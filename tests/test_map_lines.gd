@@ -84,3 +84,40 @@ func test_a_debug_build_can_draw_the_map_without_its_traces() -> void:
 		Settings.display["traces"] = false
 		assert_eq(Map3D._first_trace_mode(), "off", "TRACES off draws none (the phone's switch)")
 		Settings.display["traces"] = true
+
+
+func test_the_marks_edges_carry_their_distance_in() -> void:
+	# The ground marks' edges (Map3D.set_marks) are lines of one width on screen too, drawn by
+	# mark_line.gdshader from the distance in each corner carries.
+	var m := Map3D.new()
+	m.hex_px = 44.0
+	m._ppu = m.hex_px / Map3D.HEX_WORLD
+	m._sin = sin(deg_to_rad(Map3D.PITCH))
+	var arrays := m._edge_mesh(0.0, [0, 3]).surface_get_arrays(0)
+	var v: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	assert_eq(uv.size(), v.size(), "a distance a corner")
+	var px := func(p: Vector3) -> Vector2: return Vector2(p.x * m._ppu, p.z * m._ppu * m._sin)
+	var worst := 0.0
+	for t in range(0, v.size(), 6):
+		var a: Vector2 = px.call(v[t])
+		var edge: Vector2 = (px.call(v[t + 1]) - a).normalized()
+		for k in range(6):
+			worst = maxf(worst, absf(absf((px.call(v[t + k]) - a).cross(edge)) - uv[t + k].x))
+	assert_true(worst < 0.01, "every corner reads its distance in (off by %.3f at worst)" % worst)
+	m.free()
+
+
+func test_the_overlay_holds_its_size_at_every_zoom() -> void:
+	# Ryan, 30 October: "all UI overlay type items should hold at one width". The map view
+	# draws its marks in map space under the zoom, so a size given in screen pixels goes
+	# through _px; a plaque is laid out in screen space at its place.
+	var view := BattleMapView.new()
+	view.size = Vector2(720.0, 1000.0)
+	for z in [1.0, 1.7, 2.6]:
+		view.zoom = z
+		assert_true(is_equal_approx(view._px(3.0) * z, 3.0), "three screen pixels at zoom %.1f" % z)
+	var r := view._plaque_rect(Vector2(10.0, 50.0), Vector2(60.0, 18.0))
+	assert_eq(r.position.x, 4.0, "a plaque near the view's edge keeps inside it, in screen pixels")
+	assert_eq(r.size, Vector2(60.0, 18.0), "and keeps its size")
+	view.free()

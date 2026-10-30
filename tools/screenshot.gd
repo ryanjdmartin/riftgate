@@ -474,6 +474,12 @@ func _apply_battle_pose() -> void:
 			s._on_hex_tapped(m.pos)
 			s._on_hex_tapped(boss.pos)
 			s._engage()
+	# RIFTGATE_SHOT_ZOOM=<z> shows any pose zoomed to z on its first machine, to judge its marks
+	# zoomed in (they hold their size on screen at every zoom).
+	var z := float(OS.get_environment("RIFTGATE_SHOT_ZOOM"))
+	if z > 0.0 and is_instance_valid(s._map):
+		s._map.zoom_at(s._map.size * 0.5, z / s._map.zoom)
+		s._map.scroll_to_unit(b.mechs()[0])
 
 ## The quick campaign's screens (25 October): draft (the default, nothing picked), picked (three
 ## picked), hangar (the first battle ahead, a stored piece and module: RIFTGATE_SHOT_H=3000 shows

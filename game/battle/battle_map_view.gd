@@ -117,11 +117,11 @@ func set_field(f: Battlefield) -> void:
 		# The 3D scene and the compositor are the size of this control, not the map: the
 		# camera follows the scroll and zoom, so a frame costs the same at any zoom and the
 		# scene runs every frame (sway, ripple, later the movement phase).
-		# The scene and the compositor render at the design's size, and the window stretches
-		# them to the glass (1.5 times on a 1080 phone, nearest): the machines' edges step.
-		# With the FINE MAP setting they render at the glass's density instead and the
-		# stretch lands one to one (Ryan, 29 September; the painted world keeps its pixels,
-		# sampled from the design-size paintings). Costs 2.25 times the pixels on that phone.
+		# The scene and the compositor render at the glass's density, so the stretch lands
+		# one to one (the fine map: Ryan, 29 September, and always since 30 October; the
+		# painted world keeps its pixels, sampled from the design-size paintings). At the
+		# design's size the window stretched them 1.5 times on a 1080 phone, nearest, and the
+		# machines' edges stepped; the glass's costs 2.25 times the pixels there, at 60 fps.
 		var density := _density()
 		_map3d = Map3D.new()
 		add_child(_map3d)
@@ -153,8 +153,7 @@ func set_field(f: Battlefield) -> void:
 	queue_redraw()
 
 
-## Device pixels per design pixel for the scene and the compositor: the window's stretch
-## when the FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1.
+## Device pixels per design pixel for the scene and the compositor: the window's stretch.
 func _density() -> float:
 	return Hud.density(self)
 
@@ -222,6 +221,24 @@ func to_screen(p: Vector2) -> Vector2:
 
 func to_map(local: Vector2) -> Vector2:
 	return (local - Vector2(scroll_x, scroll_y)) / zoom
+
+
+## The overlay's marks hold their size on screen at every zoom (Ryan, 30 October: "all UI
+## overlay type items should hold at one width. It will look better"): a line's width, a
+## dash, an inset and a glyph are given in screen pixels and drawn in map space through
+## `_px`; a plaque, a gauge and a tag are drawn in screen space at their place on the map.
+## What a mark outlines or fills (a hex, a region, a route from hex to hex, a ring sized to
+## its hex) stays where it is on the map.
+func _px(screen_px: float) -> float:
+	return screen_px / zoom
+
+
+func _map_space() -> void:
+	draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
+
+
+func _screen_space() -> void:
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 ## The base of a hex in map space: its grid cell before any height. The enemy's marks and
@@ -406,29 +423,29 @@ func _draw() -> void:
 		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, size), false)
 		# Everything from here to the edge tags is drawn in map space under the zoom and
 		# scroll. The grid itself is in the scene, lit, so raised ground hides it.
-		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
+		_map_space()
 	else:
-		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
+		_map_space()
 		# Headless: the painted map, so the view still lays out and the structures still show.
 		for h in map.all_hexes():
 			var pts := Hex.corners(center(h), HEX_SIZE - 1.5)
 			draw_colored_polygon(pts, TERRAIN[map.terrain[h]])
 			TerrainArt.draw(self, center(h), HEX_SIZE, map.terrain[h], h.x * 131 + h.y * 7919, 0.9)
-			Hud.stroke_poly(self, pts, Color(hud, 0.10), 1.0)
+			Hud.stroke_poly(self, pts, Color(hud, 0.10), _px(1.0))
 		for wh in map.wall_hexes:
 			draw_colored_polygon(Hex.corners(center(wh), HEX_SIZE - 3.0), Color(Palette.MUTED, 0.35))
 		for g in map.gate_hexes:
 			var pts := Hex.corners(center(g), HEX_SIZE - 3.0)
 			draw_colored_polygon(pts, Color(hud, 0.10))
-			Hud.stroke_poly(self, pts, Color(hud, 0.85), 2.0)
+			Hud.stroke_poly(self, pts, Color(hud, 0.85), _px(2.0))
 	_draw_rift(map)
 
 	# Where the selected mech may end its move: every hex alike, lit under one solid edge (Ryan,
 	# 28 October: a move is given in one go and the map draws reach and nothing else).
 	for h in destinations.keys():
-		var pts := Hex.corners(center(h), HEX_SIZE - 5.0)
+		var pts := Hex.corners(center(h), HEX_SIZE - _px(5.0))
 		draw_colored_polygon(pts, Color(hud, 0.26))
-		Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
+		Hud.stroke_poly(self, pts, Color(hud, 0.8), _px(1.5))
 
 	# Where the selected machine could attack from past its move (Ryan, 25 October: "not only its
 	# available move spaces, but its available attacking spaces at the edge of that move, in
@@ -437,7 +454,7 @@ func _draw() -> void:
 	# ordered onto, in the band or in reach where it stands, bracketed in red.
 	if not threat.is_empty() and _anim.is_empty():
 		for h in threat.keys():
-			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 5.0), Color(Palette.ENEMY_MAP, 0.26))
+			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - _px(5.0)), Color(Palette.ENEMY_MAP, 0.26))
 		_ring_outline(threat, Palette.ENEMY_MAP, 3.0, false)
 		if selected != null:
 			for sq in field.packs():
@@ -446,7 +463,7 @@ func _draw() -> void:
 					hit = hit or threat.has(x) or Hex.distance(x, selected.pos) <= selected.attack_range
 				if hit:
 					var bc := center(sq.pos)
-					Hud.brackets(self, Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, ENEMY_HOT, 3.0)
+					Hud.brackets(self, Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), ENEMY_HOT, _px(3.0))
 
 	# Every pack's ring, the enemy's engagement range: a fight on a hex in it pulls the pack in,
 	# and a hunter catches what stands in it (Ryan, 25 October: "always visible, and become more
@@ -484,7 +501,7 @@ func _draw() -> void:
 				continue
 			_route(pc["from"], pc["path"], hud, last_piece[int(pc["unit"])] == k)
 			for rd in pc["riders"]:
-				Hud.stroke_poly(self, Hex.corners(center(rd[3]), HEX_SIZE - 6.0), Color(hud, 0.8), 2.5)
+				Hud.stroke_poly(self, Hex.corners(center(rd[3]), HEX_SIZE - _px(6.0)), Color(hud, 0.8), _px(2.5))
 
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
 	# stand now, and every hunter's lock on its prey; nothing while a move plays or a fight is
@@ -527,13 +544,13 @@ func _draw() -> void:
 		var blink := 0.55 + 0.45 * sin(_ring_t * 3.0)   # the glyphs pulse together
 		for n in attack.keys():
 			_fill(n, Color(Palette.ENEMY_MAP, 0.06))
-			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 5.5), Palette.ENEMY_MAP, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
-			Glyphs.draw(self, "warning", center(n), HEX_SIZE * (0.42 + 0.08 * blink), Color(ENEMY_HOT, 0.5 + 0.5 * blink), 2.5)
+			_crawl_poly(Hex.corners(center(n), HEX_SIZE - _px(5.5)), Palette.ENEMY_MAP, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
+			Glyphs.draw(self, "warning", center(n), _px(HEX_SIZE * (0.42 + 0.08 * blink)), Color(ENEMY_HOT, 0.5 + 0.5 * blink), _px(2.5))
 		for g in map.gate_hexes:
 			# A light tint (ground marks land at alpha to the 2.2, so 0.3 is faint) under
 			# lines at a third (Ryan, 29 September).
 			_fill(g, Color(hud, 0.3))
-			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.35), 1.5)
+			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - _px(2.0)), Color(hud, 0.35), _px(1.5))
 
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
@@ -548,7 +565,7 @@ func _draw() -> void:
 	# pack there has its route breathing between red and salmon, drawn in the pack loop.
 	if map.has(inspected) and _anim.is_empty():
 		var ic := center(inspected)
-		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), HEX_SIZE * 0.45, Color(hud, 0.95), 2.5)
+		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), _px(HEX_SIZE * 0.45), Color(hud, 0.95), _px(2.5))
 
 	# The route being drawn by hand: the same line, heavier, ringed where it ends. It never
 	# leaves the lit reach, so its end needs no gauge (Ryan, 28 October: a move in one go).
@@ -556,9 +573,9 @@ func _draw() -> void:
 		var prev := center(_route_drag.pos)
 		for step in draft:
 			var p := center(step)
-			draw_line(prev, p, hud, 5.0)
+			draw_line(prev, p, hud, _px(5.0))
 			prev = p
-		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.5)
+		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, _px(2.5))
 		# A carrier's block where it would land (the Swallowtail's carry, Ryan, 21 October): each
 		# rider's hex outlined; one it cannot land on dashed and struck through, and the stop
 		# itself crossed and tagged, so the player changes it before letting go. By structure,
@@ -567,13 +584,13 @@ func _draw() -> void:
 		var lands: Dictionary = draft_land.get("to", {})
 		for r in lands.keys():
 			var lh: Vector2i = lands[r]
-			var pts := Hex.corners(center(lh), HEX_SIZE - 6.0)
+			var pts := Hex.corners(center(lh), HEX_SIZE - _px(6.0))
 			if bad.has(lh):
 				for i in range(6):
 					_dashed_line(pts[i], pts[(i + 1) % 6], Palette.ENEMY_MAP, HEX_SIZE * 0.16)
 				_strike(center(lh), HEX_SIZE * 0.42, Palette.ENEMY_MAP)
 			else:
-				Hud.stroke_poly(self, pts, hud, 3.0)
+				Hud.stroke_poly(self, pts, hud, _px(3.0))
 		if not bad.is_empty():
 			# The stop is no move: struck through and tagged.
 			_strike(prev, HEX_SIZE * 0.42, Palette.ENEMY_MAP)
@@ -586,7 +603,7 @@ func _draw() -> void:
 			var prey: Unit = f["prey"]
 			for h in f["hunters"]:
 				_contact_effect((h as Unit).pos, true, true)
-			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, Palette.ENEMY_MAP, 3.0)
+			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), Palette.ENEMY_MAP, _px(3.0))
 			_plaque(center(prey.pos) + Vector2(0.0, -HEX_SIZE * 1.05), "CAUGHT", Palette.ENEMY, 2.0)
 	# The orders (bible section 5): a line from each machine to the pack it is ordered onto, in
 	# the display's light, dashes crawling toward the pack.
@@ -601,10 +618,10 @@ func _draw() -> void:
 			var dir := (b - a).normalized()
 			a += dir * HEX_SIZE * 0.55
 			b -= dir * HEX_SIZE * 0.6
-			draw_line(a, b, Color(hud, 0.35), 6.0)
+			draw_line(a, b, Color(hud, 0.35), _px(6.0))
 			_dashed_line(a, b, hud, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0))
 			var side := Vector2(-dir.y, dir.x)
-			draw_polyline(PackedVector2Array([b - dir * 10.0 + side * 8.0, b, b - dir * 10.0 - side * 8.0]), hud, 3.0)
+			draw_polyline(PackedVector2Array([b - dir * _px(10.0) + side * _px(8.0), b, b - dir * _px(10.0) - side * _px(8.0)]), hud, _px(3.0))
 	# The fight shown (bible section 5): the next one ENGAGE opens, the one a dragged machine
 	# is over, or a pack looked at. The attack range round the target in the display's light
 	# (where a machine must stand to join), every joining pack's ring in the enemy's, the packs
@@ -626,7 +643,7 @@ func _draw() -> void:
 			_contact_effect((u as Unit).pos, true, true)
 		for m in attack.get("committed", []):
 			var c := center((m as Unit).pos)
-			Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, hud, 3.0)
+			Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), hud, _px(3.0))
 		if not targets.is_empty():
 			_plaque(center((targets[0] as Unit).pos) + Vector2(0.0, -HEX_SIZE * 1.05), "FIGHT // " + contact_text(attack.get("committed", []) + group), Palette.ENEMY, 2.0)
 	# The fight being entered: frozen on its units through the handover.
@@ -646,9 +663,9 @@ func _draw() -> void:
 
 	if selected != null:
 		var c := _unit_center(selected)
-		Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.85, Vector2(HEX_SIZE, HEX_SIZE) * 1.7), 12.0, hud, 2.0)
+		Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.85, Vector2(HEX_SIZE, HEX_SIZE) * 1.7), _px(12.0), hud, _px(2.0))
 
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # from here, screen space
+	_screen_space()   # from here, screen space
 	# The HUD's own marks (the frame, the bars, their text) are drawn in screen space at
 	# their positions under the zoom, so they stay crisp and their lines stay thin however
 	# far the reconstruction is zoomed (Ryan, 22 September).
@@ -775,7 +792,7 @@ func _draw_rift(map: BattleMap) -> void:
 	var tex := Sprites.rift()
 	if tex == null:
 		for r in map.rift_hexes:
-			Hud.stroke_poly(self, Hex.corners(center(r), HEX_SIZE - 3.0), RIFT_ART, 2.0)
+			Hud.stroke_poly(self, Hex.corners(center(r), HEX_SIZE - 3.0), RIFT_ART, _px(2.0))
 		return
 	var fh := tex.get_size().y
 	var frames := maxi(1, int(round(tex.get_size().x / fh)))   # square frames side by side
@@ -827,24 +844,25 @@ func _draw_rift(map: BattleMap) -> void:
 func _strike(c: Vector2, r: float, col: Color) -> void:
 	for d in [Vector2(1, 1), Vector2(1, -1)]:
 		var v: Vector2 = d.normalized() * r
-		draw_line(c - v, c + v, Color(Palette.BG, 0.9), 9.0)
-		draw_line(c - v, c + v, col, 5.0)
+		draw_line(c - v, c + v, Color(Palette.BG, 0.9), _px(9.0))
+		draw_line(c - v, c + v, col, _px(5.0))
 
 
+## A plaque at a map point `at`, drawn in screen space there so it holds its size at every zoom.
 func _plaque(at: Vector2, text: String, border: Color, thick: float = 1.5) -> void:
+	_screen_space()
 	var w := Hud.mono().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 10.0
-	var rect := _plaque_rect(at, Vector2(w, 18.0))
+	var rect := _plaque_rect(to_screen(at), Vector2(w, 18.0))
 	draw_rect(rect, Palette.BG, true)
 	draw_rect(rect, border, false, thick)
 	draw_string(Hud.mono(), rect.position + Vector2(5.0, 13.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
+	_map_space()
 
 
-## A plaque's rect centred on `at`, kept inside the visible width so a zoomed-in plaque
+## A plaque's rect centred on the screen point `at`, kept inside the view's width so a plaque
 ## never runs off the screen.
 func _plaque_rect(at: Vector2, sz: Vector2) -> Rect2:
-	var left := (4.0 - scroll_x) / zoom
-	var right := (size.x - 4.0 - scroll_x) / zoom
-	var x := clampf(at.x, left + sz.x * 0.5, right - sz.x * 0.5) if right - left > sz.x else at.x
+	var x := clampf(at.x, 4.0 + sz.x * 0.5, size.x - 4.0 - sz.x * 0.5) if size.x - 8.0 > sz.x else at.x
 	return Rect2(Vector2(x, at.y) - sz * 0.5, sz)
 
 
@@ -906,7 +924,7 @@ func _edges(h: Vector2i, idx: Array, col: Color) -> void:
 	else:
 		var pts := Hex.corners(center(h), HEX_SIZE - 1.0)
 		for i in idx:
-			draw_line(pts[i], pts[(i + 1) % 6], col, 2.0)
+			draw_line(pts[i], pts[(i + 1) % 6], col, _px(2.0))
 
 
 func _mark(h: Vector2i) -> Dictionary:
@@ -1039,7 +1057,7 @@ func _field_rings(c: Vector2, r: float, dir: float, _phase: float, width: float 
 				if b1 - b0 < 0.002:
 					continue
 				var colour := _field_hot if posmod(floori(((b0 + b1) * 0.5 - turn) / step), 2) == 0 else _field_deep
-				draw_arc(c, rad, b0, b1, maxi(2, int((b1 - b0) * rad / 3.0) + 1), colour, width)
+				draw_arc(c, rad, b0, b1, maxi(2, int((b1 - b0) * rad * zoom / 3.0) + 1), colour, _px(width))
 
 
 func _intent_breath() -> float:
@@ -1078,12 +1096,12 @@ func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
 	_fill(h, Color(Palette.ENEMY_MAP, (0.7 + 0.25 * breath) * a))
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY_MAP, a), 2.5)
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - _px(3.0)), Color(Palette.ENEMY_MAP, a), _px(2.5))
 	var col := _ring_colour()
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
 		var r := HEX_SIZE * (0.3 + 1.1 * phase)
-		draw_arc(c, r, 0.0, TAU, 40, Color(col, (1.0 - phase) * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
+		draw_arc(c, r, 0.0, TAU, 40, Color(col, (1.0 - phase) * a), _px(3.0 * (1.0 - phase * 0.5) + 1.0))
 
 
 ## A route, either side's (Ryan, 29 September): a quiet line with dashes crawling toward
@@ -1105,14 +1123,14 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		_set_intent_pair(breathe)   # the tapped pack's whole mark pulses: line, gaps, rings, border
 		col = _field_hot
 		if _intent_edged():
-			draw_polyline(pts, INTENT_EDGE, 7.0)
-		draw_polyline(pts, col, 3.5)
+			draw_polyline(pts, INTENT_EDGE, _px(7.0))
+		draw_polyline(pts, col, _px(3.5))
 		# The moving dashes over the line stay one dark colour (Ryan, 30 September: the field
 		# on them made the line itself look striped); the field is for the rings and border.
 		for i in range(pts.size() - 1):
 			_dashed_line(pts[i], pts[i + 1], _field_deep, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
 	else:
-		draw_polyline(pts, Color(col, 0.5), 3.0)
+		draw_polyline(pts, Color(col, 0.5), _px(3.0))
 		for i in range(pts.size() - 1):
 			_dashed_line(pts[i], pts[i + 1], col, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
 	# A chevron a step, pointing the way (edged too, on the enemy's).
@@ -1120,10 +1138,11 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		var dir := (pts[i + 1] - pts[i]).normalized()
 		var tip := pts[i].lerp(pts[i + 1], 0.55)
 		var side := Vector2(-dir.y, dir.x)
-		var chev := PackedVector2Array([tip - dir * 6.0 + side * 6.0, tip, tip - dir * 6.0 - side * 6.0])
+		var k := _px(6.0)
+		var chev := PackedVector2Array([tip - dir * k + side * k, tip, tip - dir * k - side * k])
 		if edged and _intent_edged():
-			draw_polyline(chev, INTENT_EDGE, 5.0)
-		draw_polyline(chev, col, 2.5)
+			draw_polyline(chev, INTENT_EDGE, _px(5.0))
+		draw_polyline(chev, col, _px(2.5))
 	if not lock:
 		return
 	var end := pts[pts.size() - 1]
@@ -1136,25 +1155,25 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		if _intent_edged():
 			_field_rings(end, DEST_RING, -1.0, phase, 6.0)
 		_field_rings(end, DEST_RING, -1.0, phase)
-		draw_circle(end, 3.5, col)
-		_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if _intent_edged() else Color(0, 0, 0, 0), phase)   # just inside the hex lines (Ryan, 30 September)
+		draw_circle(end, _px(3.5), col)
+		_crawl_poly(Hex.corners(end, HEX_SIZE - _px(5.5)), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if _intent_edged() else Color(0, 0, 0, 0), phase)   # just inside the hex lines (Ryan, 30 September)
 		return
 	# A machine's target lock in the same construction (Ryan, 30 September), over the same
 	# fields, in its line's two colours: the display's light, and the light at half.
 	_field_hot = bright
 	_field_deep = Color(bright, 0.5)
 	_field_rings(end, DEST_RING, -1.0, 0.0)
-	draw_circle(end, 3.5, bright)
-	_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))   # just inside the hex lines (Ryan, 30 September)
+	draw_circle(end, _px(3.5), bright)
+	_crawl_poly(Hex.corners(end, HEX_SIZE - _px(5.5)), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))   # just inside the hex lines (Ryan, 30 September)
 
 
 ## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
-## both `dash` long.
+## both `dash` screen pixels long.
 func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float, edge: Color = Color(0, 0, 0, 0), phase: float = 0.0) -> void:
 	var per := 0.0
 	for i in range(pts.size()):
 		per += pts[i].distance_to(pts[(i + 1) % pts.size()])
-	var n := maxi(2, int(per / dash) & ~1)
+	var n := maxi(2, int(per / _px(dash)) & ~1)
 	var step := per / n
 	for pass_i in range(2 if edge.a > 0.0 else 1):
 		var k := -2.0 + offset
@@ -1166,8 +1185,8 @@ func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float
 			k += 2.0
 
 
-## The stretch of a closed outline between distances `d0` and `d1` along it.
-## `col` at zero alpha means the intent field's colours, at `phase`.
+## The stretch of a closed outline between distances `d0` and `d1` along it, `width` screen
+## pixels wide. `col` at zero alpha means the intent field's colours, at `phase`.
 func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, width: float = 2.5, phase: float = 0.0) -> void:
 	var walked := 0.0
 	for i in range(pts.size()):
@@ -1178,25 +1197,25 @@ func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, wi
 		var s1 := clampf(d1 - walked, 0.0, len)
 		if s1 > s0:
 			if col.a == 0.0:
-				_field_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), phase, width)
+				_field_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), phase, _px(width))
 			else:
-				draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, width)
+				draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, _px(width))
 		walked += len
 
 
-## A dashed line from `a` to `b`, dash and gap both `dash` long, the pattern shifted along
-## by `offset` dashes so it can crawl.
+## A dashed line from `a` to `b`, dash and gap both `dash` screen pixels long and the line
+## `width`, the pattern shifted along by `offset` dashes so it can crawl.
 func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float = 0.0, phase: float = 0.0, width: float = 3.0) -> void:
-	var n := maxi(1, int(a.distance_to(b) / dash))
+	var n := maxi(1, int(a.distance_to(b) / _px(dash)))
 	var k := -2.0 + fmod(offset, 2.0)
 	while k < n:
 		var t0 := clampf(k / n, 0.0, 1.0)
 		var t1 := clampf((k + 1.0) / n, 0.0, 1.0)
 		if t1 > t0:
 			if col.a == 0.0:   # the intent field's colours
-				_field_line(a.lerp(b, t0), a.lerp(b, t1), phase, width)
+				_field_line(a.lerp(b, t0), a.lerp(b, t1), phase, _px(width))
 			else:
-				draw_line(a.lerp(b, t0), a.lerp(b, t1), col, width)
+				draw_line(a.lerp(b, t0), a.lerp(b, t1), col, _px(width))
 		k += 2.0
 
 
@@ -1208,8 +1227,8 @@ func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float
 const HUNT_TAG := Vector2(66.0, 40.0)   # the picture at twice its pixels, the target beside it
 
 func _hunted_tag(prey: Unit, hunters: Array) -> void:
-	var c := _unit_center(prey)
-	var right := c + Vector2(-HEX_SIZE * 0.72, -HEX_SIZE * 0.95)   # the first plate's right edge, clear of a selected machine's gauges
+	_screen_space()
+	var right := to_screen(_unit_center(prey) + Vector2(-HEX_SIZE * 0.72, -HEX_SIZE * 0.95))   # the first plate's right edge, clear of a selected machine's gauges
 	for k in range(hunters.size()):
 		var sq: Unit = hunters[k]
 		var rect := Rect2(right + Vector2(-HUNT_TAG.x - k * (HUNT_TAG.x + 4.0), -HUNT_TAG.y * 0.5), HUNT_TAG)
@@ -1230,6 +1249,7 @@ func _hunted_tag(prey: Unit, hunters: Array) -> void:
 		if k == 0:
 			var tip := Vector2(rect.end.x + 6.0, rect.end.y + 6.0)
 			draw_colored_polygon(PackedVector2Array([Vector2(rect.end.x - 10.0, rect.end.y), Vector2(rect.end.x, rect.end.y - 8.0), tip]), Palette.ENEMY)
+	_map_space()
 
 
 ## The target: a ring of three dashes turning, four ticks closing on a hot centre.
@@ -1270,18 +1290,18 @@ func _zone_hexes(sq: Unit, anchor: Vector2i, region: Dictionary, radius: int = -
 func _ring_outline(region: Dictionary, col: Color, width: float, dashed: bool, crawl: bool = false) -> void:
 	for h in region.keys():
 		var nb := Hex.neighbors(h)
-		var pts := Hex.corners(center(h), HEX_SIZE - 2.5)
+		var pts := Hex.corners(center(h), HEX_SIZE - _px(2.5))
 		for i in range(6):
 			var across: Vector2i = nb[(6 - i) % 6]
 			if region.has(across) or not field.map.has(across):
 				continue
 			var a := pts[i]
 			var b := pts[(i + 1) % 6]
-			draw_line(a, b, Color(ENEMY_EDGE, minf(1.0, col.a + 0.1)), width + 3.0)
+			draw_line(a, b, Color(ENEMY_EDGE, minf(1.0, col.a + 0.1)), _px(width + 3.0))
 			if dashed:
 				_dashed_line(a, b, col, HEX_SIZE * 0.17, 0.0, 0.0, width)
 			else:
-				draw_line(a, b, col, width)
+				draw_line(a, b, col, _px(width))
 			if crawl:
 				_dashed_line(a, b, ENEMY_HOT, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0), 0.0, width * 0.5)
 
@@ -1304,22 +1324,25 @@ func _region_outline(region: Dictionary, col: Color, _thick: float) -> void:
 
 ## A selected machine's shield and hull as two gauges floating over its hex.
 func _unit_gauges(u: Unit) -> void:
-	var c := _unit_center(u) + Vector2(0.0, -HEX_SIZE * 1.05)
-	var w := HEX_SIZE * 1.3
+	_screen_space()
+	var c := to_screen(_unit_center(u) + Vector2(0.0, -HEX_SIZE * 1.05))
+	var w := HEX_SIZE * 1.3   # a hex's width at zoom 1, held at every zoom
 	var r := Rect2(c.x - w * 0.5, c.y - 12.0, w, 6.0)
 	for pair in [[u.shield, u.shield_max, Palette.SHIELD], [u.hull, u.hull_max, Palette.HULL]]:
 		draw_rect(r.grow(1.5), Color(Palette.BG, 0.9))
 		draw_rect(r, Color(pair[2], 0.25))
 		draw_rect(Rect2(r.position, Vector2(r.size.x * clampf(float(pair[0]) / maxf(1.0, float(pair[1])), 0.0, 1.0), r.size.y)), pair[2])
 		r.position.y += 9.0
+	_map_space()
 
 
 ## An inspected pack's strength: one segment a foe, so a pack thinned by a fight reads
 ## thinner than a fresh one.
 func _pack_segments(p: Unit) -> void:
+	_screen_space()
 	var n := maxi(1, p.strength)
-	var c := center(p.pos) + Vector2(0.0, -HEX_SIZE * 1.05)
-	var w := HEX_SIZE * 1.3
+	var c := to_screen(center(p.pos) + Vector2(0.0, -HEX_SIZE * 1.05))
+	var w := HEX_SIZE * 1.3   # a hex's width at zoom 1, held at every zoom
 	var gap := 2.0
 	var seg := (w - gap * (n - 1)) / n
 	var x := c.x - w * 0.5
@@ -1327,6 +1350,7 @@ func _pack_segments(p: Unit) -> void:
 	for i in range(n):
 		draw_rect(Rect2(x, c.y - 12.0, seg, 6.0), Palette.ENEMY)
 		x += seg + gap
+	_map_space()
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:

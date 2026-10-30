@@ -136,7 +136,7 @@ func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float,
 	_ppu = hex_px / HEX_WORLD
 	_sin = sin(deg_to_rad(PITCH))
 	_cos = cos(deg_to_rad(PITCH))
-	size = Vector2i((view_size * density).round())   # the pixels rendered: the design's, or the glass's (the FINE MAP setting)
+	size = Vector2i((view_size * density).round())   # the pixels rendered: the glass's (Hud.density)
 	own_world_3d = true
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS   # alive: sway and ripple every frame
@@ -982,7 +982,7 @@ func _ink(grow: float = 1.0) -> StandardMaterial3D:
 ## follow every call, so a mark can breathe.
 var _marks: Dictionary = {}   # hex -> [fill MeshInstance3D or null, line MeshInstance3D or null]
 var _marks_key := ""
-const EDGE_W := 1.0   # the ribbon's width in map pixels: a hairline, the tint does the work (Ryan, 22 September)
+const EDGE_W := 1.0   # the edge's width in design pixels on screen, at every zoom: a hairline, the tint does the work (Ryan, 22 September)
 
 func set_marks(list: Array) -> void:
 	var key := ""
@@ -1005,7 +1005,7 @@ func set_marks(list: Array) -> void:
 				fill = _flat_mark(_mark_mesh(y), _columns[h])
 			var line: MeshInstance3D = null
 			if not (m["edges"] as Array).is_empty():
-				line = _flat_mark(_edge_mesh(y + 0.05, m["edges"]), _columns[h])
+				line = _line_mark(_edge_mesh(y + 0.05, m["edges"]), _columns[h])
 			_marks[h] = [fill, line]
 	for m in list:
 		var pair: Array = _marks.get(m["hex"], [])
@@ -1014,7 +1014,7 @@ func set_marks(list: Array) -> void:
 		if pair[0] != null:
 			(pair[0].material_override as StandardMaterial3D).albedo_color = _scene_alpha(m["fill"])
 		if pair[1] != null:
-			(pair[1].material_override as StandardMaterial3D).albedo_color = _scene_alpha(m["line"])
+			(pair[1].material_override as ShaderMaterial).set_shader_parameter("color", _scene_alpha(m["line"]))
 
 
 ## The scene blends in linear light, so a thin tint of a bright colour over dark ground
@@ -1038,6 +1038,22 @@ func _flat_mark(mesh: Mesh, col: Node3D) -> MeshInstance3D:
 	return mi
 
 
+## A mark's edge, drawn by mark_line.gdshader: EDGE_W design pixels on screen at every zoom,
+## smoothed, as the grid's.
+func _line_mark(mesh: Mesh, col: Node3D) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.mesh = mesh
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://game/battle/mark_line.gdshader")
+	mat.set_shader_parameter("line_px", EDGE_W * _density)
+	mat.set_shader_parameter("inset_px", maxf(0.5, GRID_INSET * _density))
+	mat.render_priority = 1
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	col.add_child(mi)
+	return mi
+
+
 func _mark_mesh(y: float) -> ArrayMesh:
 	var corners := Hex.corners(Vector2.ZERO, hex_px - 3.0)
 	var st := SurfaceTool.new()
@@ -1050,10 +1066,14 @@ func _mark_mesh(y: float) -> ArrayMesh:
 	return st.commit()
 
 
-## Ribbons along the given edges (corner i to i+1), just inside the hex's edge.
+## Ribbons along the given edges (corner i to i+1), just inside the hex's edge, GRID_RIBBON
+## map pixels deep: UV.x carries each corner's distance in, which mark_line.gdshader turns
+## into a line of one width on screen.
 func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
 	var outer := Hex.corners(Vector2.ZERO, hex_px - 1.0)
-	var inner := Hex.corners(Vector2.ZERO, hex_px - 1.0 - EDGE_W * 1.15)
+	var inner := Hex.corners(Vector2.ZERO, hex_px - 1.0 - GRID_RIBBON * 2.0 / sqrt(3.0))
+	var edge := Vector2.ZERO
+	var deep := Vector2(GRID_RIBBON, 0.0)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for e in edges:
@@ -1063,8 +1083,12 @@ func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
 		var b := _world(outer[j], y)
 		var c := _world(inner[j], y)
 		var d := _world(inner[i], y)
-		st.add_vertex(a); st.add_vertex(b); st.add_vertex(c)
-		st.add_vertex(a); st.add_vertex(c); st.add_vertex(d)
+		st.set_uv(edge); st.add_vertex(a)
+		st.set_uv(edge); st.add_vertex(b)
+		st.set_uv(deep); st.add_vertex(c)
+		st.set_uv(edge); st.add_vertex(a)
+		st.set_uv(deep); st.add_vertex(c)
+		st.set_uv(deep); st.add_vertex(d)
 	return st.commit()
 
 
@@ -1118,10 +1142,11 @@ func _grid_material() -> ShaderMaterial:
 ## The grid's resting brightness (the tuner's GRID knob). The phone needs far more than
 ## the Mac: the ribbons drawn at the Mac's gain were still dim on the phone at any zoom
 ## (Ryan, 28 September; the Compatibility renderer adds no bloom halo to a line, and the
-## glass is small), so a phone rests hotter. Both down a fifth (Ryan, 25 October: "base hex
-## outline brightness can be reduced a bit"), so the marks drawn over the grid stand out.
-const GRID_GAIN := 0.56
-const GRID_GAIN_PHONE := 1.2
+## glass is small), so a phone rests hotter. Down a fifth on 25 October to calm a busy
+## screen, and back once the lines held one width at every zoom (Ryan, 30 October: "With
+## these changes, I think it could go back how it was").
+const GRID_GAIN := 0.7
+const GRID_GAIN_PHONE := 1.5
 
 
 ## One hex of flat ground as a polygon: the dark rim under the columns, for the grid gaps.

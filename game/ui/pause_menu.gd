@@ -137,7 +137,6 @@ func _show_page(page: String) -> void:
 			_slider("ENEMY PACE", "enemy_pace")
 			_toggle("GLITCH", "glitch")
 			_toggle("SCAN BAR", "scan")
-			_toggle("FINE MAP", "fine_map")   # the map at the glass's density: sharper, costlier; a phone judges its frame rate
 			_controls_row()
 			_slider("MUSIC", "music")
 			_slider("EFFECTS", "effects")

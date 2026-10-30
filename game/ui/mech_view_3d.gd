@@ -349,7 +349,7 @@ func hide_stock(n: int) -> void:
 			c.visible = false
 
 
-var density := 1.0              # device pixels a design pixel: the render is this much larger than `frame_px` (the FINE MAP setting)
+var density := 1.0              # device pixels a design pixel: the render is this much larger than `frame_px` (Hud.density)
 var frame_px := Vector2i.ZERO   # the design-size frame the render stands for; a consumer draws the texture at this size
 
 func _setup(chassis_id: String, maker: String) -> void:
@@ -360,8 +360,8 @@ func _setup(chassis_id: String, maker: String) -> void:
 	density = Hud.density(self)
 	var px := Vector2i((Vector2(frame) * density).round())
 	# The outer viewport holds the outlined 2D result; the inner one renders the 3D, both
-	# at the glass's density when FINE MAP is on (Ryan, 29 September: the skirmish's
-	# machines get the map's sharpness too).
+	# at the glass's density (Ryan, 29 September: the skirmish's machines get the map's
+	# sharpness too).
 	size = px
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS

@@ -357,13 +357,12 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # mipmaps, no FXAA on the map), as a debug build's AA toggle does; RIFTGATE_AA=fxaa runs the map's
 # FXAA beside MSAA too. With RIFTGATE_MSAA=off the desk draws the phone's look: the map's FXAA in place
 # of MSAA, which the phone's renderer leaks with until Godot 4.8 (godotengine/godot#124643).
+# RIFTGATE_SHOT_ZOOM=<z> shows any battle pose zoomed to z on its first machine (the overlay holds its size on screen).
 # RIFTGATE_OUTLINE=<n> sets the battle map's machine outline width in design pixels, the same at every zoom, for a comparison
 # (Map3D.OUTLINE is the default). A debug build's TRACES toggle draws the map without its traces (the creases on the
 # machines, the props and the gate, one device pixel at every zoom), to judge the grain zoomed out on the phone; on the
 # desk, RIFTGATE_TUNE=1's TRACE knob does the same live.
 # RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.
-# RIFTGATE_FINE_MAP=1 forces the FINE MAP setting (the map's scene and compositor at the glass's
-# density; with RIFTGATE_SHOT_SCALE=1.5 that is a phone's).
 # RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
 # capture goes through the project's own stretch and font oversampling as the phone's does:
 # run with --resolution 1080x1920 for a 1080 phone's density (the screen caps the height).
@@ -549,7 +548,7 @@ inside a fight. The battle ends when the gate falls, every mech is wrecked, or t
 dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate for its
 integrity. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, enemy pace,
-glitch, scan bar, fine map, and music, effects and voice volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
+glitch, scan bar, skirmish controls, and music, effects and voice volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
 `RIFTGATE_FACTION=meadow|waste|marsh|peak` the enemy; `RIFTGATE_TUNE=1` shows the
 development knob panel.
 

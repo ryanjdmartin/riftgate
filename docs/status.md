@@ -141,8 +141,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   width on screen at every zoom, smoothed, the outline drawn round the machines' own layer in the
   compositor (unbroken, through the wall, the Kite outlined too) and the engine's outline retired
   everywhere. The MSAA leak is Godot's, fixed for 4.8 (godotengine/godot#124643); the one-pixel
-  creases are what is left a pixel wide, behind a debug TRACES toggle. Ryan's phone read is the
-  to-do's.
+  creases are what is left a pixel wide, behind a debug TRACES toggle. His phone read: "way
+  sharper", the lines the biggest culprit, the creases the grain left and fine with AA on. Then
+  every overlay mark held its zoom-1 size at every zoom (his call: "all UI overlay type items
+  should hold at one width"), the fine map became permanent with its option gone, and the grid
+  went back to its light before the 25 October dimming. His read of those is the to-do's.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water

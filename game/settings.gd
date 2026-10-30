@@ -30,7 +30,6 @@ const DISPLAY_DEFAULTS := {
 	"weld": true,   # a debug build's comparison: off, the machines' parts are drawn as authored rather than welded (MechWeld), to judge the battery plan on the phone
 	"aa": true,   # a debug build's comparison: off, the 3D draws without its smoothing (Hud.smoothing: the textures' mipmaps, the map's FXAA), to judge it on the phone
 	"traces": true,   # a debug build's comparison: off, the map draws none of its traces (the creases on the machines, the props and the gate), to judge the grain at zoom 1 on the phone
-	"fine_map": true,   # the map's scene and compositor at the glass's density rather than the design's (Ryan, 29 September: 60 fps locked on the Pixel with it, so it is the default)
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 }
 const DISPLAY_RANGES := {

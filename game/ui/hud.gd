@@ -170,12 +170,11 @@ static func fxaa() -> bool:
 	return smoothing() and (msaa_3d() == SubViewport.MSAA_DISABLED or OS.get_environment("RIFTGATE_AA") == "fxaa")
 
 
-## Device pixels per design pixel a 3D render should use: the window's stretch when the
-## FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1. From the node's own viewport
-## when it is in the tree, else the window's.
+## Device pixels per design pixel a 3D render uses: the window's stretch, so the map and the
+## machines render at the glass's density and the stretch lands one to one (the fine map,
+## always: Ryan, 30 October, "set fine map on as the default and remove the option"). From
+## the node's own viewport when it is in the tree, else the window's.
 static func density(node: Node) -> float:
-	if OS.get_environment("RIFTGATE_FINE_MAP") != "1" and not bool(Settings.display.get("fine_map", false)):
-		return 1.0
 	var vp: Viewport = node.get_viewport() if node != null and node.is_inside_tree() else null
 	if vp == null:
 		var loop := Engine.get_main_loop()
