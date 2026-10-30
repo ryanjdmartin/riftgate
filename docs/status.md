@@ -194,7 +194,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   bored and dark, its weapons sliding along their lines, its seal hiding the irises and
   hunkering, its stack a louvred radiator sunk in each flank's chamfer above the hind hip
   and two near-square vents standing out of the back panel, and a vent on each flank that slides out, glowing orange as the shell
-  sinks once to vent, opening one at a time and shutting together, and dark sealed; every Arsenal cockpit's glass
+  sinks once to vent, opening a pair at a time and shutting together, and dark sealed; every Arsenal cockpit's glass
   lit, the Nemesis's visor flaring white-hot in its fierce acts), to judge running (the to-do). A model may hold a form while its
   machine carries the status of the same name, the form carrying the whole machine and acts of
   its own (the Armadillo's seal; `RIFTGATE_SEAL_DEBUG=1`, or Forms on the hangar's Models tab),
@@ -356,10 +356,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.394 (the
-  page's version 406, published 30 October from `claude/charming-rubin-h954bp`, three-way merged
-  onto the live v0.393 that another session published at 405 (Night Shift's battle half as a jam
-  in turns), itself onto this branch's v0.391 at 403, merged onto the live v0.390 that other
+  `docs/design-bible.html` after every change. This file and the live page are v0.396 (the
+  page's version 408, published 30 October from `claude/charming-rubin-h954bp`, three-way merged
+  onto the live v0.395 that another session published at 407 (the fight's palette beside the
+  map's tileset, the HUD's three presets), itself onto this branch's v0.394 at 406, merged onto
+  the live v0.393 that another session published at 405 (Night Shift's battle half as a jam in
+  turns), itself onto this branch's v0.391 at 403, merged onto the live v0.390 that other
   sessions published at 402 (the engine's 4.8, sound notes, the enemy's violet, the foe tables,
   the HUD's presets), itself onto this branch's v0.384 at 396,
   merged onto the live v0.383 that other sessions published at 395 (the pacing session's tier and
@@ -374,7 +376,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   and `ccr-7effd31a-u5z4gw`'s sound rows, so this file carries those rows ahead of their code;
   with this branch's notes of 29 and 30 October on the rebuilds, the Armadillo's radiators
   sunk in its flanks' chamfers above the hind hips and two near-square vents standing out of its
-  back panel, opening one at a time and shutting together, its rack's collar skirted in the
+  back panel, opening a pair at a time and shutting together, its rack's collar skirted in the
   livery, its sliding side vents, their
   glow (#ff7800) and its one-sink vent, and the desk on the phone's renderer). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
@@ -392,14 +394,15 @@ into this file in the same commit as its first publish; the procedures are in `R
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 167 (30 October, from
-  `claude/charming-rubin-h954bp`, onto its own 166 and 165, itself onto 164, which another session published with this branch's
+  acts on a reloaded page). At the page's version 168 (30 October, from
+  `claude/charming-rubin-h954bp`, onto its own 167, 166 and 165, itself onto 164, which another session published with this branch's
   manifest, `motion.js` and Armadillo files as at its 163, itself onto 162, 161 and 160, which another session
   published with this branch's manifest and `motion.js` as at its 159, which other sessions published overnight with this
   branch's page, manifest and `motion.js` as at its 152: Ryan's notes of 29 and 30 October on
   the rebuilds, the last standing the Armadillo's rear vents out of the back panel and opening
-  its vents one at a time before they shut together,
-  with its renders, the old ones to before; every other file as the live page had it, `edits`
+  its vents a pair at a time, held open together before they all shut,
+  with its renders, the old ones to before (the last round moved only the vent act, so its rig
+  and the note went up alone); every other file as the live page had it, `edits`
   empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
