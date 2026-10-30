@@ -52,7 +52,9 @@ const OPEN_GAP := 1.5         # and each machine set up with it opens at least t
 const OPEN_JITTER := 0.8      # plus up to this, so the openings are not a metronome
 const GAP_DEBUG := 0.4        # with the debug switch on
 const WAIT_TICK_MAX := 0.1    # seconds of the gap a single tick may spend, however long the frame (a hitch must not start every machine at once)
-const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon)
+const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon), before light() eases it
+const LIGHT_EASE := 1.0 / 2.2 # the power a lit part's light is eased by on the phone's renderer (light())
+static var _eases_light := -1   # whether light() eases: unknown until first asked (the renderer's known once the screen is up)
 const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
 const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
 const MOVE_BLEND_OUT := 0.35  # and to settle back when the machine stops
@@ -611,7 +613,7 @@ func _forms_step(delta: float) -> bool:
 				_form_slide[jn] = (_form_slide.get(jn, Vector3.ZERO) as Vector3) + Vector3(float(v[3]), float(v[4]), float(v[5]))
 		var p := t / float(f["duration"])
 		for g in f["glow"]:
-			(g[0] as StandardMaterial3D).emission_energy_multiplier = float(g[1]) * maxf(0.0, 1.0 + float(g[2]) * p)
+			(g[0] as StandardMaterial3D).emission_energy_multiplier = float(g[1]) * light(1.0 + float(g[2]) * p)
 	if settled:
 		_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)   # in or out, a pause before the first act of the new set
 	return true
@@ -837,7 +839,7 @@ func _evaluate_act() -> void:
 	for g in _glow:
 		var k := float(curve_at(g["curve"], _t)[0]) + 1.0   # the keys are offsets from rest: 0 is the base light
 		for i in range(g["mats"].size()):
-			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i]) * maxf(0.0, k)
+			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i]) * light(k)
 
 
 ## The machine's weight (Ryan, 4 October, the third pass: heavy, with inertia, real machines
@@ -1105,7 +1107,21 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 	if not _move_glow.is_empty():
 		var k := 1.0 + float(gait.get("glow", {}).get("k", 1.0)) * _blend
 		for row in _move_glow:
-			(row[0] as StandardMaterial3D).emission_energy_multiplier = float(row[1]) * k
+			(row[0] as StandardMaterial3D).emission_energy_multiplier = float(row[1]) * light(k)
+
+
+## A lit part's light as the screen shows it, given as a multiple of its light at rest (or
+## the rest light itself). The phone's renderer (the Compatibility renderer, the desk's too)
+## multiplies a lit tile as stored and clips each channel, so a flare past a few times the rest
+## light went white; there the light is eased by LIGHT_EASE first, as the Vulkan renderer
+## decoded a colour before it brightened it, so a flare builds in its own colour and nears
+## white only at the very top (Ryan, 30 October: "a lot of these are supposed to be looking
+## 'hot' instead of 'bright' and white doesn't really sell that"). The other renderers decode
+## the tile themselves, so the multiple passes through.
+static func light(m: float) -> float:
+	if _eases_light < 0:
+		_eases_light = 1 if RenderingServer.get_current_rendering_method() == "gl_compatibility" else 0
+	return pow(maxf(0.0, m), LIGHT_EASE) if _eases_light == 1 else maxf(0.0, m)
 
 
 ## The tread materials, by the meshes' names: scrolling their first UV runs the tread.

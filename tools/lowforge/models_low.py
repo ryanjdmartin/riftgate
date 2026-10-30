@@ -1158,7 +1158,8 @@ def armadillo(b):
         "rear_vent_heat_l": (1.4, UP0), "rear_vent_heat_r": (1.4, UP0), "side_vent_heat_l": (1.85, UP0 + 0.12),
         "side_vent_heat_r": (1.85, UP0 + 0.12), "radiator_heat_l": (2.3, UP0 + 0.24), "radiator_heat_r": (2.3, UP0 + 0.24)}
     THROW, SHUT = ((0.0, 0.0), (0.35, 1.06), (0.55, 1.0)), 0.45   # a louvre's opening from its own moment; its shutting
-    flare = lambda t0, t1: [(t0, 0.0), (round(t0 + 0.6, 3), 7.0), (t1, 7.0), (round(t1 + 0.65, 3), 0.0)]
+    HEAT = 196.0   # the heat's light at its height, over its rest: under the phone's eased light (MechRig.light) it lands #ff7800, as 7 did before
+    flare = lambda t0, t1: [(t0, 0.0), (round(t0 + 0.6, 3), HEAT), (t1, HEAT), (round(t1 + 0.65, 3), 0.0)]
     glow = []
     for heat, vent in vents:
         t0, t1 = TIMES[heat]

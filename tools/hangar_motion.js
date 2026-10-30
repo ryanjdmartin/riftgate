@@ -60,11 +60,12 @@ const GLOW_PAGE = 1.8;   // a lit part's light at rest, the game's (MechView3D.t
 // A lit part's colour as the phone shows it (Ryan, 29 October: the Armadillo's new vent glow looked
 // "the same" here). The game's renderer (gl_compatibility, the phone's and the desk's) lights in sRGB
 // space: a lit tile shows as the tile as stored times its light, each channel clipped at one (measured
-// from its renders). This page lights in linear space and would decode the tile first, crushing a
-// dark tile the game multiplies up to its colour (the vents' heat showed dull brown), so a lit part
-// takes the game's colour and only then goes into this page's linear light.
+// from its renders), the light first eased by the power 1/2.2 so a flare holds its colour (MechRig.light;
+// Ryan, 30 October: "white doesn't really sell" hot). This page lights in linear space and would decode
+// the tile first, crushing a dark tile the game multiplies up to its colour (the vents' heat showed dull
+// brown), so a lit part takes the game's colour and only then goes into this page's linear light.
 const PHONE_GLOW = `#ifdef USE_EMISSIVEMAP
-  totalEmissiveRadiance = sRGBToLinear(vec4(min(texture2D(emissiveMap, vUv).rgb * totalEmissiveRadiance, vec3(1.0)), 1.0)).rgb;
+  totalEmissiveRadiance = sRGBToLinear(vec4(min(texture2D(emissiveMap, vUv).rgb * pow(totalEmissiveRadiance, vec3(1.0 / 2.2)), vec3(1.0)), 1.0)).rgb;
 #endif`;
 const AXES = ["pitch", "yaw", "roll"];
 const D2R = Math.PI / 180;

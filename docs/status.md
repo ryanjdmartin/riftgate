@@ -523,10 +523,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.402 (the
-  page's version 414, published 30 October from `claude/charming-rubin-h954bp` after main took
-  it: Ryan's answers after the landing, the rebuilds judged fine, the Armadillo liked as built and
-  the glows' white flares asked in section 12; three-way merged onto the live v0.401 another
+  `docs/design-bible.html` after every change. This file and the live page are v0.403 (the
+  page's version 415, published 30 October from `claude/charming-rubin-h954bp`: lit parts hold
+  their colour on the phone, the reference-glass row, and a halo for lit parts asked in section
+  12; onto its own v0.402 at 414, Ryan's answers after the landing, the rebuilds judged fine, the
+  Armadillo liked as built; that three-way merged onto the live v0.401 another
   session published at 413, sound notes and new foes in the generated tables, ahead of their
   code; main's file is v0.397, the page's version 409 as main took this branch,
   onto its own v0.396 at 408, three-way merged onto the live v0.395 that another session
@@ -548,9 +549,15 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Its lit parts show as the phone's renderer shows them (29 October: a lit
   tile is the tile as stored times its light, clipped, before the page's own light; it had
-  shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
+  shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
+  game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 170 (30 October, from main as it took
+  acts on a reloaded page). At the page's version 172 (30 October, from
+  `claude/charming-rubin-h954bp`: `motion.js` with the lit parts' eased light and the Armadillo's
+  rig with its vent heat's new peak, onto 171, which another session published with its page's
+  boss-list line, a domain's bosses a list since its slate, carried into `tools/hangar.html` here
+  so a publish from this branch keeps it; every other file as 171 had it, `edits` empty), on
+  170 (30 October, from main as it took
   `claude/charming-rubin-h954bp`: `content/chassis.json` and `content/components.json` as merged,
   main's pricing numbers with that branch's Pinion Driver in two shots and the Stingray's lance on
   its dome, so the Codex reads both; onto that branch's own 169 to 165, Ryan's notes of 30 October
