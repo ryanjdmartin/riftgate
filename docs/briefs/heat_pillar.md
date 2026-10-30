@@ -61,6 +61,14 @@ player's turn, `start_round`'s cooling); `content/chassis.json` (`heat_max`, `co
   to-do's valuation line.
 - **The tiered formations**: Kestrel's row peaks at 128% with 1.6 overheats a fight on them at
   its 14 (the tier cells, 28 October), so a fleet-wide lever lands on the hot kits first.
+- **With a bot that vents** (30 October, `docs/measurements.md`: the vanilla heat grid on the car
+  under the cautious persona, `--cool-above 50`, and with the Prairie Dog's cooling 0; 30 seeds, a
+  direction): caution costs more than the overheat. Keeping heat under half the maximum all but
+  ends the overheats (0.07 a fight at heat 8 against the greedy's 0.50) and costs heat 4 nearly a
+  point and heat 8 three, with more hull lost, not less: the overheat burns only the excess while
+  holding a hot gun or venting early costs a spend, so eating the overheat is the better play
+  today. Cooling 0 adds a third of a point to heat 4 and about half a point to heat 6 and 8 under
+  the greedy, and nothing to the cold stock row.
 - **The content's allowance**, read on the vanilla scale: the Transonic Rifle carries 1.5 over
   its floor for heat 4, the Thermal Ray 2.5 for heat 6, the Railgun at 8 about 3.5 with Breach,
   the Meteor nothing for its heat 6 (its Burn 3 is its premium). Paid in full only at a maximum
@@ -119,7 +127,10 @@ The order is Claude's lean; each line is his to move.
    cooling halved), only if the prices and the cooling leave the warm classes free. Visible on
    the gauge, no new overheat.
 6. **A harder overheat** last (the excess doubled, or a dark entry next round): the blunt lever,
-   punishing the cold kits that stray as hard as the hot kits that live there.
+   punishing the cold kits that stray as hard as the hot kits that live there. The read of 30
+   October argues for moving it up: while eating the overheat is cheaper than playing around
+   heat, cutting the cooling makes the greedy eat more of it, not meet the system, so the
+   overheat's price is the lever that makes the other levers bite.
 7. **Heat between fights** (section 12's question, zero at every fight's start today): the
    campaign-layer answer, after the skirmish's bite is right.
 
@@ -139,9 +150,10 @@ it to everyone flattens the maker.
 
 ## The reads to run (each a what-if, content untouched)
 
-- Cooling 0 on the vanilla heat grid, the car: `python3 tools/pricing_run.py run cool0 --parts
-  vanillaheat --benches prairie_dog --set chassis/prairie_dog/cooling=0` (about 20 minutes on
-  four cores); the same at a maximum of 10 with cooling 0 (`--set` twice).
+- Done 30 October (`docs/measurements.md`): cooling 0 on the vanilla heat grid on the car, under
+  the greedy and the cautious persona (`--cool-above 50`). Next the same on the hot rows (Kestrel's
+  row, the Kite, the Stingray at its 0), and a harder overheat as a what-if, the excess doubled,
+  which needs an engine switch first, to see whether caution then pays.
 - The heat ladder on the four team rows with cooling 0 and a class up (`--parts heat`), after
   the venting persona exists; until then its `held` and `peak` columns are the read.
 - A priced basic: `--set components/twin_autoguns/face/heat=1 --set

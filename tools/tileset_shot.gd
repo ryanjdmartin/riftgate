@@ -83,15 +83,23 @@ class Sheet extends Control:
 				var t: int = GROUNDS[k]
 				var c := Vector2(40.0 + w * 0.5 + k * (w + 10.0), top)
 				DomainGround.draw_hex(self, c, HEX, t, 7919 * (i + 1) + 131 * k, frame, biome)
+				if t == BattleMap.Terrain.MOUNTAIN:
+					DomainGround.draw_walls(self, c, HEX, 7919 * (i + 1) + 131 * k, frame, biome)
 				var label := "walls" if t == BattleMap.Terrain.MOUNTAIN else str(BattleMap.TERRAIN_NAMES[t])
 				draw_string(font, Vector2(c.x - w * 0.5, top + HEX + 16.0), label, HORIZONTAL_ALIGNMENT_CENTER, w, 14, Palette.MUTED)
 			# The patch: the grounds as they lie together on a field, at the map's size.
 			var ox := 40.0 + 6.0 * (w + 10.0) + 30.0 + w * 0.5
+			var walls: Array = []
 			for r in range(PATCH.size()):
 				for q in range(PATCH[r].size()):
 					var c := Vector2(ox + q * w + (w * 0.5 if r % 2 == 1 else 0.0), y + 16.0 + HEX + r * HEX * 1.5)
 					var t: int = GROUNDS[int(PATCH[r][q])]
 					DomainGround.draw_hex(self, c, HEX, t, 977 * (i + 1) + 37 * (r * 8 + q), frame, biome, _links(q, r) if t == BattleMap.Terrain.ROAD else 0)
+					if t == BattleMap.Terrain.MOUNTAIN:
+						walls.append([c, 977 * (i + 1) + 37 * (r * 8 + q)])
+			# The walls after every hex's ground, top row first, as the map draws them.
+			for wall in walls:
+				DomainGround.draw_walls(self, wall[0], HEX, wall[1], frame, biome)
 			y += HEX * 6.4 + 30.0
 
 	## The patch's roads beside one of its hexes (DomainGround.road_links), its rows laid

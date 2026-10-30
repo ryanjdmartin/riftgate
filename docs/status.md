@@ -21,9 +21,9 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 786 tests, 205,244 checks, green (30 October, the pacing session and the foes' fresh
-  start with main's pricing pass, Chain and the cautious heat persona merged in; 777 and 204,651
-  on main alone), about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 787 tests, 205,261 checks, green (30 October, the pacing session and the foes' fresh
+  start with main's pricing pass, Chain, the cautious heat persona and the tilesets' walls
+  merged in; 778 and 204,668 on main alone), about four minutes in a cloud session, twenty on a slow one. A cloud
   session gets Godot 4.7's Linux build and the project's first import from the repository's
   session-start hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`,
   27 October, on main since 30 October; the GitHub release asset `godotengine/godot-builds`,
@@ -38,12 +38,13 @@ are in `README.md`.
 
 ## Branches
 
-`claude/brave-cori-fr18de` (30 October) carries the pacing session and the foes' fresh start
-(the brief, the engine in three commits to `85e28fd`, then the records), took main twice (the
-tilesets' second build before its records pass; the pricing pass, Chain and the cautious heat
-persona after them, on Ryan's word to bring the repricing in), and waits for main to take it on
-his word; its bible is v0.385 (the page's 397), three-way merged onto the live v0.384, other
-sessions' rows on main's v0.381.
+`claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
+(the brief, the engine in three commits to `85e28fd`, then the records), took main three times
+(the tilesets' second build before its records pass; the pricing pass, Chain and the cautious
+heat persona after them, on Ryan's word to bring the repricing in; the tilesets' walls and the
+heat grid's read as it landed), and main took it as a fast-forward on 30 October on his word
+("merge this into main"); its bible is v0.393 (the page's 405), onto the live v0.392, other
+sessions' rows on its v0.385.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -218,10 +219,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   different"; the Peak not volcanic, the Marsh not an undead marsh). The second dresses every
   hex in outlined pixel sprites (ASCII art inked per domain, two pixels a design pixel; "Overall
   the art is a huge improvement"), each ground its own tone a step from its domain's on the
-  posterize grid (his second read: one ground for all was "very monotone"). Each domain also
-  has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava)
-  and its own walls (snowy peaks, red buttes, black crags, volcanoes). A road follows the roads
-  beside it, three road hexes round a corner making a loop with a gap in the middle (his ask).
+  posterize grid (his second read: one ground for all was "very monotone"; his third: the
+  Waste's and the Marsh's rough wanted more separation, so olive and moss). Each domain also
+  has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava,
+  orange-red since the yellow read as acid, stopping short of the enemy's red) and its own
+  walls (snowy peaks, red buttes, black crags, volcanoes), each range standing out of the top
+  of its hex, drawn after every hex's ground (`DomainGround.draw_walls`). A road follows the
+  roads beside it, three road hexes round a corner making a loop with a gap in the middle.
   Every colour is on the posterize grid and scored against its ground by the colourblind
   simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
   field and `tools/tileset_shot.gd` draws all four. Next, Ryan's read of them running (the
@@ -447,8 +451,11 @@ and the streets) main's.
    component priced in heat, hull or shield, the basics too; passive cooling the lever that
    makes the player meet the system; vent payoffs), Claude's bench in section 12's heat
    question, the heat session on the to-do with its brief (`docs/briefs/heat_pillar.md`), waiting
-   on Ryan's answers to its six questions. Next: a persona that
-   shields and vents before the overheat and the planner on the equipment ladders, for the
+   on Ryan's answers to its six questions. The cautious persona built 30 October (`--cool-above
+   N`) and its first read in the brief and `docs/measurements.md`: on the car's heat grid caution
+   costs more than the overheat (more rounds and more hull), so the overheat's price comes before
+   the cooling's cut, and cooling 0 bites modestly on a cold die. Next: the hot rows under both
+   bots; a persona that shields before the blow and the planner on the equipment ladders, for the
    equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
    the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
    line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
@@ -483,11 +490,16 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.385 (the page's version
-  397, published 30 October from `claude/brave-cori-fr18de` with main's pricing pass
-  merged in: three-way merged onto the live v0.384, which other sessions moved past main's
-  v0.381 with a track's row, the Armadillo's radiators and acts and the grounds' tones; main's
-  v0.381 is the page's 393, published 30 October from main with `ccr-c04908be-3r43xf` merged: the pricing pass's
+  `docs/design-bible.html` after every change. This file is v0.393 (the page's version
+  405, published 30 October from `claude/brave-cori-fr18de` as main took it: three-way
+  merged onto the live v0.392, which other sessions moved past this branch's v0.385 at 397 with
+  Godot 4.8 and the AA setting, the enemy's violet, the overlay at one width, the Armadillo's
+  radiators and a track's row, so the file carries their rows ahead of their code; v0.385 was
+  this branch's with main's pricing pass merged in, three-way merged onto the live v0.384, which
+  other sessions moved past main's v0.381 with a track's row, the Armadillo's radiators and acts
+  and the grounds' tones; main's v0.382 at 394, from
+  `ccr-7821127e-kwj874`: the tilesets' walls standing out of their hexes, the lava toward red
+  and the rough set apart, onto the live v0.381 published from main with `ccr-c04908be-3r43xf` merged: the pricing pass's
   effectiveness and pricing rows, the heat triangle, the maker leans, Chain's row and the rows
   Shock's reading touched, three-way merged onto the live v0.380, which other sessions moved
   past main's v0.376 with the foes' fresh start built with the pacing session (this branch's

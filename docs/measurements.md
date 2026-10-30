@@ -3498,6 +3498,82 @@ rust `#663333` 20.4 (4.6). The Marsh's and the Peak's roads keep their domain's 
 mud causeway and ash path carrying them. The lowest is the Meadow's forest floor, the score the
 Meadow's own forest had before the domains had tilesets.
 
+**The domains' tilesets: the rough set apart, and the lava toward red** (30 October; Ryan:
+"rough on waste and marsh can use a bit more separation from the plains colour"; the lava
+"looks more like acid than lava"). The same simulations, each colour's worst CIEDE2000 against
+every mark, then against its plain worst case and for normal vision. The Waste's scrub went from
+`#999966` (11.6; against the sand 2.6, normal 9.0) to the olive `#669933` (5.7, the pure red under
+the deutan simulation; 8.9, normal 14.8), two steps of red from the sand; the lime `#99cc33` (7.1;
+8.8, 13.4) and `#99cc66` (6.9; 5.9, 13.3) read as grass on the sheet. The Marsh's dead wood went
+from `#003300` (19.7; against the bog 1.3, normal 9.3) to the moss `#336633` (5.1, the red under the
+protan simulation, the Meadow forest's own score; 16.2, 19.5); `#006633` (5.6) read too saturated
+and black `#000000` (38.0) as a hole in the field. The lava lake went from `#ff9900` (9.1; 12.2
+against the reds) to the orange-red `#ff6600`, 5.6 against the red under the deutan simulation
+and 37.2 against the Peak's ground, its rim `#990000` (16.4) and its crust `#990000` and `#330000`;
+a redder lake folds into the enemy red: `#ff3300` 0.8 (tritan), `#cc3300` 3.4 (protan), `#ff3333`
+1.6, `#ff0000` 0.0, while the deep reds hold by their darkness, `#cc0000` 6.3 and `#990000` 16.4.
+
+## 30 October, the heat grid with a bot that vents
+
+**The heat brief's first read** (`docs/briefs/heat_pillar.md`, the reads to run; the cautious
+persona built the same day, `Policy.cool_above`): the vanilla heat grid on the car
+(`tools/pricing_run.py run heat30g --parts vanillaheat --benches prairie_dog --bench-stocks
+--seeds 30`: a flat heatless gun of each reach at 3, 5 and 7 in the Prairie Dog's slot of
+Wainwright & Sutler's row, each at heat 0, 2, 4, 6 and 8, against the row as stocked; the sixteen
+big fights but the finale), four ways: as today (the greedy, the Prairie Dog's cooling 1), with
+its cooling 0 (`--set chassis/prairie_dog/cooling=0`, `heat30g0`), and both again under the
+cautious persona, each machine keeping its heat under half its maximum (`--cool-above 50`,
+`heat30c`, `heat30c0`). 124 variants, about two hours on four cores; 30 seeds, a direction.
+
+Each heat's price in vanilla points (its rounds over the heatless gun's of the same number, over
+the rounds a point buys between 3 and 7), the mean of the six guns, and the heat-8 guns'
+overheats, peak heat and the Coolant Jacket's share of the row's spends:
+
+| Setting | Heat 2 | Heat 4 | Heat 6 | Heat 8 | Overheats a fight at heat 8 | Peak at heat 8 | The Coolant Jacket at heat 8 |
+|---|---|---|---|---|---|---|---|
+| the greedy, cooling 1 (as today) | 0.1 | 0.2 | 0.7 | 1.4 | 0.50 | 92% | 4% |
+| the greedy, cooling 0 | 0.1 | 0.3 | 1.2 | 2.0 | 0.33 | 89% | 5% |
+| the cautious bot, cooling 1 | 0.1 | 0.9 | 1.9 | 2.9 | 0.07 | 65% | 7% |
+| the cautious bot, cooling 0 | 0.3 | 1.3 | 2.3 | 3.2 | 0.08 | 64% | 10% |
+
+What caution costs (the win rate, the rounds of the fights won, the hull lost, the overheats):
+
+| Setting | Gun | Win | Rounds | Hull lost | Overheats a fight |
+|---|---|---|---|---|---|
+| the greedy, cooling 1 | Direct 5, heat 0 | 97.9 | 4.74 | 15.6% | 0.11 |
+| the greedy, cooling 1 | Direct 5, heat 4 | 97.5 | 4.79 | 16.3% | 0.22 |
+| the greedy, cooling 1 | Direct 5, heat 8 | 96.7 | 5.20 | 18.9% | 0.53 |
+| the greedy, cooling 1 | Direct 7, heat 8 | 97.3 | 4.72 | 16.9% | 0.60 |
+| the cautious bot, cooling 1 | Direct 5, heat 0 | 97.9 | 4.76 | 15.5% | 0.05 |
+| the cautious bot, cooling 1 | Direct 5, heat 4 | 96.7 | 5.09 | 17.4% | 0.07 |
+| the cautious bot, cooling 1 | Direct 5, heat 8 | 96.0 | 5.75 | 19.8% | 0.09 |
+| the cautious bot, cooling 1 | Direct 7, heat 8 | 96.2 | 5.21 | 18.0% | 0.09 |
+| the greedy, cooling 0 | Direct 5, heat 8 | 96.0 | 5.39 | 19.4% | 0.31 |
+| the cautious bot, cooling 0 | Direct 5, heat 8 | 95.8 | 5.89 | 21.1% | 0.09 |
+
+Read:
+
+- **Today's prices hold.** Under the greedy at cooling 1, heat 2 and 4 cost next to nothing and
+  heat 6 and 8 about 0.7 and 1.4 points, the read of 28 October.
+- **Caution costs more than the overheat.** The bot that keeps its heat under half its maximum all
+  but never overheats (0.07 a fight at heat 8 against the greedy's 0.50) and pays for it twice
+  over: heat 4 costs it nearly a point and heat 8 three, and it loses more hull, not less (the
+  Direct 5 at heat 8, 5.75 rounds and 19.8% hull against the greedy's 5.20 and 18.9%, its wins
+  96.0% against 96.7%). The overheat burns only the excess, hull one for one, where holding a hot
+  gun or venting early costs a whole spend, so on today's rules eating the overheat is the better
+  play and heat is a tempo tax a player is right to ignore. That bears on the heat brief's fifth
+  question (the overheat's cost) before its first (the cooling): while the overheat is this cheap,
+  playing around heat loses.
+- **Cooling 0 bites, modestly, on a cold die.** With no passive cooling the greedy pays heat 4 a
+  third of a point and heat 6 and 8 about half a point more (1.2 and 2.0), overheating less (0.33
+  a fight) since it holds the hot gun more; the cautious bot leans on the Coolant Jacket more (10%
+  of the row's spends at heat 8 against 7%). The row as stocked does not notice (5.89 rounds
+  against 5.88): Wainwright & Sutler's kit is cold, so the cut bites where heat is carried, and
+  the hot rows (Kestrel's at its 14, the Kite, the Stingray at 0) are its next read.
+- The cautious line at half the maximum is one habit among many, and a player who vents only when
+  it pays sits between the two bots: the two ends bracket heat's price, they do not set it.
+
+
 ## 30 October, the pacing session and the foes' fresh start
 
 **The engine of the pacing session and the fresh start, read three ways at 40 runs** (built
