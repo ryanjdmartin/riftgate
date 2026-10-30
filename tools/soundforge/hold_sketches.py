@@ -1,41 +1,32 @@
-"""Hold The Line's third round as a pair (Ryan, 29 October, on the second round's page):
+"""Hold The Line's fourth round as a pair (Ryan, 30 October, on the third round's page):
 
-  both           V and Q stay ("I liked V and Q, put them back. The fill worked fine"), so only J
-                 goes: Q's fill lands on the wrap at bar nine, with a crash there as at J's door
-                 before. K keeps its slower tempo.
-  the battle     K's two reworks again at the solo's tempo, never on the climax's drums: each with
-                 K's drums as they were, and with drums between those and the climax's. The first
-                 lift keeps its metal chime and piano as they were and takes his pick from the
-                 second round (a backing guitar chugging each bar's root wherever the kick hits, a
-                 crash every four bars), its riff on two voices in unison, four ways; the second
-                 lift takes the same under the crunch synth as it was, then the crunch synth with
-                 a second voice in unison, three ways.
-  the map half   his picks: X's held walk on the violins, U's lead on the clean guitar, the
-                 climax's drone moved from its first set to its second, W on the low note with the
-                 roll, the roll up and the cello down (two steps to hear); K as the second round
-                 had it, without the cellos.
+  the lifts      "I think crunch+lead wins for both lifts, but want to be sure": the first lift's
+                 riff on the soft sub and the lead guitar, and on the crunch synth and the lead
+                 guitar, beside the driven bass and the lead guitar he heard; the second lift's on
+                 the crunch synth and the lead guitar with M, the bar down into the seven, on the
+                 same two ("M should be crunch+lead instead of whatever it is right now").
+  K              "No double time. Do how it was, but the first 14 bars": the solo as it was, cut
+                 to its first fourteen bars (it ends on B minor, which V's E minor resolves), then
+                 with the drums in between, then with the lead guitar added to the crunch synth's
+                 walk, then the lead guitar alone on the walk.
+  W              the cellos 6 dB down and the timpani's roll 9 dB up from the second round's ("think
+                 that will be fine").
 
-K's reworks:
+Kept from the earlier rounds: only J goes, V and Q stay, Q's fill landing on the wrap at bar nine
+with a crash; K at its slower tempo; both lifts with his pick of the second round (a backing
+guitar chugging each bar's root wherever the kick hits, a crash every four bars), their metal
+chime and piano as they were; his map picks (X's held walk on the violins, U's lead on the clean
+guitar, the climax's drone moved from S to R, W on the low note with the roll, K without the
+cellos). The map's lifts are as they were.
 
-  K1  the whole solo in double time: its melody and its walk at half their lengths, one chord a
-      bar (Em Cm Bm E(b5) Am F Bm Em), the walk on the crunch synth, the driven bass and the
-      chug, the piano's line doubled by the keys' lead.
-  K2  the solo's first half as written, the driven bass on the walk and the chug on the chords'
-      roots; it ends on the solo's E with the flattened fifth, which V's E minor resolves.
+The full pair on the switch takes his leans: both lifts and M on the crunch synth and the lead
+guitar, K's fourteen bars on the drums in between with the lead guitar added to the walk. K's
+seams set holds every K step beside K as it was, cut from full renders the way the game loops
+them (the climax's last set to the end, then the wrap on into bar thirteen); the lifts are
+excerpts for A/B, every row the same bars from the same seed at one gain.
 
-  drums as they were   K's own: the kick on one and three with a push, the snare on three, a
-                       long crash every second bar, the splash and the toms before it.
-  drums in between     K's own with the kick pushing on the and of two and into the next bar, a
-                       ghost on either side of the snare, eighths on the hat with the open hat on
-                       the and of four, a china on three every second bar, a little louder.
-
-The full pairs on the switch are K1 and K2 with the drums in between and the map's picks; K's
-seams set holds all four battle Ks beside K as it was (without J), cut from full renders the way
-the game loops them (the climax's last set to the end, then the wrap on into bar thirteen).
-Every other set is an excerpt for A/B, every row the same bars from the same seed at one gain.
-
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # every set and both pairs, then hold3.json beside the pairs (about ten minutes on four cores)
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py c l      # the named sets only (c l w, and full for the pairs and the seams)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # every set and the pair, then hold4.json beside the pairs (about ten minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py c l      # the named sets only (c l, and full for the pair and the seams)
 """
 import json
 import os
@@ -52,7 +43,7 @@ NAME = "music_hold_the_line"
 SHIPPED_FORM = F.MUSIC[NAME]["form"]
 METER = dict(F.MUSIC[NAME]["meter"])            # the seven in 7/8, K and V at the solo's slower tempo
 FORM_K16 = SHIPPED_FORM.replace(" JJ", "")       # the loop without J: Q's fill into the wrap
-FORM_K8 = FORM_K16.replace("K" * 16, "K" * 8)    # K reworked to eight bars
+FORM_K14 = FORM_K16.replace("K" * 16, "K" * 14)  # K's first fourteen bars
 BATTLE_LEVEL = F.LEVELS[NAME]
 MAP_LEVEL = P.MAP_LEVEL
 
@@ -131,38 +122,7 @@ def roots_of(call, section, bars):
     return [P.spell(chords[b % len(chords)][0]) for b in range(bars)]
 
 
-def diminish(pat):
-    """A riff pattern at double speed: every note and rest half as long."""
-    out, i = [], 0
-    while i < len(pat):
-        c, n = pat[i], 1
-        tail = "." if c == "." else "-"
-        while i + n < len(pat) and pat[i + n] == tail:
-            n += 1
-        if n % 2:
-            raise ValueError("an odd length at step %d of %r" % (i, pat))
-        out.append("." * (n // 2) if c == "." else c + "-" * (n // 2 - 1))
-        i += n
-    return "".join(out)
-
-
-def from_bar(call, section, bar):
-    """A section's run started `bar` bars in: every part and its chords turned round, so an
-    excerpt can play a long section's last bars into what follows it."""
-    def turn(pat):
-        k = 16 * bar % len(pat)
-        return pat[k:] + pat[:k]
-    for v in call["voices"]:
-        if section in v["pat"]:
-            v["pat"][section] = turn(v["pat"][section])
-    for part in call["drums"].values():
-        if section in part:
-            part[section] = turn(part[section])
-    c = call["chords"][section]
-    call["chords"][section] = c[bar % len(c):] + c[:bar % len(c)]
-
-
-# ---------------------------------------------------------------- the lifts (the battle half)
+# ---------------------------------------------------------------- the lifts and M (the battle half)
 
 LIFT_RIFF = "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"   # C E C D C A G C, E C D G A B: both lifts' riff
 LEAD_GUITAR = {"mute": False, "cutoff": 2400.0, "clean": True}   # the climax's lead guitar voice
@@ -172,6 +132,7 @@ RIFF_VOICES = {
     "crunch": {"inst": "bass", "mode": "riff", "hold": 1.0, "params": {"drive": 3.5, "cutoff": 800.0}},   # the second lift's own
     "lead": {"inst": "guitar_real", "mode": "riff", "hold": 0.9, "params": LEAD_GUITAR},               # the lead guitar voice
 }
+CRUNCH_LEAD = (("crunch", 0.4), ("lead", 0.4))   # Ryan's lean for both lifts (30 October)
 
 
 def kick_chug(call, section):
@@ -187,15 +148,40 @@ def lift_band(call, s):
     drums(call, s, crash="x" + "." * 63)
 
 
-def riff_on(call, s, *pair):
-    """The lift's riff on two voices in unison, each (voice, gain), in place of its own voice."""
+def riff_on(call, s, *pair, pat=LIFT_RIFF):
+    """A section's line on two voices in unison, each (voice, gain), in place of its own voices."""
     strip(call, "sub_bass", s)
     strip(call, "bass", s)
     for name, gain in pair:
-        add(call, **dict(RIFF_VOICES[name], gain=gain, pat={s: LIFT_RIFF}))
+        add(call, **dict(RIFF_VOICES[name], gain=gain, pat={s: pat}))
 
 
-# ---------------------------------------------------------------- K reworked (the battle half)
+def lift(s, *pair):
+    """A lift's row: the chug and the crashes, and the riff on `pair` when one is given."""
+    def edit(call):
+        lift_band(call, s)
+        if pair:
+            riff_on(call, s, *pair)
+    return edit
+
+
+def m_crunch_lead(call):
+    """M, the bar down into the seven, on the crunch synth and the lead guitar where the chug and
+    the driven bass had it (Ryan, 30 October)."""
+    down = P.part(call, "guitar_real", "M", octave=-1)
+    strip(call, "guitar_real", "M", octave=-1)
+    strip(call, "bass_real", "M")
+    riff_on(call, "M", *CRUNCH_LEAD, pat=down)
+
+
+def lifts_crunch_lead(call):
+    """Both lifts and M on the crunch synth and the lead guitar, under the chug and the crashes."""
+    lift("C", *CRUNCH_LEAD)(call)
+    lift("L", *CRUNCH_LEAD)(call)
+    m_crunch_lead(call)
+
+
+# ---------------------------------------------------------------- K (the battle half)
 
 def wrap_crash(call):
     """Q's fill lands on the wrap at bar nine, the riff's power chords: a crash there, as at J's
@@ -208,38 +194,29 @@ def k_between(call):
     and into the next bar, a ghost either side of its snare on three, eighths on the hat with the
     open hat on the and of four, a china on three every second bar, the drums a little up; its
     long crashes, splashes and toms as they were. What a phone plays of it is the cymbals and the
-    snare (the first cut, with the kick's pushes and the hat alone, sat 14 dB under K there)."""
+    snare: inside K it sits 16 dB under the mix there, where the climax's drums sat 12."""
     drums(call, "K", kick="x.....x.x.......x.....x.x...x.x.", snare="......o.x......o", hat="x.x.x.x.x.x.x...",
           open="..............x.", china="........x......." + "." * 16)
     call["drum_gain"]["K"] = 1.08
 
 
-def k_double(call, between=False):
-    """K1: the whole solo in double time, the walk the band's riff."""
-    walk = diminish(P.part(call, "bass", "K"))
-    melody = diminish(P.part(call, "epiano", "K", octave=2))
-    call["chords"]["K"] = call["chords"]["K"][::2]   # one chord a bar: Em Cm Bm E(b5) Am F Bm Em
-    strip(call, "bass", "K")
-    strip(call, "epiano", "K")
-    strip(call, "epiano", "K", mode="stab")
-    strip(call, "guitar_chord", "K", mode="stab")
-    add(call, inst="bass", mode="riff", gain=0.42, hold=1.0, params={"drive": 3.5, "cutoff": 900.0}, pat={"K": walk})
-    add(call, inst="bass_real", mode="riff", gain=0.38, hold=1.0, params={"drive": 3.5}, pat={"K": walk})
-    add(call, inst="guitar_real", mode="riff", gain=0.6, octave=-1, pat={"K": walk})
-    add(call, inst="epiano", mode="riff", gain=0.5, octave=2, hold=1.0, pat={"K": melody})
-    add(call, inst="lead", mode="riff", gain=0.28, octave=2, hold=1.0, pat={"K": melody})
-    add(call, inst="epiano", mode="stab", gain=0.4, dur=8.0, pat={"K": "x..............."})
-    if between:
-        k_between(call)
+def k_lead(call, alone=False):
+    """The lead guitar voice on K's walk, in unison with the crunch synth or in its place."""
+    walk = P.part(call, "bass", "K")
+    if alone:
+        strip(call, "bass", "K")
+    add(call, **dict(RIFF_VOICES["lead"], gain=0.45 if alone else 0.4, hold=1.0, pat={"K": walk}))
 
 
-def k_half(call, between=False):
-    """K2: the solo's first half as written (its sixteen-bar parts play their first eight bars on
-    an eight-bar run), the band under it."""
-    add(call, inst="bass_real", mode="riff", gain=0.38, hold=1.0, params={"drive": 3.5}, pat={"K": P.part(call, "bass", "K")})
-    add(call, inst="guitar_real", mode="riff", gain=0.6, octave=-1, pat={"K": P.figure("r.r.r.r.r.r.r.r.", roots_of(call, "K", 8))})
-    if between:
-        k_between(call)
+def k_step(step):
+    """K's fourteen bars a step at a time: 0 as it was, 1 the drums in between, 2 the lead guitar
+    added to the walk, 3 the lead guitar alone on the walk."""
+    def edit(call):
+        if step >= 1:
+            k_between(call)
+        if step >= 2:
+            k_lead(call, alone=step == 3)
+    return edit
 
 
 # ---------------------------------------------------------------- the map half
@@ -248,6 +225,7 @@ def k_half(call, between=False):
 VIOLINS_X = {"inst": "violin_real", "mode": "riff", "gain": 0.175, "octave": 2, "legato": True}   # at the cellos' level on the speaker
 CLEAN_GUITAR_U = {"inst": "guitar_real", "mode": "riff", "gain": 0.26, "octave": 1, "hold": 1.5,
                   "params": {"mute": False, "clean": True}}   # at the harp's level on the speaker
+W_CELLO, W_ROLL = 0.2, 0.845   # Ryan, 30 October: the cellos at -6 dB, the roll at +9 dB, of the second round's 0.4 and 0.3
 
 
 def tuned_timpani(semis):
@@ -290,32 +268,26 @@ def map_voice(kw, inst, section, new):
     raise KeyError("no %s plays %s" % (inst, section))
 
 
-def w_low(kw, call, roll=False, cello=0.4, roll_gain=0.3):
+def w_low(kw, call):
     """W dropped to a low note: the horn's held B goes, a cello holds B low through both bars with a
-    contrabass an octave under it, under the piano's last note and the sub; with `roll`, a soft
-    timpani roll on B through the second bar into the climax."""
+    contrabass an octave under it, under the piano's last note and the sub, and a timpani rolls
+    on B through the second bar into the climax."""
     strip(kw, "horn_real", "W")
-    kw["voices"].append({"inst": "cello_real", "mode": "riff", "gain": cello, "octave": 0, "legato": True, "pat": {"W": "7" + "-" * 31}})
+    kw["voices"].append({"inst": "cello_real", "mode": "riff", "gain": W_CELLO, "octave": 0, "legato": True, "pat": {"W": "7" + "-" * 31}})
     kw["voices"].append({"inst": "contrabass_real", "mode": "riff", "gain": 0.34, "octave": -1, "legato": True, "pat": {"W": "7" + "-" * 31}})
-    if roll:
-        timpani(kw, "W", [7], roll_gain, pattern="." * 16 + "x...x...x.x.xxxx")
+    timpani(kw, "W", [7], W_ROLL, pattern="." * 16 + "x...x...x.x.xxxx")
     return kw
 
 
-# W's two steps (Ryan: "bring roll volume up, bring cello down"): the roll up 4 and 8 dB, the cello
-# down 3 and 6 dB from the second round's; the full pairs take the second.
-W_STEPS = [(0.4, 0.3), (0.28, 0.48), (0.2, 0.75)]
-
-
-def map_round_three(kw, call):
+def map_picks(kw, call):
     """The map half with every pick so far: the drone down and moved, X on the violins, U on the
-    clean guitar, W low with the roll at its second step; K without the cellos (its walk on the
-    ticking guitar, the sub on its roots, a timpani on each bar's one tuned to its root, very
-    soft); the map's V and Q as they were."""
+    clean guitar, W low with the roll; K without the cellos (its walk on the ticking guitar, the
+    sub on its roots, a timpani on each bar's one tuned to its root, very soft); the map's lifts,
+    V and Q as they were."""
     map_drone(kw)
     map_voice(kw, "cello_real", "X", VIOLINS_X)
     map_voice(kw, "harp", "U", CLEAN_GUITAR_U)
-    w_low(kw, call, roll=True, cello=W_STEPS[2][0], roll_gain=W_STEPS[2][1])
+    w_low(kw, call)
     strip(kw, "cello_real", "K")
     kw["voices"].append(dict(P.TICKING, gain=0.22, pat={"K": P.part(call, "bass", "K")}))
     kw["voices"].append({"inst": "sub_bass", "mode": "riff", "gain": 0.34, "legato": True, "pat": {"K": P.roots(call, "K")}})
@@ -349,72 +321,52 @@ def map_half(form, edit=None, meter=None, battle_edit=None):
 
 C_FORM = "NNNN B CCCCCCCC NNNN"
 L_FORM = "NNNN LLLLLLLL M XX"
-W_FORM = "FFFF WW SSSS"   # the keys' last four bars, by from_bar
 
 
-def keys_end(call):
-    from_bar(call, "F", 12)
-
-
-def lift(s, *pair):
-    """A lift's row: the chug and the crashes, and the riff on `pair` when one is given."""
+def both(*edits):
     def edit(call):
-        lift_band(call, s)
-        if pair:
-            riff_on(call, s, *pair)
+        for e in edits:
+            e(call)
     return edit
 
 
 SETS = [
-    {"id": "c", "half": "battle", "title": "The battle's first lift (C)", "note": "Four bars of the riff on its power chords, the turn, the lift's eight bars, back to the riff. Every row but the first has your pick of the second round, a backing guitar chugging each bar's root wherever the kick hits and a crash every four bars, with the metal chime and the piano as they were; the riff on two voices in unison.", "rows": [
+    {"id": "c", "half": "battle", "title": "The battle's first lift (C)", "note": "Four bars of the riff on its power chords, the turn, the lift's eight bars, back to the riff. Every row but the first has the backing guitar chugging each bar's root wherever the kick hits and a crash every four bars, the metal chime and the piano as they were; the riff on two voices in unison, each with the lead guitar.", "rows": [
         ("c0", "As it ships", "The soft sub alone on the riff.", lambda: battle(C_FORM)),
-        ("c1", "Sub and driven bass", "The second round's second row as you heard it.", lambda: battle(C_FORM, lift("C", ("sub", 0.3), ("bass", 0.42)))),
-        ("c2", "Sub and crunch synth", "The second lift's voice joining the first's.", lambda: battle(C_FORM, lift("C", ("sub", 0.4), ("crunch", 0.36)))),
-        ("c3", "Driven bass and crunch synth", "The sub gone; the two drivers together.", lambda: battle(C_FORM, lift("C", ("bass", 0.38), ("crunch", 0.36)))),
-        ("c4", "Driven bass and lead guitar", "The climax's lead guitar voice with the driven bass.", lambda: battle(C_FORM, lift("C", ("bass", 0.38), ("lead", 0.4)))),
+        ("c1", "Driven bass and lead guitar", "The third round's last row, as you heard it.", lambda: battle(C_FORM, lift("C", ("bass", 0.38), ("lead", 0.4)))),
+        ("c2", "Sub and lead guitar", "The lift's own soft sub with the lead guitar.", lambda: battle(C_FORM, lift("C", ("sub", 0.4), ("lead", 0.4)))),
+        ("c3", "Crunch synth and lead guitar", "The second lift's pair, your lean for both lifts (the full pair's).", lambda: battle(C_FORM, lift("C", *CRUNCH_LEAD))),
     ]},
-    {"id": "l", "half": "battle", "title": "The battle's second lift (L)", "note": "From the riff into the lift, the bar down and into the seven. The chug and the crashes under the crunch synth as it was, then the crunch synth with a second voice in unison.", "rows": [
-        ("l0", "As it ships", "The crunch synth alone on the riff.", lambda: battle(L_FORM)),
-        ("l1", "The chug and the crashes", "The backing guitar on the kick and a crash every four bars under the crunch synth as it was.", lambda: battle(L_FORM, lift("L"))),
-        ("l2", "Crunch synth and driven bass", "As the last, the driven bass in unison with the synth.", lambda: battle(L_FORM, lift("L", ("crunch", 0.4), ("bass", 0.36)))),
-        ("l3", "Crunch synth and sub", "As the last, the soft sub in unison instead.", lambda: battle(L_FORM, lift("L", ("crunch", 0.4), ("sub", 0.4)))),
-        ("l4", "Crunch synth and lead guitar", "As the last, the lead guitar voice in unison instead.", lambda: battle(L_FORM, lift("L", ("crunch", 0.4), ("lead", 0.4)))),
-    ]},
-    {"id": "w", "half": "map", "title": "The map's keys turn (W): the roll and the cello", "note": "The keys section's last four bars, the turn on the low note with the roll, into the climax's first set. The full pairs take the second step.", "rows": [
-        ("w0", "As you heard it", "The second round's: the roll soft, the cello at its first level.", lambda: map_half(W_FORM, lambda kw, c: w_low(map_drone(kw), c, True, *W_STEPS[0]), battle_edit=keys_end)),
-        ("w1", "A step", "The roll 4 dB up, the cello 3 dB down.", lambda: map_half(W_FORM, lambda kw, c: w_low(map_drone(kw), c, True, *W_STEPS[1]), battle_edit=keys_end)),
-        ("w2", "Two steps", "The roll 8 dB up, the cello 6 dB down.", lambda: map_half(W_FORM, lambda kw, c: w_low(map_drone(kw), c, True, *W_STEPS[2]), battle_edit=keys_end)),
+    {"id": "l", "half": "battle", "title": "The battle's second lift (L) and M", "note": "From the riff into the lift, M (the bar down) and into the seven, under the chug and the crashes.", "rows": [
+        ("l0", "As it ships", "The crunch synth alone on the riff; M on the chug and the driven bass.", lambda: battle(L_FORM)),
+        ("l1", "Crunch synth and lead guitar", "The third round's last row, as you heard it: M as it ships.", lambda: battle(L_FORM, lift("L", *CRUNCH_LEAD))),
+        ("l2", "And M on the same two", "M's bar down on the crunch synth and the lead guitar as well (the full pair's).", lambda: battle(L_FORM, both(lift("L", *CRUNCH_LEAD), m_crunch_lead))),
     ]},
 ]
 
-# Every full render: (key, half, form, the battle's edit). The battle halves are K's seams; K1 and
-# K2 in between, each with the map half on its own notes, are the switch's two pairs.
+# Every full render: (key, half, form, the battle's edit), the battle's lifts and M on the crunch
+# synth and the lead guitar throughout. The battle halves are K's seams; k14l and the map's k14
+# are the switch's pair.
 FULLS = [
-    ("k0", "battle", FORM_K16, None),
-    ("k1a", "battle", FORM_K8, lambda c: k_double(c)),
-    ("k1b", "battle", FORM_K8, lambda c: k_double(c, between=True)),
-    ("k2a", "battle", FORM_K8, lambda c: k_half(c)),
-    ("k2b", "battle", FORM_K8, lambda c: k_half(c, between=True)),
-    ("k0", "map", FORM_K16, None),
-    ("k1", "map", FORM_K8, lambda c: k_double(c)),
-    ("k2", "map", FORM_K8, lambda c: k_half(c)),
+    ("k16", "battle", FORM_K16, k_step(0)),
+    ("k14", "battle", FORM_K14, k_step(0)),
+    ("k14d", "battle", FORM_K14, k_step(1)),
+    ("k14l", "battle", FORM_K14, k_step(2)),
+    ("k14g", "battle", FORM_K14, k_step(3)),
+    ("k16", "map", FORM_K16, None),
+    ("k14", "map", FORM_K14, None),
 ]
 SEAM_ROWS = {
-    "battle": [("k0", "K as it was", "The slow solo as it ships, then V, Q and the wrap: only J gone."),
-               ("k1a", "Double time, its drums as they were", "The whole solo at twice the speed on K's own drums."),
-               ("k1b", "Double time, its drums in between", "The same with the kick pushing, ghost notes and eighths on the hat (the full pair's)."),
-               ("k2a", "First half, its drums as they were", "The solo's first eight bars as written, the band under it, on K's own drums."),
-               ("k2b", "First half, its drums in between", "The same with the kick pushing, ghost notes and eighths on the hat (the full pair's).")],
-    "map": [("k0", "K as it was", "The slow solo without the cellos: the walk on the ticking guitar, the sub on its roots, the soft timpani."),
-            ("k1", "Double time", "The same voices on the solo in double time."),
-            ("k2", "First half", "The same voices on the solo's first half.")],
+    "battle": [("k16", "K as it was", "All sixteen bars of the slow solo as it ships, then V, Q and the wrap: only J gone."),
+               ("k14", "Its first fourteen bars", "The same solo cut to fourteen bars, ending on B minor into V."),
+               ("k14d", "With the drums in between", "K's own drums with the kick pushing, ghosts by the snare, eighths on the hat, the open hat and a china every second bar."),
+               ("k14l", "And the lead guitar on the walk", "As the last, the lead guitar voice in unison with the crunch synth's walk (the full pair's)."),
+               ("k14g", "The lead guitar alone on the walk", "As the last, the crunch synth gone from the walk.")],
+    "map": [("k16", "K as it was", "The slow solo's sixteen bars without the cellos: the walk on the ticking guitar, the sub on its roots, the soft timpani."),
+            ("k14", "Its first fourteen bars", "The same, cut to fourteen bars (the full pair's).")],
 }
-PAIRS = [
-    {"id": "hold_the_line_k1", "title": "Hold The Line, K in double time", "map": "k1", "battle": "k1b",
-     "k": "the keyboard solo in double time at its slower tempo, one chord a bar, the walk on crunch synth, driven bass and chug, the piano and the keys' lead on the melody, K's drums with a pushing kick and eighths on the hat"},
-    {"id": "hold_the_line_k2", "title": "Hold The Line, K's first half", "map": "k2", "battle": "k2b",
-     "k": "the keyboard solo's first half as written at its slower tempo, the driven bass on the walk, the chug on the roots, K's drums with a pushing kick and eighths on the hat"},
-]
+PAIR = {"id": "hold_the_line_r4", "title": "Hold The Line, round four", "map": "k14", "battle": "k14l",
+        "k": "the keyboard solo's first fourteen bars at its slower tempo, the lead guitar with the crunch synth on the walk, K's drums with a pushing kick, eighths on the hat and a china"}
 
 
 def level(x, db):
@@ -424,13 +376,13 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold3_" + SETS[si]["id"])
+    F.seed("hold4_" + SETS[si]["id"])
     with P.Patched(_steps=run_steps):
         return si, ri, SETS[si]["rows"][ri][3]()
 
 
 def full_path(key, half):
-    return os.path.join(P.OUT, "hold3_full_%s_%s.wav" % (key, half))
+    return os.path.join(P.OUT, "hold4_full_%s_%s.wav" % (key, half))
 
 
 def render_full(i):
@@ -440,12 +392,13 @@ def render_full(i):
         F.seed(NAME)
         call = copied(call_on(form, METER))
         wrap_crash(call)
+        lifts_crunch_lead(call)
         if edit:
             edit(call)
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
-        x = level(map_half(form, map_round_three, METER, edit), MAP_LEVEL)
+        x = level(map_half(form, map_picks, METER, edit), MAP_LEVEL)
     P.write(os.path.basename(full_path(key, half))[:-4], x, aac=False)
     return key, half
 
@@ -488,7 +441,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold3.json")
+    manifest_path = os.path.join(P.OUT, "hold4.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -499,7 +452,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _render) in enumerate(s["rows"]):
             x = F.limit(raw[si, ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold3_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold4_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -508,17 +461,15 @@ def main(argv):
         bpm = F.MUSIC[NAME]["bpm"]
         halves = {(k, h): P.read_wav(full_path(k, h)) for k, h, _f, _e in FULLS}
         forms = {(k, h): f for k, h, f, _e in FULLS}
-        manifest["tracks"] = []
-        for p in PAIRS:
-            m, b = halves[p["map"], "map"], halves[p["battle"], "battle"]
-            if len(m) != len(b):
-                raise ValueError("%s: the halves are %d and %d samples" % (p["id"], len(m), len(b)))
-            P.write(p["id"] + "_pair", [m, b], kbps=384)
-            secs, total, at = sections_of(FORM_K8, METER, bpm, p["k"])
-            levels = [P.measure("map", m), P.measure("battle", b)]
-            manifest["tracks"].append({"id": p["id"], "title": p["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
-                                       "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels})
-            print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (p["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
+        m, b = halves[PAIR["map"], "map"], halves[PAIR["battle"], "battle"]
+        if len(m) != len(b):
+            raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
+        P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
+        secs, total, at = sections_of(FORM_K14, METER, bpm, PAIR["k"])
+        levels = [P.measure("map", m), P.measure("battle", b)]
+        manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
+                               "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels}]
+        print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
         manifest["seams"] = []
         for half, sid, title, note in (("battle", "kb", "The battle's loop: K into V, Q and the wrap",
                                         "From the climax's last set through the breath, K, V and Q's fill, then the wrap into bar thirteen, as the game loops it."),
@@ -528,7 +479,7 @@ def main(argv):
             for key, rtitle, rnote in SEAM_ROWS[half]:
                 cut = seam(halves[key, half], forms[key, half], METER, bpm)
                 rows.append({"id": "%s_%s" % (key, half), "title": rtitle, "note": rnote, "seconds": round(len(cut) / F.SR, 2),
-                             "file": os.path.basename(P.write("hold3_%s_%s" % (key, half), cut))})
+                             "file": os.path.basename(P.write("hold4_%s_%s" % (key, half), cut))})
             manifest["seams"].append({"id": sid, "half": half, "title": title, "note": note, "rows": rows})
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=1)
