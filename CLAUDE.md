@@ -153,6 +153,13 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - Before ending a session, or whenever a large task completes, update `docs/status.md`: what
   changed, what was decided, what is next. Keep it short and replace stale lines rather than
   appending forever.
+- Check for a newer Godot every two weeks (Ryan, 30 October: "check for godot updates
+  periodically"): when the Godot line in `docs/status.md`'s Start here is dated two weeks back
+  or more, read `github.com/godotengine/godot-builds/releases` (every build, pre-releases
+  included) and date the line again. A newer build goes to Ryan with what it fixes or changes
+  for the game (the Compatibility renderer, Android, GDScript, the importer); the move is his
+  call, since it costs the desk's install and the phone's export templates (4.8 stable is
+  already agreed: the to-do).
 - `docs/todo.md` is the task list: one line per task, grouped by who moves it. A task that
   lands or dies is ticked or struck in the same commit as the work; a new task goes in when
   it is agreed, not when it is remembered. Status says how things stand; the to-do says what

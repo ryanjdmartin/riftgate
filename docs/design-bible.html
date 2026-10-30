@@ -207,7 +207,7 @@
   <h1>Riftgate</h1>
   <p class="lede">A portrait-mode tactical hex battler for Android. A handful of customizable war machines hold the last city gates against a whole genre invading, the JRPG world's wildlife and its heroes pouring through rifts, in a roguelike campaign built from procedurally generated battlefields.</p>
   <div class="meta">
-    <div><span class="eyebrow">Version</span>0.386</div>
+    <div><span class="eyebrow">Version</span>0.387</div>
     <div><span class="eyebrow">Date</span>30 October 2026</div>
     <div><span class="eyebrow">Platform</span>Android, portrait; nineties 3D against sixteen-bit 2D</div>
     <div><span class="eyebrow">Engine</span>Godot 4.8 (4.8-beta2 until it ships), GDScript</div>
@@ -841,7 +841,7 @@
   <p>How the game is built, measured and kept honest. <code>README.md</code> has every command.</p>
   <h3>The engine</h3>
   <div class="rows">
-    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Godot 4.7 in GDScript, exported to Android in portrait.</p><p>Hexes are axial (cube implied), pointy-top.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Godot 4.8 in GDScript, exported to Android in portrait.</p><p>Hexes are axial (cube implied), pointy-top. The project runs 4.8-beta2 until 4.8 ships, for the fix of the Compatibility renderer's MSAA leak on Android (Ryan, 30 October: &ldquo;Let's update Godot so we can get the msaa fix&rdquo;; the phone's rows below), and follows Godot's releases: a session checks for a newer build every two weeks and brings it to Ryan with what it changes here, the move his call (30 October: &ldquo;check for godot updates periodically&rdquo;; the fortnight Claude's).</p></div></div>
     <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">The simulation is pure.</p><p><code>sim/</code> never touches scenes, runs headless and draws every random number from a seeded generator, so rules test headless and runs reproduce.</p></div></div>
     <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Numbers are questions, never stored totals.</p><p>Every stat, damage figure and component property is read through <code>sim/effects.gd</code>, in one fixed order, and nothing writes to a stat or a component. Every buff, debuff, reward, passive and module is a modifier with a source and a scope (the order and the scopes are in <code>docs/rules.md</code>).</p></div></div>
     <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Content is data the build validates.</p><p><code>sim/content_db.gd</code> checks <code>content/*.json</code> in the tests, so a broken rule fails the build. Internal text lives under <code>design</code>; a draft the engine cannot run carries <code>"status": "planned"</code>; runtime defaults come from content, never a hardcoded id; a new term enters the vocabulary first.</p></div></div>

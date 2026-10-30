@@ -21,8 +21,11 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 752 tests, 66,800 checks, green on `claude/jolly-lovelace-scn82y` (29 October, the
-  skirmish's field and its second round; 739 and 66,640 on main), about four minutes in a cloud session, twenty
+- Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
+  check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
+  Session handoff); date this line again after each.
+- Tests: 768 tests, 66,948 checks, green on `claude/jolly-lovelace-scn82y` (30 October, on
+  Godot 4.8-beta2 with AA MODE; 739 and 66,640 on main), about four minutes in a cloud session, twenty
   on a slow one. A cloud session fetches Godot 4.8-beta2's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.8-beta2_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
@@ -376,7 +379,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.386, the page's version 398 and
+  `docs/design-bible.html` after every change. This file is v0.387, the page's version 399 and
   this branch's last publish (30 October, merged onto the live v0.385: the overlay at one size,
   the fine map always, the grid's old light, Godot 4.8-beta2 and AA MODE). The rows other
   sessions published since v0.348 ride along (the map's movement and shapes, the desk on the
