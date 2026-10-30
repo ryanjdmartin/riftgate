@@ -1820,9 +1820,10 @@ func _validate_factions(errs: Array[String]) -> void:
 		for old in ["pattern", "elite", "injury"]:
 			if f.has(old):
 				errs.append("%s: '%s' is gone; use spawn and boss" % [where, old])
-		# A domain's map lean names one of the map's shapes (29 October), read or not.
-		if f.has("map_kind") and not BattleMap.KINDS.has(str(f["map_kind"])):
-			errs.append("%s: map_kind '%s' is no map shape (%s)" % [where, str(f["map_kind"]), ", ".join(BattleMap.KINDS.keys())])
+		# A domain never sets or leans the map's shape (Ryan, 30 October: "That's just less
+		# variety and more subtle balance to tweak"): a battle draws its shape by its seed.
+		if f.has("map_kind"):
+			errs.append("%s: map_kind is gone; a domain names no map shape, a battle's seed draws it" % where)
 		# The spawn lists by tier (28 October): keyed "1" to "3", every domain a "1".
 		var lists = f.get("spawn", {})
 		var spawn: Array = []

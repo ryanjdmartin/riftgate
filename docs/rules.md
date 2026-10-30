@@ -781,10 +781,11 @@ a stat.
   two bands of towers across, each with streets through it three or four hexes wide in all,
   one to four of them), Gorge (one or two cliff walls down the field, lanes two wide at
   least). A ford or a street is one to three hexes wide, with a hex of river or towers
-  between two. A battle that names no shape draws one by its seed. Every map guarantees the
+  between two. A battle that names no shape draws one by its seed, never by its domain. Every
+  map guarantees the
   horde a crossing three hexes wide or more through its walls; the rift's mouth (rows 0 to 3)
-  and the two rows before the gate hold no water and no wall. Height is landscape; no
-  rule reads it: the field is level but for the badlands' mesas on their shoulders and the
+  and the two rows before the gate hold no water and no wall. Height is landscape and a look
+  alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
   steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
   edges rises to three.
 - **Moving**: a machine's move is a count of hexes, each step one hex, and a chassis has one

@@ -2206,5 +2206,5 @@ func test_the_map_and_the_vocabulary_agree_on_the_ground() -> void:
 	assert_true(db.validate().any(func(e) -> bool: return e.contains("terrain 'mountain'")), "a terrain term the map never shows is reported")
 	db.vocabulary.erase("mountain")
 	var fid := str(db.factions.keys()[0])
-	db.factions[fid]["map_kind"] = "flooded"
-	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("no map shape")), "a domain's lean to a retired type is reported")
+	db.factions[fid]["map_kind"] = str(BattleMap.KINDS.keys()[0])
+	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("names no map shape")), "a domain naming a map shape, even a real one, is reported (Ryan, 30 October)")

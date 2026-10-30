@@ -132,9 +132,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   knee-high under walls of 40 and more, dense in the scenery and against walls and water,
   sparse in the lanes, of the shape's kind (reeds, shingle, scree, scrub, rubble, grass), and
   the roads lead to the fords and through the gaps or are not laid. The field is level but for
-  the badlands' mesas on their shoulders and the steppe's one rise; the scenery rises. The
-  domains' unread leans renamed onto the shapes (the Marsh's to the river, the Peak's to the
-  city), the lean itself section 12's. Measured (`docs/measurements.md`): every shape keeps the
+  the badlands' mesas on their shoulders and the steppe's one rise; the scenery rises. A
+  domain names no shape (Ryan, 30 October: "I don't see why the domain should be related to the
+  map type in any way"; its `map_kind` gone from content and refused by the validator), height
+  is a look alone ("Too complicated, not worth"), and a skirmish never reads our own ground,
+  only, if a terrain effect ever comes, the ground the enemy paints (the bible's twisted
+  landscape row). Measured (`docs/measurements.md`): every shape keeps the
   horde's crossing three wide on all 200 maps; the shapes part on reach (the walkers' two-phase
   reach 38% on the gorge and the badlands to 51% on the steppe, the hover's 47% to 62%, the
   flyer's 62% on all); the relief steps on 0% to 16% of neighbouring land where it stepped on
@@ -364,9 +367,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.364 (the page's version 376,
-  published 29 October from `ccr-7821127e-kwj874`: the hunters pouncing at a ring of two and the
-  re-pick retired; on v0.363 at 375, the horde wading, packs passing packs, flyers and the ground
+  `docs/design-bible.html` after every change. This file is v0.365 (the page's version 377,
+  published 30 October from `ccr-7821127e-kwj874`: Ryan's calls that a domain names no map
+  shape, height is a look alone and a skirmish never reads our own ground; on v0.364 at 376, the
+  hunters pouncing at a ring of two and the re-pick retired; on v0.363 at 375, the horde wading, packs passing packs, flyers and the ground
   passing each other, and the fords and streets three or four in all, three-way merged onto the
   live v0.362 that `claude/charming-rubin-h954bp` published at 374, which carries
   `claude/jolly-lovelace-scn82y`'s v0.361 (the skirmish one field in perspective with its
@@ -389,14 +393,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 153 (29 October, from `ccr-7821127e-kwj874`:
+  acts on a reloaded page). At the page's version 154 (30 October, from `ccr-7821127e-kwj874`:
+  `content/factions.json` without the domains' map shapes, `edits` empty), on 153 (29 October:
   `content/foes.json` with the hunters at a ring of two and its map note current, replacing
   that branch's copy, whose note alone differed, and `content/vocabulary.json` with the Ring
   and Behaviour entries, onto version 152 of `claude/charming-rubin-h954bp`, its rebuilds'
   notes, its `index.html` and every other file kept as they stood, `edits` empty; 151 brought
   the horde's wade and the flyer's passing;
-  at 147 the walls' four terms and `content/factions.json` with the domains' leans on the shapes,
-  onto version 146 of `claude/charming-rubin-h954bp`'s page and files; that branch's
+  at 147 the walls' four terms, onto version 146 of `claude/charming-rubin-h954bp`'s page and files; that branch's
   `content/chassis.json` carries its own Stingray note, so main's chassis file, whose `_about`
   alone moved, waits for that branch to land; `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
