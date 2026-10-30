@@ -37,9 +37,9 @@ are in `README.md`.
 first round, the Hold The Line pair, merged on the 27th), main merged into it on the 29th: Ryan's
 go on the pairs (every track a map half and a battle half, the bible's pair row), every new half
 sketched on its shipped recipe's groove call and published on the pair page; then his notes of
-29 October on Hold The Line's two halves and Night Shift's battle half, sketched as further rounds
-on the same page (Hold The Line's fourth, Night Shift's second), and the pairs in the game once he
-has heard them.
+29 and 30 October on Hold The Line's two halves and Night Shift's battle half, sketched as further
+rounds on the same page (Hold The Line's fourth, Night Shift's third), and the pairs in the game
+once he has heard them.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -307,9 +307,10 @@ The tasks are the to-do's; this is the index of what waits.
   Line on its fourth round (30 October: J gone, V and Q kept, K as it was cut to its first
   fourteen bars, both lifts and M leaning to the crunch synth and the lead guitar under a backing
   chug, his map picks: X on the violins, U on the clean guitar, the drone moved to R, W low with a
-  roll) and Night Shift on
-  its second (the map's intro without its front, the battle half with no drone, a bass line on the
-  guitar's groove, a synth line, Hold The Line's drum energy); all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
+  roll) and Night Shift on its third (the map's intro without its front; the battle half a jam,
+  30 October: the guitar and the bass riffing in one line on his rhythms, walking the chords bar to
+  bar, pulling back for the arpeggio and the FM hook, no drone, Hold The Line's drum energy); all
+  waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
   the track, the 3 s flip) and each picked half into the forge's SHIP table.
 
 ## Next, in order
@@ -360,22 +361,25 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.378 (the
-  page's version 390, published 30 October from `ccr-7effd31a-u5z4gw`: Hold The Line's K and M
-  in the track table, three-way merged onto the live v0.377 that `claude/charming-rubin-h954bp`
-  published at 389, which carried main's v0.376, the domains' tilesets built again). So this
-  file carries rows ahead of this branch's code: `claude/charming-rubin-h954bp`'s (the model
-  rebuilds, their glows, looks and acts, the Armadillo's seal, radiators and vents) with its
-  Strikes row in the keyword table, `claude/jolly-lovelace-scn82y`'s (the skirmish as one field
-  and its controls, the enemy's red and heat's orange on trial), and main's since this branch
-  last merged it (the horde's movement, the domains' tilesets). The tables script, which writes
-  the tables from main's content, waits until `claude/charming-rubin-h954bp` lands or reverts
-  that row. The version numbers on the publishing branch's file and the live agree after every
-  publish. Before republishing, read the live page; if another session moved it, publish a
-  three-way merge onto it (`git merge-file` with the last-published file as the base, the
-  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
-  With every branch landed, the file holds no rows ahead of code, and the tables script may run
-  freely again.
+  `docs/design-bible.html` after every change. This file and the live page are v0.380 (the
+  page's version 392, published 30 October from `ccr-7effd31a-u5z4gw`: Night Shift's battle half
+  a jam in the track table, and the music row's complexity from the groove with a fill marking a
+  phrase's turn, three-way merged onto the live v0.379 that `claude/brave-cori-fr18de` published
+  at 391, the pacing session's and the foes' fresh start's rows, itself on this branch's v0.378
+  at 390, on `claude/charming-rubin-h954bp`'s v0.377 at 389, on main's v0.376). So this file
+  carries rows ahead of this branch's code: `claude/brave-cori-fr18de`'s (the pacing session:
+  the whole wall struck, the stall priced, the tears, the three clocks, the tier and the ramp),
+  `claude/charming-rubin-h954bp`'s (the model rebuilds, their glows, looks and acts, the
+  Armadillo's seal, radiators and vents) with its Strikes row in the keyword table,
+  `claude/jolly-lovelace-scn82y`'s (the skirmish as one field and its controls, the enemy's red
+  and heat's orange on trial), and main's since this branch last merged it (the horde's
+  movement, the domains' tilesets). The tables script, which writes the tables from main's
+  content, waits until `claude/charming-rubin-h954bp` lands or reverts that row. The version
+  numbers on the publishing branch's file and the live agree after every publish. Before
+  republishing, read the live page; if another session moved it, publish a three-way merge onto
+  it (`git merge-file` with the last-published file as the base, the wrapper's first line and
+  its trailing `</body></html>` stripped from the saved live source). With every branch landed,
+  the file holds no rows ahead of code, and the tables script may run freely again.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
@@ -406,6 +410,6 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  fourth, `hold_sketches.py`; Night Shift's second, `night_sketches.py`), at the page's version 8.
+  fourth, `hold_sketches.py`; Night Shift's third, `night_sketches.py`), at the page's version 9.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).

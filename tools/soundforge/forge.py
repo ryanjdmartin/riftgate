@@ -790,7 +790,8 @@ def overheat():
 # `bass` and the `chime` and `stab` of the second cut stay available.
 
 E2 = 82.41
-NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5, "l": -1, "m": -3, "n": -4, "o": -7}   # l, m, n, o: notes under the root (Eb, Db, C, A)
+NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5, "l": -1, "m": -3, "n": -4, "o": -7,   # l, m, n, o: notes under the root (Eb, Db, C, A)
+        "p": 13, "q": 16, "s": 18, "t": 20, "u": 21, "v": 23}   # the second octave's gaps, for a line that walks (Night Shift's jam, 30 October)
 _E_MINOR = [0, 2, 3, 5, 7, 8, 10]
 _SPELL = {v: k for k, v in NOTE.items()}
 
