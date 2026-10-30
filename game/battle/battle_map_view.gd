@@ -140,6 +140,9 @@ func set_field(f: Battlefield) -> void:
 		mat.set_shader_parameter("painted", _painted.get_texture())
 		mat.set_shader_parameter("painted2", _painted2.get_texture())
 		mat.set_shader_parameter("units", _map3d.get_units_texture())
+		mat.set_shader_parameter("scene_lin", _map3d.get_texture())   # the same two, read linear by the FXAA (Hud.fxaa)
+		mat.set_shader_parameter("units_lin", _map3d.get_units_texture())
+		mat.set_shader_parameter("fxaa", Hud.fxaa())
 		mat.set_shader_parameter("map_size", map_size)
 		mat.set_shader_parameter("view_size", size)
 		mat.set_shader_parameter("play_x", _frame_x())   # sharp inside the frame's lines, soft outside

@@ -28,6 +28,7 @@ const DISPLAY_DEFAULTS := {
 	"music": 1.0, "effects": 1.0, "voice": 1.0,   # Hold The Line at the full knob matches other games on the phone (Ryan, 8 October); the effects and the voice mastered up to sit over it
 	"voice_test": false,   # a debug build's test mode: every one of Jenny's hooks speaks every time
 	"weld": true,   # a debug build's comparison: off, the machines' parts are drawn as authored rather than welded (MechWeld), to judge the battery plan on the phone
+	"aa": true,   # a debug build's comparison: off, the 3D draws without its smoothing (Hud.smoothing: the textures' mipmaps, the map's FXAA), to judge it on the phone
 	"fine_map": true,   # the map's scene and compositor at the glass's density rather than the design's (Ryan, 29 September: 60 fps locked on the Pixel with it, so it is the default)
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 }

@@ -98,3 +98,32 @@ func test_a_turret_joint_traverses_and_a_limb_swings() -> void:
 	assert_eq(MechView3D.joint_axis("turret"), Vector3(0, 1, 0), "a turret turns about its up axis")
 	assert_eq(MechView3D.joint_axis("turret_l"), Vector3(0, 1, 0), "a named turret too")
 	assert_eq(MechView3D.joint_axis("shoulder_l"), Vector3(1, 0, 0), "a limb swings about the axle line")
+
+
+func test_a_models_textures_read_their_mipmaps_unless_the_smoothing_is_off() -> void:
+	# Ryan, 30 October: "a lot of aliasing on models" on the phone. A machine drawn small on
+	# the map read one texel of its 64-pixel tiles a screen pixel and sparkled; nearest from
+	# its mipmaps keeps the texels up close and the calm far off. AA off draws as before.
+	var filters := func() -> Array:
+		var node: Node = (load("res://art/models/%s.glb" % MechView3D.stand_in()) as PackedScene).instantiate()
+		MechView3D.toon(node, ContentDB.load_default().makers.keys()[0], "toon")
+		var seen: Array = []
+		for child in node.find_children("*", "MeshInstance3D", true, false):
+			var mi: MeshInstance3D = child
+			for i in range(mi.get_surface_override_material_count()):
+				var m := mi.get_surface_override_material(i)
+				if m is StandardMaterial3D and (m as StandardMaterial3D).albedo_texture != null and not seen.has(m.texture_filter):
+					seen.append(m.texture_filter)
+		node.free()
+		return seen
+	Settings.display["aa"] = true
+	assert_true(Hud.smoothing(), "the smoothing is on by default")
+	assert_eq(filters.call(), [BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS], "every textured part reads its mipmaps")
+	if OS.is_debug_build():   # the tests' build always is; a release build smooths whatever is saved
+		Settings.display["aa"] = false
+		assert_false(Hud.smoothing() or Hud.fxaa(), "the AA toggle off turns it all off (the phone's switch)")
+		assert_eq(filters.call(), [BaseMaterial3D.TEXTURE_FILTER_NEAREST], "and the textures read nearest as before")
+		Settings.display["aa"] = true
+	OS.set_environment("RIFTGATE_AA", "off")
+	assert_false(Hud.smoothing(), "RIFTGATE_AA=off turns it off for a run")
+	OS.unset_environment("RIFTGATE_AA")

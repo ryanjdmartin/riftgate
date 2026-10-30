@@ -2101,7 +2101,7 @@ func _open_menu(page: String = "paused") -> void:
 				BattleMapView.pace = float(value)
 			elif key == "scan" and _bg != null:
 				_bg.scan = bool(value)
-			elif key == "weld" or key == "skirmish_controls":
+			elif key == "weld" or key == "aa" or key == "skirmish_controls":
 				_build()   # the machines remade, welded or as authored (a debug build's comparison), or the controls moved
 				_refresh())
 		_menu.hud_changed.connect(func() -> void:

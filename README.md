@@ -353,6 +353,10 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
 # PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
 # RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; off on a phone by default).
+# RIFTGATE_AA=off draws the 3D without its smoothing (the machines' textures nearest without their
+# mipmaps, no FXAA on the map), as a debug build's AA toggle does; RIFTGATE_AA=fxaa runs the map's
+# FXAA beside MSAA too. With RIFTGATE_MSAA=off the desk draws the phone's look: the map's FXAA in place
+# of MSAA, which the phone's renderer leaks with.
 # RIFTGATE_OUTLINE=<n> sets the machines' light outline thickness for a comparison (MechView3D.OUTLINE is the default).
 # RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.
 # RIFTGATE_FINE_MAP=1 forces the FINE MAP setting (the map's scene and compositor at the glass's

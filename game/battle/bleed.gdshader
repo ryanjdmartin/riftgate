@@ -34,6 +34,11 @@ uniform float blur_max = 3.0;                // the blur's tap spacing at its ma
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
 uniform float edge_fade = 30.0;              // map pixels past the field over which the side blur reaches full strength (smaller is harder)
 uniform float edge_blur = 1.6;               // the side blur's maximum
+// FXAA where the 3D has no MSAA (the phone: Hud.fxaa): the scene and the machines read
+// again through linear samplers of the same textures, smoothing their edges in the sharp zone.
+uniform bool fxaa = false;
+uniform sampler2D scene_lin : filter_linear;
+uniform sampler2D units_lin : filter_linear;
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -61,6 +66,38 @@ float blur_radius(vec2 px) {
 	float f = clamp((focus_y - focus_band - px.y) / focus_falloff, 0.0, 1.0);
 	float s = clamp((px.y - south_y) / (focus_falloff * 0.5), 0.0, 1.0);
 	return max(f, s) * blur_max;
+}
+
+// FXAA (Lottes's console form) with a contrast threshold, so only real edges blend: a
+// machine's silhouette, its outline, the grid's ribbons, a crag against the ground; a
+// texture's quiet texels stay as they are. `texel` is the texture's own pixel.
+const vec3 LUMA = vec3(0.299, 0.587, 0.114);
+const float FXAA_EDGE_MIN = 0.0625;
+const float FXAA_EDGE = 0.125;
+const float FXAA_REDUCE_MIN = 1.0 / 128.0;
+const float FXAA_REDUCE_MUL = 1.0 / 8.0;
+const float FXAA_SPAN = 8.0;
+
+vec4 fxaa_at(sampler2D tex, vec2 uv, vec2 texel) {
+	vec4 m = texture(tex, uv);
+	float lm = dot(m.rgb, LUMA);
+	float lnw = dot(texture(tex, uv + vec2(-0.5, -0.5) * texel).rgb, LUMA);
+	float lne = dot(texture(tex, uv + vec2(0.5, -0.5) * texel).rgb, LUMA);
+	float lsw = dot(texture(tex, uv + vec2(-0.5, 0.5) * texel).rgb, LUMA);
+	float lse = dot(texture(tex, uv + vec2(0.5, 0.5) * texel).rgb, LUMA);
+	float lo = min(lm, min(min(lnw, lne), min(lsw, lse)));
+	float hi = max(lm, max(max(lnw, lne), max(lsw, lse)));
+	if (hi - lo < max(FXAA_EDGE_MIN, hi * FXAA_EDGE)) {
+		return m;
+	}
+	vec2 dir = vec2(-((lnw + lne) - (lsw + lse)), (lnw + lsw) - (lne + lse));
+	float reduce = max((lnw + lne + lsw + lse) * 0.25 * FXAA_REDUCE_MUL, FXAA_REDUCE_MIN);
+	float rcp = 1.0 / (min(abs(dir.x), abs(dir.y)) + reduce);
+	dir = clamp(dir * rcp, vec2(-FXAA_SPAN), vec2(FXAA_SPAN)) * texel;
+	vec4 a = 0.5 * (texture(tex, uv + dir * (1.0 / 3.0 - 0.5)) + texture(tex, uv + dir * (2.0 / 3.0 - 0.5)));
+	vec4 b = a * 0.5 + 0.25 * (texture(tex, uv - dir * 0.5) + texture(tex, uv + dir * 0.5));
+	float lb = dot(b.rgb, LUMA);
+	return (lb < lo || lb > hi) ? a : b;
 }
 
 // A dense 7x7 box at `rad` spacing: thick and smooth, never a ghosted multiple image.
@@ -128,7 +165,7 @@ void fragment() {
 	float outside = max(play_x.x - px.x, px.x - play_x.y);
 	float edge = smoothstep(0.0, edge_fade, outside);
 	float rad = max(blur_radius(px), edge * edge_blur);
-	vec4 scene = blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
+	bool aa_here = fxaa && rad < 0.05;   // the blurred zones are soft already
 	// The corrupted side is input the display cannot hold: rarely, a piece of a band of it
 	// tears, shearing sideways and dimming. Only the painted side ever shows it (the tear
 	// is on `other`), so a lone enemy tile between 3D tiles can glitch on its own; and a
@@ -178,12 +215,14 @@ void fragment() {
 	// nothing in front of it; on the reconstruction the scene's pixel wins, with its real
 	// depth, so the wall and the crags stand in front of a machine behind them. The
 	// units layer's translucent part (a flyer's shadow) falls on the painting the same way.
-	vec4 u = blurred_units(UV, 1.0 / view_size, rad);
+	// Each side reads only its own: the machines' layer where the painting shows, the scene
+	// where it does not (the units layer is the scene's size, so one texel serves both).
 	if (k > bayer(c)) {
+		vec4 u = aa_here ? fxaa_at(units_lin, UV, TEXTURE_PIXEL_SIZE) : blurred_units(UV, 1.0 / view_size, rad);
 		COLOR = other;
 		COLOR.rgb = mix(COLOR.rgb, u.rgb, u.a);
 	} else {
-		COLOR = scene;
+		COLOR = aa_here ? fxaa_at(scene_lin, UV, TEXTURE_PIXEL_SIZE) : blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
 	}
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
 	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;

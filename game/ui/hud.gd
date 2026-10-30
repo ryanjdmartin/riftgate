@@ -149,6 +149,22 @@ static func msaa_3d() -> int:
 	return SubViewport.MSAA_4X
 
 
+## The smoothing the 3D gets where MSAA cannot run (Ryan, 30 October: "a lot of aliasing on
+## models and hex grid lines on the phone"): the machines' textures read their mipmaps, so a
+## machine drawn small stops sparkling, and where the viewports have no MSAA the map's
+## compositor runs FXAA of its own (bleed.gdshader), the phone's renderer refusing Godot's.
+## RIFTGATE_AA=off, or AA off in a debug build's settings, draws as before, to compare;
+## RIFTGATE_AA=fxaa runs the FXAA beside MSAA too (the desk judging the phone's look).
+static func smoothing() -> bool:
+	if OS.get_environment("RIFTGATE_AA") == "off":
+		return false
+	return bool(Settings.display.get("aa", true)) or not OS.is_debug_build()
+
+
+static func fxaa() -> bool:
+	return smoothing() and (msaa_3d() == SubViewport.MSAA_DISABLED or OS.get_environment("RIFTGATE_AA") == "fxaa")
+
+
 ## Device pixels per design pixel a 3D render should use: the window's stretch when the
 ## FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1. From the node's own viewport
 ## when it is in the tree, else the window's.
