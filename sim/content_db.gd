@@ -42,6 +42,7 @@ var categories: Array = []
 ## (see normalise_name) with "Name (a BattleTech 'Mech)" for the message. A chassis nickname
 ## or id that lands on one fails validation (Ryan, 28 September: ours or a homage, never a copy).
 var reserved_names: Dictionary = {}
+var _menace: Dictionary = {}      # foe id -> its menace, read once (menace)
 var load_errors: Array[String] = []
 
 
@@ -771,26 +772,112 @@ func make_boss(uid: int, faction_id: String, boss_id: String = "") -> Unit:
 	return Unit.boss(uid, boss_name, Vector2i.ZERO, faction_id)
 
 
-## The packs a faction sends through the rift together at a tier (1 to 3, the shown number), as
-## [[foe_id, strength], ...] (the ladder's brief, D3, 28 October): the faction's `spawn` is keyed
-## by the tier as a string, and a tier with no list takes the highest tier's under it.
-func spawn_table(faction_id: String, tier: int) -> Array:
+## The sizes a composition may be (the foes' fresh start, 30 October): a patrol (one or two
+## front types, three to five foes, a detachment's fight), a formation (a front and a back, the
+## body's fight and the unit the Fractures are counted in), an elite (the guaranteed curveball a
+## Fracture spawns, led by a foe flagged `elite`) and an escort (a boss's hand-tailored escort at
+## a tier; none written yet, so the tier's units stand in).
+const COMPOSITION_SIZES := ["patrol", "formation", "elite", "escort"]
+
+
+## A faction's compositions of a size at a tier (1 to 3, the shown number), in content order,
+## each as {"id", "size", "faction", "members": [[foe_id, strength], ...]}; every size in turn
+## when `size` is empty. A tier with none of a size takes the highest tier's under it, as the
+## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
+## tier. Nothing when the faction has none.
+func compositions(faction_id: String, tier: int, size: String = "") -> Array:
 	var out: Array = []
-	for e in _spawn_list(factions.get(faction_id, {}), tier):
-		out.append([str(e.get("foe", "")), int(e.get("strength", 1))])
+	var sizes: Array = [size] if not size.is_empty() else COMPOSITION_SIZES
+	for sz in sizes:
+		for t in range(clampi(tier, 1, 3), 0, -1):
+			var found := _compositions_at(faction_id, t, str(sz))
+			if not found.is_empty():
+				out.append_array(found)
+				break
 	return out
 
 
-## A faction's spawn entries at a tier, as content writes them ({foe, strength} each): the tier's
-## own list, else the highest tier's under it; nothing when it has none.
-static func _spawn_list(fac: Dictionary, tier: int) -> Array:
-	var lists = fac.get("spawn", {})
-	if not (lists is Dictionary):
-		return []
-	for t in range(clampi(tier, 1, 3), 0, -1):
-		if lists.has(str(t)) and lists[str(t)] is Array:
-			return lists[str(t)]
-	return []
+func _compositions_at(faction_id: String, tier: int, size: String) -> Array:
+	var out: Array = []
+	for c in factions.get(faction_id, {}).get("compositions", []):
+		if not (c is Dictionary) or str(c.get("size", "")) != size or not composition_tiers(c).has(tier):
+			continue
+		var members: Array = []
+		for m in c.get("members", []):
+			if m is Dictionary and foes.has(str(m.get("foe", ""))):
+				members.append([str(m["foe"]), maxi(1, int(m.get("strength", 1)))])
+		if members.is_empty():
+			continue
+		out.append({"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members})
+	return out
+
+
+## The tiers a composition may be dealt at, as ints (content writes them as a list; one by
+## default).
+static func composition_tiers(c: Dictionary) -> Array:
+	var out: Array = []
+	var tiers = c.get("tiers", [1])
+	for t in (tiers if tiers is Array else [tiers]):
+		out.append(int(t))
+	return out
+
+
+## A faction's elite compositions at a tier, in content order: the elites its Fractures spawn.
+func elite_compositions(faction_id: String, tier: int) -> Array:
+	return compositions(faction_id, tier, "elite")
+
+
+## A boss's hand-tailored escort at a tier (an `escort` composition), or empty: the tier's units
+## stand in round robin (escort_units).
+func escort_composition(faction_id: String, tier: int) -> Dictionary:
+	var found := compositions(faction_id, tier, "escort")
+	return found[0] if not found.is_empty() else {}
+
+
+## Whether a foe leads an elite composition (content `elite`): a mini-boss event a Fracture
+## spawns, outside the spawn lists, never scaled by the tier (the bible's tiers row).
+func is_elite(foe_id: String) -> bool:
+	return bool(foes.get(foe_id, {}).get("elite", false))
+
+
+## A foe's menace, the one weight the Rupture meter, Anathema and salvage count a kill at (the
+## foes' fresh start, 30 October): its heaviest implemented blow (damage times strikes, a breach
+## one more: the engine's threat, which already orders the deployment) plus a quarter of its HP,
+## rounded up; an elite's doubled. Read off the content, so no new number is written per foe.
+func menace(foe_id: String) -> int:
+	if _menace.has(foe_id):
+		return int(_menace[foe_id])
+	if not foes.has(foe_id):
+		return 0
+	var f := make_foe(foe_id)
+	var m := f.threat() + int(ceil(float(f.hp_max) / 4.0))
+	if is_elite(foe_id):
+		m *= 2
+	_menace[foe_id] = m
+	return m
+
+
+## A composition's menace: every member's times its strength.
+func composition_menace(c: Dictionary) -> int:
+	var m := 0
+	for e in c.get("members", []):
+		m += menace(str(e[0])) * int(e[1])
+	return m
+
+
+## The units a faction sends through the rift at a tier (1 to 3, the shown number), as
+## [[foe_id, strength], ...]: derived from its compositions since 30 October (the tier's
+## formations' then patrols' members, each foe once, first seen first), for the harness, the
+## runners' cells and a boss's escort; the map places and sends the compositions themselves.
+func spawn_table(faction_id: String, tier: int) -> Array:
+	var out: Array = []
+	var seen := {}
+	for c in compositions(faction_id, tier, "formation") + compositions(faction_id, tier, "patrol"):
+		for m in c["members"]:
+			if not seen.has(m[0]):
+				seen[m[0]] = true
+				out.append([str(m[0]), int(m[1])])
+	return out
 
 
 func faction_of_foe(foe_id: String) -> String:
@@ -1741,6 +1828,10 @@ func _validate_foes(errs: Array[String]) -> void:
 			for key in ["movespeed", "behaviour", "hunts"]:
 				if f.has(key):
 					errs.append("%s: a hero only commands the boss unit, which patrols a hex a turn; drop %s" % [where, key])
+		if f.has("elite") and not (f["elite"] is bool):
+			errs.append("%s: elite is true or false" % where)
+		if bool(f.get("elite", false)) and bool(f.get("hero", false)):
+			errs.append("%s: a hero is a domain's final, never an elite" % where)
 		if f.has("winged") and not (f["winged"] is bool):
 			errs.append("%s: winged is true or false" % where)
 		for key in ["strikes", "breach"]:
@@ -1813,40 +1904,75 @@ func _validate_factions(errs: Array[String]) -> void:
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
 		var where := "faction %s" % id
-		for key in ["name", "spawn"]:
+		for key in ["name", "compositions"]:
 			if not f.has(key):
 				errs.append("%s: missing %s" % [where, key])
 		_validate_design(where, f, errs)
 		for old in ["pattern", "elite", "injury"]:
 			if f.has(old):
-				errs.append("%s: '%s' is gone; use spawn and boss" % [where, old])
+				errs.append("%s: '%s' is gone; use compositions and boss" % [where, old])
+		if f.has("spawn"):
+			errs.append("%s: spawn is gone (30 October); the lists by tier are derived from compositions" % where)
 		# A domain never sets or leans the map's shape (Ryan, 30 October: "That's just less
 		# variety and more subtle balance to tweak"): a battle draws its shape by its seed.
 		if f.has("map_kind"):
 			errs.append("%s: map_kind is gone; a domain names no map shape, a battle's seed draws it" % where)
-		# The spawn lists by tier (28 October): keyed "1" to "3", every domain a "1".
-		var lists = f.get("spawn", {})
-		var spawn: Array = []
-		if not (lists is Dictionary):
-			errs.append("%s: spawn is the lists by tier, keyed \"1\" to \"3\"" % where)
-		else:
-			for key in lists.keys():
-				if not ["1", "2", "3"].has(str(key)) or not (lists[key] is Array):
-					errs.append("%s: spawn's '%s' is no tier's list (\"1\" to \"3\", each a list)" % [where, str(key)])
-				elif (lists[key] as Array).is_empty():
-					errs.append("%s: tier %s's spawn list is empty" % [where, str(key)])
-				else:
-					spawn.append_array(lists[key])
-			if not lists.has("1"):
-				errs.append("%s: spawn needs a tier-one list, \"1\"" % where)
-		for e in spawn:
-			if not (e is Dictionary) or not foes.has(str(e.get("foe", ""))):
-				errs.append("%s: spawn entry names unknown foe %s" % [where, str(e)])
-			elif int(e.get("strength", 0)) < 1:
-				errs.append("%s: spawn entry %s needs a strength of at least 1" % [where, e.get("foe")])
-		for e in spawn:
-			if e is Dictionary and foes.has(str(e.get("foe", ""))) and bool(foes[str(e["foe"])].get("hero", false)):
-				errs.append("%s: hero %s is never in a spawn list; it is dealt from the bench" % [where, e["foe"]])
+		# The compositions (the foes' fresh start, 30 October): each a size, the tiers that may
+		# deal it and its members; a tier-one formation and patrol at least, so every tier fights.
+		var comps = f.get("compositions", [])
+		if not (comps is Array) or (comps as Array).is_empty():
+			errs.append("%s: compositions is a list of {id, size, tiers, members}" % where)
+			comps = []
+		var comp_ids := {}
+		var tier_one := {"formation": false, "patrol": false}
+		for c in comps:
+			if not (c is Dictionary):
+				errs.append("%s: each composition is an object" % where)
+				continue
+			var cw := "%s composition %s" % [where, str(c.get("id", "?"))]
+			for key in ["id", "size", "members"]:
+				if not c.has(key):
+					errs.append("%s: missing %s" % [cw, key])
+			if comp_ids.has(str(c.get("id", ""))):
+				errs.append("%s: its id comes twice" % cw)
+			comp_ids[str(c.get("id", ""))] = true
+			var size := str(c.get("size", ""))
+			if not COMPOSITION_SIZES.has(size):
+				errs.append("%s: size is one of %s, got '%s'" % [cw, ", ".join(COMPOSITION_SIZES), size])
+			var tiers = c.get("tiers", [1])
+			if not (tiers is Array) or (tiers as Array).is_empty():
+				errs.append("%s: tiers is a list of the tiers that may deal it, 1 to 3" % cw)
+			else:
+				for t in tiers:
+					if int(t) < 1 or int(t) > 3:
+						errs.append("%s: tiers are 1 to 3, got %s" % [cw, str(t)])
+			var members = c.get("members", [])
+			if not (members is Array) or (members as Array).is_empty():
+				errs.append("%s: members is a list of {foe, strength}, one at least" % cw)
+				members = []
+			var first := true
+			for m in members:
+				if not (m is Dictionary) or not foes.has(str(m.get("foe", ""))):
+					errs.append("%s: member names unknown foe %s" % [cw, str(m)])
+					first = false
+					continue
+				var fid := str(m["foe"])
+				if int(m.get("strength", 0)) < 1:
+					errs.append("%s: member %s needs a strength of at least 1" % [cw, fid])
+				if bool(foes[fid].get("hero", false)):
+					errs.append("%s: hero %s is never in a composition; it is dealt from the bench" % [cw, fid])
+				# An elite composition is led by its elite; an elite stands in no other (the bible's
+				# tiers row: outside the usual spawn list).
+				if size == "elite" and first and not bool(foes[fid].get("elite", false)):
+					errs.append("%s: an elite composition's first member is its elite, flagged elite; %s is none" % [cw, fid])
+				if size != "elite" and bool(foes[fid].get("elite", false)):
+					errs.append("%s: %s is an elite and stands only in an elite composition" % [cw, fid])
+				first = false
+			if tier_one.has(size) and composition_tiers(c).has(1):
+				tier_one[size] = true
+		for size in ["formation", "patrol"]:
+			if not tier_one[size] and not comps.is_empty():
+				errs.append("%s: needs a tier-one %s, so every tier fights" % [where, size])
 		if f.has("boss"):
 			# One foe id, or a list of them (three a domain once the slate lands), each once.
 			var ids: Array = f["boss"] if f["boss"] is Array else [f["boss"]]
