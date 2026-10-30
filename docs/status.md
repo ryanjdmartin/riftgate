@@ -24,7 +24,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 816 tests, 205,571 checks, green on `claude/jolly-lovelace-scn82y` (30 October, main merged in: the
+- Tests: 818 tests, 205,886 checks, green on `claude/jolly-lovelace-scn82y` (30 October, main merged in: the
   tilesets, the pacing session and the foes' fresh start, on Godot 4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
@@ -184,6 +184,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   not just for debug?"): SETTINGS → AA MODE, off, FXAA, MSAA 2X or MSAA 4X (the default), in
   place of the debug MSAA and AA toggles, the mipmaps on in every mode. The desk's install and
   the Pixel's read are the to-do's.
+  With main in (30 October), the backdrop took the map's palettes: the Peak's lava orange-red,
+  the Marsh's sky a cold night and its pools teal bog water and moss, the lakes the map's water.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -279,7 +281,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   posterize grid (his second read: one ground for all was "very monotone"; his third: the
   Waste's and the Marsh's rough wanted more separation, so olive and moss). Each domain also
   has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava,
-  orange-red since the yellow read as acid, stopping short of the enemy's red) and its own
+  orange-red since the yellow read as acid, short of red, a redder lake his pick since the
+  enemy's marks went violet on 30 October) and its own
   walls (snowy peaks, red buttes, black crags, volcanoes), each range standing out of the top
   of its hex, drawn after every hex's ground (`DomainGround.draw_walls`). A road follows the
   roads beside it, three road hexes round a corner making a loop with a gap in the middle.
@@ -288,15 +291,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   field and `tools/tileset_shot.gd` draws all four. The painted map takes 45 to 120 ms a
   frame to draw on the cloud's CPU, twice at a battle's start; if the phone hitches there, the
   sprites' placement is the part to make cheaper. Next, Ryan's read of them running (the
-  to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its
-  own palette table (`BattleBackdrop.PALETTES`, the same bleed keys) and is to merge main
-  (Ryan, 30 October). Its rewrite of `game/ui/terrain_art.gd` and `game/battle/painted_map.gd`
-  meets this one's: the painted map draws every hex through `DomainGround.draw_hex`, passing
-  each road hex its links, then the walls' ranges in a second pass (`draw_walls`), and keeps
-  both. Its palettes then want to agree with the map's, and the two tables one home: its lava
-  is the yellow-orange Ryan called acid on the map (the map's lake is `#ff6600` under a crust of
-  `#990000` and `#330000`, glinting `#ff9900` and `#ffcc00`), and its Marsh's poison purple
-  `#6a2e8a` sits on the rift's deep violet `#6a30c0`, the reason the map's Marsh carries none.
+  to-do). The skirmish's backdrop keeps its palettes beside the tilesets
+  (`DomainGround.BACKDROPS`, since `claude/jolly-lovelace-scn82y` took main on 30 October), its
+  water each domain's liquid (`DomainGround.LIQUIDS`, which the map's water, its rim and the
+  lava's inks read too), so the Peak's lava is orange-red in the fight as on the map and no
+  domain paints violet, the Marsh's poison purple gone; a test holds both.
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -553,11 +552,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.393 (the page's version 405, as
-  main's file has it: published 30 October from `claude/brave-cori-fr18de`, three-way merged onto
-  the live v0.392, which other sessions moved past with `claude/jolly-lovelace-scn82y`'s rows
-  through its v0.389 at 401: Godot 4.8 and AA MODE, the overlay at one size, the enemy in violet
-  and heat reddened, the HUD's three presets). So this file carries those branches' rows ahead of
+  `docs/design-bible.html` after every change. This file is v0.395 (the page's version 407,
+  published 30 October from `claude/jolly-lovelace-scn82y` with main merged in: the fight's
+  palettes beside the map's and the HUD presets' chrome line, three-way merged onto the live
+  v0.394 at 406, which another session moved past main's v0.393 at 405 with the Armadillo's looks
+  and acts; main's v0.393 carries this branch's rows through its v0.389 at 401). So this file carries those branches' rows ahead of
   their code (the models' glows, looks and acts, the Armadillo's seal on screen, the tracks in
   pairs) and the Strikes row in the keyword table, and the tables script, which writes the tables
   from main's content, waits until they land or it reverts that row. The

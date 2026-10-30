@@ -1,95 +1,21 @@
 class_name BattleBackdrop
 extends RefCounted
 
-## The other world as a JRPG battle screen's backdrop, the far part of the skirmish's field
-## (29 October; Ryan found the bare overworld tiles "amateurish, distracting, and
+## The other world as a JRPG battle screen's backdrop, the far part of the skirmish's field (29
+## October; Ryan found the bare overworld tiles "amateurish, distracting, and
 ## immersion-breaking"): a sky, the far land on the horizon and a floor in perspective, the
 ## floor's bands laid by the field's camera, in the domain's palette (keyed by its `bleed` in
-## content) and dressed by the contact hex's ground, painted once into an image at the foes'
-## own pixel grid so they stand on it in the pixels they are drawn in. Nothing in it is outlined and its values sit in a
-## narrow range: the sprites carry the outlines and the contrast. Deterministic per seed;
-## every colour and size a placeholder, judged on the phone.
+## content, DomainGround.BACKDROPS beside the map's tileset) and dressed by the contact hex's
+## ground, painted once into an image at the foes' own pixel grid so they stand on it in the
+## pixels they are drawn in. Nothing in it is outlined and its values sit in a narrow range: the
+## sprites carry the outlines and the contrast. Deterministic per seed; every colour and size a
+## placeholder, judged on the phone.
 
 const BAYER := [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
 
-## One palette a domain's bleed. sky: top to horizon; floor: far, middle, near; the rest
-## dark to light unless named.
-const PALETTES := {
-	"plains": {
-		"sky": ["2b5ec9", "3f78dc", "5c95e8", "86b6f2", "b8d8fa"],
-		"cloud": ["fbfdff", "dce8f6", "a9bfdc"],
-		"far": ["7ea6c6", "98bcd8"],
-		"hill": ["4f8f58", "64a35e", "3d7549"],
-		"floor": ["8ec466", "6aa84c", "4f8c3c"],
-		"stripe": 0.05,
-		"tuft": ["3e7834", "86c25a"],
-		"speck": ["f4f4ee", "f2d850", "f28ca0"],
-		"tree": ["21562d", "2f7036", "47903f", "6cb352"],
-		"trunk": "5c3c24",
-		"rock": ["5e5650", "857a70", "aea294"],
-		"snow": ["bccde6", "eef4fc"],
-		"stone": ["6c6c66", "94948a", "bcbcb0"],
-		"roof": ["7e2a22", "b04234"],
-		"water": ["2a58bc", "3f78dc", "86b6f2", "e2f0ff"],
-		"road": ["9c8052", "bea26c", "d6bc86"],
-	},
-	"sand": {
-		"sky": ["4472c0", "5c8acc", "84a8d4", "b6c6d0", "e4d8b4"],
-		"cloud": ["fff8e8", "eadcc0", "cfbf9e"],
-		"far": ["c8a07e", "dcb894"],
-		"hill": ["d8a860", "eac27a", "b8884a"],
-		"floor": ["e8c47a", "dcb062", "c89a4e"],
-		"stripe": 0.045,
-		"tuft": ["b0843e", "f0d290"],
-		"speck": ["f6f2e6", "8c6a3a", "f6f2e6"],
-		"tree": ["2a6a40", "3a8248", "54a058", "78bc6c"],
-		"trunk": "6e5032",
-		"rock": ["8c4c2c", "b46a3e", "d8925a"],
-		"snow": ["e8c8a0", "f6e2c2"],
-		"stone": ["a07a52", "c8a074", "e6c898"],
-		"roof": ["8c4c2c", "b46a3e"],
-		"water": ["1e6a9c", "2e8cbc", "7cc4e0", "e6f6ff"],
-		"road": ["b48a52", "c89e62", "dab478"],
-	},
-	"marsh": {
-		"sky": ["1d1a34", "2c2848", "433e5c", "5e6070", "7a8478"],
-		"cloud": ["d8dcc8", "a8b0a0", "7c8478"],
-		"far": ["4a4e58", "5c6068"],
-		"hill": ["3a4038", "4c5446", "2e342e"],
-		"floor": ["687458", "55603f", "434d32"],
-		"stripe": 0.05,
-		"tuft": ["38422a", "7a8a56"],
-		"speck": ["9a62b8", "c8d0b8", "6e7e4a"],
-		"tree": ["24262a", "33363a", "484c50", "62686a"],
-		"trunk": "2a2a2e",
-		"rock": ["34363a", "4a4c52", "686a70"],
-		"snow": ["8a90a0", "aab0bc"],
-		"stone": ["56585e", "76787e", "9a9ca0"],
-		"roof": ["3a3240", "54485a"],
-		"water": ["2e3a36", "3e4e46", "6e8a78", "b4c8b0"],
-		"road": ["4a4030", "5e5238", "766846"],
-		"poison": ["6a2e8a", "9a52c0"],
-	},
-	"lava": {
-		"sky": ["160c10", "2c1416", "4a1c18", "7a2c1a", "b0481e"],
-		"cloud": ["e2763a", "4a2c2a", "2a1a1c"],
-		"far": ["3c2a2a", "5a3a32"],
-		"hill": ["2a2024", "3a2c2e", "1e181a"],
-		"floor": ["5a3e34", "443028", "32241e"],
-		"stripe": 0.06,
-		"tuft": ["241a18", "6e4a3a"],
-		"speck": ["ff9a2a", "ffd060", "8a3a1a"],
-		"tree": ["1c1618", "2a2224", "3e3234", "5a4442"],
-		"trunk": "2a2022",
-		"rock": ["1e1819", "2e2627", "4a3a38"],
-		"snow": ["6a4a42", "8a6052"],
-		"stone": ["2e2a2e", "45403f", "62585a"],
-		"roof": ["2a2022", "3e3234"],
-		"water": ["a8300c", "e8601a", "ffaa30", "fff0a0"],
-		"road": ["4e4240", "62544e", "786a62"],
-		"glow": ["8a2a10", "e8601a", "ffb040", "fff0b0"],
-	},
-}
+## One palette a domain's bleed, kept beside its map tileset (DomainGround.BACKDROPS) so a
+## domain's colours change in one place and the fight's water is the map's liquid.
+const PALETTES := DomainGround.BACKDROPS
 
 
 ## The backdrop for one fight: `size` in art pixels, `horizon` the row the floor starts on.
@@ -550,7 +476,7 @@ class Painter:
 		var light := c("water", 2)
 		var glint := c("water", 3)
 		if biome == "lava":
-			body = c("water", 0).darkened(0.62)
+			body = c("crust", 0)   # the lava crusted over: the map's crust, its cracks alight below
 		for x in range(w):
 			var edge := int(roundf(shore + n.get_noise_1d(float(x)) * 8.0 * s))
 			for y in range(hz, edge):
@@ -583,7 +509,7 @@ class Painter:
 				var y := rng.randf_range(float(hz) + 3.0, shore - 3.0)
 				var x := rng.randf_range(0.0, float(w))
 				var r := (3.0 + (y - float(hz)) * 0.3) * s
-				disc(x, y, r, r * 0.22, c("poison", 0))
+				disc(x, y, r, r * 0.22, c("bog", 0))   # moss on the bog water
 			for k in range(5):
 				var y := rng.randf_range(float(hz) + 2.0, shore)
 				dead_tree(Vector2(rng.randf_range(0.0, float(w)), y), (8.0 + (y - float(hz)) * 0.5) * s, c("tree", 1), 1)
@@ -867,8 +793,8 @@ class Painter:
 						hspan(int(x - r * 0.4), int(x + r * 0.2), int(y), c("water", 2))
 					else:
 						var r := (2.0 + t * 10.0) * s
-						disc(x, y, r, r * 0.25, c("poison", 0))
-						hspan(int(x - r * 0.4), int(x + r * 0.1), int(y), c("poison", 1))
+						disc(x, y, r, r * 0.25, c("bog", 0))
+						hspan(int(x - r * 0.4), int(x + r * 0.1), int(y), c("bog", 1))
 				"lava":
 					if rng.randf() < 0.85:
 						pebble(x, y, size_px)

@@ -3823,3 +3823,15 @@ at a won battle and is the economy pass's number (section 10); components destro
 0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
 reads of the fights' shape stay the quick campaign's until a runner player fields a squad
 (section 12).
+
+## 30 October, the fight's backdrops on the map's palettes
+
+**The backdrop read** (the decision it informs: the bible's skirmish field row, the fight's
+palettes kept beside the map's tilesets with the map's liquid). Method: as the reads above.
+The Marsh's old backdrop against the rift's violets, the worst simulation: its poison purple
+#6a2e8a 7 from the deep #6a30c0, its purple specks 11, its indigo sky (#1d1a34, #2c2848) and
+violet-grey roofs (#3a3240) 6 to 9 from the violet edge #2a0e4a; all gone, the sky a cold teal
+night, the pools the bog's water and moss. The enemy's violet drawn bare over each lake's new
+body (luminance contrast / ΔE, the worst simulation, the old lake in brackets): the plains'
+#3366ff 1.88 / 17 (#3f78dc 1.83 / 16), the Waste's #339999 1.51 / 19 (#2e8cbc 1.64 / 13), the
+Marsh's #003333 6.40 / 56 (#3e4e46 4.18 / 46), the Peak's crust #330000 8.67 / 62 (7.61 / 60).
