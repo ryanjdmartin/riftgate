@@ -448,8 +448,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.376 (the page's version 388,
-  published 30 October from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
+  `docs/design-bible.html` after every change. This file is v0.381 (the page's version 393,
+  published 30 October from main with `ccr-c04908be-3r43xf` merged: the pricing pass's
+  effectiveness and pricing rows, the heat triangle, the maker leans, Chain's row and the rows
+  Shock's reading touched, three-way merged onto the live v0.380, which other sessions moved
+  past main's v0.376 with the foes' fresh start built with the pacing session (the packs as
+  compositions, the tier locked and the ramp, the tears, the stall's prices, the whole wall
+  struck, the elites at the Fractures, the seal), the music's rounds and the phone's line
+  widths; on v0.376 at 388, from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
   tilesets' second build, three-way merged onto the live v0.374 that `claude/charming-rubin-h954bp` published with its flush radiators,
   which carries `claude/jolly-lovelace-scn82y`'s v0.373, the map's lines one width at every zoom;
   on v0.372 at 384, the first build onto that branch's v0.371, the colour rows' pure red on
@@ -459,7 +465,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   skirmish never reads our own ground). So this file carries
   those branches' rows ahead of their code (the models' glows, looks and acts, the Armadillo's
   seal on screen, the skirmish's field, the reds, the tracks in pairs, the map's FXAA and its
-  lines at every zoom) and the Strikes row in
+  lines at every zoom, the fresh start's and the pacing's rows) and the Strikes row in
   the keyword table, and the tables script,
   which writes the tables from main's content, waits until they land or it reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.
@@ -468,12 +474,6 @@ into this file in the same commit as its first publish; the procedures are in `R
   first line and its trailing `</body></html>` stripped from the saved live source). With
   every branch landed, the file holds no rows ahead of code, and the tables script may run
   freely again.
-  Not yet published from `ccr-c04908be-3r43xf` (30 October): its rows of 27 to 29 October (the
-  pricing pass's effectiveness and pricing rows, the heat triangle, the maker leans, Chain's row
-  and the rows Shock's reading touched, section 12's heat and Chain items) are on no live page.
-  The live page had moved to v0.373 past main's v0.372 (four lines: the version, the phone's
-  line widths and its owed reads, a sound question), and the three-way merge onto it is clean;
-  the next publish from this branch reads the live page whole, merges and publishes v0.374.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
