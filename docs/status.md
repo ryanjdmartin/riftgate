@@ -357,14 +357,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.368 (the
-  page's version 380, published 30 October from `claude/charming-rubin-h954bp` onto its own v0.367
-  at 379, itself three-way merged onto the live v0.366 that `claude/jolly-lovelace-scn82y` published overnight at 378, itself
+  `docs/design-bible.html` after every change. This file and the live page are v0.369 (the
+  page's version 381, published 30 October from `claude/charming-rubin-h954bp` onto its own v0.368
+  and v0.367 at 380 and 379, the last itself three-way merged onto the live v0.366 that `claude/jolly-lovelace-scn82y` published overnight at 378, itself
   onto this branch's v0.362 at 374; that branch's rows came in the same way before (the enemy's
   red pure #ff0000 on trial, heat's orange #ff6000, reds and oranges in red and green alone),
   with main's v0.352 (the map survey) and `ccr-7effd31a-u5z4gw`'s sound rows, so this file
   carries those rows ahead of their code; with this branch's notes of 29 and 30 October on the
-  rebuilds, the Armadillo's radiators standing out high on its back panel, its sliding side
+  rebuilds, the Armadillo's radiators high on its back panel (a height on trial), its sliding side
   vents, their glow (#ff7800) and its one-sink vent, and the desk on the phone's renderer). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
@@ -381,10 +381,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 156 (30 October, from
-  `claude/charming-rubin-h954bp`, onto its own 155, itself onto 154, which other sessions published overnight with this
+  acts on a reloaded page). At the page's version 157 (30 October, from
+  `claude/charming-rubin-h954bp`, onto its own 156 and 155, those onto 154, which other sessions published overnight with this
   branch's page, manifest and `motion.js` as at its 152: Ryan's notes of 29 and 30 October on
-  the rebuilds, the last bringing the Armadillo's radiators closer together and a little less out,
+  the rebuilds, the last bringing the Armadillo's radiators four higher on trial, clipping out,
   with its renders, the old ones to before; every other file as the live page had it, `edits`
   empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
