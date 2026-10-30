@@ -823,7 +823,7 @@ func _refresh(save: bool = true) -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
 	_update_preview()
 	_update_round()
-	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), str(BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")).to_upper()]
+	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), ContentDB.load_default().term_name(sk.ground).to_upper()]
 	_header.queue_redraw()
 	if _reserve != null:
 		_reserve.set_counts(sk.reserve_counts())
@@ -1319,7 +1319,7 @@ func _foe_rows(foe: Foe) -> Array:
 		var at := sk.paradox_count()
 		rows.append(["paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox: %d%s; at the count its past self knocks it out (Suppressed), and the Paradox clears" % [paradox, " of %d" % at if at > 0 else ""], Palette.SHIELD])
 	if Effects.has(foe, "shocked"):
-		rows.append(["shocked", "×2", "Shocked: the next blow it takes lands double", Palette.HEAT])
+		rows.append(["shocked", "×2", "Shocked: the next weapon strike aimed at it lands double", Palette.HEAT])
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
 		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a buff or a debuff (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time, 10%% a stack, a stack less each of its turns (%d to go)" % [foe.resist_total(), numbed], Palette.SHIELD, "resist"])

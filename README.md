@@ -15,7 +15,11 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `unit.gd` mechs, packs, city defenses on the battlefield
   - `battlefield.gd` the turn's rules: every pack's walk on the enemy's turn (a pusher to the
     gate, a hunter to its prey, round the machines), the fights hunters force, who joins a
-    fight by ring and who can be committed by attack range, gate strikes, Rift Pressure
+    fight by ring and who can be committed by attack range, the wall struck from anywhere
+    along it, Rift Pressure's peaks (the rift's cycle, the tears and the seam)
+  - `ramp.gd` the ramp, one table of placeholders by the Convergence: the compositions on the
+    field at the start and their density, the timer, the tears a peak and the seam's creep,
+    and by the tier the Fractures and which of them bring an elite
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
@@ -36,16 +40,18 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     `user://profile.json`
   - `battle.gd` one battle end to end: the player's turn (moves at once, one fight at a time,
     a fight spends a machine's action, the Dingo's first of two, a hunter's catch first), the enemy's turn, until the gate
-    falls, the team is wrecked, or the boss dies
+    falls, the team is wrecked, or the boss dies; the Rupture meter's tally by menace, its
+    Fractures, the elites at them, the boss's seal and the stall guard
   - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
-    and its shop, salvage, the between-battle rules, the turn's bleed and drain, the finale
+    and its shop, salvage by menace and Anathema, the between-battle rules, the turn's bleed
+    and drain, the rift's tier locked as it opens and the ramp, the finale
   - `quick_run.gd` the quick campaign: battles without the map, each its fights back to back
     against one domain's formations and elites, then its boss (or from tier two its final),
     the tier's escort beside it; the loot, the token and a maker's offer when the boss falls;
     the hangar's verbs between battles
   - `profile.gd` what outlives a run: the pool, the codex, the tier, the favour piece
   - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
-    `policy.gd`), for the campaign runner
+    `policy.gd`; the turtle and the detaching personas), for the campaign runner
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
   `foes.json`, `chassis.json`, `components.json`, `modules.json`. Placeholder numbers. `reserved_names.json` is
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
@@ -54,7 +60,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `harness.tscn` is the main scene, three tabs over launch buttons that stay put: TEAM
     (who deploys, in the order ticked, and each machine's hardpoints, any component on any
     hardpoint), ENEMY (the packs, the boss and a guest faction, loaded from a faction and
-    edited from there) and SETUP (seed, map type, HUD colour). Battle plays the whole loop
+    edited from there) and SETUP (seed, map shape or the one the seed draws, HUD colour). Battle plays the whole loop
     with the packs as its formation and its rift's cycle; Fight chains them all with the
     boss into one skirmish; Resume battle below, while a save exists;
     Quick campaign starts one on SETUP's seed, and Resume quick campaign picks a saved one up.
@@ -89,10 +95,17 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   row with its damage carried, for the quick campaign (`chain_probe_read.py` reads its parts);
   `quick_run.gd` plays whole quick campaigns and writes `docs/quick_run.md`; `endgame_fours.py`
   fits the five
-  endgame fours up to tier two and runs them through the loop driver; `turn_loop.py` models the
+  endgame fours up to tier two and runs them through the loop driver; `pricing_run.py` is the
+  pricing run's driver (every stocked piece by knock-out, every slottable component and every
+  module through the same hardpoint of five benches on the team rows, the guns' heat by steps,
+  and the vanilla ladder, a flat heatless gun at every number and across the heat classes, so
+  every piece reads in vanilla points; each variant a balance-runner process with `--set` or
+  `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
+  status and resource, from content, and writes `docs/synergy_map.md`; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `screenshot.gd` renders a
-  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
+  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
+  domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
   draws the Badger's) in the
@@ -134,8 +147,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   were folded into them and retired on 15 October), the economy pass's brief
   (`economy_pass.md`), the bosses' slate
   (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
-  curve and the fronts (`curve_proposal.md`) and the mechanics audit of 25 October
-  (`mechanics_audit.md`), each retired once its decisions are rows and content; `sprites-enemies.html`,
+  mechanics audit of 25 October (`mechanics_audit.md`) and the pricing run with the roster's
+  synergy holes (`pricing_proposal.md`, 27 and 28 October, its decisions the bible's pricing row), each retired once its decisions are rows and content;
+  `synergy_map.md`, who sets and who reads every status and resource, generated from content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
 
@@ -159,7 +173,11 @@ export templates and debug keystore in `editor_data` there; Python 3.13, since W
 the tools open text without naming an encoding and Windows would read it as cp1252. Python
 writes CRLF there; `core.autocrlf=input` folds it back to LF on commit. perl's `alarm` kills
 the engine as it does on the Mac. The tests take about a minute. The first import rewrites
-the Prairie Dog's four textures, as in a cloud session: restore them. foeforge's `generate` and
+the Prairie Dog's four textures, as in a cloud session: restore them. A cloud session sets
+none of this up by hand: the repository's session-start hook (`.claude/hooks/session-start.sh`,
+registered in `.claude/settings.json`; 27 October) fetches Godot 4.7.2's Linux build into
+`~/bin`, puts it on the path and runs the first import with the textures restored, before the
+session's first command, once in a container. foeforge's `generate` and
 `fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card). The Claude
 desktop app is a packaged Windows app: what its sessions write under `AppData` lands in a
 private copy only Claude's own processes see (`AppData\Local\Programs` excepted), which is why
@@ -197,6 +215,8 @@ python3 tools/pages/bible_tables.py
 # and by greedy over 200 seeds a cell, written to docs/balance.md (several hours on one core,
 # about two in four parts, below); the team cells run under both targeting
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
+# --cool-above 50 (the cautious persona: each machine keeps its heat under half its maximum,
+# venting early and holding a hot spend above the line; the pricing driver passes it on too),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
@@ -224,11 +244,11 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # the map survey: 200 generated maps at the game's 9x20, measuring each ground's share, the
 # water (bodies, which feature), the horde's narrowest crossing and what the guarantee opened,
 # the phases each way of moving takes to the rift at move 3 and its reach after two phases,
-# the relief (the steps, the lone hexes, a ring's jogs), then every map type compared; written
-# to docs/map_survey.md (about six minutes). --type KIND
-# (mixed, steppe, rubble, badlands, flooded: BattleMap.KINDS) for the detailed report, --seeds N,
+# the relief (the steps, the lone hexes, a ring's jogs), then every map shape compared on as
+# many seeds; written to docs/map_survey.md (about fifteen minutes). --type KIND
+# (steppe, the baseline, or river, fjord, badlands, city, gorge: BattleMap.KINDS) for the detailed report, --seeds N,
 # --move M, --w/--h for another size; --show SEED prints one map as text.
-perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
+perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 
 # the campaign runner: whole runs played headless by a plain player (it defends the front
 # nearest to falling, hunts the nearest enemy on the map, fights at the greedy rung), measuring
@@ -239,7 +259,12 @@ perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd
 # --solo walks each machine toward its own nearest enemy, the rule before 26 October, for
 # comparison. --withdraw N puts the fight bot's withdrawing persona on every fight the player
 # picks (withdraw under N percent of the fighters' hull; a hunter's catch is fought out), and the
-# report then counts the fights withdrawn from
+# report then counts the fights withdrawn from. --turtle holds the squad on the two rows before
+# the gate at its columns, fighting only what comes within reach (the stall's read, 30 October);
+# --detach sends one machine at the nearest patrol within five hexes while the body fights the
+# nearest formation (a detachment's price). The report reads the Rupture meter and the mouths
+# (Fractures, the Rupture and the stall guard, peaks, what the rift and the tears sent, elites,
+# menace killed, gate damage) and the fights by what they held (patrols, formations, elites, the boss)
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40 --withdraw 50 --out /tmp/campaign_w50.md
 
@@ -271,6 +296,24 @@ python3 tools/stock_loop.py compare base blows
 # every hardpoint and module slot filled up to tier two, checked against the content and run through the loop driver
 # (random and greedy at 30 seeds, no campaign unless --campaign; stock_loop run options pass through)
 python3 tools/endgame_fours.py endgame30
+# the pricing run (27 October; the bible's pricing row of 28 October): every stocked piece knocked out of its team row, every slottable
+# component and every module through the same hardpoint of six benches (BENCHES in the script) on the team rows, and
+# every attack a heat class up, each variant one balance-runner process (--set and --fit in memory, content never written)
+# against the sixteen big fights but the finale, greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
+# as built, about two and a half hours on four cores), `run` is resumable (a variant with its JSON is skipped), `summarise`
+# writes build/pricing/<name>/summary.md from whatever has run. --parts knockouts,ladders,modules,heat, --benches, --tiers,
+# --packs all, tiers, tier2 or tier3 (the ladder's formations by tier), --policies random,greedy, --knock basic (the basic of
+# the piece's kind in place of an empty hardpoint),
+# --pieces and --modules to narrow the ladders, --numbers and --shapes the vanilla ladder, --bench-stocks for the benches'
+# rows' baselines alone (a narrow read at 200 seeds), --set path=json on every variant (a module's line, a rule's what-if)
+python3 tools/pricing_run.py plan
+python3 tools/pricing_run.py run prices
+python3 tools/pricing_run.py summarise prices
+# the vanilla ladder (28 October): a flat heatless gun of each shape at 2 to 10 and at 3, 5 and 7 across heat 0 to 8 on the
+# cold bench and the hot one, the pieces named read in vanilla points beside it; about 45 minutes on four cores
+python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,goshawk --pieces flak_cannon,stoker
+# the synergy map: who sets and who reads every status and resource, from content (--write rewrites docs/synergy_map.md)
+python3 tools/synergy_map.py --write
 # the turn loop's pressure (24 October): the campaign's turn loop modelled from sim/campaign.gd's constants, every
 # battle won, each rift keeping the tier it opened at; per way of choosing the front, the cities fallen, the fronts
 # on the board, the turns offering two tiers and the rescues on a low gate. --widen N tries a rift that steps a tier
@@ -303,7 +346,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the button under the eye opens it), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
-# RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
+# RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
+# and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
 # Battle: select (a machine in hand: its move and its red band), route (two moves planned),
 # plan_play (those played on END TURN; RIFTGATE_SHOT_FRAME), inspect (a pack tapped: its ring
 # lit, the others' dashed), draft (a route drawn by hand, about halfway through the move),
@@ -326,6 +370,10 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # vents blast would fire at with its die's vent wears the turning dashed ring and the number.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_BLEED_DEBUG=1 (any run) gives the whole field to the painted world, to judge a domain's
+# tileset in place (RIFTGATE_FACTION=meadow|waste|marsh|peak picks the domain on the standalone
+# screen); `xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd
+# -- tilesets.png [frame]` draws all four side by side.
 # RIFTGATE_POOL_DEBUG=1 (any skirmish) flies a foe on the field into the pool's count every couple
 # of seconds, to judge the join running.
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on

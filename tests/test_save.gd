@@ -126,14 +126,22 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 	assert_eq(back.lineup, b.lineup, "the rift's commanders")
 	assert_eq(back.escort, b.escort, "and its escort")
 	var profiles: Dictionary = b.db.pack_profiles()
-	for i in range(back.field.spawn_table.size()):
+	assert_eq(back.field.cycle.size(), b.field.cycle.size(), "the cycle rides in the save")
+	assert_eq(back.field.patrol_cycle.size(), b.field.patrol_cycle.size(), "and the tears' cycle")
+	for i in range(back.field.cycle.size()):
+		var before := back.field.packs().size()
 		assert_true(back.field.tick_pressure(back.field.rift_pressure_max), "the rift spawns")
-		var spawned: Unit = back.field.units[back.field.units.size() - 1]
+		var spawned: Unit = back.field.packs()[before]
 		var p: Dictionary = profiles.get(spawned.foe_id, {})
 		assert_false(p.is_empty(), "a content foe: %s" % spawned.foe_id)
-		assert_eq(spawned.zone, int(p.get("zone", 1)), "%s: its ring" % spawned.foe_id)
-		assert_eq(spawned.movespeed, int(p.get("movespeed", Unit.PACK_MOVE)), "%s: its move" % spawned.foe_id)
-		assert_eq(spawned.behaviour, str(p.get("behaviour", "push")), "%s: its walk" % spawned.foe_id)
+		var ring := 1
+		var pace := 99
+		for m in spawned.member_list():
+			ring = maxi(ring, int(profiles.get(str(m[0]), {}).get("zone", 1)))
+			pace = mini(pace, int(profiles.get(str(m[0]), {}).get("movespeed", Unit.PACK_MOVE)))
+		assert_eq(spawned.zone, ring, "%s: its ring, the largest of its members'" % spawned.foe_id)
+		assert_eq(spawned.movespeed, pace, "%s: its move, the slowest" % spawned.foe_id)
+		assert_eq(spawned.behaviour, str(p.get("behaviour", "push")), "%s: its walk, its lead's" % spawned.foe_id)
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = null
 	for p in b.field.packs():
@@ -234,6 +242,29 @@ func test_a_foe_keeps_its_role_and_its_death_through_the_trip() -> void:
 	old.erase("boss")
 	old["size"] = 2
 	assert_true(SaveGame._foe_from(old, sk).boss, "a save from before 15 October marks its massive foe the boss, as it played")
+
+
+## A composition's members ride in the save (30 October), and a fight's tallies by type with
+## them, so a resumed battle keeps its packs by member and its kills at their menace.
+func test_a_compositions_members_survive_the_trip() -> void:
+	var b := _battle()
+	var host: Unit = b.field.packs()[0]
+	host.set_members([["revenant", 2], ["ghost", 1]])
+	var d: Dictionary = JSON.parse_string(JSON.stringify(SaveGame.to_dict(b)))
+	var back := SaveGame.from_dict(d)
+	var again := back.field.unit_by_id(host.id)
+	assert_eq(again.members, [["revenant", 2], ["ghost", 1]], "the members as they were")
+	assert_eq(again.foe_id, "revenant", "the lead's type")
+	assert_eq(again.strength, 3, "and the count")
+	var sk := Skirmish.new(3)
+	sk.add_mech(b.mechs()[0])
+	sk.add_foes(b.db.foes_for(host), host)
+	sk.joined_fallen_types[host.id] = {"gel_half": 2}
+	var sd: Dictionary = JSON.parse_string(JSON.stringify(SaveGame._skirmish_dict(sk, b.field)))
+	var sk2 := SaveGame._skirmish_from(sd, b.field)
+	assert_eq(sk2.came_with.get(host.id, {}), {"revenant": 2, "ghost": 1}, "what the pack came with")
+	assert_eq(sk2.joined_fallen_types.get(host.id, {}), {"gel_half": 2}, "and the joined fallen by type")
+	assert_eq(sk2.kills_by_type(host), sk.kills_by_type(host), "the kills by type read alike")
 
 
 func test_damage_and_statuses_survive_the_trip() -> void:

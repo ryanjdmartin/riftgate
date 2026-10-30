@@ -454,6 +454,9 @@ func _draw() -> void:
 		for sq in field.packs():
 			var ring: Dictionary = {}
 			_zone_hexes(sq, sq.pos, ring)
+			if sq.sealed:
+				_ring_outline(ring, Color(Palette.MUTED, 0.5), 2.0, true)   # a sealed boss's ring is inert: drawn faint, dashed, in no colour of the enemy's
+				continue
 			if lit.has(sq):
 				for h in ring.keys():
 					_fill(h, Color(Palette.ENEMY, 0.5))
@@ -478,8 +481,9 @@ func _draw() -> void:
 				Hud.stroke_poly(self, Hex.corners(center(rd[3]), HEX_SIZE - 6.0), Color(hud, 0.8), 2.5)
 
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
-	# stand now, and every hunter's lock on its prey; nothing while a move plays or a fight is
-	# entered. A fight a hunter forced comes first, so its marks have the map until it is fought.
+	# stand now, and every hunter's tag on what it comes for (its prey, or the machine it takes
+	# when its prey is sealed off); nothing while a move plays or a fight is entered. A fight a
+	# hunter forced comes first, so its marks have the map until it is fought.
 	var hunted := {}   # prey -> the packs hunting it, for the tags drawn over the units
 	if _anim.is_empty() and fight_group.is_empty() and forced.is_empty():
 		for sq in field.packs():
@@ -646,7 +650,9 @@ func _draw() -> void:
 	if _map3d != null and frame_alpha > 0.0:
 		_draw_frame(hud)
 	_draw_gate_bar()
+	_draw_rupture_bar()
 	_draw_rift_bar()
+	_draw_tears()
 	_draw_tags()
 	if _map3d != null:
 		_map3d.set_marks(_ground_marks)
@@ -724,6 +730,9 @@ func _hud_bar(map_pos: Vector2, map_w: float, frac: float, col: Color, label: St
 ## The gate's integrity as a true bar (Ryan, 22 September), on the wall's face under the
 ## gate, always; brighter while the gate is selected.
 var gate_selected := false
+## The Rupture meter as the screen reads it off the battle (30 October): {"tally", "thresholds",
+## "fractures", "sealed"}; empty for a battle without one (the harness with no boss).
+var meter: Dictionary = {}
 var inspected := Vector2i(-9999, -9999)   # the hex a tap asked about (a pack, the ground): lit while its readout is up
 
 func _draw_gate_bar() -> void:
@@ -734,6 +743,40 @@ func _draw_gate_bar() -> void:
 	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, col, "GATE %d/%d" % [field.gate_hp, field.gate_hp_max], 1.0 if gate_selected else 0.8)
 	if gate_selected:
 		Hud.brackets(self, rect.grow(10.0), 8.0, col, 2.0)
+
+
+## The Rupture meter (30 October): a bar under the gate's toward the Rupture, a notch at each
+## Fracture, in the rift's own light; it reads SEALED until the Rupture and THE RUPTURE after.
+## A first cut, to be judged running on the phone.
+func _draw_rupture_bar() -> void:
+	if meter.is_empty() or (meter.get("thresholds", []) as Array).is_empty():
+		return
+	var thresholds: Array = meter["thresholds"]
+	var last := maxi(1, int(thresholds[thresholds.size() - 1]))
+	var map := field.map
+	var at := _origin + Hex.to_pixel(map.gate, HEX_SIZE) + Vector2(0, -HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5) + 26.0 + 22.0)
+	var frac := clampf(float(int(meter.get("tally", 0))) / float(last), 0.0, 1.0)
+	var sealed := bool(meter.get("sealed", true))
+	var label := ("RUPTURE %d/%d" % [int(meter.get("fractures", 0)), thresholds.size()]) if sealed else "THE RUPTURE"
+	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, RIFT_ART, label, 0.9)
+	for t in thresholds:
+		var x := rect.position.x + rect.size.x * clampf(float(int(t)) / float(last), 0.0, 1.0)
+		draw_line(Vector2(x, rect.position.y - 2.0), Vector2(x, rect.end.y + 2.0), Color(RIFT_ART, 0.9), 2.0)
+
+
+## The tears (30 October): each a small vortex ring in the rift's own light on the seam's
+## ground, with its name, so where the next flood comes from is known an interval ahead. A
+## first cut, to be judged running on the phone with the seam's creep.
+func _draw_tears() -> void:
+	for t in field.tears:
+		var c := center(t["pos"])
+		var r := HEX_SIZE * 0.55
+		draw_arc(c, r, 0.0, TAU, 24, Color(RIFT_ART, 0.9), 3.0)
+		draw_arc(c, r * 0.6, 0.0, TAU, 18, Color(RIFT_ART, 0.6), 2.0)
+		for k in range(6):
+			var a := float(k) * TAU / 6.0 + fmod(_ring_t, TAU)
+			draw_line(c + Vector2(cos(a), sin(a)) * r * 0.6, c + Vector2(cos(a + 0.5), sin(a + 0.5)) * r, Color(RIFT_ART, 0.8), 2.0)
+		_plaque(c + Vector2(0.0, -r - 12.0), "TEAR", RIFT_ART, 1.5)
 
 
 ## The rift's pressure as a bar toward the next spawn (Ryan, 22 September), above the rift
@@ -1368,8 +1411,7 @@ func contact_label(group: Array, ends: Dictionary = {}) -> String:
 			if u.is_enemy():
 				ground_h = ends[u.id]
 				break
-	var t: int = field.map.terrain.get(ground_h, BattleMap.Terrain.PLAIN)
-	return "%s // %s" % [contact_text(group), str(BattleMap.TERRAIN_NAMES.get(t, "plain")).to_upper()]
+	return "%s // %s" % [contact_text(group), ContentDB.load_default().term_name(field.map.ground_id(ground_h)).to_upper()]
 
 
 ## The frame's left and right lines in map pixels: the field plus a little, and the line

@@ -1243,7 +1243,7 @@ city standing, possible in a run of limited battles?). `tools/turn_loop.py`: the
 `sim/campaign.gd` modelled from its constants (four cities, gate 200, bleed 50, rifts open to 2
 plus the Convergence's tier, a won city quiet a turn, the finale at 12), with every battle won
 and no pusher let through, so whatever falls, the schedule felled. Each rift keeps the tier it
-opened at (Ryan's locked tier, `docs/curve_proposal.md`). 2,000 seeds. A model of the
+opened at (Ryan's locked tier, `git show 85e28fd:docs/curve_proposal.md`). 2,000 seeds. A model of the
 arithmetic, not a run of the game.
 
 | Front chosen | Cities fallen a run | Fronts on the board, by tier | Two tiers on the board | Most gate lost when fought | Rescues on a gate of 50 |
@@ -1276,7 +1276,7 @@ Read: at the third bleed the widening touches only the fronts a rotation never l
 and it pays the chase: the always-chaser keeps its cities because a widened front becomes the
 richest on the board, a tier of loot for the neglect (Ryan, 24 October: "more like a reward for
 ignoring it"); at the second bleed it meets the rotation too, a tier up on half the run's
-battles. Dropped (`docs/curve_proposal.md`).
+battles. Dropped (`git show 85e28fd:docs/curve_proposal.md`).
 
 ## 24 October, the foes' heat doubled
 
@@ -1563,7 +1563,7 @@ before). None of 40 reached the finale, as before.
 
 ## 26 October, the fight-size spectrum as it stands
 
-**The sizes the fresh start's proposal sizes its compositions against** (`docs/foes_proposal.md`;
+**The sizes the fresh start's proposal sizes its compositions against** (`git show 85e28fd:docs/foes_proposal.md`;
 the four-machines row's targets, section 4: a small pack one or two machines take for about a
 tenth of their hull, a formation the body's). `tools/balance.gd` with its new `--pack` cells
 (one foe type times a strength, or several together in one fight) on the merged code (`49211ca`,
@@ -1611,7 +1611,7 @@ Meadow formation (the trio 90 / 100 at 12% before, 100 / 100 at 4% now; the lone
 
 ## 26 October, the campaign bot moving as one, and the persona
 
-**The runner work the fresh start's session built without waiting** (`docs/foes_proposal.md`,
+**The runner work the fresh start's session built without waiting** (`git show 85e28fd:docs/foes_proposal.md`,
 its last section): the campaign bot's squad moving as one (every machine toward the pack nearest
 the squad, every machine in range fighting it, a caught machine's allies walking into range of
 the hunters before the catch opens; `--solo` the old walk, each machine toward its own nearest
@@ -1986,6 +1986,251 @@ on that class. A number a piece is therefore a dial with two settings on today's
 a softening (1 or 2) or a kill (3), and a tier's dial rather than a fine one; the fights' size
 remains the lever on the trio's chain.
 
+## 27 October, the pricing run
+
+**The pricing run's first pass** (the method and its reads in the proposal, retired 28 October into the bible's pricing row, `git show a89cfc6:docs/pricing_proposal.md`;
+`tools/pricing_run.py run prices`, the content and the engine as at main's `e59691d`, this
+branch adding tools and docs alone): 393 variants, each one balance-runner process on the
+records' four team rows as `--team` rows and on the Arsenal bench's row (the Nemesis, the Ammit,
+the Puffin), against the sixteen big fights but the finale (the four massive foes, the four
+formations, the eight finals), greedy play at 30 seeds a cell, 188,640 fights, about three
+hours on a cloud session's four cores. Every stocked piece knocked out of its row (51), every
+slottable component (48) through the same hardpoint of five benches (240), every module on
+them (85) and three heat loops on the four team rows (12). A direction, read on the rounds to
+win and the hull lost, since every row wins 99 to 100% of these cells.
+
+The rows as stocked, greedy: the mean win rate over the sixteen packs, the mean rounds of the
+fights won, the hull lost, the peak heat as a turn ended, the overheats and the damaging dice
+held for heat a fight:
+
+| Row | Win | Rounds | Hull | Peak | Overheats | Held |
+|---|---|---|---|---|---|---|
+| The default team (Honey Badger, Clydesdale, Kite) | 100 | 3.1 | 5% | 80% | 0.21 | 0.11 |
+| Minerva's team (Honey Badger, Armadillo, Wild Boar) | 100 | 4.9 | 7% | 31% | 0.05 | 0.01 |
+| Kestrel's team (Kite, Buzzard, Puffin) | 100 | 2.9 | 8% | 93% | 0.29 | 0.07 |
+| Wainwright & Sutler's team (Clydesdale, Prairie Dog, Dingo) | 99.6 | 5.9 | 18% | 33% | 0.13 | 0.04 |
+| The Arsenal bench's row (Nemesis, Ammit, Puffin) | 100 | 4.5 | 10% | 69% | 0.17 | 0.04 |
+
+**The knock-outs.** Ten of the 51 move their row by a fifth of a round or two points of hull;
+the other 41 read as their row (the stock's shields and vents among them, every one):
+
+| Row | Machine | Piece out | Its stock share | Rounds | Hull |
+|---|---|---|---|---|---|
+| Wainwright & Sutler's | Dingo | Airburst Shell | 13% | 5.9 to 6.6 | 18 to 23% |
+| The default team | Kite | Transonic Rifle | 13% | 3.1 to 3.8 | 5 to 7% |
+| Wainwright & Sutler's | Clydesdale | Enfilade Beam | 8% | 5.9 to 6.4 | 18 to 23% |
+| Kestrel's | Kite | Transonic Rifle | 22% | 2.9 to 3.4 | 8 to 9% |
+| Kestrel's | Buzzard | Arc Fault Cannon | 10% | 2.9 to 3.4 | 8 to 10% |
+| Kestrel's | Buzzard | Overclocked Railgun | 10% | 2.9 to 3.2 | 8 to 9% |
+| Wainwright & Sutler's | Clydesdale | Maxigun | 9% | 5.9 to 6.1 | 18 to 20% |
+| Kestrel's | Puffin | Laser Carbine | 11% | 2.9 to 3.2 | 8 to 10% |
+| Minerva's | Armadillo | Twin Autoguns | 13% | 4.9 to 5.1 | 7 to 8% |
+| Wainwright & Sutler's | Prairie Dog | Halo Shield | 8% | 5.9 to 5.6 | 18 to 20% |
+
+**The ladders.** Each candidate's rounds and hull against the bench's stock row, and its share
+of the row's spends; hot marks a peak at the maximum or a quarter of an overheat a fight more
+than stock, dead a share under 5%:
+
+| Tier | Piece | Kind | Honey Badger | Prairie Dog | Puffin | Buzzard | Nemesis | Mean |
+|---|---|---|---|---|---|---|---|---|
+| 0 | Twin Autoguns | dir 1-3, heat 0 | +0.0 r, -0% hull, 5% dead | +0.0 r, +0% hull, 25% | +0.2 r, +1% hull, 28% | +0.5 r, +2% hull, 16% | +0.0 r, -0% hull, 13% | +0.14 |
+| 0 | Ankle Mortar | ind 1-3, heat 1 | +0.0 r, -0% hull, 5% dead | +0.0 r, +0% hull, 16% | +0.2 r, +1% hull, 14% | +0.5 r, +2% hull, 4% dead | +0.0 r, -0% hull, 2% dead | +0.14 |
+| 0 | Coolant Jacket | vent 4 | +0.0 r, -0% hull, 2% dead | +0.2 r, -1% hull, 5% dead | +0.3 r, +2% hull, 4% dead | +0.5 r, +2% hull, 2% dead | +0.0 r, -0% hull, 3% dead | +0.19 |
+| 0 | Rivet Gun | dir 2, heat 0 | +0.0 r, +0% hull, 3% dead | -0.1 r, -2% hull, 11% | +0.1 r, +0% hull, 10% | +0.5 r, +2% hull, 2% dead | -0.0 r, -0% hull, 2% dead | +0.09 |
+| 0 | Laser Carbine | dir 3, heat 2 | +0.0 r, -0% hull, 7% | -0.5 r, -3% hull, 15% | +0.0 r, +0% hull, 11% | +0.5 r, +2% hull, 17% | +0.0 r, -0% hull, 15% | -0.01 |
+| 0 | Bleed Valve | vent 6 | +0.0 r, -0% hull, 5% | +0.2 r, -0% hull, 1% dead | +0.3 r, +2% hull, 8% | +0.5 r, +2% hull, 9% | +0.0 r, +0% hull, 1% dead | +0.19 |
+| 0 | Halo Shield | shield 6 | +0.0 r, -0% hull, 1% dead | +0.3 r, -2% hull, 16% | +0.2 r, +1% hull, 7% | +0.5 r, +2% hull, 6% | +0.2 r, -0% hull, 9% | +0.26 |
+| 0 | Canopy | shield 8 | +0.0 r, -0% hull, 2% dead | +0.2 r, -1% hull, 4% dead | +0.3 r, +1% hull, 4% dead | +0.5 r, +2% hull, 2% dead | +0.1 r, -0% hull, 2% dead | +0.21 |
+| 1 | Shotfire Rack | ind 2-4, heat 2 | +0.0 r, +0% hull, 9% | -0.4 r, -3% hull, 17% | +0.1 r, -0% hull, 15% | +0.5 r, +2% hull, 7% | +0.0 r, +0% hull, 5% dead | +0.03 |
+| 1 | Slugthrower | dir 2-5, heat 1 | +0.0 r, +0% hull, 10% | -0.5 r, -3% hull, 17% | +0.0 r, -0% hull, 16% | +0.4 r, +2% hull, 7% | +0.0 r, -0% hull, 7% | -0.00 |
+| 1 | Enfilade Beam | dir 4, heat 2, penetrate | -0.1 r, -0% hull, 15% | -1.0 r, -6% hull, 25% | -0.1 r, -0% hull, 13% | +0.3 r, +1% hull, 8% | -0.1 r, -1% hull, 6% | -0.18 |
+| 1 | Howitzer | ind 2-5, heat 1 | +0.0 r, +0% hull, 17% | -0.6 r, -4% hull, 24% | +0.0 r, -0% hull, 16% | +0.4 r, +2% hull, 7% | +0.0 r, -0% hull, 7% | -0.01 |
+| 1 | Incendiary Shells | ind 1-3, heat 1, burn | -0.1 r, -0% hull, 12% | -0.7 r, -3% hull, 22% | +0.0 r, -0% hull, 15% | +0.5 r, +2% hull, 5% dead | -0.0 r, -0% hull, 5% dead | -0.06 |
+| 1 | Overclocked Railgun | dir 10, heat 8, breach | -0.3 r, -1% hull, 11% | -1.9 r, -7% hull, 17% hot | -0.2 r, -1% hull, 24% | +0.3 r, +2% hull, 18% hot | -0.3 r, -0% hull, 8% hot | -0.49 |
+| 1 | Arc Fault Cannon | dir 4, heat 2, chain | -0.2 r, -1% hull, 11% | -1.7 r, -8% hull, 19% | -0.3 r, -1% hull, 25% | +0.0 r, +0% hull, 10% | -0.4 r, -1% hull, 8% | -0.51 |
+| 1 | Proximity Klaxon | ind 0, heat 1, lure cleave | +0.0 r, -0% hull, 1% dead | +0.2 r, -1% hull, 3% dead | +0.3 r, +2% hull, 2% dead | +0.5 r, +2% hull, 2% dead | +0.1 r, -0% hull, 2% dead | +0.21 |
+| 1 | Overcharge Coil | buff  | -0.0 r, -0% hull, 3% dead | -0.1 r, -0% hull, 11% | +0.2 r, +2% hull, 9% | +0.5 r, +2% hull, 1% dead | -0.0 r, -0% hull, 1% dead | +0.11 |
+| 1 | Radiator Sail | vent 5 | +0.0 r, -0% hull, 1% dead | +0.2 r, -1% hull, 2% dead | +0.3 r, +2% hull, 2% dead | +0.5 r, +2% hull, 1% dead | +0.0 r, -0% hull, 1% dead | +0.19 |
+| 1 | Plasma Arquebus | dir 2-4, heat 2 | +0.0 r, +0% hull, 9% | -0.4 r, -3% hull, 16% | +0.1 r, -0% hull, 15% | +0.5 r, +2% hull, 6% | +0.0 r, +0% hull, 10% | +0.03 |
+| 1 | Blazethrower | dir 3, heat 3, burn | -0.1 r, -0% hull, 8% | -1.2 r, -6% hull, 17% | -0.1 r, -0% hull, 12% | +0.4 r, +2% hull, 7% | -0.0 r, -0% hull, 18% | -0.20 |
+| 1 | Phased Sublimator | vent 4, cleanse | +0.0 r, -0% hull, 1% dead | +0.2 r, -1% hull, 2% dead | +0.3 r, +2% hull, 3% dead | +0.5 r, +2% hull, 1% dead | +0.0 r, -0% hull, 1% dead | +0.19 |
+| 1 | Polarity Projector | dir 0, heat 2, shock | -0.0 r, -0% hull, 3% dead | +0.1 r, +0% hull, 9% | +0.0 r, +1% hull, 10% | +0.5 r, +2% hull, 2% dead | +0.0 r, +0% hull, 3% dead | +0.13 |
+| 1 | Shoring Jack | buff  | +0.0 r, -0% hull, 1% dead | +0.4 r, +0% hull, 5% | +0.3 r, +2% hull, 4% dead | +0.5 r, +2% hull, 2% dead | +0.0 r, -0% hull, 2% dead | +0.24 |
+| 1 | Oblation Mantle | shield 10 | +0.0 r, -0% hull, 0% dead | +0.2 r, -1% hull, 3% dead | +0.3 r, +2% hull, 1% dead | +0.5 r, +2% hull, 1% dead | +0.1 r, +0% hull, 2% dead | +0.22 |
+| 1 | Retribution Thurible | buff  | -0.0 r, -0% hull, 1% dead | +0.1 r, -1% hull, 3% dead | +0.2 r, +2% hull, 5% dead | +0.5 r, +2% hull, 1% dead | -0.0 r, -0% hull, 3% dead | +0.16 |
+| 1 | Maxigun | dir 1-2, heat 1 | +0.0 r, -0% hull, 18% | -0.7 r, -4% hull, 27% | +0.0 r, -0% hull, 15% | +0.5 r, +2% hull, 8% | -0.0 r, -1% hull, 6% | -0.05 |
+| 1 | Wake Diffuser | vent 3 | +0.0 r, -0% hull, 1% dead | +0.3 r, -0% hull, 6% | +0.3 r, +2% hull, 4% dead | +0.5 r, +2% hull, 1% dead | +0.1 r, -0% hull, 2% dead | +0.23 |
+| 1 | Thermal Ray | dir 6, heat 6 | -0.1 r, -0% hull, 9% | -1.3 r, -6% hull, 17% | -0.1 r, -1% hull, 14% | +0.4 r, +3% hull, 9% hot | -0.1 r, -0% hull, 7% | -0.23 |
+| 1 | Transonic Rifle | dir 5, heat 4 | -0.0 r, -0% hull, 22% | -1.1 r, -5% hull, 18% | -0.1 r, -0% hull, 34% | +0.4 r, +2% hull, 29% | -0.0 r, -0% hull, 7% | -0.17 |
+| 1 | Airburst Shell | ind 1-2, heat 1, cleave flak | -0.0 r, -0% hull, 8% | -0.7 r, -4% hull, 28% | +0.0 r, +0% hull, 14% | +0.4 r, +2% hull, 5% dead | -0.0 r, -0% hull, 3% dead | -0.07 |
+| 1 | Blast Door | buff  | +0.1 r, -2% hull, 5% dead | +0.5 r, -7% hull, 12% | +0.3 r, -2% hull, 10% | +0.6 r, +0% hull, 4% dead | +0.4 r, -2% hull, 6% | +0.36 |
+| 1 | Decoherence Veil | buff  | +0.1 r, -2% hull, 4% dead | +0.4 r, -4% hull, 5% | +0.2 r, -1% hull, 6% | +0.5 r, +1% hull, 2% dead | +0.2 r, -0% hull, 3% dead | +0.27 |
+| 2 | Suppression Battery | ind 1-3, heat 2, suppress | +0.0 r, -0% hull, 4% dead | -0.1 r, -2% hull, 15% | +0.2 r, +1% hull, 14% | +0.5 r, +2% hull, 4% dead | -0.0 r, +0% hull, 2% dead | +0.11 |
+| 2 | Coriolis Accelerator | dir 3, heat 1 | -0.1 r, -0% hull, 9% | -1.0 r, -5% hull, 16% | -0.1 r, -0% hull, 13% | +0.4 r, +2% hull, 7% | -0.0 r, -0% hull, 6% | -0.14 |
+| 2 | Laminar Deflector | shield 6, rapid | -0.0 r, -0% hull, 1% dead | +0.1 r, -4% hull, 7% | +0.2 r, +1% hull, 3% dead | +0.5 r, +2% hull, 2% dead | -0.0 r, -1% hull, 3% dead | +0.16 |
+| 2 | Corona Shield | shield 6, cleanse | +0.0 r, -0% hull, 1% dead | +0.3 r, -2% hull, 8% | +0.2 r, +1% hull, 4% dead | +0.5 r, +2% hull, 2% dead | +0.2 r, -0% hull, 4% dead | +0.26 |
+| 2 | Pulse Vacillator | dir 2, heat 2, rapid | -0.0 r, -0% hull, 3% dead | -0.2 r, -3% hull, 11% | +0.1 r, +0% hull, 9% | +0.4 r, +2% hull, 2% dead | -0.1 r, -0% hull, 2% dead | +0.03 |
+| 2 | Meteor Artillery | ind 5, heat 6, burn | -0.1 r, -0% hull, 9% | -1.7 r, -7% hull, 18% | -0.2 r, -1% hull, 14% | +0.3 r, +2% hull, 9% hot | -0.2 r, -1% hull, 7% | -0.39 |
+| 2 | Entropy Condenser | vent 10 | +0.0 r, -0% hull, 0% dead | +0.2 r, -0% hull, 0% dead | +0.3 r, +2% hull, 0% dead | +0.5 r, +2% hull, 0% dead | +0.0 r, +0% hull, 0% dead | +0.19 |
+| 2 | Aurora Lattice | buff  | +0.0 r, -0% hull, 1% dead | +0.2 r, +0% hull, 3% dead | +0.3 r, +2% hull, 3% dead | +0.5 r, +2% hull, 1% dead | +0.0 r, +0% hull, 1% dead | +0.20 |
+| 2 | Differentiation Probe | ind 0, heat 2, disrupt | +0.1 r, -0% hull, 4% dead | +0.9 r, -1% hull, 10% | +0.2 r, +1% hull, 6% hot | +0.6 r, +2% hull, 3% hot dead | +0.5 r, +0% hull, 5% | +0.46 |
+| 2 | Tesla Gauntlets | dir 4, heat 3, shock | -0.2 r, -1% hull, 9% | -1.3 r, -6% hull, 18% | -0.2 r, -1% hull, 15% | +0.3 r, +1% hull, 9% | -0.1 r, -0% hull, 8% | -0.31 |
+| 2 | Cyclic Cannon | dir 2, heat 3 | -0.1 r, -0% hull, 10% | -1.6 r, -7% hull, 19% | -0.1 r, -0% hull, 14% | +0.4 r, +2% hull, 9% | -0.1 r, -1% hull, 8% | -0.29 |
+| 2 | Flak Cannon | dir 3, heat 2, flak | -0.1 r, -0% hull, 8% | -1.1 r, -6% hull, 17% | -0.1 r, -0% hull, 12% | +0.5 r, +2% hull, 7% | -0.1 r, -0% hull, 6% | -0.18 |
+| 2 | Stoker | dir 3, heat 1, burn | -0.1 r, -0% hull, 8% | -1.2 r, -6% hull, 18% | -0.1 r, -0% hull, 12% | +0.5 r, +2% hull, 7% | -0.0 r, -0% hull, 6% | -0.20 |
+| 2 | Backdraft Charge | dir 2, heat 2, suppress | +0.0 r, -0% hull, 3% dead | -0.1 r, -2% hull, 12% | +0.1 r, +0% hull, 10% | +0.5 r, +2% hull, 2% hot dead | +0.0 r, -0% hull, 2% dead | +0.10 |
+| 3 | Umbra Inducer | dir 3, heat 0, suppress | +0.0 r, +0% hull, 7% | -0.6 r, -1% hull, 15% | +0.1 r, +2% hull, 12% | +0.5 r, +3% hull, 6% | +0.1 r, +1% hull, 7% | +0.03 |
+| 3 | Gravity Knuckles | dir 5, heat 4, burn | -0.1 r, -1% hull, 9% | -1.8 r, -8% hull, 19% | -0.2 r, -1% hull, 14% | +0.4 r, +2% hull, 9% | -0.2 r, -1% hull, 8% | -0.40 |
+
+Guns alone, each tier's rounds against stock, the best and the worst on each bench:
+
+| Tier | Honey Badger | Prairie Dog | Puffin | Buzzard | Nemesis |
+|---|---|---|---|---|---|
+| 0 | +0.0 to +0.0 over 4 | -0.5 to +0.0 over 4 | +0.0 to +0.2 over 4 | +0.5 to +0.5 over 4 | -0.0 to +0.0 over 4 |
+| 1 | -0.3 to +0.0 over 13 | -1.9 to -0.4 over 13 | -0.3 to +0.1 over 13 | +0.0 to +0.5 over 13 | -0.4 to +0.0 over 13 |
+| 2 | -0.2 to +0.0 over 9 | -1.7 to -0.1 over 9 | -0.2 to +0.2 over 9 | +0.3 to +0.5 over 9 | -0.2 to +0.0 over 9 |
+| 3 | -0.1 to +0.0 over 2 | -1.8 to -0.6 over 2 | -0.2 to +0.1 over 2 | +0.4 to +0.5 over 2 | -0.2 to +0.1 over 2 |
+
+**The module ladder**, each module fitted alone to the bench machine:
+
+| Tier | Module | Stats and text | Honey Badger | Prairie Dog | Puffin | Buzzard | Nemesis | Mean |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Ablative Plating | hull +8, armour +1, move -10 | -0.0 r, -1% hull | -0.0 r, -2% hull | -0.0 r, -1% hull | +0.0 r, -1% hull | +0.0 r, -2% hull | +0.00 |
+| 1 | Boundary-layer Bleed | cooling +1; Each time its heat climbs, it stands up 1 shield. | +0.0 r, -0% hull | -0.0 r, -0% hull | +0.0 r, +0% hull | +0.0 r, -0% hull | +0.0 r, -0% hull | +0.00 |
+| 1 | Flak Skirt | hull +6 | +0.0 r, -0% hull | -0.0 r, -1% hull | +0.0 r, -1% hull | +0.0 r, -1% hull | +0.0 r, -1% hull | -0.00 |
+| 1 | Field Radiators | heat +4, cooling +1 | -0.0 r, -0% hull | +0.0 r, +0% hull | +0.0 r, -0% hull | +0.0 r, -1% hull | +0.0 r, -0% hull | +0.00 |
+| 1 | Susceptibility Tensor | shield +4; Its blows deal 1 more to a foe carrying any status. | -0.0 r, -0% hull | -0.5 r, -4% hull | -0.0 r, -1% hull | -0.0 r, -0% hull | +0.0 r, -1% hull | -0.09 |
+| 2 | Ram Frame | hull +24; Its Direct blows aimed at the front rank deal 1 more. | -0.1 r, -2% hull | -0.8 r, -7% hull | -0.1 r, -3% hull | -0.1 r, -3% hull | -0.2 r, -4% hull | -0.26 |
+| 2 | Spall Liner | move -10, heat -4; Taking hull damage stands up 2 shield. | -0.0 r, -0% hull | -0.0 r, -1% hull | +0.0 r, -0% hull | +0.0 r, +1% hull hot | +0.0 r, +0% hull | +0.01 |
+| 2 | Muzzle Velocity Booster | Its rolled weapons reach 1 higher. | -0.0 r, -0% hull | -0.2 r, -1% hull | -0.0 r, -0% hull | +0.0 r, +0% hull | +0.1 r, +0% hull | -0.05 |
+| 2 | Tactical Databank | Its rolled weapons' lowest roll is 1 higher. | -0.1 r, -0% hull | -0.2 r, -1% hull | -0.1 r, -1% hull | +0.0 r, +0% hull | +0.1 r, +0% hull | -0.05 |
+| 2 | Artillery Rangefinder | Its Indirect blows aimed at the back rank deal 1 more. | +0.0 r, +0% hull | +0.0 r, +0% hull | +0.0 r, +0% hull | +0.0 r, +0% hull | +0.0 r, +0% hull | +0.00 |
+| 2 | Phase Conjugator | shield +4; An ally it shields is Armoured 1 for the round. | -0.0 r, -0% hull | +0.1 r, -1% hull | -0.0 r, -1% hull | -0.0 r, -0% hull | +0.1 r, -0% hull | +0.02 |
+| 2 | Ward Plate | shield +8, armour +1 | -0.0 r, -0% hull | +0.0 r, -2% hull | -0.0 r, -1% hull | -0.0 r, -0% hull | +0.1 r, -1% hull | +0.02 |
+| 2 | Grievance Reliquary | hull +4; Taking hull damage Overcharges it, a stack a blow. | -0.0 r, -0% hull | -0.0 r, -1% hull | -0.0 r, -1% hull | +0.0 r, -1% hull | -0.0 r, -1% hull | -0.01 |
+| 2 | Trim Tabs | heat -4; Rerolling only its own die is free once a round. | -0.0 r, -0% hull | -0.1 r, -1% hull | -0.0 r, -0% hull | -0.0 r, +1% hull hot | +0.0 r, +1% hull | -0.02 |
+| 3 | Thrust Overboost | move +20, shield +12; Its weapons run twice as hot. | +0.0 r, -0% hull | +0.1 r, -1% hull | -0.0 r, -2% hull | +0.2 r, +4% hull hot | +0.5 r, +4% hull hot | +0.15 |
+| 3 | Exotic-matter Shell | shield +16, heat +6; Every blow on it lands 2 harder. | -0.0 r, +0% hull | +0.1 r, +1% hull | -0.0 r, -1% hull | -0.0 r, -0% hull | +0.1 r, +0% hull | +0.02 |
+| 3 | Tithe Coupling | hull +20, shield +12; Every component it spends costs 3 hull. | +0.4 r, +4% hull | +1.2 r, +7% hull | +0.2 r, +0% hull | +0.2 r, +7% hull | -0.6 r, +9% hull | +0.29 |
+
+**The heat ladder**, the four team rows with every attack a class hotter (step: 0 to 1, 1 to
+2, 2 to 3, 3 to 4, 4 to 6, 6 to 8, 8 to 10), the eleven heat-0 attacks alone at 1 (cold1), and
+cooling 0 on every chassis (cooling0):
+
+| Row | Variant | Win | Rounds | Hull | Peak | Hot rounds | Over | Burned | Held | Damage held | Heat left |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| the default team | stock | 100.0 | 3.1 | 5% | 80% | 0.8 | 0.21 | 0.7 | 0.11 | 0.6 | 29% |
+| Minerva Heavy Works team | stock | 100.0 | 4.9 | 7% | 31% | 0.1 | 0.05 | 0.2 | 0.01 | 0.0 | 14% |
+| Kestrel Dynamics team | stock | 100.0 | 2.9 | 8% | 93% | 1.0 | 0.29 | 1.0 | 0.07 | 0.4 | 43% |
+| Wainwright & Sutler team | stock | 99.6 | 5.9 | 18% | 33% | 0.3 | 0.13 | 0.3 | 0.04 | 0.1 | 16% |
+| the default team | step | 100.0 | 3.1 | 6% | 102% | 1.9 | 0.35 | 1.0 | 0.19 | 0.9 | 48% |
+| the default team | cold1 | 100.0 | 3.1 | 5% | 89% | 1.0 | 0.22 | 0.9 | 0.12 | 0.6 | 34% |
+| the default team | cooling0 | 100.0 | 3.1 | 5% | 95% | 1.4 | 0.20 | 0.8 | 0.13 | 0.6 | 45% |
+| Minerva Heavy Works team | step | 100.0 | 4.9 | 7% | 55% | 0.3 | 0.10 | 0.3 | 0.01 | 0.0 | 32% |
+| Minerva Heavy Works team | cold1 | 100.0 | 4.9 | 7% | 35% | 0.1 | 0.06 | 0.2 | 0.01 | 0.0 | 20% |
+| Minerva Heavy Works team | cooling0 | 100.0 | 4.9 | 7% | 47% | 0.3 | 0.09 | 0.3 | 0.01 | 0.0 | 29% |
+| Kestrel Dynamics team | step | 100.0 | 3.0 | 10% | 116% | 2.1 | 0.56 | 2.4 | 0.16 | 0.9 | 57% |
+| Kestrel Dynamics team | cold1 | 100.0 | 2.9 | 8% | 97% | 1.2 | 0.29 | 1.1 | 0.08 | 0.4 | 47% |
+| Kestrel Dynamics team | cooling0 | 100.0 | 3.0 | 9% | 103% | 1.6 | 0.31 | 1.2 | 0.10 | 0.5 | 53% |
+| Wainwright & Sutler team | step | 99.4 | 6.0 | 18% | 67% | 0.8 | 0.22 | 0.5 | 0.08 | 0.2 | 38% |
+| Wainwright & Sutler team | cold1 | 99.6 | 5.9 | 18% | 35% | 0.3 | 0.15 | 0.4 | 0.03 | 0.1 | 19% |
+| Wainwright & Sutler team | cooling0 | 99.0 | 5.9 | 19% | 61% | 0.6 | 0.20 | 0.5 | 0.06 | 0.1 | 35% |
+
+Read:
+
+- **The benches are too strong for most of the read.** Four rows win these cells in 2.9 to
+  4.9 rounds for 5 to 10% of their hull, so one hardpoint moves them by a third of a round at
+  most and a shield has nothing to save; Wainwright & Sutler's row (5.9 rounds, 18% hull) is
+  the one bench with room, and it carries the ladder: tier one's guns take 0.4 to 1.9 rounds
+  off it, tier two's 0.1 to 1.7, tier three's 0.6 to 1.8. The 23 October reads said the same
+  of a trio against today's packs (the formations and the two breaching bosses are its fights,
+  the rest free); the pricing run says it of a bench. Equipment and the setup pieces need a
+  harder bench (the formations and the breaching bosses alone, with the planner, or the fresh
+  start's compositions) before any of their numbers moves.
+- **Tier one's ceiling is tier two's.** The Arc Fault Cannon (1.7 rounds off the car, 0.5 off
+  the Nemesis's row, 0.51 off the five benches' mean) and the Overclocked Railgun (1.9, 0.3,
+  0.49) sit at or above every tier-two gun (the Meteor Artillery 1.7 and 0.39, the Cyclic Cannon
+  1.6 and 0.29, the Tesla Gauntlets 1.3 and 0.31) and the tier-three Gravity Knuckles (1.8 and
+  0.40); the next tier-one guns (the Thermal Ray 1.3, the Blazethrower 1.2, the Transonic Rifle
+  1.1) sit with tier two's; the rolled tier-one guns (the Slugthrower, the Howitzer, the
+  Shotfire Rack, the Arquebus, the Maxigun, the Incendiary Shells, the Airburst Shell) take 0.4
+  to 0.7 off the car and nothing elsewhere, a tier above the basics (0.0 to 0.5) and below the
+  flat hot guns, which is the heat row's rolled-range price. So a tier-two gun buys no kill
+  time a tier-one gun does not: the ladder's steps are heat and shape, not tiers.
+- **Heat prices show where heat bites.** On the car (maximum 12, cooling 1) the Railgun peaks
+  at 107% with 0.51 overheats a fight (0.13 stock), the Meteor Artillery and the Thermal Ray at
+  89% with 0.28, the Transonic Rifle 66%, the Gravity Knuckles 63%; on the Buzzard (maximum 14)
+  its stock Arc Fault Cannon is the best piece in its slot by 0.3 rounds over anything, the
+  cool gun that chains, and every warmer candidate holds dice for heat (0.21 to 0.27 a fight
+  against 0.07), the Railgun at 105% and 0.58 overheats, the Thermal Ray and the Meteor at 100%.
+  The Stoker reads as the Blazethrower on every bench (1.2 rounds off the car each, 0.20 off
+  the mean each) at a third of the heat.
+- **Equipment is dead under the greedy on these packs.** Every shield, vent and buff reads 1 to
+  8% of the row's spends and 0.2 to 0.5 rounds behind the stock gun on every bench; the one
+  that reads is the Blast Door (0.4 rounds slower, 2 to 7 points of hull saved: a Barrier
+  trades a round for hull), the Halo Shield and the Decoherence Veil behind it on the car. The
+  Entropy Condenser is never spent (0% on all five), the Oblation Mantle, the Radiator Sail,
+  the Phased Sublimator, the Wake Diffuser, the Shoring Jack, the Retribution Thurible, the
+  Aurora Lattice and the Proximity Klaxon 1 to 5%. A verdict on the greedy's valuation and the
+  benches' ease before any price (the proposal's rule 3; the to-do's valuation line).
+- **The Differentiation Probe reads worse than an empty hardpoint** on four benches (0.9
+  rounds slower on the car, 0.46 on the mean): a Disrupt moving foes onto the move that costs
+  the row more, or spends wasted; the bot's reading of a Disrupt first, then the jellyfish's
+  session.
+- **The setups on the car**, beside the Dingo's harpoon and its Flak: the Flak Cannon 1.1
+  rounds off at 17%, the Overcharge Coil 0.1 off at 11%, the Polarity Projector 0.1 on at 9%,
+  the Suppression Battery 0.1 off at 15%, the Backdraft Charge 0.1 off at 12%; the Umbra
+  Inducer 0.6 off at 15%, below every tier-two gun on kill time, as a stun is (its worth is the
+  turn it buys, which rounds do not count: the finals' hull is its read).
+- **The modules.** The Ram Frame is the first module on every bench (0.1 to 0.8 rounds and 2
+  to 7 points of hull off, 0.26 off the mean), the universal pick the modules row forbids, the
+  catalogue's biggest stat line (hull +24, a placeholder that waited on this run) beside a
+  point on every Direct blow at the front, strikes included. The Artillery Rangefinder reads
+  nothing on any bench by construction: no bench machine stocks an Indirect gun, so its mirror
+  needs an Indirect bench (the Clydesdale's or the Cottonmouth's slot). The Susceptibility
+  Tensor reads where setups exist (0.5 rounds and 4 points off the car, beside Flak and a
+  Shock; nothing elsewhere); the Booster and the Databank read alike on the car's rolled guns
+  (0.2 off) and nothing on the flat kits, the mirror of 11 October again; the stat modules (the
+  Ablative Plating, the Flak Skirt, the Field Radiators, the Ward Plate, the Boundary-layer
+  Bleed) move no rounds and a point or two of hull, as the Spall Liner, the Phase Conjugator,
+  the Grievance Reliquary and the Trim Tabs do; the Thrust Overboost costs the hot benches (0.2
+  to 0.5 rounds and 4 points of hull on the Buzzard and the Nemesis) and pays the Puffin its
+  shield; the Exotic-matter Shell reads as nothing; the Tithe Coupling is a loss on four
+  benches (0.2 to 1.2 rounds and 4 to 7 points of hull on) and on the Nemesis the one module
+  that trades hull for rounds (0.6 off for 10 points on), the rage loop spinning on its own
+  bites.
+- **The Ammit's loop** (the proposal's hole E), fitted by hand on the Arsenal row since the
+  ladder fits the bench machine, the Nemesis:
+
+| The Ammit fitted with | Win | Rounds | Hull | Peak | Overheats | The Talons' share | The Mantle's | The Condenser's |
+|---|---|---|---|---|---|---|---|---|
+| nothing (the row as stocked) | 100 | 4.5 | 10% | 69% | 0.17 | 22% | 1% | 0% |
+| the Grievance Reliquary | 100 | 4.4 | 9% | 69% | 0.14 | 22% | 1% | 0% |
+| the Reliquary and the Tithe Coupling | 100 | 4.9 | 15% | 73% | 0.19 | 11% | 1% | 0% |
+| the Tithe Coupling | 99.2 | 5.6 | 18% | 82% | 0.38 | 7% | 2% | 0% |
+| (the Nemesis with the Tithe, from the module ladder) | 100 | 3.9 | 20% | 81% | 0.26 | | 1% | 0% |
+
+  The Reliquary alone reads as stock: the greedy spends the Mantle 1% and the Condenser 0% of
+  the row's spends, so nothing bites. With the Tithe beside it the row is slower (4.9 rounds,
+  15% hull): the greedy halves the Ammit's Talons spends (22 to 11%) under a 3-hull price it
+  reads as a cost, and never feeds the loop (7.2 rounds on the Treant against 4.8, 7.6 on the
+  Wyvern against 4.9, the formations a few tenths quicker for twice the hull); the Tithe alone
+  5.6 and 18%. Under the greedy the Ammit's permanence never spins, a verdict on the bot's
+  horizon (a stack a spend that pays over the rounds after) before any verdict on the loop,
+  the planner's read next; the Nemesis's rage loop spins today, at a price in hull.
+- **The heat ladder.** A class up on every attack doubles the hot rows' overheats (Kestrel's
+  0.29 to 0.56 a fight, its peak 93 to 116%, its hull burned 1.0 to 2.4; the default team's 0.21
+  to 0.35 and 80 to 102%) and leaves the cold rows cold (Minerva's peak 31 to 55%, 0.05 to 0.10
+  overheats, nothing held; Wainwright & Sutler's 33 to 67%, 0.13 to 0.22), and no row's wins or
+  rounds move; the cold basics at 1 move the peaks 2 to 9 points and nothing else; cooling 0
+  warms every row, the hot one to 103%, as on 22 October. The greedy answers heat by holding a
+  die, never by venting: the Coolant Jacket's share rises from 0.9 to 2.5% to 1.2 to 4.0% under
+  a class up, the rows' vents and shields together from 7 to 12% to 8 to 13%, while the dice
+  held for heat nearly double. So the heat row's test holds on the hot kits (met, and met harder
+  a class up), the cold rows pay in their numbers and reach no heat even a class hotter, and
+  the Jacket's job is a question for a bot that vents before the overheat (the to-do's heat
+  report) before it is one for the basics' heat.
+
 ## 28 October, area numbered, on the team rows
 
 **Spread N, Penetrate N and Splash N with the blow's order, built** (Ryan, 28 October; the
@@ -2167,6 +2412,547 @@ none, as before; its tier-two battles (the report's tier 1, counting from 0) are
 (four of four), and its machines end with 39% of their hardpoints filled where they kept 59%.
 The spiral it was, a little steeper; no decision reads it.
 
+## 28 October, the pricing run's area carriers on the numbered area
+
+**The car bench rerun on the merged head** (main's `a34a3cc` merged into the pricing run's
+branch: the numbered area, the blow's order, the Marsh's Zombie Knight pair; `tools/pricing_run.py
+run area28 --benches prairie_dog --pieces ... --modules ...`): the four team rows as stocked, and
+fourteen candidates and four modules on the Prairie Dog's first hardpoint in Wainwright &
+Sutler's row, greedy at 30 seeds against the sixteen big fights, 10,560 fights; then the
+Howitzer and the Meteor Artillery with Splash 1 and 2 as what-ifs by hand (`--set` on the
+keywords and the number, the Meteor's Burn kept), 1,920 fights. A direction, read beside the
+27 October run's same variants.
+
+The rows as stocked, the 27 October run against the merged head (win, rounds, hull lost):
+
+| Row | 27 October | 28 October, the merged head |
+|---|---|---|
+| The default team | 100, 3.1, 5% | 99.8, 3.2, 7% |
+| Minerva's team | 100, 4.9, 7% | 100, 5.3, 11% |
+| Kestrel's team | 100, 2.9, 8% | 100, 2.9, 9% |
+| Wainwright & Sutler's team | 99.6, 5.9, 18% | 93.5, 6.1, 24% |
+
+The candidates on the car, each against its own run's stock row (rounds, hull, the candidate's
+share), and its peak heat and overheats on the merged head:
+
+| Candidate | Kind | 27 October | 28 October | Peak, overheats |
+|---|---|---|---|---|
+| Twin Autoguns (stock) | Direct 1 to 3, heat 0 | +0.0 r, +0% hull, 25% | +0.0 r, +0% hull, 24% | 35%, 0.18 |
+| Laser Carbine | Direct 3, heat 2 | -0.5 r, -3%, 15% | -0.6 r, -2%, 14% | 37%, 0.19 |
+| Howitzer | Indirect 2 to 5, heat 1 | -0.6 r, -4%, 24% | -0.5 r, -4%, 24% | 33%, 0.12 |
+| Maxigun | Direct 1 to 2 x3, heat 1 | -0.7 r, -4%, 27% | -0.7 r, -4%, 26% | 33%, 0.13 |
+| Airburst Shell | Indirect 1 to 2, heat 1, Spread 1, Flak 1 | -0.7 r, -4%, 28% | -0.6 r, -4%, 26% | 34%, 0.12 |
+| Enfilade Beam | Direct 4, heat 2, Penetrate 3 | -1.0 r, -6%, 25% | -1.0 r, -6%, 24% | 37%, 0.10 |
+| Flak Cannon | Direct 3, heat 2, Flak 2 | -1.1 r, -6%, 17% | -1.2 r, -6%, 17% | 37%, 0.17 |
+| Tesla Gauntlets | Direct 4, heat 3, Shock | -1.3 r, -6%, 18% | -1.4 r, -7%, 18% | 50%, 0.14 |
+| Cyclic Cannon | Direct 2 x4, heat 3 | -1.6 r, -7%, 19% | -1.7 r, -8%, 19% | 49%, 0.13 |
+| Arc Fault Cannon | Direct 4, heat 2, Chain | -1.7 r, -8%, 19% | -1.7 r, -10%, 18% | 55%, 0.16 |
+| Meteor Artillery | Indirect 5, heat 6, Burn 3 | -1.7 r, -7%, 18% | -1.8 r, -9%, 17% | 88%, 0.31 |
+| Overclocked Railgun | Direct 10, heat 8, Breach | -1.9 r, -7%, 17% | -2.0 r, -11%, 16% | 107%, 0.52 |
+| Proximity Klaxon | Indirect debuff, heat 1, Lure, Spread | +0.2 r, -1%, 3% | +0.2 r, +1%, 3% | 36%, 0.20 |
+| Overcharge Coil | a buff, Overcharged 2 | -0.1 r, -0%, 11% | -0.1 r, -0%, 10% | 35%, 0.18 |
+| Ram Frame (module) | +1 on Direct blows at the front | -0.8 r, -7% | -0.8 r, -9% | 32%, 0.10 |
+| Susceptibility Tensor (module) | +1 on a foe carrying a status | -0.5 r, -4% | -0.4 r, -3% | 33%, 0.13 |
+| Muzzle Velocity Booster (module) | rolled weapons reach 1 higher | -0.2 r, -1% | -0.2 r, -1% | 35%, 0.16 |
+| Tactical Databank (module) | rolled weapons' lowest roll 1 higher | -0.2 r, -1% | -0.1 r, -1% | 34%, 0.16 |
+
+The what-ifs on the car, against the merged head's stock row (6.1 rounds, 24% hull):
+
+| The shell with a Splash | Rounds | Hull | Share | Peak |
+|---|---|---|---|---|
+| Howitzer, Splash 1 | 5.3 (-0.9) | 18% (-6) | 24% | 32% |
+| Howitzer, Splash 2 | 5.0 (-1.2) | 16% (-8) | 25% | 31% |
+| Meteor Artillery, Burn 3 and Splash 1 | 3.7 (-2.4) | 10% (-13) | 19% | 87% |
+| Meteor Artillery, Burn 3 and Splash 2 | 3.7 (-2.4) | 9% (-14) | 20% | 88% |
+| Meteor Artillery, Splash 1 alone (its Burn dropped, a first run's slip) | 4.9 (-1.2) | 16% (-7) | 16% | 87% |
+| Meteor Artillery, Splash 2 alone | 4.8 (-1.3) | 16% (-8) | 16% | 89% |
+
+Read:
+
+- The rows read a little harder on the merged head, the Marsh's Knight pair most of it
+  (Wainwright & Sutler's row 99.6 to 93.5% won, 18 to 24% hull; Minerva's 4.9 to 5.3 rounds),
+  and every candidate's delta against its own stock row holds within a tenth of a round and a
+  point or two of hull: the numbered area (the Beam's Penetrate 3, the Airburst's Spread 1 in
+  place of the half) and the blow's order move no rank on the car, so the 27 October ladders
+  stand as directions on the merged head. The Ram Frame reads two points of hull more under the
+  order (its point on every area foe as on every strike), the Tensor a point less; the Railgun
+  four points of hull more.
+- The Howitzer with Splash 1 takes 0.9 rounds and 6 points of hull off the row, with Splash 2
+  1.2 and 8, from 0.5 and 4 plain: a chip at the neighbours moves a tier-one shell into tier
+  two's band on kill time at heat 1, the number the lever.
+- The Meteor Artillery with Splash 1 or 2 takes 2.4 rounds and 13 to 14 points off, the
+  biggest delta any piece has read on this bench, and the same at both numbers: its riders
+  land on every foe struck (the blow's order), so a Splash on it is Burn 3 on up to five foes
+  and the rank and file die to the fire whatever N is; without its Burn (the slip) a Splash of
+  1 or 2 reads 1.2 and 1.3, a plain shell's step. On the Meteor the rider is the lever, not the
+  number. Claude's lean for section 12's shells question: the Howitzer carries Splash 1 (the
+  chip Ryan named for the big hitters), the Meteor none while Burn rides every foe struck, or
+  Splash 1 at Burn 2 as the next what-if, since an area fire is a piece of its own (the
+  pricing proposal's hole A asks for fire's second reader, not a bigger first setter); Ryan's
+  to move.
+
+## 28 October, the vanilla ladder
+
+**The vanilla ladder** (`tools/pricing_run.py run vanilla28 --parts vanilla,vanillaheat,ladders
+--benches prairie_dog,goshawk --pieces ...`, the merged head of the 28th; the method in
+the scale, the bible's pricing row; the proposal's section 1 at `git show a89cfc6:docs/pricing_proposal.md`): Ryan's frame of the 28th, a piece priced by
+its effectiveness and never its number, the baseline a vanilla at each tier, heat priced up
+from the heatless vanilla, a rolled gun its mean. A flat heatless gun reshaped by `--set` from
+a basic no bench row stocks (the Rivet Gun for the Direct, the Shotfire Rack made flat for the
+Indirect) in the bench hardpoint at every number from 2 to 10, so the row's other dice stay as
+they are; the same vanilla at 3, 5 and 7 across heat 0, 2, 4, 6 and 8; and twenty real guns in
+the same slot, each read in vanilla points, the heatless flat Direct number that takes the same
+rounds off the row. Two benches: the Prairie Dog's first hardpoint in Wainwright & Sutler's row
+(the cold car, maximum 12, cooling 1, the one bench with room) and the Buzzard's third in
+Kestrel's row (the hot flyer, maximum 14, cooling 1, where heat bites). The sixteen big fights
+but the finale, greedy at 30 seeds a cell: 124 variants, 59,520 fights, about 44
+minutes on a cloud session's four cores. A direction, read on the rounds to win and the hull
+lost, since both rows win these cells.
+
+**The heatless curve**, a flat gun of each shape at heat 0 in the bench hardpoint: rounds off
+the stock row, hull off it, and the vanilla's share of the row's spends (the car's stock row
+6.1 rounds and 24% hull, the Buzzard's 2.9 and 8%):
+
+| Number | flat Indirect, Prairie Dog | flat Indirect, Buzzard | flat Direct, Prairie Dog | flat Direct, Buzzard |
+|---|---|---|---|---|
+| 2 | -0.0 r, -1%, 11% | +0.4 r, +2%, 2% | -0.1 r, -1%, 11% | +0.4 r, +2%, 2% |
+| 3 | -0.5 r, -3%, 14% | +0.4 r, +2%, 5% | -0.5 r, -3%, 14% | +0.4 r, +2%, 5% |
+| 4 | -0.9 r, -6%, 16% | +0.4 r, +2%, 9% | -0.9 r, -5%, 16% | +0.4 r, +2%, 8% |
+| 5 | -1.2 r, -7%, 18% | +0.3 r, +2%, 9% | -1.2 r, -7%, 18% | +0.3 r, +2%, 9% |
+| 6 | -1.5 r, -9%, 19% | +0.3 r, +2%, 10% | -1.6 r, -9%, 19% | +0.3 r, +1%, 10% |
+| 7 | -1.7 r, -10%, 19% | +0.3 r, +2%, 10% | -1.7 r, -10%, 19% | +0.3 r, +1%, 10% |
+| 8 | -1.9 r, -10%, 19% | +0.3 r, +1%, 11% | -1.9 r, -11%, 19% | +0.3 r, +1%, 11% |
+| 10 | -2.2 r, -13%, 19% | +0.2 r, +1%, 10% | -2.2 r, -13%, 20% | +0.2 r, +1%, 10% |
+
+**The heat grid on the car** (flat Direct; the flat Indirect reads the same within a tenth of
+a round in every cell): rounds off stock, hull off stock, share, the peak heat as a turn ended,
+the overheats and the dice held for heat a fight, hot where the peak reaches the maximum or the
+overheats rise a quarter a fight over stock (0.13):
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.5 r, -3%, 14%, 34%, 0.17, 0.03 | -0.6 r, -2%, 14%, 37%, 0.19, 0.04 | -0.6 r, -2%, 13%, 60%, 0.22, 0.05 | -0.3 r, -1%, 12%, 79%, 0.29, 0.11 | -0.2 r, -1%, 9%, 82%, 0.41, 0.19 |
+| 5 | -1.2 r, -7%, 18%, 32%, 0.10, 0.01 | -1.2 r, -7%, 18%, 37%, 0.12, 0.03 | -1.2 r, -6%, 18%, 67%, 0.20, 0.03 | -1.0 r, -5%, 15%, 87%, 0.30, 0.06 | -0.8 r, -3%, 12%, 95%, 0.55, 0.10 hot |
+| 7 | -1.7 r, -10%, 19%, 30%, 0.08, 0.02 | -1.7 r, -9%, 19%, 35%, 0.10, 0.02 | -1.7 r, -9%, 19%, 65%, 0.18, 0.03 | -1.6 r, -8%, 17%, 90%, 0.33, 0.05 | -1.3 r, -6%, 14%, 104%, 0.61, 0.07 hot |
+
+**The heat grid on the Buzzard** (flat Direct; the Indirect the same), the stock row's
+overheats 0.29 and its held dice 0.07:
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | +0.4 r, +2%, 5%, 95%, 0.38, 0.20 | +0.4 r, +2%, 5%, 96%, 0.41, 0.21 | +0.4 r, +2%, 5%, 97%, 0.43, 0.24 | +0.4 r, +3%, 4%, 99%, 0.46, 0.22 | +0.4 r, +3%, 3%, 100%, 0.49, 0.22 |
+| 5 | +0.3 r, +2%, 9%, 92%, 0.32, 0.22 | +0.3 r, +2%, 9%, 93%, 0.36, 0.20 | +0.3 r, +2%, 9%, 97%, 0.38, 0.19 | +0.4 r, +2%, 8%, 101%, 0.43, 0.21 hot | +0.4 r, +3%, 7%, 100%, 0.49, 0.21 hot |
+| 7 | +0.3 r, +1%, 10%, 89%, 0.32, 0.20 | +0.3 r, +2%, 10%, 91%, 0.36, 0.19 | +0.3 r, +2%, 10%, 95%, 0.39, 0.20 | +0.3 r, +2%, 9%, 100%, 0.44, 0.21 hot | +0.3 r, +3%, 8%, 102%, 0.51, 0.20 hot |
+
+**The pool's attacks in vanilla points on the car**, the heatless flat Direct number that takes
+the same rounds off the row: the twenty guns of this run, the area carriers rerun on the merged
+head (28 October, above) and the rest from the 27 October run (its stock row 5.9 rounds and 18%
+hull; the rerun found every delta holding within a tenth of a round), each converted with
+today's curve:
+
+| Tier | Piece | Its number, heat, keywords | Rounds off stock | Vanilla points | Share | Run |
+|---|---|---|---|---|---|---|
+| 0 | Laser Carbine | 3, heat 2 | -0.6 r, -2% hull | 3.1 | 14% | vanilla28 |
+| 0 | Rivet Gun | 2, heat 0 | -0.1 r, -2% hull | 2.2 | 11% | 27th |
+| 0 | Twin Autoguns | 1-3, heat 0 | +0.0 r, +0% hull | 2 or under | 24% | vanilla28 |
+| 0 | Ankle Mortar | 1-3, heat 1 | +0.0 r, +0% hull | 2 or under | 16% | 27th |
+| 1 | Overclocked Railgun | 10, heat 8, breach | -2.0 r, -11% hull | 8.8 | 16% | vanilla28 |
+| 1 | Arc Fault Cannon | 4, heat 2, chain | -1.7 r, -10% hull | 6.7 | 18% | vanilla28 |
+| 1 | Thermal Ray | 6, heat 6 | -1.3 r, -7% hull | 5.3 | 17% | vanilla28 |
+| 1 | Blazethrower | 3, heat 3, burn 2 | -1.3 r, -6% hull | 5.3 | 17% | vanilla28 |
+| 1 | Transonic Rifle | 5, heat 4 | -1.2 r, -6% hull | 4.9 | 18% | vanilla28 |
+| 1 | Enfilade Beam | 4, heat 2, penetrate 3 | -1.0 r, -6% hull | 4.3 | 24% | vanilla28 |
+| 1 | Maxigun | 1-2 x3, heat 1 | -0.7 r, -4% hull | 3.5 | 26% | vanilla28 |
+| 1 | Incendiary Shells | 1-3, heat 1, burn 2 | -0.7 r, -3% hull | 3.4 | 22% | 27th |
+| 1 | Airburst Shell | 1-2, heat 1, cleave 1 flak 1 | -0.6 r, -4% hull | 3.2 | 26% | vanilla28 |
+| 1 | Slugthrower | 2-5, heat 1 | -0.6 r, -3% hull | 3.2 | 17% | vanilla28 |
+| 1 | Howitzer | 2-5, heat 1 | -0.5 r, -4% hull | 3.0 | 24% | vanilla28 |
+| 1 | Plasma Arquebus | 2-4, heat 2 | -0.4 r, -2% hull | 2.8 | 16% | vanilla28 |
+| 1 | Shotfire Rack | 2-4, heat 2 | -0.4 r, -3% hull | 2.8 | 17% | 27th |
+| 1 | Polarity Projector | debuff 0, heat 2, shock | +0.1 r, +0% hull | 2 or under | 9% | 27th |
+| 1 | Proximity Klaxon | debuff 0, heat 1, lure cleave | +0.2 r, +1% hull | 2 or under | 3% | area28 |
+| 2 | Meteor Artillery | 5, heat 6, burn 3 | -1.8 r, -9% hull | 7.2 | 17% | vanilla28 |
+| 2 | Cyclic Cannon | 2 x4, heat 3 | -1.7 r, -8% hull | 6.8 | 19% | vanilla28 |
+| 2 | Tesla Gauntlets | 4, heat 3, shock | -1.4 r, -7% hull | 5.4 | 18% | vanilla28 |
+| 2 | Stoker | 3, heat 1, burn 2 self_burn 1 | -1.3 r, -6% hull | 5.3 | 17% | vanilla28 |
+| 2 | Flak Cannon | 3, heat 2, flak 2 | -1.2 r, -6% hull | 5.0 | 17% | vanilla28 |
+| 2 | Coriolis Accelerator | 3, heat 1, power_per_missing 1 per_missing 5 | -1.0 r, -5% hull | 4.2 | 16% | vanilla28 |
+| 2 | Pulse Vacillator | 2, heat 2, rapid | -0.2 r, -3% hull | 2.4 | 11% | 27th |
+| 2 | Backdraft Charge | 2, heat 2, suppress gates suppress: when target_status, status burning, stacks 2 consumes burning per_consumed 1 | -0.1 r, -2% hull | 2.2 | 12% | 27th |
+| 2 | Suppression Battery | 1-3, heat 2, suppress gates suppress: when target_status, status flakked | -0.1 r, -2% hull | 2.1 | 15% | 27th |
+| 2 | Differentiation Probe | debuff 0, heat 2, disrupt | +0.9 r, -1% hull | 2 or under | 10% | 27th |
+| 3 | Gravity Knuckles | 5, heat 4, burn 3 | -1.9 r, -9% hull | 7.7 | 18% | vanilla28 |
+| 3 | Umbra Inducer | 3, heat 0, suppress volatile 3 | -0.6 r, -1% hull | 3.2 | 15% | 27th |
+
+**The same twenty on the Buzzard**, where the heatless curve is flat (0.2 rounds between 2 and
+10: the slot fires a tenth of the time and the row wins in 2.9 rounds), so no vanilla points,
+only the rounds against stock, the share and the peak:
+
+| Tier | Piece | Its number, heat, keywords | Rounds off stock | Share | Peak |
+|---|---|---|---|---|---|
+| 0 | Laser Carbine | 3, heat 2 | +0.4 | 17% | 96% |
+| 0 | Twin Autoguns | 1-3, heat 0 | +0.4 | 16% | 98% |
+| 1 | Overclocked Railgun | 10, heat 8, breach | +0.2 | 19% | 104% |
+| 1 | Thermal Ray | 6, heat 6 | +0.4 | 9% | 100% |
+| 1 | Transonic Rifle | 5, heat 4 | +0.3 | 30% | 97% |
+| 1 | Maxigun | 1-2 x3, heat 1 | +0.4 | 8% | 94% |
+| 1 | Arc Fault Cannon | 4, heat 2, chain | +0.0 | 10% | 93% |
+| 1 | Enfilade Beam | 4, heat 2, penetrate 3 | +0.3 | 8% | 92% |
+| 1 | Howitzer | 2-5, heat 1 | +0.4 | 7% | 96% |
+| 1 | Slugthrower | 2-5, heat 1 | +0.4 | 7% | 96% |
+| 1 | Blazethrower | 3, heat 3, burn 2 | +0.4 | 7% | 96% |
+| 1 | Plasma Arquebus | 2-4, heat 2 | +0.4 | 6% | 97% |
+| 1 | Airburst Shell | 1-2, heat 1, cleave 1 flak 1 | +0.3 | 3% | 97% |
+| 2 | Cyclic Cannon | 2 x4, heat 3 | +0.3 | 10% | 94% |
+| 2 | Meteor Artillery | 5, heat 6, burn 3 | +0.3 | 9% | 100% |
+| 2 | Tesla Gauntlets | 4, heat 3, shock | +0.2 | 9% | 92% |
+| 2 | Coriolis Accelerator | 3, heat 1, power_per_missing 1 per_missing 5 | +0.4 | 7% | 93% |
+| 2 | Flak Cannon | 3, heat 2, flak 2 | +0.4 | 7% | 94% |
+| 2 | Stoker | 3, heat 1, burn 2 self_burn 1 | +0.4 | 7% | 94% |
+| 3 | Gravity Knuckles | 5, heat 4, burn 3 | +0.3 | 9% | 95% |
+
+**The rolled and strikes guns against their means** (the middle of the range times the strikes):
+
+| Piece | Its number, heat | Mean | Prairie Dog points | Buzzard points |
+|---|---|---|---|---|
+| Slugthrower | 2-5, heat 1 | 3.5 | 3.2 | 3.9 |
+| Twin Autoguns | 1-3, heat 0 | 2.0 | 2 or under | 2 or under |
+| Howitzer | 2-5, heat 1 | 3.5 | 3.0 | 4.2 |
+| Plasma Arquebus | 2-4, heat 2 | 3.0 | 2.8 | 3.9 |
+| Maxigun | 1-2 x3, heat 1 | 4.5 | 3.5 | 4.0 |
+| Cyclic Cannon | 2 x4, heat 3 | 8.0 | 6.8 | 6.3 |
+
+Read:
+
+- **A vanilla point buys a third of a round up to 6 and a seventh past it on the car.** The
+  heatless flat gun takes 0.1 rounds off at 2, 0.5 at 3, 0.9 at 4, 1.2 at 5, 1.6 at 6, then 1.7
+  at 7, 1.9 at 8 and 2.2 at 10, the hull 1 to 13%: the knee sits where a blow kills any of the
+  rank and file outright (their HP 2 to 6), and past it a point buys kill time only on the
+  massive foes and the heroes. The flat Indirect reads the same at every number, so the shape
+  is free on this bench and a reach price is the fight's, not the piece's.
+- **The hot bench reads no number.** On the Buzzard every vanilla at every number and heat
+  reads 0.2 to 0.4 rounds behind its stock Arc Fault Cannon, with 2 to 11% of the row's spends:
+  the third gun on a hot die fires a tenth of the time, and the row wins in 2.9 rounds without
+  it. What beats the vanilla there is a keyword that reaches a second foe or amplifies the row:
+  the Chain (level with stock, the one piece that is), the Shock and the Breach (0.2 behind),
+  Burn 3 and Penetrate 3 (0.3). The hot bench prices reach and nothing else.
+- **Heat's knee on a cold die is 6, the heat row's third round.** Heat 2 and 4 move nothing at
+  3, 5 or 7 (the peak 37 to 67%); heat 6 takes 0.2 rounds back at every number (the peak 79 to
+  90%, 0.3 overheats a fight), 0.6 to 0.7 vanilla points; heat 8 takes 0.3 to 0.4 back and reads
+  hot (the peak 95 to 104%, 0.4 to 0.6 overheats), 0.9 points at 3, 1.3 at 5 and 2.0 at 7, a
+  quarter of the number: a die of 7 held for heat forgoes more than a die of 3. On the Buzzard
+  no heat cell moves the rounds; the overheats climb from 0.31 to 0.53 a fight and the hull lost
+  from 1 to 3 points, so a hot die pays a third gun's heat in hull however small its number.
+- **A rolled gun is its mean, less a third of a point.** The Slugthrower reads 3.2 for a mean
+  of 3.5, the Howitzer 3.0 for 3.5, the Arquebus 2.8 for 3.0, the Twin Autoguns 2 or under for
+  2: the threshold a kill needs, the roll's low end wasting a point. A strikes gun reads a point
+  under its total (the Maxigun 3.5 for 4.5, the Cyclic Cannon 6.8 for 8), the armour and the
+  overkill each strike pays alone. Ryan's asymptote holds within that.
+- **The keywords in vanilla points on the car**: Flak 2 buys 2.0 (the Flak Cannon 5.0 for its
+  3, beside the Dingo's and the Clydesdale's guns), Burn 2 2.3 (the Stoker and the Blazethrower
+  5.3 for their 3 at heat 1 and 3 alike), Burn 3 2.7 (the Knuckles 7.7 for 5; the Meteor 7.2
+  after heat 6's 0.7), the Chain 2.7 (the Arc Fault 6.7 for 4), the Shock 1.4 (the Tesla 5.4
+  for 4, beside the Maxigun's strikes), Penetrate 3 0.3 (the Enfilade 4.3 for 4: no second foe
+  in the line at the car's reach), the Breach about 1 (the Railgun 8.8 for 10, less heat 8's
+  2), the Coriolis's point a missing five 1.2, the Airburst's Cleave 1 and Flak 1 together 1.7
+  over its mean of 1.5. Tier two's three setups (the Vacillator, the Backdraft, the Battery)
+  read 2.1 to 2.4, under tier zero, the greedy's valuation before their price.
+- **The tiers on the scale**: tier zero 2 to 3.1; tier one 2.8 to 3.5 for its rolled and
+  strikes guns, 4.3 for the Enfilade, 4.9 to 5.3 for the hot flat guns and the Blazethrower,
+  the Arc Fault 6.7 and the Railgun 8.8 outliers; tier two 4.2 to 5.4 for its keyword pieces,
+  the Cyclic 6.8 and the Meteor 7.2; tier three the Knuckles 7.7. The tiers overlap end to
+  end, as the 27 October run said in numbers; in vanilla points the mass of each tier sits a
+  point and a half above the last (3, 5, 7 for tiers one to three), which is the floors the
+  proposal leans to (2, 3.5, 5, 7: half a round a tier on the car).
+
+## 28 October, the Clydesdale bench
+
+**The warm Indirect bench** (`tools/pricing_run.py run clyde28 --parts vanilla,vanillaheat,ladders,modules
+--benches clydesdale --pieces ... --modules artillery_rangefinder,ram_frame --set
+modules/ram_frame/stats/hull=8 --set modules/artillery_rangefinder/stats/hull=8`, the merged
+head of the 28th, before the fills): the Clydesdale's Howitzer slot in Wainwright & Sutler's row,
+a nine-piece die at maximum 12 with cooling 1 whose spends run warm (the Maxigun 1, the Enfilade
+Beam 2, the shells 1), the sixth bench, added for three reads the proposal's leans asked for
+before the fills: the heat knee on a warm die beside the cold car's and the hot Buzzard's; the
+Indirect pieces in an Indirect slot (the car read the flat Indirect as the flat Direct); and the
+Artillery Rangefinder beside the Ram Frame at the hull line the pass sets (+8 each), on a
+machine whose Indirect guns the Rangefinder's rule reads. The vanilla ladder as on the car
+(heatless 2 to 10, the grid at 3, 5 and 7 across heat 0 to 8), twenty-three guns and the two
+modules: 69 variants, 33,120 fights, about 39 minutes on four cores. A direction at 30
+seeds.
+
+**The heatless curve** in the Clydesdale's Howitzer slot (rounds off the stock row, 6.1 and 24%,
+hull off it, the vanilla's share of the row's spends):
+
+| Number | flat Indirect, Clydesdale | flat Direct, Clydesdale |
+|---|---|---|
+| 2 | +0.1 r, +0%, 1% | -0.0 r, -0%, 1% |
+| 3 | -0.0 r, -0%, 6% | -0.1 r, -0%, 6% |
+| 4 | -0.3 r, -2%, 7% | -0.3 r, -2%, 7% |
+| 5 | -0.4 r, -3%, 7% | -0.4 r, -3%, 7% |
+| 6 | -0.6 r, -4%, 8% | -0.6 r, -4%, 8% |
+| 7 | -0.7 r, -4%, 8% | -0.7 r, -4%, 8% |
+| 8 | -0.8 r, -5%, 8% | -0.8 r, -5%, 8% |
+| 10 | -1.0 r, -7%, 8% | -1.0 r, -7%, 8% |
+
+**The heat grid** (flat Direct; the flat Indirect reads the same): rounds, hull, share, the peak
+heat, the overheats and the dice held a fight:
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.1 r, -0%, 6%, 34%, 0.15, 0.04 | -0.0 r, -0%, 6%, 38%, 0.19, 0.05 | -0.0 r, +0%, 6%, 49%, 0.19, 0.04 | -0.1 r, +0%, 5%, 59%, 0.25, 0.06 | +0.1 r, +1%, 4%, 62%, 0.21, 0.07 |
+| 5 | -0.4 r, -3%, 7%, 34%, 0.15, 0.04 | -0.4 r, -2%, 7%, 38%, 0.19, 0.05 | -0.4 r, -2%, 7%, 52%, 0.20, 0.05 | -0.3 r, -2%, 7%, 66%, 0.28, 0.06 | -0.1 r, -1%, 5%, 72%, 0.29, 0.08 |
+| 7 | -0.7 r, -4%, 8%, 33%, 0.17, 0.04 | -0.7 r, -4%, 8%, 38%, 0.20, 0.04 | -0.7 r, -4%, 8%, 52%, 0.23, 0.05 | -0.6 r, -3%, 7%, 66%, 0.30, 0.05 | -0.5 r, -3%, 6%, 75%, 0.33, 0.05 |
+
+**The pieces on the Clydesdale**, in vanilla points by this bench's own curve (coarse: the curve
+spans a round from 2 to 10, so a point here is a tenth of a round):
+
+| Tier | Piece | Its number, heat, keywords | Clydesdale: rounds, points, share, peak |
+|---|---|---|---|
+| 0 | Laser Carbine | 3, heat 2 | -0.0 r, 2.6 (2.6 by shape), 6%, 38% |
+| 0 | Ankle Mortar | 1-3, heat 1 | +0.2 r, 2 or under (2 or under by shape), 4%, 35% |
+| 0 | Twin Autoguns | 1-3, heat 0 | +0.1 r, 2 or under (2 or under by shape), 26%, 35% |
+| 1 | Overclocked Railgun | 10, heat 8, breach | -1.0 r, 9.4 (9.4 by shape), 7%, 79% |
+| 1 | Thermal Ray | 6, heat 6 | -0.6 r, 5.6 (5.6 by shape), 7%, 66% |
+| 1 | Transonic Rifle | 5, heat 4 | -0.4 r, 4.8 (4.8 by shape), 7%, 52% |
+| 1 | Maxigun | 1-2 x3, heat 1 | +0.0 r, 2 or under (2 or under by shape), 16%, 35% |
+| 1 | Arc Fault Cannon | 4, heat 2, chain | -0.7 r, 6.6 (6.6 by shape), 7%, 48% |
+| 1 | Enfilade Beam | 4, heat 2, penetrate 3 | -0.3 r, 4.1 (4.1 by shape), 15%, 39% |
+| 1 | Howitzer | 2-5, heat 1 | +0.0 r, 2 or under (2.7 by shape), 7%, 35% |
+| 1 | Slugthrower | 2-5, heat 1 | +0.0 r, 2 or under (2 or under by shape), 7%, 35% |
+| 1 | Blazethrower | 3, heat 3, burn 2 | -0.4 r, 4.9 (4.9 by shape), 6%, 44% |
+| 1 | Plasma Arquebus | 2-4, heat 2 | +0.0 r, 2 or under (2 or under by shape), 6%, 39% |
+| 1 | Shotfire Rack | 2-4, heat 2 | +0.0 r, 2 or under (2.7 by shape), 6%, 39% |
+| 1 | Incendiary Shells | 1-3, heat 1, burn 2 | -0.1 r, 3.2 (3.3 by shape), 12%, 34% |
+| 1 | Airburst Shell | 1-2, heat 1, cleave 1 flak 1 | +0.1 r, 2 or under (2.0 by shape), 15%, 35% |
+| 2 | Cyclic Cannon | 2 x4, heat 3 | -0.6 r, 6.2 (6.2 by shape), 8%, 44% |
+| 2 | Meteor Artillery | 5, heat 6, burn 3 | -0.9 r, 8.4 (8.3 by shape), 7%, 63% |
+| 2 | Tesla Gauntlets | 4, heat 3, shock | -0.5 r, 5.3 (5.3 by shape), 7%, 45% |
+| 2 | Coriolis Accelerator | 3, heat 1, power_per_missing 1 per_missing 5 | -0.4 r, 4.9 (4.9 by shape), 7%, 34% |
+| 2 | Flak Cannon | 3, heat 2, flak 2 | -0.5 r, 5.2 (5.2 by shape), 7%, 38% |
+| 2 | Stoker | 3, heat 1, burn 2 self_burn 1 | -0.4 r, 4.9 (4.9 by shape), 6%, 37% |
+| 3 | Gravity Knuckles | 5, heat 4, burn 3 | -0.9 r, 8.7 (8.7 by shape), 7%, 50% |
+
+**The two modules at the hull line the pass sets (+8)**, fitted to the Clydesdale alone:
+
+| Module | At hull +8 | Win | Rounds | Hull | Against stock | Peak | Overheats |
+|---|---|---|---|---|---|---|---|
+| Ram Frame | hull +24; Its Direct blows aimed at the front rank deal 1 more. | 96.9 | 5.7 | 19% | win +3.3, -0.4 r, -5% hull | 33% | 0.14 |
+| Artillery Rangefinder | Its Indirect blows aimed at the back rank deal 1 more. | 95.0 | 6.0 | 21% | win +1.5, -0.1 r, -2% hull | 35% | 0.18 |
+
+Read:
+
+- **A nine-entry die dilutes its slot.** The vanilla in the Clydesdale's slot takes a tenth of
+  a round off at 4 and a round at 10, with 6 to 8% of the row's spends, where the same vanilla
+  in the Prairie Dog's three-entry slot took 0.9 and 2.2 with 16 to 20%: a piece's worth to its
+  row is its number times how often the die lands on it, so the same gun is worth a third as
+  much on a nine-entry die. The flat Indirect reads as the flat Direct here too, on the machine
+  with the Indirect guns.
+- **Heat never bites on the nine-entry die.** At 5 and 7 the slot's heat 8 takes 0.2 rounds back
+  and lifts the peak to 72 to 75%, with no overheat; the knee the car reached at heat 6 (its
+  peak 79 to 90%) is never reached here, since the slot fires a ninth of the spends. So heat's
+  price scales with how often the piece fires: the die's size is a lever beside the maxima and
+  the cooling, and a hot gun on a big die is a cool one.
+- **The order holds.** The Railgun 9.4, the Knuckles 8.7, the Meteor 8.4, the Arc Fault 6.6,
+  the Cyclic 6.2, the Thermal Ray 5.6, the Tesla 5.3, the Flak Cannon 5.2, the Blazethrower,
+  the Stoker and the Coriolis 4.9, the Transonic 4.8, the Enfilade 4.1, the Incendiary 3.2, the
+  Carbine 2.6; every rolled gun and the Maxigun at 2 or under, since a tier-one rolled gun's
+  3.5 is a tenth of a round on this slot, within the direction's noise.
+- **The Ram Frame at +8 is still the better mirror.** On the Clydesdale's strikes and its
+  Direct guns the Frame takes 0.4 rounds and 5 points of hull off the row (its point on every
+  Maxigun strike at the front); the Rangefinder at +8 takes 0.1 and 2, its back-rank rule
+  reading on the one back-rank foe type each tier-one formation fields (two or three foes) and
+  on a greedy that aims Indirect at the kill, not at the rank. Both land at +8, the module its
+  text, and the Rangefinder is read again on the ladder's tier cells, where tier three's
+  formations field three back-rank types.
+
+## 28 October, the pricing pass's fills at 200 seeds
+
+**The landed deltas read again** (`tools/pricing_run.py run land200car --seeds 200 --parts ladders
+--benches prairie_dog --pieces ...` and `run land200clyde --seeds 200 --parts modules --benches
+clydesdale --modules ram_frame,artillery_rangefinder`, the content as the fills left it; the
+pricing row's rule that a delta a number lands on is read again at 200 seeds): the six moved
+pieces in the Prairie Dog's slot of Wainwright & Sutler's row, and the two modules at +8 on the
+Clydesdale in the same row, against that row as stocked after the fills, which carries the
+Howitzer at 2-6 with Splash 1 in the Clydesdale's stock. The sixteen big fights but the finale,
+greedy, 200 seeds a cell: 16 variants, about 53 minutes on four cores. A band, not a
+direction: a row mean at 200 seeds carries about a point and a half of win rate and a twentieth
+of a round.
+
+The row as stocked after the fills, beside its 30-seed read before them: 5.8 rounds and 21% hull
+(94.8% won) against 6.1 and 24% (93.5%), the Howitzer's Splash 1 in the Clydesdale's stock a
+third of a round off the row by itself.
+
+| Piece | Before, 30 seeds (its number; rounds off stock, hull, share) | After, 200 seeds (its number; rounds off stock, hull, share, peak, overheats) |
+|---|---|---|
+| Overclocked Railgun | 10, heat 8, Breach; -2.0 r, -11%, 16% | 8, heat 8, Breach; -1.5 r, -8%, 15%, 104%, 0.58 (hot) |
+| Coriolis Accelerator | 3, heat 1, a point a missing five; -1.0 r, -5%, 16% | 4; -1.1 r, -5%, 17%, 31%, 0.10 |
+| Howitzer | 2-5, heat 1, plain; -0.5 r, -4%, 24% (Splash 1 as a what-if -0.9) | 2-6, Splash 1; -0.8 r, -4%, 26%, 32%, 0.07 |
+| Slugthrower | 2-5, heat 1; -0.6 r, -3%, 17% | 2-6; -0.6 r, -3%, 17%, 33%, 0.13 |
+| Plasma Arquebus | 2-4, heat 2; -0.4 r, -2%, 16% | 2-6; -0.6 r, -3%, 17%, 37%, 0.13 |
+| Shotfire Rack | 2-4, heat 2; -0.4 r, -3%, 17% (the 27th) | 2-6; -0.6 r, -3%, 17%, 37%, 0.11 |
+
+The two modules at +8, fitted to the Clydesdale alone, against the same row, beside their 30-seed
+read on the Clydesdale bench before the fills:
+
+| Module | Before, 30 seeds (rounds off stock, hull, win) | After, 200 seeds (rounds off stock, hull, win) |
+|---|---|---|
+| Ram Frame, hull +8, a point on its Direct blows at the front | -0.4 r, -5%, +3.3 | -0.3 r, -3%, +2.1 |
+| Artillery Rangefinder, hull +8, a point on its Indirect blows at the back | -0.1 r, -2%, +1.5 | -0.0 r, -2%, +1.0 |
+
+Read:
+
+- **The Railgun at 8 sits where tier one's top should.** 1.5 rounds off the row against 2.0 at
+  10, still hot (the peak 104%, 0.58 overheats a fight), now under the Gravity Knuckles (1.9)
+  and the Meteor Artillery (1.8) and above the Thermal Ray (1.3) and the Transonic Rifle (1.2),
+  the two hot flat guns of its own tier: about 7 vanilla points on the ladder's curve, tier
+  three's floor rather than a point past it.
+- **The Coriolis at 4 reaches tier two's floor.** 1.1 rounds off, beside the Flak Cannon (1.2)
+  and the Stoker (1.3), where its 3 read 1.0 and sat under the Transonic; the lift bought a
+  twentieth of a round at 200 seeds, the 30-seed read of its 3 having been a tenth generous.
+- **The rolled vanillas' lift is the half point it was meant to be.** At 2-6 the Slugthrower,
+  the Arquebus and the Shotfire Rack read 0.6 rounds off alike (0.4 to 0.6 before), a tenth
+  above the tier-zero Carbine's 0.6 on the old row and level with the Maxigun; a rolled gun
+  still reads a third of a point under its mean (4 reads about 3.6), as the ladder said.
+- **The Howitzer with Splash 1 at 2-6 reads 0.8 rounds off**, a tier-one shell at tier two's kill
+  time (the Flak Cannon's 1.2, the Tesla's 1.4 above it; the Enfilade's 1.0 beside it), as the
+  what-if of the 28th said at 0.9 on the old row: the chip Ryan named, priced.
+- **The modules at +8 are their text.** The Ram Frame takes a third of a round and three points
+  of hull off the row on the Clydesdale's strikes, a tier-two module's worth and no longer the
+  universal pick (+24 took 0.8 rounds and 7 to 9 points off the car on the 27th); the
+  Rangefinder at the same line takes nothing off the rounds and two points of hull on tier
+  one's formations, with their one back-rank foe type each, so there it is the hull it carries;
+  tier three's formations field three, the ladder's tier cells its next read. The pair's read on
+  a Direct kit against an Indirect one is the catalogue line's.
+
+## 28 October, the Indirect bench on the ladder's tier cells
+
+**The Rangefinder and the Indirect pieces on the tiered formations** (`tools/pricing_run.py run
+tiers28 --parts ladders,modules --benches clydesdale --pieces ... --modules
+artillery_rangefinder,ram_frame --packs tiers`, the merged head with the ladder and the pass's
+fills; the driver reads the spawn lists by tier since this run): the Clydesdale's Howitzer slot
+in Wainwright & Sutler's row against the eight tiered formations alone (the Meadow's, the
+Waste's, the Marsh's and the Peak's at tier two and at tier three), where the back rank is a
+tier's weight: tier one's formations field one back-rank foe type each, tier two's one, tier
+three's three (the Goblin Captain, the Mandrake and the Alraune in the Meadow; the Basilisk and
+the Gorgon; the Lich, the Spectre and the Wraith; the Wyvern and the Red Dragon). Ten guns and
+the two modules at +8, greedy at 30 seeds: 16 variants, 3,840 fights, 15 minutes. A
+direction, and Ryan's correction of the evening: the fresh start is complete and has its ranks,
+so the Rangefinder's read waits on nothing but the cells it is read on.
+
+The four team rows as stocked on the eight tiered formations (the win rate, the rounds of the
+fights won, the hull lost, the peak heat, the overheats and the dice held a fight):
+
+| Row | Win | Rounds | Hull | Peak | Over | Held | Spends |
+|---|---|---|---|---|---|---|---|
+| the default team | 68.3 | 6.9 | 52% | 115% | 1.17 | 0.71 | Bullion Fragmenter 13%, Pinion Driver 13%, Chainsaw Claw 13%, Transonic Rifle 8%, Howitzer 8%, Bleed Valve 8% |
+| Minerva Heavy Works team | 68.3 | 9.9 | 63% | 59% | 1.09 | 0.16 | Slugthrower 13%, Canopy 13%, Bullion Fragmenter 12%, Chainsaw Claw 12%, Rivet Gun 11%, Twin Autoguns 10% |
+| Kestrel Dynamics team | 58.3 | 6.1 | 64% | 128% | 1.61 | 0.66 | Transonic Rifle 18%, Pinion Driver 15%, Bleed Valve 10%, Laser Carbine 10%, Twin Autoguns 9%, Overclocked Railgun 8% |
+| Wainwright & Sutler team | 28.8 | 9.5 | 90% | 48% | 0.60 | 0.20 | Twin Autoguns 18%, Airburst Shell 13%, Halo Shield 12%, Megataser Harpoon 9%, Flakshot Repeater 8%, Howitzer 8% |
+
+The Clydesdale's Howitzer slot on the tiered formations, each candidate against the row as
+stocked:
+
+| Tier | Candidate | Kind | Win | Rounds | Hull | Delta | Share | Peak | Over | Held | Flags |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Overclocked Railgun | direct 8, heat 8, breach | 30.0 | 9.0 | 88% | win +1.2, -0.5 r, -2% hull | 6% | 95% | 1.03 | 0.20 | hot |
+| 1 | Thermal Ray | direct 6, heat 6 | 27.9 | 9.3 | 89% | win -0.8, -0.2 r, -1% hull | 7% | 84% | 0.80 | 0.25 |  |
+| 1 | Enfilade Beam | direct 4, heat 2, penetrate 3 | 25.4 | 9.3 | 91% | win -3.3, -0.2 r, +1% hull | 16% | 54% | 0.59 | 0.19 |  |
+| 1 | Howitzer (stock) | indirect 2-6, heat 1, splash 1 | 28.8 | 9.5 | 90% | +0.0 r, +0% hull | 8% | 48% | 0.60 | 0.20 |  |
+| 1 | Shotfire Rack | indirect 2-6, heat 2 | 23.3 | 9.7 | 92% | win -5.4, +0.3 r, +2% hull | 7% | 52% | 0.57 | 0.19 |  |
+| 1 | Maxigun | direct 1-2 x3, heat 1 | 21.7 | 9.8 | 92% | win -7.1, +0.4 r, +2% hull | 15% | 47% | 0.54 | 0.20 |  |
+| 1 | Transonic Rifle | direct 5, heat 4 | 24.6 | 10.7 | 91% | win -4.2, +1.2 r, +1% hull | 7% | 69% | 0.67 | 0.23 |  |
+| 1 | Airburst Shell | indirect 1-2, heat 1, cleave 1 flak 1 | 18.8 | 9.3 | 94% | win -10.0, -0.1 r, +3% hull | 17% | 45% | 0.49 | 0.15 |  |
+| 1 | Incendiary Shells | indirect 1-3, heat 1, burn 2 | 19.2 | 9.8 | 94% | win -9.6, +0.3 r, +4% hull | 8% | 45% | 0.45 | 0.18 |  |
+| 2 | Meteor Artillery | indirect 5, heat 6, burn 3 | 26.2 | 8.9 | 90% | win -2.5, -0.6 r, +0% hull | 7% | 84% | 0.90 | 0.25 | hot, under tier 1 |
+
+The two modules at +8 on the Clydesdale alone, against the same row:
+
+| Tier | Module | Stats and text | Win | Rounds | Hull | Delta | Peak | Over |
+|---|---|---|---|---|---|---|---|---|
+| 2 | Ram Frame | hull +8; Its Direct blows aimed at the front rank deal 1 more. | 33.3 | 8.8 | 85% | win +4.6, -0.7 r, -5% hull | 48% | 0.68 |
+| 2 | Artillery Rangefinder | hull +8; Its Indirect blows aimed at the back rank deal 1 more. | 34.2 | 10.1 | 87% | win +5.4, +0.6 r, -3% hull | 49% | 0.78 |
+
+Read:
+
+- **The tiered formations are walls for the stock trios.** Wainwright & Sutler's row wins 29%
+  of them in 9.5 rounds for 90% of its hull, Kestrel's 58% at 128% peak heat and 1.6 overheats
+  a fight, Minerva's and the default team 68%: a tier-one kit against tier two's and tier
+  three's rank and file, which the ladder's own read of the 28th said (a fight that costs a
+  tier-one machine half its hull costs a tier three a third). A wall reads nothing about a
+  piece: the candidates' wins move 1 to 10 points on eight cells at 30 seeds, inside the band.
+- **The Rangefinder's rule needs a kit that can stand there.** On the wall the Rangefinder at
+  +8 reads as its hull (3 points kept) with the row half a round slower, the greedy spending
+  its Indirect guns at the back rank for the point rather than at the kill; the Ram Frame at
+  +8 reads 0.7 rounds and 5 points of hull off, its point on the Clydesdale's strikes at the
+  front. The pair's read by tier is the per-tier ladders' (the to-do): the tier's pieces and
+  modules on the tier's fights with a tier-matched kit, the endgame fours or a tier-three
+  trio, where the rows win and the rounds carry the read.
+- **The small shells fall off against bigger foes.** The Airburst Shell (1-2, Cleave 1 and Flak
+  1) and the Incendiary Shells (1-3, Burn 2) lose 10 points of wins against the Howitzer's
+  stock on these cells, where on tier one's they read beside it: a 1 or 2 with a rider kills
+  none of the ladder's rank and file, the kill-time test's arithmetic again (the area row).
+  The Transonic Rifle at heat 4 on the car's die runs 1.2 rounds slower on fights this long
+  (the peak 69%, 0.67 overheats), the one cell where heat 4 reads on a cold die.
+
+## 28 October, the heat knee by the maximum
+
+**The maxima lever, read as a what-if** (`tools/pricing_run.py run heatmax10 --parts vanillaheat
+--benches prairie_dog --set chassis/prairie_dog/heat_max=10` and the same at 8; content
+untouched; the merged head with the pass's fills): Ryan's question of the evening, what heat
+buys and how to make it threatening but fun, and the bench's first step, the maxima before any
+new rule. The vanilla heat grid of the vanilla ladder (the heatless flat Direct at 3, 5 and 7
+across heat 0 to 8 in the Prairie Dog's slot of Wainwright & Sutler's row, the sixteen big
+fights but the finale, greedy at 30 seeds) with the Prairie Dog's maximum at 10 and at 8
+against its 12, the other machines' as they are; 34 variants a run, 18 minutes each. A
+direction. The stock row reads the same at every maximum (5.9 rounds, 22% hull), since its
+Twin Autoguns carry no heat.
+
+At the maximum of 12 (the vanilla ladder's grid, for the comparison; rounds off stock, hull off
+stock, share, peak, overheats, dice held):
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.5 r, -3%, 14%, 34%, 0.17, 0.03 | -0.6 r, -2%, 14%, 37%, 0.19, 0.04 | -0.6 r, -2%, 13%, 60%, 0.22, 0.05 | -0.3 r, -1%, 12%, 79%, 0.29, 0.11 | -0.2 r, -1%, 9%, 82%, 0.41, 0.19 |
+| 5 | -1.2 r, -7%, 18%, 32%, 0.10, 0.01 | -1.2 r, -7%, 18%, 37%, 0.12, 0.03 | -1.2 r, -6%, 18%, 67%, 0.20, 0.03 | -1.0 r, -5%, 15%, 87%, 0.30, 0.06 | -0.8 r, -3%, 12%, 95%, 0.55, 0.10 hot |
+| 7 | -1.7 r, -10%, 19%, 30%, 0.08, 0.02 | -1.7 r, -9%, 19%, 35%, 0.10, 0.02 | -1.7 r, -9%, 19%, 65%, 0.18, 0.03 | -1.6 r, -8%, 17%, 90%, 0.33, 0.05 | -1.3 r, -6%, 14%, 104%, 0.61, 0.07 hot |
+
+At 10:
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.5 r, -2%, 14%, 34%, 0.15, 0.04 | -0.4 r, -2%, 14%, 40%, 0.19, 0.05 | -0.3 r, -1%, 13%, 68%, 0.23, 0.08 | -0.2 r, -1%, 11%, 84%, 0.52, 0.14 hot | -0.1 r, -0%, 8%, 86%, 0.32, 0.21 |
+| 5 | -1.1 r, -7%, 18%, 31%, 0.12, 0.01 | -1.1 r, -6%, 18%, 40%, 0.16, 0.02 | -1.1 r, -6%, 17%, 75%, 0.25, 0.04 | -0.8 r, -4%, 14%, 96%, 0.68, 0.09 hot | -0.5 r, -3%, 10%, 97%, 0.37, 0.16 |
+| 7 | -1.6 r, -9%, 19%, 30%, 0.09, 0.02 | -1.6 r, -9%, 19%, 39%, 0.12, 0.01 | -1.6 r, -8%, 19%, 75%, 0.23, 0.03 | -1.3 r, -7%, 16%, 99%, 0.67, 0.06 hot | -1.0 r, -5%, 12%, 104%, 0.41, 0.12 hot |
+
+At 8:
+
+| Number | heat 0 | heat 2 | heat 4 | heat 6 | heat 8 |
+|---|---|---|---|---|---|
+| 3 | -0.5 r, -2%, 14%, 34%, 0.17, 0.04 | -0.4 r, -2%, 14%, 45%, 0.20, 0.05 | -0.3 r, -1%, 13%, 78%, 0.31, 0.09 | -0.1 r, -1%, 9%, 87%, 0.43, 0.21 | +0.0 r, -0%, 7%, 99%, 0.35, 0.20 |
+| 5 | -1.1 r, -7%, 18%, 32%, 0.14, 0.01 | -1.1 r, -6%, 18%, 47%, 0.18, 0.02 | -0.9 r, -5%, 16%, 86%, 0.41, 0.04 | -0.7 r, -3%, 13%, 102%, 0.57, 0.12 hot | -0.4 r, -3%, 9%, 108%, 0.40, 0.16 hot |
+| 7 | -1.6 r, -9%, 19%, 30%, 0.10, 0.01 | -1.6 r, -9%, 19%, 46%, 0.14, 0.02 | -1.5 r, -8%, 18%, 87%, 0.36, 0.03 | -1.2 r, -6%, 15%, 111%, 0.64, 0.07 hot | -0.9 r, -5%, 10%, 116%, 0.45, 0.16 hot |
+
+Read:
+
+- **The knee moves with the maximum, a class a step.** At 12 heat 2 and 4 are free and heat 6
+  takes 0.2 rounds back; at 10 heat 4 is still free in rounds (the peak 68 to 75%, the fourth
+  round's overheat past most fights) and heat 6 takes 0.3 back with 0.67 overheats a fight;
+  at 8 heat 4 takes 0.1 to 0.2 back (the peak 78 to 87%), heat 6 0.4 and heat 8 0.7, the
+  peaks past the maximum. So the warm classes bite on a cold die only at 8, which is the Musk
+  Ox's number and a third under the fleet's.
+- **In vanilla points**: at 8, heat 4 costs about half a point, heat 6 a point and a half,
+  heat 8 two and a half; at 10 nothing, one, and two; at 12 nothing, two thirds, and one and a
+  half. The hot guns' allowance over their floor (the Transonic 1.5 at heat 4, the Thermal Ray
+  2.5 at heat 6, the Railgun at 8 about 3.5 with Breach) is paid in full only at a maximum of
+  8, and at 10 the Transonic's heat is still free on a cold die.
+- **A global 8 is the blunt end.** Kestrel's row already peaks at 128% with 1.6 overheats a
+  fight on the tiered formations at its 14; a fleet at 8 would overheat the hot kits every
+  round, so the bite for the warm classes on cold dice costs the hot kits their play. The
+  selective levers are the bench's next steps: a soft zone above two thirds of the maximum, the
+  cooling, or the maxima by chassis (the stock pass already sets the Kite's 10 and the Musk
+  Ox's 8), each a what-if the driver's `--set` can read the same way.
+
 ## 28 October, movement in hexes
 
 The map's movement on Ryan's calls of 27 and 28 October (the bible's section 4 rows: a move is a
@@ -2230,6 +3016,330 @@ ground the water and the flyer's the crags. The map types read alike (walker and
 Mixed 42 and 54, Steppe 46 and 58, Rubble 46 and 58, Badlands 39 and 49, Flooded 44 and 58).
 Every survey read before this one gave the walkers' and the hovercraft's reach at 3 and 4.
 
+## 29 October, Chain's read
+
+**The conductor on the benches** (Chain built the same day: the bible's Chain row; `tools/pricing_run.py
+run chain29 --parts vanilla,ladders --benches prairie_dog,goshawk --pieces arc_fault_cannon
+--numbers 4,6 --shapes direct --bench-stocks --seeds 200`, then the same on the car with the Tesla
+Gauntlets on the Clydesdale in the Maxigun's place, `chain29t`, a `--set` of its loadout and a
+what-if only, a tier-two piece on a tier-two chassis; and with the Dingo's Megataser Harpoon given
+Spread 1, `chain29s`, so one spend shocks the target and its neighbours, standing in for the spread
+Shock setter Aphelion's content lacks): the Arc Fault Cannon (4, heat 2, Chain 2) in the bench
+hardpoint beside flat heatless vanillas of 4 and 6 in the same slot, each against its row as
+stocked, the sixteen big fights but the finale, greedy at 200 seeds: 16 variants, about 65 minutes
+on four cores. Then 24 formation fights traced with the spread harpoon (the Meadow's, the Waste's,
+the Marsh's and the Peak's, seeds 1 to 6), and the planner at 30 seeds, a direction, on the car and
+with the spread harpoon (`chain29p`, `chain29ps`, `--policies planner`; 8 variants, 22 minutes).
+The runner is deterministic: Wainwright & Sutler's row, which carries no Chain, reads exactly as
+it did before Chain landed (94.8% won, 5.80 rounds, 21.2% hull), so every delta here is Chain's.
+
+Greedy, 200 seeds (the win rate, the rounds of the fights won, the hull lost, the delta against the
+row as stocked, the piece's share of the row's spends, the peak heat and the overheats a fight):
+
+| Bench | In the slot | Win | Rounds | Hull | Against stock | Share | Peak | Overheats |
+|---|---|---|---|---|---|---|---|---|
+| Prairie Dog | stock (Twin Autoguns) | 94.8 | 5.80 | 21.2% |  |  | 35% | 0.14 |
+| Prairie Dog | Arc Fault Cannon (4, heat 2, Chain 2) | 96.5 | 5.04 | 17.2% | -0.76 r, -4.0% hull | 16% | 36% | 0.10 |
+| Prairie Dog | vanilla 4 (flat, heat 0) | 96.4 | 5.09 | 17.6% | -0.70 r, -3.6% hull | 16% | 32% | 0.09 |
+| Prairie Dog | vanilla 6 (flat, heat 0) | 97.8 | 4.50 | 14.6% | -1.30 r, -6.6% hull | 18% | 31% | 0.08 |
+| Buzzard | stock (Arc Fault Cannon) | 99.9 | 3.40 | 11.0% |  | 8% | 97% | 0.41 |
+| Buzzard | Arc Fault Cannon (4, heat 2, Chain 2) | 99.9 | 3.40 | 11.0% | +0.00 r, +0.0% hull | 8% | 97% | 0.41 |
+| Buzzard | vanilla 4 (flat, heat 0) | 99.9 | 3.40 | 10.9% | +0.00 r, -0.1% hull | 9% | 96% | 0.37 |
+| Buzzard | vanilla 6 (flat, heat 0) | 99.9 | 3.35 | 10.6% | -0.05 r, -0.4% hull | 9% | 94% | 0.36 |
+| Prairie Dog, with the Tesla Gauntlets on the Clydesdale | stock (Twin Autoguns) | 95.9 | 5.57 | 19.9% |  |  | 45% | 0.15 |
+| Prairie Dog, with the Tesla Gauntlets on the Clydesdale | Arc Fault Cannon (4, heat 2, Chain 2) | 97.7 | 4.77 | 15.7% | -0.80 r, -4.2% hull | 16% | 43% | 0.11 |
+| Prairie Dog, with the Tesla Gauntlets on the Clydesdale | vanilla 4 (flat, heat 0) | 97.7 | 4.82 | 16.0% | -0.75 r, -3.9% hull | 16% | 41% | 0.10 |
+| Prairie Dog, with the Tesla Gauntlets on the Clydesdale | vanilla 6 (flat, heat 0) | 98.5 | 4.22 | 13.2% | -1.35 r, -6.7% hull | 19% | 38% | 0.08 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | stock (Twin Autoguns) | 96.5 | 5.57 | 18.9% |  |  | 34% | 0.12 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | Arc Fault Cannon (4, heat 2, Chain 2) | 98.0 | 4.78 | 14.8% | -0.79 r, -4.1% hull | 16% | 35% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 4 (flat, heat 0) | 97.9 | 4.87 | 15.5% | -0.70 r, -3.4% hull | 15% | 32% | 0.07 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 6 (flat, heat 0) | 98.8 | 4.32 | 12.7% | -1.25 r, -6.2% hull | 18% | 30% | 0.05 |
+
+The planner, 30 seeds:
+
+| Bench | In the slot | Win | Rounds | Hull | Against stock | Share | Peak | Overheats |
+|---|---|---|---|---|---|---|---|---|
+| Prairie Dog | stock (Twin Autoguns) | 95.6 | 5.22 | 17.7% |  |  | 33% | 0.11 |
+| Prairie Dog | Arc Fault Cannon (4, heat 2, Chain 2) | 97.5 | 4.64 | 14.2% | -0.58 r, -3.5% hull | 16% | 35% | 0.07 |
+| Prairie Dog | vanilla 4 (flat, heat 0) | 97.1 | 4.69 | 15.0% | -0.53 r, -2.7% hull | 16% | 31% | 0.08 |
+| Prairie Dog | vanilla 6 (flat, heat 0) | 98.1 | 4.20 | 12.2% | -1.01 r, -5.4% hull | 18% | 30% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | stock (Twin Autoguns) | 97.5 | 5.08 | 16.5% |  |  | 32% | 0.09 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | Arc Fault Cannon (4, heat 2, Chain 2) | 98.5 | 4.37 | 12.7% | -0.71 r, -3.8% hull | 16% | 33% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 4 (flat, heat 0) | 98.3 | 4.55 | 13.6% | -0.53 r, -2.9% hull | 16% | 30% | 0.06 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 6 (flat, heat 0) | 99.0 | 4.04 | 10.6% | -1.04 r, -5.9% hull | 18% | 29% | 0.06 |
+
+Read:
+
+- **Chain 2 is a plain 4 on today's kits.** On the car the Arc Fault takes 0.76 rounds off the row
+  against a vanilla 4's 0.70 and a vanilla 6's 1.30, about 0.2 vanilla points for the keyword; the
+  kill and repeat read 6.7 points on the same bench on the 28th, 2.7 for the keyword. With the Tesla
+  Gauntlets a second Shock setter, 0.80 against 0.75; with the harpoon shocking three foes a spend,
+  0.79 against 0.70, about 0.3 points. The Arc Fault now prices at about 4.2 points, inside tier
+  one's band (floor 3.5), where the kill and repeat put it at tier two's top.
+- **The charges are spent before the arc fires.** In the 24 traced fights with the spread harpoon
+  about 80 charges were laid and the Arc Fault arced 20 times in 98 spends: nearly every charge was
+  spent first by another machine's doubled blow, since the greedy takes each spend's best trade now
+  and a Shocked foe doubles any gun's blow. The decision the Chain row names (arc now, or hold the
+  charges for the big gun) is one the greedy never makes.
+- **The planner finds some of it, with conductors to find.** With the spread harpoon the Arc Fault
+  takes 0.71 rounds off against a vanilla 4's 0.53 and a vanilla 6's 1.04, about 0.7 points for the
+  keyword; with today's single harpoon 0.58 against 0.53, about 0.2 again. So the arc pays only
+  where one spend leaves several charges and the team leaves them for it: Aphelion's spread setter
+  and a player who sequences, which the two-round planner does in part.
+- **Kestrel's row lost the kill and repeat.** The row has no Shock setter, so the Buzzard's Arc
+  Fault is a plain 4 there (it reads as a vanilla 4 in its own slot): the row as stocked takes 3.40
+  rounds and 11.0% hull a fight at 200 seeds against 3.1 and 9% before Chain landed (the fills'
+  read of the 28th), its overheats 0.41 a fight against 0.32, still winning 99.9%.
+- For Ryan (the bible's section 12): N stays content's placeholder. Claude's lean is to keep Chain 2
+  until Aphelion's spread Shock setter exists and read it again then under the planner, since with
+  single-target setters no N changes the picture (the arc rarely finds a charge left); a bigger N
+  now would price the keyword on the one team that sequences well. The Buzzard's stock is the other
+  question: it keeps a Chain gun with no Shock beside it.
+
+## 29 October, the Chain looks
+
+**Six forms of Chain and a Shock setter on the Buzzard, read as what-ifs** (Ryan's looks of the
+29th, after Chain's read: two consumption rules, two with Shock clarified, two self-fuelling; the
+code on a throwaway worktree behind one switch, never on the branch, the bot valuing each; the
+runs through `tools/pricing_run.py` with `--set` and the switch in the environment). The looks, each
+one change from Chain as built (a conductor's arc doubled by its charge and spending it):
+
+- A, keep: an arc is doubled by a conductor's charge and leaves it standing; the target as ever.
+- B, keep all: the Chain weapon never spends a charge, its target's included, though each still
+  doubles its blow.
+- C, tap: Shock clarified, for every weapon: only a targeted strike (the blow on the foe it is
+  aimed at) doubles and spends a charge, so an area blow or an arc neither doubles nor spends it;
+  an arc lands Chain's number plain on every other Shocked foe, and a target Shocked as the die is
+  spent also takes the tap beside its doubled blow.
+- D, no tap: as C, without the tap on the target.
+- E, fuel after: after the arcs, a random foe on the field (alive, not the target, not already
+  Shocked) is Shocked, from the skirmish's seeded stream.
+- F, fuel before: the same random Shock before the arcs, so a spend arcs at least once.
+
+Each look's Arc Fault Cannon (4, heat 2, Chain 2) in the Prairie Dog's slot of Wainwright &
+Sutler's row against the row as stocked and against a flat heatless vanilla 4 in the same slot,
+the keyword read in vanilla points (the gap between the vanilla's 4 and 6 the scale): on the car,
+where the Dingo's harpoon shocks one foe; on the car with the harpoon at Spread 1 (three charges a
+spend, standing in for Aphelion's spread setter); and that again under the planner at 30 seeds, a
+direction. The sixteen big fights but the finale, greedy at 200 seeds; a look that cannot move a
+row without a Chain weapon reuses the row's stock read of the 29th (the runner is deterministic),
+and C and D, which change Shock for every weapon, rerun the stock and the vanilla. Then Kestrel's
+row, which has no Shock setter, under E and F, and with the Polarity Projector on the Buzzard in
+the Transonic Rifle's place and in the Canopy's (Ryan's question: does Shock into the Afterburner
+Cannon take the build over?), greedy at 200 seeds and the planner at 30. 25 runs, about two and a
+half hours on four cores.
+
+**On the car** (greedy, 200 seeds): the row as stocked, the Arc Fault's rounds and the vanilla 4's
+against it, the keyword in vanilla points, the Arc Fault's share of the row's spends and its hull
+against stock:
+
+| Look | The row as stocked, rounds | Arc Fault, rounds off stock | Vanilla 4, rounds off stock | Chain, in vanilla points | Arc Fault share | Hull off stock |
+|---|---|---|---|---|---|---|
+| as built (doubles and spends on every conductor) | 5.80 | -0.76 | -0.70 | +0.2 | 16% | -4.0% |
+| A, keep: conductors doubled, never spent | 5.80 | -0.78 | -0.70 | +0.2 | 16% | -4.2% |
+| B, keep all: the Chain weapon never spends a charge | 5.80 | -0.79 | -0.70 | +0.3 | 16% | -4.2% |
+| C, tap: only a targeted strike doubles and spends; a Shocked target also takes the tap | 5.80 | -0.80 | -0.71 | +0.3 | 16% | -4.1% |
+| D, no tap: as C without the tap | 5.80 | -0.77 | -0.71 | +0.2 | 16% | -4.0% |
+| E, fuel after: a random foe Shocked after the arcs | 5.80 | -0.94 | -0.70 | +0.8 | 17% | -5.3% |
+| F, fuel before: a random foe Shocked before the arcs | 5.80 | -1.23 | -0.70 | +1.8 | 17% | -7.2% |
+
+**On the car, the harpoon at Spread 1** (greedy, 200 seeds):
+
+| Look | The row as stocked, rounds | Arc Fault, rounds off stock | Vanilla 4, rounds off stock | Chain, in vanilla points | Arc Fault share | Hull off stock |
+|---|---|---|---|---|---|---|
+| as built (doubles and spends on every conductor) | 5.57 | -0.79 | -0.70 | +0.4 | 16% | -4.1% |
+| A, keep: conductors doubled, never spent | 5.57 | -0.85 | -0.70 | +0.6 | 16% | -4.6% |
+| B, keep all: the Chain weapon never spends a charge | 5.57 | -0.86 | -0.70 | +0.6 | 16% | -4.6% |
+| C, tap: only a targeted strike doubles and spends; a Shocked target also takes the tap | 5.56 | -0.86 | -0.69 | +0.6 | 16% | -4.5% |
+| D, no tap: as C without the tap | 5.56 | -0.81 | -0.69 | +0.5 | 16% | -4.3% |
+| E, fuel after: a random foe Shocked after the arcs | 5.57 | -0.97 | -0.70 | +1.0 | 17% | -4.9% |
+| F, fuel before: a random foe Shocked before the arcs | 5.57 | -1.20 | -0.70 | +1.8 | 17% | -6.3% |
+
+**The same under the planner** (30 seeds, a direction):
+
+| Look | The row as stocked, rounds | Arc Fault, rounds off stock | Vanilla 4, rounds off stock | Chain, in vanilla points | Arc Fault share | Hull off stock |
+|---|---|---|---|---|---|---|
+| as built (doubles and spends on every conductor) | 5.08 | -0.71 | -0.53 | +0.7 | 16% | -3.8% |
+| A, keep: conductors doubled, never spent | 5.08 | -0.74 | -0.53 | +0.8 | 16% | -4.2% |
+| B, keep all: the Chain weapon never spends a charge | 5.08 | -0.86 | -0.53 | +1.3 | 16% | -4.8% |
+| C, tap: only a targeted strike doubles and spends; a Shocked target also takes the tap | 5.08 | -0.79 | -0.57 | +0.9 | 17% | -4.3% |
+| D, no tap: as C without the tap | 5.08 | -0.72 | -0.57 | +0.6 | 17% | -3.9% |
+| E, fuel after: a random foe Shocked after the arcs | 5.08 | -0.84 | -0.53 | +1.2 | 17% | -4.6% |
+| F, fuel before: a random foe Shocked before the arcs | 5.08 | -1.03 | -0.53 | +1.9 | 18% | -5.9% |
+
+**Kestrel's row** (the Kite, the Buzzard, the Puffin; greedy, 200 seeds), with no Shock setter: as
+stocked under Chain as built and with the Arc Fault a plain 4, under E and F, and with the Polarity
+Projector on the Buzzard (the Afterburner Cannon's share 5.0% as stocked, 6.0% with the Projector
+in the Transonic Rifle's place, 4.9% in the Canopy's; the Projector's own 2.4% and 1.8%):
+
+| Row | Win | Rounds | Hull | Peak | Overheats | Top spends |
+|---|---|---|---|---|---|---|
+| as stocked, Chain as built | 99.9 | 3.40 | 11.0% | 97% | 0.41 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Arc Fault Cannon 8% |
+| the Arc Fault a plain 4 (vanilla 4) | 99.9 | 3.40 | 10.9% | 96% | 0.37 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Rivet Gun 9% |
+| E, fuel after | 99.9 | 3.29 | 10.4% | 95% | 0.39 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Arc Fault Cannon 9% |
+| F, fuel before | 99.9 | 3.21 | 9.7% | 94% | 0.35 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Arc Fault Cannon 9% |
+| the Polarity Projector in the Transonic Rifle's place | 99.8 | 3.47 | 11.4% | 97% | 0.46 | Pinion Driver 17%, Twin Autoguns 13%, Transonic Rifle 13%, Overclocked Railgun 12%, Laser Carbine 11%, Arc Fault Cannon 11% |
+| the Polarity Projector in the Canopy's place | 99.9 | 3.37 | 10.9% | 97% | 0.42 | Transonic Rifle 22%, Pinion Driver 17%, Twin Autoguns 13%, Laser Carbine 11%, Overclocked Railgun 10%, Arc Fault Cannon 7% |
+
+The same three rows under the planner (30 seeds): as stocked 3.39 rounds and 10.3% hull, the
+Afterburner 4.7% of the spends; the Projector in the Transonic Rifle's place 3.38 rounds and 10.5%,
+the Afterburner 5.8%, the Projector 2.5%, the overheats 0.47 a fight against 0.37; in the Canopy's
+place 3.30 rounds and 9.9%, the Afterburner 4.7%, the Projector 1.8%.
+
+Read:
+
+- **How a charge is spent barely matters; how many charges there are does.** The four consumption
+  looks move the Arc Fault within a tenth of a vanilla point of Chain as built on the car (0.2 to
+  0.3 points) and within two tenths with the spread harpoon (0.5 to 0.6 against 0.4); under the
+  planner A, C and D read 0.6 to 0.9 points against 0.7. The arc is short of charges to find, not
+  of charges it keeps: another machine's doubled blow spends nearly every one first (the 29
+  October trace), and keeping a charge an arc touched does not put more of them on the field.
+- **Keep all is the one consumption look that pays, and it is the degenerate one.** Under the
+  planner B reads 1.3 points, since the Chain weapon's own target keeps its charge through every
+  spend: one charge on a boss doubles every Chain spend there until an ally's blow cashes it.
+- **Shock clarified costs the stock rows nothing.** With only a targeted strike doubling and
+  spending a charge, Wainwright & Sutler's row reads 5.80 rounds as before (5.799 to 5.804), with
+  the spread harpoon 5.57 to 5.56 and half a point of wins more: an area blow on a Shocked foe
+  rarely mattered, so the clarification stands or falls on its reading, not its balance.
+- **Self-fuelling is what moves Chain.** E reads 0.8 points on the car, 1.0 with the spread harpoon,
+  1.2 under the planner; F 1.8, 1.8 and 1.9. In Kestrel's row, with no setter at all, E takes the
+  row from 3.40 rounds to 3.29 and F to 3.21 (3.1 with the kill and repeat): the Chain gun as its
+  own setter is the only form that pays on a kit with no Shock. F pays most because it guarantees
+  an arc, a doubled blow on a random foe every spend, which is the ping retired on the 28th at
+  twice its number; E leaves the charge for the team's next targeted strike or the next arc, a
+  setup that pays later.
+- **A Shock setter on the Buzzard takes nothing over.** The Projector is spent 2% of the time under
+  the greedy and the planner alike, and the Afterburner Cannon stays at 5 to 6% of the row's spends;
+  in the Transonic Rifle's place the row is a touch slower (3.47 rounds greedy, the overheats 0.46
+  a fight against 0.41), in the Canopy's place a touch quicker (3.37; 3.30 under the planner). The
+  combo Ryan named needs the Afterburner shown and hot the round after a charge lands, which these
+  fights, won in three and a half rounds, rarely give: a play test's question, and the tiered
+  formations' once a tier-matched Kestrel kit stands on them.
+
+## 29 October, Chain on its form of the 29th
+
+**Ryan's pick of the looks, built, on the benches** (the looks' D and E together, built the same
+day, the bible's Chain row: Shocked read only by a weapon's strike aimed at its foe; Chain's arcs
+plain, each conductor keeping its charge; then a charge on one other foe at random, neither the
+target nor already Shocked). `tools/pricing_run.py run de29 --parts vanilla,ladders --benches
+prairie_dog --pieces arc_fault_cannon --numbers 4,6 --shapes direct --bench-stocks --seeds 200`,
+then the same with the Dingo's Megataser Harpoon at Spread 1 (`de29s`, the `--set` of the 29th's
+read), and both under the planner at 30 seeds (`de29p`, `de29ps`); Kestrel's row with vanillas 4
+and 6 in the Buzzard's Arc Fault slot (`de29b`) and with the Polarity Projector in the Transonic
+Rifle's place and in the Canopy's (`de29bpr`, `de29bpc`, a `--set` of the Buzzard's loadout; under
+the planner `de29pb`, `de29pbpr`, `de29pbpc`); then Chain 3 and Chain 4 as what-ifs (`--set
+components/arc_fault_cannon/face/chain=N`: `de29n3`, `de29n4`, `de29psn3`, `de29psn4`, `de29bn3`,
+`de29bn4`), a row without the Arc Fault reusing its stock read, the runner being deterministic.
+The sixteen big fights but the finale; about two hours on four cores. And 96 fights traced on the
+car with the Arc Fault in the Prairie Dog's slot (the sixteen, seeds 1 to 3, with and without the
+spread harpoon), counting each Arc Fault spend's arcs and charges.
+
+Greedy, 200 seeds (the win rate, the rounds of the fights won, the hull lost, the delta against the
+row as stocked, the Arc Fault's share of the row's spends, the Projector's and the Afterburner
+Cannon's, the peak heat and the overheats a fight):
+
+| Bench | In the slot | Win | Rounds | Hull | Against stock | Arc Fault | Projector | Afterburner | Peak | Overheats |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Prairie Dog | stock (Twin Autoguns) | 94.8 | 5.80 | 21.3% |  |  |  |  | 35% | 0.14 |
+| Prairie Dog | Arc Fault Cannon (4, heat 2, Chain 2) | 98.1 | 4.87 | 15.9% | -0.94 r, -5.3% hull | 17% |  |  | 36% | 0.08 |
+| Prairie Dog | vanilla 4 (flat, heat 0) | 96.4 | 5.09 | 17.6% | -0.71 r, -3.6% hull | 16% (the vanilla) |  |  | 32% | 0.09 |
+| Prairie Dog | vanilla 6 (flat, heat 0) | 97.8 | 4.50 | 14.6% | -1.30 r, -6.7% hull | 18% (the vanilla) |  |  | 31% | 0.08 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | stock (Twin Autoguns) | 97.0 | 5.56 | 18.8% |  |  |  |  | 33% | 0.11 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | Arc Fault Cannon (4, heat 2, Chain 2) | 98.5 | 4.61 | 14.1% | -0.95 r, -4.8% hull | 17% |  |  | 35% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 4 (flat, heat 0) | 98.1 | 4.87 | 15.6% | -0.69 r, -3.3% hull | 15% (the vanilla) |  |  | 32% | 0.07 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 6 (flat, heat 0) | 98.8 | 4.32 | 12.6% | -1.24 r, -6.2% hull | 18% (the vanilla) |  |  | 30% | 0.05 |
+| Buzzard | stock (Arc Fault Cannon) | 99.9 | 3.30 | 10.5% |  | 9% |  | 5% | 95% | 0.39 |
+| Buzzard | vanilla 4 (flat, heat 0) | 99.9 | 3.40 | 10.9% | +0.11 r, +0.5% hull | 9% (the vanilla) |  | 5% | 96% | 0.37 |
+| Buzzard | vanilla 6 (flat, heat 0) | 99.9 | 3.35 | 10.6% | +0.05 r, +0.2% hull | 9% (the vanilla) |  | 5% | 94% | 0.36 |
+| Buzzard | the Polarity Projector in the Transonic Rifle's place | 99.8 | 3.34 | 10.6% | +0.04 r, +0.2% hull | 11% | 2% | 6% | 95% | 0.44 |
+| Buzzard | the Polarity Projector in the Canopy's place | 99.9 | 3.27 | 10.4% | -0.03 r, -0.1% hull | 7% | 2% | 5% | 95% | 0.39 |
+
+The planner, 30 seeds:
+
+| Bench | In the slot | Win | Rounds | Hull | Against stock | Arc Fault | Projector | Afterburner | Peak | Overheats |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Prairie Dog | stock (Twin Autoguns) | 95.6 | 5.24 | 17.7% |  |  |  |  | 33% | 0.10 |
+| Prairie Dog | Arc Fault Cannon (4, heat 2, Chain 2) | 99.2 | 4.49 | 13.1% | -0.75 r, -4.6% hull | 17% |  |  | 34% | 0.06 |
+| Prairie Dog | vanilla 4 (flat, heat 0) | 97.5 | 4.69 | 14.7% | -0.55 r, -2.9% hull | 16% (the vanilla) |  |  | 31% | 0.08 |
+| Prairie Dog | vanilla 6 (flat, heat 0) | 98.3 | 4.20 | 12.1% | -1.05 r, -5.6% hull | 18% (the vanilla) |  |  | 30% | 0.05 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | stock (Twin Autoguns) | 97.9 | 5.08 | 16.2% |  |  |  |  | 32% | 0.09 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | Arc Fault Cannon (4, heat 2, Chain 2) | 99.2 | 4.25 | 11.7% | -0.83 r, -4.5% hull | 17% |  |  | 33% | 0.03 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 4 (flat, heat 0) | 98.5 | 4.51 | 13.1% | -0.57 r, -3.0% hull | 16% (the vanilla) |  |  | 30% | 0.07 |
+| Prairie Dog, with the Dingo's harpoon at Spread 1 | vanilla 6 (flat, heat 0) | 99.0 | 4.07 | 10.7% | -1.01 r, -5.5% hull | 18% (the vanilla) |  |  | 29% | 0.05 |
+| Buzzard | stock (Kestrel's row) | 100.0 | 3.24 | 9.6% |  | 9% |  | 4% | 96% | 0.36 |
+| Buzzard | the Polarity Projector in the Transonic Rifle's place | 100.0 | 3.19 | 9.6% | -0.05 r, -0.0% hull | 11% | 2% | 5% | 95% | 0.43 |
+| Buzzard | the Polarity Projector in the Canopy's place | 100.0 | 3.16 | 9.2% | -0.08 r, -0.4% hull | 7% | 2% | 4% | 95% | 0.35 |
+
+**By the kind of fight** (the Arc Fault's rounds in vanilla points: 4, plus twice its rounds past
+a vanilla 4's over a vanilla 6's, on the fights of each kind; the lone massive foes are the
+Treant, the Sandworm, the Bone Dragon and the Magma Golem, the formations the Meadow's, the
+Waste's, the Marsh's and the Peak's, the finals the eight heroes'):
+
+| Bench | A lone massive foe | The finals | The formations | All sixteen |
+|---|---|---|---|---|
+| The car, greedy 200 | 4.1 | 4.8 | 6.2 | 4.8 |
+| The car with the spread harpoon, greedy 200 | 4.1 | 4.8 | 7.4 | 4.9 |
+| The car, the planner 30 | 4.0 | 5.0 | 6.0 | 4.8 |
+| The car with the spread harpoon, the planner 30 | 4.0 | 5.1 | 8.6 | 5.2 |
+
+The Marsh's formation, the row's wall, at 200 seeds: won 45 times as stocked, 86 with a vanilla 4, 130
+with a vanilla 6 and 141 with the Arc Fault (with the spread harpoon 113, 139, 162 and 154).
+
+**The Arc Fault's Chain number** (Chain N is each weapon's own, priced as Spread's is; the Arc
+Fault, the one Chain weapon in content, at Chain 3 and 4 as what-ifs, for the worth of a point of
+N):
+
+| Bench | Chain | Win | Rounds | Hull | Off stock | In vanilla points | On the formations | Arc Fault share |
+|---|---|---|---|---|---|---|---|---|
+| The car, greedy 200 | 2 | 98.1 | 4.87 | 15.9% | -0.94 r, -5.3% hull | 4.8 | 6.2 | 17% |
+| The car, greedy 200 | 3 | 98.2 | 4.83 | 15.7% | -0.97 r, -5.5% hull | 4.9 | 6.6 | 17% |
+| The car, greedy 200 | 4 | 98.2 | 4.81 | 15.5% | -0.99 r, -5.7% hull | 4.9 | 6.8 | 17% |
+| The car with the spread harpoon, the planner 30 | 2 | 99.2 | 4.25 | 11.7% | -0.83 r, -4.5% hull | 5.2 | 8.6 | 17% |
+| The car with the spread harpoon, the planner 30 | 3 | 99.0 | 4.22 | 11.8% | -0.86 r, -4.4% hull | 5.3 | 9.1 | 17% |
+| The car with the spread harpoon, the planner 30 | 4 | 99.0 | 4.19 | 11.7% | -0.89 r, -4.4% hull | 5.5 | 9.4 | 17% |
+| Kestrel's row (the Buzzard's slot), greedy 200 | 2 | 99.9 | 3.30 | 10.5% | -0.11 r against a vanilla 4 there | | 4.79 rounds (a vanilla 4 4.95, a 6 4.91) | 9% |
+| Kestrel's row (the Buzzard's slot), greedy 200 | 3 | 99.9 | 3.30 | 10.4% | -0.11 r against a vanilla 4 there | | 4.79 rounds (a vanilla 4 4.95, a 6 4.91) | 9% |
+| Kestrel's row (the Buzzard's slot), greedy 200 | 4 | 99.9 | 3.29 | 10.4% | -0.11 r against a vanilla 4 there | | 4.76 rounds (a vanilla 4 4.95, a 6 4.91) | 9% |
+
+Read:
+
+- **The form reads as look E said.** Chain 2 is worth about 0.8 vanilla points on the car over
+  the sixteen big fights (the Arc Fault 0.94 rounds off its row against a vanilla 4's 0.71 and a
+  6's 1.30: about 4.8 points, inside tier one's band), 0.9 with the spread harpoon, 0.8 under the
+  planner and 1.2 with the spread harpoon there; look E alone read 0.8, 1.0 and 1.2. Shock's reading
+  adds nothing of its own, and the two together compound nothing.
+- **Chain is a weapon for a field of foes.** On a lone massive foe the Arc Fault is a plain 4 to a
+  tenth of a point (nothing to charge, nothing to arc); on the finals it reads 4.8; on the four
+  formations 6.2, past a vanilla 6, and 7.4 with the spread harpoon (8.6 under the planner, a
+  direction). The sixteen big fights are a measuring set, four of them formations, so their
+  average undersells a Chain weapon wherever several foes stand; the ladder's formations by tier
+  (`--packs tiers`) would read it there.
+- **The charge carries it, not the arcs.** In the 96 traced fights the Arc Fault charged a foe on
+  0.35 of its spends (0.30 with the spread harpoon; never with no other foe on the field) and arced
+  on 0.06 of them (0.14), never to more than two conductors: the team's aimed strikes cash each
+  charge within the round, the greedy taking a doubled blow now over an arc of 2 later, so the
+  charges never pile up and nothing compounds on today's kits and bot.
+- **A point of N is worth little on this form; the keyword's worth is its charge.** On the Arc
+  Fault, a 4, the keyword reads about 0.75 vanilla points at Chain 2, 0.9 at 3 and 0.95 at 4 over
+  the sixteen (2.2, 2.6 and 2.8 on the formations), and nothing moves in Kestrel's row (3.30, 3.30
+  and 3.29 rounds): a point of N adds about a tenth of a point (a third on the formations), since
+  N prices the arcs and the arcs are rare while the team cashes the charges, and the charge, which
+  no N moves, is the rest (about half a point over the sixteen and one and a half on the
+  formations, extrapolated to N 0). That is the price for any Chain weapon to come, read again
+  when a spread setter and a player who holds charges make the arcs common; the Arc Fault keeps its
+  Chain 2.
+- **Shock's reading costs the stock rows nothing.** Wainwright & Sutler's row reads 5.80 rounds and
+  21.3% hull against 5.80 and 21.2% before it; with the spread harpoon 5.56 against 5.57.
+- **Kestrel's row gains a setter.** The Buzzard's Arc Fault charges for itself: the row takes 3.30
+  rounds against 3.40 on the conductor of the 28th, the Arc Fault ahead of a vanilla 6 in its slot
+  (3.35); under the planner 3.24 against 3.39.
+- **The Polarity Projector on the Buzzard takes nothing over.** It is spent 2% of the time and the
+  Afterburner Cannon 5 to 6%; in the Canopy's place the row is a touch quicker (3.27 rounds greedy,
+  3.16 under the planner, against 3.30 and 3.24), in the Transonic Rifle's place the same within the
+  noise (3.34 and 3.19, its overheats 0.44 a fight against 0.39). With the Arc Fault its own setter,
+  the Buzzard's Chain gun no longer wants one beside it; whether the Shock into the Afterburner is
+  wanted on it stays a play test's question (the bible's section 12).
+
 ## 29 October, the map's relief
 
 **The relief read** (`tools/map_survey.gd`'s new relief table, 200 seeds of Mixed Ground at
@@ -2249,3 +3359,305 @@ scratch read earlier the same day (seeds 1000 to 1199, a script outside the tool
 gate's and the rift's level ground as land and read 47% stepping, about 13 lone hexes and 6 or
 7 jogs in a ring at the field's middle; the survey's table is the measure. The shapes
 session's relief is read against it.
+
+**The six map shapes** (Ryan's direction of 28 October and his calls of 29 October; landed the
+same day). The map survey on them (`docs/map_survey.md`, 200 seeds a shape at 9x20, the detailed
+report on Open Steppe, the baseline): every shape keeps the horde's crossing three wide or more
+on all 200 maps, the guarantee opening half a hex a map on the river (where a bend narrows a
+ford) and on the badlands, none elsewhere; the horde's route is 19 hexes on every shape (19.0 to
+19.2), since on hexes a route north lengthens only where walls run across many rows, so no
+shape lengthens the walk; every way of moving reaches the rift's mouth in 6 phases at move 3.
+The shapes part on reach, the share of the field a way can stand on two phases out from its
+best lane at its content move (walker, hover, flyer): Open Steppe 51, 62, 62%; River Crossing
+49, 62, 62; Fjord 47, 62, 62; Ruined City 42, 53, 62; Badlands 38, 47, 62; Gorge 38, 47, 62.
+Water opens the hover's gap over the walkers (13 points on the river, 15 on the fjord),
+walls the flyer's over the rest (9 to 15 points over the hover on the city, the badlands and
+the gorge, 20 to 24 over the walkers). The grounds as laid: open ground 90%, 83%, 41%, 99%, 16%
+and 85% of the field (river, fjord, badlands, steppe, city, gorge), the badlands' scrub 37% and
+the city's rubble 73%; water 10% on the river and 17% on the fjord; walls 17% on the badlands,
+11% in the city and 15% in the gorge. The relief: neighbouring land at different heights 0% on
+four shapes, 4% on the steppe (its one rise) and 16% on the badlands (the mesas' shoulders),
+against 55% on the morning's noise; no lone hex but 0.6 a map on the badlands on the survey's
+count, which reads the field alone where the generator's rule also reads the scenery beside the
+edge. A first run an hour earlier, before the badlands were made denser (four mesa groups of two
+to four where about seven of three to five stand), read their walls 8%, their walker and hover
+reach 45 and 56% and their route 19.0 like every shape's; the denser badlands match the gorge
+on reach and hold the narrowest crossings, about three hexes (a scratch read at 60 seeds).
+
+The campaign run on the shapes (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`; a
+battle that names no shape draws one by its seed) against the run of 28 October on Mixed
+Ground: no band moved. Battles won 8% of 384 (7% of 377), held after a wipe 52% (52%), fell 38%
+(40%), a team wipe 90% (92%); runs reaching the finale 34 (34), cities fallen 3.95 a run (4.00);
+phases a battle 7.87 (7.96); three-machine battles won 49% of 63 (50% of 52). The run before the
+denser badlands read the same bands (8% of 387, 53%, 38%). A direction at 40 runs: the shapes
+move nothing this bot reads, which walks the squad as one at the nearest pack.
+
+**The horde moves as the machines do, and fords and streets three or four in all** (Ryan, 29
+October; built the same day: packs wade water at two a hex, pass through each other, flyers and
+the ground pass each other, nobody stops on another unit's hex). The map survey
+(`docs/map_survey.md`, 200 seeds a shape at 9x20) against the six shapes' survey of the morning:
+the horde's crossing stays three wide or more on every map of every shape; the guarantee opens
+nothing on the river and the fjord since the horde wades (it opened half a hex a map on the
+river, where a bend narrowed a ford) and 0.3 a map on the badlands where it opened 0.5, the
+ponds no longer walls; the horde's route is 19 hexes on every shape (19.2 on the fjord and 19.1
+on the badlands before). Reach is unchanged but in the city, its streets one to four a band
+where one gap of three or two of two stood: the walkers' two-phase reach 44% where it was 42%,
+the wheels' and the hover's 54% where 53%; open ground there 21% where 16%, a street paved
+through every gap, and the towers 10% where 11%. A first laying let a river take four fords as
+a band takes four streets, and printed seed by seed (3, 7, 12, 21, 33) the river broke into
+ponds; capped at two fords it reads as it did.
+
+The campaign run on it (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`) against
+the six shapes' run of the morning: no band moved. Battles won 7% of 382 (8% of 384), held
+after a wipe 53% (52%), fell 39% (38%), a team wipe 92% (90%); runs reaching the finale 34
+(34), cities fallen 3.92 a run (3.95); phases a battle 7.96 (7.87); fights 794 (796), those
+against two packs or more 354 (365); three-machine battles won 42% of 57 (49% of 63), a band of
+some twelve points at sixty battles. A direction at 40 runs: this bot walks the squad as one at
+the nearest pack and never holds a line, so what wading and passing change for a player who
+holds the streets is Ryan's play to read.
+
+**Hunters at a ring of two, and the machine nearest a sealed-off prey in place of the re-pick**
+(Ryan, 29 October; built the same day: every hunter's ring two at least, the Goblin Captain's
+three, one number for its catch, the fights it joins and the ring drawn; a hunter keeps its prey
+and goes for it by any route, and only when walls and machines seal the prey off takes the
+machine nearest it that a walk that turn can put inside its ring). The campaign run on it (40
+runs from seed 1, the greedy rung, `docs/campaign_run.md`) against the horde-wading run of the
+same afternoon: no outcome band moved, and the fights grew. Battles won 6% of 379 (7% of 382),
+held after a wipe 52% (53%), fell 40% (39%), a team wipe 93% (92%); runs reaching the finale 32
+(34), the first city falling on turn 3.55 (3.77); phases a battle 7.77 (7.96). Fights 733 (794),
+those against two packs or more 399 (354), 54% of them where 45% were, one machine against three
+packs or more 125 (86): a hunter at two joins the fights on the packs beside it, so the fights
+come fewer and bigger. Three-machine battles won 39% of 58 (42% of 57); components destroyed a
+won battle 1.15 (1.61). A direction at 40 runs, on a bot that walks the squad as one at the
+nearest pack and never hides a machine behind a line, so the stand-in is a case it rarely meets;
+whether the pounce is overbearing is Ryan's play to read (the bible's exit).
+
+**The domains' tilesets: their colours by the colourblind simulations** (30 October; Ryan, 29
+October: "They all need their own tileset"). The painted world reaches the screen through the
+map's compositor, which posterizes it to six levels a channel (`bleed.gdshader`, `levels` 5), so
+the colours that count are the posterized ones: the first picks' ash plain `5a3e34` showed as
+maroon `#663333` and their red-rock ruins `8c4c2c` as red `#993333`, so every tileset colour now
+sits on that grid and is what the map shows. Each ground's worst CIEDE2000 over normal vision and
+the Machado protan, deutan and tritan simulations at severity 1.0 (linear RGB), against the HUD
+options (green `33ff55`, amber `fff21a`, blue `5cd8ff`), the enemy red `ff1e1e`, the rift's
+violets (`c8a4ff`, `6a30c0`), water and the walls as shown (`3366ff`, `999966`); the bar is the
+Meadow's own as shown, plain `#339933` 8.3, road `#cccc99` 7.4, rough `#336633` 5.1, ruins
+`#999999` 3.5 (against the walls). The Waste: plain `#cc9933` 6.9 (lightness 73), road `#ffcc99`
+6.5 (93), rough `#663300` 16.7 (32), ruins `#993300` 11.6 (44). The Marsh: plain `#336666` 11.1
+(42), road `#333300` 20.0 (22), rough `#333333` 18.0 (23), ruins `#669999` 9.1 (63); olive
+`#666633`, the swamp's first idea, came to 3.8 against the enemy red under the deutan
+simulation, so the bog is teal-grey. The Peak: plain `#666666` 11.2 (47), road `#cccccc` 6.7
+(88), rough `#333333` 18.0 (23), ruins `#663300` 16.7 (32). A lava crack's glow is `#ffcc33`,
+19.6 against the red; the hot orange `e8601a` came to 1.2 under the deutan simulation at the
+red's own lightness, so no orange is used. Darker grounds score higher against every mark (the
+sweep's best were all under lightness 30), so the bright overworld's look, Ryan's of 20 September,
+is held against the Meadow's bar rather than maximized. Against the pure red on trial on
+`claude/jolly-lovelace-scn82y` (`#ff0000`) no pick moves by two points (the Waste's plain 7.6 and
+ruins 9.8, the Meadow's own forest 5.1 to 6.2). The Meadow's tileset is unchanged.
+
+**The domains' tilesets, second build: their colours by the colourblind simulations** (30
+October; Ryan's read of the first: water and the walls "certainly should change with
+tileset", the grounds "not wildly different"). Method as the first build's: every colour on the
+compositor's posterize grid, each scored by its worst CIEDE2000 over normal vision and the
+Machado protan, deutan and tritan simulations at severity 1.0, against the HUD options (green
+`33ff55`, amber `fff21a`, blue `5cd8ff`), the enemy red (`ff1e1e`, and `ff0000` on trial) and the
+rift's violets (`c8a4ff`, `6a30c0`), and against the ground it is drawn on (the bible's rule of
+30 October). Every ground, water and wall face scores 6.5 or more against every mark, where the
+Meadow's old forest floor scored 5.1. The grounds: the Meadow `#339933` 7.9 (the pure red, deutan;
+lightness 56), the Waste `#cc9966` 11.3 (74), the Marsh `#333300` 18.4 (22), the Peak `#333333`
+18.0 (23). The water: the Meadow's `#3366ff` 13.1 (9.0 against its ground), the Waste's oasis
+`#339999` 17.8 (16.0), the Marsh's `#003333` 18.3 (12.1), the Peak's lava `#ff9900` 9.1 (52.8; 12.2
+against the red). The walls' faces, lit and shaded: the Meadow's `#cc9966` 11.3 and `#663300`
+15.0, the Waste's buttes `#993300` 9.8 and `#663300` 15.0, the Marsh's crags `#666666` 11.2 and
+`#333333` 18.0 (4.3 against the bog, the outline and the lit faces carrying the shape), the
+Peak's `#666666` and `#333333` (its flows `#ff9900`). The roads: the Meadow's `#cc9966` 11.3, the
+Waste's `#ffcc99` 6.5 (amber, tritan), the Marsh's `#663300` 15.0 (3.5 against the bog, its
+stepping stones `#cccccc` 63.9 carrying it), the Peak's `#666666` 11.2. What the run moved before
+anything landed: the Marsh's mid greens fold into the red for a protan (`#336633` 5.1, `#006633`
+5.6, `#666633` 3.8) and the darkest fold into its water (`#003300` 2.6 against `#003333`), so its
+bog is `#333300`; the Meadow's water rim `#66ccff` came to 1.7 against the rift's light violet for
+a deutan, so the rim is foam `#ccffff` (8.4); its trees' shade `#006600` came to 1.7 against the
+red for a protan, so it is `#003300` (19.7); its mountains' shaded face and the Waste's first track,
+`#996633`, came to 3.9 against the red for a protan, so the face is `#663300` and the track the pale
+`#ffcc99`; an orange darker than the lava's folds into the red for a deutan (`#cc6633` 4.3,
+`#cc6600` 2.6, `#cc3300` 5.3), so none is used. Small marks score lower and stay small: the fissures'
+and the fire's `#ffcc00` 5.1 against the amber (deutan), the Marsh's moss `#669933` 5.7 against the
+red, the oasis rim `#66cccc` 4.7 against the blue (tritan).
+
+**The domains' tilesets: a tone a ground** (30 October; Ryan, of one ground for all four: "the
+different types need different backgrounds. Its very monotone now. It just needed to be less
+jarring"). Each decorative ground takes its own tone a step at most from its domain's ground in
+each channel of the posterize grid, picked among those neighbours by the same simulations (worst
+CIEDE2000 against every mark; then against the domain's ground): the Meadow's road verge
+`#669933` 5.7 (the pure red, deutan; 1.0), its forest floor `#336633` 5.1 (the red, protan; 18.0),
+its village green `#669966` 13.9 (5.4); the Waste's road `#cc9933` 6.9 (2.4), its scrub `#999966`
+11.6 (2.6), its ruins' bleached ground `#ffcc99` 6.5 (13.6), where the dusty rose `#cc9999` (12.4)
+read as pink on the sheet; the Marsh's dead wood floor `#003300` 19.7 (1.3) and its graveyard's
+grey `#333333` 18.0 (4.3); the Peak's scorched lava field `#330000` 34.1 (15.4) and its temple's
+rust `#663333` 20.4 (4.6). The Marsh's and the Peak's roads keep their domain's ground, their
+mud causeway and ash path carrying them. The lowest is the Meadow's forest floor, the score the
+Meadow's own forest had before the domains had tilesets.
+
+**The domains' tilesets: the rough set apart, and the lava toward red** (30 October; Ryan:
+"rough on waste and marsh can use a bit more separation from the plains colour"; the lava
+"looks more like acid than lava"). The same simulations, each colour's worst CIEDE2000 against
+every mark, then against its plain worst case and for normal vision. The Waste's scrub went from
+`#999966` (11.6; against the sand 2.6, normal 9.0) to the olive `#669933` (5.7, the pure red under
+the deutan simulation; 8.9, normal 14.8), two steps of red from the sand; the lime `#99cc33` (7.1;
+8.8, 13.4) and `#99cc66` (6.9; 5.9, 13.3) read as grass on the sheet. The Marsh's dead wood went
+from `#003300` (19.7; against the bog 1.3, normal 9.3) to the moss `#336633` (5.1, the red under the
+protan simulation, the Meadow forest's own score; 16.2, 19.5); `#006633` (5.6) read too saturated
+and black `#000000` (38.0) as a hole in the field. The lava lake went from `#ff9900` (9.1; 12.2
+against the reds) to the orange-red `#ff6600`, 5.6 against the red under the deutan simulation
+and 37.2 against the Peak's ground, its rim `#990000` (16.4) and its crust `#990000` and `#330000`;
+a redder lake folds into the enemy red: `#ff3300` 0.8 (tritan), `#cc3300` 3.4 (protan), `#ff3333`
+1.6, `#ff0000` 0.0, while the deep reds hold by their darkness, `#cc0000` 6.3 and `#990000` 16.4.
+
+## 30 October, the heat grid with a bot that vents
+
+**The heat brief's first read** (`docs/briefs/heat_pillar.md`, the reads to run; the cautious
+persona built the same day, `Policy.cool_above`): the vanilla heat grid on the car
+(`tools/pricing_run.py run heat30g --parts vanillaheat --benches prairie_dog --bench-stocks
+--seeds 30`: a flat heatless gun of each reach at 3, 5 and 7 in the Prairie Dog's slot of
+Wainwright & Sutler's row, each at heat 0, 2, 4, 6 and 8, against the row as stocked; the sixteen
+big fights but the finale), four ways: as today (the greedy, the Prairie Dog's cooling 1), with
+its cooling 0 (`--set chassis/prairie_dog/cooling=0`, `heat30g0`), and both again under the
+cautious persona, each machine keeping its heat under half its maximum (`--cool-above 50`,
+`heat30c`, `heat30c0`). 124 variants, about two hours on four cores; 30 seeds, a direction.
+
+Each heat's price in vanilla points (its rounds over the heatless gun's of the same number, over
+the rounds a point buys between 3 and 7), the mean of the six guns, and the heat-8 guns'
+overheats, peak heat and the Coolant Jacket's share of the row's spends:
+
+| Setting | Heat 2 | Heat 4 | Heat 6 | Heat 8 | Overheats a fight at heat 8 | Peak at heat 8 | The Coolant Jacket at heat 8 |
+|---|---|---|---|---|---|---|---|
+| the greedy, cooling 1 (as today) | 0.1 | 0.2 | 0.7 | 1.4 | 0.50 | 92% | 4% |
+| the greedy, cooling 0 | 0.1 | 0.3 | 1.2 | 2.0 | 0.33 | 89% | 5% |
+| the cautious bot, cooling 1 | 0.1 | 0.9 | 1.9 | 2.9 | 0.07 | 65% | 7% |
+| the cautious bot, cooling 0 | 0.3 | 1.3 | 2.3 | 3.2 | 0.08 | 64% | 10% |
+
+What caution costs (the win rate, the rounds of the fights won, the hull lost, the overheats):
+
+| Setting | Gun | Win | Rounds | Hull lost | Overheats a fight |
+|---|---|---|---|---|---|
+| the greedy, cooling 1 | Direct 5, heat 0 | 97.9 | 4.74 | 15.6% | 0.11 |
+| the greedy, cooling 1 | Direct 5, heat 4 | 97.5 | 4.79 | 16.3% | 0.22 |
+| the greedy, cooling 1 | Direct 5, heat 8 | 96.7 | 5.20 | 18.9% | 0.53 |
+| the greedy, cooling 1 | Direct 7, heat 8 | 97.3 | 4.72 | 16.9% | 0.60 |
+| the cautious bot, cooling 1 | Direct 5, heat 0 | 97.9 | 4.76 | 15.5% | 0.05 |
+| the cautious bot, cooling 1 | Direct 5, heat 4 | 96.7 | 5.09 | 17.4% | 0.07 |
+| the cautious bot, cooling 1 | Direct 5, heat 8 | 96.0 | 5.75 | 19.8% | 0.09 |
+| the cautious bot, cooling 1 | Direct 7, heat 8 | 96.2 | 5.21 | 18.0% | 0.09 |
+| the greedy, cooling 0 | Direct 5, heat 8 | 96.0 | 5.39 | 19.4% | 0.31 |
+| the cautious bot, cooling 0 | Direct 5, heat 8 | 95.8 | 5.89 | 21.1% | 0.09 |
+
+Read:
+
+- **Today's prices hold.** Under the greedy at cooling 1, heat 2 and 4 cost next to nothing and
+  heat 6 and 8 about 0.7 and 1.4 points, the read of 28 October.
+- **Caution costs more than the overheat.** The bot that keeps its heat under half its maximum all
+  but never overheats (0.07 a fight at heat 8 against the greedy's 0.50) and pays for it twice
+  over: heat 4 costs it nearly a point and heat 8 three, and it loses more hull, not less (the
+  Direct 5 at heat 8, 5.75 rounds and 19.8% hull against the greedy's 5.20 and 18.9%, its wins
+  96.0% against 96.7%). The overheat burns only the excess, hull one for one, where holding a hot
+  gun or venting early costs a whole spend, so on today's rules eating the overheat is the better
+  play and heat is a tempo tax a player is right to ignore. That bears on the heat brief's fifth
+  question (the overheat's cost) before its first (the cooling): while the overheat is this cheap,
+  playing around heat loses.
+- **Cooling 0 bites, modestly, on a cold die.** With no passive cooling the greedy pays heat 4 a
+  third of a point and heat 6 and 8 about half a point more (1.2 and 2.0), overheating less (0.33
+  a fight) since it holds the hot gun more; the cautious bot leans on the Coolant Jacket more (10%
+  of the row's spends at heat 8 against 7%). The row as stocked does not notice (5.89 rounds
+  against 5.88): Wainwright & Sutler's kit is cold, so the cut bites where heat is carried, and
+  the hot rows (Kestrel's at its 14, the Kite, the Stingray at 0) are its next read.
+- The cautious line at half the maximum is one habit among many, and a player who vents only when
+  it pays sits between the two bots: the two ends bracket heat's price, they do not set it.
+
+
+## 30 October, the pacing session and the foes' fresh start
+
+**The engine of the pacing session and the fresh start, read three ways at 40 runs** (built
+30 October, `85e28fd`; the bible's pacing, clocks, stall, tears, wall, curve and Anathema rows;
+the brief: `git show 85e28fd:docs/briefs/fresh_start.md`). `tools/campaign_run.gd` at 40 runs
+from seed 1, the greedy rung: the plain player (`docs/campaign_run.md`), the turtle (`--turtle`:
+the squad holds the two rows before the gate at its columns and fights only what comes within
+reach) and the detaching player (`--detach`: one machine sent at the nearest patrol within five
+hexes while the body fights the nearest formation), against the run of 29 October (the hunters
+at a ring of two, the same seeds, the old spawn lists as packs and the old clock). The field at
+the start is the tier's compositions by the ramp (at tier one a formation and two patrols at
+density 1.0), the wall is struck from anywhere along it with the strike's floor gone, the timer
+is the ramp's (12 at Convergence 0, 9 at 9), the meter's Fractures are set from the field's
+menace (the last at two thirds) and the boss is sealed until the Rupture. Directions, on a bot
+whose battles end in a wipe before the first peak.
+
+| Read | Battles | Won | Held | Fell | Wiped | Finale reached | First city fell, turn | Phases a battle | Three-machine battles won | Fights | Alone (1 of 1), won | The whole squad (3 of 3), won |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 29 October, the old field and clock | 379 | 6% | 52% | 40% | 93% | 32 | 3.55 | 7.77 | 39% of 58 | 733 | 327, 18% | 55, 81% |
+| 30 October, plain | 308 | 2% | 39% | 57% | 97% | 18 | 2.50 | 7.66 (3 to 16) | 16% of 48 | 575 | 279, 14% | 18, 72% |
+| 30 October, the turtle | 230 | 0% | 28% | 71% | 100% | 4 | 1.27 | 11 (5 to 81) | 0% of 44 | 536 | 228, 22% | 52, 90% |
+| 30 October, detaching | 291 | 0% | 41% | 57% | 99% | 11 | 2.35 | 7.85 (4 to 18) | 2% of 43 | 588 | 324, 19% | 4, 25% |
+
+The meter and the mouths, means a battle with their ranges:
+
+| Read | Fractures reached, of those held | Battles reaching the Rupture | By the stall guard | The seal broke, turn | Peaks | The rift sent | The tears sent | Tears open at the end | Elites | Menace killed | Gate damage |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Plain | 0.85 of 3.33 | 11% | 0% | 2.92 (1 to 5) | 0.00 (0 to 1) | 0.00 (0 to 1) | 0 | 0.00 (0 to 1) | 0.38 (0 to 2) | 25 (0 to 127) | 65 (0 to 180) |
+| The turtle | 1.24 of 3.12 | 20% | 0% | 4.89 (4 to 7) | 0.15 (0 to 6) | 0.15 (0 to 6) | 0.10 (0 to 15) | 0.15 (0 to 6) | 0.52 (0 to 2) | 40 (0 to 774) | 100 (1 to 200) |
+| Detaching | 0.84 of 3.28 | 9% | 0% | 2.76 (2 to 4) | 0.00 (0 to 1) | 0.00 (0 to 1) | 0 | 0.00 (0 to 1) | 0.42 (0 to 2) | 23 (0 to 127) | 69 (0 to 150) |
+
+Read. The field at the start is the harder battle for this bot: fell 57% where 40% fell, won 2%
+where 6%, the first city falling on turn 2.5 where 3.55, the three-machine battles won 16% of 48
+where 39% of 58. Two changes stand behind it and the run does not part them: the wall struck
+from anywhere (a pusher that reaches any of the bottom rows strikes that turn, where it had to
+reach the four hexes before the gate, which the squad stood on; the gate now takes 65 a battle
+on the plain player) and the compositions on the field (a lone machine against a formation with
+a patrol beside it wins 2% of 139 such fights, the patrols' rings covering the formation they
+flank, where the old lists came as three to five one-type packs). The matrix's composition cells
+by machine attribute it (the to-do); this is a direction.
+
+The flood is unread on the plain player: its battles last 7.7 phases against a timer of 12 at
+Convergence 0 (9 at 9), so no peak comes in all but a handful (0.00 a battle, 0 to 1): the rift
+sent nothing and no tear opened. What the plain read sees is the field at the start, the
+Fractures and the elites. The turtle's battles run 11 phases (5 to 81) and meet the peaks: 0.15
+a battle (0 to 6), the tears sending up to 15 patrols in one battle, one battle of 81 phases
+killing 774 menace: the stall the design prices exists on the turtle and is rare, since the
+turtle holds the two rows before the gate at its own columns and the wall is struck from
+anywhere beside it: the gate took 100 a battle (1 to 200) where the plain player's took 65,
+every battle a wipe, 71% fell, the first city on turn 1.27. The whole-wall rule does its work
+(the apron cannot be plugged), and the turtle read gives the interval step and the bounty cap no
+case yet: the step stays at zero and the cap on the bench until a persona that holds the whole
+apron row, or Ryan's play, meets a stall.
+
+The timer's 12 is the old clock's number, set when every peak sent one pack and the clock was
+inert (the bible's pacing row's arithmetic). The design test (a fought battle meets one or two
+tears, a stall five) wants the first peak inside a fought battle of ten turns or so, which 12 at
+the start cannot give: by arithmetic, not by the bot, Claude's lean is 8 at the start to 6 at the
+top (one peak and one armed tear in a ten-turn battle, two or three in a stall of twenty), for
+Ryan's word (`Ramp.timer_at`, section 12's ramp item).
+
+The Rupture came in 11% of the plain player's battles (0.85 Fractures a battle of the 3.33
+held), 20% of the turtle's and 9% of the detaching player's, never by the stall guard (the field
+never clears under this bot; a wipe comes first). Where it came it came early (turn 2.9 on the
+plain player), in the battles whose fights the trio won, and the boss's fight after it is the
+exam the proposal meant: two machines against the boss alone won 83% of 6, three 100% of 3,
+three against the boss with the first Fracture's elite beside it 25% of 4, the elite that
+emerged at the rift standing in the boss's ring and joining its fight. The elites: 0.38 a battle
+on the plain player, 0.52 on the turtle; a lone machine against an elite's composition won 28%
+of 7 (plain) and 15% of 20 (turtle), two machines 100% of 6 and 14% of 7, small cells of
+different elites.
+
+The patrols: a lone machine against a patrol wins 45% of 133 (plain), 50% of 116 (turtle) and
+48% of 196 (detaching), where the brief's target is a patrol costing one machine about a tenth,
+so the tier-one patrols as partitioned (three goblins, two wolves and their kin in each domain)
+are a lone starter's fight on the greedy rung, as the `--pack` read of 26 October said of three
+of a swarm type for a light machine; the partition is Ryan's to mark and the composition cells
+read it by machine. The detaching player sent a machine 219 times: its lone fights rose to 324
+(279) at 19% won (14%), and it won no battle: a detachment pays, as the design wants, and the
+patrols cost more than their tenth.
+
+Salvage by menace: a won battle banks 246 (230 to 254) at 2 a point of menace where ten a kill
+banked 163 (100 to 320), on 6 won battles against 23, so the constant reads about half again high
+at a won battle and is the economy pass's number (section 10); components destroyed a won battle
+0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
+reads of the fights' shape stay the quick campaign's until a runner player fields a squad
+(section 12).

@@ -22,11 +22,14 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 744 tests, 67,416 checks, green on `claude/charming-rubin-h954bp` (29 October, the
-  model rebuilds and Ryan's notes on them, with main merged in; 739 tests, 66,640 checks on
-  main's head, the mechanics audit), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
-  build from the GitHub release asset (`godotengine/godot-builds`,
-  `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
+- Tests: 792 tests, 206,300 checks, green (30 October, main with `claude/charming-rubin-h954bp`
+  merged in, the model rebuilds and Ryan's notes on them; 787 and 205,261 on main alone), about four minutes in a cloud session, twenty on a slow one. A cloud
+  session gets Godot 4.7's Linux build and the project's first import from the repository's
+  session-start hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`,
+  27 October, on main since 30 October; the GitHub release asset `godotengine/godot-builds`,
+  `Godot_v4.7.2-stable_linux.x86_64.zip`, into `~/bin`; a session without the hook fetches it by
+  hand, the download in a command of its own and the unpacking and first run in another, since
+  Auto mode refuses one line that fetches and runs it), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
   counts, its frame times mean nothing), and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -35,13 +38,23 @@ are in `README.md`.
 
 ## Branches
 
-`claude/charming-rubin-h954bp` (28 October) carries the model rebuilds of Ryan's brief of that
-day (the pins' record and the game's plan against it, thirteen models rebuilt to their stock,
-the Armadillo's seal) and his five rounds of notes on them of the 29th (the Kite's Pinion
-Driver in two shots and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding
-weapons, hunkered seal with acts of its own and louvred radiators, the Arsenal's lit cockpit
-glass and the Nemesis's flaring visor), and took main each evening (to `b2762d5`, the map
-survey's relief rerun); unmerged, for main to take on Ryan's word.
+`claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
+the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
+stock, the Armadillo's seal) and his rounds of notes on them of the 29th and 30th (the Kite's
+Pinion Driver in two shots and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding
+weapons, hunkered seal with acts of its own and its vents opening and shutting a pair at a time,
+the Arsenal's lit cockpit glass and the Nemesis's flaring visor, the desk on the phone's
+renderer), took main each evening (to `b2762d5`) and again as it landed (to `b1682c3`: the
+pacing session, the pricing pass, the tilesets' walls), and main took it on 30 October on his
+word ("Merge into main"); its bible is v0.397 (the page's 409).
+
+`claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
+(the brief, the engine in three commits to `85e28fd`, then the records), took main three times
+(the tilesets' second build before its records pass; the pricing pass, Chain and the cautious
+heat persona after them, on Ryan's word to bring the repricing in; the tilesets' walls and the
+heat grid's read as it landed), and main took it as a fast-forward on 30 October on his word
+("merge this into main"); its bible is v0.393 (the page's 405), onto the live v0.392, other
+sessions' rows on its v0.385.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -56,7 +69,7 @@ units' holds and the codex as text, the keywords list, area at half, Flak on a w
 0, the weapon and equipment words, the vent's blast as a weapon's hit, Spun Up spent by a weapon
 alone, the Skua's runner rows), `claude/quick-campaign-mode-pafhiv` (the quick campaign, one
 damage state, the bosses at their tier), `ccr-6073bda9-p34o8q` (the foes' fresh start proposed,
-`docs/foes_proposal.md`; the campaign bot moving as one with its withdrawing persona; `--pack` on
+`git show 85e28fd:docs/foes_proposal.md`; the campaign bot moving as one with its withdrawing persona; `--pack` on
 the balance runner), `ccr-7d865127-wr1ko2` (the Kestrel looks' third and fourth rounds, which the
 status of the 26th listed as fully merged while they stood unmerged) and `ccr-7effd31a-u5z4gw`
 (the Hold The Line pair). The conflicts were the records and the two sessions' same-afternoon
@@ -68,11 +81,18 @@ rounds of notes, the hangar's stamped fetches and the glow-parts guard) took mai
 main"). `ccr-6073bda9-p34o8q` took main the same evening, carried the ladder's build on top
 (the three verbs, the foes' buffs, the player's Purge, the recolours by tier, their sprites,
 the read at 30 seeds and the move counts settled), and main took it as a fast-forward that
-night on the same word. Every branch named here is fully
+night on the same word. `ccr-c04908be-3r43xf` (27 to 30 October: the pricing run's method and
+driver, the runs made and read, the synergy map (`docs/synergy_map.md`) and the roster's synergy
+holes, the session-start hook that fetches Godot for cloud sessions, the pricing pass landed on
+Ryan's go, Chain's conductor and its form of the 29th with every read, Shock read by an aimed
+strike alone, the heat brief, the cautious heat persona) took main on the 28th and twice on the
+30th, and main took it as a fast-forward on the 30th on Ryan's word ("merge into main and
+republish the bible"); its session carries on there, its later commits landing the same way.
+Every other branch named here is fully
 merged, to delete from the desk machine or GitHub along with `ccr-6073bda9-p34o8q`,
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4`, `ccr-24cae16e-ryhv1v` and, once
-its session ends, `ccr-7821127e-kwj874` (a cloud session may not delete one). Every other branch was
+its session ends, `ccr-7821127e-kwj874` and `ccr-c04908be-3r43xf` (a cloud session may not delete one). Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
@@ -100,7 +120,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a candidate for the Owl or the Magpie, the bible's Kestrel row). The Skua fielded since its engine of 25 October (each roll
   halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
-  follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
+  follows from its brief, and the Storm Petrel's is free since the pricing pass landed (28 October, the guns' heat
+  standing); the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
@@ -116,6 +137,35 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
+  section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
+  tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
+  85e28fd:docs/briefs/fresh_start.md`): a pack is a composition on one hex (patrols,
+  formations, elites and escorts by tier in `content/factions.json`, partitioned from the
+  ladder's lists as placeholders for Ryan's marks; its members listed on a hold, the survivors
+  kept by member); the field at the start and the rift's cycle come by the rift's tier, locked
+  as it opens, and the live Convergence as the ramp (`sim/ramp.gd`, one table of placeholders:
+  the counts, the density, the timer 12 to 8, the tears a peak, the seam's creep, the interval
+  step at zero); a peak sends from the rift and from every tear open before it, creeps the seam
+  (the bleed's edge) and opens tears on it, far from the other mouths, each armed a peak later;
+  a pusher strikes the gate's bar from anywhere along the wall, the floor of ten gone; the
+  Rupture meter fills by menace (a foe's heaviest blow plus a quarter of its HP, an elite's
+  doubled) toward the tier's Fractures, set from the field's menace at the start, the elites
+  emerging at the rift at the Fractures the tier names, the last Fracture or a cleared field
+  breaking the seal on a boss that until then joins no fight; salvage at 2 a point of menace and
+  Anathema by domain; five elites as placeholder kits (the goblin shaman, the Elder Treant, the
+  Leshy, the Old Man of the Desert, the Reaper); the quick campaign's formations and elite
+  slots on the compositions; the turtle and the detaching personas and the runner's reads of
+  the meter and the mouths; the tears, the seam, the meter's bar, SEALED and the members on
+  screen as a first cut (`RIFTGATE_PEAK_DEBUG=1` peaks every enemy turn). Read on the campaign
+  runner three ways (`docs/measurements.md`, directions): the field at the start is harder for
+  the plain bot (fell 57% where 40%, the wall struck anywhere and the compositions not parted),
+  the flood is unread on it (its battles end before the first peak; the turtle's meet them, and
+  the turtle loses to the gate), the Rupture comes in a tenth of its battles and never by the
+  guard, the tier-one patrols read as a lone starter's fight, and salvage at a won battle banks
+  half again what ten a kill did. The timer's 12 is the old clock's number: Claude's lean 8 to
+  6, Ryan's word. What waits on his marks is section 12's fresh start item; the composition
+  cells on the matrix and his play of the clocks are the to-do's.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water
@@ -125,14 +175,81 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   day (`docs/measurements.md`): the maps are unchanged seed for seed; every way of moving now
   reaches the rift in 6 phases at move 3 and reach is the move and the walls; the campaign run's
   bands hold, its three-machine battles won more (a direction: the squad no longer split by
-  slow ground). Next for the map: the six shapes, named, their relief laid by the shape and free
-  to run (`docs/briefs/map_shapes.md`, Ryan's calls of 29 October), the domains' tilesets as an
-  art task and the crossing's price in the pricing run (the to-do).
+  slow ground). The six shapes followed the next day (below); still to come for the map: the
+  domains' tilesets as an art task and the crossing's price in the pricing run (the to-do).
 - The heroes carry no map move and no hunt (Ryan, 28 October, of the Thief's: "it's a boss so
   it doesn't need it"): a hero only commands the boss unit, which patrols a hex a turn, and the
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- The six map shapes (Ryan's direction of 28 October and his calls of 29 October; landed 29
+  October, the brief retired): RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE, RUINED CITY and
+  GORGE, each laying its own water, walls, decorative ground and relief; a battle that names no
+  shape (the campaign's) draws one by its seed, every shape alike; Mixed Ground and the other
+  four types retired. The walls are named by what they are (crags, mesas, towers, cliffs) on the
+  ground tap, a fight's label and the skirmish's header, the vocabulary's terms tied to the map
+  by the validator, and the cliffs a new look (rock prisms, basalt-like). The decoration is
+  knee-high under walls of 40 and more, dense in the scenery and against walls and water,
+  sparse in the lanes, of the shape's kind (reeds, shingle, scree, scrub, rubble, grass), and
+  the roads lead to the fords and through the gaps or are not laid. The field is level but for
+  the badlands' mesas on their shoulders and the steppe's one rise; the scenery rises. A
+  domain names no shape (Ryan, 30 October: "I don't see why the domain should be related to the
+  map type in any way"; its `map_kind` gone from content and refused by the validator), height
+  is a look alone ("Too complicated, not worth"), and a skirmish never reads our own ground,
+  only, if a terrain effect ever comes, the ground the enemy paints (the bible's twisted
+  landscape row). Measured (`docs/measurements.md`): every shape keeps the
+  horde's crossing three wide on all 200 maps; the shapes part on reach (the walkers' two-phase
+  reach 38% on the gorge and the badlands to 51% on the steppe, the hover's 47% to 62%, the
+  flyer's 62% on all); the relief steps on 0% to 16% of neighbouring land where it stepped on
+  55%; the campaign run moves no band. Next: Ryan's read of them running (the to-do).
+- The horde moves as the machines do (Ryan, 29 October; built the same day): a pack wades water
+  at two a hex as a ground machine does, packs pass through each other, a flyer (a machine or a
+  winged pack) and the ground pass each other, and nobody stops on another unit's hex; grounded
+  machines still block each other and the grounded packs, so the bodyblock stays and the
+  crossing guarantee binds the walls alone. A river's fords and a city band's streets are three
+  or four hexes in all, the river's one or two (four broke it into ponds) and a band's one to
+  four. Measured (`docs/measurements.md`): the horde's crossing stays three wide on every map,
+  the guarantee opens nothing on water, and only the city's reach moves (the walkers' 44% where
+  42%, its streets spread); the campaign run moves no band, the fights' sizes with it on this
+  bot, which never holds a line.
+- The hunters pounce (Ryan, 29 October; built the same day): every hunter's ring is two at
+  least (the Goblin Captain's three; the validator holds it), one number for its catch, the
+  fights it joins and the ring drawn. A hunter keeps its prey and goes for it by any route; only
+  when walls and machines seal the prey off does it take the machine nearest the prey that a
+  walk that turn can ring, its tag, the board's HUNTED BY and its readout following ("It's just
+  punishing hiding"); the re-pick is gone. Measured (`docs/measurements.md`): the campaign run
+  moves no outcome band, and the fights grow, 54% of them against two packs or more where 45%
+  were. Ryan asked whether a hunter joins a fight it did not start: it does, as every pack does,
+  on Claude's lean until he says otherwise (the bible's fights-picked row). Next: his read of
+  the pounce in play (the to-do), the exit bringing the ring back down.
+- Each domain paints its own tileset (Ryan, 29 October), built twice on 30 October
+  (`game/ui/domain_ground.gd`, by the factions' `bleed`). Ryan turned the first down (the
+  marks were rectangles, water and the walls were alike everywhere, and each ground had its own
+  fill: "walls and water certainly should change with tileset", the grounds "not wildly
+  different"; the Peak not volcanic, the Marsh not an undead marsh). The second dresses every
+  hex in outlined pixel sprites (ASCII art inked per domain, two pixels a design pixel; "Overall
+  the art is a huge improvement"), each ground its own tone a step from its domain's on the
+  posterize grid (his second read: one ground for all was "very monotone"; his third: the
+  Waste's and the Marsh's rough wanted more separation, so olive and moss). Each domain also
+  has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava,
+  orange-red since the yellow read as acid, stopping short of the enemy's red) and its own
+  walls (snowy peaks, red buttes, black crags, volcanoes), each range standing out of the top
+  of its hex, drawn after every hex's ground (`DomainGround.draw_walls`). A road follows the
+  roads beside it, three road hexes round a corner making a loop with a gap in the middle.
+  Every colour is on the posterize grid and scored against its ground by the colourblind
+  simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
+  field and `tools/tileset_shot.gd` draws all four. The painted map takes 45 to 120 ms a
+  frame to draw on the cloud's CPU, twice at a battle's start; if the phone hitches there, the
+  sprites' placement is the part to make cheaper. Next, Ryan's read of them running (the
+  to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its
+  own palette table (`BattleBackdrop.PALETTES`, the same bleed keys) and is to merge main
+  (Ryan, 30 October). Its rewrite of `game/ui/terrain_art.gd` and `game/battle/painted_map.gd`
+  meets this one's: the painted map draws every hex through `DomainGround.draw_hex`, passing
+  each road hex its links, then the walls' ranges in a second pass (`draw_walls`), and keeps
+  both. Its palettes then want to agree with the map's, and the two tables one home: its lava
+  is the yellow-orange Ryan called acid on the map (the map's lake is `#ff6600` under a crust of
+  `#990000` and `#330000`, glinting `#ff9900` and `#ffcc00`), and its Marsh's poison purple
+  `#6a2e8a` sits on the rift's deep violet `#6a30c0`, the reason the map's Marsh carries none.
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -150,14 +267,17 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   of the time from 59% of the squad's hull, where the tier-one formations are won 87%) and a
   plateau after it while the enemy has no tiers: section 12's question, to read against the
   fresh start's compositions before any lever moves; area at half is the rule behind the
-  cliff (the Balance bullet). Its elite slots hold the lead's formation alone until the elites
-  land (the to-do; the bench hero that stood in went on 27 October, Ryan: "a can of worms");
+  cliff (the Balance bullet). Its elite slots take the lead's elite compositions in turn since 30
+  October (the bench hero that stood in went on 27 October, Ryan: "a can of worms"; a domain
+  with none, the Peak today, the lead's formation), its formations the compositions in turn;
   from tier two a domain's final may be a battle's boss (Ryan, 25 October), and every boss
   fight brings the tier's escort.
 - Bosses scale to the battle's tier (Ryan, 25 and 26 October; the bible's section 9 row, section
   3's row carrying the exception): a domain's boss, a final's hero and the finale's line take
   the tier's HP and attack and bring more escort, drawn from the domain's units of the tier (a
-  unit's `tier` in content, one by default: no unit has another yet), in the campaign and the
+  unit's `tier` in content, one by default: no unit has another yet; a domain's `escort`
+  composition at the tier stands in for them when one is written, the hook since 30 October,
+  no content yet), in the campaign and the
   quick campaign; the rank and file never scale in place, a tier's units being their own (the
   bible's section 3 row, 28 October). The campaign counts its tiers from the
   Convergence (tier two from 4, tier three from 8, the finale at 12 on tier three's step); every
@@ -173,8 +293,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
   (their passives and four locked pieces planned, so never dealt); 81 components,
-  32 of them locked; 17 modules; four domains with 44 wildlife (18 at tier one, their bosses
-  among them, and the ladder's 26 recolours) and 8 heroes with their promoted forms; 6 foe moves
+  32 of them locked; 17 modules; four domains with 49 wildlife (18 at tier one, their bosses
+  among them, the ladder's 26 recolours and five elites as placeholder kits, each tier's
+  compositions partitioned from its list as placeholders) and 8 heroes with their promoted forms; 6 foe moves
   planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
@@ -294,11 +415,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The Giant Petrel's engine and the Storm Petrel's, after the pricing run (their briefs).
-- The elites on Ryan's definition of 23 and 24 October, a guaranteed miniboss event mid-battle
-  (the bible's tiers row), with the bosses' slate
-  (`docs/bosses_proposal.md`) and the promoted forms' one move more for seven of them
-  (`docs/heroes_proposal.md`).
+- The Giant Petrel's engine and the Storm Petrel's, the latter free since the pricing pass
+  landed on 28 October with the guns' heat standing (their briefs).
+- The Peak's elite and a Waste hunter, the escort compositions by tier and the Fracture's
+  prize (the bible's section 12), with the bosses' slate (`docs/bosses_proposal.md`) and the
+  promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
   silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
   Purge on a capstone's blow (its chassis session).
@@ -310,29 +431,75 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). First: the 200-seed matrix with the ladder's cells on the desk machine (the
-to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
-numbered keywords and the blow's order; the campaign report (28 October) and the map survey
-(29 October, with its relief table) are main's head's.
+to-do's Ryan list). First: the 200-seed matrix with the ladder's and the compositions' cells on the desk machine
+(the to-do's engine line), since the matrix on file (27 October) predates the ladder, area as
+numbered keywords, the blow's order and the compositions; the campaign report (30 October, the
+pacing session's plain read) is this head's and the map survey (29 October, the horde wading
+and the streets) main's.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
-   retired once its decisions are rows and content; the map shapes' generator session among
-   them, free to run since Ryan's calls of 29 October.
-2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
-   the hitter in hand (the to-do); the Lammergeier's stock.
-3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
-   pacing and four-machines rows, section 9, section 12's foe questions,
-   `docs/campaign_run.md` and `docs/curve_proposal.md` (the tier a rift's foes, elites and
-   Fractures follow, once Ryan picks its form). Builds compositions with a front and a back
-   spawned by the rift, small packs for detachments and formations for the body, the boss sealed by the
-   threat-weighted meter and fought with its formation, the withdrawing persona on the campaign
-   bot, the curve by stage (section 3's curve row) and the elites on Ryan's definition (section
-   9's tiers row), read against the starter and endgame grids of 23 October; then reruns both
-   reports and measures the fights a team fights together. Its first part, the ladder, built
-   28 October on `ccr-6073bda9-p34o8q` (the recolours by tier, the three verbs, the enemy's
-   buffs and the player's Purge; read at 30 seeds, `docs/measurements.md`): next its 200-seed
-   matrix on the desk machine (the to-do). The rest of the fresh start waits on his marks on the proposal's questions
-   1 to 13.
+   retired once its decisions are rows and content.
+2. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass, landed
+   28 October on Ryan's go ("I trust your leans for this pass"; the bible's pricing row, section
+   11; the runs in `docs/measurements.md`, 27 and 28 October). The run of the 27th read every
+   row winning its cells, tier one's two outlier guns above tier two's band, the Ram Frame the
+   universal module on +24 hull, equipment and the setups priced not at all under the greedy,
+   the Probe, the Condenser and the Ammit's loop verdicts on the bot; reviewed on the 28th
+   against the numbered area, the blow's order and the ladder's design goals; reframed on
+   Ryan's words of the 28th (the effectiveness row: a piece priced by its effectiveness in
+   vanilla points, a vanilla at each tier the baseline, heat priced up from the heatless
+   vanilla, a rolled gun its mean). The vanilla ladder read a point a third of a round up to
+   6 and a seventh past it on the car, the hot bench reading keywords and no number, heat 1, 2
+   and 4 free on a cold die and 6 and 8 a point and two, a hot die paying in hull, a rolled gun
+   a third of a point under its mean, and the keywords' prices (Flak 2 two, Burn 2 two and a
+   third, the Chain nearly three, the Shock one and a half). Landed on his go: the floors 2, 3.5, 5 and 7;
+   the Railgun 10 to 8, the Coriolis 3 to 4, tier one's rolled vanillas to 2-6, the Howitzer
+   Splash 1, the Ram Frame and the Rangefinder hull +8 (the Clydesdale bench: the Frame 0.4 rounds off its
+   row, the Rangefinder 0.1, its back-rank rule reading on the one back-rank foe type a tier-one
+   formation fields, tier three's fielding three; a nine-entry die dilutes its slot three to
+   one and never reaches its heat knee); every landed delta read again at 200 seeds (the Railgun
+   at 8 1.5 rounds off the car's row against 2.0 at 10, under the Knuckles and the Meteor and
+   above the Thermal Ray; the Coriolis at 4 at tier two's floor; the rolled guns at 2-6 the
+   half point meant; the Howitzer with Splash 1 a tier-one shell at tier two's kill time; the
+   Frame at +8 a third of a round, the Rangefinder its hull on tier one's formations; the
+   ladder's tier-two and tier-three formations are walls for the stock trios, Wainwright &
+   Sutler's row winning 29% of them, so the Rangefinder's rule is the per-tier ladders' read
+   with a tier-matched kit). Chain decided the same evening (the conductor, the bible's Chain
+   row) and built on the 29th from its brief (retired); read the same day, it is a plain 4 on
+   today's kits (another machine's doubled blow spends nearly every charge before the arc
+   fires), about 0.7 vanilla points with a spread setter under the planner, and Kestrel's row,
+   with no Shock setter, lost the kill and repeat's pace. Ryan's six looks at Chain's form read
+   the same day as what-ifs (`docs/measurements.md`, the Chain looks): how a charge is spent
+   barely matters, self-fuelling is what moves it, Shock clarified costs nothing, and a Shock
+   setter on the Buzzard takes nothing over. Ryan picked the form the same evening (the arcs
+   plain, Shock read only by a weapon's strike aimed at its foe, a charge on one other foe at
+   random), built at once and read (`docs/measurements.md`): about 0.8 vanilla points over the
+   sixteen big fights, nothing against a lone massive foe and about 2 on the formations, the
+   charge carrying it (the team cashes each one, so nothing compounds); a point of Chain N on
+   the Arc Fault adds about a tenth of a point, so it keeps its Chain 2. Ryan affirmed the
+   random charge the same evening (lightning, free reach, it sets itself up) and kept the
+   Buzzard's stock.
+   Heat opened the same evening (Ryan: a core pillar, undervalued): the heat knee by the
+   maximum measured as a what-if, his frame recorded (the triangle row of section 2: every
+   component priced in heat, hull or shield, the basics too; passive cooling the lever that
+   makes the player meet the system; vent payoffs), Claude's bench in section 12's heat
+   question, the heat session on the to-do with its brief (`docs/briefs/heat_pillar.md`), waiting
+   on Ryan's answers to its six questions. The cautious persona built 30 October (`--cool-above
+   N`) and its first read in the brief and `docs/measurements.md`: on the car's heat grid caution
+   costs more than the overheat (more rounds and more hull), so the overheat's price comes before
+   the cooling's cut, and cooling 0 bites modestly on a cold die. Next: the hot rows under both
+   bots; a persona that shields before the blow and the planner on the equipment ladders, for the
+   equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
+   the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
+   line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
+3. **The foes' fresh start and the pacing session: Ryan's marks and the reads.** Built 30
+   October (the How things stand bullet). What waits on him: section 12's fresh start item (the
+   five kits' names and numbers, the Peak's elite and a Waste hunter, the compositions'
+   partition of each tier's list, the escort compositions, roles, the one rider a domain and
+   enemy Shock) and the ramp's numbers, the timer first (Claude's lean 8 to 6,
+   `docs/measurements.md`). What reads next: the matrix's composition cells (first, above), his
+   play of the clocks on the phone (the to-do's judge line: the tears, the seam, the meter's
+   bar, SEALED, `RIFTGATE_PEAK_DEBUG=1`), and the Fracture's prize after the meter is played.
 4. **Balancing for real** (Ryan, 14 October: only once the go is hashed out and the stock pass
    is in can the units be balanced for real; 24 October: it "probably needs foes with proper
    formations", so it follows the fresh start): the runner's rows on the roster as it stands,
@@ -345,7 +512,7 @@ numbered keywords and the blow's order; the campaign report (28 October) and the
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
 7. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves;
-   the bosses' slate as content alone); the pacing session's remaining pieces; the battery plan's rest (the props' fade, the 3D at 30); audio;
+   the bosses' slate as content alone); the ramp's numbers on Ryan's word; the battery plan's rest (the props' fade, the 3D at 30); audio;
    art; the commander layer after a balance baseline; onboarding before a phone leaves the desk.
 
 ## Pages
@@ -357,36 +524,21 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file and the live page are v0.397 (the
-  page's version 409, published 30 October from `claude/charming-rubin-h954bp` onto its own 408,
-  a three-way merge onto the live v0.395 that another session published at 407 (the fight's palette beside the
-  map's tileset, the HUD's three presets), itself onto this branch's v0.394 at 406, merged onto
-  the live v0.393 that another session published at 405 (Night Shift's battle half as a jam in
-  turns), itself onto this branch's v0.391 at 403, merged onto the live v0.390 that other
-  sessions published at 402 (the engine's 4.8, sound notes, the enemy's violet, the foe tables,
-  the HUD's presets), itself onto this branch's v0.384 at 396,
-  merged onto the live v0.383 that other sessions published at 395 (the pacing session's tier and
-  ramp rows, the track pairs' notes), itself onto this branch's v0.377 at 389, merged onto the live
-  v0.376 that another session published after this branch's 386 (the domains' tilesets built
-  again: outlined sprites, the Marsh without violet), itself onto this branch's v0.374 at 386,
-  merged onto the live v0.373 that `claude/jolly-lovelace-scn82y` published at 385
-  (the domains' first tilesets, the map's lines at one width at every zoom), itself onto this
-  branch's v0.370 at 382;
-  that branch's rows came in the same way before (the enemy's red pure #ff0000 on trial, heat's
-  orange #ff6000, reds and oranges in red and green alone), with main's v0.352 (the map survey)
-  and `ccr-7effd31a-u5z4gw`'s sound rows, so this file carries those rows ahead of their code;
-  with this branch's notes of 29 and 30 October on the rebuilds, the Armadillo's radiators
-  sunk in its flanks' chamfers above the hind hips and two near-square vents standing out of its
-  back panel, opening and shutting a pair at a time, its rack's collar skirted in the
-  livery, its sliding side vents, their
-  glow (#ff7800) and its one-sink vent, and the desk on the phone's renderer). The version numbers on the publishing branch's
+  page's version 409, published 30 October from `claude/charming-rubin-h954bp` as main took it,
+  onto its own v0.396 at 408, three-way merged onto the live v0.395 that another session
+  published at 407 (the fight's palette beside the map's tileset, the HUD's three presets), itself
+  onto that branch's v0.394 at 406, merged onto the live v0.393 that `claude/brave-cori-fr18de`
+  published at 405 as main took it; each publish before it merged the same way, as this file's
+  history in git shows). So this file carries rows other sessions published ahead of their code
+  (the skirmish's field and its palette beside the map's tileset, the reds and the enemy's
+  violet, the tracks in pairs, the map's FXAA and its lines at every zoom, the HUD's three
+  presets), each landing with its branch. The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
-  stripped from the saved live source). Until `claude/charming-rubin-h954bp` lands, the live page
-  holds its rows ahead of main's code (the model rebuilds, and the Strikes row in the keyword
-  table), so a session on main merges onto it rather than publishing main's file, and main's
-  tables script waits for it; on this branch the tables script may run freely (its tables came
-  out unchanged here).
+  stripped from the saved live source). With the model rebuilds landed, the keyword table's
+  Strikes row is main's own, and the tables script, which writes the buff, debuff and keyword
+  tables from main's content, runs freely again.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
@@ -394,16 +546,16 @@ into this file in the same commit as its first publish; the procedures are in `R
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 169 (30 October, from
-  `claude/charming-rubin-h954bp`, onto its own 168 to 165, itself onto 164, which another session published with this branch's
-  manifest, `motion.js` and Armadillo files as at its 163, itself onto 162, 161 and 160, which another session
-  published with this branch's manifest and `motion.js` as at its 159, which other sessions published overnight with this
-  branch's page, manifest and `motion.js` as at its 152: Ryan's notes of 29 and 30 October on
-  the rebuilds, the last standing the Armadillo's rear vents out of the back panel and opening
-  its vents a pair at a time, held open together, then shut a pair at a time as the shell slowly
-  rises,
-  with its renders, the old ones to before (the last two rounds moved only the vent act, so its
-  rig and the note went up alone); every other file as the live page had it, `edits`
+  acts on a reloaded page). At the page's version 170 (30 October, from main as it took
+  `claude/charming-rubin-h954bp`: `content/chassis.json` and `content/components.json` as merged,
+  main's pricing numbers with that branch's Pinion Driver in two shots and the Stingray's lance on
+  its dome, so the Codex reads both; onto that branch's own 169 to 165, Ryan's notes of 30 October
+  on the Armadillo, the last opening its vents a pair at a time, held open together, then shut a
+  pair at a time as the shell slowly rises, with its renders, the old ones to before; on 164,
+  which `claude/brave-cori-fr18de` published with main's pricing pass (the foes with the elites
+  and the compositions' notes, the factions with the compositions, the vocabulary with the
+  pacing session's terms and Chain, the modules with the pricing pass's lines); every other file
+  as the live page had it, `edits`
   empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from

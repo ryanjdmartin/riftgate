@@ -495,8 +495,10 @@ func _build_setup(page: VBoxContainer) -> void:
 	row.add_child(rnd)
 	page.add_child(_hint("The battle's map and every fight's dice come from it."))
 
-	page.add_child(_section("Map type"))
+	page.add_child(_section("Map shape"))
 	_kind = _picker()
+	_kind.add_item("By the seed")   # the campaign's way: the shape the seed draws
+	_kind.set_item_metadata(0, "")
 	for k in BattleMap.KINDS.keys():
 		_kind.add_item(str(BattleMap.KINDS[k]["name"]).capitalize())
 		_kind.set_item_metadata(_kind.item_count - 1, k)
@@ -558,7 +560,10 @@ func _refresh_summary() -> void:
 	var lines: Array = []
 	lines.append(("TEAM  " + ", ".join(team)) if not team.is_empty() else "TEAM  none ticked")
 	lines.append(("ENEMY  " + ", ".join(foes)) if not foes.is_empty() else "ENEMY  none")
-	var extra := "SEED %d · %s" % [setup.seed_value, str(BattleMap.KINDS[setup.map_kind]["name"]).capitalize()]
+	var shape := setup.map_kind if BattleMap.KINDS.has(setup.map_kind) else BattleMap.kind_for_seed(setup.seed_value)
+	var extra := "SEED %d · %s" % [setup.seed_value, str(BattleMap.KINDS[shape]["name"]).capitalize()]
+	if not BattleMap.KINDS.has(setup.map_kind):
+		extra += " (by the seed)"
 	if not setup.guest.is_empty():
 		extra += " · guest " + str(db.factions[setup.guest].get("name", setup.guest))
 	lines.append(extra)

@@ -86,11 +86,22 @@ func test_a_battle_holds_its_fractures_with_the_elites_folded_in() -> void:
 		else:
 			assert_eq(last["kind"], "boss", "the boss closes it")
 			assert_true(r.db.bosses_of(r.lead).has(str(last["foe"])), "the lead's boss")
+		var elite_comps: Array = r.db.elite_compositions(r.lead, t + 1)
+		var dealt := 0
 		for e in enc:
 			if e["kind"] == "elite":
 				assert_eq(e["domain"], r.lead, "an elite is the lead's")
-				assert_eq(str(e.get("foe", "")), "", "nothing stands in for it until the elites land (Ryan, 27 October)")
-				assert_eq(r.encounter_foes(e).size(), r.formation_foes(r.lead).size(), "the lead's formation holds the slot")
+				if dealt < elite_comps.size():
+					# The slot takes the lead's elite compositions in turn (30 October).
+					assert_eq(str(e.get("foe", "")), str(elite_comps[dealt]["id"]), "the lead's next elite composition")
+					var want := 0
+					for m in elite_comps[dealt]["members"]:
+						want += Ramp.scaled(int(m[1]), r.ramp())
+					assert_eq(r.encounter_foes(e).size(), want, "its members at the ramp's density")
+				else:
+					assert_eq(str(e.get("foe", "")), "", "with no elite left, nothing stands in (Ryan, 27 October)")
+					assert_eq(r.encounter_foes(e).size(), r.formation_foes(r.lead).size(), "the lead's formation holds the slot")
+				dealt += 1
 
 
 func test_the_guest_joins_from_tier_two_and_takes_every_other_formation() -> void:
@@ -183,9 +194,11 @@ func test_a_boss_brings_the_tiers_escort() -> void:
 		assert_eq(foes[0].attack, int(content["attack"]) + int(ContentDB.boss_tier(t)["attack"]), "its attack at the tier")
 	assert_true(counts[0] < counts[2], "more at tier three than at tier one")
 	for e in r.encounters:
-		if e["kind"] == "formation" or e["kind"] == "elite":
+		if e["kind"] == "formation":
 			var plain: int = r.encounter_foes(e).size()
-			assert_eq(plain, r.formation_foes(str(e["domain"])).size(), "no escort outside a boss fight, and no stand-in in an elite's slot")
+			assert_eq(plain, r.formation_foes(str(e["domain"]), int(e.get("index", 0))).size(), "no escort outside a boss fight: a formation is its composition")
+		elif e["kind"] == "elite":
+			assert_true(r.encounter_foes(e).all(func(f) -> bool: return not f.escorts), "no escort in an elite's slot")
 
 
 func test_a_fight_carries_its_damage_recharges_a_field_turn_and_never_withdraws() -> void:

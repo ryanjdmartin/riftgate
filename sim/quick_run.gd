@@ -43,8 +43,8 @@ const TIER_EVERY := Campaign.TIER_EVERY     # a battle a step of the Convergence
 const TOP_TIER := 2                         # the tiers count 0 to 2, shown 1 to 3
 const GUEST_TIER := Campaign.GUEST_TIER
 const FINAL_TIER := 1                        # from tier two a domain's final may be a battle's boss (Ryan, 25 October)
-const FRACTURES := [3, 4, 5]   # the fights before the boss by tier: the Rupture's Fractures (bible section 4's pacing row)
-const ELITES := [1, 2, 3]      # of them, elites: an elite counts a Fracture (Ryan, 25 October)
+const FRACTURES := Ramp.FRACTURES   # the fights before the boss by tier: the Rupture's Fractures (bible section 4's pacing row; the one table, 30 October)
+const ELITES := [1, 2, 3]           # of them, elites: an elite counts a Fracture (Ryan, 25 October), as many as the Fractures the tier names (Ramp.ELITE_FRACTURES)
 const CHOICES := 3             # a loot pick, the token and the offer: one of three
 ## A loot pick's items by the battle's tier: the weights of item tiers one, two and three (the
 ## curve proposal's calls, Ryan 24 October: a tier-two rift still deals tier one, and tier three
@@ -74,8 +74,8 @@ var modules: Dictionary = {}      # the stores: module id -> copies unfitted
 var party: Dictionary = {}        # domain -> its dealt hero (the finale's line)
 var bosses_ended: Dictionary = {} # domain -> the bosses beaten this run, so the next draws another (the campaign's rule)
 var finals_won: Array = []        # domains whose final was won: their hero leaves the finale's line, as in the campaign
-## The formations' density by tier: each spawn entry's strength scaled, at least one (the ramp's
-## one lever without a map; 1.0 everywhere unless the runner asks: docs/measurements.md, 25 October).
+## The formations' density by tier, the runner's lever on top of the ramp's own (Ramp.scaled by
+## the battle's number as the Convergence; 1.0 everywhere unless the runner asks: docs/measurements.md, 25 October).
 var density: Array = [1.0, 1.0, 1.0]
 # ---- the battle ahead or under way
 var lead: String = ""
@@ -312,14 +312,23 @@ func _encounters(t: int) -> Array:
 		next_formation = not next_formation
 	var out: Array = []
 	var formations := 0
+	var dealt := {}   # domain -> formations dealt it this battle, so its compositions come in turn
+	var elites_dealt := 0
 	for k in kinds:
 		var enc := {"kind": k, "domain": lead}
 		if k == "formation":
 			if not guest.is_empty() and formations % 2 == 1:
 				enc["domain"] = guest
 			formations += 1
+			enc["index"] = int(dealt.get(enc["domain"], 0))   # which of the domain's formation compositions
+			dealt[enc["domain"]] = int(enc["index"]) + 1
 		else:
-			enc["foe"] = elite_of(lead)
+			# An elite's slot takes the lead's elite compositions in turn (30 October); with none
+			# left, the lead's formation holds the slot as before.
+			var elites := db.elite_compositions(lead, t + 1)
+			enc["foe"] = str(elites[elites_dealt]["id"]) if elites_dealt < elites.size() else ""
+			enc["index"] = 0
+			elites_dealt += 1
 		out.append(enc)
 	if is_finale():
 		# The line is drawn as the finale is rolled, so whoever shows it reads the one fought.
@@ -348,7 +357,7 @@ func _boss_encounter(t: int) -> Dictionary:
 
 
 ## Whom an encounter fields, in arrival order (the skirmish deploys the heaviest hitters first):
-## an elite's lead (none yet), the boss or a final's hero before the domain's formation; the
+## an elite composition's members, the boss or a final's hero before the domain's formation; the
 ## finale's line, as the campaign fields it. A boss, a final's hero and the finale's line stand
 ## at the battle's tier and bring its escort after them, as the campaign's boss unit does
 ## (ContentDB.BOSS_TIERS); an elite does not.
@@ -362,6 +371,12 @@ func encounter_foes(enc: Dictionary) -> Array:
 				var f := db.make_foe(str(fid))
 				db.scale_boss(f, tier())
 				out.append(f)
+	elif kind == "elite" and not str(enc.get("foe", "")).is_empty():
+		for c in db.elite_compositions(lead, tier() + 1):
+			if str(c["id"]) == str(enc["foe"]):
+				out.append_array(_composition_foes(c))
+		if out.is_empty():
+			out.append_array(formation_foes(str(enc.get("domain", lead)), int(enc.get("index", 0))))
 	else:
 		var lead_foe := str(enc.get("foe", ""))
 		if db.foes.has(lead_foe):
@@ -369,7 +384,7 @@ func encounter_foes(enc: Dictionary) -> Array:
 			if boss:
 				db.scale_boss(f, tier())
 			out.append(f)
-		out.append_array(formation_foes(str(enc.get("domain", lead))))
+		out.append_array(formation_foes(str(enc.get("domain", lead)), int(enc.get("index", 0))))
 	if boss:
 		out.append_array(escort_foes(str(enc.get("domain", lead))))
 	return out
@@ -381,11 +396,15 @@ func escort_foes(domain: String) -> Array:
 	return Array(db.escort_units(domain, tier(), ContentDB.escort_at(tier())))
 
 
-## A domain's formation: its whole spawn list in one fight, at the tier's density.
-func formation_foes(domain: String) -> Array:
+## A domain's formation: the tier's formation compositions in turn (`index`, wrapping), at the
+## ramp's density times the runner's lever; the whole derived list when the domain has none.
+func formation_foes(domain: String, index: int = 0) -> Array:
+	var forms := db.compositions(domain, tier() + 1, "formation")
+	if not forms.is_empty():
+		return _composition_foes(forms[index % forms.size()])
 	var out: Array = []
 	var d: float = float(density[tier()]) if tier() < density.size() else 1.0
-	for e in db.spawn_table(domain, tier() + 1):   # the battle's tier's list (28 October), tier() counting 0 to 2
+	for e in db.spawn_table(domain, tier() + 1):
 		if not db.foes.has(str(e[0])):
 			continue
 		for i in range(maxi(1, roundi(int(e[1]) * d))):
@@ -393,12 +412,30 @@ func formation_foes(domain: String) -> Array:
 	return out
 
 
-## The elite a domain fields: none until the elites land, so the slot holds the lead's formation
-## alone and the Fracture count stands. The domain's other bench hero stood in from 25 October
-## (Ryan: use what we've got) until 27 October (Ryan: the bench hero "obviously shouldn't stay
-## as a stand-in elite, that's just a can of worms"); the elites take the slot when they land.
-func elite_of(_domain: String) -> String:
-	return ""
+## A composition's foes: every member at the ramp's density (the battle's number as the
+## Convergence) times the runner's lever for the tier.
+func _composition_foes(c: Dictionary) -> Array:
+	var out: Array = []
+	var d: float = float(density[tier()]) if tier() < density.size() else 1.0
+	for m in c.get("members", []):
+		if not db.foes.has(str(m[0])):
+			continue
+		for i in range(maxi(1, roundi(float(Ramp.scaled(int(m[1]), ramp())) * d))):
+			out.append(db.make_foe(str(m[0])))
+	return out
+
+
+## The battle's ramp: its number as the Convergence (the campaign's a battle a step).
+func ramp() -> int:
+	return clampi(maxi(0, battle - 1), 0, Ramp.TOP)
+
+
+## The elite a domain fields first at the battle's tier: its first elite composition's id, or
+## "" when it has none, so the slot holds the lead's formation alone and the Fracture count
+## stands (the bench hero that stood in went on 27 October, Ryan: "just a can of worms").
+func elite_of(domain: String) -> String:
+	var elites := db.elite_compositions(domain, tier() + 1)
+	return str(elites[0]["id"]) if not elites.is_empty() else ""
 
 
 ## The boss a domain brings: one its battles have not ended on this run, any once all have been

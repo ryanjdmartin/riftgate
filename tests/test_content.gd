@@ -132,7 +132,7 @@ func test_packs_unpack_by_foe_type() -> void:
 	var untyped := Unit.pack(9, "whatever", Vector2i.ZERO, "peak", 2, 3)
 	var fallback := db.foes_for(untyped)
 	assert_eq(fallback.size(), 3, "a pack with no type falls back to the faction's first spawn entry")
-	assert_eq(fallback[0].display_name, "Bomb", "which is the bomb for the Peak")
+	assert_eq(fallback[0].content_id, str(db.spawn_table("peak", 1)[0][0]), "which is the Peak's first unit, its tier-one formation's lead")
 
 
 func test_boss_unpacks_to_the_faction_boss() -> void:
@@ -146,39 +146,114 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 	assert_eq(pit[0].display_name, str(db.foes[str(db.factions["peak"]["boss"])]["name"]), "the Peak's boss")
 
 
-func test_spawn_table_lists_the_factions_formation() -> void:
+func test_spawn_table_lists_the_factions_units() -> void:
+	# Derived from the compositions since 30 October: the tier's formations' then patrols'
+	# members, each foe once, first seen first, for the harness, the runners and the escorts.
 	var db := _db()
 	var table := db.spawn_table("marsh", 1)
-	assert_eq(table.size(), 3, "three packs come through together")
-	assert_eq(table[0][0], "revenant", "ghouls first")
-	assert_eq(table[2][0], "ghost", "necromancers behind them")
-	assert_eq(table[2][1], 3, "three of them")
+	var ids: Array = table.map(func(e) -> String: return str(e[0]))
+	assert_eq(ids.size(), 3, "three units come through at tier one: %s" % str(ids))
+	assert_eq(ids[0], "revenant", "the formation's lead first")
+	assert_true(ids.has("ghost") and ids.has("zombie_knight"), "the back and the patrol's knights with it")
+	for e in table:
+		assert_true(int(e[1]) >= 1, "%s at a strength" % str(e[0]))
 	assert_eq(db.faction_of_foe("drake"), "peak", "foe to faction lookup")
+	for fid in db.factions.keys():
+		for t in [1, 2, 3]:
+			var seen := {}
+			for e in db.spawn_table(str(fid), t):
+				assert_false(seen.has(e[0]), "%s tier %d lists %s once" % [fid, t, e[0]])
+				seen[e[0]] = true
+				assert_false(db.is_elite(str(e[0])), "%s: an elite is never in the spawn list" % str(e[0]))
 
 
-## The spawn lists by tier (the ladder's brief, D3; 28 October): every domain a list at each tier,
-## a tier past the lists taking the highest under it and one below them the first; the validator
-## asks every domain for a "1", keys "1" to "3" and a list under each.
-func test_the_spawn_lists_go_by_tier() -> void:
-	var db := ContentDB.new()   # its own copy: lists are dropped below
+## The compositions by tier (the foes' fresh start, 30 October): every domain a formation and a
+## patrol at each tier, a tier past the content taking the highest under it and one below them the
+## first; the validator asks for a tier-one formation and patrol, a known size, members of known
+## foes, no hero, an elite leading its own composition and nowhere else, and refuses the old spawn
+## lists.
+func test_the_compositions_go_by_tier() -> void:
+	var db := ContentDB.new()   # its own copy: compositions are dropped below
 	db.load_dir(ContentDB.DIR)
 	for fid in db.factions.keys():
 		for t in [1, 2, 3]:
-			assert_false(db.spawn_table(str(fid), t).is_empty(), "%s has a tier-%d list" % [fid, t])
-		assert_eq(db.spawn_table(str(fid), 0), db.spawn_table(str(fid), 1), "below the lists, the first")
+			assert_false(db.compositions(str(fid), t, "formation").is_empty(), "%s has a tier-%d formation" % [fid, t])
+			assert_false(db.compositions(str(fid), t, "patrol").is_empty(), "%s has a tier-%d patrol" % [fid, t])
+			for c in db.compositions(str(fid), t):
+				assert_true(ContentDB.COMPOSITION_SIZES.has(str(c["size"])), "%s is a size" % str(c["id"]))
+				assert_false((c["members"] as Array).is_empty(), "%s has members" % str(c["id"]))
+		assert_eq(db.spawn_table(str(fid), 0), db.spawn_table(str(fid), 1), "below the tiers, the first")
 		assert_eq(db.spawn_table(str(fid), 5), db.spawn_table(str(fid), 3), "past them, the highest")
-	var fid := str(db.factions.keys()[0])
-	var lists: Dictionary = db.factions[fid]["spawn"]
-	assert_ne(db.spawn_table(fid, 2), db.spawn_table(fid, 1), "a tier's list is its own")
-	lists.erase("2")
+	var fid := "meadow"
+	assert_ne(db.spawn_table(fid, 2), db.spawn_table(fid, 1), "a tier's compositions are its own")
+	var comps: Array = db.factions[fid]["compositions"]
+	for c in comps:
+		var tiers: Array = c.get("tiers", [1])
+		c["tiers"] = tiers.filter(func(t) -> bool: return int(t) != 2)
+	db.factions[fid]["compositions"] = comps.filter(func(c) -> bool: return not (c["tiers"] as Array).is_empty())
 	assert_eq(db.spawn_table(fid, 2), db.spawn_table(fid, 1), "a tier with none takes the highest under it")
-	lists.erase("1")
-	lists["4"] = [{"foe": str(db.spawn_table(fid, 3)[0][0]), "strength": 1}]
+	# The validator.
+	var hero := ""
+	for id in db.foes.keys():
+		if bool(db.foes[id].get("hero", false)):
+			hero = str(id)
+			break
+	var elite := ""
+	for id in db.foes.keys():
+		if db.is_elite(str(id)):
+			elite = str(id)
+			break
+	var bad: Array = db.factions[fid]["compositions"]
+	bad.append({"id": "twice", "size": "patrol", "tiers": [1], "members": [{"foe": "goblin", "strength": 2}]})
+	bad.append({"id": "twice", "size": "horde", "tiers": [9], "members": [{"foe": "nobody", "strength": 0}]})
+	bad.append({"id": "with_a_hero", "size": "formation", "tiers": [1], "members": [{"foe": hero, "strength": 1}]})
+	bad.append({"id": "an_elite_astray", "size": "formation", "tiers": [1], "members": [{"foe": elite, "strength": 1}]})
+	bad.append({"id": "no_elite", "size": "elite", "tiers": [1], "members": [{"foe": "goblin", "strength": 3}]})
+	bad.append({"id": "nobody", "size": "patrol", "tiers": [1], "members": []})
 	var errs := db.validate()
-	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("tier-one list")), "a domain without a tier-one list is reported")
-	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("'4' is no tier's list")), "and a key that is no tier")
-	db.factions[fid]["spawn"] = [{"foe": str(db.spawn_table(fid, 3)[0][0]), "strength": 1}]
-	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("the lists by tier")), "and the old flat list")
+	var mine: Array = errs.filter(func(e) -> bool: return e.begins_with("faction %s" % fid))
+	assert_true(mine.any(func(e) -> bool: return e.contains("id comes twice")), "a repeated id is reported")
+	assert_true(mine.any(func(e) -> bool: return e.contains("size is one of")), "an unknown size")
+	assert_true(mine.any(func(e) -> bool: return e.contains("tiers are 1 to 3")), "a tier past three")
+	assert_true(mine.any(func(e) -> bool: return e.contains("unknown foe")), "an unknown foe")
+	assert_true(mine.any(func(e) -> bool: return e.contains("hero %s is never in a composition" % hero)), "a hero")
+	assert_true(mine.any(func(e) -> bool: return e.contains("%s is an elite and stands only in an elite composition" % elite)), "an elite astray")
+	assert_true(mine.any(func(e) -> bool: return e.contains("first member is its elite")), "an elite composition with no elite")
+	assert_true(mine.any(func(e) -> bool: return e.contains("one at least")), "no members")
+	db.factions[fid]["spawn"] = {"1": [{"foe": "goblin", "strength": 1}]}
+	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("spawn is gone")), "the old spawn lists are refused")
+	db.factions[fid].erase("spawn")
+	db.factions[fid]["compositions"] = [{"id": "only_patrols", "size": "patrol", "tiers": [2], "members": [{"foe": "goblin", "strength": 2}]}]
+	errs = db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("needs a tier-one formation")), "a domain without a tier-one formation is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("needs a tier-one patrol")), "and without a tier-one patrol")
+
+
+## Menace (the foes' fresh start, 30 October): the one weight the Rupture meter, Anathema and
+## salvage count a kill at, read off the content: the heaviest implemented blow (damage times
+## strikes, a breach one more) plus a quarter of the HP rounded up, an elite's doubled.
+func test_menace_is_the_heaviest_blow_and_a_quarter_of_the_hp() -> void:
+	var db := _db()
+	for id in db.foes.keys():
+		if db.foes[id].has("promotes"):
+			continue
+		var f := db.make_foe(str(id))
+		var want := f.threat() + int(ceil(float(f.hp_max) / 4.0))
+		if db.is_elite(str(id)):
+			want *= 2
+		assert_eq(db.menace(str(id)), want, "%s's menace" % id)
+		assert_true(db.menace(str(id)) >= 1, "%s is worth something" % id)
+	var goblin := db.make_foe("goblin")
+	assert_eq(db.menace("goblin"), goblin.threat() + 1, "a goblin: its stab and a quarter of three HP, rounded up")
+	assert_eq(db.menace("nobody"), 0, "an unknown foe is worth nothing")
+	var elites := 0
+	for fid in db.factions.keys():
+		for c in db.elite_compositions(str(fid), 1):
+			elites += 1
+			assert_true(db.is_elite(str(c["members"][0][0])), "%s is led by its elite" % str(c["id"]))
+			assert_eq(db.composition_menace(c), (c["members"] as Array).reduce(func(acc, m): return acc + db.menace(str(m[0])) * int(m[1]), 0), "%s's menace is its members'" % str(c["id"]))
+	assert_true(elites >= 1, "some domain has an elite at tier one")
+	assert_true(db.escort_composition("meadow", 1).is_empty(), "no hand-tailored escort is written yet")
 
 
 ## Every move of every foe a domain sends, at every tier, runs in a fight (the ladder's brief, D;
@@ -189,8 +264,9 @@ func test_every_move_of_every_spawned_foe_runs_in_a_fight() -> void:
 	var seen := {}
 	for fid in db.factions.keys():
 		for t in [1, 2, 3]:
-			for e in db.spawn_table(str(fid), t):
-				seen[str(e[0])] = true
+			for c in db.compositions(str(fid), t):   # every size: the elites' kits run too
+				for e in c["members"]:
+					seen[str(e[0])] = true
 	for id in seen.keys():
 		for a in db.foes[id].get("actions", []):
 			if str(a.get("status", "")) != "implemented":
@@ -215,7 +291,7 @@ func test_every_move_of_every_spawned_foe_runs_in_a_fight() -> void:
 			assert_true(sk.log.size() > 0, "%s's %s runs" % [id, str(a.get("id", ""))])
 
 
-func test_a_massive_foe_may_stand_in_a_spawn_list() -> void:
+func test_a_massive_foe_may_stand_in_a_composition() -> void:
 	# The bible's tiers row (15 October, Ryan again 24 October): size is apart from the tier, so
 	# massive rank and file validate, unpack from their pack as no boss, and take a column each.
 	var db := ContentDB.new()
@@ -225,8 +301,9 @@ func test_a_massive_foe_may_stand_in_a_spawn_list() -> void:
 	big["id"] = "massive_rank_and_file"
 	big["name"] = "Massive Rank and File"
 	db.foes["massive_rank_and_file"] = big
-	db.factions[fid]["spawn"]["1"].append({"foe": "massive_rank_and_file", "strength": 2})
-	assert_true(db.validate().is_empty(), "a massive foe in a spawn list validates: %s" % str(db.validate()))
+	db.factions[fid]["compositions"].append({"id": "giants", "size": "patrol", "tiers": [1], "members": [{"foe": "massive_rank_and_file", "strength": 2}]})
+	assert_true(db.validate().is_empty(), "a massive foe in a composition validates: %s" % str(db.validate()))
+	assert_true(db.spawn_table(fid, 1).any(func(e) -> bool: return str(e[0]) == "massive_rank_and_file"), "and the derived list carries it")
 	var foes := db.foes_for(Unit.pack(5, "giants", Vector2i.ZERO, fid, 1, 2, "massive_rank_and_file"))
 	assert_eq(foes.size(), 2, "two from strength two")
 	assert_true(foes[0].is_massive() and not foes[0].boss, "massive, and no boss for it")
@@ -267,6 +344,7 @@ func test_keyword_cap_is_enforced() -> void:
 	db.load_dir(ContentDB.DIR)
 	var comp: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	comp["face"]["keywords"] = ["penetrate", "burn", "chain", "shock"]
+	comp["face"]["chain"] = 1   # Chain says its number (the conductor, 28 October)
 	comp["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["too_many"] = comp
 	var errs := db.validate()
@@ -319,6 +397,26 @@ func test_a_hero_carries_no_map_move_or_hunt() -> void:
 	for key in ["movespeed", "behaviour", "hunts"]:
 		assert_true(errs.any(func(e) -> bool: return e.begins_with("foe roamer") and e.contains("drop " + key)), "a hero's %s is reported" % key)
 	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("a hero only")), "a hunter's are its own")
+
+
+## A hunter pounces (Ryan, 29 October: "a minimum range of 2 instead of 1 (wolfs pounce,
+## etc.)"): the validator refuses a hunter whose ring is under two, and passes every hunter in
+## content.
+func test_a_hunters_ring_is_two_at_least() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var hunter_id := ""
+	for id in db.foes.keys():
+		if str(db.foes[id].get("behaviour", "")) == "hunt":
+			hunter_id = str(id)
+			assert_true(int(db.foes[id].get("zone", 1)) >= ContentDB.HUNTER_RING, "%s rings two at least" % id)
+	assert_false(hunter_id.is_empty(), "the content has a hunter")
+	var f: Dictionary = db.foes[hunter_id].duplicate(true)
+	f["zone"] = 1
+	db.foes["creeper"] = f
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe creeper") and e.contains("it pounces")), "a hunter at ring one is reported")
+	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("it pounces")), "the content's own pass")
 
 
 ## A foe's four buff specials (the ladder's brief, B; 28 October): a priming and a regrowth say
@@ -1406,6 +1504,11 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 			# A hero has three moves (decided 9 October); one may still be planned, so two run.
 			assert_true(f.actions.size() >= 2 and f.actions.size() <= 3, "%s, a hero, has two or three moves running" % id)
 			assert_eq(f.size, 1, "%s, a hero, is human-sized" % id)
+		elif db.is_elite(id):
+			# An elite is a mini-boss tier (the bible's tiers row): up to a boss's three moves, its
+			# numbers its own and never scaled by the tier.
+			assert_true(f.actions.size() >= 1 and f.actions.size() <= 3, "%s, an elite, has one to three moves" % id)
+			assert_false(f.boss, "%s, an elite, is no boss" % id)
 		elif int(db.foes[id].get("tier", 1)) <= 1:
 			assert_true(f.actions.size() >= 1 and f.actions.size() <= 2, "%s has one or two moves" % id)
 		else:
@@ -2139,9 +2242,44 @@ func test_the_area_keywords_say_their_number() -> void:
 		var face: Dictionary = db.components[id].get("face", {})
 		if id.begins_with("test_") or str(face.get("status", "")) == "planned":
 			continue
-		for name in ["cleave", "penetrate", "splash"]:
+		for name in ["cleave", "penetrate", "splash", "chain"]:
 			if Array(face.get("keywords", [])).has(name) and not db.build_face(face).is_debuff():
 				assert_true(int(face.get(name, 0)) > 0, "%s's %s carries its number" % [id, name])
+
+
+## Chain is a weapon's keyword with a number (the conductor, Ryan, 28 October): the validator
+## refuses it bare, its number without it, and on a debuff, whose arc would carry its riders to
+## every conductor for no blow; the Arc Fault Cannon's Chain 2 validates and builds.
+func test_chain_says_its_number_and_rides_a_weapon() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.components["arc_fault_cannon"].duplicate(true)
+	base["face"]["keywords"] = []
+	base["face"].erase("chain")
+	var cases := {
+		"test_chain_bare": [{"keywords": ["chain"]}, "Chain says the number every other Shocked foe takes"],
+		"test_chain_n": [{"keywords": ["chain"], "chain": 2}, ""],
+		"test_chain_stray": [{"chain": 2}, "chain (the number) rides with the Chain keyword"],
+		"test_chain_debuff": [{"power": 0, "keywords": ["chain"], "chain": 2}, "Chain is a weapon's keyword"],
+	}
+	for id in cases:
+		var c: Dictionary = base.duplicate(true)
+		for k in cases[id][0]:
+			c["face"][k] = cases[id][0][k]
+		db.components[id] = c
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component %s " % id) or e.begins_with("component %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+	var arc: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component arc_fault_cannon"))
+	assert_true(arc.is_empty(), "the Arc Fault Cannon validates: %s" % str(arc))
+	var f := db.build_face(db.components["arc_fault_cannon"]["face"])
+	assert_true(f.has(Face.Keyword.CHAIN) and f.chain == 2, "it builds with Chain 2")
+	assert_eq(Face.from_dict(f.to_dict()).chain, 2, "and its number survives the round trip a save makes")
+	assert_true(f.describe().contains("chain 2"), "the die's text says its number: %s" % f.describe())
 
 
 ## A grant of a numbered keyword may say its number, an area keyword's must (the drum's Spread 2
@@ -2152,7 +2290,9 @@ func test_a_numbered_keywords_grant_says_its_number() -> void:
 	var cases := {
 		"test_grant_spread": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "number": 2}, ""],
 		"test_grant_bare": [{"trigger": "static", "effect": "grant_keyword", "value": "penetrate"}, "says what each foe past the target takes"],
-		"test_grant_odd": [{"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 2}, "a positive number for a numbered keyword"],
+		"test_grant_odd": [{"trigger": "static", "effect": "grant_keyword", "value": "shock", "number": 2}, "a positive number for a numbered keyword"],
+		"test_grant_conductor": [{"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 2}, ""],
+		"test_grant_arc": [{"trigger": "static", "effect": "grant_keyword", "value": "chain"}, "says what every other Shocked foe takes"],
 		"test_grant_none": [{"trigger": "static", "effect": "grant_keyword", "value": "splash", "number": 0}, "a positive number for a numbered keyword"],
 	}
 	for id in cases:
@@ -2167,3 +2307,24 @@ func test_a_numbered_keywords_grant_says_its_number() -> void:
 			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
 		else:
 			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+
+
+func test_the_map_and_the_vocabulary_agree_on_the_ground() -> void:
+	# The walls named by what they are (Ryan, 29 October): every ground word the map shows has a
+	# terrain entry in the vocabulary and every implemented terrain entry is one the map shows,
+	# so a rename on either side fails the build; a domain's map lean names a shape.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_eq(db.validate(), [], "the content as it stands agrees")
+	for g in BattleMap.ground_ids():
+		assert_eq(str(db.vocabulary.get(g, {}).get("category", "")), "terrain", "%s is a terrain term" % g)
+	var towers: Dictionary = db.vocabulary["towers"]
+	db.vocabulary.erase("towers")
+	assert_true(db.validate().any(func(e) -> bool: return e.contains("ground 'towers'")), "a look with no term is reported")
+	db.vocabulary["towers"] = towers
+	db.vocabulary["mountain"] = {"category": "terrain", "name": "Mountain", "codex": "A wall.", "status": "implemented", "design": {"holes": ""}}
+	assert_true(db.validate().any(func(e) -> bool: return e.contains("terrain 'mountain'")), "a terrain term the map never shows is reported")
+	db.vocabulary.erase("mountain")
+	var fid := str(db.factions.keys()[0])
+	db.factions[fid]["map_kind"] = str(BattleMap.KINDS.keys()[0])
+	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("names no map shape")), "a domain naming a map shape, even a real one, is reported (Ryan, 30 October)")

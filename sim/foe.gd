@@ -43,6 +43,7 @@ var kin: int = 0                 # other live foes of its type on the field, for
 var hero: bool = false           # one of the party: a hero (content `hero`, human-sized, a domain's final, dealt from its bench) or its promoted form at the finale (content `promotes`)
 var commands: bool = false       # a commander of its boss unit (the faction's boss, a final's hero, one of the finale's line), marked as the unit unpacks: the unit stands while one does
 var escorts: bool = false        # the wildlife beside a boss unit's commanders (a final's), marked as the unit unpacks: the unit's strength counts them
+var joined: bool = false         # it joined its pack in the fight (a Gel's half, a summon, a part): never one of the pack's own, whatever its type, so a pack never grows by what it called up (30 October)
 var boss: bool = false           # a domain's boss (content: a faction's `boss`), whatever its size: big is an attribute of any tier (15 October)
 var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping up in its place at once (the Gel)
 var fresh: bool = false          # stepped up mid-round (a split's half): its round is over, so it shows no intent and acts from the next round

@@ -77,6 +77,32 @@ func test_greedy_vents_before_it_burns() -> void:
 	assert_eq(hot.hull, 100, "no burn: the vent was spent on the one who needed it")
 
 
+## The cautious persona (30 October, the heat report's): heat above its line is priced as an
+## overheat's hull, so a vent is worth taking where no overheat looms, and a hot spend above
+## the line costs what an overheat would; the rungs as they are pay nothing under the cap.
+func test_the_cautious_persona_prices_heat_above_its_line() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Hot", Die.single(Face.vent(30)), 40, 100))
+	sk.add_foes([_ghoul(300, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 45   # under the cap of sixty: no overheat looms
+	assert_eq(int(sk.forecast(ms, false)["overheat"]), 0, "nothing would burn")
+	var plain := Policy.make(Policy.GREEDY)
+	var careful := Policy.make(Policy.GREEDY)
+	careful.cool_above = 50
+	assert_eq(plain.caution_line(ms), -1, "the persona off")
+	assert_eq(careful.caution_line(ms), 30, "half of sixty")
+	assert_true(absf(careful.vent_score(sk, ms, 30) - plain.vent_score(sk, ms, 30) - 15.0 * Policy.HULL_WEIGHT) < 0.001, "the vent's worth gains the fifteen over the line, as hull")
+	assert_true(absf(careful.vent_score(sk, ms, 10) - plain.vent_score(sk, ms, 10) - 10.0 * Policy.HULL_WEIGHT) < 0.001, "a smaller vent, what it takes off")
+	var gun := Face.attack(10, L, [], 8)
+	assert_eq(plain.heat_cost(sk, ms, gun), 0.0, "the greedy pays nothing under the cap")
+	assert_eq(careful.heat_cost(sk, ms, gun), 8.0 * Policy.HULL_WEIGHT, "the persona pays for every point above its line")
+	ms.heat = 26
+	assert_eq(careful.heat_cost(sk, ms, gun), 4.0 * Policy.HULL_WEIGHT, "from under the line, only the part past it")
+
+
 func test_greedy_rerolls_a_face_under_the_average() -> void:
 	# A die of one blank and one big gun: whichever shows first, the bot ends the round on
 	# the gun, having rerolled the blank away (a reroll never lands on the same entry).
@@ -1138,6 +1164,37 @@ func test_the_bot_counts_both_halves_of_a_pair() -> void:
 	var lead: Foe = sk.front[1]
 	sk._set_contents(Vector2i(0, 1), [lead, _ghoul(5, 2)])
 	assert_true(pol.hopper_fill_score(sk, ms, fill, target) > plain, "the pair beside it loads twice")
+
+
+## The bot reads Chain as the resolver deals it (the conductor, 28 October; its charge, and a Shock
+## read by an aimed strike alone, 29 October): each Shocked foe on the field past the target takes
+## Chain's number plain, its charge standing; with no conductor the Chain gun is still worth its
+## charge, one other foe Shocked for the team's next blow.
+func test_the_bot_reads_a_chains_arcs_and_its_charge() -> void:
+	var sk := Skirmish.new(1, 3)
+	var gun := Face.attack(4, L, [K.CHAIN], 3)
+	gun.chain = 2
+	var plain := Face.attack(4, L, [], 3)
+	var m := _mech("A", Die.of([gun, plain]), 40, 100)
+	sk.add_mech(m)
+	var aim := _ghoul(100)
+	var a := _ghoul(100)
+	var b := _ghoul(100)
+	sk.add_foes([aim, a, b])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.new()
+	var lead := pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
+	assert_true(absf(lead - pol.charge_worth(sk, ms, aim)) < 0.001, "with no conductor the Chain gun is a plain gun and its charge: %f" % lead)
+	assert_true(absf(lead - 4.0) < 0.001, "the charge: one other foe Shocked for the team's next blow, its average 4: %f" % lead)
+	for foe in [a, b]:
+		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(pol.damage_outcomes(ms, gun, a, -1.0, true, Skirmish.AREA_CHAIN), [[2.0, 1.0]], "a conductor: Chain 2 plain, no strike aimed at it")
+	assert_eq(pol.damage_outcomes(ms, gun, a), [[8.0, 1.0]], "the same foe aimed at: the blow doubled")
+	assert_eq(pol.charge_worth(sk, ms, aim), 0.0, "every other foe Shocked: no foe left to charge")
+	lead = pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
+	assert_true(absf(lead - 4.0) < 0.001, "two conductors, Chain 2 each, and no charge: %f" % lead)
 
 
 ## The bot reads a foe past the target as the resolver deals it (area by shape, numbered: Ryan,

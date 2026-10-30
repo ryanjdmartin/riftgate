@@ -73,20 +73,40 @@
    "id": "rift_pressure",
    "category": "resource",
    "name": "Rift Pressure",
-   "codex": "Ticks once per battlefield phase, never inside a fight. When full it resets and a fresh pack emerges at the rift.",
+   "codex": "Ticks once per battlefield phase, never inside a fight. It fills at the ramp's timer (12 at the start of a run, 8 at the finale's Convergence). When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, the seam creeps toward the gate, and new tears open on it. It never stops: the boss's seal breaking does not quiet it.",
    "status": "implemented",
    "design": {
-    "holes": "It does not escalate yet (section 12's pacing question)."
+    "holes": "The interval step inside a battle (the escalation a stall would meet) is on the ramp's table at zero until the turtle read asks for it."
+   }
+  },
+  {
+   "id": "rupture_meter",
+   "category": "resource",
+   "name": "Rupture meter",
+   "codex": "Fills by the menace of the foes you kill, in any fight however it ends, toward the tier's Fractures (three, four or five). The Fractures are set from the field's menace at the start, the last at two thirds of it and each later one costing more. The last Fracture is the Rupture: the boss's seal breaks. It also breaks once nothing but the boss's pack stands as a fight ends.",
+   "status": "implemented",
+   "design": {
+    "holes": "Shown as a bar under the gate's with a notch a Fracture, a first cut; the share and the steps are placeholders."
+   }
+  },
+  {
+   "id": "fracture",
+   "category": "resource",
+   "name": "Fracture",
+   "codex": "A step of the Rupture meter, paid out as a fight ends. At the Fractures the tier names (tier one's first; tier two's first and third; tier three's first, second and fourth) an elite emerges at the rift, the lead domain's elites in turn and never twice in a battle. The last Fracture is the Rupture.",
+   "status": "implemented",
+   "design": {
+    "holes": "The prize a Fracture may bring is not built (decided after the meter is played); the Peak has no elite yet, so its Fractures send none."
    }
   },
   {
    "id": "gate",
    "category": "resource",
    "name": "Gate Integrity",
-   "codex": "A pack whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta.",
+   "codex": "A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar for a third of its strength, at least one. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta.",
    "status": "implemented",
    "design": {
-    "holes": "The gate damage formula is a placeholder."
+    "holes": "The gate damage formula is a placeholder; city defences along the wall are not built."
    }
   },
   {
@@ -243,7 +263,7 @@
    "id": "shock",
    "category": "keyword",
    "name": "Shock",
-   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next blow it takes deals double. The entry's own blow never spends the shock it leaves.",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next weapon strike aimed at it deals double. The entry's own blow never spends the shock it leaves.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -386,10 +406,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "If this attack kills an enemy, repeat it on a new, valid target.",
+   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. Then one other foe, at random, neither the target nor already Shocked, is Shocked.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain)."
    }
   },
   {
@@ -482,7 +502,7 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. The next blow of a weapon this foe takes deals double damage, then the status clears; equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
+   "codex": "Foe status. When a weapon's strike aimed at this foe lands, it deals double damage and the status clears. A blow that only reaches it (an area, a Chain's arc, a spill) neither doubles nor clears it, and equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, by a Chain weapon's charge, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -871,7 +891,7 @@
    "codex": "Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated.",
    "status": "implemented",
    "design": {
-    "holes": "How elites arrive is section 12's question."
+    "holes": ""
    }
   },
   {
@@ -898,10 +918,10 @@
    "id": "movespeed",
    "category": "battlefield",
    "name": "Movespeed",
-   "codex": "Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; crags are the flyer's alone.",
+   "codex": "Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; walls are the flyer's alone.",
    "status": "implemented",
    "design": {
-    "holes": "Every chassis's move is a placeholder set by size and role; what crossing water and crags is worth is the pricing run's to read (28 October)."
+    "holes": "Every chassis's move is a placeholder set by size and role; what crossing water and walls is worth is the pricing run's to read (28 October)."
    }
   },
   {
@@ -958,17 +978,17 @@
    "id": "engagement_zone",
    "category": "battlefield",
    "name": "Ring",
-   "codex": "Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring is how close it must be to catch its prey. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close.",
+   "codex": "Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring, two hexes at least, is also how close it must be to catch: it pounces over whatever stands between. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close.",
    "status": "implemented",
    "design": {
-    "holes": "Rings are content on the foe type, placeholders; a machine's attack range is two for every chassis, an exception only where a role earns it."
+    "holes": "Rings are content on the foe type, placeholders; a hunter's is two at least (Ryan, 29 October: \"wolfs pounce\"; the validator holds it), and one number serves its catch, the fights it joins and the ring drawn. A machine's attack range is two for every chassis, an exception only where a role earns it."
    }
   },
   {
    "id": "pack_behaviour",
    "category": "battlefield",
    "name": "Behaviour",
-   "codex": "A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), wears the target rings on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives.",
+   "codex": "A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), puts its tag on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. A prey that keeps its distance is safe; one sealed off behind walls and machines is not: the hunter catches whichever machine it can reach that turn standing nearest it, and its tag moves there.",
    "status": "implemented",
    "design": {
     "holes": "Push and hunt are the only behaviours; the hunters' caveats are placeholders."
@@ -978,10 +998,10 @@
    "id": "pack",
    "category": "battlefield",
    "name": "Pack",
-   "codex": "An enemy hex is a pack: one foe type times a strength. A fight is the pack you attack and every pack whose ring covers it, so the rift's formations and the order you attack them in decide what you fight. A boss is one unit on one hex.",
+   "codex": "An enemy hex is a pack: a composition on one hex, its members listed on a hold, wearing its lead's picture and behaviour, walking at its slowest member's pace with its widest member's ring. A fight is the pack you attack and every pack whose ring covers it, so the compositions on the field and the order you attack them in decide what you fight. A boss is one unit on one hex.",
    "status": "implemented",
    "design": {
-    "holes": "The rift should spawn formations, not single packs: the foes' fresh start."
+    "holes": ""
    }
   },
   {
@@ -998,20 +1018,70 @@
    "id": "structure",
    "category": "battlefield",
    "name": "Structure",
-   "codex": "Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack that ends its walk beside a gate hex strikes the gate.",
+   "codex": "Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack that ends its walk beside a gate hex or a wall hex strikes the gate. A tear is a mouth, not a structure: its hex can be walked and stood on.",
    "status": "implemented",
    "design": {
-    "holes": "The rift does nothing yet beyond marking where packs spawn."
+    "holes": ""
    }
   },
   {
    "id": "spawn",
    "category": "battlefield",
    "name": "Spawn",
-   "codex": "When Rift Pressure fills, the next pack of the spawn cycle (the lead domain's packs alternating with the guest's) appears on the nearest free hex to the rift.",
+   "codex": "At a peak of Rift Pressure the next composition of the rift's cycle (the tier's formations and patrols in turn, the lead domain's and the guest's in turn) emerges at the rift, and every tear open before the peak sends a patrol. A spawn lands on the nearest free hex to its mouth with no machine beside it, at the end of the enemy's turn, so you see it and its walk for a whole turn and nothing lands on top of a detachment.",
    "status": "implemented",
    "design": {
-    "holes": "A full spawn list should arrive together as a formation; pressure currently sends one pack at a time."
+    "holes": ""
+   }
+  },
+  {
+   "id": "composition",
+   "category": "battlefield",
+   "name": "Composition",
+   "codex": "What the rift sends and what stands on the field when a battle starts: a patrol (a few foes, one machine's fight), a formation (the body's fight), an elite leading its own, or a boss's escort. A composition is one pack on one hex: its members, listed on a hold, unpack into the fight together and come back by member. Each domain writes its compositions by tier; the ramp sets how many stand at the start and how thick they are.",
+   "status": "implemented",
+   "design": {
+    "holes": "Each tier's compositions are partitioned from its list as placeholders for Ryan's marks; no escort composition is written yet, so every boss brings the tier's units."
+   }
+  },
+  {
+   "id": "patrol",
+   "category": "battlefield",
+   "name": "Patrol",
+   "codex": "The small composition: a few foes, the fight one machine detaches for. Two stand on the flanks at the start (one from Convergence 8), and the tears send nothing else.",
+   "status": "implemented",
+   "design": {
+    "holes": "The tier-one patrols read as a lone starter's fight on the greedy rung, not a tenth of its hull (docs/measurements.md, 30 October); their sizes are Ryan's to mark."
+   }
+  },
+  {
+   "id": "formation",
+   "category": "battlefield",
+   "name": "Formation",
+   "codex": "The body's composition: the fight the squad takes together. One stands on the field at the start (two from Convergence 3, three from 8), and the rift alone sends more, at its peaks. A domain's tier writes its formations; the lead's and the guest's come in turn.",
+   "status": "implemented",
+   "design": {
+    "holes": "The word also names the skirmish's two ranks; the context tells them apart."
+   }
+  },
+  {
+   "id": "tear",
+   "category": "battlefield",
+   "name": "Tear",
+   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
+   "status": "implemented",
+   "design": {
+    "holes": "Drawn as a first cut for the phone; its mark and its opening are to judge running (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn)."
+   }
+  },
+  {
+   "id": "seam",
+   "category": "battlefield",
+   "name": "Seam",
+   "codex": "The flattening's edge: the row the rift's bleed reaches, five rows down at the start, creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it.",
+   "status": "implemented",
+   "design": {
+    "holes": "The creep a peak is a placeholder (the ramp's table, flat at two)."
    }
   },
   {
@@ -1058,17 +1128,47 @@
    "id": "water",
    "category": "terrain",
    "name": "Water",
-   "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs never enter it; a winged pack crosses it.",
+   "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs wade it as the ground machines do; a winged pack crosses it.",
    "status": "implemented",
    "design": {
-    "holes": "No skirmish condition yet (section 12). The generator gives every map one real water feature with crossings for the horde."
+    "holes": "No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls."
    }
   },
   {
-   "id": "mountain",
+   "id": "crags",
    "category": "terrain",
-   "name": "Mountain",
-   "codex": "Impassable, except to flyers and winged packs.",
+   "name": "Crags",
+   "codex": "Rock spikes. Impassable, except to flyers and winged packs.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "mesas",
+   "category": "terrain",
+   "name": "Mesas",
+   "codex": "Flat-topped rock. Impassable, except to flyers and winged packs.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "towers",
+   "category": "terrain",
+   "name": "Towers",
+   "codex": "Dead skyscrapers. Impassable, except to flyers and winged packs.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "cliffs",
+   "category": "terrain",
+   "name": "Cliffs",
+   "codex": "A wall of rock. Impassable, except to flyers and winged packs.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1078,7 +1178,7 @@
    "id": "flyer",
    "category": "trait",
    "name": "Flyer",
-   "codex": "Crosses everything, water and crags included. Packs walk under it but never stop on its hex.",
+   "codex": "Crosses everything, water and walls included. It flies over machines and packs, and they pass under it, but nothing stops on another's hex.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1088,7 +1188,7 @@
    "id": "hover",
    "category": "trait",
    "name": "Hover",
-   "codex": "Skims water at full pace; crags stop it.",
+   "codex": "Skims water at full pace; walls stop it.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1271,7 +1371,7 @@
    "codex": "Each Fracture of the Rupture meter grants one, unweighted by domain: one of three, a battle-long modifier on a component you carry, a one-shot, or a battle-wide boon (an extra reroll a round).",
    "status": "planned",
    "design": {
-    "holes": ""
+    "holes": "Built without one (Ryan, 24 October: maybe not warranted at all); decided after the meter is played, with the economy pass."
    }
   },
   {
@@ -1282,6 +1382,26 @@
    "status": "planned",
    "design": {
     "holes": "Consider range limits from the gate so the push north leaves support behind."
+   }
+  },
+  {
+   "id": "tier",
+   "category": "city",
+   "name": "Tier",
+   "codex": "The hard scaling: a rift's tier is locked as the rift opens and sets the kind of battle: who comes, the sizes of its compositions, the Fractures to the Rupture, how many elites and which, the boss's numbers and escort. The Convergence's tier rises one every four; a rift keeps the tier it opened at, so an old rift never hardens by waiting.",
+   "status": "implemented",
+   "design": {
+    "holes": "Shown on the front's card when the mission map comes; today the campaign runs headless."
+   }
+  },
+  {
+   "id": "ramp",
+   "category": "city",
+   "name": "Ramp",
+   "codex": "The soft scaling under the tier, never shown: the Convergence as it stands when a battle starts sets how many compositions stand on the field at the start and how thick they are, how fast Rift Pressure fills, how many tears open at a peak and how far the seam creeps. It rises with the run, the same for every open front, and never resets.",
+   "status": "implemented",
+   "design": {
+    "holes": "One table of placeholders (sim/ramp.gd), read by the campaign runner and moved on Ryan's word; the timer's 12 reads as the old clock's number (docs/measurements.md, 30 October)."
    }
   },
   {
@@ -1756,6 +1876,36 @@
    "status": "implemented",
    "design": {
     "holes": ""
+   }
+  },
+  {
+   "id": "menace",
+   "category": "foe",
+   "name": "Menace",
+   "codex": "A foe's weight: its heaviest blow plus a quarter of its HP, rounded up; an elite's doubled. The Rupture meter, Anathema and salvage count every kill by it, so the rift's reinforcements pay a trickle and the field's formations and the elites pay the most.",
+   "status": "implemented",
+   "design": {
+    "holes": "The formula is Claude's placeholder, one weight for the three tallies; the bosses' menace counts as any foe's."
+   }
+  },
+  {
+   "id": "elite",
+   "category": "foe",
+   "name": "Elite",
+   "codex": "A unique foe leading its own composition, worth double its menace, emerging at the rift at a Fracture. Each tier names which Fractures bring one; the lead domain's elites come in turn and never twice in a battle.",
+   "status": "implemented",
+   "design": {
+    "holes": "Five placeholder kits (the goblin shaman, the Elder Treant, the Leshy, the Old Man of the Desert, the Reaper) for Ryan's marks; the Peak's elite and a Waste hunter wait on them; the Bone Wyvern waits on the slate."
+   }
+  },
+  {
+   "id": "seal",
+   "category": "foe",
+   "name": "Seal",
+   "codex": "The boss's seal holds until the Rupture: while it does the boss cannot be attacked and joins no fight, its ring inert, SEALED on its readout. The Rupture breaks it, by the last Fracture or by a cleared field.",
+   "status": "implemented",
+   "design": {
+    "holes": "The seal's look on the ring is a first cut for the phone."
    }
   },
   {
