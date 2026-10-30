@@ -5,11 +5,12 @@ extends RefCounted
 
 enum Side { PLAYER, ENEMY }
 
-## Moves are in tens (decided 2 October): a normal hex costs 10. The defaults a unit is
-## made with before content dresses it; the content carries every real number.
-const MECH_MOVE := 30
-const PACK_MOVE := 20
-const BOSS_MOVE := 10
+## Moves are in hexes (Ryan, 28 October): a step is one hex, water a ground machine wades two.
+## The defaults a unit is made with before content dresses it; the content carries every real
+## number.
+const MECH_MOVE := 3
+const PACK_MOVE := 2
+const BOSS_MOVE := 1   # the boss patrols a hex a turn
 
 var id: int = 0
 var display_name: String = ""
@@ -63,8 +64,8 @@ var cooling: int:
 		base["cooling"] = v
 
 ## Chassis traits: a way of moving ("flyer", "hover", "walker", "tracked", "wheeled";
-## BattleMap.WAYS), or "defense" for a static unit. A pack carries none and
-## moves by the horde's rule.
+## BattleMap.WAYS), or "defense" for a static unit. A pack carries none and moves by the
+## horde's rule, unless its foe is winged: then "winged", and it crosses as a flyer does.
 var traits: Array[String] = []
 
 ## Hexes this unit covers, as axial offsets from pos. Packs and mechs are one hex; a massive
@@ -167,9 +168,15 @@ func is_static() -> bool:
 	return traits.has("defense")
 
 
-## Flyers engage but never hold ground.
+## A flyer or a winged pack: it and a grounded unit pass each other and never meet but in a
+## fight (Ryan, 29 October: "flyers and ground never interact except to fight").
+func airborne() -> bool:
+	return traits.has("flyer") or traits.has("winged")
+
+
+## Flyers engage but never hold ground: nobody is stopped by an airborne unit.
 func can_block() -> bool:
-	return not traits.has("flyer")
+	return not airborne()
 
 
 func alive() -> bool:

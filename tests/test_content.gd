@@ -74,7 +74,7 @@ func test_chassis_validator_guards_hardpoints() -> void:
 	assert_true(stuffed, "filler is refused")
 
 
-func test_chassis_validator_wants_one_way_of_moving_and_moves_in_tens() -> void:
+func test_chassis_validator_wants_one_way_of_moving_and_moves_in_hexes() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var two: Dictionary = db.chassis["badger"].duplicate(true)
@@ -86,72 +86,50 @@ func test_chassis_validator_wants_one_way_of_moving_and_moves_in_tens() -> void:
 	var odd: Dictionary = db.chassis["badger"].duplicate(true)
 	odd["movespeed"] = 7
 	db.chassis["odd"] = odd
+	var still: Dictionary = db.chassis["badger"].duplicate(true)
+	still["movespeed"] = 0
+	db.chassis["still"] = still
 	var twoways := false
 	var noway := false
 	var odd_move := false
+	var still_move := false
 	for e in db.validate():
 		if e.begins_with("chassis twoways") and e.contains("exactly one way of moving"):
 			twoways = true
 		if e.begins_with("chassis noway") and e.contains("exactly one way of moving"):
 			noway = true
-		if e.begins_with("chassis odd") and e.contains("in tens"):
+		if e.begins_with("chassis odd") and e.contains("in hexes"):
 			odd_move = true
+		if e.begins_with("chassis still") and e.contains("in hexes"):
+			still_move = true
 	assert_true(twoways, "two ways of moving are refused")
 	assert_true(noway, "no way of moving is refused")
-	assert_true(odd_move, "a move that is not in tens is refused")
-
-
-func test_movement_flags_name_a_chassis_faster_on_every_ground_and_never_refuse() -> void:
-	# Ryan, 2 October: a flag, never a refusal; a slow wheeled APC is a valid design.
-	var db := _db()
-	var synthetic: Array = [
-		{"name": "Fast Tank", "traits": ["tracked"], "movespeed": 40},
-		{"name": "Slow Car", "traits": ["wheeled"], "movespeed": 20},
-		{"name": "Walker A", "traits": ["walker"], "movespeed": 30},
-		{"name": "Walker B", "traits": ["walker"], "movespeed": 20},
-		{"name": "Bird", "traits": ["flyer"], "movespeed": 50},
-	]
-	var flags := db.movement_flags(synthetic)
-	var tank_over_car := false
-	var walker_tie := false
-	var bird := false
-	for f in flags:
-		if f.begins_with("Fast Tank is at least as fast as Slow Car"):
-			tank_over_car = true
-		if f.begins_with("Walker A is at least as fast as Walker B") or f.begins_with("Walker B is at least as fast as Walker A"):
-			walker_tie = true
-		if f.contains("Bird"):
-			bird = true
-	assert_true(tank_over_car, "a tank at 40 matches the car's open ground and beats it elsewhere: flagged (%s)" % str(flags))
-	assert_false(walker_tie, "two walkers a weight class apart are weight, not a flag")
-	assert_false(bird, "flyers are exempt: they pay by not blocking")
-	assert_eq(db.validate().size(), 0, "the content still validates clean whatever the flags")
-	for f in db.movement_flags():
-		print("  movement flag: %s" % f)
+	assert_true(still_move, "a move of 0 is refused")
+	assert_true(odd_move, "a move past six hexes is refused")
 
 
 func test_sparrowhawk_loadout_matches_design() -> void:
 	var db := _db()
 	var u := db.make_mech("sparrowhawk")
-	assert_eq(u.movespeed, int(db.chassis["sparrowhawk"]["movespeed"]), "the move is the content's, in tens")
-	assert_true(u.movespeed % 5 == 0 and u.movespeed > 0, "moves are in tens")
+	assert_eq(u.movespeed, int(db.chassis["sparrowhawk"]["movespeed"]), "the move is the content's, in hexes")
+	assert_true(u.movespeed >= 1 and u.movespeed <= ContentDB.MAX_MOVE, "moves are hexes, 1 to 6")
 	assert_true(u.traits.has("flyer"), "sparrowhawk flies")
 	assert_false(u.can_block(), "and therefore does not block")
 
 
 func test_packs_unpack_by_foe_type() -> void:
 	var db := _db()
-	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "marsh", 20, 6, "revenant")
+	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "marsh", 2, 6, "revenant")
 	var foes := db.foes_for(ghouls)
 	assert_eq(foes.size(), 6, "six ghouls from strength six")
 	for f in foes:
 		assert_eq(f.display_name, "Revenant", "all the same type")
 		assert_eq(f.pack_id, 7, "foe remembers its pack")
-	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "marsh", 20, 2, "ghost")
+	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "marsh", 2, 2, "ghost")
 	var backs := db.foes_for(necros)
 	assert_eq(backs.size(), 2, "two necromancers")
 	assert_true(backs[0].prefers_back, "necromancer holds the back")
-	var untyped := Unit.pack(9, "whatever", Vector2i.ZERO, "peak", 20, 3)
+	var untyped := Unit.pack(9, "whatever", Vector2i.ZERO, "peak", 2, 3)
 	var fallback := db.foes_for(untyped)
 	assert_eq(fallback.size(), 3, "a pack with no type falls back to the faction's first spawn entry")
 	assert_eq(fallback[0].display_name, "Bomb", "which is the bomb for the Peak")
@@ -249,7 +227,7 @@ func test_a_massive_foe_may_stand_in_a_spawn_list() -> void:
 	db.foes["massive_rank_and_file"] = big
 	db.factions[fid]["spawn"]["1"].append({"foe": "massive_rank_and_file", "strength": 2})
 	assert_true(db.validate().is_empty(), "a massive foe in a spawn list validates: %s" % str(db.validate()))
-	var foes := db.foes_for(Unit.pack(5, "giants", Vector2i.ZERO, fid, 10, 2, "massive_rank_and_file"))
+	var foes := db.foes_for(Unit.pack(5, "giants", Vector2i.ZERO, fid, 1, 2, "massive_rank_and_file"))
 	assert_eq(foes.size(), 2, "two from strength two")
 	assert_true(foes[0].is_massive() and not foes[0].boss, "massive, and no boss for it")
 	var sk := Skirmish.new(1)
@@ -269,7 +247,7 @@ func test_content_mech_survives_a_skirmish_round() -> void:
 	var sk := Skirmish.new(5)
 	sk.add_mech(db.make_mech("badger"))
 	sk.add_mech(db.make_mech("clydesdale"))
-	var sq := Unit.pack(1, "risen", Vector2i.ZERO, "marsh", 20, 6)
+	var sq := Unit.pack(1, "risen", Vector2i.ZERO, "marsh", 2, 6)
 	sk.add_foes(db.foes_for(sq), sq)
 	sk.begin()
 	sk.start_round()
@@ -314,6 +292,54 @@ func test_a_silence_or_a_purge_rides_no_blow() -> void:
 	var errs := db.validate()
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe hushed") and e.contains("a special, never a rider")), "a silence on a blow is reported")
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
+
+
+## A hero only commands the boss unit, which patrols a hex a turn and never hunts (Ryan, 28
+## October, of the Thief's move: "it's a boss so it doesn't need it"): the validator refuses a
+## map move or a hunt on a hero, and a hunter of the rank and file keeps both.
+func test_a_hero_carries_no_map_move_or_hunt() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var hero_id := ""
+	var hunter_id := ""
+	for id in db.foes.keys():
+		var e: Dictionary = db.foes[id]
+		if hero_id.is_empty() and bool(e.get("hero", false)):
+			hero_id = str(id)
+		if hunter_id.is_empty() and not bool(e.get("hero", false)) and str(e.get("behaviour", "")) == "hunt":
+			hunter_id = str(id)
+	assert_false(hero_id.is_empty(), "the content has a hero")
+	assert_false(hunter_id.is_empty(), "and a hunter")
+	assert_false(db.foes[hero_id].has("movespeed"), "no hero carries a move")
+	var f: Dictionary = db.foes[hero_id].duplicate(true)
+	f["movespeed"] = 3
+	f["behaviour"] = "hunt"
+	f["hunts"] = "slowest"
+	db.foes["roamer"] = f
+	var errs := db.validate()
+	for key in ["movespeed", "behaviour", "hunts"]:
+		assert_true(errs.any(func(e) -> bool: return e.begins_with("foe roamer") and e.contains("drop " + key)), "a hero's %s is reported" % key)
+	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("a hero only")), "a hunter's are its own")
+
+
+## A hunter pounces (Ryan, 29 October: "a minimum range of 2 instead of 1 (wolfs pounce,
+## etc.)"): the validator refuses a hunter whose ring is under two, and passes every hunter in
+## content.
+func test_a_hunters_ring_is_two_at_least() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var hunter_id := ""
+	for id in db.foes.keys():
+		if str(db.foes[id].get("behaviour", "")) == "hunt":
+			hunter_id = str(id)
+			assert_true(int(db.foes[id].get("zone", 1)) >= ContentDB.HUNTER_RING, "%s rings two at least" % id)
+	assert_false(hunter_id.is_empty(), "the content has a hunter")
+	var f: Dictionary = db.foes[hunter_id].duplicate(true)
+	f["zone"] = 1
+	db.foes["creeper"] = f
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe creeper") and e.contains("it pounces")), "a hunter at ring one is reported")
+	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("it pounces")), "the content's own pass")
 
 
 ## A foe's four buff specials (the ladder's brief, B; 28 October): a priming and a regrowth say
@@ -1595,7 +1621,7 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 	# starts whole on the numbers it made.
 	var db := _fresh()
 	var maker := str(db.chassis["badger"]["maker"])
-	db.modules["test_module"] = _module(maker, 1, {"hull": 30, "armour": 5, "move": -10},
+	db.modules["test_module"] = _module(maker, 1, {"hull": 30, "armour": 5, "move": -1},
 		{"description": "Its weapons run twice as hot.", "effects": [{"trigger": "on_attack", "effect": "multiply_heat", "value": 2}]})
 	var plain := db.make_mech("badger")
 	var u := db.make_mech("badger", 0, Vector2i.ZERO, null, ["test_module"])
@@ -1603,7 +1629,7 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 	assert_eq(u.hull_max, plain.hull_max + 30, "hull line")
 	assert_eq(u.hull, u.hull_max, "and it starts whole on it")
 	assert_eq(u.armour, plain.armour + 5, "armour line")
-	assert_eq(u.movespeed, plain.movespeed - 10, "a drawback line")
+	assert_eq(u.movespeed, plain.movespeed - 1, "a drawback line")
 	var gun: Face = null
 	for f in u.die.faces:
 		if f.kind == Face.Kind.ATTACK:
@@ -1614,13 +1640,13 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 	var found := false
 	for e in codex["effects"]:
 		if str(e["name"]) == "TEST MODULE" and str(e["note"]) == "MODULE":
-			found = str(e["kind"]) == "module" and str(e["text"]) == "Hull +30, armour +5, move -10. Its weapons run twice as hot."
+			found = str(e["kind"]) == "module" and str(e["text"]) == "Hull +30, armour +5, move -1. Its weapons run twice as hot."
 	assert_true(found, "the codex lists it among the active effects as a module, with its lines and its text: %s" % str(codex["effects"]))
 	var read := {}
 	for item in codex["stat_items"]:
 		read[str(item[0]).get_slice(" ", 0)] = StatBlock.value_text(item)
 	assert_eq(read["hull"], "%d (+30▲)" % int(plain.base["hull"]), "its hull the chassis's, the module's change in a bracket, up")
-	assert_eq(read["move"], "%d (-10▼)" % int(plain.base["move"]), "and a drawback down")
+	assert_eq(read["move"], "%d (-1▼)" % int(plain.base["move"]), "and a drawback down")
 
 
 func test_a_machine_wears_no_more_modules_than_its_slots() -> void:
@@ -2199,3 +2225,24 @@ func test_a_numbered_keywords_grant_says_its_number() -> void:
 			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
 		else:
 			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+
+
+func test_the_map_and_the_vocabulary_agree_on_the_ground() -> void:
+	# The walls named by what they are (Ryan, 29 October): every ground word the map shows has a
+	# terrain entry in the vocabulary and every implemented terrain entry is one the map shows,
+	# so a rename on either side fails the build; a domain's map lean names a shape.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_eq(db.validate(), [], "the content as it stands agrees")
+	for g in BattleMap.ground_ids():
+		assert_eq(str(db.vocabulary.get(g, {}).get("category", "")), "terrain", "%s is a terrain term" % g)
+	var towers: Dictionary = db.vocabulary["towers"]
+	db.vocabulary.erase("towers")
+	assert_true(db.validate().any(func(e) -> bool: return e.contains("ground 'towers'")), "a look with no term is reported")
+	db.vocabulary["towers"] = towers
+	db.vocabulary["mountain"] = {"category": "terrain", "name": "Mountain", "codex": "A wall.", "status": "implemented", "design": {"holes": ""}}
+	assert_true(db.validate().any(func(e) -> bool: return e.contains("terrain 'mountain'")), "a terrain term the map never shows is reported")
+	db.vocabulary.erase("mountain")
+	var fid := str(db.factions.keys()[0])
+	db.factions[fid]["map_kind"] = str(BattleMap.KINDS.keys()[0])
+	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("names no map shape")), "a domain naming a map shape, even a real one, is reported (Ryan, 30 October)")

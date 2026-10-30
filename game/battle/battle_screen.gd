@@ -146,10 +146,12 @@ func _start_music() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
 ## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team; RIFTGATE_FACTION picks
-## the enemy; RIFTGATE_MAP_KIND=rubble picks the map's type (BattleMap.KINDS).
+## the enemy; RIFTGATE_MAP_KIND=gorge picks the map's shape (BattleMap.KINDS; none draws one by
+## the seed) and RIFTGATE_SEED=<n> the battle's seed (7).
 static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()
-	var b := Battle.new(7)
+	var seed_env := OS.get_environment("RIFTGATE_SEED")
+	var b := Battle.new(int(seed_env) if seed_env.is_valid_int() else 7)
 	var team: Array = []
 	var ids: Array = db.default_team()
 	var env := OS.get_environment("RIFTGATE_TEAM")
@@ -513,7 +515,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to move: the tap asks what the ground is (Ryan, 21 September).
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
-		_show_details(ground_lines(battle.field.map.terrain[h]))
+		_show_details(ground_lines(battle.field.map.terrain[h], battle.field.map.ground_id(h)))
 		Sound.play("map_select")
 	else:
 		_select(null)
@@ -539,8 +541,6 @@ func _on_route_drag_started(u: Unit) -> void:
 	_draft_unit = u
 	_drag_target = null
 	_map.draft = []
-	_map.draft_move = battle.moves_left(u)
-	_map.draft_spend = Vector2i(0, 0)
 	Sound.play("map_select")
 
 
@@ -560,7 +560,6 @@ func _on_route_drag_to(h: Vector2i) -> void:
 		return
 	var before := _map.draft.size()
 	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
-	_map.draft_spend = battle.draft_spend(_draft_unit, _map.draft)
 	_map.draft_land = battle.draft_landing(_draft_unit, _map.draft)   # a carrier's block at the end, marked where it does not fit
 	_map.queue_redraw()   # silent while it grows (the console's rule: no clicky ticks with no story)
 
@@ -572,7 +571,6 @@ func _on_route_drag_ended(commit: bool) -> void:
 	_draft_unit = null
 	_drag_target = null
 	_map.draft = []
-	_map.draft_spend = Vector2i(-1, 0)
 	_map.draft_land = {}
 	if u != null and commit and target != null:
 		_order_attack(u, target, draft)
@@ -621,7 +619,19 @@ func pack_lines(u: Unit) -> Array:
 	var db := ContentDB.load_default()
 	var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
 	if not u.is_boss:
-		return [_title(u.display_name), _words([foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]), _behaviour_line(u)]
+		var parts: Array = [foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]
+		if u.traits.has("winged"):
+			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
+		var lines: Array = [_title(u.display_name), _words(parts), _behaviour_line(u)]
+		# Its prey sealed off, it takes the machine nearest it this turn (Ryan, 29 October:
+		# "It's just punishing hiding"), and the readout says whom and why.
+		var w: Battlefield.Walk = _map.walks.get(u.id, null) if _map != null else null
+		if w != null and w.prey != 0 and w.prey != u.prey:
+			var took := battle.field.unit_by_id(w.prey)
+			var sealed := battle.field.unit_by_id(u.prey)
+			if took != null and sealed != null:
+				lines.append(_said("Takes", "%s in its place: %s is sealed off" % [took.display_name, sealed.display_name]))
+		return lines
 	var out: Array = [_title(u.display_name, "Boss")]
 	var stats: Array[String] = []
 	if int(db.foes.get(BattleMapView.foe_sprite_id(u), {}).get("size", 1)) >= 2:
@@ -671,26 +681,35 @@ static func _said(head: String, rest: String) -> Dictionary:
 	return EntryReadout.parts_line("effect", [{"text": head, "trend": 0, "gain": false, "bold": true}, EntryReadout.word(rest)])
 
 
-## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name, a line
-## for each word of moving with the ways it holds for (decided 2 October), the slow step's
-## price said, then the horde's rule.
-static func ground_lines(t: int) -> Array:
+## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name (a wall
+## by what it is, Ryan, 29 October: crags, mesas, towers or cliffs; `word`, the map's ground_id),
+## then a line for each word the crossing table gives it, read from the table so it never
+## disagrees with the rule (Ryan, 28 October: a step a hex, water waded at two, walls the
+## flyer's), the ways under each by their shown names; then the packs' rule.
+static func ground_lines(t: int, word: String = "") -> Array:
 	var db := ContentDB.load_default()
-	var id := str(BattleMap.TERRAIN_NAMES.get(t, "plain"))
-	var out: Array = [_title(str(db.vocabulary.get(id, {}).get("name", id)), "Ground")]
+	var id := word
+	if id.is_empty():
+		id = str(BattleMap.WALL_LOOKS[0]) if t == BattleMap.Terrain.MOUNTAIN else str(BattleMap.TERRAIN_NAMES.get(t, "plain"))
+	var out: Array = [_title(db.term_name(id), "Ground")]
 	for pair in BattleMap.ground_ways(t):
 		var ways: Array[String] = []
 		for way in pair[1]:
 			ways.append(str(db.vocabulary.get(way, {}).get("name", EntryReadout.capital(way))))
 		var said := ", ".join(ways)
 		match str(pair[0]):
-			"slow":
-				out.append(_said("Slow:", said + " (the step ends the move)"))
+			"wade":
+				out.append(_said("Wade:", said + " (two move a hex)"))
 			"wall":
-				out.append(_said("Impassable:", said))
+				out.append(_said("Wall:", said))
 			_:
-				out.append(_said(EntryReadout.capital(str(pair[0])) + ":", said))
-	out.append(EntryReadout.text_line("effect", "Packs cross it" if BattleMap.move_cost(t, []) != BattleMap.WALL else "Packs never enter it"))
+				out.append(_said("Cross:", "every machine" if (pair[1] as Array).size() == BattleMap.WAYS.size() else said))
+	var packs := "Packs cross it"
+	if BattleMap.step_cost(t, []) == BattleMap.WADE:
+		packs = "Packs wade it (two move a hex); a winged pack crosses it" if BattleMap.step_cost(t, ["winged"]) == BattleMap.STEP else "Packs wade it (two move a hex)"
+	elif not BattleMap.passable(t, []):
+		packs = "Packs never enter it; a winged pack crosses it" if BattleMap.passable(t, ["winged"]) else "Packs never enter it"
+	out.append(EntryReadout.text_line("effect", packs))
 	return out
 
 
@@ -789,7 +808,7 @@ static func gate_codex_entry(f: Battlefield) -> Dictionary:
 		"designation": "CARE FIELD PROJECTOR",
 		"subtitle": "THE CITY'S ENCLOSURE // THE LINE THE MACHINES HOLD",
 		"stat_items": [["integrity", "%d/%d" % [f.gate_hp, f.gate_hp_max]], ["rows", str(BattleMap.GATE_ROWS)]],
-		"body": "The projector that holds the field over the city. A pack that reaches the apron strikes it for a third of its strength each phase, at least ten; when its integrity is gone the field is down and the battle is lost. Machines may stand on it; nothing else may.",
+		"body": "The projector that holds the field over the city. A pack that reaches the apron strikes it every enemy turn, harder the bigger the pack and never for less than ten; when its integrity is gone the field is down and the battle is lost. Nothing stands on it.",
 		"flavour": "",
 	}
 
@@ -806,6 +825,8 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 	var entry := db.codex_for_foe(db.make_foe(fid))
 	entry["title"] = u.display_name
 	entry["subtitle"] = "%s // %s" % [entry["subtitle"], ("BOSS" if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	if u.traits.has("winged"):
+		entry["subtitle"] += " // WINGED"   # it crosses water and crags as a flyer does
 	return entry
 
 
@@ -881,7 +902,7 @@ func _on_end_turn() -> void:
 		if m.is_static() or not m.alive():
 			continue
 		free += 1
-		if battle.action_from.has(m.id) or int(battle.spent.get(m.id, 0)) > 0 or battle.orders.has(m.id):
+		if battle.moved.has(m.id) or int(battle.spent.get(m.id, 0)) > 0 or battle.orders.has(m.id):
 			committed += 1
 	if committed > 0:
 		Sound.say("resolve_all" if committed == free else "resolve_move")

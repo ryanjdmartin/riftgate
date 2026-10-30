@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 153 implemented, 5 planned, 0 idea.
+Status: 156 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -155,14 +155,14 @@ Status: 153 implemented, 5 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Movespeed** | Move in tens: how far a machine goes in an action. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost. | implemented |
+| **Movespeed** | Move in hexes: how far a machine goes in an action, a step a hex. Water costs a ground machine two; a hovercraft and a flyer cross it at one; walls are the flyer's alone. | implemented |
 | **Walk** | The map shows where every pack will walk on the enemy's turn, worked out from where your machines stand now: a pusher toward the gate, a hunter toward its prey. Packs go round your machines; nothing you do stops one, and nothing a pack does reacts to your plan. | implemented |
 | **Fight** | Tap a pack to attack it. The fight is at that pack's hex: every pack whose ring covers it joins, and you commit the machines whose attack range covers it. One fight at a time, each resolved before the next; a machine that fought, won, lost or withdrew, is spent until your next turn. | implemented |
 | **Spent** | A machine that has fought this turn is spent: it cannot move or fight again until your next turn. A machine whose passive grants a second action has two before it is spent. | implemented |
 | **Carry** | A machine that carries (the Swallowtail's Muster Deck) lifts the machines on the hexes beside it when it moves: they travel as a ring round it and land as a block, each where it rode from it, keeping whatever move and action they had. It cannot stop where a rider would land on a hex it cannot stand on (NO ROOM). A caught machine does not ride. | implemented |
 | **Caught** | A machine a hunter has caught fights it first on your turn, before any other fight, and cannot move until then. Others in range may join that fight. Withdrawing ends it, and the hunter catches the machine again while it lives. | implemented |
-| **Ring** | Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring is how close it must be to catch its prey. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close. | implemented |
-| **Behaviour** | A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), wears the target rings on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. | implemented |
+| **Ring** | Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring, two hexes at least, is also how close it must be to catch: it pounces over whatever stands between. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close. | implemented |
+| **Behaviour** | A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), puts its tag on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. A prey that keeps its distance is safe; one sealed off behind walls and machines is not: the hunter catches whichever machine it can reach that turn standing nearest it, and its tag moves there. | implemented |
 | **Pack** | An enemy hex is a pack: one foe type times a strength. A fight is the pack you attack and every pack whose ring covers it, so the rift's formations and the order you attack them in decide what you fight. A boss is one unit on one hex. | implemented |
 | **Footprint** | Every unit covers one hex, the boss included: it is occupied, counts for rings and range, and is a tap target. The gate and the rift are wider structures. | implemented |
 | **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack that ends its walk beside a gate hex strikes the gate. | implemented |
@@ -172,22 +172,25 @@ Status: 153 implemented, 5 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Plain** | Open ground. Normal pace for every machine; wheels run fast. Packs cross it. | implemented |
-| **Road** | Open ground, the same as plain: the road is art. Normal pace for every machine; wheels run fast. Packs cross it. | implemented |
-| **Rough** | Forest and scrub. Normal pace for tracks, walkers and flyers; slow for wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace. | implemented |
-| **Ruins** | Rubble. Normal pace for walkers and flyers; slow for tracks, wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace. | implemented |
-| **Water** | Hovercraft skim it fast and tracks ford at normal pace; walkers and wheels can enter it but end their move there; flyers pass over. Packs never enter it. | implemented |
-| **Mountain** | Impassable except for flyers, which cross at normal pace. Packs go around. | implemented |
+| **Plain** | Open ground. Every machine and pack crosses it. | implemented |
+| **Road** | Open ground, the same as plain: the road is art. Every machine and pack crosses it. | implemented |
+| **Rough** | Forest and scrub. Every machine and pack crosses it. | implemented |
+| **Ruins** | Rubble. Every machine and pack crosses it. | implemented |
+| **Water** | Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs wade it as the ground machines do; a winged pack crosses it. | implemented |
+| **Crags** | Rock spikes. Impassable, except to flyers and winged packs. | implemented |
+| **Mesas** | Flat-topped rock. Impassable, except to flyers and winged packs. | implemented |
+| **Towers** | Dead skyscrapers. Impassable, except to flyers and winged packs. | implemented |
+| **Cliffs** | A wall of rock. Impassable, except to flyers and winged packs. | implemented |
 
 ## Trait
 
 | Term | Codex | Status |
 |---|---|---|
-| **Flyer** | Normal pace over every ground, mountains included. Packs walk under it but never stop on its hex. | implemented |
-| **Hover** | Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move. | implemented |
-| **Walker** | Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move. | implemented |
-| **Tracked** | Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move. | implemented |
-| **Wheeled** | Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move. | implemented |
+| **Flyer** | Crosses everything, water and walls included. It flies over machines and packs, and they pass under it, but nothing stops on another's hex. | implemented |
+| **Hover** | Skims water at full pace; walls stop it. | implemented |
+| **Walker** | Legs. Wades water at half pace. | implemented |
+| **Tracked** | Tracks. Wades water at half pace. | implemented |
+| **Wheeled** | Wheels. Wades water at half pace. | implemented |
 | **City defense** | A static player-side unit. Not on the field yet. | planned |
 
 ## Trigger
@@ -295,17 +298,17 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Mine** (implemented): The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once.
 - **Reinforcements** (implemented): How elites arrive is section 12's question.
 - **Massive** (implemented): Spread treats it as a front-rank neighbour; Penetrate finds nothing behind it.
-- **Movespeed** (implemented): Every chassis's move is a placeholder set by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it.
+- **Movespeed** (implemented): Every chassis's move is a placeholder set by size and role; what crossing water and walls is worth is the pricing run's to read (28 October).
 - **Walk** (implemented): A pack with no way to the gate waits, and the map says so.
 - **Carry** (implemented): A landing animation or a redistribution on landing may come later.
-- **Ring** (implemented): Rings are content on the foe type, placeholders; a machine's attack range is two for every chassis, an exception only where a role earns it.
+- **Ring** (implemented): Rings are content on the foe type, placeholders; a hunter's is two at least (Ryan, 29 October: "wolfs pounce"; the validator holds it), and one number serves its catch, the fights it joins and the ring drawn. A machine's attack range is two for every chassis, an exception only where a role earns it.
 - **Behaviour** (implemented): Push and hunt are the only behaviours; the hunters' caveats are placeholders.
 - **Pack** (implemented): The rift should spawn formations, not single packs: the foes' fresh start.
 - **Footprint** (implemented): Footprints do not rotate with facing.
 - **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
 - **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one pack at a time.
 - **Ruins** (implemented): No skirmish condition yet; what terrain does in a fight is section 12's question.
-- **Water** (implemented): No skirmish condition yet (section 12). The generator gives every map one real water feature with crossings for the horde.
+- **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls.
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.
 - **On shield gain** (implemented): No content uses it yet.
 - **On shielding an ally** (implemented): Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.

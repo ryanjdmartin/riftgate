@@ -14,7 +14,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 5   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October)
+const VERSION := 9   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October)
 
 
 # ---------------------------------------------------------------- the file
@@ -56,10 +56,9 @@ static func to_dict(b: Battle) -> Dictionary:
 		for h in f["hunters"]:
 			hunters.append(h.id)
 		forced.append({"prey": f["prey"].id, "hunters": hunters})
-	var moved := {}
-	for uid in b.action_from.keys():
-		var a: Array = b.action_from[uid]
-		moved[str(uid)] = [_hex(a[0]), int(a[1]), int(a[2])]
+	var moved: Array = []
+	for uid in b.moved.keys():
+		moved.append(int(uid))
 	return {
 		"version": VERSION,
 		"seed": b.seed_value,
@@ -73,9 +72,8 @@ static func to_dict(b: Battle) -> Dictionary:
 		"state": b.state,
 		"outcome": b.outcome,
 		"spent": _int_keys(b.spent),
-		"move_left": _int_keys(b.move_left),
 		"fought": _int_keys(b.fought),
-		"action_from": moved,
+		"moved": moved,
 		"history": b.history,   # the turn's undo, in order: snapshots kept JSON's way already
 		"planned": b.planned,   # and the moves not yet played on the map
 		"forced": forced,
@@ -134,7 +132,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	var w := int(md.get("w", Battle.DEFAULT_WIDTH))
 	var h := int(md.get("h", Battle.DEFAULT_HEIGHT))
 	var map_seed := int(md.get("seed", 0))
-	b.map_kind = str(md.get("kind", "mixed"))
+	b.map_kind = str(md.get("kind", ""))
 	b.map = BattleMap.generate(w, h, map_seed, b.map_kind) if map_seed != 0 else BattleMap.flat(w, h)
 	b.field = _field_from(d.get("field", {}), b.map)
 	# What the map knows of each foe type, from the content as the setup gives it: a pack Rift
@@ -143,13 +141,10 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.field.foe_profiles = b.db.pack_profiles()
 	for uid in d.get("spent", {}).keys():
 		b.spent[int(str(uid))] = int(d["spent"][uid])
-	for uid in d.get("move_left", {}).keys():
-		b.move_left[int(str(uid))] = int(d["move_left"][uid])
 	for uid in d.get("fought", {}).keys():
 		b.fought[int(str(uid))] = true
-	for uid in d.get("action_from", {}).keys():
-		var a: Array = d["action_from"][uid]
-		b.action_from[int(str(uid))] = [_hex_from(a[0]), int(a[1]), int(a[2])]
+	for uid in d.get("moved", []):
+		b.moved[int(uid)] = true
 	# The undo and the plan (25 October), as they were; the snapshots read a JSON round trip's
 	# floats and string keys themselves (Battle._restore, Battle.plan_pieces).
 	b.history = (d.get("history", []) as Array).duplicate(true)
@@ -387,7 +382,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	for slot in sk.mines.keys():
 		mined.append({"rank": slot.x, "column": slot.y, "shots": sk.mines[slot]})
 	return {
-		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain,
+		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain, "ground": sk.ground,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
 		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "twins": paired,
@@ -431,6 +426,7 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 	var sk := Skirmish.new(0, int(d.get("columns", Skirmish.DEFAULT_COLUMNS)))
 	sk.rng.state = str(d.get("rng", "0")).to_int()
 	sk.terrain = int(d.get("terrain", BattleMap.Terrain.PLAIN))
+	sk.ground = str(d.get("ground", BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")))
 	sk.round = int(d.get("round", 0))
 	sk.rerolls_left = int(d.get("rerolls_left", 0))
 	sk.committed = bool(d.get("committed", false))
@@ -600,7 +596,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 4   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October)
+const RUN_VERSION := 8   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:

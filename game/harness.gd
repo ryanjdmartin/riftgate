@@ -10,7 +10,6 @@ extends Control
 
 const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
 const BATTLE_SCENE := preload("res://game/battle/battle_screen.tscn")
-const MAP_SCENE := preload("res://game/main.tscn")
 const TABS := ["TEAM", "ENEMY", "SETUP"]
 const ROW_H := 48.0
 
@@ -58,8 +57,8 @@ func build(s: HarnessSetup) -> void:
 func _build_menu() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text, see Hud.oversample; pixel art pins nearest on itself
-	# The harness must not swallow input meant for the scene it hosts (the map viewer reads
-	# unhandled mouse events), so the root and its backdrop ignore the mouse.
+	# The harness must not swallow input meant for the scene it hosts, so the root and its
+	# backdrop ignore the mouse.
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var bg := ColorRect.new()
 	bg.color = Palette.BG
@@ -129,7 +128,6 @@ func _build_menu() -> void:
 	_resume_btn = _button("Resume battle", _on_resume, 52, 18)
 	_resume_btn.visible = SaveGame.exists()
 	more.add_child(_resume_btn)
-	more.add_child(_button("Battlefield viewer", _on_map, 52, 18))
 	# The quick campaign (Ryan, 25 October): a run of battles without the map, seeded by SETUP's seed.
 	var quick := HBoxContainer.new()
 	quick.add_theme_constant_override("separation", 12)
@@ -497,8 +495,10 @@ func _build_setup(page: VBoxContainer) -> void:
 	row.add_child(rnd)
 	page.add_child(_hint("The battle's map and every fight's dice come from it."))
 
-	page.add_child(_section("Map type"))
+	page.add_child(_section("Map shape"))
 	_kind = _picker()
+	_kind.add_item("By the seed")   # the campaign's way: the shape the seed draws
+	_kind.set_item_metadata(0, "")
 	for k in BattleMap.KINDS.keys():
 		_kind.add_item(str(BattleMap.KINDS[k]["name"]).capitalize())
 		_kind.set_item_metadata(_kind.item_count - 1, k)
@@ -560,7 +560,10 @@ func _refresh_summary() -> void:
 	var lines: Array = []
 	lines.append(("TEAM  " + ", ".join(team)) if not team.is_empty() else "TEAM  none ticked")
 	lines.append(("ENEMY  " + ", ".join(foes)) if not foes.is_empty() else "ENEMY  none")
-	var extra := "SEED %d · %s" % [setup.seed_value, str(BattleMap.KINDS[setup.map_kind]["name"]).capitalize()]
+	var shape := setup.map_kind if BattleMap.KINDS.has(setup.map_kind) else BattleMap.kind_for_seed(setup.seed_value)
+	var extra := "SEED %d · %s" % [setup.seed_value, str(BattleMap.KINDS[shape]["name"]).capitalize()]
+	if not BattleMap.KINDS.has(setup.map_kind):
+		extra += " (by the seed)"
 	if not setup.guest.is_empty():
 		extra += " · guest " + str(db.factions[setup.guest].get("name", setup.guest))
 	lines.append(extra)
@@ -683,11 +686,6 @@ func _show_battle(b: Battle) -> void:
 	screen.back_requested.connect(_back)
 	screen.quit_requested.connect(_back)
 	_show(screen)
-
-
-func _on_map() -> void:
-	var m := MAP_SCENE.instantiate()
-	_show(m)
 
 
 ## A new quick campaign on SETUP's seed (the saved one, if any, is replaced at its first pick).

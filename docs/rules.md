@@ -262,8 +262,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
   loops moved it (the Zombie Knight's 8 HP, the promoted forms' 32 to 48, a hero's finisher, a
-  multiple of its blow, to 16). Move alone keeps steps of 5, since a hex costs 5
-  or 10. The content's numbers are the stock pass's fills as its loops moved them
+  multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 2 to 5).
+  The content's numbers are the stock pass's fills as its loops moved them
   (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines of 23
   October by hand at the same scale; placeholders until play.
 
@@ -779,21 +779,38 @@ a stat.
 - **Field**: pointy-top hexes, 9 wide and 20 rows. The rift is three hexes mid top row; the
   gate is two rows at the bottom centre (3 and 4 hexes), wall across the rest. One unit to a
   hex, the boss too.
-- **Ground**: open (plain or road), rough, ruins, water, crags. Every map guarantees the
-  horde a crossing three hexes wide or more and one water feature (a river with fords, or a
-  lake band); the two rows before the gate are never water or crags. Five map types: Mixed
-  Ground, Open Steppe, Rubble Field, Badlands, Flooded. Height is landscape; no rule reads it.
-- **Ways of moving** (each chassis has one): a fast hex costs 5, a normal hex 10; a slow hex
-  takes whatever move is left and ends the move (lit with a dashed edge and a stop sign);
-  crags are walls except to flyers. Tracked:
-  ruins slow. Walker: water slow. Wheeled: open fast; rough, ruins and water slow. Hover:
-  water fast; rough and ruins slow. Flyer: everything normal. Machines never enter or cross
-  another unit's hex.
+- **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
+  (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
+  battle, each with its own water, walls, decorative ground and relief: River Crossing (a
+  river across, two or three hexes thick, with one or two fords three or four hexes wide in
+  all, a crag on a bank at most), Fjord (water down the field, two or three wide, a
+  lane two wide at least either side), Badlands (mesas in groups and two or three ponds, the
+  paths winding between), Open Steppe (a lone crag and a pond at most), Ruined City (one or
+  two bands of towers across, each with streets through it three or four hexes wide in all,
+  one to four of them), Gorge (one or two cliff walls down the field, lanes two wide at
+  least). A ford or a street is one to three hexes wide, with a hex of river or towers
+  between two. A battle that names no shape draws one by its seed, never by its domain. Every
+  map guarantees the
+  horde a crossing three hexes wide or more through its walls; the rift's mouth (rows 0 to 3)
+  and the two rows before the gate hold no water and no wall. Height is landscape and a look
+  alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
+  steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
+  edges rises to three.
+- **Moving**: a machine's move is a count of hexes, each step one hex, and a chassis has one
+  way of moving (tracked, walker, wheeled, hover or flyer), which is its look and its footfall
+  and never a rule of its own. Open ground (plain, road), rough and ruins are ground to
+  everyone. Water: a ground machine wades it, a water hex costing two of its move, and it can
+  always enter one with whatever move it has left; a hovercraft and a flyer cross it at one.
+  Walls stop all but a flyer. Nobody stops on another unit's hex. A flyer and a grounded unit
+  pass each other and meet only in a fight: a flyer flies over machines and packs, and they
+  pass under it and under a winged pack. A grounded machine never passes another grounded
+  machine or a grounded pack: each move lands at once, so the next is planned from where it
+  ended and the player sequences them.
 - **Setup**: up to four machines on the row before the gate; the lead domain's spawn list at the
   battle's tier as packs three to five rows below the rift; the boss one row below the rift.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
-  and every pack's ring. Each machine has one action (the Dingo two): move, in pieces if
-  wanted, then may fight; a fight ends the action however it ends. A selected machine lights
+  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go,
+  then it may fight; a fight ends the action however it ends. A selected machine lights
   the hexes its move reaches, and in red the hexes past them within its attack range: where it
   could attack from. A move is planned: its route shows from where the machine stands, and the
   next move or order reads from the route's end. UNDO takes back the last move or order,
@@ -807,8 +824,9 @@ a stat.
 - **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's shield and hull as
   gauges, its move and actions left, a chip for its damaged components; a pack's foe and
-  strength, move, ring and what it is doing; the gate's integrity as its gauge; the ground's
-  word for each way of moving, a line a word, and whether packs enter it. A refused order
+  strength, move, ring and what it is doing; the gate's integrity as its gauge; the ground by
+  its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
+  packs enter it. A refused order
   says what stopped it there too.
 - **Orders**: a tap or drag onto a pack plans the machine's move to the farthest hex in attack
   range its move reaches (or leaves it, if in range) and orders it, one step for UNDO; a
@@ -818,26 +836,40 @@ a stat.
   chaining); machines whose attack range (2) covers it may join. Afterwards each machine in
   it has used its action, wrecks leave, a pack keeps only its survivor count, and Rift
   Pressure does not tick: it ticks on the map alone.
-- **Packs**: one foe type times a strength. They treat every land hex as normal and water and
-  crags as walls; moves 20 (fast 30, massive 10); rings 1 (front rank), 3 (back rank), 2
-  (massive). They walk round machines and other packs; the walk shown is the walk played. The
+- **Packs**: one foe type times a strength. They cross every land hex and wade water as a
+  ground machine does, a water hex costing two of their move (entered with whatever is left),
+  and never enter walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb,
+  the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
+  moves 2 (fast 3, the Dire Wolf's line 4, massive 1); rings 1 (front rank), 3 (back rank), 2
+  (massive), a hunter's 2 at least. A ring counts hexes as the crow flies, over anything
+  between. They walk round grounded machines, through each other and under a flyer, never
+  ending a walk on another unit's hex, so a flyer holds no ground and a pack holds none
+  against the packs; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the gate; a pusher ending its walk beside it strikes the gate for its
   strength times 10 divided by 3, at least 10, every enemy turn.
-- **Hunters** lock one machine when they appear (nearest, weakest, strongest or slowest; never
-  the Prairie Dog) and walk to put it inside their ring; the prey wears a tag by it, a plate a
-  hunter with the hunter's picture and a target. A hunter with its prey in its ring
-  at the start of the player's turn has caught it: that fight comes first, the prey cannot
-  move first, others in range may join.
+- **Hunters** lock one machine when they appear (nearest, weakest, strongest, slowest or fastest; never
+  the Prairie Dog), keep it while it stands, and walk to put it inside their ring; the machine a
+  hunter comes for wears a tag by it, a plate a hunter with the hunter's picture and a target,
+  and the board says HUNTED BY. A hunter with what it comes for in its ring at the start of the
+  player's turn has caught it: that fight comes first, the caught machine cannot move first,
+  others in range may join. A prey that any route reaches is the only machine its hunter
+  catches, however near the others stand. A prey sealed off (no hex the hunter can walk to,
+  round walls and grounded machines, through packs and under flyers, and stand on puts it
+  inside its ring) is not safe: the hunter takes the machine that a walk this turn can put
+  inside its ring and that stands nearest the prey, its caveat breaking a tie and never one
+  that is never hunted; the tag moves to it and the pack's readout says whom it takes and why.
+  With none in reach that turn it walks as near its prey as it gets.
 - **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
   it are lifted in place when it moves and travel as a ring round it, so they never block its
-  way; it lands them as a block, each where it rode from the carrier, keeping whatever move and
-  action they had. A stop where a rider would land on a hex it cannot stand on (off the field,
+  way; it lands them as a block, each where it rode from the carrier, keeping their action, and
+  their move if they have not moved. A stop where a rider would land on a hex it cannot stand on (off the field,
   a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo of the carrier's move takes the riders back with it.
-- **The boss** patrols its ring of the rift (ring 2; a final's back-rank hero ring 3), joins fights in its ring and can
-  be attacked from the first turn; its fight won wins the battle: the fight ends in victory
+- **The boss** patrols within two hexes of the rift, a hex a turn whoever commands it, joins
+  the fights its ring covers (2; a final's back-rank hero's 3) and can be attacked from the first turn
+  (a hero carries no move and no hunt of its own: it only ever commands the boss unit); its fight won wins the battle: the fight ends in victory
   only when no foe stands or waits, so its escort falls with it, and a team wrecked after the
   commander falls has lost the battle (Ryan, 27 October: the whole escort must die, else the
   smallest boss, a final's hero, gets cheaper still). A fight it is in, ordered onto

@@ -234,7 +234,7 @@ func _open_line(b: Battle, ours: Array) -> Array:
 				if o != null and not ours.has(o):
 					ok = false
 					break
-				if k <= 2 and (not BattleMap.passable(b.field.map.terrain[h], carrier.traits) or BattleMap.move_cost(b.field.map.terrain[h], carrier.traits) == BattleMap.SLOW):
+				if k <= 2 and BattleMap.step_cost(b.field.map.terrain[h], carrier.traits) != BattleMap.STEP:
 					ok = false
 					break
 				if (k == 1 or k == 3) and not BattleMap.passable(b.field.map.terrain[h], rider.traits):
@@ -290,6 +290,37 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	s._on_skirmish_back()
 	assert_true(b.forced.is_empty(), "fought")
 	assert_eq(s._resolve_btn.text, "END TURN", "the turn may end")
+	s.free()
+
+
+## A hunter whose prey is sealed off takes the machine nearest it (Ryan, 29 October: "It's just
+## punishing hiding"): its tag and the board follow the machine it comes for, and its readout
+## says whom it takes and why.
+func test_a_hunter_taking_a_machine_in_its_preys_place_says_so() -> void:
+	var s := _screen()
+	var b := s.battle
+	var hunter: Unit = b.field.packs()[0]
+	for p in b.field.packs():
+		p.behaviour = "push"
+	hunter.behaviour = "hunt"
+	var sealed: Unit = b.mechs()[0]
+	var taken: Unit = b.mechs()[1]
+	hunter.prey = sealed.id
+	var w := Battlefield.Walk.new()
+	w.end = hunter.pos
+	w.prey = taken.id
+	w.catches = taken.id
+	s._map.walks = {hunter.id: w}
+	var text := ""
+	for line in s.pack_lines(hunter):
+		text += str((line as Dictionary).get("text", "")) + " / "
+	assert_true(text.contains("Hunts"), "it still names its prey: %s" % text)
+	assert_true(text.contains("Takes %s in its place: %s is sealed off" % [taken.display_name, sealed.display_name]), "and whom it takes instead: %s" % text)
+	var meets := {}
+	for row in s._board._rows():
+		meets[(row["unit"] as Unit).id] = str(row["meets"])
+	assert_true(str(meets[taken.id]).begins_with("HUNTED BY"), "the board marks the machine it comes for")
+	assert_eq(str(meets[sealed.id]), "", "and not the one sealed off")
 	s.free()
 
 
@@ -374,11 +405,18 @@ func test_the_ground_and_a_refusal_read_as_lines() -> void:
 	var text := ""
 	for l in water:
 		text += EntryReadout.line_text(l) + "\n"
-	assert_true(text.contains("Fast: Hover"), "a line a word, the ways under it: %s" % text)
-	assert_true(text.contains("Slow: Walker, Wheeled (the step ends the move)"), "the slow step's price said: %s" % text)
-	assert_true(text.contains("Packs never enter it"), "and what the horde does")
-	var mountain := BattleScreen.ground_lines(BattleMap.Terrain.MOUNTAIN)
-	assert_true(EntryReadout.line_text(mountain[2]).begins_with("Impassable:"), "a wall reads impassable")
+	assert_true(text.contains("Wade: Tracked, Walker, Wheeled (two move a hex)"), "the ground ways wade it, the price said: %s" % text)
+	assert_true(text.contains("Cross: Hover, Flyer"), "a line a word, the ways under it: %s" % text)
+	assert_true(text.contains("Packs wade it (two move a hex); a winged pack crosses it"), "and what the horde does, as a ground machine does (Ryan, 29 October): %s" % text)
+	var mountain := BattleScreen.ground_lines(BattleMap.Terrain.MOUNTAIN, "towers")
+	assert_eq(str(mountain[0]["text"]), "TOWERS", "a wall is named by what it is (Ryan, 29 October)")
+	assert_eq(str(BattleScreen.ground_lines(BattleMap.Terrain.MOUNTAIN)[0]["text"]), "CRAGS", "rock spikes when the map gives no look")
+	assert_eq(EntryReadout.line_text(mountain[1]), "Cross: Flyer", "a wall is the flyer's")
+	assert_true(EntryReadout.line_text(mountain[2]).begins_with("Wall: Tracked, Walker, Wheeled, Hover"), "and a wall to the rest")
+	assert_eq(EntryReadout.line_text(mountain[3]), "Packs never enter it; a winged pack crosses it", "and the horde's wall")
+	var rough := BattleScreen.ground_lines(BattleMap.Terrain.ROUGH)
+	assert_eq(EntryReadout.line_text(rough[1]), "Cross: every machine", "rough is ground to every machine")
+	assert_eq(EntryReadout.line_text(rough[2]), "Packs cross it", "and to the horde")
 	s._show_details(BattleScreen.notice_lines("Out of reach", "It cannot get there"))
 	assert_eq(str(s._details_entry.lines[0]["text"]), "OUT OF REACH", "a refusal's title")
 	assert_true(s._details.visible, "shown in the readout")

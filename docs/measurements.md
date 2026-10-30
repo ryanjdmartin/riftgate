@@ -2953,6 +2953,69 @@ Read:
   cooling, or the maxima by chassis (the stock pass already sets the Kite's 10 and the Musk
   Ox's 8), each a what-if the driver's `--set` can read the same way.
 
+## 28 October, movement in hexes
+
+The map's movement on Ryan's calls of 27 and 28 October (the bible's section 4 rows: a move is a
+count of hexes, ground is ground, water the one priced hex, a move in one go, winged packs, a
+hunter picking again), measured on the landing's head.
+
+**The map survey** (`tools/map_survey.gd`, 200 seeds, `docs/map_survey.md`). The maps are the
+same maps: every ground's share, the water, the horde's crossings and its route are unchanged
+seed for seed, since the generator reads only the horde's rule, which is unchanged. Phases to
+the rift from the best lane at move 3 (move 30 on 8 October): every way of moving 6.0, where
+wheels took 3.8 (their fast open ground) and hover 5.6; the packs 8.0 at their 2, as before.
+Reach after two phases at the survey's reference moves (tracked 3, walker 3, wheeled 5, hover 4,
+flyer 5, the moves of 8 October in hexes): tracks 32% (31), walkers 32% (32), wheels 52% (61),
+hover 44% (38), flyers 62% (62); making the horde's narrowest crossing by phase two, tracks 32
+of 200 maps (30), walkers 32 (32), wheels 113 (166), hover 60 (69), flyers 115 (115). The map types at move 3 read the same
+way (every phase count 6.0; reach on Badlands the lowest for the ground ways, 29/29/48/40/62,
+and Flooded 33/33/55/47/62). Read: the trip north no longer reads the way of moving at all,
+and reach is the move and the walls: the ground ways read alike at equal move, hover above
+them by the water it crosses, the flyer above hover by the crags, which is the order the rule
+sets. Wheels lose the most (their fast ground was the one large difference the table made);
+hover gains rough and ruins and loses its fast water, so it reaches more of the field and makes
+the crossing on a few maps fewer. A note on the method: the survey's reach is at its reference moves
+because its reader of the content's moves looks for a `chassis` key the file no longer has (it
+holds `entries`), so it has fallen back to those moves since before 8 October; the content's
+biggest moves are walker 4 and hover 5.
+
+**The campaign run** (`tools/campaign_run.gd`, 40 runs from seed 1, the greedy rung,
+`docs/campaign_run.md`), on the merged head against main's report at c8dac4e: the same runner,
+seeds and content, the movement aside. The bands hold: no run won (none), 31 of 40 reach the
+finale (33), 373 battles won 7% (5%), held after a wipe 54% (50%), fell 38% (43%), 92% ending in
+a team wipe (94%). One cell moved past its band: the three-machine battles, won 54% of 50 (35%
+of 48). The fights inside them say why: lone fights in a three-machine battle fell from 33 to
+17, fights with two of three rose from 29 to 60 and with all three from 39 to 49, since no slow
+hex splits the squad as it walks onto a pack (the bot moves the squad as one onto the nearest
+pack, and under the table a walker stopped in water or tracks in ruins arrived a turn behind).
+Wrecks rushed 23 (31); components destroyed per battle 0.78 (0.80) and hardpoints filled at the
+end 42% (39%) held. The branch's own read before the merge, against its run of 27 October,
+moved the same cell the same way (54% of 50 against 36% of 57; lone fights 42 to 17, two of
+three 35 to 61). A direction at 40 runs, not a band: the rule's effect on a squad moving
+together, not a bug.
+
+**The Dire Wolf's line at 4** (Ryan, the same day: it "can be faster"; the Dire Wolf, the Warg
+and the Alpha Warg from 3; the heroes' dead moves dropped with it, which no run reads). The
+campaign run on that head (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`) against
+the merged head's: no band moved. The Meadow's battles won 13% of 83 (12% of 79), fell 40%
+(40%), wiped 86% (87%); the whole, won 7% (7%), held after a wipe 52% (54%), fell 40% (38%);
+the three-machine battles 50% of 52 (54% of 50). A direction at 40 runs: a faster wolf moves no
+cell this bot reads.
+
+**The map survey's reader fixed** (the same day; the to-do's line, found while measuring the
+landing): the reach table now reads each way's biggest move in content through ContentDB, as
+its report always said (tracked 3, walker 4, wheeled 5, hover 5, flyer 5), where its own reader
+of the file had looked for a key the file no longer has and fallen back, silently, to reference
+moves (walker 3, hover 4) since before 8 October; a way no chassis takes now stops the survey.
+Rerun at 200 seeds (`docs/map_survey.md`): the maps, the phases to the rift and the tracked,
+wheeled and flyer rows are the same; walkers at 4 reach 42% of the field after two phases (32%
+at 3) and make the horde's narrowest crossing by phase two on 59 of 200 maps (32); hover at 5
+reaches 54% (44% at 4) and makes it on 115 (60). At equal move the order the rule sets holds:
+at 5, wheels 52% and 113 maps, hover 54% and 115, flyers 62% and 115, hover's edge over the
+ground the water and the flyer's the crags. The map types read alike (walker and hover reach:
+Mixed 42 and 54, Steppe 46 and 58, Rubble 46 and 58, Badlands 39 and 49, Flooded 44 and 58).
+Every survey read before this one gave the walkers' and the hovercraft's reach at 3 and 4.
+
 ## 29 October, Chain's read
 
 **The conductor on the benches** (Chain built the same day: the bible's Chain row; `tools/pricing_run.py
@@ -3276,3 +3339,119 @@ Read:
   noise (3.34 and 3.19, its overheats 0.44 a fight against 0.39). With the Arc Fault its own setter,
   the Buzzard's Chain gun no longer wants one beside it; whether the Shock into the Afterburner is
   wanted on it stays a play test's question (the bible's section 12).
+
+## 29 October, the map's relief
+
+**The relief read** (`tools/map_survey.gd`'s new relief table, 200 seeds of Mixed Ground at
+9x20, `docs/map_survey.md`; the decision it informs: the bible's map-types row, the relief laid
+by the shape, on Ryan's "I like the look but maybe it's a bit too much for the phone screen").
+No rule reads height, so the read is what the glass shows. The field's land (water and the
+gate, the wall and the rift aside) stands 47% at step 0, 31% at 1, 20% at 2 and 3% at 3; 55%
+of neighbouring land pairs stand at different heights (47% to 64% a map), a quarter of those
+steps two or more; 13.7 hexes a map stand alone, every land neighbour at another height (6 to
+29); and a ring of 2 wholly on the field, drawn as a pack's ring is, at each hex's height, jogs
+at 5.9 of its 12 joints (4.6 to 7.1 a map). A step is 7 units, which the 42-degree camera lifts
+7 map pixels at zoom 1 (a hex's circumradius 48 pixels to 35 units), the width of a ring's
+stroke with its dark track (6 to 7.5), so a joint one step apart jogs the outline by its whole
+width and two steps clear it. Every type reads alike (steps 52% to 55%, lone hexes 13.4 to
+14.2 a map, seeds 1 to 100), the relief being a noise of its own, decoupled from the ground. A
+scratch read earlier the same day (seeds 1000 to 1199, a script outside the tools) counted the
+gate's and the rift's level ground as land and read 47% stepping, about 13 lone hexes and 6 or
+7 jogs in a ring at the field's middle; the survey's table is the measure. The shapes
+session's relief is read against it.
+
+**The six map shapes** (Ryan's direction of 28 October and his calls of 29 October; landed the
+same day). The map survey on them (`docs/map_survey.md`, 200 seeds a shape at 9x20, the detailed
+report on Open Steppe, the baseline): every shape keeps the horde's crossing three wide or more
+on all 200 maps, the guarantee opening half a hex a map on the river (where a bend narrows a
+ford) and on the badlands, none elsewhere; the horde's route is 19 hexes on every shape (19.0 to
+19.2), since on hexes a route north lengthens only where walls run across many rows, so no
+shape lengthens the walk; every way of moving reaches the rift's mouth in 6 phases at move 3.
+The shapes part on reach, the share of the field a way can stand on two phases out from its
+best lane at its content move (walker, hover, flyer): Open Steppe 51, 62, 62%; River Crossing
+49, 62, 62; Fjord 47, 62, 62; Ruined City 42, 53, 62; Badlands 38, 47, 62; Gorge 38, 47, 62.
+Water opens the hover's gap over the walkers (13 points on the river, 15 on the fjord),
+walls the flyer's over the rest (9 to 15 points over the hover on the city, the badlands and
+the gorge, 20 to 24 over the walkers). The grounds as laid: open ground 90%, 83%, 41%, 99%, 16%
+and 85% of the field (river, fjord, badlands, steppe, city, gorge), the badlands' scrub 37% and
+the city's rubble 73%; water 10% on the river and 17% on the fjord; walls 17% on the badlands,
+11% in the city and 15% in the gorge. The relief: neighbouring land at different heights 0% on
+four shapes, 4% on the steppe (its one rise) and 16% on the badlands (the mesas' shoulders),
+against 55% on the morning's noise; no lone hex but 0.6 a map on the badlands on the survey's
+count, which reads the field alone where the generator's rule also reads the scenery beside the
+edge. A first run an hour earlier, before the badlands were made denser (four mesa groups of two
+to four where about seven of three to five stand), read their walls 8%, their walker and hover
+reach 45 and 56% and their route 19.0 like every shape's; the denser badlands match the gorge
+on reach and hold the narrowest crossings, about three hexes (a scratch read at 60 seeds).
+
+The campaign run on the shapes (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`; a
+battle that names no shape draws one by its seed) against the run of 28 October on Mixed
+Ground: no band moved. Battles won 8% of 384 (7% of 377), held after a wipe 52% (52%), fell 38%
+(40%), a team wipe 90% (92%); runs reaching the finale 34 (34), cities fallen 3.95 a run (4.00);
+phases a battle 7.87 (7.96); three-machine battles won 49% of 63 (50% of 52). The run before the
+denser badlands read the same bands (8% of 387, 53%, 38%). A direction at 40 runs: the shapes
+move nothing this bot reads, which walks the squad as one at the nearest pack.
+
+**The horde moves as the machines do, and fords and streets three or four in all** (Ryan, 29
+October; built the same day: packs wade water at two a hex, pass through each other, flyers and
+the ground pass each other, nobody stops on another unit's hex). The map survey
+(`docs/map_survey.md`, 200 seeds a shape at 9x20) against the six shapes' survey of the morning:
+the horde's crossing stays three wide or more on every map of every shape; the guarantee opens
+nothing on the river and the fjord since the horde wades (it opened half a hex a map on the
+river, where a bend narrowed a ford) and 0.3 a map on the badlands where it opened 0.5, the
+ponds no longer walls; the horde's route is 19 hexes on every shape (19.2 on the fjord and 19.1
+on the badlands before). Reach is unchanged but in the city, its streets one to four a band
+where one gap of three or two of two stood: the walkers' two-phase reach 44% where it was 42%,
+the wheels' and the hover's 54% where 53%; open ground there 21% where 16%, a street paved
+through every gap, and the towers 10% where 11%. A first laying let a river take four fords as
+a band takes four streets, and printed seed by seed (3, 7, 12, 21, 33) the river broke into
+ponds; capped at two fords it reads as it did.
+
+The campaign run on it (40 runs from seed 1, the greedy rung, `docs/campaign_run.md`) against
+the six shapes' run of the morning: no band moved. Battles won 7% of 382 (8% of 384), held
+after a wipe 53% (52%), fell 39% (38%), a team wipe 92% (90%); runs reaching the finale 34
+(34), cities fallen 3.92 a run (3.95); phases a battle 7.96 (7.87); fights 794 (796), those
+against two packs or more 354 (365); three-machine battles won 42% of 57 (49% of 63), a band of
+some twelve points at sixty battles. A direction at 40 runs: this bot walks the squad as one at
+the nearest pack and never holds a line, so what wading and passing change for a player who
+holds the streets is Ryan's play to read.
+
+**Hunters at a ring of two, and the machine nearest a sealed-off prey in place of the re-pick**
+(Ryan, 29 October; built the same day: every hunter's ring two at least, the Goblin Captain's
+three, one number for its catch, the fights it joins and the ring drawn; a hunter keeps its prey
+and goes for it by any route, and only when walls and machines seal the prey off takes the
+machine nearest it that a walk that turn can put inside its ring). The campaign run on it (40
+runs from seed 1, the greedy rung, `docs/campaign_run.md`) against the horde-wading run of the
+same afternoon: no outcome band moved, and the fights grew. Battles won 6% of 379 (7% of 382),
+held after a wipe 52% (53%), fell 40% (39%), a team wipe 93% (92%); runs reaching the finale 32
+(34), the first city falling on turn 3.55 (3.77); phases a battle 7.77 (7.96). Fights 733 (794),
+those against two packs or more 399 (354), 54% of them where 45% were, one machine against three
+packs or more 125 (86): a hunter at two joins the fights on the packs beside it, so the fights
+come fewer and bigger. Three-machine battles won 39% of 58 (42% of 57); components destroyed a
+won battle 1.15 (1.61). A direction at 40 runs, on a bot that walks the squad as one at the
+nearest pack and never hides a machine behind a line, so the stand-in is a case it rarely meets;
+whether the pounce is overbearing is Ryan's play to read (the bible's exit).
+
+**The domains' tilesets: their colours by the colourblind simulations** (30 October; Ryan, 29
+October: "They all need their own tileset"). The painted world reaches the screen through the
+map's compositor, which posterizes it to six levels a channel (`bleed.gdshader`, `levels` 5), so
+the colours that count are the posterized ones: the first picks' ash plain `5a3e34` showed as
+maroon `#663333` and their red-rock ruins `8c4c2c` as red `#993333`, so every tileset colour now
+sits on that grid and is what the map shows. Each ground's worst CIEDE2000 over normal vision and
+the Machado protan, deutan and tritan simulations at severity 1.0 (linear RGB), against the HUD
+options (green `33ff55`, amber `fff21a`, blue `5cd8ff`), the enemy red `ff1e1e`, the rift's
+violets (`c8a4ff`, `6a30c0`), water and the walls as shown (`3366ff`, `999966`); the bar is the
+Meadow's own as shown, plain `#339933` 8.3, road `#cccc99` 7.4, rough `#336633` 5.1, ruins
+`#999999` 3.5 (against the walls). The Waste: plain `#cc9933` 6.9 (lightness 73), road `#ffcc99`
+6.5 (93), rough `#663300` 16.7 (32), ruins `#993300` 11.6 (44). The Marsh: plain `#336666` 11.1
+(42), road `#333300` 20.0 (22), rough `#333333` 18.0 (23), ruins `#669999` 9.1 (63); olive
+`#666633`, the swamp's first idea, came to 3.8 against the enemy red under the deutan
+simulation, so the bog is teal-grey. The Peak: plain `#666666` 11.2 (47), road `#cccccc` 6.7
+(88), rough `#333333` 18.0 (23), ruins `#663300` 16.7 (32). A lava crack's glow is `#ffcc33`,
+19.6 against the red; the hot orange `e8601a` came to 1.2 under the deutan simulation at the
+red's own lightness, so no orange is used. Darker grounds score higher against every mark (the
+sweep's best were all under lightness 30), so the bright overworld's look, Ryan's of 20 September,
+is held against the Meadow's bar rather than maximized. Against the pure red on trial on
+`claude/jolly-lovelace-scn82y` (`#ff0000`) no pick moves by two points (the Waste's plain 7.6 and
+ruins 9.8, the Meadow's own forest 5.1 to 6.2). The Meadow's tileset is unchanged.
+

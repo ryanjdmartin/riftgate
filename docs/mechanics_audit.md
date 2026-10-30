@@ -350,38 +350,39 @@ the withdrawal that would have won is gone, and the escort the fight goes on aga
 with the tier (two more at tier two, four at tier three, 26 October). The precedence is the
 only answer left, and the order in `Battle._check_outcome` is a one-line change.
 
-### 27. Text: flyers hold nothing, and the rules never say so
+### 27. Fixed 29 October (the rules' packs pass under a flyer, which holds no ground). Text: flyers hold nothing, and the rules never say so
 A pack walks under a flyer (`can_block()` is false for a flyer, sim/unit.gd:217;
 sim/battlefield.gd:333) and is only refused a stop on one. "They walk round machines and other
 packs" (docs/rules.md:622) and "holding every pack takes three machines" (the bible) read as
 if every machine held ground; three flyers across a ford stop nothing. The rules line wants
 "grounded machines".
 
-### 28. Text: the gate's codex is wrong twice
+### 28. Fixed 29 October (the codex says what the engine does: a strike harder the bigger the pack, at least ten, every enemy turn, and nothing stands on it). Text: the gate's codex is wrong twice
 "A pack that reaches the apron strikes it for a third of its strength each phase, at least
 ten ... Machines may stand on it" (game/battle/battle_screen.gd:716). The strike is strength
 times 10 divided by 3, at least 10 (sim/battlefield.gd:466; a pack of 6 strikes 20, not 10),
 and no machine may stand on a structure (`can_stand`, sim/battlefield.gd:128). The text
 predates the stock pass's single digits.
 
-### 29. Text: the codex's map claims for the Thief and the Dire Wolf
+### 29. Fixed 28 October (Ryan: the Thief "is a boss so it doesn't need" a move, so no hero carries a map move or a hunt and the validator refuses one; the Dire Wolf's line moves 4 and its codex no longer compares). Text: the codex's map claims for the Thief and the Dire Wolf
 - The Thief "goes for the slowest machine you have": a hero only ever commands the boss unit,
   which never hunts and patrols a hex a turn whatever its move (sim/battlefield.gd:74, :373),
   so its `hunt`, `hunts` and `movespeed` are dead data, and in the fight it aims at the armed.
   (Its "when it is hurt it leaves" waits on Flee, still planned.)
-- The Dire Wolf is "faster than anything you own but the cars": it moves 30, and ten machines
-  that are no car move 40 or 50 (the Kite, the Buzzard, the Stingray, the Puffin, the
-  Cassowary, the Cottonmouth, the Lammergeier, the Skua, the Needletail, the Storm Petrel).
+- The Dire Wolf is "faster than anything you own but the cars": it moves 3, and ten machines
+  that are no car move 4 or 5 (the Kite, the Buzzard, the Stingray, the Puffin, the
+  Cassowary, the Cottonmouth, the Lammergeier, the Skua, the Needletail, the Storm Petrel);
+  since moves went to hexes (28 October) no ground makes the cars faster either.
 
 ### 30. Text, small ones
-- The boss "patrols its ring of the rift (ring 2; a final's back-rank hero ring 3)"
+- Fixed 29 October (the rules' line now keeps the patrol and the ring apart). The boss "patrols its ring of the rift (ring 2; a final's back-rank hero ring 3)"
   (docs/rules.md:637): the patrol is always within 2 (`BOSS_ZONE`, sim/battlefield.gd:280);
   3 is the back-rank hero's ring for joining fights. The line runs the two together.
-- A Rift Pressure spawn is named by its content id (sim/battlefield.gd:559: "wolf pack",
+- Fixed 29 October (the foe profile carries the shown name). A Rift Pressure spawn is named by its content id (sim/battlefield.gd:559: "wolf pack",
   "zombie_knight pack"), where the setup's packs take the content name ("dire wolf pack",
   sim/battle.gd:159).
 - The terrain tap names crags "mountain" (sim/battle_map.gd:12); the rules say crags.
-- The code and the validator take a fifth hunting caveat, "fastest"; the rules list four.
+- Fixed 29 October (the rules list it). The code and the validator take a fifth hunting caveat, "fastest"; the rules list four.
 
 ## The campaign and the saves
 
@@ -446,8 +447,8 @@ ended", docs/rules.md:686).
   the Summoner) draws a fresh pick and the fight runs apart from the unbroken one. The screen's
   die locks clear on a resume too.
 - The harness fields only a faction's first boss whatever boss is chosen (sim/harness_setup.gd
-  :191), latent until a domain has two; the map viewer's sample packs are made with a move of
-  2 and never move (sim/loadouts.gd:91).
+  :191), latent until a domain has two; the map viewer's sample packs were made with a move of
+  2 and never moved (the viewer deleted 28 October, Ryan: the battle screen shows all it did).
 - The profile's pool takes the eight basics every run starts with (sim/profile.gd:25), where the
   pool is "blueprint ids found in any run"; a finale won credits the capital's rolled domain
   with a boss beaten, and so a beaten domain in the codex (sim/campaign.gd:395); `absorb` has no

@@ -110,9 +110,11 @@ func _title() -> String:
 
 
 ## One entry per machine: its unit (for the gauges), what it can still do this turn (READY,
-## MOVED, ONE MORE, SPENT, CAUGHT) and which hunter is after it.
+## MOVED, ONE MORE, SPENT, CAUGHT) and which hunter is after it: the one whose tag it wears on
+## the map, its prey or the machine it takes when its prey is sealed off.
 func _rows() -> Array:
 	var out: Array = []
+	var shown: Dictionary = walks.call() if walks.is_valid() else {}
 	for m in battle.mechs():
 		var order := "READY"
 		var col := Palette.HUD
@@ -125,13 +127,16 @@ func _rows() -> Array:
 		elif battle.order_of(m) != null:
 			order = "> " + _short(battle.order_of(m).display_name)
 			col = Palette.HUD
-		elif battle.action_from.has(m.id):
+		elif battle.moved.has(m.id):
 			order = "MOVED"
 		elif battle.actions_left(m) < Battlefield.actions_for(m):
 			order = "ONE MORE"
 		var meets := ""
 		for p in battle.field.packs():
-			if p.behaviour == "hunt" and p.prey == m.id:
+			if p.behaviour != "hunt":
+				continue
+			var w: Battlefield.Walk = shown.get(p.id, null)
+			if (w.prey if w != null and w.prey != 0 else p.prey) == m.id:
 				meets = "HUNTED BY " + _short(p.display_name)
 				break
 		out.append({"unit": m, "name": m.display_name.to_upper(), "order": order, "meets": meets, "colour": col})

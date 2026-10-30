@@ -9,6 +9,8 @@ const DIR := "res://content/"
 
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
+const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
+const HUNTER_RING := 2              # a hunter's ring at least: it pounces (Ryan, 29 October)
 const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
@@ -263,6 +265,12 @@ func module_name(module_id: String) -> String:
 	return str(modules.get(module_id, {}).get("name", module_id))
 
 
+## A vocabulary term's shown name (the ground's word on the tap, a fight's label), its id when
+## the vocabulary has none.
+func term_name(id: String) -> String:
+	return str(vocabulary.get(id, {}).get("name", id))
+
+
 func component_name(cid: String) -> String:
 	return str(components.get(cid, {}).get("name", cid))
 
@@ -493,14 +501,18 @@ func codex_for_unit(u: Unit) -> Dictionary:
 
 
 ## What the map needs of a foe type (bible section 5): its pack's ring (the `zone` key), its
-## behaviour and caveat, and its move. Keyed by foe id, for Battlefield.foe_profiles; a
-## boss's entry serves the boss unit. Defaults are the engine's when the content says nothing.
+## behaviour and caveat, its move and its shown name. Keyed by foe id, for
+## Battlefield.foe_profiles; a boss's entry serves the boss unit. Defaults are the engine's when
+## the content says nothing.
 func pack_profiles() -> Dictionary:
 	var out: Dictionary = {}
 	for id in foes.keys():
 		var f: Dictionary = foes[id]
 		var p: Dictionary = {"zone": int(f.get("zone", 1)), "behaviour": str(f.get("behaviour", "push")), "hunts": str(f.get("hunts", "nearest"))}
 		p["movespeed"] = int(f.get("movespeed", Unit.PACK_MOVE))
+		p["name"] = str(f.get("name", id))
+		if bool(f.get("winged", false)):
+			p["winged"] = true   # its pack crosses water and crags as a flyer does (Battlefield.dress_pack)
 		out[id] = p
 	return out
 
@@ -788,42 +800,6 @@ func faction_of_foe(foe_id: String) -> String:
 # ---------------------------------------------------------------- validation
 
 ## Every rule the content must obey. Returns a list of human-readable problems; empty is clean.
-## A flag, never a refusal (Ryan, 2 October: a thematically slow wheeled APC is a valid
-## design): every pair of ground chassis of different ways of moving where one crosses at
-## least as many hexes a phase as the other on every ground and more on some, since that
-## is a move buying through the other way's identity. Two machines of one way a weight
-## class apart are not flagged: a heavier frame being slower is the point. Flyers are
-## exempt, since they pay by not blocking. `entries` defaults to the content's chassis; a
-## test passes its own.
-func movement_flags(entries: Array = []) -> Array[String]:
-	var list: Array = entries if not entries.is_empty() else chassis.values()
-	var grounds := [BattleMap.Terrain.PLAIN, BattleMap.Terrain.ROUGH, BattleMap.Terrain.RUINS, BattleMap.Terrain.WATER]
-	var rows: Array = []
-	for c in list:
-		var traits: Array = c.get("traits", [])
-		if traits.has("flyer"):
-			continue
-		var move := int(c.get("movespeed", Unit.MECH_MOVE))
-		var hexes: Array[int] = []
-		for g in grounds:
-			var cost := BattleMap.move_cost(g, traits)
-			hexes.append(1 if cost == BattleMap.SLOW else (0 if cost == BattleMap.WALL else move / cost))
-		rows.append([str(c.get("name", c.get("id", "?"))), hexes, BattleMap.way_of(traits)])
-	var out: Array[String] = []
-	for a in rows:
-		for b in rows:
-			if a == b or a[2] == b[2]:
-				continue
-			var all_ge := true
-			var some_gt := false
-			for i in range(grounds.size()):
-				all_ge = all_ge and int(a[1][i]) >= int(b[1][i])
-				some_gt = some_gt or int(a[1][i]) > int(b[1][i])
-			if all_ge and some_gt:
-				out.append("%s is at least as fast as %s on every ground (open/rough/ruins/water %s against %s)" % [a[0], b[0], str(a[1]), str(b[1])])
-	return out
-
-
 func validate() -> Array[String]:
 	var errs: Array[String] = []
 	errs.append_array(load_errors)
@@ -861,6 +837,16 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 		if e.get("category") == "keyword" and e.get("status") == "implemented":
 			if Face.keyword_from_name(id) < 0 and not Foe.ATTACK_KEYWORDS.has(id):
 				errs.append("vocabulary keyword '%s' is marked implemented but the engine has no such keyword" % id)
+	# The map's ground words (each terrain's, and a wall by its look: BattleMap.ground_ids) and
+	# the vocabulary's terrain agree in both directions, so a rename on either side fails the
+	# build until the other follows.
+	var grounds := BattleMap.ground_ids()
+	for g in grounds:
+		if not vocabulary.has(g) or vocabulary[g].get("category") != "terrain":
+			errs.append("the map's ground '%s' has no terrain entry in the vocabulary" % g)
+	for id in vocabulary.keys():
+		if vocabulary[id].get("category") == "terrain" and vocabulary[id].get("status") == "implemented" and not grounds.has(id):
+			errs.append("vocabulary terrain '%s' is no ground the map shows" % id)
 
 
 ## A charged form (the Swallowtail's locked pieces, 21 October): what a muster buys, its keys the
@@ -1582,8 +1568,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 				ways += 1
 		if ways != 1:
 			errs.append("%s: a chassis has exactly one way of moving (%s)" % [where, ", ".join(BattleMap.WAYS)])
-		if c.has("movespeed") and (int(c["movespeed"]) <= 0 or int(c["movespeed"]) % 5 != 0):
-			errs.append("%s: movespeed is in tens, a positive multiple of 5" % where)
+		if c.has("movespeed") and (int(c["movespeed"]) < 1 or int(c["movespeed"]) > MAX_MOVE):
+			errs.append("%s: movespeed is in hexes, 1 to %d" % [where, MAX_MOVE])
 		if c.has("size") and not SIZES.has(str(c["size"])):
 			errs.append("%s: size is one of %s" % [where, ", ".join(SIZES)])
 		if c.has("maker") and not makers.has(c["maker"]):
@@ -1754,8 +1740,20 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: hunts is nearest, weakest, strongest, slowest or fastest" % where)
 		if f.has("hunts") and str(f.get("behaviour", "push")) != "hunt":
 			errs.append("%s: hunts is a hunter's caveat; set behaviour to hunt" % where)
-		if f.has("movespeed") and (int(f["movespeed"]) <= 0 or int(f["movespeed"]) % 5 != 0):
-			errs.append("%s: movespeed is in tens, a positive multiple of 5" % where)
+		# A hunter pounces (Ryan, 29 October: "a minimum range of 2 instead of 1 (wolfs pounce,
+		# etc.)"; "If it's overbearing then we send the engage range back down").
+		if str(f.get("behaviour", "push")) == "hunt" and int(f.get("zone", 1)) < HUNTER_RING:
+			errs.append("%s: a hunter's ring is %d at least; it pounces" % [where, HUNTER_RING])
+		if f.has("movespeed") and (int(f["movespeed"]) < 1 or int(f["movespeed"]) > MAX_MOVE):
+			errs.append("%s: movespeed is in hexes, 1 to %d" % [where, MAX_MOVE])
+		# A hero only ever commands the boss unit, which patrols a hex a turn and never hunts
+		# (Ryan, 28 October, of the Thief's move: "it's a boss so it doesn't need it").
+		if bool(f.get("hero", false)):
+			for key in ["movespeed", "behaviour", "hunts"]:
+				if f.has(key):
+					errs.append("%s: a hero only commands the boss unit, which patrols a hex a turn; drop %s" % [where, key])
+		if f.has("winged") and not (f["winged"] is bool):
+			errs.append("%s: winged is true or false" % where)
 		for key in ["strikes", "breach"]:
 			if f.has(key):
 				errs.append("%s: '%s' belongs on an attack action, not the foe" % [where, key])
@@ -1833,6 +1831,10 @@ func _validate_factions(errs: Array[String]) -> void:
 		for old in ["pattern", "elite", "injury"]:
 			if f.has(old):
 				errs.append("%s: '%s' is gone; use spawn and boss" % [where, old])
+		# A domain never sets or leans the map's shape (Ryan, 30 October: "That's just less
+		# variety and more subtle balance to tweak"): a battle draws its shape by its seed.
+		if f.has("map_kind"):
+			errs.append("%s: map_kind is gone; a domain names no map shape, a battle's seed draws it" % where)
 		# The spawn lists by tier (28 October): keyed "1" to "3", every domain a "1".
 		var lists = f.get("spawn", {})
 		var spawn: Array = []

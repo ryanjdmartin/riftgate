@@ -11,7 +11,7 @@
    "stats": {
     "hull": 8,
     "armour": 1,
-    "move": -10
+    "move": -1
    },
    "text": null,
    "design": {
@@ -57,7 +57,7 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "move": -10,
+    "move": -1,
     "heat": -4
    },
    "text": {
@@ -134,7 +134,7 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "move": 20,
+    "move": 2,
     "shield": 12
    },
    "text": {

@@ -18,8 +18,15 @@ const FLAT_AT := 0.42           # columns are fully collapsed by this much bleed
 const MAX_SOURCES := 32         # the shader's array size
 
 
+## RIFTGATE_BLEED_DEBUG=1 (any run) gives the whole field to the painted world, to judge a
+## domain's tileset in place (DomainGround).
+static var everywhere := OS.get_environment("RIFTGATE_BLEED_DEBUG") == "1"
+
+
 ## Where the rift's gradient is total and where it is gone, as map-pixel y (no scroll).
 static func gradient(field: Battlefield, origin: Vector2, hex_px: float) -> Vector2:
+	if everywhere:
+		return Vector2(1.0e7, 1.0e7 + 1.0)   # total down past the city
 	var y_full := origin.y + Hex.to_pixel(field.map.rift, hex_px).y
 	return Vector2(y_full, y_full + GRADIENT_ROWS * 1.5 * hex_px)
 
