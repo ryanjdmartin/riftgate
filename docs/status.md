@@ -38,7 +38,7 @@ first round, the Hold The Line pair, merged on the 27th), main merged into it on
 go on the pairs (every track a map half and a battle half, the bible's pair row), every new half
 sketched on its shipped recipe's groove call and published on the pair page; then his notes of
 29 and 30 October on Hold The Line's two halves and Night Shift's battle half, sketched as further
-rounds on the same page (Hold The Line's sixth, Night Shift's fourth), and the pairs in the game
+rounds on the same page (Hold The Line's seventh, Night Shift's fifth), and the pairs in the game
 once he has heard them.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
@@ -304,16 +304,19 @@ The tasks are the to-do's; this is the index of what waits.
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The
-  Line on its sixth round (30 October: J gone, V and Q kept, K's first fourteen bars on the
-  drums in between with the lead guitar added to the walk and its long crash choked, heard with
-  and without its tempo drop, the first lift on the crunch synth and the synth lead over the
-  backing chug 6 dB down and the second the same or with the lead guitar, M as it ships with the
-  crunch synth, his map picks: X on the violins, U on the clean guitar, the drone moved to R, W low with a
-  roll) and Night Shift on its fourth (the map's intro without its front; the battle half a whole
-  jam in turns of two bars, 30 October: the guitar and the bass walking one line on his rhythms
-  with the arpeggio or the FM hook, never both, holding the groove 6 dB down under the two
-  together, the octave-up saved for R and louder, no drone, Hold The Line's drum energy); all
-  waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
+  Line on its seventh round (30 October: its battle half picked, J gone, V and Q kept, K's first
+  fourteen bars at their slower tempo on the drums in between with the lead guitar added to the
+  walk and its long crash choked to a second and a half, the first lift on the crunch synth and
+  the synth lead and the second on the crunch synth and the lead guitar over the backing chug
+  6 dB down, M as it ships with the crunch synth; his map picks, X on the violins, U on the clean
+  guitar, the drone moved to R, W low with a roll; the map half given a voice for each of the
+  battle's new parts, the ticking under the lifts, their riff on the clean guitar and the harp,
+  K's walk on the clean guitar) and Night Shift on its fifth (the map's intro without its front;
+  the battle half a whole jam in turns of two bars, 30 October: the guitar and the bass walking
+  one line on his rhythms with the arpeggio or the FM hook, never both, holding three-three-two
+  6 dB down under the two together, the intro on the root, the octave-up saved for R and louder,
+  the arpeggio on other voices so the hook comes through, no drone, Hold The Line's drum
+  energy); all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
   the track, the 3 s flip) and each picked half into the forge's SHIP table.
 
 ## Next, in order
@@ -364,12 +367,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.392 (the
-  page's version 404, published 30 October from `ccr-7effd31a-u5z4gw`: Night Shift's
-  round-four calls in the track table, three-way merged onto the live v0.391 that
-  `claude/charming-rubin-h954bp` published at 403 with the Armadillo's radiators flush in its
-  flanks, itself on this branch's v0.390 at 402, Hold The Line's round-six picks merged onto
-  `claude/jolly-lovelace-scn82y`'s v0.389 with the HUD's three presets kept). So this file
+  `docs/design-bible.html` after every change. This file and the live page are v0.398 (the
+  page's version 410, published 30 October from `ccr-7effd31a-u5z4gw`: Hold The Line's
+  round-seven picks and Night Shift's round-five calls in the track table, three-way merged onto
+  the live v0.397 that `claude/charming-rubin-h954bp` published with the Armadillo's vents
+  opening and shutting a pair at a time, over `claude/jolly-lovelace-scn82y`'s v0.395 with each
+  domain's fight backdrop kept beside its map tileset and the HUD's presets row, on this branch's
+  v0.392 at 404). So this file
   carries rows ahead of this branch's code: main's since this branch last merged it (the
   horde's movement, the domains' tilesets, the pricing pass, Chain's form, the heat triangle),
   `claude/brave-cori-fr18de`'s (the pacing session: the whole wall struck, the stall priced, the
@@ -415,6 +419,6 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  sixth, `hold_sketches.py`; Night Shift's fourth, `night_sketches.py`), at the page's version 12.
+  seventh, `hold_sketches.py`; Night Shift's fifth, `night_sketches.py`), at the page's version 13.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).

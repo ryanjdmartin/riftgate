@@ -1,34 +1,29 @@
-"""Night Shift's fourth round as a pair (Ryan, 30 October, on the third): the battle half as a whole jam.
+"""Night Shift's fifth round as a pair (Ryan, 30 October, on the fourth): the hook heard over the arpeggio, the intro on three-three-two.
 
-  "The jam with every 2 bars is good. The only one out of place is the long held pull-back in spot
-  3 (and again later), that one is too jarringly slow. Less busy bars are ok, but not that one."
-  "I would save the octave-up for a later spot in the track, and I would bump up the upper volume
-  so it sounds like a true unison." "When the hook and the arpeggio are running together, the walk
-  needs to calm down back to holding the rhythm and chords like your first take, and go down in
-  volume. When we're walking, the arpeggios or the hook are great, but not both. We need to mix
-  and match as we go along, this is now turning into our grooviest track. Jam session, everybody
-  gets a turn, we keep it moving, we try different additions at different points."
+  "I meant the 3-3-2, yes" (the hold under the hook and the arpeggio). "The hook is hard to hear
+  over the arpeggios. Maybe instead of lead an octave up, another voice? Synth lead or FM synth,
+  or something else?" "I like the round 4 outro version choice more." "Intro I shouldn't walk, and
+  be more gentle with the choice rhythm changes, not straying too far from 3-3-2 - its setting the
+  tone."
 
-So the battle half runs in turns of two bars. In a walking turn the guitar and the driven bass play
-one line in unison on one of six rhythms (his four, three-three-two and the gallop), a figure
-walking each bar's chord along E minor, with the arpeggio or the FM hook over it, never both; the
-held pull-back is gone. Where both run, the guitar and the bass hold the groove 6 dB down: the
-guitar on three-three-two on each chord's root and the bass on its line in that rhythm (the second
-round's groove, the third round's first row), or round one's eighths on the roots, a set beside it.
-The turns: the intro on the root, then the walk with the arpeggio; the groove's head on the hook
-and the arpeggio over the hold, then the walk with the hook; the breakdown; the lead guitar's long
-notes over the walk alone, then the arpeggio joining; the riff in D; the groove again with the
-guitar an octave over the bass, raised to meet it, and the hook; the outro's head over the hold,
-which runs into the intro's groove at the top.
+The arpeggio played on the synth lead, sustained saws two octaves up in sixteenths, and the hook's
+FM double an octave under the chime, whose voice is cut below 320 Hz, so on a phone what is left of
+the hook sits where the arpeggio's saws are. So the arpeggio tries other voices at its own level on
+a phone's speaker (the FM synth with the hook on the synth lead, a plucked string, the tine piano),
+the hook as it was beside them; the full pair takes the plucked string. The intro stays on the root: three-three-two, the arpeggio from its
+fifth bar, the gallop (Ryan, 30 October: "pretty much the same") in its last two bars as the one
+change into the groove.
 
-Kept from the third round: the map half (the intro without its front), no crash at the top and no
-drone, the drums (Night Shift's four on the floor under Hold The Line's density, the map's industry
-over the kit), the breakdown's held roots and ringing chords, the riff in D on the driven bass and
-the crunch synth (the guitar on three-three-two under it), the piano off the beat, the chime's
-hook, the lead's long notes on the lead guitar, the choir.
+Kept from the fourth round: the battle half as a jam in turns of two bars, the walk with the
+arpeggio or the hook and never both, the hold under the two together on three-three-two 6 dB down,
+the guitar an octave over the bass in R, the outro's hold into the top; the map half (the intro
+without its front), no crash at the top and no drone, the drums (Night Shift's four on the floor
+under Hold The Line's density, the map's industry over the kit), the breakdown's held roots and
+ringing chords, the riff in D, the piano off the beat, the chime's hook, the lead's long notes on
+the lead guitar, the choir.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night4.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py h        # the named sets only (h u, and full for the pair and the seam)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night5.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py v        # the named sets only (i v u, and full for the pair)
 """
 import json
 import os
@@ -136,7 +131,7 @@ RHYTHMS = {
 # chord's root, "b" the blues note (E minor's flat fifth, for E's bars alone).
 FIGURES = {
     "332": {"home": [0, 0, 0, 0, 0, 0], "lift": [0, 0, 7, 0, 4, "A"], "climb": [0, 2, 3, 4, 6, 7]},
-    "gallop": {"drive": [0, 0, 0, 7, 0, 0, 0, "A"], "octs": [0, 7, 7, 0, 0, 7, 7, "V"], "walk": [0, 0, 2, 3, 4, 4, 6, "A"]},
+    "gallop": {"home": [0, 0, 0, 0, 0, 0, 0, 0], "drive": [0, 0, 0, 7, 0, 0, 0, "A"], "octs": [0, 7, 7, 0, 0, 7, 7, "V"], "walk": [0, 0, 2, 3, 4, 4, 6, "A"]},
     "pairs": {"pops": [0, 7, 0, 7, 0, 7, 0, 7, 4, "A"], "stairs": [0, 0, 2, 2, 3, 3, 4, 4, 6, "A"], "fall": [7, 7, 6, 6, 4, 4, 2, 2, 0, "V"]},
     "offbeats": {"run": [0, 0, 2, 3, 4, 6, 7, 4, "A"], "zigzag": [0, 7, 0, 6, 0, 4, 0, 2, "A"], "blues": [0, 0, 2, 3, "b", 4, 6, 7, "A"]},
     "bursts": {"turn": [0, 1, 0, 4, 6, 7, 6, 4, "A"], "chug": [0, 0, 0, 7, 0, 7, 0, 0, "A"], "rise": [0, 2, 4, 7, 4, 2, 0, 2, "A"]},
@@ -146,11 +141,12 @@ FIGURES = {
 # The battle half in turns of two bars (Ryan, 30 October: "Jam session, everybody gets a turn, we
 # keep it moving, we try different additions at different points"): what the guitar and the bass
 # play, a rhythm and its figure (the walk) or the hold, and the synth lines over it, the walk with
-# the arpeggio or the hook, never both. The chords run Em C D Bm Em A G D through A, C and R, E
+# the arpeggio or the hook, never both; the intro sets the tone on three-three-two and never walks
+# (Ryan, 30 October: "not straying too far from 3-3-2 - its setting the tone"). The chords run Em C D Bm Em A G D through A, C and R, E
 # minor through the intro, Em Em D G through D and Em C Bm Em through the outro; the breakdown (B)
 # keeps its own voices, and the bass plays the riff in D over the guitar's groove.
 TURNS = {
-    "I": [("332.home", ""), ("332.home", ""), ("offbeats.blues", "arp"), ("threes.climb", "arp")],
+    "I": [("332.home", ""), ("332.home", ""), ("332.home", "arp"), ("gallop.home", "arp")],   # on the root: "Intro I shouldn't walk"
     "A": [("hold", "both")] * 4 + [("offbeats.run", "hook"), ("gallop.drive", "hook"), ("bursts.rise", "hook"), ("threes.octs", "hook")],
     "C": [("332.lift", ""), ("pairs.pops", ""), ("gallop.walk", ""), ("threes.climb", ""),   # under the lead guitar's long notes
           ("offbeats.zigzag", "arp"), ("bursts.chug", "arp"), ("pairs.stairs", "arp"), ("threes.steps", "arp")],
@@ -164,6 +160,24 @@ UP = "R"   # the later spot where the guitar plays an octave over the bass ("sav
 # sitting on its octave.
 UP_GAIN = 0.9
 ARP = "0123432101234321"   # up and down two octaves of the chord in sixteenths
+
+# The synth lines' voices (Ryan, 30 October: "The hook is hard to hear over the arpeggios. Maybe
+# instead of lead an octave up, another voice?"): the arpeggio two octaves up and the hook an octave
+# under the chime, each new voice at the phone level of the line's fourth-round voice.
+ARP_VOICES = {
+    "lead": {"inst": "lead", "gain": 0.16},      # the synth lead, the fourth round's
+    "fm": {"inst": "synlead", "gain": 0.14},     # the FM synth
+    "pluck": {"inst": "pluck", "gain": 0.64},    # a plucked string
+    "tine": {"inst": "epiano", "gain": 0.25},    # the tine piano
+}
+HOOK_VOICES = {
+    "fm": {"inst": "synlead", "gain": 0.28},     # the FM synth, the fourth round's
+    "lead": {"inst": "lead", "gain": 0.25},      # the synth lead
+}
+# The arpeggio on the plucked string: of the voices tried, the one that leaves the most of the hook
+# 3 dB clear of it bin by bin on a phone's speaker (97%, against the synth lead's 93%, the tine
+# piano's 91% and the two lines swapped 83%), a pluck that falls away between its notes.
+ARP_VOICE, HOOK_VOICE = "pluck", "fm"
 
 SCALE = (0, 2, 3, 5, 7, 8, 10)   # E natural minor, the track's key
 GHOST = 0.7   # a group's sixteenths after its first, 3 dB under it
@@ -251,9 +265,10 @@ def turn_parts(call, turns, hold="332"):
     return out
 
 
-def battle_half(call, turns=None, hold="332", up_gain=UP_GAIN):
+def battle_half(call, turns=None, hold="332", up_gain=UP_GAIN, arp=ARP_VOICE, hook=HOOK_VOICE):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
-    under the hook and the arpeggio together; `up_gain` the guitar's level an octave over the bass."""
+    under the hook and the arpeggio together; `up_gain` the guitar's level an octave over the bass;
+    `arp` and `hook` the synth lines' voices."""
     p = lambda *a, **k: P.part(call, *a, **k)   # noqa: E731
     riff = p("bass", "D", gain=0.34)
     voices = []
@@ -293,8 +308,8 @@ def battle_half(call, turns=None, hold="332", up_gain=UP_GAIN):
         {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 16, "pat": {"B": "x..............."}},
         # The synth lines by turns: the arpeggio, up and down two octaves of each chord in
         # sixteenths on the lead's voice, and the chime's hook an octave under it on the FM synth.
-        {"inst": "lead", "mode": "chord", "octave": 2, "gain": 0.16, "dur": 1.4, "pat": parts["arp"]},
-        {"inst": "synlead", "mode": "chord", "octave": 1, "gain": 0.28, "dur": 3.0, "pat": parts["hook"]},
+        dict(ARP_VOICES[arp], mode="chord", octave=2, dur=1.4, pat=parts["arp"]),
+        dict(HOOK_VOICES[hook], mode="chord", octave=1, dur=3.0, pat=parts["hook"]),
     ]
     drums = {
         "kick": {"I": "x...x...x...x..." * 7 + "x...x...x.......", "A": GROOVE_KICK, "C": LEAD_KICK, "R": GROOVE_KICK,
@@ -367,21 +382,29 @@ def map_half():
     return F.groove(**map_intro(P.recipe_call(F.music_night_shift)))
 
 
+INTRO_PLAIN = dict(TURNS, I=[("332.home", ""), ("332.home", ""), ("332.home", "arp"), ("332.home", "arp")])
+
 SETS = [
-    {"id": "h", "half": "battle", "title": "The battle's hold under the hook and the arpeggio", "form": "A" * 8,
-     "note": "The groove's head, its eight chords with the hook, the arpeggio and the drums; the guitar and the bass hold the groove 6 dB under the walk.",
-     "rows": [("h0", "Three-three-two on the roots", "The guitar on each chord's root and the bass on its line in that rhythm: the second round's groove, the third round's first row (the full pair's).", {}),
-              ("h1", "Eighths on the roots", "Round one's: the guitar and the bass in straight eighths on each chord's root.", {"hold": "eighths"})]},
+    {"id": "i", "half": "battle", "title": "The battle's intro into the groove", "form": "I" * 8 + "A" * 4,
+     "note": "The intro's eight bars on the root, the arpeggio from the fifth, into the groove's head with the hook.",
+     "rows": [("i0", "Three-three-two all through", "The intro on the root in three-three-two, no change.", {"turns": INTRO_PLAIN}),
+              ("i1", "The gallop in the last two bars", "Three-three-two, then the gallop on the root into the groove: the one change (the full pair's).", {})]},
+    {"id": "v", "half": "battle", "title": "The battle's hook over the arpeggio", "form": "A" * 8,
+     "note": "The groove's head, the hook and the arpeggio together over the hold. Each new voice sits at the old one's level on a phone's speaker.",
+     "rows": [("v0", "As the fourth round had it", "The arpeggio on the synth lead, the hook on the FM synth.", {"arp": "lead", "hook": "fm"}),
+              ("v1", "The two swapped", "The hook on the synth lead, the arpeggio on the FM synth.", {"arp": "fm", "hook": "lead"}),
+              ("v2", "The arpeggio on a plucked string", "The hook on the FM synth (the full pair's).", {"arp": "pluck", "hook": "fm"}),
+              ("v3", "The arpeggio on the tine piano", "The hook on the FM synth.", {"arp": "tine", "hook": "fm"})]},
     {"id": "u", "half": "battle", "title": "The battle's walk with the guitar an octave up", "form": "R" * 8,
      "note": "The groove again, the walk with the hook, the guitar an octave over the driven bass. In the third round the two already measured within a dB of each other on a phone's speaker (the bass's overtones sit on the guitar's octave), so the guitar goes up in steps for the ear.",
      "rows": [("u0", "At the third round's level", "The guitar an octave up as you heard it in the third round.", {"up_gain": 0.45}),
               ("u1", "3 dB up", "The guitar an octave up 3 dB over the third round's.", {"up_gain": 0.45 * 2.0 ** 0.5}),
               ("u2", "6 dB up", "The guitar an octave up 6 dB over the third round's (the full pair's).", {})]},
 ]
-PAIR = {"id": "night_shift_r4", "title": "Night Shift, round four"}
+PAIR = {"id": "night_shift_r5", "title": "Night Shift, round five"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 TURNS_SAID = {   # each section's turns in the battle half, on the page beside the map half's
-    "I": "three-three-two on the root, then the walk with the arpeggio from the fifth bar",
+    "I": "three-three-two on the root, the arpeggio from the fifth bar, the gallop in the last two",
     "A": "the hook and the arpeggio over the hold, then the walk with the hook from the ninth bar",
     "B": "the breakdown: held roots and ringing chords under the choir",
     "C": "the lead guitar's long notes over the walk, the arpeggio joining at the ninth bar",
@@ -393,7 +416,7 @@ TURNS_SAID = {   # each section's turns in the battle half, on the page beside t
 
 def render_row(job):
     si, ri = job
-    F.seed("night4_" + SETS[si]["id"])
+    F.seed("night5_" + SETS[si]["id"])
     return si, ri, battle(SETS[si]["form"], mastered=False, **SETS[si]["rows"][ri][3])
 
 
@@ -408,12 +431,6 @@ def render_full(which):
     return which
 
 
-def seam(x):
-    """The loop's seam as the game plays it: the outro's last four bars, then the top on into the groove's fifth bar."""
-    at = P.bar_times(NAME)
-    return np.concatenate([x[int(round(at[68] * F.SR)):], x[:int(round(at[12] * F.SR))]])
-
-
 def main(argv):
     wanted = argv or [s["id"] for s in SETS] + ["full"]
     os.makedirs(P.OUT, exist_ok=True)
@@ -423,7 +440,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night4.json")
+    path = os.path.join(P.OUT, "night5.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -435,11 +452,12 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night4_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night5_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
     manifest["sets"].sort(key=lambda e: [s["id"] for s in SETS].index(e["id"]))
+    manifest["seams"] = []
     if "full" in wanted:
         m, b = (P.read_wav(os.path.join(P.OUT, "%s_%s.wav" % (PAIR["id"], w))) for w in ("map", "battle"))
         if len(m) != len(b):
@@ -452,16 +470,6 @@ def main(argv):
                                "sections": [{"section": s, "bars": [b0, b1], "at": round(at, 2),
                                              "what": "%s; the battle: %s" % (INTRO if s == "I" else what, TURNS_SAID[s])} for s, b0, b1, at, what in runs],
                                "levels": levels}]
-        # The battle half's seam beside the third round's; the map half is the second round's own.
-        was = P.read_wav(os.path.join(P.OUT, "night_shift_r3_battle.wav"))
-        rows = []
-        for rid, title, note, src in (("r3", "Round three", "The outro pulling back into the intro's three-three-two on the root.", was),
-                                      ("r4", "Round four", "The outro's hook and arpeggio over the hold, into the intro's three-three-two on the root.", b)):
-            cut = seam(src)
-            rows.append({"id": "battle_" + rid, "title": title, "note": note, "seconds": round(len(cut) / F.SR, 2),
-                         "file": os.path.basename(P.write("night4_seam_battle_" + rid, cut))})
-        manifest["seams"] = [{"id": "nb", "half": "battle", "title": "The battle half's loop: the outro into the top",
-                              "note": "The outro's last four bars, then the top into the groove's fifth bar, as the game loops it.", "rows": rows}]
         print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
     with open(path, "w") as f:
         json.dump(manifest, f, indent=1)
