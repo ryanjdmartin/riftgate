@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 755 tests, 203,943 checks, green (30 October, the domains' tilesets; 751 and 203,868 on
-  the hunters at a ring of two), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 759 tests, 204,504 checks, green (30 October, a tone a ground on the tilesets'
+  second build; 755 and 203,943 on the first), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -162,18 +162,25 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   were. Ryan asked whether a hunter joins a fight it did not start: it does, as every pack does,
   on Claude's lean until he says otherwise (the bible's fights-picked row). Next: his read of
   the pounce in play (the to-do), the exit bringing the ring back down.
-- Each domain paints its own tileset (Ryan, 29 October; built 30 October, `game/ui/domain_ground.gd`
-  by the factions' `bleed`): the Waste's dunes, caravan track, cacti in rows and red-rock ruins,
-  the Marsh's teal bog, boardwalks, dead trees and graveyard, the Peak's ash plain, flagstones,
-  glowing crust and charred ruins; the Meadow's overworld as it was, and water and the walls
-  alike in all four. Every colour sits on the map compositor's posterize grid and was picked by
-  the colourblind simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
-  field and `tools/tileset_shot.gd` draws all four; next, Ryan's read of them running (the
-  to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its own
-  palette table (`BattleBackdrop.PALETTES`, the same bleed keys); when it lands, the two tables
-  want one home, and that branch's rewrite of `game/ui/terrain_art.gd` and
-  `game/battle/painted_map.gd` meets this one's (the painted map now draws through
-  `DomainGround.draw_hex`).
+- Each domain paints its own tileset (Ryan, 29 October), built twice on 30 October
+  (`game/ui/domain_ground.gd`, by the factions' `bleed`). Ryan turned the first down (the
+  marks were rectangles, water and the walls were alike everywhere, and each ground had its own
+  fill: "walls and water certainly should change with tileset", the grounds "not wildly
+  different"; the Peak not volcanic, the Marsh not an undead marsh). The second dresses every
+  hex in outlined pixel sprites (ASCII art inked per domain, two pixels a design pixel; "Overall
+  the art is a huge improvement"), each ground its own tone a step from its domain's on the
+  posterize grid (his second read: one ground for all was "very monotone"). Each domain also
+  has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava)
+  and its own walls (snowy peaks, red buttes, black crags, volcanoes). A road follows the roads
+  beside it, three road hexes round a corner making a loop with a gap in the middle (his ask).
+  Every colour is on the posterize grid and scored against its ground by the colourblind
+  simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
+  field and `tools/tileset_shot.gd` draws all four. Next, Ryan's read of them running (the
+  to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its
+  own palette table (`BattleBackdrop.PALETTES`, the same bleed keys). When it lands, the two
+  tables want one home, and its rewrite of `game/ui/terrain_art.gd` and
+  `game/battle/painted_map.gd` meets this one's (the painted map draws through
+  `DomainGround.draw_hex` and passes each road hex its links).
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -379,15 +386,18 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.372 (the page's version 384,
-  published 30 October from `ccr-7821127e-kwj874`: each domain's tileset built, three-way merged
-  onto the live v0.371 that `claude/jolly-lovelace-scn82y` published, which carries
-  `claude/charming-rubin-h954bp`'s v0.370 too: the colour rows' pure red on trial and the rule
-  that a colour is scored against the ground it is drawn on, and the FXAA of the map's own; on
-  v0.365 at 377, Ryan's calls that a domain names no map shape, height is a look alone and a
+  `docs/design-bible.html` after every change. This file is v0.376 (the page's version 388,
+  published 30 October from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
+  tilesets' second build, three-way merged onto the live v0.374 that `claude/charming-rubin-h954bp` published with its flush radiators,
+  which carries `claude/jolly-lovelace-scn82y`'s v0.373, the map's lines one width at every zoom;
+  on v0.372 at 384, the first build onto that branch's v0.371, the colour rows' pure red on
+  trial and the rule that a colour is scored against the ground it is drawn on, and the FXAA of
+  the map's own; on v0.365 at 377, Ryan's calls that a domain names no map shape, height is a
+  look alone and a
   skirmish never reads our own ground). So this file carries
   those branches' rows ahead of their code (the models' glows, looks and acts, the Armadillo's
-  seal on screen, the skirmish's field, the reds, the tracks in pairs, the map's FXAA) and the Strikes row in
+  seal on screen, the skirmish's field, the reds, the tracks in pairs, the map's FXAA and its
+  lines at every zoom) and the Strikes row in
   the keyword table, and the tables script,
   which writes the tables from main's content, waits until they land or it reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.
