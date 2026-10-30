@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's ninth notes, 29 October.",
-   "note": "Ryan, 29 October, the ninth notes: \"now that I can actually see the glow, its way too yellow.\" Every vent glows orange now, #ff7800 at the vent act's height and a deeper orange on the way up, red and green alone under the bible's colour rule, below the #ff8200 past which an orange reads to Ryan as yellow (the golden 255, 204, 51 before it; the ember's red-orange 255, 123, 41 before that read too red); the panel's 3D view shows it as the phone does, and so does the desk game, which draws with the phone's renderer since the same day (the fifth, venting from the skirmish's angle, and the sixth, from the front; the first to fourth at rest and sealed). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's notes, 30 October.",
+   "note": "Ryan, 30 October: \"Can we bring the rear radiators up on that back face, and extrude them out more?\" The two radiators stand 5 further out from the back panel (their faces' top edges 6 behind it, their feet 14) and 4 higher, their tops near the deck's height, at the same spacing: tilted back, each box's top wall runs down into the panel under the chamfer at its outer corner, which is what caps how high they can sit there. From straight behind, a box further out also reads lower, so the climb shows most from the side (the third) and the boxes read chunkier from behind (the second; venting, the fifth and sixth; sealed, the fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the eighth notes of 29 October (the glow golden, the radiators already where they are)",
+    "summary": "Before: the ninth notes of 29 October (the radiators close on the back panel, lower)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",

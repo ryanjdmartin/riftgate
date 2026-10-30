@@ -188,12 +188,12 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
   stock that day (the Kite's wingtip drivers, the Stingray's dome lance, the Dingo's nose ports
   and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
-  the stock pass had left on old kit), and reworked on his nine rounds of notes of 29 October
+  the stock pass had left on old kit), and reworked on his notes of 29 and 30 October
   (the Kite's drivers as ramjet-guns, their teeth running aft as strakes; the Dingo's rear
   mount on a roof gimbal, its coil threaded and its second antenna gone; the Armadillo's bores
   bored and dark, its weapons sliding along their lines, its seal hiding the irises and
-  hunkering, its stack two big louvred radiators in dark steel low on the tail's back
-  panel, tilted up, and a vent on each flank that slides out, glowing orange as the shell
+  hunkering, its stack two big louvred radiators in dark steel standing well out of the
+  tail's back panel, high on it, tilted up, and a vent on each flank that slides out, glowing orange as the shell
   sinks once to vent them open and shut, and dark sealed; every Arsenal cockpit's glass
   lit, the Nemesis's visor flaring white-hot in its fierce acts), to judge running (the to-do). A model may hold a form while its
   machine carries the status of the same name, the form carrying the whole machine and acts of

@@ -1002,9 +1002,10 @@ def armadillo(b):
     # deck in "a darker colour", then "Go back to the previous iteration. Ditch the bottom long
     # vent. Put these guys right on the back panel, still tilted up, and make them bigger";
     # then "move them down and farther apart", and back "a little towards each other, and a
-    # little up"): two big armoured boxes in dark steel standing
-    # out of the low half of the tail's back panel, wide apart, their louvred faces tilted up
-    # as the bevel had held them, each a dark steel box with a stripe rim and its heat banked
+    # little up"; then, 30 October, "bring the rear radiators up on that back face, and extrude
+    # them out more"): two big armoured boxes in dark steel standing well out of the tail's
+    # back panel, apart, their louvred faces tilted up as the bevel had held them, each a dark
+    # steel box with a stripe rim and its heat banked
     # in its floor (amber.heat, "way more yellow/orange" than the ember it had), heavy louvres
     # across it on joints. At rest the louvres stand tilted, a grille that hides the heat from
     # the cameras behind (their thickness closes the slots); the vent act throws them edge on
@@ -1012,13 +1013,14 @@ def armadillo(b):
     # down), the heat flaring behind, so it reads as motion and not by its colour alone;
     # sealed, they shut flat with the ports.
     RAD = math.degrees(math.atan2(11.0, 7.5))   # the boxes' faces tilted as the bevel stood (11 up in 7.5 back), about 56 degrees
-    # Each box's face its top edge a hair behind the panel and its outer top corner under the
-    # panel's chamfer, so the box stands out of the panel alone; its walls run nine back into
-    # the band (twelve, so low, ran out under its belly), the hollow cut through the panel
-    # where the face's top lies over it.
-    RAD_X, RAD_MOUTH = 12.0, (-54.66, Z0 + 10.33)
-    vents = [_vent(b, [band_obs[0]], (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
-                   wall=1.5, housing="steel.dark", back=9.0) for s in (-1.0, 1.0)]   # heavy walls round the louvres
+    # Each box's face stands six behind the panel at its top edge, near the deck's height, and
+    # fourteen at its foot; tilted back, its top wall runs down into the panel under the
+    # chamfer at its outer corner, so the box stands out of the panel alone, and its walls run
+    # seventeen and a half back, its foot and its back planted in the band above the belly.
+    # The face clear of the panel, nothing of the band needs cutting.
+    RAD_X, RAD_MOUTH = 12.0, (-59.66, Z0 + 14.33)
+    vents = [_vent(b, None, (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
+                   wall=1.5, housing="steel.dark", back=17.5) for s in (-1.0, 1.0)]   # heavy walls round the louvres
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in
     # front of the back weapons. Those are small rectangular protrusions when sealed, and
     # either slide out, or lever up using the forward edge as a pivot, to show the vent face
