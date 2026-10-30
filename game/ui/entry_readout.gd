@@ -10,7 +10,7 @@ extends Control
 ## last"), then its tags. A number the live sources have moved off the component's own is
 ## coloured rather than its sources listed (Ryan, 26 October: listing them "reads to me like
 ## we're expecting the player to do math"; "just change the font colour and add the arrow"):
-## green where the change is good for its unit, the enemy red where it is bad (more heat, a
+## green where the change is good for its unit, the red-red (LOSS) where it is bad (more heat, a
 ## smaller blow), relative to the unit and never to the player ("Positive and negative are
 ## always relative to the unit"), its arrow attached to the number that moved, so a split
 ## weapon's smaller blow and its extra strike each say so ("Skua should have down on the damage
@@ -366,12 +366,12 @@ static func _trend(p: Dictionary, now: int, own: int, less_is_gain: bool = false
 	p["gain"] = (now < own) if less_is_gain else (now > own)
 
 
-## The ink of a moved number: green for its unit's gain, the enemy red for its loss (Ryan, 26
+## The ink of a moved number: green for its unit's gain, the red-red for its loss (Ryan, 26
 ## October: "If that means using green, this is the place for it"); unmoved, the text's own.
 static func trend_ink(p: Dictionary, plain: Color = Palette.INK) -> Color:
 	if int(p.get("trend", 0)) == 0:
 		return plain
-	return Palette.GAIN if bool(p.get("gain", false)) else Palette.ENEMY
+	return Palette.GAIN if bool(p.get("gain", false)) else Palette.LOSS
 
 
 ## Fill the readout from `list` (lines_for) at `width`, its height the text's. Each line's parts

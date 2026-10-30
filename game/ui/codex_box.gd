@@ -24,6 +24,7 @@ extends Control
 const WIDTH := 640.0
 const TOP := 150.0
 const BOTTOM := 40.0        # air under the panel at the screen's foot
+var bottom := BOTTOM        # a host keeping a row clear under the panel raises it (the skirmish's KEYWORDS)
 const MARGIN := 24.0        # the panel's content margin
 const SCROLLBAR := 10.0     # the plate's scroll bar, beside its rows
 const TEXT := WIDTH - MARGIN * 2.0 - SCROLLBAR - 6.0   # a line's width in the plate
@@ -47,7 +48,8 @@ var _ring: CylinderView        # a die that steps (the Cassowary's): its order a
 var _flavour: Label
 
 
-## The colour a passive's row takes from its source: the chassis's own in the accent, anything
+## The colour a passive's row takes from its source: the chassis's own in heat's colour, the
+## accent it has always worn, anything
 ## granted (a component's, a module's, a reward's) in ink, its source named beside it. Never the
 ## HUD colour, which is decoration (Ryan, 26 October: "Actual gameplay text should be in a
 ## sensible colour").
@@ -55,7 +57,7 @@ static func passive_colour(kind: String) -> Color:
 	match kind:
 		"component", "module", "reward":
 			return Palette.INK
-	return Palette.ACCENT
+	return Palette.HEAT
 
 
 ## A wrapping label needs a width before its first layout pass, or it reports the height
@@ -304,7 +306,7 @@ func _fit() -> void:
 	# The plate as tall as its contents, up to what the screen leaves under the panel's top; past
 	# that it scrolls.
 	var screen := size.y if size.y > 0.0 else (get_viewport_rect().size.y if is_inside_tree() else 1280.0)
-	var room := screen - TOP - BOTTOM - MARGIN * 2.0 - 52.0 - 14.0
+	var room := screen - TOP - bottom - MARGIN * 2.0 - 52.0 - 14.0
 	var content := _scroll.get_child(0) as Control
 	var wanted := content.get_combined_minimum_size().y if content != null else 0.0
 	_scroll.custom_minimum_size = Vector2(0, minf(wanted, maxf(200.0, room)))

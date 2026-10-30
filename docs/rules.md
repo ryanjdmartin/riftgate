@@ -205,12 +205,17 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   is bad (more heat, a smaller blow), always relative to the unit and never the player, with
   its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
   and its extra strike each say so. No source is listed. The whole die is in the codex (double-tap the machine). **The keywords list**, in
-  the pause menu and behind the button under the eye, gives every reach, keyword, rule and
-  status the dice and chips print, with its codex line.
+  the pause menu and behind KEYWORDS between End turn and Withdraw (pressable over an open
+  codex), gives every reach, keyword, rule and status the dice and chips print, with its codex
+  line.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
-- **Holding a machine or a foe** shows it the way the die's hold shows an entry: its name;
+- **Tapping a machine or a foe** opens its readout, the way the die's hold shows an entry, and
+  tapping it again closes it; one unit's is open at a time, a tap on another unit moves it, a
+  tap on nothing or ending the turn closes it, and a hold opens it too. It follows the fight
+  while open, translucent over the arrows it draws, a machine's resting on its gauges. It
+  shows its name;
   its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
   has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
   armour and cooling (a foe's armour and attack) as the codex's stats, the base with the change
@@ -814,18 +819,17 @@ a stat.
   turn with the lead's first, every member's strength at the ramp's density (×1 at
   Convergence 0 to ×1.5 at 12, rounded, never below one).
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
-  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go,
-  then it may fight; a fight ends the action however it ends. A selected machine lights
-  the hexes its move reaches, and in red the hexes past them within its attack range: where it
-  could attack from. A move is planned: its route shows from where the machine stands, and the
-  next move or order reads from the route's end. UNDO takes back the last move or order,
-  whoever made it, in the order they were made, back to the turn's start or the last fight.
-  A caught machine's fight comes first. ENGAGE and END TURN play every planned move first (the
-  boss's fight aside, below);
-  then the fight opens, or the turn ends: packs walk and strike; machines that did not fight
-  regain shield at their field rate; Rift Pressure rises one. Once every machine has fought,
-  is ordered, is caught, or can neither move nor reach a pack where it stands, the button
-  pulses.
+  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go, then
+  it may fight; a fight ends the action however it ends. A selected machine lights the hexes
+  its move reaches, and in the enemy's violet the hexes past them within its attack range:
+  where it could attack from. A move is planned: its route shows from where the machine stands,
+  and the next move or order reads from the route's end. UNDO takes back the last move or
+  order, whoever made it, in the order they were made, back to the turn's start or the last
+  fight. A caught machine's fight comes first. ENGAGE and END TURN play every planned move
+  first (the boss's fight aside, below); then the fight opens, or the turn ends: packs walk and
+  strike; machines that did not fight regain shield at their field rate; Rift Pressure rises
+  one. Once every machine has fought, is ordered, is caught, or can neither move nor reach a
+  pack where it stands, the button pulses.
 - **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's shield and hull as
   gauges, its move and actions left, a chip for its damaged components; a pack's members (each foe

@@ -3360,6 +3360,168 @@ gate's and the rift's level ground as land and read 47% stepping, about 13 lone 
 7 jogs in a ring at the field's middle; the survey's table is the measure. The shapes
 session's relief is read against it.
 
+## 29 October, the enemy's red against the heat orange
+
+**The red read** (the decision it informs: the bible's semantic-colours row, the red lifted on
+Ryan's "Red chips everywhere need to brighten up, saturate, whatever, it's hard to see on the
+new backgrounds", and his ask to see its closeness to the heat orange; then his try of pure red,
+"try just full ff0000 for me, please. no outlines"). Method: the Machado
+(2009) protan, deutan and tritan matrices at severity 1.0 in linear sRGB, CIELAB lightness,
+CIEDE2000 distance (ΔE), and the luminance contrast of a chip's red on its own black (the
+chip's ground over the field, #0c110a as drawn). Normal / protan / deutan / tritan:
+
+| | Lightness | On a chip's black | ΔE to the orange #ff6a00 |
+|---|---|---|---|
+| #ff1e1e (the red until 29 October) | 54 / 42 / 61 / 53 | 5.0 / 3.2 / 6.1 / 4.8 | 15.7 / 13.8 / 6.1 / 10.2 |
+| #ff7c80 (the first try) | 68 / 61 / 71 / 64 | 7.7 / 6.2 / 8.6 / 6.9 | 22.2 / 19.4 / 14.0 / 7.5 |
+| #ff0000 (Ryan's try, that evening) | 53 / 40 / 60 / 53 | 4.8 / 3.0 / 6.0 / 4.8 | 14.7 / 14.7 / 6.8 / 13.1 |
+| #ff6a00 (the orange, for scale) | 63 / 55 / 68 / 58 | 6.7 / 5.0 / 7.7 / 5.6 | — |
+
+A red saturates little past #ff1e1e (#ff0000 is the limit), so a brighter one leans toward orange (more green) or
+toward pink (more blue). Toward orange (#ff4420, #ff5530) the worst ΔE to the orange falls to 4.0
+and 3.4 (deutan); toward pink the protan and deutan distances grow but tritan's falls, its
+orange being a pink-red (#ff6464 2.6, #ff7070 4.6); with green and blue raised together the
+light red's tritan lightness clears the orange's. The search (red 255, green and blue in
+steps of 4) kept the reds at 6:1 or more on the chip in every simulation, 14 or more from the
+gain green and the green HUD and 22 or more from the ink, and took the one furthest from the
+orange in its worst simulation: #ff7c80, 7.5 (tritan) where #ff1e1e was 6.1 (deutan). It costs
+the gain green (deutan 20 to 14), the green HUD (19 to 15) and the ink (protan 46 to 25). Deepening
+the orange to #ff6000 as well would take the worst to 9.4, the orange's own protan contrast on a
+chip falling from 5.0; the orange was left as it is.
+
+A red drawn straight on the field fails on the bright grounds whatever the hue: an arrow of
+#ff1e1e stood ΔE 8.1 from the meadow's and the waste's floors in the deutan simulation, its
+luminance contrast 1.04 and 1.28, and #ff7c80 4.9 and 7.7, so the skirmish's arrows took the map's
+deep-red edge (#5a0e0e). The dark edge and the light core part from every floor between them, the
+edge on the bright ones and the core on the dark: on each floor's shades in every simulation the
+better of the two stands ΔE 22.5 or more away (the marsh, protan, the worst), and the core stands
+4.9:1 on its own edge in the worst simulation. Bare, as Ryan's try has it, an arrow of #ff0000
+stands 8.3 and 8.6 from the meadow's and the waste's floors (deutan), its luminance contrast 1.02 and
+1.31, within half a point of the old red's.
+
+**The rule, that evening.** Ryan: "you're moving the blues as well when I ask for brighter/darker
+and so on. Reds and oranges, compose them using RG only, not B. I actually like ff6000, once we get
+past the ff8200 area it starts to get confusing whether its orange or yellow/green to me. ff30,
+ff40, ff50, ff60 are all very distinct to my particular blindness." So the red is #ff0000 and heat's
+orange #ff6000, and with no blue a red lightens only toward the orange. Normal / protan / deutan /
+tritan:
+
+| | Lightness | On a chip's black | ΔE to the orange #ff6000 |
+|---|---|---|---|
+| #ff0000 (the red) | 53 / 40 / 60 / 53 | 4.8 / 3.0 / 6.0 / 4.8 | 12.1 / 12.2 / 5.6 / 12.2 |
+| #ff3000 (a lighter red, for scale) | 55 / 44 / 61 / 53 | 5.2 / 3.4 / 6.3 / 4.8 | 8.9 / 8.8 / 4.1 / 7.6 |
+| #ff6000 (the orange) | 61 / 53 / 66 / 56 | 6.3 / 4.6 / 7.4 / 5.3 | — |
+
+Against #ff6a00 the red stood 6.8 in deutan, so the orange's move costs 1.2 there; the orange
+stands 14.6 or more from every HUD option and the gain green in every simulation (#ff6a00, 13.6).
+The map's bright, #ff8a1e, past his line, became #ff6000, and the deep reds lost their blue
+(#7a1414 to #7a1400, ΔE 5.0; the map's edge #5a0e0e to #5a0e00, ΔE 3.5).
+
+## 30 October, red and yellow lines against the grounds
+
+**The ground read** (the decision it informs: none yet; Ryan's note that a colour fails over the
+backgrounds, never between two UI elements, "since we always have an icon", and his instinct that
+the enemy's lines could leave red: "plotting all routes in a friendly easy-to-use yellow is
+completely sane too"). Method: as the red read of 29 October, a line's colour against each
+ground's sampled shades in the Machado simulations, the worst over the shades and the
+simulations; luminance contrast / ΔE2000:
+
+| Ground | #ff0000 | #ff1000 | #ffd000 | #ffff00 |
+|---|---|---|---|---|
+| The meadow | 1.02 / 8.3 | 1.03 / 8.3 | 1.25 / 10.6 | 1.72 / 17.2 |
+| The waste | 1.31 / 8.6 | 1.30 / 8.5 | 1.06 / 2.5 | 1.45 / 15.0 |
+| The marsh | 1.05 / 11.4 | 1.07 / 11.6 | 3.11 / 35.8 | 4.27 / 38.5 |
+| The peak | 1.60 / 19.8 | 1.64 / 20.3 | 6.08 / 50.3 | 8.42 / 58.7 |
+| Our floor | 1.88 / 22.6 | 1.93 / 23.1 | 7.49 / 60.4 | 10.38 / 64.7 |
+
+Pure yellow stands further from every ground than pure red, by both measures; its weakest ground
+is the waste's sand, where a golden yellow (#ffd000) all but vanishes. No single colour reaches
+3:1 on the meadow or the waste, the field's two bright grounds.
+
+
+## 30 October, the map's lines across the zoom
+
+**The outline and the grid at one width** (the bible's row "Nothing is one device pixel thin, and
+no line grows with the zoom"; Ryan: "I don't want the outline to thicken as I zoom in"). Renders
+at the phone's layout and density on the Compatibility renderer, MSAA off (the phone's), the
+battle screen's opening at zoom 1 and its `zoom` pose (2.4). The engine's outline, measured as
+runs of its colour across the machines in device pixels: a median of 2 at zoom 1 (most 1 to 3),
+6 at 2.4; the grid's ribbons, 1.5 map pixels, were 2.25 device pixels at zoom 1 and 5.4 at 2.4.
+The compositor's outline is 2 design pixels (3 device pixels) and the grid 1.5 (2.25) at both.
+
+Its cost, from `tools/perf_probe.gd` in a cloud container (Mesa's llvmpipe on the CPU, so a
+direction for the phone, never its frame time), `RIFTGATE_OUTLINE=0` against the outline: 155.5
+to 158.7 ms a frame at zoom 1 (2%), 125.6 to 130.3 ms at 2.6 (4%). It looks only inside each
+machine's projected box; the machines fill 18 to 20% of their boxes, and no machine pixel fell
+outside one. It adds no draw call, being the compositor's; the engine's outline pass is gone from
+every machine's materials (not counted against the code before it).
+
+## 30 October, the enemy's register in violet
+
+**The violet read** (the decision it informs: none yet; Ryan's proposal that every enemy mark
+take the rift's violet, freeing red for heat at about #ff3000 to #ff4000, the shield to a cool
+blue if it sits too near the violet). Method: as the red read of 29 October, the Machado
+simulations at severity 1.0, CIEDE2000 (ΔE) and luminance contrast; a line read as its light
+core on its deep edge, the better of the two on each shade, the worst over a ground's shades
+and the simulations. The grounds: the skirmish floors of the read above, and the battle map's
+own, clustered from a render at the phone's layout (its ground #57564b, #4e4f3f, #626669 and
+#42484f; its green #1e321e and #304331; its water #1c3e6b; its town #cad1d8 and #a59ca5).
+
+| Ground | Red #ff0000 on #5a0e00 | Violet #c8a4ff on #2a0e4a |
+|---|---|---|
+| The meadow | 3.06 / 26.1 | 3.90 / 42.6 |
+| The waste | 5.22 / 43.4 | 5.85 / 51.0 |
+| The marsh | 1.81 / 14.9 | 3.23 / 30.6 |
+| The peak | 1.60 / 19.8 | 4.57 / 46.7 |
+| Our floor | 1.88 / 22.6 | 5.79 / 51.9 |
+| The map's ground | 1.77 / 17.6 | 2.83 / 31.2 |
+| The map's green | 1.63 / 19.5 | 5.05 / 52.2 |
+| The map's water | 1.60 / 45.5 | 4.87 / 45.8 |
+| The map's town | 4.88 / 46.5 | 6.09 / 46.7 |
+
+The violet core stands 7.9:1 on its own edge in the worst simulation, the red 2.5. On a chip's
+black (#0c110a), normal / protan / deutan / tritan: the violet #c8a4ff 9.3 / 9.2 / 9.3 / 9.5, the
+red 4.8 / 3.0 / 6.0 / 4.8; heat at #ff6000 6.3 / 4.6 / 7.4 / 5.3, #ff4000 5.4 / 3.7 / 6.6 / 4.8,
+#ff3000 5.2 / 3.4 / 6.3 / 4.8; the shield #2f63d8 3.5 / 4.0 / 3.4 / 4.1. A redder heat moves
+from the greens in the deutan simulation (ΔE to the gain green 15.8 at #ff6000, 18.4 at #ff4000,
+19.3 at #ff3000) and stands 35 or more from either violet in every simulation.
+
+The shield against the violets, the worst simulation: today's #2f63d8 stands 21.9 from the light
+violet (protan) and 6.1 from the deep (deutan). A cool blue nears the light violet, which loses
+its red to protan and deutan vision and reads as a light blue: #2f8fff 9.2, #1e90ff 9.1, #3aa0ff
+4.8, #00a0ff 5.1, #4ab4ff 0.5 (protan each). The light violet stands 4.2 from the blue HUD
+option #5cd8ff (deutan) and 37.5 or more from the green HUD and the gain green.
+
+The picks, that evening (Ryan: "keep purple for enemy activities", heat reddened, the other reds
+case by case): the enemy's violet as above; its breath toward #ecdcff, ΔE 16.7 / 15.6 / 15.6 /
+12.1 from the violet (normal / protan / deutan / tritan), 12.5:1 on the deep edge, about the
+swing the red had toward the orange; heat #ff4000; harm's red-red #ff0000, 2.6 from heat in the
+deutan simulation (5.5 / 5.7 / 2.6 / 7.7), the steps Ryan reads as distinct, each mark with its
+glyph, 20.7 or more from the gain green and 37.5 or more from the violet in every simulation.
+
+## 30 October, the HUD's green and amber apart
+
+**The presets read** (the decision it informs: whether the green preset moves; Ryan's "Do we
+have room to push the green and amber farther apart?", the free picker set aside). Method: as
+the reads above, a preset against the others and every meaning (the enemy's violet, harm's red,
+heat, the shield) in the worst simulation, and against each ground's shades. Today's green
+#33ff55 and amber #fff21a stand 26.5 apart in normal vision but 2.4 (protan) and 8.1 (deutan),
+both a bright yellow to red-green vision. The amber cannot move: a deeper gold (#f0c81a) all but
+vanishes on the waste's sand (1.01:1, ΔE 3, where today's stands 1.35 and 13), and more orange
+nears heat. The green can, toward mint, against the amber in the worst simulation / against the
+blue preset (tritan) / on the meadow and the waste (ΔE):
+
+| Green | Against the amber | Against the blue | Meadow | Waste |
+|---|---|---|---|---|
+| #33ff55 (today) | 2.4 | 9.4 | 11 | 6 |
+| #50ff90 | 9.7 | 8.4 | 10 | 4 |
+| #58ffa0 | 12.3 | 8.1 | 11 | 7 |
+| #60ffb0 | 15.0 | 7.8 | 13 | 10 |
+| #68ffc0 | 18.0 | 7.6 | 15 | 12 |
+
+Each stands 13 or more from every meaning and 14:1 or more on the HUD's black; the blue preset
+stands 4.2 from the enemy's violet (deutan), the closest pair the three presets keep.
+
 **The six map shapes** (Ryan's direction of 28 October and his calls of 29 October; landed the
 same day). The map survey on them (`docs/map_survey.md`, 200 seeds a shape at 9x20, the detailed
 report on Open Steppe, the baseline): every shape keeps the horde's crossing three wide or more
@@ -3661,3 +3823,15 @@ at a won battle and is the economy pass's number (section 10); components destro
 0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
 reads of the fights' shape stay the quick campaign's until a runner player fields a squad
 (section 12).
+
+## 30 October, the fight's backdrops on the map's palettes
+
+**The backdrop read** (the decision it informs: the bible's skirmish field row, the fight's
+palettes kept beside the map's tilesets with the map's liquid). Method: as the reads above.
+The Marsh's old backdrop against the rift's violets, the worst simulation: its poison purple
+#6a2e8a 7 from the deep #6a30c0, its purple specks 11, its indigo sky (#1d1a34, #2c2848) and
+violet-grey roofs (#3a3240) 6 to 9 from the violet edge #2a0e4a; all gone, the sky a cold teal
+night, the pools the bog's water and moss. The enemy's violet drawn bare over each lake's new
+body (luminance contrast / ΔE, the worst simulation, the old lake in brackets): the plains'
+#3366ff 1.88 / 17 (#3f78dc 1.83 / 16), the Waste's #339999 1.51 / 19 (#2e8cbc 1.64 / 13), the
+Marsh's #003333 6.40 / 56 (#3e4e46 4.18 / 46), the Peak's crust #330000 8.67 / 62 (7.61 / 60).

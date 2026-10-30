@@ -22,14 +22,19 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 792 tests, 206,300 checks, green (30 October, main with `claude/charming-rubin-h954bp`
-  merged in, the model rebuilds and Ryan's notes on them; 787 and 205,261 on main alone), about four minutes in a cloud session, twenty on a slow one. A cloud
-  session gets Godot 4.7's Linux build and the project's first import from the repository's
-  session-start hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`,
-  27 October, on main since 30 October; the GitHub release asset `godotengine/godot-builds`,
-  `Godot_v4.7.2-stable_linux.x86_64.zip`, into `~/bin`; a session without the hook fetches it by
-  hand, the download in a command of its own and the unpacking and first run in another, since
-  Auto mode refuses one line that fetches and runs it), uses `xvfb-run` for screenshots (with
+- Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
+  check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
+  Session handoff); date this line again after each.
+- Tests: 824 tests, 206,868 checks, green on main (30 October, `claude/jolly-lovelace-scn82y` landed with main
+  and `claude/charming-rubin-h954bp`'s model rebuilds in, on Godot 4.8-beta2; the same count again with
+  that branch's lit parts' eased light merged on top), about four minutes
+  in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
+  the project's first import from the repository's session-start hook
+  (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
+  GitHub release asset `godotengine/godot-builds`, `Godot_v4.8-beta2_linux.x86_64.zip`, into
+  `~/bin`; a session without the hook fetches it by hand, the download in a command of its own and
+  the unpacking and first run in another, since Auto mode refuses one line that fetches and runs
+  it), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
   counts, its frame times mean nothing), and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -37,6 +42,15 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/jolly-lovelace-scn82y` (29 and 30 October) carried the skirmish's field with the
+Skirmish Controls setting, the map's lines and overlay at one size on screen, Godot 4.8-beta2
+with AA MODE, the enemy in the rift's violet with heat reddened and harm a red-red, the fight's
+backdrop on the map's palettes, the minty GREEN and the COLOURS page cut to what is in play; it
+took main twice on 30 October (the tilesets, the pacing session and the foes' fresh start; then
+`claude/charming-rubin-h954bp`'s model rebuilds as they landed, the fitted die worn on the pins
+inside the map compositor's outline), and main took it on 30 October on Ryan's word ("merge
+this into main"); its bible is v0.399 (the page's 411).
 
 `claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
 the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
@@ -137,6 +151,60 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- The skirmish is one field (29 October, on `claude/jolly-lovelace-scn82y`; Ryan of the looks
+  on trial: "it's 100% field, it looks really good"): one floor seen by one level camera from
+  behind the machines, the other world painted far under the foes in the domain's palette and
+  dressed by the contact hex's ground, our ground near with the display's grid, meeting at a
+  ragged dithered seam. The foes stand on their rank's feet line (a winged one over its shadow)
+  and breathe planted at the feet; the squad stands in four fixed hexes of the grid, a smaller
+  squad's spots dashed and empty, each machine drawn by the floor's own camera and square to the
+  foes (the rear three-quarter turned left retired: "their angle is wrong for the field
+  perspective"). The layout is the saved setting Skirmish Controls (Ryan: "Leave the layout as
+  an option"), Middle by default, Bottom the machines right under the foes. The vista, window
+  and holo grounds and the overworld tiles are gone. His second round that day, built: a squad
+  of one or two in the middle hexes; the machines turned 15° toward the middle; KEYWORDS spelt
+  out between End turn and Withdraw, pressable over an open codex; a quick switch for the
+  controls beside the eye, both inside the log's glass; a unit's readout a tap toggle, one at a
+  time, translucent (70%) over the arrows it draws, a machine's resting on its gauges; at the
+  bottom the field down to the log and the machines lower. His third round asked the red chips to
+  brighten: the light #ff7c80 came first, then his try of pure #ff0000 with the arrows bare, and
+  his rule that a red or an orange is red and green alone, never blue, heat's orange at #ff6000
+  (`docs/measurements.md`). Then the colours went to him (30 October): a debug build's Settings
+  → COLOURS sets any named colour by wheel or hex, and his picks come back as COPY text to land
+  as the defaults; what fails is a colour over its ground, not two UI colours apart (his words,
+  the bible's colour rows). Then the enemy left red (his call the same day: "keep purple for
+  enemy activities"): every foe's mark wears the rift's violet #c8a4ff on a deep #2a0e4a edge,
+  the rings and the band where a machine could attack from with them; heat reddened to #ff4000,
+  since a lighter orange can read as green, good's colour, to him; harm to a unit a red-red
+  #ff0000; Volatile's hull cost in the hull's colour; the shield kept, a cooler blue landing on
+  the violet under red-green vision (`docs/measurements.md`). His read on the phone is the
+  to-do's. His phone read of the map's aliasing (30 October) found the
+  machines' textures sampled nearest without their mipmaps, sparkling when drawn small, and no
+  anti-aliasing at all on the phone (MSAA leaks there): the textures read their mipmaps now and
+  the map's compositor runs FXAA of its own where MSAA cannot, behind a debug AA toggle. His next
+  read (the same day: grainy zoomed out, "I don't want the outline to thicken as I zoom in")
+  settled the section 12 outline question: the grid's lines and the machines' outline keep one
+  width on screen at every zoom, smoothed, the outline drawn round the machines' own layer in the
+  compositor (unbroken, through the wall, the Kite outlined too) and the engine's outline retired
+  everywhere. The MSAA leak is Godot's, fixed for 4.8 (godotengine/godot#124643); the one-pixel
+  creases are what is left a pixel wide, behind a debug TRACES toggle. His phone read: "way
+  sharper", the lines the biggest culprit, the creases the grain left and fine with AA on. Then
+  every overlay mark held its zoom-1 size at every zoom (his call: "all UI overlay type items
+  should hold at one width"), the fine map became permanent with its option gone, and the grid
+  went back to its light before the 25 October dimming. His read of those is the to-do's. Then
+  the project moved to Godot 4.8-beta2 for the MSAA fix (his call: "Let's update Godot so we can
+  get the msaa fix"; 4.8 stable has not shipped, no 4.7 patch carries it): the suite and the
+  renders came out the same as on 4.7.2, MSAA is back on the phone, and the import files are in
+  4.8's form. Then the anti-aliasing became the player's (his ask: "Can we add an AA mode setting,
+  not just for debug?"): SETTINGS → AA MODE, off, FXAA, MSAA 2X or MSAA 4X (the default), in
+  place of the debug MSAA and AA toggles, the mipmaps on in every mode. The desk's install and
+  the Pixel's read are the to-do's.
+  With main in (30 October), the backdrop took the map's palettes: the Peak's lava orange-red,
+  the Marsh's sky a cold night and its pools teal bog water and moss, the lakes the map's water.
+  Then (his calls the same evening) the lava kept ("lava looks great"), the GREEN preset went
+  minty, #60ffb0, apart from the amber for red-green eyes, and the COLOURS page was cut to what
+  is in play: the presets, the enemy's four violets (the routes and the rift's bars and tears
+  wear the violet itself) and the meanings; the old other-world drawing in TerrainArt is gone.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -232,7 +300,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   posterize grid (his second read: one ground for all was "very monotone"; his third: the
   Waste's and the Marsh's rough wanted more separation, so olive and moss). Each domain also
   has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava,
-  orange-red since the yellow read as acid, stopping short of the enemy's red) and its own
+  orange-red since the yellow read as acid, short of red, a redder lake his pick since the
+  enemy's marks went violet on 30 October) and its own
   walls (snowy peaks, red buttes, black crags, volcanoes), each range standing out of the top
   of its hex, drawn after every hex's ground (`DomainGround.draw_walls`). A road follows the
   roads beside it, three road hexes round a corner making a loop with a gap in the middle.
@@ -241,15 +310,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   field and `tools/tileset_shot.gd` draws all four. The painted map takes 45 to 120 ms a
   frame to draw on the cloud's CPU, twice at a battle's start; if the phone hitches there, the
   sprites' placement is the part to make cheaper. Next, Ryan's read of them running (the
-  to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its
-  own palette table (`BattleBackdrop.PALETTES`, the same bleed keys) and is to merge main
-  (Ryan, 30 October). Its rewrite of `game/ui/terrain_art.gd` and `game/battle/painted_map.gd`
-  meets this one's: the painted map draws every hex through `DomainGround.draw_hex`, passing
-  each road hex its links, then the walls' ranges in a second pass (`draw_walls`), and keeps
-  both. Its palettes then want to agree with the map's, and the two tables one home: its lava
-  is the yellow-orange Ryan called acid on the map (the map's lake is `#ff6600` under a crust of
-  `#990000` and `#330000`, glinting `#ff9900` and `#ffcc00`), and its Marsh's poison purple
-  `#6a2e8a` sits on the rift's deep violet `#6a30c0`, the reason the map's Marsh carries none.
+  to-do). The skirmish's backdrop keeps its palettes beside the tilesets
+  (`DomainGround.BACKDROPS`, since `claude/jolly-lovelace-scn82y` took main on 30 October), its
+  water each domain's liquid (`DomainGround.LIQUIDS`, which the map's water, its rim and the
+  lava's inks read too), so the Peak's lava is orange-red in the fight as on the map and no
+  domain paints violet, the Marsh's poison purple gone; a test holds both.
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -527,23 +592,20 @@ into this file in the same commit as its first publish; the procedures are in `R
   page's version 415, published 30 October from `claude/charming-rubin-h954bp`: lit parts hold
   their colour on the phone, the reference-glass row, and a halo for lit parts asked in section
   12; onto its own v0.402 at 414, Ryan's answers after the landing, the rebuilds judged fine, the
-  Armadillo liked as built; that three-way merged onto the live v0.401 another
-  session published at 413, sound notes and new foes in the generated tables, ahead of their
-  code; main's file is v0.397, the page's version 409 as main took this branch,
-  onto its own v0.396 at 408, three-way merged onto the live v0.395 that another session
-  published at 407 (the fight's palette beside the map's tileset, the HUD's three presets), itself
-  onto that branch's v0.394 at 406, merged onto the live v0.393 that `claude/brave-cori-fr18de`
-  published at 405 as main took it; each publish before it merged the same way, as this file's
+  Armadillo liked as built; that three-way merged onto the live v0.401 another session published
+  at 413, sound notes and new foes in the generated tables, ahead of their code; past
+  `claude/jolly-lovelace-scn82y`'s v0.399 at 411 as main took it (the minty GREEN, the COLOURS
+  page cut to what is in play and the lava kept), itself onto the live v0.398 at 410 (the tracks'
+  notes) and this branch's v0.397 at 409 as main first took it; each publish before it merged the same way, as this file's
   history in git shows). So this file carries rows other sessions published ahead of their code
-  (the skirmish's field and its palette beside the map's tileset, the reds and the enemy's
-  violet, the tracks in pairs, the map's FXAA and its lines at every zoom, the HUD's three
-  presets), each landing with its branch. The version numbers on the publishing branch's
-  file and the live agree after every publish. Before republishing, read the live page; if
-  another session moved it, publish a three-way merge onto it (`git merge-file` with the
-  last-published file as the base, the wrapper's first line and its trailing `</body></html>`
-  stripped from the saved live source). With the model rebuilds landed, the keyword table's
-  Strikes row is main's own, and the tables script, which writes the buff, debuff and keyword
-  tables from main's content, runs freely again.
+  (the tracks in pairs, and the notes on Hold The Line and Night Shift; the new foes in the
+  generated tables, the Rotbloom, the Behemoth, the Matador and the Swallowed debuff among them,
+  v0.401's), each landing with its branch. The version numbers on the publishing branch's file and the live agree after every
+  publish. Before republishing, read the live page; if another session moved it, publish a
+  three-way merge onto it (`git merge-file` with the last-published file as the base, the
+  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
+  The tables script, which writes the buff, debuff and keyword tables from main's content, waits
+  until those foes land: run on main's content it reverts their rows (36 lines, tried 30 October).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's

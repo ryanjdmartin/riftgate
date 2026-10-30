@@ -6,7 +6,7 @@ extends Control
 ##
 ##   header   the turn and Rift Pressure; the turn's readout beside it
 ##   map      drag to scroll; tap a machine to select it and light where it can move, and in
-##            red where it could attack from there; tap a lit hex (or draw a route from it)
+##            violet where it could attack from there; tap a lit hex (or draw a route from it)
 ##            and the move is planned, its route drawn from where the machine stands; with a
 ##            machine in hand, tap a pack (or drag the machine onto one) and it is planned into
 ##            range and ordered onto that fight; hold a unit for its numbers. Every pack's
@@ -746,14 +746,14 @@ func _on_hold_released() -> void:
 
 var _menu: PauseMenu = null
 var _built_hud := ""   # the HUD colour this screen was built with; a change rebuilds it
-var _built_weld := true   # whether the map's machines were welded (a debug build's WELD toggle); a change in the skirmish's menu remakes them on the way back
+var _built_map := ""   # the switches the map was built with (_map_switches); a change in the skirmish's menu remakes it on the way back
 
 func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
-			if key == "fine_map" or key == "weld":
-				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density, or the machines with the weld on or off
+			if key == "weld" or key == "aa_mode" or key == "traces":
+				_map.set_field(battle.field)   # the machines with the weld on or off, the anti-aliasing, or the traces
 				_refresh()
 			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
@@ -772,7 +772,13 @@ func _apply_display() -> void:
 	_map.sweep_on = bool(d["scan"])   # off: the bar stays hidden and the traces rest as ink
 	BattleMapView.pace = float(d["pace"])
 	_built_hud = Settings.hud
-	_built_weld = MechWeld.enabled()
+	_built_map = _map_switches()
+
+
+## What the map is built with that a settings switch changes: the AA mode, and a debug build's
+## weld and traces.
+func _map_switches() -> String:
+	return str([MechWeld.enabled(), Hud.aa_mode(), Settings.display.get("traces", true)])
 
 
 ## A colour change rebuilds the screen from the battle (the skirmish, if one is open,
@@ -818,7 +824,7 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 static func gate_lines(f: Battlefield) -> Array:
 	var frac := float(f.gate_hp) / maxf(1.0, float(f.gate_hp_max))
 	return [_title("The Gate", "Field projector"),
-		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.ENEMY),
+		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.LOSS),
 		EntryReadout.text_line("effect", "A pack beside the wall, anywhere along it, strikes it")]
 
 
@@ -961,10 +967,10 @@ func _after_step() -> void:
 	_autosave()
 
 
-## A hunter has caught a machine (bible section 5): the warning, big and red over the map;
-## the catch stays lit and the button reads ENGAGE until it is fought. On a black band with red rules across
-## the map, and the map dimmed under it: red on the terrain alone never reads (Ryan, 22
-## September).
+## A hunter has caught a machine (bible section 5): the warning, big and in the enemy's violet over
+## the map; the catch stays lit and the button reads ENGAGE until it is fought. On a black band with
+## violet rules across the map, and the map dimmed under it: a colour on the terrain alone never
+## reads (Ryan, 22 September, of the red then).
 func _show_caught() -> void:
 	_refresh()
 	var warn := Control.new()
@@ -1297,8 +1303,8 @@ func _on_skirmish_back() -> void:
 	Sound.music("map")
 	if _built_hud != Settings.hud:
 		_build()   # the colour changed in the skirmish's menu: this screen catches up
-	elif _built_weld != MechWeld.enabled():
-		_map.set_field(battle.field)   # the weld switched in the skirmish's menu: the map's machines remade
+	elif _built_map != _map_switches():
+		_map.set_field(battle.field)   # a switch changed in the skirmish's menu (the AA mode, the weld, the traces): the map remade
 		_apply_display()
 	_refresh()
 	if battle.state == Battle.State.DONE:

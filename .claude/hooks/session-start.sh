@@ -1,22 +1,23 @@
 #!/bin/bash
-# The cloud session's start (27 October): Godot 4.7.2 into ~/bin and the project's first
-# import, so the tests, the runners and the screenshots run as the README writes them from
-# the first command. Runs only in a Claude Code cloud session (the desk machine has its own
-# Godot); idempotent, so a resumed session costs nothing; the container's state is cached once
-# it has run. The import rewrites four Prairie Dog textures and the maker's review tiles (the
-# status's cloud note): they are restored when they were clean before it.
+# The cloud session's start (27 October): Godot 4.8-beta2 into ~/bin (the project runs it for its
+# MSAA fix until 4.8 ships, 30 October) and the project's first import, so the tests, the runners
+# and the screenshots run as the README writes them from the first command. Runs only in a Claude
+# Code cloud session (the desk machine has its own Godot); idempotent, so a resumed session costs
+# nothing; the container's state is cached once it has run. The import rewrites four Prairie Dog
+# textures and the maker's review tiles (the status's cloud note): they are restored when they
+# were clean before it.
 set -euo pipefail
 
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
-VERSION="4.7.2-stable"
+VERSION="4.8-beta2"
 BIN="$HOME/bin/godot"
 ASSET="Godot_v${VERSION}_linux.x86_64"
 
 mkdir -p "$HOME/bin"
-if ! "$BIN" --version 2>/dev/null | grep -q "^4\.7\.2\."; then
+if ! "$BIN" --version 2>/dev/null | grep -q "^4\.8\.beta2\."; then
   tmp="$(mktemp -d)"
   curl -sSL --retry 3 --max-time 900 -o "$tmp/godot.zip" \
     "https://github.com/godotengine/godot-builds/releases/download/${VERSION}/${ASSET}.zip"

@@ -52,7 +52,29 @@ const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip r
 var BOTTOM_Y := 1196.0
 ## The rows' places on the 1280 design, scaled to the screen in `_build`.
 const ROWS := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "EYE_Y": 510.0, "LOG_Y": 508.0, "DIE_Y": 640.0, "REROLL_Y": 786.0, "MECH_Y": 892.0, "BOTTOM_Y": 1196.0}
+## The rows with the controls at the bottom (Ryan, 29 October: "Skirmish Controls", "bottom"
+## or "middle", Settings): the foes where they were, the machines right under them in one
+## scene, then the log, dice and Reroll. RIFTGATE_SKIRMISH_CONTROLS=bottom|middle forces it.
+const ROWS_BOTTOM := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "MECH_Y": 498.0, "LOG_Y": 800.0, "EYE_Y": 802.0, "DIE_Y": 926.0, "REROLL_Y": 1072.0, "BOTTOM_Y": 1196.0}
+## The field (Ryan, 29 October: "it's 100% field"): one floor from the horizon to the machines'
+## feet, the other world painted far under the foes and our ground near under the machines,
+## seen by one level camera that the floor, the backdrop's bands and every machine's view
+## share. It is set so a row of hexes PITCH wide runs through the machines' feet, seen
+## FIELD_THETA down there; the squad stands in SLOTS hexes of it, a smaller one leaving its
+## spots empty, so the floor never changes with the squad.
+const FIELD_THETA := 30.0
+const SLOTS := 4
+const MECH_FOOT := 214.0    # a machine's hex centre below the top of its row
+const MECH_WINDOW := Rect2(-22.0, 14.0, 220.0, 256.0)   # a machine's view in its row: the floor camera's window it is drawn through
+const MECH_FILL := 0.96     # a machine's size in hexes at its class's full share (MechView3D.SIZE_FILL)
+const FLYER_LIFT := 0.4     # hexes a flyer stands off the floor, and a hovercraft
+const HOVER_LIFT := 0.06
+const WINGED_LIFT := 16.0   # design pixels a winged foe floats over its feet line
+const FIELD_TURN := 15.0    # degrees a machine turns toward the middle, those left of it to the right and those right of it to the left
+var _cam := {}              # _field_camera
 const BOTTOM_BTN := Vector2(210, 60)
+const KEYS_W := 180.0       # KEYWORDS between End turn and Withdraw
+const MECH_LOG_GAP := 18.0  # with the controls at the bottom, from the machines' row to the log
 const PITCH := 172.0
 const LOG_LINES := 7
 const ENEMY_BEAT := 0.45   # seconds between the enemy's blows at ENEMY PACE 1; the setting divides it
@@ -90,7 +112,8 @@ var show_all_arrows: bool = false
 var _header: HudButton
 var _sub_label: Label
 var _eye: HudButton
-var _keys: HudButton                 # the keywords list, under the eye (Ryan, 26 October)
+var _keys: HudButton                 # the keywords list, between End turn and Withdraw (Ryan, 26 and 29 October)
+var _switch: HudButton               # the controls' quick switch, left of the eye
 var _log: RichTextLabel
 var _log_scroll: ScrollContainer
 var _log_full: Control = null        # the log full screen: a shade with a panel
@@ -196,7 +219,7 @@ func _process(delta: float) -> void:
 		var v := _mech_views[i]
 		if v.size.y <= 0.0:
 			continue
-		view.set_sweep_screen((y - v.position.y) * float(view.size.y) / v.size.y)
+		view.set_sweep_screen((y - v.position.y - v.sprite_at.position.y) * view.density)
 
 
 ## The feed's analysis events pick from what is alive right now.
@@ -258,8 +281,12 @@ var _replay_shade: Control            # swallows taps while the enemy's turn rep
 var _fx: FeedFX = null                # the display's rare analysis events
 var _drag_from: int = -1
 var _log_seen: int = 0
-var _hold_foe: Foe = null
-var _hold_mech: int = -1
+## The unit whose readout a tap left open, one at a time (Ryan, 29 October: "a tap toggle, only
+## one unit popup allowed at a time"): {"foe": Foe}, {"mech": index} or a mined empty slot's
+## {"mine": Vector2i(rank, col)}; empty, none.
+var _pop: Dictionary = {}
+const POP_ALPHA := 0.7   # a unit's readout lets the arrows under it show through (Ryan, 29 October: "slightly translucent")
+const POP_GAP := 4.0      # a machine's readout over its gauges
 var _drag_over = null                 # what the dragged die is over and may be spent on: a Foe, a MechState or an empty slot
 var _round: Dictionary = {}           # the rest of the round as it stands (Skirmish.preview_round): every machine's gauges and warnings, every foe's HP after it
 var _turns: Array[Foe] = []           # the foes a Lure in hand would turn, their arrows drawn dashed to the die's machine
@@ -317,6 +344,11 @@ static func _default_skirmish() -> Skirmish:
 			if paints.has(id):
 				u.paint = paints[id]
 			s.add_mech(u)
+	# RIFTGATE_TERRAIN=ruins puts the fight on that ground (BattleMap.TERRAIN_NAMES), for a look.
+	var ground := OS.get_environment("RIFTGATE_TERRAIN")
+	for t in BattleMap.TERRAIN_NAMES.keys():
+		if BattleMap.TERRAIN_NAMES[t] == ground:
+			s.terrain = int(t)
 	# The first faction's first and last spawn entries: its rank and file, then its support.
 	# RIFTGATE_FOES=warrior,goblin:3,white_mage puts those foes on instead, by content id and
 	# count (heroes included), each its own pack: to see any sprite in the fight.
@@ -372,20 +404,20 @@ func _build() -> void:
 	H = Hud.screen_height(self)
 	for key in ROWS.keys():
 		set(key, float(ROWS[key]) * H / BASE_H)
+	if controls() == "bottom":
+		for key in ROWS_BOTTOM.keys():
+			set(key, float(ROWS_BOTTOM[key]) * H / BASE_H)
+		# The machines' row rests on the log, so a taller glass gives its height to the field and
+		# the machines stand further from the foes, rather than black over the log (Ryan, 29
+		# October: "extra black space above that doesn't need to be there").
+		MECH_Y = LOG_Y - MECH_SIZE.y - MECH_LOG_GAP
+	_cam = _field_camera()
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text linear; the ground bands and the sprites pin nearest on themselves
 
 	var bg := HudBackdrop.new()
-	var seam_y := REROLL_Y + REROLL_SIZE.y + REROLL_GAP
-	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, seam_y, BOTTOM_Y - 16.0]
-	# The fight is on the enemy's ground (Ryan, 21 September): the foes stand on the other
-	# world's flat bright overworld of this terrain; the mechs stand on the seam, the
-	# reconstruction's tile with the other world eating into it from above.
-	bg.grounds = [
-		[Rect2(0.0, BACK_Y - 14.0, W, LOG_Y - 10.0 - (BACK_Y - 14.0)), sk.terrain, sk.rng.seed, "other"],
-		[Rect2(0.0, seam_y, W, BOTTOM_Y - 16.0 - seam_y), sk.terrain, sk.rng.seed + 1, "seam"],
-	]
+	_lay_ground(bg)
 	bg.scan = bool(Settings.display["scan"])   # off: no band, and the machines' traces rest as ink
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
@@ -410,17 +442,18 @@ func _build() -> void:
 	_eye.glyph = "eye"
 	_eye.slant_px = 0.0
 	_eye.toggle_mode = true
+	_eye.set_pressed_no_signal(show_all_arrows)   # a screen laid again (the controls moved) keeps it as it was
 	_eye.tooltip_text = "Show every intent arrow"
 	_eye.toggled.connect(_toggle_all_arrows)
 	_place(_eye, Vector2(W - 12 - EYE, EYE_Y), Vector2(EYE, EYE))
-	# The keywords list (Ryan, 26 October: "an accessible overlay with a button that's somehow
-	# always visible"): under the eye, in the black beside the dice, the pause menu's KEYWORDS
-	# page opened straight, its CLOSE resuming.
-	_keys = HudButton.new("?", _open_menu.bind("keywords"))
-	_keys.slant_px = 0.0
-	_keys.font_size = 30
-	_keys.tooltip_text = "Keywords"
-	_place(_keys, Vector2(W - 12 - EYE, EYE_Y + EYE + 8.0), Vector2(EYE, EYE))
+	# The controls' quick switch (Ryan, 29 October: "a quick-switch that changes the control layout
+	# position"), beside the eye: the controls to the bottom or back to the middle, saved as the
+	# menu's Skirmish Controls is. Its glyph shows where they sit and which way a press moves them.
+	_switch = HudButton.new("", _switch_controls)
+	_switch.glyph = "controls_" + controls()
+	_switch.slant_px = 0.0
+	_switch.tooltip_text = "Move the controls to the bottom" if controls() == "middle" else "Move the controls to the middle"
+	_place(_switch, Vector2(W - 12 - EYE * 2.0 - 8.0, EYE_Y), Vector2(EYE, EYE))
 
 	# Formation: six slot views, three massive views (hidden until needed). Ranks need no
 	# label; the back rank is the one behind.
@@ -429,31 +462,33 @@ func _build() -> void:
 			var v := UnitView.new()
 			v.is_enemy = true
 			var y := FRONT_Y if rank == 0 else BACK_Y
+			_stand(v, y, SLOT_SIZE.y)
+			v.empty_pad = true
 			_place(v, Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
 			v.held.connect(_on_foe_held.bind(v))
-			v.hold_released.connect(_on_hold_released)
 			v.double_tapped.connect(_on_foe_double_tapped.bind(v))
-			v.tapped.connect(_on_slot_tapped.bind(rank, col))
+			v.tapped.connect(_on_foe_tapped.bind(v, rank, col))
 			_slot_views[rank][col] = v
 			# A twin slot's right-hand half (26 October): the slot's right half while the pair
 			# stands, the left half's view taking the other.
 			var tv := UnitView.new()
 			tv.is_enemy = true
+			_stand(tv, y, SLOT_SIZE.y)
 			tv.visible = false
 			_place(tv, Vector2(_col_x(col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
 			tv.held.connect(_on_foe_held.bind(tv))
-			tv.hold_released.connect(_on_hold_released)
 			tv.double_tapped.connect(_on_foe_double_tapped.bind(tv))
-			tv.tapped.connect(_on_twin_tapped.bind(rank, col))
+			tv.tapped.connect(_on_foe_tapped.bind(tv, rank, col, true))
 			_twin_views[rank][col] = tv
 		var mv := UnitView.new()
 		mv.is_enemy = true
 		mv.massive = true
+		_stand(mv, BACK_Y, MASSIVE_SIZE.y)
 		mv.visible = false
 		_place(mv, Vector2(_col_x(col) - MASSIVE_SIZE.x * 0.5, BACK_Y), MASSIVE_SIZE)
 		mv.held.connect(_on_foe_held.bind(mv))
-		mv.hold_released.connect(_on_hold_released)
 		mv.double_tapped.connect(_on_foe_double_tapped.bind(mv))
+		mv.tapped.connect(_on_foe_tapped.bind(mv, -1, col))
 		_massive_views[col] = mv
 	_pair_marks = PairMarks.new()
 	_place(_pair_marks, Vector2.ZERO, Vector2(W, H))
@@ -469,8 +504,9 @@ func _build() -> void:
 	# under the sprites it was lost): a screen-reading layer the size of the foes' ground.
 	var tear := TearLayer.new()
 	tear.clock = bg.time
-	tear.position = Vector2(0.0, BACK_Y - 14.0)
-	tear.size = Vector2(W, LOG_Y - 10.0 - (BACK_Y - 14.0))
+	var foes_ground := _foes_ground()
+	tear.position = foes_ground.position
+	tear.size = foes_ground.size
 	add_child(tear)
 	# The predator sense (the funnel-web, 18 October): the foes' ground and the foes on it
 	# dim while an ambusher's die is held or dragged, and the foes looking away get their eyes.
@@ -486,14 +522,14 @@ func _build() -> void:
 	_place(log_tag, Vector2(12, LOG_Y), Vector2(52, 18))
 	_log_scroll = _log_scroller()
 	_log_scroll.tooltip_text = "Drag to read back; double-tap to expand"
-	_place(_log_scroll, Vector2(20, LOG_Y + 22), Vector2(W - 52 - EYE, LOG_H - 22))
+	_place(_log_scroll, Vector2(20, LOG_Y + 22), Vector2(W - 60 - EYE * 2.0, LOG_H - 22))
 	_log = _log_label(14)
 	_log_scroll.add_child(_log)
 
-	# Dice in the middle, each centred on its mech.
+	# Dice in the middle, each centred on its mech's spot.
 	var n := sk.mechs.size()
 	for i in range(n):
-		var cx := _column_x(i, n)
+		var cx := _slot_x(_mech_slot(i))
 		var d := DieFaceView.new()
 		_place(d, Vector2(cx - DIE_SIZE * 0.5, DIE_Y), DieFaceView.view_size())
 		d.tapped.connect(_on_die_tapped.bind(i))
@@ -516,23 +552,36 @@ func _build() -> void:
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
 
-	# Mechs: gauges hugging the sprite, three-quarter sprite, chip row beneath.
+	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
-		var cx := _column_x(i, n)
+		var cx := _slot_x(_mech_slot(i))
+		var hex_x := _slot_hex_x(_mech_slot(i))
 		var ms: Skirmish.MechState = sk.mechs[i]
 		var v := UnitView.new()
 		v.display_name = ms.unit.display_name
 		v.bars_above = true
+		var db := ContentDB.load_default()
+		var fill := MECH_FILL * float(MechView3D.SIZE_FILL.get(str(db.chassis.get(ms.unit.chassis_id, {}).get("size", "")), 1.0))   # the team in proportion
+		var flies := ms.unit.traits.has("flyer")
+		v.ground_shadow = true
+		v.ground_at = Vector2(MECH_SIZE.x * 0.5, MECH_FOOT)
+		v.shadow_rx = fill * PITCH * (0.4 if flies else 0.5)
+		v.shadow_ratio = (_cam.row - _cam.horizon) / _cam.focal
 		# Mechs are 3D (decided 16 September); headless (and RIFTGATE_MECH3D=off) draws the
 		# placeholder shape. A chassis with no model uses the Badger's.
 		var look := MechView3D.look_setting()
 		_mech_3d.append(null)
 		if not look.is_empty():
-			var db := ContentDB.load_default()
 			var maker := db.maker_of(ms.unit.chassis_id)
-			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
+			var window := Rect2(Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y) + MECH_WINDOW.position, MECH_WINDOW.size)
+			var lift := FLYER_LIFT if flies else (HOVER_LIFT if ms.unit.traits.has("hover") else 0.0)
+			var view := MechView3D.make_on_floor(ms.unit.chassis_id, maker, look, {
+				"focal": _cam.focal, "height": _cam.height, "principal": Vector2(W * 0.5, _cam.horizon),
+				"at": Vector2(hex_x, _cam.depth), "window": window, "fill": fill, "lift": lift,
+				"turn": _mech_turn(i),
+			}, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
-			view.size_k = float(MechView3D.SIZE_FILL.get(str(db.chassis.get(ms.unit.chassis_id, {}).get("size", "")), 1.0))   # the team in proportion
+			v.sprite_at = MECH_WINDOW
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
 			if ms.unit.traits.has("flyer"):
@@ -547,7 +596,6 @@ func _build() -> void:
 				view.sway_yaw = 0.04
 				view.balance = HoverBalance.new(i + 1)
 			view.sway_phase = i * 2.1
-			view.strip_silhouette()   # no light outline in the skirmish (Ryan, 22 September); the trace and its scan glow stay
 			# Hug the model by its framed bounds, never the render read back. The view frames
 			# its camera on ready, so the bounds are taken then: connected before add_child,
 			# because when the screen is already in the tree ready fires inside it.
@@ -562,7 +610,7 @@ func _build() -> void:
 				v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)
 		v.held.connect(_on_mech_held.bind(i))
-		v.hold_released.connect(_on_hold_released)
+		v.tapped.connect(_on_mech_tapped.bind(i))
 		v.double_tapped.connect(_on_mech_double_tapped.bind(i))
 		_mech_views.append(v)
 
@@ -639,11 +687,137 @@ func _build() -> void:
 	dv.add_child(_details_entry)
 
 	_build_codex()
+	# The keywords list (Ryan, 26 October: "an accessible overlay with a button that's somehow
+	# always visible"; 29 October: spelt out, between End turn and Withdraw, "pressable even when a
+	# codex is opened"): the pause menu's KEYWORDS page opened straight, its CLOSE resuming. Laid
+	# after the codex, so it stands over the codex's shade, whose panel stops short of this row.
+	_keys = HudButton.new("KEYWORDS", _open_menu.bind("keywords"))
+	_keys.font_size = 16
+	_keys.tooltip_text = "Every keyword, reach and rule"
+	_place(_keys, Vector2(W * 0.5 - KEYS_W * 0.5, BOTTOM_Y), Vector2(KEYS_W, BOTTOM_BTN.y))
 	_build_confirm()
 	_build_outcome()
 	_build_log_full()
 	if _menu != null:
 		_menu.move_to_front()
+
+
+## Where the controls sit (Settings.SKIRMISH_CONTROLS): the environment's, else the setting.
+static func controls() -> String:
+	var env := OS.get_environment("RIFTGATE_SKIRMISH_CONTROLS")
+	if Settings.SKIRMISH_CONTROLS.has(env):
+		return env
+	var v := str(Settings.display.get("skirmish_controls", "middle"))
+	return v if Settings.SKIRMISH_CONTROLS.has(v) else "middle"
+
+
+## The foes' ground: from above the back rank to the log, or with the controls at the bottom to
+## the machines.
+func _foes_ground() -> Rect2:
+	var top := BACK_Y - 14.0
+	var bottom := (MECH_Y + 4.0) if controls() == "bottom" else (LOG_Y - 10.0)
+	return Rect2(0.0, top, W, bottom - top)
+
+
+## The floor's camera (the field, above), for the rows as laid: the horizon a little above the
+## back rank's feet, the machines' hex row MECH_FOOT into theirs. focal in design pixels,
+## height and depth (to the machines' row) in hexes, shift the lattice's offset in depth so a
+## row of hex centres runs through the machines' feet: the half-offset row (centres at x = n +
+## 1/2) for an even number of spots, the other for an odd one.
+func _field_camera() -> Dictionary:
+	var horizon := BACK_Y + SLOT_SIZE.y * 0.38
+	var row := MECH_Y + MECH_FOOT
+	var d := row - horizon
+	var focal := d / tan(deg_to_rad(FIELD_THETA))
+	var depth := focal / PITCH
+	var half := 0.5 if _slot_count() % 2 == 0 else 0.0
+	var shift := depth - (roundf(depth / sqrt(3.0) - half) + half) * sqrt(3.0)
+	return {"horizon": horizon, "row": row, "focal": focal, "height": d / PITCH, "depth": depth, "shift": shift}
+
+
+## A point on the floor (x across, z deep, in hexes) on the screen.
+func _on_floor(x: float, z: float) -> Vector2:
+	return Vector2(W * 0.5 + _cam.focal * x / z, _cam.horizon + _cam.focal * _cam.height / z)
+
+
+## The squad's spots: SLOTS, or more for a bigger squad.
+func _slot_count() -> int:
+	return maxi(SLOTS, sk.mechs.size())
+
+
+## The spot machine `i` stands in: a squad of one or two in the middle hexes, the outer ones
+## left empty (Ryan, 29 October), a squad of three from the left.
+func _mech_slot(i: int) -> int:
+	return i + floori((_slot_count() - sk.mechs.size()) * 0.5)
+
+
+## How far machine `i` turns from facing the foes, toward the middle (Ryan, 29 October: "player
+## units on the left side can face slightly to the right, and units on the right can face
+## slightly left"): MechView3D's turn, positive to the machine's left.
+func _mech_turn(i: int) -> float:
+	return signf(_slot_hex_x(_mech_slot(i))) * FIELD_TURN
+
+
+## A spot's place across the floor, in hexes from the middle, and on the screen.
+func _slot_hex_x(i: int) -> float:
+	return float(i) - float(_slot_count() - 1) * 0.5
+
+
+func _slot_x(i: int) -> float:
+	return W * 0.5 + _slot_hex_x(i) * PITCH
+
+
+## A foe's view stands on its rank's feet line (or a massive one's), its shadow flattened as
+## the floor is there.
+func _stand(v: UnitView, top: float, tall: float) -> void:
+	v.ground_shadow = true
+	v.feet_y = tall - UnitView.STATUS_H
+	v.shadow_ratio = clampf((top + v.feet_y - _cam.horizon) / _cam.focal, 0.14, 0.6)
+
+
+## The field (the const block above): the other world's backdrop over the whole of it, our floor
+## laid over that below its seam (under the console's glass in the middle, at the machines'
+## backs at the bottom), the rules at its edges and the squad's hexes marked, an empty spot's
+## dashed.
+func _lay_ground(bg: HudBackdrop) -> void:
+	var bottom := controls() == "bottom"
+	var foes := _foes_ground()
+	var end := (MECH_Y + MECH_SIZE.y + 8.0) if bottom else (BOTTOM_Y - 16.0)
+	var field := Rect2(0.0, foes.position.y, W, end - foes.position.y)
+	var camera := {"horizon": _cam.horizon - field.position.y, "focal": _cam.focal, "height": _cam.height, "shift": _cam.shift}
+	var backdrop := camera.duplicate()
+	backdrop.merge({"biome": _biome(), "dim": 0.9})
+	var floor := camera.duplicate()
+	floor.merge({"seam": (foes.end.y if bottom else (LOG_Y + DIE_Y) * 0.5) - field.position.y, "seam_band": 34.0, "grid": 0.14, "grid_fade": 220.0})
+	bg.grounds = [[field, sk.terrain, sk.rng.seed, "backdrop", backdrop], [field, sk.terrain, sk.rng.seed + 1, "floor", floor]]
+	bg.rules = [field.position.y, field.end.y]
+	if not bottom:
+		# The console floats on the floor: dark glass under the log and under the dice.
+		bg.glass = [Rect2(0.0, LOG_Y - 6.0, W, LOG_H + 6.0), Rect2(0.0, DIE_Y - 12.0, W, REROLL_Y + REROLL_SIZE.y + 12.0 - (DIE_Y - 12.0))]
+	var r := 1.0 / sqrt(3.0)
+	var corners := [Vector2(0.0, r), Vector2(0.5, r * 0.5), Vector2(0.5, -r * 0.5), Vector2(0.0, -r), Vector2(-0.5, -r * 0.5), Vector2(-0.5, r * 0.5)]
+	bg.marks = []
+	var first := _mech_slot(0)
+	for i in range(_slot_count()):
+		var pts := PackedVector2Array()
+		for c in corners:
+			pts.append(_on_floor(_slot_hex_x(i) + c.x, _cam.depth + c.y))
+		bg.marks.append([pts, i < first or i >= first + sk.mechs.size()])
+
+
+## The fight's domain, by its bleed in content: the domain most of the foes come from.
+func _biome() -> String:
+	var db := ContentDB.load_default()
+	var count := {}
+	for f in sk.field_foes() + sk.reinforcements:
+		var fac := db.faction_of_foe(str(f.content_id))
+		if not fac.is_empty():
+			count[fac] = int(count.get(fac, 0)) + 1
+	var best := db.default_faction()
+	for fac in count.keys():
+		if int(count[fac]) > int(count.get(best, 0)):
+			best = fac
+	return str(db.factions.get(best, {}).get("bleed", ""))
 
 
 ## A log body: bbcode, sized by its content, filling its scroller's width.
@@ -719,6 +893,7 @@ func _toggle_log_full() -> void:
 func _build_codex() -> void:
 	# Codex: a double-tap opens it; a tap anywhere outside closes it (`CodexBox`).
 	_codex = CodexBox.new()
+	_codex.bottom = H - BOTTOM_Y + 12.0   # the panel clear of the bottom row, where KEYWORDS stays pressable
 	add_child(_codex)
 
 
@@ -786,10 +961,6 @@ func _build_outcome() -> void:
 	back.sound = "ui_back"
 	back.custom_minimum_size = Vector2(0, 54)
 	ov.add_child(back)
-
-
-func _column_x(i: int, n: int) -> float:
-	return W * 0.5 + (i - (n - 1) * 0.5) * PITCH
 
 
 ## Enemy column centres: three columns at a wide pitch, four at a tight one.
@@ -1010,6 +1181,7 @@ func _refresh(save: bool = true) -> void:
 	if sk.committed and _withdraw_btn.text != "NO RETREAT":
 		_withdraw_btn.text = "NO RETREAT"   # the boss's fight and the quick campaign's: a fall ends it
 		_withdraw_btn.queue_redraw()
+	_show_pop()
 	_refresh_arrows()
 	_refresh_prey()
 	if save and autosave.is_valid():
@@ -1157,7 +1329,9 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.sprite = Sprites.combat_foe(foe.content_id)
 	v.pixel_snap = true
 	# Enemies face left, the convention; a sprite painted facing right says so in content.
-	v.flip_h = bool(ContentDB.load_default().foes.get(foe.content_id, {}).get("flip", false))
+	var entry: Dictionary = ContentDB.load_default().foes.get(foe.content_id, {})
+	v.flip_h = bool(entry.get("flip", false))
+	v.hover = WINGED_LIFT if bool(entry.get("winged", false)) else 0.0   # what flies floats over its shadow
 	v.breathe = true
 	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
 	# (Ryan, 23 September: the instance-id phases read as in step).
@@ -1233,7 +1407,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# since its line still matters to what reads it.
 	var fate: Dictionary = _round.get("foes", {}).get(foe, {})
 	if foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
-		rows.append(["skull", "", "Destroyed this round, as the round stands", Palette.ENEMY, "preview"])
+		rows.append(["skull", "", "Destroyed this round, as the round stands", Palette.LOSS, "preview"])
 	var tick := Effects.tick_preview(foe)
 	if foe.burn_stacks() > 0:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % (int(tick["hp"]) - int(tick["share"])), Palette.HEAT])
@@ -1332,7 +1506,7 @@ func _foe_rows(foe: Foe) -> Array:
 		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26
 		# October: a chip for it "steps on the debuff and is very confusing"); a dragged Direct
 		# weapon lighting it says it is in reach.
-		rows.append(["exposed", "0", "Exposed: in every machine's Direct reach, and its armour counts for nothing, through the next round", Palette.ENEMY])
+		rows.append(["exposed", "0", "Exposed: in every machine's Direct reach, and its armour counts for nothing, through the next round", Palette.LOSS])
 	# Every status the round will land on it (Ryan, 26 October: "All incoming chips should appear
 	# as pulsing opacity versions"): the copy's grants, each a chip pulsing on a dashed edge with
 	# the stacks it gains, beside the skull when the round kills it, since one may be the cause.
@@ -1392,8 +1566,10 @@ static func _foe_chip_colour(id: String) -> Color:
 		return Palette.HEAT
 	if id in ["webbed", "braced", "numbed", "paradox", "barrier", "ward"]:
 		return Palette.SHIELD
-	if id in ["risen", "exposure"]:
+	if id == "risen":
 		return Palette.ENEMY
+	if id == "exposure":
+		return Palette.LOSS
 	return Palette.HUD
 
 
@@ -1523,9 +1699,9 @@ func _mech_rows(i: int) -> Array:
 			# The heat burns as the turn ends, so there is still time to vent.
 			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the turn unless vented" % int(fc["overheat"]), Palette.HEAT, "preview"])
 		if bool(fc["destroyed"]):
-			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY, "preview"])
+			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.LOSS, "preview"])
 		elif bool(fc["component_risk"]):
-			rows.append(["crack", "!", "A hit that big destroys a component: the die is rolled", Palette.ENEMY, "preview"])
+			rows.append(["crack", "!", "A hit that big destroys a component: the die is rolled", Palette.LOSS, "preview"])
 		# The shield-break chip went on 26 October (Ryan: "It's clutter, the bar previews are more
 		# than enough"). Every status the round will land on it (Ryan, 26 October: "All incoming
 		# chips should appear as pulsing opacity versions"), beside the skull when the round wrecks
@@ -1584,7 +1760,7 @@ func _refresh_arrows() -> void:
 			if not targets.has(int(i)) and int(i) >= 0 and int(i) < _mech_views.size():
 				spill.append(int(i))
 		for target_index in targets + spill:
-			var wanted := show_all_arrows or foe == _hold_foe or target_index == _hold_mech or target_index == lurer
+			var wanted: bool = show_all_arrows or _pop.get("foe") == foe or target_index == int(_pop.get("mech", -1)) or target_index == lurer
 			if not wanted:
 				continue
 			var from: Vector2 = inv * fv.anchor_global()
@@ -1605,10 +1781,11 @@ func _refresh_arrows() -> void:
 	_arrows.set_arrows(list)
 
 
-## Hold readout beside a control: a text block (a mined slot's), or lines (EntryReadout): a
-## die's entry showing with its effects listed, a stepping die's cylinder above it, or a
-## unit's gauges, chips and intent.
-func _show_details(text: String, near: Control, ring: Array = [], entry: Array = []) -> void:
+## Readout over a control: a text block (a mined slot's), or lines (EntryReadout): a die's
+## entry showing with its effects listed, a stepping die's cylinder above it, or a unit's
+## gauges, chips and intent. `top` is where the control's drawing starts inside it (a
+## machine's gauges), `gap` the air between the readout and that.
+func _show_details(text: String, near: Control, ring: Array = [], entry: Array = [], top: float = 0.0, gap: float = 10.0) -> void:
 	_details_label.text = text
 	_details_label.visible = not text.is_empty()
 	# A stepping die's cylinder above its entries: [faces, the chamber showing, the next].
@@ -1632,7 +1809,7 @@ func _show_details(text: String, near: Control, ring: Array = [], entry: Array =
 	# Over the control, centred on it, whenever it fits: the thumb holding the thing covers
 	# what is beside and below it (Ryan, 22 September). Only when there is no room above
 	# (the back rank) does it sit beside.
-	var pos := Vector2(near.position.x + near.size.x * 0.5 - width * 0.5, near.position.y - height - 10.0)
+	var pos := Vector2(near.position.x + near.size.x * 0.5 - width * 0.5, near.position.y + top - height - gap)
 	if pos.y < 8.0:
 		pos = near.position + Vector2(near.size.x + 8.0, 0)
 		if pos.x + width > W - 8.0:
@@ -1716,33 +1893,111 @@ func _on_die_held(i: int) -> void:
 		var sf := sk.shown_face(ms, f)
 		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
 		entry = EntryReadout.lines_for(sf, at + 1, shown, f, _entry_states(ms, at), Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit))
-	_show_details("", _dice[i], ring, entry)
+	_details.fill_alpha = 1.0   # over the log's lines: a readout of text reads over nothing
+	_details.queue_redraw()
+	_show_details("", _dice[i], ring, entry)   # held, it takes the panel from a unit's readout until it is let go
 	Sound.play("hold")
 	_hold_die = i
 	_refresh(false)   # the marks and a lure's preview read the held die
 
 
-func _on_foe_held(v: UnitView) -> void:
-	var foe: Foe = _view_foe.get(v, null)
-	if foe == null:
-		# A mined empty slot (the Lammergeier's): what waits there.
-		for rank in range(2):
-			var col: int = _slot_views[rank].find(v)
-			if col >= 0 and not sk.mines_at(Vector2i(rank, col)).is_empty():
-				_show_details(_mine_text(rank, col, sk.mines_at(Vector2i(rank, col))), v)
-				Sound.play("hold")
+## A tap on a foe (or on a mined empty slot) opens its readout, a tap on it again closes it, a
+## tap on another unit moves it there and a tap on nothing closes it (Ryan, 29 October: "a tap
+## toggle, only one unit popup allowed at a time"); a hold opens it too. While a Swap waits for
+## its second target, the tap picks that instead.
+func _on_foe_tapped(v: UnitView, rank: int, col: int, twin: bool = false) -> void:
+	if not _pending.is_empty():
+		if twin:
+			_on_twin_tapped(rank, col)
+		elif rank >= 0:
+			_on_slot_tapped(rank, col)
 		return
-	_hold_foe = foe
-	_show_details("", v, [], _foe_hold_lines(foe))
-	Sound.play("hold")
-	_refresh_arrows()
+	var what := _pop_for(v)
+	if what.is_empty() or what == _pop:
+		_close_pop()
+	else:
+		_open_pop(what)
+
+
+func _on_foe_held(v: UnitView) -> void:
+	var what := _pop_for(v)
+	if not what.is_empty() and what != _pop:
+		_open_pop(what)
+
+
+func _on_mech_tapped(i: int) -> void:
+	if _pop == {"mech": i}:
+		_close_pop()
+	else:
+		_open_pop({"mech": i})
 
 
 func _on_mech_held(i: int) -> void:
-	_hold_mech = i
-	_show_details("", _mech_views[i], [], _mech_hold_lines(i))
+	if _pop != {"mech": i}:
+		_open_pop({"mech": i})
+
+
+## What a foe's view would open: its foe, a mined empty slot (the Lammergeier's: what waits
+## there), or nothing.
+func _pop_for(v: UnitView) -> Dictionary:
+	var foe: Foe = _view_foe.get(v, null)
+	if foe != null:
+		return {"foe": foe}
+	for rank in range(2):
+		var col: int = _slot_views[rank].find(v)
+		if col >= 0 and not sk.mines_at(Vector2i(rank, col)).is_empty():
+			return {"mine": Vector2i(rank, col)}
+	return {}
+
+
+func _open_pop(what: Dictionary) -> void:
+	_pop = what
 	Sound.play("hold")
+	_show_pop()
 	_refresh_arrows()
+
+
+func _close_pop() -> void:
+	if _pop.is_empty():
+		return
+	_pop = {}
+	if _hold_die < 0:
+		_details.visible = false
+	_refresh_arrows()
+
+
+## The open readout drawn again over its unit as the unit stands now (after a blow, a swap, a
+## new round), translucent so the arrows it brings show under it; its unit gone, it closes. A
+## held die's readout keeps the panel while it is held.
+func _show_pop() -> void:
+	if _pop.is_empty() or _hold_die >= 0:
+		return
+	_details.fill_alpha = POP_ALPHA
+	_details.queue_redraw()
+	if _pop.has("foe"):
+		var foe: Foe = _pop["foe"]
+		var v := _foe_view_for(foe)
+		if v == null:
+			_close_pop()
+			return
+		_show_details("", v, [], _foe_hold_lines(foe))
+	elif _pop.has("mech"):
+		var i: int = _pop["mech"]
+		var mv: UnitView = _mech_views[i]
+		_show_details("", mv, [], _mech_hold_lines(i), mv.drawn_top(), POP_GAP)
+	else:
+		var at: Vector2i = _pop["mine"]
+		var shots := sk.mines_at(at)
+		if shots.is_empty() or sk.foe_at(at.x, at.y) != null:
+			_close_pop()
+			return
+		_show_details(_mine_text(at.x, at.y, shots), _slot_views[at.x][at.y])
+
+
+## A tap on nothing (the ground, the black) closes an open readout.
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_close_pop()
 
 
 ## A machine's hold (Ryan, 26 October: "the hold press on an ally or enemy should follow a
@@ -1830,8 +2085,7 @@ func _on_mech_double_tapped(i: int) -> void:
 ## Fill and show the codex (see `CodexBox` for the entry keys).
 func _open_codex(entry: Dictionary) -> void:
 	_details.visible = false
-	_hold_foe = null
-	_hold_mech = -1
+	_pop = {}
 	_refresh_arrows()
 	_codex.open(entry)
 
@@ -1851,8 +2105,8 @@ func _open_menu(page: String = "paused") -> void:
 				BattleMapView.pace = float(value)
 			elif key == "scan" and _bg != null:
 				_bg.scan = bool(value)
-			elif key == "weld":
-				_build()   # the machines remade, welded or as authored (a debug build's comparison)
+			elif key == "weld" or key == "aa_mode" or key == "skirmish_controls":
+				_build()   # the machines remade, welded or as authored (a debug build's comparison) or at another AA mode, or the controls moved
 				_refresh())
 		_menu.hud_changed.connect(func() -> void:
 			_build()
@@ -1868,15 +2122,23 @@ func _toggle_all_arrows(on: bool) -> void:
 	_refresh_arrows()
 
 
+## The quick switch: the controls to the other place, saved as the menu's setting is, and the
+## screen laid again around the fight as it stands.
+func _switch_controls() -> void:
+	Settings.set_display("skirmish_controls", "bottom" if controls() == "middle" else "middle")
+	_build()
+	_refresh()
+
+
+## A die (or the waiting Swap's) let go: its readout goes, and a unit's left open comes back.
 func _on_hold_released() -> void:
 	_details.visible = false
-	_hold_foe = null
-	_hold_mech = -1
 	var was_die := _hold_die >= 0
 	_hold_die = -1
 	if was_die:
-		_refresh(false)   # a held die's preview lets go of the gauges too
+		_refresh(false)   # a held die's preview lets go of the gauges too; the unit's readout returns with it
 	else:
+		_show_pop()
 		_refresh_arrows()
 		_refresh_prey()
 
@@ -2380,9 +2642,9 @@ func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool, lands
 	if lands > 0.0:
 		tw.tween_interval(lands)
 	tw.tween_property(ghost, "modulate", Color(2.0, 1.2, 1.2), 0.06)
-	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY_DIM, 1.0), 0.12)
+	tw.tween_property(ghost, "modulate", Color(Palette.LOSS_DIM, 1.0), 0.12)
 	tw.set_parallel(true)
-	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY_DIM, 0.0), 0.4)
+	tw.tween_property(ghost, "modulate", Color(Palette.LOSS_DIM, 0.0), 0.4)
 	tw.tween_property(ghost, "position:y", ghost.position.y + 16.0, 0.4).set_ease(Tween.EASE_IN)
 	tw.set_parallel(false)
 	tw.tween_callback(ghost.queue_free)
@@ -2756,6 +3018,7 @@ func _on_end_turn() -> void:
 func _end_turn_now() -> void:
 	if sk.state != Skirmish.State.ASSIGN:
 		return
+	_close_pop()   # a readout is for planning the turn: the enemy's plays without one
 	Sound.play("resolve", -4.0)
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
@@ -2851,11 +3114,11 @@ func _animate_pool_join(f: Foe, delay: float) -> void:
 	ghost.size = sz
 	ghost.pivot_offset = sz * 0.5
 	ghost.position = from - sz * 0.5
-	ghost.modulate = Color(1.6, 0.8, 0.8, 0.0)
+	ghost.modulate = Color(1.4, 0.9, 1.8, 0.0)   # the flash in the enemy's violet, as the count it flies to
 	add_child(ghost)
 	var tw := create_tween()
 	tw.tween_interval(delay)
-	tw.tween_property(ghost, "modulate", Color(1.6, 0.8, 0.8, 1.0), 0.12)
+	tw.tween_property(ghost, "modulate", Color(1.4, 0.9, 1.8, 1.0), 0.12)
 	tw.tween_interval(0.18)
 	tw.set_parallel(true)
 	tw.tween_property(ghost, "position", to - sz * 0.5, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)

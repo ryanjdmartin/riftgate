@@ -67,6 +67,7 @@ var _sin: float = 1.0
 var _cos: float = 1.0
 var _origin := Vector2.ZERO     # where hex (0,0) sits in the map, in map pixels
 var _view := Vector2.ZERO       # the screen area, in pixels
+var _density: float = 1.0       # device pixels rendered per design pixel (Hud.density)
 var _scroll := Vector2.ZERO     # the map view's scroll
 var _zoom: float = 1.0
 var _camera: Camera3D
@@ -75,6 +76,7 @@ var _pivots: Dictionary = {}    # unit id -> the pivot that turns to the facing;
 var _shadows: Dictionary = {}   # unit id -> the ground disc under a flyer
 var _rigs: Dictionary = {}      # unit id -> MechRig: the machine's joints, its idle acts and strikes (the same as the skirmish's)
 var _scale: Dictionary = {}     # unit id -> the model's scale on the map (model units to world units)
+var _outlined: Dictionary = {}  # unit id -> [the model, its bounds in its own space] (outline_boxes)
 var _heading: Dictionary = {}   # unit id -> the yaw the move is heading, radians, while a move plays
 var _last_pos: Dictionary = {}  # unit id -> the seat's position last frame, for the speed
 var _rest_yaw: Dictionary = {}  # unit id -> the facing it settles to at rest; eased, never snapped (Ryan, 4 October)
@@ -130,14 +132,15 @@ func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float,
 	hex_px = hex_size
 	_origin = origin
 	_view = view_size   # the screen area in design pixels: the camera's frame, whatever the density
+	_density = density
 	_ppu = hex_px / HEX_WORLD
 	_sin = sin(deg_to_rad(PITCH))
 	_cos = cos(deg_to_rad(PITCH))
-	size = Vector2i((view_size * density).round())   # the pixels rendered: the design's, or the glass's (the FINE MAP setting)
+	size = Vector2i((view_size * density).round())   # the pixels rendered: the glass's (Hud.density)
 	own_world_3d = true
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS   # alive: sway and ripple every frame
-	msaa_3d = Hud.msaa_3d()   # none on a phone: the Compatibility renderer leaks with it (Hud.msaa_3d)
+	msaa_3d = Hud.msaa_3d()
 	canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	_build_light()
 	_build_ground()
@@ -639,9 +642,15 @@ func _bake_model(node: Node3D, band: int) -> void:
 ## The display traces a thing's edges in light (TraceLines), lit by the scan bar as it
 ## passes. RIFTGATE_INK=dark starts them as black ink.
 var _trace_nodes: Array = []
-var _trace_mode := TraceLines.mode()
+var _trace_mode := _first_trace_mode()
 var _light_mat: ShaderMaterial = null
 var _ink_line_mat: StandardMaterial3D = null
+
+## The traces' mode the map starts in: TraceLines.mode(), or none while a debug build's TRACES is
+## off (a crease is one device pixel at every zoom, many on a machine drawn small: Ryan judges
+## on the phone whether they are the grain he sees zoomed out, 30 October).
+static func _first_trace_mode() -> String:
+	return TraceLines.mode() if bool(Settings.display.get("traces", true)) or not OS.is_debug_build() else "off"
 
 func _trace(mi: MeshInstance3D, kind: String = "prop") -> void:
 	var added := TraceLines.attach(mi, _trace_material(kind))
@@ -975,7 +984,7 @@ func _ink(grow: float = 1.0) -> StandardMaterial3D:
 ## follow every call, so a mark can breathe.
 var _marks: Dictionary = {}   # hex -> [fill MeshInstance3D or null, line MeshInstance3D or null]
 var _marks_key := ""
-const EDGE_W := 1.0   # the ribbon's width in map pixels: a hairline, the tint does the work (Ryan, 22 September)
+const EDGE_W := 1.0   # the edge's width in design pixels on screen, at every zoom: a hairline, the tint does the work (Ryan, 22 September)
 
 func set_marks(list: Array) -> void:
 	var key := ""
@@ -998,7 +1007,7 @@ func set_marks(list: Array) -> void:
 				fill = _flat_mark(_mark_mesh(y), _columns[h])
 			var line: MeshInstance3D = null
 			if not (m["edges"] as Array).is_empty():
-				line = _flat_mark(_edge_mesh(y + 0.05, m["edges"]), _columns[h])
+				line = _line_mark(_edge_mesh(y + 0.05, m["edges"]), _columns[h])
 			_marks[h] = [fill, line]
 	for m in list:
 		var pair: Array = _marks.get(m["hex"], [])
@@ -1007,7 +1016,7 @@ func set_marks(list: Array) -> void:
 		if pair[0] != null:
 			(pair[0].material_override as StandardMaterial3D).albedo_color = _scene_alpha(m["fill"])
 		if pair[1] != null:
-			(pair[1].material_override as StandardMaterial3D).albedo_color = _scene_alpha(m["line"])
+			(pair[1].material_override as ShaderMaterial).set_shader_parameter("color", _scene_alpha(m["line"]))
 
 
 ## The scene blends in linear light, so a thin tint of a bright colour over dark ground
@@ -1031,6 +1040,22 @@ func _flat_mark(mesh: Mesh, col: Node3D) -> MeshInstance3D:
 	return mi
 
 
+## A mark's edge, drawn by mark_line.gdshader: EDGE_W design pixels on screen at every zoom,
+## smoothed, as the grid's.
+func _line_mark(mesh: Mesh, col: Node3D) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.mesh = mesh
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://game/battle/mark_line.gdshader")
+	mat.set_shader_parameter("line_px", EDGE_W * _density)
+	mat.set_shader_parameter("inset_px", maxf(0.5, GRID_INSET * _density))
+	mat.render_priority = 1
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	col.add_child(mi)
+	return mi
+
+
 func _mark_mesh(y: float) -> ArrayMesh:
 	var corners := Hex.corners(Vector2.ZERO, hex_px - 3.0)
 	var st := SurfaceTool.new()
@@ -1043,10 +1068,14 @@ func _mark_mesh(y: float) -> ArrayMesh:
 	return st.commit()
 
 
-## Ribbons along the given edges (corner i to i+1), just inside the hex's edge.
+## Ribbons along the given edges (corner i to i+1), just inside the hex's edge, GRID_RIBBON
+## map pixels deep: UV.x carries each corner's distance in, which mark_line.gdshader turns
+## into a line of one width on screen.
 func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
 	var outer := Hex.corners(Vector2.ZERO, hex_px - 1.0)
-	var inner := Hex.corners(Vector2.ZERO, hex_px - 1.0 - EDGE_W * 1.15)
+	var inner := Hex.corners(Vector2.ZERO, hex_px - 1.0 - GRID_RIBBON * 2.0 / sqrt(3.0))
+	var edge := Vector2.ZERO
+	var deep := Vector2(GRID_RIBBON, 0.0)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for e in edges:
@@ -1056,8 +1085,12 @@ func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
 		var b := _world(outer[j], y)
 		var c := _world(inner[j], y)
 		var d := _world(inner[i], y)
-		st.add_vertex(a); st.add_vertex(b); st.add_vertex(c)
-		st.add_vertex(a); st.add_vertex(c); st.add_vertex(d)
+		st.set_uv(edge); st.add_vertex(a)
+		st.set_uv(edge); st.add_vertex(b)
+		st.set_uv(deep); st.add_vertex(c)
+		st.set_uv(edge); st.add_vertex(a)
+		st.set_uv(deep); st.add_vertex(c)
+		st.set_uv(deep); st.add_vertex(d)
 	return st.commit()
 
 
@@ -1065,13 +1098,21 @@ func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
 ## grid. Geometry, not GL lines: a line primitive is one device pixel whatever the screen,
 ## and on the phone (Ryan, 25 September: faint at rest on native Android) that is a
 ## hairline on a small dense screen, thinner and dimmer still on the Compatibility
-## renderer. A ribbon of GRID_W map pixels scales with the hex, the zoom and the screen.
+## renderer. The line keeps GRID_W design pixels on screen at every zoom (Ryan, 30 October:
+## it thickened as the map zoomed in, and stepped zoomed out), drawn smoothed by
+## grid.gdshader on a ribbon GRID_RIBBON map pixels wide, which holds the line and its
+## smoothing down to zoom 1 on a glass of the design's density.
 const GRID_W := 1.5
+const GRID_INSET := 0.4   # design pixels between the column's edge and the line
+const GRID_RIBBON := 3.0
 
 func _grid_geo(y: float) -> Dictionary:
 	var outer := Hex.corners(Vector2.ZERO, hex_px - 0.75)
-	var inner := Hex.corners(Vector2.ZERO, hex_px - 0.75 - GRID_W * 1.15)   # 1.15: a corner's inset is measured along the edge's normal, not the radius
+	var inner := Hex.corners(Vector2.ZERO, hex_px - 0.75 - GRID_RIBBON * 2.0 / sqrt(3.0))   # a corner's inset is measured along the edge's normal, not the radius, and exactly: UV.x says how deep it is
 	var v := PackedVector3Array()
+	var uv := PackedVector2Array()
+	var edge := Vector2.ZERO
+	var deep := Vector2(GRID_RIBBON, 0.0)   # UV.x: map pixels in from the column's edge
 	for i in range(outer.size()):
 		var j := (i + 1) % outer.size()
 		var a := _world(outer[i], y)
@@ -1080,29 +1121,34 @@ func _grid_geo(y: float) -> Dictionary:
 		var d := _world(inner[i], y)
 		v.append(a); v.append(b); v.append(c)
 		v.append(a); v.append(c); v.append(d)
-	return {"v": v}
+		uv.append(edge); uv.append(edge); uv.append(deep)
+		uv.append(edge); uv.append(deep); uv.append(deep)
+	return {"v": v, "uv": uv}
 
 
 var _grid_mat: ShaderMaterial = null
 
-## The display's light: the same trace shader as the edges, so the scan bar lights the grid
-## as it passes; a little dimmer than the traces.
+## The display's light: the trace shader's scan on the grid's own (grid.gdshader), so the
+## scan bar lights the grid as it passes; a little dimmer than the traces.
 func _grid_material() -> ShaderMaterial:
 	if _grid_mat == null:
 		_grid_mat = ShaderMaterial.new()
-		_grid_mat.shader = load("res://game/battle/trace.gdshader")
+		_grid_mat.shader = load("res://game/battle/grid.gdshader")
 		_grid_mat.set_shader_parameter("color", Palette.HUD)
 		_grid_mat.set_shader_parameter("gain", GRID_GAIN_PHONE if OS.has_feature("mobile") else GRID_GAIN)
+		_grid_mat.set_shader_parameter("line_px", GRID_W * _density)
+		_grid_mat.set_shader_parameter("inset_px", maxf(0.5, GRID_INSET * _density))
 	return _grid_mat
 
 
 ## The grid's resting brightness (the tuner's GRID knob). The phone needs far more than
 ## the Mac: the ribbons drawn at the Mac's gain were still dim on the phone at any zoom
 ## (Ryan, 28 September; the Compatibility renderer adds no bloom halo to a line, and the
-## glass is small), so a phone rests hotter. Both down a fifth (Ryan, 25 October: "base hex
-## outline brightness can be reduced a bit"), so the marks drawn over the grid stand out.
-const GRID_GAIN := 0.56
-const GRID_GAIN_PHONE := 1.2
+## glass is small), so a phone rests hotter. Down a fifth on 25 October to calm a busy
+## screen, and back once the lines held one width at every zoom (Ryan, 30 October: "With
+## these changes, I think it could go back how it was").
+const GRID_GAIN := 0.7
+const GRID_GAIN_PHONE := 1.5
 
 
 ## One hex of flat ground as a polygon: the dark rim under the columns, for the grid gaps.
@@ -1520,23 +1566,62 @@ func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 			Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.8)))
 
 
-func _model(id: String, maker: String, paint: Dictionary = {}, outline: bool = true, plan: Array = []) -> Node3D:
+## A model in its maker's materials, wearing its fitted die on the pins as the skirmish does
+## (MechView3D.plan_for), so the outline's bounds take them in. A machine's light outline is
+## the compositor's, drawn round the machines' layer (outline_boxes); the gate and walls wear
+## none (Ryan, 22 September).
+func _model(id: String, maker: String, paint: Dictionary = {}, plan: Array = []) -> Node3D:
 	var scene: PackedScene = load("res://art/models/%s.glb" % id)
 	var node: Node3D = scene.instantiate()
 	MechView3D.toon(node, maker, "clean", paint, false)
-	# The fitted die on the pins before the outline, as the skirmish wears it (MechView3D.plan_for).
 	MechView3D.wear(MechView3D.pins_of(node), plan, "clean", paint, false, true, id)
-	if outline:
-		TraceLines.silhouette_through_all(node)   # a machine keeps its outline behind the wall
-	else:
-		TraceLines.strip_silhouette(node)         # the gate and walls wear none (Ryan, 22 September)
 	return node
+
+
+## The machines' light outline, in design pixels on screen at every zoom (Ryan, 30 October:
+## "I don't want the outline to thicken as I zoom in"; the engine's outline grew with the
+## world, 2.6 model units, and broke along the models' flat faces). The compositor draws it
+## (bleed.gdshader) in the trace modes that outline the player's things; RIFTGATE_OUTLINE=<n>
+## sets it, to compare widths by eye.
+const OUTLINE := 2.0
+const MAX_BOXES := 32   # bleed.gdshader's `boxes`
+
+static func outline_px() -> float:
+	if not TraceLines.mode() in ["assets", "pulse"]:
+		return 0.0
+	var env := OS.get_environment("RIFTGATE_OUTLINE")
+	return float(env) if not env.is_empty() else OUTLINE
+
+
+## Where each machine stands on screen, for the compositor's outline: the box round its bounds
+## as they project now (the model's own transform carries its facing and its body's acts), an
+## eighth larger each way for its limbs', in this viewport's pixels, so the outline is looked
+## for only near one.
+func outline_boxes() -> PackedVector4Array:
+	var out := PackedVector4Array()
+	if _camera == null or not _camera.is_inside_tree():
+		return out
+	for uid in _outlined.keys():
+		var model: Node3D = _outlined[uid][0]
+		if not is_instance_valid(model) or not model.is_visible_in_tree() or out.size() >= MAX_BOXES:
+			continue
+		var bounds: AABB = _outlined[uid][1]
+		var xf := model.global_transform
+		var lo := Vector2(INF, INF)
+		var hi := -lo
+		for i in range(8):
+			var at := _camera.unproject_position(xf * bounds.get_endpoint(i))
+			lo = lo.min(at)
+			hi = hi.max(at)
+		var grow := (hi - lo) * 0.125
+		out.append(Vector4(lo.x - grow.x, lo.y - grow.y, hi.x + grow.x, hi.y + grow.y))
+	return out
 
 
 func _build_structures() -> void:
 	var map := field.map
 	if MechView3D.has_model("gate"):
-		var g := _model("gate", "arsenal", {}, false)
+		var g := _model("gate", "arsenal")
 		g.position = _hex_world(map.gate)
 		g.rotation.y = PI   # turned about, so its portcullis face is the one the player sees
 		_bake_model(g, _band(map.gate))   # with ink on its creases, so the towers and reveals read as geometry
@@ -1551,7 +1636,7 @@ func _build_structures() -> void:
 		for mh in map.margin.keys():
 			if Hex.axial_to_offset(mh).y == map.height - 1 and not map.city.has(mh):
 				bottom.append(mh)
-		var m := _model("wall", "arsenal", {}, false)   # one segment, baked at every place on the line
+		var m := _model("wall", "arsenal")   # one segment, baked at every place on the line
 		m.rotation.y = PI
 		for w in bottom:
 			m.position = _hex_world(w)
@@ -1643,6 +1728,7 @@ func sync() -> void:
 			_setoff.erase(uid)
 			_rigs.erase(uid)
 			_scale.erase(uid)
+			_outlined.erase(uid)
 			_rest_yaw.erase(uid)
 			_heading.erase(uid)
 			_last_pos.erase(uid)
@@ -1701,7 +1787,7 @@ func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := ContentDB.load_default().maker_of(u.chassis_id)
 		var model_id := MechView3D.model_for(u.chassis_id)
-		var node := _model(model_id, maker, u.paint, true, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [])
+		var node := _model(model_id, maker, u.paint, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [])
 		MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
@@ -1725,6 +1811,7 @@ func _make_unit(u: Unit) -> Node3D:
 		var south := (hover + (aabb.end.y * k) * 0.5) * _cos / _sin
 		node.position = Vector3(-aabb.get_center().x, 0.0, -aabb.get_center().z * 0.5) * k + Vector3(0.0, hover, 0.0)
 		pivot.add_child(node)
+		_outlined[u.id] = [node, aabb]   # where the compositor looks for its outline (outline_boxes)
 		# The rig after the materials and the seat: a body track moves the model under its
 		# pivot, so the facing and the idle never fight; seeded by the unit, so no two act in step.
 		var rig := MechRig.new()

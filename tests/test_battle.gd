@@ -432,7 +432,7 @@ func test_nothing_is_left_once_every_machine_has_done_what_it_can() -> void:
 	assert_true(b.nothing_left(), "and now the button is all that is left")
 
 
-## Where a selected machine could attack from, past its move, in red on the map (Ryan, 25 October).
+## Where a selected machine could attack from, past its move, in the enemy's violet on the map (Ryan, 25 October; violet since 30 October).
 func test_the_attack_hexes_ring_the_move() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]

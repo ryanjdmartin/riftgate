@@ -16,7 +16,8 @@ const CLEAN_SCALE := 2
 const PITCH := 30.0
 const YAW_FRONT := 45.0     # front three-quarter: the codex hero angle
 const YAW_REAR := 225.0     # rear three-quarter, kept for hero shots
-const YAW_SKIRMISH := 155.0 # the skirmish: rear three-quarter facing the foes above, turned to the left (the claw side shows)
+const YAW_SKIRMISH := 155.0 # the old skirmish pose and the act tools': rear three-quarter facing the foes above, turned to the left (the claw side shows)
+const YAW_FIELD := 0.0      # the skirmish on its floor (29 October): facing the foes, seen from behind by the floor's camera; `field.turn` turns each toward the middle
 const FILL := 0.92
 ## How much of its frame a machine fills, by its class by mass (chassis `size`; Ryan, 5
 ## October: the machines' scale): the skirmish sets `size_k` from it, so the team stands in
@@ -86,6 +87,14 @@ var hide_detail: bool = true      # in token mode: drop ".detail" parts (a struc
 var paint: Dictionary = {}        # optional repaint: {"primary": Color, "secondary": Color} over the maker's livery and bone plating
 var frame_override: Vector2i = Vector2i.ZERO
 var size_k: float = 1.0           # the share of FILL the model takes (SIZE_FILL); set before it is in the tree
+## The skirmish's floor (29 October, the field), set by make_on_floor: the machine is drawn as
+## the floor's own camera sees it standing on its hex, through a window of that camera's view,
+## rather than framed alone at the sprites' angle. focal (design px) and height (hexes) are the
+## camera's, level, its centre `principal` (design px) on the horizon; `at` the hex's centre on
+## the floor (x across, y deep, in hexes); `window` the view's rect on the screen (design px);
+## `fill` the machine's size in hexes; `lift` how far off the floor it flies; `turn` the degrees
+## it turns from facing the foes, positive to its left.
+var field: Dictionary = {}
 const SPIN_SPEED := 0.7           # radians per second
 
 # The model's tags (tools/lowforge/bl_low.py): `joint_<name>` is a pivot with the limb's
@@ -102,6 +111,8 @@ var _inner: SubViewport
 var _camera: Camera3D
 var _model: Node3D
 var _pivot: Node3D = null   # the model's turntable, at its bounds' centre
+var _stage: Node3D = null   # where the pivot stands: the world's origin, or on the floor its hex at the floor's scale
+var _field_scale := 1.0     # on the floor: hexes a model unit
 
 
 ## The sky a chrome finish mirrors: the nineties chrome map, pale blue overhead running
@@ -195,15 +206,6 @@ static func parse_tag(node_name: String) -> Array:
 	return MechRig.parse_tag(node_name)
 
 
-## The light outline's thickness (the stencil outline; thin was Ryan's call on 22 September).
-## RIFTGATE_OUTLINE=<n> overrides it, to compare thicknesses by eye.
-const OUTLINE := 2.6   # Ryan, 29 September: trying it thick in game (1.0 was the 22 September thin)
-
-static func outline_thickness() -> float:
-	var env := OS.get_environment("RIFTGATE_OUTLINE")
-	return float(env) if not env.is_empty() else OUTLINE
-
-
 ## Which look the screens use: "clean" by default, RIFTGATE_MECH3D=pixel for the pixel look,
 ## RIFTGATE_MECH3D=off for the 2D sprites.
 static func look_setting() -> String:
@@ -226,6 +228,20 @@ static func make(chassis_id: String, maker: String, look: String, fallback: Stri
 	var id := model_for(chassis_id, fallback)
 	v.model_id = id
 	v.plan = plan_arg if id == chassis_id else []   # a borrowed model never wears another machine's kit
+	v._setup(id, maker)
+	return v
+
+
+## A machine standing on the skirmish's floor, drawn by the floor's camera (`field`, above).
+static func make_on_floor(chassis_id: String, maker: String, look: String, field_arg: Dictionary, paint_arg: Dictionary = {}, plan_arg: Array = []) -> MechView3D:
+	var v := MechView3D.new()
+	v.mode = look
+	v.yaw = YAW_FIELD + float(field_arg.get("turn", 0.0))
+	v.field = field_arg
+	v.paint = paint_arg
+	var id := model_for(chassis_id, "")
+	v.model_id = id
+	v.plan = plan_arg if id == chassis_id else []
 	v._setup(id, maker)
 	return v
 
@@ -385,17 +401,19 @@ static func wear(pins: Dictionary, rows: Array, look: String, paint_arg: Diction
 		MechWeld.weld(part)
 
 
-var density := 1.0              # device pixels a design pixel: the render is this much larger than `frame_px` (the FINE MAP setting)
+var density := 1.0              # device pixels a design pixel: the render is this much larger than `frame_px` (Hud.density)
 var frame_px := Vector2i.ZERO   # the design-size frame the render stands for; a consumer draws the texture at this size
 
 func _setup(chassis_id: String, maker: String) -> void:
 	var frame := frame_override if frame_override != Vector2i.ZERO else PIXEL_FRAME * CLEAN_SCALE
+	if not field.is_empty():
+		frame = Vector2i((field["window"] as Rect2).size.round())
 	frame_px = frame
 	density = Hud.density(self)
 	var px := Vector2i((Vector2(frame) * density).round())
 	# The outer viewport holds the outlined 2D result; the inner one renders the 3D, both
-	# at the glass's density when FINE MAP is on (Ryan, 29 September: the skirmish's
-	# machines get the map's sharpness too).
+	# at the glass's density (Ryan, 29 September: the skirmish's machines get the map's
+	# sharpness too).
 	size = px
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -408,7 +426,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		_inner.own_world_3d = true     # otherwise every mech view shares one world and the models overlap
 		_inner.transparent_bg = true
 		_inner.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-		_inner.msaa_3d = Hud.msaa_3d()   # none on a phone: the Compatibility renderer leaks with it (Hud.msaa_3d)
+		_inner.msaa_3d = Hud.msaa_3d()
 		_inner.screen_space_aa = SubViewport.SCREEN_SPACE_AA_DISABLED   # FXAA is refused by the Compatibility renderer (the phone's), so no screen-space AA anywhere
 		add_child(_inner)
 	else:
@@ -421,8 +439,10 @@ func _setup(chassis_id: String, maker: String) -> void:
 	# The model hangs off a pivot at its own bounds' centre (a model's origin is wherever
 	# its author put it; the Badger's is off to one side, and it turned around that, Ryan
 	# 22 September). Yaw, spin and sway all turn the pivot. The ground stays at y = 0.
+	_stage = Node3D.new()
+	_inner.add_child(_stage)
 	_pivot = Node3D.new()
-	_inner.add_child(_pivot)
+	_stage.add_child(_pivot)
 	_pivot.add_child(_model)
 	var corners: Array[Vector3] = []
 	_collect_corners_local(_model, _model, corners)   # before the tree: relative transforms, never global
@@ -435,6 +455,14 @@ func _setup(chassis_id: String, maker: String) -> void:
 			hi = Vector3(maxf(hi.x, c.x), maxf(hi.y, c.y), maxf(hi.z, c.z))
 		_model.position = -Vector3((lo.x + hi.x) * 0.5, 0.0, (lo.z + hi.z) * 0.5)
 		widest = maxf(hi.x - lo.x, hi.z - lo.z)
+		if not field.is_empty():
+			# On its hex at the floor's scale, a tall machine kept to the same share of the hex
+			# a wide one is; the pivot under the stage still turns and bobs in model units.
+			var tall := hi.y - minf(lo.y, 0.0)
+			_field_scale = float(field.get("fill", 0.86)) / maxf(0.001, maxf(widest, tall * 0.8))
+			var at: Vector2 = field["at"]
+			_stage.position = Vector3(at.x, float(field.get("lift", 0.0)), -at.y)
+			_stage.scale = Vector3.ONE * _field_scale
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
 	MechWeld.weld(_model, MechWeld.kept_parts(chassis_id))   # a mesh a material in each moving group (the battery plan), before the rig and the traces read it
@@ -452,9 +480,8 @@ func _setup(chassis_id: String, maker: String) -> void:
 		# screen's scan bar lights it through set_sweep_screen.
 		var tmode := TraceLines.mode()
 		if spin:
-			# The codex: black ink only, no silhouette, no scan (Ryan, 22 September).
+			# The codex: black ink only, no scan (Ryan, 22 September).
 			_trace_mat = TraceLines.ink_material()
-			strip_silhouette()
 		elif tmode == "pulse":
 			_trace_mat = TraceLines.pulse_material(Palette.HUD)
 		elif TraceLines.inked(tmode, "asset"):
@@ -463,6 +490,11 @@ func _setup(chassis_id: String, maker: String) -> void:
 			_trace_mat = TraceLines.light_material(Palette.HUD)
 		if _trace_mat is ShaderMaterial:
 			(_trace_mat as ShaderMaterial).set_shader_parameter("gain", 0.8)
+			if not field.is_empty():
+				# The scan's reach and wake are in world units, the model's own until the floor
+				# made the world hexes.
+				(_trace_mat as ShaderMaterial).set_shader_parameter("lead", 10.0 * _field_scale)
+				(_trace_mat as ShaderMaterial).set_shader_parameter("tail", 75.0 * _field_scale)
 		TraceLines.attach(_model, _trace_mat)
 	if OS.get_environment("RIFTGATE_MECH3D_WIRE") == "1":
 		# Wireframe trial (21 September): the reconstruction's own telemetry drawing.
@@ -471,9 +503,9 @@ func _setup(chassis_id: String, maker: String) -> void:
 	# tiled facets and overhangs read. The toon shader carries its own light and ignores it.
 	var sun := DirectionalLight3D.new()
 	sun.light_energy = 1.7
-	sun.rotation_degrees = Vector3(-55.0, yaw - 150.0, 0.0)
+	sun.rotation_degrees = Vector3(-55.0, (yaw if field.is_empty() else YAW_FIELD) - 150.0, 0.0)   # on the floor one sun for the squad, however each is turned
 	sun.shadow_enabled = true
-	sun.directional_shadow_max_distance = 2000.0
+	sun.directional_shadow_max_distance = 2000.0 if field.is_empty() else 30.0   # the floor's world is in hexes
 	_inner.add_child(sun)
 	var env := WorldEnvironment.new()
 	var e := Environment.new()
@@ -496,6 +528,19 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_camera = Camera3D.new()
 	_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	_camera.keep_aspect = Camera3D.KEEP_HEIGHT
+	if not field.is_empty():
+		# The floor's camera, level at its height, looking down the floor; this view is the
+		# window of its picture where the machine stands: a frustum shifted off its centre.
+		var win: Rect2 = field["window"]
+		var principal: Vector2 = field["principal"]
+		var focal := float(field["focal"])
+		var c := win.get_center()
+		_camera.projection = Camera3D.PROJECTION_FRUSTUM
+		_camera.near = 0.05
+		_camera.far = 400.0
+		_camera.size = _camera.near * win.size.y / focal
+		_camera.frustum_offset = Vector2(_camera.near * (c.x - principal.x) / focal, -_camera.near * (c.y - principal.y) / focal)
+		_camera.position = Vector3(0.0, float(field["height"]), 0.0)
 	_inner.add_child(_camera)
 	_camera.add_child(sheen_light())
 	# Framing needs global transforms, so it waits for the tree (see _ready).
@@ -611,10 +656,10 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				ramp = ramp_for(paint_arg["secondary"])
 			if src is StandardMaterial3D and (src as StandardMaterial3D).albedo_texture != null:
 				# A lowforge model (the ally register, decided 21 September): its own tiled
-				# texture, nearest filtered, flat facets, lit by the scene's sun, gloss by
+				# texture, nearest filtered through its mipmaps, flat facets, lit by the scene's sun, gloss by
 				# maker. The toon pass below is for untextured models (the structures).
 				var tm: StandardMaterial3D = (src as StandardMaterial3D).duplicate()
-				tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+				tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS   # its mipmaps, so a machine drawn small never sparkles
 				var finish: Array = FINISH.get(maker, FINISH.values()[0])
 				if float(finish[1]) >= 0.25:
 					mi.layers |= 1 << (SHEEN_LAYER - 1)   # the sheen light finds it
@@ -626,8 +671,6 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				# grid and hides it, like a prop or the wall (Ryan, 22 September).
 				tm.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 				tm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_ALWAYS
-				if TraceLines.mode() in ["assets", "pulse"]:
-					TraceLines.silhouette(tm, Palette.HUD, outline_thickness())   # the light outline around the whole machine
 				if role == "amber":
 					# Lamps, engines and light strips glow: the reconstruction's own light.
 					tm.emission_enabled = true
@@ -666,8 +709,12 @@ static func view_height(extent: Vector2, aspect: float, k: float = 1.0) -> float
 
 
 ## Orthographic camera on the sprites' angle, sized so the model fills the frame the way
-## blendforge fits it: the projected extents of every mesh's bounds, with a little slack.
+## blendforge fits it: the projected extents of every mesh's bounds, with a little slack. On
+## the floor the camera is the floor's and fixed; only where the drawing lands is measured.
 func _frame_camera() -> void:
+	if not field.is_empty():
+		_frame_field()
+		return
 	var corners: Array[Vector3] = []
 	_collect_corners(_model, corners)
 	if corners.is_empty():
@@ -724,6 +771,23 @@ var _target := Vector3.ZERO
 var _model_rect := Rect2()
 
 
+## On the floor: where the drawing lands in this view's pixels, every vertex through the
+## floor's camera, so the gauges hug it without reading the render back.
+func _frame_field() -> void:
+	var verts: Array[Vector3] = []
+	_collect_vertices(_model, verts)
+	if verts.is_empty():
+		return
+	var lo := Vector2(INF, INF)
+	var hi := Vector2(-INF, -INF)
+	for v in verts:
+		var p := _camera.unproject_position(v)
+		lo = Vector2(minf(lo.x, p.x), minf(lo.y, p.y))
+		hi = Vector2(maxf(hi.x, p.x), maxf(hi.y, p.y))
+	_model_rect = Rect2(lo, hi - lo)
+	_screen_down = Vector3(0.0, -1.0, 0.0)
+
+
 ## The model's projected bounds in this view's pixels, from the camera's framing. Gauges
 ## and chips hug this; nothing reads the viewport's image back (a GPU readback every frame
 ## on a phone, and an empty one before the first render, which left gauges floating).
@@ -732,21 +796,17 @@ func model_rect() -> Rect2:
 var _screen_down := Vector3.ZERO
 
 ## The screen's scan bar, in this view's own pixels from its top: the traces under it light.
-## Drop the light outline from every material: the codex and the portraits (Ryan, 22
-## September) show the machine bare.
-func strip_silhouette() -> void:
-	if _model == null:
-		return
-	for child in _model.find_children("*", "MeshInstance3D", true, false):
-		var mi: MeshInstance3D = child
-		for i in range(mi.get_surface_override_material_count()):
-			var sm := mi.get_surface_override_material(i)
-			if sm is BaseMaterial3D and "stencil_mode" in sm:
-				sm.set("stencil_mode", BaseMaterial3D.STENCIL_MODE_DISABLED)
-
-
 func set_sweep_screen(local_y: float) -> void:
 	if _trace_mat == null or not (_trace_mat is ShaderMaterial) or _camera == null:
+		return
+	if not field.is_empty():
+		# The floor's camera is level: the band's row is a height at the machine's depth.
+		var win: Rect2 = field["window"]
+		var at: Vector2 = field["at"]
+		var row := win.position.y + local_y / maxf(0.01, density)
+		var y := float(field["height"]) - (row - (field["principal"] as Vector2).y) * at.y / float(field["focal"])
+		(_trace_mat as ShaderMaterial).set_shader_parameter("sweep_p", -y)
+		(_trace_mat as ShaderMaterial).set_shader_parameter("screen_down", Vector3(0.0, -1.0, 0.0))
 		return
 	var per_px := _camera.size / float(size.y)   # world units per view pixel
 	var p := _target.dot(_screen_down) + (local_y - size.y * 0.5) * per_px
