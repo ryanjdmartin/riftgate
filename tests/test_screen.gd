@@ -108,18 +108,59 @@ func test_drop_target_lookup_finds_a_foe_view() -> void:
 	s.free()
 
 
-func test_hold_shows_details_and_arrows() -> void:
+## A unit's readout is a tap toggle, one unit's at a time (Ryan, 29 October: "Change the
+## hold-press on player units and enemy units into a tap toggle, only one unit popup allowed at a
+## time"): a tap opens it with the arrows that concern the unit, a tap on it again closes it, a
+## tap on another unit moves it there, a hold opens it and letting go keeps it, a tap on nothing
+## closes it, and it is translucent so the arrows under it show.
+func test_a_tap_toggles_a_units_readout() -> void:
 	var s := _screen()
 	var foe: Foe = s.sk.front[0]
 	var v := s._foe_view_for(foe)
-	s._on_foe_held(v)
-	assert_true(s._details.visible, "details shown on hold")
-	assert_eq(s._arrows.arrows.size(), 1, "one arrow for the held foe")
+	s._on_foe_tapped(v, 0, 0)
+	assert_true(s._details.visible, "a tap opens the foe's readout")
+	assert_true(s._details.fill_alpha < 1.0, "translucent, the arrows under it showing")
+	assert_eq(s._arrows.arrows.size(), 1, "with the arrow it brings")
+	s._on_foe_tapped(v, 0, 0)
+	assert_false(s._details.visible, "a tap on it again closes it")
+	assert_eq(s._arrows.arrows.size(), 0, "and its arrow")
+	s._on_foe_tapped(v, 0, 0)
+	s._on_mech_tapped(1)
+	assert_eq(s._pop, {"mech": 1}, "a tap on another unit moves it there, one at a time")
+	var name := s.sk.mechs[1].unit.display_name.to_upper()
+	assert_true(s._details_entry.text().begins_with(name), "the machine's readout")
+	s._on_mech_held(1)
+	assert_eq(s._pop, {"mech": 1}, "a hold on the same unit leaves it open")
+	s._on_die_held(0)
+	assert_eq(s._details.fill_alpha, 1.0, "a held die's readout takes the panel, opaque over the log")
 	s._on_hold_released()
-	assert_false(s._details.visible, "details hidden on release")
-	assert_eq(s._arrows.arrows.size(), 0, "arrows cleared")
+	assert_true(s._details.visible and s._details_entry.text().begins_with(name), "let go, the machine's readout comes back")
+	s._refresh()
+	assert_true(s._details.visible and s._details_entry.text().begins_with(name), "and it stays open as the fight refreshes")
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	s._gui_input(press)
+	assert_false(s._details.visible, "a tap on nothing closes it")
+	s._on_foe_held(v)
+	assert_true(s._details.visible and s._pop == {"foe": foe}, "a hold opens it too")
+	s._on_mech_double_tapped(0)
+	assert_true(s._pop.is_empty() and not s._details.visible, "the codex takes over from it")
+	s._close_codex()
 	s._toggle_all_arrows(true)
 	assert_true(s._arrows.arrows.size() >= 3, "eye shows every arrow")
+	s.free()
+
+
+## A machine's readout rests on its gauges (Ryan, 29 October: "Tighten the bottom of the player
+## unit popups to the top of the unit's bounding box, just a bit").
+func test_a_machines_readout_rests_on_its_gauges() -> void:
+	var s := _screen()
+	s._on_mech_tapped(0)
+	var v: UnitView = s._mech_views[0]
+	var bottom := s._details.position.y + s._details.size.y
+	var top := v.position.y + v.drawn_top()
+	assert_true(top - bottom >= 0.0 and top - bottom <= SkirmishScreen.POP_GAP + 0.5, "its foot just over the unit's gauges: %.1f over %.1f" % [bottom, top])
 	s.free()
 
 
@@ -191,7 +232,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 ## runs it: its place and name from content, its number as the die prints it, its heat, its
 ## target, its keywords, its own rules, then its tags. A number the live sources moved off the
 ## component's own is coloured, never its sources listed: green where it is good for the unit,
-## the enemy red where it is bad, an arrow on the number for which way. The whole die is the
+## the red-red where it is bad, an arrow on the number for which way. The whole die is the
 ## codex's.
 func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	var s := _screen()
@@ -231,7 +272,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "and the panel to it")
 	s._on_hold_released()
 	assert_false(s._details.visible, "hidden on release")
-	# A heat a passive raised is bad for the machine: the red, its arrow up.
+	# A heat a passive raised is bad for the machine: the red-red, its arrow up.
 	ms.unit.grant_passive({"id": "t_hot", "name": "Test Hot", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 2}]})
 	s._on_die_held(1)
 	var heat: Dictionary = {}
@@ -239,7 +280,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 		if str(l["text"]).begins_with("Heat"):
 			heat = l["parts"][1]
 	assert_eq([int(heat.get("trend", 0)), bool(heat.get("gain", true))], [1, false], "more heat than the component's own: a loss")
-	assert_eq(EntryReadout.trend_ink(heat), Palette.ENEMY, "in the enemy red")
+	assert_eq(EntryReadout.trend_ink(heat), Palette.LOSS, "in the red-red, harm to its unit")
 	s._on_hold_released()
 	s.free()
 
@@ -385,11 +426,25 @@ func test_the_keywords_list_holds_every_term_the_dice_print() -> void:
 		if str(db.vocabulary[id].get("status", "")) != "implemented":
 			assert_false(ids.has(id), "the planned %s is never shown" % id)
 	var s := _screen()
+	assert_eq(s._keys.text, "KEYWORDS", "spelt out (Ryan, 29 October)")
+	assert_true(s._keys.position.x >= s._end_btn.position.x + s._end_btn.size.x and s._keys.position.x + s._keys.size.x <= s._withdraw_btn.position.x, "between End turn and Withdraw")
+	assert_eq(s._keys.position.y, s.BOTTOM_Y, "on their row")
 	s._keys.pressed.emit()
-	assert_true(s._menu != null and s._menu.visible, "the button under the eye opens it")
+	assert_true(s._menu != null and s._menu.visible, "KEYWORDS opens it")
 	assert_eq(s._menu._page, "keywords", "straight on the keywords")
 	s._menu.close()
 	assert_false(s._menu.visible, "and it closes back to the fight")
+	# Over an open codex: laid after it, so above its shade, with the codex's panel stopping short
+	# of its row.
+	assert_true(s._keys.get_index() > s._codex.get_index(), "KEYWORDS stands over the codex")
+	assert_true(s._codex.bottom >= s.H - s.BOTTOM_Y, "the codex's panel clear of the bottom row")
+	s._on_mech_double_tapped(0)
+	assert_true(s._codex.is_open(), "a codex open")
+	s._keys.pressed.emit()
+	assert_true(s._menu.visible and s._menu._page == "keywords", "KEYWORDS still opens the list over it")
+	s._menu.close()
+	assert_true(s._codex.is_open(), "and the codex is there when it closes")
+	s._close_codex()
 	s._open_menu()
 	assert_eq(s._menu._page, "paused", "MENU still opens on PAUSED")
 	s._menu._show_page("keywords")
@@ -1180,13 +1235,19 @@ func test_the_menu_survives_a_colour_change_and_quits_to_the_host() -> void:
 
 
 func test_the_eye_and_reroll_keep_off_the_grounds() -> void:
+	var was: Variant = Settings.display.get("skirmish_controls", "middle")
+	Settings.display["skirmish_controls"] = "middle"   # the controls between the sides: a desk machine may have saved them at the bottom
 	var s := _screen()
 	assert_true(s._eye.position.y >= s.LOG_Y - 10.0, "the eye sits in the black under the foes' ground")
-	assert_true(s._log_scroll.position.x + s._log_scroll.size.x <= s._eye.position.x, "the log strip stops short of it")
+	assert_true(s._switch.position.x + s._switch.size.x <= s._eye.position.x and s._switch.position.y == s._eye.position.y, "the controls' switch beside it")
+	assert_true(s._log_scroll.position.x + s._log_scroll.size.x <= s._switch.position.x, "the log strip stops short of them")
+	var glass: Rect2 = s._bg.glass[0]
+	assert_true(glass.encloses(s._eye.get_rect()) and glass.encloses(s._switch.get_rect()), "both inside the log's glass (Ryan, 29 October: they did not fit it)")
 	var seam := s.REROLL_Y + SkirmishScreen.REROLL_SIZE.y + SkirmishScreen.REROLL_GAP
-	assert_true(seam <= s.MECH_Y, "the mechs' ground starts before the mechs")
+	assert_true(seam <= s.MECH_Y, "Reroll clear of the machines' row")
 	assert_true(s.DIE_Y >= s.LOG_Y + SkirmishScreen.LOG_H, "the dice sit under the log")
 	s.free()
+	Settings.display["skirmish_controls"] = was
 
 
 func test_replay_steps_order_specials_among_blows_and_name_only_the_named() -> void:

@@ -212,7 +212,7 @@ func _draw() -> void:
 	var border := Color(hud, alpha)
 	var fill := Palette.PANEL
 	if dead:
-		border = Palette.ENEMY_DIM
+		border = Palette.LOSS_DIM
 		fill = Palette.PANEL
 	# A soft shadow under the object, so the bob reads as height.
 	Hud.fill_poly(self, Hud.cut(Rect2(Vector2(4, 8 + bob * 0.4), Vector2(FACE, FACE)), CUT), Color(0, 0, 0, 0.4))
@@ -232,7 +232,7 @@ func _draw() -> void:
 		draw_string(Hud.quote(), SLOT_AT + Vector2(0, bob), Hud.roman(slot), HORIZONTAL_ALIGNMENT_LEFT, -1, SLOT_SIZE, Color(Palette.MUTED, alpha))
 	if face == null or dead:
 		if dead:
-			Glyphs.draw(self, "blank", Vector2(FACE * 0.5, FACE * 0.5 + bob), 44, Palette.ENEMY_DIM, 4.0)
+			Glyphs.draw(self, "blank", Vector2(FACE * 0.5, FACE * 0.5 + bob), 44, Palette.LOSS_DIM, 4.0)
 		return
 	var ink := Color(hud, alpha)
 	var mono := Hud.mono()
@@ -261,7 +261,7 @@ func _draw() -> void:
 	if face.ammo > 0:
 		# A forging machine's gun (the Musk Ox's, 21 October): its price in ammo where the heat
 		# sits, the shells' mark beside it; struck through and DRY when the magazine cannot pay.
-		var ac := Color(Palette.ENEMY if face.dry else Palette.SELECT, alpha)
+		var ac := Color(Palette.LOSS if face.dry else Palette.SELECT, alpha)
 		Glyphs.draw(self, "ammo", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, ac, 1.6)
 		var ammo_text := ("%d DRY" if face.dry else "%d AMMO") % face.ammo
 		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), ammo_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, ac)
@@ -276,15 +276,16 @@ func _draw() -> void:
 		slot_x += mono.get_string_size(heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
 	if face.volatile > 0 and not (face.disabled and dark > 0):
 		# A hull cost (Volatile, a cost beside the heat since 26 October, Ryan: "converting it
-		# from a keyword with a chip to a cost, alongside heat"): the enemy's colour, what it takes.
-		var vc := Color(Palette.ENEMY, alpha)
+		# from a keyword with a chip to a cost, alongside heat"): the hull's colour, what it spends, as
+		# heat and shield costs wear theirs (Ryan, 30 October, agreeing Claude's lean).
+		var vc := Color(Palette.HULL, alpha)
 		var hull_text := "-%d HULL" % face.volatile
 		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), hull_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, vc)
 		slot_x += mono.get_string_size(hull_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
 	if face.shield_cost > 0 and not (face.disabled and dark > 0):
 		# A shield cost (26 October): the shield's colour while the shield can pay; struck through
-		# and SHORT in the enemy's when it cannot and the entry is locked (the dry gun's pattern).
-		var cc := Color(Palette.ENEMY if face.short else Palette.SHIELD, alpha)
+		# and SHORT in the red-red when it cannot and the entry is locked (the dry gun's pattern).
+		var cc := Color(Palette.LOSS if face.short else Palette.SHIELD, alpha)
 		var cost_text := ("-%d SHORT" if face.short else "-%d SHIELD") % face.shield_cost
 		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), cost_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, cc)
 		var cw := mono.get_string_size(cost_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x

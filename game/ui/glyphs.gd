@@ -296,7 +296,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_colored_polygon(flame, color)
 			flame.append(flame[0])
 			ci.draw_polyline(flame, color, width)
-			var cut := Color(Palette.ACCENT_INK, color.a)
+			var cut := Color(Palette.BG, color.a)
 			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
 			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":
@@ -321,6 +321,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(s, 0), c + Vector2(s * 0.55, s * 0.7), c + Vector2(-s * 0.55, s * 0.7), c + Vector2(-s, 0),
 			]), color, width)
 			ci.draw_arc(c, s * 0.3, 0.0, TAU, 16, color, width)
+		"controls_middle", "controls_bottom":
+			# The skirmish's controls switch (29 October): a phone's frame, the controls a solid band
+			# where they sit, a chevron toward where a press moves them.
+			var w := s * 0.62
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-w, -s), c + Vector2(w, -s), c + Vector2(w, s), c + Vector2(-w, s), c + Vector2(-w, -s),
+			]), color, width)
+			var low := id == "controls_bottom"
+			var band_y := s * 0.52 if low else -s * 0.16
+			ci.draw_rect(Rect2(c + Vector2(-w + width * 1.5, band_y), Vector2((w - width * 1.5) * 2.0, s * 0.34)), color)
+			var tip := -s * 0.62 if low else s * 0.78
+			var d := 1.0 if low else -1.0   # the chevron's arms open away from its tip
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-s * 0.3, tip + s * 0.26 * d), c + Vector2(0.0, tip), c + Vector2(s * 0.3, tip + s * 0.26 * d),
+			]), color, width)
 		"prev", "next":
 			# Skip back or on: a filled triangle against a bar, the transport's own mark.
 			var d := 1.0 if id == "next" else -1.0
@@ -433,13 +448,18 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 
 ## The colour a chip for this glyph takes. Most sit in the HUD colour; effects that mean
 ## damage or danger take their own, so a burn reads as fire at a glance and related effects
-## can share a shape in different colours.
+## can share a shape in different colours: heat's for what heats or hits harder, the enemy's
+## violet for a foe's doing, the red-red for a death, the hull's for what costs hull.
 static func colour_for(id: String) -> Color:
 	match id:
 		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin", "mine", "primed":
 			return Palette.HEAT
-		"skull", "shieldbreak", "corrupt", "volatile", "silence":
+		"shieldbreak", "corrupt", "silence":
 			return Palette.ENEMY
+		"skull":
+			return Palette.LOSS
+		"volatile":
+			return Palette.HULL
 		"star":
 			return Palette.SELECT
 		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward", "dispel":

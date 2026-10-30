@@ -6,9 +6,9 @@ extends SceneTree
 ## Poses put the skirmish screen into a state before the capture: codex (a foe's entry), pair
 ## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
-## showing), mechhold and foehold (the first machine's and the first foe's), confirm (the
+## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
 ## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
-## Scorched on the first machine), repick (a foe whose machine falls before it acts, a second
+## Scorched on the first machine), foeheat (heat's red-orange beside the enemy's violet on three foes' chips), repick (a foe whose machine falls before it acts, a second
 ## arrow dashed to the machine it will strike).
 
 var _frames := 0
@@ -46,6 +46,7 @@ func _init() -> void:
 	else:
 		_vp.size = design
 	_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_vp.gui_embed_subwindows = true   # a popup (the colour picker) drawn inside the capture, as the phone embeds it
 	# RIFTGATE_SHOT_WINDOW=1 skips the SubViewport and puts the scene in the window itself,
 	# so the capture goes through the project's own stretch and font oversampling, the way
 	# the phone does: run with --resolution 1080x1920 for a 1080 phone's density.
@@ -128,10 +129,19 @@ func _apply_pose() -> void:
 			s._fx.force(_pose.trim_prefix("feed_"))
 		"keywords":
 			s._open_menu("keywords")   # as the button under the eye opens it
-		"menu", "settings", "quit":
+		"menu", "settings", "quit", "colours":
 			s._open_menu()
 			if _pose != "menu":
 				s._menu._show_page(_pose)
+		"colourpick":
+			# A debug build's COLOURS page with the first swatch's picker open (the wheel, the
+			# sliders and the hex), to judge its size on the phone's layout.
+			s._open_menu()
+			s._menu._show_page("colours")
+			var swatches := s._menu._list.find_children("*", "ColorPickerButton", true, false)
+			if not swatches.is_empty():
+				var pb: ColorPickerButton = swatches[3]   # ENEMY
+				pb.get_popup().popup_centered()
 		"withdraw":
 			# Withdraw confirmed: the enemy's parting blows replay (RIFTGATE_SHOT_FRAME) before
 			# the outcome.
@@ -201,6 +211,18 @@ func _apply_pose() -> void:
 			Effects.stack(u, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "shot", 2, Effects.DECAY_TURN)
 			Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TURN_ALL)
 			Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TICK)
+			s._refresh()
+		"foeheat":
+			# Heat's red-orange beside the enemy's violet on the foes' chip rows, the one place the two
+			# sit side by side: Burning on the first front foe, Flak on the second, Shocked on the third.
+			var ids := ["burning", "flakked", "shocked"]
+			var k := 0
+			for foe in s.sk.front:
+				if foe == null or k >= ids.size():
+					continue
+				var st: Dictionary = Effects.STATUS[ids[k]]
+				Effects.stack(foe, st, Effects.SKIRMISH, "shot", 1 if ids[k] == "shocked" else 2, Effects.status_decay(st))
+				k += 1
 			s._refresh()
 		"enemyturn":
 			# Thin every shield so the enemy turn breaks some: the replay and shatter play.
@@ -452,6 +474,12 @@ func _apply_battle_pose() -> void:
 			s._on_hex_tapped(m.pos)
 			s._on_hex_tapped(boss.pos)
 			s._engage()
+	# RIFTGATE_SHOT_ZOOM=<z> shows any pose zoomed to z on its first machine, to judge its marks
+	# zoomed in (they hold their size on screen at every zoom).
+	var z := float(OS.get_environment("RIFTGATE_SHOT_ZOOM"))
+	if z > 0.0 and is_instance_valid(s._map):
+		s._map.zoom_at(s._map.size * 0.5, z / s._map.zoom)
+		s._map.scroll_to_unit(b.mechs()[0])
 
 ## The quick campaign's screens (25 October): draft (the default, nothing picked), picked (three
 ## picked), hangar (the first battle ahead, a stored piece and module: RIFTGATE_SHOT_H=3000 shows

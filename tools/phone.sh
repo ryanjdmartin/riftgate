@@ -12,7 +12,7 @@
 # and the frame rate is the browser's, not the game's. First load pulls about 40 MB over
 # the LAN, later loads come from the browser cache.
 #
-# Needs the 4.7.2 export templates in ~/Library/Application Support/Godot/export_templates
+# Needs the 4.8-beta2 export templates in ~/Library/Application Support/Godot/export_templates
 # on the Mac, editor_data\export_templates beside the Godot executable on the Windows PC (the
 # README says where to fetch them). On Windows it runs from Git Bash, or from PowerShell as
 # tools\phone, and the first serve asks Windows Firewall to let Python take connections on

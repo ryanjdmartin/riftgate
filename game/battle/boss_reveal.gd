@@ -2,8 +2,8 @@ class_name BossReveal
 extends Control
 
 ## The boss's contact on the field (Ryan, 25 September): before the handover the display
-## makes a show of who it has found. Over the dimmed map a black band with red rules slides in; the
-## boss's picture flies up out of its hex and grows to fill the band's left, three red
+## makes a show of who it has found. Over the dimmed map a black band with violet rules slides in;
+## the boss's picture flies up out of its hex and grows to fill the band's left, three violet
 ## afterimages behind it; brackets collapse onto it as the feed acquires it; its family
 ## types in, its name resolves out of a scramble, and the order to engage types under, saying how
 ## many machines are committed (the boss is fought like any pack, by the machines ordered on); the

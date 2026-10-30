@@ -49,7 +49,7 @@ func test_a_tap_selects_and_a_lit_hex_plans_the_move() -> void:
 	s._on_hex_tapped(m.pos)
 	assert_eq(s._map.selected, m, "mech selected")
 	assert_true(s._map.destinations.size() > 0, "destinations lit")
-	assert_false(s._map.threat.is_empty(), "and in red where it could attack from past them")
+	assert_false(s._map.threat.is_empty(), "and in violet where it could attack from past them")
 	var dest: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(dest)
 	assert_eq(m.pos, dest, "the battle has it there at once")

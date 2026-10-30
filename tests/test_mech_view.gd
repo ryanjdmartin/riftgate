@@ -137,3 +137,59 @@ func test_a_turret_joint_traverses_and_a_limb_swings() -> void:
 	assert_eq(MechView3D.joint_axis("turret"), Vector3(0, 1, 0), "a turret turns about its up axis")
 	assert_eq(MechView3D.joint_axis("turret_l"), Vector3(0, 1, 0), "a named turret too")
 	assert_eq(MechView3D.joint_axis("shoulder_l"), Vector3(1, 0, 0), "a limb swings about the axle line")
+
+
+func test_a_models_textures_read_their_mipmaps() -> void:
+	# Ryan, 30 October: "a lot of aliasing on models" on the phone. A machine drawn small on
+	# the map read one texel of its 64-pixel tiles a screen pixel and sparkled; nearest from
+	# its mipmaps keeps the texels up close and the calm far off, in every AA mode.
+	var node: Node = (load("res://art/models/%s.glb" % MechView3D.stand_in()) as PackedScene).instantiate()
+	MechView3D.toon(node, ContentDB.load_default().makers.keys()[0], "toon")
+	var seen: Array = []
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = child
+		for i in range(mi.get_surface_override_material_count()):
+			var m := mi.get_surface_override_material(i)
+			if m is StandardMaterial3D and (m as StandardMaterial3D).albedo_texture != null and not seen.has(m.texture_filter):
+				seen.append(m.texture_filter)
+	node.free()
+	assert_eq(seen, [BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS], "every textured part reads its mipmaps")
+
+
+func test_the_aa_mode_sets_the_msaa_and_the_fxaa() -> void:
+	# The player's AA MODE (Ryan, 30 October: "Can we add an AA mode setting, not just for
+	# debug?"), MSAA 4x by default, a phone's too: Godot 4.8 fixed the Compatibility renderer's
+	# MSAA leak on Android (godotengine/godot#124643).
+	var was_env := OS.get_environment("RIFTGATE_AA")
+	var was: Variant = Settings.display.get("aa_mode", "msaa4")
+	OS.unset_environment("RIFTGATE_AA")
+	assert_eq(str(Settings.DISPLAY_DEFAULTS["aa_mode"]), "msaa4", "MSAA 4x by default")
+	var want := {"off": [SubViewport.MSAA_DISABLED, false], "fxaa": [SubViewport.MSAA_DISABLED, true],
+		"msaa2": [SubViewport.MSAA_2X, false], "msaa4": [SubViewport.MSAA_4X, false]}
+	assert_eq(want.keys().size(), Settings.AA_MODES.size(), "every mode is checked")
+	for mode in Settings.AA_MODES:
+		Settings.display["aa_mode"] = mode
+		assert_eq(Hud.msaa_3d(), int(want[mode][0]), "%s: its MSAA" % mode)
+		assert_eq(Hud.fxaa(), bool(want[mode][1]), "%s: the map's FXAA only in the FXAA mode" % mode)
+		assert_true(Settings.AA_LABELS.has(mode), "%s has a label" % mode)
+	Settings.display["aa_mode"] = "msaa16"
+	assert_eq(Hud.aa_mode(), "msaa4", "a saved mode the game no longer knows reads as the default")
+	Settings.display["aa_mode"] = "msaa4"
+	OS.set_environment("RIFTGATE_AA", "fxaa")
+	assert_true(Hud.fxaa() and Hud.msaa_3d() == SubViewport.MSAA_DISABLED, "RIFTGATE_AA=<mode> forces one for a run")
+	OS.unset_environment("RIFTGATE_AA")
+	if not was_env.is_empty():
+		OS.set_environment("RIFTGATE_AA", was_env)
+	Settings.display["aa_mode"] = was
+
+
+func test_the_settings_page_offers_every_aa_mode() -> void:
+	var menu := PauseMenu.new()
+	menu._show_page("settings")
+	var labels: Array = []
+	for b in menu._rows.find_children("*", "", true, false):
+		if b is HudButton:
+			labels.append(str((b as HudButton).text))
+	for mode in Settings.AA_MODES:
+		assert_true(labels.has(str(Settings.AA_LABELS[mode])), "the settings page offers %s" % Settings.AA_LABELS[mode])
+	menu.free()

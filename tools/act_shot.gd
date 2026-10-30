@@ -31,7 +31,6 @@ func _init() -> void:
 		frame = Vector2i(int(args[6].get_slice("x", 0)), int(args[6].get_slice("x", 1)))
 	_out = args[4]
 	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, frame, false, {}, [])
-	_view.strip_silhouette()
 	root.add_child(_view)
 	_view.set_process(false)
 	var form := OS.get_environment("RIFTGATE_FORM")

@@ -7,7 +7,7 @@ extends Control
 ## ranks, when one waits, a tall plaque for the massive foes that take a whole column. A rank
 ## with none waiting shows its plaque dim at nought while any foe waits, so a mine is laid
 ## against a count; with the reserve empty nothing shows. Ink on a dark ground, the enemy's
-## red only on its edge and arrow, the structure (an arrow, a tall frame) carrying the read.
+## violet only on its edge and arrow, the structure (an arrow, a tall frame) carrying the read.
 
 const ARROW := 6.0          # the arrow's half-height over the count
 const NUMBER := 17          # the count's size
