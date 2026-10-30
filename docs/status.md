@@ -384,7 +384,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   `claude/charming-rubin-h954bp`, onto 160, which another session published with this branch's
   manifest and `motion.js` as at its 159, and its own 159 to 155 before that, onto 154, which other sessions published overnight with this
   branch's page, manifest and `motion.js` as at its 152: Ryan's notes of 29 and 30 October on
-  the rebuilds, the last bringing the Armadillo's radiators five forward on the tail's top corners,
+  the rebuilds, the last bringing the Armadillo's radiators flush with the tail's flanks and the
+  rack's collar run down into the deck,
   with its renders, the old ones to before; every other file as the live page had it, `edits`
   empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.

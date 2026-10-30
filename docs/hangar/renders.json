@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's fifth notes, 30 October.",
-   "note": "Ryan, 30 October: \"3 more further forward.\" The radiators sit three further forward on the tail's top rear corners, five in all since the third notes: the tops of their faces two and a half in from the back panel, over the deck, their feet five behind it, each top running over the deck to the next band, clear of the rack's hatch and of its whole slide; their louvred hollows dip into the corner and are cut there (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's sixth notes, 30 October.",
+   "note": "Ryan, 30 October: \"move them apart so that they're flush with the outer face of the back segment\", and \"the rack has a rear cut that I'm not sure is supposed to be that big\". The radiators' outer walls now stand flush with the tail band's flanks (centres 17 off the spine, from 13.5), over the whole chamfer, their walls thirteen deep so each far end keeps two clear of the hind hip's cuff. The rack's striped collar began too high: its back edge hung over both decks, a slot under it into the hatch's cut; it now runs down its line until that edge is buried in the lower deck, its base a striped skirt between the radiators (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the fourth notes of 30 October (the radiators three further back)",
+    "summary": "Before: the fifth notes of 30 October (the radiators 13.5 off the spine, the rack's collar hanging over the decks behind)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
