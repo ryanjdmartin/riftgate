@@ -380,8 +380,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 160 (30 October, from
-  `claude/charming-rubin-h954bp`, onto its own 159 to 155, those onto 154, which other sessions published overnight with this
+  acts on a reloaded page). At the page's version 161 (30 October, from
+  `claude/charming-rubin-h954bp`, onto 160, which another session published with this branch's
+  manifest and `motion.js` as at its 159, and its own 159 to 155 before that, onto 154, which other sessions published overnight with this
   branch's page, manifest and `motion.js` as at its 152: Ryan's notes of 29 and 30 October on
   the rebuilds, the last bringing the Armadillo's radiators five forward on the tail's top corners,
   with its renders, the old ones to before; every other file as the live page had it, `edits`
