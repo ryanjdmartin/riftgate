@@ -145,6 +145,7 @@ func _show_page(page: String) -> void:
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
+				_toggle("MSAA", "msaa")   # the 3D's MSAA (Hud.msaa_3d), back on the phone with Godot 4.8: off to compare, or if the phone's memory climbs with it
 				_toggle("AA", "aa")   # the 3D's smoothing (Hud.smoothing): off draws it as before, to compare the edges on the phone
 				_toggle("TRACES", "traces")   # the map's creases, one device pixel at every zoom: off draws none, to judge the zoomed-out grain on the phone
 				_button("COLOURS", func() -> void: _show_page("colours"))   # every named colour, by wheel or hex (ColourTuner)

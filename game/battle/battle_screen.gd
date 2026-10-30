@@ -716,8 +716,8 @@ func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
-			if key == "weld" or key == "aa" or key == "traces":
-				_map.set_field(battle.field)   # the machines with the weld on or off, the smoothing, or the traces
+			if key == "weld" or key == "msaa" or key == "aa" or key == "traces":
+				_map.set_field(battle.field)   # the machines with the weld on or off, the MSAA, the smoothing, or the traces
 				_refresh()
 			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
@@ -739,10 +739,10 @@ func _apply_display() -> void:
 	_built_map = _map_switches()
 
 
-## What the map is built with that a settings switch changes: the weld, the smoothing and the
-## traces (a debug build's WELD, AA and TRACES).
+## What the map is built with that a settings switch changes: the weld, the MSAA, the smoothing
+## and the traces (a debug build's WELD, MSAA, AA and TRACES).
 func _map_switches() -> String:
-	return str([MechWeld.enabled(), Hud.smoothing(), Settings.display.get("traces", true)])
+	return str([MechWeld.enabled(), Hud.msaa_3d(), Hud.smoothing(), Settings.display.get("traces", true)])
 
 
 ## A colour change rebuilds the screen from the battle (the skirmish, if one is open,
@@ -1268,7 +1268,7 @@ func _on_skirmish_back() -> void:
 	if _built_hud != Settings.hud:
 		_build()   # the colour changed in the skirmish's menu: this screen catches up
 	elif _built_map != _map_switches():
-		_map.set_field(battle.field)   # a switch changed in the skirmish's menu (the weld, the smoothing, the traces): the map remade
+		_map.set_field(battle.field)   # a switch changed in the skirmish's menu (the weld, the MSAA, the smoothing, the traces): the map remade
 		_apply_display()
 	_refresh()
 	if battle.state == Battle.State.DONE:

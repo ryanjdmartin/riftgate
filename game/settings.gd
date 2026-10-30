@@ -30,6 +30,7 @@ const DISPLAY_DEFAULTS := {
 	"weld": true,   # a debug build's comparison: off, the machines' parts are drawn as authored rather than welded (MechWeld), to judge the battery plan on the phone
 	"aa": true,   # a debug build's comparison: off, the 3D draws without its smoothing (Hud.smoothing: the textures' mipmaps, the map's FXAA), to judge it on the phone
 	"traces": true,   # a debug build's comparison: off, the map draws none of its traces (the creases on the machines, the props and the gate), to judge the grain at zoom 1 on the phone
+	"msaa": true,   # a debug build's comparison: off, the 3D draws without MSAA (Hud.msaa_3d), the map's FXAA in its place, to compare, or if the Pixel's memory climbs with it
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 }
 const DISPLAY_RANGES := {

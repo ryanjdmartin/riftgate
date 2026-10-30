@@ -129,27 +129,25 @@ static func oversample(win: Window) -> void:
 	win.size_changed.connect(apply)
 
 
-## The 3D viewports' anti-aliasing: 4x on the desktop, none on a phone. Godot's
-## Compatibility renderer leaks native memory every frame a 3D viewport draws with MSAA
-## on Android (godotengine/godot#97967, open since October 2024; seen here on a Pixel 9,
-## Mali-G715: the GL driver aborts out of memory after some minutes, Ryan, 26 September).
-## The phone renders at the design's 720 and upscales nearest anyway, so MSAA bought
-## little there. RIFTGATE_MSAA=on or off forces it, to compare. Returns a
-## SubViewport.MSAA value, typed int (a class-scoped enum type fails in a headless runner).
+## The 3D viewports' anti-aliasing: 4x on every glass. A phone had none on Godot 4.7: its
+## Compatibility renderer leaked native memory every frame a 3D viewport drew with MSAA on
+## Android (godotengine/godot#97967). Measured on the Pixel 9 (29 September, MSAA 2x with the
+## fine map), the native heap grew about 170 MB every twenty seconds until the GL driver
+## aborted out of memory at 1.8 GB, three and a half minutes in: a phone's GPU resolves MSAA
+## on the chip, so the renderer made no MSAA buffer, took the missing buffer for "not set up"
+## and set the target up again, a framebuffer every frame. Godot 4.8 fixes it
+## (godotengine/godot#124643), and the project runs it from 4.8-beta2 for that (Ryan, 30
+## October: "Let's update Godot so we can get the msaa fix"). A debug build's MSAA toggle
+## turns it off, to compare, or if the Pixel's memory climbs again; RIFTGATE_MSAA=on or off
+## forces it for a run. Returns a SubViewport.MSAA value, typed int (a class-scoped enum
+## type fails in a headless runner).
 static func msaa_3d() -> int:
-	var env := OS.get_environment("RIFTGATE_MSAA")
-	if env == "off":
-		return SubViewport.MSAA_DISABLED
-	if env != "on" and OS.has_feature("mobile"):
-		# Measured on the Pixel 9 (29 September, MSAA 2x with the fine map): the native heap
-		# grew about 170 MB every twenty seconds until the GL driver aborted out of memory
-		# at 1.8 GB, three and a half minutes in. Godot's bug (godotengine/godot#97967): a
-		# phone's GPU resolves MSAA on the chip, so the renderer makes no MSAA buffer, takes
-		# the missing buffer for "not set up" and sets the target up again, a framebuffer
-		# every frame (where the 3D draws through a buffer of its own, by the fix's author:
-		# scaling, or post effects like the map's glow). Fixed for Godot 4.8
-		# (godotengine/godot#124643, 22 October), not in 4.7.2: MSAA comes back on a phone
-		# once the project runs a Godot with the fix and the Pixel's memory holds flat.
+	match OS.get_environment("RIFTGATE_MSAA"):
+		"off":
+			return SubViewport.MSAA_DISABLED
+		"on":
+			return SubViewport.MSAA_4X
+	if OS.is_debug_build() and not bool(Settings.display.get("msaa", true)):
 		return SubViewport.MSAA_DISABLED
 	return SubViewport.MSAA_4X
 

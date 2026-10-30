@@ -374,7 +374,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		_inner.own_world_3d = true     # otherwise every mech view shares one world and the models overlap
 		_inner.transparent_bg = true
 		_inner.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-		_inner.msaa_3d = Hud.msaa_3d()   # none on a phone: the Compatibility renderer leaks with it (Hud.msaa_3d)
+		_inner.msaa_3d = Hud.msaa_3d()
 		_inner.screen_space_aa = SubViewport.SCREEN_SPACE_AA_DISABLED   # FXAA is refused by the Compatibility renderer (the phone's), so no screen-space AA anywhere
 		add_child(_inner)
 	else:

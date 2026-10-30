@@ -1,6 +1,6 @@
 # Riftgate
 
-Godot 4.7 / GDScript. Portrait tactical hex battler for Android. `docs/rules.md` states the game's
+Godot 4.8 (4.8-beta2 until 4.8 ships, for its MSAA fix) / GDScript. Portrait tactical hex battler for Android. `docs/rules.md` states the game's
 rules as they are now: read it first. `docs/design-bible.html` records every decision and why
 (its first row says how to read a row; section 12 holds the questions only Ryan can settle);
 `docs/status.md` says how things stand and the order of work; `docs/todo.md` holds the tasks;
@@ -32,7 +32,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 ## Rules
 
 - Declare enum-typed fields and params as `int`. Class-scoped enum types fail to compile when
-  class_name scripts load from a headless `-s` runner in Godot 4.7.
+  class_name scripts load from a headless `-s` runner (seen in Godot 4.7, not rechecked since).
 - `content/*.json` is data; `sim/content_db.gd` validates it and `tests/test_content.gd` runs the
   validator, so bad content fails the build. Every entry's internal text lives under `design`
   (`fantasy`, `niche`, `holes`, ...: Ryan's pitch, inspiration and homages) and is never shown;

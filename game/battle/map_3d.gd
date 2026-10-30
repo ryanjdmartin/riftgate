@@ -140,7 +140,7 @@ func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float,
 	own_world_3d = true
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS   # alive: sway and ripple every frame
-	msaa_3d = Hud.msaa_3d()   # none on a phone: the Compatibility renderer leaks with it (Hud.msaa_3d)
+	msaa_3d = Hud.msaa_3d()
 	canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	_build_light()
 	_build_ground()

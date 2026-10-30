@@ -127,3 +127,23 @@ func test_a_models_textures_read_their_mipmaps_unless_the_smoothing_is_off() -> 
 	OS.set_environment("RIFTGATE_AA", "off")
 	assert_false(Hud.smoothing(), "RIFTGATE_AA=off turns it off for a run")
 	OS.unset_environment("RIFTGATE_AA")
+
+
+func test_msaa_runs_on_every_glass_unless_a_debug_build_turns_it_off() -> void:
+	# Godot 4.8 fixed the Compatibility renderer's MSAA leak on Android (godotengine/godot#124643),
+	# so a phone runs MSAA as the desk does; a debug build's MSAA toggle turns it off.
+	var was := OS.get_environment("RIFTGATE_MSAA")
+	OS.unset_environment("RIFTGATE_MSAA")
+	Settings.display["msaa"] = true
+	assert_eq(Hud.msaa_3d(), SubViewport.MSAA_4X, "MSAA 4x by default, a phone's too")
+	assert_false(Hud.fxaa(), "and no FXAA beside it")
+	if OS.is_debug_build():   # the tests' build always is; a release build runs MSAA whatever is saved
+		Settings.display["msaa"] = false
+		assert_eq(Hud.msaa_3d(), SubViewport.MSAA_DISABLED, "the MSAA toggle off turns it off (the phone's switch)")
+		assert_eq(Hud.fxaa(), Hud.smoothing(), "and the map's FXAA takes its place while the smoothing is on")
+		Settings.display["msaa"] = true
+	OS.set_environment("RIFTGATE_MSAA", "off")
+	assert_eq(Hud.msaa_3d(), SubViewport.MSAA_DISABLED, "RIFTGATE_MSAA=off for a run")
+	OS.unset_environment("RIFTGATE_MSAA")
+	if not was.is_empty():
+		OS.set_environment("RIFTGATE_MSAA", was)

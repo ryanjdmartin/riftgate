@@ -13,7 +13,7 @@ config_version=5
 config/name="Riftgate"
 config/description="Portrait hex-grid mech roguelike. Working title."
 run/main_scene="res://game/harness.tscn"
-config/features=PackedStringArray("4.7", "Mobile")
+config/features=PackedStringArray("4.8", "Mobile")
 config/icon="res://art/icon.png"
 
 [display]

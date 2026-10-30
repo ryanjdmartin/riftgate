@@ -7,7 +7,7 @@
 #
 # Once, on the phone: Settings > About > tap Build number seven times, then Developer
 # options > USB debugging on; plug in and accept the computer's key. The desk machine has
-# the 4.7.2 export templates, the Android SDK (platform-tools, build-tools 35, platform 35;
+# the 4.8-beta2 export templates, the Android SDK (platform-tools, build-tools 35, platform 35;
 # ~/Library/Android/sdk on the Mac, ~/Android/Sdk on the Windows PC), a JDK, and the debug
 # keystore Godot expects; the README says how they were put there. On Windows this runs from
 # Git Bash, or from PowerShell as tools\android.

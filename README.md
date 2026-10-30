@@ -151,7 +151,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 
 ## Running
 
-Open the folder in Godot 4.7 or later, or from a terminal:
+Open the folder in Godot 4.8 (4.8-beta2 until 4.8 ships: its MSAA fix is why) or later, or from a terminal:
 
 On Windows (the desk machine since 19 October, when the Mac went out of reach) every command
 below runs as written from Git Bash, from the repo folder (a new Git Bash starts in the home
@@ -160,7 +160,7 @@ folder: `cd ~/Desktop/Code/riftgate` first); from PowerShell, wrap one as
 PowerShell and cmd, `tools\android` and `tools\phone` (`.cmd` files that run the `.sh` with Git
 Bash in the same window, from any folder by their full path); given a `.sh` itself, Windows
 opens a separate Git Bash window that closes with the output. What makes them run there: `godot` and
-`python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.7.2 under
+`python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.8-beta2 under
 `%LOCALAPPDATA%\Programs\Godot`, self-contained: the `._sc_` file beside it keeps its settings,
 export templates and debug keystore in `editor_data` there; Python 3.13, since Windows' own
 `python3` is a Microsoft Store stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
@@ -352,11 +352,12 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
 # PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
-# RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; off on a phone by default).
+# RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; on everywhere since Godot 4.8, a debug build's MSAA toggle
+# turns it off).
 # RIFTGATE_AA=off draws the 3D without its smoothing (the machines' textures nearest without their
 # mipmaps, no FXAA on the map), as a debug build's AA toggle does; RIFTGATE_AA=fxaa runs the map's
-# FXAA beside MSAA too. With RIFTGATE_MSAA=off the desk draws the phone's look: the map's FXAA in place
-# of MSAA, which the phone's renderer leaks with until Godot 4.8 (godotengine/godot#124643).
+# FXAA beside MSAA too. RIFTGATE_MSAA=off draws the look without MSAA: the map's FXAA in its place, as the
+# phone drew on Godot 4.7, whose renderer leaked with MSAA there (godotengine/godot#97967, fixed in 4.8).
 # RIFTGATE_SHOT_ZOOM=<z> shows any battle pose zoomed to z on its first machine (the overlay holds its size on screen).
 # RIFTGATE_OUTLINE=<n> sets the battle map's machine outline width in design pixels, the same at every zoom, for a comparison
 # (Map3D.OUTLINE is the default). A debug build's TRACES toggle draws the map without its traces (the creases on the
@@ -451,10 +452,10 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 # with a certificate the script makes: accept the browser's warning once). Open the printed
 # address in the phone's browser on the same Wi-Fi; the first button press goes full
 # screen. Sizes and touch are the phone's own, the frame rate is the browser's.
-# Needs the 4.7.2 export templates once: fetch Godot_v4.7.2-stable_export_templates.tpz
-# from the Godot release, unzip, and put its `templates` folder at
-# ~/Library/Application Support/Godot/export_templates/4.7.2.stable (on the Windows PC,
-# editor_data\export_templates\4.7.2.stable beside the Godot executable). On Windows the first serve asks Windows
+# Needs the 4.8-beta2 export templates once: fetch Godot_v4.8-beta2_export_templates.tpz
+# from the release (github.com/godotengine/godot-builds/releases/tag/4.8-beta2), unzip, and put
+# its `templates` folder at ~/Library/Application Support/Godot/export_templates/4.8.beta2 (on
+# the Windows PC, editor_data\export_templates\4.8.beta2 beside the Godot executable). On Windows the first serve asks Windows
 # Firewall to let Python take connections: allow it on private networks.
 tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
 

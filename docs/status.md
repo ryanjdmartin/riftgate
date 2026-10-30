@@ -23,9 +23,9 @@ are in `README.md`.
   `generate` and `fix` have no machine until a route for the image model is chosen.
 - Tests: 752 tests, 66,800 checks, green on `claude/jolly-lovelace-scn82y` (29 October, the
   skirmish's field and its second round; 739 and 66,640 on main), about four minutes in a cloud session, twenty
-  on a slow one. A cloud session fetches Godot 4.7's Linux
+  on a slow one. A cloud session fetches Godot 4.8-beta2's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
-  `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
+  `Godot_v4.8-beta2_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
   counts, its frame times mean nothing), and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -145,7 +145,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   sharper", the lines the biggest culprit, the creases the grain left and fine with AA on. Then
   every overlay mark held its zoom-1 size at every zoom (his call: "all UI overlay type items
   should hold at one width"), the fine map became permanent with its option gone, and the grid
-  went back to its light before the 25 October dimming. His read of those is the to-do's.
+  went back to its light before the 25 October dimming. His read of those is the to-do's. Then
+  the project moved to Godot 4.8-beta2 for the MSAA fix (his call: "Let's update Godot so we can
+  get the msaa fix"; 4.8 stable has not shipped, no 4.7 patch carries it): the suite and the
+  renders came out the same as on 4.7.2, MSAA is back on the phone behind a debug toggle, and the
+  import files are in 4.8's form. The desk's install and the Pixel's read are the to-do's.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water
@@ -369,9 +373,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.373 (the page's version 385,
-  published 30 October from `claude/jolly-lovelace-scn82y`: the map's lines at one width at
-  every zoom, the outline question settled, merged onto the live v0.372; the rows other sessions
+  `docs/design-bible.html` after every change. This file is v0.382, merged on 30 October onto
+  the live v0.381 (the overlay at one size, the fine map always, the grid's old light, Godot
+  4.8-beta2) and not yet published: the publish waits on a full read of the live page, owed by
+  the next session on `claude/jolly-lovelace-scn82y` (read the live page, merge, publish). The
+  page's version 385 was this branch's last publish (v0.373); the rows other sessions
   published since v0.348 ride along (the map's movement and shapes, the desk on the phone's
   renderer, the Armadillo's looks and seal, the Hold The Line voices, the tracks as pairs, the
   Arsenal's lit cockpit glass, the domains' tilesets), on v0.346 from
