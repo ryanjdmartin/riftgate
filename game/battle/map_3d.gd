@@ -341,20 +341,22 @@ func _box(col: Node3D, size: Vector3, material: Material, pos: Vector3, rot: Vec
 		_bake(_unit_geo("box_lines"), xf, _trace_material("prop"), band, false, "prop", 1, null, hex)
 
 
-func _ball(col: Node3D, radius: float, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> void:
-	var xf := Transform3D(Basis.from_euler(rot), col.position + pos).scaled_local(Vector3.ONE * radius)
+func _ball(col: Node3D, radius: float, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO, traced: bool = true, squash: Vector3 = Vector3.ONE) -> void:
+	var xf := Transform3D(Basis.from_euler(rot), col.position + pos).scaled_local(squash * radius)
 	var band: int = col.get_meta("band", 0)
 	var hex = col.get_meta("prop_hex") if col.has_meta("prop_hex") else null
 	_bake(_unit_geo("ball"), xf, material, band, true, "", 1, null, hex)
-	_bake(_unit_geo("ball_lines"), xf, _trace_material("prop"), band, false, "prop", 1, null, hex)
+	if traced:
+		_bake(_unit_geo("ball_lines"), xf, _trace_material("prop"), band, false, "prop", 1, null, hex)
 
 
-func _cyl(col: Node3D, top: float, bottom: float, height: float, segments: int, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> void:
+func _cyl(col: Node3D, top: float, bottom: float, height: float, segments: int, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO, traced: bool = true) -> void:
 	var xf := Transform3D(Basis.from_euler(rot), col.position + pos)
 	var band: int = col.get_meta("band", 0)
 	var hex = col.get_meta("prop_hex") if col.has_meta("prop_hex") else null
 	_bake(_cylinder_geo(top, bottom, height, segments), xf, material, band, true, "", 1, null, hex)
-	_bake(_cylinder_lines(top, bottom, height, segments), xf, _trace_material("prop"), band, false, "prop", 1, null, hex)
+	if traced:
+		_bake(_cylinder_lines(top, bottom, height, segments), xf, _trace_material("prop"), band, false, "prop", 1, null, hex)
 
 
 # ---------------------------------------------------------------- baking
@@ -1260,42 +1262,166 @@ func _build_ground() -> void:
 		if map.city.has(h):
 			_city_block(col, hgt, rng)
 			continue
-		match t:
-			BattleMap.Terrain.MOUNTAIN:
-				_top[h] = hgt + _crag(col, ground_t, hgt, rng)
-			BattleMap.Terrain.RUINS:
-				# Broken blocks and a couple of standing wall stubs.
-				var rubble := _terrain_material("rubble")
-				for k in range(5):
-					var size := Vector3(rng.randf_range(8, 16), rng.randf_range(5, 18), rng.randf_range(6, 13))
-					_box(col, size, rubble, Vector3(rng.randf_range(-18, 18), hgt + size.y * 0.5, rng.randf_range(-13, 13)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
-				for k in range(2):
-					var stub := Vector3(rng.randf_range(14, 24), rng.randf_range(20, 32), 3.5)
-					_box(col, stub, rubble, Vector3(rng.randf_range(-14, 14), hgt + stub.y * 0.5, rng.randf_range(-10, 10)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
-			BattleMap.Terrain.ROUGH:
-				# Wasteland: dead trees and boulders, the parallel of the other world's forest.
-				_top[h] = hgt + 40.0
-				for k in range(rng.randi_range(2, 4)):
-					_dead_tree(col, Vector3(rng.randf_range(-18, 18), hgt, rng.randf_range(-14, 14)), rng)
-				for k in range(rng.randi_range(1, 3)):
-					var radius := rng.randf_range(5.0, 9.0)
-					_ball(col, radius, rock, Vector3(rng.randf_range(-16, 16), hgt + radius * 0.6, rng.randf_range(-12, 12)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+		if t == BattleMap.Terrain.MOUNTAIN:
+			_top[h] = hgt + _wall_model(col, str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0])), hgt, rng)
+			continue
+		var dressed := _dress(col, h, t, hgt, rng)
+		if dressed > 0.0:
+			_top[h] = hgt + dressed
 	_flush_batches()
 
 
-## The blocking crag on a tile, in the ground's own idiom: rock spikes on dirt and water,
-## broken towers on ruins, mesas on wasteland (Ryan, 21 September). All overflow the tile's
-## height so they read as things you fly over.
-func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -> float:
-	## Returns how tall the crag stands above the ground, so a flyer clears it and no more.
-	match ground_t:
+## The decoration, laid to be read (Ryan, 29 October: placement "can go a long way towards
+## making the map less cluttered and easier to read, while still looking believable"):
+## knee-high, so a wall is the one tall thing on the field (DRESS_MAX under WALL_MIN, measured
+## from the ground, so a raised hex never lifts it past a wall); dense out in the scenery and
+## against the walls and the water, sparse in the open ground the squads play on; and of the
+## shape's kind: rubble on ruins, scrub on rough, and on bare ground what the shape stands on
+## its banks, at its walls' feet and in its scenery (BattleMap.KINDS' dress). Nothing stands
+## under the wall's rows. Returns the tallest thing it stood, above the ground.
+const DRESS_MAX := 16.0
+const WALL_MIN := 40.0
+const DENSE := 1.0      # the scenery
+const EDGE := 0.7       # the field's ground against a wall or the water
+const LANE := 0.25      # the field's open ground
+
+
+func _dress(col: Node3D, h: Vector2i, t: int, hgt: float, rng: RandomNumberGenerator) -> float:
+	var map := field.map
+	if Hex.axial_to_offset(h).y >= map.height - BattleMap.GATE_ROWS:
+		return 0.0
+	var by_wall := false
+	var by_water := false
+	for n in Hex.neighbors(h):
+		if not (map.has(n) or map.margin.has(n)):
+			continue
+		by_wall = by_wall or map.terrain_of(n) == BattleMap.Terrain.MOUNTAIN
+		by_water = by_water or map.terrain_of(n) == BattleMap.Terrain.WATER
+	var scenery := not map.has(h)
+	var density := DENSE if scenery else (EDGE if by_wall or by_water else LANE)
+	var dress: Dictionary = BattleMap.KINDS.get(map.kind, {}).get("dress", {})
+	match t:
 		BattleMap.Terrain.RUINS:
+			return _rubble(col, hgt, rng, density)
+		BattleMap.Terrain.ROUGH:
+			return _scrub(col, hgt, rng, density)
+		BattleMap.Terrain.PLAIN:
+			var word := ""
+			if by_water:
+				word = str(dress.get("bank", ""))
+			elif by_wall:
+				word = str(dress.get("foot", ""))
+			elif scenery:
+				word = str(dress.get("scenery", ""))
+			return _strew(col, word, hgt, rng, density)
+	return 0.0
+
+
+## How many of a prop a hex takes: `full` at full density, a little either way.
+func _count(rng: RandomNumberGenerator, full: int, density: float) -> int:
+	return int(round(float(full) * density * rng.randf_range(0.7, 1.3)))
+
+
+## Ruins: broken blocks, and a standing wall stub where the rubble is thick. In the open the
+## blocks are few, low and dark, so a street reads clear between the towers.
+func _rubble(col: Node3D, hgt: float, rng: RandomNumberGenerator, density: float) -> float:
+	var rubble := _terrain_material("rubble")
+	var tallest := 0.0
+	for k in range(_count(rng, 5, density)):
+		var size := Vector3(rng.randf_range(7, 14), rng.randf_range(4, 11), rng.randf_range(6, 12))
+		if density < EDGE:
+			size *= Vector3(0.7, 0.5, 0.7)
+		_box(col, size, rubble if density >= EDGE else _stone_material(), Vector3(rng.randf_range(-18, 18), hgt + size.y * 0.5, rng.randf_range(-13, 13)), Vector3(0.0, rng.randf_range(0, TAU), 0.0), density >= EDGE)
+		tallest = maxf(tallest, size.y)
+	if density >= EDGE:
+		var stub := Vector3(rng.randf_range(12, 20), rng.randf_range(10, DRESS_MAX), 3.5)
+		_box(col, stub, rubble, Vector3(rng.randf_range(-14, 14), hgt + stub.y * 0.5, rng.randf_range(-10, 10)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+		tallest = maxf(tallest, stub.y)
+	return tallest
+
+
+## Low scrub: bushes and a boulder or two (the badlands' rough ground).
+func _scrub(col: Node3D, hgt: float, rng: RandomNumberGenerator, density: float) -> float:
+	for k in range(_count(rng, 4, density)):
+		var r := rng.randf_range(4.0, 7.0)
+		_ball(col, r, _plant_material(), Vector3(rng.randf_range(-18, 18), hgt + r * 0.5, rng.randf_range(-14, 14)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+	for k in range(_count(rng, 2, density)):
+		var r := rng.randf_range(4.0, 6.5)
+		_ball(col, r, _stone_material(), Vector3(rng.randf_range(-16, 16), hgt + r * 0.6, rng.randf_range(-12, 12)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+	return 10.0
+
+
+## A bare hex's dressing, by the shape's word: reeds on a bank, shingle on a shore, rocks or
+## scree at a wall's foot, grass and the odd low dead tree out in the scenery, boulders. The
+## small stuff wears no trace, so it reads as texture and the walls as things.
+func _strew(col: Node3D, word: String, hgt: float, rng: RandomNumberGenerator, density: float) -> float:
+	var rock := _stone_material()
+	match word:
+		"reeds":
+			for k in range(_count(rng, 10, density)):
+				var tall := rng.randf_range(7.0, 13.0)
+				_box(col, Vector3(1.1, tall, 1.1), _plant_material(), Vector3(rng.randf_range(-18, 18), hgt + tall * 0.5, rng.randf_range(-13, 13)), Vector3(rng.randf_range(-0.25, 0.25), 0.0, rng.randf_range(-0.25, 0.25)), false)
+			return 13.0
+		"shingle":
+			for k in range(_count(rng, 9, density)):
+				var r := rng.randf_range(2.0, 3.6)
+				_ball(col, r, rock, Vector3(rng.randf_range(-18, 18), hgt + r * 0.25, rng.randf_range(-13, 13)), Vector3(0.0, rng.randf_range(0, TAU), 0.0), false, Vector3(1.5, 0.45, 1.0))
+			return 3.0
+		"rocks", "boulders":
+			for k in range(_count(rng, 3 if word == "rocks" else 2, density)):
+				var r := rng.randf_range(4.0, 7.5)
+				_ball(col, r, rock, Vector3(rng.randf_range(-16, 16), hgt + r * 0.6, rng.randf_range(-12, 12)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+			return 12.0
+		"scree":
+			if rng.randf() < 0.5:
+				return 0.0   # a gorge's lanes run along its cliffs, so the scree lies at every other foot
+			for k in range(_count(rng, 8, density)):
+				var size := Vector3(rng.randf_range(2.0, 5.0), rng.randf_range(1.5, 3.5), rng.randf_range(2.0, 5.0))
+				_box(col, size, rock, Vector3(rng.randf_range(-18, 18), hgt + size.y * 0.4, rng.randf_range(-13, 13)), Vector3(rng.randf_range(-0.4, 0.4), rng.randf_range(0, TAU), rng.randf_range(-0.4, 0.4)), false)
+			return 4.0
+		"grass":
+			for k in range(_count(rng, 9, density)):
+				var tall := rng.randf_range(3.0, 6.0)
+				_cyl(col, 0.0, 1.8, tall, 4, _plant_material(), Vector3(rng.randf_range(-18, 18), hgt + tall * 0.5, rng.randf_range(-13, 13)), Vector3.ZERO, false)
+			if rng.randf() < 0.25 * density:
+				_dead_tree(col, Vector3(rng.randf_range(-12, 12), hgt, rng.randf_range(-9, 9)), rng)
+				return DRESS_MAX
+			return 6.0
+	return 0.0
+
+
+var _plant_mat: StandardMaterial3D = null
+var _stone_mat: StandardMaterial3D = null
+
+## The vegetation's one colour, a dark dry olive, so a hex's grass, reeds and scrub bake together
+## and read as the ground's texture, not as things.
+func _plant_material() -> StandardMaterial3D:
+	if _plant_mat == null:
+		_plant_mat = _lit(Color("2c2e1c"))
+	return _plant_mat
+
+
+## The small stones' one colour (shingle, scree, rocks, boulders), dark for the same reason.
+func _stone_material() -> StandardMaterial3D:
+	if _stone_mat == null:
+		_stone_mat = _lit(Color("34322f"))
+	return _stone_mat
+
+
+## A wall by what it is (BattleMap.WALL_LOOKS; Ryan, 29 October: one rule under every name):
+## crags are rock spikes, mesas flat-topped rock stacked and offset, towers dead skyscrapers
+## and cliffs a wall of rock. Every one overflows its tile and stands WALL_MIN at least, well
+## over the decoration, so it reads as a thing a flyer goes over. Returns how tall it stands
+## above the ground, so a flyer clears it and no more.
+func _wall_model(col: Node3D, look: String, hgt: float, rng: RandomNumberGenerator) -> float:
+	match look:
+		"towers":
 			# Dead skyscrapers: tall thin shells stepping down as they rise, a few dim
 			# windows still lit on the tallest, far above anything else on the field.
 			var rubble := _terrain_material("rubble")
 			for k in range(4):
 				var w := rng.randf_range(8.0, 12.0)
-				var tall := rng.randf_range(70.0, 96.0) if k == 0 else rng.randf_range(34.0, 62.0)
+				var tall := rng.randf_range(70.0, 96.0) if k == 0 else rng.randf_range(WALL_MIN, 62.0)
 				var ox := 0.0 if k == 0 else rng.randf_range(-17.0, 17.0)
 				var oz := 0.0 if k == 0 else rng.randf_range(-13.0, 13.0)
 				for step in range(3):
@@ -1306,34 +1432,88 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 					var wm := _window_material("dim", Color(0.9, 0.7, 0.35), 1.2)
 					for wz in [tall * 0.35, tall * 0.55]:
 						_box(col, Vector3(w * 0.7, 2.0, 0.6), wm, Vector3(ox, hgt + wz, oz - w * 0.5 * rng.randf_range(0.8, 1.0)), Vector3.ZERO, false)
-		BattleMap.Terrain.ROUGH:
+			return 96.0
+		"mesas":
 			# Mesas: flat-topped blocks stacked and offset, a badland.
 			var rock := _terrain_material("rock")
 			for k in range(3):
-				var tall := rng.randf_range(30.0, 46.0) if k == 0 else rng.randf_range(18.0, 30.0)
+				var tall := rng.randf_range(44.0, 54.0) if k == 0 else rng.randf_range(28.0, 38.0)
 				var ox := 0.0 if k == 0 else rng.randf_range(-16.0, 16.0)
 				var oz := 0.0 if k == 0 else rng.randf_range(-12.0, 12.0)
 				for step in range(2):
 					var top := rng.randf_range(10.0, 15.0) * (0.8 if step == 1 else 1.0)
 					var slab_h := tall * (0.6 if step == 0 else 0.4)
 					_cyl(col, top, top * 1.15, slab_h, 6, rock, Vector3(ox, hgt + slab_h * 0.5 + (tall * 0.6 if step == 1 else 0.0), oz), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
-		_:
-			# Rock spikes, leaning, filling the tile.
-			var rock_dark := _terrain_material("rock")
-			for k in range(6):
-				var foot := rng.randf_range(9.0, 14.0)
-				var spike_h := rng.randf_range(40.0, 56.0) if k == 0 else rng.randf_range(22.0, 40.0)
-				var a := k * TAU / 5.0 + rng.randf_range(-0.4, 0.4)
-				var dist := 0.0 if k == 0 else rng.randf_range(14.0, 22.0)
-				_cyl(col, 0.8, foot, spike_h, 4, rock_dark, Vector3(cos(a) * dist, hgt + spike_h * 0.5 - 1.0, sin(a) * dist),
-					Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18)))
-	match ground_t:
-		BattleMap.Terrain.RUINS:
-			return 96.0
-		BattleMap.Terrain.ROUGH:
-			return 46.0
-		_:
-			return 56.0
+			return 54.0
+		"cliffs":
+			return _cliff(col, hgt, rng)
+	# Crags: rock spikes, leaning, filling the tile.
+	var rock_dark := _terrain_material("rock")
+	for k in range(6):
+		var foot := rng.randf_range(9.0, 14.0)
+		var spike_h := rng.randf_range(46.0, 58.0) if k == 0 else rng.randf_range(28.0, 42.0)
+		var a := k * TAU / 5.0 + rng.randf_range(-0.4, 0.4)
+		var dist := 0.0 if k == 0 else rng.randf_range(14.0, 22.0)
+		_cyl(col, 0.8, foot, spike_h, 4, rock_dark, Vector3(cos(a) * dist, hgt + spike_h * 0.5 - 1.0, sin(a) * dist),
+			Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18)))
+	return 58.0
+
+
+## A hex prism's trace, `inset` of the hex's radius in from its rim: its top's rim and its
+## corners' edges down to `from`.
+func _prism_lines(inset: float, from: float, to: float) -> Dictionary:
+	var corners := Hex.corners(Vector2.ZERO, hex_px - inset)
+	var v := PackedVector3Array()
+	for i in range(corners.size()):
+		var a := _world(corners[i], to)
+		v.append(a)
+		v.append(_world(corners[(i + 1) % corners.size()], to))
+		v.append(a)
+		v.append(_world(corners[i], from))
+	return {"v": v, "lines": true}
+
+
+## A hex prism `inset` in from the hex's rim, from `from` up to `to`: its top and every side.
+func _prism_geo(inset: float, from: float, to: float) -> Array:
+	var corners := Hex.corners(Vector2.ZERO, hex_px - inset)
+	var tv := PackedVector3Array()
+	for i in range(1, corners.size() - 1):
+		for j in [0, i + 1, i]:
+			tv.append(_world(corners[j], to))
+	var sv := PackedVector3Array()
+	var sn := PackedVector3Array()
+	for i in range(corners.size()):
+		var a := corners[i]
+		var b := corners[(i + 1) % corners.size()]
+		var mid := (a + b) * 0.5
+		var nrm := Vector3(mid.x, 0.0, mid.y).normalized()
+		for p in [_world(a, from), _world(b, from), _world(b, to), _world(a, from), _world(b, to), _world(a, to)]:
+			sv.append(p)
+			sn.append(nrm)
+	return [{"v": tv, "n": _filled3(tv.size(), Vector3.UP)}, {"v": sv, "n": sn}]
+
+
+## A cliff (the gorge's): its hex a column of rock with a face on every edge, so neighbouring
+## cliffs stand as one wall, like basalt columns, some of them stepping up again narrower, so
+## the wall's top line breaks; traced, as the props are.
+func _cliff(col: Node3D, hgt: float, rng: RandomNumberGenerator) -> float:
+	var rock := _terrain_material("rock")
+	var band: int = col.get_meta("band", 0)
+	var xf := Transform3D(Basis.IDENTITY, col.position)
+	var tall := hgt + rng.randf_range(WALL_MIN + 4.0, WALL_MIN + 12.0)
+	var base := _prism_geo(0.75, 0.0, tall)
+	_bake(base[0], xf, rock, band, true)
+	_bake(base[1], xf, rock, band, true)
+	_bake(_prism_lines(0.75, 0.0, tall), xf, _trace_material("prop"), band, false, "prop")
+	if rng.randf() < 0.6:
+		var inset := hex_px * rng.randf_range(0.3, 0.5)
+		var top := tall + rng.randf_range(6.0, 12.0)
+		var step := _prism_geo(inset, tall, top)
+		_bake(step[0], xf, rock, band, true)
+		_bake(step[1], xf, rock, band, true)
+		_bake(_prism_lines(inset, tall, top), xf, _trace_material("prop"), band, false, "prop")
+		tall = top
+	return tall - hgt
 
 
 ## A hex of the city behind the wall: intact blocks in the Arsenal's grey, lit windows in
@@ -1370,17 +1550,18 @@ func _window_material(tone: String, colour: Color, energy: float) -> StandardMat
 	return _window_mats[tone]
 
 
-## A dead tree: a bare trunk, thick at the foot, with a few stub branches, inked.
+## A dead tree, knee-high (DRESS_MAX): a bare trunk, thick at the foot, with a few stub
+## branches, inked.
 var _bark_mat: StandardMaterial3D = null
 
 func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 	if _bark_mat == null:
 		_bark_mat = _lit(Color("2e2a26"))
 	var bark := _bark_mat
-	var tall := rng.randf_range(24.0, 40.0)
-	_cyl(col, 1.2, 3.4, tall, 5, bark, at + Vector3(0.0, tall * 0.5, 0.0), Vector3(0.0, 0.0, rng.randf_range(-0.12, 0.12)))
-	for k in range(rng.randi_range(2, 4)):
-		var branch := Vector3(rng.randf_range(9.0, 18.0), 2.0, 2.0)
+	var tall := rng.randf_range(11.0, DRESS_MAX)
+	_cyl(col, 1.0, 2.6, tall, 5, bark, at + Vector3(0.0, tall * 0.5, 0.0), Vector3(0.0, 0.0, rng.randf_range(-0.12, 0.12)))
+	for k in range(rng.randi_range(2, 3)):
+		var branch := Vector3(rng.randf_range(5.0, 10.0), 1.6, 1.6)
 		_box(col, branch, bark, at + Vector3(branch.x * 0.4, tall * rng.randf_range(0.5, 0.9), 0.0),
 			Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.8)))
 

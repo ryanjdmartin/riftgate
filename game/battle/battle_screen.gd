@@ -146,10 +146,12 @@ func _start_music() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
 ## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team; RIFTGATE_FACTION picks
-## the enemy; RIFTGATE_MAP_KIND=rubble picks the map's type (BattleMap.KINDS).
+## the enemy; RIFTGATE_MAP_KIND=gorge picks the map's shape (BattleMap.KINDS; none draws one by
+## the seed) and RIFTGATE_SEED=<n> the battle's seed (7).
 static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()
-	var b := Battle.new(7)
+	var seed_env := OS.get_environment("RIFTGATE_SEED")
+	var b := Battle.new(int(seed_env) if seed_env.is_valid_int() else 7)
 	var team: Array = []
 	var ids: Array = db.default_team()
 	var env := OS.get_environment("RIFTGATE_TEAM")
@@ -328,8 +330,16 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 
 # ---------------------------------------------------------------- refresh
 
+## RIFTGATE_PEAK_DEBUG=1: Rift Pressure peaks every enemy turn, so the tears, the seam's creep
+## and the mouths' sends can be judged running within a few turns (the pacing session, 30
+## October; placeholders all).
+static var PEAK_DEBUG := OS.get_environment("RIFTGATE_PEAK_DEBUG") == "1"
+
+
 func _refresh() -> void:
 	var f := battle.field
+	if PEAK_DEBUG:
+		f.rift_pressure_max = 1
 	var planning := battle.state == Battle.State.PLAN
 	var playing := _map.is_playing()
 	# Plain words (Ryan, 22 September): the turn, and how long until the rift spawns. The
@@ -366,6 +376,7 @@ func _refresh() -> void:
 		_map.plans = battle.plan_pieces() if planning else []
 		_map.shown = battle.shown_positions() if planning else {}
 	_map.attack = _fight_preview() if planning and not playing else {}
+	_map.meter = {"tally": battle.menace_killed, "thresholds": battle.thresholds, "fractures": battle.fractures, "sealed": battle.is_sealed()}
 	_map.route_drawing = planning and not playing
 	_map.queue_redraw()
 	_refresh_log()
@@ -513,7 +524,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to move: the tap asks what the ground is (Ryan, 21 September).
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
-		_show_details(ground_lines(battle.field.map.terrain[h]))
+		_show_details(ground_lines(battle.field.map.terrain[h], battle.field.map.ground_id(h)))
 		Sound.play("map_select")
 	else:
 		_select(null)
@@ -617,10 +628,25 @@ func pack_lines(u: Unit) -> Array:
 	var db := ContentDB.load_default()
 	var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
 	if not u.is_boss:
-		var parts: Array = [foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]
+		# A composition's members in order, the lead first (30 October); a one-type pack is one.
+		var parts: Array = []
+		for m in u.member_list():
+			if not parts.is_empty():
+				parts.append("·")
+			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
+		parts.append_array(["·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)])
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
-		return [_title(u.display_name), _words(parts), _behaviour_line(u)]
+		var lines: Array = [_title(u.display_name), _words(parts), _behaviour_line(u)]
+		# Its prey sealed off, it takes the machine nearest it this turn (Ryan, 29 October:
+		# "It's just punishing hiding"), and the readout says whom and why.
+		var w: Battlefield.Walk = _map.walks.get(u.id, null) if _map != null else null
+		if w != null and w.prey != 0 and w.prey != u.prey:
+			var took := battle.field.unit_by_id(w.prey)
+			var sealed := battle.field.unit_by_id(u.prey)
+			if took != null and sealed != null:
+				lines.append(_said("Takes", "%s in its place: %s is sealed off" % [took.display_name, sealed.display_name]))
+		return lines
 	var out: Array = [_title(u.display_name, "Boss")]
 	var stats: Array[String] = []
 	if int(db.foes.get(BattleMapView.foe_sprite_id(u), {}).get("size", 1)) >= 2:
@@ -630,7 +656,10 @@ func pack_lines(u: Unit) -> Array:
 	var brings: Array[String] = []
 	if u.lineup.size() > 1:
 		brings.append("%d of the party" % u.lineup.size())
-	if u.strength > 0:
+	if not u.members.is_empty():
+		for m in u.members:   # a hand-tailored escort, by member
+			brings.append("%s ×%d" % [str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), int(m[1])])
+	elif u.strength > 0:
 		brings.append("%s ×%d" % [foe_name, u.strength])
 	if not brings.is_empty():
 		out.append(_said("With", ", ".join(brings)))
@@ -642,6 +671,8 @@ func pack_lines(u: Unit) -> Array:
 ## name is.
 func _behaviour_line(u: Unit) -> Dictionary:
 	if u.is_boss:
+		if u.sealed:
+			return _said("Sealed", "holds the rift; its seal breaks at the Rupture")
 		return _said("Holds", "the rift")
 	match u.behaviour:
 		"hunt":
@@ -670,14 +701,17 @@ static func _said(head: String, rest: String) -> Dictionary:
 	return EntryReadout.parts_line("effect", [{"text": head, "trend": 0, "gain": false, "bold": true}, EntryReadout.word(rest)])
 
 
-## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name, then a
-## line for each word the crossing table gives it, read from the table so it never disagrees
-## with the rule (Ryan, 28 October: a step a hex, water waded at two, crags the flyer's), the
-## ways under each by their shown names; then the packs' rule.
-static func ground_lines(t: int) -> Array:
+## The ground's readout (Ryan, 21 September: a tap asks what the ground is): its name (a wall
+## by what it is, Ryan, 29 October: crags, mesas, towers or cliffs; `word`, the map's ground_id),
+## then a line for each word the crossing table gives it, read from the table so it never
+## disagrees with the rule (Ryan, 28 October: a step a hex, water waded at two, walls the
+## flyer's), the ways under each by their shown names; then the packs' rule.
+static func ground_lines(t: int, word: String = "") -> Array:
 	var db := ContentDB.load_default()
-	var id := str(BattleMap.TERRAIN_NAMES.get(t, "plain"))
-	var out: Array = [_title(str(db.vocabulary.get(id, {}).get("name", id)), "Ground")]
+	var id := word
+	if id.is_empty():
+		id = str(BattleMap.WALL_LOOKS[0]) if t == BattleMap.Terrain.MOUNTAIN else str(BattleMap.TERRAIN_NAMES.get(t, "plain"))
+	var out: Array = [_title(db.term_name(id), "Ground")]
 	for pair in BattleMap.ground_ways(t):
 		var ways: Array[String] = []
 		for way in pair[1]:
@@ -691,7 +725,9 @@ static func ground_lines(t: int) -> Array:
 			_:
 				out.append(_said("Cross:", "every machine" if (pair[1] as Array).size() == BattleMap.WAYS.size() else said))
 	var packs := "Packs cross it"
-	if not BattleMap.passable(t, []):
+	if BattleMap.step_cost(t, []) == BattleMap.WADE:
+		packs = "Packs wade it (two move a hex); a winged pack crosses it" if BattleMap.step_cost(t, ["winged"]) == BattleMap.STEP else "Packs wade it (two move a hex)"
+	elif not BattleMap.passable(t, []):
 		packs = "Packs never enter it; a winged pack crosses it" if BattleMap.passable(t, ["winged"]) else "Packs never enter it"
 	out.append(EntryReadout.text_line("effect", packs))
 	return out
@@ -789,7 +825,7 @@ static func gate_lines(f: Battlefield) -> Array:
 	var frac := float(f.gate_hp) / maxf(1.0, float(f.gate_hp_max))
 	return [_title("The Gate", "Field projector"),
 		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.LOSS),
-		EntryReadout.text_line("effect", "A pack on the apron strikes it")]
+		EntryReadout.text_line("effect", "A pack beside the wall, anywhere along it, strikes it")]
 
 
 static func gate_codex_entry(f: Battlefield) -> Dictionary:
@@ -798,7 +834,7 @@ static func gate_codex_entry(f: Battlefield) -> Dictionary:
 		"designation": "CARE FIELD PROJECTOR",
 		"subtitle": "THE CITY'S ENCLOSURE // THE LINE THE MACHINES HOLD",
 		"stat_items": [["integrity", "%d/%d" % [f.gate_hp, f.gate_hp_max]], ["rows", str(BattleMap.GATE_ROWS)]],
-		"body": "The projector that holds the field over the city. A pack that reaches the apron strikes it every enemy turn, harder the bigger the pack and never for less than ten; when its integrity is gone the field is down and the battle is lost. Nothing stands on it.",
+		"body": "The projector that holds the field over the city. A pack that reaches the wall strikes it from anywhere along it, every enemy turn, harder the bigger the pack; when its integrity is gone the field is down and the battle is lost. Nothing stands on it.",
 		"flavour": "",
 	}
 
@@ -814,7 +850,7 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 		return {"title": u.display_name, "subtitle": str(u.faction).to_upper(), "body": ""}
 	var entry := db.codex_for_foe(db.make_foe(fid))
 	entry["title"] = u.display_name
-	entry["subtitle"] = "%s // %s" % [entry["subtitle"], ("BOSS" if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	entry["subtitle"] = "%s // %s" % [entry["subtitle"], (("BOSS // SEALED" if u.sealed else "BOSS") if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
 	if u.traits.has("winged"):
 		entry["subtitle"] += " // WINGED"   # it crosses water and crags as a flyer does
 	return entry

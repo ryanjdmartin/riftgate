@@ -56,7 +56,7 @@ func _win(sk: Skirmish) -> void:
 func test_setup_places_team_formation_and_boss() -> void:
 	var b := _battle()
 	assert_eq(b.mechs().size(), 3, "three mechs")
-	assert_eq(b.field.packs().size(), 4, "three packs from the spawn list plus the boss")
+	assert_eq(b.field.packs().size(), 1 + Ramp.formations_at(0) + Ramp.patrols_at(0), "the ramp's formations and patrols at the start, plus the boss")
 	assert_true(b.boss != null and b.field.units.has(b.boss), "boss on the field")
 	assert_eq(b.boss.foe_id, "", "boss unpacks by faction, not foe id")
 	for u in b.field.units:
@@ -87,9 +87,10 @@ func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_hom
 		assert_false(sq.is_boss, "%s is no boss" % sq.display_name)
 		placed.append([sq.foe_id, sq.strength, sq.faction])
 	assert_eq(placed, [[a, 2, str(facs[0])], [c, 5, str(facs[1])], [a, 1, str(facs[0])]], "the packs as composed, each under its own foe's faction")
-	assert_eq(b.field.spawn_table, placed, "and the rift sends them in turn")
+	var cycled: Array = b.field.cycle.map(func(comp) -> Array: return [str(comp["members"][0][0]), int(comp["members"][0][1]), str(comp["faction"])])
+	assert_eq(cycled, placed, "and the rift sends them in turn")
 	b.field.rift_pressure = b.field.rift_pressure_max - 1
-	b.field._spawn_index = 1
+	b.field._cycle_index = 1
 	b.field.tick_pressure(1)
 	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
 	assert_eq([spawned.foe_id, spawned.faction], [c, str(facs[1])], "a rift pack wears its own faction")
@@ -97,6 +98,178 @@ func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_hom
 	b.field.gate_hp = 0
 	b.end_turn()
 	assert_eq(b.outcome, Battle.Outcome.GATE_FALLEN, "without a boss only the field ends it")
+
+
+## A pack as a composition (the foes' fresh start, 30 October): one hex, one sprite (its lead's),
+## every member unpacked into the fight, the survivors kept by member, its ring the largest of
+## its members', its pace the slowest, winged only when every member is, and each kill worth its
+## type's menace.
+func test_a_composition_unpacks_its_members_and_keeps_its_survivors_by_member() -> void:
+	var b := _battle()
+	var db := b.db
+	var host := Unit.pack(0, "the host", Vector2i.ZERO, "marsh", Unit.PACK_MOVE, 0, "")
+	host.set_members([["revenant", 3], ["ghost", 2]])
+	assert_eq(host.foe_id, "revenant", "its foe type is the lead's")
+	assert_eq(host.strength, 5, "its strength is the count of every member")
+	b.field.add_unit(b.field.dress_pack(host))
+	var ring := maxi(int(db.foes["revenant"].get("zone", 1)), int(db.foes["ghost"].get("zone", 1)))
+	assert_eq(host.zone, ring, "its ring is the largest of its members'")
+	assert_eq(host.movespeed, mini(int(db.foes["revenant"].get("movespeed", 2)), int(db.foes["ghost"].get("movespeed", 2))), "its pace the slowest")
+	assert_eq(host.behaviour, str(db.foes["revenant"].get("behaviour", "push")), "it walks by its lead")
+	assert_false(host.traits.has("winged"), "winged only when every member is: the revenants walk")
+	var wisps := Unit.pack(0, "wisps", Vector2i.ZERO, "marsh", Unit.PACK_MOVE, 0, "")
+	wisps.set_members([["ghost", 2]])
+	b.field.dress_pack(wisps)
+	assert_eq(wisps.traits.has("winged"), bool(db.foes["ghost"].get("winged", false)), "a composition of winged members is winged")
+	var types := {}
+	for f in db.foes_for(host):
+		types[f.content_id] = int(types.get(f.content_id, 0)) + 1
+	assert_eq(types, {"revenant": 3, "ghost": 2}, "every member unpacks, by type")
+	# A fight that kills two revenants and a ghost: the pack keeps the rest by member.
+	var m: Unit = b.mechs()[0]
+	_engage(b, host, m)
+	var sk := b.attack(host, [m])
+	assert_true(sk != null, "the fight opens")
+	sk.begin()
+	sk.start_round()
+	var fell := {"revenant": 0, "ghost": 0}
+	for f in sk.field_foes():
+		if f.pack_id == host.id and fell.has(f.content_id) and int(fell[f.content_id]) < (2 if f.content_id == "revenant" else 1):
+			f.hp = 0
+			fell[f.content_id] = int(fell[f.content_id]) + 1
+	for f in sk.reinforcements:
+		if f.pack_id == host.id and fell.has(f.content_id) and int(fell[f.content_id]) < (2 if f.content_id == "revenant" else 1):
+			f.hp = 0
+			fell[f.content_id] = int(fell[f.content_id]) + 1
+	assert_eq(fell, {"revenant": 2, "ghost": 1}, "three of its own fall")
+	sk.reinforcements = sk.reinforcements.filter(func(f) -> bool: return f.alive())
+	sk.end_round()
+	assert_eq(sk.kills_by_type(host), {"revenant": 2, "ghost": 1}, "the kills by type")
+	assert_eq(sk.kills_for(host), 3, "and in all")
+	assert_eq(sk.members_left(host), [["revenant", 1], ["ghost", 1]], "the members left, in the pack's order")
+	var before := b.menace_killed
+	b.finish_skirmish()
+	assert_eq(host.members, [["revenant", 1], ["ghost", 1]], "the map keeps the survivors by member")
+	assert_eq(host.strength, 2, "and the badge their count")
+	assert_eq(b.foes_killed, 3, "the battle counts the kills")
+	assert_eq(b.menace_killed - before, 2 * db.menace("revenant") + db.menace("ghost"), "each at its type's menace")
+
+
+## The field at the start follows the tier and the ramp (the pacing session, 30 October): the
+## tier's compositions, the ramp's count of formations (the second the guest's where there is
+## one) and patrols at the ramp's density, the timer the ramp's, and the cycle the lead's and the
+## guest's formations and patrols in turn, a formation first.
+func test_the_field_at_the_start_follows_the_tier_and_the_ramp() -> void:
+	var db := ContentDB.load_default()
+	for r in [0, 6, 12]:
+		var b := Battle.new(5)
+		b.tier = 1
+		b.ramp = r
+		b.guest = "waste"
+		b.setup(_team(), "meadow")
+		assert_eq(b.field.rift_pressure_max, Ramp.timer_at(r), "ramp %d: the timer" % r)
+		var forms := 0
+		var patrols := 0
+		var guests := 0
+		for sq in b.field.packs():
+			if sq.is_boss:
+				continue
+			if sq.composition_size == "formation":
+				forms += 1
+			elif sq.composition_size == "patrol":
+				patrols += 1
+			if sq.faction == "waste":
+				guests += 1
+			var comp: Dictionary = {}
+			for c in db.compositions(sq.faction, 2, sq.composition_size):
+				if str(c["id"]) == sq.composition:
+					comp = c
+			assert_false(comp.is_empty(), "ramp %d: %s is a tier-two composition of its domain" % [r, sq.composition])
+			for k in range(comp["members"].size()):
+				assert_eq(sq.members[k], [str(comp["members"][k][0]), Ramp.scaled(int(comp["members"][k][1]), r)], "ramp %d: %s's member %d at the ramp's density" % [r, sq.composition, k])
+		assert_eq(forms, Ramp.formations_at(r), "ramp %d: the formations at the start" % r)
+		assert_eq(patrols, Ramp.patrols_at(r), "ramp %d: the patrols at the start" % r)
+		# The lead's and the guest's in turn, the lead's first: the second formation and the
+		# second patrol are the guest's.
+		assert_eq(guests, Ramp.formations_at(r) / 2 + Ramp.patrols_at(r) / 2, "ramp %d: every second composition on the field is the guest's" % r)
+		var first_pack: Unit = b.field.packs()[0]
+		assert_eq(first_pack.faction, "meadow", "ramp %d: the first on the field is the lead's" % r)
+		assert_eq(str(b.field.cycle[0]["size"]), "formation", "ramp %d: the cycle starts with a formation" % r)
+		assert_eq(str(b.field.cycle[0]["faction"]), "meadow", "the lead's")
+		assert_eq(str(b.field.cycle[2]["faction"]), "waste", "then the guest's formation, after the lead's patrol")
+		for c in b.field.patrol_cycle:
+			assert_eq(str(c["size"]), "patrol", "the tears send patrols alone")
+		assert_true(b.field.cycle.size() >= db.compositions("meadow", 2, "formation").size() + db.compositions("waste", 2, "formation").size(), "every formation of both is in the cycle")
+
+
+## The Rupture meter (the pacing session, 30 October): the thresholds from the field's menace at
+## the start, the last at two thirds of it; a Fracture pays out as a fight ends, the elite the
+## tier names spawning at the rift; the last breaks the seal; a sealed boss cannot be ordered
+## onto and joins no fight; and the stall guard breaks the seal once the field is clear.
+func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() -> void:
+	var b := _battle()   # the Marsh at tier 0: three Fractures, the Reaper at the first
+	var db := b.db
+	assert_eq(b.thresholds.size(), Ramp.fractures_at(0), "the tier's count of Fractures")
+	assert_true(b.field_menace > 0, "the field's menace at the start")
+	assert_eq(int(b.thresholds[b.thresholds.size() - 1]), maxi(1, roundi(Battle.RUPTURE_SHARE * float(b.field_menace))), "the last at the Rupture's share of it")
+	for k in range(1, b.thresholds.size()):
+		assert_true(int(b.thresholds[k]) - int(b.thresholds[k - 1]) >= int(b.thresholds[k - 1]) - (int(b.thresholds[k - 2]) if k >= 2 else 0), "later Fractures cost more (%s)" % str(b.thresholds))
+	assert_true(b.is_sealed() and b.boss.sealed, "the boss is sealed while there is a field to earn the Rupture against")
+	assert_false(b.can_target(b.boss), "a sealed boss cannot be ordered onto")
+	assert_true(b.roster(b.boss).is_empty(), "nor fought")
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	for n in Hex.neighbors(b.boss.pos):   # a pack beside the boss, inside its ring
+		if b.field.can_stand(sq, n):
+			sq.pos = n
+			break
+	_engage(b, sq, m)
+	var r := b.roster(sq)
+	assert_false((r["joins"] as Array).has(b.boss), "a sealed boss's ring is inert: it joins no fight")
+	assert_false(bool(r["all_in"]), "so the fight is an ordinary one")
+	# Kill the first pack outright: its menace is the first Fracture's worth or more.
+	var sk := b.attack(sq, [m])
+	_win(sk)
+	b.finish_skirmish()
+	var packs_before := b.field.packs().size()
+	assert_true(b.menace_killed > 0, "the tally counts the kills' menace")
+	if b.menace_killed >= int(b.thresholds[0]):
+		assert_true(b.fractures >= 1, "a Fracture is earned once the tally crosses its threshold")
+		assert_eq(b.elites_spawned, ["the_reaper"], "and the Marsh's first elite emerges at it")
+		var elite: Unit = b.field.packs()[b.field.packs().size() - 1]
+		assert_eq(elite.composition_size, "elite", "an elite composition")
+		assert_true(db.is_elite(elite.foe_id), "led by its elite")
+		assert_true(Hex.distance(elite.pos, b.map.rift) <= 3, "at the rift")
+	else:
+		assert_eq(b.fractures, 0, "no Fracture under the first threshold")
+	assert_true(b.is_sealed(), "the seal holds short of the Rupture")
+	# The tally carried over the last threshold by hand: the Rupture.
+	b.menace_killed = int(b.thresholds[b.thresholds.size() - 1])
+	b._fractures()
+	assert_eq(b.fractures, b.thresholds.size(), "every Fracture earned")
+	assert_false(b.is_sealed(), "the Rupture: the seal breaks")
+	assert_eq(b.rupture_turn, b.field.phase, "the turn it broke")
+	assert_false(b.stall_guard, "by the tally, not the guard")
+	assert_true(b.can_target(b.boss), "the boss can be fought now")
+	assert_true(bool(b.roster(b.boss).get("all_in", false)), "and its fight takes every machine")
+
+
+func test_the_stall_guard_breaks_the_seal_once_the_field_is_clear() -> void:
+	var b := _battle()
+	b.thresholds = [100000, 200000, 300000]   # out of reach by the tally
+	assert_true(b.is_sealed(), "sealed")
+	for sq in b.field.packs().duplicate():
+		if not sq.is_boss:
+			b.field.units.erase(sq)   # the field cleared by hand
+	var m: Unit = b.mechs()[0]
+	var sq := b.field.add_unit(b.field.dress_pack(Unit.pack(0, "the last pack", Vector2i.ZERO, "marsh", Unit.PACK_MOVE, 2, "revenant")))
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	_win(sk)
+	b.finish_skirmish()
+	assert_false(b.is_sealed(), "the field clear, the seal breaks by the guard")
+	assert_true(b.stall_guard, "marked as the guard's")
+	assert_eq(b.fractures, 0, "with no Fracture earned")
 
 
 func test_route_to_reaches_every_reachable_hex() -> void:
@@ -367,6 +540,7 @@ func test_a_second_action_fights_twice_a_turn() -> void:
 
 func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> void:
 	var b := _battle()
+	b.thresholds = []   # no meter here, so no Fracture's elite joins the count
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
@@ -448,6 +622,7 @@ func test_a_withdrawal_never_grows_a_pack_by_its_halves() -> void:
 
 func test_boss_death_seals_the_rift() -> void:
 	var b := _battle()
+	b.rupture()   # the seal broken: the boss can be fought
 	var m: Unit = b.mechs()[0]
 	_engage(b, b.boss, m)
 	var sk := b.attack(b.boss, [m])
@@ -575,6 +750,14 @@ func test_a_skirmish_is_fought_on_the_first_packs_ground() -> void:
 	assert_eq(b.ground_terrain(group), BattleMap.Terrain.RUINS, "and its terrain")
 	var sk := b._build_skirmish(group)
 	assert_eq(sk.terrain, BattleMap.Terrain.RUINS, "the skirmish is fought there, not on the machine's road")
+	assert_eq(sk.ground, "ruins", "and its header names that ground")
+	# A winged pack over a wall: the fight's word is the wall's look (Ryan, 29 October: walls are
+	# named by what they are), kept through a save.
+	f.map.terrain[sq.pos] = BattleMap.Terrain.MOUNTAIN
+	f.map.wall_look[sq.pos] = "towers"
+	var on_wall := b._build_skirmish(group)
+	assert_eq(on_wall.ground, "towers", "a fight over a tower says towers")
+	assert_eq(SaveGame._skirmish_from(SaveGame._skirmish_dict(on_wall, f), f).ground, "towers", "and a resumed one too")
 
 
 ## A route drawn by hand goes the way it was drawn, where a tap would take the cheapest way.
@@ -772,6 +955,7 @@ func test_the_hexes_moved_are_tallied_and_an_undo_takes_them_back() -> void:
 ## counts among the battle's kills.
 func test_the_boss_fight_takes_every_machine_and_cannot_be_left() -> void:
 	var b := _battle()
+	b.rupture()
 	var m: Unit = b.mechs()[0]
 	var far: Unit = b.mechs()[2]
 	_engage(b, b.boss, m)
@@ -800,6 +984,7 @@ func test_the_boss_fight_takes_every_machine_and_cannot_be_left() -> void:
 ## A fight the boss joins by its ring is the boss's fight too: every machine, no withdrawal.
 func test_a_fight_the_boss_joins_takes_every_machine() -> void:
 	var b := _battle()
+	b.rupture()
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	sq.behaviour = "push"
@@ -838,6 +1023,7 @@ func test_a_heros_unit_stands_while_its_hero_does_with_its_escort() -> void:
 	b.setup(_team(), fid)
 	assert_eq(b.boss.lineup, [hero], "the hero commands the rift")
 	assert_eq([b.boss.foe_id, b.boss.strength], [escort, 3], "its wildlife with it")
+	b.rupture()
 	var m: Unit = b.mechs()[0]
 	_engage(b, b.boss, m)
 	var sk := b.attack(b.boss, [m])

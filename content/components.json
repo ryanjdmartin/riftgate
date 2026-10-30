@@ -48,7 +48,7 @@
     "kind": "attack",
     "reach": "indirect",
     "power": 2,
-    "power_max": 4,
+    "power_max": 6,
     "keywords": [],
     "heat": 2
    },
@@ -101,7 +101,7 @@
     "kind": "attack",
     "reach": "direct",
     "power": 2,
-    "power_max": 5,
+    "power_max": 6,
     "keywords": [],
     "heat": 1
    },
@@ -227,9 +227,12 @@
     "kind": "attack",
     "reach": "indirect",
     "power": 2,
-    "power_max": 5,
-    "keywords": [],
-    "heat": 1
+    "power_max": 6,
+    "keywords": [
+     "splash"
+    ],
+    "heat": 1,
+    "splash": 1
    },
    "passive": null,
    "tags": [
@@ -316,7 +319,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 8,
     "keywords": [
      "breach"
     ],
@@ -344,7 +347,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 3,
+    "power": 4,
     "keywords": [],
     "heat": 1,
     "power_per_missing": 1,
@@ -399,7 +402,8 @@
     "keywords": [
      "chain"
     ],
-    "heat": 2
+    "heat": 2,
+    "chain": 2
    },
    "passive": null,
    "tags": [
@@ -975,7 +979,7 @@
     "power": 2,
     "keywords": [],
     "heat": 2,
-    "power_max": 4
+    "power_max": 6
    },
    "passive": null,
    "tags": [

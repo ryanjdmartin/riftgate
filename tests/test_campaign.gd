@@ -194,12 +194,14 @@ func test_a_won_battle_lifts_the_siege_and_banks_its_salvage() -> void:
 	var b := _battle(c)
 	var faction := b.faction
 	b.foes_killed = 10
+	b.menace_killed = 30
 	_end(b, Battle.Outcome.VICTORY)
 	var r := c.finish_battle()
 	assert_eq(r["result"], "won", "won")
 	assert_eq(c.cities[front].gate, Campaign.CITY_GATE, "the gate is restored to full")
 	assert_true(c.cities[front].rift.is_empty(), "its rift is closed")
-	assert_eq(c.salvage, Campaign.START_SALVAGE + 10 * Campaign.SALVAGE_PER_FOE, "the salvage banks")
+	assert_eq(c.salvage, Campaign.START_SALVAGE + 30 * Campaign.SALVAGE_PER_MENACE, "the salvage banks, by the menace killed")
+	assert_eq(int(c.anathema.get(faction, 0)), 30, "and Anathema takes the menace")
 	assert_true(c.tokens.has(faction), "the boss drops a research token of its faction")
 	assert_true(c.offers.has(front), "the host maker owes an offer")
 	assert_eq(c.turn, 1, "the turn ends")
@@ -241,13 +243,14 @@ func test_a_wipe_lets_the_horde_strike_and_the_city_holds_wounded() -> void:
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 4
+	b.menace_killed = 12
 	_end(b, Battle.Outcome.WRECKED)
 	var r := c.finish_battle()
 	assert_true(r["wiped"], "a wipe")
 	assert_eq(r["result"], "held", "the gate held the strikes")
 	assert_true(not c.cities[front].fallen, "the city stands")
 	assert_true(not c.cities[front].rift.is_empty(), "its rift stays open")
-	assert_eq(c.salvage, Campaign.START_SALVAGE + 4 * Campaign.SALVAGE_PER_FOE, "the salvage was in the city and is kept")
+	assert_eq(c.salvage, Campaign.START_SALVAGE + 12 * Campaign.SALVAGE_PER_MENACE, "the salvage was in the city and is kept")
 	assert_eq(c.tokens.size(), 0, "no token")
 	assert_eq(c.ready_machines().size(), 0, "every machine is in the shop")
 
@@ -365,29 +368,59 @@ func test_rifts_open_with_the_tier_and_a_guest_joins_from_its_tier() -> void:
 		assert_true(c.db.factions.has(rift["guest"]) and rift["guest"] != rift["faction"], "a guest, another faction")
 
 
+## A rift keeps the tier it opened at (Ryan's form, the curve proposal; 30 October): the card's
+## jump never moves under the player, and the battle reads the live Convergence as its ramp,
+## the same for every open front.
+func test_a_rift_keeps_the_tier_it_opened_at_and_the_battle_reads_the_ramp() -> void:
+	var c := _run(7)
+	for f in c.fronts():
+		assert_eq(int(c.cities[f].rift.get("tier", -1)), 0, "a rift opened at the start carries tier one")
+	var front := str(c.fronts()[0])
+	c.convergence = 5   # the clock moved on: tier two now
+	assert_eq(c.tier(), 1, "the Convergence's tier is two")
+	var b := _battle(c, front)
+	assert_eq(b.tier, 0, "the battle is fought at the rift's own tier")
+	assert_eq(b.ramp, 5, "and at the live Convergence as its ramp")
+	assert_eq(b.field.rift_pressure_max, Ramp.timer_at(5), "the timer is the ramp's")
+	_end(b, Battle.Outcome.VICTORY)
+	c.finish_battle()
+	var late := ""
+	for f in c.fronts():
+		if int(c.cities[f].rift.get("tier", -1)) == 1:
+			late = f
+	assert_ne(late, "", "a rift opened now carries tier two")
+	var d: Dictionary = JSON.parse_string(JSON.stringify(SaveGame.campaign_to_dict(c)))
+	var back := SaveGame.campaign_from_dict(d)
+	assert_eq(int(back.cities[late].rift.get("tier", -1)), 1, "the rift's tier rides in the save")
+
+
 func test_a_guests_spawns_join_the_rifts_cycle() -> void:
 	var db := ContentDB.load_default()
 	var facs: Array = db.factions.keys()
 	var b := Battle.new(3)
 	b.guest = str(facs[1])
 	b.setup([db.make_mech(str(db.default_team()[0]))], str(facs[0]))
-	var guest_foes := 0
-	for e in b.field.spawn_table:
-		if db.faction_of_foe(str(e[0])) == str(facs[1]):
-			guest_foes += 1
-	assert_eq(guest_foes, db.spawn_table(str(facs[1]), 1).size(), "every guest pack is in the cycle")
-	var formation := 0
+	var guest_comps := 0
+	for c in b.field.cycle:
+		if str(c["faction"]) == str(facs[1]):
+			guest_comps += 1
+	assert_eq(guest_comps, db.compositions(str(facs[1]), 1, "formation").size() + db.compositions(str(facs[1]), 1, "patrol").size(), "every guest formation and patrol is in the cycle")
+	var on_field := 0
+	var guests_on_field := 0
 	for u in b.field.packs():
 		if not u.is_boss:
-			formation += 1
-			assert_eq(db.faction_of_foe(u.foe_id), str(facs[0]), "the field's formation is the lead's foes")
-	assert_eq(formation, db.spawn_table(str(facs[0]), 1).size(), "and only the lead's: a guest never doubles the field")
-	# A guest pack the rift sends wears its own faction.
+			on_field += 1
+			if u.faction == str(facs[1]):
+				guests_on_field += 1
+	assert_eq(on_field, Ramp.formations_at(0) + Ramp.patrols_at(0), "the ramp's count: a guest never doubles the field")
+	assert_eq(guests_on_field, Ramp.formations_at(0) / 2 + Ramp.patrols_at(0) / 2, "the lead's and the guest's in turn on the field, the lead's first")
+	# A guest composition the rift sends wears its own faction.
 	b.field.rift_pressure = b.field.rift_pressure_max - 1
-	b.field._spawn_index = 1
+	b.field._cycle_index = 2   # the lead's formation, its patrol, then the guest's formation
 	b.field.tick_pressure(1)
 	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
 	assert_eq(spawned.faction, str(facs[1]), "the guest's pack is the guest's")
+	assert_eq(spawned.composition_size, "formation", "its formation")
 
 
 func test_the_finale_is_due_at_the_threshold_and_fought_at_the_capital() -> void:
@@ -637,6 +670,7 @@ func test_a_battle_not_won_pays_no_favour() -> void:
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 3
+	b.menace_killed = 9
 	_end(b, Battle.Outcome.WRECKED)
 	var r := c.finish_battle()
 	assert_eq(r["result"], "held", "the city held")
@@ -907,6 +941,7 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	c.convergence = Campaign.TIER_EVERY * 2
 	assert_eq(c.tier(), 2, "the Convergence at tier three")
 	var front := str(c.fronts()[0])
+	c.cities[front].rift["tier"] = c.tier()   # a rift opened now: it carries the tier (locked, 30 October)
 	var uids: Array = c.ready_machines().slice(0, 1).map(func(m) -> int: return m.uid)
 	var b2 := c.start_battle(front, uids)
 	assert_eq(b2.tier, 2, "the campaign hands its tier to the battle")
@@ -916,7 +951,7 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 ## A battle fields its domain's spawn list at its tier (the ladder's brief, D3; 28 October): the
 ## formation on the map is the lead's list at the tier, and the rift's cycle carries it and the
 ## guest's at the same tier.
-func test_a_battle_fields_the_spawn_list_of_its_tier() -> void:
+func test_a_battle_fields_the_compositions_of_its_tier() -> void:
 	var db := ContentDB.load_default()
 	var facs: Array = db.factions.keys()
 	for t in range(3):
@@ -924,18 +959,16 @@ func test_a_battle_fields_the_spawn_list_of_its_tier() -> void:
 		b.tier = t
 		b.guest = str(facs[1])
 		b.setup([db.make_mech(str(db.default_team()[0]))], str(facs[0]))
-		var lead := db.spawn_table(str(facs[0]), t + 1)
-		var guest := db.spawn_table(str(facs[1]), t + 1)
-		var cycle: Array = b.field.spawn_table.map(func(e) -> String: return str(e[0]))
-		for e in lead + guest:
-			assert_true(cycle.has(str(e[0])), "tier %d's %s in the rift's cycle" % [t + 1, str(e[0])])
-		var formation: Array = []
+		var cycle: Array = b.field.cycle.map(func(c) -> String: return str(c["id"]))
+		for fid in [facs[0], facs[1]]:
+			for c in db.compositions(str(fid), t + 1, "formation") + db.compositions(str(fid), t + 1, "patrol"):
+				assert_true(cycle.has(str(c["id"])), "tier %d's %s in the rift's cycle" % [t + 1, str(c["id"])])
+		var ids: Array = []
+		for fid in [facs[0], facs[1]]:
+			ids.append_array((db.compositions(str(fid), t + 1, "formation") + db.compositions(str(fid), t + 1, "patrol")).map(func(c) -> String: return str(c["id"])))
 		for u in b.field.packs():
 			if not u.is_boss:
-				formation.append(u.foe_id)
-		assert_eq(formation.size(), lead.size(), "tier %d's formation is the lead's list" % (t + 1))
-		for fid in formation:
-			assert_true(lead.any(func(e) -> bool: return str(e[0]) == fid), "%s is in tier %d's list" % [fid, t + 1])
+				assert_true(ids.has(u.composition), "%s on the field is one of tier %d's compositions, the lead's or the guest's" % [u.composition, t + 1])
 
 
 ## An escort's units are the foes of its domain's spawn list at the battle's tier (the ladder's
@@ -952,9 +985,11 @@ func test_an_escort_is_drawn_from_its_tiers_list() -> void:
 				units.append(str(e[0]))
 		var drawn: Array = db.escort_units(faction, t, units.size()).map(func(f) -> String: return f.content_id)
 		assert_eq(drawn, units, "tier %d draws its own list, in spawn order" % (t + 1))
-	var lists: Dictionary = db.factions[faction]["spawn"]
 	var tier_two: Array = db.spawn_table(faction, 2)
-	lists.erase("3")
+	var comps: Array = db.factions[faction]["compositions"]
+	for c in comps:   # tier three's compositions dropped: the tier takes tier two's
+		c["tiers"] = (c.get("tiers", [1]) as Array).filter(func(t) -> bool: return int(t) != 3)
+	db.factions[faction]["compositions"] = comps.filter(func(c) -> bool: return not (c["tiers"] as Array).is_empty())
 	assert_eq(db.spawn_table(faction, 3), tier_two, "a tier with no list takes the highest under it")
 	assert_eq(db.escort_units(faction, 2, 1)[0].content_id, str(tier_two[0][0]), "and its escort with it")
 	var first: Dictionary = db.foes[str(tier_two[0][0])]

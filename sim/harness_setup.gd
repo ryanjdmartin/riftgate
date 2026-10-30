@@ -24,7 +24,7 @@ var packs: Array = []           # [[foe_id, strength], ...]: on the field at the
 var boss: String = ""           # a faction's boss by foe id, "" for none
 var guest: String = ""          # a battle's guest faction, joining the rift's cycle; "" for none
 var seed_value: int = 7
-var map_kind: String = "mixed"
+var map_kind: String = ""        # a map shape (BattleMap.KINDS), or "" for the one the seed draws
 
 
 func _init(content: ContentDB = null) -> void:
@@ -256,8 +256,8 @@ static func from_dict(d: Dictionary, content: ContentDB = null) -> HarnessSetup:
 	var g := str(d.get("guest", ""))
 	s.guest = g if s.db.factions.has(g) else ""
 	s.seed_value = clampi(int(d.get("seed", 7)), 1, MAX_SEED)
-	var k := str(d.get("map_kind", "mixed"))
-	s.map_kind = k if BattleMap.KINDS.has(k) else "mixed"
+	var k := str(d.get("map_kind", ""))
+	s.map_kind = k if BattleMap.KINDS.has(k) else ""
 	return s
 
 
