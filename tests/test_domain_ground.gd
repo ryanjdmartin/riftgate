@@ -2,9 +2,10 @@ extends TestCase
 
 ## Each domain paints its own tileset (Ryan, 29 October: "They all need their own tileset, first
 ## of all. Shouldn't all be painting green meadows"; 30 October: "walls and water certainly
-## should change with tileset", and the grounds "can differ where appropriate. Just not wildly
-## different like it was"): the painted map dresses every hex by the lead domain's bleed, in
-## sprites inked in the domain's colours, and a road runs to the roads beside it.
+## should change with tileset"; the grounds "not wildly different like it was", yet "the
+## different types need different backgrounds"): the painted map dresses every hex by the lead
+## domain's bleed, each ground a tone of the domain's, in sprites inked in the domain's colours,
+## and a road runs to the roads beside it.
 
 const DECORATIVE := [BattleMap.Terrain.PLAIN, BattleMap.Terrain.ROAD, BattleMap.Terrain.ROUGH, BattleMap.Terrain.RUINS]
 
@@ -42,10 +43,13 @@ func test_every_domain_has_a_tileset() -> void:
 func test_a_domains_grounds_are_one_family() -> void:
 	for key in DomainGround.TILESETS.keys():
 		var ground := Color(str(DomainGround.TILESETS[key]["ground"]))
+		var tones := {}
 		for t in DECORATIVE:
 			var c := DomainGround.fill(str(key), t)
 			var step := maxf(absf(c.r - ground.r), maxf(absf(c.g - ground.g), absf(c.b - ground.b)))
 			assert_true(step <= 0.2 + 0.001, "%s's %s is the domain's ground or a step from it" % [key, BattleMap.TERRAIN_NAMES[t]])
+			tones[c.to_html()] = true
+		assert_true(tones.size() >= 3, "%s's grounds are told apart by their tone too" % key)
 
 
 func test_water_and_the_walls_are_each_domains_own() -> void:

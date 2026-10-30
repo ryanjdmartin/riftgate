@@ -2373,3 +2373,17 @@ red for a protan, so it is `#003300` (19.7); its mountains' shaded face and the 
 `#cc6600` 2.6, `#cc3300` 5.3), so none is used. Small marks score lower and stay small: the fissures'
 and the fire's `#ffcc00` 5.1 against the amber (deutan), the Marsh's moss `#669933` 5.7 against the
 red, the oasis rim `#66cccc` 4.7 against the blue (tritan).
+
+**The domains' tilesets: a tone a ground** (30 October; Ryan, of one ground for all four: "the
+different types need different backgrounds. Its very monotone now. It just needed to be less
+jarring"). Each decorative ground takes its own tone a step at most from its domain's ground in
+each channel of the posterize grid, picked among those neighbours by the same simulations (worst
+CIEDE2000 against every mark; then against the domain's ground): the Meadow's road verge
+`#669933` 5.7 (the pure red, deutan; 1.0), its forest floor `#336633` 5.1 (the red, protan; 18.0),
+its village green `#669966` 13.9 (5.4); the Waste's road `#cc9933` 6.9 (2.4), its scrub `#999966`
+11.6 (2.6), its ruins' bleached ground `#ffcc99` 6.5 (13.6), where the dusty rose `#cc9999` (12.4)
+read as pink on the sheet; the Marsh's dead wood floor `#003300` 19.7 (1.3) and its graveyard's
+grey `#333333` 18.0 (4.3); the Peak's scorched lava field `#330000` 34.1 (15.4) and its temple's
+rust `#663333` 20.4 (4.6). The Marsh's and the Peak's roads keep their domain's ground, their
+mud causeway and ash path carrying them. The lowest is the Meadow's forest floor, the score the
+Meadow's own forest had before the domains had tilesets.

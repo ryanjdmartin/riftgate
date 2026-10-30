@@ -4,11 +4,11 @@ extends RefCounted
 ## The other world's ground in each domain's own tileset (Ryan, 29 October: "They all need
 ## their own tileset, first of all. Shouldn't all be painting green meadows"; 30 October:
 ## "walls and water certainly should change with tileset, even if they have no functional
-## change", and of the grounds, "the ground can differ where appropriate. Just not wildly
-## different like it was"). A domain, by its `bleed` in content, paints every hex in its own
-## idiom on one ground of its own, a ground differing only where it is apt, so the grounds are
-## told apart by what stands on them: outlined pixel sprites, two pixels a design pixel, as
-## flat, bright and chunky as the painted map is (Ryan, 20 September). Water is always the
+## change", and of the grounds, "the different types need different backgrounds. Its very
+## monotone now. It just needed to be less jarring"). A domain, by its `bleed` in content,
+## paints every hex in its own idiom, each ground a tone of the domain's own a step apart on the
+## posterize grid, and dressed in outlined pixel sprites, two pixels a design pixel, as flat,
+## bright and chunky as the painted map is (Ryan, 20 September). Water is always the
 ## domain's liquid edged by a rim and stirred by ripples, the walls always a range filling the
 ## hex, so a hex's rule reads alike in every domain; a road follows the roads beside it. Every
 ## colour sits on the compositor's posterize grid (six levels a channel, bleed.gdshader), so
@@ -18,7 +18,8 @@ extends RefCounted
 ## painted world (Bleed.gradient), and tools/tileset_shot.gd draws every tileset side by side.
 
 ## Each domain's tileset, by its bleed:
-##   ground, grounds: the colour under every hex, and the grounds that differ from it;
+##   ground, grounds: the domain's ground, and each ground's own tone of it (a step at most
+##   in a channel of the posterize grid) or its water;
 ##   grid: the hex's outline; specks: the colours its decorative grounds are flecked with;
 ##   road: its edge and bed, and the sprite set along it (road_stone, if any);
 ##   rim, ripples: the water's edge and what drifts on it, a frame's step apart;
@@ -30,7 +31,7 @@ extends RefCounted
 const TILESETS := {
 	"plains": {
 		"ground": "339933",
-		"grounds": {BattleMap.Terrain.WATER: "3366ff"},
+		"grounds": {BattleMap.Terrain.ROAD: "669933", BattleMap.Terrain.ROUGH: "336633", BattleMap.Terrain.RUINS: "669966", BattleMap.Terrain.WATER: "3366ff"},
 		"grid": "003300",
 		"specks": ["336633", "66cc66"],
 		"road": ["996633", "cc9966"],
@@ -45,7 +46,7 @@ const TILESETS := {
 	},
 	"sand": {
 		"ground": "cc9966",
-		"grounds": {BattleMap.Terrain.WATER: "339999"},
+		"grounds": {BattleMap.Terrain.ROAD: "cc9933", BattleMap.Terrain.ROUGH: "999966", BattleMap.Terrain.RUINS: "ffcc99", BattleMap.Terrain.WATER: "339999"},
 		"grid": "663300",
 		"specks": ["996633", "ffcc99"],
 		"road": ["996633", "ffcc99"],
@@ -60,7 +61,7 @@ const TILESETS := {
 	},
 	"marsh": {
 		"ground": "333300",
-		"grounds": {BattleMap.Terrain.WATER: "003333"},
+		"grounds": {BattleMap.Terrain.ROUGH: "003300", BattleMap.Terrain.RUINS: "333333", BattleMap.Terrain.WATER: "003333"},
 		"grid": "000000",
 		"specks": ["336633", "000000"],
 		"road": ["333300", "663300"],
@@ -76,7 +77,7 @@ const TILESETS := {
 	},
 	"lava": {
 		"ground": "333333",
-		"grounds": {BattleMap.Terrain.WATER: "ff9900"},
+		"grounds": {BattleMap.Terrain.ROUGH: "330000", BattleMap.Terrain.RUINS: "663333", BattleMap.Terrain.WATER: "ff9900"},
 		"grid": "000000",
 		"specks": ["000000", "663333", "666666"],
 		"road": ["000000", "666666"],
@@ -944,24 +945,13 @@ static func _road_ends(hex_px: float, links: int) -> Array:
 	return ends
 
 
-## Whether a point (from the hex's middle) lies in a corner the road fills: between two edges
-## it runs to side by side, the three hexes round that corner are all road, so the road there is
-## one surface (a road two wide, a square). The corner between edges i and i + 1 is the hex's
-## sixth from the one's angle to the other's (Hex.DIRECTIONS turn a sixth clockwise a step).
-static func _in_fill(p: Vector2, links: int) -> bool:
-	var i := posmod(floori(-atan2(p.y, p.x) / (PI / 3.0)), 6)
-	return links & (1 << i) != 0 and links & (1 << ((i + 1) % 6)) != 0
-
-
 static func _seg_dist(p: Vector2, b: Vector2) -> float:
 	var t := clampf(p.dot(b) / b.length_squared(), 0.0, 1.0)
 	return p.distance_to(b * t)
 
 
-## How far a point (from the hex's middle) stands from the road: 0 in a filled corner.
-static func _road_dist(p: Vector2, ends: Array, links: int) -> float:
-	if _in_fill(p, links):
-		return 0.0
+## How far a point (from the hex's middle) stands from the road.
+static func _road_dist(p: Vector2, ends: Array) -> float:
 	var d := INF
 	for e in ends:
 		d = minf(d, _seg_dist(p, e))
@@ -970,7 +960,9 @@ static func _road_dist(p: Vector2, ends: Array, links: int) -> float:
 
 ## The road through a hex, from its middle to each edge in `links`, a bed with an edge, laid on
 ## the design pixels' grid so it reads as the sprites do; cached by links, as every hex with
-## the same roads beside it lays the same road.
+## the same roads beside it lays the same road. Three road hexes round a corner make a loop
+## with the ground showing in its middle (Ryan, 30 October: "can these types of triples have a
+## gap in the middle?"), a road two wide a ladder of them.
 static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_px: float, s: int, links: int) -> void:
 	var ck := "%s/road/%d/%d/%d" % [key, links, roundi(hex_px), s]
 	if not _textures.has(ck):
@@ -987,7 +979,7 @@ static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_p
 				var p := Vector2(x + 0.5, y + 0.5) * s - mid
 				if not _inside(p, Vector2.ZERO, r):
 					continue
-				var d := _road_dist(p, ends, links)
+				var d := _road_dist(p, ends)
 				if d <= ROAD_HALF * s:
 					img.fill_rect(Rect2i(x * s, y * s, s, s), bed)
 				elif d <= (ROAD_HALF + 1.0) * s:
@@ -1005,10 +997,10 @@ static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_p
 
 
 ## Whether a sprite standing in `rect` would stand on the road (its `ends`, as _road_ends).
-static func _on_road(rect: Rect2, c: Vector2, ends: Array, links: int, s: int) -> bool:
+static func _on_road(rect: Rect2, c: Vector2, ends: Array, s: int) -> bool:
 	var foot := Vector2(rect.get_center().x, rect.end.y)
 	for p in [foot, rect.get_center(), rect.position, Vector2(rect.end.x, rect.position.y)]:
-		if _road_dist(p - c, ends, links) <= (ROAD_HALF + 2.0) * s:
+		if _road_dist(p - c, ends) <= (ROAD_HALF + 2.0) * s:
 			return true
 	return false
 
@@ -1032,7 +1024,7 @@ static func _scatter(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r:
 				var rect := Rect2((foot - Vector2(size.x * 0.5, size.y)).floor(), size)
 				if not _fits(rect, c, r):
 					continue
-				if links != 0 and _on_road(rect, c, ends, links, s):
+				if links != 0 and _on_road(rect, c, ends, s):
 					continue
 				if _crowded(rect.grow(s) if overlap == 0.0 else rect, placed, overlap):
 					continue

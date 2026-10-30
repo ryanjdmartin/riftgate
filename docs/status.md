@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 759 tests, 204,470 checks, green (30 October, the tilesets' second build; 755 and
-  203,943 on the first), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 759 tests, 204,504 checks, green (30 October, a tone a ground on the tilesets'
+  second build; 755 and 203,943 on the first), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -166,13 +166,15 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   (`game/ui/domain_ground.gd`, by the factions' `bleed`). Ryan turned the first down (the
   marks were rectangles, water and the walls were alike everywhere, and each ground had its own
   fill: "walls and water certainly should change with tileset", the grounds "not wildly
-  different"; the Peak not volcanic, the Marsh not an undead marsh). The second paints one
-  ground a domain, every hex dressed in outlined pixel sprites (ASCII art inked per domain,
-  two pixels a design pixel). Each domain also has its own water (the Meadow's lake, the Waste's
-  oasis, the Marsh's murk, the Peak's lava) and its own walls (snowy peaks, red buttes, black
-  crags, volcanoes). A road follows the roads beside it, and three road hexes round a corner
-  pave it. Every colour is on the posterize grid and scored against its ground by the
-  colourblind simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
+  different"; the Peak not volcanic, the Marsh not an undead marsh). The second dresses every
+  hex in outlined pixel sprites (ASCII art inked per domain, two pixels a design pixel; "Overall
+  the art is a huge improvement"), each ground its own tone a step from its domain's on the
+  posterize grid (his second read: one ground for all was "very monotone"). Each domain also
+  has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava)
+  and its own walls (snowy peaks, red buttes, black crags, volcanoes). A road follows the roads
+  beside it, three road hexes round a corner making a loop with a gap in the middle (his ask).
+  Every colour is on the posterize grid and scored against its ground by the colourblind
+  simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
   field and `tools/tileset_shot.gd` draws all four. Next, Ryan's read of them running (the
   to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its
   own palette table (`BattleBackdrop.PALETTES`, the same bleed keys). When it lands, the two
@@ -384,9 +386,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.375 (the page's version 387,
-  published 30 October from `ccr-7821127e-kwj874`: the tilesets' second build, three-way merged
-  onto the live v0.374 that `claude/charming-rubin-h954bp` published with its flush radiators,
+  `docs/design-bible.html` after every change. This file is v0.376 (the page's version 388,
+  published 30 October from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
+  tilesets' second build, three-way merged onto the live v0.374 that `claude/charming-rubin-h954bp` published with its flush radiators,
   which carries `claude/jolly-lovelace-scn82y`'s v0.373, the map's lines one width at every zoom;
   on v0.372 at 384, the first build onto that branch's v0.371, the colour rows' pure red on
   trial and the rule that a colour is scored against the ground it is drawn on, and the FXAA of
