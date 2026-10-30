@@ -2368,6 +2368,32 @@ func test_the_overheat_scale_burns_its_multiple_and_the_forecast_reads_it() -> v
 	assert_eq([int(sk.overheats[0]["over"]), int(sk.overheats[0]["burn"])], [10, 20], "the record keeps the excess and the burn")
 
 
+## The overheat's other what-ifs (Ryan, 30 October; the runner's --burnout and --overheat-corrupt
+## N), on the component whose spend took the gauge past its maximum: burnt out once the burn
+## reaches the injury threshold, as an injury destroys an entry, and Corrupted by an overheat
+## short of it; both off as the engine runs.
+func test_an_overheat_burns_out_or_corrupts_the_component_that_took_it_over() -> void:
+	var cases := [[40, true, 0, 30, true, 0], [35, true, 1, 35, false, 1], [35, false, 0, 35, false, 0]]
+	for c in cases:
+		Skirmish.overheat_burnout = bool(c[1])
+		Skirmish.overheat_corrupt = int(c[2])
+		var sk := Skirmish.new(1)
+		var hot := _mech("Hot", Die.single(Face.attack(10, L, [], int(c[0]))), 0, 40)
+		hot.heat_max = 30
+		sk.add_mech(hot)
+		sk.add_foes([_ghoul(500, 0)])
+		sk.begin()
+		sk.start_round()
+		sk.assign(0, sk.front[0])
+		sk.end_round()
+		Skirmish.overheat_burnout = false
+		Skirmish.overheat_corrupt = 0
+		var said := "heat %d, burnout %s, corrupt %d" % [int(c[0]), str(c[1]), int(c[2])]
+		assert_eq(hot.hull, int(c[3]), "%s: the burn" % said)
+		assert_eq(sk.mechs[0].die.faces[0].kind == Face.Kind.BLANK, bool(c[4]), "%s: burnt out only when the burn reaches a quarter of the hull" % said)
+		assert_eq(Effects.corrupt_stacks(hot, 0), int(c[5]), "%s: the corruption" % said)
+
+
 func test_an_overheat_that_wrecks_the_last_machine_ends_the_fight_before_the_enemy_acts() -> void:
 	var sk := Skirmish.new(1)
 	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 10)

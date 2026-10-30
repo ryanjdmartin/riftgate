@@ -394,3 +394,10 @@ overrule)
 - Two tests from those rounds (Claude's, 13 October): a passive that is pure upside with no
   interest fails (the fan-boat's Ballistic splash); so does a payoff not worth its setup (the
   gunship's missile-marked reach).
+
+**The foes** (noted in the heat session, 30 October)
+
+- Weaken, a status that weakens a machine's blows: something the foes might carry (Ryan, 30
+  October: "Weaken is something the foes might want to carry. Note it down for that reason").
+  Weighed the same day as an overheat penalty, where he is "not against it", though it is "more
+  of a hard punish than corrupted"; the softer Corrupted is read first (the heat brief).

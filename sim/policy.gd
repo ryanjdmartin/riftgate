@@ -680,12 +680,30 @@ func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0)
 	var cost := float(burn) * HULL_WEIGHT
 	if not fc["destroyed"] and int(fc["hull_after"]) - burn <= 0:
 		cost += DEATH_WEIGHT
+	cost += overheat_marks_cost(ms, int(fc["overheat"]), over)
 	# The cautious persona: the heat this spend leaves above its line (under the maximum, past
 	# which the overheat above prices it), as an overheat's hull.
 	var line := caution_line(ms)
 	if line >= 0:
 		var top := mini(int(fc["heat_end"]) + added, ms.heat_max)
 		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT * Skirmish.overheat_scale
+	return cost
+
+
+## What the overheat's what-ifs (Ryan, 30 October; Skirmish.overheat_burnout and overheat_corrupt)
+## add when the turn's excess goes from `before` to `after`: a component burnt out for the battle
+## once the burn reaches the injury threshold, priced as its share of the machine's worth (its
+## share of the die, of DEATH_WEIGHT), and the corruption an overheat lays, the bites its stacks
+## take over the rounds to come, as a foe's corrupt rider is priced. Placeholders, as every weight.
+func overheat_marks_cost(ms: Skirmish.MechState, before: int, after: int) -> float:
+	var cost := 0.0
+	var faces := maxi(1, ms.die.faces.size())
+	if Skirmish.overheat_burnout:
+		var bar := ms.unit.hull_max * Skirmish.injury_pct
+		if after * Skirmish.overheat_scale * 100 >= bar and before * Skirmish.overheat_scale * 100 < bar:
+			cost += DEATH_WEIGHT / float(faces)
+	if Skirmish.overheat_corrupt > 0 and before <= 0 and after > 0:
+		cost += float(Skirmish.corrupt_bite() * Skirmish.overheat_corrupt) * HULL_WEIGHT * CLEANSE_ROUNDS / float(faces)
 	return cost
 
 
@@ -1820,6 +1838,7 @@ func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	var score := float(saved) * HULL_WEIGHT
 	if fc["destroyed"] and int(fc["overheat"]) > 0 and int(fc["hull_after"]) + saved > 0:
 		score += DEATH_WEIGHT
+	score += overheat_marks_cost(who, maxi(0, int(fc["overheat"]) - power), int(fc["overheat"]))
 	score += float(mini(power, who.heat)) * BANK_WEIGHT
 	# The cautious persona: what the vent takes off above its line and under the maximum (the
 	# overheat above counts the rest), as an overheat's hull.

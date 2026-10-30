@@ -35,6 +35,11 @@ const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conduct
 const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
 static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
 static var overheat_scale: int = 1   # hull an overheat burns a point of heat past the maximum; tools/balance.gd's --overheat sets it for one run's what-if (30 October)
+# Two more what-ifs on the overheat (Ryan, 30 October), set by tools/balance.gd for one run: a
+# burn reaching the injury threshold burns out the component that took the gauge past the
+# maximum (--burnout), and every overheat Corrupts that component, so many stacks (--overheat-corrupt N).
+static var overheat_burnout: bool = false
+static var overheat_corrupt: int = 0
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
@@ -50,6 +55,7 @@ class MechState:
 	var free_rerolls: int = 0   # rerolls of this die alone left this round, from a passive, on top of the team's
 	var ammo: int = 0           # the magazine (the Musk Ox's Desublimation Forge): a resource beside heat, never a status
 	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
+	var hot_entry: int = -1     # the entry whose spend last took the gauge past its maximum this turn (the overheat's what-ifs)
 
 	## The entry showing, as it is right now: a disabled one shows as blank (the component
 	## itself is untouched; the status is what says so).
@@ -1062,6 +1068,7 @@ func start_round() -> void:
 		if drop > 0:
 			ms.heat -= drop
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
+		ms.hot_entry = -1
 		ms.face_index = _roll(ms)
 		ms.free_rerolls = Effects.free_rerolls(ms.unit)
 		# The forge's trickle (the Musk Ox's), from the second round: the first holds its start, 3
@@ -2478,7 +2485,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		heat_total = 0 if _salvo_strike else Effects.debuff_heat(ms.unit, f)   # the forge took the gun's own heat; a foe's debuff still heats it
 	if _blast_strike:
 		heat_total = 0   # the vent's spend paid its own heat, once
-	_add_heat(ms, heat_total)
+	_add_heat(ms, heat_total, ms.face_index)
 	# The Shrapnel Recuperator's refund: ammo back for every foe its blows reached.
 	if f.ammo_per_foe_hit > 0 and ms.ammo_max > 0 and not reached.is_empty():
 		_reload(ms, f.ammo_per_foe_hit * reached.size(), "its casings")
@@ -3068,7 +3075,7 @@ func _reload(ms: MechState, n: int, why: String) -> void:
 ## it spends on itself.
 func _machine_spend_after(ms: MechState, f: Face, target) -> void:
 	if f.heat > 0 and ms.alive():
-		_add_heat(ms, f.heat)
+		_add_heat(ms, f.heat, ms.face_index)
 	if ms.ammo_max <= 0:
 		return
 	if f.reloads_ammo > 0:
@@ -3260,7 +3267,7 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 		Effects.spend_stacks(ms.unit, "hopper", loads)
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
-	_add_heat(ms, heat_total)
+	_add_heat(ms, heat_total, ms.face_index)
 	var says: Array[String] = []
 	for shot in laid:
 		says.append(_shot_text(shot))
@@ -3269,7 +3276,7 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 
 ## A spend's heat alone, for an entry whose spend lands no blow (the pull on an empty slot).
 func _spend_heat(ms: MechState, f: Face) -> void:
-	_add_heat(ms, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]))
+	_add_heat(ms, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]), ms.face_index)
 
 
 static func _shot_text(shot: Dictionary) -> String:
@@ -3880,8 +3887,10 @@ static func _bite(shield: int, hull: int, amount: int) -> Dictionary:
 ## 22 September: every overheat lands at once, never as a spike when a component is spent),
 ## so a machine run hot can still be vented before it pays. Gaining heat fires the
 ## on_heat_gain passives (which may raise shield, never heat).
-func _add_heat(ms: MechState, amount: int) -> void:
+func _add_heat(ms: MechState, amount: int, entry: int = -1) -> void:
 	if amount > 0:
+		if entry >= 0 and ms.heat <= ms.heat_max and ms.heat + amount > ms.heat_max:
+			ms.hot_entry = entry   # a spend took the gauge past its maximum: the overheat's what-ifs land on it
 		ms.heat += amount
 		_fired(ms, Effects.fire(ms.unit, "on_heat_gain", amount), "on the heat")
 
@@ -3961,6 +3970,24 @@ func _settle_heat() -> void:
 		log.append("%s overheats: hull -%d" % [ms.unit.display_name, burn])
 		if ms.alive():
 			_hull_damaged(ms)   # an overheat is hull damage like any other (10 October)
+		_overheat_marks(ms, burn)
+
+
+## The overheat's what-ifs (Ryan, 30 October), on the component whose spend took the gauge past
+## its maximum this turn, none when a status's heat did: a burn reaching the injury threshold
+## burns it out for the battle as an injury does, else the overheat Corrupts it.
+func _overheat_marks(ms: MechState, burn: int) -> void:
+	var idx := ms.hot_entry
+	ms.hot_entry = -1
+	if idx < 0 or idx >= ms.die.faces.size() or not ms.alive():
+		return
+	if overheat_burnout and burn * 100 >= ms.unit.hull_max * injury_pct:
+		log.append("%s: the overheat burns out its %s" % [ms.unit.display_name, ms.die.faces[idx].describe()])
+		if _injure_entry(ms, idx) == "destroyed":
+			return
+	if overheat_corrupt > 0 and ms.die.faces[idx].kind != Face.Kind.BLANK:
+		Effects.corrupt_entry(ms.unit, idx, "overheat", overheat_corrupt)
+		log.append("%s: the overheat corrupts its %s (×%d)" % [ms.unit.display_name, ms.die.faces[idx].describe(), Effects.corrupt_stacks(ms.unit, idx)])
 
 
 ## One blow. The honest shield (Ryan, 14 October; built 21 October): the shield absorbs its

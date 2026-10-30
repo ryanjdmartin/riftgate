@@ -30,7 +30,9 @@ the benches' rows alone, for a narrow read at 200 seeds); --set path=json (a con
 variant, the runner's own, never validated: a module's line, a rule's what-if); --cool-above N
 (the cautious persona on every variant, each machine keeping its heat under N percent of its
 maximum: a vent's worth read by a bot that vents); --overheat N (a what-if: an overheat burns N
-hull a point past the maximum). GODOT names the binary when it is not on the path.
+hull a point past the maximum), --burnout and --overheat-corrupt N (what-ifs on the component
+that took the gauge over: burnt out once the burn reaches the injury threshold, or Corrupted N
+stacks every overheat). GODOT names the binary when it is not on the path.
 
 The reads (the bible's balance rows): a candidate's worth is its row's change against the
 bench's stock, read beside its tier's others on the same hardpoint; its pick share says whether
@@ -290,6 +292,10 @@ def runner_args(v, opts, packs):
         extra += ['--cool-above', str(opts.cool_above)]
     if getattr(opts, 'overheat', 1) > 1:
         extra += ['--overheat', str(opts.overheat)]
+    if getattr(opts, 'burnout', False):
+        extra += ['--burnout']
+    if getattr(opts, 'overheat_corrupt', 0) > 0:
+        extra += ['--overheat-corrupt', str(opts.overheat_corrupt)]
     return ['--seeds', str(opts.seeds), '--policies', ','.join(opts.policies), '--rows', row_id(v['row']),
             '--team', ','.join(v['row']), '--packs', ','.join(packs)] + extra + v['args']
 
@@ -749,6 +755,9 @@ def main():
                     help='the cautious persona on every variant: each machine keeps its heat under N percent of its maximum (the runner\'s --cool-above; 0, the default, cools only against an overheat)')
     ap.add_argument('--overheat', type=int, default=1, metavar='N',
                     help='a what-if on every variant: an overheat burns N hull a point of heat past the maximum (the runner\'s --overheat; 1, the engine\'s own, by default)')
+    ap.add_argument('--burnout', action='store_true', help='a what-if on every variant: an overheat past the injury threshold burns out the component that took the gauge over (the runner\'s --burnout)')
+    ap.add_argument('--overheat-corrupt', type=int, default=0, dest='overheat_corrupt', metavar='N',
+                    help='a what-if on every variant: every overheat Corrupts the component that took the gauge over, N stacks (the runner\'s --overheat-corrupt)')
     ap.add_argument('--verbose', action='store_true', help='plan: print each variant\'s runner arguments')
     opts = ap.parse_args()
     opts.parts = [x.strip() for x in opts.parts.split(',') if x.strip()]
