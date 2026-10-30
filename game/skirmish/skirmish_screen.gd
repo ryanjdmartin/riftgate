@@ -1762,7 +1762,7 @@ func _refresh_arrows() -> void:
 				continue
 			var from: Vector2 = inv * fv.anchor_global()
 			var to: Vector2 = inv * _mech_views[target_index].anchor_global()
-			list.append([from, to, Palette.ENEMY_ARROW, true] if spill.has(target_index) else [from, to, Palette.ENEMY_ARROW])
+			list.append([from, to, Palette.ENEMY, true] if spill.has(target_index) else [from, to, Palette.ENEMY])
 	# The lure preview: every foe the die in hand would turn, dashed to its machine, shown unasked;
 	# one whose blow lands elsewhere as the round stands (the lurer falls before it acts, and it
 	# picks again) dashes to that machine too, so the lure reads as worked and the blow as landing.
@@ -1771,10 +1771,10 @@ func _refresh_arrows() -> void:
 			var fv := _foe_view_for(foe)
 			if fv == null:
 				continue
-			list.append([inv * fv.anchor_global(), inv * _mech_views[lurer].anchor_global(), Palette.ENEMY_ARROW, true])
+			list.append([inv * fv.anchor_global(), inv * _mech_views[lurer].anchor_global(), Palette.ENEMY, true])
 			for i in _round.get("foes", {}).get(foe, {}).get("struck", []):
 				if int(i) != lurer and int(i) >= 0 and int(i) < _mech_views.size():
-					list.append([inv * fv.anchor_global(), inv * _mech_views[int(i)].anchor_global(), Palette.ENEMY_ARROW, true])
+					list.append([inv * fv.anchor_global(), inv * _mech_views[int(i)].anchor_global(), Palette.ENEMY, true])
 	_arrows.set_arrows(list)
 
 

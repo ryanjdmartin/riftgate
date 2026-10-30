@@ -296,7 +296,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_colored_polygon(flame, color)
 			flame.append(flame[0])
 			ci.draw_polyline(flame, color, width)
-			var cut := Color(Palette.ACCENT_INK, color.a)
+			var cut := Color(Palette.BG, color.a)
 			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
 			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":

@@ -21,9 +21,10 @@ extends Control
 ## button under the eye opens it straight, and then CLOSE (or a tap outside) resumes.
 ##
 ## COLOURS, a debug build's page under SETTINGS (Ryan, 30 October: "put in a whole colour wheel
-## or hex entry ... switches for everything"): every named colour (ColourTuner) with its swatch,
-## which opens a picker (wheel, sliders and hex), its hex and RESET; PEEK hides the menu until a
-## tap, COPY puts the changed colours on the clipboard as text, RESET ALL asks twice.
+## or hex entry"; then "simplified to only what we need"): the colours that carry a meaning and
+## the HUD presets (ColourTuner), each with its swatch, which opens a picker (wheel, sliders and
+## hex), its hex and RESET; PEEK hides the menu until a tap, COPY puts the changed colours on the
+## clipboard as text, RESET ALL asks twice.
 
 signal resumed
 signal display_changed(key: String, value: Variant)
@@ -147,7 +148,7 @@ func _show_page(page: String) -> void:
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
 				_toggle("TRACES", "traces")   # the map's creases, one device pixel at every zoom: off draws none, to judge the zoomed-out grain on the phone
-				_button("COLOURS", func() -> void: _show_page("colours"))   # every named colour, by wheel or hex (ColourTuner)
+				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"colours":
 			_title("COLOURS")
@@ -482,8 +483,7 @@ func _colours_list() -> ScrollContainer:
 		_picker_popup(swatch.get_popup())
 		swatch.popup_closed.connect(func() -> void: _pick(key, swatch.color))
 		line.add_child(swatch)
-		var follows := str(s[4]) != "" and not ColourTuner.is_set(key)
-		var hex := Hud.label("#" + ColourTuner.value(key).to_html(false).to_upper() + (" =" + str(s[4]) if follows else ""), 13,
+		var hex := Hud.label("#" + ColourTuner.value(key).to_html(false).to_upper(), 13,
 				Palette.HUD if ColourTuner.is_set(key) else Palette.MUTED, Hud.mono())
 		hex.custom_minimum_size = Vector2(118, 0)
 		hex.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -495,7 +495,7 @@ func _colours_list() -> ScrollContainer:
 		reset.mouse_filter = Control.MOUSE_FILTER_STOP if ColourTuner.is_set(key) else Control.MOUSE_FILTER_IGNORE
 		line.add_child(reset)
 		row.add_child(line)
-		var note := Hud.label(str(s[5]), 14, Palette.INK.lerp(Palette.MUTED, 0.35))
+		var note := Hud.label(str(s[4]), 14, Palette.INK.lerp(Palette.MUTED, 0.35))
 		note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		note.custom_minimum_size = Vector2(width, 0)
 		row.add_child(note)

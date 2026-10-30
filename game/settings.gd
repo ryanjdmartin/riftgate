@@ -8,10 +8,11 @@ extends RefCounted
 const PATH := "user://settings.cfg"
 
 ## HUD colour choices, in the order a picker shows them.
-# Chrome only: the semantic colours in Palette never change with this. Red is not offered,
-# since red is the enemy colour. A static var so a debug build's colour tuner can set them.
+# Chrome only: the semantic colours in Palette never change with this, and no choice wears
+# one (the enemy's violet, heat's red-orange, harm's red). A static var so a debug build's
+# colour tuner can set them.
 static var HUD_OPTIONS := {
-	"green": Color("33ff55"),
+	"green": Color("60ffb0"),   # minty since 30 October, so it parts from the amber for red-green vision (15 apart in the worst simulation where #33ff55 stood 2.4; Ryan: "Move to the minty, yes")
 	"amber": Color("fff21a"),
 	"blue": Color("5cd8ff"),
 }

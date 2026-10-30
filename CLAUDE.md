@@ -126,7 +126,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   tritan matrices in a few lines of numpy) against the grounds it is drawn on (the field's,
   the map's, a chip's plate), pick by the worst case, and report luminance contrast and
   simulated distance against them, not how it looks. A debug build's Settings → COLOURS sets
-  any named colour (`ColourTuner`); Ryan tunes there and sends its COPY text (`KEY #rrggbb`
+  the colours that carry a meaning and the HUD presets (`ColourTuner`); Ryan tunes there and sends its COPY text (`KEY #rrggbb`
   lines) for the picks to land as the defaults.
 - A phone read arrives as a screenshot. Work it this way: crop and zoom it with nearest
   sampling to see the pixels, reproduce it on the desk machine at the phone's layout and density

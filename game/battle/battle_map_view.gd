@@ -455,8 +455,8 @@ func _draw() -> void:
 	# where it stands, bracketed in the violet's bright.
 	if not threat.is_empty() and _anim.is_empty():
 		for h in threat.keys():
-			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - _px(5.0)), Color(Palette.ENEMY_MAP, 0.26))
-		_ring_outline(threat, Palette.ENEMY_MAP, 3.0, false)
+			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - _px(5.0)), Color(Palette.ENEMY, 0.26))
+		_ring_outline(threat, Palette.ENEMY, 3.0, false)
 		if selected != null:
 			for sq in field.packs():
 				var hit := false
@@ -487,10 +487,10 @@ func _draw() -> void:
 				continue
 			if lit.has(sq):
 				for h in ring.keys():
-					_fill(h, Color(Palette.ENEMY_MAP, 0.5))
-				_ring_outline(ring, Palette.ENEMY_MAP, 4.5, false, true)
+					_fill(h, Color(Palette.ENEMY, 0.5))
+				_ring_outline(ring, Palette.ENEMY, 4.5, false, true)
 			else:
-				_ring_outline(ring, Color(Palette.ENEMY_MAP, 0.85), 2.5, true)
+				_ring_outline(ring, Color(Palette.ENEMY, 0.85), 2.5, true)
 
 	# The moves planned and not yet played (Ryan, 25 October: "highlight and display the planned
 	# move like we used to"): each machine's route in the display's light from where it stands,
@@ -527,7 +527,7 @@ func _draw() -> void:
 			if not w.path.is_empty():
 				# The same route mark as the player's (Ryan, 29 September), in steady violet; the
 				# colour breathes only on the pack that was tapped.
-				_route(sq.pos, w.path, INTENT, false, false, sq.pos == inspected, true)
+				_route(sq.pos, w.path, Palette.ENEMY, false, false, sq.pos == inspected, true)
 			var below := center(w.end) + Vector2(0.0, HEX_SIZE * 0.7)
 			if w.strikes:
 				_plaque(below, "STRIKES THE GATE", Palette.ENEMY, 1.5)
@@ -549,8 +549,8 @@ func _draw() -> void:
 		# footprint translucent but plain to see, a tint under a half-strength outline.
 		var blink := 0.55 + 0.45 * sin(_ring_t * 3.0)   # the glyphs pulse together
 		for n in attack.keys():
-			_fill(n, Color(Palette.ENEMY_MAP, 0.06))
-			_crawl_poly(Hex.corners(center(n), HEX_SIZE - _px(5.5)), Palette.ENEMY_MAP, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
+			_fill(n, Color(Palette.ENEMY, 0.06))
+			_crawl_poly(Hex.corners(center(n), HEX_SIZE - _px(5.5)), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
 			Glyphs.draw(self, "warning", center(n), _px(HEX_SIZE * (0.42 + 0.08 * blink)), Color(ENEMY_HOT, 0.5 + 0.5 * blink), _px(2.5))
 		for g in map.gate_hexes:
 			# A light tint (ground marks land at alpha to the 2.2, so 0.3 is faint) under
@@ -609,7 +609,7 @@ func _draw() -> void:
 			var prey: Unit = f["prey"]
 			for h in f["hunters"]:
 				_contact_effect((h as Unit).pos, true, true)
-			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), Palette.ENEMY_MAP, _px(3.0))
+			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), Palette.ENEMY, _px(3.0))
 			_plaque(center(prey.pos) + Vector2(0.0, -HEX_SIZE * 1.05), "CAUGHT", Palette.ENEMY, 2.0)
 	# The orders (bible section 5): a line from each machine to the pack it is ordered onto, in
 	# the display's light, dashes crawling toward the pack.
@@ -786,10 +786,10 @@ func _draw_rupture_bar() -> void:
 	var frac := clampf(float(int(meter.get("tally", 0))) / float(last), 0.0, 1.0)
 	var sealed := bool(meter.get("sealed", true))
 	var label := ("RUPTURE %d/%d" % [int(meter.get("fractures", 0)), thresholds.size()]) if sealed else "THE RUPTURE"
-	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, RIFT_ART, label, 0.9)
+	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, Palette.ENEMY, label, 0.9)
 	for t in thresholds:
 		var x := rect.position.x + rect.size.x * clampf(float(int(t)) / float(last), 0.0, 1.0)
-		draw_line(Vector2(x, rect.position.y - 2.0), Vector2(x, rect.end.y + 2.0), Color(RIFT_ART, 0.9), 2.0)
+		draw_line(Vector2(x, rect.position.y - 2.0), Vector2(x, rect.end.y + 2.0), Color(Palette.ENEMY, 0.9), 2.0)
 
 
 ## The tears (30 October): each a small vortex ring in the rift's own light on the seam's
@@ -799,12 +799,12 @@ func _draw_tears() -> void:
 	for t in field.tears:
 		var c := center(t["pos"])
 		var r := HEX_SIZE * 0.55
-		draw_arc(c, r, 0.0, TAU, 24, Color(RIFT_ART, 0.9), 3.0)
-		draw_arc(c, r * 0.6, 0.0, TAU, 18, Color(RIFT_ART, 0.6), 2.0)
+		draw_arc(c, r, 0.0, TAU, 24, Color(Palette.ENEMY, 0.9), 3.0)
+		draw_arc(c, r * 0.6, 0.0, TAU, 18, Color(Palette.ENEMY, 0.6), 2.0)
 		for k in range(6):
 			var a := float(k) * TAU / 6.0 + fmod(_ring_t, TAU)
-			draw_line(c + Vector2(cos(a), sin(a)) * r * 0.6, c + Vector2(cos(a + 0.5), sin(a + 0.5)) * r, Color(RIFT_ART, 0.8), 2.0)
-		_plaque(c + Vector2(0.0, -r - 12.0), "TEAR", RIFT_ART, 1.5)
+			draw_line(c + Vector2(cos(a), sin(a)) * r * 0.6, c + Vector2(cos(a + 0.5), sin(a + 0.5)) * r, Color(Palette.ENEMY, 0.8), 2.0)
+		_plaque(c + Vector2(0.0, -r - 12.0), "TEAR", Palette.ENEMY, 1.5)
 
 
 ## The rift's pressure as a bar toward the next spawn (Ryan, 22 September), above the rift
@@ -812,7 +812,7 @@ func _draw_tears() -> void:
 func _draw_rift_bar() -> void:
 	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 2.7)
 	var frac := float(field.rift_pressure) / maxf(1.0, float(field.rift_pressure_max))
-	_hud_bar(at, HEX_SIZE * 3.2, frac, RIFT_ART, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
+	_hud_bar(at, HEX_SIZE * 3.2, frac, Palette.ENEMY, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
 
 
 ## The one scan bar crosses the whole screen on the top layer (the battle screen draws it);
@@ -822,7 +822,6 @@ func sweep_at(local_y: float) -> void:
 		_map3d.set_sweep((local_y - scroll_y) / zoom if sweep_on else -1.0e6)
 
 
-static var RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
 const RIFT_FRAME_SECONDS := 0.7    # a frame, on the vortex's own clock
 const RIFT_ON_BEAT := false        # true: one turn of the strip is a bar of the music instead (Ryan, 23 September: an option, off for now)
 const RIFT_TEAR_ROWS := 16         # the bands the vortex is drawn in, for its tear
@@ -837,7 +836,7 @@ func _draw_rift(map: BattleMap) -> void:
 	var tex := Sprites.rift()
 	if tex == null:
 		for r in map.rift_hexes:
-			Hud.stroke_poly(self, Hex.corners(center(r), HEX_SIZE - 3.0), RIFT_ART, _px(2.0))
+			Hud.stroke_poly(self, Hex.corners(center(r), HEX_SIZE - 3.0), Palette.ENEMY, _px(2.0))
 		return
 	var fh := tex.get_size().y
 	var frames := maxi(1, int(round(tex.get_size().x / fh)))   # square frames side by side
@@ -984,48 +983,41 @@ func _mark(h: Vector2i) -> Dictionary:
 const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # A pack's intent in the rift's register (Ryan, 29 September: they are rift units, so
 # violet, which nothing else on the field uses but the rift itself): the route, its target
-# and the tapped pack's pulse. Since 30 October the contact, the gate's warning zones and the
-# tags wear the violet too (Ryan: "keep purple for enemy activities"): the warning parts from
-# the plan by its structure, a ring of dashed hex edges against a line, its target and stripes.
-# Picked by simulation, not by eye (Ryan is colourblind, 29 September): each colour's
-# worst-case Lab distance from every HUD option and the enemy red under protan, deutan and
-# tritan vision. The rest sits 60 from its nearest neighbour (the blue HUD, deutan), the
-# bright 36; the rift's own pale (c9a6ff) was 7 from the blue HUD and a paler lavender 1,
-# so the pulse never goes that far, and plum went toward the red under red-green vision.
-# Two violets in all (Ryan, 30 September): the light one is the route's line and the field's
-# bright; the deep one is the line's crawling gaps and the field's dark.
-static var INTENT := Color("c8a4ff")       # a pack's route at rest, and the field's bright (L 73; Ryan, 30 September: room left on the phone; the striped structure carries it now, not the hue)
-static var INTENT_HOT := Color("c8a4ff")   # the same
-static var INTENT_DEEP := Color("6a30c0")  # the field's dark and the line's gaps (up again, Ryan, 30 September: it blended into the dark tiles)
-static var INTENT_PALE := Color("d0b8ff")  # the top of the tapped pack's pulse, briefly
-static var INTENT_DARK := Color("2a0e4a")  # the bottom of the tapped pack's pulse for the dark
-static var INTENT_DIM := Color("9a68e0")   # the bottom of the pulse for the light: under its resting value (Ryan, 30 September)
-static var INTENT_EDGE := Color("2a0e4a")  # the edge, if RIFTGATE_INTENT_EDGE puts it on
+# and the tapped pack's pulse. Since 30 October every mark of a foe's doing wears it (Ryan:
+# "keep purple for enemy activities"): the contact, the gate's warning zones, the tags, the
+# rift's bars and tears, so the warning parts from the plan by its structure, a ring of dashed
+# hex edges against a line, its target and stripes. The register is four violets, the light
+# one the palette's (Palette.ENEMY, the route's line and the field's bright) and three here:
+# the deep (the field's dark and the line's crawling gaps), the edge under every violet line
+# and border, and the bright the marks breathe toward. Picked by simulation, not by eye (Ryan
+# is colourblind; docs/measurements.md, 29 September and 30 October).
+static var ENEMY_DEEP := Color("6a30c0")   # the field's dark and the line's gaps (up again, Ryan, 30 September: it blended into the dark tiles)
+static var ENEMY_EDGE := Color("2a0e4a")   # the edge under every violet line and border: deep violet, not black (Ryan, 29 September: black made candy canes)
+static var ENEMY_HOT := Color("ecdcff")    # the bright the violet marks breathe toward, and the tapped intent's pulse top: a breath that shows in every vision (ΔE 12 to 17 from the violet, docs/measurements.md)
 
-# The pair the field and the line draw with right now: the constants for a pack at rest,
-# both lifted together on the tapped pack so the whole mark pulses (Ryan, 30 September:
+# The pair the field and the line draw with right now: the violet and its deep for a pack at
+# rest, both lifted together on the tapped pack so the whole mark pulses (Ryan, 30 September:
 # the pulse had been on the line alone).
-var _field_hot: Color = INTENT_HOT
-var _field_deep: Color = INTENT_DEEP
+var _field_hot: Color = Palette.ENEMY
+var _field_deep: Color = ENEMY_DEEP
 
 func _set_intent_pair(breathe: bool) -> void:
 	var b := _intent_breath() if breathe else 0.0
 	if not breathe:
-		_field_hot = INTENT_HOT
-		_field_deep = INTENT_DEEP
+		_field_hot = Palette.ENEMY
+		_field_deep = ENEMY_DEEP
 		return
-	# The tapped pack swings the whole way: down to the old dark, up to the pale.
-	_field_hot = INTENT_DIM.lerp(INTENT_PALE, b)
-	_field_deep = INTENT_DARK.lerp(INTENT_DEEP.lerp(INTENT_HOT, 0.5), b)
+	# The tapped pack swings the whole way: the light from under its resting value (halfway to
+	# the deep) up to the bright, the dark from the edge up to halfway to the light.
+	_field_hot = Palette.ENEMY.lerp(ENEMY_DEEP, 0.5).lerp(ENEMY_HOT, b)
+	_field_deep = ENEMY_EDGE.lerp(ENEMY_DEEP.lerp(Palette.ENEMY, 0.5), b)
 ## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
 ## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
 ## crawling gaps stay either way: the gaps are the motion, the edge was only the contrast.
 static func _intent_edged() -> bool:
 	return OS.get_environment("RIFTGATE_INTENT_EDGE") == "1"
-static var ENEMY_HOT := Color("ecdcff")    # the contact's bright: the violet paled, a breath that shows in every vision (ΔE 12 to 17 from the violet, docs/measurements.md)
-static var ENEMY_EDGE := Color("2a0e4a")   # the edge under every violet line and border: deep violet, not black (Ryan, 29 September: black made candy canes)
 
-## The tapped pack's intent breathes between violet and the rift's pale, most of the way up
+## The tapped pack's intent breathes between the violet and its bright, most of the way up
 ## and never quite down to the deep, so on any ground it passes through a colour that reads.
 ## The intent field (Ryan, 30 September): a hidden static map of diagonal stripes in the
 ## deep and the bright violet, which the rings, the target's border and the route's dashes
@@ -1113,7 +1105,7 @@ func _intent_breath() -> float:
 ## The contact marks breathe between the violet and its pale (Ryan, 22 September, of the red then).
 func _ring_colour() -> Color:
 	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
-	return Palette.ENEMY_MAP.lerp(ENEMY_HOT, 0.35 + 0.65 * breath)
+	return Palette.ENEMY.lerp(ENEMY_HOT, 0.35 + 0.65 * breath)
 
 
 
@@ -1141,8 +1133,8 @@ func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 	var c := center(h)
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	_fill(h, Color(Palette.ENEMY_MAP, (0.7 + 0.25 * breath) * a))
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - _px(3.0)), Color(Palette.ENEMY_MAP, a), _px(2.5))
+	_fill(h, Color(Palette.ENEMY, (0.7 + 0.25 * breath) * a))
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - _px(3.0)), Color(Palette.ENEMY, a), _px(2.5))
 	var col := _ring_colour()
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
@@ -1169,7 +1161,7 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		_set_intent_pair(breathe)   # the tapped pack's whole mark pulses: line, gaps, rings, border
 		col = _field_hot
 		if _intent_edged():
-			draw_polyline(pts, INTENT_EDGE, _px(7.0))
+			draw_polyline(pts, ENEMY_EDGE, _px(7.0))
 		draw_polyline(pts, col, _px(3.5))
 		# The moving dashes over the line stay one dark colour (Ryan, 30 September: the field
 		# on them made the line itself look striped); the field is for the rings and border.
@@ -1187,7 +1179,7 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		var k := _px(6.0)
 		var chev := PackedVector2Array([tip - dir * k + side * k, tip, tip - dir * k - side * k])
 		if edged and _intent_edged():
-			draw_polyline(chev, INTENT_EDGE, _px(5.0))
+			draw_polyline(chev, ENEMY_EDGE, _px(5.0))
 		draw_polyline(chev, col, _px(2.5))
 	if not lock:
 		return
@@ -1202,7 +1194,7 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 			_field_rings(end, DEST_RING, -1.0, phase, 6.0)
 		_field_rings(end, DEST_RING, -1.0, phase)
 		draw_circle(end, _px(3.5), col)
-		_crawl_poly(Hex.corners(end, HEX_SIZE - _px(5.5)), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if _intent_edged() else Color(0, 0, 0, 0), phase)   # just inside the hex lines (Ryan, 30 September)
+		_crawl_poly(Hex.corners(end, HEX_SIZE - _px(5.5)), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), ENEMY_EDGE if _intent_edged() else Color(0, 0, 0, 0), phase)   # just inside the hex lines (Ryan, 30 September)
 		return
 	# A machine's target lock in the same construction (Ryan, 30 September), over the same
 	# fields, in its line's two colours: the display's light, and the light at half.
@@ -1304,7 +1296,7 @@ func _target_mark(c: Vector2, r: float) -> void:
 		var a := _ring_t * 1.6 + TAU * float(k) / 3.0
 		draw_arc(c, r, a, a + TAU / 3.0 * 0.62, 8, ENEMY_HOT, 2.0)
 	for d in [Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN]:
-		draw_line(c + d * (r * 0.35), c + d * (r * 0.8), Palette.ENEMY_MAP, 2.0)
+		draw_line(c + d * (r * 0.35), c + d * (r * 0.8), Palette.ENEMY, 2.0)
 	draw_circle(c, 1.8, ENEMY_HOT)
 
 

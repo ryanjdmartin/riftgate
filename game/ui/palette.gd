@@ -21,18 +21,14 @@ static var PANEL_RAISED := Color("121812")
 static var RULE := Color("2c3a2c")
 static var INK := Color("f2f4ee")
 static var MUTED := Color("7b857c")
-static var ACCENT := Color("ff4000")      # the heat colour, used sparingly as an accent
-static var ACCENT_INK := Color("070907")
 ## The enemy's violet, the rift's light one, which the packs' routes have worn since 29 September
-## (Ryan, 30 October: "keep purple for enemy activities"): a foe's intents, plaques, chips and
-## readouts, and what a foe did to a machine. By the Machado simulations its worst case on a
-## chip's black is 9.2:1 (protan), where the red it replaced stood 3.0; docs/measurements.md.
+## (Ryan, 30 October: "keep purple for enemy activities"): everything a foe does, on a plate or
+## straight on a ground: its intents, plaques, chips and readouts, the skirmish's arrows, the map's
+## rings, bands, routes and marks, the rift's bars and tears, and what a foe did to a machine; on
+## the map a deep edge under its lines and a deep and a bright of its own (BattleMapView's
+## ENEMY_EDGE, ENEMY_DEEP and ENEMY_HOT). By the Machado simulations its worst case on a chip's
+## black is 9.2:1 (protan), where the red it replaced stood 3.0; docs/measurements.md.
 static var ENEMY := Color("c8a4ff")
-## The enemy's violet where it is drawn straight on a ground rather than on a plate: the
-## skirmish's intent arrows, and the map's rings, bands, edges and marks. ENEMY's own value
-## unless the colour tuner parts them, so a line can be tried in another colour than the chips.
-static var ENEMY_ARROW := Color("c8a4ff")
-static var ENEMY_MAP := Color("c8a4ff")
 static var HULL := Color("d8d2c4")
 static var SHIELD := Color("2f63d8")
 ## Heat's red-orange (Ryan, 30 October: "Lighter, less red oranges sometimes look green to me ...
@@ -57,5 +53,6 @@ static var LOSS := Color("ff0000")
 ## A dead thing, dimmed: a blank or destroyed entry, a wrecked machine's die, a dying foe's ghost.
 static var LOSS_DIM := Color("7a1400")
 
-## The overlay colour. Settings.apply() sets it from the saved choice.
-static var HUD := Color("5cff6a")
+## The overlay colour. Settings.apply() sets it from the saved choice; this is the green
+## preset's, the default.
+static var HUD := Color("60ffb0")

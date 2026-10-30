@@ -79,11 +79,11 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), `mech_rig.gd`
     (its joints, idle acts and strikes from the model's sidecar), `mech_weld.gd` (its parts
     welded at load, a mesh a material in each moving group, for the draw calls),
-    `colour_tuner.gd` (a debug build's COLOURS page, under the pause menu's SETTINGS: every
-    named colour, the HUD choices among them, set by wheel, sliders or hex and kept in
+    `colour_tuner.gd` (a debug build's COLOURS page, under the pause menu's SETTINGS: the HUD
+    presets, the enemy's four violets and the meanings, set by wheel, sliders or hex and kept in
     `user://settings.cfg`; PEEK hides the menu until a tap, COPY puts the picks on the
-    clipboard as `KEY #rrggbb` lines, RESET ALL asks twice; a slot such as `ENEMY_ARROW`
-    follows another until it is set itself; headless runs and other builds keep no picks), the feed
+    clipboard as `KEY #rrggbb` lines, RESET ALL asks twice; headless runs and other builds keep
+    no picks), the feed
     effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`), and the
     skirmish's field (29 October): `hud_backdrop.gd` lays it, `battle_backdrop.gd` paints its
     far part, the other world as a battle screen's backdrop in each domain's palette, and

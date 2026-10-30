@@ -48,7 +48,8 @@ var _ring: CylinderView        # a die that steps (the Cassowary's): its order a
 var _flavour: Label
 
 
-## The colour a passive's row takes from its source: the chassis's own in the accent, anything
+## The colour a passive's row takes from its source: the chassis's own in heat's colour, the
+## accent it has always worn, anything
 ## granted (a component's, a module's, a reward's) in ink, its source named beside it. Never the
 ## HUD colour, which is decoration (Ryan, 26 October: "Actual gameplay text should be in a
 ## sensible colour").
@@ -56,7 +57,7 @@ static func passive_colour(kind: String) -> Color:
 	match kind:
 		"component", "module", "reward":
 			return Palette.INK
-	return Palette.ACCENT
+	return Palette.HEAT
 
 
 ## A wrapping label needs a width before its first layout pass, or it reports the height

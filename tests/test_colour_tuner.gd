@@ -2,8 +2,7 @@ extends TestCase
 
 ## The colour tuner (ColourTuner) and its page (a debug build's COLOURS, under SETTINGS): every
 ## slot names a colour its script declares, a pick lands in the script and comes off again, a
-## slot that follows another takes its value until it is set, a HUD choice's pick reaches the
-## HUD, and a headless run keeps no picks. Nothing here writes the settings file: a headless
+## HUD choice's pick reaches the HUD, and a headless run keeps no picks. Nothing here writes the settings file: a headless
 ## run never saves a pick.
 
 
@@ -14,28 +13,24 @@ func test_every_slot_names_a_colour() -> void:
 		assert_false(keys.has(key), "%s is one slot" % key)
 		keys[key] = true
 		assert_ne(ColourTuner.value(key), Color.MAGENTA, "%s reads a colour from %s" % [key, s[2]])
-		if str(s[4]) != "":
-			assert_true(keys.has(str(s[4])), "%s follows a slot listed before it" % key)
 	assert_eq(ColourTuner.value("ENEMY"), Color("c8a4ff"), "the violet as the palette declares it")
+	assert_eq(ColourTuner.value("hud_green"), Color("60ffb0"), "the green preset, minty (30 October)")
 
 
-func test_a_pick_lands_follows_and_comes_off() -> void:
+func test_a_pick_lands_and_comes_off() -> void:
 	ColourTuner.reset_all(false)
-	var red := Palette.ENEMY
+	var violet := Palette.ENEMY
+	var heat := Palette.HEAT
 	ColourTuner.set_colour("ENEMY", Color("ffff00"), false)
-	assert_eq(Palette.ENEMY, Color("ffff00"), "the pick is the palette's red")
-	assert_eq(Palette.ENEMY_ARROW, Color("ffff00"), "the arrows follow the red")
-	assert_eq(Palette.ENEMY_MAP, Color("ffff00"), "and so does the map's ground red")
-	ColourTuner.set_colour("ENEMY_ARROW", Color("00ffff"), false)
-	assert_eq(Palette.ENEMY_ARROW, Color("00ffff"), "the arrows parted from the chips")
-	assert_eq(Palette.ENEMY_MAP, Color("ffff00"), "the map's still following")
-	assert_true(ColourTuner.export_text().contains("ENEMY #ffff00") and ColourTuner.export_text().contains("ENEMY_ARROW #00ffff"), "the copy lists both picks")
+	assert_eq(Palette.ENEMY, Color("ffff00"), "the pick is the palette's violet")
+	ColourTuner.set_colour("HEAT", Color("00ffff"), false)
+	assert_eq(Palette.HEAT, Color("00ffff"), "and a second pick lands beside it")
+	assert_true(ColourTuner.export_text().contains("ENEMY #ffff00") and ColourTuner.export_text().contains("HEAT #00ffff"), "the copy lists both picks")
 	ColourTuner.reset("ENEMY", false)
-	assert_eq(Palette.ENEMY, red, "a reset puts the declared red back")
-	assert_eq(Palette.ENEMY_MAP, red, "and the follower with it")
-	assert_eq(Palette.ENEMY_ARROW, Color("00ffff"), "a slot set itself stays set")
+	assert_eq(Palette.ENEMY, violet, "a reset puts the declared violet back")
+	assert_eq(Palette.HEAT, Color("00ffff"), "and leaves the other pick standing")
 	ColourTuner.reset_all(false)
-	assert_eq(Palette.ENEMY_ARROW, red, "RESET ALL clears it")
+	assert_eq(Palette.HEAT, heat, "RESET ALL clears it")
 	assert_eq(ColourTuner.export_text(), "No colours changed.", "and the copy says so")
 
 
@@ -53,15 +48,25 @@ func test_a_hud_choice_pick_reaches_the_hud() -> void:
 	ColourTuner.apply()
 
 
-func test_the_map_and_the_plaque_take_their_picks() -> void:
+func test_the_maps_violets_take_their_picks() -> void:
 	ColourTuner.reset_all(false)
 	var hot := BattleMapView.ENEMY_HOT
+	var deep := BattleMapView.ENEMY_DEEP
 	ColourTuner.set_colour("ENEMY_HOT", Color("ffff00"), false)
-	ColourTuner.set_colour("PLAQUE_BLUE_TOP", Color("00ff00"), false)
+	ColourTuner.set_colour("ENEMY_DEEP", Color("00ff00"), false)
 	assert_eq(BattleMapView.ENEMY_HOT, Color("ffff00"), "the map's bright")
-	assert_eq(Plaque.BLUE_TOP, Color("00ff00"), "the plaque's blue")
+	assert_eq(BattleMapView.ENEMY_DEEP, Color("00ff00"), "the intent field's deep")
 	ColourTuner.reset_all(false)
-	assert_eq(BattleMapView.ENEMY_HOT, hot, "both come off")
+	assert_true(BattleMapView.ENEMY_HOT == hot and BattleMapView.ENEMY_DEEP == deep, "both come off")
+
+
+func test_the_page_holds_only_what_is_in_play() -> void:
+	# Ryan, 30 October: "Make sure the colours tab is simplified to only what we need": the HUD
+	# presets, the enemy's four violets and the meanings, and nothing that draws nothing.
+	var keys: Array = []
+	for s in ColourTuner.SLOTS:
+		keys.append(str(s[0]))
+	assert_eq(keys, ["hud_green", "hud_amber", "hud_blue", "ENEMY", "ENEMY_HOT", "ENEMY_DEEP", "ENEMY_EDGE", "HEAT", "LOSS", "LOSS_DIM", "SHIELD", "HULL", "GAIN"], "the page's rows")
 
 
 func test_a_headless_run_keeps_no_picks() -> void:

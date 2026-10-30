@@ -24,7 +24,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 818 tests, 205,886 checks, green on `claude/jolly-lovelace-scn82y` (30 October, main merged in: the
+- Tests: 819 tests, 205,829 checks, green on `claude/jolly-lovelace-scn82y` (30 October, main merged in: the
   tilesets, the pacing session and the foes' fresh start, on Godot 4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
@@ -186,6 +186,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the Pixel's read are the to-do's.
   With main in (30 October), the backdrop took the map's palettes: the Peak's lava orange-red,
   the Marsh's sky a cold night and its pools teal bog water and moss, the lakes the map's water.
+  Then (his calls the same evening) the lava kept ("lava looks great"), the GREEN preset went
+  minty, #60ffb0, apart from the amber for red-green eyes, and the COLOURS page was cut to what
+  is in play: the presets, the enemy's four violets (the routes and the rift's bars and tears
+  wear the violet itself) and the meanings; the old other-world drawing in TerrainArt is gone.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -552,11 +556,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.395 (the page's version 407,
-  published 30 October from `claude/jolly-lovelace-scn82y` with main merged in: the fight's
-  palettes beside the map's and the HUD presets' chrome line, three-way merged onto the live
-  v0.394 at 406, which another session moved past main's v0.393 at 405 with the Armadillo's looks
-  and acts; main's v0.393 carries this branch's rows through its v0.389 at 401). So this file carries those branches' rows ahead of
+  `docs/design-bible.html` after every change. This file is v0.399 (the page's version 411,
+  published 30 October from `claude/jolly-lovelace-scn82y`: the minty GREEN, the COLOURS page
+  cut to what is in play and the lava kept, three-way merged onto the live v0.398, which other
+  sessions moved past this branch's v0.395 at 407 with the tracks' table and the Armadillo's
+  looks and acts). So this file carries those branches' rows ahead of
   their code (the models' glows, looks and acts, the Armadillo's seal on screen, the tracks in
   pairs) and the Strikes row in the keyword table, and the tables script, which writes the tables
   from main's content, waits until they land or it reverts that row. The

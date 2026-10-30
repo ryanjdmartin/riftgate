@@ -619,7 +619,7 @@ func _reward_card(item: Dictionary, index: int) -> Control:
 			var u := _db.make_mech(id)
 			box.add_child(Hud.label(_plate(id), 14, Palette.MUTED, Hud.mono()))
 			if not u.passive.is_empty():
-				var pl := Hud.label("%s: %s" % [str(u.passive.get("name", "")).to_upper(), str(u.passive.get("description", ""))], 17, Palette.ACCENT)
+				var pl := Hud.label("%s: %s" % [str(u.passive.get("name", "")).to_upper(), str(u.passive.get("description", ""))], 17, Palette.HEAT)
 				pl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 				box.add_child(pl)
 			box.add_child(_face_list(u.die.faces, _labels(u.die.faces)))
@@ -693,7 +693,7 @@ func _machine_panel(u: Unit, picked: bool) -> HudPanel:
 	box.add_child(Hud.label(u.display_name.to_upper(), 26, Palette.INK, Hud.display_bold()))
 	box.add_child(Hud.label(_plate(u.chassis_id), 14, Palette.MUTED, Hud.mono()))
 	if not u.passive.is_empty():
-		var pl := Hud.label("%s: %s" % [str(u.passive.get("name", "")).to_upper(), str(u.passive.get("description", ""))], 17, Palette.ACCENT)
+		var pl := Hud.label("%s: %s" % [str(u.passive.get("name", "")).to_upper(), str(u.passive.get("description", ""))], 17, Palette.HEAT)
 		pl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		box.add_child(pl)
 	box.add_child(_face_list(u.die.faces, _labels(u.die.faces)))
