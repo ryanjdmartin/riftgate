@@ -411,6 +411,7 @@ class Build:
         self.spins = {}        # joints turned without end (see spin())
         self.forms = {}        # poses held while a status lasts (see form())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
+        self.halo = 0.0        # a soft halo round each lit part a glow names, this many units out (0: none; see MechRig's halos)
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -996,6 +997,8 @@ class Build:
             out["spin"] = self.spins
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
+        if self.halo > 0.0:
+            out["halo"] = self.halo
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):

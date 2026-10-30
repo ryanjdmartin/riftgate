@@ -55,6 +55,9 @@ const WAIT_TICK_MAX := 0.1    # seconds of the gap a single tick may spend, howe
 const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon), before light() eases it
 const LIGHT_EASE := 1.0 / 2.2 # the power a lit part's light is eased by on the phone's renderer (light())
 static var _eases_light := -1   # whether light() eases: unknown until first asked (the renderer's known once the screen is up)
+const HALO_FULL := 8.0        # a halo is full once its part's light stands this many rests over its own (_light_to)
+const HALO_SHADER := preload("res://game/ui/halo.gdshader")
+static var _halo_meshes: Dictionary = {}   # "<mesh id>:<surface>" -> the halo's shell, its normals smoothed, built once a mesh
 const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
 const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
 const MOVE_BLEND_OUT := 0.35  # and to settle back when the machine stops
@@ -122,6 +125,7 @@ var _act_slide: Dictionary = {}    # joint -> world-unit slide (dx, dy, dz, Blen
 var _strikes: Array = []           # [{joint, vec (degrees), slide (world units, a gun kicking back along its line), up, down, t}]
 var _glow: Array = []              # [{mats: [StandardMaterial3D], base: [float]}] per glow track of the act playing
 var _glow_cache: Dictionary = {}   # part prefix -> [StandardMaterial3D]
+var _halos: Dictionary = {}        # a lit material -> the halos' ShaderMaterials round its surfaces (_setup_halos)
 var _body_act_rot := Vector3.ZERO  # the act's body track, degrees (pitch, yaw, roll)
 var _body_act_slide := Vector3.ZERO
 var _body_move_rot := Vector3.ZERO # the gait's body: bob, rock, bank
@@ -514,6 +518,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		for m in _lit_materials(str(part)):
 			_move_glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
 	_setup_forms(side.get("forms", {}) if side.get("forms", {}) is Dictionary else {})
+	_setup_halos(side)
 
 
 ## The forms a sidecar names, ready to hold: their tracks as curves over their turn, and
@@ -613,7 +618,7 @@ func _forms_step(delta: float) -> bool:
 				_form_slide[jn] = (_form_slide.get(jn, Vector3.ZERO) as Vector3) + Vector3(float(v[3]), float(v[4]), float(v[5]))
 		var p := t / float(f["duration"])
 		for g in f["glow"]:
-			(g[0] as StandardMaterial3D).emission_energy_multiplier = float(g[1]) * light(1.0 + float(g[2]) * p)
+			_light_to(g[0], float(g[1]), 1.0 + float(g[2]) * p)
 	if settled:
 		_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)   # in or out, a pause before the first act of the new set
 	return true
@@ -815,7 +820,7 @@ func _end_act() -> void:
 		st[0] = Vector3(wrapf(r.x, -180.0, 180.0), wrapf(r.y, -180.0, 180.0), wrapf(r.z, -180.0, 180.0))
 	for g in _glow:
 		for i in range(g["mats"].size()):
-			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i])
+			_light_to(g["mats"][i], float(g["base"][i]), 1.0)
 	_glow = []
 	_current = {}
 	_curves = {}
@@ -839,7 +844,7 @@ func _evaluate_act() -> void:
 	for g in _glow:
 		var k := float(curve_at(g["curve"], _t)[0]) + 1.0   # the keys are offsets from rest: 0 is the base light
 		for i in range(g["mats"].size()):
-			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i]) * light(k)
+			_light_to(g["mats"][i], float(g["base"][i]), k)
 
 
 ## The machine's weight (Ryan, 4 October, the third pass: heavy, with inertia, real machines
@@ -1107,7 +1112,7 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 	if not _move_glow.is_empty():
 		var k := 1.0 + float(gait.get("glow", {}).get("k", 1.0)) * _blend
 		for row in _move_glow:
-			(row[0] as StandardMaterial3D).emission_energy_multiplier = float(row[1]) * light(k)
+			_light_to(row[0], float(row[1]), k)
 
 
 ## A lit part's light as the screen shows it, given as a multiple of its light at rest (or
@@ -1122,6 +1127,111 @@ static func light(m: float) -> float:
 	if _eases_light < 0:
 		_eases_light = 1 if RenderingServer.get_current_rendering_method() == "gl_compatibility" else 0
 	return pow(maxf(0.0, m), LIGHT_EASE) if _eases_light == 1 else maxf(0.0, m)
+
+
+## Set a lit material's light: `base`, its light at rest, times `multiple` over that rest,
+## eased (light()), and its halos with it, whose presence climbs with the multiple until it
+## stands HALO_FULL rests over (_setup_halos).
+func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
+	var e := base * light(multiple)
+	m.emission_energy_multiplier = e
+	for h in _halos.get(m, []):
+		(h as ShaderMaterial).set_shader_parameter("light", e)
+		(h as ShaderMaterial).set_shader_parameter("presence", clampf((multiple - 1.0) / HALO_FULL, 0.0, 1.0))
+
+
+## The halos (on trial, Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try it").
+## A model whose sidecar asks (`halo`: how many units out) wears round each lit surface its glows
+## name a soft copy of the part grown out along its smoothed normals (halo.gdshader), in the
+## part's colour at its light and faded in as that light climbs over its rest, so a flare spills
+## past the part's edge and the machine's outline; Godot's own glow, on the phone's renderer,
+## cannot tell a lit part from white paint and stops at the outline. RIFTGATE_HALO=off strips
+## them to compare, =all puts them on every model.
+func _setup_halos(side: Dictionary) -> void:
+	_halos.clear()
+	var env := OS.get_environment("RIFTGATE_HALO")
+	var grow := 0.0 if env == "off" else float(side.get("halo", 3.0 if env == "all" else 0.0))
+	if grow <= 0.0:
+		return
+	var done := {}
+	for p in side.get("glow_parts", []):
+		var tag := parse_tag(str(p))
+		if tag.size() == 2:
+			var root: Node = joints.get(tag[1], null) if tag[0] == "joint" else hardpoints.get(tag[1], null)
+			if root != null:
+				_halo_under(root, grow, done)
+		else:
+			_halo_named(model, str(p), grow, done)
+
+
+func _halo_named(node: Node, part: String, grow: float, done: Dictionary) -> void:
+	if node is MeshInstance3D and labelled(node.name, part):
+		_halo_under(node, grow, done)
+	else:
+		for c in node.get_children():
+			_halo_named(c, part, grow, done)
+
+
+func _halo_under(node: Node, grow: float, done: Dictionary) -> void:
+	if node.has_meta("halo"):
+		return
+	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+		var mi: MeshInstance3D = node
+		for i in range(mi.get_surface_override_material_count()):
+			var sm := mi.get_surface_override_material(i)
+			var key := "%d:%d" % [mi.get_instance_id(), i]
+			if done.has(key) or not (sm is StandardMaterial3D and (sm as StandardMaterial3D).emission_enabled):
+				continue
+			done[key] = true
+			var lit: StandardMaterial3D = sm
+			var hm := ShaderMaterial.new()
+			hm.shader = HALO_SHADER
+			hm.set_shader_parameter("tile", lit.emission_texture if lit.emission_texture != null else lit.albedo_texture)
+			hm.set_shader_parameter("light", lit.emission_energy_multiplier)
+			hm.set_shader_parameter("grow", grow)
+			var h := MeshInstance3D.new()
+			h.name = "halo"
+			h.mesh = _halo_mesh(mi.mesh, i)
+			h.material_override = hm
+			h.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			h.layers = mi.layers
+			h.set_meta("halo", true)   # no trace, no hull, no second halo
+			mi.add_child(h)
+			if not _halos.has(lit):
+				_halos[lit] = []
+			(_halos[lit] as Array).append(hm)
+	for c in node.get_children():
+		_halo_under(c, grow, done)
+
+
+## A surface's halo shell: its own triangles and UVs, each corner's normal the sum of the faces
+## meeting there, so the shell grows out closed round a flat-shaded part. Built once a mesh.
+static func _halo_mesh(mesh: Mesh, surface: int) -> ArrayMesh:
+	var key := "%d:%d" % [mesh.get_instance_id(), surface]
+	if _halo_meshes.has(key):
+		return _halo_meshes[key]
+	var arrays := mesh.surface_get_arrays(surface)
+	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var sums := {}
+	for i in range(verts.size()):
+		var at := Vector3i((verts[i] * 64.0).round())
+		sums[at] = (sums.get(at, Vector3.ZERO) as Vector3) + normals[i]
+	var smooth := PackedVector3Array()
+	smooth.resize(verts.size())
+	for i in range(verts.size()):
+		var n: Vector3 = sums[Vector3i((verts[i] * 64.0).round())]
+		smooth[i] = n.normalized() if n.length() > 0.0001 else normals[i]
+	var out := []
+	out.resize(Mesh.ARRAY_MAX)
+	out[Mesh.ARRAY_VERTEX] = verts
+	out[Mesh.ARRAY_NORMAL] = smooth
+	out[Mesh.ARRAY_TEX_UV] = arrays[Mesh.ARRAY_TEX_UV]
+	out[Mesh.ARRAY_INDEX] = arrays[Mesh.ARRAY_INDEX]
+	var am := ArrayMesh.new()
+	am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, out)
+	_halo_meshes[key] = am
+	return am
 
 
 ## The tread materials, by the meshes' names: scrolling their first UV runs the tread.

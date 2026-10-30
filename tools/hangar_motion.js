@@ -67,6 +67,30 @@ const GLOW_PAGE = 1.8;   // a lit part's light at rest, the game's (MechView3D.t
 const PHONE_GLOW = `#ifdef USE_EMISSIVEMAP
   totalEmissiveRadiance = sRGBToLinear(vec4(min(texture2D(emissiveMap, vUv).rgb * pow(totalEmissiveRadiance, vec3(1.0 / 2.2)), vec3(1.0)), 1.0)).rgb;
 #endif`;
+// A lit part's halo (MechRig's halos, on trial; halo.gdshader): a copy of the part grown out along
+// its smoothed normals, in the part's colour at its light as the phone shows it, its alpha highest
+// where the shell faces the eye, faded in as the light climbs over its rest; written as it is, not
+// re-encoded, so it shows the game's colour over this page's ground.
+const HALO_FULL = 8, HALO_REACH = 0.49;
+const HALO_VERT = `uniform float grow; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+void main() { vUv = uv; vec4 mv = modelViewMatrix * vec4(position + normal * grow, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`;
+const HALO_FRAG = `uniform sampler2D tile; uniform float light; uniform float presence; uniform float reach; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+void main() { vec3 c = min(texture2D(tile, vUv).rgb * light, vec3(1.0)); float f = abs(dot(normalize(vN), normalize(vV))); gl_FragColor = vec4(c, reach * presence * pow(f, 1.5)); }`;
+// A mesh's halo shell (MechRig._halo_mesh): its own triangles and UVs, each corner's normal the sum
+// of the faces meeting there, so the shell grows out closed round a flat-shaded part. Once a geometry.
+function haloGeometry(geo) {
+  if (geo.userData.halo) return geo.userData.halo;
+  const T = window.THREE, pos = geo.attributes.position, nor = geo.attributes.normal, sums = new Map();
+  const key = i => Math.round(pos.getX(i) * 64) + "," + Math.round(pos.getY(i) * 64) + "," + Math.round(pos.getZ(i) * 64);
+  for (let i = 0; i < pos.count; i++) { const k = key(i), s = sums.get(k) || [0, 0, 0]; s[0] += nor.getX(i); s[1] += nor.getY(i); s[2] += nor.getZ(i); sums.set(k, s); }
+  const out = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) { const s = sums.get(key(i)), l = Math.hypot(s[0], s[1], s[2]) || 1; out[i * 3] = s[0] / l; out[i * 3 + 1] = s[1] / l; out[i * 3 + 2] = s[2] / l; }
+  const g = new T.BufferGeometry();
+  g.setAttribute("position", pos); g.setAttribute("normal", new T.BufferAttribute(out, 3));
+  if (geo.attributes.uv) g.setAttribute("uv", geo.attributes.uv);
+  if (geo.index) g.setIndex(geo.index);
+  return geo.userData.halo = g;
+}
 const AXES = ["pitch", "yaw", "roll"];
 const D2R = Math.PI / 180;
 
@@ -225,6 +249,43 @@ class Rig {
     });
     for (const part of ((this.gait.glow || {}).parts || [])) for (const m of this.litMaterials(part)) this.moveGlow.push([m, m.emissiveIntensity]);
     this.setupForms(side.forms || {});
+    this.setupHalos(side);
+  }
+  // A lit material's light (MechRig._light_to): its rest times the multiple, and its halos with it,
+  // their light eased as the game eases it (the page's own light eases in PHONE_GLOW).
+  lightTo(m, base, k) {
+    m.emissiveIntensity = base * Math.max(0, k);
+    for (const h of this.halos.get(m) || []) {
+      h.uniforms.light.value = Math.pow(m.emissiveIntensity, 1 / 2.2);
+      h.uniforms.presence.value = clamp((k - 1) / HALO_FULL, 0, 1);
+    }
+  }
+  // The halos (MechRig._setup_halos, on trial): a model whose sidecar asks wears round each lit
+  // surface its glows name a soft shell grown `halo` units out.
+  setupHalos(side) {
+    this.halos = new Map();
+    const grow = side.halo || 0;
+    if (!(grow > 0)) return;
+    const T = window.THREE, done = new Set();
+    const wear = (node) => node.traverse(n => {
+      if (!n.isMesh || n.userData.halo) return;
+      for (const m of [].concat(n.material)) {
+        if (!m.userData.lit || done.has(n.uuid + m.uuid)) continue;
+        done.add(n.uuid + m.uuid);
+        const mat = new T.ShaderMaterial({uniforms: {tile: {value: m.map}, light: {value: Math.pow(m.emissiveIntensity, 1 / 2.2)}, presence: {value: 0}, grow: {value: grow}, reach: {value: HALO_REACH}},
+          vertexShader: HALO_VERT, fragmentShader: HALO_FRAG, transparent: true, depthWrite: false});
+        const h = new T.Mesh(haloGeometry(n.geometry), mat);
+        h.userData.halo = true; h.renderOrder = 1;
+        n.add(h);
+        if (!this.halos.has(m)) this.halos.set(m, []);
+        this.halos.get(m).push(mat);
+      }
+    });
+    for (const p of side.glow_parts || []) {
+      const tag = parseTag(p);
+      if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) wear(root); }
+      else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) wear(n); });
+    }
   }
   // The forms a sidecar names (MechRig._setup_forms): poses held while the machine carries the
   // status of the same name (the Armadillo's seal), their tracks and body as curves over their
@@ -290,7 +351,7 @@ class Rig {
         if (v.length >= 6) this.formSlide[jn] = add3(this.formSlide[jn] || v3(), v3(v[3], v[4], v[5]));
       }
       const k = t / f.duration;
-      for (const [m, base, gk] of f.glow) m.emissiveIntensity = base * Math.max(0, 1 + gk * k);
+      for (const [m, base, gk] of f.glow) this.lightTo(m, base, 1 + gk * k);
     }
     if (settled) this.wait = this.debug ? GAP_DEBUG : lerp(GAP_MIN, GAP_MAX, this.random());   // a pause before the new set's first act
     return true;
@@ -354,7 +415,7 @@ class Rig {
       this.glow.push({curve: curve(g.keys || [], d, ease), mats, base: mats.map(m => m.emissiveIntensity)});
     }
   }
-  restoreGlow() { for (const g of this.glow) g.mats.forEach((m, i) => { m.emissiveIntensity = g.base[i]; }); this.glow = []; }
+  restoreGlow() { for (const g of this.glow) g.mats.forEach((m, i) => { this.lightTo(m, g.base[i], 1); }); this.glow = []; }
   // The act is over (MechRig._end_act): its asks go to nothing and the servos bring every part home.
   endAct(quiet) {
     const wrap = (a) => fposmod(a + 180, 360) - 180;   // the short way round: a loop or a spin ends a whole turn on and never unwinds
@@ -375,7 +436,7 @@ class Rig {
     }
     for (const g of this.glow) {
       const k = curveAt(g.curve, this.t)[0] + 1;
-      g.mats.forEach((m, i) => { m.emissiveIntensity = g.base[i] * Math.max(0, k); });
+      g.mats.forEach((m, i) => { this.lightTo(m, g.base[i], k); });
     }
   }
   // The servos (MechRig._follow): each part a mass on a damped spring chasing what the act asks,
@@ -596,7 +657,7 @@ class Rig {
     }
     if (this.moveGlow.length) {
       const k = 1 + ((g.glow || {}).k ?? 1) * b;
-      for (const [m, base] of this.moveGlow) m.emissiveIntensity = base * k;
+      for (const [m, base] of this.moveGlow) this.lightTo(m, base, k);
     }
   }
 }
@@ -790,7 +851,7 @@ class Route {
 function prepareMaterials(root) {
   const T = window.THREE;
   root.traverse(n => {
-    if (!n.isMesh) return;
+    if (!n.isMesh || n.userData.halo) return;
     n.material = [].concat(n.material).map(src => {
       const m = src.clone();
       m.flatShading = true; m.side = T.DoubleSide; m.roughness = 0.85; m.metalness = 0.1;

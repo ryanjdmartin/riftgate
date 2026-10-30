@@ -60,7 +60,10 @@ weapons, hunkered seal with acts of its own and its vents opening and shutting a
 the Arsenal's lit cockpit glass and the Nemesis's flaring visor, the desk on the phone's
 renderer), took main each evening (to `b2762d5`) and again as it landed (to `b1682c3`: the
 pacing session, the pricing pass, the tilesets' walls), and main took it on 30 October on his
-word ("Merge into main"); its bible is v0.397 (the page's 409).
+word ("Merge into main"); its bible is v0.397 (the page's 409). Main took it again that evening
+as the lit parts' eased light landed (`d84ad16`). Since then it carries the halo trial on the
+Buzzard (a soft shell round its lit parts, faded in with the flare; Ryan judges it running, the
+to-do), not yet on main; its bible is v0.405 (the page's 417).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -588,19 +591,17 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.403 (the
-  page's version 415, published 30 October from `claude/charming-rubin-h954bp`: lit parts hold
-  their colour on the phone, the reference-glass row, and a halo for lit parts asked in section
-  12; onto its own v0.402 at 414, Ryan's answers after the landing, the rebuilds judged fine, the
-  Armadillo liked as built; that three-way merged onto the live v0.401 another session published
-  at 413, sound notes and new foes in the generated tables, ahead of their code; past
-  `claude/jolly-lovelace-scn82y`'s v0.399 at 411 as main took it (the minty GREEN, the COLOURS
-  page cut to what is in play and the lava kept), itself onto the live v0.398 at 410 (the tracks'
-  notes) and this branch's v0.397 at 409 as main first took it; each publish before it merged the same way, as this file's
-  history in git shows). So this file carries rows other sessions published ahead of their code
-  (the tracks in pairs, and the notes on Hold The Line and Night Shift; the new foes in the
-  generated tables, the Rotbloom, the Behemoth, the Matador and the Swallowed debuff among them,
-  v0.401's), each landing with its branch. The version numbers on the publishing branch's file and the live agree after every
+  `docs/design-bible.html` after every change. This file and the live page are v0.405 (the
+  page's version 417, published 30 October from `claude/charming-rubin-h954bp`: the halo trial
+  on the Buzzard in the reference-glass row, which answers section 12's halo question; three-way
+  merged onto the live v0.404 another session published at 416, a tap, a hold and a drag, a term
+  in shown text read in its colour with its icon, shield blue for protect and hold, and the
+  KEYWORDS button asked in section 12; on this branch's v0.403 at 415, lit parts holding their
+  colour on the phone; each publish before it merged the same way, as this file's history in
+  git shows). So this file carries rows other sessions published ahead of their code (the
+  tracks in pairs, and the notes on Hold The Line and Night Shift; the new foes in the generated
+  tables, the Rotbloom, the Behemoth, the Matador and the Swallowed debuff among them, v0.401's;
+  the terms in their colours, v0.404's), each landing with its branch. The version numbers on the publishing branch's file and the live agree after every
   publish. Before republishing, read the live page; if another session moved it, publish a
   three-way merge onto it (`git merge-file` with the last-published file as the base, the
   wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
@@ -614,11 +615,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 172 (30 October, from
-  `claude/charming-rubin-h954bp`: `motion.js` with the lit parts' eased light and the Armadillo's
+  acts on a reloaded page). At the page's version 173 (30 October, from
+  `claude/charming-rubin-h954bp`: `motion.js` with the halo trial ported, so the Buzzard's
+  charge spills its glow past its outline there as in the game, and the Buzzard's rig asking for
+  it; every other file as 172 had it, `edits` empty), on 172 (the same day and branch:
+  `motion.js` with the lit parts' eased light and the Armadillo's
   rig with its vent heat's new peak, onto 171, which another session published with its page's
   boss-list line, a domain's bosses a list since its slate, carried into `tools/hangar.html` here
-  so a publish from this branch keeps it; every other file as 171 had it, `edits` empty), on
+  so a publish from this branch keeps it), on
   170 (30 October, from main as it took
   `claude/charming-rubin-h954bp`: `content/chassis.json` and `content/components.json` as merged,
   main's pricing numbers with that branch's Pinion Driver in two shots and the Stingray's lance on

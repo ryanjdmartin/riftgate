@@ -115,6 +115,36 @@ func test_the_glow_parts_name_lit_meshes_in_every_model() -> void:
 		model.free()
 
 
+func test_a_halo_closes_round_a_flat_part_and_shows_only_as_its_light_climbs() -> void:
+	# Each corner of the shell takes the sum of the faces meeting there, so a flat-shaded box's
+	# shell grows out along its diagonals, closed, never split open along its edges.
+	var box := ArrayMesh.new()
+	box.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, BoxMesh.new().get_mesh_arrays())
+	var shell := MechRig._halo_mesh(box, 0).surface_get_arrays(0)
+	var verts: PackedVector3Array = shell[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = shell[Mesh.ARRAY_NORMAL]
+	var out := 0
+	for i in range(verts.size()):
+		if normals[i].dot(verts[i].normalized()) > 0.999:
+			out += 1
+	assert_true(verts.size() >= 24, "a box's shell keeps its faces' corners")
+	assert_eq(out, verts.size(), "every corner of a box's shell points straight out from its middle")
+	# At rest a lit part wears no halo; it fades in as the part's light climbs over its rest,
+	# whole at HALO_FULL rests over, burning at the part's own light.
+	var rig := MechRig.new()
+	var lit := StandardMaterial3D.new()
+	var halo := ShaderMaterial.new()
+	halo.shader = MechRig.HALO_SHADER
+	rig._halos[lit] = [halo]
+	rig._light_to(lit, 2.0, 1.0)
+	assert_eq(halo.get_shader_parameter("presence"), 0.0, "no halo at rest")
+	rig._light_to(lit, 2.0, 1.0 + MechRig.HALO_FULL / 2.0)
+	assert_true(absf(float(halo.get_shader_parameter("presence")) - 0.5) < 0.001, "half a halo halfway to full")
+	rig._light_to(lit, 2.0, 1.0 + MechRig.HALO_FULL * 3.0)
+	assert_eq(halo.get_shader_parameter("presence"), 1.0, "a whole halo past full")
+	assert_true(absf(float(halo.get_shader_parameter("light")) - lit.emission_energy_multiplier) < 0.0001, "the halo burns at its part's light")
+
+
 func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	var want := {
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],
