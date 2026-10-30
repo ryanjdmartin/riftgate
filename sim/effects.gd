@@ -150,7 +150,7 @@ const STATUS := {
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
 	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
-	# machine's bare hull is Shocked, and the team's next blow on it lands double.
+	# machine's bare hull is Shocked, and the team's next weapon strike aimed at it lands double.
 	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.", "stacking": "renew",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
@@ -158,8 +158,10 @@ const STATUS := {
 	# and lifts it as its parts fall and grow back, so every number reads it, the die's too.
 	"guarded": {"id": "guarded", "name": "Guarded", "description": "Takes no damage while its parts stand.", "stacking": "renew",
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
-	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow of a weapon it takes deals double, then the shock is spent.", "stacking": "renew",
-		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
+	# Shocked (Ryan, 29 October): only a weapon's strike aimed at the foe reads it (aimed_only), so a
+	# blow that merely reaches it, an area's, a Chain's arc or a spill, neither doubles nor spends it.
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "When a weapon's strike aimed at it lands, the blow deals double and the shock is spent; a blow that only reaches it neither doubles nor spends it.", "stacking": "renew",
+		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2, "aimed_only": true}]},
 	# Exposed (the Kestrel session, 20 and 21 October; built 21 October), the debuff: the foe
 	# stands in Direct reach of every machine as if its column's front were empty, and its
 	# armour counts for nothing, its own and any Armoured (Foe.armour_total), through the next
@@ -237,7 +239,7 @@ const STATUS := {
 	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
 	# Flak keyword's number. Every blow of a weapon the foe takes deals a point more a stack, a
 	# strike of 0 included (Ryan, 25 October: "Flak and overcharge exist in part to get past
-	# armour"), an add before the multiplies (a Shocked foe takes blow plus Flak, doubled) and
+	# armour"), an add before the multiplies (a Shocked foe takes a strike aimed at it plus Flak, doubled) and
 	# before its armour comes off (the bible's armour row); equipment's blow stays nothing
 	# (damage_taken). The stacks halve at the end of each round, rounded down (Overcharged's
 	# clock: Skirmish.end_round halves a foe's), so a sprayer feeding three a round settles near
@@ -1038,14 +1040,17 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 ## A blow of nothing (a lure, a web, a probe) stays nothing: an add on what a blow deals
 ## (Flak's point a stack) never turns no blow into one. A `weapon` blow, a weapon's, takes every
 ## add whatever it deals, a strike of 0 included (Ryan, 25 October: "Flak and overcharge exist
-## in part to get past armour").
-static func damage_taken(u, amount: int, source = null, weapon: bool = false) -> int:
+## in part to get past armour"). An effect marked aimed_only (Shocked's double) is read only on a
+## weapon's strike `aimed` at the unit, never on a blow that only reaches it (29 October).
+static func damage_taken(u, amount: int, source = null, weapon: bool = false, aimed: bool = true) -> int:
 	if amount <= 0 and not weapon:
 		return 0
 	var add := 0.0
 	var mult := 1.0
 	for pair in _taking_part(u, "static", null, source):
 		var eff: Dictionary = pair[0]
+		if bool(eff.get("aimed_only", false)) and not (aimed and weapon):
+			continue   # Shocked (29 October): read by a weapon's strike aimed at the unit, nothing else
 		var n: int = pair[1].stacks
 		match str(eff.get("effect", "")):
 			"add_damage_taken":

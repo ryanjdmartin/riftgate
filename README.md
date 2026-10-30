@@ -89,7 +89,13 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   row with its damage carried, for the quick campaign (`chain_probe_read.py` reads its parts);
   `quick_run.gd` plays whole quick campaigns and writes `docs/quick_run.md`; `endgame_fours.py`
   fits the five
-  endgame fours up to tier two and runs them through the loop driver; `turn_loop.py` models the
+  endgame fours up to tier two and runs them through the loop driver; `pricing_run.py` is the
+  pricing run's driver (every stocked piece by knock-out, every slottable component and every
+  module through the same hardpoint of five benches on the team rows, the guns' heat by steps,
+  and the vanilla ladder, a flat heatless gun at every number and across the heat classes, so
+  every piece reads in vanilla points; each variant a balance-runner process with `--set` or
+  `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
+  status and resource, from content, and writes `docs/synergy_map.md`; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
@@ -134,8 +140,10 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   were folded into them and retired on 15 October), the economy pass's brief
   (`economy_pass.md`), the bosses' slate
   (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
-  curve and the fronts (`curve_proposal.md`) and the mechanics audit of 25 October
-  (`mechanics_audit.md`), each retired once its decisions are rows and content; `sprites-enemies.html`,
+  curve and the fronts (`curve_proposal.md`), the mechanics audit of 25 October
+  (`mechanics_audit.md`) and the pricing run with the roster's synergy holes
+  (`pricing_proposal.md`, 27 and 28 October, its decisions the bible's pricing row), each retired once its decisions are rows and content;
+  `synergy_map.md`, who sets and who reads every status and resource, generated from content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
 
@@ -159,7 +167,11 @@ export templates and debug keystore in `editor_data` there; Python 3.13, since W
 the tools open text without naming an encoding and Windows would read it as cp1252. Python
 writes CRLF there; `core.autocrlf=input` folds it back to LF on commit. perl's `alarm` kills
 the engine as it does on the Mac. The tests take about a minute. The first import rewrites
-the Prairie Dog's four textures, as in a cloud session: restore them. foeforge's `generate` and
+the Prairie Dog's four textures, as in a cloud session: restore them. A cloud session sets
+none of this up by hand: the repository's session-start hook (`.claude/hooks/session-start.sh`,
+registered in `.claude/settings.json`; 27 October) fetches Godot 4.7.2's Linux build into
+`~/bin`, puts it on the path and runs the first import with the textures restored, before the
+session's first command, once in a container. foeforge's `generate` and
 `fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card). The Claude
 desktop app is a packaged Windows app: what its sessions write under `AppData` lands in a
 private copy only Claude's own processes see (`AppData\Local\Programs` excepted), which is why
@@ -197,6 +209,8 @@ python3 tools/pages/bible_tables.py
 # and by greedy over 200 seeds a cell, written to docs/balance.md (several hours on one core,
 # about two in four parts, below); the team cells run under both targeting
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
+# --cool-above 50 (the cautious persona: each machine keeps its heat under half its maximum,
+# venting early and holding a hot spend above the line; the pricing driver passes it on too),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
@@ -271,6 +285,24 @@ python3 tools/stock_loop.py compare base blows
 # every hardpoint and module slot filled up to tier two, checked against the content and run through the loop driver
 # (random and greedy at 30 seeds, no campaign unless --campaign; stock_loop run options pass through)
 python3 tools/endgame_fours.py endgame30
+# the pricing run (27 October; the bible's pricing row of 28 October): every stocked piece knocked out of its team row, every slottable
+# component and every module through the same hardpoint of six benches (BENCHES in the script) on the team rows, and
+# every attack a heat class up, each variant one balance-runner process (--set and --fit in memory, content never written)
+# against the sixteen big fights but the finale, greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
+# as built, about two and a half hours on four cores), `run` is resumable (a variant with its JSON is skipped), `summarise`
+# writes build/pricing/<name>/summary.md from whatever has run. --parts knockouts,ladders,modules,heat, --benches, --tiers,
+# --packs all, tiers, tier2 or tier3 (the ladder's formations by tier), --policies random,greedy, --knock basic (the basic of
+# the piece's kind in place of an empty hardpoint),
+# --pieces and --modules to narrow the ladders, --numbers and --shapes the vanilla ladder, --bench-stocks for the benches'
+# rows' baselines alone (a narrow read at 200 seeds), --set path=json on every variant (a module's line, a rule's what-if)
+python3 tools/pricing_run.py plan
+python3 tools/pricing_run.py run prices
+python3 tools/pricing_run.py summarise prices
+# the vanilla ladder (28 October): a flat heatless gun of each shape at 2 to 10 and at 3, 5 and 7 across heat 0 to 8 on the
+# cold bench and the hot one, the pieces named read in vanilla points beside it; about 45 minutes on four cores
+python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,goshawk --pieces flak_cannon,stoker
+# the synergy map: who sets and who reads every status and resource, from content (--write rewrites docs/synergy_map.md)
+python3 tools/synergy_map.py --write
 # the turn loop's pressure (24 October): the campaign's turn loop modelled from sim/campaign.gd's constants, every
 # battle won, each rift keeping the tier it opened at; per way of choosing the front, the cities fallen, the fronts
 # on the board, the turns offering two tiers and the rescues on a low gate. --widen N tries a rift that steps a tier

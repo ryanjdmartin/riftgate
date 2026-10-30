@@ -955,6 +955,15 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: a debuff's %s deals nothing, so it carries no number (%s)" % [where, label, name])
 	if kw_names.has("splash") and (kw_names.has("cleave") or kw_names.has("penetrate")):
 		errs.append("%s: Splash is the row and the column together: it never rides beside Spread or Penetrate" % where)
+	# Chain (Ryan, 28 October; the kill and repeat retired): a weapon's keyword with a number, the
+	# blow every other Shocked foe on the field takes; a debuff's arc would carry its riders to
+	# every conductor for no blow, so a debuff carries none.
+	if kw_names.has("chain") and kind == "attack" and debuff:
+		errs.append("%s: Chain is a weapon's keyword, an arc of a blow; a debuff carries none" % where)
+	elif kw_names.has("chain") and kind == "attack" and int(fd.get("chain", 0)) <= 0:
+		errs.append("%s: Chain says the number every other Shocked foe takes: chain, a positive number" % where)
+	if fd.has("chain") and not kw_names.has("chain"):
+		errs.append("%s: chain (the number) rides with the Chain keyword" % where)
 	if kw_names.has("cleave") and kw_names.has("penetrate") and int(fd.get("cleave", 0)) == int(fd.get("penetrate", 0)):
 		errs.append("%s: Spread and Penetrate at one number are Splash: write splash" % where)
 	# A reach over every foe is equipment's (the Siphon's lure-all): the foes past the target take
@@ -1247,9 +1256,11 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			# keyword's must (Ryan, 28 October); a keyword with no number takes none.
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
-				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Burn, Cryo, Flak, Spread, Penetrate, Splash)" % where)
+				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Burn, Cryo, Flak, Spread, Penetrate, Splash, Chain)" % where)
 			if ["cleave", "penetrate", "splash"].has(kw) and not eff.has("number"):
 				errs.append("%s: a grant of %s says what each foe past the target takes: number" % [where, "Spread" if kw == "cleave" else kw.capitalize()])
+			if kw == "chain" and not eff.has("number"):
+				errs.append("%s: a grant of Chain says what every other Shocked foe takes: number" % where)
 		var when := str(eff.get("when", ""))
 		if not Effects.supports_when(when):
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
