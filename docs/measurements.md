@@ -3644,3 +3644,58 @@ Read:
   makes the maximum a wall the player plans around, which is the meeting with the system his
   frame asks for, and none makes the warm classes bite on a cold die, which stays the maxima's
   and the cooling's.
+
+## 30 October, the support ladders
+
+**Every slottable shield, vent and buff in one slot** (the pricing row's next step, the equipment
+ramp Ryan wants first: "especially to shield and vent"; `tools/pricing_run.py run sup30 --parts
+ladders --benches puffin --pieces <the seventeen> --bench-stocks --seeds 30`): the seventeen
+pieces of tiers 0 to 2 in the Puffin's slot of Kestrel's row (the Laser Carbine's, the bench
+where equipment reads), each against the row as stocked, with today's bots and again with the
+personas that value support (`--shield-ahead --cool-above 50`, `sup30p`). The sixteen big fights
+but the finale; 30 seeds, a direction; 36 variants, about sixteen minutes on four cores.
+
+The row as stocked: 100% won, 3.28 rounds and 9.8% hull today; 3.59 and 10.0% with the personas.
+Each piece's rounds and hull against the row with the gun in its slot, and its share of the
+row's spends:
+
+| Piece | Tier | What it is | Today: rounds and hull off the gun | Its share | With the personas: rounds and hull off the gun | Its share |
+|---|---|---|---|---|---|---|
+| Blast Door | 1 | buff  | +0.27 r, -1.7% | 9% | +0.24 r, -2.3% | 7% |
+| Decoherence Veil | 1 | buff  | +0.24 r, -0.7% | 6% | +0.19 r, -1.0% | 5% |
+| Overcharge Coil | 1 | buff  | +0.24 r, +2.5% | 8% | +0.25 r, +2.3% | 5% |
+| Retribution Thurible | 1 | buff  | +0.19 r, +2.0% | 4% | +0.16 r, +2.0% | 3% |
+| Shoring Jack | 1 | buff  | +0.31 r, +2.3% | 4% | +0.27 r, +2.5% | 3% |
+| Aurora Lattice | 2 | buff  | +0.26 r, +2.8% | 3% | +0.24 r, +2.8% | 2% |
+| Canopy | 0 | shield 8 | +0.29 r, +2.1% | 4% | +0.27 r, +2.0% | 4% |
+| Halo Shield | 0 | shield 6 | +0.28 r, +2.1% | 8% | +0.24 r, +2.0% | 8% |
+| Oblation Mantle | 1 | shield 10 | +0.28 r, +2.5% | 1% | +0.23 r, +2.7% | 1% |
+| Corona Shield | 2 | shield 6, cleanse | +0.28 r, +2.1% | 4% | +0.24 r, +1.9% | 4% |
+| Laminar Deflector | 2 | shield 6, rapid | +0.26 r, +1.4% | 4% | +0.24 r, +1.6% | 4% |
+| Bleed Valve | 0 | vent 6 | +0.24 r, +2.6% | 8% | +0.24 r, +2.9% | 10% |
+| Coolant Jacket | 0 | vent 4 | +0.25 r, +2.5% | 4% | +0.25 r, +2.6% | 4% |
+| Phased Sublimator | 1 | vent 4, cleanse | +0.25 r, +2.5% | 3% | +0.26 r, +2.6% | 2% |
+| Radiator Sail | 1 | vent 5 | +0.25 r, +2.4% | 2% | +0.26 r, +2.5% | 2% |
+| Wake Diffuser | 1 | vent 3 | +0.26 r, +2.3% | 4% | +0.25 r, +2.6% | 4% |
+| Entropy Condenser | 2 | vent 10 | +0.24 r, +2.6% | 0% | +0.25 r, +2.8% | 0% |
+
+Read:
+
+- **No equipment beats the gun it replaces on this bench.** Every piece costs a quarter of a round
+  (+0.19 to +0.31), and all but two cost hull too (+1.4% to +2.8%): the Blast Door, whose Barrier
+  takes a big blow whole, saves 1.7% hull for its quarter round (2.3% with the personas), and the
+  Decoherence Veil's Ward 0.7%. Kestrel's row wins every one of these fights in about three
+  rounds, so support has little to save and the gun ending the fight sooner saves more.
+- **The ladder is flat by tier.** The tier-two shields read as the basics do (the Corona Shield and
+  the Laminar Deflector +0.26 to +0.28 rounds beside the Canopy's and the Halo Shield's +0.28 and
+  +0.29), and the tier-two capstone vent as the basic ones (the Entropy Condenser +0.24 rounds,
+  never spent, beside the Coolant Jacket's +0.25). The tiers carry keywords at the basics'
+  numbers (the shields 6 to 10, the vents 3 to 6 and the Condenser's 10), so the ramp Ryan asked
+  for, "plain number increases beside the keywords, especially to shield and vent" (28 October),
+  is not there in content.
+- **The personas change no ranking.** Valuing a standing shield by next round's blows and venting
+  early slow the row by a third of a round and leave every piece where it stood, so the bot was
+  not hiding the support's worth: the fights are.
+- So the equipment ramp is read where support has work: on harder fights (the ladder's tier-two
+  and tier-three formations, which walled the stock trios on 28 October), with tier-matched kits,
+  and its numbers by tier are a fills proposal for Ryan's go.

@@ -416,8 +416,10 @@ of two) and the map survey (29 October, the horde wading and the streets) are ma
    the cooling's cut, and cooling 0 bites modestly on a cold die. The overheat's price read as
    what-ifs the same day (a harsher burn, burnout, self-Corrupted: Ryan's calls in the brief):
    each makes the bot ride the maximum and hold, caution never pays, so the form is his call by
-   feel. The shield persona built (`--shield-ahead`); the support ladders running on it. Next:
-   the planner on the equipment ladders, for the equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
+   feel. The shield persona built (`--shield-ahead`) and the support ladders read on the Puffin
+   bench: flat by tier, no shield, vent or buff beating the gun it replaces in fights Kestrel's row
+   wins in three rounds. Next: the equipment ramp on harder fights with tier-matched kits and the
+   planner, and the shields' and vents' numbers by tier as a fills proposal; the ladders per tier on the fresh start's formations once
    the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
    line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
 3. **The foes' fresh start, the fight-size spectrum and the Rupture meter.** Reads section 4's
