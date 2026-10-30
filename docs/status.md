@@ -21,8 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 751 tests, 203,868 checks, green (29 October, the hunters at a ring of two; 746 and
-  203,825 on the horde wading), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
+- Tests: 755 tests, 203,943 checks, green (30 October, the domains' tilesets; 751 and 203,868 on
+  the hunters at a ring of two), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
   build from the GitHub release asset (`godotengine/godot-builds`,
   `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
@@ -162,6 +162,18 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   were. Ryan asked whether a hunter joins a fight it did not start: it does, as every pack does,
   on Claude's lean until he says otherwise (the bible's fights-picked row). Next: his read of
   the pounce in play (the to-do), the exit bringing the ring back down.
+- Each domain paints its own tileset (Ryan, 29 October; built 30 October, `game/ui/domain_ground.gd`
+  by the factions' `bleed`): the Waste's dunes, caravan track, cacti in rows and red-rock ruins,
+  the Marsh's teal bog, boardwalks, dead trees and graveyard, the Peak's ash plain, flagstones,
+  glowing crust and charred ruins; the Meadow's overworld as it was, and water and the walls
+  alike in all four. Every colour sits on the map compositor's posterize grid and was picked by
+  the colourblind simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
+  field and `tools/tileset_shot.gd` draws all four; next, Ryan's read of them running (the
+  to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its own
+  palette table (`BattleBackdrop.PALETTES`, the same bleed keys); when it lands, the two tables
+  want one home, and that branch's rewrite of `game/ui/terrain_art.gd` and
+  `game/battle/painted_map.gd` meets this one's (the painted map now draws through
+  `DomainGround.draw_hex`).
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -367,19 +379,15 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.365 (the page's version 377,
-  published 30 October from `ccr-7821127e-kwj874`: Ryan's calls that a domain names no map
-  shape, height is a look alone and a skirmish never reads our own ground; on v0.364 at 376, the
-  hunters pouncing at a ring of two and the re-pick retired; on v0.363 at 375, the horde wading, packs passing packs, flyers and the ground
-  passing each other, and the fords and streets three or four in all, three-way merged onto the
-  live v0.362 that `claude/charming-rubin-h954bp` published at 374, which carries
-  `claude/jolly-lovelace-scn82y`'s v0.361 (the skirmish one field in perspective with its
-  controls where the player sets them, the enemy's red pure #ff0000 on trial, heat's orange
-  #ff6000, reds and oranges in red and green alone), `ccr-7effd31a-u5z4gw`'s sound rows (every
-  track a pair) and its own notes on the rebuilds, the Armadillo's radiators and vents and the
-  desk on the phone's renderer; on v0.352 at 364, the six map shapes). So this file carries
+  `docs/design-bible.html` after every change. This file is v0.372 (the page's version 384,
+  published 30 October from `ccr-7821127e-kwj874`: each domain's tileset built, three-way merged
+  onto the live v0.371 that `claude/jolly-lovelace-scn82y` published, which carries
+  `claude/charming-rubin-h954bp`'s v0.370 too: the colour rows' pure red on trial and the rule
+  that a colour is scored against the ground it is drawn on, and the FXAA of the map's own; on
+  v0.365 at 377, Ryan's calls that a domain names no map shape, height is a look alone and a
+  skirmish never reads our own ground). So this file carries
   those branches' rows ahead of their code (the models' glows, looks and acts, the Armadillo's
-  seal on screen, the skirmish's field, the reds, the tracks in pairs) and the Strikes row in
+  seal on screen, the skirmish's field, the reds, the tracks in pairs, the map's FXAA) and the Strikes row in
   the keyword table, and the tables script,
   which writes the tables from main's content, waits until they land or it reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.
@@ -393,8 +401,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 154 (30 October, from `ccr-7821127e-kwj874`:
-  `content/factions.json` without the domains' map shapes, `edits` empty), on 153 (29 October:
+  acts on a reloaded page). At the page's version 160 (30 October, from `ccr-7821127e-kwj874`:
+  `content/factions.json`'s note naming the bleeds as the tilesets, onto version 159, its
+  `index.html` and every other file kept as they stood, `edits` empty; 154 took the domains' map
+  shapes out), on 153 (29 October:
   `content/foes.json` with the hunters at a ring of two and its map note current, replacing
   that branch's copy, whose note alone differed, and `content/vocabulary.json` with the Ring
   and Behaviour entries, onto version 152 of `claude/charming-rubin-h954bp`, its rebuilds'

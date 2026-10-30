@@ -92,7 +92,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   endgame fours up to tier two and runs them through the loop driver; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `screenshot.gd` renders a
-  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
+  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
+  domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
   draws the Badger's) in the
@@ -326,6 +327,10 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # vents blast would fire at with its die's vent wears the turning dashed ring and the number.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_BLEED_DEBUG=1 (any run) gives the whole field to the painted world, to judge a domain's
+# tileset in place (RIFTGATE_FACTION=meadow|waste|marsh|peak picks the domain on the standalone
+# screen); `xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd
+# -- tilesets.png [frame]` draws all four side by side.
 # RIFTGATE_POOL_DEBUG=1 (any skirmish) flies a foe on the field into the pool's count every couple
 # of seconds, to judge the join running.
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on

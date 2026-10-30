@@ -2321,3 +2321,26 @@ come fewer and bigger. Three-machine battles won 39% of 58 (42% of 57); componen
 won battle 1.15 (1.61). A direction at 40 runs, on a bot that walks the squad as one at the
 nearest pack and never hides a machine behind a line, so the stand-in is a case it rarely meets;
 whether the pounce is overbearing is Ryan's play to read (the bible's exit).
+
+**The domains' tilesets: their colours by the colourblind simulations** (30 October; Ryan, 29
+October: "They all need their own tileset"). The painted world reaches the screen through the
+map's compositor, which posterizes it to six levels a channel (`bleed.gdshader`, `levels` 5), so
+the colours that count are the posterized ones: the first picks' ash plain `5a3e34` showed as
+maroon `#663333` and their red-rock ruins `8c4c2c` as red `#993333`, so every tileset colour now
+sits on that grid and is what the map shows. Each ground's worst CIEDE2000 over normal vision and
+the Machado protan, deutan and tritan simulations at severity 1.0 (linear RGB), against the HUD
+options (green `33ff55`, amber `fff21a`, blue `5cd8ff`), the enemy red `ff1e1e`, the rift's
+violets (`c8a4ff`, `6a30c0`), water and the walls as shown (`3366ff`, `999966`); the bar is the
+Meadow's own as shown, plain `#339933` 8.3, road `#cccc99` 7.4, rough `#336633` 5.1, ruins
+`#999999` 3.5 (against the walls). The Waste: plain `#cc9933` 6.9 (lightness 73), road `#ffcc99`
+6.5 (93), rough `#663300` 16.7 (32), ruins `#993300` 11.6 (44). The Marsh: plain `#336666` 11.1
+(42), road `#333300` 20.0 (22), rough `#333333` 18.0 (23), ruins `#669999` 9.1 (63); olive
+`#666633`, the swamp's first idea, came to 3.8 against the enemy red under the deutan
+simulation, so the bog is teal-grey. The Peak: plain `#666666` 11.2 (47), road `#cccccc` 6.7
+(88), rough `#333333` 18.0 (23), ruins `#663300` 16.7 (32). A lava crack's glow is `#ffcc33`,
+19.6 against the red; the hot orange `e8601a` came to 1.2 under the deutan simulation at the
+red's own lightness, so no orange is used. Darker grounds score higher against every mark (the
+sweep's best were all under lightness 30), so the bright overworld's look, Ryan's of 20 September,
+is held against the Meadow's bar rather than maximized. Against the pure red on trial on
+`claude/jolly-lovelace-scn82y` (`#ff0000`) no pick moves by two points (the Waste's plain 7.6 and
+ruins 9.8, the Meadow's own forest 5.1 to 6.2). The Meadow's tileset is unchanged.
