@@ -120,12 +120,12 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],
 		"clydesdale": [["head", ""], ["knee_fl", "hip_fl"], ["knee_hr", "hip_hr"], ["ankle_fl", "knee_fl"], ["ankle_hr", "knee_hr"], ["elev_mortar", "turret_mortar"], ["elev_howitzer", "turret_howitzer"]],
 		"baboon": [["waist", ""], ["shoulder_l", "waist"], ["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["ankle_l", "knee_l"], ["knee_l", "hip_l"], ["elev_r", "waist"]],
-		"armadillo": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["elev_l", ""], ["elev_r", ""], ["elev_cell", ""]],
+		"armadillo": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["run_l", ""], ["run_r", ""], ["run_fl", ""], ["run_rack", ""], ["shutter_rl", ""], ["louvre_l1", ""], ["louvre_r3", ""], ["louvre_cl1", ""], ["louvre_cr4", ""], ["vent_pop_l", ""]],
 		"wild_boar": [["elev", "turret"], ["plow", ""], ["elev_pod", ""]],
 		"prairie_dog": [["wheel_fl", "steer_fl"], ["wheel_rl", ""], ["sensor", "chassis"], ["turret", "chassis"]],
-		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["elev_mortar", "chassis"]],
+		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["turret_rack", "chassis"], ["elev_rack", "turret_rack"]],
 		"goshawk": [["nacelle_l", ""], ["nacelle_r", ""]],
-		"nemesis": [["waist", ""], ["shoulder_r", "waist"], ["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_meteor", "waist"]],
+		"nemesis": [["waist", ""], ["shoulder_r", "waist"], ["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_shoulder", "waist"]],
 		"ammit": [["waist", ""], ["shoulder_l", "waist"], ["hand_l", "elbow_l"], ["talon_l_out", "hand_l"], ["talon_r_mid", "hand_r"], ["talon_r_in", "hand_r"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"],
 			["shoulder_low_r", ""], ["elbow_low_r", "shoulder_low_r"], ["hand_low_r", "elbow_low_r"], ["elev_l", "waist"]],
 	}
@@ -144,12 +144,146 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	assert_eq(rig.joint_of(rig.hardpoints[4]), "elev_mortar", "the mortar's socket is on its elevation, inside the traverse")
 	assert_eq(rig.joint_of(rig.joints["elev_mortar"]), "turret_mortar", "which nests in the turret")
 	pair[1].free()
+	# The Dingo's launcher rides its roof gimbal (Ryan, 29 October): the socket on the elevation, in the yoke that turns.
+	pair = _rig_for("dingo")
+	rig = pair[0]
+	assert_eq(rig.joint_of(rig.hardpoints[1]), "elev_rack", "the Dingo's launcher elevates on its gimbal")
+	pair[1].free()
 	# The lower pair of the Ammit's arms never swing on a blow; the upper pair do.
 	pair = _rig_for("ammit")
 	rig = pair[0]
 	assert_true(bool(rig.meta["shoulder_l"]["swing"]), "the Ammit's upper arm swings")
 	assert_false(bool(rig.meta["shoulder_low_l"]["swing"]), "its planted lower arm does not")
 	pair[1].free()
+
+
+func test_a_form_is_held_while_set_and_let_go_after() -> void:
+	# A pose a model holds while its machine carries the status of the same name (the
+	# Armadillo's seal: its guns sink and its irises shut): it turns in when set, no act
+	# starts while it turns, held it plays its own acts if it has any and otherwise none that
+	# moves a joint it holds, and letting it go brings them home.
+	var with_form := ""
+	for id in MACHINES:
+		if not (MechRig.load_sidecar(id).get("forms", {}) as Dictionary).is_empty():
+			with_form = id
+			break
+	assert_false(with_form.is_empty(), "a model holds a form")
+	var pair := _rig_for(with_form)
+	var rig: MechRig = pair[0]
+	var name := str(rig.forms.keys()[0])
+	var held: Dictionary = rig.forms[name]["curves"]
+	assert_false(held.is_empty(), "%s: the form holds joints" % with_form)
+	var rest := {}
+	for jn in held.keys():
+		if jn != MechRig.BODY:
+			rest[jn] = [(rig.joints[jn] as Node3D).position, (rig.joints[jn] as Node3D).rotation]
+	rig.set_form(name, true)
+	assert_true(rig.form_held(name), "set, it is held")
+	rig.tick(0.1)
+	assert_true(rig.choose().is_empty(), "%s: no act starts while the form turns" % with_form)
+	rig.tick(float(rig.forms[name]["duration"]) + 0.5)
+	for jn in held.keys():
+		if jn == MechRig.BODY:
+			continue
+		var j: Node3D = rig.joints[jn]
+		assert_true(j.position.distance_to(rest[jn][0]) > 0.5 or j.rotation.distance_to(rest[jn][1]) > 0.01, "%s: %s has turned to its held pose" % [with_form, jn])
+	var own := {}
+	for a in rig.forms[name]["acts"]:
+		own[str(a["name"])] = true
+	for i in range(30):
+		var a := rig.choose()
+		assert_false(a.is_empty(), "%s: held, it still plays" % with_form)
+		if not own.is_empty():
+			assert_true(own.has(str(a.get("name", ""))), "%s: held, it plays only the form's own acts (%s)" % [with_form, a.get("name", "?")])
+		else:
+			for jn in (a.get("tracks", {}) as Dictionary).keys():
+				assert_false(held.has(jn), "%s: no act that moves a held joint is chosen (%s keys %s)" % [with_form, a.get("name", "?"), jn])
+		rig.last_act = str(a.get("name", ""))
+	rig.set_form(name, false)
+	assert_false(rig.form_held(name), "let go, it is not held")
+	rig.tick(float(rig.forms[name]["duration"]) + 0.3)
+	for jn in held.keys():
+		if jn == MechRig.BODY:
+			continue
+		assert_true((rig.joints[jn] as Node3D).position.distance_to(rest[jn][0]) < 0.05, "%s: %s is home once the form is let go" % [with_form, jn])
+	var mine := {}
+	for a in rig.acts:
+		mine[str(a["name"])] = true
+	for i in range(20):
+		var a := rig.choose()
+		assert_true(mine.has(str(a.get("name", ""))), "%s: let go, the machine's own acts are back (%s)" % [with_form, a.get("name", "?")])
+		rig.last_act = str(a.get("name", ""))
+	pair[1].free()
+
+
+func test_a_held_form_may_move_the_body_and_its_own_acts_play_over_it() -> void:
+	# The sealed Armadillo hunkers (Ryan, 29 October: "its base pose should be hunkered down
+	# in a defensive position"): a form may carry the whole machine with it, and an act of
+	# its own plays as an offset over that pose and ends back on it, never on the rest.
+	var id := ""
+	var name := ""
+	for m in MACHINES:
+		var forms: Dictionary = MechRig.load_sidecar(m).get("forms", {})
+		for f in forms.keys():
+			if not (forms[f].get("body", []) as Array).is_empty() and not (forms[f].get("acts", []) as Array).is_empty():
+				id = m
+				name = str(f)
+	assert_false(id.is_empty(), "a model's form moves the body and carries acts of its own")
+	var pair := _rig_for(id, 3)
+	var rig: MechRig = pair[0]
+	var model: Node3D = pair[1]
+	var base := model.position
+	var base_rot := model.rotation
+	rig.set_form(name, true)
+	rig.tick(float(rig.forms[name]["duration"]) + 0.5)
+	var held := model.position
+	assert_true(held.distance_to(base) > 1.0 or model.rotation.distance_to(base_rot) > 0.01, "%s: held, the form moves the body (%s)" % [id, held])
+	var a: Dictionary = rig.forms[name]["acts"][0]
+	assert_true(rig.play(str(a["name"])), "%s: its own act plays" % id)
+	assert_true(rig.in_act(), "and is playing")
+	rig.tick(float(a["duration"]) + 2.5)
+	assert_false(rig.in_act(), "%s: the act is over" % id)
+	assert_true(model.position.distance_to(held) < 0.05, "%s: the act ends back on the held pose (%s, held %s)" % [id, model.position, held])
+	rig.set_form(name, false)
+	rig.tick(float(rig.forms[name]["duration"]) + 0.5)
+	assert_true(model.position.distance_to(base) < 0.05 and model.rotation.distance_to(base_rot) < 0.001, "%s: let go, the body is home" % id)
+	pair[1].free()
+
+
+func test_a_gun_that_runs_in_its_port_kicks_back_along_its_line_and_never_turns() -> void:
+	# Ryan, 29 October (the Armadillo's weapons: "they should only move along their axis of
+	# firing, in and out"): a joint given a line runs along it alone; every turn is held to
+	# nothing, and a shot kicks it back along the line instead of pitching it.
+	var checked := 0
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var lines := {}
+		for jn in (side.get("joints", {}) as Dictionary).keys():
+			if (side["joints"][jn].get("slide", []) as Array).size() == 3:
+				lines[jn] = side["joints"][jn]["slide"]
+		if lines.is_empty():
+			continue
+		var pair := _rig_for(id, 2)
+		var rig: MechRig = pair[0]
+		var armed := {}
+		for n in rig.hardpoints.keys():
+			armed[rig.joint_of(rig.hardpoints[n])] = true
+		rig.strike(true)
+		rig.tick(0.05)
+		for jn in lines.keys():
+			var j: Node3D = rig.joints[jn]
+			assert_true(j.rotation.is_equal_approx(rig._rest[jn]), "%s: %s never turns, a shot or not" % [id, jn])
+			if not armed.has(jn):
+				continue
+			var line := MechRig.offset_of(Vector3(float(lines[jn][0]), float(lines[jn][1]), float(lines[jn][2])))
+			var moved: Vector3 = j.position - rig._rest_pos[jn]
+			assert_true(moved.length() > 0.3 and moved.normalized().dot(-line.normalized()) > 0.99, "%s: a shot kicks %s back along its line (%s against %s)" % [id, jn, moved, line])
+			checked += 1
+		rig.tick(1.0)
+		for jn in lines.keys():
+			assert_true((rig.joints[jn] as Node3D).position.distance_to(rig._rest_pos[jn]) < 0.01, "%s: %s runs home after the kick" % [id, jn])
+		pair[1].free()
+	assert_true(checked > 0, "a gun that runs in its port is checked")
 
 
 func test_acts_are_picked_at_random_and_never_twice_running() -> void:

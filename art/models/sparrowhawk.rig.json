@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/sparrowhawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/sparrowhawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {},
  "acts": [
   {
@@ -76,7 +76,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -308,7 +310,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -381,7 +385,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -1089,7 +1095,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -1900,7 +1908,9 @@
     {
      "parts": [
       "booster_ring",
-      "exhaust"
+      "exhaust",
+      "driver_ring",
+      "driver_exhaust"
      ],
      "keys": [
       [
@@ -1952,7 +1962,9 @@
   "glow": {
    "parts": [
     "booster_ring",
-    "exhaust"
+    "exhaust",
+    "driver_ring",
+    "driver_exhaust"
    ],
    "k": 5.0
   },
@@ -1976,6 +1988,12 @@
  },
  "glow_parts": [
   "booster_ring",
+  "driver_exhaust",
+  "driver_ring",
   "exhaust"
- ]
+ ],
+ "pins": {
+  "hp_1": "transonic_rifle",
+  "hp_2": ""
+ }
 }

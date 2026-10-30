@@ -139,7 +139,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
-  numbers; written by lowforge, read by `mech_rig.gd`), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
+  numbers, what each hardpoint's stock part is; written by lowforge, read by `mech_rig.gd`
+  and by `mech_view_3d.gd`, which wears a fitted die against that record), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
   16x16 map tokens the sheet export writes, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
@@ -398,7 +399,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
-# PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
+# PNG comes out 1080 wide). The desk draws with the phone's renderer (gl_compatibility, the
+# project's setting since 29 October), so a run there shows the phone's colours.
 # RIFTGATE_AA=off|fxaa|msaa2|msaa4 forces the AA mode for a run (any run; the player's SETTINGS → AA MODE, MSAA 4X by
 # default). fxaa is the look a phone had on Godot 4.7: no MSAA, the map's compositor running FXAA of its own in its place,
 # the renderer leaking with MSAA there (godotengine/godot#97967, fixed in 4.8). The machines' textures read their mipmaps

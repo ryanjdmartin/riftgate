@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/goshawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/goshawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "nacelle_l": {
    "axis": "pitch",
@@ -1066,5 +1066,12 @@
   "joint_nacelle_l",
   "joint_nacelle_r",
   "vent_glow"
- ]
+ ],
+ "pins": {
+  "hp_1": "overclocked_railgun",
+  "hp_2": "transonic_rifle",
+  "hp_3": "arc_fault_cannon",
+  "hp_4": "",
+  "hp_5": ""
+ }
 }

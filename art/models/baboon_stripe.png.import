@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bi4oyy6cdj662"
-path="res://.godot/imported/badger_missile.png-2382c73b57c51515955e2e7626eba68e.ctex"
+uid="uid://bunqdgy4kys8x"
+path="res://.godot/imported/baboon_stripe.png-fc0a44bd57611e6611182c9c77e9bd64.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "2a2c6b96ed5216545d680d48b248aade"
+"md5": "5733be437d2cc3bb6d83556174aefa9a"
 }
 
 [deps]
 
-source_file="res://art/models/badger_missile.png"
-dest_files=["res://.godot/imported/badger_missile.png-2382c73b57c51515955e2e7626eba68e.ctex"]
+source_file="res://art/models/baboon_stripe.png"
+dest_files=["res://.godot/imported/baboon_stripe.png-fc0a44bd57611e6611182c9c77e9bd64.ctex"]
 
 [params]
 

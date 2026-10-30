@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fftiegunewwx"
-path="res://.godot/imported/funnel_web_engine.png-bab0b0f166711508287ee67addb5e530.ctex"
+uid="uid://m2t3518v6hi8"
+path="res://.godot/imported/stingray_missile.png-b842f4380f9c888c9bbfee49b0bb83b9.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "607ea68dba21bd5583c1f6ab4be05079"
+"md5": "69bd46e9c14c7ab47022b0f50c90e6cb"
 }
 
 [deps]
 
-source_file="res://art/models/funnel_web_engine.png"
-dest_files=["res://.godot/imported/funnel_web_engine.png-bab0b0f166711508287ee67addb5e530.ctex"]
+source_file="res://art/models/stingray_missile.png"
+dest_files=["res://.godot/imported/stingray_missile.png-b842f4380f9c888c9bbfee49b0bb83b9.ctex"]
 
 [params]
 

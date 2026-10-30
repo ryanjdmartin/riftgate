@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/stingray.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/stingray.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "fan_l": {
    "axis": "yaw",
@@ -133,7 +133,7 @@
    "glow": [
     {
      "parts": [
-      "emitter_tip",
+      "lance_muzzle",
       "dome_light"
      ],
      "keys": [
@@ -404,11 +404,17 @@
  },
  "glow_parts": [
   "dome_light",
-  "emitter_tip",
   "eye",
   "lance_muzzle",
   "nozzle_glow"
  ],
+ "pins": {
+  "hp_1": "laser_carbine",
+  "hp_2": "halo_shield",
+  "hp_3": "twin_autoguns",
+  "hp_4": "ankle_mortar",
+  "hp_5": ""
+ },
  "spin": {
   "fan_l": [
    -480.0,

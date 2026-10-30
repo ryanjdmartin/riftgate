@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0bd4hklknsk5"
-path="res://.godot/imported/armadillo_missile.png-0fecdad79f5ab52a75c693c0df2b0573.ctex"
+uid="uid://c42o2f75rkxnn"
+path="res://.godot/imported/armadillo_ember.png-fa0aed2c1466b1e03928a502d9b6c81a.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "1e8dbb2c4f17d9f1582bdba7b0bc1a41"
+"md5": "667f2ace7758b94dc7f6d76a39ee4612"
 }
 
 [deps]
 
-source_file="res://art/models/armadillo_missile.png"
-dest_files=["res://.godot/imported/armadillo_missile.png-0fecdad79f5ab52a75c693c0df2b0573.ctex"]
+source_file="res://art/models/armadillo_ember.png"
+dest_files=["res://.godot/imported/armadillo_ember.png-fa0aed2c1466b1e03928a502d9b6c81a.ctex"]
 
 [params]
 

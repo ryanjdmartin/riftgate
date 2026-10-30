@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/prairie_dog.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/prairie_dog.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "steer_fl": {
    "axis": "yaw",
@@ -819,5 +819,10 @@
  "glow_parts": [
   "lamp",
   "mast_light"
- ]
+ ],
+ "pins": {
+  "hp_1": "twin_autoguns",
+  "hp_2": "halo_shield",
+  "hp_3": ""
+ }
 }

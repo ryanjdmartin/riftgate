@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/baboon.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/baboon.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "hip_l": {
    "axis": "pitch",
@@ -1076,7 +1076,7 @@
    "glow": [
     {
      "parts": [
-      "emitter",
+      "dish_core",
       "eye"
      ],
      "keys": [
@@ -1657,9 +1657,8 @@
    "glow": [
     {
      "parts": [
-      "emitter",
-      "hp_5",
-      "hp_3",
+      "dish_core",
+      "hp_2",
       "hp_4"
      ],
      "keys": [
@@ -6576,11 +6575,18 @@
   "heft": 0.2
  },
  "glow_parts": [
-  "emitter",
+  "dish_core",
   "eye",
-  "hp_3",
+  "hp_2",
   "hp_4",
-  "hp_5",
   "rack_port"
- ]
+ ],
+ "pins": {
+  "hp_1": "twin_autoguns",
+  "hp_2": "laser_carbine",
+  "hp_3": "halo_shield",
+  "hp_4": "rivet_gun",
+  "hp_5": "ankle_mortar",
+  "hp_6": ""
+ }
 }

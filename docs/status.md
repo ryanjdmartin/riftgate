@@ -17,15 +17,16 @@ are in `README.md`.
   records pass, and expect the bible's live page to have moved (read it, merge, republish).
 - The desk machine is a Windows PC since 19 October (the Mac went out of reach mid-session):
   `C:\Users\jam82\Desktop\Code\riftgate`; the README's Running section says what is set up
-  there. What the Mac held outside git is gone. Of the seventh round's foeforge renders
+  there. Since 29 October it draws with the phone's renderer (gl_compatibility, the project's
+  setting; Ryan's go), so a lit part's colour there is the phone's. What the Mac held outside git is gone. Of the seventh round's foeforge renders
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 819 tests, 205,829 checks, green on `claude/jolly-lovelace-scn82y` (30 October, main merged in: the
-  tilesets, the pacing session and the foes' fresh start, on Godot 4.8-beta2), about four minutes
+- Tests: 824 tests, 206,868 checks, green on main (30 October, `claude/jolly-lovelace-scn82y` landed with main
+  and `claude/charming-rubin-h954bp`'s model rebuilds in, on Godot 4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -41,11 +42,24 @@ are in `README.md`.
 
 ## Branches
 
-`claude/jolly-lovelace-scn82y` (30 October) carries the skirmish's field with the Skirmish
-Controls setting, the map's lines and overlay at one size on screen, Godot 4.8-beta2 with AA MODE,
-the enemy in the rift's violet with heat reddened and harm a red-red, and the fight's backdrop on
-the map's palettes; it took main on 30 October (the tilesets, the pacing session and the foes'
-fresh start). Main can take it as it stands (the bible rows are in its file).
+`claude/jolly-lovelace-scn82y` (29 and 30 October) carried the skirmish's field with the
+Skirmish Controls setting, the map's lines and overlay at one size on screen, Godot 4.8-beta2
+with AA MODE, the enemy in the rift's violet with heat reddened and harm a red-red, the fight's
+backdrop on the map's palettes, the minty GREEN and the COLOURS page cut to what is in play; it
+took main twice on 30 October (the tilesets, the pacing session and the foes' fresh start; then
+`claude/charming-rubin-h954bp`'s model rebuilds as they landed, the fitted die worn on the pins
+inside the map compositor's outline), and main took it on 30 October on Ryan's word ("merge
+this into main"); its bible is v0.399 (the page's 411).
+
+`claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
+the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
+stock, the Armadillo's seal) and his rounds of notes on them of the 29th and 30th (the Kite's
+Pinion Driver in two shots and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding
+weapons, hunkered seal with acts of its own and its vents opening and shutting a pair at a time,
+the Arsenal's lit cockpit glass and the Nemesis's flaring visor, the desk on the phone's
+renderer), took main each evening (to `b2762d5`) and again as it landed (to `b1682c3`: the
+pacing session, the pricing pass, the tilesets' walls), and main took it on 30 October on his
+word ("Merge into main"); its bible is v0.397 (the page's 409).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -353,7 +367,23 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   Scorpion, the Swallowtail and the Musk Ox, which draw the Badger's); the Lammergeier's, the
   Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
   to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
-  until Ryan's next session (the to-do). Since 25 October every machine's parts are welded at load by material
+  until Ryan's next session (the to-do). Since 28 October (Ryan's brief, `claude/charming-rubin-h954bp`) a
+  model names the component each pin's stock part is and the game wears a die against that
+  record, so a stock that moves on shows class shapes until the model follows; every model has
+  as many pins as its chassis has hardpoints (a test); thirteen models were rebuilt to their
+  stock that day (the Kite's wingtip drivers, the Stingray's dome lance, the Dingo's nose ports
+  and Translocator, the Armadillo's four ports, flinger rack and seal, the Baboon, and eight
+  the stock pass had left on old kit), and reworked on his notes of 29 and 30 October
+  (the Kite's drivers as ramjet-guns, their teeth running aft as strakes; the Dingo's rear
+  mount on a roof gimbal, its coil threaded and its second antenna gone; the Armadillo's bores
+  bored and dark, its weapons sliding along their lines, its seal hiding the irises and
+  hunkering, its stack a louvred radiator sunk in each flank's chamfer above the hind hip
+  and two near-square vents standing out of the back panel, and a vent on each flank that slides out, glowing orange as the shell
+  sinks once to vent, opening and shutting a pair at a time, and dark sealed; every Arsenal cockpit's glass
+  lit, the Nemesis's visor flaring white-hot in its fierce acts), to judge running (the to-do). A model may hold a form while its
+  machine carries the status of the same name, the form carrying the whole machine and acts of
+  its own (the Armadillo's seal; `RIFTGATE_SEAL_DEBUG=1`, or Forms on the hangar's Models tab),
+  and a glow must name a part that can light (lowforge refuses one that cannot). Since 25 October every machine's parts are welded at load by material
   within each moving group (`game/ui/mech_weld.gd`, the bible's battery row): a machine's draw
   calls about halve and nothing on screen changes (`docs/measurements.md`); `RIFTGATE_WELD=off`,
   or a debug build's WELD setting on the phone, draws every part as authored to compare, and a
@@ -458,7 +488,8 @@ The tasks are the to-do's; this is the index of what waits.
   silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
   Purge on a capstone's blow (its chassis session).
 - The Honey Badger's rework, once its numbers are settled (its brief).
-- The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
+- The five Wainwright & Sutler machines' models (the Cassowary, the Cottonmouth, the Whip
+  Scorpion on six or eight legs, the Swallowtail, the Musk Ox).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 
 ## Next, in order
@@ -556,45 +587,37 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.399 (the page's version 411,
-  published 30 October from `claude/jolly-lovelace-scn82y`: the minty GREEN, the COLOURS page
-  cut to what is in play and the lava kept, three-way merged onto the live v0.398, which other
-  sessions moved past this branch's v0.395 at 407 with the tracks' table and the Armadillo's
-  looks and acts). So this file carries those branches' rows ahead of
-  their code (the models' glows, looks and acts, the Armadillo's seal on screen, the tracks in
-  pairs) and the Strikes row in the keyword table, and the tables script, which writes the tables
-  from main's content, waits until they land or it reverts that row. The
-  version numbers on the publishing branch's file and the live agree after every publish.
-  Before republishing, read the live page; if another session moved it, publish a three-way
-  merge onto it (`git merge-file` with the last-published file as the base, the wrapper's
-  first line and its trailing `</body></html>` stripped from the saved live source). With
-  every branch landed, the file holds no rows ahead of code, and the tables script may run
-  freely again.
+  `docs/design-bible.html` after every change. This file and the live page are v0.399 (the
+  page's version 411, published 30 October from `claude/jolly-lovelace-scn82y` as main took it:
+  the minty GREEN, the COLOURS page cut to what is in play and the lava kept, three-way merged
+  onto the live v0.398 at 410 (the tracks' notes), itself onto `claude/charming-rubin-h954bp`'s
+  v0.397 at 409 as main took it; each publish before it merged the same way, as this file's
+  history in git shows). So this file carries rows other sessions published ahead of their code
+  (the tracks in pairs, and the notes on Hold The Line and Night Shift), each landing with its
+  branch. The version numbers on the publishing branch's file and the live agree after every
+  publish. Before republishing, read the live page; if another session moved it, publish a
+  three-way merge onto it (`git merge-file` with the last-published file as the base, the
+  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
+  With the model rebuilds landed, the keyword table's Strikes row is main's own, and the tables
+  script, which writes the buff, debuff and keyword tables from main's content, runs freely again.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. Every file the page reads is fetched with a
+  before it is replaced and `edits` read first. Its lit parts show as the phone's renderer shows them (29 October: a lit
+  tile is the tile as stored times its light, clipped, before the page's own light; it had
+  shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 164 (30 October, from `claude/brave-cori-fr18de`
-  with main's pricing pass merged: `content/foes.json` with the elites and the compositions'
-  notes, `content/factions.json` with the compositions, `content/vocabulary.json` with the
-  pacing session's terms and Chain, `content/modules.json` with the pricing pass's lines, its
-  `index.html` and every other file kept as they stood, `edits` empty; `content/components.json`
-  and `content/chassis.json` are `claude/charming-rubin-h954bp`'s copies (the Pinion Driver's two
-  shots, the Stingray's lance on its back), so main's pricing numbers reach the Codex when that
-  branch lands and republishes; a publish of another session's the same hour kept these four;
-  160, from `ccr-7821127e-kwj874`:
-  `content/factions.json`'s note naming the bleeds as the tilesets, onto version 159, its
-  `index.html` and every other file kept as they stood, `edits` empty; 154 took the domains' map
-  shapes out), on 153 (29 October:
-  `content/foes.json` with the hunters at a ring of two and its map note current, replacing
-  that branch's copy, whose note alone differed, and `content/vocabulary.json` with the Ring
-  and Behaviour entries, onto version 152 of `claude/charming-rubin-h954bp`, its rebuilds'
-  notes, its `index.html` and every other file kept as they stood, `edits` empty; 151 brought
-  the horde's wade and the flyer's passing;
-  at 147 the walls' four terms, onto version 146 of `claude/charming-rubin-h954bp`'s page and files; that branch's
-  `content/chassis.json` carries its own Stingray note, so main's chassis file, whose `_about`
-  alone moved, waits for that branch to land; `edits` empty). Its database (Ryan's saved edits,
+  acts on a reloaded page). At the page's version 170 (30 October, from main as it took
+  `claude/charming-rubin-h954bp`: `content/chassis.json` and `content/components.json` as merged,
+  main's pricing numbers with that branch's Pinion Driver in two shots and the Stingray's lance on
+  its dome, so the Codex reads both; onto that branch's own 169 to 165, Ryan's notes of 30 October
+  on the Armadillo, the last opening its vents a pair at a time, held open together, then shut a
+  pair at a time as the shell slowly rises, with its renders, the old ones to before; on 164,
+  which `claude/brave-cori-fr18de` published with main's pricing pass (the foes with the elites
+  and the compositions' notes, the factions with the compositions, the vocabulary with the
+  pacing session's terms and Chain, the modules with the pricing pass's lines); every other file
+  as the live page had it, `edits`
+  empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

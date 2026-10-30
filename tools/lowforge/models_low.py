@@ -24,8 +24,10 @@ def badger(b):
     cockpit; an outsized claw on the left, the defining feature; the Bullion Fragmenter on the
     right, a sawed-off cannon with a crusher hopper built in (6 October: the Slug Cannon converted to melee and
     locked to the Badger, the second claw gone, so the right boom's mount is no hardpoint and
-    the pins run hp_1 missile box, hp_2 left gimbal, hp_3 right gimbal); a missile box on the
-    deck; floodlights, vents, a ladder, a hatch."""
+    the pins run hp_1 the deck's ring, hp_2 left gimbal, hp_3 right gimbal); floodlights,
+    vents, a ladder, a hatch. Since the stock pass (22 October) its stock is the Rivet Gun
+    alone, on the deck's ring as its class shape, the gimbals bare; the missile box and the
+    gimbal's autoguns went with the old stock (Ryan's go, 28 October)."""
     # Treads: wide enough for the booms to rest over them, chamfered both ends, a skirt
     # plate over each, hazard tips forward.
     for s in (-1.0, 1.0):
@@ -72,19 +74,12 @@ def badger(b):
         _rings(b, [[(cx - s * 14.0, -16.0, 50.0), (cx + s * 14.0, -16.0, 50.0), (cx + s * 14.0, 4.0, 50.0), (cx - s * 14.0, 4.0, 50.0)],
                    [(cx - s * 11.5, -14.0, 54.0), (cx + s * 11.5, -14.0, 54.0), (cx + s * 11.5, 2.0, 54.0), (cx - s * 11.5, 2.0, 54.0)]], "steel.plate", "pauldron")
         # A gimbal on each pauldron, the same both sides (Ryan, 1 October): a ring and a
-        # drum under a turret joint that traverses. The left carries the Twin Autoguns
-        # (hp_2); the right's mount is bare (hp_3: the stock's third entry is the
-        # Proximity Klaxon, which shows nowhere).
+        # drum under a turret joint that traverses, a bare mount on each (hp_2 left, hp_3
+        # right: the stock's Canopy and Coolant Jacket show nowhere).
         b.prism("z", cx, -6.0, 54.5, 5.2, 1.0, "steel.dark", 8, "gimbal_ring")
         with b.joint("turret_%s" % ("l" if s < 0 else "r"), (cx, -6.0, 55.0), limits=(-80.0, 80.0)):
             b.prism("z", cx, -6.0, 57.0, 4.4, 4.0, "steel.plate", 8, "gimbal", phase=math.pi / 8)
-            if s < 0:
-                with b.socket("hp_2", (cx, -6.0, 59.0)):   # on the gimbal's centre (Ryan, 1 October)
-                    b.box(cx - 3.0, cx + 3.0, -10.0, -2.0, 58.0, 61.0, "steel.panel", "receiver")
-                    for s2 in (-1.0, 1.0):
-                        b.prism("y", cx + s2 * 2.4, 11.0, 59.5, 1.8, 26.0, "steel.dark", 6, "autogun")
-            else:
-                b.pad("hp_3", (cx, -6.0, 60.0), size=(6.0, 1.0))
+            b.pad("hp_%d" % (2 if s < 0 else 3), (cx, -6.0, 60.0), size=(6.0, 1.0))   # on the gimbal's centre (Ryan, 1 October)
         start = (hinge_x, -6.0, 40.0)
         # The whole boom hangs under a shoulder joint at the hinge: it swings on a melee
         # blow and idles under power (the joints, decided earlier and on the to-do; built
@@ -140,15 +135,11 @@ def badger(b):
                         _rings(b, [[(x, wy + 30.0, z) for x, z in octo(5.8)], [(x, wy + 30.0, z) for x, z in octo(4.4)]], "steel.panel", "muzzle_rim", cap=False)
                         b.loft([(wy + 25.0, octo(4.1)), (wy + 30.0, octo(4.4))], "steel.dark", "bore_lining", cap=False)
                         b.loft([(wy + 24.8, octo(4.1)), (wy + 25.0, octo(4.1))], "steel.dark", "bore_floor")
-    # Deck weapon: a missile box on a turret ring, right of centre. Its face is exactly one
-    # tile (14 units) square on tile boundaries, so the box projection shows the nine tubes
-    # whole rather than a slice of them.
-    b.prism("z", 7.0, -13.0, 41.0, 8.0, 2.0, "steel.dark", 8, "ring")
-    with b.socket("hp_1", (7.0, -12.0, 49.0)):   # no joint: a missile box there has no business spinning (Ryan, 1 October); hp_1 since 6 October
-        b.box(0.0, 14.0, -22.0, -4.0, 42.0, 56.0, "steel.panel", "turret")
-        # The tubes on the front alone, one face fitted to the tile (Ryan, 5 October: a slab
-        # of missile tile showed the tubes on its edges and back too).
-        _missile_face(b, (0.0, -3.95, 42.0), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), 14.0)
+    # The deck gun on a ring right of centre (hp_1): the stock's Rivet Gun as its class, its
+    # barrel forward over the brow; no joint, as the missile box it replaced had none (Ryan,
+    # 1 October), so it never spins.
+    b.prism("z", 7.0, -13.0, 46.5, 8.0, 1.0, "steel.dark", 8, "ring")
+    b.stock("hp_1", (7.0, -12.0, 50.6), "barrel", scale=0.9, carries="rivet_gun")
 
     # Idle acts, third pass (Ryan, 4 October: some stilted, turrets too fast and wild; heavy,
     # with inertia): curves a part runs on through, the servos' heft (b.move), held poses that
@@ -220,23 +211,32 @@ def sparrowhawk(b):
     back, twin nose guns, two big boosters, a tail rooted into the fuselage and riding over
     the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
     to Kestrel's metals: the body in chrome plate, the wings cobalt, the boosters dark (the
-    bone body predated the palettes). Mounts (30 September, the loadout's order): hp_1 and
-    hp_2 the nose guns (Overclocked Railgun, Coriolis Accelerator), hp_3 the left wing pod (Arc
-    Projector, two prongs), hp_4 the right wing pod (Deflector, a projector's dish); every
-    socket at half scale, the machine being small."""
+    bone body predated the palettes). Since its rework (21 October) it carries the Pinion
+    Driver locked and two hardpoints, and Ryan, 28 October: "both wingtips be the 'Pinion
+    Drivers'... Then the nose mounts are the hardpoints. Then the wingtips can maintain a
+    streamlined symmetrical appearance based on what the drivers look like." So a matched
+    driver at each tip, fixed, no pin, each a ramjet-gun (Ryan, 29 October: "a kind of
+    mini-booster, barrel forwards with a tapered exhaust behind... Like a ramjet-gun"): a
+    chrome drum like the boosters' tapering aft to a lit exhaust, a dark inlet ahead ringed by
+    gear teeth (the pinion, a wing's flight feathers and a gear) whose backs run aft as strakes
+    tapering into the drum, the barrel out of the inlet's centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
+    side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare (the Bleed
+    Valve shows nowhere), at half scale, the machine being small."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
     # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
     # forward under the wing roots (Ryan, 21 September).
     b.loft([(46.0, _fuse(1.2, 0.6, 0.5)), (36.0, _fuse(6.0, 2.2, 2.0)), (18.0, _fuse(12.0, 3.8, 3.4)),
             (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "steel.plate", "fuselage")
     b.loft([(38.0, diamond(0.0, 0.5, 2.0, 1.5)), (46.0, diamond(0.0, 0.5, 1.0, 0.7))], "steel.dark", "nose_tip")
-    # Twin nose guns, one either side of the nosecone, the first two mounts (Ryan, 30
-    # September: two nose hardpoints, sleeker than one): hp_1 the left, the Overclocked
-    # Railgun; hp_2 the right, the Coriolis Accelerator.
+    # The nose mounts, one either side of the nosecone on its fairing (Ryan, 30 September:
+    # two nose hardpoints, sleeker than one; 28 October: the nose mounts are the hardpoints):
+    # hp_1 the left, the stock's Transonic Rifle as its class; hp_2 the right, bare.
     for s in (-1.0, 1.0):
-        with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 4.5, 24.0, -1.0), scale=0.5):
-            b.prism("y", s * 4.5, 36.0, -1.0, 1.3, 26.0, "steel.dark", 6, "nose_gun")
-            b.box(s * 4.5 - 1.5, s * 4.5 + 1.5, 22.0, 30.0, -2.5, 1.0, "steel.plate", "gun_fairing")
+        b.box(s * 4.5 - 1.5, s * 4.5 + 1.5, 22.0, 30.0, -2.5, 1.0, "steel.plate", "gun_fairing")
+        if s < 0:
+            b.stock("hp_1", (s * 4.5, 28.0, -1.0), "barrel", scale=0.5, carries="transonic_rifle")
+        else:
+            b.pad("hp_2", (s * 4.5, 30.0, -1.0), scale=0.5, size=(3.0, 1.0))
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
@@ -248,26 +248,36 @@ def sparrowhawk(b):
         b.box(s * 4.6, s * 5.2, -34.0, -29.0, 7.0, 9.6, "steel.vent", "intake_slits")
     # Reverse-swept wings with a little anhedral, knife-edged at the front (a three-point
     # section: the leading edge is one line), the root's trailing edge running back into
-    # the boosters; a weapon pod and gun at each tip. The root sits inside the fuselage
+    # the boosters; a Pinion Driver at each tip. The root sits inside the fuselage
     # (Ryan, 6 October, the ninth notes: the wings did not quite meet the fuselage at the
     # front, where it narrows to 7.3 either side of the centreline and the root stood at 8).
     for s in (-1.0, 1.0):
         root = [(s * 6.5, -32.0, -1.0), (s * 6.5, -32.0, 1.4), (s * 6.5, 6.0, 0.2)]
         tip = [(s * 32.0, 6.0, -5.4), (s * 32.0, 6.0, -4.6), (s * 32.0, 14.0, -5.0)]
         _wing(b, root, tip, "livery.livery", "wing")
-        if s < 0:
-            # The Arc Projector's pod on the left tip (hp_3): two prongs off the pod's nose.
-            with b.socket("hp_3", (s * 32.0, 14.0, -4.8), scale=0.5):
-                b.prism("y", s * 32.0, 10.0, -4.8, 2.2, 22.0, "steel.dark", 6, "wing_pod")
-                for s2 in (-1.0, 1.0):
-                    b.prism("y", s * 32.0 + s2 * 1.2, 24.0, -4.8, 0.7, 8.0, "steel.dark", 6, "prong")
-        else:
-            # The Deflector's pod on the right tip (hp_4): a projector, its dish on the
-            # pod's nose (a shield projector is gun-shaped enough to take a mount).
-            with b.socket("hp_4", (s * 32.0, 14.0, -4.8), scale=0.5):
-                b.prism("y", s * 32.0, 10.0, -4.8, 2.2, 22.0, "steel.dark", 6, "wing_pod")
-                b.prism("y", s * 32.0, 21.6, -4.8, 3.2, 1.2, "steel.plate", 8, "dish")
-                b.prism("y", s * 32.0, 22.5, -4.8, 1.2, 0.8, "amber.engine", 8, "dish_core")
+        # The Pinion Driver at the tip, the same both sides (fixed, no pin), a ramjet-gun
+        # (Ryan, 29 October: "a kind of mini-booster, barrel forwards with a tapered exhaust
+        # behind, something that looks like it gives an extra boost of speed on a kill"): a
+        # chrome six-sided drum like the boosters', a lit ring round it and its tail tapering
+        # to a lit exhaust; ahead, a dark inlet with the toothed lip (the pinion: a wing's
+        # flight feathers, and a gear), the barrel running out of its centre as a ramjet's
+        # spike, the muzzle lit.
+        tx, tz = s * 32.0, -4.8
+        b.loft([(-9.0, _hexr(tx, tz, 2.0)), (-3.5, _hexr(tx, tz, 3.0)), (0.0, _hexr(tx, tz, 3.5)), (12.0, _hexr(tx, tz, 3.5))], "steel.plate", "driver")
+        b.prism("y", tx, -1.4, tz, 3.75, 1.4, "amber.engine", 6, "driver_ring", phase=math.pi / 6)
+        b.loft([(-9.0, _hexr(tx, tz, 1.85)), (-9.4, _hexr(tx, tz, 1.6))], "amber.exhaust", "driver_exhaust")
+        _tube(b, (tx, 11.5, tz), (tx, 16.5, tz), 3.5, 2.6, 6, "steel.plate", "driver_inlet", phase=math.pi / 6)
+        # Each tooth's back face runs aft as a strake, tapering down the drum until it meets it
+        # (Ryan, 29 October: "extend the back face, tapering it down the length of the ramjet
+        # a bit till it meets"); its front stays the gear's face round the lip.
+        for k in range(10):
+            u = Vector((math.cos(k * math.pi / 5.0), 0.0, math.sin(k * math.pi / 5.0)))
+            t = Vector((-u.z, 0.0, u.x))
+            tooth = lambda y, r0, r1, w0, w1, u=u, t=t: [tuple(Vector((tx, y, tz)) + u * r + t * w) for r, w in ((r0, -w0), (r0, w0), (r1, w1), (r1, -w1))]
+            _rings(b, [tooth(16.5, 3.2, 4.4, 0.6, 0.4), tooth(15.3, 3.2, 4.4, 0.6, 0.4), tooth(9.0, 2.8, 3.0, 0.45, 0.3)], "steel.dark", "pinion")
+        b.loft([(12.0, _hexr(tx, tz, 1.8)), (17.5, _hexr(tx, tz, 0.95))], "steel.dark", "driver_spike")
+        b.prism("y", tx, 24.0, tz, 0.8, 13.0, "steel.dark", 6, "driver_rail")
+        b.prism("y", tx, 30.8, tz, 1.1, 0.8, "amber.engine", 6, "driver_muzzle")
     # Boosters: two big six-sided drums under and behind the cockpit, red glow at the back.
     for s in (-1.0, 1.0):
         b.prism("y", s * 7.5, -32.0, -1.0, 6.0, 28.0, "steel.dark", 6, "booster", phase=math.pi / 6)
@@ -294,7 +304,7 @@ def sparrowhawk(b):
     # sixth: quicker, with inertia, and about the fuselage): a dip and a kick the other way to
     # gather, then once round its own length fast, a little past and back, level where it began.
     b.act("barrel_roll", 3.0, body=_barrel_roll(t0=0.35, t1=1.55, over=24.0, duration=3.0),   # once round in a second and a quarter (the seventh notes: slower)
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.45, 7.0), (1.6, 7.0), (2.3, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.45, 7.0), (1.6, 7.0), (2.3, 0.0)])])
     # A loop (Ryan, 5 October: the nose dip was the weakest; it needs to do a loop): it backs
     # off, runs in and pulls up through a full circle, over on its back and down, the nose
     # along the path, the boosters hot, and brakes onto its hex a whole turn on, the pose it
@@ -303,9 +313,9 @@ def sparrowhawk(b):
     # only: the skirmish's frame has no room for it, nor any reason.
     # Bigger again (the eighth notes: the map has the room), at the same pace round it.
     b.act("loop", 5.2, body=_loop(r=46.0, t0=1.4, t1=4.1, duration=5.2, back=34.0, run=22.0), places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.6, 0.0), (1.1, 8.0), (4.2, 8.0), (4.9, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.6, 0.0), (1.1, 8.0), (4.2, 8.0), (4.9, 0.0)])])
     b.act("flare_boosters", 3.8, body=[(0.5, 0.0, 0.0, 0.0), (1.1, 0.0, 9.0, 0.0, 0.0, -6.0, 0.0), (2.5, 0.0, 12.0, 0.5, 0.0, -7.0, 0.0), (3.8, 0.0, 0.0, 0.0)],
-          glow=[(["booster_ring", "exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
     # A banked circle (Ryan, 5 October, in place of the slow pirouette): wide, out over the next
     # hexes, and on the map only, as the loop (the fifth notes). A circling predator surveying
     # the ground, slow and smooth (the seventh notes). After the eighth (Ryan, 6 October: no
@@ -318,7 +328,7 @@ def sparrowhawk(b):
     # from rest to rest at an even rate, where it had slid into its finish.
     circle = _survey_circle()
     b.act("banked_circle", circle[-1][0], body=circle, places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.8, 7.0), (circle[-2][0] - 0.6, 6.0), (circle[-1][0] - 0.1, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.8, 7.0), (circle[-2][0] - 0.6, 6.0), (circle[-1][0] - 0.1, 0.0)])])
     # A figure eight beside it, to judge against the circle (Ryan, 6 October, the ninth notes:
     # "I'd like to see what a figure 8 looks like"; the tenth: a smooth bank change, crossing the
     # hex on a diagonal, larger, quicker): a lobe to the left and one to the right, crossing its
@@ -328,10 +338,10 @@ def sparrowhawk(b):
     eight = _figure_eight(vmax=145.0)
     mid = round((eight[0][0] + eight[-2][0]) * 0.5, 3)   # the crossing, halfway in time (the pace is symmetric)
     b.act("figure_eight", eight[-1][0], body=eight, places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.6, 7.0), (mid - 0.3, 6.0), (mid, 8.0), (mid + 0.3, 6.0), (eight[-2][0] - 0.6, 6.0), (eight[-1][0] - 0.1, 0.0)])])
-    # Movement: the boosters brighten, the nose drops; it banks and slides through corners
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.6, 7.0), (mid - 0.3, 6.0), (mid, 8.0), (mid + 0.3, 6.0), (eight[-2][0] - 0.6, 6.0), (eight[-1][0] - 0.1, 0.0)])])
+    # Movement: the boosters brighten, the drivers' with them, the nose drops; it banks and slides through corners
     # (b.move) at full speed.
-    b.gait(glow={"parts": ["booster_ring", "exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
+    b.gait(glow={"parts": ["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
     b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08, oversteer=0.35)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts; the nose a little into its corners (the fifth notes: the jets oversteer too, a bit)
 
 sparrowhawk.maker = "kestrel"
@@ -376,9 +386,15 @@ def clydesdale(b):
     b.box(-9.0, 9.0, 48.0, 54.0, 20.0, 25.0, "steel.dark", "chin")
     for s in (-1.0, 1.0):
         b.box(min(s * 12.0, s * 13.5), max(s * 12.0, s * 13.5), 44.0, 49.0, 30.0, 35.0, "amber.light", "lamp")
+    # A mount on each cheek bracket: the left the stock's Incendiary Shells as its class (hp_7,
+    # Ryan's go, 28 October), turning with the head; the right bare (hp_8). Set out from the
+    # bracket at a size the head carries, so a rack fitted there clears the visor.
     for s, k in ((-1.0, 7), (1.0, 8)):
         b.box(min(s * 12.0, s * 14.5), max(s * 12.0, s * 14.5), 42.0, 48.0, 22.0, 28.0, "steel.panel", "cheek_bracket")
-        b.pin("hp_%d" % k, (s * 14.5, 48.0, 25.0))
+        if k == 7:
+            b.stock("hp_7", (s * 17.5, 46.0, 25.0), "rack", scale=0.6, carries="incendiary_shells")
+        else:
+            b.pin("hp_8", (s * 17.5, 46.0, 25.0), scale=0.6, carries="")
     head.__exit__(None, None, None)
     raised.__exit__(None, None, None)
     # The legs: a hip cuff on the flank, a hinge pin, a thigh angling out and (fore pair)
@@ -435,15 +451,18 @@ def clydesdale(b):
         with b.joint("turret_%s" % ("l" if s < 0 else "r"), (tx, 12.0, 51.0), limits=(0.0, 110.0) if s < 0 else (-110.0, 0.0)):   # each turret traverses, outward only (the limit holds the view to it)
             b.box(tx - 5.0, tx + 5.0, 7.0, 17.0, 51.0, 61.0, "steel.panel", "turret")
             b.box(tx - 2.0, tx + 2.0, 17.0, 18.0, 58.0, 60.0, "amber.light", "sight")
-            with b.socket("hp_%d" % (1 if s < 0 else 2), (tx, 12.0, 58.0)):
-                for s2 in (-1.0, 1.0):
-                    b.prism("y", tx + s2 * 2.6, 28.0, 58.0, 1.8, 22.0, "steel.dark", 6, "autogun")
+            if s < 0:
+                b.stock("hp_1", (tx, 12.0, 58.0), "barrel", carries="maxigun")   # the stock's Maxigun as its class (Ryan's go, 28 October)
+            else:
+                with b.socket("hp_2", (tx, 12.0, 58.0), carries="twin_autoguns"):
+                    for s2 in (-1.0, 1.0):
+                        b.prism("y", tx + s2 * 2.6, 28.0, 58.0, 1.8, 22.0, "steel.dark", 6, "autogun")
     # The lance (hp_3): a breech block aft of centre, saddles along the deck, one long
     # six-sided rail out past the head, a collar, a lit emitter at the point.
     b.box(-5.0, 5.0, -24.0, -6.0, 48.0, 61.0, "steel.panel", "breech")
     b.box(-3.5, 3.5, 6.0, 10.0, 48.0, 54.0, "steel.dark", "saddle")
     with b.joint("lance", (0.0, -15.0, 57.0), limits=(-4.0, 18.0)):   # the lance pivots at the breech: it kicks on a shot, and lifts
-        with b.socket("hp_3", (0.0, -15.0, 57.0)):
+        with b.socket("hp_3", (0.0, -15.0, 57.0), carries="enfilade_beam"):
             _beam(b, (0.0, -26.0, 57.0), (0.0, 64.0, 57.0), _poly(3.4, 6), _poly(2.8, 6), "steel.dark", "lance")
             b.prism("y", 0.0, 24.0, 57.0, 4.8, 5.0, "steel.plate", 6, "guard")
             _beam(b, (0.0, 64.0, 57.0), (0.0, 72.0, 57.0), _poly(2.8, 6), _poly(0.8, 6), "amber.light", "emitter")
@@ -456,7 +475,7 @@ def clydesdale(b):
     b.prism("z", -13.0, -24.0, 49.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
     with b.joint("turret_mortar", (-13.0, -24.0, 51.0), limits=(0.0, 150.0)):   # outward only, like the turrets
         with b.joint("elev_mortar", (-13.0, -24.0, 53.0), limits=(-12.0, 20.0)):   # the tube's elevation, inside the traverse (the joint pass)
-            with b.socket("hp_4", (-13.0, -24.0, 55.0), forward=(0.0, 0.5, 0.866)):   # the same height as the howitzer's mount (Ryan, 1 October)
+            with b.socket("hp_4", (-13.0, -24.0, 55.0), forward=(0.0, 0.5, 0.866), carries="ankle_mortar"):   # the same height as the howitzer's mount (Ryan, 1 October)
                 _beam(b, (-13.0, -24.0, 51.0), (-13.0, -16.0, 65.0), _poly(4.0, 6), _poly(4.4, 6), "steel.panel", "mortar")
                 _beam(b, (-13.0, -16.0, 65.0), (-13.0, -15.0, 66.8), _poly(4.4, 6), _poly(3.2, 6), "steel.dark", "muzzle")
     # The howitzer (hp_5) on the deck's right: a fat short barrel pitched up out of a
@@ -464,13 +483,14 @@ def clydesdale(b):
     b.prism("z", 12.5, -14.0, 49.5, 6.0, 3.0, "steel.dark", 8, "howitzer_base")
     with b.joint("turret_howitzer", (12.5, -14.0, 51.0), limits=(-150.0, 0.0)):
         with b.joint("elev_howitzer", (12.5, -14.0, 55.0), limits=(-15.0, 20.0)):   # the barrel's elevation at the breech
-            with b.socket("hp_5", (12.5, -14.0, 55.0), forward=(0.0, 0.866, 0.5)):
+            with b.socket("hp_5", (12.5, -14.0, 55.0), forward=(0.0, 0.866, 0.5), carries="howitzer"):
                 b.box(7.5, 17.5, -19.0, -9.0, 51.0, 59.0, "steel.panel", "howitzer_breech")
                 _beam(b, (12.5, -12.0, 55.0), (12.5, 6.0, 65.4), _poly(5.0, 6), _poly(4.4, 6), "steel.dark", "howitzer")
                 _beam(b, (12.5, 6.0, 65.4), (12.5, 8.6, 66.9), _poly(4.4, 6), _poly(5.2, 6), "steel.plate", "howitzer_muzzle")
-    # The shock barrage (hp_6): a rack of tubes on the deck's left between the turret and
-    # the breech, pitched up; the class shape, since nothing was modelled there.
-    b.stock("hp_6", (-12.0, -10.0, 52.0), "rack", forward=(0.0, 0.707, 0.707), scale=0.8)   # aft a bit (Ryan, 1 October)
+    # The Airburst Shell (hp_6; the shock barrage's mount until the stock pass of 22 October):
+    # a rack of tubes on the deck's left between the turret and the breech, pitched up; the
+    # class shape, since nothing was modelled there.
+    b.stock("hp_6", (-12.0, -10.0, 52.0), "rack", forward=(0.0, 0.707, 0.707), scale=0.8, carries="airburst_shell")   # aft a bit (Ryan, 1 October)
     # Ablative plating: two bolted slabs each flank, standing proud of the hull; the heat
     # sink across the tail, its stack up through the bed. Detail, no mounts: armour and
     # vents show nowhere (the rule, 30 September).
@@ -600,7 +620,13 @@ def baboon(b):
     Pulse Repeaters on the outer sides, hp_5 the Zenith Emitter on the right fist's top,
     hp_6 bare on the left), the shoulders hp_1 and hp_2 (Umbra Projectors); the Radiator
     Sail is the vent block on the backpack, no mount; a d7. Every number is a proportion
-    Ryan may change."""
+    Ryan may change. Since the stock pass (22 October) every station keeps its kind, the pins
+    renumbered to the stock's order and each part its class (Ryan's go, 28 October): the
+    shoulders' elevating mounts carry the Halo Shield's dish (hp_3, left) and the Ankle
+    Mortar's rack (hp_5, right) where the projectors rode; the fists' outer sides the Twin
+    Autoguns (hp_1, right) and the Rivet Gun (hp_4, left); the right fist's top the Laser
+    Carbine (hp_2) where the Zenith Emitter was; the left fist's top bare (hp_6); the vent
+    block on the backpack is detail (the Coolant Jacket shows nowhere)."""
     OCT = lambda r: _poly(r, 8, math.pi / 8)
     Z0 = -5.0   # the upper body rides this much lower than the third pass: the legs got shorter
     # Feet and legs: plantigrade, the whole sole on the ground; knee forward of the ankle,
@@ -642,18 +668,17 @@ def baboon(b):
     b.box(-8.0, 8.0, 8.0, 22.0, 60.0 + Z0, 68.0 + Z0, "steel.dark", "sensor_pod")
     b.box(-6.0, 6.0, 22.0, 23.0, 62.0 + Z0, 66.0 + Z0, "amber.engine", "eye")
     b.box(-9.0, 9.0, 6.0, 24.0, 68.0 + Z0, 70.5 + Z0, "steel.plate", "brow")
-    # Shoulders: red pauldrons, an octagonal drum each, low on the torso's shoulder, with
-    # an Umbra Projector riding on top (hp_1 left, hp_2 right).
+    # Shoulders: red pauldrons, an octagonal drum each, low on the torso's shoulder, with a
+    # stock piece riding on top on its elevating mount: the Halo Shield's dish (hp_3 left),
+    # the Ankle Mortar's rack (hp_5 right).
     for s in (-1.0, 1.0):
         px = s * 25.0
         b.prism("x", px, 0.0, 57.0 + Z0, 9.0, 14.0, "livery.livery", 8, "pauldron", phase=math.pi / 8)
         b.prism("x", px, 0.0, 57.0 + Z0, 4.0, 15.0, "steel.dark", 6, "shoulder_pin")
         b.box(px - 4.0, px + 4.0, -2.0, 6.0, 60.0 + Z0, 65.0 + Z0, "steel.plate", "projector_mount")
         side = "l" if s < 0 else "r"
-        with b.joint("elev_%s" % side, (px, 2.0, 63.0 + Z0), limits=(-6.0, 50.0)):   # the projector elevates on its mount
-            with b.socket("hp_%d" % (1 if s < 0 else 2), (px, 16.0, 63.0 + Z0)):
-                b.prism("y", px, 12.0, 63.0 + Z0, 3.2, 20.0, "steel.dark", 6, "umbra_projector")
-                b.prism("y", px, 23.0, 63.0 + Z0, 2.2, 3.0, "amber.engine", 6, "emitter")
+        with b.joint("elev_%s" % side, (px, 2.0, 63.0 + Z0), limits=(-6.0, 50.0)):   # the shoulder piece elevates on its mount
+            b.stock("hp_%d" % (3 if s < 0 else 5), (px, 6.0, 64.0 + Z0), "dish" if s < 0 else "rack", scale=0.6, carries="halo_shield" if s < 0 else "ankle_mortar")
         # The arm: the elbow back and out behind the shoulder, the forearm forward and
         # down to a wrist drum, the fist hanging from it to rest on the ground, knuckles
         # forward (Ryan, 30 September: back on the ground, and loaded).
@@ -679,20 +704,16 @@ def baboon(b):
         wr = b.joint("wrist_%s" % side, wrist, limits=(-60.0, 60.0))
         wr.__enter__()
         _fist(b, wrist[0], wrist[1] - 7.0, wrist[1] + 7.0, wrist[2] - 16.5, wrist[2] - 3.5, 14.0, -s)   # the inner side faces the body
-        # Two mounts a hand. On the outside of each fist a Pulse Repeater (hp_3 right,
-        # hp_4 left); on the fist's top the Zenith Emitter on the right (hp_5) and a bare
-        # mount on the left (hp_6).
+        # Two mounts a hand. On the outside of each fist a gun, the Twin Autoguns on the
+        # right (hp_1) and the Rivet Gun on the left (hp_4); on the fist's top the Laser
+        # Carbine on the right (hp_2) and a bare mount on the left (hp_6).
         gx = wrist[0] + s * 9.5
         b.box(min(gx - 2.5, gx + 2.5), max(gx - 2.5, gx + 2.5), wrist[1] - 5.0, wrist[1] + 5.0, wrist[2] - 13.0, wrist[2] - 7.0, "steel.plate", "repeater_mount")
-        with b.socket("hp_%d" % (3 if s > 0 else 4), (gx, wrist[1] + 5.0, wrist[2] - 10.0)):
-            b.prism("y", gx, wrist[1] + 5.0, wrist[2] - 10.0, 2.0, 18.0, "steel.dark", 6, "pulse_repeater")
-            b.prism("y", gx, wrist[1] + 14.5, wrist[2] - 10.0, 1.4, 1.5, "amber.engine", 6, "repeater_tip")
+        b.stock("hp_%d" % (1 if s > 0 else 4), (gx, wrist[1] + 1.0, wrist[2] - 10.0), "twin_barrel" if s > 0 else "barrel", scale=0.5, carries="twin_autoguns" if s > 0 else "rivet_gun")
         top = (wrist[0], wrist[1] + 1.0, wrist[2] - 3.5)
         if s > 0:
             b.box(top[0] - 3.5, top[0] + 3.5, top[1] - 5.0, top[1] + 3.0, top[2], top[2] + 3.0, "steel.plate", "emitter_mount")
-            with b.socket("hp_5", (top[0], top[1] + 3.0, top[2] + 3.0)):
-                b.prism("y", top[0], top[1] + 12.0, top[2] + 3.0, 2.6, 20.0, "steel.dark", 6, "zenith_emitter")
-                b.prism("y", top[0], top[1] + 22.5, top[2] + 3.0, 1.8, 1.5, "amber.engine", 6, "emitter_tip")
+            b.stock("hp_2", (top[0], top[1] + 1.0, top[2] + 5.0), "barrel", scale=0.5, carries="laser_carbine")
         else:
             b.pad("hp_6", (top[0], top[1] + 1.0, top[2] + 3.0), size=(7.0, 3.0))
         wr.__exit__(None, None, None)
@@ -756,7 +777,7 @@ def baboon(b):
         "shoulder_r": [(0.6, 10.0), (5.4, 10.0), (6.0, 0.0)],
         "wrist_l": [(0.6, -12.0), (5.4, -12.0), (6.0, 0.0)],
         "wrist_r": [(0.6, -12.0), (5.4, -12.0), (6.0, 0.0)],
-    }, heft=0.08, glow=[(["emitter", "eye"], [(0.5, 0.0)] + [(t + d, k) for t in ticks for d, k in ((-0.02, 0.0), (0.06, 9.0), (0.3, 0.0))] + [(5.0, 0.0)])])
+    }, heft=0.08, glow=[(["dish_core", "eye"], [(0.5, 0.0)] + [(t + d, k) for t in ticks for d, k in ((-0.02, 0.0), (0.06, 9.0), (0.3, 0.0))] + [(5.0, 0.0)])])
     # The right fist marks the target (Ryan, 5 October, the sixth notes: inspect_fist already
     # raises the left), the torso turning right to it; the fist comes up palm out, then the
     # wrist turns it down so its projector prongs lock on the mark before the rack sends (the
@@ -778,7 +799,7 @@ def baboon(b):
         "shoulder_r": [(0.8, 10.0), (5.4, 10.0), (6.0, 0.0)],
         "wrist_l": [(0.8, -14.0), (5.4, -14.0), (6.0, 0.0)],
         "wrist_r": [(0.8, -14.0), (5.4, -14.0), (6.0, 0.0)],
-    }, glow=[(["emitter", "hp_5", "hp_3", "hp_4"], [(0.6, 0.0), (1.6, 4.0), (2.2, 8.0), (2.6, 4.0), (3.0, 8.0), (4.4, 8.0), (5.2, 0.0)])])
+    }, glow=[(["dish_core", "hp_2", "hp_4"], [(0.6, 0.0), (1.6, 4.0), (2.2, 8.0), (2.6, 4.0), (3.0, 8.0), (4.4, 8.0), (5.2, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a heavy knuckle-walk, every foot and fist planted while the body passes over it,
     # the left fist with the right foot; the fists flat on their knuckles through each stance
@@ -807,18 +828,41 @@ def armadillo(b):
     it, the Badger's way (the first pass's head, with a smaller cockpit: Ryan, 30
     September). The weapons come out of round ports in the shell like a Blastoise: each
     port is a hollow of chassis with the mount at its floor, so a fitted gun rises out of
-    it. Mounts (the loadout's order): hp_1 the left rear port (Rivet Gun), hp_2 the right
-    rear port (Slug Cannon), hp_3 the hatch behind them, pitched forward (Missile Rack),
-    hp_4 and hp_5 two forward ports flanking the cowl, level with the ground, cut back
-    into the step behind the front band, bare; the plating on the flanks and the stack at
-    the tail are detail. The ports are real holes: b.cut subtracts them from the bands
-    before export. The Lockdown Shutters are
-    the ports' stripe rims (fixed, no pin)."""
+    it. Mounts, the four weapon ports (Ryan, 15 October: "the 4 weapons ports are the 4
+    hardpoints"; his go of 20 October), in the stock's order: hp_1 the left rear port (the
+    Rivet Gun), hp_2 the right rear port (the Twin Autoguns), hp_3 and hp_4 two forward ports
+    flanking the cowl, level with the ground, cut back into the step behind the front band,
+    bare; the plating on the flanks is detail, and a louvred radiator sunk flush in each
+    flank's chamfer above the hind hip and two near-square louvred vents low in the tail's
+    back panel, each a grille at rest that throws its louvres open over flaring orange heat
+    when it vents and shuts flat when it seals, while a vent on each flank's chamfer ahead of
+    the rear ports slides out over its glowing core (Ryan, 29 October: the stack's rain flap
+    read "more W&S comical than heavy Minerva"; the two vents that replaced it grew into "big
+    boxy radiators sticking out at an angle", with "new vents on the sides", their glow "way
+    more yellow/orange"; then, 30 October, "Place them flush on the chamfered face above the
+    leg joint", and "Split the long rear vent into two squareish ones"). The ports are real
+    holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
+    carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
+    canister rack that slides out of it to fire, its two barrels bored dark through the rack's
+    face (Ryan, 29 October: "the cryo barrels need to be bored in") and a beacon on each rim
+    (the beep). Every weapon only runs in and out along its line of fire, never pitching
+    (Ryan, 29 October: "remove the vertical pivot from all armadillo weapons"): the port guns
+    and the rack slide on their joints, a shot kicks them back along it. The seal made real
+    (the form "sealed", held while Sealed): the port guns sink into the shell, then an iris
+    plug in the ports' stripe rises out of each port's floor and closes it just under the rim
+    (Ryan, 29 October: the leaves drawn back across the shell showed, so they rest out of
+    sight under the floor), the radiators shut, the cowl lamps go dark and the whole machine
+    hunkers down on its planted feet, the defensive base pose its own acts play from (Ryan,
+    29 October: sealed, "the animations set shouldn't be the same"), none of them a vent; the
+    flingers' rack stays live, since a sealed Armadillo still lures; opening runs it back."""
     Z0 = 26.0   # the shell's floor: the legs lift it this high
+    PLUG_DEEP, PLUG_DEEP_F = 12.0, 9.0   # how far down its line each port's iris plug rests, rear and fore: under the floor, out of sight in the shell
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
     bands = [(-50.0, -38.0, 50.0, Z0 + 21.0, 9.0), (-39.0, -22.0, 54.0, Z0 + 24.0, 10.0), (-23.0, -4.0, 60.0, Z0 + 28.0, 12.0),
              (-5.0, 14.0, 62.0, Z0 + 28.0, 12.0), (13.0, 30.0, 56.0, Z0 + 24.0, 11.0), (29.0, 46.0, 48.0, Z0 + 17.0, 9.0)]
+    # The tail band square again (Ryan, 29 October): its back had been bevelled to carry the
+    # radiators sunk in the slope, and he liked the taper, to keep in mind for the next pass.
     band_obs = []
     for i, (y0, y1, w, top, c) in enumerate(bands):
         tile = "steel.panel" if i % 2 == 0 else "steel.plate"
@@ -864,6 +908,7 @@ def armadillo(b):
     # pitched up and forward, lined by a tube with a dark floor and a stripe rim at the
     # mouth; the mount on the floor, deep, the barrel out of it (Ryan, 1 October).
     D = (0.0, 0.707, 0.707)
+    shutters = {}   # port -> [(joint, its slide home)]: the seal's irises (the form below)
     for s, kind in ((-1.0, "rivet"), (1.0, "slug")):
         px = s * 14.0
         # A shallow socket (a rack fitted deep would be invisible), but the collar's outer
@@ -874,46 +919,66 @@ def armadillo(b):
         b.cut(band_obs, p0, p1, 6.6)
         _tube(b, (px, -11.5, Z0 + 18.5), p1, 8.0, 6.4, 8, "steel.plate", "port", floor_depth=9.9)
         _tube(b, (px, -0.9, Z0 + 29.1), (px, 0.3, Z0 + 30.3), 8.7, 6.4, 8, "steel.stripe", "port_rim", floor=False)
+        tag = "r" + ("l" if s < 0 else "r")
+        shutters[tag] = _plug(b, tag, Vector((px, -0.9, Z0 + 29.1)) - Vector(D) * 0.5, D, 6.8, PLUG_DEEP)   # closes just under the rim; rests under the floor
         mount = Vector((px, -3.5, Z0 + 26.5))
         DV = Vector(D)
         # The barrels a fixed length from the mount (they had run to a fixed muzzle point
         # and grew with every push back: Ryan, 1 October).
-        # Each port gun elevates in its port (the joint pass, 2 October): a pitch joint at
-        # the mount, the socket inside it.
-        with b.joint("elev_%s" % ("l" if s < 0 else "r"), tuple(mount), limits=(-12.0, 28.0)):
+        # Each port gun runs in and out of its port along its line (Ryan, 29 October: it
+        # pitched on a joint at the mount, and its barrels clipped the shell presenting): a
+        # slide joint at the mount, the socket inside it.
+        with b.joint("run_%s" % ("l" if s < 0 else "r"), tuple(mount), slide=D):
             if kind == "rivet":
-                with b.socket("hp_1", tuple(mount), forward=D, scale=1.2):
+                with b.socket("hp_1", tuple(mount), forward=D, scale=1.2, carries="rivet_gun"):
                     _beam(b, tuple(mount), tuple(mount + DV * 16.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
                     _beam(b, tuple(mount + DV * 16.0), tuple(mount + DV * 18.5), _poly(4.0, 6), _poly(3.6, 6), "steel.plate", "rivet_muzzle")
             else:
-                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2):
-                    _beam(b, tuple(mount), tuple(mount + DV * 23.0), _poly(3.0, 6), _poly(2.8, 6), "steel.dark", "slug_barrel")
-                    _beam(b, tuple(mount + DV * 23.0), tuple(mount + DV * 26.5), _poly(3.8, 6), _poly(3.4, 6), "steel.plate", "slug_muzzle")
-    # The hatch behind the ports: a missile cell in a stripe frame, pitched forward with
-    # the ports so a cannon fitted there is a hull gun (hp_3).
+                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2, carries="twin_autoguns"):
+                    for xo in (-2.4, 2.4):   # the pair inside the port's bore, no wider than a fitted pair
+                        off = Vector((xo, 0.0, 0.0))
+                        _beam(b, tuple(mount + off), tuple(mount + off + DV * 18.0), _poly(1.9, 6), _poly(1.9, 6), "steel.dark", "autogun_barrel")
+                        _beam(b, tuple(mount + off + DV * 18.0), tuple(mount + off + DV * 20.0), _poly(2.3, 6), _poly(2.1, 6), "steel.plate", "autogun_muzzle")
+    # The hatch behind the ports: a rack in a stripe frame, pitched forward with the ports,
+    # the Cryo Flingers' (no pin since the rework: the four ports are the hardpoints).
     # Up and back a little, so a cannon fitted there clears the shell's crown ahead of it
     # (Ryan, 1 October).
     # A square channel through the shell along the cell's own line, the cell sliding and
     # tilting in it (Ryan, 5 October, the sixth notes: lifted, the cell slid through the top
     # panel, so the mount wants a cutout): cut through both bands it crosses, long enough for
     # the cell's whole slide, its walls the shell's own; the stripe frame a hollow sleeve over
-    # its lower part, floored dark deep in the shell.
+    # its lower part, floored dark deep in the shell. The sleeve runs down its line until its
+    # back edge is buried in the lower deck behind the step (it began where its back edge hung
+    # over both decks, a slot under it into the cut: Ryan, 30 October, "the rack has a rear cut
+    # that I'm not sure is supposed to be that big"), that run down a skirt in the livery under
+    # the stripe (the same day: "that's now a lot of hazard stripe in one area. I don't mind
+    # the extension, but maybe this is a good place for livery instead").
     HB, DV, R2 = Vector((0.0, -34.0, Z0 + 20.0)), Vector(D), math.sqrt(2.0)
-    b.cut(band_obs, tuple(HB + DV * 0.5), tuple(HB + DV * 20.0), 7.4 * R2, sides=4, phase=math.pi / 4)
-    _tube(b, tuple(HB + DV * 0.5), tuple(HB + DV * 11.3), 8.5 * R2, 7.4 * R2, 4, "steel.stripe", "hatch_frame", floor_depth=0.3, phase=math.pi / 4)
-    with b.joint("elev_cell", (0.0, -32.0, Z0 + 22.0), limits=(-4.0, 28.0)):   # the cell tilts up and back on its hatch
-        with b.socket("hp_3", (0.0, -26.0, Z0 + 28.0), forward=D, scale=1.2):
-            # The tubes on the cell's face alone (Ryan, 5 October: the missile tile showed on
-            # every side once the cell lifted out): a panel body and one face, the tile fitted
-            # to it whole.
-            _beam(b, (0.0, -32.0, Z0 + 22.0), (0.0, -24.5, Z0 + 29.5), _sq(13.0, 13.0), _sq(13.0, 13.0), "steel.panel", "missile_cell")
-            UP, RT = Vector((0.0, -0.7071, 0.7071)), Vector((1.0, 0.0, 0.0))
-            _missile_face(b, Vector((0.0, -24.5, Z0 + 29.5)) + DV * 0.05 - RT * 6.5 - UP * 6.5, UP, RT, DV, 13.0)
+    b.cut(band_obs, tuple(HB - DV * 8.0), tuple(HB + DV * 20.0), 7.4 * R2, sides=4, phase=math.pi / 4)
+    _tube(b, tuple(HB - DV * 8.0), tuple(HB + DV * 0.5), 8.5 * R2, 7.4 * R2, 4, "livery.livery2", "hatch_skirt", floor_depth=0.3, phase=math.pi / 4)
+    _tube(b, tuple(HB + DV * 0.5), tuple(HB + DV * 11.3), 8.5 * R2, 7.4 * R2, 4, "steel.stripe", "hatch_frame", floor_depth=0.0, floor=False, phase=math.pi / 4)
+    with b.joint("run_rack", (0.0, -32.0, Z0 + 22.0), slide=D):   # the rack slides out of its hatch along its line (it tilted, Ryan, 29 October)
+        # The Cryo Flingers' twin rack (fixed, no pin): a panel body, two barrels side by side
+        # through its face, bored six deep (Ryan, 29 October: "the cryo barrels need to be bored
+        # in"; the face had capped them a hair down), the bore, its floor and the rim at its mouth
+        # in the guns' dark steel (Ryan, the same day: the plate rim and its inner wall read
+        # light), and a beacon beside each that blinks when the rack runs out (Ryan, 18 October:
+        # "a sticky cryo canister with a really annoying beep or something").
+        rack = _beam(b, (0.0, -32.0, Z0 + 22.0), (0.0, -24.5, Z0 + 29.5), _sq(13.0, 13.0), _sq(13.0, 13.0), "steel.panel", "flinger_rack")
+        UP, RT = Vector((0.0, -0.7071, 0.7071)), Vector((1.0, 0.0, 0.0))
+        FACE = Vector((0.0, -24.5, Z0 + 29.5))
+        for xo in (-3.2, 3.2):
+            c = FACE + RT * xo
+            b.cut([rack], tuple(c - DV * 6.0), tuple(c + DV * 0.5), 2.6)
+            _tube(b, tuple(c - DV * 6.0), tuple(c + DV * 1.2), 3.0, 2.3, 8, "steel.dark", "flinger_tube", floor_material="steel.dark", floor_depth=0.3)
+            _tube(b, tuple(c + DV * 0.7), tuple(c + DV * 1.4), 3.3, 2.3, 8, "steel.dark", "flinger_rim", floor=False)
+            bc = c + UP * 3.9 + DV * 0.6
+            b.box(bc.x - 0.7, bc.x + 0.7, bc.y - 0.7, bc.y + 0.7, bc.z - 0.7, bc.z + 0.7, "amber.light", "beacon")
     # Two forward ports flanking the cowl: level with the ground, cut straight back into
     # the step behind the front band (the fifth band's front face stands seven above the
     # sixth's crown), so a gun comes out of that plate and runs forward over the cowl's
-    # band (Ryan, 1 October). Bare mounts on their floors, deep (hp_4, hp_5).
-    for s, n in ((-1.0, 4), (1.0, 5)):
+    # band (Ryan, 1 October). Bare mounts on their floors, deep (hp_3, hp_4).
+    for s, n in ((-1.0, 3), (1.0, 4)):
         px = s * 14.0
         # Lowered so the collar sits inside the plate behind the cowl, its wall run back
         # into the band (Ryan, 1 October: the tube and the body did not meet).
@@ -927,17 +992,51 @@ def armadillo(b):
         # fitted there lies in a trough instead of running into the shell (Ryan, 1
         # October: the barrels would have clipped the band in front).
         b.cut_box(band_obs, px - 4.6, px + 4.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
-        b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2)
+        tag = "f" + ("l" if s < 0 else "r")
+        shutters[tag] = _plug(b, tag, Vector((px, 29.6, ZF)), (0.0, 1.0, 0.0), 5.0, PLUG_DEEP_F)   # closes just behind the rim; rests behind the floor
+        with b.joint("run_" + tag, (px, 24.5, ZF), slide=(0.0, 1.0, 0.0)):   # a gun fitted here runs in and out along its line, and sinks as the seal turns in
+            b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2, carries="")
     # The slab between the two channels cut away too, so the front band steps down to one
     # wide firing deck ahead of the ports (Ryan, 1 October).
     b.cut_box(band_obs, -9.6, 9.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
-    # Plating on the flanks between the hips and the blowout stack at the tail with vents
-    # across the rear band: detail, no mounts.
+    # Plating on the flanks between the hips: detail, no mounts.
     for s in (-1.0, 1.0):
         b.box(min(s * 29.0, s * 32.5), max(s * 29.0, s * 32.5), -10.0, 10.0, Z0 + 2.0, Z0 + 18.0, "livery.livery2", "ablative")
-    b.box(-14.0, -2.0, -51.0, -50.0, Z0 + 2.0, Z0 + 12.0, "steel.vent", "tail_vents")
-    b.prism("z", 9.0, -44.0, Z0 + 24.0, 4.4, 16.0, "steel.dark", 6, "stack")
-    b.prism("z", 9.0, -44.0, Z0 + 33.0, 5.4, 2.0, "steel.plate", 6, "stack_cap")
+    # The radiators (Ryan, 29 October: the two tail vents, "more active animated vents, more
+    # rugged looking, that seal as well as the armour ports", then enlarged into radiators;
+    # big boxes standing out of the tail at an angle, moved about its back panel and its top
+    # rear corners through 30 October, until "Place them flush on the chamfered face above the
+    # leg joint, and resize to fit"): one sunk flush in each flank's chamfer of the band over
+    # the hind hip, above the hip's cuff where it stands out of the slope, fourteen along the
+    # machine by eight up the slope, a dark steel box with a stripe rim and its heat banked in
+    # its floor (amber.heat, "way more yellow/orange" than the ember it had), three louvres along
+    # the machine on joints. At rest they stand a little out, a grille over the heat; the vent
+    # act throws them near square to the slope, so the heat shows between them to a camera
+    # above that flank; sealed, they shut flat with the ports.
+    vents = [("radiator_heat_" + t, _vent(b, [band_obs[1]], (s * 20.5, -31.0, Z0 + 20.5), 0.0, 14.0, 8.0, 3, "louvre_" + t, 20.0, 80.0, flank=s, heat="radiator_heat_" + t))
+             for s, t in ((-1.0, "l"), (1.0, "r"))]   # on the slope (x plus height 41), from the deck's edge to just over the cuff
+    # The long rear vent split in two (Ryan, the same day: "Split the long rear vent into two
+    # squareish ones"; it had run forty-four across the panel's fifty, then "The rear ones can
+    # protrude a bit more"): two vents fifteen wide by twelve tall side by side low in the
+    # tail's rear face, each box standing out of it, its mouth two and a half behind the panel
+    # and its back a little inside it, four louvres each a little out at rest that throw their
+    # upper edges out (edge on to an eye 30 to 42 degrees down behind) and shut flat with the
+    # radiators'.
+    vents += [("rear_vent_heat_" + t, _vent(b, [band_obs[0]], (s * 12.0, bands[0][0] - 2.5, Z0 + 6.5), 90.0, 15.0, 12.0, 4, "louvre_c" + t, 10.0, 60.0, heat="rear_vent_heat_" + t))
+              for s, t in ((-1.0, "l"), (1.0, "r"))]
+    # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in
+    # front of the back weapons. Those are small rectangular protrusions when sealed, and
+    # either slide out, or lever up using the forward edge as a pivot, to show the vent face
+    # when venting"; then the glow "way more yellow/orange", with "a larger footprint to
+    # sell"): one on each flank's chamfer, just ahead of the rear ports, a dark cap on a stripe
+    # rim, fourteen along the machine by eight across, a little down the slope so its well
+    # clears the port's tube; venting, it slides straight out of its well on a joint, thin
+    # slatted sides rising under the cap over heat that glows between them. Slid, not levered: one joint, and it
+    # shows its faces to the cameras ahead and behind alike, where a lever on the forward edge
+    # shows its face behind only (and that edge runs up the slope, off the machine's axes, so
+    # the rig would turn it on three nested joints: rolled square, pitched, rolled back).
+    pops = [("side_vent_heat_" + t,) + _popvent(b, [band_obs[3]], (s * 26.05, 5.5, Z0 + 20.95), s, "vent_pop_" + t, heat="side_vent_heat_" + t)
+            for s, t in ((-1.0, "l"), (1.0, "r"))]   # seven up the slope's seventeen
 
     # Idle acts, third pass (Ryan, 4 October: some stilted, the weight thrown side to side;
     # heavy, with inertia): curves a part runs on through, the servos' heft (b.move), held
@@ -946,15 +1045,16 @@ def armadillo(b):
     # roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is
     # (t, k), k the light added over rest.
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
-    # The missile cell rises along its own line before it tilts (Ryan, 5 October: it cut
-    # through the stripes), and sinks back after; but its base stays inside the frame, even
-    # at the tilt's far corner (Ryan, 5 October, the fifth notes: lifted eleven, it left its
-    # housing whole and floated).
-    CELL = (0.0, 3.9, 3.9)   # five and a half units up the cell's line
-    cell = lambda t0, t1, t2, t3: [(t0, 0.0), (t0 + 0.5, 0.0, 0.0, 0.0) + CELL, (t1, 22.0, 0.0, 0.0) + CELL, (t2, 21.0, 0.0, 0.0) + CELL,
-                                   (t3 - 0.5, 0.0, 0.0, 0.0) + CELL, (t3, 0.0)]
+    # Every weapon runs in and out along its line, never pitching (Ryan, 29 October: "they
+    # should only move along their axis of firing, in and out"): a port gun runs out RUN to
+    # bear, no further, its barrel's root still in the port; the rack slides LIFT up its
+    # hatch, its base still inside the frame (lifted eleven, it left its housing whole and
+    # floated: Ryan, 5 October, the fifth notes).
+    RUN, LIFT = 2.5, 7.0
+    along = lambda t, d, line=D: (t, 0.0, 0.0, 0.0) + tuple(round(v * d, 3) for v in line)
+    rack_out = lambda t0, t1, t2, t3: [along(t0, 0.0), along(t1, LIFT), along(t2, LIFT - 0.4), along(t3, 0.0)]
     # Present the guns as a sumo does (Ryan, 5 October): a forefoot lifts and steps out wide,
-    # then the other, the shell's front sinking between them, and every back gun comes up
+    # then the other, the shell's front sinking between them, and every back gun runs out
     # to bear; then up, and the feet step back in, one and then the other. Each foot stays
     # flat (the hips roll out and the ankles under them: _stance).
     WIDE, LIFT = 7.0, 9.0
@@ -977,22 +1077,24 @@ def armadillo(b):
     frames += step(6.9, 7.7, "fr", WIDE, 0.0, B1, B5) + step(7.8, 8.6, "fl", WIDE, 0.0, B5, B0)
     tracks, body = _stance(legs, [(round(t, 3), pose, feet) for t, pose, feet in frames])
     tracks.update({
-        "elev_l": [(3.2, 0.0), (4.0, 28.0), (5.4, 27.0), (6.2, 0.0)],
-        "elev_r": [(3.4, 0.0), (4.2, 28.0), (5.4, 27.0), (6.2, 0.0)],
-        "elev_cell": cell(3.1, 4.4, 5.4, 6.6),
+        "run_l": [along(3.2, 0.0), along(4.0, RUN), along(5.4, RUN - 0.3), along(6.2, 0.0)],
+        "run_r": [along(3.4, 0.0), along(4.2, RUN), along(5.4, RUN - 0.3), along(6.2, 0.0)],
+        "run_rack": rack_out(3.1, 4.4, 5.4, 6.6),
     })
+    blink = lambda t0, t1: [(round(t0 + k * 0.45 + d, 2), v) for k in range(int((t1 - t0) / 0.45)) for d, v in ((0.0, 0.0), (0.05, 12.0), (0.18, 0.0))]
     b.act("present_guns", 8.8, tracks, body=body,
-          glow=[(["lamp"], [(3.2, 0.0), (3.8, 8.0), (5.6, 8.0), (6.2, 0.0)])])   # the cowl lamps burn: the guns are up
+          glow=[(["lamp"], [(3.2, 0.0), (3.8, 8.0), (5.6, 8.0), (6.2, 0.0)]),   # the cowl lamps burn: the guns are up
+                (["beacon"], blink(3.6, 6.2))])   # and the canisters beep while the rack is out
     # Crouch (Ryan, 5 October: the knee bend of the old present_guns as an act of its own):
     # it sinks low and level on its planted feet, settles, and stands.
     tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
                             [(1.4, 0.0, -8.0, -0.6), (2.0, 0.0, -8.6, -0.8), (3.8, 0.0, -9.0, -0.8), (5.0, 0.0, 0.0, 0.0)])
     b.act("crouch", 5.4, tracks, body=body)
-    b.act("weapons_check", 6.6, {   # each port gun rises and drops in turn, then the cell lifts out of its hatch and tilts
-        "elev_l": [(1.0, 28.0), (1.6, 27.0), (2.4, -10.0), (2.9, 0.0)],
-        "elev_r": [(2.0, 0.0), (3.0, 28.0), (3.6, 27.0), (4.4, -10.0), (4.9, 0.0)],
-        "elev_cell": cell(3.6, 4.7, 5.3, 6.4),
-    })
+    b.act("weapons_check", 6.6, {   # each port gun runs out and cycles back in turn, then the rack slides up its hatch, its canisters beeping
+        "run_l": [along(1.0, 0.0), along(1.5, RUN), along(1.9, RUN), along(2.1, -0.8), along(2.5, 0.0)],
+        "run_r": [along(2.2, 0.0), along(2.7, RUN), along(3.1, RUN), along(3.3, -0.8), along(3.7, 0.0)],
+        "run_rack": rack_out(3.6, 4.7, 5.3, 6.4),
+    }, glow=[(["beacon"], blink(4.0, 6.2))])
     b.act("stamp", 5.6, {   # a forefoot lifts high and stamps down, then a hind one, the shell dropping onto each
         "hip_fr": [(0.9, 30.0), (1.8, 31.0), (2.1, 0.0)],
         "knee_fr": [(0.9, -44.0), (1.8, -45.0), (2.1, 0.0)],
@@ -1006,7 +1108,7 @@ def armadillo(b):
     # no head and no waist it turns its whole shell to look, the way it walks, in diagonal
     # pairs: a pair lifts, the shell turns eight degrees on the other pair, planted, and drops
     # onto the landing pair (the stamp's dip); three pairs bring it round twenty-four and a
-    # fourth squares the trailing pair up under it, the port guns rise to bear and the cowl
+    # fourth squares the trailing pair up under it, the port guns run out to bear and the cowl
     # lamps burn while it holds facing the new way; then back the same way. The shell sits
     # lower through the turn (its legs stand straight in their planes, and a planted foot
     # under a turning shell needs the slack). Each hip takes the yaw and roll that keep its
@@ -1030,9 +1132,44 @@ def armadillo(b):
     s2, k2 = come(5.3, YAW, 0.0)
     tracks, body = _footwork({leg: limb(leg) for leg in ("fl", "fr", "hl", "hr")},
                              [(0.2, REST6), (0.5, low(0.0))] + k1 + [(5.3, low(YAW))] + k2 + [(8.8, REST6)], s1 + s2, until=9.0)
-    tracks.update({"elev_l": _dense([(3.2, 0.0), (3.8, 24.0), (5.1, 23.0), (5.8, 0.0)]), "elev_r": _dense([(3.3, 0.0), (3.9, 24.0), (5.1, 23.0), (5.8, 0.0)])})
+    tracks.update({"run_l": _dense([along(3.2, 0.0), along(3.8, RUN), along(5.1, RUN - 0.3), along(5.8, 0.0)]),
+                   "run_r": _dense([along(3.3, 0.0), along(3.9, RUN), along(5.1, RUN - 0.3), along(5.8, 0.0)])})
     b.act("come_about", 9.4, tracks, body=body, ease="linear", heft=0.12,
           glow=[(["lamp"], [(3.4, 0.0), (3.9, 8.0), (5.2, 8.0), (5.8, 0.0)])])
+    # Venting (Ryan, 29 October: the vents "more active animated", and never while sealed;
+    # then "don't do the double knee bend. Lower down, open vents, close vents, come back up";
+    # 30 October: "desync the vent openings, then close them all at the same-ish time", then
+    # "Open them in pairs, not one at a time, and leave them open longer once they're all
+    # open"; then "slow down the standing back up at the end and start it as the vents are
+    # closing. the vents can stay open a touch less long. desync the pairs closing just a
+    # bit"): the shell sinks low on its planted feet and settles; the vents open a pair at a
+    # time, each left with its right, the rear vents, then the side vents, then the radiators, a
+    # radiator's or a rear vent's louvres the lowest first and the rest a beat after, a side
+    # vent sliding out, each one's heat flaring as it opens; held open together a second and a
+    # half while the heat pours out, they shut a pair at a time a beat apart in the same order
+    # as the glow dies, and the shell rises slowly from the first pair's shutting. A louvre's
+    # key is a share of its own throw.
+    SINK, UP0, UP = -7.0, 4.5, 2.0   # how low it sinks; when it starts back up, and how long it takes
+    eased = lambda u: u * u * (3.0 - 2.0 * u)
+    rise = [(round(UP0 + UP * k / 8.0, 3), 0.0, round((SINK - 0.3) * (1.0 - eased(k / 8.0)), 3), 0.0) for k in range(1, 9)]   # keyed close so the feet stay planted
+    tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
+                            [(0.3, 0.0, 0.0, 0.0), (1.2, 0.0, SINK, 0.0), (1.5, 0.0, SINK - 0.3, 0.0), (UP0, 0.0, SINK - 0.3, 0.0)] + rise)
+    TIMES = {   # each vent's (opening, shutting), by its heat: a pair at a time, and shut a pair at a time a beat apart
+        "rear_vent_heat_l": (1.4, UP0), "rear_vent_heat_r": (1.4, UP0), "side_vent_heat_l": (1.85, UP0 + 0.12),
+        "side_vent_heat_r": (1.85, UP0 + 0.12), "radiator_heat_l": (2.3, UP0 + 0.24), "radiator_heat_r": (2.3, UP0 + 0.24)}
+    THROW, SHUT = ((0.0, 0.0), (0.35, 1.06), (0.55, 1.0)), 0.45   # a louvre's opening from its own moment; its shutting
+    flare = lambda t0, t1: [(t0, 0.0), (round(t0 + 0.6, 3), 7.0), (t1, 7.0), (round(t1 + 0.65, 3), 0.0)]
+    glow = []
+    for heat, vent in vents:
+        t0, t1 = TIMES[heat]
+        for k, (jn, shut, swing) in enumerate(vent):
+            tracks[jn] = [(round(t0 + 0.05 * k + t, 3), round(swing * f, 2)) for t, f in THROW] + [(t1, round(swing, 2)), (round(t1 + SHUT, 3), 0.0)]
+        glow.append(([heat], flare(t0, t1)))
+    for heat, jn, line, out in pops:   # the side vents slide out of their wells and home
+        t0, t1 = TIMES[heat]
+        tracks[jn] = [along(t, out * f, line) for t, f in ((t0, 0.0), (t0 + 0.45, 1.0), (t1, 1.0), (t1 + 0.5, 0.0))]
+        glow.append(([heat], flare(t0, t1)))
+    b.act("vent_heat", round(UP0 + UP + 0.3, 3), tracks, body=body, heft=0.1, glow=glow)
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a heavy walk in diagonal pairs, each foot planted flat while the shell passes
     # over it, lifted and stamped down; the shell level but for its drop onto each pair. The
@@ -1046,6 +1183,44 @@ def armadillo(b):
         for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.6, heft=0.26)
+    # The seal (the form "sealed", held while the machine carries the status): the port guns
+    # sink into the shell along their lines, past the ports' floors (and a gun fitted in a
+    # forward port with them), then each port's iris plug rises out of its floor and closes it
+    # just under the rim as every vent's louvres shut flat, the cowl lamps and the vents'
+    # heat going dark ("the shell goes dark", its design note),
+    # while the whole machine hunkers down on its planted feet, the shell low and its brow
+    # dipped: the defensive base pose (Ryan, 29 October). Opening runs it back, the plugs
+    # dropping before the guns rise. RIFTGATE_SEAL_DEBUG=1 holds it and lets it go in turn,
+    # as the hangar's Forms toggle does, to judge running.
+    SINK, SINK_F, T_SINK, T_PLUG0, T_PLUG1, T_ALL = 23.0, 32.0, 0.45, 0.45, 0.85, 1.2
+    HUNK = (0.0, -11.0, -1.5)   # (dy, dz, pitch): low, the brow dipped
+    FWD = (0.0, 1.0, 0.0)
+    tracks = {jn: [along(0.0, 0.0), along(T_SINK, -SINK)] for jn in ("run_l", "run_r")}
+    for tag in ("fl", "fr"):
+        tracks["run_" + tag] = [along(0.0, 0.0, FWD), along(T_SINK, -SINK_F, FWD)]
+    for jn, (hx, hy, hz) in shutters.values():
+        tracks[jn] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG1, 0.0, 0.0, 0.0, hx, hy, hz)]
+    for _, vent in vents:   # every vent shuts flat as the plugs close
+        for jn, shut, swing in vent:
+            tracks[jn] = [(0.0, 0.0), (T_PLUG0, 0.0), (T_PLUG1, shut)]
+    hunker = [(round(0.2 + 0.1 * k, 3),) + tuple(round(v * eased(k / 9.0), 3) for v in HUNK) for k in range(10)]   # 0.2 to 1.1 s, dense so the feet stay planted
+    limbs4 = [limb(leg) for leg in ("fl", "fr", "hl", "hr")]
+    legs_t, body = _planted(limbs4, [(0.0, 0.0, 0.0, 0.0)] + hunker)
+    tracks.update(legs_t)
+    b.form("sealed", T_ALL, tracks, glow=[(["lamp"] + [heat for heat, _ in vents] + [p[0] for p in pops], -1.0)], body=body)
+    # Sealed, it plays acts of its own from the hunker (Ryan, 29 October: "the animations set
+    # shouldn't be the same, its base pose should be hunkered down in a defensive position"):
+    # it braces lower and back as for a blow, rocks its weight back onto its hinds and forward
+    # again, and runs the flingers' rack out to beep, since a sealed Armadillo still lures; it
+    # never vents sealed (Ryan, the same day: "I don't think a vent animation should run
+    # during the sealed form"). Each an offset over the hunker, the legs solved from the
+    # hunkered pose so the feet stay planted (_planted_over).
+    tracks, body = _planted_over(limbs4, HUNK, [(0.5, 0.0, 0.0, 0.0), (1.0, -0.6, -2.0, 0.8), (2.6, -0.6, -2.2, 0.9), (3.4, 0.0, 0.0, 0.0)])
+    b.act("brace", 3.8, tracks, body=body, form="sealed")
+    tracks, body = _planted_over(limbs4, HUNK, [(0.4, 0.0, 0.0, 0.0), (1.3, -1.2, -0.6, 1.6), (2.4, 1.0, -0.4, -1.2), (3.4, 0.3, 0.0, -0.3), (4.2, 0.0, 0.0, 0.0)])
+    b.act("rock", 4.6, tracks, body=body, form="sealed")
+    b.act("lure", 5.2, {"run_rack": [along(0.6, 0.0), along(1.4, 4.0), along(3.8, 4.0), along(4.6, 0.0)]}, form="sealed",
+          glow=[(["beacon"], blink(1.4, 3.8))])
 
 armadillo.maker = "minerva"
 
@@ -1118,7 +1293,7 @@ def wild_boar(b):
         with b.joint("elev", (0.0, 8.0, 37.0), limits=(-6.0, 22.0)):   # the mantlet and both guns elevate together (the joint pass)
             b.box(-15.0, 15.0, 8.0, 14.0, 33.0, 41.0, "steel.plate", "mantlet")
             for s in (-1.0, 1.0):
-                with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0)):
+                with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0), carries="slugthrower"):
                     b.prism("y", s * 9.0, 32.0, 37.0, 2.8, 40.0, "steel.dark", 6, "gun")
                     b.prism("y", s * 9.0, 51.0, 37.0, 3.4, 4.0, "steel.plate", 6, "muzzle")
         b.box(-4.0, 4.0, -20.0, -14.0, 42.0, 44.0, "steel.plate", "hatch")
@@ -1128,7 +1303,7 @@ def wild_boar(b):
     # Set back and out so the turret's drum and its guns sweep clear of it (Ryan, 1
     # October: the turret must look able to turn).
     with b.joint("elev_pod", (-TX - 1.0, -23.0, TH + 9.0), limits=(0.0, 16.0)):   # the pod tilts up on its deck
-        with b.socket("hp_3", (-TX - 1.0, -16.0, TH + 16.0)):
+        with b.socket("hp_3", (-TX - 1.0, -16.0, TH + 16.0), carries="shotfire_rack"):
             b.box(-TX - 8.0, -TX + 6.0, -30.0, -16.2, TH + 9.0, TH + 23.0, "steel.panel", "missile_box")
             _missile_face(b, (-TX - 8.0, -16.15, TH + 9.0), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), 14.0)
     # Ablative plating on the outer faces of the treads and the blowout stack at the hull's
@@ -1332,7 +1507,7 @@ def prairie_dog(b):
         shape_barrel(b, 0.7)
         for ob in b.objects[start:]:
             ob.matrix_world = Matrix.Translation(Vector((-8.8, -9.0, 33.0 + L)))
-        b.stock("hp_1", (8.8, -9.0, 33.0 + L), "twin_barrel", scale=0.7)
+        b.stock("hp_1", (8.8, -9.0, 33.0 + L), "twin_barrel", scale=0.7, carries="twin_autoguns")
     # The mast, out of the tail's centre, lower: a post, a sensor head, a red light.
     b.prism("z", 0.0, -27.0, 28.5 + L, 1.2, 11.0, "steel.dark", 4, "mast")   # rooted in the roof; a little shorter (Ryan, 1 October)
     with b.joint("sensor", (0.0, -27.0, 34.0 + L), limits=(-75.0, 75.0)):   # the head turns on its mast (the joint pass)
@@ -1348,10 +1523,10 @@ def prairie_dog(b):
         b.box(s * 11.0 - 2.4, s * 11.0 + 2.4, -32.7, -29.8, 13.0 + L, 13.8 + L, "steel.dark", "can_strap")
         b.box(s * 12.0 - 1.5, s * 12.0 + 1.5, -30.6, -30.0, 19.0 + L, 21.5 + L, "amber.light", "tail_light")
     b.box(-1.5, 1.5, -34.0, -30.0, 8.0 + L, 10.0 + L, "steel.dark", "hitch")
-    # The launcher on the rear-left corner (hp_2): the class rack, its tube face one whole
-    # tile (the hand-built box showed a quarter of the tile: Ryan, 1 October).
-    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "rack", scale=0.6)
-    # The third mount (hp_3) is bare on the rear-right corner, the launcher's twin.
+    # The projector on the rear-left corner (hp_2): the stock's Halo Shield as its class, a
+    # dish facing forward (the launcher there went with the old stock: Ryan's go, 28 October).
+    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "dish", scale=0.6, carries="halo_shield")
+    # The third mount (hp_3) is bare on the rear-right corner, the projector's twin.
     b.pad("hp_3", (10.0, -26.0, 26.0 + L), scale=0.7, size=(6.0, 2.0))   # on the roof, not above it
     for s in (-1.0, 1.0):
         b.box(s * 7.0 - 2.0, s * 7.0 + 2.0, 32.5, 33.5, 12.0 + L, 14.0 + L, "amber.light", "lamp")
@@ -1406,10 +1581,17 @@ def dingo(b):
     Tumbler, toned down to W&S). A flat wedge of a body, and the wheels out on swing arms,
     each on its own cambered arm off the body's corners, hubs lit, so it reads as a thing
     that steps rather than rolls. The Megataser Harpoon (fixed, no pin) lies low along
-    the roof, its capacitor drum sunk into the tail. Mounts: hp_1 the nose guns (Twin
-    Autoguns), hp_2 the rear-right deck tube (Pocket Mortar), hp_3 bare on the rear-left
-    deck; the Coolant Dump takes no mount, so its tank is detail on both flanks (Ryan, 30
-    September: the rail into the drum, a vent on the tail plate, the glass along the body)."""
+    the roof, its capacitor drum sunk into the tail. The coolant tanks are detail on both
+    flanks (Ryan, 30 September: the rail into the drum, a vent on the tail plate, the glass
+    along the body). Since the stock pass and Ryan's notes of 28 October ("twin autoguns can't
+    be that wide since we don't have variable-width hardpoints... so those are actually two
+    hardpoints on the nose. Then where the burst shell used to be can be the coil thing"): the
+    two nose ports are two hardpoints, the stock's Twin Autoguns in the left as its class (hp_2)
+    and the right bare (hp_3); the Airburst Shell's rack on a gimbal on the flat of the roof,
+    left of the harpoon (hp_1; Ryan, 29 October, from the rear-left deck); and the Combat
+    Translocator (fixed, no pin) on the rear-right where the tube stood: a riveted cabinet with
+    two prongs raised forward and a lit coil threaded on a core between them, W&S iron that is
+    totally not a teleporter."""
     R = 8.0
     # The wheels (the joint pass, 2 October; Ryan: the posts they hang from are casters
     # with a limited swing, so it can strafe): each on a caster joint about up at its hub,
@@ -1455,24 +1637,58 @@ def dingo(b):
         b.prism("x", 0.0, -20.0, 18.0, 7.6, 2.5, "amber.strip", 8, "capacitor_ring", phase=math.pi / 8)
         for s in (-1.0, 1.0):
             b.prism("x", s * 13.0, -20.0, 18.0, 4.0, 2.0, "steel.plate", 8, "capacitor_cap")
-    # The nose guns: two ports in the raked front either side of the visor (hp_1).
-    with b.socket("hp_1", (0.0, 24.0, 10.5), scale=0.6):
+    # The nose ports, either side of the visor in the raked front: two hardpoints, one gun a
+    # port (Ryan, 28 October: no variable-width hardpoints), the stock's Twin Autoguns in the
+    # left as their class (hp_2), the right a bare port (hp_3).
+    for s in (-1.0, 1.0):
+        b.prism("y", s * 6.0, 23.4, 10.5, 2.2, 1.2, "steel.dark", 6, "nose_port")
+        if s < 0:
+            b.stock("hp_2", (s * 6.0, 26.0, 10.5), "twin_barrel", scale=0.45, carries="twin_autoguns")
+        else:
+            b.pad("hp_3", (s * 6.0, 26.0, 10.5), scale=0.45, size=(3.0, 1.0))
+    # The launcher on a gimbal on the flat of the roof, left of the harpoon (Ryan, 29 October:
+    # "put the back quarter hardpoint on the flat part of the roof instead, still on that
+    # side of the harpoon, on a rotating gimbal"; it had stood on the rear-left deck): a
+    # turntable on the roof, a yoke turning on it, the stock's Airburst Shell as its class
+    # (hp_1) elevating between the yoke's cheeks, clear of the yoke at every elevation.
+    GX, GY, GZ = -8.0, -5.0, 25.5
+    b.prism("z", GX, GY, 19.9, 4.0, 1.4, "steel.dark", 8, "gimbal_base", phase=math.pi / 8)
+    with b.joint("turret_rack", (GX, GY, 20.6), limits=(-30.0, 120.0)):   # the gimbal's traverse, more to the left than toward the harpoon
+        b.box(GX - 5.0, GX + 5.0, GY - 1.8, GY + 1.8, 20.6, 21.4, "steel.plate", "gimbal_yoke")
         for s in (-1.0, 1.0):
-            b.prism("y", s * 6.0, 30.0, 10.5, 1.4, 16.0, "steel.dark", 6, "autogun")
-    # The pocket mortar on the rear deck beside the drum, pitched up over the tail (hp_2).
-    b.prism("z", 10.0, -28.0, 18.5, 2.6, 1.5, "steel.dark", 8, "mortar_base")
-    with b.joint("elev_mortar", (10.0, -28.0, 19.0), limits=(-6.0, 28.0)):   # the tube elevates on its base
-        with b.socket("hp_2", (10.0, -26.0, 23.0), forward=(0.0, 0.406, 0.914), scale=0.6):
-            _beam(b, (10.0, -28.0, 19.0), (10.0, -24.0, 28.0), _poly(2.4, 6), _poly(2.7, 6), "steel.panel", "mortar")
+            b.box(min(GX + s * 4.2, GX + s * 5.0), max(GX + s * 4.2, GX + s * 5.0), GY - 1.6, GY + 1.6, 21.4, GZ + 1.4, "steel.panel", "gimbal_yoke")
+            b.prism("x", GX + s * 5.3, GY, GZ, 1.0, 0.6, "steel.plate", 8, "trunnion")
+        with b.joint("elev_rack", (GX, GY, GZ), limits=(-8.0, 30.0)):   # the launcher elevates in the yoke
+            b.stock("hp_1", (GX, GY, GZ), "rack", forward=(0.0, 0.940, 0.342), scale=0.5, carries="airburst_shell")
+    # The Combat Translocator on the rear-right deck where the tube stood (fixed, no pin):
+    # a riveted cabinet bolted behind the drum, two prongs raised forward off its top and a
+    # stack of lit coil rings between them, threaded on a core out of the cabinet (Ryan, 29
+    # October: the rings had floated between the prongs, touching nothing); the coil
+    # crackles in its own act.
+    b.box(6.0, 14.0, -32.0, -25.5, 16.0, 23.0, "steel.panel", "coil_cabinet")
+    b.box(6.5, 13.5, -31.5, -26.0, 23.0, 24.0, "steel.plate", "coil_cap")
+    b.box(5.8, 14.2, -32.2, -31.8, 18.0, 20.0, "steel.stripe", "coil_band")
+    CD = Vector((0.0, math.cos(math.radians(30.0)), math.sin(math.radians(30.0))))
+    C0 = Vector((10.0, -28.0, 24.0))
+    for xo in (-2.2, 2.2):
+        p0 = C0 + Vector((xo, 0.0, 0.0))
+        _beam(b, tuple(p0), tuple(p0 + CD * 12.0), _poly(0.7, 6), _poly(0.45, 6), "steel.dark", "coil_prong")
+        b.prism("y", p0.x, (p0 + CD * 12.0).y, (p0 + CD * 12.0).z, 0.8, 1.0, "steel.plate", 6, "prong_tip")
+    A0 = C0 + Vector((0.0, 0.0, 0.4))   # the coil's axis
+    _beam(b, tuple(A0 - CD * 1.5), tuple(A0 + CD * 11.2), _poly(0.6, 6), _poly(0.5, 6), "steel.dark", "coil_core")
+    b.prism("y", A0.x, (A0 + CD * 11.2).y, (A0 + CD * 11.2).z, 0.9, 0.8, "steel.plate", 6, "coil_top")
+    for k in range(4):
+        c = A0 + CD * (3.5 + 2.2 * k)
+        _beam(b, tuple(c - CD * 0.35), tuple(c + CD * 0.35), _poly(1.5, 8), _poly(1.5, 8), "amber.light", "coil")
     # The coolant tanks low on both flanks, a drum with a grille and a dump valve each:
-    # detail. The third mount (hp_3) is bare on the rear-left deck, the mortar's twin.
+    # detail.
     for s in (-1.0, 1.0):
         b.prism("y", s * 17.5, -6.0, 11.0, 3.2, 18.0, "steel.plate", 8, "coolant_tank")
         b.box(min(s * 19.2, s * 17.0), max(s * 19.2, s * 17.0), -4.0, 4.0, 10.0, 12.0, "steel.vent", "tank_grille")
         b.prism("z", s * 17.5, 2.5, 7.0, 1.0, 3.0, "steel.dark", 6, "dump_valve")
-    b.pad("hp_3", (-10.0, -26.0, 21.0), scale=0.6, size=(6.0, 2.0))
-    for s in (-1.0, 1.0):
-        b.prism("z", s * 11.0, -29.0, 22.0, 0.5, 12.0, "steel.dark", 4, "antenna")
+    # One antenna, on the left: its twin on the right ran up through the Translocator's
+    # cabinet once the coil stood there (Ryan, 29 October: removed).
+    b.prism("z", -11.0, -29.0, 22.0, 0.5, 12.0, "steel.dark", 4, "antenna")
     chassis.__exit__(None, None, None)
 
     # Idle acts, third pass (Ryan, 4 October: some stilted; real machines with inertia; the
@@ -1514,16 +1730,28 @@ def dingo(b):
     # over and jab, kicking the tail out a few degrees about the front axle (the car's yaw with
     # the slide that keeps the front wheels put), a fine-aim jitter, the casters snap the other
     # way for a correction back past centre, another tick on the tube, then a throttle blip
-    # straightens it and the tube drops.
+    # straightens it and the tube drops. On the roof's gimbal (29 October) the launcher swings
+    # out over the left quarter as it ticks up, and comes back as it drops; the tail still
+    # lays it fine.
     kick = lambda t, yaw_deg, dy=0.0: (t, round(26.0 * math.sin(math.radians(yaw_deg)), 2), round(26.0 * (1.0 - math.cos(math.radians(yaw_deg))) + dy, 2), 0.0, yaw_deg, 0.0, 0.0)
-    b.act("mortar_check", 4.4, {   # the tube ticked up notch by notch; the rear casters snap and kick the tail over to lay it, a jitter, a correction back, a throttle blip, and down
-        "elev_mortar": [(0.4, 0.0), (0.5, 9.5), (0.58, 8.5), (0.95, 8.5), (1.05, 17.5), (1.13, 16.5), (1.5, 16.5), (1.6, 25.5), (1.68, 24.5), (2.2, 24.5),
-                        (2.26, 26.0), (2.32, 24.0), (2.38, 25.5), (2.44, 24.5), (2.85, 24.5), (2.92, 23.0), (2.98, 23.5), (3.7, 23.5), (3.8, 25.0), (4.2, 0.0)],
+    b.act("rack_check", 5.6, {   # the launcher swung out and ticked up notch by notch; the rear casters snap and kick the tail over to lay it, a jitter, a correction back, a throttle blip, and down and home
+        "turret_rack": [(0.4, 0.0), (1.8, 45.0), (3.8, 45.0), (5.2, 0.0)],
+        "elev_rack": [(0.4, 0.0), (0.5, 9.5), (0.58, 8.5), (0.95, 8.5), (1.05, 17.5), (1.13, 16.5), (1.5, 16.5), (1.6, 25.5), (1.68, 24.5), (2.2, 24.5),
+                      (2.26, 26.0), (2.32, 24.0), (2.38, 25.5), (2.44, 24.5), (2.85, 24.5), (2.92, 23.0), (2.98, 23.5), (3.7, 23.5), (3.8, 25.0), (4.6, 0.0)],
         **{"caster_" + w: [(1.75, 0.0), (1.85, -16.0), (2.6, -16.0), (2.68, 12.0), (3.15, 12.0), (3.25, 0.0)] for w in ("rl", "rr")},
         **{"caster_" + w: [(1.8, 0.0), (1.9, 5.0), (2.6, 5.0), (2.7, -3.0), (3.15, -3.0), (3.25, 0.0)] for w in ("fl", "fr")},
         **{"wheel_" + w: spin([(1.85, 0.0), (2.0, -1.8), (2.6, -1.8), (2.72, 0.6), (3.15, 0.6), (3.33, 3.1), (3.65, 0.0)], ROLL) for w in ("rl", "rr")},
         **{"wheel_" + w: spin([(3.15, 0.0), (3.33, 2.5), (3.65, 0.0)], ROLL) for w in ("fl", "fr")},
     }, body=[(1.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), kick(2.0, 3.5), kick(2.55, 3.5), kick(2.72, -1.1), kick(3.15, -1.1), kick(3.33, 0.0, 2.5), kick(3.65, 0.0)], heft=0.06)
+    # The coil check (28 October, with the Translocator modelled): the coil crackles in
+    # bursts, a flicker and a hot hold, the car twitching on its casters at each burst as the
+    # antsy pilot's inputs do; nothing moves but the light and the twitch.
+    crackle = [(0.4, 0.0), (0.48, 9.0), (0.55, 1.0), (0.62, 12.0), (0.7, 2.0), (0.78, 14.0), (1.4, 14.0), (1.5, 1.0),
+               (2.2, 1.0), (2.28, 10.0), (2.34, 2.0), (2.42, 16.0), (3.0, 16.0), (3.2, 0.0)]
+    b.act("coil_check", 3.6, {
+        "chassis": [(0.45, 0.0, 0.0, 0.0), (0.6, 0.0, 0.0, 1.5), (0.8, 0.0, 0.0, -1.0), (1.0, 0.0, 0.0, 0.0),
+                    (2.25, 0.0, 0.0, 0.0), (2.4, 0.0, 0.0, -1.5), (2.6, 0.0, 0.0, 1.0), (2.8, 0.0, 0.0, 0.0)],
+    }, heft=0.06, glow=[(["coil"], crackle)])
     # A full turn on the spot (Ryan, 5 October: the paired casters could not spin it): each
     # caster square to its corner's radius, the right wheels driving forward and the left
     # back, and the car whips round once anticlockwise and rocks to a stop. The wheels'
@@ -1553,8 +1781,10 @@ def funnel_web(b):
     a four-legged walker that does spider-like things (Ryan, 14 and 17 October: a little
     spider takes down a big thing with venom). Four cuts on 19 October, each on Ryan's notes:
     a war machine, not a mechanical spider (the first: the legs under the mass, more leg to
-    body, geometry of its own for the gear, practical feet); not the BattleTech Scorpion's low
-    quad (the second: the larger boiler spider's likely shape) but the Revenant's and the Doom
+    body, geometry of its own for the gear, practical feet); not the BattleTech Scorpion's quad
+    (the second; the note that called it the larger boiler spider's likely shape was logged
+    wrong, Ryan, 28 October: the Scorpion stands tall, and the Whip Scorpion walks on six or
+    eight legs) but the Revenant's and the Doom
     Arachnotron's legs under a turret, sides as well as a top and a front for the weapons, a
     diminutive little death machine; the legs going down, up and down so the thighs clear the
     body (the third; leggy is fine); and this, the fourth: the body in W&S's military camp,
@@ -1586,7 +1816,9 @@ def funnel_web(b):
     base); his tenth, 20 October: the eighth's fins were the shape and size he liked, it was
     only their base that wanted squaring off, so they are back at that size on a level base;
     and the scan's first turn is quick. His eleventh, the same day: the antenna a little
-    inboard, clear of the fin, and the model is good to go."""
+    inboard, clear of the fin, and the model is good to go. Since the stock pass (22 October)
+    its fourth stock piece is a Canopy, which shows nowhere, so the right pod's mount (hp_4)
+    is bare (Ryan's go, 28 October)."""
     # The hub: the legs' pelvis under the body, a dark block. Each leg goes down, up and down
     # (the third notes: the thighs had no clearance from the body, and every reference resolves
     # it so): a strut drops from a coxa joint at the hub's corner, down and out, to a low hip
@@ -1662,19 +1894,20 @@ def funnel_web(b):
         # receivers sunk into them.
         for s, k, shape in ((-1.0, 1, "barrel"), (1.0, 3, "twin_barrel")):
             b.box(min(s * 3.5, s * 12.5), max(s * 3.5, s * 12.5), 28.0, 31.5, 44.0, 51.0, "steel.dark", "mantlet")
-            b.stock("hp_%d" % k, (s * 8.0, 31.5, 47.5), shape, scale=0.75)
+            b.stock("hp_%d" % k, (s * 8.0, 31.5, 47.5), shape, scale=0.75, carries="maxigun" if k == 1 else "twin_autoguns")
         # The roof's one mount (hp_2): the howitzer on a low pedestal aft of the pods (the
         # seventh notes: not in line with the side mounts), on its elevation, the torso twist
         # its traverse.
         b.box(-5.0, 5.0, -19.0, -9.0, 63.0, 68.0, "steel.dark", "top_mount")   # sunk into the roof (the eighth notes: a gap showed)
         with b.joint("elev_top", (0.0, -14.0, 68.0), limits=(-8.0, 30.0)):
-            b.stock("hp_2", (0.0, -12.0, 69.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9)
+            b.stock("hp_2", (0.0, -12.0, 69.0), "barrel", forward=(0.0, 0.866, 0.5), scale=0.9, carries="howitzer")
         # The pods: an armoured box on each flank, a livery panel on its outer face, a sight
         # on its front, what it carries on an elevation and never a traverse (the fourth
         # notes: the torso twist aims them). The left pod carries the Web Bomb (fixed, no
         # pin): a box launcher of four tubes out of its front, pitched up a little, each
-        # tube's floor lit, so it glows when it is about to lob. The right pod carries the
-        # deflector's dish (hp_4), facing forward.
+        # tube's floor lit, so it glows when it is about to lob. The right pod's mount is bare
+        # (hp_4: the stock's Canopy shows nowhere; the deflector's dish there went with the old
+        # stock, Ryan's go of 28 October).
         for s in (-1.0, 1.0):
             px = s * 23.5
             b.box(min(s * 18.0, s * 29.0), max(s * 18.0, s * 29.0), -10.0, 8.0, 50.0, 64.0, "steel.plate", "pod")
@@ -1692,7 +1925,7 @@ def funnel_web(b):
                             _tube(b, tuple(P0 + off), tuple(P0 + off + D * 9.3), 2.1, 1.65, 6, "steel.dark", "web_tube", floor_material="amber.light", floor_depth=7.0)
             else:
                 with b.joint("elev_r", (px, 4.0, 56.5), limits=(-10.0, 30.0)):
-                    b.stock("hp_4", (s * 25.5, 8.0, 56.5), "dish", scale=0.85)
+                    b.pad("hp_4", (s * 25.5, 8.0, 56.5), scale=0.85, size=(6.0, 1.5))
 
     # Idle acts (the builder's rules: curves a part runs on through, held poses that drift,
     # every gun turning slowly and not far with a pause before it turns back). Degrees and
@@ -1793,9 +2026,10 @@ def goshawk(b):
     fuselage's shoulders as nacelles, each carrying a fin canted outward, and the cannon is
     a wide short bore tucked under the nose in a fairing that runs back along the belly to
     the engines it draws heat from (the Afterburner Cannon, fixed, no pin). Pins under the
-    wings: hp_1 left inner (Laser Carbine), hp_2 right inner (Coriolis Accelerator), hp_3 left
-    outer (Arc Projector, two prongs), hp_4 right outer (Deflector, a projector's dish);
-    hp_5 bare under the belly aft of the cannon (the Ram-air Scoop is the dorsal intake,
+    wings: hp_1 left inner (the Overclocked Railgun) and hp_2 right inner (the Transonic Rifle),
+    each a gun in its pod, hp_3 left outer (the Arc-fault Cannon, two prongs), hp_4 right
+    outer an empty pod (the stock's Canopy shows nowhere; its Deflector's dish went with the
+    old stock, Ryan's go of 28 October); hp_5 bare under the belly aft of the cannon (the Ram-air Scoop is the dorsal intake,
     detail, no mount). Ryan, 30 September: the cannon recessed behind the nose, a wide low
     oval bore, its fairing blended into the fuselage. Centred on z = 0 like the Sparrowhawk."""
     # Fuselage: short and deep, a blunt nose.
@@ -1851,15 +2085,12 @@ def goshawk(b):
             pz = wz - 1.0 - r - 2.0   # the pod hangs clear under the wing on a pylon
             b.box(s * px - 1.2, s * px + 1.2, -1.0, 7.0, pz + r - 0.5, wz - 0.6, "steel.plate", "pylon")
             n = (1 if s < 0 else 2) if k == 0 else (3 if s < 0 else 4)
-            with b.socket("hp_%d" % n, (s * px, 6.0, pz), scale=0.7):
+            with b.socket("hp_%d" % n, (s * px, 6.0, pz), scale=0.7, carries={1: "overclocked_railgun", 2: "transonic_rifle", 3: "arc_fault_cannon", 4: ""}[n]):
                 b.prism("y", s * px, 3.0, pz, r, 18.0, "steel.dark", 6, "pod")
                 if n == 3:
-                    for s2 in (-1.0, 1.0):   # the Arc Projector's prongs
+                    for s2 in (-1.0, 1.0):   # the Arc-fault Cannon's prongs
                         b.prism("y", s * px + s2 * 1.1, 14.0, pz, r * 0.3, 6.0, "steel.dark", 6, "prong")
-                elif n == 4:   # the Deflector's dish
-                    b.prism("y", s * px, 12.6, pz, r * 1.4, 1.2, "steel.plate", 8, "dish")
-                    b.prism("y", s * px, 13.5, pz, r * 0.5, 0.8, "amber.engine", 8, "dish_core")
-                else:
+                elif n < 3:
                     b.prism("y", s * px, 14.0, pz, r * 0.55, 6.0, "steel.dark", 6, "pod_gun")
     # The nacelles: two boosters on the aft shoulders, their mouths dark, exhausts lit, and a
     # fin canted outward off each nacelle's top; a short ventral strake under the tail.
@@ -1989,10 +2220,13 @@ def nemesis(b):
     shoulders, forearms and knees. Its fixed fists (the Knuckle of Fury) are modelled in, with no pins.
     Third pass (Ryan, 30 September): a humanoid's arms, elbows bent and the spiked fists
     forward, no gun on the hand; a hip cannon in the Atlas way; traps like the Hulk's; the
-    core's port striped like a vent. Mounts: hp_1 the right hip cannon (Plasma Carbine),
-    hp_2 the right shoulder tubes (Meteor Artillery), hp_3 and hp_4 two chest ports flanking
-    the core, bare; the Ward Plate stays on the left pauldron and the Entropy Condenser on
-    the back as detail (armour and vents take no mount)."""
+    core's port striped like a vent. Mounts: hp_1 the waist cannon (the Plasma Arquebus, the
+    Carbine renamed), hp_2 the right shoulder's mount, hp_3 and hp_4 two chest ports flanking
+    the core; the Ward Plate stays on the left pauldron and the Entropy Condenser on the back
+    as detail (armour and vents take no mount). Since the stock pass (22 October): the
+    Blazethrower on the shoulder's mount where the Meteor Artillery's tubes rode, raised on a
+    post clear of the pauldron, and the Retribution Thurible and the Oblation Mantle as dishes
+    in the chest ports, each as its class shape (Ryan's go, 28 October)."""
     # Legs: plantigrade, long, in angular greaves; a heavy sabaton with a toe wedge.
     # Hip and knee on both legs (the joint pass, 2 October), and an ankle carrying the
     # sabaton flat through a stride (Ryan, 4 October, the third pass).
@@ -2042,20 +2276,23 @@ def nemesis(b):
     b.prism("y", 0.0, 13.6, 69.0, 5.8, 1.2, "amber.glow", 8, "core_fire", phase=math.pi / 8)   # plain fire, no pattern (Ryan, 1 October)
     for z in (64.4, 67.0, 69.6, 72.2):
         b.box(-5.6, 5.6, 14.2, 15.2, z, z + 1.1, "steel.dark", "core_bar")
-    # Two chest ports flanking the core high on the pectoral plates, recessed rings: bare
-    # mounts (hp_3 left, hp_4 right).
+    # Two chest ports flanking the core high on the pectoral plates, recessed rings, each
+    # carrying a stock dish as its class: the Retribution Thurible (hp_3 left) and the
+    # Oblation Mantle (hp_4 right).
     for s, n in ((-1.0, 3), (1.0, 4)):
         b.prism("y", s * 12.0, 12.5, 73.0, 3.6, 2.0, "steel.dark", 8, "port_ring", phase=math.pi / 8)
         b.prism("y", s * 12.0, 12.6, 73.0, 2.6, 1.6, "bore.dark", 8, "port_throat", phase=math.pi / 8)
-        b.pin("hp_%d" % n, (s * 12.0, 13.5, 73.0))
-    # The helm: hooded, low between the shoulders, a visor slit and two horns.
+        b.stock("hp_%d" % n, (s * 12.0, 13.5, 73.0), "dish", scale=0.5, carries="retribution_thurible" if n == 3 else "oblation_ward")
+    # The helm: hooded, low between the shoulders, a visor slit (lit, as every Arsenal
+    # cockpit's glass is: Ryan, 29 October; it flares in the roar and its other fierce acts,
+    # the same day) and two horns.
     b.box(-8.0, 8.0, -7.0, 12.0, 82.0, 92.0, "steel.panel", "helm")   # runs back to meet the traps
     b.loft([(-4.0, rect(0.0, 18.0, 90.0, 94.0)), (14.0, rect(0.0, 14.0, 88.0, 92.0))], "steel.plate", "hood")
     b.box(-6.0, 6.0, 12.0, 13.0, 85.0, 87.0, "glass.glass", "visor")
     for s in (-1.0, 1.0):
         _spike(b, (s * 6.0, 2.0, 93.0), (s * 12.0, -2.0, 104.0), 2.2, "steel.dark", "horn")
     # Shoulders: asymmetric. The left a massive slab pauldron with a crown of spikes and
-    # the Ward Plate riding on it (hp_3); the right a smaller, angled pauldron.
+    # the Ward Plate riding on it (detail); the right a smaller, angled pauldron.
     L = -1.0
     b.loft([(-14.0, rect(L * 36.0, 20.0, 72.0, 86.0)), (10.0, rect(L * 36.0, 24.0, 70.0, 88.0))], "steel.panel", "pauldron_l")
     for k in range(4):
@@ -2065,13 +2302,13 @@ def nemesis(b):
     b.box(L * 44.0, L * 30.0, -10.0, 6.0, 91.0, 92.0, "steel.plate", "ward_inscription")
     b.loft([(-8.0, rect(30.0, 14.0, 74.0, 84.0)), (8.0, rect(30.0, 12.0, 74.0, 82.0))], "steel.plate", "pauldron_r")
     _spike(b, (32.0, 0.0, 84.0), (36.0, -2.0, 92.0), 1.8, "steel.dark", "pauldron_spike_r")
-    # The Meteor Artillery behind the right shoulder: two tubes pitched up (hp_2).
-    with b.joint("elev_meteor", (27.0, -16.0, 76.0), limits=(-18.0, 16.0)):   # the tubes elevate on the rack (the joint pass)
-        with b.socket("hp_2", (27.0, -14.0, 80.0), forward=(0.0, 0.33, 0.944)):
-            b.box(20.0, 34.0, -20.0, -12.0, 64.0, 78.0, "steel.panel", "rack")
-            for x in (24.0, 30.0):
-                _beam(b, (x, -16.0, 76.0), (x, -9.0, 96.0), _poly(3.2, 6), _poly(3.6, 6), "steel.dark", "meteor_tube")
-                _beam(b, (x, -9.0, 96.0), (x, -8.5, 97.5), _poly(3.6, 6), _poly(2.6, 6), "amber.engine", "tube_mouth")
+    # The right shoulder's mount behind the pauldron (hp_2): the stock's Blazethrower as its
+    # class, forward on a post that lifts it clear of the pauldron, elevating there; the
+    # Meteor Artillery's tubes rode this rack until the stock pass (Ryan's go, 28 October).
+    b.box(20.0, 34.0, -20.0, -12.0, 64.0, 78.0, "steel.panel", "rack")
+    b.box(24.0, 30.0, -18.0, -12.0, 78.0, 84.5, "steel.dark", "post")
+    with b.joint("elev_shoulder", (27.0, -15.0, 87.7), limits=(-18.0, 16.0)):
+        b.stock("hp_2", (27.0, -13.0, 87.7), "barrel", scale=0.8, carries="blazethrower")
     # Arms: the right heavier. Upper arm down and out, an elbow block, the forearm forward
     # in a vambrace to a fist held out ahead of the hip, knuckles forward and spiked.
     for s in (-1.0, 1.0):
@@ -2115,7 +2352,7 @@ def nemesis(b):
     # The waist cannon (hp_1): a mount on the right of the waist, the Plasma Carbine
     # forward off it (Ryan, 30 September: on the waist, not the hip).
     b.box(13.0, 23.0, -7.0, 5.0, 51.0, 59.0, "steel.plate", "waist_mount")
-    with b.socket("hp_1", (18.0, 5.0, 55.0)):
+    with b.socket("hp_1", (18.0, 5.0, 55.0), carries="plasma_arquebus"):
         b.prism("y", 18.0, 17.0, 55.0, 3.0, 24.0, "steel.dark", 6, "plasma_carbine")
         b.prism("y", 18.0, 29.5, 55.0, 2.2, 1.5, "amber.engine", 6, "carbine_tip")
     # The Entropy Condenser on the lower back, a dark block with lit slots (hp_4).
@@ -2193,7 +2430,7 @@ def nemesis(b):
         tracks["elbow_" + side] = [(t, e2) for t, (p2, y2, r2, e2) in keys]
     tracks["waist"] = [(t, p2, 0.0, 0.0) for t, p2 in [(1.5, 2.0), (2.05, 4.0)] + _slam(2.05, 4.0, 2.3, -6.0) + [(2.5, -4.0), (4.2, -4.0), (5.0, 0.0)]]   # pitch: the waist's own axis is its yaw
     b.act("pound_fists", 6.6, tracks, body=body, heft=0.05,   # the stance widened foot by foot, then the fists wound up and slammed together before the chest, elbows out, twice, stopping dead, pressed, and the feet stepped back in
-          glow=[(["core_fire"], [(2.27, 0.0), (2.33, 13.0), (2.6, 4.0), (2.92, 3.0), (2.98, 16.0), (4.1, 9.0), (5.0, 0.0)])])
+          glow=[(["core_fire", "visor"], [(2.27, 0.0), (2.33, 13.0), (2.6, 4.0), (2.92, 3.0), (2.98, 16.0), (4.1, 9.0), (5.0, 0.0)])])   # the core and the visor flaring at each blow
     tracks, body = _planted(feet, [(1.2, -2.0, 0.0, 7.0), (3.8, -2.2, 0.0, 7.5), (5.2, 0.0, 0.0, 0.0)])
     tracks.update({
         "shoulder_l": [(1.2, 60.0, 60.0, 0.0), (3.8, 62.0, 62.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
@@ -2202,11 +2439,13 @@ def nemesis(b):
         "elbow_r": [(1.2, -20.0), (3.8, -22.0), (5.0, 0.0)],
     })
     b.act("roar", 5.6, tracks, body=body,   # the arms flung wide and up, the body rearing back on its planted feet, the core blazing
-          glow=[(["core_fire"], [(0.6, 0.0), (1.2, 10.0), (3.8, 10.0), (4.8, 0.0)])])
+          glow=[(["core_fire"], [(0.6, 0.0), (1.2, 10.0), (3.8, 10.0), (4.8, 0.0)]),
+                (["visor"], [(0.5, 0.0), (0.95, 16.0), (1.3, 11.0), (2.4, 13.0), (3.6, 11.0), (4.6, 0.0)])])   # the visor flares as it rears and burns through the roar (Ryan, 29 October: "some flare during relevant animations, like roar")
     # The meteor, angrier: it stamps into a firing stance, leaning in and turned on its mark
     # (the turn the waist's, Ryan, 5 October: the feet slid round under it),
-    # the right arm flung clear and the left fist thrust at the target, the tubes snapping up
-    # and loading hot, then two shots, each one kicking the tubes and the body.
+    # the right arm flung clear and the left fist thrust at the target, the shoulder gun
+    # snapping up and loading hot, then two shots, each one kicking it and the body (the
+    # Meteor Artillery's tubes until the stock pass; the act keeps its name).
     # The stance is a real one now (Ryan, 20 October: lateral motion for the bipeds, on the
     # funnel-web's planted footwork): the right foot steps back and out as the whole machine
     # turns ten degrees toward its mark on its planted left foot, braced, the waist's turn on
@@ -2221,15 +2460,16 @@ def nemesis(b):
     tracks.update({
         "waist": _dense([(0.5, -3.0, -16.0, 0.0), (0.8, -2.0, -15.0, 0.0), (2.4, -2.0, -16.0, 0.0), (2.55, 2.0, -15.0, 0.0), (2.9, -2.0, -16.0, 0.0), (3.35, 2.0, -15.0, 0.0),
                          (3.7, -2.0, -16.0, 0.0), (4.4, -1.0, -15.0, 0.0), (5.4, 0.0, 0.0, 0.0)]),   # turned on its mark on the waist too; each shot kicks it back
-        "elev_meteor": _dense([(0.4, 0.0), (0.9, 16.0), (2.4, 15.0), (2.5, 6.0), (2.9, 15.0), (3.35, 6.0), (3.75, 15.0), (4.4, 15.0), (5.1, 0.0)]),
+        "elev_shoulder": _dense([(0.4, 0.0), (0.9, 16.0), (2.4, 15.0), (2.5, 6.0), (2.9, 15.0), (3.35, 6.0), (3.75, 15.0), (4.4, 15.0), (5.1, 0.0)]),
         "shoulder_r": _dense([(0.5, 10.0, -50.0, 0.0), (4.4, 12.0, -52.0, 0.0), (5.2, 0.0, 0.0, 0.0)]),
         "shoulder_l": _dense([(0.6, 58.0, -14.0, 0.0), (2.4, 60.0, -16.0, 0.0), (2.55, 55.0, -14.0, 0.0), (3.35, 55.0, -14.0, 0.0), (4.4, 58.0, -15.0, 0.0), (5.2, 0.0, 0.0, 0.0)]),
         "elbow_l": _dense([(0.6, 10.0), (4.4, 12.0), (5.2, 0.0)]),
     })
     b.act("raise_meteor", 5.6, tracks, body=body, ease="linear",
-          glow=[(["tube_mouth"], [(0.6, 0.0), (1.0, 5.0), (1.3, 2.0), (1.6, 7.0), (1.9, 3.0), (2.2, 9.0), (2.4, 9.0), (2.5, 14.0), (2.8, 5.0), (3.3, 9.0),
+          glow=[(["sight"], [(0.6, 0.0), (1.0, 5.0), (1.3, 2.0), (1.6, 7.0), (1.9, 3.0), (2.2, 9.0), (2.4, 9.0), (2.5, 14.0), (2.8, 5.0), (3.3, 9.0),
                                   (3.35, 14.0), (3.7, 5.0), (4.6, 0.0)]),
-                (["core_fire"], [(0.4, 0.0), (0.8, 6.0), (4.4, 6.0), (5.0, 0.0)])])
+                (["core_fire"], [(0.4, 0.0), (0.8, 6.0), (4.4, 6.0), (5.0, 0.0)]),
+                (["visor"], [(2.45, 0.0), (2.5, 14.0), (2.9, 0.0), (3.3, 0.0), (3.35, 14.0), (3.75, 0.0)])])   # the visor flashing white-hot with each shot (a red light already at full red flares toward white: held in between it reads pink)
     # The shoulders, angrier: hunched forward, each arm wrenched round in a fast circle that
     # cracks at the bottom, the torso twisting with it on the waist (Ryan, 5 October: not the
     # whole machine pivoting on its feet) and the core flaring at each crack; then the chest
@@ -2257,7 +2497,7 @@ def nemesis(b):
         "elbow_r": [(2.25, 20.0), (3.5, 0.0), (3.95, 10.0)] + _slam(3.95, 10.0, 4.35, HITC_R[3]) + [(5.05, PRESSC_R[3]), (6.05, 0.0)],
     })
     b.act("crack_shoulders", 6.4, tracks, body=body, heft=0.07,
-          glow=[(["core_fire"], [(1.65, 0.0), (1.8, 7.0), (2.25, 1.0), (3.5, 7.0), (3.95, 3.0), (4.35, 12.0), (5.05, 10.0), (5.95, 0.0)])])
+          glow=[(["core_fire", "visor"], [(1.65, 0.0), (1.8, 7.0), (2.25, 1.0), (3.5, 7.0), (3.95, 3.0), (4.35, 12.0), (5.05, 10.0), (5.95, 0.0)])])   # the core and the visor flaring at each crack and the slam
     # Squaring up (Ryan, 20 October: lateral motion for an angry boy on planted footwork; a
     # sideways pace was built first and looked like dancing, so this instead): something comes
     # at it from its left and it squares up to it, the left foot stamping out wide and back as
@@ -2276,7 +2516,8 @@ def nemesis(b):
         tracks["elbow_" + side] = _dense([(0.5, 0.0), (1.1, g[3]), (3.5, g[3] - 2.0), (4.6, 0.0)])
     tracks["waist"] = _dense([(0.5, 0.0, 0.0, 0.0), (1.2, -4.0, 8.0, 0.0), (3.4, -5.0, 11.0, 0.0), (3.7, -3.0, 6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])   # leaning in, wound a little further round than the feet
     b.act("square_up", 5.2, tracks, body=body, ease="linear", heft=0.06,
-          glow=[(["core_fire"], [(0.9, 0.0), (1.15, 9.0), (3.4, 9.0), (4.3, 0.0)])])
+          glow=[(["core_fire"], [(0.9, 0.0), (1.15, 9.0), (3.4, 9.0), (4.3, 0.0)]),
+                (["visor"], [(0.9, 0.0), (1.15, 12.0), (3.4, 12.0), (4.3, 0.0)])])   # the visor glaring hotter than the core
     # Movement (Ryan, 4 October, the third pass: stomp and plod, MechWarrior and not Gundam,
     # no weight thrown side to side): a long heavy stride, each sabaton planted flat while
     # the body passes over it, lifted and stamped down; the arms swinging evenly against the
@@ -2301,8 +2542,9 @@ def ammit(b):
     the ankle and the rear vent from the pelvis. The four Soulcutter Talons are the four
     clawed hands (fixed, no pins). Mounts: hp_1 the right shoulder cannon (Plasma Carbine),
     hp_2 the left shoulder cannon (Blazethrower), hp_3 and hp_4 two throat ports either
-    side of the vent under the jaw, bare (Ryan, 30 September); the Ward Plate on the back
-    and the throat vent (the Entropy Condenser, heat exhaled) are detail; the plate lies flat
+    side of the vent under the jaw, bare (Ryan, 30 September), the left carrying the stock's
+    Oblation Mantle as a dish since the stock pass (hp_3; Ryan's go, 28 October); the Ward
+    Plate on the back and the throat vent (the Entropy Condenser, heat exhaled) are detail; the plate lies flat
     on the back's slope with the shoulder cannons on it pointing up the slope, the spines
     rooted in it down its centre (Ryan, 30 September)."""
     OCT = lambda r: _poly(r, 8, math.pi / 8)
@@ -2354,8 +2596,9 @@ def ammit(b):
     _rings(b, [_deck(26.0, 20.0, -8.0, 38.0, 4.0), _deck(32.0, 24.0, 0.0, 44.0, 5.0),
                _deck(34.0, 24.0, 8.0, 50.0, 5.0), _deck(26.0, 18.0, 14.0, 54.0, 4.0)], "steel.panel", "torso")
     # The snout: a long hexagonal muzzle out of the chest's top, two long glass strips down
-    # its top ridges (the cockpit's eyes), a dark tip; under the jaw the Entropy Condenser's
-    # throat vent, slotted and lit (hp_4).
+    # its top ridges (the cockpit's eyes, lit as every Arsenal cockpit's glass is since 29
+    # October, so they flare with the throat in its acts), a dark tip; under the jaw the
+    # Entropy Condenser's throat vent, slotted and lit (hp_4).
     b.loft([(12.0, hexagon(0.0, 50.0, 18.0, 10.0)), (30.0, hexagon(0.0, 49.0, 12.0, 7.0)), (42.0, hexagon(0.0, 48.0, 7.0, 4.0))], "steel.plate", "snout")
     b.loft([(42.0, hexagon(0.0, 48.0, 7.0, 4.0)), (45.0, hexagon(0.0, 48.0, 4.0, 2.0))], "steel.dark", "snout_tip")
     for s in (-1.0, 1.0):
@@ -2367,12 +2610,16 @@ def ammit(b):
     for y in (23.0, 27.0, 31.0):
         b.box(-3.0, 3.0, y, y + 1.5, 43.6, 44.2, "amber.strip", "throat_slot")
     # Two throat ports either side of the vent, recessed rings under the jaw, pointing
-    # forward and a little down: bare mounts (hp_3 left, hp_4 right).
+    # forward and a little down: the left carries the stock's Oblation Mantle as its class
+    # (hp_3), the right is bare (hp_4).
     for s, n in ((-1.0, 3), (1.0, 4)):
         px = s * 6.5
         _beam(b, (px, 24.0, 47.0), (px, 30.0, 45.0), _poly(3.0, 8), _poly(3.0, 8), "steel.dark", "throat_port")
         _beam(b, (px, 29.0, 45.3), (px, 31.0, 44.7), _poly(2.2, 8), _poly(2.2, 8), "bore.dark", "port_throat")
-        b.pin("hp_%d" % n, (px, 30.0, 45.0), forward=(0.0, 0.949, -0.316))
+        if n == 3:
+            b.stock("hp_3", (px, 30.0, 45.0), "dish", forward=(0.0, 0.949, -0.316), scale=0.45, carries="oblation_ward")
+        else:
+            b.pin("hp_4", (px, 30.0, 45.0), forward=(0.0, 0.949, -0.316), carries="")
     # The back panel (the Ward Plate, detail): a rectangular plate lying flat on the back's
     # slope from the shoulders to the tail, the shoulder cannons sitting on it and pointing
     # up the slope, so panel and guns lie parallel to the back (Ryan, 30 September).
@@ -2388,11 +2635,11 @@ def ammit(b):
         # Each shoulder cannon elevates along the plate (the joint pass).
         with b.joint("elev_%s" % ("l" if s < 0 else "r"), tuple(gun), limits=(-12.0, 18.0)):
             if s > 0:
-                with b.socket("hp_1", tuple(gun), forward=tuple(U)):
+                with b.socket("hp_1", tuple(gun), forward=tuple(U), carries="plasma_arquebus"):
                     _beam(b, gun, gun + U * 26.0, _poly(2.6, 6), _poly(2.6, 6), "steel.dark", "plasma_carbine")
                     _beam(b, gun + U * 26.0, gun + U * 27.5, _poly(2.0, 6), _poly(2.0, 6), "amber.engine", "carbine_tip")
             else:
-                with b.socket("hp_2", tuple(gun), forward=tuple(U)):
+                with b.socket("hp_2", tuple(gun), forward=tuple(U), carries="blazethrower"):
                     _beam(b, gun - U * 8.0, gun + U * 2.0, _poly(3.6, 8), _poly(3.6, 8), "steel.dark", "fuel_tank")
                     _beam(b, gun + U * 2.0, gun + U * 19.0, _poly(2.0, 6), _poly(2.0, 6), "steel.dark", "nozzle")
                     _beam(b, gun + U * 19.0, gun + U * 20.5, _poly(2.6, 6), _poly(2.6, 6), "amber.engine", "pilot_flame")
@@ -2821,7 +3068,8 @@ def stingray(b):
     A flat lens of a pearl hull: a central body with a slit canopy and one red eye, two
     wing discs lofted out of its flanks, their outer thirds in red (the markings), a ducted
     lift fan sunk flush through each wing where it is thickest, and the Photosphere Lance
-    (fixed, no pin) under the nose where a ray's mouth is. Second pass (Ryan, 2 October: too
+    (fixed, no pin) out of the dome turret's slot (Ryan, 28 October: the locked lance on the
+    dome; it lay under the nose where a ray's mouth is). Second pass (Ryan, 2 October: too
     literal, it needs no whippy tail; the mounts floated; a livery spot floated ahead of the
     cockpit): no tail; every mount, the canopy, the eye and the spine stripe are seated on
     the skin through `_ray_top`; the nose chevron is gone. Third pass (Ryan, 2 October, late: the
@@ -2841,10 +3089,11 @@ def stingray(b):
     Ryan picked the shoulder pods at the tips (3 October, night), so the deck keeps the dome
     alone and the forewing pods stay. Seventh pass (the same night): the tail narrows in one
     quick stage from the stern to the mouth, the exhaust itself kept. Mounts, in the die's
-    order: hp_1 (the Solar Flare Array, two pods) at the left wing tip and hp_2 (the Pulse
-    Repeater) at the right, hp_3 the dome (the Zenith Emitter), hp_4 (the Aurora Lattice, a
-    dish) out of the right forewing's underside and hp_5 bare out of the left (the Radiator
-    Sail is a vent and shows nowhere). Eighth pass (Ryan, 5 October): the tail still read as two
+    order since the stock pass, each stock part as its class (Ryan, 28 October: the lance on
+    the dome, the rest his "whatever"): hp_1 the Laser Carbine on the keel mount under the
+    nose where the lance lay, hp_2 the Halo Shield's dish out of the right forewing's
+    underside, hp_3 the Twin Autoguns at the right wing tip, hp_4 the Ankle Mortar's rack at
+    the left, hp_5 bare out of the left forewing (the Coolant Jacket shows nowhere). Eighth pass (Ryan, 5 October): the tail still read as two
     stages, the body running on behind the wings as a near-parallel neck before the taper, so
     the body ends at the wings' trailing edge and the tail is one straight taper from there.
     Ninth pass (the same day): the taper's rate kept, the tail four units longer to a smaller
@@ -2882,31 +3131,23 @@ def stingray(b):
     _rings(b, [[(x, -50.0, z) for x, z in hexagon(0.0, 15.0, 7.6, 3.2)], [(x, -50.0, z) for x, z in hexagon(0.0, 15.0, 6.4, 2.3)]], "steel.dark", "duct_rim", cap=False)
     b.loft([(-50.0, hexagon(0.0, 15.0, 6.4, 2.3)), (-49.0, hexagon(0.0, 15.0, 6.5, 2.35))], "steel.dark", "duct_lining", cap=False)
     b.loft([(-49.0, hexagon(0.0, 15.0, 6.5, 2.35)), (-48.7, hexagon(0.0, 15.0, 6.5, 2.35))], "amber.glow", "nozzle_glow")   # the hot face a unit inside the mouth (Ryan, 5 October)
-    # The Photosphere Lance under the nose (fixed, no pin): a long emitter along the keel,
-    # a red collar at its root and a lit muzzle.
-    b.box(-4.0, 4.0, 10.0, 24.0, 5.5, 9.5, "steel.panel", "lance_mount")
-    b.prism("y", 0.0, 32.0, 7.5, 2.6, 36.0, "steel.dark", 6, "lance")
-    b.prism("y", 0.0, 22.0, 7.5, 3.1, 4.0, "livery.livery2", 6, "lance_collar")
-    b.prism("y", 0.0, 50.5, 7.5, 2.0, 1.4, "amber.engine", 6, "lance_muzzle")
+    # The keel mount under the nose (hp_1), where the Photosphere Lance lay until it went up
+    # to the dome (Ryan, 28 October): the stock's Laser Carbine as its class, a beam in the
+    # ray's mouth.
+    b.box(-4.0, 4.0, 10.0, 24.0, 5.5, 9.5, "steel.panel", "keel_mount")
+    b.stock("hp_1", (0.0, 27.0, 7.5), "barrel", scale=0.7, carries="laser_carbine")
 
     def forewing_pod(s, name):
         """A pod lying along a forewing's underside, buried under the plateau and emerging
         where the leading edge's lower slope rises past it, its muzzle ahead of the edge
-        (Ryan, 3 October): hp_4 the Aurora Lattice (a dish) on the right, hp_5 bare on the left."""
+        (Ryan, 3 October): hp_2 the Halo Shield's dish on the right, hp_5 bare on the left."""
         px, pz = s * 16.0, 9.6
         b.prism("y", px, 24.0, pz, 2.0, 24.0, "steel.dark", 6, "wing_pod")   # y 12 to 36; the wing's leading edge is near y 34 here
         b.prism("y", px, 36.4, pz, 2.3, 1.2, "steel.plate", 6, "pod_collar")
-        if name == "hp_4":
-            with b.socket(name, (px, 37.0, pz), scale=0.7):
-                lattice(px, 37.0, pz)
+        if name == "hp_2":
+            b.stock(name, (px, 37.0, pz), "dish", scale=0.6, carries="halo_shield")
         else:
             b.pad(name, (px, 37.0, pz), scale=0.7, size=(3.6, 1.4))
-
-    def lattice(px, py, pz):
-        """The Aurora Lattice's stock part on a pin at (px, py, pz): a short mast, a dish, a lit core."""
-        b.prism("y", px, py + 1.2, pz, 0.9, 2.4, "steel.dark", 6, "lattice_mast")
-        b.loft([(py + 2.4, _poly(4.2, 8, math.pi / 8)), (py + 3.8, _poly(1.5, 8, math.pi / 8))], "steel.plate", "lattice_dish", Matrix.Translation((px, 0.0, pz)))
-        b.prism("y", px, py + 4.2, pz, 1.3, 0.8, "amber.engine", 8, "lattice_core")
 
     def tip_pod(s):
         """A pod along a wing tip's outer edge (Ryan, 3 October: too many weapons on the
@@ -2920,26 +3161,19 @@ def stingray(b):
         return px, 8.0, pz
 
     # The wing tips carry the shoulder pods (Ryan's pick, 3 October, night: keep this
-    # layout): hp_1 at the left tip, the flare pods pitched up off the pod's mouth, hp_2 at
-    # the right, the repeater running on from the pod; the deck keeps the dome alone; the
-    # forewing pods stay.
+    # layout), each a stock part as its class at the size the tip carries: the Ankle
+    # Mortar's rack at the left (hp_4), the Twin Autoguns at the right (hp_3); the deck keeps
+    # the dome alone; the forewing pods stay.
     for s in (-1.0, 1.0):
         px, py, pz = tip_pod(s)
-        if s < 0:
-            with b.socket("hp_1", (px, py, pz), scale=0.8):   # the flare pods point forward like every gun (Ryan, 5 October: pitched up read wrong), stacked over the tip
-                for s2 in (-1.0, 1.0):
-                    _beam(b, (px, py - 1.5, pz + s2 * 1.4), (px, py + 7.5, pz + s2 * 1.4), _poly(1.2, 6), _poly(1.4, 6), "steel.dark", "flare_pod")
-                    b.prism("y", px, py + 7.9, pz + s2 * 1.4, 0.9, 0.8, "amber.engine", 6, "pod_mouth")
-        else:
-            with b.socket("hp_2", (px, py, pz), scale=0.8):
-                b.prism("y", px, py + 8.0, pz, 1.4, 16.0, "steel.dark", 6, "pulse_repeater")
-                b.prism("y", px, py + 16.4, pz, 1.0, 1.2, "amber.engine", 6, "repeater_tip")
-        forewing_pod(s, "hp_4" if s > 0 else "hp_5")
-    # The turret (hp_3) behind the canopy: a wide dome faired to the crown on a dark ring,
-    # turning whole on its joint, the Zenith Emitter leaving a dark slot in the dome's
-    # forward slope (Ryan, 2 October, late: the gun comes out of the edge of something
-    # sleek). Fifth pass: the pin two units further back and the dome taller, so the gun
-    # leaves the slot from deeper and still clears the canopy's crown (Ryan, 3 October).
+        b.stock("hp_4" if s < 0 else "hp_3", (px, py, pz), "rack" if s < 0 else "twin_barrel", scale=0.55, carries="ankle_mortar" if s < 0 else "twin_autoguns")
+        forewing_pod(s, "hp_2" if s > 0 else "hp_5")
+    # The turret behind the canopy: a wide dome faired to the crown on a dark ring, turning
+    # whole on its joint, the gun leaving a dark slot in the dome's forward slope (Ryan, 2
+    # October, late: the gun comes out of the edge of something sleek). Fifth pass: the gun
+    # two units further back and the dome taller, so it leaves the slot from deeper and still
+    # clears the canopy's crown (Ryan, 3 October). The gun is the Photosphere Lance since 28
+    # October (Ryan: the locked lance on the dome turret), so the dome is no hardpoint.
     gz = top(0.0, -10.0)
     b.prism("z", 0.0, -10.0, gz + 0.5, 9.2, 1.6, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
     with b.joint("turret", (0.0, -10.0, gz + 1.3)):
@@ -2947,9 +3181,11 @@ def stingray(b):
                "steel.plate", "turret_dome", Matrix.Translation((0.0, -10.0, 0.0)) @ Matrix.Rotation(math.pi / 2, 4, "X"))
         b.box(-2.8, 2.8, -8.4, -1.0, gz + 3.2, gz + 6.9, "steel.dark", "emitter_slot")
         b.prism("z", 0.0, -10.0, gz + 8.0, 1.8, 0.8, "amber.engine", 8, "dome_light", phase=math.pi / 8)
-        with b.socket("hp_3", (0.0, -8.0, gz + 5.0)):   # the pin sits back inside the dome, so a fitted gun comes out of the slot
-            b.prism("y", 0.0, 4.0, gz + 5.0, 2.0, 24.0, "steel.dark", 6, "zenith_emitter")
-            b.prism("y", 0.0, 16.6, gz + 5.0, 1.5, 1.4, "amber.engine", 6, "emitter_tip")
+        # The lance from deep in the dome out of the slot, its red collar at the slot's mouth
+        # and its muzzle lit, clearing the canopy's crown as the emitter did.
+        b.prism("y", 0.0, 7.0, gz + 5.0, 2.0, 30.0, "steel.dark", 6, "lance")
+        b.prism("y", 0.0, -0.6, gz + 5.0, 2.6, 3.0, "livery.livery2", 6, "lance_collar")
+        b.prism("y", 0.0, 22.7, gz + 5.0, 1.6, 1.4, "amber.engine", 6, "lance_muzzle")
 
     # Idle acts, third pass (Ryan, 4 October: turrets too fast and wild; real machines with
     # inertia): curves a part runs on through, the servos' heft (b.move), and the emitter's
@@ -2957,9 +3193,9 @@ def stingray(b):
     # and seconds; a key is (t, value) on the joint's own axis or (t, pitch, yaw, roll); a
     # body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k),
     # k the light added over rest.
-    b.act("scan_emitter", 7.8, {"turret": [(0.5, 0.0), (2.1, 55.0), (2.8, 55.0), (5.7, -45.0), (6.4, -45.0), (7.7, 0.0)]},   # the emitter scans out one way, pauses, across to the other, pauses, home, the ray leaning after it like a helicopter
+    b.act("scan_emitter", 7.8, {"turret": [(0.5, 0.0), (2.1, 55.0), (2.8, 55.0), (5.7, -45.0), (6.4, -45.0), (7.7, 0.0)]},   # the lance scans out one way, pauses, across to the other, pauses, home, the ray leaning after it like a helicopter
           body=[(2.1, 2.5, 0.0, 0.0, 0.0, 0.0, 5.0), (2.8, 2.5, 0.0, 0.0, 0.0, 0.0, 5.0), (5.7, -2.0, 0.0, 0.0, 0.0, 0.0, -4.0), (6.4, -2.0, 0.0, 0.0, 0.0, 0.0, -4.0), (7.8, 0.0, 0.0, 0.0)],
-          glow=[(["emitter_tip", "dome_light"], [(0.6, 0.0), (1.0, 6.0), (7.0, 6.0), (7.8, 0.0)])])
+          glow=[(["lance_muzzle", "dome_light"], [(0.6, 0.0), (1.0, 6.0), (7.0, 6.0), (7.8, 0.0)])])
     b.act("lance_charge", 4.6, glow=[(["lance_muzzle", "eye"], [(0.3, 0.0), (1.0, 4.0), (1.4, 1.0), (2.0, 7.0), (2.4, 3.0), (3.0, 10.0), (3.6, 10.0), (4.3, 0.0)])],
           body=[(1.8, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (3.6, 0.0, -3.0, 0.0, 0.0, -6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
     b.act("thrusters_surge", 4.4, body=[   # surges forward nose down, brakes nose up, settles: a helicopter's
@@ -3120,7 +3356,7 @@ def needletail(b):
             _disc(b, (nx, ny, nz - 12.5), (0.0, 0.0, -1.0), 4.5, 6, "amber.exhaust", "exhaust", phase=math.pi / 6)
         # The mounts under the stubs, the gun's barrel and the dish out ahead of the leading edge.
         b.box(s * 12.5 - 0.7, s * 12.5 + 0.7, -8.0, 2.0, -2.2, -0.6, "steel.plate", "pylon")
-        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 12.5, 1.0, -3.0), "barrel" if s < 0 else "dish", scale=0.5)
+        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 12.5, 1.0, -3.0), "barrel" if s < 0 else "dish", scale=0.5, carries="transonic_rifle" if s < 0 else "overcharge_coil")
     b.pad("hp_3", (0.0, -10.0, -3.8), scale=0.5, size=(4.0, 1.2))
     # The X tail: four small cobalt fins on the boom ahead of the needle.
     for k in range(4):
@@ -3286,7 +3522,7 @@ def giant_petrel(b):
         with b.joint(name, (0.0, ty, tz + 1.0), axis="yaw", limits=(-75.0, 75.0)):
             b.loft([(tz + 0.8, _poly(5.8, 8, math.pi / 8)), (tz + 3.6, _poly(5.4, 8, math.pi / 8)), (tz + 5.4, _poly(3.6, 8, math.pi / 8))],
                    "steel.plate", "turret_house", Matrix.Translation((0.0, ty, 0.0)) @ Matrix.Rotation(math.pi / 2, 4, "X"))
-            b.stock(pin, (0.0, ty + 2.0, tz + 3.2), kind, scale=0.8)
+            b.stock(pin, (0.0, ty + 2.0, tz + 3.2), kind, scale=0.8, carries={"hp_1": "overclocked_railgun", "hp_2": "twin_autoguns"}[pin])
     b.pad("hp_3", (8.5, 6.0, deck(6.0) + 1.0), scale=0.8, size=(4.4, 1.4))
 
     # Idle acts (four, loud, never in step; a capital's heavy servos). Degrees and seconds; a body
@@ -3444,7 +3680,7 @@ def skua(b):
     # under the belly.
     for s in (-1.0, 1.0):
         b.box(s * 10.0 - 0.7, s * 10.0 + 0.7, -2.0, 5.0, -2.4, -0.4, "steel.plate", "pylon")
-        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 10.0, 5.0, -3.0), "barrel" if s < 0 else "twin_barrel", scale=0.5)
+        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 10.0, 5.0, -3.0), "barrel" if s < 0 else "twin_barrel", scale=0.5, carries="laser_carbine" if s < 0 else "twin_autoguns")
     b.pad("hp_3", (0.0, -10.0, -5.0), scale=0.5, size=(5.0, 1.4))
 
     # Idle acts (five, like the Kite's, loud and never in step; Ryan, 28 October: the strafing
@@ -3533,9 +3769,9 @@ def puffin(b):
     the lit repulsor discs, and they fold up in a fight to amplify the shield it projects,
     the amplifier strip and boss on their inside faces lighting (joints plate_l and plate_r,
     rolling about the hinge). Mounts in the die's order: hp_1 a pod under the left foredeck's
-    edge (the Halo Shield, a dish), hp_2 the pod under the right, bare (the Coolant Jacket shows
-    nowhere), hp_3 the right shoulder (the Twin Autoguns), hp_4 the left shoulder (the Laser
-    Carbine). Floats: the lip at z = 6."""
+    edge (the Halo Shield, a dish), hp_2 the right shoulder (the Twin Autoguns), hp_3 the left
+    shoulder (the Laser Carbine), hp_4 the pod under the right, bare, numbered last since the
+    Coolant Jacket takes no mount (28 October). Floats: the lip at z = 6."""
     K = 0.86   # the boat at the light size
     HULL = [(y * K, w * K, 6.0 + (z0 - 6.0) * K, 6.0 + (z1 - 6.0) * K, c * K) for (y, w, z0, z1, c) in
             ((48.0, 3.0, 11.6, 13.6, 0.6), (40.0, 10.0, 9.6, 15.0, 1.4), (28.0, 18.0, 7.8, 16.8, 2.2), (12.0, 24.0, 6.6, 18.0, 2.8),
@@ -3604,7 +3840,7 @@ def puffin(b):
     for s in (-1.0, 1.0):
         px = s * 12.0 * K
         b.box(min(px - 0.8, px + 0.8), max(px - 0.8, px + 0.8), 12.0, 18.0, 8.4, 10.2, "steel.plate", "pod_pylon")
-        with b.socket("hp_%d" % (1 if s < 0 else 2), (px, 20.0, 8.2), scale=0.5):
+        with b.socket("hp_%d" % (1 if s < 0 else 4), (px, 20.0, 8.2), scale=0.5, carries="halo_shield" if s < 0 else ""):
             b.prism("y", px, 15.0, 8.2, 1.5, 11.0, "steel.dark", 6, "pod")
             if s < 0:
                 b.prism("y", px, 22.5, 8.2, 3.0, 1.2, "steel.plate", 8, "dish")
@@ -3612,7 +3848,7 @@ def puffin(b):
         rx, ry = s * 6.5, -22.0
         dz = deck(ry)
         b.loft([(ry - 6.0, rect(rx, 2.6, dz - 0.6, dz + 1.0)), (ry + 5.0, rect(rx, 3.8, dz - 0.6, dz + 2.0))], "steel.panel", "shoulder_fairing")
-        b.stock("hp_3" if s > 0 else "hp_4", (rx, ry + 5.5, dz + 1.3), "twin_barrel" if s > 0 else "barrel", scale=0.5)
+        b.stock("hp_2" if s > 0 else "hp_3", (rx, ry + 5.5, dz + 1.3), "twin_barrel" if s > 0 else "barrel", scale=0.5, carries="twin_autoguns" if s > 0 else "laser_carbine")
     # The booster drawn in: its mouth over the afterdeck, its exhaust just past the stern.
     BY, BZ, BR = -27.0, 12.6, 6.0
     b.prism("y", 0.0, BY, BZ, BR, 24.0, "steel.dark", 6, "booster", phase=math.pi / 6)
@@ -3796,7 +4032,7 @@ def storm_petrel(b):
             b.loft([(ey - 2.0, rect(ex, 2.2, ctop + 1.6, ctop + 2.8)), (ey + 2.0, rect(ex, 2.2, ctop + 1.6, ctop + 2.8))], "amber.ember", "emitter")
         tx = s * (at(-10.0)[0] / 2.0 + 5.0)
         b.box(tx - 2.0, tx + 2.0, -12.0, -7.0, 16.2, 17.4, "steel.panel", "mount")
-        b.stock("hp_%d" % (1 if s < 0 else 3), (tx, -7.0, 18.6), "barrel" if s < 0 else "twin_barrel", scale=0.5)
+        b.stock("hp_%d" % (1 if s < 0 else 3), (tx, -7.0, 18.6), "barrel" if s < 0 else "twin_barrel", scale=0.5, carries="laser_carbine" if s < 0 else "twin_autoguns")
         # The nacelles and the giant boosters, the Puffin's grown to the size: the deck carried
         # over each drum, the louvred vent housing on its top, the drum's mouth ahead as the
         # intake, its lit ring and exhaust past the stern.
@@ -3819,7 +4055,7 @@ def storm_petrel(b):
         b.prism("y", bx, -36.9 * K, bz, 6.9 * K, 1.4, "amber.engine", 6, "nozzle_ring", phase=math.pi / 6)
         b.loft([(-37.6 * K, hexagon(bx, bz, 11.2 * K, 9.8 * K)), (-38.1 * K, hexagon(bx, bz, 10.0 * K, 8.6 * K))], "amber.exhaust", "exhaust")
     b.box(-6.5, -2.5, -26.0, -22.0, deck(-24.0) - 0.6, deck(-24.0) + 0.9, "steel.panel", "mount")
-    b.stock("hp_2", (-4.5, -22.0, deck(-24.0) + 2.0), "rack", scale=0.5)
+    b.stock("hp_2", (-4.5, -22.0, deck(-24.0) + 2.0), "rack", scale=0.5, carries="ankle_mortar")
     b.pad("hp_4", (4.5, -24.0, deck(-24.0) + 1.0), scale=0.5, size=(4.0, 1.4))
     # Two canted fins on the afterdeck, tall and swept back.
     fh, fy0, fy1 = 14.0, -48.0, -39.0
@@ -3951,16 +4187,16 @@ def lammergeier(b):
     # drums (x 32, where the drum at 20 reaches 25.8 and the rack's class at its scale 27.1), the
     # outer pair on the outer wing past the outer drums (x 57, where the drum at 44 reaches 49.8
     # and the dish's class 51.9); the drone tubes end at y 31 and more, the inner mounts at 10.
-    for s, pin, kind in ((-1.0, "hp_1", "rack"), (1.0, "hp_2", "barrel")):
+    for s, pin, kind, cid in ((-1.0, "hp_1", "rack", "incendiary_shells"), (1.0, "hp_2", "barrel", "enfilade_beam")):
         tx, ty = s * 32.0, 10.0
         tz = Z + thick(tx) * 0.5
         b.box(tx - 1.8, tx + 1.8, ty - 3.0, ty + 1.0, tz - 0.4, tz + 1.0, "steel.panel", "mount")
-        b.stock(pin, (tx, ty + 1.5, tz + 1.8), kind, scale=0.7)
-    for s, pin, kind in ((-1.0, "hp_3", "dish"), (1.0, "hp_4", "twin_barrel")):
+        b.stock(pin, (tx, ty + 1.5, tz + 1.8), kind, scale=0.7, carries=cid)
+    for s, pin, kind, cid in ((-1.0, "hp_3", "dish", "polarity_projector"), (1.0, "hp_4", "twin_barrel", "arc_fault_cannon")):
         tx, ty = s * 57.0, 6.0
         tz = Z + thick(tx) * 0.5
         b.box(tx - 1.8, tx + 1.8, ty - 3.0, ty + 1.0, tz - 0.4, tz + 1.0, "steel.panel", "mount")
-        b.stock(pin, (tx, ty + 1.5, tz + 1.8), kind, scale=0.7)
+        b.stock(pin, (tx, ty + 1.5, tz + 1.8), kind, scale=0.7, carries=cid)
     for s in (-1.0, 1.0):
         a = math.radians(s * 30.0)
         _rings(b, [[(s * 70.0, 10.0, Z), (s * 70.4, 6.0, Z), (s * 70.0, 2.0, Z), (s * 69.6, 6.0, Z)],
@@ -3983,7 +4219,7 @@ def lammergeier(b):
     # small yaw after them.
     b.act("syrinx_launch", 4.4, body=[(0.6, 0.0, 0.0, 0.0), (1.0, 0.0, -2.0, 0.6, 0.0, 2.0, 0.0), (1.3, 0.0, -1.0, 0.0, -4.0, 0.0, -3.0), (1.8, 0.0, 1.0, 0.4, 4.0, -1.0, 3.0),
                                       (2.6, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
-          glow=[(["drone_tube"], [(0.7, 0.0), (0.9, 14.0), (1.1, 2.0), (1.25, 14.0), (1.5, 2.0), (2.2, 0.0)]), (boosters, [(0.6, 0.0), (1.0, 4.0), (2.4, 4.0), (3.2, 0.0)])])
+          glow=[(["drone_tube_floor"], [(0.7, 0.0), (0.9, 14.0), (1.1, 2.0), (1.25, 14.0), (1.5, 2.0), (2.2, 0.0)]), (boosters, [(0.6, 0.0), (1.0, 4.0), (2.4, 4.0), (3.2, 0.0)])])
     # The wheel: a long banked turn to the left and a shallower one back, the outer boosters
     # brighter in each.
     b.act("wheel", 5.6, {"sensor_contractor": [(0.8, 0.0), (2.2, -40.0), (4.0, 30.0), (5.2, 0.0)]},
@@ -4040,6 +4276,160 @@ def _sq(w, h):
 def _poly(r, n, phase=0.0):
     """A regular polygon profile for `_beam`."""
     return [(r * math.cos(phase + i * 2.0 * math.pi / n), r * math.sin(phase + i * 2.0 * math.pi / n)) for i in range(n)]
+
+
+def _slab(b, pts, normal, thick, material, label):
+    """A flat polygon given in world space, `thick` deep along `normal` and centred on it."""
+    n = Vector(normal).normalized() * (thick / 2.0)
+    bm = bmesh.new()
+    top = [bm.verts.new(Vector(p) + n) for p in pts]
+    bot = [bm.verts.new(Vector(p) - n) for p in pts]
+    bm.faces.new(top)
+    bm.faces.new(list(reversed(bot)))
+    for i in range(len(pts)):
+        j = (i + 1) % len(pts)
+        bm.faces.new([bot[i], bot[j], top[j], top[i]])
+    return b._finish(bm, material, label)
+
+
+def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe"):
+    """A port's iris plug (the Armadillo's Lockdown Shutters): `n` leaves of a disc of radius
+    `r` about `centre`, square to `axis`, each a hair off the centre so the iris's seams read
+    dark, all on one joint (`shutter_<tag>`, sliding along `axis`) that rests `depth` down the
+    port's line, under its floor and out of sight in the shell. A form slides it home: it
+    rises out of the floor once the gun has sunk and closes the mouth (Ryan, 29 October: the
+    leaves drawn back across the shell showed, "it's no good like this"; a port on a sloping
+    shell has no room beside its mouth to hide them). Returns (joint, its slide home), world
+    units."""
+    axis = Vector(axis).normalized()
+    up = Vector((0.0, 0.0, 1.0))
+    side = Vector((1.0, 0.0, 0.0)) if abs(axis.dot(up)) > 0.999 else axis.cross(up).normalized()
+    over = side.cross(axis).normalized()
+    rest = Vector(centre) - axis * depth
+    span = 2.0 * math.pi / n
+    name = "shutter_%s" % tag
+    with b.joint(name, tuple(rest), slide=tuple(axis)):
+        for k in range(n):
+            a = math.pi / 2.0 + k * span   # the first leaf's bisector up the port's face
+            tip = rest + (side * math.cos(a) + over * math.sin(a)) * 0.15
+            pts = [tip] + [tip + (side * math.cos(a - span / 2.0 + j * span / 4.0) + over * math.sin(a - span / 2.0 + j * span / 4.0)) * r
+                           for j in range(5)]
+            _slab(b, pts, axis, thick, material, "shutter")
+    return name, tuple(axis * depth)
+
+
+def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0, flank=None, heat="vent_box_floor"):
+    """An armoured louvred vent (the Armadillo's radiators): a dark steel box `width` by
+    `height` with heat banked in its floor (the part a glow names, labelled `heat`), a
+    stripe rim round its mouth, and `slats` heavy louvres across the mouth, each on a pitch
+    joint `<prefix><k>`, the lowest first. Sunk into a face of the shell, a hole cut through
+    `cutting` for it, the rim standing `proud` of the face; or, given a `housing` material,
+    standing out of the shell as an armoured box in it, its walls running `back` behind the
+    mouth to a closed back planted in the shell, nothing cut, the hollow clear of the shell
+    (Ryan, 29 October: "big boxy radiators sticking out at an angle"). `origin` is the mouth's
+    centre, its face
+    rising `alpha` degrees from flat toward the front and facing back (90 a rear face, 0 a
+    top). A louvre stands `rest` degrees out of the face (positive lifts its upper edge out),
+    so its joint's 0 is that rest; it shuts flat at `-rest` and opens to `opens` degrees out
+    of the face at `opens - rest`. `flank`, given (-1 the left, 1 the right), lays the vent
+    on that flank's 45-degree chamfer instead (the Armadillo's radiators since Ryan's notes
+    of 30 October), `width` along the machine and `height` up the slope, `alpha` unused: its
+    louvres run along the machine on roll joints, the upper edge the one toward the spine.
+    Returns [(joint, its shut swing, its open swing)], the lowest first, in the joint's own
+    sense."""
+    if flank is None:
+        a = math.radians(alpha)
+        X, U, N = Vector((1.0, 0.0, 0.0)), Vector((0.0, math.cos(a), math.sin(a))), Vector((0.0, -math.sin(a), math.cos(a)))
+        axis, sense = "pitch", 1.0
+    else:
+        r = math.sqrt(0.5)
+        U, N = Vector((-flank * r, 0.0, r)), Vector((flank * r, 0.0, r))
+        X = U.cross(N)   # forward on the right flank, back on the left, so a turn about X lifts U toward N
+        axis, sense = "roll", flank   # a roll turns about forward: about X on the right, against it on the left
+    o = Vector(origin)
+    at = lambda x, u, n: o + X * x + U * u + N * n
+    frame = lambda hw, hh, n: [at(-hw, -hh, n), at(hw, -hh, n), at(hw, hh, n), at(-hw, hh, n)]
+    hw, hh = width / 2.0, height / 2.0
+    iw, ih = hw - wall, hh - wall
+    if cutting:
+        b.cut(cutting, tuple(at(0.0, 0.0, -depth)), tuple(at(0.0, 0.0, 0.5)), 0.0, section=[(-iw - 0.2, -ih - 0.2), (iw + 0.2, -ih - 0.2), (iw + 0.2, ih + 0.2), (-iw - 0.2, ih + 0.2)])
+    tiles = (o, N, X, U, None)
+    if housing:   # the armoured box out of the shell, closed at the back; the dark lining inside it
+        _rings(b, [frame(hw, hh, -back), frame(hw, hh, proud - 0.3)], housing, "vent_housing", tiles, cap=False)
+        _rings(b, [frame(hw, hh, -back - 0.3), frame(hw, hh, -back)], housing, "vent_housing", tiles)
+        _rings(b, [frame(iw, ih, proud - 0.9), frame(iw, ih, -depth)], "steel.dark", "vent_box", tiles, cap=False)
+    else:
+        _rings(b, [frame(hw, hh, -depth), frame(hw, hh, proud - 0.3), frame(iw, ih, proud - 0.3), frame(iw, ih, -depth)], "steel.dark", "vent_box", tiles)
+    _rings(b, [frame(hw, hh, proud - 0.9), frame(hw + rim, hh + rim, proud - 0.9), frame(hw + rim, hh + rim, proud), frame(iw, ih, proud), frame(iw, ih, proud - 0.9)],
+           "steel.stripe", "vent_rim", tiles, cap=False)   # a lip under it, so no slot shows between the rim and the box
+    _rings(b, [frame(iw - 0.05, ih - 0.05, -depth + 0.2), frame(iw - 0.05, ih - 0.05, -depth + 0.4)], "amber.heat", heat, tiles)
+    pitch = 2.0 * ih / slats
+    th = math.radians(rest)
+    w, m = U * math.cos(th) + N * math.sin(th), N * math.cos(th) - U * math.sin(th)
+    across = X.cross(Vector((0.0, 0.0, 1.0))).normalized()   # _beam's frame for a member along X
+    over = across.cross(X).normalized()
+    prof = [(v.dot(across), v.dot(over)) for v in (w * (-pitch / 2.0 + 0.05) - m * (thick / 2.0), w * (pitch / 2.0 - 0.05) - m * (thick / 2.0),
+                                                   w * (pitch / 2.0 - 0.05) + m * (thick / 2.0), w * (-pitch / 2.0 + 0.05) + m * (thick / 2.0))]
+    shut, swing = -rest * sense, (opens - rest) * sense
+    lo, hi = min(shut, 1.1 * swing) - 3.0, max(shut, 1.1 * swing) + 3.0
+    out = []
+    for k in range(slats):
+        c = at(0.0, -ih + pitch * (k + 0.5), -pivot)
+        name = "%s%d" % (prefix, k + 1)
+        with b.joint(name, tuple(c), axis=axis, limits={ax: ((lo, hi) if ax == axis else (0.0, 0.0)) for ax in ("pitch", "yaw", "roll")}):
+            _beam(b, tuple(c - X * (iw - 0.15)), tuple(c + X * (iw - 0.15)), prof, prof, "steel.plate", "louvre")
+        out.append((name, shut, swing))
+    return out
+
+
+def _popvent(b, cutting, centre, side, name, length=14.0, width=8.0, out=6.0, slats=5, heat="vent_box_floor"):
+    """A vent on a flank's 45-degree chamfer (the Armadillo's side vents: Ryan, 29 October,
+    "small rectangular protrusions when sealed" that "slide out ... to show the vent face when
+    venting", then "a larger footprint to sell"): a well cut into `cutting` and lined in dark steel under a stripe rim,
+    and on a slide joint `name` along the slope's outward normal a dark cap `length` along the
+    machine by `width` across the slope, standing a little proud of the rim at rest, over a
+    stack as deep as the joint runs it `out`: `slats` thin dark slats ringed round a core of
+    heat that glows between them (labelled `heat`, the part the vent act's glow names), dark posts at
+    its corners. Home, the stack sits in the well under the cap; run out, all of it stands
+    clear of the rim, the glow showing between the slats. `centre` is the vent's
+    middle on the slope, `side` -1 for the left flank and 1 for the right. Returns (the
+    joint, its line, how far it runs)."""
+    nrm = Vector((side * math.sqrt(0.5), 0.0, math.sqrt(0.5)))   # out of the slope
+    up = Vector((-side * math.sqrt(0.5), 0.0, math.sqrt(0.5)))   # up the slope, toward the spine
+    along = Vector((0.0, 1.0, 0.0))
+    c = Vector(centre)
+    quad = lambda l0, l1, a0, a1, n: [c + along * l + up * a + nrm * n for l, a in ((l0, a0), (l1, a0), (l1, a1), (l0, a1))]
+    rect = lambda hl, ha, n: quad(-hl, hl, -ha, ha, n)
+    tiles = (c, nrm, along, up, None)
+    hl, ha = length / 2.0, width / 2.0   # the cap
+    wl, wa = hl - 0.4, ha - 0.4   # the well, inside the cap's edge
+    floor = -out - 0.6   # the well's floor, under the stack when it is home
+    b.cut(cutting, tuple(c + nrm * (floor - 0.2)), tuple(c + nrm * 0.5), 0.0, section=[(-wl - 0.15, -wa - 0.15), (wl + 0.15, -wa - 0.15), (wl + 0.15, wa + 0.15), (-wl - 0.15, wa + 0.15)])
+    _rings(b, [rect(wl, wa, 0.05), rect(wl, wa, floor)], "steel.dark", "vent_well", tiles, cap=False)
+    _rings(b, [rect(wl, wa, floor - 0.2), rect(wl, wa, floor)], "steel.dark", "vent_well", tiles)
+    _rings(b, [rect(wl + 0.75, wa + 0.75, -0.2), rect(wl + 0.75, wa + 0.75, 0.35), rect(wl, wa, 0.35), rect(wl, wa, -0.2)], "steel.stripe", "vent_rim", tiles, cap=False)
+    with b.joint(name, tuple(c), slide=tuple(nrm)):
+        _rings(b, [rect(hl, ha, 0.3), rect(hl, ha, 1.3)], "steel.dark", "vent_cap", tiles)
+        foot = 0.3 - out   # level with the rim once the joint runs out
+        sl, sa = wl - 0.15, wa - 0.15   # the slats' outer faces, a hair inside the well
+        pitch = out / slats
+        # The slats stand a hair proud of the core, so the glow between them shows from a
+        # glancing camera too (sunk a slat's depth, the cameras' 30 to 42 degrees hid it).
+        for k in range(slats):   # the slats ringed round the core, thin, so the gaps between them carry most of its sides
+            n0, n1 = foot + pitch * k, foot + pitch * (k + 0.3)
+            _rings(b, [rect(sl, sa, n0), rect(sl, sa, n1), rect(sl - 0.3, sa - 0.3, n1), rect(sl - 0.3, sa - 0.3, n0), rect(sl, sa, n0)],
+                   "steel.dark", "vent_slat", tiles, cap=False)
+        for l0, a0 in ((-sl, -sa), (sl - 0.8, -sa), (sl - 0.8, sa - 0.8), (-sl, sa - 0.8)):   # the posts that carry the cap
+            _rings(b, [quad(l0, l0 + 0.8, a0, a0 + 0.8, foot), quad(l0, l0 + 0.8, a0, a0 + 0.8, 0.3)], "steel.dark", "vent_post", tiles)
+        _rings(b, [rect(sl - 0.12, sa - 0.12, foot), rect(sl - 0.12, sa - 0.12, 0.3)], "amber.heat", heat, tiles)
+    return name, tuple(nrm), out
+
+
+def _gear(cx, cz, r_out, r_in, teeth, phase=0.0):
+    """A toothed section as (x, z) points about (cx, cz), counter-clockwise from +y: `teeth`
+    teeth of radius r_out between roots of r_in (the Kite's pinions)."""
+    return [(cx + (r_out if k % 2 == 0 else r_in) * math.cos(phase + k * math.pi / teeth),
+             cz + (r_out if k % 2 == 0 else r_in) * math.sin(phase + k * math.pi / teeth)) for k in range(teeth * 2)]
 
 
 def _beam(b, p0, p1, ring0, ring1, material, label):
@@ -4322,6 +4712,17 @@ def _planted(limbs, body):
         if l.get("ankle"):
             tracks[l["ankle"]] = rows["ankle"]
     return tracks, [(t, 0.0, dy, dz, 0.0, pitch, 0.0) for t, dy, dz, pitch in body]
+
+
+def _planted_over(limbs, base, body):
+    """_planted for an act played over a held pose (a form's own acts: the sealed Armadillo's,
+    29 October): `base` the pose's (dy, dz, pitch), `body` the act's keys as offsets from it.
+    The legs' keys are what each offset adds to the held pose's own angles (one axis each,
+    so they add exactly in the engine), so the feet stay planted from the held pose."""
+    held, _ = _planted(limbs, [(0.0,) + tuple(base)])
+    full, _ = _planted(limbs, [(t, base[0] + dy, base[1] + dz, base[2] + p) for t, dy, dz, p in body])
+    tracks = {jn: [(t, round(v - held[jn][0][1], 3)) for t, v in rows] for jn, rows in full.items()}
+    return tracks, [(t, 0.0, dy, dz, 0.0, p, 0.0) for t, dy, dz, p in body]
 
 
 def _basis(pitch, yaw, roll):

@@ -54,6 +54,7 @@ func _init() -> void:
 
 
 func _tick() -> void:
+	_view.set_process(false)   # its _ready, run with the first frame, turns processing back on: the clip steps the rig itself
 	_frames += 1
 	if _frames < 4:
 		return   # the first frames render before the view has framed itself

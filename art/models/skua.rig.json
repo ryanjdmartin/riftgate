@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/skua.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/skua.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "wing_l": {
    "axis": "yaw",
@@ -2588,6 +2588,11 @@
   "exhaust",
   "pod_collar"
  ],
+ "pins": {
+  "hp_1": "laser_carbine",
+  "hp_2": "twin_autoguns",
+  "hp_3": ""
+ },
  "gait_options": {
   "spread": {
    "stride": 40.0,

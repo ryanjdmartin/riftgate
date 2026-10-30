@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcq5q2hwtpcsk"
-path="res://.godot/imported/prairie_dog_stripe.png-04b6ba46a89cd94998fe268c67f14c10.ctex"
+uid="uid://d1vkmtlhmdknx"
+path="res://.godot/imported/stingray_stripe.png-3d6375cea1ec03613fa82cd989a529cc.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "608c7d50f3ffc5e08da1da4b651de00f"
+"md5": "4167136f9a67a9a30bf3b65cc83ede5a"
 }
 
 [deps]
 
-source_file="res://art/models/prairie_dog_stripe.png"
-dest_files=["res://.godot/imported/prairie_dog_stripe.png-04b6ba46a89cd94998fe268c67f14c10.ctex"]
+source_file="res://art/models/stingray_stripe.png"
+dest_files=["res://.godot/imported/stingray_stripe.png-3d6375cea1ec03613fa82cd989a529cc.ctex"]
 
 [params]
 

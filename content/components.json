@@ -369,12 +369,13 @@
    "design": {
     "stage": "draft",
     "fantasy": "A pinion is a wing's flight feathers, and a gear: the reset gun that keeps the Kite in the air by killing.",
-    "niche": "The Kite's lock, its reset gun: a sure kill the drag shows on most trash; if its shot kills, every weapon comes back and the Kite acts again, and a team reroll back onto it chains it again with every kill, with no limit (Ryan, 24 October)."
+    "niche": "The Kite's lock, its reset gun: a sure kill the drag shows on most trash; two shots at half each, one from each wing tip, the old total in two; if either kills, every weapon comes back and the Kite acts again, and a team reroll back onto it chains it again with every kill, with no limit (Ryan, 24 October)."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 4,
+    "power": 2,
+    "strikes": 2,
     "keywords": [],
     "heat": 0,
     "resets_on_kill": true
