@@ -83,7 +83,10 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     presets, the enemy's four violets and the meanings, set by wheel, sliders or hex and kept in
     `user://settings.cfg`; PEEK hides the menu until a tap, COPY puts the picks on the
     clipboard as `KEY #rrggbb` lines, RESET ALL asks twice; headless runs and other builds keep
-    no picks), the feed
+    no picks), `terms.gd` (the one table of every term the keywords list defines, its icon and
+    its colour group, read by the die's marks, the chips and the text, and the matcher that
+    finds the terms in shown text), `keyword_tip.gd` (a term's entry, opened by a tap on it in
+    any text), the feed
     effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`), and the
     skirmish's field (29 October): `hud_backdrop.gd` lays it, `battle_backdrop.gd` paints its
     far part, the other world as a battle screen's backdrop in each domain's palette, and
@@ -348,7 +351,8 @@ python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squa
 python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain_1.json build/chain_2.json build/chain_3.json
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
-# poses the screen first. Skirmish: codex, mechcodex, pair and pair_spread (a Gel's halves in its slot, and a
+# poses the screen first. Skirmish: codex, mechcodex, termtip (the first machine's codex with the
+# first term its passive names opened, as a tap opens it), pair and pair_spread (a Gel's halves in its slot, and a
 # Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die's; RIFTGATE_HOLD_ENTRY=<place>
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
 # and the first foe's: gauges, chips, a foe's intent), confirm, lock, repick (a foe whose machine falls first, a
@@ -409,7 +413,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_OUTLINE=<n> sets the battle map's machine outline width in design pixels, the same at every zoom, for a comparison
 # (Map3D.OUTLINE is the default). A debug build's TRACES toggle draws the map without its traces (the creases on the
 # machines, the props and the gate, one device pixel at every zoom), to judge the grain zoomed out on the phone; on the
-# desk, RIFTGATE_TUNE=1's TRACE knob does the same live.
+# desk, RIFTGATE_TUNE=1's TRACE knob does the same live. A debug build's KEYWORD INK sets the terms in shown text
+# bold in ink with their icons alone in their colour, against the words in their colour, to compare on the phone.
 # RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.
 # RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
 # capture goes through the project's own stretch and font oversampling as the phone's does:

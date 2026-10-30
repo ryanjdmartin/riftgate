@@ -207,7 +207,14 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   and its extra strike each say so. No source is listed. The whole die is in the codex (double-tap the machine). **The keywords list**, in
   the pause menu and behind KEYWORDS between End turn and Withdraw (pressable over an open
   codex), gives every reach, keyword, rule and status the dice and chips print, with its codex
-  line.
+  line. Wherever shown text names one of those terms (the holds, the readouts, the codex, the
+  list itself), it reads bold in its colour with its icon before it, and a tap on it opens its
+  entry beside the word, where its own terms open theirs; a tap anywhere else closes it. A term
+  wears one colour on the die, on its chip and in text, its group's: heat's red-orange for
+  fire, heat and what hits harder, the shield's blue for what protects or holds, the enemy's
+  violet for what only a foe does, the red-red for harm (Exposed, a destroyed component), the
+  hull's colour for a price in hull, and ink for a shape, a reach or a rule; never the HUD
+  colour.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.

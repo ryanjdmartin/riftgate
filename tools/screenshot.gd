@@ -83,6 +83,15 @@ func _apply_pose() -> void:
 			s._on_foe_double_tapped(s._foe_view_for(s.sk.front[0]))
 		"mechcodex":
 			s._on_mech_double_tapped(0)
+		"termtip":
+			# A term's tip (30 October): the first machine's codex, then the first term its passive
+			# names opened as a tap on it opens it, once the plate has laid out (RIFTGATE_TEAM
+			# chooses the machine).
+			s._on_mech_double_tapped(0)
+			_later(2, func() -> void:
+				var r: EntryReadout = s._codex._passives
+				if not r._hits.is_empty():
+					r.open_tip(r._hits[0]["terms"], r._hits[0]["rect"]))
 		"pair", "pair_spread":
 			# The Gel's pair (26 October): the first Gel on the front falls and its halves stand
 			# in its slot (RIFTGATE_FOES=gel:2,goblin:3); pair_spread holds a Spread weapon over
@@ -524,6 +533,13 @@ func _apply_quick_pose() -> void:
 					r.finish_fight()
 				s._choice = 1
 			s._refresh()
+
+
+## Run `f` `frames` frames on, once the containers have laid out what a pose opened.
+func _later(frames: int, f: Callable) -> void:
+	for i in range(frames):
+		await process_frame
+	f.call()
 
 
 func _tick() -> void:

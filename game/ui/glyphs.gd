@@ -74,6 +74,19 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"blank":
 			ci.draw_line(c + Vector2(-s, -s), c + Vector2(s, s), color, width)
 			ci.draw_line(c + Vector2(-s, s), c + Vector2(s, -s), color, width)
+		"swap":
+			# Swap (the Dingo's Combat Translocator, 30 October): two arrows passing, one each way,
+			# two places trading what stands in them.
+			ci.draw_line(c + Vector2(-s * 0.85, -s * 0.38), c + Vector2(s * 0.85, -s * 0.38), color, width)
+			ci.draw_line(c + Vector2(s * 0.85, -s * 0.38), c + Vector2(s * 0.42, -s * 0.8), color, width)
+			ci.draw_line(c + Vector2(s * 0.85, s * 0.38), c + Vector2(-s * 0.85, s * 0.38), color, width)
+			ci.draw_line(c + Vector2(-s * 0.85, s * 0.38), c + Vector2(-s * 0.42, s * 0.8), color, width)
+		"cooldown":
+			# A cooldown (30 October): a clock face, its hands at twelve and three, the rounds an
+			# entry stays dark.
+			ci.draw_arc(c, s * 0.88, 0.0, TAU, 24, color, width)
+			ci.draw_line(c, c + Vector2(0, -s * 0.58), color, width)
+			ci.draw_line(c, c + Vector2(s * 0.46, 0), color, width)
 		"warning":
 			# A hazard triangle with its bar and dot: the hexes a pack can strike the gate from.
 			var tri := PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.95, s * 0.75), c + Vector2(-s * 0.95, s * 0.75), c + Vector2(0, -s)])
@@ -446,24 +459,27 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_rect(Rect2(c - Vector2(s, s), Vector2(size, size)), color, false, width)
 
 
-## The colour a chip for this glyph takes. Most sit in the HUD colour; effects that mean
-## damage or danger take their own, so a burn reads as fire at a glance and related effects
-## can share a shape in different colours: heat's for what heats or hits harder, the enemy's
-## violet for a foe's doing, the red-red for a death, the hull's for what costs hull.
+## The colour a mark for this id takes: a term's, by its group in the one table (Terms), so the
+## die's keyword marks, the chips and the text agree, never the HUD colour (Ryan, 30 October:
+## "Stay away from HUD colour"); a mark that is no term keeps its own: heat's for what heats, the
+## enemy's violet for a foe's doing, the red-red for a death, white for a written-out rule, and
+## the HUD colour for the chrome's own marks (a lock).
 static func colour_for(id: String) -> Color:
+	if Terms.has(id):
+		return Terms.colour(id)
 	match id:
-		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin", "mine", "primed":
+		"self", "ally":
+			return Terms.colour("targets")   # whom a piece reaches
+		"exposed":
+			return Terms.colour("exposure")
+		"overcharge", "heat", "scorch", "devour", "spin", "mine":
 			return Palette.HEAT
-		"shieldbreak", "corrupt", "silence":
+		"shieldbreak", "silence":
 			return Palette.ENEMY
 		"skull":
 			return Palette.LOSS
-		"volatile":
-			return Palette.HULL
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward", "dispel":
-			return Palette.SHIELD
 		_:
 			return Palette.HUD
 

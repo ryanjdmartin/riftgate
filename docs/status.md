@@ -25,9 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 824 tests, 206,867 checks, green on `claude/jolly-lovelace-scn82y` (30 October: main's head, where the
-  branch landed with `claude/charming-rubin-h954bp`'s model rebuilds in, and the passive line in ink
-  after it, on Godot 4.8-beta2), about four minutes
+- Tests: 832 tests, 207,594 checks, green on `claude/jolly-lovelace-scn82y` (30 October: main's head, where the
+  branch landed with `claude/charming-rubin-h954bp`'s model rebuilds in, then the passive line in ink
+  and the keywords in text after it, on Godot 4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -50,8 +50,9 @@ backdrop on the map's palettes, the minty GREEN and the COLOURS page cut to what
 took main twice on 30 October (the tilesets, the pacing session and the foes' fresh start; then
 `claude/charming-rubin-h954bp`'s model rebuilds as they landed, the fitted die worn on the pins
 inside the map compositor's outline), and main took it on 30 October on Ryan's word ("merge
-this into main"); its bible is v0.399 (the page's 411). One commit stands past main since (the
-codex's passive line in ink), for main on his word.
+this into main"); its bible is v0.404 (the page's 416). Two commits stand past main since (the
+codex's passive line in ink; the keywords in their colour with their icons, a tap opening each),
+for main on his word.
 
 `claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
 the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
@@ -207,8 +208,15 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   is in play: the presets, the enemy's four violets (the routes and the rift's bars and tears
   wear the violet itself) and the meanings; the old other-world drawing in TerrainArt is gone.
   The codex's passive line reads in ink since ("the passive line can go in normal colour"; it
-  wore heat's colour, the old accent), and keywords highlighted in shown text with their icons
-  are his next ask, in discussion (the to-do once agreed).
+  wore heat's colour, the old accent). Then the keywords, his calls the same evening ("Try bold
+  in the colour first, and I'll judge"; "standardize the keyword colours"; "Tapping a keyword is
+  exactly what we need"): every term the keywords list defines reads bold in its colour with its
+  icon wherever shown text names it (the holds, the readouts, the codex, the list itself), and a
+  tap opens its entry beside the word (`KeywordTip`); one table (`Terms`) gives each term its
+  icon and its colour group, the die's marks, the chips and the text alike, never the HUD colour
+  (Chain moved to heat; Cryo, Suppressed and Guarded to the blue; Exposed's die mark to the
+  red-red; Spread, Rapid and the plain shapes to ink). A debug build's KEYWORD INK compares the
+  words in ink. His thought, open: the KEYWORDS button retired to the menu now terms open in place.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -592,19 +600,22 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.399 (the
-  page's version 411, published 30 October from `claude/jolly-lovelace-scn82y` as main took it:
-  the minty GREEN, the COLOURS page cut to what is in play and the lava kept, three-way merged
-  onto the live v0.398 at 410 (the tracks' notes), itself onto `claude/charming-rubin-h954bp`'s
-  v0.397 at 409 as main took it; each publish before it merged the same way, as this file's
-  history in git shows). So this file carries rows other sessions published ahead of their code
-  (the tracks in pairs, and the notes on Hold The Line and Night Shift), each landing with its
-  branch. The version numbers on the publishing branch's file and the live agree after every
-  publish. Before republishing, read the live page; if another session moved it, publish a
-  three-way merge onto it (`git merge-file` with the last-published file as the base, the
-  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
-  With the model rebuilds landed, the keyword table's Strikes row is main's own, and the tables
-  script, which writes the buff, debuff and keyword tables from main's content, runs freely again.
+  `docs/design-bible.html` after every change. This file and the live page are v0.404 (the
+  page's version 416, published 30 October from `claude/jolly-lovelace-scn82y`: the keywords in
+  their colour with their icons and a tap's tip, the blue's meaning and the KEYWORDS button's
+  question, three-way merged onto the live v0.403 at 415, which another session moved past this
+  branch's v0.399 at 411 with the bosses' slate (Swallow, Steal, Follow-up, its seven bosses and
+  their tables) and a halo for lit parts; each publish before it merged the same way, as this
+  file's history in git shows). So this file carries rows other sessions published ahead of
+  their code (the bosses' slate, the tracks in pairs, the notes on Hold The Line and Night Shift),
+  each landing with its branch; the slate's branch brings new terms (Swallowed among them) that
+  need their rows in `game/ui/terms.gd` as it lands, which a test holds. The version numbers on
+  the publishing branch's file and the live agree after every publish. Before republishing, read
+  the live page; if another session moved it, publish a three-way merge onto it (`git merge-file`
+  with the last-published file as the base, the wrapper's first line and its trailing
+  `</body></html>` stripped from the saved live source). The tables script writes the buff,
+  debuff and keyword tables from this branch's content, so it waits until the slate lands or it
+  drops the slate's rows.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's

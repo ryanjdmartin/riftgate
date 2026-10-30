@@ -3835,3 +3835,27 @@ night, the pools the bog's water and moss. The enemy's violet drawn bare over ea
 body (luminance contrast / ΔE, the worst simulation, the old lake in brackets): the plains'
 #3366ff 1.88 / 17 (#3f78dc 1.83 / 16), the Waste's #339999 1.51 / 19 (#2e8cbc 1.64 / 13), the
 Marsh's #003333 6.40 / 56 (#3e4e46 4.18 / 46), the Peak's crust #330000 8.67 / 62 (7.61 / 60).
+
+## 30 October, the meanings as text on the codex's plate
+
+**Keywords in their colour** (the decision it informs: whether a term's word wears its colour or
+ink, Ryan's "Try bold in the colour first, and I'll judge"). Method: luminance contrast of each
+meaning drawn as text on the codex's plate (#0c100c), in normal vision and the three Machado
+simulations, the worst case read; on a raised plate (#121812) each stands a few tenths lower.
+
+| Colour | Normal | Protan | Deutan | Tritan | Worst |
+|---|---|---|---|---|---|
+| ink #f2f4ee | 17.3 | 17.3 | 17.3 | 17.3 | 17.3 |
+| heat #ff4000 | 5.5 | 3.7 | 6.6 | 4.9 | 3.7 |
+| the shield's blue #2f63d8 | 3.6 | 4.1 | 3.4 | 4.1 | 3.4 |
+| the enemy's violet #c8a4ff | 9.3 | 9.3 | 9.4 | 9.5 | 9.3 |
+| the red-red #ff0000 | 4.8 | 3.0 | 6.0 | 4.8 | 3.0 |
+| the hull's #d8d2c4 | 12.7 | 12.6 | 12.8 | 12.7 | 12.6 |
+| GAIN #5cff6a | 14.6 | 15.5 | 13.8 | 14.3 | 13.8 |
+| the muted grey #7b857c | 5.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+
+The three darker meanings sit under the plate's quietest text, the flavour quote's muted grey
+(5.0): heat 3.7, the shield's blue 3.4 and the red-red 3.0 at their worst, where the violet, the
+hull's colour and ink read freely. None can simply be lightened: a lighter blue nears the violet
+for red-green vision (the reason the shield stayed dark) and a lighter heat reads green to Ryan.
+Drawn as icons at the chips' size, the three clear the 3:1 a graphic wants, the red-red at it.

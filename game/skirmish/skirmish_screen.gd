@@ -1410,32 +1410,32 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["skull", "", "Destroyed this round, as the round stands", Palette.LOSS, "preview"])
 	var tick := Effects.tick_preview(foe)
 	if foe.burn_stacks() > 0:
-		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % (int(tick["hp"]) - int(tick["share"])), Palette.HEAT])
+		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % (int(tick["hp"]) - int(tick["share"])), _foe_chip_colour("burning")])
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
-		rows.append(["vitriol", str(vitriol), "Vitriol: loses %d at its action (%d%% of its current HP a stack, %d stack%s), past armour, after Burning, then a stack fades; it never finishes a foe" % [int(tick["share"]), Effects.status_value("vitriol", "tick_hp_share"), vitriol, "" if vitriol == 1 else "s"], Palette.HEAT])
+		rows.append(["vitriol", str(vitriol), "Vitriol: loses %d at its action (%d%% of its current HP a stack, %d stack%s), past armour, after Burning, then a stack fades; it never finishes a foe" % [int(tick["share"]), Effects.status_value("vitriol", "tick_hp_share"), vitriol, "" if vitriol == 1 else "s"], _foe_chip_colour("vitriol")])
 	var flak := Effects.stacks_of(foe, "flakked")
 	if flak > 0:
 		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow of a
 		# weapon it takes deals, and what its clock keeps into the next round (the status names
 		# the clock).
 		var halves := Effects.status_decay(Effects.STATUS["flakked"]) == Effects.DECAY_HALF
-		rows.append(["flak", str(flak), "Flak: +%d to every weapon's blow, a point a stack; %s (%d)" % [flak, "at the end of the round the stacks halve" if halves else "a stack fades at its action", Effects.stacks_next_round(Effects.STATUS["flakked"], flak)], Palette.HEAT])
+		rows.append(["flak", str(flak), "Flak: +%d to every weapon's blow, a point a stack; %s (%d)" % [flak, "at the end of the round the stacks halve" if halves else "a stack fades at its action", Effects.stacks_next_round(Effects.STATUS["flakked"], flak)], _foe_chip_colour("flakked")])
 	var cryo := Effects.stacks_of(foe, "cryoed")
 	if cryo > 0:
 		# The Armadillo's mark (20 October; its chip from 21 October): what a weapon's hit on it
 		# cools the hitter, the stacks it spends.
-		rows.append(["cryo", str(cryo), "Cryo: cools the hitter %d heat (%d a stack) when a weapon hits it, spending every stack" % [cryo * Skirmish.cryo_cool(), Skirmish.cryo_cool()], Palette.HUD])
+		rows.append(["cryo", str(cryo), "Cryo: cools the hitter %d heat (%d a stack) when a weapon hits it, spending every stack" % [cryo * Skirmish.cryo_cool(), Skirmish.cryo_cool()], _foe_chip_colour("cryoed")])
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
 		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
 		var caught := sk.web_catch(foe)
 		var mark := "" if caught == null else (">" if caught.column > foe.column else "<")
 		var who := ", and nobody stands beside it" if caught == null else " and %s beside it%s" % [caught.display_name, ", which has acted and loses its next" if caught.column < foe.column else ""]
-		rows.append(["web", mark, "Webbed: at the end of its action the web bursts, Suppressing it (its next action)%s" % who, Palette.SHIELD])
+		rows.append(["web", mark, "Webbed: at the end of its action the web bursts, Suppressing it (its next action)%s" % who, _foe_chip_colour("webbed")])
 	if foe.is_suppressed():
-		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+		rows.append(["suppress", "", "Suppressed: loses its action this round", _foe_chip_colour("suppressed")])
 	if not foe.last_act().is_empty():
 		# A last act (15 October): the skull and what it lands the moment the foe falls.
 		var la := foe.last_act()
@@ -1443,7 +1443,7 @@ func _foe_rows(foe: Foe) -> Array:
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
-		rows.append(["lock", "", "Guarded: takes no damage while %s" % ("all its parts stand" if foe.guard == "all" else "any of its parts stands"), Palette.HUD])
+		rows.append(["lock", "", "Guarded: takes no damage while %s" % ("all its parts stand" if foe.guard == "all" else "any of its parts stands"), _foe_chip_colour("guarded")])
 	if foe.gathering():
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
@@ -1452,10 +1452,10 @@ func _foe_rows(foe: Foe) -> Array:
 		# Armoured, the machines' status (16 October; Braced until 18 October): their chip's
 		# glyph, with the armour every grant adds (its own brace, a Protect).
 		var arm := Effects.foe_armour_bonus(foe)
-		rows.append([status_glyph("braced"), "+%d" % arm, "%s: armour +%d until its next action" % [Effects.STATUS["braced"]["name"], arm], Palette.SHIELD])
+		rows.append([status_glyph("braced"), "+%d" % arm, "%s: armour +%d until its next action" % [Effects.STATUS["braced"]["name"], arm], _foe_chip_colour("braced")])
 	if Effects.has(foe, "kindled"):
 		var kindled := Effects.foe_attack_bonus(foe)
-		rows.append(["overcharge", "+%d" % kindled, "Kindled: its next move hits %d harder, then it is spent (a special gains nothing from it; a countdown carries it to its blow)" % kindled, Palette.HEAT])
+		rows.append(["overcharge", "+%d" % kindled, "Kindled: its next move hits %d harder, then it is spent (a special gains nothing from it; a countdown carries it to its blow)" % kindled, _foe_chip_colour("kindled")])
 	# A rally on its way (Ryan, 26 October: "a pulsing version of the incoming buff as a preview
 	# chip, so the player knows it's incoming and that's the reason for the increased damage"):
 	# the Kindled the rallies will land before its blow, already in the number its intent
@@ -1469,9 +1469,9 @@ func _foe_rows(foe: Foe) -> Array:
 		for r in sk.rallies_on(foe):
 			who.append(r.display_name)
 		var from := ", ".join(who) if not who.is_empty() else "nobody (RIFTGATE_PREVIEW_DEBUG)"
-		rows.append(["overcharge", "+%d" % maxi(1, coming), "Kindled on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], Palette.HEAT, "preview"])
+		rows.append(["overcharge", "+%d" % maxi(1, coming), "Kindled on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], _foe_chip_colour("kindled"), "preview"])
 	if Effects.has(foe, "risen"):
-		rows.append(["star", "", "Getting back up: returns from the pool once after dying", Palette.ENEMY])
+		rows.append(["star", "", "%s: returns from the pool once after dying" % Effects.STATUS["risen"]["name"], _foe_chip_colour("risen")])
 	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
 	# flame, the shield with its wall or its struck ring, the heart regrowing.
 	var primed := Effects.stacks_of(foe, "primed")
@@ -1491,22 +1491,22 @@ func _foe_rows(foe: Foe) -> Array:
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()
-		rows.append(["paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox: %d%s; at the count its past self knocks it out (Suppressed), and the Paradox clears" % [paradox, " of %d" % at if at > 0 else ""], Palette.SHIELD])
+		rows.append(["paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox: %d%s; at the count its past self knocks it out (Suppressed), and the Paradox clears" % [paradox, " of %d" % at if at > 0 else ""], _foe_chip_colour("paradox")])
 	if Effects.has(foe, "shocked"):
-		rows.append(["shocked", "×2", "Shocked: the next weapon strike aimed at it lands double", Palette.HEAT])
+		rows.append(["shocked", "×2", "Shocked: the next weapon strike aimed at it lands double", _foe_chip_colour("shocked")])
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
-		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a buff or a debuff (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time, 10%% a stack, a stack less each of its turns (%d to go)" % [foe.resist_total(), numbed], Palette.SHIELD, "resist"])
+		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a buff or a debuff (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time, 10%% a stack, a stack less each of its turns (%d to go)" % [foe.resist_total(), numbed], _foe_chip_colour("numbed"), "resist"])
 	if Effects.has(foe, "syrinx_drone"):
 		# The Syrinx Drone (the Lammergeier's, 21 October): its own chip, the killing shot to come.
 		var drone: Dictionary = Effects.STATUS["syrinx_drone"]
-		rows.append(["syrinx_drone", "", "%s: %s" % [drone["name"], drone["description"]], Palette.HUD])
+		rows.append(["syrinx_drone", "", "%s: %s" % [drone["name"], drone["description"]], _foe_chip_colour("syrinx_drone")])
 	if Effects.has(foe, "exposure"):
 		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed. The
 		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26
 		# October: a chip for it "steps on the debuff and is very confusing"); a dragged Direct
 		# weapon lighting it says it is in reach.
-		rows.append(["exposed", "0", "Exposed: in every machine's Direct reach, and its armour counts for nothing, through the next round", Palette.LOSS])
+		rows.append(["exposed", "0", "Exposed: in every machine's Direct reach, and its armour counts for nothing, through the next round", _foe_chip_colour("exposure")])
 	# Every status the round will land on it (Ryan, 26 October: "All incoming chips should appear
 	# as pulsing opacity versions"): the copy's grants, each a chip pulsing on a dashed edge with
 	# the stacks it gains, beside the skull when the round kills it, since one may be the cause.
@@ -1560,17 +1560,10 @@ static func _foe_glyph(id: String) -> String:
 	return status_glyph(id)
 
 
-## A foe's status's colour on its chip, as the rows above give them.
+## A foe's status's colour on its chip: its term's, by its group (Terms, the one table the die,
+## the chips and the text read; Ryan, 30 October: "standardize the keyword colours").
 static func _foe_chip_colour(id: String) -> Color:
-	if id in ["burning", "vitriol", "flakked", "kindled", "shocked", "primed"]:
-		return Palette.HEAT
-	if id in ["webbed", "braced", "numbed", "paradox", "barrier", "ward"]:
-		return Palette.SHIELD
-	if id == "risen":
-		return Palette.ENEMY
-	if id == "exposure":
-		return Palette.LOSS
-	return Palette.HUD
+	return Terms.status_colour(id)
 
 
 ## The glyph a machine's status wears on its chip.
@@ -1621,16 +1614,13 @@ static func status_glyph(id: String) -> String:
 
 ## Statuses and warnings on a mech as [glyph, chip text, readout text, colour]. Warnings come
 ## from the forecast: what the end of the round does if nothing changes.
-## A machine status's colour on its chip, or on a capped store's boxes: the heat's for what heats
-## or hits harder, the enemy's for what a foe did to it, the shield's for armour and wards.
+## A machine status's colour on its chip, or on a capped store's boxes: its term's (Terms), the
+## Nemesis's rage, a store the keywords list holds no term for, in heat's, and any other in ink,
+## never the HUD colour (Ryan, 30 October: "Stay away from HUD colour").
 static func _chip_colour(id: String) -> Color:
-	if id in ["burning_mech", "scorched", "overcharged", "primed", "rage", "spun_up", "siphoning"]:
+	if id == "rage":
 		return Palette.HEAT
-	if id.begins_with("corrupted") or id == "silenced":
-		return Palette.ENEMY
-	if id in ["braced", "retaliate", "barrier", "ward"]:
-		return Palette.SHIELD
-	return Palette.HUD
+	return Terms.status_colour(id)
 
 
 func _mech_rows(i: int) -> Array:
@@ -1644,7 +1634,7 @@ func _mech_rows(i: int) -> Array:
 		rows.append(["reroll", "×%d" % ms.free_rerolls, "A free reroll of this die alone this round: lock the others and press REROLL", Palette.HUD])
 	var damaged := ms.unit.damaged_component_count()
 	if damaged > 0:
-		rows.append(["crack", str(damaged), "%d destroyed component%s" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
+		rows.append(["crack", str(damaged), "%d destroyed component%s" % [damaged, "" if damaged == 1 else "s"], Terms.colour("destroyed_component")])
 	# An on_foe_status passive is live all fight, so it reads here as an active effect (Ryan,
 	# 28 September); its count is the chip (the Paradox meter, 10 October).
 	var meter := Effects.paradox(ms.unit)
@@ -1654,7 +1644,7 @@ func _mech_rows(i: int) -> Array:
 			for eff in m.effects:
 				if str(eff.get("trigger", "")) == "on_foe_status" and not loop_names.has(m.name):
 					loop_names.append(m.name)
-		rows.append(["paradox", str(meter[1]), "%s: a foe gaining any status but Paradox gains Paradox; at %d its past self knocks it out (Suppressed), and the Paradox clears" % [", ".join(loop_names), meter[1]], Palette.SHIELD])
+		rows.append(["paradox", str(meter[1]), "%s: a foe gaining any status but Paradox gains Paradox; at %d its past self knocks it out (Suppressed), and the Paradox clears" % [", ".join(loop_names), meter[1]], Terms.colour("paradox")])
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
 	# the fight's statuses live here, as chips that the hold expands into their descriptions),
 	# and every status whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so

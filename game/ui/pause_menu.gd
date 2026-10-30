@@ -148,6 +148,7 @@ func _show_page(page: String) -> void:
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
 				_toggle("TRACES", "traces")   # the map's creases, one device pixel at every zoom: off draws none, to judge the zoomed-out grain on the phone
+				_toggle("KEYWORD INK", "keyword_ink")   # a term in shown text bold in ink, its icon in its colour, against the word in its colour (Ryan judges which)
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"colours":
@@ -408,7 +409,9 @@ static func glossary(db: ContentDB) -> Array:
 	return out
 
 
-## The keywords page's scroller: a heading a kind, then each term's name over its codex line.
+## The keywords page's scroller: a heading a kind, then each term's icon and name in its colour
+## over its codex line (Terms; Ryan, 30 October), the terms a line names highlighted and opening
+## their own entries where they stand (KeywordTip), as everywhere.
 func _keywords_list() -> ScrollContainer:
 	var sc := _scroller()
 	var col: VBoxContainer = sc.get_child(0)
@@ -417,13 +420,8 @@ func _keywords_list() -> ScrollContainer:
 		var head := Hud.label(str(kind["title"]), 15, Palette.HUD, Hud.mono())
 		col.add_child(head)
 		for e in kind["entries"]:
-			var term := VBoxContainer.new()   # a name over its line, close together
-			term.add_theme_constant_override("separation", 0)
-			term.add_child(Hud.label(str(e[0]), 20, Palette.INK, Hud.display_bold()))
-			var codex := Hud.label(str(e[1]), 17, Palette.INK.lerp(Palette.MUTED, 0.35))
-			codex.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			codex.custom_minimum_size = Vector2(width, 0)   # a wrapping label needs its width before its first layout
-			term.add_child(codex)
+			var term := EntryReadout.new()   # a name over its line, close together
+			term.set_lines([EntryReadout.term_line(str(e[2])), EntryReadout.prose_line(str(e[1]), 17, Palette.INK.lerp(Palette.MUTED, 0.35))], width)
 			col.add_child(term)
 	return sc
 

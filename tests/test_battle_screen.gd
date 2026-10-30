@@ -451,7 +451,7 @@ func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
 	assert_true(s._codex.visible, "the codex opens for a pack")
 	assert_eq(s._codex._title.text, sq.display_name, "headed by the pack")
 	assert_true(s._codex._sub.text.contains("×%d" % sq.strength), "with its strength in the subtitle")
-	assert_true(not s._codex._body.text.is_empty(), "and its foe type's codex text")
+	assert_true(not s._codex._body.text().is_empty(), "and its foe type's codex text")
 	s._codex.close()
 	s.free()
 

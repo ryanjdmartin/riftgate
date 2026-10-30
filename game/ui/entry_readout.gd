@@ -16,6 +16,13 @@ extends Control
 ## weapon's smaller blow and its extra strike each say so ("Skua should have down on the damage
 ## and up on the count"), and it reads without the hue. What a keyword means is the keywords list's (the pause menu,
 ## and the button under the eye). No flavour yet.
+##
+## A term the keywords list defines reads bold in its colour with its icon before it, wherever
+## shown text names it (Ryan, 30 October: "in codex and help text, we should be highlighting
+## keywords in their colour when applicable, and even including the iconography"; "Try bold in
+## the colour first, and I'll judge"), the colour and the icon the one table's (Terms); a tap on
+## it opens its entry where it stands (KeywordTip; "Tapping a keyword is exactly what we need").
+## The readout claims a tap on a term alone, so every other tap falls through as it did.
 
 ## The content width at the readout's panel width (460, less the panel's margins).
 const WIDTH := 432.0
@@ -27,15 +34,29 @@ const BAR_W := 220.0
 const BAR_H := 13.0
 const CHIP := 22.0        # a chip's box, its text beside it
 const CHIP_INDENT := 32.0
+const ICON := 0.86        # a term's icon, a share of its text's size
+const ICON_GAP := 3.0     # between a term's icon and its word
+const TAP_GROW := 6.0     # a term's tap area past its word, for a thumb
+const TAP_SLOP := 14.0    # how far a press may travel and still be a tap
 
 var lines: Array = []   # the readout as built, each {style, text, parts, place}: what tests read
-var _words: Array = []  # the words as laid out, each {text, font, px, ink, at, arrow, w}
+var _words: Array = []  # the words as laid out, each {text, font, px, ink, at, arrow, w, icon, glyph, terms}
 var _bars: Array = []   # the gauges as laid out, each {rect, frac, colour}
 var _chips: Array = []  # the chips' boxes as laid out, each {rect, glyph, colour}
+var _hits: Array = []   # the terms as laid out, each {rect, terms}: where a tap opens one
+var _press_at := Vector2.ZERO
+var _press_terms: Array = []
 
 
 func _init() -> void:
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# A tap lands here on a term alone (_has_point), so the rest falls through to what lies under.
+	mouse_filter = Control.MOUSE_FILTER_PASS
+
+
+## A debug build's comparison (Settings' KEYWORD INK): a term's word in ink, its icon alone in
+## its colour, against the word in its colour.
+static func keyword_ink() -> bool:
+	return OS.is_debug_build() and bool(Settings.display.get("keyword_ink", false))
 
 
 ## The quieter face's ink: halfway from the ink to the muted grey (the tags row).
@@ -382,6 +403,7 @@ func set_lines(list: Array, width: float = WIDTH) -> void:
 	_words.clear()
 	_bars.clear()
 	_chips.clear()
+	_hits.clear()
 	var y := 0.0
 	for i in range(list.size()):
 		var l: Dictionary = list[i]
@@ -422,9 +444,15 @@ static func _spans(l: Dictionary) -> Array:
 				head.append(_span(str(l["type"]), Hud.display(), 17, Palette.INK, 10.0))   # what kind of piece it is on this machine
 			return head
 		"state":
-			return [_span(text, Hud.display_bold(), 18, Palette.INK)]
+			return _marked([_span(text, Hud.display_bold(), 18, Palette.INK)])
 		"codex":
-			return [_span(text, Hud.display(), 17, Palette.INK)]
+			return _marked([_span(text, Hud.display(), 17, Palette.INK)])
+		"term":
+			var id := str(l.get("term", ""))
+			var head := _span(text, Hud.display_bold(), int(l.get("px", 20)), Terms.colour(id))
+			head["glyph"] = Terms.glyph(id)
+			head["glyph_ink"] = Terms.colour(id)
+			return [head]
 		"tags":
 			return [_span(text, Hud.quote(), 17, hint_ink())]
 		"name":
@@ -440,21 +468,69 @@ static func _spans(l: Dictionary) -> Array:
 		"caption":
 			return [_span(text, Hud.mono(), 12, Color(Palette.HUD, 0.75))]
 	# The codex's joined rows a size down from the hold's lines. A moved number is bold in its
-	# trend's ink with its arrow; a part may ask for bold or an ink of its own (a source's).
-	var px := 17 if str(l.get("style", "")).begins_with("row_") or str(l.get("style", "")) in ["named", "chip"] else 18
+	# trend's ink with its arrow; a part may ask for bold or an ink of its own (a source's); a
+	# paragraph (prose_line) brings its own size and ink. A term in a part's words is marked.
+	var px := int(l.get("px", 17 if str(l.get("style", "")).begins_with("row_") or str(l.get("style", "")) in ["named", "chip"] else 18))
+	var plain: Color = l.get("ink", Palette.INK)
 	var out: Array = []
 	for p in l.get("parts", [word(text)]):
 		var trend := int(p.get("trend", 0))
 		var bold := trend != 0 or bool(p.get("bold", false))
-		var sp := _span(str(p["text"]), Hud.display_bold() if bold else Hud.display(), px, trend_ink(p, p.get("ink", Palette.INK)))
+		var sp := _span(str(p["text"]), Hud.display_bold() if bold else Hud.display(), px, trend_ink(p, p.get("ink", plain)))
 		sp["arrow"] = trend
 		sp["glue"] = bool(p.get("glue", false))
-		out.append(sp)
+		if trend == 0:
+			out.append_array(_marked([sp], bool(p.get("icon", true))))
+		else:
+			out.append(sp)   # a moved number is its trend's, never a term
 	return out
 
 
 static func _span(text: String, font: Font, px: int, ink: Color, pad: float = 0.0) -> Dictionary:
 	return {"text": text, "font": font, "px": px, "ink": ink, "pad": pad, "arrow": 0, "glue": false}
+
+
+## Spans with each term in their words cut out as its own span, bold in its colour with its
+## icon before it (unless `icons` is off: a chip's own name, its box beside it), the ids it
+## stands for kept for a tap (Terms.split). The runs keep their spacing: a term against a
+## bracket or a comma stays against it.
+static func _marked(spans: Array, icons: bool = true) -> Array:
+	var out: Array = []
+	for sp in spans:
+		var segs := Terms.split(str(sp["text"]))
+		if segs.size() == 1 and (segs[0]["terms"] as Array).is_empty():
+			out.append(sp)
+			continue
+		var first := true
+		var spaced := false   # the run before ended on a space
+		for seg in segs:
+			var t := str(seg["text"])
+			var bare := t.strip_edges()
+			if bare.is_empty():
+				spaced = true
+				continue
+			var sub: Dictionary = sp.duplicate()
+			sub["text"] = bare
+			sub["pad"] = float(sp["pad"]) if first else 0.0
+			sub["glue"] = bool(sp["glue"]) if first else not (spaced or t.begins_with(" "))
+			var terms: Array = seg["terms"]
+			if not terms.is_empty():
+				var c := Terms.colour(str(terms[0]))
+				sub["font"] = Hud.display_bold()
+				sub["ink"] = Palette.INK if keyword_ink() else c
+				sub["terms"] = terms
+				if icons:
+					sub["glyph"] = Terms.glyph(str(terms[0]))
+					sub["glyph_ink"] = c
+			out.append(sub)
+			first = false
+			spaced = t.ends_with(" ")
+	return out
+
+
+## A term's icon's width before its word at `px`, the gap after it in.
+static func icon_width(px: float) -> float:
+	return px * ICON + ICON_GAP
 
 
 ## A gauge: its label, its bar filled to what it holds, then its numbers, a maximum something
@@ -492,15 +568,34 @@ static func bar_line(label: String, now: int, top: int, own_top: int, colour: Co
 
 
 ## A chip's line for the unit holds: its glyph boxed in its colour, then what it says, the name
-## before the first colon in bold.
+## before the first colon in bold (no icon of its own beside it: the chip's box is its icon).
 static func chip_line(glyph: String, colour: Color, text: String) -> Dictionary:
 	var cut := text.find(": ")
-	var parts: Array = [word(text)] if cut < 0 else [{"text": text.substr(0, cut + 1), "trend": 0, "gain": false, "bold": true}, word(text.substr(cut + 2))]
+	var parts: Array = [word(text)] if cut < 0 else [{"text": text.substr(0, cut + 1), "trend": 0, "gain": false, "bold": true, "icon": false}, word(text.substr(cut + 2))]
 	var l := parts_line("chip", parts)
 	l["glyph"] = glyph
 	l["colour"] = colour
 	l["text"] = text
 	return l
+
+
+## A paragraph of shown text (a passive, a module's line, a term's line in the keywords list),
+## its terms highlighted, at `px` in `ink`; with `bold_head`, the name before its first colon in
+## bold, as a chip's.
+static func prose_line(text: String, px: int = 17, ink: Color = Palette.INK, bold_head: bool = false) -> Dictionary:
+	var cut := text.find(": ") if bold_head else -1
+	var parts: Array = [word(text)] if cut < 0 else [{"text": text.substr(0, cut + 1), "trend": 0, "gain": false, "bold": true}, word(text.substr(cut + 2))]
+	var l := parts_line("prose", parts)
+	l["px"] = px
+	l["ink"] = ink
+	l["text"] = text
+	return l
+
+
+## A term's head (the keywords list's, a tip's): its icon and its name, bold in its colour.
+static func term_line(id: String, px: int = 20) -> Dictionary:
+	var name := str(Terms.entry(id).get("name", id))
+	return {"style": "term", "term": id, "text": name, "parts": [], "place": "", "px": px}
 
 
 ## The width an arrow takes beside a number at `px`.
@@ -518,18 +613,23 @@ func _flow(spans: Array, width: float, y: float, indent: float = 0.0) -> float:
 		var px: int = sp["px"]
 		var space := font.get_string_size(" ", HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 		var words: PackedStringArray = [str(sp["text"])] if int(sp["arrow"]) != 0 else str(sp["text"]).split(" ", false)
+		var glyph := str(sp.get("glyph", ""))
+		var terms: Array = sp.get("terms", [])
 		var first := true
 		for w in words:
 			var ww := font.get_string_size(w, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 			if int(sp["arrow"]) != 0:
 				ww += arrow_width(px)
+			var icon := icon_width(px) if first and not glyph.is_empty() else 0.0   # a term's icon before its first word
+			ww += icon
 			var lead := 0.0 if row.is_empty() or (first and bool(sp["glue"])) else space + (float(sp["pad"]) if first else 0.0)
 			if not row.is_empty() and x + lead + ww > width:
 				y = _commit(row, y) + LEADING
 				row = []
 				x = indent
 				lead = 0.0
-			row.append({"text": w, "font": font, "px": px, "ink": sp["ink"], "x": x + lead, "w": ww, "arrow": sp["arrow"]})
+			row.append({"text": w, "font": font, "px": px, "ink": sp["ink"], "x": x + lead, "w": ww, "arrow": sp["arrow"],
+				"icon": icon, "glyph": glyph if icon > 0.0 else "", "glyph_ink": sp.get("glyph_ink", sp["ink"]), "terms": terms})
 			x += lead + ww
 			first = false
 	if not row.is_empty():
@@ -549,6 +649,8 @@ func _commit(row: Array, y: float) -> float:
 		w["top"] = y
 		w["height"] = ascent + descent
 		_words.append(w)
+		if not (w.get("terms", []) as Array).is_empty():
+			_hits.append({"rect": Rect2(Vector2(float(w["x"]), y), Vector2(float(w["w"]), ascent + descent)), "terms": w["terms"]})
 	return y + ascent + descent
 
 
@@ -564,9 +666,73 @@ func _draw() -> void:
 		Glyphs.draw(self, str(c["glyph"]), r.get_center(), 13, c["colour"], 1.7)
 	for w in _words:
 		var at: Vector2 = w["at"]
+		var icon := float(w.get("icon", 0.0))
+		if icon > 0.0:
+			# A term's icon, centred on the text's middle as the arrow is, in its colour.
+			var px := float(w["px"])
+			Glyphs.draw(self, str(w["glyph"]), Vector2(at.x + px * ICON * 0.5, at.y - px * 0.36), px * ICON, w["glyph_ink"], maxf(1.4, px * 0.1))
+			at = Vector2(at.x + icon, at.y)
 		draw_string(w["font"], at, w["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, w["px"], w["ink"])
 		if int(w["arrow"]) != 0:
-			draw_arrow(self, Vector2(at.x + float(w["w"]) - arrow_width(float(w["px"])) + ARROW_GAP, at.y), float(w["px"]), int(w["arrow"]), w["ink"])
+			draw_arrow(self, Vector2(at.x + float(w["w"]) - icon - arrow_width(float(w["px"])) + ARROW_GAP, at.y), float(w["px"]), int(w["arrow"]), w["ink"])
+
+
+## The terms under `point`, in the readout's own space; none off them.
+func terms_at(point: Vector2) -> Array:
+	for h in _hits:
+		if (h["rect"] as Rect2).grow(TAP_GROW).has_point(point):
+			return h["terms"]
+	return []
+
+
+## The laid-out rect of the term under `point`.
+func _hit_rect(point: Vector2) -> Rect2:
+	for h in _hits:
+		if (h["rect"] as Rect2).grow(TAP_GROW).has_point(point):
+			return h["rect"]
+	return Rect2(point, Vector2.ZERO)
+
+
+## Only a term takes a tap here; the rest of the readout lets it through to what lies under it.
+func _has_point(point: Vector2) -> bool:
+	return not terms_at(point).is_empty()
+
+
+## A tap on a term opens its tip beside it. In a popup the press is the term's, so the screen
+## under it never reads it as a tap on nothing; in a scrolling plate (the codex, the keywords
+## list) the press goes on, so a drag that starts on a term still scrolls.
+func _gui_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton) or (event as InputEventMouseButton).button_index != MOUSE_BUTTON_LEFT:
+		return
+	var mb := event as InputEventMouseButton
+	if mb.pressed:
+		_press_at = mb.position
+		_press_terms = terms_at(mb.position)
+		if not _press_terms.is_empty() and not _in_scroller():
+			accept_event()
+		return
+	if _press_terms.is_empty():
+		return
+	var ids := _press_terms
+	_press_terms = []
+	if mb.position.distance_to(_press_at) <= TAP_SLOP:
+		accept_event()
+		open_tip(ids, _hit_rect(_press_at))
+
+
+## Open the tip for `ids` beside `rect` (the readout's own space): the tap's way, and the tests'.
+func open_tip(ids: Array, rect: Rect2) -> KeywordTip:
+	var xf := get_global_transform_with_canvas() if is_inside_tree() else Transform2D.IDENTITY
+	return KeywordTip.open(self, ids, xf * rect)
+
+
+func _in_scroller() -> bool:
+	var n := get_parent()
+	while n != null:
+		if n is ScrollContainer:
+			return true
+		n = n.get_parent()
+	return false
 
 
 ## A moved number's arrow, a filled triangle from `left` on the baseline `left.y`, up or down by

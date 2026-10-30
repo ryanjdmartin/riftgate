@@ -506,7 +506,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_true(s._codex.visible, "codex opens for a foe")
 	assert_eq(s._codex._title.text, foe.display_name, "titled with the foe's name")
 	assert_eq(s._codex._sub.text, "THE MARSH", "the domain's name as the subtitle")
-	assert_true(not s._codex._body.text.is_empty(), "foe codex text present")
+	assert_true(not s._codex._body.text().is_empty(), "foe codex text present")
 	assert_true(s._codex._moves.visible and s._codex._moves.text().contains("CLAW"), "implemented moves listed")
 	assert_true(s._codex._moves.text().contains("a kin standing"), "the swarm is said too")
 	assert_true(s._codex._flavour.text.begins_with("“"), "flavour shown as a quote")
@@ -523,12 +523,10 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_true(headless or (s._codex._sprite.visible and s._codex._sprite.texture != null), "head-on model shown")
 	assert_true(s._codex._passives.visible, "sparrowhawk's passive is shown")
 	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", "")).to_lower()
-	var shown := ""
-	for l in s._codex._passives.get_children():
-		shown += (l as Label).text.to_lower() + "\n"
+	var shown := s._codex._passives.text().to_lower()
 	assert_true(not passive_name.is_empty() and shown.contains(passive_name), "by its name from content")
-	var first: Label = s._codex._passives.get_child(0)
-	assert_eq(first.get_theme_color("font_color"), Palette.INK, "the chassis's own passive first, in ink (Ryan, 30 October: \"the passive line can go in normal colour\")")
+	var first: Dictionary = s._codex._passives.lines[0]
+	assert_eq(first.get("ink", Color.BLACK), Palette.INK, "the chassis's own passive first, in ink (Ryan, 30 October: \"the passive line can go in normal colour\")")
 	assert_true(s._codex._faces.visible and s._codex._faces.get_child_count() == s.sk.mechs[2].die.faces.size(), "a row an entry, one column")
 	s._close_codex()
 	s.free()

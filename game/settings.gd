@@ -30,6 +30,7 @@ const DISPLAY_DEFAULTS := {
 	"voice_test": false,   # a debug build's test mode: every one of Jenny's hooks speaks every time
 	"weld": true,   # a debug build's comparison: off, the machines' parts are drawn as authored rather than welded (MechWeld), to judge the battery plan on the phone
 	"traces": true,   # a debug build's comparison: off, the map draws none of its traces (the creases on the machines, the props and the gate), to judge the grain at zoom 1 on the phone
+	"keyword_ink": false,   # a debug build's comparison: on, a term in shown text is bold in ink with its icon in its colour, against the word in its colour (EntryReadout)
 	"aa_mode": "msaa4",   # AA_MODES: the 3D's anti-aliasing (Hud.aa_mode)
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 }

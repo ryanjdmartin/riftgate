@@ -36,11 +36,11 @@ var _scroll: ScrollContainer
 var _title: Label
 var _sub: Label
 var _sprite: TextureRect
-var _body: Label
+var _body: EntryReadout       # the codex text, its terms highlighted
 var _designation: HudButton   # a stamped tag, not a label, so the plate does not read as three stacked lines
 var _stats: StatBlock
 var _view: MechView3D = null   # the spinning model, when mechs are 3D
-var _passives: VBoxContainer   # the chassis's passive, in ink
+var _passives: EntryReadout    # the chassis's passive, in ink, its terms highlighted
 var _effects: EntryReadout     # the active effects: a module's, a reward's, a status the battle keeps
 var _moves: EntryReadout       # a foe's moves, each a name and its lines
 var _faces: VBoxContainer      # the die, a row a component: its tile and its lines
@@ -138,10 +138,8 @@ func _init() -> void:
 	spacer.custom_minimum_size = Vector2(0, 10)
 	head.add_child(spacer)
 	head.add_child(_stats)
-	_passives = VBoxContainer.new()
-	_passives.add_theme_constant_override("separation", 3)
+	_passives = EntryReadout.new()
 	_passives.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_passives.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	cv.add_child(_passives)
 	_effects = EntryReadout.new()
 	cv.add_child(_effects)
@@ -159,11 +157,11 @@ func _init() -> void:
 	rule.color = Color(Palette.HUD, 0.25)
 	rule.custom_minimum_size = Vector2(0, 1)
 	cv.add_child(rule)
-	_body = Hud.label("", 19, Palette.INK)
+	_body = EntryReadout.new()
+	cv.add_child(_body)
 	_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
-	for l in [_body, _flavour]:
-		_wrap(l)
-		cv.add_child(l)
+	_wrap(_flavour)
+	cv.add_child(_flavour)
 	var close_btn := HudButton.new("CLOSE", close)
 	close_btn.sound = ""   # the codex closing is its own figure
 	close_btn.custom_minimum_size = Vector2(0, 52)
@@ -200,21 +198,19 @@ func open(entry: Dictionary) -> void:
 	_sprite.texture = tex
 	_sprite.visible = tex != null
 	_stats.set_items(entry.get("stat_items", []))
-	_body.text = str(entry.get("body", ""))
-	_body.visible = not _body.text.is_empty()
+	var body := str(entry.get("body", ""))
+	_body.set_lines([EntryReadout.prose_line(body, 19, Palette.INK)] if not body.is_empty() else [], TEXT)
+	_body.visible = not body.is_empty()
 	# The passive in ink, as gameplay text reads (Ryan, 30 October: "the passive line can go in
 	# normal colour"; it wore heat's colour, the old accent, before). A granted rule says where it
 	# comes from by its place: a component's on its row, a module's or a reward's an active effect.
-	for c in _passives.get_children():
-		_passives.remove_child(c)   # out of the tree now, so the rows below are the only children
-		c.queue_free()
 	var rows: Array = entry.get("passive_rows", [])
 	if rows.is_empty() and not str(entry.get("passive", "")).is_empty():
 		rows = [[str(entry.get("passive", "")), "chassis"]]
+	var said: Array = []
 	for row in rows:
-		var l := Hud.label(str(row[0]), 17, Palette.INK)
-		_wrap(l)
-		_passives.add_child(l)
+		said.append(EntryReadout.prose_line(str(row[0]), 17, Palette.INK, true))   # its name in bold, as a chip's
+	_passives.set_lines(said, TEXT)
 	_passives.visible = not rows.is_empty()
 	# The active effects, each its name and where it comes from, then what it does.
 	var effects: Array = entry.get("effects", [])
