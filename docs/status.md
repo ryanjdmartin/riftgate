@@ -228,12 +228,18 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   roads beside it, three road hexes round a corner making a loop with a gap in the middle.
   Every colour is on the posterize grid and scored against its ground by the colourblind
   simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
-  field and `tools/tileset_shot.gd` draws all four. Next, Ryan's read of them running (the
+  field and `tools/tileset_shot.gd` draws all four. The painted map takes 45 to 120 ms a
+  frame to draw on the cloud's CPU, twice at a battle's start; if the phone hitches there, the
+  sprites' placement is the part to make cheaper. Next, Ryan's read of them running (the
   to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its
-  own palette table (`BattleBackdrop.PALETTES`, the same bleed keys). When it lands, the two
-  tables want one home, and its rewrite of `game/ui/terrain_art.gd` and
-  `game/battle/painted_map.gd` meets this one's (the painted map draws through
-  `DomainGround.draw_hex` and passes each road hex its links).
+  own palette table (`BattleBackdrop.PALETTES`, the same bleed keys) and is to merge main
+  (Ryan, 30 October). Its rewrite of `game/ui/terrain_art.gd` and `game/battle/painted_map.gd`
+  meets this one's: the painted map draws every hex through `DomainGround.draw_hex`, passing
+  each road hex its links, then the walls' ranges in a second pass (`draw_walls`), and keeps
+  both. Its palettes then want to agree with the map's, and the two tables one home: its lava
+  is the yellow-orange Ryan called acid on the map (the map's lake is `#ff6600` under a crust of
+  `#990000` and `#330000`, glinting `#ff9900` and `#ffcc00`), and its Marsh's poison purple
+  `#6a2e8a` sits on the rift's deep violet `#6a30c0`, the reason the map's Marsh carries none.
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
