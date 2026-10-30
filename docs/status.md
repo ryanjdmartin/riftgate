@@ -21,15 +21,15 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 772 tests, 204,082 checks, green on `ccr-c04908be-3r43xf` with main
-  merged (30 October; main's head 755 and 203,943), about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 777 tests, 204,651 checks, green on main (30 October, `ccr-c04908be-3r43xf`
+  merged: the pricing pass, Chain, the cautious heat persona; 759 and 204,504 on the tilesets'
+  second build), about four minutes in a cloud session, twenty on a slow one. A cloud
   session gets Godot 4.7's Linux build and the project's first import from the repository's
   session-start hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`,
-  27 October, on `ccr-c04908be-3r43xf` until it lands on main; the GitHub release asset
-  `godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`, into `~/bin`; a session
-  without the hook fetches it by hand, the download in a command of its own and the unpacking
-  and first run in another, since Auto mode refuses one line that fetches and runs it), uses
-  `xvfb-run` for screenshots (with
+  27 October, on main since 30 October; the GitHub release asset `godotengine/godot-builds`,
+  `Godot_v4.7.2-stable_linux.x86_64.zip`, into `~/bin`; a session without the hook fetches it by
+  hand, the download in a command of its own and the unpacking and first run in another, since
+  Auto mode refuses one line that fetches and runs it), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
   counts, its frame times mean nothing), and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -63,17 +63,18 @@ rounds of notes, the hangar's stamped fetches and the glow-parts guard) took mai
 main"). `ccr-6073bda9-p34o8q` took main the same evening, carried the ladder's build on top
 (the three verbs, the foes' buffs, the player's Purge, the recolours by tier, their sprites,
 the read at 30 seeds and the move counts settled), and main took it as a fast-forward that
-night on the same word. Live beside main, landing by merging main in: `ccr-c04908be-3r43xf`
-(27 and 28 October: the pricing run's method and driver, the runs made and read,
-`docs/measurements.md`, the synergy map (`docs/synergy_map.md`) and the roster's synergy
-holes, the session-start hook that fetches Godot for cloud sessions, main merged in on the
-28th and again with the ladder that night, and the pricing pass landed on Ryan's go the same
-evening, the bible's pricing row and the fills; docs, Python tools, the hook and the content's
-numbers). Every other branch named here is fully
+night on the same word. `ccr-c04908be-3r43xf` (27 to 30 October: the pricing run's method and
+driver, the runs made and read, the synergy map (`docs/synergy_map.md`) and the roster's synergy
+holes, the session-start hook that fetches Godot for cloud sessions, the pricing pass landed on
+Ryan's go, Chain's conductor and its form of the 29th with every read, Shock read by an aimed
+strike alone, the heat brief, the cautious heat persona) took main on the 28th and twice on the
+30th, and main took it as a fast-forward on the 30th on Ryan's word ("merge into main and
+republish the bible"); its session carries on there, its later commits landing the same way.
+Every other branch named here is fully
 merged, to delete from the desk machine or GitHub along with `ccr-6073bda9-p34o8q`,
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4`, `ccr-24cae16e-ryhv1v` and, once
-its session ends, `ccr-7821127e-kwj874` (a cloud session may not delete one). Every other branch was
+its session ends, `ccr-7821127e-kwj874` and `ccr-c04908be-3r43xf` (a cloud session may not delete one). Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
@@ -174,18 +175,25 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   were. Ryan asked whether a hunter joins a fight it did not start: it does, as every pack does,
   on Claude's lean until he says otherwise (the bible's fights-picked row). Next: his read of
   the pounce in play (the to-do), the exit bringing the ring back down.
-- Each domain paints its own tileset (Ryan, 29 October; built 30 October, `game/ui/domain_ground.gd`
-  by the factions' `bleed`): the Waste's dunes, caravan track, cacti in rows and red-rock ruins,
-  the Marsh's teal bog, boardwalks, dead trees and graveyard, the Peak's ash plain, flagstones,
-  glowing crust and charred ruins; the Meadow's overworld as it was, and water and the walls
-  alike in all four. Every colour sits on the map compositor's posterize grid and was picked by
-  the colourblind simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
-  field and `tools/tileset_shot.gd` draws all four; next, Ryan's read of them running (the
-  to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its own
-  palette table (`BattleBackdrop.PALETTES`, the same bleed keys); when it lands, the two tables
-  want one home, and that branch's rewrite of `game/ui/terrain_art.gd` and
-  `game/battle/painted_map.gd` meets this one's (the painted map now draws through
-  `DomainGround.draw_hex`).
+- Each domain paints its own tileset (Ryan, 29 October), built twice on 30 October
+  (`game/ui/domain_ground.gd`, by the factions' `bleed`). Ryan turned the first down (the
+  marks were rectangles, water and the walls were alike everywhere, and each ground had its own
+  fill: "walls and water certainly should change with tileset", the grounds "not wildly
+  different"; the Peak not volcanic, the Marsh not an undead marsh). The second dresses every
+  hex in outlined pixel sprites (ASCII art inked per domain, two pixels a design pixel; "Overall
+  the art is a huge improvement"), each ground its own tone a step from its domain's on the
+  posterize grid (his second read: one ground for all was "very monotone"). Each domain also
+  has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava)
+  and its own walls (snowy peaks, red buttes, black crags, volcanoes). A road follows the roads
+  beside it, three road hexes round a corner making a loop with a gap in the middle (his ask).
+  Every colour is on the posterize grid and scored against its ground by the colourblind
+  simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
+  field and `tools/tileset_shot.gd` draws all four. Next, Ryan's read of them running (the
+  to-do). `claude/jolly-lovelace-scn82y` paints the skirmish's backdrop per domain from its
+  own palette table (`BattleBackdrop.PALETTES`, the same bleed keys). When it lands, the two
+  tables want one home, and its rewrite of `game/ui/terrain_art.gd` and
+  `game/battle/painted_map.gd` meets this one's (the painted map draws through
+  `DomainGround.draw_hex` and passes each road hex its links).
 - The harness's battlefield viewer (`game/main.tscn`, a flat 2D debug view from before the 3D
   map) is gone (Ryan, 28 October): the battle screen shows all it did. The mechanics audit's
   map texts are closed (29 October: packs pass under a flyer, the gate's codex, a spawn's shown
@@ -440,15 +448,18 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.372 (the page's version 384,
-  published 30 October from `ccr-7821127e-kwj874`: each domain's tileset built, three-way merged
-  onto the live v0.371 that `claude/jolly-lovelace-scn82y` published, which carries
-  `claude/charming-rubin-h954bp`'s v0.370 too: the colour rows' pure red on trial and the rule
-  that a colour is scored against the ground it is drawn on, and the FXAA of the map's own; on
-  v0.365 at 377, Ryan's calls that a domain names no map shape, height is a look alone and a
+  `docs/design-bible.html` after every change. This file is v0.376 (the page's version 388,
+  published 30 October from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
+  tilesets' second build, three-way merged onto the live v0.374 that `claude/charming-rubin-h954bp` published with its flush radiators,
+  which carries `claude/jolly-lovelace-scn82y`'s v0.373, the map's lines one width at every zoom;
+  on v0.372 at 384, the first build onto that branch's v0.371, the colour rows' pure red on
+  trial and the rule that a colour is scored against the ground it is drawn on, and the FXAA of
+  the map's own; on v0.365 at 377, Ryan's calls that a domain names no map shape, height is a
+  look alone and a
   skirmish never reads our own ground). So this file carries
   those branches' rows ahead of their code (the models' glows, looks and acts, the Armadillo's
-  seal on screen, the skirmish's field, the reds, the tracks in pairs, the map's FXAA) and the Strikes row in
+  seal on screen, the skirmish's field, the reds, the tracks in pairs, the map's FXAA and its
+  lines at every zoom) and the Strikes row in
   the keyword table, and the tables script,
   which writes the tables from main's content, waits until they land or it reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.

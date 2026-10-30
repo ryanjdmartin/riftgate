@@ -3455,3 +3455,45 @@ is held against the Meadow's bar rather than maximized. Against the pure red on 
 `claude/jolly-lovelace-scn82y` (`#ff0000`) no pick moves by two points (the Waste's plain 7.6 and
 ruins 9.8, the Meadow's own forest 5.1 to 6.2). The Meadow's tileset is unchanged.
 
+**The domains' tilesets, second build: their colours by the colourblind simulations** (30
+October; Ryan's read of the first: water and the walls "certainly should change with
+tileset", the grounds "not wildly different"). Method as the first build's: every colour on the
+compositor's posterize grid, each scored by its worst CIEDE2000 over normal vision and the
+Machado protan, deutan and tritan simulations at severity 1.0, against the HUD options (green
+`33ff55`, amber `fff21a`, blue `5cd8ff`), the enemy red (`ff1e1e`, and `ff0000` on trial) and the
+rift's violets (`c8a4ff`, `6a30c0`), and against the ground it is drawn on (the bible's rule of
+30 October). Every ground, water and wall face scores 6.5 or more against every mark, where the
+Meadow's old forest floor scored 5.1. The grounds: the Meadow `#339933` 7.9 (the pure red, deutan;
+lightness 56), the Waste `#cc9966` 11.3 (74), the Marsh `#333300` 18.4 (22), the Peak `#333333`
+18.0 (23). The water: the Meadow's `#3366ff` 13.1 (9.0 against its ground), the Waste's oasis
+`#339999` 17.8 (16.0), the Marsh's `#003333` 18.3 (12.1), the Peak's lava `#ff9900` 9.1 (52.8; 12.2
+against the red). The walls' faces, lit and shaded: the Meadow's `#cc9966` 11.3 and `#663300`
+15.0, the Waste's buttes `#993300` 9.8 and `#663300` 15.0, the Marsh's crags `#666666` 11.2 and
+`#333333` 18.0 (4.3 against the bog, the outline and the lit faces carrying the shape), the
+Peak's `#666666` and `#333333` (its flows `#ff9900`). The roads: the Meadow's `#cc9966` 11.3, the
+Waste's `#ffcc99` 6.5 (amber, tritan), the Marsh's `#663300` 15.0 (3.5 against the bog, its
+stepping stones `#cccccc` 63.9 carrying it), the Peak's `#666666` 11.2. What the run moved before
+anything landed: the Marsh's mid greens fold into the red for a protan (`#336633` 5.1, `#006633`
+5.6, `#666633` 3.8) and the darkest fold into its water (`#003300` 2.6 against `#003333`), so its
+bog is `#333300`; the Meadow's water rim `#66ccff` came to 1.7 against the rift's light violet for
+a deutan, so the rim is foam `#ccffff` (8.4); its trees' shade `#006600` came to 1.7 against the
+red for a protan, so it is `#003300` (19.7); its mountains' shaded face and the Waste's first track,
+`#996633`, came to 3.9 against the red for a protan, so the face is `#663300` and the track the pale
+`#ffcc99`; an orange darker than the lava's folds into the red for a deutan (`#cc6633` 4.3,
+`#cc6600` 2.6, `#cc3300` 5.3), so none is used. Small marks score lower and stay small: the fissures'
+and the fire's `#ffcc00` 5.1 against the amber (deutan), the Marsh's moss `#669933` 5.7 against the
+red, the oasis rim `#66cccc` 4.7 against the blue (tritan).
+
+**The domains' tilesets: a tone a ground** (30 October; Ryan, of one ground for all four: "the
+different types need different backgrounds. Its very monotone now. It just needed to be less
+jarring"). Each decorative ground takes its own tone a step at most from its domain's ground in
+each channel of the posterize grid, picked among those neighbours by the same simulations (worst
+CIEDE2000 against every mark; then against the domain's ground): the Meadow's road verge
+`#669933` 5.7 (the pure red, deutan; 1.0), its forest floor `#336633` 5.1 (the red, protan; 18.0),
+its village green `#669966` 13.9 (5.4); the Waste's road `#cc9933` 6.9 (2.4), its scrub `#999966`
+11.6 (2.6), its ruins' bleached ground `#ffcc99` 6.5 (13.6), where the dusty rose `#cc9999` (12.4)
+read as pink on the sheet; the Marsh's dead wood floor `#003300` 19.7 (1.3) and its graveyard's
+grey `#333333` 18.0 (4.3); the Peak's scorched lava field `#330000` 34.1 (15.4) and its temple's
+rust `#663333` 20.4 (4.6). The Marsh's and the Peak's roads keep their domain's ground, their
+mud causeway and ash path carrying them. The lowest is the Meadow's forest floor, the score the
+Meadow's own forest had before the domains had tilesets.

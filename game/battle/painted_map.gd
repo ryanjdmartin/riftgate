@@ -34,4 +34,6 @@ func _draw() -> void:
 		# Opaque under the whole hex, transparent outside, so the bleed's dither never
 		# shows off the map.
 		draw_colored_polygon(Hex.corners(c, hex_px), Palette.BG)
-		DomainGround.draw_hex(self, c, hex_px, map.terrain_of(h), h.x * 131 + h.y * 7919, frame, biome)
+		var t := map.terrain_of(h)
+		var links := DomainGround.road_links(map, h) if t == BattleMap.Terrain.ROAD else 0
+		DomainGround.draw_hex(self, c, hex_px, t, h.x * 131 + h.y * 7919, frame, biome, links)
