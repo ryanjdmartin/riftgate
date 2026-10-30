@@ -25,9 +25,10 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 832 tests, 207,594 checks, green on `claude/jolly-lovelace-scn82y` (30 October: main's head, where the
-  branch landed with `claude/charming-rubin-h954bp`'s model rebuilds in, then the passive line in ink
-  and the keywords in text after it, on Godot 4.8-beta2), about four minutes
+- Tests: 826 tests, 206,874 checks on main alone, the count of this head following the slate merge, green on `claude/jolly-lovelace-scn82y` (30 October: main's head, the foes'
+  move-order fix of `claude/zealous-wright-ixxo3l` in it, then the passive line in ink, the keywords
+  in text and the bosses' slate of `claude/brave-cori-fr18de` merged in for its terms, on Godot
+  4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -42,6 +43,12 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/zealous-wright-ixxo3l` (30 October) carried the foes' move-order fix and its boss
+cells' read (How things stand), took main as it landed (to `d84ad16`: the skirmish's field,
+Godot 4.8-beta2, the enemy in violet, the backdrops on the map's palettes, the lit parts' eased
+light), and main took it as a fast-forward on 30 October on Ryan's word ("merge into main
+please").
 
 `claude/jolly-lovelace-scn82y` (29 and 30 October) carried the skirmish's field with the
 Skirmish Controls setting, the map's lines and overlay at one size on screen, Godot 4.8-beta2
@@ -262,6 +269,21 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- A foe's moves keep content's order (30 October): `ContentDB.make_foe`, bringing the first
+  attack to the front when a special leads, passed over an attack already in front and moved
+  the next, so 25 of the 65 foes loaded out of order (two attacks listed first swapped, as for
+  the Lancer, the Augur and the Reaper; a below-half special put first, as for the Black Mage's
+  Flare and three of the four bosses'). It now stops at the first attack, two tests in
+  `tests/test_content.gd` holding it. The order is the codex's list, the opening intent, the
+  order a seeded draw walks (each move's odds unchanged, so only which seed draws it moves)
+  and the pattern a Disrupt steps through, which changed for nine (the Antlion Queen, the
+  Wyvern, the Red Dragon, the Reaper, the Lancer and the Augur, and the promoted Lancer, Cleric
+  and Augur; the rest's old order was a rotation of content's). A saved battle keeps the order
+  its foes were saved in. The boss cells at 30 seeds hold their direction (`docs/measurements.md`,
+  the foes' move order): no fight's mean over the rows moves more than 2.2 points, the fights
+  with no foe it touched come out identical fight for fight, and the three single cells past a
+  cell's band read inside it at 200 seeds; no stock kit fields a Disrupt, so the new pattern is
+  unread until one does.
 - The six map shapes (Ryan's direction of 28 October and his calls of 29 October; landed 29
   October, the brief retired): RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE, RUINED CITY and
   GORGE, each laying its own water, walls, decorative ground and relief; a battle that names no
@@ -603,27 +625,33 @@ into this file in the same commit as its first publish; the procedures are in `R
   `docs/design-bible.html` after every change. This file and the live page are v0.404 (the
   page's version 416, published 30 October from `claude/jolly-lovelace-scn82y`: the keywords in
   their colour with their icons and a tap's tip, the blue's meaning and the KEYWORDS button's
-  question, three-way merged onto the live v0.403 at 415, which another session moved past this
-  branch's v0.399 at 411 with the bosses' slate (Swallow, Steal, Follow-up, its seven bosses and
-  their tables) and a halo for lit parts; each publish before it merged the same way, as this
-  file's history in git shows). So this file carries rows other sessions published ahead of
-  their code (the bosses' slate, the tracks in pairs, the notes on Hold The Line and Night Shift),
-  each landing with its branch; the slate's branch brings new terms (Swallowed among them) that
-  need their rows in `game/ui/terms.gd` as it lands, which a test holds. The version numbers on
-  the publishing branch's file and the live agree after every publish. Before republishing, read
-  the live page; if another session moved it, publish a three-way merge onto it (`git merge-file`
-  with the last-published file as the base, the wrapper's first line and its trailing
-  `</body></html>` stripped from the saved live source). The tables script writes the buff,
-  debuff and keyword tables from this branch's content, so it waits until the slate lands or it
-  drops the slate's rows.
+  question, three-way merged onto the live v0.403 at 415, which `claude/charming-rubin-h954bp`
+  published as main took it (lit parts holding their colour, a halo for lit parts asked in section
+  12), onto its own v0.402 at 414 (Ryan's answers after the landing) and the live v0.401 at 413
+  (the bosses' slate's rows and new foes in the generated tables, from `claude/brave-cori-fr18de`);
+  each publish before it merged the same way, as this file's history in git shows). So this file
+  carries rows other sessions published ahead of their code (the tracks in pairs, and the notes on
+  Hold The Line and Night Shift), each landing with its branch. The version numbers on the
+  publishing branch's file and the live agree after every publish. Before republishing, read the
+  live page; if another session moved it, publish a three-way merge onto it (`git merge-file` with
+  the last-published file as the base, the wrapper's first line and its trailing `</body></html>`
+  stripped from the saved live source).
+  The tables script, which writes the buff, debuff and keyword tables from the content, waits
+  until the slate lands: run without it, it reverts the slate's rows (36 lines, tried 30 October).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Its lit parts show as the phone's renderer shows them (29 October: a lit
   tile is the tile as stored times its light, clipped, before the page's own light; it had
-  shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
+  shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
+  game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 170 (30 October, from main as it took
+  acts on a reloaded page). At the page's version 172 (30 October, from
+  `claude/charming-rubin-h954bp`: `motion.js` with the lit parts' eased light and the Armadillo's
+  rig with its vent heat's new peak, onto 171, which another session published with its page's
+  boss-list line, a domain's bosses a list since its slate, carried into `tools/hangar.html` here
+  so a publish from this branch keeps it; every other file as 171 had it, `edits` empty), on
+  170 (30 October, from main as it took
   `claude/charming-rubin-h954bp`: `content/chassis.json` and `content/components.json` as merged,
   main's pricing numbers with that branch's Pinion Driver in two shots and the Stingray's lance on
   its dome, so the Codex reads both; onto that branch's own 169 to 165, Ryan's notes of 30 October

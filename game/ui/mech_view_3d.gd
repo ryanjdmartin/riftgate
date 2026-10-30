@@ -675,7 +675,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 					# Lamps, engines and light strips glow: the reconstruction's own light.
 					tm.emission_enabled = true
 					tm.emission_texture = tm.albedo_texture
-					tm.emission_energy_multiplier = 1.8
+					tm.emission_energy_multiplier = MechRig.light(MechRig.GLOW_BASE)   # eased on the phone's renderer, so a flare holds its colour
 				elif role == "glass":
 					tm.roughness = 0.25
 					tm.metallic = 0.35
