@@ -538,20 +538,24 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			for part in parts_for(b):
 				scale_boss(part, sq.boss_tier)
 				out.append(part)
-		if sq.foe_id.is_empty():
+		if sq.foe_id.is_empty() and sq.members.is_empty():
 			# Its escort unnamed, the tier's own units of its domain (escort_units).
 			for f in escort_units(sq.faction, sq.boss_tier, sq.strength):
 				f.pack_id = sq.id
 				f.escorts = true
 				out.append(f)
 			return out
-	var fid := sq.foe_id
-	if fid.is_empty():
-		var spawn := spawn_table(sq.faction, 1)   # a pack that names no foe: the first of today's list
-		if not spawn.is_empty():
-			fid = str(spawn[0][0])
-	if foes.has(fid):
-		for i in range(sq.strength):
+	# A pack's members, each its foe type times its strength (one type when it has no list; a
+	# boss unit's members are its escort): the foes' fresh start, 30 October.
+	for e in sq.member_list():
+		var fid := str(e[0])
+		if fid.is_empty():
+			var spawn := spawn_table(sq.faction, 1)   # a pack that names no foe: the first of today's list
+			if not spawn.is_empty():
+				fid = str(spawn[0][0])
+		if not foes.has(fid):
+			continue
+		for i in range(int(e[1])):
 			var f := make_foe(fid)
 			f.pack_id = sq.id
 			f.escorts = sq.is_boss

@@ -619,7 +619,13 @@ func pack_lines(u: Unit) -> Array:
 	var db := ContentDB.load_default()
 	var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
 	if not u.is_boss:
-		var parts: Array = [foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]
+		# A composition's members in order, the lead first (30 October); a one-type pack is one.
+		var parts: Array = []
+		for m in u.member_list():
+			if not parts.is_empty():
+				parts.append("·")
+			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
+		parts.append_array(["·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)])
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
 		var lines: Array = [_title(u.display_name), _words(parts), _behaviour_line(u)]
@@ -641,7 +647,10 @@ func pack_lines(u: Unit) -> Array:
 	var brings: Array[String] = []
 	if u.lineup.size() > 1:
 		brings.append("%d of the party" % u.lineup.size())
-	if u.strength > 0:
+	if not u.members.is_empty():
+		for m in u.members:   # a hand-tailored escort, by member
+			brings.append("%s ×%d" % [str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), int(m[1])])
+	elif u.strength > 0:
 		brings.append("%s ×%d" % [foe_name, u.strength])
 	if not brings.is_empty():
 		out.append(_said("With", ", ".join(brings)))

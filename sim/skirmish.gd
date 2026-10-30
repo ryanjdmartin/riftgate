@@ -115,6 +115,13 @@ var _falls: int = 0   # foes that have fallen this fight, counted as their slots
 ## Foes that joined a pack in this fight (a Gel's half, a summon, a part) and fell for good, by
 ## pack id: the kills its own count cannot see (kills_for).
 var joined_fallen: Dictionary = {}
+## The same by type, pack id -> {content id: fallen}, for the menace a kill is worth
+## (kills_by_type).
+var joined_fallen_types: Dictionary = {}
+## What each pack came into the fight with, pack id -> {content id: count} of its own foes
+## (add_foes), so the kills by type are what came less what is left; a resumed fight carries it
+## in its save, and one from before reads the pack itself (_came_with_of).
+var came_with: Dictionary = {}
 ## Mines (the Lammergeier's Fuse-delayed Bay, 21 October): Vector2i(rank, column) -> the shots
 ## waiting in that empty slot, in laid order, each {damage, keywords, burn, cryo, flak, by, seq}:
 ## its number as rolled and modified when laid, and its keywords, acting as it lands.
@@ -194,6 +201,10 @@ func add_foes(list: Array, from_pack: Unit = null) -> void:
 	for f in list:
 		if from_pack != null:
 			f.pack_id = from_pack.id
+			if is_own(from_pack, f):
+				var tally: Dictionary = came_with.get(from_pack.id, {})
+				tally[f.content_id] = int(tally.get(f.content_id, 0)) + 1
+				came_with[from_pack.id] = tally
 		reinforcements.append(f)
 	if from_pack != null and not packs.has(from_pack):
 		packs.append(from_pack)
@@ -323,7 +334,76 @@ func survivors_for(sq: Unit) -> int:
 static func is_own(sq: Unit, f: Foe) -> bool:
 	if sq.is_boss:
 		return f.commands or f.escorts
+	if not sq.members.is_empty():
+		return sq.member_ids().has(f.content_id)   # a composition's own are its members' types
 	return sq.foe_id.is_empty() or f.content_id == sq.foe_id
+
+
+## A pack's members left after this fight, [[content id, count], ...] in the pack's own order
+## (a boss unit's: its escort, never its commanders): its own foes alive on the field or
+## waiting. What the map keeps of a composition (Battlefield.apply_skirmish_result).
+func members_left(sq: Unit) -> Array:
+	var counts := {}
+	for f in field_foes():
+		if f.pack_id == sq.id and f.alive() and is_own(sq, f) and not f.commands:
+			counts[f.content_id] = int(counts.get(f.content_id, 0)) + 1
+	for f in reinforcements:
+		if f.pack_id == sq.id and is_own(sq, f) and not f.commands:
+			counts[f.content_id] = int(counts.get(f.content_id, 0)) + 1
+	var out: Array = []
+	for m in sq.member_list():
+		var cid := str(m[0])
+		if int(counts.get(cid, 0)) > 0:
+			out.append([cid, int(counts[cid])])
+			counts.erase(cid)
+	for cid in counts.keys():
+		if int(counts[cid]) > 0:
+			out.append([str(cid), int(counts[cid])])
+	return out
+
+
+## What a pack came into this fight with, by type: recorded as its foes were added, or read off
+## the pack itself for a fight resumed from a save made before the record (its members, or its
+## one type times its strength; a boss unit's commanders and its escort).
+func _came_with_of(sq: Unit) -> Dictionary:
+	if came_with.has(sq.id):
+		return came_with[sq.id]
+	var tally := {}
+	if sq.is_boss:
+		for cid in sq.lineup:
+			tally[str(cid)] = int(tally.get(str(cid), 0)) + 1
+		if sq.lineup.is_empty():
+			for f in field_foes():
+				if f.pack_id == sq.id and f.commands:
+					tally[f.content_id] = int(tally.get(f.content_id, 0)) + 1
+	for m in sq.member_list():
+		if not str(m[0]).is_empty():
+			tally[str(m[0])] = int(tally.get(str(m[0]), 0)) + int(m[1])
+	return tally
+
+
+## The foes of a pack this fight killed, by type (content id -> count), for the menace each is
+## worth (the Rupture meter, Anathema and salvage, 30 October): its own that are gone, what it
+## came with less what is left, and every foe that joined it and fell for good. Read before the
+## map takes the result.
+func kills_by_type(sq: Unit) -> Dictionary:
+	var left := {}
+	for f in field_foes():
+		if f.pack_id == sq.id and f.alive() and is_own(sq, f):
+			left[f.content_id] = int(left.get(f.content_id, 0)) + 1
+	for f in reinforcements:
+		if f.pack_id == sq.id and is_own(sq, f):
+			left[f.content_id] = int(left.get(f.content_id, 0)) + 1
+	var out := {}
+	var came := _came_with_of(sq)
+	for cid in came.keys():
+		var n := int(came[cid]) - int(left.get(cid, 0))
+		if n > 0:
+			out[str(cid)] = n
+	var joined: Dictionary = joined_fallen_types.get(sq.id, {})
+	for cid in joined.keys():
+		out[str(cid)] = int(out.get(str(cid), 0)) + int(joined[cid])
+	return out
 
 
 ## A boss unit's commanders still standing in this fight (Foe.commands: its boss, a final's
@@ -358,10 +438,10 @@ func escort_left(sq: Unit) -> int:
 ## before the map takes the result, while its lineup and strength are still the ones it came
 ## with).
 func kills_for(sq: Unit) -> int:
-	var joined := int(joined_fallen.get(sq.id, 0))
-	if sq.is_boss:
-		return maxi(0, maxi(1, sq.lineup.size()) - commanders_left(sq).size()) + maxi(0, sq.strength - escort_left(sq)) + joined
-	return maxi(0, sq.strength - survivors_for(sq)) + joined
+	var n := 0
+	for cid in kills_by_type(sq).keys():
+		n += int(kills_by_type(sq)[cid])
+	return n
 
 
 func any_assigned() -> bool:
@@ -4322,6 +4402,9 @@ func _clear_dead_slots() -> void:
 						var sq := _pack_of(f)
 						if sq != null and not is_own(sq, f):
 							joined_fallen[sq.id] = int(joined_fallen.get(sq.id, 0)) + 1
+							var types: Dictionary = joined_fallen_types.get(sq.id, {})
+							types[f.content_id] = int(types.get(f.content_id, 0)) + 1
+							joined_fallen_types[sq.id] = types
 						_last_act(f)
 						if not f.on_death.is_empty() and f.on_death.has("summon"):
 							splits.append([f, 0 if is_same(rank, front) else 1, col])

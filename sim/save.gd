@@ -66,6 +66,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"faction": b.faction,
 		"guest": b.guest,
 		"foes_killed": b.foes_killed,
+		"menace_killed": b.menace_killed,
 		"sponsorship": b.sponsorship,
 		"action_hexes": _int_keys(b.action_hexes),
 		"wrecks": _units(b.wrecks),
@@ -118,6 +119,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.faction = str(d.get("faction", ""))
 	b.guest = str(d.get("guest", ""))
 	b.foes_killed = int(d.get("foes_killed", 0))
+	b.menace_killed = int(d.get("menace_killed", 0))
 	var tally: Dictionary = d.get("sponsorship", {})
 	for k in tally.keys():
 		b.sponsorship[str(k)] = int(tally[k])
@@ -235,7 +237,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "is_boss": u.is_boss, "lineup": u.lineup, "boss_tier": u.boss_tier, "zone": u.zone, "attack_range": u.attack_range,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "is_boss": u.is_boss, "lineup": u.lineup, "boss_tier": u.boss_tier, "zone": u.zone, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules,
 	}
@@ -265,6 +267,9 @@ static func _unit_from(d: Dictionary) -> Unit:
 	u.faction = str(d.get("faction", ""))
 	u.foe_id = str(d.get("foe_id", ""))
 	u.strength = int(d.get("strength", 0))
+	for m in d.get("members", []):   # a composition's members (30 October); a save from before has none
+		if m is Array and (m as Array).size() >= 2:
+			u.members.append([str(m[0]), int(m[1])])
 	u.behaviour = str(d.get("behaviour", "push"))
 	u.hunts = str(d.get("hunts", "nearest"))
 	u.prey = int(d.get("prey", 0))
@@ -387,6 +392,8 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
 		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "twins": paired,
 		"joined_fallen": _int_keys(sk.joined_fallen),
+		"joined_fallen_types": _typed_tallies(sk.joined_fallen_types),
+		"came_with": _typed_tallies(sk.came_with),
 	}
 
 
@@ -493,7 +500,30 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 	var joined: Dictionary = d.get("joined_fallen", {})
 	for pid in joined.keys():
 		sk.joined_fallen[int(str(pid))] = int(joined[pid])
+	sk.joined_fallen_types = _typed_tallies_from(d.get("joined_fallen_types", {}))
+	sk.came_with = _typed_tallies_from(d.get("came_with", {}))
 	return sk
+
+
+## A tally by pack and type (pack id -> {content id: count}), with string keys for JSON.
+static func _typed_tallies(t: Dictionary) -> Dictionary:
+	var out := {}
+	for pid in t.keys():
+		var inner := {}
+		for cid in (t[pid] as Dictionary).keys():
+			inner[str(cid)] = int(t[pid][cid])
+		out[str(pid)] = inner
+	return out
+
+
+static func _typed_tallies_from(d: Dictionary) -> Dictionary:
+	var out := {}
+	for pid in d.keys():
+		var inner := {}
+		for cid in (d[pid] as Dictionary).keys():
+			inner[str(cid)] = int(d[pid][cid])
+		out[int(str(pid))] = inner
+	return out
 
 
 static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:

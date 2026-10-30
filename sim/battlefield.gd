@@ -78,7 +78,17 @@ func dress_pack(sq: Unit, foe: String = "") -> Unit:
 		sq.hunts = str(p.get("hunts", sq.hunts))
 		# A winged foe's pack crosses water and crags as a flyer does and stands there (Ryan,
 		# 28 October, the movement proposal's lever 2); the boss is never winged.
-		if bool(p.get("winged", false)) and not sq.traits.has("winged"):
+		var winged := bool(p.get("winged", false))
+		# A composition (the foes' fresh start, 30 October): it walks by its lead, at its slowest
+		# member's pace, with the largest of its members' rings, and is winged only when every
+		# member is, since a walker among them cannot cross water.
+		for m in sq.members:
+			var mp: Dictionary = foe_profiles.get(str(m[0]), {})
+			sq.zone = maxi(sq.zone, int(mp.get("zone", 1)))
+			if mp.has("movespeed"):
+				sq.movespeed = mini(sq.movespeed, int(mp["movespeed"]))
+			winged = winged and bool(mp.get("winged", false))
+		if winged and not sq.traits.has("winged"):
 			sq.traits.append("winged")
 	return sq
 
@@ -739,7 +749,19 @@ func apply_skirmish_result(sk: Skirmish) -> void:
 				units.erase(sq)
 			else:
 				sq.lineup = standing
-				sq.strength = sk.escort_left(sq)
+				if not sq.members.is_empty():
+					sq.set_members(sk.members_left(sq))   # a hand-tailored escort, kept by member
+				else:
+					sq.strength = sk.escort_left(sq)
+			continue
+		if not sq.members.is_empty():
+			# A composition keeps its survivors by member (30 October), the lead first.
+			var left_members := sk.members_left(sq)
+			if left_members.is_empty():
+				log.append("%s destroyed" % sq.display_name)
+				units.erase(sq)
+			else:
+				sq.set_members(left_members)
 			continue
 		var left := sk.survivors_for(sq)
 		if left <= 0:

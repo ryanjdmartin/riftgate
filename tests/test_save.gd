@@ -236,6 +236,29 @@ func test_a_foe_keeps_its_role_and_its_death_through_the_trip() -> void:
 	assert_true(SaveGame._foe_from(old, sk).boss, "a save from before 15 October marks its massive foe the boss, as it played")
 
 
+## A composition's members ride in the save (30 October), and a fight's tallies by type with
+## them, so a resumed battle keeps its packs by member and its kills at their menace.
+func test_a_compositions_members_survive_the_trip() -> void:
+	var b := _battle()
+	var host: Unit = b.field.packs()[0]
+	host.set_members([["revenant", 2], ["ghost", 1]])
+	var d: Dictionary = JSON.parse_string(JSON.stringify(SaveGame.to_dict(b)))
+	var back := SaveGame.from_dict(d)
+	var again := back.field.unit_by_id(host.id)
+	assert_eq(again.members, [["revenant", 2], ["ghost", 1]], "the members as they were")
+	assert_eq(again.foe_id, "revenant", "the lead's type")
+	assert_eq(again.strength, 3, "and the count")
+	var sk := Skirmish.new(3)
+	sk.add_mech(b.mechs()[0])
+	sk.add_foes(b.db.foes_for(host), host)
+	sk.joined_fallen_types[host.id] = {"gel_half": 2}
+	var sd: Dictionary = JSON.parse_string(JSON.stringify(SaveGame._skirmish_dict(sk, b.field)))
+	var sk2 := SaveGame._skirmish_from(sd, b.field)
+	assert_eq(sk2.came_with.get(host.id, {}), {"revenant": 2, "ghost": 1}, "what the pack came with")
+	assert_eq(sk2.joined_fallen_types.get(host.id, {}), {"gel_half": 2}, "and the joined fallen by type")
+	assert_eq(sk2.kills_by_type(host), sk.kills_by_type(host), "the kills by type read alike")
+
+
 func test_damage_and_statuses_survive_the_trip() -> void:
 	var b := _battle(4)
 	var m: Unit = b.mechs()[0]

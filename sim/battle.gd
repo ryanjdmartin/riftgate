@@ -99,6 +99,9 @@ var tier: int = 0
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
 ## decides what is kept.
 var foes_killed: int = 0
+## The menace of every foe killed this battle (ContentDB.menace, the one weight for the Rupture
+## meter, Anathema and salvage, 30 October), tallied as each fight ends like the kills.
+var menace_killed: int = 0
 ## The battle's share of the run's Sponsorship measures (the bible's Sponsorship row): the
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
@@ -904,7 +907,10 @@ func finish_skirmish() -> void:
 		moved.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
 	for sq in current.packs:
-		foes_killed += current.kills_for(sq)
+		var by_type := current.kills_by_type(sq)
+		for cid in by_type.keys():
+			foes_killed += int(by_type[cid])
+			menace_killed += db.menace(str(cid)) * int(by_type[cid])
 	for k in current.sponsorship.keys():
 		sponsorship[k] = int(sponsorship.get(k, 0)) + int(current.sponsorship[k])
 	field.apply_skirmish_result(current)
