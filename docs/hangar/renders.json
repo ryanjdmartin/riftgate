@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's fourth notes, 30 October.",
-   "note": "Ryan, 30 October: \"move them towards the front of the hull a bit, maybe 2 units.\" The radiators sit two further forward on the tail's top rear corners: the tops of their faces half a unit behind the back panel, their feet eight, each top running over the deck past the tail band's middle; their louvred hollows now dip into the panel, so the panel is cut there (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's fifth notes, 30 October.",
+   "note": "Ryan, 30 October: \"3 more further forward.\" The radiators sit three further forward on the tail's top rear corners, five in all since the third notes: the tops of their faces two and a half in from the back panel, over the deck, their feet five behind it, each top running over the deck to the next band, clear of the rack's hatch and of its whole slide; their louvred hollows dip into the corner and are cut there (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the third notes of 30 October (the radiators two further back)",
+    "summary": "Before: the fourth notes of 30 October (the radiators three further back)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
