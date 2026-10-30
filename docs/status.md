@@ -523,8 +523,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.397 (the
-  page's version 409, published 30 October from `claude/charming-rubin-h954bp` as main took it,
+  `docs/design-bible.html` after every change. This file and the live page are v0.402 (the
+  page's version 414, published 30 October from `claude/charming-rubin-h954bp` after main took
+  it: Ryan's answers after the landing, the rebuilds judged fine, the Armadillo liked as built and
+  the glows' white flares asked in section 12; three-way merged onto the live v0.401 another
+  session published at 413, sound notes and new foes in the generated tables, ahead of their
+  code; main's file is v0.397, the page's version 409 as main took this branch,
   onto its own v0.396 at 408, three-way merged onto the live v0.395 that another session
   published at 407 (the fight's palette beside the map's tileset, the HUD's three presets), itself
   onto that branch's v0.394 at 406, merged onto the live v0.393 that `claude/brave-cori-fr18de`
