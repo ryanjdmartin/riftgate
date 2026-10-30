@@ -129,7 +129,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   bottom the field down to the log and the machines lower. His third round asked the red chips to
   brighten: the light #ff7c80 came first, then his try of pure #ff0000 with the arrows bare, and
   his rule that a red or an orange is red and green alone, never blue, heat's orange at #ff6000
-  (`docs/measurements.md`). Ryan's phone read is the to-do's.
+  (`docs/measurements.md`). Then the colours went to him (30 October): a debug build's Settings
+  → COLOURS sets any named colour by wheel or hex, and his picks come back as COPY text to land
+  as the defaults; what fails is a colour over its ground, not two UI colours apart (his words,
+  the bible's colour rows). Ryan's phone read is the to-do's.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water
@@ -353,12 +356,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.361 (the page's version 373,
-  published 29 October from `claude/jolly-lovelace-scn82y`: pure red on trial and the rule that a
-  red or an orange carries no blue, merged onto the live v0.360; the rows other sessions published
-  since v0.348 ride along: the Armadillo's radiators, side vents, acts and seal on screen, the
-  desk renderer question, the Hold The Line voices, the six map shapes, the tracks as pairs and
-  the Arsenal's lit cockpit glass, on v0.346 from `claude/charming-rubin-h954bp`). So this
+  `docs/design-bible.html` after every change. This file is v0.366 (the page's version 378,
+  published 30 October from `claude/jolly-lovelace-scn82y`: the debug colour tuner and colours
+  judged against their grounds, merged onto the live v0.365; the rows other sessions published
+  since v0.348 ride along (the map's movement and shapes, the desk on the phone's renderer, the
+  Armadillo's looks and seal, the Hold The Line voices, the tracks as pairs, the Arsenal's lit
+  cockpit glass), on v0.346 from `claude/charming-rubin-h954bp`). So this
   file carries those sessions' rows ahead of their code (the models' looks and acts, the
   Armadillo's seal on screen, the six shapes) and the Strikes row in the keyword table, and the
   tables script, which writes the tables from main's content, waits until they land or it

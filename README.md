@@ -72,7 +72,12 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `ui/` the HUD kit (bars, glyphs, palette, buttons), the die face view, the codex box, the
     pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), `mech_rig.gd`
     (its joints, idle acts and strikes from the model's sidecar), `mech_weld.gd` (its parts
-    welded at load, a mesh a material in each moving group, for the draw calls), the feed
+    welded at load, a mesh a material in each moving group, for the draw calls),
+    `colour_tuner.gd` (a debug build's COLOURS page, under the pause menu's SETTINGS: every
+    named colour, the HUD choices among them, set by wheel, sliders or hex and kept in
+    `user://settings.cfg`; PEEK hides the menu until a tap, COPY puts the picks on the
+    clipboard as `KEY #rrggbb` lines, RESET ALL asks twice; a slot such as `ENEMY_ARROW`
+    follows another until it is set itself; headless runs and other builds keep no picks), the feed
     effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`), and the
     skirmish's field (29 October): `hud_backdrop.gd` lays it, `battle_backdrop.gd` paints its
     far part, the other world as a battle screen's backdrop in each domain's palette, and
@@ -305,7 +310,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
 # and the first foe's: gauges, chips, a foe's intent), confirm, lock, repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
-# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's orange beside each red intent), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as KEYWORDS opens it), and the feed's
+# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's orange beside each red intent), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.

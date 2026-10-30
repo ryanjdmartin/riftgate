@@ -92,7 +92,7 @@ const OTHER := {
 	BattleMap.Terrain.WATER: Color("2860e8"),
 	BattleMap.Terrain.MOUNTAIN: Color("a8905a"),
 }
-const OTHER_GRID := Color("1a3a12")
+static var OTHER_GRID := Color("1a3a12")
 
 
 ## One hex of the other world: a flat bright fill and a few chunky marks at a coarse

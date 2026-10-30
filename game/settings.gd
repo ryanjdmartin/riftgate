@@ -2,14 +2,15 @@ class_name Settings
 extends RefCounted
 
 ## Player settings, saved to user://settings.cfg: the HUD colour and the display knobs
-## (22 September: the map tuner's useful knobs, made the player's).
+## (22 September: the map tuner's useful knobs, made the player's), and a debug build's colour
+## picks (ColourTuner).
 
 const PATH := "user://settings.cfg"
 
 ## HUD colour choices, in the order a picker shows them.
 # Chrome only: the semantic colours in Palette never change with this. Red is not offered,
-# since red is the enemy colour.
-const HUD_OPTIONS := {
+# since red is the enemy colour. A static var so a debug build's colour tuner can set them.
+static var HUD_OPTIONS := {
 	"green": Color("33ff55"),
 	"amber": Color("fff21a"),
 	"blue": Color("5cd8ff"),
@@ -52,6 +53,7 @@ static func apply() -> void:
 				hud = h
 			for key in DISPLAY_DEFAULTS.keys():
 				display[key] = cf.get_value("display", key, DISPLAY_DEFAULTS[key])
+		ColourTuner.load_saved(cf)   # a debug build's colour picks (the pause menu's COLOURS page)
 	# RIFTGATE_HUD=<green|amber|blue> forces the colour for a run without touching the saved
 	# choice: the screenshot tool, to judge a mark against every HUD option.
 	var forced := OS.get_environment("RIFTGATE_HUD")

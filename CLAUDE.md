@@ -119,11 +119,14 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   darker included (Ryan, 29 October: moving the blue too is what made the reds hard to
   judge); past pure red the green steps 30, 40, 50 and 60 are each distinct to him, and past
   about #ff8200 an orange reads as yellow or green. Never separate two marks by hue alone:
-  give them structure too (an edge, dashes, motion, a glyph, a weight). Check a new colour
-  by simulation (the Machado protan, deutan and tritan matrices in a few lines of numpy)
-  against every HUD option and the enemy red, and pick by the worst case; report lightness
-  and simulated distance, not how it looks. Red against the green HUD and violet against the
-  blue HUD are the pairs that fold first.
+  give them structure too (an edge, dashes, motion, a glyph, a weight). What fails is a
+  colour over its ground, never two UI colours apart, since every mark carries an icon
+  (Ryan, 30 October): check a new colour by simulation (the Machado protan, deutan and
+  tritan matrices in a few lines of numpy) against the grounds it is drawn on (the field's,
+  the map's, a chip's plate), pick by the worst case, and report luminance contrast and
+  simulated distance against them, not how it looks. A debug build's Settings → COLOURS sets
+  any named colour (`ColourTuner`); Ryan tunes there and sends its COPY text (`KEY #rrggbb`
+  lines) for the picks to land as the defaults.
 - A phone read arrives as a screenshot. Work it this way: crop and zoom it with nearest
   sampling to see the pixels, reproduce it on the desk machine at the phone's layout and density
   (`RIFTGATE_SHOT_H`, `RIFTGATE_SAFE`, `RIFTGATE_SHOT_SCALE`, and

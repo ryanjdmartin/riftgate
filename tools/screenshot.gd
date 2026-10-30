@@ -46,6 +46,7 @@ func _init() -> void:
 	else:
 		_vp.size = design
 	_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_vp.gui_embed_subwindows = true   # a popup (the colour picker) drawn inside the capture, as the phone embeds it
 	# RIFTGATE_SHOT_WINDOW=1 skips the SubViewport and puts the scene in the window itself,
 	# so the capture goes through the project's own stretch and font oversampling, the way
 	# the phone does: run with --resolution 1080x1920 for a 1080 phone's density.
@@ -128,10 +129,19 @@ func _apply_pose() -> void:
 			s._fx.force(_pose.trim_prefix("feed_"))
 		"keywords":
 			s._open_menu("keywords")   # as the button under the eye opens it
-		"menu", "settings", "quit":
+		"menu", "settings", "quit", "colours":
 			s._open_menu()
 			if _pose != "menu":
 				s._menu._show_page(_pose)
+		"colourpick":
+			# A debug build's COLOURS page with the first swatch's picker open (the wheel, the
+			# sliders and the hex), to judge its size on the phone's layout.
+			s._open_menu()
+			s._menu._show_page("colours")
+			var swatches := s._menu._list.find_children("*", "ColorPickerButton", true, false)
+			if not swatches.is_empty():
+				var pb: ColorPickerButton = swatches[3]   # ENEMY
+				pb.get_popup().popup_centered()
 		"withdraw":
 			# Withdraw confirmed: the enemy's parting blows replay (RIFTGATE_SHOT_FRAME) before
 			# the outcome.

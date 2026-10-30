@@ -2306,3 +2306,25 @@ Against #ff6a00 the red stood 6.8 in deutan, so the orange's move costs 1.2 ther
 stands 14.6 or more from every HUD option and the gain green in every simulation (#ff6a00, 13.6).
 The map's bright, #ff8a1e, past his line, became #ff6000, and the deep reds lost their blue
 (#7a1414 to #7a1400, ΔE 5.0; the map's edge #5a0e0e to #5a0e00, ΔE 3.5).
+
+## 30 October, red and yellow lines against the grounds
+
+**The ground read** (the decision it informs: none yet; Ryan's note that a colour fails over the
+backgrounds, never between two UI elements, "since we always have an icon", and his instinct that
+the enemy's lines could leave red: "plotting all routes in a friendly easy-to-use yellow is
+completely sane too"). Method: as the red read of 29 October, a line's colour against each
+ground's sampled shades in the Machado simulations, the worst over the shades and the
+simulations; luminance contrast / ΔE2000:
+
+| Ground | #ff0000 | #ff1000 | #ffd000 | #ffff00 |
+|---|---|---|---|---|
+| The meadow | 1.02 / 8.3 | 1.03 / 8.3 | 1.25 / 10.6 | 1.72 / 17.2 |
+| The waste | 1.31 / 8.6 | 1.30 / 8.5 | 1.06 / 2.5 | 1.45 / 15.0 |
+| The marsh | 1.05 / 11.4 | 1.07 / 11.6 | 3.11 / 35.8 | 4.27 / 38.5 |
+| The peak | 1.60 / 19.8 | 1.64 / 20.3 | 6.08 / 50.3 | 8.42 / 58.7 |
+| Our floor | 1.88 / 22.6 | 1.93 / 23.1 | 7.49 / 60.4 | 10.38 / 64.7 |
+
+Pure yellow stands further from every ground than pure red, by both measures; its weakest ground
+is the waste's sand, where a golden yellow (#ffd000) all but vanishes. No single colour reaches
+3:1 on the meadow or the waste, the field's two bright grounds.
+
