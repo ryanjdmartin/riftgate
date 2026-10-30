@@ -21,8 +21,11 @@ extends RefCounted
 ##           fight's) and keeps the one whose fight is worth most. A team that sets up and
 ##           cashes across rounds: the top the gap is read against.
 ## A persona is a habit on top: `withdraw_below` pulls out when the team's hull is under a
-## percentage. The weights here trade mech hull against foe hit points and are knobs for
-## the tool, not the game. Nothing here is shown to the player.
+## percentage; `cool_above` keeps each machine's gauge under a share of its maximum, pricing the
+## heat a spend leaves above that line as an overheat's hull, so it vents early and holds a hot
+## gun there (the heat report's cautious persona, 30 October; the rungs as they are play the
+## reckless one, cooling only against an overheat). The weights here trade mech hull against
+## foe hit points and are knobs for the tool, not the game. Nothing here is shown to the player.
 
 const RANDOM := 0
 const GREEDY := 1
@@ -64,6 +67,7 @@ const REGEN_ACTIONS := 3         # the actions a foe's Regenerating runs from it
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
+var cool_above: int = 0          # persona: keep the gauge under this percent of the maximum (0: cool only against an overheat)
 var rng := RandomNumberGenerator.new()
 
 ## What the fight cost and how it was played, for the runner to tally.
@@ -258,6 +262,7 @@ func rollout(sk: Skirmish, c: Dictionary, seed_value: int) -> float:
 	var copy := SaveGame.clone_skirmish(sk)
 	copy.rng.seed = seed_value
 	var g := Policy.make(GREEDY, seed_value)
+	g.cool_above = cool_above   # the persona's habit plays the future out too
 	if not copy.assign(int(c["mech"]), _mirror(copy, sk, c.get("target")), _mirror(copy, sk, c.get("second"))):
 		return -INF
 	g.play_round(copy, false)
@@ -669,11 +674,26 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 ## entry itself, not the one showing, so a reroll can weigh every entry the same way.
 func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
 	var fc := sk.forecast(ms, false)
-	var over := maxi(0, int(fc["heat_end"]) + int(roundf(heat_of(ms, f) * uses)) - ms.heat_max)
+	var added := int(roundf(heat_of(ms, f) * uses))
+	var over := maxi(0, int(fc["heat_end"]) + added - ms.heat_max)
 	var cost := float(over - int(fc["overheat"])) * HULL_WEIGHT
 	if not fc["destroyed"] and int(fc["hull_after"]) - (over - int(fc["overheat"])) <= 0:
 		cost += DEATH_WEIGHT
+	# The cautious persona: the heat this spend leaves above its line (under the maximum, past
+	# which the overheat above prices it), as an overheat's hull.
+	var line := caution_line(ms)
+	if line >= 0:
+		var top := mini(int(fc["heat_end"]) + added, ms.heat_max)
+		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT
 	return cost
+
+
+## The cautious persona's line on this machine's gauge (cool_above percent of its maximum), or
+## -1 when the persona is off.
+func caution_line(ms: Skirmish.MechState) -> int:
+	if cool_above <= 0:
+		return -1
+	return int(floorf(float(ms.heat_max) * float(cool_above) / 100.0))
 
 
 # ---------------------------------------------------------------- mines
@@ -1799,6 +1819,12 @@ func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	if fc["destroyed"] and int(fc["overheat"]) > 0 and int(fc["hull_after"]) + mini(power, int(fc["overheat"])) > 0:
 		score += DEATH_WEIGHT
 	score += float(mini(power, who.heat)) * BANK_WEIGHT
+	# The cautious persona: what the vent takes off above its line and under the maximum (the
+	# overheat above counts the rest), as an overheat's hull.
+	var line := caution_line(who)
+	if line >= 0:
+		var held := mini(int(fc["heat_end"]), who.heat_max) - line
+		score += float(clampi(power - int(fc["overheat"]), 0, maxi(0, held))) * HULL_WEIGHT
 	return score
 
 

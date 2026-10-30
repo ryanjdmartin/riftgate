@@ -77,6 +77,32 @@ func test_greedy_vents_before_it_burns() -> void:
 	assert_eq(hot.hull, 100, "no burn: the vent was spent on the one who needed it")
 
 
+## The cautious persona (30 October, the heat report's): heat above its line is priced as an
+## overheat's hull, so a vent is worth taking where no overheat looms, and a hot spend above
+## the line costs what an overheat would; the rungs as they are pay nothing under the cap.
+func test_the_cautious_persona_prices_heat_above_its_line() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Hot", Die.single(Face.vent(30)), 40, 100))
+	sk.add_foes([_ghoul(300, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 45   # under the cap of sixty: no overheat looms
+	assert_eq(int(sk.forecast(ms, false)["overheat"]), 0, "nothing would burn")
+	var plain := Policy.make(Policy.GREEDY)
+	var careful := Policy.make(Policy.GREEDY)
+	careful.cool_above = 50
+	assert_eq(plain.caution_line(ms), -1, "the persona off")
+	assert_eq(careful.caution_line(ms), 30, "half of sixty")
+	assert_true(absf(careful.vent_score(sk, ms, 30) - plain.vent_score(sk, ms, 30) - 15.0 * Policy.HULL_WEIGHT) < 0.001, "the vent's worth gains the fifteen over the line, as hull")
+	assert_true(absf(careful.vent_score(sk, ms, 10) - plain.vent_score(sk, ms, 10) - 10.0 * Policy.HULL_WEIGHT) < 0.001, "a smaller vent, what it takes off")
+	var gun := Face.attack(10, L, [], 8)
+	assert_eq(plain.heat_cost(sk, ms, gun), 0.0, "the greedy pays nothing under the cap")
+	assert_eq(careful.heat_cost(sk, ms, gun), 8.0 * Policy.HULL_WEIGHT, "the persona pays for every point above its line")
+	ms.heat = 26
+	assert_eq(careful.heat_cost(sk, ms, gun), 4.0 * Policy.HULL_WEIGHT, "from under the line, only the part past it")
+
+
 func test_greedy_rerolls_a_face_under_the_average() -> void:
 	# A die of one blank and one big gun: whichever shows first, the bot ends the round on
 	# the gun, having rerolled the blank away (a reroll never lands on the same entry).

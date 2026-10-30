@@ -27,8 +27,10 @@ piece's kind in its place); --pieces id,id (the ladders' candidates narrowed to 
 rule changes under a few pieces); --modules id,id (the module ladder's likewise); --numbers n,n
 and --shapes direct,indirect (the vanilla ladder narrowed); --bench-stocks (stock baselines for
 the benches' rows alone, for a narrow read at 200 seeds); --set path=json (a content edit on every
-variant, the runner's own, never validated: a module's line, a rule's what-if). GODOT names the
-binary when it is not on the path.
+variant, the runner's own, never validated: a module's line, a rule's what-if); --cool-above N
+(the cautious persona on every variant, each machine keeping its heat under N percent of its
+maximum: a vent's worth read by a bot that vents). GODOT names the binary when it is not on the
+path.
 
 The reads (the bible's balance rows): a candidate's worth is its row's change against the
 bench's stock, read beside its tier's others on the same hardpoint; its pick share says whether
@@ -284,6 +286,8 @@ def runner_args(v, opts, packs):
     extra = []
     for s in getattr(opts, 'sets', []) or []:
         extra += ['--set', s]
+    if getattr(opts, 'cool_above', 0):
+        extra += ['--cool-above', str(opts.cool_above)]
     return ['--seeds', str(opts.seeds), '--policies', ','.join(opts.policies), '--rows', row_id(v['row']),
             '--team', ','.join(v['row']), '--packs', ','.join(packs)] + extra + v['args']
 
@@ -739,6 +743,8 @@ def main():
     ap.add_argument('--bench-stocks', action='store_true', help='stock baselines for the benches\' rows alone, not every team row')
     ap.add_argument('--set', action='append', default=[], dest='sets', metavar='PATH=JSON',
                     help='a content edit for every variant of the run, the runner\'s own --set (a module\'s line to read a bench on, a rule\'s what-if)')
+    ap.add_argument('--cool-above', type=int, default=0, dest='cool_above', metavar='N',
+                    help='the cautious persona on every variant: each machine keeps its heat under N percent of its maximum (the runner\'s --cool-above; 0, the default, cools only against an overheat)')
     ap.add_argument('--verbose', action='store_true', help='plan: print each variant\'s runner arguments')
     opts = ap.parse_args()
     opts.parts = [x.strip() for x in opts.parts.split(',') if x.strip()]
