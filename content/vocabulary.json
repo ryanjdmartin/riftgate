@@ -263,7 +263,7 @@
    "id": "shock",
    "category": "keyword",
    "name": "Shock",
-   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next blow it takes deals double. The entry's own blow never spends the shock it leaves.",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next weapon strike aimed at it deals double. The entry's own blow never spends the shock it leaves.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -406,10 +406,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "If this attack kills an enemy, repeat it on a new, valid target.",
+   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. Then one other foe, at random, neither the target nor already Shocked, is Shocked.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain)."
    }
   },
   {
@@ -502,7 +502,7 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. The next blow of a weapon this foe takes deals double damage, then the status clears; equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
+   "codex": "Foe status. When a weapon's strike aimed at this foe lands, it deals double damage and the status clears. A blow that only reaches it (an area, a Chain's arc, a spill) neither doubles nor clears it, and equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, by a Chain weapon's charge, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
    "status": "implemented",
    "design": {
     "holes": "",

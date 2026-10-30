@@ -344,6 +344,7 @@ func test_keyword_cap_is_enforced() -> void:
 	db.load_dir(ContentDB.DIR)
 	var comp: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	comp["face"]["keywords"] = ["penetrate", "burn", "chain", "shock"]
+	comp["face"]["chain"] = 1   # Chain says its number (the conductor, 28 October)
 	comp["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["too_many"] = comp
 	var errs := db.validate()
@@ -2241,9 +2242,44 @@ func test_the_area_keywords_say_their_number() -> void:
 		var face: Dictionary = db.components[id].get("face", {})
 		if id.begins_with("test_") or str(face.get("status", "")) == "planned":
 			continue
-		for name in ["cleave", "penetrate", "splash"]:
+		for name in ["cleave", "penetrate", "splash", "chain"]:
 			if Array(face.get("keywords", [])).has(name) and not db.build_face(face).is_debuff():
 				assert_true(int(face.get(name, 0)) > 0, "%s's %s carries its number" % [id, name])
+
+
+## Chain is a weapon's keyword with a number (the conductor, Ryan, 28 October): the validator
+## refuses it bare, its number without it, and on a debuff, whose arc would carry its riders to
+## every conductor for no blow; the Arc Fault Cannon's Chain 2 validates and builds.
+func test_chain_says_its_number_and_rides_a_weapon() -> void:
+	var db := _fresh()
+	var base: Dictionary = db.components["arc_fault_cannon"].duplicate(true)
+	base["face"]["keywords"] = []
+	base["face"].erase("chain")
+	var cases := {
+		"test_chain_bare": [{"keywords": ["chain"]}, "Chain says the number every other Shocked foe takes"],
+		"test_chain_n": [{"keywords": ["chain"], "chain": 2}, ""],
+		"test_chain_stray": [{"chain": 2}, "chain (the number) rides with the Chain keyword"],
+		"test_chain_debuff": [{"power": 0, "keywords": ["chain"], "chain": 2}, "Chain is a weapon's keyword"],
+	}
+	for id in cases:
+		var c: Dictionary = base.duplicate(true)
+		for k in cases[id][0]:
+			c["face"][k] = cases[id][0][k]
+		db.components[id] = c
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component %s " % id) or e.begins_with("component %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
+	var arc: Array = errs.filter(func(e: String) -> bool: return e.begins_with("component arc_fault_cannon"))
+	assert_true(arc.is_empty(), "the Arc Fault Cannon validates: %s" % str(arc))
+	var f := db.build_face(db.components["arc_fault_cannon"]["face"])
+	assert_true(f.has(Face.Keyword.CHAIN) and f.chain == 2, "it builds with Chain 2")
+	assert_eq(Face.from_dict(f.to_dict()).chain, 2, "and its number survives the round trip a save makes")
+	assert_true(f.describe().contains("chain 2"), "the die's text says its number: %s" % f.describe())
 
 
 ## A grant of a numbered keyword may say its number, an area keyword's must (the drum's Spread 2
@@ -2254,7 +2290,9 @@ func test_a_numbered_keywords_grant_says_its_number() -> void:
 	var cases := {
 		"test_grant_spread": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "number": 2}, ""],
 		"test_grant_bare": [{"trigger": "static", "effect": "grant_keyword", "value": "penetrate"}, "says what each foe past the target takes"],
-		"test_grant_odd": [{"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 2}, "a positive number for a numbered keyword"],
+		"test_grant_odd": [{"trigger": "static", "effect": "grant_keyword", "value": "shock", "number": 2}, "a positive number for a numbered keyword"],
+		"test_grant_conductor": [{"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 2}, ""],
+		"test_grant_arc": [{"trigger": "static", "effect": "grant_keyword", "value": "chain"}, "says what every other Shocked foe takes"],
 		"test_grant_none": [{"trigger": "static", "effect": "grant_keyword", "value": "splash", "number": 0}, "a positive number for a numbered keyword"],
 	}
 	for id in cases:

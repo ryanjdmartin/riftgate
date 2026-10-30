@@ -21,10 +21,15 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 768 tests, 205,097 checks, green (30 October, the pacing session and the foes' fresh
-  start on the tilesets' second build; 759 and 204,504 on that build alone), about four minutes in a cloud session, twenty on a slow one. A cloud session fetches Godot 4.7's Linux
-  build from the GitHub release asset (`godotengine/godot-builds`,
-  `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for screenshots (with
+- Tests: 786 tests, 205,244 checks, green (30 October, the pacing session and the foes' fresh
+  start with main's pricing pass, Chain and the cautious heat persona merged in; 777 and 204,651
+  on main alone), about four minutes in a cloud session, twenty on a slow one. A cloud
+  session gets Godot 4.7's Linux build and the project's first import from the repository's
+  session-start hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`,
+  27 October, on main since 30 October; the GitHub release asset `godotengine/godot-builds`,
+  `Godot_v4.7.2-stable_linux.x86_64.zip`, into `~/bin`; a session without the hook fetches it by
+  hand, the download in a command of its own and the unpacking and first run in another, since
+  Auto mode refuses one line that fetches and runs it), uses `xvfb-run` for screenshots (with
   `--rendering-method gl_compatibility`, Mesa's llvmpipe on the CPU: its draw calls are true
   counts, its frame times mean nothing), and builds models with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (the wheel takes about twenty minutes to install). Its first `--import` rewrites
@@ -34,9 +39,11 @@ are in `README.md`.
 ## Branches
 
 `claude/brave-cori-fr18de` (30 October) carries the pacing session and the foes' fresh start
-(the brief, the engine in three commits to `85e28fd`, then the records), took main's tilesets'
-second build before its records pass, and waits for main to take it on Ryan's word; its
-bible is v0.379, three-way merged onto the live v0.378 over main's v0.376.
+(the brief, the engine in three commits to `85e28fd`, then the records), took main twice (the
+tilesets' second build before its records pass; the pricing pass, Chain and the cautious heat
+persona after them, on Ryan's word to bring the repricing in), and waits for main to take it on
+his word; its bible is v0.385 (the page's 397), three-way merged onto the live v0.384, other
+sessions' rows on main's v0.381.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -63,11 +70,18 @@ rounds of notes, the hangar's stamped fetches and the glow-parts guard) took mai
 main"). `ccr-6073bda9-p34o8q` took main the same evening, carried the ladder's build on top
 (the three verbs, the foes' buffs, the player's Purge, the recolours by tier, their sprites,
 the read at 30 seeds and the move counts settled), and main took it as a fast-forward that
-night on the same word. Every branch named here is fully
+night on the same word. `ccr-c04908be-3r43xf` (27 to 30 October: the pricing run's method and
+driver, the runs made and read, the synergy map (`docs/synergy_map.md`) and the roster's synergy
+holes, the session-start hook that fetches Godot for cloud sessions, the pricing pass landed on
+Ryan's go, Chain's conductor and its form of the 29th with every read, Shock read by an aimed
+strike alone, the heat brief, the cautious heat persona) took main on the 28th and twice on the
+30th, and main took it as a fast-forward on the 30th on Ryan's word ("merge into main and
+republish the bible"); its session carries on there, its later commits landing the same way.
+Every other branch named here is fully
 merged, to delete from the desk machine or GitHub along with `ccr-6073bda9-p34o8q`,
 `claude/affectionate-goldberg-8e3mkh`, `claude/playtesting-issues-08mnqj`, `ccr-535a7596-5ptzsj`,
 `claude/eager-newton-sf947u`, `claude/friendly-cannon-kyk9v4`, `ccr-24cae16e-ryhv1v` and, once
-its session ends, `ccr-7821127e-kwj874` (a cloud session may not delete one). Every other branch was
+its session ends, `ccr-7821127e-kwj874` and `ccr-c04908be-3r43xf` (a cloud session may not delete one). Every other branch was
 merged into main and deleted (22 October).
 
 ## The design sessions
@@ -95,7 +109,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a candidate for the Owl or the Magpie, the bible's Kestrel row). The Skua fielded since its engine of 25 October (each roll
   halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
-  follows from its brief, and the Storm Petrel's after the pricing run; the last two, the Magpie (a working name, a support engine)
+  follows from its brief, and the Storm Petrel's is free since the pricing pass landed (28 October, the guns' heat
+  standing); the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
@@ -364,7 +379,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The Giant Petrel's engine and the Storm Petrel's, after the pricing run (their briefs).
+- The Giant Petrel's engine and the Storm Petrel's, the latter free since the pricing pass
+  landed on 28 October with the guns' heat standing (their briefs).
 - The Peak's elite and a Waste hunter, the escort compositions by tier and the Fracture's
   prize (the bible's section 12), with the bosses' slate (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
@@ -386,8 +402,56 @@ and the streets) main's.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
-2. **The stock pass's tail**: Ryan's name pass and the pricing run, on the bots' Shock priced at
-   the hitter in hand (the to-do); the Lammergeier's stock.
+2. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass, landed
+   28 October on Ryan's go ("I trust your leans for this pass"; the bible's pricing row, section
+   11; the runs in `docs/measurements.md`, 27 and 28 October). The run of the 27th read every
+   row winning its cells, tier one's two outlier guns above tier two's band, the Ram Frame the
+   universal module on +24 hull, equipment and the setups priced not at all under the greedy,
+   the Probe, the Condenser and the Ammit's loop verdicts on the bot; reviewed on the 28th
+   against the numbered area, the blow's order and the ladder's design goals; reframed on
+   Ryan's words of the 28th (the effectiveness row: a piece priced by its effectiveness in
+   vanilla points, a vanilla at each tier the baseline, heat priced up from the heatless
+   vanilla, a rolled gun its mean). The vanilla ladder read a point a third of a round up to
+   6 and a seventh past it on the car, the hot bench reading keywords and no number, heat 1, 2
+   and 4 free on a cold die and 6 and 8 a point and two, a hot die paying in hull, a rolled gun
+   a third of a point under its mean, and the keywords' prices (Flak 2 two, Burn 2 two and a
+   third, the Chain nearly three, the Shock one and a half). Landed on his go: the floors 2, 3.5, 5 and 7;
+   the Railgun 10 to 8, the Coriolis 3 to 4, tier one's rolled vanillas to 2-6, the Howitzer
+   Splash 1, the Ram Frame and the Rangefinder hull +8 (the Clydesdale bench: the Frame 0.4 rounds off its
+   row, the Rangefinder 0.1, its back-rank rule reading on the one back-rank foe type a tier-one
+   formation fields, tier three's fielding three; a nine-entry die dilutes its slot three to
+   one and never reaches its heat knee); every landed delta read again at 200 seeds (the Railgun
+   at 8 1.5 rounds off the car's row against 2.0 at 10, under the Knuckles and the Meteor and
+   above the Thermal Ray; the Coriolis at 4 at tier two's floor; the rolled guns at 2-6 the
+   half point meant; the Howitzer with Splash 1 a tier-one shell at tier two's kill time; the
+   Frame at +8 a third of a round, the Rangefinder its hull on tier one's formations; the
+   ladder's tier-two and tier-three formations are walls for the stock trios, Wainwright &
+   Sutler's row winning 29% of them, so the Rangefinder's rule is the per-tier ladders' read
+   with a tier-matched kit). Chain decided the same evening (the conductor, the bible's Chain
+   row) and built on the 29th from its brief (retired); read the same day, it is a plain 4 on
+   today's kits (another machine's doubled blow spends nearly every charge before the arc
+   fires), about 0.7 vanilla points with a spread setter under the planner, and Kestrel's row,
+   with no Shock setter, lost the kill and repeat's pace. Ryan's six looks at Chain's form read
+   the same day as what-ifs (`docs/measurements.md`, the Chain looks): how a charge is spent
+   barely matters, self-fuelling is what moves it, Shock clarified costs nothing, and a Shock
+   setter on the Buzzard takes nothing over. Ryan picked the form the same evening (the arcs
+   plain, Shock read only by a weapon's strike aimed at its foe, a charge on one other foe at
+   random), built at once and read (`docs/measurements.md`): about 0.8 vanilla points over the
+   sixteen big fights, nothing against a lone massive foe and about 2 on the formations, the
+   charge carrying it (the team cashes each one, so nothing compounds); a point of Chain N on
+   the Arc Fault adds about a tenth of a point, so it keeps its Chain 2. Ryan affirmed the
+   random charge the same evening (lightning, free reach, it sets itself up) and kept the
+   Buzzard's stock.
+   Heat opened the same evening (Ryan: a core pillar, undervalued): the heat knee by the
+   maximum measured as a what-if, his frame recorded (the triangle row of section 2: every
+   component priced in heat, hull or shield, the basics too; passive cooling the lever that
+   makes the player meet the system; vent payoffs), Claude's bench in section 12's heat
+   question, the heat session on the to-do with its brief (`docs/briefs/heat_pillar.md`), waiting
+   on Ryan's answers to its six questions. Next: a persona that
+   shields and vents before the overheat and the planner on the equipment ladders, for the
+   equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
+   the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
+   line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
 3. **The foes' fresh start and the pacing session: Ryan's marks and the reads.** Built 30
    October (the How things stand bullet). What waits on him: section 12's fresh start item (the
    five kits' names and numbers, the Peak's elite and a Waste hunter, the compositions'
@@ -419,12 +483,17 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.379 (the page's version
-  391, published 30 October from `claude/brave-cori-fr18de`: the pacing session's and the
-  fresh start's rows, three-way merged onto the live v0.378, two other sessions' rows on
-  main's v0.376 (Hold The Line's halves in the tracks table, the Armadillo's radiators in the
-  settled looks row), main's being the page's 388, published 30 October
-  from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
+  `docs/design-bible.html` after every change. This file is v0.385 (the page's version
+  397, published 30 October from `claude/brave-cori-fr18de` with main's pricing pass
+  merged in: three-way merged onto the live v0.384, which other sessions moved past main's
+  v0.381 with a track's row, the Armadillo's radiators and acts and the grounds' tones; main's
+  v0.381 is the page's 393, published 30 October from main with `ccr-c04908be-3r43xf` merged: the pricing pass's
+  effectiveness and pricing rows, the heat triangle, the maker leans, Chain's row and the rows
+  Shock's reading touched, three-way merged onto the live v0.380, which other sessions moved
+  past main's v0.376 with the foes' fresh start built with the pacing session (this branch's
+  v0.379 at 391: the packs as compositions, the tier locked and the ramp, the tears, the
+  stall's prices, the whole wall struck, the elites at the Fractures, the seal), the music's
+  rounds and the phone's line widths; on v0.376 at 388, from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
   tilesets' second build, three-way merged onto the live v0.374 that `claude/charming-rubin-h954bp` published with its flush radiators,
   which carries `claude/jolly-lovelace-scn82y`'s v0.373, the map's lines one width at every zoom;
   on v0.372 at 384, the first build onto that branch's v0.371, the colour rows' pure red on
@@ -434,7 +503,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   skirmish never reads our own ground). So this file carries
   those branches' rows ahead of their code (the models' glows, looks and acts, the Armadillo's
   seal on screen, the skirmish's field, the reds, the tracks in pairs, the map's FXAA and its
-  lines at every zoom) and the Strikes row in
+  lines at every zoom, the fresh start's and the pacing's rows) and the Strikes row in
   the keyword table, and the tables script,
   which writes the tables from main's content, waits until they land or it reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.
@@ -448,7 +517,15 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 160 (30 October, from `ccr-7821127e-kwj874`:
+  acts on a reloaded page). At the page's version 164 (30 October, from `claude/brave-cori-fr18de`
+  with main's pricing pass merged: `content/foes.json` with the elites and the compositions'
+  notes, `content/factions.json` with the compositions, `content/vocabulary.json` with the
+  pacing session's terms and Chain, `content/modules.json` with the pricing pass's lines, its
+  `index.html` and every other file kept as they stood, `edits` empty; `content/components.json`
+  and `content/chassis.json` are `claude/charming-rubin-h954bp`'s copies (the Pinion Driver's two
+  shots, the Stingray's lance on its back), so main's pricing numbers reach the Codex when that
+  branch lands and republishes; a publish of another session's the same hour kept these four;
+  160, from `ccr-7821127e-kwj874`:
   `content/factions.json`'s note naming the bleeds as the tilesets, onto version 159, its
   `index.html` and every other file kept as they stood, `edits` empty; 154 took the domains' map
   shapes out), on 153 (29 October:

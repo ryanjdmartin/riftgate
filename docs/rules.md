@@ -145,6 +145,8 @@ defeat when every machine is wrecked. There is no round limit.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (which
   explosives carry which is open: no shell carries Splash, and the Musk Ox's two locked guns
   do).
+- Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
+  whatever the gun's reach.
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
   (a Gel's halves step up into it at once, below).
 - **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): every weapon and equipment it
@@ -156,24 +158,25 @@ defeat when every machine is wrecked. There is no round limit.
   arrival takes both slots'; shots still waiting when it falls wait on for the next. The
   reinforcement step places every arrival first, then the mines land left to right; any other
   way in (a Swap) sets them off at once. Every keyword acts as the shot lands, as on a blow:
-  a stun takes the arrival's first action, and a Chain mine that kills repeats its spender's
-  attack on the next foe in reach, rolling and paying heat again (nothing repeats once the
-  spender is gone); Lure and Disrupt do nothing, their round being over, and Rapid and
-  Volatile acted at the spend. Nothing expires.
+  a stun takes the arrival's first action, and a Chain mine arcs its number as laid to every
+  other Shocked foe on the field as it lands, then charges one other foe at random; Lure and
+  Disrupt do nothing, their round being over, and Rapid and Volatile acted at the spend.
+  Nothing expires.
 
 ### A blow
 Every foe a strike reaches takes a blow of its own, read in one order:
 1. The number: on the foe the strike is aimed at, the roll or the flat number; on every other
    foe its area reaches, the number of the shape it stands in (Spread's beside the target,
-   Penetrate's in the other rank of its column, Splash's both). Then what the entry prints
-   from its firer: what heat fired adds (Vents all) and the hopper's loads.
+   Penetrate's in the other rank of its column, Splash's both); on every other Shocked foe on
+   the field, Chain's (a foe in a shape and Shocked takes the shape's, one blow). Then what the
+   entry prints from its firer: what heat fired adds (Vents all) and the hopper's loads.
 2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
    the foe read on that foe (a status it carries, its rank).
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
    blow, the stacks a consumer eats on it on its first blow) and its Flak; then its multiplies
-   (Shocked doubles it); then its armour comes off. A weapon's blow takes them whatever it
-   deals, a 0 included (the Skua's halved 1); a debuff's blow stays nothing. Its riders land
-   on every foe struck.
+   (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
+   armour comes off. A weapon's blow takes them whatever it deals, a 0 included (the Skua's
+   halved 1); a debuff's blow stays nothing. Its riders land on every foe struck.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
   Overcharged) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
@@ -281,8 +284,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
   that action gains nothing more, Numbed included.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
-- **Chain**: a kill repeats the attack on the next valid target, rolling and paying heat
-  again, until a link fails to kill.
+- **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
+  each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
+  and an arc adds no heat; then one other foe at random, neither the target nor already
+  Shocked, is Shocked. Its footprint, like an area's, is read from the strike's own foe: an arc
+  spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
+  Shocked takes one blow, the area's.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 2 heat to it (Siphoning), in the enemy's turn, after the overheat.
@@ -386,9 +393,9 @@ not built): the ally gains Overcharged 2 and its die rolls again, which does not
 spent die. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
-strike of the spend whole; the engine runs it as a keyword the passive grants written out,
-so each of the Boar's weapons wears the star, the hold reading the passive's line, and no
-keyword chip.
+strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
+spent; the engine runs it as a keyword the passive grants written out, so each of the Boar's
+weapons wears the star, the hold reading the passive's line, and no keyword chip.
 
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
@@ -492,8 +499,10 @@ On a foe:
 - **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
   it has already acted this turn. It never stacks and never carries: a second suppress on a
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
-- **Shocked** (debuff): the next team blow of a weapon deals double, spending the shock (a
-  vent's blast and a weapon's mine too); equipment leaves it standing; it never stacks.
+- **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
+  shock is spent (a vent's blast and a mine's shot on its arrival too); a blow that only reaches
+  it (an area's, a Chain's arc, a spill) neither doubles nor spends it, and equipment leaves it
+  standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added.
@@ -520,9 +529,8 @@ On a foe:
 - **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 2 a stack;
   equipment spends none. It never fades on its own.
 - **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
-  multiplies and its armour (a Shocked foe takes blow plus Flak, doubled); a debuff's blow
-  stays nothing. The stacks halve at the end of each round, rounded
-  down.
+  multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a
+  debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
 - **Kindled** (buff, Rally): lands on every other foe on the field the moment the rally does,
   and its next move hits harder by the rally's value, an add before the move's factor as
   every add is. That move spends it, whatever it is: a blow lands it, a special gains nothing
@@ -706,7 +714,7 @@ and every one of them that fell is a kill).
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, chains, spills and a vent's blast included). No trigger feeds itself.
+  this machine's that killed, arcs, spills and a vent's blast included). No trigger feeds itself.
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
