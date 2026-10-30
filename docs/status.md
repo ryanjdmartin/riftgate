@@ -407,8 +407,11 @@ of two) and the map survey (29 October, the horde wading and the streets) are ma
    component priced in heat, hull or shield, the basics too; passive cooling the lever that
    makes the player meet the system; vent payoffs), Claude's bench in section 12's heat
    question, the heat session on the to-do with its brief (`docs/briefs/heat_pillar.md`), waiting
-   on Ryan's answers to its six questions. Next: a persona that
-   shields and vents before the overheat and the planner on the equipment ladders, for the
+   on Ryan's answers to its six questions. The cautious persona built 30 October (`--cool-above
+   N`) and its first read in the brief and `docs/measurements.md`: on the car's heat grid caution
+   costs more than the overheat (more rounds and more hull), so the overheat's price comes before
+   the cooling's cut, and cooling 0 bites modestly on a cold die. Next: the hot rows under both
+   bots; a persona that shields before the blow and the planner on the equipment ladders, for the
    equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
    the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
    line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
