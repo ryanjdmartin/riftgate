@@ -192,7 +192,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   (the Kite's drivers as ramjet-guns, their teeth running aft as strakes; the Dingo's rear
   mount on a roof gimbal, its coil threaded and its second antenna gone; the Armadillo's bores
   bored and dark, its weapons sliding along their lines, its seal hiding the irises and
-  hunkering, its stack two big louvred radiators in dark steel standing well out of the
+  hunkering, its stack two big louvred radiators in dark steel standing out of the
   tail's back panel, high on it, tilted up, and a vent on each flank that slides out, glowing orange as the shell
   sinks once to vent them open and shut, and dark sealed; every Arsenal cockpit's glass
   lit, the Nemesis's visor flaring white-hot in its fierce acts), to judge running (the to-do). A model may hold a form while its
