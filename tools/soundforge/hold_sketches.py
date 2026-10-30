@@ -1,31 +1,30 @@
-"""Hold The Line's fifth round as a pair (Ryan, 30 October, on the fourth round's page):
+"""Hold The Line's sixth round as a pair (Ryan, 30 October, on the fifth round's page):
 
-  the lifts      "crunch and synth for both lifts, and lower the backing guitar volume a bunch":
-                 read as the fourth round's pick for both, the crunch synth and the lead guitar,
-                 with the backing guitar 6 dB down (10 dB in a row beside it), and one row on the
-                 crunch synth and the track's own synth lead in case that is what he meant.
-  M              "I was wrong about M, it needs to go with how it ships, but add the crunch synth
-                 to it": the chug and the driven bass as they ship, the crunch synth on the chug's
-                 line an octave up as the fourth round had it.
-  K              "in between drums and the add lead to the unison, yes. Shorten the crashes,
-                 they're too much now that the drums are doing more": K's long crash, every second
-                 bar, choked to fall 20 dB in about a second, as the track's other crashes do (half
-                 a second in a row beside it).
+  the lifts      "I mean crunch synth and lead guitar, yes, but hearing the crunch synth and synth
+                 lead, with the -6 is actually perfect. Show me that on lift 2 as well": the first
+                 lift on the crunch synth and the track's synth lead over the backing guitar 6 dB
+                 down, and the second lift the same beside its crunch synth and lead guitar, M
+                 after it as it ships with the crunch synth.
+  K              "Don't choke the crash quite that much in K, lets try 1.5s? And can I hear it
+                 without the tempo drop, again?": K's long crash falling 20 dB in a second and a
+                 half (beside the fifth round's second), and the loop's seam through K with K and V
+                 at the track's own tempo beside them six percent slower as they ship.
 
 Kept from the earlier rounds: only J goes, V and Q stay, Q's fill landing on the wrap at bar nine
-with a crash; K at its slower tempo, its first fourteen bars; both lifts with the backing guitar
-chugging each bar's root wherever the kick hits and a crash every four bars, their metal chime
-and piano as they were; his map picks (X's held walk on the violins, U's lead on the clean
-guitar, the climax's drone moved from S to R, W on the low note with the roll, K without the
-cellos), the map half as the fourth round's.
+with a crash; K's first fourteen bars on the drums in between with the lead guitar added to the
+walk; both lifts' backing guitar chugging each bar's root wherever the kick hits and a crash every
+four bars, their metal chime and piano as they were; his map picks (X's held walk on the violins,
+U's lead on the clean guitar, the climax's drone moved from S to R, W on the low note with the
+roll, K without the cellos), the map half as the fourth round's.
 
-The full pair on the switch takes every pick: the lifts on the crunch synth and the lead guitar
-over the quieter backing guitar, M as it ships with the crunch synth, K on the drums in between
-with the lead guitar added to the walk and its crashes choked. The sets are excerpts for A/B,
-every row the same bars from the same seed at one gain.
+The full pair on the switch takes every pick, both lifts on the crunch synth and the synth lead
+and K at its slower tempo with the crash at a second and a half. The sets are excerpts for A/B,
+every row the same bars from the same seed through one master at one gain; the tempo's seams are
+cut from full renders the way the game loops them (the climax's last set to the end, then the
+wrap on into bar thirteen).
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # every set and the pair, then hold5.json beside the pairs (about five minutes on four cores)
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py c m      # the named sets only (c m k, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # every set and the pair, then hold6.json beside the pairs (about six minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py l k      # the named sets only (l k, and full for the pair and the seams)
 """
 import json
 import os
@@ -41,6 +40,7 @@ import pair_sketches as P  # noqa: E402
 NAME = "music_hold_the_line"
 SHIPPED_FORM = F.MUSIC[NAME]["form"]
 METER = dict(F.MUSIC[NAME]["meter"])            # the seven in 7/8, K and V at the solo's slower tempo
+METER_NO_DROP = {s: m for s, m in METER.items() if s not in "KV"}   # K and V at the track's own tempo
 FORM_K16 = SHIPPED_FORM.replace(" JJ", "")       # the loop without J: Q's fill into the wrap
 FORM_K14 = FORM_K16.replace("K" * 16, "K" * 14)  # K's first fourteen bars
 BATTLE_LEVEL = F.LEVELS[NAME]
@@ -132,8 +132,8 @@ RIFF_VOICES = {
     "lead": {"inst": "guitar_real", "mode": "riff", "hold": 0.9, "params": LEAD_GUITAR},               # the lead guitar voice
     "synth": {"inst": "lead", "mode": "riff", "hold": 0.9},                                            # the track's synth lead
 }
-CRUNCH_LEAD = (("crunch", 0.4), ("lead", 0.4))     # Ryan's pick for both lifts (30 October)
-CRUNCH_SYNTH = (("crunch", 0.4), ("synth", 0.42))  # the other reading of "crunch and synth": 0.42 meets the lead guitar's 0.4 on the speaker
+CRUNCH_LEAD = (("crunch", 0.4), ("lead", 0.4))     # the fifth round's pick for both lifts
+CRUNCH_SYNTH = (("crunch", 0.4), ("synth", 0.42))  # Ryan's of the sixth ("actually perfect"): 0.42 meets the lead guitar's 0.4 on the speaker
 BACKING = 0.31   # the backing guitar 6 dB under the fourth round's 0.62 (Ryan: "lower the backing guitar volume a bunch")
 
 
@@ -224,7 +224,7 @@ def shortened(x, t20):
     return y
 
 
-K_CRASH = 1.0   # seconds to fall 20 dB, as the track's crash does (its long crash took 2.4)
+K_CRASH = 1.5   # seconds to fall 20 dB (Ryan: "Don't choke the crash quite that much in K, lets try 1.5s?"; its long crash took 2.4)
 
 
 def k_crashes(t20=K_CRASH):
@@ -382,44 +382,41 @@ def both(*edits):
 K_FORM = "K" * 14
 
 
-def round_five(call):
+def round_six(call):
     """The battle half with every pick: the wrap's crash, both lifts on the crunch synth and the
-    lead guitar over the quieter backing guitar, M as it ships with the crunch synth, K on the
-    drums in between with the lead guitar added to the walk and its crashes choked."""
+    synth lead over the quieter backing guitar, M as it ships with the crunch synth, K on the drums
+    in between with the lead guitar added to the walk and its crash choked to a second and a half."""
     wrap_crash(call)
-    lift("C", *CRUNCH_LEAD)(call)
-    lift("L", *CRUNCH_LEAD)(call)
+    lift("C", *CRUNCH_SYNTH)(call)
+    lift("L", *CRUNCH_SYNTH)(call)
     m_crunch(call)
     k_step(2)(call)
     k_crashes()(call)
 
 
 SETS = [
-    {"id": "c", "half": "battle", "title": "The battle's first lift (C): the backing guitar", "note": "Four bars of the riff on its power chords, the turn, the lift's eight bars, back to the riff: the riff on the crunch synth and a second voice in unison over the backing guitar chugging each bar's root on the kick, a crash every four bars, the metal chime and the piano as they were. The second lift is the same.", "rows": [
-        ("c0", "As the fourth round had it", "The crunch synth and the lead guitar, the backing guitar where you heard it.", C_FORM, lift("C", *CRUNCH_LEAD, backing=0.62)),
-        ("c1", "The backing guitar 6 dB down", "The same with the backing guitar at half its level (the full pair's).", C_FORM, lift("C", *CRUNCH_LEAD)),
-        ("c2", "The backing guitar 10 dB down", "The same, the backing guitar further down.", C_FORM, lift("C", *CRUNCH_LEAD, backing=0.62 * 10 ** (-10 / 20.0))),
-        ("c3", "The crunch synth and the synth lead", "If “crunch and synth” meant the track's own synth lead in the lead guitar's place: level with it on the speaker, the backing guitar 6 dB down.", C_FORM, lift("C", *CRUNCH_SYNTH)),
+    {"id": "l", "half": "battle", "title": "The battle's second lift (L) into M", "note": "From the riff into the lift over the backing guitar 6 dB down, M (the bar down, as it ships with the crunch synth) and into the seven.", "rows": [
+        ("l0", "Crunch synth and lead guitar", "As the fifth round had it.", L_FORM, both(lift("L", *CRUNCH_LEAD), m_crunch)),
+        ("l1", "Crunch synth and synth lead", "Your pick for the first lift, on the second (the full pair's).", L_FORM, both(lift("L", *CRUNCH_SYNTH), m_crunch)),
     ]},
-    {"id": "m", "half": "battle", "title": "The battle's second lift (L) into M", "note": "From the riff into the lift on the crunch synth and the lead guitar, M (the bar down) and into the seven.", "rows": [
-        ("m0", "M as it ships", "The chug and the driven bass.", L_FORM, lift("L", *CRUNCH_LEAD)),
-        ("m1", "As it ships, with the crunch synth", "The crunch synth on the chug's line an octave up, as the fourth round's M had it (the full pair's).", L_FORM, both(lift("L", *CRUNCH_LEAD), m_crunch)),
-    ]},
-    {"id": "k", "half": "battle", "title": "K's crashes", "note": "K's fourteen bars on the drums in between with the lead guitar added to the walk; its long crash comes every second bar.", "rows": [
-        ("k0", "As the fourth round had it", "The long crash ringing out, about 2.4 seconds to fall 20 dB.", K_FORM, k_step(2)),
-        ("k1", "Choked to a second", "Falling 20 dB in a second, as the track's other crashes do (the full pair's).", K_FORM, both(k_step(2), k_crashes())),
-        ("k2", "Choked to half a second", "Shorter again.", K_FORM, both(k_step(2), k_crashes(0.5))),
+    {"id": "k", "half": "battle", "title": "K's crash", "note": "K's fourteen bars at its slower tempo on the drums in between with the lead guitar added to the walk; its long crash comes every second bar.", "rows": [
+        ("k0", "Choked to a second", "As the fifth round had it.", K_FORM, both(k_step(2), k_crashes(1.0))),
+        ("k1", "Choked to a second and a half", "Falling 20 dB in a second and a half (the full pair's).", K_FORM, both(k_step(2), k_crashes())),
     ]},
 ]
 
-# Every full render: (key, half, form, the battle's edit). The pair's map half is the fourth
-# round's, on the battle half's notes as they were (none of the picks moves a note it follows).
+# Every full render: (key, half, form, meter, the battle's edit). The pair's map half is the
+# fourth round's, on the battle half's notes as they were (none of the picks moves a note it
+# follows); the battle half without the tempo drop is for its seam alone.
 FULLS = [
-    ("k14", "battle", FORM_K14, round_five),
-    ("k14", "map", FORM_K14, None),
+    ("k14", "battle", FORM_K14, METER, round_six),
+    ("k14", "map", FORM_K14, METER, None),
+    ("k14n", "battle", FORM_K14, METER_NO_DROP, round_six),
 ]
-PAIR = {"id": "hold_the_line_r5", "title": "Hold The Line, round five", "map": "k14", "battle": "k14",
-        "k": "the keyboard solo's first fourteen bars at its slower tempo, the lead guitar with the crunch synth on the walk, K's drums with a pushing kick, eighths on the hat and a china, its crashes choked"}
+SEAM_ROWS = [("k14", "With its tempo drop", "K and V six percent slower, as they ship (the full pair's)."),
+             ("k14n", "Without the tempo drop", "K and V at the track's own tempo, everything else the same.")]
+PAIR = {"id": "hold_the_line_r6", "title": "Hold The Line, round six", "map": "k14", "battle": "k14",
+        "k": "the keyboard solo's first fourteen bars at its slower tempo, the lead guitar with the crunch synth on the walk, K's drums with a pushing kick, eighths on the hat and a china, its crash choked to a second and a half"}
 
 
 def level(x, db):
@@ -429,27 +426,27 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold5_" + SETS[si]["id"])
+    F.seed("hold6_" + SETS[si]["id"])
     _rid, _title, _note, form, edit = SETS[si]["rows"][ri]
     with P.Patched(_steps=run_steps):
         return si, ri, battle_unmastered(form, edit)
 
 
 def full_path(key, half):
-    return os.path.join(P.OUT, "hold5_full_%s_%s.wav" % (key, half))
+    return os.path.join(P.OUT, "hold6_full_%s_%s.wav" % (key, half))
 
 
 def render_full(i):
     """One full half, in a worker, from the shipped half's seed, at its half's level."""
-    key, half, form, edit = FULLS[i]
+    key, half, form, meter, edit = FULLS[i]
     if half == "battle":
         F.seed(NAME)
-        call = copied(call_on(form, METER))
+        call = copied(call_on(form, meter))
         edit(call)
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
-        x = level(map_half(form, map_picks, METER, edit), MAP_LEVEL)
+        x = level(map_half(form, map_picks, meter, edit), MAP_LEVEL)
     P.write(os.path.basename(full_path(key, half))[:-4], x, aac=False)
     return key, half
 
@@ -475,6 +472,14 @@ def sections_of(form, meter, bpm, k_name=None):
     return out, float(at[-1]), at
 
 
+def seam(x, form, meter, bpm):
+    """The loop's seam as the game plays it: from the climax's last set to the end, then on from bar
+    nine (the wrap) into bar thirteen."""
+    form, at = bars_of(form, meter, bpm)
+    z = form.index("Z")
+    return np.concatenate([x[int(round(at[z] * F.SR)):], x[int(round(at[8] * F.SR)):int(round(at[13] * F.SR))]])
+
+
 def main(argv):
     wanted = argv or [s["id"] for s in SETS] + ["full"]
     os.makedirs(P.OUT, exist_ok=True)
@@ -484,7 +489,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold5.json")
+    manifest_path = os.path.join(P.OUT, "hold6.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -496,14 +501,15 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _form, _edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold5_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold6_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
     manifest["sets"].sort(key=lambda e: [s["id"] for s in SETS].index(e["id"]))
     if "full" in wanted:
         bpm = F.MUSIC[NAME]["bpm"]
-        halves = {(k, h): P.read_wav(full_path(k, h)) for k, h, _f, _e in FULLS}
+        halves = {(k, h): P.read_wav(full_path(k, h)) for k, h, _f, _m, _e in FULLS}
+        meters = {k: m for k, h, _f, m, _e in FULLS if h == "battle"}
         m, b = halves[PAIR["map"], "map"], halves[PAIR["battle"], "battle"]
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
@@ -513,7 +519,13 @@ def main(argv):
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
                                "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels}]
         print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
-        manifest["seams"] = []
+        rows = []
+        for key, rtitle, rnote in SEAM_ROWS:
+            cut = seam(halves[key, "battle"], FORM_K14, meters[key], bpm)
+            rows.append({"id": key + "_battle", "title": rtitle, "note": rnote, "seconds": round(len(cut) / F.SR, 2),
+                         "file": os.path.basename(P.write("hold6_seam_" + key, cut))})
+        manifest["seams"] = [{"id": "kt", "half": "battle", "title": "The battle's loop: K with or without its tempo drop",
+                              "note": "From the climax's last set through the breath, K, V and Q's fill, then the wrap into bar thirteen, as the game loops it.", "rows": rows}]
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=1)
     print(os.path.relpath(manifest_path))
