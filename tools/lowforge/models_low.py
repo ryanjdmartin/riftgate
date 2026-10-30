@@ -1018,8 +1018,11 @@ def armadillo(b):
     # at its outer corner (what caps how high it stands, and why the pair moved in, where the
     # panel is taller), so the box stands out of the panel alone, and its walls run fifteen and
     # a half back, its foot and its back planted in the band above the belly. The face clear of
-    # the panel, nothing of the band needs cutting.
-    RAD_X, RAD_MOUTH = 11.0, (-57.66, Z0 + 14.23)
+    # the panel, nothing of the band needs cutting. On trial, four higher than the chamfer lets
+    # them stand (Ryan, 30 October: "bring them up without going closer together, and let them
+    # clip out of the top and angled faces, just so I can see"): each top wall runs out over the
+    # panel's upper edge into the deck and out through the chamfer, his read deciding.
+    RAD_X, RAD_MOUTH = 11.0, (-57.66, Z0 + 18.23)
     vents = [_vent(b, None, (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
                    wall=1.5, housing="steel.dark", back=15.5) for s in (-1.0, 1.0)]   # heavy walls round the louvres
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in

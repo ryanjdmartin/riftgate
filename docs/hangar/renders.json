@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's second notes, 30 October.",
-   "note": "Ryan, 30 October, on moving them closer to stand higher: \"yes, do that, and make them stick out a little less, thats too much.\" The radiators' centres sit 11 off the spine (from 12), and they stand 2 less out from the back panel (their faces' top edges 4 behind it, their feet 12). Closer to the panel, the chamfer at each box's outer corner holds them at the same height in the model, tops near the deck's, but from behind they now read about a unit higher on the face (the second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "A trial, 30 October.",
+   "note": "Ryan, 30 October: \"bring them up without going closer together, and let them clip out of the top and angled faces, just so I can see.\" On trial: the radiators stand four higher at the same spacing and depth, the tops of their faces about three above the deck, so each box's top wall runs out over the back panel's upper edge into the deck and out through the chamfer at its outer corner (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Your read decides. Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the first notes of 30 October (the radiators five further out, centres 12 off the spine)",
+    "summary": "Before: the second notes of 30 October (the radiators as high as the chamfers let them stand)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
