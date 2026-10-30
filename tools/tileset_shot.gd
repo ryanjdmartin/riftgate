@@ -1,9 +1,10 @@
 extends SceneTree
 
 ## The domains' tilesets side by side, for judging (DomainGround): a row a domain, in content's
-## order, its four decorative grounds and then water and the walls (alike in every row), each a
-## hex at the map's size, and a patch of field mixing them all, posterized as the map's
-## compositor posterizes the painted world (bleed.gdshader), so it shows what the map shows.
+## order, its four decorative grounds and then its water and walls, each a hex at the map's
+## size, and a patch of field mixing them all, its roads joined up as the map joins them,
+## posterized as the map's compositor posterizes the painted world (bleed.gdshader), so it
+## shows what the map shows.
 ## Needs a renderer:
 ##   xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd -- out.png [frame]
 
@@ -90,5 +91,16 @@ class Sheet extends Control:
 				for q in range(PATCH[r].size()):
 					var c := Vector2(ox + q * w + (w * 0.5 if r % 2 == 1 else 0.0), y + 16.0 + HEX + r * HEX * 1.5)
 					var t: int = GROUNDS[int(PATCH[r][q])]
-					DomainGround.draw_hex(self, c, HEX, t, 977 * (i + 1) + 37 * (r * 8 + q), frame, biome)
+					DomainGround.draw_hex(self, c, HEX, t, 977 * (i + 1) + 37 * (r * 8 + q), frame, biome, _links(q, r) if t == BattleMap.Terrain.ROAD else 0)
 			y += HEX * 6.4 + 30.0
+
+	## The patch's roads beside one of its hexes (DomainGround.road_links), its rows laid
+	## odd-r as the map's are.
+	func _links(q: int, r: int) -> int:
+		var h := Hex.offset_to_axial(q, r)
+		var links := 0
+		for k in range(Hex.DIRECTIONS.size()):
+			var at := Hex.axial_to_offset(h + Hex.DIRECTIONS[k])
+			if at.y >= 0 and at.y < PATCH.size() and at.x >= 0 and at.x < PATCH[at.y].size() and GROUNDS[int(PATCH[at.y][at.x])] == BattleMap.Terrain.ROAD:
+				links |= 1 << k
+		return links

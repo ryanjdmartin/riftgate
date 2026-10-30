@@ -2,50 +2,801 @@ class_name DomainGround
 extends RefCounted
 
 ## The other world's ground in each domain's own tileset (Ryan, 29 October: "They all need
-## their own tileset, first of all. Shouldn't all be painting green meadows"). A domain, by its
-## `bleed` in content, re-dresses the four decorative grounds (plain, road, rough, ruins) in its
-## idiom; water and the walls are drawn alike in every domain (TerrainArt.draw_other_hex), so a
-## domain's paint never changes how a hex's rule looks. The plains are the overworld TerrainArt
-## has always drawn. Flat, bright and chunky as the painted map is (Ryan, 20 September), every
-## colour a placeholder judged running: RIFTGATE_BLEED_DEBUG=1 gives the whole field to the
+## their own tileset, first of all. Shouldn't all be painting green meadows"; 30 October:
+## "walls and water certainly should change with tileset, even if they have no functional
+## change", and of the grounds, "the ground can differ where appropriate. Just not wildly
+## different like it was"). A domain, by its `bleed` in content, paints every hex in its own
+## idiom on one ground of its own, a ground differing only where it is apt, so the grounds are
+## told apart by what stands on them: outlined pixel sprites, two pixels a design pixel, as
+## flat, bright and chunky as the painted map is (Ryan, 20 September). Water is always the
+## domain's liquid edged by a rim and stirred by ripples, the walls always a range filling the
+## hex, so a hex's rule reads alike in every domain; a road follows the roads beside it. Every
+## colour sits on the compositor's posterize grid (six levels a channel, bleed.gdshader), so
+## what is drawn is what the map shows, and was picked by the three colourblind simulations
+## against the HUD options, the enemy red and the rift's violets on the ground it is drawn on
+## (docs/measurements.md, 30 October). RIFTGATE_BLEED_DEBUG=1 gives the whole field to the
 ## painted world (Bleed.gradient), and tools/tileset_shot.gd draws every tileset side by side.
-## Every colour sits on the compositor's posterize grid (six levels a channel, bleed.gdshader),
-## so what is drawn is what the map shows; each was picked by the three colourblind simulations
-## against the HUD options, the enemy red, the rift's violets, water and the walls as shown,
-## none worse than the plains' own, and a lava crack's core is the light yellow glow, since an
-## orange folds into the enemy red for a deutan (docs/measurements.md, 30 October).
 
-## The domain whose tileset TerrainArt draws.
-const PLAINS := "plains"
-
-## A tileset a bleed: each decorative ground's fill, the hex outline, and the colours its marks
-## are drawn in.
+## Each domain's tileset, by its bleed:
+##   ground, grounds: the colour under every hex, and the grounds that differ from it;
+##   grid: the hex's outline; specks: the colours its decorative grounds are flecked with;
+##   road: its edge and bed, and the sprite set along it (road_stone, if any);
+##   rim, ripples: the water's edge and what drifts on it, a frame's step apart;
+##   plain, rough, ruins: what stands on each decorative ground, [sprite, how many, and the
+##   chance of each if not certain], the largest first (a road's hex takes the plain's, clear
+##   of the road);
+##   walls: the ranges a wall hex shows one of;
+##   flat: sprites that lie on the ground, under the rest; fixed: sprites never mirrored.
 const TILESETS := {
+	"plains": {
+		"ground": "339933",
+		"grounds": {BattleMap.Terrain.WATER: "3366ff"},
+		"grid": "003300",
+		"specks": ["336633", "66cc66"],
+		"road": ["996633", "cc9966"],
+		"rim": "ccffff",
+		"ripples": ["ripple", "ripple", "glint"],
+		"plain": [["tuft", 3], ["tuft_small", 3], ["bloom", 2], ["bloom_y", 2]],
+		"rough": [["tree", 5], ["tree_small", 3]],
+		"ruins": [["cottage_long", 1], ["cottage", 1], ["haystack", 1], ["bush", 1], ["tuft", 2]],
+		"walls": ["walls", "walls_b"],
+		"flat": ["tuft", "tuft_small", "bloom", "bloom_y"],
+		"fixed": [],
+	},
 	"sand": {
-		"fill": {BattleMap.Terrain.PLAIN: "cc9933", BattleMap.Terrain.ROAD: "ffcc99", BattleMap.Terrain.ROUGH: "663300", BattleMap.Terrain.RUINS: "993300"},
-		"grid": "333300",
-		"dune": "663300", "dune_light": "ffcc66", "pebble": "663300",
-		"track": "ffcc66", "rut": "cc9966", "stone": "cc9933",
-		"cactus": "339933", "cactus_light": "66cc66", "cactus_dark": "336633", "shadow": "333300", "rock": "333300",
-		"block": "ffcc99", "block_shade": "cc9966", "block_dark": "663300", "bone": "ffffff",
+		"ground": "cc9966",
+		"grounds": {BattleMap.Terrain.WATER: "339999"},
+		"grid": "663300",
+		"specks": ["996633", "ffcc99"],
+		"road": ["996633", "ffcc99"],
+		"rim": "66cccc",
+		"ripples": ["ripple", "ripple", "glint"],
+		"plain": [["dune", 2, 0.7], ["rock", 1, 0.5], ["pebble", 3]],
+		"rough": [["saguaro", 3], ["saguaro_small", 2], ["barrel", 2], ["shrub", 1]],
+		"ruins": [["arch", 1], ["column", 1], ["skull", 1], ["block", 1], ["rock", 1]],
+		"walls": ["walls", "walls_b"],
+		"flat": ["dune", "pebble"],
+		"fixed": ["saguaro", "saguaro_small"],
 	},
 	"marsh": {
-		"fill": {BattleMap.Terrain.PLAIN: "336666", BattleMap.Terrain.ROAD: "333300", BattleMap.Terrain.ROUGH: "333333", BattleMap.Terrain.RUINS: "669999"},
-		"grid": "003333",
-		"reed": "99cc66", "reed_dark": "003333", "puddle": "003333", "glint": "cccccc",
-		"plank": "cc9966", "plank_light": "ffcc99", "plank_gap": "333300", "post": "663300",
-		"trunk": "666666", "branch": "999999", "moss": "669933",
-		"tomb": "cccccc", "tomb_shade": "999999", "tomb_dark": "333333", "mound": "336666", "mist": "cccccc",
+		"ground": "333300",
+		"grounds": {BattleMap.Terrain.WATER: "003333"},
+		"grid": "000000",
+		"specks": ["336633", "000000"],
+		"road": ["333300", "663300"],
+		"road_stone": "stone",
+		"rim": "336666",
+		"ripples": ["ripple", "lily", "bubble", "ripple", "lily"],
+		"plain": [["pool", 1, 0.7], ["reeds", 2, 0.5], ["grass", 3, 0.6]],
+		"rough": [["deadtree", 2], ["deadtree_b", 2], ["reeds", 1], ["grass", 2]],
+		"ruins": [["crypt", 1, 0.6], ["tomb", 2, 0.7], ["cross", 1, 0.6], ["skull", 1, 0.4], ["grass", 2, 0.5]],
+		"walls": ["walls", "walls_b"],
+		"flat": ["pool", "grass"],
+		"fixed": [],
 	},
 	"lava": {
-		"fill": {BattleMap.Terrain.PLAIN: "666666", BattleMap.Terrain.ROAD: "cccccc", BattleMap.Terrain.ROUGH: "333333", BattleMap.Terrain.RUINS: "663300"},
+		"ground": "333333",
+		"grounds": {BattleMap.Terrain.WATER: "ff9900"},
 		"grid": "000000",
-		"ash": "999999", "cinder": "333333", "ember": "ffcc33",
-		"flag": "999999", "flag_light": "cccccc", "joint": "666666",
-		"rim": "993300", "glow": "ffcc33", "glow_hot": "ffff99", "crust": "000000",
-		"char": "000000", "char_light": "666666", "smoke": "999999",
+		"specks": ["000000", "663333", "666666"],
+		"road": ["000000", "666666"],
+		"rim": "993300",
+		"ripples": ["crust_big", "streak", "crust", "hot", "bubble", "streak"],
+		"plain": [["boulder", 1, 0.4], ["shard", 1, 0.5], ["rock", 1, 0.6], ["pebble", 4]],
+		"rough": [["fissure", 1], ["fissure_b", 1, 0.4], ["vent", 1, 0.6], ["boulder", 1], ["shard", 2], ["rock", 2, 0.6]],
+		"ruins": [["temple", 1], ["pillar_broken", 1], ["block", 1], ["rock", 1]],
+		"walls": ["walls", "walls_b"],
+		"flat": ["pebble", "fissure", "fissure_b"],
+		"fixed": [],
 	},
 }
+
+## What moves with a sprite: [sprite, x and y in design pixels from the host's top left, its
+## rise a frame]. A sprite with a variant a frame ("flame0", "flame1") shows the frame's.
+const ATTACH := {
+	"plains": {"cottage_long": ["puff", 10, -4, 2]},
+	"sand": {},
+	"marsh": {"crypt": ["wisp", 12, -3, 1]},
+	"lava": {"temple": ["flame", 5, 4, 0], "vent": ["steam", 3, -5, 2], "walls": ["steam", 18, -3, 2]},
+}
+
+const ROAD_HALF := 3.5   # the road's half width in design pixels, its edge one more
+
+## Each domain's inks: the colour each letter of its sprites is drawn in.
+const INKS := {
+	"plains": {"o": "003300", "1": "003300", "2": "339933", "3": "66cc33", "4": "ccff66", "t": "663300", "s": "336633", "g": "66cc66", "G": "336633", "f": "ffffff", "y": "ffff99", "k": "333300", "w": "ffffcc", "W": "cccc99", "r": "cc9933", "R": "996633", "h": "ffcc66", "d": "663300", "n": "333300", "m": "cc9966", "M": "663300", "S": "ffffff", "Z": "cccccc", "B": "ccffff", "x": "ffffff", "c": "3366cc"},
+	"sand": {"o": "663300", "s": "cc9966", "S": "ffcc99", "D": "996633", "q": "003300", "c": "339933", "C": "66cc66", "e": "336633", "f": "ffff99", "n": "ffffcc", "N": "ffcc99", "K": "cc9966", "B": "ffffff", "b": "cccc99", "k": "333300", "y": "996633", "Y": "663300", "z": "330000", "m": "993300", "M": "663300", "l": "cc9966", "t": "cc9966", "T": "ffcc99", "W": "66cccc", "x": "ccffff", "v": "336666"},
+	"marsh": {"o": "000000", "d": "333333", "m": "666666", "l": "999999", "G": "669933", "g": "336633", "p": "003333", "P": "336666", "t": "663300", "S": "cccccc", "s": "999999", "e": "666666", "B": "ffffff", "b": "cccccc", "w": "ccff99", "W": "ffffcc"},
+	"lava": {"o": "000000", "d": "333333", "m": "666666", "l": "999999", "h": "cccccc", "c": "993300", "C": "663300", "L": "ff9900", "H": "ffcc00", "W": "ffff99"},
+}
+
+## Each domain's sprites, a row of letters a row of design pixels, "." clear: authored with an
+## outline one pixel round, lit from the upper left, every colour its domain's ink.
+const SPRITES := {
+	"plains": {
+		"tree": [
+			"...ooooo...",
+			"..o33322o..",
+			".o3443222o.",
+			"o334322221o",
+			"o343222221o",
+			"o332222211o",
+			"o222222111o",
+			".o2221111o.",
+			"..oo111oo..",
+			"....oto....",
+			"...soto....",
+			"...sooos...",
+		],
+		"tree_small": [
+			"..ooooo..",
+			".o33322o.",
+			"o3443221o",
+			"o3432211o",
+			"o2222111o",
+			".o22111o.",
+			"..oo1oo..",
+			"...oto...",
+			"..ssoss..",
+		],
+		"bush": [
+			"..ooo..",
+			".o332o.",
+			"o32221o",
+			"o22111o",
+			".ooooo.",
+		],
+		"tuft": [
+			"g.g.g",
+			".GgG.",
+		],
+		"tuft_small": [
+			"g.g",
+			"GgG",
+		],
+		"bloom": ["f"],
+		"bloom_y": ["y"],
+		"cottage": [
+			"......k......",
+			".....khk.....",
+			"....khrrk....",
+			"...khrrrRk...",
+			"..khrrrrrRk..",
+			".khrrrrrrrRk.",
+			"khrrrrrrrrrRk",
+			"kkkkkkkkkkkkk",
+			".kwwwwwwwwWk.",
+			".kwnnwwwnnWk.",
+			".kwnnddwnnWk.",
+			".kwwwddwwwWk.",
+			".kkkkkkkkkkk.",
+			"..sssssssssss",
+		],
+		"cottage_long": [
+			"..........kkk..",
+			"...kkkkkkkkdk..",
+			"..khhhhhhhhdhk.",
+			".khrrrrrrrrrRk.",
+			"khrrrrrrrrrrrRk",
+			"kkkkkkkkkkkkkkk",
+			".kwwwwwwwwwwWk.",
+			".kwnnwddwwnnWk.",
+			".kwnnwddwwnnWk.",
+			".kwwwwddwwwwWk.",
+			".kkkkkkkkkkkkk.",
+			"..sssssssssssss",
+		],
+		"haystack": [
+			"...k...",
+			"..khk..",
+			".khrrk.",
+			".khrRk.",
+			"khrrrRk",
+			"krrrRRk",
+			"kkkkkkk",
+			".sssss.",
+		],
+		"puff": [
+			".ZZ.",
+			"ZSSZ",
+			".ZZ.",
+		],
+		"ripple": [
+			"BBB",
+			".c.",
+		],
+		"glint": ["xB"],
+		"walls": [
+			"...................k...................",
+			"..................kSk..................",
+			"..................kSk..................",
+			".................kSSZk.................",
+			"................kSSSZZk................",
+			"................kSSSZZk................",
+			"...............kSSSSZZZk...............",
+			"...............kmSSSmMMk...............",
+			"..............kmmmmmmMMMk..............",
+			"........k....kmmmmmmmMMMMk.............",
+			".......kSk...kmmmmmmmMMMMk....k........",
+			"......kSSZk.kmmmmmmmmMMMMMk..kSk.......",
+			"......kmSZk.kmmmmmmmmMMMMMk.kSSZk......",
+			".....kmmmZMkmmmmmmmmmmMMMMMkkSmZk......",
+			"....kmmmmMMMkmmmmmmmmmMMMMMkmmmMMk.....",
+			"....kmmmmMMMkmmmmmmmmmMMMMMkmmmMMk.....",
+			"...kmmmmmmMMMkmmmmmmmmMMMMkmmmmMMMk....",
+			"...kmmmmmmMMMkmmmmmmmmMMMkmmmmmmMMMk...",
+			"..kmmmmmmmMMMMkmmmmmmmmMMkmmmmmmMMMk...",
+			".kmmmmmmmmMMMMMkmmmmmmmMkmmmmmmmMMMMk..",
+			".kmmmmmmmmMMMMMkmmmmmmmkmmmmmmmmMMMMMk.",
+			"kmmmmmmmmmMMMMMMkmmmmmmkmmmmmmmmMMMMMk.",
+			"mmmmmmmmmmmMMMMMMkkkkkkmmmmmmmmmMMMMMMk",
+			"kkkkkkkkkkkkkkkkk......kkkkkkkkkkkkkkk.",
+		],
+		"walls_b": [
+			"..........................k............",
+			".........................kSk...........",
+			".........................kSk...........",
+			"........................kSSZk..........",
+			"...........k...........kSSSZZk.........",
+			"..........kSk..........kSSSZZk.........",
+			"..........kSk.........kmSSmZZMk........",
+			".........kSSZk........kmmmmSMMk........",
+			"........kSSSZZk......kmmmmmmMMMk.......",
+			"........kSSSMMk......kmmmmmmMMMk.......",
+			".......kmSmmMMZk....kmmmmmmmMMMMk......",
+			"......kmmmmmmMMMk..kmmmmmmmmMMMMMk.....",
+			"......kmmmmmmMMMk..kmmmmmmmmMMMMMk.....",
+			".....kmmmmmmmMMMMkkmmmmmmmmmmMMMMMk....",
+			".....kmmmmmmmMMMkmkmmmmmmmmmmMMMMMk....",
+			"....kmmmmmmmmMMkmmMkmmmmmmmmmMMMMMMk...",
+			"...kmmmmmmmmmMMkmmMkmmmmmmmmmMMMMMMk...",
+			"...kmmmmmmmmmmkmmmMMkmmmmmmmmMMMMMMMk..",
+			"..kmmmmmmmmmmkmmmmMMMkmmmmmmmmMMMMMMMk.",
+			".kmmmmmmmmmmkmmmmmMMMMkmmmmmmmMMMMMMMk.",
+			".kmmmmmmmmmmkmmmmmmMMMkmmmmmmmMMMMMMMMk",
+			"kmmmmmmmmmmkmmmmmmmMMMMkkkkkkkkkkkkkkk.",
+			".kkkkkkkkkkmmmmmmmmMMMMMk..............",
+			"...........kkkkkkkkkkkkk...............",
+		],
+	},
+	"sand": {
+		"saguaro": [
+			"..qqq......",
+			".qCceq.....",
+			".qCceq.....",
+			".qCceq..qq.",
+			".qCceq.qCeq",
+			".qCceq.qCeq",
+			".qCceq.qCeq",
+			".qCceqqqCeq",
+			".qCcecccceq",
+			".qCceqqqqq.",
+			".qCceq.....",
+			".qCceq.....",
+			".qCceq.....",
+			".qCceq.....",
+			"..DqqqD....",
+		],
+		"saguaro_small": [
+			"..qq....",
+			".qCeq...",
+			".qCeq.qq",
+			".qCeqqCq",
+			".qCcccCq",
+			".qCeqqq.",
+			".qCeq...",
+			".qCeq...",
+			"..DqqD..",
+		],
+		"barrel": [
+			"..ff..",
+			".qqqq.",
+			"qCcceq",
+			"qCcceq",
+			"qCcceq",
+			".qqqq.",
+			"..DDD.",
+		],
+		"shrub": [
+			".y.Y.y.",
+			"yYyYyYy",
+			".YyYyY.",
+			"..DDD..",
+		],
+		"rock": [
+			"..ooo.",
+			".onNKo",
+			"oNNKKo",
+			".ooooo",
+		],
+		"rock_big": [
+			"...oooo..",
+			"..onnNKo.",
+			".onNNNKKo",
+			"oNNNKKKDo",
+			"oNKKKKDDo",
+			".ooooooo.",
+		],
+		"skull": [
+			"BB.......BB",
+			".BBb...bBB.",
+			"...BBBBB...",
+			"...BkBkB...",
+			"...BBBBB...",
+			"....BbB....",
+			"....kBk....",
+		],
+		"arch": [
+			"ooooooooooooooooo",
+			"onnnnnnnnnnnnnnNo",
+			"oNNNNNNNNoNNNNNKo",
+			"oKKKKKKKKoKKKKKKo",
+			"ooooooooooooooooo",
+			".onNo.......onNo.",
+			".onNo.......onNo.",
+			".onKo.......onKo.",
+			".onNo.......onNo.",
+			".onNo.......onNo.",
+			".onNo.......onKo.",
+			".onKo.......onNo.",
+			".onNo.......onNo.",
+			"oooooo.....oooooo",
+			"oNNNKo.....oNNNKo",
+			"oooooo.....oooooo",
+			".DDDDD.....DDDDD.",
+		],
+		"column": [
+			".oooo.",
+			"onnNKo",
+			"oonNoo",
+			".onKo.",
+			".onNo.",
+			".onNo.",
+			".onKo.",
+			".onNo.",
+			"oooooo",
+			".DDDD.",
+		],
+		"block": [
+			".ooooo.",
+			"onnnNKo",
+			"oNNNKKo",
+			".ooooo.",
+		],
+		"dune": [
+			"....SSSSS.....",
+			"..SSsssssSS...",
+			".S.DDDDDDDsSS.",
+			"...........DD.",
+		],
+		"pebble": ["SD"],
+		"ripple": [
+			"WWW",
+			".v.",
+		],
+		"glint": ["xW"],
+		"walls": [
+			"...............zzzzzzzzzzzzzz...........",
+			"..............zTTTTTTTTTtttttz..........",
+			"..............zttttttttttttttz..........",
+			"..............zmmmmmmmmmMMMMMz..........",
+			"..............zmmmmmmmmmMMMMMz..........",
+			"..............zmzmmmmmmmMMMMMz..........",
+			".............zmmMmmmmmmmMMMMMMz.........",
+			".....zzzzzzz.zmmmmmmmmmmMMMMMMz.........",
+			"....zTTTTtttzzmmmmzmmmmmMMMMMMz..zzzzzz.",
+			"....ztttttttzzmmmzMmmmmmMMMMMMz.zTTTtttz",
+			"....zmmmmMMMzzmmmMmmmmmmMMMMMMz.zttttttz",
+			"....zmmmmMMMzmmmmmmmmmmmMMMMMMMzzmmmMMMz",
+			"....zmmmmMMMzmmmmmmmmmmmMMMMMMMzzmmmMMMz",
+			"...zmmmzmMMMMzmmmmmmzmmmMMMMMMMzzmzmMMMz",
+			"...zmmzMmMMMMzllllllMllllMMMMMMzmmMmmMMM",
+			"..zlllMlllMMMMzllllllllllMMMMMzllllllMMM",
+			".zllllllllMMMMMzlllllllllMMMMzlllllllMMM",
+			"zlllllllllMMMMMMzzzzzzzzzzzzzlllllllllMM",
+			".zzzzzzzzzzzzzzz.............zzzzzzzzzzz",
+		],
+		"walls_b": [
+			"......zzzzzzzzz.......................",
+			".....zTTTTTttttz......................",
+			".....ztttttttttz......................",
+			".....zmmmmmMMMMz......................",
+			".....zmmzmmMMMMz......................",
+			".....zmmMmmMMMMz.....zzzzzzzzzzzz.....",
+			"....zmmmmmzmMMMMz...zTTTTTTTtttttz....",
+			"....zmmmmmMmMMMMz...zttttttttttttz....",
+			"....zmmmmmmmMMMMz...zmmmmmmmMMMMMz....",
+			"....zmmmzmmmMMMMz...zmmmmmmmMMMMMz....",
+			"....zmmmMmmmMMMMz...zmmmmmmmMMMMMz....",
+			"...zmmmmmmmmMMMMMz.zmmmmmmmmmMMMMMz...",
+			"...zmmmmmmmmMMMMMz.zmmmmmzmmzMMMMMz...",
+			"...zmmmmmmmmMMMMMz.zmmmmmMmmMMMMMMz...",
+			"...zmmmmmmmmMMMMMz.zmmmmmmmmmMMMMMz...",
+			"..zlllllllllMMMMMMzllllllllllMMMMMMz..",
+			".zlllllllllllMMMMzlllllllllllMMMMMMMz.",
+			"zllllllllllllMMMzlllllllllllllMMMMMMMz",
+			".zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz.",
+		],
+	},
+	"marsh": {
+		"deadtree": [
+			".o............",
+			"olo...........",
+			"omo.........o.",
+			".olo.o..o..olo",
+			".omoolooloolo.",
+			"..olomoomoomo.",
+			"..omlo.omolmlo",
+			"...omoololooo.",
+			"....olomlo....",
+			".....olmdo....",
+			".....olmdo....",
+			".....olmdo....",
+			".....olmdo....",
+			".....olmdo....",
+			".....olmdo....",
+			".....olmdo....",
+			".....olmdo....",
+			"....ollmddo...",
+			".....ooooo....",
+		],
+		"deadtree_b": [
+			"...........o.",
+			"..........olo",
+			"......o...omo",
+			".....olo.olo.",
+			".....omooomo.",
+			"......olllo..",
+			".oo...omoo...",
+			"ollo..omo....",
+			".oolo.omo....",
+			"...ololo.ooo.",
+			"....olmdolllo",
+			"....olmdlooo.",
+			"....olmdo....",
+			"....olmdo....",
+			"....olmdo....",
+			"....olmdo....",
+			"...ollmddo...",
+			"....ooooo....",
+		],
+		"reeds": [
+			"t..t...",
+			"t..t.t.",
+			"G.tGt..",
+			"G..G.tG",
+			"G.GG.G.",
+			"gGgGGgG",
+		],
+		"grass": [
+			"G.G.G",
+			"gGgGg",
+		],
+		"pool": [
+			"...PPPPPP...",
+			".PPpppppppP.",
+			"Pppppppppppp",
+			".pppppppppp.",
+			"...pppppp...",
+		],
+		"stone": [
+			".oooo.",
+			"oSSsso",
+			"oSsseo",
+			".oooo.",
+		],
+		"tomb": [
+			"..ooo..",
+			".oSSso.",
+			"oSSsseo",
+			"oSeeseo",
+			"oSssseo",
+			"oSssseo",
+			"ooooooo",
+		],
+		"cross": [
+			"..ooo..",
+			"..oSo..",
+			"oooSooo",
+			"oSSSsso",
+			"oooSooo",
+			"..oSo..",
+			"..oso..",
+			"..oso..",
+			"..ooo..",
+		],
+		"skull": [
+			"..ooo..",
+			".oBBBo.",
+			"oBBBBbo",
+			"oBoBobo",
+			"oBBBBbo",
+			".obBbo.",
+			"..ooo..",
+		],
+		"crypt": [
+			".......o.......",
+			"......oSo......",
+			".....oSSso.....",
+			"....oSSSsso....",
+			"...oSSSSssso...",
+			"..ooooooooooo..",
+			"..oSsoooooSeo..",
+			"..oSsoooooSeo..",
+			"..oSsoooooSeo..",
+			"..oSsoooooSeo..",
+			".ooooooooooooo.",
+			".oSSSssssssseo.",
+			"ooooooooooooooo",
+		],
+		"wisp": [
+			".W.",
+			"WwW",
+			"wWw",
+			".w.",
+		],
+		"ripple": [
+			".PP.",
+			"P..P",
+		],
+		"bubble": [
+			".P.",
+			"P.P",
+			".P.",
+		],
+		"lily": [
+			".GG",
+			"Ggg",
+			".g.",
+		],
+		"walls": [
+			"............o................",
+			"...........odo...............",
+			"...........olo...............",
+			"...........olo...............",
+			"..........omldo..............",
+			"...........oldo......o.......",
+			"...........oldo.....odo......",
+			"...........oldo.....olo......",
+			"...o.......olddo....olo......",
+			"..odo......olddo...omldo.....",
+			"..odo.....ollmddo...oldo.....",
+			"..oldo....ollmddo...olddo....",
+			".omldo.....ommddo..omlddo....",
+			".olldo....olmmddoo..olddo....",
+			".ollddo...olmmdodo.olldddo...",
+			".olmdddo..olmmdodo.olmmddo...",
+			".olmddo...olmmomldoolmmddo...",
+			".olmdddo..olmmolldoolmmddo...",
+			".olmdddo.omlmmmomdoolmmdddo..",
+			".olmmddo.ollmmolmdoolmmdddo..",
+			".olmmddooollmmolmddolmmddddo.",
+			"ollmmddddolmmmolmdddommddddo.",
+			".ommmdddo.oooollmdddommdddddo",
+			"..oooooo.....olmmddddooooooo.",
+			"..............ooooooo........",
+		],
+		"walls_b": [
+			"....................oo...",
+			"...................oldo..",
+			".......o...........olo...",
+			"......omo.........omldo..",
+			"......olo.........olmdo..",
+			".....omddo........olddo..",
+			".....omddo.......omlddo..",
+			".....oldo........oomddo..",
+			".....oldo.......omlmdddo.",
+			"....ollddoo.....ollmdddo.",
+			"....olmddomo....olmmdddo.",
+			"....olmddomo...omlmmdddo.",
+			"...ollmddolo....olmmddo..",
+			"..omlmdddolo...olmmddddo.",
+			"...olmdddolo...olmmddddo.",
+			"..ollmddolmdo.ollmmddddo.",
+			"..olmmddolmdo.olmmmddddo.",
+			".omlmmdomlmddomlmmmdddddo",
+			".olmmmdolmmddolmmmmdddddo",
+			".olmmmdolmmddolmmmmddddo.",
+			"omlmmmdolmmddolmmmmdddddo",
+			".oooooollmmdddoooooooooo.",
+			".......ooooooo...........",
+		],
+	},
+	"lava": {
+		"boulder": [
+			"...oooo...",
+			"..ollmmo..",
+			".olmmmmdo.",
+			"olmmmmddo.",
+			"ommmmdddoo",
+			"omdddddddo",
+			".oooooooo.",
+		],
+		"rock": [
+			"..ooo...",
+			".olmmo..",
+			"olmmddoo",
+			"ommdddmo",
+			".oooooo.",
+		],
+		"shard": [
+			"...o..",
+			"..oho.",
+			"..ohoo",
+			".ohloo",
+			".ohloo",
+			"ohlooo",
+			"ohlooo",
+			"oooooo",
+		],
+		"lavapool": [
+			"..ooooooo..",
+			".ocLLHLLco.",
+			"ocLHWWHLLco",
+			".ocLLHLLco.",
+			"..ooooooo..",
+		],
+		"vent": [
+			"....ooo....",
+			"...ocWco...",
+			"..omcHcmo..",
+			".olmmcmmdo.",
+			"olmmmmmmddo",
+			"ooooooooooo",
+		],
+		"steam": [
+			".hh..",
+			"hhlh.",
+			".llll",
+			"..ll.",
+		],
+		"temple": [
+			"ooooooooooooooooo",
+			"ollllllllllllllmo",
+			"ommmmmmmmmmmmmmdo",
+			"ooooooooooooooooo",
+			".olmo.......olmo.",
+			".olmo.......olmo.",
+			".olmo.......olmo.",
+			".olmo.......olmo.",
+			".olmo.......olmo.",
+			".olmo.ooooo.olmo.",
+			".olmo..omo..olmo.",
+			".olmo..omo..olmo.",
+			"ooooo.ooooo.ooooo",
+		],
+		"pillar_broken": [
+			".o.oo.",
+			"oloomo",
+			"olmmmo",
+			"olmmdo",
+			"olmmdo",
+			"olmmdo",
+			"oooooo",
+		],
+		"block": [
+			".ooooo.",
+			"ollllmo",
+			"ommmmdo",
+			".ooooo.",
+		],
+		"flame0": [
+			"...W...",
+			"..WHW..",
+			".LHWHL.",
+			".LHHHL.",
+			"..LLL..",
+		],
+		"flame1": [
+			"..W....",
+			"..HW.W.",
+			".LHWHL.",
+			".LHHHL.",
+			"..LLL..",
+		],
+		"crust": [
+			".ccc.",
+			"cCCCc",
+			"cCCc.",
+			".cc..",
+		],
+		"crust_big": [
+			"..cccc.",
+			".cCCCCc",
+			"cCCCCCc",
+			".cCCCc.",
+			"..ccc..",
+		],
+		"hot": [
+			"WW",
+			"H.",
+		],
+		"streak": ["LHWHL"],
+		"bubble": [
+			".W.",
+			"W.W",
+			".W.",
+		],
+		"ember": ["H"],
+		"pebble": ["mo"],
+		"walls": [
+			"..............oooooooo..............",
+			".............occcWcccco.............",
+			"............ommLHHHLdddo............",
+			"...........ommmmLcLcddddo...........",
+			"..........ommmmLcmLcdddddo..........",
+			"..........ommmmLcmLcdddddo..........",
+			".........ommmmLcmmmLcdddddo.........",
+			"........ommmmmLcmmmLcddddddo........",
+			".......ommmmmmLcmmmdLcddddddo.......",
+			".......ommmmmLcmmmmLcdddddddo.......",
+			"......ommmmmmLcmmmmLcddddddddo......",
+			".....ommmmmLcmmmmmmdLcddddddddo.....",
+			".....ommmmmLcmmmmmmLcdddddddddo.....",
+			"....ommmmmLcmmmmmmmLcddddddddddo....",
+			"....ommmmmmLcmmmmmmLcddddddddddo....",
+			"...ommmmmLcmmmmmmmmmLcddddddddddo...",
+			"..ommmmmmLcmmmmmmmmmLcdddddddddddo..",
+			"..ommmmmLcmmmmmmmmmmLcdddddddddddo..",
+			".ommmmmmLcmmmmmmmmmmLcddddddddddddo.",
+			".ommmmmmmmmmmmmmmmmmLcddddddddddddo.",
+			"ommmmmmmmmmmmmmmmmmmdddddddddddddddo",
+			".oooooooooooooooooooooooooooooooooo.",
+		],
+		"walls_b": [
+			".....................o.................",
+			"....................omo................",
+			"....................omo................",
+			"...................ommdo...............",
+			"...................ommdo...............",
+			".........o........ommmddo..............",
+			"........omo.......ommmddo..............",
+			"........omo......ommmmmddo.............",
+			".......ommdo.....ommmmmdLo.............",
+			"......ommmddo...ommmmmmdLdo............",
+			"......ommmddo...ommmmmmddLo............",
+			".....ommmmddLo.ommmmmmmddLdo...o.......",
+			".....ommmmmdLo.ommmmmmmddLdo..omo......",
+			"....ommmmmmddLommmmmmmmmddLdoommdo.....",
+			"....ommmmmmddLommmmmmmmmddLdoommdo.....",
+			"...ommmmmmmddommmmmmmmmmddLdommmddo....",
+			"...ommmmmmmddommmmmmmmmmdddommmmdddo...",
+			"..ommmmmmmmdommmmmmmmmmmdddommmmdddo...",
+			".ommmmmmmmmmommmmmmmmmmmmdommmmmmdddo..",
+			".ommmmmmmmmommmmmmmmmmmmmdommmmmmdddo..",
+			"ommmmmmmmmmommmmmmmmmmmmmommmmmmmddddo.",
+			".oooooooooommmmmmmmmmmmmommmmmmmmdddddo",
+			"...........ooooooooooooooooooooooooooo.",
+		],
+		"fissure": [
+			"....oo...............",
+			"..ooccoo..ooo........",
+			".occLLccoocccoo..oo..",
+			"ocLHccHLccHLHccoocco.",
+			".occooccLWcccLLccWHco",
+			"..oo..oocLcooccHLcco.",
+			".......ocLco.ooccoo..",
+			"........ocLco..oo....",
+			".........oco.........",
+			"..........o..........",
+		],
+		"fissure_b": [
+			"................o...",
+			".........oo...ooco..",
+			"..oo...ooccoooccLco.",
+			".occoooccWLcccHHco..",
+			"ocLHcccLLccWHLcco...",
+			".occLLHccooccLco....",
+			"..oocccoo..oocLcoo..",
+			"....ooo.....ocLLcco.",
+			".............occHLco",
+			"..............oocco.",
+			"................oo..",
+		],
+	},
+}
+
+static var _textures: Dictionary = {}
 
 
 ## The bleed of the domain leading the battle on `field` (its `spawn_faction`), "" for none.
@@ -55,217 +806,281 @@ static func biome_of(field: Battlefield) -> String:
 	return str(ContentDB.load_default().factions.get(field.spawn_faction, {}).get("bleed", ""))
 
 
-## Whether a ground is drawn alike in every domain: water and the walls, whose rule a domain's
-## paint never changes.
-static func shared(t: int) -> bool:
-	return t == BattleMap.Terrain.WATER or t == BattleMap.Terrain.MOUNTAIN
+## The tileset a bleed paints: its own, or the first domain's in content for a bleed with none.
+static func key_of(biome: String) -> String:
+	if TILESETS.has(biome):
+		return biome
+	for f in ContentDB.load_default().factions.values():
+		if TILESETS.has(str(f.get("bleed", ""))):
+			return str(f["bleed"])
+	return str(TILESETS.keys()[0])
 
 
-## The flat colour a ground takes in a domain's tileset: TerrainArt's for water, the walls and
-## the plains (or a bleed with no tileset of its own).
+## The colour under a ground in a domain's tileset.
 static func fill(biome: String, t: int) -> Color:
-	if shared(t) or not TILESETS.has(biome):
-		return TerrainArt.OTHER.get(t, TerrainArt.OTHER[BattleMap.Terrain.PLAIN])
-	return Color(str(TILESETS[biome]["fill"].get(t, TILESETS[biome]["fill"][BattleMap.Terrain.PLAIN])))
+	var ts: Dictionary = TILESETS[key_of(biome)]
+	return Color(str(ts["grounds"].get(t, ts["ground"])))
 
 
-## One hex of the other world in a domain's tileset, as TerrainArt.draw_other_hex draws the
-## plains': a flat fill and a few chunky marks, the second frame nudging what moves.
-static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int, biome: String) -> void:
-	if shared(t) or not TILESETS.has(biome):
-		TerrainArt.draw_other_hex(ci, c, hex_px, t, seed_value, frame)
-		return
-	var ts: Dictionary = TILESETS[biome]
+## Screen pixels a design pixel at a hex size: two at the map's.
+static func scale_of(hex_px: float) -> int:
+	return maxi(1, roundi(hex_px / 24.0))
+
+
+## The roads beside a hex: a bit for each of Hex.DIRECTIONS whose neighbour is a road.
+static func road_links(map: BattleMap, h: Vector2i) -> int:
+	var links := 0
+	for i in range(Hex.DIRECTIONS.size()):
+		var n: Vector2i = h + Hex.DIRECTIONS[i]
+		if (map.has(n) or map.margin.has(n)) and map.terrain_of(n) == BattleMap.Terrain.ROAD:
+			links |= 1 << i
+	return links
+
+
+## One hex of the other world in a domain's tileset: its ground, and on it the domain's water,
+## a range of its walls, or what stands on a decorative ground; a road runs to `links` (as
+## road_links), across the hex when it has none. The second frame moves what moves.
+static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int, biome: String, links: int = 0) -> void:
+	var key := key_of(biome)
+	var ts: Dictionary = TILESETS[key]
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
-	var pts := Hex.corners(c, hex_px - 1.5)
-	ci.draw_colored_polygon(pts, fill(biome, t))
-	var r := hex_px * 0.7
-	match biome:
-		"sand":
-			_sand(ci, c, hex_px, r, t, rng, frame, ts)
-		"marsh":
-			_marsh(ci, c, hex_px, r, t, rng, frame, ts)
-		"lava":
-			_lava(ci, c, hex_px, r, t, rng, frame, ts)
+	var s := scale_of(hex_px)
+	var r := hex_px - 1.5
+	var pts := Hex.corners(c, r)
+	ci.draw_colored_polygon(pts, fill(key, t))
+	match t:
+		BattleMap.Terrain.WATER:
+			_water(ci, key, ts, c, r, s, rng, frame)
+		BattleMap.Terrain.MOUNTAIN:
+			var name: String = ts["walls"][rng.randi() % ts["walls"].size()]
+			var mirror := rng.randf() < 0.5
+			var tex := _tex(key, name, mirror, s)
+			var rect := Rect2((c - tex.get_size() * 0.5 + Vector2(0.0, s)).floor(), tex.get_size())
+			ci.draw_texture(tex, rect.position)
+			_attach(ci, key, name, rect, mirror, s, frame)
+		BattleMap.Terrain.ROAD:
+			_specks(ci, ts, c, r, s, rng)
+			var road := links if links != 0 else (1 << 1) | (1 << 4)
+			_road(ci, key, ts, c, hex_px, s, road)
+			_scatter(ci, key, ts, c, r, s, rng, frame, _halved(ts["plain"]), road, 0.0)
+		BattleMap.Terrain.ROUGH:
+			_specks(ci, ts, c, r, s, rng)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["rough"], 0, 0.45)
+		BattleMap.Terrain.RUINS:
+			_specks(ci, ts, c, r, s, rng)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["ruins"], 0, 0.0)
+		_:
+			_specks(ci, ts, c, r, s, rng)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["plain"], 0, 0.0)
 	Hud.stroke_poly(ci, pts, Color(Color(str(ts["grid"])), 0.35), 1.0)
 
 
-static func _k(ts: Dictionary, name: String) -> Color:
-	return Color(str(ts[name]))
+## A sprite as a texture, its letters inked in the domain's colours, `s` pixels a letter.
+static func _tex(key: String, name: String, mirror: bool, s: int) -> ImageTexture:
+	var ck := "%s/%s/%d/%d" % [key, name, int(mirror), s]
+	if _textures.has(ck):
+		return _textures[ck]
+	var rows: Array = SPRITES[key][name]
+	var ink: Dictionary = INKS[key]
+	var w := 0
+	for row in rows:
+		w = maxi(w, str(row).length())
+	var img := Image.create_empty(w * s, rows.size() * s, false, Image.FORMAT_RGBA8)
+	for y in range(rows.size()):
+		var row: String = rows[y]
+		for x in range(row.length()):
+			if row[x] != ".":
+				img.fill_rect(Rect2i(x * s, y * s, s, s), Color(str(ink[row[x]])))
+	if mirror:
+		img.flip_x()
+	var tex := ImageTexture.create_from_image(img)
+	_textures[ck] = tex
+	return tex
 
 
-static func _at(rng: RandomNumberGenerator, c: Vector2, rx: float, ry: float) -> Vector2:
-	return (c + Vector2(rng.randf_range(-rx, rx), rng.randf_range(-ry, ry))).floor()
+## Whether a point lies inside a pointy-top hex of circumradius `r` about `c`.
+static func _inside(p: Vector2, c: Vector2, r: float) -> bool:
+	var d := (p - c).abs()
+	return d.x <= r * sqrt(3.0) * 0.5 and d.y <= r - d.x / sqrt(3.0)
 
 
-## The Waste: dunes rippled by the wind, a pale caravan track, cacti in rows all facing the
-## same way (its fantasy's), and red-rock ruins with sandstone pillars and bleached bones.
-static func _sand(ci: CanvasItem, c: Vector2, hex_px: float, r: float, t: int, rng: RandomNumberGenerator, frame: int, ts: Dictionary) -> void:
-	var f2 := float(frame)
-	match t:
-		BattleMap.Terrain.PLAIN:
-			for i in range(4):
-				var p := _at(rng, c, r * 0.7, r * 0.62)
-				var w := rng.randf_range(12.0, 17.0)
-				# A ripple: a shadowed crest and its lit lip, the wind's way.
-				ci.draw_polyline(PackedVector2Array([p, p + Vector2(w * 0.35, -3.0), p + Vector2(w * 0.7, 0.0), p + Vector2(w, -3.0)]), _k(ts, "dune"), 3.0)
-				ci.draw_polyline(PackedVector2Array([p + Vector2(0.0, -3.0), p + Vector2(w * 0.35, -6.0), p + Vector2(w * 0.7, -3.0)]), _k(ts, "dune_light"), 2.0)
-			for i in range(4):
-				ci.draw_rect(Rect2(_at(rng, c, r, r * 0.7) + Vector2(2.0 * f2, 0.0), Vector2(3.0, 2.0)), _k(ts, "pebble"))
-		BattleMap.Terrain.ROAD:
-			ci.draw_colored_polygon(Hex.corners(c, hex_px - 6.0), _k(ts, "track"))
-			for dx in [-r * 0.3, r * 0.3]:
-				for k in range(5):
-					var y := c.y - r * 0.8 + k * r * 0.4
-					ci.draw_rect(Rect2(Vector2(c.x + dx - 1.0, y).floor(), Vector2(3.0, r * 0.24)), _k(ts, "rut"))
-			for i in range(5):
-				ci.draw_rect(Rect2(_at(rng, c, r * 0.8, r * 0.6), Vector2(4.0, 3.0)), _k(ts, "stone"))
-		BattleMap.Terrain.ROUGH:
-			# Three saguaros in a loose row, every arm to the east.
-			var y0 := c.y + rng.randf_range(-r * 0.15, r * 0.15)
-			for i in range(3):
-				var x := c.x - r * 0.7 + (r * 1.4) * (float(i) + 0.5) / 3.0 + rng.randf_range(-3.0, 3.0)
-				var h := rng.randf_range(18.0, 24.0)
-				var base := Vector2(x, y0 + rng.randf_range(-4.0, 4.0) + h * 0.5).floor()
-				ci.draw_rect(Rect2(base + Vector2(-6.0, -2.0), Vector2(15.0, 4.0)), _k(ts, "shadow"))
-				ci.draw_rect(Rect2(base + Vector2(-3.0, -h), Vector2(7.0, h)), _k(ts, "cactus"))
-				ci.draw_rect(Rect2(base + Vector2(-3.0, -h + 1.0), Vector2(2.0, h - 2.0)), _k(ts, "cactus_light"))
-				ci.draw_rect(Rect2(base + Vector2(2.0, -h + 1.0), Vector2(2.0, h - 1.0)), _k(ts, "cactus_dark"))
-				var arm := base + Vector2(4.0, -h * 0.55)
-				ci.draw_rect(Rect2(arm, Vector2(5.0, 4.0)), _k(ts, "cactus"))
-				ci.draw_rect(Rect2(arm + Vector2(3.0, -8.0), Vector2(5.0, 12.0)), _k(ts, "cactus"))
-				ci.draw_rect(Rect2(arm + Vector2(3.0, -8.0), Vector2(2.0, 9.0)), _k(ts, "cactus_light"))
-			for i in range(3):
-				ci.draw_rect(Rect2(_at(rng, c, r * 0.8, r * 0.7), Vector2(4.0, 3.0)), _k(ts, "rock"))
-		BattleMap.Terrain.RUINS:
-			for i in range(2):
-				# A broken sandstone pillar, lit on the west, its capital and a fallen block.
-				var p := _at(rng, c, r * 0.45, r * 0.25) + Vector2(-r * 0.25 + i * r * 0.55, 0.0)
-				var h := rng.randf_range(15.0, 21.0)
-				ci.draw_rect(Rect2(p + Vector2(0.0, -h), Vector2(10.0, h)), _k(ts, "block_shade"))
-				ci.draw_rect(Rect2(p + Vector2(0.0, -h), Vector2(4.0, h)), _k(ts, "block"))
-				ci.draw_rect(Rect2(p + Vector2(-2.0, -h - 3.0), Vector2(14.0, 4.0)), _k(ts, "block"))
-				ci.draw_rect(Rect2(p + Vector2(12.0, -6.0), Vector2(12.0, 6.0)), _k(ts, "block_dark"))
-				ci.draw_rect(Rect2(p + Vector2(12.0, -6.0), Vector2(12.0, 2.0)), _k(ts, "block"))
-			# Bleached bones: a ribcage and a skull, the dust drifting past.
-			var b := _at(rng, c, r * 0.35, r * 0.2) + Vector2(-6.0, r * 0.42)
-			ci.draw_rect(Rect2(b + Vector2(-1.0, 0.0), Vector2(16.0, 2.0)), _k(ts, "bone"))
-			for k in range(4):
-				ci.draw_rect(Rect2(b + Vector2(k * 4.0, 2.0), Vector2(2.0, 5.0)), _k(ts, "bone"))
-			ci.draw_rect(Rect2(b + Vector2(18.0, -2.0), Vector2(7.0, 6.0)), _k(ts, "bone"))
-			ci.draw_rect(Rect2(b + Vector2(19.0, 0.0), Vector2(2.0, 2.0)), _k(ts, "block_dark"))
-			ci.draw_rect(Rect2(b + Vector2(22.0, 0.0), Vector2(2.0, 2.0)), _k(ts, "block_dark"))
-			ci.draw_rect(Rect2(_at(rng, c, r * 0.7, r * 0.6) + Vector2(3.0 * f2, -f2), Vector2(3.0, 2.0)), _k(ts, "block"))
+## Whether a sprite's rect stands inside the hex, clear of its edge.
+static func _fits(rect: Rect2, c: Vector2, r: float) -> bool:
+	for p in [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]:
+		if not _inside(p, c, r - 2.0):
+			return false
+	return true
 
 
-## The Marsh: bog with reeds and dark pools, a boardwalk over the mud, dead trees hung with moss,
-## and a graveyard of tombstones and a cross.
-static func _marsh(ci: CanvasItem, c: Vector2, hex_px: float, r: float, t: int, rng: RandomNumberGenerator, frame: int, ts: Dictionary) -> void:
-	var f2 := float(frame)
-	match t:
-		BattleMap.Terrain.PLAIN:
-			for i in range(2):
-				var p := _at(rng, c, r * 0.6, r * 0.5)
-				ci.draw_rect(Rect2(p + Vector2(-7.0, -3.0), Vector2(15.0, 7.0)), _k(ts, "puddle"))
-				ci.draw_rect(Rect2(p + Vector2(-4.0, -5.0), Vector2(9.0, 11.0)), _k(ts, "puddle"))
-				ci.draw_rect(Rect2(p + Vector2(-3.0 + 4.0 * f2, -2.0), Vector2(3.0, 2.0)), _k(ts, "glint"))
-			for i in range(5):
-				# A tuft of reeds, its tips leaning with the frame.
-				var q := _at(rng, c, r * 0.85, r * 0.7)
-				for k in range(3):
-					var x := q.x + k * 3.0
-					ci.draw_line(Vector2(x, q.y), Vector2(x + 2.0 * f2 - 1.0 + (k - 1), q.y - 7.0 - (k % 2) * 3.0), _k(ts, "reed"), 2.0)
-				ci.draw_rect(Rect2(q + Vector2(-2.0, 0.0), Vector2(10.0, 2.0)), _k(ts, "reed_dark"))
-		BattleMap.Terrain.ROAD:
-			# Duckboards across the mud: planks with their gaps, two posts.
-			var y := c.y - r * 0.6
-			while y < c.y + r * 0.55:
-				var half := r * 0.6
-				ci.draw_rect(Rect2(Vector2(c.x - half, y).floor(), Vector2(half * 2.0, 5.0)), _k(ts, "plank"))
-				ci.draw_rect(Rect2(Vector2(c.x - half, y).floor(), Vector2(half * 2.0, 2.0)), _k(ts, "plank_light"))
-				ci.draw_rect(Rect2(Vector2(c.x - half, y + 5.0).floor(), Vector2(half * 2.0, 2.0)), _k(ts, "plank_gap"))
-				y += 7.0
-			for dx in [-r * 0.7, r * 0.7 - 4.0]:
-				ci.draw_rect(Rect2(Vector2(c.x + dx, c.y - r * 0.75).floor(), Vector2(4.0, r * 1.45)), _k(ts, "post"))
-		BattleMap.Terrain.ROUGH:
-			for i in range(2):
-				# A dead tree: a grey trunk and bare branches, moss hanging and swaying.
-				var p := _at(rng, c, r * 0.25, r * 0.2) + Vector2(-r * 0.32 + i * r * 0.62, r * 0.45)
-				var h := rng.randf_range(20.0, 26.0)
-				ci.draw_rect(Rect2(p + Vector2(-6.0, -1.0), Vector2(13.0, 3.0)), _k(ts, "puddle"))
-				ci.draw_rect(Rect2(p + Vector2(-2.0, -h), Vector2(4.0, h)), _k(ts, "trunk"))
-				var top := p + Vector2(0.0, -h)
-				ci.draw_line(top + Vector2(0.0, 6.0), top + Vector2(-9.0, -2.0), _k(ts, "branch"), 3.0)
-				ci.draw_line(top + Vector2(-9.0, -2.0), top + Vector2(-11.0, -7.0), _k(ts, "branch"), 2.0)
-				ci.draw_line(top + Vector2(1.0, 9.0), top + Vector2(10.0, 2.0), _k(ts, "branch"), 3.0)
-				ci.draw_line(top + Vector2(10.0, 2.0), top + Vector2(13.0, -4.0), _k(ts, "branch"), 2.0)
-				ci.draw_line(top + Vector2(0.0, 1.0), top + Vector2(2.0, -6.0), _k(ts, "branch"), 2.0)
-				ci.draw_rect(Rect2(top + Vector2(-9.0 + f2, -1.0), Vector2(2.0, 6.0)), _k(ts, "moss"))
-				ci.draw_rect(Rect2(top + Vector2(9.0 + f2, 3.0), Vector2(2.0, 7.0)), _k(ts, "moss"))
-		BattleMap.Terrain.RUINS:
-			for i in range(3):
-				# A tombstone, round-topped, its shadow and its worn line.
-				var p := _at(rng, c, r * 0.6, r * 0.42)
-				ci.draw_rect(Rect2(p + Vector2(-2.0, 11.0), Vector2(14.0, 3.0)), _k(ts, "mound"))
-				ci.draw_rect(Rect2(p + Vector2(0.0, 2.0), Vector2(10.0, 10.0)), _k(ts, "tomb"))
-				ci.draw_circle(p + Vector2(5.0, 3.0), 5.0, _k(ts, "tomb"))
-				ci.draw_rect(Rect2(p + Vector2(7.0, 2.0), Vector2(3.0, 10.0)), _k(ts, "tomb_shade"))
-				ci.draw_rect(Rect2(p + Vector2(2.0, 5.0), Vector2(5.0, 2.0)), _k(ts, "tomb_dark"))
-			var x := _at(rng, c, r * 0.35, r * 0.3)
-			ci.draw_rect(Rect2(x + Vector2(4.0, -9.0), Vector2(4.0, 17.0)), _k(ts, "tomb"))
-			ci.draw_rect(Rect2(x + Vector2(0.0, -5.0), Vector2(12.0, 4.0)), _k(ts, "tomb"))
-			ci.draw_rect(Rect2(x + Vector2(6.0, -9.0), Vector2(2.0, 17.0)), _k(ts, "tomb_shade"))
-			# A wisp of mist drifting over the graves.
-			var m := _at(rng, c, r * 0.6, r * 0.5)
-			ci.draw_rect(Rect2(m + Vector2(4.0 * f2, 0.0), Vector2(11.0, 2.0)), Color(_k(ts, "mist"), 0.75))
-			ci.draw_rect(Rect2(m + Vector2(3.0 + 4.0 * f2, -3.0), Vector2(6.0, 2.0)), Color(_k(ts, "mist"), 0.55))
+## A list of what stands on a ground at half its numbers, for the hex a road runs through.
+static func _halved(list: Array) -> Array:
+	var out: Array = []
+	for e in list:
+		out.append([e[0], ceili(int(e[1]) * 0.5), e[2] if e.size() > 2 else 1.0])
+	return out
 
 
-## The Peak: an ash plain with embers rising, basalt flagstones, a field of black crust split by
-## glowing cracks, and charred ruins smoking.
-static func _lava(ci: CanvasItem, c: Vector2, hex_px: float, r: float, t: int, rng: RandomNumberGenerator, frame: int, ts: Dictionary) -> void:
-	var f2 := float(frame)
-	match t:
-		BattleMap.Terrain.PLAIN:
-			for i in range(7):
-				ci.draw_rect(Rect2(_at(rng, c, r, r * 0.75), Vector2(4.0, 2.0)), _k(ts, "ash"))
-			for i in range(3):
-				ci.draw_rect(Rect2(_at(rng, c, r * 0.8, r * 0.6), Vector2(6.0, 4.0)), _k(ts, "cinder"))
-			for i in range(3):
-				ci.draw_rect(Rect2(_at(rng, c, r * 0.7, r * 0.5) + Vector2(f2, -3.0 * f2), Vector2(3.0, 3.0)), _k(ts, "ember"))
-		BattleMap.Terrain.ROAD:
-			# Worn basalt flagstones, odd sizes and set loose, lit along their tops, the dark
-			# joints showing between: paving, never courses that would read as a wall.
-			for i in range(7):
-				var p := _at(rng, c, r * 0.72, r * 0.6)
-				var size := Vector2(rng.randf_range(8.0, 13.0), rng.randf_range(6.0, 9.0)).floor()
-				ci.draw_rect(Rect2(p - size * 0.5 + Vector2(1.0, 1.0), size), _k(ts, "joint"))
-				ci.draw_rect(Rect2(p - size * 0.5, size), _k(ts, "flag"))
-				ci.draw_rect(Rect2(p - size * 0.5, Vector2(size.x, 2.0)), _k(ts, "flag_light"))
-		BattleMap.Terrain.ROUGH:
-			for i in range(3):
-				ci.draw_rect(Rect2(_at(rng, c, r * 0.8, r * 0.6), Vector2(6.0, 4.0)), _k(ts, "crust"))
-			for i in range(2):
-				# A crack across the crust: a dark rim and the glow in it, brighter on the
-				# second frame. The glow is the light one, never the hot orange: that folds into
-				# the enemy red for a deutan.
-				var p := _at(rng, c, r * 0.3, r * 0.2) + Vector2(-r * 0.62, -r * 0.3 + i * r * 0.6)
-				var pts := PackedVector2Array([p])
-				for k in range(4):
-					p += Vector2(rng.randf_range(7.0, 11.0), rng.randf_range(-6.0, 6.0))
-					pts.append(p.floor())
-				ci.draw_polyline(pts, _k(ts, "rim"), 6.0)
-				ci.draw_polyline(pts, _k(ts, "glow_hot") if frame == 1 else _k(ts, "glow"), 3.0)
-		BattleMap.Terrain.RUINS:
-			for i in range(2):
-				# A charred wall, its top broken, and a smoke wisp rising from it.
-				var p := _at(rng, c, r * 0.3, r * 0.2) + Vector2(-r * 0.6 + i * r * 0.6, r * 0.2)
-				var w := rng.randf_range(15.0, 19.0)
-				ci.draw_rect(Rect2(p + Vector2(0.0, -12.0), Vector2(w, 12.0)), _k(ts, "char"))
-				ci.draw_rect(Rect2(p + Vector2(0.0, -17.0), Vector2(w * 0.45, 5.0)), _k(ts, "char"))
-				ci.draw_rect(Rect2(p + Vector2(0.0, -17.0), Vector2(w * 0.45, 2.0)), _k(ts, "char_light"))
-				ci.draw_rect(Rect2(p + Vector2(w * 0.55, -12.0), Vector2(w * 0.45, 2.0)), _k(ts, "char_light"))
-				ci.draw_rect(Rect2(p + Vector2(w * 0.7, -7.0), Vector2(3.0, 4.0)), _k(ts, "rim"))
-				ci.draw_rect(Rect2(p + Vector2(3.0, -21.0 - 3.0 * f2), Vector2(3.0, 3.0)), _k(ts, "smoke"))
-				ci.draw_rect(Rect2(p + Vector2(6.0, -26.0 - 3.0 * f2), Vector2(3.0, 3.0)), _k(ts, "smoke"))
+## A ground's flecks: a few design pixels in the domain's speck colours.
+static func _specks(ci: CanvasItem, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator) -> void:
+	var cols: Array = ts["specks"]
+	for i in range(10):
+		var p := c + Vector2(rng.randf_range(-0.85, 0.85) * r * 0.866, rng.randf_range(-0.8, 0.8) * r)
+		if _inside(p, c, r - 3.0):
+			ci.draw_rect(Rect2(p.floor(), Vector2(s, s)), Color(str(cols[i % cols.size()])))
+
+
+## The midpoint of a hex's edge toward Hex.DIRECTIONS[i], on the hex's fill.
+static func _edge_mid(i: int, hex_px: float) -> Vector2:
+	return Hex.to_pixel(Hex.DIRECTIONS[i], hex_px) * 0.5 * (hex_px - 1.5) / hex_px
+
+
+## The road's ends: the midpoints of the edges it runs to.
+static func _road_ends(hex_px: float, links: int) -> Array:
+	var ends: Array = []
+	for i in range(Hex.DIRECTIONS.size()):
+		if links & (1 << i):
+			ends.append(_edge_mid(i, hex_px))
+	return ends
+
+
+## Whether a point (from the hex's middle) lies in a corner the road fills: between two edges
+## it runs to side by side, the three hexes round that corner are all road, so the road there is
+## one surface (a road two wide, a square). The corner between edges i and i + 1 is the hex's
+## sixth from the one's angle to the other's (Hex.DIRECTIONS turn a sixth clockwise a step).
+static func _in_fill(p: Vector2, links: int) -> bool:
+	var i := posmod(floori(-atan2(p.y, p.x) / (PI / 3.0)), 6)
+	return links & (1 << i) != 0 and links & (1 << ((i + 1) % 6)) != 0
+
+
+static func _seg_dist(p: Vector2, b: Vector2) -> float:
+	var t := clampf(p.dot(b) / b.length_squared(), 0.0, 1.0)
+	return p.distance_to(b * t)
+
+
+## How far a point (from the hex's middle) stands from the road: 0 in a filled corner.
+static func _road_dist(p: Vector2, ends: Array, links: int) -> float:
+	if _in_fill(p, links):
+		return 0.0
+	var d := INF
+	for e in ends:
+		d = minf(d, _seg_dist(p, e))
+	return d
+
+
+## The road through a hex, from its middle to each edge in `links`, a bed with an edge, laid on
+## the design pixels' grid so it reads as the sprites do; cached by links, as every hex with
+## the same roads beside it lays the same road.
+static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_px: float, s: int, links: int) -> void:
+	var ck := "%s/road/%d/%d/%d" % [key, links, roundi(hex_px), s]
+	if not _textures.has(ck):
+		var r := hex_px - 1.5
+		var cols := int(ceil(sqrt(3.0) * r / s)) + 2
+		var rows := int(ceil(2.0 * r / s)) + 2
+		var mid := Vector2(cols * s, rows * s) * 0.5
+		var ends := _road_ends(hex_px, links)
+		var edge := Color(str(ts["road"][0]))
+		var bed := Color(str(ts["road"][1]))
+		var img := Image.create_empty(cols * s, rows * s, false, Image.FORMAT_RGBA8)
+		for y in range(rows):
+			for x in range(cols):
+				var p := Vector2(x + 0.5, y + 0.5) * s - mid
+				if not _inside(p, Vector2.ZERO, r):
+					continue
+				var d := _road_dist(p, ends, links)
+				if d <= ROAD_HALF * s:
+					img.fill_rect(Rect2i(x * s, y * s, s, s), bed)
+				elif d <= (ROAD_HALF + 1.0) * s:
+					img.fill_rect(Rect2i(x * s, y * s, s, s), edge)
+		_textures[ck] = ImageTexture.create_from_image(img)
+	var tex: ImageTexture = _textures[ck]
+	ci.draw_texture(tex, (c - tex.get_size() * 0.5).floor())
+	if ts.has("road_stone"):
+		var stone := _tex(key, str(ts["road_stone"]), false, s)
+		var at: Array = [Vector2.ZERO]
+		for e in _road_ends(hex_px, links):
+			at.append(e * 0.55)
+		for p in at:
+			ci.draw_texture(stone, (c + p - stone.get_size() * 0.5).floor())
+
+
+## Whether a sprite standing in `rect` would stand on the road (its `ends`, as _road_ends).
+static func _on_road(rect: Rect2, c: Vector2, ends: Array, links: int, s: int) -> bool:
+	var foot := Vector2(rect.get_center().x, rect.end.y)
+	for p in [foot, rect.get_center(), rect.position, Vector2(rect.end.x, rect.position.y)]:
+		if _road_dist(p - c, ends, links) <= (ROAD_HALF + 2.0) * s:
+			return true
+	return false
+
+
+## What stands on a ground: each sprite of `list` set where it fits inside the hex, off the
+## road, overlapping the ones set before by at most `overlap` of the smaller (rough's, a
+## forest's crowns), then drawn back to front, the flat ones first.
+static func _scatter(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int, list: Array, links: int, overlap: float) -> void:
+	var placed: Array = []
+	var ends := _road_ends(r + 1.5, links)
+	for entry in list:
+		var name: String = entry[0]
+		var chance: float = entry[2] if entry.size() > 2 else 1.0
+		for k in range(int(entry[1])):
+			if rng.randf() >= chance:
+				continue
+			var mirror: bool = not ts["fixed"].has(name) and rng.randf() < 0.5
+			var size := _tex(key, name, mirror, s).get_size()
+			for attempt in range(30):
+				var foot := c + Vector2(rng.randf_range(-0.8, 0.8) * r * 0.866, rng.randf_range(-0.5, 0.78) * r)
+				var rect := Rect2((foot - Vector2(size.x * 0.5, size.y)).floor(), size)
+				if not _fits(rect, c, r):
+					continue
+				if links != 0 and _on_road(rect, c, ends, links, s):
+					continue
+				if _crowded(rect.grow(s) if overlap == 0.0 else rect, placed, overlap):
+					continue
+				placed.append({"name": name, "rect": rect, "mirror": mirror, "flat": ts["flat"].has(name)})
+				break
+	placed.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if a["flat"] != b["flat"]:
+			return a["flat"]
+		return a["rect"].end.y < b["rect"].end.y)
+	for p in placed:
+		var rect: Rect2 = p["rect"]
+		ci.draw_texture(_tex(key, p["name"], p["mirror"], s), rect.position)
+		_attach(ci, key, p["name"], rect, p["mirror"], s, frame)
+
+
+## Whether a rect overlaps one set before by more than `overlap` of the smaller.
+static func _crowded(rect: Rect2, placed: Array, overlap: float) -> bool:
+	for p in placed:
+		var other: Rect2 = p["rect"]
+		if not rect.intersects(other):
+			continue
+		var cut := rect.intersection(other).get_area()
+		if cut > overlap * minf(rect.get_area(), other.get_area()):
+			return true
+	return false
+
+
+## A sprite's moving companion (ATTACH), set by its host and stepped by the frame.
+static func _attach(ci: CanvasItem, key: String, name: String, rect: Rect2, mirror: bool, s: int, frame: int) -> void:
+	var a = ATTACH.get(key, {}).get(name)
+	if a == null:
+		return
+	var which: String = a[0]
+	if SPRITES[key].has(which + str(frame)):
+		which += str(frame)
+	var tex := _tex(key, which, mirror, s)
+	var x := float(a[1]) * s
+	if mirror:
+		x = rect.size.x - x - tex.get_width()
+	ci.draw_texture(tex, (rect.position + Vector2(x, float(a[2] - a[3] * frame) * s)).floor())
+
+
+## The water: the domain's liquid, a rim inside its edge and ripples drifting a step a frame.
+static func _water(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int) -> void:
+	Hud.stroke_poly(ci, Hex.corners(c, r - 2.0 - s), Color(str(ts["rim"])), float(s) + 1.0)
+	var ripples: Array = ts["ripples"]
+	for i in range(7):
+		var tex := _tex(key, str(ripples[i % ripples.size()]), false, s)
+		var p := c + Vector2(rng.randf_range(-0.55, 0.55) * r * 0.866, rng.randf_range(-0.5, 0.45) * r)
+		p += Vector2(2.0, -1.0) * s * frame
+		ci.draw_texture(tex, (p - tex.get_size() * 0.5).floor())

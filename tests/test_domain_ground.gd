@@ -1,8 +1,12 @@
 extends TestCase
 
 ## Each domain paints its own tileset (Ryan, 29 October: "They all need their own tileset, first
-## of all. Shouldn't all be painting green meadows"): the painted map dresses its decorative
-## grounds by the lead domain's bleed, and water and the walls read alike in every domain.
+## of all. Shouldn't all be painting green meadows"; 30 October: "walls and water certainly
+## should change with tileset", and the grounds "can differ where appropriate. Just not wildly
+## different like it was"): the painted map dresses every hex by the lead domain's bleed, in
+## sprites inked in the domain's colours, and a road runs to the roads beside it.
+
+const DECORATIVE := [BattleMap.Terrain.PLAIN, BattleMap.Terrain.ROAD, BattleMap.Terrain.ROUGH, BattleMap.Terrain.RUINS]
 
 
 func _battle(faction: String) -> Battle:
@@ -15,27 +19,104 @@ func _battle(faction: String) -> Battle:
 	return b
 
 
+## A sprite as the colours it is drawn in, so two domains' art compares by what shows.
+func _inked(key: String, name: String) -> String:
+	var out := ""
+	for row in DomainGround.SPRITES[key][name]:
+		for ch in str(row):
+			out += "." if ch == "." else str(DomainGround.INKS[key][ch])
+		out += "/"
+	return out
+
+
 func test_every_domain_has_a_tileset() -> void:
 	var db := ContentDB.load_default()
 	for id in db.factions.keys():
 		var bleed := str(db.factions[id].get("bleed", ""))
-		assert_true(bleed == DomainGround.PLAINS or DomainGround.TILESETS.has(bleed), "%s's bleed '%s' has a tileset" % [id, bleed])
+		assert_true(DomainGround.TILESETS.has(bleed), "%s's bleed '%s' has a tileset" % [id, bleed])
+		assert_true(DomainGround.SPRITES.has(bleed) and DomainGround.INKS.has(bleed), "and its sprites and inks")
+	var first := str(db.factions.values()[0].get("bleed", ""))
+	assert_eq(DomainGround.key_of("no such bleed"), first, "a bleed with no tileset paints the first domain's in content")
 
 
-func test_water_and_the_walls_read_alike_in_every_domain() -> void:
-	var decorative := [BattleMap.Terrain.PLAIN, BattleMap.Terrain.ROAD, BattleMap.Terrain.ROUGH, BattleMap.Terrain.RUINS]
-	for biome in [DomainGround.PLAINS] + DomainGround.TILESETS.keys():
-		for t in [BattleMap.Terrain.WATER, BattleMap.Terrain.MOUNTAIN]:
-			assert_true(DomainGround.shared(t), "%s is drawn alike everywhere" % BattleMap.TERRAIN_NAMES[t])
-			assert_eq(DomainGround.fill(str(biome), t), TerrainArt.OTHER[t], "%s's %s is the plains'" % [biome, BattleMap.TERRAIN_NAMES[t]])
-		var seen := {}
-		for t in decorative:
-			assert_false(DomainGround.shared(t), "%s is the domain's to dress" % BattleMap.TERRAIN_NAMES[t])
-			var col := DomainGround.fill(str(biome), t)
-			assert_false(seen.has(col.to_html()), "%s's %s has a fill of its own" % [biome, BattleMap.TERRAIN_NAMES[t]])
-			seen[col.to_html()] = true
-			if biome != DomainGround.PLAINS:
-				assert_true(col != TerrainArt.OTHER[t], "%s's %s is its own, not the plains'" % [biome, BattleMap.TERRAIN_NAMES[t]])
+func test_a_domains_grounds_are_one_family() -> void:
+	for key in DomainGround.TILESETS.keys():
+		var ground := Color(str(DomainGround.TILESETS[key]["ground"]))
+		for t in DECORATIVE:
+			var c := DomainGround.fill(str(key), t)
+			var step := maxf(absf(c.r - ground.r), maxf(absf(c.g - ground.g), absf(c.b - ground.b)))
+			assert_true(step <= 0.2 + 0.001, "%s's %s is the domain's ground or a step from it" % [key, BattleMap.TERRAIN_NAMES[t]])
+
+
+func test_water_and_the_walls_are_each_domains_own() -> void:
+	var waters := {}
+	var walls := {}
+	for key in DomainGround.TILESETS.keys():
+		var ts: Dictionary = DomainGround.TILESETS[key]
+		var water := DomainGround.fill(str(key), BattleMap.Terrain.WATER).to_html()
+		assert_false(waters.has(water), "%s's water is its own liquid" % key)
+		waters[water] = true
+		assert_true(water != Color(str(ts["ground"])).to_html(), "and not its ground")
+		assert_true(ts["walls"].size() >= 1, "%s has a range for its walls" % key)
+		for name in ts["walls"]:
+			var art := _inked(str(key), str(name))
+			assert_false(walls.has(art), "%s's %s is its own" % [key, name])
+			walls[art] = true
+
+
+func test_every_sprite_is_inked_and_every_name_drawn() -> void:
+	for key in DomainGround.TILESETS.keys():
+		var sprites: Dictionary = DomainGround.SPRITES[key]
+		var ink: Dictionary = DomainGround.INKS[key]
+		for name in sprites.keys():
+			var stray := ""
+			for row in sprites[name]:
+				for ch in str(row):
+					if ch != "." and not ink.has(ch) and not stray.contains(ch):
+						stray += ch
+			assert_eq(stray, "", "%s's %s is inked in its domain's colours" % [key, name])
+		var ts: Dictionary = DomainGround.TILESETS[key]
+		var named: Array = []
+		for ground in ["plain", "rough", "ruins"]:
+			for e in ts[ground]:
+				named.append(e[0])
+		named.append_array(ts["walls"] + ts["ripples"] + ts["flat"] + ts["fixed"])
+		if ts.has("road_stone"):
+			named.append(ts["road_stone"])
+		for host in DomainGround.ATTACH.get(key, {}).keys():
+			named.append(host)
+			named.append(DomainGround.ATTACH[key][host][0])
+		for n in named:
+			assert_true(sprites.has(n) or (sprites.has(str(n) + "0") and sprites.has(str(n) + "1")), "%s draws a sprite '%s'" % [key, n])
+
+
+func test_every_colour_sits_on_the_posterize_grid() -> void:
+	# The map's compositor posterizes the painted world to six levels a channel (bleed.gdshader),
+	# so a colour off the grid would show as another.
+	for key in DomainGround.TILESETS.keys():
+		var ts: Dictionary = DomainGround.TILESETS[key]
+		var colours: Array = [ts["ground"], ts["grid"], ts["rim"]]
+		colours.append_array(ts["grounds"].values() + ts["specks"] + ts["road"] + DomainGround.INKS[key].values())
+		for h in colours:
+			var c := Color(str(h))
+			for ch in [c.r8, c.g8, c.b8]:
+				assert_eq(int(ch) % 51, 0, "%s's #%s is on the grid" % [key, h])
+
+
+func test_a_road_runs_to_the_roads_beside_it() -> void:
+	var map := _battle(str(ContentDB.load_default().factions.keys()[0])).field.map
+	var seen := 0
+	for h in map.all_hexes() + map.margin.keys():
+		if map.terrain_of(h) != BattleMap.Terrain.ROAD:
+			continue
+		var want := 0
+		for i in range(Hex.DIRECTIONS.size()):
+			var n: Vector2i = h + Hex.DIRECTIONS[i]
+			if (map.has(n) or map.margin.has(n)) and map.terrain_of(n) == BattleMap.Terrain.ROAD:
+				want |= 1 << i
+		assert_eq(DomainGround.road_links(map, h), want, "the road at %s runs to the roads beside it" % h)
+		seen += 1
+	assert_true(seen > 0, "the battle has roads to read")
 
 
 func test_a_battle_paints_its_lead_domains_tileset() -> void:
