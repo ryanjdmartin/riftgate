@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's seventh notes, 30 October.",
-   "note": "Ryan, 30 October: \"bring the rads out so they're flush with the next biggest segment instead. And that's now a lot of hazard stripe in one area. I don't mind the extension, but maybe this is a good place for livery instead.\" The radiators' outer walls now stand flush with the next band's flanks (centres 19 off the spine, from 17), two out past the tail's own over the whole chamfer, their far ends still two clear of the hind hips' cuffs. The rack's collar keeps its stripe above the decks' step; the length run down into the lower deck last round is now a skirt in the livery, the military green of the flank plates (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's eighth notes, 30 October.",
+   "note": "Ryan, 30 October: \"bring back the rear-mounted long vent, but make it almost the whole width of the back. Make the rads just a smidge thinner and more square, keep them centered where they are. Then bring them up and forward a bit more.\" The long vent is back low on the tail's rear face, forty-four wide of the panel's fifty (it was twenty-four), sunk in the shell, its three louvres throwing their upper edges out over the heat with the radiators' and shutting flat with them sealed. Each radiator is fourteen wide by thirteen tall (from sixteen) on the same centre, so its outer wall now stands one inside the next band's flank and one out past the tail's own; both stand two higher and two further forward, the top of each box now running into the next band's top edge, its far end one and a half clear of the hind hip's cuff (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the sixth notes of 30 October (the radiators flush with the tail band's flanks, the rack's collar striped down into the deck)",
+    "summary": "Before: the seventh notes of 30 October (the radiators sixteen wide and two lower and further back, no long vent)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",

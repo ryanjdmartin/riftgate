@@ -833,13 +833,14 @@ def armadillo(b):
     Rivet Gun), hp_2 the right rear port (the Twin Autoguns), hp_3 and hp_4 two forward ports
     flanking the cowl, level with the ground, cut back into the step behind the front band,
     bare; the plating on the flanks is detail, and two big armoured louvred radiators sit on
-    the tail's top rear corners, apart, their faces tilted up, a tilted grille at rest that
-    throws its louvres edge on over flaring orange heat when it vents and shuts flat when it
-    seals, while a vent on each flank's chamfer slides out over its glowing core (Ryan, 29
-    October: the stack's rain flap read "more W&S comical than heavy Minerva"; the two vents
-    that replaced it grew into "big boxy radiators sticking out at an angle", with "new vents
-    on the sides", their glow "way more yellow/orange"; then, 30 October, "They need to look
-    like units mounted to the chassis, not poking out of it"). The ports are real
+    the tail's top rear corners, apart, their faces tilted up, over a long louvred vent across
+    the back panel, each a grille at rest that throws its louvres edge on over flaring orange
+    heat when it vents and shuts flat when it seals, while a vent on each flank's chamfer
+    slides out over its glowing core (Ryan, 29 October: the stack's rain flap read "more W&S
+    comical than heavy Minerva"; the two vents that replaced it grew into "big boxy radiators
+    sticking out at an angle", with "new vents on the sides", their glow "way more
+    yellow/orange"; then, 30 October, "They need to look like units mounted to the chassis,
+    not poking out of it", and the long vent back, "almost the whole width of the back"). The ports are real
     holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
     carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
     canister rack that slides out of it to fire, its two barrels bored dark through the rack's
@@ -1019,18 +1020,26 @@ def armadillo(b):
     # eye 30 to 42 degrees down), the heat flaring behind, so it reads as motion and not by its
     # colour alone; sealed, they shut flat with the ports.
     RAD = math.degrees(math.atan2(11.0, 7.5))   # the boxes' faces tilted as the bevel stood (11 up in 7.5 back), about 56 degrees
-    # Each box straddles its corner: its face's top edge about five above the deck and two and
-    # a half in from the panel, its foot five behind it (five toward the front: Ryan, 30
-    # October, "maybe 2 units", then "3 more further forward"); its top runs over the deck to
-    # the next band, and its outer wall stands flush with that next band's flank, two out past
-    # the tail's own ("move them apart so that they're flush with the outer face of the back
-    # segment", then "flush with the next biggest segment instead"), over the whole chamfer,
-    # so it sits on the hull as a unit bolted there, clear of the rack's hatch and its slide;
-    # its walls run thirteen back, its far end two clear of the hind hip's cuff. The louvred
-    # hollow dips into the corner, cut there.
-    RAD_X, RAD_MOUTH = 19.0, (-50.66, Z0 + 20.73)   # the housing's outer wall at the next band's flank, 27 off the spine
-    vents = [_vent(b, [band_obs[0]], (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
+    # Each box straddles its corner: its face's top edge about seven above the deck and four and
+    # a half in from the panel, its foot under three behind it (seven toward the front and two
+    # up: Ryan, 30 October, "maybe 2 units", "3 more further forward", then "up and forward a
+    # bit more"); its top runs over the deck into the next band, and its outer wall stands one
+    # inside that band's flank and one out past the tail's own, over the whole chamfer: fourteen
+    # wide by thirteen tall, centred where it stood ("just a smidge thinner and more square";
+    # sixteen wide, it had stood flush with the tail's flank, then "flush with the next biggest
+    # segment"). So it sits on the hull as a unit bolted there, clear of the rack's hatch and
+    # its slide; its walls run thirteen back, its far end one and a half clear of the hind
+    # hip's cuff. The louvred hollow dips into the corner, cut there.
+    RAD_X, RAD_MOUTH = 19.0, (-48.66, Z0 + 22.73)   # the housing's outer wall 26 off the spine
+    vents = [_vent(b, [band_obs[0]], (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 14.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
                    wall=1.5, housing="steel.dark", back=13.0) for s in (-1.0, 1.0)]   # heavy walls round the louvres
+    # The long vent, back low across the tail's rear face (Ryan, 30 October: "bring back the
+    # rear-mounted long vent, but make it almost the whole width of the back"; twenty-four wide,
+    # "a wider centered version of the vent", it went on the 29th with "Ditch the bottom long
+    # vent"): forty-four of the panel's fifty, sunk into the shell under the radiators, three
+    # louvres a little out at rest that throw their upper edges out with the radiators' (edge on
+    # to an eye 30 to 42 degrees down behind) and shut flat with them.
+    vents.append(_vent(b, [band_obs[0]], (0.0, bands[0][0], Z0 + 4.0), 90.0, 44.0, 8.0, 3, "louvre_c", 10.0, 60.0))
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in
     # front of the back weapons. Those are small rectangular protrusions when sealed, and
     # either slide out, or lever up using the forward edge as a pivot, to show the vent face
@@ -1144,11 +1153,11 @@ def armadillo(b):
           glow=[(["lamp"], [(3.4, 0.0), (3.9, 8.0), (5.2, 8.0), (5.8, 0.0)])])
     # Venting (Ryan, 29 October: the vents "more active animated", and never while sealed;
     # then "don't do the double knee bend. Lower down, open vents, close vents, come back up"):
-    # the shell sinks low on its planted feet and settles; every radiator's louvres throw edge
-    # on over the flaring heat, the lowest first and the rest a beat after, as the side vents
-    # slide out, all held open while the heat pours out; then the louvres shut and the side
-    # vents slide home as the glow dies, and the shell rises. A louvre's key is a share of its
-    # own throw.
+    # the shell sinks low on its planted feet and settles; the louvres of every radiator and of
+    # the long vent throw edge on over the flaring heat, the lowest first and the rest a beat
+    # after, as the side vents slide out, all held open while the heat pours out; then the
+    # louvres shut and the side vents slide home as the glow dies, and the shell rises. A
+    # louvre's key is a share of its own throw.
     SINK = -7.0
     tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
                             [(0.3, 0.0, 0.0, 0.0), (1.2, 0.0, SINK, 0.0), (1.5, 0.0, SINK - 0.3, 0.0), (4.3, 0.0, SINK - 0.3, 0.0), (5.4, 0.0, 0.0, 0.0)])

@@ -193,7 +193,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   mount on a roof gimbal, its coil threaded and its second antenna gone; the Armadillo's bores
   bored and dark, its weapons sliding along their lines, its seal hiding the irises and
   hunkering, its stack two big louvred radiators in dark steel mounted on the tail's
-  top rear corners, tilted up, and a vent on each flank that slides out, glowing orange as the shell
+  top rear corners, tilted up, over a long louvred vent across the back, and a vent on each flank that slides out, glowing orange as the shell
   sinks once to vent them open and shut, and dark sealed; every Arsenal cockpit's glass
   lit, the Nemesis's visor flaring white-hot in its fierce acts), to judge running (the to-do). A model may hold a form while its
   machine carries the status of the same name, the form carrying the whole machine and acts of
@@ -356,18 +356,20 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.377 (the
-  page's version 389, published 30 October from `claude/charming-rubin-h954bp`, three-way merged
-  onto the live v0.376 that another session published after this branch's 386 (the domains'
-  tilesets built again: outlined sprites, the Marsh without violet), itself onto this branch's
-  v0.374 at 386, merged onto the live v0.373 that `claude/jolly-lovelace-scn82y` published at 385
+  `docs/design-bible.html` after every change. This file and the live page are v0.384 (the
+  page's version 396, published 30 October from `claude/charming-rubin-h954bp`, three-way merged
+  onto the live v0.383 that other sessions published at 395 (the pacing session's tier and ramp
+  rows, the track pairs' notes), itself onto this branch's v0.377 at 389, merged onto the live
+  v0.376 that another session published after this branch's 386 (the domains' tilesets built
+  again: outlined sprites, the Marsh without violet), itself onto this branch's v0.374 at 386,
+  merged onto the live v0.373 that `claude/jolly-lovelace-scn82y` published at 385
   (the domains' first tilesets, the map's lines at one width at every zoom), itself onto this
   branch's v0.370 at 382;
   that branch's rows came in the same way before (the enemy's red pure #ff0000 on trial, heat's
   orange #ff6000, reds and oranges in red and green alone), with main's v0.352 (the map survey)
   and `ccr-7effd31a-u5z4gw`'s sound rows, so this file carries those rows ahead of their code;
   with this branch's notes of 29 and 30 October on the rebuilds, the Armadillo's radiators
-  mounted on its tail's top rear corners flush with the next band's flanks, its rack's collar
+  mounted on its tail's top rear corners over a long vent across the back, its rack's collar
   skirted in the livery, its sliding side vents, their
   glow (#ff7800) and its one-sink vent, and the desk on the phone's renderer). The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
@@ -385,12 +387,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 163 (30 October, from
-  `claude/charming-rubin-h954bp`, onto its own 162, itself onto 161 and 160, which another session
+  acts on a reloaded page). At the page's version 165 (30 October, from
+  `claude/charming-rubin-h954bp`, onto 164, which another session published with this branch's
+  manifest, `motion.js` and Armadillo files as at its 163, itself onto 162, 161 and 160, which another session
   published with this branch's manifest and `motion.js` as at its 159, which other sessions published overnight with this
   branch's page, manifest and `motion.js` as at its 152: Ryan's notes of 29 and 30 October on
-  the rebuilds, the last bringing the Armadillo's radiators out flush with the next band's flanks
-  and the rack's collar's skirt into the livery,
+  the rebuilds, the last bringing back the Armadillo's long rear vent across almost the whole
+  back and its radiators narrower, higher and further forward,
   with its renders, the old ones to before; every other file as the live page had it, `edits`
   empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
