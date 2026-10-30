@@ -103,6 +103,31 @@ func test_the_cautious_persona_prices_heat_above_its_line() -> void:
 	assert_eq(careful.heat_cost(sk, ms, gun), 4.0 * Policy.HULL_WEIGHT, "from under the line, only the part past it")
 
 
+## The overheat's what-if switch (30 October): the bot prices an overheat at the hull it burns, on
+## the spend that causes it and on the vent that saves it.
+func test_the_bot_prices_an_overheat_at_its_burn() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Hot", Die.single(Face.vent(30)), 40, 100))
+	sk.add_foes([_ghoul(300, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.make(Policy.GREEDY)
+	var gun := Face.attack(10, L, [], 10)
+	ms.heat = 55   # the gun would end the turn five past the cap of sixty
+	var cost_plain := pol.heat_cost(sk, ms, gun)
+	ms.heat = 70   # ten past it: the vent of ten saves the whole burn
+	var vent_plain := pol.vent_score(sk, ms, 10)
+	Skirmish.overheat_scale = 2
+	var vent_doubled := pol.vent_score(sk, ms, 10)
+	ms.heat = 55
+	var cost_doubled := pol.heat_cost(sk, ms, gun)
+	Skirmish.overheat_scale = 1
+	assert_true(absf(cost_plain - 5.0 * Policy.HULL_WEIGHT) < 0.001, "five past the cap, one for one: %f" % cost_plain)
+	assert_true(absf(cost_doubled - 10.0 * Policy.HULL_WEIGHT) < 0.001, "doubled, the hull it burns: %f" % cost_doubled)
+	assert_true(absf(vent_doubled - vent_plain - 10.0 * Policy.HULL_WEIGHT) < 0.001, "the vent saves twice the hull")
+
+
 func test_greedy_rerolls_a_face_under_the_average() -> void:
 	# A die of one blank and one big gun: whichever shows first, the bot ends the round on
 	# the gun, having rerolled the blank away (a reroll never lands on the same entry).

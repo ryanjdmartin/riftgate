@@ -118,7 +118,7 @@ func play(sk: Skirmish) -> int:
 			break
 		sk.end_round()
 		for o in sk.overheats:
-			overheat_hull += int(o["over"])
+			overheat_hull += int(o.get("burn", o["over"]))
 			overheats += 1
 	return sk.outcome
 
@@ -676,15 +676,16 @@ func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0)
 	var fc := sk.forecast(ms, false)
 	var added := int(roundf(heat_of(ms, f) * uses))
 	var over := maxi(0, int(fc["heat_end"]) + added - ms.heat_max)
-	var cost := float(over - int(fc["overheat"])) * HULL_WEIGHT
-	if not fc["destroyed"] and int(fc["hull_after"]) - (over - int(fc["overheat"])) <= 0:
+	var burn := (over - int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the added excess burns
+	var cost := float(burn) * HULL_WEIGHT
+	if not fc["destroyed"] and int(fc["hull_after"]) - burn <= 0:
 		cost += DEATH_WEIGHT
 	# The cautious persona: the heat this spend leaves above its line (under the maximum, past
 	# which the overheat above prices it), as an overheat's hull.
 	var line := caution_line(ms)
 	if line >= 0:
 		var top := mini(int(fc["heat_end"]) + added, ms.heat_max)
-		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT
+		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT * Skirmish.overheat_scale
 	return cost
 
 
@@ -1280,7 +1281,7 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	if tick > 0:
 		var fc := sk.forecast(who, false)
 		var over := mini(int(fc["overheat"]), tick)
-		score += float(over) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
+		score += float(over * Skirmish.overheat_scale) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
 	var scorch := Effects.stacks_of(who.unit, "scorched")
 	if scorch > 0:
 		for eff in Effects.STATUS["scorched"]["effects"]:
@@ -1815,8 +1816,9 @@ func siphon_score(sk: Skirmish, ms: Skirmish.MechState, per_blow: int) -> float:
 ## room it makes.
 func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	var fc := sk.forecast(who, false)
-	var score := float(mini(power, int(fc["overheat"]))) * HULL_WEIGHT
-	if fc["destroyed"] and int(fc["overheat"]) > 0 and int(fc["hull_after"]) + mini(power, int(fc["overheat"])) > 0:
+	var saved := mini(power, int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the vent keeps from the burn
+	var score := float(saved) * HULL_WEIGHT
+	if fc["destroyed"] and int(fc["overheat"]) > 0 and int(fc["hull_after"]) + saved > 0:
 		score += DEATH_WEIGHT
 	score += float(mini(power, who.heat)) * BANK_WEIGHT
 	# The cautious persona: what the vent takes off above its line and under the maximum (the
@@ -1824,7 +1826,7 @@ func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	var line := caution_line(who)
 	if line >= 0:
 		var held := mini(int(fc["heat_end"]), who.heat_max) - line
-		score += float(clampi(power - int(fc["overheat"]), 0, maxi(0, held))) * HULL_WEIGHT
+		score += float(clampi(power - int(fc["overheat"]), 0, maxi(0, held))) * HULL_WEIGHT * Skirmish.overheat_scale
 	return score
 
 

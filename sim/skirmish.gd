@@ -34,6 +34,7 @@ const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
 const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
 const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
 static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
+static var overheat_scale: int = 1   # hull an overheat burns a point of heat past the maximum; tools/balance.gd's --overheat sets it for one run's what-if (30 October)
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
@@ -814,7 +815,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	if spent != null and spent.self_burn > 0:
 		heat_end += spent.self_burn * Effects.status_value("burning_mech", "tick_heat")   # the Stoker's own fire ticks with the rest
 	var over := maxi(0, heat_end - ms.heat_max)
-	hull -= over
+	hull -= over * overheat_scale
 	var blows := 0
 	for f in attackers_of(ms):
 		blows += f.strikes()
@@ -3946,17 +3947,18 @@ func _apply(ms: MechState, result: Dictionary) -> Array[String]:
 	return parts
 
 
-## The end of the player's turn: heat above the maximum burns hull one for one and the gauge
-## settles at its cap.
+## The end of the player's turn: heat above the maximum burns hull one for one (overheat_scale
+## a point, for a runner's what-if) and the gauge settles at its cap.
 func _settle_heat() -> void:
 	for ms in live_mechs():
 		var over := ms.heat - ms.heat_max
 		if over <= 0:
 			continue
-		ms.unit.hull -= over
+		var burn := over * overheat_scale
+		ms.unit.hull -= burn
 		ms.heat = ms.heat_max
-		overheats.append({"mech": mechs.find(ms), "over": over, "hull": ms.unit.hull})
-		log.append("%s overheats: hull -%d" % [ms.unit.display_name, over])
+		overheats.append({"mech": mechs.find(ms), "over": over, "burn": burn, "hull": ms.unit.hull})
+		log.append("%s overheats: hull -%d" % [ms.unit.display_name, burn])
 		if ms.alive():
 			_hull_damaged(ms)   # an overheat is hull damage like any other (10 October)
 

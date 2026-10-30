@@ -2346,6 +2346,28 @@ func test_the_overheat_burns_before_the_enemy_acts() -> void:
 	assert_eq(int(sk.turn_events[0]["mech"]), 1, "and the enemy's only blow fell on the survivor")
 
 
+## The overheat's what-if switch (30 October; the runner's --overheat N): an overheat burns N hull
+## a point past the maximum, and the forecast reads the same; the engine's own is one for one.
+func test_the_overheat_scale_burns_its_multiple_and_the_forecast_reads_it() -> void:
+	assert_eq(Skirmish.overheat_scale, 1, "the engine burns one for one")
+	Skirmish.overheat_scale = 2
+	var sk := Skirmish.new(1)
+	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 40)), 0, 100)
+	hot.heat_max = 30
+	sk.add_mech(hot)
+	sk.add_foes([_ghoul(500, 0)])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	var fc := sk.forecast(sk.mechs[0], false)
+	sk.end_round()
+	Skirmish.overheat_scale = 1
+	assert_eq(int(fc["overheat"]), 10, "ten past a cap of thirty")
+	assert_eq(int(fc["hull_after"]), 80, "the forecast burns twenty")
+	assert_eq(hot.hull, 80, "and so does the turn's end")
+	assert_eq([int(sk.overheats[0]["over"]), int(sk.overheats[0]["burn"])], [10, 20], "the record keeps the excess and the burn")
+
+
 func test_an_overheat_that_wrecks_the_last_machine_ends_the_fight_before_the_enemy_acts() -> void:
 	var sk := Skirmish.new(1)
 	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 10)

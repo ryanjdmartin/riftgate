@@ -211,6 +211,7 @@ python3 tools/pages/bible_tables.py
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
 # --cool-above 50 (the cautious persona: each machine keeps its heat under half its maximum,
 # venting early and holding a hot spend above the line; the pricing driver passes it on too),
+# --overheat 2 (a what-if: an overheat burns two hull a point past the maximum; the driver's too),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
