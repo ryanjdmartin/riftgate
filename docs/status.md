@@ -38,7 +38,7 @@ first round, the Hold The Line pair, merged on the 27th), main merged into it on
 go on the pairs (every track a map half and a battle half, the bible's pair row), every new half
 sketched on its shipped recipe's groove call and published on the pair page; then his notes of
 29 and 30 October on Hold The Line's two halves and Night Shift's battle half, sketched as further
-rounds on the same page (Hold The Line's sixth, Night Shift's third), and the pairs in the game
+rounds on the same page (Hold The Line's sixth, Night Shift's fourth), and the pairs in the game
 once he has heard them.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
@@ -309,9 +309,10 @@ The tasks are the to-do's; this is the index of what waits.
   and without its tempo drop, the first lift on the crunch synth and the synth lead over the
   backing chug 6 dB down and the second the same or with the lead guitar, M as it ships with the
   crunch synth, his map picks: X on the violins, U on the clean guitar, the drone moved to R, W low with a
-  roll) and Night Shift on its third (the map's intro without its front; the battle half a jam,
-  30 October: the guitar and the bass riffing in one line on his rhythms, walking the chords bar to
-  bar, pulling back for the arpeggio and the FM hook, no drone, Hold The Line's drum energy); all
+  roll) and Night Shift on its fourth (the map's intro without its front; the battle half a whole
+  jam in turns of two bars, 30 October: the guitar and the bass walking one line on his rhythms
+  with the arpeggio or the FM hook, never both, holding the groove 6 dB down under the two
+  together, the octave-up saved for R and louder, no drone, Hold The Line's drum energy); all
   waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
   the track, the 3 s flip) and each picked half into the forge's SHIP table.
 
@@ -363,12 +364,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.390 (the
-  page's version 402, published 30 October from `ccr-7effd31a-u5z4gw`: Hold The Line's
-  round-six picks in the track table, three-way merged onto the live v0.389 that
-  `claude/jolly-lovelace-scn82y` published with the HUD's three presets kept, itself on
-  `claude/charming-rubin-h954bp`'s v0.384 and this branch's v0.383 at 395, whose music row
-  takes its complexity from the groove as well and a fill as a phrase's turn). So this file
+  `docs/design-bible.html` after every change. This file and the live page are v0.392 (the
+  page's version 404, published 30 October from `ccr-7effd31a-u5z4gw`: Night Shift's
+  round-four calls in the track table, three-way merged onto the live v0.391 that
+  `claude/charming-rubin-h954bp` published at 403 with the Armadillo's radiators flush in its
+  flanks, itself on this branch's v0.390 at 402, Hold The Line's round-six picks merged onto
+  `claude/jolly-lovelace-scn82y`'s v0.389 with the HUD's three presets kept). So this file
   carries rows ahead of this branch's code: main's since this branch last merged it (the
   horde's movement, the domains' tilesets, the pricing pass, Chain's form, the heat triangle),
   `claude/brave-cori-fr18de`'s (the pacing session: the whole wall struck, the stall priced, the
@@ -414,6 +415,6 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  sixth, `hold_sketches.py`; Night Shift's third, `night_sketches.py`), at the page's version 11.
+  sixth, `hold_sketches.py`; Night Shift's fourth, `night_sketches.py`), at the page's version 12.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
