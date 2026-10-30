@@ -1013,13 +1013,13 @@ def armadillo(b):
     # eye 30 to 42 degrees down), the heat flaring behind, so it reads as motion and not by its
     # colour alone; sealed, they shut flat with the ports.
     RAD = math.degrees(math.atan2(11.0, 7.5))   # the boxes' faces tilted as the bevel stood (11 up in 7.5 back), about 56 degrees
-    # Each box straddles its corner: its face's top edge about five above the deck and two and
-    # a half behind the panel, its foot ten behind; its top runs over the deck to about the
-    # band's middle and its outer side over two thirds of the chamfer's width, so it sits on
-    # the hull as a unit bolted there, and its walls run fifteen back into the band. The
-    # louvred hollow stands clear of the hull, so nothing of the band needs cutting.
-    RAD_X, RAD_MOUTH = 13.5, (-55.66, Z0 + 20.73)
-    vents = [_vent(b, None, (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
+    # Each box straddles its corner: its face's top edge about five above the deck and half a
+    # unit behind the panel, its foot eight behind (two toward the front: Ryan, 30 October);
+    # its top runs over the deck past the band's middle and its outer side over two thirds of
+    # the chamfer's width, so it sits on the hull as a unit bolted there, and its walls run
+    # fifteen back into the bands. The louvred hollow dips into the panel, so it is cut there.
+    RAD_X, RAD_MOUTH = 13.5, (-53.66, Z0 + 20.73)
+    vents = [_vent(b, [band_obs[0]], (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
                    wall=1.5, housing="steel.dark", back=15.0) for s in (-1.0, 1.0)]   # heavy walls round the louvres
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in
     # front of the back weapons. Those are small rectangular protrusions when sealed, and

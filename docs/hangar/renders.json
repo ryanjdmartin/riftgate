@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's third notes, 30 October.",
-   "note": "Ryan, 30 October, on the trial: \"yeah I think this is what i was missing. They need to look like units mounted to the chassis, not poking out of it, thats why i wasnt satisfied with it. extrude less, up more, spread apart more, so they are covering a good half of the angled face.\" Each radiator now sits on the tail's top rear corner: two less out from the back panel, two and a half higher (the tops of the faces about five above the deck), centres 13.5 off the spine (from 11), so each box's top runs over the deck to about the tail band's middle and its outer side covers two thirds of the chamfer's width (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's fourth notes, 30 October.",
+   "note": "Ryan, 30 October: \"move them towards the front of the hull a bit, maybe 2 units.\" The radiators sit two further forward on the tail's top rear corners: the tops of their faces half a unit behind the back panel, their feet eight, each top running over the deck past the tail band's middle; their louvred hollows now dip into the panel, so the panel is cut there (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the trial of 30 October (the radiators clipping out of the deck and chamfers, closer together)",
+    "summary": "Before: the third notes of 30 October (the radiators two further back)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
