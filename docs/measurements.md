@@ -3573,3 +3573,74 @@ Read:
 - The cautious line at half the maximum is one habit among many, and a player who vents only when
   it pays sits between the two bots: the two ends bracket heat's price, they do not set it.
 
+
+## 30 October, the overheat's price as what-ifs
+
+**A harsher burn, burnout and self-Corrupted** (Ryan, 30 October: "let's try a more severe
+overheat penalty just to see what happens", then his calls on the forms, the heat brief's
+section on the overheat's penalties): test-only settings of the balance runner, off as the
+engine runs (`--overheat N`, an overheat burning N hull a point past the maximum; `--burnout`,
+an overheat whose burn reaches the injury threshold burning out the component whose spend took
+the gauge over; `--overheat-corrupt N`, every overheat Corrupting that component N stacks), the
+bot pricing each. Two benches: the car's vanilla heat grid (`tools/pricing_run.py run oh2g
+--parts vanillaheat --benches prairie_dog --bench-stocks --shapes direct --seeds 30 --overheat
+2`, Direct guns at 3, 5 and 7 and heat 0 to 8 in the Prairie Dog's slot of Wainwright &
+Sutler's row) and Kestrel's row as stocked, the hot row (`--parts none --benches goshawk
+--bench-stocks`), each under the greedy and the cautious persona (`--cool-above 50`), whose
+line is priced at what an overheat burns. The sixteen big fights but the finale; 30 seeds, a
+direction; about two and a half hours on four cores.
+
+On the car (each heat's price in vanilla points, the mean of the three guns, as the heat grid of
+the morning reads it; the heat-8 guns' overheats, hull lost, rounds and wins; the row as stocked):
+
+| Setting | Heat 2 | Heat 4 | Heat 6 | Heat 8 | Overheats at 8 | Hull lost at 8 | Rounds at 8 | Win at 8 | The row as stocked: rounds, hull, overheats |
+|---|---|---|---|---|---|---|---|---|---|
+| the greedy, one for one (as today) | 0.1 | 0.2 | 0.8 | 1.4 | 0.51 | 19.1% | 5.22 | 96.6 | 5.88, 22.2%, 0.18 |
+| the cautious bot, one for one | 0.1 | 1.0 | 1.9 | 2.8 | 0.08 | 19.9% | 5.70 | 95.9 | 5.98, 22.7%, 0.11 |
+| the greedy, two a point | 0.1 | 0.3 | 0.9 | 1.9 | 0.23 | 19.5% | 5.36 | 95.8 | 5.91, 23.0%, 0.11 |
+| the cautious bot, two a point | 0.1 | 1.1 | 2.1 | 3.9 | 0.02 | 22.6% | 6.06 | 94.1 | 6.02, 23.7%, 0.02 |
+| the greedy, three a point | 0.1 | 0.4 | 1.0 | 2.1 | 0.14 | 19.5% | 5.42 | 95.8 | 5.90, 23.2%, 0.09 |
+| the cautious bot, three a point | 0.1 | 1.5 | 2.5 | 4.9 | 0.02 | 24.1% | 6.32 | 93.4 | 6.01, 24.1%, 0.02 |
+| the greedy, two a point and burnout | 0.1 | 0.3 | 1.0 | 1.9 | 0.21 | 19.4% | 5.37 | 95.8 | 5.90, 23.0%, 0.11 |
+| the cautious bot, two a point and burnout | 0.1 | 1.1 | 2.2 | 3.9 | 0.02 | 22.6% | 6.06 | 94.1 | 6.02, 23.7%, 0.02 |
+| the greedy, one for one and Corrupted | 0.1 | 0.3 | 0.9 | 1.8 | 0.30 | 18.8% | 5.33 | 96.7 | 5.90, 22.4%, 0.15 |
+| the cautious bot, one for one and Corrupted | 0.1 | 1.0 | 2.0 | 2.9 | 0.06 | 20.2% | 5.73 | 95.8 | 6.03, 22.9%, 0.07 |
+
+Kestrel's row as stocked (its Buzzard's Arc Fault and Afterburner Cannon, the Kite's flat heat
+on every shot):
+
+| Kestrel's row as stocked | Win | Rounds | Hull lost | Overheats a fight | Peak | Components destroyed a fight |
+|---|---|---|---|---|---|---|
+| the greedy, one for one | 100.0 | 3.28 | 9.8% | 0.34 | 94% | 0.46 |
+| the greedy, two a point | 100.0 | 3.35 | 9.8% | 0.21 | 88% | 0.47 |
+| the greedy, two a point and burnout | 100.0 | 3.39 | 9.9% | 0.20 | 86% | 0.50 |
+| the greedy, one for one and Corrupted | 100.0 | 3.31 | 9.7% | 0.31 | 92% | 0.46 |
+| the cautious bot, one for one | 100.0 | 3.53 | 10.1% | 0.10 | 79% | 0.52 |
+| the cautious bot, two a point | 99.8 | 3.77 | 11.2% | 0.02 | 68% | 0.59 |
+| the cautious bot, two a point and burnout | 99.8 | 3.78 | 11.2% | 0.01 | 68% | 0.59 |
+| the cautious bot, one for one and Corrupted | 100.0 | 3.56 | 10.2% | 0.07 | 77% | 0.53 |
+
+Read:
+
+- **Every penalty does the same thing to play: the bot rides to the maximum and holds there.**
+  At two a point the greedy overheats half as often on the car's hot guns (0.23 a fight at heat
+  8 against 0.51) and in Kestrel's row (0.21 against 0.34), and holds the hot die instead, so
+  heat costs tempo rather than hull: heat 8 from 1.4 vanilla points to 1.9 (2.1 at three a point),
+  heat 6 from 0.8 to 0.9 or 1.0, while heat 2 and 4 stay all but free on a cold die. Kestrel's row
+  pays a tenth of a round at most (3.35 rounds against 3.28) and wins as it did.
+- **Caution never pays, under any penalty.** The cautious bot, whose line is priced at what an
+  overheat burns, grows more cautious as the burn grows and loses more each step (on the car at
+  heat 8, 5.70, 6.06 and 6.32 rounds and 19.9%, 22.6% and 24.1% hull against the greedy's 5.22,
+  5.36 and 5.42 and about 19.5%; Kestrel's row 3.53 and 3.77 rounds against 3.28 and 3.35). The
+  play the penalties reward is holding at the edge, not venting early.
+- **Burnout adds nothing over two a point.** The bot prices the lost component and stays clear of
+  the threshold (the overheats 0.21 against 0.23 on the car, 0.20 against 0.21 in Kestrel's row,
+  its components destroyed a fight 0.50 against 0.47), so its weight is a threat the forecast must
+  show, never a cost the runs see.
+- **Corrupted at one for one deters as a burn of two does,** for less hull: heat 8 at 1.8 points,
+  the overheats 0.30 a fight, the hull lost 18.8% against the greedy's 19.1% as today, and
+  Kestrel's row 3.31 rounds; the softer form lands where the harsher burn lands.
+- So the form is a question of feel and readability, Ryan's play, more than of balance: each
+  makes the maximum a wall the player plans around, which is the meeting with the system his
+  frame asks for, and none makes the warm classes bite on a cold die, which stays the maxima's
+  and the cooling's.

@@ -166,6 +166,17 @@ self-Corrupted as test-only settings, each with the bot's price (`--burnout`,
 `--overheat-corrupt N`; built 30 October), read on the car and the hot rows. None is a rule
 before his go; whichever lands brings Jenny's lines and the warning chips with it.
 
+Read the same day (`docs/measurements.md`, the overheat's price as what-ifs; 30 seeds, a
+direction): every form does the same thing to play, the bot riding to the maximum and holding
+there rather than eating the overheat (half the overheats at two a point, on the car's hot guns
+and in Kestrel's row), so heat costs tempo rather than hull (heat 8 from 1.4 vanilla points to
+1.9, 2.1 at three a point; Kestrel's row a tenth of a round at most). Caution never pays under
+any of them. Burnout adds nothing over two a point, the bot staying clear of the threshold, so its
+weight is a threat the forecast must show; Corrupted at one for one deters as a burn of two does,
+for less hull. So the form is a question of feel and readability, his play, more than of
+balance; none makes the warm classes bite on a cold die, which stays the maxima's and the
+cooling's.
+
 ## The questions for Ryan
 
 1. Is passive cooling cut by default, and which chassis keep theirs?
