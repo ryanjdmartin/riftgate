@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "A trial, 30 October.",
-   "note": "Ryan, 30 October: \"bring them up without going closer together, and let them clip out of the top and angled faces, just so I can see.\" On trial: the radiators stand four higher at the same spacing and depth, the tops of their faces about three above the deck, so each box's top wall runs out over the back panel's upper edge into the deck and out through the chamfer at its outer corner (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Your read decides. Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's third notes, 30 October.",
+   "note": "Ryan, 30 October, on the trial: \"yeah I think this is what i was missing. They need to look like units mounted to the chassis, not poking out of it, thats why i wasnt satisfied with it. extrude less, up more, spread apart more, so they are covering a good half of the angled face.\" Each radiator now sits on the tail's top rear corner: two less out from the back panel, two and a half higher (the tops of the faces about five above the deck), centres 13.5 off the spine (from 11), so each box's top runs over the deck to about the tail band's middle and its outer side covers two thirds of the chamfer's width (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the second notes of 30 October (the radiators as high as the chamfers let them stand)",
+    "summary": "Before: the trial of 30 October (the radiators clipping out of the deck and chamfers, closer together)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",

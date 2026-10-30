@@ -832,14 +832,14 @@ def armadillo(b):
     hardpoints"; his go of 20 October), in the stock's order: hp_1 the left rear port (the
     Rivet Gun), hp_2 the right rear port (the Twin Autoguns), hp_3 and hp_4 two forward ports
     flanking the cowl, level with the ground, cut back into the step behind the front band,
-    bare; the plating on the flanks is detail, and two big armoured louvred radiators stand
-    out of the low half of the tail's back panel, wide apart, their faces tilted up, a tilted
-    grille at rest that throws its louvres edge on over flaring yellow-orange heat when it
-    vents and shuts flat when it seals, while a vent on each flank's chamfer slides out over
-    its glowing core (Ryan, 29 October: the stack's rain flap read "more W&S comical than
-    heavy Minerva"; the two vents that replaced it grew into "big boxy radiators sticking out
-    at an angle", "right on the back panel, still tilted up", then "down and farther apart",
-    with "new vents on the sides", their glow "way more yellow/orange"). The ports are real
+    bare; the plating on the flanks is detail, and two big armoured louvred radiators sit on
+    the tail's top rear corners, apart, their faces tilted up, a tilted grille at rest that
+    throws its louvres edge on over flaring orange heat when it vents and shuts flat when it
+    seals, while a vent on each flank's chamfer slides out over its glowing core (Ryan, 29
+    October: the stack's rain flap read "more W&S comical than heavy Minerva"; the two vents
+    that replaced it grew into "big boxy radiators sticking out at an angle", with "new vents
+    on the sides", their glow "way more yellow/orange"; then, 30 October, "They need to look
+    like units mounted to the chassis, not poking out of it"). The ports are real
     holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
     carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
     canister rack that slides out of it to fire, its two barrels bored dark through the rack's
@@ -1001,30 +1001,26 @@ def armadillo(b):
     # streamlined. I meant big boxy radiators sticking out at an angle"; raised onto the rear
     # deck in "a darker colour", then "Go back to the previous iteration. Ditch the bottom long
     # vent. Put these guys right on the back panel, still tilted up, and make them bigger";
-    # then "move them down and farther apart", and back "a little towards each other, and a
-    # little up"; then, 30 October, "bring the rear radiators up on that back face, and extrude
-    # them out more", and closer together to stand higher, "a little less" out): two big
-    # armoured boxes in dark steel standing out of the tail's back panel, apart, their louvred
-    # faces tilted up as the bevel had held them, each a dark steel box with a stripe rim and
-    # its heat banked in its floor (amber.heat, "way more yellow/orange" than the ember it
-    # had), heavy louvres across it on joints. At rest the louvres stand tilted, a grille that hides the heat from
-    # the cameras behind (their thickness closes the slots); the vent act throws them edge on
-    # to those cameras (lower edges out, the way they line up with an eye 30 to 42 degrees
-    # down), the heat flaring behind, so it reads as motion and not by its colour alone;
-    # sealed, they shut flat with the ports.
+    # moved about the panel through 30 October, until, raised through its top on trial, "They
+    # need to look like units mounted to the chassis, not poking out of it", so "extrude less,
+    # up more, spread apart more, so they are covering a good half of the angled face"): two
+    # big armoured boxes in dark steel mounted on the tail's top rear corners, apart, their
+    # louvred faces tilted up as the bevel had held them, each a dark steel box with a stripe
+    # rim and its heat banked in its floor (amber.heat, "way more yellow/orange" than the ember
+    # it had), heavy louvres across it on joints. At rest the louvres stand tilted, a grille
+    # that hides the heat from the cameras behind (their thickness closes the slots); the vent
+    # act throws them edge on to those cameras (lower edges out, the way they line up with an
+    # eye 30 to 42 degrees down), the heat flaring behind, so it reads as motion and not by its
+    # colour alone; sealed, they shut flat with the ports.
     RAD = math.degrees(math.atan2(11.0, 7.5))   # the boxes' faces tilted as the bevel stood (11 up in 7.5 back), about 56 degrees
-    # Each box's face stands four behind the panel at its top edge, near the deck's height, and
-    # twelve at its foot; tilted back, its top wall runs down into the panel under the chamfer
-    # at its outer corner (what caps how high it stands, and why the pair moved in, where the
-    # panel is taller), so the box stands out of the panel alone, and its walls run fifteen and
-    # a half back, its foot and its back planted in the band above the belly. The face clear of
-    # the panel, nothing of the band needs cutting. On trial, four higher than the chamfer lets
-    # them stand (Ryan, 30 October: "bring them up without going closer together, and let them
-    # clip out of the top and angled faces, just so I can see"): each top wall runs out over the
-    # panel's upper edge into the deck and out through the chamfer, his read deciding.
-    RAD_X, RAD_MOUTH = 11.0, (-57.66, Z0 + 18.23)
+    # Each box straddles its corner: its face's top edge about five above the deck and two and
+    # a half behind the panel, its foot ten behind; its top runs over the deck to about the
+    # band's middle and its outer side over two thirds of the chamfer's width, so it sits on
+    # the hull as a unit bolted there, and its walls run fifteen back into the band. The
+    # louvred hollow stands clear of the hull, so nothing of the band needs cutting.
+    RAD_X, RAD_MOUTH = 13.5, (-55.66, Z0 + 20.73)
     vents = [_vent(b, None, (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 16.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
-                   wall=1.5, housing="steel.dark", back=15.5) for s in (-1.0, 1.0)]   # heavy walls round the louvres
+                   wall=1.5, housing="steel.dark", back=15.0) for s in (-1.0, 1.0)]   # heavy walls round the louvres
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in
     # front of the back weapons. Those are small rectangular protrusions when sealed, and
     # either slide out, or lever up using the forward edge as a pivot, to show the vent face
