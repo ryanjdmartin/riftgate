@@ -2345,3 +2345,39 @@ to 158.7 ms a frame at zoom 1 (2%), 125.6 to 130.3 ms at 2.6 (4%). It looks only
 machine's projected box; the machines fill 18 to 20% of their boxes, and no machine pixel fell
 outside one. It adds no draw call, being the compositor's; the engine's outline pass is gone from
 every machine's materials (not counted against the code before it).
+
+## 30 October, the enemy's register in violet
+
+**The violet read** (the decision it informs: none yet; Ryan's proposal that every enemy mark
+take the rift's violet, freeing red for heat at about #ff3000 to #ff4000, the shield to a cool
+blue if it sits too near the violet). Method: as the red read of 29 October, the Machado
+simulations at severity 1.0, CIEDE2000 (ΔE) and luminance contrast; a line read as its light
+core on its deep edge, the better of the two on each shade, the worst over a ground's shades
+and the simulations. The grounds: the skirmish floors of the read above, and the battle map's
+own, clustered from a render at the phone's layout (its ground #57564b, #4e4f3f, #626669 and
+#42484f; its green #1e321e and #304331; its water #1c3e6b; its town #cad1d8 and #a59ca5).
+
+| Ground | Red #ff0000 on #5a0e00 | Violet #c8a4ff on #2a0e4a |
+|---|---|---|
+| The meadow | 3.06 / 26.1 | 3.90 / 42.6 |
+| The waste | 5.22 / 43.4 | 5.85 / 51.0 |
+| The marsh | 1.81 / 14.9 | 3.23 / 30.6 |
+| The peak | 1.60 / 19.8 | 4.57 / 46.7 |
+| Our floor | 1.88 / 22.6 | 5.79 / 51.9 |
+| The map's ground | 1.77 / 17.6 | 2.83 / 31.2 |
+| The map's green | 1.63 / 19.5 | 5.05 / 52.2 |
+| The map's water | 1.60 / 45.5 | 4.87 / 45.8 |
+| The map's town | 4.88 / 46.5 | 6.09 / 46.7 |
+
+The violet core stands 7.9:1 on its own edge in the worst simulation, the red 2.5. On a chip's
+black (#0c110a), normal / protan / deutan / tritan: the violet #c8a4ff 9.3 / 9.2 / 9.3 / 9.5, the
+red 4.8 / 3.0 / 6.0 / 4.8; heat at #ff6000 6.3 / 4.6 / 7.4 / 5.3, #ff4000 5.4 / 3.7 / 6.6 / 4.8,
+#ff3000 5.2 / 3.4 / 6.3 / 4.8; the shield #2f63d8 3.5 / 4.0 / 3.4 / 4.1. A redder heat moves
+from the greens in the deutan simulation (ΔE to the gain green 15.8 at #ff6000, 18.4 at #ff4000,
+19.3 at #ff3000) and stands 35 or more from either violet in every simulation.
+
+The shield against the violets, the worst simulation: today's #2f63d8 stands 21.9 from the light
+violet (protan) and 6.1 from the deep (deutan). A cool blue nears the light violet, which loses
+its red to protan and deutan vision and reads as a light blue: #2f8fff 9.2, #1e90ff 9.1, #3aa0ff
+4.8, #00a0ff 5.1, #4ab4ff 0.5 (protan each). The light violet stands 4.2 from the blue HUD
+option #5cd8ff (deutan) and 37.5 or more from the green HUD and the gain green.
