@@ -16,7 +16,7 @@ func test_every_slot_names_a_colour() -> void:
 		assert_ne(ColourTuner.value(key), Color.MAGENTA, "%s reads a colour from %s" % [key, s[2]])
 		if str(s[4]) != "":
 			assert_true(keys.has(str(s[4])), "%s follows a slot listed before it" % key)
-	assert_eq(ColourTuner.value("ENEMY"), Color("ff0000"), "the red as the palette declares it")
+	assert_eq(ColourTuner.value("ENEMY"), Color("c8a4ff"), "the violet as the palette declares it")
 
 
 func test_a_pick_lands_follows_and_comes_off() -> void:
@@ -70,7 +70,7 @@ func test_a_headless_run_keeps_no_picks() -> void:
 	cf.set_value(ColourTuner.SECTION, "ENEMY", "ffff00")
 	ColourTuner.load_saved(cf)
 	assert_true(ColourTuner.picks().is_empty(), "a saved pick is not read")
-	assert_eq(Palette.ENEMY, Color("ff0000"), "the declared red stands")
+	assert_eq(Palette.ENEMY, Color("c8a4ff"), "the declared violet stands")
 
 
 func test_the_page_lists_every_colour_and_a_pick_rebuilds() -> void:
@@ -93,7 +93,7 @@ func test_the_page_lists_every_colour_and_a_pick_rebuilds() -> void:
 	menu._scrim.gui_input.emit(tap)
 	assert_true(menu._panel.visible and not menu._peeking, "a tap brings it back")
 	menu._recolour(func() -> void: ColourTuner.reset_all(false))
-	assert_eq(Palette.ENEMY, Color("ff0000"), "RESET ALL from the page")
+	assert_eq(Palette.ENEMY, Color("c8a4ff"), "RESET ALL from the page")
 	menu.free()
 
 

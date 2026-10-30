@@ -448,13 +448,18 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 
 ## The colour a chip for this glyph takes. Most sit in the HUD colour; effects that mean
 ## damage or danger take their own, so a burn reads as fire at a glance and related effects
-## can share a shape in different colours.
+## can share a shape in different colours: heat's for what heats or hits harder, the enemy's
+## violet for a foe's doing, the red-red for a death, the hull's for what costs hull.
 static func colour_for(id: String) -> Color:
 	match id:
 		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin", "mine", "primed":
 			return Palette.HEAT
-		"skull", "shieldbreak", "corrupt", "volatile", "silence":
+		"shieldbreak", "corrupt", "silence":
 			return Palette.ENEMY
+		"skull":
+			return Palette.LOSS
+		"volatile":
+			return Palette.HULL
 		"star":
 			return Palette.SELECT
 		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward", "dispel":

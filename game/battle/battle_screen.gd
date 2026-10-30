@@ -6,7 +6,7 @@ extends Control
 ##
 ##   header   the turn and Rift Pressure; the turn's readout beside it
 ##   map      drag to scroll; tap a machine to select it and light where it can move, and in
-##            red where it could attack from there; tap a lit hex (or draw a route from it)
+##            violet where it could attack from there; tap a lit hex (or draw a route from it)
 ##            and the move is planned, its route drawn from where the machine stands; with a
 ##            machine in hand, tap a pack (or drag the machine onto one) and it is planned into
 ##            range and ordered onto that fight; hold a unit for its numbers. Every pack's
@@ -788,7 +788,7 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 static func gate_lines(f: Battlefield) -> Array:
 	var frac := float(f.gate_hp) / maxf(1.0, float(f.gate_hp_max))
 	return [_title("The Gate", "Field projector"),
-		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.ENEMY),
+		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.LOSS),
 		EntryReadout.text_line("effect", "A pack on the apron strikes it")]
 
 
@@ -931,10 +931,10 @@ func _after_step() -> void:
 	_autosave()
 
 
-## A hunter has caught a machine (bible section 5): the warning, big and red over the map;
-## the catch stays lit and the button reads ENGAGE until it is fought. On a black band with red rules across
-## the map, and the map dimmed under it: red on the terrain alone never reads (Ryan, 22
-## September).
+## A hunter has caught a machine (bible section 5): the warning, big and in the enemy's violet over
+## the map; the catch stays lit and the button reads ENGAGE until it is fought. On a black band with
+## violet rules across the map, and the map dimmed under it: a colour on the terrain alone never
+## reads (Ryan, 22 September, of the red then).
 func _show_caught() -> void:
 	_refresh()
 	var warn := Control.new()

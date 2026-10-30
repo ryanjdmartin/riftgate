@@ -1404,7 +1404,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# since its line still matters to what reads it.
 	var fate: Dictionary = _round.get("foes", {}).get(foe, {})
 	if foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
-		rows.append(["skull", "", "Destroyed this round, as the round stands", Palette.ENEMY, "preview"])
+		rows.append(["skull", "", "Destroyed this round, as the round stands", Palette.LOSS, "preview"])
 	var tick := Effects.tick_preview(foe)
 	if foe.burn_stacks() > 0:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % (int(tick["hp"]) - int(tick["share"])), Palette.HEAT])
@@ -1503,7 +1503,7 @@ func _foe_rows(foe: Foe) -> Array:
 		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26
 		# October: a chip for it "steps on the debuff and is very confusing"); a dragged Direct
 		# weapon lighting it says it is in reach.
-		rows.append(["exposed", "0", "Exposed: in every machine's Direct reach, and its armour counts for nothing, through the next round", Palette.ENEMY])
+		rows.append(["exposed", "0", "Exposed: in every machine's Direct reach, and its armour counts for nothing, through the next round", Palette.LOSS])
 	# Every status the round will land on it (Ryan, 26 October: "All incoming chips should appear
 	# as pulsing opacity versions"): the copy's grants, each a chip pulsing on a dashed edge with
 	# the stacks it gains, beside the skull when the round kills it, since one may be the cause.
@@ -1563,8 +1563,10 @@ static func _foe_chip_colour(id: String) -> Color:
 		return Palette.HEAT
 	if id in ["webbed", "braced", "numbed", "paradox", "barrier", "ward"]:
 		return Palette.SHIELD
-	if id in ["risen", "exposure"]:
+	if id == "risen":
 		return Palette.ENEMY
+	if id == "exposure":
+		return Palette.LOSS
 	return Palette.HUD
 
 
@@ -1694,9 +1696,9 @@ func _mech_rows(i: int) -> Array:
 			# The heat burns as the turn ends, so there is still time to vent.
 			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the turn unless vented" % int(fc["overheat"]), Palette.HEAT, "preview"])
 		if bool(fc["destroyed"]):
-			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY, "preview"])
+			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.LOSS, "preview"])
 		elif bool(fc["component_risk"]):
-			rows.append(["crack", "!", "A hit that big destroys a component: the die is rolled", Palette.ENEMY, "preview"])
+			rows.append(["crack", "!", "A hit that big destroys a component: the die is rolled", Palette.LOSS, "preview"])
 		# The shield-break chip went on 26 October (Ryan: "It's clutter, the bar previews are more
 		# than enough"). Every status the round will land on it (Ryan, 26 October: "All incoming
 		# chips should appear as pulsing opacity versions"), beside the skull when the round wrecks
@@ -2637,9 +2639,9 @@ func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool, lands
 	if lands > 0.0:
 		tw.tween_interval(lands)
 	tw.tween_property(ghost, "modulate", Color(2.0, 1.2, 1.2), 0.06)
-	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY_DIM, 1.0), 0.12)
+	tw.tween_property(ghost, "modulate", Color(Palette.LOSS_DIM, 1.0), 0.12)
 	tw.set_parallel(true)
-	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY_DIM, 0.0), 0.4)
+	tw.tween_property(ghost, "modulate", Color(Palette.LOSS_DIM, 0.0), 0.4)
 	tw.tween_property(ghost, "position:y", ghost.position.y + 16.0, 0.4).set_ease(Tween.EASE_IN)
 	tw.set_parallel(false)
 	tw.tween_callback(ghost.queue_free)
@@ -3109,11 +3111,11 @@ func _animate_pool_join(f: Foe, delay: float) -> void:
 	ghost.size = sz
 	ghost.pivot_offset = sz * 0.5
 	ghost.position = from - sz * 0.5
-	ghost.modulate = Color(1.6, 0.8, 0.8, 0.0)
+	ghost.modulate = Color(1.4, 0.9, 1.8, 0.0)   # the flash in the enemy's violet, as the count it flies to
 	add_child(ghost)
 	var tw := create_tween()
 	tw.tween_interval(delay)
-	tw.tween_property(ghost, "modulate", Color(1.6, 0.8, 0.8, 1.0), 0.12)
+	tw.tween_property(ghost, "modulate", Color(1.4, 0.9, 1.8, 1.0), 0.12)
 	tw.tween_interval(0.18)
 	tw.set_parallel(true)
 	tw.tween_property(ghost, "position", to - sz * 0.5, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)

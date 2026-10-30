@@ -2381,3 +2381,10 @@ violet (protan) and 6.1 from the deep (deutan). A cool blue nears the light viol
 its red to protan and deutan vision and reads as a light blue: #2f8fff 9.2, #1e90ff 9.1, #3aa0ff
 4.8, #00a0ff 5.1, #4ab4ff 0.5 (protan each). The light violet stands 4.2 from the blue HUD
 option #5cd8ff (deutan) and 37.5 or more from the green HUD and the gain green.
+
+The picks, that evening (Ryan: "keep purple for enemy activities", heat reddened, the other reds
+case by case): the enemy's violet as above; its breath toward #ecdcff, ΔE 16.7 / 15.6 / 15.6 /
+12.1 from the violet (normal / protan / deutan / tritan), 12.5:1 on the deep edge, about the
+swing the red had toward the orange; heat #ff4000; harm's red-red #ff0000, 2.6 from heat in the
+deutan simulation (5.5 / 5.7 / 2.6 / 7.7), the steps Ryan reads as distinct, each mark with its
+glyph, 20.7 or more from the gain green and 37.5 or more from the violet in every simulation.

@@ -232,7 +232,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 ## runs it: its place and name from content, its number as the die prints it, its heat, its
 ## target, its keywords, its own rules, then its tags. A number the live sources moved off the
 ## component's own is coloured, never its sources listed: green where it is good for the unit,
-## the enemy red where it is bad, an arrow on the number for which way. The whole die is the
+## the red-red where it is bad, an arrow on the number for which way. The whole die is the
 ## codex's.
 func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	var s := _screen()
@@ -272,7 +272,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "and the panel to it")
 	s._on_hold_released()
 	assert_false(s._details.visible, "hidden on release")
-	# A heat a passive raised is bad for the machine: the red, its arrow up.
+	# A heat a passive raised is bad for the machine: the red-red, its arrow up.
 	ms.unit.grant_passive({"id": "t_hot", "name": "Test Hot", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 2}]})
 	s._on_die_held(1)
 	var heat: Dictionary = {}
@@ -280,7 +280,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 		if str(l["text"]).begins_with("Heat"):
 			heat = l["parts"][1]
 	assert_eq([int(heat.get("trend", 0)), bool(heat.get("gain", true))], [1, false], "more heat than the component's own: a loss")
-	assert_eq(EntryReadout.trend_ink(heat), Palette.ENEMY, "in the enemy red")
+	assert_eq(EntryReadout.trend_ink(heat), Palette.LOSS, "in the red-red, harm to its unit")
 	s._on_hold_released()
 	s.free()
 

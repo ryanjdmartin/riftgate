@@ -477,8 +477,8 @@ class _SquadRow extends Control:
 		var ink := Palette.MUTED if wreck else Palette.INK
 		draw_string(Hud.display_bold(), Vector2(0, 24), unit.display_name.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 250, 22, ink)
 		if wreck:
-			draw_string(Hud.mono(), Vector2(0, 48), "WRECKED: OUT UNTIL THE BOSS FALLS", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.ENEMY)
-			draw_line(Vector2(0, 16), Vector2(250, 16), Palette.ENEMY, 2.0)
+			draw_string(Hud.mono(), Vector2(0, 48), "WRECKED: OUT UNTIL THE BOSS FALLS", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.LOSS)
+			draw_line(Vector2(0, 16), Vector2(250, 16), Palette.LOSS, 2.0)
 			return
 		var x := 260.0
 		var w := size.x - x - 8.0

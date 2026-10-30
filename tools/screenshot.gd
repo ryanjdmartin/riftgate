@@ -8,7 +8,7 @@ extends SceneTree
 ## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
 ## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
 ## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
-## Scorched on the first machine), foeheat (heat's orange beside the red on three foes' chips), repick (a foe whose machine falls before it acts, a second
+## Scorched on the first machine), foeheat (heat's red-orange beside the enemy's violet on three foes' chips), repick (a foe whose machine falls before it acts, a second
 ## arrow dashed to the machine it will strike).
 
 var _frames := 0
@@ -213,8 +213,8 @@ func _apply_pose() -> void:
 			Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TICK)
 			s._refresh()
 		"foeheat":
-			# Heat's orange beside the enemy's red on the foes' chip rows, the one place the two sit
-			# side by side: Burning on the first front foe, Flak on the second, Shocked on the third.
+			# Heat's red-orange beside the enemy's violet on the foes' chip rows, the one place the two
+			# sit side by side: Burning on the first front foe, Flak on the second, Shocked on the third.
 			var ids := ["burning", "flakked", "shocked"]
 			var k := 0
 			for foe in s.sk.front:

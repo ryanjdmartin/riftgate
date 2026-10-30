@@ -789,18 +789,17 @@ a stat.
 - **Setup**: up to four machines on the row before the gate; the lead domain's spawn list at the
   battle's tier as packs three to five rows below the rift; the boss one row below the rift.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
-  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go,
-  then it may fight; a fight ends the action however it ends. A selected machine lights
-  the hexes its move reaches, and in red the hexes past them within its attack range: where it
-  could attack from. A move is planned: its route shows from where the machine stands, and the
-  next move or order reads from the route's end. UNDO takes back the last move or order,
-  whoever made it, in the order they were made, back to the turn's start or the last fight.
-  A caught machine's fight comes first. ENGAGE and END TURN play every planned move first (the
-  boss's fight aside, below);
-  then the fight opens, or the turn ends: packs walk and strike; machines that did not fight
-  regain shield at their field rate; Rift Pressure rises one. Once every machine has fought,
-  is ordered, is caught, or can neither move nor reach a pack where it stands, the button
-  pulses.
+  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go, then
+  it may fight; a fight ends the action however it ends. A selected machine lights the hexes
+  its move reaches, and in the enemy's violet the hexes past them within its attack range:
+  where it could attack from. A move is planned: its route shows from where the machine stands,
+  and the next move or order reads from the route's end. UNDO takes back the last move or
+  order, whoever made it, in the order they were made, back to the turn's start or the last
+  fight. A caught machine's fight comes first. ENGAGE and END TURN play every planned move
+  first (the boss's fight aside, below); then the fight opens, or the turn ends: packs walk and
+  strike; machines that did not fight regain shield at their field rate; Rift Pressure rises
+  one. Once every machine has fought, is ordered, is caught, or can neither move nor reach a
+  pack where it stands, the button pulses.
 - **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's shield and hull as
   gauges, its move and actions left, a chip for its damaged components; a pack's foe and

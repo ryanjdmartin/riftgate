@@ -78,7 +78,7 @@ func _draw() -> void:
 		var cur := i == current
 		var col := Palette.HUD if cur or current < 0 else Color(Palette.HUD, 0.55)
 		if f.kind == Face.Kind.BLANK and not f.empty:
-			col = Palette.ENEMY_DIM
+			col = Palette.LOSS_DIM
 		draw_circle(p, CHAMBER, Palette.PANEL_RAISED if cur else Palette.PANEL)
 		draw_arc(p, CHAMBER, 0.0, TAU, 28, col, 2.5 if cur else 1.2)
 		if cur:
@@ -86,7 +86,7 @@ func _draw() -> void:
 		if f.empty:
 			draw_string(mono, p + Vector2(-CHAMBER, 4.0), "EMPTY", HORIZONTAL_ALIGNMENT_CENTER, CHAMBER * 2.0, 8, Color(Palette.HUD, 0.5))
 		elif f.kind == Face.Kind.BLANK:
-			Glyphs.draw(self, "blank", p, 14.0, Palette.ENEMY_DIM, 2.0)
+			Glyphs.draw(self, "blank", p, 14.0, Palette.LOSS_DIM, 2.0)
 		else:
 			Glyphs.draw(self, Glyphs.primary_for(f), p + Vector2(0, -6.0), 12.0, col, 1.5)
 			draw_string(mono, p + Vector2(-CHAMBER, 12.0), f.number_text(), HORIZONTAL_ALIGNMENT_CENTER, CHAMBER * 2.0, 10 if f.is_ranged() else 12, col)

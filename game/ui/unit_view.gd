@@ -349,7 +349,7 @@ func _draw_glitched(frame: Rect2) -> void:
 		if drop:
 			mod = Color(1, 1, 1, 0.12 + 0.18 * Hud.noise(tick + k * 0.5))
 		elif Hud.noise(tick * 3.3 + k * 0.17) > 0.8:
-			mod = Color(1.5, 0.55, 0.55)
+			mod = Color(1.3, 0.6, 1.6)   # a slice in the enemy's violet (30 October; it was red)
 		draw_texture_rect_region(sprite, dst, src, mod)
 	if drop:
 		var r := frame.abs()
@@ -443,11 +443,11 @@ func _draw() -> void:
 				var a1 := TAU * float(k + 1) / 16.0
 				draw_line(foot + Vector2(cos(a0) * rx, sin(a0) * rx * shadow_ratio), foot + Vector2(cos(a1) * rx, sin(a1) * rx * shadow_ratio), Color(0, 0, 0, 0.5), 2.0)
 	else:
-		var edge := Color(Palette.ENEMY_DIM if dead else hud, 0.4)
+		var edge := Color(Palette.LOSS_DIM if dead else hud, 0.4)
 		Hud.box(self, sil, 10.0, Color(Palette.PANEL_RAISED, 0.9), edge, 1.0)
 	if dead:
-		draw_line(vis.position, vis.end, Palette.ENEMY_DIM, 2.0)
-		draw_line(Vector2(vis.position.x, vis.end.y), Vector2(vis.end.x, vis.position.y), Palette.ENEMY_DIM, 2.0)
+		draw_line(vis.position, vis.end, Palette.LOSS_DIM, 2.0)
+		draw_line(Vector2(vis.position.x, vis.end.y), Vector2(vis.end.x, vis.position.y), Palette.LOSS_DIM, 2.0)
 	if mined and sprite == null:
 		_draw_dashed(sil.grow(5.0), Palette.HEAT, 3.0)
 	if highlight:

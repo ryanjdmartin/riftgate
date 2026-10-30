@@ -8,9 +8,9 @@ extends RefCounted
 ## and can be judged on the phone. Only a debug build with a screen reads the saved picks;
 ## every other build, and every headless run (tests, tools), draws the scripts' defaults.
 ##
-## A slot that follows another (the red on the ground follows ENEMY, the accent HEAT) takes the
-## other's value until it is set itself, so "change the red entirely" is one pick and parting
-## the arrows from the chips is a second.
+## A slot that follows another (the violet on the ground follows ENEMY, the accent HEAT) takes
+## the other's value until it is set itself, so "change the violet entirely" is one pick and
+## parting the arrows from the chips is a second.
 
 const SECTION := "colours"
 const SETTINGS := "res://game/settings.gd"   # a HUD choice lives in Settings.HUD_OPTIONS
@@ -21,18 +21,19 @@ const SLOTS := [
 	["hud_green", "HUD CHOICES", SETTINGS, "green", "", "The display colour GREEN: chrome, frames, the grid"],
 	["hud_amber", "HUD CHOICES", SETTINGS, "amber", "", "The display colour AMBER"],
 	["hud_blue", "HUD CHOICES", SETTINGS, "blue", "", "The display colour BLUE"],
-	["ENEMY", "ENEMY", "res://game/ui/palette.gd", "ENEMY", "", "The enemy's red on plates: intent chips, labels, readouts, plaques"],
+	["ENEMY", "ENEMY", "res://game/ui/palette.gd", "ENEMY", "", "The enemy's violet on plates: intent chips, labels, readouts, plaques"],
 	["ENEMY_ARROW", "ENEMY", "res://game/ui/palette.gd", "ENEMY_ARROW", "ENEMY", "The skirmish's intent arrows, straight on the field"],
-	["ENEMY_MAP", "ENEMY", "res://game/ui/palette.gd", "ENEMY_MAP", "ENEMY", "The map's red on the ground: rings, bands, outlines, strikes, the target"],
-	["ENEMY_HOT", "ENEMY", "res://game/battle/battle_map_view.gd", "ENEMY_HOT", "", "What the map's red marks pulse toward; brackets, warnings"],
-	["ENEMY_EDGE", "ENEMY", "res://game/battle/battle_map_view.gd", "ENEMY_EDGE", "", "The dark line under the map's red rings and band edges"],
-	["ENEMY_DIM", "ENEMY", "res://game/ui/palette.gd", "ENEMY_DIM", "", "A destroyed component, a wrecked machine's die, a dying foe's ghost"],
+	["ENEMY_MAP", "ENEMY", "res://game/ui/palette.gd", "ENEMY_MAP", "ENEMY", "The map's violet on the ground: rings, bands, outlines, the warning zones"],
+	["ENEMY_HOT", "ENEMY", "res://game/battle/battle_map_view.gd", "ENEMY_HOT", "", "What the map's violet marks pulse toward; brackets, warnings"],
+	["ENEMY_EDGE", "ENEMY", "res://game/battle/battle_map_view.gd", "ENEMY_EDGE", "", "The dark line under the map's violet rings and band edges"],
 	["HEAT", "SEMANTIC", "res://game/ui/palette.gd", "HEAT", "", "Heat: its chips, the gauge, a die's heat, the mine"],
 	["ACCENT", "SEMANTIC", "res://game/ui/palette.gd", "ACCENT", "HEAT", "The codex's passive accent"],
 	["ACCENT_INK", "SEMANTIC", "res://game/ui/palette.gd", "ACCENT_INK", "", "Text on the accent"],
 	["SHIELD", "SEMANTIC", "res://game/ui/palette.gd", "SHIELD", "", "Shield: its gauge and chips"],
 	["HULL", "SEMANTIC", "res://game/ui/palette.gd", "HULL", "", "Hull: its gauge"],
 	["GAIN", "SEMANTIC", "res://game/ui/palette.gd", "GAIN", "", "A number moved in its unit's favour"],
+	["LOSS", "SEMANTIC", "res://game/ui/palette.gd", "LOSS", "", "Harm to a unit: a number moved against it, a kill or wreck forecast, DRY, SHORT, NO ROOM"],
+	["LOSS_DIM", "SEMANTIC", "res://game/ui/palette.gd", "LOSS_DIM", "", "A blank or destroyed entry, a wrecked machine's die, a dying foe's ghost"],
 	["SELECT", "SEMANTIC", "res://game/ui/palette.gd", "SELECT", "", "Selection"],
 	["TARGET", "SEMANTIC", "res://game/ui/palette.gd", "TARGET", "", "A target"],
 	["OK", "SEMANTIC", "res://game/ui/palette.gd", "OK", "", "Good"],

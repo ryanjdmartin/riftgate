@@ -135,7 +135,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   (`docs/measurements.md`). Then the colours went to him (30 October): a debug build's Settings
   → COLOURS sets any named colour by wheel or hex, and his picks come back as COPY text to land
   as the defaults; what fails is a colour over its ground, not two UI colours apart (his words,
-  the bible's colour rows). His phone read of the map's aliasing (30 October) found the
+  the bible's colour rows). Then the enemy left red (his call the same day: "keep purple for
+  enemy activities"): every foe's mark wears the rift's violet #c8a4ff on a deep #2a0e4a edge,
+  the rings and the band where a machine could attack from with them; heat reddened to #ff4000,
+  since a lighter orange can read as green, good's colour, to him; harm to a unit a red-red
+  #ff0000; Volatile's hull cost in the hull's colour; the shield kept, a cooler blue landing on
+  the violet under red-green vision (`docs/measurements.md`). His read on the phone is the
+  to-do's. His phone read of the map's aliasing (30 October) found the
   machines' textures sampled nearest without their mipmaps, sparkling when drawn small, and no
   anti-aliasing at all on the phone (MSAA leaks there): the textures read their mipmaps now and
   the map's compositor runs FXAA of its own where MSAA cannot, behind a debug AA toggle. His next
@@ -379,9 +385,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.387, the page's version 399 and
+  `docs/design-bible.html` after every change. This file is v0.388, the page's version 400 and
   this branch's last publish (30 October, merged onto the live v0.385: the overlay at one size,
-  the fine map always, the grid's old light, Godot 4.8-beta2 and AA MODE). The rows other
+  the fine map always, the grid's old light, Godot 4.8-beta2, AA MODE and the enemy in violet). The rows other
   sessions published since v0.348 ride along (the map's movement and shapes, the desk on the
   phone's renderer, the Armadillo's looks and seal, the Hold The Line voices, the tracks as
   pairs, the Arsenal's lit cockpit glass, the domains' tilesets; on v0.346 from

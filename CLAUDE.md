@@ -118,8 +118,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   suggestions. Compose a red or an orange from red and green alone, never blue, brighter and
   darker included (Ryan, 29 October: moving the blue too is what made the reds hard to
   judge); past pure red the green steps 30, 40, 50 and 60 are each distinct to him, and past
-  about #ff8200 an orange reads as yellow or green. Never separate two marks by hue alone:
-  give them structure too (an edge, dashes, motion, a glyph, a weight). What fails is a
+  about #ff8200 an orange reads as yellow or green; even a lighter, less red orange can read as
+  green, which is good's colour, so heat leans red (Ryan, 30 October). Never separate two marks
+  by hue alone: give them structure too (an edge, dashes, motion, a glyph, a weight). What fails is a
   colour over its ground, never two UI colours apart, since every mark carries an icon
   (Ryan, 30 October): check a new colour by simulation (the Machado protan, deutan and
   tritan matrices in a few lines of numpy) against the grounds it is drawn on (the field's,
