@@ -798,8 +798,13 @@ a stat.
   pass under it and under a winged pack. A grounded machine never passes another grounded
   machine or a grounded pack: each move lands at once, so the next is planned from where it
   ended and the player sequences them.
-- **Setup**: up to four machines on the row before the gate; the lead domain's spawn list at the
-  battle's tier as packs three to five rows below the rift; the boss one row below the rift.
+- **Setup**: up to four machines on the row before the gate; the boss one row below the rift,
+  sealed (below); and on the field the compositions the tier and the ramp put there: the
+  ramp's count of formations (one; two from Convergence 3; three from 8) spread across the
+  width three to five rows below the rift, and its count of patrols (two; one from 8) on the
+  flanks a little lower, each the tier's compositions in turn, the lead's and the guest's in
+  turn with the lead's first, every member's strength at the ramp's density (×1 at
+  Convergence 0 to ×1.5 at 12, rounded, never below one).
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
   and every pack's ring. Each machine has one action (the Dingo two): one move, in one go,
   then it may fight; a fight ends the action however it ends. A selected machine lights
@@ -815,8 +820,9 @@ a stat.
   pulses.
 - **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's shield and hull as
-  gauges, its move and actions left, a chip for its damaged components; a pack's foe and
-  strength, move, ring and what it is doing; the gate's integrity as its gauge; the ground by
+  gauges, its move and actions left, a chip for its damaged components; a pack's members (each foe
+  type and its count), move, ring and what it is doing, and SEALED on the boss while its seal
+  holds; the gate's integrity as its gauge; the ground by
   its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
   packs enter it. A refused order
   says what stopped it there too.
@@ -826,9 +832,14 @@ a stat.
   order's pack and every machine ordered onto it.
 - **A fight** is at the target's hex. Every other pack whose ring covers that hex joins (no
   chaining); machines whose attack range (2) covers it may join. Afterwards each machine in
-  it has used its action, wrecks leave, a pack keeps only its survivor count, and Rift
+  it has used its action, wrecks leave, a pack keeps only its survivors, by member, and Rift
   Pressure does not tick: it ticks on the map alone.
-- **Packs**: one foe type times a strength. They cross every land hex and wade water as a
+- **Packs**: a pack is a composition on one hex: its members, each a foe type times a
+  strength, in content order, the lead first, whose sprite and behaviour the pack wears; a hold
+  lists them. A composition is a patrol (a few foes, one machine's fight), a formation (the
+  body's), an elite (an elite leading its own) or a boss's escort. Every member unpacks into
+  the fight, and the survivors come back by member. A pack walks at its slowest member's pace
+  with the largest of its members' rings, winged only when every member is. They cross every land hex and wade water as a
   ground machine does, a water hex costing two of their move (entered with whatever is left),
   and never enter walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb,
   the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
@@ -838,8 +849,10 @@ a stat.
   ending a walk on another unit's hex, so a flyer holds no ground and a pack holds none
   against the packs; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
-- **Pushers** make for the gate; a pusher ending its walk beside it strikes the gate for its
-  strength times 10 divided by 3, at least 10, every enemy turn.
+- **Pushers** make for the wall; a pusher ending its walk beside any hex of the gate or the
+  wall strikes the gate's bar for its strength times 10 divided by 3, at least 1 (the floor of
+  ten is gone, so a stray pair chips less than a trio), every enemy turn. The gate is the look
+  and the bar's name; the whole wall is the target, so no line plugs it.
 - **Hunters** lock one machine when they appear (nearest, weakest, strongest, slowest or fastest; never
   the Prairie Dog), keep it while it stands, and walk to put it inside their ring; the machine a
   hunter comes for wears a tag by it, a plate a hunter with the hunter's picture and a target,
@@ -859,8 +872,10 @@ a stat.
   a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo of the carrier's move takes the riders back with it.
-- **The boss** patrols within two hexes of the rift, a hex a turn whoever commands it, joins
-  the fights its ring covers (2; a final's back-rank hero's 3) and can be attacked from the first turn
+- **The boss** patrols within two hexes of the rift, a hex a turn whoever commands it. Its seal
+  holds until the Rupture (below): while it does, the boss cannot be ordered onto and joins no
+  fight, its ring inert, SEALED on its readout. After the Rupture it joins
+  the fights its ring covers (2; a final's back-rank hero's 3) and can be attacked
   (a hero carries no move and no hunt of its own: it only ever commands the boss unit); its fight won wins the battle: the fight ends in victory
   only when no foe stands or waits, so its escort falls with it, and a team wrecked after the
   commander falls has lost the battle (Ryan, 27 October: the whole escort must die, else the
@@ -874,18 +889,49 @@ a stat.
   to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
   finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
   ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
-  three. An escort it does not name (a final's wildlife, the tier's more) is the foes of its
-  domain's spawn list at the battle's tier, round robin in spawn order and never massive; a
-  named escort is kept. The rank and file never scale in place: a tier's units are their own,
+  three. An escort it does not name (a final's wildlife, the tier's more) is its domain's `escort`
+  composition at the battle's tier when one is written (none is yet), its members at the
+  ramp's density, else the foes of its domain's units at the tier, round robin in content
+  order and never massive; a named escort is kept. The rank and file never scale in place: a tier's units are their own,
   each with its numbers and its name (a recolour: a base type in a new hue under a new name, with
-  a twist). A domain's spawn list is one a tier, the battle's tier choosing it and a guest's by
+  a twist). A domain's compositions are by tier, the battle's tier choosing them and a guest's by
   the same tier; a tier with none takes the highest under it.
-- **Rift Pressure** fills at 12 (+1 each enemy turn, never inside a fight) and spawns the next
-  pack of the spawn cycle by the rift. Packs never escalate.
+- **Rift Pressure** fills at the ramp's timer (12 at Convergence 0, one less every 3, 8 at
+  12; +1 each enemy turn, never inside a fight). When it fills it resets and peaks: the rift
+  sends the next composition of its cycle (the tier's formations and patrols in turn, the
+  lead's and the guest's in turn); every tear open before this peak sends the next patrol of
+  the patrol cycle; the seam creeps two rows toward the gate (as far as the row before the
+  wall); the ramp's count of tears (one; two from Convergence 8) open on the seam's row, each
+  on a free land hex with no unit on it and no machine beside it, the farthest from the rift
+  and the other tears, so the mouths spread across the width; and the interval shortens by the
+  ramp's step (zero today, never below 2). A tear opens a peak before it first sends, so where
+  the next flood comes from is known an interval ahead; tears stay open and never close. A
+  spawn lands on the nearest free hex to its mouth with no machine beside it, so it and its
+  walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
+  escalate in place.
+- **The seam** is the flattening's edge: the row the rift's bleed reaches, five at the start,
+  total on the rift's row and gone past the seam. It is the clock's picture: no rule reads the
+  flattened hexes.
+- **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an
+  elite's doubled. The Rupture meter, Anathema and salvage count kills by it, so the rift's
+  reinforcements pay a trickle and the formations and the elites pay the most.
+- **The Rupture meter** fills by the menace of every foe killed, in any fight however it ended,
+  tallied as each fight ends, toward the tier's Fractures (three at tier one, four at tier two,
+  five at tier three). The thresholds are set from the field's menace at the start (the packs
+  placed, the boss aside): the last at two thirds of it, the steps 1, 1.5, 2, 2.5 and 3, so
+  later Fractures cost more and a battle that kills the field as it stood earns the Rupture
+  with a third of the field left to leave. A Fracture pays out as a fight ends. At the Fractures
+  the tier names (tier one's first; tier two's first and third; tier three's first, second and
+  fourth) the next elite composition of the lead's domain not yet fought this battle emerges at
+  the rift (a domain with none, the Peak today, sends none). The last Fracture is the Rupture:
+  the boss's seal breaks. The stall guard breaks it too, when no pack but the boss's stands as
+  a fight ends, so a team that cleared the field never waits on the clock. Rift Pressure keeps
+  running after. A Fracture brings no prize (not built).
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.
-- Not built: city defences, the Rupture meter and its Fractures, the sealed boss, rift tiles.
+- Not built: city defences (along the wall when they come), the Fracture's prize, rift tiles;
+  the escort compositions have no content yet, so every boss brings the tier's units.
 
 ## The campaign
 
@@ -903,7 +949,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   to its end and a team wipe is the graded loss; a withdrawal from a battle is not built (open:
   the bible's section 4).
 - **Won** (the boss dies): the gate refills, the rift closes, no rift opens there next turn;
-  10 salvage a kill, the boss's included (to be weighted by the foe's threat, not built); 100 Favour less 1 per gate
+  2 salvage a point of menace killed, the boss's included; 100 Favour less 1 per gate
   point the city lost, never below 0; a research
   token of the lead domain and an offer from the host maker are owed (the token a choice of
   three blueprints of the domain's theme at the Convergence's tier; the offer a chassis, a
@@ -918,15 +964,20 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **Turn end**: each unfought open rift bleeds its city 50 (falling it at zero); each fallen
   city drains the capital 25; the Convergence rises 1; rifts open at standing cities that are
   not quiet, up to 2 + tier (tier = the Convergence ÷ 4, rounded down, so two rifts at first,
-  three from Convergence 4 and four from 8, before the finale at 12).
+  three from Convergence 4 and four from 8, before the finale at 12). A rift keeps the tier it
+  opened at, whatever the Convergence does after (the finale's is the Convergence's), so an old
+  rift never hardens by waiting; the ramp a battle reads is the Convergence as it stands when
+  the battle starts, the same for every open front, never shown and never reset.
 - **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a beaten one)
-  and from tier 1 a guest, another domain not beaten, whose packs alternate with the lead's in
-  the spawn cycle.
+  and from tier 1 a guest, another domain not beaten, whose compositions alternate with the lead's on the field at the start and in
+  the rift's cycle.
 - **The party**: dealt as the run starts, one hero to each domain from its bench, the front
   jobs and the back as even as the benches allow (two and two), by the seed; no job changes
   after.
 - **A rift's boss**: each battle brings one of its domain's bosses that its battles have not
   ended on this run, drawn by the seed; once every one has been, any of them.
+- **Anathema**: the menace of a domain's foes killed this run, every battle however it ended,
+  is recorded by domain beside the count of its bosses beaten; the count still sets the final.
 - **Finals and finale**: three bosses of one domain beaten set its final: every rift it leads
   at a standing city around the capital turns final at once, and every rift it leads after is
   one, fought
@@ -967,9 +1018,10 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   boss while that hero stands; once all are beaten, any of its bosses again. The finale's last
   fight is the party's line with the tier's escort, every domain's dealt hero promoted, a domain
   whose final was won leaving its column to a standing domain's boss, as in the campaign.
-- **A formation** is a domain's whole spawn list at the battle's tier in one fight; the lead's and the guest's take
-  turns. **An elite**'s slot holds the lead's formation alone until the elites land (the
-  bench hero that stood in went on 27 October).
+- **A formation** is one of the domain's formation compositions at the battle's tier, in
+  turn, every member at the ramp's density (the battle's number as the Convergence); the
+  lead's and the guest's take turns. **An elite**'s slot holds the lead's elite compositions in
+  turn (a domain with none, the Peak today, the lead's formation).
 - **A fight** takes the squad's machines still standing, their damage carried and their heat
   from zero. There is no withdrawal. A won fight gives each standing machine one field recharge
   before the next; a wipe ends the run.

@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 156 implemented, 5 planned, 0 idea.
+Status: 168 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -13,8 +13,10 @@ Status: 156 implemented, 5 planned, 0 idea.
 | **Shield** | Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands, and the armour, so the whole blow reaches the hull. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back only from components, modules and passives. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes. | implemented |
 | **Heat** | A component that prints heat adds it when spent. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a machine sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons and equipment aimed at foes run hotter. | implemented |
 | **Reroll** | Three rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
-| **Rift Pressure** | Ticks once per battlefield phase, never inside a fight. When full it resets and a fresh pack emerges at the rift. | implemented |
-| **Gate Integrity** | A pack whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta. | implemented |
+| **Rift Pressure** | Ticks once per battlefield phase, never inside a fight. It fills at the ramp's timer (12 at the start of a run, 8 at the finale's Convergence). When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, the seam creeps toward the gate, and new tears open on it. It never stops: the boss's seal breaking does not quiet it. | implemented |
+| **Rupture meter** | Fills by the menace of the foes you kill, in any fight however it ends, toward the tier's Fractures (three, four or five). The Fractures are set from the field's menace at the start, the last at two thirds of it and each later one costing more. The last Fracture is the Rupture: the boss's seal breaks. It also breaks once nothing but the boss's pack stands as a fight ends. | implemented |
+| **Fracture** | A step of the Rupture meter, paid out as a fight ends. At the Fractures the tier names (tier one's first; tier two's first and third; tier three's first, second and fourth) an elite emerges at the rift, the lead domain's elites in turn and never twice in a battle. The last Fracture is the Rupture. | implemented |
+| **Gate Integrity** | A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar for a third of its strength, at least one. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta. | implemented |
 | **Shots** | Machine count, the Cassowary's: every weapon and equipment it aims at a foe this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight. | implemented |
 | **Armour** | A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull and what passes a shield alike, never a breach, which ignores it. A blow at or under the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage. | implemented |
 | **Rage** | Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), up to 5, kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; no cleanse, Silence or Purge touches it. | implemented |
@@ -163,10 +165,15 @@ Status: 156 implemented, 5 planned, 0 idea.
 | **Caught** | A machine a hunter has caught fights it first on your turn, before any other fight, and cannot move until then. Others in range may join that fight. Withdrawing ends it, and the hunter catches the machine again while it lives. | implemented |
 | **Ring** | Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring, two hexes at least, is also how close it must be to catch: it pounces over whatever stands between. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close. | implemented |
 | **Behaviour** | A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), puts its tag on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. A prey that keeps its distance is safe; one sealed off behind walls and machines is not: the hunter catches whichever machine it can reach that turn standing nearest it, and its tag moves there. | implemented |
-| **Pack** | An enemy hex is a pack: one foe type times a strength. A fight is the pack you attack and every pack whose ring covers it, so the rift's formations and the order you attack them in decide what you fight. A boss is one unit on one hex. | implemented |
+| **Pack** | An enemy hex is a pack: a composition on one hex, its members listed on a hold, wearing its lead's picture and behaviour, walking at its slowest member's pace with its widest member's ring. A fight is the pack you attack and every pack whose ring covers it, so the compositions on the field and the order you attack them in decide what you fight. A boss is one unit on one hex. | implemented |
 | **Footprint** | Every unit covers one hex, the boss included: it is occupied, counts for rings and range, and is a tap target. The gate and the rift are wider structures. | implemented |
-| **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack that ends its walk beside a gate hex strikes the gate. | implemented |
-| **Spawn** | When Rift Pressure fills, the next pack of the spawn cycle (the lead domain's packs alternating with the guest's) appears on the nearest free hex to the rift. | implemented |
+| **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack that ends its walk beside a gate hex or a wall hex strikes the gate. A tear is a mouth, not a structure: its hex can be walked and stood on. | implemented |
+| **Spawn** | At a peak of Rift Pressure the next composition of the rift's cycle (the tier's formations and patrols in turn, the lead domain's and the guest's in turn) emerges at the rift, and every tear open before the peak sends a patrol. A spawn lands on the nearest free hex to its mouth with no machine beside it, at the end of the enemy's turn, so you see it and its walk for a whole turn and nothing lands on top of a detachment. | implemented |
+| **Composition** | What the rift sends and what stands on the field when a battle starts: a patrol (a few foes, one machine's fight), a formation (the body's fight), an elite leading its own, or a boss's escort. A composition is one pack on one hex: its members, listed on a hold, unpack into the fight together and come back by member. Each domain writes its compositions by tier; the ramp sets how many stand at the start and how thick they are. | implemented |
+| **Patrol** | The small composition: a few foes, the fight one machine detaches for. Two stand on the flanks at the start (one from Convergence 8), and the tears send nothing else. | implemented |
+| **Formation** | The body's composition: the fight the squad takes together. One stands on the field at the start (two from Convergence 3, three from 8), and the rift alone sends more, at its peaks. A domain's tier writes its formations; the lead's and the guest's come in turn. | implemented |
+| **Tear** | A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close. | implemented |
+| **Seam** | The flattening's edge: the row the rift's bleed reaches, five rows down at the start, creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it. | implemented |
 
 ## Terrain
 
@@ -224,6 +231,8 @@ Status: 156 implemented, 5 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **City ability** | Battlefield-level ability owned and upgraded by the city: sprint, airlift, teleport, tractor beam, orbital strike. Cooldowns measured in phases. | planned |
+| **Tier** | The hard scaling: a rift's tier is locked as the rift opens and sets the kind of battle: who comes, the sizes of its compositions, the Fractures to the Rupture, how many elites and which, the boss's numbers and escort. The Convergence's tier rises one every four; a rift keeps the tier it opened at, so an old rift never hardens by waiting. | implemented |
+| **Ramp** | The soft scaling under the tier, never shown: the Convergence as it stands when a battle starts sets how many compositions stand on the field at the start and how thick they are, how fast Rift Pressure fills, how many tears open at a peak and how far the seam creeps. It rises with the run, the same for every open front, and never resets. | implemented |
 
 ## Foe
 
@@ -238,6 +247,9 @@ Status: 156 implemented, 5 planned, 0 idea.
 | **Countdown** | A move that gathers before it lands: announced as the round opens, it lands the stated number of rounds later, its warning chip counting down the whole time. Nothing hits while it gathers. Suppress holds it a round, Disrupt breaks it off, and killing the foe ends it. | implemented |
 | **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, regrowing or curing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine burning, silencing or purging one, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 | **Scorch** | Foe attack keyword with a number. Each blow that lands leaves that many stacks of Scorched on the machine it hit (Scorch 2: two): every weapon and equipment it aims at a foe runs hotter. | implemented |
+| **Menace** | A foe's weight: its heaviest blow plus a quarter of its HP, rounded up; an elite's doubled. The Rupture meter, Anathema and salvage count every kill by it, so the rift's reinforcements pay a trickle and the field's formations and the elites pay the most. | implemented |
+| **Elite** | A unique foe leading its own composition, worth double its menace, emerging at the rift at a Fracture. Each tier names which Fractures bring one; the lead domain's elites come in turn and never twice in a battle. | implemented |
+| **Seal** | The boss's seal holds until the Rupture: while it does the boss cannot be attacked and joins no fight, its ring inert, SEALED on its readout. The Rupture breaks it, by the last Fracture or by a cleared field. | implemented |
 
 ## Rules
 
@@ -252,8 +264,10 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **HP** (implemented): A machine's health is its hull; the engine's code may say either word.
 - **Shield** (implemented): Rates and shield sizes are placeholders. No in-combat trickle; a passive may bring one back for one chassis.
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning).
-- **Rift Pressure** (implemented): It does not escalate yet (section 12's pacing question).
-- **Gate Integrity** (implemented): The gate damage formula is a placeholder.
+- **Rift Pressure** (implemented): The interval step inside a battle (the escalation a stall would meet) is on the ramp's table at zero until the turtle read asks for it.
+- **Rupture meter** (implemented): Shown as a bar under the gate's with a notch a Fracture, a first cut; the share and the steps are placeholders.
+- **Fracture** (implemented): The prize a Fracture may bring is not built (decided after the meter is played); the Peak has no elite yet, so its Fractures send none.
+- **Gate Integrity** (implemented): The gate damage formula is a placeholder; city defences along the wall are not built.
 - **Weapon** (implemented): The engine's kind is attack for a weapon and a debuff alike: a debuff is an attack of no damage (Face.is_debuff), so code asks is_weapon() for this word and is_attack() for both.
 - **Spread** (implemented): Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file.
 - **Penetrate** (implemented): Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon.
@@ -295,17 +309,18 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Flak** (implemented): Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: "Flak and overcharge exist in part to get past armour"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Overcharged at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.
 - **Destroyed component** (implemented): The threshold is a placeholder, set by what it asks of the player, never by a loss or win rate (Ryan, 25 October). The campaign's hangar screen is not built.
 - **Mine** (implemented): The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once.
-- **Reinforcements** (implemented): How elites arrive is section 12's question.
 - **Massive** (implemented): Spread treats it as a front-rank neighbour; Penetrate finds nothing behind it.
 - **Movespeed** (implemented): Every chassis's move is a placeholder set by size and role; what crossing water and walls is worth is the pricing run's to read (28 October).
 - **Walk** (implemented): A pack with no way to the gate waits, and the map says so.
 - **Carry** (implemented): A landing animation or a redistribution on landing may come later.
 - **Ring** (implemented): Rings are content on the foe type, placeholders; a hunter's is two at least (Ryan, 29 October: "wolfs pounce"; the validator holds it), and one number serves its catch, the fights it joins and the ring drawn. A machine's attack range is two for every chassis, an exception only where a role earns it.
 - **Behaviour** (implemented): Push and hunt are the only behaviours; the hunters' caveats are placeholders.
-- **Pack** (implemented): The rift should spawn formations, not single packs: the foes' fresh start.
 - **Footprint** (implemented): Footprints do not rotate with facing.
-- **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
-- **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one pack at a time.
+- **Composition** (implemented): Each tier's compositions are partitioned from its list as placeholders for Ryan's marks; no escort composition is written yet, so every boss brings the tier's units.
+- **Patrol** (implemented): The tier-one patrols read as a lone starter's fight on the greedy rung, not a tenth of its hull (docs/measurements.md, 30 October); their sizes are Ryan's to mark.
+- **Formation** (implemented): The word also names the skirmish's two ranks; the context tells them apart.
+- **Tear** (implemented): Drawn as a first cut for the phone; its mark and its opening are to judge running (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn).
+- **Seam** (implemented): The creep a peak is a placeholder (the ramp's table, flat at two).
 - **Ruins** (implemented): No skirmish condition yet; what terrain does in a fight is section 12's question.
 - **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a river with fords, a fjord, ponds, a pond or none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls.
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.
@@ -317,7 +332,10 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **On hull damage** (implemented): The hook for the pinned berserker idea too.
 - **Out of combat** (implemented): Heat does not persist between fights, so a vent here would be nothing. No content uses it yet.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
+- **Reward pick** (planned): Built without one (Ryan, 24 October: maybe not warranted at all); decided after the meter is played, with the economy pass.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
+- **Tier** (implemented): Shown on the front's card when the mission map comes; today the campaign runs headless.
+- **Ramp** (implemented): One table of placeholders (sim/ramp.gd), read by the campaign runner and moved on Ryan's word; the timer's 12 reads as the old clock's number (docs/measurements.md, 30 October).
 - **Cooldown** (implemented): A price as heat is. The city's battlefield abilities count their own cooldowns in phases.
 - **Reset** (implemented): No limit (Ryan, 24 October: "Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbs with every kill.
 - **Pull** (implemented): Never Rapid, so a pull costs the turn and the laying is still chosen.
@@ -350,6 +368,9 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Scorched** (implemented): Placeholder numbers.
 - **Silenced** (implemented): Its stores are untouched. Keywords alone since 28 October (buffs alone from 25 to 28 October, a one-round purge that returns); Volatile is a cost, so nothing it mutes is a price.
 - **Ward** (implemented): A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS) and never Suppressed, since Numbed stays the one stun resistance.
+- **Menace** (implemented): The formula is Claude's placeholder, one weight for the three tallies; the bosses' menace counts as any foe's.
+- **Elite** (implemented): Five placeholder kits (the goblin shaman, the Elder Treant, the Leshy, the Old Man of the Desert, the Reaper) for Ryan's marks; the Peak's elite and a Waste hunter wait on them; the Bone Wyvern waits on the slate.
+- **Seal** (implemented): The seal's look on the ring is a first cut for the phone.
 - **Muster** (implemented): Every number is a placeholder; carrying it between fights is section 12's heat question.
 - **Rallied** (implemented): The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.
 - **Regenerating** (implemented): The machine half, the Storm Petrel's, is planned until the engine has a round-start shield on a timed status and the rider on a weapon's own spender: it regains 2 shield at the start of each round for three rounds, each grant its own clock, so two grants regain 4 a round until the first runs out. The numbers are placeholders.

@@ -1243,7 +1243,7 @@ city standing, possible in a run of limited battles?). `tools/turn_loop.py`: the
 `sim/campaign.gd` modelled from its constants (four cities, gate 200, bleed 50, rifts open to 2
 plus the Convergence's tier, a won city quiet a turn, the finale at 12), with every battle won
 and no pusher let through, so whatever falls, the schedule felled. Each rift keeps the tier it
-opened at (Ryan's locked tier, `docs/curve_proposal.md`). 2,000 seeds. A model of the
+opened at (Ryan's locked tier, `git show 85e28fd:docs/curve_proposal.md`). 2,000 seeds. A model of the
 arithmetic, not a run of the game.
 
 | Front chosen | Cities fallen a run | Fronts on the board, by tier | Two tiers on the board | Most gate lost when fought | Rescues on a gate of 50 |
@@ -1276,7 +1276,7 @@ Read: at the third bleed the widening touches only the fronts a rotation never l
 and it pays the chase: the always-chaser keeps its cities because a widened front becomes the
 richest on the board, a tier of loot for the neglect (Ryan, 24 October: "more like a reward for
 ignoring it"); at the second bleed it meets the rotation too, a tier up on half the run's
-battles. Dropped (`docs/curve_proposal.md`).
+battles. Dropped (`git show 85e28fd:docs/curve_proposal.md`).
 
 ## 24 October, the foes' heat doubled
 
@@ -1563,7 +1563,7 @@ before). None of 40 reached the finale, as before.
 
 ## 26 October, the fight-size spectrum as it stands
 
-**The sizes the fresh start's proposal sizes its compositions against** (`docs/foes_proposal.md`;
+**The sizes the fresh start's proposal sizes its compositions against** (`git show 85e28fd:docs/foes_proposal.md`;
 the four-machines row's targets, section 4: a small pack one or two machines take for about a
 tenth of their hull, a formation the body's). `tools/balance.gd` with its new `--pack` cells
 (one foe type times a strength, or several together in one fight) on the merged code (`49211ca`,
@@ -1611,7 +1611,7 @@ Meadow formation (the trio 90 / 100 at 12% before, 100 / 100 at 4% now; the lone
 
 ## 26 October, the campaign bot moving as one, and the persona
 
-**The runner work the fresh start's session built without waiting** (`docs/foes_proposal.md`,
+**The runner work the fresh start's session built without waiting** (`git show 85e28fd:docs/foes_proposal.md`,
 its last section): the campaign bot's squad moving as one (every machine toward the pack nearest
 the squad, every machine in range fighting it, a caught machine's allies walking into range of
 the hunters before the catch opens; `--solo` the old walk, each machine toward its own nearest
@@ -2387,3 +2387,91 @@ grey `#333333` 18.0 (4.3); the Peak's scorched lava field `#330000` 34.1 (15.4) 
 rust `#663333` 20.4 (4.6). The Marsh's and the Peak's roads keep their domain's ground, their
 mud causeway and ash path carrying them. The lowest is the Meadow's forest floor, the score the
 Meadow's own forest had before the domains had tilesets.
+
+## 30 October, the pacing session and the foes' fresh start
+
+**The engine of the pacing session and the fresh start, read three ways at 40 runs** (built
+30 October, `85e28fd`; the bible's pacing, clocks, stall, tears, wall, curve and Anathema rows;
+the brief: `git show 85e28fd:docs/briefs/fresh_start.md`). `tools/campaign_run.gd` at 40 runs
+from seed 1, the greedy rung: the plain player (`docs/campaign_run.md`), the turtle (`--turtle`:
+the squad holds the two rows before the gate at its columns and fights only what comes within
+reach) and the detaching player (`--detach`: one machine sent at the nearest patrol within five
+hexes while the body fights the nearest formation), against the run of 29 October (the hunters
+at a ring of two, the same seeds, the old spawn lists as packs and the old clock). The field at
+the start is the tier's compositions by the ramp (at tier one a formation and two patrols at
+density 1.0), the wall is struck from anywhere along it with the strike's floor gone, the timer
+is the ramp's (12 at Convergence 0, 9 at 9), the meter's Fractures are set from the field's
+menace (the last at two thirds) and the boss is sealed until the Rupture. Directions, on a bot
+whose battles end in a wipe before the first peak.
+
+| Read | Battles | Won | Held | Fell | Wiped | Finale reached | First city fell, turn | Phases a battle | Three-machine battles won | Fights | Alone (1 of 1), won | The whole squad (3 of 3), won |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 29 October, the old field and clock | 379 | 6% | 52% | 40% | 93% | 32 | 3.55 | 7.77 | 39% of 58 | 733 | 327, 18% | 55, 81% |
+| 30 October, plain | 308 | 2% | 39% | 57% | 97% | 18 | 2.50 | 7.66 (3 to 16) | 16% of 48 | 575 | 279, 14% | 18, 72% |
+| 30 October, the turtle | 230 | 0% | 28% | 71% | 100% | 4 | 1.27 | 11 (5 to 81) | 0% of 44 | 536 | 228, 22% | 52, 90% |
+| 30 October, detaching | 291 | 0% | 41% | 57% | 99% | 11 | 2.35 | 7.85 (4 to 18) | 2% of 43 | 588 | 324, 19% | 4, 25% |
+
+The meter and the mouths, means a battle with their ranges:
+
+| Read | Fractures reached, of those held | Battles reaching the Rupture | By the stall guard | The seal broke, turn | Peaks | The rift sent | The tears sent | Tears open at the end | Elites | Menace killed | Gate damage |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Plain | 0.85 of 3.33 | 11% | 0% | 2.92 (1 to 5) | 0.00 (0 to 1) | 0.00 (0 to 1) | 0 | 0.00 (0 to 1) | 0.38 (0 to 2) | 25 (0 to 127) | 65 (0 to 180) |
+| The turtle | 1.24 of 3.12 | 20% | 0% | 4.89 (4 to 7) | 0.15 (0 to 6) | 0.15 (0 to 6) | 0.10 (0 to 15) | 0.15 (0 to 6) | 0.52 (0 to 2) | 40 (0 to 774) | 100 (1 to 200) |
+| Detaching | 0.84 of 3.28 | 9% | 0% | 2.76 (2 to 4) | 0.00 (0 to 1) | 0.00 (0 to 1) | 0 | 0.00 (0 to 1) | 0.42 (0 to 2) | 23 (0 to 127) | 69 (0 to 150) |
+
+Read. The field at the start is the harder battle for this bot: fell 57% where 40% fell, won 2%
+where 6%, the first city falling on turn 2.5 where 3.55, the three-machine battles won 16% of 48
+where 39% of 58. Two changes stand behind it and the run does not part them: the wall struck
+from anywhere (a pusher that reaches any of the bottom rows strikes that turn, where it had to
+reach the four hexes before the gate, which the squad stood on; the gate now takes 65 a battle
+on the plain player) and the compositions on the field (a lone machine against a formation with
+a patrol beside it wins 2% of 139 such fights, the patrols' rings covering the formation they
+flank, where the old lists came as three to five one-type packs). The matrix's composition cells
+by machine attribute it (the to-do); this is a direction.
+
+The flood is unread on the plain player: its battles last 7.7 phases against a timer of 12 at
+Convergence 0 (9 at 9), so no peak comes in all but a handful (0.00 a battle, 0 to 1): the rift
+sent nothing and no tear opened. What the plain read sees is the field at the start, the
+Fractures and the elites. The turtle's battles run 11 phases (5 to 81) and meet the peaks: 0.15
+a battle (0 to 6), the tears sending up to 15 patrols in one battle, one battle of 81 phases
+killing 774 menace: the stall the design prices exists on the turtle and is rare, since the
+turtle holds the two rows before the gate at its own columns and the wall is struck from
+anywhere beside it: the gate took 100 a battle (1 to 200) where the plain player's took 65,
+every battle a wipe, 71% fell, the first city on turn 1.27. The whole-wall rule does its work
+(the apron cannot be plugged), and the turtle read gives the interval step and the bounty cap no
+case yet: the step stays at zero and the cap on the bench until a persona that holds the whole
+apron row, or Ryan's play, meets a stall.
+
+The timer's 12 is the old clock's number, set when every peak sent one pack and the clock was
+inert (the bible's pacing row's arithmetic). The design test (a fought battle meets one or two
+tears, a stall five) wants the first peak inside a fought battle of ten turns or so, which 12 at
+the start cannot give: by arithmetic, not by the bot, Claude's lean is 8 at the start to 6 at the
+top (one peak and one armed tear in a ten-turn battle, two or three in a stall of twenty), for
+Ryan's word (`Ramp.timer_at`, section 12's ramp item).
+
+The Rupture came in 11% of the plain player's battles (0.85 Fractures a battle of the 3.33
+held), 20% of the turtle's and 9% of the detaching player's, never by the stall guard (the field
+never clears under this bot; a wipe comes first). Where it came it came early (turn 2.9 on the
+plain player), in the battles whose fights the trio won, and the boss's fight after it is the
+exam the proposal meant: two machines against the boss alone won 83% of 6, three 100% of 3,
+three against the boss with the first Fracture's elite beside it 25% of 4, the elite that
+emerged at the rift standing in the boss's ring and joining its fight. The elites: 0.38 a battle
+on the plain player, 0.52 on the turtle; a lone machine against an elite's composition won 28%
+of 7 (plain) and 15% of 20 (turtle), two machines 100% of 6 and 14% of 7, small cells of
+different elites.
+
+The patrols: a lone machine against a patrol wins 45% of 133 (plain), 50% of 116 (turtle) and
+48% of 196 (detaching), where the brief's target is a patrol costing one machine about a tenth,
+so the tier-one patrols as partitioned (three goblins, two wolves and their kin in each domain)
+are a lone starter's fight on the greedy rung, as the `--pack` read of 26 October said of three
+of a swarm type for a light machine; the partition is Ryan's to mark and the composition cells
+read it by machine. The detaching player sent a machine 219 times: its lone fights rose to 324
+(279) at 19% won (14%), and it won no battle: a detachment pays, as the design wants, and the
+patrols cost more than their tenth.
+
+Salvage by menace: a won battle banks 246 (230 to 254) at 2 a point of menace where ten a kill
+banked 163 (100 to 320), on 6 won battles against 23, so the constant reads about half again high
+at a won battle and is the economy pass's number (section 10); components destroyed a won battle
+0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
+reads of the fights' shape stay the quick campaign's until a runner player fields a squad
+(section 12).

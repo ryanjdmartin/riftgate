@@ -15,7 +15,11 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `unit.gd` mechs, packs, city defenses on the battlefield
   - `battlefield.gd` the turn's rules: every pack's walk on the enemy's turn (a pusher to the
     gate, a hunter to its prey, round the machines), the fights hunters force, who joins a
-    fight by ring and who can be committed by attack range, gate strikes, Rift Pressure
+    fight by ring and who can be committed by attack range, the wall struck from anywhere
+    along it, Rift Pressure's peaks (the rift's cycle, the tears and the seam)
+  - `ramp.gd` the ramp, one table of placeholders by the Convergence: the compositions on the
+    field at the start and their density, the timer, the tears a peak and the seam's creep,
+    and by the tier the Fractures and which of them bring an elite
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
@@ -36,16 +40,18 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     `user://profile.json`
   - `battle.gd` one battle end to end: the player's turn (moves at once, one fight at a time,
     a fight spends a machine's action, the Dingo's first of two, a hunter's catch first), the enemy's turn, until the gate
-    falls, the team is wrecked, or the boss dies
+    falls, the team is wrecked, or the boss dies; the Rupture meter's tally by menace, its
+    Fractures, the elites at them, the boss's seal and the stall guard
   - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
-    and its shop, salvage, the between-battle rules, the turn's bleed and drain, the finale
+    and its shop, salvage by menace and Anathema, the between-battle rules, the turn's bleed
+    and drain, the rift's tier locked as it opens and the ramp, the finale
   - `quick_run.gd` the quick campaign: battles without the map, each its fights back to back
     against one domain's formations and elites, then its boss (or from tier two its final),
     the tier's escort beside it; the loot, the token and a maker's offer when the boss falls;
     the hangar's verbs between battles
   - `profile.gd` what outlives a run: the pool, the codex, the tier, the favour piece
   - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
-    `policy.gd`), for the campaign runner
+    `policy.gd`; the turtle and the detaching personas), for the campaign runner
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
   `foes.json`, `chassis.json`, `components.json`, `modules.json`. Placeholder numbers. `reserved_names.json` is
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
@@ -133,8 +139,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design's one home, with a README; the makers' proposal files
   were folded into them and retired on 15 October), the economy pass's brief
   (`economy_pass.md`), the bosses' slate
-  (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
-  curve and the fronts (`curve_proposal.md`) and the mechanics audit of 25 October
+  (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`) and the mechanics audit of 25 October
   (`mechanics_audit.md`), each retired once its decisions are rows and content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
@@ -239,7 +244,12 @@ perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.g
 # --solo walks each machine toward its own nearest enemy, the rule before 26 October, for
 # comparison. --withdraw N puts the fight bot's withdrawing persona on every fight the player
 # picks (withdraw under N percent of the fighters' hull; a hunter's catch is fought out), and the
-# report then counts the fights withdrawn from
+# report then counts the fights withdrawn from. --turtle holds the squad on the two rows before
+# the gate at its columns, fighting only what comes within reach (the stall's read, 30 October);
+# --detach sends one machine at the nearest patrol within five hexes while the body fights the
+# nearest formation (a detachment's price). The report reads the Rupture meter and the mouths
+# (Fractures, the Rupture and the stall guard, peaks, what the rift and the tears sent, elites,
+# menace killed, gate damage) and the fights by what they held (patrols, formations, elites, the boss)
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40 --withdraw 50 --out /tmp/campaign_w50.md
 

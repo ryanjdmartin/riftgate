@@ -9,7 +9,8 @@ extends RefCounted
 ## elites and which, the boss's numbers and escort. The ramp sets the count and the speed: the
 ## compositions on the field at the start and their density, Rift Pressure's fill, the tears a
 ## peak, the seam's creep. The interval step inside a battle is on the table at zero until the
-## turtle read asks for it (docs/briefs/fresh_start.md). Every number here is a placeholder,
+## turtle read asks for it (the bible's stall row; the brief: git show 85e28fd:docs/briefs/fresh_start.md).
+## Every number here is a placeholder,
 ## measured by the campaign runner and moved on Ryan's word.
 
 const TOP := 12   # the Convergence the finale is due at (Campaign.FINALE_AT)

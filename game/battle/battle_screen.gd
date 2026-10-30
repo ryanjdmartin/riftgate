@@ -330,8 +330,16 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 
 # ---------------------------------------------------------------- refresh
 
+## RIFTGATE_PEAK_DEBUG=1: Rift Pressure peaks every enemy turn, so the tears, the seam's creep
+## and the mouths' sends can be judged running within a few turns (the pacing session, 30
+## October; placeholders all).
+static var PEAK_DEBUG := OS.get_environment("RIFTGATE_PEAK_DEBUG") == "1"
+
+
 func _refresh() -> void:
 	var f := battle.field
+	if PEAK_DEBUG:
+		f.rift_pressure_max = 1
 	var planning := battle.state == Battle.State.PLAN
 	var playing := _map.is_playing()
 	# Plain words (Ryan, 22 September): the turn, and how long until the rift spawns. The
