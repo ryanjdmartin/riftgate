@@ -24,7 +24,9 @@ extends RefCounted
 ## percentage; `cool_above` keeps each machine's gauge under a share of its maximum, pricing the
 ## heat a spend leaves above that line as an overheat's hull, so it vents early and holds a hot
 ## gun there (the heat report's cautious persona, 30 October; the rungs as they are play the
-## reckless one, cooling only against an overheat). The weights here trade mech hull against
+## reckless one, cooling only against an overheat); `shield_ahead` values a shield left standing
+## by the blows it turns next round, where the rungs bank it at a fifth of a point (the support
+## ladders' bot, 30 October). The weights here trade mech hull against
 ## foe hit points and are knobs for the tool, not the game. Nothing here is shown to the player.
 
 const RANDOM := 0
@@ -64,10 +66,12 @@ const REROLL_SHARE := 0.4        # a team reroll more (Rallied), as a share of t
 const AMMO_SHARE := 0.5          # an ammo (the Musk Ox's magazine), as a share of the best damage a gun on its die buys with one
 const PRIMED_WORTH := 2.0        # a stack of Primed on a foe (28 October): the Burning its next move leaves, a placeholder
 const REGEN_ACTIONS := 3         # the actions a foe's Regenerating runs from its grant (Effects.regenerating's clock)
+const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a share of one this round (the fight may end, the foes pick afresh)
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
 var cool_above: int = 0          # persona: keep the gauge under this percent of the maximum (0: cool only against an overheat)
+var shield_ahead: bool = false   # persona: a standing shield valued by the blows it turns next round (the support ladders' bot, 30 October)
 var rng := RandomNumberGenerator.new()
 
 ## What the fight cost and how it was played, for the runner to tally.
@@ -263,6 +267,7 @@ func rollout(sk: Skirmish, c: Dictionary, seed_value: int) -> float:
 	copy.rng.seed = seed_value
 	var g := Policy.make(GREEDY, seed_value)
 	g.cool_above = cool_above   # the persona's habit plays the future out too
+	g.shield_ahead = shield_ahead
 	if not copy.assign(int(c["mech"]), _mirror(copy, sk, c.get("target")), _mirror(copy, sk, c.get("second"))):
 		return -INF
 	g.play_round(copy, false)
@@ -1329,7 +1334,15 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, overshield:
 		score += DEATH_WEIGHT
 	# What stands afterwards: an overshield's excess fades at the round's end, so only the
 	# shield up to the maximum banks.
-	score += float(maxi(0, mini(power, who.unit.shield_max - who.unit.shield))) * BANK_WEIGHT
+	if shield_ahead:
+		# The persona (30 October): what this shield leaves standing past the round's blows turns
+		# next round's, the hull the foes' blows would take off an average machine, at a share for
+		# the round away; the rest banks as ever.
+		var stand := maxi(0, mini(int(after["shield_after"]), who.unit.shield_max) - mini(int(before["shield_after"]), who.unit.shield_max))
+		var ahead := minf(float(stand), next_round_hull(sk, who))
+		score += ahead * HULL_WEIGHT * AHEAD_SHARE + (float(stand) - ahead) * BANK_WEIGHT
+	else:
+		score += float(maxi(0, mini(power, who.unit.shield_max - who.unit.shield))) * BANK_WEIGHT
 	# An escort's passive sheds the ally's heat as it shields (on_shield_granted): worth what
 	# a vent of that much would be, on an ally only.
 	if by != null and by != who:
@@ -1337,6 +1350,17 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, overshield:
 		if vent > 0:
 			score += vent_score(sk, who, vent)
 	return score
+
+
+## The hull the foes' blows would take off an average machine next round (the shield persona's read
+## of a standing shield): every live foe's blow on the field as its intent shows it, less this
+## machine's armour a blow, spread over the live machines, since a foe without an aim picks at random.
+func next_round_hull(sk: Skirmish, who: Skirmish.MechState) -> float:
+	var total := 0.0
+	for foe in sk.field_foes():
+		if foe.alive():
+			total += float(maxi(0, sk.foe_blow(foe) - who.unit.armour) * maxi(1, foe.strikes()))
+	return total / float(maxi(1, sk.live_mechs().size()))
 
 
 ## A lure on the foes an entry reaches: the team's hull the redirect saves this round, and

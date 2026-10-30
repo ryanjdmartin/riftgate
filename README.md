@@ -214,6 +214,8 @@ python3 tools/pages/bible_tables.py
 # --overheat 2 (a what-if: an overheat burns two hull a point past the maximum; the driver's too),
 # --burnout and --overheat-corrupt 1 (what-ifs on the component that took the gauge past the maximum:
 # burnt out once the burn reaches the injury threshold, or Corrupted a stack every overheat; the driver's too),
+# --shield-ahead (the shield persona: a shield left standing valued by the blows it turns next round,
+# where the rungs bank it at a fifth of a point; the driver's too, for the support ladders),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its

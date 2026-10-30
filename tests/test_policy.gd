@@ -156,6 +156,31 @@ func test_the_bot_prices_a_burnout_and_an_overheats_corruption() -> void:
 	assert_eq(again, 0.0, "one overheat a turn: a spend that only deepens it lays no more")
 
 
+## The shield persona (30 October, the support ladders' bot): a shield left standing past this
+## round's blows is worth the hull it turns next round, the foes' blows on an average machine at
+## a share for the round away, where the rungs bank it at a fifth of a point.
+func test_the_shield_persona_values_a_standing_shield_by_next_rounds_blows() -> void:
+	var sk := Skirmish.new(3)
+	var a := _mech("A", Die.single(Face.shield(8)), 40, 100)
+	a.shield = 0
+	sk.add_mech(a)
+	sk.add_mech(_mech("B", Die.single(Face.attack(5, L)), 40, 100))
+	var g := _ghoul(300, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[1]   # the blow this round falls on the other machine: the shield on A saves nothing now
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var plain := Policy.make(Policy.GREEDY)
+	var ahead := Policy.make(Policy.GREEDY)
+	ahead.shield_ahead = true
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 5.0) < 0.001, "a blow of ten over two machines")
+	var p := plain.shield_score(sk, ms, 8)
+	var q := ahead.shield_score(sk, ms, 8)
+	assert_true(absf(p - 8.0 * Policy.BANK_WEIGHT) < 0.001, "the rungs bank the eight: %f" % p)
+	assert_true(absf(q - (5.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE + 3.0 * Policy.BANK_WEIGHT)) < 0.001, "the persona: five of it turns next round's blow, the rest banks: %f" % q)
+
+
 func test_greedy_rerolls_a_face_under_the_average() -> void:
 	# A die of one blank and one big gun: whichever shows first, the bot ends the round on
 	# the gun, having rerolled the blank away (a reroll never lands on the same entry).
