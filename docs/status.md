@@ -457,6 +457,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   first line and its trailing `</body></html>` stripped from the saved live source). With
   every branch landed, the file holds no rows ahead of code, and the tables script may run
   freely again.
+  Not yet published from `ccr-c04908be-3r43xf` (30 October): its rows of 27 to 29 October (the
+  pricing pass's effectiveness and pricing rows, the heat triangle, the maker leans, Chain's row
+  and the rows Shock's reading touched, section 12's heat and Chain items) are on no live page.
+  The live page had moved to v0.373 past main's v0.372 (four lines: the version, the phone's
+  line widths and its owed reads, a sound question), and the three-way merge onto it is clean;
+  the next publish from this branch reads the live page whole, merges and publishes v0.374.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
