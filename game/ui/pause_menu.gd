@@ -39,7 +39,7 @@ const TOOL_ROW := 66.0     # the colours page's row of tools above its BACK
 
 ## The keywords list's kinds, in the order the page shows them: the vocabulary's category and the
 ## page's heading for it.
-const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"]]
+const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"], ["foe", "FOES' MOVES"]]
 
 var _scrim: ColorRect
 var _panel: HudPanel
@@ -394,7 +394,9 @@ class BusyMask extends Control:
 
 
 ## The keywords list as data: each kind's heading and its terms, [name, codex, id] sorted by
-## name; only what the engine runs (a planned term is never shown).
+## name; only what the engine runs (a planned term is never shown), and of the foes' words only the
+## keywords their moves carry, those with an icon of their own (Terms), never the engine's (its aim,
+## its menace).
 static func glossary(db: ContentDB) -> Array:
 	var out: Array = []
 	for kind in GLOSSARY:
@@ -402,6 +404,8 @@ static func glossary(db: ContentDB) -> Array:
 		for id in db.vocabulary.keys():
 			var e: Dictionary = db.vocabulary[id]
 			if str(e.get("category", "")) == str(kind[0]) and str(e.get("status", "")) == "implemented":
+				if str(kind[0]) == "foe" and not Terms.has(str(id)):
+					continue
 				entries.append([str(e.get("name", id)), str(e.get("codex", "")), str(id)])
 		entries.sort_custom(func(a: Array, b: Array) -> bool: return str(a[0]).naturalnocasecmp_to(str(b[0])) < 0)
 		if not entries.is_empty():

@@ -232,6 +232,12 @@ func _apply_pose() -> void:
 				var st: Dictionary = Effects.STATUS[ids[k]]
 				Effects.stack(foe, st, Effects.SKIRMISH, "shot", 1 if ids[k] == "shocked" else 2, Effects.status_decay(st))
 				k += 1
+		"swallowed":
+			# A foe's swallow on the first machine (30 October, Floraison's): out of the fight for two
+			# rounds, drawn as a ghost under a dashed edge, its chip the maw.
+			var sw: Unit = s.sk.mechs[0].unit
+			Effects.grant_for_rounds(sw, Effects.STATUS["swallowed"], "swallow:0:shot", s.sk.round + 2)
+			s.sk.mechs[0].assigned = true
 			s._refresh()
 		"enemyturn":
 			# Thin every shield so the enemy turn breaks some: the replay and shatter play.

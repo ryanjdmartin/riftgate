@@ -140,10 +140,10 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "marsh")
 	var only := db.foes_for(boss)
 	assert_eq(only.size(), 1, "a boss unpacks to just its boss")
-	assert_eq(only[0].display_name, str(db.foes[str(db.factions["marsh"]["boss"])]["name"]), "the Marsh's boss, whatever the content names it")
+	assert_eq(only[0].display_name, str(db.foes[db.bosses_of("marsh")[0]]["name"]), "the Marsh's first boss, whatever the content names it (a domain's bosses are a list since the slate)")
 	assert_true(only[0].boss, "and the content marks it the boss")
 	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "peak"))
-	assert_eq(pit[0].display_name, str(db.foes[str(db.factions["peak"]["boss"])]["name"]), "the Peak's boss")
+	assert_eq(pit[0].display_name, str(db.foes[db.bosses_of("peak")[0]]["name"]), "the Peak's first boss")
 
 
 func test_spawn_table_lists_the_factions_units() -> void:
@@ -468,7 +468,7 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var fid := str(db.factions.keys()[0])
-	var small: Dictionary = db.foes[str(db.factions[fid]["boss"])].duplicate(true)
+	var small: Dictionary = db.foes[str(db.bosses_of(fid)[0])].duplicate(true)
 	small["size"] = 1
 	db.foes["small_boss"] = small
 	db.factions[fid]["boss"] = "small_boss"

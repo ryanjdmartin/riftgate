@@ -1129,6 +1129,7 @@ func _refresh(save: bool = true) -> void:
 		# A form the model holds while the machine carries its status (the Armadillo's seal).
 		if i < _mech_3d.size() and _mech_3d[i] != null:
 			_mech_3d[i].hold_forms(ms.unit)
+		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
 		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
@@ -1595,6 +1596,8 @@ static func status_glyph(id: String) -> String:
 			return "lock"
 		"phased":
 			return "phased"
+		"swallowed":
+			return "swallowed"
 		"rallied":
 			return "reroll"
 		"barrier":

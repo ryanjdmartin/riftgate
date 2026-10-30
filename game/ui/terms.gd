@@ -1,8 +1,8 @@
 class_name Terms
 extends RefCounted
 
-## The terms the keywords list defines (its reach, keywords, rules on a component and statuses:
-## PauseMenu.GLOSSARY), each with its icon and its colour: the one table the die's marks, the
+## The terms the keywords list defines (its reach, keywords, rules on a component, statuses and
+## the keywords a foe's move carries: PauseMenu.GLOSSARY), each with its icon and its colour: the one table the die's marks, the
 ## chips and shown text read, so a term looks the same wherever it shows (Ryan, 30 October:
 ## "standardize the keyword colours ... We don't need a unique colour for each keyword,
 ## obviously. Just groups that kind of make sense. Neutral white or grey or whatever is also
@@ -28,7 +28,7 @@ const TABLE := {
 	"suppress": ["suppress", "guard"], "web": ["web", "guard"], "swap": ["swap", "guard"],
 	"dispel": ["dispel", "guard"], "cleanse": ["cleanse", "guard"], "overshield": ["overshield", "guard"],
 	"expose": ["expose", "harm"],
-	"disable": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"],
+	"disable": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"], "steal": ["steal", "enemy"],
 	# Rules on a component.
 	"damage_range": ["", "plain"], "targets": ["", "plain"], "strikes": ["", "plain"],
 	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"],
@@ -48,8 +48,13 @@ const TABLE := {
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
 	"exposure": ["exposed", "harm"], "destroyed_component": ["crack", "harm"],
 	"corrupted": ["corrupt", "enemy"], "disabled": ["blank", "enemy"], "silenced": ["silence", "enemy"],
-	"risen": ["star", "enemy"], "regenerating": ["regenerating", "enemy"],
+	"risen": ["star", "enemy"], "regenerating": ["regenerating", "enemy"], "swallowed": ["swallowed", "enemy"],
 	"rallied": ["reroll", "plain"], "quick_turned": ["rapid", "plain"],
+	# A foe's moves: the keywords they carry, the list's last heading. A foe-side word without a row
+	# here (its aim, its menace, the seal) is the engine's and stays out of the list.
+	"scorch": ["scorch", "heat"], "silence": ["silence", "enemy"], "swallow": ["swallowed", "enemy"],
+	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
+	"follow_up": ["next", "enemy"], "last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
 }
 
 ## An engine status keyed apart from its term: a machine's Burning, the Badger's hopper.
@@ -114,7 +119,7 @@ static func status_colour(status_id: String) -> Color:
 
 
 ## What one term is, over its tip: the list's headings (PauseMenu.GLOSSARY) for one.
-const KINDS := {"reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS"}
+const KINDS := {"reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS", "foe": "A FOE'S MOVE"}
 
 
 ## The list's entry for a term, for its tip: its name, its line and what kind of term it is.
@@ -172,6 +177,8 @@ static func _build() -> void:
 			var e: Dictionary = db.vocabulary[id]
 			if str(e.get("category", "")) != str(kind[0]) or str(e.get("status", "")) != "implemented" or UNMATCHED.has(str(id)):
 				continue
+			if str(kind[0]) == "foe" and not TABLE.has(str(id)):
+				continue   # a foe-side word that is the engine's (its aim, its menace), never a move's keyword
 			var name := str(e.get("name", ""))
 			if name.is_empty():
 				continue

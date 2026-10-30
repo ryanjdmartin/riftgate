@@ -83,7 +83,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     presets, the enemy's four violets and the meanings, set by wheel, sliders or hex and kept in
     `user://settings.cfg`; PEEK hides the menu until a tap, COPY puts the picks on the
     clipboard as `KEY #rrggbb` lines, RESET ALL asks twice; headless runs and other builds keep
-    no picks), `terms.gd` (the one table of every term the keywords list defines, its icon and
+    no picks), `terms.gd` (the one table of every term the keywords list defines, a foe's move
+    keywords among them, its icon and
     its colour group, read by the die's marks, the chips and the text, and the matcher that
     finds the terms in shown text), `keyword_tip.gd` (a term's entry, opened by a tap on it in
     any text), the feed
@@ -236,8 +237,9 @@ python3 tools/pages/bible_tables.py
 # twin with that module fitted to every machine, the differences in a section of their own; for prices, --bump armour:5
 # (repeatable: hull, shield, armour, heat, cooling, or damage on every blow) gives every machine
 # that much more, --nopassive strips every chassis's passive, and --set
-# components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only
-# (repeatable, never validated: knock-outs and what-ifs), and --fit badger=ram_frame,tactical_databank
+# components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only (under
+# components/, chassis/, modules/ or foes/: foes/behemoth/hp=48 reads a boss at another HP;
+# repeatable, never validated: knock-outs and what-ifs), and --fit badger=ram_frame,tactical_databank
 # (repeatable) fits those modules to every machine of that chassis; compare each against the same seeds without;
 # --trace "sparrowhawk|goblin x6|greedy|3" plays that one fight and prints its log instead.
 # --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
@@ -359,7 +361,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
 # enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
-# and groundtear (the corrupted side's tear as it fires).
+# and groundtear (the corrupted side's tear as it fires), and swallowed (the first machine swallowed: a ghost under a dashed edge).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
 # and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
 # The skirmish's controls (any run, the battle's fights too): RIFTGATE_SKIRMISH_CONTROLS=bottom|middle overrides

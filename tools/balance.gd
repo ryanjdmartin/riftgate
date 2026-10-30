@@ -505,7 +505,14 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	else:
 		for n in range(int(p["strength"])):
 			foes.append(db.make_foe(p["foe"]))
-	sk.add_foes(foes)
+	# As in a battle (30 October: the runner fielded none of them): a core's parts stand with it,
+	# and a split, a summon and a regrown part call content up, so a Gel splits here as in play.
+	var fielded: Array = []
+	for f in foes:
+		fielded.append(f)
+		fielded.append_array(db.parts_for(f))
+	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
+	sk.add_foes(fielded)
 	sk.begin()
 	var pol := Policy.make(k, seed_value)
 	pol.withdraw_below = withdraw_below
@@ -637,9 +644,9 @@ func _apply_edit(e: String) -> String:
 	var parsed := JSON.new()
 	if parsed.parse(e.substr(eq + 1)) != OK:
 		return "the value is not JSON"
-	var roots := {"components": db.components, "chassis": db.chassis, "modules": db.modules}
+	var roots := {"components": db.components, "chassis": db.chassis, "modules": db.modules, "foes": db.foes}
 	if path.size() < 3 or not roots.has(path[0]):
-		return "a path starts components/, chassis/ or modules/ and names a field"
+		return "a path starts components/, chassis/, modules/ or foes/ and names a field"
 	var node = roots[path[0]]
 	for k in range(1, path.size() - 1):
 		if node is Array and path[k].is_valid_int() and int(path[k]) < node.size():

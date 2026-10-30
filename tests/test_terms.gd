@@ -7,13 +7,12 @@ extends TestCase
 ## vocabulary, never written here, so a rename moves the tests with it.
 
 
+## The terms the keywords list shows, as it shows them (PauseMenu.glossary).
 func _listed(db: ContentDB) -> Array[String]:
 	var out: Array[String] = []
-	for kind in PauseMenu.GLOSSARY:
-		for id in db.vocabulary.keys():
-			var e: Dictionary = db.vocabulary[id]
-			if str(e.get("category", "")) == str(kind[0]) and str(e.get("status", "")) == "implemented":
-				out.append(str(id))
+	for kind in PauseMenu.glossary(db):
+		for e in kind["entries"]:
+			out.append(str(e[2]))
 	return out
 
 
@@ -50,6 +49,18 @@ func test_every_term_the_list_shows_has_its_row_and_only_they() -> void:
 		assert_true(Terms.has(id), "%s, in the keywords list, has its icon and its colour" % id)
 	for id in Terms.TABLE.keys():
 		assert_true(db.vocabulary.has(str(id)), "%s is a vocabulary term" % id)
+		assert_true(listed.has(str(id)) or str(db.vocabulary[str(id)].get("status", "")) != "implemented", "%s shows in the list" % id)
+	# Every reach, keyword, rule and status the engine runs is listed; of the foes' words, the move
+	# keywords the table carries, never the engine's own (the table has no row for them).
+	for id in db.vocabulary.keys():
+		var e: Dictionary = db.vocabulary[id]
+		if str(e.get("status", "")) == "implemented" and str(e.get("category", "")) in ["reach", "keyword", "component_property", "status"]:
+			assert_true(listed.has(str(id)), "%s, a %s, is listed" % [id, e.get("category", "")])
+	var foes := 0
+	for id in listed:
+		if str(db.vocabulary[id].get("category", "")) == "foe":
+			foes += 1
+	assert_true(foes >= 8, "the foes' move keywords have a heading of their own")
 
 
 func test_a_term_draws_a_real_icon_in_a_meaning_never_a_hud_preset() -> void:
