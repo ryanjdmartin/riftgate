@@ -316,6 +316,8 @@ func make_foe(foe_id: String) -> Foe:
 					act[k] = int(a[k])   # the stacks the rider lays a blow
 			if a.has("countdown"):
 				act["countdown"] = int(a["countdown"])
+			if a.has("power"):
+				act["power"] = str(a["power"])   # a borrowed swing: the number of what a steal took (30 October)
 		else:
 			# A defend, buff or debuff: its effect and the fields it reads (Foe.ACTION_EFFECTS).
 			act = {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
@@ -329,6 +331,8 @@ func make_foe(foe_id: String) -> Foe:
 			act["aim"] = str(a["aim"])
 		if a.has("when"):
 			act["when"] = Foe.whens_of(a)
+		if a.has("then"):
+			act["then"] = str(a["then"])   # the follow-up it announces next round (30 October)
 		acts.append(act)
 	# The first attack leads, so a foe's opening intent is its blow.
 	for i in range(acts.size()):
@@ -1728,6 +1732,34 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: unknown condition '%s' (moves know %s)" % [aw, str(w), ", ".join(Foe.WHENS)])
 		if a.has("swarm") and (str(a.get("kind", "")) != "attack" or int(a["swarm"]) < 0):
 			errs.append("%s: swarm is an attack's, so much more per kin on the field, never negative" % aw)
+		# A follow-up (30 October): `then` names another move of the same foe, which comes only the
+		# round after this one lands; one deep, so the move it names names none of its own.
+		if a.has("then"):
+			var named := str(a["then"])
+			var found: Dictionary = {}
+			for o in acts:
+				if o is Dictionary and str(o.get("id", "")) == named:
+					found = o
+			if named == str(a.get("id", "")):
+				errs.append("%s: then names the move itself" % aw)
+			elif found.is_empty():
+				errs.append("%s: then names '%s', which is no move of this foe" % [aw, named])
+			elif found.has("then"):
+				errs.append("%s: then names '%s', which names a follow-up of its own; follow-ups are one deep" % [aw, named])
+			elif str(found.get("status", "")) != str(a.get("status", "")):
+				errs.append("%s: then names '%s', whose status differs; a move and its follow-up land together" % [aw, named])
+		# A borrowed swing (30 October): an attack whose number is what a steal took, so it comes
+		# only as the follow-up of a blow that steals.
+		if a.has("power"):
+			if str(a["power"]) != "held" or str(a.get("kind", "attack")) != "attack":
+				errs.append("%s: power is an attack's, and the one word it knows is held" % aw)
+			else:
+				var stolen_by := false
+				for o in acts:
+					if o is Dictionary and str(o.get("then", "")) == str(a.get("id", "")) and Array(o.get("keywords", [])).has("steal"):
+						stolen_by = true
+				if not stolen_by:
+					errs.append("%s: a borrowed swing (power held) is the follow-up of a blow that steals; name it in that blow's then" % aw)
 		if str(a.get("status", "")) == "implemented":
 			if str(a.get("kind", "")) != "attack":
 				# A defend, buff or debuff names an effect the engine runs and the fields it reads.
@@ -1761,6 +1793,10 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
 				if ["burn", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
 					errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
+				# A swallow (30 October) says the rounds its machine is out, 1 to 3: hard control on
+				# the team, held short.
+				if effect == "swallow" and (int(a.get("value", 0)) < 1 or int(a.get("value", 0)) > 3):
+					errs.append("%s: a swallow's value is the rounds its machine is out, 1 to 3" % aw)
 				for key in ["factor", "strikes", "keywords", "countdown"] + Foe.NUMBERED_RIDERS:
 					if a.has(key):
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])

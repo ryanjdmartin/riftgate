@@ -955,6 +955,7 @@ func _refresh(save: bool = true) -> void:
 				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms)))
 			v.bars.append([ms.ammo, ms.ammo_max, Palette.SELECT, after, 1])
 		v.dead = not ms.alive()
+		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
 		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
@@ -1423,6 +1424,8 @@ static func status_glyph(id: String) -> String:
 			return "lock"
 		"phased":
 			return "phased"
+		"swallowed":
+			return "swallowed"
 		"rallied":
 			return "reroll"
 		"barrier":

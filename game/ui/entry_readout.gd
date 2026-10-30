@@ -256,6 +256,8 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	var aimed := "" if aim == Foe.AIM_ANYTHING else ", " + str(Foe.AIM_TEXT.get(aim, aim))
 	if Foe.is_attack_action(a):
 		var line := [word("Attack"), num(str(dmg), dmg, own) if live else word(str(dmg))]
+		if Foe.swings_held(a) and (not live or f.held.is_empty()):
+			line = [word("Attack: what it took")]   # a borrowed swing (30 October): its number is the stolen piece's
 		var n := maxi(1, int(a.get("strikes", 1)))
 		if n > 1:
 			line.append(word("×%d" % n))
@@ -279,6 +281,13 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	if count > 0:
 		var left := f.charge if live and f.gathering() and f.pending.get("id", "") == a.get("id", "") else count
 		out.append(text_line("effect", "Lands next round" if left == 1 else "Lands in %d rounds" % left, "attr"))
+	# A follow-up (30 October): the pair says itself, so the second never reads as a move of the roll.
+	var follows := str(a.get("then", ""))
+	if not follows.is_empty():
+		out.append(text_line("effect", "Then %s, next round" % _move_name(f, follows), "attr"))
+	for o in f.actions:
+		if str(o.get("then", "")) == str(a.get("id", "")) and not str(a.get("id", "")).is_empty():
+			out.append(text_line("effect", "Only after %s" % str(o.get("name", "")), "attr"))
 	var whens := Foe.whens_of(a)
 	if not whens.is_empty():
 		var said: Array[String] = []
@@ -296,6 +305,14 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	if not text.is_empty():
 		out.append(text_line("rule", text, "rule"))
 	return out
+
+
+## A foe's move's name by its id, or the id when it has none.
+static func _move_name(f: Foe, id: String) -> String:
+	for o in f.actions:
+		if str(o.get("id", "")) == id:
+			return str(o.get("name", id))
+	return id
 
 
 ## The codex's row for a foe's move: its name, then move_lines' groups joined, at its own numbers.

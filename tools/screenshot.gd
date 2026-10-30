@@ -202,6 +202,13 @@ func _apply_pose() -> void:
 			Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TURN_ALL)
 			Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TICK)
 			s._refresh()
+		"swallowed":
+			# A foe's swallow on the first machine (30 October, Floraison's): out of the fight for two
+			# rounds, drawn as a ghost under a dashed edge, its chip the maw.
+			var sw: Unit = s.sk.mechs[0].unit
+			Effects.grant_for_rounds(sw, Effects.STATUS["swallowed"], "swallow:0:shot", s.sk.round + 2)
+			s.sk.mechs[0].assigned = true
+			s._refresh()
 		"enemyturn":
 			# Thin every shield so the enemy turn breaks some: the replay and shatter play.
 			for ms in s.sk.mechs:

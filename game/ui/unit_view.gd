@@ -49,6 +49,7 @@ var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...
 var highlight: bool = false       # valid drop target while dragging a die
 var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
+var away: bool = false             # out of the fight, swallowed (30 October): drawn as a faint ghost under a dashed edge
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
 var pixel_snap := false           # a foe's pixel art: scaled by whole device pixels, not design pixels (below)
 var used_override := Rect2()      # the drawing's extent inside the sprite, when the caller knows it (a 3D view's model bounds)
@@ -398,7 +399,9 @@ func _draw() -> void:
 		if _glitch >= 0.0 and not dead:
 			_draw_glitched(frame)
 		else:
-			draw_texture_rect(sprite, frame, false, Color(0.3, 0.3, 0.3) if dead else Color.WHITE)
+			draw_texture_rect(sprite, frame, false, Color(0.3, 0.3, 0.3) if dead else (Color(1, 1, 1, 0.22) if away else Color.WHITE))
+		if away and not dead:
+			_draw_dashed(sil.grow(4.0), Palette.ENEMY, 3.0)
 	else:
 		var edge := Color(Palette.ENEMY_DIM if dead else hud, 0.4)
 		Hud.box(self, sil, 10.0, Color(Palette.PANEL_RAISED, 0.9), edge, 1.0)

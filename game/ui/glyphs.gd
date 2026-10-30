@@ -408,6 +408,16 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var x := -s * 0.6 + i * s * 0.6
 				ci.draw_rect(Rect2(c + Vector2(x - s * 0.17, -s * 0.25), Vector2(s * 0.34, s * 1.05)), color, false, width)
 				ci.draw_arc(c + Vector2(x, -s * 0.25), s * 0.17, PI, TAU, 8, color, width)
+		"swallowed":
+			# Swallowed (a foe's swallow, 30 October): a maw closing on the machine's mark, its teeth
+			# meeting, out of the fight until its rounds run out or its swallower falls.
+			ci.draw_arc(c, s * 0.82, PI * 0.15, PI * 0.85, 10, color, width)
+			ci.draw_arc(c, s * 0.82, PI * 1.15, PI * 1.85, 10, color, width)
+			for i in range(4):
+				var x := -s * 0.48 + i * s * 0.32
+				ci.draw_line(c + Vector2(x, -s * 0.5), c + Vector2(x + s * 0.16, -s * 0.18), color, width)
+				ci.draw_line(c + Vector2(x, s * 0.5), c + Vector2(x + s * 0.16, s * 0.18), color, width)
+			ci.draw_circle(c, s * 0.14, color)
 		"phased":
 			# Phased (the Swallowtail's Mooring Screens, 21 October): the machine's outline gone to
 			# dashes, out of the fight until the round's end.

@@ -468,7 +468,7 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var fid := str(db.factions.keys()[0])
-	var small: Dictionary = db.foes[str(db.factions[fid]["boss"])].duplicate(true)
+	var small: Dictionary = db.foes[str(db.bosses_of(fid)[0])].duplicate(true)
 	small["size"] = 1
 	db.foes["small_boss"] = small
 	db.factions[fid]["boss"] = "small_boss"

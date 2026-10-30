@@ -518,7 +518,8 @@ const FILTER_SPECS = {
   factions: {
     noun: ["faction", "factions"], placeholder: "Name",
     text: e => [e.name, e.id], groups: [EDITS], sorts: [BY_ORDER, BY_NAME],
-    line: e => [e.boss ? "boss " + ((ctx().foes.get(e.boss) || {}).name || e.boss) : "", e.reward_bias ? "rewards lean " + plain(e.reward_bias) : ""],
+    // A domain's bosses are a list since the slate landed (30 October); a lone id reads as one.
+    line: e => { const b = [].concat(e.boss || []).map(id => (ctx().foes.get(id) || {}).name || id); return [b.length ? (b.length === 1 ? "boss " : "bosses ") + b.join(", ") : "", e.reward_bias ? "rewards lean " + plain(e.reward_bias) : ""]; },
   },
   makers: {
     noun: ["maker", "makers"], placeholder: "Name",

@@ -21,9 +21,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 787 tests, 205,261 checks, green (30 October, the pacing session and the foes' fresh
-  start with main's pricing pass, Chain, the cautious heat persona and the tilesets' walls
-  merged in; 778 and 204,668 on main alone), about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 803 tests, 205,496 checks, green (30 October, the slate's first seven bosses on
+  `claude/brave-cori-fr18de`; 787 and 205,261 on main), about four minutes in a cloud session, twenty on a slow one. A cloud
   session gets Godot 4.7's Linux build and the project's first import from the repository's
   session-start hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`,
   27 October, on main since 30 October; the GitHub release asset `godotengine/godot-builds`,
@@ -43,8 +42,10 @@ are in `README.md`.
 (the tilesets' second build before its records pass; the pricing pass, Chain and the cautious
 heat persona after them, on Ryan's word to bring the repricing in; the tilesets' walls and the
 heat grid's read as it landed), and main took it as a fast-forward on 30 October on his word
-("merge this into main"); its bible is v0.393 (the page's 405), onto the live v0.392, other
-sessions' rows on its v0.385.
+("merge this into main"). It then carried the slate's first seven bosses on his word the same
+evening ("build what can be built, and specify exactly what you need to flesh the rest out,
+including any holes"), for main to take on his word; its bible is v0.401 (the page's version
+413), three-way merged onto the live v0.400, and its hangar the page's version 171.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -127,6 +128,27 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- The bosses' slate, seven of twelve (30 October, on Ryan's word; `docs/bosses_proposal.md`, its
+  sections on what landed, what each waiting boss needs and the calls on what landed; the
+  bible's section 9 rows): Rotbloom and Floraison in the Meadow, Gilgamesh and the Fallen
+  Weapon in the Waste, the Matador in the Marsh, the Behemoth and the Cinder Tortoise in the
+  Peak, as runnable placeholder kits, each domain keeping its old massive stand-in last until it
+  has three of its own. Built for them, on any foe: a follow-up (`then`: a move names its foe's
+  next round's move, a Suppress or a Disrupt breaking the pair), a steal with its borrowed swing
+  (the entry a machine shows taken, swung back at its number, a fake for 1 when it was no
+  weapon) and a swallow (a machine Swallowed, out of the fight for two rounds or until its
+  swallower falls, never the last in the fight; drawn as a ghost under a dashed edge); the
+  Behemoth carries the first last act in content and the Fallen Weapon the first boss in parts,
+  its two eyes Guarding its core. The harness fields the boss its picker names (it fielded each
+  domain's first whatever was picked, unnoticed while each had one), the tables script reads a
+  last act where content keeps it, and `--set foes/...` reaches a foe's numbers on the runner.
+  The slate stands at 48 HP at tier one (the core in parts 40, its eyes 8), under the scale
+  row's 80 to 100, which at 80 took the default team 7 to 13 rounds against each boss alone where
+  the kill-time test asks three to five (`docs/measurements.md`, 30 seeds, a direction). Found on
+  the way: the balance runner never set the foe factory, so in every matrix until now a Gel never
+  split, nothing was summoned and no part stood; fixed, and the Gel's, the summoners' and the
+  parts' cells wait on the next 200-seed matrix. Waiting on Ryan: the five unbuilt bosses' marks and the calls on what
+  landed; Rotbloom, Gilgamesh and the eyes have no art until the image model has a route.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -283,9 +305,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
   (their passives and four locked pieces planned, so never dealt); 81 components,
-  32 of them locked; 17 modules; four domains with 49 wildlife (18 at tier one, their bosses
-  among them, the ladder's 26 recolours and five elites as placeholder kits, each tier's
-  compositions partitioned from its list as placeholders) and 8 heroes with their promoted forms; 6 foe moves
+  32 of them locked; 17 modules; four domains with 49 wildlife (18 at tier one, the four
+  stand-in bosses among them, the ladder's 26 recolours and five elites as placeholder kits, each tier's
+  compositions partitioned from its list as placeholders), seven of the slate's bosses and the
+  Fallen Weapon's two eyes as placeholder kits, and 8 heroes with their promoted forms; 6 foe moves
   planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
@@ -392,7 +415,7 @@ The tasks are the to-do's; this is the index of what waits.
 - The Giant Petrel's engine and the Storm Petrel's, the latter free since the pricing pass
   landed on 28 October with the guns' heat standing (their briefs).
 - The Peak's elite and a Waste hunter, the escort compositions by tier and the Fracture's
-  prize (the bible's section 12), with the bosses' slate (`docs/bosses_proposal.md`) and the
+  prize (the bible's section 12), with the bosses' slate's five waiting (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
   silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
@@ -485,7 +508,7 @@ and the streets) main's.
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
 7. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves;
-   the bosses' slate as content alone); the ramp's numbers on Ryan's word; the battery plan's rest (the props' fade, the 3D at 30); audio;
+   the bosses' slate's five waiting, content once marked, seven landed 30 October); the ramp's numbers on Ryan's word; the battery plan's rest (the props' fade, the 3D at 30); audio;
    art; the commander layer after a balance baseline; onboarding before a phone leaves the desk.
 
 ## Pages
@@ -496,54 +519,38 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.393 (the page's version
-  405, published 30 October from `claude/brave-cori-fr18de` as main took it: three-way
-  merged onto the live v0.392, which other sessions moved past this branch's v0.385 at 397 with
-  Godot 4.8 and the AA setting, the enemy's violet, the overlay at one width, the Armadillo's
-  radiators and a track's row, so the file carries their rows ahead of their code; v0.385 was
-  this branch's with main's pricing pass merged in, three-way merged onto the live v0.384, which
-  other sessions moved past main's v0.381 with a track's row, the Armadillo's radiators and acts
-  and the grounds' tones; main's v0.382 at 394, from
-  `ccr-7821127e-kwj874`: the tilesets' walls standing out of their hexes, the lava toward red
-  and the rough set apart, onto the live v0.381 published from main with `ccr-c04908be-3r43xf` merged: the pricing pass's
-  effectiveness and pricing rows, the heat triangle, the maker leans, Chain's row and the rows
-  Shock's reading touched, three-way merged onto the live v0.380, which other sessions moved
-  past main's v0.376 with the foes' fresh start built with the pacing session (this branch's
-  v0.379 at 391: the packs as compositions, the tier locked and the ramp, the tears, the
-  stall's prices, the whole wall struck, the elites at the Fractures, the seal), the music's
-  rounds and the phone's line widths; on v0.376 at 388, from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
-  tilesets' second build, three-way merged onto the live v0.374 that `claude/charming-rubin-h954bp` published with its flush radiators,
-  which carries `claude/jolly-lovelace-scn82y`'s v0.373, the map's lines one width at every zoom;
-  on v0.372 at 384, the first build onto that branch's v0.371, the colour rows' pure red on
-  trial and the rule that a colour is scored against the ground it is drawn on, and the FXAA of
-  the map's own; on v0.365 at 377, Ryan's calls that a domain names no map shape, height is a
-  look alone and a
-  skirmish never reads our own ground). So this file carries
-  those branches' rows ahead of their code (the models' glows, looks and acts, the Armadillo's
-  seal on screen, the skirmish's field, the reds, the tracks in pairs, the map's FXAA and its
-  lines at every zoom, the fresh start's and the pacing's rows) and the Strikes row in
-  the keyword table, and the tables script,
-  which writes the tables from main's content, waits until they land or it reverts that row. The
-  version numbers on the publishing branch's file and the live agree after every publish.
-  Before republishing, read the live page; if another session moved it, publish a three-way
-  merge onto it (`git merge-file` with the last-published file as the base, the wrapper's
-  first line and its trailing `</body></html>` stripped from the saved live source). With
-  every branch landed, the file holds no rows ahead of code, and the tables script may run
-  freely again.
+  `docs/design-bible.html` after every change. This file is v0.401 (the page's version
+  413, published 30 October from `claude/brave-cori-fr18de` with the slate's first seven
+  bosses: three-way merged onto the live v0.400, which other sessions moved past this branch's
+  v0.393 at 405 with the fight's backdrop palette, two tracks' rows, the HUD's mint green, the
+  Armadillo's radiators and the lava's call). Earlier merges onto the live page brought in the
+  same way Godot 4.8 and the AA setting, the enemy's violet, the overlay at one width, the
+  models' glows, looks and acts, the Armadillo's seal on screen, the skirmish's field, the reds,
+  the tracks in pairs and the map's FXAA and lines at every zoom, so this file carries those
+  branches' rows ahead of their code. The tables script writes the tables from this branch's
+  content, so it runs only with its diff read: another branch's Pinion Driver (its two shots)
+  keeps the Strikes row's locked count at 2 where this content counts 1, a cell restored by
+  hand until that branch lands. The version numbers on the publishing branch's file and the
+  live agree after every publish. Before republishing, read the live page; if another session
+  moved it, publish a three-way merge onto it (`git merge-file` with the last-published file as
+  the base, the wrapper's first line and its trailing `</body></html>` stripped from the saved
+  live source). With every branch landed, the file holds no rows ahead of code, and the tables
+  script may run freely again.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 164 (30 October, from `claude/brave-cori-fr18de`
-  with main's pricing pass merged: `content/foes.json` with the elites and the compositions'
-  notes, `content/factions.json` with the compositions, `content/vocabulary.json` with the
-  pacing session's terms and Chain, `content/modules.json` with the pricing pass's lines, its
-  `index.html` and every other file kept as they stood, `edits` empty; `content/components.json`
+  acts on a reloaded page). At the page's version 171 (30 October, from `claude/brave-cori-fr18de`
+  with the slate's first seven bosses: `content/foes.json`, `content/factions.json` with each
+  domain's bosses a list and `content/vocabulary.json` with steal, swallow, Swallowed and the
+  follow-up, onto another session's republish whose `index.html` it keeps but for the factions
+  line, which reads a list of bosses (in `tools/hangar.html` too), every other file kept as it
+  stood, `edits` empty; 164 brought the elites, the compositions, the pacing session's terms,
+  Chain and the pricing pass's module lines; `content/components.json`
   and `content/chassis.json` are `claude/charming-rubin-h954bp`'s copies (the Pinion Driver's two
   shots, the Stingray's lance on its back), so main's pricing numbers reach the Codex when that
-  branch lands and republishes; a publish of another session's the same hour kept these four;
-  160, from `ccr-7821127e-kwj874`:
+  branch lands and republishes; 160, from `ccr-7821127e-kwj874`:
   `content/factions.json`'s note naming the bleeds as the tilesets, onto version 159, its
   `index.html` and every other file kept as they stood, `edits` empty; 154 took the domains' map
   shapes out), on 153 (29 October:

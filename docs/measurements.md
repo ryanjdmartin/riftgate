@@ -3661,3 +3661,54 @@ at a won battle and is the economy pass's number (section 10); components destro
 0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
 reads of the fights' shape stay the quick campaign's until a runner player fields a squad
 (section 12).
+
+## 30 October, the bosses' slate
+
+**The slate's seven read alone, at the scale row's 80 and at 48** (`tools/balance.gd`, 30 seeds,
+the greedy rung, each boss alone with nothing beside it; a direction). Rows: the default team
+(the Honey Badger, the Clydesdale, the Kite), the three makers' trios and a stock four of tier
+ones (the Honey Badger, the Baboon, the Armadillo, the Prairie Dog). The bosses as built, at 80
+(the Fallen Weapon's core 64, its eyes 12), and at 48 by `--set foes/<id>/hp` (the core 40);
+Rotbloom and the Fallen Weapon read on the fixed runner (below), the eyes once more at 8. Mean
+rounds of the fights won, the win rate where under 100%:
+
+| At 80 | Rotbloom | Floraison | Gilgamesh | Fallen Weapon | Matador | Behemoth | Cinder Tortoise | The four stand-ins |
+|---|---|---|---|---|---|---|---|---|
+| Default team | 8.9 | 8.4 | 7.1 | 13.1 (93%) | 8.4 | 8.8 | 10.5 | 3.1 to 4.0 |
+| Minerva's trio | 17.3 (73%) | 17.3 | 13.8 | 26.9 (80%) | 18.6 | 17.2 | 32.1 | 6.4 to 7.1 |
+| Kestrel's trio | 7.6 | 7.8 | 6.8 | 9.4 | 7.6 | 8.1 | 8.5 | 2.8 to 3.7 |
+| Wainwright & Sutler's trio | 18.6 (20%) | 18.5 (83%) | 14.4 | 17.0 (0%) | 18.1 (97%) | 18.1 (97%) | 24.6 | 6.3 to 8.0 |
+| The stock four | 13.2 (97%) | 13.4 | 11.3 | 22.1 | 13.4 | 11.6 | 19.0 | 5.1 to 5.9 |
+
+| At 48 | Rotbloom | Floraison | Gilgamesh | Fallen Weapon, eyes 12 / 8 | Matador | Behemoth | Cinder Tortoise |
+|---|---|---|---|---|---|---|---|
+| Default team | 4.4 | 4.7 | 4.2 | 6.9 / 5.4 | 4.8 | 5.4 | 5.8 |
+| Minerva's trio | 9.7 | 10.0 | 8.4 | 17.4 / 12.5 | 11.2 | 11.0 | 19.3 |
+| Kestrel's trio | 4.2 | 4.8 | 4.2 | 5.4 / 4.6 | 4.5 | 5.5 | 5.1 |
+| Wainwright & Sutler's trio | 12.4 (83%) | 10.7 | 9.0 | 17.1 (13%) / 18.4 (47%) | 10.7 | 11.3 (97%) | 14.4 |
+| The stock four | 8.0 | 8.2 | 7.1 | 14.0 / 11.1 | 8.2 | 7.9 | 11.9 |
+
+Read. The scale row's 80 to 100 for bosses (the bible's section 11), written before any boss
+existed, fails the kill-time test (section 2: a boss three to five rounds for a squad of four,
+with its mechanics) on today's kits: at 80 the default team takes 7 to 13 rounds against each
+alone and the stock four 11 to 22, where the four stand-ins at their 32 to 40 take 3 to 4 and 5
+to 6. At 48 the default team takes 4 to 7 and Kestrel's trio 4 to 5.5, the test's band, while
+the stock four takes 7 to 14 and the slow trios 8 to 19, those kits' own pace (they take the
+stand-ins 5 to 8). So the slate lands at 48 at tier one (60 and 72 at tiers two and three by
+`ContentDB.BOSS_TIERS`), the boss in parts' core at 40 and its eyes at 8: at 12 the eyes grew
+back faster than Wainwright & Sutler's trio could open the core (13% won, 94% of its hull spent),
+at 8 it wins 47%, still the slate's hardest boss for a trio without burst. Alone, most of the
+slate costs little hull (1 to 17% on four of the five rows): long rather than dangerous, its
+threat the mechanics and, in a battle, the escort. The Cinder Tortoise is the slowest: its
+shell's five armour walls the small blows, as meant, and Expose and a breach, its answers, are
+in none of these stock kits. The row's 80 to 100 is Ryan's to keep or move; the 200-seed
+matrix's boss cells and his play read it again.
+
+**The balance runner fielded no split, no summon and no part until 30 October** (found reading
+the Fallen Weapon, whose eyes never stood in its cell): it never set the skirmish's foe factory,
+so a Gel never split there, a Ghost raised nothing, a summoner called nothing up and a core's
+parts never stood (a trace of the default team against four Gels on the old runner: no half
+stepped up; on the fixed one, every Gel split). Every matrix read until then, the 27 October
+200-seed run among them, read those cells so. Fixed the same day: a cell fields a core's parts
+and calls up splits, summons and regrown parts as a battle does. The Gel's, the summoners' and
+the boss in parts' cells are read again at the next 200-seed matrix.
