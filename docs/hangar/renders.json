@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's ninth notes, 30 October.",
-   "note": "Ryan, 30 October: \"Place them flush on the chamfered face above the leg joint, and resize to fit. Split the long rear vent into two squareish ones. Do that, then I'll explain my actual idea.\" The radiators leave the tail's corners: one sunk flush in each flank's chamfer of the band over the hind hip, above the hip's cuff, fourteen along the machine by eight up the slope (what the slope holds there), three louvres along the machine that stand a little out at rest and throw near square to the slope when it vents, the heat glowing between them. The long rear vent is two vents fifteen by twelve, side by side low in the back panel, four louvres each. All of them shut flat sealed (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's tenth notes, 30 October.",
+   "note": "Ryan, 30 October: \"The rear ones can protrude a bit more. During the vent animation, can you desync the vent openings, then close them all at the same-ish time?\" The two rear vents now stand out of the back panel as boxes, their mouths two and a half behind it (the rim had stood six tenths proud). In vent_heat the six vents open one at a time and out of order, between 1.4 and 2.6 seconds in (the right rear vent, the left side vent, the left radiator, the right side vent, the left rear vent, the right radiator), each vent's heat flaring as it opens; held open together, they all shut within a few hundredths of a second of each other at 3.85, the glow dying with them, before the shell rises. Watch it on the Models tab; RIFTGATE_ACTS_DEBUG=vent_heat loops it in the game. The venting shots are now caught at 3.4 seconds, every vent open (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the eighth notes of 30 October (the radiators boxes on the tail's top rear corners, the long vent across the back)",
+    "summary": "Before: the ninth notes of 30 October (the rear vents sunk in the panel, every vent opening at once)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",

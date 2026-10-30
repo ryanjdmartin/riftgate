@@ -1013,15 +1013,17 @@ def armadillo(b):
     # the machine on joints. At rest they stand a little out, a grille over the heat; the vent
     # act throws them near square to the slope, so the heat shows between them to a camera
     # above that flank; sealed, they shut flat with the ports.
-    vents = [_vent(b, [band_obs[1]], (s * 20.5, -31.0, Z0 + 20.5), 0.0, 14.0, 8.0, 3, "louvre_" + ("l" if s < 0 else "r"), 20.0, 80.0, flank=s)
-             for s in (-1.0, 1.0)]   # on the slope (x plus height 41), from the deck's edge to just over the cuff
+    vents = [("radiator_heat_" + t, _vent(b, [band_obs[1]], (s * 20.5, -31.0, Z0 + 20.5), 0.0, 14.0, 8.0, 3, "louvre_" + t, 20.0, 80.0, flank=s, heat="radiator_heat_" + t))
+             for s, t in ((-1.0, "l"), (1.0, "r"))]   # on the slope (x plus height 41), from the deck's edge to just over the cuff
     # The long rear vent split in two (Ryan, the same day: "Split the long rear vent into two
-    # squareish ones"; it had run forty-four across the panel's fifty): two vents fifteen wide
-    # by twelve tall, sunk side by side low in the tail's rear face, four louvres each a little
-    # out at rest that throw their upper edges out with the radiators' (edge on to an eye 30 to
-    # 42 degrees down behind) and shut flat with them.
-    vents += [_vent(b, [band_obs[0]], (s * 12.0, bands[0][0], Z0 + 6.5), 90.0, 15.0, 12.0, 4, "louvre_c" + ("l" if s < 0 else "r"), 10.0, 60.0)
-              for s in (-1.0, 1.0)]
+    # squareish ones"; it had run forty-four across the panel's fifty, then "The rear ones can
+    # protrude a bit more"): two vents fifteen wide by twelve tall side by side low in the
+    # tail's rear face, each box standing out of it, its mouth two and a half behind the panel
+    # and its back a little inside it, four louvres each a little out at rest that throw their
+    # upper edges out (edge on to an eye 30 to 42 degrees down behind) and shut flat with the
+    # radiators'.
+    vents += [("rear_vent_heat_" + t, _vent(b, [band_obs[0]], (s * 12.0, bands[0][0] - 2.5, Z0 + 6.5), 90.0, 15.0, 12.0, 4, "louvre_c" + t, 10.0, 60.0, heat="rear_vent_heat_" + t))
+              for s, t in ((-1.0, "l"), (1.0, "r"))]
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in
     # front of the back weapons. Those are small rectangular protrusions when sealed, and
     # either slide out, or lever up using the forward edge as a pivot, to show the vent face
@@ -1033,7 +1035,8 @@ def armadillo(b):
     # shows its faces to the cameras ahead and behind alike, where a lever on the forward edge
     # shows its face behind only (and that edge runs up the slope, off the machine's axes, so
     # the rig would turn it on three nested joints: rolled square, pitched, rolled back).
-    pops = [_popvent(b, [band_obs[3]], (s * 26.05, 5.5, Z0 + 20.95), s, "vent_pop_" + ("l" if s < 0 else "r")) for s in (-1.0, 1.0)]   # seven up the slope's seventeen
+    pops = [("side_vent_heat_" + t,) + _popvent(b, [band_obs[3]], (s * 26.05, 5.5, Z0 + 20.95), s, "vent_pop_" + t, heat="side_vent_heat_" + t)
+            for s, t in ((-1.0, "l"), (1.0, "r"))]   # seven up the slope's seventeen
 
     # Idle acts, third pass (Ryan, 4 October: some stilted, the weight thrown side to side;
     # heavy, with inertia): curves a part runs on through, the servos' heft (b.move), held
@@ -1134,23 +1137,32 @@ def armadillo(b):
     b.act("come_about", 9.4, tracks, body=body, ease="linear", heft=0.12,
           glow=[(["lamp"], [(3.4, 0.0), (3.9, 8.0), (5.2, 8.0), (5.8, 0.0)])])
     # Venting (Ryan, 29 October: the vents "more active animated", and never while sealed;
-    # then "don't do the double knee bend. Lower down, open vents, close vents, come back up"):
-    # the shell sinks low on its planted feet and settles; the louvres of the radiators and the
-    # rear vents throw open over the flaring heat, the lowest first and the rest a beat
-    # after, as the side vents slide out, all held open while the heat pours out; then the
-    # louvres shut and the side vents slide home as the glow dies, and the shell rises. A
-    # louvre's key is a share of its own throw.
+    # then "don't do the double knee bend. Lower down, open vents, close vents, come back up";
+    # 30 October: "desync the vent openings, then close them all at the same-ish time"): the
+    # shell sinks low on its planted feet and settles; the vents open one at a time and out of
+    # order, a radiator's or a rear vent's louvres the lowest first and the rest a beat after, a
+    # side vent sliding out, each one's heat flaring as it opens; held open together while the
+    # heat pours out, they all shut within a few hundredths of each other as the glow dies,
+    # and the shell rises. A louvre's key is a share of its own throw.
     SINK = -7.0
     tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
-                            [(0.3, 0.0, 0.0, 0.0), (1.2, 0.0, SINK, 0.0), (1.5, 0.0, SINK - 0.3, 0.0), (4.3, 0.0, SINK - 0.3, 0.0), (5.4, 0.0, 0.0, 0.0)])
-    THROW = ((1.5, 0.0), (1.85, 1.06), (2.05, 1.0), (3.6, 1.0), (4.05, 0.0))
-    for vent in vents:
+                            [(0.3, 0.0, 0.0, 0.0), (1.2, 0.0, SINK, 0.0), (1.5, 0.0, SINK - 0.3, 0.0), (4.5, 0.0, SINK - 0.3, 0.0), (5.6, 0.0, 0.0, 0.0)])
+    TIMES = {   # each vent's (opening, shutting), by its heat: apart and out of order, then together
+        "rear_vent_heat_r": (1.4, 3.85), "side_vent_heat_l": (1.7, 3.83), "radiator_heat_l": (1.95, 3.86),
+        "side_vent_heat_r": (2.15, 3.87), "rear_vent_heat_l": (2.4, 3.84), "radiator_heat_r": (2.6, 3.86)}
+    THROW, SHUT = ((0.0, 0.0), (0.35, 1.06), (0.55, 1.0)), 0.45   # a louvre's opening from its own moment; its shutting
+    flare = lambda t0, t1: [(t0, 0.0), (round(t0 + 0.6, 3), 7.0), (t1, 7.0), (round(t1 + 0.65, 3), 0.0)]
+    glow = []
+    for heat, vent in vents:
+        t0, t1 = TIMES[heat]
         for k, (jn, shut, swing) in enumerate(vent):
-            tracks[jn] = [(round(t + 0.05 * k, 3), round(swing * f, 2)) for t, f in THROW]
-    for jn, line, out in pops:   # the side vents slide out of their wells with the louvres, and home with them
-        tracks[jn] = [along(t, out * f, line) for t, f in ((1.5, 0.0), (1.95, 1.0), (3.6, 1.0), (4.1, 0.0))]
-    b.act("vent_heat", 5.8, tracks, body=body, heft=0.1,
-          glow=[(["vent_box_floor"], [(1.5, 0.0), (2.1, 7.0), (3.6, 7.0), (4.3, 0.0)])])
+            tracks[jn] = [(round(t0 + 0.05 * k + t, 3), round(swing * f, 2)) for t, f in THROW] + [(t1, round(swing, 2)), (round(t1 + SHUT, 3), 0.0)]
+        glow.append(([heat], flare(t0, t1)))
+    for heat, jn, line, out in pops:   # the side vents slide out of their wells and home
+        t0, t1 = TIMES[heat]
+        tracks[jn] = [along(t, out * f, line) for t, f in ((t0, 0.0), (t0 + 0.45, 1.0), (t1, 1.0), (t1 + 0.5, 0.0))]
+        glow.append(([heat], flare(t0, t1)))
+    b.act("vent_heat", 6.0, tracks, body=body, heft=0.1, glow=glow)
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a heavy walk in diagonal pairs, each foot planted flat while the shell passes
     # over it, lifted and stamped down; the shell level but for its drop onto each pair. The
@@ -1181,7 +1193,7 @@ def armadillo(b):
         tracks["run_" + tag] = [along(0.0, 0.0, FWD), along(T_SINK, -SINK_F, FWD)]
     for jn, (hx, hy, hz) in shutters.values():
         tracks[jn] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG1, 0.0, 0.0, 0.0, hx, hy, hz)]
-    for vent in vents:   # every vent shuts flat as the plugs close
+    for _, vent in vents:   # every vent shuts flat as the plugs close
         for jn, shut, swing in vent:
             tracks[jn] = [(0.0, 0.0), (T_PLUG0, 0.0), (T_PLUG1, shut)]
     eased = lambda u: u * u * (3.0 - 2.0 * u)
@@ -1189,7 +1201,7 @@ def armadillo(b):
     limbs4 = [limb(leg) for leg in ("fl", "fr", "hl", "hr")]
     legs_t, body = _planted(limbs4, [(0.0, 0.0, 0.0, 0.0)] + hunker)
     tracks.update(legs_t)
-    b.form("sealed", T_ALL, tracks, glow=[(["lamp", "vent_box_floor"], -1.0)], body=body)
+    b.form("sealed", T_ALL, tracks, glow=[(["lamp"] + [heat for heat, _ in vents] + [p[0] for p in pops], -1.0)], body=body)
     # Sealed, it plays acts of its own from the hunker (Ryan, 29 October: "the animations set
     # shouldn't be the same, its base pose should be hunkered down in a defensive position"):
     # it braces lower and back as for a blow, rocks its weight back onto its hinds and forward
@@ -4300,9 +4312,9 @@ def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe
     return name, tuple(axis * depth)
 
 
-def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0, flank=None):
+def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0, flank=None, heat="vent_box_floor"):
     """An armoured louvred vent (the Armadillo's radiators): a dark steel box `width` by
-    `height` with heat banked in its floor (the part a glow names, `vent_box_floor`), a
+    `height` with heat banked in its floor (the part a glow names, labelled `heat`), a
     stripe rim round its mouth, and `slats` heavy louvres across the mouth, each on a pitch
     joint `<prefix><k>`, the lowest first. Sunk into a face of the shell, a hole cut through
     `cutting` for it, the rim standing `proud` of the face; or, given a `housing` material,
@@ -4344,7 +4356,7 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
         _rings(b, [frame(hw, hh, -depth), frame(hw, hh, proud - 0.3), frame(iw, ih, proud - 0.3), frame(iw, ih, -depth)], "steel.dark", "vent_box", tiles)
     _rings(b, [frame(hw, hh, proud - 0.9), frame(hw + rim, hh + rim, proud - 0.9), frame(hw + rim, hh + rim, proud), frame(iw, ih, proud), frame(iw, ih, proud - 0.9)],
            "steel.stripe", "vent_rim", tiles, cap=False)   # a lip under it, so no slot shows between the rim and the box
-    _rings(b, [frame(iw - 0.05, ih - 0.05, -depth + 0.2), frame(iw - 0.05, ih - 0.05, -depth + 0.4)], "amber.heat", "vent_box_floor", tiles)
+    _rings(b, [frame(iw - 0.05, ih - 0.05, -depth + 0.2), frame(iw - 0.05, ih - 0.05, -depth + 0.4)], "amber.heat", heat, tiles)
     pitch = 2.0 * ih / slats
     th = math.radians(rest)
     w, m = U * math.cos(th) + N * math.sin(th), N * math.cos(th) - U * math.sin(th)
@@ -4364,14 +4376,14 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
     return out
 
 
-def _popvent(b, cutting, centre, side, name, length=14.0, width=8.0, out=6.0, slats=5):
+def _popvent(b, cutting, centre, side, name, length=14.0, width=8.0, out=6.0, slats=5, heat="vent_box_floor"):
     """A vent on a flank's 45-degree chamfer (the Armadillo's side vents: Ryan, 29 October,
     "small rectangular protrusions when sealed" that "slide out ... to show the vent face when
     venting", then "a larger footprint to sell"): a well cut into `cutting` and lined in dark steel under a stripe rim,
     and on a slide joint `name` along the slope's outward normal a dark cap `length` along the
     machine by `width` across the slope, standing a little proud of the rim at rest, over a
     stack as deep as the joint runs it `out`: `slats` thin dark slats ringed round a core of
-    heat that glows between them (`vent_box_floor`, the part the vent act's glow names), dark posts at
+    heat that glows between them (labelled `heat`, the part the vent act's glow names), dark posts at
     its corners. Home, the stack sits in the well under the cap; run out, all of it stands
     clear of the rim, the glow showing between the slats. `centre` is the vent's
     middle on the slope, `side` -1 for the left flank and 1 for the right. Returns (the
@@ -4403,7 +4415,7 @@ def _popvent(b, cutting, centre, side, name, length=14.0, width=8.0, out=6.0, sl
                    "steel.dark", "vent_slat", tiles, cap=False)
         for l0, a0 in ((-sl, -sa), (sl - 0.8, -sa), (sl - 0.8, sa - 0.8), (-sl, sa - 0.8)):   # the posts that carry the cap
             _rings(b, [quad(l0, l0 + 0.8, a0, a0 + 0.8, foot), quad(l0, l0 + 0.8, a0, a0 + 0.8, 0.3)], "steel.dark", "vent_post", tiles)
-        _rings(b, [rect(sl - 0.12, sa - 0.12, foot), rect(sl - 0.12, sa - 0.12, 0.3)], "amber.heat", "vent_box_floor", tiles)
+        _rings(b, [rect(sl - 0.12, sa - 0.12, foot), rect(sl - 0.12, sa - 0.12, 0.3)], "amber.heat", heat, tiles)
     return name, tuple(nrm), out
 
 
