@@ -136,6 +136,10 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 		out.append(parts_line("effect", ammo, "attr"))
 	if f.heat > 0 or base.heat > 0:
 		out.append(parts_line("effect", [word("Heat"), num(str(f.heat), f.heat, base.heat, true)], "attr"))
+	if f.burns > 0:
+		# The Storm Petrel's Riot Field Generator (30 October): the shield its weapon burns in place
+		# of that heat, and the target takes as much after the strikes.
+		out.append(parts_line("effect", [word("Burns"), num(str(f.burns), f.burns, base.burns, true), word("shield in its place; the target takes as much")], "attr"))
 	# The entry's costs past heat, beside it as the die prints them (Ryan, 26 October: Volatile a
 	# cost printed beside the heat, a keyword with a chip until then, and a shield cost beside it):
 	# the hull a spend bites, the shield it takes first. Less is the gain.

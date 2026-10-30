@@ -1177,6 +1177,27 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
+	# The Petrels' locked pieces (Ryan's go, 21 October; built 30 October): the rider on its own
+	# spender (the St. Elmo's Regenerator), an ally's action bought with the team's rerolls (the
+	# Immelmann Booster), a roll on the machine a buff lands on (the Reheat Uplink), and the rerolls
+	# a kill brings (the Spindrift Salvo).
+	if fd.has("regenerates"):
+		var rg = fd["regenerates"]
+		if kind != "attack" or not (rg is Dictionary) or str(rg.get("status", "")) != "regenerating" \
+				or int(rg.get("shield", 0)) <= 0 or int(rg.get("rounds", 0)) <= 0:
+			errs.append("%s: regenerates is an attack's rider on its own machine: {status: regenerating, shield and rounds, positive}" % where)
+	if fd.has("ally_action"):
+		var deal = fd["ally_action"]
+		if kind != "buff" or not (deal is Dictionary) or int(deal.get("rerolls", 0)) <= 0:
+			errs.append("%s: ally_action is a buff's: {rerolls}, the team's rerolls an ally's action costs, positive" % where)
+		elif str(fd.get("targets", "self_ally")) == "self":
+			errs.append("%s: ally_action buys an ally's action, so the buff reaches allies" % where)
+		elif bool(fd.get("act_again", false)):
+			errs.append("%s: ally_action prices an ally's action, act_again gives one free: one or the other" % where)
+	if fd.has("rolls_target") and (kind != "buff" or not (fd["rolls_target"] is bool)):
+		errs.append("%s: rolls_target (true) is a buff's: the die of the machine it lands on rolls again" % where)
+	if fd.has("kill_rerolls") and (kind != "attack" or int(fd["kill_rerolls"]) <= 0):
+		errs.append("%s: kill_rerolls is an attack's: the rerolls a kill brings the team, a positive number" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs. A planned
 		# component may grant a machine status the vocabulary names but the engine lacks (the
@@ -1320,6 +1341,12 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: muster needs value (the points a charge, positive), cap (the charges it holds, positive) and kill (the points a kill by its own guns gives, 0 or more)" % where)
 		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
 			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
+		# The Petrels' passives (built 30 October): the shield paying a weapon's heat point for
+		# point (the Storm Petrel's), and the most rerolls a bank carries (the Giant Petrel's).
+		if effect == "burn_shield" and int(eff.get("value", 0)) != 1:
+			errs.append("%s: burn_shield's value is 1: a point of shield for each point of heat" % where)
+		if effect == "bank_rerolls" and int(eff.get("value", 0)) < 1:
+			errs.append("%s: bank_rerolls's value is the most rerolls the bank carries, at least 1" % where)
 		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):
 			errs.append("%s: target_rank needs rank, front or back" % where)
 		# A reach beside the rank (the Ram Frame's and the Rangefinder's reads, 22 October) reads

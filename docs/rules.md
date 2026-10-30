@@ -19,8 +19,7 @@ skirmish.
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`), two of them planned and never dealt until their engines land (the
-  Storm Petrel, the Giant Petrel). A run has four squad slots and starts with three
+  (`content/chassis.json`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
@@ -117,9 +116,10 @@ defeat when every machine is wrecked. There is no round limit.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
   read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
   the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
-- **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
-  unspent at the round's end are banked, up to three, and spent in a later round like any
-  reroll.
+- **Maverick's Playbook** (the Giant Petrel's passive): the team's rerolls unspent as the
+  player's turn ends are banked, up to three, and come back at the next round's start beside
+  its three, spent like any reroll; a roar's cost comes off the whole. It banks while the
+  Giant Petrel fights: wrecked by the next round's start, it carries nothing.
 - **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
   vent or a buff onto a machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
@@ -390,12 +390,17 @@ the stacks being the limit, and the fight's last blow rolls nothing. **The pull*
 Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, and a foe
 standing there takes them now, in laid order; spent on an empty slot, it gathers them there. **The drone**
 (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone; if it already carries Exposed (read
-before the drone lands) the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
-spent on itself, the team gains a reroll; spent on an ally whose die is spent, three rerolls
-are paid, the ally's die rolls again and it acts again. **The Spindrift Salvo** (the Giant Petrel's,
-not built): a kill by its shot gives the team two rerolls. **The Reheat Uplink** (the Giant Petrel's,
-not built): the ally gains Overcharged 2 and its die rolls again, which does nothing on a
-spent die. **Spillover** (the Wild
+before the drone lands) the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid):
+spent on itself, the team gains a reroll (Rallied); spent on an ally whose die is spent, which
+it may land on only while the team holds the price, three rerolls are paid, banked or fresh,
+and the ally's die rolls again by Rapid's path, never onto the entry it showed, and it acts
+again, while the Booster's own Rapid gives the Petrel its turn back. **The Spindrift Salvo** (the
+Giant Petrel's): a spend of it that kills gives the team two rerolls this round, once however
+many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies only): the ally
+gains Overcharged 2 and its die rolls again, never onto the entry showing; a spent die rolls
+nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
+foe, its own machine gains Regenerating, the shield it prints at the start of each of the
+rounds it prints after this one. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
@@ -452,8 +457,9 @@ On a machine:
 - **Regenerating** (buff, on either side): a foe's, from its own special, regrows its value in HP
   at each of its next three actions, after its Burning and Vitriol have ticked (a suppressed
   foe's included), so a foe its tick kills regrows nothing; each grant keeps its own clock. A
-  machine's (the Storm Petrel's St. Elmo's Regenerator, not built): 2 shield at the start of each
-  round for three rounds; it stacks, each grant keeping its own end.
+  machine's (the Storm Petrel's St. Elmo's Regenerator): 2 shield at the start of each of the
+  next three rounds, up to its maximum; it stacks, each grant keeping its own end, and a die
+  entry bought it, so an enemy's purge takes it.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
   the round's end. Never granted to every ally at once. The Blast Door grants it, self or ally.
@@ -582,6 +588,16 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
+- **The Riot Field Generator** (the Storm Petrel's passive): its weapons' heat comes off its
+  shield as they are spent, every point a spend adds (a Scorched machine's extra included)
+  taken from the shield as it stands, overshield included, and only what the shield cannot
+  pay reaching the gauge; equipment heats the gauge as ever. After the weapon's strikes, its
+  target takes a blow of what the shield paid (the zap): plain, no keyword and no Shock read,
+  through what the foe takes and its armour, and lost if the strikes killed it. And while its
+  shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
+  meets. The die shows the shield a weapon will take in its heat slot's place, behind the
+  shield's mark ("-3"), with the heat past it beside, and over a foe the blow joined to its
+  zap ("3+2"), each with the foe's armour off.
 - **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and

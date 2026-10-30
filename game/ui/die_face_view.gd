@@ -244,7 +244,7 @@ func _draw() -> void:
 		# component's number.
 		num = str(dark)
 		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "TURN LEFT" if dark == 1 else "TURNS LEFT", HORIZONTAL_ALIGNMENT_CENTER, FACE, 11, ink)
-	var num_size := 28 if num.contains("–") else 38
+	var num_size := 28 if num.contains("–") or num.contains("+") else 38   # a range, or a blow joined to its zap (the Storm Petrel's "4+2")
 	if _recalc >= 0.0:
 		# The display recomputes this face: its ink dips a little and the frame flashes once;
 		# the static itself is drawn last, over the whole die (`_draw_static`). The number
@@ -269,6 +269,16 @@ func _draw() -> void:
 		if face.dry:
 			draw_line(Vector2(slot_x, FACE - 13.0 + bob), Vector2(slot_x + 16.0 + aw, FACE - 13.0 + bob), ac, 2.0)
 		slot_x += aw + 22.0
+	if face.burns > 0:
+		# A weapon whose heat the shield pays (the Storm Petrel's Riot Field Generator, 30 October):
+		# the shield it takes in the heat slot's place, the costs' grammar ("-3") behind the
+		# shield's mark, which parts it from a shield cost's words and from the Burn keyword's
+		# fire; the heat past what the shield holds follows it.
+		var bc := Color(Palette.SHIELD, alpha)
+		Glyphs.draw(self, "shield", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, bc, 1.6)
+		var burn_text := "-%d" % face.burns
+		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), burn_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, bc)
+		slot_x += 14.0 + mono.get_string_size(burn_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
 	if face.heat > 0:
 		var hc := Color(Palette.HEAT, alpha)
 		var heat_text := "+%d HEAT" % face.heat

@@ -162,6 +162,9 @@ var preview_notes: Array = []   # what the copy held back: {kind: pick, resist, 
 var _screened: Array = []
 ## Rerolls a foe's roar has cost the team for the coming round.
 var reroll_debt: int = 0
+## The team's rerolls banked as the last player's turn ended (Maverick's Playbook, the Giant
+## Petrel's; built 30 October), back at the next round's start while a banker fights.
+var banked: int = 0
 ## Makes a foe from a content id, for a summoning action; set by the battle (the content
 ## database), left empty by tests, in which case a summon calls nothing up.
 var foe_factory: Callable = Callable()
@@ -472,7 +475,34 @@ func pending_heat(ms: MechState) -> int:
 	if ammo_price_of(ms, f) > 0:
 		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun pays ammo; only a foe's debuff heats it
 	var added: int = Effects.attack(ms.unit, f, 0, f.heat)["heat"]
+	added -= shield_burn(ms, Effects.effective_face(ms.unit, f), added)   # what the shield pays never reaches the gauge (the Storm Petrel's)
 	return added - ms.heat if f.vents_all else added
+
+
+## The shield a weapon's spend burns in place of `heat` (the Storm Petrel's Riot Field Generator,
+## Ryan's go of 21 October; built 30 October): as much of the heat as the shield holds as it
+## stands, overshield included; the rest reaches the gauge. Nothing for equipment, a forging
+## machine's gun (its heat is paid in ammo) or a machine whose shield pays nothing.
+static func shield_burn(ms: MechState, f: Face, heat: int) -> int:
+	if ms == null or f == null or not f.is_weapon() or heat <= 0 or ms.ammo_max > 0 or not Effects.burns_shield(ms.unit):
+		return 0
+	return mini(heat, maxi(0, ms.unit.shield))
+
+
+## The shield the entry in hand would burn as it is spent (shield_burn), for the forecast.
+func pending_burn(ms: MechState) -> int:
+	var f := spend_face(ms) if ms.face() != null else null
+	if f == null or ms.assigned or not f.is_attack():
+		return 0
+	return shield_burn(ms, Effects.effective_face(ms.unit, f), int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]))
+
+
+## The blow the burn pays a foe after a weapon's strikes (the zap): what the shield paid, plain,
+## through what the foe takes and its armour; nothing on a Guarded core, as every blow there.
+static func zap_on(foe: Foe, burnt: int, by: MechState) -> int:
+	if foe == null or burnt <= 0:
+		return 0
+	return maxi(0, Effects.damage_taken(foe, burnt, by.unit if by != null else null) - foe.armour_total())
 
 
 ## What a vent-on-fire attack adds to every blow from the heat it fires: its power_per_heat
@@ -573,7 +603,12 @@ func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
 	if f == null or not f.is_attack() or f.is_debuff():
 		return f.number_text() if f != null else ""
 	var n := shown_number(ms, f, target)
-	return str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]
+	var text := str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]
+	# Over a foe, a weapon whose heat the shield pays shows its zap joined to the blow (the Storm
+	# Petrel's, "4+2"), each with the foe's armour off; the zap is lost if the blow kills.
+	if target != null and f.burns > 0:
+		text += "+%d" % zap_on(target, f.burns, ms)
+	return text
 
 
 ## Every live machine learns how many allies stand with it, for passives that read it.
@@ -869,6 +904,10 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	# A volatile entry costs hull outright as it is spent, shield or no shield.
 	var volatile := pending_volatile(ms) if with_face else 0
 	hull -= volatile
+	# A weapon that burns shield in place of heat (the Storm Petrel's) takes it as it is spent, after
+	# a bite: the shield the enemy's blows meet is what it leaves.
+	if with_face:
+		shield -= mini(shield, pending_burn(ms))
 	var incoming := 0
 	var component_risk := false
 	# The die in hand's own grant on its machine, for this round's blows: a brace's armour (the
@@ -944,7 +983,7 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 	var breach := f.breaches() and not Effects.has(ms.unit, "ward")
 	var armour := ms.unit.armour + Effects.armour_against(ms.unit, f.rank) + int(walk.get("armour", 0))
 	for s in range(f.strikes()):
-		var amount := Effects.damage_taken(ms.unit, foe_blow(f), f)
+		var amount := Effects.damage_taken(ms.unit, foe_blow(f), f, false, true, maxi(0, int(walk["shield"])))   # a plate that stands with the shield reads the shield this blow meets
 		if amount > 0 and bool(walk.get("barrier", false)):
 			walk["barrier"] = false
 			amount = 0
@@ -965,6 +1004,8 @@ func machine_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 			continue   # a Phased ally cannot be targeted (Ryan, 20 October)
 		if f.act_again and (who == ms or not who.assigned):
 			continue   # an ally acting again: one whose die is spent (the Reveille Horn's charged form)
+		if f.action_price > 0 and who != ms and (not who.assigned or rerolls_left < f.action_price):
+			continue   # an ally's action bought (the Immelmann Booster): one whose die is spent, while the team's rerolls pay its price
 		if (who == ms and f.can_target_self()) or (who != ms and f.can_target_ally()):
 			out.append(who)
 	return out
@@ -1111,6 +1152,15 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 		sf.dry = not can_fire(ms, sf)
 		sf.heat = Effects.debuff_heat(ms.unit, sf)
 		return sf
+	var burn := shield_burn(ms, sf, heat)
+	if burn > 0:
+		# A weapon whose heat the shield pays (the Storm Petrel's): the burn in the heat slot's place
+		# with the shield's mark, and the heat past what the shield holds beside it.
+		if sf == f:
+			sf = f.duplicate_face()
+		sf.burns = burn
+		sf.heat = heat - burn
+		return sf
 	if heat == sf.heat:
 		return sf
 	if sf == f:
@@ -1124,7 +1174,13 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 func start_round() -> void:
 	assert(state == State.ROUND_START, "start_round called out of order")
 	round += 1
-	rerolls_left = maxi(0, REROLLS_PER_ROUND - reroll_debt)   # a roar last round costs rerolls now
+	# The bank (Maverick's Playbook): what the last turn left unspent comes back while a banker
+	# still fights, a reroll like any other; a roar's cost comes off the whole.
+	var from_bank := mini(banked, bank_cap())
+	banked = 0
+	rerolls_left = maxi(0, REROLLS_PER_ROUND + from_bank - reroll_debt)   # a roar last round costs rerolls now
+	if from_bank > 0:
+		log.append("the bank carries %d reroll%s" % [from_bank, "" if from_bank == 1 else "s"])
 	if reroll_debt > 0:
 		log.append("the roar costs the team %d reroll%s" % [reroll_debt, "" if reroll_debt == 1 else "s"])
 	reroll_debt = 0
@@ -1511,6 +1567,16 @@ func next_face(ms: MechState) -> Face:
 	return shown_face(ms, ms.die.faces[at])
 
 
+## The most of the team's unspent rerolls the bank carries to the next round (Maverick's
+## Playbook): the largest cap of a live machine that banks, so two never bank twice; 0 when none
+## fights.
+func bank_cap() -> int:
+	var cap := 0
+	for ms in live_mechs():
+		cap = maxi(cap, Effects.bank_cap(ms.unit))
+	return cap
+
+
 ## Is any reroll open: the team's, or a machine's own?
 func can_reroll() -> bool:
 	if state != State.ASSIGN:
@@ -1697,6 +1763,15 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 				who.assigned = false
 				who.face_index = _roll(who)
 				log.append("%s rallies %s: its die rolls again, and it acts again" % [ms.unit.display_name, who.unit.display_name])
+			elif f.action_price > 0 and who != ms:
+				# The Immelmann Booster's ally use (the Giant Petrel's, Ryan's go of 21 October; built
+				# 30 October): on an ally whose die is spent, the team's rerolls pay its price, banked
+				# or fresh, and the ally's die rolls again by Rapid's path, never onto the entry it
+				# showed, and it acts again. The Booster's own Rapid gives the Petrel its turn back too,
+				# so no turn is traded for the ally's.
+				rerolls_left -= f.action_price
+				_act_again(who, f)
+				log.append("%s pays %d reroll%s: %s's die rolls again, and it acts again" % [ms.unit.display_name, f.action_price, "" if f.action_price == 1 else "s", who.unit.display_name])
 			else:
 				var until := round + f.buff_rounds - 1
 				var src := "buff:" + f.component if not f.component.is_empty() else "buff"
@@ -1718,6 +1793,12 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 						_phase(w)
 					elif f.buff_status == "rallied":
 						rerolls_left += stacks   # the team's reroll more this round (the Reveille Horn)
+					# The Reheat Uplink's roll (the Giant Petrel's, Ryan's go of 21 October; built 30
+					# October): the die of the machine it lands on rolls again, never onto the entry
+					# showing; a spent die rolls nothing.
+					if f.rolls_target and w.alive() and not w.assigned:
+						_roll_again(w)
+						log.append("%s's die rolls again" % w.unit.display_name)
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
@@ -1750,6 +1831,18 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 						free = _drone(ms, target, exposed_before)
 			killed = _falls - falls_before
 			_after_kills(ms, killed)
+			# The Spindrift Salvo's kill rider (the Giant Petrel's, Ryan's go of 21 October; built 30
+			# October): a spend that kills gives the team its rerolls this round, banked if unspent.
+			if f.kill_rerolls > 0 and killed > 0:
+				rerolls_left += f.kill_rerolls
+				log.append("%s: the kill brings the team %d reroll%s" % [ms.unit.display_name, f.kill_rerolls, "" if f.kill_rerolls == 1 else "s"])
+			# The rider on its own spender (the Storm Petrel's St. Elmo's Regenerator, Ryan's go of 21
+			# October; built 30 October): spent on a foe, its machine gains Regenerating, the entry's
+			# shield at the start of each of the rounds it says after this one, a grant of its own, so
+			# a second keeps its own end. Bought by a die entry, so a foe's purge takes it.
+			if f.regen_shield > 0 and f.regen_rounds > 0 and target is Foe and ms.alive():
+				Effects.grant_for_rounds(ms.unit, Effects.regenerating_shield(f.regen_shield), "buff:" + f.component, round + f.regen_rounds)
+				log.append("%s regenerates: %d shield at the start of each of the next %d rounds" % [ms.unit.display_name, f.regen_shield, f.regen_rounds])
 			if f.has(Face.Keyword.SWAP) and target is Foe and target.alive():
 				_swap(target, second)
 			if Effects.counts_shots(ms.unit) > 0:
@@ -1854,6 +1947,9 @@ func end_round() -> int:
 ## made room for it or a cleanse took it off. Shared by END TURN and a withdrawal.
 func _end_player_turn() -> void:
 	overheats.clear()
+	# Maverick's Playbook (the Giant Petrel's, built 30 October): the team's rerolls left unspent
+	# as the turn ends are banked, up to its cap, for the next round while it still fights.
+	banked = mini(rerolls_left, bank_cap())
 	for f in field_foes():
 		Effects.player_turn_end_foe(f)   # a foe's Barrier and Ward last to the end of the player's turn (28 October)
 	_burn_mechs()
@@ -2547,6 +2643,25 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
 		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, vented_all, fired])
+	# The Riot Field Generator (the Storm Petrel's, Ryan's go of 21 October; built 30 October):
+	# while its shield stands its weapons burn shield in place of heat, every point the spend adds
+	# (a Scorched machine's extra included) coming off the shield as it stands, overshield
+	# included, and the rest reaching the gauge; then, the strikes landed, the target takes a blow
+	# of what the shield paid (the zap), plain, no keyword and no Shock read, through what it takes
+	# and its armour, and lost on a kill.
+	var burnt := 0 if forged or _blast_strike else shield_burn(ms, f, heat_total)
+	if burnt > 0:
+		ms.unit.shield -= burnt
+		heat_total -= burnt
+		log.append("%s burns %d shield in place of heat" % [ms.unit.display_name, burnt])
+		if target.alive():
+			var zap_before := target.hp
+			var zap := zap_on(target, burnt, ms)
+			if _barrier_eats(target, true):
+				zap = 0
+			target.hp -= zap
+			dealt += clampi(zap, 0, maxi(0, zap_before))
+			log.append("%s zaps %s for %d" % [ms.unit.display_name, target.display_name, zap])
 	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
 	# opens the back rank to direct fire until reinforcements plug it. Indirect fire at the
 	# front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
@@ -3086,6 +3201,15 @@ func specials_reach() -> Array[MechState]:
 		if not is_phased(ms):
 			out.append(ms)
 	return out
+
+
+## A machine's unspent die rolled again in place (the Reheat Uplink's roll, 30 October): never
+## onto the entry showing, a stepping die stepping, as a team reroll does; the round preview's
+## copy keeps its entry, a roll never promised.
+func _roll_again(ms: MechState) -> void:
+	if previewing:
+		return
+	_reroll_die(ms)
 
 
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry

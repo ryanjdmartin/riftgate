@@ -63,6 +63,11 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("pull", "Pull", lambda f: bool(f.get("pulls_mines"))),
            ("drone", "Drone", lambda f: bool(f.get("drones"))),
            ("spray", "Spray", lambda f: bool(f.get("spray"))),
+           # The Petrels' locked pieces (built 30 October).
+           ("regenerates", "Regenerates", lambda f: bool(f.get("regenerates"))),
+           ("ally_action", "An ally's action", lambda f: bool(f.get("ally_action"))),
+           ("rolls_target", "Rolls its die", lambda f: bool(f.get("rolls_target"))),
+           ("kill_rerolls", "Rerolls a kill", lambda f: int(f.get("kill_rerolls", 0) or 0) > 0),
            # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "silence", "dispel", "self_destruct", "all", "countdown", "last_act", "parts"]

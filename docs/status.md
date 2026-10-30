@@ -25,7 +25,10 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 824 tests, 206,868 checks, green on main (30 October, `claude/jolly-lovelace-scn82y` landed with main
+- Tests: 844 tests, 206,988 checks, green on `claude/affectionate-ramanujan-5d24t6` (30 October, the
+  Petrels' engines on main's `d84ad16`, run on Godot 4.7.2: this session's hook installed 4.7.2 as it
+  started on the old head, and Auto mode refused the 4.8-beta2 build's unpacking and first run;
+  the headless sim reads no renderer); 824 and 206,868 on main alone (`claude/jolly-lovelace-scn82y` landed with main
   and `claude/charming-rubin-h954bp`'s model rebuilds in, on Godot 4.8-beta2; the same count again with
   that branch's lit parts' eased light merged on top), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -42,6 +45,12 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/affectionate-ramanujan-5d24t6` (30 October) carries the two Petrels' engines on Ryan's go
+("go for the ready to build ones", after his question of the same day on which chassis come
+next), from main's head `d84ad16`; main has not taken it. Its bible is v0.404 and unpublished:
+the live page moved to v0.406 meanwhile, so its publish is a three-way merge onto it (the Pages
+paragraph), and the hangar page waits on the same landing for its three content files.
 
 `claude/jolly-lovelace-scn82y` (29 and 30 October) carried the skirmish's field with the
 Skirmish Controls setting, the map's lines and overlay at one size on screen, Godot 4.8-beta2
@@ -113,7 +122,8 @@ merged into main and deleted (22 October).
 
 Each resumes from its briefs; `docs/briefs/README.md`'s table says what each waits on.
 
-- Kestrel: ten machines, eight decided and in content (the bible's Kestrel row; the hub
+- Kestrel: ten machines, eight decided, in content and fielded since the Storm Petrel's and the
+  Giant Petrel's engines (30 October, the How things stand bullet; the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`). Its models' second round landed 28 October and took two
   rounds of his notes the same day (the Storm Petrel's field strips, sparks, beaded arch and
   emitters clear of the guns; the Puffin's plates near plumb with lit rims, its amplify's glow
@@ -133,9 +143,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   beat as an ornithopter and close into a blade, `docs/looks/kestrel_ornithopter.png`; parked as
   a candidate for the Owl or the Magpie, the bible's Kestrel row). The Skua fielded since its engine of 25 October (each roll
   halved, rounded down and never below one since 27 October, and struck twice; the Pod's spray), its rows read the same day: mid-field
-  alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the Giant Petrel's engine session
-  follows from its brief, and the Storm Petrel's is free since the pricing pass landed (28 October, the guns' heat
-  standing); the last two, the Magpie (a working name, a support engine)
+  alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
@@ -151,6 +159,26 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
+  their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
+  `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield
+  pays its weapons' heat as they are spent, the rest reaching the gauge, and the target takes a
+  zap of what it paid after the strikes, lost on a kill; its plate takes a point off every blow
+  while its shield stands; its lock's Regenerating regains 2 shield a round for three rounds, a
+  grant of its own each time. The Giant Petrel banks up to three unspent rerolls while it fights;
+  its Immelmann Booster rallies itself or, for three rerolls, gives a spent ally its die again and
+  its action; its Spindrift Salvo's kill brings two; its Reheat Uplink overcharges an ally and rolls
+  its die. The die shows the burn behind the shield's mark ("-2") and, over a foe, the blow joined
+  to its zap ("3+2"); the hold says what it burns. The bot reads the burn as shield lost, the zap
+  as damage and the regen as hull kept, and weighs looks against actions, a reroll a spend pays or
+  brings mid-round worth what the bank carries (`Policy.bank_delta`); the runner tallies actions
+  bought and rerolls banked. The Storm Petrel is in Kestrel's tender since, so a start that skips
+  Minerva may still be dealt a front. Read at 30 seeds (directions, `docs/measurements.md`): alone
+  the Storm Petrel stands in the Armadillo's band and above it on the ladder's recolours, in half
+  the rounds, and beside the Puffin about half again the Armadillo's pair on the big foes; the Giant
+  Petrel's four reads level with the Lammergeier's in Kestrel's team and over the Swallowtail's in
+  Wainwright & Sutler's on every formation, the team its must-pick guard watches at 200 seeds. What
+  waits on Ryan: his play of both (the to-do) and the Storm Petrel's burn on basics (section 12).
 - The skirmish is one field (29 October, on `claude/jolly-lovelace-scn82y`; Ryan of the looks
   on trial: "it's 100% field, it looks really good"): one floor seen by one level camera from
   behind the machines, the other world painted far under the foes in the domain's palette and
@@ -356,8 +384,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   pieces a battle in tiers one and two (`docs/quick_run.md`), at or past section 10's "about one
   a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
   economy pass's first number to read.
-- Content: five makers; 24 chassis, every one runnable but the Storm Petrel and the Giant Petrel
-  (their passives and four locked pieces planned, so never dealt); 81 components,
+- Content: five makers; 24 chassis, every one runnable since the Petrels' engines (30 October); 81 components,
   32 of them locked; 17 modules; four domains with 49 wildlife (18 at tier one, their bosses
   among them, the ladder's 26 recolours and five elites as placeholder kits, each tier's
   compositions partitioned from its list as placeholders) and 8 heroes with their promoted forms; 6 foe moves
@@ -480,8 +507,6 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The Giant Petrel's engine and the Storm Petrel's, the latter free since the pricing pass
-  landed on 28 October with the guns' heat standing (their briefs).
 - The Peak's elite and a Waste hunter, the escort compositions by tier and the Fracture's
   prize (the bible's section 12), with the bosses' slate (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
@@ -588,7 +613,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.403 (the
+  `docs/design-bible.html` after every change. On `claude/affectionate-ramanujan-5d24t6` this file
+  is v0.404 with the Petrels' rows (their engines, section 12's burn on basics, the Regenerating
+  row and four printed-rule rows spliced by hand from the tables script's own rendering) and is
+  not published: the live page read v0.406 on 30 October, other sessions' rows on main's v0.403,
+  so its publish is a three-way merge onto the live (base `d84ad16`'s file) as this branch lands.
+  On main's head this file and the live page are v0.403 (the
   page's version 415, published 30 October from `claude/charming-rubin-h954bp`: lit parts hold
   their colour on the phone, the reference-glass row, and a halo for lit parts asked in section
   12; onto its own v0.402 at 414, Ryan's answers after the landing, the rebuilds judged fine, the
@@ -609,7 +639,10 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. Its lit parts show as the phone's renderer shows them (29 October: a lit
+  before it is replaced and `edits` read first. `claude/affectionate-ramanujan-5d24t6`'s three
+  content files (`content/chassis.json`, `content/components.json` and `content/vocabulary.json`:
+  the Petrels un-planned, the four printed rules) are not published; they go up as that branch
+  lands. Its lit parts show as the phone's renderer shows them (29 October: a lit
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a

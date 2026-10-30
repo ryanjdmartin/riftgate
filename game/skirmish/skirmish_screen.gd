@@ -1628,7 +1628,7 @@ static func _chip_colour(id: String) -> Color:
 		return Palette.HEAT
 	if id.begins_with("corrupted") or id == "silenced":
 		return Palette.ENEMY
-	if id in ["braced", "retaliate", "barrier", "ward"]:
+	if id in ["braced", "retaliate", "barrier", "ward", "regenerating"]:
 		return Palette.SHIELD
 	return Palette.HUD
 

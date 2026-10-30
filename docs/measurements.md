@@ -3835,3 +3835,87 @@ night, the pools the bog's water and moss. The enemy's violet drawn bare over ea
 body (luminance contrast / ΔE, the worst simulation, the old lake in brackets): the plains'
 #3366ff 1.88 / 17 (#3f78dc 1.83 / 16), the Waste's #339999 1.51 / 19 (#2e8cbc 1.64 / 13), the
 Marsh's #003333 6.40 / 56 (#3e4e46 4.18 / 46), the Peak's crust #330000 8.67 / 62 (7.61 / 60).
+
+## 30 October, the Petrels' first rows
+
+**Their engine session's reads** (the Storm Petrel and the Giant Petrel fielded 30 October on
+`claude/affectionate-ramanujan-5d24t6`, from main's `d84ad16`), as their briefs asked: the Storm
+Petrel alone and beside the Puffin, its magazine, each against the Armadillo, the other tier-one
+body, in the same run; the Giant Petrel in two teams of four against the same three with another
+machine in its place. `tools/balance.gd`, 30 seeds a cell (a direction), random and greedy, no
+party, the matrix's 55 packs as it stands (the thirteen tier-one packs, the ladder's twenty-six
+recolours, the four big foes and the twelve formations), on Godot 4.7.2 (the session's hook
+installed it on the old head; the 4.8-beta2 build's unpacking and first run were refused by Auto
+mode, and the headless sim reads no renderer). Won, random / greedy, then greedy's hull lost and
+rounds to a win.
+
+**The Storm Petrel alone**, beside the Armadillo:
+
+| Row | Every pack | Tier-one rank and file (13) | Tiers two and three (26) | The four big foes | The twelve formations | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|---|
+| Storm Petrel | 32 / 45 | 52 / 66 | 42 / 61 | 0 / 0 | 0 / 0 | 63% | 4.9 |
+| Armadillo | 25 / 38 | 48 / 65 | 29 / 49 | 0 / 0 | 0 / 0 | 75% | 9.7 |
+
+Pick share (greedy): the Laser Carbine 31%, the St. Elmo's Regenerator 24%, the Canopy 20%, the
+Ankle Mortar 15%, the Twin Autoguns 9%. Its heat peaks at a tenth of its gauge (the Armadillo's
+41%), 0.04 overheats a fight. The first run of the day, before the bot valued the regen, read the
+row 32 / 46 with the Regenerator spent 4% of the time: valuing it moved the lock's share and not
+the row.
+
+Read: alone it stands in the Armadillo's band and above it on the ladder's recolours, winning in
+half the rounds; every tier one alone is walled by the big foes and the formations, and so is it.
+On its stock the burn is a trickle: the Carbine's 2 is the most any basic burns, and the gauge
+never sees it, so its identity shows at the size of its basics' heat (the bible's section 12 holds
+the question).
+
+**Beside the Puffin**, the same two bodies:
+
+| Row | Every pack | Tier-one rank and file | Tiers two and three | The four big foes | The twelve formations | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|---|
+| Storm Petrel + Puffin | 53 / 66 | 85 / 94 | 68 / 84 | 4 / 51 | 0 / 2 | 39% | 4.5 |
+| Armadillo + Puffin | 47 / 62 | 77 / 93 | 60 / 78 | 0 / 32 | 0 / 8 | 46% | 6.5 |
+
+Pick share (greedy, the Storm Petrel's pair): the Laser Carbine 31%, the Twin Autoguns 24%, the
+Regenerator 13%, the Halo Shield 10%, the Ankle Mortar 10%, the Canopy 6%, the Backwash Ionizer 3%.
+
+Read: the escort pair reads a few points over the Armadillo's on the rank and file and about half
+again on the big foes (51% against 32%, in a third the rounds), for less hull; the Armadillo's pair
+takes a formation now and then where it takes almost none. Neither is a must-pick on this read; the
+Puffin's overshield is rarely spent on it (the Ionizer 3%), so the brief's magazine claim is not
+read here, the greedy shielding its ally against this round's blows and never for a burn to come.
+
+**The Giant Petrel in a four**, beside the same three with the Lammergeier, Kestrel's other tier
+three, in its place:
+
+| Row | Every pack | Rank and file, tier one / two and three | The four big foes | Formations, tier one / two / three | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|
+| Kite, Buzzard, Puffin, Giant Petrel | 88 / 98 | 100 / 100, 99 / 100 | 100 / 100 | 95 / 100, 50 / 100, 0 / 74 | 7% | 2.2 |
+| Kite, Buzzard, Puffin, Lammergeier | 86 / 98 | 100 / 100, 96 / 100 | 98 / 100 | 92 / 100, 43 / 100, 0 / 73 | 7% | 2.2 |
+
+Its four buys an ally's action 0.19 a fight under the greedy and banks 0.94 rerolls a round; the
+Booster is 3% of the team's spends, the Salvo 9%, the Uplink 1%. The first run of the day priced
+every reroll a spend paid or brought as a look and bought 0.01 actions a fight, the greedy rerolling
+only as a round opens, so a reroll mid-round is worth only what the bank carries (`Policy.bank_delta`):
+read again on that, the outcome cells moved by a point at most and the actions rose from 0.01 to 0.19.
+
+Read: the formation leader's four reads level with the bomber's under the greedy everywhere (tier
+three's formations 74% against 73%), random play a few points higher with it on tier two's (50%
+against 43%). Its fights are short (2.2 rounds), so the bank and the bought action have little
+room; the must-pick guard reads no must-pick on this team.
+
+**The Giant Petrel in another four**, Wainwright & Sutler's three with the Swallowtail, the other
+action-economy capstone, in its place:
+
+| Row | Every pack | Rank and file, tier one / two and three | The four big foes | Formations, tier one / two / three | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|
+| Cassowary, Clydesdale, Dingo, Giant Petrel | 87 / 95 | 100 / 100, 98 / 100 | 100 / 100 | 90 / 100, 41 / 100, 0 / 38 | 11% | 2.8 |
+| Cassowary, Clydesdale, Dingo, Swallowtail | 83 / 93 | 99 / 100, 94 / 99 | 99 / 100 | 78 / 99, 28 / 93, 0 / 21 | 13% | 3.2 |
+
+Its four buys an ally's action 0.24 a fight and banks 1.21 rerolls a round; the Salvo is 8% of the
+team's spends, the Overclocked Railgun 9%, the Booster 3%, the Uplink 1%.
+
+Read: here the Giant Petrel's four reads over the Swallowtail's on every formation, most on tier
+three's (38% against 21% under the greedy) and on tier two's under random play (41% against 28%), in
+fewer rounds. The bought actions are a fifth of a fight, so most of that is its own guns beside a
+support capstone's kit; the must-pick guard to watch is this team's, read again at 200 seeds with
+the matrix (the to-do), the levers the Booster's price, the bank's cap and the Salvo's two.
