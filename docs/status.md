@@ -22,8 +22,8 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 792 tests, 206,300 checks, green (30 October, main with `claude/charming-rubin-h954bp`
-  merged in, the model rebuilds and Ryan's notes on them; 787 and 205,261 on main alone), about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 794 tests, 206,306 checks, green (30 October, main's head with the foes' move-order
+  fix, its two tests the difference), about four minutes in a cloud session, twenty on a slow one. A cloud
   session gets Godot 4.7's Linux build and the project's first import from the repository's
   session-start hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`,
   27 October, on main since 30 October; the GitHub release asset `godotengine/godot-builds`,
@@ -37,6 +37,9 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/zealous-wright-ixxo3l` (30 October) carries the foes' move-order fix (How things
+stand) on main's head (`8607407`), for main to take as a fast-forward on Ryan's word.
 
 `claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
 the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
@@ -182,6 +185,17 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- A foe's moves keep content's order (30 October): `ContentDB.make_foe`, bringing the first
+  attack to the front when a special leads, passed over an attack already in front and moved
+  the next, so 25 of the 65 foes loaded out of order (two attacks listed first swapped, as for
+  the Lancer, the Augur and the Reaper; a below-half special put first, as for the Black Mage's
+  Flare and three of the four bosses'). It now stops at the first attack, two tests in
+  `tests/test_content.gd` holding it. The order is the codex's list, the opening intent, the
+  order a seeded draw walks (each move's odds unchanged, so only which seed draws it moves)
+  and the pattern a Disrupt steps through, which changed for nine (the Antlion Queen, the
+  Wyvern, the Red Dragon, the Reaper, the Lancer and the Augur, and the promoted Lancer, Cleric
+  and Augur; the rest's old order was a rotation of content's). A saved battle keeps the order
+  its foes were saved in.
 - The six map shapes (Ryan's direction of 28 October and his calls of 29 October; landed 29
   October, the brief retired): RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE, RUINED CITY and
   GORGE, each laying its own water, walls, decorative ground and relief; a battle that names no

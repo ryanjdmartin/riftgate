@@ -1454,6 +1454,47 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	assert_true(said.contains("Regrows %d HP" % regrow), "with its number filled in")
 
 
+## A synthetic foe move, so no test leans on a real entry's kit: an attack, or a special of the
+## kind given running the engine's first effect of that kind; `when` its condition, if any.
+func _foe_move(id: String, kind: String = "attack", when: String = "") -> Dictionary:
+	var m := {"id": id, "name": id.capitalize(), "kind": kind, "weight": 1, "text": "", "status": "implemented"}
+	if kind != "attack":
+		m["effect"] = str(Foe.ACTION_EFFECTS[kind][0])
+		m["value"] = 1
+	if not when.is_empty():
+		m["when"] = when
+	return m
+
+
+## A foe's moves keep content's order (ContentDB.make_foe), the pattern a Disrupt steps through
+## and the order a weighted draw walks: an attack that already leads moves nothing, so two
+## attacks listed first stay as written, and a later attack (a below-half special, the Black
+## Mage's shape) stays where content put it.
+func test_a_foe_that_leads_with_an_attack_keeps_its_content_order() -> void:
+	var db := ContentDB.new()
+	db.foes = {
+		"test_twin": {"name": "Twin", "hp": 5, "attack": 2, "actions": [_foe_move("jab"), _foe_move("hook"), _foe_move("guard", "defend")]},
+		"test_caster": {"name": "Caster", "hp": 5, "attack": 2, "actions": [_foe_move("fire"), _foe_move("ward", "debuff"), _foe_move("flare", "attack", "below_half")]},
+	}
+	var twin := db.make_foe("test_twin")
+	assert_eq(twin.actions.map(func(a): return str(a["id"])), ["jab", "hook", "guard"], "two attacks listed first keep content's order")
+	assert_eq(str(twin.action["id"]), "jab", "and it opens with the first")
+	var caster := db.make_foe("test_caster")
+	assert_eq(caster.actions.map(func(a): return str(a["id"])), ["fire", "ward", "flare"], "a later attack, a below-half special, is not moved to the front")
+	assert_eq(str(caster.action["id"]), "fire", "and it opens with its first attack")
+
+
+## A foe whose content leads with a special still opens with its blow: its first attack moves
+## to the front and nothing else moves, a later attack included.
+func test_a_foe_that_leads_with_a_special_opens_with_its_first_attack() -> void:
+	var db := ContentDB.new()
+	db.foes = {"test_mystic": {"name": "Mystic", "hp": 5, "attack": 2, "actions": [_foe_move("rouse", "buff"), _foe_move("guard", "defend"),
+		_foe_move("jab"), _foe_move("hook"), _foe_move("flare", "attack", "below_half")]}}
+	var f := db.make_foe("test_mystic")
+	assert_eq(f.actions.map(func(a): return str(a["id"])), ["jab", "rouse", "guard", "hook", "flare"], "the first attack leads, the rest in content's order")
+	assert_eq(str(f.action["id"]), "jab", "its opening intent is its blow")
+
+
 func test_every_component_names_a_silhouette_class() -> void:
 	var db := ContentDB.new()   # its own copy: the checks below break an entry
 	db.load_dir(ContentDB.DIR)

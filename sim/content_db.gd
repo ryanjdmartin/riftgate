@@ -330,11 +330,13 @@ func make_foe(foe_id: String) -> Foe:
 		if a.has("when"):
 			act["when"] = Foe.whens_of(a)
 		acts.append(act)
-	# The first attack leads, so a foe's opening intent is its blow.
+	# The first attack leads, so a foe's opening intent is its blow; the rest keep content's
+	# order, the pattern a Disrupt steps through (Skirmish.disrupt_next).
 	for i in range(acts.size()):
-		if str(acts[i].get("kind", "")) == "attack" and i > 0:
-			var lead: Dictionary = acts.pop_at(i)
-			acts.insert(0, lead)
+		if str(acts[i].get("kind", "")) == "attack":
+			if i > 0:
+				var lead: Dictionary = acts.pop_at(i)
+				acts.insert(0, lead)
 			break
 	if not acts.is_empty():
 		f.actions = acts
