@@ -195,7 +195,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   and the pattern a Disrupt steps through, which changed for nine (the Antlion Queen, the
   Wyvern, the Red Dragon, the Reaper, the Lancer and the Augur, and the promoted Lancer, Cleric
   and Augur; the rest's old order was a rotation of content's). A saved battle keeps the order
-  its foes were saved in.
+  its foes were saved in. The boss cells at 30 seeds hold their direction (`docs/measurements.md`,
+  the foes' move order): no fight's mean over the rows moves more than 2.2 points, the fights
+  with no foe it touched come out identical fight for fight, and the three single cells past a
+  cell's band read inside it at 200 seeds; no stock kit fields a Disrupt, so the new pattern is
+  unread until one does.
 - The six map shapes (Ryan's direction of 28 October and his calls of 29 October; landed 29
   October, the brief retired): RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE, RUINED CITY and
   GORGE, each laying its own water, walls, decorative ground and relief; a battle that names no

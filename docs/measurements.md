@@ -3661,3 +3661,47 @@ at a won battle and is the economy pass's number (section 10); components destro
 0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
 reads of the fights' shape stay the quick campaign's until a runner player fields a squad
 (section 12).
+
+## 30 October, the foes' move order
+
+**The boss cells before and after the move-order fix** (30 October; the status's bullet:
+`ContentDB.make_foe` passed over an attack already in front and moved the next, so 25 of the
+65 foes loaded out of content's order). `tools/balance.gd -- --seeds 30 --packs` the thirteen
+boss cells (the four bosses alone, each bench hero's final with three of its domain's first
+pack, the finale), random and greedy, on main's head (`8607407`) as it stood and with the fix,
+the same seeds, against every row (the 22 runnable machines alone, the team and the three
+makers' trios): 676 cells, 21,060 fights a side. Won, the mean over the 26 rows:
+
+| Fight | Random, before / after | Greedy, before / after | Cells identical, of 52 |
+|---|---|---|---|
+| Treant | 24.2% / 24.2% | 43.8% / 44.0% | 16 |
+| Sandworm | 12.6% / 13.2% | 18.6% / 19.4% | 29 |
+| Bone Wyvern | 23.5% / 23.8% | 44.5% / 44.4% | 17 |
+| Magma Elemental | 10.5% / 10.5% | 15.9% / 15.9% | 52 |
+| The Warrior's final (with Goblin x3) | 15.1% / 15.1% | 18.2% / 17.6% | 35 |
+| The Martial Artist's final (with Goblin x3) | 12.6% / 12.7% | 16.4% / 16.3% | 40 |
+| The Thief's final (with Needler x3) | 19.2% / 19.2% | 27.9% / 27.9% | 52 |
+| The Lancer's final (with Needler x3) | 15.4% / 16.4% | 20.9% / 19.2% | 0 |
+| The Cleric's final (with Revenant x3) | 32.1% / 32.6% | 62.6% / 60.5% | 10 |
+| The Augur's final (with Revenant x3) | 28.7% / 30.9% | 59.7% / 59.7% | 0 |
+| The Black Mage's final (with Salamander x3) | 14.2% / 13.8% | 16.0% / 16.0% | 41 |
+| The Summoner's final (with Salamander x3) | 18.3% / 18.3% | 25.9% / 25.9% | 52 |
+| The finale (the Warrior, the Thief, the Cleric, the Black Mage, promoted) | 0.0% / 0.0% | 0.0% / 0.0% | 48 |
+
+Read. The direction of the boss cells holds: no fight's mean moves more than 2.2 points on
+either rung, inside the band of a mean over the rows at 30 seeds (about 4), and the thirteen
+pooled read 17.4% won to 17.8% on the random rung and 28.5% to 28.2% on the greedy. The fights
+that field no foe the fix touched (the Magma Elemental alone, the Thief's and the Summoner's
+finals) are identical fight for fight, as are 392 of the 676 cells in all, where no draw fell
+differently (a Treant that never falls below half draws as it did). No stock kit carries a
+Disrupt (the Differentiation Probe alone has one, and no chassis fields it), so the matrix
+reads only the draw's order, which moves which seed draws a move and never a move's odds:
+every delta here is seeded noise, and the pattern a Disrupt steps through, which the fix
+changed for nine foes, is unread until a kit fields one. Three single cells moved past a
+cell's 30-seed band of about 18 points (the Musk Ox on the Lancer's final, random, 20% to 47%;
+the Musk Ox on the Cleric's final, greedy, 97% to 70%; the Whip Scorpion on the Augur's final,
+random, 3% to 27%). Read again at 200 seeds a side (those two rows against those three
+finals, both rungs: twelve cells, 2,400 fights a side), they move +4.5, -6.5 and +7.0, inside
+a 200-seed difference's band (about 8 there); the one cell of the twelve past it (the Musk Ox
+on the Augur's final, random, 70.0% to 80.5%) moves +1.5 at 1,000 seeds (72.6% to 74.1%, the
+band 3.9), and the Whip Scorpion's beside it -0.1 (18.0% to 17.9%).
