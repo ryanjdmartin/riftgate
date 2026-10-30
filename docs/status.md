@@ -21,9 +21,9 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 777 tests, 204,651 checks, green on main (30 October, `ccr-c04908be-3r43xf`
-  merged: the pricing pass, Chain, the cautious heat persona; 759 and 204,504 on the tilesets'
-  second build), about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 778 tests, 204,668 checks, green (30 October, the tilesets' walls out of their hexes on main
+  with `ccr-c04908be-3r43xf` merged: the pricing pass, Chain, the cautious heat persona; 777
+  and 204,651 before), about four minutes in a cloud session, twenty on a slow one. A cloud
   session gets Godot 4.7's Linux build and the project's first import from the repository's
   session-start hook (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`,
   27 October, on main since 30 October; the GitHub release asset `godotengine/godot-builds`,
@@ -182,10 +182,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   different"; the Peak not volcanic, the Marsh not an undead marsh). The second dresses every
   hex in outlined pixel sprites (ASCII art inked per domain, two pixels a design pixel; "Overall
   the art is a huge improvement"), each ground its own tone a step from its domain's on the
-  posterize grid (his second read: one ground for all was "very monotone"). Each domain also
-  has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava)
-  and its own walls (snowy peaks, red buttes, black crags, volcanoes). A road follows the roads
-  beside it, three road hexes round a corner making a loop with a gap in the middle (his ask).
+  posterize grid (his second read: one ground for all was "very monotone"; his third: the
+  Waste's and the Marsh's rough wanted more separation, so olive and moss). Each domain also
+  has its own water (the Meadow's lake, the Waste's oasis, the Marsh's murk, the Peak's lava,
+  orange-red since the yellow read as acid, stopping short of the enemy's red) and its own
+  walls (snowy peaks, red buttes, black crags, volcanoes), each range standing out of the top
+  of its hex, drawn after every hex's ground (`DomainGround.draw_walls`). A road follows the
+  roads beside it, three road hexes round a corner making a loop with a gap in the middle.
   Every colour is on the posterize grid and scored against its ground by the colourblind
   simulations (`docs/measurements.md`). `RIFTGATE_BLEED_DEBUG=1` paints the whole
   field and `tools/tileset_shot.gd` draws all four. Next, Ryan's read of them running (the
@@ -451,14 +454,16 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.381 (the page's version 393,
-  published 30 October from main with `ccr-c04908be-3r43xf` merged: the pricing pass's
-  effectiveness and pricing rows, the heat triangle, the maker leans, Chain's row and the rows
-  Shock's reading touched, three-way merged onto the live v0.380, which other sessions moved
-  past main's v0.376 with the foes' fresh start built with the pacing session (the packs as
-  compositions, the tier locked and the ramp, the tears, the stall's prices, the whole wall
-  struck, the elites at the Fractures, the seal), the music's rounds and the phone's line
-  widths; on v0.376 at 388, from `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
+  `docs/design-bible.html` after every change. This file is v0.382 (the page's version 394,
+  published 30 October from `ccr-7821127e-kwj874`: the tilesets' walls standing out of their
+  hexes, the lava toward red and the rough set apart, three-way merged onto the live v0.381
+  published from main with `ccr-c04908be-3r43xf` merged: the pricing pass's effectiveness and
+  pricing rows, the heat triangle, the maker leans, Chain's row and the rows Shock's reading
+  touched, onto the live v0.380, which other sessions moved past main's v0.376 with the foes'
+  fresh start built with the pacing session (the packs as compositions, the tier locked and the
+  ramp, the tears, the stall's prices, the whole wall struck, the elites at the Fractures, the
+  seal), the music's rounds and the phone's line widths; on v0.376 at 388, from
+  `ccr-7821127e-kwj874`: a tone a ground, on v0.375 at 387, the
   tilesets' second build, three-way merged onto the live v0.374 that `claude/charming-rubin-h954bp` published with its flush radiators,
   which carries `claude/jolly-lovelace-scn82y`'s v0.373, the map's lines one width at every zoom;
   on v0.372 at 384, the first build onto that branch's v0.371, the colour rows' pure red on
