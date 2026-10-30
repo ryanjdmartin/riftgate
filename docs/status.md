@@ -25,9 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 824 tests, 206,868 checks, green on main (30 October, `claude/jolly-lovelace-scn82y` landed with main
-  and `claude/charming-rubin-h954bp`'s model rebuilds in, on Godot 4.8-beta2; the same count again with
-  that branch's lit parts' eased light merged on top), about four minutes
+- Tests: 826 tests, 206,874 checks, green on main (30 October, `claude/zealous-wright-ixxo3l`'s
+  foes' move-order fix landed, its two tests the difference, on Godot 4.8-beta2; 824 and 206,868
+  on main before it), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -42,6 +42,12 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/zealous-wright-ixxo3l` (30 October) carried the foes' move-order fix and its boss
+cells' read (How things stand), took main as it landed (to `d84ad16`: the skirmish's field,
+Godot 4.8-beta2, the enemy in violet, the backdrops on the map's palettes, the lit parts' eased
+light), and main took it as a fast-forward on 30 October on Ryan's word ("merge into main
+please").
 
 `claude/jolly-lovelace-scn82y` (29 and 30 October) carried the skirmish's field with the
 Skirmish Controls setting, the map's lines and overlay at one size on screen, Godot 4.8-beta2
@@ -63,7 +69,9 @@ pacing session, the pricing pass, the tilesets' walls), and main took it on 30 O
 word ("Merge into main"); its bible is v0.397 (the page's 409). Main took it again that evening
 as the lit parts' eased light landed (`d84ad16`). Since then it carries the halo trial on the
 Buzzard (a soft shell round its lit parts, faded in with the flare; Ryan judges it running, the
-to-do), not yet on main; its bible is v0.405 (the page's 417).
+to-do), and took main as `claude/zealous-wright-ixxo3l` landed (to `06880da`: the foes'
+move-order fix), green there with the halo's test, 827 tests and 206,880 checks; not yet on
+main; its bible is v0.405 (the page's 417).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -253,6 +261,21 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- A foe's moves keep content's order (30 October): `ContentDB.make_foe`, bringing the first
+  attack to the front when a special leads, passed over an attack already in front and moved
+  the next, so 25 of the 65 foes loaded out of order (two attacks listed first swapped, as for
+  the Lancer, the Augur and the Reaper; a below-half special put first, as for the Black Mage's
+  Flare and three of the four bosses'). It now stops at the first attack, two tests in
+  `tests/test_content.gd` holding it. The order is the codex's list, the opening intent, the
+  order a seeded draw walks (each move's odds unchanged, so only which seed draws it moves)
+  and the pattern a Disrupt steps through, which changed for nine (the Antlion Queen, the
+  Wyvern, the Red Dragon, the Reaper, the Lancer and the Augur, and the promoted Lancer, Cleric
+  and Augur; the rest's old order was a rotation of content's). A saved battle keeps the order
+  its foes were saved in. The boss cells at 30 seeds hold their direction (`docs/measurements.md`,
+  the foes' move order): no fight's mean over the rows moves more than 2.2 points, the fights
+  with no foe it touched come out identical fight for fight, and the three single cells past a
+  cell's band read inside it at 200 seeds; no stock kit fields a Disrupt, so the new pattern is
+  unread until one does.
 - The six map shapes (Ryan's direction of 28 October and his calls of 29 October; landed 29
   October, the brief retired): RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE, RUINED CITY and
   GORGE, each laying its own water, walls, decorative ground and relief; a battle that names no
