@@ -356,8 +356,11 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_AA=off draws the 3D without its smoothing (the machines' textures nearest without their
 # mipmaps, no FXAA on the map), as a debug build's AA toggle does; RIFTGATE_AA=fxaa runs the map's
 # FXAA beside MSAA too. With RIFTGATE_MSAA=off the desk draws the phone's look: the map's FXAA in place
-# of MSAA, which the phone's renderer leaks with.
-# RIFTGATE_OUTLINE=<n> sets the machines' light outline thickness for a comparison (MechView3D.OUTLINE is the default).
+# of MSAA, which the phone's renderer leaks with until Godot 4.8 (godotengine/godot#124643).
+# RIFTGATE_OUTLINE=<n> sets the battle map's machine outline width in design pixels, the same at every zoom, for a comparison
+# (Map3D.OUTLINE is the default). A debug build's TRACES toggle draws the map without its traces (the creases on the
+# machines, the props and the gate, one device pixel at every zoom), to judge the grain zoomed out on the phone; on the
+# desk, RIFTGATE_TUNE=1's TRACE knob does the same live.
 # RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.
 # RIFTGATE_FINE_MAP=1 forces the FINE MAP setting (the map's scene and compositor at the glass's
 # density; with RIFTGATE_SHOT_SCALE=1.5 that is a phone's).
@@ -424,7 +427,7 @@ BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.p
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
-# one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
+# one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
 # nose up), then the art/models/wslook_* and ktlook_* files deleted again

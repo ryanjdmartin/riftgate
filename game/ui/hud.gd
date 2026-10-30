@@ -143,8 +143,13 @@ static func msaa_3d() -> int:
 	if env != "on" and OS.has_feature("mobile"):
 		# Measured on the Pixel 9 (29 September, MSAA 2x with the fine map): the native heap
 		# grew about 170 MB every twenty seconds until the GL driver aborted out of memory
-		# at 1.8 GB, three and a half minutes in. No setting reaches this; a phone never
-		# has MSAA until Godot fixes the leak.
+		# at 1.8 GB, three and a half minutes in. Godot's bug (godotengine/godot#97967): a
+		# phone's GPU resolves MSAA on the chip, so the renderer makes no MSAA buffer, takes
+		# the missing buffer for "not set up" and sets the target up again, a framebuffer
+		# every frame (where the 3D draws through a buffer of its own, by the fix's author:
+		# scaling, or post effects like the map's glow). Fixed for Godot 4.8
+		# (godotengine/godot#124643, 22 October), not in 4.7.2: MSAA comes back on a phone
+		# once the project runs a Godot with the fix and the Pixel's memory holds flat.
 		return SubViewport.MSAA_DISABLED
 	return SubViewport.MSAA_4X
 

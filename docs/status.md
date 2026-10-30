@@ -135,9 +135,14 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the bible's colour rows). His phone read of the map's aliasing (30 October) found the
   machines' textures sampled nearest without their mipmaps, sparkling when drawn small, and no
   anti-aliasing at all on the phone (MSAA leaks there): the textures read their mipmaps now and
-  the map's compositor runs FXAA of its own where MSAA cannot, behind a debug AA toggle; the
-  outline parting on the flat-shaded models is the bible's section 12 question. Ryan's phone read
-  is the to-do's.
+  the map's compositor runs FXAA of its own where MSAA cannot, behind a debug AA toggle. His next
+  read (the same day: grainy zoomed out, "I don't want the outline to thicken as I zoom in")
+  settled the section 12 outline question: the grid's lines and the machines' outline keep one
+  width on screen at every zoom, smoothed, the outline drawn round the machines' own layer in the
+  compositor (unbroken, through the wall, the Kite outlined too) and the engine's outline retired
+  everywhere. The MSAA leak is Godot's, fixed for 4.8 (godotengine/godot#124643); the one-pixel
+  creases are what is left a pixel wide, behind a debug TRACES toggle. Ryan's phone read is the
+  to-do's.
 - Map movement in hexes (Ryan, 27 and 28 October: the move points and the terrain table "add
   confusion and overhead for no strategic gain"; landed on main 28 October, the proposal retired
   with it): a move is a count of hexes given in one go, ground is ground, water
@@ -361,14 +366,15 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.371 (the page's version 383,
-  published 30 October from `claude/jolly-lovelace-scn82y`: the phone's 3D smoothing and the
-  outline question, merged onto the live v0.370; the rows other sessions published since v0.348
-  ride along (the map's movement and shapes, the desk on the phone's renderer, the Armadillo's
-  looks and seal, the Hold The Line voices, the tracks as pairs, the Arsenal's lit cockpit
-  glass), on v0.346 from `claude/charming-rubin-h954bp`). So this
+  `docs/design-bible.html` after every change. This file is v0.373 (the page's version 385,
+  published 30 October from `claude/jolly-lovelace-scn82y`: the map's lines at one width at
+  every zoom, the outline question settled, merged onto the live v0.372; the rows other sessions
+  published since v0.348 ride along (the map's movement and shapes, the desk on the phone's
+  renderer, the Armadillo's looks and seal, the Hold The Line voices, the tracks as pairs, the
+  Arsenal's lit cockpit glass, the domains' tilesets), on v0.346 from
+  `claude/charming-rubin-h954bp`). So this
   file carries those sessions' rows ahead of their code (the models' looks and acts, the
-  Armadillo's seal on screen, the six shapes) and the Strikes row in the keyword table, and the
+  Armadillo's seal on screen, the six shapes, the domains' tilesets) and the Strikes row in the keyword table, and the
   tables script, which writes the tables from main's content, waits until they land or it
   reverts that row. The
   version numbers on the publishing branch's file and the live agree after every publish.

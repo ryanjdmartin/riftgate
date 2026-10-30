@@ -206,15 +206,6 @@ static func parse_tag(node_name: String) -> Array:
 	return MechRig.parse_tag(node_name)
 
 
-## The light outline's thickness (the stencil outline; thin was Ryan's call on 22 September).
-## RIFTGATE_OUTLINE=<n> overrides it, to compare thicknesses by eye.
-const OUTLINE := 2.6   # Ryan, 29 September: trying it thick in game (1.0 was the 22 September thin)
-
-static func outline_thickness() -> float:
-	var env := OS.get_environment("RIFTGATE_OUTLINE")
-	return float(env) if not env.is_empty() else OUTLINE
-
-
 ## Which look the screens use: "clean" by default, RIFTGATE_MECH3D=pixel for the pixel look,
 ## RIFTGATE_MECH3D=off for the 2D sprites.
 static func look_setting() -> String:
@@ -437,9 +428,8 @@ func _setup(chassis_id: String, maker: String) -> void:
 		# screen's scan bar lights it through set_sweep_screen.
 		var tmode := TraceLines.mode()
 		if spin:
-			# The codex: black ink only, no silhouette, no scan (Ryan, 22 September).
+			# The codex: black ink only, no scan (Ryan, 22 September).
 			_trace_mat = TraceLines.ink_material()
-			strip_silhouette()
 		elif tmode == "pulse":
 			_trace_mat = TraceLines.pulse_material(Palette.HUD)
 		elif TraceLines.inked(tmode, "asset"):
@@ -629,8 +619,6 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				# grid and hides it, like a prop or the wall (Ryan, 22 September).
 				tm.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 				tm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_ALWAYS
-				if TraceLines.mode() in ["assets", "pulse"]:
-					TraceLines.silhouette(tm, Palette.HUD, outline_thickness())   # the light outline around the whole machine
 				if role == "amber":
 					# Lamps, engines and light strips glow: the reconstruction's own light.
 					tm.emission_enabled = true
@@ -756,19 +744,6 @@ func model_rect() -> Rect2:
 var _screen_down := Vector3.ZERO
 
 ## The screen's scan bar, in this view's own pixels from its top: the traces under it light.
-## Drop the light outline from every material: the codex and the portraits (Ryan, 22
-## September) show the machine bare.
-func strip_silhouette() -> void:
-	if _model == null:
-		return
-	for child in _model.find_children("*", "MeshInstance3D", true, false):
-		var mi: MeshInstance3D = child
-		for i in range(mi.get_surface_override_material_count()):
-			var sm := mi.get_surface_override_material(i)
-			if sm is BaseMaterial3D and "stencil_mode" in sm:
-				sm.set("stencil_mode", BaseMaterial3D.STENCIL_MODE_DISABLED)
-
-
 func set_sweep_screen(local_y: float) -> void:
 	if _trace_mat == null or not (_trace_mat is ShaderMaterial) or _camera == null:
 		return

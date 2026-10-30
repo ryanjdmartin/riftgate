@@ -596,7 +596,6 @@ func _build() -> void:
 				view.sway_yaw = 0.04
 				view.balance = HoverBalance.new(i + 1)
 			view.sway_phase = i * 2.1
-			view.strip_silhouette()   # no light outline in the skirmish (Ryan, 22 September); the trace and its scan glow stay
 			# Hug the model by its framed bounds, never the render read back. The view frames
 			# its camera on ready, so the bounds are taken then: connected before add_child,
 			# because when the screen is already in the tree ready fires inside it.

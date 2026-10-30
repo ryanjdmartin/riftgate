@@ -2328,3 +2328,20 @@ Pure yellow stands further from every ground than pure red, by both measures; it
 is the waste's sand, where a golden yellow (#ffd000) all but vanishes. No single colour reaches
 3:1 on the meadow or the waste, the field's two bright grounds.
 
+
+## 30 October, the map's lines across the zoom
+
+**The outline and the grid at one width** (the bible's row "Nothing is one device pixel thin, and
+no line grows with the zoom"; Ryan: "I don't want the outline to thicken as I zoom in"). Renders
+at the phone's layout and density on the Compatibility renderer, MSAA off (the phone's), the
+battle screen's opening at zoom 1 and its `zoom` pose (2.4). The engine's outline, measured as
+runs of its colour across the machines in device pixels: a median of 2 at zoom 1 (most 1 to 3),
+6 at 2.4; the grid's ribbons, 1.5 map pixels, were 2.25 device pixels at zoom 1 and 5.4 at 2.4.
+The compositor's outline is 2 design pixels (3 device pixels) and the grid 1.5 (2.25) at both.
+
+Its cost, from `tools/perf_probe.gd` in a cloud container (Mesa's llvmpipe on the CPU, so a
+direction for the phone, never its frame time), `RIFTGATE_OUTLINE=0` against the outline: 155.5
+to 158.7 ms a frame at zoom 1 (2%), 125.6 to 130.3 ms at 2.6 (4%). It looks only inside each
+machine's projected box; the machines fill 18 to 20% of their boxes, and no machine pixel fell
+outside one. It adds no draw call, being the compositor's; the engine's outline pass is gone from
+every machine's materials (not counted against the code before it).

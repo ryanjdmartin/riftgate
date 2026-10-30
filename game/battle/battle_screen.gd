@@ -710,14 +710,14 @@ func _on_hold_released() -> void:
 
 var _menu: PauseMenu = null
 var _built_hud := ""   # the HUD colour this screen was built with; a change rebuilds it
-var _built_weld := true   # whether the map's machines were welded (a debug build's WELD toggle); a change in the skirmish's menu remakes them on the way back
+var _built_map := ""   # the switches the map was built with (_map_switches); a change in the skirmish's menu remakes it on the way back
 
 func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
-			if key == "fine_map" or key == "weld" or key == "aa":
-				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density, or the machines with the weld on or off
+			if key == "fine_map" or key == "weld" or key == "aa" or key == "traces":
+				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density, the machines with the weld on or off, or the traces
 				_refresh()
 			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
@@ -736,7 +736,13 @@ func _apply_display() -> void:
 	_map.sweep_on = bool(d["scan"])   # off: the bar stays hidden and the traces rest as ink
 	BattleMapView.pace = float(d["pace"])
 	_built_hud = Settings.hud
-	_built_weld = MechWeld.enabled()
+	_built_map = _map_switches()
+
+
+## What the map is built with that a settings switch changes: the weld, the smoothing, the
+## traces (a debug build's WELD, AA and TRACES) and the fine map's density.
+func _map_switches() -> String:
+	return str([MechWeld.enabled(), Hud.smoothing(), Settings.display.get("traces", true), Hud.density(self)])
 
 
 ## A colour change rebuilds the screen from the battle (the skirmish, if one is open,
@@ -1261,8 +1267,8 @@ func _on_skirmish_back() -> void:
 	Sound.music("map")
 	if _built_hud != Settings.hud:
 		_build()   # the colour changed in the skirmish's menu: this screen catches up
-	elif _built_weld != MechWeld.enabled():
-		_map.set_field(battle.field)   # the weld switched in the skirmish's menu: the map's machines remade
+	elif _built_map != _map_switches():
+		_map.set_field(battle.field)   # a switch changed in the skirmish's menu (the weld, the smoothing, the traces, the fine map): the map remade
 		_apply_display()
 	_refresh()
 	if battle.state == Battle.State.DONE:

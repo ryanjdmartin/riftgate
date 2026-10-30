@@ -143,6 +143,7 @@ func set_field(f: Battlefield) -> void:
 		mat.set_shader_parameter("scene_lin", _map3d.get_texture())   # the same two, read linear by the FXAA (Hud.fxaa)
 		mat.set_shader_parameter("units_lin", _map3d.get_units_texture())
 		mat.set_shader_parameter("fxaa", Hud.fxaa())
+		mat.set_shader_parameter("outline_px", Map3D.outline_px() * density)   # the machines' outline, one width at every zoom
 		mat.set_shader_parameter("map_size", map_size)
 		mat.set_shader_parameter("view_size", size)
 		mat.set_shader_parameter("play_x", _frame_x())   # sharp inside the frame's lines, soft outside
@@ -397,6 +398,11 @@ func _draw() -> void:
 		mat.set_shader_parameter("focus_y", (minf(size.y, FOCUS_VIEW_H) * 0.5 - scroll_y) / zoom)
 		mat.set_shader_parameter("scroll", Vector2(scroll_x, scroll_y))
 		mat.set_shader_parameter("zoom", zoom)
+		var boxes := _map3d.outline_boxes()
+		mat.set_shader_parameter("box_count", boxes.size())
+		boxes.resize(Map3D.MAX_BOXES)
+		mat.set_shader_parameter("boxes", boxes)
+		mat.set_shader_parameter("outline_color", Palette.HUD)
 		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, size), false)
 		# Everything from here to the edge tags is drawn in map space under the zoom and
 		# scroll. The grid itself is in the scene, lit, so raised ground hides it.

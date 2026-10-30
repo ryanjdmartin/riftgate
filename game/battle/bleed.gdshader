@@ -39,6 +39,16 @@ uniform float edge_blur = 1.6;               // the side blur's maximum
 uniform bool fxaa = false;
 uniform sampler2D scene_lin : filter_linear;
 uniform sampler2D units_lin : filter_linear;
+// The machines' light outline (Ryan, 30 October: "I don't want the outline to thicken as I
+// zoom in"): a ring round the machines' layer, `outline_px` of the scene's pixels wide at
+// every zoom, smoothed, unbroken, and round the whole machine where the wall stands in front
+// of it, since the wall is not in that layer. Looked for only near a machine: `boxes` holds
+// each one's box on screen (Map3D.outline_boxes), so the rest of the map pays a comparison a
+// machine.
+uniform float outline_px = 0.0;              // 0: no outline
+uniform vec4 outline_color = vec4(0.36, 1.0, 0.42, 1.0);
+uniform vec4 boxes[32];                      // left, top, right, bottom, in the scene's pixels
+uniform int box_count = 0;
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -98,6 +108,63 @@ vec4 fxaa_at(sampler2D tex, vec2 uv, vec2 texel) {
 	vec4 b = a * 0.5 + 0.25 * (texture(tex, uv - dir * 0.5) + texture(tex, uv + dir * 0.5));
 	float lb = dot(b.rgb, LUMA);
 	return (lb < lo || lb > hi) ? a : b;
+}
+
+// How much of a machine the machines' layer holds at a texel: a flyer's shadow (alpha 0.45)
+// is not one.
+float solid_at(ivec2 p, ivec2 hi) {
+	return clamp((texelFetch(units, clamp(p, ivec2(0), hi), 0).a - 0.5) * 4.0, 0.0, 1.0);
+}
+
+// The outline's cover at a pixel: the machines' layer grown by `outline_px` (each texel
+// within reach counts, the farthest by how far it falls inside), less the machine itself,
+// whose own cover is smoothed over its four neighbours so the ring's inner edge does not
+// stair-step along the silhouette.
+float outline_at(vec2 uv, vec2 texel) {
+	vec2 p = uv / texel;
+	float pad = outline_px + 2.0;
+	bool near = false;
+	for (int i = 0; i < box_count; i++) {
+		vec4 b = boxes[i];
+		if (p.x > b.x - pad && p.x < b.z + pad && p.y > b.y - pad && p.y < b.w + pad) {
+			near = true;
+			break;
+		}
+	}
+	if (!near) {
+		return 0.0;
+	}
+	ivec2 hi = textureSize(units, 0) - ivec2(1);
+	ivec2 c = ivec2(floor(p));
+	float inner = (2.0 * solid_at(c, hi) + solid_at(c + ivec2(1, 0), hi) + solid_at(c - ivec2(1, 0), hi)
+		+ solid_at(c + ivec2(0, 1), hi) + solid_at(c - ivec2(0, 1), hi)) / 6.0;
+	if (inner >= 1.0) {
+		return 0.0;
+	}
+	float reach = outline_px + 1.0;
+	int n = int(ceil(reach));
+	// First, whether anything at all is in reach: a linear read at a corner where four texels
+	// meet averages the four, so a quarter of the reads cover the square, and most pixels near
+	// a machine are not near its edge.
+	float found = 0.0;
+	for (int y = -n; y <= n; y += 2) {
+		for (int x = -n; x <= n; x += 2) {
+			found = max(found, texture(units_lin, (vec2(c + ivec2(x, y)) + 1.0) * texel).a);
+		}
+	}
+	if (found <= 0.0) {
+		return 0.0;
+	}
+	float grown = 0.0;
+	for (int y = -n; y <= n; y++) {
+		for (int x = -n; x <= n; x++) {
+			float w = clamp(reach - length(vec2(float(x), float(y))), 0.0, 1.0);
+			if (w > grown) {
+				grown = max(grown, solid_at(c + ivec2(x, y), hi) * w);
+			}
+		}
+	}
+	return grown * (1.0 - inner);
 }
 
 // A dense 7x7 box at `rad` spacing: thick and smooth, never a ghosted multiple image.
@@ -223,6 +290,13 @@ void fragment() {
 		COLOR.rgb = mix(COLOR.rgb, u.rgb, u.a);
 	} else {
 		COLOR = aa_here ? fxaa_at(scene_lin, UV, TEXTURE_PIXEL_SIZE) : blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
+	}
+	if (outline_px > 0.0) {
+		// Over either world, and gone where the ground blurs: a sharp ring round a soft machine
+		// reads as a sticker.
+		float ring = outline_at(UV, TEXTURE_PIXEL_SIZE) * (1.0 - clamp(rad / 1.5, 0.0, 1.0));
+		COLOR.rgb = mix(COLOR.rgb, outline_color.rgb, ring);
+		COLOR.a = max(COLOR.a, ring);
 	}
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
 	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;

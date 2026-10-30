@@ -39,7 +39,6 @@ func _init() -> void:
 	_prefix = args[2]
 	_total = int(ceil(float(args[3]) / _step))
 	_view = MechView3D.make(args[0], args[1], "clean", "", yaw, frame, false, {}, [])
-	_view.strip_silhouette()
 	root.add_child(_view)
 	_view.set_process(false)
 	if args.size() >= 7 and not args[6].is_empty() and args[6] != "-":
