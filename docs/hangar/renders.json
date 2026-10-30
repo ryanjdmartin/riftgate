@@ -170,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's eighth notes, 30 October.",
-   "note": "Ryan, 30 October: \"bring back the rear-mounted long vent, but make it almost the whole width of the back. Make the rads just a smidge thinner and more square, keep them centered where they are. Then bring them up and forward a bit more.\" The long vent is back low on the tail's rear face, forty-four wide of the panel's fifty (it was twenty-four), sunk in the shell, its three louvres throwing their upper edges out over the heat with the radiators' and shutting flat with them sealed. Each radiator is fourteen wide by thirteen tall (from sixteen) on the same centre, so its outer wall now stands one inside the next band's flank and one out past the tail's own; both stand two higher and two further forward, the top of each box now running into the next band's top edge, its far end one and a half clear of the hind hip's cuff (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
+   "when": "Ryan's ninth notes, 30 October.",
+   "note": "Ryan, 30 October: \"Place them flush on the chamfered face above the leg joint, and resize to fit. Split the long rear vent into two squareish ones. Do that, then I'll explain my actual idea.\" The radiators leave the tail's corners: one sunk flush in each flank's chamfer of the band over the hind hip, above the hip's cuff, fourteen along the machine by eight up the slope (what the slope holds there), three louvres along the machine that stand a little out at rest and throw near square to the slope when it vents, the heat glowing between them. The long rear vent is two vents fifteen by twelve, side by side low in the back panel, four louvres each. All of them shut flat sealed (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game; RIFTGATE_ACTS_DEBUG=vent_heat loops the vent.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -199,7 +199,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the seventh notes of 30 October (the radiators sixteen wide and two lower and further back, no long vent)",
+    "summary": "Before: the eighth notes of 30 October (the radiators boxes on the tail's top rear corners, the long vent across the back)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",

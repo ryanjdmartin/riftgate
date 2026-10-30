@@ -832,15 +832,15 @@ def armadillo(b):
     hardpoints"; his go of 20 October), in the stock's order: hp_1 the left rear port (the
     Rivet Gun), hp_2 the right rear port (the Twin Autoguns), hp_3 and hp_4 two forward ports
     flanking the cowl, level with the ground, cut back into the step behind the front band,
-    bare; the plating on the flanks is detail, and two big armoured louvred radiators sit on
-    the tail's top rear corners, apart, their faces tilted up, over a long louvred vent across
-    the back panel, each a grille at rest that throws its louvres edge on over flaring orange
-    heat when it vents and shuts flat when it seals, while a vent on each flank's chamfer
-    slides out over its glowing core (Ryan, 29 October: the stack's rain flap read "more W&S
-    comical than heavy Minerva"; the two vents that replaced it grew into "big boxy radiators
-    sticking out at an angle", with "new vents on the sides", their glow "way more
-    yellow/orange"; then, 30 October, "They need to look like units mounted to the chassis,
-    not poking out of it", and the long vent back, "almost the whole width of the back"). The ports are real
+    bare; the plating on the flanks is detail, and a louvred radiator sunk flush in each
+    flank's chamfer above the hind hip and two near-square louvred vents low in the tail's
+    back panel, each a grille at rest that throws its louvres open over flaring orange heat
+    when it vents and shuts flat when it seals, while a vent on each flank's chamfer ahead of
+    the rear ports slides out over its glowing core (Ryan, 29 October: the stack's rain flap
+    read "more W&S comical than heavy Minerva"; the two vents that replaced it grew into "big
+    boxy radiators sticking out at an angle", with "new vents on the sides", their glow "way
+    more yellow/orange"; then, 30 October, "Place them flush on the chamfered face above the
+    leg joint", and "Split the long rear vent into two squareish ones"). The ports are real
     holes: b.cut subtracts them from the bands before export. The hatch behind the rear ports
     carries the two Cryo Flingers (fixed, no pin; Ryan, 28 October: the brief's lean), a twin
     canister rack that slides out of it to fire, its two barrels bored dark through the rack's
@@ -1003,43 +1003,25 @@ def armadillo(b):
     for s in (-1.0, 1.0):
         b.box(min(s * 29.0, s * 32.5), max(s * 29.0, s * 32.5), -10.0, 10.0, Z0 + 2.0, Z0 + 18.0, "livery.livery2", "ablative")
     # The radiators (Ryan, 29 October: the two tail vents, "more active animated vents, more
-    # rugged looking, that seal as well as the armour ports", then enlarged, "angle them
-    # towards the back, turning them into large radiators"; sunk in a bevel, then "not so
-    # streamlined. I meant big boxy radiators sticking out at an angle"; raised onto the rear
-    # deck in "a darker colour", then "Go back to the previous iteration. Ditch the bottom long
-    # vent. Put these guys right on the back panel, still tilted up, and make them bigger";
-    # moved about the panel through 30 October, until, raised through its top on trial, "They
-    # need to look like units mounted to the chassis, not poking out of it", so "extrude less,
-    # up more, spread apart more, so they are covering a good half of the angled face"): two
-    # big armoured boxes in dark steel mounted on the tail's top rear corners, apart, their
-    # louvred faces tilted up as the bevel had held them, each a dark steel box with a stripe
-    # rim and its heat banked in its floor (amber.heat, "way more yellow/orange" than the ember
-    # it had), heavy louvres across it on joints. At rest the louvres stand tilted, a grille
-    # that hides the heat from the cameras behind (their thickness closes the slots); the vent
-    # act throws them edge on to those cameras (lower edges out, the way they line up with an
-    # eye 30 to 42 degrees down), the heat flaring behind, so it reads as motion and not by its
-    # colour alone; sealed, they shut flat with the ports.
-    RAD = math.degrees(math.atan2(11.0, 7.5))   # the boxes' faces tilted as the bevel stood (11 up in 7.5 back), about 56 degrees
-    # Each box straddles its corner: its face's top edge about seven above the deck and four and
-    # a half in from the panel, its foot under three behind it (seven toward the front and two
-    # up: Ryan, 30 October, "maybe 2 units", "3 more further forward", then "up and forward a
-    # bit more"); its top runs over the deck into the next band, and its outer wall stands one
-    # inside that band's flank and one out past the tail's own, over the whole chamfer: fourteen
-    # wide by thirteen tall, centred where it stood ("just a smidge thinner and more square";
-    # sixteen wide, it had stood flush with the tail's flank, then "flush with the next biggest
-    # segment"). So it sits on the hull as a unit bolted there, clear of the rack's hatch and
-    # its slide; its walls run thirteen back, its far end one and a half clear of the hind
-    # hip's cuff. The louvred hollow dips into the corner, cut there.
-    RAD_X, RAD_MOUTH = 19.0, (-48.66, Z0 + 22.73)   # the housing's outer wall 26 off the spine
-    vents = [_vent(b, [band_obs[0]], (s * RAD_X, RAD_MOUTH[0], RAD_MOUTH[1]), RAD, 14.0, 13.0, 5, "louvre_" + ("l" if s < 0 else "r"), -20.0, -80.0,
-                   wall=1.5, housing="steel.dark", back=13.0) for s in (-1.0, 1.0)]   # heavy walls round the louvres
-    # The long vent, back low across the tail's rear face (Ryan, 30 October: "bring back the
-    # rear-mounted long vent, but make it almost the whole width of the back"; twenty-four wide,
-    # "a wider centered version of the vent", it went on the 29th with "Ditch the bottom long
-    # vent"): forty-four of the panel's fifty, sunk into the shell under the radiators, three
-    # louvres a little out at rest that throw their upper edges out with the radiators' (edge on
-    # to an eye 30 to 42 degrees down behind) and shut flat with them.
-    vents.append(_vent(b, [band_obs[0]], (0.0, bands[0][0], Z0 + 4.0), 90.0, 44.0, 8.0, 3, "louvre_c", 10.0, 60.0))
+    # rugged looking, that seal as well as the armour ports", then enlarged into radiators;
+    # big boxes standing out of the tail at an angle, moved about its back panel and its top
+    # rear corners through 30 October, until "Place them flush on the chamfered face above the
+    # leg joint, and resize to fit"): one sunk flush in each flank's chamfer of the band over
+    # the hind hip, above the hip's cuff where it stands out of the slope, fourteen along the
+    # machine by eight up the slope, a dark steel box with a stripe rim and its heat banked in
+    # its floor (amber.heat, "way more yellow/orange" than the ember it had), three louvres along
+    # the machine on joints. At rest they stand a little out, a grille over the heat; the vent
+    # act throws them near square to the slope, so the heat shows between them to a camera
+    # above that flank; sealed, they shut flat with the ports.
+    vents = [_vent(b, [band_obs[1]], (s * 20.5, -31.0, Z0 + 20.5), 0.0, 14.0, 8.0, 3, "louvre_" + ("l" if s < 0 else "r"), 20.0, 80.0, flank=s)
+             for s in (-1.0, 1.0)]   # on the slope (x plus height 41), from the deck's edge to just over the cuff
+    # The long rear vent split in two (Ryan, the same day: "Split the long rear vent into two
+    # squareish ones"; it had run forty-four across the panel's fifty): two vents fifteen wide
+    # by twelve tall, sunk side by side low in the tail's rear face, four louvres each a little
+    # out at rest that throw their upper edges out with the radiators' (edge on to an eye 30 to
+    # 42 degrees down behind) and shut flat with them.
+    vents += [_vent(b, [band_obs[0]], (s * 12.0, bands[0][0], Z0 + 6.5), 90.0, 15.0, 12.0, 4, "louvre_c" + ("l" if s < 0 else "r"), 10.0, 60.0)
+              for s in (-1.0, 1.0)]
     # The side vents (Ryan, the same day: "new vents on the sides, on the angled slopes just in
     # front of the back weapons. Those are small rectangular protrusions when sealed, and
     # either slide out, or lever up using the forward edge as a pivot, to show the vent face
@@ -1153,8 +1135,8 @@ def armadillo(b):
           glow=[(["lamp"], [(3.4, 0.0), (3.9, 8.0), (5.2, 8.0), (5.8, 0.0)])])
     # Venting (Ryan, 29 October: the vents "more active animated", and never while sealed;
     # then "don't do the double knee bend. Lower down, open vents, close vents, come back up"):
-    # the shell sinks low on its planted feet and settles; the louvres of every radiator and of
-    # the long vent throw edge on over the flaring heat, the lowest first and the rest a beat
+    # the shell sinks low on its planted feet and settles; the louvres of the radiators and the
+    # rear vents throw open over the flaring heat, the lowest first and the rest a beat
     # after, as the side vents slide out, all held open while the heat pours out; then the
     # louvres shut and the side vents slide home as the glow dies, and the shell rises. A
     # louvre's key is a share of its own throw.
@@ -1185,8 +1167,8 @@ def armadillo(b):
     # The seal (the form "sealed", held while the machine carries the status): the port guns
     # sink into the shell along their lines, past the ports' floors (and a gun fitted in a
     # forward port with them), then each port's iris plug rises out of its floor and closes it
-    # just under the rim as the radiators' louvres shut flat, the cowl lamps and the
-    # radiators' embers going dark ("the shell goes dark", its design note),
+    # just under the rim as every vent's louvres shut flat, the cowl lamps and the vents'
+    # heat going dark ("the shell goes dark", its design note),
     # while the whole machine hunkers down on its planted feet, the shell low and its brow
     # dipped: the defensive base pose (Ryan, 29 October). Opening runs it back, the plugs
     # dropping before the guns rise. RIFTGATE_SEAL_DEBUG=1 holds it and lets it go in turn,
@@ -1199,7 +1181,7 @@ def armadillo(b):
         tracks["run_" + tag] = [along(0.0, 0.0, FWD), along(T_SINK, -SINK_F, FWD)]
     for jn, (hx, hy, hz) in shutters.values():
         tracks[jn] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (T_PLUG1, 0.0, 0.0, 0.0, hx, hy, hz)]
-    for vent in vents:   # the radiators shut flat as the plugs close
+    for vent in vents:   # every vent shuts flat as the plugs close
         for jn, shut, swing in vent:
             tracks[jn] = [(0.0, 0.0), (T_PLUG0, 0.0), (T_PLUG1, shut)]
     eased = lambda u: u * u * (3.0 - 2.0 * u)
@@ -4318,7 +4300,7 @@ def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe
     return name, tuple(axis * depth)
 
 
-def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0):
+def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0, flank=None):
     """An armoured louvred vent (the Armadillo's radiators): a dark steel box `width` by
     `height` with heat banked in its floor (the part a glow names, `vent_box_floor`), a
     stripe rim round its mouth, and `slats` heavy louvres across the mouth, each on a pitch
@@ -4331,10 +4313,21 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
     rising `alpha` degrees from flat toward the front and facing back (90 a rear face, 0 a
     top). A louvre stands `rest` degrees out of the face (positive lifts its upper edge out),
     so its joint's 0 is that rest; it shuts flat at `-rest` and opens to `opens` degrees out
-    of the face at `opens - rest`. Returns [(joint, its shut swing, its open swing)], the
-    lowest first."""
-    a = math.radians(alpha)
-    X, U, N = Vector((1.0, 0.0, 0.0)), Vector((0.0, math.cos(a), math.sin(a))), Vector((0.0, -math.sin(a), math.cos(a)))
+    of the face at `opens - rest`. `flank`, given (-1 the left, 1 the right), lays the vent
+    on that flank's 45-degree chamfer instead (the Armadillo's radiators since Ryan's notes
+    of 30 October), `width` along the machine and `height` up the slope, `alpha` unused: its
+    louvres run along the machine on roll joints, the upper edge the one toward the spine.
+    Returns [(joint, its shut swing, its open swing)], the lowest first, in the joint's own
+    sense."""
+    if flank is None:
+        a = math.radians(alpha)
+        X, U, N = Vector((1.0, 0.0, 0.0)), Vector((0.0, math.cos(a), math.sin(a))), Vector((0.0, -math.sin(a), math.cos(a)))
+        axis, sense = "pitch", 1.0
+    else:
+        r = math.sqrt(0.5)
+        U, N = Vector((-flank * r, 0.0, r)), Vector((flank * r, 0.0, r))
+        X = U.cross(N)   # forward on the right flank, back on the left, so a turn about X lifts U toward N
+        axis, sense = "roll", flank   # a roll turns about forward: about X on the right, against it on the left
     o = Vector(origin)
     at = lambda x, u, n: o + X * x + U * u + N * n
     frame = lambda hw, hh, n: [at(-hw, -hh, n), at(hw, -hh, n), at(hw, hh, n), at(-hw, hh, n)]
@@ -4355,15 +4348,17 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
     pitch = 2.0 * ih / slats
     th = math.radians(rest)
     w, m = U * math.cos(th) + N * math.sin(th), N * math.cos(th) - U * math.sin(th)
-    prof = [(-v.y, v.z) for v in (w * (-pitch / 2.0 + 0.05) - m * (thick / 2.0), w * (pitch / 2.0 - 0.05) - m * (thick / 2.0),
-                                  w * (pitch / 2.0 - 0.05) + m * (thick / 2.0), w * (-pitch / 2.0 + 0.05) + m * (thick / 2.0))]   # _beam's (across, up): across is -y along x
-    shut, swing = -rest, opens - rest
+    across = X.cross(Vector((0.0, 0.0, 1.0))).normalized()   # _beam's frame for a member along X
+    over = across.cross(X).normalized()
+    prof = [(v.dot(across), v.dot(over)) for v in (w * (-pitch / 2.0 + 0.05) - m * (thick / 2.0), w * (pitch / 2.0 - 0.05) - m * (thick / 2.0),
+                                                   w * (pitch / 2.0 - 0.05) + m * (thick / 2.0), w * (-pitch / 2.0 + 0.05) + m * (thick / 2.0))]
+    shut, swing = -rest * sense, (opens - rest) * sense
     lo, hi = min(shut, 1.1 * swing) - 3.0, max(shut, 1.1 * swing) + 3.0
     out = []
     for k in range(slats):
         c = at(0.0, -ih + pitch * (k + 0.5), -pivot)
         name = "%s%d" % (prefix, k + 1)
-        with b.joint(name, tuple(c), axis="pitch", limits={"pitch": (lo, hi), "yaw": (0.0, 0.0), "roll": (0.0, 0.0)}):
+        with b.joint(name, tuple(c), axis=axis, limits={ax: ((lo, hi) if ax == axis else (0.0, 0.0)) for ax in ("pitch", "yaw", "roll")}):
             _beam(b, tuple(c - X * (iw - 0.15)), tuple(c + X * (iw - 0.15)), prof, prof, "steel.plate", "louvre")
         out.append((name, shut, swing))
     return out
