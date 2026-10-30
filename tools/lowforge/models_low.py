@@ -1140,18 +1140,23 @@ def armadillo(b):
     # then "don't do the double knee bend. Lower down, open vents, close vents, come back up";
     # 30 October: "desync the vent openings, then close them all at the same-ish time", then
     # "Open them in pairs, not one at a time, and leave them open longer once they're all
-    # open"): the shell sinks low on its planted feet and settles; the vents open a pair at a
+    # open"; then "slow down the standing back up at the end and start it as the vents are
+    # closing. the vents can stay open a touch less long. desync the pairs closing just a
+    # bit"): the shell sinks low on its planted feet and settles; the vents open a pair at a
     # time, each left with its right, the rear vents, then the side vents, then the radiators, a
     # radiator's or a rear vent's louvres the lowest first and the rest a beat after, a side
-    # vent sliding out, each one's heat flaring as it opens; held open together a good two
-    # seconds while the heat pours out, they all shut within a few hundredths of each other as
-    # the glow dies, and the shell rises. A louvre's key is a share of its own throw.
-    SINK = -7.0
+    # vent sliding out, each one's heat flaring as it opens; held open together a second and a
+    # half while the heat pours out, they shut a pair at a time a beat apart in the same order
+    # as the glow dies, and the shell rises slowly from the first pair's shutting. A louvre's
+    # key is a share of its own throw.
+    SINK, UP0, UP = -7.0, 4.5, 2.0   # how low it sinks; when it starts back up, and how long it takes
+    eased = lambda u: u * u * (3.0 - 2.0 * u)
+    rise = [(round(UP0 + UP * k / 8.0, 3), 0.0, round((SINK - 0.3) * (1.0 - eased(k / 8.0)), 3), 0.0) for k in range(1, 9)]   # keyed close so the feet stay planted
     tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
-                            [(0.3, 0.0, 0.0, 0.0), (1.2, 0.0, SINK, 0.0), (1.5, 0.0, SINK - 0.3, 0.0), (5.6, 0.0, SINK - 0.3, 0.0), (6.7, 0.0, 0.0, 0.0)])
-    TIMES = {   # each vent's (opening, shutting), by its heat: a pair at a time, then all together
-        "rear_vent_heat_l": (1.4, 4.9), "rear_vent_heat_r": (1.4, 4.92), "side_vent_heat_l": (1.85, 4.88),
-        "side_vent_heat_r": (1.85, 4.91), "radiator_heat_l": (2.3, 4.89), "radiator_heat_r": (2.3, 4.92)}
+                            [(0.3, 0.0, 0.0, 0.0), (1.2, 0.0, SINK, 0.0), (1.5, 0.0, SINK - 0.3, 0.0), (UP0, 0.0, SINK - 0.3, 0.0)] + rise)
+    TIMES = {   # each vent's (opening, shutting), by its heat: a pair at a time, and shut a pair at a time a beat apart
+        "rear_vent_heat_l": (1.4, UP0), "rear_vent_heat_r": (1.4, UP0), "side_vent_heat_l": (1.85, UP0 + 0.12),
+        "side_vent_heat_r": (1.85, UP0 + 0.12), "radiator_heat_l": (2.3, UP0 + 0.24), "radiator_heat_r": (2.3, UP0 + 0.24)}
     THROW, SHUT = ((0.0, 0.0), (0.35, 1.06), (0.55, 1.0)), 0.45   # a louvre's opening from its own moment; its shutting
     flare = lambda t0, t1: [(t0, 0.0), (round(t0 + 0.6, 3), 7.0), (t1, 7.0), (round(t1 + 0.65, 3), 0.0)]
     glow = []
@@ -1164,7 +1169,7 @@ def armadillo(b):
         t0, t1 = TIMES[heat]
         tracks[jn] = [along(t, out * f, line) for t, f in ((t0, 0.0), (t0 + 0.45, 1.0), (t1, 1.0), (t1 + 0.5, 0.0))]
         glow.append(([heat], flare(t0, t1)))
-    b.act("vent_heat", 7.0, tracks, body=body, heft=0.1, glow=glow)
+    b.act("vent_heat", round(UP0 + UP + 0.3, 3), tracks, body=body, heft=0.1, glow=glow)
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a heavy walk in diagonal pairs, each foot planted flat while the shell passes
     # over it, lifted and stamped down; the shell level but for its drop onto each pair. The
@@ -1198,7 +1203,6 @@ def armadillo(b):
     for _, vent in vents:   # every vent shuts flat as the plugs close
         for jn, shut, swing in vent:
             tracks[jn] = [(0.0, 0.0), (T_PLUG0, 0.0), (T_PLUG1, shut)]
-    eased = lambda u: u * u * (3.0 - 2.0 * u)
     hunker = [(round(0.2 + 0.1 * k, 3),) + tuple(round(v * eased(k / 9.0), 3) for v in HUNK) for k in range(10)]   # 0.2 to 1.1 s, dense so the feet stay planted
     limbs4 = [limb(leg) for leg in ("fl", "fr", "hl", "hr")]
     legs_t, body = _planted(limbs4, [(0.0, 0.0, 0.0, 0.0)] + hunker)
