@@ -15,8 +15,8 @@ extends Control
 ## plate scrolls under a CLOSE that stays in view.
 ##
 ## Entry keys (see `ContentDB.codex_for_unit` / `codex_for_foe`): title, designation,
-## subtitle, body, stat_items, passive, passive_rows ([text, source] pairs, coloured by
-## source), effects ({name, text, kind, note}), faces (Array of Face), face_rules (each face's
+## subtitle, body, stat_items, passive, passive_rows ([text, source] pairs), effects ({name,
+## text, kind, note}), faces (Array of Face), face_rules (each face's
 ## component passive lines), current (index), steps (a die that steps: its chambers as a
 ## cylinder above them), moves and foe (a foe's moves), flavour, sprite_id (a chassis or foe
 ## id), paint and unit (the machine, so the model can wear its fitted loadout).
@@ -40,24 +40,12 @@ var _body: Label
 var _designation: HudButton   # a stamped tag, not a label, so the plate does not read as three stacked lines
 var _stats: StatBlock
 var _view: MechView3D = null   # the spinning model, when mechs are 3D
-var _passives: VBoxContainer   # the chassis's passive, in its source's colour
+var _passives: VBoxContainer   # the chassis's passive, in ink
 var _effects: EntryReadout     # the active effects: a module's, a reward's, a status the battle keeps
 var _moves: EntryReadout       # a foe's moves, each a name and its lines
 var _faces: VBoxContainer      # the die, a row a component: its tile and its lines
 var _ring: CylinderView        # a die that steps (the Cassowary's): its order as a cylinder
 var _flavour: Label
-
-
-## The colour a passive's row takes from its source: the chassis's own in heat's colour, the
-## accent it has always worn, anything
-## granted (a component's, a module's, a reward's) in ink, its source named beside it. Never the
-## HUD colour, which is decoration (Ryan, 26 October: "Actual gameplay text should be in a
-## sensible colour").
-static func passive_colour(kind: String) -> Color:
-	match kind:
-		"component", "module", "reward":
-			return Palette.INK
-	return Palette.HEAT
 
 
 ## A wrapping label needs a width before its first layout pass, or it reports the height
@@ -214,8 +202,9 @@ func open(entry: Dictionary) -> void:
 	_stats.set_items(entry.get("stat_items", []))
 	_body.text = str(entry.get("body", ""))
 	_body.visible = not _body.text.is_empty()
-	# The passive, in its source's colour (Ryan's to-do: granted passives coloured): the
-	# chassis's own in the accent.
+	# The passive in ink, as gameplay text reads (Ryan, 30 October: "the passive line can go in
+	# normal colour"; it wore heat's colour, the old accent, before). A granted rule says where it
+	# comes from by its place: a component's on its row, a module's or a reward's an active effect.
 	for c in _passives.get_children():
 		_passives.remove_child(c)   # out of the tree now, so the rows below are the only children
 		c.queue_free()
@@ -223,11 +212,11 @@ func open(entry: Dictionary) -> void:
 	if rows.is_empty() and not str(entry.get("passive", "")).is_empty():
 		rows = [[str(entry.get("passive", "")), "chassis"]]
 	for row in rows:
-		var l := Hud.label(str(row[0]), 17, passive_colour(str(row[1])))
+		var l := Hud.label(str(row[0]), 17, Palette.INK)
 		_wrap(l)
 		_passives.add_child(l)
 	_passives.visible = not rows.is_empty()
-	# The active effects, each its name in its source's colour, then what it does.
+	# The active effects, each its name and where it comes from, then what it does.
 	var effects: Array = entry.get("effects", [])
 	_effects.visible = not effects.is_empty()
 	if not effects.is_empty():
@@ -272,12 +261,12 @@ func open(entry: Dictionary) -> void:
 
 
 ## The active effects as readout lines: a caption, then each its name and where it comes from in
-## its source's colour, then what it does.
+## bold, then what it does.
 static func effect_lines(effects: Array) -> Array:
 	var out: Array = [{"style": "caption", "text": "ACTIVE EFFECTS", "parts": [], "place": ""}]
 	for e in effects:
 		var head := "%s (%s):" % [str(e.get("name", "")), str(e.get("note", ""))] if not str(e.get("note", "")).is_empty() else "%s:" % str(e.get("name", ""))
-		var parts: Array = [{"text": head, "trend": 0, "gain": false, "bold": true, "ink": passive_colour(str(e.get("kind", "")))}, {"text": str(e.get("text", "")), "trend": 0, "gain": false}]
+		var parts: Array = [{"text": head, "trend": 0, "gain": false, "bold": true}, {"text": str(e.get("text", "")), "trend": 0, "gain": false}]
 		out.append({"style": "named", "text": head + " " + str(e.get("text", "")), "parts": parts, "place": ""})
 	return out
 

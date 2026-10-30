@@ -528,8 +528,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 		shown += (l as Label).text.to_lower() + "\n"
 	assert_true(not passive_name.is_empty() and shown.contains(passive_name), "by its name from content")
 	var first: Label = s._codex._passives.get_child(0)
-	assert_eq(first.get_theme_color("font_color"), CodexBox.passive_colour("chassis"), "the chassis's own passive in its colour, first")
-	assert_true(CodexBox.passive_colour("component") != CodexBox.passive_colour("chassis"), "a component's passive reads in another")
+	assert_eq(first.get_theme_color("font_color"), Palette.INK, "the chassis's own passive first, in ink (Ryan, 30 October: \"the passive line can go in normal colour\")")
 	assert_true(s._codex._faces.visible and s._codex._faces.get_child_count() == s.sk.mechs[2].die.faces.size(), "a row an entry, one column")
 	s._close_codex()
 	s.free()

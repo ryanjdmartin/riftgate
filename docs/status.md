@@ -25,8 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 824 tests, 206,868 checks, green on main (30 October, `claude/jolly-lovelace-scn82y` landed with main
-  and `claude/charming-rubin-h954bp`'s model rebuilds in, on Godot 4.8-beta2), about four minutes
+- Tests: 824 tests, 206,867 checks, green on `claude/jolly-lovelace-scn82y` (30 October: main's head, where the
+  branch landed with `claude/charming-rubin-h954bp`'s model rebuilds in, and the passive line in ink
+  after it, on Godot 4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -49,7 +50,8 @@ backdrop on the map's palettes, the minty GREEN and the COLOURS page cut to what
 took main twice on 30 October (the tilesets, the pacing session and the foes' fresh start; then
 `claude/charming-rubin-h954bp`'s model rebuilds as they landed, the fitted die worn on the pins
 inside the map compositor's outline), and main took it on 30 October on Ryan's word ("merge
-this into main"); its bible is v0.399 (the page's 411).
+this into main"); its bible is v0.399 (the page's 411). One commit stands past main since (the
+codex's passive line in ink), for main on his word.
 
 `claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
 the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
@@ -204,6 +206,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   minty, #60ffb0, apart from the amber for red-green eyes, and the COLOURS page was cut to what
   is in play: the presets, the enemy's four violets (the routes and the rift's bars and tears
   wear the violet itself) and the meanings; the old other-world drawing in TerrainArt is gone.
+  The codex's passive line reads in ink since ("the passive line can go in normal colour"; it
+  wore heat's colour, the old accent), and keywords highlighted in shown text with their icons
+  are his next ask, in discussion (the to-do once agreed).
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
