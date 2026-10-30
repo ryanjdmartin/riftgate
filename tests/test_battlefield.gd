@@ -109,6 +109,72 @@ func test_a_pack_on_the_apron_strikes_the_gate() -> void:
 	assert_eq(sq.pos, front, "it holds at the gate")
 
 
+## The whole wall is a target (Ryan, 30 October): a pack beside any hex of the bottom rows
+## strikes the gate's bar, so the apron cannot be plugged, and the strike's floor of ten is
+## gone, so a stray pair chips less than a trio.
+func test_the_wall_is_struck_anywhere_along_it_and_a_small_pack_chips_less() -> void:
+	var f := _field()
+	var corner := _o(0, f.map.height - BattleMap.GATE_ROWS - 1)   # the apron row's west end, beside the wall and far from the gate
+	assert_true(f.map.wall_hexes.size() > 0, "the wall stands across the rest of the bottom rows")
+	var far := true
+	for g in f.map.gate_hexes:
+		if Hex.distance(corner, g) <= 1:
+			far = false
+	assert_true(far, "the corner is beside no gate hex")
+	var pair := f.add_unit(Unit.pack(1, "a stray pair", corner, "marsh", 2, 2))
+	var w: Battlefield.Walk = f.plan_walks()[1]
+	assert_true(w.strikes, "beside the wall it strikes")
+	assert_true(w.path.is_empty(), "and walks nowhere")
+	var hp := f.gate_hp
+	f.enemy_turn()
+	assert_eq(f.gate_hp, hp - 6, "a third of two times ten: six, no floor of ten")
+	assert_eq(pair.pos, corner, "it holds at the wall")
+	assert_eq(f.apron_row(), f.map.height - BattleMap.GATE_ROWS - 1, "the apron is the row before the wall")
+	for col in range(f.map.width):
+		assert_true(f.apron_hexes().has(_o(col, f.apron_row())), "column %d of the apron row strikes" % col)
+
+
+## A peak (the pacing session, 30 October): the rift sends the cycle's next composition, a tear
+## opens on the seam's row and sends a patrol from the next peak on, the seam creeps, and a
+## spawn never lands beside a machine.
+func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_opens() -> void:
+	var f := _field(9, 20)
+	f.spawn_faction = "marsh"
+	f.cycle = [Battlefield.composition([["revenant", 4], ["ghost", 2]], "marsh", "formation", "host")]
+	f.patrol_cycle = [Battlefield.composition([["revenant", 2]], "marsh", "patrol", "shamblers")]
+	f.ramp = 0
+	var m := f.add_unit(Unit.mech(9, "A", _o(4, 2), 3))   # a machine right under the rift
+	assert_eq(f.seam_row, Battlefield.SEAM_START, "the seam starts where the bleed's gradient ended")
+	f.peak()
+	assert_eq(f.peaks, 1, "one peak")
+	assert_eq(f.packs().size(), 1, "the rift sent one composition and the new tear sent nothing yet")
+	var sent: Unit = f.packs()[0]
+	assert_eq(sent.members, [["revenant", 4], ["ghost", 2]], "the composition's members")
+	assert_eq(sent.composition_size, "formation", "and its size")
+	assert_false(f.machine_adjacent(sent.pos), "it landed beside no machine")
+	assert_true(Hex.distance(sent.pos, f.map.rift) <= 3, "near the rift")
+	assert_eq(f.tears.size(), Ramp.tears_at(0), "the ramp's count of tears opened")
+	assert_eq(f.seam_row, Battlefield.SEAM_START + Ramp.seam_creep_at(0), "the seam crept")
+	var first: Vector2i = f.tears[0]["pos"]
+	assert_eq(Hex.axial_to_offset(first).y, f.seam_row, "and the tear opened on the seam's new edge")
+	f.peak()
+	assert_eq(f.packs().size(), 3, "the rift sent again and the tear sent its first patrol")
+	assert_eq(f.rift_spawns, 2, "two from the rift")
+	assert_eq(f.tear_spawns, 1, "one from the tear")
+	var patrol: Unit = f.packs()[2]
+	assert_eq(patrol.members, [["revenant", 2]], "the patrol cycle's")
+	assert_true(Hex.distance(patrol.pos, first) <= 2, "landed by its tear")
+	assert_eq(f.tears.size(), 2 * Ramp.tears_at(0), "another tear opened")
+	var second: Vector2i = f.tears[1]["pos"]
+	assert_true(Hex.distance(first, second) >= 3, "spread away from the first")
+	for i in range(12):
+		f.peak()
+	assert_eq(f.seam_row, f.apron_row(), "the seam creeps as far as the apron and no further")
+	for t in f.tears:
+		assert_true(Hex.axial_to_offset(t["pos"]).y <= f.apron_row(), "a tear opens no further south than the apron")
+	assert_true(f.units.has(m), "the machine still stands")
+
+
 func test_gate_is_wider_than_one_hex() -> void:
 	var f := _field()
 	assert_eq(f.map.gate_hexes.size(), 7, "four gate hexes on the apron row, three below")
@@ -179,12 +245,13 @@ func test_a_boss_patrols_its_zone_outside_the_rift() -> void:
 func test_pressure_spawns_pack_at_rift() -> void:
 	var f := _field()
 	f.spawn_faction = "marsh"
-	f.spawn_table = [["revenant", 6]]
+	f.cycle = [Battlefield.composition([["revenant", 6]], "marsh")]
 	f.rift_pressure_max = 2
 	assert_false(f.tick_pressure(1), "one tick, no spawn")
 	assert_true(f.tick_pressure(1), "the second spawns")
 	assert_eq(f.packs().size(), 1, "one pack now")
-	assert_eq(f.packs()[0].foe_id, "revenant", "spawned from the spawn table")
+	assert_eq(f.packs()[0].foe_id, "revenant", "spawned from the cycle")
+	assert_eq(f.packs()[0].members, [["revenant", 6]], "its members at the ramp's density, one at the start")
 	assert_eq(f.rift_pressure, 0, "clock reset")
 	assert_true(Hex.distance(f.packs()[0].pos, f.map.rift) <= 1, "spawned at or beside the rift")
 
@@ -638,7 +705,7 @@ func test_a_rift_pressure_spawn_takes_its_foes_shown_name() -> void:
 	# the setup names its packs by the foe's shown name.
 	var f := _field()
 	f.foe_profiles = {"bone_hound": {"zone": 1, "behaviour": "push", "hunts": "nearest", "movespeed": 2, "name": "Bone Hound"}}
-	f.spawn_table = [["bone_hound", 3]]
+	f.cycle = [Battlefield.composition([["bone_hound", 3]], "marsh")]
 	f.spawn_faction = "marsh"
 	assert_true(f.tick_pressure(f.rift_pressure_max), "the rift spawns")
 	var sq: Unit = f.units[f.units.size() - 1]

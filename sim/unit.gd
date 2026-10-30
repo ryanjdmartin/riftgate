@@ -90,10 +90,13 @@ var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders
 ## members are its hand-tailored escort when one is written; empty, its escort is its `foe_id`
 ## times its `strength`, or the tier's units.
 var members: Array = []
+var composition: String = ""       # the composition it emerged as (content's id), "" for a one-type pack
+var composition_size: String = ""  # its size: patrol, formation, elite or escort (ContentDB.COMPOSITION_SIZES); "" for a one-type pack
 var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
 var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')
+var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight, its ring inert; the Rupture breaks it
 var zone: int = 1            # the pack's ring: a pack whose ring covers a fight's target joins that fight, and a hunter catches a prey inside it (bible section 5)
 var attack_range: int = 2    # a machine's ring: it may join a fight whose target is within this many hexes (bible section 5)
 

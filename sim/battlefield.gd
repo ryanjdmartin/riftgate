@@ -39,12 +39,34 @@ var units: Array[Unit] = []
 var gate_hp: int = 200
 var gate_hp_max: int = 200
 var rift_pressure: int = 0
-var rift_pressure_max: int = 12
-var spawn_faction: String = ""
-## Packs the rift sends, cycled: [[foe_id, strength], ...], a guest faction's entries with
-## their faction third. The game fills this from content (both, so no default names a foe).
-var spawn_table: Array = []
-var _spawn_index: int = 0
+var rift_pressure_max: int = 12   # the timer: the ramp's (Ramp.timer_at), set by the battle
+var spawn_faction: String = ""    # the faction a composition that names none belongs to
+## The ramp the battle reads its counts and speed from (Ramp): the campaign's live Convergence.
+var ramp: int = 0
+## The compositions the rift sends, cycled (the foes' fresh start, 30 October): each
+## {"id", "size", "faction", "members": [[foe_id, strength], ...]}, formations and patrols in
+## turn, the lead's and the guest's in turn. The game fills this from content.
+var cycle: Array = []
+## The compositions the tears send, cycled: the patrols, the lead's and the guest's in turn.
+var patrol_cycle: Array = []
+var _cycle_index: int = 0
+var _patrol_index: int = 0
+## The flattening's edge (the pacing session, 30 October): the row the rift's bleed reaches,
+## total on the rift's row and gone here, SEAM_START at the start; it creeps south a peak
+## (Ramp.seam_creep_at) as the clock's picture, as far as the apron. No rule reads the
+## flattened hexes; the tears open on the seam's row.
+const SEAM_START := 5
+var seam_row: int = SEAM_START
+## The tears (Ryan's name, 30 October): the mouths beside the rift's, each {"pos": Vector2i,
+## "opened": the phase it opened at}. A tear opens at a peak on the seam's row, far from the
+## other mouths, and sends a patrol at every peak after, so where the next flood comes from is
+## known an interval ahead. Tears stay open.
+var tears: Array = []
+var peaks: int = 0        # Rift Pressure's peaks so far this battle
+var rift_spawns: int = 0  # packs the rift has sent (the runner reads both)
+var tear_spawns: int = 0
+const TIMER_FLOOR := 2    # the interval never shortens below this
+const NO_HEX := Vector2i(-9999, -9999)
 var phase: int = 0
 var log: Array[String] = []
 var _next_id: int = 1
@@ -496,13 +518,32 @@ func _landable(sq: Unit, at: Vector2i, blocked: Dictionary) -> bool:
 	return true
 
 
-## Whether a pack with its anchor at `at` stands on the gate's apron, beside a gate hex.
+## Whether a pack with its anchor at `at` stands on the apron: beside a gate hex, or beside
+## any hex of the wall (Ryan, 30 October: the whole wall is a target, so a pack strikes the
+## gate's bar from anywhere along the bottom rows and the apron cannot be plugged).
 func on_apron(sq: Unit, at: Vector2i) -> bool:
+	var apron := apron_hexes()
 	for o in sq.footprint:
-		for g in map.gate_hexes:
-			if Hex.distance(at + o, g) <= 1:
-				return true
+		if apron.has(at + o):
+			return true
 	return false
+
+
+var _apron: Dictionary = {}
+
+## Every hex a pack strikes from: the ones beside a gate hex or a wall hex, read once.
+func apron_hexes() -> Dictionary:
+	if _apron.is_empty():
+		for s in map.gate_hexes + map.wall_hexes:
+			for n in Hex.neighbors(s):
+				if map.has(n) and not map.is_structure(n):
+					_apron[n] = true
+	return _apron
+
+
+## The row before the wall, the last a pack walks to.
+func apron_row() -> int:
+	return map.height - BattleMap.GATE_ROWS - 1
 
 
 ## The shortest distance from a pack anchored at `at` to a unit.
@@ -623,7 +664,7 @@ func enemy_turn() -> Dictionary:
 			sq.facing = _direction_index(before, w.end)
 		sq.pos = w.end
 		if w.strikes:
-			var dmg := maxi(10, (sq.strength * 10) / 3)
+			var dmg := maxi(1, (sq.strength * 10) / 3)   # a third of its strength, no floor but one (Ryan, 30 October: a stray pair chips less than a trio)
 			gate_hp = maxi(0, gate_hp - dmg)
 			log.append("%s strikes the gate for %d" % [sq.display_name, dmg])
 		elif w.waits:
@@ -668,8 +709,8 @@ func forced_fights() -> Array:
 func attack_roster(targets: Array) -> Dictionary:
 	var joins: Array[Unit] = []
 	for p in packs():
-		if targets.has(p):
-			continue
+		if targets.has(p) or p.sealed:
+			continue   # a sealed boss's ring is inert (30 October)
 		for t in targets:
 			if in_ring(p, t):
 				joins.append(p)
@@ -710,23 +751,135 @@ static func unit_distance(a: Unit, b: Unit) -> int:
 			best = mini(best, Hex.distance(x, y))
 	return best
 
-## Feed the Rift Pressure clock. Spawns a pack at the rift when it fills. Returns true on spawn.
+## Feed the Rift Pressure clock. A peak when it fills. Returns true on a peak.
 func tick_pressure(ticks: int) -> bool:
 	rift_pressure += ticks
 	if rift_pressure < rift_pressure_max:
 		return false
 	rift_pressure -= rift_pressure_max
-	var at := nearest_free(map.rift, [])
-	var entry: Array = spawn_table[_spawn_index % spawn_table.size()] if not spawn_table.is_empty() else ["", 6]
-	_spawn_index += 1
-	var fac := str(entry[2]) if entry.size() > 2 else spawn_faction
-	# Named as the setup names its packs, by the foe's shown name (the mechanics audit's 30: a
-	# spawn was named by its content id, "zombie_knight pack").
-	var shown := str(foe_profiles.get(str(entry[0]), {}).get("name", entry[0])).to_lower()
-	var sq := Unit.pack(0, "%s pack" % shown, at, fac, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
-	add_unit(dress_pack(sq))
-	log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(at)])
+	peak()
 	return true
+
+
+## A peak of Rift Pressure (the pacing session, 30 October): the rift sends the cycle's next
+## composition; every tear open before this peak sends the patrol cycle's next; the seam creeps
+## south; the ramp's count of new tears open on the seam's row, each to send from the next
+## peak; and the interval shortens by the ramp's step. One clock, more mouths as the ramp rises.
+func peak() -> void:
+	peaks += 1
+	if not cycle.is_empty():
+		var c: Dictionary = cycle[_cycle_index % cycle.size()]
+		_cycle_index += 1
+		var sq := emerge(c, map.rift)
+		if sq != null:
+			rift_spawns += 1
+			log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
+	for t in tears:
+		if patrol_cycle.is_empty():
+			break
+		var c: Dictionary = patrol_cycle[_patrol_index % patrol_cycle.size()]
+		_patrol_index += 1
+		var sq := emerge(c, t["pos"])
+		if sq != null:
+			tear_spawns += 1
+			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
+	seam_row = mini(seam_row + Ramp.seam_creep_at(ramp), apron_row())
+	for i in range(Ramp.tears_at(ramp)):
+		var at := tear_hex()
+		if at == NO_HEX:
+			break
+		tears.append({"pos": at, "opened": phase})
+		log.append("A tear opens at %s" % str(at))
+	rift_pressure_max = maxi(TIMER_FLOOR, rift_pressure_max - Ramp.step_at(ramp))
+
+
+## A composition as the cycle holds it, for the harness and the tests: one or more members
+## under a faction, a patrol unless named otherwise.
+static func composition(members: Array, faction: String, size: String = "patrol", id: String = "") -> Dictionary:
+	var list: Array = []
+	for m in members:
+		list.append([str(m[0]), int(m[1])])
+	return {"id": id if not id.is_empty() else (str(list[0][0]) if not list.is_empty() else ""), "size": size, "faction": faction, "members": list}
+
+
+## A pack's shown name: its lead's shown name and "pack", as the setup names its packs (the
+## mechanics audit's 30: a spawn was named by its content id, "zombie_knight pack").
+func pack_name(foe_id: String) -> String:
+	return "%s pack" % str(foe_profiles.get(foe_id, {}).get("name", foe_id)).to_lower()
+
+
+## A composition emerges at a mouth (the rift, a tear, or where the setup places it): a pack of
+## its members at the ramp's density, dressed by its lead, on the nearest free hex to the mouth
+## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
+## appears on top of a detachment). Null for a composition with no members.
+func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
+	var members: Array = []
+	for m in c.get("members", []):
+		members.append([str(m[0]), Ramp.scaled(int(m[1]), ramp)])
+	if members.is_empty():
+		return null
+	var fac := str(c.get("faction", spawn_faction))
+	var sq := Unit.pack(0, "", Vector2i.ZERO, fac if not fac.is_empty() else spawn_faction, Unit.PACK_MOVE, 0, str(members[0][0]))
+	sq.set_members(members)
+	sq.composition = str(c.get("id", ""))
+	sq.composition_size = str(c.get("size", ""))
+	sq.display_name = pack_name(sq.foe_id)
+	dress_pack(sq)
+	sq.pos = landing(sq, mouth)
+	add_unit(sq)
+	return sq
+
+
+## Whether a machine stands beside a hex.
+func machine_adjacent(h: Vector2i) -> bool:
+	for n in Hex.neighbors(h):
+		var occ := unit_at(n)
+		if occ != null and occ.is_player():
+			return true
+	return false
+
+
+## Where a pack emerging at a mouth lands: the nearest hex it can stand on with no machine
+## adjacent, by ring search; the nearest it can stand on at all when none is clear.
+func landing(sq: Unit, mouth: Vector2i) -> Vector2i:
+	var seen := {mouth: true}
+	var queue: Array[Vector2i] = [mouth]
+	while not queue.is_empty():
+		var cur: Vector2i = queue.pop_front()
+		if can_stand(sq, cur) and not machine_adjacent(cur):
+			return cur
+		for n in Hex.neighbors(cur):
+			if map.has(n) and not seen.has(n):
+				seen[n] = true
+				queue.append(n)
+	return nearest_standable(sq, mouth)
+
+
+## Where the next tear opens: a free land hex on the seam's row (the row above or below it
+## when the row has none), no machine beside it, the farthest from the rift and every open
+## tear, so the mouths spread across the width; among equals, one by the turn. NO_HEX when
+## none.
+func tear_hex() -> Vector2i:
+	for row in [seam_row, seam_row - 1, seam_row + 1]:
+		var best: Array = []
+		var best_d := -1
+		for col in range(map.width):
+			var h := Hex.offset_to_axial(col, row)
+			if not map.has(h) or map.is_structure(h) or int(map.terrain[h]) == BattleMap.Terrain.WATER or int(map.terrain[h]) == BattleMap.Terrain.MOUNTAIN:
+				continue
+			if unit_at(h) != null or machine_adjacent(h):
+				continue
+			var d := Hex.distance(h, map.rift)
+			for t in tears:
+				d = mini(d, Hex.distance(h, t["pos"]))
+			if d > best_d:
+				best = [h]
+				best_d = d
+			elif d == best_d:
+				best.append(h)
+		if not best.is_empty():
+			return best[(phase * 7 + tears.size() * 13) % best.size()]
+	return NO_HEX
 
 
 ## Apply a finished skirmish back to the map: survivors keep marching, wrecks are removed.

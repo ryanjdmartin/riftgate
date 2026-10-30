@@ -328,6 +328,7 @@ func test_a_hunter_taking_a_machine_in_its_preys_place_says_so() -> void:
 func test_the_boss_fight_plays_its_theme() -> void:
 	var s := _screen()
 	var b := s.battle
+	b.rupture()   # the seal broken: the boss can be fought
 	_engage(b, b.boss, b.mechs()[0])
 	s._refresh()
 	s._on_hex_tapped(b.mechs()[0].pos)
@@ -388,7 +389,7 @@ func test_hold_shows_a_readout() -> void:
 	assert_false(s._details.visible, "hidden on release")
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
-	assert_true(s._details_entry.text().contains("×%d" % sq.strength), "pack strength")
+	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
 	assert_true(s._details_entry.text().contains("Ring %d" % sq.zone), "and its ring")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	s._on_unit_held(s.battle.boss)

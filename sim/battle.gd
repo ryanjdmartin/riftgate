@@ -92,8 +92,13 @@ var with_boss := true
 var lineup: Array = []
 var escort: Array = []
 ## The battle's tier, 0 to 2 (the campaign's, set before setup; 0 in the harness): its boss unit
-## stands at it, its commanders' numbers and its escort following (ContentDB.BOSS_TIERS).
+## stands at it, its commanders' numbers and its escort following (ContentDB.BOSS_TIERS), and
+## its compositions, its Fractures and its elites are the tier's (Ramp).
 var tier: int = 0
+## The battle's ramp (the campaign's live Convergence, set before setup; 0 in the harness):
+## the compositions on the field at the start and their density, the timer, the tears a peak
+## (Ramp, the one table of placeholders).
+var ramp: int = 0
 ## Every foe killed this battle, in any fight however it ended (Ryan, 7 October: a kill is a
 ## kill, and withdrawing never takes it away), for the salvage the campaign tallies at the
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
@@ -102,6 +107,26 @@ var foes_killed: int = 0
 ## The menace of every foe killed this battle (ContentDB.menace, the one weight for the Rupture
 ## meter, Anathema and salvage, 30 October), tallied as each fight ends like the kills.
 var menace_killed: int = 0
+## The Rupture meter (the pacing session, 30 October; the bible's pacing row): the tally above
+## against the Fractures' thresholds, set at setup from the field's menace at the start (the
+## packs placed, the boss unit aside) as fractions of it, the last at RUPTURE_SHARE and the
+## steps growing (later Fractures cost more), so they follow the tier's numbers and the ramp's
+## count without a table of their own, and the Rupture is earnable from the field alone with a
+## third of it left to leave and pay for at the gate. A Fracture pays out as a fight ends: the
+## log names it, and at the Fractures the tier names the next elite composition of the lead's
+## domain not yet fought this battle spawns at the rift. The last Fracture is the Rupture: the
+## boss's seal breaks. The stall guard breaks it too, when no pack but the boss's stands as a
+## fight ends, so a team that cleared the field never waits on the clock. Rift Pressure keeps
+## running after. The prize a Fracture may bring is not built (decided after the meter is
+## played).
+const RUPTURE_SHARE := 0.67
+const FRACTURE_STEPS := [1.0, 1.5, 2.0, 2.5, 3.0]
+var thresholds: Array = []        # the menace each Fracture is earned at, the tier's count of them
+var fractures: int = 0            # Fractures earned so far
+var rupture_turn: int = -1        # the phase the seal broke at; -1 while it holds (or with no seal)
+var stall_guard: bool = false     # the Rupture came by the guard, not the tally
+var elites_spawned: Array = []    # the elite compositions spawned this battle, by id
+var field_menace: int = 0         # the field's menace at the start, the thresholds' base
 ## The battle's share of the run's Sponsorship measures (the bible's Sponsorship row): the
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
@@ -127,26 +152,40 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	map = BattleMap.generate(w, h, seed_value, map_kind)
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
-	var lead_table: Array = db.spawn_table(faction, tier + 1)   # the battle's tier's list (28 October), tier counting 0 to 2
+	field.ramp = ramp
+	field.rift_pressure_max = Ramp.timer_at(ramp)
+	field.foe_profiles = db.pack_profiles()
+	# What the rift sends and what stands on the field at the start (the foes' fresh start, 30
+	# October): the tier's compositions, the lead's and the guest's in turn, formations and
+	# patrols in turn in the cycle, the patrols alone in the tears' cycle; on the field at the
+	# start the ramp's count of formations (the second the guest's where there is one) and
+	# patrols, at the ramp's density. The harness's composed side (`formation`) is each entry a
+	# pack of one type under its own foe's faction, all placed and all cycled, as before.
+	var placed: Array = []   # [composition, hex]
+	var w_cols := w
 	if not formation.is_empty():
-		lead_table = []
+		var comps: Array = []
 		for e in formation:
 			var fac := db.faction_of_foe(str(e[0]))
-			lead_table.append([str(e[0]), int(e[1]), fac if not fac.is_empty() else faction])
-	field.spawn_table = lead_table
-	if not guest.is_empty() and guest != faction and db.factions.has(guest):
-		# The guest joins the rift's cycle only, each entry carrying its own faction; the
-		# formation placed below is the lead's alone (found 6 October: placing it from the
-		# mixed table doubled the field).
-		var visitors: Array = db.spawn_table(guest, tier + 1)
-		var mixed: Array = []
-		for k in range(maxi(lead_table.size(), visitors.size())):
-			if k < lead_table.size():
-				mixed.append(lead_table[k])
-			if k < visitors.size():
-				mixed.append([visitors[k][0], visitors[k][1], guest])
-		field.spawn_table = mixed
-	field.foe_profiles = db.pack_profiles()
+			comps.append(Battlefield.composition([[str(e[0]), int(e[1])]], fac if not fac.is_empty() else faction))
+		field.cycle = comps
+		field.patrol_cycle = comps.duplicate(true)
+		for j in range(comps.size()):
+			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3))])
+	else:
+		var has_guest := not guest.is_empty() and guest != faction and db.factions.has(guest)
+		var forms := _alternate(db.compositions(faction, tier + 1, "formation"), db.compositions(guest, tier + 1, "formation") if has_guest else [])
+		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol"), db.compositions(guest, tier + 1, "patrol") if has_guest else [])
+		field.cycle = _alternate(forms, patrols)
+		field.patrol_cycle = patrols
+		var nf := Ramp.formations_at(ramp)
+		var np := Ramp.patrols_at(ramp)
+		if not forms.is_empty():
+			for k in range(nf):
+				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), 3 + (k % 3))])
+		if not patrols.is_empty():
+			for k in range(np):
+				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, 5 + k / 2)])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -157,14 +196,8 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
-	var table: Array = lead_table
-	for j in range(table.size()):
-		var entry: Array = table[j]
-		var col := (w * (j + 1)) / (table.size() + 1)
-		var row := 3 + (j % 3)
-		var sq := Unit.pack(0, _pack_name(str(entry[0])), Vector2i.ZERO, str(entry[2]) if entry.size() > 2 else faction, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
-		sq.pos = field.nearest_standable(sq, Hex.offset_to_axial(col, row))
-		field.add_unit(field.dress_pack(sq))
+	for p in placed:
+		field.emerge(p[0], p[1])
 	var fac: Dictionary = db.factions.get(faction, {})
 	var firsts := db.bosses_of(faction)
 	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
@@ -179,17 +212,102 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 				boss.foe_id = str(escort[0])
 			boss.strength = maxi(0, int(escort[1]))
 		boss.boss_tier = tier
-		boss.strength += ContentDB.escort_at(tier)
+		var tailored := db.escort_composition(faction, tier + 1)
+		if escort.size() < 2 and not tailored.is_empty():
+			# A hand-tailored escort written in content (an `escort` composition at the tier):
+			# its members at the ramp's density, in place of the tier's units round robin.
+			var members: Array = []
+			for m in tailored["members"]:
+				members.append([str(m[0]), Ramp.scaled(int(m[1]), ramp)])
+			boss.set_members(members)
+		else:
+			boss.strength += ContentDB.escort_at(tier)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
+	# The Rupture meter: the thresholds from the field's menace at the start, and the seal on the
+	# boss while there is a field to earn it against.
+	field_menace = 0
+	for sq in field.packs():
+		if sq.is_boss:
+			continue
+		for m in sq.member_list():
+			field_menace += db.menace(str(m[0])) * int(m[1])
+	thresholds = []
+	var n := Ramp.fractures_at(tier)
+	if field_menace > 0 and n > 0:
+		var steps: Array = []
+		var total := 0.0
+		for k in range(n):
+			total += float(FRACTURE_STEPS[mini(k, FRACTURE_STEPS.size() - 1)])
+			steps.append(total)
+		for k in range(n):
+			thresholds.append(maxi(1, roundi(RUPTURE_SHARE * float(field_menace) * float(steps[k]) / total)))
+	if boss != null and not thresholds.is_empty():
+		boss.sealed = true
 	state = State.PLAN
 	_new_turn()
+
+
+## Whether the boss's seal holds: it cannot be ordered onto and joins no fight until the Rupture.
+func is_sealed() -> bool:
+	return boss != null and boss.sealed
+
+
+## The Rupture: the seal breaks, by the last Fracture or by the stall guard. Engaging the boss
+## is the battle's last decision from here (the bible's boss row).
+func rupture(by_guard: bool = false) -> void:
+	if boss == null or not boss.sealed:
+		return
+	boss.sealed = false
+	rupture_turn = field.phase
+	stall_guard = by_guard
+	field.log.append("THE RUPTURE: the seal breaks" + (" with the field clear" if by_guard else ""))
+
+
+## The Fractures earned by the tally so far, each paying out in turn: the log names it, the
+## elite the tier names at it spawns at the rift, and the last breaks the seal; then the stall
+## guard. Read as a fight ends, after the map has taken its result.
+func _fractures() -> void:
+	while fractures < thresholds.size() and menace_killed >= int(thresholds[fractures]):
+		fractures += 1
+		field.log.append("FRACTURE %d of %d" % [fractures, thresholds.size()])
+		if Ramp.elite_fractures_at(tier).has(fractures):
+			_spawn_elite()
+		if fractures == thresholds.size():
+			rupture(false)
+	if is_sealed() and field.packs().filter(func(p: Unit) -> bool: return not p.is_boss).is_empty():
+		rupture(true)
+
+
+## The next elite composition of the lead's domain not yet fought this battle emerges at the
+## rift (the elites' moment is a Fracture, 30 October); none when the domain's are spent.
+func _spawn_elite() -> void:
+	for c in db.elite_compositions(faction, tier + 1):
+		if elites_spawned.has(str(c["id"])):
+			continue
+		var sq := field.emerge(c, map.rift)
+		if sq == null:
+			continue
+		elites_spawned.append(str(c["id"]))
+		field.log.append("An elite emerges at the rift: %s" % sq.display_name)
+		return
 
 
 func _pack_name(foe_id: String) -> String:
 	if db.foes.has(foe_id):
 		return "%s pack" % str(db.foes[foe_id]["name"]).to_lower()
 	return "%s pack" % foe_id
+
+
+## Two lists in turn, the first's first, the leftovers of the longer after.
+static func _alternate(a: Array, b: Array) -> Array:
+	var out: Array = []
+	for k in range(maxi(a.size(), b.size())):
+		if k < a.size():
+			out.append(a[k])
+		if k < b.size():
+			out.append(b[k])
+	return out
 
 
 # ---------------------------------------------------------------- the player's turn
@@ -575,8 +693,8 @@ func roster(target: Unit = null) -> Dictionary:
 	if not forced.is_empty():
 		targets = (forced[0]["hunters"] as Array).duplicate()
 		pinned = forced[0]["prey"]
-	elif target != null and target.is_enemy() and field.units.has(target):
-		targets = [target]
+	elif target != null and target.is_enemy() and field.units.has(target) and not target.sealed:
+		targets = [target]   # a sealed boss cannot be fought (30 October)
 	else:
 		return {}
 	var r := field.attack_roster(targets)
@@ -678,7 +796,7 @@ func attack_hex(m: Unit, target: Unit) -> Vector2i:
 ## Whether a fight may be ordered at `target` now: a pack on the field, and while a hunter's
 ## catch waits, one of its hunters alone (that fight comes first).
 func can_target(target: Unit) -> bool:
-	if target == null or not target.is_enemy() or not field.units.has(target):
+	if target == null or not target.is_enemy() or not field.units.has(target) or target.sealed:
 		return false
 	if not forced.is_empty():
 		return (forced[0]["hunters"] as Array).has(target)
@@ -920,6 +1038,7 @@ func finish_skirmish() -> void:
 	if not forced.is_empty():
 		forced.pop_front()
 	_prune_forced()
+	_fractures()
 	_prune_orders()
 	_check_outcome()
 

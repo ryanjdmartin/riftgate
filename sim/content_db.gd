@@ -741,6 +741,7 @@ func parts_for(core: Foe) -> Array[Foe]:
 		if foes.has(pid):
 			var p := make_foe(str(pid))
 			p.pack_id = core.pack_id
+			p.joined = true   # a part stands with its core, never one of the pack's own
 			out.append(p)
 	return out
 

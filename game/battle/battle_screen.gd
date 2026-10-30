@@ -368,6 +368,7 @@ func _refresh() -> void:
 		_map.plans = battle.plan_pieces() if planning else []
 		_map.shown = battle.shown_positions() if planning else {}
 	_map.attack = _fight_preview() if planning and not playing else {}
+	_map.meter = {"tally": battle.menace_killed, "thresholds": battle.thresholds, "fractures": battle.fractures, "sealed": battle.is_sealed()}
 	_map.route_drawing = planning and not playing
 	_map.queue_redraw()
 	_refresh_log()
@@ -662,6 +663,8 @@ func pack_lines(u: Unit) -> Array:
 ## name is.
 func _behaviour_line(u: Unit) -> Dictionary:
 	if u.is_boss:
+		if u.sealed:
+			return _said("Sealed", "holds the rift; its seal breaks at the Rupture")
 		return _said("Holds", "the rift")
 	match u.behaviour:
 		"hunt":
@@ -808,7 +811,7 @@ static func gate_lines(f: Battlefield) -> Array:
 	var frac := float(f.gate_hp) / maxf(1.0, float(f.gate_hp_max))
 	return [_title("The Gate", "Field projector"),
 		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.ENEMY),
-		EntryReadout.text_line("effect", "A pack on the apron strikes it")]
+		EntryReadout.text_line("effect", "A pack beside the wall, anywhere along it, strikes it")]
 
 
 static func gate_codex_entry(f: Battlefield) -> Dictionary:
@@ -817,7 +820,7 @@ static func gate_codex_entry(f: Battlefield) -> Dictionary:
 		"designation": "CARE FIELD PROJECTOR",
 		"subtitle": "THE CITY'S ENCLOSURE // THE LINE THE MACHINES HOLD",
 		"stat_items": [["integrity", "%d/%d" % [f.gate_hp, f.gate_hp_max]], ["rows", str(BattleMap.GATE_ROWS)]],
-		"body": "The projector that holds the field over the city. A pack that reaches the apron strikes it every enemy turn, harder the bigger the pack and never for less than ten; when its integrity is gone the field is down and the battle is lost. Nothing stands on it.",
+		"body": "The projector that holds the field over the city. A pack that reaches the wall strikes it from anywhere along it, every enemy turn, harder the bigger the pack; when its integrity is gone the field is down and the battle is lost. Nothing stands on it.",
 		"flavour": "",
 	}
 
@@ -833,7 +836,7 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 		return {"title": u.display_name, "subtitle": str(u.faction).to_upper(), "body": ""}
 	var entry := db.codex_for_foe(db.make_foe(fid))
 	entry["title"] = u.display_name
-	entry["subtitle"] = "%s // %s" % [entry["subtitle"], ("BOSS" if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	entry["subtitle"] = "%s // %s" % [entry["subtitle"], (("BOSS // SEALED" if u.sealed else "BOSS") if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
 	if u.traits.has("winged"):
 		entry["subtitle"] += " // WINGED"   # it crosses water and crags as a flyer does
 	return entry

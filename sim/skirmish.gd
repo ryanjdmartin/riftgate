@@ -332,6 +332,8 @@ func survivors_for(sq: Unit) -> int:
 ## among them), rather than one that joined it in the fight (a Gel's half, a summon, a part)?
 ## A boss unit's own are its commanders and its escort; a pack's, its foe type.
 static func is_own(sq: Unit, f: Foe) -> bool:
+	if f.joined:
+		return false   # a half, a summon or a part: never own, whatever its type
 	if sq.is_boss:
 		return f.commands or f.escorts
 	if not sq.members.is_empty():
@@ -1355,6 +1357,7 @@ func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 		var n = foe_factory.call(who)
 		if n is Foe:
 			n.pack_id = f.pack_id
+			n.joined = true
 			made.append(n)
 	if made.is_empty():
 		return
@@ -2885,6 +2888,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 					var n = foe_factory.call(who)
 					if n is Foe:
 						n.pack_id = f.pack_id
+						n.joined = true
 						if _step_up(n, f.column):
 							stood += 1
 						else:
@@ -4314,6 +4318,7 @@ func _regrow_parts() -> void:
 			var n = foe_factory.call(str(d[0]))
 			if n is Foe:
 				n.pack_id = core.pack_id
+				n.joined = true
 				reinforcements.append(n)
 				log.append("%s grows back its %s" % [core.display_name, n.display_name])
 		core.regrow_due = keep
