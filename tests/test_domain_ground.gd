@@ -46,8 +46,9 @@ func test_a_domains_grounds_are_one_family() -> void:
 		var tones := {}
 		for t in DECORATIVE:
 			var c := DomainGround.fill(str(key), t)
-			var step := maxf(absf(c.r - ground.r), maxf(absf(c.g - ground.g), absf(c.b - ground.b)))
-			assert_true(step <= 0.2 + 0.001, "%s's %s is the domain's ground or a step from it" % [key, BattleMap.TERRAIN_NAMES[t]])
+			# Steps of the posterize grid a channel (bleed.gdshader's six levels).
+			var steps := [roundi(absf(c.r - ground.r) * 5.0), roundi(absf(c.g - ground.g) * 5.0), roundi(absf(c.b - ground.b) * 5.0)]
+			assert_true(steps.max() <= 2 and steps[0] + steps[1] + steps[2] <= 3, "%s's %s is a tone of the domain's ground, never wildly apart" % [key, BattleMap.TERRAIN_NAMES[t]])
 			tones[c.to_html()] = true
 		assert_true(tones.size() >= 3, "%s's grounds are told apart by their tone too" % key)
 
@@ -66,6 +67,18 @@ func test_water_and_the_walls_are_each_domains_own() -> void:
 			var art := _inked(str(key), str(name))
 			assert_false(walls.has(art), "%s's %s is its own" % [key, name])
 			walls[art] = true
+
+
+func test_the_walls_stand_out_of_the_top_of_their_hex() -> void:
+	# Ryan, 30 October: "The wall objects on all can be larger, or at least taller. Can they
+	# extend out of the top of their hex"; a range stands on its foot low in the hex, so its
+	# peaks reach past the hex's top corner into the hexes above.
+	var hex := 48.0
+	var reach := hex * (1.0 + DomainGround.WALL_FOOT)
+	for key in DomainGround.TILESETS.keys():
+		for name in DomainGround.TILESETS[key]["walls"]:
+			var tall: float = DomainGround.SPRITES[key][name].size() * DomainGround.scale_of(hex)
+			assert_true(tall > reach, "%s's %s stands out of its hex (%d px from a foot %d px below the top)" % [key, name, tall, reach])
 
 
 func test_every_sprite_is_inked_and_every_name_drawn() -> void:

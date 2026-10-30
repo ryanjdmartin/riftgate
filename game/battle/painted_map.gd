@@ -29,6 +29,7 @@ func _draw() -> void:
 	var map := field.map
 	var hexes: Array = map.all_hexes().duplicate()
 	hexes.append_array(map.margin.keys())
+	var walls: Array = []
 	for h in hexes:
 		var c: Vector2 = origin + Hex.to_pixel(h, hex_px)
 		# Opaque under the whole hex, transparent outside, so the bleed's dither never
@@ -37,3 +38,10 @@ func _draw() -> void:
 		var t := map.terrain_of(h)
 		var links := DomainGround.road_links(map, h) if t == BattleMap.Terrain.ROAD else 0
 		DomainGround.draw_hex(self, c, hex_px, t, h.x * 131 + h.y * 7919, frame, biome, links)
+		if t == BattleMap.Terrain.MOUNTAIN:
+			walls.append(h)
+	# The walls' ranges stand taller than their hexes, so they go down last, the top rows
+	# first, each in front of the ground and the ranges above it.
+	walls.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y < b.y or (a.y == b.y and a.x < b.x))
+	for h in walls:
+		DomainGround.draw_walls(self, origin + Hex.to_pixel(h, hex_px), hex_px, h.x * 131 + h.y * 7919, frame, biome)

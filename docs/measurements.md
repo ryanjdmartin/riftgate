@@ -2387,3 +2387,18 @@ grey `#333333` 18.0 (4.3); the Peak's scorched lava field `#330000` 34.1 (15.4) 
 rust `#663333` 20.4 (4.6). The Marsh's and the Peak's roads keep their domain's ground, their
 mud causeway and ash path carrying them. The lowest is the Meadow's forest floor, the score the
 Meadow's own forest had before the domains had tilesets.
+
+**The domains' tilesets: the rough set apart, and the lava toward red** (30 October; Ryan:
+"rough on waste and marsh can use a bit more separation from the plains colour"; the lava
+"looks more like acid than lava"). The same simulations, each colour's worst CIEDE2000 against
+every mark, then against its plain worst case and for normal vision. The Waste's scrub went from
+`#999966` (11.6; against the sand 2.6, normal 9.0) to the olive `#669933` (5.7, the pure red under
+the deutan simulation; 8.9, normal 14.8), two steps of red from the sand; the lime `#99cc33` (7.1;
+8.8, 13.4) and `#99cc66` (6.9; 5.9, 13.3) read as grass on the sheet. The Marsh's dead wood went
+from `#003300` (19.7; against the bog 1.3, normal 9.3) to the moss `#336633` (5.1, the red under the
+protan simulation, the Meadow forest's own score; 16.2, 19.5); `#006633` (5.6) read too saturated
+and black `#000000` (38.0) as a hole in the field. The lava lake went from `#ff9900` (9.1; 12.2
+against the reds) to the orange-red `#ff6600`, 5.6 against the red under the deutan simulation
+and 37.2 against the Peak's ground, its rim `#990000` (16.4) and its crust `#990000` and `#330000`;
+a redder lake folds into the enemy red: `#ff3300` 0.8 (tritan), `#cc3300` 3.4 (protan), `#ff3333`
+1.6, `#ff0000` 0.0, while the deep reds hold by their darkness, `#cc0000` 6.3 and `#990000` 16.4.
