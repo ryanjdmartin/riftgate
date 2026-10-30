@@ -376,14 +376,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.382, merged on 30 October onto
-  the live v0.381 (the overlay at one size, the fine map always, the grid's old light, Godot
-  4.8-beta2) and not yet published: the publish waits on a full read of the live page, owed by
-  the next session on `claude/jolly-lovelace-scn82y` (read the live page, merge, publish). The
-  page's version 385 was this branch's last publish (v0.373); the rows other sessions
-  published since v0.348 ride along (the map's movement and shapes, the desk on the phone's
-  renderer, the Armadillo's looks and seal, the Hold The Line voices, the tracks as pairs, the
-  Arsenal's lit cockpit glass, the domains' tilesets), on v0.346 from
+  `docs/design-bible.html` after every change. This file is v0.386, the page's version 398 and
+  this branch's last publish (30 October, merged onto the live v0.385: the overlay at one size,
+  the fine map always, the grid's old light, Godot 4.8-beta2 and AA MODE). The rows other
+  sessions published since v0.348 ride along (the map's movement and shapes, the desk on the
+  phone's renderer, the Armadillo's looks and seal, the Hold The Line voices, the tracks as
+  pairs, the Arsenal's lit cockpit glass, the domains' tilesets; on v0.346 from
   `claude/charming-rubin-h954bp`). So this
   file carries those sessions' rows ahead of their code (the models' looks and acts, the
   Armadillo's seal on screen, the six shapes, the domains' tilesets) and the Strikes row in the keyword table, and the
