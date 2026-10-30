@@ -2388,3 +2388,26 @@ case by case): the enemy's violet as above; its breath toward #ecdcff, ΔE 16.7 
 swing the red had toward the orange; heat #ff4000; harm's red-red #ff0000, 2.6 from heat in the
 deutan simulation (5.5 / 5.7 / 2.6 / 7.7), the steps Ryan reads as distinct, each mark with its
 glyph, 20.7 or more from the gain green and 37.5 or more from the violet in every simulation.
+
+## 30 October, the HUD's green and amber apart
+
+**The presets read** (the decision it informs: whether the green preset moves; Ryan's "Do we
+have room to push the green and amber farther apart?", the free picker set aside). Method: as
+the reads above, a preset against the others and every meaning (the enemy's violet, harm's red,
+heat, the shield) in the worst simulation, and against each ground's shades. Today's green
+#33ff55 and amber #fff21a stand 26.5 apart in normal vision but 2.4 (protan) and 8.1 (deutan),
+both a bright yellow to red-green vision. The amber cannot move: a deeper gold (#f0c81a) all but
+vanishes on the waste's sand (1.01:1, ΔE 3, where today's stands 1.35 and 13), and more orange
+nears heat. The green can, toward mint, against the amber in the worst simulation / against the
+blue preset (tritan) / on the meadow and the waste (ΔE):
+
+| Green | Against the amber | Against the blue | Meadow | Waste |
+|---|---|---|---|---|
+| #33ff55 (today) | 2.4 | 9.4 | 11 | 6 |
+| #50ff90 | 9.7 | 8.4 | 10 | 4 |
+| #58ffa0 | 12.3 | 8.1 | 11 | 7 |
+| #60ffb0 | 15.0 | 7.8 | 13 | 10 |
+| #68ffc0 | 18.0 | 7.6 | 15 | 12 |
+
+Each stands 13 or more from every meaning and 14:1 or more on the HUD's black; the blue preset
+stands 4.2 from the enemy's violet (deutan), the closest pair the three presets keep.

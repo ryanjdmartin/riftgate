@@ -385,7 +385,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.388, the page's version 400 and
+  `docs/design-bible.html` after every change. This file is v0.389, the page's version 401 and
   this branch's last publish (30 October, merged onto the live v0.385: the overlay at one size,
   the fine map always, the grid's old light, Godot 4.8-beta2, AA MODE and the enemy in violet). The rows other
   sessions published since v0.348 ride along (the map's movement and shapes, the desk on the
