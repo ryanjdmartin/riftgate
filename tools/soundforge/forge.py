@@ -792,6 +792,8 @@ def overheat():
 E2 = 82.41
 NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5, "l": -1, "m": -3, "n": -4, "o": -7,   # l, m, n, o: notes under the root (Eb, Db, C, A)
         "p": 13, "q": 16, "s": 18, "t": 20, "u": 21, "v": 23}   # the second octave's gaps, for a line that walks (Night Shift's jam, 30 October)
+NOTE.update(zip("BCDEFGHIJKLM", range(25, 37)))                 # the third octave, in capitals, for a line moved by an interval
+NOTE.update(zip("NOPQRS", (-6, -8, -9, -10, -11, -12)))         # and the octave under the root's gaps (Night Shift's guitar over its bass, 31 October)
 _E_MINOR = [0, 2, 3, 5, 7, 8, 10]
 _SPELL = {v: k for k, v in NOTE.items()}
 

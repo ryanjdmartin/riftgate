@@ -1,14 +1,14 @@
-"""Hold The Line's eighth round as a pair (Ryan, 30 October, on the seventh round's page): the map minimal.
+"""Hold The Line's ninth round as a pair (Ryan, 31 October, on the eighth round's page): K's walk.
 
-  the lifts      "Hold the Line map lifts are just too busy. A lot of the first lift's issue is the
-                 bells are too busy, and for both the 'as it was' is kind of the best ones. Maybe
-                 with the tine piano added. But in general the map tracks need to be minimalist."
-                 Both lifts as they were, the first lift's bell down to one a bar where it played
-                 the battle chime's eighths with its echoes; the tine piano on the riff a row in
-                 each lift's set.
-  K              "map K - go with a single harp and single piano and let me hear it in context":
-                 the harp on the walk and the piano's solo and nothing else, heard from the
-                 climax's last set through the breath, K, V and Q's fill beside K as it was.
+  the lifts      "bell calm and tine piano for first lift, add tine piano to second lift": the
+                 first lift's bell once a bar and its riff on the tine piano two octaves up, the
+                 second lift's riff on the tine piano too.
+  K              "bring back the other backing voices like the sub and so on, I just meant the
+                 single harp on the walk. I'd also like to hear that plucked string on the walk."
+                 K as the seventh round had it (the sub on its roots, a soft timpani, the piano's
+                 solo over its held chords and the pads), its walk on a single harp where the
+                 ticking guitar played it, or on the plucked string; heard from the climax's last
+                 set through the breath, K, V and Q's fill beside K as it was.
 
 Kept from the earlier rounds: the battle half as the seventh round has it (the loop without J, V
 and Q kept, Q's fill landing on the wrap at bar nine with a crash; the first lift on the crunch
@@ -17,14 +17,13 @@ guitar 6 dB down, a crash every four bars; M as it ships with the crunch synth; 
 bars at its slower tempo on the drums in between with the lead guitar added to the walk and its
 long crash choked to a second and a half); his map picks (X's held walk on the violins, U's lead
 on the clean guitar, the climax's drone moved from S to R, W on the low note with the roll). The
-seventh round's map voices for the battle's new parts (the ticking under the lifts, their riff on
-the clean guitar and the harp, K's walk on the clean guitar) are gone with his call.
+map halves are minimal (Ryan, 30 October: "in general the map tracks need to be minimalist").
 
-The full pair on the switch takes every pick. The sets are excerpts of the map half for A/B, every
+The full pair on the switch takes every pick. The set is an excerpt of the map half for A/B, every
 row the same bars from the same seed through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # every set and the pair, then hold8.json beside the pairs (about five minutes on four cores)
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py mc mk    # the named sets only (mc ml mk, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the set and the pair, then hold9.json beside the pairs (about four minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py mk       # the named sets only (mk, and full for the pair)
 """
 import json
 import os
@@ -326,13 +325,15 @@ def map_picks(kw, call):
 # ---------------------------------------------------------------- the map half, minimal
 
 # The map halves are minimal (Ryan, 30 October: "in general the map tracks need to be minimalist").
-# The seventh round's voices for the battle's new parts went with that call; what stays is a lift's
-# riff on the tine piano (the map's voice for the riff in A and N) to try, and K on a single harp
-# and a single piano. A voice's gain sets it at the phone level of U's clean guitar in U.
+# The seventh round's voices for the battle's new parts went with that call; what stays is each
+# lift's riff on the tine piano (the map's voice for the riff in A and N) and K's walk on a single
+# harp or the plucked string. A voice's gain sets it at the phone level of U's clean guitar in U,
+# the plucked string at the harp's.
 MAP_HARP = {"inst": "harp", "mode": "riff", "octave": 1, "hold": 1.5}
 MAP_TINE = {"inst": "epiano", "mode": "riff", "octave": 2, "hold": 1.4}
-MAP_LEADS = {("C", "tine"): 0.18, ("L", "tine"): 0.18, ("K", "harp"): 0.49}   # (section, voice): gain
-MAP_VOICES = {"harp": MAP_HARP, "tine": MAP_TINE}
+MAP_PLUCK = {"inst": "pluck", "mode": "riff", "octave": 1, "hold": 1.5}
+MAP_LEADS = {("C", "tine"): 0.18, ("L", "tine"): 0.18, ("K", "harp"): 0.49, ("K", "pluck"): 0.42}   # (section, voice): gain
+MAP_VOICES = {"harp": MAP_HARP, "tine": MAP_TINE, "pluck": MAP_PLUCK}
 CALM_BELL = "0..............."   # the first lift's bell, one a bar (Ryan: "the bells are too busy")
 
 
@@ -352,17 +353,16 @@ def map_calm_bell(kw, call):
     return kw
 
 
-def map_k_single(kw, call):
-    """K on a single harp and a single piano: the harp on the walk, the piano's solo, nothing else
-    (the walk's ticking guitar, the sub, the timpani, the piano's held chords and the pads go)."""
-    for v in kw["voices"]:
-        if "K" in v["pat"] and not (v["inst"] == "epiano" and v.get("mode", "riff") == "riff"):
-            del v["pat"]["K"]
-    for name in [n for n in kw["drums"] if n.startswith("timp_K")]:
-        del kw["drums"][name]
-    for p in kw["pad"]:
-        p["sections"] = p["sections"].replace("K", "")
-    return map_lead("K", "harp")(kw, call)
+def map_k_walk(name):
+    """K's walk on a single voice where the ticking guitar played it, the rest of K as it was (the
+    sub on its roots, the timpani, the piano's solo over its held chords, the pads)."""
+    def edit(kw, call):
+        ticking = [v for v in kw["voices"] if v["inst"] == P.TICKING["inst"] and v.get("params") == P.TICKING["params"] and "K" in v["pat"]]
+        if len(ticking) != 1:
+            raise ValueError("%d ticking guitars play K" % len(ticking))
+        del ticking[0]["pat"]["K"]
+        return map_lead("K", name)(kw, call)
+    return edit
 
 
 def map_edits(*edits):
@@ -373,8 +373,9 @@ def map_edits(*edits):
     return edit
 
 
-# The map half of the eighth round: every pick so far, the first lift's bell calmer, K on a harp and a piano.
-map_eight = map_edits(map_picks, map_calm_bell, map_k_single)
+# The map half of the ninth round: every pick so far, the first lift's bell calmer, both lifts' riff
+# on the tine piano, K's walk on a single harp.
+map_nine = map_edits(map_picks, map_calm_bell, map_lead("C", "tine"), map_lead("L", "tine"), map_k_walk("harp"))
 
 
 # ---------------------------------------------------------------- the renders
@@ -430,24 +431,14 @@ def round_seven(call):
 
 
 SETS = [
-    {"id": "mc", "half": "map", "title": "The map's first lift (C)", "form": C_FORM,
-     "note": "From the riff's end through the turn, the lift and the riff again: the soft sub on the riff, the piano's chords on the beats, the choir and the bell.", "rows": [
-        ("mc0", "As it was", "The bell on the battle chime's eighths with its echoes.", map_picks),
-        ("mc1", "The bell calmer", "One bell a bar (the full pair's).", map_edits(map_picks, map_calm_bell)),
-        ("mc2", "And the tine piano on the riff", "The bell calmer and the riff on the tine piano two octaves up.", map_edits(map_picks, map_calm_bell, map_lead("C", "tine"))),
-    ]},
-    {"id": "ml", "half": "map", "title": "The map's second lift (L) into M", "form": L_FORM,
-     "note": "From the riff into the lift, M and the seven: the soft sub and the spiccato cellos on the riff, the piano's chords on the beats.", "rows": [
-        ("ml0", "As it was", "The full pair's.", map_picks),
-        ("ml1", "And the tine piano on the riff", "The riff on the tine piano two octaves up as well.", map_edits(map_picks, map_lead("L", "tine"))),
-    ]},
     {"id": "mk", "half": "map", "title": "The map's K in context", "form": K_CONTEXT,
-     "note": "Four bars of the climax, the breath, K's fourteen bars at its slower tempo, V and Q's fill.", "rows": [
-        ("mk0", "As it was", "The walk on the ticking guitar, the sub on its roots, a soft timpani, the piano's solo over its held chords and the pads.", map_picks),
-        ("mk1", "A single harp and a single piano", "The harp on the walk and the piano's solo, nothing else (the full pair's).", map_edits(map_picks, map_k_single)),
+     "note": "Four bars of the climax, the breath, K's fourteen bars at its slower tempo, V and Q's fill: the sub on K's roots, a soft timpani, the piano's solo over its held chords and the pads.", "rows": [
+        ("mk0", "As it was", "The walk on the ticking guitar, as the seventh round had it.", map_picks),
+        ("mk1", "The walk on a single harp", "Where the ticking guitar played it (the full pair's).", map_edits(map_picks, map_k_walk("harp"))),
+        ("mk2", "The walk on the plucked string", "At the harp's level on a phone's speaker.", map_edits(map_picks, map_k_walk("pluck"))),
     ]},
 ]
-PAIR = {"id": "hold_the_line_r8", "title": "Hold The Line, round eight",
+PAIR = {"id": "hold_the_line_r9", "title": "Hold The Line, round nine",
         "k": "the keyboard solo's first fourteen bars at its slower tempo, the lead guitar with the crunch synth on the walk, K's drums with a pushing kick, eighths on the hat and a china, its crash choked to a second and a half"}
 
 
@@ -458,14 +449,14 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold8_" + SETS[si]["id"])
+    F.seed("hold9_" + SETS[si]["id"])
     _rid, _title, _note, edit = SETS[si]["rows"][ri]
     with P.Patched(_steps=run_steps):
         return si, ri, unmastered(map_call(SETS[si]["form"], edit))
 
 
 def full_path(half):
-    return os.path.join(P.OUT, "hold8_full_%s.wav" % half)
+    return os.path.join(P.OUT, "hold9_full_%s.wav" % half)
 
 
 def render_full(half):
@@ -477,7 +468,7 @@ def render_full(half):
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
-        x = level(map_half(FORM_K14, map_eight), MAP_LEVEL)
+        x = level(map_half(FORM_K14, map_nine), MAP_LEVEL)
     P.write(os.path.basename(full_path(half))[:-4], x, aac=False)
     return half
 
@@ -512,7 +503,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold8.json")
+    manifest_path = os.path.join(P.OUT, "hold9.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -524,7 +515,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold8_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold9_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))

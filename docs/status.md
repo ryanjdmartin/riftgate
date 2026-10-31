@@ -38,7 +38,7 @@ first round, the Hold The Line pair, merged on the 27th), main merged into it on
 go on the pairs (every track a map half and a battle half, the bible's pair row), every new half
 sketched on its shipped recipe's groove call and published on the pair page; then his notes of
 29 and 30 October on Hold The Line's two halves and Night Shift's battle half, sketched as further
-rounds on the same page (Hold The Line's eighth, Night Shift's seventh, The Far Bank's map half's second), and the pairs in the game
+rounds on the same page (Hold The Line's ninth, Night Shift's eighth, The Far Bank's map half's third), and the pairs in the game
 once he has heard them.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
@@ -304,21 +304,24 @@ The tasks are the to-do's; this is the index of what waits.
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The
-  Line on its eighth round (30 October: its battle half picked, J gone, V and Q kept, K's first
+  Line on its ninth round (31 October: its battle half picked, J gone, V and Q kept, K's first
   fourteen bars at their slower tempo on the drums in between with the lead guitar added to the
   walk and its long crash choked to a second and a half, the first lift on the crunch synth and
   the synth lead and the second on the crunch synth and the lead guitar over the backing chug
   6 dB down, M as it ships with the crunch synth; his map picks, X on the violins, U on the clean
   guitar, the drone moved to R, W low with a roll; the map half minimal, the lifts as they were
-  with the first lift's bell calmer, K on a single harp and a single piano) and Night Shift on its
-  seventh (the map's intro without its front;
+  with the riff on the tine piano and the first lift's bell calmer, K's walk on a single harp over
+  its backing, the plucked string beside it) and Night Shift on its eighth (the map's intro
+  without its front;
   the battle half a whole jam in turns of two bars, 30 October: the guitar and the bass walking
   one line on his rhythms with the arpeggio or the FM hook, never both, holding three-three-two
   6 dB down under the two together, the intro on three-three-two, D the piano's turn and the
-  factory's blended over Hold The Line's riff as the map's nod, the guitar two octaves over the
-  bass in R, the synth lines voiced for each turn's job, no drone, Hold The Line's drum energy);
-  The Far Bank's map half made minimal, its flip retired (the shipped track as a map half under a
-  new battle half: "far bank flipped doesn't work"); all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
+  factory's blended over Hold The Line's riff as the map's nod, the octave over the bass in R
+  retired, a fifth on the pair beside a fourth, a tenth and a twelfth, the synth lines voiced for
+  each turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half on its third
+  round, its flip retired (31 October: the bells calm in the groove and the lift alone, the
+  strings section and the climax off the battle's orchestra, the tune on a plucked string, the
+  tine piano or the clean guitar over the harp, the climax's bells full); all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
   the track, the 3 s flip) and each picked half into the forge's SHIP table.
 
 ## Next, in order
@@ -369,12 +372,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.416 (the
-  page's version 428, published 31 October from `ccr-7effd31a-u5z4gw`: the map halves made
-  minimal in the pair row, Hold The Line's map lifts and K, Night Shift's voicings, intro, D and
-  two octaves, and The Far Bank's flip retired, in the track table, three-way merged onto the live
-  v0.415 that `claude/charming-rubin-h954bp` published with the burn weapons' glow, itself past
-  this branch's v0.400 at 412). So this file
+  `docs/design-bible.html` after every change. This file and the live page are v0.418 (the
+  page's version 430, published 31 October from `ccr-7effd31a-u5z4gw`: a map half that keeps
+  its battle half's leading voices failing in the pair row, Hold The Line's map lifts and K's
+  walk, Night Shift's D and the octave retired over the bass, and The Far Bank's bells, strings
+  section and climax in the track table, three-way merged onto the live v0.417 that another
+  session published at 429 with the foes' pass of 31 October, Gilgamesh the elite that wanders,
+  the Barrow Giant's line, the bosses' escorts and the Cinder Tortoise's armour by tier). So this file
   carries rows ahead of this branch's code: main's since this branch last merged it (the
   horde's movement, the domains' tilesets, the pricing pass, Chain's form, the heat triangle),
   `claude/brave-cori-fr18de`'s (the pacing session: the whole wall struck, the stall priced, the
@@ -382,7 +386,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   rebuilds, their glows, looks and acts, the Armadillo's seal, radiators and vents) with its
   Strikes row in the keyword table, and `claude/jolly-lovelace-scn82y`'s (the skirmish as one
   field and its controls, the overlay at one width, Godot 4.8-beta2 and AA MODE, the enemy in
-  the rift's violet). The tables script, which
+  the rift's violet), and the foes' pass of 31 October from another session (Gilgamesh the elite
+  that wanders, the Barrow Giant's line, the bosses' escorts and the swallow's release, with its
+  rows in the tables). The tables script, which
   writes the tables from main's content, waits until `claude/charming-rubin-h954bp` lands or
   reverts that row. The version numbers on the publishing branch's file and the live agree after
   every publish. Before republishing, read the live page; if another session moved it, publish a
@@ -420,7 +426,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  eighth, `hold_sketches.py`; Night Shift's seventh, `night_sketches.py`; The Far Bank's map
-  half's second, `far_sketches.py`), at the page's version 16.
+  ninth, `hold_sketches.py`; Night Shift's eighth, `night_sketches.py`; The Far Bank's map
+  half's third, `far_sketches.py`), at the page's version 17.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
