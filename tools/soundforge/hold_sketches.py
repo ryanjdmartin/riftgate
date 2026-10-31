@@ -1,35 +1,30 @@
-"""Hold The Line's seventh round as a pair (Ryan, 30 October, on the sixth round's page):
+"""Hold The Line's eighth round as a pair (Ryan, 30 October, on the seventh round's page): the map minimal.
 
-  the battle     "keep Crunch synth and lead guitar for second lift. 1.5s crash in K and keep the
-                 tempo drop": the second lift on the crunch synth and the lead guitar, the first on
-                 the crunch synth and the synth lead, both over the backing guitar 6 dB down; K's
-                 long crash falling 20 dB in a second and a half; K and V six percent slower.
-  the map        "Then take a look at the map version and see what needs to change based on our
-                 battle-side changes": the map half is still the fourth round's, on the battle's
-                 notes as they were, and it follows everything the halves share (the loop without
-                 J, Q into the wrap, K's fourteen bars, the tempo drop, M's line, whose sub and
-                 cellos already sit where the crunch synth doubles it). What it lacks is a voice for
-                 each part the battle has gained: the lifts' lead on the riff and their backing
-                 guitar's chug, and the lead guitar on K's walk. The map re-voices them as it does
-                 every battle part (the bible's pair row): the ticking guitar on the backing's chug,
-                 6 dB under its chug elsewhere as the backing sits under the battle's; the synth
-                 lead's riff on the clean guitar, the map's voice for the synth lead since Ryan's
-                 pick for U; the lead guitar's riff on the harp, the climax's map voice; K's walk
-                 on the clean guitar. The sets put each beside the map as it was and one other
-                 voice, level-matched on a phone's speaker.
+  the lifts      "Hold the Line map lifts are just too busy. A lot of the first lift's issue is the
+                 bells are too busy, and for both the 'as it was' is kind of the best ones. Maybe
+                 with the tine piano added. But in general the map tracks need to be minimalist."
+                 Both lifts as they were, the first lift's bell down to one a bar where it played
+                 the battle chime's eighths with its echoes; the tine piano on the riff a row in
+                 each lift's set.
+  K              "map K - go with a single harp and single piano and let me hear it in context":
+                 the harp on the walk and the piano's solo and nothing else, heard from the
+                 climax's last set through the breath, K, V and Q's fill beside K as it was.
 
-Kept from the earlier rounds: only J goes, V and Q stay, Q's fill landing on the wrap at bar nine
-with a crash; K's first fourteen bars on the drums in between with the lead guitar added to the
-walk; both lifts' backing guitar chugging each bar's root wherever the kick hits and a crash every
-four bars, their metal chime and piano as they were; M as it ships with the crunch synth; his map
-picks (X's held walk on the violins, U's lead on the clean guitar, the climax's drone moved from S
-to R, W on the low note with the roll, K without the cellos).
+Kept from the earlier rounds: the battle half as the seventh round has it (the loop without J, V
+and Q kept, Q's fill landing on the wrap at bar nine with a crash; the first lift on the crunch
+synth and the synth lead and the second on the crunch synth and the lead guitar over the backing
+guitar 6 dB down, a crash every four bars; M as it ships with the crunch synth; K's first fourteen
+bars at its slower tempo on the drums in between with the lead guitar added to the walk and its
+long crash choked to a second and a half); his map picks (X's held walk on the violins, U's lead
+on the clean guitar, the climax's drone moved from S to R, W on the low note with the roll). The
+seventh round's map voices for the battle's new parts (the ticking under the lifts, their riff on
+the clean guitar and the harp, K's walk on the clean guitar) are gone with his call.
 
-The full pair on the switch takes every pick and the map's new voices. The sets are excerpts of
-the map half for A/B, every row the same bars from the same seed through one master at one gain.
+The full pair on the switch takes every pick. The sets are excerpts of the map half for A/B, every
+row the same bars from the same seed through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # every set and the pair, then hold7.json beside the pairs (about five minutes on four cores)
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py mc ml    # the named sets only (mc ml mk, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # every set and the pair, then hold8.json beside the pairs (about five minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py mc mk    # the named sets only (mc ml mk, and full for the pair)
 """
 import json
 import os
@@ -328,40 +323,46 @@ def map_picks(kw, call):
     return kw
 
 
-# ---------------------------------------------------------------- the map half after the battle's new parts
+# ---------------------------------------------------------------- the map half, minimal
 
-# The map's voices for the parts the battle has gained, as the map voices the battle's own: the
-# clean guitar for the synth lead (Ryan's pick for U's), the harp for the lead guitar (the
-# climax's), the tine piano for a riff (A's and N's). Each gain sets the voice at the phone level
-# of U's clean guitar in U, the map's lead there.
-MAP_CLEAN = {"inst": "guitar_real", "mode": "riff", "octave": 1, "hold": 1.5, "params": {"mute": False, "clean": True}}
-MAP_HARP = {"inst": "harp", "mode": "riff", "octave": 1, "hold": 2.5}
+# The map halves are minimal (Ryan, 30 October: "in general the map tracks need to be minimalist").
+# The seventh round's voices for the battle's new parts went with that call; what stays is a lift's
+# riff on the tine piano (the map's voice for the riff in A and N) to try, and K on a single harp
+# and a single piano. A voice's gain sets it at the phone level of U's clean guitar in U.
+MAP_HARP = {"inst": "harp", "mode": "riff", "octave": 1, "hold": 1.5}
 MAP_TINE = {"inst": "epiano", "mode": "riff", "octave": 2, "hold": 1.4}
-MAP_LEADS = {   # (section, voice): gain, each at -23.6 dB on the speaker in its section as U's clean guitar is in U
-    ("C", "clean"): 0.2, ("C", "tine"): 0.18, ("L", "harp"): 0.38, ("L", "clean"): 0.2, ("K", "clean"): 0.21, ("K", "harp"): 0.49,
-}
-MAP_VOICES = {"clean": MAP_CLEAN, "harp": MAP_HARP, "tine": MAP_TINE}
-TICKING_BACKING = 0.1   # the ticking guitar 6 dB under its 0.2 elsewhere, as the battle's backing sits 6 dB down
-
-
-def map_backing(s):
-    """The ticking guitar on a lift's backing chug: each bar's root wherever the battle's kick hits."""
-    def edit(kw, call):
-        kw["voices"].append(dict(P.TICKING, gain=TICKING_BACKING, pat={s: kick_chug(call, s)}))
-        return kw
-    return edit
+MAP_LEADS = {("C", "tine"): 0.18, ("L", "tine"): 0.18, ("K", "harp"): 0.49}   # (section, voice): gain
+MAP_VOICES = {"harp": MAP_HARP, "tine": MAP_TINE}
+CALM_BELL = "0..............."   # the first lift's bell, one a bar (Ryan: "the bells are too busy")
 
 
 def map_lead(s, name):
-    """A map voice on the line the battle's lead plays in a section: a lift's riff, or K's walk
-    (held to its own length there, as the battle's lead guitar holds it)."""
+    """A map voice on a section's line: a lift's riff, or K's walk."""
     def edit(kw, call):
-        v = dict(MAP_VOICES[name], gain=MAP_LEADS[s, name], pat={s: LIFT_RIFF if s in "CL" else P.part(call, "bass", s)})
-        if s == "K":
-            v["hold"] = 1.0
-        kw["voices"].append(v)
+        kw["voices"].append(dict(MAP_VOICES[name], gain=MAP_LEADS[s, name], pat={s: LIFT_RIFF if s in "CL" else P.part(call, "bass", s)}))
         return kw
     return edit
+
+
+def map_calm_bell(kw, call):
+    """The first lift's bell, which played the battle chime's eighths with its echoes, once a bar."""
+    for v in kw["voices"]:
+        if v["inst"] == "bell" and "C" in v["pat"]:
+            v["pat"]["C"] = CALM_BELL
+    return kw
+
+
+def map_k_single(kw, call):
+    """K on a single harp and a single piano: the harp on the walk, the piano's solo, nothing else
+    (the walk's ticking guitar, the sub, the timpani, the piano's held chords and the pads go)."""
+    for v in kw["voices"]:
+        if "K" in v["pat"] and not (v["inst"] == "epiano" and v.get("mode", "riff") == "riff"):
+            del v["pat"]["K"]
+    for name in [n for n in kw["drums"] if n.startswith("timp_K")]:
+        del kw["drums"][name]
+    for p in kw["pad"]:
+        p["sections"] = p["sections"].replace("K", "")
+    return map_lead("K", "harp")(kw, call)
 
 
 def map_edits(*edits):
@@ -372,8 +373,8 @@ def map_edits(*edits):
     return edit
 
 
-# The map half of the seventh round: every pick so far and a voice for each of the battle's new parts.
-map_seven = map_edits(map_picks, map_backing("C"), map_lead("C", "clean"), map_backing("L"), map_lead("L", "harp"), map_lead("K", "clean"))
+# The map half of the eighth round: every pick so far, the first lift's bell calmer, K on a harp and a piano.
+map_eight = map_edits(map_picks, map_calm_bell, map_k_single)
 
 
 # ---------------------------------------------------------------- the renders
@@ -412,7 +413,7 @@ def map_half(form, edit=None, meter=None):
 
 C_FORM = "NNNN B CCCCCCCC NNNN"
 L_FORM = "NNNN LLLLLLLL M XX"
-K_FORM = "K" * 14
+K_CONTEXT = "ZZZZ Y " + "K" * 14 + " V Q"
 
 
 def round_seven(call):
@@ -430,27 +431,23 @@ def round_seven(call):
 
 SETS = [
     {"id": "mc", "half": "map", "title": "The map's first lift (C)", "form": C_FORM,
-     "note": "From the riff's end through the turn, the lift and the riff again. In the battle the lift now has the crunch synth and the synth lead on its riff over a backing guitar chugging on the kick.", "rows": [
-        ("mc0", "As it was", "The soft sub on the riff, the piano's chords on the beats, the choir and the bell.", map_picks),
-        ("mc1", "The ticking guitar on the backing's chug", "Each bar's root wherever the battle's kick hits, 6 dB under the ticking elsewhere.", map_edits(map_picks, map_backing("C"))),
-        ("mc2", "And the clean guitar on the riff", "The map's voice for the synth lead, as in U (the full pair's).", map_edits(map_picks, map_backing("C"), map_lead("C", "clean"))),
-        ("mc3", "And the tine piano on the riff", "The map's voice for the riff in A and N, two octaves up.", map_edits(map_picks, map_backing("C"), map_lead("C", "tine"))),
+     "note": "From the riff's end through the turn, the lift and the riff again: the soft sub on the riff, the piano's chords on the beats, the choir and the bell.", "rows": [
+        ("mc0", "As it was", "The bell on the battle chime's eighths with its echoes.", map_picks),
+        ("mc1", "The bell calmer", "One bell a bar (the full pair's).", map_edits(map_picks, map_calm_bell)),
+        ("mc2", "And the tine piano on the riff", "The bell calmer and the riff on the tine piano two octaves up.", map_edits(map_picks, map_calm_bell, map_lead("C", "tine"))),
     ]},
     {"id": "ml", "half": "map", "title": "The map's second lift (L) into M", "form": L_FORM,
-     "note": "From the riff into the lift, M and the seven. In the battle the lift now has the crunch synth and the lead guitar on its riff over a backing guitar chugging on the kick.", "rows": [
-        ("ml0", "As it was", "The soft sub and the spiccato cellos on the riff, the piano's chords on the beats.", map_picks),
-        ("ml1", "The ticking guitar on the backing's chug", "Each bar's root wherever the battle's kick hits, 6 dB under the ticking elsewhere.", map_edits(map_picks, map_backing("L"))),
-        ("ml2", "And the harp on the riff", "The map's voice for the lead guitar, as in the climax (the full pair's).", map_edits(map_picks, map_backing("L"), map_lead("L", "harp"))),
-        ("ml3", "And the clean guitar on the riff", "The clean guitar, as on U's lead and the first lift.", map_edits(map_picks, map_backing("L"), map_lead("L", "clean"))),
+     "note": "From the riff into the lift, M and the seven: the soft sub and the spiccato cellos on the riff, the piano's chords on the beats.", "rows": [
+        ("ml0", "As it was", "The full pair's.", map_picks),
+        ("ml1", "And the tine piano on the riff", "The riff on the tine piano two octaves up as well.", map_edits(map_picks, map_lead("L", "tine"))),
     ]},
-    {"id": "mk", "half": "map", "title": "The map's K", "form": K_FORM,
-     "note": "K's fourteen bars at its slower tempo. In the battle the lead guitar now plays the walk with the crunch synth.", "rows": [
-        ("mk0", "As it was", "The walk on the ticking guitar, the sub on its roots, a soft timpani, the piano's solo over its held chords.", map_picks),
-        ("mk1", "The clean guitar on the walk", "The walk held note to note an octave over the ticking (the full pair's).", map_edits(map_picks, map_lead("K", "clean"))),
-        ("mk2", "The harp on the walk", "The climax's map voice for the lead guitar.", map_edits(map_picks, map_lead("K", "harp"))),
+    {"id": "mk", "half": "map", "title": "The map's K in context", "form": K_CONTEXT,
+     "note": "Four bars of the climax, the breath, K's fourteen bars at its slower tempo, V and Q's fill.", "rows": [
+        ("mk0", "As it was", "The walk on the ticking guitar, the sub on its roots, a soft timpani, the piano's solo over its held chords and the pads.", map_picks),
+        ("mk1", "A single harp and a single piano", "The harp on the walk and the piano's solo, nothing else (the full pair's).", map_edits(map_picks, map_k_single)),
     ]},
 ]
-PAIR = {"id": "hold_the_line_r7", "title": "Hold The Line, round seven",
+PAIR = {"id": "hold_the_line_r8", "title": "Hold The Line, round eight",
         "k": "the keyboard solo's first fourteen bars at its slower tempo, the lead guitar with the crunch synth on the walk, K's drums with a pushing kick, eighths on the hat and a china, its crash choked to a second and a half"}
 
 
@@ -461,14 +458,14 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold7_" + SETS[si]["id"])
+    F.seed("hold8_" + SETS[si]["id"])
     _rid, _title, _note, edit = SETS[si]["rows"][ri]
     with P.Patched(_steps=run_steps):
         return si, ri, unmastered(map_call(SETS[si]["form"], edit))
 
 
 def full_path(half):
-    return os.path.join(P.OUT, "hold7_full_%s.wav" % half)
+    return os.path.join(P.OUT, "hold8_full_%s.wav" % half)
 
 
 def render_full(half):
@@ -480,7 +477,7 @@ def render_full(half):
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
-        x = level(map_half(FORM_K14, map_seven), MAP_LEVEL)
+        x = level(map_half(FORM_K14, map_eight), MAP_LEVEL)
     P.write(os.path.basename(full_path(half))[:-4], x, aac=False)
     return half
 
@@ -515,7 +512,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold7.json")
+    manifest_path = os.path.join(P.OUT, "hold8.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -527,7 +524,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold7_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold8_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))

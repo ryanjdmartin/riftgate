@@ -1,159 +1,102 @@
-"""The Far Bank the other way round (Ryan, 30 October): the shipped track kept a map track, as it
-was first meant, and a battle half built on it.
+"""The Far Bank's map half, its second round (Ryan, 30 October): minimal.
 
-  "Can we try what would happen to Far Bank if we kept it a map track, and built a battle track on
-  it? Since it's kind of in the middle, but was originally supposed to be a map track. Don't scrap
-  the 'map' version you made just yet, though. Still could go either way."
+  "far bank flipped doesn't work, lets work on the original map version" and, of the map halves,
+  "in general the map tracks need to be minimalist."
 
-The battle half is written on the shipped recipe's own groove call, as every new half is (the
-bible's pair row): the same form, metres, chords and notes, so the switch keeps its place. The
-rift's battle voice is the electronic chug under the orchestra (The Crossing's engine); here it
-drives The Far Bank's own bass lines, never The Crossing's three-three-two ostinato or its pattern
-of kick and chug: the groove's cellos struck again in eighths, the lift's bowed riff, the strings
-section's and the climax's contrabass, a pulse quickening through the quiet before, which builds
-with the horns and the strings swelling into the climax. The kick keeps
-its places (Ryan's rule for this track, 24 September) on the full orchestral drum, the soft one
-gone, with a backbeat, eighths on the hat, a crash at each door, toms into the turns, timpani on
-the climax's beats and a roll into it, and brass on the lift's and the climax's pushes; the
-climax's crescendo is halved, since a battle half holds its level. The melodies, the bells, the
-harp, the horns, the choir and the pads are the shipped track's own. The map half is the shipped
-track as it is; the sketched map half and its pair stay (pair_sketches.py).
+The shipped track stays the battle half. The first round's map half (pair_sketches.map_far_bank)
+kept every orchestral voice and dropped only the kit, the timpani and the hits. Now it thins: the
+bells, which play eighths with their echoes through the groove, the lift and the climax, play their
+figures at half speed with one echo (Hold The Line's first lift had the same wash: "the bells are
+too busy"); the harp's arpeggios and the contrabass's driving three-three-two leave the strings
+section and the climax, where the violins, the horns, the cellos and the pads carry them. The rest is
+the first round's, from its seed. The sets cut the groove and the lift, the strings section and the
+climax from the two map halves as the pair plays them, the first round's as it was heard.
 
-    tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py      # the flipped pair, then far1.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py      # the pair and the sets, then far2.json beside the pairs
 """
 import json
 import os
 import sys
-from concurrent.futures import ProcessPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import forge as F  # noqa: E402
 import pair_sketches as P  # noqa: E402
 
 NAME = "music_far_bank"
-PAIR = {"id": "far_bank_flip", "title": "The Far Bank, flipped"}
-# The battle half at the track's own level, the rift tracks' (forge's LEVELS); the map half 3 dB
-# under it on a phone's speaker, where the rift tracks' map halves sit (pair_sketches.PAIRS), until
-# the rift tracks are levelled against Hold The Line (the bible's open levelling row). Matched to
-# the other battle halves on a phone instead, it would stand 5 dB over the shipped track in full,
-# since most of a rift track's power lies under what a phone plays.
-UNDER = 3.0
+PAIR = {"id": "far_bank_r2", "title": "The Far Bank, round two"}
+MAP_LEVEL = P.PAIRS["far_bank"]["level"]   # the first round's map level, 3 dB under the battle half on a phone
+QUIET_ECHO = (3, 0.42, 1)   # the bells' echo, once
 
 
-def driven(line, step=2):
-    """A held line struck again every `step` steps through each note's length: the bass line driven."""
-    out = list(line)
-    i = 0
-    while i < len(line):
-        if line[i] in ".-":
-            i += 1
-            continue
-        j = i + 1
-        while j < len(line) and line[j] == "-":
-            j += 1
-        for k in range(i, j):
-            out[k] = line[i] if (k - i) % step == 0 else "."
-        i = j
-    return "".join(out)
+def calm(pattern):
+    """A bell pattern calmed: a figure in even eighths at half speed, its contour on the quarters;
+    any other figure in four-four kept to its notes on the quarters; one in another metre as it was."""
+    if len(pattern) % 16:
+        return pattern
+    notes = [c for c in pattern if c != "."]
+    if len(notes) * 2 == len(pattern) and all(pattern[i] != "." for i in range(0, len(pattern), 2)):
+        return "".join(n + "..." for n in notes[:len(pattern) // 4])
+    return "".join(c if i % 4 == 0 else "." for i, c in enumerate(pattern))
 
 
-def soft(value, by=0.5):
-    """A crescendo's level with its swing from full cut by `by`."""
-    return 1.0 + (value - 1.0) * by
+def map_minimal(call):
+    """The first round's map half, thinned: see the module's notes."""
+    kw = P.map_far_bank(call)
+    voices = []
+    for v in kw["voices"]:
+        v = dict(v, pat=dict(v["pat"]))
+        if v["inst"] == "bell":
+            v["pat"] = {s: calm(pat) for s, pat in v["pat"].items()}
+            v["echo"] = QUIET_ECHO
+        elif (v["inst"] == "harp" and v.get("mode") == "chord") or (v["inst"] == "contrabass" and ("E" in v["pat"] or "G" in v["pat"])):
+            v["pat"] = {s: pat for s, pat in v["pat"].items() if s not in "EG"}
+        voices.append(v)
+    return dict(kw, voices=voices)
 
 
-def battle_far_bank(call):
-    """The Far Bank's battle half: see the module's notes."""
-    p = lambda *a, **k: P.part(call, *a, **k)   # noqa: E731
-    cellos = p("cello", "A")
-    voices = [dict(v) for v in call["voices"]] + [
-        # The engine: the electronic chug on the track's own bass lines, an octave under them.
-        {"inst": "e_chug", "mode": "riff", "gain": 0.55, "hold": 0.8, "octave": -1,
-         "pat": {"P": "0.0.0.0.0.0.0.0." * 4 + driven(cellos), "A": driven(cellos), "B": driven(p("cello", "B")),
-                 "C": p("contrabass", "C"), "T": "3.3.3.5.5.5.", "E": p("contrabass", "E"), "G": p("contrabass", "G"),
-                 "H": "0" + "." * 63}},
-        # The quiet before, held up as a battle half holds its level: the pulse quickening into the climax.
-        {"inst": "e_chug", "mode": "riff", "gain": 0.8, "hold": 0.8, "octave": -1,
-         "pat": {"V": "0.....0....." * 2 + "g..g..g..g.." + "0.0.0.0.0.0."}},
-        # The interlude's exposed chords: the chug on the and of one with the cellos, closed down.
-        {"inst": "e_chug", "mode": "riff", "gain": 0.45, "hold": 1.6, "octave": -1, "params": {"cutoff": 500.0},
-         "pat": {"D": "..a............." + "..8............." + "..g.............", "Z": "..0..........."}},
-        # The quiet before builds: the horns on each bar's chord, climbing into the climax.
-        {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.16, "dur": 12.0, "shape": (0.5, 1.4), "pat": {"V": "0..........."}},
-        # Brass on the pushes: the lift's downbeat and the a of four, the climax's from its repeat edge.
-        {"inst": "brass", "mode": "stab", "gain": 0.22, "dur": 2, "pat": {"C": "x.............x."}},
-        {"inst": "brass", "mode": "stab", "gain": 0.2, "dur": 2, "pat": {"G": "." * 128 + "x.......x.....x." * 24}},
-    ]
-    drums = {k: dict(d) for k, d in call["drums"].items()}
-    # The full drum where the soft one played, in its places.
-    drums["kick"].update({s: pat for s, pat in drums.pop("kick_soft").items()})
-    drums["snare"].update({"A": "....x.......x..o", "E": "....x.......x..o"})
-    drums["hat"].update({s: "x.x.x.x.x.x.x.x." for s in "ABCEP"} | {"V": "x.x.x.x.x.x."})
-    drums["snare"]["V"] = "......x....." * 3 + "......x.x.xx"   # the six-eight's backbeat, a roll into the climax
-    drums["open"] = dict(drums.get("open", {}), A="..............x.", C="..............x.")
-    drums["crash"] = {"*": P.door_pattern(call, "ACEDH"), "G": "x" + "." * 127}
-    drums["tom"] = {"B": "........x.x.....", "G": "." * 112 + "....x.x.xx.x.x..", "Z": "..........x.x.", "V": "." * 36 + "x.x.x......."}
-    drums["tom2"] = {"B": "............x.xx", "G": "." * 112 + "......x.....x.xx", "Z": "............x.", "V": "." * 36 + "......x.x.x."}
-    drums["timp"] = dict(drums["timp"], V="." * 36 + "x.x.x.xxxxxx")
-    kit = dict(call["kit"])
-    kit.pop("kick_soft", None)
-    kit.update({"crash": ([F.crash_real()], 0.55), "tom": (F.variants(lambda q: F.tom_real(130.0, q)), 1.0),
-                "tom2": (F.variants(lambda q: F.tom_real(98.0, q)), 1.0)})
-    # The strings swell across the quiet before as well.
-    pad = [dict(q) for q in call["pad"]] + [{"inst": "strings", "gain": 0.12, "sections": "V", "swell": [(0.0, 0.6), (1.0, 1.5)]}]
-    crescendo = {}
-    for s, c in call["crescendo"].items():
-        crescendo[s] = [(t, soft(v)) for t, v in c] if isinstance(c, list) else c
-    return {"kit": kit, "drums": drums, "voices": voices, "pad": pad, "crescendo": crescendo}
-
-
-BATTLE_SAID = {   # each section's battle layers, on the page beside the shipped track's own
-    "P": "the chug on the root under eighths on the hat, the groove's cellos driven from the fifth bar",
-    "A": "the groove's cellos struck in eighths on the chug, the full drum in its places, a backbeat, eighths on the hat",
-    "B": "toms into the next section",
-    "C": "the bowed riff on the chug, brass on the downbeat and the push",
-    "E": "the contrabass's line on the chug, the full drum on one and three",
-    "D": "the chug on the and of one with the cellos, the timpani",
-    "Z": "toms into the next half",
-    "T": "the turn on the chug in six-eight",
-    "V": "a build: the chug's pulse quickening over a six-eight backbeat, the horns and the strings swelling, toms and a timpani roll into the climax",
-    "G": "the contrabass's line on the chug, a crash every eight bars and toms into it, brass from the repeat edge",
-    "H": "the closer's hit on the chug",
-}
-
-
-def render(half):
-    """One half, mastered, before its level."""
-    if half == "map":
-        F.seed(NAME)
-        return half, F.music_far_bank()
-    F.seed(NAME + "_battle")
+def render_map():
+    """The minimal map half from the first round's seed, at its level."""
+    F.seed(NAME + "_map")
     call = P.recipe_call(F.music_far_bank)
     kw = dict(call)
-    kw.update(battle_far_bank(call))
-    return half, F.groove(**kw)
+    kw.update(map_minimal(call))
+    return F.limit(F.write_level(F.groove(**kw), NAME, MAP_LEVEL))
+
+
+# Each set: (id, title, note, the bars cut, by index from 0).
+SETS = [("fa", "The map's groove and lift", "The groove's bells and the horn's answers, the turn, the lift's bowed riff and its bells.", (8, 24)),
+        ("fe", "The map's strings section", "The violins' tune over the cellos' chords, the horns breaking in.", (24, 40)),
+        ("fg", "The map's climax", "Its first sixteen bars: the leads swelling in turn from the repeat edge.", (53, 69))]
 
 
 def main():
     os.makedirs(P.OUT, exist_ok=True)
-    with ProcessPoolExecutor(max_workers=2) as pool:
-        raw = dict(pool.map(render, ("map", "battle")))
-    b = F.limit(F.write_level(raw["battle"], NAME, F.LEVELS[NAME]))
-    phone = P.measure("map", raw["map"])
-    m = F.limit(F.write_level(raw["map"], NAME, phone["mean_db"] + P.measure("battle", b)["phone_db"] - UNDER - phone["phone_db"]))
-    for half, x in (("map", m), ("battle", b)):
-        P.write("%s_%s" % (PAIR["id"], half), x, aac=False)
+    m = render_map()
+    P.write(PAIR["id"] + "_map", m, aac=False)
+    r1, b = P.halves("far_bank")   # the first round's map half as it was heard, the shipped track
     if len(m) != len(b):
         raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
     P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
+    at = P.bar_times(NAME)
+    edges = list(at) + [len(m) / F.SR]
+    sets = []
+    for sid, title, note, (b0, b1) in SETS:
+        rows = []
+        for rid, rtitle, rnote, x in ((sid + "0", "As it was", "The first round's map half.", r1),
+                                      (sid + "1", "Minimal", "The bells at half speed with one echo, the harp's arpeggios and the contrabass's drive gone (the full pair's).", m)):
+            cut = x[int(round(edges[b0] * F.SR)):int(round(edges[b1] * F.SR))]
+            rows.append({"id": rid, "title": rtitle, "note": rnote, "file": os.path.basename(P.write("far2_" + rid, cut)),
+                         "seconds": round(len(cut) / F.SR, 2), "phone_db": P.measure(rid, cut)["phone_db"]})
+        sets.append({"id": sid, "half": "map", "title": title, "note": note, "rows": rows})
+        print("%-2s %s" % (sid, "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
     runs, total = F.sections(NAME)
     levels = [P.measure("map", m), P.measure("battle", b)]
-    manifest = {"sets": [], "seams": [], "tracks": [{
-        "id": PAIR["id"], "title": PAIR["title"], "new": "battle", "bpm": F.MUSIC[NAME]["bpm"], "length": round(total, 3),
-        "loop_from_bar": 1 + int(P.LOOP_FROM.get(NAME, 0)), "bar_at": [round(float(t), 4) for t in P.bar_times(NAME)],
-        "sections": [{"section": s, "bars": [b0, b1], "at": round(at, 2), "what": "%s; the battle: %s" % (what, BATTLE_SAID[s])} for s, b0, b1, at, what in runs],
+    manifest = {"sets": sets, "seams": [], "tracks": [{
+        "id": PAIR["id"], "title": PAIR["title"], "new": "map", "bpm": F.MUSIC[NAME]["bpm"], "length": round(total, 3),
+        "loop_from_bar": 1 + int(P.LOOP_FROM.get(NAME, 0)), "bar_at": [round(float(t), 4) for t in at],
+        "sections": [{"section": s, "bars": [b0, b1], "at": round(t0, 2), "what": what} for s, b0, b1, t0, what in runs],
         "levels": levels}]}
-    path = os.path.join(P.OUT, "far1.json")
+    path = os.path.join(P.OUT, "far2.json")
     with open(path, "w") as f:
         json.dump(manifest, f, indent=1)
     print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
