@@ -3787,3 +3787,23 @@ by about a sixth. The trios' losses fall on the trios short of a damage dealer: 
 Rotbloom and the Phantom Train (45 to 90% won) and the Behemoth (95%). On the stock four the slate runs 7 to 12 rounds at 48 HP, long
 against the kill-time test's three to five and safe, the basics' damage the limiter; the default
 team (two tier-two machines) takes 4 to 5.
+
+**The Cinder Tortoise's armour at tier one** (31 October; `tools/balance.gd`, 30 seeds, the
+greedy rung, alone; `--set` on its base armour and on Withdraw's value; a direction). Ryan's
+question of 31 October: "If 2 is a massive hurdle for a first battle", for the bosses that carry
+armour scaling by tier. Mean rounds of the fights won (every fight won):
+
+| Base, shell | Default team | Minerva's trio | Kestrel's trio | Wainwright & Sutler's trio | The stock four |
+|---|---|---|---|---|---|
+| 2, +3 (as built) | 5.8 | 19.3 | 5.1 | 14.4 | 11.9 |
+| 2, +2 | 5.6 | 18.4 | 4.9 | 14.4 | 12.1 |
+| 1, +3 | 4.6 | 11.4 | 4.5 | 10.8 | 8.2 |
+| 0, +3 | 3.9 | 7.4 | 3.7 | 7.5 | 5.7 |
+
+Read. The base is the hurdle and the shell is not: a point off Withdraw moves nothing, since the
+shell stands one round in a few, while the base taxes every blow of every round. At base 2 the
+small-blow kits (Minerva's trio, Wainwright & Sutler's, the stock four) take the Tortoise half
+again to twice as long as the rest of the slate; at base 1 it sits in the slate's middle on
+every row; at 0 it is the slate's quickest. Hull lost stays 0 to 9% throughout: a slog, never a
+threat. A tier-one team has little against armour: no Expose below tier two's locked pieces, the
+one breach a tier-one blueprint no tier-one chassis stocks, Flak on the Prairie Dog alone.
