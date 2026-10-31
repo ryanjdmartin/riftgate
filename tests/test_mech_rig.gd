@@ -120,7 +120,8 @@ func test_a_halo_names_only_parts_a_glow_lights() -> void:
 		var side := MechRig.load_sidecar(id)
 		var halo = side.get("halo", [])
 		assert_true(halo is Array, "%s: the halo is a list of parts" % id)
-		for p in (halo if halo is Array else []):
+		for entry in (halo if halo is Array else []):
+			var p = entry[0] if entry is Array else entry
 			assert_true((side.get("glow_parts", []) as Array).has(p), "%s: the halo's %s is a part a glow lights" % [id, p])
 
 

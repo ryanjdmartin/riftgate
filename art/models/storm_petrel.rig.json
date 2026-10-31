@@ -915,6 +915,7 @@
  },
  "halo": [
   "nozzle_ring",
-  "exhaust"
+  "exhaust",
+  "projector_glow"
  ]
 }

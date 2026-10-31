@@ -1967,6 +1967,7 @@
     {
      "parts": [
       "core_fire",
+      "condenser_slot",
       "visor"
      ],
      "keys": [
@@ -2331,7 +2332,8 @@
    "glow": [
     {
      "parts": [
-      "core_fire"
+      "core_fire",
+      "condenser_slot"
      ],
      "keys": [
       [
@@ -19514,7 +19516,8 @@
     },
     {
      "parts": [
-      "core_fire"
+      "core_fire",
+      "condenser_slot"
      ],
      "keys": [
       [
@@ -20592,6 +20595,7 @@
     {
      "parts": [
       "core_fire",
+      "condenser_slot",
       "visor"
      ],
      "keys": [
@@ -35569,7 +35573,8 @@
    "glow": [
     {
      "parts": [
-      "core_fire"
+      "core_fire",
+      "condenser_slot"
      ],
      "keys": [
       [
@@ -39012,6 +39017,7 @@
   "heft": 0.24
  },
  "glow_parts": [
+  "condenser_slot",
   "core_fire",
   "sight",
   "visor"
@@ -39021,5 +39027,9 @@
   "hp_2": "blazethrower",
   "hp_3": "retribution_thurible",
   "hp_4": "oblation_ward"
- }
+ },
+ "halo": [
+  "core_fire",
+  "condenser_slot"
+ ]
 }

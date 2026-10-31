@@ -908,7 +908,13 @@
   "booster_ring",
   "exhaust",
   "lift_nozzle",
-  "repulsor_l",
-  "repulsor_r"
+  [
+   "repulsor_l",
+   2.0
+  ],
+  [
+   "repulsor_r",
+   2.0
+  ]
  ]
 }

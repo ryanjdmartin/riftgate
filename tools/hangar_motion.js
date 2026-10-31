@@ -266,19 +266,20 @@ class Rig {
     }
   }
   // The halos (MechRig._setup_halos): round each lit surface of the hot parts a sidecar names
-  // (`halo`), a soft shell standing out a share of the machine's size.
+  // (`halo`), a soft shell standing out a share of the machine's size, a part named with a scale
+  // ([part, 2]) that much larger and stronger.
   setupHalos(side) {
     this.halos = new Map();
     const named = Array.isArray(side.halo) ? side.halo : [];
     if (!named.length) return;
     const grow = HALO_SPREAD * this.modelSize();
     const T = window.THREE, done = new Set();
-    const wear = (node) => node.traverse(n => {
+    const wear = (node, scale) => node.traverse(n => {
       if (!n.isMesh || n.userData.halo) return;
       for (const m of [].concat(n.material)) {
         if (!m.userData.lit || done.has(n.uuid + m.uuid)) continue;
         done.add(n.uuid + m.uuid);
-        const mat = new T.ShaderMaterial({uniforms: {tile: {value: m.map}, light: {value: Math.pow(m.emissiveIntensity, 1 / 2.2)}, presence: {value: 0}, grow: {value: grow}, ahead: {value: HALO_AHEAD}, reach: {value: HALO_REACH}},
+        const mat = new T.ShaderMaterial({uniforms: {tile: {value: m.map}, light: {value: Math.pow(m.emissiveIntensity, 1 / 2.2)}, presence: {value: 0}, grow: {value: grow * scale}, ahead: {value: HALO_AHEAD}, reach: {value: Math.min(1, HALO_REACH * scale)}},
           vertexShader: HALO_VERT, fragmentShader: HALO_FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending});
         const h = new T.Mesh(haloGeometry(n.geometry), mat);
         h.userData.halo = true; h.renderOrder = 1;
@@ -287,10 +288,11 @@ class Rig {
         this.halos.get(m).push(mat);
       }
     });
-    for (const p of named) {
+    for (const entry of named) {
+      const p = Array.isArray(entry) ? entry[0] : entry, scale = Array.isArray(entry) && entry.length > 1 ? +entry[1] : 1;
       const tag = parseTag(p);
-      if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) wear(root); }
-      else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) wear(n); });
+      if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) wear(root, scale); }
+      else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) wear(n, scale); });
     }
   }
   // The longest side of the model's bounds at rest, in its own units (MechRig._model_size).

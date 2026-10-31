@@ -79441,5 +79441,9 @@
   "hp_2": "blazethrower",
   "hp_3": "oblation_ward",
   "hp_4": ""
- }
+ },
+ "halo": [
+  "throat_slot",
+  "pilot_flame"
+ ]
 }

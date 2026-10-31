@@ -1772,6 +1772,7 @@ def dingo(b):
     # its turns where it should drift into them): the nose swings into a corner ahead of the
     # path, the tail stepping out, and back as the corner ends, while the casters point
     # along the travel, so they counter-steer through it.
+    b.halo = ["coil"]   # the Translocator's coil, hot (Ryan, 31 October)
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R},
            aim={"caster_fl": 1.0, "caster_fr": 1.0, "caster_rl": 1.0, "caster_rr": 1.0}, rock=4.0)
     b.move(slide=0.4, bank=0.0, accel=0.5, heft=0.09, oversteer=2.0)   # drifts wildly on the map and does not bank (Ryan, 2 October); its rear kicked out further (the sixth notes), and further again (the seventh)
@@ -2176,10 +2177,9 @@ def goshawk(b):
     heat = [([("heat_%d" % (i + 1))], [(0.2, 0.0), (round(0.3 + 0.15 * i, 2), 0.0), (round(0.45 + 0.15 * i, 2), 26.0), (round(0.7 + 0.15 * i, 2), 16.0), (3.6, 18.0), (5.2, 16.0), (5.8, 0.0)])
             for i in range(9)]
     # The halo's trial machine (Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try
-    # it"): the spine's heat cells, the cannon's vents and the nacelles' boosters, hot parts as
-    # every machine's are (the next day: "all glowing boosters and vents"), and the cannon's bore,
-    # kept from the trial.
-    b.halo = ["heat_%d" % (i + 1) for i in range(9)] + ["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow", "joint_nacelle_l", "joint_nacelle_r"]
+    # it"): the nacelles' boosters, hot as every machine's are, and the cannon, its vents and bore
+    # (31 October: "the cannon is hot since it's a heat cannon"; the spine's cells "aren't vents").
+    b.halo = ["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow", "joint_nacelle_l", "joint_nacelle_r"]
     b.act("charge_cannon", 6.0, glow=heat + [
         (["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [(1.6, 0.0), (2.2, 5.0), (2.5, 1.5), (2.8, 11.0), (3.1, 4.0), (3.6, 26.0), (4.5, 26.0), (5.4, 0.0)]),
         (["joint_nacelle_l", "joint_nacelle_r"], [(0.3, 0.0), (1.4, -0.6), (4.3, -0.85), (4.6, 7.0), (5.2, 4.0), (5.9, 0.0)])],
@@ -2442,7 +2442,7 @@ def nemesis(b):
         tracks["elbow_" + side] = [(t, e2) for t, (p2, y2, r2, e2) in keys]
     tracks["waist"] = [(t, p2, 0.0, 0.0) for t, p2 in [(1.5, 2.0), (2.05, 4.0)] + _slam(2.05, 4.0, 2.3, -6.0) + [(2.5, -4.0), (4.2, -4.0), (5.0, 0.0)]]   # pitch: the waist's own axis is its yaw
     b.act("pound_fists", 6.6, tracks, body=body, heft=0.05,   # the stance widened foot by foot, then the fists wound up and slammed together before the chest, elbows out, twice, stopping dead, pressed, and the feet stepped back in
-          glow=[(["core_fire", "visor"], [(2.27, 0.0), (2.33, 13.0), (2.6, 4.0), (2.92, 3.0), (2.98, 16.0), (4.1, 9.0), (5.0, 0.0)])])   # the core and the visor flaring at each blow
+          glow=[(["core_fire", "condenser_slot", "visor"], [(2.27, 0.0), (2.33, 13.0), (2.6, 4.0), (2.92, 3.0), (2.98, 16.0), (4.1, 9.0), (5.0, 0.0)])])   # the core and the visor flaring at each blow
     tracks, body = _planted(feet, [(1.2, -2.0, 0.0, 7.0), (3.8, -2.2, 0.0, 7.5), (5.2, 0.0, 0.0, 0.0)])
     tracks.update({
         "shoulder_l": [(1.2, 60.0, 60.0, 0.0), (3.8, 62.0, 62.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
@@ -2451,7 +2451,7 @@ def nemesis(b):
         "elbow_r": [(1.2, -20.0), (3.8, -22.0), (5.0, 0.0)],
     })
     b.act("roar", 5.6, tracks, body=body,   # the arms flung wide and up, the body rearing back on its planted feet, the core blazing
-          glow=[(["core_fire"], [(0.6, 0.0), (1.2, 10.0), (3.8, 10.0), (4.8, 0.0)]),
+          glow=[(["core_fire", "condenser_slot"], [(0.6, 0.0), (1.2, 10.0), (3.8, 10.0), (4.8, 0.0)]),
                 (["visor"], [(0.5, 0.0), (0.95, 16.0), (1.3, 11.0), (2.4, 13.0), (3.6, 11.0), (4.6, 0.0)])])   # the visor flares as it rears and burns through the roar (Ryan, 29 October: "some flare during relevant animations, like roar")
     # The meteor, angrier: it stamps into a firing stance, leaning in and turned on its mark
     # (the turn the waist's, Ryan, 5 October: the feet slid round under it),
@@ -2480,7 +2480,7 @@ def nemesis(b):
     b.act("raise_meteor", 5.6, tracks, body=body, ease="linear",
           glow=[(["sight"], [(0.6, 0.0), (1.0, 5.0), (1.3, 2.0), (1.6, 7.0), (1.9, 3.0), (2.2, 9.0), (2.4, 9.0), (2.5, 14.0), (2.8, 5.0), (3.3, 9.0),
                                   (3.35, 14.0), (3.7, 5.0), (4.6, 0.0)]),
-                (["core_fire"], [(0.4, 0.0), (0.8, 6.0), (4.4, 6.0), (5.0, 0.0)]),
+                (["core_fire", "condenser_slot"], [(0.4, 0.0), (0.8, 6.0), (4.4, 6.0), (5.0, 0.0)]),
                 (["visor"], [(2.45, 0.0), (2.5, 14.0), (2.9, 0.0), (3.3, 0.0), (3.35, 14.0), (3.75, 0.0)])])   # the visor flashing white-hot with each shot (a red light already at full red flares toward white: held in between it reads pink)
     # The shoulders, angrier: hunched forward, each arm wrenched round in a fast circle that
     # cracks at the bottom, the torso twisting with it on the waist (Ryan, 5 October: not the
@@ -2509,7 +2509,7 @@ def nemesis(b):
         "elbow_r": [(2.25, 20.0), (3.5, 0.0), (3.95, 10.0)] + _slam(3.95, 10.0, 4.35, HITC_R[3]) + [(5.05, PRESSC_R[3]), (6.05, 0.0)],
     })
     b.act("crack_shoulders", 6.4, tracks, body=body, heft=0.07,
-          glow=[(["core_fire", "visor"], [(1.65, 0.0), (1.8, 7.0), (2.25, 1.0), (3.5, 7.0), (3.95, 3.0), (4.35, 12.0), (5.05, 10.0), (5.95, 0.0)])])   # the core and the visor flaring at each crack and the slam
+          glow=[(["core_fire", "condenser_slot", "visor"], [(1.65, 0.0), (1.8, 7.0), (2.25, 1.0), (3.5, 7.0), (3.95, 3.0), (4.35, 12.0), (5.05, 10.0), (5.95, 0.0)])])   # the core and the visor flaring at each crack and the slam
     # Squaring up (Ryan, 20 October: lateral motion for an angry boy on planted footwork; a
     # sideways pace was built first and looked like dancing, so this instead): something comes
     # at it from its left and it squares up to it, the left foot stamping out wide and back as
@@ -2528,7 +2528,7 @@ def nemesis(b):
         tracks["elbow_" + side] = _dense([(0.5, 0.0), (1.1, g[3]), (3.5, g[3] - 2.0), (4.6, 0.0)])
     tracks["waist"] = _dense([(0.5, 0.0, 0.0, 0.0), (1.2, -4.0, 8.0, 0.0), (3.4, -5.0, 11.0, 0.0), (3.7, -3.0, 6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])   # leaning in, wound a little further round than the feet
     b.act("square_up", 5.2, tracks, body=body, ease="linear", heft=0.06,
-          glow=[(["core_fire"], [(0.9, 0.0), (1.15, 9.0), (3.4, 9.0), (4.3, 0.0)]),
+          glow=[(["core_fire", "condenser_slot"], [(0.9, 0.0), (1.15, 9.0), (3.4, 9.0), (4.3, 0.0)]),
                 (["visor"], [(0.9, 0.0), (1.15, 12.0), (3.4, 12.0), (4.3, 0.0)])])   # the visor glaring hotter than the core
     # Movement (Ryan, 4 October, the third pass: stomp and plod, MechWarrior and not Gundam,
     # no weight thrown side to side): a long heavy stride, each sabaton planted flat while
@@ -2539,6 +2539,7 @@ def nemesis(b):
         for side in ("l", "r")], sweep=30.0, lift=8.0, crouch=0.5, dip=1.8, nod=1.2)
     tracks["shoulder_l"] = (_swing(5.0, 0.5), 0.0)   # a little swing (Ryan, 5 October: less arm movement; the plod is good)
     tracks["shoulder_r"] = (_swing(5.0, 0.0), 0.0)
+    b.halo = ["core_fire", "condenser_slot"]   # the chest furnace and the condenser venting it out the back, hot (Ryan, 31 October)
     b.gait(stride=stride, tracks=tracks, hold={"elbow_l": 9.0, "elbow_r": 9.0}, body=body, ease="linear")
     b.move(accel=1.2, heft=0.24)
 
@@ -2939,6 +2940,7 @@ def ammit(b):
         limbs.append({"hip": "shoulder_low_" + side, "knee": "elbow_low_" + side, "ankle": "hand_low_" + side, "at": arms[side],
                       "phase": 0.25 if side == "r" else 0.75, "shift": -12.0, "cycles": 3})
     tracks, body, stride = _plant(limbs, sweep=60.0, lift=8.0, crouch=0.5, dip=1.5, nod=0.9, n=120)
+    b.halo = ["throat_slot", "pilot_flame"]   # the vent on its back and the Blazethrower's pilot flame, a burn weapon's, hot (Ryan, 31 October)
     b.gait(stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
     b.move(accel=1.0, heft=0.2)
 
@@ -3212,7 +3214,7 @@ def stingray(b):
           body=[(1.8, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (3.6, 0.0, -3.0, 0.0, 0.0, -6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
     b.act("thrusters_surge", 4.4, body=[   # surges forward nose down, brakes nose up, settles: a helicopter's
         (0.5, 0.0, 0.0, 0.0), (1.3, 0.0, 12.0, -1.0, 0.0, -12.0, 0.0), (2.3, 0.0, 12.0, 0.0, 0.0, 10.0, 0.0), (3.1, 0.0, 0.0, 0.0, 0.0, -3.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
-          glow=[(["nozzle_glow"], [(0.3, 0.0), (0.9, 8.0), (1.6, 8.0), (2.4, 2.0), (3.6, 0.0)])])
+          glow=[(["nozzle_glow", "fan_duct_floor"], [(0.3, 0.0), (0.9, 8.0), (1.6, 8.0), (2.4, 2.0), (3.6, 0.0)])])
     b.act("sidestep", 4.8, body=[   # slides a step to one side, rolling into it, and straight on across to the other
         (0.9, -6.0, 0.0, 0.0, 0.0, 0.0, -12.0), (1.6, -14.0, 0.0, 0.0, 0.0, 0.0, 2.0), (2.6, 2.0, 0.0, 0.0, 0.0, 0.0, 12.0),
         (3.4, 14.0, 0.0, 0.0, 0.0, 0.0, -2.0), (4.8, 0.0, 0.0, 0.0)])
@@ -3221,8 +3223,11 @@ def stingray(b):
     # Puffin): it faces its heading and oversteers through corners like them, banking a
     # little, and noses down hard into its travel, since its fans are its propulsion (the
     # tilt: nose down going forward, a side down to slip that way).
-    b.halo = ["nozzle_glow"]   # its thrusters, hot
-    b.gait(glow={"parts": ["nozzle_glow"], "k": 5.0})
+    # Its exhaust and its lift fans, hot, the fans' downwash lit with the exhaust (Ryan, 31
+    # October: "Stingray fans hot"); the exhaust's halo twice the size, since its face sits a
+    # unit inside the duct and only its spill shows ("too subtle").
+    b.halo = [("nozzle_glow", 2.0), "fan_duct_floor"]
+    b.gait(glow={"parts": ["nozzle_glow", "fan_duct_floor"], "k": 5.0})
     # The lift fans turn all the time, counter-rotating, and faster under way (Ryan, 6 October,
     # the seventh notes, the model locked: "the thing the Stingray really needs"). Slow enough a
     # frame that five blades never strobe backward at 30 frames a second.
@@ -3911,7 +3916,9 @@ def puffin(b):
     # Movement: the plates lie level as the repulsors, lit with the booster; the nose down a
     # touch; it oversteers through its corners like the Puffin always has, never banking (a
     # hovercraft keeps flat).
-    b.halo = ["booster_ring", "exhaust", "lift_nozzle", "repulsor_l", "repulsor_r"]   # its booster, lift nozzles and repulsors, hot
+    # Its booster, lift nozzles and repulsors, hot; the repulsors' halos twice the size, since
+    # their discs face down under the plates and only their spill shows (Ryan, 31 October: "too subtle").
+    b.halo = ["booster_ring", "exhaust", "lift_nozzle", ("repulsor_l", 2.0), ("repulsor_r", 2.0)]
     b.gait(hold={"plate_l": 0.0, "plate_r": 0.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": boosters + reps, "k": 5.0}, rock=3.0)
     b.move(slide=0.3, bank=0.0, accel=0.8, heft=0.13, oversteer=1.5)
 
@@ -4119,7 +4126,7 @@ def storm_petrel(b):
           glow=[(["emitter", "field_tip"], [(0.5, 0.0), (0.6, HOT), (0.8, 0.0), (1.0, HOT), (1.2, 0.0), (1.4, HOT), (1.6, 0.0)]), (boosters, [(0.3, 0.0), (0.6, 6.0), (1.6, 6.0), (2.2, 0.0)])])
     # Movement: it runs flat and fast, nose down a touch, and drifts through its corners like
     # the Puffin, never banking (a hovercraft keeps flat).
-    b.halo = ["nozzle_ring", "exhaust"]   # its boosters, hot
+    b.halo = ["nozzle_ring", "exhaust", "projector_glow"]   # its boosters and the projector arch, hot (Ryan, 31 October)
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": boosters, "k": 5.0}, rock=3.0)
     b.move(slide=0.3, bank=0.0, accel=0.6, heft=0.14, oversteer=1.1)
 
@@ -4245,7 +4252,7 @@ def lammergeier(b):
                 (5.6, 0.0, 0.0, 0.0)],
           glow=[(boosters, [(0.5, 0.0), (1.4, 7.0), (4.2, 7.0), (5.0, 0.0)])])
     # Movement: a heavy flyer, banking into its turns and slow to gather way, nose down a touch.
-    b.halo = ["booster_ring", "exhaust"]   # its boosters, hot
+    b.halo = ["booster_ring", "exhaust", "drone_tube_floor"]   # its boosters and drone tubes, hot (Ryan, 31 October)
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -2.0, 0.0), glow={"parts": boosters, "k": 4.0})
     b.move(slide=0.4, bank=22.0, accel=1.2, heft=0.2, oversteer=0.4)
 

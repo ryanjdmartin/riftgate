@@ -72,8 +72,10 @@ Buzzard (a soft shell round its lit parts, faded in with the flare; its first ro
 much", its second added rather than laid over, leaning red and a third the size), took main as
 `claude/zealous-wright-ixxo3l` landed (to `06880da`: the foes' move-order fix), and spread the
 halo to every machine's boosters and vents a little stronger, with the Buzzard's vector turn
-lighting both nacelles (31 October; the other lit parts wait on Ryan's vetting, the to-do); green
-at 828 tests and 206,940 checks; not yet on main; its bible is v0.412 (the page's 424).
+lighting both nacelles, then onto the parts Ryan vetted hot (31 October: the Nemesis's condenser
+and the Stingray's fans now flaring; the petrels' glow colour and every burn weapon hot asked in
+the bible's section 12); green at 828 tests and 206,945 checks; not yet on main; its bible is
+v0.413 (the page's 425).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -616,9 +618,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.412 (the
-  page's version 424, published 31 October from `claude/charming-rubin-h954bp`: the halo on every
-  machine's boosters and vents in the reference-glass row; onto its own v0.411 at 423, the halo's
+  `docs/design-bible.html` after every change. This file and the live page are v0.413 (the
+  page's version 425, published 31 October from `claude/charming-rubin-h954bp`: the halo on the
+  parts Ryan vetted hot in the reference-glass row, and the petrels' glow colour and every burn
+  weapon hot asked in section 12; onto its own v0.412 at 424, every booster and vent; on v0.411 at 423, the halo's
   second round, three-way merged onto the live v0.410 another session
   published at 422, its v0.406 to v0.410 at 418 to 422 a pass of its own (the codex's whole die
   and a die entry's fixed places, a term read in its colour with its icon, the component kinds,
@@ -642,10 +645,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 177 (31 October, from
-  `claude/charming-rubin-h954bp`: `motion.js` with the halo on every machine's boosters and vents,
-  a share of each machine's size, and the ten rigs that name them, the Buzzard's with its vector
-  turn lighting both nacelles; onto 176, which another session published, every file this publish
+  acts on a reloaded page). At the page's version 178 (31 October, from
+  `claude/charming-rubin-h954bp`: `motion.js` reading a part's halo scale, and the eight rigs
+  Ryan's vetting moved, the Nemesis's with its condenser flaring and the Stingray's with its fans
+  lit; every other file as 177 had it, `edits` empty), on 177 (the same day and branch: `motion.js`
+  with the halo on every machine's boosters and vents, a share of each machine's size, and the ten
+  rigs that name them, the Buzzard's with its vector turn lighting both nacelles; onto 176, which another session published, every file this publish
   did not send as 176 had it and every file it sent the size it had at this branch's last commit,
   `edits` empty), on 175 (the same day and branch: the halo's second round, onto 174, another
   session's), on 173 (30 October, the same branch: the halo's first round), on 172 (the same day

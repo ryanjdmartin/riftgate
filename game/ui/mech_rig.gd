@@ -57,6 +57,7 @@ const LIGHT_EASE := 1.0 / 2.2 # the power a lit part's light is eased by on the 
 static var _eases_light := -1   # whether light() eases: unknown until first asked (the renderer's known once the screen is up)
 const HALO_FULL := 8.0        # a halo is full once its part's light stands this many rests over its own (_light_to)
 const HALO_SPREAD := 0.025    # how far a halo stands out, a share of its machine's longest side (_setup_halos)
+const HALO_REACH := 0.45      # the share of its part's colour a halo adds at its fullest (halo.gdshader)
 const HALO_SHADER := preload("res://game/ui/halo.gdshader")
 static var _halo_meshes: Dictionary = {}   # "<mesh id>:<surface>" -> the halo's shell, its normals smoothed, built once a mesh
 const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
@@ -1148,8 +1149,10 @@ func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
 ## lies on and faded in as the part's light climbs over its rest, so a flare spills past the
 ## part's edge and the machine's outline; Godot's own glow, on the phone's renderer, cannot tell
 ## a lit part from white paint and stops at the outline. It stands out a share of the machine's
-## size (HALO_SPREAD), so it keeps its share of every machine however each is framed.
-## RIFTGATE_HALO=off strips them to compare, =all puts them on every lit part of every model.
+## size (HALO_SPREAD), so it keeps its share of every machine however each is framed; a part
+## named with a scale ([part, 2.0]) wears one that much larger and stronger, for a part only its
+## spill shows (Ryan, 31 October, of the Puffin's repulsors: "too subtle"). RIFTGATE_HALO=off
+## strips them to compare, =all puts them on every lit part of every model.
 func _setup_halos(side: Dictionary) -> void:
 	_halos.clear()
 	var env := OS.get_environment("RIFTGATE_HALO")
@@ -1158,14 +1161,16 @@ func _setup_halos(side: Dictionary) -> void:
 		return
 	var grow := HALO_SPREAD * _model_size()
 	var done := {}
-	for p in named:
-		var tag := parse_tag(str(p))
+	for entry in named:
+		var p := str(entry[0]) if entry is Array else str(entry)
+		var scale := float(entry[1]) if entry is Array and (entry as Array).size() > 1 else 1.0
+		var tag := parse_tag(p)
 		if tag.size() == 2:
 			var root: Node = joints.get(tag[1], null) if tag[0] == "joint" else hardpoints.get(tag[1], null)
 			if root != null:
-				_halo_under(root, grow, done)
+				_halo_under(root, grow * scale, minf(1.0, HALO_REACH * scale), done)
 		else:
-			_halo_named(model, str(p), grow, done)
+			_halo_named(model, p, grow * scale, minf(1.0, HALO_REACH * scale), done)
 
 
 ## The longest side of the model's bounds at rest, in its own units.
@@ -1188,15 +1193,15 @@ func _model_size() -> float:
 	return maxf(box.size.x, maxf(box.size.y, box.size.z))
 
 
-func _halo_named(node: Node, part: String, grow: float, done: Dictionary) -> void:
+func _halo_named(node: Node, part: String, grow: float, reach: float, done: Dictionary) -> void:
 	if node is MeshInstance3D and labelled(node.name, part):
-		_halo_under(node, grow, done)
+		_halo_under(node, grow, reach, done)
 	else:
 		for c in node.get_children():
-			_halo_named(c, part, grow, done)
+			_halo_named(c, part, grow, reach, done)
 
 
-func _halo_under(node: Node, grow: float, done: Dictionary) -> void:
+func _halo_under(node: Node, grow: float, reach: float, done: Dictionary) -> void:
 	if node.has_meta("halo"):
 		return
 	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
@@ -1213,6 +1218,7 @@ func _halo_under(node: Node, grow: float, done: Dictionary) -> void:
 			hm.set_shader_parameter("tile", lit.emission_texture if lit.emission_texture != null else lit.albedo_texture)
 			hm.set_shader_parameter("light", lit.emission_energy_multiplier)
 			hm.set_shader_parameter("grow", grow)
+			hm.set_shader_parameter("reach", reach)
 			var h := MeshInstance3D.new()
 			h.name = "halo"
 			h.mesh = _halo_mesh(mi.mesh, i)
@@ -1225,7 +1231,7 @@ func _halo_under(node: Node, grow: float, done: Dictionary) -> void:
 				_halos[lit] = []
 			(_halos[lit] as Array).append(hm)
 	for c in node.get_children():
-		_halo_under(c, grow, done)
+		_halo_under(c, grow, reach, done)
 
 
 ## A surface's halo shell: its own triangles and UVs, each corner's normal the sum of the faces

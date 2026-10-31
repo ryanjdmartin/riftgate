@@ -289,7 +289,8 @@
    "glow": [
     {
      "parts": [
-      "nozzle_glow"
+      "nozzle_glow",
+      "fan_duct_floor"
      ],
      "keys": [
       [
@@ -383,7 +384,8 @@
   "treads": {},
   "glow": {
    "parts": [
-    "nozzle_glow"
+    "nozzle_glow",
+    "fan_duct_floor"
    ],
    "k": 5.0
   },
@@ -405,6 +407,7 @@
  "glow_parts": [
   "dome_light",
   "eye",
+  "fan_duct_floor",
   "lance_muzzle",
   "nozzle_glow"
  ],
@@ -426,6 +429,10 @@
   ]
  },
  "halo": [
-  "nozzle_glow"
+  [
+   "nozzle_glow",
+   2.0
+  ],
+  "fan_duct_floor"
  ]
 }

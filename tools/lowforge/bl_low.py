@@ -411,7 +411,7 @@ class Build:
         self.spins = {}        # joints turned without end (see spin())
         self.forms = {}        # poses held while a status lasts (see form())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
-        self.halo = []         # the lit parts a glow names that wear a soft halo when they flare: the hot ones (MechRig's halos)
+        self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger (MechRig's halos)
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -998,11 +998,12 @@ class Build:
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
         # A halo is the glow's own bloom, so it names only parts a glow lights.
-        stray = [p for p in self.halo if p not in glow_parts]
+        halo = [list(h) if isinstance(h, (tuple, list)) else h for h in self.halo]
+        stray = [h for h in halo if (h[0] if isinstance(h, list) else h) not in glow_parts]
         if stray:
-            raise ValueError("%s: a halo names %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
-        if self.halo:
-            out["halo"] = list(self.halo)
+            raise ValueError("%s: a halo names %s, which no glow lights" % (self.name, ", ".join(repr(h) for h in stray)))
+        if halo:
+            out["halo"] = halo
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
