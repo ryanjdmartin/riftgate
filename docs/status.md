@@ -49,7 +49,7 @@ are in `README.md`.
 Ryan's go ("go for the ready to build ones", after his question of the 30th on which chassis come
 next), from main's `d84ad16`; it took main as it landed (the foes' move-order fix, the bosses'
 slate, the keywords in their colours and the dice's gestures, to `1f78e41`), and main took it as
-a fast-forward on 31 October on his word ("merge this into main"); its bible is v0.409 (the Pages paragraph).
+a fast-forward on 31 October on his word ("merge this into main"); its bible is v0.410 (the Pages paragraph).
 
 `claude/zealous-wright-ixxo3l` (30 October) carried the foes' move-order fix and its boss
 cells' read (How things stand), took main as it landed (to `d84ad16`: the skirmish's field,
@@ -692,25 +692,24 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.408 (the
-  page's version 420, published 30 October from `claude/jolly-lovelace-scn82y`: the die's tap
-  waiting out the double-tap window and a tap on the ground setting a Swap back, onto its own
-  v0.407 at 419, the dice's gestures and KEYWORDS retired, onto its own v0.406 at 418, the keywords list's
-  heading for a foe's move keywords, onto the live v0.405 at 417, which another session published
-  with the halo for lit parts on trial on the Buzzard; under it this branch's v0.404 at 416, the
-  keywords in their colour with their icons and a tap's tip, three-way merged onto the live v0.403
-  at 415, which `claude/charming-rubin-h954bp` published as main took it, onto its own v0.402 at
-  414 and the live v0.401 at 413, the bosses' slate's rows, from `claude/brave-cori-fr18de`; each
-  publish before it merged the same way, as this file's history in git shows). So this file carries
-  rows other sessions published ahead of their code (the halo on trial, the tracks in pairs, and
-  the notes on Hold The Line and Night Shift), each landing with its branch. The version numbers on the
-  publishing branch's file and the live agree after every publish. Before republishing, read the
+  `docs/design-bible.html` after every change. This file and the live page are v0.410 (the page's
+  version 422, published 31 October as `claude/affectionate-ramanujan-5d24t6` landed on main: the
+  Petrels' engines, their rows and section 12's question on the Storm Petrel's burn on basics),
+  three-way merged onto the live v0.409 at 421, which another session published with the slate's
+  last five bosses (the King Gel, the Pilgrim, the Phantom Train, the Vampire Lord and the
+  Obsidian Tyrant) and Numbed's third stack on a boss as on a massive foe, ahead of their code;
+  under it main's v0.408 at 420, the die's tap waiting out the double-tap window, from
+  `claude/jolly-lovelace-scn82y`; each publish before it merged the same way, as this file's
+  history in git shows. So this file carries rows other sessions published ahead of their code
+  (the slate's last five bosses and Numbed by boss, the halo on trial, the tracks in pairs, and
+  the notes on Hold The Line and Night Shift), each landing with its branch. The version numbers
+  on the publishing branch's file and the live agree after every publish. Before republishing, read the
   live page; if another session moved it, publish a three-way merge onto it (`git merge-file` with
   the last-published file as the base, the wrapper's first line and its trailing `</body></html>`
   stripped from the saved live source). The tables script, which writes the buff, debuff and
-  keyword tables from the content, runs freely on this branch, the slate's content in it (run 30
-  October after the merge: no line changed); on a head without the slate it reverts the slate's
-  rows.
+  keyword tables from the content, reverts the last five bosses' rows and Numbed's on main's head
+  (checked 31 October), since their content is not on it: splice those tables by hand until that
+  branch lands, then it runs freely.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
