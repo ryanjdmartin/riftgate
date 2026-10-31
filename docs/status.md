@@ -240,8 +240,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   renders came out the same as on 4.7.2, MSAA is back on the phone, and the import files are in
   4.8's form. Then the anti-aliasing became the player's (his ask: "Can we add an AA mode setting,
   not just for debug?"): SETTINGS → AA MODE, off, FXAA, MSAA 2X or MSAA 4X (the default), in
-  place of the debug MSAA and AA toggles, the mipmaps on in every mode. The desk's install and
-  the Pixel's read are the to-do's.
+  place of the debug MSAA and AA toggles, the mipmaps on in every mode. The desk runs 4.8-beta2
+  too (30 October, its build on the Pixel); the Pixel's read is the to-do's.
   With main in (30 October), the backdrop took the map's palettes: the Peak's lava orange-red,
   the Marsh's sky a cold night and its pools teal bog water and moss, the lakes the map's water.
   Then (his calls the same evening) the lava kept ("lava looks great"), the GREEN preset went
