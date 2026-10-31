@@ -316,8 +316,9 @@ The tasks are the to-do's; this is the index of what waits.
   one line on his rhythms with the arpeggio or the FM hook, never both, holding three-three-two
   6 dB down under the two together, the intro on the root, D a turn of its own with Hold The
   Line's riff back to the map's nod, the octave-up saved for R and louder, the arpeggio on other
-  voices so the hook comes through, no drone, Hold The Line's drum energy); all waiting on his
-  ear; then the engine (a pair as one synchronized stream, the map choosing
+  voices so the hook comes through, no drone, Hold The Line's drum energy); The Far Bank tried
+  the other way round (30 October: the shipped track as its map half, a new battle half on it,
+  both pairs on the page, his to pick); all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
   the track, the 3 s flip) and each picked half into the forge's SHIP table.
 
 ## Next, in order
@@ -374,7 +375,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   `claude/jolly-lovelace-scn82y` published at 411 with the minty GREEN preset and the lava kept,
   itself on this branch's v0.398 at 410, Hold The Line's round-seven picks and Night Shift's
   round-five calls merged onto `claude/charming-rubin-h954bp`'s v0.397 with the Armadillo's
-  vents opening and shutting a pair at a time). So this file
+  vents opening and shutting a pair at a time). The live page has moved on since (another
+  session's publish of 31 October, 00:12 UTC), so this branch's next publish merges onto it;
+  The Far Bank's other way round waits for Ryan's pick before it is a row. So this file
   carries rows ahead of this branch's code: main's since this branch last merged it (the
   horde's movement, the domains' tilesets, the pricing pass, Chain's form, the heat triangle),
   `claude/brave-cori-fr18de`'s (the pacing session: the whole wall struck, the stall priced, the
@@ -420,6 +423,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  seventh, `hold_sketches.py`; Night Shift's sixth, `night_sketches.py`), at the page's version 14.
+  seventh, `hold_sketches.py`; Night Shift's sixth, `night_sketches.py`; The Far Bank the other
+  way round, `far_sketches.py`), at the page's version 15.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
