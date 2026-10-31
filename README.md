@@ -112,7 +112,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the map tokens and the
   contact sheet from the grids in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/`
   generates enemy candidates with an image model and cuts one into `art/foes/` (the combat
-  sprites come from here, not the sheet); `recolour.py` writes a recolour's two sprites from its
+  sprites come from here, not the sheet); `placeholder_art.py` draws a rough placeholder, a
+  reminder stamped "?", for a foe with no picked render; `recolour.py` writes a recolour's two sprites from its
   base's by a hue shift (the ladder's palette swaps, its table the hues the three colourblind
   simulations chose); `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
@@ -436,6 +437,11 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 # Then the import. Runs anywhere with numpy and Pillow (the spriter venv has both).
 tools/spriter/.venv/bin/python tools/recolour.py goblin goblin_guard --hue 240 --light 0.8 --tint 0.45
 tools/spriter/.venv/bin/python tools/recolour.py --all
+
+# rough placeholder sprites, a reminder each, for the bosses and parts with no picked render (30
+# October): a few flat shapes at the cut's sizes, outlined, a yellow "?" in a corner; only the
+# foes with no art unless named or --force. Then the import. Pillow alone.
+python3 tools/placeholder_art.py
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall

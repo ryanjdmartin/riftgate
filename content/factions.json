@@ -1,5 +1,5 @@
 {
-  "_about": "The invasion's domains (decided 9 October; bible section 9). The other world is a JRPG world and the rift is where its overworld pushes into ours: a domain is one biome of the classic overworld, its bleed (the tileset the flattened ground paints, DomainGround's: plains, sand, marsh or lava), its wildlife with one tactical signature, and its hero. A rift rolls its domain when it opens, one lead and at most one guest. A pack on the battlefield is one composition on one hex: one sprite (its lead's), one badge (its count), its members listed on a tap (the foes' fresh start, 30 October). compositions are the packs the rift places and sends (the domain's shape on the map), each {id, size, tiers, members}: size is patrol (one or two front types, three to five foes, a detachment's fight), formation (a front and a back, six to sixteen by the tier, the body's fight and the unit the Fractures are counted in), elite (led by a foe flagged elite, the guaranteed curveball a Fracture spawns) or escort (a boss's hand-tailored escort at a tier; none written yet, so the tier's units stand in round robin); tiers lists the tiers (1 to 3) that may deal it, and a tier with none of a size takes the highest tier's under it (every domain needs a tier-one formation and patrol); members are {foe, strength} in order, the first the lead (its sprite and its behaviour; the pack's ring the largest of its members', its pace the slowest, winged only when every member is). The spawn lists by tier are derived (ContentDB.spawn_table: the tier's formations' then patrols' members, each foe once, first seen first) for the harness, the runners and a boss's escort; boss lists the domain's bosses, the slate's first (bible section 9: three a domain before its hero, each battle drawing one its domain has not ended on this run); a domain short of three keeps its old massive stand-in as the last until the slate fills it (30 October); bench names the heroes the campaign's start may deal to this domain, one per campaign, the domain's final (the party, bible section 9: the hero stands in its rank with the domain's wildlife in the other columns). A domain names no map shape: a battle draws its shape by its seed (Ryan, 30 October: \"I don't see why the domain should be related to the map type in any way\"). Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the domain does), answer (how the player beats it, in the engine's own vocabulary). Numbers are placeholders.",
+  "_about": "The invasion's domains (decided 9 October; bible section 9). The other world is a JRPG world and the rift is where its overworld pushes into ours: a domain is one biome of the classic overworld, its bleed (the tileset the flattened ground paints, DomainGround's: plains, sand, marsh or lava), its wildlife with one tactical signature, and its hero. A rift rolls its domain when it opens, one lead and at most one guest. A pack on the battlefield is one composition on one hex: one sprite (its lead's), one badge (its count), its members listed on a tap (the foes' fresh start, 30 October). compositions are the packs the rift places and sends (the domain's shape on the map), each {id, size, tiers, members}: size is patrol (one or two front types, three to five foes, a detachment's fight), formation (a front and a back, six to sixteen by the tier, the body's fight and the unit the Fractures are counted in), elite (led by a foe flagged elite, the guaranteed curveball a Fracture spawns) or escort (a boss's hand-tailored escort at a tier, the tier's units standing in round robin where none is written; one may name its boss, the boss's own coming first: the King Gel's Gels, which its merge takes in, 30 October); tiers lists the tiers (1 to 3) that may deal it, and a tier with none of a size takes the highest tier's under it (every domain needs a tier-one formation and patrol); members are {foe, strength} in order, the first the lead (its sprite and its behaviour; the pack's ring the largest of its members', its pace the slowest, winged only when every member is). The spawn lists by tier are derived (ContentDB.spawn_table: the tier's formations' then patrols' members, each foe once, first seen first) for the harness, the runners and a boss's escort; boss lists the domain's three bosses (bible section 9: three a domain before its hero, each battle drawing one its domain has not ended on this run; the slate's twelve, 30 October, the old massive stand-ins gone to the rank and file and the Bone Wyvern to the elites); bench names the heroes the campaign's start may deal to this domain, one per campaign, the domain's final (the party, bible section 9: the hero stands in its rank with the domain's wildlife in the other columns). A domain names no map shape: a battle draws its shape by its seed (Ryan, 30 October: \"I don't see why the domain should be related to the map type in any way\"). Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the domain does), answer (how the player beats it, in the engine's own vocabulary). Numbers are placeholders.",
   "entries": [
     {
       "id": "meadow",
@@ -35,9 +35,19 @@
         { "id": "elder_treants_grove", "size": "elite", "tiers": [2, 3],
           "members": [ { "foe": "elder_treant", "strength": 1 }, { "foe": "mandragora", "strength": 2 } ] },
         { "id": "leshys_hunt", "size": "elite", "tiers": [2, 3],
-          "members": [ { "foe": "leshy", "strength": 1 }, { "foe": "wolf", "strength": 3 } ] }
+          "members": [ { "foe": "leshy", "strength": 1 }, { "foe": "wolf", "strength": 3 } ] },
+        { "id": "treant_grove", "size": "formation", "tiers": [1],
+          "members": [ { "foe": "treant", "strength": 1 }, { "foe": "goblin", "strength": 4 }, { "foe": "mandragora", "strength": 2 } ] },
+        { "id": "treant_march", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "treant", "strength": 1 }, { "foe": "goblin_guard", "strength": 3 }, { "foe": "mandrake", "strength": 2 } ] },
+        { "id": "king_gels_court", "size": "escort", "boss": "king_gel", "tiers": [1],
+          "members": [ { "foe": "gel", "strength": 3 } ] },
+        { "id": "king_gels_court_2", "size": "escort", "boss": "king_gel", "tiers": [2],
+          "members": [ { "foe": "gel", "strength": 3 }, { "foe": "bubble_gel", "strength": 2 } ] },
+        { "id": "king_gels_court_3", "size": "escort", "boss": "king_gel", "tiers": [3],
+          "members": [ { "foe": "bubble_gel", "strength": 3 }, { "foe": "metal_gel", "strength": 2 }, { "foe": "gel", "strength": 2 } ] }
       ],
-      "boss": ["rotbloom", "bourgeon", "treant"],
+      "boss": ["rotbloom", "bourgeon", "king_gel"],
       "bench": ["warrior", "martial_artist"],
       "flavour": "Gate order one: if it is green and it is coming at you, it is not grass."
     },
@@ -69,9 +79,13 @@
         { "id": "great_scouts", "size": "patrol", "tiers": [3],
           "members": [ { "foe": "great_needler", "strength": 3 }, { "foe": "barbed_needler", "strength": 2 } ] },
         { "id": "old_mans_rising", "size": "elite", "tiers": [1, 2, 3],
-          "members": [ { "foe": "old_man_of_the_desert", "strength": 1 }, { "foe": "needler", "strength": 4 } ] }
+          "members": [ { "foe": "old_man_of_the_desert", "strength": 1 }, { "foe": "needler", "strength": 4 } ] },
+        { "id": "sandworm_ambush", "size": "formation", "tiers": [1],
+          "members": [ { "foe": "sandworm", "strength": 1 }, { "foe": "needler", "strength": 4 }, { "foe": "cockatrice", "strength": 1 } ] },
+        { "id": "sandworm_pit", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "sandworm", "strength": 1 }, { "foe": "barbed_needler", "strength": 3 }, { "foe": "basilisk", "strength": 2 } ] }
       ],
-      "boss": ["gilgamesh", "fallen_weapon", "sandworm"],
+      "boss": ["gilgamesh", "fallen_weapon", "pilgrim"],
       "bench": ["thief", "lancer"],
       "flavour": "Field manual, appendix K: the cactus has never been seen to move. Do not take your eyes off the cactus."
     },
@@ -103,9 +117,11 @@
         { "id": "wraith_choir", "size": "formation", "tiers": [3],
           "members": [ { "foe": "wraith", "strength": 3 }, { "foe": "spectre", "strength": 3 }, { "foe": "wight", "strength": 4 }, { "foe": "death_knight", "strength": 2 } ] },
         { "id": "the_reaper", "size": "elite", "tiers": [1, 2, 3],
-          "members": [ { "foe": "reaper", "strength": 1 } ] }
+          "members": [ { "foe": "reaper", "strength": 1 } ] },
+        { "id": "bone_wyverns_flight", "size": "elite", "tiers": [2, 3],
+          "members": [ { "foe": "bone_dragon", "strength": 1 }, { "foe": "revenant", "strength": 3 } ] }
       ],
-      "boss": ["matador", "bone_dragon"],
+      "boss": ["matador", "phantom_train", "vampire_lord"],
       "bench": ["white_mage", "augur"],
       "flavour": "Gate order four: nothing that has died passes the wall. Nothing."
     },
@@ -137,9 +153,13 @@
         { "id": "balloon_storm", "size": "formation", "tiers": [3],
           "members": [ { "foe": "balloon", "strength": 4 }, { "foe": "grenade", "strength": 3 }, { "foe": "wyvern", "strength": 2 }, { "foe": "magma_lizard", "strength": 2 }, { "foe": "red_dragon", "strength": 1 } ] },
         { "id": "balloon_flight", "size": "patrol", "tiers": [3],
-          "members": [ { "foe": "balloon", "strength": 3 }, { "foe": "grenade", "strength": 2 } ] }
+          "members": [ { "foe": "balloon", "strength": 3 }, { "foe": "grenade", "strength": 2 } ] },
+        { "id": "magma_vent", "size": "formation", "tiers": [1],
+          "members": [ { "foe": "magma_golem", "strength": 1 }, { "foe": "salamander", "strength": 3 }, { "foe": "bomb", "strength": 2 } ] },
+        { "id": "magma_forge", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "magma_golem", "strength": 1 }, { "foe": "fire_lizard", "strength": 3 }, { "foe": "grenade", "strength": 2 } ] }
       ],
-      "boss": ["behemoth", "cinder_tortoise", "magma_golem"],
+      "boss": ["behemoth", "cinder_tortoise", "obsidian_tyrant"],
       "bench": ["black_mage", "summoner"],
       "flavour": "Recruitment poster: THEY BROUGHT FIRE. WE BROUGHT BIGGER FIRE."
     }

@@ -439,6 +439,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"joined_fallen": _int_keys(sk.joined_fallen),
 		"joined_fallen_types": _typed_tallies(sk.joined_fallen_types),
 		"came_with": _typed_tallies(sk.came_with),
+		"team_kills": sk.team_kills,
 	}
 
 
@@ -547,6 +548,7 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 		sk.joined_fallen[int(str(pid))] = int(joined[pid])
 	sk.joined_fallen_types = _typed_tallies_from(d.get("joined_fallen_types", {}))
 	sk.came_with = _typed_tallies_from(d.get("came_with", {}))
+	sk.team_kills = int(d.get("team_kills", 0))   # the foes the team has killed this fight (30 October)
 	return sk
 
 
@@ -586,7 +588,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"boss": f.boss, "hero": f.hero, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down, "joined": f.joined, "fresh": f.fresh,
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
-		"next_move": f.next_move, "held": f.held,
+		"next_move": f.next_move, "held": f.held, "grudge": f.grudge, "spent_once": f.spent_once,
 	}
 
 
@@ -638,6 +640,8 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.regrow_parts = int(d.get("regrow_parts", 0))
 	f.regrow_due = Array(d.get("regrow_due", [])).map(func(x): return [str(x[0]), int(x[1])])
 	f.next_move = str(d.get("next_move", ""))   # a follow-up it announces next round (30 October)
+	f.grudge = int(d.get("grudge", 0))   # the team's kills its grudge reads (30 October)
+	f.spent_once = Array(d.get("spent_once", [])).map(func(x): return str(x))   # its moves used once a fight (30 October)
 	var hd = d.get("held", {})   # what a steal took (30 October)
 	if hd is Dictionary and not hd.is_empty():
 		f.held = {"name": str(hd.get("name", "")), "power": int(hd.get("power", 0)), "fake": bool(hd.get("fake", false))}

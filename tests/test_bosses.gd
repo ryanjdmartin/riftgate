@@ -259,21 +259,36 @@ func test_a_save_keeps_a_follow_up_a_held_piece_and_a_swallow() -> void:
 	assert_true(Skirmish.is_swallowed(copy.mechs[1]), "and a swallowed machine")
 
 
-## The content: the slate's bosses are whole, by their structure (30 October).
+## The content: the slate's bosses are whole, by their structure (30 October): three a domain,
+## each with three moves, and the massive foes that stood in for them in the rank and file.
 func test_the_slates_bosses_are_whole_in_content() -> void:
 	var db := ContentDB.load_default()
 	assert_true(db.validate().is_empty(), "the content validates")
 	var bosses := 0
 	for fid in db.factions.keys():
 		var list := db.bosses_of(str(fid))
-		assert_true(list.size() >= 2, "%s fields two bosses at least while the slate fills" % fid)
+		assert_eq(list.size(), 3, "%s fields three bosses of its own" % fid)
 		for b in list:
 			bosses += 1
+			assert_false(bool(db.foes[b].get("elite", false)), "%s is no elite" % b)
 			var acts: Array = db.foes[b].get("actions", []).filter(func(a): return str(a.get("status", "")) == "implemented")
 			assert_eq(acts.size(), 3, "%s carries three moves" % b)
 			var opens := acts.any(func(a): return a.has("when")) or not Foe.follow_ups(acts).is_empty()
 			assert_true(opens, "%s's third opens on a condition or follows another" % b)
-	assert_true(bosses >= 11, "the slate's seven beside the four stand-ins")
+	assert_eq(bosses, 12, "the slate's twelve")
+	# A massive foe that is no boss, no elite, no hero and no part stands in a domain's ranks.
+	var parts: Array = []
+	for id in db.foes.keys():
+		parts.append_array(Array(db.foes[id].get("parts", [])))
+	for id in db.foes.keys():
+		var f: Dictionary = db.foes[id]
+		if int(f.get("size", 1)) < 2 or db.is_boss(str(id)) or db.is_elite(str(id)) or bool(f.get("hero", false)) or f.has("promotes") or parts.has(id):
+			continue
+		var ranked := false
+		for c in db.factions.get(str(f.get("faction", "")), {}).get("compositions", []):
+			if ["formation", "patrol"].has(str(c.get("size", ""))) and Array(c.get("members", [])).any(func(m): return str(m.get("foe", "")) == str(id)):
+				ranked = true
+		assert_true(ranked, "%s, massive rank and file, stands in its domain's ranks" % id)
 	for id in db.foes.keys():
 		for a in db.foes[id].get("actions", []):
 			if a.has("then"):
@@ -374,3 +389,263 @@ func test_the_codex_says_a_follow_up_pair_and_a_borrowed_swing() -> void:
 	g.held = {"name": "gun", "power": 6, "fake": false}
 	lines = EntryReadout.move_lines(g, g.actions[1], db, true)
 	assert_false(str(lines[1].get("parts", [{}])[0].get("text", "")) == "Attack: what it took", "held, the intent shows the number")
+
+
+
+# ---------------------------------------------------------------- the slate's last five (30 October)
+
+## Gels for a merge, their kind named as content names a foe.
+func _gels(n: int, hp: int = 5) -> Array:
+	var out: Array = []
+	for i in range(n):
+		var g := Foe.make("gel", hp, 2)
+		g.content_id = "gel"
+		out.append(g)
+	return out
+
+
+## A king that takes its Gels in.
+func _king() -> Foe:
+	var k := Foe.make("king", 90, 6)
+	k.content_id = "king"
+	k.actions = [_move("slam"), {"id": "merge", "name": "Merge", "kind": "buff", "effect": "merge", "foe": ["gel"], "value": 1, "weight": 1, "text": ""}]
+	return k
+
+
+func test_a_merge_takes_its_kinds_in_and_regrows_what_they_had() -> void:
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("A", Die.single(Face.blank())))
+	var k := _king()
+	k.hp = 40
+	var gels := _gels(3)
+	gels[0].hp = 3
+	sk.add_foes([k] + gels)
+	sk.begin()
+	sk.start_round()
+	k.action = k.actions[1]
+	k.last_special = "merge"
+	sk.end_round()
+	assert_eq(k.hp, 40 + 3 + 5 + 5, "it regrows the HP they had left")
+	for g in gels:
+		assert_false(sk.field_foes().has(g), "each Gel is gone from the field")
+	assert_eq(sk.team_kills, 0, "and none is a kill of the team's")
+	assert_eq(k.damage_of(k.actions[0]), 6 + 3, "its next move hits a point harder for each")
+	assert_true("\n".join(sk.log).contains("3 taken in"), "the log says how many")
+
+
+func test_a_merge_with_nothing_to_take_in_is_never_drawn() -> void:
+	var lone := Skirmish.new(1, 4)
+	lone.add_mech(_mech("A", Die.single(Face.blank())))
+	var k := _king()
+	lone.add_foes([k])
+	lone.begin()
+	var ids: Array = lone.legal_actions(k).map(func(x): return str(x.get("id", "")))
+	assert_false(ids.has("merge"), "no Gel stands: no merge")
+	var court := Skirmish.new(1, 4)
+	court.add_mech(_mech("A", Die.single(Face.blank())))
+	var k2 := _king()
+	court.add_foes([k2] + _gels(1))
+	court.begin()
+	ids = court.legal_actions(k2).map(func(x): return str(x.get("id", "")))
+	assert_true(ids.has("merge"), "a Gel stands: the merge may come")
+
+
+## A drain regrows what the blow took from the hull, so the shield starves it.
+func test_a_drain_regrows_what_the_blow_took_from_the_hull_and_no_more() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.blank()), 4, 500)
+	var b := _mech("B", Die.single(Face.blank()), 0, 3)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var v := Foe.make("lord", 40, 10)
+	v.hp = 10
+	v.actions = [_move("drain", {"keywords": ["drain"]})]
+	v.action = v.actions[0]
+	sk.add_foes([v])
+	sk.begin()
+	sk.start_round()
+	v.action = v.actions[0]
+	v.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(a.shield, 0, "the shield takes four")
+	assert_eq(a.hull, 494, "the hull six")
+	assert_eq(v.hp, 16, "it regrows the six it took from the hull, the shield's four none")
+	sk.start_round()
+	v.action = v.actions[0]
+	v.target = sk.mechs[1]
+	sk.end_round()
+	assert_eq(v.hp, 19, "a machine with three hull left gives three")
+
+
+## A Barrier's blow deals nothing, so it drains nothing; a Ward turns no drain away, since it lays
+## nothing on the machine.
+func test_a_barrier_drains_nothing_and_a_ward_turns_no_drain_away() -> void:
+	var sk := Skirmish.new(1, 3)
+	var u := _mech("A", Die.single(Face.blank()))
+	sk.add_mech(u)
+	var v := Foe.make("lord", 40, 10)
+	v.hp = 10
+	v.actions = [{"id": "drain", "name": "Drain", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["drain"], "text": ""}]
+	v.action = v.actions[0]
+	sk.add_foes([v])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_buff(u, "barrier", 1, "test", sk.round)
+	Effects.grant_buff(u, "ward", 1, "test", sk.round)
+	v.action = v.actions[0]
+	v.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(v.hp, 10, "a blow the Barrier takes drains nothing")
+	sk.start_round()
+	Effects.grant_buff(u, "ward", 1, "test", sk.round)
+	v.action = v.actions[0]
+	v.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(v.hp, 20, "and a Ward turns no drain away")
+
+
+func test_a_grudge_grows_with_the_teams_kills_and_a_burst_is_none() -> void:
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("A", Die.single(Face.attack(50, I))))
+	var p := Foe.make("pilgrim", 900, 6)
+	p.actions = [_move("karma", {"per_kill": 1, "keywords": ["breach"]})]
+	p.action = p.actions[0]
+	var fodder := Foe.make("revenant", 3, 1)
+	var bomb := Foe.make("bomb", 900, 1)
+	bomb.actions = [_move("burst", {"keywords": ["self_destruct"]})]
+	bomb.action = bomb.actions[0]
+	sk.add_foes([p, fodder, bomb])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.foe_blow(p), 6, "no kills: its own number")
+	assert_true(sk.assign(0, fodder), "the team kills one")
+	assert_eq(sk.team_kills, 1, "the fight counts it")
+	assert_eq(sk.foe_blow(p), 7, "a point heavier, shown at once")
+	bomb.action = bomb.actions[0]
+	bomb.target = sk.mechs[0]
+	sk.end_round()
+	assert_false(bomb.alive(), "the bomb bursts")
+	assert_eq(sk.team_kills, 1, "and a burst is no kill of the team's")
+
+
+func test_a_move_may_open_once_a_part_has_fallen() -> void:
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("A", Die.single(Face.attack(50, I))))
+	var core := Foe.make("tyrant", 900, 8)
+	core.content_id = "tyrant"
+	core.part_ids = ["rider"]
+	core.guard = "all"
+	core.actions = [_move("crunch"), _move("firestorm", {"countdown": 5, "keywords": ["all"], "when": ["part_fallen"]})]
+	var rider := Foe.make("rider", 10, 3, true)
+	rider.content_id = "rider"
+	sk.add_foes([core, rider])
+	sk.begin()
+	assert_eq(sk.parts_down(core), 0, "its rider stands")
+	var ids: Array = sk.legal_actions(core).map(func(x): return str(x.get("id", "")))
+	assert_false(ids.has("firestorm"), "and the firestorm waits")
+	sk.start_round()
+	assert_true(sk.assign(0, rider), "the rider falls")
+	assert_eq(sk.parts_down(core), 1, "a part is down")
+	ids = sk.legal_actions(core).map(func(x): return str(x.get("id", "")))
+	assert_true(ids.has("firestorm"), "the firestorm opens")
+
+
+func test_a_move_marked_once_is_used_once_a_fight() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.blank())))
+	var v := Foe.make("lord", 40, 6)
+	v.actions = [_move("bite"), {"id": "undying", "name": "Undying", "kind": "buff", "effect": "revive_once", "once": true, "weight": 1, "text": ""}]
+	sk.add_foes([v])
+	sk.begin()
+	var ids: Array = sk.legal_actions(v).map(func(x): return str(x.get("id", "")))
+	assert_true(ids.has("undying"), "it may ready itself")
+	sk.start_round()
+	v.action = v.actions[1]
+	v.last_special = "undying"
+	sk.end_round()
+	assert_true(Effects.has(v, "risen"), "it is readied")
+	v.last_special = ""
+	ids = sk.legal_actions(v).map(func(x): return str(x.get("id", "")))
+	assert_false(ids.has("undying"), "and never again this fight")
+
+
+func test_a_boss_takes_three_numbed_whatever_its_size() -> void:
+	var boss := Foe.make("boss", 50, 5)
+	boss.boss = true
+	var hero := Foe.make("hero", 20, 8)
+	hero.commands = true
+	var big := Foe.make("big", 30, 7)
+	big.size = 2
+	var grunt := Foe.make("grunt", 5, 2)
+	assert_eq(Skirmish.numbed_per_suppress(boss), 3, "a human-sized boss takes three")
+	assert_eq(Skirmish.numbed_per_suppress(hero), 3, "so does a final's hero, the boss of its battle")
+	assert_eq(Skirmish.numbed_per_suppress(big), 3, "a massive foe keeps its three")
+	assert_eq(Skirmish.numbed_per_suppress(grunt), 2, "the rest take two")
+
+
+func test_a_save_keeps_a_grudge_a_move_used_once_and_the_teams_kills() -> void:
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("A", Die.single(Face.attack(50, I))))
+	var p := Foe.make("pilgrim", 900, 6)
+	p.actions = [_move("karma", {"per_kill": 1}), {"id": "undying", "name": "Undying", "kind": "buff", "effect": "revive_once", "once": true, "weight": 1, "text": ""}]
+	var fodder := Foe.make("revenant", 3, 1)
+	sk.add_foes([p, fodder])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, fodder), "a kill")
+	p.action = p.actions[1]
+	p.last_special = "undying"
+	sk.end_round()
+	var copy: Skirmish = SaveGame.clone_skirmish(sk)
+	assert_eq(copy.team_kills, 1, "the team's kills survive a save")
+	var cp: Foe = copy.field_foes()[0]
+	assert_eq(cp.grudge, 1, "and the grudge")
+	assert_true(cp.spent_once.has("undying"), "and a move used once")
+
+
+## The content's side (30 October): an escort that names its boss is that boss's alone, and a
+## boss that merges finds its kinds in its own escort.
+func test_an_escort_that_names_its_boss_is_that_bosss_alone() -> void:
+	var db := ContentDB.load_default()
+	var found := false
+	for fid in db.factions.keys():
+		for c in db.factions[fid].get("compositions", []):
+			if str(c.get("size", "")) != "escort" or not c.has("boss"):
+				continue
+			found = true
+			var b := str(c["boss"])
+			var t := int(ContentDB.composition_tiers(c)[0])
+			var own := db.escort_composition(str(fid), t, b)
+			assert_eq(str(own.get("boss", "")), b, "%s's own escort at tier %d" % [b, t])
+			for other in db.bosses_of(str(fid)):
+				if other != b:
+					assert_ne(str(db.escort_composition(str(fid), t, other).get("boss", "")), b, "never %s's" % other)
+	assert_true(found, "an escort that names its boss is in content")
+	for id in db.foes.keys():
+		if not db.is_boss(str(id)):
+			continue
+		for a in db.foes[id].get("actions", []):
+			if str(a.get("effect", "")) != "merge":
+				continue
+			var esc := db.escort_composition(db.faction_of_foe(str(id)), 1, str(id))
+			var kinds := Foe.kinds_named(a)
+			assert_true(Array(esc.get("members", [])).any(func(m): return kinds.has(str(m[0]))), "%s's own escort brings what it merges" % id)
+
+
+func test_the_harness_fields_a_bosss_own_escort() -> void:
+	var db := ContentDB.load_default()
+	var boss_id := ""
+	for fid in db.factions.keys():
+		for c in db.factions[fid].get("compositions", []):
+			if str(c.get("size", "")) == "escort" and c.has("boss") and ContentDB.composition_tiers(c).has(1):
+				boss_id = str(c["boss"])
+	assert_ne(boss_id, "", "a boss with its own tier-one escort is in content")
+	var s := HarnessSetup.defaults(db)
+	s.packs = []
+	s.boss = boss_id
+	var sk := s.make_skirmish()
+	var esc := db.escort_composition(db.faction_of_foe(boss_id), 1, boss_id)
+	var want := 1
+	for m in esc["members"]:
+		want += int(m[1])
+	assert_eq(sk.field_foes().size() + sk.reinforcements.size(), want, "the boss and its own escort")

@@ -293,7 +293,7 @@
    "id": "suppress",
    "category": "keyword",
    "name": "Suppress",
-   "codex": "Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off at 10% a Numbed stack; no foe resists by nature.",
+   "codex": "Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three on a boss or a massive foe). A foe may shrug it off at 10% a Numbed stack; no foe resists by nature.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -340,7 +340,7 @@
     "table": {
      "kind": "buff",
      "on": "foe",
-     "stacks": "Yes: two a landed suppress, three on a massive foe",
+     "stacks": "Yes: two a landed suppress, three on a boss or a massive foe",
      "lasts": "A stack fades at each of its turns"
     }
    }
@@ -443,6 +443,16 @@
    }
   },
   {
+   "id": "drain",
+   "category": "keyword",
+   "name": "Drain",
+   "codex": "Enemy keyword. The foe regrows what the blow took from the hull, no more than the machine had, so a shield starves it. It lays nothing on the machine, so no Ward turns it away; a Barrier's blow deals nothing to drain, and Burning on the foe takes back what it heals.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Vampire Lord's (30 October), its bite and, below half, a drain at every machine. The genre's word (Drain), and the soft counter section 2 asks for: burn never stops healing. The hull alone, so the shield answers it: a drain of shield and hull walled the slowest trio at every HP tried, the shield, its answer to every blow, doing nothing against the heal."
+   }
+  },
+  {
    "id": "corrupt",
    "category": "keyword",
    "name": "Corrupt",
@@ -470,6 +480,16 @@
    "status": "implemented",
    "design": {
     "holes": "Floraison's (30 October). Nothing frees the machine early but the swallower's fall; the rounds, 1 to 3, are the move's, and no damage lands on the machine while it is held."
+   }
+  },
+  {
+   "id": "merge",
+   "category": "foe",
+   "name": "Merge",
+   "codex": "Foe move of its own. Every other foe on the field of the kinds it names is taken into it, gone without falling: it regrows the HP they had left, and its next move hits harder for each one. Thin them first; a Suppress or a Disrupt stops it, as any move.",
+   "status": "implemented",
+   "design": {
+    "holes": "The King Gel's (30 October): every Gel, Bubble Gel, Metal Gel and half on the field. Content: effect merge, foe (an id or a list), value (the lift a foe taken in). A foe taken in leaves no last act and no split and is no kill of the team's; its pack's tally still counts it gone. It needs its kinds beside it, so the King Gel's escort is its own (an escort that names its boss)."
    }
   },
   {
@@ -1601,7 +1621,7 @@
    "codex": "A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after.",
    "status": "implemented",
    "design": {
-    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. No foe carries it yet."
+    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Behemoth's Meteor (30 October)."
    }
   },
   {
@@ -1611,7 +1631,7 @@
    "codex": "A foe in parts: a core and the parts that stand with it. While its parts stand (all of them, or any, by the foe) the core is Guarded and takes no damage; a fallen part may grow back after a few rounds; when the core falls, its parts fall with it. Choose what to focus: a part to open the core, or the core to end them all.",
    "status": "implemented",
    "design": {
-    "holes": "Content: parts (foe ids), guard (all or any), regrow_parts (rounds). Parts are found by pack and type, one deep, and deploy by the ordinary rules, so beside the core is likely but not placed. No foe carries it yet."
+    "holes": "Content: parts (foe ids), guard (all or any), regrow_parts (rounds). Parts are found by pack and type, one deep, and deploy by the ordinary rules, so beside the core is likely but not placed. The Fallen Weapon's two eyes and the Obsidian Tyrant's rider (30 October); a move may open once a part has fallen (part_fallen)."
    }
   },
   {
@@ -1632,6 +1652,16 @@
    "status": "implemented",
    "design": {
     "holes": "Content: then, on the first move, naming the second (30 October). One deep: a follow-up names none of its own and comes only after the move that names it, never by the roll. A borrowed swing with nothing taken is no follow-up, and the roll decides."
+   }
+  },
+  {
+   "id": "grudge",
+   "category": "foe",
+   "name": "Grudge",
+   "codex": "A blow that grows with the fight: a point heavier for every foe the team has killed this fight, its intent showing the number as it stands. Kill order answers it: the grudge-bearer first, the rest after.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Pilgrim's Karma (30 October), the Tonberry's Everyone's Grudge under a name of ours. Content: per_kill on an attack, the points a kill. Every fall counts but a foe that went whole (a burst, a part falling with its core) and one taken in by a merge."
    }
   },
   {

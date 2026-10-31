@@ -318,12 +318,14 @@ func make_foe(foe_id: String) -> Foe:
 				act["countdown"] = int(a["countdown"])
 			if a.has("power"):
 				act["power"] = str(a["power"])   # a borrowed swing: the number of what a steal took (30 October)
+			if a.has("per_kill"):
+				act["per_kill"] = int(a["per_kill"])   # a point a foe the team has killed this fight (the Pilgrim's Karma, 30 October)
 		else:
 			# A defend, buff or debuff: its effect and the fields it reads (Foe.ACTION_EFFECTS).
 			act = {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
 				"value": int(a.get("value", 0)), "weight": int(a.get("weight", 1)), "text": str(a.get("text", ""))}
 			if a.has("foe"):
-				act["foe"] = str(a["foe"])
+				act["foe"] = Foe.kinds_named(a) if a["foe"] is Array else str(a["foe"])   # a merge names a list of kinds
 			if a.has("count"):
 				act["count"] = int(a["count"])
 		# The move's own sense and condition (2 October), when it has them.
@@ -333,6 +335,8 @@ func make_foe(foe_id: String) -> Foe:
 			act["when"] = Foe.whens_of(a)
 		if a.has("then"):
 			act["then"] = str(a["then"])   # the follow-up it announces next round (30 October)
+		if bool(a.get("once", false)):
+			act["once"] = true   # a special used once a fight (30 October)
 		acts.append(act)
 	# The first attack leads, so a foe's opening intent is its blow.
 	for i in range(acts.size()):
@@ -817,7 +821,7 @@ func _compositions_at(faction_id: String, tier: int, size: String) -> Array:
 				members.append([str(m["foe"]), maxi(1, int(m.get("strength", 1)))])
 		if members.is_empty():
 			continue
-		out.append({"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members})
+		out.append({"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "boss": str(c.get("boss", ""))})
 	return out
 
 
@@ -837,10 +841,17 @@ func elite_compositions(faction_id: String, tier: int) -> Array:
 
 
 ## A boss's hand-tailored escort at a tier (an `escort` composition), or empty: the tier's units
-## stand in round robin (escort_units).
-func escort_composition(faction_id: String, tier: int) -> Dictionary:
+## stand in round robin (escort_units). An escort may name its `boss` (30 October: the King Gel's
+## Gels, which its merge takes in); the boss's own comes first, then one that names none.
+func escort_composition(faction_id: String, tier: int, boss_id: String = "") -> Dictionary:
 	var found := compositions(faction_id, tier, "escort")
-	return found[0] if not found.is_empty() else {}
+	for c in found:
+		if not boss_id.is_empty() and str(c.get("boss", "")) == boss_id:
+			return c
+	for c in found:
+		if str(c.get("boss", "")).is_empty():
+			return c
+	return {}
 
 
 ## Whether a foe leads an elite composition (content `elite`): a mini-boss event a Fracture
@@ -1732,6 +1743,15 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: unknown condition '%s' (moves know %s)" % [aw, str(w), ", ".join(Foe.WHENS)])
 		if a.has("swarm") and (str(a.get("kind", "")) != "attack" or int(a["swarm"]) < 0):
 			errs.append("%s: swarm is an attack's, so much more per kin on the field, never negative" % aw)
+		# A special used once a fight (30 October: the Vampire Lord readies its rise once).
+		if a.has("once") and (not (a["once"] is bool) or str(a.get("kind", "attack")) == "attack"):
+			errs.append("%s: once is a special's, true or left out" % aw)
+		# A grudge (30 October): an attack a point heavier for every foe the team has killed this fight.
+		if a.has("per_kill") and (str(a.get("kind", "attack")) != "attack" or int(a["per_kill"]) < 1):
+			errs.append("%s: per_kill is an attack's, its number a foe the team has killed this fight: 1 or more" % aw)
+		# A condition reading a fallen part (30 October) means something only on a core with parts.
+		if Foe.whens_of(a).has("part_fallen") and (f.get("parts", []) as Array).is_empty():
+			errs.append("%s: part_fallen reads its parts, and this foe has none" % aw)
 		# A follow-up (30 October): `then` names another move of the same foe, which comes only the
 		# round after this one lands; one deep, so the move it names names none of its own.
 		if a.has("then"):
@@ -1782,6 +1802,17 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 							errs.append("%s: a cleanse's condition, if any, is ally_marked, got '%s'" % [aw, str(w)])
 				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
 					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
+				# A merge (30 October) names the kinds it takes in, one id or a list, and the lift a
+				# kind gives its next move.
+				if effect == "merge":
+					var kinds := Foe.kinds_named(a)
+					if kinds.is_empty():
+						errs.append("%s: a merge names the kinds it takes in: foe, an id or a list" % aw)
+					for k in kinds:
+						if not foes.has(str(k)):
+							errs.append("%s: merge names unknown foe '%s'" % [aw, str(k)])
+					if int(a.get("value", 0)) < 1:
+						errs.append("%s: a merge says how much harder its next move hits a foe taken in: value, 1 or more" % aw)
 				# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
 				# October, so its value is its stacks: a positive number.
 				if effect == "brace" or effect == "brace_all":
@@ -2020,6 +2051,14 @@ func _validate_factions(errs: Array[String]) -> void:
 				if size != "elite" and bool(foes[fid].get("elite", false)):
 					errs.append("%s: %s is an elite and stands only in an elite composition" % [cw, fid])
 				first = false
+			if c.has("boss"):
+				# An escort written for one boss (30 October); no other composition names one.
+				var named_boss := str(c["boss"])
+				var listed: Array = f.get("boss", []) if f.get("boss", []) is Array else [f.get("boss", "")]
+				if size != "escort":
+					errs.append("%s: only an escort names its boss" % cw)
+				elif not listed.has(named_boss):
+					errs.append("%s: boss '%s' is none of this domain's bosses" % [cw, named_boss])
 			if tier_one.has(size) and composition_tiers(c).has(1):
 				tier_one[size] = true
 		for size in ["formation", "patrol"]:

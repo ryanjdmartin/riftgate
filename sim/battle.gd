@@ -212,7 +212,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 				boss.foe_id = str(escort[0])
 			boss.strength = maxi(0, int(escort[1]))
 		boss.boss_tier = tier
-		var tailored := db.escort_composition(faction, tier + 1)
+		var tailored := db.escort_composition(faction, tier + 1, boss_id)
 		if escort.size() < 2 and not tailored.is_empty():
 			# A hand-tailored escort written in content (an `escort` composition at the tier):
 			# its members at the ramp's density, in place of the tier's units round robin.

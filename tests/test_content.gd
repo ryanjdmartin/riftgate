@@ -140,10 +140,10 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "marsh")
 	var only := db.foes_for(boss)
 	assert_eq(only.size(), 1, "a boss unpacks to just its boss")
-	assert_eq(only[0].display_name, str(db.foes[str(db.factions["marsh"]["boss"])]["name"]), "the Marsh's boss, whatever the content names it")
+	assert_eq(only[0].display_name, str(db.foes[db.bosses_of("marsh")[0]]["name"]), "the Marsh's first boss, whatever the content names it")
 	assert_true(only[0].boss, "and the content marks it the boss")
 	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "peak"))
-	assert_eq(pit[0].display_name, str(db.foes[str(db.factions["peak"]["boss"])]["name"]), "the Peak's boss")
+	assert_eq(pit[0].display_name, str(db.foes[db.bosses_of("peak")[0]]["name"]), "the Peak's first boss")
 
 
 func test_spawn_table_lists_the_factions_units() -> void:
@@ -467,6 +467,11 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 	# human-sized boss validates and is the boss; a hero is a final, dealt from the bench.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
+	# An escort written for one boss names it (30 October); this test rewrites the boss lists, so
+	# its copy's escorts name none.
+	for fac in db.factions.values():
+		for c in fac.get("compositions", []):
+			c.erase("boss")
 	var fid := str(db.factions.keys()[0])
 	var small: Dictionary = db.foes[str(db.bosses_of(fid)[0])].duplicate(true)
 	small["size"] = 1
@@ -1523,9 +1528,22 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	assert_eq(g.damage(), int(db.foes["revenant"]["attack"]) + 3 * swarm, "four on the field hit for the blow and three kin's swarm each")
 	var entry := db.codex_for_foe(g)
 	assert_true(_moves_text(db, entry).contains("Attack %d (+%d a kin standing)" % [int(db.foes["revenant"]["attack"]), swarm]), "the codex says the swarm, at its own number with no kin: %s" % _moves_text(db, entry))
-	var maw := db.codex_for_foe(db.make_foe("sandworm"))
-	assert_true(_moves_text(db, maw).contains("When below half"), "the codex says a move's condition: %s" % _moves_text(db, maw))
-	assert_true(str(maw["stats"]).contains("ARM %d" % int(db.foes["sandworm"]["armour"])), "and the boss's armour")
+	# A move's condition and a foe's armour show in its codex, read off whichever armoured foe
+	# carries a condition (by structure, never an entry by id: the stand-ins moved to the ranks, 30 October).
+	var held_id := ""
+	var held_when := ""
+	for id in db.foes.keys():
+		if not held_id.is_empty() or int(db.foes[id].get("armour", 0)) <= 0:
+			continue
+		for a in db.foes[id].get("actions", []):
+			if held_id.is_empty() and a.has("when") and str(a.get("status", "")) == "implemented":
+				held_id = str(id)
+				held_when = str(Foe.whens_of(a)[0])
+	assert_ne(held_id, "", "an armoured foe with a condition is in content")
+	var maw := db.codex_for_foe(db.make_foe(held_id))
+	var said := str(Foe.WHEN_TEXT[held_when])
+	assert_true(_moves_text(db, maw).contains(said.substr(0, 1).to_upper() + said.substr(1)), "the codex says a move's condition: %s" % _moves_text(db, maw))
+	assert_true(str(maw["stats"]).contains("ARM %d" % int(db.foes[held_id]["armour"])), "and its armour")
 
 
 # The name plate shows the traits, not a silhouette word (Ryan, 2 October): maker, then

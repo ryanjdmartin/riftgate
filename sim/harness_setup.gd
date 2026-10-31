@@ -196,6 +196,11 @@ func make_skirmish() -> Skirmish:
 	if not boss.is_empty():
 		var b := Unit.boss(sid, str(db.foes[boss]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(boss))
 		b.lineup = [boss]   # the boss picked, whichever of its domain's (30 October: the slate lists several)
+		# Its own escort, where content writes one that names it (the King Gel's Gels, which its
+		# merge takes in), at the harness's tier one; a domain's other escorts are the packs' to pick.
+		var own := db.escort_composition(db.faction_of_foe(boss), 1, boss)
+		if str(own.get("boss", "")) == boss:
+			b.set_members(own["members"])
 		sk.add_foes(db.foes_for(b), b)
 	if sk.reinforcements.is_empty():
 		return null

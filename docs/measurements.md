@@ -3712,3 +3712,56 @@ stepped up; on the fixed one, every Gel split). Every matrix read until then, th
 200-seed run among them, read those cells so. Fixed the same day: a cell fields a core's parts
 and calls up splits, summons and regrown parts as a battle does. The Gel's, the summoners' and
 the boss in parts' cells are read again at the next 200-seed matrix.
+
+## 30 October, the slate's last five
+
+**The last five read alone, beside two of the first seven** (`tools/balance.gd`, 30 seeds, the
+greedy rung, each boss alone, its parts with it; a direction). The same rows as the first seven's
+read. Mean rounds of the fights won, the win rate where under 100%, and the row's hull lost (h,
+percent of the squad's):
+
+| As built | King Gel | Pilgrim | Phantom Train | Vampire Lord (40) | Obsidian Tyrant | Rotbloom | Matador |
+|---|---|---|---|---|---|---|---|
+| Default team | 4.2 h1 | 4.3 h9 | 4.7 h3 | 10.2 (86%) h24 | 5.2 h2 | 4.4 h3 | 4.8 h6 |
+| Minerva's trio | 8.9 h4 | 8.1 h18 | 11.3 h7 | 43.0 (3%) h49 | 9.5 h6 | 9.7 h17 | 11.2 h9 |
+| Kestrel's trio | 4.1 h2 | 4.1 h11 | 4.7 h4 | 8.6 h8 | 4.8 h2 | 4.2 h4 | 4.5 h6 |
+| Wainwright & Sutler's trio | 8.8 h3 | 8.2 h24 | 12.6 (96%) h21 | (0%) h74 | 10.7 h8 | 11.3 (83%) h49 | 10.7 h21 |
+| The stock four | 7.0 h0 | 7.1 h8 | 8.3 h0 | 19.3 h2 | 8.4 h1 | 8.0 h6 | 8.2 h1 |
+
+Read. The King Gel alone (no Gels to take in), the Pilgrim, the Phantom Train and the Obsidian
+Tyrant sit with the first seven, the default team 4 to 5 rounds; Rotbloom and the Matador read as
+they did that morning, so the stand-ins' move left them be. The Vampire Lord at 40 is a wall: its
+drain and a whole second life outrun the small blows, Minerva's trio winning 3% of its fights and
+Wainwright & Sutler's none. Traces (one fight each, the default team) showed every new mechanic
+firing in content: the Tyrant open and counting the moment its rider fell, the King Gel taking
+its Gels in, the Pilgrim's knife walking in, the Vampire Lord draining and rising once.
+
+**The Vampire Lord's drain, nine forms against the rows** (`tools/balance.gd`, 30 seeds, the
+greedy rung, alone; `--set` on the HP and on Blood Feast; a direction). The first five keep the
+drain as built that morning (it regrew what a blow dealt, shield and hull); the last four take
+it from the hull alone. Mean rounds of the fights won, the win rate where under 100%, and the
+fights past 60 rounds (st):
+
+| Form | Default team | Minerva's trio | Kestrel's trio | Wainwright & Sutler's trio | The stock four |
+|---|---|---|---|---|---|
+| Shield and hull, 40 HP | 10.2 (86%) | 43.0 (3%) st29 | 8.6 | (0%) st17 | 19.3 |
+| Shield and hull, 28 HP | 4.7 | 44.2 (36%) st19 | 4.8 | (0%) st17 | 12.3 |
+| Shield and hull, 28 HP, Blood Feast at 0.34 | 4.5 | 38.3 (80%) st6 | 4.7 | 49.0 (3%) st15 | 11.7 |
+| Shield and hull, 32 HP, Blood Feast no drain | 5.5 | 43.4 (73%) st8 | 5.5 | 43.7 (10%) st17 | 12.7 |
+| Shield and hull, 24 HP | 3.8 | 44.5 (60%) st12 | 3.0 | 30.7 (10%) st12 | 10.2 |
+| Hull alone, 40 HP | 4.8 | 14.5 | 4.6 | 14.4 | 9.6 |
+| Hull alone, 36 HP | 4.1 | 13.9 | 4.2 | 13.1 | 8.5 |
+| Hull alone, 32 HP | 3.7 | 11.2 | 3.4 | 10.5 | 7.3 |
+| Hull alone, 28 HP | 2.9 | 8.8 | 2.7 | 8.4 | 6.4 |
+
+Read. No HP fixed the drain of shield and hull: Wainwright & Sutler's trio won 0 to 10% at every
+size down to 24, stalling past 60 rounds, since every blow regrew the lord whether the shield took
+it or not, and a trio that deals less a round than it drinks never closes. From the hull alone,
+the shield starves it, and every row wins every fight at 40, the slow trios in 14 rounds (9 to 13
+against the rest of the slate), the hard-to-keep-down boss it was meant as. Landed: the hull alone,
+40 HP kept.
+
+**The two escorted bosses** (the same rows and rung; a direction): the King Gel with three Gels,
+so its merge has fuel, 6.0 rounds for the default team, 10.4 and 12.1 for the slow trios, 9.5 for
+the stock four, hull lost 1 to 11%; the Pilgrim with three Needlers, 5.6, 8.7, 10.3 and 7.7, hull
+lost 10 to 35%. Every row won every fight.

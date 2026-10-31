@@ -252,9 +252,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
   tier three, 30 to 40 massive, 12
-  to 24 heroes, the slate's bosses 48 at tier one (a core in parts 40, each part 8; under the
-  80 to 100 first written for them, on the kill-time test's read, for Ryan's word), the four
-  massive foes standing in as bosses 32 to 40; a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
+  to 24 heroes, the slate's bosses 48 at tier one (a core in parts 40, a part 8 to 12, a boss
+  that may rise once 40; the kill-time test's read, under the 80 to 100 first written for
+  them); a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
   and to 10 at tier three, a massive
   foe's 7 or 8, a hero's 4 to 10, the slate's bosses' 6 to 10; machine hull 20 to 50 by size (the
   Kite's paper hull 12, its row's one-off), shield 6 to 16, field recharge 4 to 8 (about half
@@ -552,7 +552,8 @@ On a foe:
   back up once, whole, in its own slot and at once, unless it self-destructed; its round is
   over, as a split's half's is, and it takes a mine its fall left there.
 - **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
-  chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
+  chance a suppress fails. A landed suppress adds two stacks (three on a boss of any size, a
+  final's hero and the finale's line among them, or on a massive foe); a
   shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
   at each of its turns. Nothing reads, deepens, spreads or cleanses it, and no foe resists by
   nature.
@@ -622,7 +623,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   the same special twice running while anything else is open. A move without a condition
   fires on its weight; the conditions read the foe's own side or what its move needs: below
   half, hurt, a foe behind it, another foe on the field, one
-  of its own hurt, a machine carrying a buff, one of its own not readied. A move may
+  of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
+  marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
+  comes once a fight. A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
   breaks it off, and the foe stays on the field. A move may name a follow-up: once it lands, the
@@ -630,7 +633,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   follow-up comes only that way, never by the roll, and a Suppress on the first move, or a
   Disrupt that turns it, means it never comes. A borrowed swing with nothing taken is no
   follow-up, and the roll decides. A swallow is never drawn while fewer than two machines stand
-  in the fight.
+  in the fight, nor a merge while nothing of its kinds stands on the field.
 - **Its target**, drawn as the round opens: at random, unless the foe or its move carries an
   aim, as its threat calls for: exposed (weighted by the hull its blows would reach
   plus half the shield they would break), heat (the hottest machine), armed (a machine
@@ -649,14 +652,18 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   aimed at it, and the preview shows where its blow lands after. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
-- **A blow** is its base attack, plus its Kindled and its swarm for each other live foe of its
-  type, times the move's factor: the adds, then the multiplies, the one damage formula on both
+- **A blow** is its base attack, plus its Kindled, its swarm for each other live foe of its
+  type and its grudge (its number for every foe the team has killed this fight, every fall but a
+  foe gone whole, a burst or a part falling with its core, and one taken in by a merge), times
+  the move's factor: the adds, then the multiplies, the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
-  two): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
+  three): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
   Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it), steal (the
   entry the machine shows switched off through its next turn, as a disable, and taken: its foe
   holds it until its borrowed swing, whose number is what it took, a weapon's printed blow, a
   rolled one at its middle, and anything that was no weapon a fake, for 1),
+  drain (the striker regrows what the blow took from the hull, no more than the machine had,
+  so a shield starves it; it lays nothing on the machine, so a Barrier's blow drains nothing),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, burn and corrupt each say their stacks a blow, as the player's Burn
@@ -677,7 +684,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   Barrier on itself), regenerate (Regenerating at its value on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed at its value on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
-  fight), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
+  fight), merge (every other foe on the field of the kinds it names taken into it, gone with no
+  fall, no last act, no split and no kill of the team's: it regrows the HP they had left, and
+  its next move hits its value harder for each), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
   content carries a silence, a purge or a ward all yet.
@@ -914,7 +923,8 @@ a stat.
   finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
   ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
   three. An escort it does not name (a final's wildlife, the tier's more) is its domain's `escort`
-  composition at the battle's tier when one is written (none is yet), its members at the
+  composition at the battle's tier when one is written, one that names the boss first and then
+  one that names none (the King Gel's court, its Gels, is the only one), its members at the
   ramp's density, else the foes of its domain's units at the tier, round robin in content
   order and never massive; a named escort is kept. The rank and file never scale in place: a tier's units are their own,
   each with its numbers and its name (a recolour: a base type in a new hue under a new name, with
@@ -954,8 +964,7 @@ a stat.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.
-- Not built: city defences (along the wall when they come), the Fracture's prize, rift tiles;
-  the escort compositions have no content yet, so every boss brings the tier's units.
+- Not built: city defences (along the wall when they come), the Fracture's prize, rift tiles.
 
 ## The campaign
 
@@ -1000,8 +1009,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   after.
 - **A rift's boss**: each battle brings one of its domain's bosses that its battles have not
   ended on this run, drawn by the seed; once every one has been, any of them. A domain's bosses
-  are the slate's it has, its old massive stand-in last while it has fewer than three (the
-  Meadow's, the Waste's and the Peak's three, the Marsh's two).
+  are three of the slate's own; the massive foes that stood in for them stand in its ranks, the
+  Bone Wyvern among the Marsh's elites.
 - **Anathema**: the menace of a domain's foes killed this run, every battle however it ended,
   is recorded by domain beside the count of its bosses beaten; the count still sets the final.
 - **Finals and finale**: three bosses of one domain beaten set its final: every rift it leads
