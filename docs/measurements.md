@@ -3765,3 +3765,25 @@ against the rest of the slate), the hard-to-keep-down boss it was meant as. Land
 so its merge has fuel, 6.0 rounds for the default team, 10.4 and 12.1 for the slow trios, 9.5 for
 the stock four, hull lost 1 to 11%; the Pilgrim with three Needlers, 5.6, 8.7, 10.3 and 7.7, hull
 lost 10 to 35%. Every row won every fight.
+
+**Three machines or four, against the slate** (31 October; `tools/balance.gd`, 20 seeds, the
+greedy rung, each boss alone, its parts with it; a direction). Ryan's question of 30 October:
+"the biggest power spike the player gets is probably going from 3 to 4 units, right?" The stock
+four (Honey Badger, Baboon, Armadillo, Prairie Dog, stock kits) against each of its trios, the
+same kit a machine short, over the twelve bosses at tier one:
+
+| Row | Won | Mean rounds of the fights won | Hull lost |
+|---|---|---|---|
+| The stock four | 100% | 8.6 (7.0 to 12.1) | 2.4% |
+| Less the Armadillo | 100% | 10.3 | 8.0% |
+| Less the Prairie Dog | 100% | 10.4 | 8.8% |
+| Less the Honey Badger | 92% | 14.9 | 17.7% |
+| Less the Baboon | 92% | 18.5 | 24.4% |
+
+Read. The fourth machine is the run's biggest step in wear: a trio loses three to ten times the
+hull the four loses on the same bosses, the halving of 13 October and more. In rounds the step
+is the machine's role: a fourth that deals damage cuts a fight by 40 to 55%, a support or a scout
+by about a sixth. The trios' losses fall on the trios short of a damage dealer: the Fallen Weapon,
+Rotbloom and the Phantom Train (45 to 90% won) and the Behemoth (95%). On the stock four the slate runs 7 to 12 rounds at 48 HP, long
+against the kill-time test's three to five and safe, the basics' damage the limiter; the default
+team (two tier-two machines) takes 4 to 5.
