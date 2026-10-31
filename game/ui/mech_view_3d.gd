@@ -360,6 +360,13 @@ func hold_forms(u: Unit) -> void:
 		rig.set_form(str(name), Effects.has(u, str(name)))
 
 
+## Show its machine's die on the model's indexed joints (the Cassowary's drum, a chamber a roll:
+## MechRig.show_entry): the entry showing, the die's size and its count of rolls.
+func show_die(entry: int, entries: int, rolls: int) -> void:
+	if rig != null and rig.show_entry(entry, entries, rolls) and is_inside_tree():
+		set_process(true)
+
+
 ## Wear the plan: each row hangs its class shape on its pin, or bares the socket.
 func _apply_plan() -> void:
 	wear(hardpoints, plan, mode, paint, token, hide_detail, model_id)
