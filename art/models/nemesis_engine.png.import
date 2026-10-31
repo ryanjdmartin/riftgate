@@ -8,7 +8,7 @@ metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "d46ca284a5187b6060dea5dbc8432e79"
+"md5": "2a60478cb380ce1b4c805d0ec4b7aca6"
 }
 
 [deps]
@@ -20,6 +20,7 @@ dest_files=["res://.godot/imported/nemesis_engine.png-c892a08ea6fb418d61c7e0f645
 
 compress/mode=0
 compress/high_quality=false
+compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
@@ -28,6 +29,8 @@ compress/normal_map=0
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
+mipmaps/preserve_alpha_test_coverage=false
+mipmaps/alpha_test_threshold=0.5
 roughness/mode=0
 roughness/src_normal=""
 process/channel_remap/red=0

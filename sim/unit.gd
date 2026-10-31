@@ -83,10 +83,20 @@ var foe_id: String = ""      # content id of the foe this pack is made of (a bos
 var strength: int = 6        # how many foes the pack holds (a boss: its escort, none for a boss alone)
 var lineup: Array = []       # a boss unit's commanders, foe ids in order (a final's hero, the finale's line); empty for the faction's boss
 var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders' numbers and its escort follow it (ContentDB.BOSS_TIERS)
+## The pack's members (the foes' fresh start, 30 October): [[foe_id, strength], ...] in content
+## order, the first the lead, whose sprite and behaviour the pack wears; `foe_id` is the lead's
+## and `strength` the count of every member, kept in step by set_members. Empty is the one-type
+## pack, `foe_id` times `strength` (a test's, the harness's, a save's from before). A boss unit's
+## members are its hand-tailored escort when one is written; empty, its escort is its `foe_id`
+## times its `strength`, or the tier's units.
+var members: Array = []
+var composition: String = ""       # the composition it emerged as (content's id), "" for a one-type pack
+var composition_size: String = ""  # its size: patrol, formation, elite or escort (ContentDB.COMPOSITION_SIZES); "" for a one-type pack
 var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
 var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')
+var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight, its ring inert; the Rupture breaks it
 var zone: int = 1            # the pack's ring: a pack whose ring covers a fight's target joins that fight, and a hunter catches a prey inside it (bible section 5)
 var attack_range: int = 2    # a machine's ring: it may join a fight whose target is within this many hexes (bible section 5)
 
@@ -154,6 +164,33 @@ static func defense(uid: int, name: String, at: Vector2i) -> Unit:
 	u.movespeed = 0
 	u.traits = ["defense"]
 	return u
+
+
+## Give the pack its members, the lead first: its foe type and its strength follow.
+func set_members(list: Array) -> void:
+	members = []
+	var total := 0
+	for m in list:
+		if m is Array and (m as Array).size() >= 2 and int(m[1]) > 0:
+			members.append([str(m[0]), int(m[1])])
+			total += int(m[1])
+	if not members.is_empty():
+		foe_id = str(members[0][0])
+	strength = total
+
+
+## The members as the engine reads them: the list, or the one-type pack as one member.
+func member_list() -> Array:
+	if not members.is_empty():
+		return members.duplicate(true)
+	return [[foe_id, strength]] if strength > 0 else []
+
+
+func member_ids() -> Array:
+	var out: Array = []
+	for m in member_list():
+		out.append(str(m[0]))
+	return out
 
 
 func is_player() -> bool:

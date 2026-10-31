@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/badger.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/badger.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "turret_l": {
    "axis": "yaw",
@@ -1545,5 +1545,10 @@
   "floodlight",
   "mount_light",
   "tread"
- ]
+ ],
+ "pins": {
+  "hp_1": "rivet_gun",
+  "hp_2": "",
+  "hp_3": ""
+ }
 }

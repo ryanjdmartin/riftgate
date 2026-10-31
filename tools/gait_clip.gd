@@ -39,7 +39,6 @@ func _init() -> void:
 	_prefix = args[2]
 	_total = int(ceil(float(args[3]) / _step))
 	_view = MechView3D.make(args[0], args[1], "clean", "", yaw, frame, false, {}, [])
-	_view.strip_silhouette()
 	root.add_child(_view)
 	_view.set_process(false)
 	if args.size() >= 7 and not args[6].is_empty() and args[6] != "-":
@@ -55,6 +54,7 @@ func _init() -> void:
 
 
 func _tick() -> void:
+	_view.set_process(false)   # its _ready, run with the first frame, turns processing back on: the clip steps the rig itself
 	_frames += 1
 	if _frames < 4:
 		return   # the first frames render before the view has framed itself

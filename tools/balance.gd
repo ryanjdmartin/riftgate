@@ -521,7 +521,14 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	else:
 		for n in range(int(p["strength"])):
 			foes.append(db.make_foe(p["foe"]))
-	sk.add_foes(foes)
+	# As in a battle (30 October: the runner fielded none of them): a core's parts stand with it,
+	# and a split, a summon and a regrown part call content up, so a Gel splits here as in play.
+	var fielded: Array = []
+	for f in foes:
+		fielded.append(f)
+		fielded.append_array(db.parts_for(f))
+	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
+	sk.add_foes(fielded)
 	sk.begin()
 	var pol := Policy.make(k, seed_value)
 	pol.withdraw_below = withdraw_below
@@ -579,7 +586,7 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
 		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {},
 		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0,
-		"plans": 0, "plan_changes": 0}
+		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0}
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -625,6 +632,8 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		agg["forgone"] += pol.forgone
 		agg["plans"] += pol.plans
 		agg["plan_changes"] += pol.plan_changes
+		agg["actions"] += pol.actions_bought
+		agg["banked"] += pol.banked
 		var end_heat := 0.0
 		for ms in sk.mechs:
 			end_heat += 100.0 * float(ms.heat) / float(maxi(1, ms.heat_max))
@@ -654,9 +663,9 @@ func _apply_edit(e: String) -> String:
 	var parsed := JSON.new()
 	if parsed.parse(e.substr(eq + 1)) != OK:
 		return "the value is not JSON"
-	var roots := {"components": db.components, "chassis": db.chassis, "modules": db.modules}
+	var roots := {"components": db.components, "chassis": db.chassis, "modules": db.modules, "foes": db.foes}
 	if path.size() < 3 or not roots.has(path[0]):
-		return "a path starts components/, chassis/ or modules/ and names a field"
+		return "a path starts components/, chassis/, modules/ or foes/ and names a field"
 	var node = roots[path[0]]
 	for k in range(1, path.size() - 1):
 		if node is Array and path[k].is_valid_int() and int(path[k]) < node.size():
@@ -763,10 +772,16 @@ func _report(fights: int, secs: float) -> String:
 		var total := 0
 		var rounds := 0
 		var rerolls := 0
+		var fought := 0
+		var actions := 0
+		var banked := 0
 		for p in packs:
 			var a: Dictionary = cells[_key(r, p, top)]
 			rounds += int(a["rounds"])
 			rerolls += int(a["rerolls"])
+			fought += int(a["fights"])
+			actions += int(a.get("actions", 0))
+			banked += int(a.get("banked", 0))
 			for c in a["spends"].keys():
 				spends[c] = int(spends.get(c, 0)) + int(a["spends"][c])
 				total += int(a["spends"][c])
@@ -784,7 +799,14 @@ func _report(fights: int, secs: float) -> String:
 			parts.append("%s %d%%" % [e[0], _pct(e[1], total)])
 		for e in blanks:
 			parts.append("%s %d%%" % [e[0], _pct(e[1], total)])
-		L.append("- **%s**: %s. Rerolls %.2f a round." % [r["name"], ", ".join(parts), float(rerolls) / maxi(1, rounds)])
+		# The reroll economy (the Giant Petrel's, 30 October): an ally's action bought with the
+		# team's rerolls, a fight, and what the bank carried, a round, where either happened.
+		var economy := ""
+		if actions > 0:
+			economy += " An ally's action bought %.2f a fight." % (float(actions) / maxi(1, fought))
+		if banked > 0:
+			economy += " Rerolls banked %.2f a round." % (float(banked) / maxi(1, rounds))
+		L.append("- **%s**: %s. Rerolls %.2f a round.%s" % [r["name"], ", ".join(parts), float(rerolls) / maxi(1, rounds), economy])
 	L.append("")
 	L.append_array(_reach_report(top))
 	return "\n".join(L)

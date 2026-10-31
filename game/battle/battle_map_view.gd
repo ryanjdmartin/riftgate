@@ -52,7 +52,7 @@ var spent: Dictionary = {}           # machine id -> true: no action left this t
 var flatten_at := Vector2.ZERO       # the handover into a skirmish: one more bleed source, growing
 var flatten_r := 0.0                 # its radius in hexes; 0 is none (tweened by the screen)
 var destinations: Dictionary = {}    # hexes the selected mech may end on
-var threat: Dictionary = {}          # hexes past its move the selected mech may attack from there (Battle.threat_for), in red
+var threat: Dictionary = {}          # hexes past its move the selected mech may attack from there (Battle.threat_for), in the enemy's violet
 var plans: Array = []                # the moves planned and not yet played (Battle.plan_pieces), drawn as routes
 var shown: Dictionary = {}           # machine id -> [hex, facing]: where a planned machine stands until its plan plays (Battle.shown_positions)
 var scroll_y: float = 0.0            # the map's offset on screen, in pixels
@@ -117,11 +117,11 @@ func set_field(f: Battlefield) -> void:
 		# The 3D scene and the compositor are the size of this control, not the map: the
 		# camera follows the scroll and zoom, so a frame costs the same at any zoom and the
 		# scene runs every frame (sway, ripple, later the movement phase).
-		# The scene and the compositor render at the design's size, and the window stretches
-		# them to the glass (1.5 times on a 1080 phone, nearest): the machines' edges step.
-		# With the FINE MAP setting they render at the glass's density instead and the
-		# stretch lands one to one (Ryan, 29 September; the painted world keeps its pixels,
-		# sampled from the design-size paintings). Costs 2.25 times the pixels on that phone.
+		# The scene and the compositor render at the glass's density, so the stretch lands
+		# one to one (the fine map: Ryan, 29 September, and always since 30 October; the
+		# painted world keeps its pixels, sampled from the design-size paintings). At the
+		# design's size the window stretched them 1.5 times on a 1080 phone, nearest, and the
+		# machines' edges stepped; the glass's costs 2.25 times the pixels there, at 60 fps.
 		var density := _density()
 		_map3d = Map3D.new()
 		add_child(_map3d)
@@ -140,6 +140,10 @@ func set_field(f: Battlefield) -> void:
 		mat.set_shader_parameter("painted", _painted.get_texture())
 		mat.set_shader_parameter("painted2", _painted2.get_texture())
 		mat.set_shader_parameter("units", _map3d.get_units_texture())
+		mat.set_shader_parameter("scene_lin", _map3d.get_texture())   # the same two, read linear by the FXAA (Hud.fxaa)
+		mat.set_shader_parameter("units_lin", _map3d.get_units_texture())
+		mat.set_shader_parameter("fxaa", Hud.fxaa())
+		mat.set_shader_parameter("outline_px", Map3D.outline_px() * density)   # the machines' outline, one width at every zoom
 		mat.set_shader_parameter("map_size", map_size)
 		mat.set_shader_parameter("view_size", size)
 		mat.set_shader_parameter("play_x", _frame_x())   # sharp inside the frame's lines, soft outside
@@ -149,8 +153,7 @@ func set_field(f: Battlefield) -> void:
 	queue_redraw()
 
 
-## Device pixels per design pixel for the scene and the compositor: the window's stretch
-## when the FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1.
+## Device pixels per design pixel for the scene and the compositor: the window's stretch.
 func _density() -> float:
 	return Hud.density(self)
 
@@ -218,6 +221,24 @@ func to_screen(p: Vector2) -> Vector2:
 
 func to_map(local: Vector2) -> Vector2:
 	return (local - Vector2(scroll_x, scroll_y)) / zoom
+
+
+## The overlay's marks hold their size on screen at every zoom (Ryan, 30 October: "all UI
+## overlay type items should hold at one width. It will look better"): a line's width, a
+## dash, an inset and a glyph are given in screen pixels and drawn in map space through
+## `_px`; a plaque, a gauge and a tag are drawn in screen space at their place on the map.
+## What a mark outlines or fills (a hex, a region, a route from hex to hex, a ring sized to
+## its hex) stays where it is on the map.
+func _px(screen_px: float) -> float:
+	return screen_px / zoom
+
+
+func _map_space() -> void:
+	draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
+
+
+func _screen_space() -> void:
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 ## The base of a hex in map space: its grid cell before any height. The enemy's marks and
@@ -394,41 +415,47 @@ func _draw() -> void:
 		mat.set_shader_parameter("focus_y", (minf(size.y, FOCUS_VIEW_H) * 0.5 - scroll_y) / zoom)
 		mat.set_shader_parameter("scroll", Vector2(scroll_x, scroll_y))
 		mat.set_shader_parameter("zoom", zoom)
+		var boxes := _map3d.outline_boxes()
+		mat.set_shader_parameter("box_count", boxes.size())
+		boxes.resize(Map3D.MAX_BOXES)
+		mat.set_shader_parameter("boxes", boxes)
+		mat.set_shader_parameter("outline_color", Palette.HUD)
 		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, size), false)
 		# Everything from here to the edge tags is drawn in map space under the zoom and
 		# scroll. The grid itself is in the scene, lit, so raised ground hides it.
-		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
+		_map_space()
 	else:
-		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
+		_map_space()
 		# Headless: the painted map, so the view still lays out and the structures still show.
 		for h in map.all_hexes():
 			var pts := Hex.corners(center(h), HEX_SIZE - 1.5)
 			draw_colored_polygon(pts, TERRAIN[map.terrain[h]])
 			TerrainArt.draw(self, center(h), HEX_SIZE, map.terrain[h], h.x * 131 + h.y * 7919, 0.9)
-			Hud.stroke_poly(self, pts, Color(hud, 0.10), 1.0)
+			Hud.stroke_poly(self, pts, Color(hud, 0.10), _px(1.0))
 		for wh in map.wall_hexes:
 			draw_colored_polygon(Hex.corners(center(wh), HEX_SIZE - 3.0), Color(Palette.MUTED, 0.35))
 		for g in map.gate_hexes:
 			var pts := Hex.corners(center(g), HEX_SIZE - 3.0)
 			draw_colored_polygon(pts, Color(hud, 0.10))
-			Hud.stroke_poly(self, pts, Color(hud, 0.85), 2.0)
+			Hud.stroke_poly(self, pts, Color(hud, 0.85), _px(2.0))
 	_draw_rift(map)
 
 	# Where the selected mech may end its move: every hex alike, lit under one solid edge (Ryan,
 	# 28 October: a move is given in one go and the map draws reach and nothing else).
 	for h in destinations.keys():
-		var pts := Hex.corners(center(h), HEX_SIZE - 5.0)
+		var pts := Hex.corners(center(h), HEX_SIZE - _px(5.0))
 		draw_colored_polygon(pts, Color(hud, 0.26))
-		Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
+		Hud.stroke_poly(self, pts, Color(hud, 0.8), _px(1.5))
 
 	# Where the selected machine could attack from past its move (Ryan, 25 October: "not only its
 	# available move spaces, but its available attacking spaces at the edge of that move, in
-	# red"): a red band round the lit hexes, tinted, under one solid edge, so it reads as one
-	# region beside the move's outlined cells (structure as well as hue); a pack it could be
-	# ordered onto, in the band or in reach where it stands, bracketed in red.
+	# red", the rings' colour, which is the enemy's violet since 30 October): a band round the lit
+	# hexes, tinted, under one solid edge, so it reads as one region beside the move's outlined
+	# cells (structure as well as hue); a pack it could be ordered onto, in the band or in reach
+	# where it stands, bracketed in the violet's bright.
 	if not threat.is_empty() and _anim.is_empty():
 		for h in threat.keys():
-			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.26))
+			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - _px(5.0)), Color(Palette.ENEMY, 0.26))
 		_ring_outline(threat, Palette.ENEMY, 3.0, false)
 		if selected != null:
 			for sq in field.packs():
@@ -437,13 +464,14 @@ func _draw() -> void:
 					hit = hit or threat.has(x) or Hex.distance(x, selected.pos) <= selected.attack_range
 				if hit:
 					var bc := center(sq.pos)
-					Hud.brackets(self, Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, ENEMY_HOT, 3.0)
+					Hud.brackets(self, Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), ENEMY_HOT, _px(3.0))
 
 	# Every pack's ring, the enemy's engagement range: a fight on a hex in it pulls the pack in,
 	# and a hunter catches what stands in it (Ryan, 25 October: "always visible, and become more
-	# visible when the enemy is tapped, and done in red not hud colour"). At rest a dashed red
-	# edge on a deep-red track; the pack tapped, or one that would join the fight shown, its ring
-	# tinted under a solid edge, heavier.
+	# visible when the enemy is tapped, and done in red not hud colour"; in the enemy's violet
+	# since 30 October: "keep purple for enemy activities"). At rest a dashed violet edge on a
+	# deep-violet track; the pack tapped, or one that would join the fight shown, its ring tinted
+	# under a solid edge, heavier.
 	if _anim.is_empty() and fight_group.is_empty():
 		var lit := {}
 		var tapped := field.unit_at(inspected) if map.has(inspected) else null
@@ -454,6 +482,9 @@ func _draw() -> void:
 		for sq in field.packs():
 			var ring: Dictionary = {}
 			_zone_hexes(sq, sq.pos, ring)
+			if sq.sealed:
+				_ring_outline(ring, Color(Palette.MUTED, 0.5), 2.0, true)   # a sealed boss's ring is inert: drawn faint, dashed, in no colour of the enemy's
+				continue
 			if lit.has(sq):
 				for h in ring.keys():
 					_fill(h, Color(Palette.ENEMY, 0.5))
@@ -475,7 +506,7 @@ func _draw() -> void:
 				continue
 			_route(pc["from"], pc["path"], hud, last_piece[int(pc["unit"])] == k)
 			for rd in pc["riders"]:
-				Hud.stroke_poly(self, Hex.corners(center(rd[3]), HEX_SIZE - 6.0), Color(hud, 0.8), 2.5)
+				Hud.stroke_poly(self, Hex.corners(center(rd[3]), HEX_SIZE - _px(6.0)), Color(hud, 0.8), _px(2.5))
 
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
 	# stand now, and every hunter's tag on what it comes for (its prey, or the machine it takes
@@ -494,9 +525,9 @@ func _draw() -> void:
 						hunted[prey] = []
 					(hunted[prey] as Array).append(sq)
 			if not w.path.is_empty():
-				# The same route mark as the player's (Ryan, 29 September), in steady red; the
+				# The same route mark as the player's (Ryan, 29 September), in steady violet; the
 				# colour breathes only on the pack that was tapped.
-				_route(sq.pos, w.path, INTENT, false, false, sq.pos == inspected, true)
+				_route(sq.pos, w.path, Palette.ENEMY, false, false, sq.pos == inspected, true)
 			var below := center(w.end) + Vector2(0.0, HEX_SIZE * 0.7)
 			if w.strikes:
 				_plaque(below, "STRIKES THE GATE", Palette.ENEMY, 1.5)
@@ -513,19 +544,19 @@ func _draw() -> void:
 			for n in Hex.neighbors(g):
 				if map.has(n) and not map.is_structure(n):
 					attack[n] = true
-		# The hexes a pack can strike from read as warning zones (Ryan, 29 September): a red
+		# The hexes a pack can strike from read as warning zones (Ryan, 29 September): a violet
 		# border crawling round each with a warning glyph at its centre; the gate's own
 		# footprint translucent but plain to see, a tint under a half-strength outline.
 		var blink := 0.55 + 0.45 * sin(_ring_t * 3.0)   # the glyphs pulse together
 		for n in attack.keys():
 			_fill(n, Color(Palette.ENEMY, 0.06))
-			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 5.5), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
-			Glyphs.draw(self, "warning", center(n), HEX_SIZE * (0.42 + 0.08 * blink), Color(ENEMY_HOT, 0.5 + 0.5 * blink), 2.5)
+			_crawl_poly(Hex.corners(center(n), HEX_SIZE - _px(5.5)), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
+			Glyphs.draw(self, "warning", center(n), _px(HEX_SIZE * (0.42 + 0.08 * blink)), Color(ENEMY_HOT, 0.5 + 0.5 * blink), _px(2.5))
 		for g in map.gate_hexes:
 			# A light tint (ground marks land at alpha to the 2.2, so 0.3 is faint) under
 			# lines at a third (Ryan, 29 September).
 			_fill(g, Color(hud, 0.3))
-			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.35), 1.5)
+			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - _px(2.0)), Color(hud, 0.35), _px(1.5))
 
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
@@ -537,10 +568,10 @@ func _draw() -> void:
 		_pack_segments(ipack)
 
 	# The hex a tap asked about: bracketed in the display's light (Ryan, 29 September); a
-	# pack there has its route breathing between red and salmon, drawn in the pack loop.
+	# pack there has its route breathing between the violets, drawn in the pack loop.
 	if map.has(inspected) and _anim.is_empty():
 		var ic := center(inspected)
-		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), HEX_SIZE * 0.45, Color(hud, 0.95), 2.5)
+		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), _px(HEX_SIZE * 0.45), Color(hud, 0.95), _px(2.5))
 
 	# The route being drawn by hand: the same line, heavier, ringed where it ends. It never
 	# leaves the lit reach, so its end needs no gauge (Ryan, 28 October: a move in one go).
@@ -548,9 +579,9 @@ func _draw() -> void:
 		var prev := center(_route_drag.pos)
 		for step in draft:
 			var p := center(step)
-			draw_line(prev, p, hud, 5.0)
+			draw_line(prev, p, hud, _px(5.0))
 			prev = p
-		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.5)
+		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, _px(2.5))
 		# A carrier's block where it would land (the Swallowtail's carry, Ryan, 21 October): each
 		# rider's hex outlined; one it cannot land on dashed and struck through, and the stop
 		# itself crossed and tagged, so the player changes it before letting go. By structure,
@@ -559,17 +590,17 @@ func _draw() -> void:
 		var lands: Dictionary = draft_land.get("to", {})
 		for r in lands.keys():
 			var lh: Vector2i = lands[r]
-			var pts := Hex.corners(center(lh), HEX_SIZE - 6.0)
+			var pts := Hex.corners(center(lh), HEX_SIZE - _px(6.0))
 			if bad.has(lh):
 				for i in range(6):
-					_dashed_line(pts[i], pts[(i + 1) % 6], Palette.ENEMY, HEX_SIZE * 0.16)
-				_strike(center(lh), HEX_SIZE * 0.42, Palette.ENEMY)
+					_dashed_line(pts[i], pts[(i + 1) % 6], Palette.LOSS, HEX_SIZE * 0.16)
+				_strike(center(lh), HEX_SIZE * 0.42, Palette.LOSS)
 			else:
-				Hud.stroke_poly(self, pts, hud, 3.0)
+				Hud.stroke_poly(self, pts, hud, _px(3.0))
 		if not bad.is_empty():
 			# The stop is no move: struck through and tagged.
-			_strike(prev, HEX_SIZE * 0.42, Palette.ENEMY)
-			_plaque(prev + Vector2(0.0, -HEX_SIZE * 1.0), "NO ROOM", Palette.ENEMY, 2.5)
+			_strike(prev, HEX_SIZE * 0.42, Palette.LOSS)
+			_plaque(prev + Vector2(0.0, -HEX_SIZE * 1.0), "NO ROOM", Palette.LOSS, 2.5)
 
 	# The fights hunters forced (bible section 5): the hunter and its prey lit, the prey
 	# tagged; they come first on the player's turn.
@@ -578,7 +609,7 @@ func _draw() -> void:
 			var prey: Unit = f["prey"]
 			for h in f["hunters"]:
 				_contact_effect((h as Unit).pos, true, true)
-			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, Palette.ENEMY, 3.0)
+			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), Palette.ENEMY, _px(3.0))
 			_plaque(center(prey.pos) + Vector2(0.0, -HEX_SIZE * 1.05), "CAUGHT", Palette.ENEMY, 2.0)
 	# The orders (bible section 5): a line from each machine to the pack it is ordered onto, in
 	# the display's light, dashes crawling toward the pack.
@@ -593,10 +624,10 @@ func _draw() -> void:
 			var dir := (b - a).normalized()
 			a += dir * HEX_SIZE * 0.55
 			b -= dir * HEX_SIZE * 0.6
-			draw_line(a, b, Color(hud, 0.35), 6.0)
+			draw_line(a, b, Color(hud, 0.35), _px(6.0))
 			_dashed_line(a, b, hud, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0))
 			var side := Vector2(-dir.y, dir.x)
-			draw_polyline(PackedVector2Array([b - dir * 10.0 + side * 8.0, b, b - dir * 10.0 - side * 8.0]), hud, 3.0)
+			draw_polyline(PackedVector2Array([b - dir * _px(10.0) + side * _px(8.0), b, b - dir * _px(10.0) - side * _px(8.0)]), hud, _px(3.0))
 	# The fight shown (bible section 5): the next one ENGAGE opens, the one a dragged machine
 	# is over, or a pack looked at. The attack range round the target in the display's light
 	# (where a machine must stand to join), every joining pack's ring in the enemy's, the packs
@@ -604,7 +635,7 @@ func _draw() -> void:
 	if not attack.is_empty() and _anim.is_empty():
 		var targets: Array = attack.get("targets", [])
 		# Where a machine must stand to join, in the display's light; a pack looked at with
-		# nothing in hand shows its own ring instead (above), the selected machine's red band
+		# nothing in hand shows its own ring instead (above), the selected machine's violet band
 		# saying where it could attack from (Ryan, 25 October).
 		if not bool(attack.get("inspect", false)):
 			var reach: Dictionary = {}
@@ -618,7 +649,7 @@ func _draw() -> void:
 			_contact_effect((u as Unit).pos, true, true)
 		for m in attack.get("committed", []):
 			var c := center((m as Unit).pos)
-			Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, hud, 3.0)
+			Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), hud, _px(3.0))
 		if not targets.is_empty():
 			_plaque(center((targets[0] as Unit).pos) + Vector2(0.0, -HEX_SIZE * 1.05), "FIGHT // " + contact_text(attack.get("committed", []) + group), Palette.ENEMY, 2.0)
 	# The fight being entered: frozen on its units through the handover.
@@ -638,16 +669,18 @@ func _draw() -> void:
 
 	if selected != null:
 		var c := _unit_center(selected)
-		Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.85, Vector2(HEX_SIZE, HEX_SIZE) * 1.7), 12.0, hud, 2.0)
+		Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.85, Vector2(HEX_SIZE, HEX_SIZE) * 1.7), _px(12.0), hud, _px(2.0))
 
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # from here, screen space
+	_screen_space()   # from here, screen space
 	# The HUD's own marks (the frame, the bars, their text) are drawn in screen space at
 	# their positions under the zoom, so they stay crisp and their lines stay thin however
 	# far the reconstruction is zoomed (Ryan, 22 September).
 	if _map3d != null and frame_alpha > 0.0:
 		_draw_frame(hud)
 	_draw_gate_bar()
+	_draw_rupture_bar()
 	_draw_rift_bar()
+	_draw_tears()
 	_draw_tags()
 	if _map3d != null:
 		_map3d.set_marks(_ground_marks)
@@ -725,16 +758,53 @@ func _hud_bar(map_pos: Vector2, map_w: float, frac: float, col: Color, label: St
 ## The gate's integrity as a true bar (Ryan, 22 September), on the wall's face under the
 ## gate, always; brighter while the gate is selected.
 var gate_selected := false
+## The Rupture meter as the screen reads it off the battle (30 October): {"tally", "thresholds",
+## "fractures", "sealed"}; empty for a battle without one (the harness with no boss).
+var meter: Dictionary = {}
 var inspected := Vector2i(-9999, -9999)   # the hex a tap asked about (a pack, the ground): lit while its readout is up
 
 func _draw_gate_bar() -> void:
 	var map := field.map
 	var at := _origin + Hex.to_pixel(map.gate, HEX_SIZE) + Vector2(0, -HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5) + 26.0)
 	var frac := float(field.gate_hp) / maxf(1.0, float(field.gate_hp_max))
-	var col := Palette.HUD if frac > 0.34 else Palette.ENEMY
+	var col := Palette.HUD if frac > 0.34 else Palette.LOSS
 	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, col, "GATE %d/%d" % [field.gate_hp, field.gate_hp_max], 1.0 if gate_selected else 0.8)
 	if gate_selected:
 		Hud.brackets(self, rect.grow(10.0), 8.0, col, 2.0)
+
+
+## The Rupture meter (30 October): a bar under the gate's toward the Rupture, a notch at each
+## Fracture, in the rift's own light; it reads SEALED until the Rupture and THE RUPTURE after.
+## A first cut, to be judged running on the phone.
+func _draw_rupture_bar() -> void:
+	if meter.is_empty() or (meter.get("thresholds", []) as Array).is_empty():
+		return
+	var thresholds: Array = meter["thresholds"]
+	var last := maxi(1, int(thresholds[thresholds.size() - 1]))
+	var map := field.map
+	var at := _origin + Hex.to_pixel(map.gate, HEX_SIZE) + Vector2(0, -HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5) + 26.0 + 22.0)
+	var frac := clampf(float(int(meter.get("tally", 0))) / float(last), 0.0, 1.0)
+	var sealed := bool(meter.get("sealed", true))
+	var label := ("RUPTURE %d/%d" % [int(meter.get("fractures", 0)), thresholds.size()]) if sealed else "THE RUPTURE"
+	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, Palette.ENEMY, label, 0.9)
+	for t in thresholds:
+		var x := rect.position.x + rect.size.x * clampf(float(int(t)) / float(last), 0.0, 1.0)
+		draw_line(Vector2(x, rect.position.y - 2.0), Vector2(x, rect.end.y + 2.0), Color(Palette.ENEMY, 0.9), 2.0)
+
+
+## The tears (30 October): each a small vortex ring in the rift's own light on the seam's
+## ground, with its name, so where the next flood comes from is known an interval ahead. A
+## first cut, to be judged running on the phone with the seam's creep.
+func _draw_tears() -> void:
+	for t in field.tears:
+		var c := center(t["pos"])
+		var r := HEX_SIZE * 0.55
+		draw_arc(c, r, 0.0, TAU, 24, Color(Palette.ENEMY, 0.9), 3.0)
+		draw_arc(c, r * 0.6, 0.0, TAU, 18, Color(Palette.ENEMY, 0.6), 2.0)
+		for k in range(6):
+			var a := float(k) * TAU / 6.0 + fmod(_ring_t, TAU)
+			draw_line(c + Vector2(cos(a), sin(a)) * r * 0.6, c + Vector2(cos(a + 0.5), sin(a + 0.5)) * r, Color(Palette.ENEMY, 0.8), 2.0)
+		_plaque(c + Vector2(0.0, -r - 12.0), "TEAR", Palette.ENEMY, 1.5)
 
 
 ## The rift's pressure as a bar toward the next spawn (Ryan, 22 September), above the rift
@@ -742,7 +812,7 @@ func _draw_gate_bar() -> void:
 func _draw_rift_bar() -> void:
 	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 2.7)
 	var frac := float(field.rift_pressure) / maxf(1.0, float(field.rift_pressure_max))
-	_hud_bar(at, HEX_SIZE * 3.2, frac, RIFT_ART, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
+	_hud_bar(at, HEX_SIZE * 3.2, frac, Palette.ENEMY, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
 
 
 ## The one scan bar crosses the whole screen on the top layer (the battle screen draws it);
@@ -752,7 +822,6 @@ func sweep_at(local_y: float) -> void:
 		_map3d.set_sweep((local_y - scroll_y) / zoom if sweep_on else -1.0e6)
 
 
-const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
 const RIFT_FRAME_SECONDS := 0.7    # a frame, on the vortex's own clock
 const RIFT_ON_BEAT := false        # true: one turn of the strip is a bar of the music instead (Ryan, 23 September: an option, off for now)
 const RIFT_TEAR_ROWS := 16         # the bands the vortex is drawn in, for its tear
@@ -767,7 +836,7 @@ func _draw_rift(map: BattleMap) -> void:
 	var tex := Sprites.rift()
 	if tex == null:
 		for r in map.rift_hexes:
-			Hud.stroke_poly(self, Hex.corners(center(r), HEX_SIZE - 3.0), RIFT_ART, 2.0)
+			Hud.stroke_poly(self, Hex.corners(center(r), HEX_SIZE - 3.0), Palette.ENEMY, _px(2.0))
 		return
 	var fh := tex.get_size().y
 	var frames := maxi(1, int(round(tex.get_size().x / fh)))   # square frames side by side
@@ -819,24 +888,25 @@ func _draw_rift(map: BattleMap) -> void:
 func _strike(c: Vector2, r: float, col: Color) -> void:
 	for d in [Vector2(1, 1), Vector2(1, -1)]:
 		var v: Vector2 = d.normalized() * r
-		draw_line(c - v, c + v, Color(Palette.BG, 0.9), 9.0)
-		draw_line(c - v, c + v, col, 5.0)
+		draw_line(c - v, c + v, Color(Palette.BG, 0.9), _px(9.0))
+		draw_line(c - v, c + v, col, _px(5.0))
 
 
+## A plaque at a map point `at`, drawn in screen space there so it holds its size at every zoom.
 func _plaque(at: Vector2, text: String, border: Color, thick: float = 1.5) -> void:
+	_screen_space()
 	var w := Hud.mono().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 10.0
-	var rect := _plaque_rect(at, Vector2(w, 18.0))
+	var rect := _plaque_rect(to_screen(at), Vector2(w, 18.0))
 	draw_rect(rect, Palette.BG, true)
 	draw_rect(rect, border, false, thick)
 	draw_string(Hud.mono(), rect.position + Vector2(5.0, 13.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
+	_map_space()
 
 
-## A plaque's rect centred on `at`, kept inside the visible width so a zoomed-in plaque
+## A plaque's rect centred on the screen point `at`, kept inside the view's width so a plaque
 ## never runs off the screen.
 func _plaque_rect(at: Vector2, sz: Vector2) -> Rect2:
-	var left := (4.0 - scroll_x) / zoom
-	var right := (size.x - 4.0 - scroll_x) / zoom
-	var x := clampf(at.x, left + sz.x * 0.5, right - sz.x * 0.5) if right - left > sz.x else at.x
+	var x := clampf(at.x, 4.0 + sz.x * 0.5, size.x - 4.0 - sz.x * 0.5) if size.x - 8.0 > sz.x else at.x
 	return Rect2(Vector2(x, at.y) - sz * 0.5, sz)
 
 
@@ -898,7 +968,7 @@ func _edges(h: Vector2i, idx: Array, col: Color) -> void:
 	else:
 		var pts := Hex.corners(center(h), HEX_SIZE - 1.0)
 		for i in idx:
-			draw_line(pts[i], pts[(i + 1) % 6], col, 2.0)
+			draw_line(pts[i], pts[(i + 1) % 6], col, _px(2.0))
 
 
 func _mark(h: Vector2i) -> Dictionary:
@@ -913,47 +983,41 @@ func _mark(h: Vector2i) -> Dictionary:
 const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # A pack's intent in the rift's register (Ryan, 29 September: they are rift units, so
 # violet, which nothing else on the field uses but the rift itself): the route, its target
-# and the tapped pack's pulse. Red stays for the contact, the gate's warning zones and the
-# tags: the engagement warning, not the plan.
-# Picked by simulation, not by eye (Ryan is colourblind, 29 September): each colour's
-# worst-case Lab distance from every HUD option and the enemy red under protan, deutan and
-# tritan vision. The rest sits 60 from its nearest neighbour (the blue HUD, deutan), the
-# bright 36; the rift's own pale (c9a6ff) was 7 from the blue HUD and a paler lavender 1,
-# so the pulse never goes that far, and plum went toward the red under red-green vision.
-# Two violets in all (Ryan, 30 September): the light one is the route's line and the field's
-# bright; the deep one is the line's crawling gaps and the field's dark.
-const INTENT := Color("c8a4ff")       # a pack's route at rest, and the field's bright (L 73; Ryan, 30 September: room left on the phone; the striped structure carries it now, not the hue)
-const INTENT_HOT := Color("c8a4ff")   # the same
-const INTENT_DEEP := Color("6a30c0")  # the field's dark and the line's gaps (up again, Ryan, 30 September: it blended into the dark tiles)
-const INTENT_PALE := Color("d0b8ff")  # the top of the tapped pack's pulse, briefly
-const INTENT_DARK := Color("2a0e4a")  # the bottom of the tapped pack's pulse for the dark
-const INTENT_DIM := Color("9a68e0")   # the bottom of the pulse for the light: under its resting value (Ryan, 30 September)
-const INTENT_EDGE := Color("2a0e4a")  # the edge, if RIFTGATE_INTENT_EDGE puts it on
+# and the tapped pack's pulse. Since 30 October every mark of a foe's doing wears it (Ryan:
+# "keep purple for enemy activities"): the contact, the gate's warning zones, the tags, the
+# rift's bars and tears, so the warning parts from the plan by its structure, a ring of dashed
+# hex edges against a line, its target and stripes. The register is four violets, the light
+# one the palette's (Palette.ENEMY, the route's line and the field's bright) and three here:
+# the deep (the field's dark and the line's crawling gaps), the edge under every violet line
+# and border, and the bright the marks breathe toward. Picked by simulation, not by eye (Ryan
+# is colourblind; docs/measurements.md, 29 September and 30 October).
+static var ENEMY_DEEP := Color("6a30c0")   # the field's dark and the line's gaps (up again, Ryan, 30 September: it blended into the dark tiles)
+static var ENEMY_EDGE := Color("2a0e4a")   # the edge under every violet line and border: deep violet, not black (Ryan, 29 September: black made candy canes)
+static var ENEMY_HOT := Color("ecdcff")    # the bright the violet marks breathe toward, and the tapped intent's pulse top: a breath that shows in every vision (ΔE 12 to 17 from the violet, docs/measurements.md)
 
-# The pair the field and the line draw with right now: the constants for a pack at rest,
-# both lifted together on the tapped pack so the whole mark pulses (Ryan, 30 September:
+# The pair the field and the line draw with right now: the violet and its deep for a pack at
+# rest, both lifted together on the tapped pack so the whole mark pulses (Ryan, 30 September:
 # the pulse had been on the line alone).
-var _field_hot: Color = INTENT_HOT
-var _field_deep: Color = INTENT_DEEP
+var _field_hot: Color = Palette.ENEMY
+var _field_deep: Color = ENEMY_DEEP
 
 func _set_intent_pair(breathe: bool) -> void:
 	var b := _intent_breath() if breathe else 0.0
 	if not breathe:
-		_field_hot = INTENT_HOT
-		_field_deep = INTENT_DEEP
+		_field_hot = Palette.ENEMY
+		_field_deep = ENEMY_DEEP
 		return
-	# The tapped pack swings the whole way: down to the old dark, up to the pale.
-	_field_hot = INTENT_DIM.lerp(INTENT_PALE, b)
-	_field_deep = INTENT_DARK.lerp(INTENT_DEEP.lerp(INTENT_HOT, 0.5), b)
+	# The tapped pack swings the whole way: the light from under its resting value (halfway to
+	# the deep) up to the bright, the dark from the edge up to halfway to the light.
+	_field_hot = Palette.ENEMY.lerp(ENEMY_DEEP, 0.5).lerp(ENEMY_HOT, b)
+	_field_deep = ENEMY_EDGE.lerp(ENEMY_DEEP.lerp(Palette.ENEMY, 0.5), b)
 ## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
 ## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
 ## crawling gaps stay either way: the gaps are the motion, the edge was only the contrast.
 static func _intent_edged() -> bool:
 	return OS.get_environment("RIFTGATE_INTENT_EDGE") == "1"
-const ENEMY_HOT := Color("ff8a1e")    # the contact's bright: red toward orange
-const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border: deep red, not black (Ryan, 29 September: black made candy canes)
 
-## The tapped pack's intent breathes between violet and the rift's pale, most of the way up
+## The tapped pack's intent breathes between the violet and its bright, most of the way up
 ## and never quite down to the deep, so on any ground it passes through a colour that reads.
 ## The intent field (Ryan, 30 September): a hidden static map of diagonal stripes in the
 ## deep and the bright violet, which the rings, the target's border and the route's dashes
@@ -1031,14 +1095,14 @@ func _field_rings(c: Vector2, r: float, dir: float, _phase: float, width: float 
 				if b1 - b0 < 0.002:
 					continue
 				var colour := _field_hot if posmod(floori(((b0 + b1) * 0.5 - turn) / step), 2) == 0 else _field_deep
-				draw_arc(c, rad, b0, b1, maxi(2, int((b1 - b0) * rad / 3.0) + 1), colour, width)
+				draw_arc(c, rad, b0, b1, maxi(2, int((b1 - b0) * rad * zoom / 3.0) + 1), colour, _px(width))
 
 
 func _intent_breath() -> float:
 	return 0.5 + 0.5 * sin(_ring_t * 2.0)   # a touch quicker than the contact's 1.6 (Ryan, 30 September: halfway back from 2.4)
 
 
-## The contact marks breathe between red and the bright (Ryan, 22 September).
+## The contact marks breathe between the violet and its pale (Ryan, 22 September, of the red then).
 func _ring_colour() -> Color:
 	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
 	return Palette.ENEMY.lerp(ENEMY_HOT, 0.35 + 0.65 * breath)
@@ -1070,12 +1134,12 @@ func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
 	_fill(h, Color(Palette.ENEMY, (0.7 + 0.25 * breath) * a))
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, a), 2.5)
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - _px(3.0)), Color(Palette.ENEMY, a), _px(2.5))
 	var col := _ring_colour()
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
 		var r := HEX_SIZE * (0.3 + 1.1 * phase)
-		draw_arc(c, r, 0.0, TAU, 40, Color(col, (1.0 - phase) * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
+		draw_arc(c, r, 0.0, TAU, 40, Color(col, (1.0 - phase) * a), _px(3.0 * (1.0 - phase * 0.5) + 1.0))
 
 
 ## A route, either side's (Ryan, 29 September): a quiet line with dashes crawling toward
@@ -1092,19 +1156,19 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	for step in path:
 		pts.append(center(step))
 	if edged:
-		# One red line: a deep-red edge, the red, and the motion as deep-red gaps crawling
-		# along it, so nothing alternates between two bright colours.
+		# One violet line: the light violet, and the motion as deep-violet gaps crawling along
+		# it, so nothing alternates between two bright colours.
 		_set_intent_pair(breathe)   # the tapped pack's whole mark pulses: line, gaps, rings, border
 		col = _field_hot
 		if _intent_edged():
-			draw_polyline(pts, INTENT_EDGE, 7.0)
-		draw_polyline(pts, col, 3.5)
+			draw_polyline(pts, ENEMY_EDGE, _px(7.0))
+		draw_polyline(pts, col, _px(3.5))
 		# The moving dashes over the line stay one dark colour (Ryan, 30 September: the field
 		# on them made the line itself look striped); the field is for the rings and border.
 		for i in range(pts.size() - 1):
 			_dashed_line(pts[i], pts[i + 1], _field_deep, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
 	else:
-		draw_polyline(pts, Color(col, 0.5), 3.0)
+		draw_polyline(pts, Color(col, 0.5), _px(3.0))
 		for i in range(pts.size() - 1):
 			_dashed_line(pts[i], pts[i + 1], col, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
 	# A chevron a step, pointing the way (edged too, on the enemy's).
@@ -1112,15 +1176,16 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		var dir := (pts[i + 1] - pts[i]).normalized()
 		var tip := pts[i].lerp(pts[i + 1], 0.55)
 		var side := Vector2(-dir.y, dir.x)
-		var chev := PackedVector2Array([tip - dir * 6.0 + side * 6.0, tip, tip - dir * 6.0 - side * 6.0])
+		var k := _px(6.0)
+		var chev := PackedVector2Array([tip - dir * k + side * k, tip, tip - dir * k - side * k])
 		if edged and _intent_edged():
-			draw_polyline(chev, INTENT_EDGE, 5.0)
-		draw_polyline(chev, col, 2.5)
+			draw_polyline(chev, ENEMY_EDGE, _px(5.0))
+		draw_polyline(chev, col, _px(2.5))
 	if not lock:
 		return
 	var end := pts[pts.size() - 1]
 	# An enemy route's rings pulse in the line's own register (the selected pack's whole
-	# route breathes red to orange together, Ryan, 29 September); a machine's lift toward white.
+	# route breathes together, Ryan, 29 September); a machine's lift toward white.
 	var bright := col if edged else (col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col)
 	if edged:
 		# The rings and the target's border in the field's stripes (crawling on the tapped pack).
@@ -1128,25 +1193,25 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		if _intent_edged():
 			_field_rings(end, DEST_RING, -1.0, phase, 6.0)
 		_field_rings(end, DEST_RING, -1.0, phase)
-		draw_circle(end, 3.5, col)
-		_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if _intent_edged() else Color(0, 0, 0, 0), phase)   # just inside the hex lines (Ryan, 30 September)
+		draw_circle(end, _px(3.5), col)
+		_crawl_poly(Hex.corners(end, HEX_SIZE - _px(5.5)), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), ENEMY_EDGE if _intent_edged() else Color(0, 0, 0, 0), phase)   # just inside the hex lines (Ryan, 30 September)
 		return
 	# A machine's target lock in the same construction (Ryan, 30 September), over the same
 	# fields, in its line's two colours: the display's light, and the light at half.
 	_field_hot = bright
 	_field_deep = Color(bright, 0.5)
 	_field_rings(end, DEST_RING, -1.0, 0.0)
-	draw_circle(end, 3.5, bright)
-	_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))   # just inside the hex lines (Ryan, 30 September)
+	draw_circle(end, _px(3.5), bright)
+	_crawl_poly(Hex.corners(end, HEX_SIZE - _px(5.5)), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))   # just inside the hex lines (Ryan, 30 September)
 
 
 ## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
-## both `dash` long.
+## both `dash` screen pixels long.
 func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float, edge: Color = Color(0, 0, 0, 0), phase: float = 0.0) -> void:
 	var per := 0.0
 	for i in range(pts.size()):
 		per += pts[i].distance_to(pts[(i + 1) % pts.size()])
-	var n := maxi(2, int(per / dash) & ~1)
+	var n := maxi(2, int(per / _px(dash)) & ~1)
 	var step := per / n
 	for pass_i in range(2 if edge.a > 0.0 else 1):
 		var k := -2.0 + offset
@@ -1158,8 +1223,8 @@ func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float
 			k += 2.0
 
 
-## The stretch of a closed outline between distances `d0` and `d1` along it.
-## `col` at zero alpha means the intent field's colours, at `phase`.
+## The stretch of a closed outline between distances `d0` and `d1` along it, `width` screen
+## pixels wide. `col` at zero alpha means the intent field's colours, at `phase`.
 func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, width: float = 2.5, phase: float = 0.0) -> void:
 	var walked := 0.0
 	for i in range(pts.size()):
@@ -1170,25 +1235,25 @@ func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, wi
 		var s1 := clampf(d1 - walked, 0.0, len)
 		if s1 > s0:
 			if col.a == 0.0:
-				_field_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), phase, width)
+				_field_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), phase, _px(width))
 			else:
-				draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, width)
+				draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, _px(width))
 		walked += len
 
 
-## A dashed line from `a` to `b`, dash and gap both `dash` long, the pattern shifted along
-## by `offset` dashes so it can crawl.
+## A dashed line from `a` to `b`, dash and gap both `dash` screen pixels long and the line
+## `width`, the pattern shifted along by `offset` dashes so it can crawl.
 func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float = 0.0, phase: float = 0.0, width: float = 3.0) -> void:
-	var n := maxi(1, int(a.distance_to(b) / dash))
+	var n := maxi(1, int(a.distance_to(b) / _px(dash)))
 	var k := -2.0 + fmod(offset, 2.0)
 	while k < n:
 		var t0 := clampf(k / n, 0.0, 1.0)
 		var t1 := clampf((k + 1.0) / n, 0.0, 1.0)
 		if t1 > t0:
 			if col.a == 0.0:   # the intent field's colours
-				_field_line(a.lerp(b, t0), a.lerp(b, t1), phase, width)
+				_field_line(a.lerp(b, t0), a.lerp(b, t1), phase, _px(width))
 			else:
-				draw_line(a.lerp(b, t0), a.lerp(b, t1), col, width)
+				draw_line(a.lerp(b, t0), a.lerp(b, t1), col, _px(width))
 		k += 2.0
 
 
@@ -1200,8 +1265,8 @@ func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float
 const HUNT_TAG := Vector2(66.0, 40.0)   # the picture at twice its pixels, the target beside it
 
 func _hunted_tag(prey: Unit, hunters: Array) -> void:
-	var c := _unit_center(prey)
-	var right := c + Vector2(-HEX_SIZE * 0.72, -HEX_SIZE * 0.95)   # the first plate's right edge, clear of a selected machine's gauges
+	_screen_space()
+	var right := to_screen(_unit_center(prey) + Vector2(-HEX_SIZE * 0.72, -HEX_SIZE * 0.95))   # the first plate's right edge, clear of a selected machine's gauges
 	for k in range(hunters.size()):
 		var sq: Unit = hunters[k]
 		var rect := Rect2(right + Vector2(-HUNT_TAG.x - k * (HUNT_TAG.x + 4.0), -HUNT_TAG.y * 0.5), HUNT_TAG)
@@ -1222,6 +1287,7 @@ func _hunted_tag(prey: Unit, hunters: Array) -> void:
 		if k == 0:
 			var tip := Vector2(rect.end.x + 6.0, rect.end.y + 6.0)
 			draw_colored_polygon(PackedVector2Array([Vector2(rect.end.x - 10.0, rect.end.y), Vector2(rect.end.x, rect.end.y - 8.0), tip]), Palette.ENEMY)
+	_map_space()
 
 
 ## The target: a ring of three dashes turning, four ticks closing on a hot centre.
@@ -1256,24 +1322,24 @@ func _zone_hexes(sq: Unit, anchor: Vector2i, region: Dictionary, radius: int = -
 
 
 ## The edge of a region of hexes drawn over the map, heavy enough for the phone: each edge whose
-## far side is outside the region, on a deep-red track, solid or dashed, and with `crawl` the
+## far side is outside the region, on a deep-violet track, solid or dashed, and with `crawl` the
 ## contact's bright dashes crawling along it; no edge against the map's end. Corner i to i+1
 ## faces DIRECTIONS[(6 - i) % 6], as on the ground (_region_outline).
 func _ring_outline(region: Dictionary, col: Color, width: float, dashed: bool, crawl: bool = false) -> void:
 	for h in region.keys():
 		var nb := Hex.neighbors(h)
-		var pts := Hex.corners(center(h), HEX_SIZE - 2.5)
+		var pts := Hex.corners(center(h), HEX_SIZE - _px(2.5))
 		for i in range(6):
 			var across: Vector2i = nb[(6 - i) % 6]
 			if region.has(across) or not field.map.has(across):
 				continue
 			var a := pts[i]
 			var b := pts[(i + 1) % 6]
-			draw_line(a, b, Color(ENEMY_EDGE, minf(1.0, col.a + 0.1)), width + 3.0)
+			draw_line(a, b, Color(ENEMY_EDGE, minf(1.0, col.a + 0.1)), _px(width + 3.0))
 			if dashed:
 				_dashed_line(a, b, col, HEX_SIZE * 0.17, 0.0, 0.0, width)
 			else:
-				draw_line(a, b, col, width)
+				draw_line(a, b, col, _px(width))
 			if crawl:
 				_dashed_line(a, b, ENEMY_HOT, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0), 0.0, width * 0.5)
 
@@ -1296,22 +1362,25 @@ func _region_outline(region: Dictionary, col: Color, _thick: float) -> void:
 
 ## A selected machine's shield and hull as two gauges floating over its hex.
 func _unit_gauges(u: Unit) -> void:
-	var c := _unit_center(u) + Vector2(0.0, -HEX_SIZE * 1.05)
-	var w := HEX_SIZE * 1.3
+	_screen_space()
+	var c := to_screen(_unit_center(u) + Vector2(0.0, -HEX_SIZE * 1.05))
+	var w := HEX_SIZE * 1.3   # a hex's width at zoom 1, held at every zoom
 	var r := Rect2(c.x - w * 0.5, c.y - 12.0, w, 6.0)
 	for pair in [[u.shield, u.shield_max, Palette.SHIELD], [u.hull, u.hull_max, Palette.HULL]]:
 		draw_rect(r.grow(1.5), Color(Palette.BG, 0.9))
 		draw_rect(r, Color(pair[2], 0.25))
 		draw_rect(Rect2(r.position, Vector2(r.size.x * clampf(float(pair[0]) / maxf(1.0, float(pair[1])), 0.0, 1.0), r.size.y)), pair[2])
 		r.position.y += 9.0
+	_map_space()
 
 
 ## An inspected pack's strength: one segment a foe, so a pack thinned by a fight reads
 ## thinner than a fresh one.
 func _pack_segments(p: Unit) -> void:
+	_screen_space()
 	var n := maxi(1, p.strength)
-	var c := center(p.pos) + Vector2(0.0, -HEX_SIZE * 1.05)
-	var w := HEX_SIZE * 1.3
+	var c := to_screen(center(p.pos) + Vector2(0.0, -HEX_SIZE * 1.05))
+	var w := HEX_SIZE * 1.3   # a hex's width at zoom 1, held at every zoom
 	var gap := 2.0
 	var seg := (w - gap * (n - 1)) / n
 	var x := c.x - w * 0.5
@@ -1319,6 +1388,7 @@ func _pack_segments(p: Unit) -> void:
 	for i in range(n):
 		draw_rect(Rect2(x, c.y - 12.0, seg, 6.0), Palette.ENEMY)
 		x += seg + gap
+	_map_space()
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:

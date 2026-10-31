@@ -15,7 +15,11 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `unit.gd` mechs, packs, city defenses on the battlefield
   - `battlefield.gd` the turn's rules: every pack's walk on the enemy's turn (a pusher to the
     gate, a hunter to its prey, round the machines), the fights hunters force, who joins a
-    fight by ring and who can be committed by attack range, gate strikes, Rift Pressure
+    fight by ring and who can be committed by attack range, the wall struck from anywhere
+    along it, Rift Pressure's peaks (the rift's cycle, the tears and the seam)
+  - `ramp.gd` the ramp, one table of placeholders by the Convergence: the compositions on the
+    field at the start and their density, the timer, the tears a peak and the seam's creep,
+    and by the tier the Fractures and which of them bring an elite
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
@@ -36,16 +40,18 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     `user://profile.json`
   - `battle.gd` one battle end to end: the player's turn (moves at once, one fight at a time,
     a fight spends a machine's action, the Dingo's first of two, a hunter's catch first), the enemy's turn, until the gate
-    falls, the team is wrecked, or the boss dies
+    falls, the team is wrecked, or the boss dies; the Rupture meter's tally by menace, its
+    Fractures, the elites at them, the boss's seal and the stall guard
   - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
-    and its shop, salvage, the between-battle rules, the turn's bleed and drain, the finale
+    and its shop, salvage by menace and Anathema, the between-battle rules, the turn's bleed
+    and drain, the rift's tier locked as it opens and the ramp, the finale
   - `quick_run.gd` the quick campaign: battles without the map, each its fights back to back
     against one domain's formations and elites, then its boss (or from tier two its final),
     the tier's escort beside it; the loot, the token and a maker's offer when the boss falls;
     the hangar's verbs between battles
   - `profile.gd` what outlives a run: the pool, the codex, the tier, the favour piece
   - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
-    `policy.gd`), for the campaign runner
+    `policy.gd`; the turtle and the detaching personas), for the campaign runner
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
   `foes.json`, `chassis.json`, `components.json`, `modules.json`. Placeholder numbers. `reserved_names.json` is
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
@@ -72,8 +78,21 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `ui/` the HUD kit (bars, glyphs, palette, buttons), the die face view, the codex box, the
     pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), `mech_rig.gd`
     (its joints, idle acts and strikes from the model's sidecar), `mech_weld.gd` (its parts
-    welded at load, a mesh a material in each moving group, for the draw calls), the feed
-    effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`)
+    welded at load, a mesh a material in each moving group, for the draw calls),
+    `colour_tuner.gd` (a debug build's COLOURS page, under the pause menu's SETTINGS: the HUD
+    presets, the enemy's four violets and the meanings, set by wheel, sliders or hex and kept in
+    `user://settings.cfg`; PEEK hides the menu until a tap, COPY puts the picks on the
+    clipboard as `KEY #rrggbb` lines, RESET ALL asks twice; headless runs and other builds keep
+    no picks), `terms.gd` (the one table of every term the keywords list defines, a foe's move
+    keywords among them, its icon and
+    its colour group, read by the die's marks, the chips and the text, and the matcher that
+    finds the terms in shown text), `keyword_tip.gd` (a term's entry, opened by a tap on it in
+    any text), the feed
+    effects (`feed_fx.gd`, `tear_layer.gd`), the predator sense (`prey_layer.gd`), and the
+    skirmish's field (29 October): `hud_backdrop.gd` lays it, `battle_backdrop.gd` paints its
+    far part, the other world as a battle screen's backdrop in each domain's palette, and
+    `floor_plane.gdshader` its near part, our ground with the display's grid, both seen by the
+    one camera that draws the machines
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
@@ -97,7 +116,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
   status and resource, from content, and writes `docs/synergy_map.md`; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
-  on the cities; `screenshot.gd` renders a
+  on the cities; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
+  every ground into PNGs, headless; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
   domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
@@ -123,7 +143,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
-  numbers; written by lowforge, read by `mech_rig.gd`), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
+  numbers, what each hardpoint's stock part is; written by lowforge, read by `mech_rig.gd`
+  and by `mech_view_3d.gd`, which wears a fitted die against that record), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
   16x16 map tokens the sheet export writes, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
@@ -140,16 +161,15 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   were folded into them and retired on 15 October), the economy pass's brief
   (`economy_pass.md`), the bosses' slate
   (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
-  curve and the fronts (`curve_proposal.md`), the mechanics audit of 25 October
-  (`mechanics_audit.md`) and the pricing run with the roster's synergy holes
-  (`pricing_proposal.md`, 27 and 28 October, its decisions the bible's pricing row), each retired once its decisions are rows and content;
+  mechanics audit of 25 October (`mechanics_audit.md`) and the pricing run with the roster's
+  synergy holes (`pricing_proposal.md`, 27 and 28 October, its decisions the bible's pricing row), each retired once its decisions are rows and content;
   `synergy_map.md`, who sets and who reads every status and resource, generated from content; `sprites-enemies.html`,
   the sheet the map tokens are exported from; the hangar page's renders and pins under `hangar/`,
   look tests under `looks/`, design canvases under `canvas/`.
 
 ## Running
 
-Open the folder in Godot 4.7 or later, or from a terminal:
+Open the folder in Godot 4.8 (4.8-beta2 until 4.8 ships: its MSAA fix is why) or later, or from a terminal:
 
 On Windows (the desk machine since 19 October, when the Mac went out of reach) every command
 below runs as written from Git Bash, from the repo folder (a new Git Bash starts in the home
@@ -158,7 +178,7 @@ folder: `cd ~/Desktop/Code/riftgate` first); from PowerShell, wrap one as
 PowerShell and cmd, `tools\android` and `tools\phone` (`.cmd` files that run the `.sh` with Git
 Bash in the same window, from any folder by their full path); given a `.sh` itself, Windows
 opens a separate Git Bash window that closes with the output. What makes them run there: `godot` and
-`python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.7.2 under
+`python3` are shims in `~/bin`, which Git Bash puts first on its path (Godot 4.8-beta2 under
 `%LOCALAPPDATA%\Programs\Godot`, self-contained: the `._sc_` file beside it keeps its settings,
 export templates and debug keystore in `editor_data` there; Python 3.13, since Windows' own
 `python3` is a Microsoft Store stub); each venv has a `bin` junction to its `Scripts`, so `.venv/bin/python` resolves;
@@ -169,7 +189,7 @@ writes CRLF there; `core.autocrlf=input` folds it back to LF on commit. perl's `
 the engine as it does on the Mac. The tests take about a minute. The first import rewrites
 the Prairie Dog's four textures, as in a cloud session: restore them. A cloud session sets
 none of this up by hand: the repository's session-start hook (`.claude/hooks/session-start.sh`,
-registered in `.claude/settings.json`; 27 October) fetches Godot 4.7.2's Linux build into
+registered in `.claude/settings.json`; 27 October) fetches Godot 4.8-beta2's Linux build into
 `~/bin`, puts it on the path and runs the first import with the textures restored, before the
 session's first command, once in a container. foeforge's `generate` and
 `fix` cannot run there (mflux needs Apple silicon, and the PC has no NVIDIA card). The Claude
@@ -222,8 +242,9 @@ python3 tools/pages/bible_tables.py
 # twin with that module fitted to every machine, the differences in a section of their own; for prices, --bump armour:5
 # (repeatable: hull, shield, armour, heat, cooling, or damage on every blow) gives every machine
 # that much more, --nopassive strips every chassis's passive, and --set
-# components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only
-# (repeatable, never validated: knock-outs and what-ifs), and --fit badger=ram_frame,tactical_databank
+# components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only (under
+# components/, chassis/, modules/ or foes/: foes/behemoth/hp=48 reads a boss at another HP;
+# repeatable, never validated: knock-outs and what-ifs), and --fit badger=ram_frame,tactical_databank
 # (repeatable) fits those modules to every machine of that chassis; compare each against the same seeds without;
 # --trace "sparrowhawk|goblin x6|greedy|3" plays that one fight and prints its log instead.
 # --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
@@ -258,7 +279,12 @@ perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.g
 # --solo walks each machine toward its own nearest enemy, the rule before 26 October, for
 # comparison. --withdraw N puts the fight bot's withdrawing persona on every fight the player
 # picks (withdraw under N percent of the fighters' hull; a hunter's catch is fought out), and the
-# report then counts the fights withdrawn from
+# report then counts the fights withdrawn from. --turtle holds the squad on the two rows before
+# the gate at its columns, fighting only what comes within reach (the stall's read, 30 October);
+# --detach sends one machine at the nearest patrol within five hexes while the body fights the
+# nearest formation (a detachment's price). The report reads the Rupture meter and the mouths
+# (Fractures, the Rupture and the stall guard, peaks, what the rift and the tears sent, elites,
+# menace killed, gate damage) and the fights by what they held (patrols, formations, elites, the boss)
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40 --withdraw 50 --out /tmp/campaign_w50.md
 
@@ -332,16 +358,24 @@ python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squa
 python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain_1.json build/chain_2.json build/chain_3.json
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
-# poses the screen first. Skirmish: codex, mechcodex, pair and pair_spread (a Gel's halves in its slot, and a
-# Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die's; RIFTGATE_HOLD_ENTRY=<place>
+# poses the screen first. Skirmish: codex, mechcodex, termtip (the first machine's codex with the
+# first term its passive names opened, as a tap opens it), pair and pair_spread (a Gel's halves in its slot, and a
+# Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die read, its readout; RIFTGATE_HOLD_ENTRY=<place>
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
-# and the first foe's: gauges, chips, a foe's intent), confirm, lock, repick (a foe whose machine falls first, a
+# and the first foe's: gauges, chips, a foe's intent), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
-# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the button under the eye opens it), and the feed's
+# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), reserve (the reinforcements waiting by rank in the formation's gutter, a massive one among them), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
-# and groundtear (the corrupted side's tear as it fires).
+# and groundtear (the corrupted side's tear as it fires), and swallowed (the first machine swallowed: a ghost under a dashed edge).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
 # and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
+# The skirmish's controls (any run, the battle's fights too): RIFTGATE_SKIRMISH_CONTROLS=bottom|middle overrides
+# the saved Skirmish Controls setting (Middle by default: the log, dice and Reroll between the sides; Bottom: the
+# machines right under the foes, the controls below them). RIFTGATE_TERRAIN=<ground> (the standalone skirmish)
+# dresses the field for that ground, RIFTGATE_FOES puts a domain's foes on it:
+# RIFTGATE_SKIRMISH_CONTROLS=bottom RIFTGATE_TERRAIN=ruins RIFTGATE_FOES=revenant:4,ghost:2
+# and the backdrops alone, every domain on every ground, into PNGs (headless; size and horizon in art pixels):
+# perl -e 'alarm 120; exec @ARGV' godot --headless --path . -s tools/backdrop_shot.gd -- build/backdrops 540 330 86
 # Battle: select (a machine in hand: its move and its red band), route (two moves planned),
 # plan_play (those played on END TURN; RIFTGATE_SHOT_FRAME), inspect (a pack tapped: its ring
 # lit, the others' dashed), draft (a route drawn by hand, about halfway through the move),
@@ -376,12 +410,19 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
-# PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
-# RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; off on a phone by default).
-# RIFTGATE_OUTLINE=<n> sets the machines' light outline thickness for a comparison (MechView3D.OUTLINE is the default).
+# PNG comes out 1080 wide). The desk draws with the phone's renderer (gl_compatibility, the
+# project's setting since 29 October), so a run there shows the phone's colours.
+# RIFTGATE_AA=off|fxaa|msaa2|msaa4 forces the AA mode for a run (any run; the player's SETTINGS → AA MODE, MSAA 4X by
+# default). fxaa is the look a phone had on Godot 4.7: no MSAA, the map's compositor running FXAA of its own in its place,
+# the renderer leaking with MSAA there (godotengine/godot#97967, fixed in 4.8). The machines' textures read their mipmaps
+# in every mode.
+# RIFTGATE_SHOT_ZOOM=<z> shows any battle pose zoomed to z on its first machine (the overlay holds its size on screen).
+# RIFTGATE_OUTLINE=<n> sets the battle map's machine outline width in design pixels, the same at every zoom, for a comparison
+# (Map3D.OUTLINE is the default). A debug build's TRACES toggle draws the map without its traces (the creases on the
+# machines, the props and the gate, one device pixel at every zoom), to judge the grain zoomed out on the phone; on the
+# desk, RIFTGATE_TUNE=1's TRACE knob does the same live. A debug build's KEYWORD INK sets the terms in shown text
+# bold in ink with their icons alone in their colour, against the words in their colour, to compare on the phone.
 # RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.
-# RIFTGATE_FINE_MAP=1 forces the FINE MAP setting (the map's scene and compositor at the glass's
-# density; with RIFTGATE_SHOT_SCALE=1.5 that is a phone's).
 # RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
 # capture goes through the project's own stretch and font oversampling as the phone's does:
 # run with --resolution 1080x1920 for a 1080 phone's density (the screen caps the height).
@@ -445,7 +486,7 @@ BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.p
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
-# one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
+# one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
 # nose up), then the art/models/wslook_* and ktlook_* files deleted again
@@ -470,22 +511,23 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 # with a certificate the script makes: accept the browser's warning once). Open the printed
 # address in the phone's browser on the same Wi-Fi; the first button press goes full
 # screen. Sizes and touch are the phone's own, the frame rate is the browser's.
-# Needs the 4.7.2 export templates once: fetch Godot_v4.7.2-stable_export_templates.tpz
-# from the Godot release, unzip, and put its `templates` folder at
-# ~/Library/Application Support/Godot/export_templates/4.7.2.stable (on the Windows PC,
-# editor_data\export_templates\4.7.2.stable beside the Godot executable). On Windows the first serve asks Windows
+# Needs the 4.8-beta2 export templates once: fetch Godot_v4.8-beta2_export_templates.tpz
+# from the release (github.com/godotengine/godot-builds/releases/tag/4.8-beta2), unzip, and put
+# its `templates` folder at ~/Library/Application Support/Godot/export_templates/4.8.beta2 (on
+# the Windows PC, editor_data\export_templates\4.8.beta2 beside the Godot executable). On Windows the first serve asks Windows
 # Firewall to let Python take connections: allow it on private networks.
 tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
 
 # the real thing: a debug APK exported, installed over USB and launched (USB debugging on
 # the phone). Beyond the templates this needs the Android SDK at ~/Library/Android/sdk
 # (brew install --cask android-commandlinetools, then sdkmanager "platform-tools"
-# "build-tools;35.0.0" "platforms;android-35"), a JDK (brew's openjdk does; Godot's
+# "build-tools;36.1.0" "platforms;android-36"), a JDK (brew's openjdk does; Godot's
 # editor settings point export/android/java_sdk_path at it) and the debug keystore
-# (keytool, at the path Godot's editor settings name). All of that was set up on the Mac.
+# (keytool, at the path Godot's editor settings name). All of that was set up on the Mac,
+# at 35 for Godot 4.7: 4.8 refuses to export without build-tools 36.1.0 and platform 36.
 # On Windows, where it is set up now: the SDK at ~/Android/Sdk, out of AppData (Google's
 # command-line tools unzipped to cmdline-tools\latest, then `android sdk install platform-tools
-# build-tools/35.0.1 platforms/android-35`: the Android CLI replaced sdkmanager in 2026 and
+# build-tools/36.1.0 platforms/android-36`: the Android CLI replaced sdkmanager in 2026 and
 # names packages with slashes; pass --no-metrics, it reports usage otherwise), Temurin's JDK 17
 # unzipped under %LOCALAPPDATA%\Programs\Eclipse Adoptium (an unzip, so the Java 8 this PC's
 # other software opens .jar files with stays the default), and the keystore in Godot's
@@ -500,27 +542,37 @@ tools/android.sh        # export, install, launch; `tools/android.sh log` tails 
 ```
 
 The skirmish screen runs top to bottom: header with the round tag and MENU, enemies in two
-ranks of four, log with the intent eye at its right, dice with the wide Reroll right under
-them, mechs at the bottom with their gauges above the sprite, End turn bottom-left and
-Withdraw bottom-right. No unit names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
+ranks of four, log with the controls' switch and the intent eye at its right, dice with the
+wide Reroll right under them, mechs at the bottom with their gauges above the sprite, End turn
+bottom-left and Withdraw bottom-right; the setting Skirmish Controls at
+Bottom (or the switch, mid-fight) stands the mechs right under the enemies and puts the log,
+dice and Reroll below them. Both sides stand on one field seen from behind the mechs: the
+other world far, under the enemies, our ground near, the mechs in four fixed hexes of its grid
+turned a little toward the middle (a squad of one or two in the middle hexes, three from the
+left), each die in its mech's column. No unit names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
 the attack) and its statuses (burn, suppressed, exposed) as chips. Under each mech sit its
 statuses and warning signs: a broken shield when incoming damage will break it, a crack when
 a hit that big may destroy a component, a skull when the round would wreck it, a thermometer
 when the current face would overheat. The gauges pulse over the part about to change and the
 warnings update as you act, so shielding or killing an attacker clears them at once. Tap a
-die to lock it, hold a die to read the entry showing (its effects a line each, every keyword
-explained; double-tap the machine for the whole die), drag a die onto a foe to spend an attack
-face or onto a mech to spend a shield or vent face; valid targets light up while dragging.
-Hold or drag an ambusher's die (the funnel-web's) and the foes' ground dims: the foes its
-entry can reach that show no intent on it get pulsing eyes, the ones its blows bite.
+die to read the entry showing (its effects a line each, each term tappable for what it means;
+the readout a beat after the tap, the die lit meanwhile, so a double-tap never flashes it; tap
+again to close it; double-tap the machine for the whole die), double-tap or hold a die to lock
+it, drag a die onto a foe to spend an attack face or onto a mech to spend a shield or vent face;
+valid targets light up while dragging. A Swap waits on its first target for a tap on its second;
+a tap on the ground sends it home to the tray. Read or drag an ambusher's die (the funnel-web's)
+and the foes' ground dims: the foes its entry can reach that show no intent on it get pulsing
+eyes, the ones its blows bite.
 Keywords float beside each die as annotation tags. A rolled weapon rolls its damage when it
 lands and the number flashes over the target; a flat one shows its number. Reroll up to three
 times per round, before or after attacking; a reroll lands on any other face, never the
 one showing; a copy of it may come up. End turn runs the enemy: its turn replays blow
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,
-and then the next round's dice show. Hold a foe or a mech for its
-numbers, its statuses with icons and text, and the intent arrows that concern it; the eye
-shows every arrow; double-tap any unit for its codex entry. Withdraw is offered at any point
+and then the next round's dice show. Tap a foe or a mech for its
+numbers, its statuses with icons and text, and the intent arrows that concern it, and tap it
+again to close it (one readout at a time, a die's included; a tap on nothing closes it too);
+the eye shows every arrow; double-tap any unit for its codex entry; MENU's KEYWORDS lists every
+keyword. Withdraw is offered at any point
 of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
 are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness. A
 battle started from the harness is saved after every change (`user://battle.json`, written
@@ -531,7 +583,8 @@ on. A decided battle clears the save. Standalone scene runs and the tests never 
 
 The harness can add any faction's boss; a massive foe fills both ranks of a column. For the
 standalone screen, `RIFTGATE_FOES=warrior,goblin:3,white_mage` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
-`RIFTGATE_BOSS=1` adds the faction's boss.
+`RIFTGATE_BOSS=1` adds the faction's boss, `RIFTGATE_TERRAIN=<ground>` dresses the field, and
+`RIFTGATE_SKIRMISH_CONTROLS=bottom|middle` places the controls over the saved setting.
 
 The screens are laid out for 720 by 1280 and the window expands its height to the phone's
 (stretch aspect `expand`): the battle screen gives the extra to the map, the skirmish
@@ -559,7 +612,7 @@ inside a fight. The battle ends when the gate falls, every mech is wrecked, or t
 dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate for its
 integrity. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, enemy pace,
-glitch, scan bar, fine map, and music, effects and voice volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
+glitch, scan bar, skirmish controls, AA mode, and music, effects and voice volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
 `RIFTGATE_FACTION=meadow|waste|marsh|peak` the enemy; `RIFTGATE_TUNE=1` shows the
 development knob panel.
 

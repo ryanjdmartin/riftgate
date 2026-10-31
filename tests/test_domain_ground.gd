@@ -158,3 +158,37 @@ func test_the_debug_switch_gives_the_whole_field_to_the_painting() -> void:
 	Bleed.everywhere = true
 	assert_true(Bleed.at(south, Bleed.gradient(b.field, Vector2.ZERO, 48.0), PackedVector3Array()) > 0.99, "RIFTGATE_BLEED_DEBUG paints it all")
 	Bleed.everywhere = was
+
+
+func test_the_fights_backdrop_keeps_its_palette_beside_the_tileset() -> void:
+	# One home for a domain's colours (30 October: the fight's lava had stayed the yellow-orange
+	# Ryan called acid after the map's went orange-red): every domain with a tileset has its
+	# backdrop here, and the fight's water is the map's liquid.
+	assert_eq(BattleBackdrop.PALETTES, DomainGround.BACKDROPS, "the fight reads the palettes kept with the tilesets")
+	for key in DomainGround.TILESETS.keys():
+		assert_true(DomainGround.BACKDROPS.has(key) and DomainGround.LIQUIDS.has(key), "%s has a backdrop and a liquid" % key)
+		var water: Array = DomainGround.BACKDROPS[key]["water"]
+		assert_eq(Color(str(water[1])), DomainGround.fill(str(key), BattleMap.Terrain.WATER), "%s: the fight's lake is the map's water" % key)
+	var lava: Dictionary = DomainGround.LIQUIDS["lava"]
+	assert_true(Array(DomainGround.BACKDROPS["lava"]["glow"]).has(lava["body"]), "the Peak's glow is its lava's")
+	assert_eq(Color(str(DomainGround.BACKDROPS["lava"]["crust"][0])), Color(str(lava["deep"])), "and its crust the lava's deep")
+
+
+func test_no_domain_wears_the_enemys_violet() -> void:
+	# Violet is the rift's and the enemy's register (30 October: "keep purple for enemy
+	# activities"), so no ground, sprite or backdrop paints it: the Marsh's poison purple left.
+	for key in DomainGround.TILESETS.keys():
+		var colours: Array = []
+		var ts: Dictionary = DomainGround.TILESETS[key]
+		colours.append_array([ts["ground"], ts["grid"], ts["rim"]] + ts["grounds"].values() + ts["specks"] + ts["road"])
+		colours.append_array(DomainGround.INKS[key].values())
+		for k in DomainGround.BACKDROPS[key].keys():
+			var v: Variant = DomainGround.BACKDROPS[key][k]
+			if v is Array:
+				colours.append_array(v)
+			elif v is String:
+				colours.append(v)
+		for hex in colours:
+			var c := Color(str(hex))
+			var violet := c.h * 360.0 >= 245.0 and c.h * 360.0 <= 300.0 and c.s > 0.15 and c.v > 0.1
+			assert_false(violet, "%s paints no violet (%s)" % [key, hex])

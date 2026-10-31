@@ -1243,7 +1243,7 @@ city standing, possible in a run of limited battles?). `tools/turn_loop.py`: the
 `sim/campaign.gd` modelled from its constants (four cities, gate 200, bleed 50, rifts open to 2
 plus the Convergence's tier, a won city quiet a turn, the finale at 12), with every battle won
 and no pusher let through, so whatever falls, the schedule felled. Each rift keeps the tier it
-opened at (Ryan's locked tier, `docs/curve_proposal.md`). 2,000 seeds. A model of the
+opened at (Ryan's locked tier, `git show 85e28fd:docs/curve_proposal.md`). 2,000 seeds. A model of the
 arithmetic, not a run of the game.
 
 | Front chosen | Cities fallen a run | Fronts on the board, by tier | Two tiers on the board | Most gate lost when fought | Rescues on a gate of 50 |
@@ -1276,7 +1276,7 @@ Read: at the third bleed the widening touches only the fronts a rotation never l
 and it pays the chase: the always-chaser keeps its cities because a widened front becomes the
 richest on the board, a tier of loot for the neglect (Ryan, 24 October: "more like a reward for
 ignoring it"); at the second bleed it meets the rotation too, a tier up on half the run's
-battles. Dropped (`docs/curve_proposal.md`).
+battles. Dropped (`git show 85e28fd:docs/curve_proposal.md`).
 
 ## 24 October, the foes' heat doubled
 
@@ -1563,7 +1563,7 @@ before). None of 40 reached the finale, as before.
 
 ## 26 October, the fight-size spectrum as it stands
 
-**The sizes the fresh start's proposal sizes its compositions against** (`docs/foes_proposal.md`;
+**The sizes the fresh start's proposal sizes its compositions against** (`git show 85e28fd:docs/foes_proposal.md`;
 the four-machines row's targets, section 4: a small pack one or two machines take for about a
 tenth of their hull, a formation the body's). `tools/balance.gd` with its new `--pack` cells
 (one foe type times a strength, or several together in one fight) on the merged code (`49211ca`,
@@ -1611,7 +1611,7 @@ Meadow formation (the trio 90 / 100 at 12% before, 100 / 100 at 4% now; the lone
 
 ## 26 October, the campaign bot moving as one, and the persona
 
-**The runner work the fresh start's session built without waiting** (`docs/foes_proposal.md`,
+**The runner work the fresh start's session built without waiting** (`git show 85e28fd:docs/foes_proposal.md`,
 its last section): the campaign bot's squad moving as one (every machine toward the pack nearest
 the squad, every machine in range fighting it, a caught machine's allies walking into range of
 the hunters before the catch opens; `--solo` the old walk, each machine toward its own nearest
@@ -3360,6 +3360,168 @@ gate's and the rift's level ground as land and read 47% stepping, about 13 lone 
 7 jogs in a ring at the field's middle; the survey's table is the measure. The shapes
 session's relief is read against it.
 
+## 29 October, the enemy's red against the heat orange
+
+**The red read** (the decision it informs: the bible's semantic-colours row, the red lifted on
+Ryan's "Red chips everywhere need to brighten up, saturate, whatever, it's hard to see on the
+new backgrounds", and his ask to see its closeness to the heat orange; then his try of pure red,
+"try just full ff0000 for me, please. no outlines"). Method: the Machado
+(2009) protan, deutan and tritan matrices at severity 1.0 in linear sRGB, CIELAB lightness,
+CIEDE2000 distance (ΔE), and the luminance contrast of a chip's red on its own black (the
+chip's ground over the field, #0c110a as drawn). Normal / protan / deutan / tritan:
+
+| | Lightness | On a chip's black | ΔE to the orange #ff6a00 |
+|---|---|---|---|
+| #ff1e1e (the red until 29 October) | 54 / 42 / 61 / 53 | 5.0 / 3.2 / 6.1 / 4.8 | 15.7 / 13.8 / 6.1 / 10.2 |
+| #ff7c80 (the first try) | 68 / 61 / 71 / 64 | 7.7 / 6.2 / 8.6 / 6.9 | 22.2 / 19.4 / 14.0 / 7.5 |
+| #ff0000 (Ryan's try, that evening) | 53 / 40 / 60 / 53 | 4.8 / 3.0 / 6.0 / 4.8 | 14.7 / 14.7 / 6.8 / 13.1 |
+| #ff6a00 (the orange, for scale) | 63 / 55 / 68 / 58 | 6.7 / 5.0 / 7.7 / 5.6 | — |
+
+A red saturates little past #ff1e1e (#ff0000 is the limit), so a brighter one leans toward orange (more green) or
+toward pink (more blue). Toward orange (#ff4420, #ff5530) the worst ΔE to the orange falls to 4.0
+and 3.4 (deutan); toward pink the protan and deutan distances grow but tritan's falls, its
+orange being a pink-red (#ff6464 2.6, #ff7070 4.6); with green and blue raised together the
+light red's tritan lightness clears the orange's. The search (red 255, green and blue in
+steps of 4) kept the reds at 6:1 or more on the chip in every simulation, 14 or more from the
+gain green and the green HUD and 22 or more from the ink, and took the one furthest from the
+orange in its worst simulation: #ff7c80, 7.5 (tritan) where #ff1e1e was 6.1 (deutan). It costs
+the gain green (deutan 20 to 14), the green HUD (19 to 15) and the ink (protan 46 to 25). Deepening
+the orange to #ff6000 as well would take the worst to 9.4, the orange's own protan contrast on a
+chip falling from 5.0; the orange was left as it is.
+
+A red drawn straight on the field fails on the bright grounds whatever the hue: an arrow of
+#ff1e1e stood ΔE 8.1 from the meadow's and the waste's floors in the deutan simulation, its
+luminance contrast 1.04 and 1.28, and #ff7c80 4.9 and 7.7, so the skirmish's arrows took the map's
+deep-red edge (#5a0e0e). The dark edge and the light core part from every floor between them, the
+edge on the bright ones and the core on the dark: on each floor's shades in every simulation the
+better of the two stands ΔE 22.5 or more away (the marsh, protan, the worst), and the core stands
+4.9:1 on its own edge in the worst simulation. Bare, as Ryan's try has it, an arrow of #ff0000
+stands 8.3 and 8.6 from the meadow's and the waste's floors (deutan), its luminance contrast 1.02 and
+1.31, within half a point of the old red's.
+
+**The rule, that evening.** Ryan: "you're moving the blues as well when I ask for brighter/darker
+and so on. Reds and oranges, compose them using RG only, not B. I actually like ff6000, once we get
+past the ff8200 area it starts to get confusing whether its orange or yellow/green to me. ff30,
+ff40, ff50, ff60 are all very distinct to my particular blindness." So the red is #ff0000 and heat's
+orange #ff6000, and with no blue a red lightens only toward the orange. Normal / protan / deutan /
+tritan:
+
+| | Lightness | On a chip's black | ΔE to the orange #ff6000 |
+|---|---|---|---|
+| #ff0000 (the red) | 53 / 40 / 60 / 53 | 4.8 / 3.0 / 6.0 / 4.8 | 12.1 / 12.2 / 5.6 / 12.2 |
+| #ff3000 (a lighter red, for scale) | 55 / 44 / 61 / 53 | 5.2 / 3.4 / 6.3 / 4.8 | 8.9 / 8.8 / 4.1 / 7.6 |
+| #ff6000 (the orange) | 61 / 53 / 66 / 56 | 6.3 / 4.6 / 7.4 / 5.3 | — |
+
+Against #ff6a00 the red stood 6.8 in deutan, so the orange's move costs 1.2 there; the orange
+stands 14.6 or more from every HUD option and the gain green in every simulation (#ff6a00, 13.6).
+The map's bright, #ff8a1e, past his line, became #ff6000, and the deep reds lost their blue
+(#7a1414 to #7a1400, ΔE 5.0; the map's edge #5a0e0e to #5a0e00, ΔE 3.5).
+
+## 30 October, red and yellow lines against the grounds
+
+**The ground read** (the decision it informs: none yet; Ryan's note that a colour fails over the
+backgrounds, never between two UI elements, "since we always have an icon", and his instinct that
+the enemy's lines could leave red: "plotting all routes in a friendly easy-to-use yellow is
+completely sane too"). Method: as the red read of 29 October, a line's colour against each
+ground's sampled shades in the Machado simulations, the worst over the shades and the
+simulations; luminance contrast / ΔE2000:
+
+| Ground | #ff0000 | #ff1000 | #ffd000 | #ffff00 |
+|---|---|---|---|---|
+| The meadow | 1.02 / 8.3 | 1.03 / 8.3 | 1.25 / 10.6 | 1.72 / 17.2 |
+| The waste | 1.31 / 8.6 | 1.30 / 8.5 | 1.06 / 2.5 | 1.45 / 15.0 |
+| The marsh | 1.05 / 11.4 | 1.07 / 11.6 | 3.11 / 35.8 | 4.27 / 38.5 |
+| The peak | 1.60 / 19.8 | 1.64 / 20.3 | 6.08 / 50.3 | 8.42 / 58.7 |
+| Our floor | 1.88 / 22.6 | 1.93 / 23.1 | 7.49 / 60.4 | 10.38 / 64.7 |
+
+Pure yellow stands further from every ground than pure red, by both measures; its weakest ground
+is the waste's sand, where a golden yellow (#ffd000) all but vanishes. No single colour reaches
+3:1 on the meadow or the waste, the field's two bright grounds.
+
+
+## 30 October, the map's lines across the zoom
+
+**The outline and the grid at one width** (the bible's row "Nothing is one device pixel thin, and
+no line grows with the zoom"; Ryan: "I don't want the outline to thicken as I zoom in"). Renders
+at the phone's layout and density on the Compatibility renderer, MSAA off (the phone's), the
+battle screen's opening at zoom 1 and its `zoom` pose (2.4). The engine's outline, measured as
+runs of its colour across the machines in device pixels: a median of 2 at zoom 1 (most 1 to 3),
+6 at 2.4; the grid's ribbons, 1.5 map pixels, were 2.25 device pixels at zoom 1 and 5.4 at 2.4.
+The compositor's outline is 2 design pixels (3 device pixels) and the grid 1.5 (2.25) at both.
+
+Its cost, from `tools/perf_probe.gd` in a cloud container (Mesa's llvmpipe on the CPU, so a
+direction for the phone, never its frame time), `RIFTGATE_OUTLINE=0` against the outline: 155.5
+to 158.7 ms a frame at zoom 1 (2%), 125.6 to 130.3 ms at 2.6 (4%). It looks only inside each
+machine's projected box; the machines fill 18 to 20% of their boxes, and no machine pixel fell
+outside one. It adds no draw call, being the compositor's; the engine's outline pass is gone from
+every machine's materials (not counted against the code before it).
+
+## 30 October, the enemy's register in violet
+
+**The violet read** (the decision it informs: none yet; Ryan's proposal that every enemy mark
+take the rift's violet, freeing red for heat at about #ff3000 to #ff4000, the shield to a cool
+blue if it sits too near the violet). Method: as the red read of 29 October, the Machado
+simulations at severity 1.0, CIEDE2000 (ΔE) and luminance contrast; a line read as its light
+core on its deep edge, the better of the two on each shade, the worst over a ground's shades
+and the simulations. The grounds: the skirmish floors of the read above, and the battle map's
+own, clustered from a render at the phone's layout (its ground #57564b, #4e4f3f, #626669 and
+#42484f; its green #1e321e and #304331; its water #1c3e6b; its town #cad1d8 and #a59ca5).
+
+| Ground | Red #ff0000 on #5a0e00 | Violet #c8a4ff on #2a0e4a |
+|---|---|---|
+| The meadow | 3.06 / 26.1 | 3.90 / 42.6 |
+| The waste | 5.22 / 43.4 | 5.85 / 51.0 |
+| The marsh | 1.81 / 14.9 | 3.23 / 30.6 |
+| The peak | 1.60 / 19.8 | 4.57 / 46.7 |
+| Our floor | 1.88 / 22.6 | 5.79 / 51.9 |
+| The map's ground | 1.77 / 17.6 | 2.83 / 31.2 |
+| The map's green | 1.63 / 19.5 | 5.05 / 52.2 |
+| The map's water | 1.60 / 45.5 | 4.87 / 45.8 |
+| The map's town | 4.88 / 46.5 | 6.09 / 46.7 |
+
+The violet core stands 7.9:1 on its own edge in the worst simulation, the red 2.5. On a chip's
+black (#0c110a), normal / protan / deutan / tritan: the violet #c8a4ff 9.3 / 9.2 / 9.3 / 9.5, the
+red 4.8 / 3.0 / 6.0 / 4.8; heat at #ff6000 6.3 / 4.6 / 7.4 / 5.3, #ff4000 5.4 / 3.7 / 6.6 / 4.8,
+#ff3000 5.2 / 3.4 / 6.3 / 4.8; the shield #2f63d8 3.5 / 4.0 / 3.4 / 4.1. A redder heat moves
+from the greens in the deutan simulation (ΔE to the gain green 15.8 at #ff6000, 18.4 at #ff4000,
+19.3 at #ff3000) and stands 35 or more from either violet in every simulation.
+
+The shield against the violets, the worst simulation: today's #2f63d8 stands 21.9 from the light
+violet (protan) and 6.1 from the deep (deutan). A cool blue nears the light violet, which loses
+its red to protan and deutan vision and reads as a light blue: #2f8fff 9.2, #1e90ff 9.1, #3aa0ff
+4.8, #00a0ff 5.1, #4ab4ff 0.5 (protan each). The light violet stands 4.2 from the blue HUD
+option #5cd8ff (deutan) and 37.5 or more from the green HUD and the gain green.
+
+The picks, that evening (Ryan: "keep purple for enemy activities", heat reddened, the other reds
+case by case): the enemy's violet as above; its breath toward #ecdcff, ΔE 16.7 / 15.6 / 15.6 /
+12.1 from the violet (normal / protan / deutan / tritan), 12.5:1 on the deep edge, about the
+swing the red had toward the orange; heat #ff4000; harm's red-red #ff0000, 2.6 from heat in the
+deutan simulation (5.5 / 5.7 / 2.6 / 7.7), the steps Ryan reads as distinct, each mark with its
+glyph, 20.7 or more from the gain green and 37.5 or more from the violet in every simulation.
+
+## 30 October, the HUD's green and amber apart
+
+**The presets read** (the decision it informs: whether the green preset moves; Ryan's "Do we
+have room to push the green and amber farther apart?", the free picker set aside). Method: as
+the reads above, a preset against the others and every meaning (the enemy's violet, harm's red,
+heat, the shield) in the worst simulation, and against each ground's shades. Today's green
+#33ff55 and amber #fff21a stand 26.5 apart in normal vision but 2.4 (protan) and 8.1 (deutan),
+both a bright yellow to red-green vision. The amber cannot move: a deeper gold (#f0c81a) all but
+vanishes on the waste's sand (1.01:1, ΔE 3, where today's stands 1.35 and 13), and more orange
+nears heat. The green can, toward mint, against the amber in the worst simulation / against the
+blue preset (tritan) / on the meadow and the waste (ΔE):
+
+| Green | Against the amber | Against the blue | Meadow | Waste |
+|---|---|---|---|---|
+| #33ff55 (today) | 2.4 | 9.4 | 11 | 6 |
+| #50ff90 | 9.7 | 8.4 | 10 | 4 |
+| #58ffa0 | 12.3 | 8.1 | 11 | 7 |
+| #60ffb0 | 15.0 | 7.8 | 13 | 10 |
+| #68ffc0 | 18.0 | 7.6 | 15 | 12 |
+
+Each stands 13 or more from every meaning and 14:1 or more on the HUD's black; the blue preset
+stands 4.2 from the enemy's violet (deutan), the closest pair the three presets keep.
+
 **The six map shapes** (Ryan's direction of 28 October and his calls of 29 October; landed the
 same day). The map survey on them (`docs/map_survey.md`, 200 seeds a shape at 9x20, the detailed
 report on Open Steppe, the baseline): every shape keeps the horde's crossing three wide or more
@@ -3573,6 +3735,311 @@ Read:
 - The cautious line at half the maximum is one habit among many, and a player who vents only when
   it pays sits between the two bots: the two ends bracket heat's price, they do not set it.
 
+
+## 30 October, the pacing session and the foes' fresh start
+
+**The engine of the pacing session and the fresh start, read three ways at 40 runs** (built
+30 October, `85e28fd`; the bible's pacing, clocks, stall, tears, wall, curve and Anathema rows;
+the brief: `git show 85e28fd:docs/briefs/fresh_start.md`). `tools/campaign_run.gd` at 40 runs
+from seed 1, the greedy rung: the plain player (`docs/campaign_run.md`), the turtle (`--turtle`:
+the squad holds the two rows before the gate at its columns and fights only what comes within
+reach) and the detaching player (`--detach`: one machine sent at the nearest patrol within five
+hexes while the body fights the nearest formation), against the run of 29 October (the hunters
+at a ring of two, the same seeds, the old spawn lists as packs and the old clock). The field at
+the start is the tier's compositions by the ramp (at tier one a formation and two patrols at
+density 1.0), the wall is struck from anywhere along it with the strike's floor gone, the timer
+is the ramp's (12 at Convergence 0, 9 at 9), the meter's Fractures are set from the field's
+menace (the last at two thirds) and the boss is sealed until the Rupture. Directions, on a bot
+whose battles end in a wipe before the first peak.
+
+| Read | Battles | Won | Held | Fell | Wiped | Finale reached | First city fell, turn | Phases a battle | Three-machine battles won | Fights | Alone (1 of 1), won | The whole squad (3 of 3), won |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 29 October, the old field and clock | 379 | 6% | 52% | 40% | 93% | 32 | 3.55 | 7.77 | 39% of 58 | 733 | 327, 18% | 55, 81% |
+| 30 October, plain | 308 | 2% | 39% | 57% | 97% | 18 | 2.50 | 7.66 (3 to 16) | 16% of 48 | 575 | 279, 14% | 18, 72% |
+| 30 October, the turtle | 230 | 0% | 28% | 71% | 100% | 4 | 1.27 | 11 (5 to 81) | 0% of 44 | 536 | 228, 22% | 52, 90% |
+| 30 October, detaching | 291 | 0% | 41% | 57% | 99% | 11 | 2.35 | 7.85 (4 to 18) | 2% of 43 | 588 | 324, 19% | 4, 25% |
+
+The meter and the mouths, means a battle with their ranges:
+
+| Read | Fractures reached, of those held | Battles reaching the Rupture | By the stall guard | The seal broke, turn | Peaks | The rift sent | The tears sent | Tears open at the end | Elites | Menace killed | Gate damage |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Plain | 0.85 of 3.33 | 11% | 0% | 2.92 (1 to 5) | 0.00 (0 to 1) | 0.00 (0 to 1) | 0 | 0.00 (0 to 1) | 0.38 (0 to 2) | 25 (0 to 127) | 65 (0 to 180) |
+| The turtle | 1.24 of 3.12 | 20% | 0% | 4.89 (4 to 7) | 0.15 (0 to 6) | 0.15 (0 to 6) | 0.10 (0 to 15) | 0.15 (0 to 6) | 0.52 (0 to 2) | 40 (0 to 774) | 100 (1 to 200) |
+| Detaching | 0.84 of 3.28 | 9% | 0% | 2.76 (2 to 4) | 0.00 (0 to 1) | 0.00 (0 to 1) | 0 | 0.00 (0 to 1) | 0.42 (0 to 2) | 23 (0 to 127) | 69 (0 to 150) |
+
+Read. The field at the start is the harder battle for this bot: fell 57% where 40% fell, won 2%
+where 6%, the first city falling on turn 2.5 where 3.55, the three-machine battles won 16% of 48
+where 39% of 58. Two changes stand behind it and the run does not part them: the wall struck
+from anywhere (a pusher that reaches any of the bottom rows strikes that turn, where it had to
+reach the four hexes before the gate, which the squad stood on; the gate now takes 65 a battle
+on the plain player) and the compositions on the field (a lone machine against a formation with
+a patrol beside it wins 2% of 139 such fights, the patrols' rings covering the formation they
+flank, where the old lists came as three to five one-type packs). The matrix's composition cells
+by machine attribute it (the to-do); this is a direction.
+
+The flood is unread on the plain player: its battles last 7.7 phases against a timer of 12 at
+Convergence 0 (9 at 9), so no peak comes in all but a handful (0.00 a battle, 0 to 1): the rift
+sent nothing and no tear opened. What the plain read sees is the field at the start, the
+Fractures and the elites. The turtle's battles run 11 phases (5 to 81) and meet the peaks: 0.15
+a battle (0 to 6), the tears sending up to 15 patrols in one battle, one battle of 81 phases
+killing 774 menace: the stall the design prices exists on the turtle and is rare, since the
+turtle holds the two rows before the gate at its own columns and the wall is struck from
+anywhere beside it: the gate took 100 a battle (1 to 200) where the plain player's took 65,
+every battle a wipe, 71% fell, the first city on turn 1.27. The whole-wall rule does its work
+(the apron cannot be plugged), and the turtle read gives the interval step and the bounty cap no
+case yet: the step stays at zero and the cap on the bench until a persona that holds the whole
+apron row, or Ryan's play, meets a stall.
+
+The timer's 12 is the old clock's number, set when every peak sent one pack and the clock was
+inert (the bible's pacing row's arithmetic). The design test (a fought battle meets one or two
+tears, a stall five) wants the first peak inside a fought battle of ten turns or so, which 12 at
+the start cannot give: by arithmetic, not by the bot, Claude's lean is 8 at the start to 6 at the
+top (one peak and one armed tear in a ten-turn battle, two or three in a stall of twenty), for
+Ryan's word (`Ramp.timer_at`, section 12's ramp item).
+
+The Rupture came in 11% of the plain player's battles (0.85 Fractures a battle of the 3.33
+held), 20% of the turtle's and 9% of the detaching player's, never by the stall guard (the field
+never clears under this bot; a wipe comes first). Where it came it came early (turn 2.9 on the
+plain player), in the battles whose fights the trio won, and the boss's fight after it is the
+exam the proposal meant: two machines against the boss alone won 83% of 6, three 100% of 3,
+three against the boss with the first Fracture's elite beside it 25% of 4, the elite that
+emerged at the rift standing in the boss's ring and joining its fight. The elites: 0.38 a battle
+on the plain player, 0.52 on the turtle; a lone machine against an elite's composition won 28%
+of 7 (plain) and 15% of 20 (turtle), two machines 100% of 6 and 14% of 7, small cells of
+different elites.
+
+The patrols: a lone machine against a patrol wins 45% of 133 (plain), 50% of 116 (turtle) and
+48% of 196 (detaching), where the brief's target is a patrol costing one machine about a tenth,
+so the tier-one patrols as partitioned (three goblins, two wolves and their kin in each domain)
+are a lone starter's fight on the greedy rung, as the `--pack` read of 26 October said of three
+of a swarm type for a light machine; the partition is Ryan's to mark and the composition cells
+read it by machine. The detaching player sent a machine 219 times: its lone fights rose to 324
+(279) at 19% won (14%), and it won no battle: a detachment pays, as the design wants, and the
+patrols cost more than their tenth.
+
+Salvage by menace: a won battle banks 246 (230 to 254) at 2 a point of menace where ten a kill
+banked 163 (100 to 320), on 6 won battles against 23, so the constant reads about half again high
+at a won battle and is the economy pass's number (section 10); components destroyed a won battle
+0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
+reads of the fights' shape stay the quick campaign's until a runner player fields a squad
+(section 12).
+
+## 30 October, the fight's backdrops on the map's palettes
+
+**The backdrop read** (the decision it informs: the bible's skirmish field row, the fight's
+palettes kept beside the map's tilesets with the map's liquid). Method: as the reads above.
+The Marsh's old backdrop against the rift's violets, the worst simulation: its poison purple
+#6a2e8a 7 from the deep #6a30c0, its purple specks 11, its indigo sky (#1d1a34, #2c2848) and
+violet-grey roofs (#3a3240) 6 to 9 from the violet edge #2a0e4a; all gone, the sky a cold teal
+night, the pools the bog's water and moss. The enemy's violet drawn bare over each lake's new
+body (luminance contrast / ΔE, the worst simulation, the old lake in brackets): the plains'
+#3366ff 1.88 / 17 (#3f78dc 1.83 / 16), the Waste's #339999 1.51 / 19 (#2e8cbc 1.64 / 13), the
+Marsh's #003333 6.40 / 56 (#3e4e46 4.18 / 46), the Peak's crust #330000 8.67 / 62 (7.61 / 60).
+
+## 30 October, the foes' move order
+
+**The boss cells before and after the move-order fix** (30 October; the status's bullet:
+`ContentDB.make_foe` passed over an attack already in front and moved the next, so 25 of the
+65 foes loaded out of content's order). `tools/balance.gd -- --seeds 30 --packs` the thirteen
+boss cells (the four bosses alone, each bench hero's final with three of its domain's first
+pack, the finale), random and greedy, on main's head (`8607407`) as it stood and with the fix,
+the same seeds, against every row (the 22 runnable machines alone, the team and the three
+makers' trios): 676 cells, 21,060 fights a side. Won, the mean over the 26 rows:
+
+| Fight | Random, before / after | Greedy, before / after | Cells identical, of 52 |
+|---|---|---|---|
+| Treant | 24.2% / 24.2% | 43.8% / 44.0% | 16 |
+| Sandworm | 12.6% / 13.2% | 18.6% / 19.4% | 29 |
+| Bone Wyvern | 23.5% / 23.8% | 44.5% / 44.4% | 17 |
+| Magma Elemental | 10.5% / 10.5% | 15.9% / 15.9% | 52 |
+| The Warrior's final (with Goblin x3) | 15.1% / 15.1% | 18.2% / 17.6% | 35 |
+| The Martial Artist's final (with Goblin x3) | 12.6% / 12.7% | 16.4% / 16.3% | 40 |
+| The Thief's final (with Needler x3) | 19.2% / 19.2% | 27.9% / 27.9% | 52 |
+| The Lancer's final (with Needler x3) | 15.4% / 16.4% | 20.9% / 19.2% | 0 |
+| The Cleric's final (with Revenant x3) | 32.1% / 32.6% | 62.6% / 60.5% | 10 |
+| The Augur's final (with Revenant x3) | 28.7% / 30.9% | 59.7% / 59.7% | 0 |
+| The Black Mage's final (with Salamander x3) | 14.2% / 13.8% | 16.0% / 16.0% | 41 |
+| The Summoner's final (with Salamander x3) | 18.3% / 18.3% | 25.9% / 25.9% | 52 |
+| The finale (the Warrior, the Thief, the Cleric, the Black Mage, promoted) | 0.0% / 0.0% | 0.0% / 0.0% | 48 |
+
+Read. The direction of the boss cells holds: no fight's mean moves more than 2.2 points on
+either rung, inside the band of a mean over the rows at 30 seeds (about 4), and the thirteen
+pooled read 17.4% won to 17.8% on the random rung and 28.5% to 28.2% on the greedy. The fights
+that field no foe the fix touched (the Magma Elemental alone, the Thief's and the Summoner's
+finals) are identical fight for fight, as are 392 of the 676 cells in all, where no draw fell
+differently (a Treant that never falls below half draws as it did). No stock kit carries a
+Disrupt (the Differentiation Probe alone has one, and no chassis fields it), so the matrix
+reads only the draw's order, which moves which seed draws a move and never a move's odds:
+every delta here is seeded noise, and the pattern a Disrupt steps through, which the fix
+changed for nine foes, is unread until a kit fields one. Three single cells moved past a
+cell's 30-seed band of about 18 points (the Musk Ox on the Lancer's final, random, 20% to 47%;
+the Musk Ox on the Cleric's final, greedy, 97% to 70%; the Whip Scorpion on the Augur's final,
+random, 3% to 27%). Read again at 200 seeds a side (those two rows against those three
+finals, both rungs: twelve cells, 2,400 fights a side), they move +4.5, -6.5 and +7.0, inside
+a 200-seed difference's band (about 8 there); the one cell of the twelve past it (the Musk Ox
+on the Augur's final, random, 70.0% to 80.5%) moves +1.5 at 1,000 seeds (72.6% to 74.1%, the
+band 3.9), and the Whip Scorpion's beside it -0.1 (18.0% to 17.9%). Run on Godot 4.7.2; the
+Musk Ox's 1,000 replayed on main as it took the fix (`d84ad16` merged, Godot 4.8-beta2) come out
+identical fight for fight, so the read stands for that head.
+
+## 30 October, the meanings as text on the codex's plate
+
+**Keywords in their colour** (the decision it informs: whether a term's word wears its colour or
+ink, Ryan's "Try bold in the colour first, and I'll judge"). Method: luminance contrast of each
+meaning drawn as text on the codex's plate (#0c100c), in normal vision and the three Machado
+simulations, the worst case read; on a raised plate (#121812) each stands a few tenths lower.
+
+| Colour | Normal | Protan | Deutan | Tritan | Worst |
+|---|---|---|---|---|---|
+| ink #f2f4ee | 17.3 | 17.3 | 17.3 | 17.3 | 17.3 |
+| heat #ff4000 | 5.5 | 3.7 | 6.6 | 4.9 | 3.7 |
+| the shield's blue #2f63d8 | 3.6 | 4.1 | 3.4 | 4.1 | 3.4 |
+| the enemy's violet #c8a4ff | 9.3 | 9.3 | 9.4 | 9.5 | 9.3 |
+| the red-red #ff0000 | 4.8 | 3.0 | 6.0 | 4.8 | 3.0 |
+| the hull's #d8d2c4 | 12.7 | 12.6 | 12.8 | 12.7 | 12.6 |
+| GAIN #5cff6a | 14.6 | 15.5 | 13.8 | 14.3 | 13.8 |
+| the muted grey #7b857c | 5.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+
+The three darker meanings sit under the plate's quietest text, the flavour quote's muted grey
+(5.0): heat 3.7, the shield's blue 3.4 and the red-red 3.0 at their worst, where the violet, the
+hull's colour and ink read freely. None can simply be lightened: a lighter blue nears the violet
+for red-green vision (the reason the shield stayed dark) and a lighter heat reads green to Ryan.
+Drawn as icons at the chips' size, the three clear the 3:1 a graphic wants, the red-red at it.
+
+## 30 October, the bosses' slate
+
+**The slate's seven read alone, at the scale row's 80 and at 48** (`tools/balance.gd`, 30 seeds,
+the greedy rung, each boss alone with nothing beside it; a direction). Rows: the default team
+(the Honey Badger, the Clydesdale, the Kite), the three makers' trios and a stock four of tier
+ones (the Honey Badger, the Baboon, the Armadillo, the Prairie Dog). The bosses as built, at 80
+(the Fallen Weapon's core 64, its eyes 12), and at 48 by `--set foes/<id>/hp` (the core 40);
+Rotbloom and the Fallen Weapon read on the fixed runner (below), the eyes once more at 8. Mean
+rounds of the fights won, the win rate where under 100%:
+
+| At 80 | Rotbloom | Floraison | Gilgamesh | Fallen Weapon | Matador | Behemoth | Cinder Tortoise | The four stand-ins |
+|---|---|---|---|---|---|---|---|---|
+| Default team | 8.9 | 8.4 | 7.1 | 13.1 (93%) | 8.4 | 8.8 | 10.5 | 3.1 to 4.0 |
+| Minerva's trio | 17.3 (73%) | 17.3 | 13.8 | 26.9 (80%) | 18.6 | 17.2 | 32.1 | 6.4 to 7.1 |
+| Kestrel's trio | 7.6 | 7.8 | 6.8 | 9.4 | 7.6 | 8.1 | 8.5 | 2.8 to 3.7 |
+| Wainwright & Sutler's trio | 18.6 (20%) | 18.5 (83%) | 14.4 | 17.0 (0%) | 18.1 (97%) | 18.1 (97%) | 24.6 | 6.3 to 8.0 |
+| The stock four | 13.2 (97%) | 13.4 | 11.3 | 22.1 | 13.4 | 11.6 | 19.0 | 5.1 to 5.9 |
+
+| At 48 | Rotbloom | Floraison | Gilgamesh | Fallen Weapon, eyes 12 / 8 | Matador | Behemoth | Cinder Tortoise |
+|---|---|---|---|---|---|---|---|
+| Default team | 4.4 | 4.7 | 4.2 | 6.9 / 5.4 | 4.8 | 5.4 | 5.8 |
+| Minerva's trio | 9.7 | 10.0 | 8.4 | 17.4 / 12.5 | 11.2 | 11.0 | 19.3 |
+| Kestrel's trio | 4.2 | 4.8 | 4.2 | 5.4 / 4.6 | 4.5 | 5.5 | 5.1 |
+| Wainwright & Sutler's trio | 12.4 (83%) | 10.7 | 9.0 | 17.1 (13%) / 18.4 (47%) | 10.7 | 11.3 (97%) | 14.4 |
+| The stock four | 8.0 | 8.2 | 7.1 | 14.0 / 11.1 | 8.2 | 7.9 | 11.9 |
+
+Read. The scale row's 80 to 100 for bosses (the bible's section 11), written before any boss
+existed, fails the kill-time test (section 2: a boss three to five rounds for a squad of four,
+with its mechanics) on today's kits: at 80 the default team takes 7 to 13 rounds against each
+alone and the stock four 11 to 22, where the four stand-ins at their 32 to 40 take 3 to 4 and 5
+to 6. At 48 the default team takes 4 to 7 and Kestrel's trio 4 to 5.5, the test's band, while
+the stock four takes 7 to 14 and the slow trios 8 to 19, those kits' own pace (they take the
+stand-ins 5 to 8). So the slate lands at 48 at tier one (60 and 72 at tiers two and three by
+`ContentDB.BOSS_TIERS`), the boss in parts' core at 40 and its eyes at 8: at 12 the eyes grew
+back faster than Wainwright & Sutler's trio could open the core (13% won, 94% of its hull spent),
+at 8 it wins 47%, still the slate's hardest boss for a trio without burst. Alone, most of the
+slate costs little hull (1 to 17% on four of the five rows): long rather than dangerous, its
+threat the mechanics and, in a battle, the escort. The Cinder Tortoise is the slowest: its
+shell's five armour walls the small blows, as meant, and Expose and a breach, its answers, are
+in none of these stock kits. The row's 80 to 100 is Ryan's to keep or move; the 200-seed
+matrix's boss cells and his play read it again.
+
+**The balance runner fielded no split, no summon and no part until 30 October** (found reading
+the Fallen Weapon, whose eyes never stood in its cell): it never set the skirmish's foe factory,
+so a Gel never split there, a Ghost raised nothing, a summoner called nothing up and a core's
+parts never stood (a trace of the default team against four Gels on the old runner: no half
+stepped up; on the fixed one, every Gel split). Every matrix read until then, the 27 October
+200-seed run among them, read those cells so. Fixed the same day: a cell fields a core's parts
+and calls up splits, summons and regrown parts as a battle does. The Gel's, the summoners' and
+the boss in parts' cells are read again at the next 200-seed matrix.
+
+## 30 October, the Petrels' first rows
+
+**Their engine session's reads** (the Storm Petrel and the Giant Petrel fielded 30 October on
+`claude/affectionate-ramanujan-5d24t6`, from main's `d84ad16`), as their briefs asked: the Storm
+Petrel alone and beside the Puffin, its magazine, each against the Armadillo, the other tier-one
+body, in the same run; the Giant Petrel in two teams of four against the same three with another
+machine in its place. `tools/balance.gd`, 30 seeds a cell (a direction), random and greedy, no
+party, the matrix's 55 packs as it stands (the thirteen tier-one packs, the ladder's twenty-six
+recolours, the four big foes and the twelve formations), on Godot 4.7.2 (the session's hook
+installed it on the old head; the 4.8-beta2 build's unpacking and first run were refused by Auto
+mode, and the headless sim reads no renderer). Won, random / greedy, then greedy's hull lost and
+rounds to a win.
+
+**The Storm Petrel alone**, beside the Armadillo:
+
+| Row | Every pack | Tier-one rank and file (13) | Tiers two and three (26) | The four big foes | The twelve formations | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|---|
+| Storm Petrel | 32 / 45 | 52 / 66 | 42 / 61 | 0 / 0 | 0 / 0 | 63% | 4.9 |
+| Armadillo | 25 / 38 | 48 / 65 | 29 / 49 | 0 / 0 | 0 / 0 | 75% | 9.7 |
+
+Pick share (greedy): the Laser Carbine 31%, the St. Elmo's Regenerator 24%, the Canopy 20%, the
+Ankle Mortar 15%, the Twin Autoguns 9%. Its heat peaks at a tenth of its gauge (the Armadillo's
+41%), 0.04 overheats a fight. The first run of the day, before the bot valued the regen, read the
+row 32 / 46 with the Regenerator spent 4% of the time: valuing it moved the lock's share and not
+the row.
+
+Read: alone it stands in the Armadillo's band and above it on the ladder's recolours, winning in
+half the rounds; every tier one alone is walled by the big foes and the formations, and so is it.
+On its stock the burn is a trickle: the Carbine's 2 is the most any basic burns, and the gauge
+never sees it, so its identity shows at the size of its basics' heat (the bible's section 12 holds
+the question).
+
+**Beside the Puffin**, the same two bodies:
+
+| Row | Every pack | Tier-one rank and file | Tiers two and three | The four big foes | The twelve formations | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|---|
+| Storm Petrel + Puffin | 53 / 66 | 85 / 94 | 68 / 84 | 4 / 51 | 0 / 2 | 39% | 4.5 |
+| Armadillo + Puffin | 47 / 62 | 77 / 93 | 60 / 78 | 0 / 32 | 0 / 8 | 46% | 6.5 |
+
+Pick share (greedy, the Storm Petrel's pair): the Laser Carbine 31%, the Twin Autoguns 24%, the
+Regenerator 13%, the Halo Shield 10%, the Ankle Mortar 10%, the Canopy 6%, the Backwash Ionizer 3%.
+
+Read: the escort pair reads a few points over the Armadillo's on the rank and file and about half
+again on the big foes (51% against 32%, in a third the rounds), for less hull; the Armadillo's pair
+takes a formation now and then where it takes almost none. Neither is a must-pick on this read; the
+Puffin's overshield is rarely spent on it (the Ionizer 3%), so the brief's magazine claim is not
+read here, the greedy shielding its ally against this round's blows and never for a burn to come.
+
+**The Giant Petrel in a four**, beside the same three with the Lammergeier, Kestrel's other tier
+three, in its place:
+
+| Row | Every pack | Rank and file, tier one / two and three | The four big foes | Formations, tier one / two / three | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|
+| Kite, Buzzard, Puffin, Giant Petrel | 88 / 98 | 100 / 100, 99 / 100 | 100 / 100 | 95 / 100, 50 / 100, 0 / 74 | 7% | 2.2 |
+| Kite, Buzzard, Puffin, Lammergeier | 86 / 98 | 100 / 100, 96 / 100 | 98 / 100 | 92 / 100, 43 / 100, 0 / 73 | 7% | 2.2 |
+
+Its four buys an ally's action 0.19 a fight under the greedy and banks 0.94 rerolls a round; the
+Booster is 3% of the team's spends, the Salvo 9%, the Uplink 1%. The first run of the day priced
+every reroll a spend paid or brought as a look and bought 0.01 actions a fight, the greedy rerolling
+only as a round opens, so a reroll mid-round is worth only what the bank carries (`Policy.bank_delta`):
+read again on that, the outcome cells moved by a point at most and the actions rose from 0.01 to 0.19.
+
+Read: the formation leader's four reads level with the bomber's under the greedy everywhere (tier
+three's formations 74% against 73%), random play a few points higher with it on tier two's (50%
+against 43%). Its fights are short (2.2 rounds), so the bank and the bought action have little
+room; the must-pick guard reads no must-pick on this team.
+
+**The Giant Petrel in another four**, Wainwright & Sutler's three with the Swallowtail, the other
+action-economy capstone, in its place:
+
+| Row | Every pack | Rank and file, tier one / two and three | The four big foes | Formations, tier one / two / three | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|
+| Cassowary, Clydesdale, Dingo, Giant Petrel | 87 / 95 | 100 / 100, 98 / 100 | 100 / 100 | 90 / 100, 41 / 100, 0 / 38 | 11% | 2.8 |
+| Cassowary, Clydesdale, Dingo, Swallowtail | 83 / 93 | 99 / 100, 94 / 99 | 99 / 100 | 78 / 99, 28 / 93, 0 / 21 | 13% | 3.2 |
+
+Its four buys an ally's action 0.24 a fight and banks 1.21 rerolls a round; the Salvo is 8% of the
+team's spends, the Overclocked Railgun 9%, the Booster 3%, the Uplink 1%.
+
+Read: here the Giant Petrel's four reads over the Swallowtail's on every formation, most on tier
+three's (38% against 21% under the greedy) and on tier two's under random play (41% against 28%), in
+fewer rounds. The bought actions are a fifth of a fight, so most of that is its own guns beside a
+support capstone's kit; the must-pick guard to watch is this team's, read again at 200 seeds with
+the matrix (the to-do), the levers the Booster's price, the bank's cap and the Salvo's two.
 
 ## 30 October, the overheat's price as what-ifs
 

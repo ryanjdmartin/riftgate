@@ -1,5 +1,5 @@
 {
-  "_about": "The invasion's domains (decided 9 October; bible section 9). The other world is a JRPG world and the rift is where its overworld pushes into ours: a domain is one biome of the classic overworld, its bleed (the tileset the flattened ground paints, DomainGround's: plains, sand, marsh or lava), its wildlife with one tactical signature, and its hero. A rift rolls its domain when it opens, one lead and at most one guest. A pack on the battlefield is ONE foe type times a strength; mixed fights come from packs chained on the map. spawn lists the packs the rift sends through together (the domain's shape as it appears on the map), one list a tier keyed \"1\" to \"3\" (every domain a \"1\"; a tier with none takes the highest under it), the battle's tier choosing, a boss's escort included; boss names the massive wildlife a boss unit unpacks into (the one powering the rift); bench names the heroes the campaign's start may deal to this domain, one per campaign, the domain's final (the party, bible section 9: the hero stands in its rank with the domain's wildlife in the other columns). A domain names no map shape: a battle draws its shape by its seed (Ryan, 30 October: \"I don't see why the domain should be related to the map type in any way\"). Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the domain does), answer (how the player beats it, in the engine's own vocabulary). Numbers are placeholders.",
+  "_about": "The invasion's domains (decided 9 October; bible section 9). The other world is a JRPG world and the rift is where its overworld pushes into ours: a domain is one biome of the classic overworld, its bleed (the tileset the flattened ground paints, DomainGround's: plains, sand, marsh or lava), its wildlife with one tactical signature, and its hero. A rift rolls its domain when it opens, one lead and at most one guest. A pack on the battlefield is one composition on one hex: one sprite (its lead's), one badge (its count), its members listed on a tap (the foes' fresh start, 30 October). compositions are the packs the rift places and sends (the domain's shape on the map), each {id, size, tiers, members}: size is patrol (one or two front types, three to five foes, a detachment's fight), formation (a front and a back, six to sixteen by the tier, the body's fight and the unit the Fractures are counted in), elite (led by a foe flagged elite, the guaranteed curveball a Fracture spawns) or escort (a boss's hand-tailored escort at a tier; none written yet, so the tier's units stand in round robin); tiers lists the tiers (1 to 3) that may deal it, and a tier with none of a size takes the highest tier's under it (every domain needs a tier-one formation and patrol); members are {foe, strength} in order, the first the lead (its sprite and its behaviour; the pack's ring the largest of its members', its pace the slowest, winged only when every member is). The spawn lists by tier are derived (ContentDB.spawn_table: the tier's formations' then patrols' members, each foe once, first seen first) for the harness, the runners and a boss's escort; boss lists the domain's bosses, the slate's first (bible section 9: three a domain before its hero, each battle drawing one its domain has not ended on this run); a domain short of three keeps its old massive stand-in as the last until the slate fills it (30 October); bench names the heroes the campaign's start may deal to this domain, one per campaign, the domain's final (the party, bible section 9: the hero stands in its rank with the domain's wildlife in the other columns). A domain names no map shape: a battle draws its shape by its seed (Ryan, 30 October: \"I don't see why the domain should be related to the map type in any way\"). Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the domain does), answer (how the player beats it, in the engine's own vocabulary). Numbers are placeholders.",
   "entries": [
     {
       "id": "meadow",
@@ -7,32 +7,37 @@
       "design": { "fantasy": "The first overworld: grass, round trees, a road that goes nowhere. The invasion's shallow end, and the first thing CARE ever classified. Dragon Quest's plains and Final Fantasy's, where the slime and the goblin live.", "signature": "Numbers that split and swarm. Dumb and many.", "answer": "Area damage, armour against volume, kill order." },
       "bleed": "plains",
       "reward_bias": "one_shot",
-      "spawn": {
-        "1": [
-          { "foe": "goblin", "strength": 6 },
-          { "foe": "wolf", "strength": 3 },
-          { "foe": "gel", "strength": 4 },
-          { "foe": "mandragora", "strength": 2 }
-        ],
-        "2": [
-          { "foe": "goblin", "strength": 3 },
-          { "foe": "goblin_guard", "strength": 4 },
-          { "foe": "warg", "strength": 4 },
-          { "foe": "gel", "strength": 3 },
-          { "foe": "bubble_gel", "strength": 2 },
-          { "foe": "mandrake", "strength": 3 }
-        ],
-        "3": [
-          { "foe": "goblin_guard", "strength": 4 },
-          { "foe": "goblin_captain", "strength": 4 },
-          { "foe": "alpha_warg", "strength": 4 },
-          { "foe": "bubble_gel", "strength": 2 },
-          { "foe": "metal_gel", "strength": 3 },
-          { "foe": "mandrake", "strength": 2 },
-          { "foe": "alraune", "strength": 3 }
-        ]
-      },
-      "boss": "treant",
+      "compositions": [
+        { "id": "goblin_warband", "size": "formation", "tiers": [1],
+          "members": [ { "foe": "goblin", "strength": 6 }, { "foe": "mandragora", "strength": 2 } ] },
+        { "id": "wolf_pack", "size": "patrol", "tiers": [1],
+          "members": [ { "foe": "wolf", "strength": 3 } ] },
+        { "id": "gel_cluster", "size": "patrol", "tiers": [1],
+          "members": [ { "foe": "gel", "strength": 4 } ] },
+        { "id": "guard_warband", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "goblin_guard", "strength": 4 }, { "foe": "goblin", "strength": 3 }, { "foe": "mandrake", "strength": 3 } ] },
+        { "id": "warg_hunt", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "warg", "strength": 4 }, { "foe": "gel", "strength": 3 }, { "foe": "bubble_gel", "strength": 2 } ] },
+        { "id": "warg_pack", "size": "patrol", "tiers": [2],
+          "members": [ { "foe": "warg", "strength": 4 } ] },
+        { "id": "gel_drift", "size": "patrol", "tiers": [2],
+          "members": [ { "foe": "gel", "strength": 3 }, { "foe": "bubble_gel", "strength": 2 } ] },
+        { "id": "captains_warband", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "goblin_captain", "strength": 4 }, { "foe": "goblin_guard", "strength": 5 }, { "foe": "alraune", "strength": 3 } ] },
+        { "id": "alpha_hunt", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "alpha_warg", "strength": 4 }, { "foe": "goblin_guard", "strength": 4 }, { "foe": "mandrake", "strength": 2 }, { "foe": "alraune", "strength": 2 } ] },
+        { "id": "metal_drift", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "metal_gel", "strength": 3 }, { "foe": "bubble_gel", "strength": 2 }, { "foe": "mandrake", "strength": 2 }, { "foe": "alraune", "strength": 3 }, { "foe": "goblin_captain", "strength": 2 } ] },
+        { "id": "alpha_pack", "size": "patrol", "tiers": [3],
+          "members": [ { "foe": "alpha_warg", "strength": 5 } ] },
+        { "id": "shamans_warband", "size": "elite", "tiers": [1, 2, 3],
+          "members": [ { "foe": "goblin_shaman", "strength": 1 }, { "foe": "goblin", "strength": 4 }, { "foe": "wolf", "strength": 2 } ] },
+        { "id": "elder_treants_grove", "size": "elite", "tiers": [2, 3],
+          "members": [ { "foe": "elder_treant", "strength": 1 }, { "foe": "mandragora", "strength": 2 } ] },
+        { "id": "leshys_hunt", "size": "elite", "tiers": [2, 3],
+          "members": [ { "foe": "leshy", "strength": 1 }, { "foe": "wolf", "strength": 3 } ] }
+      ],
+      "boss": ["rotbloom", "bourgeon", "treant"],
       "bench": ["warrior", "martial_artist"],
       "flavour": "Gate order one: if it is green and it is coming at you, it is not grass."
     },
@@ -42,28 +47,31 @@
       "design": { "fantasy": "Desert and badlands: sand, dunes, bleached bones, and cacti in rows all facing the same way. The genre's fixed-damage country, where the needles ignore your armour and the thieves take what you have.", "signature": "Fixed damage that no shield answers, and theft of what you have.", "answer": "Hull and tempo over shields; redundancy on the die against theft." },
       "bleed": "sand",
       "reward_bias": "face_modifier",
-      "spawn": {
-        "1": [
-          { "foe": "needler", "strength": 5 },
-          { "foe": "antlion", "strength": 2 },
-          { "foe": "cockatrice", "strength": 2 }
-        ],
-        "2": [
-          { "foe": "needler", "strength": 3 },
-          { "foe": "barbed_needler", "strength": 3 },
-          { "foe": "pit_antlion", "strength": 2 },
-          { "foe": "basilisk", "strength": 2 }
-        ],
-        "3": [
-          { "foe": "barbed_needler", "strength": 3 },
-          { "foe": "great_needler", "strength": 2 },
-          { "foe": "pit_antlion", "strength": 1 },
-          { "foe": "antlion_queen", "strength": 1 },
-          { "foe": "basilisk", "strength": 1 },
-          { "foe": "gorgon", "strength": 2 }
-        ]
-      },
-      "boss": "sandworm",
+      "compositions": [
+        { "id": "needler_swarm", "size": "formation", "tiers": [1],
+          "members": [ { "foe": "needler", "strength": 5 }, { "foe": "cockatrice", "strength": 2 } ] },
+        { "id": "antlion_pair", "size": "patrol", "tiers": [1],
+          "members": [ { "foe": "antlion", "strength": 2 } ] },
+        { "id": "needler_scouts", "size": "patrol", "tiers": [1, 2],
+          "members": [ { "foe": "needler", "strength": 3 } ] },
+        { "id": "barbed_swarm", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "barbed_needler", "strength": 4 }, { "foe": "needler", "strength": 3 }, { "foe": "basilisk", "strength": 2 } ] },
+        { "id": "pit_ambush", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "pit_antlion", "strength": 3 }, { "foe": "needler", "strength": 4 }, { "foe": "basilisk", "strength": 2 } ] },
+        { "id": "pit_pair", "size": "patrol", "tiers": [2],
+          "members": [ { "foe": "pit_antlion", "strength": 2 }, { "foe": "barbed_needler", "strength": 2 } ] },
+        { "id": "great_swarm", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "great_needler", "strength": 3 }, { "foe": "barbed_needler", "strength": 5 }, { "foe": "gorgon", "strength": 2 }, { "foe": "basilisk", "strength": 2 } ] },
+        { "id": "queens_court", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "antlion_queen", "strength": 1 }, { "foe": "pit_antlion", "strength": 3 }, { "foe": "barbed_needler", "strength": 4 }, { "foe": "gorgon", "strength": 2 }, { "foe": "basilisk", "strength": 2 } ] },
+        { "id": "gorgon_glare", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "gorgon", "strength": 3 }, { "foe": "basilisk", "strength": 3 }, { "foe": "great_needler", "strength": 3 }, { "foe": "barbed_needler", "strength": 3 } ] },
+        { "id": "great_scouts", "size": "patrol", "tiers": [3],
+          "members": [ { "foe": "great_needler", "strength": 3 }, { "foe": "barbed_needler", "strength": 2 } ] },
+        { "id": "old_mans_rising", "size": "elite", "tiers": [1, 2, 3],
+          "members": [ { "foe": "old_man_of_the_desert", "strength": 1 }, { "foe": "needler", "strength": 4 } ] }
+      ],
+      "boss": ["gilgamesh", "fallen_weapon", "sandworm"],
       "bench": ["thief", "lancer"],
       "flavour": "Field manual, appendix K: the cactus has never been seen to move. Do not take your eyes off the cactus."
     },
@@ -73,28 +81,31 @@
       "design": { "fantasy": "Swamp, graveyard, the dungeon: dead trees, tombstones, the poison swamp's purple. The genre's undead, in rusted ornate plate, with the healer who heals them standing behind.", "signature": "Hard to keep down: they regrow, get back up and are called again.", "answer": "Kill order and reach (the healer behind), burst that beats regrow." },
       "bleed": "marsh",
       "reward_bias": "one_shot",
-      "spawn": {
-        "1": [
-          { "foe": "revenant", "strength": 6 },
-          { "foe": "zombie_knight", "strength": 2 },
-          { "foe": "ghost", "strength": 3 }
-        ],
-        "2": [
-          { "foe": "revenant", "strength": 3 },
-          { "foe": "wight", "strength": 4 },
-          { "foe": "death_knight", "strength": 2 },
-          { "foe": "spectre", "strength": 3 }
-        ],
-        "3": [
-          { "foe": "wight", "strength": 4 },
-          { "foe": "lich", "strength": 1 },
-          { "foe": "death_knight", "strength": 1 },
-          { "foe": "dread_knight", "strength": 2 },
-          { "foe": "spectre", "strength": 2 },
-          { "foe": "wraith", "strength": 2 }
-        ]
-      },
-      "boss": "bone_dragon",
+      "compositions": [
+        { "id": "grave_host", "size": "formation", "tiers": [1],
+          "members": [ { "foe": "revenant", "strength": 6 }, { "foe": "ghost", "strength": 3 } ] },
+        { "id": "knights_retinue", "size": "patrol", "tiers": [1],
+          "members": [ { "foe": "zombie_knight", "strength": 2 }, { "foe": "revenant", "strength": 1 } ] },
+        { "id": "revenant_shamblers", "size": "patrol", "tiers": [1],
+          "members": [ { "foe": "revenant", "strength": 3 } ] },
+        { "id": "wight_host", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "wight", "strength": 4 }, { "foe": "revenant", "strength": 3 }, { "foe": "spectre", "strength": 3 } ] },
+        { "id": "death_knights_retinue", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "death_knight", "strength": 2 }, { "foe": "wight", "strength": 3 }, { "foe": "spectre", "strength": 2 }, { "foe": "revenant", "strength": 2 } ] },
+        { "id": "wight_shamblers", "size": "patrol", "tiers": [2, 3],
+          "members": [ { "foe": "wight", "strength": 4 } ] },
+        { "id": "knight_and_wights", "size": "patrol", "tiers": [2],
+          "members": [ { "foe": "death_knight", "strength": 1 }, { "foe": "wight", "strength": 3 } ] },
+        { "id": "lichs_court", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "lich", "strength": 1 }, { "foe": "wight", "strength": 5 }, { "foe": "dread_knight", "strength": 2 }, { "foe": "spectre", "strength": 2 }, { "foe": "wraith", "strength": 2 } ] },
+        { "id": "dread_host", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "dread_knight", "strength": 2 }, { "foe": "death_knight", "strength": 1 }, { "foe": "wight", "strength": 4 }, { "foe": "wraith", "strength": 2 }, { "foe": "spectre", "strength": 3 } ] },
+        { "id": "wraith_choir", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "wraith", "strength": 3 }, { "foe": "spectre", "strength": 3 }, { "foe": "wight", "strength": 4 }, { "foe": "death_knight", "strength": 2 } ] },
+        { "id": "the_reaper", "size": "elite", "tiers": [1, 2, 3],
+          "members": [ { "foe": "reaper", "strength": 1 } ] }
+      ],
+      "boss": ["matador", "bone_dragon"],
       "bench": ["white_mage", "augur"],
       "flavour": "Gate order four: nothing that has died passes the wall. Nothing."
     },
@@ -104,28 +115,31 @@
       "design": { "fantasy": "Volcano and mountain, the fire cave: lava, black rock, the orange. The genre's bombs and drakes, furious rather than evil, and the mage who throws fire for a living.", "signature": "Hard hits on a telegraph, and heat.", "answer": "Shields for the telegraph, cooling, a lure onto a cold machine." },
       "bleed": "lava",
       "reward_bias": "face_modifier",
-      "spawn": {
-        "1": [
-          { "foe": "bomb", "strength": 4 },
-          { "foe": "salamander", "strength": 3 },
-          { "foe": "drake", "strength": 2 }
-        ],
-        "2": [
-          { "foe": "bomb", "strength": 2 },
-          { "foe": "grenade", "strength": 3 },
-          { "foe": "fire_lizard", "strength": 3 },
-          { "foe": "wyvern", "strength": 2 }
-        ],
-        "3": [
-          { "foe": "grenade", "strength": 2 },
-          { "foe": "balloon", "strength": 2 },
-          { "foe": "fire_lizard", "strength": 2 },
-          { "foe": "magma_lizard", "strength": 2 },
-          { "foe": "wyvern", "strength": 1 },
-          { "foe": "red_dragon", "strength": 2 }
-        ]
-      },
-      "boss": "magma_golem",
+      "compositions": [
+        { "id": "ember_pit", "size": "formation", "tiers": [1],
+          "members": [ { "foe": "salamander", "strength": 3 }, { "foe": "bomb", "strength": 2 }, { "foe": "drake", "strength": 2 } ] },
+        { "id": "bomb_flight", "size": "patrol", "tiers": [1],
+          "members": [ { "foe": "bomb", "strength": 4 } ] },
+        { "id": "salamander_trio", "size": "patrol", "tiers": [1],
+          "members": [ { "foe": "salamander", "strength": 3 } ] },
+        { "id": "wyvern_roost", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "fire_lizard", "strength": 3 }, { "foe": "wyvern", "strength": 2 }, { "foe": "bomb", "strength": 2 }, { "foe": "grenade", "strength": 2 } ] },
+        { "id": "grenade_volley", "size": "formation", "tiers": [2],
+          "members": [ { "foe": "grenade", "strength": 3 }, { "foe": "bomb", "strength": 2 }, { "foe": "fire_lizard", "strength": 2 }, { "foe": "wyvern", "strength": 2 } ] },
+        { "id": "grenade_flight", "size": "patrol", "tiers": [2],
+          "members": [ { "foe": "grenade", "strength": 3 }, { "foe": "bomb", "strength": 2 } ] },
+        { "id": "fire_lizards", "size": "patrol", "tiers": [2],
+          "members": [ { "foe": "fire_lizard", "strength": 4 } ] },
+        { "id": "dragons_roost", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "red_dragon", "strength": 2 }, { "foe": "magma_lizard", "strength": 3 }, { "foe": "fire_lizard", "strength": 2 }, { "foe": "balloon", "strength": 2 }, { "foe": "wyvern", "strength": 2 }, { "foe": "grenade", "strength": 1 } ] },
+        { "id": "magma_pit", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "magma_lizard", "strength": 4 }, { "foe": "fire_lizard", "strength": 3 }, { "foe": "grenade", "strength": 3 }, { "foe": "red_dragon", "strength": 2 } ] },
+        { "id": "balloon_storm", "size": "formation", "tiers": [3],
+          "members": [ { "foe": "balloon", "strength": 4 }, { "foe": "grenade", "strength": 3 }, { "foe": "wyvern", "strength": 2 }, { "foe": "magma_lizard", "strength": 2 }, { "foe": "red_dragon", "strength": 1 } ] },
+        { "id": "balloon_flight", "size": "patrol", "tiers": [3],
+          "members": [ { "foe": "balloon", "strength": 3 }, { "foe": "grenade", "strength": 2 } ] }
+      ],
+      "boss": ["behemoth", "cinder_tortoise", "magma_golem"],
       "bench": ["black_mage", "summoner"],
       "flavour": "Recruitment poster: THEY BROUGHT FIRE. WE BROUGHT BIGGER FIRE."
     }

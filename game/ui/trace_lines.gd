@@ -34,45 +34,6 @@ static func pulse_material(color: Color) -> ShaderMaterial:
 	return m
 
 
-## A true silhouette for an asset (Ryan, 22 September: the outline, no interior lines):
-## the material's stencil outline, which the engine draws around the whole thing at once.
-static func silhouette(mat: BaseMaterial3D, color: Color, thickness: float) -> void:
-	if "stencil_mode" in mat:
-		mat.set("stencil_mode", BaseMaterial3D.STENCIL_MODE_OUTLINE)
-		mat.set("stencil_color", color)
-		mat.set("stencil_outline_thickness", thickness)
-
-
-## The silhouette drawn even where something stands in front (Ryan, 22 September: a
-## machine behind the wall keeps its outline): the hidden part still writes the stencil,
-## and the outline pass skips the depth test.
-static func silhouette_through(mat: BaseMaterial3D) -> void:
-	if "stencil_flags" in mat:
-		mat.set("stencil_flags", BaseMaterial3D.STENCIL_FLAG_WRITE | BaseMaterial3D.STENCIL_FLAG_WRITE_DEPTH_FAIL)
-		var outline := mat.next_pass
-		if outline is BaseMaterial3D:
-			(outline as BaseMaterial3D).no_depth_test = true
-
-
-## Drop the silhouette from every material under `node`: structures wear none.
-static func strip_silhouette(node: Node) -> void:
-	for child in node.find_children("*", "MeshInstance3D", true, false):
-		var mi: MeshInstance3D = child
-		for i in range(mi.get_surface_override_material_count()):
-			var sm := mi.get_surface_override_material(i)
-			if sm is BaseMaterial3D and "stencil_mode" in sm:
-				sm.set("stencil_mode", BaseMaterial3D.STENCIL_MODE_DISABLED)
-
-
-static func silhouette_through_all(node: Node) -> void:
-	for child in node.find_children("*", "MeshInstance3D", true, false):
-		var mi: MeshInstance3D = child
-		for i in range(mi.get_surface_override_material_count()):
-			var sm := mi.get_surface_override_material(i)
-			if sm is BaseMaterial3D:
-				silhouette_through(sm)
-
-
 ## The prominent silhouette an asset wears in the assets mode: a grown, front-culled hull
 ## in the display's light, so the machine stands out from the field's fainter traces.
 static func hull_material(color: Color) -> StandardMaterial3D:

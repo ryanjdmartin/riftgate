@@ -43,6 +43,7 @@ var kin: int = 0                 # other live foes of its type on the field, for
 var hero: bool = false           # one of the party: a hero (content `hero`, human-sized, a domain's final, dealt from its bench) or its promoted form at the finale (content `promotes`)
 var commands: bool = false       # a commander of its boss unit (the faction's boss, a final's hero, one of the finale's line), marked as the unit unpacks: the unit stands while one does
 var escorts: bool = false        # the wildlife beside a boss unit's commanders (a final's), marked as the unit unpacks: the unit's strength counts them
+var joined: bool = false         # it joined its pack in the fight (a Gel's half, a summon, a part): never one of the pack's own, whatever its type, so a pack never grows by what it called up (30 October)
 var boss: bool = false           # a domain's boss (content: a faction's `boss`), whatever its size: big is an attribute of any tier (15 October)
 var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping up in its place at once (the Gel)
 var fresh: bool = false          # stepped up mid-round (a split's half): its round is over, so it shows no intent and acts from the next round
@@ -52,6 +53,8 @@ var part_ids: Array = []         # a core's parts (content `parts`): the foes of
 var guard: String = ""          # a core takes no damage while "all" its parts stand, or while "any" does
 var regrow_parts: int = 0        # rounds after a part falls before it grows back, while the core stands (0: never)
 var regrow_due: Array = []       # [part id, round it returns] for each part on its way back
+var next_move: String = ""       # the follow-up it announces next round: the move its last move names in `then` (30 October)
+var held: Dictionary = {}        # what a steal took off a machine, {"name", "power"}, until the borrowed swing spends it (30 October)
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -179,7 +182,31 @@ func damage_of(a: Dictionary, extra: int = 0) -> int:
 		return 0
 	# A swarm blow grows with the foe's kin on the field: the ghoul's threat is its numbers.
 	var swarm := int(a.get("swarm", 0)) * kin
-	return int(roundf((attack + Effects.foe_attack_bonus(self) + extra + swarm) * float(a.get("factor", 1.0))))
+	return int(roundf((base_number(a) + Effects.foe_attack_bonus(self) + extra + swarm) * float(a.get("factor", 1.0))))
+
+
+## The number a move's blow starts from: the foe's attack, or for a borrowed swing (`power`
+## "held", 30 October) the number of what it took, nothing while it holds nothing.
+func base_number(a: Dictionary) -> int:
+	if str(a.get("power", "")) == "held":
+		return int(held.get("power", 0))
+	return attack
+
+
+## Does the move swing what the foe took (`power` "held")?
+static func swings_held(a: Dictionary) -> bool:
+	return str(a.get("power", "")) == "held"
+
+
+## The moves another of its moves names in `then` (30 October): a follow-up comes only the round
+## after the move that names it lands, never by the roll.
+static func follow_ups(list: Array) -> Array:
+	var out: Array = []
+	for a in list:
+		var t := str(a.get("then", ""))
+		if not t.is_empty() and not out.has(t):
+			out.append(t)
+	return out
 
 
 ## One blow of an action at the foe's own numbers: its attack times the move's factor, with no
@@ -187,7 +214,7 @@ func damage_of(a: Dictionary, extra: int = 0) -> int:
 func base_damage_of(a: Dictionary) -> int:
 	if not is_attack_action(a):
 		return 0
-	return int(roundf(attack * float(a.get("factor", 1.0))))
+	return int(roundf(base_number(a) * float(a.get("factor", 1.0))))
 
 
 ## The action's kind: attack by default (the basic action), or defend, buff, debuff.
@@ -277,10 +304,14 @@ func strikes() -> int:
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
 ##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
+##           swallow: its target is Swallowed for `value` rounds, out of the fight until they run
+##           out or the swallower falls; never the last machine able to act (Floraison's, 31
+##           October: hard control on the team, answered before it lands by a Ward, a Lure, a
+##           Suppress or a Disrupt, and after by the kill)
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all"],
-	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel"],
+	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel", "swallow"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
@@ -319,9 +350,12 @@ func intent_on(u) -> bool:
 ## back up (the Bomb). all: the blow lands on every machine in the fight, each strike on each
 ## machine, so no aim or lure moves it (Ryan, 15 October: no foe struck more than one
 ## machine, the storms' three blows included; the content follows in a foe kit refresh).
+## steal: as disable, the entry the machine's die shows switched off through its next turn, and
+## the foe takes it: its borrowed swing (a move with `power` "held") lands that weapon's number,
+## and anything else it took is a fake, for 1 (Gilgamesh's, 30 October).
 ## A silence and a purge are specials, never riders (28 October: a rider on a hitter's blow is a
 ## tax with no decision), so neither is an attack keyword; the validator refuses them on a blow.
-const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct", "all"]
+const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct", "all", "steal"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["silence", "dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the

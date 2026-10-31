@@ -6,7 +6,7 @@ extends Control
 ##
 ##   header   the turn and Rift Pressure; the turn's readout beside it
 ##   map      drag to scroll; tap a machine to select it and light where it can move, and in
-##            red where it could attack from there; tap a lit hex (or draw a route from it)
+##            violet where it could attack from there; tap a lit hex (or draw a route from it)
 ##            and the move is planned, its route drawn from where the machine stands; with a
 ##            machine in hand, tap a pack (or drag the machine onto one) and it is planned into
 ##            range and ordered onto that fight; hold a unit for its numbers. Every pack's
@@ -330,8 +330,16 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 
 # ---------------------------------------------------------------- refresh
 
+## RIFTGATE_PEAK_DEBUG=1: Rift Pressure peaks every enemy turn, so the tears, the seam's creep
+## and the mouths' sends can be judged running within a few turns (the pacing session, 30
+## October; placeholders all).
+static var PEAK_DEBUG := OS.get_environment("RIFTGATE_PEAK_DEBUG") == "1"
+
+
 func _refresh() -> void:
 	var f := battle.field
+	if PEAK_DEBUG:
+		f.rift_pressure_max = 1
 	var planning := battle.state == Battle.State.PLAN
 	var playing := _map.is_playing()
 	# Plain words (Ryan, 22 September): the turn, and how long until the rift spawns. The
@@ -368,6 +376,7 @@ func _refresh() -> void:
 		_map.plans = battle.plan_pieces() if planning else []
 		_map.shown = battle.shown_positions() if planning else {}
 	_map.attack = _fight_preview() if planning and not playing else {}
+	_map.meter = {"tally": battle.menace_killed, "thresholds": battle.thresholds, "fractures": battle.fractures, "sealed": battle.is_sealed()}
 	_map.route_drawing = planning and not playing
 	_map.queue_redraw()
 	_refresh_log()
@@ -619,7 +628,13 @@ func pack_lines(u: Unit) -> Array:
 	var db := ContentDB.load_default()
 	var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
 	if not u.is_boss:
-		var parts: Array = [foe_name, "×%d" % u.strength, "·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)]
+		# A composition's members in order, the lead first (30 October); a one-type pack is one.
+		var parts: Array = []
+		for m in u.member_list():
+			if not parts.is_empty():
+				parts.append("·")
+			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
+		parts.append_array(["·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)])
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
 		var lines: Array = [_title(u.display_name), _words(parts), _behaviour_line(u)]
@@ -641,7 +656,10 @@ func pack_lines(u: Unit) -> Array:
 	var brings: Array[String] = []
 	if u.lineup.size() > 1:
 		brings.append("%d of the party" % u.lineup.size())
-	if u.strength > 0:
+	if not u.members.is_empty():
+		for m in u.members:   # a hand-tailored escort, by member
+			brings.append("%s ×%d" % [str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), int(m[1])])
+	elif u.strength > 0:
 		brings.append("%s ×%d" % [foe_name, u.strength])
 	if not brings.is_empty():
 		out.append(_said("With", ", ".join(brings)))
@@ -653,6 +671,8 @@ func pack_lines(u: Unit) -> Array:
 ## name is.
 func _behaviour_line(u: Unit) -> Dictionary:
 	if u.is_boss:
+		if u.sealed:
+			return _said("Sealed", "holds the rift; its seal breaks at the Rupture")
 		return _said("Holds", "the rift")
 	match u.behaviour:
 		"hunt":
@@ -726,14 +746,14 @@ func _on_hold_released() -> void:
 
 var _menu: PauseMenu = null
 var _built_hud := ""   # the HUD colour this screen was built with; a change rebuilds it
-var _built_weld := true   # whether the map's machines were welded (a debug build's WELD toggle); a change in the skirmish's menu remakes them on the way back
+var _built_map := ""   # the switches the map was built with (_map_switches); a change in the skirmish's menu remakes it on the way back
 
 func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
-			if key == "fine_map" or key == "weld":
-				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density, or the machines with the weld on or off
+			if key == "weld" or key == "aa_mode" or key == "traces":
+				_map.set_field(battle.field)   # the machines with the weld on or off, the anti-aliasing, or the traces
 				_refresh()
 			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
@@ -752,7 +772,13 @@ func _apply_display() -> void:
 	_map.sweep_on = bool(d["scan"])   # off: the bar stays hidden and the traces rest as ink
 	BattleMapView.pace = float(d["pace"])
 	_built_hud = Settings.hud
-	_built_weld = MechWeld.enabled()
+	_built_map = _map_switches()
+
+
+## What the map is built with that a settings switch changes: the AA mode, and a debug build's
+## weld and traces.
+func _map_switches() -> String:
+	return str([MechWeld.enabled(), Hud.aa_mode(), Settings.display.get("traces", true)])
 
 
 ## A colour change rebuilds the screen from the battle (the skirmish, if one is open,
@@ -798,8 +824,8 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 static func gate_lines(f: Battlefield) -> Array:
 	var frac := float(f.gate_hp) / maxf(1.0, float(f.gate_hp_max))
 	return [_title("The Gate", "Field projector"),
-		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.ENEMY),
-		EntryReadout.text_line("effect", "A pack on the apron strikes it")]
+		EntryReadout.bar_line("Integrity", f.gate_hp, f.gate_hp_max, f.gate_hp_max, Palette.HUD if frac > 0.34 else Palette.LOSS),
+		EntryReadout.text_line("effect", "A pack beside the wall, anywhere along it, strikes it")]
 
 
 static func gate_codex_entry(f: Battlefield) -> Dictionary:
@@ -808,7 +834,7 @@ static func gate_codex_entry(f: Battlefield) -> Dictionary:
 		"designation": "CARE FIELD PROJECTOR",
 		"subtitle": "THE CITY'S ENCLOSURE // THE LINE THE MACHINES HOLD",
 		"stat_items": [["integrity", "%d/%d" % [f.gate_hp, f.gate_hp_max]], ["rows", str(BattleMap.GATE_ROWS)]],
-		"body": "The projector that holds the field over the city. A pack that reaches the apron strikes it every enemy turn, harder the bigger the pack and never for less than ten; when its integrity is gone the field is down and the battle is lost. Nothing stands on it.",
+		"body": "The projector that holds the field over the city. A pack that reaches the wall strikes it from anywhere along it, every enemy turn, harder the bigger the pack; when its integrity is gone the field is down and the battle is lost. Nothing stands on it.",
 		"flavour": "",
 	}
 
@@ -824,7 +850,7 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 		return {"title": u.display_name, "subtitle": str(u.faction).to_upper(), "body": ""}
 	var entry := db.codex_for_foe(db.make_foe(fid))
 	entry["title"] = u.display_name
-	entry["subtitle"] = "%s // %s" % [entry["subtitle"], ("BOSS" if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	entry["subtitle"] = "%s // %s" % [entry["subtitle"], (("BOSS // SEALED" if u.sealed else "BOSS") if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
 	if u.traits.has("winged"):
 		entry["subtitle"] += " // WINGED"   # it crosses water and crags as a flyer does
 	return entry
@@ -941,10 +967,10 @@ func _after_step() -> void:
 	_autosave()
 
 
-## A hunter has caught a machine (bible section 5): the warning, big and red over the map;
-## the catch stays lit and the button reads ENGAGE until it is fought. On a black band with red rules across
-## the map, and the map dimmed under it: red on the terrain alone never reads (Ryan, 22
-## September).
+## A hunter has caught a machine (bible section 5): the warning, big and in the enemy's violet over
+## the map; the catch stays lit and the button reads ENGAGE until it is fought. On a black band with
+## violet rules across the map, and the map dimmed under it: a colour on the terrain alone never
+## reads (Ryan, 22 September, of the red then).
 func _show_caught() -> void:
 	_refresh()
 	var warn := Control.new()
@@ -1277,8 +1303,8 @@ func _on_skirmish_back() -> void:
 	Sound.music("map")
 	if _built_hud != Settings.hud:
 		_build()   # the colour changed in the skirmish's menu: this screen catches up
-	elif _built_weld != MechWeld.enabled():
-		_map.set_field(battle.field)   # the weld switched in the skirmish's menu: the map's machines remade
+	elif _built_map != _map_switches():
+		_map.set_field(battle.field)   # a switch changed in the skirmish's menu (the AA mode, the weld, the traces): the map remade
 		_apply_display()
 	_refresh()
 	if battle.state == Battle.State.DONE:

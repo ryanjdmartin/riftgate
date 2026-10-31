@@ -15,7 +15,6 @@ func _init() -> void:
 	_out = a[2]
 	_view = MechView3D.make(a[0], a[1], "clean", "badger", float(a[3]), Vector2i(int(a[5]), int(a[6])), false, {}, [])
 	_view.pitch = float(a[4])
-	_view.strip_silhouette()
 	root.add_child(_view)
 	process_frame.connect(_tick)
 

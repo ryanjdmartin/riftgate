@@ -604,7 +604,7 @@
    "maker": "aphelion",
    "tier": 1,
    "design": {
-    "fantasy": "A flat pearl-white lens of a hull that rides on lift fans sunk flush into its wings and pitches like a helicopter to move. Its heat suite is its weapon: the hotter it runs, the deeper every burn and every buff it lays. The ray's barb is its tail, lit at the tip; its mouth is the lance under the nose.",
+    "fantasy": "A flat pearl-white lens of a hull that rides on lift fans sunk flush into its wings and pitches like a helicopter to move. Its heat suite is its weapon: the hotter it runs, the deeper every burn and every buff it lays. The ray's barb is its tail, lit at the tip; its lance rides the turret on its back (Ryan, 28 October: the locked lance on the dome; it lay in the ray's mouth under the nose).",
     "niche": "hot status amplifier"
    },
    "codex": "",
@@ -1129,7 +1129,7 @@
    "design": {
     "fantasy": "The off-tank, a fast hovercraft (Ryan, 20 October: since the Puffin is slow, the shield-burner should be fast, so Kestrel is seen to make a fast hover), the Storm Petrel since 21 October, the small sea bird that patters across the water; its hard shields used both for defence and for whacking things with (Ryan, 21 October).",
     "niche": "Kestrel's tier-one body, a body from a second maker for the tender: while its shield stands every blow on it loses a point, and its weapons burn shield in place of heat, the target taking a zap of what the shield paid; its lock lures a foe and regenerates its own shield for three rounds, stacking. A generalist that can zoom off and fight a pack (Ryan, 20 October).",
-    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_shield_spender.md holds the rounds and the engine it waits on). Landed 23 October as planned: the burn and its zap, the plate and Regenerating wait on the engine, so it is never dealt. Numbers are placeholders at the stock pass's scale: a medium hover at 24 hull and the scale's top shield, 16, its shield its gauge and its plate; the plate 1 and the regen 2 a round from the brief's 5 and 10. The stock by kind from the basics, a tier one stocking tier zero: the Laser Carbine, the hottest basic at 2, for the brief's big hot gun; the Ankle Mortar for its mid-heat gun; the Twin Autoguns, cold; the Canopy, a self shield. With basics alone its burn is 2 a spend, the brief's open hole. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, storm_petrel), Ryan's to judge running."
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row; its brief, retired 30 October as its engine landed, holds the rounds: git show d84ad16:docs/briefs/kestrel_shield_spender.md). Landed 23 October as planned; its engine built 30 October (the burn and its zap, the plate, Regenerating's machine half and the rider), so it is dealt since. Numbers are placeholders at the stock pass's scale: a medium hover at 24 hull and the scale's top shield, 16, its shield its gauge and its plate; the plate 1 and the regen 2 a round from the brief's 5 and 10. The stock by kind from the basics, a tier one stocking tier zero: the Laser Carbine, the hottest basic at 2, for the brief's big hot gun; the Ankle Mortar for its mid-heat gun; the Twin Autoguns, cold; the Canopy, a self shield. With basics alone its burn is 2 a spend at most, a hole for Ryan (the bible's section 12). Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, storm_petrel), Ryan's to judge running."
    },
    "codex": "",
    "hull": 24,
@@ -1158,8 +1158,19 @@
     "id": "riot_field_generator",
     "name": "Riot Field Generator",
     "description": "While its shield stands, every blow on the Storm Petrel loses 1, and its weapons burn shield in place of heat; after a weapon's strikes, its target takes a blow of what the shield paid.",
-    "status": "planned",
-    "effects": []
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "add_damage_taken",
+      "value": -1,
+      "when": "shield_up"
+     },
+     {
+      "trigger": "static",
+      "effect": "burn_shield",
+      "value": 1
+     }
+    ]
    },
    "flavour": ""
   },
@@ -1220,7 +1231,7 @@
    "design": {
     "fantasy": "Kestrel's capital (Ryan, 20 October: from irony, the capital hovers where most of the line flies), the ekranoplan, the Giant Petrel since 21 October, the family's big one over the same sea; the formation leader, aggressive where the Swallowtail is the supportive mobile HQ, pushing its allies to act and keeping the tempo up (Ryan, 21 October).",
     "niche": "Kestrel's action-economy capstone, the reroll economy all the way (Ryan, 20 October): the team's unspent rerolls bank, up to three; the Immelmann Booster gives the team a reroll on itself, or for three rerolls a spent ally's die rolls again and it acts again; the Spindrift Salvo's kill brews two rerolls; the Reheat Uplink Overcharges an ally and rolls its die. Its own guns are ordinary; its prices are a slot, a fleet that moves at 20 and the rerolls a team needs for its own dice.",
-    "notes": "Ryan's go, 21 October (the bible's Kestrel row; docs/briefs/kestrel_gun_platform.md holds the rounds and the engine it waits on). Landed 23 October as planned: the bank, the Booster's price, the Salvo's kill rider and the Uplink's roll wait on the engine, and the bot's look-or-action valuation on them before its runner rows, so it is never dealt. Numbers are placeholders at the stock pass's scale, an assault hover at 44 hull. The stock by kind, a tier three stocking tiers zero to two (a big flat gun, a cold rolled gun, a vent): the Overclocked Railgun, the Twin Autoguns and the Bleed Valve. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, giant_petrel), Ryan's to judge running. After the Lun."
+    "notes": "Ryan's go, 21 October (the bible's Kestrel row; its brief, retired 30 October as its engine landed, holds the rounds: git show d84ad16:docs/briefs/kestrel_gun_platform.md). Landed 23 October as planned; its engine built 30 October (the bank, the Booster's price, the Salvo's kill rider, the Uplink's roll and the bot's look-or-action valuation), so it is fielded since. Numbers are placeholders at the stock pass's scale, an assault hover at 44 hull. The stock by kind, a tier three stocking tiers zero to two (a big flat gun, a cold rolled gun, a vent): the Overclocked Railgun, the Twin Autoguns and the Bleed Valve. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, giant_petrel), Ryan's to judge running. After the Lun."
    },
    "codex": "",
    "hull": 44,
@@ -1250,8 +1261,13 @@
     "id": "mavericks_playbook",
     "name": "Maverick's Playbook",
     "description": "The team's rerolls left unspent at the round's end are banked, up to three, and spent in a later round like any reroll.",
-    "status": "planned",
-    "effects": []
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "bank_rerolls",
+      "value": 3
+     }
+    ]
    },
    "flavour": ""
   }

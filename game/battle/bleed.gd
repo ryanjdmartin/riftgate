@@ -7,13 +7,14 @@ extends RefCounted
 ## out south of it, and a radius around every pack that moves with it. The same function
 ## lives in `bleed.gdshader` for the pixels that turn 2D; keep the two identical.
 ##
-## Later knobs: the gradient could grow with Rift Pressure, so the corruption spreads south
-## as the clock runs.
+## The gradient reaches the field's seam (Battlefield.seam_row), which creeps south a peak of
+## Rift Pressure (the pacing session, 30 October): the flattening is the clock's picture, and
+## the tears open on it; no rule reads the flattened hexes.
 
 static var pack_radius_hex := 1.45   # a var, so the map tuner can move it live
 const BOSS_RADIUS_HEX := 2.6
 const RIFT_RADIUS_HEX := 2.6
-const GRADIENT_ROWS := 5.0      # the rift's bleed is total on its row and gone this many rows south
+const GRADIENT_ROWS := 5.0      # the rift's bleed is total on its row and gone this many rows south before the seam creeps (Battlefield.SEAM_START)
 const FLAT_AT := 0.42           # columns are fully collapsed by this much bleed, just before the seam
 const MAX_SOURCES := 32         # the shader's array size
 
@@ -28,7 +29,7 @@ static func gradient(field: Battlefield, origin: Vector2, hex_px: float) -> Vect
 	if everywhere:
 		return Vector2(1.0e7, 1.0e7 + 1.0)   # total down past the city
 	var y_full := origin.y + Hex.to_pixel(field.map.rift, hex_px).y
-	return Vector2(y_full, y_full + GRADIENT_ROWS * 1.5 * hex_px)
+	return Vector2(y_full, y_full + float(field.seam_row) * 1.5 * hex_px)
 
 
 ## The sources of bleed as (x, y, radius) in map pixels: the rift, then every pack.

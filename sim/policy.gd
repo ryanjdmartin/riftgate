@@ -65,6 +65,7 @@ const DRONE_WEIGHT := 0.5        # the Syrinx Drone's mine: the team's average b
 const REROLL_SHARE := 0.4        # a team reroll more (Rallied), as a share of the team's average blow
 const AMMO_SHARE := 0.5          # an ammo (the Musk Ox's magazine), as a share of the best damage a gun on its die buys with one
 const PRIMED_WORTH := 2.0        # a stack of Primed on a foe (28 October): the Burning its next move leaves, a placeholder
+const REGEN_WEIGHT := 0.5        # a point of shield a regeneration brings in a round to come, as a share of the hull it keeps: those blows are guessed from this round's (the Storm Petrel's, 30 October)
 const REGEN_ACTIONS := 3         # the actions a foe's Regenerating runs from its grant (Effects.regenerating's clock)
 const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a share of one this round (the fight may end, the foes pick afresh)
 
@@ -88,6 +89,8 @@ var stalled: bool = false
 var withdrew: bool = false
 var plans: int = 0               # the planner's decisions that weighed more than one candidate
 var plan_changes: int = 0        # of those, the ones where it spent otherwise than the greedy would
+var actions_bought: int = 0      # an ally's action bought with the team's rerolls (the Immelmann Booster, 30 October)
+var banked: int = 0              # rerolls the bank carried as each turn ended, summed (Maverick's Playbook, 30 October)
 
 
 static func make(kind_arg: int, seed_value: int = 0) -> Policy:
@@ -121,6 +124,7 @@ func play(sk: Skirmish) -> int:
 		if sk.outcome != Skirmish.Outcome.NONE:
 			break
 		sk.end_round()
+		banked += sk.banked
 		for o in sk.overheats:
 			overheat_hull += int(o.get("burn", o["over"]))
 			overheats += 1
@@ -197,6 +201,15 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 		var spent := ms.face()
 		if sk.assign(best["mech"], best["target"], best.get("second", null)):
 			_tally(spent)
+			if spent != null and spent.action_price > 0 and best["target"] is Skirmish.MechState and best["target"] != ms:
+				actions_bought += 1
+			# An entry that buys an ally's action (the Immelmann Booster) waits for an ally to spend:
+			# a die held for it is weighed again once one has.
+			var still: Array[int] = []
+			for h in held:
+				if not _buys_action(sk, sk.mechs[h]):
+					still.append(h)
+			held = still
 		else:
 			held.append(best["mech"])
 
@@ -616,6 +629,19 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A kill feeds stacks of Overcharged: what the status adds to the die's own damage, a
 		# stack, for about the rounds the stacks last. Read from the status, never hardcoded.
 		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * float(f.devours) * DEVOUR_ROUNDS
+	if f.kill_rerolls > 0:
+		# The Spindrift Salvo's kill rider (30 October): the team's rerolls it brings mid-round, at
+		# the odds of the kill, worth what the bank carries of them (bank_delta).
+		score += p_kill * bank_delta(sk, f.kill_rerolls)
+	if f.regen_shield > 0 and f.regen_rounds > 0:
+		score += regen_worth(sk, ms, f)   # the St. Elmo's Regenerator's rider on its own spender
+	# The Riot Field Generator (the Storm Petrel's, 30 October): the shield the spend burns in place
+	# of heat, at what that shield would have kept this round and after (burn_cost), and the zap it
+	# pays the target, a plain blow of that much on every roll the strikes leave it standing, with
+	# the kill it makes (zap_worth). The heat it saves is heat_cost's, read net of the burn.
+	var burnt := Skirmish.shield_burn(ms, f, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])) if f.is_weapon() and Effects.burns_shield(ms.unit) else 0
+	if burnt > 0:
+		score += zap_worth(sk, ms, target, burnt, outcomes) - burn_cost(sk, ms, burnt)
 	score -= heat_cost(sk, ms, f)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
@@ -636,6 +662,95 @@ func charge_worth(sk: Skirmish, ms: Skirmish.MechState, but: Foe) -> float:
 		if not Effects.turns_mark(foe, "shocked"):
 			worth += minf(float(foe.hp), shock_cash(sk, ms, foe))
 	return worth / float(pool.size())
+
+
+## The zap a burn pays (the Storm Petrel's Riot Field Generator, 30 October): on every roll that
+## leaves the target standing, a plain blow of what the shield paid, through what it takes and
+## its armour, capped at what it has left, and the kill it makes there; nothing where the strikes
+## kill, since the zap is lost.
+func zap_worth(sk: Skirmish, ms: Skirmish.MechState, target: Foe, burnt: int, outcomes: Array) -> float:
+	var zap := Skirmish.zap_on(target, burnt, ms)
+	if zap <= 0:
+		return 0.0
+	var worth := 0.0
+	for o in outcomes:
+		var left := float(target.hp) - float(o[0])
+		if left <= 0.0:
+			continue
+		worth += float(o[1]) * minf(float(zap), left)
+		if float(zap) >= left:
+			worth += float(o[1]) * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
+	return worth
+
+
+## What burning shield costs a machine (the Storm Petrel's): the hull the enemy's blows would take
+## through the gap this round, a death it opens, and the shield that would have stood afterwards,
+## at shield_score's weights, read as the shield gone.
+func burn_cost(sk: Skirmish, ms: Skirmish.MechState, burnt: int) -> float:
+	var before := sk.forecast(ms, false)
+	var after := sk.forecast(ms, false, -burnt)
+	var lost := maxf(0.0, float(before["hull_after"])) - maxf(0.0, float(after["hull_after"]))
+	var cost := lost * HULL_WEIGHT + float(mini(burnt, int(before["shield_after"]))) * BANK_WEIGHT
+	if after["destroyed"] and not before["destroyed"]:
+		cost += DEATH_WEIGHT
+	return cost
+
+
+## What a regeneration on its own spender is worth (the Storm Petrel's St. Elmo's Regenerator, 30
+## October): its shield at each round it runs, as hull kept against the blows to come, this
+## round's incoming the guess, at REGEN_WEIGHT, and what nothing strikes as shield banked.
+func regen_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
+	var incoming := float(sk.incoming_for(ms))
+	var kept := minf(float(f.regen_shield), incoming) * HULL_WEIGHT * REGEN_WEIGHT
+	var stood := maxf(0.0, float(f.regen_shield) - incoming) * BANK_WEIGHT
+	return (kept + stood) * float(f.regen_rounds)
+
+
+## A team reroll's worth, the one yardstick for a reroll gained (Rallied, a kill's), paid (an
+## ally's action bought) or banked: a share of the team's average blow.
+static func reroll_value(sk: Skirmish) -> float:
+	return REROLL_SHARE * _team_raw_attack_mean(sk)
+
+
+## What `n` rerolls more (or fewer) mid-round are worth: the bot rerolls only as the round opens,
+## so a reroll a spend brings or pays after that is worth only what the bank carries into the
+## next round (Maverick's Playbook), each at a reroll's worth; nothing past the bank's cap, and
+## nothing on a team that banks none.
+static func bank_delta(sk: Skirmish, n: int) -> float:
+	var cap := sk.bank_cap()
+	var left := sk.rerolls_left
+	return float(absi(mini(cap, maxi(0, left + n)) - mini(cap, left))) * reroll_value(sk)
+
+
+## What an action bought for a machine is worth (the Immelmann Booster's, 30 October): its die
+## rolled again and spent again, about its own average blow, as the Horn's charged form is read.
+static func action_value(who: Skirmish.MechState) -> float:
+	return ROLL_AGAIN_WEIGHT * _raw_attack_mean(who)
+
+
+## The best action an entry that buys one (the Booster's ally use) may still buy this round for an
+## ally yet to spend, less its price as the bank reads it (bank_delta): what spending it now on
+## anything else gives up, and what it holds out for. Nothing while the team cannot pay.
+func action_ahead(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
+	if f == null or f.action_price <= 0 or sk.rerolls_left < f.action_price:
+		return 0.0
+	var best := 0.0
+	var price := bank_delta(sk, -f.action_price)
+	for who in sk.live_mechs():
+		if who != ms and not who.assigned and not Skirmish.is_phased(who):
+			best = maxf(best, action_value(who) - price)
+	return best
+
+
+## What rolling an unspent machine's die again in place is worth (the Reheat Uplink's roll): its
+## die's average blow, read plainly, less the blow the entry showing would land; the roll never
+## lands on the entry showing. Nothing on a spent die, which rolls nothing.
+static func roll_gain(who: Skirmish.MechState) -> float:
+	if who.assigned or who.face() == null:
+		return 0.0
+	var shown := who.face()
+	var now := float(shown.average() * maxi(1, shown.strikes)) if shown.is_weapon() else 0.0
+	return _raw_attack_mean(who) - now
 
 
 ## What the player's Purge takes off one foe (28 October; placeholders), by what it carries:
@@ -1090,7 +1205,8 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 	var own_fire := f.self_burn * Effects.status_value("burning_mech", "tick_heat") if f != null else 0
 	if ms.ammo_max > 0 and f != null and not f.is_debuff():
 		return Effects.debuff_heat(ms.unit, f) + own_fire   # a forging machine's gun: only a foe's debuff and its own fire heat it
-	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]) + own_fire
+	var own := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
+	var added := own - Skirmish.shield_burn(ms, f, own) + own_fire   # what the shield pays never reaches the gauge (the Storm Petrel's)
 	return added - ms.heat if f.vents_all else added
 
 
@@ -1202,8 +1318,23 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 		Face.Kind.BUFF:
 			if f.act_again:
 				score = ROLL_AGAIN_WEIGHT * _raw_attack_mean(who)   # the Horn's charged form: the ally acts again
+			elif f.action_price > 0 and who != ms:
+				# The Immelmann Booster's ally use (30 October), the look-or-action valuation: the
+				# action bought, less its price, the rerolls it pays worth what the bank would have
+				# carried of them (bank_delta), since the looks were taken as the round opened.
+				score = action_value(who) - bank_delta(sk, -f.action_price)
 			else:
 				score = buff_score(sk, who, f)
+				if f.action_price > 0 and f.buff_status == "rallied":
+					# The Booster's reroll on itself: the bot rerolls only as the round opens, so a
+					# reroll gained mid-round is worth what the bank carries of it, as its price is.
+					score = bank_delta(sk, f.buff_stacks)
+				if f.rolls_target:
+					score += roll_gain(who)   # the Reheat Uplink's roll on the machine it lands on
+				if f.action_price > 0:
+					# Spent on itself, the Booster goes dark for the round (Rapid's switch-off): the
+					# ally's action it could still buy once an ally has spent is given up.
+					score -= action_ahead(sk, ms, f)
 			if Effects.quick_turn_live(ms.unit, f):
 				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
 	if f.has(Face.Keyword.CLEANSE):
@@ -1891,7 +2022,9 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 			var best := 0.0
 			for who in sk.machine_targets_for(ms, f):
 				best = maxf(best, machine_spend_score(sk, ms, who, f))
-			return best
+			# An entry that buys an ally's action (the Immelmann Booster) is worth the best one it may
+			# still buy this round, so the bot neither rerolls it away nor spends it early.
+			return maxf(best, action_ahead(sk, ms, f))
 	return 0.0
 
 
@@ -1940,19 +2073,57 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 			if not sk.reroll([i]):
 				break
 			rerolls += 1
+	# The look-or-action valuation (the Giant Petrel's, 30 October): with an ally's action to buy this
+	# round (the Immelmann Booster showing, worth its price), its price in rerolls is kept from the
+	# looks; and with a bank (Maverick's Playbook), a reroll it would carry to the next round goes on
+	# looks only when they are worth more than a reroll kept.
+	var kept := sk.bank_cap()
 	while sk.rerolls_left > 0:
+		var reserve := _action_reserve(sk)   # read again after every reroll: one may bring the Booster up
+		if sk.rerolls_left <= reserve:
+			return
 		var idx: Array = []
+		var gain := 0.0
 		for i in range(sk.mechs.size()):
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned:
 				continue
-			if face_value(sk, ms, sk.spend_face(ms)) + 0.001 < reroll_worth(sk, ms):   # a charged form as it will go out
+			var now := face_value(sk, ms, sk.spend_face(ms))   # a charged form as it will go out
+			var worth := reroll_worth(sk, ms)
+			if now + 0.001 < worth:
 				idx.append(i)
+				gain += worth - now
 		if idx.is_empty():
+			return
+		if kept > 0 and sk.rerolls_left <= reserve + kept and gain < reroll_value(sk):
 			return
 		if not sk.reroll(idx):
 			return
 		rerolls += 1
+
+
+## Rerolls to keep from the looks this round (the look-or-action valuation): the price of an ally's
+## action an entry showing on an unspent die can buy (the Immelmann Booster), while one is worth
+## more than the looks the price would take, at a reroll's worth each; 0 otherwise.
+func _action_reserve(sk: Skirmish) -> int:
+	for ms in sk.live_mechs():
+		if ms.assigned or ms.face() == null:
+			continue
+		var f := sk.spend_face(ms)
+		if f == null or f.action_price <= 0 or Effects.is_entry_disabled(ms.unit, ms.face_index) or sk.rerolls_left < f.action_price:
+			continue
+		for who in sk.live_mechs():
+			if who != ms and not Skirmish.is_phased(who) and action_value(who) > float(f.action_price) * reroll_value(sk):
+				return f.action_price
+	return 0
+
+
+## Whether a machine's die shows an entry that buys an ally's action (the Immelmann Booster), unspent.
+static func _buys_action(sk: Skirmish, ms: Skirmish.MechState) -> bool:
+	if not ms.alive() or ms.assigned or ms.face() == null:
+		return false
+	var f := sk.spend_face(ms)
+	return f != null and f.action_price > 0
 
 
 ## The blow this foe is about to land, if it is aimed at anyone: on every live machine for a
