@@ -713,10 +713,16 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. `claude/affectionate-ramanujan-5d24t6`'s three
-  content files (`content/chassis.json`, `content/components.json` and `content/vocabulary.json`:
-  the Petrels un-planned, the four printed rules) are not published; they go up as that branch
-  lands. Its lit parts show as the phone's renderer shows them (29 October: a lit
+  before it is replaced and `edits` read first. At the page's version 176 (31 October, as
+  `claude/affectionate-ramanujan-5d24t6` landed on main): `content/chassis.json` and
+  `content/components.json` as main has them, the Petrels un-planned, over `8607407`'s; `edits`
+  empty. Four files on the page are other sessions' work ahead of its code, kept until their
+  branches land: `content/foes.json`, `content/factions.json` and `content/vocabulary.json` at
+  `claude/brave-cori-fr18de`'s `c065748` (the slate's last five bosses and the Saurian Queen, with
+  Drain, Merge and Grudge), and `hangar/motion.js` at `claude/charming-rubin-h954bp`'s `5b7317e`
+  (the halo's second round on the Buzzard). So the page's vocabulary lacks the Petrels' four
+  printed rules until that branch lands (the codex never reads them), and a publish from main
+  replaces only a file whose live version main's history holds. Its lit parts show as the phone's renderer shows them (29 October: a lit
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
