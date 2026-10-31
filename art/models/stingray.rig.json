@@ -429,10 +429,10 @@
   ]
  },
  "halo": [
-  [
-   "nozzle_glow",
-   2.0
-  ],
+  "nozzle_glow",
   "fan_duct_floor"
- ]
+ ],
+ "standing": {
+  "fan_duct_floor": 5.0
+ }
 }

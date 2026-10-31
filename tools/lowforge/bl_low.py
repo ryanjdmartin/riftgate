@@ -340,17 +340,43 @@ class Tiles:
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
         elif kind == "spark":
-            # St. Elmo's fire banked down: the corona at a third of its light, for the port's
-            # sparks that rest dim and crackle lit (Ryan, 28 October: the lit corona read as a
-            # white block, and lighting it further showed nothing).
-            img = 0.32 * np.tile(np.array([0.62, 0.86, 1.0], np.float32), (TILE, TILE, 1))
-            img += self.rng.uniform(-0.02, 0.02, size=(TILE, TILE, 1)).astype(np.float32)
+            # St. Elmo's fire banked down, for the port's sparks that rest dim and crackle lit
+            # (Ryan, 28 October: the lit corona read as a white block, and lighting it further
+            # showed nothing): banked far enough that its crackle, at twenty-eight times its rest
+            # light, holds an electric blue rather than white (31 October: "a tinge of something
+            # other than white").
+            img = 0.16 * np.tile(np.array([0.40, 0.75, 1.0], np.float32), (TILE, TILE, 1))
+            img += self.rng.uniform(-0.01, 0.01, size=(TILE, TILE, 1)).astype(np.float32)
         elif kind == "corona":
-            # St. Elmo's fire (the Storm Petrel's mast, 23 October): an electric blue-white,
-            # near uniform like the lit tile, so a small part reads the same wherever the world
-            # grid lands on it; the one lit colour on a machine that is no flame.
-            img = np.tile(np.array([0.62, 0.86, 1.0], np.float32), (TILE, TILE, 1))
-            img += self.rng.uniform(-0.04, 0.04, size=(TILE, TILE, 1)).astype(np.float32)
+            # St. Elmo's fire (the Storm Petrel's mast, 23 October): an electric blue, near uniform
+            # like the lit tile, so a small part reads the same wherever the world grid lands on
+            # it; the one lit colour on a machine that is no flame. Banked so it burns blue at rest
+            # and pales only toward its flare (31 October: it had read white).
+            img = 0.45 * np.tile(np.array([0.40, 0.70, 1.0], np.float32), (TILE, TILE, 1))
+            img += self.rng.uniform(-0.02, 0.02, size=(TILE, TILE, 1)).astype(np.float32)
+        elif kind == "fire":
+            # A fire weapon's flame (Ryan, 31 October: "Fire weapons, like the blazethrower, need a
+            # red glow, not a white one"): one even red-orange, banked so a flare to eight times
+            # its rest light shows #ff380d and sixteen still a red-orange, never white; red and
+            # green alone, as every red is.
+            img = np.tile(np.array([0.28, 0.062, 0.0], np.float32), (TILE, TILE, 1))
+        elif kind == "furnace":
+            # A furnace seen through its grille (Ryan, 31 October, of the Nemesis's chest: "that
+            # thing has to look HOT"): one even orange, no rim to read as a red grille, banked for a
+            # part that burns always at ten times its rest light (#ff5900) and flares to sixteen
+            # (#ff6e00), red and green alone and short of the orange that reads yellow to Ryan.
+            img = np.tile(np.array([0.26, 0.091, 0.0], np.float32), (TILE, TILE, 1))
+        elif kind == "tesla":
+            # Lightning in a coil (Ryan, 31 October, of the Dingo's Translocator: "classic 'tesla
+            # lightning blue'"): an electric cyan, banked so its flare to sixteen times its rest
+            # light holds the colour; paler and greener than the shield's blue, so the two part.
+            img = np.tile(np.array([0.095, 0.18, 0.21], np.float32), (TILE, TILE, 1))
+        elif kind == "shield":
+            # A shield's light (Ryan, 31 October, of the Puffin's amplifier and the Storm Petrel's
+            # field: "since both are related to their shield-related passive, could they glow in a
+            # shield-ish colour?"): the game's shield blue (Palette.SHIELD, #2f63d8) brightened,
+            # banked so a flare to thirty times its rest light shows #3775ff and a rest reads dark.
+            img = np.tile(np.array([0.035, 0.074, 0.161], np.float32), (TILE, TILE, 1))
         else:
             img = self.metal()
         image = bpy.data.images.new(name, TILE, TILE, alpha=True)
@@ -412,6 +438,7 @@ class Build:
         self.forms = {}        # poses held while a status lasts (see form())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger (MechRig's halos)
+        self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -1004,6 +1031,11 @@ class Build:
             raise ValueError("%s: a halo names %s, which no glow lights" % (self.name, ", ".join(repr(h) for h in stray)))
         if halo:
             out["halo"] = halo
+        stray = [p for p in self.standing if p not in glow_parts]
+        if stray:
+            raise ValueError("%s: a standing glow names %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
+        if self.standing:
+            out["standing"] = dict(self.standing)
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):

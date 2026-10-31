@@ -79445,5 +79445,8 @@
  "halo": [
   "throat_slot",
   "pilot_flame"
- ]
+ ],
+ "standing": {
+  "throat_slot": 8.0
+ }
 }

@@ -115,6 +115,18 @@ func test_the_glow_parts_name_lit_meshes_in_every_model() -> void:
 		model.free()
 
 
+func test_a_standing_glow_holds_its_light_and_a_flare_rises_past_it() -> void:
+	var rig := MechRig.new()
+	var lit := StandardMaterial3D.new()
+	lit.emission_energy_multiplier = 2.0
+	rig._standing[lit] = 5.0
+	rig._light_to(lit, MechRig._rest_of(lit), 1.0)
+	assert_true(absf(lit.emission_energy_multiplier - 2.0 * MechRig.light(5.0)) < 0.0001, "at rest it holds its standing glow")
+	rig._light_to(lit, MechRig._rest_of(lit), 9.0)
+	assert_true(absf(lit.emission_energy_multiplier - 2.0 * MechRig.light(9.0)) < 0.0001, "an act's flare rises past it")
+	assert_true(absf(MechRig._rest_of(lit) - 2.0) < 0.0001, "its rest is kept under the raised light")
+
+
 func test_a_halo_names_only_parts_a_glow_lights() -> void:
 	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
@@ -139,6 +151,18 @@ func test_a_halo_closes_round_a_flat_part_and_shows_only_as_its_light_climbs() -
 			out += 1
 	assert_true(verts.size() >= 24, "a box's shell keeps its faces' corners")
 	assert_eq(out, verts.size(), "every corner of a box's shell points straight out from its middle")
+	# A flat part's shell spreads round its rim, never floating off its face: a quad's corners lean
+	# outward in its plane as well as off it.
+	var quad := ArrayMesh.new()
+	quad.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, QuadMesh.new().get_mesh_arrays())
+	var flat := MechRig._halo_mesh(quad, 0).surface_get_arrays(0)
+	var fv: PackedVector3Array = flat[Mesh.ARRAY_VERTEX]
+	var fn: PackedVector3Array = flat[Mesh.ARRAY_NORMAL]
+	var leaning := 0
+	for i in range(fv.size()):
+		if fn[i].dot(Vector3(fv[i].x, fv[i].y, 0.0).normalized()) > 0.5 and absf(fn[i].z) > 0.3:
+			leaning += 1
+	assert_eq(leaning, fv.size(), "every corner of a flat quad's shell leans out round its rim")
 	# At rest a lit part wears no halo; it fades in as the part's light climbs over its rest,
 	# whole at HALO_FULL rests over, burning at the part's own light.
 	var rig := MechRig.new()

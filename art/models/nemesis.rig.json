@@ -39029,7 +39029,14 @@
   "hp_4": "oblation_ward"
  },
  "halo": [
-  "core_fire",
+  [
+   "core_fire",
+   2.0
+  ],
   "condenser_slot"
- ]
+ ],
+ "standing": {
+  "core_fire": 10.0,
+  "condenser_slot": 8.0
+ }
 }

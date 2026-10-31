@@ -128,6 +128,7 @@ var _strikes: Array = []           # [{joint, vec (degrees), slide (world units,
 var _glow: Array = []              # [{mats: [StandardMaterial3D], base: [float]}] per glow track of the act playing
 var _glow_cache: Dictionary = {}   # part prefix -> [StandardMaterial3D]
 var _halos: Dictionary = {}        # a lit material -> the halos' ShaderMaterials round its surfaces (_setup_halos)
+var _standing: Dictionary = {}     # a lit material -> the multiple of its rest light it never falls under (_setup_standing)
 var _body_act_rot := Vector3.ZERO  # the act's body track, degrees (pitch, yaw, roll)
 var _body_act_slide := Vector3.ZERO
 var _body_move_rot := Vector3.ZERO # the gait's body: bob, rock, bank
@@ -518,9 +519,10 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	var mg: Dictionary = gait.get("glow", {})
 	for part in mg.get("parts", []):
 		for m in _lit_materials(str(part)):
-			_move_glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
+			_move_glow.append([m, _rest_of(m)])
 	_setup_forms(side.get("forms", {}) if side.get("forms", {}) is Dictionary else {})
 	_setup_halos(side)
+	_setup_standing(side)
 
 
 ## The forms a sidecar names, ready to hold: their tracks as curves over their turn, and
@@ -547,7 +549,7 @@ func _setup_forms(fs: Dictionary) -> void:
 		for g in f.get("glow", []):
 			for part in g.get("parts", []):
 				for m in _lit_materials(str(part)):
-					glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier, float(g.get("k", -1.0))])
+					glow.append([m, _rest_of(m), float(g.get("k", -1.0))])
 		var own: Array = []
 		for a in f.get("acts", []):
 			if a is Dictionary and a.has("name"):
@@ -807,7 +809,7 @@ func _start(a: Dictionary) -> void:
 			mats.append_array(_lit_materials(str(part)))
 		var base: Array = []
 		for m in mats:
-			base.append((m as StandardMaterial3D).emission_energy_multiplier)
+			base.append(_rest_of(m))
 		_glow.append({"curve": curve(g.get("keys", []), duration, ease), "mats": mats, "base": base})
 
 
@@ -1135,11 +1137,36 @@ static func light(m: float) -> float:
 ## eased (light()), and its halos with it, whose presence climbs with the multiple until it
 ## stands HALO_FULL rests over (_setup_halos).
 func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
+	multiple = maxf(multiple, float(_standing.get(m, 1.0)))
 	var e := base * light(multiple)
 	m.emission_energy_multiplier = e
 	for h in _halos.get(m, []):
 		(h as ShaderMaterial).set_shader_parameter("light", e)
 		(h as ShaderMaterial).set_shader_parameter("presence", clampf((multiple - 1.0) / HALO_FULL, 0.0, 1.0))
+
+
+## The glows a sidecar holds always (`standing`: a lit part and how many rests over its own),
+## an act's flare rising past them and settling back to them, their halos lit with them (Ryan,
+## 31 October: the Stingray's fans "always on with heat glow"; the Arsenal's back vents "a creepy
+## glowing exhaust").
+func _setup_standing(side: Dictionary) -> void:
+	_standing.clear()
+	var st = side.get("standing", {})
+	if not (st is Dictionary):
+		return
+	for part in st.keys():
+		for m in _lit_materials(str(part)):
+			var rest := _rest_of(m)
+			_standing[m] = 1.0 + float(st[part])
+			_light_to(m, rest, 1.0)
+
+
+## A lit material's light at rest, kept on the material the first time it is asked, so a standing
+## glow that raises its light is never taken for its rest.
+static func _rest_of(m: StandardMaterial3D) -> float:
+	if not m.has_meta("rest_light"):
+		m.set_meta("rest_light", m.emission_energy_multiplier)
+	return float(m.get_meta("rest_light"))
 
 
 ## The halos (Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try it"; the next
@@ -1235,7 +1262,10 @@ func _halo_under(node: Node, grow: float, reach: float, done: Dictionary) -> voi
 
 
 ## A surface's halo shell: its own triangles and UVs, each corner's normal the sum of the faces
-## meeting there, so the shell grows out closed round a flat-shaded part. Built once a mesh.
+## meeting there, so the shell grows out closed round a flat-shaded part; where the surface ends,
+## at an edge one triangle alone uses, the corner leans outward in the surface's own plane too, so
+## a flat disc's shell spreads round its rim rather than floating off its face (Ryan, 31 October,
+## of the Puffin's repulsor discs: "extended way far out"). Built once a mesh.
 static func _halo_mesh(mesh: Mesh, surface: int) -> ArrayMesh:
 	var key := "%d:%d" % [mesh.get_instance_id(), surface]
 	if _halo_meshes.has(key):
@@ -1243,15 +1273,48 @@ static func _halo_mesh(mesh: Mesh, surface: int) -> ArrayMesh:
 	var arrays := mesh.surface_get_arrays(surface)
 	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var index: PackedInt32Array = arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
 	var sums := {}
 	for i in range(verts.size()):
 		var at := Vector3i((verts[i] * 64.0).round())
 		sums[at] = (sums.get(at, Vector3.ZERO) as Vector3) + normals[i]
+	var edges := {}   # "a|b" -> [uses, outward in the face's plane, a, b]
+	var corners := index.size() if index.size() > 0 else verts.size()
+	for f in range(0, corners - 2, 3):
+		var tri: Array[Vector3] = []
+		for c in range(3):
+			tri.append(verts[index[f + c]] if index.size() > 0 else verts[f + c])
+		var fn := (tri[1] - tri[0]).cross(tri[2] - tri[0])
+		if fn.length_squared() < 1e-12:
+			continue
+		fn = fn.normalized()
+		for e in range(3):
+			var p: Vector3 = tri[e]
+			var q: Vector3 = tri[(e + 1) % 3]
+			var a := Vector3i((p * 64.0).round())
+			var b := Vector3i((q * 64.0).round())
+			var ek := "%s|%s" % [a, b] if str(a) < str(b) else "%s|%s" % [b, a]
+			if edges.has(ek):
+				edges[ek][0] = int(edges[ek][0]) + 1
+				continue
+			var out := (q - p).cross(fn).normalized()
+			if out.dot(tri[(e + 2) % 3] - p) > 0.0:
+				out = -out
+			edges[ek] = [1, out, a, b]
+	var rims := {}
+	for ek in edges.keys():
+		var e: Array = edges[ek]
+		if int(e[0]) == 1:
+			for at in [e[2], e[3]]:
+				rims[at] = (rims.get(at, Vector3.ZERO) as Vector3) + (e[1] as Vector3)
 	var smooth := PackedVector3Array()
 	smooth.resize(verts.size())
 	for i in range(verts.size()):
-		var n: Vector3 = sums[Vector3i((verts[i] * 64.0).round())]
-		smooth[i] = n.normalized() if n.length() > 0.0001 else normals[i]
+		var at := Vector3i((verts[i] * 64.0).round())
+		var n: Vector3 = sums[at]
+		n = n.normalized() if n.length() > 0.0001 else normals[i]
+		var rim: Vector3 = rims.get(at, Vector3.ZERO)
+		smooth[i] = (n + rim.normalized()).normalized() if rim.length() > 0.0001 else n
 	var out := []
 	out.resize(Mesh.ARRAY_MAX)
 	out[Mesh.ARRAY_VERTEX] = verts

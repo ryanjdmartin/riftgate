@@ -81,15 +81,43 @@ void main() { vUv = uv; vec4 mv = modelViewMatrix * vec4(position + normal * gro
 const HALO_FRAG = `uniform sampler2D tile; uniform float light; uniform float presence; uniform float reach; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
 void main() { vec3 t = texture2D(tile, vUv).rgb; vec3 c = (t - min(t.r, min(t.g, t.b))) * light; c /= max(1.0, max(c.r, max(c.g, c.b))); c *= c;
   float f = abs(dot(normalize(vN), normalize(vV))); float a = sqrt(reach * presence * smoothstep(0.0, 0.6, f)); gl_FragColor = vec4(c * a, a); }`;
+// A lit material's light at rest, kept the first time it is asked (MechRig._rest_of), so a standing
+// glow that raises it is never taken for its rest.
+function restOf(m) { if (m.userData.restLight === undefined) m.userData.restLight = m.emissiveIntensity; return m.userData.restLight; }
 // A mesh's halo shell (MechRig._halo_mesh): its own triangles and UVs, each corner's normal the sum
-// of the faces meeting there, so the shell grows out closed round a flat-shaded part. Once a geometry.
+// of the faces meeting there, so the shell grows out closed round a flat-shaded part; at an edge
+// one triangle alone uses, the corner leans outward in the face's own plane too, so a flat disc's
+// shell spreads round its rim. Once a geometry.
 function haloGeometry(geo) {
   if (geo.userData.halo) return geo.userData.halo;
   const T = window.THREE, pos = geo.attributes.position, nor = geo.attributes.normal, sums = new Map();
   const key = i => Math.round(pos.getX(i) * 64) + "," + Math.round(pos.getY(i) * 64) + "," + Math.round(pos.getZ(i) * 64);
   for (let i = 0; i < pos.count; i++) { const k = key(i), s = sums.get(k) || [0, 0, 0]; s[0] += nor.getX(i); s[1] += nor.getY(i); s[2] += nor.getZ(i); sums.set(k, s); }
+  const idx = geo.index ? geo.index.array : null, corners = idx ? idx.length : pos.count, edges = new Map(), v = i => [pos.getX(i), pos.getY(i), pos.getZ(i)];
+  const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]], cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2], unit = a => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+  for (let f = 0; f + 2 < corners; f += 3) {
+    const ix = [0, 1, 2].map(c => idx ? idx[f + c] : f + c), p = ix.map(v);
+    const fn = cross(sub(p[1], p[0]), sub(p[2], p[0]));
+    if (dot(fn, fn) < 1e-12) continue;
+    const n = unit(fn);
+    for (let e = 0; e < 3; e++) {
+      const a = key(ix[e]), b = key(ix[(e + 1) % 3]), ek = a < b ? a + "|" + b : b + "|" + a;
+      if (edges.has(ek)) { edges.get(ek)[0]++; continue; }
+      let out = unit(cross(sub(p[(e + 1) % 3], p[e]), n));
+      if (dot(out, sub(p[(e + 2) % 3], p[e])) > 0) out = out.map(x => -x);
+      edges.set(ek, [1, out, a, b]);
+    }
+  }
+  const rims = new Map();
+  for (const [uses, out, a, b] of edges.values()) if (uses === 1) for (const k of [a, b]) { const r = rims.get(k) || [0, 0, 0]; rims.set(k, [r[0] + out[0], r[1] + out[1], r[2] + out[2]]); }
   const out = new Float32Array(pos.count * 3);
-  for (let i = 0; i < pos.count; i++) { const s = sums.get(key(i)), l = Math.hypot(s[0], s[1], s[2]) || 1; out[i * 3] = s[0] / l; out[i * 3 + 1] = s[1] / l; out[i * 3 + 2] = s[2] / l; }
+  for (let i = 0; i < pos.count; i++) {
+    let n = unit(sums.get(key(i)));
+    const r = rims.get(key(i));
+    if (r && Math.hypot(r[0], r[1], r[2]) > 1e-4) { const u = unit(r); n = unit([n[0] + u[0], n[1] + u[1], n[2] + u[2]]); }
+    out[i * 3] = n[0]; out[i * 3 + 1] = n[1]; out[i * 3 + 2] = n[2];
+  }
   const g = new T.BufferGeometry();
   g.setAttribute("position", pos); g.setAttribute("normal", new T.BufferAttribute(out, 3));
   if (geo.attributes.uv) g.setAttribute("uv", geo.attributes.uv);
@@ -214,7 +242,7 @@ function labelled(name, part) {
 
 class Rig {
   constructor(root, side, rngSeed = 1) {
-    this.model = root; this.body = root;
+    this.model = root; this.body = root; this.standing = new Map(); this.halos = new Map();
     this.joints = {}; this.hardpoints = {}; this.rest = {}; this.restPos = {};
     root.traverse(n => {
       const tag = parseTag(n.name || "");
@@ -252,13 +280,15 @@ class Rig {
     for (const part of ((this.gait.treads || {}).parts || [])) root.traverse(n => {
       if (n.isMesh && labelled(n.name, part)) for (const m of [].concat(n.material)) if (m.map) this.treadMats.push([m, m.map.offset.x]);
     });
-    for (const part of ((this.gait.glow || {}).parts || [])) for (const m of this.litMaterials(part)) this.moveGlow.push([m, m.emissiveIntensity]);
+    for (const part of ((this.gait.glow || {}).parts || [])) for (const m of this.litMaterials(part)) this.moveGlow.push([m, restOf(m)]);
     this.setupForms(side.forms || {});
     this.setupHalos(side);
+    this.setupStanding(side);
   }
   // A lit material's light (MechRig._light_to): its rest times the multiple, and its halos with it,
   // their light eased as the game eases it (the page's own light eases in PHONE_GLOW).
   lightTo(m, base, k) {
+    k = Math.max(k, this.standing.get(m) || 1);
     m.emissiveIntensity = base * Math.max(0, k);
     for (const h of this.halos.get(m) || []) {
       h.uniforms.light.value = Math.pow(m.emissiveIntensity, 1 / 2.2);
@@ -295,6 +325,16 @@ class Rig {
       else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) wear(n, scale); });
     }
   }
+  // The glows a sidecar holds always (MechRig._setup_standing): a lit part never falls under so
+  // many rests over its own, an act's flare rising past it.
+  setupStanding(side) {
+    this.standing = new Map();
+    for (const [part, k] of Object.entries(side.standing || {})) for (const m of this.litMaterials(part)) {
+      const rest = restOf(m);
+      this.standing.set(m, 1 + k);
+      this.lightTo(m, rest, 1);
+    }
+  }
   // The longest side of the model's bounds at rest, in its own units (MechRig._model_size).
   modelSize() {
     const T = window.THREE, box = new T.Box3(), inv = new T.Matrix4();
@@ -317,7 +357,7 @@ class Rig {
       const duration = Math.max(0.01, f.duration ?? 0.6), curves = {}, glow = [];
       for (const [jn, keys] of Object.entries(f.tracks || {})) if (this.joints[jn]) curves[jn] = curve(keys, duration, "smooth");
       if ((f.body || []).length) curves["@body"] = curve(f.body, duration, "smooth");
-      for (const g of f.glow || []) for (const part of g.parts || []) for (const m of this.litMaterials(part)) glow.push([m, m.emissiveIntensity, g.k ?? -1]);
+      for (const g of f.glow || []) for (const part of g.parts || []) for (const m of this.litMaterials(part)) glow.push([m, restOf(m), g.k ?? -1]);
       this.forms[name] = {duration, curves, glow, acts: (f.acts || []).filter(a => a && a.name)};
       this.formOn[name] = false; this.formT[name] = 0;
     }
@@ -432,7 +472,7 @@ class Rig {
     if ((a.body || []).length) this.curves["@body"] = curve(a.body, d, ease);
     for (const g of (a.glow || [])) {
       const mats = []; for (const p of g.parts || []) mats.push(...this.litMaterials(p));
-      this.glow.push({curve: curve(g.keys || [], d, ease), mats, base: mats.map(m => m.emissiveIntensity)});
+      this.glow.push({curve: curve(g.keys || [], d, ease), mats, base: mats.map(restOf)});
     }
   }
   restoreGlow() { for (const g of this.glow) g.mats.forEach((m, i) => { this.lightTo(m, g.base[i], 1); }); this.glow = []; }
