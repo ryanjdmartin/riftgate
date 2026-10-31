@@ -3382,6 +3382,7 @@ func _swallow(f: Foe, t: MechState, rounds: int) -> void:
 		log.append("%s: %s, and finds nothing it may take" % [f.display_name, what])
 		return
 	Effects.grant_for_rounds(t.unit, Effects.STATUS["swallowed"], swallow_source(f), round + rounds)
+	f.swallow_mark = f.hp   # a quarter of its HP lost from here lets the machine go (31 October)
 	t.assigned = true
 	for foe in field_foes():
 		if foe.alive() and foe.target == t:
@@ -3389,8 +3390,45 @@ func _swallow(f: Foe, t: MechState, rounds: int) -> void:
 	log.append("%s: %s, %s swallowed: out of the fight for %d round%s, or until %s falls" % [f.display_name, what, t.unit.display_name, rounds, "" if rounds == 1 else "s", f.display_name])
 
 
-## A swallower down lets go of what it holds, at once (30 October).
-func _release_swallowed(f: Foe) -> void:
+## The HP a swallower lets its machine go at: a quarter of its HP below its HP as it swallowed
+## (Ryan, 31 October, agreeing Claude's lean: a damage threshold, Clair Obscur's stagger in its
+## smallest form; a quarter is a round of the team's focus, a third as long as waiting).
+static func swallow_release_at(f: Foe) -> int:
+	return f.swallow_mark - ceili(f.hp_max / 4.0)
+
+
+## The damage still to deal a swallower before it lets its machine go: its chip's number.
+static func swallow_left(f: Foe) -> int:
+	return maxi(0, f.hp - swallow_release_at(f))
+
+
+## The machine a foe holds swallowed, or null.
+func swallowed_by(f: Foe) -> MechState:
+	var src := swallow_source(f)
+	for ms in mechs:
+		for m in Effects.live(ms.unit):
+			if m.id == "swallowed" and m.source == src:
+				return ms
+	return null
+
+
+## A swallower that has lost a quarter of its HP since it swallowed lets its machine go at
+## once, and loses nothing else (a lost action on top would be a stun, the stun row's care);
+## a swallower whose machine came back on its own clock holds nothing (31 October).
+func _release_staggered() -> void:
+	for f in field_foes():
+		if f.swallow_mark < 0 or not f.alive():
+			continue
+		if swallowed_by(f) == null:
+			f.swallow_mark = -1
+		elif f.hp <= swallow_release_at(f):
+			f.swallow_mark = -1
+			_release_swallowed(f, "reels")
+
+
+## A swallower down, or reeling from a quarter of its HP lost, lets go of what it holds, at
+## once (30 and 31 October).
+func _release_swallowed(f: Foe, why: String = "falls") -> void:
 	var src := swallow_source(f)
 	for ms in mechs:
 		var keep: Array = []
@@ -3404,7 +3442,7 @@ func _release_swallowed(f: Foe) -> void:
 			ms.unit.modifiers = keep
 			if state == State.ASSIGN:
 				ms.assigned = false   # let go in the player's turn, it acts this round
-			log.append("%s falls, and lets %s go" % [f.display_name, ms.unit.display_name])
+			log.append("%s %s, and lets %s go" % [f.display_name, why, ms.unit.display_name])
 
 
 ## A steal (Gilgamesh's, 30 October, the slate's signature: "takes the weapon a machine shows and
@@ -4514,6 +4552,7 @@ func hull_reached(f: Foe, ms: MechState) -> int:
 func _clear_dead() -> void:
 	_fall_with_cores()
 	_clear_dead_slots()
+	_release_staggered()
 	_refresh_kin()
 	_refresh_guards()
 

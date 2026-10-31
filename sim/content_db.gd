@@ -281,6 +281,7 @@ func make_foe(foe_id: String) -> Foe:
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
 	f.armour = maxi(0, int(d.get("armour", 0)))
+	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
 	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
@@ -373,7 +374,10 @@ func codex_for_foe(f: Foe) -> Dictionary:
 		faction_name = str(d.get("faction", "")).capitalize()
 	var items: Array = [["hp", stat_parts(int(d.get("hp", f.hp_max)), f.hp_max)], ["attack", stat_parts(int(d.get("attack", f.attack)), f.attack)]]
 	if f.armour > 0 or int(d.get("armour", 0)) > 0:
-		items.append(["armour", stat_parts(int(d.get("armour", 0)), f.armour)])
+		var arm := stat_parts(int(d.get("armour", 0)), f.armour)
+		if f.armour_step > 0:
+			arm.append({"text": "+%d A TIER" % f.armour_step, "trend": 0, "gain": false})
+		items.append(["armour", arm])
 	items.append(["rank", "BACK" if f.prefers_back else "FRONT"])
 	if f.aim != Foe.AIM_ANYTHING:
 		items.append(["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()])
@@ -594,12 +598,15 @@ static func escort_at(t: int) -> int:
 
 
 ## A commander at its battle's tier: its HP and attack as the tier gives them, set as it is made,
-## so the plaque, the codex and a save read them as its own.
+## so the plaque, the codex and a save read them as its own. A boss whose kit is armour grows it
+## by its `armour_step` a tier above one, from a lighter start (Ryan, 31 October: "just the ones
+## that have it", since a tier-one team has little against armour; the Cinder Tortoise's 1, 2, 3).
 func scale_boss(f: Foe, t: int) -> void:
 	var s := boss_tier(t)
 	f.hp_max = maxi(1, roundi(f.hp_max * float(s["hp"])))
 	f.hp = f.hp_max
 	f.attack += int(s["attack"])
+	f.armour += f.armour_step * clampi(t, 0, BOSS_TIERS.size() - 1)
 
 
 ## A boss's escort from its domain's units of the tier (Ryan, 26 October: "Make sure that boss
@@ -1875,6 +1882,13 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: hp must be positive" % where)
 		if int(f.get("armour", 0)) < 0:
 			errs.append("%s: armour cannot be negative" % where)
+		if f.has("armour_step"):
+			# A boss whose kit is armour grows it a tier (31 October): only a foe that scales in
+			# place with the tier, a domain's boss or one of the party, carries a step.
+			if not (f["armour_step"] is float or f["armour_step"] is int) or int(f["armour_step"]) < 1:
+				errs.append("%s: armour_step must be a whole number of at least 1" % where)
+			elif not (is_boss(str(id)) or bool(f.get("hero", false)) or f.has("promotes")):
+				errs.append("%s: armour_step only on a foe that scales with the tier (a boss, a hero)" % where)
 		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
 		_validate_actions(where, f, errs)

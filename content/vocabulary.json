@@ -476,10 +476,10 @@
    "id": "swallow",
    "category": "foe",
    "name": "Swallow",
-   "codex": "Foe move of its own, never a rider on a blow. The machine it lands on is Swallowed: out of the fight for the rounds it says, or until the swallower falls. It never takes the last machine able to act. A Ward turns it away; a Lure turns it, and a Suppress or a Disrupt stops it, as any move.",
+   "codex": "Foe move of its own, never a rider on a blow. The machine it lands on is Swallowed: out of the fight for the rounds it says, until the swallower falls, or until the swallower has lost a quarter of its HP since the swallow, the damage still to deal counting down on its chip. It never takes the last machine able to act. A Ward turns it away; a Lure turns it, and a Suppress or a Disrupt stops it, as any move.",
    "status": "implemented",
    "design": {
-    "holes": "Floraison's (30 October). Nothing frees the machine early but the swallower's fall; the rounds, 1 to 3, are the move's, and no damage lands on the machine while it is held."
+    "holes": "Floraison's (30 October). The rounds, 1 to 3, are the move's, and no damage lands on the machine while it is held. The early release (31 October, Ryan agreeing Claude's lean): a quarter of the swallower's HP lost since the swallow, Clair Obscur's stagger in its smallest form, a round of the team's focus; the swallower loses nothing else, since a lost action on top would be a stun. A machine let go in the player's turn acts that round."
    }
   },
   {
@@ -1884,7 +1884,7 @@
    "id": "swallowed",
    "category": "status",
    "name": "Swallowed",
-   "codex": "Machine status, from a foe's swallow. It cannot act, take damage or be targeted: a blow or a move at every machine passes it by, and no ally can shield, vent or buff it. It comes back when its rounds run out, or the moment its swallower falls.",
+   "codex": "Machine status, from a foe's swallow. It cannot act, take damage or be targeted: a blow or a move at every machine passes it by, and no ally can shield, vent or buff it. It comes back when its rounds run out, the moment its swallower falls, or once its swallower has lost a quarter of its HP since the swallow; let go in the player's turn, it acts that round.",
    "status": "implemented",
    "design": {
     "holes": "Its own cooling, ticks and overheats still land, as a Phased machine's do; nothing cleanses it.",
@@ -1892,7 +1892,7 @@
      "kind": "debuff",
      "on": "machine",
      "stacks": "No",
-     "lasts": "The swallow's rounds, or until the swallower falls"
+     "lasts": "The swallow's rounds, or until the swallower falls or loses a quarter of its HP"
     }
    }
   },

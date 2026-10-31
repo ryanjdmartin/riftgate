@@ -1268,6 +1268,12 @@ func _foe_rows(foe: Foe) -> Array:
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
 		rows.append(["lock", "", "Guarded: takes no damage while %s" % ("all its parts stand" if foe.guard == "all" else "any of its parts stands"), Palette.HUD])
+	var holding := sk.swallowed_by(foe) if foe.swallow_mark >= 0 else null
+	if holding != null:
+		# A swallow (30 October) and its release (31 October): the damage still to deal before it
+		# lets its machine go, a quarter of its HP counted from the swallow.
+		var left := Skirmish.swallow_left(foe)
+		rows.append([status_glyph("swallowed"), str(left), "Holding %s: lets it go after %d more damage, when its rounds run out, or when it falls" % [holding.unit.display_name, left], Palette.ENEMY])
 	if foe.gathering():
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge

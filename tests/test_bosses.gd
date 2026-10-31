@@ -645,7 +645,78 @@ func test_the_harness_fields_a_bosss_own_escort() -> void:
 	s.boss = boss_id
 	var sk := s.make_skirmish()
 	var esc := db.escort_composition(db.faction_of_foe(boss_id), 1, boss_id)
-	var want := 1
+	var want := 1 + Array(db.foes[boss_id].get("parts", [])).size()   # the boss and its parts
 	for m in esc["members"]:
 		want += int(m[1])
-	assert_eq(sk.field_foes().size() + sk.reinforcements.size(), want, "the boss and its own escort")
+	assert_eq(sk.field_foes().size() + sk.reinforcements.size(), want, "the boss, its parts and its own escort")
+
+
+## A boss whose kit is armour grows it by its step a tier above one, from a lighter start (Ryan,
+## 31 October: "just the ones that have it"); a boss with no step keeps its armour at every tier.
+func test_a_boss_grows_its_armour_by_its_step_a_tier() -> void:
+	var db := ContentDB.load_default()
+	for t in range(ContentDB.BOSS_TIERS.size()):
+		var plated := Foe.make("shell", 48, 7)
+		plated.armour = 1
+		plated.armour_step = 1
+		db.scale_boss(plated, t)
+		assert_eq(plated.armour, 1 + t, "tier %d: a point a tier above one" % (t + 1))
+		var plain := Foe.make("plain", 48, 7)
+		plain.armour = 1
+		db.scale_boss(plain, t)
+		assert_eq(plain.armour, 1, "tier %d: no step, the same armour" % (t + 1))
+	for id in db.foes.keys():
+		if int(db.foes[id].get("armour_step", 0)) > 0:
+			var f := db.make_foe(str(id))
+			assert_eq(f.armour_step, int(db.foes[id]["armour_step"]), "%s carries its step from content" % id)
+
+
+func test_the_validator_holds_an_armour_step_to_the_foes_that_scale() -> void:
+	var db := ContentDB.new()   # a copy of its own: the shared content is never written to
+	db.load_dir(ContentDB.DIR)
+	db.foes["x_step"] = {"id": "x_step", "name": "X", "faction": "meadow", "hp": 9, "attack": 3, "armour_step": 1, "codex": "", "flavour": "", "design": {},
+		"actions": [{"id": "a", "name": "A", "kind": "attack", "text": "", "status": "implemented"}]}
+	db.foes["x_zero"] = {"id": "x_zero", "name": "Z", "faction": "meadow", "hp": 9, "attack": 3, "hero": true, "armour_step": 0, "codex": "", "flavour": "", "design": {},
+		"actions": [{"id": "a", "name": "A", "kind": "attack", "text": "", "status": "implemented"}]}
+	var errs: Array = db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.contains("x_step") and e.contains("only on a foe that scales with the tier")), "the rank and file never step")
+	assert_true(errs.any(func(e) -> bool: return e.contains("x_zero") and e.contains("at least 1")), "a step is at least a point")
+
+
+## A swallower that has lost a quarter of its HP since the swallow lets its machine go at once,
+## and the machine acts that round (Ryan, 31 October); less than a quarter, it holds on, its chip
+## counting the damage still to deal; a save keeps the count.
+func test_a_swallow_lets_go_once_its_swallower_loses_a_quarter_of_its_hp() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.attack(6, I)))
+	var b := _mech("B", Die.single(Face.attack(6, I)))
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var flo := Foe.make("floraison", 40, 10)
+	flo.actions = [{"id": "swallow", "name": "Swallow", "kind": "debuff", "effect": "swallow", "value": 3, "weight": 1, "text": ""}, _move("lash")]
+	sk.add_foes([flo])
+	sk.begin()
+	sk.start_round()
+	flo.action = flo.actions[0]
+	flo.target = sk.mechs[0]
+	sk.end_round()
+	assert_true(Skirmish.is_swallowed(sk.mechs[0]), "A is swallowed")
+	assert_eq(flo.swallow_mark, 40, "the swallower marks its HP as it swallows")
+	assert_eq(Skirmish.swallow_left(flo), 10, "a quarter of its 40 to deal")
+	var copy: Skirmish = SaveGame.clone_skirmish(sk)
+	assert_eq(copy.field_foes()[0].swallow_mark, 40, "a save keeps the mark")
+	sk.start_round()
+	assert_true(sk.assign(1, flo), "B strikes for 6")
+	assert_true(Skirmish.is_swallowed(sk.mechs[0]), "short of a quarter, it holds on")
+	assert_eq(Skirmish.swallow_left(flo), 4, "four still to deal")
+	assert_eq(sk.swallowed_by(flo), sk.mechs[0], "and it holds A")
+	flo.action = flo.actions[1]
+	flo.target = sk.mechs[1]
+	sk.end_round()
+	sk.start_round()
+	assert_true(Skirmish.is_swallowed(sk.mechs[0]), "still held in its swallow's next round")
+	assert_true(sk.assign(1, flo), "B strikes again")
+	assert_false(Skirmish.is_swallowed(sk.mechs[0]), "a quarter lost: A is let go at once")
+	assert_true(sk.can_spend(0), "and acts this round")
+	assert_eq(flo.swallow_mark, -1, "the swallower holds nothing")
+	assert_true("\n".join(sk.log).contains("reels, and lets A go"), "the log says so")

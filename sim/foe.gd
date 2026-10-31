@@ -24,6 +24,7 @@ var hp: int = 30
 var hp_max: int = 30
 var attack: int = 10             # base attack: the number the player reads as "how hard it hits"
 var armour: int = 0              # flat off every blow that lands on it (content; 2 October: the one enemy mitigation besides recovery)
+var armour_step: int = 0         # armour more a tier above one, a boss whose kit is armour (content `armour_step`; Ryan, 31 October)
 var aim: String = AIM_ANYTHING   # the sense its target pick follows (content; a move may override it)
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
@@ -57,6 +58,7 @@ var next_move: String = ""       # the follow-up it announces next round: the mo
 var held: Dictionary = {}        # what a steal took off a machine, {"name", "power"}, until the borrowed swing spends it (30 October)
 var grudge: int = 0              # foes the team has killed this fight, for a blow that grows with them (`per_kill`); the skirmish keeps it
 var spent_once: Array = []       # the moves marked `once` it has used this fight (30 October: the Vampire Lord readies its rise once)
+var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding none: a quarter of its HP lost since lets it go (31 October)
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"

@@ -3807,3 +3807,21 @@ again to twice as long as the rest of the slate; at base 1 it sits in the slate'
 every row; at 0 it is the slate's quickest. Hull lost stays 0 to 9% throughout: a slog, never a
 threat. A tier-one team has little against armour: no Expose below tier two's locked pieces, the
 one breach a tier-one blueprint no tier-one chassis stocks, Flak on the Prairie Dog alone.
+
+**The slate's blanket point of armour at tier one** (31 October; `tools/balance.gd`, 20 seeds,
+the greedy rung, each boss alone; every boss at its standard 1 against every boss at 0, the
+Cinder Tortoise at 1 in both; a direction). Ryan, 31 October: "be careful giving all bosses
+blanket 1 armour early on". Mean rounds of the fights won over the twelve, the win rate where
+under 100%:
+
+| Row | Armour 1 | Armour 0 |
+|---|---|---|
+| Default team | 4.7 | 3.8 |
+| Minerva's trio | 10.5 | 7.6 |
+| Wainwright & Sutler's trio | 11.0 (92%) | 7.9 |
+| The stock four | 8.3 | 6.0 |
+
+Read. The blanket point costs the small-blow kits about 40% more rounds and the default team
+about a quarter; Wainwright & Sutler's trio loses fights only with it (the Fallen Weapon 40% won,
+Rotbloom 80%, the Behemoth 95%), and wins every one without. At 0 the stock four takes 5 to 7
+rounds and the default team 3.3 to 4.7, against the kill-time test's three to five.
