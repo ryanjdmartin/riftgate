@@ -72,7 +72,7 @@ Buzzard (a soft shell round its lit parts, faded in with the flare; its first ro
 much", its second added rather than laid over, leaning red and a third the size; Ryan judges it
 running, the to-do), and took main as `claude/zealous-wright-ixxo3l` landed (to `06880da`: the
 foes' move-order fix), green there with the halo's test, 827 tests and 206,880 checks; not yet
-on main; its bible is v0.410.
+on main; its bible is v0.411 (the page's 423).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -615,17 +615,18 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.405 (the
-  page's version 417, published 30 October from `claude/charming-rubin-h954bp`: the halo trial
-  on the Buzzard in the reference-glass row, which answers section 12's halo question; three-way
-  merged onto the live v0.404 another session published at 416, a tap, a hold and a drag, a term
-  in shown text read in its colour with its icon, shield blue for protect and hold, and the
-  KEYWORDS button asked in section 12; on this branch's v0.403 at 415, lit parts holding their
-  colour on the phone; each publish before it merged the same way, as this file's history in
-  git shows). So this file carries rows other sessions published ahead of their code (the
-  tracks in pairs, and the notes on Hold The Line and Night Shift; the new foes in the generated
-  tables, the Rotbloom, the Behemoth, the Matador and the Swallowed debuff among them, v0.401's;
-  the terms in their colours, v0.404's), each landing with its branch. The version numbers on the publishing branch's file and the live agree after every
+  `docs/design-bible.html` after every change. This file and the live page are v0.411 (the
+  page's version 423, published 31 October from `claude/charming-rubin-h954bp`: the halo trial's
+  second round in the reference-glass row; three-way merged onto the live v0.410 another session
+  published at 422, its v0.406 to v0.410 at 418 to 422 a pass of its own (the codex's whole die
+  and a die entry's fixed places, a term read in its colour with its icon, the component kinds,
+  the boss mechanics inside the skirmish, the Cassowary, the quick campaign as a test bed and the
+  generated tables' new terms among them), the version and date lines the only conflicts; on
+  this branch's v0.405 at 417, the halo's first round; each publish before it merged the same
+  way, as this file's history in git shows). So this file carries rows other sessions published
+  ahead of their code (the tracks in pairs, and the notes on Hold The Line and Night Shift; the
+  new foes in the generated tables, the Rotbloom, the Behemoth, the Matador and the Swallowed
+  debuff among them, v0.401's; v0.404's to v0.410's), each landing with its branch. The version numbers on the publishing branch's file and the live agree after every
   publish. Before republishing, read the live page; if another session moved it, publish a
   three-way merge onto it (`git merge-file` with the last-published file as the base, the
   wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
