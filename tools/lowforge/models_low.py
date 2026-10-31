@@ -2534,6 +2534,353 @@ def nemesis(b):
 nemesis.maker = "arsenal"
 
 
+def _musk_ox_prisms(b, specs, material, label):
+    """Several low prisms as one part, each (axis, (cx, cy, cz), radius, length, sides, phase)
+    laid as Build.prism lays one: a lit set that draws in one call (a weld leaves a lit part
+    whole, so eleven lenses as eleven parts would be eleven draws), or a row of like pieces."""
+    bm = bmesh.new()
+    for axis, (cx, cy, cz), r, length, n, phase in specs:
+        if axis == "y":
+            m = Matrix.Translation((cx, cy, cz))
+        elif axis == "x":
+            m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(math.pi / 2, 4, "Z")
+        else:
+            m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
+        rings = [[bm.verts.new(m @ Vector((r * math.cos(phase + 2.0 * math.pi * k / n), y, r * math.sin(phase + 2.0 * math.pi * k / n))))
+                  for k in range(n)] for y in (-length / 2.0, length / 2.0)]
+        for k in range(n):
+            k2 = (k + 1) % n
+            bm.faces.new([rings[0][k], rings[0][k2], rings[1][k2], rings[1][k]])
+        bm.faces.new(rings[0])
+        bm.faces.new(rings[1])
+    return b._finish(bm, material, label)
+
+
+def _musk_ox_fitted(b, corner, along, across, size, material, label):
+    """One rectangle from `corner`, `size` = (across, along) long, wearing exactly one whole
+    tile, so a banked fire (the ember) shows its hot middle and dark rim on the face whatever
+    the world grid says: the Musk Ox's back-blasts and forge mouths."""
+    o, al, ac = Vector(corner), Vector(along), Vector(across)
+    w, h = size
+    pts = [o, o + ac * w, o + ac * w + al * h, o + al * h]
+    return _quad(b, [tuple(p) for p in pts], material, label, (o, al, ac, ac.cross(al).normalized(), (w, h)))
+
+
+def _musk_ox_wheel(b, cx, cy, r, w, s):
+    """One of the Musk Ox's big wheels across x, its outer face on side `s`: a ten-sided tyre,
+    a pressed rim stepping out of the outer face, a hub proud of it, and five ribs across the
+    rim so a turn reads from the side."""
+    b.prism("x", cx, cy, r, r, w, "bore.tread", 10, "tyre", phase=math.pi / 10)
+    b.prism("x", cx + s * 1.5, cy, r, r * 0.62, w - 2.0, "steel.plate", 10, "rim", phase=math.pi / 10)
+    b.prism("x", cx + s * 2.0, cy, r, r * 0.28, w, "steel.dark", 8, "hub", phase=math.pi / 8)
+    face = cx + s * (w / 2.0 + 0.5)   # the rim's outer face
+    for k in range(5):
+        a = math.radians(90.0 + 72.0 * k)
+        p0 = (face + s * 0.4, cy + r * 0.3 * math.cos(a), r + r * 0.3 * math.sin(a))
+        p1 = (face + s * 0.4, cy + r * 0.6 * math.cos(a), r + r * 0.6 * math.sin(a))
+        _beam(b, p0, p1, _sq(0.8, 2.4), _sq(0.8, 1.8), "steel.dark", "rib")
+
+
+def musk_ox(b):
+    """Wainwright & Sutler "Musk Ox" (Pattern 24 Field Battery): the artillery, its guns fired
+    from forged ammo (Ryan's go, 21 October; its brief: git show bc97727:docs/briefs/ws_artillery.md).
+    Ryan's picture: "a cross between a Big Bertha, a M270 MLRS, and/or a truck-mounted MEADS
+    launcher. Big. Big wheels", wide ("Wide is good"), the old cannon on the centreline and the
+    high-tech guns on flank sponsons: the "high-tech" W&S design, "where they tried to resolve
+    their inherent bias against energy weapons"; the brief's look, the energy guns fired from
+    cartridges, a rack of glowing cells feeding the flanks and an act that ejects a spent one
+    (the maker never trusted a reactor, so it put the lasers on cartridges). First cut, 31
+    October, from his to-do line: a wide, low ironclad hull on four big bare wheels at its
+    corners, as tall as the hull, the fronts steering; on the centreline the Shrapnel
+    Recuperator (fixed, no pin), an old built-up howitzer, hooped, stepped and swelled at the
+    muzzle under a slotted brake, its recuperator cylinders over the barrel, on a carriage that
+    traverses a touch, elevates and recoils along its line; ahead of it a low cab with two visor
+    slits under a bone-white boss whose horns sweep down and out, the namesake's (as the
+    Clydesdale's feathering is its), shell lockers beside it and a winch on the nose; aft, the
+    Unrestricted Expenditure (fixed, no pin), an MLRS launcher of two pods on a turntable,
+    hinged at the tail to elevate, the tubes on their fronts and the back-blast banked on their
+    backs; either side of the cannon a dark rack of six cells, each lit in its upper third in the
+    Storm Petrel's electric white (the one lit colour on the machine that is no flame), piped
+    across to a sponson on each flank between the wheels, a capacitor on its roof ringed with
+    coils; behind each rack a mouth of the Desublimation Forge, banked fire, into which an act
+    ejects a spent cell from the right rack and out of which a fresh one rises. Mounts in the
+    die's order: hp_1 the left sponson's casemate gun (the stock's Thermal Ray as its class),
+    hp_2 the right's (the Enfilade Beam), each on a mantlet that traverses; hp_3 and hp_4 bare,
+    on rings on the sponsons' roofs behind them, superfiring (the Coolant Jacket and the Canopy
+    show nowhere). The Quick Reload shows nowhere, a vent. The look, the rig, the acts and the
+    gait are Ryan's to judge running."""
+    R, W = 17.0, 14.0          # the wheels: big (Ryan: "Big. Big wheels"), their tops level with the deck
+    HX, AY = 44.0, 30.0        # the hubs across and the axles fore and aft
+    DECK = 34.0                # the hull's top
+    # The wheels, outside the chassis joint so they stay planted while the hull rocks over
+    # them: each spins on its hub, the fronts on a knuckle that steers.
+    for yw, fr in ((AY, "f"), (-AY, "r")):
+        for s in (-1.0, 1.0):
+            w = fr + ("l" if s < 0 else "r")
+            hub = (s * HX, yw, R)
+            if fr == "f":
+                with b.joint("steer_%s" % w, hub, limits=(-25.0, 25.0)):
+                    with b.joint("wheel_%s" % w, hub):
+                        _musk_ox_wheel(b, hub[0], yw, R, W, s)
+            else:
+                with b.joint("wheel_%s" % w, hub):
+                    _musk_ox_wheel(b, hub[0], yw, R, W, s)
+    chassis = b.joint("chassis", (0.0, 0.0, R), limits={"pitch": (-5.0, 5.0), "roll": (-5.0, 5.0)}, swing=False)
+    chassis.__enter__()
+    # The hull: a wide, low casemate, its deck level, a steep glacis falling to a nose plate
+    # between the front wheels; the axles under it. No fenders: the tyres stand bare, their tops
+    # level with the deck, so the wheels read big from above (Big Bertha's are bare).
+    b.loft([(-44.0, _case(66.0, 13.0, DECK, 5.0)), (30.0, _case(66.0, 12.0, DECK, 5.0)), (39.0, _case(62.0, 12.0, 21.0, 3.0)), (41.0, _case(60.0, 13.0, 17.0, 2.0))],
+           "steel.panel", "hull")
+    for yw in (AY, -AY):
+        b.prism("x", 0.0, yw, R, 3.2, 2.0 * (HX - W / 2.0) + 1.0, "steel.dark", 6, "axle")
+    # The nose: a winch drum across it between end plates over a bumper bar, the wagon-builder's,
+    # a livery plate down the glacis's middle and a headlamp either side of it.
+    glacis_z = lambda y: DECK - (y - 30.0) * 13.0 / 9.0
+    b.box(-26.0, 26.0, 40.0, 43.0, 12.5, 15.5, "steel.dark", "bumper")
+    b.prism("x", 0.0, 41.6, 18.6, 2.6, 20.0, "steel.dark", 6, "winch")
+    on_glacis = lambda x0, x1, y0, y1, lift: [[(x0, y, glacis_z(y) - 0.6), (x1, y, glacis_z(y) - 0.6), (x1, y, glacis_z(y) + lift), (x0, y, glacis_z(y) + lift)] for y in (y0, y1)]
+    for s in (-1.0, 1.0):
+        b.box(min(s * 10.0, s * 11.4), max(s * 10.0, s * 11.4), 39.4, 43.6, 15.5, 21.8, "steel.plate", "winch_cheek")
+        x0, x1 = sorted((s * 11.0, s * 19.0))
+        _rings(b, on_glacis(x0 - 0.8, x1 + 0.8, 30.4, 34.6, 0.8), "steel.dark", "lamp_housing")
+        _rings(b, on_glacis(x0, x1, 30.9, 34.1, 1.1), "amber.lit", "lamp")
+    _rings(b, on_glacis(-8.0, 8.0, 30.4, 37.6, 0.5), "livery.livery2", "glacis_panel")
+    # The cab: across the front of the deck under the cannon's barrel, its face raked, two
+    # visor slits either side of the barrel's line; the bone boss over them parted under the
+    # barrel, as the musk ox's is, its horns sweeping down past the cab's corners and hooking
+    # out and up at their tips (the namesake's, in bone as the Clydesdale's feathering is).
+    CABZ = 42.5
+    b.loft([(14.0, rect(0.0, 36.0, DECK - 0.5, CABZ)), (25.0, rect(0.0, 36.0, DECK - 0.5, CABZ)), (30.0, rect(0.0, 34.0, DECK - 0.5, CABZ - 5.0))], "steel.panel", "cab")
+    face_z = lambda y: CABZ - (y - 25.0)
+    for x0, x1 in ((-15.0, -4.0), (4.0, 15.0)):
+        _rings(b, [[(x0, y, face_z(y) - 0.5), (x1, y, face_z(y) - 0.5), (x1, y, face_z(y) + 0.5), (x0, y, face_z(y) + 0.5)] for y in (25.8, 28.4)],
+               "glass.glass", "visor")
+    # A shell locker on each front corner of the deck beside the cab, its lid in the livery.
+    for s in (-1.0, 1.0):
+        x0, x1 = sorted((s * 21.0, s * 28.0))
+        b.box(x0, x1, 12.5, 23.5, DECK, DECK + 4.0, "steel.panel", "locker")
+        b.box(x0 + 0.6, x1 - 0.6, 13.1, 22.9, DECK + 4.0, DECK + 4.5, "livery.livery2", "locker_lid")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 5.0, s * 19.0), max(s * 5.0, s * 19.0), 21.5, 25.5, CABZ - 0.4, CABZ + 0.7, "bone.bone", "boss")
+        horn = [(s * 17.0, 23.5, CABZ + 0.1), (s * 21.5, 26.5, CABZ - 3.5), (s * 25.5, 29.6, CABZ - 5.9), (s * 28.2, 32.8, CABZ - 2.9)]
+        ring = [_sq(4.4, 3.0), _sq(3.4, 2.6), _sq(2.4, 2.0), _sq(0.6, 0.6)]
+        for k in range(3):
+            _beam(b, horn[k], horn[k + 1], ring[k], ring[k + 1], "bone.bone", "horn")
+    # The flanks: a sponson on each between the wheels, a riveted casemate standing above the
+    # deck, its outer face bevelled top and bottom with a livery panel on it. The casemate gun
+    # on a mantlet in its front face, traversing (hp_1 left, the Thermal Ray; hp_2 right, the
+    # Enfilade Beam), high enough to fire over the front tyre; a bare mount on a ring on its
+    # roof behind (hp_3 left, hp_4 right), superfiring over it; a capacitor along the roof's
+    # inner edge ringed with two coils, banked dark and lit by the charge; three feeds across
+    # from the cell rack into its inner face, a lit sight glass on each.
+    prof = [(29.0, 14.0), (43.0, 14.0), (47.0, 20.0), (47.0, 40.0), (44.0, 46.0), (29.0, 46.0)]
+    for s in (-1.0, 1.0):
+        side = "l" if s < 0 else "r"
+        pts = [(s * x, z) for x, z in (prof if s > 0 else prof[::-1])]
+        b.loft([(-11.0, pts), (11.0, pts)], "steel.panel", "sponson")
+        b.box(min(s * 47.0, s * 47.3), max(s * 47.0, s * 47.3), -8.5, 8.5, 23.0, 37.0, "livery.livery2", "sponson_panel")
+        gx = s * 40.0
+        with b.joint("turret_" + side, (gx, 10.0, 38.5), limits=(-15.0, 50.0) if s < 0 else (-50.0, 15.0)):
+            b.box(gx - 4.0, gx + 4.0, 8.0, 12.6, 33.5, 43.5, "steel.plate", "mantlet")
+            b.stock("hp_%d" % (1 if s < 0 else 2), (gx, 12.6, 38.5), "barrel", scale=0.85, carries="thermal_ray" if s < 0 else "enfilade_beam")
+        ax = s * 39.5
+        b.prism("z", ax, -4.0, 46.6, 4.6, 1.2, "steel.dark", 8, "aft_ring", phase=math.pi / 8)
+        with b.joint("turret_%s_aft" % side, (ax, -4.0, 47.2), limits=(-20.0, 45.0) if s < 0 else (-45.0, 20.0)):
+            b.prism("z", ax, -4.0, 48.0, 3.8, 1.6, "steel.plate", 8, "aft_mount", phase=math.pi / 8)
+            b.pad("hp_%d" % (3 if s < 0 else 4), (ax, -4.0, 50.0), scale=0.85, size=(6.5, 1.2))
+        cx = s * 32.0
+        b.prism("y", cx, -2.0, 48.4, 2.2, 16.0, "steel.dark", 6, "capacitor")
+        for yy in (-10.4, 6.4):
+            b.prism("y", cx, yy, 48.4, 2.6, 0.8, "steel.plate", 6, "capacitor_cap")
+        _musk_ox_prisms(b, [("y", (cx, yy, 48.4), 2.6, 1.8, 6, 0.0) for yy in (-6.0, 2.0)], "amber.spark", "coil_" + side)
+        for yy in (2.5, -2.5, -7.5):
+            b.prism("x", s * 27.0, yy, 38.5, 1.1, 4.4, "steel.dark", 6, "feed_pipe")
+        _musk_ox_prisms(b, [("x", (s * 27.0, yy, 38.5), 1.5, 1.4, 6, 0.0) for yy in (2.5, -2.5, -7.5)], "amber.spark", "feed_" + side)
+        # The cell rack beside the cannon: a dark iron tray with low walls, so the lit cells
+        # stand out of a dark ground, two columns of three standing in it; the forge mouth
+        # behind it, a box of low walls round a pit of banked fire.
+        x0, x1 = sorted((s * 12.0, s * 25.0))
+        b.box(x0, x1, -12.5, 6.5, DECK, DECK + 1.4, "steel.dark", "rack_tray")
+        for ya, yb in ((5.0, 6.5), (-12.5, -11.0)):
+            b.box(x0, x1, ya, yb, DECK, DECK + 6.0, "steel.dark", "rack_wall")
+        for xa, xb in ((12.0, 13.4), (23.6, 25.0)):
+            b.box(min(s * xa, s * xb), max(s * xa, s * xb), -11.0, 5.0, DECK, DECK + 6.0, "steel.dark", "rack_wall")
+        # The walls low and the fire high in them, so the pit shows to a camera thirty degrees
+        # down from behind (a deeper pit hid its whole floor behind its near wall).
+        hx0, hx1 = sorted((s * 13.6, s * 24.4))
+        b.box(hx0, hx1, -18.4, -17.0, DECK, DECK + 2.0, "steel.panel", "forge_wall")
+        for xa, xb in ((13.6, 15.0), (23.0, 24.4)):
+            b.box(min(s * xa, s * xb), max(s * xa, s * xb), -17.0, -12.5, DECK, DECK + 2.0, "steel.panel", "forge_wall")
+        fx0, fx1 = sorted((s * 15.0, s * 23.0))
+        _musk_ox_fitted(b, (fx0, -17.0, DECK + 1.3), (0.0, 1.0, 0.0), (1.0, 0.0, 0.0), (fx1 - fx0, 4.5), "amber.ember", "forge_mouth")
+    # The cells: a dark body each, its upper third a lit core; the right rack's rear outer cell
+    # is the one an act ejects, on a joint at its middle so it tumbles about it. The right, since
+    # the codex and the skirmish both show that flank, and the skirmish's camera, behind it,
+    # sees the right forge mouth past the launcher (the left one it hides). Its core slides
+    # down into its body as it is spent (the corona's own colour shows unlit, so a core that
+    # only went dark flew pale), and up again out of sight, so a dark canister is thrown and
+    # a lit cell comes back.
+    CZ0, CZ1, LZ1 = DECK + 1.4, DECK + 7.0, DECK + 9.4
+    seats = [(s * x, y) for s in (-1.0, 1.0) for x in (16.0, 21.0) for y in (2.5, -2.5, -7.5)]
+    spent = (21.0, -7.5)
+    kept = [p for p in seats if p != spent]
+    _musk_ox_prisms(b, [("z", (x, y, (CZ0 + CZ1) / 2.0), 2.3, CZ1 - CZ0, 6, 0.0) for x, y in kept], "steel.dark", "cell")
+    _musk_ox_prisms(b, [("z", (x, y, (CZ1 + LZ1) / 2.0), 2.15, LZ1 - CZ1, 6, 0.0) for x, y in kept], "amber.corona", "cell_lens")
+    with b.joint("cell_eject", (spent[0], spent[1], (CZ0 + LZ1) / 2.0)):
+        b.prism("z", spent[0], spent[1], (CZ0 + CZ1) / 2.0, 2.3, CZ1 - CZ0, "steel.dark", 6, "cell")
+        with b.joint("cell_core", (spent[0], spent[1], CZ1), slide=(0.0, 0.0, 1.0)):
+            b.prism("z", spent[0], spent[1], (CZ1 + LZ1) / 2.0, 2.15, LZ1 - CZ1, "amber.corona", 6, "cell_spent_lens")
+    # The Shrapnel Recuperator: a carriage of two rails and cheeks on a ring, traversing a touch;
+    # the cradle elevating on trunnions, its two recuperator cylinders over it; the barrel, its
+    # breech block and its brake sliding in the cradle along their line (the recoil), a
+    # built-up barrel stepped down at a hoop to the chase and swelled at the muzzle.
+    CY, CZ = 8.0, 48.0         # the trunnions
+    b.prism("z", 0.0, CY, DECK + 0.9, 9.5, 1.8, "steel.dark", 8, "gun_ring", phase=math.pi / 8)
+    with b.joint("turret_cannon", (0.0, CY, DECK + 1.8), limits=(-14.0, 14.0)):
+        for s in (-1.0, 1.0):
+            x0, x1 = sorted((s * 5.8, s * 9.2))
+            b.box(x0, x1, CY - 9.0, CY + 10.0, DECK + 1.8, DECK + 6.0, "steel.panel", "carriage")
+            b.box(x0, x1, CY - 6.0, CY + 6.0, DECK + 6.0, CZ + 3.5, "steel.plate", "cheek")
+            b.prism("x", s * 9.7, CY, CZ, 2.4, 1.0, "steel.dark", 6, "trunnion")
+        b.box(-9.2, 9.2, CY + 6.5, CY + 10.0, DECK + 1.8, DECK + 5.0, "steel.panel", "carriage")
+        b.box(-8.8, -6.2, CY + 2.5, CY + 5.0, CZ + 3.5, CZ + 5.0, "amber.light", "gun_sight")
+        with b.joint("elev_cannon", (0.0, CY, CZ), limits=(0.0, 42.0)):
+            b.box(-5.4, 5.4, CY - 5.0, CY + 15.0, CZ - 5.0, CZ + 4.6, "steel.panel", "cradle")
+            for s in (-1.0, 1.0):
+                b.prism("y", s * 2.6, CY + 6.0, CZ + 6.4, 1.8, 22.0, "steel.plate", 6, "recuperator")
+                b.prism("y", s * 2.6, CY + 17.4, CZ + 6.4, 1.2, 0.8, "steel.dark", 6, "recuperator_cap")
+            with b.joint("recoil_cannon", (0.0, CY, CZ), slide=(0.0, 1.0, 0.0)):
+                b.box(-5.5, 5.5, CY - 10.0, CY - 4.0, CZ - 5.4, CZ + 5.4, "steel.panel", "breech")
+                b.prism("x", 6.0, CY - 7.0, CZ, 2.0, 0.8, "steel.dark", 6, "breech_wheel")
+                oc = lambda r: _oct(CZ, 2.0 * r, 2.0 * r)
+                b.loft([(CY - 4.0, oc(4.3)), (CY + 20.0, oc(4.0)), (CY + 20.0, oc(3.5)), (CY + 40.0, oc(3.3)), (CY + 40.0, oc(3.9)), (CY + 44.0, oc(3.9))], "steel.dark", "barrel")
+                b.loft([(CY + 18.5, oc(4.7)), (CY + 21.0, oc(4.7))], "steel.plate", "hoop")
+                b.box(-4.6, 4.6, CY + 44.0, CY + 50.0, CZ - 4.2, CZ + 4.2, "steel.plate", "muzzle_brake")
+                for s in (-1.0, 1.0):
+                    b.box(min(s * 4.6, s * 5.0), max(s * 4.6, s * 5.0), CY + 45.0, CY + 49.0, CZ - 2.6, CZ + 2.6, "steel.dark", "brake_port")
+                b.loft([(CY + 50.0, oc(2.7)), (CY + 50.15, oc(2.7))], "bore.dark", "bore")
+    # The Unrestricted Expenditure: a turntable at the tail, a base on it, and two pods hinged
+    # at their tails between the base's brackets, the tube face on each pod's front, the
+    # back-blast on its back, an arming lamp on its nose, livery down its outer side and on
+    # its top, a strap over both.
+    TY = -32.0
+    PZ0, PZ1 = DECK + 4.6, DECK + 15.0
+    b.prism("z", 0.0, TY, DECK + 0.9, 11.0, 1.8, "steel.dark", 8, "launcher_ring", phase=math.pi / 8)
+    with b.joint("turret_racks", (0.0, TY, DECK + 1.8), limits=(-60.0, 60.0)):
+        b.box(-15.0, 15.0, TY - 10.0, TY + 8.0, DECK + 1.8, DECK + 4.4, "steel.panel", "launcher_base")
+        for s in (-1.0, 1.0):
+            x0, x1 = sorted((s * 13.4, s * 15.0))
+            b.box(x0, x1, TY - 14.0, TY - 7.0, DECK + 4.4, DECK + 9.0, "steel.dark", "launcher_hinge")
+            b.prism("x", s * 15.3, TY - 10.5, DECK + 7.0, 1.6, 0.8, "steel.plate", 6, "hinge_pin")
+        with b.joint("elev_racks", (0.0, TY - 10.5, DECK + 7.0), limits=(0.0, 50.0)):
+            for s in (-1.0, 1.0):
+                side = "l" if s < 0 else "r"
+                x0, x1 = sorted((s * 1.2, s * 13.2))
+                b.box(x0, x1, TY - 12.0, TY + 10.0, PZ0, PZ1, "steel.panel", "pod")
+                cxp = s * 7.2
+                _missile_face(b, (cxp - 5.2, TY + 10.05, PZ0), Vector((0.0, 0.0, 1.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 1.0, 0.0)), PZ1 - PZ0, "pod_face")
+                b.box(min(s * 13.2, s * 13.5), max(s * 13.2, s * 13.5), TY - 9.0, TY + 7.0, PZ0 + 1.6, PZ1 - 1.6, "livery.livery2", "pod_panel")
+                b.box(cxp - 4.6, cxp + 4.6, TY - 9.0, TY + 5.0, PZ1, PZ1 + 0.3, "livery.livery2", "pod_panel")
+                _musk_ox_fitted(b, (cxp + 5.0, TY - 12.1, PZ0 + 1.0), (0.0, 0.0, 1.0), (-1.0, 0.0, 0.0), (10.0, PZ1 - PZ0 - 2.0), "amber.ember", "blast_" + side)
+                b.box(min(s * 10.4, s * 12.6), max(s * 10.4, s * 12.6), TY + 7.6, TY + 9.6, PZ1, PZ1 + 0.9, "amber.light", "arm_lamp")
+            b.box(-13.4, 13.4, TY - 3.0, TY + 0.0, PZ1, PZ1 + 0.8, "steel.dark", "pod_strap")
+    # The tail: the forge's flues in the deck either side of the launcher and its stack on the
+    # right, a whip antenna on the left; on the rear plate two trail spades folded up on a hinge
+    # bar, a hitch, the tail lights.
+    for s in (-1.0, 1.0):
+        x0, x1 = sorted((s * 18.0, s * 30.0))
+        b.box(x0, x1, -42.0, -26.0, DECK, DECK + 0.6, "steel.vent", "flue_grille")
+        b.box(min(s * 24.0, s * 28.5), max(s * 24.0, s * 28.5), -44.8, -44.0, 27.0, 30.5, "amber.light", "tail_light")
+        x0, x1 = sorted((s * 8.0, s * 20.0))
+        b.box(x0, x1, -45.6, -44.0, 15.0, 29.0, "steel.plate", "spade")
+    b.prism("x", 0.0, -45.0, 29.6, 1.2, 42.0, "steel.dark", 6, "spade_hinge")
+    b.box(-2.0, 2.0, -48.5, -44.0, 15.0, 18.0, "steel.dark", "hitch")
+    b.prism("z", 26.0, -38.0, DECK + 6.0, 2.2, 12.0, "steel.dark", 6, "stack")
+    b.prism("z", 26.0, -38.0, DECK + 12.4, 2.8, 0.8, "steel.plate", 6, "stack_cap")
+    b.box(-30.0, -26.0, -42.0, -38.0, DECK, DECK + 2.0, "steel.dark", "antenna_base")
+    b.prism("z", -28.0, -40.0, DECK + 12.0, 0.5, 20.0, "steel.dark", 4, "antenna")
+    chassis.__exit__(None, None, None)
+
+    # Idle acts (four, loud, never in step; a heavy battery's servos, b.move). Degrees and
+    # seconds; a key is (t, value) on the joint's own axis, (t, pitch, yaw, roll), or that with
+    # a slide (dx, dy, dz) after it; a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw,
+    # pitch, roll); a glow key is (t, k), k the light added over rest (-1 dark).
+    wheels = ("wheel_fl", "wheel_fr", "wheel_rl", "wheel_rr")
+    ROLL = math.degrees(1.0 / R)   # wheel degrees a unit rolled
+    # The spent cell: it goes dark in its seat, its core sinking into it, is kicked up out of the
+    # rack, tumbles back over the rack's wall and drops into the forge mouth behind it, which
+    # flares as it takes it; out of sight under the deck it rights itself, its core lit and up
+    # again, and rises into the empty seat, a fresh one, the right sponson's coils flickering
+    # as it feeds. On a sharp servo, as a kick is. The
+    # path keeps the cell clear of the walls: upside down, end first, into the mouth, and every
+    # pose it takes under the deck lies below it (the cell is eight long about its middle).
+    b.act("eject_cell", 6.4, {
+        "cell_eject": [(0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (1.1, 8.0, 0.0, -4.0, -0.2, -0.4, 9.0), (1.45, 70.0, 0.0, -10.0, -0.6, -3.0, 11.5),
+                       (1.8, 140.0, 0.0, -12.0, -1.0, -6.0, 9.5), (2.1, 180.0, 0.0, -8.0, -1.2, -7.25, 5.0), (2.4, 180.0, 0.0, -4.0, -1.2, -7.25, -1.0),
+                       (2.75, 180.0, 0.0, 0.0, -1.2, -7.25, -11.0), (3.4, 300.0, 0.0, 0.0, 0.0, 0.0, -11.0), (3.7, 360.0, 0.0, 0.0, 0.0, 0.0, -10.5),
+                       (4.4, 360.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+        "cell_core": [(0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.75, 0.0, 0.0, 0.0, 0.0, 0.0, -2.6), (3.3, 0.0, 0.0, 0.0, 0.0, 0.0, -2.6), (3.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],   # the core 2.4 tall, sunk wholly under the body's top
+        "chassis": [(1.0, 0.0, 0.0, 0.0), (1.15, 0.0, 0.0, 1.2), (1.5, 0.0, 0.0, 1.0), (2.2, 0.0, 0.0, 0.0)],
+    }, heft=0.08, glow=[
+        (["cell_spent_lens"], [(0.25, 0.0), (0.7, -1.0), (3.5, -1.0), (3.8, 0.0)]),
+        (["forge_mouth"], [(2.2, 0.0), (2.45, 10.0), (2.8, 4.0), (3.2, 8.0), (3.9, 0.0)]),
+        (["coil_r"], [(4.2, 0.0), (4.35, 7.0), (4.5, 1.0), (4.65, 8.0), (5.4, 0.0)]),
+    ])
+    # Laying the gun: the battery inches forward onto its mark, the wheels turning, the cab's
+    # lamps up and the nose dipping as it stops; the Shrapnel Recuperator traverses a touch and
+    # rises to a low angle, its sight lit; a test of its recoil, the barrel slammed back along
+    # its line and the recuperator easing it home as the hull squats on its tail; then up to a
+    # howitzer's angle, held, and down; and the battery backs onto its spot, tail lights lit.
+    creep = 6.0
+    roll = round(-creep * ROLL, 2)
+    back = round(roll + ROLL, 2)   # the recoil shoves it back a unit
+    lay_wheels = [(0.4, 0.0), (1.8, roll), (3.55, roll), (3.68, back), (4.4, roll), (7.4, roll), (8.8, 0.0)]
+    b.act("lay_gun", 9.6, {
+        **{w: lay_wheels for w in wheels},
+        "turret_cannon": [(1.9, 0.0), (2.5, 10.0), (6.6, 10.0), (7.2, 0.0)],
+        "elev_cannon": [(2.1, 0.0), (3.1, 14.0), (4.7, 14.0), (5.7, 34.0), (6.5, 34.0), (7.7, 0.0)],
+        "recoil_cannon": [(3.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (3.6, 0.0, 0.0, 0.0, 0.0, -6.0, 0.0), (3.75, 0.0, 0.0, 0.0, 0.0, -6.0, 0.0), (4.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+        "chassis": [(1.6, 0.0, 0.0, 0.0), (1.95, -1.6, 0.0, 0.0), (2.3, -1.4, 0.0, 0.0), (2.9, 0.0, 0.0, 0.0), (3.55, 0.0, 0.0, 0.0), (3.65, 2.4, 0.0, 0.0), (3.9, 2.2, 0.0, 0.0), (4.7, 0.0, 0.0, 0.0),
+                    (8.6, 0.0, 0.0, 0.0), (8.95, 1.2, 0.0, 0.0), (9.15, 1.1, 0.0, 0.0), (9.5, 0.0, 0.0, 0.0)],
+    }, body=[(0.4, 0.0, 0.0, 0.0), (1.8, 0.0, creep, 0.0), (3.55, 0.0, creep, 0.0), (3.68, 0.0, creep - 1.0, 0.0), (4.4, 0.0, creep, 0.0), (7.4, 0.0, creep, 0.0), (8.8, 0.0, 0.0, 0.0)],
+       heft=0.12, glow=[(["gun_sight"], [(1.9, 0.0), (2.3, 6.0), (7.0, 6.0), (7.6, 0.0)]),
+                        (["lamp"], [(0.2, 0.0), (0.5, 6.0), (2.0, 6.0), (2.4, 0.0)]),
+                        (["tail_light"], [(7.2, 0.0), (7.4, 6.0), (8.8, 6.0), (9.2, 0.0)])])
+    # The ripple: the launcher rises on its hinge and swings out to the left, so its back-blasts
+    # turn toward the skirmish's camera behind the right flank, the arming lamps blinking, and
+    # fires its pods in turn, each back-blast flaring as the hull shrugs back from it; it swings
+    # home and settles.
+    b.act("ripple", 7.6, {
+        "elev_racks": [(0.5, 0.0), (1.9, 34.0), (5.6, 34.0), (7.0, 0.0)],
+        "turret_racks": [(1.7, 0.0), (2.7, 28.0), (4.7, 28.0), (5.7, 0.0)],
+        "chassis": [(3.0, 0.0, 0.0, 0.0), (3.15, 1.3, 0.0, -0.5), (4.4, 1.5, 0.0, -0.6), (5.1, 0.0, 0.0, 0.0)],
+    }, body=[(3.0, 0.0, 0.0, 0.0), (3.3, 0.0, -0.8, 0.0), (4.4, 0.0, -1.0, 0.0), (5.3, 0.0, 0.0, 0.0)],
+       glow=[(["arm_lamp"], [(1.9, 0.0), (2.05, 8.0), (2.25, 0.5), (2.45, 8.0), (2.65, 0.5), (2.85, 8.0), (4.6, 8.0), (5.2, 0.0)]),
+             (["blast_l"], [(3.0, 0.0), (3.08, 16.0), (3.4, 3.0), (3.65, 0.5), (3.73, 16.0), (4.05, 3.0), (4.6, 0.0)]),
+             (["blast_r"], [(3.3, 0.0), (3.38, 16.0), (3.7, 3.0), (3.95, 0.5), (4.03, 16.0), (4.35, 3.0), (4.9, 0.0)])])
+    # The charge: the cells draw down as their light runs out along the feeds into the
+    # sponsons, whose coils burn hot; the casemate guns swing out, the herd's ring of horns
+    # facing out, the roof mounts after them, and the hull settles under the load; held, home.
+    b.act("charge", 7.8, {
+        "turret_l": [(1.9, 0.0), (3.1, 40.0), (4.9, 40.0), (6.1, 0.0)],
+        "turret_r": [(2.1, 0.0), (3.3, -40.0), (5.1, -40.0), (6.3, 0.0)],
+        "turret_l_aft": [(2.5, 0.0), (3.5, 25.0), (4.7, 25.0), (5.7, 0.0)],
+        "turret_r_aft": [(2.7, 0.0), (3.7, -25.0), (4.9, -25.0), (5.9, 0.0)],
+        "chassis": [(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (2.4, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0), (5.8, 0.0, 0.0, 0.0, 0.0, 0.0, -1.1), (6.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+    }, glow=[(["cell_lens", "cell_spent_lens"], [(0.4, 0.0), (0.6, -0.7), (0.8, 0.0), (1.0, -0.7), (1.2, 0.0)]),
+             (["feed_l"], [(0.6, 0.0), (0.75, 9.0), (0.95, 2.0), (1.1, 10.0), (5.8, 10.0), (6.6, 0.0)]),
+             (["feed_r"], [(0.75, 0.0), (0.9, 9.0), (1.1, 2.0), (1.25, 10.0), (5.95, 10.0), (6.75, 0.0)]),
+             (["coil_l"], [(1.0, 0.0), (1.5, 6.0), (2.2, 12.0), (5.8, 12.0), (6.8, 0.0)]),
+             (["coil_r"], [(1.15, 0.0), (1.65, 6.0), (2.35, 12.0), (5.95, 12.0), (6.95, 0.0)])])
+    # Movement: the wheels spin by their radius, the fronts steer into the turns, the hull
+    # noses up a little pulling away; slow to get going, as a battery is.
+    b.gait(wheels={w: R for w in wheels}, steer={"steer_fl": 12.0, "steer_fr": 12.0}, rock=2.5)
+    b.move(accel=1.8, heft=0.24)
+
+musk_ox.maker = "wainwright_sutler"
+
+
 def ammit(b):
     """The Arsenal "Ammit" (Arsenal Instrument VII): a sinister digitigrade figure with four
     clawed arms, the middle pair a second pair of legs, a low snout of a cockpit. Second pass
