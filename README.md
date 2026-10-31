@@ -516,12 +516,13 @@ tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the l
 # the real thing: a debug APK exported, installed over USB and launched (USB debugging on
 # the phone). Beyond the templates this needs the Android SDK at ~/Library/Android/sdk
 # (brew install --cask android-commandlinetools, then sdkmanager "platform-tools"
-# "build-tools;35.0.0" "platforms;android-35"), a JDK (brew's openjdk does; Godot's
+# "build-tools;36.1.0" "platforms;android-36"), a JDK (brew's openjdk does; Godot's
 # editor settings point export/android/java_sdk_path at it) and the debug keystore
-# (keytool, at the path Godot's editor settings name). All of that was set up on the Mac.
+# (keytool, at the path Godot's editor settings name). All of that was set up on the Mac,
+# at 35 for Godot 4.7: 4.8 refuses to export without build-tools 36.1.0 and platform 36.
 # On Windows, where it is set up now: the SDK at ~/Android/Sdk, out of AppData (Google's
 # command-line tools unzipped to cmdline-tools\latest, then `android sdk install platform-tools
-# build-tools/35.0.1 platforms/android-35`: the Android CLI replaced sdkmanager in 2026 and
+# build-tools/36.1.0 platforms/android-36`: the Android CLI replaced sdkmanager in 2026 and
 # names packages with slashes; pass --no-metrics, it reports usage otherwise), Temurin's JDK 17
 # unzipped under %LOCALAPPDATA%\Programs\Eclipse Adoptium (an unzip, so the Java 8 this PC's
 # other software opens .jar files with stays the default), and the keystore in Godot's
