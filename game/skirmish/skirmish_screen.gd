@@ -1121,6 +1121,7 @@ func _refresh(save: bool = true) -> void:
 		# A form the model holds while the machine carries its status (the Armadillo's seal).
 		if i < _mech_3d.size() and _mech_3d[i] != null:
 			_mech_3d[i].hold_forms(ms.unit)
+			_mech_3d[i].show_die(ms.face_index, ms.die.faces.size(), ms.rolls)   # an indexed joint shows the die (the Cassowary's drum, a chamber a roll)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)

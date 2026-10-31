@@ -409,6 +409,7 @@ class Build:
         self.gait_spec = {}    # how the machine moves (see gait())
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
+        self.indexed = {}      # joints turned a step for every entry the machine's die moves on (see index())
         self.forms = {}        # poses held while a status lasts (see form())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
@@ -923,6 +924,21 @@ class Build:
         with the move. Give the joint no limits: the turn is wrapped, never clamped."""
         self.spins[joint] = [float(idle), float(idle if moving is None else moving)]
 
+    def index(self, joint, step):
+        """A joint the game turns `step` degrees on its own axis, always forward, for every entry
+        its machine's die moves on, so it shows the entry showing (the Cassowary's drum, 31
+        October: "clicking round a chamber at every roll"); a roll that lands where it was turns it
+        a whole way round, and the fight's first roll spins it up from rest (MechRig.show_entry).
+        Rest is the die's first entry. No limits on that axis: the turn is wrapped, never
+        clamped."""
+        if joint not in self.joint_meta:
+            raise ValueError("%s: index names a joint the model has not got: %s" % (self.name, joint))
+        if self.joint_meta[joint]["axis"] in self.joint_meta[joint]["limits"]:
+            raise ValueError("%s: the indexed joint %s has limits on its axis, which would clamp its turn" % (self.name, joint))
+        if not 0.0 < abs(float(step)) <= 180.0:
+            raise ValueError("%s: the indexed joint %s steps %g degrees, which is no step" % (self.name, joint, step))
+        self.indexed[joint] = float(step)
+
     def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
         `slide`, how far the body drifts from its path on a turn and how slowly its heading
@@ -994,6 +1010,8 @@ class Build:
             out["gait_options"] = self.gait_options
         if self.spins:
             out["spin"] = self.spins
+        if self.indexed:
+            out["index"] = self.indexed
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
         return out

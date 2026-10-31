@@ -23,6 +23,7 @@ const THREE_URLS = [
 
 // ---------------------------------------------------------------- the rig (MechRig's numbers)
 const RECOIL_SLIDE = 1.5;   // MechRig: world units a gun that only runs in and out of its port kicks back on a shot
+const INDEX_CLICK = 0.14, INDEX_CLICK_MORE = 0.05, INDEX_KICK = 0.12, INDEX_DEBUG_PERIOD = 1.0;   // MechRig: an indexed joint's click (the Cassowary's drum), and the debug switch's beat
 const GAP_MIN = 6.0, GAP_MAX = 12.0, GAP_DEBUG = 0.4, WAIT_TICK_MAX = 0.1;   // MechRig: a long frame spends at most this much of the gap
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
@@ -206,6 +207,9 @@ class Rig {
     this.gaitOptions = side.gait_options || {};   // other ways it could move, to judge beside it (b.gait_option); the game moves by the gait alone
     this.spinners = {}; this.spun = {};   // joints turned without end (MechRig.spinners, b.spin: the Stingray's fans)
     for (const [name, r] of Object.entries(side.spin || {})) if (this.joints[name] && Array.isArray(r) && r.length >= 2) { this.spinners[name] = [Number(r[0]), Number(r[1])]; this.spun[name] = 0; }
+    this.indexed = {};   // joints turned a step for every entry the machine's die moves on (MechRig.indexed, b.index: the Cassowary's drum)
+    for (const [name, st] of Object.entries(side.index || {})) if (this.joints[name]) this.indexed[name] = Number(st);
+    this.indexEntry = -1; this.indexRolls = -1; this.indexFrom = 0; this.indexTo = 0; this.indexT = 0; this.indexDur = 0; this.indexDebugT = 0; this.indexDebugN = 0;
     this.useGait(side.gait || {});
     root.rotation.order = "YXZ";
     this.bodyRestPos = root.position.clone();
@@ -249,6 +253,30 @@ class Rig {
     if (this.current) this.endAct();
   }
   formHeld(name) { return !!this.formOn[name]; }
+  // The die on the indexed joints (MechRig.show_entry): always forward round the die, a step an
+  // entry, a whole turn for a roll that lands where it was, the first look a spin up from rest.
+  showEntry(entry, entries, rolls = -1) {
+    if (!Object.keys(this.indexed).length || entries <= 0 || entry < 0) return false;
+    let steps = this.indexEntry < 0 ? entry + entries : (((entry - this.indexEntry) % entries) + entries) % entries;
+    if (steps === 0 && rolls >= 0 && this.indexRolls >= 0 && rolls !== this.indexRolls) steps = entries;
+    this.indexEntry = entry; this.indexRolls = rolls;
+    this.click(steps);
+    return steps > 0;
+  }
+  // MechRig.click: on `steps` steps from wherever the joints are, speeding into the stop, which catches it.
+  click(steps) {
+    if (!Object.keys(this.indexed).length || steps <= 0) return;
+    this.indexFrom = this.indexNow(); this.indexTo += steps; this.indexT = 0;
+    this.indexDur = INDEX_CLICK + INDEX_CLICK_MORE * (steps - 1);
+  }
+  indexNow() {
+    if (this.indexDur <= 0) return this.indexTo;
+    const u = clamp(this.indexT / this.indexDur, 0, 1);
+    return this.indexFrom + (this.indexTo - this.indexFrom) * Rig.clickAt(u) + INDEX_KICK * Rig.clickKick(u);
+  }
+  static clickAt(u) { const a = clamp(u / 0.7, 0, 1); return a * a; }
+  static clickKick(u) { if (u <= 0.7 || u >= 1) return 0; const b = (u - 0.7) / 0.3; return Math.sin(Math.PI * b) * (1 - b) * 2; }
+  wholeTurn() { for (const st of Object.values(this.indexed)) return Math.max(1, Math.round(360 / Math.max(1, Math.abs(st)))); return 1; }
   static keysAny(a, held) { return Object.keys(a.tracks || {}).some(jn => held[jn]); }
   // The acts it may play now (MechRig.act_set): none while a form turns; a form held all the way
   // in plays its own when it has any (the sealed Armadillo's, from its hunkered pose); else its
@@ -313,7 +341,7 @@ class Rig {
     this.startOffset = 0; this.mainOffset = 0; this.handing = false;
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
-  alive() { return this.acts.length > 0 || Object.keys(this.forms).length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0; }
+  alive() { return this.acts.length > 0 || Object.keys(this.forms).length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0 || Object.keys(this.indexed).length > 0; }
   litMaterials(part) {
     if (this.glowCache[part]) return this.glowCache[part];
     const out = [], tag = parseTag(part);
@@ -418,6 +446,10 @@ class Rig {
     this.waitBudget = Math.min(delta, WAIT_TICK_MAX);
     while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
     if (this.formsStep(delta)) moved = true;   // the held forms turn on their own clock
+    if (Object.keys(this.indexed).length) {   // no die on this page: the indexed joints click on as RIFTGATE_DRUM_DEBUG has them in the game
+      this.indexDebugT += delta;
+      if (this.indexDebugT >= INDEX_DEBUG_PERIOD) { this.indexDebugT -= INDEX_DEBUG_PERIOD; this.indexDebugN += 1; this.click(1 + (this.indexDebugN % 6 === 0 ? this.wholeTurn() : 0)); }
+    }
     for (const [name, r] of Object.entries(this.spinners)) {
       const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
       this.spun[name] = ((s % 360) + 360) % 360; moved = true;
@@ -433,6 +465,7 @@ class Rig {
       const spent = Math.min(dt, this.waitBudget || 0); this.waitBudget -= spent; this.wait -= spent;
       if (this.wait <= 0) { const next = this.choose(); if (next) { this.start(next); this.evaluateAct(); moved = true; } }
     }
+    if (this.indexDur > 0) { this.indexT += dt; if (this.indexT >= this.indexDur) { this.indexDur = 0; this.indexFrom = this.indexTo; } moved = true; }
     const bw = this.bodyWantRot, bs = this.bodyWantSlide;
     if (Object.keys(this.servo).length || Object.keys(this.wantRot).length || bw.x || bw.y || bw.z || bs.x || bs.y || bs.z) { this.follow(dt); moved = true; }
     if (this.strikes.length) {
@@ -485,6 +518,7 @@ class Rig {
       for (const st of this.strikes) if (st.joint === name) { deg = add3(deg, mul3(st.vec, Rig.envelope(st))); if (st.slide) kick = add3(kick, mul3(st.slide, Rig.envelope(st))); }
       deg = clampDegrees(deg, this.meta[name].limits);
       if (name in this.spun) { const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)]; deg = {...deg, [k]: deg[k] + this.spun[name]}; }
+      if (name in this.indexed) { const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)]; deg = {...deg, [k]: (((deg[k] + this.indexed[name] * this.indexNow()) % 360) + 360) % 360}; }
       const r = this.rest[name], e = eulerOf(deg);
       j.rotation.set(r.x + e.x, r.y + e.y, r.z + e.z, "YXZ");
       const o = offsetOf(add3(add3(add3(this.actSlide[name] || v3(), this.gaitSlide[name] || v3()), this.formSlide[name] || v3()), kick)), p = this.restPos[name];

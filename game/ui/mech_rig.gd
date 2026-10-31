@@ -44,6 +44,12 @@ extends RefCounted
 ## turret turns with the hull on the move (Ryan, 4 October: holding its aim was not worth
 ## the complexity). RIFTGATE_MOVE_DEBUG=1 drives every machine constantly at its own full
 ## speed on the map (`top_speed`, map_speed), on both screens, for judging a gait running.
+##
+## An indexed joint (the sidecar's `index`, b.index: the Cassowary's drum, 31 October) shows its
+## machine's die: the screen tells the rig the entry showing (show_entry) and the joint clicks
+## round to it, always forward, a step an entry, a roll that lands where it was a whole turn.
+## RIFTGATE_DRUM_DEBUG=1 clicks every indexed joint on a step a second, a whole turn and a step
+## every sixth, on both screens, to judge the click running.
 
 const GAP_MIN := 6.0          # seconds between acts, at least (Ryan, 7 October: from 2.5, as the acts overlapped too often)
 const GAP_MAX := 12.0         # and at most (from 6.5)
@@ -80,6 +86,10 @@ const HEFT_DEFAULT := 0.12    # seconds: the inertia of a machine whose sidecar 
 const DAMPING := 0.7          # the joints' servos: a touch under critical, so a heavy part gives a little past its mark and settles
 const FORM_DEBUG_PERIOD := 2.5  # seconds a form is held, then let go, under RIFTGATE_SEAL_DEBUG
 const RECOIL_SLIDE := 1.5       # world units a gun that only runs in and out of its port kicks back along its line on a shot
+const INDEX_CLICK := 0.14       # seconds an indexed joint takes to click on one step (the drum's chamber)
+const INDEX_CLICK_MORE := 0.05  # and each step more (the fight's opening spin runs a whole turn and on)
+const INDEX_KICK := 0.12        # steps it carries past its stop and back as the stop catches: the click
+const INDEX_DEBUG_PERIOD := 1.0 # seconds between clicks under RIFTGATE_DRUM_DEBUG
 const STEP := 1.0 / 60.0      # the longest step the acts and the servos advance by, so a long tick (a frozen frame) plays the same as frames
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
@@ -98,6 +108,16 @@ var _main_offset := 0.0            # and for the gait's own (at the handoff's "t
 var _handoff_at := 0.0             # the travel (`_dist`) the stride it changes in counts from
 var _handing := false              # whether it is rolling and the handoff counts (false standing)
 var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
+var indexed: Dictionary = {}       # joint -> degrees a step: turned a step for every entry its machine's die moves on (b.index: the Cassowary's drum)
+var index_debug: bool = false      # RIFTGATE_DRUM_DEBUG: every indexed joint clicks on a step a second
+var _index_entry := -1             # the die's entry the indexed joints show; -1 before the first look
+var _index_rolls := -1             # the die's count of rolls at the last look
+var _index_from := 0.0             # steps turned as the click under way began
+var _index_to := 0.0               # steps it turns to
+var _index_t := 0.0                # seconds into the click
+var _index_dur := 0.0              # how long the click takes; 0 at rest
+var _index_debug_t := 0.0
+var _index_debug_n := 0
 var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
 var forms: Dictionary = {}         # name -> {"duration", "curves": {joint: curve, BODY: the body's}, "glow": [[material, its light at rest, k]], "acts": [act]}: poses held while the machine carries the status of the same name, each with the acts it plays while held (the sidecar's forms: the Armadillo's seal)
 var _form_on: Dictionary = {}      # name -> whether it is held (set_form)
@@ -475,6 +495,19 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		if joints.has(name) and sp[name] is Array and (sp[name] as Array).size() >= 2:
 			spinners[name] = [float(sp[name][0]), float(sp[name][1])]
 			_spun[name] = 0.0
+	indexed = {}
+	var ix: Dictionary = side.get("index", {}) if side.get("index", {}) is Dictionary else {}
+	for name in ix.keys():
+		if joints.has(name):
+			indexed[name] = float(ix[name])
+	_index_entry = -1
+	_index_rolls = -1
+	_index_from = 0.0
+	_index_to = 0.0
+	_index_dur = 0.0
+	_index_debug_t = 0.0
+	_index_debug_n = 0
+	index_debug = OS.get_environment("RIFTGATE_DRUM_DEBUG") == "1"
 	use_gait(side.get("gait", {}) if side.get("gait", {}) is Dictionary else {})
 	_body_rest_pos = body.position
 	_body_rest_rot = body.rotation
@@ -571,6 +604,67 @@ func form_held(name: String) -> bool:
 	return bool(_form_on.get(name, false))
 
 
+## Show the machine's die on its indexed joints (the Cassowary's drum, Ryan's to-do of 31
+## October: "clicking round a chamber at every roll"): `entry` the entry showing, `entries` the
+## die's size, `rolls` its count of rolls (Skirmish.MechState.rolls). The joints click on from
+## the entry they show to this one, always forward round the die, a step an entry; a roll that
+## lands where it was (the Spin-Up's spin onto itself) turns them a whole way round; and the
+## first look spins them up from rest, a whole turn and on to the entry, the fight's opening
+## spin. True when a click starts.
+func show_entry(entry: int, entries: int, rolls: int = -1) -> bool:
+	if indexed.is_empty() or entries <= 0 or entry < 0:
+		return false
+	var steps := entry + entries if _index_entry < 0 else posmod(entry - _index_entry, entries)
+	if steps == 0 and rolls >= 0 and _index_rolls >= 0 and rolls != _index_rolls:
+		steps = entries
+	_index_entry = entry
+	_index_rolls = rolls
+	click(steps)
+	return steps > 0
+
+
+## Click the indexed joints on `steps` steps from wherever they are (a click under way carries
+## on from where it has got to): the turn gathers speed into the stop and the stop catches it,
+## a little past and back (click_at, INDEX_KICK), quickly for a step and longer for a spin.
+func click(steps: int) -> void:
+	if indexed.is_empty() or steps <= 0:
+		return
+	_index_from = index_now()
+	_index_to += float(steps)
+	_index_t = 0.0
+	_index_dur = INDEX_CLICK + INDEX_CLICK_MORE * float(steps - 1)
+
+
+## The steps the indexed joints have turned at this moment, the click under way included.
+func index_now() -> float:
+	if _index_dur <= 0.0:
+		return _index_to
+	var u := clampf(_index_t / _index_dur, 0.0, 1.0)
+	return _index_from + (_index_to - _index_from) * click_at(u) + INDEX_KICK * click_kick(u)
+
+
+## A click's share of its turn at `u` of its time: speeding up all the way into the stop, which
+## it reaches at seven tenths.
+static func click_at(u: float) -> float:
+	var a := clampf(u / 0.7, 0.0, 1.0)
+	return a * a
+
+
+## The stop catching it, in steps over the click's last three tenths: past the stop and back.
+static func click_kick(u: float) -> float:
+	if u <= 0.7 or u >= 1.0:
+		return 0.0
+	var b := (u - 0.7) / 0.3
+	return sin(PI * b) * (1.0 - b) * 2.0
+
+
+## Steps in a whole turn of the first indexed joint (six for the drum's sixty degrees).
+func _whole_turn() -> int:
+	for name in indexed.keys():
+		return maxi(1, roundi(360.0 / maxf(1.0, absf(float(indexed[name])))))
+	return 1
+
+
 ## Whether an act keys any of these joints.
 static func _keys_any(a: Dictionary, held: Dictionary) -> bool:
 	for jn in (a.get("tracks", {}) as Dictionary).keys():
@@ -640,7 +734,8 @@ func in_act() -> bool:
 
 
 func alive() -> bool:
-	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty())
+	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty()) \
+		or _index_dur > 0.0 or (index_debug and not indexed.is_empty())
 
 
 ## The wait before this machine's first act. The machines a screen sets up together open
@@ -682,6 +777,13 @@ func tick(delta: float) -> void:
 			set_form(name, fmod(_form_debug_t, FORM_DEBUG_PERIOD * 2.0) >= FORM_DEBUG_PERIOD)
 	if _forms_step(delta):
 		moved = true
+	# The debug switch clicks every indexed joint on a step a second, a whole turn and a step every sixth.
+	if index_debug and not indexed.is_empty():
+		_index_debug_t += delta
+		if _index_debug_t >= INDEX_DEBUG_PERIOD:
+			_index_debug_t -= INDEX_DEBUG_PERIOD
+			_index_debug_n += 1
+			click(1 + (_whole_turn() if _index_debug_n % 6 == 0 else 0))
 	# What turns without end turns whatever else is happening, faster as the move blends in.
 	for name in spinners.keys():
 		var r: Array = spinners[name]
@@ -713,6 +815,12 @@ func _step(dt: float) -> bool:
 				moved = true
 	if not _servo.is_empty() or not _want_rot.is_empty() or _body_want_rot != Vector3.ZERO or _body_want_slide != Vector3.ZERO:
 		_follow(dt)
+		moved = true
+	if _index_dur > 0.0:
+		_index_t += dt
+		if _index_t >= _index_dur:
+			_index_dur = 0.0
+			_index_from = _index_to
 		moved = true
 	if not _strikes.is_empty():
 		for st in _strikes:
@@ -900,6 +1008,9 @@ func _pose() -> void:
 		deg = clamp_degrees(deg, m.get("limits", {}))
 		if _spun.has(name):
 			deg[["pitch", "yaw", "roll"].find(str(m.get("axis", "yaw")))] += float(_spun[name])
+		if indexed.has(name):
+			var k := ["pitch", "yaw", "roll"].find(str(m.get("axis", "pitch")))
+			deg[k] = fposmod(deg[k] + float(indexed[name]) * index_now(), 360.0)
 		j.rotation = _rest[name] + euler_of(deg)
 		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO) + _gait_slide.get(name, Vector3.ZERO) + _form_slide.get(name, Vector3.ZERO) + kick
 		if slide != Vector3.ZERO or j.position != _rest_pos[name]:

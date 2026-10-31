@@ -1576,6 +1576,417 @@ def prairie_dog(b):
 prairie_dog.maker = "wainwright_sutler"
 
 
+## The Cassowary's leg (31 October): a digitigrade leg in its own plane, hip, knee forward, hock
+## back and the ball of the foot, each pivot (y, z); the shank from the hock to the ball and the
+## toes ride the ankle at the hock and the toe joint at the ball.
+_CASSOWARY_HIP = (-1.0, 56.0)
+_CASSOWARY_KNEE = (9.0, 47.0)
+_CASSOWARY_HOCK = (-7.0, 24.0)
+_CASSOWARY_BALL = (2.0, 4.0)
+
+
+def _cassowary_oct(w, z0, z1, c):
+    """A rectangle with every corner chamfered by `c`, as (x, z) points for a loft: the
+    Cassowary's cab, squared off and bevelled."""
+    hw = w / 2.0
+    return [(-hw + c, z0), (hw - c, z0), (hw, z0 + c), (hw, z1 - c), (hw - c, z1), (-hw + c, z1), (-hw, z1 - c), (-hw, z0 + c)]
+
+
+def _cassowary_mono(pts):
+    """A monotone cubic through (t, v...) rows, as the rig runs an act's keys (MechRig._through):
+    no slope at a turn, a hold or either end, the weighted harmonic mean of the secants either
+    side where a value runs on through a key. Returns a function of t, held outside the keys."""
+    pts = sorted((tuple(float(v) for v in p) for p in pts), key=lambda p: p[0])
+    n, w = len(pts), len(pts[0]) - 1
+    ts = [p[0] for p in pts]
+    m = [[0.0] * w for _ in range(n)]
+    for i in range(1, n - 1):
+        h0, h1 = ts[i] - ts[i - 1], ts[i + 1] - ts[i]
+        if h0 <= 0.0 or h1 <= 0.0:
+            continue
+        for j in range(w):
+            d0 = (pts[i][j + 1] - pts[i - 1][j + 1]) / h0
+            d1 = (pts[i + 1][j + 1] - pts[i][j + 1]) / h1
+            if d0 * d1 > 0.0:
+                w0, w1 = 2.0 * h1 + h0, h1 + 2.0 * h0
+                m[i][j] = (w0 + w1) / (w0 / d0 + w1 / d1)
+
+    def at(t):
+        if t <= ts[0]:
+            return pts[0][1:]
+        if t >= ts[-1]:
+            return pts[-1][1:]
+        i = min(max(bisect.bisect_right(ts, t) - 1, 0), n - 2)
+        h = ts[i + 1] - ts[i]
+        u = (t - ts[i]) / h if h > 0.0 else 1.0
+        u2, u3 = u * u, u * u * u
+        a, c, d, e = 2.0 * u3 - 3.0 * u2 + 1.0, u3 - 2.0 * u2 + u, -2.0 * u3 + 3.0 * u2, u3 - u2
+        return tuple(a * pts[i][j + 1] + c * h * m[i][j] + d * pts[i + 1][j + 1] + e * h * m[i + 1][j] for j in range(w))
+    return at
+
+
+def _cassowary_dense(keys, until, hz=30.0):
+    """Sparse keys (t, v...) as dense ones `hz` a second up to `until`, on the curve the rig would
+    run through them (rest before the first, as an act's track), for an act keyed linear."""
+    pts = list(keys)
+    if pts[0][0] > 0.0:
+        pts = [(0.0,) + (0.0,) * (len(pts[0]) - 1)] + pts
+    f = _cassowary_mono(pts)
+    return [(round(i / hz, 3),) + tuple(round(v, 3) for v in f(i / hz)) for i in range(int(round(until * hz)) + 1)]
+
+
+def _cassowary_hock(ball, shank):
+    """Where the hock stands over a ball at `ball` (y, z) with the shank tipped `shank` degrees
+    from its rest (pitch, so a negative tip lifts the heel)."""
+    vy, vz = _CASSOWARY_HOCK[0] - _CASSOWARY_BALL[0], _CASSOWARY_HOCK[1] - _CASSOWARY_BALL[1]
+    c, s = math.cos(math.radians(shank)), math.sin(math.radians(shank))
+    return (ball[0] + vy * c - vz * s, ball[1] + vy * s + vz * c)
+
+
+def _cassowary_solve(ball, shank, toes, dy, dz, pitch):
+    """A leg's hip, knee, ankle and toe (degrees) putting its ball at `ball` (y, z, the model's
+    rest frame) with the shank tipped `shank` and the toes `toes` to the ground (both pitch from
+    rest), under a body slid (dy, dz) and pitched `pitch`: the hip and the knee carry the hock,
+    the knee forward (_ik2), the ankle sets the shank and the toe joint the toes."""
+    target = _to_body(*_cassowary_hock(ball, shank), dy, dz, pitch)
+    hip, knee = _ik2(_CASSOWARY_HIP, _CASSOWARY_KNEE, _CASSOWARY_HOCK, target, -1.0)
+    return hip, knee, shank - (hip + knee + pitch), toes - shank
+
+
+def _cassowary_pose(frames, until, hz=30.0):
+    """Leg tracks and body keys for one of the Cassowary's acts, dense for ease "linear": `frames`
+    is (t, (dy, dz, pitch), {side: (ball y, ball z, shank, toes)}) with each foot named where it
+    is at that moment (at rest until first named, then where it was last named), the body and
+    each foot run on the curve the rig runs an act's keys on, so a planted foot never slides
+    between keys. Returns joint -> keys and the body keys."""
+    rest = (_CASSOWARY_BALL[0], _CASSOWARY_BALL[1], 0.0, 0.0)
+    body = _cassowary_mono([(0.0, 0.0, 0.0, 0.0)] + [(t,) + tuple(p) for t, p, _ in frames])
+    feet = {}
+    for side in ("l", "r"):
+        rows = [(0.0,) + rest] + [(t,) + tuple(f[side]) for t, _, f in frames if side in f]
+        feet[side] = _cassowary_mono(rows)
+    tracks = {j + side: [] for side in ("l", "r") for j in ("hip_", "knee_", "ankle_", "toe_")}
+    out = []
+    for i in range(int(round(until * hz)) + 1):
+        t = round(i / hz, 3)
+        dy, dz, pitch = body(t)
+        for side in ("l", "r"):
+            y, z, shank, toes = feet[side](t)
+            q = _cassowary_solve((y, z), shank, toes, dy, dz, pitch)
+            for j, v in zip(("hip_", "knee_", "ankle_", "toe_"), q):
+                tracks[j + side].append((t, round(v, 3)))
+        out.append((t, 0.0, round(dy, 3), round(dz, 3), 0.0, round(pitch, 3), 0.0))
+    return tracks, out
+
+
+def _cassowary_stride(sweep, duty=0.6, lift=5.0, heel=-28.0, roll=0.3, flex=22.0, curl=-30.0, crouch=0.5, dip=1.6, nod=1.2,
+                      reach=0.97, n=60, carry=(0.08, 0.8)):
+    """The Cassowary's walk (31 October), _plant's worked foot by foot for a digitigrade leg: each
+    foot's toes planted flat through its stance while the leg sweeps back under the body, and in
+    the stance's last `roll` the heel lifts, the shank tipping `heel` degrees about the ball with
+    the toes still flat, the push-off. Then the hock carries forward, lifted `lift`, as the ankle
+    flexes the foot up and forward under it, `flex` degrees, its toes curling `curl` (a bird's
+    swing: the hock stays low, so the knee never rises into the cab), and the foot reaches down
+    flat to land. The body rides as high as its planted legs allow kept `reach` of straight,
+    `crouch` lower, and drops `dip` and nods `nod` degrees onto each foot, never rolling. The feet
+    a half stride apart. Returns (tracks, body, stride) for b.gait with ease "linear"."""
+    stride = sweep / duty
+    shank_swing = _cassowary_mono([(0.0, heel), (0.45, flex), (0.85, 0.0), (1.0, 0.0)])
+    toes_swing = _cassowary_mono([(0.0, 0.0), (0.25, curl), (0.65, curl * 0.4), (0.85, 0.0), (1.0, 0.0)])
+    phases = {"l": 0.0, "r": 0.5}
+    y0, z0 = _CASSOWARY_BALL
+    off_y, off_z = _cassowary_hock((y0 - sweep * 0.5, z0), heel)   # the hock as the toes leave the ground
+    land_y, land_z = _cassowary_hock((y0 + sweep * 0.5, z0), 0.0)  # and as the foot lands
+
+    def foot(side, p):
+        """(ball y, ball z, shank, toes, planted) at phase p."""
+        q = (p - phases[side]) % 1.0
+        if q < duty:
+            u = max(0.0, (q / duty - (1.0 - roll)) / roll)
+            return y0 + sweep * 0.5 - sweep * q / duty, z0, heel * u * u * (3.0 - 2.0 * u), 0.0, True
+        s = (q - duty) / (1.0 - duty)
+        u = min(1.0, max(0.0, (s - carry[0]) / carry[1]))
+        w = u * u * (3.0 - 2.0 * u)
+        hy, hz = off_y + (land_y - off_y) * w, off_z + (land_z - off_z) * w
+        if s < 0.3:
+            hz += lift * (1.0 - (1.0 - s / 0.3) ** 2)   # up briskly
+        elif s < 0.62:
+            hz += lift
+        else:
+            hz += lift * (1.0 - ((s - 0.62) / 0.38) ** 2)  # down gathering speed
+        shank = shank_swing(s)[0]
+        oy, oz = _cassowary_hock((0.0, 0.0), shank)
+        return hy - oy, hz - oz, shank, toes_swing(s)[0], False
+
+    span = reach * (math.hypot(_CASSOWARY_KNEE[0] - _CASSOWARY_HIP[0], _CASSOWARY_KNEE[1] - _CASSOWARY_HIP[1])
+                    + math.hypot(_CASSOWARY_HOCK[0] - _CASSOWARY_KNEE[0], _CASSOWARY_HOCK[1] - _CASSOWARY_KNEE[1]))
+    pose = []
+    for i in range(n + 1):
+        p = i / float(n)
+        ride = 0.0
+        for side in ("l", "r"):
+            y, z, shank, _toes, down = foot(side, p)
+            if not down:
+                continue
+            hy, hz = _cassowary_hock((y, z), shank)
+            dy = hy - _CASSOWARY_HIP[0]
+            ride = min(ride, hz + math.sqrt(max(0.0, span * span - dy * dy)) - _CASSOWARY_HIP[1])
+        jolt = 0.0
+        for land in phases.values():
+            x = (p - land) % 1.0
+            jolt += x / 0.05 if x < 0.05 else ((1.0 - (x - 0.05) / 0.35) ** 2 if x < 0.4 else 0.0)
+        pose.append((ride - crouch - dip * jolt, -nod * jolt))
+    tracks = {}
+    for side in ("l", "r"):
+        rows = {j: [] for j in ("hip_", "knee_", "ankle_", "toe_")}
+        for i in range(n + 1):
+            p = i / float(n)
+            y, z, shank, toes, _down = foot(side, p)
+            dz, pitch = pose[i]
+            for j, v in zip(("hip_", "knee_", "ankle_", "toe_"), _cassowary_solve((y, z), shank, toes, 0.0, dz, pitch)):
+                rows[j].append((p, round(v, 3)))
+        for j, keys in rows.items():
+            tracks[j + side] = (keys, 0.0)
+    body = [(i / float(n), 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
+    return tracks, body, stride
+
+
+def _cassowary_drum_ring(cx, cz, r, flute):
+    """The drum's fluted section about its axis (cx, cz) as (x, z) points: six lands of radius
+    `r`, one round each chamber, and a groove `flute` deep between each pair, the chambers at
+    every sixth of a turn from the top (where the hammer stands)."""
+    pts = []
+    for j in range(6):
+        c = 60.0 * j
+        for a, rr in ((c - 16.0, r), (c + 16.0, r), (c + 30.0, r - flute)):
+            pts.append((cx + rr * math.sin(math.radians(a)), cz + rr * math.cos(math.radians(a))))
+    return pts
+
+
+def cassowary(b):
+    """Wainwright & Sutler "Cassowary" (Pattern 15 Gun Walker), first cut 31 October from Ryan's
+    to-do line: a medium chicken walker in the maker's iron, the AT-ST silhouette, a squared cab
+    on two digitigrade legs, no arms, the revolver drum on the cab's flank clicking round a
+    chamber at every roll; five hardpoints, the Spin-Up showing nowhere. The flightless bird
+    that kills: each leg a short thigh down and forward to the knee under the pelvis, the long
+    drumstick of a shin back to a high hock, the shank down to the ball, three toes and a spur,
+    the inner toe carrying the dagger claw. The cab turns on a waist over the pelvis the legs
+    hang from (a walker turns at the waist), its brow over a visor slit and two lamps, the chin
+    turret under the prow. The drum on the right flank, its axle in straps off the cab and the
+    hammer lit over its top: six fluted chambers, their mouths front and back lit, the first
+    ringed in white paint with a white stripe down its land, the cylinder's index, which sits
+    under the hammer when the die shows its first entry, so the drum shows where the cylinder
+    stands (b.index: the game turns it a chamber for every entry the die moves on). Mounts in
+    the die's order: hp_1 the chin turret's Twin Autoguns, hp_2 the left
+    pod's Rivet Gun, hp_3 the Ankle Mortar's rack on the roof's rear right, hp_4 the Halo
+    Shield's dish on the roof's front left, hp_5 bare on the roof's rear left (the Coolant
+    Jacket shows nowhere)."""
+    # The pelvis the legs hang from, a dark block under the waist, a drive box behind it.
+    b.box(-12.0, 12.0, -9.0, 7.0, 50.0, 62.0, "steel.dark", "pelvis")
+    b.box(-7.0, 7.0, -12.0, -9.0, 52.0, 60.0, "steel.panel", "drive_box")
+    b.prism("z", 0.0, -1.0, 62.6, 9.0, 1.6, "steel.dark", 8, "waist_ring", phase=math.pi / 8)
+    # The legs, each in its own plane: a hip disc on the pelvis's flank, a short thigh down and
+    # forward to the knee, the shin long down and back to the hock, the shank down to the ball,
+    # and the foot: a sole under the ball, three toes splayed forward and a spur back, the inner
+    # toe's dagger claw forward and up. Nothing hangs below z = 0.
+    LX = 17.0
+    for s in (-1.0, 1.0):
+        side = "l" if s < 0 else "r"
+        x = s * LX
+        hip, knee = (x,) + _CASSOWARY_HIP, (x,) + _CASSOWARY_KNEE
+        hock, ball = (x,) + _CASSOWARY_HOCK, (x,) + _CASSOWARY_BALL
+        with b.joint("hip_" + side, hip, limits=(-35.0, 65.0)):   # what the acts and the stride ask, with a margin
+            b.prism("x", x, hip[1], hip[2], 5.6, 9.0, "steel.dark", 8, "hip_disc", phase=math.pi / 8)
+            _beam(b, hip, knee, _sq(7.5, 10.0), _sq(6.5, 8.5), "steel.plate", "thigh")
+            b.prism("x", x, knee[1], knee[2], 4.2, 9.0, "steel.dark", 8, "knee", phase=math.pi / 8)
+            with b.joint("knee_" + side, knee, limits=(-55.0, 25.0)):
+                # The drumstick, the leg's long visible stroke: a livery plate on its outer face
+                # and a tendon rod down its back.
+                _beam(b, knee, hock, _sq(6.0, 7.0), _sq(5.2, 6.0), "steel.panel", "shin")
+                d = (Vector(hock) - Vector(knee)).normalized()
+                back = Vector((0.0, d.z, -d.y)) if d.z < 0.0 else Vector((0.0, -d.z, d.y))   # square to the shin, toward the leg's rear
+                back = back if back.y < 0.0 else -back
+                p0, p1 = Vector(knee) + (Vector(hock) - Vector(knee)) * 0.15, Vector(knee) + (Vector(hock) - Vector(knee)) * 0.8
+                _beam(b, tuple(p0 + Vector((s * 3.4, 0.0, 0.0))), tuple(p1 + Vector((s * 3.4, 0.0, 0.0))), _sq(0.8, 6.4), _sq(0.8, 5.4), "livery.livery2", "shin_plate")
+                _beam(b, tuple(p0 + back * 3.6), tuple(p1 + back * 3.4), _poly(0.9, 6), _poly(0.9, 6), "steel.dark", "tendon")
+                b.prism("x", x, hock[1], hock[2], 3.6, 8.0, "steel.dark", 8, "hock", phase=math.pi / 8)
+                with b.joint("ankle_" + side, hock, limits=(-60.0, 65.0)):
+                    _beam(b, hock, ball, _sq(4.6, 5.0), _sq(4.2, 4.2), "steel.dark", "shank")
+                    b.prism("x", x, ball[1], ball[2], 2.4, 6.5, "steel.plate", 8, "ball", phase=math.pi / 8)
+                    with b.joint("toe_" + side, ball, limits=(-85.0, 50.0)):
+                        b.box(x - 4.0, x + 4.0, ball[1] - 2.5, ball[1] + 4.0, 0.0, 2.2, "steel.dark", "sole")
+                        for ang, length, label in ((0.0, 12.0, "toe"), (s * 28.0, 10.0, "toe"), (-s * 28.0, 7.5, "toe_inner")):
+                            d = Vector((math.sin(math.radians(ang)), math.cos(math.radians(ang)), 0.0))
+                            root = Vector((x, ball[1] + 1.0, 1.6))
+                            tip = root + d * length
+                            _beam(b, tuple(root), tuple(tip), _sq(4.2, 3.2), _sq(2.6, 2.2), "steel.plate", label)
+                            if label == "toe":
+                                _spike(b, tuple(tip + Vector((0.0, 0.0, -0.4))), tuple(tip + d * 3.0 + Vector((0.0, 0.0, -0.9))), 1.0, "steel.dark", "claw")
+                            else:
+                                # The dagger, the inner toe's claw: long, forward and up.
+                                _spike(b, tuple(tip), tuple(tip + d * 6.0 + Vector((0.0, 4.5, 3.6))), 1.4, "steel.dark", "dagger")
+                        _beam(b, (x, ball[1] - 1.0, 1.4), (x, ball[1] - 7.0, 1.0), _sq(2.6, 2.4), _sq(1.4, 1.4), "steel.plate", "spur")
+
+    # The waist (a walker turns at the waist): the cab and everything on it turns and leans on it.
+    waist = b.joint("waist", (0.0, -1.0, 62.0), axis="yaw", limits={"yaw": (-45.0, 45.0), "pitch": (-15.0, 12.0), "roll": (-6.0, 6.0)}, swing=False)
+    waist.__enter__()
+    b.prism("z", 0.0, -1.0, 64.0, 7.0, 1.6, "steel.dark", 8, "collar", phase=math.pi / 8)
+    # The cab: squared off and bevelled, the prow raked above and below a vertical nose, the
+    # visor slit in the nose under a brow, a lamp either side of it.
+    b.loft([(-17.0, _cassowary_oct(25.0, 66.0, 82.0, 2.5)), (-15.5, _cassowary_oct(28.0, 64.0, 84.0, 3.0)), (9.0, _cassowary_oct(28.0, 64.0, 84.0, 3.0)),
+            (14.5, _cassowary_oct(27.0, 65.5, 80.5, 3.0)), (19.0, _cassowary_oct(23.0, 69.5, 75.5, 2.0))], "steel.panel", "cab")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 14.0, s * 14.4), max(s * 14.0, s * 14.4), -14.0, 8.0, 76.5, 80.5, "livery.livery2", "flank_band")
+    b.box(-7.5, 7.5, 18.7, 19.5, 71.0, 74.0, "glass.glass", "visor")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 8.6, s * 10.6), max(s * 8.6, s * 10.6), 18.6, 19.6, 71.0, 74.0, "amber.light", "lamp")
+    b.box(-10.5, 10.5, 17.0, 20.8, 75.3, 76.9, "steel.plate", "brow")
+    # The roof: a hatch, the rear deck in the livery, an antenna; the tail's grille and lights.
+    b.box(-5.0, 5.0, -2.0, 6.0, 84.0, 85.2, "steel.plate", "hatch")
+    b.box(-1.5, 1.5, 4.5, 5.5, 85.2, 86.0, "steel.dark", "hatch_handle")
+    b.box(-11.0, 11.0, -15.0, -4.0, 84.0, 84.5, "livery.livery2", "deck")
+    b.prism("z", -11.0, -14.0, 89.0, 0.5, 10.0, "steel.dark", 4, "antenna")
+    b.box(-8.0, 8.0, -17.6, -17.0, 69.0, 77.0, "steel.vent", "rear_vent")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 9.5, s * 11.5), max(s * 9.5, s * 11.5), -17.5, -16.8, 78.5, 80.5, "amber.light", "tail_light")
+    # The chin turret under the prow (hp_1): the stock's Twin Autoguns as their class, on an
+    # elevation, far enough forward to read past the nose from above.
+    b.box(-5.5, 5.5, 7.0, 14.0, 60.0, 64.5, "steel.dark", "chin_mount")
+    with b.joint("elev_chin", (0.0, 12.0, 62.0), limits=(-12.0, 25.0)):
+        b.stock("hp_1", (0.0, 14.0, 62.0), "twin_barrel", scale=0.6, carries="twin_autoguns")
+    # The left pod (hp_2): an armoured box on the flank, a livery panel on its face, the
+    # stock's Rivet Gun as its class forward out of it, on an elevation.
+    b.box(-19.5, -13.5, -7.0, 9.0, 67.0, 77.0, "steel.plate", "pod")
+    b.box(-19.8, -19.5, -5.0, 7.0, 68.5, 75.5, "livery.livery2", "pod_panel")
+    with b.joint("elev_pod", (-16.75, 3.0, 72.0), limits=(-10.0, 25.0)):
+        b.stock("hp_2", (-16.75, 9.0, 72.0), "barrel", scale=0.62, carries="rivet_gun")
+    # The roof's mounts: the Ankle Mortar's rack at the rear right on its elevation, pitched up
+    # (hp_3); the Halo Shield's dish at the front left on a short mast (hp_4); the rear left bare
+    # (hp_5: the Coolant Jacket shows nowhere).
+    b.box(4.0, 11.0, -14.0, -7.0, 84.5, 86.0, "steel.dark", "mortar_base")
+    with b.joint("elev_mortar", (7.5, -10.5, 87.0), limits=(-15.0, 25.0)):
+        b.stock("hp_3", (7.5, -11.0, 87.5), "rack", forward=(0.0, 0.819, 0.574), scale=0.5, carries="ankle_mortar")
+    b.prism("z", -7.5, 3.0, 86.0, 2.0, 4.4, "steel.dark", 6, "dish_base")
+    b.stock("hp_4", (-7.5, 3.0, 88.2), "dish", scale=0.55, carries="halo_shield")
+    b.pad("hp_5", (-7.5, -10.5, 85.5), scale=0.55, size=(6.0, 1.5))
+    # The drum on the right flank: an axle in two straps off the cab, the hammer on an arm over
+    # its top at the rear, lit; the cylinder turns on the axle (the drum joint, indexed by the
+    # die). Six fluted chambers round the axle, bored shallow front and back, every floor lit
+    # (lean hotter: the phone sees the drum's rear face in the cab's shadow); the first chamber
+    # at the top under the hammer, ringed in white paint with a white stripe down its land, the
+    # cylinder's index: where the stripe stands says which chamber is up.
+    DX, DY, DZ, DR = 23.5, 0.5, 72.0, 8.5
+    Y0, Y1 = DY - 7.5, DY + 7.5
+    RC, RB = 4.8, 1.8   # the chambers' circle and their bores
+    b.prism("y", DX, DY, DZ, 1.8, 22.0, "steel.dark", 8, "drum_axle", phase=math.pi / 8)
+    for y in (Y1 + 0.9, Y0 - 0.9):
+        b.box(14.0, DX + 1.0, y - 0.9, y + 0.9, DZ - 1.0, DZ + 1.0, "steel.dark", "drum_strap")
+        b.prism("y", DX, y, DZ, 2.8, 2.0, "steel.plate", 8, "drum_boss", phase=math.pi / 8)
+    b.box(12.0, DX + 2.0, Y0 - 2.6, Y0 - 0.4, DR + DZ + 0.8, DR + DZ + 2.5, "steel.plate", "hammer_arm")
+    b.box(DX - 2.0, DX + 2.0, Y0 - 3.2, Y0 - 0.1, DR + DZ + 2.5, DR + DZ + 4.3, "amber.lit", "hammer")
+    with b.joint("drum", (DX, DY, DZ), axis="roll"):
+        outer, inner = _cassowary_drum_ring(DX, DZ, DR, 1.8), _cassowary_drum_ring(DX, DZ, DR * 0.9, 1.8 * 0.9)
+        b.loft([(Y0, inner), (Y0 + 0.9, outer), (Y1 - 0.9, outer), (Y1, inner)], "steel.plate", "drum", cap=False)
+        half = DR * math.sin(math.radians(16.0)) - 0.2
+        b.box(DX - half, DX + half, Y0 + 1.0, Y1 - 1.0, DZ + DR * math.cos(math.radians(16.0)) - 0.1, DZ + DR * math.cos(math.radians(16.0)) + 0.35, "bone.bone", "index_stripe")
+        for yf, inward in ((Y0, 1.0), (Y1, -1.0)):
+            holes, mouths = [], []
+            for j in range(6):
+                a = math.radians(-60.0 * j)   # chamber j, the die's entry j + 1: it comes up under the hammer after j steps
+                cx, cz = DX + RC * math.sin(a), DZ + RC * math.cos(a)
+                ring = [(cx + RB * math.cos(math.pi / 6.0 + k * math.pi / 3.0), cz + RB * math.sin(math.pi / 6.0 + k * math.pi / 3.0)) for k in range(6)]
+                holes.append([(px, yf, pz) for px, pz in ring])
+                mouths.append((cx, cz, ring))
+            _plate(b, [(px, yf, pz) for px, pz in inner], holes, "steel.plate", "drum_face")
+            for j, (cx, cz, ring) in enumerate(mouths):
+                floor = yf + inward * 1.3
+                _rings(b, [[(px, yf, pz) for px, pz in ring], [(px, floor, pz) for px, pz in ring]], "bore.dark", "bore", cap=False)
+                _face(b, [(px, floor, pz) for px, pz in ring], "amber.lit", "chamber")   # the lit tile: uniformly bright, so a small face lights whole
+                if j == 0:
+                    collar = [(cx + 3.2 * math.cos(math.pi / 6.0 + k * math.pi / 3.0), cz + 3.2 * math.sin(math.pi / 6.0 + k * math.pi / 3.0)) for k in range(6)]
+                    lip = yf - inward * 0.35
+                    _plate(b, [(px, lip, pz) for px, pz in collar], [[(px, lip, pz) for px, pz in ring]], "bone.bone", "chamber_one")
+    b.index("drum", 60.0)
+    waist.__exit__(None, None, None)
+
+    # Idle acts (the builder's rules: loud, never in step, every joint pausing before it turns
+    # back; the feet planted, each act's legs worked out frame by frame, _cassowary_pose, dense
+    # for ease "linear", the other tracks on the curve the rig would run, _cassowary_dense).
+    # Degrees and seconds; a body pose is (dy, dz, pitch), a foot (ball y, ball z, shank, toes).
+    BY, BZ = _CASSOWARY_BALL
+    # Fanning the hammer: it braces and draws, the cab snapping round on the waist onto its mark
+    # and the guns coming up, then the drum clicks round all six chambers in quick succession,
+    # each click kicking the cab and flaring the chambers and the hammer, and it holds, lowers
+    # and turns home. The drum ends a whole turn on, the chamber it started at.
+    CLICKS = [1.35 + 0.26 * k for k in range(6)]
+    tracks, body = _cassowary_pose([(0.4, (0.0, 0.0, 0.0), {}), (1.0, (0.0, -1.6, -1.0), {}), (2.9, (0.0, -1.8, -1.2), {}), (3.8, (0.0, -1.4, -0.8), {}),
+                                    (4.9, (0.0, 0.0, 0.0), {})], until=5.8)
+    base = _cassowary_mono([(0.0, 0.0, 0.0), (0.4, 0.0, 0.0), (1.0, -2.0, 14.0), (3.4, -2.4, 15.0), (4.6, 0.0, 0.0), (5.8, 0.0, 0.0)])
+    def kick(t):
+        out = 0.0
+        for tk in CLICKS:
+            x = t - tk
+            if 0.0 <= x < 0.04:
+                out += 3.0 * x / 0.04
+            elif 0.04 <= x < 0.4:
+                out += 3.0 * math.exp(-(x - 0.04) / 0.07)
+        return out
+    tracks["waist"] = [(round(i / 30.0, 3), round(base(i / 30.0)[0] + kick(i / 30.0), 3), round(base(i / 30.0)[1], 3), 0.0) for i in range(int(5.8 * 30.0) + 1)]
+    tracks["drum"] = [(1.3, 0.0)] + [key for k, tk in enumerate(CLICKS) for key in ((tk, 60.0 * k), (round(tk + 0.06, 3), 60.0 * (k + 1)))] + [(5.8, 360.0)]
+    tracks["elev_chin"] = _cassowary_dense([(0.5, 0.0), (1.1, 9.0), (3.3, 10.0), (4.3, 0.0)], 5.8)
+    tracks["elev_pod"] = _cassowary_dense([(0.6, 0.0), (1.2, 7.0), (3.3, 8.0), (4.4, 0.0)], 5.8)
+    flare = [(1.3, 0.0)] + [key for tk in CLICKS for key in ((tk, 2.0), (round(tk + 0.05, 3), 14.0), (round(tk + 0.2, 3), 4.0))] + [(3.6, 0.0)]
+    b.act("fan_hammer", 5.8, tracks, body=body, ease="linear", heft=0.06,
+          glow=[(["chamber", "hammer"], flare), (["lamp"], [(0.5, 0.0), (1.0, 6.0), (3.4, 6.0), (4.2, 0.0)])])
+    # The scan: it rises tall on its toes, the heels lifting, the cab turns on the waist to the
+    # left and dips to look, holds, swings across to the right and looks, holds, and comes home
+    # as it settles, the lamps hot.
+    UP = (BY, BZ, -14.0, 0.0)
+    tracks, body = _cassowary_pose([(0.4, (0.0, 0.0, 0.0), {}), (1.4, (0.0, 3.0, 0.5), {"l": UP, "r": UP}), (6.2, (0.0, 3.2, 0.5), {"l": UP, "r": UP}),
+                                    (7.2, (0.0, 0.0, 0.0), {"l": (BY, BZ, 0.0, 0.0), "r": (BY, BZ, 0.0, 0.0)})], until=7.6)
+    tracks["waist"] = _cassowary_dense([(1.0, 0.0, 0.0, 0.0), (2.1, -4.0, 34.0, 0.0), (3.3, -5.0, 35.0, 0.0), (5.3, -4.0, -34.0, 0.0), (6.5, -5.0, -35.0, 0.0), (7.4, 0.0, 0.0, 0.0)], 7.6)
+    b.act("scan", 7.6, tracks, body=body, ease="linear", glow=[(["lamp"], [(1.0, 0.0), (1.6, 7.0), (6.6, 7.0), (7.3, 0.0)])])
+    # Hunkering down: it sinks low on its legs, the hocks folding toward the ground and the cab
+    # tipping down to look under its prow, holds, then heaves up past its height onto its toes,
+    # the chin guns and the pod gun coming up as it rises, and settles.
+    LOW = (BY, BZ, 18.0, 0.0)
+    tracks, body = _cassowary_pose([(0.5, (0.0, 0.0, 0.0), {}), (1.8, (0.0, -11.0, -2.5), {"l": LOW, "r": LOW}), (3.6, (0.0, -11.8, -3.0), {"l": LOW, "r": LOW}),
+                                    (4.6, (0.0, 1.6, 1.0), {"l": (BY, BZ, -6.0, 0.0), "r": (BY, BZ, -6.0, 0.0)}),
+                                    (5.4, (0.0, 0.6, 0.3), {"l": (BY, BZ, -2.0, 0.0), "r": (BY, BZ, -2.0, 0.0)}),
+                                    (6.3, (0.0, 0.0, 0.0), {"l": (BY, BZ, 0.0, 0.0), "r": (BY, BZ, 0.0, 0.0)})], until=6.6)
+    tracks["waist"] = _cassowary_dense([(0.6, 0.0, 0.0, 0.0), (1.8, -6.0, 0.0, 0.0), (3.6, -7.0, 0.0, 0.0), (4.6, 3.0, 0.0, 0.0), (5.6, 0.0, 0.0, 0.0)], 6.6)
+    tracks["elev_chin"] = _cassowary_dense([(3.6, 0.0), (4.4, 18.0), (5.2, 18.0), (6.0, 0.0)], 6.6)
+    tracks["elev_pod"] = _cassowary_dense([(3.7, 0.0), (4.5, 12.0), (5.2, 12.0), (6.0, 0.0)], 6.6)
+    b.act("hunker", 6.6, tracks, body=body, ease="linear", glow=[(["lamp"], [(1.4, 0.0), (2.0, 5.0), (4.2, 5.0), (5.0, 0.0)])])
+    # The kick (the flightless bird that kills): the pilot tests the left leg, drawing the foot
+    # up folded and holding it, the toes spreading and curling round the dagger, then a kick
+    # straight out ahead that gathers speed into it and stops dead, held, drawn back, and
+    # stamped down, the body dropping onto it; the right foot planted throughout.
+    HELD = (BY + 6.0, 16.0, 35.0, -32.0)   # the foot tucked up and forward under the hock, the ankle folded
+    OUT = (BY + 20.0, 10.0, 5.0, 6.0)
+    frames = [(0.4, (0.0, 0.0, 0.0), {}), (1.0, (0.0, -1.2, 1.5), {"l": (BY + 4.0, 12.0, 25.0, -28.0)}), (1.6, (0.0, -1.0, 1.8), {"l": HELD}),
+              (1.9, (0.0, -1.0, 1.8), {"l": HELD[:3] + (8.0,)}), (2.2, (0.0, -1.0, 1.9), {"l": HELD}), (2.5, (0.0, -1.0, 2.0), {"l": HELD})]
+    frames += [(t, p[:3], {"l": p[3:]}) for t, p in _slam(2.5, (0.0, -1.0, 2.0) + HELD, 2.7, (0.0, -0.6, 3.5) + OUT)]
+    frames += [(3.1, (0.0, -0.6, 3.4), {"l": OUT}), (3.7, (0.0, -1.0, 1.5), {"l": (BY + 2.0, 13.0, 20.0, -10.0)}),
+               (3.95, (0.0, -1.0, 1.2), {"l": (BY + 0.5, 9.0, 8.0, 0.0)})]
+    frames += [(t, p[:3], {"l": p[3:]}) for t, p in _slam(3.95, (0.0, -1.0, 1.2, BY + 0.5, 9.0, 8.0, 0.0), 4.1, (0.0, -2.4, -1.2, BY, BZ, 0.0, 0.0))]
+    frames += [(4.6, (0.0, -0.3, 0.2), {}), (5.4, (0.0, 0.0, 0.0), {})]
+    tracks, body = _cassowary_pose(frames, until=6.0)
+    tracks["waist"] = _cassowary_dense([(0.6, 0.0, 0.0, 0.0), (1.4, -3.0, 0.0, 0.0), (2.5, -3.5, 0.0, 0.0), (2.7, 2.0, 0.0, 0.0), (3.1, 1.6, 0.0, 0.0), (4.0, -2.0, 0.0, 0.0),
+                                        (4.15, 1.5, 0.0, 0.0), (5.0, 0.0, 0.0, 0.0)], 6.0)
+    b.act("kick", 6.0, tracks, body=body, ease="linear", heft=0.07, glow=[(["lamp"], [(2.4, 0.0), (2.7, 8.0), (3.2, 8.0), (3.8, 0.0)])])
+    # Movement: a long digitigrade stride, the toes planted while the body passes over them, the
+    # heel lifting into the push-off, the ankle folding the foot up under the hock as it swings
+    # and reaching it down to land flat; the body dropping and nodding onto each foot. A sweep of
+    # 40, a stride of 67, so its four hexes a move are paced, not scurried (at 30 it took three
+    # steps a second at its map pace).
+    tracks, body, stride = _cassowary_stride(sweep=40.0)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.move(accel=1.0, heft=0.17)
+
+cassowary.maker = "wainwright_sutler"
+
+
 def dingo(b):
     """Wainwright & Sutler "Dingo" (Pattern 12 Support Car): the agile, stealthy one, low
     enough to skirt between a big foe's legs (Ryan, 29 September; the MK-200 and the

@@ -6,7 +6,8 @@ extends TestCase
 ## only the drawing needs a window.
 
 const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
-	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox"]
+	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
+	"cassowary"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
@@ -1074,6 +1075,104 @@ func test_a_hovercraft_eases_down_and_takes_no_gust_through_an_act() -> void:
 		last_rate = rate
 	assert_true(widest_calm < widest_free * 0.5, "an act's balance is a share of the free one (%f against %f)" % [widest_calm, widest_free])
 	assert_true(worst_jolt < 0.02, "and a gust never changes the attitude's rate at a stroke (%f radians a second in a frame)" % worst_jolt)
+
+
+func test_an_indexed_joint_clicks_round_to_the_die_s_entry() -> void:
+	# The Cassowary's drum (31 October: "clicking round a chamber at every roll"): the screen shows
+	# the rig its die's entry and the drum clicks on to that chamber, always forward, a sixth of a
+	# turn an entry; a roll that lands where it was turns it a whole way, and the first look spins
+	# it up from rest, the fight's opening spin.
+	var pair := _rig_for("cassowary", 2)
+	var rig: MechRig = pair[0]
+	var drum: Node3D = rig.joints["drum"]
+	assert_eq(rig.indexed, {"drum": 60.0}, "the drum turns a chamber an entry")
+	var rest := drum.rotation.z
+	var shown := func() -> float: return fposmod(-rad_to_deg(drum.rotation.z - rest), 360.0)   # a roll of r is rotation.z = -r
+	var settle := func() -> void:
+		for i in range(90):
+			rig.tick(1.0 / 60.0)
+	assert_true(rig.show_entry(2, 6, 1), "the first look clicks")
+	assert_true(rig.alive(), "and the rig keeps ticking while it does")
+	var spun := 0.0
+	var last := 0.0
+	for i in range(90):
+		rig.tick(1.0 / 60.0)
+		spun += fposmod(shown.call() - last + 180.0, 360.0) - 180.0
+		last = shown.call()
+	assert_true(spun > 360.0 + 100.0, "the opening spin runs a whole turn and on (%f degrees)" % spun)
+	assert_true(absf(shown.call() - 120.0) < 0.01, "onto the third chamber (%f)" % shown.call())
+	assert_true(rig.show_entry(3, 6, 2), "a step")
+	var path: Array = []
+	for i in range(12):
+		rig.tick(1.0 / 60.0)
+		path.append(shown.call())
+	assert_true(float(path[2]) > 120.0 and float(path[2]) < 180.0, "on its way (%f)" % float(path[2]))
+	assert_true(float(path.max()) > 182.0, "carried past the stop as it catches (%f)" % float(path.max()))
+	settle.call()
+	assert_true(absf(shown.call() - 180.0) < 0.01, "a chamber on (%f)" % shown.call())
+	assert_false(rig.show_entry(3, 6, 2), "the same look clicks nothing")
+	assert_true(rig.show_entry(3, 6, 3), "a roll that lands where it was")
+	rig.tick(0.15)
+	assert_true(absf(shown.call() - 180.0) > 1.0, "turns it")
+	settle.call()
+	assert_true(absf(shown.call() - 180.0) < 0.01, "a whole way round (%f)" % shown.call())
+	assert_true(rig.show_entry(0, 6, 4), "past the last entry")
+	rig.tick(0.05)
+	assert_true(shown.call() > 180.0, "it carries on forward (%f), never back" % shown.call())
+	settle.call()
+	assert_true(absf(fposmod(shown.call() + 1.0, 360.0) - 1.0) < 0.01, "round to the first chamber (%f)" % shown.call())
+	# RIFTGATE_DRUM_DEBUG clicks it on a chamber a second, to judge it running.
+	rig.index_debug = true
+	for i in range(66):
+		rig.tick(1.0 / 60.0)
+	rig.index_debug = false
+	settle.call()
+	assert_true(absf(shown.call() - 60.0) < 0.01, "the debug switch clicks a chamber a second (%f)" % shown.call())
+	pair[1].free()
+	var plain := _rig_for("clydesdale", 2)
+	assert_false((plain[0] as MechRig).show_entry(1, 9, 1), "a model with nothing indexed shows no die")
+	plain[1].free()
+
+
+func test_the_cassowary_plants_its_toes_and_rolls_onto_them() -> void:
+	# Its stride (31 October): each foot's toes planted flat while the body passes over them, the
+	# heel lifting into the push-off before they leave the ground, the body never rolling.
+	var pair := _rig_for("cassowary", 2)
+	var rig: MechRig = pair[0]
+	var model: Node3D = pair[1]
+	for key in rig.gait.get("body", []):
+		assert_true(is_zero_approx(float(key[6])), "the walk's body never rolls")
+	var ball: Node3D = rig.joints["toe_l"]
+	var hock: Node3D = rig.joints["ankle_l"]
+	var rest_h := _in_model(ball, model).origin.y
+	_drive(rig, rig.top_speed, 1.0)
+	var samples: Array = []
+	var lowest := 1e9
+	var t := 0.0
+	while t < 2.0 * float(rig.gait["stride"]) / rig.top_speed:
+		rig.drive(rig.top_speed, 0.0, 0.0, 1.0 / 240.0)
+		var at := _in_model(ball, model).origin
+		samples.append([at.y, at.z - rig._dist, _in_model(hock, model).origin.y])
+		lowest = minf(lowest, at.y)
+		t += 1.0 / 240.0
+	var runs: Array = [[]]
+	for sm in samples:
+		if float(sm[0]) < lowest + 0.3:
+			(runs[runs.size() - 1] as Array).append(sm)
+		elif not (runs[runs.size() - 1] as Array).is_empty():
+			runs.append([])
+	var whole := 0
+	for run in runs:
+		if (run as Array).size() < 5 or run == runs[0] or run == runs[runs.size() - 1]:
+			continue   # a stance the window cut into
+		whole += 1
+		var ys: Array = (run as Array).map(func(sm): return float(sm[1]))
+		assert_true(float(ys.max()) - float(ys.min()) < 0.8, "the toes stay put while the body passes over them (%f units)" % (float(ys.max()) - float(ys.min())))
+		var heights: Array = (run as Array).map(func(sm): return float(sm[2]))
+		assert_true(float(heights[heights.size() - 1]) - float(heights.min()) > 1.5, "the heel lifts before they leave the ground (%f)" % (float(heights[heights.size() - 1]) - float(heights.min())))
+	assert_true(whole >= 1, "a whole stance in two strides")
+	assert_true(absf(lowest - rest_h) < 0.6, "down on the ground where it stands at rest (%f against %f)" % [lowest, rest_h])
+	pair[1].free()
 
 
 func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
