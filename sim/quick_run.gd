@@ -421,7 +421,10 @@ func _composition_foes(c: Dictionary) -> Array:
 		if not db.foes.has(str(m[0])):
 			continue
 		for i in range(maxi(1, roundi(float(Ramp.scaled(int(m[1]), ramp())) * d))):
-			out.append(db.make_foe(str(m[0])))
+			var f := db.make_foe(str(m[0]))
+			if f.wanders:
+				db.scale_boss(f, tier())   # a wandering elite stands at the battle's tier (31 October)
+			out.append(f)
 	return out
 
 

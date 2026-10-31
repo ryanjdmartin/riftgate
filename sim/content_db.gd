@@ -282,6 +282,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.size = int(d.get("size", 1))
 	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
+	f.wanders = bool(d.get("wanders", false))
 	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
@@ -372,6 +373,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 	var faction_name := str(fac.get("name", "")).strip_edges()
 	if faction_name.is_empty():
 		faction_name = str(d.get("faction", "")).capitalize()
+	if bool(d.get("wanders", false)):
+		faction_name = "Any domain"   # a wanderer walks out of any rift (31 October)
 	var items: Array = [["hp", stat_parts(int(d.get("hp", f.hp_max)), f.hp_max)], ["attack", stat_parts(int(d.get("attack", f.attack)), f.attack)]]
 	if f.armour > 0 or int(d.get("armour", 0)) > 0:
 		var arm := stat_parts(int(d.get("armour", 0)), f.armour)
@@ -569,6 +572,8 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			continue
 		for i in range(int(e[1])):
 			var f := make_foe(fid)
+			if f.wanders:
+				scale_boss(f, sq.boss_tier)   # a wandering elite stands at its battle's tier (31 October)
 			f.pack_id = sq.id
 			f.escorts = sq.is_boss
 			out.append(f)
@@ -1929,6 +1934,10 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: elite is true or false" % where)
 		if bool(f.get("elite", false)) and bool(f.get("hero", false)):
 			errs.append("%s: a hero is a domain's final, never an elite" % where)
+		if f.has("wanders") and not (f["wanders"] is bool):
+			errs.append("%s: wanders is true or false" % where)
+		elif bool(f.get("wanders", false)) and not bool(f.get("elite", false)):
+			errs.append("%s: only an elite wanders (31 October: the one elite any domain fields, scaled by the tier)" % where)
 		if f.has("winged") and not (f["winged"] is bool):
 			errs.append("%s: winged is true or false" % where)
 		for key in ["strikes", "breach"]:

@@ -49,6 +49,12 @@ TABLE = {
     "bomb": [("grenade", 180, 1.25, 0.45), ("balloon", 240, 1.00, None)],
     "salamander": [("fire_lizard", 210, 1.25, None), ("magma_lizard", 60, 1.25, None)],
     "drake": [("wyvern", 240, 1.25, None), ("red_dragon", 60, 1.25, None)],
+    # The massive lines (31 October), by the same three simulations: the worst case 64 for the
+    # Treant's (tinted, its whites grey), 77 for the Sandworm's (hue 180 at tier two, past the
+    # violet that 240 and 210 landed on) and 47 for the Magma Elemental's (tinted, its rock grey).
+    "treant": [("dusk_treant", 240, 0.80, 0.45), ("frost_treant", 180, 1.25, 0.45)],
+    "sandworm": [("night_sandworm", 180, 0.80, None), ("salt_sandworm", 150, 1.25, None)],
+    "magma_golem": [("basalt_elemental", 210, 1.25, 0.45), ("sulphur_elemental", 60, 1.25, 0.45)],
 }
 
 

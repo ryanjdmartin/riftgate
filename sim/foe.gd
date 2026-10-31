@@ -59,6 +59,7 @@ var held: Dictionary = {}        # what a steal took off a machine, {"name", "po
 var grudge: int = 0              # foes the team has killed this fight, for a blow that grows with them (`per_kill`); the skirmish keeps it
 var spent_once: Array = []       # the moves marked `once` it has used this fight (30 October: the Vampire Lord readies its rise once)
 var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding none: a quarter of its HP lost since lets it go (31 October)
+var wanders: bool = false        # an elite that walks out of any domain's rift, scaled by the tier as a boss is (Gilgamesh, 31 October)
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"

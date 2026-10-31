@@ -150,13 +150,18 @@ func test_spawn_table_lists_the_factions_units() -> void:
 	# Derived from the compositions since 30 October: the tier's formations' then patrols'
 	# members, each foe once, first seen first, for the harness, the runners and the escorts.
 	var db := _db()
-	var table := db.spawn_table("marsh", 1)
-	var ids: Array = table.map(func(e) -> String: return str(e[0]))
-	assert_eq(ids.size(), 3, "three units come through at tier one: %s" % str(ids))
-	assert_eq(ids[0], "revenant", "the formation's lead first")
-	assert_true(ids.has("ghost") and ids.has("zombie_knight"), "the back and the patrol's knights with it")
-	for e in table:
-		assert_true(int(e[1]) >= 1, "%s at a strength" % str(e[0]))
+	for fac in db.factions.keys():
+		var table := db.spawn_table(str(fac), 1)
+		var ids: Array = table.map(func(e) -> String: return str(e[0]))
+		var want: Array = []
+		for size in ["formation", "patrol"]:
+			for c in db.compositions(str(fac), 1, size):
+				for m in c["members"]:
+					if not want.has(str(m[0])):
+						want.append(str(m[0]))
+		assert_eq(ids, want, "%s at tier one: the formations' then the patrols' members, each once, first seen first" % fac)
+		for e in table:
+			assert_true(int(e[1]) >= 1, "%s at a strength" % str(e[0]))
 	assert_eq(db.faction_of_foe("drake"), "peak", "foe to faction lookup")
 	for fid in db.factions.keys():
 		for t in [1, 2, 3]:

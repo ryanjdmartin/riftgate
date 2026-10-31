@@ -288,6 +288,7 @@ func _spawn_elite() -> void:
 		var sq := field.emerge(c, map.rift)
 		if sq == null:
 			continue
+		sq.boss_tier = tier   # a wandering elite stands at the battle's tier (31 October)
 		elites_spawned.append(str(c["id"]))
 		field.log.append("An elite emerges at the rift: %s" % sq.display_name)
 		return

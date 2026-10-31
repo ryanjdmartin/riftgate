@@ -209,6 +209,66 @@ def gilgamesh(d, w, h):
         d.line((x0, y0, (x0 * 3 + x1) / 4, (y0 * 3 + y1) / 4), fill=(110, 70, 40, 255), width=4)
 
 
+def djinn(d, w, h):
+    blue, dark, gold, smoke = (70, 120, 220, 255), (40, 70, 160, 255), (240, 196, 40, 255), (150, 170, 210, 255)
+    d.polygon([(30, 60), (44, 60), (46, 74), (40, 86), (34, 94), (36, 82), (30, 72)], fill=smoke)
+    d.polygon([(22, 36), (50, 36), (46, 62), (26, 62)], fill=blue)
+    d.line((22, 40, 8, 54), fill=blue, width=6)
+    d.line((50, 40, 60, 26), fill=blue, width=6)
+    d.rectangle((10, 50, 16, 54), fill=gold)
+    d.rectangle((54, 30, 60, 34), fill=gold)
+    d.ellipse((26, 16, 46, 38), fill=blue)
+    d.ellipse((22, 4, 50, 24), fill=(150, 60, 140, 255))
+    d.polygon([(36, 8), (40, 13), (36, 18), (32, 13)], fill=gold)
+    d.point((32, 28), fill=OUTLINE)
+    d.point((40, 28), fill=OUTLINE)
+    d.line((31, 33, 41, 33), fill=dark, width=2)
+    d.arc((52, 2, 76, 34), 180, 290, fill=(220, 225, 235, 255), width=3)
+    d.line((60, 26, 58, 30), fill=(110, 70, 40, 255), width=3)
+
+
+def _giant(d, w, h, pal):
+    """The Marsh's massive line (31 October): an undead giant in plate, its cleaver down."""
+    plate, dark, skin, eye, iron = pal
+    d.polygon([(18, 54), (78, 54), (86, 104), (70, 110), (26, 110), (10, 104)], fill=plate)
+    d.rectangle((26, 108, 42, 140), fill=dark)
+    d.rectangle((54, 108, 70, 140), fill=dark)
+    d.rectangle((22, 136, 44, 142), fill=plate)
+    d.rectangle((52, 136, 74, 142), fill=plate)
+    d.ellipse((4, 50, 26, 70), fill=dark)
+    d.ellipse((70, 50, 92, 70), fill=dark)
+    d.line((14, 68, 10, 104), fill=skin, width=7)
+    d.line((82, 68, 86, 98), fill=skin, width=7)
+    d.ellipse((36, 28, 60, 54), fill=skin)
+    d.polygon([(34, 36), (48, 24), (62, 36), (60, 42), (36, 42)], fill=dark)
+    d.rectangle((41, 44, 44, 47), fill=eye)
+    d.rectangle((52, 44, 55, 47), fill=eye)
+    d.line((42, 51, 54, 51), fill=dark, width=2)
+    for y in range(64, 104, 10):
+        d.line((22, y, 74, y), fill=dark, width=1)
+    d.polygon([(80, 96), (94, 96), (94, 130), (84, 136), (80, 128)], fill=iron)
+    d.line((86, 92, 86, 100), fill=(90, 60, 40, 255), width=4)
+
+
+GIANTS = {
+    "barrow_giant": ((150, 84, 44, 255), (96, 54, 32, 255), (140, 160, 128, 255), (130, 255, 170, 255), (150, 150, 160, 255)),
+    "grave_giant": ((200, 196, 182, 255), (120, 116, 108, 255), (150, 170, 196, 255), (255, 250, 200, 255), (110, 110, 120, 255)),
+    "charnel_giant": ((54, 56, 66, 255), (24, 26, 32, 255), (196, 182, 96, 255), (255, 230, 90, 255), (200, 170, 70, 255)),
+}
+
+
+def barrow_giant(d, w, h):
+    _giant(d, w, h, GIANTS["barrow_giant"])
+
+
+def grave_giant(d, w, h):
+    _giant(d, w, h, GIANTS["grave_giant"])
+
+
+def charnel_giant(d, w, h):
+    _giant(d, w, h, GIANTS["charnel_giant"])
+
+
 def _eye(d, w, h, iris):
     bronze, crack = (170, 120, 60, 255), (250, 240, 170, 255)
     d.chord((4, 20, 68, 92), 140, 400, fill=bronze)
@@ -238,6 +298,10 @@ FOES = {
     "saurian_queen": (saurian_queen, False),
     "rotbloom": (rotbloom, True),
     "gilgamesh": (gilgamesh, False),
+    "djinn": (djinn, False),
+    "barrow_giant": (barrow_giant, True),
+    "grave_giant": (grave_giant, True),
+    "charnel_giant": (charnel_giant, True),
     "piercing_eye": (piercing_eye, False),
     "prising_eye": (prising_eye, False),
 }

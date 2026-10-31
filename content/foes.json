@@ -152,6 +152,30 @@
       ],
       "flavour": "Gate order one still applies. Bring a bigger saw."
     },
+    {
+      "id": "dusk_treant", "name": "Dusk Treant", "faction": "meadow", "tier": 2,
+      "design": {"fantasy": "Tier two of the Treant's line, a massive rank and file (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): its cut Root Storm back as the twist.", "notes": "A recolour (tools/recolour.py, its hue by the three simulations); every number a placeholder."},
+      "codex": "A treant gone dark in the rift's shade. It walks like the first and grows back what you cut, and when it is hurt its roots come up under every machine.",
+      "hp": 40, "attack": 8, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "limb", "name": "Limb", "kind": "attack", "weight": 2, "text": "A branch the size of a girder, for {damage}.", "status": "implemented"},
+        {"id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 4, "weight": 1, "when": "missing_hull", "text": "Regrows {value} HP.", "status": "implemented"},
+        {"id": "root_storm", "name": "Root Storm", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "Roots come up everywhere: {damage} to every machine.", "status": "implemented"}
+      ],
+      "flavour": "The second grove came in at dusk. Nobody saw it come."
+    },
+    {
+      "id": "frost_treant", "name": "Frost Treant", "faction": "meadow", "tier": 3,
+      "design": {"fantasy": "Tier three of the Treant's line, a massive rank and file (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): Root Storm its twist.", "notes": "A recolour (tools/recolour.py, its hue by the three simulations); every number a placeholder."},
+      "codex": "A treant rimed white, older than the others and slower to die. It regrows more than they do, and below half its roots come up under every machine.",
+      "hp": 48, "attack": 9, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "limb", "name": "Limb", "kind": "attack", "weight": 2, "text": "A branch the size of a girder, for {damage}.", "status": "implemented"},
+        {"id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 5, "weight": 1, "when": "missing_hull", "text": "Regrows {value} HP.", "status": "implemented"},
+        {"id": "root_storm", "name": "Root Storm", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "Roots come up everywhere: {damage} to every machine.", "status": "implemented"}
+      ],
+      "flavour": "Gate order one, appended: if it is white and it is coming at you, it is still not a tree."
+    },
 
     {
       "id": "needler", "name": "Needler", "faction": "waste",
@@ -263,6 +287,30 @@
       ],
       "flavour": "Appendix K, last page: if the sand is moving toward you, it is too late to read this."
     },
+    {
+      "id": "night_sandworm", "name": "Night Sandworm", "faction": "waste", "tier": 2,
+      "design": {"fantasy": "Tier two of the Sandworm's line, a massive rank and file (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): its cut Quake back as the twist.", "notes": "A recolour (tools/recolour.py, its hue by the three simulations, past the violet two hues landed on); every number a placeholder."},
+      "codex": "A sandworm the colour of the desert at night. Its ring of teeth goes through the shield, it digs in when hurt, and below half the ground heaves under every machine.",
+      "hp": 44, "attack": 9, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "swallow", "name": "Swallow", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "The ring closes for {damage}, through the shield.", "status": "implemented"},
+        {"id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented"},
+        {"id": "quake", "name": "Quake", "kind": "attack", "factor": 0.25, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "The ground heaves: {damage} to every machine.", "status": "implemented"}
+      ],
+      "flavour": "Field manual, appendix K: the dune moved at night. The dune is not a dune."
+    },
+    {
+      "id": "salt_sandworm", "name": "Salt Sandworm", "faction": "waste", "tier": 3,
+      "design": {"fantasy": "Tier three of the Sandworm's line, a massive rank and file (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): Quake its twist.", "notes": "A recolour (tools/recolour.py, its hue by the three simulations); every number a placeholder."},
+      "codex": "A sandworm bleached by the salt flats, the oldest of its line. Its bite goes through the shield, it digs in deeper, and below half the ground heaves under every machine.",
+      "hp": 52, "attack": 10, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "swallow", "name": "Swallow", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "The ring closes for {damage}, through the shield.", "status": "implemented"},
+        {"id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 4, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented"},
+        {"id": "quake", "name": "Quake", "kind": "attack", "factor": 0.25, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "The ground heaves: {damage} to every machine.", "status": "implemented"}
+      ],
+      "flavour": "The salt flats have no dunes. Something keeps making them."
+    },
 
     {
       "id": "revenant", "name": "Revenant", "faction": "marsh",
@@ -342,6 +390,41 @@
         { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" }
       ],
       "flavour": "It saluted. Then it got up again."
+    },
+    {
+      "id": "barrow_giant", "name": "Barrow Giant", "faction": "marsh",
+      "design": {"fantasy": "The Marsh's own massive line (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): the genre's undead giant, risen from a barrow in rusted plate. The Marsh had no massive rank and file since the Bone Wyvern became an elite.", "niche": "Hard to keep down at its size: it knits its wounds over three actions, so burst it or purge the mending; its higher tiers ready themselves to get back up.", "notes": "Landed 31 October as a placeholder kit for Ryan's marks; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked.", "sprite": "an undead giant in rusted ornate plate, a grey-green dead face with glowing eyes under a dented helm, a door-sized rusted cleaver hanging from one hand", "variants": ["an undead giant in rusted ornate plate, a grey-green dead face with glowing eyes under a dented helm, a door-sized rusted cleaver hanging from one hand"]},
+      "codex": "A giant that died in its armour and was buried in a barrow too small for it. It fills a whole column, and hurt, it knits itself back together over three rounds.",
+      "hp": 32, "attack": 7, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "grave_cleaver", "name": "Grave Cleaver", "kind": "attack", "weight": 2, "text": "A rusted cleaver the size of a door, for {damage}.", "status": "implemented"},
+        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 3, "weight": 1, "when": "missing_hull", "text": "Its bones knit: regrows {value} at each of its next three actions.", "status": "implemented"}
+      ],
+      "flavour": "Gate order four: nothing that has died passes the wall. Including that."
+    },
+    {
+      "id": "grave_giant", "name": "Grave Giant", "faction": "marsh", "tier": 2,
+      "design": {"fantasy": "Tier two of the Barrow Giant's line (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): Rise Again its twist, the Marsh's getting back up.", "notes": "A placeholder drawing in its own palette (tools/placeholder_art.py, the three simulations reading it apart from the line's other two); every number a placeholder. Rise Again doubles what it takes to put down unless the readying is answered: a Suppress, a Disrupt or a Purge."},
+      "codex": "A barrow giant in ash-white plate. It knits its wounds, and once hurt it readies itself to get back up, whole, the first time it falls.",
+      "hp": 36, "attack": 8, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "grave_cleaver", "name": "Grave Cleaver", "kind": "attack", "weight": 2, "text": "A rusted cleaver the size of a door, for {damage}.", "status": "implemented"},
+        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 3, "weight": 1, "when": "missing_hull", "text": "Its bones knit: regrows {value} at each of its next three actions.", "status": "implemented"},
+        {"id": "rise_again", "name": "Rise Again", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented"}
+      ],
+      "flavour": "We buried it twice. The second time we watched."
+    },
+    {
+      "id": "charnel_giant", "name": "Charnel Giant", "faction": "marsh", "tier": 3,
+      "design": {"fantasy": "Tier three of the Barrow Giant's line (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): Rise Again its twist.", "notes": "A placeholder drawing in its own palette (tools/placeholder_art.py); every number a placeholder. Rise Again doubles what it takes to put down unless the readying is answered."},
+      "codex": "A barrow giant in black iron, the charnel house's own. It knits its wounds faster, and once hurt it readies itself to get back up, whole, the first time it falls.",
+      "hp": 40, "attack": 9, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "grave_cleaver", "name": "Grave Cleaver", "kind": "attack", "weight": 2, "text": "A rusted cleaver the size of a door, for {damage}.", "status": "implemented"},
+        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 4, "weight": 1, "when": "missing_hull", "text": "Its bones knit: regrows {value} at each of its next three actions.", "status": "implemented"},
+        {"id": "rise_again", "name": "Rise Again", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented"}
+      ],
+      "flavour": "Field manual, appendix M: the big ones get up too. Plan for twice."
     },
     {
       "id": "death_knight", "name": "Death Knight", "faction": "marsh", "tier": 2,
@@ -491,6 +574,30 @@
       ],
       "flavour": "They brought fire. We brought bigger fire. It brought the mountain."
     },
+    {
+      "id": "basalt_elemental", "name": "Basalt Elemental", "faction": "peak", "tier": 2,
+      "design": {"fantasy": "Tier two of the Magma Elemental's line, a massive rank and file (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): its cut Stoke the Forge back as the twist.", "notes": "A recolour (tools/recolour.py, its hue by the three simulations); every number a placeholder."},
+      "codex": "A magma elemental cooled to blue-black basalt and no kinder for it. Its fist goes through the shield, it stokes every other foe on the field, and below half its cracks vent on every machine.",
+      "hp": 48, "attack": 9, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented"},
+        {"id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 4, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented"},
+        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented"}
+      ],
+      "flavour": "Recruitment poster: IT COOLED DOWN. IT DID NOT CALM DOWN."
+    },
+    {
+      "id": "sulphur_elemental", "name": "Sulphur Elemental", "faction": "peak", "tier": 3,
+      "design": {"fantasy": "Tier three of the Magma Elemental's line, a massive rank and file (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): Stoke the Forge its twist.", "notes": "A recolour (tools/recolour.py, its hue by the three simulations); every number a placeholder."},
+      "codex": "A magma elemental crusted yellow with sulphur, the hottest of its line. Its fist goes through the shield, it stokes the others harder, and below half its cracks vent on every machine.",
+      "hp": 56, "attack": 10, "armour": 1, "rank": "front", "size": 2, "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented"},
+        {"id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 5, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented"},
+        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 3, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented"}
+      ],
+      "flavour": "The smell arrives a round before it does. Use the round."
+    },
 
     {
       "id": "goblin_shaman", "name": "Goblin Shaman", "faction": "meadow", "elite": true,
@@ -578,10 +685,10 @@
       "flavour": "Gate order one, footnote: some of the flowers bite. Count your machines after."
     },
     {
-      "id": "gilgamesh", "name": "Gilgamesh", "faction": "waste",
-      "design": {"fantasy": "Final Fantasy's recurring rival and weapon collector; Gilgamesh is a myth's name, so it stays (the names rule). On the slate by Claude's lean (keep, as iconic as the dragoon); Ryan, 24 October, was tempted to move him down to the elites, since he can pop up anywhere: noted, not decided.", "niche": "He takes what a machine is showing and swings it back next round at its own number: a weapon's blow, or a fake for 1 if he took a shield, a vent, equipment or a blank. What shows on the die he picks is the player's to choose.", "notes": "Landed 30 October as a runnable placeholder kit for Ryan's marks (the slate, docs/bosses_proposal.md); every number a placeholder. No art yet (design.sprite is the forge's brief). Benkei is the conversion if one more is wanted; boss or elite is Ryan's call.", "sprite": "a towering wandering swordsman in battered plate patched together from a dozen different armours, a fan of stolen blades of every make strapped across his back like a peacock's tail, a broad bearded face under a dented open helm, a long sword gripped in each fist, mid-stride", "variants": ["a towering wandering swordsman in battered plate patched together from a dozen different armours, a fan of stolen blades of every make strapped across his back like a peacock's tail, a broad bearded face under a dented open helm, a long sword gripped in each fist, mid-stride", "a towering swordsman with a laughing bearded face and a dented open helm, in mismatched plate, a dozen sheathed swords hung from his belt and shoulders, one great sword raised over his head and another held low, crouched to spring", "a towering warrior collector in patched armour of many colours of steel, sword hilts sticking up over both shoulders from a rack on his back, a heavy moustache and a grin under an open helm, a curved blade in one hand and a straight one in the other, legs planted wide", "a towering wandering swordsman in battered mismatched plate and a ragged cloak, a bundle of stolen blades bound on his back, both arms spread with a different sword in each hand, a bearded face under a dented helm with its visor up"]},
-      "codex": "A swordsman who collects swords. He knocks the weapon out of a machine's hands and takes it, and next round he swings it back at its own number. If what he took was no weapon, the swing is a fake. Mind what your dice are showing when he comes for them.",
-      "hp": 48, "attack": 7, "armour": 1, "rank": "front", "zone": 2, "movespeed": 1, "aim": "armed",
+      "id": "gilgamesh", "name": "Gilgamesh", "faction": "waste", "elite": true, "wanders": true,
+      "design": {"fantasy": "Final Fantasy's recurring rival and weapon collector; Gilgamesh is a myth's name, so it stays (the names rule). On the slate by Claude's lean, then an elite that can turn up in any domain (Ryan, 24 October: tempted to move him to the elites, \"since he can pop up anywhere\"; 31 October, agreed).", "niche": "He takes what a machine is showing and swings it back next round at its own number: a weapon's blow, or a fake for 1 if he took a shield, a vent, equipment or a blank. What shows on the die he picks is the player's to choose.", "notes": "Landed 30 October as a boss, a runnable placeholder kit for Ryan's marks; an elite since 31 October, the one that wanders (Ryan: \"I agree with everything\", of Claude's lean): Final Fantasy V banished him into the rift between worlds, and he turns up uninvited in other worlds ever since, so he walks out of any rift, the last of every domain's elites, and the one elite scaled by the tier as a boss is, since he may come at any tier. At an elite's 40 HP. Every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked.", "sprite": "a towering wandering swordsman in battered plate patched together from a dozen different armours, a fan of stolen blades of every make strapped across his back like a peacock's tail, a broad bearded face under a dented open helm, a long sword gripped in each fist, mid-stride", "variants": ["a towering wandering swordsman in battered plate patched together from a dozen different armours, a fan of stolen blades of every make strapped across his back like a peacock's tail, a broad bearded face under a dented open helm, a long sword gripped in each fist, mid-stride", "a towering swordsman with a laughing bearded face and a dented open helm, in mismatched plate, a dozen sheathed swords hung from his belt and shoulders, one great sword raised over his head and another held low, crouched to spring", "a towering warrior collector in patched armour of many colours of steel, sword hilts sticking up over both shoulders from a rack on his back, a heavy moustache and a grin under an open helm, a curved blade in one hand and a straight one in the other, legs planted wide", "a towering wandering swordsman in battered mismatched plate and a ragged cloak, a bundle of stolen blades bound on his back, both arms spread with a different sword in each hand, a bearded face under a dented helm with its visor up"]},
+      "codex": "A swordsman who collects swords, and who walks out of any rift. He knocks the weapon out of a machine's hands and takes it, and next round he swings it back at its own number. If what he took was no weapon, the swing is a fake. Mind what your dice are showing when he comes for them.",
+      "hp": 40, "attack": 7, "armour": 1, "rank": "front", "zone": 2, "movespeed": 1, "aim": "armed",
       "actions": [
         {"id": "blade", "name": "Blade", "kind": "attack", "weight": 2, "text": "His own sword, for {damage}.", "status": "implemented"},
         {"id": "disarm", "name": "Disarm", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["steal"], "then": "borrowed_blade", "text": "Knocks loose what a machine is showing, for {damage}, and takes it: that entry is switched off through its next turn, and he swings it next round.", "status": "implemented"},
@@ -683,6 +790,18 @@
         {"id": "karma", "name": "Karma", "kind": "attack", "per_kill": 1, "weight": 2, "keywords": ["breach"], "when": "below_half", "text": "Karma: {damage}, a point for every foe you have killed this fight, through the shield.", "status": "implemented"}
       ],
       "flavour": "Gate order nine: if it is walking toward you, you are already late."
+    },
+    {
+      "id": "djinn", "name": "The Djinn", "faction": "waste",
+      "design": {"fantasy": "The desert's own spirit, the genie by archetype (the jinn are the Thousand and One Nights' and older, a myth's word, so it stays). The Waste's third boss since Gilgamesh went to the elites (Ryan, 31 October: \"I agree with everything\", of Claude's lean and its candidate).", "niche": "The Waste's purge on a boss: it unmakes what a machine's die bought, every buff a face granted, on the machine carrying the most, and below half it slips into a mirage, a Barrier that eats the next weapon blow. Pop the mirage with a cheap blow; spend a buff before it is unmade, or put it on the machine it is not aiming at.", "notes": "Landed 31 October as a runnable placeholder kit for Ryan's marks; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked. Its escort the Basilisks and Gorgons, whose Stone disables what the die shows while it unmakes what the die bought.", "sprite": "a towering blue genie with a muscular bare torso and gold armbands, a turban set with a red gem, its lower body a tapering swirl of desert smoke, a curved scimitar raised in one hand", "variants": ["a towering blue genie with a muscular bare torso and gold armbands, a turban set with a red gem, its lower body a tapering swirl of desert smoke, a curved scimitar raised in one hand"]},
+      "codex": "A spirit of the deep desert, bound to no lamp. Its blade is plain; its wishing is not: it unmakes what a machine's die bought, and below half it hides behind a mirage that eats the next blow. Pop the mirage cheaply, and spend a buff before it unmakes it.",
+      "hp": 48, "attack": 7, "armour": 1, "rank": "front", "zone": 2, "movespeed": 1,
+      "actions": [
+        {"id": "scimitar", "name": "Scimitar", "kind": "attack", "weight": 2, "text": "A curved blade of smoke, for {damage}.", "status": "implemented"},
+        {"id": "unmake", "name": "Unmake", "kind": "debuff", "effect": "dispel", "weight": 2, "when": "machine_buffed", "aim": "buffed", "text": "It unmakes a wish: the machine carrying the most buffs loses every buff a die face bought.", "status": "implemented"},
+        {"id": "mirage", "name": "Mirage", "kind": "defend", "effect": "barrier", "weight": 1, "when": "below_half", "text": "It slips into a mirage: the next weapon blow on it deals nothing.", "status": "implemented"}
+      ],
+      "flavour": "Field manual, appendix K: do not make a wish. Do not ask what it meant by that."
     },
     {
       "id": "phantom_train", "name": "The Phantom Train", "faction": "marsh",

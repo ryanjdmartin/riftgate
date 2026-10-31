@@ -68,7 +68,7 @@ stands or shielding it until one falls.
 
 Six of the twelve are Final Fantasy's and six come from six other series.
 
-## What landed (30 October)
+## What landed (30 and 31 October)
 
 The kits are placeholders for Ryan's marks, every number too; each boss carries three moves,
 the third opening on a condition or following another, and a point of armour (the set of 2
@@ -80,22 +80,45 @@ condition that reads a fallen part, and a move used once a fight.
 | Domain | Boss | Its kit | Claude's leans inside it |
 |---|---|---|---|
 | The Meadow | Rotbloom | Tendrils, two strikes; Bad Breath at every machine, carrying Burn, Scorch, Disable and Corrupt; below half, Seedfall, two mandragoras called up | The third move and its name |
-| The Meadow | Floraison | Thorn Combo, three strikes; Swallow, a machine out of the fight for two rounds or until Floraison falls; below half, Full Bloom, five strikes | Two rounds; never the last machine able to act; no damage while held; only the kill frees it early (the release is open, below) |
+| The Meadow | Floraison | Thorn Combo, three strikes; Swallow, a machine out of the fight for two rounds, until Floraison falls, or until it has lost a quarter of its HP since (Ryan, 31 October); below half, Full Bloom, five strikes | Two rounds; never the last machine able to act; no damage while held; the release at a quarter, its chip counting the damage left, the swallower losing nothing else |
 | The Meadow | The King Gel | Body Slam; Merge, every Gel and half on the field taken in, regrowing what they had left and its next move a point harder for each; below half, Belly Flop at every machine | Its court is its own escort (Gels at every tier), so the merge has fuel; a Gel taken in is no kill of the team's |
-| The Waste | Gilgamesh | Blade; Disarm, a blow that takes the entry the machine shows, then Borrowed Blade, that weapon's number, or a fake for 1 | The fake as anything that was no weapon; one strike at the piece's number, no keyword riding it |
+| The Waste | The Djinn (31 October, in Gilgamesh's place) | Scimitar; Unmake, a purge on the machine carrying the most buffs, cast when one carries a buff; below half, Mirage, a Barrier on itself | The kit and its name; the Waste's purge on a boss |
 | The Waste | The Fallen Weapon | The core: Haft; Drive, a rally; below half, The Fall, every machine two rounds on. Two eyes as parts, the Piercing Eye (breach) and the Prising Eye (disable); the core Guarded while both stand, an eye back three rounds after it falls | One eye down opens the core (guard all); the eyes' blows |
 | The Waste | The Pilgrim | Lantern; Chef's Knife, twice its blow on a countdown of two, through the shield; below half, Karma, a point heavier for every foe the team has killed this fight, through the shield | Human-sized; the knife's two rounds |
 | The Marsh | The Matador | Estocada; Red Capote, armour +3, then Andalucia, four strikes at one machine | A Suppress or a Disrupt on the cape breaks the pair |
 | The Marsh | The Phantom Train | Run Down; Whistle, two Ghosts called up; below half, Last Run, every machine a round on | Two Ghosts, which raise Revenants of their own |
 | The Marsh | The Vampire Lord | Drain, a bite that heals what it takes from the hull; Undying, once a fight when hurt, readying it to get back up whole; below half, Blood Feast, a drain at every machine | 40 HP, since it may rise once; once a fight, so it never readies again after it rises; the drain from the hull alone, so a shield starves it (one of shield and hull walled the slowest trio at every HP tried) |
 | The Peak | Behemoth | Gore; Flame, Scorch 2; below half, Charge, a round's warning, through the shield; Meteor on every machine as it falls | The Flame and the Charge |
-| The Peak | Cinder Tortoise | Bite; Withdraw, armour +3 on its own 2, then Earthquake on every machine, Scorch 1 | In, its name kept (Ryan, 30 October) |
+| The Peak | Cinder Tortoise | Bite; Withdraw, armour +3 on its own, then Earthquake on every machine, Scorch 1 | In, its name kept (Ryan, 30 October); its armour 1, 2 and 3 by the tier (Ryan, 31 October), since at 2 at tier one its base was the hurdle and its shell was not |
 | The Peak | The Obsidian Tyrant | Crunch; Roar, a reroll off the team; once its rider has fallen, Firestorm, a countdown of five to half again its blow at every machine, Scorch 2. Its part, the Saurian Queen in the back rank: Lash, and Goad, a rally | Guarded while she stands; the firestorm drawn as good as at once after she falls |
 
 The stand-ins left the boss lists (30 October): the Treant, the Sandworm and the Magma Elemental
-stand in their domains' formations at tiers one and two (the Treant's grove and march, the
-Sandworm's ambush and pit, the Magma Elemental's vent and forge), and the Bone Wyvern leads an
-elite of the Marsh's at tiers two and three.
+stand in their domains' formations at tier one, each with a recolour at tiers two and three
+that takes back its third move as the twist (31 October: the Dusk and the Frost Treant with
+Root Storm, the Night and the Salt Sandworm with Quake, the Basalt and the Sulphur Elemental
+with Stoke the Forge), and the Bone Wyvern leads an elite of the Marsh's at tiers two and
+three. The Marsh has a massive line of its own (31 October): the Barrow Giant (a cleaver and
+Knit, a regeneration), the Grave Giant and the Charnel Giant (Rise Again, getting back up
+once), each in a formation at its tier.
+
+Gilgamesh is an elite since 31 October, the one that wanders: the last elite of every domain,
+at an elite's 40 HP scaled by the tier as a boss is. Every boss but the King Gel has its own
+escort at tiers two and three, at the tier's counts (two and four), picked to sharpen its
+mechanic, and stands alone at tier one:
+
+| Boss | Its escort | Why |
+|---|---|---|
+| Rotbloom | Mandrakes and Goblin Guards; Alraunes at tier three | The Scream and the Shriek pile more trouble on the die it breathes on |
+| Floraison | Wargs; Alpha Wargs and goblins at tier three | Howls and bites on a team a machine down |
+| The Djinn | A Basilisk and a Needler; Gorgons at tier three | Stone disables what the die shows while it unmakes what the die bought |
+| The Fallen Weapon | Barbed Needlers and Basilisks; Great Needlers and Gorgons | The Waste's breach and theft beside the eyes', so the eyes are a race |
+| The Pilgrim | Needlers; Barbed and Great Needlers | Every kill feeds Karma, so the kill order turns over |
+| The Matador | Wights; a Death Knight and a Spectre at tier three | A wall of claws while the cape is up |
+| The Phantom Train | A Revenant and a Spectre; Wights, a Wraith and a Spectre | The dead it carries, raising more |
+| The Vampire Lord | A Death Knight and a Wight; a Dread Knight, a Lich and their kind | The Marsh's other risers, so the burst it asks for is spread thin |
+| The Behemoth | A Bomb and a Grenade; Grenades and Balloons | A second blast to shield for |
+| The Cinder Tortoise | Fire Lizards; Magma Lizards and a Wyvern | Scorch under the quake, so the shelled round is a heat question |
+| The Obsidian Tyrant | A Wyvern and a Fire Lizard; a Red Dragon and its kind | Fire while the count runs |
 
 The slate stands at 48 HP at tier one, the boss in parts' core at 40 and its eyes at 8, the
 Obsidian Tyrant's rider at 12 and the Vampire Lord at 40, under the scale row's 80 to 100 (the
@@ -106,46 +129,30 @@ you think works best for scaling", so 48 stands, 60 and 72 at tiers two and thre
 
 ## Calls still open
 
-Ryan's answers of 30 October: the Cinder Tortoise in and named so, the working names kept until
-his content pass, the stand-ins moved, the size left to the scaling, and Numbed by boss. Open:
+Ryan's answers of 30 and 31 October ("I agree with everything in your last two messages")
+settled the six calls of the 30th: Gilgamesh an elite that wanders and the Djinn in his place,
+the swallow's release at a quarter of the swallower's HP, the steal's fake and the follow-up's
+break as built, the escorts written for his marks, the massive lines, and the Cinder Tortoise's
+armour by the tier. Every name and number above waits on his content pass. Open, from his notes
+of 31 October:
 
-1. **Gilgamesh**, a domain's boss or a domain-agnostic elite (Ryan, 30 October: "What do you
-   think?"). Claude's lean: the elite. Final Fantasy V banished him into the Interdimensional
-   Rift, and ever since he has turned up uninvited in other worlds; here he is the one thing that
-   walks out of any rift. His steal tests the build, an elite's job (a curveball the player
-   adapts to), where a boss is its domain's identity; and the elites are thin (the Peak has none,
-   the Waste one). The shape: the last elite in every domain's order, so he comes when a
-   domain's own are spent (the Peak's every Fracture until it has one), at an elite's numbers
-   scaled by the tier as a boss's are, the one elite that wanders and so the one that scales.
-   The holes: the Waste wants a third boss again (Claude's candidate: a Djinn, the desert's own
-   spirit, carrying the Waste's lever, the purge, which no foe carries yet, and a mirage's
-   Barrier); the scaling bends the elites' never-scaled rule for one foe; and the front card
-   names an elite's kind once scouted, so a wanderer is a kind like any other there.
-2. **The swallow's release** (Ryan: Clair Obscur releases on a stagger, "So maybe it's a damage
-   threshold? Every quarter or third releases? Either that or he gets a unique stagger
-   mechanic"). Claude's lean: a quarter of the swallower's HP, counted from the swallow and
-   shown on a chip on it as it falls, the stagger in its smallest form: at nought the machine is
-   let go at once and acts that round if it has not, and the swallower loses nothing else (a
-   lost action on top would be a stun, which wants the stun row's care). A quarter is a round
-   of a team's focus, so freeing a machine a round early costs the boss fight's own damage
-   turned on the boss; a third is as long as waiting.
-3. **The steal's fake and the follow-up's break**, explained in chat the same day; both stand as
-   built until Ryan moves them.
-4. **The escorts by boss and tier**: an escort may name its boss since the King Gel's court
-   (built). Marks means Ryan's yes or swap on each, Claude writing them first as placeholders, as
-   the elites were; only the King Gel's is written, its merge needing Gels.
-5. **More massive foes** for the ranks (Ryan: "We also probably need more massive foes, yes?"):
-   a line a domain, each stand-in's tier-two and tier-three recolours with its cut third move as
-   the twist, and the Marsh a massive line of its own, which has none since the Bone Wyvern went
-   up; for his marks before content.
-6. **A boss's armour by the tier** (his question of the Cinder Tortoise, base armour 2, 5 while
-   withdrawn). Claude's lean: no cap and no scaling. The tier is carried by HP, the neutral lever,
-   since armour taxes small blows first and scaling it would wall every tier-three boss against
-   the strikes builds; and a brace that walls is the design (his call of 22 October: armour
-   reachable only conditionally should allow complete blocks), the Tortoise's for one turn with
-   a round's warning. The hole: a fixed 2 is two thirds of a tier-one blow and a third of a
-   tier-three one, so the shell thins as the run goes; if the per-tier reads show bosses going
-   soft at tier three, the first lever is the HP multiplier, not armour.
+1. **The slate's blanket point of armour at tier one** (Ryan: "be careful giving all bosses
+   blanket 1 armour early on"). Read (`docs/measurements.md`, 31 October, 20 seeds, a
+   direction): it costs the small-blow kits about 40% more rounds against the slate and
+   Wainwright & Sutler's trio a few fights it wins without it. The forms: armour only where a
+   boss's kit is armour, at every tier, every other boss at 0; or none at tier one and the
+   standard point from tier two. Claude's lean: the first, a boss's armour by its fantasy as a
+   machine's is by its role, the Tortoise's step the form for any that grows it.
+2. **A follow-up that cannot be Disrupted** (Ryan: "we need to watch whether stunning a
+   follow-up is too strong or not, since its so telegraphed. The follow-up chip could grant
+   Numbed if it needed to, but that doesn't stop disrupt, which is the bigger issue. I would
+   probably add 'cannot be Disrupted' to the follow-up chip"). A follow-up comes only after
+   the move that names it, never by the roll (built so). Claude's view, in chat first: the
+   announced follow-up committed, Disrupt unable to turn it, its chip saying so and a Disrupt
+   held over it struck through, as a gated keyword shows; the first move stays the window that
+   breaks the pair, a round earlier and on that round's dice; Suppress stays, Numbed its limit.
+   The hole named: a countdown is as telegraphed and a Disrupt breaks it off, which is its
+   design (interrupt the big hit), so the two part by their questions and the countdown stays.
 
 ## Art the forge owes
 

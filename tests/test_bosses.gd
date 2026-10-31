@@ -720,3 +720,61 @@ func test_a_swallow_lets_go_once_its_swallower_loses_a_quarter_of_its_hp() -> vo
 	assert_true(sk.can_spend(0), "and acts this round")
 	assert_eq(flo.swallow_mark, -1, "the swallower holds nothing")
 	assert_true("\n".join(sk.log).contains("reels, and lets A go"), "the log says so")
+
+
+## The wandering elite (31 October: Gilgamesh, the one elite any domain fields, Ryan agreeing
+## Claude's lean): every foe that wanders leads an elite composition in every domain at every
+## tier, the last of its elites, and stands at its battle's tier as a boss does, where the other
+## elites keep their own numbers.
+func test_a_wandering_elite_walks_out_of_every_domain_at_the_tier() -> void:
+	var db := ContentDB.load_default()
+	var wanderers: Array = []
+	for id in db.foes.keys():
+		if bool(db.foes[id].get("wanders", false)):
+			wanderers.append(str(id))
+	assert_false(wanderers.is_empty(), "a wanderer is in content")
+	for w in wanderers:
+		assert_true(db.is_elite(str(w)), "%s is an elite" % w)
+		assert_false(db.is_boss(str(w)), "and no domain's boss")
+		for fid in db.factions.keys():
+			for t in [1, 2, 3]:
+				var elites := db.elite_compositions(str(fid), t)
+				assert_false(elites.is_empty(), "%s fields an elite at tier %d" % [fid, t])
+				if not elites.is_empty():
+					assert_eq(str(elites[elites.size() - 1]["members"][0][0]), w, "%s's last elite at tier %d is the wanderer" % [fid, t])
+	var w := str(wanderers[0])
+	var base := db.make_foe(w)
+	for t in range(ContentDB.BOSS_TIERS.size()):
+		var sq := Unit.pack(0, "", Vector2i.ZERO, str(db.factions.keys()[0]), Unit.PACK_MOVE, 0, w)
+		sq.set_members([[w, 1]])
+		sq.boss_tier = t
+		var made := db.foes_for(sq)
+		var s := ContentDB.boss_tier(t)
+		assert_eq(made[0].hp_max, roundi(base.hp_max * float(s["hp"])), "tier %d: its HP the tier's" % (t + 1))
+		assert_eq(made[0].attack, base.attack + int(s["attack"]), "tier %d: its attack the tier's" % (t + 1))
+	var other := ""
+	for id in db.foes.keys():
+		if db.is_elite(str(id)) and not bool(db.foes[id].get("wanders", false)):
+			other = str(id)
+	var still := Unit.pack(0, "", Vector2i.ZERO, str(db.factions.keys()[0]), Unit.PACK_MOVE, 0, other)
+	still.set_members([[other, 1]])
+	still.boss_tier = 2
+	assert_eq(db.foes_for(still)[0].hp_max, int(db.foes[other]["hp"]), "another elite keeps its own numbers")
+	# A battle's elite stands at the battle's tier.
+	var b := Battle.new(3)
+	b.tier = 2
+	b.setup([], "peak")
+	b._spawn_elite()
+	var emerged: Array = b.field.units.filter(func(u) -> bool: return u.composition_size == "elite")
+	assert_false(emerged.is_empty(), "an elite emerges")
+	if not emerged.is_empty():
+		assert_eq(emerged[0].boss_tier, 2, "at the battle's tier")
+
+
+func test_the_validator_holds_wanders_to_the_elites() -> void:
+	var db := ContentDB.new()   # a copy of its own: the shared content is never written to
+	db.load_dir(ContentDB.DIR)
+	db.foes["x_wander"] = {"id": "x_wander", "name": "X", "faction": "meadow", "hp": 9, "attack": 3, "wanders": true, "codex": "", "flavour": "", "design": {},
+		"actions": [{"id": "a", "name": "A", "kind": "attack", "text": "", "status": "implemented"}]}
+	var errs: Array = db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.contains("x_wander") and e.contains("only an elite wanders")), "the rank and file never wander")

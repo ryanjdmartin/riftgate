@@ -251,7 +251,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   the round as the lure would leave it (the Siphon's heat a blow included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
-  tier three, 30 to 40 massive, 12
+  tier three, 30 to 40 massive at tier one and to 56 at tier three, 12
   to 24 heroes, the slate's bosses 48 at tier one (a core in parts 40, a part 8 to 12, a boss
   that may rise once 40; the kill-time test's read, under the 80 to 100 first written for
   them); a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
@@ -431,8 +431,10 @@ On a machine:
 - **Swallowed** (debuff, from a foe's swallow): out of the fight as a Phased machine is (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
   at every machine passes it by; its cooling, ticks and overheats are its own) for the swallow's
-  rounds, its die standing down as each round opens, or until its swallower falls, which lets
-  it go at once: in the player's turn it acts that round. Nothing cleanses it.
+  rounds, its die standing down as each round opens, until its swallower falls, or until its
+  swallower has lost a quarter of its maximum HP since the swallow (its chip counting the damage
+  still to deal); either lets it go at once, and in the player's turn it acts that round. The
+  swallower loses nothing else. Nothing cleanses it.
 - **Muster** (store, the Swallowtail's): its charges. Every die that rolls fills
   it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
   charges; it starts each fight empty and never decays. It shows as a smooth bar under the
@@ -684,7 +686,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   Barrier on itself), regenerate (Regenerating at its value on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed at its value on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
-  fight), merge (every other foe on the field of the kinds it names taken into it, gone with no
+  fight, let go early once the swallower has lost a quarter of its HP), merge (every other foe on the field of the kinds it names taken into it, gone with no
   fall, no last act, no split and no kill of the team's: it regrows the HP they had left, and
   its next move hits its value harder for each), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
@@ -921,12 +923,15 @@ a stat.
   its escort. It stands at the battle's tier (the tiers as the quick campaign shows them, one
   to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
   finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
-  ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
-  three. An escort it does not name (a final's wildlife, the tier's more) is its domain's `escort`
-  composition at the battle's tier when one is written, one that names the boss first and then
-  one that names none (the King Gel's court, its Gels, is the only one), its members at the
-  ramp's density, else the foes of its domain's units at the tier, round robin in content
-  order and never massive; a named escort is kept. The rank and file never scale in place: a tier's units are their own,
+  ×1.5 at tier three, their attack +1 and +2, a boss whose kit is armour its `armour_step` more
+  armour a tier above one (the Cinder Tortoise 1, 2 and 3), and two more escort at tier two and
+  four at tier three. An escort it does not name (a final's wildlife, the tier's more) is its
+  domain's `escort` composition at the battle's tier when one is written, one that names the
+  boss first and then one that names none, its members at the ramp's density, else the foes of
+  its domain's units at the tier, round robin in content order and never massive; a named
+  escort is kept. Every domain boss has its own at tiers two and three, at the tier's counts,
+  and stands alone at tier one but the King Gel, whose court of Gels comes at every tier for its
+  merge. The rank and file never scale in place: a tier's units are their own,
   each with its numbers and its name (a recolour: a base type in a new hue under a new name, with
   a twist). A domain's compositions are by tier, the battle's tier choosing them and a guest's by
   the same tier; a tier with none takes the highest under it.
@@ -957,7 +962,10 @@ a stat.
   with a third of the field left to leave. A Fracture pays out as a fight ends. At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the next elite composition of the lead's domain not yet fought this battle emerges at
-  the rift (a domain with none, the Peak today, sends none). The last Fracture is the Rupture:
+  the rift, its last the wandering elite's, which every domain fields (Gilgamesh), so a domain
+  whose own are spent, the Peak today, sends him. A wandering elite (`wanders`) stands at the
+  battle's tier as a boss does, its HP and attack the tier's; every other elite keeps its own
+  numbers. The last Fracture is the Rupture:
   the boss's seal breaks. The stall guard breaks it too, when no pack but the boss's stands as
   a fight ends, so a team that cleared the field never waits on the clock. Rift Pressure keeps
   running after. A Fracture brings no prize (not built).
@@ -1009,8 +1017,10 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   after.
 - **A rift's boss**: each battle brings one of its domain's bosses that its battles have not
   ended on this run, drawn by the seed; once every one has been, any of them. A domain's bosses
-  are three of the slate's own; the massive foes that stood in for them stand in its ranks, the
-  Bone Wyvern among the Marsh's elites.
+  are three of the slate's own; the massive foes that stood in for them stand in its ranks, each
+  with a line of recolours at tiers two and three (its third move back as their twist), the
+  Marsh with a massive line of its own (the Barrow Giant's), and the Bone Wyvern among the
+  Marsh's elites.
 - **Anathema**: the menace of a domain's foes killed this run, every battle however it ended,
   is recorded by domain beside the count of its bosses beaten; the count still sets the final.
 - **Finals and finale**: three bosses of one domain beaten set its final: every rift it leads
