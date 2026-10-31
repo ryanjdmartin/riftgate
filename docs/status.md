@@ -21,7 +21,7 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 814 tests, 205,683 checks, green (31 October, the slate's twelve bosses on
+- Tests: 819 tests, 206,074 checks, green (31 October, the slate's calls of the 31st on
   `claude/brave-cori-fr18de`; 787 and 205,261 on main), about four minutes in a cloud session,
   twenty on a slow one. A cloud session gets Godot 4.7's Linux build and the project's first
   import from the repository's session-start hook (`.claude/hooks/session-start.sh`,
@@ -46,7 +46,7 @@ heat grid's read as it landed), and main took it as a fast-forward on 30 October
 ("merge this into main"). It then carried the bosses' slate on his word the same evening, the
 first seven ("build what can be built, and specify exactly what you need to flesh the rest out,
 including any holes") and the last five ("Yes to all waiting bosses"), for main to take on his
-word; its bible is v0.417 (the page's version BIBLE_PAGE) and its hangar the page's
+word; its bible is v0.417 (the page's version 429) and its hangar the page's
 version 181.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
@@ -529,7 +529,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file is v0.417 (the page's version
-  BIBLE_PAGE, published 31 October from `claude/brave-cori-fr18de` with the slate's calls of
+  429, published 31 October from `claude/brave-cori-fr18de` with the slate's calls of
   the 31st: the escorts, the Djinn, Gilgamesh wandering, the massive lines, the Tortoise's armour
   by the tier and the swallow's release; three-way merged onto the live v0.416, which other
   sessions had moved past this branch's v0.409 at 421 with the Storm Petrel's and the Giant
