@@ -78,7 +78,7 @@ furnace, the Skua's hinges gone), then the burn weapons' fire on their silhouett
 as they fire, and the weapon-fire package proposed (`docs/weapon_fire_proposal.md`), then his
 notes on round five (the Puffin's repulsors pucks, the Stingray's fans lit round the blades, the
 Nemesis hot then really hot, the Ammit's glow moved to its rear vent, a halo's own distance
-toward the eye); green at 832 tests and 206,966 checks; not yet on main; its bible is v0.416.
+toward the eye); green at 832 tests and 206,966 checks; not yet on main; its bible is v0.419 (the page's 431).
 Next on it: the weapon-fire package Ryan answered (31 October: flare colours by tag, a cheap aim
 where a pivot exists and never a quad's step round, the locked weapons with acts to cut first),
 then his read of the glows running.
@@ -624,10 +624,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.415 (the
-  page's version 427, published 31 October from `claude/charming-rubin-h954bp`: a burn weapon's fire
-  on its silhouette class in the glow colours row, and the weapon-fire package asked in section 12;
-  onto its own v0.414 at 426, the standing glows and the glow colours row; v0.413 at 425, the parts Ryan vetted hot; v0.412 at 424, every
+  `docs/design-bible.html` after every change. This file and the live page are v0.419 (the
+  page's version 431, published 31 October from `claude/charming-rubin-h954bp`: the glows' sixth
+  round in the reference-glass and glow colours rows, three-way merged onto the live v0.418 another
+  session published at 430, its v0.416 to v0.418 at 428 to 430 a pass of its own (the track pairs'
+  notes and the generated tables' statuses and foe keywords among them), the version line the only
+  conflict; on its own v0.415 at 427, a burn weapon's fire on its silhouette class in the glow
+  colours row, and the weapon-fire package asked in section 12; onto its own v0.414 at 426, the standing glows and the glow colours row; v0.413 at 425, the parts Ryan vetted hot; v0.412 at 424, every
   booster and vent; on v0.411 at 423, the halo's
   second round, three-way merged onto the live v0.410 another session
   published at 422, its v0.406 to v0.410 at 418 to 422 a pass of its own (the codex's whole die
@@ -652,7 +655,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 180 (31 October, from
+  acts on a reloaded page). At the page's version 182 (31 October, from
+  `claude/charming-rubin-h954bp`: `motion.js` with a halo's own distance toward the eye, the four
+  machines round six moved (their models and rigs) and their renders redone with round five's
+  under "before", the stills nothing names removed; onto 181, which another session published, its
+  page's foe line showing a tier's armour step carried into `tools/hangar.html`, every other file as
+  181 had it, `edits` empty), on 180 (31 October, from
   `claude/charming-rubin-h954bp`: `motion.js` hanging a burn weapon's fire over each stock burn
   weapon's class and flaring it on Melee or Shot, the four burn models, the sixteen rigs with their
   stock classes, and three machines' renders redone; every other file as 179 had it, `edits`
