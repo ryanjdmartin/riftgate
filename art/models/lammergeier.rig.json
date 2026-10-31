@@ -538,5 +538,11 @@
   "booster_ring",
   "exhaust",
   "drone_tube_floor"
- ]
+ ],
+ "stock_shapes": {
+  "hp_1": "rack",
+  "hp_2": "barrel",
+  "hp_3": "dish",
+  "hp_4": "twin_barrel"
+ }
 }

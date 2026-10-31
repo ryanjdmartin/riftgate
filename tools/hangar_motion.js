@@ -75,6 +75,16 @@ const PHONE_GLOW = `#ifdef USE_EMISSIVEMAP
 // colour times the alpha, the root of the strength in each); written as it is, not re-encoded,
 // so it shows the game's colour.
 const HALO_FULL = 8, HALO_REACH = 0.45, HALO_AHEAD = 3, HALO_SPREAD = 0.025;
+// A weapon's fire flaring as it fires (MechRig.flash_k): up to `peak` rests over its own in `up`
+// seconds, held `hold`, gone in `down`, easing out.
+const FLASH = {peak: 12, up: 0.05, hold: 0.15, down: 0.6};
+function flashK(t) {
+  if (t < FLASH.up) return FLASH.peak * t / FLASH.up;
+  t -= FLASH.up;
+  if (t < FLASH.hold) return FLASH.peak;
+  const u = Math.min(1, Math.max(0, 1 - (t - FLASH.hold) / FLASH.down));
+  return FLASH.peak * u * u;
+}
 const HALO_VERT = `uniform float grow; uniform float ahead; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
 void main() { vUv = uv; vec4 mv = modelViewMatrix * vec4(position + normal * grow, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
   mv.xyz += mix(normalize(-mv.xyz), vec3(0.0, 0.0, 1.0), projectionMatrix[3][3]) * ahead * length(modelViewMatrix[0].xyz); gl_Position = projectionMatrix * mv; }`;
@@ -242,7 +252,7 @@ function labelled(name, part) {
 
 class Rig {
   constructor(root, side, rngSeed = 1) {
-    this.model = root; this.body = root; this.standing = new Map(); this.halos = new Map();
+    this.model = root; this.body = root; this.standing = new Map(); this.halos = new Map(); this.flashes = []; this.haloGrow = 0;
     this.joints = {}; this.hardpoints = {}; this.rest = {}; this.restPos = {};
     root.traverse(n => {
       const tag = parseTag(n.name || "");
@@ -300,15 +310,24 @@ class Rig {
   // ([part, 2]) that much larger and stronger.
   setupHalos(side) {
     this.halos = new Map();
+    this.haloGrow = HALO_SPREAD * this.modelSize();
     const named = Array.isArray(side.halo) ? side.halo : [];
-    if (!named.length) return;
-    const grow = HALO_SPREAD * this.modelSize();
-    const T = window.THREE, done = new Set();
-    const wear = (node, scale) => node.traverse(n => {
-      if (!n.isMesh || n.userData.halo) return;
+    for (const entry of named) {
+      const p = Array.isArray(entry) ? entry[0] : entry, scale = Array.isArray(entry) && entry.length > 1 ? +entry[1] : 1;
+      const tag = parseTag(p);
+      if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) this.wearHalo(root, scale); }
+      else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) this.wearHalo(n, scale); });
+    }
+  }
+  // A halo round each lit surface under a node (MechRig._halo_under); a hot part hung later, a burn
+  // weapon's fire over its class, wears one too (MechRig.wear_hot).
+  wearHalo(node, scale = 1) {
+    const T = window.THREE, grow = this.haloGrow;
+    node.traverse(n => {
+      if (!n.isMesh || n.userData.halo || n.userData.haloWorn) return;
+      n.userData.haloWorn = true;
       for (const m of [].concat(n.material)) {
-        if (!m.userData.lit || done.has(n.uuid + m.uuid)) continue;
-        done.add(n.uuid + m.uuid);
+        if (!m.userData.lit) continue;
         const mat = new T.ShaderMaterial({uniforms: {tile: {value: m.map}, light: {value: Math.pow(m.emissiveIntensity, 1 / 2.2)}, presence: {value: 0}, grow: {value: grow * scale}, ahead: {value: HALO_AHEAD}, reach: {value: Math.min(1, HALO_REACH * scale)}},
           vertexShader: HALO_VERT, fragmentShader: HALO_FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending});
         const h = new T.Mesh(haloGeometry(n.geometry), mat);
@@ -318,12 +337,24 @@ class Rig {
         this.halos.get(m).push(mat);
       }
     });
-    for (const entry of named) {
-      const p = Array.isArray(entry) ? entry[0] : entry, scale = Array.isArray(entry) && entry.length > 1 ? +entry[1] : 1;
-      const tag = parseTag(p);
-      if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) wear(root, scale); }
-      else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) wear(n, scale); });
+  }
+  // Flare the lit parts under a node as a weapon fires (MechRig.flash_under): FLASH rests over their
+  // own at the top, held, then easing back.
+  flashUnder(node) {
+    const mats = [];
+    node.traverse(n => { if (n.isMesh && !n.userData.halo) for (const m of [].concat(n.material)) if (m.userData.lit && !mats.includes(m)) mats.push(m); });
+    if (mats.length) this.flashes.push({mats, base: mats.map(restOf), t: 0});
+  }
+  stepFlashes(dt) {
+    if (!this.flashes.length) return false;
+    const end = FLASH.up + FLASH.hold + FLASH.down;
+    for (const f of this.flashes) {
+      f.t += dt;
+      const k = f.t >= end ? 0 : flashK(f.t);
+      f.mats.forEach((m, i) => this.lightTo(m, f.base[i], 1 + k));
     }
+    this.flashes = this.flashes.filter(f => f.t < end);
+    return true;
   }
   // The glows a sidecar holds always (MechRig._setup_standing): a lit part never falls under so
   // many rests over its own, an act's flare rising past it.
@@ -535,7 +566,7 @@ class Rig {
   }
   // Advance (MechRig.tick): in steps no longer than STEP, so a slow frame lands where frames would.
   tick(delta, acting = true) {
-    let moved = false, left = delta;
+    let moved = this.stepFlashes(delta), left = delta;
     this.waitBudget = Math.min(delta, WAIT_TICK_MAX);
     while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
     if (this.formsStep(delta)) moved = true;   // the held forms turn on their own clock
@@ -1113,6 +1144,8 @@ class Stage {
     this.modelRoot = root;
     this.pivot.add(root);
     this.rig = new Rig(root, sidecar, 7);
+    this.burns = [];
+    if (!shape) this.wearBurns(sidecar, id);
     this.gaitName = "";
     this.rig.debug = this.loop || "1";
     this.side = sidecar;
@@ -1243,7 +1276,38 @@ class Stage {
   // the route's step, which the map fits to it, at the map's time for its move.
   topSpeed() { return this.route.STEP / mechSecondsPerHex(this.movespeed || 5); }
   emitTick() { const now = performance.now(); if (!this.lastTick || now - this.lastTick > 90) { this.lastTick = now; this.emit(); } }
-  strike(ranged) { if (this.rig) this.rig.strike(ranged); }
+  strike(ranged) {
+    if (!this.rig) return;
+    this.rig.strike(ranged);
+    for (const part of this.burns || []) if (part.visible !== false && part.parent && part.parent.visible !== false) this.rig.flashUnder(part);
+  }
+  // A burn weapon's fire over its class on each stock mount whose component burns (MechView3D.burn_rows):
+  // the sidecar names each stock class (`stock_shapes`) and what each pin carries (`pins`); content
+  // says what burns (its entry's keywords hold "burn"). It flares on a strike, here on either button.
+  async wearBurns(side, id) {
+    const shapes = side.stock_shapes || {}, pins = side.pins || {};
+    if (!Object.keys(shapes).length) return;
+    if (!this.burnsOf) this.burnsOf = fetch("content/components.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).then(j => {
+      const out = new Set();
+      for (const c of j.entries || []) if (((c.face || {}).keywords || []).includes("burn")) out.add(c.id);
+      return out;
+    }).catch(() => new Set());
+    const rig = this.rig, burning = await this.burnsOf;
+    for (const [pin, shape] of Object.entries(shapes)) {
+      const cid = pins[pin], n = Number(pin.slice(3));
+      if (!cid || !burning.has(cid) || this.rig !== rig) continue;
+      let gltf;
+      try { gltf = await this.loadModel("shapes/burn_" + shape); } catch (e) { continue; }
+      const node = rig && rig.hardpoints[n];
+      if (this.rig !== rig || !node) return;   // a later visit replaced this rig
+      const part = gltf.scene;
+      prepareMaterials(part);
+      part.userData.burn = cid;
+      node.add(part);
+      rig.wearHalo(part);
+      this.burns.push(part);
+    }
+  }
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }
 }
 

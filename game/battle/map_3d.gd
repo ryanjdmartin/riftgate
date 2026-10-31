@@ -1570,11 +1570,13 @@ func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 ## (MechView3D.plan_for), so the outline's bounds take them in. A machine's light outline is
 ## the compositor's, drawn round the machines' layer (outline_boxes); the gate and walls wear
 ## none (Ryan, 22 September).
-func _model(id: String, maker: String, paint: Dictionary = {}, plan: Array = []) -> Node3D:
+func _model(id: String, maker: String, paint: Dictionary = {}, plan: Array = [], own: bool = true) -> Node3D:
 	var scene: PackedScene = load("res://art/models/%s.glb" % id)
 	var node: Node3D = scene.instantiate()
 	MechView3D.toon(node, maker, "clean", paint, false)
-	MechView3D.wear(MechView3D.pins_of(node), plan, "clean", paint, false, true, id)
+	var pins := MechView3D.pins_of(node)
+	MechView3D.wear(pins, plan, "clean", paint, false, true, id)
+	MechView3D.wear_burns(pins, MechView3D.burn_rows(id, plan, ContentDB.load_default(), own), "clean", paint)   # a burn weapon's fire, dim at rest
 	return node
 
 
@@ -1787,7 +1789,7 @@ func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := ContentDB.load_default().maker_of(u.chassis_id)
 		var model_id := MechView3D.model_for(u.chassis_id)
-		var node := _model(model_id, maker, u.paint, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [])
+		var node := _model(model_id, maker, u.paint, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [], model_id == u.chassis_id)
 		MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's

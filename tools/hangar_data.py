@@ -99,6 +99,13 @@ def main():
                 present["classes"].append(c)
             if m not in present["makers"]:
                 present["makers"].append(m)
+        # A burn weapon's fire over the class (models_low.BURNS), one file a class.
+        src = os.path.join(ROOT, "art", "models", "shapes", "burn_%s.glb" % c)
+        if os.path.exists(src):
+            built = os.path.join("build", "hangar", "models", "shapes", "burn_%s.model.json" % c)
+            if not check_only:
+                glb_to_json(src, os.path.join(ROOT, built))
+            files["hangar/models/shapes/burn_%s.model.json" % c] = built
     manifest_path = os.path.join("build", "hangar", "shapes.json")
     if not check_only:
         os.makedirs(os.path.dirname(os.path.join(ROOT, manifest_path)), exist_ok=True)

@@ -79448,5 +79448,8 @@
  ],
  "standing": {
   "throat_slot": 8.0
+ },
+ "stock_shapes": {
+  "hp_3": "dish"
  }
 }

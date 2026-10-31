@@ -145,7 +145,7 @@ The design sessions below run from the briefs in `docs/briefs/`, one session eac
 - [ ] Hooks the game cannot fire yet: the loss by the city; the buff hook per keyword once the vocabulary is locked
 - [ ] Onboarding: the gesture tutorial and the cheat sheet, the reroll rule and the round first
 
-- [ ] Burn weapons glow red on their silhouette classes, wherever one is fitted (Ryan, 31 October: "yes to your proposal ... on the actual swappable classes, not on the model"): a lit part per class (a pilot flame on a barrel, glowing shells in a rack, a hot edge on a blade), dim at rest and flaring as it fires (a strike's flare, new), wearing the halo; content says what burns
+- [x] Burn weapons glow red on their silhouette classes, wherever one is fitted (built 31 October) (Ryan, 31 October: "yes to your proposal ... on the actual swappable classes, not on the model"): a lit part per class (a pilot flame on a barrel, glowing shells in a rack, a hot edge on a blade), dim at rest and flaring as it fires (a strike's flare, new), wearing the halo; content says what burns
 - [ ] The weapon-fire and hit-reaction package (Ryan, 31 October: "It would obviously be really cool if the actual weapon from the die fired"; locked weapons such as the claws and fists need custom work, idle acts repurposed or moved): a proposal first, `docs/weapon_fire_proposal.md`
 
 ## Map and screens

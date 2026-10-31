@@ -439,6 +439,7 @@ class Build:
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
+        self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -1036,6 +1037,8 @@ class Build:
             raise ValueError("%s: a standing glow names %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
         if self.standing:
             out["standing"] = dict(self.standing)
+        if self.stock_shapes:
+            out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
@@ -1065,6 +1068,7 @@ class Build:
         names the component (pin()); its class is `shape`."""
         import models_low
         start = len(self.objects)
+        self.stock_shapes[name] = shape
         models_low.SHAPES[shape](self, 1.0)
         m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
         parts = self.objects[start:]
@@ -1261,7 +1265,14 @@ def main():
                 builder = Build("%s_%s" % (shape, maker), tiles)
                 fn(builder, 1.0)
                 _export(os.path.join(a["shapes"], "%s_%s.glb" % (shape, maker)))
-        print(f"lowforge: {len(MAKERS) * len(models_low.SHAPES)} shapes -> {a['shapes']}")
+        # A burn weapon's fire over its class (models_low.BURNS), one file a class: its red is
+        # no maker's metal.
+        for shape, fn in models_low.BURNS.items():
+            bpy.ops.wm.read_factory_settings(use_empty=True)
+            builder = Build("burn_%s" % shape, Tiles(a.get("tiles", os.path.join(HERE, "tiles")), next(iter(MAKERS))))
+            fn(builder, 1.0)
+            _export(os.path.join(a["shapes"], "burn_%s.glb" % shape))
+        print(f"lowforge: {len(MAKERS) * len(models_low.SHAPES)} shapes and {len(models_low.BURNS)} burns -> {a['shapes']}")
         return
     out = a["out"]
     if "blend" in a and "model" not in a:

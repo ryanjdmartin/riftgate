@@ -79802,5 +79802,10 @@
   "hp_2": "howitzer",
   "hp_3": "twin_autoguns",
   "hp_4": ""
+ },
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "barrel",
+  "hp_3": "twin_barrel"
  }
 }

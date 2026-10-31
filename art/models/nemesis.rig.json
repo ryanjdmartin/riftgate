@@ -39038,5 +39038,10 @@
  "standing": {
   "core_fire": 10.0,
   "condenser_slot": 8.0
+ },
+ "stock_shapes": {
+  "hp_2": "barrel",
+  "hp_3": "dish",
+  "hp_4": "dish"
  }
 }

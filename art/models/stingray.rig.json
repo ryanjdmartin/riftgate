@@ -434,5 +434,11 @@
  ],
  "standing": {
   "fan_duct_floor": 5.0
+ },
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "dish",
+  "hp_3": "twin_barrel",
+  "hp_4": "rack"
  }
 }

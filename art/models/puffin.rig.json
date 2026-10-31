@@ -910,5 +910,9 @@
   "lift_nozzle",
   "repulsor_l",
   "repulsor_r"
- ]
+ ],
+ "stock_shapes": {
+  "hp_2": "twin_barrel",
+  "hp_3": "barrel"
+ }
 }

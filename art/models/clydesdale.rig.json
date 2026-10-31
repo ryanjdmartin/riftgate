@@ -70340,5 +70340,10 @@
    "glow": {},
    "rock": 0.0
   }
+ },
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_6": "rack",
+  "hp_7": "rack"
  }
 }

@@ -2541,9 +2541,9 @@ func _use_die(i: int, target, second = null) -> bool:
 		if fire_at > BLOW_AT and is_inside_tree():
 			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
 			tw.tween_interval(fire_at - BLOW_AT)
-			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow)))
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow), spent.component if spent != null else ""))
 		else:
-			_animate_attack(_mech_views[i], tv, ranged, hit, landed)
+			_animate_attack(_mech_views[i], tv, ranged, hit, landed, spent.component if spent != null else "")
 		Sound.play_after(fire_at, blow)
 		for k in range(dead.size()):
 			var w: Array = was[dead[k]]
@@ -2563,7 +2563,7 @@ func _use_die(i: int, target, second = null) -> bool:
 		# A shot laid in an empty slot (the Lammergeier's), or the pull's gather there: the
 		# weapon fires and the machine kicks back, nothing struck.
 		var slot: Vector2i = target
-		_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed)
+		_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed, spent.component if spent != null else "")
 		Sound.play_after(fire_at, blow)
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
@@ -2600,15 +2600,16 @@ func _use_die(i: int, target, second = null) -> bool:
 # Nothing here changes state. It makes the exchange readable: who struck, who was struck.
 
 ## A melee weapon (the tag) lunges the attacker at the target; anything else kicks it back. The target
-## flashes and shakes a beat later, when the blow lands.
-func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08) -> void:
+## flashes and shakes a beat later, when the blow lands. `cid`, the component that struck, flares a
+## burn weapon's fire on its mount.
+func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08, cid: String = "") -> void:
 	if not is_inside_tree() or attacker == null:
 		return
 	_settle(attacker)
 	var origin: Vector2 = _home.get(attacker, attacker.position)
 	var mi := _mech_views.find(attacker)
 	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
-		_mech_3d[mi].strike(ranged)   # the arms swing when the model has joints
+		_mech_3d[mi].strike(ranged, cid)   # the arms swing when the model has joints; a burn weapon's fire flares
 	var tw := _track(attacker, create_tween())
 	if ranged or target == null:
 		var kick := Vector2(0.0, 8.0) if attacker in _mech_views else Vector2(0.0, -8.0)

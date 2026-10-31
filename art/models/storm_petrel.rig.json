@@ -917,5 +917,10 @@
   "nozzle_ring",
   "exhaust",
   "projector_glow"
- ]
+ ],
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "rack",
+  "hp_3": "twin_barrel"
+ }
 }

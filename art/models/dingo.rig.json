@@ -2942,5 +2942,9 @@
  },
  "halo": [
   "coil"
- ]
+ ],
+ "stock_shapes": {
+  "hp_1": "rack",
+  "hp_2": "twin_barrel"
+ }
 }

@@ -5924,6 +5924,42 @@ def shape_blade(b, s=1.0):
 SHAPES = {"barrel": shape_barrel, "twin_barrel": shape_twin_barrel, "rack": shape_rack, "blade": shape_blade, "dish": shape_dish}
 
 
+# A burn weapon's fire (Ryan, 31 October: "every burn-causing weapon", "on the actual swappable
+# classes, not on the model ... So its not chassis-specific"; "Fire weapons, like the
+# blazethrower, need a red glow, not a white one"): one lit part a class, built where that
+# class's business end is, worn over the class on any mount whose component burns (content: its
+# entry's keywords hold "burn"), dim at rest and flaring as it fires (MechView3D). `forge.py
+# shapes` builds each into art/models/shapes/burn_<shape>.glb; a dish takes none, no burn
+# weapon being one.
+
+def burn_barrel(b, s=1.0):
+    """A pilot flame in the muzzle's mouth."""
+    b.prism("y", 0.0, 30.7 * s, 0.0, 2.4 * s, 1.4 * s, "amber.fire", 6, "burn_flame")
+
+
+def burn_twin_barrel(b, s=1.0):
+    """A pilot flame in each muzzle."""
+    for x in (-2.8, 2.8):
+        b.prism("y", x * s, 28.6 * s, 0.0, 1.6 * s, 1.2 * s, "amber.fire", 6, "burn_flame")
+
+
+def burn_rack(b, s=1.0):
+    """The shells glowing in their tubes: a lit tip in each of the face's nine."""
+    for x in (-4.6, 0.0, 4.6):
+        for z in (-4.6, 0.0, 4.6):
+            b.prism("y", x * s, 11.3 * s, z * s, 1.3 * s, 0.6 * s, "amber.fire", 6, "burn_shell")
+
+
+def burn_blade(b, s=1.0):
+    """The edge hot: a lit strip down each side of the blade to its point."""
+    for side in (-1.0, 1.0):
+        b.loft([(1.5 * s, rect(side * 4.55 * s, 0.5 * s, -0.5 * s, 0.5 * s)), (14.0 * s, rect(side * 3.55 * s, 0.5 * s, -0.4 * s, 0.4 * s)),
+                (23.5 * s, rect(side * 0.6 * s, 0.4 * s, -0.15 * s, 0.15 * s))], "amber.fire", "burn_edge")
+
+
+BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade}
+
+
 # ---------------------------------------------------------------- structures (the Arsenal)
 
 def _blades(b, x0, x1, y, z, step=12.0, h=16.0, w=2.4):

@@ -2001,5 +2001,8 @@
   "exhaust",
   "driver_ring",
   "driver_exhaust"
- ]
+ ],
+ "stock_shapes": {
+  "hp_1": "barrel"
+ }
 }

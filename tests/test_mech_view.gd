@@ -193,3 +193,32 @@ func test_the_settings_page_offers_every_aa_mode() -> void:
 	for mode in Settings.AA_MODES:
 		assert_true(labels.has(str(Settings.AA_LABELS[mode])), "the settings page offers %s" % Settings.AA_LABELS[mode])
 	menu.free()
+
+
+func test_a_burn_weapon_wears_its_fire_on_its_class_and_nothing_else_does() -> void:
+	var db := ContentDB.new()
+	db.components = {"fire_gun": {"shape": "barrel", "face": {"keywords": ["burn"]}},
+		"cold_gun": {"shape": "barrel", "face": {"keywords": ["pierce"]}},
+		"bare_gun": {"shape": "barrel", "face": {}}}
+	assert_true(MechView3D.burning("fire_gun", db), "a component whose entry's keywords hold burn burns")
+	assert_false(MechView3D.burning("cold_gun", db), "one without burn does not")
+	assert_false(MechView3D.burning("bare_gun", db), "nor one whose entry names no keywords")
+	var rows := [[1, "fire_gun", "barrel", "minerva"], [2, "cold_gun", "barrel", "minerva"]]
+	assert_eq(MechView3D.burn_rows("", rows, db), [[1, "fire_gun", "barrel"]], "a swapped burn weapon's mount takes its class's fire, and only it")
+
+
+func test_a_flash_rises_holds_and_settles_back_to_rest() -> void:
+	var rig := MechRig.new()
+	var node := MeshInstance3D.new()
+	node.mesh = BoxMesh.new()
+	var lit := StandardMaterial3D.new()
+	lit.emission_enabled = true
+	lit.emission_energy_multiplier = 1.5
+	node.set_surface_override_material(0, lit)
+	rig.flash_under(node)
+	rig._step(MechRig.FLASH_UP + MechRig.FLASH_HOLD * 0.5)
+	assert_true(absf(lit.emission_energy_multiplier - 1.5 * MechRig.light(1.0 + MechRig.FLASH_PEAK)) < 0.001, "at its top it burns FLASH_PEAK rests over its own")
+	rig._step(MechRig.FLASH_HOLD + MechRig.FLASH_DOWN)
+	assert_true(absf(lit.emission_energy_multiplier - 1.5) < 0.001, "and settles back to its rest")
+	node.free()
+

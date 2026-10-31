@@ -1550,5 +1550,8 @@
   "hp_1": "rivet_gun",
   "hp_2": "",
   "hp_3": ""
+ },
+ "stock_shapes": {
+  "hp_1": "barrel"
  }
 }

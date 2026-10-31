@@ -895,5 +895,9 @@
  "halo": [
   "booster_ring",
   "exhaust"
- ]
+ ],
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "dish"
+ }
 }

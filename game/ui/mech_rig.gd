@@ -58,6 +58,10 @@ static var _eases_light := -1   # whether light() eases: unknown until first ask
 const HALO_FULL := 8.0        # a halo is full once its part's light stands this many rests over its own (_light_to)
 const HALO_SPREAD := 0.025    # how far a halo stands out, a share of its machine's longest side (_setup_halos)
 const HALO_REACH := 0.45      # the share of its part's colour a halo adds at its fullest (halo.gdshader)
+const FLASH_PEAK := 12.0      # a weapon's fire flaring as it fires (flash): this many rests over its own at the top,
+const FLASH_UP := 0.05        # reached in this many seconds,
+const FLASH_HOLD := 0.15      # held this long,
+const FLASH_DOWN := 0.6       # and gone in this long, easing out
 const HALO_SHADER := preload("res://game/ui/halo.gdshader")
 static var _halo_meshes: Dictionary = {}   # "<mesh id>:<surface>" -> the halo's shell, its normals smoothed, built once a mesh
 const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
@@ -129,6 +133,8 @@ var _glow: Array = []              # [{mats: [StandardMaterial3D], base: [float]
 var _glow_cache: Dictionary = {}   # part prefix -> [StandardMaterial3D]
 var _halos: Dictionary = {}        # a lit material -> the halos' ShaderMaterials round its surfaces (_setup_halos)
 var _standing: Dictionary = {}     # a lit material -> the multiple of its rest light it never falls under (_setup_standing)
+var _halo_grow := 0.0              # how far a halo stands out on this model (_setup_halos), for hot parts hung later (wear_hot)
+var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (flash)
 var _body_act_rot := Vector3.ZERO  # the act's body track, degrees (pitch, yaw, roll)
 var _body_act_slide := Vector3.ZERO
 var _body_move_rot := Vector3.ZERO # the gait's body: bob, rock, bank
@@ -728,6 +734,17 @@ func _step(dt: float) -> bool:
 			st["t"] = float(st["t"]) + dt
 		_strikes = _strikes.filter(func(st): return float(st["t"]) < float(st["up"]) + float(st["down"]))
 		moved = true
+	if not _flashes.is_empty():
+		var live: Array = []
+		for f in _flashes:
+			f["t"] = float(f["t"]) + dt
+			var done := float(f["t"]) >= FLASH_UP + FLASH_HOLD + FLASH_DOWN
+			for i in range(f["mats"].size()):
+				_light_to(f["mats"][i], float(f["base"][i]), 1.0 if done else 1.0 + flash_k(float(f["t"])))
+			if not done:
+				live.append(f)
+		_flashes = live
+		moved = true
 	return moved
 
 
@@ -1161,6 +1178,37 @@ func _setup_standing(side: Dictionary) -> void:
 			_light_to(m, rest, 1.0)
 
 
+## A hot part hung after setup (a burn weapon's fire over its class: MechView3D.wear_burns) wears
+## the halo as the sidecar's hot parts do.
+func wear_hot(node: Node) -> void:
+	if _halo_grow > 0.0:
+		_halo_under(node, _halo_grow, HALO_REACH, {})
+
+
+## Flare the lit parts under a node as a weapon fires (Ryan, 31 October: a burn weapon's fire
+## "flaring as it fires"): up to FLASH_PEAK rests over their own, held, then easing back.
+func flash_under(node: Node) -> void:
+	var mats: Array = []
+	_lit_under(node, mats)
+	if mats.is_empty():
+		return
+	var base: Array = []
+	for m in mats:
+		base.append(_rest_of(m))
+	_flashes.append({"mats": mats, "base": base, "t": 0.0})
+
+
+## A flash's light over its rest at `t` seconds in.
+static func flash_k(t: float) -> float:
+	if t < FLASH_UP:
+		return FLASH_PEAK * t / FLASH_UP
+	t -= FLASH_UP
+	if t < FLASH_HOLD:
+		return FLASH_PEAK
+	var u := clampf(1.0 - (t - FLASH_HOLD) / FLASH_DOWN, 0.0, 1.0)
+	return FLASH_PEAK * u * u
+
+
 ## A lit material's light at rest, kept on the material the first time it is asked, so a standing
 ## glow that raises its light is never taken for its rest.
 static func _rest_of(m: StandardMaterial3D) -> float:
@@ -1184,9 +1232,10 @@ func _setup_halos(side: Dictionary) -> void:
 	_halos.clear()
 	var env := OS.get_environment("RIFTGATE_HALO")
 	var named = side.get("glow_parts", []) if env == "all" else side.get("halo", [])
+	_halo_grow = 0.0 if env == "off" else HALO_SPREAD * _model_size()
 	if env == "off" or not (named is Array) or (named as Array).is_empty():
 		return
-	var grow := HALO_SPREAD * _model_size()
+	var grow := _halo_grow
 	var done := {}
 	for entry in named:
 		var p := str(entry[0]) if entry is Array else str(entry)

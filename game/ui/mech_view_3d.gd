@@ -105,6 +105,8 @@ var rig := MechRig.new()
 var joints: Dictionary = {}       # "shoulder_l" -> Node3D (the rig's)
 var hardpoints: Dictionary = {}   # 1 -> Node3D (the rig's)
 var plan: Array = []              # what the pins wear instead of their built parts (plan_for's rows), applied in _setup
+var wears_stock := true           # whether the model's own stock parts are its machine's kit (false on a borrowed model)
+var _burns: Array = []            # the burn weapons' fire hung over their classes (wear_burns), each node carrying its component's id
 var model_id: String = ""         # the glTF drawn: the chassis, or the fallback when it has no model
 
 var _inner: SubViewport
@@ -228,6 +230,7 @@ static func make(chassis_id: String, maker: String, look: String, fallback: Stri
 	var id := model_for(chassis_id, fallback)
 	v.model_id = id
 	v.plan = plan_arg if id == chassis_id else []   # a borrowed model never wears another machine's kit
+	v.wears_stock = id == chassis_id
 	v._setup(id, maker)
 	return v
 
@@ -242,6 +245,7 @@ static func make_on_floor(chassis_id: String, maker: String, look: String, field
 	var id := model_for(chassis_id, "")
 	v.model_id = id
 	v.plan = plan_arg if id == chassis_id else []
+	v.wears_stock = id == chassis_id
 	v._setup(id, maker)
 	return v
 
@@ -360,9 +364,66 @@ func hold_forms(u: Unit) -> void:
 		rig.set_form(str(name), Effects.has(u, str(name)))
 
 
-## Wear the plan: each row hangs its class shape on its pin, or bares the socket.
+## Wear the plan: each row hangs its class shape on its pin, or bares the socket; then a burn
+## weapon's fire over its class, wearing the halo.
 func _apply_plan() -> void:
 	wear(hardpoints, plan, mode, paint, token, hide_detail, model_id)
+	_burns = wear_burns(hardpoints, burn_rows(model_id, plan, ContentDB.load_default(), wears_stock), mode, paint, token)
+	for part in _burns:
+		rig.wear_hot(part)
+
+
+## Whether a component burns: its entry's keywords hold "burn" (content says, never an id).
+static func burning(cid: String, db: ContentDB) -> bool:
+	var face = db.components.get(cid, {}).get("face", {})
+	var words = face.get("keywords", []) if face is Dictionary else []
+	return words is Array and (words as Array).has("burn")
+
+
+## A burn weapon's fire (Ryan, 31 October: "every burn-causing weapon", "on the actual swappable
+## classes, not on the model"): every mount that shows a class and carries a component that burns,
+## as [pin, component, class]: a swapped row's class, or the stock part's when lowforge built it as
+## one (the sidecar's `stock_shapes`; a hand-built weapon, the Ammit's flamer, has its own fire).
+static func burn_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
+	var out: Array = []
+	var swapped := {}
+	for row in rows:
+		if row.size() >= 4:
+			swapped[int(row[0])] = row
+	var stock = pin_record(model_name) if stock_too else null
+	var shapes = MechRig.load_sidecar(model_name).get("stock_shapes", {})
+	var count := maxi(stock.size() if stock is Array else 0, 0)
+	for n in swapped.keys():
+		count = maxi(count, int(n))
+	for n in range(1, count + 1):
+		var cid := ""
+		var shape := ""
+		if swapped.has(n):
+			cid = str(swapped[n][1])
+			shape = str(swapped[n][2])
+		elif stock is Array and n <= (stock as Array).size() and shapes is Dictionary:
+			cid = str(stock[n - 1])
+			shape = str((shapes as Dictionary).get("hp_%d" % n, ""))
+		if cid.is_empty() or shape.is_empty() or not burning(cid, db) or not has_model("shapes/burn_%s" % shape):
+			continue
+		out.append([n, cid, shape])
+	return out
+
+
+## Hang each burn row's fire on its pin (art/models/shapes/burn_<class>.glb), over the class the
+## pin shows, so it points and scales as the class does. Returns the hung nodes.
+static func wear_burns(pins: Dictionary, burns: Array, look: String, paint_arg: Dictionary = {}, as_token: bool = false) -> Array:
+	var out: Array = []
+	for row in burns:
+		if not pins.has(int(row[0])):
+			continue
+		var part: Node3D = (load("res://art/models/shapes/burn_%s.glb" % str(row[2])) as PackedScene).instantiate()
+		part.set_meta("mounted", true)
+		part.set_meta("burn", str(row[1]))
+		(pins[int(row[0])] as Node3D).add_child(part)
+		toon(part, "", look, paint_arg, as_token, false)
+		out.append(part)
+	return out
 
 
 ## A model's pins by number (1 -> the hp_1 node), found by name as the rig finds them.
@@ -596,10 +657,14 @@ static func joint_axis(name: String) -> Vector3:
 ## A blow: the shoulders swing the arms forward and back. Ranged: every joint carrying a
 ## weapon socket kicks about its own axis, a recoil; a turret with a mount flinches on its
 ## traverse. A melee blow leaves turrets alone. Does nothing on an untagged model (MechRig).
-func strike(ranged: bool) -> void:
+## `cid`, the component that struck: a burn weapon's fire flares on its mount as it fires.
+func strike(ranged: bool, cid: String = "") -> void:
 	if not is_inside_tree():
 		return
 	rig.strike(ranged)
+	for part in _burns:
+		if not cid.is_empty() and str((part as Node).get_meta("burn", "")) == cid:
+			rig.flash_under(part)
 	set_process(true)
 
 

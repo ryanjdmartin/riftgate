@@ -6588,5 +6588,12 @@
   "hp_4": "rivet_gun",
   "hp_5": "ankle_mortar",
   "hp_6": ""
+ },
+ "stock_shapes": {
+  "hp_1": "twin_barrel",
+  "hp_2": "barrel",
+  "hp_3": "dish",
+  "hp_4": "barrel",
+  "hp_5": "rack"
  }
 }
