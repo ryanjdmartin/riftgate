@@ -912,5 +912,9 @@
   "hp_2": "ankle_mortar",
   "hp_3": "twin_autoguns",
   "hp_4": ""
- }
+ },
+ "halo": [
+  "nozzle_ring",
+  "exhaust"
+ ]
 }

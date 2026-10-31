@@ -4,19 +4,20 @@
 // shell's rim. It adds its light to what it lies over, so the part's own hot core shows through,
 // and it is drawn a little toward the eye, so a part in a slot or a channel glows out over its
 // walls as a bloom would; past a machine's outline it leaves a fringe of the same colour in the
-// see-through view, which the outline pass keeps (outline.gdshader). Sized in the part's own
-// units, it keeps its share of the machine at any size it is drawn, so the hangar zoomed in shows
-// the game's look magnified. The first form, seven units out laid over the machine in its clipped
-// colour, was "way too much" (Ryan, 30 October).
+// see-through view, which the outline pass keeps (outline.gdshader). Sized as a share of its
+// machine, it keeps that share at any size the machine is drawn, so the hangar zoomed in shows the
+// game's look magnified. The first form, seven units out laid over the machine in its clipped
+// colour, was "way too much" (Ryan, 30 October); the second, a fifth smaller and a fifth fainter
+// than this, wanted "cranked up a little bit, for phone scale" (the next day).
 shader_type spatial;
 render_mode unshaded, blend_add, depth_draw_never, cull_back, shadows_disabled;
 
 uniform sampler2D tile : filter_nearest;   // the part's lit tile, as stored: the phone's renderer lights it so (MechRig.light)
 uniform float light = 1.0;                 // the part's light now, as its own material has it
 uniform float presence = 0.0;              // 0 to 1: how much halo the part's light over its rest earns
-uniform float grow = 2.5;                  // how far out the shell stands, in the part's own units
+uniform float grow = 2.5;                  // how far out the shell stands, in the part's own units (MechRig: a share of the machine)
 uniform float ahead = 3.0;                 // drawn this many of the part's units toward the eye: out of its slot, never through the hull
-uniform float reach = 0.35;                // the share of the part's colour it adds at its fullest
+uniform float reach = 0.45;                // the share of the part's colour it adds at its fullest
 
 void vertex() {
 	VERTEX += NORMAL * grow;

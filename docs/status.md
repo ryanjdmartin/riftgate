@@ -69,10 +69,11 @@ pacing session, the pricing pass, the tilesets' walls), and main took it on 30 O
 word ("Merge into main"); its bible is v0.397 (the page's 409). Main took it again that evening
 as the lit parts' eased light landed (`d84ad16`). Since then it carries the halo trial on the
 Buzzard (a soft shell round its lit parts, faded in with the flare; its first round "way too
-much", its second added rather than laid over, leaning red and a third the size; Ryan judges it
-running, the to-do), and took main as `claude/zealous-wright-ixxo3l` landed (to `06880da`: the
-foes' move-order fix), green there with the halo's test, 827 tests and 206,880 checks; not yet
-on main; its bible is v0.411 (the page's 423).
+much", its second added rather than laid over, leaning red and a third the size), took main as
+`claude/zealous-wright-ixxo3l` landed (to `06880da`: the foes' move-order fix), and spread the
+halo to every machine's boosters and vents a little stronger, with the Buzzard's vector turn
+lighting both nacelles (31 October; the other lit parts wait on Ryan's vetting, the to-do); green
+at 828 tests and 206,940 checks; not yet on main; its bible is v0.412 (the page's 424).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -615,9 +616,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.411 (the
-  page's version 423, published 31 October from `claude/charming-rubin-h954bp`: the halo trial's
-  second round in the reference-glass row; three-way merged onto the live v0.410 another session
+  `docs/design-bible.html` after every change. This file and the live page are v0.412 (the
+  page's version 424, published 31 October from `claude/charming-rubin-h954bp`: the halo on every
+  machine's boosters and vents in the reference-glass row; onto its own v0.411 at 423, the halo's
+  second round, three-way merged onto the live v0.410 another session
   published at 422, its v0.406 to v0.410 at 418 to 422 a pass of its own (the codex's whole die
   and a die entry's fixed places, a term read in its colour with its icon, the component kinds,
   the boss mechanics inside the skirmish, the Cassowary, the quick campaign as a test bed and the
@@ -640,12 +642,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 175 (31 October, from
-  `claude/charming-rubin-h954bp`: `motion.js` with the halo trial's second round, and the
-  Buzzard's rig with its halo at two and a half units; onto 174, which another session published,
-  every file this publish did not send as 174 had it, `edits` empty), on 173 (30 October, the
-  same branch: `motion.js` with the halo trial's first round and the Buzzard's rig asking for it),
-  on 172 (the same day and branch:
+  acts on a reloaded page). At the page's version 177 (31 October, from
+  `claude/charming-rubin-h954bp`: `motion.js` with the halo on every machine's boosters and vents,
+  a share of each machine's size, and the ten rigs that name them, the Buzzard's with its vector
+  turn lighting both nacelles; onto 176, which another session published, every file this publish
+  did not send as 176 had it and every file it sent the size it had at this branch's last commit,
+  `edits` empty), on 175 (the same day and branch: the halo's second round, onto 174, another
+  session's), on 173 (30 October, the same branch: the halo's first round), on 172 (the same day
+  and branch:
   `motion.js` with the lit parts' eased light and the Armadillo's
   rig with its vent heat's new peak, onto 171, which another session published with its page's
   boss-list line, a domain's bosses a list since its slate, carried into `tools/hangar.html` here

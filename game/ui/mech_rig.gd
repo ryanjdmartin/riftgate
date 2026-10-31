@@ -56,6 +56,7 @@ const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.to
 const LIGHT_EASE := 1.0 / 2.2 # the power a lit part's light is eased by on the phone's renderer (light())
 static var _eases_light := -1   # whether light() eases: unknown until first asked (the renderer's known once the screen is up)
 const HALO_FULL := 8.0        # a halo is full once its part's light stands this many rests over its own (_light_to)
+const HALO_SPREAD := 0.025    # how far a halo stands out, a share of its machine's longest side (_setup_halos)
 const HALO_SHADER := preload("res://game/ui/halo.gdshader")
 static var _halo_meshes: Dictionary = {}   # "<mesh id>:<surface>" -> the halo's shell, its normals smoothed, built once a mesh
 const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
@@ -1140,21 +1141,24 @@ func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
 		(h as ShaderMaterial).set_shader_parameter("presence", clampf((multiple - 1.0) / HALO_FULL, 0.0, 1.0))
 
 
-## The halos (on trial, Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try it").
-## A model whose sidecar asks (`halo`: how many units out) wears round each lit surface its glows
-## name a soft copy of the part grown out along its smoothed normals (halo.gdshader), in the
-## part's colour held to its hue, added over what it lies on and faded in as the part's light
-## climbs over its rest, so a flare spills past the part's edge and the machine's outline;
-## Godot's own glow, on the phone's renderer, cannot tell a lit part from white paint and stops
-## at the outline. RIFTGATE_HALO=off strips them to compare, =all puts them on every model.
+## The halos (Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try it"; the next
+## day, on every machine's hot parts: "all glowing boosters and vents"). The lit parts a sidecar
+## names (`halo`) wear round each lit surface a soft copy of the part grown out along its
+## smoothed normals (halo.gdshader), in the part's colour held to its hue, added over what it
+## lies on and faded in as the part's light climbs over its rest, so a flare spills past the
+## part's edge and the machine's outline; Godot's own glow, on the phone's renderer, cannot tell
+## a lit part from white paint and stops at the outline. It stands out a share of the machine's
+## size (HALO_SPREAD), so it keeps its share of every machine however each is framed.
+## RIFTGATE_HALO=off strips them to compare, =all puts them on every lit part of every model.
 func _setup_halos(side: Dictionary) -> void:
 	_halos.clear()
 	var env := OS.get_environment("RIFTGATE_HALO")
-	var grow := 0.0 if env == "off" else float(side.get("halo", 2.5 if env == "all" else 0.0))
-	if grow <= 0.0:
+	var named = side.get("glow_parts", []) if env == "all" else side.get("halo", [])
+	if env == "off" or not (named is Array) or (named as Array).is_empty():
 		return
+	var grow := HALO_SPREAD * _model_size()
 	var done := {}
-	for p in side.get("glow_parts", []):
+	for p in named:
 		var tag := parse_tag(str(p))
 		if tag.size() == 2:
 			var root: Node = joints.get(tag[1], null) if tag[0] == "joint" else hardpoints.get(tag[1], null)
@@ -1162,6 +1166,26 @@ func _setup_halos(side: Dictionary) -> void:
 				_halo_under(root, grow, done)
 		else:
 			_halo_named(model, str(p), grow, done)
+
+
+## The longest side of the model's bounds at rest, in its own units.
+func _model_size() -> float:
+	var box := AABB()
+	var first := true
+	for mi in model.find_children("*", "MeshInstance3D", true, false):
+		var m: MeshInstance3D = mi
+		if m.mesh == null or m.has_meta("halo") or m.has_meta("is_trace"):
+			continue
+		var to_model := Transform3D.IDENTITY
+		var n: Node = m
+		while n != null and n != model:
+			if n is Node3D:
+				to_model = (n as Node3D).transform * to_model
+			n = n.get_parent()
+		var b := to_model * m.mesh.get_aabb()
+		box = b if first else box.merge(b)
+		first = false
+	return maxf(box.size.x, maxf(box.size.y, box.size.z))
 
 
 func _halo_named(node: Node, part: String, grow: float, done: Dictionary) -> void:

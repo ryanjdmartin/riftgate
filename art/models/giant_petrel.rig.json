@@ -655,5 +655,9 @@
   "hp_1": "overclocked_railgun",
   "hp_2": "twin_autoguns",
   "hp_3": ""
- }
+ },
+ "halo": [
+  "booster_ring",
+  "exhaust"
+ ]
 }

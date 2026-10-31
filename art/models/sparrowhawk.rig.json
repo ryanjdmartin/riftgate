@@ -1995,5 +1995,11 @@
  "pins": {
   "hp_1": "transonic_rifle",
   "hp_2": ""
- }
+ },
+ "halo": [
+  "booster_ring",
+  "exhaust",
+  "driver_ring",
+  "driver_exhaust"
+ ]
 }

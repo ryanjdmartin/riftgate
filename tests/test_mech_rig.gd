@@ -115,6 +115,15 @@ func test_the_glow_parts_name_lit_meshes_in_every_model() -> void:
 		model.free()
 
 
+func test_a_halo_names_only_parts_a_glow_lights() -> void:
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var halo = side.get("halo", [])
+		assert_true(halo is Array, "%s: the halo is a list of parts" % id)
+		for p in (halo if halo is Array else []):
+			assert_true((side.get("glow_parts", []) as Array).has(p), "%s: the halo's %s is a part a glow lights" % [id, p])
+
+
 func test_a_halo_closes_round_a_flat_part_and_shows_only_as_its_light_climbs() -> void:
 	# Each corner of the shell takes the sum of the faces meeting there, so a flat-shaded box's
 	# shell grows out along its diagonals, closed, never split open along its edges.

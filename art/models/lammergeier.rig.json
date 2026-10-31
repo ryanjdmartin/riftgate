@@ -533,5 +533,9 @@
   "hp_2": "enfilade_beam",
   "hp_3": "polarity_projector",
   "hp_4": "arc_fault_cannon"
- }
+ },
+ "halo": [
+  "booster_ring",
+  "exhaust"
+ ]
 }

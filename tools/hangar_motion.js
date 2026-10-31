@@ -74,7 +74,7 @@ const PHONE_GLOW = `#ifdef USE_EMISSIVEMAP
 // in a slot glows out over its walls, and added to what it lies over as the game adds it (the
 // colour times the alpha, the root of the strength in each); written as it is, not re-encoded,
 // so it shows the game's colour.
-const HALO_FULL = 8, HALO_REACH = 0.35, HALO_AHEAD = 3;
+const HALO_FULL = 8, HALO_REACH = 0.45, HALO_AHEAD = 3, HALO_SPREAD = 0.025;
 const HALO_VERT = `uniform float grow; uniform float ahead; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
 void main() { vUv = uv; vec4 mv = modelViewMatrix * vec4(position + normal * grow, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
   mv.xyz += mix(normalize(-mv.xyz), vec3(0.0, 0.0, 1.0), projectionMatrix[3][3]) * ahead * length(modelViewMatrix[0].xyz); gl_Position = projectionMatrix * mv; }`;
@@ -265,12 +265,13 @@ class Rig {
       h.uniforms.presence.value = clamp((k - 1) / HALO_FULL, 0, 1);
     }
   }
-  // The halos (MechRig._setup_halos, on trial): a model whose sidecar asks wears round each lit
-  // surface its glows name a soft shell grown `halo` units out.
+  // The halos (MechRig._setup_halos): round each lit surface of the hot parts a sidecar names
+  // (`halo`), a soft shell standing out a share of the machine's size.
   setupHalos(side) {
     this.halos = new Map();
-    const grow = side.halo || 0;
-    if (!(grow > 0)) return;
+    const named = Array.isArray(side.halo) ? side.halo : [];
+    if (!named.length) return;
+    const grow = HALO_SPREAD * this.modelSize();
     const T = window.THREE, done = new Set();
     const wear = (node) => node.traverse(n => {
       if (!n.isMesh || n.userData.halo) return;
@@ -286,11 +287,23 @@ class Rig {
         this.halos.get(m).push(mat);
       }
     });
-    for (const p of side.glow_parts || []) {
+    for (const p of named) {
       const tag = parseTag(p);
       if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) wear(root); }
       else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) wear(n); });
     }
+  }
+  // The longest side of the model's bounds at rest, in its own units (MechRig._model_size).
+  modelSize() {
+    const T = window.THREE, box = new T.Box3(), inv = new T.Matrix4();
+    this.model.updateMatrixWorld(true); inv.copy(this.model.matrixWorld).invert();
+    this.model.traverse(n => {
+      if (!n.isMesh || !n.geometry || n.userData.halo) return;
+      if (!n.geometry.boundingBox) n.geometry.computeBoundingBox();
+      box.union(n.geometry.boundingBox.clone().applyMatrix4(new T.Matrix4().multiplyMatrices(inv, n.matrixWorld)));
+    });
+    const s = box.getSize(new T.Vector3());
+    return Math.max(s.x, s.y, s.z);
   }
   // The forms a sidecar names (MechRig._setup_forms): poses held while the machine carries the
   // status of the same name (the Armadillo's seal), their tracks and body as curves over their

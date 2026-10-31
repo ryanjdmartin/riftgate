@@ -341,6 +341,7 @@ def sparrowhawk(b):
           glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.6, 7.0), (mid - 0.3, 6.0), (mid, 8.0), (mid + 0.3, 6.0), (eight[-2][0] - 0.6, 6.0), (eight[-1][0] - 0.1, 0.0)])])
     # Movement: the boosters brighten, the drivers' with them, the nose drops; it banks and slides through corners
     # (b.move) at full speed.
+    b.halo = ["booster_ring", "exhaust", "driver_ring", "driver_exhaust"]   # its boosters and the Pinion Drivers' ramjets, hot
     b.gait(glow={"parts": ["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
     b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08, oversteer=0.35)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts; the nose a little into its corners (the fifth notes: the jets oversteer too, a bit)
 
@@ -1171,6 +1172,7 @@ def armadillo(b):
         tracks[jn] = [along(t, out * f, line) for t, f in ((t0, 0.0), (t0 + 0.45, 1.0), (t1, 1.0), (t1 + 0.5, 0.0))]
         glow.append(([heat], flare(t0, t1)))
     b.act("vent_heat", round(UP0 + UP + 0.3, 3), tracks, body=body, heft=0.1, glow=glow)
+    b.halo = [heat for heat, _ in vents] + [p[0] for p in pops]   # its vents, hot
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a heavy walk in diagonal pairs, each foot planted flat while the shell passes
     # over it, lifted and stamped down; the shell level but for its drop onto each pair. The
@@ -2156,7 +2158,11 @@ def goshawk(b):
         "nacelle_r": [(0.6, 0.0), (1.2, -14.0), (2.2, -12.0), (2.8, 40.0), (3.8, 38.0), (4.6, 0.0)],
     }, body=[(0.8, 0.0, 0.0, 0.0), (2.1, 0.0, 0.0, 1.0, -34.0, 0.0, 9.0), (2.5, 0.0, 0.0, 1.0, -36.0, 0.0, 6.0), (3.7, 0.0, 0.0, 1.0, 30.0, 0.0, -9.0),
              (4.1, 0.0, 0.0, 1.0, 32.0, 0.0, -6.0), (5.4, 0.0, 0.0, 0.0)],
-       glow=[(["joint_nacelle_l"], [(0.8, 0.0), (1.3, 8.0), (2.4, 8.0), (2.9, 0.0)]), (["joint_nacelle_r"], [(2.4, 0.0), (2.9, 8.0), (3.9, 8.0), (4.5, 0.0)])])
+       # Both nacelles thrust through the turn, the one swung down the hotter (Ryan, 31 October:
+       # "Vector turn doesn't glow the boosters"; only the one swung down had lit, its exhaust
+       # facing the ground, away from every camera).
+       glow=[(["joint_nacelle_l"], [(0.8, 0.0), (1.3, 8.0), (2.4, 8.0), (2.9, 6.0), (3.9, 6.0), (4.5, 0.0)]),
+             (["joint_nacelle_r"], [(0.8, 0.0), (1.3, 6.0), (2.4, 6.0), (2.9, 8.0), (3.9, 8.0), (4.5, 0.0)])])
     # The cannon draws its heat from the engines: the heat comes forward up the spine on top,
     # where the cameras look (Ryan, 5 October, the fifth notes: "let's try the heat spine"),
     # cell by cell from the tail to the nose, the exhausts fading as it is drawn off; then the
@@ -2169,12 +2175,11 @@ def goshawk(b):
     # the cannon, dark at rest now, flickers up and burns far hotter than it did.
     heat = [([("heat_%d" % (i + 1))], [(0.2, 0.0), (round(0.3 + 0.15 * i, 2), 0.0), (round(0.45 + 0.15 * i, 2), 26.0), (round(0.7 + 0.15 * i, 2), 16.0), (3.6, 18.0), (5.2, 16.0), (5.8, 0.0)])
             for i in range(9)]
-    # On trial (Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try it"): a soft
-    # halo round each lit part its acts and its gait light, faded in with the part's light
-    # (MechRig's halos), so the cannon's charge and the nacelles spill their glow past their
-    # edges and the machine's outline. Seven units out was "way too much" (Ryan, the same
-    # evening, from the hangar on his phone): two and a half, about a heat cell's width.
-    b.halo = 2.5
+    # The halo's trial machine (Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try
+    # it"): the spine's heat cells, the cannon's vents and the nacelles' boosters, hot parts as
+    # every machine's are (the next day: "all glowing boosters and vents"), and the cannon's bore,
+    # kept from the trial.
+    b.halo = ["heat_%d" % (i + 1) for i in range(9)] + ["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow", "joint_nacelle_l", "joint_nacelle_r"]
     b.act("charge_cannon", 6.0, glow=heat + [
         (["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [(1.6, 0.0), (2.2, 5.0), (2.5, 1.5), (2.8, 11.0), (3.1, 4.0), (3.6, 26.0), (4.5, 26.0), (5.4, 0.0)]),
         (["joint_nacelle_l", "joint_nacelle_r"], [(0.3, 0.0), (1.4, -0.6), (4.3, -0.85), (4.6, 7.0), (5.2, 4.0), (5.9, 0.0)])],
@@ -3216,6 +3221,7 @@ def stingray(b):
     # Puffin): it faces its heading and oversteers through corners like them, banking a
     # little, and noses down hard into its travel, since its fans are its propulsion (the
     # tilt: nose down going forward, a side down to slip that way).
+    b.halo = ["nozzle_glow"]   # its thrusters, hot
     b.gait(glow={"parts": ["nozzle_glow"], "k": 5.0})
     # The lift fans turn all the time, counter-rotating, and faster under way (Ryan, 6 October,
     # the seventh notes, the model locked: "the thing the Stingray really needs"). Slow enough a
@@ -3415,6 +3421,7 @@ def needletail(b):
     # boosters brighten and it banks through its corners.
     glow = {"parts": boosters, "k": 5.0}
     b.gait_option("hover", tracks={"nacelle_l": [(0.0, -12.0), (1.0, -12.0)], "nacelle_r": [(0.0, -12.0), (1.0, -12.0)]}, glow=glow)
+    b.halo = ["booster_ring", "exhaust"]   # its boosters, hot
     b.gait(tracks={"nacelle_l": [(0.0, -86.0), (1.0, -86.0)], "nacelle_r": [(0.0, -86.0), (1.0, -86.0)]}, glow=glow,
            body_hold=(0.0, 0.0, 0.0, 0.0, -4.0, 0.0), start=("hover", 0.25, 0.85))
     b.move(slide=0.35, bank=32.0, accel=0.7, heft=0.1, oversteer=0.4)
@@ -3562,6 +3569,7 @@ def giant_petrel(b):
     })
     # Movement: slow and heavy, its boosters brightening, its nose a touch up as a ground-effect
     # craft runs; it drifts through its corners and never banks (a hovercraft keeps flat).
+    b.halo = ["booster_ring", "exhaust"]   # its boosters, hot
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, 2.0, 0.0), glow={"parts": boosters, "k": 4.0}, rock=2.0)
     b.move(slide=0.3, bank=0.0, accel=1.6, heft=0.25, oversteer=0.5)
 
@@ -3752,6 +3760,7 @@ def skua(b):
     glow = {"parts": boosters, "k": 5.0}
     b.gait_option("spread", tracks={"wing_l": [(0.0, -4.0), (1.0, -4.0)], "wing_r": [(0.0, 4.0), (1.0, 4.0)]}, glow=glow,
                   body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0))
+    b.halo = ["booster_ring", "exhaust"]   # its booster, hot
     b.gait(tracks={"wing_l": [(0.0, SW), (1.0, SW)], "wing_r": [(0.0, -SW), (1.0, -SW)]}, glow=glow,
            body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0), start=("spread", 0.25, 0.85))
     b.move(slide=0.5, bank=44.0, accel=0.7, heft=0.08, oversteer=0.3)
@@ -3902,6 +3911,7 @@ def puffin(b):
     # Movement: the plates lie level as the repulsors, lit with the booster; the nose down a
     # touch; it oversteers through its corners like the Puffin always has, never banking (a
     # hovercraft keeps flat).
+    b.halo = ["booster_ring", "exhaust", "lift_nozzle", "repulsor_l", "repulsor_r"]   # its booster, lift nozzles and repulsors, hot
     b.gait(hold={"plate_l": 0.0, "plate_r": 0.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": boosters + reps, "k": 5.0}, rock=3.0)
     b.move(slide=0.3, bank=0.0, accel=0.8, heft=0.13, oversteer=1.5)
 
@@ -4109,6 +4119,7 @@ def storm_petrel(b):
           glow=[(["emitter", "field_tip"], [(0.5, 0.0), (0.6, HOT), (0.8, 0.0), (1.0, HOT), (1.2, 0.0), (1.4, HOT), (1.6, 0.0)]), (boosters, [(0.3, 0.0), (0.6, 6.0), (1.6, 6.0), (2.2, 0.0)])])
     # Movement: it runs flat and fast, nose down a touch, and drifts through its corners like
     # the Puffin, never banking (a hovercraft keeps flat).
+    b.halo = ["nozzle_ring", "exhaust"]   # its boosters, hot
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": boosters, "k": 5.0}, rock=3.0)
     b.move(slide=0.3, bank=0.0, accel=0.6, heft=0.14, oversteer=1.1)
 
@@ -4234,6 +4245,7 @@ def lammergeier(b):
                 (5.6, 0.0, 0.0, 0.0)],
           glow=[(boosters, [(0.5, 0.0), (1.4, 7.0), (4.2, 7.0), (5.0, 0.0)])])
     # Movement: a heavy flyer, banking into its turns and slow to gather way, nose down a touch.
+    b.halo = ["booster_ring", "exhaust"]   # its boosters, hot
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -2.0, 0.0), glow={"parts": boosters, "k": 4.0})
     b.move(slide=0.4, bank=22.0, accel=1.2, heft=0.2, oversteer=0.4)
 

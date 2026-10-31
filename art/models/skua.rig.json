@@ -2668,5 +2668,9 @@
     0.0
    ]
   }
- }
+ },
+ "halo": [
+  "booster_ring",
+  "exhaust"
+ ]
 }

@@ -903,5 +903,12 @@
   "hp_2": "twin_autoguns",
   "hp_3": "laser_carbine",
   "hp_4": ""
- }
+ },
+ "halo": [
+  "booster_ring",
+  "exhaust",
+  "lift_nozzle",
+  "repulsor_l",
+  "repulsor_r"
+ ]
 }
