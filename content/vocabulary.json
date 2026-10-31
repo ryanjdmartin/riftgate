@@ -313,7 +313,7 @@
    "id": "swap",
    "category": "keyword",
    "name": "Swap",
-   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it or set it back.",
+   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -433,6 +433,16 @@
    }
   },
   {
+   "id": "steal",
+   "category": "keyword",
+   "name": "Steal",
+   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn, as a Disable, and the foe takes it: its next swing lands that weapon's number, a rolled one at its middle, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
+   "status": "implemented",
+   "design": {
+    "holes": "Gilgamesh's (30 October). One piece held at a time, the swing spending it; the swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it."
+   }
+  },
+  {
    "id": "corrupt",
    "category": "keyword",
    "name": "Corrupt",
@@ -450,6 +460,16 @@
    "status": "implemented",
    "design": {
     "holes": "Who carries it is section 12's question. It mutes the machine's keywords and never its buffs (Ryan, 27 and 28 October); cast with no condition, aimed as its move says."
+   }
+  },
+  {
+   "id": "swallow",
+   "category": "foe",
+   "name": "Swallow",
+   "codex": "Foe move of its own, never a rider on a blow. The machine it lands on is Swallowed: out of the fight for the rounds it says, or until the swallower falls. It never takes the last machine able to act. A Ward turns it away; a Lure turns it, and a Suppress or a Disrupt stops it, as any move.",
+   "status": "implemented",
+   "design": {
+    "holes": "Floraison's (30 October). Nothing frees the machine early but the swallower's fall; the rounds, 1 to 3, are the move's, and no damage lands on the machine while it is held."
    }
   },
   {
@@ -1645,6 +1665,16 @@
    }
   },
   {
+   "id": "follow_up",
+   "category": "foe",
+   "name": "Follow-up",
+   "codex": "A move that names the move its foe announces next round. The first lands, and the second is the next round's intent, so the warning comes a round ahead: Red Capote, then Andalucia. A Suppress on the first, or a Disrupt that turns it, and the second never comes.",
+   "status": "implemented",
+   "design": {
+    "holes": "Content: then, on the first move, naming the second (30 October). One deep: a follow-up names none of its own and comes only after the move that names it, never by the roll. A borrowed swing with nothing taken is no follow-up, and the roll decides."
+   }
+  },
+  {
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",
@@ -1857,6 +1887,22 @@
      "on": "machine",
      "stacks": "No",
      "lasts": "Through the machine's next round"
+    }
+   }
+  },
+  {
+   "id": "swallowed",
+   "category": "status",
+   "name": "Swallowed",
+   "codex": "Machine status, from a foe's swallow. It cannot act, take damage or be targeted: a blow or a move at every machine passes it by, and no ally can shield, vent or buff it. It comes back when its rounds run out, or the moment its swallower falls.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its own cooling, ticks and overheats still land, as a Phased machine's do; nothing cleanses it.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "The swallow's rounds, or until the swallower falls"
     }
    }
   },

@@ -25,12 +25,11 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 844 tests, 206,988 checks, green on `claude/affectionate-ramanujan-5d24t6` (30 October, the
-  Petrels' engines on main's `d84ad16`, run on Godot 4.7.2: this session's hook installed 4.7.2 as it
-  started on the old head, and Auto mode refused the 4.8-beta2 build's unpacking and first run;
-  the headless sim reads no renderer); 824 and 206,868 on main alone (`claude/jolly-lovelace-scn82y` landed with main
-  and `claude/charming-rubin-h954bp`'s model rebuilds in, on Godot 4.8-beta2; the same count again with
-  that branch's lit parts' eased light merged on top), about four minutes
+- Tests: 870 tests, 208,336 checks, green on main (31 October: `claude/affectionate-ramanujan-5d24t6`'s Petrels
+  landed onto main's head, on Godot 4.8-beta2; 850 and 208,176 on main alone, the foes'
+  move-order fix of `claude/zealous-wright-ixxo3l` in it, then the passive line in ink, the keywords
+  in text and the bosses' slate of `claude/brave-cori-fr18de` merged in for its terms, and the dice's
+  gestures, all from `claude/jolly-lovelace-scn82y`), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -46,20 +45,33 @@ are in `README.md`.
 
 ## Branches
 
-`claude/affectionate-ramanujan-5d24t6` (30 October) carries the two Petrels' engines on Ryan's go
-("go for the ready to build ones", after his question of the same day on which chassis come
-next), from main's head `d84ad16`; main has not taken it. Its bible is v0.404 and unpublished:
-the live page moved to v0.406 meanwhile, so its publish is a three-way merge onto it (the Pages
-paragraph), and the hangar page waits on the same landing for its three content files.
+`claude/affectionate-ramanujan-5d24t6` (30 and 31 October) carried the two Petrels' engines on
+Ryan's go ("go for the ready to build ones", after his question of the 30th on which chassis come
+next), from main's `d84ad16`; it took main as it landed (the foes' move-order fix, the bosses'
+slate, the keywords in their colours and the dice's gestures, to `1f78e41`), and main took it as
+a fast-forward on 31 October on his word ("merge this into main"); its bible is v0.409 (the Pages paragraph).
 
-`claude/jolly-lovelace-scn82y` (29 and 30 October) carried the skirmish's field with the
+`claude/zealous-wright-ixxo3l` (30 October) carried the foes' move-order fix and its boss
+cells' read (How things stand), took main as it landed (to `d84ad16`: the skirmish's field,
+Godot 4.8-beta2, the enemy in violet, the backdrops on the map's palettes, the lit parts' eased
+light), and main took it as a fast-forward on 30 October on Ryan's word ("merge into main
+please").
+
+`claude/jolly-lovelace-scn82y` (29 and 30 October) carried `claude/brave-cori-fr18de`'s bosses'
+slate from 30 October (merged for its terms, so main took the two together), and the skirmish's field with the
 Skirmish Controls setting, the map's lines and overlay at one size on screen, Godot 4.8-beta2
 with AA MODE, the enemy in the rift's violet with heat reddened and harm a red-red, the fight's
 backdrop on the map's palettes, the minty GREEN and the COLOURS page cut to what is in play; it
 took main twice on 30 October (the tilesets, the pacing session and the foes' fresh start; then
 `claude/charming-rubin-h954bp`'s model rebuilds as they landed, the fitted die worn on the pins
 inside the map compositor's outline), and main took it on 30 October on Ryan's word ("merge
-this into main"); its bible is v0.399 (the page's 411).
+this into main"), then again that evening as a fast-forward ("Do those, then clean up and push to
+main") with what it carried since: the codex's passive line in ink; the keywords in their colour
+with their icons, a tap opening each; main's six commits after it landed merged in; the slate,
+merged in for its terms, with the foe moves' keywords in the list; and the dice's gestures (a tap
+reads a die once the double-tap window passes, a double-tap or a hold locks it, a tap on the
+ground sends a waiting Swap home), KEYWORDS gone from the field to the menu. Its bible is v0.408
+(the page's 420).
 
 `claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
 the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
@@ -76,8 +88,12 @@ word ("Merge into main"); its bible is v0.397 (the page's 409).
 (the tilesets' second build before its records pass; the pricing pass, Chain and the cautious
 heat persona after them, on Ryan's word to bring the repricing in; the tilesets' walls and the
 heat grid's read as it landed), and main took it as a fast-forward on 30 October on his word
-("merge this into main"); its bible is v0.393 (the page's 405), onto the live v0.392, other
-sessions' rows on its v0.385.
+("merge this into main"). It then carried the slate's first seven bosses on his word the same
+evening ("build what can be built, and specify exactly what you need to flesh the rest out,
+including any holes"); its bible is v0.401 (the page's version 413), three-way merged onto the
+live v0.400, and its hangar the page's version 171. `claude/jolly-lovelace-scn82y` merged it on
+30 October for its terms (Ryan: "Fix the missing ones now, that's this sessions job, the other
+one doesn't have your context"), and main took the two together that evening.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -190,8 +206,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   perspective"). The layout is the saved setting Skirmish Controls (Ryan: "Leave the layout as
   an option"), Middle by default, Bottom the machines right under the foes. The vista, window
   and holo grounds and the overworld tiles are gone. His second round that day, built: a squad
-  of one or two in the middle hexes; the machines turned 15° toward the middle; KEYWORDS spelt
-  out between End turn and Withdraw, pressable over an open codex; a quick switch for the
+  of one or two in the middle hexes; the machines turned 15° toward the middle; a quick switch for the
   controls beside the eye, both inside the log's glass; a unit's readout a tap toggle, one at a
   time, translucent (70%) over the arrows it draws, a machine's resting on its gauges; at the
   bottom the field down to the log and the machines lower. His third round asked the red chips to
@@ -233,6 +248,54 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   minty, #60ffb0, apart from the amber for red-green eyes, and the COLOURS page was cut to what
   is in play: the presets, the enemy's four violets (the routes and the rift's bars and tears
   wear the violet itself) and the meanings; the old other-world drawing in TerrainArt is gone.
+  The codex's passive line reads in ink since ("the passive line can go in normal colour"; it
+  wore heat's colour, the old accent). Then the keywords, his calls the same evening ("Try bold
+  in the colour first, and I'll judge"; "standardize the keyword colours"; "Tapping a keyword is
+  exactly what we need"): every term the keywords list defines reads bold in its colour with its
+  icon wherever shown text names it (the holds, the readouts, the codex, the list itself), and a
+  tap opens its entry beside the word (`KeywordTip`); one table (`Terms`) gives each term its
+  icon and its colour group, the die's marks, the chips and the text alike, never the HUD colour
+  (Chain moved to heat; Cryo, Suppressed and Guarded to the blue; Exposed's die mark to the
+  red-red; Spread, Rapid and the plain shapes to ink). A debug build's KEYWORD INK compares the
+  words in ink. Then the bosses' slate came in for its terms (his word: "Fix the missing ones now,
+  that's this sessions job"): `claude/brave-cori-fr18de` merged here, Steal and Swallowed in the
+  table, and the keywords list's last heading, FOES' MOVES, the keywords a foe's move carries
+  (Every Machine, Countdown, Last Act, Follow-up, Swallow, Scorch, Silence, Self-Destruct, Parts),
+  each with an icon (Steal, Every Machine and Parts new), the engine's own words (its aim, menace)
+  kept out; the slate's swallowed machine's dashed edge drawn round the machine, the field's views
+  being wider than their machines, and its boss test reading a domain's first boss of the list
+  (it had errored after its first check, unseen, since a domain's bosses became a list). Then his
+  call on the dice ("can we just change lock/unlock to hold and double-tap, and tap to inspect for
+  dice? That way it's standard across the board"; "And yes remove keywords button"): a tap reads a
+  die as it reads a unit, its readout one with the units' and open until closed, so its terms take
+  a tap; a double-tap or a hold locks or unlocks, the readouts left as they stand; the waiting
+  Swap's die reads on a tap or a hold; KEYWORDS left the bottom row, the list in MENU alone, and
+  the codex's panel runs to the foot again. His two follow-ups, agreed the same evening ("Yeah,
+  agreed to all"): a die's tap lands once the double-tap window (0.3 s) passes, the face lit from
+  the touch meanwhile, so a double-tap's lock never flashes the readout; and a tap on the ground
+  sends a waiting Swap home (the first closing an open readout), since only the drag back had set
+  it back, unseen; the Swap's keywords-list line says so.
+- The bosses' slate, seven of twelve (30 October, on Ryan's word; `docs/bosses_proposal.md`, its
+  sections on what landed, what each waiting boss needs and the calls on what landed; the
+  bible's section 9 rows): Rotbloom and Floraison in the Meadow, Gilgamesh and the Fallen
+  Weapon in the Waste, the Matador in the Marsh, the Behemoth and the Cinder Tortoise in the
+  Peak, as runnable placeholder kits, each domain keeping its old massive stand-in last until it
+  has three of its own. Built for them, on any foe: a follow-up (`then`: a move names its foe's
+  next round's move, a Suppress or a Disrupt breaking the pair), a steal with its borrowed swing
+  (the entry a machine shows taken, swung back at its number, a fake for 1 when it was no
+  weapon) and a swallow (a machine Swallowed, out of the fight for two rounds or until its
+  swallower falls, never the last in the fight; drawn as a ghost under a dashed edge); the
+  Behemoth carries the first last act in content and the Fallen Weapon the first boss in parts,
+  its two eyes Guarding its core. The harness fields the boss its picker names (it fielded each
+  domain's first whatever was picked, unnoticed while each had one), the tables script reads a
+  last act where content keeps it, and `--set foes/...` reaches a foe's numbers on the runner.
+  The slate stands at 48 HP at tier one (the core in parts 40, its eyes 8), under the scale
+  row's 80 to 100, which at 80 took the default team 7 to 13 rounds against each boss alone where
+  the kill-time test asks three to five (`docs/measurements.md`, 30 seeds, a direction). Found on
+  the way: the balance runner never set the foe factory, so in every matrix until now a Gel never
+  split, nothing was summoned and no part stood; fixed, and the Gel's, the summoners' and the
+  parts' cells wait on the next 200-seed matrix. Waiting on Ryan: the five unbuilt bosses' marks and the calls on what
+  landed; Rotbloom, Gilgamesh and the eyes have no art until the image model has a route.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -278,6 +341,21 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   validator refuses either; the Thief's codex lost its speed claim. The Dire Wolf's line moves 4
   (Ryan: it "can be faster"), the Warg and the Alpha Warg with it, and its codex no longer
   compares it with the cars (the mechanics audit's 29); the campaign run moves no band on it.
+- A foe's moves keep content's order (30 October): `ContentDB.make_foe`, bringing the first
+  attack to the front when a special leads, passed over an attack already in front and moved
+  the next, so 25 of the 65 foes loaded out of order (two attacks listed first swapped, as for
+  the Lancer, the Augur and the Reaper; a below-half special put first, as for the Black Mage's
+  Flare and three of the four bosses'). It now stops at the first attack, two tests in
+  `tests/test_content.gd` holding it. The order is the codex's list, the opening intent, the
+  order a seeded draw walks (each move's odds unchanged, so only which seed draws it moves)
+  and the pattern a Disrupt steps through, which changed for nine (the Antlion Queen, the
+  Wyvern, the Red Dragon, the Reaper, the Lancer and the Augur, and the promoted Lancer, Cleric
+  and Augur; the rest's old order was a rotation of content's). A saved battle keeps the order
+  its foes were saved in. The boss cells at 30 seeds hold their direction (`docs/measurements.md`,
+  the foes' move order): no fight's mean over the rows moves more than 2.2 points, the fights
+  with no foe it touched come out identical fight for fight, and the three single cells past a
+  cell's band read inside it at 200 seeds; no stock kit fields a Disrupt, so the new pattern is
+  unread until one does.
 - The six map shapes (Ryan's direction of 28 October and his calls of 29 October; landed 29
   October, the brief retired): RIVER CROSSING, FJORD, BADLANDS, OPEN STEPPE, RUINED CITY and
   GORGE, each laying its own water, walls, decorative ground and relief; a battle that names no
@@ -385,9 +463,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
   economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable since the Petrels' engines (30 October); 81 components,
-  32 of them locked; 17 modules; four domains with 49 wildlife (18 at tier one, their bosses
-  among them, the ladder's 26 recolours and five elites as placeholder kits, each tier's
-  compositions partitioned from its list as placeholders) and 8 heroes with their promoted forms; 6 foe moves
+  32 of them locked; 17 modules; four domains with 49 wildlife (18 at tier one, the four
+  stand-in bosses among them, the ladder's 26 recolours and five elites as placeholder kits, each tier's
+  compositions partitioned from its list as placeholders), seven of the slate's bosses and the
+  Fallen Weapon's two eyes as placeholder kits, and 8 heroes with their promoted forms; 6 foe moves
   planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
@@ -508,7 +587,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 The tasks are the to-do's; this is the index of what waits.
 
 - The Peak's elite and a Waste hunter, the escort compositions by tier and the Fracture's
-  prize (the bible's section 12), with the bosses' slate (`docs/bosses_proposal.md`) and the
+  prize (the bible's section 12), with the bosses' slate's five waiting (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
   silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
@@ -602,7 +681,7 @@ and the streets) main's.
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
 7. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves;
-   the bosses' slate as content alone); the ramp's numbers on Ryan's word; the battery plan's rest (the props' fade, the 3D at 30); audio;
+   the bosses' slate's five waiting, content once marked, seven landed 30 October); the ramp's numbers on Ryan's word; the battery plan's rest (the props' fade, the 3D at 30); audio;
    art; the commander layer after a balance baseline; onboarding before a phone leaves the desk.
 
 ## Pages
@@ -613,29 +692,25 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. On `claude/affectionate-ramanujan-5d24t6` this file
-  is v0.404 with the Petrels' rows (their engines, section 12's burn on basics, the Regenerating
-  row and four printed-rule rows spliced by hand from the tables script's own rendering) and is
-  not published: the live page read v0.406 on 30 October, other sessions' rows on main's v0.403,
-  so its publish is a three-way merge onto the live (base `d84ad16`'s file) as this branch lands.
-  On main's head this file and the live page are v0.403 (the
-  page's version 415, published 30 October from `claude/charming-rubin-h954bp`: lit parts hold
-  their colour on the phone, the reference-glass row, and a halo for lit parts asked in section
-  12; onto its own v0.402 at 414, Ryan's answers after the landing, the rebuilds judged fine, the
-  Armadillo liked as built; that three-way merged onto the live v0.401 another session published
-  at 413, sound notes and new foes in the generated tables, ahead of their code; past
-  `claude/jolly-lovelace-scn82y`'s v0.399 at 411 as main took it (the minty GREEN, the COLOURS
-  page cut to what is in play and the lava kept), itself onto the live v0.398 at 410 (the tracks'
-  notes) and this branch's v0.397 at 409 as main first took it; each publish before it merged the same way, as this file's
-  history in git shows). So this file carries rows other sessions published ahead of their code
-  (the tracks in pairs, and the notes on Hold The Line and Night Shift; the new foes in the
-  generated tables, the Rotbloom, the Behemoth, the Matador and the Swallowed debuff among them,
-  v0.401's), each landing with its branch. The version numbers on the publishing branch's file and the live agree after every
-  publish. Before republishing, read the live page; if another session moved it, publish a
-  three-way merge onto it (`git merge-file` with the last-published file as the base, the
-  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
-  The tables script, which writes the buff, debuff and keyword tables from main's content, waits
-  until those foes land: run on main's content it reverts their rows (36 lines, tried 30 October).
+  `docs/design-bible.html` after every change. This file and the live page are v0.408 (the
+  page's version 420, published 30 October from `claude/jolly-lovelace-scn82y`: the die's tap
+  waiting out the double-tap window and a tap on the ground setting a Swap back, onto its own
+  v0.407 at 419, the dice's gestures and KEYWORDS retired, onto its own v0.406 at 418, the keywords list's
+  heading for a foe's move keywords, onto the live v0.405 at 417, which another session published
+  with the halo for lit parts on trial on the Buzzard; under it this branch's v0.404 at 416, the
+  keywords in their colour with their icons and a tap's tip, three-way merged onto the live v0.403
+  at 415, which `claude/charming-rubin-h954bp` published as main took it, onto its own v0.402 at
+  414 and the live v0.401 at 413, the bosses' slate's rows, from `claude/brave-cori-fr18de`; each
+  publish before it merged the same way, as this file's history in git shows). So this file carries
+  rows other sessions published ahead of their code (the halo on trial, the tracks in pairs, and
+  the notes on Hold The Line and Night Shift), each landing with its branch. The version numbers on the
+  publishing branch's file and the live agree after every publish. Before republishing, read the
+  live page; if another session moved it, publish a three-way merge onto it (`git merge-file` with
+  the last-published file as the base, the wrapper's first line and its trailing `</body></html>`
+  stripped from the saved live source). The tables script, which writes the buff, debuff and
+  keyword tables from the content, runs freely on this branch, the slate's content in it (run 30
+  October after the merge: no line changed); on a head without the slate it reverts the slate's
+  rows.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's

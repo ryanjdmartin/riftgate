@@ -302,12 +302,13 @@ func live_mechs() -> Array[MechState]:
 	return out
 
 
-## The live machines a foe may pick or a teammate may land a shield, a vent or a buff on: a Phased one is neither
-## (the Swallowtail's Mooring Screens, 21 October).
+## The live machines a foe may pick or a teammate may land a shield, a vent or a buff on: one out
+## of the fight is neither, Phased (the Swallowtail's Mooring Screens, 21 October) or Swallowed
+## (a foe's swallow, 30 October).
 func targetable_mechs() -> Array[MechState]:
 	var out: Array[MechState] = []
 	for m in live_mechs():
-		if not Effects.has(m.unit, "phased"):
+		if not is_out(m):
 			out.append(m)
 	return out
 
@@ -315,6 +316,18 @@ func targetable_mechs() -> Array[MechState]:
 ## Is the machine Phased (cannot act, take damage or be targeted until the round's end)?
 static func is_phased(ms: MechState) -> bool:
 	return ms != null and Effects.has(ms.unit, "phased")
+
+
+## Is the machine Swallowed (a foe's swallow, 30 October: out of the fight until its rounds run
+## out or its swallower falls)?
+static func is_swallowed(ms: MechState) -> bool:
+	return ms != null and Effects.has(ms.unit, "swallowed")
+
+
+## Is the machine out of the fight: Phased or Swallowed? Nothing reaches it, nobody may target
+## it, and it takes no damage; its own cooling, ticks and overheats are its own.
+static func is_out(ms: MechState) -> bool:
+	return is_phased(ms) or is_swallowed(ms)
 
 
 ## The pack's own foes left standing, on the field or waiting: what it keeps on the map. A pack
@@ -634,8 +647,8 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 ## on nobody in particular shows none: Foe.intent_on), and not about to die to burn first.
 func acting_on(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
-	if is_phased(ms):
-		return out   # nothing reaches a Phased machine
+	if is_out(ms):
+		return out   # nothing reaches a machine out of the fight
 	for f in field_foes():
 		if not f.intent_on(ms.unit):
 			continue
@@ -1000,8 +1013,8 @@ func machine_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 	if f == null or not f.on_machines() or shield_short(ms, f):
 		return out
 	for who in live_mechs():
-		if who != ms and is_phased(who):
-			continue   # a Phased ally cannot be targeted (Ryan, 20 October)
+		if who != ms and is_out(who):
+			continue   # an ally out of the fight cannot be targeted (Ryan, 20 October)
 		if f.act_again and (who == ms or not who.assigned):
 			continue   # an ally acting again: one whose die is spent (the Reveille Horn's charged form)
 		if f.action_price > 0 and who != ms and (not who.assigned or rerolls_left < f.action_price):
@@ -1190,7 +1203,8 @@ func start_round() -> void:
 	# the end): every machine sheds its chassis's cooling rating, one log line for all.
 	var cooled: Array[String] = []
 	for ms in mechs:
-		ms.assigned = false
+		# A swallowed machine cannot act while it is out (30 October): its die is spent before it rolls.
+		ms.assigned = is_swallowed(ms)
 		if not ms.alive():
 			continue
 		# A sealed machine's own cooling stops (the Armadillo's Lockdown, 20 October); an ally's
@@ -1275,7 +1289,12 @@ func _draw_blows(f: Foe, ahead: Dictionary) -> void:
 ## so the swing after the roar can be counted on). Nothing legal falls back to its blow.
 func legal_actions(f: Foe) -> Array:
 	var legal: Array = []
+	var follow := Foe.follow_ups(f.actions)
 	for a in f.actions:
+		if follow.has(str(a.get("id", ""))):
+			continue   # a follow-up comes only after the move that names it (30 October)
+		if str(a.get("effect", "")) == "swallow" and swallowable().size() < 2:
+			continue   # never the last machine able to act
 		if _when_holds(f, a):
 			legal.append(a)
 	if legal.size() > 1 and not f.last_special.is_empty():
@@ -1296,6 +1315,17 @@ func _choose_foe_action(f: Foe) -> void:
 	if not f.pending.is_empty():
 		f.action = f.pending   # a countdown move holds until it lands
 		return
+	# A follow-up (30 October): the move its last move named in `then` comes now, announced like
+	# any; a borrowed swing with nothing taken has nothing to swing, and the roll decides.
+	var next := f.next_move
+	f.next_move = ""
+	if not next.is_empty():
+		for a in f.actions:
+			if str(a.get("id", "")) == next and (not Foe.swings_held(a) or not f.held.is_empty()):
+				f.action = a
+				f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
+				_begin_countdown(f)
+				return
 	f.choose_from(legal_actions(f), rng)
 	f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
 	_begin_countdown(f)
@@ -1997,6 +2027,10 @@ func _enemy_turn() -> void:
 		var moves := not f.fresh and not f.gathering()
 		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			_foe_turn(f)
+			# A move that landed names its follow-up for next round (30 October); one lost to a
+			# Suppress or turned by a Disrupt names nothing, so either answer breaks the pair.
+			if f.alive() and not f.gathering() and f.action.has("then"):
+				f.next_move = str(f.action["then"])
 		if moves:
 			Effects.remove(f, "kindled")
 			Effects.remove(f, "primed")   # a stoker's priming rides the same move (28 October)
@@ -2017,8 +2051,8 @@ func _enemy_turn() -> void:
 ## own (the mechanics audit's 13, 27 October).
 func _foe_turn(f: Foe) -> void:
 	var t := f.target as MechState
-	if t == null or not t.alive() or is_phased(t):
-		t = _repick(f)   # its machine fell, or is Phased: the next in line
+	if t == null or not t.alive() or is_out(t):
+		t = _repick(f)   # its machine fell, or is out of the fight: the next in line
 	_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
 	if not f.pending.is_empty():
 		if f.charge > 0:
@@ -2040,8 +2074,8 @@ func _foe_turn(f: Foe) -> void:
 			if _screened.has(m):
 				log.append("%s's blow on %s is lost in the static" % [f.display_name, m.unit.display_name])
 				continue
-			if is_phased(m):
-				continue   # out of the fight until the round's end
+			if is_out(m):
+				continue   # out of the fight
 			_strike(f, m)
 	else:
 		if t == null:
@@ -2058,6 +2092,8 @@ func _foe_turn(f: Foe) -> void:
 			_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
 			return
 		_strike(f, t)
+	if Foe.swings_held(f.action):
+		f.held = {}   # the borrowed swing spends what it took (30 October)
 	if f.has_keyword(f.action, "self_destruct") and f.alive():
 		# The blow spends the striker (the Bomb): it dies whole and never gets back up.
 		f.hp = 0
@@ -2155,13 +2191,15 @@ func _strike(f: Foe, t: MechState) -> void:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
 			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id, f.rider(f.action, "corrupt"))
 			log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
+		if f.has_keyword(f.action, "steal") and t.alive() and t.face_index >= 0:
+			_steal(f, t)
 
 
 
 ## Whether this foe's blows carry a rider a Ward turns away: a scorch, a burn, a disable or a
 ## corrupt (the breach is the Ward's too, in _damage_mech; a silence and a purge are specials).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "burn", "disable", "corrupt"]:
+	for kw in ["scorch", "burn", "disable", "corrupt", "steal"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return Effects.has(f, "primed")   # a primed foe's blows carry Burning as a rider (28 October)
@@ -2992,7 +3030,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var a := f.action
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
-	if t == null and effect in ["burn", "disable", "silence", "dispel"]:
+	if t == null and effect in ["burn", "disable", "silence", "dispel", "swallow"]:
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
@@ -3093,6 +3131,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			else:
 				_fire_on(t, "burning_mech", maxi(1, value), f)
 				log.append("%s: %s, %s burning ×%d" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, maxi(1, value)])
+		"swallow":
+			_swallow(f, t, maxi(1, value))
 		"disable":
 			# The entry the die shows is switched off through the machine's next turn, no blow.
 			if Effects.has(t.unit, "ward"):
@@ -3198,7 +3238,7 @@ func _unready_ally(caster: Foe) -> Foe:
 func specials_reach() -> Array[MechState]:
 	var out: Array[MechState] = []
 	for ms in live_mechs():
-		if not is_phased(ms):
+		if not is_out(ms):
 			out.append(ms)
 	return out
 
@@ -3352,6 +3392,79 @@ func _phase(w: MechState) -> void:
 		if foe.alive() and foe.target == w:
 			foe.target = _repick(foe)
 	log.append("%s is Phased: out of the fight until the round's end" % w.unit.display_name)
+
+
+# ---------------------------------------------------------------- a swallow and a steal (30 October)
+
+## The machines a swallow may take: alive and in the fight. A swallow needs two of them, so it
+## never takes the last machine able to act (Floraison's, 30 October).
+func swallowable() -> Array[MechState]:
+	return targetable_mechs()
+
+
+## The source a swallow's status carries: the swallower by its pack and type, so its fall finds
+## the machine it holds after a save, with no references kept.
+static func swallow_source(f: Foe) -> String:
+	return "swallow:%d:%s" % [f.pack_id, f.content_id]
+
+
+## A foe's swallow on its machine (Floraison's, 30 October, the slate's signature: "swallows a
+## machine, out of the fight for a few rounds"): Swallowed for `rounds` rounds, out of the fight
+## as a Phased machine is, cannot act, take damage or be targeted, until its rounds run out or
+## its swallower falls. A Ward turns it away; it never takes the last machine able to act.
+func _swallow(f: Foe, t: MechState, rounds: int) -> void:
+	var what := str(f.action.get("name", "swallows"))
+	if Effects.has(t.unit, "ward"):
+		log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, what, t.unit.display_name])
+		return
+	if is_out(t) or swallowable().size() < 2:
+		log.append("%s: %s, and finds nothing it may take" % [f.display_name, what])
+		return
+	Effects.grant_for_rounds(t.unit, Effects.STATUS["swallowed"], swallow_source(f), round + rounds)
+	t.assigned = true
+	for foe in field_foes():
+		if foe.alive() and foe.target == t:
+			foe.target = _repick(foe)
+	log.append("%s: %s, %s swallowed: out of the fight for %d round%s, or until %s falls" % [f.display_name, what, t.unit.display_name, rounds, "" if rounds == 1 else "s", f.display_name])
+
+
+## A swallower down lets go of what it holds, at once (30 October).
+func _release_swallowed(f: Foe) -> void:
+	var src := swallow_source(f)
+	for ms in mechs:
+		var keep: Array = []
+		var freed := false
+		for m in ms.unit.modifiers:
+			if m.id == "swallowed" and m.source == src:
+				freed = true
+				continue
+			keep.append(m)
+		if freed:
+			ms.unit.modifiers = keep
+			if state == State.ASSIGN:
+				ms.assigned = false   # let go in the player's turn, it acts this round
+			log.append("%s falls, and lets %s go" % [f.display_name, ms.unit.display_name])
+
+
+## A steal (Gilgamesh's, 30 October, the slate's signature: "takes the weapon a machine shows and
+## fights with it; now and then the piece it took is a fake"): the entry the machine's die shows
+## is switched off through its next turn, as a disable, and the foe holds it: its borrowed swing
+## lands that weapon's number (a rolled one at its mean, a blow a strike), and anything else it
+## took, a shield, a vent, equipment or a blank, is a fake, for 1.
+func _steal(f: Foe, t: MechState) -> void:
+	var face: Face = t.die.faces[t.face_index]
+	Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+	var weapon := face.is_weapon()
+	f.held = {"name": face.describe(), "power": stolen_number(face), "fake": not weapon}
+	log.append("%s takes %s's %s%s" % [f.display_name, t.unit.display_name, face.describe(), "" if weapon else ", a fake"])
+
+
+## The number a stolen entry swings for: a weapon's printed blow (a rolled one at its mean,
+## rounded), anything else 1, the fake.
+static func stolen_number(face: Face) -> int:
+	if face == null or not face.is_weapon():
+		return 1
+	return maxi(1, roundi((face.power + face.power_max) / 2.0))
 
 
 ## A die rolled, any machine's (the Swallowtail's Muster, Ryan's go of 21 October): every machine
@@ -4040,7 +4153,7 @@ func _disrupt(foes: Array) -> void:
 		# move it leaves aimed at no one machine (a brace, a blow at every machine), so the pick it
 		# carried was never an intent the player saw.
 		var t := foe.target as MechState
-		if t == null or not t.alive() or is_phased(t) or not aimed:
+		if t == null or not t.alive() or is_out(t) or not aimed:
 			foe.target = _repick(foe)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
@@ -4177,8 +4290,8 @@ func _settle_heat() -> void:
 ## whole blow reaches the hull. A Barrier takes the next blow whole; a Ward turns a breach
 ## away. A shield sized to a telegraphed blow, or a Barrier, is the counterplay.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
-	if is_phased(ms):
-		return   # a Phased machine takes no damage (ticks and overheats are its own, and land elsewhere)
+	if is_out(ms):
+		return   # a machine out of the fight takes no damage (ticks and overheats are its own, and land elsewhere)
 	amount = Effects.damage_taken(ms.unit, amount, source)   # buffs and debuffs on damage taken, before shield and armour; the striker read for its statuses
 	var brought := amount   # the blow as it arrives, for the round preview's incoming
 	# A Barrier takes the next blow that deals anything, whole, and is spent; a blow of nothing
@@ -4354,7 +4467,7 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 			return most[r.randi_range(0, most.size() - 1)]
 		"focus":
 			var shared = _focus.get(f.rank, null)
-			if shared != null and shared.alive() and not is_phased(shared) and live.has(shared):
+			if shared != null and shared.alive() and not is_out(shared) and live.has(shared):
 				return shared
 			var pick := _pick_exposed(f, live, r)
 			_focus[f.rank] = pick
@@ -4579,6 +4692,7 @@ func _clear_dead_slots() -> void:
 				cleared = true
 				if f.rank >= 0:
 					_falls += 1   # a foe down, gone or getting back up: what a spend counts as a kill
+					_release_swallowed(f)   # a swallower down lets its machine go, whatever comes next
 					# A foe that readied itself to get back up does so once, whole, in its own slot
 					# and at once (Ryan, 26 October: "just like the gel splitting. It makes clearing
 					# that column harder"), unless it went whole (a Bomb's burst).

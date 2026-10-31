@@ -140,10 +140,10 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "marsh")
 	var only := db.foes_for(boss)
 	assert_eq(only.size(), 1, "a boss unpacks to just its boss")
-	assert_eq(only[0].display_name, str(db.foes[str(db.factions["marsh"]["boss"])]["name"]), "the Marsh's boss, whatever the content names it")
+	assert_eq(only[0].display_name, str(db.foes[db.bosses_of("marsh")[0]]["name"]), "the Marsh's first boss, whatever the content names it (a domain's bosses are a list since the slate)")
 	assert_true(only[0].boss, "and the content marks it the boss")
 	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "peak"))
-	assert_eq(pit[0].display_name, str(db.foes[str(db.factions["peak"]["boss"])]["name"]), "the Peak's boss")
+	assert_eq(pit[0].display_name, str(db.foes[db.bosses_of("peak")[0]]["name"]), "the Peak's first boss")
 
 
 func test_spawn_table_lists_the_factions_units() -> void:
@@ -468,7 +468,7 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var fid := str(db.factions.keys()[0])
-	var small: Dictionary = db.foes[str(db.factions[fid]["boss"])].duplicate(true)
+	var small: Dictionary = db.foes[str(db.bosses_of(fid)[0])].duplicate(true)
 	small["size"] = 1
 	db.foes["small_boss"] = small
 	db.factions[fid]["boss"] = "small_boss"
@@ -1452,6 +1452,47 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 		if str(a["id"]) == "regen":
 			regrow = int(a["value"])
 	assert_true(said.contains("Regrows %d HP" % regrow), "with its number filled in")
+
+
+## A synthetic foe move, so no test leans on a real entry's kit: an attack, or a special of the
+## kind given running the engine's first effect of that kind; `when` its condition, if any.
+func _foe_move(id: String, kind: String = "attack", when: String = "") -> Dictionary:
+	var m := {"id": id, "name": id.capitalize(), "kind": kind, "weight": 1, "text": "", "status": "implemented"}
+	if kind != "attack":
+		m["effect"] = str(Foe.ACTION_EFFECTS[kind][0])
+		m["value"] = 1
+	if not when.is_empty():
+		m["when"] = when
+	return m
+
+
+## A foe's moves keep content's order (ContentDB.make_foe), the pattern a Disrupt steps through
+## and the order a weighted draw walks: an attack that already leads moves nothing, so two
+## attacks listed first stay as written, and a later attack (a below-half special, the Black
+## Mage's shape) stays where content put it.
+func test_a_foe_that_leads_with_an_attack_keeps_its_content_order() -> void:
+	var db := ContentDB.new()
+	db.foes = {
+		"test_twin": {"name": "Twin", "hp": 5, "attack": 2, "actions": [_foe_move("jab"), _foe_move("hook"), _foe_move("guard", "defend")]},
+		"test_caster": {"name": "Caster", "hp": 5, "attack": 2, "actions": [_foe_move("fire"), _foe_move("ward", "debuff"), _foe_move("flare", "attack", "below_half")]},
+	}
+	var twin := db.make_foe("test_twin")
+	assert_eq(twin.actions.map(func(a): return str(a["id"])), ["jab", "hook", "guard"], "two attacks listed first keep content's order")
+	assert_eq(str(twin.action["id"]), "jab", "and it opens with the first")
+	var caster := db.make_foe("test_caster")
+	assert_eq(caster.actions.map(func(a): return str(a["id"])), ["fire", "ward", "flare"], "a later attack, a below-half special, is not moved to the front")
+	assert_eq(str(caster.action["id"]), "fire", "and it opens with its first attack")
+
+
+## A foe whose content leads with a special still opens with its blow: its first attack moves
+## to the front and nothing else moves, a later attack included.
+func test_a_foe_that_leads_with_a_special_opens_with_its_first_attack() -> void:
+	var db := ContentDB.new()
+	db.foes = {"test_mystic": {"name": "Mystic", "hp": 5, "attack": 2, "actions": [_foe_move("rouse", "buff"), _foe_move("guard", "defend"),
+		_foe_move("jab"), _foe_move("hook"), _foe_move("flare", "attack", "below_half")]}}
+	var f := db.make_foe("test_mystic")
+	assert_eq(f.actions.map(func(a): return str(a["id"])), ["jab", "rouse", "guard", "hook", "flare"], "the first attack leads, the rest in content's order")
+	assert_eq(str(f.action["id"]), "jab", "its opening intent is its blow")
 
 
 func test_every_component_names_a_silhouette_class() -> void:

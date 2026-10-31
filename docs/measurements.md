@@ -3836,6 +3836,127 @@ body (luminance contrast / ΔE, the worst simulation, the old lake in brackets):
 #3366ff 1.88 / 17 (#3f78dc 1.83 / 16), the Waste's #339999 1.51 / 19 (#2e8cbc 1.64 / 13), the
 Marsh's #003333 6.40 / 56 (#3e4e46 4.18 / 46), the Peak's crust #330000 8.67 / 62 (7.61 / 60).
 
+## 30 October, the foes' move order
+
+**The boss cells before and after the move-order fix** (30 October; the status's bullet:
+`ContentDB.make_foe` passed over an attack already in front and moved the next, so 25 of the
+65 foes loaded out of content's order). `tools/balance.gd -- --seeds 30 --packs` the thirteen
+boss cells (the four bosses alone, each bench hero's final with three of its domain's first
+pack, the finale), random and greedy, on main's head (`8607407`) as it stood and with the fix,
+the same seeds, against every row (the 22 runnable machines alone, the team and the three
+makers' trios): 676 cells, 21,060 fights a side. Won, the mean over the 26 rows:
+
+| Fight | Random, before / after | Greedy, before / after | Cells identical, of 52 |
+|---|---|---|---|
+| Treant | 24.2% / 24.2% | 43.8% / 44.0% | 16 |
+| Sandworm | 12.6% / 13.2% | 18.6% / 19.4% | 29 |
+| Bone Wyvern | 23.5% / 23.8% | 44.5% / 44.4% | 17 |
+| Magma Elemental | 10.5% / 10.5% | 15.9% / 15.9% | 52 |
+| The Warrior's final (with Goblin x3) | 15.1% / 15.1% | 18.2% / 17.6% | 35 |
+| The Martial Artist's final (with Goblin x3) | 12.6% / 12.7% | 16.4% / 16.3% | 40 |
+| The Thief's final (with Needler x3) | 19.2% / 19.2% | 27.9% / 27.9% | 52 |
+| The Lancer's final (with Needler x3) | 15.4% / 16.4% | 20.9% / 19.2% | 0 |
+| The Cleric's final (with Revenant x3) | 32.1% / 32.6% | 62.6% / 60.5% | 10 |
+| The Augur's final (with Revenant x3) | 28.7% / 30.9% | 59.7% / 59.7% | 0 |
+| The Black Mage's final (with Salamander x3) | 14.2% / 13.8% | 16.0% / 16.0% | 41 |
+| The Summoner's final (with Salamander x3) | 18.3% / 18.3% | 25.9% / 25.9% | 52 |
+| The finale (the Warrior, the Thief, the Cleric, the Black Mage, promoted) | 0.0% / 0.0% | 0.0% / 0.0% | 48 |
+
+Read. The direction of the boss cells holds: no fight's mean moves more than 2.2 points on
+either rung, inside the band of a mean over the rows at 30 seeds (about 4), and the thirteen
+pooled read 17.4% won to 17.8% on the random rung and 28.5% to 28.2% on the greedy. The fights
+that field no foe the fix touched (the Magma Elemental alone, the Thief's and the Summoner's
+finals) are identical fight for fight, as are 392 of the 676 cells in all, where no draw fell
+differently (a Treant that never falls below half draws as it did). No stock kit carries a
+Disrupt (the Differentiation Probe alone has one, and no chassis fields it), so the matrix
+reads only the draw's order, which moves which seed draws a move and never a move's odds:
+every delta here is seeded noise, and the pattern a Disrupt steps through, which the fix
+changed for nine foes, is unread until a kit fields one. Three single cells moved past a
+cell's 30-seed band of about 18 points (the Musk Ox on the Lancer's final, random, 20% to 47%;
+the Musk Ox on the Cleric's final, greedy, 97% to 70%; the Whip Scorpion on the Augur's final,
+random, 3% to 27%). Read again at 200 seeds a side (those two rows against those three
+finals, both rungs: twelve cells, 2,400 fights a side), they move +4.5, -6.5 and +7.0, inside
+a 200-seed difference's band (about 8 there); the one cell of the twelve past it (the Musk Ox
+on the Augur's final, random, 70.0% to 80.5%) moves +1.5 at 1,000 seeds (72.6% to 74.1%, the
+band 3.9), and the Whip Scorpion's beside it -0.1 (18.0% to 17.9%). Run on Godot 4.7.2; the
+Musk Ox's 1,000 replayed on main as it took the fix (`d84ad16` merged, Godot 4.8-beta2) come out
+identical fight for fight, so the read stands for that head.
+
+## 30 October, the meanings as text on the codex's plate
+
+**Keywords in their colour** (the decision it informs: whether a term's word wears its colour or
+ink, Ryan's "Try bold in the colour first, and I'll judge"). Method: luminance contrast of each
+meaning drawn as text on the codex's plate (#0c100c), in normal vision and the three Machado
+simulations, the worst case read; on a raised plate (#121812) each stands a few tenths lower.
+
+| Colour | Normal | Protan | Deutan | Tritan | Worst |
+|---|---|---|---|---|---|
+| ink #f2f4ee | 17.3 | 17.3 | 17.3 | 17.3 | 17.3 |
+| heat #ff4000 | 5.5 | 3.7 | 6.6 | 4.9 | 3.7 |
+| the shield's blue #2f63d8 | 3.6 | 4.1 | 3.4 | 4.1 | 3.4 |
+| the enemy's violet #c8a4ff | 9.3 | 9.3 | 9.4 | 9.5 | 9.3 |
+| the red-red #ff0000 | 4.8 | 3.0 | 6.0 | 4.8 | 3.0 |
+| the hull's #d8d2c4 | 12.7 | 12.6 | 12.8 | 12.7 | 12.6 |
+| GAIN #5cff6a | 14.6 | 15.5 | 13.8 | 14.3 | 13.8 |
+| the muted grey #7b857c | 5.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+
+The three darker meanings sit under the plate's quietest text, the flavour quote's muted grey
+(5.0): heat 3.7, the shield's blue 3.4 and the red-red 3.0 at their worst, where the violet, the
+hull's colour and ink read freely. None can simply be lightened: a lighter blue nears the violet
+for red-green vision (the reason the shield stayed dark) and a lighter heat reads green to Ryan.
+Drawn as icons at the chips' size, the three clear the 3:1 a graphic wants, the red-red at it.
+
+## 30 October, the bosses' slate
+
+**The slate's seven read alone, at the scale row's 80 and at 48** (`tools/balance.gd`, 30 seeds,
+the greedy rung, each boss alone with nothing beside it; a direction). Rows: the default team
+(the Honey Badger, the Clydesdale, the Kite), the three makers' trios and a stock four of tier
+ones (the Honey Badger, the Baboon, the Armadillo, the Prairie Dog). The bosses as built, at 80
+(the Fallen Weapon's core 64, its eyes 12), and at 48 by `--set foes/<id>/hp` (the core 40);
+Rotbloom and the Fallen Weapon read on the fixed runner (below), the eyes once more at 8. Mean
+rounds of the fights won, the win rate where under 100%:
+
+| At 80 | Rotbloom | Floraison | Gilgamesh | Fallen Weapon | Matador | Behemoth | Cinder Tortoise | The four stand-ins |
+|---|---|---|---|---|---|---|---|---|
+| Default team | 8.9 | 8.4 | 7.1 | 13.1 (93%) | 8.4 | 8.8 | 10.5 | 3.1 to 4.0 |
+| Minerva's trio | 17.3 (73%) | 17.3 | 13.8 | 26.9 (80%) | 18.6 | 17.2 | 32.1 | 6.4 to 7.1 |
+| Kestrel's trio | 7.6 | 7.8 | 6.8 | 9.4 | 7.6 | 8.1 | 8.5 | 2.8 to 3.7 |
+| Wainwright & Sutler's trio | 18.6 (20%) | 18.5 (83%) | 14.4 | 17.0 (0%) | 18.1 (97%) | 18.1 (97%) | 24.6 | 6.3 to 8.0 |
+| The stock four | 13.2 (97%) | 13.4 | 11.3 | 22.1 | 13.4 | 11.6 | 19.0 | 5.1 to 5.9 |
+
+| At 48 | Rotbloom | Floraison | Gilgamesh | Fallen Weapon, eyes 12 / 8 | Matador | Behemoth | Cinder Tortoise |
+|---|---|---|---|---|---|---|---|
+| Default team | 4.4 | 4.7 | 4.2 | 6.9 / 5.4 | 4.8 | 5.4 | 5.8 |
+| Minerva's trio | 9.7 | 10.0 | 8.4 | 17.4 / 12.5 | 11.2 | 11.0 | 19.3 |
+| Kestrel's trio | 4.2 | 4.8 | 4.2 | 5.4 / 4.6 | 4.5 | 5.5 | 5.1 |
+| Wainwright & Sutler's trio | 12.4 (83%) | 10.7 | 9.0 | 17.1 (13%) / 18.4 (47%) | 10.7 | 11.3 (97%) | 14.4 |
+| The stock four | 8.0 | 8.2 | 7.1 | 14.0 / 11.1 | 8.2 | 7.9 | 11.9 |
+
+Read. The scale row's 80 to 100 for bosses (the bible's section 11), written before any boss
+existed, fails the kill-time test (section 2: a boss three to five rounds for a squad of four,
+with its mechanics) on today's kits: at 80 the default team takes 7 to 13 rounds against each
+alone and the stock four 11 to 22, where the four stand-ins at their 32 to 40 take 3 to 4 and 5
+to 6. At 48 the default team takes 4 to 7 and Kestrel's trio 4 to 5.5, the test's band, while
+the stock four takes 7 to 14 and the slow trios 8 to 19, those kits' own pace (they take the
+stand-ins 5 to 8). So the slate lands at 48 at tier one (60 and 72 at tiers two and three by
+`ContentDB.BOSS_TIERS`), the boss in parts' core at 40 and its eyes at 8: at 12 the eyes grew
+back faster than Wainwright & Sutler's trio could open the core (13% won, 94% of its hull spent),
+at 8 it wins 47%, still the slate's hardest boss for a trio without burst. Alone, most of the
+slate costs little hull (1 to 17% on four of the five rows): long rather than dangerous, its
+threat the mechanics and, in a battle, the escort. The Cinder Tortoise is the slowest: its
+shell's five armour walls the small blows, as meant, and Expose and a breach, its answers, are
+in none of these stock kits. The row's 80 to 100 is Ryan's to keep or move; the 200-seed
+matrix's boss cells and his play read it again.
+
+**The balance runner fielded no split, no summon and no part until 30 October** (found reading
+the Fallen Weapon, whose eyes never stood in its cell): it never set the skirmish's foe factory,
+so a Gel never split there, a Ghost raised nothing, a summoner called nothing up and a core's
+parts never stood (a trace of the default team against four Gels on the old runner: no half
+stepped up; on the fixed one, every Gel split). Every matrix read until then, the 27 October
+200-seed run among them, read those cells so. Fixed the same day: a cell fields a core's parts
+and calls up splits, summons and regrown parts as a battle does. The Gel's, the summoners' and
+the boss in parts' cells are read again at the next 200-seed matrix.
+
 ## 30 October, the Petrels' first rows
 
 **Their engine session's reads** (the Storm Petrel and the Giant Petrel fielded 30 October on

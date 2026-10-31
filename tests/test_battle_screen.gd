@@ -367,7 +367,7 @@ func test_offscreen_packs_get_edge_tags() -> void:
 	var still: Array = s._map.offscreen_tags()
 	for t in still:
 		assert_true(t[1] != sq, "the pack scrolled to has no tag")
-	assert_true(BattleMapView.foe_sprite_id(s.battle.boss) == "bone_dragon", "boss uses the faction's boss art")
+	assert_eq(BattleMapView.foe_sprite_id(s.battle.boss), str(ContentDB.load_default().bosses_of("marsh")[0]), "boss uses its own art, the domain's first boss's")
 	s.free()
 
 
@@ -394,7 +394,10 @@ func test_hold_shows_a_readout() -> void:
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	s._on_unit_held(s.battle.boss)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Boss", "the boss says so beside its name")
-	assert_true(s._details_entry.text().contains("Massive"), "boss readout")
+	# Its size is its own in content, apart from its being the boss (15 October): a massive boss
+	# says so, a human-sized one does not (the slate's Matador leads the Marsh since 30 October).
+	var massive := int(ContentDB.load_default().foes[BattleMapView.foe_sprite_id(s.battle.boss)].get("size", 1)) >= 2
+	assert_eq(s._details_entry.text().contains("Massive"), massive, "boss readout gives its own size")
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "the panel holds its lines")
 	s.free()
 
@@ -451,7 +454,7 @@ func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
 	assert_true(s._codex.visible, "the codex opens for a pack")
 	assert_eq(s._codex._title.text, sq.display_name, "headed by the pack")
 	assert_true(s._codex._sub.text.contains("×%d" % sq.strength), "with its strength in the subtitle")
-	assert_true(not s._codex._body.text.is_empty(), "and its foe type's codex text")
+	assert_true(not s._codex._body.text().is_empty(), "and its foe type's codex text")
 	s._codex.close()
 	s.free()
 
