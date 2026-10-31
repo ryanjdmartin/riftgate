@@ -692,9 +692,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.410 (the page's
+  `docs/design-bible.html` after every change. The live page is v0.410 (the page's
   version 422, published 31 October as `claude/affectionate-ramanujan-5d24t6` landed on main: the
-  Petrels' engines, their rows and section 12's question on the Storm Petrel's burn on basics),
+  Petrels' engines, their rows and section 12's question on the Storm Petrel's burn on basics;
+  this file carries two edits of 31 October since, the Onryō's Grudge a working term and Ryan's
+  word on the Storm Petrel's question, which go up with the Badger's rows),
   three-way merged onto the live v0.409 at 421, which another session published with the slate's
   last five bosses (the King Gel, the Pilgrim, the Phantom Train, the Vampire Lord and the
   Obsidian Tyrant) and Numbed's third stack on a boss as on a massive foe, ahead of their code;

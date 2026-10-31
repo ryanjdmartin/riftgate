@@ -154,7 +154,7 @@ What the go's holes left once the landings of 18 to 23 October filled the rest (
 line, Wainwright & Sutler's ten, the stock pass's kit; git keeps the full list):
 
 - Soft control: Minos, the jellyfish, the echidna's draw.
-- Amplify for others: the echidna's Sonic Needle; the Onryō's Grudge in another shape, since
+- Amplify for others: the echidna's Sonic Needle; the Onryō's curse in another shape, since
   Flak took the flat on-hit.
 - Area on a hardpoint: which explosives carry Spread and Penetrate (the bible's section 12).
 - New prices: negative cooling. Reads nobody uses yet: the die's own state on the Gundam and
