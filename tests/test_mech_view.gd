@@ -222,3 +222,43 @@ func test_a_flash_rises_holds_and_settles_back_to_rest() -> void:
 	assert_true(absf(lit.emission_energy_multiplier - 1.5) < 0.001, "and settles back to its rest")
 	node.free()
 
+
+
+func test_a_weapon_flares_on_its_class_in_its_tags_look_and_equipment_never() -> void:
+	var db := ContentDB.new()
+	db.components = {"gun": {"shape": "twin_barrel", "tags": ["ballistic", "flame"], "face": {"kind": "attack"}},
+		"lance": {"shape": "barrel", "tags": ["beam"], "face": {"kind": "attack"}},
+		"ward": {"shape": "dish", "tags": [], "face": {"kind": "shield"}}}
+	var pins := {1: Node3D.new(), 2: Node3D.new(), 3: Node3D.new()}
+	var rows := [[1, "gun", "twin_barrel"], [2, "lance", "barrel"], [3, "ward", "dish"]]
+	var flares := MechView3D.wear_flares(pins, rows, db)
+	var by := {}
+	for fl in flares:
+		by[str(fl[1])] = int(by.get(str(fl[1]), 0)) + 1
+		assert_false((fl[0] as Node3D).visible, "a flare waits hidden until its weapon fires")
+	assert_eq(by.get("gun", 0), MuzzleFlare.places("twin_barrel").size(), "a twin barrel flares at each of its muzzles")
+	assert_eq(by.get("lance", 0), 1, "a barrel at its one")
+	assert_false(by.has("ward"), "a shield's dish is no weapon and takes none")
+	for fl in flares:
+		if str(fl[1]) == "gun":
+			assert_eq(str(fl[2]), "flame", "a flame tag takes the look over a ballistic one")
+	for n in pins.keys():
+		(pins[n] as Node3D).free()
+
+
+func test_the_tags_pick_a_flare_and_every_class_has_its_places() -> void:
+	assert_eq(MuzzleFlare.look_for(["ballistic", "arc"], "barrel"), "arc", "lightning outranks a slug")
+	assert_eq(MuzzleFlare.look_for(["melee"], "blade"), "blade", "a melee piece throws a blade's sparks")
+	assert_eq(MuzzleFlare.look_for([], "rack"), "missile", "a rack with no tag puffs as a launcher")
+	assert_eq(MuzzleFlare.look_for([], "barrel"), "ballistic", "a barrel with none flashes as a gun")
+	for t in MuzzleFlare.ORDER:
+		assert_true(MuzzleFlare.BEATS.has("blade" if t == "melee" else t), "the tag %s has a beat" % t)
+	for shape in ContentDB.SHAPES:
+		if shape == ContentDB.SHAPE_NONE:
+			continue
+		assert_false(MuzzleFlare.places(shape).is_empty(), "the class %s has a muzzle to flare at" % shape)
+	for look in MuzzleFlare.BEATS.keys():
+		assert_eq(MuzzleFlare.strength(look, -0.01), 0.0, "%s: nothing before it fires" % look)
+		assert_eq(MuzzleFlare.strength(look, MuzzleFlare.lasts(look)), 0.0, "%s: nothing once it is over" % look)
+		var b: Dictionary = MuzzleFlare.BEATS[look]
+		assert_true(MuzzleFlare.strength(look, float(b["up"]) + float(b["hold"]) * 0.5) > 0.2, "%s: lit through its hold" % look)

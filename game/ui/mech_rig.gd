@@ -90,6 +90,9 @@ const HEFT_DEFAULT := 0.12    # seconds: the inertia of a machine whose sidecar 
 const DAMPING := 0.7          # the joints' servos: a touch under critical, so a heavy part gives a little past its mark and settles
 const FORM_DEBUG_PERIOD := 2.5  # seconds a form is held, then let go, under RIFTGATE_SEAL_DEBUG
 const RECOIL_SLIDE := 1.5       # world units a gun that only runs in and out of its port kicks back along its line on a shot
+const RECOIL_BODY := 1.2        # model units the whole machine kicks back along a gun's line when it fires from a mount on the body
+const AIM_UP := 0.12            # seconds a machine takes to turn onto its target before it fires (aim),
+const AIM_DOWN := 0.5           # and to turn back once the blow has landed
 const STEP := 1.0 / 60.0      # the longest step the acts and the servos advance by, so a long tick (a frozen frame) plays the same as frames
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
@@ -136,6 +139,8 @@ var _halos: Dictionary = {}        # a lit material -> the halos' ShaderMaterial
 var _standing: Dictionary = {}     # a lit material -> the multiple of its rest light it never falls under (_setup_standing)
 var _halo_grow := 0.0              # how far a halo stands out on this model (_setup_halos), for hot parts hung later (wear_hot)
 var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (flash)
+var _flares: Array = []            # [{node, mat, look, t}] a muzzle flare on its look's beat (fire_flare)
+var _aim: Dictionary = {}          # {joint (or BODY), deg, hold, t}: the turn onto a target (aim)
 var _body_act_rot := Vector3.ZERO  # the act's body track, degrees (pitch, yaw, roll)
 var _body_act_slide := Vector3.ZERO
 var _body_move_rot := Vector3.ZERO # the gait's body: bob, rock, bank
@@ -656,7 +661,7 @@ func in_act() -> bool:
 
 
 func alive() -> bool:
-	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty())
+	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _flares.is_empty() or not _aim.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty())
 
 
 ## The wait before this machine's first act. The machines a screen sets up together open
@@ -734,6 +739,23 @@ func _step(dt: float) -> bool:
 		for st in _strikes:
 			st["t"] = float(st["t"]) + dt
 		_strikes = _strikes.filter(func(st): return float(st["t"]) < float(st["up"]) + float(st["down"]))
+		moved = true
+	if not _flares.is_empty():
+		var lit: Array = []
+		for fl in _flares:
+			fl["t"] = float(fl["t"]) + dt
+			var k := MuzzleFlare.strength(str(fl["look"]), float(fl["t"]))
+			(fl["mat"] as ShaderMaterial).set_shader_parameter("strength", k)
+			(fl["node"] as Node3D).visible = k > 0.0
+			if float(fl["t"]) < MuzzleFlare.lasts(str(fl["look"])):
+				lit.append(fl)
+			else:
+				(fl["node"] as Node3D).visible = false
+		_flares = lit
+	if not _aim.is_empty():
+		_aim["t"] = float(_aim["t"]) + dt
+		if float(_aim["t"]) >= AIM_UP + float(_aim["hold"]) + AIM_DOWN:
+			_aim = {}
 		moved = true
 	if not _flashes.is_empty():
 		var live: Array = []
@@ -923,6 +945,8 @@ func _pose() -> void:
 			if st["joint"] == name:
 				deg += (st["vec"] as Vector3) * _strike_envelope(st)
 				kick += (st.get("slide", Vector3.ZERO) as Vector3) * _strike_envelope(st)
+		if not _aim.is_empty() and _aim["joint"] == name:
+			deg.y += float(_aim["deg"]) * aim_envelope()
 		var m: Dictionary = meta.get(name, {})
 		deg = clamp_degrees(deg, m.get("limits", {}))
 		if _spun.has(name):
@@ -932,8 +956,13 @@ func _pose() -> void:
 		if slide != Vector3.ZERO or j.position != _rest_pos[name]:
 			j.position = _rest_pos[name] + offset_of(slide)
 	if body != null:
-		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide)
-		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot)
+		var recoil := Vector3.ZERO
+		for st in _strikes:
+			if st["joint"] == BODY:
+				recoil += (st["slide"] as Vector3) * _strike_envelope(st)
+		var turn := Vector3(0.0, float(_aim["deg"]) * aim_envelope(), 0.0) if not _aim.is_empty() and _aim["joint"] == BODY else Vector3.ZERO
+		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil
+		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot + turn)
 
 
 # ---------------------------------------------------------------- movement
@@ -1399,6 +1428,8 @@ static func _strike_envelope(st: Dictionary) -> float:
 	var t := float(st["t"])
 	var up := float(st["up"])
 	var down := float(st["down"])
+	if t <= 0.0:
+		return 0.0
 	if t < up:
 		var f := t / up
 		return 1.0 - (1.0 - f) * (1.0 - f)   # out: fast away
@@ -1409,16 +1440,26 @@ static func _strike_envelope(st: Dictionary) -> float:
 ## A blow. Melee: the joints that swing (the shoulders, by the sidecar or by name) throw the
 ## arms forward. Ranged: every joint that carries a weapon socket kicks about its own axis,
 ## a recoil, toward whichever side its limits allow (a Clydesdale turret flinches outward).
-## Does nothing on an untagged model.
-func strike(ranged: bool) -> void:
+## `only` names the joints of the weapon that fired, and only they kick (Ryan, 31 October: "It
+## would obviously be really cool if the actual weapon from the die fired"); `recoil`, given,
+## kicks the whole machine back along a gun's line, for a gun on a mount on the body. `lead`
+## holds the blow that many seconds, while the machine turns onto its target (aim). Does nothing
+## on an untagged model.
+func strike(ranged: bool, only: Array = [], recoil := Vector3.ZERO, lead := 0.0) -> void:
+	if recoil != Vector3.ZERO:
+		_strikes.append({"joint": BODY, "vec": Vector3.ZERO, "slide": recoil, "up": 0.05, "down": 0.22, "t": -lead})
 	if joints.is_empty():
+		_pose()
 		return
 	var armed := {}
 	for n in hardpoints.keys():
 		var owner := joint_of(hardpoints[n])
 		if not owner.is_empty():
 			armed[owner] = true
+	var named := not only.is_empty() or recoil != Vector3.ZERO
 	for name in joints.keys():
+		if named and not only.has(name):
+			continue
 		var m: Dictionary = meta.get(name, {})
 		var axis := str(m.get("axis", axis_for(name)))
 		var swing_deg: float
@@ -1429,13 +1470,15 @@ func strike(ranged: bool) -> void:
 			if line.size() == 3:
 				# A gun that only runs in and out of its port (the Armadillo's, Ryan, 29 October:
 				# "they should only move along their axis of firing") kicks back along its line.
-				_strikes.append({"joint": name, "vec": Vector3.ZERO, "slide": -Vector3(float(line[0]), float(line[1]), float(line[2])) * RECOIL_SLIDE, "up": 0.05, "down": 0.2, "t": 0.0})
+				_strikes.append({"joint": name, "vec": Vector3.ZERO, "slide": -Vector3(float(line[0]), float(line[1]), float(line[2])) * RECOIL_SLIDE, "up": 0.05, "down": 0.2, "t": -lead})
 				continue
 			swing_deg = 5.0
-		elif not bool(m.get("swing", false)):
-			continue
-		else:
+		elif bool(m.get("swing", false)):
 			swing_deg = -29.0
+		elif named:
+			swing_deg = -15.0   # a blade on a joint that is not an arm's: a jab, not a swing
+		else:
+			continue
 		var lim: Dictionary = m.get("limits", {})
 		if lim.has(axis) and lim[axis] is Array and (lim[axis] as Array).size() == 2:
 			var lo := float(lim[axis][0])
@@ -1446,8 +1489,58 @@ func strike(ranged: bool) -> void:
 				swing_deg = -swing_deg
 		var vec := Vector3.ZERO
 		vec[["pitch", "yaw", "roll"].find(axis)] = swing_deg
-		_strikes.append({"joint": name, "vec": vec, "up": 0.05 if ranged else 0.10, "down": 0.2 if ranged else 0.28, "t": 0.0})
+		_strikes.append({"joint": name, "vec": vec, "up": 0.05 if ranged else 0.10, "down": 0.2 if ranged else 0.28, "t": -lead})
 	_pose()
+
+
+## A muzzle flare on its look's beat (MuzzleFlare), from `lead` seconds on.
+func fire_flare(node: MeshInstance3D, look: String, lead := 0.0) -> void:
+	var mat := node.material_override as ShaderMaterial
+	if mat == null:
+		return
+	mat.set_shader_parameter("spin", _rng.randf_range(0.0, TAU))
+	_flares.append({"node": node, "mat": mat, "look": look, "t": -lead})
+
+
+## Turn onto a target before firing (Ryan, 31 October: "If there's a cheap way of aiming (torso
+## twist, hover pivot, gimbal) then yeah lets do that"): a joint turning about its up axis (a
+## waist, a turret, a head with guns) or the whole machine (BODY, a hover's or a flyer's pivot)
+## turns `deg` to its left over AIM_UP, holds `hold` seconds and turns back over AIM_DOWN. A
+## joint's limits still clamp it.
+func aim(joint: String, deg: float, hold: float) -> void:
+	if joint != BODY and not joints.has(joint):
+		return
+	_aim = {"joint": joint, "deg": deg, "hold": maxf(0.0, hold), "t": 0.0}
+
+
+func aim_envelope() -> float:
+	if _aim.is_empty():
+		return 0.0
+	var t := float(_aim["t"])
+	var hold := float(_aim["hold"])
+	if t < AIM_UP:
+		var f := t / AIM_UP
+		return 1.0 - (1.0 - f) * (1.0 - f)
+	if t < AIM_UP + hold:
+		return 1.0
+	var g := clampf((t - AIM_UP - hold) / AIM_DOWN, 0.0, 1.0)
+	return 1.0 - g * g * (3.0 - 2.0 * g)
+
+
+## The joint a machine turns to aim the gun on `node` (a pin): the nearest above it that turns
+## about its up axis and is no spinner or steering knuckle; "" when there is none (a gun on the
+## body, a quad's legs).
+func aim_joint_over(node: Node) -> String:
+	var steer: Dictionary = gait.get("steer", {})
+	var p := node.get_parent()
+	while p != null and p != model:
+		var tag := parse_tag(p.name)
+		if tag.size() == 2 and tag[0] == "joint":
+			var name := str(tag[1])
+			if joints.has(name) and str(meta.get(name, {}).get("axis", "")) == "yaw" and not spinners.has(name) and not steer.has(name):
+				return name
+		p = p.get_parent()
+	return ""
 
 
 ## The joint a node hangs under, by name, or "" when it is on the body.

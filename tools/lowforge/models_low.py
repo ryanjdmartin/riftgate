@@ -5970,6 +5970,22 @@ def burn_blade(b, s=1.0):
 BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade}
 
 
+# Where each class's muzzle flare blooms as its weapon fires (Ryan, 31 October: "If the flare
+# colour of the weapons can follow their tags, that would be really cool"): (point, size) in the
+# class's own frame, as the classes above are built, the size the flare's width there. A barrel's
+# at its muzzle, a rack's over its tube face, a dish's off its core, a blade's at its point. One
+# table for a swapped class and a stock one alike, since both hang on the pin the same way;
+# `forge.py shapes` writes it into art/models/shapes/muzzles.json in the models' own frame, and
+# the component's tags pick the flare's colour and beat (MuzzleFlare).
+MUZZLES = {
+    "barrel": [((0.0, 33.0, 0.0), 24.0)],
+    "twin_barrel": [((-2.8, 31.0, 0.0), 17.0), ((2.8, 31.0, 0.0), 17.0)],
+    "rack": [((0.0, 13.0, 0.0), 30.0)],
+    "dish": [((0.0, 10.0, 0.0), 26.0)],
+    "blade": [((0.0, 25.0, 0.0), 16.0)],
+}
+
+
 # ---------------------------------------------------------------- structures (the Arsenal)
 
 def _blades(b, x0, x1, y, z, step=12.0, h=16.0, w=2.4):

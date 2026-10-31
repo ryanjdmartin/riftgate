@@ -1241,6 +1241,20 @@ def terrain_tiles(out_dir, seed=11):
     print(f"lowforge: terrain tiles -> {out_dir}: {', '.join(tiles)}")
 
 
+def write_muzzles(path):
+    """The muzzle flares' places on each class (models_low.MUZZLES) in the models' own frame, as
+    the glTF carries them (a point built at (x, y, z) is at (x, z, -y)): [[point, size], ...] a
+    class, read by MechView3D and the hangar."""
+    import json
+    import models_low
+    out = {"_about": "Where each silhouette class's muzzle flare blooms: [point, size] in the class's own frame under its pin, written by tools/lowforge (models_low.MUZZLES)."}
+    for shape, places in models_low.MUZZLES.items():
+        out[shape] = [[[round(p[0], 3), round(p[2], 3), round(-p[1], 3)], size] for p, size in places]
+    with open(path, "w") as f:
+        json.dump(out, f, indent=1)
+        f.write("\n")
+
+
 def _export(out):
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
     bpy.ops.object.select_all(action="SELECT")
@@ -1272,7 +1286,8 @@ def main():
             builder = Build("burn_%s" % shape, Tiles(a.get("tiles", os.path.join(HERE, "tiles")), next(iter(MAKERS))))
             fn(builder, 1.0)
             _export(os.path.join(a["shapes"], "burn_%s.glb" % shape))
-        print(f"lowforge: {len(MAKERS) * len(models_low.SHAPES)} shapes and {len(models_low.BURNS)} burns -> {a['shapes']}")
+        write_muzzles(os.path.join(a["shapes"], "muzzles.json"))
+        print(f"lowforge: {len(MAKERS) * len(models_low.SHAPES)} shapes, {len(models_low.BURNS)} burns and the muzzles -> {a['shapes']}")
         return
     out = a["out"]
     if "blend" in a and "model" not in a:

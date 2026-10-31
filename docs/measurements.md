@@ -3881,3 +3881,31 @@ on the Augur's final, random, 70.0% to 80.5%) moves +1.5 at 1,000 seeds (72.6% t
 band 3.9), and the Whip Scorpion's beside it -0.1 (18.0% to 17.9%). Run on Godot 4.7.2; the
 Musk Ox's 1,000 replayed on main as it took the fix (`d84ad16` merged, Godot 4.8-beta2) come out
 identical fight for fight, so the read stands for that head.
+
+## 31 October, the weapons' flare colours
+
+**The flare read** (the decision it informs: the weapons' muzzle flares, a colour a tag, Ryan's
+31 October "If the flare colour of the weapons can follow their tags, that would be really
+cool"; MuzzleFlare). Method: the Machado simulations at severity 1.0 (normal, protan, deutan,
+tritan), CIE76 ΔE in CIELAB and luminance contrast, each pair at its worst simulation. The
+palette: ballistic #ff6a00, missile #ff4c00, flame #ff2400, beam #ff0a40, plasma #ff2a8c, arc
+#40d8ff, blade #ff7800 (the reds and oranges red and green alone, short of #ff8200; the beam and
+the plasma carry blue, being no heat).
+
+Between the flares (worst ΔE, the simulation): the heat family stands close in the deutan
+simulation, ballistic and blade 2.8, missile and flame 4.0, ballistic and missile 4.9, ballistic
+and flame 8.9; flame and beam 2.9 (tritan); every other pair 7.6 or more, the arc 62 or more from
+everything. So no two looks part by hue alone: each has its beat and its shape (MuzzleFlare.BEATS:
+a sharp four-point star for a gun, a slow round puff for a launcher, a flickering round gout for
+a fire weapon, a held streak for a beam, a swelling six-point star for plasma, a strobing star for
+lightning, eight quick sparks for a blade), and its class's place.
+
+Against the meanings (worst ΔE): every flare 27 or more from the gain green except the arc, 15.3
+(tritan); every one 34.9 or more from the enemy violet except the arc, 6.5 (deutan), the coil's own
+cyan since the 31st; the plasma 44.0 and every other 41 or more from the shield.
+
+On the grounds (contrast / worst ΔE): the Arsenal's black hull #2a2e36 3.5 to 8.1:1 / 31 to 79;
+our floor #4a4438 2.5 to 5.7:1 / 18 to 64; a steel hull #8a9098 1.0 to 1.9:1 / 14 to 68; the
+Aphelion's white #e8e8ec 1.4 to 3.2:1 / 24 to 73. A flare is laid over the hull rather than added
+(added, the plasma read pale pink on the Badger's grey), so its colour holds on every hull; on a
+mid steel its edge is its shape, not its lightness.

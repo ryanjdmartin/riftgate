@@ -581,6 +581,7 @@ func _build() -> void:
 				"turn": _mech_turn(i),
 			}, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
+			view.pivots = flies or ms.unit.traits.has("hover")   # aims by turning its whole body
 			v.sprite_at = MECH_WINDOW
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
@@ -2476,6 +2477,7 @@ func _heat_hook(before: Array) -> String:
 ##     (the damage applied), or after the death on a kill.
 ## The die that wins the fight has none of her.
 const BLOW_AT := 0.08
+const AIM_HOLD := 0.35       # a machine that turned to fire holds its aim this long past the blow's landing
 const PRE_LINE_AT := 0.1     # her line, just after the die's own sound
 const PRE_FIRE := 0.85       # the weapon, this far through her line
 const AFTER_DEATH := 0.45   # her line, this long after a foe's death begins
@@ -2609,7 +2611,9 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 	var origin: Vector2 = _home.get(attacker, attacker.position)
 	var mi := _mech_views.find(attacker)
 	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
-		_mech_3d[mi].strike(ranged, cid)   # the arms swing when the model has joints; a burn weapon's fire flares
+		if target != null:
+			_mech_3d[mi].aim_at(cid, _aim_turn(mi, target), lands + AIM_HOLD)   # a turret, a waist or a hover turns onto the foe first
+		_mech_3d[mi].strike(ranged, cid)   # the weapon that fired kicks and flares; a fixed one swings the arms
 	var tw := _track(attacker, create_tween())
 	if ranged or target == null:
 		var kick := Vector2(0.0, 8.0) if attacker in _mech_views else Vector2(0.0, -8.0)
@@ -2621,6 +2625,21 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 		tw.tween_property(attacker, "position", origin, 0.16).set_ease(Tween.EASE_IN_OUT)
 	if target != null and hit:
 		_animate_hit(target, lands)
+
+
+## How far machine `i` turns to its left to face `target` across the floor: the bearing from its
+## hex to the foe's feet (the floor's camera run backward from the screen), less the turn it
+## already stands at toward the middle.
+func _aim_turn(i: int, target: UnitView) -> float:
+	var origin: Vector2 = _home.get(target, target.position)
+	var feet := origin + Vector2(target.size.x * 0.5, target.feet_y if target.feet_y >= 0.0 else target.size.y * 0.5)
+	var below: float = feet.y - float(_cam.horizon)
+	if below <= 1.0:
+		return 0.0
+	var z: float = float(_cam.focal) * float(_cam.height) / below
+	var x: float = (feet.x - W * 0.5) * z / float(_cam.focal)
+	var bearing := rad_to_deg(atan2(x - _slot_hex_x(_mech_slot(i)), z - float(_cam.depth)))   # to the right, as the floor's x runs
+	return -bearing - _mech_turn(i)
 
 
 ## A foe dies: a ghost of its drawing, where it stood, flashes, drops and fades, in the

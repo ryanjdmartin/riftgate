@@ -62,11 +62,13 @@ func test_the_maps_violets_take_their_picks() -> void:
 
 func test_the_page_holds_only_what_is_in_play() -> void:
 	# Ryan, 30 October: "Make sure the colours tab is simplified to only what we need": the HUD
-	# presets, the enemy's four violets and the meanings, and nothing that draws nothing.
+	# presets, the enemy's four violets and the meanings, and nothing that draws nothing; since 31
+	# October the weapons' flares, a colour a tag (MuzzleFlare).
 	var keys: Array = []
 	for s in ColourTuner.SLOTS:
 		keys.append(str(s[0]))
-	assert_eq(keys, ["hud_green", "hud_amber", "hud_blue", "ENEMY", "ENEMY_HOT", "ENEMY_DEEP", "ENEMY_EDGE", "HEAT", "LOSS", "LOSS_DIM", "SHIELD", "HULL", "GAIN"], "the page's rows")
+	assert_eq(keys, ["hud_green", "hud_amber", "hud_blue", "ENEMY", "ENEMY_HOT", "ENEMY_DEEP", "ENEMY_EDGE", "HEAT", "LOSS", "LOSS_DIM", "SHIELD", "HULL", "GAIN",
+		"FLARE_BALLISTIC", "FLARE_MISSILE", "FLARE_FLAME", "FLARE_BEAM", "FLARE_PLASMA", "FLARE_ARC", "FLARE_BLADE"], "the page's rows")
 
 
 func test_a_headless_run_keeps_no_picks() -> void:

@@ -106,6 +106,8 @@ def main():
             if not check_only:
                 glb_to_json(src, os.path.join(ROOT, built))
             files["hangar/models/shapes/burn_%s.model.json" % c] = built
+    # Where each class's muzzle flare blooms (lowforge's MUZZLES), read as the game reads it.
+    files["hangar/models/shapes/muzzles.json"] = os.path.join("art", "models", "shapes", "muzzles.json")
     manifest_path = os.path.join("build", "hangar", "shapes.json")
     if not check_only:
         os.makedirs(os.path.dirname(os.path.join(ROOT, manifest_path)), exist_ok=True)

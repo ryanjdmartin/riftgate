@@ -14,6 +14,7 @@ const SECTION := "colours"
 const SETTINGS := "res://game/settings.gd"   # a HUD choice lives in Settings.HUD_OPTIONS
 const PALETTE := "res://game/ui/palette.gd"
 const MAP := "res://game/battle/battle_map_view.gd"
+const FLARE := "res://game/ui/muzzle_flare.gd"
 
 ## [key, heading, script, variable, what it paints]: the page's rows, in order.
 const SLOTS := [
@@ -30,6 +31,13 @@ const SLOTS := [
 	["SHIELD", "MEANINGS", PALETTE, "SHIELD", "Shield: its gauge and chips"],
 	["HULL", "MEANINGS", PALETTE, "HULL", "Hull: its gauge, a hull cost"],
 	["GAIN", "MEANINGS", PALETTE, "GAIN", "A number moved in its unit's favour"],
+	["FLARE_BALLISTIC", "WEAPON FLARES", FLARE, "BALLISTIC", "A gun's muzzle flash (the ballistic tag), a sharp star; a machine built after the pick wears it"],
+	["FLARE_MISSILE", "WEAPON FLARES", FLARE, "MISSILE", "A launcher's puff (missile), round and slow"],
+	["FLARE_FLAME", "WEAPON FLARES", FLARE, "FLAME", "A fire weapon's gout (flame), round and flickering"],
+	["FLARE_BEAM", "WEAPON FLARES", FLARE, "BEAM", "A beam's streak (beam), held"],
+	["FLARE_PLASMA", "WEAPON FLARES", FLARE, "PLASMA", "Plasma's bloom (plasma), a swelling six-point star"],
+	["FLARE_ARC", "WEAPON FLARES", FLARE, "ARC", "Lightning (arc), a strobing five-point star"],
+	["FLARE_BLADE", "WEAPON FLARES", FLARE, "BLADE", "A blade's sparks (blade, melee), a quick eight-point star"],
 ]
 
 static var _defaults := {}    # key -> Color, as the scripts declare them

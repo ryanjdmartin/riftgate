@@ -205,6 +205,37 @@ func test_a_halo_is_drawn_toward_the_eye_unless_its_part_names_its_own_distance(
 	rig.free()
 
 
+func test_only_the_weapon_that_fired_kicks_after_its_aim() -> void:
+	# The Prairie Dog's twin autoguns ride its turret; its other mounts sit on the chassis.
+	var pair := _rig_for("prairie_dog")
+	var rig: MechRig = pair[0]
+	rig.strike(true, ["turret"], Vector3.ZERO, 0.1)
+	for st in rig._strikes:
+		assert_eq(str(st["joint"]), "turret", "only the joint carrying the weapon that fired kicks")
+	assert_false(rig._strikes.is_empty(), "and it does kick")
+	assert_eq(MechRig._strike_envelope(rig._strikes[0]), 0.0, "held while the machine turns onto its target")
+	rig._step(0.15)
+	assert_true(MechRig._strike_envelope(rig._strikes[0]) > 0.0, "then the blow")
+	assert_eq(rig.aim_joint_over(rig.hardpoints[1]), "turret", "the turret aims the gun on it")
+	assert_eq(rig.aim_joint_over(rig.hardpoints[2]), "", "a gun on the chassis aims by nothing")
+	pair[1].free()
+	pair = _rig_for("armadillo")
+	rig = pair[0]
+	assert_eq(rig.aim_joint_over(rig.hardpoints[1]), "", "a quad's port guns never turn to aim (Ryan: don't bother)")
+	pair[1].free()
+	pair = _rig_for("nemesis")
+	rig = pair[0]
+	assert_eq(rig.aim_joint_over(rig.hardpoints[2]), "waist", "past the shoulder's elevation, the waist")
+	rig.aim("waist", 20.0, 1.0)
+	rig._step(MechRig.AIM_UP + 0.05)
+	rig._pose()
+	var turned := rad_to_deg(rig.joints["waist"].rotation.y - rig._rest["waist"].y)
+	assert_true(absf(turned - 20.0) < 1.0, "the waist turns its aim to the left (%.1f)" % turned)
+	rig._step(1.0 + MechRig.AIM_DOWN)
+	assert_true(rig._aim.is_empty(), "and lets it go once the blow has landed")
+	pair[1].free()
+
+
 func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	var want := {
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],

@@ -1,0 +1,61 @@
+{
+ "_about": "Where each silhouette class's muzzle flare blooms: [point, size] in the class's own frame under its pin, written by tools/lowforge (models_low.MUZZLES).",
+ "barrel": [
+  [
+   [
+    0.0,
+    0.0,
+    -33.0
+   ],
+   24.0
+  ]
+ ],
+ "twin_barrel": [
+  [
+   [
+    -2.8,
+    0.0,
+    -31.0
+   ],
+   17.0
+  ],
+  [
+   [
+    2.8,
+    0.0,
+    -31.0
+   ],
+   17.0
+  ]
+ ],
+ "rack": [
+  [
+   [
+    0.0,
+    0.0,
+    -13.0
+   ],
+   30.0
+  ]
+ ],
+ "dish": [
+  [
+   [
+    0.0,
+    0.0,
+    -10.0
+   ],
+   26.0
+  ]
+ ],
+ "blade": [
+  [
+   [
+    0.0,
+    0.0,
+    -25.0
+   ],
+   16.0
+  ]
+ ]
+}
