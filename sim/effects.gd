@@ -2134,7 +2134,9 @@ static func effect_text(eff: Dictionary) -> String:
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
 		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]
 		"fill_hopper": body = "every foe its weapons damage puts %s in its hopper, up to %d" % ["a load" if vs == "1" else vs + " loads", int(eff.get("cap", 0))]
-		"hopper_plate": body = "each %s held is %s armour" % ["load" if int(eff.get("per", 1)) <= 1 else "%d loads" % int(eff.get("per", 1)), "a point of" if vs == "1" else vs]
+		"hopper_plate":
+			var per := int(eff.get("per", 1))
+			body = ("each load held is %s armour" if per <= 1 else "every %d loads held are %%s armour" % per) % ("a point of" if vs == "1" else vs)
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs

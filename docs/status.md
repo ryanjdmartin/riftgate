@@ -177,15 +177,17 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 - The Honey Badger's rework built (31 October, Ryan: "agreed on all proposed. Build it"; its
   brief retired). Its passive, the Ore Hopper, puts a load in for each foe a spend of its weapons
-  damages, four at most, boxes under the heat; each load held is a point of armour, the Ore
-  Plate, the first buff a store grants, which a purge sleeps while the loads stay; base armour 1,
-  so 1 empty and 5 full. The Chainsaw Claw is flat 3 twice with no area and digs two loads a foe;
+  damages, four at most, boxes under the heat; every two loads held are a point of armour, the
+  Ore Plate, the first buff a store grants, which a purge sleeps while the loads stay; base
+  armour 1, so 1 empty and 3 full. The Chainsaw Claw is flat 3 twice with no area and digs two loads a foe;
   the Bullion Fragmenter fires two at +2, the plate they stood for spent with them; "never
   destroyed" is the Reinforced Skeleton, a Minerva module at tier two with +8 hull. The bot prices
-  the plate a shot spends and the plate a spend digs (`Policy.hopper_score`). Its runner rows
-  beside the old Badger, its shield at 6 (Ryan's question) and his first fallback (base 2, a
-  point for every two loads) are running at 30 seeds for `docs/measurements.md`; his fallbacks
-  wait on them. Ore Hopper
+  the plate a shot spends and the plate a spend digs (`Policy.hopper_score`). Read at 30 seeds
+  the same day (`docs/measurements.md`): a point a load (1 to 5) read eighteen points over the old
+  Badger alone, the plate carrying it, so Ryan's second fallback landed as his sequence said (his
+  first moved it two points); at 38 / 60 it reads a few points over the old Badger, and its shield
+  stays 8 (at 6 within a point or two). Still his eye: random play takes three lone big foes more
+  often than not, where the old Badger lost them. Ore Hopper
   and Ore Plate are working names.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and

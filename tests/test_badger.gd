@@ -152,7 +152,7 @@ func test_a_hopper_with_no_passive_fills_as_its_weapon_says_with_no_cap_or_plate
 func test_the_rules_read_as_sentences() -> void:
 	assert_eq(Effects.effect_text(HOPPER["effects"][0]), "every foe its weapons damage puts a load in its hopper, up to 4", "the fill")
 	assert_eq(Effects.effect_text(HOPPER["effects"][1]), "each load held is a point of armour", "the plate")
-	assert_eq(Effects.effect_text(HALF["effects"][1]), "each 2 loads held is a point of armour", "the fallback's plate")
+	assert_eq(Effects.effect_text(HALF["effects"][1]), "every 2 loads held are a point of armour", "the fallback's plate")
 
 
 func test_never_destroyed_is_a_modules_rule() -> void:

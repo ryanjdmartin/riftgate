@@ -634,14 +634,14 @@
    "id": "ore_plate",
    "category": "status",
    "name": "Ore Plate",
-   "codex": "Status, a machine's buff (the Honey Badger's): armour +1 a stack, what the loads in its hopper are worth, standing while it holds them and going as they are fired. Granted by a store, so a Purge puts it to sleep until the player's turn while the loads stay.",
+   "codex": "Status, a machine's buff (the Honey Badger's): armour +1 a stack, what the loads in its hopper are worth (a point for every two), standing while it holds them and going as they are fired. Granted by a store, so a Purge puts it to sleep until the player's turn while the loads stay.",
    "status": "implemented",
    "design": {
     "holes": "A working name (31 October), as is the Ore Hopper's.",
     "table": {
      "kind": "buff",
      "on": "machine",
-     "stacks": "Yes: an armour point a load held",
+     "stacks": "Yes: an armour point for every two loads held",
      "lasts": "While the loads are held; a purge sleeps it a turn"
     }
    }
@@ -1830,10 +1830,10 @@
    "id": "hopper",
    "category": "resource",
    "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and each load held is a point of armour, shown as the Ore Plate. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches the loads.",
+   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and every two loads held are a point of armour, shown as the Ore Plate. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches the loads.",
    "status": "implemented",
    "design": {
-    "holes": "Its numbers since 31 October (Ryan's go): a cap of four at a point a load; his fallbacks, if the runner reads it too strong, a point for every two loads over base armour 2, then base 1 again.",
+    "holes": "Its numbers since 31 October (Ryan's go, then his second fallback on the runner's read the same day): a cap of four, a point of armour for every two loads.",
     "table": {
      "kind": "store",
      "on": "machine",

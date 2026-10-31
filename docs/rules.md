@@ -443,7 +443,7 @@ On a machine:
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
 - **Ore Plate** (buff, the Honey Badger's): armour +1 a stack, what the loads in its hopper
-  are worth (a point a load), standing while they are held and going as they are fired.
+  are worth (a point for every two loads), standing while they are held and going as they are fired.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
   target, a spray's on each strike's own foe; a blow that kills leaves nothing to burn. A foe's,
   from a stoker's priming, is spent by its next move, whatever it is, on Kindled's clock, and a
@@ -500,7 +500,7 @@ On a machine:
   stack.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
-  instead), up to four, and each load held stands as a point of Ore Plate; a weapon that fires
+  instead), up to four, and every two loads held stand as a point of Ore Plate; a weapon that fires
   the hopper spends them. A mine laid with the loads' bonus loads nothing when it goes off
   later. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
   under the heat, one lit a load.
