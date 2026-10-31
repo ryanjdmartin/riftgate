@@ -164,8 +164,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   round in each unanswered.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
   session is free to run.
-- Minerva: the Honey Badger's rework in session (Ryan's calls in its brief, four numbers open),
-  the echidna left open, the siege battery parked on Ryan's charge brief, the battlecruiser never
+- Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced
+  Skeleton module; its brief retired), the echidna left open, the siege battery parked on Ryan's charge brief, the battlecruiser never
   with the Carrier's session (Ryan, 20 October).
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own; a defensive tier one unproposed (the to-do).
@@ -175,6 +175,18 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- The Honey Badger's rework built (31 October, Ryan: "agreed on all proposed. Build it"; its
+  brief retired). Its passive, the Ore Hopper, puts a load in for each foe a spend of its weapons
+  damages, four at most, boxes under the heat; each load held is a point of armour, the Ore
+  Plate, the first buff a store grants, which a purge sleeps while the loads stay; base armour 1,
+  so 1 empty and 5 full. The Chainsaw Claw is flat 3 twice with no area and digs two loads a foe;
+  the Bullion Fragmenter fires two at +2, the plate they stood for spent with them; "never
+  destroyed" is the Reinforced Skeleton, a Minerva module at tier two with +8 hull. The bot prices
+  the plate a shot spends and the plate a spend digs (`Policy.hopper_score`). Its runner rows
+  beside the old Badger, its shield at 6 (Ryan's question) and his first fallback (base 2, a
+  point for every two loads) are running at 30 seeds for `docs/measurements.md`; his fallbacks
+  wait on them. Ore Hopper
+  and Ore Plate are working names.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
   `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield
@@ -194,7 +206,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the rounds, and beside the Puffin about half again the Armadillo's pair on the big foes; the Giant
   Petrel's four reads level with the Lammergeier's in Kestrel's team and over the Swallowtail's in
   Wainwright & Sutler's on every formation, the team its must-pick guard watches at 200 seeds. What
-  waits on Ryan: his play of both (the to-do) and the Storm Petrel's burn on basics (section 12).
+  waits on Ryan: his play of both (the to-do); the Storm Petrel's burn on basics stays as built (31 October).
 - The skirmish is one field (29 October, on `claude/jolly-lovelace-scn82y`; Ryan of the looks
   on trial: "it's 100% field, it looks really good"): one floor seen by one level camera from
   behind the machines, the other world painted far under the foes in the domain's palette and
@@ -456,9 +468,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 - Injuries (25 October): one damage state, Ryan's "Cracked is gone". An injury destroys the
   entry the die lands on, at a quarter of the maximum hull, the threshold set by what it asks of
   the player (half was tried and retired within the day: a machine could lose but one piece); a
-  wreck loses only what was destroyed. The Honey Badger's "never destroyed" now holds off every
-  injury until its identity session lands (Ryan: later; the to-do), so until then it is the one
-  machine no blow can strip. The quick runs on the bot destroy about one to one and a half
+  wreck loses only what was destroyed. "Never destroyed" is the Reinforced Skeleton's since 31
+  October, a Minerva module at tier two, so a stock machine has no such guard. The quick runs on the bot destroy about one to one and a half
   pieces a battle in tiers one and two (`docs/quick_run.md`), at or past section 10's "about one
   a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
   economy pass's first number to read.
@@ -592,7 +603,6 @@ The tasks are the to-do's; this is the index of what waits.
 - The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
   silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
   Purge on a capstone's blow (its chassis session).
-- The Honey Badger's rework, once its numbers are settled (its brief).
 - The five Wainwright & Sutler machines' models (the Cassowary, the Cottonmouth, the Whip
   Scorpion on six or eight legs, the Swallowtail, the Musk Ox).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).

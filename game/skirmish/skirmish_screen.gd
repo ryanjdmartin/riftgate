@@ -1582,7 +1582,7 @@ static func status_glyph(id: String) -> String:
 			return "regenerating"
 		"retaliate":
 			return "shocked"
-		"hopper":
+		"hopper", "ore_plate":
 			return "hopper"
 		"sealed":
 			return "lock"

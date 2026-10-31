@@ -36,7 +36,8 @@ COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper", "heat_per_blow": "siphoning"}
 FACE_FIELDS_ON_FOES = {"drones": ["syrinx_drone", "exposure"]}   # the Syrinx Drone: its own status, and Exposed on a foe not yet Exposed
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
-                   "paradox": ("paradox", "foe"), "muster": ("muster", "machine")}   # stack_status names its own, on the machine
+                   "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
+                   "fill_hopper": ("hopper", "machine"), "hopper_plate": ("ore_plate", "machine")}   # stack_status names its own, on the machine
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "steal": "disabled"}   # a silence is a special since 28 October, never a rider
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "silence": "silenced", "swallow": "swallowed"}

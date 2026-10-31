@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 172 implemented, 5 planned, 0 idea.
+Status: 177 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -20,7 +20,7 @@ Status: 172 implemented, 5 planned, 0 idea.
 | **Shots** | Machine count, the Cassowary's: every weapon and equipment it aims at a foe this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight. | implemented |
 | **Armour** | A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull and what passes a shield alike, never a breach, which ignores it. A blow at or under the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage. | implemented |
 | **Rage** | Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), up to 5, kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; no cleanse, Silence or Purge touches it. | implemented |
-| **Hopper** | Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches it. | implemented |
+| **Hopper** | Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and each load held is a point of armour, shown as the Ore Plate. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches the loads. | implemented |
 | **Muster** | Machine store, the Swallowtail's: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Silence or Purge touches it. With a charge up, its locked pieces go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits. | implemented |
 | **Ammo** | The Musk Ox's magazine, a bar under its heat bar, a notch an ammo. Its weapons spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2. With too little left, a gun cannot be spent (DRY). | implemented |
 
@@ -67,7 +67,7 @@ Status: 172 implemented, 5 planned, 0 idea.
 | **Gated** | A keyword printed with a condition, such as a Suppress on a foe carrying Flak or on a foe carrying two Burning or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through. | implemented |
 | **Consumes** | A rule printed on a weapon: its blow consumes every stack of the status it names on its target and deals a point more for each stack consumed, before the multiplies. The die held over the foe shows the number with the stacks in. | implemented |
 | **Burns its firer** | A rule printed on a weapon: spending it sets its own machine Burning, the stacks it says, after the blow. The machine's Burning heats it at the end of the player's turn, before the overheat, then loses a stack, so a vent makes room for it and a cleanse takes it off. Fuel for a machine that wants heat, a price for one that does not. | implemented |
-| **The hopper** | Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire. | implemented |
+| **The hopper** | A rule printed on a weapon, for a machine with a hopper. One fills it: the loads it prints for each foe its blows damage, after the blow, in place of what the machine's own passive puts in. The other fires it: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent, with the armour they stood for. The hopper shows under the heat; the die shows what a shot would fire. | implemented |
 | **Braces** | A rule printed on a component (the Breaching Plow's). Spending it Armours its owner, the stacks it says (an armour point each), until the round's end: the armour stands behind the blow through the enemy's turn. | implemented |
 | **Rolls again** | A rule printed on a component (the Nemesis's Knuckle of Fury). Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, so the machine acts again and the same component may show again. Unlike Rapid nothing switches off: the stacks are the limit. | implemented |
 | **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often (the Skua's strikes share each roll, halved and never below one). Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
@@ -121,6 +121,7 @@ Status: 172 implemented, 5 planned, 0 idea.
 | **Sealed** | Machine status, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is. An ally's vent still cools it. | implemented |
 | **Cryo** | Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 2 a stack; equipment spends none. It never fades on its own. | implemented |
 | **Armoured** | Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. On a machine (a buff, an armouring component, a passive) it lasts until the round's end and comes off blows on bare hull; on a foe, from its brace, it lasts until its next action. | implemented |
+| **Ore Plate** | Status, a machine's buff (the Honey Badger's): armour +1 a stack, what the loads in its hopper are worth, standing while it holds them and going as they are fired. Granted by a store, so a Purge puts it to sleep until the player's turn while the loads stay. | implemented |
 | **Primed** | Status, on either side. Every blow it lands leaves a stack of Burning per stack of Primed. On a machine, a buff grants it for the rounds it says. On a foe, a stoker's move primes every other foe on the field at its value, and its next move spends it, whatever it is: a foe acting after the stoker spends it this turn, one that has acted carries it to its next move. A machine's Ward turns its Burning away, as it does any rider. | implemented |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the machine's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
@@ -306,6 +307,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Sealed** (implemented): One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.
 - **Cryo** (implemented): Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.
 - **Armoured** (implemented): The engine id stays braced.
+- **Ore Plate** (implemented): A working name (31 October), as is the Ore Hopper's.
 - **Primed** (implemented): A placeholder name.
 - **Corrupted** (implemented): The bite is the status's own number in the engine's table, a placeholder.
 - **Phased** (implemented): Not targetable means allies cannot vent or shield it either, and a foe's intent on it picks again; it still cools by its own cooling, and ticks and overheats still land. Aphelion's pieces may grant it beside the Swallowtail's screens.
@@ -371,14 +373,14 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Gated** (implemented): Suppress alone carries a gate today. A working name for Ryan's name pass.
 - **Consumes** (implemented): A mine laid from it eats its arrival's stacks.
 - **Burns its firer** (implemented): A working name for Ryan's name pass.
-- **The hopper** (implemented): The numbers are placeholders; the Honey Badger's rework (its brief) may change the fill.
+- **The hopper** (implemented): The numbers are placeholders at the stock pass's scale.
 - **Braces** (implemented): A rule on one carrier, not a keyword, until another piece wants it; the stacks are a placeholder.
 - **Rolls again** (implemented): A rule on one carrier, not a keyword, until another piece wants it.
 - **Strikes** (implemented): Heat is paid once per use, not per strike.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
 - **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built.
 - **Rage** (implemented): Capped at 5 (the passive's stack_status cap).
-- **Hopper** (implemented): No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.
+- **Hopper** (implemented): Its numbers since 31 October (Ryan's go): a cap of four at a point a load; his fallbacks, if the runner reads it too strong, a point for every two loads over base armour 2, then base 1 again.
 - **Scorched** (implemented): Placeholder numbers.
 - **Silenced** (implemented): Its stores are untouched. Keywords alone since 28 October (buffs alone from 25 to 28 October, a one-round purge that returns); Volatile is a cost, so nothing it mutes is a price.
 - **Swallowed** (implemented): Its own cooling, ticks and overheats still land, as a Phased machine's do; nothing cleanses it.

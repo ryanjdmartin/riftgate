@@ -44,7 +44,7 @@ const TABLE := {
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"],
 	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "syrinx_drone": ["syrinx_drone", "heat"],
-	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
+	"braced": ["shield", "guard"], "ore_plate": ["hopper", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["lock", "guard"],
 	"retaliate": ["shocked", "guard"], "suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],

@@ -631,6 +631,22 @@
    }
   },
   {
+   "id": "ore_plate",
+   "category": "status",
+   "name": "Ore Plate",
+   "codex": "Status, a machine's buff (the Honey Badger's): armour +1 a stack, what the loads in its hopper are worth, standing while it holds them and going as they are fired. Granted by a store, so a Purge puts it to sleep until the player's turn while the loads stay.",
+   "status": "implemented",
+   "design": {
+    "holes": "A working name (31 October), as is the Ore Hopper's.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: an armour point a load held",
+     "lasts": "While the loads are held; a purge sleeps it a turn"
+    }
+   }
+  },
+  {
    "id": "primed",
    "category": "status",
    "name": "Primed",
@@ -1738,10 +1754,10 @@
    "id": "hopper_property",
    "category": "component_property",
    "name": "The hopper",
-   "codex": "Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire.",
+   "codex": "A rule printed on a weapon, for a machine with a hopper. One fills it: the loads it prints for each foe its blows damage, after the blow, in place of what the machine's own passive puts in. The other fires it: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent, with the armour they stood for. The hopper shows under the heat; the die shows what a shot would fire.",
    "status": "implemented",
    "design": {
-    "holes": "The numbers are placeholders; the Honey Badger's rework (its brief) may change the fill."
+    "holes": "The numbers are placeholders at the stock pass's scale."
    }
   },
   {
@@ -1814,14 +1830,14 @@
    "id": "hopper",
    "category": "resource",
    "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches it.",
+   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and each load held is a point of armour, shown as the Ore Plate. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches the loads.",
    "status": "implemented",
    "design": {
-    "holes": "No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.",
+    "holes": "Its numbers since 31 October (Ryan's go): a cap of four at a point a load; his fallbacks, if the runner reads it too strong, a point for every two loads over base armour 2, then base 1 again.",
     "table": {
      "kind": "store",
      "on": "machine",
-     "stacks": "Yes: a load a foe the claw reaches, up to three spent a shot",
+     "stacks": "Yes: a load a foe its weapons damage (the claw's two), up to 4; two spent a shot",
      "lasts": "The skirmish; never decays"
     }
    }

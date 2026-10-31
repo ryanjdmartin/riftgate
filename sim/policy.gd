@@ -46,6 +46,7 @@ const DEVOUR_ROUNDS := 2.0       # rounds of damage a kill's Overcharged stacks 
 const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): the doubled blow, as a share of the team's average; a blow's own reads the hitter in hand (shock_cash)
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
+const PLATE_ROUNDS := 2.0        # rounds a held load's Ore Plate is likely to stand (this round's blows and the next's), for the hull its armour keeps
 const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
 const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
@@ -578,8 +579,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# of that much would be on the hitter.
 	if not f.is_debuff() and Effects.has(target, "cryoed"):
 		score += vent_score(sk, ms, Effects.stacks_of(target, "cryoed") * Skirmish.cryo_cool())
-	if f.fills_hopper > 0:
-		score += hopper_fill_score(sk, ms, f, target)
+	score += hopper_score(sk, ms, f, target)
 	if f.braces > 0:
 		score += brace_score(sk, ms, f.braces)
 	if f.heat_per_blow > 0:
@@ -1105,10 +1105,29 @@ func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
 	return float(saved)
 
 
-## What filling the hopper is worth (the Chainsaw Claw, 11 October): each load what this
-## machine's best hopper-firing entry adds a load, at the odds a later shot fires it, while
-## the hopper holds less than two of that entry's shots (more would sit unfired).
-func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+## What a spend does to the hopper (the Ore Hopper, 31 October): the plate its fired loads stood
+## for, lost, then the loads its blows dig back (hopper_fill_score, from the hopper as the shot
+## leaves it).
+func hopper_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	var fired := Skirmish.hopper_loads(ms.unit, f)
+	var have := Effects.stacks_of(ms.unit, "hopper")
+	var score := 0.0
+	if fired > 0:
+		var lost := Effects.hopper_plate(ms.unit, have) - Effects.hopper_plate(ms.unit, have - fired)
+		if lost > 0:
+			score -= _armour_saved(sk, ms, lost) * HULL_WEIGHT * PLATE_ROUNDS
+	return score + hopper_fill_score(sk, ms, f, target, have - fired)
+
+
+## What filling the hopper is worth (the Chainsaw Claw, 11 October; any weapon on the Ore
+## Hopper, 31 October): each load gained, up to the cap's room, the Ore Plate it stands (the
+## hull its armour keeps over the rounds it is likely held) and what this machine's best
+## hopper-firing entry adds a load, at the odds a later shot fires it. With no cap, the hopper
+## is worth filling while it holds less than two of that entry's shots (more would sit unfired).
+func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe, held: int = -1) -> float:
+	var per_foe := Skirmish.hopper_fill_of(ms.unit, f)
+	if per_foe <= 0:
+		return 0.0
 	var per_load := 0
 	var per_shot := 0
 	for e in ms.die.faces:
@@ -1116,12 +1135,19 @@ func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Fo
 		if ef.fires_hopper > 0 and ef.power_per_load > per_load:
 			per_load = ef.power_per_load
 			per_shot = ef.fires_hopper
-	if per_load <= 0:
-		return 0.0
-	# A load for each foe the blow reaches, as the resolver reaches them (a twin slot's pair both).
+	var have := Effects.stacks_of(ms.unit, "hopper") if held < 0 else held
+	var cap := Effects.store_cap(ms.unit, "hopper")
+	var room := cap - have if cap > 0 else per_shot * 2 - have
+	# A load set for each foe the blow reaches, as the resolver reaches them (a twin slot's pair both).
 	var reached := maxi(1, sk.reached_by(f, target).filter(func(n: Foe) -> bool: return n == target or n.alive()).size())
-	var room := maxi(0, per_shot * 2 - Effects.stacks_of(ms.unit, "hopper"))
-	return float(mini(f.fills_hopper * reached, room) * per_load) * HOPPER_WEIGHT
+	var gained := mini(per_foe * reached, maxi(0, room))
+	if gained <= 0:
+		return 0.0
+	var score := float(gained * per_load) * HOPPER_WEIGHT
+	var plate := Effects.hopper_plate(ms.unit, have + gained) - Effects.hopper_plate(ms.unit, have)
+	if plate > 0:
+		score += _armour_saved(sk, ms, plate) * HULL_WEIGHT * PLATE_ROUNDS
+	return score
 
 
 ## What `stacks` of a ticking status are worth on a foe with `hp` left, over the actions to
