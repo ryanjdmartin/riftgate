@@ -68,10 +68,11 @@ renderer), took main each evening (to `b2762d5`) and again as it landed (to `b16
 pacing session, the pricing pass, the tilesets' walls), and main took it on 30 October on his
 word ("Merge into main"); its bible is v0.397 (the page's 409). Main took it again that evening
 as the lit parts' eased light landed (`d84ad16`). Since then it carries the halo trial on the
-Buzzard (a soft shell round its lit parts, faded in with the flare; Ryan judges it running, the
-to-do), and took main as `claude/zealous-wright-ixxo3l` landed (to `06880da`: the foes'
-move-order fix), green there with the halo's test, 827 tests and 206,880 checks; not yet on
-main; its bible is v0.405 (the page's 417).
+Buzzard (a soft shell round its lit parts, faded in with the flare; its first round "way too
+much", its second added rather than laid over, leaning red and a third the size; Ryan judges it
+running, the to-do), and took main as `claude/zealous-wright-ixxo3l` landed (to `06880da`: the
+foes' move-order fix), green there with the halo's test, 827 tests and 206,880 checks; not yet
+on main; its bible is v0.410.
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -638,10 +639,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 173 (30 October, from
-  `claude/charming-rubin-h954bp`: `motion.js` with the halo trial ported, so the Buzzard's
-  charge spills its glow past its outline there as in the game, and the Buzzard's rig asking for
-  it; every other file as 172 had it, `edits` empty), on 172 (the same day and branch:
+  acts on a reloaded page). At the page's version 175 (31 October, from
+  `claude/charming-rubin-h954bp`: `motion.js` with the halo trial's second round, and the
+  Buzzard's rig with its halo at two and a half units; onto 174, which another session published,
+  every file this publish did not send as 174 had it, `edits` empty), on 173 (30 October, the
+  same branch: `motion.js` with the halo trial's first round and the Buzzard's rig asking for it),
+  on 172 (the same day and branch:
   `motion.js` with the lit parts' eased light and the Armadillo's
   rig with its vent heat's new peak, onto 171, which another session published with its page's
   boss-list line, a domain's bosses a list since its slate, carried into `tools/hangar.html` here

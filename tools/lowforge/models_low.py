@@ -2170,10 +2170,11 @@ def goshawk(b):
     heat = [([("heat_%d" % (i + 1))], [(0.2, 0.0), (round(0.3 + 0.15 * i, 2), 0.0), (round(0.45 + 0.15 * i, 2), 26.0), (round(0.7 + 0.15 * i, 2), 16.0), (3.6, 18.0), (5.2, 16.0), (5.8, 0.0)])
             for i in range(9)]
     # On trial (Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try it"): a soft
-    # halo round each lit part its acts and its gait light, seven units out (the exaggerated end
-    # to come down from), faded in with the part's light (MechRig's halos), so the cannon's
-    # charge and the nacelles spill their glow past their edges and the machine's outline.
-    b.halo = 7.0
+    # halo round each lit part its acts and its gait light, faded in with the part's light
+    # (MechRig's halos), so the cannon's charge and the nacelles spill their glow past their
+    # edges and the machine's outline. Seven units out was "way too much" (Ryan, the same
+    # evening, from the hangar on his phone): two and a half, about a heat cell's width.
+    b.halo = 2.5
     b.act("charge_cannon", 6.0, glow=heat + [
         (["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [(1.6, 0.0), (2.2, 5.0), (2.5, 1.5), (2.8, 11.0), (3.1, 4.0), (3.6, 26.0), (4.5, 26.0), (5.4, 0.0)]),
         (["joint_nacelle_l", "joint_nacelle_r"], [(0.3, 0.0), (1.4, -0.6), (4.3, -0.85), (4.6, 7.0), (5.2, 4.0), (5.9, 0.0)])],

@@ -1143,14 +1143,14 @@ func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
 ## The halos (on trial, Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try it").
 ## A model whose sidecar asks (`halo`: how many units out) wears round each lit surface its glows
 ## name a soft copy of the part grown out along its smoothed normals (halo.gdshader), in the
-## part's colour at its light and faded in as that light climbs over its rest, so a flare spills
-## past the part's edge and the machine's outline; Godot's own glow, on the phone's renderer,
-## cannot tell a lit part from white paint and stops at the outline. RIFTGATE_HALO=off strips
-## them to compare, =all puts them on every model.
+## part's colour held to its hue, added over what it lies on and faded in as the part's light
+## climbs over its rest, so a flare spills past the part's edge and the machine's outline;
+## Godot's own glow, on the phone's renderer, cannot tell a lit part from white paint and stops
+## at the outline. RIFTGATE_HALO=off strips them to compare, =all puts them on every model.
 func _setup_halos(side: Dictionary) -> void:
 	_halos.clear()
 	var env := OS.get_environment("RIFTGATE_HALO")
-	var grow := 0.0 if env == "off" else float(side.get("halo", 3.0 if env == "all" else 0.0))
+	var grow := 0.0 if env == "off" else float(side.get("halo", 2.5 if env == "all" else 0.0))
 	if grow <= 0.0:
 		return
 	var done := {}

@@ -68,14 +68,19 @@ const PHONE_GLOW = `#ifdef USE_EMISSIVEMAP
   totalEmissiveRadiance = sRGBToLinear(vec4(min(texture2D(emissiveMap, vUv).rgb * pow(totalEmissiveRadiance, vec3(1.0 / 2.2)), vec3(1.0)), 1.0)).rgb;
 #endif`;
 // A lit part's halo (MechRig's halos, on trial; halo.gdshader): a copy of the part grown out along
-// its smoothed normals, in the part's colour at its light as the phone shows it, its alpha highest
-// where the shell faces the eye, faded in as the light climbs over its rest; written as it is, not
-// re-encoded, so it shows the game's colour over this page's ground.
-const HALO_FULL = 8, HALO_REACH = 0.49;
-const HALO_VERT = `uniform float grow; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
-void main() { vUv = uv; vec4 mv = modelViewMatrix * vec4(position + normal * grow, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`;
+// its smoothed normals, in the part's colour at its light without its grey, held to its hue and
+// squared to lean red (never white), whole from the part's edge and fading to nothing at the
+// shell's rim, faded in as the light climbs over its rest, drawn a little toward the eye so a part
+// in a slot glows out over its walls, and added to what it lies over as the game adds it (the
+// colour times the alpha, the root of the strength in each); written as it is, not re-encoded,
+// so it shows the game's colour.
+const HALO_FULL = 8, HALO_REACH = 0.35, HALO_AHEAD = 3;
+const HALO_VERT = `uniform float grow; uniform float ahead; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+void main() { vUv = uv; vec4 mv = modelViewMatrix * vec4(position + normal * grow, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
+  mv.xyz += mix(normalize(-mv.xyz), vec3(0.0, 0.0, 1.0), projectionMatrix[3][3]) * ahead * length(modelViewMatrix[0].xyz); gl_Position = projectionMatrix * mv; }`;
 const HALO_FRAG = `uniform sampler2D tile; uniform float light; uniform float presence; uniform float reach; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
-void main() { vec3 c = min(texture2D(tile, vUv).rgb * light, vec3(1.0)); float f = abs(dot(normalize(vN), normalize(vV))); gl_FragColor = vec4(c, reach * presence * pow(f, 1.5)); }`;
+void main() { vec3 t = texture2D(tile, vUv).rgb; vec3 c = (t - min(t.r, min(t.g, t.b))) * light; c /= max(1.0, max(c.r, max(c.g, c.b))); c *= c;
+  float f = abs(dot(normalize(vN), normalize(vV))); float a = sqrt(reach * presence * smoothstep(0.0, 0.6, f)); gl_FragColor = vec4(c * a, a); }`;
 // A mesh's halo shell (MechRig._halo_mesh): its own triangles and UVs, each corner's normal the sum
 // of the faces meeting there, so the shell grows out closed round a flat-shaded part. Once a geometry.
 function haloGeometry(geo) {
@@ -272,8 +277,8 @@ class Rig {
       for (const m of [].concat(n.material)) {
         if (!m.userData.lit || done.has(n.uuid + m.uuid)) continue;
         done.add(n.uuid + m.uuid);
-        const mat = new T.ShaderMaterial({uniforms: {tile: {value: m.map}, light: {value: Math.pow(m.emissiveIntensity, 1 / 2.2)}, presence: {value: 0}, grow: {value: grow}, reach: {value: HALO_REACH}},
-          vertexShader: HALO_VERT, fragmentShader: HALO_FRAG, transparent: true, depthWrite: false});
+        const mat = new T.ShaderMaterial({uniforms: {tile: {value: m.map}, light: {value: Math.pow(m.emissiveIntensity, 1 / 2.2)}, presence: {value: 0}, grow: {value: grow}, ahead: {value: HALO_AHEAD}, reach: {value: HALO_REACH}},
+          vertexShader: HALO_VERT, fragmentShader: HALO_FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending});
         const h = new T.Mesh(haloGeometry(n.geometry), mat);
         h.userData.halo = true; h.renderOrder = 1;
         n.add(h);
