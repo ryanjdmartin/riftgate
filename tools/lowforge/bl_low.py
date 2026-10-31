@@ -437,7 +437,7 @@ class Build:
         self.spins = {}        # joints turned without end (see spin())
         self.forms = {}        # poses held while a status lasts (see form())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
-        self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger (MechRig's halos)
+        self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
         self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
         self._joint_stack = []   # the joint blocks open right now, outermost first

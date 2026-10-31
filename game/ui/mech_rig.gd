@@ -58,6 +58,7 @@ static var _eases_light := -1   # whether light() eases: unknown until first ask
 const HALO_FULL := 8.0        # a halo is full once its part's light stands this many rests over its own (_light_to)
 const HALO_SPREAD := 0.025    # how far a halo stands out, a share of its machine's longest side (_setup_halos)
 const HALO_REACH := 0.45      # the share of its part's colour a halo adds at its fullest (halo.gdshader)
+const HALO_AHEAD := 3.0       # how far toward the eye a halo is drawn, in its part's units: out of a slot over its walls; a part standing proud names its own (_setup_halos)
 const FLASH_PEAK := 12.0      # a weapon's fire flaring as it fires (flash): this many rests over its own at the top,
 const FLASH_UP := 0.05        # reached in this many seconds,
 const FLASH_HOLD := 0.15      # held this long,
@@ -1238,15 +1239,20 @@ func _setup_halos(side: Dictionary) -> void:
 	var grow := _halo_grow
 	var done := {}
 	for entry in named:
+		# A part, or [part, scale] for one larger, or [part, scale, ahead] for one drawn its own
+		# distance toward the eye: nought for a part standing proud of a thin plate, whose halo the
+		# usual three carried through the plate when it faced away (the Puffin's repulsors under
+		# their plates, a violet wash over the blue).
 		var p := str(entry[0]) if entry is Array else str(entry)
 		var scale := float(entry[1]) if entry is Array and (entry as Array).size() > 1 else 1.0
+		var ahead := float(entry[2]) if entry is Array and (entry as Array).size() > 2 else HALO_AHEAD
 		var tag := parse_tag(p)
 		if tag.size() == 2:
 			var root: Node = joints.get(tag[1], null) if tag[0] == "joint" else hardpoints.get(tag[1], null)
 			if root != null:
-				_halo_under(root, grow * scale, minf(1.0, HALO_REACH * scale), done)
+				_halo_under(root, grow * scale, minf(1.0, HALO_REACH * scale), done, ahead)
 		else:
-			_halo_named(model, p, grow * scale, minf(1.0, HALO_REACH * scale), done)
+			_halo_named(model, p, grow * scale, minf(1.0, HALO_REACH * scale), done, ahead)
 
 
 ## The longest side of the model's bounds at rest, in its own units.
@@ -1269,15 +1275,15 @@ func _model_size() -> float:
 	return maxf(box.size.x, maxf(box.size.y, box.size.z))
 
 
-func _halo_named(node: Node, part: String, grow: float, reach: float, done: Dictionary) -> void:
+func _halo_named(node: Node, part: String, grow: float, reach: float, done: Dictionary, ahead := HALO_AHEAD) -> void:
 	if node is MeshInstance3D and labelled(node.name, part):
-		_halo_under(node, grow, reach, done)
+		_halo_under(node, grow, reach, done, ahead)
 	else:
 		for c in node.get_children():
-			_halo_named(c, part, grow, reach, done)
+			_halo_named(c, part, grow, reach, done, ahead)
 
 
-func _halo_under(node: Node, grow: float, reach: float, done: Dictionary) -> void:
+func _halo_under(node: Node, grow: float, reach: float, done: Dictionary, ahead := HALO_AHEAD) -> void:
 	if node.has_meta("halo"):
 		return
 	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
@@ -1295,6 +1301,7 @@ func _halo_under(node: Node, grow: float, reach: float, done: Dictionary) -> voi
 			hm.set_shader_parameter("light", lit.emission_energy_multiplier)
 			hm.set_shader_parameter("grow", grow)
 			hm.set_shader_parameter("reach", reach)
+			hm.set_shader_parameter("ahead", ahead)
 			var h := MeshInstance3D.new()
 			h.name = "halo"
 			h.mesh = _halo_mesh(mi.mesh, i)
@@ -1307,7 +1314,7 @@ func _halo_under(node: Node, grow: float, reach: float, done: Dictionary) -> voi
 				_halos[lit] = []
 			(_halos[lit] as Array).append(hm)
 	for c in node.get_children():
-		_halo_under(c, grow, reach, done)
+		_halo_under(c, grow, reach, done, ahead)
 
 
 ## A surface's halo shell: its own triangles and UVs, each corner's normal the sum of the faces

@@ -179,6 +179,32 @@ func test_a_halo_closes_round_a_flat_part_and_shows_only_as_its_light_climbs() -
 	assert_true(absf(float(halo.get_shader_parameter("light")) - lit.emission_energy_multiplier) < 0.0001, "the halo burns at its part's light")
 
 
+func test_a_halo_is_drawn_toward_the_eye_unless_its_part_names_its_own_distance() -> void:
+	# A part in a slot glows out over its walls; a part standing proud of a thin plate names nought,
+	# so its halo never shows through the plate when it faces away.
+	var rig := MechRig.new()
+	rig.model = Node3D.new()
+	var shells := {}
+	for part in ["slot", "puck"]:
+		var mi := MeshInstance3D.new()
+		mi.name = part
+		mi.mesh = BoxMesh.new()
+		var lit := StandardMaterial3D.new()
+		lit.emission_enabled = true
+		mi.set_surface_override_material(0, lit)
+		rig.model.add_child(mi)
+		shells[part] = mi
+	rig._setup_halos({"halo": ["slot", ["puck", 1.0, 0.0]]})
+	for part in shells.keys():
+		var worn: Array = (shells[part] as Node).find_children("halo", "MeshInstance3D", false, false)
+		assert_eq(worn.size(), 1, "the %s wears one halo" % part)
+		if worn.size() == 1:
+			var ahead := float(((worn[0] as MeshInstance3D).material_override as ShaderMaterial).get_shader_parameter("ahead"))
+			assert_eq(ahead, MechRig.HALO_AHEAD if part == "slot" else 0.0, "the %s's halo is drawn its distance toward the eye" % part)
+	rig.model.free()
+	rig.free()
+
+
 func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	var want := {
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],

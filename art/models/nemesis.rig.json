@@ -39031,13 +39031,13 @@
  "halo": [
   [
    "core_fire",
-   2.0
+   1.5
   ],
   "condenser_slot"
  ],
  "standing": {
-  "core_fire": 10.0,
-  "condenser_slot": 8.0
+  "core_fire": 3.5,
+  "condenser_slot": 3.0
  },
  "stock_shapes": {
   "hp_2": "barrel",

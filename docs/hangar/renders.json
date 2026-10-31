@@ -349,8 +349,8 @@
    }
   },
   "nemesis": {
-   "when": "Ryan's glow notes, 31 October.",
-   "note": "The chest furnace always burning, hotter, its halo twice the size (Ryan, 31 October: \"that thing has to look HOT\"), and the condenser on its back always lit, a little under its flares (\"a creepy glowing exhaust\"). The last picture is the roar. Its stock Blazethrower wears a burn weapon's fire over its barrel, a pilot flame dim at rest and flaring as it fires.",
+   "when": "Ryan's next glow notes, 31 October.",
+   "note": "Hot at rest, really hot as it acts (Ryan, 31 October: \"not burn crazy hot all the time. Just like, hot, then really hot\"): the chest furnace and the condenser on its back smoulder always and flare in its fierce acts, the vent toned down (\"still too much\"). The last picture is the fist pound's blow.",
    "images": [
     {
      "file": "nemesis/nemesis_front.png",
@@ -361,12 +361,12 @@
      "alt": "nemesis, rear"
     },
     {
-     "file": "nemesis/nemesis_roar.png",
-     "alt": "nemesis, roar"
+     "file": "nemesis/nemesis_pound.png",
+     "alt": "nemesis, pound"
     }
    ],
    "before": {
-    "summary": "Before: Ryan's third notes, 29 October",
+    "summary": "Before: Ryan's glow notes, 31 October",
     "images": [
      {
       "file": "nemesis/before_nemesis_front.png",
@@ -378,14 +378,14 @@
      },
      {
       "file": "nemesis/before_nemesis_roar.png",
-      "alt": "Earlier: nemesis, roaring"
+      "alt": "Earlier: nemesis, roar"
      }
     ]
    }
   },
   "ammit": {
-   "when": "Ryan's glow notes, 31 October.",
-   "note": "The vent on its back always lit, a little under its flares (Ryan, 31 October: \"an Arsenal signature, I think, a creepy glowing exhaust\"), and the Blazethrower's pilot flame red, never white (\"Fire weapons, like the blazethrower, need a red glow\"); both wear the halo.",
+   "when": "Ryan's next glow notes, 31 October.",
+   "note": "The vent at its tail, the condenser's twin, always lit in the furnace's orange and flaring in its fierce acts (Ryan, 31 October: \"Ammit vents don't seem to be glowing\"; the glow had gone to the throat vent under the jaw, which no camera sees). The last picture is the threat.",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -394,10 +394,14 @@
     {
      "file": "ammit/ammit_rear.png",
      "alt": "ammit, rear"
+    },
+    {
+     "file": "ammit/ammit_threat.png",
+     "alt": "ammit, threat"
     }
    ],
    "before": {
-    "summary": "Before: Ryan's second notes, 29 October",
+    "summary": "Before: Ryan's glow notes, 31 October",
     "images": [
      {
       "file": "ammit/before_ammit_front.png",
@@ -411,8 +415,8 @@
    }
   },
   "stingray": {
-   "when": "Ryan's glow notes, 31 October.",
-   "note": "The lift fans always lit with their heat (Ryan, 31 October: \"always on with heat glow\"), their downwash flaring with the exhaust, whose halo is back to its plain size.",
+   "when": "Ryan's next glow notes, 31 October.",
+   "note": "A lit lining round the fans' blades and the floor under them in one even orange (Ryan, 31 October: \"Anything to be done about the stingray fans?\"): the downwash blows under the wing, where no camera looks, so the duct's walls carry the heat; the glow tile's hot centre had read yellow. The last picture is the thrusters' surge.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -421,10 +425,14 @@
     {
      "file": "stingray/stingray_rear.png",
      "alt": "stingray, rear"
+    },
+    {
+     "file": "stingray/stingray_surge.png",
+     "alt": "stingray, surge"
     }
    ],
    "before": {
-    "summary": "Before: The stock rebuild, 28 October",
+    "summary": "Before: Ryan's glow notes, 31 October",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
@@ -433,17 +441,13 @@
      {
       "file": "stingray/before_stingray_rear.png",
       "alt": "Earlier: stingray, rear"
-     },
-     {
-      "file": "stingray/before_stingray_from_behind.png",
-      "alt": "Earlier: stingray, from behind and above"
      }
     ]
    }
   },
   "puffin": {
-   "when": "Ryan's glow notes, 31 October.",
-   "note": "The amplifier, its rims, edges, bosses, the prow band and the projector's core, in the shield's blue (Ryan, 31 October: \"could they glow in a shield-ish colour?\"); the repulsor discs' halos hug the discs (twice the size they had floated off the plates). The last picture is the amplify.",
+   "when": "Ryan's next glow notes, 31 October.",
+   "note": "The repulsors are pucks standing proud of the plates (Ryan, 31 October: \"if the solution is to give them geometry, then go ahead\"), in one even orange, always on as it hovers; a flat disc's halo stood off it as a copy, and the engine tile's metal rim flared white. The last picture is the amplify.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -459,7 +463,7 @@
     }
    ],
    "before": {
-    "summary": "Before: The swap, the amplify lit for real, 28 October",
+    "summary": "Before: Ryan's glow notes, 31 October",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
@@ -470,12 +474,8 @@
       "alt": "Earlier: puffin, rear"
      },
      {
-      "file": "puffin/before_puffin_above.png",
-      "alt": "Earlier: puffin, from above"
-     },
-     {
       "file": "puffin/before_puffin_amplify.png",
-      "alt": "Earlier: puffin, the plates folded up to amplify"
+      "alt": "Earlier: puffin, amplify"
      }
     ]
    }

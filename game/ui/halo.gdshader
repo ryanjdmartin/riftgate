@@ -16,7 +16,7 @@ uniform sampler2D tile : filter_nearest;   // the part's lit tile, as stored: th
 uniform float light = 1.0;                 // the part's light now, as its own material has it
 uniform float presence = 0.0;              // 0 to 1: how much halo the part's light over its rest earns
 uniform float grow = 2.5;                  // how far out the shell stands, in the part's own units (MechRig: a share of the machine)
-uniform float ahead = 3.0;                 // drawn this many of the part's units toward the eye: out of its slot, never through the hull
+uniform float ahead = 3.0;                 // drawn this many of the part's units toward the eye: out of its slot, never through the hull (MechRig.HALO_AHEAD, or the part's own)
 uniform float reach = 0.45;                // the share of the part's colour it adds at its fullest
 
 void vertex() {

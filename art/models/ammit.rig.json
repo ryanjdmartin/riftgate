@@ -3102,6 +3102,7 @@
     {
      "parts": [
       "throat_slot",
+      "tail_slot",
       "eye_strip"
      ],
      "keys": [
@@ -9048,6 +9049,7 @@
     {
      "parts": [
       "throat_slot",
+      "tail_slot",
       "eye_strip"
      ],
      "keys": [
@@ -65135,6 +65137,7 @@
     {
      "parts": [
       "throat_slot",
+      "tail_slot",
       "eye_strip"
      ],
      "keys": [
@@ -79434,6 +79437,7 @@
   "carbine_tip",
   "eye_strip",
   "pilot_flame",
+  "tail_slot",
   "throat_slot"
  ],
  "pins": {
@@ -79443,11 +79447,11 @@
   "hp_4": ""
  },
  "halo": [
-  "throat_slot",
+  "tail_slot",
   "pilot_flame"
  ],
  "standing": {
-  "throat_slot": 8.0
+  "tail_slot": 3.0
  },
  "stock_shapes": {
   "hp_3": "dish"

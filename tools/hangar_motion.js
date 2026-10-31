@@ -313,22 +313,24 @@ class Rig {
     this.haloGrow = HALO_SPREAD * this.modelSize();
     const named = Array.isArray(side.halo) ? side.halo : [];
     for (const entry of named) {
+      // A part, [part, scale] or [part, scale, ahead] (MechRig._setup_halos).
       const p = Array.isArray(entry) ? entry[0] : entry, scale = Array.isArray(entry) && entry.length > 1 ? +entry[1] : 1;
+      const ahead = Array.isArray(entry) && entry.length > 2 ? +entry[2] : HALO_AHEAD;
       const tag = parseTag(p);
-      if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) this.wearHalo(root, scale); }
-      else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) this.wearHalo(n, scale); });
+      if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) this.wearHalo(root, scale, ahead); }
+      else this.model.traverse(n => { if (n.isMesh && !n.userData.halo && labelled(n.name, p)) this.wearHalo(n, scale, ahead); });
     }
   }
   // A halo round each lit surface under a node (MechRig._halo_under); a hot part hung later, a burn
   // weapon's fire over its class, wears one too (MechRig.wear_hot).
-  wearHalo(node, scale = 1) {
+  wearHalo(node, scale = 1, ahead = HALO_AHEAD) {
     const T = window.THREE, grow = this.haloGrow;
     node.traverse(n => {
       if (!n.isMesh || n.userData.halo || n.userData.haloWorn) return;
       n.userData.haloWorn = true;
       for (const m of [].concat(n.material)) {
         if (!m.userData.lit) continue;
-        const mat = new T.ShaderMaterial({uniforms: {tile: {value: m.map}, light: {value: Math.pow(m.emissiveIntensity, 1 / 2.2)}, presence: {value: 0}, grow: {value: grow * scale}, ahead: {value: HALO_AHEAD}, reach: {value: Math.min(1, HALO_REACH * scale)}},
+        const mat = new T.ShaderMaterial({uniforms: {tile: {value: m.map}, light: {value: Math.pow(m.emissiveIntensity, 1 / 2.2)}, presence: {value: 0}, grow: {value: grow * scale}, ahead: {value: ahead}, reach: {value: Math.min(1, HALO_REACH * scale)}},
           vertexShader: HALO_VERT, fragmentShader: HALO_FRAG, transparent: true, depthWrite: false, blending: T.AdditiveBlending});
         const h = new T.Mesh(haloGeometry(n.geometry), mat);
         h.userData.halo = true; h.renderOrder = 1;

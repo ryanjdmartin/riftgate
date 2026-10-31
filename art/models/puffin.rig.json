@@ -908,9 +908,21 @@
   "booster_ring",
   "exhaust",
   "lift_nozzle",
-  "repulsor_l",
-  "repulsor_r"
+  [
+   "repulsor_l",
+   1.0,
+   0.0
+  ],
+  [
+   "repulsor_r",
+   1.0,
+   0.0
+  ]
  ],
+ "standing": {
+  "repulsor_l": 4.0,
+  "repulsor_r": 4.0
+ },
  "stock_shapes": {
   "hp_2": "twin_barrel",
   "hp_3": "barrel"

@@ -75,9 +75,13 @@ halo to every machine's boosters and vents a little stronger, with the Buzzard's
 lighting both nacelles, then onto the parts Ryan vetted hot, then his notes on those (31
 October: flat parts' halos hug them, standing glows, the shield's blue, lightning, fire and the
 furnace, the Skua's hinges gone), then the burn weapons' fire on their silhouette classes, flaring
-as they fire, and the weapon-fire package proposed (`docs/weapon_fire_proposal.md`); green at 831
-tests and 206,955 checks; not yet on main; its bible is v0.415 (the page's 427). Next on it: Ryan's
-read of the glows running and of the proposal.
+as they fire, and the weapon-fire package proposed (`docs/weapon_fire_proposal.md`), then his
+notes on round five (the Puffin's repulsors pucks, the Stingray's fans lit round the blades, the
+Nemesis hot then really hot, the Ammit's glow moved to its rear vent, a halo's own distance
+toward the eye); green at 832 tests and 206,966 checks; not yet on main; its bible is v0.416.
+Next on it: the weapon-fire package Ryan answered (31 October: flare colours by tag, a cheap aim
+where a pivot exists and never a quad's step round, the locked weapons with acts to cut first),
+then his read of the glows running.
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times

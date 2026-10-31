@@ -2370,7 +2370,7 @@ def nemesis(b):
     # The Entropy Condenser on the lower back, a dark block with lit slots (hp_4).
     b.box(-12.0, 12.0, -20.0, -10.0, 60.0, 74.0, "steel.dark", "condenser")   # detail: a vent takes no mount; up on the back (Ryan, 1 October)
     for z in (64.0, 68.0, 71.5):
-        b.box(-9.0, 9.0, -20.8, -20.0, z, z + 1.5, "amber.lit", "condenser_slot")
+        b.box(-9.0, 9.0, -20.8, -20.0, z, z + 1.5, "amber.furnace", "condenser_slot")
     waist.__exit__(None, None, None)
 
     # Idle acts, third pass (Ryan, 4 October: some stilted; heavy, with inertia; MechWarrior,
@@ -2542,8 +2542,8 @@ def nemesis(b):
     # The chest furnace and the condenser venting it out the back, hot and always lit (Ryan, 31
     # October: the chest "has to look HOT"; the rear vent "always on, and a little less than you
     # have it in the animations. It's an Arsenal signature, I think, a creepy glowing exhaust").
-    b.halo = [("core_fire", 2.0), "condenser_slot"]
-    b.standing = {"core_fire": 10.0, "condenser_slot": 8.0}
+    b.halo = [("core_fire", 1.5), "condenser_slot"]
+    b.standing = {"core_fire": 3.5, "condenser_slot": 3.0}   # hot at rest, really hot as the acts flare (Ryan, 31 October: "not burn crazy hot all the time. Just like, hot, then really hot"); the vent "still too much" at eight
     b.gait(stride=stride, tracks=tracks, hold={"elbow_l": 9.0, "elbow_r": 9.0}, body=body, ease="linear")
     b.move(accel=1.2, heft=0.24)
 
@@ -2603,7 +2603,7 @@ def ammit(b):
     b.prism("x", 0.0, -12.0, 36.0, 6.5, 26.0, "steel.panel", 8, "pelvis", phase=math.pi / 8)
     b.box(-8.0, 8.0, -24.0, -12.0, 30.0, 40.0, "steel.dark", "tail_block")
     for z in (32.5, 35.5):   # lit slots on its back, the Nemesis's condenser's (Ryan, 1 October)
-        b.box(-6.0, 6.0, -24.8, -24.0, z, z + 1.3, "amber.lit", "tail_slot")
+        b.box(-6.0, 6.0, -24.8, -24.0, z, z + 1.3, "amber.furnace", "tail_slot")
     # The waist (Ryan, 5 October, the fifth notes: walkers turn with a waist, never by
     # sliding their feet round): the torso, the snout, the back and its guns and the upper
     # arms turn and lean on it over the pelvis. The middle arms stay off it: they carry the
@@ -2792,7 +2792,7 @@ def ammit(b):
             tracks["talon_low_%s_%s" % (side, w)] = [(c0, 0.0, 0.0, 0.0), (round(s0 + 0.03, 3), 36.0, 0.0, 0.0), (shut, -36.0, 0.0, 0.0), (round(t + 0.5, 3), -34.0, 0.0, 0.0),
                                                      (round(t + 0.85, 3), 0.0, 0.0, 0.0)]
     b.act("rear", 6.0, tracks, body=body, heft=0.05,
-          glow=[(["throat_slot", "eye_strip"], [(W1 - 0.15, 0.0), (W1 + 0.02, 12.0), (W1 + 0.3, 5.0), (W2 - 0.05, 4.0), (W2 + 0.02, 13.0), (W2 + 0.7, 3.0), (4.6, 0.0)])])
+          glow=[(["throat_slot", "tail_slot", "eye_strip"], [(W1 - 0.15, 0.0), (W1 + 0.02, 12.0), (W1 + 0.3, 5.0), (W2 - 0.05, 4.0), (W2 + 0.02, 13.0), (W2 + 0.7, 3.0), (4.6, 0.0)])])
     # The talons shown off (Ryan, 5 October, the fifth notes: the fingers more, the wave
     # less, the middle pair in it, and no turning on the feet): the torso turns on its waist
     # to one hand as it comes up before the snout, wrist cocked, and holds there while its
@@ -2880,7 +2880,7 @@ def ammit(b):
                 [(tt, *v) for tt, v in _slam(round(t - 0.06, 3), (pitch, yaw, 0.0), snap, (shut, 0.0, 0.0))] + \
                 [(back, shut, 0.0, 0.0), (round(home + 0.15, 3), pitch, yaw, 0.0), (2.9, pitch * 0.9, yaw * 0.9, 0.0), (3.7, 0.0, 0.0, 0.0)]
     b.act("threat", 4.4, tracks, body=body, heft=0.05,
-          glow=[(["throat_slot", "eye_strip"], [(0.6, 0.0), (1.2, 6.0), (1.58, 11.0), (1.88, 12.0), (2.5, 10.0), (2.9, 3.0), (3.7, 0.0)])])
+          glow=[(["throat_slot", "tail_slot", "eye_strip"], [(0.6, 0.0), (1.2, 6.0), (1.58, 11.0), (1.88, 12.0), (2.5, 10.0), (2.9, 3.0), (3.7, 0.0)])])
     # Circling (Ryan, 20 October: lateral motion for a creepy stalker, on the funnel-web's
     # planted footwork): it circles its prey with the snout kept on it, the body sliding round
     # an arc about a point ahead and turning to face it, the feet and the hands scuttling
@@ -2926,7 +2926,7 @@ def ammit(b):
             ks += [(7.5, pitch, yaw, 0.0), (8.1, 0.0, 0.0, 0.0)]
             tracks["talon_%s_%s" % (side, w)] = _dense(ks)
     b.act("circle", 8.6, tracks, body=body, ease="linear", heft=0.08,
-          glow=[(["throat_slot", "eye_strip"], [(0.8, 0.0), (1.2, 5.0), (3.7, 5.0), (3.95, 10.0), (4.3, 5.0), (7.3, 5.0), (7.55, 10.0), (7.9, 5.0), (8.3, 0.0)])])
+          glow=[(["throat_slot", "tail_slot", "eye_strip"], [(0.8, 0.0), (1.2, 5.0), (3.7, 5.0), (3.95, 10.0), (4.3, 5.0), (7.3, 5.0), (7.55, 10.0), (7.9, 5.0), (8.3, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a four-limbed gait, every foot and talon planted while the body passes over it,
     # the lower arms reaching from further back under the chest; the upper arms held up out
@@ -2944,8 +2944,8 @@ def ammit(b):
         limbs.append({"hip": "shoulder_low_" + side, "knee": "elbow_low_" + side, "ankle": "hand_low_" + side, "at": arms[side],
                       "phase": 0.25 if side == "r" else 0.75, "shift": -12.0, "cycles": 3})
     tracks, body, stride = _plant(limbs, sweep=60.0, lift=8.0, crouch=0.5, dip=1.5, nod=0.9, n=120)
-    b.halo = ["throat_slot", "pilot_flame"]   # the vent on its back and the Blazethrower's pilot flame, a burn weapon's, hot (Ryan, 31 October)
-    b.standing = {"throat_slot": 8.0}   # the back vent always lit, the Arsenal's creepy glowing exhaust (Ryan, 31 October)
+    b.halo = ["tail_slot", "pilot_flame"]   # the vent at its tail (the condenser's twin) and the Blazethrower's pilot flame, a burn weapon's, hot (Ryan, 31 October)
+    b.standing = {"tail_slot": 3.0}   # the rear vent always lit, the Arsenal's creepy glowing exhaust, hot under its flares (Ryan, 31 October); the throat under the jaw is never seen
     b.gait(stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
     b.move(accel=1.0, heft=0.2)
 
@@ -2987,14 +2987,19 @@ def _lift_fan(b, targets, cx, cy, z0, z1, r=8.6, blades=5, joint=None, hand=1.0)
     notes: the starboard fan's blades were pitched for the port fan's spin)."""
     b.cut(targets, (cx, cy, z0 - 2.0), (cx, cy, z1 + 2.0), r, 12)
     zfloor = z1 - 3.6
-    _tube(b, (cx, cy, zfloor), (cx, cy, z1), r + 0.5, r - 0.8, 12, "steel.dark", "fan_duct", floor_material="amber.glow", floor_depth=0.4)
+    _tube(b, (cx, cy, zfloor), (cx, cy, z1), r + 0.5, r - 0.8, 12, "steel.dark", "fan_duct", floor_material="amber.furnace", floor_depth=0.4)
+    # A lining lit round the blades, just inside the duct's wall (Ryan, 31 October: "Anything to be
+    # done about the stingray fans?"): the downwash blows under the wing, where no camera looks, so
+    # the fan reads hot from above by its walls. The floor and the lining in the furnace's even
+    # orange: the glow tile's hot centre, held always on, read yellow.
+    _tube(b, (cx, cy, zfloor + 0.45), (cx, cy, z1 - 0.2), r - 0.82, r - 0.9, 12, "amber.furnace", "fan_lining", floor=False)
     zf = z1 - 1.9
     rotor = b.joint(joint, (cx, cy, zf), axis="yaw") if joint else None
     if rotor:
         rotor.__enter__()
     b.prism("z", cx, cy, zf, 2.0, 2.6, "steel.dark", 8, "fan_hub")
     b.prism("z", cx, cy, zf + 1.4, 1.2, 0.6, "steel.plate", 8, "hub_cap")
-    ri, ro = 2.0, r - 1.1
+    ri, ro = 2.0, r - 1.2   # the tips clear the lit lining's flats
     for k in range(blades):
         a = k * 2.0 * math.pi / blades
         di, do = 0.7 * hand, 0.3 * hand
@@ -3219,7 +3224,8 @@ def stingray(b):
           body=[(1.8, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (3.6, 0.0, -3.0, 0.0, 0.0, -6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
     b.act("thrusters_surge", 4.4, body=[   # surges forward nose down, brakes nose up, settles: a helicopter's
         (0.5, 0.0, 0.0, 0.0), (1.3, 0.0, 12.0, -1.0, 0.0, -12.0, 0.0), (2.3, 0.0, 12.0, 0.0, 0.0, 10.0, 0.0), (3.1, 0.0, 0.0, 0.0, 0.0, -3.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
-          glow=[(["nozzle_glow", "fan_duct_floor"], [(0.3, 0.0), (0.9, 8.0), (1.6, 8.0), (2.4, 2.0), (3.6, 0.0)])])
+          glow=[(["nozzle_glow"], [(0.3, 0.0), (0.9, 8.0), (1.6, 8.0), (2.4, 2.0), (3.6, 0.0)]),
+                (["fan_duct_floor", "fan_lining"], [(0.3, 0.0), (0.9, 14.0), (1.6, 14.0), (2.4, 7.0), (3.6, 0.0)])])
     b.act("sidestep", 4.8, body=[   # slides a step to one side, rolling into it, and straight on across to the other
         (0.9, -6.0, 0.0, 0.0, 0.0, 0.0, -12.0), (1.6, -14.0, 0.0, 0.0, 0.0, 0.0, 2.0), (2.6, 2.0, 0.0, 0.0, 0.0, 0.0, 12.0),
         (3.4, 14.0, 0.0, 0.0, 0.0, 0.0, -2.0), (4.8, 0.0, 0.0, 0.0)])
@@ -3231,9 +3237,9 @@ def stingray(b):
     # Its exhaust and its lift fans, hot, the fans' downwash lit with the exhaust (Ryan, 31
     # October: "Stingray fans hot", and "always on with heat glow"); the exhaust's halo at its plain
     # size (twice it made "a big ring around it").
-    b.halo = ["nozzle_glow", "fan_duct_floor"]
-    b.standing = {"fan_duct_floor": 5.0}   # the fans always on with their heat (Ryan, 31 October)
-    b.gait(glow={"parts": ["nozzle_glow", "fan_duct_floor"], "k": 5.0})
+    b.halo = ["nozzle_glow", ("fan_duct_floor", 0.6), ("fan_lining", 0.6)]   # the fans' halos close, inside the rim more than over it (over the white they read pink)
+    b.standing = {"fan_duct_floor": 8.0, "fan_lining": 8.0}   # the fans always on with their heat (Ryan, 31 October)
+    b.gait(glow={"parts": ["nozzle_glow"], "k": 5.0})
     # The lift fans turn all the time, counter-rotating, and faster under way (Ryan, 6 October,
     # the seventh notes, the model locked: "the thing the Stingray really needs"). Slow enough a
     # frame that five blades never strobe backward at 30 frames a second.
@@ -3861,7 +3867,7 @@ def puffin(b):
             for (u, v) in ((5.4, 4.8), (-1.5, 6.9), (-9.5, 5.6)):
                 c = Vector((hx, HY + u, hz)) + d * v
                 _disc(b, tuple(c - n * 0.55), tuple(-n), 2.4, 8, "steel.dark", "repulsor_ring")
-                _disc(b, tuple(c - n * 0.7), tuple(-n), 1.6, 8, "amber.engine", "repulsor_" + side)
+                _beam(b, tuple(c - n * 0.5), tuple(c - n * 1.7), _poly(1.8, 8), _poly(1.5, 8), "amber.furnace", "repulsor_" + side)   # a puck standing proud of the plate (Ryan, 31 October: "if the solution is to give them geometry, then go ahead"), in one even orange: the engine tile's metal rim, landing on it, flared white
     # The pods under the foredeck's edges; the shoulder mounts aft of the canopy.
     for s in (-1.0, 1.0):
         px = s * 12.0 * K
@@ -3922,8 +3928,12 @@ def puffin(b):
     # touch; it oversteers through its corners like the Puffin always has, never banking (a
     # hovercraft keeps flat).
     # Its booster, lift nozzles and repulsors, hot (the repulsors judged in amplify, Ryan, 31
-    # October: "too subtle", then, twice the size, "extended way far out").
-    b.halo = ["booster_ring", "exhaust", "lift_nozzle", "repulsor_l", "repulsor_r"]
+    # October: "too subtle", then, twice the size, "extended way far out": a flat disc's halo
+    # stood off it as a copy, so they are pucks now). The repulsors always on, as it hovers.
+    # The pucks stand proud of their plates, so their halos are drawn where they are, never pulled
+    # toward the eye: pulled, they showed through the plates lying level over them, a violet wash.
+    b.halo = ["booster_ring", "exhaust", "lift_nozzle", ("repulsor_l", 1.0, 0.0), ("repulsor_r", 1.0, 0.0)]
+    b.standing = {"repulsor_l": 4.0, "repulsor_r": 4.0}
     b.gait(hold={"plate_l": 0.0, "plate_r": 0.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": boosters + reps, "k": 5.0}, rock=3.0)
     b.move(slide=0.3, bank=0.0, accel=0.8, heft=0.13, oversteer=1.5)
 
