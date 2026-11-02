@@ -7,7 +7,7 @@ extends TestCase
 
 const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
 	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
-	"cassowary", "cottonmouth"]
+	"cassowary", "cottonmouth", "swallowtail"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
