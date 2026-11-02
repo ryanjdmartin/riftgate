@@ -131,6 +131,7 @@ func _refresh() -> void:
 			_rewards()
 		_:
 			_over()
+	Hud.pass_touches(_content)   # a drag scrolls from anywhere on it, the cards and their buttons too
 	_scroll.scroll_vertical = 0
 
 
@@ -433,6 +434,7 @@ func _show_chooser(title: String, options: Array, on_pick: Callable) -> void:
 		b.custom_minimum_size = SIDE_BTN
 		b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(b)
+	Hud.pass_touches(list)
 	var cancel := HudButton.new("CANCEL", _close_chooser)
 	cancel.ghost = true
 	cancel.custom_minimum_size = Vector2(0, 56)

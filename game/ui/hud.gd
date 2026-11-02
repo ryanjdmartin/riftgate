@@ -213,6 +213,20 @@ static func label(text: String, size_px: int, color: Color, font: Font = null) -
 	return l
 
 
+## A scrolled list a finger drags from anywhere (Ryan, 2 November: the quick campaign's draft
+## was hard to scroll on the phone). On a touch screen a ScrollContainer scrolls on the touch
+## itself, and a touch goes no further than the first control under the finger that stops it (a
+## HudPanel's card, a HudButton), so only the gaps between the cards scrolled. Every control
+## under `list` that would stop it passes it on to the scroller instead. A button still takes the
+## touch first, so a tap presses it, and lets go of the press when the scroll begins, so a drag
+## never does. Called again whenever the list is rebuilt.
+static func pass_touches(list: Node) -> void:
+	if list is Control and (list as Control).mouse_filter == Control.MOUSE_FILTER_STOP:
+		(list as Control).mouse_filter = Control.MOUSE_FILTER_PASS
+	for c in list.get_children():
+		pass_touches(c)
+
+
 # ---------------------------------------------------------------- shapes
 
 ## A parallelogram: the top-left and bottom-right corners cut by `k` along x.
