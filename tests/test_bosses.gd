@@ -761,8 +761,8 @@ func test_a_second_swallow_keeps_the_first_release() -> void:
 ## domain's own to run out, and an elite may come again in a later battle): one composition in
 ## one domain's list is every domain's by ContentDB.next_elite, the domain's next own on a high
 ## roll, a wanderer on a roll under WANDER_CHANCE, always once the own are spent, nothing twice
-## in a battle; it stands at the battle's tier as a boss does, where another elite keeps its
-## own numbers.
+## in a battle; it stands at the battle's tier as a boss does, as every elite does since
+## 2 November.
 func test_a_wandering_elite_walks_out_of_every_domain_at_the_tier() -> void:
 	var db := ContentDB.load_default()
 	var wanderers: Array = []
@@ -816,7 +816,7 @@ func test_a_wandering_elite_walks_out_of_every_domain_at_the_tier() -> void:
 	var still := Unit.pack(0, "", Vector2i.ZERO, str(db.factions.keys()[0]), Unit.PACK_MOVE, 0, other)
 	still.set_members([[other, 1]])
 	still.boss_tier = 2
-	assert_eq(db.foes_for(still)[0].hp_max, int(db.foes[other]["hp"]), "another elite keeps its own numbers")
+	assert_eq(db.foes_for(still)[0].hp_max, roundi(int(db.foes[other]["hp"]) * float(ContentDB.boss_tier(2)["hp"])), "every elite stands at the tier as a boss does (2 November)")
 	# A battle's elite stands at the battle's tier.
 	var b := Battle.new(3)
 	b.tier = 2

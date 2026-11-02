@@ -629,8 +629,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
   marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
   comes once a fight. No foe flees the field but a loot-runner whose prize goes with it (the
-  one shape a flee may take; none is built, and no planned move flees but the Thief's, which
-  waits on Ryan's word). A move may
+  one shape a flee may take; none is built, and no move flees). A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
   breaks it off, and the foe stays on the field. A move may name a follow-up: once it lands, the
@@ -968,9 +967,9 @@ a stat.
   rift, or a wanderer (`wanders`: Gilgamesh, one composition in one domain's list, every
   domain's), drawn on the Fracture's roll one time in three in place of the domain's own and
   always once its own are spent, so every domain may meet him and none waits on him. An elite
-  may come again in a later battle, never twice in one; a run never repeats a boss. A wandering
-  elite stands at the battle's tier as a boss does, its HP and attack the tier's; every other
-  elite keeps its own numbers. The last Fracture is the Rupture:
+  may come again in a later battle, never twice in one; a run never repeats a boss. Every elite
+  stands at the battle's tier as a boss does, its HP and attack the tier's, the other members of
+  its composition at their own. The last Fracture is the Rupture:
   the boss's seal breaks. The stall guard breaks it too, when no pack but the boss's stands as
   a fight ends, so a team that cleared the field never waits on the clock. Rift Pressure keeps
   running after. A Fracture brings no prize (not built).

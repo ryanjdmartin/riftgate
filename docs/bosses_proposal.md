@@ -160,9 +160,11 @@ content pass. Open:
    breaks the pair, a round earlier and on that round's dice; Suppress stays, Numbed its limit.
    The hole named: a countdown is as telegraphed and a Disrupt breaks it off, which is its
    design (interrupt the big hit), so the two part by their questions and the countdown stays.
-3. **The Thief's Flee under the flee rule** (Ryan, 2 November: a foe flees only as a
-   loot-runner whose prize goes with it). The Thief's prize is the final's count, so Claude reads
-   it as the rule's one shape; his to confirm, else it is struck as the Needler's Scatter was.
+3. **The Thief's third move** (its Flee struck 2 November: "that just raises complicated
+   questions (does he come back for the finale? does the rift even close?)"). A hero carries
+   three, the third a signature below half. Claude's lean: Smoke Bomb, a Barrier on itself (built;
+   a cheap blow pops it), so the slippery thief stays slippery without leaving; the alternatives
+   Showtime, a blow at every machine, or a steal of the entry shown, which is Gilgamesh's.
 4. **The Cinder Tortoise at tier three** (flagged 2 November, left for now on Ryan's word):
    armour 3, and 5 withdrawn, against blows of 2 to 6, so a round of basics is zeroed; its
    tier-three read with a tier-matched kit is the to-do's, on the runner's `--boss-tiers` cells.

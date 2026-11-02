@@ -31,8 +31,9 @@ Built (30 October to 2 November):
   same). The quick campaign's elite slots draw the same way.
 - Elites may come again in a later battle, never twice in one; a run never repeats a boss
   (Ryan, 2 November).
-- An elite keeps its own numbers at every tier but a wanderer, which stands at the battle's
-  tier as a boss does (`ContentDB.scale_boss`: HP ×1.25 and ×1.5, attack +1 and +2).
+- Every elite stands at the battle's tier as a boss does (`ContentDB.scale_boss`: HP ×1.25 and
+  ×1.5, attack +1 and +2; Ryan, 2 November: "Scale the elites by tier"), the other members of
+  its composition at their own numbers.
 
 The roster today, by domain and the tiers its compositions name:
 
@@ -128,7 +129,7 @@ curveball), a kit from built pieces, and what is open. Nothing here is decided.
 ### The wanderers (more than one)
 
 1. **The Iron Giant** (the genre's wandering armoured giant with the great sword, plain words):
-   a harder fight anywhere, armour 2, scaled by the tier as Gilgamesh is. Great Sword, a blow
+   a harder fight anywhere, armour 2. Great Sword, a blow
    of 10 on a countdown of one; Guard, brace +2. Open: a second wanderer at the same chance, or
    the wanderers' pool drawn one at a time in content order (as built: the first not yet sent).
 2. **Enkidu with Gilgamesh** at tier three: Gilgamesh's companion joins his composition's
@@ -151,11 +152,6 @@ curveball), a kit from built pieces, and what is open. Nothing here is decided.
   reshaped (his notes against them first).
 - The wanderer's chance: one in three (the placeholder), or a wanderer slot of its own at one
   Fracture a battle.
-- Elites by the tier: today every elite keeps its own numbers at every tier but the wanderer
-  (Claude's lean of 30 October, never his rule). Reusable across tiers, a tier-one elite met at
-  tier three is a rank-and-file fight at 44 HP. Claude's lean now: scale every elite by the tier
-  as a boss is, since the wanderer already does and the ramp's point is that tier two is harder;
-  the alternative is an elite composition per tier, three times the content.
 - The Reaper to the wanderers, or not.
 
 ## What the session hands back

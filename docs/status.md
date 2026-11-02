@@ -46,8 +46,8 @@ heat grid's read as it landed), and main took it as a fast-forward on 30 October
 ("merge this into main"). It then carried the bosses' slate on his word the same evening, the
 first seven ("build what can be built, and specify exactly what you need to flesh the rest out,
 including any holes") and the last five ("Yes to all waiting bosses"), for main to take on his
-word; its bible is v0.424 (the page's version 436) and its hangar the page's
-version 188.
+word; its bible is v0.425 (the page's version 437) and its hangar the page's
+version 189.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -141,16 +141,16 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   Saurian Queen, a part) in the Peak. The Djinn, a trope archetype, is the Waste's tier-two
   back-rank caster, the ranks' first purge. Gilgamesh is an elite that wanders: drawn by any
   domain's Fracture one time in three in place of its next own elite and always once its own are
-  spent (`ContentDB.next_elite`), scaled by the tier as a boss is; an elite may come again in a
-  later battle, a boss never in a run. Every boss has its own escort at tiers two and three at
+  spent (`ContentDB.next_elite`); every elite is scaled by the tier as a boss is (Ryan, 2
+  November), an elite may come again in a later battle, a boss never in a run. Every boss has its own escort at tiers two and three at
   the tier's counts (the King Gel's court at every tier, six at tier three) and stands alone at
   tier one, in the quick campaign too. The stand-ins went to the ranks with a line of recolours
   each at tiers two and three (their cut third moves the twist), the Marsh a massive line of its
   own (the Barrow, Grave and Charnel Giant), and the Bone Wyvern to the Marsh's elites. The
   worms' and the Antlion Queen's bites are Maw and Devour (Swallow is Floraison's word);
   Withdraw is 2, the Tortoise at tier three flagged (the to-do); no foe flees but a loot-runner
-  (Ryan's rule of the 2nd), so the Needler's Scatter is struck and the Thief's Flee waits on
-  his word. Built for them, on any foe: a follow-up, a steal with its borrowed swing, a swallow
+  (Ryan's rule of the 2nd), so the Needler's Scatter and the Thief's Flee are struck, the
+  Thief's third move open. Built for them, on any foe: a follow-up, a steal with its borrowed swing, a swallow
   that lets go once its swallower loses a quarter of its HP (a second machine taken joining the
   first's count), a merge, a drain from the hull, a grudge (`per_kill`), a condition that reads
   a fallen part, a move used once a fight, an escort that names its boss, a boss's armour step a
@@ -172,7 +172,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   passes a test that crashes after its first check (the to-do); a second swallow moved the
   first's release (fixed on the 2nd). Waiting on Ryan: the blanket armour at tier one and a
   follow-up that cannot be Disrupted (the proposal's two calls, each with Claude's lean), the
-  Thief's Flee, his marks on the session's placeholders and the elites brief.
+  Thief's third move, his marks on the session's placeholders and the elites brief.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -544,9 +544,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.424 (the page's version
-  436, published 2 November from `claude/brave-cori-fr18de` with the review's calls of the
-  2nd: the Ruby Colossus, the Djinn in the ranks, the wanderer by chance, elites reusable, the
+  `docs/design-bible.html` after every change. This file is v0.425 (the page's version
+  437, published 2 November from `claude/brave-cori-fr18de` with Ryan's two calls of the
+  evening, every elite scaled by the tier and the Thief's Flee struck, over 436 of the same
+  day, which carried the review's calls of the 2nd: the Ruby Colossus, the Djinn in the ranks, the wanderer by chance, elites reusable, the
   flee rule, the Thief's Flee as a section 12 question; three-way merged onto the live v0.423,
   which other sessions had moved past this branch's v0.417 at 429 with the Honey Badger's hopper
   and Ore Plate, the five Wainwright & Sutler models' first cuts and the weapon-fire row, four
@@ -581,9 +582,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 188 (2 November, from
-  `claude/brave-cori-fr18de`, the escorts' read: `content/foes.json` and `content/factions.json`
-  again, over 187 of the same day, which carried the review's calls of the 2nd, each live copy
+  acts on a reloaded page). At the page's version 189 (2 November, from
+  `claude/brave-cori-fr18de`, the Thief's Flee struck: `content/foes.json` over 188 of the same
+  day, the escorts' read's `content/foes.json` and `content/factions.json`, over 187 of the same day, which carried the review's calls of the 2nd, each live copy
   checked identical to 181's first, `edits` empty, the page itself another session's republish
   of 13:07 kept as it stood, its motion panel's forms and pin records this branch's
   `tools/hangar.html` does not carry); 181 (31 October, from

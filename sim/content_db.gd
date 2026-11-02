@@ -572,8 +572,8 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			continue
 		for i in range(int(e[1])):
 			var f := make_foe(fid)
-			if f.wanders:
-				scale_boss(f, sq.boss_tier)   # a wandering elite stands at its battle's tier (31 October)
+			if is_elite(fid):
+				scale_boss(f, sq.boss_tier)   # every elite stands at its battle's tier as a boss does (Ryan, 2 November)
 			f.pack_id = sq.id
 			f.escorts = sq.is_boss
 			out.append(f)
@@ -1936,11 +1936,12 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: armour cannot be negative" % where)
 		if f.has("armour_step"):
 			# A boss whose kit is armour grows it a tier (31 October): only a foe that scales in
-			# place with the tier, a domain's boss or one of the party, carries a step.
+			# place with the tier, a domain's boss, one of the party or an elite (2 November),
+			# carries a step.
 			if not (f["armour_step"] is float or f["armour_step"] is int) or int(f["armour_step"]) < 1:
 				errs.append("%s: armour_step must be a whole number of at least 1" % where)
-			elif not (is_boss(str(id)) or bool(f.get("hero", false)) or f.has("promotes")):
-				errs.append("%s: armour_step only on a foe that scales with the tier (a boss, a hero)" % where)
+			elif not (is_boss(str(id)) or bool(f.get("hero", false)) or f.has("promotes") or bool(f.get("elite", false))):
+				errs.append("%s: armour_step only on a foe that scales with the tier (a boss, a hero, an elite)" % where)
 		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
 		_validate_actions(where, f, errs)
