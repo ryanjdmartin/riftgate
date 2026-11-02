@@ -725,7 +725,9 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 184 (2 November, from
+  before it is replaced and `edits` read first. At the page's version 185 (2 November, the five
+  Wainwright & Sutler models' second rounds and the Cottonmouth's rails, models and rigs alone over
+  184, each rig checked against 184's first). At 184 (2 November, from
   `claude/affectionate-ramanujan-5d24t6`; `edits` empty): `content/chassis.json`,
   `content/components.json` and `content/modules.json` as this branch has them (the Honey Badger's
   rework, the Reinforced Skeleton module), `hangar/pins.json`, and the five Wainwright & Sutler
