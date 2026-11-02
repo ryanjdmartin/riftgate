@@ -42,20 +42,26 @@ var EYE_Y := 510.0   # 12 px into the black under the foes' ground, the same as 
 const EYE := 60.0
 var LOG_Y := 508.0
 const LOG_H := 112.0
-var DIE_Y := 640.0
+var DIE_Y := 630.0
 const DIE_SIZE := 120.0
-var REROLL_Y := 786.0
+var REROLL_Y := 768.0
 const REROLL_SIZE := Vector2(250, 54)
 const REROLL_GAP := 30.0   # black between Reroll and the mechs' ground (Ryan, 23 September: 14 was too tight)
-var MECH_Y := 892.0
+var MECH_Y := 852.0
 const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip row 38; neighbours overlap 4 px at PITCH
-var BOTTOM_Y := 1196.0
-## The rows' places on the 1280 design, scaled to the screen in `_build`.
-const ROWS := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "EYE_Y": 510.0, "LOG_Y": 508.0, "DIE_Y": 640.0, "REROLL_Y": 786.0, "MECH_Y": 892.0, "BOTTOM_Y": 1196.0}
+## Room under the machines for two more rows of chips past the first (Ryan, 2 November: "there needs
+## to be space for 2-3 rows of chips under the player units specifically without bumping into the
+## UI"): the rows wrap at a machine's width, so three hold six or more.
+const CHIP_ROOM := 2.0 * (UnitView.CHIP_H + UnitView.ROW_GAP)
+var BOTTOM_Y := 1210.0
+## The rows' places on the 1280 design, scaled to the screen in `_build`. The machines stand 40 higher
+## and END TURN 14 lower than until 2 November, so three rows of chips fit between them.
+const ROWS := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "EYE_Y": 510.0, "LOG_Y": 508.0, "DIE_Y": 630.0, "REROLL_Y": 768.0, "MECH_Y": 852.0, "BOTTOM_Y": 1210.0}
 ## The rows with the controls at the bottom (Ryan, 29 October: "Skirmish Controls", "bottom"
 ## or "middle", Settings): the foes where they were, the machines right under them in one
-## scene, then the log, dice and Reroll. RIFTGATE_SKIRMISH_CONTROLS=bottom|middle forces it.
-const ROWS_BOTTOM := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "MECH_Y": 498.0, "LOG_Y": 800.0, "EYE_Y": 802.0, "DIE_Y": 926.0, "REROLL_Y": 1072.0, "BOTTOM_Y": 1196.0}
+## scene, then the log, dice and Reroll, the log far enough down for three rows of chips under the
+## machines. RIFTGATE_SKIRMISH_CONTROLS=bottom|middle forces it.
+const ROWS_BOTTOM := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "MECH_Y": 480.0, "LOG_Y": 850.0, "EYE_Y": 852.0, "DIE_Y": 972.0, "REROLL_Y": 1106.0, "BOTTOM_Y": 1210.0}
 ## The field (Ryan, 29 October: "it's 100% field"): one floor from the horizon to the machines'
 ## feet, the other world painted far under the foes and our ground near under the machines,
 ## seen by one level camera that the floor, the backdrop's bands and every machine's view
@@ -77,6 +83,7 @@ const MECH_LOG_GAP := 18.0  # with the controls at the bottom, from the machines
 const PITCH := 172.0
 const LOG_LINES := 7
 const ENEMY_BEAT := 0.45   # seconds between the enemy's blows at ENEMY PACE 1; the setting divides it
+const ACT_LEAD := 0.45     # how much of a beat the next foe is lit before its move lands
 const PLAQUE_HOLD := 1.0   # seconds the replay holds on a named move's plaque (decided 9 October; a placeholder, judged running); the pace setting does not shorten a read
 const PLAQUE_Y := -10.0    # the plaque's top, from the back rank's row: over the foes, where the other world is
 ## RIFTGATE_PLAQUE_DEBUG=1: the plaque fires one of the field's move names after another.
@@ -85,6 +92,10 @@ static var PLAQUE_DEBUG := OS.get_environment("RIFTGATE_PLAQUE_DEBUG") == "1"
 ## the join running (the counts land back where they were).
 static var POOL_DEBUG := OS.get_environment("RIFTGATE_POOL_DEBUG") == "1"
 var _pool_debug_at := 0.0
+## RIFTGATE_ACT_DEBUG=1: one foe after another lit as if acting, a beat each, to judge the
+## highlight running (Ryan, 2 November: "enemies need to highlight during their attacks").
+static var ACT_DEBUG := OS.get_environment("RIFTGATE_ACT_DEBUG") == "1"
+var _act_debug_at := 0.0
 ## RIFTGATE_RAGE_DEBUG=1: the rage's roll again plays over and over on the machine that
 ## spends rage (its chip bursts, its die flips back with the reroll's sound), to judge running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
@@ -125,6 +136,7 @@ var _slot_views: Array = []          # [rank][col] -> UnitView
 var _massive_views: Array = []       # [col] -> UnitView
 var _twin_views: Array = []          # [rank][col] -> UnitView: a twin slot's right-hand half (the Gel's pair), hidden otherwise
 var _pair_marks: PairMarks = null    # an area weapon's target brackets round a twin slot whole
+var _half_sides: Dictionary = {}     # Foe -> 0 left, 1 right: the side of its slot each half of a pair was last shown on
 
 
 ## The brackets an area weapon draws round a twin slot's pair, one for the slot (Ryan, 26
@@ -193,6 +205,12 @@ func _process(delta: float) -> void:
 		if names.is_empty():
 			names = ["Protect", "1000 Needles", "Self-Destruct", "Bone Storm"]
 		_announce(str(names[int(_fight_t / (PLAQUE_HOLD + 1.2)) % names.size()]))
+	if ACT_DEBUG and not _replay_shade.visible and _fight_t - _act_debug_at > 1.2:
+		_act_debug_at = _fight_t
+		var views := _live_foe_views()
+		if not views.is_empty():
+			var at := views.find(_lit)
+			_spotlight(views[(at + 1) % views.size()])
 	if POOL_DEBUG and _fight_t - _pool_debug_at > 2.2 and not sk.field_foes().is_empty():
 		_pool_debug_at = _fight_t
 		var live := sk.field_foes()
@@ -409,7 +427,7 @@ func _build() -> void:
 		# The machines' row rests on the log, so a taller glass gives its height to the field and
 		# the machines stand further from the foes, rather than black over the log (Ryan, 29
 		# October: "extra black space above that doesn't need to be there").
-		MECH_Y = LOG_Y - MECH_SIZE.y - MECH_LOG_GAP
+		MECH_Y = LOG_Y - MECH_SIZE.y - MECH_LOG_GAP - CHIP_ROOM
 	_cam = _field_camera()
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
@@ -463,6 +481,7 @@ func _build() -> void:
 			var y := FRONT_Y if rank == 0 else BACK_Y
 			_stand(v, y, SLOT_SIZE.y)
 			v.empty_pad = true
+			v.chip_wrap = _col_pitch() - 6.0   # a foe's chips wrap at its column, wider than its drawing
 			_place(v, Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
 			v.held.connect(_on_foe_held.bind(v))
 			v.double_tapped.connect(_on_foe_double_tapped.bind(v))
@@ -484,6 +503,7 @@ func _build() -> void:
 		mv.massive = true
 		_stand(mv, BACK_Y, MASSIVE_SIZE.y)
 		mv.visible = false
+		mv.chip_wrap = _col_pitch() - 6.0
 		_place(mv, Vector2(_col_x(col) - MASSIVE_SIZE.x * 0.5, BACK_Y), MASSIVE_SIZE)
 		mv.held.connect(_on_foe_held.bind(mv))
 		mv.double_tapped.connect(_on_foe_double_tapped.bind(mv))
@@ -779,7 +799,7 @@ func _stand(v: UnitView, top: float, tall: float) -> void:
 func _lay_ground(bg: HudBackdrop) -> void:
 	var bottom := controls() == "bottom"
 	var foes := _foes_ground()
-	var end := (MECH_Y + MECH_SIZE.y + 8.0) if bottom else (BOTTOM_Y - 16.0)
+	var end := (LOG_Y - 10.0) if bottom else (BOTTOM_Y - 16.0)
 	var field := Rect2(0.0, foes.position.y, W, end - foes.position.y)
 	var camera := {"horizon": _cam.horizon - field.position.y, "focal": _cam.focal, "height": _cam.height, "shift": _cam.shift}
 	var backdrop := camera.duplicate()
@@ -961,9 +981,13 @@ func _build_outcome() -> void:
 
 ## Enemy column centres: three columns at a wide pitch, four at a tight one.
 func _col_x(col: int) -> float:
+	return W * 0.5 + (col - (sk.columns - 1) * 0.5) * _col_pitch()
+
+
+## The formation's columns apart.
+func _col_pitch() -> float:
 	var n := sk.columns
-	var pitch := 210.0 if n <= 3 else minf(176.0, (W - 16.0) / n)
-	return W * 0.5 + (col - (n - 1) * 0.5) * pitch
+	return 210.0 if n <= 3 else minf(176.0, (W - 16.0) / n)
 
 
 func _place(c: Control, pos: Vector2, sz: Vector2) -> void:
@@ -1036,6 +1060,8 @@ func _refresh(save: bool = true) -> void:
 			# one view across the whole.
 			var at := Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, FRONT_Y if rank == 0 else BACK_Y)
 			if twin != null:
+				_half_sides[foe] = 0
+				_half_sides[twin] = 1
 				_lay(v, at, Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
 				_lay(tv, at + Vector2(SLOT_SIZE.x * 0.5, 0.0), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
 				tv.visible = true
@@ -1043,6 +1069,12 @@ func _refresh(save: bool = true) -> void:
 				_fill_foe_view(tv, twin, targets, rank * sk.columns + col + 11)
 				_view_foe[tv] = twin
 				pairs.append([v, tv, foe, twin])
+			elif foe != null and not massive and is_half(foe):
+				# A half alone keeps its half of the slot, on its side (Ryan, 2 November: "a half unit
+				# should not take the full unit slot when it's other half dies, only when both are
+				# vacated does it return to a full size slot"); its twin's half stands empty.
+				tv.visible = false
+				_lay(v, at + Vector2(SLOT_SIZE.x * 0.5 * int(_half_sides.get(foe, 0)), 0.0), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
 			else:
 				tv.visible = false
 				_lay(v, at, SLOT_SIZE)
@@ -1355,6 +1387,30 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	for r in _foe_rows(foe):
 		v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status"])
 	v.queue_redraw()
+
+
+## Whether `foe` is one half of a pair (the Gel's), shown at half a slot even alone: a half this
+## screen has shown in a pair, or, with none remembered (a resumed fight), a foe content stands up
+## as a pair's half.
+func is_half(foe: Foe) -> bool:
+	if foe == null:
+		return false
+	if _half_sides.has(foe):
+		return true
+	return pair_halves().has(foe.content_id)
+
+
+static var _pair_halves: Dictionary = {}
+
+## The foes a split stands up as a pair, by content id (a foe whose `on_death` names a pair).
+static func pair_halves() -> Dictionary:
+	if _pair_halves.is_empty():
+		var db := ContentDB.load_default()
+		for id in db.foes.keys():
+			var od = (db.foes[id] as Dictionary).get("on_death", {})
+			if od is Dictionary and bool(od.get("pair", false)) and not str(od.get("summon", "")).is_empty():
+				_pair_halves[str(od["summon"])] = true
+	return _pair_halves
 
 
 ## The riders of a foe's blow, inside its intent chip after its number (Ryan, 2 November: "Enemy
@@ -2609,7 +2665,7 @@ func _use_die(i: int, target, second = null) -> bool:
 	for foe in sk.field_foes():
 		var fv := _foe_view_for(foe)
 		if fv != null:
-			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h]
+			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h, _home.get(fv, fv.position)]
 		if Effects.has(foe, "risen"):
 			readied.append(foe)
 	var spent: Face = sk.mechs[i].face()
@@ -2663,7 +2719,7 @@ func _use_die(i: int, target, second = null) -> bool:
 		Sound.play_after(fire_at, blow)
 		for k in range(dead.size()):
 			var w: Array = was[dead[k]]
-			_animate_death(w[0], w[1], w[2], w[3], landed)
+			_animate_death(w[0], w[1], w[2], w[3], landed, w[4])
 			Sound.play_after(landed + 0.07 * k, "kill", -2.0 * k)
 		# A last act (15 October): it lands as its foe falls, so the plaque names it after the
 		# death and the machines it struck take it.
@@ -2741,7 +2797,7 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 ## A foe dies: a ghost of its drawing, where it stood, flashes, drops and fades, in the
 ## enemy's colour. The slot itself is already empty (a kill clears it at once), so the ghost
 ## stands in for the foe until the blow lands (`lands`), then goes.
-func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool, lands: float = 0.0) -> void:
+func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool, lands: float = 0.0, home = null) -> void:
 	if not is_inside_tree() or v == null or tex == null:
 		return
 	var ghost := TextureRect.new()
@@ -2751,7 +2807,7 @@ func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool, lands
 	ghost.stretch_mode = TextureRect.STRETCH_SCALE
 	ghost.texture_filter = v.texture_filter
 	ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ghost.position = _home.get(v, v.position) + frame.position
+	ghost.position = (home if home is Vector2 else _home.get(v, v.position)) + frame.position   # where the view stood as it died: a pair's view may since rest elsewhere
 	ghost.size = frame.size
 	add_child(ghost)
 	var tw := create_tween()
@@ -2854,18 +2910,33 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 			_dying[h[1]] = true
 			deaths.append([h[1], h[10]])
 	var beat := _enemy_beat()
+	# Each foe lights a beat before its move lands and stays lit through it (Ryan, 2 November:
+	# "enemies need to highlight during their attacks, starting right before"); the next foe's lead
+	# comes out of the beat after the last blow, so the turn keeps its pace.
+	var lead := beat * ACT_LEAD
 	var tw := create_tween()
 	if not sk.overheats.is_empty():
 		tw.tween_callback(_land_overheats)
 		tw.tween_interval(beat)
 		tw.tween_callback(_set_phase.bind("ENEMY PHASE"))
-	for st in steps:
+	for k in range(steps.size()):
+		var st: Dictionary = steps[k]
+		var actor = before["views"].get(st["foe"])
+		if k == 0:
+			tw.tween_callback(_spotlight.bind(actor))
+			tw.tween_interval(lead)
 		if not str(st["announce"]).is_empty():
 			tw.tween_callback(_announce.bind(str(st["announce"])))
 			tw.tween_interval(PLAQUE_HOLD)
+		var switching: bool = k + 1 < steps.size() and before["views"].get(steps[k + 1]["foe"]) != actor
 		if not (st["blow"] as Array).is_empty():
 			tw.tween_callback(_land_blow.bind(st["blow"]))
-			tw.tween_interval(beat)
+			tw.tween_interval(beat - lead if switching else beat)
+		if switching:
+			# The next foe lights while this one's move settles, its lead out of the beat.
+			tw.tween_callback(_spotlight.bind(before["views"].get(steps[k + 1]["foe"])))
+			tw.tween_interval(lead)
+	tw.tween_callback(_spotlight.bind(null))
 	for d in deaths:
 		tw.tween_callback(_land_death.bind(d[0], d[1]))
 		tw.tween_interval(Sound.death_span(d[1]))
@@ -2906,6 +2977,21 @@ func _replay_steps(before: Dictionary) -> Array:
 		last_foe = st["foe"]
 		last_name = str(st["name"])
 	return steps
+
+
+var _lit: UnitView = null   # the foe lit as it acts in the enemy's turn
+
+
+## Light `v` as the foe acting now, and put out the one lit before; null puts it out.
+func _spotlight(v) -> void:
+	if _lit != null and is_instance_valid(_lit):
+		_lit.acting = false
+		_lit.queue_redraw()
+	_lit = v if v is UnitView and is_instance_valid(v) else null
+	if _lit != null:
+		_lit.acting = true
+		_lit.set_process(true)
+		_lit.queue_redraw()
 
 
 ## The plaque: the move's name in the other world's window, centred over the foes' rows,
@@ -3149,7 +3235,7 @@ func _end_turn_now() -> void:
 	for foe in field_before:
 		var rv := _foe_view_for(foe)
 		if Effects.has(foe, "risen") and rv != null:
-			readied[foe] = [rv, rv.sprite, rv.sprite_frame(), rv.flip_h]
+			readied[foe] = [rv, rv.sprite, rv.sprite_frame(), rv.flip_h, _home.get(rv, rv.position)]
 	var outcome := sk.end_round()
 	if outcome == Skirmish.Outcome.NONE:
 		sk.start_round()
@@ -3168,7 +3254,7 @@ func _end_turn_now() -> void:
 			if Effects.has(foe, "risen") or not sk.field_foes().has(foe):
 				continue
 			var w: Array = readied[foe]
-			_animate_death(w[0], w[1], w[2], w[3], 0.05 + 0.2 * rose)
+			_animate_death(w[0], w[1], w[2], w[3], 0.05 + 0.2 * rose, w[4])
 			Sound.play_after(0.05 + 0.2 * rose, "kill", -4.0)
 			_animate_arrival(_foe_view_for(foe), 0.5 + 0.2 * rose)
 			rose += 1

@@ -729,7 +729,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   core from taking any damage while all its parts stand, or while any does (Guarded); a part
   that falls may grow back after so many rounds while the core stands; a core that falls takes
   its parts with it.
-- **The enemy's turn**: front rank left to right, then the back. At its action each foe's
+- **The enemy's turn**: front rank left to right, then the back; on screen each foe is lit from
+  just before its move lands until the next acts. At its action each foe's
   statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
   included; Vitriol after Burning, on what it leaves); a suppressed foe does nothing; a web
   on it bursts at the end of its action, skipped or not. A foe with no machine to strike (every one fallen or out of the fight) loses its blow
@@ -744,7 +745,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   full while either stands: no mine is laid in it, and a Syrinx Drone on a half that falls
   while its twin stands leaves none. The left half acts first; a web on it catches its twin; a
   Swap moves the pair together and never swaps a half with its twin. When one falls the other
-  keeps the slot alone, and with both gone it is a plain slot: the pair is only ever its
+  keeps the slot alone, still drawn on its own half of it, and with both gone it is a plain slot: the pair is only ever its
   split's, so no half joins another's slot. A mine waiting in the slot goes off on the pair
   as they step up. Their round is over: no intent, no Lure or Disrupt turns them, a stun takes
   their next action, and they act from the next round. A split that is no pair (none in

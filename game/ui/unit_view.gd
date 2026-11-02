@@ -36,6 +36,7 @@ const ROW_GAP := 4.0       # between two rows of chips
 const RIDER_GLYPH := 16.0  # a rider's mark inside the intent chip
 const RIDER_TEXT := 14
 const RIDER_PAD := 6.0     # before a rider: its divider's room
+const ACT_RATE := 9.0      # the acting foe's breath, radians a second: quick, it is happening now
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -57,6 +58,11 @@ var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
 var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Kindled), pulsing, "asleep" a buff a purge put to sleep, still at half light
 var highlight: bool = false       # valid drop target while dragging a die
+## The foe acting in the enemy's turn, lit from just before its move until the next acts (Ryan, 2
+## November: "enemies need to highlight during their attacks, starting right before"): a glow in
+## the enemy's violet behind its drawing and heavy corners breathing round it, so it reads by
+## structure and motion as well as hue.
+var acting: bool = false
 var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
 var away: bool = false             # out of the fight, swallowed (30 October): drawn as a faint ghost under a dashed edge
@@ -275,7 +281,7 @@ func _process(delta: float) -> void:
 		if _spend > SPEND_SECONDS:
 			_spend = -1.0
 		queue_redraw()
-	if (_has_pending() or breathe) and visible and not dead:
+	if (_has_pending() or breathe or acting) and visible and not dead:
 		_t += delta
 		queue_redraw()
 	elif not _pressed and _shatter < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0:
@@ -425,6 +431,11 @@ func _draw() -> void:
 	var mono := Hud.mono()
 	var sil := _silhouette()
 	var vis := _visible()
+	var act := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * ACT_RATE) if acting and not dead else -1.0
+	if act >= 0.0:
+		# The acting foe's glow, behind everything it draws.
+		Hud.fill_poly(self, Hud.cut(vis.grow(12.0), 12.0), Color(Palette.ENEMY, 0.18 + 0.17 * act))
+		Hud.stroke_poly(self, Hud.cut(vis.grow(12.0), 12.0), Color(Palette.ENEMY, 0.35 + 0.3 * act), 2.0)
 	if sprite != null and ground_shadow:
 		var foot := ground_at if ground_at.x >= 0.0 else Vector2(vis.get_center().x, vis.end.y + hover - 1.0)
 		var rx := shadow_rx if shadow_rx > 0.0 else vis.size.x * (0.4 if hover > 0.0 else 0.5)
@@ -465,6 +476,11 @@ func _draw() -> void:
 		_draw_dashed(sil.grow(5.0), Palette.HEAT, 3.0)
 	if highlight:
 		Hud.brackets(self, vis.grow(6.0), 14.0, Palette.TARGET, 2.0)
+	if act >= 0.0:
+		# Heavy corners breathing round the acting foe, on a dark edge so they hold on any ground.
+		var r := vis.grow(14.0 + 4.0 * act)
+		Hud.brackets(self, r, 22.0, Color(Palette.BG, 0.8), 7.0)
+		Hud.brackets(self, r, 22.0, Palette.ENEMY, 4.0)
 	if _shatter >= 0.0:
 		_draw_shatter(vis)
 

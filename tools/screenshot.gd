@@ -228,6 +228,20 @@ func _apply_pose() -> void:
 				foes[i].target = s.sk.mechs[0]
 			s._toggle_all_arrows(true)
 			s._refresh()
+		"chips":
+			# Every unit crowded with chips (Ryan, 2 November: "chips can go off the sides of the
+			# screen ... Need to wrap rows ... space for 2-3 rows of chips under the player units"):
+			# seven statuses on each machine and five on each foe, so the rows wrap at the unit's
+			# width and the third row under a machine shows its room.
+			for ms in s.sk.mechs:
+				var u: Unit = ms.unit
+				for st in [["burning_mech", Effects.DECAY_TURN], ["scorched", Effects.DECAY_TURN_ALL], ["primed", Effects.DECAY_TICK], ["overcharged", Effects.DECAY_NONE], ["braced", Effects.DECAY_TURN_ALL], ["phased", Effects.DECAY_TURN_ALL], ["cryoed", Effects.DECAY_NONE]]:
+					if Effects.STATUS.has(st[0]):
+						Effects.stack(u, Effects.STATUS[st[0]], Effects.SKIRMISH, "shot", 2, st[1])
+			for foe in s.sk.field_foes():
+				for id in ["burning", "flakked", "shocked", "cryoed", "vitriol"]:
+					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
+			s._refresh()
 		"heat":
 			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row, with
 			# Primed beside them, the one other flame a machine wears.

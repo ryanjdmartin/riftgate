@@ -1791,10 +1791,41 @@ func test_a_twin_slot_shows_both_halves() -> void:
 	assert_true(tv.visible, "the right half shows")
 	assert_eq(s._view_foe.get(tv, null), half, "its own view, its own target")
 	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x * 0.5, "the left half takes half the slot")
+	# One half falls: the other keeps its half of the slot, never the whole (Ryan, 2 November: "a half
+	# unit should not take the full unit slot when it's other half dies, only when both are vacated
+	# does it return to a full size slot").
+	var home := s._home[s._slot_views[0][0]] as Vector2
 	s.sk.twins.clear()
 	s._refresh(false)
-	assert_false(tv.visible, "a plain slot again")
-	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x, "one view across it")
+	assert_false(tv.visible, "the fallen half's view goes")
+	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x * 0.5, "the survivor keeps its half")
+	assert_eq(s._home[s._slot_views[0][0]], home, "on its own side")
+	s.sk.front[0] = null
+	s._refresh(false)
+	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x, "both gone: one view across the slot again")
+	s.free()
+
+
+## The right half survives its twin: it stays on the right of its slot, drawn by the slot's own view.
+## A half shown alone after a resume (no side remembered) is still a half, on the left.
+func test_a_right_half_alone_keeps_the_right_of_its_slot() -> void:
+	var s := _screen()
+	var lead: Foe = s.sk.front[0]
+	var half := Foe.make("gel_small", 2, 1)
+	s.sk._set_contents(Vector2i(0, 0), [lead, half])
+	s._refresh(false)
+	var left_x: float = (s._home[s._slot_views[0][0]] as Vector2).x
+	s.sk._set_contents(Vector2i(0, 0), [half, null])   # the left half falls; the right keeps the slot alone
+	s._refresh(false)
+	var v: UnitView = s._slot_views[0][0]
+	assert_eq(s._view_foe.get(v, null), half, "the slot's view draws the survivor")
+	assert_eq((s._home[v] as Vector2).x, left_x + SkirmishScreen.SLOT_SIZE.x * 0.5, "on the right, where it stood")
+	assert_eq(v.size.x, SkirmishScreen.SLOT_SIZE.x * 0.5, "at half a slot")
+	var halves := SkirmishScreen.pair_halves()
+	assert_false(halves.is_empty(), "content names the pair's halves")
+	var resumed := Foe.make(str(halves.keys()[0]), 2, 1)
+	resumed.content_id = str(halves.keys()[0])
+	assert_true(s.is_half(resumed), "a half no screen has shown is one by its content")
 	s.free()
 
 
@@ -2011,4 +2042,21 @@ func test_an_open_readout_takes_every_tap_on_it() -> void:
 	assert_eq(s._details.mouse_filter, Control.MOUSE_FILTER_STOP, "the panel stops every press on it")
 	assert_eq(s._details_entry.mouse_filter, Control.MOUSE_FILTER_PASS, "its lines take one on a term alone")
 	assert_false(s._details_entry._has_point(Vector2(-50.0, -50.0)), "nothing off a term")
+	s.free()
+
+
+## The foe acting in the enemy's turn is lit, one at a time (Ryan, 2 November: "enemies need to
+## highlight during their attacks, starting right before"); the replay lights the next a part of
+## the beat before its move lands, out of the beat after the last blow, so the turn keeps its pace.
+func test_the_acting_foe_is_lit_one_at_a_time() -> void:
+	var s := _screen()
+	var views := s._live_foe_views()
+	assert_true(views.size() >= 2, "foes on the field")
+	s._spotlight(views[0])
+	assert_true(views[0].acting, "the first lit")
+	s._spotlight(views[1])
+	assert_true(views[1].acting and not views[0].acting, "the next lit puts the last out")
+	s._spotlight(null)
+	assert_false(views[1].acting, "and none at the turn's end")
+	assert_true(SkirmishScreen.ACT_LEAD > 0.0 and SkirmishScreen.ACT_LEAD < 1.0, "the lead a part of the beat")
 	s.free()
