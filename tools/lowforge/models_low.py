@@ -1777,6 +1777,299 @@ def dingo(b):
 dingo.maker = "wainwright_sutler"
 
 
+def _cottonmouth_prisms(b, specs, material, label):
+    """Several low prisms as one part, each (axis, (cx, cy, cz), radius, length, sides, phase)
+    laid as Build.prism lays one: a lit set that draws in one call (the weld keeps a lit part
+    whole, so six lamps as six parts would be six draws), or a row of like pieces."""
+    bm = bmesh.new()
+    for axis, (cx, cy, cz), r, length, n, phase in specs:
+        if axis == "y":
+            m = Matrix.Translation((cx, cy, cz))
+        elif axis == "x":
+            m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(math.pi / 2, 4, "Z")
+        else:
+            m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
+        rings = [[bm.verts.new(m @ Vector((r * math.cos(phase + 2.0 * math.pi * k / n), y, r * math.sin(phase + 2.0 * math.pi * k / n))))
+                  for k in range(n)] for y in (-length / 2.0, length / 2.0)]
+        for k in range(n):
+            k2 = (k + 1) % n
+            bm.faces.new([rings[0][k], rings[0][k2], rings[1][k2], rings[1][k]])
+        bm.faces.new(rings[0])
+        bm.faces.new(rings[1])
+    return b._finish(bm, material, label)
+
+
+def _cottonmouth_ring(b, cx, cz, y0, y1, r_out, r_in, n, material, label, phase=0.0):
+    """A closed ring about an axis along y from `y0` to `y1`: its outer and inner walls and
+    both end faces, so a duct or a muzzle reads as a thick-walled hoop from either end."""
+    bm = bmesh.new()
+    ring = lambda y, r: [bm.verts.new((cx + r * math.cos(phase + 2.0 * math.pi * k / n), y, cz + r * math.sin(phase + 2.0 * math.pi * k / n))) for k in range(n)]
+    o0, o1, i1, i0 = ring(y0, r_out), ring(y1, r_out), ring(y1, r_in), ring(y0, r_in)
+    for k in range(n):
+        k2 = (k + 1) % n
+        bm.faces.new([o0[k], o0[k2], o1[k2], o1[k]])
+        bm.faces.new([o1[k], o1[k2], i1[k2], i1[k]])
+        bm.faces.new([i1[k], i1[k2], i0[k2], i0[k]])
+        bm.faces.new([i0[k], i0[k2], o0[k2], o0[k]])
+    return b._finish(bm, material, label)
+
+
+def _cottonmouth_boxes(b, boxes, material, label):
+    """Several boxes as one part, each (centre, (u, v, w), (hu, hv, hw)): its three axes as
+    vectors and its half-size along each, so a ring of windows round a drum lies square to it
+    and draws in one call."""
+    bm = bmesh.new()
+    for centre, axes, half in boxes:
+        c = Vector(centre)
+        u, v, w = (Vector(a).normalized() for a in axes)
+        corners = [bm.verts.new(c + u * (su * half[0]) + v * (sv * half[1]) + w * (sw * half[2]))
+                   for sw in (-1.0, 1.0) for sv in (-1.0, 1.0) for su in (-1.0, 1.0)]
+        for f in ((0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3)):
+            bm.faces.new([corners[i] for i in f])
+    return b._finish(bm, material, label)
+
+
+def _cottonmouth_blade(b, centre, a, r0, r1, chord, pitch, thick, material, label):
+    """One fan blade in the disc square to y about `centre`: from radius `r0` to `r1` along the
+    angle `a` (radians, from +x toward +z), its chord across the radius pitched `pitch` radians
+    out of the disc, as a thin slab."""
+    c = Vector(centre)
+    u = Vector((math.cos(a), 0.0, math.sin(a)))
+    t = Vector((-math.sin(a), 0.0, math.cos(a)))
+    ax = Vector((0.0, 1.0, 0.0))
+    cd = t * math.cos(pitch) + ax * math.sin(pitch)
+    nd = ax * math.cos(pitch) - t * math.sin(pitch)
+    face = [c + u * r0 - cd * (chord * 0.5), c + u * r1 - cd * (chord * 0.4), c + u * r1 + cd * (chord * 0.4), c + u * r0 + cd * (chord * 0.5)]
+    return _rings(b, [[tuple(p + nd * (thick / 2.0)) for p in face], [tuple(p - nd * (thick / 2.0)) for p in face]], material, label)
+
+
+def cottonmouth(b):
+    """Wainwright & Sutler "Cottonmouth" (Pattern 16 Hover Gunboat): the reach piece, every
+    weapon and equipment it aims at a foe leaving the drum as one Indirect shot (Ryan's go, 19
+    October; its brief: git show 021f075:docs/briefs/ws_fan_boat.md). Ryan's picture (19
+    October): "a big rotating set of barrels with the guns mounted (invisibly) inside, like a
+    multi shot grenade launcher. We call it a fan boat but the profile is more sophisticated than
+    that, it is still future-tech after all"; the to-do's line: a light hovercraft in the
+    maker's iron, a hover hull under a big rotating drum of barrels, the fitted guns inside it,
+    the one machine whose hardpoints show no mounts. First cut, 31 October: a squared-off
+    hover barge on a rubber skirt the whole way round (its fingers the tread's cleats), a raked
+    punt bow behind a fender, gunwale rails, the maker's brown on the flanks; a low armoured
+    wheelhouse at the bow, its visor slit on the raked face under a brow, a searchlight on its
+    roof that turns (joint sensor) and a whip antenna; amidships the Adaptive Munitions Drum
+    (the passive, no entry on the die) on trunnions in a yoke on a ring, elevating to lob (joint
+    elev_drum) and turning on its own axis (joint drum, always turning slowly, b.spin): a
+    riveted breech casing banded in the livery, a window in the band over each chamber, its back
+    a face of six chamber caps round a hub, the index chamber's lamp lit and the others banked
+    (the windows and lamps burn as it spins up, so the spin reads as light running round it);
+    six fat barrels out of its front through two collars to bored muzzles, each bore dark at
+    rest and burning when it fires, the index barrel striped white down its top and ringed white
+    at its muzzle, so the turn reads from above, behind and in front; the lift intakes either
+    side of the yoke and an ammunition locker either side of the barrels, lidded in the livery.
+    The heat is the heat tile's, an orange of red and green alone (#ff7800 at its height). The stern is the
+    fan-boat's: two ducted fans side by side on a fairing, hazard-striped lips, five blades each
+    with yellow tips turning against each other (joints fan_l and fan_r, b.spin), a lit ring
+    behind each rotor, and two rudder vanes behind each duct (joints rudder_l1, rudder_l2,
+    rudder_r1, rudder_r2) that steer with the turns. Mounts in the die's order, all four hidden
+    inside the drum's casing (b.pin hidden=True: nothing drawn there, stock or fitted), riding
+    its elevation so a shot kicks the drum: hp_1 the Ankle Mortar, hp_2 the Twin Autoguns, hp_3
+    the Halo Shield, hp_4 bare (the Coolant Jacket takes no mount). Floats: the skirt at z = 5.
+    The look, the rig, the acts and the gait are Ryan's to judge running."""
+    DECK = 15.0
+    # The skirt: a rubber bag under the hull the whole way round, bulging past it, rising with
+    # the bow's rake; its rounded ends in plan from sections that narrow fore and aft.
+    SKIRT = [(-37.0, 6.6, 10.6, 30.0, 2.0), (-35.6, 5.6, 11.0, 40.0, 2.4), (-33.0, 5.0, 11.4, 45.0, 2.6), (21.0, 5.0, 11.4, 45.0, 2.6),
+             (28.0, 6.2, 12.4, 43.0, 2.6), (33.0, 8.2, 13.8, 37.0, 2.2), (35.6, 10.0, 14.2, 27.0, 1.8)]   # (y, z0, z1, w, c), stern to bow
+    b.loft([(y, _hull_section(z0, z1, w, c, belly=0.4)) for (y, z0, z1, w, c) in SKIRT], "bore.tread", "skirt")
+    # The hull: a squared barge, the deck level stem to stern, the bottom raked up to a blunt
+    # punt bow; riveted iron.
+    b.loft([(-34.0, _case(38.0, 9.6, DECK, 2.0)), (-31.0, _case(40.0, 9.0, DECK, 2.6)), (20.0, _case(40.0, 9.0, DECK, 2.6)),
+            (28.0, _case(37.0, 10.8, DECK, 2.4)), (33.0, _case(32.0, 13.0, DECK, 2.0))], "steel.panel", "hull")
+    for s in (-1.0, 1.0):
+        # The gunwale rail along each deck edge, the maker's brown panel down each flank, the
+        # lift intakes either side of the drum's yoke.
+        b.box(min(s * 19.0, s * 20.4), max(s * 19.0, s * 20.4), -33.0, 27.0, DECK - 0.2, DECK + 0.9, "steel.dark", "gunwale")
+        b.box(min(s * 19.95, s * 20.5), max(s * 19.95, s * 20.5), -27.0, 17.0, 11.6, 14.2, "livery.livery2", "flank_panel")
+        b.box(min(s * 15.6, s * 18.8), max(s * 15.6, s * 18.8), -19.0, -1.0, DECK, DECK + 0.6, "steel.vent", "lift_grille")
+        # An ammunition locker either side of the barrels, bolted to the deck, its lid in the
+        # livery.
+        b.box(min(s * 13.8, s * 18.8), max(s * 13.8, s * 18.8), 3.0, 14.0, DECK, DECK + 3.4, "steel.panel", "locker")
+        b.box(min(s * 14.3, s * 18.3), max(s * 14.3, s * 18.3), 3.5, 13.5, DECK + 3.4, DECK + 3.9, "livery.livery2", "locker_lid")
+    b.box(-14.5, 14.5, 31.2, 33.6, DECK - 0.6, DECK + 0.5, "steel.dark", "bow_fender")
+    _cottonmouth_prisms(b, [("z", (s * 14.5, y, DECK + 1.2), 1.1, 2.4, 6, 0.0) for s in (-1.0, 1.0) for y in (26.5, -23.5)], "steel.dark", "bollard")
+    _cottonmouth_prisms(b, [("z", (s * 14.5, y, DECK + 2.6), 1.6, 0.6, 6, 0.0) for s in (-1.0, 1.0) for y in (26.5, -23.5)], "steel.plate", "bollard_cap")
+    for s in (-1.0, 1.0):
+        b.box(s * 16.0 - 1.6, s * 16.0 + 1.6, -34.5, -33.9, 12.4, 14.4, "amber.lit", "tail_light")
+
+    # The wheelhouse at the bow: low and armoured, its face raked, the visor slit across the rake
+    # under a brow, its roof in the livery, two lamps under the face, the searchlight and a whip
+    # antenna on the roof.
+    CABZ = 22.0
+    rake = lambda y: CABZ - 1.15 * (y - 27.0)
+    b.loft([(20.0, _case(18.0, DECK - 0.5, CABZ, 1.6)), (27.0, _case(18.0, DECK - 0.5, CABZ, 1.6)), (31.0, _case(16.4, DECK - 0.5, rake(31.0), 1.2))], "steel.panel", "cab")
+    _rings(b, [[(-7.0, y, rake(y) - 0.1), (7.0, y, rake(y) - 0.1), (7.0, y, rake(y) + 0.45), (-7.0, y, rake(y) + 0.45)] for y in (27.6, 29.0)], "glass.glass", "visor")
+    b.box(-8.6, 8.6, 25.6, 27.6, CABZ - 0.4, CABZ + 1.2, "steel.plate", "brow")
+    b.box(-7.4, 7.4, 20.6, 25.4, CABZ, CABZ + 0.5, "livery.livery2", "cab_roof")
+    for s in (-1.0, 1.0):
+        b.box(s * 5.2 - 1.5, s * 5.2 + 1.5, 30.9, 31.5, DECK + 0.7, DECK + 2.1, "amber.lit", "lamp")
+    b.prism("z", -6.0, 21.6, CABZ + 6.4, 0.4, 12.0, "steel.dark", 4, "antenna")
+    b.prism("z", 4.4, 23.0, CABZ + 0.9, 1.4, 0.8, "steel.dark", 8, "searchlight_base")
+    with b.joint("sensor", (4.4, 23.0, CABZ + 1.3), axis="yaw", limits=(-80.0, 80.0)):
+        b.box(3.0, 5.8, 21.6, 24.8, CABZ + 1.3, CABZ + 3.9, "steel.plate", "searchlight_housing")
+        b.box(3.3, 5.5, 24.8, 25.3, CABZ + 1.6, CABZ + 3.6, "amber.lit", "searchlight")
+
+    # The drum's yoke: a ring on the deck, a base, two cheeks rising either side of the drum to
+    # the trunnions, a sight on the left cheek.
+    PY, ZA = -9.0, 29.5          # the trunnions: the drum's pivot and its axis's height
+    RC = 12.4                    # the breech casing's radius
+    b.prism("z", 0.0, PY + 1.0, DECK + 0.4, 11.0, 0.8, "steel.dark", 12, "yoke_ring", phase=math.pi / 12)
+    for s in (-1.0, 1.0):
+        b.box(min(s * 12.6, s * 16.6), max(s * 12.6, s * 16.6), PY - 5.6, PY + 7.0, DECK + 0.2, DECK + 2.6, "steel.panel", "yoke_base")
+        b.loft([(PY - 4.6, rect(s * 14.4, 2.6, DECK + 2.6, ZA + 3.0)), (PY + 4.6, rect(s * 14.4, 2.6, DECK + 2.6, ZA + 3.0)),
+                (PY + 6.2, rect(s * 14.4, 2.6, DECK + 2.6, ZA - 3.0))], "steel.panel", "yoke_cheek")
+        b.prism("x", s * 16.2, PY, ZA, 3.0, 1.2, "steel.dark", 8, "trunnion", phase=math.pi / 8)
+    b.box(-15.6, -13.2, PY - 2.0, PY + 2.4, ZA + 3.0, ZA + 4.6, "amber.lit", "sight")
+
+    # The drum: elevating in the yoke, turning on its own axis inside it.
+    RR, RB = 7.6, 3.7            # the barrels' ring radius and each barrel's
+    angles = [math.pi / 2.0 + k * math.pi / 3.0 for k in range(6)]   # the index barrel on top at rest
+    with b.joint("elev_drum", (0.0, PY, ZA), axis="pitch", limits=(0.0, 30.0)):
+        with b.joint("drum", (0.0, PY, ZA), axis="roll"):
+            # The breech casing: chamfered at its back so the drum lifts clear of the deck.
+            b.loft([(PY - 7.0, _oct(ZA, 2.0 * (RC - 1.8), 2.0 * (RC - 1.8), 0.0, 12)), (PY - 4.6, _oct(ZA, 2.0 * RC, 2.0 * RC, 0.0, 12)),
+                    (PY + 10.0, _oct(ZA, 2.0 * RC, 2.0 * RC, 0.0, 12))], "steel.panel", "casing")
+            b.loft([(PY - 5.2, _oct(ZA, 2.0 * RC + 0.8, 2.0 * RC + 0.8, 0.0, 12)), (PY - 3.8, _oct(ZA, 2.0 * RC + 0.8, 2.0 * RC + 0.8, 0.0, 12))], "steel.plate", "casing_rim")
+            b.loft([(PY + 9.2, _oct(ZA, 2.0 * RC + 0.8, 2.0 * RC + 0.8, 0.0, 12)), (PY + 10.6, _oct(ZA, 2.0 * RC + 0.8, 2.0 * RC + 0.8, 0.0, 12))], "steel.plate", "casing_rim")
+            b.loft([(PY + 0.5, _oct(ZA, 2.0 * RC + 0.4, 2.0 * RC + 0.4, 0.0, 12)), (PY + 4.5, _oct(ZA, 2.0 * RC + 0.4, 2.0 * RC + 0.4, 0.0, 12))], "livery.livery2", "drum_band")
+            # A window over each chamber in the band, banked dark, burning as the drum spins up,
+            # so the spin reads as a light running round it.
+            _cottonmouth_boxes(b, [((RC * 0.97 * math.cos(a), PY + 2.5, ZA + RC * 0.97 * math.sin(a)), ((-math.sin(a), 0.0, math.cos(a)), (0.0, 1.0, 0.0), (math.cos(a), 0.0, math.sin(a))), (1.6, 1.3, 0.5))
+                                   for a in angles], "amber.heat", "chamber_window")
+            # Its back: a hub and six chamber caps, the index chamber's lamp lit, the rest banked.
+            yb = PY - 7.0
+            b.prism("y", 0.0, yb - 0.6, ZA, 3.0, 1.2, "steel.dark", 8, "drum_hub", phase=math.pi / 8)
+            cr = 6.6
+            _cottonmouth_prisms(b, [("y", (cr * math.cos(a), yb - 0.3, ZA + cr * math.sin(a)), 2.3, 0.6, 8, math.pi / 8) for a in angles], "steel.plate", "chamber_cap")
+            _cottonmouth_prisms(b, [("y", (cr * math.cos(a), yb - 0.75, ZA + cr * math.sin(a)), 1.5, 0.4, 8, math.pi / 8) for a in angles[1:]], "amber.heat", "chamber_lamp")
+            _cottonmouth_prisms(b, [("y", (cr * math.cos(angles[0]), yb - 0.75, ZA + cr * math.sin(angles[0])), 1.5, 0.4, 8, math.pi / 8)], "amber.lit", "index_lamp")
+            # The barrels out of the casing's face, through two collars, to bored muzzles.
+            y0, y1, ym = PY + 10.0, PY + 21.0, PY + 27.5
+            for k, a in enumerate(angles):
+                bx, bz = RR * math.cos(a), ZA + RR * math.sin(a)
+                b.prism("y", bx, (y0 + y1) / 2.0, bz, RB, y1 - y0, "steel.dark", 8, "barrel", phase=math.pi / 8)
+                _cottonmouth_ring(b, bx, bz, y1, ym, RB + 0.2, RB - 1.0, 8, "bone.bone" if k == 0 else "steel.dark", "muzzle_index" if k == 0 else "muzzle", phase=math.pi / 8)
+            _cottonmouth_prisms(b, [("y", (RR * math.cos(a), ym - 1.8, ZA + RR * math.sin(a)), RB - 0.95, 0.4, 8, math.pi / 8) for a in angles], "amber.heat", "bore_glow")   # a short way in, where the cameras see it
+            b.box(-1.3, 1.3, y0 + 0.4, y1 - 0.4, ZA + RR + RB * math.cos(math.pi / 8.0) - 0.1, ZA + RR + RB * math.cos(math.pi / 8.0) + 0.3, "bone.bone", "index_stripe")
+            b.prism("y", 0.0, (y0 + ym) / 2.0, ZA, 2.3, ym - y0, "steel.dark", 8, "spindle", phase=math.pi / 8)
+            b.prism("y", 0.0, ym, ZA, 3.0, 1.4, "steel.plate", 8, "spindle_cap", phase=math.pi / 8)
+            for yc in (y0 + 3.6, y1 + 1.6):
+                b.prism("y", 0.0, yc, ZA, RR + RB + 0.5, 2.2, "steel.plate", 12, "collar", phase=math.pi / 12)
+        # The four mounts, hidden inside the casing (nothing drawn there, stock or fitted), on
+        # the elevation so a shot kicks the drum up; in the die's order.
+        for n, (dx, dz), carries in ((1, (-4.2, 4.2), "ankle_mortar"), (2, (4.2, 4.2), "twin_autoguns"), (3, (-4.2, -4.2), "halo_shield"), (4, (4.2, -4.2), "")):
+            b.pin("hp_%d" % n, (dx, PY + 2.0, ZA + dz), scale=0.5, carries=carries, hidden=True)
+
+    # The stern: two ducted fans side by side on a fairing, each on a pylon, its lip
+    # hazard-striped, a motor behind the rotor with a lit ring at its back, five blades with
+    # yellow tips turning against its twin's; two rudder vanes behind each duct.
+    FX, FY, FZ, FR, FRI = 11.6, -29.0, 25.4, 9.0, 8.0
+    b.box(-3.0, 3.0, FY - 2.4, FY + 2.4, DECK, FZ + 4.6, "steel.panel", "fan_fairing")
+    rings = []
+    for s in (-1.0, 1.0):
+        side = "l" if s < 0 else "r"
+        fx = s * FX
+        _cottonmouth_ring(b, fx, FZ, FY - 2.6, FY + 2.6, FR, FRI, 16, "steel.panel", "duct", phase=math.pi / 16)
+        _cottonmouth_ring(b, fx, FZ, FY - 2.5, FY + 2.5, FRI + 0.05, FRI - 0.25, 16, "steel.dark", "duct_liner", phase=math.pi / 16)
+        _cottonmouth_ring(b, fx, FZ, FY - 3.1, FY - 2.6, FR + 0.3, FRI - 0.2, 16, "steel.hazard", "duct_lip", phase=math.pi / 16)
+        _cottonmouth_ring(b, fx, FZ, FY + 2.6, FY + 3.1, FR + 0.3, FRI - 0.2, 16, "steel.plate", "duct_lip_front", phase=math.pi / 16)
+        b.box(fx - 3.0, fx + 3.0, FY - 2.2, FY + 2.2, DECK, FZ - FR + 0.8, "steel.panel", "duct_pylon")
+        b.prism("y", fx, FY - 1.2, FZ, 2.6, 3.0, "steel.dark", 8, "fan_motor", phase=math.pi / 8)
+        rings.append(("y", (fx, FY - 2.9, FZ), 2.2, 0.5, 8, math.pi / 8))
+        for k in range(3):
+            a = math.pi / 2.0 + k * 2.0 * math.pi / 3.0
+            _beam(b, (fx + 2.2 * math.cos(a), FY - 1.6, FZ + 2.2 * math.sin(a)), (fx + (FRI + 0.2) * math.cos(a), FY - 1.6, FZ + (FRI + 0.2) * math.sin(a)),
+                  _sq(0.9, 0.9), _sq(0.9, 0.9), "steel.dark", "stator")
+        with b.joint("fan_" + side, (fx, FY + 1.4, FZ), axis="roll"):
+            b.prism("y", fx, FY + 1.4, FZ, 1.8, 2.6, "steel.plate", 8, "fan_hub", phase=math.pi / 8)
+            b.loft([(FY + 2.7, _oct(FZ, 3.2, 3.2, fx, 8)), (FY + 4.0, _oct(FZ, 0.6, 0.6, fx, 8))], "steel.plate", "spinner")
+            for k in range(5):
+                a = k * 2.0 * math.pi / 5.0 + (0.3 if s > 0 else 0.0)
+                _cottonmouth_blade(b, (fx, FY + 1.4, FZ), a, 1.6, FRI - 1.9, 3.2, s * math.radians(28.0), 0.5, "steel.dark", "fan_blade")
+                _cottonmouth_blade(b, (fx, FY + 1.4, FZ), a, FRI - 1.9, FRI - 0.6, 2.6, s * math.radians(28.0), 0.5, "steel.hazard", "blade_tip")
+        for k, dx in enumerate((-4.4, 4.4)):
+            rx, ry = fx + dx, FY - 3.8
+            b.box(rx - 0.6, rx + 0.6, ry - 0.2, FY - 2.6, FZ + 6.6, FZ + 7.6, "steel.dark", "rudder_bracket")
+            b.box(rx - 0.6, rx + 0.6, ry - 0.2, FY - 2.6, FZ - 7.8, FZ - 6.8, "steel.dark", "rudder_bracket")
+            with b.joint("rudder_%s%d" % (side, k + 1), (rx, ry, FZ), axis="yaw", limits=(-30.0, 30.0)):
+                b.prism("z", rx, ry, FZ, 0.6, 14.4, "steel.dark", 6, "rudder_post")
+                b.loft([(ry, rect(rx, 0.9, FZ - 6.8, FZ + 6.4)), (ry - 5.0, rect(rx, 0.6, FZ - 6.0, FZ + 5.6))], "livery.livery2", "rudder")
+    _cottonmouth_prisms(b, rings, "amber.heat", "fan_ring")
+
+    # Idle acts (four, loud, never in step; a light hovercraft's servos, b.move). Degrees and
+    # seconds; a key is (t, value) on the joint's own axis; a body key is (t, dx, dy, dz) or
+    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
+    rudders = ("rudder_l1", "rudder_l2", "rudder_r1", "rudder_r2")
+    hot = ["chamber_lamp", "chamber_window", "bore_glow"]
+    HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 here under the phone's eased light (the Armadillo's vents)
+    # Spin-up: the drum lifts a touch and spins up through four whole turns, its chambers and
+    # bores burning hotter as it whirls, the hull shuddering on its cushion; it spins down onto
+    # its index and settles.
+    b.act("spin_up", 6.6, {
+        "elev_drum": [(0.4, 0.0), (1.3, 12.0), (5.2, 12.0), (6.2, 0.0)],
+        "drum": [(0.8, 0.0), (1.5, 40.0), (2.2, 210.0), (2.9, 560.0), (3.6, 950.0), (4.3, 1260.0), (5.0, 1410.0), (5.6, 1440.0), (6.6, 1440.0)],
+    }, body=[(2.0, 0.0, 0.0, 0.0), (2.3, 0.0, -0.4, 0.3, 0.0, 0.6, 0.8), (2.6, 0.0, -0.6, 0.0, 0.0, 0.8, -0.8), (2.9, 0.0, -0.8, 0.3, 0.0, 1.0, 0.9),
+             (3.2, 0.0, -0.8, 0.0, 0.0, 1.0, -0.9), (3.5, 0.0, -0.8, 0.3, 0.0, 1.0, 0.9), (3.8, 0.0, -0.8, 0.0, 0.0, 1.0, -0.9), (4.1, 0.0, -0.6, 0.3, 0.0, 0.8, 0.7),
+             (4.4, 0.0, -0.4, 0.0, 0.0, 0.6, -0.5), (5.0, 0.0, 0.0, 0.0)], heft=0.08,
+       glow=[(hot, [(0.8, 0.0), (2.2, 0.25 * HEAT), (3.0, HEAT), (4.6, HEAT), (5.6, 0.2 * HEAT), (6.3, 0.0)]),
+             (["sight"], [(0.4, 0.0), (0.8, 6.0), (5.6, 6.0), (6.2, 0.0)])])
+    # The ranging: up for the back rank, two shots punched out, each kicking the drum and
+    # shoving the hull back on its cushion, the drum turning a chamber after each; then down for
+    # the front rank, three shots sprayed along the row as the hull yaws across it on its
+    # rudders, and home, the drum turning on to its index.
+    shot = lambda t, at: [(t, at), (t + 0.06, at + 4.0), (t + 0.5, at)]
+    flash = lambda t: [(t, 0.0), (t + 0.05, HEAT), (t + 0.3, 0.3 * HEAT), (t + 0.6, 0.0)]
+    b.act("ranging", 9.0, {
+        "elev_drum": [(0.4, 0.0), (1.6, 26.0)] + shot(2.4, 26.0) + shot(3.6, 26.0) + [(4.4, 26.0), (5.4, 6.0)] + shot(5.9, 6.0) + shot(6.6, 6.0) + shot(7.3, 6.0) + [(8.6, 0.0)],
+        "drum": [(2.5, 0.0), (2.9, 60.0), (3.7, 60.0), (4.1, 120.0), (6.0, 120.0), (6.4, 180.0), (6.7, 180.0), (7.1, 240.0), (7.4, 240.0), (7.8, 300.0), (8.2, 300.0), (8.7, 360.0), (9.0, 360.0)],
+        **{r: [(5.2, 0.0), (5.7, -18.0), (6.0, -18.0), (6.5, 0.0), (6.8, 0.0), (7.2, 18.0), (7.6, 18.0), (8.3, 0.0)] for r in rudders},
+    }, body=[(2.4, 0.0, 0.0, 0.0), (2.55, 0.0, -2.2, -0.3, 0.0, 1.4, 0.0), (3.3, 0.0, -1.2, 0.0, 0.0, 0.0, 0.0), (3.6, 0.0, -1.2, 0.0), (3.75, 0.0, -3.4, -0.3, 0.0, 1.4, 0.0),
+             (4.6, 0.0, -2.0, 0.0), (5.6, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0), (5.9, 0.0, -1.0, 0.0, 12.0, 0.0, 0.0), (6.05, 0.0, -2.2, -0.2, 12.0, 0.8, 0.0),
+             (6.6, 0.0, -1.6, 0.0, 0.0, 0.0, 0.0), (6.75, 0.0, -2.8, -0.2, 0.0, 0.8, 0.0), (7.3, 0.0, -2.0, 0.0, -12.0, 0.0, 0.0), (7.45, 0.0, -3.0, -0.2, -12.0, 0.8, 0.0),
+             (8.2, 0.0, -1.0, 0.0, -2.0, 0.0, 0.0), (9.0, 0.0, 0.0, 0.0)],
+       glow=[(["bore_glow"], flash(2.4) + flash(3.6)[:] + flash(5.9) + flash(6.6) + flash(7.3)),
+             (["sight"], [(0.4, 0.0), (0.9, 6.0), (8.0, 6.0), (8.6, 0.0)])])
+    # Coming about: the rudders go hard over and the hull swings round on its cushion to its
+    # left, tipping out as it turns, the searchlight sweeping the water as it holds; then hard
+    # over the other way and back round to its station, settling with a heave.
+    b.act("come_about", 8.0, {
+        **{r: [(0.4, 0.0), (0.9, -28.0), (2.0, -28.0), (2.6, 0.0), (4.6, 0.0), (5.1, 28.0), (6.2, 28.0), (6.8, 0.0)] for r in rudders},
+        "sensor": [(2.6, 0.0), (3.4, 50.0), (3.9, 50.0), (4.7, -30.0), (5.2, -30.0), (6.2, 0.0)],
+        "elev_drum": [(1.0, 0.0), (2.0, 6.0), (5.6, 6.0), (6.6, 0.0)],
+    }, body=[(0.6, 0.0, 0.0, 0.0), (1.6, 0.0, 0.0, 0.4, 24.0, 0.0, 2.6), (2.6, 0.0, 0.0, 0.6, 46.0, 0.0, 0.8), (3.0, 0.0, 0.0, 0.5, 48.0, 0.0, 0.0),
+             (4.8, 0.0, 0.0, 0.5, 48.0, 0.0, 0.0), (5.8, 0.0, 0.0, 0.4, 22.0, 0.0, -2.6), (6.8, 0.0, 0.0, 0.2, 0.0, 0.0, -0.6), (7.2, 0.0, 0.0, -0.6, 0.0, 0.6, 0.0), (8.0, 0.0, 0.0, 0.0)],
+       glow=[(["searchlight", "lamp"], [(2.4, 0.0), (2.8, 8.0), (5.4, 8.0), (6.0, 0.0)])])
+    # The surge: the rudders are tried hard over each way, then the fans roar, their rings
+    # burning, and it surges ahead on its cushion with its bow lifting, brakes nose down with
+    # the drum swinging up on its trunnions, and drifts back onto its station.
+    b.act("surge", 7.2, {
+        **{r: [(0.4, 0.0), (0.9, 26.0), (1.4, 26.0), (2.1, -26.0), (2.6, -26.0), (3.1, 0.0)] for r in rudders},
+        "elev_drum": [(4.4, 0.0), (4.9, 9.0), (5.4, 9.0), (6.2, 0.0)],
+    }, body=[(3.0, 0.0, 0.0, 0.0), (3.9, 0.0, 6.0, 0.8, 0.0, 4.0, 0.0), (4.4, 0.0, 9.0, 0.6, 0.0, 2.0, 0.0), (4.9, 0.0, 9.6, -0.5, 0.0, -2.6, 0.0),
+             (5.4, 0.0, 9.4, 0.0, 0.0, -0.6, 0.0), (7.2, 0.0, 0.0, 0.0)],
+       glow=[(["fan_ring"], [(3.0, 0.0), (3.4, HEAT), (4.4, HEAT), (5.0, 0.3 * HEAT), (5.6, 0.0)]),
+             (["tail_light"], [(4.4, 0.0), (4.6, 6.0), (6.4, 6.0), (6.9, 0.0)])])
+    # Movement: the fans turn faster and their rings burn under way, the rudders steer into the
+    # turns (trailing edges toward the turn), the bow lifts on the cushion and pulling away; it
+    # drifts through its corners, never banking (a hovercraft keeps flat). The drum turns
+    # slowly always, a turn in ten seconds.
+    b.gait(steer={r: -16.0 for r in rudders}, body_hold=(0.0, 0.0, 0.6, 0.0, 2.5, 0.0), glow={"parts": ["fan_ring"], "k": 0.7 * HEAT}, rock=3.0)
+    b.spin("fan_l", 360.0, 1260.0)
+    b.spin("fan_r", -360.0, -1260.0)
+    b.spin("drum", 36.0)
+    b.move(slide=0.35, bank=0.0, accel=0.7, heft=0.13, oversteer=1.3)
+
+cottonmouth.maker = "wainwright_sutler"
+
+
 def funnel_web(b):
     """Wainwright & Sutler "Funnel-web" (Pattern 19 Ambush Walker): the roster's tank-buster,
     a four-legged walker that does spider-like things (Ryan, 14 and 17 October: a little

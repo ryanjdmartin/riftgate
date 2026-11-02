@@ -402,6 +402,7 @@ class Build:
         self.objects = []
         self.pins = []      # every hp_* and joint_* Empty made, in order, so a joint block can take the pins made inside it
         self.carries = {}   # hp_<n> -> the component its stock part is, "" a bare mount: the rig sidecar's pins (see pin())
+        self.hidden = []    # the hp_<n> pins that show nothing, stock or fitted: the sidecar's hidden_pins (see pin())
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
         self.acts = []         # the machine's idle acts, in authoring order (see act())
@@ -616,7 +617,7 @@ class Build:
             bm.to_mesh(ob.data)
             bm.free()
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, hidden=False):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
         weapon points) and its scale the size a mounted component wears there, so the
         engine can hang a component's shape under it with no arithmetic. `parts` are the
@@ -625,9 +626,20 @@ class Build:
         content id of the component those parts are, "" for a bare mount: the sidecar lists
         it (rig()'s pins), and the engine compares a machine's fitted die against it, never
         against content's stock, so a stock that moves on shows its class shapes until the
-        model follows (Ryan's go, 28 October). Every pin of a rigged machine names one."""
+        model follows (Ryan's go, 28 October). Every pin of a rigged machine names one.
+        `hidden` makes a mount that shows nothing, its stock or a fitted component's class (the
+        Cottonmouth's guns, mounted inside its drum: Ryan, 19 October, "the guns mounted
+        (invisibly) inside"): still a hardpoint, counted and recording what it carries, with no
+        parts of its own; the sidecar lists it under `hidden_pins` and the engine hangs nothing
+        on it (MechView3D.wear)."""
+        if hidden and not name.startswith("hp_"):
+            raise ValueError("%s: only a hardpoint (hp_<n>) hides, not %s" % (self.name, name))
+        if hidden and parts:
+            raise ValueError("%s: %s is hidden, so it carries no parts to show" % (self.name, name))
         if name.startswith("hp_"):
             self.carries[name] = carries
+            if hidden:
+                self.hidden.append(name)
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
         m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
@@ -990,6 +1002,8 @@ class Build:
         out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it" % self.name,
                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts,
                "pins": {n: self.carries[n] for n in sorted(self.carries, key=lambda n: int(n[3:]))}}
+        if self.hidden:
+            out["hidden_pins"] = sorted(self.hidden, key=lambda n: int(n[3:]))   # mounts that show nothing, stock or fitted (pin()'s `hidden`)
         if self.gait_options:
             out["gait_options"] = self.gait_options
         if self.spins:
