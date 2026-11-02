@@ -85,7 +85,7 @@ of an idle act; then his notes of 2 November: the hand-built stock guns flaring 
 finds their muzzles, the flares in the colours each shot has (off the colour tuner, the colourblind
 rules scoped to gameplay information in `CLAUDE.md`), a component's tags layered, the turn before
 the blow's sound, the tracked machines and the Dingo pivoting; green at 838 tests and 207,118
-checks; not yet on main; its bible is v0.421. Next on
+checks; not yet on main; its bible is v0.423 (the page's 435). Next on
 it: Ryan's read of the glows and the weapons firing, then the shot crossing the field and a hit
 moving the machine (the to-do).
 
@@ -630,8 +630,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.420 (the
-  page's version 432, published 2 November from `claude/charming-rubin-h954bp`: the weapon that
+  `docs/design-bible.html` after every change. This file and the live page are v0.423 (the
+  page's version 435, published 2 November from `claude/charming-rubin-h954bp`: the weapon-fire
+  row on Ryan's notes of 2 November (the turn before the sound, the hand-built guns' flares, each
+  shot's own colours, a weapon's tags layered, the pivots), three-way merged onto the live v0.422
+  that `claude/affectionate-ramanujan-5d24t6` published at 434 (its v0.421 and v0.422 at 433 and
+  434: the Honey Badger's hopper and Ore Plate, the Cassowary and the track notes among them), the
+  version line the only conflict; on its own v0.420 at 432, the weapon that
   fired the one that moves, turning onto its foe, flaring in its tags' look and, fixed, firing with
   a cut of its own act, in place of the open attack-acts row and section 12's weapon-fire question;
   onto its own v0.419 at 431, the glows' sixth
@@ -664,7 +669,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 183 (2 November, from
+  acts on a reloaded page). At the page's version 186 (2 November, from
+  `claude/charming-rubin-h954bp`: `motion.js` with the turn before the blow, the hand-built guns'
+  flares, each shot's colours and a weapon's tags layered, the pivots and the fixed weapons' aim
+  joints, and the eleven rigs that carry them; onto 185, which `claude/affectionate-ramanujan-5d24t6`
+  published (its 184 and 185: the five Wainwright & Sutler models, their rigs and renders, the
+  content and the pins), every file it sent as it had it and every file this publish sent as 183
+  had it, `edits` empty), on 183 (2 November, from
   `claude/charming-rubin-h954bp`: `motion.js` with the weapon that fired the only one that moves,
   its flares, its aim and the fixed weapons' firing acts, the page's Shot renamed Fire, the muzzle
   table, and the sixteen rigs that name a firing act; every other file as 182 had it, `edits`
