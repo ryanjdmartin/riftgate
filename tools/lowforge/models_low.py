@@ -2298,7 +2298,7 @@ def cottonmouth(b):
     for s in (-1.0, 1.0):
         # The gunwale rail along each deck edge, the maker's brown panel down each flank, the
         # lift intakes either side of the drum's yoke.
-        b.box(min(s * 19.0, s * 20.4), max(s * 19.0, s * 20.4), -33.0, 27.0, DECK - 0.2, DECK + 0.9, "steel.dark", "gunwale")
+        b.box(min(s * 19.0, s * 20.4), max(s * 19.0, s * 20.4), -33.0, 19.0, DECK - 0.2, DECK + 0.9, "steel.dark", "gunwale")   # ends where the bow narrows (Ryan, 2 November: the rails poked too far forward)
         b.box(min(s * 19.95, s * 20.5), max(s * 19.95, s * 20.5), -27.0, 17.0, 11.6, 14.2, "livery.livery2", "flank_panel")
         b.box(min(s * 15.6, s * 18.8), max(s * 15.6, s * 18.8), -19.0, -1.0, DECK, DECK + 0.6, "steel.vent", "lift_grille")
         # An ammunition locker either side of the barrels, bolted to the deck, its lid in the
