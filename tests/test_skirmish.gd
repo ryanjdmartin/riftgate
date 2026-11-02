@@ -2394,6 +2394,32 @@ func test_an_overheat_burns_out_or_corrupts_the_component_that_took_it_over() ->
 		assert_eq(Effects.corrupt_stacks(hot, 0), int(c[5]), "%s: the corruption" % said)
 
 
+## A vent that brings the gauge back under the maximum clears the what-ifs' culprit (2 November):
+## a status's heat taking it over again afterwards marks nothing, where the spend's own excess
+## left standing marks its entry.
+func test_a_vent_under_the_maximum_clears_the_overheats_culprit() -> void:
+	for vented in [true, false]:
+		Skirmish.overheat_corrupt = 1
+		var sk := Skirmish.new(1)
+		var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 100)
+		hot.heat_max = 60
+		var ms := sk.add_mech(hot)
+		sk.add_mech(_mech("Cool", Die.single(Face.vent(30)), 40, 100))
+		sk.add_foes([_ghoul(500, 0)])
+		sk.begin()
+		sk.start_round()
+		ms.heat = 30
+		sk.assign(0, sk.front[0])
+		assert_eq([ms.heat, ms.hot_entry], [80, 0], "the spend took the gauge to eighty: its entry stands accused")
+		if vented:
+			assert_true(sk.assign(1, ms), "the ally vents it")
+			assert_eq([ms.heat, ms.hot_entry], [50, -1], "back under the maximum, nothing stands accused")
+		ms.heat += 20   # a status's heat (a seal, Siphoning) through the gauge: 70, or 100 unvented
+		sk.end_round()
+		Skirmish.overheat_corrupt = 0
+		assert_eq(Effects.corrupt_stacks(hot, 0), 0 if vented else 1, "vented %s: the overheat corrupts the entry only while its own excess stands" % str(vented))
+
+
 func test_an_overheat_that_wrecks_the_last_machine_ends_the_fight_before_the_enemy_acts() -> void:
 	var sk := Skirmish.new(1)
 	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 10)

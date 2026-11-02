@@ -319,7 +319,7 @@ python3 tools/endgame_fours.py endgame30
 # the pricing run (27 October; the bible's pricing row of 28 October): every stocked piece knocked out of its team row, every slottable
 # component and every module through the same hardpoint of six benches (BENCHES in the script) on the team rows, and
 # every attack a heat class up, each variant one balance-runner process (--set and --fit in memory, content never written)
-# against the sixteen big fights but the finale, greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
+# against the big fights but the finale (the slate's bosses, tier one's formations from the factions' compositions, the finals), greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
 # as built, about two and a half hours on four cores), `run` is resumable (a variant with its JSON is skipped), `summarise`
 # writes build/pricing/<name>/summary.md from whatever has run. --parts knockouts,ladders,modules,heat, --benches, --tiers,
 # --packs all, tiers, tier2 or tier3 (the ladder's formations by tier), --policies random,greedy, --knock basic (the basic of

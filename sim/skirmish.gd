@@ -47,7 +47,11 @@ const NUMBED_PER_SUPPRESS_MASSIVE := 3
 class MechState:
 	var unit: Unit
 	var die: Die
-	var heat: int = 0
+	var heat: int = 0:
+		set(v):
+			heat = v
+			if heat <= heat_max:
+				hot_entry = -1   # back at or under the maximum (a vent, the settle): no spend stands accused (the overheat's what-ifs)
 	var heat_max: int = 60
 	var face_index: int = -1
 	var locked: bool = false
@@ -4285,21 +4289,22 @@ func _settle_heat() -> void:
 		if over <= 0:
 			continue
 		var burn := over * overheat_scale
+		var culprit := ms.hot_entry   # read before the gauge settles, which clears it
 		ms.unit.hull -= burn
 		ms.heat = ms.heat_max
 		overheats.append({"mech": mechs.find(ms), "over": over, "burn": burn, "hull": ms.unit.hull})
 		log.append("%s overheats: hull -%d" % [ms.unit.display_name, burn])
 		if ms.alive():
 			_hull_damaged(ms)   # an overheat is hull damage like any other (10 October)
-		_overheat_marks(ms, burn)
+		_overheat_marks(ms, burn, culprit)
 
 
 ## The overheat's what-ifs (Ryan, 30 October), on the component whose spend took the gauge past
-## its maximum this turn, none when a status's heat did: a burn reaching the injury threshold
-## burns it out for the battle as an injury does, else the overheat Corrupts it.
-func _overheat_marks(ms: MechState, burn: int) -> void:
-	var idx := ms.hot_entry
-	ms.hot_entry = -1
+## its maximum this turn and left it there (`idx`, MechState.hot_entry): none when a status's
+## heat did, or when a vent brought the gauge back under before a status took it over again. A
+## burn reaching the injury threshold burns it out for the battle as an injury does, else the
+## overheat Corrupts it.
+func _overheat_marks(ms: MechState, burn: int, idx: int) -> void:
 	if idx < 0 or idx >= ms.die.faces.size() or not ms.alive():
 		return
 	if overheat_burnout and burn * 100 >= ms.unit.hull_max * injury_pct:

@@ -528,9 +528,10 @@ On a foe:
   it has already acted this turn. It never stacks and never carries: a second suppress on a
   foe already suppressed, a Paradox's included, does nothing and numbs it no further.
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
-  shock is spent (a vent's blast and a mine's shot on its arrival too); a blow that only reaches
-  it (an area's, a Chain's arc, a spill) neither doubles nor spends it, and equipment leaves it
-  standing; it never stacks.
+  shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or the draw of
+  a vent's blast, a random hit, a spray's strike or a mine's arrival, which the game targets
+  rather than the player. A blow that only reaches it (an area's, a Chain's arc, a spill)
+  neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added.

@@ -179,6 +179,14 @@ func test_the_shield_persona_values_a_standing_shield_by_next_rounds_blows() -> 
 	var q := ahead.shield_score(sk, ms, 8)
 	assert_true(absf(p - 8.0 * Policy.BANK_WEIGHT) < 0.001, "the rungs bank the eight: %f" % p)
 	assert_true(absf(q - (5.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE + 3.0 * Policy.BANK_WEIGHT)) < 0.001, "the persona: five of it turns next round's blow, the rest banks: %f" % q)
+	# Next round's blow is the roll's mean, not this round's pick (2 November): a brace at the
+	# same weight halves it, and a blow on every machine lands whole at its weight.
+	g.actions.append({"id": "cower", "kind": "defend", "effect": "brace", "value": 2, "weight": 1})
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 2.5) < 0.001, "ten over two machines at one weight, nothing at the other: %f" % ahead.next_round_hull(sk, ms))
+	g.actions.append({"id": "sweep", "factor": 1.0, "strikes": 1, "weight": 2, "keywords": ["all"]})
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 6.25) < 0.001, "the sweep's ten whole at two weights of four: %f" % ahead.next_round_hull(sk, ms))
+	g.actions.append({"id": "wind_up", "factor": 3.0, "strikes": 1, "weight": 1, "keywords": [], "then": "sweep"})
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 20.0 / 3.0) < 0.001, "the wind-up's thirty over two beside the ten over two and the brace, three weights, its follow-up (the sweep) never rolled: %f" % ahead.next_round_hull(sk, ms))
 
 
 func test_greedy_rerolls_a_face_under_the_average() -> void:

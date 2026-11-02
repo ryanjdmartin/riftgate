@@ -25,13 +25,13 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 875 tests, 208,362 checks, green on main (31 October: `ccr-c04908be-3r43xf`'s overheat
-  what-ifs, shield persona and support ladders merged onto main's head, on Godot 4.8-beta2; 870 and
-  208,336 before it, with `claude/affectionate-ramanujan-5d24t6`'s Petrels, the foes' move-order fix
-  of `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
+- Tests: 876 tests, 208,371 checks, green (2 November: `ccr-c04908be-3r43xf`'s review fixes on
+  main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
+  overheat what-ifs, shield persona and support ladders landed on the 31st, over the Petrels of
+  `claude/affectionate-ramanujan-5d24t6`, the foes' move-order fix of
+  `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
   slate of `claude/brave-cori-fr18de`, and the dice's gestures of `claude/jolly-lovelace-scn82y`),
-  about four minutes
-  in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
+  about four minutes in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
   GitHub release asset `godotengine/godot-builds`, `Godot_v4.8-beta2_linux.x86_64.zip`, into
@@ -660,12 +660,19 @@ and the streets) main's.
    the cooling's cut, and cooling 0 bites modestly on a cold die. The overheat's price read as
    what-ifs the same day (a harsher burn, burnout, self-Corrupted: Ryan's calls in the brief):
    each makes the bot ride the maximum and hold, caution never pays, so the form is his call by
-   feel. The shield persona built (`--shield-ahead`) and the support ladders read on the Puffin
-   bench: flat by tier, no shield, vent or buff beating the gun it replaces in fights Kestrel's row
-   wins in three rounds. Next: the equipment ramp on harder fights with tier-matched kits and the
-   planner, and the shields' and vents' numbers by tier as a fills proposal; the ladders per tier on the fresh start's formations once
-   the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
-   line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
+   feel. The shield persona built (`--shield-ahead`; since 2 November it reads next round's
+   blow as each foe's roll by weight, not this round's pick) and the support ladders read on the
+   Puffin bench: flat by tier, no shield, vent or buff beating the gun it replaces in fights
+   Kestrel's row wins in three rounds, a bench the fresh start has since replaced (the four
+   formations are the compositions', the big bench the slate's eleven bosses; the four entries
+   name the heads they ran on). The pricing driver read the factions' retired `spawn` lists
+   until 2 November, listing no formation on main since the fresh start; it reads the
+   compositions as the runner does now. Next: the equipment ramp on the fresh start's tier-two
+   and tier-three formations once Ryan's land, with tier-matched kits and the planner beside the
+   greedy, and the shields' and vents' numbers by tier as a fills proposal; the ladders per tier
+   on those formations once the ladder lands; the synergy holes as pieces proposed in chat (the
+   to-do's design-sessions line); the catalogue's tag pairs. The synergy map is
+   `docs/synergy_map.md`, generated.
 3. **The foes' fresh start and the pacing session: Ryan's marks and the reads.** Built 30
    October (the How things stand bullet). What waits on him: section 12's fresh start item (the
    five kits' names and numbers, the Peak's elite and a Waste hunter, the compositions'
@@ -701,7 +708,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   version 422, published 31 October as `claude/affectionate-ramanujan-5d24t6` landed on main: the
   Petrels' engines, their rows and section 12's question on the Storm Petrel's burn on basics;
   this file carries two edits of 31 October since, the Onryō's Grudge a working term and Ryan's
-  word on the Storm Petrel's question, which go up with the Badger's rows),
+  word on the Storm Petrel's question, which go up with the Badger's rows, and one of
+  2 November, his words on a blast's or a random hit's foe reading Shock in the Chain row),
   three-way merged onto the live v0.409 at 421, which another session published with the slate's
   last five bosses (the King Gel, the Pilgrim, the Phantom Train, the Vampire Lord and the
   Obsidian Tyrant) and Numbed's third stack on a boss as on a massive foe, ahead of their code;

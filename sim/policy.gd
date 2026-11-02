@@ -1484,14 +1484,32 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, overshield:
 
 
 ## The hull the foes' blows would take off an average machine next round (the shield persona's read
-## of a standing shield): every live foe's blow on the field as its intent shows it, less this
-## machine's armour a blow, spread over the live machines, since a foe without an aim picks at random.
+## of a standing shield): each live foe's moves by their weight, since a foe rolls its move as a
+## round opens (a defend, a buff or a debuff deals nothing at its weight; a follow-up never
+## rolls), a blow less this machine's armour and its armour against the foe's rank, times the
+## move's strikes, whole for a blow on every machine and a share of one otherwise, since a foe
+## without an aim picks at random (this round's pick was the read until 2 November).
 func next_round_hull(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var total := 0.0
+	var live := float(maxi(1, sk.live_mechs().size()))
 	for foe in sk.field_foes():
-		if foe.alive():
-			total += float(maxi(0, sk.foe_blow(foe) - who.unit.armour) * maxi(1, foe.strikes()))
-	return total / float(maxi(1, sk.live_mechs().size()))
+		if not foe.alive():
+			continue
+		var armour := who.unit.armour + Effects.armour_against(who.unit, foe.rank)
+		var follow := Foe.follow_ups(foe.actions)
+		var weights := 0.0
+		var sum := 0.0
+		for a in foe.actions:
+			if follow.has(str(a.get("id", ""))):
+				continue
+			var w := float(maxi(1, int(a.get("weight", 1))))
+			weights += w
+			if not Foe.is_attack_action(a):
+				continue
+			var blow := float(maxi(0, foe.damage_of(a) - armour) * maxi(1, int(a.get("strikes", 1))))
+			sum += w * blow * (1.0 if foe.has_keyword(a, "all") else 1.0 / live)
+		total += sum / maxf(1.0, weights)
+	return total
 
 
 ## A lure on the foes an entry reaches: the team's hull the redirect saves this round, and
