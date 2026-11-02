@@ -330,6 +330,15 @@ func is_pinned(u: Unit) -> bool:
 	return false
 
 
+## The hunters that caught this machine, in field order: its fight to come, which the map draws
+## as the machine's order onto them and the board names; empty while none has.
+func catchers_of(u: Unit) -> Array:
+	for f in forced:
+		if f["prey"] == u:
+			return (f["hunters"] as Array).duplicate()
+	return []
+
+
 ## Whether a machine may move now: the player's turn, an action left, not moved this action
 ## (one move an action, in one go), a move to give, not caught.
 func can_move(u: Unit) -> bool:

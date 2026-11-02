@@ -696,6 +696,8 @@ func test_a_hunter_that_caught_its_prey_forces_the_first_fight() -> void:
 	b._new_turn()
 	assert_eq(b.forced.size(), 1, "caught")
 	assert_true(b.is_pinned(m), "its prey is pinned")
+	assert_eq(b.catchers_of(m), [hunter], "by the hunter: its fight, the map's order and the board's")
+	assert_true(b.catchers_of(b.mechs()[1]).is_empty(), "and nobody else is caught")
 	assert_true(b.destinations_for(m).is_empty(), "and cannot move")
 	var r := b.roster(other)
 	assert_eq(r["targets"], [hunter], "the forced fight comes first whatever is tapped")

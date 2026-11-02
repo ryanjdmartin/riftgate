@@ -423,6 +423,19 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE with nobody ordered")
 	assert_true(s._sub_label.text.begins_with("CAUGHT"), "the readout says so")
 	assert_false(s._map.attack.is_empty(), "the catch's fight shows")
+	# The catch reads as the caught machine's attack order (Ryan, 2 November: "when caught, the
+	# unit should show the attack order on the enemy that caught it for clarity").
+	assert_true(s._map.order_pairs().has([m, hunter]), "the map draws its order onto the hunter")
+	var row: Dictionary = {}
+	for r in s._board._rows():
+		if r["unit"] == m:
+			row = r
+	assert_eq(str(row.get("order", "")), "CAUGHT", "the board says it is caught")
+	assert_eq(str(row.get("meets", "")), "> " + s._board._short(hunter.display_name), "and names its fight as an order does, in HUNTED BY's place")
+	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(hunter.pos)
+	assert_eq(b.order_of(m), hunter, "ordered onto its hunter as well")
+	assert_eq(s._map.order_pairs().filter(func(p: Array) -> bool: return p[0] == m).size(), 1, "it is still the one line")
 	var other: Unit = b.field.packs()[1]
 	s._on_hex_tapped(b.mechs()[1].pos)
 	s._on_hex_tapped(other.pos)
