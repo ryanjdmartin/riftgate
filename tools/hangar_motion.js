@@ -658,9 +658,11 @@ class Rig {
     const turning = this.formsStep(delta);   // a form held or let go on a paused stage turns all the same
     const flaring = this.stepFlares(delta);
     if (this.aimAt) { this.aimAt.t += delta; if (this.aimAt.t >= AIM_UP + this.aimAt.hold + AIM_DOWN) this.aimAt = null; }
-    if (this.current && this.until >= 0) {   // a firing slice is a blow, and plays out on a paused stage too
-      this.t += delta; this.evaluateAct(); this.follow(delta);
-      if (this.t >= this.until) this.endAct(true);
+    if (this.current && this.until >= 0) {   // a firing slice is a blow, and plays out on a paused stage too, in steps no longer than STEP
+      let left = delta;
+      while (left > 1e-9 && this.current) { const dt = Math.min(left, STEP); left -= dt; this.t += dt; this.evaluateAct(); this.follow(dt); if (this.t >= this.until) this.endAct(true); }
+      for (const st of this.strikes) st.t += delta;
+      this.strikes = this.strikes.filter(st => st.t < st.up + st.down);
       this.pose(); return;
     }
     if (!this.strikes.length && !this.aimAt) { if (turning || flaring) this.pose(); return; }
