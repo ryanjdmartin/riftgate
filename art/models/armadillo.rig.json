@@ -48680,5 +48680,12 @@
   "rear_vent_heat_r",
   "side_vent_heat_l",
   "side_vent_heat_r"
- ]
+ ],
+ "fires": {
+  "cryo_flinger": {
+   "act": "weapons_check",
+   "from": 3.9,
+   "to": 5.6
+  }
+ }
 }

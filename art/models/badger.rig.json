@@ -1551,6 +1551,13 @@
   "hp_2": "",
   "hp_3": ""
  },
+ "fires": {
+  "chainsaw_claw": {
+   "act": "test_claw",
+   "from": 1.6,
+   "to": 2.9
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel"
  }

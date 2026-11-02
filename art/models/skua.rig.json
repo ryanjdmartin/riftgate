@@ -2673,6 +2673,13 @@
   "booster_ring",
   "exhaust"
  ],
+ "fires": {
+  "flechette_pod": {
+   "act": "strafing_run",
+   "from": 1.7,
+   "to": 2.9
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "twin_barrel"

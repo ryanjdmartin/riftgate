@@ -1386,7 +1386,7 @@ function paintMotion(force) {
     }
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
       el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
-      el("button", {class: "btn", id: "mo-shot", onclick: () => st.strike(true)}, "Shot"))));
+      el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"))));
   }
   // A form is a pose held while the machine carries the status of its name (the Armadillo's
   // seal); held here as the status would hold it, in any mode.

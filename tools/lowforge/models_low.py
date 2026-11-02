@@ -200,6 +200,7 @@ def badger(b):
     # high), curled up on its wrist as an excavator carries its bucket, a rock on pulling away
     # and stopping; heavy to start.
     b.gait(treads={"parts": ["tread"], "scroll": 1.0}, hold={"shoulder_l": 7.0, "elbow_l": 6.0, "wrist_l": 24.0, "shoulder_r": 3.0}, rock=7.0)
+    b.fires = {"chainsaw_claw": ("test_claw", 1.6, 2.9)}   # its fixed weapon fires with a slice of its act: the claw's snap (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(accel=1.2, heft=0.2)
 
 badger.maker = "minerva"
@@ -343,6 +344,7 @@ def sparrowhawk(b):
     # (b.move) at full speed.
     b.halo = ["booster_ring", "exhaust", "driver_ring", "driver_exhaust"]   # its boosters and the Pinion Drivers' ramjets, hot
     b.gait(glow={"parts": ["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
+    b.fires = {"pinion_driver": ("flare_boosters", 0.4, 1.8)}   # its fixed weapon fires with a slice of its act: the drivers flaring (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08, oversteer=0.35)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts; the nose a little into its corners (the fifth notes: the jets oversteer too, a bit)
 
 sparrowhawk.maker = "kestrel"
@@ -813,6 +815,7 @@ def baboon(b):
                       "phase": 0.0 if side == "r" else 0.5})
     tracks, body, stride = _plant(limbs, sweep=26.0, lift=6.0, crouch=0.5, dip=1.2, nod=1.0)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.fires = {"solar_flare_array": ("charge_projectors", 1.8, 3.4)}   # its fixed weapon fires with a slice of its act: the projectors' charge and blaze (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(accel=1.1, heft=0.2)
 
 baboon.maker = "aphelion"
@@ -1185,6 +1188,7 @@ def armadillo(b):
          "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]}
         for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.fires = {"cryo_flinger": ("weapons_check", 3.9, 5.6)}   # its fixed weapon fires with a slice of its act: the rack run out and back (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(accel=1.6, heft=0.26)
     # The seal (the form "sealed", held while the machine carries the status): the port guns
     # sink into the shell along their lines, past the ports' floors (and a gun fitted in a
@@ -1359,6 +1363,7 @@ def wild_boar(b):
     b.gait(treads={"parts": ["tread"], "scroll": 1.0}, rock=7.0, stride=150.0,
            body=[(round(p, 3), 0.0, round(surge(p), 2), 0.0, 0.0, round(sway(p), 2), 0.0) for p in phases],
            tracks={"plow": [(round(p, 3), round(max(-2.0, -1.2 * sway(p - 0.08)), 2)) for p in phases]})
+    b.fires = {"breaching_plow": ("test_plow", 2.5, 4.4)}   # its fixed weapon fires with a slice of its act: the plow down, shaken and thrown up (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(accel=1.1, heft=0.18)
 
 wild_boar.maker = "minerva"
@@ -1775,6 +1780,7 @@ def dingo(b):
     b.halo = ["coil"]   # the Translocator's coil, hot (Ryan, 31 October)
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R},
            aim={"caster_fl": 1.0, "caster_fr": 1.0, "caster_rl": 1.0, "caster_rr": 1.0}, rock=4.0)
+    b.fires = {"megataser_harpoon": ("harpoon", 2.0, 3.2), "combat_translocator": ("coil_check", 2.0, 3.2)}   # its fixed weapons fire with slices of its acts: the harpoon's shot and kick; the coil's second flare (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.4, bank=0.0, accel=0.5, heft=0.09, oversteer=2.0)   # drifts wildly on the map and does not bank (Ryan, 2 October); its rear kicked out further (the sixth notes), and further again (the seventh)
 
 dingo.maker = "wainwright_sutler"
@@ -2017,6 +2023,7 @@ def funnel_web(b):
             for leg in ("fl", "fr", "hl", "hr")]   # each stance a little out from the rest foot, so a lifted foot never folds the leg under its low hip
     tracks, body, stride = _plant(walk, sweep=36.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80, carry=(0.04, 0.92))
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")   # the row at twenty degrees was an option for a day (the seventh notes); Ryan could not tell the two apart, so it is gone (the eighth)
+    b.fires = {"web_bomb": ("sight_in", 2.0, 3.8)}   # its fixed weapon fires with a slice of its act: the web tube lit (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(accel=0.9, heft=0.16)
 
 funnel_web.maker = "wainwright_sutler"
@@ -2203,6 +2210,7 @@ def goshawk(b):
     b.gait(hold={"nacelle_l": -12.0, "nacelle_r": -12.0}, steer={"nacelle_l": -15.0, "nacelle_r": 15.0},
            glow={"parts": ["joint_nacelle_l", "joint_nacelle_r"], "k": 5.0},
            body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0))
+    b.fires = {"afterburner_cannon": ("charge_cannon", 4.1, 5.6)}   # its fixed weapon fires with a slice of its act: the charge's last breath, the nacelles' flare and the recoil (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Sparrowhawk: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
 
 goshawk.maker = "kestrel"
@@ -2545,6 +2553,7 @@ def nemesis(b):
     b.halo = [("core_fire", 1.5), "condenser_slot"]
     b.standing = {"core_fire": 3.5, "condenser_slot": 3.0}   # hot at rest, really hot as the acts flare (Ryan, 31 October: "not burn crazy hot all the time. Just like, hot, then really hot"); the vent "still too much" at eight
     b.gait(stride=stride, tracks=tracks, hold={"elbow_l": 9.0, "elbow_r": 9.0}, body=body, ease="linear")
+    b.fires = {"knuckle_of_fury": ("pound_fists", 1.9, 3.4)}   # its fixed weapon fires with a slice of its act: the fists pound, left then right (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(accel=1.2, heft=0.24)
 
 nemesis.maker = "arsenal"
@@ -2947,6 +2956,7 @@ def ammit(b):
     b.halo = ["tail_slot", "pilot_flame"]   # the vent at its tail (the condenser's twin) and the Blazethrower's pilot flame, a burn weapon's, hot (Ryan, 31 October)
     b.standing = {"tail_slot": 3.0}   # the rear vent always lit, the Arsenal's creepy glowing exhaust, hot under its flares (Ryan, 31 October); the throat under the jaw is never seen
     b.gait(stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
+    b.fires = {"soulcutter_talons": ("threat", 1.1, 2.6)}   # its fixed weapon fires with a slice of its act: the rear and the shake of the threat (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(accel=1.0, heft=0.2)
 
 ammit.maker = "arsenal"
@@ -3252,6 +3262,7 @@ def stingray(b):
     # The nineteenth notes (Ryan, 7 October: it would not keep its nose down so far in the
     # corner; a helicopter banks, then pulls into the turn as a plane does): it sheds seven
     # tenths of its nose-down at a full bank's turn rate (the tilt's third number).
+    b.fires = {"photosphere_lance": ("lance_charge", 2.5, 3.9)}   # its fixed weapon fires with a slice of its act: the lance's last charge and its blaze (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.3, bank=36.0, tilt=(26.0, 10.0, 0.7), accel=0.9, heft=0.12, oversteer=0.3)
 
 stingray.maker = "aphelion"
@@ -3441,6 +3452,7 @@ def needletail(b):
     b.halo = ["booster_ring", "exhaust"]   # its boosters, hot
     b.gait(tracks={"nacelle_l": [(0.0, -86.0), (1.0, -86.0)], "nacelle_r": [(0.0, -86.0), (1.0, -86.0)]}, glow=glow,
            body_hold=(0.0, 0.0, 0.0, 0.0, -4.0, 0.0), start=("hover", 0.25, 0.85))
+    b.fires = {"fovea_designator": ("designate", 1.4, 2.9)}   # its fixed weapon fires with a slice of its act: the sensor's turn and the fovea's flare (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.35, bank=32.0, accel=0.7, heft=0.1, oversteer=0.4)
 
 needletail.maker = "kestrel"
@@ -3588,6 +3600,7 @@ def giant_petrel(b):
     # craft runs; it drifts through its corners and never banks (a hovercraft keeps flat).
     b.halo = ["booster_ring", "exhaust"]   # its boosters, hot
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, 2.0, 0.0), glow={"parts": boosters, "k": 4.0}, rock=2.0)
+    b.fires = {"spindrift_salvo": ("salvo", 1.8, 3.6)}   # its fixed weapon fires with a slice of its act: the three launches (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.3, bank=0.0, accel=1.6, heft=0.25, oversteer=0.5)
 
 giant_petrel.maker = "kestrel"
@@ -3779,6 +3792,7 @@ def skua(b):
     b.halo = ["booster_ring", "exhaust"]   # its booster, hot
     b.gait(tracks={"wing_l": [(0.0, SW), (1.0, SW)], "wing_r": [(0.0, -SW), (1.0, -SW)]}, glow=glow,
            body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0), start=("spread", 0.25, 0.85))
+    b.fires = {"flechette_pod": ("strafing_run", 1.7, 2.9)}   # its fixed weapon fires with a slice of its act: the wings swept and the pod's two bursts (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.5, bank=44.0, accel=0.7, heft=0.08, oversteer=0.3)
 
 skua.maker = "kestrel"
@@ -4143,6 +4157,7 @@ def storm_petrel(b):
     # the Puffin, never banking (a hovercraft keeps flat).
     b.halo = ["nozzle_ring", "exhaust", "projector_glow"]   # its boosters and the projector arch, hot (Ryan, 31 October)
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": boosters, "k": 5.0}, rock=3.0)
+    b.fires = {"st_elmos_regenerator": ("st_elmo", 1.1, 2.7)}   # its fixed weapon fires with a slice of its act: the sparks' chase, the ring and the corona (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.3, bank=0.0, accel=0.6, heft=0.14, oversteer=1.1)
 
 storm_petrel.maker = "kestrel"
@@ -4269,6 +4284,7 @@ def lammergeier(b):
     # Movement: a heavy flyer, banking into its turns and slow to gather way, nose down a touch.
     b.halo = ["booster_ring", "exhaust", "drone_tube_floor"]   # its boosters and drone tubes, hot (Ryan, 31 October)
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -2.0, 0.0), glow={"parts": boosters, "k": 4.0})
+    b.fires = {"lorentz_contractor": ("contract", 1.5, 3.0), "syrinx_drone": ("syrinx_launch", 0.6, 2.0)}   # its fixed weapons fire with slices of its acts: the contractor's flare; the drones' launch (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.4, bank=22.0, accel=1.2, heft=0.2, oversteer=0.4)
 
 lammergeier.maker = "kestrel"

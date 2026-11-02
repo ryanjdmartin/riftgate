@@ -896,6 +896,13 @@
   "booster_ring",
   "exhaust"
  ],
+ "fires": {
+  "fovea_designator": {
+   "act": "designate",
+   "from": 1.4,
+   "to": 2.9
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "dish"

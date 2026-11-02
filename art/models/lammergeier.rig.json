@@ -539,6 +539,18 @@
   "exhaust",
   "drone_tube_floor"
  ],
+ "fires": {
+  "lorentz_contractor": {
+   "act": "contract",
+   "from": 1.5,
+   "to": 3.0
+  },
+  "syrinx_drone": {
+   "act": "syrinx_launch",
+   "from": 0.6,
+   "to": 2.0
+  }
+ },
  "stock_shapes": {
   "hp_1": "rack",
   "hp_2": "barrel",

@@ -93,6 +93,7 @@ const RECOIL_SLIDE := 1.5       # world units a gun that only runs in and out of
 const RECOIL_BODY := 1.2        # model units the whole machine kicks back along a gun's line when it fires from a mount on the body
 const AIM_UP := 0.12            # seconds a machine takes to turn onto its target before it fires (aim),
 const AIM_DOWN := 0.5           # and to turn back once the blow has landed
+const FIRE_HEFT := 0.1          # a firing slice's weight: snappier than an idle act's, so its wind-up lands on the blow
 const STEP := 1.0 / 60.0      # the longest step the acts and the servos advance by, so a long tick (a frozen frame) plays the same as frames
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
@@ -141,6 +142,8 @@ var _halo_grow := 0.0              # how far a halo stands out on this model (_s
 var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (flash)
 var _flares: Array = []            # [{node, mat, look, t}] a muzzle flare on its look's beat (fire_flare)
 var _aim: Dictionary = {}          # {joint (or BODY), deg, hold, t}: the turn onto a target (aim)
+var fires: Dictionary = {}         # a fixed component -> {act, from, to}: the slice of an act that is its firing (the sidecar's `fires`)
+var _until := -1.0                 # where a firing slice playing now ends (fire_act); below nought, the act's own end
 var _body_act_rot := Vector3.ZERO  # the act's body track, degrees (pitch, yaw, roll)
 var _body_act_slide := Vector3.ZERO
 var _body_move_rot := Vector3.ZERO # the gait's body: bob, rock, bank
@@ -495,6 +498,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 			spinners[name] = [float(sp[name][0]), float(sp[name][1])]
 			_spun[name] = 0.0
 	use_gait(side.get("gait", {}) if side.get("gait", {}) is Dictionary else {})
+	fires = side.get("fires", {}) if side.get("fires", {}) is Dictionary else {}
 	_body_rest_pos = body.position
 	_body_rest_rot = body.rotation
 	_rng.seed = hash(model_id) ^ (randi() if phase < 0 else phase * 7919)
@@ -720,7 +724,7 @@ func _step(dt: float) -> bool:
 		_t += dt
 		_evaluate_act()
 		moved = true
-		if _t >= float(_current.get("duration", 0.0)):
+		if _t >= (_until if _until >= 0.0 else float(_current.get("duration", 0.0))):
 			_end_act()
 	elif not act_set().is_empty() and not moving:   # a pilot on the move has no hands free for an act
 		var spent := minf(dt, _wait_budget)
@@ -813,6 +817,33 @@ func act_set() -> Array:
 	return acts.filter(func(a): return not _keys_any(a, held))
 
 
+## A fixed weapon fires with its own act (Ryan, 31 October: "For the locked weapons, go for ones
+## that are cheapest to do first, where pre-existing animation work has already been looked at
+## that you can leverage"): the slice of an idle act the sidecar names for it (`fires`) plays now,
+## from `lead` seconds before its start, the act playing cut short, its servos snappier than an
+## idle act's so the wind-up lands on the blow. False when it has none, or a held form keeps the
+## joints its act moves (the sealed Armadillo's rack): the spend strikes as before.
+func fire_act(cid: String, lead := 0.0) -> bool:
+	var f = fires.get(cid, null)
+	if not (f is Dictionary):
+		return false
+	var act: Dictionary = {}
+	for a in act_set():
+		if str(a["name"]) == str(f.get("act", "")):
+			act = a
+	if act.is_empty():
+		return false
+	if not _current.is_empty():
+		_end_act()
+	_start(act)
+	_t = maxf(0.0, float(f.get("from", 0.0)) - lead)
+	_until = float(f.get("to", act.get("duration", 0.0)))
+	_act_heft = minf(_act_heft, FIRE_HEFT)
+	_evaluate_act()
+	_pose()
+	return true
+
+
 ## Start a named act now, among those it may play first, then its own and its forms'; false
 ## when the machine has no act of that name.
 func play(name: String) -> bool:
@@ -831,6 +862,7 @@ func play(name: String) -> bool:
 func _start(a: Dictionary) -> void:
 	_current = a
 	_t = 0.0
+	_until = -1.0
 	last_act = str(a["name"])
 	var duration := float(a.get("duration", 0.0))
 	var ease := str(a.get("ease", "smooth"))
@@ -868,6 +900,7 @@ func _end_act() -> void:
 	_glow = []
 	_current = {}
 	_curves = {}
+	_until = -1.0
 	_want_rot.clear()
 	_want_slide.clear()
 	_body_want_rot = Vector3.ZERO

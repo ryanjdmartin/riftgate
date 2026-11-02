@@ -39039,6 +39039,13 @@
   "core_fire": 3.5,
   "condenser_slot": 3.0
  },
+ "fires": {
+  "knuckle_of_fury": {
+   "act": "pound_fists",
+   "from": 1.9,
+   "to": 3.4
+  }
+ },
  "stock_shapes": {
   "hp_2": "barrel",
   "hp_3": "dish",

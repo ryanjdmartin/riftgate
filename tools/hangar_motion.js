@@ -313,6 +313,7 @@ class Rig {
     this.spinners = {}; this.spun = {};   // joints turned without end (MechRig.spinners, b.spin: the Stingray's fans)
     for (const [name, r] of Object.entries(side.spin || {})) if (this.joints[name] && Array.isArray(r) && r.length >= 2) { this.spinners[name] = [Number(r[0]), Number(r[1])]; this.spun[name] = 0; }
     this.useGait(side.gait || {});
+    this.fires = side.fires || {}; this.until = -1;   // a fixed weapon's firing slice (MechRig.fire_act), and where one playing now ends
     root.rotation.order = "YXZ";
     this.bodyRestPos = root.position.clone();
     this.bodyRestRot = v3(root.rotation.x, root.rotation.y, root.rotation.z);
@@ -536,7 +537,7 @@ class Rig {
     this.endAct(true); this.start(a); this.evaluateAct(); this.pose(); return true;
   }
   start(a) {
-    this.current = a; this.t = 0; this.lastAct = a.name; this.glow = [];
+    this.current = a; this.t = 0; this.lastAct = a.name; this.glow = []; this.until = -1;
     this.actHeft = a.heft ?? this.heft;   // an act may ask for its own heft (MechRig._act_heft): a blow sharper than the machine's weight
     const d = a.duration || 0, ease = a.ease || "smooth";
     this.curves = {};
@@ -553,9 +554,23 @@ class Rig {
     const wrap = (a) => fposmod(a + 180, 360) - 180;   // the short way round: a loop or a spin ends a whole turn on and never unwinds
     for (const st of Object.values(this.servo)) st[0] = v3(wrap(st[0].x), wrap(st[0].y), wrap(st[0].z));
     this.restoreGlow();
-    this.current = null; this.curves = {}; this.wantRot = {}; this.wantSlide = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3();
+    this.current = null; this.curves = {}; this.wantRot = {}; this.wantSlide = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3(); this.until = -1;
     this.wait = this.debug ? GAP_DEBUG : lerp(GAP_MIN, GAP_MAX, this.random());
     if (!quiet) this.pose();
+  }
+  // A fixed weapon fires with its own act (MechRig.fire_act): the slice the sidecar names, from `lead`
+  // before its start, snappier than an idle act; false when it has none or a held form keeps its joints.
+  fireAct(cid, lead = 0) {
+    const f = this.fires[cid];
+    if (!f) return false;
+    const act = this.actSet().find(a => a.name === f.act);
+    if (!act) return false;
+    if (this.current) this.endAct(true);
+    this.start(act);
+    this.t = Math.max(0, f.from - lead); this.until = f.to;
+    this.actHeft = Math.min(this.actHeft, 0.1);
+    this.evaluateAct(); this.pose();
+    return true;
   }
   // Every part home at once, no settling (a change of mode).
   settle() { this.servo = {}; this.actRot = {}; this.actSlide = {}; this.bodyActRot = v3(); this.bodyActSlide = v3(); }
@@ -622,7 +637,7 @@ class Rig {
     let moved = false;
     if (this.current) {
       this.t += dt; this.evaluateAct(); moved = true;
-      if (this.t >= (this.current.duration || 0)) this.endAct(true);
+      if (this.t >= (this.until >= 0 ? this.until : (this.current.duration || 0))) this.endAct(true);
     } else if (acting && this.actSet().length && !this.moving) {
       const spent = Math.min(dt, this.waitBudget || 0); this.waitBudget -= spent; this.wait -= spent;
       if (this.wait <= 0) { const next = this.choose(); if (next) { this.start(next); this.evaluateAct(); moved = true; } }
@@ -643,6 +658,11 @@ class Rig {
     const turning = this.formsStep(delta);   // a form held or let go on a paused stage turns all the same
     const flaring = this.stepFlares(delta);
     if (this.aimAt) { this.aimAt.t += delta; if (this.aimAt.t >= AIM_UP + this.aimAt.hold + AIM_DOWN) this.aimAt = null; }
+    if (this.current && this.until >= 0) {   // a firing slice is a blow, and plays out on a paused stage too
+      this.t += delta; this.evaluateAct(); this.follow(delta);
+      if (this.t >= this.until) this.endAct(true);
+      this.pose(); return;
+    }
     if (!this.strikes.length && !this.aimAt) { if (turning || flaring) this.pose(); return; }
     for (const st of this.strikes) st.t += delta;
     this.strikes = this.strikes.filter(st => st.t < st.up + st.down);
@@ -1360,19 +1380,29 @@ class Stage {
   // the route's step, which the map fits to it, at the map's time for its move.
   topSpeed() { return this.route.STEP / mechSecondsPerHex(this.movespeed || 5); }
   emitTick() { const now = performance.now(); if (!this.lastTick || now - this.lastTick > 90) { this.lastTick = now; this.emit(); } }
-  // A blow (MechView3D.strike): Shot fires the machine's weapons one press at a time, mount by
-  // mount, each turning onto a target first where it can (a turret, a waist, a hover's pivot;
-  // here a bearing to one side and then the other) and only it kicking and flaring; Melee swings
-  // as a fixed weapon does. A burn weapon's fire flares with its mount, or on Melee.
+  // A blow (MechView3D.strike): Fire fires the machine's weapons one press at a time, mount by
+  // mount and then each fixed weapon with its own act, each turning onto a target first where it
+  // can (a turret, a waist, a hover's pivot; here a bearing to one side and then the other) and
+  // only it kicking and flaring; Melee swings as a fixed weapon without an act does. A burn
+  // weapon's fire flares with its mount, or on Melee.
   strike(ranged) {
     if (!this.rig) return;
     const rig = this.rig, mounts = [...new Set(this.flares.map(f => f.pin))].sort((a, b) => a - b);
-    if (!ranged || !mounts.length) {
+    const fixed = Object.keys(rig.fires || {}), shots = [...mounts, ...fixed];
+    if (!ranged || !shots.length) {
       rig.strike(ranged);
       for (const part of this.burns || []) if (part.visible !== false && part.parent && part.parent.visible !== false) rig.flashUnder(part);
       return;
     }
-    const n = mounts[this.shot++ % mounts.length], pin = rig.hardpoints[n];
+    const next = shots[this.shot++ % shots.length];
+    if (typeof next === "string") {   // a fixed weapon: the waist or a hover's pivot turns, then its own act fires (MechView3D.strike)
+      let joint = rig.joints.waist && rig.meta.waist.axis === "yaw" ? "waist" : ((this.hover || this.flyer) ? "@body" : "");
+      let lead = 0;
+      if (joint) { this.aimSide = -this.aimSide; rig.aim(joint, 22 * this.aimSide, 0.8); lead = AIM_LEAD; }
+      if (!rig.fireAct(next, lead)) rig.strike(true, [], null, lead);
+      return;
+    }
+    const n = next, pin = rig.hardpoints[n];
     let lead = 0, joint = rig.aimJointOver(pin);
     if (!joint && (this.hover || this.flyer)) joint = "@body";   // a hover's or a flyer's pivot (MechView3D.pivots)
     if (joint) { this.aimSide = -this.aimSide; rig.aim(joint, 22 * this.aimSide, 0.6); lead = AIM_LEAD; }

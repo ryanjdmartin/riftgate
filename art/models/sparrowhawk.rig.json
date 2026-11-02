@@ -2002,6 +2002,13 @@
   "driver_ring",
   "driver_exhaust"
  ],
+ "fires": {
+  "pinion_driver": {
+   "act": "flare_boosters",
+   "from": 0.4,
+   "to": 1.8
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel"
  }

@@ -470,6 +470,13 @@
   "fan_duct_floor": 8.0,
   "fan_lining": 8.0
  },
+ "fires": {
+  "photosphere_lance": {
+   "act": "lance_charge",
+   "from": 2.5,
+   "to": 3.9
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "dish",

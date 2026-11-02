@@ -1097,5 +1097,12 @@
   "cannon_glow",
   "joint_nacelle_l",
   "joint_nacelle_r"
- ]
+ ],
+ "fires": {
+  "afterburner_cannon": {
+   "act": "charge_cannon",
+   "from": 4.1,
+   "to": 5.6
+  }
+ }
 }

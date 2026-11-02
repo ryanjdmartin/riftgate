@@ -739,9 +739,10 @@ static func joint_axis(name: String) -> Vector3:
 ## A spend: the weapon that fired moves and flares (Ryan, 31 October: "It would obviously be
 ## really cool if the actual weapon from the die fired"). The joints of the mounts carrying it
 ## kick, a gun on the body kicks the whole machine back along its line, its muzzle flares bloom
-## and a burn weapon's fire flares; a weapon on no mount (a fixed one: the fists, the claws)
-## strikes as every machine did before, its arms swinging or its guns kicking. After an aim the
-## blow waits while the machine turns (aim_at).
+## and a burn weapon's fire flares; a weapon on no mount (a fixed one: the fists, the claws) fires
+## with its own act (MechRig.fire_act), or where the model names none strikes as every machine
+## did before, its arms swinging or its guns kicking. After an aim the blow waits while the
+## machine turns (aim_at).
 func strike(ranged: bool, cid: String = "") -> void:
 	if not is_inside_tree():
 		return
@@ -749,7 +750,8 @@ func strike(ranged: bool, cid: String = "") -> void:
 	_aim_lead = 0.0
 	var mounts := carrying(cid)
 	if mounts.is_empty():
-		rig.strike(ranged, [], Vector3.ZERO, lead)
+		if not rig.fire_act(cid, lead):   # a fixed weapon fires with its own act where the model names one
+			rig.strike(ranged, [], Vector3.ZERO, lead)
 	else:
 		var only: Array = []
 		var recoil := Vector3.ZERO

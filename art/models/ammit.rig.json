@@ -79453,6 +79453,13 @@
  "standing": {
   "tail_slot": 3.0
  },
+ "fires": {
+  "soulcutter_talons": {
+   "act": "threat",
+   "from": 1.1,
+   "to": 2.6
+  }
+ },
  "stock_shapes": {
   "hp_3": "dish"
  }

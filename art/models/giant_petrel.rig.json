@@ -660,6 +660,13 @@
   "booster_ring",
   "exhaust"
  ],
+ "fires": {
+  "spindrift_salvo": {
+   "act": "salvo",
+   "from": 1.8,
+   "to": 3.6
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "twin_barrel"

@@ -439,6 +439,7 @@ class Build:
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
+        self.fires = {}        # a fixed component -> (act, from, to): the slice of an act that is its firing, played on the spend (MechRig.fire_act)
         self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
@@ -1037,6 +1038,18 @@ class Build:
             raise ValueError("%s: a standing glow names %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
         if self.standing:
             out["standing"] = dict(self.standing)
+        # A fixed weapon fires with a slice of one of its acts (Ryan, 31 October: "go for ones that
+        # are cheapest to do first, where pre-existing animation work has already been looked at").
+        fires = {}
+        for cid, (name, t0, t1) in self.fires.items():
+            act = next((a for a in self.acts if a["name"] == name), None)
+            if act is None:
+                raise ValueError("%s: %s fires with an act it has not got, %r" % (self.name, cid, name))
+            if not (0.0 <= t0 < t1 <= act["duration"]):
+                raise ValueError("%s: %s fires from %.2f to %.2f, outside %r's %.2f seconds" % (self.name, cid, t0, t1, name, act["duration"]))
+            fires[cid] = {"act": name, "from": t0, "to": t1}
+        if fires:
+            out["fires"] = fires
         if self.stock_shapes:
             out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
         return out

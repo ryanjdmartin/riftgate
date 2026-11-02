@@ -79803,6 +79803,13 @@
   "hp_3": "twin_autoguns",
   "hp_4": ""
  },
+ "fires": {
+  "web_bomb": {
+   "act": "sight_in",
+   "from": 2.0,
+   "to": 3.8
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "barrel",

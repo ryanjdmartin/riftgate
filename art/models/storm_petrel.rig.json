@@ -918,6 +918,13 @@
   "exhaust",
   "projector_glow"
  ],
+ "fires": {
+  "st_elmos_regenerator": {
+   "act": "st_elmo",
+   "from": 1.1,
+   "to": 2.7
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "rack",

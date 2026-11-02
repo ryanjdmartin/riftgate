@@ -6589,6 +6589,13 @@
   "hp_5": "ankle_mortar",
   "hp_6": ""
  },
+ "fires": {
+  "solar_flare_array": {
+   "act": "charge_projectors",
+   "from": 1.8,
+   "to": 3.4
+  }
+ },
  "stock_shapes": {
   "hp_1": "twin_barrel",
   "hp_2": "barrel",

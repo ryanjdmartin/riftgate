@@ -236,6 +236,41 @@ func test_only_the_weapon_that_fired_kicks_after_its_aim() -> void:
 	pair[1].free()
 
 
+func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
+	# Every firing a sidecar names is one of its chassis's fixed components, on an act it has, so a
+	# renamed component or act fails here until the model follows.
+	var db := ContentDB.load_default()
+	var named := 0
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var fires = side.get("fires", {})
+		var fixed: Array = db.chassis.get(id, {}).get("fixed", [])
+		var acts := {}
+		for a in side.get("acts", []):
+			acts[str(a["name"])] = float(a.get("duration", 0.0))
+		for cid in (fires as Dictionary).keys():
+			named += 1
+			var f: Dictionary = fires[cid]
+			assert_true(fixed.has(cid), "%s: %s fires with an act, and is one of its fixed weapons" % [id, cid])
+			assert_true(acts.has(str(f["act"])), "%s: %s's act %s is one of its own" % [id, cid, f["act"]])
+			assert_true(float(f["from"]) < float(f["to"]) and float(f["to"]) <= float(acts.get(str(f["act"]), 0.0)), "%s: %s's slice lies inside its act" % [id, cid])
+	assert_true(named >= 10, "the cheapest locked weapons fire with their acts (%d)" % named)
+	# The slice plays from its start and ends at its end, cutting the act short.
+	var pair := _rig_for("nemesis")
+	var rig: MechRig = pair[0]
+	var cid := str((rig.fires as Dictionary).keys()[0])
+	var f: Dictionary = rig.fires[cid]
+	assert_true(rig.fire_act(cid), "the fixed weapon fires with its act")
+	assert_eq(str(rig._current["name"]), str(f["act"]), "the act it names plays")
+	assert_true(absf(rig._t - float(f["from"])) < 0.001, "from the slice's start")
+	rig._step(float(f["to"]) - float(f["from"]) - 0.05)
+	assert_false(rig._current.is_empty(), "through the slice")
+	rig._step(0.1)
+	assert_true(rig._current.is_empty(), "and no further than its end")
+	assert_false(rig.fire_act("no_such_weapon"), "a weapon with no firing act strikes as before")
+	pair[1].free()
+
+
 func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	var want := {
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],
