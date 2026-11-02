@@ -1042,13 +1042,14 @@ class Stage {
   // Fit a mount as the game does (MechView3D.mount): the stock part under hp_<n> hides and a
   // silhouette class in a maker's metal hangs under the pin, wearing its frame and scale, so it
   // swings and recoils with whatever joint carries the pin. `shape` "" bares the mount; null
-  // puts the stock part back.
+  // puts the stock part back. A hidden mount (the sidecar's hidden_pins: the Cottonmouth's
+  // guns inside its drum) wears nothing, as in the game (MechView3D.wear).
   async fit(n, shape, maker) {
     const rig = this.rig, pin = rig && rig.hardpoints[n];
     if (!pin) return;
     const id = this.id;
     let part = null;
-    if (shape) {
+    if (shape && !((this.side && this.side.hidden_pins) || []).includes("hp_" + n)) {
       const gltf = await this.loadModel("shapes/" + shape + "_" + maker);
       if (this.id !== id) return;
       part = gltf.scene;

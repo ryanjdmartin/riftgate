@@ -321,6 +321,24 @@ static func pin_record(model_id: String) -> Variant:
 	return out
 
 
+## The model's mounts that show nothing, stock or fitted, by number (1 -> true): lowforge's
+## b.pin(hidden=True), the sidecar's `hidden_pins`. The Cottonmouth's guns sit inside its drum
+## (Ryan, 19 October: "the guns mounted (invisibly) inside"), so its die is mounted and recorded
+## as any machine's and nothing is hung on those pins (wear, mount). Empty for most models.
+static func hidden_pins(model_id: String) -> Dictionary:
+	var out := {}
+	if model_id.is_empty():
+		return out
+	var hidden = MechRig.load_sidecar(model_id).get("hidden_pins", [])
+	if not (hidden is Array):
+		return out
+	for key in hidden:
+		var tag := MechRig.parse_tag(str(key))
+		if tag.size() == 2 and str(tag[0]) == "hp":
+			out[int(tag[1])] = true
+	return out
+
+
 ## The plan for a unit: against what its model's pins were built carrying, or, for a model
 ## whose sidecar names none, its chassis's stock loadout in content.
 static func plan_for(u: Unit, db: ContentDB) -> Array:
@@ -385,9 +403,11 @@ static func pins_of(root: Node) -> Dictionary:
 
 ## Wear a plan on a model's pins (`hardpoints`: the pin's number to its node, as the rig finds
 ## them): each row hides the pin's stock part and hangs its component's class shape there in
-## that component's own metal, or leaves the socket bare. Shared with the map, which builds
-## its machines without a view (Map3D).
+## that component's own metal, or leaves the socket bare. A hidden mount (hidden_pins, read by
+## `model_name`) is left bare whatever the row fits. Shared with the map, which builds its
+## machines without a view (Map3D).
 static func wear(pins: Dictionary, rows: Array, look: String, paint_arg: Dictionary = {}, as_token: bool = false, drop_detail: bool = true, model_name: String = "") -> void:
+	var hidden := hidden_pins(model_name)
 	for row in rows:
 		if row.size() < 4 or not pins.has(int(row[0])):
 			continue
@@ -395,7 +415,7 @@ static func wear(pins: Dictionary, rows: Array, look: String, paint_arg: Diction
 		for c in pin.get_children():
 			if c is Node3D:
 				(c as Node3D).visible = false
-		if str(row[1]).is_empty():
+		if str(row[1]).is_empty() or hidden.has(int(row[0])):
 			continue
 		var id := shape_model(str(row[2]), str(row[3]))
 		if not has_model(id):
@@ -613,9 +633,9 @@ func strike(ranged: bool) -> void:
 ## Hang a component's model on a socket: the stock part under `hp_<n>` is hidden and the
 ## scene is added under the pin, so it points where the pin points and wears the pin's
 ## scale (lowforge sets both; a Sparrowhawk's pins are half size). Returns false when the
-## model has no such socket.
+## model has no such socket, or hides it (hidden_pins).
 func mount(n: int, scene: PackedScene, maker: String) -> bool:
-	if not hardpoints.has(n):
+	if not hardpoints.has(n) or hidden_pins(model_id).has(n):
 		return false
 	var pin: Node3D = hardpoints[n]
 	for c in pin.get_children():
