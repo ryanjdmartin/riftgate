@@ -388,13 +388,11 @@ func _draw() -> void:
 ## Whom an entry spent on machines reaches, written under the primary glyph when it is narrowed
 ## (Ryan, 2 November: "Ally and self chips - those shouldn't be chips, those are targeting rules.
 ## They need to be on the main icon"), in the readout's target line's words (EntryReadout.whom):
-## SELF, ALLY, or EVERY ALLY for a piece that lands on every ally at once; nothing for the
-## default, itself or an ally. A weapon's reach is its glyph's own shape (a crosshair, an arc).
+## SELF or ALLY; nothing for the default, itself or an ally. A weapon's reach is its glyph's own
+## shape (a crosshair, an arc); a reach over every foe or every ally is a keyword's chip.
 static func target_word(f: Face) -> String:
 	if f == null or not f.on_machines():
 		return ""
-	if f.reaches_all:
-		return "EVERY ALLY"
 	match f.targets:
 		Face.Target.SELF:
 			return "SELF"

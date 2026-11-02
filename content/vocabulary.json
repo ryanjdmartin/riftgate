@@ -220,6 +220,26 @@
    }
   },
   {
+   "id": "every_foe",
+   "category": "keyword",
+   "name": "Every Foe",
+   "codex": "Keyword, a debuff's. Aimed at a foe in its reach, the entry lands on every foe in the fight, front rank and back, as it lands on its target.",
+   "status": "implemented",
+   "design": {
+    "holes": "A targeting mode as Spread, Penetrate and Splash are (Ryan, 2 November: 'it should be listed as such and given a keyword'), so a Silence mutes it as it mutes them; a working name, the foes' Every Machine mirrored. A weapon's area is Spread, Penetrate or Splash with its number, so the validator holds Every Foe to a debuff (the Heliographic Siphon's lure-all) until a damaging one is designed."
+   }
+  },
+  {
+   "id": "every_ally",
+   "category": "keyword",
+   "name": "Every Ally",
+   "codex": "Keyword, a shield's or a buff's. Spent on a machine it may be spent on, the entry lands on every machine it may be spent on, each taking all of it: every other ally for one that goes to allies only.",
+   "status": "implemented",
+   "design": {
+    "holes": "Every Foe's mirror on the team's side (2 November), the Mooring Screens' team shield; a working name. Never a vent's (the validator)."
+   }
+  },
+  {
    "id": "spillover",
    "category": "keyword",
    "name": "Spillover",

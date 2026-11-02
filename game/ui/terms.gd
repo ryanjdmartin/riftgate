@@ -21,6 +21,7 @@ const TABLE := {
 	"direct": ["line", "plain"], "indirect": ["indirect", "plain"],
 	# Keywords.
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
+	"every_foe": ["every_foe", "plain"], "every_ally": ["every_ally", "plain"],
 	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"],
 	"burn": ["burn", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
 	"flak": ["flak", "heat"], "breach": ["breach", "heat"],

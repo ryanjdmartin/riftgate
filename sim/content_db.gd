@@ -949,7 +949,7 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 
 ## A charged form (the Swallowtail's locked pieces, 21 October): what a muster buys, its keys the
 ## engine reads (Face.charged_form) and nothing else.
-const CHARGED_KEYS := ["muster", "status", "stacks", "rounds", "reaches_all", "not_acted", "keywords", "shield", "vents", "cleanse", "act_again"]
+const CHARGED_KEYS := ["muster", "status", "stacks", "rounds", "not_acted", "keywords", "shield", "vents", "cleanse", "act_again"]
 
 
 func _validate_charged(where: String, kind: String, cd, errs: Array[String]) -> void:
@@ -1064,10 +1064,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: chain (the number) rides with the Chain keyword" % where)
 	if kw_names.has("cleave") and kw_names.has("penetrate") and int(fd.get("cleave", 0)) == int(fd.get("penetrate", 0)):
 		errs.append("%s: Spread and Penetrate at one number are Splash: write splash" % where)
-	# A reach over every foe is equipment's (the Siphon's lure-all): the foes past the target take
-	# no number, so a weapon reaches wide by Spread, Penetrate or Splash instead.
-	if bool(fd.get("reaches_all", false)) and kind == "attack" and not debuff:
-		errs.append("%s: a reach over every foe is a debuff's; a weapon's area is Spread, Penetrate or Splash with its number" % where)
+	# Every Foe is equipment's (the Siphon's lure-all): the foes past the target take no number,
+	# so a weapon reaches wide by Spread, Penetrate or Splash instead.
+	if kw_names.has("every_foe") and kind == "attack" and not debuff:
+		errs.append("%s: Every Foe is a debuff's; a weapon's area is Spread, Penetrate or Splash with its number" % where)
 	# A gated keyword (the stock pass's engine, 22 October): keyword name to the condition it
 	# lands under, a condition on the foe in hand, read through the effects' conditions. Suppress
 	# alone today (the stun row's gated stuns); another keyword's gate waits for its first piece.
@@ -1098,8 +1098,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("consumes"):
 		if kind != "attack" or not Effects.FOE_STATUSES.has(str(fd["consumes"])):
 			errs.append("%s: consumes names a status the team puts on a foe (%s), on an attack" % [where, ", ".join(Effects.FOE_STATUSES)])
-		if int(fd.get("strikes", 1)) > 1 or bool(fd.get("reaches_all", false)):
-			errs.append("%s: a consumer is one blow on each foe it strikes, each eating its own: no strikes past one or reach over every foe" % where)
+		if int(fd.get("strikes", 1)) > 1 or Array(fd.get("keywords", [])).has("every_foe"):
+			errs.append("%s: a consumer is one blow on each foe it strikes, each eating its own: no strikes past one or Every Foe" % where)
 	if fd.has("per_consumed") and (not fd.has("consumes") or int(fd["per_consumed"]) <= 0):
 		errs.append("%s: per_consumed is the damage a stack consumed adds: positive, and only beside consumes" % where)
 	# Its own fire (the Stoker's, the stock pass's landing, 22 October): an attack that sets its
@@ -1140,19 +1140,20 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if rapid and not planned and not stepped and fd.has("cooldown") and int(fd["cooldown"]) == 0 \
 			and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0:
 		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
-	# The Siphon's rules (the Whip Scorpion's, 20 October): a reach over every foe in the fight,
-	# an attack's; and a heat every blow taken that round adds, any entry's.
-	# On a shield or a buff it is every machine it may land on (the Swallowtail's team shield, built 21
-	# October), never a vent's.
-	if fd.has("reaches_all") and (not (fd["reaches_all"] is bool) or kind == "vent" or kind == "blank"):
-		errs.append("%s: reaches_all (true) is an attack's reach over every foe in the fight, or a shield's or a buff's over every ally" % where)
+	# A reach over every foe or every ally is a keyword since 2 November (Ryan: "a targeting mode,
+	# just like spread, penetrate, and splash"): Every Foe on a debuff (the Siphon's), Every Ally on
+	# a shield or a buff (the Swallowtail's team shield), never a vent's.
+	if fd.has("reaches_all"):
+		errs.append("%s: reaches_all is a keyword now: every_foe on a debuff, every_ally on a shield or a buff" % where)
+	if kind == "vent" and Array(fd.get("keywords", [])).has("every_ally"):
+		errs.append("%s: Every Ally is a shield's or a buff's, never a vent's" % where)
 	# The Swallowtail's locked pieces (21 October): a shield's cooling half, a buff on every ally
 	# yet to act, an ally acting again, and the charged form a muster buys.
 	if fd.has("vents") and (kind != "shield" or not (fd["vents"] is float or fd["vents"] is int) or int(fd["vents"]) <= 0):
 		errs.append("%s: vents is a shield's cooling half: the heat it takes off the machine it shields, first, a positive number" % where)
 	if (fd.has("fills_shield") or fd.has("cools_all")) and kind != "shield":
 		errs.append("%s: fills_shield and cools_all are a shield's (the full reset)" % where)
-	if fd.has("not_acted") and (kind != "buff" or not bool(fd.get("reaches_all", false))):
+	if fd.has("not_acted") and (kind != "buff" or not Array(fd.get("keywords", [])).has("every_ally")):
 		errs.append("%s: not_acted narrows a buff reaching every ally to those yet to act" % where)
 	if fd.has("act_again") and kind != "buff":
 		errs.append("%s: act_again is a buff's: an ally whose die is spent acts again" % where)

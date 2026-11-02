@@ -25,7 +25,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 899 tests, 208,751 checks, green on `ccr-bb178c9b-l6airv` (2 November: Ryan's playtest
+- Tests: 899 tests, 208,785 checks, green on `ccr-bb178c9b-l6airv` (2 November: Ryan's playtest
   list of 2 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -47,7 +47,9 @@ are in `README.md`.
 stand bullet), from main's `3929042`, which has not moved since; its battle map's share (EXECUTE
 and the END TURN question, the catch drawn as an attack order, the quick campaign's lists
 scrolling) was built in a worktree on a branch of its own and merged in (`aa39bc2`), that branch
-deleted. Main takes it on Ryan's word; its bible is v0.411 (the Pages paragraph).
+deleted. Main takes it on Ryan's word; its bible is v0.411 (the Pages paragraph). Its content
+moved (Every Foe and Every Ally, the Siphon's and the Mooring Screens' keywords), so the hangar
+page's components and vocabulary go up when it lands.
 
 `claude/affectionate-ramanujan-5d24t6` (30 and 31 October) carried the two Petrels' engines on
 Ryan's go ("go for the ready to build ones", after his question of the 30th on which chassis come
@@ -210,7 +212,16 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   are targeting rules. They need to be on the main icon"), the word Claude's form beside figures
   and arrows (`docs/looks/die_targeting_options.png`; `tools/die_sheet.gd` draws the whole set); the unit readouts
   at 85% (from 70%, "Increase the opacity of the popups in skirmish a bit"). What waits on Ryan:
-  his phone read of the list (the to-do), the targeting form among them.
+  his phone read of the list (the to-do), the targeting form among them. Then, the same day: a
+  reach over every foe is a keyword, Every Foe, and its mirror Every Ally ("Every foe is a
+  targeting mode, just like spread, penetrate, and splash"; working names after the foes' Every
+  Machine; the Siphon's and the Mooring Screens'; `Face.reaches_all` reads the keyword, so a
+  Silence mutes it as it mutes Spread; content writes it under keywords, the old key refused); the
+  aim to go into the icon itself as a debuff's mark sits in its reach frame, with new buff and
+  debuff marks ("those arrows look like push/pull to me"): Claude's candidates in
+  `docs/looks/die_icon_candidates.png` (plus and minus, a diamond, a spark and a drop, steps; a
+  ring or a hex for SELF and ALLY), his pick to come. The reload entry is the Musk Ox's alone (the
+  Quick Reload, fixed).
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
   `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield

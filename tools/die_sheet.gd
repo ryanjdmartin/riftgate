@@ -11,7 +11,7 @@ extends SceneTree
 ##
 ## The window's size is the sheet's in design pixels (one to one, whatever the project's stretch).
 
-const COLS := 8   # the targets' rows hold two kinds of four
+const COLS := 8
 const CELL := Vector2(164, 222)
 const MARGIN := 24.0
 const HEAD := 46.0
@@ -32,7 +32,7 @@ func _init() -> void:
 	root.add_child(_sheet)
 	var y := MARGIN
 	y = _section(y, "WHAT AN ENTRY IS: THE MAIN ICON", _kinds())
-	y = _section(y, "WHOM IT REACHES: WRITTEN UNDER THE ICON WHEN NARROWED (2 NOVEMBER)", _targets())
+	y = _section(y, "WHOM IT IS AIMED AT: WRITTEN UNDER THE ICON WHEN NARROWED (2 NOVEMBER)", _targets(), 6)
 	y = _section(y, "THE REST OF A FACE: COSTS, STATES, THE CHIPS DOWN ITS EDGE", _rest())
 	process_frame.connect(_tick)
 
@@ -60,12 +60,12 @@ func _draw_sheet() -> void:
 		_sheet.draw_string(Hud.mono(), l[0], l[1], HORIZONTAL_ALIGNMENT_LEFT, CELL.x - 8.0 if int(l[2]) < 16 else -1, int(l[2]), l[3])
 
 
-## A heading and its cells, COLS a row: each cell a name over a die and a line under it.
-func _section(y: float, title: String, cells: Array) -> float:
+## A heading and its cells, `cols` a row: each cell a name over a die and a line under it.
+func _section(y: float, title: String, cells: Array, cols: int = COLS) -> float:
 	_labels.append([Vector2(MARGIN, y + 22.0), title, 18, Palette.INK])
 	y += HEAD
 	for i in range(cells.size()):
-		var at := Vector2(MARGIN + (i % COLS) * CELL.x, y + (i / COLS) * CELL.y)
+		var at := Vector2(MARGIN + (i % cols) * CELL.x, y + (i / cols) * CELL.y)
 		var cell: Array = cells[i]
 		_labels.append([at + Vector2(0, 12.0), str(cell[0]), 13, Palette.INK])
 		var d: DieFaceView = cell[2]
@@ -76,7 +76,7 @@ func _section(y: float, title: String, cells: Array) -> float:
 		for line in str(cell[1]).split("\n"):
 			_labels.append([Vector2(at.x, y2), line, 11, Palette.MUTED])
 			y2 += 14.0
-	return y + ceili(cells.size() / float(COLS)) * CELL.y + 12.0
+	return y + ceili(cells.size() / float(cols)) * CELL.y + 12.0
 
 
 func _die(f: Face) -> DieFaceView:
@@ -123,13 +123,9 @@ func _targets() -> Array:
 		own.targets = Face.Target.SELF
 		var give: Face = make.call()
 		give.targets = Face.Target.ALLY
-		var every: Face = make.call()
-		every.targets = Face.Target.ALLY
-		every.reaches_all = true
 		out.append(["%s, default" % k[0], "itself or an ally:\nunmarked", _die(plain)])
 		out.append(["%s, SELF" % k[0], "its own machine only", _die(own)])
 		out.append(["%s, ALLY" % k[0], "any other ally only", _die(give)])
-		out.append(["%s, EVERY ALLY" % k[0], "every ally at once", _die(every)])
 	return out
 
 
@@ -169,6 +165,10 @@ func _rest() -> Array:
 	stepping.next_face = Face.attack(6)
 	var seal := _die(Face.shield(3))
 	seal.form_mark = "seal"
+	var lure_all := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE, Face.Keyword.EVERY_FOE])
+	var team := Face.shield(2)
+	team.targets = Face.Target.ALLY
+	team.add_keyword(Face.Keyword.EVERY_ALLY)
 	var unseal := _die(Face.vent(3))
 	unseal.form_mark = "unseal"
 	return [
@@ -183,6 +183,8 @@ func _rest() -> Array:
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
 		["Turns left", "dark: a cooldown or a\nfoe's switch-off", dark],
 		["Chips", "keywords, the star for a\nrule, a corruption", chipped],
+		["Every Foe", "a keyword: lands on\nevery foe (the Siphon)", _die(lure_all)],
+		["Every Ally", "a keyword: lands on every\nally (the Mooring Screens)", _die(team)],
 		["Next chamber", "a stepping die's next\nentry (the Cassowary)", stepping],
 		["Seals", "spent on itself, the\nArmadillo shuts", seal],
 		["Opens", "spent, the Armadillo's\nshell opens", unseal],

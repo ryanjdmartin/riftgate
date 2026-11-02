@@ -102,7 +102,7 @@ FACE_FIELDS = {
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
     "spends_magazine": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_burn": [("burning_mech", "sets"), ("heat", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
-    "shields": [], "vents": [], "spins": [], "reaches_all": [], "random_targets": [], "cooldown": [], "charged": [("muster", "reads")],
+    "shields": [], "vents": [], "spins": [], "random_targets": [], "cooldown": [], "charged": [("muster", "reads")],
     "rolls_target": [], "spray": [("strikes", "sets")],
 }
 # A gate or a consume on a status reads it.

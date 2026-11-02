@@ -2143,19 +2143,25 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 
 
 ## The Siphon's rules and the vent blast (the Whip Scorpion's, 20 October): a reach over every
-## foe is an attack's, a heat a blow taken is a positive number, and a blast a positive share.
+## machine is never a vent's, the old reach key is the keywords' now (2 November), a heat a blow
+## taken is a positive number, and a blast a positive share.
 func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
 	var db := _fresh()
 	var plate: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	plate["tier"] = 1
-	plate["face"]["reaches_all"] = true
+	plate["face"]["keywords"] = ["every_ally"]
 	plate["face"]["heat_per_blow"] = 0
 	db.components["test_vent_all"] = plate
+	var old: Dictionary = db.components["heliographic_siphon"].duplicate(true)
+	old["face"]["keywords"] = ["lure"]
+	old["face"]["reaches_all"] = true
+	db.components["test_old_reach"] = old
 	var boiler: Dictionary = db.chassis["whip_scorpion"].duplicate(true)
 	boiler["passive"]["effects"] = [{"trigger": "static", "effect": "vent_blast", "value": 0}]
 	db.chassis["test_boiler"] = boiler
 	var errs := db.validate()
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("reaches_all")), "a vent never reaches every foe")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("Every Ally is a shield's or a buff's")), "a vent never reaches every ally")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_old_reach") and e.contains("reaches_all is a keyword now")), "the old reach key is refused for the keyword")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow")), "a heat a blow is positive")
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("vent_blast")), "and a blast's share")
 
@@ -2242,8 +2248,8 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 
 ## Area by shape, numbered (Ryan, 28 October): a weapon's Spread, Penetrate or Splash says what
 ## each foe past its target takes; a debuff's says none; Splash is the row and the column at one
-## number, so it never rides beside either, and the two at one number are Splash; a reach over
-## every foe is a debuff's.
+## number, so it never rides beside either, and the two at one number are Splash; Every Foe is a
+## debuff's (2 November: a targeting mode given a keyword).
 func test_the_area_keywords_say_their_number() -> void:
 	var db := _fresh()
 	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
@@ -2260,7 +2266,8 @@ func test_the_area_keywords_say_their_number() -> void:
 		"test_plus_two_numbers": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 1}, ""],
 		"test_debuff_n": [{"power": 0, "keywords": ["lure", "cleave"], "cleave": 1}, "carries no number"],
 		"test_debuff_area": [{"power": 0, "keywords": ["lure", "cleave"]}, ""],
-		"test_wide_weapon": [{"reaches_all": true}, "a reach over every foe is a debuff's"],
+		"test_wide_weapon": [{"keywords": ["every_foe"]}, "Every Foe is a debuff's"],
+		"test_wide_debuff": [{"power": 0, "keywords": ["lure", "every_foe"]}, ""],
 	}
 	for id in cases:
 		var c: Dictionary = base.duplicate(true)

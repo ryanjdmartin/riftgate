@@ -108,6 +108,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var x := -s * 0.6 + k * s * 0.6
 				ci.draw_line(c + Vector2(x, -s * 0.45), c + Vector2(x, s * 0.55), color, width)
 				ci.draw_colored_polygon(PackedVector2Array([c + Vector2(x - s * 0.22, s * 0.45), c + Vector2(x + s * 0.22, s * 0.45), c + Vector2(x, s * 0.9)]), color)
+		"every_foe":
+			# Every Foe (2 November): the enemy's formation whole, both ranks of three lit, a
+			# diagram as Spread's row and Penetrate's column are, apart from Spread's three bars.
+			for row in range(2):
+				for k in range(3):
+					var at := c + Vector2(-s * 0.65 + k * s * 0.65, -s * 0.36 + row * s * 0.72)
+					ci.draw_rect(Rect2(at - Vector2(s * 0.22, s * 0.22), Vector2(s * 0.44, s * 0.44)), color, true)
+		"every_ally":
+			# Every Ally (2 November): one arch over three of the team, a piece that lands on all of
+			# them at once.
+			ci.draw_arc(c + Vector2(0, s * 0.3), s * 0.9, PI, TAU, 18, color, width)
+			ci.draw_line(c + Vector2(-s * 0.9, s * 0.3), c + Vector2(-s * 0.9, s * 0.5), color, width)
+			ci.draw_line(c + Vector2(s * 0.9, s * 0.3), c + Vector2(s * 0.9, s * 0.5), color, width)
+			for k in range(3):
+				ci.draw_circle(c + Vector2(-s * 0.5 + k * s * 0.5, s * 0.6), s * 0.19, color)
 		"parts":
 			# A foe in parts (30 October): the core's ring and the two parts standing by it.
 			ci.draw_arc(c + Vector2(0, s * 0.15), s * 0.5, 0.0, TAU, 20, color, width)

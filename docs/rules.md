@@ -29,9 +29,9 @@ skirmish.
   damage and is spent on a foe in its reach; **equipment** is a buff or a debuff and deals
   none, a buff spent on a machine and a debuff on a foe in its reach; a **shield** and a
   **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
-  default, or self only, or allies only, as the die writes under its main icon (SELF, ALLY, or
-  EVERY ALLY for one that lands on every ally at once; nothing for the default), a targeting rule
-  as a weapon's reach is its icon's shape. A passive may make a piece count as
+  default, or self only, or allies only, as the die writes under its main icon (SELF, ALLY;
+  nothing for the default), a targeting rule as a weapon's reach is its icon's shape; a reach
+  over every foe or every ally is a keyword (Every Foe, Every Ally). A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
   too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
   codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
@@ -308,6 +308,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Splash N**: the plus round the target, Spread and Penetrate at one number; the two at one
   number are written Splash. A weapon's area keyword carries its number; a debuff's carries
   none, its effects reaching those foes and its blow nothing.
+- **Every Foe** (a debuff's): aimed at a foe in its reach, the entry lands on every foe in the
+  fight, front rank and back, as on its target. A weapon reaches wide by Spread, Penetrate or
+  Splash instead. Like every keyword, a Silence mutes it, and the entry reaches its target alone.
+- **Every Ally** (a shield's or a buff's, never a vent's): the entry lands on every machine it
+  may be spent on, each taking all of it, every other ally for one that goes to allies only.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
   foes' rider below. The Overclocked Railgun carries it.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning (Burn 3: three
@@ -325,8 +330,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
   Shocked takes one blow, the area's.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
-  Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
-  round adds 2 heat to it (Siphoning), in the enemy's turn, after the overheat.
+  Scorpion's Siphon carries Every Foe, and every blow a foe lands on it that round adds 2 heat
+  to it (Siphoning), in the enemy's turn, after the overheat.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare): every foe reached
   and left standing is Exposed through the next round; a second Expose refreshes it, never
   adds.
@@ -480,8 +485,8 @@ On a machine:
   piece goes out charged, unasked, and its die shows the charged form under a double frame;
   when the charged form has nowhere to land (Phased once any ally has acted, the act again
   with no ally spent), the plain form goes out and the charge waits. The
-  Mooring Screens shield every ally (never the carrier), or Phase every ally, only while none
-  has acted this round, so it is never a selective protection;
+  Mooring Screens shield every ally (Every Ally; never the carrier), or Phase every ally, only
+  while none has acted this round, so it is never a selective protection;
   the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
   Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.

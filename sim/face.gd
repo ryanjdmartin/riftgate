@@ -30,7 +30,11 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## wherever it stands and whatever the gun's reach, plain, no strike being aimed at it, so its
 ## Shock stands; then one other foe at random, neither the target nor already Shocked, is
 ## Shocked. A weapon's alone.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
+## Every Foe and Every Ally (Ryan, 2 November: "Every foe is a targeting mode, just like spread,
+## penetrate, and splash, it should be listed as such and given a keyword"): a reach over every
+## foe in the fight from the target (a debuff's, the Siphon's lure-all), or over every machine a
+## shield or a buff may be spent on (the Mooring Screens'); `reaches_all` reads them.
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, EVERY_FOE, EVERY_ALLY }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open.
@@ -50,11 +54,11 @@ const KEYWORD_NAMES := {
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
 	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach", Keyword.SPLASH: "splash",
-	Keyword.DISPEL: "dispel",
+	Keyword.DISPEL: "dispel", Keyword.EVERY_FOE: "every_foe", Keyword.EVERY_ALLY: "every_ally",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 ## Purge (28 October) is one id on both sides, dispel, as breach is.
-const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
+const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge", Keyword.EVERY_FOE: "every foe", Keyword.EVERY_ALLY: "every ally" }
 ## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
@@ -81,7 +85,7 @@ const TARGET_NAMES := {
 ## entry aimed at a foe, a weapon or equipment, whatever else it does.
 ## Shock (9 October) is an attack keyword too: every foe the blows reach and leave alive is
 ## Shocked.
-const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
+const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD, Keyword.EVERY_ALLY]
 ## Of those, the ones only a shield may carry: overshield (5 October, the Puffin's Prow
 ## Projector first, rare) lets a shield pass its target's maximum, and the excess fades at the
 ## round's end. A vent has nothing to pass.
@@ -142,7 +146,18 @@ var braces: int = 0           # any entry: spending it Braces its owner, this ma
 var rolls_again_on: String = ""   # any entry: spending it spends a stack of this status, if its owner has one, and the die rolls again (the Nemesis's fists on rage, 12 October)
 var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October); -1 reads its keywords (Rapid's switch-off, 1), 0 none
 var spins: bool = false       # a Rapid entry whose free reroll is a true spin over every entry, itself included (the Cassowary's Spin-Up: Ryan's exception to the reroll rule, 19 October)
-var reaches_all: bool = false # an attack that reaches every foe in the fight from its target (the Whip Scorpion's Heliographic Siphon, a lure-all, 20 October)
+## Reaches every foe in the fight from its target (an attack: the Whip Scorpion's Heliographic
+## Siphon, a lure-all, 20 October) or every machine it may be spent on (a shield or a buff: the
+## Swallowtail's Mooring Screens): its keyword, Every Foe or Every Ally (2 November), so a
+## Silence mutes it as it mutes Spread. Setting it gives or takes the keyword its kind carries.
+var reaches_all: bool:
+	get:
+		return keywords.has(Keyword.EVERY_FOE) or keywords.has(Keyword.EVERY_ALLY)
+	set(on):
+		keywords.erase(Keyword.EVERY_FOE)
+		keywords.erase(Keyword.EVERY_ALLY)
+		if on:
+			keywords.append(Keyword.EVERY_FOE if kind == Kind.ATTACK else Keyword.EVERY_ALLY)
 var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
 var resets_on_kill: bool = false   # an attack: if its spend kills, every entry dark from a cooldown comes back and its machine acts again (the Kite's Pinion Driver, 21 October)
@@ -332,7 +347,6 @@ static func from_dict(d: Dictionary) -> Face:
 	f.rolls_again_on = str(d.get("rolls_again_on", ""))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.spins = bool(d.get("spins", false))
-	f.reaches_all = bool(d.get("reaches_all", false)) and f.kind != Kind.BLANK   # an attack: every foe; a piece spent on machines: every machine it may land on
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
@@ -362,6 +376,8 @@ static func from_dict(d: Dictionary) -> Face:
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
 			f.add_keyword(kw)
+	if bool(d.get("reaches_all", false)) and f.kind != Kind.BLANK and not f.reaches_all:
+		f.reaches_all = true   # a save from before the keywords (2 November): Every Foe or Every Ally by its kind, after the rest
 	f.label = str(d.get("label", ""))
 	return f
 
@@ -430,8 +446,6 @@ func to_dict() -> Dictionary:
 		d["cooldown"] = cooldown
 	if spins:
 		d["spins"] = true
-	if reaches_all:
-		d["reaches_all"] = true
 	if heat_per_blow > 0:
 		d["heat_per_blow"] = heat_per_blow
 	if shields > 0:
@@ -548,7 +562,7 @@ func cooldown_rounds() -> int:
 ## every foe and its heat a blow, or a labelled effect.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
-		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
+		or printed_cooldown() or spins or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or spray or reloads_ammo > 0 \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
@@ -672,7 +686,6 @@ func duplicate_face() -> Face:
 	f.rolls_again_on = rolls_again_on
 	f.cooldown = cooldown
 	f.spins = spins
-	f.reaches_all = reaches_all
 	f.heat_per_blow = heat_per_blow
 	f.shields = shields
 	f.resets_on_kill = resets_on_kill
@@ -768,8 +781,6 @@ func _spin_phrases() -> Array[String]:
 	var out: Array[String] = []
 	if spins:
 		out.append("spins the die")
-	if reaches_all and kind == Kind.ATTACK:
-		out.append("reaches every foe")
 	if heat_per_blow > 0:
 		out.append("+%d heat a blow taken this round" % heat_per_blow)
 	return out
@@ -907,11 +918,9 @@ func describe() -> String:
 				s += " cools %d" % vents
 			if cools_all:
 				s += " cools to nothing"
-			if reaches_all:
-				s += " on every ally yet to act" if not_acted else " on every ally"
 			for k in keywords:
 				if not printed.has(k):
-					s += " " + keyword_label(k)
+					s += " " + keyword_label(k) + (" yet to act" if k == Keyword.EVERY_ALLY and not_acted else "")
 			if action_price > 0:
 				s += " " + _action_text()   # the Immelmann Booster's ally use, after what it does on itself
 			if rolls_target:

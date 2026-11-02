@@ -188,20 +188,18 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 		if f.short:
 			shield_cost.append(word("(the shield cannot pay it)"))
 		out.append(parts_line("effect", shield_cost, "attr"))
-	# Whom it reaches, in the words the die writes under its main glyph when narrowed (SELF, ALLY,
-	# EVERY ALLY: DieFaceView.target_word), so the line wears no mark of its own; every ally at once
-	# is the entry's own rule as well, its star.
-	var target := text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f), "attr")
-	if f.kind != Face.Kind.ATTACK and f.reaches_all:
-		marked(target, [star])
-	out.append(target)
+	# Whom it is aimed at, in the words the die writes under its main glyph when narrowed (SELF,
+	# ALLY: DieFaceView.target_word), so the line wears no mark of its own; a reach past the
+	# target is its keyword's line (Every Foe, Every Ally, an area's), as the die chips it.
+	out.append(text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f), "attr"))
 	var land: Array = []   # how it lands
 	var lays: Array = []   # what it leaves on each foe hit
 	var after: Array = []  # Rapid's turn
 	for k in f.keywords:
 		if f.printed.has(k):
 			continue   # a grant written out is its passive's line, with the rules
-		var label := capital(Face.keyword_label(k))
+		# Its name as the list writes it (Every Foe), so the word is the term's and taps open it.
+		var label := Face.keyword_label(k).capitalize() + (" yet to act" if k == Face.Keyword.EVERY_ALLY and f.not_acted else "")
 		var gate := Effects.gate_text(f.gates[Face.KEYWORD_NAMES[k]]) if f.gates.has(Face.KEYWORD_NAMES[k]) else ""
 		# The keyword's chip, as the die boxes it, the star beside it when a gate is the entry's own
 		# rule; the chip is the term's icon, so the word itself wears none.
@@ -398,10 +396,9 @@ const MOVE_TARGETS := {
 }
 
 
-## Whom a shield, a vent or a buff is spent on (Ryan's words, 26 October).
+## Whom a shield, a vent or a buff is spent on (Ryan's words, 26 October); a reach over every
+## ally past it is its keyword's (Every Ally).
 static func whom(f: Face) -> String:
-	if f.reaches_all:
-		return "Target: Every ally yet to act" if f.not_acted else "Target: Every ally"
 	match f.targets:
 		Face.Target.SELF:
 			return "Target: Self"

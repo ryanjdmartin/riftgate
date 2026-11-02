@@ -6882,8 +6882,13 @@ func test_a_vent_spent_on_itself_blasts_a_random_foe_for_the_heat_it_took_off() 
 ## damage, every foe in the fight turns on it for the round, it braces, and every blow a foe
 ## lands on it that round adds the entry's heat, next round's fuel, after the overheat.
 func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
-	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10})
-	assert_eq(siphon.describe(), "indirect lure braces ×2 reaches every foe +10 heat a blow taken this round", "the entry says its rules")
+	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "every_foe"], "braces": 2, "heat_per_blow": 10})
+	assert_eq(siphon.describe(), "indirect lure every foe braces ×2 +10 heat a blow taken this round", "the entry says its rules, Every Foe a keyword (2 November)")
+	var old := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10})
+	assert_eq(old.keywords, siphon.keywords, "a save from before the keyword reads the same")
+	assert_true(old.reaches_all and old.has(Face.Keyword.EVERY_FOE), "its reach the keyword")
+	assert_false(old.to_dict().has("reaches_all"), "written back as the keyword")
+	assert_true((old.to_dict()["keywords"] as Array).has("every_foe"), "every_foe among its keywords")
 	var sk := Skirmish.new(1, 2)
 	var u := _mech("A", Die.single(siphon), 40, 200)
 	var other := _mech("B", Die.single(Face.attack(10, L)), 40, 200)

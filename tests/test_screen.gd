@@ -75,11 +75,12 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	s.free()
 
 
-## Whom a piece reaches is written under the die's main glyph, never a chip on its rail (Ryan, 2
-## November: "Ally and self chips - those shouldn't be chips, those are targeting rules. They need
-## to be on the main icon"): SELF, ALLY or EVERY ALLY on a piece spent on machines when narrowed,
-## nothing for the default or a weapon (its reach is its glyph's shape); every narrowed piece in
-## content writes its word.
+## Whom a piece is aimed at is written under the die's main glyph, never a chip on its rail (Ryan,
+## 2 November: "Ally and self chips - those shouldn't be chips, those are targeting rules. They
+## need to be on the main icon"): SELF or ALLY on a piece spent on machines when narrowed, nothing
+## for the default or a weapon (its reach is its glyph's shape); every narrowed piece in content
+## writes its word. A reach over every ally or every foe is a keyword's chip (Every Ally, Every
+## Foe: "a targeting mode, just like spread, penetrate, and splash").
 func test_whom_a_piece_reaches_is_written_under_its_main_glyph() -> void:
 	var shield := Face.shield(4)
 	assert_eq(DieFaceView.target_word(shield), "", "itself or an ally, the default: nothing")
@@ -88,16 +89,22 @@ func test_whom_a_piece_reaches_is_written_under_its_main_glyph() -> void:
 	shield.targets = Face.Target.ALLY
 	assert_eq(DieFaceView.target_word(shield), "ALLY", "its allies only")
 	shield.reaches_all = true
-	assert_eq(DieFaceView.target_word(shield), "EVERY ALLY", "every ally at once")
+	assert_eq(DieFaceView.target_word(shield), "ALLY", "every ally at once is aimed at an ally")
+	assert_true(shield.has(Face.Keyword.EVERY_ALLY) and not shield.has(Face.Keyword.EVERY_FOE), "and carries Every Ally, a keyword")
 	var vent := Face.vent(3)
 	vent.targets = Face.Target.SELF
 	assert_eq(DieFaceView.target_word(vent), "SELF", "a vent's")
 	var buff := Face.buff("overcharged", 1)
 	buff.targets = Face.Target.ALLY
 	assert_eq(DieFaceView.target_word(buff), "ALLY", "a buff's")
-	var gun := Face.attack(3)
+	var gun := Face.attack(0)
 	gun.reaches_all = true
-	assert_eq(DieFaceView.target_word(gun), "", "a weapon writes none")
+	assert_eq(DieFaceView.target_word(gun), "", "a weapon or a debuff writes none")
+	assert_true(gun.has(Face.Keyword.EVERY_FOE), "its reach over every foe a keyword, Every Foe")
+	var lure := DieFaceView.new()
+	lure.set_face(gun)
+	assert_eq(lure.rail_tags(), ["every_foe"] as Array[String], "its chip on the rail, never the star")
+	lure.free()
 	assert_eq(DieFaceView.target_word(Face.empty_slot()), "", "nor a blank")
 	var d := DieFaceView.new()
 	var own := Face.shield(4)
@@ -115,7 +122,7 @@ func test_whom_a_piece_reaches_is_written_under_its_main_glyph() -> void:
 		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
 			continue
 		var f := db.build_face(comp["face"])
-		if f.on_machines() and (f.targets != Face.Target.SELF_ALLY or f.reaches_all):
+		if f.on_machines() and f.targets != Face.Target.SELF_ALLY:
 			narrowed += 1
 			assert_false(DieFaceView.target_word(f).is_empty(), "%s writes whom it reaches" % cid)
 	assert_true(narrowed > 0, "content narrows some (%d)" % narrowed)
@@ -590,8 +597,7 @@ func test_the_keywords_list_holds_every_term_the_dice_print() -> void:
 
 
 ## The rules the hold lists last are the ones the entry prints, word for word, for every
-## component in content and its charged form; a piece reaching every ally never says it
-## reaches every foe.
+## component in content and its charged form; a piece reaching every ally never says every foe.
 func test_every_rule_the_hold_lists_is_one_the_entry_prints() -> void:
 	var db := ContentDB.load_default()
 	var checked := 0
@@ -601,7 +607,7 @@ func test_every_rule_the_hold_lists_is_one_the_entry_prints() -> void:
 			assert_true(f.describe().contains(r), "%s prints %s: %s" % [cid, r, f.describe()])
 			checked += 1
 		if not f.is_attack():
-			assert_false(f.describe().contains("reaches every foe"), "%s, spent on machines, reaches no foe: %s" % [cid, f.describe()])
+			assert_false(f.describe().contains("every foe"), "%s, spent on machines, reaches no foe: %s" % [cid, f.describe()])
 	assert_true(checked > 10, "the rules read: %d" % checked)
 
 
@@ -1957,7 +1963,7 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 			assert_true(heads.has(g), "%s: the die's %s mark heads a readout line (%s)" % [cid, g, str(heads)])
 		var aim := DieFaceView.target_word(f)
 		if not aim.is_empty():
-			var said: String = {"SELF": "Target: Self", "ALLY": "Target: Any other ally", "EVERY ALLY": "Target: Every ally"}[aim]
+			var said: String = {"SELF": "Target: Self", "ALLY": "Target: Any other ally"}[aim]
 			assert_true(texts.any(func(t: String) -> bool: return t.contains(said)), "%s: the die's %s is its target line (%s)" % [cid, aim, str(texts)])
 
 
