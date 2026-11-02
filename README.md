@@ -144,7 +144,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
   numbers, what each hardpoint's stock part is, `hidden_pins` where a model hides its mounts
-  (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status; written by lowforge, read by `mech_rig.gd`
+  (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status, `spin_step` and an act's `locks` where an act stops a spinner on a step; written by lowforge, read by `mech_rig.gd`
   and by `mech_view_3d.gd`, which wears a fitted die against that record), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
   16x16 map tokens the sheet export writes, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
@@ -478,6 +478,8 @@ RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantl
 # a model may show a count and a status: `b.count(source, parts)` lights the first n of its parts for the number the game passes
 # (`shots`, the counted shots toward the sixth; `ammo`, the magazine), a falling number flaring them all dark (the Cassowary's
 # capacitor); `b.spin_held(status, joint, speed)` turns a joint while the machine carries that status (its capacitor, Spun Up)
+# `b.spin(joint, idle, moving, step=60)` gives a spinner its pitch, and an act naming `locks=[joint]` parks it on the next step ahead
+# and holds it while the act plays, the act's turn folded into the spin as it ends (the Cottonmouth's drum, stopped on a chamber to fire)
 RIFTGATE_COUNT_DEBUG=1 godot --path .           # every count display counts up a part a second until it falls
 RIFTGATE_SPIN_DEBUG=1 godot --path .            # every status's spin held in turn, then let go
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride
