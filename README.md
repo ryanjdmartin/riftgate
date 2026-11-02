@@ -94,7 +94,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     `floor_plane.gdshader` its near part, our ground with the display's grid, both seen by the
     one camera that draws the machines
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
-  `test_` method, including the content validator and a headless drive of the skirmish screen.
+  `test_` method, including the content validator and a headless drive of the skirmish screen;
+  a `live_test_` method runs on the first frame, once the scene tree is up, for a test that
+  routes input as the engine does (a drag over a scrolled list).
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
   writes the bible's two vocabulary tables from content; `balance.gd` plays every
   chassis and the team against every pack under each policy and writes `docs/balance.md`
@@ -378,7 +380,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # and the backdrops alone, every domain on every ground, into PNGs (headless; size and horizon in art pixels):
 # perl -e 'alarm 120; exec @ARGV' godot --headless --path . -s tools/backdrop_shot.gd -- build/backdrops 540 330 86
 # Battle: select (a machine in hand: its move and its red band), route (two moves planned),
-# plan_play (those played on END TURN; RIFTGATE_SHOT_FRAME), inspect (a pack tapped: its ring
+# plan_play (those played on END TURN; RIFTGATE_SHOT_FRAME), execute (played on EXECUTE, the turn
+# going on), endask (END TURN's question while machines can still act), inspect (a pack tapped: its ring
 # lit, the others' dashed), draft (a route drawn by hand, about halfway through the move),
 # carry (a carrier's route to a stop where its rider cannot land: NO
 # ROOM), hold, north, zoom, zoomlast,

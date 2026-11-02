@@ -4166,3 +4166,49 @@ Read:
 - So the equipment ramp is read where support has work: on harder fights (the ladder's tier-two
   and tier-three formations, which walled the stock trios on 28 October), with tier-matched kits,
   and its numbers by tier are a fills proposal for Ryan's go.
+
+## 2 November, the Armadillo at tier one
+
+**Is the Armadillo too much of a wall for tier one?** (Ryan's play test of 2 November: "armadillo
+is probably too much of a wall for tier 1. It's very good at its job.") The balance runner,
+greedy, 30 seeds a cell (a direction), the tier-one packs and formations (`--packs` the seventeen
+of tier one: each spawn-table pack at its strength and each domain's tier-one formation;
+`--noparty`): the Armadillo alone beside three tier-one peers (the Storm Petrel, the Baboon, the
+Cassowary) and the Honey Badger; then a starter trio, the Honey Badger and the Skua with the
+Armadillo in the middle seat, beside the same trio with each peer there; then three what-ifs on
+the Armadillo's trio, its Lockdown's armour 3 to 2 (`--set
+chassis/armadillo/passive/effects/0/value=2`), its base armour 2 to 1, and both. About twenty
+minutes on two cores, from a frozen copy of `3929042`'s tree (this branch's base, the engine as main has it).
+
+The trios' hull lost, mean of every fight (greedy):
+
+| Trio (Honey Badger, X, Skua) | Rank and file (13 packs) | Meadow formation | Waste | Marsh | Peak |
+|---|---|---|---|---|---|
+| Armadillo | 0 to 2%, the Zombie Knights 28% | 6% | 6% | 82% | 8% |
+| Storm Petrel | 0 to 2%, the Zombie Knights 25% | 4% | 4% | 83% | 4% |
+| Baboon | 0 to 2%, the Zombie Knights 19% | 10% | 7% | 78% | 8% |
+| Cassowary | 0 to 1%, the Zombie Knights 33% | 13% | 8% | 94% | 12% |
+| Armadillo, Lockdown +2 | as the Armadillo's | 6% | 6% | 82% | 8% |
+| Armadillo, armour 1 | as the Armadillo's | 9% | 6% | 81% | 9% |
+| Armadillo, both | as the Armadillo's | 9% | 6% | 81% | 9% |
+
+Alone, the Armadillo kills slowly and loses hull on most tier-one packs (98% on the goblins and the
+revenants, 88% on the gels, 100% on every formation), the slowest of the five rows (5.6 to 27.9
+rounds won where the Badger takes 2.3 to 10). In the trio, the Canopy is 6% of the spends (26%
+alone): the greedy bot rarely seals in a team, so the runner barely reads Lockdown at all (its
++2 what-if moves no trio cell).
+
+Read:
+
+- **Every starter trio walls tier one's rank and file**: none loses more than 2% hull on any of the
+  thirteen packs but the Zombie Knights, whoever sits in the middle seat; the formations take 4% to
+  13% but the Marsh's (about 80%, its Zombie Knights). On the bot's play the Armadillo's trio sits
+  in the band, and the Storm Petrel's takes less.
+- **The seal is where the bot cannot look**: sealed, the Armadillo's armour is 5 against tier-one
+  blows of 2 or 3 (the rank and file's), so once its shield is down a sealed Armadillo takes
+  nothing from them; the greedy bot spends the Canopy on itself too rarely in a team to show it.
+  Ryan's read is of play the runner does not make, so the runner neither confirms it nor clears
+  it; the arithmetic agrees with him for a sealed Armadillo against the rank and file.
+- **A smaller seal does not reach the root**: at Lockdown +2 the sealed armour is 4, still over
+  every tier-one rank-and-file blow; flat armour at or over a tier's blows is immunity at any
+  number. The question is the bible's section 12 (the Armadillo at tier one).

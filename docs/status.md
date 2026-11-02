@@ -25,12 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 875 tests, 208,362 checks, green on main (31 October: `ccr-c04908be-3r43xf`'s overheat
-  what-ifs, shield persona and support ladders merged onto main's head, on Godot 4.8-beta2; 870 and
-  208,336 before it, with `claude/affectionate-ramanujan-5d24t6`'s Petrels, the foes' move-order fix
-  of `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
-  slate of `claude/brave-cori-fr18de`, and the dice's gestures of `claude/jolly-lovelace-scn82y`),
-  about four minutes
+- Tests: 898 tests, 208,728 checks, green on `ccr-bb178c9b-l6airv` (2 November: Ryan's playtest
+  list of 2 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
+  with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -45,6 +42,12 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`ccr-bb178c9b-l6airv` (2 November) carries Ryan's playtest list of 2 November (the How things
+stand bullet), from main's `3929042`, which has not moved since; its battle map's share (EXECUTE
+and the END TURN question, the catch drawn as an attack order, the quick campaign's lists
+scrolling) was built in a worktree on a branch of its own and merged in (`aa39bc2`), that branch
+deleted. Main takes it on Ryan's word; its bible is v0.411 (the Pages paragraph).
 
 `claude/affectionate-ramanujan-5d24t6` (30 and 31 October) carried the two Petrels' engines on
 Ryan's go ("go for the ready to build ones", after his question of the 30th on which chassis come
@@ -176,6 +179,33 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- Ryan's playtest list of 2 November built (on `ccr-bb178c9b-l6airv`; `docs/rules.md`, and the
+  bible's rows on the readouts, the chip block, the replay, the twin's slot, the reinforcements,
+  the seal and the planned moves). The gauges carry a tick a point, the fives long, the fives
+  alone where the ones would crowd (`Hud.TICK_PITCH`), on the field, the readouts, the map, the
+  orders board and the hangar. The die's double-tap window is 0.2 s. Every mark a die entry
+  shows heads its line in the readout (the self and ally chips, the star before a rule, a
+  keyword's chip); a foe's intent chip carries its riders, and its readout opens on the chip (the
+  Cinder Tortoise's unknown chip was its Withdraw); the units' readouts name their chips by name
+  and count, their terms tappable. A readout takes every tap on it, and the harness's and the
+  quick campaign's lists scroll by a drag from anywhere on them. The chips wrap into rows, three
+  under the machines, the field's rows moved to make the room; the acting foe is lit from just
+  before its blow (`ACT_LEAD`, `RIFTGATE_ACT_DEBUG=1`); a spend's blows land a strike at a time
+  with its animation (`STRIKE_GAP` 0.24 s), every gauge, number and kill on its own strike. The
+  reinforcements' plaques are fifty wide with their counts at 28, a tap pulling out the waiting
+  foes' list. A lone Gel half keeps its half of the slot. The floor's sun casts a fitted
+  orthogonal shadow (the Middle layout's smear was its far cascade). The Armadillo's form shows on
+  its die (a seal or unseal mark on the entries that shift it, the readout saying which), its
+  shell and a burst as it shifts, its vents ajar while open (`RIFTGATE_SEAL_DEBUG=1`; the rig
+  sidecar's `ajar` edited by hand, and written by `bl_low.py` from `models_low.py` at the next
+  rebuild, which needs `bpy`). EXECUTE plays the planned moves and the turn goes on, every move
+  undoable; END TURN asks while a machine can still act; a catch draws as the caught machine's
+  attack order onto its hunter. Ryan's "armadillo is probably too much of a wall for tier 1" read
+  at 30 seeds (`docs/measurements.md`, a direction): the greedy bot rarely seals in a team, so the
+  runner cannot see it; every starter trio walls tier one's rank and file whoever sits in the
+  middle; sealed armour at or over a tier's blows is immunity at any number. It is section 12's
+  question, Claude's lean a floor of 1 past armour on both sides. What waits on Ryan: his phone
+  read of the list (the to-do) and that answer.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
   `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield
@@ -701,7 +731,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   version 422, published 31 October as `claude/affectionate-ramanujan-5d24t6` landed on main: the
   Petrels' engines, their rows and section 12's question on the Storm Petrel's burn on basics;
   this file carries two edits of 31 October since, the Onryō's Grudge a working term and Ryan's
-  word on the Storm Petrel's question, which go up with the Badger's rows),
+  word on the Storm Petrel's question, and on `ccr-bb178c9b-l6airv` its v0.411 of 2 November, the
+  playtest round's rows and section 12's Armadillo question, none published yet: they go up with
+  the next publish, the Badger's rows or this branch's landing, merged as below),
   three-way merged onto the live v0.409 at 421, which another session published with the slate's
   last five bosses (the King Gel, the Pilgrim, the Phantom Train, the Vampire Lord and the
   Obsidian Tyrant) and Numbed's third stack on a boss as on a massive foe, ahead of their code;
