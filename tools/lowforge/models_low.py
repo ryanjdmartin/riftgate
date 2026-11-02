@@ -3970,11 +3970,10 @@ def musk_ox(b):
     Recuperator (fixed, no pin), an old built-up howitzer, hooped, stepped and swelled at the
     muzzle under a slotted brake, its recuperator cylinders over the barrel, on a carriage that
     traverses a touch, elevates and recoils along its line; ahead of it a low cab with two visor
-    slits under a bone-white boss whose horns sweep down and out, the namesake's (as the
-    Clydesdale's feathering is its), shell lockers beside it and a winch on the nose; aft, the
-    Unrestricted Expenditure (fixed, no pin), an MLRS launcher of two pods on a turntable,
-    hinged at the tail to elevate, the tubes on their fronts and the back-blast banked on their
-    backs; either side of the cannon a dark rack of six cells, each lit in its upper third in the
+    slits, shell lockers beside it and a winch on the nose; aft, the Unrestricted Expenditure
+    (fixed, no pin), an MLRS launcher of two big pods on a turntable, hinged at the tail to
+    elevate, the tubes on their fronts and the back-blast banked on their backs, the forge's
+    flue grilles either side of it; either side of the cannon a dark rack of six cells, each lit in its upper third in the
     Storm Petrel's electric white (the one lit colour on the machine that is no flame), piped
     across to a sponson on each flank between the wheels, a capacitor on its roof ringed with
     coils; behind each rack a mouth of the Desublimation Forge, banked fire, into which an act
@@ -3982,8 +3981,12 @@ def musk_ox(b):
     die's order: hp_1 the left sponson's casemate gun (the stock's Thermal Ray as its class),
     hp_2 the right's (the Enfilade Beam), each on a mantlet that traverses; hp_3 and hp_4 bare,
     on rings on the sponsons' roofs behind them, superfiring (the Coolant Jacket and the Canopy
-    show nowhere). The Quick Reload shows nowhere, a vent. The look, the rig, the acts and the
-    gait are Ryan's to judge running."""
+    show nowhere). The Quick Reload shows nowhere, a vent. Second round, 2 November, on Ryan's
+    notes of the first ("missile racks can be bigger. There's things sitting on top of vents at
+    the back. Horns aren't necessary."): the pods bigger, the flue grilles cleared (the forge's
+    stack stood in one and the antenna's base on the other), the horns gone and their boss with
+    them; the cells as they were, his question whether they track the ammo open. The look, the
+    rig, the acts and the gait are Ryan's to judge running."""
     R, W = 17.0, 14.0          # the wheels: big (Ryan: "Big. Big wheels"), their tops level with the deck
     HX, AY = 44.0, 30.0        # the hubs across and the axles fore and aft
     DECK = 34.0                # the hull's top
@@ -4022,9 +4025,9 @@ def musk_ox(b):
         _rings(b, on_glacis(x0, x1, 30.9, 34.1, 1.1), "amber.lit", "lamp")
     _rings(b, on_glacis(-8.0, 8.0, 30.4, 37.6, 0.5), "livery.livery2", "glacis_panel")
     # The cab: across the front of the deck under the cannon's barrel, its face raked, two
-    # visor slits either side of the barrel's line; the bone boss over them parted under the
-    # barrel, as the musk ox's is, its horns sweeping down past the cab's corners and hooking
-    # out and up at their tips (the namesake's, in bone as the Clydesdale's feathering is).
+    # visor slits either side of the barrel's line, the radio's whip antenna up off its rear
+    # corner. The bone horns and the boss they rose from are gone (Ryan, 2 November: "Horns
+    # aren't necessary"; the boss without them was a mount for nothing).
     CABZ = 42.5
     b.loft([(14.0, rect(0.0, 36.0, DECK - 0.5, CABZ)), (25.0, rect(0.0, 36.0, DECK - 0.5, CABZ)), (30.0, rect(0.0, 34.0, DECK - 0.5, CABZ - 5.0))], "steel.panel", "cab")
     face_z = lambda y: CABZ - (y - 25.0)
@@ -4036,12 +4039,10 @@ def musk_ox(b):
         x0, x1 = sorted((s * 21.0, s * 28.0))
         b.box(x0, x1, 12.5, 23.5, DECK, DECK + 4.0, "steel.panel", "locker")
         b.box(x0 + 0.6, x1 - 0.6, 13.1, 22.9, DECK + 4.0, DECK + 4.5, "livery.livery2", "locker_lid")
-    for s in (-1.0, 1.0):
-        b.box(min(s * 5.0, s * 19.0), max(s * 5.0, s * 19.0), 21.5, 25.5, CABZ - 0.4, CABZ + 0.7, "bone.bone", "boss")
-        horn = [(s * 17.0, 23.5, CABZ + 0.1), (s * 21.5, 26.5, CABZ - 3.5), (s * 25.5, 29.6, CABZ - 5.9), (s * 28.2, 32.8, CABZ - 2.9)]
-        ring = [_sq(4.4, 3.0), _sq(3.4, 2.6), _sq(2.4, 2.0), _sq(0.6, 0.6)]
-        for k in range(3):
-            _beam(b, horn[k], horn[k + 1], ring[k], ring[k + 1], "bone.bone", "horn")
+    # The antenna on the cab's left rear corner, where it stood on the left flue grille at the
+    # tail until the second round (Ryan, 2 November: things sat on top of the vents at the back).
+    b.box(-17.5, -14.5, 14.6, 17.6, CABZ, CABZ + 1.6, "steel.dark", "antenna_base")
+    b.prism("z", -16.0, 16.1, CABZ + 11.6, 0.5, 20.0, "steel.dark", 4, "antenna")
     # The flanks: a sponson on each between the wheels, a riveted casemate standing above the
     # deck, its outer face bevelled top and bottom with a livery panel on it. The casemate gun
     # on a mantlet in its front face, traversing (hp_1 left, the Thermal Ray; hp_2 right, the
@@ -4136,45 +4137,50 @@ def musk_ox(b):
                     b.box(min(s * 4.6, s * 5.0), max(s * 4.6, s * 5.0), CY + 45.0, CY + 49.0, CZ - 2.6, CZ + 2.6, "steel.dark", "brake_port")
                 b.loft([(CY + 50.0, oc(2.7)), (CY + 50.15, oc(2.7))], "bore.dark", "bore")
     # The Unrestricted Expenditure: a turntable at the tail, a base on it, and two pods hinged
-    # at their tails between the base's brackets, the tube face on each pod's front, the
+    # low at their tails between the base's brackets, the tube face on each pod's front, the
     # back-blast on its back, an arming lamp on its nose, livery down its outer side and on
-    # its top, a strap over both.
+    # its top, a strap over both. The second round's pods are bigger (Ryan, 2 November:
+    # "missile racks can be bigger"): a third wider, a third taller and two longer than the
+    # first cut's, the whole tail of the deck, the tubes one big tile to a face, so bigger
+    # rockets and not more of them; the tallest thing on the machine at rest.
     TY = -32.0
-    PZ0, PZ1 = DECK + 4.6, DECK + 15.0
-    b.prism("z", 0.0, TY, DECK + 0.9, 11.0, 1.8, "steel.dark", 8, "launcher_ring", phase=math.pi / 8)
+    PZ0, PZ1 = DECK + 4.6, DECK + 18.6         # the pods' foot and top
+    PY0, PY1 = -44.5, -20.5                    # their tails, flush with the rear plate, and their noses
+    PX0, PX1 = 1.0, 16.5                       # each pod across, from the centreline out
+    FACE = PZ1 - PZ0                           # the tube face: one tile, as tall as the pod
+    b.prism("z", 0.0, TY, DECK + 0.9, 12.0, 1.8, "steel.dark", 8, "launcher_ring", phase=math.pi / 8)
     with b.joint("turret_racks", (0.0, TY, DECK + 1.8), limits=(-60.0, 60.0)):
-        b.box(-15.0, 15.0, TY - 10.0, TY + 8.0, DECK + 1.8, DECK + 4.4, "steel.panel", "launcher_base")
+        b.box(-17.5, 17.5, PY0 + 0.5, PY1 - 3.5, DECK + 1.8, DECK + 4.4, "steel.panel", "launcher_base")
         for s in (-1.0, 1.0):
-            x0, x1 = sorted((s * 13.4, s * 15.0))
-            b.box(x0, x1, TY - 14.0, TY - 7.0, DECK + 4.4, DECK + 9.0, "steel.dark", "launcher_hinge")
-            b.prism("x", s * 15.3, TY - 10.5, DECK + 7.0, 1.6, 0.8, "steel.plate", 6, "hinge_pin")
-        with b.joint("elev_racks", (0.0, TY - 10.5, DECK + 7.0), limits=(0.0, 50.0)):
+            x0, x1 = sorted((s * (PX1 + 0.3), s * (PX1 + 1.8)))
+            b.box(x0, x1, PY0 + 0.5, PY0 + 6.5, DECK + 4.4, PZ0 + 2.4, "steel.dark", "launcher_hinge")
+            b.prism("x", s * (PX1 + 2.1), PY0 + 0.9, PZ0 + 0.4, 1.6, 0.8, "steel.plate", 6, "hinge_pin")
+        # Hinged at the pods' heel, so they rise clear of the base and never dip into it.
+        with b.joint("elev_racks", (0.0, PY0 + 0.4, PZ0 + 0.4), limits=(0.0, 50.0)):
             for s in (-1.0, 1.0):
                 side = "l" if s < 0 else "r"
-                x0, x1 = sorted((s * 1.2, s * 13.2))
-                b.box(x0, x1, TY - 12.0, TY + 10.0, PZ0, PZ1, "steel.panel", "pod")
-                cxp = s * 7.2
-                _missile_face(b, (cxp - 5.2, TY + 10.05, PZ0), Vector((0.0, 0.0, 1.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 1.0, 0.0)), PZ1 - PZ0, "pod_face")
-                b.box(min(s * 13.2, s * 13.5), max(s * 13.2, s * 13.5), TY - 9.0, TY + 7.0, PZ0 + 1.6, PZ1 - 1.6, "livery.livery2", "pod_panel")
-                b.box(cxp - 4.6, cxp + 4.6, TY - 9.0, TY + 5.0, PZ1, PZ1 + 0.3, "livery.livery2", "pod_panel")
-                _musk_ox_fitted(b, (cxp + 5.0, TY - 12.1, PZ0 + 1.0), (0.0, 0.0, 1.0), (-1.0, 0.0, 0.0), (10.0, PZ1 - PZ0 - 2.0), "amber.ember", "blast_" + side)
-                b.box(min(s * 10.4, s * 12.6), max(s * 10.4, s * 12.6), TY + 7.6, TY + 9.6, PZ1, PZ1 + 0.9, "amber.light", "arm_lamp")
-            b.box(-13.4, 13.4, TY - 3.0, TY + 0.0, PZ1, PZ1 + 0.8, "steel.dark", "pod_strap")
-    # The tail: the forge's flues in the deck either side of the launcher and its stack on the
-    # right, a whip antenna on the left; on the rear plate two trail spades folded up on a hinge
-    # bar, a hitch, the tail lights.
+                x0, x1 = sorted((s * PX0, s * PX1))
+                b.box(x0, x1, PY0, PY1, PZ0, PZ1, "steel.panel", "pod")
+                cxp = s * (PX0 + PX1) / 2.0
+                _missile_face(b, (cxp - FACE / 2.0, PY1 + 0.05, PZ0), Vector((0.0, 0.0, 1.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 1.0, 0.0)), FACE, "pod_face")
+                b.box(min(s * PX1, s * (PX1 + 0.3)), max(s * PX1, s * (PX1 + 0.3)), PY0 + 3.0, PY1 - 3.0, PZ0 + 2.0, PZ1 - 2.0, "livery.livery2", "pod_panel")
+                b.box(cxp - 6.2, cxp + 6.2, PY0 + 3.0, PY1 - 5.0, PZ1, PZ1 + 0.3, "livery.livery2", "pod_panel")
+                _musk_ox_fitted(b, (cxp + 6.5, PY0 - 0.1, PZ0 + 1.2), (0.0, 0.0, 1.0), (-1.0, 0.0, 0.0), (13.0, FACE - 2.4), "amber.ember", "blast_" + side)
+                b.box(min(s * (PX1 - 3.0), s * (PX1 - 0.4)), max(s * (PX1 - 3.0), s * (PX1 - 0.4)), PY1 - 2.4, PY1 - 0.2, PZ1, PZ1 + 1.0, "amber.light", "arm_lamp")
+            b.box(-(PX1 + 0.2), PX1 + 0.2, TY - 3.0, TY + 0.5, PZ1, PZ1 + 0.8, "steel.dark", "pod_strap")
+    # The tail: the forge's flues in the deck either side of the launcher, clear of everything
+    # (Ryan, 2 November: "There's things sitting on top of vents at the back": the forge's stack
+    # stood in the right one and the antenna's base on the left one; the stack is gone and the
+    # antenna is on the cab); on the rear plate two trail spades folded up on a hinge bar, a
+    # hitch, the tail lights.
     for s in (-1.0, 1.0):
-        x0, x1 = sorted((s * 18.0, s * 30.0))
-        b.box(x0, x1, -42.0, -26.0, DECK, DECK + 0.6, "steel.vent", "flue_grille")
+        x0, x1 = sorted((s * 19.8, s * 27.6))
+        b.box(x0, x1, -42.0, -22.0, DECK, DECK + 0.6, "steel.vent", "flue_grille")
         b.box(min(s * 24.0, s * 28.5), max(s * 24.0, s * 28.5), -44.8, -44.0, 27.0, 30.5, "amber.light", "tail_light")
         x0, x1 = sorted((s * 8.0, s * 20.0))
         b.box(x0, x1, -45.6, -44.0, 15.0, 29.0, "steel.plate", "spade")
     b.prism("x", 0.0, -45.0, 29.6, 1.2, 42.0, "steel.dark", 6, "spade_hinge")
     b.box(-2.0, 2.0, -48.5, -44.0, 15.0, 18.0, "steel.dark", "hitch")
-    b.prism("z", 26.0, -38.0, DECK + 6.0, 2.2, 12.0, "steel.dark", 6, "stack")
-    b.prism("z", 26.0, -38.0, DECK + 12.4, 2.8, 0.8, "steel.plate", 6, "stack_cap")
-    b.box(-30.0, -26.0, -42.0, -38.0, DECK, DECK + 2.0, "steel.dark", "antenna_base")
-    b.prism("z", -28.0, -40.0, DECK + 12.0, 0.5, 20.0, "steel.dark", 4, "antenna")
     chassis.__exit__(None, None, None)
 
     # Idle acts (four, loud, never in step; a heavy battery's servos, b.move). Degrees and
@@ -4235,8 +4241,9 @@ def musk_ox(b):
              (["blast_l"], [(3.0, 0.0), (3.08, 16.0), (3.4, 3.0), (3.65, 0.5), (3.73, 16.0), (4.05, 3.0), (4.6, 0.0)]),
              (["blast_r"], [(3.3, 0.0), (3.38, 16.0), (3.7, 3.0), (3.95, 0.5), (4.03, 16.0), (4.35, 3.0), (4.9, 0.0)])])
     # The charge: the cells draw down as their light runs out along the feeds into the
-    # sponsons, whose coils burn hot; the casemate guns swing out, the herd's ring of horns
-    # facing out, the roof mounts after them, and the hull settles under the load; held, home.
+    # sponsons, whose coils burn hot; the casemate guns swing out, facing out as a musk ox
+    # herd's ring does, the roof mounts after them, and the hull settles under the load; held,
+    # home.
     b.act("charge", 7.8, {
         "turret_l": [(1.9, 0.0), (3.1, 40.0), (4.9, 40.0), (6.1, 0.0)],
         "turret_r": [(2.1, 0.0), (3.3, -40.0), (5.1, -40.0), (6.3, 0.0)],
