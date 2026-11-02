@@ -47,7 +47,7 @@ heat grid's read as it landed), and main took it as a fast-forward on 30 October
 first seven ("build what can be built, and specify exactly what you need to flesh the rest out,
 including any holes") and the last five ("Yes to all waiting bosses"), for main to take on his
 word; its bible is v0.424 (the page's version 436) and its hangar the page's
-version 187.
+version 188.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -166,7 +166,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the escorts read on the 2nd (`--boss-tiers`, every boss at tiers two and three with its escort
   and alone): most cost a round or two and some hull, three make walls (the Vampire Lord's and the
   Fallen Weapon's at tier three, the Matador's for a trio), since menace does not sort them and a
-  boss's own mechanic amplifies them, and the Ruby Colossus is a wall alone at its first numbers.
+  boss's own mechanic amplifies them, and the Ruby Colossus was a wall alone at its first numbers
+  (its tentacles lightened and slowed on a what-if, and the Lich out of the Lord's escort: landed).
   Found on the way: the balance runner had never set the foe factory (fixed); the test runner
   passes a test that crashes after its first check (the to-do); a second swallow moved the
   first's release (fixed on the 2nd). Waiting on Ryan: the blanket armour at tier one and a
@@ -580,11 +581,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 187 (2 November, from
-  `claude/brave-cori-fr18de`, with the review's calls of the 2nd: `content/foes.json` and
-  `content/factions.json`, each live copy checked identical to 181's first, `edits` empty, the
-  page itself another session's republish of 13:07 kept as it stood, its motion panel's forms
-  and pin records this branch's `tools/hangar.html` does not carry); 181 (31 October, from
+  acts on a reloaded page). At the page's version 188 (2 November, from
+  `claude/brave-cori-fr18de`, the escorts' read: `content/foes.json` and `content/factions.json`
+  again, over 187 of the same day, which carried the review's calls of the 2nd, each live copy
+  checked identical to 181's first, `edits` empty, the page itself another session's republish
+  of 13:07 kept as it stood, its motion panel's forms and pin records this branch's
+  `tools/hangar.html` does not carry); 181 (31 October, from
   `claude/brave-cori-fr18de`, with the slate's calls of the 31st: `content/foes.json`,
   `content/factions.json` and `content/vocabulary.json`, each live copy checked identical to
   174's first, every other file kept as another session's republish of 04:10 left it, the

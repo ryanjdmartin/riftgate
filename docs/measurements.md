@@ -3879,3 +3879,14 @@ Fallen Weapon alone wins 95 and 100%: its two tentacles are two more attackers a
 of 7 to 8 and two strikes of 5 to 6 at the tiers) that grow back in two rounds, its Whirlsand
 takes a third of a trio's dice for two rounds, which the greedy cannot answer (it values no
 swallow), and Ultima lands 13 to 15 on every machine; its numbers are the evening's placeholders.
+
+What-ifs (the same day, the same rows and seeds, a direction). The Colossus with its tentacles
+at 4 and 3 (from 6 and 4) and a regrowth of three rounds (from two): alone at tier two 95 and
+100% won at 32 and 26% hull (from 65 and 80% at 64 and 57%), at tier three 60 and 95% at 69 and
+45% (from 15 and 20%); with its escort 45 and 85% at tier two (from 30 and 15%), and at tier three
+still none, as the Fallen Weapon's cells read under its Great Needlers. Landed. The Vampire
+Lord's tier-three escort at the Lord's tier-one numbers (a `--pack` cell, the boss unscaled), with
+the Lich and with a second Wight in its place: 20 and 30% won with the Lich, 40 and 60% without,
+hull 92 and 88% against 87 and 70%; the Lich readying the Lord to rise again is half the wall,
+the risers' guard and last act the rest. The Lich out, landed; a lighter form (a Death Knight and
+three Wights) is Ryan's to mark.

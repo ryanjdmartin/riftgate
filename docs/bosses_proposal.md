@@ -82,7 +82,7 @@ condition that reads a fallen part, and a move used once a fight.
 | The Meadow | Rotbloom | Tendrils, two strikes; Bad Breath at every machine, carrying Burn, Scorch, Disable and Corrupt; below half, Seedfall, two mandragoras called up | The third move and its name |
 | The Meadow | Floraison | Thorn Combo, three strikes; Swallow, a machine out of the fight for two rounds, until Floraison falls, or until it has lost a quarter of its HP since (Ryan, 31 October); below half, Full Bloom, five strikes | Two rounds; never the last machine able to act; no damage while held; the release at a quarter, its chip counting the damage left, the swallower losing nothing else |
 | The Meadow | The King Gel | Body Slam; Merge, every Gel and half on the field taken in, regrowing what they had left and its next move a point harder for each; below half, Belly Flop at every machine | Its court is its own escort (Gels at every tier), so the merge has fuel; a Gel taken in is no kill of the team's |
-| The Waste | The Ruby Colossus (2 November, in the Djinn's place; Ryan: "Ruby weapon is cool". The Djinn, a trope archetype, went to the rank and file: a tier-two back-rank caster, the Waste's purge in the ranks) | Big Claw; Whirlsand, a swallow; below half, Ultima, every machine three rounds on. Two tentacles as parts with no guard, the Burrowing (breach) and the Thrashing (two strikes), back two rounds after they fall | The kit and its name; parts that guard nothing, so the arms or the body is the question; Ultima's three rounds |
+| The Waste | The Ruby Colossus (2 November, in the Djinn's place; Ryan: "Ruby weapon is cool". The Djinn, a trope archetype, went to the rank and file: a tier-two back-rank caster, the Waste's purge in the ranks) | Big Claw; Whirlsand, a swallow; below half, Ultima, every machine three rounds on. Two tentacles as parts with no guard, the Burrowing (breach, 4) and the Thrashing (two strikes of 3), back three rounds after they fall (6, 4 and two rounds walled the stock teams alone: the read of 2 November) | The kit and its name; parts that guard nothing, so the arms or the body is the question; Ultima's three rounds |
 | The Waste | The Fallen Weapon | The core: Haft; Drive, a rally; below half, The Fall, every machine two rounds on. Two eyes as parts, the Piercing Eye (breach) and the Prising Eye (disable); the core Guarded while both stand, an eye back three rounds after it falls | One eye down opens the core (guard all); the eyes' blows |
 | The Waste | The Pilgrim | Lantern; Chef's Knife, twice its blow on a countdown of two, through the shield; below half, Karma, a point heavier for every foe the team has killed this fight, through the shield | Human-sized; the knife's two rounds |
 | The Marsh | The Matador | Estocada; Red Capote, armour +3, then Andalucia, four strikes at one machine | A Suppress or a Disrupt on the cape breaks the pair |
@@ -117,7 +117,7 @@ mechanic, and stands alone at tier one:
 | The Pilgrim | Needlers; Barbed and Great Needlers | Every kill feeds Karma, so the kill order turns over |
 | The Matador | Wights; a Death Knight and a Spectre at tier three | A wall of claws while the cape is up |
 | The Phantom Train | A Revenant and a Spectre; Wights, a Wraith and a Spectre | The dead it carries, raising more |
-| The Vampire Lord | A Death Knight and a Wight; a Dread Knight, a Lich and their kind | The Marsh's other risers, so the burst it asks for is spread thin |
+| The Vampire Lord | A Death Knight and a Wight; a Dread Knight, a Death Knight and Wights (the Lich out, 2 November: readying the Lord to rise again was half a wall) | The Marsh's other risers, so the burst it asks for is spread thin |
 | The Behemoth | A Bomb and a Grenade; Grenades and Balloons | A second blast to shield for |
 | The Cinder Tortoise | Fire Lizards; Magma Lizards and a Wyvern | Scorch under the quake, so the shelled round is a heat question |
 | The Obsidian Tyrant | A Wyvern and a Fire Lizard; a Red Dragon and its kind | Fire while the count runs |
@@ -172,13 +172,15 @@ content pass. Open:
    menace but the ones the boss's own mechanic amplifies: the Vampire Lord's (the Lich readies it
    to rise again and the Wight mends it, on a boss that drains), the Fallen Weapon's (Drive rallies
    two Great Needlers' countdowns), the Matador's for a trio (a Death Knight's guard and a Spectre's
-   cleanse under the cape). Claude's moves, his to mark: the Lich out of the Lord's (Wights ×2 in
-   its place), Barbed Needlers for the Fallen Weapon's Great Needlers, Wights ×3 and the Spectre
-   for the Matador's; the Phantom Train's to Ghosts (the raising starts at once, which is its
+   cleanse under the cape). Landed on the what-ifs of the same day: the Lich out of the Lord's (a
+   second Wight in its place; the losses halved), and the Colossus's tentacles at 4 and 3 with a
+   regrowth of three rounds (alone, from 65 and 80% won to 95 and 100% at tier two). Claude's
+   moves still his to mark: a Death Knight and three Wights for the Lord's, Barbed Needlers for
+   the Fallen Weapon's Great Needlers, Wights ×3 and the Spectre for the Matador's; the Phantom Train's to Ghosts (the raising starts at once, which is its
    plan) and the Obsidian Tyrant's to stokers (a Drake and the lizards, so its Crunch burns while
    the rider is killed), since those two are the Marsh's and the Peak's rank and file rather than
-   their boss's plan. The Ruby Colossus is a wall alone at its first numbers: the tentacles' blows
-   and their regrowth are the levers (the what-if of the 2nd).
+   their boss's plan. The Colossus's tier-three escort (Gorgons, the Antlion Queen, a Pit Antlion)
+   walls a stock team as the Fallen Weapon's does; a tier-matched kit reads it, the to-do's cells.
 
 ## Art the forge owes
 

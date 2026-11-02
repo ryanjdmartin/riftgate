@@ -163,7 +163,7 @@
         { "id": "vampire_lords_thralls_2", "size": "escort", "boss": "vampire_lord", "tiers": [2],
           "members": [ { "foe": "death_knight", "strength": 1 }, { "foe": "wight", "strength": 1 } ] },
         { "id": "vampire_lords_thralls_3", "size": "escort", "boss": "vampire_lord", "tiers": [3],
-          "members": [ { "foe": "dread_knight", "strength": 1 }, { "foe": "death_knight", "strength": 1 }, { "foe": "lich", "strength": 1 }, { "foe": "wight", "strength": 1 } ] }
+          "members": [ { "foe": "dread_knight", "strength": 1 }, { "foe": "death_knight", "strength": 1 }, { "foe": "wight", "strength": 2 } ] }
       ],
       "boss": ["matador", "phantom_train", "vampire_lord"],
       "bench": ["white_mage", "augur"],
