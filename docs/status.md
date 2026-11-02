@@ -483,9 +483,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
-- Models: every machine's by lowforge but the Whip Scorpion's (building in a worktree of its own
-  on 2 November; it draws the Badger's until then); the Musk Ox's and the Cassowary's are first
-  cuts of 31 October and the Cottonmouth's and the Swallowtail's of 2 November, to judge running
+- Models: every machine's by lowforge; the five Wainwright & Sutler machines' are first cuts, the
+  Musk Ox's and the Cassowary's of 31 October and the Cottonmouth's, the Swallowtail's and the
+  Whip Scorpion's of 2 November, to judge running
   (the Cassowary's drum clicking a chamber each time its die rolls, `b.index`; the Cottonmouth's
   mounts hidden in its drum, `b.pin(..., hidden=True)`; the to-do's lines); the Lammergeier's, the
   Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
@@ -608,8 +608,8 @@ The tasks are the to-do's; this is the index of what waits.
 - The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
   silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
   Purge on a capstone's blow (its chassis session).
-- The Whip Scorpion's model (six or eight legs), building on 2 November; then Ryan's read of all
-  five Wainwright & Sutler models running.
+- Ryan's read of the five Wainwright & Sutler models running (the to-do's lines carry what each
+  asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 
 ## Next, in order
@@ -707,26 +707,20 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.410 (the page's
-  version 422, published 31 October as `claude/affectionate-ramanujan-5d24t6` landed on main: the
-  Petrels' engines, their rows and section 12's question on the Storm Petrel's burn on basics;
-  this file carries two edits of 31 October since, the Onryō's Grudge a working term and Ryan's
-  word on the Storm Petrel's question, which go up with the Badger's rows),
-  three-way merged onto the live v0.409 at 421, which another session published with the slate's
-  last five bosses (the King Gel, the Pilgrim, the Phantom Train, the Vampire Lord and the
-  Obsidian Tyrant) and Numbed's third stack on a boss as on a massive foe, ahead of their code;
-  under it main's v0.408 at 420, the die's tap waiting out the double-tap window, from
-  `claude/jolly-lovelace-scn82y`; each publish before it merged the same way, as this file's
-  history in git shows. So this file carries rows other sessions published ahead of their code
-  (the slate's last five bosses and Numbed by boss, the halo on trial, the tracks in pairs, and
-  the notes on Hold The Line and Night Shift), each landing with its branch. The version numbers
-  on the publishing branch's file and the live agree after every publish. Before republishing, read the
-  live page; if another session moved it, publish a three-way merge onto it (`git merge-file` with
-  the last-published file as the base, the wrapper's first line and its trailing `</body></html>`
+  `docs/design-bible.html` after every change. This file is v0.422 (2 November, from
+  `claude/affectionate-ramanujan-5d24t6`: the Honey Badger's rework and its plate at Ryan's second
+  fallback, the Onryō's Grudge a working term, the Storm Petrel's question struck, the five
+  Wainwright & Sutler machines' first cuts and the hidden mount), three-way merged onto the live
+  v0.421, which other sessions had published ahead of this branch (the slate's calls of 31 October,
+  the weapon-fire work and the tracks' notes among them), with this branch's last publish, v0.410
+  at the page's version 422, as the base. So this file carries rows other sessions published
+  ahead of their code, each landing with its branch. The version numbers on the publishing
+  branch's file and the live agree after every publish. Before republishing, read the live page;
+  if another session moved it, publish a three-way merge onto it (`git merge-file` with the
+  last-published file as the base, the wrapper's first line and its trailing `</body></html>`
   stripped from the saved live source). The tables script, which writes the buff, debuff and
-  keyword tables from the content, reverts the last five bosses' rows and Numbed's on main's head
-  (checked 31 October), since their content is not on it: splice those tables by hand until that
-  branch lands, then it runs freely.
+  keyword tables from the content, reverts rows published ahead of their code on this head:
+  splice those tables by hand until those branches land.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
