@@ -37,6 +37,19 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(0, s), c + Vector2(-s, s * 0.1), c + Vector2(-s, -s * 0.85),
 			])
 			ci.draw_polyline(pts, color, width)
+		"seal", "unseal":
+			# The Armadillo's shell (Ryan, 2 November: "armadillo needs indication when a die face
+			# will transform it"): a seam, and an arrow either side driving shut onto it (seal) or
+			# thrown open off it (unseal), so the two read apart by structure, never by hue.
+			ci.draw_line(c + Vector2(0.0, -s), c + Vector2(0.0, s), color, width * 1.3)
+			for side in [-1.0, 1.0]:
+				var near := Vector2(side * s * 0.2, 0.0)
+				var far := Vector2(side * s, 0.0)
+				var tip := near if id == "seal" else far
+				var tail := far if id == "seal" else near
+				var back := (tail - tip).normalized() * s * 0.45
+				ci.draw_line(c + tail, c + tip, color, width)
+				ci.draw_colored_polygon(PackedVector2Array([c + tip + back + Vector2(0.0, -s * 0.45), c + tip, c + tip + back + Vector2(0.0, s * 0.45)]), color)   # a solid head, so it holds at a chip's size
 		"barrier", "ward":
 			# The block as a buff (21 October): the shield's outline, and inside it a wall for a
 			# Barrier (a solid bar: the next blow stops there) or a ring struck through for a
@@ -499,6 +512,8 @@ static func colour_for(id: String) -> Color:
 	match id:
 		"self", "ally":
 			return Terms.colour("targets")   # whom a piece reaches
+		"seal", "unseal":
+			return Terms.colour("sealed")   # the Armadillo's shell, the Sealed status's colour
 		"exposed":
 			return Terms.colour("exposure")
 		"overcharge", "heat", "scorch", "devour", "spin", "mine":

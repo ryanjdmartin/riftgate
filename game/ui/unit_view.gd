@@ -63,6 +63,13 @@ var highlight: bool = false       # valid drop target while dragging a die
 ## the enemy's violet behind its drawing and heavy corners breathing round it, so it reads by
 ## structure and motion as well as hue.
 var acting: bool = false
+## A machine in its sealed form (the Armadillo's Lockdown; Ryan, 2 November: "a better indication
+## of what form it's in"): a heavy hexagon shell round its drawing in the shield's blue, steady,
+## and a burst as it seals or opens (form_shift), rings closing in or thrown off with the word.
+var shell: bool = false
+var _shift: float = -1.0          # seconds since its form shifted; negative when idle
+var _shift_sealing := true
+const SHIFT_SECONDS := 1.1
 var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
 var away: bool = false             # out of the fight, swallowed (30 October): drawn as a faint ghost under a dashed edge
@@ -304,10 +311,15 @@ func _process(delta: float) -> void:
 		if _spend > SPEND_SECONDS:
 			_spend = -1.0
 		queue_redraw()
+	if _shift >= 0.0:
+		_shift += delta
+		if _shift > SHIFT_SECONDS:
+			_shift = -1.0
+		queue_redraw()
 	if (_has_pending() or breathe or acting) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed and _shatter < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0:
+	elif not _pressed and _shatter < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
 		set_process(false)
 
 
@@ -360,6 +372,55 @@ func spend_chip(glyph: String) -> void:
 		_chip_rects[glyph] = [_box_rect(at).grow(3.0), boxes[2]]
 	set_process(true)
 	queue_redraw()
+
+
+## The machine's form shifts as a spend lands (the Armadillo seals or opens): a burst of rings, closing
+## in on it as it seals or thrown off as it opens, and the word, SEALED or OPEN, rising off it.
+func form_shift(sealing: bool) -> void:
+	_shift = 0.0
+	_shift_sealing = sealing
+	set_process(true)
+	queue_redraw()
+
+
+## The shell's hexagon round the drawing, `grow` past its usual size.
+func _shell_points(vis: Rect2, grow: float) -> PackedVector2Array:
+	var r := maxf(vis.size.x, vis.size.y) * 0.5 + 12.0 + grow
+	var c := vis.get_center()
+	var pts := PackedVector2Array()
+	for k in range(7):
+		var a := PI / 6.0 + TAU * float(k % 6) / 6.0
+		pts.append(c + Vector2(cos(a) * r, sin(a) * r * 0.78))   # a touch flattened, as the floor lies
+	return pts
+
+
+func _draw_shell(vis: Rect2) -> void:
+	var col := Palette.SHIELD
+	if shell:
+		var pts := _shell_points(vis, 0.0)
+		draw_colored_polygon(pts, Color(col, 0.08))
+		draw_polyline(pts, Color(Palette.BG, 0.85), 7.0)
+		draw_polyline(pts, col, 3.5)
+	if _shift < 0.0:
+		return
+	var t := clampf(_shift / SHIFT_SECONDS, 0.0, 1.0)
+	for k in range(3):
+		# Three rings a beat apart: closing onto the shell as it seals, thrown off it as it opens.
+		var u := clampf(t * 1.6 - k * 0.22, 0.0, 1.0)
+		if u <= 0.0 or u >= 1.0:
+			continue
+		var grow := (1.0 - u) * 70.0 if _shift_sealing else u * 70.0
+		var a := (u if _shift_sealing else 1.0 - u) * 0.9
+		draw_polyline(_shell_points(vis, grow), Color(Palette.BG, a * 0.7), 6.0)
+		draw_polyline(_shell_points(vis, grow), Color(col, a), 3.0)
+	var font := Hud.display_bold()
+	var word := "SEALED" if _shift_sealing else "OPEN"
+	var w := font.get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x
+	var y := vis.position.y - 8.0 - 26.0 * t
+	var plate := Rect2(vis.get_center().x - w * 0.5 - 8.0, y - 22.0, w + 16.0, 30.0)
+	var fade := 1.0 - maxf(0.0, t - 0.6) / 0.4
+	Hud.box(self, plate, 4.0, Color(Palette.BG, 0.9 * fade), Color(col, fade), 2.0)
+	draw_string(font, Vector2(plate.position.x, plate.end.y - 8.0), word, HORIZONTAL_ALIGNMENT_CENTER, plate.size.x, 22, Color(col, fade))
 
 
 ## The opaque part of the drawing, in this view's pixels, for anything drawn around the
@@ -506,6 +567,8 @@ func _draw() -> void:
 		Hud.brackets(self, r, 22.0, Palette.ENEMY, 4.0)
 	if _shatter >= 0.0:
 		_draw_shatter(vis)
+	if (shell or _shift >= 0.0) and not dead:
+		_draw_shell(vis)
 
 	# Every gauge has a dark ground of its own shape (Ryan, 23 September: the plate under the
 	# stack was a box; the bars keep the chamfer and the ground keeps them readable on

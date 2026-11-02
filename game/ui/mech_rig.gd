@@ -107,6 +107,16 @@ var _form_slide: Dictionary = {}   # joint -> world-unit slide the forms add
 var _form_body_rot := Vector3.ZERO   # degrees (pitch, yaw, roll) the forms add to the body (the seal's hunker)
 var _form_body_slide := Vector3.ZERO
 var form_debug: bool = false       # RIFTGATE_SEAL_DEBUG: every form held and let go in turn, to judge running
+## The pose a machine stands in while a form is not held (the Armadillo's vents ajar while its shell
+## is open; Ryan, 2 November: "When unsealed, the vents should be open, and then more open during
+## the vent animation"): joint -> [degrees, slide] over its built rest, fading out as the form named
+## by `ajar_unless` turns in. An act that moves the joint opens it the rest of the way: the ajar
+## share gives way as the act's own swing grows, so the act still ends where it was authored to,
+## never past it. The sidecar's "ajar": {"unless": a form, "joints": {joint: [pitch, yaw, roll(,
+## dx, dy, dz)]}}.
+var ajar: Dictionary = {}
+var ajar_unless := ""
+var _ajar_span: Dictionary = {}   # joint -> [degrees, slide]: the furthest any act swings it, axis by axis
 var _form_debug_t := 0.0
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
 var debug_move: bool = false       # RIFTGATE_MOVE_DEBUG: driven constantly
@@ -514,6 +524,57 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		for m in _lit_materials(str(part)):
 			_move_glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
 	_setup_forms(side.get("forms", {}) if side.get("forms", {}) is Dictionary else {})
+	_setup_ajar(side.get("ajar", {}) if side.get("ajar", {}) is Dictionary else {})
+	_pose()   # the rest it stands in, ajar included, before anything moves
+
+
+## The ajar pose a sidecar names (ajar, above): its joints' offsets, and how far the acts swing
+## each, which the offset gives way to.
+func _setup_ajar(aj: Dictionary) -> void:
+	ajar = {}
+	_ajar_span = {}
+	ajar_unless = str(aj.get("unless", ""))
+	var js: Dictionary = aj.get("joints", {}) if aj.get("joints", {}) is Dictionary else {}
+	for jn in js.keys():
+		if not joints.has(jn) or not (js[jn] is Array) or (js[jn] as Array).size() < 3:
+			continue
+		var v: Array = js[jn]
+		ajar[jn] = [Vector3(float(v[0]), float(v[1]), float(v[2])), Vector3(float(v[3]), float(v[4]), float(v[5])) if v.size() >= 6 else Vector3.ZERO]
+		var rot := Vector3.ZERO
+		var sl := Vector3.ZERO
+		for a in acts:
+			for row in (a.get("tracks", {}) as Dictionary).get(jn, []):
+				for i in range(3):
+					if row.size() > 1 + i and absf(float(row[1 + i])) > absf(rot[i]):
+						rot[i] = float(row[1 + i])
+					if row.size() > 4 + i and absf(float(row[4 + i])) > absf(sl[i]):
+						sl[i] = float(row[4 + i])
+		_ajar_span[jn] = [rot, sl]
+
+
+## Where joint `jn` stands at rest, the ajar pose in (ajar_open's share of it).
+func home_position(jn: String) -> Vector3:
+	var slide: Vector3 = (ajar[jn][1] as Vector3) * ajar_open() if ajar.has(jn) else Vector3.ZERO
+	return _rest_pos[jn] + offset_of(slide)
+
+
+## The ajar offset `off` on a joint whose acts swing it `span` and swing it `now`: whole at rest, nil
+## once an act has it at its furthest.
+static func ajar_share(off: Vector3, span: Vector3, now: Vector3) -> Vector3:
+	var out := off
+	for i in range(3):
+		if span[i] != 0.0:
+			out[i] *= clampf(1.0 - now[i] / span[i], 0.0, 1.0)
+	return out
+
+
+## How far the ajar pose stands in, 1 open to 0 shut: the form it waits on, turned in, shuts it.
+func ajar_open() -> float:
+	if ajar.is_empty():
+		return 0.0
+	if ajar_unless.is_empty() or not forms.has(ajar_unless):
+		return 1.0
+	return 1.0 - clampf(float(_form_t[ajar_unless]) / float(forms[ajar_unless]["duration"]), 0.0, 1.0)
 
 
 ## The forms a sidecar names, ready to hold: their tracks as curves over their turn, and
@@ -888,9 +949,15 @@ func _follow(dt: float) -> void:
 ## Rest plus the act plus the gait plus the strikes, clamped to the joint's limits, on every
 ## joint; the body's rest plus its act and gait tracks.
 func _pose() -> void:
+	var open_k := ajar_open()
 	for name in joints.keys():
 		var j: Node3D = joints[name]
 		var deg: Vector3 = _act_rot.get(name, Vector3.ZERO) + _gait_rot.get(name, Vector3.ZERO) + _form_rot.get(name, Vector3.ZERO)
+		var ajar_slide := Vector3.ZERO
+		if open_k > 0.0 and ajar.has(name):
+			var span: Array = _ajar_span.get(name, [Vector3.ZERO, Vector3.ZERO])
+			deg += ajar_share((ajar[name][0] as Vector3) * open_k, span[0], _act_rot.get(name, Vector3.ZERO))
+			ajar_slide = ajar_share((ajar[name][1] as Vector3) * open_k, span[1], _act_slide.get(name, Vector3.ZERO))
 		var kick := Vector3.ZERO
 		for st in _strikes:
 			if st["joint"] == name:
@@ -901,7 +968,7 @@ func _pose() -> void:
 		if _spun.has(name):
 			deg[["pitch", "yaw", "roll"].find(str(m.get("axis", "yaw")))] += float(_spun[name])
 		j.rotation = _rest[name] + euler_of(deg)
-		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO) + _gait_slide.get(name, Vector3.ZERO) + _form_slide.get(name, Vector3.ZERO) + kick
+		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO) + _gait_slide.get(name, Vector3.ZERO) + _form_slide.get(name, Vector3.ZERO) + kick + ajar_slide
 		if slide != Vector3.ZERO or j.position != _rest_pos[name]:
 			j.position = _rest_pos[name] + offset_of(slide)
 	if body != null:

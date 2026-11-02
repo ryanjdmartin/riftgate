@@ -281,7 +281,7 @@ func test_a_gun_that_runs_in_its_port_kicks_back_along_its_line_and_never_turns(
 			checked += 1
 		rig.tick(1.0)
 		for jn in lines.keys():
-			assert_true((rig.joints[jn] as Node3D).position.distance_to(rig._rest_pos[jn]) < 0.01, "%s: %s runs home after the kick" % [id, jn])
+			assert_true((rig.joints[jn] as Node3D).position.distance_to(rig.home_position(jn)) < 0.01, "%s: %s runs home after the kick (ajar, where it stands ajar)" % [id, jn])
 		pair[1].free()
 	assert_true(checked > 0, "a gun that runs in its port is checked")
 
@@ -1103,4 +1103,37 @@ func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
 	turned.call(fan_r, 2.0, true)   # under way, the move blended in
 	var under_way: float = turned.call(fan_r, 1.0, true)
 	assert_true(absf(under_way - float(rig.spinners["fan_r"][1])) < 40.0, "under way it turns at its moving rate (%f a second)" % under_way)
+	pair[1].free()
+
+
+## The Armadillo's vents stand ajar while its shell is open (Ryan, 2 November: "When unsealed, the
+## vents should be open, and then more open during the vent animation"): at rest each louvre stands
+## its ajar share open, the seal turning in shuts it, and a vent act's swing takes the share's place
+## so the act still peaks where it was authored to.
+func test_the_vents_stand_ajar_while_open_and_shut_with_the_seal() -> void:
+	var with_ajar := ""
+	for id in MACHINES:
+		if not (MechRig.load_sidecar(id).get("ajar", {}) as Dictionary).is_empty():
+			with_ajar = id
+			break
+	assert_false(with_ajar.is_empty(), "a model stands ajar")
+	var pair := _rig_for(with_ajar)
+	var rig: MechRig = pair[0]
+	assert_false(rig.ajar.is_empty(), "%s: its ajar joints read" % with_ajar)
+	assert_eq(rig.ajar_open(), 1.0, "open at rest")
+	var jn := str(rig.ajar.keys()[0])
+	var off: Vector3 = rig.ajar[jn][0]
+	var j: Node3D = rig.joints[jn]
+	var built: Vector3 = rig._rest[jn]
+	if off != Vector3.ZERO:
+		assert_true(j.rotation.distance_to(built) > 0.1, "%s: %s stands open past its built rest" % [with_ajar, jn])
+	rig.set_form(rig.ajar_unless, true)
+	rig.tick(float(rig.forms[rig.ajar_unless]["duration"]) + 0.5)
+	assert_eq(rig.ajar_open(), 0.0, "sealed, the ajar pose is gone")
+	var span: Vector3 = rig._ajar_span[jn][0]
+	assert_eq(MechRig.ajar_share(off, span, Vector3.ZERO), off, "the whole share at rest")
+	assert_eq(MechRig.ajar_share(off, span, span), Vector3.ZERO, "none once an act has it at its furthest")
+	for k in range(3):
+		if span[k] != 0.0:
+			assert_true(absf(off[k]) < absf(span[k]) and signf(off[k]) == signf(span[k]), "%s: the share opens the way the act does, and less far" % jn)
 	pair[1].free()

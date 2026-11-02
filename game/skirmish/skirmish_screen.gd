@@ -95,6 +95,9 @@ var _pool_debug_at := 0.0
 ## RIFTGATE_ACT_DEBUG=1: one foe after another lit as if acting, a beat each, to judge the
 ## highlight running (Ryan, 2 November: "enemies need to highlight during their attacks").
 static var ACT_DEBUG := OS.get_environment("RIFTGATE_ACT_DEBUG") == "1"
+## RIFTGATE_SEAL_DEBUG=1 (the model's own switch: its seal held and let go in turn): the sealed
+## machine's shell and its burst follow the model, to judge them running together.
+static var SEAL_DEBUG := OS.get_environment("RIFTGATE_SEAL_DEBUG") == "1"
 var _act_debug_at := 0.0
 ## RIFTGATE_RAGE_DEBUG=1: the rage's roll again plays over and over on the machine that
 ## spends rage (its chip bursts, its die flips back with the reroll's sound), to judge running.
@@ -208,6 +211,15 @@ func _process(delta: float) -> void:
 		if names.is_empty():
 			names = ["Protect", "1000 Needles", "Self-Destruct", "Bone Storm"]
 		_announce(str(names[int(_fight_t / (PLAQUE_HOLD + 1.2)) % names.size()]))
+	if SEAL_DEBUG:
+		for k in range(mini(_mech_3d.size(), _mech_views.size())):
+			var mv3 := _mech_3d[k]
+			if mv3 == null or mv3.rig == null or not mv3.rig.forms.has("sealed"):
+				continue
+			var held := mv3.rig.form_held("sealed")
+			if held != _mech_views[k].shell:
+				_mech_views[k].shell = held
+				_mech_views[k].form_shift(held)
 	if ACT_DEBUG and not _replay_shade.visible and _fight_t - _act_debug_at > 1.2:
 		_act_debug_at = _fight_t
 		var views := _live_foe_views()
@@ -1163,6 +1175,8 @@ func _refresh(save: bool = true) -> void:
 		# A form the model holds while the machine carries its status (the Armadillo's seal).
 		if i < _mech_3d.size() and _mech_3d[i] != null:
 			_mech_3d[i].hold_forms(ms.unit)
+		if not SEAL_DEBUG:
+			v.shell = ms.alive() and Effects.is_sealed(ms.unit)   # the sealed form's shell (the Armadillo's, 2 November)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
@@ -1187,6 +1201,7 @@ func _refresh(save: bool = true) -> void:
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.blast = sk.blast_number(ms, sk.blast_amount(ms, sf, ms)) if not ms.assigned and ms.alive() else 0   # a vent's blast on its own machine
+		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
@@ -1420,6 +1435,18 @@ static func pair_halves() -> Dictionary:
 			if od is Dictionary and bool(od.get("pair", false)) and not str(od.get("summon", "")).is_empty():
 				_pair_halves[str(od["summon"])] = true
 	return _pair_halves
+
+
+## Whether spending entry `f` changes its machine's form (Ryan, 2 November: "armadillo needs
+## indication when a die face will transform it"): "seal" for a shield it may spend on itself while
+## its shell is open (the Armadillo's Lockdown seals it so), "unseal" for a vent or a weapon while
+## it is sealed (either opens it), "" for anything else or a machine with no form.
+static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
+	if f == null or ms == null or Effects.seal_form(ms.unit).is_empty():
+		return ""
+	if Effects.is_sealed(ms.unit):
+		return "unseal" if f.kind == Face.Kind.VENT or (f.is_attack() and (f.power > 0 or f.power_max > 0)) else ""
+	return "seal" if f.kind == Face.Kind.SHIELD and f.targets != Face.Target.ALLY else ""
 
 
 ## The riders of a foe's blow, inside its intent chip after its number (Ryan, 2 November: "Enemy
@@ -1671,7 +1698,7 @@ static func status_glyph(id: String) -> String:
 		"hopper":
 			return "hopper"
 		"sealed":
-			return "lock"
+			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
 		"phased":
 			return "phased"
 		"swallowed":
@@ -1983,6 +2010,12 @@ func _show_die(i: int) -> bool:
 		var blast := _dice[i].blast if i < _dice.size() else 0
 		if blast > 0 and sf.kind == Face.Kind.VENT:
 			extra.append(EntryReadout.marked(EntryReadout.parts_line("effect", [EntryReadout.word("Blasts a random foe for"), EntryReadout.word(str(blast))], "attr"), [EntryReadout.mark("blast", Palette.HEAT, false)]))
+		# Its machine's form (the Armadillo's): the seal or the opening this entry brings, by the
+		# chip the die shows for it, Sealed a term a tap opens.
+		var shift := form_mark(ms, sf) if not ms.assigned else ""
+		if not shift.is_empty():
+			var said := "Seals it, spent on itself: Sealed" if shift == "seal" else "Opens it, spent: Sealed goes"
+			extra.append(EntryReadout.marked(EntryReadout.text_line("effect", said, "rule"), [EntryReadout.mark(shift, Glyphs.colour_for(shift))]))
 		var states: Array = _entry_states(ms, at)
 		states.append_array(_entry_marks(ms, at, i))
 		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra)
@@ -2484,6 +2517,7 @@ func _on_drag_started(i: int) -> void:
 	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.blast = sk.blast_number(sk.mechs[i], sk.blast_amount(sk.mechs[i], sf))
+	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.charged = sk.charge_lands(sk.mechs[i])
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.slot = sk.mechs[i].face_index + 1
@@ -2787,6 +2821,7 @@ func _use_die(i: int, target, second = null) -> bool:
 		if Effects.has(foe, "risen"):
 			readied.append(foe)
 	var spent: Face = sk.mechs[i].face()
+	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
 	var heat_before := _heat_marks()
 	var fuel := spent.rolls_again_on if spent != null else ""
 	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
@@ -2864,6 +2899,10 @@ func _use_die(i: int, target, second = null) -> bool:
 			landed = fire_at + Sound.lands(effect)
 		if not blows.is_empty():
 			_attack_at(maxf(0.0, fire_at - BLOW_AT), _mech_views[i], _view_struck(blows, 0, was, null), true)   # a vent's blast
+	if ok and Effects.is_sealed(sk.mechs[i].unit) != sealed_before:
+		# Its form shifts as the spend lands (Ryan, 2 November: "It also needs some highlight or
+		# something when it is transforming").
+		_form_shift_at(landed, i, not sealed_before)
 	var ends := landed
 	if ok:
 		var deaths := _land_blows(blows, landed, was, dead, hp_before)
@@ -2900,6 +2939,15 @@ var _shown_hp: Dictionary = {}       # Foe -> the HP its gauge shows while a spe
 var _shown_gauges: Dictionary = {}   # machine index -> [shield, hull] its gauges show until a last act lands on it
 var _stand_ins: Dictionary = {}      # Foe -> the view standing in for it, killed by a spend, until its death plays
 var _blows_tw: Tween = null          # the spend's blows as they land
+
+
+## Machine `i`'s form shifts `t` seconds from now: its view's burst, sealing or opening.
+func _form_shift_at(t: float, i: int, sealing: bool) -> void:
+	if not is_inside_tree() or i < 0 or i >= _mech_views.size():
+		return
+	var tw := create_tween()
+	tw.tween_interval(maxf(0.0, t))
+	tw.tween_callback(_mech_views[i].form_shift.bind(sealing))
 
 
 ## The strikes a spend's blows came in: one past the last strike any landed on (the zap after them

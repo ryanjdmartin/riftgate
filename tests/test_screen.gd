@@ -2154,3 +2154,50 @@ func test_a_last_act_records_the_gauges_it_met() -> void:
 	if sk.last_acts.size() == 1:
 		assert_eq(sk.last_acts[0]["gauges"], [[shield, hull]], "the gauges it met")
 		assert_true(m.shield < shield or m.hull < hull, "and it struck")
+
+
+## The Armadillo's form reads on its die and its view (Ryan, 2 November: "armadillo needs indication
+## when a die face will transform it, like a die chip or something. It also needs some highlight or
+## something when it is transforming, and a better indication of what form it's in"): open, a shield
+## it may spend on itself wears the seal chip and its readout says so; sealed, a weapon or a vent
+## wears the opening one; sealed, the view wears its shell; the Sealed chip the seal's own mark.
+func test_the_armadillos_form_reads_on_its_die_and_its_view() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("armadillo")
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 30, 1)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var shield := -1
+	var gun := -1
+	for k in range(m.die.faces.size()):
+		var f: Face = m.die.faces[k]
+		if f.kind == Face.Kind.SHIELD and shield < 0:
+			shield = k
+		elif f.is_attack() and f.power > 0 and gun < 0:
+			gun = k
+	assert_true(shield >= 0 and gun >= 0, "its die carries a shield and a gun")
+	ms.face_index = shield
+	s._refresh()
+	assert_eq(s._dice[0].form_mark, "seal", "open, its shield wears the seal chip")
+	s._on_die_tapped(0)
+	assert_true(s._details_entry.text().contains("Seals it"), "and its readout says so: %s" % s._details_entry.text())
+	s._close_pop()
+	assert_false(s._mech_views[0].shell, "open: no shell")
+	assert_true(s._use_die(0, ms), "the shield spent on itself")
+	assert_true(Effects.is_sealed(m), "sealed")
+	assert_true(s._mech_views[0].shell, "the view wears its shell")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = gun
+	s._refresh()
+	assert_eq(s._dice[0].form_mark, "unseal", "sealed, a weapon wears the opening chip")
+	assert_eq(SkirmishScreen.status_glyph("sealed"), "seal", "the Sealed chip wears the seal's own mark")
+	assert_eq(Terms.glyph("sealed"), "seal", "and the term in text")
+	var other := db.make_mech("badger")
+	var plain := Skirmish.MechState.new()
+	plain.unit = other
+	assert_eq(SkirmishScreen.form_mark(plain, other.die.faces[0]), "", "a machine with no form has no such chip")
+	s.free()

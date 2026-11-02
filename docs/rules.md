@@ -226,6 +226,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   violet for what only a foe does, the red-red for harm (Exposed, a destroyed component), the
   hull's colour for a price in hull, and ink for a shape, a reach or a rule; never the HUD
   colour.
+  A piece that changes its machine's form wears that form's chip: on the Armadillo, a shield it
+  may spend on itself the seal's while its shell is open, and a weapon or a vent the opening's
+  while it is sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and read or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.

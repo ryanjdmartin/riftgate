@@ -1209,6 +1209,14 @@ def armadillo(b):
     legs_t, body = _planted(limbs4, [(0.0, 0.0, 0.0, 0.0)] + hunker)
     tracks.update(legs_t)
     b.form("sealed", T_ALL, tracks, glow=[(["lamp"] + [heat for heat, _ in vents] + [p[0] for p in pops], -1.0)], body=body)
+    # Open, its vents stand ajar (Ryan, 2 November: "When unsealed, the vents should be open, and
+    # then more open during the vent animation"): each louvre half its throw and each side vent
+    # half out of its well, the vent act opening them the rest of the way, the seal shutting them.
+    AJAR = 0.5
+    ajar = {jn: swing * AJAR for _, vent in vents for jn, shut, swing in vent}
+    for heat, jn, line, out in pops:
+        ajar[jn] = tuple(v * out * AJAR for v in line)
+    b.ajar("sealed", ajar)
     # Sealed, it plays acts of its own from the hunker (Ryan, 29 October: "the animations set
     # shouldn't be the same, its base pose should be hunkered down in a defensive position"):
     # it braces lower and back as for a blow, rocks its weight back onto its hinds and forward

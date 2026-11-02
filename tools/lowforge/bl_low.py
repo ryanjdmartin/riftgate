@@ -410,6 +410,7 @@ class Build:
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
         self.forms = {}        # poses held while a status lasts (see form())
+        self.ajar_spec = None  # the pose it stands in while a form is not held (see ajar())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
@@ -777,6 +778,26 @@ class Build:
         self.forms[name] = out
         return out
 
+    def ajar(self, unless, joints):
+        """A pose the machine stands in while the form `unless` is not held (the Armadillo's vents
+        ajar while its shell is open; Ryan, 2 November: "When unsealed, the vents should be open,
+        and then more open during the vent animation"): `joints` map a joint to degrees along its
+        own axis, in its own sense, or to a (dx, dy, dz) slide. MechRig stands it in at rest, fades
+        it out as the form turns in, and gives it way as an act swings the joint, so the act still
+        ends where it was authored to."""
+        out = {}
+        for jn, v in joints.items():
+            if jn not in self.joint_meta:
+                raise ValueError("ajar of %s keys a joint the model has not got: %s" % (self.name, jn))
+            row = [0.0] * 6
+            if isinstance(v, (int, float)):
+                row[("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])] = round(float(v), 2)
+            else:
+                row[3:6] = [round(float(x), 2) for x in v]
+            out[jn] = row
+        self.ajar_spec = {"unless": unless, "joints": out}
+        return self.ajar_spec
+
     # A turret's traverse in an act (Ryan, 4 October, the third pass: too fast and wild; not so
     # far, not nearly as fast, and a pause before it swings back, so it carries its weight).
     TURRET_REACH = 70.0   # degrees from the bow at most
@@ -996,6 +1017,8 @@ class Build:
             out["spin"] = self.spins
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
+        if self.ajar_spec:
+            out["ajar"] = self.ajar_spec
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):

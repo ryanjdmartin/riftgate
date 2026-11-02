@@ -388,6 +388,9 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 # RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
 # second and the ground tears every couple of seconds, to judge them by eye.
+# RIFTGATE_SEAL_DEBUG=1 (any run with a model that holds a form, the Armadillo) holds the seal and lets it go in
+# turn, and in a skirmish the sealed shell and its burst follow it, to judge them running; the open
+# Armadillo stands with its vents ajar.
 # RIFTGATE_ACT_DEBUG=1 (any skirmish) lights one foe after another as the acting foe is lit in the
 # enemy's turn (its violet glow and breathing corners), a beat each, to judge it running.
 # RIFTGATE_RAGE_DEBUG=1 (any skirmish) plays the rage's roll again over and over on the machine
