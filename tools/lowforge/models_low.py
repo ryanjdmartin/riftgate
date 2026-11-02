@@ -2724,6 +2724,363 @@ funnel_web.maker = "wainwright_sutler"
 
 
 
+def _whip_scorpion_leg(b, leg, hip, knee, ankle, s):
+    """One of the Whip Scorpion's six legs, an arachnid's in iron: a thigh from the hip on the
+    cab's flank up and out to a knee standing over the body, a shin down to an ankle well clear
+    of the ground, and under the ankle a short plumb post on a heavy pad, its toe plate turned
+    out. Hip, knee and ankle each pitch on the axle line, so the walk solver (_plant) keeps the
+    post plumb and the pad flat while the body passes over it, the Funnel-web's and the
+    Clydesdale's way. `s` is -1 on the left."""
+    with b.joint("hip_%s" % leg, hip, limits=(-60.0, 60.0)):
+        _beam(b, hip, knee, _sq(7.2, 8.2), _sq(6.0, 6.8), "steel.plate", "thigh")
+        b.prism("x", knee[0], knee[1], knee[2], 4.6, 9.5, "steel.dark", 6, "knee")
+        with b.joint("knee_%s" % leg, knee, limits=(-60.0, 60.0)):
+            _beam(b, knee, ankle, _sq(6.0, 6.6), _sq(4.4, 4.8), "steel.panel", "shin")
+            b.prism("x", ankle[0], ankle[1], ankle[2], 3.2, 7.5, "steel.dark", 6, "ankle_pin")
+            with b.joint("ankle_%s" % leg, ankle, limits=(-50.0, 50.0)):
+                ax, ay, az = ankle
+                b.box(ax - 2.4, ax + 2.4, ay - 2.4, ay + 2.4, 4.0, az - 1.2, "steel.plate", "foot_post")
+                b.box(ax - 6.0, ax + 6.0, ay - 6.5, ay + 6.5, 0.0, 4.2, "steel.dark", "foot")
+                x0, x1 = sorted((ax + s * 6.0, ax + s * 9.0))
+                b.box(x0, x1, ay - 4.5, ay + 4.5, 0.0, 2.6, "steel.plate", "toe")
+
+
+def _whip_scorpion_vent(b, tag, base, d):
+    """One of the Thermal Ejection Manifold's vents (the passive's, modelled in, no pin), built as
+    a gun (Ryan's to-do line: vents that read as guns): a dark boss on the boiler's shoulder, a
+    short heavy barrel out of it with its heat banked in the bore just inside the mouth (the part
+    a glow names, `vent_bore_<tag>_floor`), and a muzzle brake round the mouth, the barrel and the
+    brake on a joint that runs along their line (`vent_<tag>`), so a blast kicks them back into
+    the boss; a collar of heat round the barrel's middle (`vent_heat_<tag>`), lit with the bore,
+    so a blast shows from behind and above as well as down the barrel, and still clear of the
+    boss at the kick. Returns the joint's name."""
+    base, d = Vector(base), Vector(d).normalized()
+    _beam(b, tuple(base - d * 2.5), tuple(base + d * 3.0), _poly(5.0, 8, math.pi / 8), _poly(4.4, 8, math.pi / 8), "steel.dark", "vent_boss")
+    name = "vent_%s" % tag
+    with b.joint(name, tuple(base), slide=tuple(d)):
+        _tube(b, tuple(base + d * 1.5), tuple(base + d * 15.5), 3.2, 2.4, 8, "steel.dark", "vent_bore_" + tag, floor_material="amber.heat", floor_depth=12.4, phase=math.pi / 8)
+        _tube(b, tuple(base + d * 13.0), tuple(base + d * 16.5), 4.3, 3.2, 8, "steel.plate", "vent_brake", floor=False, phase=math.pi / 8)
+        _tube(b, tuple(base + d * 6.0), tuple(base + d * 9.2), 3.9, 3.2, 8, "amber.heat", "vent_heat_" + tag, floor=False, phase=math.pi / 8)
+    return name
+
+
+def whip_scorpion(b):
+    """Wainwright & Sutler "Whip Scorpion" (Pattern 22 Heavy Walker): the boiler whose vents are
+    its guns (Ryan's go, 20 October; its brief: git show 82ff916:docs/briefs/ws_boiler.md), a
+    future-tech machine that behaves like a steampunk device, "a crazy steampunk machine venting
+    everywhere". First cut, 31 October, from Ryan's to-do line: a heavy walker on six legs in the
+    maker's iron, standing tall (Ryan, 28 October: the note of a low quad in the BattleTech
+    Scorpion's shape was logged wrong, the Scorpion standing tall), a signal mirror on a mast for
+    the Siphon's dish, four hardpoints, vents that read as guns. The namesake's shape (the
+    vinegaroon of the American desert, which sprays from its tail when provoked): the body in
+    two, an armoured cab in front and the boiler behind it on a waist, as the animal's carapace
+    and abdomen; six walking legs off the cab's flanks, the fore pair reaching forward and the
+    other two back along the boiler, each knee standing over the body; the animal's first legs
+    as two long sensor feelers off the cab's front corners, its pedipalps as two heavy claws
+    folded under the nose, and its whip as a jointed tail rising off the boiler's end. The cab
+    and the legs are the maker's iron; the boiler is the pressure vessel in its brown (as the
+    Clydesdale's bed is), hooped in dark iron, a sight glass down its spine and a gauge on its
+    end, both banked with heat; the Thermal Ejection Manifold (the passive, modelled in) a
+    broadside of four short gun-barrelled vents on its shoulders, fed by a manifold pipe down
+    each flank, each kicking back on its own line as it blasts. The Heliographic Siphon (fixed,
+    no pin) a signal mirror on a yoke at the top of a mast off the cab's back, turning on its
+    head and tilting in the yoke, its face a cold glass that flashes white. Mounts in the die's
+    order: hp_1 the left shoulder gun (the stock's Thermal Ray as its barrel class) and hp_4 the
+    right's (the Maxigun), each on a ring that traverses (turret_l, turret_r); hp_2 and hp_3 bare
+    pads on the cab's back either side of the mast (the two Coolant Jackets show nowhere,
+    vents). The look, the rig, the acts and the gait are Ryan's to judge running."""
+    # The legs, each in the planes the walk solver works in: the knee displaced along the
+    # machine from both the hip and the ankle, so a leg's side view always bends at the knee.
+    # Hips on the cab's flanks, knees over the body's line, ankles well off the ground on plumb
+    # posts. (x, y, z) for the left; the right mirrors.
+    LEG_AT = {
+        "f": ((23.0, 24.0, 48.0), (40.0, 46.0, 72.0), (48.0, 58.0, 22.0)),
+        "m": ((24.0, 8.0, 48.0), (46.0, -16.0, 72.0), (53.0, -18.0, 22.0)),
+        "h": ((23.0, -6.0, 48.0), (43.0, -30.0, 72.0), (48.0, -44.0, 22.0)),
+    }
+    legs = {}
+    for k, (hip, knee, ankle) in LEG_AT.items():
+        for s in (-1.0, 1.0):
+            leg = k + ("l" if s < 0 else "r")
+            at = tuple((s * p[0], p[1], p[2]) for p in (hip, knee, ankle))
+            legs[leg] = at
+            # The hip's housing on the cab's flank and its pin across it.
+            x0, x1 = sorted((s * 19.0, s * 25.5))
+            b.box(x0, x1, hip[1] - 5.0, hip[1] + 5.0, 42.0, 54.0, "steel.dark", "hip_block")
+            b.prism("x", s * 25.0, hip[1], hip[2], 4.2, 5.0, "steel.plate", 6, "hip_pin")
+            _whip_scorpion_leg(b, leg, *at, s)
+    # The cab, the animal's carapace: an armoured box, its nose raked under a brow, its belly
+    # dark; the eyes on a boss at the front of the roof (the median eyes, lamps, so they burn:
+    # the rule, lean hotter), a visor glazed across the raked face under them.
+    b.loft([(-11.0, _case(40.0, 38.0, 57.0, 6.0)), (22.0, _case(40.0, 38.0, 58.0, 7.0)), (31.0, _case(36.0, 40.0, 56.0, 7.0)),
+            (37.0, _case(24.0, 43.0, 52.0, 5.0))], "steel.panel", "cab")
+    b.box(-16.0, 16.0, -9.0, 31.0, 35.5, 38.5, "steel.dark", "belly")
+    b.box(-7.0, 7.0, 22.0, 30.0, 55.0, 61.0, "steel.plate", "eye_boss")
+    for x0, x1 in ((-6.0, -1.6), (1.6, 6.0)):
+        b.box(x0, x1, 29.8, 31.2, 57.4, 60.4, "amber.light", "eye")
+    vz = lambda y: 56.0 - (y - 31.0) * 4.0 / 6.0 + 0.45   # just proud of the raked face
+    _rings(b, [[(-10.0, 31.6, vz(31.6) - 0.6), (10.0, 31.6, vz(31.6) - 0.6), (10.0, 31.6, vz(31.6)), (-10.0, 31.6, vz(31.6))],
+               [(-7.0, 36.4, vz(36.4) - 0.6), (7.0, 36.4, vz(36.4) - 0.6), (7.0, 36.4, vz(36.4)), (-7.0, 36.4, vz(36.4))]], "glass.glass", "visor")
+    b.box(-6.0, 6.0, 10.0, 18.0, 57.5, 58.6, "steel.plate", "hatch")
+    # The shoulder guns (hp_1 left, the Thermal Ray; hp_4 right, the Maxigun), each on a ring at
+    # a front corner of the roof that traverses, its barrel class forward over the nose.
+    for s, n, comp in ((-1.0, 1, "thermal_ray"), (1.0, 4, "maxigun")):
+        gx = s * 13.5
+        b.prism("z", gx, 21.0, 58.6, 5.4, 1.4, "steel.dark", 8, "gun_ring", phase=math.pi / 8)
+        with b.joint("turret_" + ("l" if s < 0 else "r"), (gx, 21.0, 59.2), limits=(-60.0, 60.0)):
+            b.box(gx - 4.6, gx + 4.6, 16.0, 26.0, 59.2, 63.4, "steel.plate", "gun_mount")
+            b.stock("hp_%d" % n, (gx, 22.0, 66.6), "barrel", scale=0.95, carries=comp)
+    # The bare mounts on the cab's back either side of the mast (hp_2, hp_3), each on a ring.
+    for s, n in ((-1.0, 2), (1.0, 3)):
+        b.prism("z", s * 13.0, 2.0, 58.0, 4.8, 1.2, "steel.dark", 8, "pad_ring", phase=math.pi / 8)
+        b.pad("hp_%d" % n, (s * 13.0, 2.0, 59.8), scale=0.9, size=(7.0, 1.2))
+    # The pedipalps: a heavy claw folded under each side of the nose, an arm forward and out to
+    # an elbow, a hand back in, a fixed finger pointing in and forward across the front and a
+    # movable one inside it (pincer_*, about up), opening back from it; spines up the arm. Each
+    # raises and spreads on its root (palp_*).
+    for s in (-1.0, 1.0):
+        side = "l" if s < 0 else "r"
+        root, elbow, wrist = (s * 8.0, 34.5, 43.5), (s * 21.0, 44.0, 47.5), (s * 17.0, 55.0, 46.5)
+        b.prism("x", root[0], root[1], root[2], 3.6, 6.0, "steel.dark", 6, "palp_pin")
+        with b.joint("palp_" + side, root, limits={"pitch": (-20.0, 45.0), "yaw": (-40.0, 40.0)}):
+            _beam(b, root, elbow, _sq(7.8, 8.2), _sq(7.2, 7.6), "steel.plate", "palp_arm")
+            b.prism("z", elbow[0], elbow[1], elbow[2], 4.2, 7.6, "steel.dark", 6, "palp_elbow")
+            _beam(b, elbow, wrist, _sq(9.6, 9.0), _sq(8.8, 8.4), "livery.livery2", "palp_hand")
+            for f in (0.35, 0.7):
+                p = tuple(root[i] + (elbow[i] - root[i]) * f for i in range(3))
+                _spike(b, (p[0], p[1], p[2] + 3.2), (p[0] - s * 1.5, p[1] + 1.5, p[2] + 7.5), 1.2, "steel.dark", "palp_spine")
+            _spike(b, wrist, (s * 6.0, 64.0, 46.5), 2.8, "steel.dark", "palp_finger")
+            dactyl = (s * 13.5, 54.5, 46.0)
+            with b.joint("pincer_" + side, dactyl, axis="yaw", limits=(-45.0, 45.0)):
+                _spike(b, dactyl, (s * 4.0, 58.5, 46.0), 2.3, "steel.dark", "palp_dactyl")
+    # The feelers, the animal's first legs as sensor whips off the cab's front corners: a rod up
+    # and out to a node, a whip forward and down from it to a lit tip, each node a joint.
+    for s in (-1.0, 1.0):
+        side = "l" if s < 0 else "r"
+        root, node, tip = (s * 17.0, 31.5, 49.0), (s * 27.0, 43.0, 64.0), (s * 33.0, 59.0, 54.0)
+        b.prism("x", root[0], root[1], root[2], 2.8, 4.0, "steel.dark", 6, "feeler_root")
+        with b.joint("feeler_" + side, root, limits={"pitch": (-45.0, 45.0), "yaw": (-45.0, 45.0)}):
+            _beam(b, root, node, _poly(2.5, 6), _poly(2.1, 6), "steel.plate", "feeler")
+            b.prism("x", node[0], node[1], node[2], 2.9, 4.0, "steel.dark", 6, "feeler_node")
+            with b.joint("feeler_%s2" % side, node, limits={"pitch": (-45.0, 45.0), "yaw": (-30.0, 30.0)}):
+                _beam(b, node, tip, _poly(1.9, 6), _poly(0.9, 6), "steel.dark", "feeler_whip")
+                b.box(tip[0] - 1.6, tip[0] + 1.6, tip[1] - 1.6, tip[1] + 1.6, tip[2] - 1.6, tip[2] + 1.6, "amber.light", "feeler_tip")
+    # The mast off the cab's back and the Heliographic Siphon at its head: a pole to a head that
+    # turns (turret_mirror), a yoke on it and the mirror tilting in the yoke (mirror), its face
+    # forward and up, a cold glass banked dim that flashes white (St. Elmo's spark, the one lit
+    # colour on the machine that is no flame), its back in the livery.
+    b.box(-5.0, 5.0, -3.0, 7.0, 57.0, 60.0, "steel.dark", "mast_base")
+    b.prism("z", 0.0, 2.0, 74.0, 2.1, 28.0, "steel.dark", 6, "mast")
+    b.prism("z", 0.0, 2.0, 87.0, 3.2, 1.6, "steel.plate", 8, "mast_collar", phase=math.pi / 8)
+    MZ = 98.0
+    N = Vector((0.0, math.cos(math.radians(40.0)), math.sin(math.radians(40.0))))
+    with b.joint("turret_mirror", (0.0, 2.0, 88.0), limits=(-70.0, 70.0)):
+        b.box(-3.4, 3.4, -1.0, 5.0, 88.0, 90.5, "steel.dark", "yoke_base")
+        b.box(-13.5, 13.5, 0.5, 3.5, 89.0, 91.0, "steel.plate", "yoke")
+        for s in (-1.0, 1.0):
+            x0, x1 = sorted((s * 12.0, s * 13.5))
+            b.box(x0, x1, 0.5, 3.5, 90.0, MZ + 1.2, "steel.plate", "yoke")
+        b.prism("x", 0.0, 2.0, MZ, 1.3, 27.0, "steel.dark", 6, "mirror_pin")
+        with b.joint("mirror", (0.0, 2.0, MZ), limits=(-40.0, 40.0)):
+            c = Vector((0.0, 2.0, MZ))
+            _beam(b, tuple(c - N * 1.3), tuple(c + N * 0.2), _poly(10.6, 8, math.pi / 8), _poly(10.6, 8, math.pi / 8), "livery.livery2", "mirror_back")
+            _tube(b, tuple(c - N * 0.6), tuple(c + N * 1.1), 11.4, 10.3, 8, "steel.dark", "mirror_rim", floor=False, phase=math.pi / 8)
+            _disc(b, tuple(c + N * 0.3), tuple(N), 9.9, 8, "amber.spark", "mirror_face", phase=math.pi / 8)
+    # The boiler on the waist (abdomen), the animal's abdomen: a pressure vessel in the maker's
+    # brown, eight-sided, hooped in dark iron, dished to its end; a sight glass down its spine
+    # banked with heat; a gauge on its end; a valve wheel on its back; the manifold's pipe down
+    # each flank feeding two vents on each shoulder, a broadside angled forward and out, set back
+    # behind the hind thighs' sweep.
+    BZ = 50.0
+    b.prism("y", 0.0, -12.5, 49.0, 11.0, 6.0, "steel.dark", 8, "waist", phase=math.pi / 8)
+    abdomen = b.joint("abdomen", (0.0, -12.5, 49.0), limits={"pitch": (-16.0, 10.0), "yaw": (-14.0, 14.0)})   # its pitch negative tips the boiler's end up
+    abdomen.__enter__()
+    b.loft([(-62.0, _oct(BZ + 2.0, 16.0, 12.0)), (-58.0, _oct(BZ + 1.0, 34.0, 24.0)), (-51.0, _oct(BZ, 46.0, 30.0)), (-15.0, _oct(BZ, 46.0, 30.0))],
+           "livery.livery2", "boiler")
+    for y in (-22.0, -32.0, -42.0, -51.0):
+        b.loft([(y - 1.1, _oct(BZ, 47.6, 31.6)), (y + 1.1, _oct(BZ, 47.6, 31.6))], "steel.dark", "hoop")
+    b.box(-2.2, 2.2, -48.0, -17.0, 63.4, 64.4, "steel.dark", "glass_frame")
+    b.box(-1.4, 1.4, -47.3, -17.7, 63.8, 64.7, "amber.heat", "gauge_glass")
+    b.prism("y", 0.0, -62.2, BZ + 2.0, 3.6, 1.2, "steel.dark", 8, "gauge", phase=math.pi / 8)
+    b.prism("y", 0.0, -62.9, BZ + 2.0, 2.8, 0.4, "amber.light", 8, "gauge_face", phase=math.pi / 8)
+    b.prism("z", 0.0, -54.5, 63.6, 1.0, 3.0, "steel.dark", 6, "valve_stem")
+    b.prism("z", 0.0, -54.5, 65.2, 3.8, 0.9, "steel.plate", 8, "valve_wheel")
+    vents = []
+    for s in (-1.0, 1.0):
+        side = "l" if s < 0 else "r"
+        b.prism("y", s * 22.3, -34.0, 51.0, 2.0, 34.0, "steel.dark", 6, "manifold")
+        for k, y in ((1, -35.0), (2, -46.0)):
+            base = (s * 15.0, y, 59.8)
+            _beam(b, (s * 22.3, y, 51.0), (s * 17.6, y, 57.6), _poly(1.6, 6), _poly(1.6, 6), "steel.dark", "manifold_feed")
+            d = (s * math.cos(math.radians(35.0)) * math.sin(math.radians(55.0)), math.cos(math.radians(35.0)) * math.cos(math.radians(55.0)), math.sin(math.radians(35.0)))
+            vents.append((side + str(k), _whip_scorpion_vent(b, side + str(k), base, d), d))
+    # The whip: a jointed tail rising up and back off the boiler's end, tapering, a node at each
+    # joint, its tip a lit sensor. A joint's pitch negative curls it forward over the back.
+    TAIL = [(0.0, -61.0, 56.0), (0.0, -68.0, 63.0), (0.0, -73.0, 72.0), (0.0, -76.0, 82.0), (0.0, -77.0, 92.0)]
+    RAD = [3.0, 2.4, 1.9, 1.4, 0.8]
+    b.prism("y", 0.0, -61.0, 56.0, 3.8, 3.0, "steel.dark", 8, "tail_socket", phase=math.pi / 8)
+    opened = []
+    for k in range(4):
+        j = b.joint("tail_%d" % (k + 1), TAIL[k], limits={"pitch": (-45.0, 45.0), "yaw": (-40.0, 40.0)})
+        j.__enter__()
+        opened.append(j)
+        _beam(b, TAIL[k], TAIL[k + 1], _poly(RAD[k], 6), _poly(RAD[k + 1], 6), "steel.plate" if k < 2 else "steel.dark", "tail")
+        if k < 3:
+            p = Vector(TAIL[k + 1])
+            dd = (Vector(TAIL[k + 2]) - p).normalized()
+            _beam(b, tuple(p - dd * 1.1), tuple(p + dd * 1.1), _poly(RAD[k + 1] + 0.8, 6), _poly(RAD[k + 1] + 0.8, 6), "steel.dark", "tail_node")
+    b.box(-1.2, 1.2, -78.2, -75.8, 91.4, 94.2, "amber.light", "tail_tip")
+    for j in reversed(opened):
+        j.__exit__(None, None, None)
+    abdomen.__exit__(None, None, None)
+
+    # Idle acts (four, loud, never in step; a heavy walker's servos, b.move). Degrees and
+    # seconds; a key is (t, value) on the joint's own axis, (t, pitch, yaw, roll), or that with
+    # a slide (dx, dy, dz) after it; a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw,
+    # pitch, roll); a glow key is (t, k), k the light added over rest (-1 dark). The feet stay
+    # planted while the body moves over them (_planted, its poses keyed ten a second so nothing
+    # drifts between them, and _footwork).
+    LEGS = ("fl", "fr", "ml", "mr", "hl", "hr")
+    limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
+    limbs = [limb(leg) for leg in LEGS]
+    HEAT = 196.0   # the heat tile's light at its height: #ff7800 under the phone's eased light, as the Armadillo's vents
+    # The flash (the Heliographic Siphon's lure): it rises tall on its legs, the boiler's end
+    # tipping up, the claws spread wide and gaping, the feelers up and out; the mirror tips its
+    # glass to the sky and its head swings round to the left, flashing short, short, long, then
+    # sweeps the whole field to the right flashing as it goes and holds there on a long flash, the
+    # eyes burning, every foe on the field its mark (the glass to the sky, so the map, the codex
+    # and the skirmish all see it flash); it swings home and hunkers down braced (Armoured for the
+    # round), the claws snapping shut and folding in low, as the siphon drinks the blows into the
+    # boiler's sight glass.
+    tracks, body = _planted(limbs, _dense([(0.4, 0.0, 0.0, 0.0), (1.7, 0.0, 4.0, 2.5), (6.0, 0.0, 4.4, 2.8), (6.6, 0.0, 4.4, 2.8),
+                                           (7.6, 0.0, -2.6, -1.5), (8.6, 0.0, -2.8, -1.6), (9.6, 0.0, 0.0, 0.0)], 10.0))
+    tracks.update({
+        "turret_mirror": [(0.6, 0.0), (1.9, 45.0), (3.0, 45.0), (5.6, -45.0), (6.4, -45.0), (7.7, 0.0)],
+        "mirror": [(0.6, 0.0), (1.8, 34.0), (6.6, 34.0), (7.7, 0.0)],
+        "palp_l": [(0.8, 0.0, 0.0, 0.0), (2.0, 14.0, 16.0, 0.0), (6.0, 15.0, 18.0, 0.0), (6.6, 15.0, 18.0, 0.0), (7.5, -6.0, 6.0, 0.0), (8.5, -6.0, 6.0, 0.0), (9.4, 0.0, 0.0, 0.0)],
+        "palp_r": [(0.95, 0.0, 0.0, 0.0), (2.15, 14.0, -16.0, 0.0), (6.15, 15.0, -18.0, 0.0), (6.75, 15.0, -18.0, 0.0), (7.65, -6.0, -6.0, 0.0), (8.65, -6.0, -6.0, 0.0), (9.55, 0.0, 0.0, 0.0)],
+        "pincer_l": [(1.6, 0.0), (2.2, -30.0), (6.6, -30.0), (6.8, 0.0)],
+        "pincer_r": [(1.75, 0.0), (2.35, 30.0), (6.75, 30.0), (6.95, 0.0)],
+        "feeler_l": [(0.7, 0.0, 0.0, 0.0), (1.9, 22.0, 20.0, 0.0), (6.0, 24.0, 22.0, 0.0), (6.6, 24.0, 22.0, 0.0), (7.9, 0.0, 0.0, 0.0)],
+        "feeler_l2": [(0.8, 0.0, 0.0, 0.0), (2.0, 18.0, 0.0, 0.0), (6.6, 18.0, 0.0, 0.0), (7.9, 0.0, 0.0, 0.0)],
+        "feeler_r": [(0.85, 0.0, 0.0, 0.0), (2.05, 22.0, -20.0, 0.0), (6.15, 24.0, -22.0, 0.0), (6.75, 24.0, -22.0, 0.0), (8.05, 0.0, 0.0, 0.0)],
+        "feeler_r2": [(0.95, 0.0, 0.0, 0.0), (2.15, 18.0, 0.0, 0.0), (6.75, 18.0, 0.0, 0.0), (8.05, 0.0, 0.0, 0.0)],
+        "abdomen": [(1.0, 0.0, 0.0, 0.0), (2.2, -6.0, 0.0, 0.0), (6.4, -6.0, 0.0, 0.0), (7.6, 3.0, 0.0, 0.0), (8.6, 3.0, 0.0, 0.0), (9.4, 0.0, 0.0, 0.0)],
+        "tail_1": [(1.1, 0.0, 0.0, 0.0), (2.4, -10.0, 0.0, 0.0), (6.4, -10.0, 0.0, 0.0), (7.8, 0.0, 0.0, 0.0)],
+        "tail_2": [(1.2, 0.0, 0.0, 0.0), (2.5, -12.0, 0.0, 0.0), (6.5, -12.0, 0.0, 0.0), (7.9, 0.0, 0.0, 0.0)],
+    })
+    FLASH = 24.0   # the glass's light at a flash: past white under the phone's eased light
+    blink = lambda t, d, k=FLASH: [(round(t, 3), 1.0), (round(t + 0.05, 3), k), (round(t + d - 0.05, 3), k), (round(t + d, 3), 1.0)]
+    keys = [(1.9, 0.0)] + blink(1.95, 0.2) + blink(2.32, 0.2) + blink(2.66, 0.4)
+    for t in (3.35, 3.75, 4.15, 4.55, 4.95, 5.35):
+        keys += blink(t, 0.22)
+    keys += blink(5.72, 0.6) + [(6.5, 0.0)]
+    b.act("flash", 9.8, tracks, body=body,
+          glow=[(["mirror_face"], keys),
+                (["eye"], [(0.5, 0.0), (1.2, 7.0), (7.2, 7.0), (8.0, 0.0)]),
+                (["gauge_glass"], [(6.9, 0.0), (7.7, 60.0), (8.9, 60.0), (9.6, 0.0)]), (["gauge_face"], [(6.9, 0.0), (7.5, 7.0), (8.9, 7.0), (9.6, 0.0)])])
+    # The blast (the Thermal Ejection Manifold): it squats and braces, the boiler pumping up, its
+    # pressure building in the sight glass and every bore; then the vents fire across the
+    # broadside, right and left by turns, each barrel kicking back into its boss as its bore
+    # flares, the whole machine jolting off each shot on its planted feet and the whip lashing
+    # away from it; the bores bank down and it rises again.
+    SHOTS = [("r1", 2.0), ("l1", 2.55), ("r2", 3.1), ("l2", 3.65)]
+    keys = [(0.3, (0.0,) * 6), (1.4, (0.0, -0.5, -2.4, 0.0, -1.2, 0.0)), (1.95, (0.0, -0.5, -2.4, 0.0, -1.2, 0.0))]
+    for tag, t in SHOTS:
+        s = 1.0 if tag[0] == "r" else -1.0
+        keys += [(round(t + 0.06, 3), (round(-s * 0.8, 3), -1.2, -2.1, round(-s * 0.9, 3), -0.6, round(-s * 1.4, 3))),
+                 (round(t + 0.45, 3), (0.0, -0.6, -2.4, 0.0, -1.2, 0.0))]
+    keys += [(5.0, (0.0, -0.5, -2.4, 0.0, -1.2, 0.0)), (6.3, (0.0,) * 6)]
+    legs_t, body = _footwork({leg: limb(leg) for leg in LEGS}, keys, [], until=6.6)
+    tracks = dict(legs_t)
+    for tag, jn, d in vents:
+        t = dict(SHOTS)[tag]
+        back = tuple(round(-3.8 * v, 3) for v in d)   # kicked back into its boss, the collar still clear of it
+        tracks[jn] = _dense([(0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (round(t - 0.02, 3), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (round(t + 0.05, 3), 0.0, 0.0, 0.0) + back,
+                             (round(t + 0.12, 3), 0.0, 0.0, 0.0) + back, (round(t + 0.7, 3), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (6.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)])
+    tracks["abdomen"] = _dense([(0.3, 0.0, 0.0, 0.0), (1.4, -6.0, 0.0, 0.0), (1.95, -6.0, 0.0, 0.0), (2.1, -4.0, 2.0, 0.0), (2.65, -4.0, -2.0, 0.0), (3.2, -4.0, 2.0, 0.0),
+                                (3.75, -4.0, -2.0, 0.0), (4.4, -5.0, 0.0, 0.0), (5.0, -5.0, 0.0, 0.0), (6.2, 0.0, 0.0, 0.0)])
+    lash = [(0.3, 0.0, 0.0, 0.0), (1.4, -6.0, 0.0, 0.0), (1.95, -6.0, 0.0, 0.0)]
+    for tag, t in SHOTS:
+        s = 1.0 if tag[0] == "r" else -1.0
+        lash += [(round(t + 0.12, 3), -10.0, round(s * 18.0, 3), 0.0), (round(t + 0.5, 3), -8.0, round(s * 4.0, 3), 0.0)]
+    lash += [(5.0, -6.0, 0.0, 0.0), (6.2, 0.0, 0.0, 0.0)]
+    tracks["tail_1"] = _dense(lash)
+    tracks["tail_2"] = _dense([(round(t + 0.08, 3), p, round(y * 0.8, 3), r) for t, p, y, r in lash])
+    tracks["tail_3"] = _dense([(round(t + 0.16, 3), p, round(y * 0.6, 3), r) for t, p, y, r in lash])
+    BANKED = 16.0   # the bores' heat building before the shots and banked after them: a dull ember, so each shot jumps to the full orange
+    glow = [(["gauge_glass"], [(0.4, 0.0), (1.6, 60.0), (1.95, 120.0), (3.9, HEAT), (4.6, 60.0), (6.2, 0.0)]), (["gauge_face"], [(0.4, 0.0), (1.6, 5.0), (3.9, 9.0), (4.6, 5.0), (6.2, 0.0)])]
+    for tag, t in SHOTS:
+        glow.append((["vent_bore_%s_floor" % tag, "vent_heat_%s" % tag], [(0.4, 0.0), (1.6, BANKED), (round(t - 0.02, 3), BANKED), (round(t + 0.04, 3), HEAT), (round(t + 0.45, 3), HEAT),
+                                                                         (round(t + 1.1, 3), BANKED), (5.0, BANKED), (6.2, 0.0)]))
+    b.act("blast", 6.6, tracks, body=body, ease="linear", heft=0.06, glow=glow)
+    # The threat, the vinegaroon's own: it rears up at the front on its planted feet, the claws
+    # raised high and spread, gaping, and snapping twice; the feelers up and wide; the boiler
+    # tipped up and the whip curled forward over it; the shoulder guns swung out and the eyes
+    # burning; held, and down.
+    tracks, body = _planted(limbs, _dense([(0.4, 0.0, 0.0, 0.0), (1.5, -1.0, 3.0, 5.0), (4.6, -1.2, 3.2, 5.4), (5.2, -1.2, 3.2, 5.4), (6.6, 0.0, 0.0, 0.0)], 10.0))
+    tracks.update({
+        "palp_l": [(0.6, 0.0, 0.0, 0.0), (1.6, 32.0, 24.0, 0.0), (4.6, 34.0, 26.0, 0.0), (5.2, 34.0, 26.0, 0.0), (6.5, 0.0, 0.0, 0.0)],
+        "palp_r": [(0.75, 0.0, 0.0, 0.0), (1.75, 32.0, -24.0, 0.0), (4.75, 34.0, -26.0, 0.0), (5.35, 34.0, -26.0, 0.0), (6.65, 0.0, 0.0, 0.0)],
+        "pincer_l": [(1.2, 0.0), (1.8, -36.0), (2.8, -36.0), (2.95, -2.0), (3.55, -2.0), (3.75, -36.0), (4.35, -36.0), (4.5, 0.0)],
+        "pincer_r": [(1.3, 0.0), (1.9, 36.0), (2.9, 36.0), (3.05, 2.0), (3.65, 2.0), (3.85, 36.0), (4.45, 36.0), (4.6, 0.0)],
+        "feeler_l": [(0.5, 0.0, 0.0, 0.0), (1.6, 36.0, 30.0, 0.0), (4.6, 38.0, 32.0, 0.0), (5.2, 38.0, 32.0, 0.0), (6.4, 0.0, 0.0, 0.0)],
+        "feeler_l2": [(0.6, 0.0, 0.0, 0.0), (1.8, 22.0, 0.0, 0.0), (5.2, 22.0, 0.0, 0.0), (6.4, 0.0, 0.0, 0.0)],
+        "feeler_r": [(0.6, 0.0, 0.0, 0.0), (1.7, 36.0, -30.0, 0.0), (4.7, 38.0, -32.0, 0.0), (5.3, 38.0, -32.0, 0.0), (6.5, 0.0, 0.0, 0.0)],
+        "feeler_r2": [(0.7, 0.0, 0.0, 0.0), (1.9, 22.0, 0.0, 0.0), (5.3, 22.0, 0.0, 0.0), (6.5, 0.0, 0.0, 0.0)],
+        "abdomen": [(0.8, 0.0, 0.0, 0.0), (2.0, -11.0, 0.0, 0.0), (4.8, -12.0, 0.0, 0.0), (5.4, -12.0, 0.0, 0.0), (6.6, 0.0, 0.0, 0.0)],
+        "tail_1": [(1.0, 0.0, 0.0, 0.0), (2.2, -16.0, 0.0, 0.0), (4.8, -17.0, 0.0, 0.0), (5.4, -17.0, 0.0, 0.0), (6.6, 0.0, 0.0, 0.0)],
+        "tail_2": [(1.1, 0.0, 0.0, 0.0), (2.3, -20.0, 0.0, 0.0), (4.9, -21.0, 0.0, 0.0), (5.5, -21.0, 0.0, 0.0), (6.7, 0.0, 0.0, 0.0)],
+        "tail_3": [(1.2, 0.0, 0.0, 0.0), (2.4, -24.0, 0.0, 0.0), (5.0, -25.0, 0.0, 0.0), (5.6, -25.0, 0.0, 0.0), (6.8, 0.0, 0.0, 0.0)],
+        "tail_4": [(1.3, 0.0, 0.0, 0.0), (2.5, -28.0, 0.0, 0.0), (5.1, -29.0, 0.0, 0.0), (5.7, -29.0, 0.0, 0.0), (6.9, 0.0, 0.0, 0.0)],
+        "turret_l": [(0.8, 0.0), (2.2, 40.0), (4.8, 40.0), (6.0, 0.0)],
+        "turret_r": [(0.9, 0.0), (2.3, -40.0), (4.9, -40.0), (6.1, 0.0)],
+    })
+    b.act("threat", 7.2, tracks, body=body, glow=[(["eye"], [(0.5, 0.0), (1.2, 8.0), (5.2, 8.0), (6.0, 0.0)])])
+    # The probe: it leans forward and down to feel the ground ahead, the left feeler reaching
+    # down and pressing the ground twice, holding each touch, its tip lit at each, then the right;
+    # the shoulder guns and the mirror's head following the feeler at work, a claw opening a little
+    # as it listens; and back.
+    tracks, body = _planted(limbs, _dense([(0.5, 0.0, 0.0, 0.0), (1.6, 2.0, -2.6, -3.6), (8.2, 2.4, -2.8, -3.9), (8.8, 2.4, -2.8, -3.9), (9.8, 0.0, 0.0, 0.0)], 10.0))
+    press = lambda t0: [(round(t0, 3), 0.0, 0.0, 0.0), (round(t0 + 0.3, 3), -24.0, 0.0, 0.0), (round(t0 + 0.9, 3), -24.0, 0.0, 0.0), (round(t0 + 1.15, 3), -6.0, 0.0, 0.0),
+                        (round(t0 + 1.75, 3), -6.0, 0.0, 0.0), (round(t0 + 2.0, 3), -24.0, 0.0, 0.0), (round(t0 + 2.6, 3), -24.0, 0.0, 0.0), (round(t0 + 3.1, 3), 0.0, 0.0, 0.0)]
+    lit = lambda t0: [(round(t0 + 0.25, 3), 1.0), (round(t0 + 0.32, 3), 10.0), (round(t0 + 0.9, 3), 10.0), (round(t0 + 1.1, 3), 1.0),
+                      (round(t0 + 1.95, 3), 1.0), (round(t0 + 2.02, 3), 10.0), (round(t0 + 2.6, 3), 10.0), (round(t0 + 2.8, 3), 1.0)]
+    tracks.update({
+        "feeler_l": [(0.6, 0.0, 0.0, 0.0), (1.6, -30.0, 10.0, 0.0), (4.3, -30.0, 10.0, 0.0), (5.2, 0.0, 0.0, 0.0)],
+        "feeler_l2": press(1.7),
+        "feeler_r": [(3.9, 0.0, 0.0, 0.0), (4.9, -30.0, -10.0, 0.0), (7.6, -30.0, -10.0, 0.0), (8.5, 0.0, 0.0, 0.0)],
+        "feeler_r2": press(5.0),
+        "turret_l": [(1.0, 0.0), (1.8, 16.0), (4.0, 16.0), (4.9, -12.0), (7.6, -12.0), (8.3, 0.0)],
+        "turret_r": [(1.1, 0.0), (1.9, 16.0), (4.1, 16.0), (5.0, -12.0), (7.7, -12.0), (8.4, 0.0)],
+        "turret_mirror": [(1.2, 0.0), (2.0, 14.0), (4.1, 14.0), (5.0, -14.0), (7.7, -14.0), (8.4, 0.0)],
+        "palp_l": [(1.0, 0.0, 0.0, 0.0), (1.8, -8.0, 4.0, 0.0), (8.6, -8.0, 4.0, 0.0), (9.6, 0.0, 0.0, 0.0)],
+        "palp_r": [(1.1, 0.0, 0.0, 0.0), (1.9, -8.0, -4.0, 0.0), (8.7, -8.0, -4.0, 0.0), (9.7, 0.0, 0.0, 0.0)],
+        "pincer_l": [(1.8, 0.0), (2.4, -14.0), (4.0, -14.0), (4.3, 0.0)],
+        "pincer_r": [(5.0, 0.0), (5.6, 14.0), (7.2, 14.0), (7.5, 0.0)],
+    })
+    b.act("probe", 10.2, tracks, body=body,
+          glow=[(["feeler_tip"], [(1.6, 0.0)] + lit(1.7) + lit(5.0) + [(8.4, 0.0)]),
+                (["eye"], [(0.6, 0.0), (1.3, 6.0), (8.6, 6.0), (9.4, 0.0)])])
+    # Movement: a heavy creep on six legs, one foot at a time on each side from the hind to the
+    # fore, the two sides half a stride apart, so four feet or more stand at once, each planted
+    # while the body passes over it, lifted, carried and stamped down; the body level but for its
+    # drop onto each foot, the fores dipping the nose and the hinds lifting it; the whip swaying
+    # and the feelers bobbing with the stride.
+    DUTY = 0.7
+    order = {"hl": 0.0, "ml": 1.0 / 3.0, "fl": 2.0 / 3.0, "hr": 0.5, "mr": 5.0 / 6.0, "fr": 1.0 / 6.0}
+    walk = [dict(limb(leg), phase=order[leg], shift={"f": 2.0, "m": 0.0, "h": -2.0}[leg[0]], nod={"f": 0.6, "m": 0.1, "h": -0.4}[leg[0]]) for leg in LEGS]
+    tracks, body, stride = _plant(walk, sweep=34.0, duty=DUTY, lift=8.0, crouch=0.3, dip=1.0, nod=0.5, reach=0.96, airborne=0.97, smooth=0.02, n=120)
+    tracks["tail_1"] = ([(i / 40.0, -2.0, round(6.0 * math.sin(2.0 * math.pi * i / 40.0), 3), 0.0) for i in range(41)], 0.0)
+    tracks["tail_2"] = ([(i / 40.0, -2.0, round(5.0 * math.sin(2.0 * math.pi * (i / 40.0 - 0.08)), 3), 0.0) for i in range(41)], 0.0)
+    tracks["feeler_l"] = ([(i / 40.0, round(4.0 * math.sin(4.0 * math.pi * i / 40.0), 3), 0.0, 0.0) for i in range(41)], 0.0)
+    tracks["feeler_r"] = ([(i / 40.0, round(-4.0 * math.sin(4.0 * math.pi * i / 40.0), 3), 0.0, 0.0) for i in range(41)], 0.0)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.move(accel=1.4, heft=0.22)
+
+whip_scorpion.maker = "wainwright_sutler"
+
+
 def goshawk(b):
     """Kestrel "Goshawk" (K-9 Mk II Attack Airframe): a medium-large airframe, endurance over
     burst. Second pass (Ryan, 29 September): a wider span on a shorter body, a smaller
