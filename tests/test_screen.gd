@@ -75,37 +75,41 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	s.free()
 
 
-## Whom a piece is aimed at is written under the die's main glyph, never a chip on its rail (Ryan,
-## 2 November: "Ally and self chips - those shouldn't be chips, those are targeting rules. They
-## need to be on the main icon"): SELF or ALLY on a piece spent on machines when narrowed, nothing
-## for the default or a weapon (its reach is its glyph's shape); every narrowed piece in content
-## writes its word. A reach over every ally or every foe is a keyword's chip (Every Ally, Every
-## Foe: "a targeting mode, just like spread, penetrate, and splash").
-func test_whom_a_piece_reaches_is_written_under_its_main_glyph() -> void:
+## Whom a piece spent on machines reaches is three hexes under the die's main glyph, never a chip
+## on its rail (Ryan, 2 November: "just 3 connected hexes: center filled for self-only, left/right
+## filled for ally only, all filled for self or ally"): every shield, vent, reload and buff wears
+## them, the default included; a weapon's or a debuff's reach is its frame's shape. A buff and a
+## debuff are one equipment mark ("merging buff/debuff into one 'equipment' face type"), held by
+## the hexes or by a reach frame. A reach over every ally or every foe is a keyword's chip.
+func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	var shield := Face.shield(4)
-	assert_eq(DieFaceView.target_word(shield), "", "itself or an ally, the default: nothing")
+	assert_eq(Glyphs.aim_for(shield), "aim_any", "itself or an ally, the default: all three lit")
 	shield.targets = Face.Target.SELF
-	assert_eq(DieFaceView.target_word(shield), "SELF", "itself only")
+	assert_eq(Glyphs.aim_for(shield), "aim_self", "itself only: the middle")
 	shield.targets = Face.Target.ALLY
-	assert_eq(DieFaceView.target_word(shield), "ALLY", "its allies only")
+	assert_eq(Glyphs.aim_for(shield), "aim_ally", "its allies only: the two beside it")
 	shield.reaches_all = true
-	assert_eq(DieFaceView.target_word(shield), "ALLY", "every ally at once is aimed at an ally")
+	assert_eq(Glyphs.aim_for(shield), "aim_ally", "every ally at once is aimed at an ally")
 	assert_true(shield.has(Face.Keyword.EVERY_ALLY) and not shield.has(Face.Keyword.EVERY_FOE), "and carries Every Ally, a keyword")
 	var vent := Face.vent(3)
 	vent.targets = Face.Target.SELF
-	assert_eq(DieFaceView.target_word(vent), "SELF", "a vent's")
+	assert_eq(Glyphs.aim_for(vent), "aim_self", "a vent's")
 	var buff := Face.buff("overcharged", 1)
 	buff.targets = Face.Target.ALLY
-	assert_eq(DieFaceView.target_word(buff), "ALLY", "a buff's")
+	assert_eq(Glyphs.aim_for(buff), "aim_ally", "a buff's")
+	assert_eq(Glyphs.primary_for(buff), "equipment", "a buff wears the equipment mark")
 	var gun := Face.attack(0)
 	gun.reaches_all = true
-	assert_eq(DieFaceView.target_word(gun), "", "a weapon or a debuff writes none")
+	assert_eq(Glyphs.aim_for(gun), "", "a debuff wears no hexes")
+	assert_eq(Glyphs.primary_for(gun), "equipment_line", "its mark in its reach frame, the same mark as a buff's")
+	assert_eq(Glyphs.primary_for(Face.attack(0, Face.Reach.INDIRECT)), "equipment_indirect", "under the arc")
+	assert_eq(Glyphs.aim_for(Face.attack(4)), "", "nor a weapon")
 	assert_true(gun.has(Face.Keyword.EVERY_FOE), "its reach over every foe a keyword, Every Foe")
 	var lure := DieFaceView.new()
 	lure.set_face(gun)
 	assert_eq(lure.rail_tags(), ["every_foe"] as Array[String], "its chip on the rail, never the star")
 	lure.free()
-	assert_eq(DieFaceView.target_word(Face.empty_slot()), "", "nor a blank")
+	assert_eq(Glyphs.aim_for(Face.empty_slot()), "", "nor a blank")
 	var d := DieFaceView.new()
 	var own := Face.shield(4)
 	own.targets = Face.Target.SELF
@@ -122,9 +126,9 @@ func test_whom_a_piece_reaches_is_written_under_its_main_glyph() -> void:
 		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
 			continue
 		var f := db.build_face(comp["face"])
+		assert_eq(Glyphs.aim_for(f).is_empty(), not f.on_machines(), "%s: hexes on a piece spent on machines alone" % cid)
 		if f.on_machines() and f.targets != Face.Target.SELF_ALLY:
 			narrowed += 1
-			assert_false(DieFaceView.target_word(f).is_empty(), "%s writes whom it reaches" % cid)
 	assert_true(narrowed > 0, "content narrows some (%d)" % narrowed)
 
 
@@ -1936,9 +1940,8 @@ func test_a_bar_ticks_its_ones_and_its_fives_alone_where_the_ones_crowd() -> voi
 
 ## Every icon on a die face is in its readout (Ryan, 2 November: "any icon on a die face NEEDS to
 ## be represented in the popup, star icon before the unique effect for instance"): for every
-## component in content, the die's big glyph, each keyword chip and the star for a rule of its
-## own each stand at the head of a line of its readout, and whom it reaches, written under the
-## big glyph when narrowed, is its target line's words.
+## component in content, the die's big glyph, each keyword chip, the star for a rule of its own
+## and the three hexes of whom it reaches each stand at the head of a line of its readout.
 func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 	var db := ContentDB.load_default()
 	for cid in db.components.keys():
@@ -1961,16 +1964,14 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 			wanted.append("star")
 		for g in wanted:
 			assert_true(heads.has(g), "%s: the die's %s mark heads a readout line (%s)" % [cid, g, str(heads)])
-		var aim := DieFaceView.target_word(f)
+		var aim := Glyphs.aim_for(f)
 		if not aim.is_empty():
-			var said: String = {"SELF": "Target: Self", "ALLY": "Target: Any other ally"}[aim]
-			assert_true(texts.any(func(t: String) -> bool: return t.contains(said)), "%s: the die's %s is its target line (%s)" % [cid, aim, str(texts)])
+			assert_true(heads.has(aim), "%s: the die's hexes head its target line (%s)" % [cid, str(heads)])
 
 
 ## The die's readout lines each with the mark it says: the Puffin's projector, an ally's shield
-## with Overshield, its glyph on its number, its target in words as the die writes it under the
-## glyph, the keyword's chip on its line (and no second icon in the words), and a lock and a
-## corruption on their states.
+## with Overshield, its glyph on its number, the three hexes on its target, the keyword's chip on
+## its line (and no second icon in the words), and a lock and a corruption on their states.
 func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 	var db := ContentDB.load_default()
 	var f := db.build_face(db.components["backwash_ionizer"]["face"])
@@ -1986,8 +1987,8 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 		if str(l.get("text", "")) == "Target: Any other ally":
 			target = l
 	assert_false(target.is_empty(), "whom it reaches, in words")
-	assert_true((target.get("marks", []) as Array).is_empty(), "with no chip of its own: the die writes ALLY under its glyph")
-	assert_eq(DieFaceView.target_word(f), "ALLY", "as the die writes it")
+	assert_eq((target.get("marks", []) as Array).map(func(m: Dictionary) -> String: return str(m.get("glyph", ""))), ["aim_ally"], "headed by the three hexes the die draws, the two beside lit")
+	assert_false(bool((target.get("marks", [{}]) as Array)[0].get("box", true)), "bare, as the die draws them under its glyph")
 	assert_eq(str(by.get("overshield", {}).get("text", "")), "Overshield", "the keyword's chip on its line")
 	assert_false(bool((by.get("overshield", {}).get("parts", [{}])[0] as Dictionary).get("icon", true)), "its word wears no second icon")
 	assert_eq(str(by.get("lock", {}).get("style", "")), "state", "the lock on its state")
@@ -2000,7 +2001,7 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 			boxed += 1
 		else:
 			bare += 1
-	assert_eq([boxed, bare], [1, 2], "the keyword's chip boxed as the die boxes it, the big glyph and the lock bare")
+	assert_eq([boxed, bare], [1, 3], "the keyword's chip boxed as the die boxes it, the big glyph, the hexes and the lock bare")
 	readout.free()
 
 

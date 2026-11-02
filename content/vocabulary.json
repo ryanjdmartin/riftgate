@@ -416,7 +416,7 @@
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
-   "codex": "Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, or any other ally. The die writes a narrowed one under its main icon: SELF, ALLY, or EVERY ALLY for one that lands on every ally at once.",
+   "codex": "Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, or any other ally. The die shows it as three hexes under its main icon, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only.",
    "status": "implemented",
    "design": {
     "holes": ""

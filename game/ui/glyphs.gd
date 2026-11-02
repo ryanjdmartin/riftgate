@@ -16,21 +16,46 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
 			ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
 			ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
-		"debuff_line", "debuff_indirect":
-			# A debuff (Ryan, 20 and 21 October, the die's grammar): its reach frame carries the
-			# status mark where a gun carries its number, the debuff chips' down arrow, so the
-			# frame and the mark both say it (structure twice). The crosshair's cross is cut to
-			# four ticks so the mark sits inside the ring; the arc lobs over it.
-			if id == "debuff_line":
+		"equipment":
+			# Equipment, one mark for a buff and a debuff (Ryan, 2 November: "merging buff/debuff
+			# into one 'equipment' face type"; the arrows "look like push/pull"): a diamond with a
+			# solid core, its aim said by what holds it, a reach frame for a foe, the three hexes
+			# for a machine.
+			ci.draw_polyline(PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.8, 0), c + Vector2(0, s), c + Vector2(-s * 0.8, 0), c + Vector2(0, -s)]), color, width)
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s * 0.42), c + Vector2(s * 0.34, 0), c + Vector2(0, s * 0.42), c + Vector2(-s * 0.34, 0)]), color)
+		"equipment_line", "equipment_indirect":
+			# Equipment aimed at a foe (Ryan, 20 and 21 October, the die's grammar): its reach frame
+			# carries the equipment's mark where a gun carries its number, so the frame says whom
+			# and the mark what. The crosshair's cross is cut to four ticks so the mark sits inside
+			# the ring; the arc lobs over it.
+			if id == "equipment_line":
 				ci.draw_arc(c, s * 0.68, 0.0, TAU, 28, color, width)
 				for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
 					ci.draw_line(c + d * s * 0.68, c + d * s, color, width)
-				draw(ci, "debuff", c, s * 0.82, color, width)
+				draw(ci, "equipment", c, s * 0.95, color, width)
 			else:
 				ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
 				ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
 				ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
-				draw(ci, "debuff", c + Vector2(0, s * 0.12), s * 0.78, color, width)
+				draw(ci, "equipment", c + Vector2(0, s * 0.1), s * 0.9, color, width)
+		"aim_self", "aim_ally", "aim_any":
+			# Whom a piece spent on machines reaches (Ryan, 2 November: "just 3 connected hexes:
+			# center filled for self-only, left/right filled for ally only, all filled for self or
+			# ally"): three hexes in a row, the middle its own machine, a filled one a machine it
+			# may be spent on. As wide as the size given; each cell drawn a little inside its place,
+			# so three lit read as three, never one band.
+			var r := size / (3.0 * sqrt(3.0))
+			var cell := r - maxf(1.2, width * 0.8)
+			for k in range(3):
+				var hc := c + Vector2((k - 1) * sqrt(3.0) * r, 0.0)
+				var hex := PackedVector2Array()
+				for i in range(7):
+					var a := PI / 6.0 + i * PI / 3.0
+					hex.append(hc + Vector2(cos(a), sin(a)) * cell)
+				var lit := id == "aim_any" or (id == "aim_self") == (k == 1)
+				if lit:
+					ci.draw_colored_polygon(hex, color)
+				ci.draw_polyline(hex, color, width)
 		"shield":
 			var pts := PackedVector2Array([
 				c + Vector2(-s, -s * 0.85), c + Vector2(s, -s * 0.85), c + Vector2(s, s * 0.1),
@@ -556,9 +581,24 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.BLANK:
 			return "blank"
 		Face.Kind.BUFF:
-			return "buff"
+			return "equipment"   # spent on a machine: the three hexes under it say whom (aim_for)
 		_:
-			# A debuff (equipment aimed at a foe) wears its reach frame with the status mark inside.
+			# Equipment aimed at a foe (a debuff) wears its reach frame with the equipment's mark inside.
 			if face.reach == Face.Reach.INDIRECT:
-				return "debuff_indirect" if face.is_debuff() else "indirect"
-			return "debuff_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags
+				return "equipment_indirect" if face.is_debuff() else "indirect"
+			return "equipment_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags
+
+
+## Whom a piece spent on machines reaches, as the three hexes under its main glyph draw it
+## (Ryan, 2 November): its own machine only, its allies only, or either; "" for a weapon or
+## equipment aimed at a foe (its reach is its frame's shape) and a blank. A reach over every
+## ally is its keyword's chip besides (Every Ally).
+static func aim_for(face: Face) -> String:
+	if face == null or not face.on_machines():
+		return ""
+	match face.targets:
+		Face.Target.SELF:
+			return "aim_self"
+		Face.Target.ALLY:
+			return "aim_ally"
+	return "aim_any"

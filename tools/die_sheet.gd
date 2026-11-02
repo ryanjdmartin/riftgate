@@ -32,7 +32,7 @@ func _init() -> void:
 	root.add_child(_sheet)
 	var y := MARGIN
 	y = _section(y, "WHAT AN ENTRY IS: THE MAIN ICON", _kinds())
-	y = _section(y, "WHOM IT IS AIMED AT: WRITTEN UNDER THE ICON WHEN NARROWED (2 NOVEMBER)", _targets(), 6)
+	y = _section(y, "WHOM A PIECE SPENT ON MACHINES REACHES: THREE HEXES UNDER THE ICON, THE MIDDLE ITS OWN", _targets(), 6)
 	y = _section(y, "THE REST OF A FACE: COSTS, STATES, THE CHIPS DOWN ITS EDGE", _rest())
 	process_frame.connect(_tick)
 
@@ -98,12 +98,12 @@ func _kinds() -> Array:
 		["Weapon, indirect", "an arc: Indirect,\nany foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
 		["Weapon, rolled", "rolls in its range\nas it is spent", _die(rolled)],
 		["Weapon, strikes", "three blows a spend,\neach rolled on its own", _die(burst)],
-		["Debuff, direct", "the crosshair with the\nstatus mark: no damage", _die(Face.attack(0))],
-		["Debuff, indirect", "the arc with the\nstatus mark", _die(Face.attack(0, Face.Reach.INDIRECT))],
+		["Equipment, direct", "the crosshair holding\nthe mark: no damage", _die(Face.attack(0))],
+		["Equipment, indirect", "the arc over the\nmark: no damage", _die(Face.attack(0, Face.Reach.INDIRECT))],
 		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
 		["Vent", "spent on a machine:\nheat off", _die(Face.vent(3))],
 		["Reload", "a vent that fills the\nmagazine (the Musk Ox)", _die(reload)],
-		["Buff", "spent on a machine:\na status, stacks", _die(Face.buff("overcharged", 2))],
+		["Equipment", "spent on a machine:\na status, stacks", _die(Face.buff("overcharged", 2))],
 		["Blank", "an empty hardpoint, or\na destroyed component", _die(Face.empty_slot())],
 		["Machine down", "its die, wrecked", down],
 	]
@@ -112,7 +112,7 @@ func _kinds() -> Array:
 func _targets() -> Array:
 	var out: Array = []
 	var kinds := [["Shield", func() -> Face: return Face.shield(4)], ["Vent", func() -> Face: return Face.vent(3)],
-		["Buff", func() -> Face: return Face.buff("overcharged", 2)], ["Reload", func() -> Face:
+		["Equipment", func() -> Face: return Face.buff("overcharged", 2)], ["Reload", func() -> Face:
 			var r := Face.vent(0)
 			r.reloads_ammo = 2
 			return r]]
@@ -123,9 +123,9 @@ func _targets() -> Array:
 		own.targets = Face.Target.SELF
 		var give: Face = make.call()
 		give.targets = Face.Target.ALLY
-		out.append(["%s, default" % k[0], "itself or an ally:\nunmarked", _die(plain)])
-		out.append(["%s, SELF" % k[0], "its own machine only", _die(own)])
-		out.append(["%s, ALLY" % k[0], "any other ally only", _die(give)])
+		out.append(["%s, either" % k[0], "all three: itself\nor an ally", _die(plain)])
+		out.append(["%s, self" % k[0], "the middle: its own\nmachine only", _die(own)])
+		out.append(["%s, ally" % k[0], "the two beside it:\nits allies only", _die(give)])
 	return out
 
 

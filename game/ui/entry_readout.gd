@@ -116,8 +116,8 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 		base = f
 	# Each line carries the die's mark it says in words (Ryan, 2 November: every icon on a die face
 	# represented in the popup): the big glyph on what the piece is, a keyword's chip on its line,
-	# the star on every unique rule, the marks beside the heat on theirs; whom it is spent on is
-	# words on the die as here.
+	# the star on every unique rule, the marks beside the heat on theirs, the three hexes on whom
+	# it is spent on.
 	var main := mark(Glyphs.primary_for(f), Palette.HUD, false)
 	var star := mark("star", Glyphs.colour_for("star"))
 	if f.kind == Face.Kind.BLANK:
@@ -188,10 +188,15 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 		if f.short:
 			shield_cost.append(word("(the shield cannot pay it)"))
 		out.append(parts_line("effect", shield_cost, "attr"))
-	# Whom it is aimed at, in the words the die writes under its main glyph when narrowed (SELF,
-	# ALLY: DieFaceView.target_word), so the line wears no mark of its own; a reach past the
-	# target is its keyword's line (Every Foe, Every Ally, an area's), as the die chips it.
-	out.append(text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f), "attr"))
+	# Whom it is aimed at: a piece spent on machines headed by the three hexes the die draws
+	# under its main glyph (Glyphs.aim_for), bare as the glyph is; a weapon's or a debuff's reach
+	# is its frame's, on its first line. A reach past the target is its keyword's line (Every
+	# Foe, Every Ally, an area's), as the die chips it.
+	var target := text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f), "attr")
+	var aim := Glyphs.aim_for(f)
+	if not aim.is_empty():
+		marked(target, [mark(aim, Palette.HUD, false)])
+	out.append(target)
 	var land: Array = []   # how it lands
 	var lays: Array = []   # what it leaves on each foe hit
 	var after: Array = []  # Rapid's turn
@@ -779,7 +784,9 @@ func _draw() -> void:
 			Hud.box(self, r, 3.0, Color(Palette.BG, 0.92), c["colour"], 1.2)
 			Glyphs.draw(self, str(c["glyph"]), r.get_center(), 13, c["colour"], 1.7)
 		else:
-			Glyphs.draw(self, str(c["glyph"]), r.get_center(), 17, c["colour"], 2.0)   # bare, as the die draws its big glyph
+			# Bare, as the die draws its big glyph; the three hexes of whom it reaches across the box.
+			var aimed := str(c["glyph"]).begins_with("aim_")
+			Glyphs.draw(self, str(c["glyph"]), r.get_center(), r.size.x if aimed else 17.0, c["colour"], 1.4 if aimed else 2.0)
 	for w in _words:
 		var at: Vector2 = w["at"]
 		var icon := float(w.get("icon", 0.0))

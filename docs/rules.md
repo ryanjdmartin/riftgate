@@ -29,9 +29,10 @@ skirmish.
   damage and is spent on a foe in its reach; **equipment** is a buff or a debuff and deals
   none, a buff spent on a machine and a debuff on a foe in its reach; a **shield** and a
   **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
-  default, or self only, or allies only, as the die writes under its main icon (SELF, ALLY;
-  nothing for the default), a targeting rule as a weapon's reach is its icon's shape; a reach
-  over every foe or every ally is a keyword (Every Foe, Every Ally). A passive may make a piece count as
+  default, or self only, or allies only, as the three hexes under its main icon show: the middle
+  its own machine, the two beside it its allies, a filled one a machine it may be spent on (all
+  three for either), a targeting rule as a weapon's reach is its icon's shape; a reach over
+  every foe or every ally is a keyword (Every Foe, Every Ally). A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
   too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
   codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
@@ -138,12 +139,13 @@ defeat when every machine is wrecked. There is no round limit.
   no rounds when the status runs down on its own (Overcharged).
 - **A debuff** is equipment aimed at a foe (a setter, a swap), spent on a foe in reach as a
   weapon is: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
-  Up, Primed's burn), and its heat is paid as a weapon's. The die's kinds: Direct, Indirect, Debuff,
-  Buff, Shield, Vent, and the blank. On the die a gun is its reach frame with its number, a
-  debuff the frame with the status mark inside and no number (the crosshair's ring with its
-  cross cut to four ticks round the mark, or the arc over it; the mark is the debuff chips'
-  down arrow), a buff the mark alone; a shield or vent that also buffs is its own glyph with a
-  buff chip. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  Up, Primed's burn), and its heat is paid as a weapon's. The die's kinds: Direct, Indirect,
+  Equipment, Shield, Vent, and the blank. On the die a gun is its reach frame with its number;
+  equipment, a buff or a debuff, is one mark, a diamond with a solid core: aimed at a foe it sits
+  in its reach frame and prints no number (the crosshair's ring with its cross cut to four ticks
+  round it, or the arc over it), spent on a machine it stands over the three hexes with its
+  stacks beneath, as a shield and a vent do; a shield or vent that also buffs is its own glyph
+  with a buff chip. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
 
@@ -205,8 +207,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
 - **Tapping a die** opens its readout, the entry showing alone, its marks as text, each line headed
-  by the mark on the die it says (the big glyph, a keyword's chip, the star, the lock, a
-  corruption, a mark beside the heat; whom it reaches in the die's own words): its place and name,
+  by the mark on the die it says (the big glyph, a keyword's chip, the star, the three hexes on
+  its target, the lock, a corruption, a mark beside the heat): its place and name,
   what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
   codex, then a line a mark: its number as the die prints it, its heat, its target, then its
   keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a
