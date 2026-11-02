@@ -81,7 +81,7 @@ Nemesis hot then really hot, the Ammit's glow moved to its rear vent, a halo's o
 toward the eye), then the weapon-fire package he answered: the weapon that fired the only one
 that moves, its muzzle flares on every class in its tags' look, the aim onto the foe where a
 turret, a waist or a hover's pivot is cheap, and sixteen machines' fixed weapons firing with a cut
-of an idle act; green at 836 tests and 207,097 checks; not yet on main; its bible is v0.420. Next on
+of an idle act; green at 836 tests and 207,097 checks; not yet on main; its bible is v0.420 (the page's 432). Next on
 it: Ryan's read of the glows and the weapons firing, then the shot crossing the field and a hit
 moving the machine (the to-do).
 
@@ -626,8 +626,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.419 (the
-  page's version 431, published 31 October from `claude/charming-rubin-h954bp`: the glows' sixth
+  `docs/design-bible.html` after every change. This file and the live page are v0.420 (the
+  page's version 432, published 2 November from `claude/charming-rubin-h954bp`: the weapon that
+  fired the one that moves, turning onto its foe, flaring in its tags' look and, fixed, firing with
+  a cut of its own act, in place of the open attack-acts row and section 12's weapon-fire question;
+  onto its own v0.419 at 431, the glows' sixth
   round in the reference-glass and glow colours rows, three-way merged onto the live v0.418 another
   session published at 430, its v0.416 to v0.418 at 428 to 430 a pass of its own (the track pairs'
   notes and the generated tables' statuses and foe keywords among them), the version line the only
@@ -657,7 +660,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 182 (31 October, from
+  acts on a reloaded page). At the page's version 183 (2 November, from
+  `claude/charming-rubin-h954bp`: `motion.js` with the weapon that fired the only one that moves,
+  its flares, its aim and the fixed weapons' firing acts, the page's Shot renamed Fire, the muzzle
+  table, and the sixteen rigs that name a firing act; every other file as 182 had it, `edits`
+  empty), on 182 (31 October, from
   `claude/charming-rubin-h954bp`: `motion.js` with a halo's own distance toward the eye, the four
   machines round six moved (their models and rigs) and their renders redone with round five's
   under "before", the stills nothing names removed; onto 181, which another session published, its
