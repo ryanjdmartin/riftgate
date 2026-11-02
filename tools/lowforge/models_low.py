@@ -1766,29 +1766,32 @@ def _cassowary_drum_ring(cx, cz, r, flute):
 def cassowary(b):
     """Wainwright & Sutler "Cassowary" (Pattern 15 Gun Walker), first cut 31 October from Ryan's
     to-do line: a medium chicken walker in the maker's iron, the AT-ST silhouette, a squared cab
-    on two digitigrade legs, no arms, the revolver drum on the cab's flank clicking round a
-    chamber at every roll; five hardpoints, the Spin-Up showing nowhere. The flightless bird
-    that kills: each leg a short thigh down and forward to the knee under the pelvis, the long
-    drumstick of a shin back to a high hock, the shank down to the ball, three toes and a spur,
-    the inner toe carrying the dagger claw. The cab turns on a waist over the pelvis the legs
+    on two digitigrade legs, no arms, five hardpoints, the Spin-Up showing nowhere. Each leg a
+    short thigh down and forward to the knee under the pelvis, the long drumstick of a shin back
+    to a high hock, the shank down to the ball. The cab turns on a waist over the pelvis the legs
     hang from (a walker turns at the waist), its brow over a visor slit and two lamps, the chin
-    turret under the prow. The drum on the right flank, its axle in straps off the cab and the
-    hammer lit over its top: six fluted chambers, their mouths front and back lit, the first
-    ringed in white paint with a white stripe down its land, the cylinder's index, which sits
-    under the hammer when the die shows its first entry, so the drum shows where the cylinder
-    stands (b.index: the game turns it a chamber for every entry the die moves on). Mounts in
-    the die's order: hp_1 the chin turret's Twin Autoguns, hp_2 the left
-    pod's Rivet Gun, hp_3 the Ankle Mortar's rack on the roof's rear right, hp_4 the Halo
-    Shield's dish on the roof's front left, hp_5 bare on the roof's rear left (the Coolant
-    Jacket shows nowhere)."""
+    turret under the prow. Second round, 2 November, on Ryan's notes ("more of a symbolic
+    revolver than a literal one", "weird toes, not mechanical enough"): the revolver drum on the
+    cab's flank is a capacitor bank now, six cells round a core between two end plates, wound
+    with two copper coils, on its axle in straps off the cab under a lit spark gap; its cells
+    light one a counted shot, charging toward the sixth shot, the one its Indexed Cylinder
+    counts double, and all six flare and go dark as that shot discharges it (b.count, the
+    machine's `shots`); it spins while the machine is Spun Up, the status its Spin-Up grants
+    (b.spin_held). The feet are the AT-ST's, broad and flat in iron: a heel block on the shank,
+    three hinged toe plates on the ball, so the toes stay flat as the heel lifts. Mounts in the
+    die's order: hp_1 the chin turret's Twin Autoguns, hp_2 the left pod's Rivet Gun, hp_3 the
+    Ankle Mortar's rack on the roof's rear right, hp_4 the Halo Shield's dish on the roof's
+    front left, hp_5 bare on the roof's rear left (the Coolant Jacket shows nowhere)."""
     # The pelvis the legs hang from, a dark block under the waist, a drive box behind it.
     b.box(-12.0, 12.0, -9.0, 7.0, 50.0, 62.0, "steel.dark", "pelvis")
     b.box(-7.0, 7.0, -12.0, -9.0, 52.0, 60.0, "steel.panel", "drive_box")
     b.prism("z", 0.0, -1.0, 62.6, 9.0, 1.6, "steel.dark", 8, "waist_ring", phase=math.pi / 8)
     # The legs, each in its own plane: a hip disc on the pelvis's flank, a short thigh down and
     # forward to the knee, the shin long down and back to the hock, the shank down to the ball,
-    # and the foot: a sole under the ball, three toes splayed forward and a spur back, the inner
-    # toe's dagger claw forward and up. Nothing hangs below z = 0.
+    # and the foot, the AT-ST's in iron (Ryan, 2 November: the bird's toes were "not mechanical
+    # enough"): a heel block on the shank behind the ball, clevis plates either side of the ball's
+    # hinge, and on the toe joint three flat toe plates splayed a little, a dark cap on each, so
+    # the plates stay flat on the ground as the heel lifts. Nothing hangs below z = 0.
     LX = 17.0
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
@@ -1812,20 +1815,21 @@ def cassowary(b):
                 b.prism("x", x, hock[1], hock[2], 3.6, 8.0, "steel.dark", 8, "hock", phase=math.pi / 8)
                 with b.joint("ankle_" + side, hock, limits=(-60.0, 65.0)):
                     _beam(b, hock, ball, _sq(4.6, 5.0), _sq(4.2, 4.2), "steel.dark", "shank")
-                    b.prism("x", x, ball[1], ball[2], 2.4, 6.5, "steel.plate", 8, "ball", phase=math.pi / 8)
+                    by = ball[1]
+                    b.loft([(by - 10.0, rect(x, 8.0, 0.0, 2.6)), (by - 7.5, rect(x, 10.0, 0.0, 4.8)), (by - 0.6, rect(x, 10.0, 0.0, 4.8))], "steel.plate", "heel")
+                    b.box(x - 5.0, x + 5.0, by - 9.5, by - 0.6, 0.0, 0.7, "steel.dark", "heel_tread")
+                    for xo in (-4.0, 4.0):
+                        b.box(x + xo - 0.6, x + xo + 0.6, by - 3.0, by + 2.2, 1.0, 8.0, "steel.panel", "clevis")
+                    b.prism("x", x, ball[1], ball[2], 2.4, 9.2, "steel.dark", 8, "ball", phase=math.pi / 8)
                     with b.joint("toe_" + side, ball, limits=(-85.0, 50.0)):
-                        b.box(x - 4.0, x + 4.0, ball[1] - 2.5, ball[1] + 4.0, 0.0, 2.2, "steel.dark", "sole")
-                        for ang, length, label in ((0.0, 12.0, "toe"), (s * 28.0, 10.0, "toe"), (-s * 28.0, 7.5, "toe_inner")):
+                        b.box(x - 6.6, x + 6.6, by - 0.4, by + 3.4, 0.0, 2.8, "steel.plate", "forefoot")
+                        for ang, length in ((0.0, 13.0), (s * 13.0, 11.5), (-s * 13.0, 11.5)):
                             d = Vector((math.sin(math.radians(ang)), math.cos(math.radians(ang)), 0.0))
-                            root = Vector((x, ball[1] + 1.0, 1.6))
-                            tip = root + d * length
-                            _beam(b, tuple(root), tuple(tip), _sq(4.2, 3.2), _sq(2.6, 2.2), "steel.plate", label)
-                            if label == "toe":
-                                _spike(b, tuple(tip + Vector((0.0, 0.0, -0.4))), tuple(tip + d * 3.0 + Vector((0.0, 0.0, -0.9))), 1.0, "steel.dark", "claw")
-                            else:
-                                # The dagger, the inner toe's claw: long, forward and up.
-                                _spike(b, tuple(tip), tuple(tip + d * 6.0 + Vector((0.0, 4.5, 3.6))), 1.4, "steel.dark", "dagger")
-                        _beam(b, (x, ball[1] - 1.0, 1.4), (x, ball[1] - 7.0, 1.0), _sq(2.6, 2.4), _sq(1.4, 1.4), "steel.plate", "spur")
+                            sd = Vector((d.y, -d.x, 0.0))
+                            root = Vector((x, by + 1.0, 0.0)) + sd * (math.copysign(4.3, ang) if ang else 0.0)
+                            ring = lambda c, w, h: [tuple(c + sd * (w / 2.0)), tuple(c - sd * (w / 2.0)), tuple(c - sd * (w / 2.0) + Vector((0.0, 0.0, h))), tuple(c + sd * (w / 2.0) + Vector((0.0, 0.0, h)))]
+                            _rings(b, [ring(root, 4.4, 2.8), ring(root + d * (length * 0.62), 4.4, 2.8), ring(root + d * length, 3.8, 1.3)], "steel.plate", "toe_plate")
+                            _rings(b, [ring(root + d * (length * 0.84), 4.6, 1.9), ring(root + d * (length + 0.6), 4.0, 1.0)], "steel.dark", "toe_cap")
 
     # The waist (a walker turns at the waist): the cab and everything on it turns and leans on it.
     waist = b.joint("waist", (0.0, -1.0, 62.0), axis="yaw", limits={"yaw": (-45.0, 45.0), "pitch": (-15.0, 12.0), "roll": (-6.0, 6.0)}, swing=False)
@@ -1869,44 +1873,48 @@ def cassowary(b):
     b.prism("z", -7.5, 3.0, 86.0, 2.0, 4.4, "steel.dark", 6, "dish_base")
     b.stock("hp_4", (-7.5, 3.0, 88.2), "dish", scale=0.55, carries="halo_shield")
     b.pad("hp_5", (-7.5, -10.5, 85.5), scale=0.55, size=(6.0, 1.5))
-    # The drum on the right flank: an axle in two straps off the cab, the hammer on an arm over
-    # its top at the rear, lit; the cylinder turns on the axle (the drum joint, indexed by the
-    # die). Six fluted chambers round the axle, bored shallow front and back, every floor lit
-    # (lean hotter: the phone sees the drum's rear face in the cab's shadow); the first chamber
-    # at the top under the hammer, ringed in white paint with a white stripe down its land, the
-    # cylinder's index: where the stripe stands says which chamber is up.
+    # The capacitor on the right flank, where the revolver drum hung (Ryan, 2 November: "some kind
+    # of capacitor, charging up for the sixth hit of its passive"): six cells round a core between
+    # two end plates, wound with two copper coils, on an axle in straps off the cab, a spark gap
+    # lit over its rear on an arm off the cab, two horns and the spark between them. Each cell's
+    # lens in either end plate and its window down its outside light, a cell a counted shot,
+    # cell_1 at the top first and the rest clockwise seen from behind; the sixth shot, the one the
+    # Indexed Cylinder counts double, discharges them, all six flaring and going dark (b.count).
+    # The bank spins while the machine is Spun Up (b.spin_held).
     DX, DY, DZ, DR = 23.5, 0.5, 72.0, 8.5
     Y0, Y1 = DY - 7.5, DY + 7.5
-    RC, RB = 4.8, 1.8   # the chambers' circle and their bores
-    b.prism("y", DX, DY, DZ, 1.8, 22.0, "steel.dark", 8, "drum_axle", phase=math.pi / 8)
+    RC, RL = 4.9, 2.0   # the cells' circle and their lenses
+    b.prism("y", DX, DY, DZ, 1.8, 22.0, "steel.dark", 8, "capacitor_axle", phase=math.pi / 8)
     for y in (Y1 + 0.9, Y0 - 0.9):
-        b.box(14.0, DX + 1.0, y - 0.9, y + 0.9, DZ - 1.0, DZ + 1.0, "steel.dark", "drum_strap")
-        b.prism("y", DX, y, DZ, 2.8, 2.0, "steel.plate", 8, "drum_boss", phase=math.pi / 8)
-    b.box(12.0, DX + 2.0, Y0 - 2.6, Y0 - 0.4, DR + DZ + 0.8, DR + DZ + 2.5, "steel.plate", "hammer_arm")
-    b.box(DX - 2.0, DX + 2.0, Y0 - 3.2, Y0 - 0.1, DR + DZ + 2.5, DR + DZ + 4.3, "amber.lit", "hammer")
-    with b.joint("drum", (DX, DY, DZ), axis="roll"):
-        outer, inner = _cassowary_drum_ring(DX, DZ, DR, 1.8), _cassowary_drum_ring(DX, DZ, DR * 0.9, 1.8 * 0.9)
-        b.loft([(Y0, inner), (Y0 + 0.9, outer), (Y1 - 0.9, outer), (Y1, inner)], "steel.plate", "drum", cap=False)
-        half = DR * math.sin(math.radians(16.0)) - 0.2
-        b.box(DX - half, DX + half, Y0 + 1.0, Y1 - 1.0, DZ + DR * math.cos(math.radians(16.0)) - 0.1, DZ + DR * math.cos(math.radians(16.0)) + 0.35, "bone.bone", "index_stripe")
-        for yf, inward in ((Y0, 1.0), (Y1, -1.0)):
-            holes, mouths = [], []
-            for j in range(6):
-                a = math.radians(-60.0 * j)   # chamber j, the die's entry j + 1: it comes up under the hammer after j steps
-                cx, cz = DX + RC * math.sin(a), DZ + RC * math.cos(a)
-                ring = [(cx + RB * math.cos(math.pi / 6.0 + k * math.pi / 3.0), cz + RB * math.sin(math.pi / 6.0 + k * math.pi / 3.0)) for k in range(6)]
-                holes.append([(px, yf, pz) for px, pz in ring])
-                mouths.append((cx, cz, ring))
-            _plate(b, [(px, yf, pz) for px, pz in inner], holes, "steel.plate", "drum_face")
-            for j, (cx, cz, ring) in enumerate(mouths):
-                floor = yf + inward * 1.3
-                _rings(b, [[(px, yf, pz) for px, pz in ring], [(px, floor, pz) for px, pz in ring]], "bore.dark", "bore", cap=False)
-                _face(b, [(px, floor, pz) for px, pz in ring], "amber.lit", "chamber")   # the lit tile: uniformly bright, so a small face lights whole
-                if j == 0:
-                    collar = [(cx + 3.2 * math.cos(math.pi / 6.0 + k * math.pi / 3.0), cz + 3.2 * math.sin(math.pi / 6.0 + k * math.pi / 3.0)) for k in range(6)]
-                    lip = yf - inward * 0.35
-                    _plate(b, [(px, lip, pz) for px, pz in collar], [[(px, lip, pz) for px, pz in ring]], "bone.bone", "chamber_one")
-    b.index("drum", 60.0)
+        b.box(14.0, DX + 1.0, y - 0.9, y + 0.9, DZ - 1.0, DZ + 1.0, "steel.dark", "capacitor_strap")
+        b.prism("y", DX, y, DZ, 2.8, 2.0, "steel.plate", 8, "capacitor_boss", phase=math.pi / 8)
+    b.box(12.0, DX + 2.0, Y0 - 2.6, Y0 - 0.4, DR + DZ + 0.8, DR + DZ + 2.5, "steel.plate", "spark_arm")
+    for xo in (-1.9, 1.9):
+        _beam(b, (DX + xo, Y0 - 1.5, DR + DZ + 2.4), (DX + xo * 0.55, Y0 - 1.5, DR + DZ + 5.4), _sq(0.9, 0.9), _sq(0.6, 0.6), "steel.dark", "spark_horn")
+    b.box(DX - 0.9, DX + 0.9, Y0 - 2.0, Y0 - 1.0, DR + DZ + 3.0, DR + DZ + 5.0, "amber.lit", "spark_gap")
+    with b.joint("capacitor", (DX, DY, DZ), axis="roll"):
+        for yf in (Y0, Y1):
+            b.prism("y", DX, yf, DZ, DR, 1.4, "steel.plate", 12, "end_plate", phase=math.pi / 12)
+        b.prism("y", DX, DY, DZ, 2.6, Y1 - Y0, "steel.panel", 8, "core", phase=math.pi / 8)
+        for yb in (DY - 3.2, DY + 3.2):
+            b.prism("y", DX, yb, DZ, 7.7, 1.8, "livery.livery2", 12, "coil", phase=math.pi / 12)
+        cells = []
+        for k in range(6):
+            a = math.radians(60.0 * k)
+            n, t = Vector((math.sin(a), 0.0, math.cos(a))), Vector((math.cos(a), 0.0, -math.sin(a)))
+            c = Vector((DX, DY, DZ)) + n * RC
+            label = "cell_%d" % (k + 1)
+            cells.append(label)
+            b.prism("y", c.x, DY, c.z, 2.3, Y1 - Y0 - 1.0, "steel.dark", 8, "cell_body", phase=math.pi / 8)
+            for yf, out in ((Y0, -1.0), (Y1, 1.0)):
+                b.prism("y", c.x, yf + out * 0.85, c.z, RL + 0.55, 0.4, "steel.dark", 8, "cell_bezel", phase=math.pi / 8)
+                b.prism("y", c.x, yf + out * 1.0, c.z, RL, 0.5, "amber.spark", 8, label, phase=math.pi / 8)
+            w = c + n * 2.25   # the window down the cell's outside, between the end plates
+            strip = lambda y: [tuple(w + t * 0.75 + Vector((0.0, y, 0.0)) - n * 0.2), tuple(w - t * 0.75 + Vector((0.0, y, 0.0)) - n * 0.2),
+                               tuple(w - t * 0.75 + Vector((0.0, y, 0.0)) + n * 0.25), tuple(w + t * 0.75 + Vector((0.0, y, 0.0)) + n * 0.25)]
+            _rings(b, [strip(Y0 + 0.9 - DY), strip(Y1 - 0.9 - DY)], "amber.spark", label)
+    b.count("shots", cells, on=6.0, off=-1.0, flare=14.0)   # hot when charged, unlit glass when not (lean hotter: the phone sees the rear plate in the cab's shadow)
+    b.spin_held("spun_up", "capacitor", 600.0)
     waist.__exit__(None, None, None)
 
     # Idle acts (the builder's rules: loud, never in step, every joint pausing before it turns
@@ -1914,30 +1922,22 @@ def cassowary(b):
     # for ease "linear", the other tracks on the curve the rig would run, _cassowary_dense).
     # Degrees and seconds; a body pose is (dy, dz, pitch), a foot (ball y, ball z, shank, toes).
     BY, BZ = _CASSOWARY_BALL
-    # Fanning the hammer: it braces and draws, the cab snapping round on the waist onto its mark
-    # and the guns coming up, then the drum clicks round all six chambers in quick succession,
-    # each click kicking the cab and flaring the chambers and the hammer, and it holds, lowers
-    # and turns home. The drum ends a whole turn on, the chamber it started at.
-    CLICKS = [1.35 + 0.26 * k for k in range(6)]
-    tracks, body = _cassowary_pose([(0.4, (0.0, 0.0, 0.0), {}), (1.0, (0.0, -1.6, -1.0), {}), (2.9, (0.0, -1.8, -1.2), {}), (3.8, (0.0, -1.4, -0.8), {}),
-                                    (4.9, (0.0, 0.0, 0.0), {})], until=5.8)
-    base = _cassowary_mono([(0.0, 0.0, 0.0), (0.4, 0.0, 0.0), (1.0, -2.0, 14.0), (3.4, -2.4, 15.0), (4.6, 0.0, 0.0), (5.8, 0.0, 0.0)])
-    def kick(t):
-        out = 0.0
-        for tk in CLICKS:
-            x = t - tk
-            if 0.0 <= x < 0.04:
-                out += 3.0 * x / 0.04
-            elif 0.04 <= x < 0.4:
-                out += 3.0 * math.exp(-(x - 0.04) / 0.07)
-        return out
-    tracks["waist"] = [(round(i / 30.0, 3), round(base(i / 30.0)[0] + kick(i / 30.0), 3), round(base(i / 30.0)[1], 3), 0.0) for i in range(int(5.8 * 30.0) + 1)]
-    tracks["drum"] = [(1.3, 0.0)] + [key for k, tk in enumerate(CLICKS) for key in ((tk, 60.0 * k), (round(tk + 0.06, 3), 60.0 * (k + 1)))] + [(5.8, 360.0)]
+    # Test-charging the capacitor: it braces and draws, the cab coming round on the waist onto its
+    # mark and the guns up, then the bank spins up three turns, the spark gap crackling hotter as
+    # it gathers speed, and as it brakes the gap flashes and the cab kicks back, a test discharge;
+    # it holds, lowers and turns home. The bank ends where it started, three turns on (the cells
+    # are the count display's alone: nothing here lights them).
+    tracks, body = _cassowary_pose([(0.4, (0.0, 0.0, 0.0), {}), (1.0, (0.0, -1.6, -1.0), {}), (3.25, (0.0, -1.8, -1.2), {}), (3.38, (0.0, -2.6, 1.0), {}),
+                                    (3.8, (0.0, -1.5, -0.6), {}), (4.9, (0.0, 0.0, 0.0), {})], until=5.8)
+    tracks["waist"] = _cassowary_dense([(0.4, 0.0, 0.0, 0.0), (1.0, -2.0, 14.0, 0.0), (3.25, -2.4, 15.0, 0.0), (3.38, 2.2, 15.0, 0.0), (3.8, -1.5, 14.5, 0.0),
+                                        (4.6, 0.0, 0.0, 0.0)], 5.8)
+    tracks["capacitor"] = _cassowary_dense([(1.1, 0.0), (1.8, 180.0), (2.4, 540.0), (2.9, 900.0), (3.3, 1080.0)], 5.8)
     tracks["elev_chin"] = _cassowary_dense([(0.5, 0.0), (1.1, 9.0), (3.3, 10.0), (4.3, 0.0)], 5.8)
     tracks["elev_pod"] = _cassowary_dense([(0.6, 0.0), (1.2, 7.0), (3.3, 8.0), (4.4, 0.0)], 5.8)
-    flare = [(1.3, 0.0)] + [key for tk in CLICKS for key in ((tk, 2.0), (round(tk + 0.05, 3), 14.0), (round(tk + 0.2, 3), 4.0))] + [(3.6, 0.0)]
-    b.act("fan_hammer", 5.8, tracks, body=body, ease="linear", heft=0.06,
-          glow=[(["chamber", "hammer"], flare), (["lamp"], [(0.5, 0.0), (1.0, 6.0), (3.4, 6.0), (4.2, 0.0)])])
+    crackle = [(1.1, 0.0), (1.4, 5.0), (1.5, 1.0), (1.75, 7.0), (1.85, 2.0), (2.1, 9.0), (2.2, 3.0), (2.45, 11.0), (2.55, 4.0), (2.8, 12.0), (3.25, 12.0),
+               (3.32, 18.0), (3.6, 4.0), (4.2, 0.0)]
+    b.act("test_charge", 5.8, tracks, body=body, ease="linear", heft=0.08,
+          glow=[(["spark_gap"], crackle), (["lamp"], [(0.5, 0.0), (1.0, 6.0), (3.4, 6.0), (4.2, 0.0)])])
     # The scan: it rises tall on its toes, the heels lifting, the cab turns on the waist to the
     # left and dips to look, holds, swings across to the right and looks, holds, and comes home
     # as it settles, the lamps hot.
@@ -1959,13 +1959,13 @@ def cassowary(b):
     tracks["elev_pod"] = _cassowary_dense([(3.7, 0.0), (4.5, 12.0), (5.2, 12.0), (6.0, 0.0)], 6.6)
     b.act("hunker", 6.6, tracks, body=body, ease="linear", glow=[(["lamp"], [(1.4, 0.0), (2.0, 5.0), (4.2, 5.0), (5.0, 0.0)])])
     # The kick (the flightless bird that kills): the pilot tests the left leg, drawing the foot
-    # up folded and holding it, the toes spreading and curling round the dagger, then a kick
+    # up folded and holding it, the toe plates flexing on their hinges, then a kick
     # straight out ahead that gathers speed into it and stops dead, held, drawn back, and
     # stamped down, the body dropping onto it; the right foot planted throughout.
-    HELD = (BY + 6.0, 16.0, 35.0, -32.0)   # the foot tucked up and forward under the hock, the ankle folded
+    HELD = (BY + 6.0, 16.0, 35.0, -22.0)   # the foot tucked up and forward under the hock, the ankle folded
     OUT = (BY + 20.0, 10.0, 5.0, 6.0)
-    frames = [(0.4, (0.0, 0.0, 0.0), {}), (1.0, (0.0, -1.2, 1.5), {"l": (BY + 4.0, 12.0, 25.0, -28.0)}), (1.6, (0.0, -1.0, 1.8), {"l": HELD}),
-              (1.9, (0.0, -1.0, 1.8), {"l": HELD[:3] + (8.0,)}), (2.2, (0.0, -1.0, 1.9), {"l": HELD}), (2.5, (0.0, -1.0, 2.0), {"l": HELD})]
+    frames = [(0.4, (0.0, 0.0, 0.0), {}), (1.0, (0.0, -1.2, 1.5), {"l": (BY + 4.0, 12.0, 25.0, -20.0)}), (1.6, (0.0, -1.0, 1.8), {"l": HELD}),
+              (1.9, (0.0, -1.0, 1.8), {"l": HELD[:3] + (6.0,)}), (2.2, (0.0, -1.0, 1.9), {"l": HELD}), (2.5, (0.0, -1.0, 2.0), {"l": HELD})]
     frames += [(t, p[:3], {"l": p[3:]}) for t, p in _slam(2.5, (0.0, -1.0, 2.0) + HELD, 2.7, (0.0, -0.6, 3.5) + OUT)]
     frames += [(3.1, (0.0, -0.6, 3.4), {"l": OUT}), (3.7, (0.0, -1.0, 1.5), {"l": (BY + 2.0, 13.0, 20.0, -10.0)}),
                (3.95, (0.0, -1.0, 1.2), {"l": (BY + 0.5, 9.0, 8.0, 0.0)})]
@@ -1980,7 +1980,7 @@ def cassowary(b):
     # and reaching it down to land flat; the body dropping and nodding onto each foot. A sweep of
     # 40, a stride of 67, so its four hexes a move are paced, not scurried (at 30 it took three
     # steps a second at its map pace).
-    tracks, body, stride = _cassowary_stride(sweep=40.0)
+    tracks, body, stride = _cassowary_stride(sweep=40.0, curl=-18.0)   # the toe plates droop on their hinges through the swing, less than a bird's toes curl
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.0, heft=0.17)
 

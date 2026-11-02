@@ -410,7 +410,8 @@ class Build:
         self.gait_spec = {}    # how the machine moves (see gait())
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
-        self.indexed = {}      # joints turned a step for every entry the machine's die moves on (see index())
+        self.spins_held = {}   # status -> {joint: degrees a second}: turned while the machine carries the status (see spin_held())
+        self.counts = []       # the count displays: parts lit in order for a number the game passes (see count())
         self.forms = {}        # poses held while a status lasts (see form())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
@@ -936,20 +937,34 @@ class Build:
         with the move. Give the joint no limits: the turn is wrapped, never clamped."""
         self.spins[joint] = [float(idle), float(idle if moving is None else moving)]
 
-    def index(self, joint, step):
-        """A joint the game turns `step` degrees on its own axis, always forward, for every entry
-        its machine's die moves on, so it shows the entry showing (the Cassowary's drum, 31
-        October: "clicking round a chamber at every roll"); a roll that lands where it was turns it
-        a whole way round, and the fight's first roll spins it up from rest (MechRig.show_entry).
-        Rest is the die's first entry. No limits on that axis: the turn is wrapped, never
-        clamped."""
+    def spin_held(self, status, joint, speed):
+        """A joint turned without end at `speed` degrees a second while the machine carries the
+        status `status` (an id in sim/effects.gd's STATUS, a test holding it), eased up to speed
+        as the status lands and run down as it goes (MechRig.hold_spin: the Cassowary's capacitor
+        while Spun Up, Ryan, 2 November). Give the joint no limits on its axis: the turn is
+        wrapped, never clamped."""
         if joint not in self.joint_meta:
-            raise ValueError("%s: index names a joint the model has not got: %s" % (self.name, joint))
+            raise ValueError("%s: spin_held names a joint the model has not got: %s" % (self.name, joint))
         if self.joint_meta[joint]["axis"] in self.joint_meta[joint]["limits"]:
-            raise ValueError("%s: the indexed joint %s has limits on its axis, which would clamp its turn" % (self.name, joint))
-        if not 0.0 < abs(float(step)) <= 180.0:
-            raise ValueError("%s: the indexed joint %s steps %g degrees, which is no step" % (self.name, joint, step))
-        self.indexed[joint] = float(step)
+            raise ValueError("%s: the held spin's joint %s has limits on its axis, which would clamp its turn" % (self.name, joint))
+        self.spins_held.setdefault(str(status), {})[joint] = float(speed)
+
+    COUNT_SOURCES = ("shots", "ammo")   # the numbers the game passes a count display (MechRig.COUNT_SOURCES)
+
+    def count(self, source, parts, on=1.5, off=-0.85, flare=8.0):
+        """A count display: `parts` (lit labels, the first lit first) shown lit for as many as the
+        number `source` the game passes as the screen refreshes (`shots`, a machine's counted
+        shots toward the next that counts; `ammo`, its magazine's rounds: COUNT_SOURCES), the rest
+        dark; a number that falls flares every part and lets them all go dark (MechRig.show_counts:
+        the Cassowary's capacitor, a cell a counted shot, discharging on the sixth, Ryan, 2
+        November). `on`, `off` and `flare` are each part's light as an offset from its light at
+        rest, as a glow key's: -1 dark. The parts are kept apart by the weld, as a glow's are."""
+        if source not in self.COUNT_SOURCES:
+            raise ValueError("%s: a count display shows one of %s, not %r" % (self.name, ", ".join(self.COUNT_SOURCES), source))
+        parts = [parts] if isinstance(parts, str) else list(parts)
+        if not parts or len(set(parts)) != len(parts):
+            raise ValueError("%s: a count display names its parts, each once: %r" % (self.name, parts))
+        self.counts.append({"source": source, "parts": parts, "on": float(on), "off": float(off), "flare": float(flare)})
 
     def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
@@ -992,8 +1007,16 @@ class Build:
         every_act = self.acts + [a for acts in self.form_acts.values() for a in acts]
         lit_parts = ({p for a in every_act for g in a["glow"] for p in g["parts"]}
                      | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
-                     | set(self.gait_spec.get("glow", {}).get("parts", [])))
+                     | set(self.gait_spec.get("glow", {}).get("parts", []))
+                     | {p for c in self.counts for p in c["parts"]})
         glow_parts = sorted(lit_parts | set(self.gait_spec.get("treads", {}).get("parts", [])))
+        # A count display's part has one master: an act, a form or the gait lighting it too would
+        # fight the display over its light.
+        glowing = ({p for a in every_act for g in a["glow"] for p in g["parts"]} | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
+                   | set(self.gait_spec.get("glow", {}).get("parts", [])))
+        shared = sorted(glowing & {p for c in self.counts for p in c["parts"]})
+        if shared:
+            raise ValueError("%s: %s light for a count display and a glow both" % (self.name, ", ".join(shared)))
         # A part a glow names is a label matched whole (the rig's MechRig.labelled: the label,
         # or the label with the importer's numbering), never a prefix: "repulsor" lights no
         # "repulsor_l" (the Puffin's amplify lit nothing for a day; Ryan, 28 October).
@@ -1024,8 +1047,10 @@ class Build:
             out["gait_options"] = self.gait_options
         if self.spins:
             out["spin"] = self.spins
-        if self.indexed:
-            out["index"] = self.indexed
+        if self.spins_held:
+            out["spin_held"] = self.spins_held
+        if self.counts:
+            out["counts"] = self.counts
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
         return out

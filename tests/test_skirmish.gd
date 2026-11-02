@@ -6636,37 +6636,6 @@ func test_a_spinning_rapid_entry_rolls_true_and_may_land_on_itself() -> void:
 	assert_eq(landed.size(), 3, "it lands anywhere, itself included: %s" % str(landed.keys()))
 
 
-## The drum counts the rolls (the Cassowary's, 31 October: "clicking round a chamber at every
-## roll"): every roll of a machine's die is one more on its own count, the round's, a reroll and
-## a spin alike, so the screen shows a spin that lands where it was; a held die and the round's
-## preview roll nothing.
-func test_every_roll_of_a_die_counts_one_for_its_drum() -> void:
-	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["rapid"], "cooldown": 0, "spins": true})
-	var sk := Skirmish.new(3)
-	var u := _mech("A", Die.of([spin, Face.attack(10, L), Face.attack(20, L)]), 40, 100)
-	u.grant_passive(STEP_PASSIVE)
-	sk.add_mech(u)
-	sk.add_mech(_mech("B", Die.of([Face.attack(10, L), Face.attack(20, L)]), 40, 100))
-	sk.add_foes([_ghoul(500, 1)])
-	sk.begin()
-	sk.start_round()
-	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_eq(ms.rolls, 1, "the fight's opening spin is the die's first roll")
-	assert_eq(sk.mechs[1].rolls, 1, "and every machine counts its own")
-	assert_true(sk.reroll([0]), "a reroll")
-	assert_eq(ms.rolls, 2, "counts one")
-	assert_true(sk.reroll([1]), "the other die rerolled, this one held")
-	assert_eq([ms.rolls, sk.mechs[1].rolls], [2, 2], "a held die rolls nothing")
-	sk.preview_round(0, ms)
-	assert_eq(ms.rolls, 2, "nor does the round's preview")
-	ms.face_index = 0
-	assert_true(sk.assign(0, ms), "the spin is spent")
-	assert_eq(ms.rolls, 3, "a spin is a roll, wherever it lands")
-	sk.end_round()
-	sk.start_round()
-	assert_eq(ms.rolls, 4, "and so is the round's")
-
-
 ## Spun Up (the Cassowary's, Ryan's go of 19 October; built 21 October): its number a stack on
 ## the next weapon the machine spends, stacking, carried between turns until one takes it;
 ## equipment leaves it standing (Ryan, 26 October: "Spun up only interacts with damage").
