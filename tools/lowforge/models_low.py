@@ -2197,6 +2197,320 @@ def goshawk(b):
 goshawk.maker = "kestrel"
 
 
+# ---------------------------------------------------------------- the Swallowtail (31 October)
+# Wainwright & Sutler's helicarrier, from the look Ryan picked on 13 October (the third of the
+# multi-rotor's looks, tools/lowforge/looks/ws_multirotor.py's wslook_deck, docs/looks/
+# ws_multirotor.png): a flat iron deck held up by four rotors in rings at its corners, an
+# island on the starboard edge, the crane at the stern with its hook under the hull.
+
+def _swallowtail_boxes(b, specs, material, label):
+    """Several boxes as one part, each (x0, x1, y0, y1, z0, z1): a set of lamps that light
+    together draws in one call (a weld leaves a lit part whole), or a row of like pieces."""
+    bm = bmesh.new()
+    for x0, x1, y0, y1, z0, z1 in specs:
+        vs = [bm.verts.new(v) for v in ((x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0),
+                                        (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1))]
+        for f in ((0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)):
+            bm.faces.new([vs[i] for i in f])
+    return b._finish(bm, material, label)
+
+
+def _swallowtail_band(b, a, c, w, normal, label, material="steel.stripe"):
+    """A flat strip from `a` to `c`, `w` wide, facing `normal`, wearing the tile's middle band
+    across its width at square texels, so the hazard stripe's dashes run the length of it
+    wherever the world grid falls: the landing square's frame, the hook block's sides."""
+    a, c, up = Vector(a), Vector(c), Vector(normal).normalized()
+    d = (c - a).normalized()
+    n = up.cross(d).normalized()
+    pts = [a - n * (w / 2.0), c - n * (w / 2.0), c + n * (w / 2.0), a + n * (w / 2.0)]
+    s = w / 0.28
+    return _quad(b, [tuple(p) for p in pts], material, label, (a - n * (w / 2.0 + 0.36 * s), n, d, up, (s, s)))
+
+
+def _swallowtail_inset(pts, d):
+    """A convex outline of (x, y) points, counter-clockwise, moved in by `d` all round."""
+    lines = []
+    for i in range(len(pts)):
+        (x0, y0), (x1, y1) = pts[i], pts[(i + 1) % len(pts)]
+        ex, ey = x1 - x0, y1 - y0
+        k = d / math.hypot(ex, ey)
+        lines.append(((x0 - ey * k, y0 + ex * k), (ex, ey)))
+    out = []
+    for i in range(len(lines)):
+        (p, e), (q, f) = lines[i - 1], lines[i]
+        t = ((q[0] - p[0]) * f[1] - (q[1] - p[1]) * f[0]) / (e[0] * f[1] - e[1] * f[0])
+        out.append((p[0] + t * e[0], p[1] + t * e[1]))
+    return out
+
+
+def _swallowtail_rotor(b, name, cx, cy, cz, radius, hand, blades=4, chord=4.8, phase=0.4):
+    """A great rotor drawn as blades, never a disc (the look's): a hub, long tapering blades
+    with hazard tips (the stripe fitted along each tip's top, so every tip wears it), on a yaw
+    joint so it can spin (b.spin); `hand` -1 pitches the blades for a rotor turning the other
+    way."""
+    with b.joint(name, (cx, cy, cz), axis="yaw"):
+        b.prism("z", cx, cy, cz, 3.2, 3.0, "steel.dark", 8, "rotor_hub")
+        b.prism("z", cx, cy, cz + 2.0, 1.8, 1.2, "steel.plate", 8, "hub_cap")
+        for k in range(blades):
+            a = phase + k * 2.0 * math.pi / blades
+            m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(a, 4, "Z") @ Matrix.Rotation(0.12 * hand, 4, "Y")
+            tip = radius * 0.82
+            b.loft([(2.5, rect(0.0, chord, -0.55, 0.55)), (tip, rect(0.0, chord * 0.8, -0.45, 0.45))], "steel.dark", "blade", m)
+            b.loft([(tip, rect(0.0, chord * 0.8, -0.45, 0.45)), (radius, rect(0.0, chord * 0.75, -0.4, 0.4))], "steel.dark", "blade_tip", m)
+            _swallowtail_band(b, tuple(m @ Vector((0.0, tip + 0.1, 0.5))), tuple(m @ Vector((0.0, radius - 0.1, 0.45))), chord * 0.72,
+                              tuple(m.to_3x3() @ Vector((0.0, 0.0, 1.0))), "blade_band")
+
+
+def swallowtail(b):
+    """Wainwright & Sutler "Swallowtail" (Pattern 20 Field Headquarters): the helicarrier, a
+    muster its pieces spend (Ryan's go, 21 October; its brief: git show 5d989be:docs/briefs/
+    ws_multirotor.md). The maker's first tier three, an assault flyer: "the apex of
+    steampunk-silly military technology" (Ryan, 20 October), a mobile headquarters that
+    carries the squad, directs its fire, refuels it and gives it a lift. First cut, 31 October,
+    from the look Ryan picked on 13 October (the helicarrier deck, wslook_deck in
+    tools/lowforge/looks/ws_multirotor.py) and his to-do line: a long flat iron deck with a
+    blunt bow on a keel of riveted slab sides banded in the livery, a livery coaming round
+    its edge so the maker's brown reads from above, a centre line in hazard dashes and a
+    landing square framed in hazard stripes aft to port; at each corner a rotor drawn as
+    blades in an iron ring on an arm from the hull, the rings' lips in the livery, the rotors
+    always turning, the diagonal pairs against each other. The island on the starboard edge,
+    its bridge glazed round, a mast with a lamp and a stack on its roof. The four locked
+    pieces modelled in, no pins: the Mooring Screens' projectors, a squared post at each
+    corner of the deck with a cup on a mast that rises out of it, its lens banked in the
+    corona's blue-white and a rail of it along the coaming between them; the Spotting
+    Flare's rack, three tubes stood near upright on the island's roof, a red flare round in
+    each mouth; the Sutler's Hoist, the crane at the stern a little to starboard (Ryan, 15
+    October: "as the look builds it"), its house and winch on a turntable, the jib swung aft
+    past the stern and its hook block on a line hanging below the hull, the tell for the
+    passive; and the Reveille Horn, a great horn on a post at the roof's aft corner, its long
+    pipe flaring to a bell turned out over the deck toward the squad, the bell lined in the
+    vents' heat so its mouth burns orange when it sounds. Mounts in the die's order: hp_1 the
+    port bow gun (the stock's Howitzer as its barrel class), hp_2 the starboard bow (the Twin
+    Autoguns), hp_3 bare on the port edge amidships (the Canopy shows nowhere), each on a
+    turret on a bolted pedestal. Every number is a proportion Ryan may change; the look, the
+    rig, the acts and the gait are his to judge running."""
+    DECK = 27.0                # the flight deck's top
+    # The hull: a keel under the deck, slab sides of riveted iron, its bottom corners
+    # chamfered, a band of the livery down each side; the deck over it, blunt at the bow.
+    keel = lambda w, z0, z1, c: [(-w / 2 + c, z0), (w / 2 - c, z0), (w / 2, z0 + c), (w / 2, z1), (-w / 2, z1), (-w / 2, z0 + c)]
+    b.loft([(-47.0, keel(40.0, 11.0, 22.0, 4.0)), (34.0, keel(40.0, 11.0, 22.0, 4.0)), (52.0, keel(20.0, 15.0, 22.0, 2.0))], "steel.panel", "hull")
+    b.loft([(-52.0, rect(0.0, 54.0, 22.0, DECK)), (40.0, rect(0.0, 54.0, 22.0, DECK)), (60.0, rect(0.0, 26.0, 23.0, DECK))], "steel.plate", "deck")
+    for s in (-1.0, 1.0):
+        x0, x1 = sorted((s * 20.0, s * 20.4))
+        b.box(x0, x1, -45.0, 32.0, 14.0, 19.0, "livery.livery2", "band")
+    # The coaming: a low livery rim round the deck's edge.
+    outline = [(-27.0, -52.0), (27.0, -52.0), (27.0, 40.0), (13.0, 60.0), (-13.0, 60.0), (-27.0, 40.0)]
+    inner = _swallowtail_inset(outline, 1.6)
+    _rings(b, [[(x, y, DECK - 0.01) for x, y in outline], [(x, y, DECK + 1.3) for x, y in outline],
+               [(x, y, DECK + 1.3) for x, y in inner], [(x, y, DECK - 0.01) for x, y in inner]], "livery.livery2", "coaming", cap=False)
+    # The deck's markings: the centre line in hazard dashes, the landing square aft to port
+    # framed in hazard stripes.
+    b.box(-1.0, 1.0, -48.0, 36.0, DECK, DECK + 0.3, "steel.stripe", "centre_line")
+    LX0, LX1, LY0, LY1, LW = -20.0, -4.0, -44.0, -28.0, 2.6
+    for y in (LY0, LY1):
+        _swallowtail_band(b, (LX0 - LW / 2, y, DECK + 0.15), (LX1 + LW / 2, y, DECK + 0.15), LW, (0.0, 0.0, 1.0), "landing")
+    for x in (LX0, LX1):
+        _swallowtail_band(b, (x, LY0 + LW / 2, DECK + 0.15), (x, LY1 - LW / 2, DECK + 0.15), LW, (0.0, 0.0, 1.0), "landing")
+    # The lamps: a pair on the bow, the tail lights on the stern.
+    _swallowtail_boxes(b, [(s * 8.0 - 1.8, s * 8.0 + 1.8, 59.4, 60.7, 23.4, 26.4) for s in (-1.0, 1.0)], "amber.light", "bow_lamp")
+    _swallowtail_boxes(b, [(s * 20.0 - 2.4, s * 20.0 + 2.4, -52.7, -51.6, 22.8, 26.2) for s in (-1.0, 1.0)], "amber.light", "tail_light")
+    # The rotors: an iron ring at each corner on an arm from the hull, a strut under it, a spar
+    # across the ring carrying the hub, the ring's lip in the livery; the rotor turning in it.
+    for sx in (-1.0, 1.0):
+        for tag, yy, hand in (("f", 30.0, sx * -1.0), ("a", -38.0, sx)):
+            cx = sx * 44.0
+            _tube(b, (cx, yy, 16.0), (cx, yy, 23.6), 16.0, 14.4, 16, "steel.panel", "ring", floor=False)
+            _tube(b, (cx, yy, 23.6), (cx, yy, 25.2), 16.4, 14.2, 16, "livery.livery2", "ring_lip", floor=False)
+            b.box(min(sx * 19.0, sx * 30.0), max(sx * 19.0, sx * 30.0), yy - 3.2, yy + 3.2, 17.0, 22.5, "steel.dark", "arm")
+            _beam(b, (sx * 19.0, yy, 12.5), (sx * 29.0, yy, 17.5), _sq(4.0, 2.4), _sq(4.0, 2.4), "steel.dark", "strut")
+            b.box(cx - 1.2, cx + 1.2, yy - 15.0, yy + 15.0, 19.0, 20.6, "steel.dark", "ring_spar")
+            _swallowtail_rotor(b, "rotor_%s%s" % ("l" if sx < 0 else "r", tag), cx, yy, 22.0, 14.0, hand)
+    # The island on the starboard edge: a riveted block, the bridge glazed round under its roof.
+    IX0, IX1, IY0, IY1, ITOP = 16.0, 26.0, -14.0, 12.0, 42.0
+    b.box(IX0, IX1, IY0, IY1, DECK, ITOP, "steel.panel", "island")
+    b.box(IX0 - 0.3, IX1 + 0.3, IY0 + 1.2, IY1 - 1.2, 36.6, 40.2, "glass.glass", "bridge")
+    b.box(IX0 + 1.2, IX1 - 1.2, IY0 - 0.3, IY1 + 0.3, 36.6, 40.2, "glass.glass", "bridge")
+    b.box(IX0 - 0.6, IX1 + 0.6, IY0 - 0.6, IY1 + 0.6, ITOP, ITOP + 1.2, "steel.plate", "island_roof")
+    # On the roof: the mast with its lamp and a yard, the stack aft to starboard.
+    b.prism("z", 21.0, -2.0, ITOP + 7.0, 0.9, 12.0, "steel.dark", 6, "island_mast")
+    b.box(17.4, 24.6, -2.5, -1.5, ITOP + 9.0, ITOP + 9.8, "steel.dark", "yard")
+    b.box(19.8, 22.2, -3.2, -0.8, ITOP + 12.6, ITOP + 15.0, "amber.light", "mast_lamp")
+    b.box(21.4, 25.8, -13.0, -6.6, ITOP + 1.2, ITOP + 8.5, "steel.dark", "stack")
+    b.box(21.0, 26.2, -13.4, -6.2, ITOP + 8.5, ITOP + 9.4, "steel.plate", "stack_cap")
+    # The Spotting Flare (fixed, no pin): a rack of three tubes in a cradle on the roof's fore
+    # end, stood near upright and leaning forward, a red flare round in each mouth on its own
+    # slide (fire_1 to fire_3), which it pops out of the tube burning to fire and draws back
+    # spent; the rack rears to the upright first.
+    FX, FY, FZ = 21.0, 6.0, ITOP + 1.2
+    b.box(FX - 5.0, FX + 5.0, FY - 3.4, FY + 3.4, FZ, FZ + 1.4, "steel.dark", "flare_base")
+    with b.joint("elev_flare", (FX, FY, FZ + 2.6), limits=(-5.0, 25.0)):
+        rack = Matrix.Translation((FX, FY, FZ + 2.6)) @ Matrix.Rotation(math.radians(70.0), 4, "X")
+        along = rack.to_3x3() @ Vector((0.0, 1.0, 0.0))
+        for s in (-1.0, 1.0):
+            x0, x1 = sorted((s * 5.0, s * 5.9))
+            b.box(x0, x1, -2.4, 7.0, -2.6, 2.6, "livery.livery2", "flare_cheek", rack)
+        b.box(-5.0, 5.0, -1.8, 0.0, -2.4, 2.4, "steel.dark", "flare_cradle", rack)
+        for k, x in enumerate((-3.3, 0.0, 3.3)):
+            _tube(b, tuple(rack @ Vector((x, -1.8, 0.0))), tuple(rack @ Vector((x, 7.4, 0.0))), 1.65, 1.35, 8, "steel.dark", "flare_tube", phase=math.pi / 8)
+            with b.joint("fire_%d" % (k + 1), tuple(rack @ Vector((x, 0.0, 0.0))), slide=tuple(along)):
+                b.loft([(1.6, _poly(1.25, 8, math.pi / 8)), (7.0, _poly(1.25, 8, math.pi / 8))], "amber.ember", "flare_round_%d" % (k + 1), rack @ Matrix.Translation((x, 0.0, 0.0)))
+        b.box(-5.0, 5.0, 3.6, 4.8, -1.9, 1.9, "steel.dark", "flare_strap", rack)
+    # The Reveille Horn (fixed, no pin): a great horn on a post at the roof's aft corner to
+    # port, a long pipe flaring to a wide bell turned out over the deck toward the squad and a
+    # little up, so its profile reads from above and behind; it swings on the post, its throat
+    # lit when it sounds.
+    HX, HY, HZ = 18.6, -9.6, ITOP + 1.2
+    b.prism("z", HX, HY, HZ + 0.5, 2.6, 1.0, "steel.dark", 8, "horn_ring", phase=math.pi / 8)
+    with b.joint("horn", (HX, HY, HZ + 1.0), axis="yaw", limits=(-60.0, 60.0)):
+        b.prism("z", HX, HY, HZ + 2.6, 1.3, 3.2, "steel.plate", 6, "horn_post")
+        up = Matrix.Translation((HX, HY, HZ + 4.6)) @ Matrix.Rotation(math.pi / 2, 4, "Z") @ Matrix.Rotation(math.radians(14.0), 4, "X")
+        bell = [(-1.6, 1.0), (5.0, 1.15), (8.0, 1.8), (10.5, 3.0), (12.0, 4.6), (12.8, 6.0)]
+        b.loft([(y, _poly(r, 12)) for y, r in bell], "livery.livery2", "horn_bell", up, cap=False)
+        b.loft([(-1.6, _poly(1.0, 12)), (-1.4, _poly(1.0, 12))], "steel.dark", "horn_cap", up)
+        for y0 in (0.6, 4.2):
+            b.loft([(y0, _poly(1.5, 12)), (y0 + 1.0, _poly(1.5, 12))], "steel.dark", "horn_collar", up)
+        # The bell's lining: the vents' heat, near black at rest and burning orange when it
+        # sounds, so the whole mouth lights to whoever it faces.
+        b.loft([(y, _poly(r * 0.9, 12)) for y, r in bell if y >= 5.0], "amber.heat", "horn_throat", up, cap=False)
+        b.loft([(5.0, _poly(1.0, 12)), (5.1, _poly(1.0, 12))], "amber.heat", "horn_throat", up)
+    # The Sutler's Hoist (fixed, no pin): the crane at the stern a little to starboard. A
+    # turntable, the house on it with the winch drum across its back, a stout mast; the jib
+    # pinned at the mast's head, swung aft past the stern and falling a little to its sheave;
+    # the hook block on its line under the sheave, hanging below the hull. The line is two:
+    # the upper from the sheave, the lower with the block, sliding along it as the hook drops.
+    CX, CY = 8.0, -43.0
+    b.prism("z", CX, CY, DECK + 0.6, 4.8, 1.2, "steel.dark", 8, "crane_ring", phase=math.pi / 8)
+    with b.joint("crane", (CX, CY, DECK + 1.2), axis="yaw", limits=(-100.0, 100.0)):
+        b.box(CX - 3.8, CX + 3.8, CY - 2.0, CY + 6.0, DECK + 1.2, DECK + 7.0, "steel.panel", "crane_house")
+        b.box(CX - 3.4, CX + 3.4, CY - 1.6, CY + 5.6, DECK + 7.0, DECK + 7.6, "livery.livery2", "crane_roof")
+        b.prism("x", CX, CY + 3.6, DECK + 9.4, 1.8, 6.0, "steel.dark", 8, "winch")
+        for s in (-1.0, 1.0):
+            b.prism("x", CX + s * 3.2, CY + 3.6, DECK + 9.4, 2.4, 0.6, "livery.livery2", 8, "winch_flange")
+        b.prism("z", CX, CY - 1.0, DECK + 11.0, 1.6, 8.0, "steel.dark", 6, "crane_mast")
+        b.box(CX - 1.4, CX + 1.4, CY - 2.9, CY - 2.6, DECK + 12.0, DECK + 14.0, "amber.light", "crane_lamp")
+        heel = Vector((CX, CY - 1.0, DECK + 15.0))
+        with b.joint("jib", tuple(heel), limits=(-15.0, 20.0)):
+            fall = math.radians(12.0)
+            tip = heel + Vector((0.0, -math.cos(fall), -math.sin(fall))) * 22.0
+            _beam(b, tuple(heel), tuple(tip), _sq(3.4, 3.6), _sq(2.2, 2.2), "livery.livery2", "jib")
+            b.box(tip.x - 1.6, tip.x + 1.6, tip.y - 1.6, tip.y + 1.6, tip.z - 1.6, tip.z + 1.6, "steel.dark", "sheave")
+            HZ0 = 3.0      # the hook block's foot at rest
+            with b.joint("hook", tuple(tip), limits={"pitch": (-30.0, 30.0), "roll": (-30.0, 30.0)}):
+                b.prism("z", tip.x, tip.y, (tip.z + HZ0 + 18.0) / 2.0, 0.4, tip.z - HZ0 - 18.0, "steel.dark", 4, "crane_line")
+                with b.joint("hook_drop", (tip.x, tip.y, HZ0 + 4.4), slide=(0.0, 0.0, 1.0)):
+                    b.prism("z", tip.x, tip.y, HZ0 + 4.4 + 12.0, 0.34, 24.0, "steel.dark", 4, "crane_line")
+                    b.box(tip.x - 2.2, tip.x + 2.2, tip.y - 2.2, tip.y + 2.2, HZ0 + 1.2, HZ0 + 4.4, "steel.dark", "hook_block")
+                    for n_ in ((1.0, 0.0, 0.0), (-1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, -1.0, 0.0)):
+                        nv = Vector(n_)
+                        side = Vector((n_[1], -n_[0], 0.0))
+                        cface = Vector((tip.x, tip.y, HZ0 + 2.8)) + nv * 2.25
+                        _swallowtail_band(b, tuple(cface - side * 2.2), tuple(cface + side * 2.2), 3.2, n_, "hook_band")
+                    b.box(tip.x - 0.8, tip.x + 0.8, tip.y - 0.8, tip.y + 0.8, HZ0 - 0.6, HZ0 + 1.2, "steel.dark", "hook")
+                    b.box(tip.x - 0.8, tip.x + 0.8, tip.y - 2.6, tip.y - 2.2, HZ0 + 2.2, HZ0 + 3.6, "amber.light", "hook_lamp")
+    # The Mooring Screens (fixed, no pin): a squared post at each corner of the deck, a cup on
+    # a mast that rises out of it, its lens banked in the corona's blue-white; a rail of the
+    # same along the coaming's inner edge between them, so the screens raised draw the deck's
+    # outline lit.
+    for tag, x, y in (("fl", -21.5, 41.0), ("fr", 21.5, 41.0), ("al", -21.5, -47.5), ("ar", 21.5, -47.5)):
+        b.box(x - 2.6, x + 2.6, y - 2.6, y + 2.6, DECK, DECK + 4.6, "steel.panel", "screen_post")
+        b.box(x - 3.1, x + 3.1, y - 3.1, y + 3.1, DECK + 3.6, DECK + 4.6, "livery.livery2", "screen_collar")
+        with b.joint("screen_" + tag, (x, y, DECK + 4.6), slide=(0.0, 0.0, 1.0)):
+            b.prism("z", x, y, DECK + 3.35, 1.3, 8.7, "steel.dark", 6, "screen_mast")   # long enough to stay in its post raised
+            b.loft([(DECK + 7.6, _poly(1.6, 8, math.pi / 8)), (DECK + 8.6, _poly(3.4, 8, math.pi / 8)), (DECK + 9.4, _poly(4.2, 8, math.pi / 8))],
+                   "steel.plate", "screen_cup", Matrix.Translation((x, y, 0.0)) @ Matrix.Rotation(math.pi / 2, 4, "X"), cap=False)
+            _disc(b, (x, y, DECK + 8.7), (0.0, 0.0, 1.0), 2.6, 8, "amber.spark", "screen_lens_" + tag, phase=math.pi / 8)
+    rail = _swallowtail_inset(outline, 2.0)
+    _rings(b, [[(x, y, DECK + 0.05) for x, y in rail], [(x, y, DECK + 0.6) for x, y in rail],
+               [(x, y, DECK + 0.6) for x, y in _swallowtail_inset(outline, 2.7)], [(x, y, DECK + 0.05) for x, y in _swallowtail_inset(outline, 2.7)]],
+           "amber.spark", "screen_rail", cap=False)
+    # The mounts, bolted on and squared off: a pedestal, a dark ring, the turret on it. In the
+    # die's order: hp_1 the port bow (the Howitzer as its barrel class), hp_2 the starboard
+    # bow (the Twin Autoguns), hp_3 bare on the port edge amidships (the Canopy shows
+    # nowhere). Each traverses outward.
+    S = 0.85
+    for k, x, y, shape, cid, lim in ((1, -9.5, 43.0, "barrel", "howitzer", (-10.0, 70.0)), (2, 9.5, 43.0, "twin_barrel", "twin_autoguns", (-70.0, 10.0)),
+                                     (3, -19.0, 4.0, None, "", (-10.0, 70.0))):
+        b.box(x - 5.0, x + 5.0, y - 5.5, y + 4.5, DECK, DECK + 2.4, "steel.panel", "pedestal")
+        b.prism("z", x, y, DECK + 2.9, 4.4, 1.0, "steel.dark", 8, "mount_ring", phase=math.pi / 8)
+        with b.joint("turret_%d" % k, (x, y, DECK + 3.4), limits=lim):
+            b.box(x - 4.6, x + 4.6, y - 5.0, y + 3.0, DECK + 3.4, DECK + 7.0, "steel.plate", "turret")
+            b.box(x - 4.7, x + 4.7, y - 5.1, y - 3.6, DECK + 3.4, DECK + 7.0, "livery.livery2", "turret_band")
+            if shape:
+                b.stock("hp_%d" % k, (x, y + 1.0, DECK + 7.0 + 4.0 * S), shape, scale=S, carries=cid)
+            else:
+                b.pad("hp_%d" % k, (x, y + 1.0, DECK + 8.0), scale=S, size=(7.0, 1.0))
+
+    # Idle acts (four, loud, never in step; a heavy deck's servos, b.move). Degrees and
+    # seconds; a key is (t, value) on the joint's own axis, (t, pitch, yaw, roll), or that
+    # with a slide (dx, dy, dz) after it; a body key is (t, dx, dy, dz) or (t, dx, dy, dz,
+    # yaw, pitch, roll); a glow key is (t, k), k the light added over rest (-1 dark).
+    # The hoist: the crane slews out over the port quarter, the hook swinging behind it and
+    # past as it stops, the jib dipping to reach; the hook drops with its lamp flashing and the
+    # deck lists to the load, then it rises, the deck rights itself, and the crane slews home,
+    # the hook swinging again. (A crane slewing clockwise leaves its hook to roll negative.)
+    slack = lambda t, pitch, roll: (t, pitch, 0.0, roll)
+    b.act("hoist", 9.0, {
+        "crane": [(0.5, 0.0), (2.4, -55.0), (5.9, -55.0), (7.8, 0.0)],
+        "jib": [(2.0, 0.0), (2.9, 9.0), (5.6, 9.0), (6.6, 0.0)],
+        "hook": [slack(0.5, 0.0, 0.0), slack(1.2, 0.0, -7.0), slack(2.0, 0.0, -4.0), slack(2.4, -4.0, 2.0), slack(2.9, -9.0, 6.0), slack(3.5, -9.0, -3.0),
+                 slack(4.2, -9.0, 1.5), slack(4.8, -9.0, 0.0), slack(5.6, -9.0, 0.0), slack(6.6, 0.0, 6.0), slack(7.8, 0.0, 2.0),
+                 slack(8.3, 0.0, -4.0), slack(8.8, 0.0, 0.0)],
+        "hook_drop": [(2.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (3.7, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0), (4.5, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0), (5.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+    }, body=[(2.6, 0.0, 0.0, 0.0), (3.8, 0.0, 0.0, -0.9, 0.0, 1.0, -3.2), (4.5, 0.0, 0.0, -0.8, 0.0, 1.0, -3.4), (5.6, 0.0, 0.0, 0.3, 0.0, -0.3, 0.8),
+             (6.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+       glow=[(["crane_lamp"], [(0.2, 0.0), (0.5, 8.0), (7.9, 8.0), (8.5, 0.0)]),
+             (["hook_lamp"], [(2.6, 0.0), (2.8, 10.0), (3.1, 1.0), (3.4, 10.0), (3.7, 1.0), (4.0, 10.0), (5.4, 10.0), (5.9, 0.0)])])
+    # The screens: the posts' cups rise in turn round the deck, each lens flaring as it tops
+    # out, the rail lighting the deck's outline; a flicker runs through them all, they hold,
+    # and sink in turn as the deck, lifted a touch, settles.
+    rise = lambda t0, t1: [(t0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (t0 + 0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0), (t1, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0), (t1 + 0.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]
+    flare = lambda t0, t1: [(t0 + 0.4, 0.0), (t0 + 0.7, 12.0), (t0 + 1.0, 6.0), (2.7, 8.0), (2.85, 0.5), (3.0, 12.0), (3.15, 2.0), (3.4, 10.0), (t1, 10.0), (t1 + 0.7, 0.0)]
+    b.act("screens", 7.0, {
+        "screen_fl": rise(0.4, 4.8), "screen_fr": rise(0.6, 5.0), "screen_ar": rise(0.8, 5.2), "screen_al": rise(1.0, 5.4),
+    }, body=[(0.6, 0.0, 0.0, 0.0), (1.9, 0.0, 0.0, 1.4, 0.0, 0.6, 0.0), (4.9, 0.0, 0.0, 1.1, 0.0, 0.4, 0.0), (6.4, 0.0, 0.0, 0.0)],
+       glow=[(["screen_lens_fl"], flare(0.4, 4.8)), (["screen_lens_fr"], flare(0.6, 5.0)), (["screen_lens_ar"], flare(0.8, 5.2)), (["screen_lens_al"], flare(1.0, 5.4)),
+             (["screen_rail"], [(1.4, 0.0), (1.9, 12.0), (2.7, 12.0), (2.85, 0.0), (3.0, 14.0), (3.15, 1.0), (3.4, 12.0), (4.9, 12.0), (5.9, 0.0)])])
+    # The flare: the deck swings its bow a little toward the mark, the rack rears to the
+    # upright and fires its three in turn, each round popping out of its tube white-hot as the
+    # deck kicks, then drawn back spent and dark; the mast lamp blinks the mark; the rack
+    # settles and the rounds come back lit. On a sharp servo, as a shot is.
+    kick = lambda t: [(t, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0), (t + 0.08, 0.0, -0.5, 0.5, 7.0, 1.2, 0.0), (t + 0.35, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0)]
+    pop = lambda t: [(t, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)] + [(tt, 0.0, 0.0, 0.0) + tuple(round(v * d, 3) for v in along) for tt, d in ((t + 0.14, 11.0), (t + 0.75, 11.0), (t + 2.0, 0.0))]   # held 0.6 s at the top before it turns back
+    burn = lambda t: [(t - 0.02, 0.0), (t + 0.08, 18.0), (t + 0.6, 12.0), (t + 1.0, -1.0), (5.2, -1.0), (5.8, 0.0)]
+    b.act("flare", 6.4, {
+        "elev_flare": [(0.6, 0.0), (1.6, 20.0), (4.4, 20.0), (5.4, 0.0)],
+        "fire_1": pop(1.9), "fire_2": pop(2.4), "fire_3": pop(2.9),
+    }, body=[(0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (1.5, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0)] + kick(1.9) + kick(2.4) + kick(2.9) + [(4.4, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0), (5.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+       heft=0.09, glow=[(["flare_round_1"], burn(1.9)), (["flare_round_2"], burn(2.4)), (["flare_round_3"], burn(2.9)),
+                        (["mast_lamp"], [(3.3, 0.0), (3.45, 10.0), (3.65, 0.0), (3.85, 10.0), (4.05, 0.0), (4.25, 10.0), (4.9, 10.0), (5.5, 0.0)])])
+    # Reveille: the horn swings aft over the deck and sounds, three blasts, the throat burning
+    # and the island shuddering with each; the guns traverse out to their stations in turn,
+    # the bow lamps up; the horn swings forward and sounds once more, and all stand down.
+    blast = lambda t, n: [(t + 0.0, 0.0, 0.0, 0.0), (t + 0.08, 0.0, 0.0, 0.5, 0.0, 0.0, 0.7), (t + 0.2, 0.0, 0.0, -0.3, 0.0, 0.0, -0.6),
+                          (t + 0.34, 0.0, 0.0, 0.3, 0.0, 0.0, 0.5), (t + n, 0.0, 0.0, 0.0)]
+    b.act("reveille", 8.0, {
+        "horn": [(0.4, 0.0), (1.4, 28.0), (3.4, 28.0), (4.8, -30.0), (6.2, -30.0), (7.2, 0.0)],   # its mouth aft over the deck, then forward
+        "turret_1": [(2.0, 0.0), (3.2, 35.0), (5.4, 35.0), (6.6, 0.0)],
+        "turret_2": [(2.3, 0.0), (3.5, -35.0), (5.7, -35.0), (6.9, 0.0)],
+        "turret_3": [(2.6, 0.0), (4.0, 45.0), (6.0, 45.0), (7.4, 0.0)],
+    }, body=blast(1.5, 0.6) + blast(2.2, 0.6) + blast(2.9, 0.6) + blast(5.0, 0.9),
+       glow=[(["horn_throat"], [(1.45, 0.0), (1.55, 220.0), (2.0, 160.0), (2.15, 20.0), (2.25, 220.0), (2.7, 160.0), (2.85, 20.0), (2.95, 220.0), (3.4, 180.0), (3.7, 0.0),
+                                (4.95, 0.0), (5.05, 220.0), (5.8, 180.0), (6.1, 0.0)]),
+             (["bow_lamp"], [(1.9, 0.0), (2.2, 8.0), (6.6, 8.0), (7.2, 0.0)])])
+    # The rotors turn all the time, the diagonal pairs against each other, faster under way.
+    for name, hand in (("rotor_lf", 1.0), ("rotor_rf", -1.0), ("rotor_la", -1.0), ("rotor_ra", 1.0)):
+        b.spin(name, 400.0 * hand, 640.0 * hand)
+    # Movement: a flyer's, heavy and slow to gather way, barely a bank; it noses down into its
+    # travel as a rotorcraft does and lifts its nose to stop (the rock under nought), and the
+    # deck rides a long swell under way, two slow waves a stride so it never ticks.
+    swell = lambda p: (round(p, 3), 0.0, 0.0, round(1.1 * math.sin(2.0 * math.pi * p) + 0.4 * math.sin(4.0 * math.pi * p + 1.0), 2),
+                       0.0, round(1.2 * math.sin(2.0 * math.pi * p + 0.9), 2), round(0.8 * math.sin(2.0 * math.pi * p + 2.2), 2))
+    b.gait(stride=220.0, body=[swell(k / 12.0) for k in range(13)], rock=-3.0)
+    b.move(slide=0.3, bank=10.0, tilt=(7.0, 5.0, 0.5), accel=1.8, heft=0.28, oversteer=0.2)
+
+swallowtail.maker = "wainwright_sutler"
+
+
 def _spike(b, base, tip, half, material, label):
     """A four-sided spike: a square of half-width `half` at `base` drawn to a point at `tip`."""
     d = (Vector(tip) - Vector(base)).normalized()
