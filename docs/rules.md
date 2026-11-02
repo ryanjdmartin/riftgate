@@ -29,7 +29,9 @@ skirmish.
   damage and is spent on a foe in its reach; **equipment** is a buff or a debuff and deals
   none, a buff spent on a machine and a debuff on a foe in its reach; a **shield** and a
   **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
-  default, or self only, or allies only, as its chip says. A passive may make a piece count as
+  default, or self only, or allies only, as the die writes under its main icon (SELF, ALLY, or
+  EVERY ALLY for one that lands on every ally at once; nothing for the default), a targeting rule
+  as a weapon's reach is its icon's shape. A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
   too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
   codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
@@ -123,7 +125,7 @@ defeat when every machine is wrecked. There is no round limit.
   its three, spent like any reroll; a roar's cost comes off the whole. It banks while the
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
 - **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
-  vent or a buff onto a machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
+  vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost. On screen a spend's strikes land one at a time, a beat apart:
   each foe a strike reaches flashes, its gauge steps down to what the blow left and the blow's
   number rises off it; a foe the spend kills stands until its killing blow lands, and a last act
@@ -203,8 +205,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
 - **Tapping a die** opens its readout, the entry showing alone, its marks as text, each line headed
-  by the mark on the die it says (the big glyph, a keyword's chip, the star, the self or ally chip,
-  the lock, a corruption, a mark beside the heat): its place and name,
+  by the mark on the die it says (the big glyph, a keyword's chip, the star, the lock, a
+  corruption, a mark beside the heat; whom it reaches in the die's own words): its place and name,
   what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
   codex, then a line a mark: its number as the die prints it, its heat, its target, then its
   keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a

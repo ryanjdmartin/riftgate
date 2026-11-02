@@ -4,9 +4,10 @@ extends Control
 ## A die drawn as an object under the tactical overlay. The face is a chamfered square that
 ## bobs gently; its keywords sit as small annotation chips hugging its right edge, one per
 ## keyword, bright and flickering now and then. On the face, as Ryan sketched it: the primary
-## glyph large at the top centre, the number or range beneath it, heat bottom-left, the lock
-## top-right, the entry's place on its die top-left. A locked die gets bracket corners and a
-## LOCKED readout. A unique effect adds a star chip.
+## glyph large at the top centre, whom it reaches written under it when that is narrowed, the
+## number or range beneath, heat bottom-left, the lock top-right, the entry's place on its die
+## top-left. A locked die gets bracket corners and a LOCKED readout. A unique effect adds a star
+## chip.
 ##
 ## Gestures (the skirmish's, Ryan, 30 October):
 ##   tap         -> `tapped`          read the die: its readout opens, or closes
@@ -37,6 +38,10 @@ const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 const SLOT_AT := Vector2(13, 30)   # the place's numeral, its baseline tucked under the cut corner
 const SLOT_SIZE := 18
+const GLYPH_Y := 34.0      # the primary glyph's centre
+const GLYPH_LIFT := 4.0    # how far it rises to make room for the target word under it
+const TARGET_Y := 61.0     # the target word's baseline, between the glyph and the number
+const TARGET_SIZE := 12
 
 var face: Face = null
 var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
@@ -270,7 +275,10 @@ func _draw() -> void:
 		return
 	var ink := Color(hud, alpha)
 	var mono := Hud.mono()
-	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, 34.0 + bob), 34, ink, 2.6)
+	var aim := target_word(face)
+	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, GLYPH_Y - (0.0 if aim.is_empty() else GLYPH_LIFT) + bob), 34, ink, 2.6)
+	if not aim.is_empty():
+		draw_string(mono, Vector2(0, TARGET_Y + bob), aim, HORIZONTAL_ALIGNMENT_CENTER, FACE, TARGET_SIZE, ink)
 	var num := shown_number if not shown_number.is_empty() else face.number_text()
 	if face.disabled and dark > 0:
 		# Dark with the turns left (the cooldown row, 14 October; Ryan's "turns", 26 October): the
@@ -352,25 +360,11 @@ func _draw() -> void:
 		draw_string(mono, Vector2(slot_x + 16.0, FACE - 9.0 + bob), "%d" % blast, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, bc)
 	if locked and not spent:
 		Glyphs.draw(self, "lock", Vector2(FACE - 20.0, 20.0 + bob), 14, hud, 2.0)
-	# Annotation chips hugging the right edge, one per keyword, star for a unique effect. A
-	# keyword a passive grants written out (the Boar's spill) is the star, never its own chip.
-	var tags: Array[String] = []
+	var tags := rail_tags()
 	var struck: Array[int] = []   # the chips a shut gate strikes, by their place on the rail
-	for k in face.keywords:
-		if not face.printed.has(k):
-			if shut.has(k):
-				struck.append(tags.size())
-			tags.append(Face.KEYWORD_NAMES[k])
-	if face.has_unique_rule():
-		tags.append("star")      # a rule printed on the entry: the hold reads it out
-	if face.targets == Face.Target.SELF:
-		tags.append("self")      # a piece that reaches only its own machine
-	elif face.targets == Face.Target.ALLY:
-		tags.append("ally")      # or only its allies
-	if not form_mark.is_empty():
-		tags.append(form_mark)   # it seals its machine, or opens it (the Armadillo's, 2 November)
-	if corrupted > 0 and face.kind != Face.Kind.BLANK:
-		tags.append("corrupt")   # what a foe did to the entry, last on the rail, in its colour
+	for i in range(tags.size()):
+		if shut.has(Face.keyword_from_name(tags[i])):
+			struck.append(i)
 	for i in range(tags.size()):
 		var col := Glyphs.colour_for(tags[i])
 		col.a = (_flicker(i) if animate else 1.0) * (0.45 if spent else 1.0)
@@ -389,6 +383,43 @@ func _draw() -> void:
 		_draw_next(bob, tags.size())
 	if _recalc >= 0.0:
 		_draw_static(rect)
+
+
+## Whom an entry spent on machines reaches, written under the primary glyph when it is narrowed
+## (Ryan, 2 November: "Ally and self chips - those shouldn't be chips, those are targeting rules.
+## They need to be on the main icon"), in the readout's target line's words (EntryReadout.whom):
+## SELF, ALLY, or EVERY ALLY for a piece that lands on every ally at once; nothing for the
+## default, itself or an ally. A weapon's reach is its glyph's own shape (a crosshair, an arc).
+static func target_word(f: Face) -> String:
+	if f == null or not f.on_machines():
+		return ""
+	if f.reaches_all:
+		return "EVERY ALLY"
+	match f.targets:
+		Face.Target.SELF:
+			return "SELF"
+		Face.Target.ALLY:
+			return "ALLY"
+	return ""
+
+
+## The annotation chips hugging the right edge, top down: one per keyword, the star for a unique
+## effect, the shell's seal or opening, a corruption last. A keyword a passive grants written out
+## (the Boar's spill) is the star, never its own chip; whom it reaches is no chip (target_word).
+func rail_tags() -> Array[String]:
+	var tags: Array[String] = []
+	if face == null:
+		return tags
+	for k in face.keywords:
+		if not face.printed.has(k):
+			tags.append(Face.KEYWORD_NAMES[k])
+	if face.has_unique_rule():
+		tags.append("star")      # a rule printed on the entry: the hold reads it out
+	if not form_mark.is_empty():
+		tags.append(form_mark)   # it seals its machine, or opens it (the Armadillo's, 2 November)
+	if corrupted > 0 and face.kind != Face.Kind.BLANK:
+		tags.append("corrupt")   # what a foe did to the entry, last on the rail, in its colour
+	return tags
 
 
 ## A stepping die's next chamber (21 October): at the rail's foot, an arrow into a chip with

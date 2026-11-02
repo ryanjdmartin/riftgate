@@ -75,6 +75,52 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	s.free()
 
 
+## Whom a piece reaches is written under the die's main glyph, never a chip on its rail (Ryan, 2
+## November: "Ally and self chips - those shouldn't be chips, those are targeting rules. They need
+## to be on the main icon"): SELF, ALLY or EVERY ALLY on a piece spent on machines when narrowed,
+## nothing for the default or a weapon (its reach is its glyph's shape); every narrowed piece in
+## content writes its word.
+func test_whom_a_piece_reaches_is_written_under_its_main_glyph() -> void:
+	var shield := Face.shield(4)
+	assert_eq(DieFaceView.target_word(shield), "", "itself or an ally, the default: nothing")
+	shield.targets = Face.Target.SELF
+	assert_eq(DieFaceView.target_word(shield), "SELF", "itself only")
+	shield.targets = Face.Target.ALLY
+	assert_eq(DieFaceView.target_word(shield), "ALLY", "its allies only")
+	shield.reaches_all = true
+	assert_eq(DieFaceView.target_word(shield), "EVERY ALLY", "every ally at once")
+	var vent := Face.vent(3)
+	vent.targets = Face.Target.SELF
+	assert_eq(DieFaceView.target_word(vent), "SELF", "a vent's")
+	var buff := Face.buff("overcharged", 1)
+	buff.targets = Face.Target.ALLY
+	assert_eq(DieFaceView.target_word(buff), "ALLY", "a buff's")
+	var gun := Face.attack(3)
+	gun.reaches_all = true
+	assert_eq(DieFaceView.target_word(gun), "", "a weapon writes none")
+	assert_eq(DieFaceView.target_word(Face.empty_slot()), "", "nor a blank")
+	var d := DieFaceView.new()
+	var own := Face.shield(4)
+	own.targets = Face.Target.SELF
+	own.add_keyword(Face.Keyword.CLEANSE)
+	d.set_face(own)
+	assert_eq(d.rail_tags(), ["cleanse"] as Array[String], "the rail carries its keyword and no self chip")
+	own.targets = Face.Target.ALLY
+	assert_eq(d.rail_tags(), ["cleanse"] as Array[String], "nor an ally chip")
+	d.free()
+	var db := ContentDB.load_default()
+	var narrowed := 0
+	for cid in db.components.keys():
+		var comp: Dictionary = db.components[cid]
+		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
+			continue
+		var f := db.build_face(comp["face"])
+		if f.on_machines() and (f.targets != Face.Target.SELF_ALLY or f.reaches_all):
+			narrowed += 1
+			assert_false(DieFaceView.target_word(f).is_empty(), "%s writes whom it reaches" % cid)
+	assert_true(narrowed > 0, "content narrows some (%d)" % narrowed)
+
+
 ## The die's tap waits out the double-tap window (Ryan, 30 October), so a double-tap never shows a
 ## tap's work, and the face lights from the touch until the tap lands, so the beat never reads as
 ## lag; a tap and then a hold or a drag is the hold or the drag. Without the wait (the waiting
@@ -1884,8 +1930,9 @@ func test_a_bar_ticks_its_ones_and_its_fives_alone_where_the_ones_crowd() -> voi
 
 ## Every icon on a die face is in its readout (Ryan, 2 November: "any icon on a die face NEEDS to
 ## be represented in the popup, star icon before the unique effect for instance"): for every
-## component in content, the die's big glyph, each keyword chip, the star for a rule of its own
-## and the self or ally chip each stand at the head of a line of its readout.
+## component in content, the die's big glyph, each keyword chip and the star for a rule of its
+## own each stand at the head of a line of its readout, and whom it reaches, written under the
+## big glyph when narrowed, is its target line's words.
 func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 	var db := ContentDB.load_default()
 	for cid in db.components.keys():
@@ -1895,26 +1942,29 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 		var f := db.build_face(comp["face"])
 		f.component = str(cid)
 		var heads: Array[String] = []
+		var texts: Array[String] = []
 		for l in EntryReadout.lines_for(f, 1, [], f, [], [], db):
+			texts.append(str(l.get("text", "")))
 			for m in l.get("marks", []):
 				heads.append(str(m.get("glyph", "")))
 		var wanted: Array[String] = [Glyphs.primary_for(f)]
 		for k in f.keywords:
 			if not f.printed.has(k):
 				wanted.append(str(Face.KEYWORD_NAMES[k]))
-		if f.targets == Face.Target.SELF and f.kind != Face.Kind.ATTACK:
-			wanted.append("self")
-		elif f.targets == Face.Target.ALLY and f.kind != Face.Kind.ATTACK:
-			wanted.append("ally")
 		if f.has_unique_rule():
 			wanted.append("star")
 		for g in wanted:
 			assert_true(heads.has(g), "%s: the die's %s mark heads a readout line (%s)" % [cid, g, str(heads)])
+		var aim := DieFaceView.target_word(f)
+		if not aim.is_empty():
+			var said: String = {"SELF": "Target: Self", "ALLY": "Target: Any other ally", "EVERY ALLY": "Target: Every ally"}[aim]
+			assert_true(texts.any(func(t: String) -> bool: return t.contains(said)), "%s: the die's %s is its target line (%s)" % [cid, aim, str(texts)])
 
 
 ## The die's readout lines each with the mark it says: the Puffin's projector, an ally's shield
-## with Overshield, its glyph on its number, the ally chip on its target, the keyword's chip on its
-## line (and no second icon in the words), and a lock and a corruption on their states.
+## with Overshield, its glyph on its number, its target in words as the die writes it under the
+## glyph, the keyword's chip on its line (and no second icon in the words), and a lock and a
+## corruption on their states.
 func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 	var db := ContentDB.load_default()
 	var f := db.build_face(db.components["backwash_ionizer"]["face"])
@@ -1925,7 +1975,13 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 		for m in l.get("marks", []):
 			by[str(m["glyph"])] = l
 	assert_eq(str(by.get("shield", {}).get("text", "")), "Shield 3", "the shield's glyph on its number")
-	assert_eq(str(by.get("ally", {}).get("text", "")), "Target: Any other ally", "the ally chip on whom it reaches")
+	var target: Dictionary = {}
+	for l in lines:
+		if str(l.get("text", "")) == "Target: Any other ally":
+			target = l
+	assert_false(target.is_empty(), "whom it reaches, in words")
+	assert_true((target.get("marks", []) as Array).is_empty(), "with no chip of its own: the die writes ALLY under its glyph")
+	assert_eq(DieFaceView.target_word(f), "ALLY", "as the die writes it")
 	assert_eq(str(by.get("overshield", {}).get("text", "")), "Overshield", "the keyword's chip on its line")
 	assert_false(bool((by.get("overshield", {}).get("parts", [{}])[0] as Dictionary).get("icon", true)), "its word wears no second icon")
 	assert_eq(str(by.get("lock", {}).get("style", "")), "state", "the lock on its state")
@@ -1938,7 +1994,7 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 			boxed += 1
 		else:
 			bare += 1
-	assert_eq([boxed, bare], [2, 2], "the chips boxed as the die boxes them, the big glyph and the lock bare")
+	assert_eq([boxed, bare], [1, 2], "the keyword's chip boxed as the die boxes it, the big glyph and the lock bare")
 	readout.free()
 
 

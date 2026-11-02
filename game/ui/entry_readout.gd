@@ -116,8 +116,8 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 		base = f
 	# Each line carries the die's mark it says in words (Ryan, 2 November: every icon on a die face
 	# represented in the popup): the big glyph on what the piece is, a keyword's chip on its line,
-	# the star on every unique rule, whom it is spent on on its target, the marks beside the heat on
-	# theirs.
+	# the star on every unique rule, the marks beside the heat on theirs; whom it is spent on is
+	# words on the die as here.
 	var main := mark(Glyphs.primary_for(f), Palette.HUD, false)
 	var star := mark("star", Glyphs.colour_for("star"))
 	if f.kind == Face.Kind.BLANK:
@@ -188,14 +188,12 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 		if f.short:
 			shield_cost.append(word("(the shield cannot pay it)"))
 		out.append(parts_line("effect", shield_cost, "attr"))
+	# Whom it reaches, in the words the die writes under its main glyph when narrowed (SELF, ALLY,
+	# EVERY ALLY: DieFaceView.target_word), so the line wears no mark of its own; every ally at once
+	# is the entry's own rule as well, its star.
 	var target := text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f), "attr")
-	if f.kind != Face.Kind.ATTACK:
-		if f.targets == Face.Target.SELF:
-			marked(target, [mark("self", Glyphs.colour_for("self"))])
-		elif f.targets == Face.Target.ALLY:
-			marked(target, [mark("ally", Glyphs.colour_for("ally"))])
-		if f.reaches_all:
-			marked(target, [star])   # every ally at once: the entry's own rule
+	if f.kind != Face.Kind.ATTACK and f.reaches_all:
+		marked(target, [star])
 	out.append(target)
 	var land: Array = []   # how it lands
 	var lays: Array = []   # what it leaves on each foe hit

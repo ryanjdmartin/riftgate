@@ -25,7 +25,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 898 tests, 208,728 checks, green on `ccr-bb178c9b-l6airv` (2 November: Ryan's playtest
+- Tests: 899 tests, 208,751 checks, green on `ccr-bb178c9b-l6airv` (2 November: Ryan's playtest
   list of 2 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -204,8 +204,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   at 30 seeds (`docs/measurements.md`, a direction): the greedy bot rarely seals in a team, so the
   runner cannot see it; every starter trio walls tier one's rank and file whoever sits in the
   middle; sealed armour at or over a tier's blows is immunity at any number. It is section 12's
-  question, Claude's lean a floor of 1 past armour on both sides. What waits on Ryan: his phone
-  read of the list (the to-do) and that answer.
+  question, parked on his word ("Just note down the armadillo for now, I suspect tier 2 is smarter
+  but we need more options first"). His follow-ups the same day: whom a piece reaches is written
+  under the die's main icon (SELF, ALLY, EVERY ALLY) in place of the self and ally chips ("those
+  are targeting rules. They need to be on the main icon"), the word Claude's form beside figures
+  and arrows (`docs/looks/die_targeting_options.png`; `tools/die_sheet.gd` draws the whole set); the unit readouts
+  at 85% (from 70%, "Increase the opacity of the popups in skirmish a bit"). What waits on Ryan:
+  his phone read of the list (the to-do), the targeting form among them.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
   `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield
@@ -239,7 +244,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   and holo grounds and the overworld tiles are gone. His second round that day, built: a squad
   of one or two in the middle hexes; the machines turned 15° toward the middle; a quick switch for the
   controls beside the eye, both inside the log's glass; a unit's readout a tap toggle, one at a
-  time, translucent (70%) over the arrows it draws, a machine's resting on its gauges; at the
+  time, translucent (85% since 2 November, 70% before) over the arrows it draws, a machine's resting on its gauges; at the
   bottom the field down to the log and the machines lower. His third round asked the red chips to
   brighten: the light #ff7c80 came first, then his try of pure #ff0000 with the arrows bare, and
   his rule that a red or an orange is red and green alone, never blue, heat's orange at #ff6000

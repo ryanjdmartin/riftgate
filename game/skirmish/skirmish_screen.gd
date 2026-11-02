@@ -317,7 +317,7 @@ var _log_seen: int = 0
 ## index}, a mined empty slot's {"mine": Vector2i(rank, col)} or a die's {"die": index}; empty,
 ## none.
 var _pop: Dictionary = {}
-const POP_ALPHA := 0.7   # a unit's readout lets the arrows under it show through (Ryan, 29 October: "slightly translucent")
+const POP_ALPHA := 0.85   # a unit's readout lets the arrows under it show through (Ryan, 29 October: "slightly translucent"; 2 November: "Increase the opacity of the popups in skirmish a bit", from 0.7)
 const POP_GAP := 4.0      # a machine's readout over its gauges
 var _drag_over = null                 # what the dragged die is over and may be spent on: a Foe, a MechState or an empty slot
 var _round: Dictionary = {}           # the rest of the round as it stands (Skirmish.preview_round): every machine's gauges and warnings, every foe's HP after it

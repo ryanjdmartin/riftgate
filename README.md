@@ -120,7 +120,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
   every ground into PNGs, headless; `screenshot.gd` renders a
-  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
+  scene to PNG at 720x1280; `die_sheet.gd` draws the die's whole iconography on one sheet with
+  the die's own drawing (every main icon, whom a piece reaches, the rest of a face's marks);
+  `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
   domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
@@ -441,6 +443,9 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/
 # chooser, fight (no withdrawal), track, rewards, over
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/quick/quick_run_screen.tscn shot.png hangar
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
+# the die's iconography on one sheet (2 November: every main icon, whom a piece reaches, the rest of
+# a face's marks), one design pixel a pixel; in a cloud session under xvfb-run -a -s "-screen 0 2000x2000x24"
+godot --path . --rendering-method gl_compatibility --resolution 1360x1540 -s tools/die_sheet.gd -- build/die_sheet.png
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel
