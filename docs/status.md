@@ -483,8 +483,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
-- Models: every machine's by lowforge but five (the Cassowary, the Cottonmouth, the Whip
-  Scorpion, the Swallowtail and the Musk Ox, which draw the Badger's); the Lammergeier's, the
+- Models: every machine's by lowforge but three (the Cottonmouth, the Whip Scorpion and the
+  Swallowtail, which draw the Badger's, each building in a worktree of its own on 2 November);
+  the Musk Ox's and the Cassowary's are first cuts of 31 October to judge running (the Cassowary's
+  drum clicking a chamber each time its die rolls, `b.index`; the to-do's lines); the Lammergeier's, the
   Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
   to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
   until Ryan's next session (the to-do). Since 28 October (Ryan's brief, `claude/charming-rubin-h954bp`) a
@@ -605,8 +607,8 @@ The tasks are the to-do's; this is the index of what waits.
 - The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
   silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
   Purge on a capstone's blow (its chassis session).
-- The five Wainwright & Sutler machines' models (the Cassowary, the Cottonmouth, the Whip
-  Scorpion on six or eight legs, the Swallowtail, the Musk Ox).
+- The last three Wainwright & Sutler machines' models (the Cottonmouth, the Whip Scorpion on
+  six or eight legs, the Swallowtail), building on 2 November; then Ryan's read of all five running.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 
 ## Next, in order

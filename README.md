@@ -474,6 +474,9 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 # machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:
 RIFTGATE_ACTS_DEBUG=1 godot --path .            # every act back to back in the skirmish and on the map (=<act name> loops one)
 RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantly: the walks, wheels, treads and held poses (`b.gait(...)` in models_low.py); the cornering (the Dingo's drift, the banks) needs a real move
+# a joint may show the die: `b.index(joint, step)` writes an `index` into the sidecar, and MechRig.show_entry turns it a step for
+# each entry the die moves, a whole turn when a roll lands where it was (the Cassowary's drum, a chamber a roll)
+RIFTGATE_DRUM_DEBUG=1 godot --path .            # every indexed joint clicks a step a second, a whole turn every sixth, wherever the model shows (the hangar page clicks it on that timer always)
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride
 godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwright_sutler clip/clydesdale 8 front 480x400 trot   # a machine walking at its map pace, every frame a PNG (a gait option by name, "-" for its own); then ffmpeg -framerate 30 -i clip/clydesdale_%04d.png -pix_fmt yuv420p clydesdale.mp4
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
