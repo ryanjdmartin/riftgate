@@ -1388,13 +1388,17 @@ function paintMotion(force) {
       el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
       el("button", {class: "btn", id: "mo-shot", onclick: () => st.strike(true)}, "Shot"))));
   }
-  // A form is a pose held while the machine carries the status of its name (the Armadillo's
-  // seal); held here as the status would hold it, in any mode.
-  const formNames = Object.keys(rig.forms || {});
-  if (formNames.length) {
+  // What a status holds while the machine carries it (MechView3D.hold_statuses): a form, a pose
+  // (the Armadillo's seal), or a spin (the Cassowary's capacitor while Spun Up); held here as the
+  // status would hold it, in any mode.
+  const statusNames = [...new Set([...Object.keys(rig.forms || {}), ...Object.keys(rig.heldSpins || {})])];
+  if (statusNames.length) {
     const fg = el("div", {class: "acts"});
-    for (const name of formNames) fg.append(el("button", {class: "fchip", id: "mo-form-" + safeId(name), "aria-pressed": String(rig.formHeld(name)), onclick: () => st.setForm(name, !rig.formHeld(name))}, actWords(name)));
-    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Forms"), fg, el("p", {class: "mhelp"}, "Held while the machine carries the status of its name, as in the game; tap to hold it or let it go. While one is held it plays the form's own acts, from its held pose.")));
+    for (const name of statusNames) {
+      const on = rig.formHeld(name) || rig.spinHeld(name);
+      fg.append(el("button", {class: "fchip", id: "mo-form-" + safeId(name), "aria-pressed": String(on), onclick: () => st.holdStatus(name, !on)}, actWords(name)));
+    }
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Statuses"), fg, el("p", {class: "mhelp"}, "Held while the machine carries the status of its name, as in the game; tap to hold it or let it go. A form holds a pose and plays its own acts from it; a spin turns its part.")));
   }
   // A machine with gait options (b.gait_option) walks by any of them here, to judge beside its own.
   const options = Object.keys(rig.gaitOptions || {});

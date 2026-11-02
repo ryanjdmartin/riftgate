@@ -368,21 +368,34 @@ static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 	return out
 
 
-## Hold each of the model's forms while its machine carries the status of the same name (the
-## Armadillo's Sealed: its guns sink and its ports shut), and let it go when it does not. A
-## borrowed model holds nothing.
-func hold_forms(u: Unit) -> void:
+## Hold what each status the machine carries holds on its model, and let it go when it does not:
+## a form of the same name (the Armadillo's Sealed: its guns sink and its ports shut) and a spin
+## (the Cassowary's Spun Up: its capacitor turns). A borrowed model holds nothing.
+func hold_statuses(u: Unit) -> void:
 	if u == null or rig == null or model_id != u.chassis_id:
 		return
 	for name in rig.forms.keys():
 		rig.set_form(str(name), Effects.has(u, str(name)))
+	for status in rig.held_spins.keys():
+		if rig.hold_spin(str(status), Effects.has(u, str(status))) and is_inside_tree():
+			set_process(true)
 
 
-## Show its machine's die on the model's indexed joints (the Cassowary's drum, a chamber a roll:
-## MechRig.show_entry): the entry showing, the die's size and its count of rolls.
-func show_die(entry: int, entries: int, rolls: int) -> void:
-	if rig != null and rig.show_entry(entry, entries, rolls) and is_inside_tree():
+## Show its machine's numbers on the model's count displays (the Cassowary's capacitor, a cell a
+## counted shot: MechRig.show_counts), as count_values reads them. A borrowed model shows none.
+func show_counts(ms: Skirmish.MechState) -> void:
+	if ms == null or rig == null or model_id != ms.unit.chassis_id:
+		return
+	if rig.show_counts(count_values(ms)) and is_inside_tree():
 		set_process(true)
+
+
+## The numbers a count display may show (MechRig.COUNT_SOURCES), for one machine in a fight:
+## `shots` its counted shots toward the next that counts (the pips under its heat bar, the
+## Cassowary's sixth shot), `ammo` its magazine's rounds (the Musk Ox's).
+static func count_values(ms: Skirmish.MechState) -> Dictionary:
+	var every := Effects.counts_shots(ms.unit)
+	return {"shots": Effects.stacks_of(ms.unit, "shots") % every if every > 0 else 0, "ammo": ms.ammo}
 
 
 ## Wear the plan: each row hangs its class shape on its pin, or bares the socket.

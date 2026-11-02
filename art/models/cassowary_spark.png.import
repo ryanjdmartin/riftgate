@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://k234ho6sel2s"
-path="res://.godot/imported/cassowary_bone.png-3c0dbf9f96d84f4c2b0789ed1bbccdfa.ctex"
+uid="uid://jgcfv24if861"
+path="res://.godot/imported/cassowary_spark.png-c2ba1c8d4fcfca0f99d418d5b4b32fa3.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "5a2d948515eea15d30e478f948b015fe"
+"md5": "a12c6da526a028db85f35bc6d300c1f0"
 }
 
 [deps]
 
-source_file="res://art/models/cassowary_bone.png"
-dest_files=["res://.godot/imported/cassowary_bone.png-3c0dbf9f96d84f4c2b0789ed1bbccdfa.ctex"]
+source_file="res://art/models/cassowary_spark.png"
+dest_files=["res://.godot/imported/cassowary_spark.png-c2ba1c8d4fcfca0f99d418d5b4b32fa3.ctex"]
 
 [params]
 

@@ -49,7 +49,6 @@ class MechState:
 	var free_rerolls: int = 0   # rerolls of this die alone left this round, from a passive, on top of the team's
 	var ammo: int = 0           # the magazine (the Musk Ox's Desublimation Forge): a resource beside heat, never a status
 	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
-	var rolls: int = 0          # its die's rolls this fight, a step, a spin and a reroll each one: the screen's drum clicks on it (the Cassowary's), so a roll that lands where it was still shows
 
 	## The entry showing, as it is right now: a disabled one shows as blank (the component
 	## itself is untouched; the status is what says so).
@@ -1564,7 +1563,7 @@ func reroll(mech_indices: Array) -> bool:
 
 ## One die rerolled: never the same entry. A stepping die steps (a reroll is a roll).
 func _reroll_die(ms: MechState) -> void:
-	_rolled(ms)
+	_rolled()
 	ms.face_index = _step(ms) if Effects.steps_die(ms.unit) else ms.die.reroll(rng, ms.face_index)
 
 
@@ -1575,7 +1574,7 @@ func _reroll_die(ms: MechState) -> void:
 func _roll(ms: MechState) -> int:
 	if previewing:
 		return ms.face_index   # the copy's die keeps its entry: a roll is never promised
-	_rolled(ms)
+	_rolled()
 	if ms.face_index >= 0 and Effects.steps_die(ms.unit):
 		return _step(ms)
 	return ms.die.roll(rng)
@@ -3274,7 +3273,7 @@ func _act_again(ms: MechState, f: Face) -> void:
 	if previewing:
 		ms.assigned = false   # it acts again; the copy's die keeps its entry, a roll never promised
 		return
-	_rolled(ms)
+	_rolled()
 	if f.spins:
 		ms.face_index = ms.die.roll(rng)
 	elif Effects.steps_die(ms.unit):
@@ -3484,10 +3483,8 @@ static func stolen_number(face: Face) -> int:
 
 
 ## A die rolled, any machine's (the Swallowtail's Muster, Ryan's go of 21 October): every machine
-## that musters gains a sliver, and the machine's own count of its rolls goes up.
-func _rolled(rolled: MechState = null) -> void:
-	if rolled != null:
-		rolled.rolls += 1
+## that musters gains a sliver.
+func _rolled() -> void:
 	for ms in live_mechs():
 		_muster(ms, 1)
 

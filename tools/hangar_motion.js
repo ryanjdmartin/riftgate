@@ -23,7 +23,8 @@ const THREE_URLS = [
 
 // ---------------------------------------------------------------- the rig (MechRig's numbers)
 const RECOIL_SLIDE = 1.5;   // MechRig: world units a gun that only runs in and out of its port kicks back on a shot
-const INDEX_CLICK = 0.14, INDEX_CLICK_MORE = 0.05, INDEX_KICK = 0.12, INDEX_DEBUG_PERIOD = 1.0;   // MechRig: an indexed joint's click (the Cassowary's drum), and the debug switch's beat
+const COUNT_RISE = 0.08, COUNT_FALL = 0.35, COUNT_DEBUG_PERIOD = 1.0;   // MechRig: a count display's part lighting and fading, and the beat it counts to with no fight to count (RIFTGATE_COUNT_DEBUG's)
+const SPIN_HELD_EASE = 0.45;   // MechRig: seconds a status's spin takes to come up to speed and to run down
 const GAP_MIN = 6.0, GAP_MAX = 12.0, GAP_DEBUG = 0.4, WAIT_TICK_MAX = 0.1;   // MechRig: a long frame spends at most this much of the gap
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
@@ -207,9 +208,12 @@ class Rig {
     this.gaitOptions = side.gait_options || {};   // other ways it could move, to judge beside it (b.gait_option); the game moves by the gait alone
     this.spinners = {}; this.spun = {};   // joints turned without end (MechRig.spinners, b.spin: the Stingray's fans)
     for (const [name, r] of Object.entries(side.spin || {})) if (this.joints[name] && Array.isArray(r) && r.length >= 2) { this.spinners[name] = [Number(r[0]), Number(r[1])]; this.spun[name] = 0; }
-    this.indexed = {};   // joints turned a step for every entry the machine's die moves on (MechRig.indexed, b.index: the Cassowary's drum)
-    for (const [name, st] of Object.entries(side.index || {})) if (this.joints[name]) this.indexed[name] = Number(st);
-    this.indexEntry = -1; this.indexRolls = -1; this.indexFrom = 0; this.indexTo = 0; this.indexT = 0; this.indexDur = 0; this.indexDebugT = 0; this.indexDebugN = 0;
+    this.heldSpins = {}; this.heldOn = {}; this.heldSpeed = {};   // a status's spin (MechRig.held_spins, b.spin_held: the Cassowary's capacitor while Spun Up)
+    for (const [status, js] of Object.entries(side.spin_held || {})) {
+      const turned = {};
+      for (const [jn, v] of Object.entries(js || {})) if (this.joints[jn]) { turned[jn] = Number(v); this.spun[jn] = this.spun[jn] || 0; this.heldSpeed[jn] = 0; }
+      if (Object.keys(turned).length) { this.heldSpins[status] = turned; this.heldOn[status] = false; }
+    }
     this.useGait(side.gait || {});
     root.rotation.order = "YXZ";
     this.bodyRestPos = root.position.clone();
@@ -229,6 +233,7 @@ class Rig {
     });
     for (const part of ((this.gait.glow || {}).parts || [])) for (const m of this.litMaterials(part)) this.moveGlow.push([m, m.emissiveIntensity]);
     this.setupForms(side.forms || {});
+    this.setupCounts(side.counts || []);
   }
   // The forms a sidecar names (MechRig._setup_forms): poses held while the machine carries the
   // status of the same name (the Armadillo's seal), their tracks and body as curves over their
@@ -253,30 +258,64 @@ class Rig {
     if (this.current) this.endAct();
   }
   formHeld(name) { return !!this.formOn[name]; }
-  // The die on the indexed joints (MechRig.show_entry): always forward round the die, a step an
-  // entry, a whole turn for a roll that lands where it was, the first look a spin up from rest.
-  showEntry(entry, entries, rolls = -1) {
-    if (!Object.keys(this.indexed).length || entries <= 0 || entry < 0) return false;
-    let steps = this.indexEntry < 0 ? entry + entries : (((entry - this.indexEntry) % entries) + entries) % entries;
-    if (steps === 0 && rolls >= 0 && this.indexRolls >= 0 && rolls !== this.indexRolls) steps = entries;
-    this.indexEntry = entry; this.indexRolls = rolls;
-    this.click(steps);
-    return steps > 0;
+  // A status's spin held or let go (MechRig.hold_spin); true when it changes.
+  holdSpin(status, on) { if (!this.heldSpins[status] || this.heldOn[status] === on) return false; this.heldOn[status] = on; return true; }
+  spinHeld(status) { return !!this.heldOn[status]; }
+  // MechRig._spins_held_step: each held spin's joints ease toward what their held statuses ask, and turn.
+  spinsHeldStep(delta) {
+    let turning = false;
+    for (const jn of Object.keys(this.heldSpeed)) {
+      let want = 0;
+      for (const [status, js] of Object.entries(this.heldSpins)) if (this.heldOn[status] && jn in js) want += js[jn];
+      let v = want + (this.heldSpeed[jn] - want) * Math.exp(-delta / SPIN_HELD_EASE);
+      if (Math.abs(v - want) < 3) v = want;   // the exponential's tail, a creep, cut off (MechRig)
+      this.heldSpeed[jn] = v;
+      if (v !== 0) { this.spun[jn] = ((((this.spun[jn] || 0) + v * delta) % 360) + 360) % 360; turning = true; }
+    }
+    return turning;
   }
-  // MechRig.click: on `steps` steps from wherever the joints are, speeding into the stop, which catches it.
-  click(steps) {
-    if (!Object.keys(this.indexed).length || steps <= 0) return;
-    this.indexFrom = this.indexNow(); this.indexTo += steps; this.indexT = 0;
-    this.indexDur = INDEX_CLICK + INDEX_CLICK_MORE * (steps - 1);
+  // The count displays (MechRig._setup_counts): each part's lit materials and its light at rest, every part dark.
+  setupCounts(cs) {
+    this.countDisplays = []; this.countDebugT = 0;
+    for (const c of Array.isArray(cs) ? cs : []) {
+      if (!c || !Array.isArray(c.parts) || !c.parts.length) continue;
+      const off = c.off ?? -0.85;
+      this.countDisplays.push({source: c.source || "", parts: c.parts.map(p => this.litMaterials(p).map(m => [m, m.emissiveIntensity])),
+        on: c.on ?? 1.5, off, flare: c.flare ?? 0, n: -1, k: c.parts.map(() => off)});
+    }
+    this.lightCounts();
   }
-  indexNow() {
-    if (this.indexDur <= 0) return this.indexTo;
-    const u = clamp(this.indexT / this.indexDur, 0, 1);
-    return this.indexFrom + (this.indexTo - this.indexFrom) * Rig.clickAt(u) + INDEX_KICK * Rig.clickKick(u);
+  // MechRig.show_counts: the first n parts lit, the rest dark; a number that falls flares them all and lets them go dark.
+  showCounts(values) {
+    let changed = false;
+    for (const d of this.countDisplays) {
+      if (!(d.source in values)) continue;
+      const size = d.parts.length, n = clamp(Math.round(values[d.source]), 0, size), was = d.n;
+      if (n === was) continue;
+      if (was < 0) d.k = d.k.map((_, i) => i < n ? d.on : d.off);
+      else if (n < was && d.flare > 0) d.k = d.k.map(() => d.flare);
+      d.n = n; changed = true;
+    }
+    if (changed) this.lightCounts();
+    return changed;
   }
-  static clickAt(u) { const a = clamp(u / 0.7, 0, 1); return a * a; }
-  static clickKick(u) { if (u <= 0.7 || u >= 1) return 0; const b = (u - 0.7) / 0.3; return Math.sin(Math.PI * b) * (1 - b) * 2; }
-  wholeTurn() { for (const st of Object.values(this.indexed)) return Math.max(1, Math.round(360 / Math.max(1, Math.abs(st)))); return 1; }
+  // MechRig._counts_step: each part chases its light, quick to light and slower to fade.
+  countsStep(delta) {
+    let moving = false;
+    for (const d of this.countDisplays) {
+      const n = Math.max(0, d.n);
+      d.k = d.k.map((k, i) => {
+        const want = i < n ? d.on : d.off;
+        if (k === want) return k;
+        moving = true;
+        const nk = want + (k - want) * Math.exp(-delta / (want > k ? COUNT_RISE : COUNT_FALL));
+        return Math.abs(nk - want) < 0.05 ? want : nk;   // the fade's tail, past seeing, cut off (MechRig)
+      });
+    }
+    if (moving) this.lightCounts();
+    return moving;
+  }
+  lightCounts() { for (const d of this.countDisplays || []) d.parts.forEach((mats, i) => { for (const [m, base] of mats) m.emissiveIntensity = base * Math.max(0, 1 + d.k[i]); }); }
   static keysAny(a, held) { return Object.keys(a.tracks || {}).some(jn => held[jn]); }
   // The acts it may play now (MechRig.act_set): none while a form turns; a form held all the way
   // in plays its own when it has any (the sealed Armadillo's, from its hunkered pose); else its
@@ -341,7 +380,8 @@ class Rig {
     this.startOffset = 0; this.mainOffset = 0; this.handing = false;
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
-  alive() { return this.acts.length > 0 || Object.keys(this.forms).length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0 || Object.keys(this.indexed).length > 0; }
+  alive() { return this.acts.length > 0 || Object.keys(this.forms).length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0
+    || Object.keys(this.heldSpins).length > 0 || this.countDisplays.length > 0; }
   litMaterials(part) {
     if (this.glowCache[part]) return this.glowCache[part];
     const out = [], tag = parseTag(part);
@@ -446,9 +486,16 @@ class Rig {
     this.waitBudget = Math.min(delta, WAIT_TICK_MAX);
     while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
     if (this.formsStep(delta)) moved = true;   // the held forms turn on their own clock
-    if (Object.keys(this.indexed).length) {   // no die on this page: the indexed joints click on as RIFTGATE_DRUM_DEBUG has them in the game
-      this.indexDebugT += delta;
-      if (this.indexDebugT >= INDEX_DEBUG_PERIOD) { this.indexDebugT -= INDEX_DEBUG_PERIOD; this.indexDebugN += 1; this.click(1 + (this.indexDebugN % 6 === 0 ? this.wholeTurn() : 0)); }
+    if (this.spinsHeldStep(delta)) moved = true;   // a status's spin, held on the page by its chip
+    if (this.countDisplays.length) {   // no fight on this page: every display counts up a part a second until it falls, as RIFTGATE_COUNT_DEBUG has it in the game
+      this.countDebugT += delta;
+      if (this.countDebugT >= COUNT_DEBUG_PERIOD) {
+        this.countDebugT -= COUNT_DEBUG_PERIOD;
+        const up = {};
+        for (const d of this.countDisplays) up[d.source] = (Math.max(0, d.n) + 1) % (d.parts.length + 1);
+        this.showCounts(up);
+      }
+      this.countsStep(delta);
     }
     for (const [name, r] of Object.entries(this.spinners)) {
       const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
@@ -465,7 +512,6 @@ class Rig {
       const spent = Math.min(dt, this.waitBudget || 0); this.waitBudget -= spent; this.wait -= spent;
       if (this.wait <= 0) { const next = this.choose(); if (next) { this.start(next); this.evaluateAct(); moved = true; } }
     }
-    if (this.indexDur > 0) { this.indexT += dt; if (this.indexT >= this.indexDur) { this.indexDur = 0; this.indexFrom = this.indexTo; } moved = true; }
     const bw = this.bodyWantRot, bs = this.bodyWantSlide;
     if (Object.keys(this.servo).length || Object.keys(this.wantRot).length || bw.x || bw.y || bw.z || bs.x || bs.y || bs.z) { this.follow(dt); moved = true; }
     if (this.strikes.length) {
@@ -518,7 +564,6 @@ class Rig {
       for (const st of this.strikes) if (st.joint === name) { deg = add3(deg, mul3(st.vec, Rig.envelope(st))); if (st.slide) kick = add3(kick, mul3(st.slide, Rig.envelope(st))); }
       deg = clampDegrees(deg, this.meta[name].limits);
       if (name in this.spun) { const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)]; deg = {...deg, [k]: deg[k] + this.spun[name]}; }
-      if (name in this.indexed) { const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)]; deg = {...deg, [k]: (((deg[k] + this.indexed[name] * this.indexNow()) % 360) + 360) % 360}; }
       const r = this.rest[name], e = eulerOf(deg);
       j.rotation.set(r.x + e.x, r.y + e.y, r.z + e.z, "YXZ");
       const o = offsetOf(add3(add3(add3(this.actSlide[name] || v3(), this.gaitSlide[name] || v3()), this.formSlide[name] || v3()), kick)), p = this.restPos[name];
@@ -1097,6 +1142,13 @@ class Stage {
     this.gaitName = name && this.rig.gaitOptions[name] ? name : "";
     this.rig.useGait(this.gaitName ? this.rig.gaitOptions[this.gaitName] : (this.side.gait || {}));
     this.emit();
+  }
+  // Hold what a status holds or let it go, as the machine carrying it would in the game
+  // (MechView3D.hold_statuses): its form, its spin.
+  holdStatus(name, on) {
+    if (!this.rig) return;
+    if (this.rig.forms[name]) this.setForm(name, on);
+    if (this.rig.heldSpins[name]) { this.rig.holdSpin(name, on); this.emit(); }
   }
   // Hold one of the sidecar's forms or let it go, as the status of its name would in the game.
   setForm(name, on) {
