@@ -885,13 +885,18 @@ a stat.
   it may fight; a fight ends the action however it ends. A selected machine lights the hexes
   its move reaches, and in the enemy's violet the hexes past them within its attack range:
   where it could attack from. A move is planned: its route shows from where the machine stands,
-  and the next move or order reads from the route's end. UNDO takes back the last move or
-  order, whoever made it, in the order they were made, back to the turn's start or the last
-  fight. A caught machine's fight comes first. ENGAGE and END TURN play every planned move
-  first (the boss's fight aside, below); then the fight opens, or the turn ends: packs walk and
-  strike; machines that did not fight regain shield at their field rate; Rift Pressure rises
-  one. Once every machine has fought, is ordered, is caught, or can neither move nor reach a
-  pack where it stands, the button pulses.
+  and the next move or order reads from the route's end. The one button reads ENGAGE while a
+  fight is ready (a catch, or a machine ordered onto a pack), else EXECUTE while planned moves
+  wait, else END TURN. EXECUTE plays every planned move and the turn goes on, so moves play in
+  whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
+  below), then the fight opens. UNDO takes back the last move or order, whoever made it, in the
+  order they were made, a move that has played included (the machine goes back where it
+  stood), back to the turn's start or the last fight. A caught machine's fight comes first, and
+  the map draws it as the machine's order onto the hunters that caught it. END TURN asks first
+  while a machine can still move or fight; then the turn ends: packs walk and strike; machines
+  that did not fight regain shield at their field rate; Rift Pressure rises one. Once every
+  machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
+  stands, the button pulses, whichever it reads.
 - **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's shield and hull as
   gauges, its move and actions left, a chip for its damaged components; a pack's members (each foe

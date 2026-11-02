@@ -71,6 +71,154 @@ func test_a_tap_selects_and_a_lit_hex_plans_the_move() -> void:
 	s.free()
 
 
+## A move entered reads EXECUTE, and EXECUTE plays it with the turn going on (Ryan, 2 November:
+## "it shouldn't "end turn" when a command is entered. Movement should be able to be executed in
+## sequence if the player wants, and undone"): no enemy turn, the next moves planned and played
+## after it, and UNDO takes them back in order, each machine where it stood, nothing planned again.
+func test_a_planned_move_reads_execute_and_plays_with_the_turn_going_on() -> void:
+	var s := _screen()
+	var b := s.battle
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var d: Unit = b.mechs()[2]
+	var a0 := a.pos
+	var c0 := c.pos
+	var d0 := d.pos
+	var packs := {}
+	for sq in b.field.packs():
+		packs[sq] = sq.pos
+	s._on_hex_tapped(a.pos)
+	var ha: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(ha)
+	assert_eq(s._resolve_btn.text, "EXECUTE", "a move entered: the button executes it")
+	s._on_main_button()
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "EXECUTE plays the plan")
+	assert_eq(a.pos, ha, "the machine stands where it went")
+	assert_eq(b.field.phase, 0, "and the turn goes on")
+	assert_eq(b.state, Battle.State.PLAN, "the player's still")
+	for sq in packs.keys():
+		assert_eq(sq.pos, packs[sq], "no pack walked")
+	assert_eq(s._resolve_btn.text, "END TURN", "nothing waiting: the button ends the turn")
+	assert_false(s._clear_btn.disabled, "and the move can still be undone")
+	# Two more planned, then one EXECUTE plays both.
+	var dests := {}
+	for m in [c, d]:
+		s._on_hex_tapped(m.pos)
+		for h in s._map.destinations.keys():
+			if h != ha and not dests.values().has(h):
+				dests[m] = h
+				break
+		s._on_hex_tapped(dests[m])
+	assert_eq(s._map.shown.get(c.id, [Vector2i.ZERO])[0], c0, "the next moves are planned from where their machines stand")
+	assert_false(s._map.shown.has(a.id), "and the played one is not planned again")
+	assert_eq(s._resolve_btn.text, "EXECUTE", "EXECUTE again")
+	s._on_main_button()
+	assert_eq([a.pos, c.pos, d.pos], [ha, dests[c], dests[d]], "all three played, in sequence")
+	s._on_undo()
+	assert_eq([a.pos, c.pos, d.pos], [ha, dests[c], d0], "UNDO takes the last back, the machine where it stood")
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "with the move played before it not planned again")
+	assert_eq(s._map.selected, d, "and back in hand to move again")
+	s._on_undo()
+	assert_eq(c.pos, c0, "then the one before")
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "nothing planned")
+	s._on_undo()
+	assert_eq(a.pos, a0, "then the first")
+	assert_true(s._clear_btn.disabled, "back to the turn's start")
+	assert_eq(s._resolve_btn.text, "END TURN", "and the button ends the turn")
+	s.free()
+
+
+## ENGAGE still comes first with a fight ready, a move waiting or not; a move entered with nothing
+## else left to do pulses EXECUTE, the next press.
+func test_engage_comes_before_execute_and_execute_pulses_when_it_is_all_that_is_left() -> void:
+	var s := _screen()
+	var b := s.battle
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var sq: Unit = b.field.packs()[0]
+	var home := sq.pos
+	_engage(b, sq, a)
+	s._refresh()
+	s._on_hex_tapped(c.pos)
+	s._on_hex_tapped(s._map.destinations.keys()[0])
+	s._on_hex_tapped(a.pos)
+	s._on_hex_tapped(sq.pos)
+	assert_eq(b.order_of(a), sq, "one ordered")
+	assert_false(b.planned.is_empty(), "and another's move waiting")
+	assert_eq(s._resolve_btn.text, "ENGAGE", "the fight's button first")
+	s._on_undo()
+	assert_eq(s._resolve_btn.text, "EXECUTE", "the order taken back: the move's")
+	for m in b.mechs():
+		if m != c:
+			b.spent[m.id] = 1   # nothing else for anyone to do
+	sq.pos = home   # and the pack back where it spawned, out of reach of the one that moved
+	s._refresh()
+	assert_true(b.nothing_left(), "nothing left but the button")
+	assert_eq(s._resolve_btn.text, "EXECUTE", "which executes the move")
+	assert_true(s._resolve_btn.pulse, "and pulses")
+	s.free()
+
+
+## END TURN with a machine still able to move or fight asks first (Ryan, 2 November: "If end turn
+## is hit and there are movements/actions remaining, it should alert the player"); NO keeps the
+## turn, YES ends it; with nothing left it ends at once.
+func test_end_turn_asks_while_a_machine_can_still_act() -> void:
+	var s := _screen()
+	var b := s.battle
+	assert_eq(s._resolve_btn.text, "END TURN", "nothing entered")
+	s._on_main_button()
+	assert_true(s._confirm.visible and s._confirm_shade.visible, "END TURN asks first")
+	assert_eq(s._confirm_text.text, "%d machines can still move or fight. End the turn anyway?" % b.mechs().size(), "in plain words")
+	assert_eq(b.field.phase, 0, "and nothing has ended")
+	s._hide_confirm()
+	assert_false(s._confirm.visible, "NO puts it away")
+	assert_eq(b.field.phase, 0, "with the turn as it was")
+	s._on_main_button()
+	s._confirm_yes()
+	assert_false(s._confirm.visible, "YES puts it away")
+	assert_eq(b.field.phase, 1, "and ends the turn")
+	assert_true(s._header.text.begins_with("TURN 02"), "the next turn opens")
+	assert_true(b.forced.is_empty(), "with no catch to fight first")
+	for m in b.mechs():
+		b.spent[m.id] = 1
+	s._refresh()
+	assert_true(s._resolve_btn.pulse, "nothing left: the button pulses")
+	s._on_main_button()
+	assert_false(s._confirm.visible, "and ends the turn without asking")
+	assert_eq(b.field.phase, 2, "at once")
+	s.free()
+
+
+## A move played by EXECUTE is saved played: the save resumes with nothing planned, and its undo
+## sets the machine back where it stood.
+func test_an_executed_move_is_saved_played() -> void:
+	const TMP := "user://test_screen_execute.json"
+	SaveGame.clear(TMP)
+	var s := _screen(4)
+	s.autosave_enabled = true
+	s.save_path = TMP
+	var m: Unit = s.battle.mechs()[0]
+	var start := m.pos
+	s._on_hex_tapped(m.pos)
+	var dest: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(dest)
+	s._on_main_button()
+	var loaded := SaveGame.load(TMP)
+	assert_true(loaded.planned.is_empty(), "the save holds the move played, nothing planned")
+	assert_eq(loaded.field.unit_by_id(m.id).pos, dest, "the machine where it went")
+	var r := BattleScreen.new()
+	r.setup(loaded)
+	r._resume_where_it_was()
+	assert_true(r._map.shown.is_empty(), "resumed, the map shows it there")
+	assert_eq(r._resolve_btn.text, "END TURN", "with nothing to execute")
+	r._on_undo()
+	assert_eq(loaded.field.unit_by_id(m.id).pos, start, "and its undo sets it back where it stood")
+	assert_true(r._map.plans.is_empty(), "with nothing planned again")
+	r.free()
+	s.free()
+	SaveGame.clear(TMP)
+
+
 func test_undo_takes_back_an_order_and_the_moves_in_the_order_made() -> void:
 	var s := _screen()
 	var b := s.battle
@@ -275,6 +423,19 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE with nobody ordered")
 	assert_true(s._sub_label.text.begins_with("CAUGHT"), "the readout says so")
 	assert_false(s._map.attack.is_empty(), "the catch's fight shows")
+	# The catch reads as the caught machine's attack order (Ryan, 2 November: "when caught, the
+	# unit should show the attack order on the enemy that caught it for clarity").
+	assert_true(s._map.order_pairs().has([m, hunter]), "the map draws its order onto the hunter")
+	var row: Dictionary = {}
+	for r in s._board._rows():
+		if r["unit"] == m:
+			row = r
+	assert_eq(str(row.get("order", "")), "CAUGHT", "the board says it is caught")
+	assert_eq(str(row.get("meets", "")), "> " + s._board._short(hunter.display_name), "and names its fight as an order does, in HUNTED BY's place")
+	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(hunter.pos)
+	assert_eq(b.order_of(m), hunter, "ordered onto its hunter as well")
+	assert_eq(s._map.order_pairs().filter(func(p: Array) -> bool: return p[0] == m).size(), 1, "it is still the one line")
 	var other: Unit = b.field.packs()[1]
 	s._on_hex_tapped(b.mechs()[1].pos)
 	s._on_hex_tapped(other.pos)

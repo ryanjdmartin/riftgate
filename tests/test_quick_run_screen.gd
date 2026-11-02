@@ -111,6 +111,155 @@ func test_the_rewards_take_the_chosen_card() -> void:
 	s.free()
 
 
+## The controls under `n` that would keep a touch from the scroller above them.
+func _stoppers(n: Node) -> Array:
+	var out: Array = []
+	if n is Control and (n as Control).mouse_filter == Control.MOUSE_FILTER_STOP:
+		out.append(n)
+	for c in n.get_children():
+		out.append_array(_stoppers(c))
+	return out
+
+
+## Every scrolled list on the screen hands a touch on to its scroller (Ryan, 2 November: "quick
+## campaign draft menu is hard to scroll"): no card, row or button in it stops one, in the draft,
+## the hangar and its chooser, between the fights and in the rewards, rebuilt or not.
+func test_every_scrolled_list_passes_a_touch_on_to_its_scroller() -> void:
+	var s := _screen()
+	assert_eq(_stoppers(s._content).size(), 0, "the draft: nothing stops a touch")
+	s._toggle_pick(str(QuickRun.draft_choices(s.run.db)[0]))
+	assert_eq(_stoppers(s._content).size(), 0, "nor once a pick has rebuilt it")
+	s.free()
+	s = _drafted()
+	var m: QuickRun.Machine = s.run.roster[0]
+	assert_eq(_stoppers(s._content).size(), 0, "the hangar")
+	s._open_hardpoint(m.uid, 0, s.run.db.chassis[m.chassis].get("fixed", []).size())
+	var lists: Array = s._chooser.find_children("*", "ScrollContainer", true, false)
+	assert_eq(lists.size(), 1, "the chooser scrolls its pieces")
+	assert_eq(_stoppers((lists[0] as ScrollContainer).get_child(0)).size(), 0, "and nothing in it stops a touch")
+	s._close_chooser()
+	s._on_primary()
+	assert_eq(s.run.state, QuickRun.BATTLE, "between the fights")
+	assert_eq(_stoppers(s._content).size(), 0, "the track and the squad's rows")
+	for i in range(s.run.encounters.size()):
+		_end(s.run, Skirmish.Outcome.VICTORY)
+		s.run.finish_fight()
+	s._refresh()
+	assert_eq(s.run.state, QuickRun.REWARDS, "the rewards")
+	assert_eq(_stoppers(s._content).size(), 0, "the reward cards")
+	s.free()
+
+
+## The layout a frame would give, here and now: every control's minimum size read again (a
+## wrapped label measured before it had a width keeps a height a word a line until then) and
+## every container sorted, three times over so the widths and the wrapped heights settle.
+func _lay_out(vp: Viewport) -> void:
+	for i in range(3):
+		_remeasure(vp)
+		vp.propagate_notification(Container.NOTIFICATION_SORT_CHILDREN)
+
+
+func _remeasure(n: Node) -> void:
+	for c in n.get_children():
+		_remeasure(c)
+	if n is Control:
+		(n as Control).update_minimum_size()
+
+
+## A finger touching or lifting as Android delivers it: the mouse event Godot emulates from the
+## finger first (DEVICE_ID_EMULATION, which buttons and scrollers ignore), then the touch.
+func _finger(vp: Viewport, at: Vector2, down: bool) -> void:
+	var mb := InputEventMouseButton.new()
+	mb.device = InputEvent.DEVICE_ID_EMULATION
+	mb.button_index = MOUSE_BUTTON_LEFT
+	mb.pressed = down
+	mb.position = at
+	mb.global_position = at
+	mb.button_mask = MOUSE_BUTTON_MASK_LEFT if down else 0
+	vp.push_input(mb)
+	var st := InputEventScreenTouch.new()
+	st.index = 0
+	st.pressed = down
+	st.position = at
+	vp.push_input(st)
+
+
+## A finger down at `from`, slid `by` in `steps`, and lifted, its motion as Android delivers it.
+func _drag(vp: Viewport, from: Vector2, by: Vector2, steps: int = 10) -> void:
+	_finger(vp, from, true)
+	var at := from
+	for k in range(steps):
+		at += by / steps
+		var mm := InputEventMouseMotion.new()
+		mm.device = InputEvent.DEVICE_ID_EMULATION
+		mm.position = at
+		mm.global_position = at
+		mm.relative = by / steps
+		mm.button_mask = MOUSE_BUTTON_MASK_LEFT
+		vp.push_input(mm)
+		var sd := InputEventScreenDrag.new()
+		sd.index = 0
+		sd.position = at
+		sd.relative = by / steps
+		vp.push_input(sd)
+	_finger(vp, at, false)
+
+
+## The first card's PICK (PICKED once it is picked).
+func _first_pick(s: QuickRunScreen) -> HudButton:
+	for b in s._content.find_children("*", "HudButton", true, false):
+		if (b as HudButton).text in ["PICK", "PICKED"]:
+			return b
+	return null
+
+
+## The draft scrolls from anywhere on it (Ryan, 2 November: "quick campaign draft menu is hard to
+## scroll"). A ScrollContainer scrolls on the touch itself, and a card's panel or its button, both
+## stopping a touch, kept it from the scroller: only the gaps between the cards scrolled, and a
+## short drag that ended on PICK picked. Live: the screen in the tree, a finger's events pushed
+## through its viewport as the phone's arrive.
+func live_test_a_drag_over_a_card_scrolls_the_draft_and_never_picks() -> void:
+	var vp := SubViewport.new()
+	vp.size = Vector2i(720, 1280)
+	(Engine.get_main_loop() as SceneTree).root.add_child(vp)
+	var s := QuickRunScreen.new()
+	s.run = QuickRun.new(5)
+	vp.add_child(s)
+	_lay_out(vp)
+	var pick := _first_pick(s)
+	assert_true(pick != null and pick.is_visible_in_tree(), "a card's PICK on the glass")
+	_drag(vp, pick.get_global_rect().get_center(), Vector2(0, -200))
+	var after := s._scroll.scroll_vertical
+	assert_true(after >= 150, "a drag that starts on PICK scrolls the list (%d)" % after)
+	assert_true(s._picked.is_empty(), "and picks nothing")
+	_lay_out(vp)
+	_drag(vp, pick.get_global_rect().get_center(), Vector2(0, -24), 3)
+	assert_true(s._scroll.scroll_vertical > after, "a short drag past the dead zone scrolls")
+	assert_true(s._picked.is_empty(), "though it lifts on PICK, it never picks")
+	_lay_out(vp)
+	var card: Control = pick.get_parent().get_parent().get_parent()   # PICK's row, the card's column, its panel
+	assert_true(card is HudPanel, "the card itself")
+	var on_card := pick.get_global_rect().get_center() + Vector2(0, -80)   # on its die's entries, above PICK
+	assert_true(card.get_global_rect().has_point(on_card) and not pick.get_global_rect().has_point(on_card), "a spot on the card off its buttons")
+	var before := s._scroll.scroll_vertical
+	_drag(vp, on_card, Vector2(0, -150))
+	assert_true(s._scroll.scroll_vertical >= before + 100, "a drag on the card's panel scrolls too (%d to %d)" % [before, s._scroll.scroll_vertical])
+	_lay_out(vp)
+	var at := pick.get_global_rect().get_center()
+	_finger(vp, at, true)
+	_finger(vp, at, false)
+	assert_eq(s._picked.size(), 1, "a tap on PICK still picks")
+	s._scroll.scroll_vertical = 0   # where the pick's own refresh leaves it for a frame
+	_lay_out(vp)   # the pick rebuilt the list
+	var again := _first_pick(s)
+	assert_eq(again.text, "PICKED", "the rebuilt card says so")
+	before = s._scroll.scroll_vertical
+	_drag(vp, again.get_global_rect().get_center(), Vector2(0, -200))
+	assert_true(s._scroll.scroll_vertical >= before + 150, "and the rebuilt list scrolls from its cards as well (%d to %d)" % [before, s._scroll.scroll_vertical])
+	assert_eq(s._picked.size(), 1, "with no pick taken back")
+	vp.free()
+
+
 func test_the_end_says_where_and_goes_back() -> void:
 	var s := _drafted()
 	var r := s.run

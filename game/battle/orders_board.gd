@@ -110,15 +110,18 @@ func _title() -> String:
 
 
 ## One entry per machine: its unit (for the gauges), what it can still do this turn (READY,
-## MOVED, ONE MORE, SPENT, CAUGHT) and which hunter is after it: the one whose tag it wears on
-## the map, its prey or the machine it takes when its prey is sealed off.
+## MOVED, ONE MORE, SPENT, its order, CAUGHT) and which hunter is after it: the one whose tag it
+## wears on the map, its prey or the machine it takes when its prey is sealed off. A caught
+## machine names its fight there instead, as an order names its pack (Ryan, 2 November: the catch
+## reads as its attack order): CAUGHT > the hunter that caught it, +1 a hunter more.
 func _rows() -> Array:
 	var out: Array = []
 	var shown: Dictionary = walks.call() if walks.is_valid() else {}
 	for m in battle.mechs():
 		var order := "READY"
 		var col := Palette.HUD
-		if battle.is_pinned(m):
+		var caught := battle.catchers_of(m)
+		if not caught.is_empty():
 			order = "CAUGHT"
 			col = Palette.ENEMY
 		elif battle.actions_left(m) <= 0:
@@ -132,7 +135,9 @@ func _rows() -> Array:
 		elif battle.actions_left(m) < Battlefield.actions_for(m):
 			order = "ONE MORE"
 		var meets := ""
-		for p in battle.field.packs():
+		if not caught.is_empty():
+			meets = "> " + _short((caught[0] as Unit).display_name) + (" +%d" % (caught.size() - 1) if caught.size() > 1 else "")
+		for p in (battle.field.packs() if caught.is_empty() else []):
 			if p.behaviour != "hunt":
 				continue
 			var w: Battlefield.Walk = shown.get(p.id, null)

@@ -603,7 +603,8 @@ func _draw() -> void:
 			_plaque(prev + Vector2(0.0, -HEX_SIZE * 1.0), "NO ROOM", Palette.LOSS, 2.5)
 
 	# The fights hunters forced (bible section 5): the hunter and its prey lit, the prey
-	# tagged; they come first on the player's turn.
+	# tagged; they come first on the player's turn, and the catch is drawn as the prey's order
+	# onto its hunters, below.
 	if _anim.is_empty() and fight_group.is_empty():
 		for f in forced:
 			var prey: Unit = f["prey"]
@@ -612,22 +613,10 @@ func _draw() -> void:
 			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), Palette.ENEMY, _px(3.0))
 			_plaque(center(prey.pos) + Vector2(0.0, -HEX_SIZE * 1.05), "CAUGHT", Palette.ENEMY, 2.0)
 	# The orders (bible section 5): a line from each machine to the pack it is ordered onto, in
-	# the display's light, dashes crawling toward the pack.
+	# the display's light, dashes crawling toward the pack; a caught machine's to its hunters.
 	if _anim.is_empty() and fight_group.is_empty():
-		for uid in orders.keys():
-			var m := field.unit_by_id(int(uid))
-			var target: Unit = orders[uid]
-			if m == null or target == null or not field.units.has(target):
-				continue
-			var a := center(m.pos)
-			var b := center(target.pos)
-			var dir := (b - a).normalized()
-			a += dir * HEX_SIZE * 0.55
-			b -= dir * HEX_SIZE * 0.6
-			draw_line(a, b, Color(hud, 0.35), _px(6.0))
-			_dashed_line(a, b, hud, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0))
-			var side := Vector2(-dir.y, dir.x)
-			draw_polyline(PackedVector2Array([b - dir * _px(10.0) + side * _px(8.0), b, b - dir * _px(10.0) - side * _px(8.0)]), hud, _px(3.0))
+		for pair in order_pairs():
+			_order_line(pair[0], pair[1])
 	# The fight shown (bible section 5): the next one ENGAGE opens, the one a dragged machine
 	# is over, or a pack looked at. The attack range round the target in the display's light
 	# (where a machine must stand to join), every joining pack's ring in the enemy's, the packs
@@ -689,6 +678,45 @@ func _draw() -> void:
 	# faint scanlines and its soft band drifting down, over everything, foes and overlays
 	# too (Ryan, 21 September).
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
+
+
+## The attack orders the map draws (bible section 5), [[machine, pack], ...]: each machine's
+## order onto the pack it fights, then a caught machine's onto each hunter that caught it (Ryan,
+## 2 November: "when caught, the unit should show the attack order on the enemy that caught it
+## for clarity"), one line a pair however it came.
+func order_pairs() -> Array:
+	var out: Array = []
+	if field == null:
+		return out
+	for uid in orders.keys():
+		var m := field.unit_by_id(int(uid))
+		var target: Unit = orders[uid]
+		if m != null and target != null and field.units.has(target):
+			out.append([m, target])
+	for f in forced:
+		var prey: Unit = f["prey"]
+		if not field.units.has(prey):
+			continue
+		for h in f["hunters"]:
+			if field.units.has(h) and orders.get(prey.id, null) != h:
+				out.append([prey, h])
+	return out
+
+
+## An attack order on the map (bible section 5): a line from the machine, where its move ends,
+## to the pack it fights, in the display's light under a wide faint band, dashes crawling toward
+## the pack and an arrowhead short of it. Map space.
+func _order_line(m: Unit, target: Unit) -> void:
+	var hud := Palette.HUD
+	var a := center(m.pos)
+	var b := center(target.pos)
+	var dir := (b - a).normalized()
+	a += dir * HEX_SIZE * 0.55
+	b -= dir * HEX_SIZE * 0.6
+	draw_line(a, b, Color(hud, 0.35), _px(6.0))
+	_dashed_line(a, b, hud, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0))
+	var side := Vector2(-dir.y, dir.x)
+	draw_polyline(PackedVector2Array([b - dir * _px(10.0) + side * _px(8.0), b, b - dir * _px(10.0) - side * _px(8.0)]), hud, _px(3.0))
 
 
 ## The frame: two boundary lines in the display's light, a tick on every row's centre with

@@ -300,7 +300,8 @@ func _apply_pose() -> void:
 
 
 ## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),
-## plan_play (those two played on END TURN), inspect (a pack tapped, its ring lit), draft (a
+## plan_play (those two played on END TURN), execute (played on EXECUTE, the turn going on),
+## endask (END TURN's question while machines can still act), inspect (a pack tapped, its ring lit), draft (a
 ## route drawn by hand, about halfway through the move), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
 ## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
@@ -333,14 +334,21 @@ func _apply_battle_pose() -> void:
 				if pick != Vector2i(-9999, -9999):
 					break
 			s._on_hex_tapped(pick)
-		"plan_play":
-			# Two machines' moves planned, then END TURN: the plan playing (RIFTGATE_SHOT_FRAME).
+		"plan_play", "execute":
+			# Two machines' moves planned, then END TURN, or EXECUTE (the turn going on): the plan
+			# playing (RIFTGATE_SHOT_FRAME), or played, at a later frame.
 			for i in range(mini(2, b.mechs().size())):
 				s._on_hex_tapped(b.mechs()[i].pos)
 				var dests: Array = s._map.destinations.keys()
 				if not dests.is_empty():
 					s._on_hex_tapped(dests[dests.size() / 2])
-			s._on_end_turn()
+			if _pose == "execute":
+				s._on_main_button()
+			else:
+				s._on_end_turn()
+		"endask":
+			# END TURN pressed with every machine still able to act: the question.
+			s._on_main_button()
 		"inspect":
 			# A pack tapped with nothing in hand: its ring lit, every other pack's at rest.
 			var sq: Unit = b.field.packs()[0]
