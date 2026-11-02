@@ -31,6 +31,11 @@ const FLOAT_LIFT := 16.0   # a foe's floating gauge: how far its bottom row sits
 const LEADER := 16.0       # the floating gauge's leader, in x and in y; it runs onto the sprite, which is allowed
 const PIP_H := 9.0         # the pips' row under the gauges, and the step it adds to them
 const PENDING_RATE := 3.2  # the one clock every pending mark breathes on, radians a second: a gauge's change and a buff on its way (a preview chip) pulse in step
+const CHIP_GAP := 6.0      # between two chips in a row
+const ROW_GAP := 4.0       # between two rows of chips
+const RIDER_GLYPH := 16.0  # a rider's mark inside the intent chip
+const RIDER_TEXT := 14
+const RIDER_PAD := 6.0     # before a rider: its divider's room
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -42,7 +47,12 @@ var boxes: Array = []             # [count, cap, colour, glyph]: a capped store'
 var sprite_density := 1.0         # a machine's render is this much larger than the frame it stands for (MechView3D.density); pixel art is 1
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
-var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
+var intent_note: String = ""      # after the number: "×2" for a double strike
+## The blow's riders inside the intent chip, after its number (Ryan, 2 November: "Enemy intents with
+## a rider need to show that rider as part of the intent chip"): [[glyph, text, Color], ...], a
+## breach, a scorch with its stacks, a blow at every machine.
+var intent_riders: Array = []
+var chip_wrap := 0.0              # the widest a row of chips runs before the next row starts; 0, the view's width
 var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
 var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Kindled), pulsing, "asleep" a buff a purge put to sleep, still at half light
@@ -497,70 +507,155 @@ func _draw() -> void:
 	if not intent.is_empty() and not dead and sprite == null and intent_kind.is_empty():
 		draw_string(mono, Vector2(0, sil.get_center().y + 5.0), "[%s]" % intent, HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Color(hud, 0.45 if intent_dim else 0.95))
 
-	# The chip row under the drawing: intent first, then statuses, centred.
+	# The chips under the drawing: intent first, then statuses, centred in rows that wrap at the
+	# view's width (Ryan, 2 November: "chips can go off the sides of the screen if there are too
+	# many ... Need to wrap rows"), each row kept on the screen.
 	if dead:
 		return
 	var chips: Array = []
 	if not intent_kind.is_empty():
-		chips.append([Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud])
+		chips.append([Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud, "intent", intent_riders])
 	for s in statuses:
-		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status"])
+		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status", []])
 	if chips.is_empty():
 		_draw_spend(mono)
 		return
 	var widths: Array[float] = []
-	var total := 0.0
 	for ch in chips:
-		var txt: String = ch[1]
-		var w := CHIP_H + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0 if not txt.is_empty() else 0.0)
-		widths.append(w)
-		total += w + 6.0
-	total -= 6.0
-	var x := floorf((size.x - total) * 0.5)
+		widths.append(chip_width(mono, ch))
+	var rows := chip_rows(widths, chip_wrap if chip_wrap > 0.0 else size.x)
+	var lo := -INF
+	var hi := INF
+	var parent := get_parent() as Control
+	if parent != null:
+		lo = 2.0 - position.x
+		hi = parent.size.x - position.x - 2.0
 	var cy := minf(vis.end.y + GAP, size.y - 2.0) + CHIP_H * 0.5
 	cy = minf(cy, size.y - CHIP_H * 0.5 - 1.0)
 	var acq := clampf(_acquire / ACQUIRE_SECONDS, 0.0, 1.0) if _acquire >= 0.0 else 1.0
-	for i in range(chips.size()):
-		var ch: Array = chips[i]
-		var col: Color = ch[2]
-		var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
-		_chip_rects[ch[0]] = [rect, col]
-		if ch.size() >= 4 and ch[3] == "resist":
-			# A resistance is no status (Numbed, 10 October): bracket corners on a bare ground,
-			# never the box a status wears, so the difference is the frame, not a hue.
-			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-			Hud.brackets(self, rect, 5.0, col, 1.6)
-		elif ch.size() >= 4 and ch[3] == "preview":
-			# A buff on its way (a rally's Kindled, Ryan, 26 October: "a pulsing version of the
-			# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
-			# in concept to the health and shield bars"), on the gauges' one clock, a full swing
-			# between faint and lit on its dark ground, its edge dashed, so "coming" reads by
-			# motion and structure, never by hue.
-			var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
-			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-			col = Color(col, 0.3 + 0.7 * beat)
-			_draw_dashed(rect, col, 2.0)
-		elif ch.size() >= 4 and ch[3] == "asleep":
-			# A buff a purge put to sleep (28 October): half its light on a dashed edge, still, so
-			# "asleep" reads by structure and by standing still beside the preview's pulse, never
-			# by hue (placeholders, judged running: RIFTGATE_SLEEP_DEBUG=1).
-			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-			col = Color(col, 0.5)
-			_draw_dashed(rect, col, 2.0)
-		else:
-			Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
-		Glyphs.draw(self, ch[0], Vector2(x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
-		var txt: String = ch[1]
-		var locking := i == 0 and not intent_kind.is_empty() and acq < 1.0
-		if locking and acq < SCRAMBLE_PART:
-			txt = Hud.scramble(txt, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
-		if not txt.is_empty():
-			draw_string(mono, Vector2(x + CHIP_H - 2.0, cy + CHIP_TEXT * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
-		if locking:
-			# The lock: bracket corners collapsing onto the chip, fading as they land.
-			Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(col, 1.0 - acq * 0.7), 1.5)
-		x += widths[i] + 6.0
+	for row in rows:
+		var total := 0.0
+		for i in row:
+			total += widths[i] + CHIP_GAP
+		total -= CHIP_GAP
+		var x := floorf((size.x - total) * 0.5)
+		x = clampf(x, lo, maxf(lo, hi - total))
+		for i in row:
+			var ch: Array = chips[i]
+			var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
+			_chip_rects[ch[0]] = [rect, ch[2]]
+			var locking: bool = int(i) == 0 and not intent_kind.is_empty() and acq < 1.0
+			var txt: String = ch[1]
+			if locking and acq < SCRAMBLE_PART:
+				txt = Hud.scramble(txt, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
+			draw_chip(self, rect, ch, mono, txt)
+			if locking:
+				# The lock: bracket corners collapsing onto the chip, fading as they land.
+				Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(ch[2], 1.0 - acq * 0.7), 1.5)
+			x += widths[i] + CHIP_GAP
+		cy += CHIP_H + ROW_GAP
 	_draw_spend(mono)
+
+
+## The chips' rows: each as many chips, in order, as fit `wrap` with their gaps, a chip wider than
+## the row on a row of its own. Index lists, the first row first.
+static func chip_rows(widths: Array, wrap: float) -> Array:
+	var rows: Array = [[]]
+	var run := 0.0
+	for i in range(widths.size()):
+		var w := float(widths[i])
+		var row: Array = rows.back()
+		if not row.is_empty() and run + CHIP_GAP + w > wrap:
+			rows.append([i])
+			run = w
+		else:
+			run += (CHIP_GAP if not row.is_empty() else 0.0) + w
+			row.append(i)
+	return rows
+
+
+## A chip's width: its glyph's square, its text, and each rider inside it after a divider (an
+## intent's). `ch` is [glyph, text, Color, kind, riders].
+static func chip_width(mono: Font, ch: Array) -> float:
+	var txt := str(ch[1])
+	var w := CHIP_H + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0 if not txt.is_empty() else 0.0)
+	for r in (ch[4] if ch.size() > 4 else []):
+		w += RIDER_PAD + RIDER_GLYPH + 4.0
+		var rt := str(r[1])
+		if not rt.is_empty():
+			w += mono.get_string_size(rt, HORIZONTAL_ALIGNMENT_LEFT, -1, RIDER_TEXT).x + 2.0
+	return w
+
+
+## One chip in `rect` on `ci` (the field's views, a readout's mark): its frame by its kind (a
+## resistance's brackets, a coming status's dashed pulse, a buff asleep's dashed half light, a
+## status's box), its glyph, its text (`txt`, or its own), then each rider after a divider, its
+## mark and its number in its own colour.
+static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> void:
+	var col: Color = ch[2]
+	var kind := str(ch[3]) if ch.size() > 3 else "status"
+	if kind == "resist":
+		# A resistance is no status (Numbed, 10 October): bracket corners on a bare ground,
+		# never the box a status wears, so the difference is the frame, not a hue.
+		Hud.fill_poly(ci, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+		Hud.brackets(ci, rect, 5.0, col, 1.6)
+	elif kind == "preview":
+		# A buff on its way (a rally's Kindled, Ryan, 26 October: "a pulsing version of the
+		# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
+		# in concept to the health and shield bars"), on the gauges' one clock, a full swing
+		# between faint and lit on its dark ground, its edge dashed, so "coming" reads by
+		# motion and structure, never by hue.
+		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
+		Hud.fill_poly(ci, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+		col = Color(col, 0.3 + 0.7 * beat)
+		dashed_rect(ci, rect, col, 2.0)
+	elif kind == "asleep":
+		# A buff a purge put to sleep (28 October): half its light on a dashed edge, still, so
+		# "asleep" reads by structure and by standing still beside the preview's pulse, never
+		# by hue (placeholders, judged running: RIFTGATE_SLEEP_DEBUG=1).
+		Hud.fill_poly(ci, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+		col = Color(col, 0.5)
+		dashed_rect(ci, rect, col, 2.0)
+	else:
+		Hud.box(ci, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
+	var cy := rect.get_center().y
+	Glyphs.draw(ci, str(ch[0]), Vector2(rect.position.x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
+	var text := str(ch[1]) if txt == null else str(txt)
+	var x := rect.position.x + CHIP_H - 2.0
+	if not text.is_empty():
+		ci.draw_string(mono, Vector2(x, cy + CHIP_TEXT * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
+		x += mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0
+	else:
+		x = rect.position.x + CHIP_H
+	for r in (ch[4] if ch.size() > 4 else []):
+		# A rider: a divider, then its mark and its number in its own colour (its term's).
+		var rc: Color = r[2]
+		rc.a *= col.a
+		ci.draw_line(Vector2(x + RIDER_PAD * 0.5 - 2.0, rect.position.y + 5.0), Vector2(x + RIDER_PAD * 0.5 - 2.0, rect.end.y - 5.0), Color(col, 0.55 * col.a), 1.0)
+		x += RIDER_PAD
+		Glyphs.draw(ci, str(r[0]), Vector2(x + RIDER_GLYPH * 0.5, cy), RIDER_GLYPH, rc, 1.8)
+		x += RIDER_GLYPH + 4.0
+		var rt := str(r[1])
+		if not rt.is_empty():
+			ci.draw_string(mono, Vector2(x - 2.0, cy + RIDER_TEXT * 0.36), rt, HORIZONTAL_ALIGNMENT_LEFT, -1, RIDER_TEXT, rc)
+			x += mono.get_string_size(rt, HORIZONTAL_ALIGNMENT_LEFT, -1, RIDER_TEXT).x + 2.0
+
+
+## A rect drawn in dashes on any canvas item (a chip's edge), its dark edge under each dash.
+static func dashed_rect(ci: CanvasItem, rect: Rect2, color: Color, width: float) -> void:
+	var dash := 9.0
+	var gap := 6.0
+	var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
+	for k in range(4):
+		var a: Vector2 = corners[k]
+		var b: Vector2 = corners[(k + 1) % 4]
+		var length := a.distance_to(b)
+		var dir := (b - a) / maxf(1.0, length)
+		var t := 0.0
+		while t < length:
+			ci.draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8 * color.a), width + 2.0)
+			ci.draw_line(a + dir * t, a + dir * minf(t + dash, length), color, width)
+			t += dash + gap
 
 
 ## The drawing's frame this moment and its lean, a shear about the feet line (a Transform2D
@@ -595,19 +690,7 @@ func _draw_shadow(foot: Vector2, rx: float, alpha: float) -> void:
 ## A rect drawn in dashes (a mined slot's outline, a preview chip's edge): structure, so it never
 ## rests on its hue. The dark edge under each dash fades with the colour.
 func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
-	var dash := 9.0
-	var gap := 6.0
-	var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
-	for k in range(4):
-		var a: Vector2 = corners[k]
-		var b: Vector2 = corners[(k + 1) % 4]
-		var length := a.distance_to(b)
-		var dir := (b - a) / maxf(1.0, length)
-		var t := 0.0
-		while t < length:
-			draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8 * color.a), width + 2.0)
-			draw_line(a + dir * t, a + dir * minf(t + dash, length), color, width)
-			t += dash + gap
+	dashed_rect(self, rect, color, width)
 
 
 ## A gauge on its own dark ground, with, when a pending value is given, a pulsing overlay on
@@ -697,7 +780,8 @@ func _gauge(rect: Rect2, b: Array) -> void:
 			draw_line(Vector2(hx, ext.end.y), Vector2(hx + ext.size.y, ext.position.y), Color(Palette.INK, 0.8), 1.0)
 			hx += 4.0
 	# A banked bar's charges (the Swallowtail's Muster, a fifth element the points a charge): a
-	# notch at each charge across the bar, so its count reads by structure.
+	# notch at each charge across the bar, so its count reads by structure; every other bar
+	# wears its scale, a tick a point (Hud.ticks), drawn over its pending change so it holds.
 	if b.size() >= 5 and int(b[4]) > 0:
 		var step := float(int(b[4])) / mx
 		var at := step
@@ -705,6 +789,8 @@ func _gauge(rect: Rect2, b: Array) -> void:
 			var x := rect.position.x + rect.size.x * at
 			draw_line(Vector2(x, rect.position.y - 1.0), Vector2(x, rect.end.y + 1.0), Color(Palette.BG, 0.95), 3.0)
 			at += step
+	elif b.size() < 4 or int(b[3]) == int(b[0]):
+		Hud.ticks(self, rect.grow(-2.0), int(b[0]), int(b[1]), col, 2.4)
 	if b.size() < 4 or int(b[3]) == int(b[0]):
 		return
 	var pending: float = clampf(float(b[3]) / mx, 0.0, 1.0)
@@ -732,3 +818,5 @@ func _gauge(rect: Rect2, b: Array) -> void:
 		while x < seg.end.x:
 			draw_line(Vector2(x, seg.end.y), Vector2(x + seg.size.y, seg.position.y), Color(col, pulse * 0.8), 1.0)
 			x += 4.0
+	if b.size() < 5 or int(b[4]) <= 0:
+		Hud.ticks(self, rect.grow(-2.0), int(b[0]), int(b[1]), col, 2.4)

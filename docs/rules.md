@@ -83,8 +83,10 @@ skirmish.
 ### The round
 1. Rerolls reset to three (less any a foe drained). Every machine sheds heat by its cooling.
    Every die rolls; entries are equally likely. Round-start passives fire.
-2. Every foe picks its move, then its target; both show, exact, before the player acts. A
-   blow's number counts the rallies on their way to it this round (Kindled, below).
+2. Every foe picks its move, then its target; both show, exact, before the player acts, its
+   intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
+   mark, a numbered one with its stacks. A blow's number counts the rallies on their way to it
+   this round (Kindled, below).
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. Withdrawal is open at any point. END TURN pulses once no die has anywhere to be
    spent, rerolls aside.
@@ -196,7 +198,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
-- **Tapping a die** opens its readout, the entry showing alone, its marks as text: its place and name,
+- **Tapping a die** opens its readout, the entry showing alone, its marks as text, each line headed
+  by the mark on the die it says (the big glyph, a keyword's chip, the star, the self or ally chip,
+  the lock, a corruption, a mark beside the heat): its place and name,
   what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
   codex, then a line a mark: its number as the die prints it, its heat, its target, then its
   keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a
@@ -206,7 +210,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
   and its extra strike each say so. No source is listed. A tap on it again closes it, and it
   is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
-  lands once the double-tap window (0.3 s) has passed with no second tap, the die lit from the
+  lands once the double-tap window (0.2 s) has passed with no second tap, the die lit from the
   touch until it does, so a double-tap only locks and leaves the readouts as they stand; a tap
   that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die is in
   the codex (double-tap the machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
@@ -223,14 +227,16 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   blast may land on wears a turning dashed ring with the number it would deal there.
 - **Tapping a machine or a foe** opens its readout, the way a die's shows an entry, and
   tapping it again closes it; one readout is open at a time, a tap on another unit or a die
-  moves it, a tap on nothing or ending the turn closes it, and a hold opens it too. It follows the fight
+  moves it, a tap on nothing or ending the turn closes it, and a hold opens it too; a tap on an
+  open readout, a term's aside, reaches nothing under it. It follows the fight
   while open, translucent over the arrows it draws, a machine's resting on its gauges. It
   shows its name;
   its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
   has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
   armour and cooling (a foe's armour and attack) as the codex's stats, the base with the change
-  beside it ("Armour 2 (+1▲)"); every chip on it with what it does, and the round's warnings
-  (an overheat, a wreck, an injury's risk); then a foe's intent a line a mark: its move's name,
+  beside it ("Armour 2 (+1▲)"); every chip on it by its name and count, what it does a tap on its
+  term away, and the round's warnings (an overheat, a wreck, an injury's risk); then a foe's intent
+  under its chip as the field draws it, a line a mark: its move's name,
   its blow as it will land read against its own, the machine it is aimed at by name, when it
   lands, its riders and its text. The colours are the unit's, so a foe hitting harder is green
   and up. A suppressed foe shows no intent.
@@ -245,6 +251,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   lines: its number, heat and target; its keywords; its own rules and its passive's), at the
   component's own numbers; a foe's moves the same way, at its own numbers, its last act
   last; then its lore and its quote.
+- **Every gauge wears its scale**, on the field and in the readouts: a tick a point, every fifth
+  long, the fives alone where the ones would stand closer than four design pixels (the tens past
+  that); a tick inside the fill is cut in the ground's dark, past it drawn in the bar's colour.
 - **The gauges forecast the round**: everything the rest of the round will do as it stands,
   played on a copy of the fight with every rule as it runs: the end of the player's turn (its
   burns and overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a

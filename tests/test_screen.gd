@@ -989,7 +989,7 @@ func test_a_braced_foe_wears_one_braced_chip() -> void:
 	assert_eq(chips.size(), 1, "one chip for its brace and the Protect on top")
 	if chips.size() == 1:
 		assert_eq(str(chips[0][1]), "+15", "the armour both add")
-		assert_eq(str(chips[0][2]), "Armoured: armour +15 until its next action", "named Armoured, as a machine's is")
+		assert_eq(str(chips[0][2]), "Armoured +15", "named Armoured, as a machine's is, with what the chip counts (its meaning a tap on the term)")
 	s.free()
 
 
@@ -1135,14 +1135,16 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 	for g in ["primed", "barrier", "ward", "regenerating"]:
 		assert_true(by.has(g), "a %s chip" % g)
 	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Getting Back Up, each its own")
+	# The readout names each chip with its count, never what it does (Ryan, 2 November: "unit popups
+	# don't need the chips descriptions spelled out now that we can tap keywords").
 	if by.has("primed"):
 		assert_eq(str(by["primed"][1]), "×2", "Primed counts its stacks")
-		assert_true(str(by["primed"][2]).contains("2 Burning"), "and says what its move leaves")
+		assert_eq(str(by["primed"][2]), "Primed ×2", "and the readout names it with them")
 	if by.has("regenerating"):
 		assert_eq(str(by["regenerating"][1]), "+4", "Regenerating its regrowth")
-		assert_true(str(by["regenerating"][2]).contains("3 actions to go"), "and its clock")
+		assert_true(str(by["regenerating"][2]).contains("3 actions to go"), "and its clock, which no chip shows")
 	if by.has("barrier"):
-		assert_true(str(by["barrier"][2]).contains("weapon"), "a foe's Barrier says a weapon's blow pops it")
+		assert_eq(str(by["barrier"][2]), "Barrier", "a foe's Barrier by its name alone, its meaning the term's")
 	assert_eq(SkirmishScreen.status_glyph("primed"), "primed", "the same chip on a machine")
 	s.free()
 
@@ -1830,4 +1832,183 @@ func test_a_foe_getting_back_up_in_the_enemy_turn_is_shown() -> void:
 	assert_true(s.sk.field_foes().has(foe), "it stood again")
 	assert_eq(foe.hp, foe.hp_max, "whole")
 	assert_false(Effects.has(foe, "risen"), "its charge spent")
+	s.free()
+
+
+## A gauge wears its scale (Ryan, 2 November: "Tick on the ones, a bigger or more prominent tick
+## on the 5s, reduce to ticking on 5s only if the 1s get crowded on a particular bar"): every
+## point while the ones stand TICK_PITCH apart, the fives alone where they would crowd, the tens
+## past that, none on a one-point bar.
+func test_a_bar_ticks_its_ones_and_its_fives_alone_where_the_ones_crowd() -> void:
+	assert_eq(Hud.tick_step(136.8, 12), 1, "a machine's heat: every point")
+	assert_eq(Hud.tick_step(136.8, 16), 1, "its shield: every point")
+	assert_eq(Hud.tick_step(136.8, 34), 1, "a hull of 34 still fits its ones")
+	assert_eq(Hud.tick_step(136.8, 36), 5, "a hull of 36 crowds them: the fives alone")
+	assert_eq(Hud.tick_step(56.0, 6), 1, "a foe's small gauge: every point")
+	assert_eq(Hud.tick_step(56.0, 48), 5, "a boss's: the fives")
+	assert_eq(Hud.tick_step(56.0, 72), 10, "a bigger one's: the tens")
+	assert_eq(Hud.tick_step(56.0, 1), 0, "a one-point bar has no scale")
+	assert_eq(Hud.tick_step(0.0, 10), 0, "nor a bar with no width")
+
+
+## Every icon on a die face is in its readout (Ryan, 2 November: "any icon on a die face NEEDS to
+## be represented in the popup, star icon before the unique effect for instance"): for every
+## component in content, the die's big glyph, each keyword chip, the star for a rule of its own
+## and the self or ally chip each stand at the head of a line of its readout.
+func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
+	var db := ContentDB.load_default()
+	for cid in db.components.keys():
+		var comp: Dictionary = db.components[cid]
+		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
+			continue
+		var f := db.build_face(comp["face"])
+		f.component = str(cid)
+		var heads: Array[String] = []
+		for l in EntryReadout.lines_for(f, 1, [], f, [], [], db):
+			for m in l.get("marks", []):
+				heads.append(str(m.get("glyph", "")))
+		var wanted: Array[String] = [Glyphs.primary_for(f)]
+		for k in f.keywords:
+			if not f.printed.has(k):
+				wanted.append(str(Face.KEYWORD_NAMES[k]))
+		if f.targets == Face.Target.SELF and f.kind != Face.Kind.ATTACK:
+			wanted.append("self")
+		elif f.targets == Face.Target.ALLY and f.kind != Face.Kind.ATTACK:
+			wanted.append("ally")
+		if f.has_unique_rule():
+			wanted.append("star")
+		for g in wanted:
+			assert_true(heads.has(g), "%s: the die's %s mark heads a readout line (%s)" % [cid, g, str(heads)])
+
+
+## The die's readout lines each with the mark it says: the Puffin's projector, an ally's shield
+## with Overshield, its glyph on its number, the ally chip on its target, the keyword's chip on its
+## line (and no second icon in the words), and a lock and a corruption on their states.
+func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
+	var db := ContentDB.load_default()
+	var f := db.build_face(db.components["backwash_ionizer"]["face"])
+	f.component = "backwash_ionizer"
+	var lines := EntryReadout.lines_for(f, 1, [], f, [["Locked: a reroll skips it", EntryReadout.mark("lock", Palette.HUD, false)]], [], db)
+	var by := {}
+	for l in lines:
+		for m in l.get("marks", []):
+			by[str(m["glyph"])] = l
+	assert_eq(str(by.get("shield", {}).get("text", "")), "Shield 3", "the shield's glyph on its number")
+	assert_eq(str(by.get("ally", {}).get("text", "")), "Target: Any other ally", "the ally chip on whom it reaches")
+	assert_eq(str(by.get("overshield", {}).get("text", "")), "Overshield", "the keyword's chip on its line")
+	assert_false(bool((by.get("overshield", {}).get("parts", [{}])[0] as Dictionary).get("icon", true)), "its word wears no second icon")
+	assert_eq(str(by.get("lock", {}).get("style", "")), "state", "the lock on its state")
+	var readout := EntryReadout.new()
+	readout.set_lines(lines)
+	var boxed := 0
+	var bare := 0
+	for c in readout._chips:
+		if bool(c["box"]):
+			boxed += 1
+		else:
+			bare += 1
+	assert_eq([boxed, bare], [2, 2], "the chips boxed as the die boxes them, the big glyph and the lock bare")
+	readout.free()
+
+
+## A foe's intent chip carries its blow's riders (Ryan, 2 November: "Enemy intents with a rider need
+## to show that rider as part of the intent chip"): each keyword its move carries by its term's mark,
+## a numbered one with its stacks, the breach no longer a "!" after the number.
+func test_a_foes_intent_chip_carries_its_riders() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.add_mech(db.make_mech("badger"))
+	var foe := Foe.make("revenant", 30, 4)
+	foe.actions = [{"id": "rake", "name": "Rake", "kind": "attack", "weight": 1, "keywords": ["breach", "scorch"], "scorch": 2}]
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var v := s._foe_view_for(foe)
+	assert_eq(v.intent_note, "", "no mark after the number for a single blow")
+	var riders: Array = v.intent_riders
+	assert_eq(riders.size(), 2, "both riders inside the chip")
+	if riders.size() == 2:
+		assert_eq([str(riders[0][0]), str(riders[0][1])], [Terms.glyph("breach"), ""], "the breach by its mark")
+		assert_eq([str(riders[1][0]), str(riders[1][1])], [Terms.glyph("scorch"), "2"], "the scorch with its stacks")
+	var plain := UnitView.chip_width(Hud.mono(), ["sword", "4", Palette.ENEMY, "intent", []])
+	assert_true(UnitView.chip_width(Hud.mono(), ["sword", "4", Palette.ENEMY, "intent", riders]) > plain + 30.0, "the chip grows to hold them")
+	# Its readout heads the move with that chip (Ryan, of the Cinder Tortoise's Withdraw: "a chip I
+	# don't recognize ... and more importantly it doesn't show in the popup").
+	s._on_foe_tapped(v, 0, 0)
+	var head := {}
+	for l in s._details_entry.lines:
+		if str(l.get("style", "")) == "name":
+			head = l
+	var marks: Array = head.get("marks", [])
+	assert_eq(marks.size(), 1, "the move's name wears its chip")
+	if marks.size() == 1:
+		assert_eq(marks[0]["chip"], s._intent_chip(foe), "the field's own chip, riders and all")
+		assert_eq(str(marks[0]["chip"][0]), "sword", "a blow's sword")
+	s.free()
+
+
+## A special's chip is its kind's (the Cinder Tortoise's Withdraw, a brace: the defend kite with its
+## value), and its readout heads the move with it.
+func test_a_specials_intent_chip_heads_its_readout() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.add_mech(db.make_mech("badger"))
+	var foe := Foe.make("revenant", 30, 4)
+	foe.actions = [{"id": "withdraw", "name": "Withdraw", "kind": "defend", "effect": "brace", "value": 3, "weight": 1}]
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var chip := s._intent_chip(foe)
+	assert_eq([str(chip[0]), str(chip[1])], [Glyphs.intent_for("defend"), "3"], "the defend mark and its value, as under the foe")
+	s._on_foe_held(s._foe_view_for(foe))
+	assert_true(s._details_entry.text().contains("WITHDRAW"), "the move named under it")
+	s.free()
+
+
+## A unit's readout names its chips, never spells them out (Ryan, 2 November: "unit popups don't need
+## the chips descriptions spelled out now that we can tap keywords"): each chip line its status's
+## name and count, the name a term a tap opens.
+func test_a_units_readout_names_its_chips_without_their_descriptions() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 30, 4)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.grant_buff(m, "overcharged", 2, "buff", sk.round)
+	s._refresh()
+	var chips: Array[String] = []
+	for l in s._foe_hold_lines(foe):
+		if str(l["style"]) == "chip":
+			chips.append(str(l["text"]))
+	assert_true(chips.has("Burning ×3"), "a foe's Burning by its name and stacks: %s" % str(chips))
+	var mine: Array[String] = []
+	for l in s._mech_hold_lines(0):
+		if str(l["style"]) == "chip":
+			mine.append(str(l["text"]))
+	assert_true(mine.has("Overcharged ×2"), "a machine's Overcharged the same: %s" % str(mine))
+	var readout := EntryReadout.new()
+	readout.set_lines(s._foe_hold_lines(foe))
+	var terms: Array = []
+	for h in readout._hits:
+		terms.append_array(h["terms"])
+	assert_true(terms.has("burning"), "the name a term, its meaning a tap away")
+	readout.free()
+	s.free()
+
+
+## An open readout takes every tap on it (Ryan, 2 November: "i managed to reroll when trying to click
+## a keyword on a unit popup since it was underneath. Popups intuitively should prevent triggering
+## things behind them, even other popup triggers"): its panel stops the press, and what it holds
+## lets one through only to a term.
+func test_an_open_readout_takes_every_tap_on_it() -> void:
+	var s := _screen()
+	s._on_mech_tapped(0)
+	assert_true(s._details.visible, "open")
+	assert_eq(s._details.mouse_filter, Control.MOUSE_FILTER_STOP, "the panel stops every press on it")
+	assert_eq(s._details_entry.mouse_filter, Control.MOUSE_FILTER_PASS, "its lines take one on a term alone")
+	assert_false(s._details_entry._has_point(Vector2(-50.0, -50.0)), "nothing off a term")
 	s.free()

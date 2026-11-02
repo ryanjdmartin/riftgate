@@ -26,7 +26,7 @@ signal drag_ended(global_pos: Vector2)
 
 const HOLD_SECONDS := 0.45
 const DRAG_THRESHOLD := 14.0
-const DOUBLE_TAP_SECONDS := 0.3   # Android's own double-tap window
+const DOUBLE_TAP_SECONDS := 0.2   # under Android's own 0.3, which read as lag on a single tap (Ryan, 2 November: "Lower to 0.2 and I'll try again")
 
 const FACE := 120.0        # the square face
 const RAIL := 18.0         # how far the chips hang past the right edge

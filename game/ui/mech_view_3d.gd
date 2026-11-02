@@ -506,6 +506,15 @@ func _setup(chassis_id: String, maker: String) -> void:
 	sun.rotation_degrees = Vector3(-55.0, (yaw if field.is_empty() else YAW_FIELD) - 150.0, 0.0)   # on the floor one sun for the squad, however each is turned
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 2000.0 if field.is_empty() else 30.0   # the floor's world is in hexes
+	if not field.is_empty():
+		# On the floor, one shadow map fitted to the machine's own distance from the floor's
+		# camera (Ryan, 2 November: "there's a shadow on middle units in the skirmish screen when
+		# controls set to middle"): the split maps over thirty hexes put a machine on the Middle
+		# layout, nearly twice as far from the camera as on the Bottom one, in a coarse split
+		# whose bias shaded its lower body. Fitted, both layouts light a machine alike.
+		var at: Vector2 = field.get("at", Vector2.ZERO)
+		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+		sun.directional_shadow_max_distance = Vector3(at.x, float(field.get("height", 0.0)), at.y).length() + 3.0
 	_inner.add_child(sun)
 	var env := WorldEnvironment.new()
 	var e := Environment.new()
