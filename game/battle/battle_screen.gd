@@ -12,12 +12,15 @@ extends Control
 ##            range and ordered onto that fight; hold a unit for its numbers. Every pack's
 ##            ring, its walk on the enemy's turn, a hunter's lock on its prey, and the next
 ##            fight: its target, the packs whose ring covers it, the machines ordered onto it
-##   bottom   ENGAGE (while a fight is ready) or END TURN bottom-left, pulsing when nothing is
-##            left to do; UNDO bottom-right, the last move or order, in the order they were made
+##   bottom   ENGAGE (while a fight is ready), EXECUTE (while planned moves wait to play) or END
+##            TURN bottom-left, pulsing when nothing is left to do; UNDO bottom-right, the last
+##            move or order, in the order they were made, a move that has played included
 ##
-## The planned moves play on ENGAGE or END TURN (Ryan, 25 October), and the fight opens or the
-## enemy walks once they have. A fight opens the skirmish screen over the map. Its Back button
-## applies the result, and the turn goes on; End turn plays the enemy's turn.
+## The planned moves play on EXECUTE and the turn goes on (Ryan, 2 November: "Movement should be
+## able to be executed in sequence if the player wants, and undone"); ENGAGE and END TURN play
+## them first too (Ryan, 25 October), then the fight opens or the enemy walks. END TURN asks first
+## while a machine can still move or fight. A fight opens the skirmish screen over the map. Its
+## Back button applies the result, and the turn goes on; End turn plays the enemy's turn.
 
 signal back_requested
 signal quit_requested   # the menu's QUIT, on this screen or in an open skirmish: out to the harness
@@ -279,9 +282,78 @@ func _build() -> void:
 	_scan.map_y = MAP_Y
 	_place(_scan, Vector2.ZERO, Vector2(W, H))
 
+	_build_confirm()
 	_build_outcome()
 	if _menu != null:
 		_menu.move_to_front()
+
+
+var _confirm_shade: Control
+var _confirm: HudPanel
+var _confirm_text: Label
+var _confirm_action := Callable()
+
+
+## The question END TURN asks while a machine can still act: the fight's confirm (the skirmish
+## screen's, over unspent dice), a panel over a shade, NO and YES; a tap on the shade is NO.
+func _build_confirm() -> void:
+	_confirm_action = Callable()   # a rebuild (a colour change) drops a question left open
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.6)
+	_confirm_shade = shade
+	_confirm_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_confirm_shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	_confirm_shade.visible = false
+	_confirm_shade.gui_input.connect(func(e: InputEvent) -> void:
+		if e is InputEventMouseButton and e.pressed:
+			_hide_confirm())
+	add_child(_confirm_shade)
+	_confirm = HudPanel.new(22.0)
+	_confirm.custom_minimum_size = Vector2(520, 0)
+	_confirm.visible = false
+	_place(_confirm, Vector2(100, H * 0.5 - 90.0), Vector2(520, 0))
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 18)
+	_confirm.add_child(v)
+	_confirm_text = Hud.label("", 20, Palette.INK)
+	_confirm_text.autowrap_mode = TextServer.AUTOWRAP_WORD
+	_confirm_text.custom_minimum_size = Vector2(470, 0)
+	v.add_child(_confirm_text)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	v.add_child(row)
+	var no := HudButton.new("NO", _hide_confirm)
+	no.sound = "ui_back"
+	no.custom_minimum_size = Vector2(0, 54)
+	no.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(no)
+	var yes := HudButton.new("YES", _confirm_yes)
+	yes.sound = "confirm"
+	yes.filled = true
+	yes.custom_minimum_size = Vector2(0, 54)
+	yes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(yes)
+
+
+func _ask(text: String, on_yes: Callable) -> void:
+	_confirm_text.text = text
+	_confirm_action = on_yes
+	_confirm_shade.visible = true
+	_confirm.visible = true
+	_confirm.reset_size()
+
+
+func _hide_confirm() -> void:
+	_confirm.visible = false
+	_confirm_shade.visible = false
+	_confirm_action = Callable()
+
+
+func _confirm_yes() -> void:
+	var action := _confirm_action
+	_hide_confirm()
+	if action.is_valid():
+		action.call()
 
 
 func _build_outcome() -> void:
@@ -381,9 +453,16 @@ func _refresh() -> void:
 	_map.queue_redraw()
 	_refresh_log()
 	# The one button: ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack),
-	# END TURN otherwise.
+	# EXECUTE while planned moves wait to play (Ryan, 2 November: "It should show "execute" when
+	# a move command is entered, and only end turn if no order is entered"), and while the moves
+	# it took play; END TURN otherwise.
 	var fight := battle.next_fight() if planning else {}
-	_resolve_btn.text = "ENGAGE" if not fight.is_empty() else "END TURN"
+	if not fight.is_empty():
+		_resolve_btn.text = "ENGAGE"
+	elif _executing or (planning and not battle.planned.is_empty()):
+		_resolve_btn.text = "EXECUTE"
+	else:
+		_resolve_btn.text = "END TURN"
 	_resolve_btn.queue_redraw()
 	_resolve_btn.set_enabled(planning and not playing)
 	_resolve_btn.set_pulse(planning and not playing and battle.nothing_left())   # every machine done: the button is next
@@ -882,9 +961,9 @@ func _on_undo() -> void:
 
 
 ## A move planned (the battle already has the machine at its route's end): the route shows from
-## where it stands, and it plays on ENGAGE or END TURN (Ryan, 25 October: no waiting on a walk
-## to do the next thing). It stays in hand while it can still act, so a tap on a pack next is
-## its attack from the route's end (Abalon's move, then pick a target).
+## where it stands, and it plays on EXECUTE, ENGAGE or END TURN (Ryan, 25 October: no waiting on
+## a walk to do the next thing). It stays in hand while it can still act, so a tap on a pack next
+## is its attack from the route's end (Abalon's move, then pick a target).
 func _planned(u: Unit, keep: bool = true) -> void:
 	Sound.play("plot")
 	_select(u if keep and battle.actions_left(u) > 0 else null)
@@ -1105,14 +1184,49 @@ func _ordered_onto(targets: Array) -> Array:
 	return out
 
 
-## The one button: ENGAGE while a fight is ready, END TURN otherwise.
+## The one button: ENGAGE while a fight is ready, EXECUTE while planned moves wait to play, END
+## TURN otherwise.
 func _on_main_button() -> void:
 	if battle.state != Battle.State.PLAN or _map.is_playing():
 		return
-	if battle.next_fight().is_empty():
-		_on_end_turn()
-	else:
+	if not battle.next_fight().is_empty():
 		_engage()
+	elif not battle.planned.is_empty():
+		_execute()
+	else:
+		_ask_end_turn()
+
+
+var _executing := false   # the moves EXECUTE took are playing: the button keeps its word until they have
+
+
+## EXECUTE: the planned moves play on the map and the turn goes on, with no enemy turn (Ryan, 2
+## November: "Movement should be able to be executed in sequence if the player wants, and
+## undone"). UNDO still takes them back, in order, each machine set back where it stood
+## (Battle.take_plan). What is in hand stays in hand, to pick a target from where it now stands.
+func _execute() -> void:
+	var plan := battle.take_plan()
+	if plan.is_empty():
+		return
+	_details.visible = false
+	Sound.say("resolve_move")   # "in transit", "moving to intercept"
+	_autosave()   # the battle has every machine where its plan ends already
+	_executing = true
+	_play_plan(plan, [], func() -> void:
+		_executing = false
+		_refresh())
+
+
+## END TURN: at once with nothing left to do; while a machine can still move or fight it asks
+## first, as the fight's END TURN does over unspent dice (Ryan, 2 November: "If end turn is hit
+## and there are movements/actions remaining, it should alert the player").
+func _ask_end_turn() -> void:
+	var n := battle.still_to_act().size()
+	if n == 0:
+		_on_end_turn()
+		return
+	Sound.play("ui_tap")
+	_ask("%d %s still move or fight. End the turn anyway?" % [n, "machine can" if n == 1 else "machines can"], _on_end_turn)
 
 
 ## ENGAGE: the next fight opens with the machines ordered onto it; the boss's fight plays its

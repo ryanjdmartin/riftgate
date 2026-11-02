@@ -13,7 +13,8 @@ extends RefCounted
 ##             takes back the last move or order, in the order they were made; engage() opens
 ##             the next fight with the machines ordered onto it, a fight hunters forced always
 ##             first (`forced`); end_turn() when done. A move lands in the battle at once and is
-##             planned on the map (`planned`): the screen plays the plan on ENGAGE or END TURN
+##             planned on the map (`planned`): the screen plays the plan on EXECUTE, ENGAGE or
+##             END TURN (take_plan())
 ##   SKIRMISH  the fight attack() opened; the screen plays it, finish_skirmish() applies it
 ##             back to the map and the machines in it are spent; back to PLAN
 ##   DONE      outcome is set
@@ -616,10 +617,16 @@ func shown_positions() -> Dictionary:
 	return out
 
 
-## The plan, handed to the screen to play (on ENGAGE or END TURN), and gone from the battle.
+## The plan, handed to the screen to play (on EXECUTE, ENGAGE or END TURN), and gone from the
+## battle. A piece played stays played (Ryan, 2 November: "Movement should be able to be
+## executed in sequence if the player wants, and undone"): every snapshot on the undo holds
+## pieces of this plan alone, so each forgets them, and an undo after it puts the machine back
+## where it stood with nothing planned to play a second time.
 func take_plan() -> Array:
 	var out := plan_pieces()
 	planned.clear()
+	for snap in history:
+		(snap as Dictionary)["planned"] = []
 	return out
 
 
@@ -652,22 +659,33 @@ func draft_step(u: Unit, draft: Array, h: Vector2i) -> Array:
 	return out
 
 
+## The machines that can still do something on the map this turn: an action left, not ordered
+## onto a fight, not caught (its fight comes first), and a move to give or a pack in reach where
+## it stands. END TURN asks first while any is left (Ryan, 2 November: "If end turn is hit and
+## there are movements/actions remaining, it should alert the player").
+func still_to_act() -> Array[Unit]:
+	var out: Array[Unit] = []
+	if state != State.PLAN:
+		return out
+	for m in mechs():
+		if m.is_static() or not m.alive() or actions_left(m) <= 0 or orders.has(m.id) or is_pinned(m):
+			continue
+		if can_move(m):
+			out.append(m)
+			continue
+		for p in field.packs():
+			if can_target(p) and in_range_from(m, m.pos, p):
+				out.append(m)
+				break
+	return out
+
+
 ## Whether nothing is left for the player to do on the map this turn but press the button
 ## (Ryan, 25 October: END TURN pulses "when all units are out of actions"): every machine has
 ## fought its actions out, is ordered onto a fight, is caught (its fight comes first), or can
 ## neither move nor reach a pack where it stands.
 func nothing_left() -> bool:
-	if state != State.PLAN:
-		return false
-	for m in mechs():
-		if m.is_static() or not m.alive() or actions_left(m) <= 0 or orders.has(m.id) or is_pinned(m):
-			continue
-		if can_move(m):
-			return false
-		for p in field.packs():
-			if can_target(p) and in_range_from(m, m.pos, p):
-				return false
-	return true
+	return state == State.PLAN and still_to_act().is_empty()
 
 
 ## Whether the next fight ENGAGE opens holds the boss: every machine goes in, nothing moves first

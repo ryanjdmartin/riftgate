@@ -397,6 +397,43 @@ func test_a_move_is_planned_and_handed_over_once() -> void:
 	assert_true(b.can_undo(), "the move can still be taken back until a fight or the turn's end")
 
 
+## A plan played mid turn stays played (Ryan, 2 November: "Movement should be able to be executed
+## in sequence if the player wants, and undone"): an undo after EXECUTE puts each machine back
+## where it stood, in the order made, and plans nothing to play a second time, a save between too.
+func test_a_plan_played_mid_turn_undoes_to_where_each_machine_stood() -> void:
+	var b := _battle()
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var a0 := a.pos
+	var c0 := c.pos
+	var ha: Vector2i = b.destinations_for(a).keys()[0]
+	b.move_to(a, ha)
+	var hc := Vector2i(-99, -99)
+	for h in b.destinations_for(c).keys():
+		if h != ha:
+			hc = h
+			break
+	b.move_to(c, hc)
+	assert_eq(b.take_plan().size(), 2, "both moves handed to the screen to play")
+	for snap in b.history:
+		assert_true((snap["planned"] as Array).is_empty(), "and no step on the undo plans either again")
+	var saved := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq(b.undo(), c, "the last move first")
+	assert_eq([a.pos, c.pos], [ha, c0], "the second machine back where it stood, the first where it went")
+	assert_true(b.planned.is_empty() and b.shown_positions().is_empty(), "with nothing planned to play again")
+	assert_true(b.can_move(c), "and its move whole")
+	assert_eq(b.undo(), a, "then the first")
+	assert_eq(a.pos, a0, "back where it stood")
+	assert_true(b.planned.is_empty(), "nothing planned")
+	assert_false(b.can_undo(), "back to the turn's start")
+	b.move_to(a, ha)
+	assert_eq(b.plan_pieces().size(), 1, "a move after it is planned as any is")
+	assert_eq(b.plan_pieces()[0]["from"], a0, "from where the machine stands")
+	saved.undo()
+	assert_eq(saved.field.unit_by_id(c.id).pos, c0, "the save's undo sets the machine back the same")
+	assert_true(saved.planned.is_empty(), "and plans nothing")
+
+
 ## A piece planned into the room another piece made waits for it to play.
 func test_a_move_into_a_hex_another_left_plays_after_it() -> void:
 	var a := {"unit": 1, "from": Vector2i(2, 2), "facing": 0, "path": [Vector2i(3, 2)] as Array[Vector2i], "to_facing": 0, "riders": []}
@@ -414,9 +451,11 @@ func test_a_move_into_a_hex_another_left_plays_after_it() -> void:
 func test_nothing_is_left_once_every_machine_has_done_what_it_can() -> void:
 	var b := _battle()
 	assert_false(b.nothing_left(), "a fresh turn: everyone can move")
+	assert_eq(b.still_to_act().size(), b.mechs().size(), "every machine still to act, for END TURN's question")
 	for m in b.mechs():
 		b.spent[m.id] = 1
 	assert_true(b.nothing_left(), "every action spent")
+	assert_true(b.still_to_act().is_empty(), "and nobody left to ask about")
 	b.spent.clear()
 	for m in b.mechs():
 		b.moved[m.id] = true
@@ -424,12 +463,15 @@ func test_nothing_is_left_once_every_machine_has_done_what_it_can() -> void:
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, a)
 	assert_false(b.nothing_left(), "every machine moved, but a pack in reach of the first")
+	assert_true(b.still_to_act().has(a), "the first can still fight")
 	assert_true(b.order(a, sq), "ordered onto it")
+	assert_false(b.still_to_act().has(a), "and is done once ordered")
 	for m in b.mechs():
 		if m != a and b.in_range_from(m, m.pos, sq):
 			assert_false(b.nothing_left(), "another still has it in reach")
 			b.order(m, sq)
 	assert_true(b.nothing_left(), "and now the button is all that is left")
+	assert_true(b.still_to_act().is_empty(), "with nobody to ask about")
 
 
 ## Where a selected machine could attack from, past its move, in the enemy's violet on the map (Ryan, 25 October; violet since 30 October).
