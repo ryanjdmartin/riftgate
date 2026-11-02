@@ -707,7 +707,8 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.422 (2 November, from
+  `docs/design-bible.html` after every change. This file and the live page are v0.422 (the page's
+  version 434, published 2 November from
   `claude/affectionate-ramanujan-5d24t6`: the Honey Badger's rework and its plate at Ryan's second
   fallback, the Onryō's Grudge a working term, the Storm Petrel's question struck, the five
   Wainwright & Sutler machines' first cuts and the hidden mount), three-way merged onto the live
@@ -724,16 +725,19 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 176 (31 October, as
-  `claude/affectionate-ramanujan-5d24t6` landed on main): `content/chassis.json` and
-  `content/components.json` as main has them, the Petrels un-planned, over `8607407`'s; `edits`
-  empty. Four files on the page are other sessions' work ahead of its code, kept until their
-  branches land: `content/foes.json`, `content/factions.json` and `content/vocabulary.json` at
-  `claude/brave-cori-fr18de`'s `c065748` (the slate's last five bosses and the Saurian Queen, with
-  Drain, Merge and Grudge), and `hangar/motion.js` at `claude/charming-rubin-h954bp`'s `5b7317e`
-  (the halo's second round on the Buzzard). So the page's vocabulary lacks the Petrels' four
-  printed rules until that branch lands (the codex never reads them), and a publish from main
-  replaces only a file whose live version main's history holds. Its lit parts show as the phone's renderer shows them (29 October: a lit
+  before it is replaced and `edits` read first. At the page's version 184 (2 November, from
+  `claude/affectionate-ramanujan-5d24t6`; `edits` empty): `content/chassis.json`,
+  `content/components.json` and `content/modules.json` as this branch has them (the Honey Badger's
+  rework, the Reinforced Skeleton module), `hangar/pins.json`, and the five Wainwright & Sutler
+  machines' models and rigs (no renders yet), each replaced file checked against this branch's
+  history first. The page's own HTML went up as the live had it, since other sessions' newer page
+  (the foes list's armour step, the Models tab's Fire) is not in this branch; for the same reason
+  `hangar/motion.js` (the weapon-fire work and the halo's trial), `content/vocabulary.json`,
+  `content/foes.json` and `content/factions.json` stay the live's, other sessions' work ahead of
+  its code, until their branches land. So the page shows neither the Cassowary's drum clicking
+  nor the Cottonmouth's mounts hidden (both this branch's motion script), and its vocabulary
+  lacks the Ore Plate and the Petrels' four printed rules and carries the old hopper text, until
+  the two vocabularies meet on one head. Its lit parts show as the phone's renderer shows them (29 October: a lit
   tile is the tile as stored times its light, clipped, before the page's own light; it had
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
