@@ -589,6 +589,29 @@ static func primary_for(face: Face) -> String:
 			return "equipment_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags
 
 
+## A piece spent on machines as its die draws it (Ryan, 2 November: one standard format, the
+## faces uncrowded; "just 3 connected hexes: center filled for self-only, left/right filled for
+## ally only, all filled for self or ally"): three connected hexes `width` wide, the middle its
+## own machine holding the piece's own glyph (`symbol`), a filled hex a machine it may be spent
+## on. What and whom in one mark, as a weapon's reach frame is; a lit middle carries its glyph
+## cut out in `ground`.
+static func draw_triad(ci: CanvasItem, aim: String, symbol: String, c: Vector2, width: float, ink: Color, ground: Color, line: float = 2.0) -> void:
+	var r := width / (3.0 * sqrt(3.0))
+	var cell := r - maxf(1.2, line * 0.7)
+	for k in range(3):
+		var hc := c + Vector2((k - 1) * sqrt(3.0) * r, 0.0)
+		var hex := PackedVector2Array()
+		for i in range(7):
+			var a := PI / 6.0 + i * PI / 3.0
+			hex.append(hc + Vector2(cos(a), sin(a)) * cell)
+		var lit := aim == "aim_any" or (aim == "aim_self") == (k == 1)
+		if lit:
+			ci.draw_colored_polygon(hex, ink)
+		ci.draw_polyline(hex, ink, line)
+		if k == 1:
+			draw(ci, symbol, hc, cell * 1.15, ground if lit else ink, line)   # inside with the hex's own ground showing round it
+
+
 ## Whom a piece spent on machines reaches, as the three hexes under its main glyph draw it
 ## (Ryan, 2 November): its own machine only, its allies only, or either; "" for a weapon or
 ## equipment aimed at a foe (its reach is its frame's shape) and a blank. A reach over every

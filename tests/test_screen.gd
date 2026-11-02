@@ -1940,8 +1940,9 @@ func test_a_bar_ticks_its_ones_and_its_fives_alone_where_the_ones_crowd() -> voi
 
 ## Every icon on a die face is in its readout (Ryan, 2 November: "any icon on a die face NEEDS to
 ## be represented in the popup, star icon before the unique effect for instance"): for every
-## component in content, the die's big glyph, each keyword chip, the star for a rule of its own
-## and the three hexes of whom it reaches each stand at the head of a line of its readout.
+## component in content, the die's big glyph, each keyword chip, the star for a rule of its own,
+## equipment's status chip, the marks of its costs and the three hexes of whom it reaches each
+## stand at the head of a line of its readout.
 func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 	var db := ContentDB.load_default()
 	for cid in db.components.keys():
@@ -1962,6 +1963,16 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 				wanted.append(str(Face.KEYWORD_NAMES[k]))
 		if f.has_unique_rule():
 			wanted.append("star")
+		var granted := DieFaceView.status_chip(f)
+		if not granted.is_empty():
+			wanted.append(Terms.glyph(granted))   # equipment's status, its chip on the rail
+		# The costs along the foot, each a mark and a number (Ryan, 2 November).
+		if f.heat > 0:
+			wanted.append("heat")
+		if f.volatile > 0:
+			wanted.append("volatile")
+		if f.shield_cost > 0:
+			wanted.append("shield")
 		for g in wanted:
 			assert_true(heads.has(g), "%s: the die's %s mark heads a readout line (%s)" % [cid, g, str(heads)])
 		var aim := Glyphs.aim_for(f)

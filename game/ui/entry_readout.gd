@@ -151,7 +151,13 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 				var line := [word("Grants %s" % str(st.get("name", f.buff_status))), num("×%d" % f.buff_stacks, f.buff_stacks, base.buff_stacks)]
 				if f.buff_rounds > 1:
 					line.append(word("for %d rounds" % f.buff_rounds))
-				out.append(marked(parts_line("effect", line, "attr"), [main]))
+				# The status's chip beside the equipment's mark, as the die's rail carries it with its
+				# stacks (DieFaceView.status_chip): the word itself wears no second icon.
+				var granted := DieFaceView.status_chip(f)
+				var heads := [main] + ([mark(Terms.glyph(granted), Terms.colour(granted))] if not granted.is_empty() else [])
+				if not granted.is_empty():
+					line[0] = _bare(line[0])
+				out.append(marked(parts_line("effect", line, "attr"), heads))
 		Face.Kind.SHIELD:
 			if f.fills_shield:
 				out.append(marked(text_line("effect", "Shield to its maximum", "attr"), [main, star]))
@@ -173,7 +179,8 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 			ammo.append(word("(the magazine cannot pay it)"))
 		out.append(marked(parts_line("effect", ammo, "attr"), [mark("ammo", Palette.LOSS if f.dry else Palette.SELECT, false)]))
 	if f.heat > 0 or base.heat > 0:
-		out.append(parts_line("effect", [word("Heat"), num(str(f.heat), f.heat, base.heat, true)], "attr"))
+		# The costs, each by the mark the die prints it with along its foot (Ryan, 2 November).
+		out.append(marked(parts_line("effect", [word("Heat"), num(str(f.heat), f.heat, base.heat, true)], "attr"), [mark("heat", Palette.HEAT, false)]))
 	if f.burns > 0:
 		# The Storm Petrel's Riot Field Generator (30 October): the shield its weapon burns in place
 		# of that heat, and the target takes as much after the strikes.
@@ -182,12 +189,12 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 	# cost printed beside the heat, a keyword with a chip until then, and a shield cost beside it):
 	# the hull a spend bites, the shield it takes first. Less is the gain.
 	if f.volatile > 0 or base.volatile > 0:
-		out.append(parts_line("effect", [word("Costs"), num(str(f.volatile), f.volatile, base.volatile, true), word("hull")], "attr"))
+		out.append(marked(parts_line("effect", [word("Costs"), num(str(f.volatile), f.volatile, base.volatile, true), word("hull")], "attr"), [mark("volatile", Palette.HULL, false)]))
 	if f.shield_cost > 0 or base.shield_cost > 0:
 		var shield_cost := [word("Costs"), num(str(f.shield_cost), f.shield_cost, base.shield_cost, true), word("shield")]
 		if f.short:
 			shield_cost.append(word("(the shield cannot pay it)"))
-		out.append(parts_line("effect", shield_cost, "attr"))
+		out.append(marked(parts_line("effect", shield_cost, "attr"), [mark("shield", Palette.LOSS if f.short else Palette.SHIELD, false)]))
 	# Whom it is aimed at: a piece spent on machines headed by the three hexes the die draws
 	# under its main glyph (Glyphs.aim_for), bare as the glyph is; a weapon's or a debuff's reach
 	# is its frame's, on its first line. A reach past the target is its keyword's line (Every

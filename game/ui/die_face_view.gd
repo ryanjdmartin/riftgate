@@ -4,10 +4,11 @@ extends Control
 ## A die drawn as an object under the tactical overlay. The face is a chamfered square that
 ## bobs gently; its keywords sit as small annotation chips hugging its right edge, one per
 ## keyword, bright and flickering now and then. On the face, as Ryan sketched it: the primary
-## glyph large at the top centre, three hexes under it for whom a piece spent on machines
-## reaches, the number or range beneath, heat bottom-left, the lock top-right, the entry's place
-## on its die top-left. A locked die gets bracket corners and a LOCKED readout. A unique effect
-## adds a star chip.
+## mark large at the top centre saying what it is and whom it reaches (a weapon's reach frame;
+## equipment's mark in the frame; a piece spent on machines in the middle of three hexes), how
+## much beneath it, its costs along the foot as marks and numbers, the lock top-right, the
+## entry's place on its die top-left. A locked die gets bracket corners and a LOCKED readout. A
+## unique effect adds a star chip; equipment spent on a machine, its status's chip.
 ##
 ## Gestures (the skirmish's, Ryan, 30 October):
 ##   tap         -> `tapped`          read the die: its readout opens, or closes
@@ -38,10 +39,14 @@ const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 const SLOT_AT := Vector2(13, 30)   # the place's numeral, its baseline tucked under the cut corner
 const SLOT_SIZE := 18
-const GLYPH_Y := 34.0      # the primary glyph's centre
-const GLYPH_LIFT := 8.0    # how far it rises to make room for the hexes under it
-const AIM_Y := 53.0        # the three hexes' centre, between the glyph and the number (Glyphs.aim_for)
-const AIM_SIZE := 40.0     # their width, the glyph's and a little more, to read on a phone
+const GLYPH_Y := 38.0      # the primary glyph's centre, a weapon's frame or equipment's aimed at a foe
+const TRIAD_Y := 49.0      # the three hexes' centre, a piece spent on machines (Glyphs.draw_triad), clear of the place's numeral
+const TRIAD_W := 88.0      # their width: the middle hex holds the piece's glyph
+const NUMBER_Y := 96.0     # how much: the number's baseline
+const CLOCK := 26.0        # a dark entry's clock, in the number's place
+const COST_Y := 112.0      # the costs' baseline along the foot
+const COST_ICON := 14.0    # a cost's mark
+const COST_SIZE := 16      # and its number
 
 var face: Face = null
 var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
@@ -275,17 +280,19 @@ func _draw() -> void:
 		return
 	var ink := Color(hud, alpha)
 	var mono := Hud.mono()
+	# One standard face (Ryan, 2 November: "We need a standard format, using combined or layered
+	# icons, that works for every component across the board and doesn't crowd the die"): what it
+	# is and whom it reaches in one mark at the top, how much under it, its costs along the foot
+	# as marks and numbers, its keywords down the rail. A weapon is its reach frame; equipment
+	# aimed at a foe the frame holding the equipment's mark; a piece spent on machines three
+	# hexes holding its own glyph (Glyphs.draw_triad).
 	var aim := Glyphs.aim_for(face)
-	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, GLYPH_Y - (0.0 if aim.is_empty() else GLYPH_LIFT) + bob), 34, ink, 2.6)
-	if not aim.is_empty():
-		Glyphs.draw(self, aim, Vector2(FACE * 0.5, AIM_Y + bob), AIM_SIZE, ink, 1.8)
-	var num := shown_number if not shown_number.is_empty() else face.number_text()
-	if face.disabled and dark > 0:
-		# Dark with the turns left (the cooldown row, 14 October; Ryan's "turns", 26 October): the
-		# count where the number sits and what it counts beneath, so it never reads as the
-		# component's number.
-		num = str(dark)
-		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "TURN LEFT" if dark == 1 else "TURNS LEFT", HORIZONTAL_ALIGNMENT_CENTER, FACE, 11, ink)
+	if aim.is_empty():
+		Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, GLYPH_Y + bob), 34, ink, 2.6)
+	else:
+		Glyphs.draw_triad(self, aim, Glyphs.primary_for(face), Vector2(FACE * 0.5, TRIAD_Y + bob), TRIAD_W, ink, fill, 2.0)
+	var dark_now := face.disabled and dark > 0
+	var num := shown_number if not shown_number.is_empty() else die_number(face)
 	var num_size := 28 if num.contains("–") or num.contains("+") else 38   # a range, or a blow joined to its zap (the Storm Petrel's "4+2")
 	if _recalc >= 0.0:
 		# The display recomputes this face: its ink dips a little and the frame flashes once;
@@ -294,70 +301,62 @@ func _draw() -> void:
 		var rt := _recalc / _recalc_for
 		ink.a *= 0.75 + 0.25 * Hud.noise(int(_recalc * STATIC_RATE) * 0.7 + 0.3)
 		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.5 * (1.0 - rt)), 1.0)
-	draw_string(mono, Vector2(0, 92.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
+	if dark_now:
+		# Dark (the cooldown row, 14 October; Ryan's "turns", 26 October): the clock and the turns
+		# it has left where the number sits, so it never reads as the component's number.
+		var count := str(dark)
+		var cw := mono.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, 38).x
+		var x0 := FACE * 0.5 - (CLOCK + 6.0 + cw) * 0.5
+		Glyphs.draw(self, "cooldown", Vector2(x0 + CLOCK * 0.5, NUMBER_Y - 14.0 + bob), CLOCK, ink, 2.4)
+		draw_string(mono, Vector2(x0 + CLOCK + 6.0, NUMBER_Y + bob), count, HORIZONTAL_ALIGNMENT_LEFT, -1, 38, ink)
+	elif not num.is_empty():
+		draw_string(mono, Vector2(0, NUMBER_Y + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
+	# What else the spend does, small beside the number, each by its mark: blows a use ("10 ×3"),
+	# the shield a vent also gives (the combined entry, Ryan's go of 20 October), a vent's blast at
+	# a random foe (the Whip Scorpion's).
+	var also: Array = []
 	if face.strikes > 1:
-		# Blows per use, small, to the right of the number: "10 ×3" reads as a burst.
-		var w := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_CENTER, -1, num_size).x
-		draw_string(mono, Vector2(FACE * 0.5 + w * 0.5 + 2.0, 92.0 + bob), "×%d" % face.strikes, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, ink)
-	var slot_x := 10.0
+		also.append(["", "×%d" % face.strikes, ink])
+	if face.shields > 0 and not dark_now:
+		also.append(["shield", str(face.shields), Color(Palette.SHIELD, alpha)])
+	if blast > 0 and face.kind == Face.Kind.VENT and not dark_now:
+		also.append(["blast", str(blast), Color(Palette.HEAT, alpha)])
+	var nw := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_CENTER, -1, num_size).x if not num.is_empty() else 0.0
+	var ax := FACE * 0.5 + nw * 0.5 + 3.0
+	for i in range(also.size()):
+		var a: Array = also[i]
+		var ay := NUMBER_Y - i * 17.0 + bob
+		var tx := ax
+		if not str(a[0]).is_empty():
+			Glyphs.draw(self, str(a[0]), Vector2(ax + 6.0, ay - 5.0), 12, a[2], 1.6)
+			tx += 13.0
+		draw_string(mono, Vector2(tx, ay), str(a[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, a[2])
+	# Its costs along the foot, a mark and a number each, no word and no sign (Ryan, 2 November:
+	# "For costs (heat, shield, hull), don't spell out the word. Use an icon + number. We don't
+	# need +/- symbols either"): a forging gun's ammo, the shield a burn or a cost takes, the heat,
+	# the hull; struck through in the red-red when its pool cannot pay (DRY, SHORT).
+	var costs: Array = []   # [glyph, number, colour, struck]
 	if face.ammo > 0:
-		# A forging machine's gun (the Musk Ox's, 21 October): its price in ammo where the heat
-		# sits, the shells' mark beside it; struck through and DRY when the magazine cannot pay.
-		var ac := Color(Palette.LOSS if face.dry else Palette.SELECT, alpha)
-		Glyphs.draw(self, "ammo", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, ac, 1.6)
-		var ammo_text := ("%d DRY" if face.dry else "%d AMMO") % face.ammo
-		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), ammo_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, ac)
-		var aw := mono.get_string_size(ammo_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
-		if face.dry:
-			draw_line(Vector2(slot_x, FACE - 13.0 + bob), Vector2(slot_x + 16.0 + aw, FACE - 13.0 + bob), ac, 2.0)
-		slot_x += aw + 22.0
+		costs.append(["ammo", face.ammo, Palette.LOSS if face.dry else Palette.SELECT, face.dry])
 	if face.burns > 0:
-		# A weapon whose heat the shield pays (the Storm Petrel's Riot Field Generator, 30 October):
-		# the shield it takes in the heat slot's place, the costs' grammar ("-3") behind the
-		# shield's mark, which parts it from a shield cost's words and from the Burn keyword's
-		# fire; the heat past what the shield holds follows it.
-		var bc := Color(Palette.SHIELD, alpha)
-		Glyphs.draw(self, "shield", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, bc, 1.6)
-		var burn_text := "-%d" % face.burns
-		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), burn_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, bc)
-		slot_x += 14.0 + mono.get_string_size(burn_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
+		costs.append(["shield", face.burns, Palette.SHIELD, false])
 	if face.heat > 0:
-		var hc := Color(Palette.HEAT, alpha)
-		var heat_text := "+%d HEAT" % face.heat
-		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)
-		slot_x += mono.get_string_size(heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
-	if face.volatile > 0 and not (face.disabled and dark > 0):
-		# A hull cost (Volatile, a cost beside the heat since 26 October, Ryan: "converting it
-		# from a keyword with a chip to a cost, alongside heat"): the hull's colour, what it spends, as
-		# heat and shield costs wear theirs (Ryan, 30 October, agreeing Claude's lean).
-		var vc := Color(Palette.HULL, alpha)
-		var hull_text := "-%d HULL" % face.volatile
-		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), hull_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, vc)
-		slot_x += mono.get_string_size(hull_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
-	if face.shield_cost > 0 and not (face.disabled and dark > 0):
-		# A shield cost (26 October): the shield's colour while the shield can pay; struck through
-		# and SHORT in the red-red when it cannot and the entry is locked (the dry gun's pattern).
-		var cc := Color(Palette.LOSS if face.short else Palette.SHIELD, alpha)
-		var cost_text := ("-%d SHORT" if face.short else "-%d SHIELD") % face.shield_cost
-		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), cost_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, cc)
-		var cw := mono.get_string_size(cost_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
-		if face.short:
-			draw_line(Vector2(slot_x, FACE - 13.0 + bob), Vector2(slot_x + cw, FACE - 13.0 + bob), cc, 2.0)
-		slot_x += cw + 8.0
-	if face.shields > 0 and not (face.disabled and dark > 0):
-		# The combined entry's second half (Ryan's go, 20 October): the shield it also gives, its
-		# own glyph and number beside the heat slot, so the two numbers part by structure.
-		var sc := Color(Palette.SHIELD, alpha)
-		Glyphs.draw(self, "shield", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, sc, 1.6)
-		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), "%d" % face.shields, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, sc)
-		slot_x += 14.0 + mono.get_string_size("%d" % face.shields, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 8.0
-	if blast > 0 and face.kind == Face.Kind.VENT and not (face.disabled and dark > 0):
-		# A vent's blast (the Whip Scorpion's Thermal Ejection Manifold, 22 October): spent on its
-		# own machine it fires the heat it takes off at a random foe, so the die prints that blow
-		# by its own mark, an arc landing in a burst, apart from the heat slot's word.
-		var bc := Color(Palette.HEAT, alpha)
-		Glyphs.draw(self, "blast", Vector2(slot_x + 7.0, FACE - 13.0 + bob), 13, bc, 1.8)
-		draw_string(mono, Vector2(slot_x + 16.0, FACE - 9.0 + bob), "%d" % blast, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, bc)
+		costs.append(["heat", face.heat, Palette.HEAT, false])
+	if not dark_now:
+		if face.volatile > 0:
+			costs.append(["volatile", face.volatile, Palette.HULL, false])
+		if face.shield_cost > 0:
+			costs.append(["shield", face.shield_cost, Palette.LOSS if face.short else Palette.SHIELD, face.short])
+	var cx := 10.0
+	for cst in costs:
+		var cc := Color(cst[2], alpha)
+		Glyphs.draw(self, str(cst[0]), Vector2(cx + 7.0, COST_Y - 6.0 + bob), COST_ICON, cc, 1.8)
+		var t := str(cst[1])
+		draw_string(mono, Vector2(cx + COST_ICON + 2.0, COST_Y + bob), t, HORIZONTAL_ALIGNMENT_LEFT, -1, COST_SIZE, cc)
+		var tw := COST_ICON + 2.0 + mono.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, COST_SIZE).x
+		if bool(cst[3]):
+			draw_line(Vector2(cx - 1.0, COST_Y - 6.0 + bob), Vector2(cx + tw + 1.0, COST_Y - 6.0 + bob), cc, 2.0)
+		cx += tw + 9.0
 	if locked and not spent:
 		Glyphs.draw(self, "lock", Vector2(FACE - 20.0, 20.0 + bob), 14, hud, 2.0)
 	var tags := rail_tags()
@@ -372,7 +371,9 @@ func _draw() -> void:
 		if struck.has(i):
 			col.a *= 0.45   # a shut gate: the keyword will not land on this foe
 		Hud.box(self, chip_rect, 4.0, Color(Palette.BG, 0.94), col, 1.0)
-		Glyphs.draw(self, tags[i], chip_rect.get_center(), 13, col, 1.8)
+		Glyphs.draw(self, chip_glyph(tags[i]), chip_rect.get_center(), 13, col, 1.8)
+		if tags[i] == status_chip(face) and face.buff_stacks > 1:
+			draw_string(mono, chip_rect.position + Vector2(CHIP.x + 2.0, CHIP.y - 7.0), "×%d" % face.buff_stacks, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, col)
 		if struck.has(i):
 			# Struck through corner to corner, structure as well as the dimming (Ryan reads by
 			# structure: never a mark parted by hue alone).
@@ -385,14 +386,38 @@ func _draw() -> void:
 		_draw_static(rect)
 
 
-## The annotation chips hugging the right edge, top down: one per keyword, the star for a unique
-## effect, the shell's seal or opening, a corruption last. A keyword a passive grants written out
+## How much a spend does, as the die prints it under its mark: a weapon's blow or range, a
+## shield's or a vent's number, the ammo a reload adds; nothing for equipment (Ryan, 2 November:
+## "Equipment don't generally need numbers": its status is a chip with its stacks) or a blank.
+static func die_number(f: Face) -> String:
+	if f == null or f.kind == Face.Kind.BUFF:
+		return ""
+	if f.kind == Face.Kind.VENT and f.power <= 0 and f.reloads_ammo > 0:
+		return str(f.reloads_ammo)
+	return f.number_text()
+
+
+## The status a piece of equipment spent on a machine grants, as its chip on the rail (its
+## term's id; "" for any other entry or a status the list does not define).
+static func status_chip(f: Face) -> String:
+	if f == null or f.kind != Face.Kind.BUFF or f.buff_status.is_empty():
+		return ""
+	var term := Terms.of_status(f.buff_status)
+	return term if not term.is_empty() and not Terms.glyph(term).is_empty() else ""
+
+
+## The annotation chips hugging the right edge, top down: the status equipment grants, one per
+## keyword, the star for a unique effect, the shell's seal or opening, a corruption last. Each
+## is a term's id or a glyph's (chip_glyph). A keyword a passive grants written out
 ## (the Boar's spill) is the star, never its own chip; whom it reaches is no chip (the three
 ## hexes under the glyph, Glyphs.aim_for).
 func rail_tags() -> Array[String]:
 	var tags: Array[String] = []
 	if face == null:
 		return tags
+	var granted := status_chip(face)
+	if not granted.is_empty():
+		tags.append(granted)   # what the equipment grants, first: a debuff's keywords are its effect, a buff's status is
 	for k in face.keywords:
 		if not face.printed.has(k):
 			tags.append(Face.KEYWORD_NAMES[k])
@@ -403,6 +428,12 @@ func rail_tags() -> Array[String]:
 	if corrupted > 0 and face.kind != Face.Kind.BLANK:
 		tags.append("corrupt")   # what a foe did to the entry, last on the rail, in its colour
 	return tags
+
+
+## The glyph a rail chip draws: a term's icon (a status's, Overcharged's), else the id itself (a
+## keyword's, the star, the seal, a corruption).
+static func chip_glyph(tag: String) -> String:
+	return Terms.glyph(tag) if Terms.has(tag) and not Terms.glyph(tag).is_empty() else tag
 
 
 ## A stepping die's next chamber (21 October): at the rail's foot, an arrow into a chip with

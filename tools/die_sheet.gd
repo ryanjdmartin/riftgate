@@ -32,8 +32,8 @@ func _init() -> void:
 	root.add_child(_sheet)
 	var y := MARGIN
 	y = _section(y, "WHAT AN ENTRY IS: THE MAIN ICON", _kinds())
-	y = _section(y, "WHOM A PIECE SPENT ON MACHINES REACHES: THREE HEXES UNDER THE ICON, THE MIDDLE ITS OWN", _targets(), 6)
-	y = _section(y, "THE REST OF A FACE: COSTS, STATES, THE CHIPS DOWN ITS EDGE", _rest())
+	y = _section(y, "A PIECE SPENT ON MACHINES: ITS GLYPH IN THE MIDDLE OF THREE HEXES, A FILLED ONE A MACHINE IT REACHES", _targets(), 6)
+	y = _section(y, "THE REST OF A FACE: COSTS ALONG THE FOOT (A MARK AND A NUMBER), STATES, THE CHIPS", _rest())
 	process_frame.connect(_tick)
 
 
@@ -79,9 +79,16 @@ func _section(y: float, title: String, cells: Array, cols: int = COLS) -> float:
 	return y + ceili(cells.size() / float(cols)) * CELL.y + 12.0
 
 
+var _slots := 0
+
+
+## A die showing `f`, its place on its die counted along the sheet (I to IX, again), so every
+## mark is seen beside the numeral it shares the face with.
 func _die(f: Face) -> DieFaceView:
 	var d := DieFaceView.new()
 	d.set_face(f)
+	_slots += 1
+	d.slot = (_slots - 1) % 9 + 1
 	return d
 
 
@@ -103,7 +110,7 @@ func _kinds() -> Array:
 		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
 		["Vent", "spent on a machine:\nheat off", _die(Face.vent(3))],
 		["Reload", "a vent that fills the\nmagazine (the Musk Ox)", _die(reload)],
-		["Equipment", "spent on a machine:\na status, stacks", _die(Face.buff("overcharged", 2))],
+		["Equipment", "spent on a machine: no\nnumber, its status a chip", _die(Face.buff("overcharged", 2))],
 		["Blank", "an empty hardpoint, or\na destroyed component", _die(Face.empty_slot())],
 		["Machine down", "its die, wrecked", down],
 	]
@@ -174,14 +181,14 @@ func _rest() -> Array:
 	return [
 		["Heat", "the heat a spend adds", _die(hot)],
 		["Hull and shield costs", "paid first, from its\nown machine", _die(costly)],
-		["SHORT", "the shield cannot pay:\nstruck through", _die(short)],
-		["Ammo, DRY", "a forging gun's price;\nthe magazine cannot pay", _die(dry)],
+		["Short", "the shield cannot pay:\nstruck through", _die(short)],
+		["Ammo, dry", "a forging gun's price;\nthe magazine cannot pay", _die(dry)],
 		["Burn", "the Storm Petrel's: shield\npays the heat", _die(burn)],
 		["Shield too", "a vent that also\nshields", _die(both)],
 		["Blast", "a vent's blow at a\nrandom foe", blast_vent],
 		["LOCKED", "a reroll skips it", locked],
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
-		["Turns left", "dark: a cooldown or a\nfoe's switch-off", dark],
+		["Dark", "a cooldown or a switch-\noff: the clock, its turns", dark],
 		["Chips", "keywords, the star for a\nrule, a corruption", chipped],
 		["Every Foe", "a keyword: lands on\nevery foe (the Siphon)", _die(lure_all)],
 		["Every Ally", "a keyword: lands on every\nally (the Mooring Screens)", _die(team)],
