@@ -923,6 +923,18 @@
   "repulsor_l": 4.0,
   "repulsor_r": 4.0
  },
+ "muzzles": {
+  "hp_1": [
+   [
+    [
+     0.0,
+     0.0,
+     -10.4
+    ],
+    40.8
+   ]
+  ]
+ },
  "stock_shapes": {
   "hp_2": "twin_barrel",
   "hp_3": "barrel"

@@ -440,6 +440,8 @@ class Build:
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
         self.fires = {}        # a fixed component -> (act, from, to): the slice of an act that is its firing, played on the spend (MechRig.fire_act)
+        self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
+        self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
         self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
@@ -1050,8 +1052,72 @@ class Build:
             fires[cid] = {"act": name, "from": t0, "to": t1}
         if fires:
             out["fires"] = fires
+        for cid, name in self.aims.items():
+            if self.joint_meta.get(name, {}).get("axis") != "yaw":
+                raise ValueError("%s: %s aims with %r, which is no joint turning about its up axis" % (self.name, cid, name))
+        if self.aims:
+            out["aims"] = dict(self.aims)
+        if self.pivots:
+            out["pivots"] = True
+        # Where each hand-built stock gun's muzzle flare blooms (a class's are art/models/shapes/muzzles.json).
+        muzzles = self.muzzles()
+        if muzzles:
+            out["muzzles"] = muzzles
         if self.stock_shapes:
             out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
+        return out
+
+    def muzzles(self):
+        """Each hand-built stock gun's muzzle flare places (Ryan, 2 November: "We should probably
+        replace or fix those hand built stock guns, right?"), found from its parts: in the pin's
+        own frame (the gun pointing down its +y), each part reaching within a unit and a half of
+        the gun's farthest reach is a barrel's end (its vertices there make its middle and its
+        width), and ends that overlap are one (a barrel and its muzzle collar); a flare sits just
+        past each, sized to its width. A class's places are its own (models_low.MUZZLES); a bare
+        mount has none. In the models' frame as the glTF carries it: a point at (x, y, z) here
+        is at (x, z, -y) there."""
+        out = {}
+        for e in self.pins:
+            name = e.name
+            if not name.startswith("hp_") or name in self.stock_shapes or not self.carries.get(name):
+                continue
+            inv = e.matrix_world.inverted()
+            scale = e.matrix_world.to_scale()[1] or 1.0
+            parts = []
+            stack = list(e.children)
+            while stack:
+                ob = stack.pop()
+                stack.extend(ob.children)
+                if ob.type == "MESH" and ob.data.vertices:
+                    parts.append([inv @ (ob.matrix_world @ v.co) for v in ob.data.vertices])
+            if not parts:
+                continue
+            reach = max(p.y for pts in parts for p in pts)
+            ends = []
+            for pts in parts:
+                tip = [p for p in pts if p.y > reach - 1.5 / scale]
+                if tip:
+                    xs, zs = [p.x for p in tip], [p.z for p in tip]
+                    ends.append([min(xs), max(xs), min(zs), max(zs)])
+            merged = True
+            while merged:   # ends that overlap are one
+                merged = False
+                for a in range(len(ends)):
+                    for b in range(a + 1, len(ends)):
+                        A, B = ends[a], ends[b]
+                        if A[0] <= B[1] and B[0] <= A[1] and A[2] <= B[3] and B[2] <= A[3]:
+                            ends[a] = [min(A[0], B[0]), max(A[1], B[1]), min(A[2], B[2]), max(A[3], B[3])]
+                            del ends[b]
+                            merged = True
+                            break
+                    if merged:
+                        break
+            places = []
+            for x0, x1, z0, z1 in ends:
+                width = max(x1 - x0, z1 - z0, 1.0 / scale)
+                size = min(max(2.4 * width + 6.0 / scale, 8.0 / scale), 30.0 / scale)
+                places.append([[round((x0 + x1) / 2.0, 3), round((z0 + z1) / 2.0, 3), round(-(reach + 1.5 / scale), 3)], round(size, 2)])
+            out[name] = places
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):

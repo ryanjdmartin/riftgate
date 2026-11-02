@@ -2,35 +2,35 @@ class_name MuzzleFlare
 extends RefCounted
 
 ## A weapon's muzzle flare (Ryan, 31 October: "If the flare colour of the weapons can follow
-## their tags, that would be really cool"): a soft star where its class's business end is
-## (art/models/shapes/muzzles.json, lowforge's MUZZLES), drawn toward the eye over the gun, its
-## colour laid over the hull and past the machine's outline (flare.gdshader). The component's tags pick
-## its look: a colour in the glows' language and a beat of its own, so two weapons part by how
-## their flares move as well as by their colour (Ryan reads colour poorly; never hue alone). A
-## component with two tags takes the first of ORDER it carries; one with none, its class's.
-##
-## Each colour is a static var so a debug build's COLOURS page (ColourTuner) can try another; the
-## hangar's motion.js keeps the same table (FLARES) for its Shot button.
+## their tags, that would be really cool"): a soft star where its gun's business end is (a class's
+## places in art/models/shapes/muzzles.json, lowforge's MUZZLES; a hand-built gun's in its model's
+## sidecar), drawn toward the eye over the gun, its colour laid over the hull and past the
+## machine's outline, its middle hot (flare.gdshader). Each tag a component carries has its look,
+## a colour and a beat; a component with two blooms both at once, the way it delivers its blow
+## first (a shell, a rocket, a beam, an edge) and what the blow carries over it, smaller and a
+## beat behind (fire, plasma, lightning), so an incendiary shell flashes and then burns. One with
+## no tag takes its class's look. The colours are what each kind of shot looks like and carry no
+## meaning in play, so they are free of the colourblind rules (Ryan, 2 November: "Not worried about
+## colourblind issues for things that carry no gameplay information like weapon effects. Choose
+## colours that make sense"); the hangar's motion.js keeps the same table (FLARES).
 
-## Gunfire: an orange short of the one that reads yellow to Ryan.
-static var BALLISTIC := Color("ff6a00")
-## A rocket's launch: a redder orange.
-static var MISSILE := Color("ff4c00")
-## A fire weapon: the burn's red.
-static var FLAME := Color("ff2400")
-## A beam: a crimson, a little blue in the red, which a fire never has.
-static var BEAM := Color("ff0a40")
-## Plasma: a hot pink, clear of the enemy's violet by every simulation (docs/measurements.md).
-static var PLASMA := Color("ff2a8c")
-## Lightning: the electric cyan of the Dingo's coil.
-static var ARC := Color("40d8ff")
-## Steel on steel: a blade's sparks.
-static var BLADE := Color("ff7800")
+## Each look's colour and how much its middle whitens: gunfire's yellow-orange flash, a rocket's
+## orange, fire's orange-red, a laser's red, plasma's green, lightning's electric blue, sparks'
+## yellow.
+const COLOURS := {
+	"ballistic": Color(1.0, 0.71, 0.24), "missile": Color(1.0, 0.48, 0.13), "flame": Color(1.0, 0.29, 0.06),
+	"beam": Color(1.0, 0.13, 0.25), "plasma": Color(0.4, 1.0, 0.33), "arc": Color(0.54, 0.85, 1.0), "blade": Color(1.0, 0.84, 0.35),
+}
+const CORES := {"ballistic": 0.7, "missile": 0.5, "flame": 0.35, "beam": 0.6, "plasma": 0.55, "arc": 0.75, "blade": 0.8}
 
-## The tags in the order one picks the look (content's working set, sim/content_db.gd).
-const ORDER := ["flame", "arc", "plasma", "beam", "missile", "ballistic", "blade", "melee"]
+## The tags in the order a component's looks layer: how it delivers its blow, then what the blow
+## carries (content's working set, sim/content_db.gd). Melee throws a blade's sparks.
+const ORDER := ["ballistic", "missile", "beam", "blade", "melee", "flame", "plasma", "arc"]
 ## A class's look for a component with no tag.
 const CLASS_LOOK := {"barrel": "ballistic", "twin_barrel": "ballistic", "rack": "missile", "dish": "arc", "blade": "blade"}
+## Each layer after the first blooms this much later and this much smaller than the one before.
+const LAYER_DELAY := 0.05
+const LAYER_SCALE := 0.75
 
 ## The beat a look moves to: rays (0 a round bloom, 2 a streak across, 4 or more a star), the
 ## seconds it takes to bloom, to hold and to fade, a flicker's rate (0 for none; a strobe for the
@@ -46,23 +46,20 @@ const BEATS := {
 }
 
 
-## The look a component's tags give it, on its class: a tag of ORDER (melee takes the blade's).
-static func look_for(tags: Array, shape: String) -> String:
+## Every look a component's tags give it, in the order they layer (ORDER), or its class's alone.
+static func looks_for(tags: Array, shape: String) -> Array:
+	var out: Array = []
 	for t in ORDER:
-		if tags.has(t):
-			return "blade" if t == "melee" else t
-	return str(CLASS_LOOK.get(shape, "ballistic"))
+		var look := "blade" if t == "melee" else str(t)
+		if tags.has(t) and not out.has(look):
+			out.append(look)
+	if out.is_empty():
+		out.append(str(CLASS_LOOK.get(shape, "ballistic")))
+	return out
 
 
 static func colour(look: String) -> Color:
-	match look:
-		"missile": return MISSILE
-		"flame": return FLAME
-		"beam": return BEAM
-		"plasma": return PLASMA
-		"arc": return ARC
-		"blade": return BLADE
-	return BALLISTIC
+	return COLOURS.get(look, COLOURS["ballistic"])
 
 
 ## How bright a flare is `t` seconds after its weapon fired, 0 to 1: it blooms, holds and fades on

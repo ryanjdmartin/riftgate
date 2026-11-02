@@ -228,29 +228,36 @@ func test_a_weapon_flares_on_its_class_in_its_tags_look_and_equipment_never() ->
 	var db := ContentDB.new()
 	db.components = {"gun": {"shape": "twin_barrel", "tags": ["ballistic", "flame"], "face": {"kind": "attack"}},
 		"lance": {"shape": "barrel", "tags": ["beam"], "face": {"kind": "attack"}},
-		"ward": {"shape": "dish", "tags": [], "face": {"kind": "shield"}}}
-	var pins := {1: Node3D.new(), 2: Node3D.new(), 3: Node3D.new()}
-	var rows := [[1, "gun", "twin_barrel"], [2, "lance", "barrel"], [3, "ward", "dish"]]
+		"ward": {"shape": "dish", "tags": [], "face": {"kind": "shield"}},
+		"built": {"shape": "barrel", "tags": ["plasma"], "face": {"kind": "attack"}}}
+	var pins := {1: Node3D.new(), 2: Node3D.new(), 3: Node3D.new(), 4: Node3D.new()}
+	var by_hand := [[Vector3(0.0, 1.0, -20.0), 10.0]]
+	var rows := [[1, "gun", "twin_barrel", MuzzleFlare.places("twin_barrel")], [2, "lance", "barrel", MuzzleFlare.places("barrel")],
+		[3, "ward", "dish", MuzzleFlare.places("dish")], [4, "built", "", by_hand]]
 	var flares := MechView3D.wear_flares(pins, rows, db)
 	var by := {}
 	for fl in flares:
 		by[str(fl[1])] = int(by.get(str(fl[1]), 0)) + 1
 		assert_false((fl[0] as Node3D).visible, "a flare waits hidden until its weapon fires")
-	assert_eq(by.get("gun", 0), MuzzleFlare.places("twin_barrel").size(), "a twin barrel flares at each of its muzzles")
-	assert_eq(by.get("lance", 0), 1, "a barrel at its one")
+	assert_eq(by.get("gun", 0), MuzzleFlare.places("twin_barrel").size() * 2, "a twin barrel flares at each muzzle, a layer a tag")
+	assert_eq(by.get("lance", 0), 1, "a barrel at its one, in its one look")
 	assert_false(by.has("ward"), "a shield's dish is no weapon and takes none")
+	assert_eq(by.get("built", 0), 1, "a gun built by hand flares where its model says")
 	for fl in flares:
 		if str(fl[1]) == "gun":
-			assert_eq(str(fl[2]), "flame", "a flame tag takes the look over a ballistic one")
+			var first := str(fl[2]) == "ballistic"
+			assert_eq(float(fl[3]), 0.0 if first else MuzzleFlare.LAYER_DELAY, "the shell flashes first, its fire a beat behind")
+		if str(fl[1]) == "built":
+			assert_eq((fl[0] as Node3D).position, Vector3(0.0, 1.0, -20.0), "at the place its model names")
 	for n in pins.keys():
 		(pins[n] as Node3D).free()
 
 
 func test_the_tags_pick_a_flare_and_every_class_has_its_places() -> void:
-	assert_eq(MuzzleFlare.look_for(["ballistic", "arc"], "barrel"), "arc", "lightning outranks a slug")
-	assert_eq(MuzzleFlare.look_for(["melee"], "blade"), "blade", "a melee piece throws a blade's sparks")
-	assert_eq(MuzzleFlare.look_for([], "rack"), "missile", "a rack with no tag puffs as a launcher")
-	assert_eq(MuzzleFlare.look_for([], "barrel"), "ballistic", "a barrel with none flashes as a gun")
+	assert_eq(MuzzleFlare.looks_for(["arc", "ballistic"], "barrel"), ["ballistic", "arc"], "the slug's flash, then its lightning")
+	assert_eq(MuzzleFlare.looks_for(["melee", "blade"], "blade"), ["blade"], "a melee piece throws a blade's sparks, once")
+	assert_eq(MuzzleFlare.looks_for([], "rack"), ["missile"], "a rack with no tag puffs as a launcher")
+	assert_eq(MuzzleFlare.looks_for([], "barrel"), ["ballistic"], "a barrel with none flashes as a gun")
 	for t in MuzzleFlare.ORDER:
 		assert_true(MuzzleFlare.BEATS.has("blade" if t == "melee" else t), "the tag %s has a beat" % t)
 	for shape in ContentDB.SHAPES:
@@ -262,3 +269,29 @@ func test_the_tags_pick_a_flare_and_every_class_has_its_places() -> void:
 		assert_eq(MuzzleFlare.strength(look, MuzzleFlare.lasts(look)), 0.0, "%s: nothing once it is over" % look)
 		var b: Dictionary = MuzzleFlare.BEATS[look]
 		assert_true(MuzzleFlare.strength(look, float(b["up"]) + float(b["hold"]) * 0.5) > 0.2, "%s: lit through its hold" % look)
+
+
+func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -> void:
+	# A fixed weapon turns the joint its model names (the sidecar's `aims`) or a waist; a machine
+	# that turns on the spot (its sidecar's `pivots`: tracks, casters) turns its body for a gun on
+	# its hull; a quad with neither fires where it points (Ryan, 31 October: "don't bother").
+	var named := 0
+	for id in ["badger", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "nemesis", "ammit", "funnel_web"]:
+		var view := MechView3D.make(id, "", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
+		var side := MechRig.load_sidecar(id)
+		for cid in (side.get("aims", {}) as Dictionary).keys():
+			named += 1
+			assert_eq(view.aim_joint_for(str(cid)), str(side["aims"][cid]), "%s: %s turns its named joint" % [id, cid])
+		var pins: Dictionary = side.get("pins", {})
+		for pin in pins.keys():
+			var cid := str(pins[pin])
+			if cid.is_empty():
+				continue
+			var joint := view.aim_joint_for(cid)
+			if bool(side.get("pivots", false)):
+				assert_false(joint.is_empty(), "%s: %s aims, a turret or the body turning" % [id, cid])
+			if id == "armadillo":
+				assert_eq(joint, "", "the Armadillo's %s fires where it points" % cid)
+		view.free()
+	assert_true(named >= 2, "the fixed weapons riding a head or a turret name it (%d)" % named)
+

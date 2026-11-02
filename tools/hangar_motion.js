@@ -92,13 +92,18 @@ const HALO_FRAG = `uniform sampler2D tile; uniform float light; uniform float pr
 void main() { vec3 t = texture2D(tile, vUv).rgb; vec3 c = (t - min(t.r, min(t.g, t.b))) * light; c /= max(1.0, max(c.r, max(c.g, c.b))); c *= c;
   float f = abs(dot(normalize(vN), normalize(vV))); float a = sqrt(reach * presence * smoothstep(0.0, 0.6, f)); gl_FragColor = vec4(c * a, a); }`;
 // A weapon's muzzle flare (MuzzleFlare; Ryan, 31 October: "If the flare colour of the weapons can
-// follow their tags, that would be really cool"): a quad facing the eye at its class's muzzle
-// (hangar/models/shapes/muzzles.json), a soft core with rays in the look its tags give it, on its
-// look's beat, its colour laid over what is there (flare.gdshader). The same table as the game's.
+// follow their tags, that would be really cool"): a quad facing the eye at its gun's muzzle (a
+// class's in hangar/models/shapes/muzzles.json, a hand-built gun's in its sidecar's `muzzles`), a
+// soft core with rays, its middle hot, a layer a tag (the delivery first, what it carries smaller
+// and a beat behind), each on its look's beat, its colour laid over what is there
+// (flare.gdshader). Colours as each kind of shot looks, free of the colourblind rules (Ryan, 2
+// November). The same table as the game's.
 const FLARES = {
-  colours: {ballistic: [1.0, 0.416, 0.0], missile: [1.0, 0.298, 0.0], flame: [1.0, 0.141, 0.0], beam: [1.0, 0.039, 0.251], plasma: [1.0, 0.165, 0.549], arc: [0.251, 0.847, 1.0], blade: [1.0, 0.471, 0.0]},
-  order: ["flame", "arc", "plasma", "beam", "missile", "ballistic", "blade", "melee"],
+  colours: {ballistic: [1.0, 0.71, 0.24], missile: [1.0, 0.48, 0.13], flame: [1.0, 0.29, 0.06], beam: [1.0, 0.13, 0.25], plasma: [0.4, 1.0, 0.33], arc: [0.54, 0.85, 1.0], blade: [1.0, 0.84, 0.35]},
+  cores: {ballistic: 0.7, missile: 0.5, flame: 0.35, beam: 0.6, plasma: 0.55, arc: 0.75, blade: 0.8},
+  order: ["ballistic", "missile", "beam", "blade", "melee", "flame", "plasma", "arc"],
   classLook: {barrel: "ballistic", twin_barrel: "ballistic", rack: "missile", dish: "arc", blade: "blade"},
+  layerDelay: 0.05, layerScale: 0.75,
   beats: {
     ballistic: {rays: 4, up: 0.03, hold: 0.04, down: 0.16, flicker: 0, scale: 1.0},
     missile: {rays: 0, up: 0.06, hold: 0.10, down: 0.45, flicker: 0, scale: 1.25},
@@ -109,7 +114,11 @@ const FLARES = {
     blade: {rays: 8, up: 0.02, hold: 0.03, down: 0.12, flicker: 0, scale: 0.8},
   },
 };
-function flareLook(tags, shape) { for (const t of FLARES.order) if ((tags || []).includes(t)) return t === "melee" ? "blade" : t; return FLARES.classLook[shape] || "ballistic"; }
+function flareLooks(tags, shape) {   // MuzzleFlare.looks_for: every look its tags give it, in the order they layer
+  const out = [];
+  for (const t of FLARES.order) { const look = t === "melee" ? "blade" : t; if ((tags || []).includes(t) && !out.includes(look)) out.push(look); }
+  return out.length ? out : [FLARES.classLook[shape] || "ballistic"];
+}
 function flareLasts(look) { const b = FLARES.beats[look] || FLARES.beats.ballistic; return b.up + b.hold + b.down; }
 function flareStrength(look, t) {   // MuzzleFlare.strength
   const b = FLARES.beats[look] || FLARES.beats.ballistic;
@@ -123,13 +132,13 @@ function flareStrength(look, t) {   // MuzzleFlare.strength
 const FLARE_VERT = `uniform float ahead; varying vec2 vUv;
 void main() { vUv = uv; vec4 c = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0); float s = length(modelViewMatrix[0].xyz);
   c.xyz += mix(normalize(-c.xyz), vec3(0.0, 0.0, 1.0), projectionMatrix[3][3]) * ahead * s; gl_Position = projectionMatrix * (c + vec4(position.xy * s, 0.0, 0.0)); }`;
-const FLARE_FRAG = `uniform vec3 colour; uniform float strength; uniform float rays; uniform float spin; varying vec2 vUv;
-void main() { vec2 p = vUv * 2.0 - 1.0; float r = length(p); float core = 1.0 - smoothstep(0.15, 0.6, r); float star;
+const FLARE_FRAG = `uniform vec3 colour; uniform float strength; uniform float rays; uniform float spin; uniform float core; varying vec2 vUv;
+void main() { vec2 p = vUv * 2.0 - 1.0; float r = length(p); float bloom = 1.0 - smoothstep(0.15, 0.6, r); float star;
   if (rays > 0.5) { float a = atan(p.y, p.x) + spin; star = pow(abs(cos(a * rays * 0.5)), rays < 2.5 ? 16.0 : 6.0) * (1.0 - smoothstep(0.2, 1.0, r)); }
   else star = 0.7 * (1.0 - smoothstep(0.4, 1.0, r));
-  gl_FragColor = vec4(colour, clamp(core + star, 0.0, 1.0) * strength); }`;
+  gl_FragColor = vec4(mix(colour, vec3(1.0), core * (1.0 - smoothstep(0.0, 0.4, r))), clamp(bloom + star, 0.0, 1.0) * strength); }`;
 const RECOIL_BODY = 1.2;   // MechRig: model units a machine kicks back along a gun's line when it fires from a mount on the body
-const AIM_UP = 0.12, AIM_DOWN = 0.5, AIM_LEAD = 0.1;   // MechRig.aim, MechView3D: the turn onto a target, and the blow's wait while it turns
+const AIM_UP = 0.22, AIM_DOWN = 0.5;   // MechRig.aim: the turn onto a target, the blow waiting on it (Ryan, 2 November: "make sure that the turns or aims happen before the sound effects")
 // A lit material's light at rest, kept the first time it is asked (MechRig._rest_of), so a standing
 // glow that raises it is never taken for its rest.
 function restOf(m) { if (m.userData.restLight === undefined) m.userData.restLight = m.emissiveIntensity; return m.userData.restLight; }
@@ -314,6 +323,7 @@ class Rig {
     for (const [name, r] of Object.entries(side.spin || {})) if (this.joints[name] && Array.isArray(r) && r.length >= 2) { this.spinners[name] = [Number(r[0]), Number(r[1])]; this.spun[name] = 0; }
     this.useGait(side.gait || {});
     this.fires = side.fires || {}; this.until = -1;   // a fixed weapon's firing slice (MechRig.fire_act), and where one playing now ends
+    this.aims = side.aims || {}; this.pivots = !!side.pivots;   // a fixed weapon's aim joint; the whole machine turning on the spot (tracks, casters)
     root.rotation.order = "YXZ";
     this.bodyRestPos = root.position.clone();
     this.bodyRestRot = v3(root.rotation.x, root.rotation.y, root.rotation.z);
@@ -1284,7 +1294,10 @@ class Stage {
     if (part) pin.add(part);
     for (const f of this.flares.filter(f => f.pin === n)) pin.remove(f.mesh);
     this.flares = this.flares.filter(f => f.pin !== n);
-    if (shape === null) this.hangFlares(n, ((this.side || {}).stock_shapes || {})["hp_" + n], ((this.side || {}).pins || {})["hp_" + n]);
+    if (shape === null) {   // the stock part back: its class's flares, or a hand-built gun's own
+      const side = this.side || {}, cls = (side.stock_shapes || {})["hp_" + n];
+      this.hangFlares(n, cls, (side.pins || {})["hp_" + n], cls ? null : (side.muzzles || {})["hp_" + n]);
+    }
     else if (shape) this.hangFlares(n, shape, "");
     rig.glowCache = {};   // a fitted part's lights now answer the mount's glow
     if (shape === null) delete this.fits[n]; else this.fits[n] = shape ? shape + ":" + maker : "bare";
@@ -1398,16 +1411,16 @@ class Stage {
     }
     const next = shots[this.shot++ % shots.length];
     if (typeof next === "string") {   // a fixed weapon: the waist or a hover's pivot turns, then its own act fires (MechView3D.strike)
-      let joint = rig.joints.waist && rig.meta.waist.axis === "yaw" ? "waist" : ((this.hover || this.flyer) ? "@body" : "");
+      let joint = rig.joints[rig.aims[next]] ? rig.aims[next] : (rig.joints.waist && rig.meta.waist.axis === "yaw" ? "waist" : ((this.hover || this.flyer || rig.pivots) ? "@body" : ""));
       let lead = 0;
-      if (joint) { this.aimSide = -this.aimSide; rig.aim(joint, 22 * this.aimSide, 0.8); lead = AIM_LEAD; }
+      if (joint) { this.aimSide = -this.aimSide; rig.aim(joint, 22 * this.aimSide, 0.8); lead = AIM_UP; }
       if (!rig.fireAct(next, lead)) rig.strike(true, [], null, lead);
       return;
     }
     const n = next, pin = rig.hardpoints[n];
     let lead = 0, joint = rig.aimJointOver(pin);
-    if (!joint && (this.hover || this.flyer)) joint = "@body";   // a hover's or a flyer's pivot (MechView3D.pivots)
-    if (joint) { this.aimSide = -this.aimSide; rig.aim(joint, 22 * this.aimSide, 0.6); lead = AIM_LEAD; }
+    if (!joint && (this.hover || this.flyer || rig.pivots)) joint = "@body";   // a hover's, a flyer's, a tank's or a castered chassis's pivot (MechView3D.aim_joint_for)
+    if (joint) { this.aimSide = -this.aimSide; rig.aim(joint, 22 * this.aimSide, 0.6); lead = AIM_UP; }
     const owner = rig.jointOf(pin), T = window.THREE;
     let recoil = null;
     if (!owner) {   // a gun on the body kicks the whole machine back along its line
@@ -1418,14 +1431,14 @@ class Stage {
       recoil = {x: back.x, y: back.y, z: back.z};
     }
     rig.strike(true, owner ? [owner] : [], recoil, lead);
-    for (const f of this.flares) if (f.pin === n) rig.fireFlare(f.mesh, f.look, lead);
+    for (const f of this.flares) if (f.pin === n) rig.fireFlare(f.mesh, f.look, lead + f.delay);
     for (const part of this.burns || []) if (part.parent === pin && part.visible !== false) rig.flashUnder(part);
   }
   // A weapon's muzzle flares on its mount (MechView3D.wear_flares): at its class's places, in the
   // look its tags give it (a fitted class alone, its class's). A component that is no weapon takes none.
-  async hangFlares(n, shape, cid) {
+  async hangFlares(n, shape, cid, own = null) {   // `own`: a hand-built gun's places from its sidecar, in place of a class's
     const rig = this.rig, pin = rig && rig.hardpoints[n];
-    if (!pin || !shape) return;
+    if (!pin || (!shape && !own)) return;
     if (!this.muzzles) this.muzzles = fetch("hangar/models/shapes/muzzles.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).catch(() => ({}));
     if (!this.kitOf) this.kitOf = fetch("content/components.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).then(j => {
       const out = {};
@@ -1436,22 +1449,23 @@ class Stage {
     if (this.rig !== rig) return;
     const c = cid ? kit[cid] : null;
     if (c && (c.face || {}).kind !== "attack") return;
-    const look = flareLook(c ? c.tags : [], shape), b = FLARES.beats[look], T = window.THREE;
-    for (const [at, size] of places[shape] || []) {
-      const w = size * b.scale, col = FLARES.colours[look];
-      const mat = new T.ShaderMaterial({uniforms: {colour: {value: new T.Vector3(col[0], col[1], col[2])}, strength: {value: 0}, rays: {value: b.rays}, spin: {value: 0}, ahead: {value: 4}},
+    const looks = flareLooks(c ? c.tags : [], shape), T = window.THREE;
+    for (const [at, size] of own || places[shape] || []) looks.forEach((look, k) => {
+      const b = FLARES.beats[look], w = size * b.scale * Math.pow(FLARES.layerScale, k), col = FLARES.colours[look];
+      const mat = new T.ShaderMaterial({uniforms: {colour: {value: new T.Vector3(col[0], col[1], col[2])}, strength: {value: 0}, rays: {value: b.rays}, spin: {value: 0}, ahead: {value: 4}, core: {value: FLARES.cores[look]}},
         vertexShader: FLARE_VERT, fragmentShader: FLARE_FRAG, transparent: true, depthWrite: false, side: T.DoubleSide});   // laid over, as the game lays it (flare.gdshader)
       const mesh = new T.Mesh(new T.PlaneGeometry(w, w), mat);
-      mesh.position.set(at[0], at[1], at[2]); mesh.visible = false; mesh.userData.halo = true; mesh.renderOrder = 2; mesh.frustumCulled = false;
+      mesh.position.set(at[0], at[1], at[2]); mesh.visible = false; mesh.userData.halo = true; mesh.renderOrder = 2 + k; mesh.frustumCulled = false;
       pin.add(mesh);
-      this.flares.push({pin: n, mesh, look});
-    }
+      this.flares.push({pin: n, mesh, look, delay: FLARES.layerDelay * k});
+    });
   }
   // A burn weapon's fire over its class on each stock mount whose component burns (MechView3D.burn_rows):
   // the sidecar names each stock class (`stock_shapes`) and what each pin carries (`pins`); content
   // says what burns (its entry's keywords hold "burn"). It flares on a strike, here on either button.
   async wearBurns(side, id) {
     const shapes = side.stock_shapes || {}, pins = side.pins || {};
+    for (const [pin, own] of Object.entries(side.muzzles || {})) if (pins[pin] && !shapes[pin]) this.hangFlares(Number(pin.slice(3)), "", pins[pin], own);   // a hand-built stock gun (MechView3D.flare_rows)
     if (!Object.keys(shapes).length) return;
     for (const [pin, shape] of Object.entries(shapes)) this.hangFlares(Number(pin.slice(3)), shape, pins[pin] || "");
     if (!this.burnsOf) this.burnsOf = fetch("content/components.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).then(j => {

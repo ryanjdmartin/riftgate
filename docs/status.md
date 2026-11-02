@@ -81,7 +81,11 @@ Nemesis hot then really hot, the Ammit's glow moved to its rear vent, a halo's o
 toward the eye), then the weapon-fire package he answered: the weapon that fired the only one
 that moves, its muzzle flares on every class in its tags' look, the aim onto the foe where a
 turret, a waist or a hover's pivot is cheap, and sixteen machines' fixed weapons firing with a cut
-of an idle act; green at 836 tests and 207,097 checks; not yet on main; its bible is v0.420 (the page's 432). Next on
+of an idle act; then his notes of 2 November: the hand-built stock guns flaring where lowforge
+finds their muzzles, the flares in the colours each shot has (off the colour tuner, the colourblind
+rules scoped to gameplay information in `CLAUDE.md`), a component's tags layered, the turn before
+the blow's sound, the tracked machines and the Dingo pivoting; green at 838 tests and 207,118
+checks; not yet on main; its bible is v0.421. Next on
 it: Ryan's read of the glows and the weapons firing, then the shot crossing the field and a hit
 moving the machine (the to-do).
 

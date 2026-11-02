@@ -108,10 +108,8 @@ var plan: Array = []              # what the pins wear instead of their built pa
 var wears_stock := true           # whether the model's own stock parts are its machine's kit (false on a borrowed model)
 var _burns: Array = []            # the burn weapons' fire hung over their classes (wear_burns), each node carrying its component's id
 var _flares: Array = []           # [node, component, look]: each weapon's muzzle flares on its class (wear_flares)
-var pivots := false               # aims by turning its whole body (a hover or a flyer): the skirmish sets it
-var _aim_lead := 0.0              # the seconds the next strike waits while the machine turns onto its target (aim_at)
+var pivots := false               # aims by turning its whole body (a hover or a flyer): the skirmish sets it; a model may say so too (its sidecar's `pivots`)
 const FLARE_SHADER := preload("res://game/ui/flare.gdshader")
-const AIM_LEAD := 0.1             # a blow waits this long when the machine turns to aim, about the blow's sound's own lead (the skirmish's BLOW_AT)
 var model_id: String = ""         # the glTF drawn: the chassis, or the fallback when it has no model
 
 var _inner: SubViewport
@@ -377,7 +375,7 @@ func _apply_plan() -> void:
 	_burns = wear_burns(hardpoints, burn_rows(model_id, plan, db, wears_stock), mode, paint, token)
 	for part in _burns:
 		rig.wear_hot(part)
-	_flares = [] if token else wear_flares(hardpoints, shaped_rows(model_id, plan, db, wears_stock), db)
+	_flares = [] if token else wear_flares(hardpoints, flare_rows(model_id, plan, db, wears_stock), db)
 
 
 ## Whether a component burns: its entry's keywords hold "burn" (content says, never an id).
@@ -427,9 +425,41 @@ static func shaped_rows(model_name: String, rows: Array, db: ContentDB, stock_to
 	return out
 
 
-## Hang each weapon's muzzle flares on its pin, at its class's places (MuzzleFlare.places), hidden
-## until it fires, in the look its tags give it. Returns [node, component, look] for each. A
-## component that is not a weapon (a shield's dish) takes none.
+## Every mount that shows a gun and where its muzzle flares bloom, as [pin, component, class,
+## places]: a class's places on a swapped row or a stock class (shaped_rows), or for a stock gun
+## built by hand the places its model's sidecar names (lowforge found its business end; Ryan, 2
+## November: "We should probably replace or fix those hand built stock guns, right?").
+static func flare_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
+	var out: Array = []
+	var shown := {}
+	for row in shaped_rows(model_name, rows, db, stock_too):
+		out.append([int(row[0]), str(row[1]), str(row[2]), MuzzleFlare.places(str(row[2]))])
+		shown[int(row[0])] = true
+	for row in rows:
+		if row.size() >= 2:
+			shown[int(row[0])] = true   # a swapped mount shows its class, never the hand-built gun under it
+	var stock = pin_record(model_name) if stock_too else null
+	var built = MechRig.load_sidecar(model_name).get("muzzles", {})
+	if stock is Array and built is Dictionary:
+		for key in (built as Dictionary).keys():
+			var tag := MechRig.parse_tag(str(key))
+			if tag.is_empty() or str(tag[0]) != "hp":
+				continue
+			var n := int(tag[1])
+			if shown.has(n) or n > (stock as Array).size() or str(stock[n - 1]).is_empty():
+				continue
+			var places: Array = []
+			for p in built[key]:
+				if p is Array and (p as Array).size() == 2 and p[0] is Array and (p[0] as Array).size() == 3:
+					places.append([Vector3(float(p[0][0]), float(p[0][1]), float(p[0][2])), float(p[1])])
+			out.append([n, str(stock[n - 1]), "", places])
+	return out
+
+
+## Hang each weapon's muzzle flares on its pin at its places, hidden until it fires, a layer a
+## look its tags give it (MuzzleFlare.looks_for: the delivery first and full size, what it carries
+## smaller and a beat behind). Returns [node, component, look, delay] for each. A component that
+## is not a weapon (a shield's dish) takes none.
 static func wear_flares(pins: Dictionary, rows: Array, db: ContentDB) -> Array:
 	var out: Array = []
 	for row in rows:
@@ -440,26 +470,29 @@ static func wear_flares(pins: Dictionary, rows: Array, db: ContentDB) -> Array:
 		if not (face is Dictionary) or str(face.get("kind", "")) != "attack":
 			continue
 		var tags = c.get("tags", [])
-		var look := MuzzleFlare.look_for(tags if tags is Array else [], str(row[2]))
-		for place in MuzzleFlare.places(str(row[2])):
-			var node := flare_node(place, look)
-			(pins[int(row[0])] as Node3D).add_child(node)
-			out.append([node, str(row[1]), look])
+		var looks := MuzzleFlare.looks_for(tags if tags is Array else [], str(row[2]))
+		for place in row[3]:
+			for k in range(looks.size()):
+				var node := flare_node(place, str(looks[k]), pow(MuzzleFlare.LAYER_SCALE, k))
+				(pins[int(row[0])] as Node3D).add_child(node)
+				out.append([node, str(row[1]), str(looks[k]), MuzzleFlare.LAYER_DELAY * k])
 	return out
 
 
-## One flare: a quad facing the eye at a class's place (MuzzleFlare), in its look's colour and rays.
-static func flare_node(place: Array, look: String) -> MeshInstance3D:
+## One flare: a quad facing the eye at a place (MuzzleFlare), in its look's colour, core and rays,
+## `size_k` of its place's size.
+static func flare_node(place: Array, look: String, size_k: float = 1.0) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
 	mi.name = "flare"
 	var q := QuadMesh.new()
-	var w := float(place[1]) * float(MuzzleFlare.BEATS.get(look, MuzzleFlare.BEATS["ballistic"])["scale"])
+	var w := float(place[1]) * float(MuzzleFlare.BEATS.get(look, MuzzleFlare.BEATS["ballistic"])["scale"]) * size_k
 	q.size = Vector2(w, w)
 	mi.mesh = q
 	var mat := ShaderMaterial.new()
 	mat.shader = FLARE_SHADER
 	var c := MuzzleFlare.colour(look)
 	mat.set_shader_parameter("colour", Vector3(c.r, c.g, c.b))
+	mat.set_shader_parameter("core", float(MuzzleFlare.CORES.get(look, 0.6)))
 	mat.set_shader_parameter("rays", float(MuzzleFlare.BEATS.get(look, MuzzleFlare.BEATS["ballistic"])["rays"]))
 	mi.material_override = mat
 	mi.position = place[0]
@@ -741,13 +774,12 @@ static func joint_axis(name: String) -> Vector3:
 ## kick, a gun on the body kicks the whole machine back along its line, its muzzle flares bloom
 ## and a burn weapon's fire flares; a weapon on no mount (a fixed one: the fists, the claws) fires
 ## with its own act (MechRig.fire_act), or where the model names none strikes as every machine
-## did before, its arms swinging or its guns kicking. After an aim the blow waits while the
-## machine turns (aim_at).
+## did before, its arms swinging or its guns kicking. A caller that aims first strikes once the
+## turn is done (aim_at), so the turn comes before the blow and its sound.
 func strike(ranged: bool, cid: String = "") -> void:
 	if not is_inside_tree():
 		return
-	var lead := _aim_lead
-	_aim_lead = 0.0
+	var lead := 0.0
 	var mounts := carrying(cid)
 	if mounts.is_empty():
 		if not rig.fire_act(cid, lead):   # a fixed weapon fires with its own act where the model names one
@@ -768,7 +800,7 @@ func strike(ranged: bool, cid: String = "") -> void:
 		rig.strike(ranged, only, recoil, lead)
 	for fl in _flares:
 		if str(fl[1]) == cid:
-			rig.fire_flare(fl[0], str(fl[2]), lead)
+			rig.fire_flare(fl[0], str(fl[2]), lead + float(fl[3]))
 	for part in _burns:
 		if not cid.is_empty() and str((part as Node).get_meta("burn", "")) == cid:
 			rig.flash_under(part)
@@ -779,26 +811,38 @@ func strike(ranged: bool, cid: String = "") -> void:
 ## twist, hover pivot, gimbal) then yeah lets do that. If a quad has to step around to fire like
 ## the armadillo, then don't bother"): `deg` to the machine's left, held `hold` seconds. The
 ## joint that turns is the nearest above the weapon's mount that turns about its up axis (a
-## turret, a waist, a head with guns); a weapon on no mount turns the waist; with neither, a hover
-## or a flyer turns its whole body, and anything else fires where it points. The next strike
-## waits while it turns.
-func aim_at(cid: String, deg: float, hold: float) -> void:
+## turret, a waist, a head with guns); a weapon on no mount turns the joint its model names for
+## it (its sidecar's `aims`: the Funnel-web's Web Bomb rides the head) or the waist; with none, a
+## machine that turns on the spot (a hover, a flyer, a tank's tracks, a castered chassis) turns
+## its whole body, and anything else fires where it points. True when it turns: the caller
+## strikes once the turn is done (MechRig.AIM_UP), before the blow's sound.
+func aim_at(cid: String, deg: float, hold: float) -> bool:
 	if not is_inside_tree() or absf(deg) < 1.0:
-		return
-	var joint := ""
-	for n in carrying(cid):
-		joint = rig.aim_joint_over(hardpoints[n])
-		if not joint.is_empty():
-			break
-	if joint.is_empty() and carrying(cid).is_empty() and rig.joints.has("waist") and str(rig.meta.get("waist", {}).get("axis", "")) == "yaw":
-		joint = "waist"
-	if joint.is_empty() and pivots:
-		joint = MechRig.BODY
+		return false
+	var joint := aim_joint_for(cid)
 	if joint.is_empty():
-		return
+		return false
 	rig.aim(joint, deg, hold)
-	_aim_lead = AIM_LEAD
 	set_process(true)
+	return true
+
+
+## The joint that turns to aim a component (aim_at), or "" when it fires where it points.
+func aim_joint_for(cid: String) -> String:
+	var mounts := carrying(cid)
+	for n in mounts:
+		var joint := rig.aim_joint_over(hardpoints[n])
+		if not joint.is_empty():
+			return joint
+	if mounts.is_empty():
+		var named := str(rig.aims.get(cid, ""))
+		if rig.joints.has(named):
+			return named
+		if rig.joints.has("waist") and str(rig.meta.get("waist", {}).get("axis", "")) == "yaw":
+			return "waist"
+	if pivots or rig.pivots:
+		return MechRig.BODY
+	return ""
 
 
 ## Hang a component's model on a socket: the stock part under `hp_<n>` is hidden and the

@@ -2955,6 +2955,7 @@
    "to": 3.2
   }
  },
+ "pivots": true,
  "stock_shapes": {
   "hp_1": "rack",
   "hp_2": "twin_barrel"

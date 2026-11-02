@@ -201,6 +201,7 @@ def badger(b):
     # and stopping; heavy to start.
     b.gait(treads={"parts": ["tread"], "scroll": 1.0}, hold={"shoulder_l": 7.0, "elbow_l": 6.0, "wrist_l": 24.0, "shoulder_r": 3.0}, rock=7.0)
     b.fires = {"chainsaw_claw": ("test_claw", 1.6, 2.9)}   # its fixed weapon fires with a slice of its act: the claw's snap (Ryan, 31 October: "go for ones that are cheapest to do first")
+    b.pivots = True   # its tracks turn it on the spot to aim the gun on its hull and the claw, as a tank's neutral turn (Ryan, 31 October: "a cheap way of aiming")
     b.move(accel=1.2, heft=0.2)
 
 badger.maker = "minerva"
@@ -1364,6 +1365,7 @@ def wild_boar(b):
            body=[(round(p, 3), 0.0, round(surge(p), 2), 0.0, 0.0, round(sway(p), 2), 0.0) for p in phases],
            tracks={"plow": [(round(p, 3), round(max(-2.0, -1.2 * sway(p - 0.08)), 2)) for p in phases]})
     b.fires = {"breaching_plow": ("test_plow", 2.5, 4.4)}   # its fixed weapon fires with a slice of its act: the plow down, shaken and thrown up (Ryan, 31 October: "go for ones that are cheapest to do first")
+    b.pivots = True   # its tracks turn it on the spot to aim the pod and the plow, as a tank's neutral turn (Ryan, 31 October: "a cheap way of aiming")
     b.move(accel=1.1, heft=0.18)
 
 wild_boar.maker = "minerva"
@@ -1578,6 +1580,7 @@ def prairie_dog(b):
     # full lock, since the gain had been read per degree a second): about 22 through a corner's
     # first quarter, 30 at its quickest.
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R}, steer={"steer_fl": 14.0, "steer_fr": 14.0}, rock=5.0)
+    b.aims = {"flakshot_repeater": "turret"}   # the Flakshot Repeater rides the turret beside hp_1, so the turret turns to aim it
     b.move(accel=0.6, heft=0.1)
 
 prairie_dog.maker = "wainwright_sutler"
@@ -1781,6 +1784,7 @@ def dingo(b):
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R},
            aim={"caster_fl": 1.0, "caster_fr": 1.0, "caster_rl": 1.0, "caster_rr": 1.0}, rock=4.0)
     b.fires = {"megataser_harpoon": ("harpoon", 2.0, 3.2), "combat_translocator": ("coil_check", 2.0, 3.2)}   # its fixed weapons fire with slices of its acts: the harpoon's shot and kick; the coil's second flare (Ryan, 31 October: "go for ones that are cheapest to do first")
+    b.pivots = True   # its casters turn it on the spot to aim its nose guns, the harpoon and the coil (Ryan, 31 October: "a cheap way of aiming")
     b.move(slide=0.4, bank=0.0, accel=0.5, heft=0.09, oversteer=2.0)   # drifts wildly on the map and does not bank (Ryan, 2 October); its rear kicked out further (the sixth notes), and further again (the seventh)
 
 dingo.maker = "wainwright_sutler"
@@ -2024,6 +2028,7 @@ def funnel_web(b):
     tracks, body, stride = _plant(walk, sweep=36.0, duty=DUTY, lift=5.0, crouch=0.3, dip=0.6, nod=0.4, reach=0.96, airborne=0.97, smooth=0.02, n=80, carry=(0.04, 0.92))
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")   # the row at twenty degrees was an option for a day (the seventh notes); Ryan could not tell the two apart, so it is gone (the eighth)
     b.fires = {"web_bomb": ("sight_in", 2.0, 3.8)}   # its fixed weapon fires with a slice of its act: the web tube lit (Ryan, 31 October: "go for ones that are cheapest to do first")
+    b.aims = {"web_bomb": "head"}   # the Web Bomb rides the head with the rest of its guns, so the head turns to aim it
     b.move(accel=0.9, heft=0.16)
 
 funnel_web.maker = "wainwright_sutler"

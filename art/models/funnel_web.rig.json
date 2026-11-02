@@ -79810,6 +79810,9 @@
    "to": 3.8
   }
  },
+ "aims": {
+  "web_bomb": "head"
+ },
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "barrel",

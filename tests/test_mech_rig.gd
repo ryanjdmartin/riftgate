@@ -271,6 +271,26 @@ func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
 	pair[1].free()
 
 
+func test_every_hand_built_stock_gun_has_a_muzzle_and_every_aim_joint_turns() -> void:
+	# A stock gun built by hand rather than as a class flares where lowforge found its business
+	# end (Ryan, 2 November); a fixed weapon's named aim joint turns about its up axis. A shield
+	# built by hand never fires, so it needs no muzzle.
+	var db := ContentDB.load_default()
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var pins: Dictionary = side.get("pins", {})
+		var shapes: Dictionary = side.get("stock_shapes", {})
+		var muzzles: Dictionary = side.get("muzzles", {})
+		for pin in pins.keys():
+			if str(pins[pin]).is_empty() or shapes.has(pin) or str(db.components.get(str(pins[pin]), {}).get("face", {}).get("kind", "")) != "attack":
+				continue
+			assert_true(muzzles.has(pin) and not (muzzles[pin] as Array).is_empty(), "%s: the hand-built %s on %s flares somewhere" % [id, pins[pin], pin])
+		var joints: Dictionary = side.get("joints", {})
+		var aims: Dictionary = side.get("aims", {})
+		for cid in aims.keys():
+			assert_eq(str(joints.get(str(aims[cid]), {}).get("axis", "")), "yaw", "%s: %s aims with a joint that turns about its up axis" % [id, cid])
+
+
 func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	var want := {
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],

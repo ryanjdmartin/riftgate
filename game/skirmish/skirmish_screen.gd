@@ -2519,6 +2519,16 @@ func _use_die(i: int, target, second = null) -> bool:
 	var heat_hook := _heat_hook(heat_before) if ok and not won else ""
 	var quiet := won or not heat_hook.is_empty()   # nothing but the heat may take her line
 	var fire_at := BLOW_AT
+	# A machine turns onto what it fires at before its weapon fires (Ryan, 2 November: "make sure
+	# that the turns or aims happen before the sound effects. It's part of the whole immersion
+	# package"): the blow, its kick and its sound wait on the turn.
+	var aim_view: UnitView = null
+	if ok and target is Foe:
+		aim_view = was[target][0] if was.has(target) else null
+	elif ok and target is Vector2i:
+		aim_view = _slot_views[(target as Vector2i).x][(target as Vector2i).y]
+	var aim := _aim_plan(i, aim_view, spent)
+	fire_at += float(aim[1])
 	var landed := fire_at + Sound.lands(blow)   # where the blow lands, from the die let go
 	if ok and target is Foe:
 		var tv: UnitView = was[target][0] if was.has(target) else null
@@ -2533,13 +2543,14 @@ func _use_die(i: int, target, second = null) -> bool:
 			if dead.is_empty():
 				var said := Sound.claim_line("die_spent", PRE_LINE_AT)
 				if said > 0.0:
-					fire_at = PRE_LINE_AT + said * PRE_FIRE
+					fire_at = maxf(PRE_LINE_AT + said * PRE_FIRE, BLOW_AT + float(aim[1]))
 			else:
 				var hook := "foe_down_" + fallen
 				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + AFTER_DEATH)
 		landed = fire_at + Sound.lands(blow)
 		var ranged := not bool(sk.last_roll.get("melee", false))   # a melee weapon (the tag) lunges, anything else kicks back
 		var hit := (target as Foe).alive()
+		_aim_before(i, aim, fire_at - BLOW_AT, landed, spent.component if spent != null else "")
 		if fire_at > BLOW_AT and is_inside_tree():
 			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
 			tw.tween_interval(fire_at - BLOW_AT)
@@ -2565,7 +2576,13 @@ func _use_die(i: int, target, second = null) -> bool:
 		# A shot laid in an empty slot (the Lammergeier's), or the pull's gather there: the
 		# weapon fires and the machine kicks back, nothing struck.
 		var slot: Vector2i = target
-		_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed, spent.component if spent != null else "")
+		_aim_before(i, aim, fire_at - BLOW_AT, landed, spent.component if spent != null else "")
+		if fire_at > BLOW_AT and is_inside_tree():
+			var tw := create_tween()   # the machine fires once it has turned
+			tw.tween_interval(fire_at - BLOW_AT)
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], _slot_views[slot.x][slot.y], true, false, BLOW_AT + Sound.lands(blow), spent.component if spent != null else ""))
+		else:
+			_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed, spent.component if spent != null else "")
 		Sound.play_after(fire_at, blow)
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
@@ -2611,9 +2628,7 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 	var origin: Vector2 = _home.get(attacker, attacker.position)
 	var mi := _mech_views.find(attacker)
 	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
-		if target != null:
-			_mech_3d[mi].aim_at(cid, _aim_turn(mi, target), lands + AIM_HOLD)   # a turret, a waist or a hover turns onto the foe first
-		_mech_3d[mi].strike(ranged, cid)   # the weapon that fired kicks and flares; a fixed one swings the arms
+		_mech_3d[mi].strike(ranged, cid)   # the weapon that fired kicks and flares, its aim already turned (_aim_before); a fixed one fires with its act
 	var tw := _track(attacker, create_tween())
 	if ranged or target == null:
 		var kick := Vector2(0.0, 8.0) if attacker in _mech_views else Vector2(0.0, -8.0)
@@ -2625,6 +2640,39 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 		tw.tween_property(attacker, "position", origin, 0.16).set_ease(Tween.EASE_IN_OUT)
 	if target != null and hit:
 		_animate_hit(target, lands)
+
+
+## How machine `i` turns to fire at `target`: [degrees to its left, the seconds the turn takes],
+## the seconds nought when it fires where it points (no joint turns for the weapon spent, or the
+## foe is dead ahead).
+func _aim_plan(i: int, target: UnitView, spent: Face) -> Array:
+	if target == null or spent == null or i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null:
+		return [0.0, 0.0]
+	var deg := _aim_turn(i, target)
+	if absf(deg) < 1.0 or _mech_3d[i].aim_joint_for(spent.component).is_empty():
+		return [deg, 0.0]
+	return [deg, MechRig.AIM_UP]
+
+
+## Start machine `i`'s turn so it ends as its weapon fires (`attack_at` seconds from now) and holds
+## until the blow has landed and a beat after.
+func _aim_before(i: int, aim: Array, attack_at: float, landed: float, cid: String) -> void:
+	if float(aim[1]) <= 0.0 or not is_inside_tree():
+		return
+	var view: MechView3D = _mech_3d[i]
+	var start := maxf(0.0, attack_at - float(aim[1]))
+	var hold := maxf(0.0, landed + AIM_HOLD - attack_at)
+	if start <= 0.0:
+		view.aim_at(cid, float(aim[0]), hold)
+		return
+	var tw := create_tween()
+	tw.tween_interval(start)
+	tw.tween_callback(_aim_view.bind(view, cid, float(aim[0]), hold))
+
+
+func _aim_view(view: MechView3D, cid: String, deg: float, hold: float) -> void:
+	if is_instance_valid(view):
+		view.aim_at(cid, deg, hold)
 
 
 ## How far machine `i` turns to its left to face `target` across the floor: the bearing from its
