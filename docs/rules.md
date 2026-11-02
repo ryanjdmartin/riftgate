@@ -19,12 +19,11 @@ skirmish.
 - **Chassis**: hull, shield, field recharge (shield regained out of fights), heat maximum,
   cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`), two of them planned and never dealt until their engines land (the
-  Storm Petrel, the Giant Petrel). A run has four squad slots and starts with three
+  (`content/chassis.json`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
-  beside its name in the hold, and down the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
+  beside its name in its readout, and down the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
   undamaged machine is reliable.
 - **Components** come in four kinds, as the die's main icon shows them: a **weapon** deals
   damage and is spent on a foe in its reach; **equipment** is a buff or a debuff and deals
@@ -32,7 +31,7 @@ skirmish.
   **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
   default, or self only, or allies only, as its chip says. A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
-  too there, and the blast is a weapon's hit): the hold shows the kind on the machine, the
+  too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
   codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
   and equipment aimed at a foe, so a buff, a shield and a vent stay out of it. A
   component has a number (or none), heat, strikes, up to three authored keywords, and may
@@ -46,7 +45,7 @@ skirmish.
   armour). Neither shape owns heat: a weapon's heat is its own number, set by its niche like
   its reach. There are no crits and no weapon classes.
 - **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set, and
-  the only tags a component may wear) are build flavour, shown on its hold's last line and
+  the only tags a component may wear) are build flavour, shown on its readout's last line and
   beside its name in its codex row. A tag carries no rule of its own; a module or passive may
   read one. Every weapon and debuff wears its tags by its fantasy, a shield, a vent and a buff none, but five locked ones the stock
   pass's table did not reach (the Pinion Driver, the Lorentz Contractor, the Syrinx Drone,
@@ -104,12 +103,12 @@ defeat when every machine is wrecked. There is no round limit.
 - **Rerolls**: three a round for the team, never banked (Maverick's Playbook, the Giant
   Petrel's passive, below, the one exception). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
-  showing; a copy of it may come up, at the odds its copies give it. Tap a die to lock it;
-  spending unlocks it; locks clear each round.
+  showing; a copy of it may come up, at the odds its copies give it. Double-tap or hold a die
+  to lock it, and again to unlock it; spending unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
-  lock holds it. The die shows its next entry beside it, and its hold and codex show its entries as a
-  cylinder, in order (the one showing lit and an arrow to the next, in the hold). Its Spin-Up spins the whole die, the entry
+  lock holds it. The die shows its next entry beside it, and its readout and codex show its entries as a
+  cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up spins the whole die, the entry
   showing included, the one piece that breaks the reroll rule, so it may land on itself and
   be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
   its damage and the stacks it lays; the count shows as six pips under the heat bar, the sixth
@@ -117,9 +116,10 @@ defeat when every machine is wrecked. There is no round limit.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
   read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
   the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
-- **Maverick's Playbook** (the Giant Petrel's passive, not built): while it fights, the team's rerolls
-  unspent at the round's end are banked, up to three, and spent in a later round like any
-  reroll.
+- **Maverick's Playbook** (the Giant Petrel's passive): the team's rerolls unspent as the
+  player's turn ends are banked, up to three, and come back at the next round's start beside
+  its three, spent like any reroll; a roar's cost comes off the whole. It banks while the
+  Giant Petrel fights: wrecked by the next round's start, it carries nothing.
 - **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
   vent or a buff onto a machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
   nothing; an unspent die is lost.
@@ -196,7 +196,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
-- **Holding the die** shows the entry showing, alone, its marks as text: its place and name,
+- **Tapping a die** opens its readout, the entry showing alone, its marks as text: its place and name,
   what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
   codex, then a line a mark: its number as the die prints it, its heat, its target, then its
   keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a
@@ -204,13 +204,28 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   component's own is coloured, green where the change is good for its unit and red where it
   is bad (more heat, a smaller blow), always relative to the unit and never the player, with
   its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
-  and its extra strike each say so. No source is listed. The whole die is in the codex (double-tap the machine). **The keywords list**, in
-  the pause menu and behind the button under the eye, gives every reach, keyword, rule and
-  status the dice and chips print, with its codex line.
+  and its extra strike each say so. No source is listed. A tap on it again closes it, and it
+  is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
+  lands once the double-tap window (0.3 s) has passed with no second tap, the die lit from the
+  touch until it does, so a double-tap only locks and leaves the readouts as they stand; a tap
+  that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die is in
+  the codex (double-tap the machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
+  a foe's move carries (Every Machine, Countdown, Last Act and the rest), with its codex line. Wherever shown text names one of those terms (the holds, the readouts, the codex, the
+  list itself), it reads bold in its colour with its icon before it, and a tap on it opens its
+  entry beside the word, where its own terms open theirs; a tap anywhere else closes it. A term
+  wears one colour on the die, on its chip and in text, its group's: heat's red-orange for
+  fire, heat and what hits harder, the shield's blue for what protects or holds, the enemy's
+  violet for what only a foe does, the red-red for harm (Exposed, a destroyed component), the
+  hull's colour for a price in hull, and ink for a shape, a reach or a rule; never the HUD
+  colour.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
-  heat it would take off makes), and held or dragged anywhere but over an ally, every foe the
+  heat it would take off makes), and read or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
-- **Holding a machine or a foe** shows it the way the die's hold shows an entry: its name;
+- **Tapping a machine or a foe** opens its readout, the way a die's shows an entry, and
+  tapping it again closes it; one readout is open at a time, a tap on another unit or a die
+  moves it, a tap on nothing or ending the turn closes it, and a hold opens it too. It follows the fight
+  while open, translucent over the arrows it draws, a machine's resting on its gauges. It
+  shows its name;
   its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
   has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
   armour and cooling (a foe's armour and attack) as the codex's stats, the base with the change
@@ -226,7 +241,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its active effects, what else it carries between fights (a module, a battle's reward, a
   status the battle keeps), each named with its source; then its die in one column, each
   component a row (its tile, its name, its type as its icon shows it, Weapon, Shield, Vent, or
-  Equipment for a buff or a debuff, and its tags, then the hold's marks joined into three
+  Equipment for a buff or a debuff, and its tags, then the readout's marks joined into three
   lines: its number, heat and target; its keywords; its own rules and its passive's), at the
   component's own numbers; a foe's moves the same way, at its own numbers, its last act
   last; then its lore and its quote.
@@ -337,8 +352,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
   A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
   front stands exposed to Direct fire). On the screen: drag the die to the first target and
-  drop it; the second targets light; tap one to spend it; a hold reads as ever; drag the die
-  again to move it or set it back.
+  drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
+  again to move it or set it back. A tap on the ground sets it back too, the die flying home,
+  once no readout is open: the first such tap closes the open readout.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak after the blow (Flak 2: two stacks), so the blow that lays it never
   feeds on it and a later strike of the same spend does.
@@ -386,17 +402,22 @@ the stacks being the limit, and the fight's last blow rolls nothing. **The pull*
 Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, and a foe
 standing there takes them now, in laid order; spent on an empty slot, it gathers them there. **The drone**
 (the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone; if it already carries Exposed (read
-before the drone lands) the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid, not built):
-spent on itself, the team gains a reroll; spent on an ally whose die is spent, three rerolls
-are paid, the ally's die rolls again and it acts again. **The Spindrift Salvo** (the Giant Petrel's,
-not built): a kill by its shot gives the team two rerolls. **The Reheat Uplink** (the Giant Petrel's,
-not built): the ally gains Overcharged 2 and its die rolls again, which does nothing on a
-spent die. **Spillover** (the Wild
+before the drone lands) the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid):
+spent on itself, the team gains a reroll (Rallied); spent on an ally whose die is spent, which
+it may land on only while the team holds the price, three rerolls are paid, banked or fresh,
+and the ally's die rolls again by Rapid's path, never onto the entry it showed, and it acts
+again, while the Booster's own Rapid gives the Petrel its turn back. **The Spindrift Salvo** (the
+Giant Petrel's): a spend of it that kills gives the team two rerolls this round, once however
+many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies only): the ally
+gains Overcharged 2 and its die rolls again, never onto the entry showing; a spent die rolls
+nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
+foe, its own machine gains Regenerating, the shield it prints at the start of each of the
+rounds it prints after this one. **Spillover** (the Wild
 Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
 spent; the engine runs it as a keyword the passive grants written out, so each of the Boar's
-weapons wears the star, the hold reading the passive's line, and no keyword chip.
+weapons wears the star, the die's readout reading the passive's line, and no keyword chip.
 
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
@@ -456,8 +477,9 @@ On a machine:
 - **Regenerating** (buff, on either side): a foe's, from its own special, regrows its value in HP
   at each of its next three actions, after its Burning and Vitriol have ticked (a suppressed
   foe's included), so a foe its tick kills regrows nothing; each grant keeps its own clock. A
-  machine's (the Storm Petrel's St. Elmo's Regenerator, not built): 2 shield at the start of each
-  round for three rounds; it stacks, each grant keeping its own end.
+  machine's (the Storm Petrel's St. Elmo's Regenerator): 2 shield at the start of each of the
+  next three rounds, up to its maximum; it stacks, each grant keeping its own end, and a die
+  entry bought it, so an enemy's purge takes it.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
   the round's end. Never granted to every ally at once. The Blast Door grants it, self or ally.
@@ -587,6 +609,16 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
+- **The Riot Field Generator** (the Storm Petrel's passive): its weapons' heat comes off its
+  shield as they are spent, every point a spend adds (a Scorched machine's extra included)
+  taken from the shield as it stands, overshield included, and only what the shield cannot
+  pay reaching the gauge; equipment heats the gauge as ever. After the weapon's strikes, its
+  target takes a blow of what the shield paid (the zap): plain, no keyword and no Shock read,
+  through what the foe takes and its armour, and lost if the strikes killed it. And while its
+  shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
+  meets. The die shows the shield a weapon will take in its heat slot's place, behind the
+  shield's mark ("-3"), with the heat past it beside, and over a foe the blow joined to its
+  zap ("3+2"), each with the foe's armour off.
 - **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and
@@ -845,18 +877,17 @@ a stat.
   turn with the lead's first, every member's strength at the ramp's density (×1 at
   Convergence 0 to ×1.5 at 12, rounded, never below one).
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
-  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go,
-  then it may fight; a fight ends the action however it ends. A selected machine lights
-  the hexes its move reaches, and in red the hexes past them within its attack range: where it
-  could attack from. A move is planned: its route shows from where the machine stands, and the
-  next move or order reads from the route's end. UNDO takes back the last move or order,
-  whoever made it, in the order they were made, back to the turn's start or the last fight.
-  A caught machine's fight comes first. ENGAGE and END TURN play every planned move first (the
-  boss's fight aside, below);
-  then the fight opens, or the turn ends: packs walk and strike; machines that did not fight
-  regain shield at their field rate; Rift Pressure rises one. Once every machine has fought,
-  is ordered, is caught, or can neither move nor reach a pack where it stands, the button
-  pulses.
+  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go, then
+  it may fight; a fight ends the action however it ends. A selected machine lights the hexes
+  its move reaches, and in the enemy's violet the hexes past them within its attack range:
+  where it could attack from. A move is planned: its route shows from where the machine stands,
+  and the next move or order reads from the route's end. UNDO takes back the last move or
+  order, whoever made it, in the order they were made, back to the turn's start or the last
+  fight. A caught machine's fight comes first. ENGAGE and END TURN play every planned move
+  first (the boss's fight aside, below); then the fight opens, or the turn ends: packs walk and
+  strike; machines that did not fight regain shield at their field rate; Rift Pressure rises
+  one. Once every machine has fought, is ordered, is caught, or can neither move nor reach a
+  pack where it stands, the button pulses.
 - **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's shield and hull as
   gauges, its move and actions left, a chip for its damaged components; a pack's members (each foe

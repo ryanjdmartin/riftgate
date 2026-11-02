@@ -3,10 +3,13 @@ extends SceneTree
 ## Renders one chassis model large through the game's own 3D view and saves a PNG, for
 ## judging polish and manner at a size the codex cannot show. Needs a window.
 ##   godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png [front|rear|<yaw degrees>] [width height]
-## Rendered bare, without the display's outline (RIFTGATE_OUTLINE_KEEP=1 keeps it).
+## Rendered bare: the display's outline is the battle map's alone (Ryan, 30 September).
 ## RIFTGATE_FIT="1:lance,4:blazethrower" hangs components' silhouette classes on the mounts in
 ## place of the stock parts ("2:" bares a socket), to judge a swap; a class on its own is
-## a model too: <chassis> shapes/barrel_minerva.
+## a model too: <chassis> shapes/barrel_minerva. RIFTGATE_FIT=stock wears what the game puts on
+## a fresh machine (MechView3D.plan_for): the stock in content against what the model's pins
+## were built carrying, so a stale part shows as its class shape. RIFTGATE_FORM=<name> renders
+## the model holding that form (the Armadillo's "sealed"), turned all the way in.
 
 var _frames := 0
 var _view: MechView3D
@@ -32,12 +35,17 @@ func _init() -> void:
 		frame = Vector2i(int(args[4]), int(args[5]))
 	var plan: Array = []
 	var fit := OS.get_environment("RIFTGATE_FIT")
-	if not fit.is_empty():
+	if fit == "stock":
+		var db := ContentDB.load_default()
+		plan = MechView3D.plan_for(db.make_mech(chassis), db) if db.chassis.has(chassis) else []
+	elif not fit.is_empty():
 		plan = MechView3D.plan_from_spec(fit, ContentDB.load_default())
 	_view = MechView3D.make(chassis, maker, "clean", "badger", yaw, frame, false, {}, plan)
-	if OS.get_environment("RIFTGATE_OUTLINE_KEEP") != "1":
-		_view.strip_silhouette()   # the viewer's renders show the machine bare (Ryan, 30 September); RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge
 	root.add_child(_view)
+	var form := OS.get_environment("RIFTGATE_FORM")
+	if not form.is_empty():
+		_view.rig.set_form(form, true)
+		_view.rig.tick(2.0)
 	process_frame.connect(_tick)
 
 

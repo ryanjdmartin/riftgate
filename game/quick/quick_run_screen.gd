@@ -477,8 +477,8 @@ class _SquadRow extends Control:
 		var ink := Palette.MUTED if wreck else Palette.INK
 		draw_string(Hud.display_bold(), Vector2(0, 24), unit.display_name.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 250, 22, ink)
 		if wreck:
-			draw_string(Hud.mono(), Vector2(0, 48), "WRECKED: OUT UNTIL THE BOSS FALLS", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.ENEMY)
-			draw_line(Vector2(0, 16), Vector2(250, 16), Palette.ENEMY, 2.0)
+			draw_string(Hud.mono(), Vector2(0, 48), "WRECKED: OUT UNTIL THE BOSS FALLS", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.LOSS)
+			draw_line(Vector2(0, 16), Vector2(250, 16), Palette.LOSS, 2.0)
 			return
 		var x := 260.0
 		var w := size.x - x - 8.0
@@ -619,7 +619,7 @@ func _reward_card(item: Dictionary, index: int) -> Control:
 			var u := _db.make_mech(id)
 			box.add_child(Hud.label(_plate(id), 14, Palette.MUTED, Hud.mono()))
 			if not u.passive.is_empty():
-				var pl := Hud.label("%s: %s" % [str(u.passive.get("name", "")).to_upper(), str(u.passive.get("description", ""))], 17, Palette.ACCENT)
+				var pl := Hud.label("%s: %s" % [str(u.passive.get("name", "")).to_upper(), str(u.passive.get("description", ""))], 17, Palette.INK)
 				pl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 				box.add_child(pl)
 			box.add_child(_face_list(u.die.faces, _labels(u.die.faces)))
@@ -693,7 +693,7 @@ func _machine_panel(u: Unit, picked: bool) -> HudPanel:
 	box.add_child(Hud.label(u.display_name.to_upper(), 26, Palette.INK, Hud.display_bold()))
 	box.add_child(Hud.label(_plate(u.chassis_id), 14, Palette.MUTED, Hud.mono()))
 	if not u.passive.is_empty():
-		var pl := Hud.label("%s: %s" % [str(u.passive.get("name", "")).to_upper(), str(u.passive.get("description", ""))], 17, Palette.ACCENT)
+		var pl := Hud.label("%s: %s" % [str(u.passive.get("name", "")).to_upper(), str(u.passive.get("description", ""))], 17, Palette.INK)
 		pl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		box.add_child(pl)
 	box.add_child(_face_list(u.die.faces, _labels(u.die.faces)))

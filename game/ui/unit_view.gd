@@ -56,6 +56,19 @@ var used_override := Rect2()      # the drawing's extent inside the sprite, when
 var breathe: bool = false         # a slow vertical bob from the feet: a painted foe alive
 var flip_h: bool = false          # mirror the sprite, so an enemy painted facing right faces left
 var breathe_phase: float = 0.0
+## Standing on the skirmish's floor (29 October, the field). A foe's drawing stands with its
+## feet on `feet_y` rather than centred, so sprites of every height share their rank's ground,
+## and `hover` lifts what flies off it; a machine's view is drawn at `sprite_at`, the window of
+## the floor's own camera it was rendered for. The shadow lies on the floor at `ground_at`
+## (under the feet when unset), flattened by the floor's perspective there.
+var ground_shadow: bool = false
+var feet_y := -1.0                # the drawing's lowest pixel stands on this line; negative centres it as before
+var hover := 0.0                  # how far above its feet line a flyer's drawing floats
+var sprite_at := Rect2()          # the frame drawn here, unscaled, when set (a machine's view on the floor)
+var ground_at := Vector2(-1.0, -1.0)   # the shadow's centre when set; otherwise under the drawing's feet
+var shadow_rx := 0.0              # the shadow's half-width when set; otherwise from the drawing
+var shadow_ratio := 0.22          # the shadow's height over its width: the floor's foreshortening where it lies
+var empty_pad: bool = false       # an empty slot drawn as a place on the floor rather than a panel
 var _shatter: float = -1.0        # seconds since the shield broke on this unit; negative when idle
 const SHATTER_SECONDS := 0.55
 var _acquire: float = -1.0        # seconds since the display locked onto this unit's intent; negative when idle
@@ -102,6 +115,8 @@ func _boxes_step() -> float:
 func _scale() -> float:
 	if sprite == null:
 		return 1.0
+	if sprite_at.size.x > 0.0:
+		return sprite_at.size.x / maxf(1.0, _sprite_size().x)
 	var top := _bars_height() + 2.0
 	var avail := size.y - top - STATUS_H
 	var ts := _sprite_size()
@@ -150,9 +165,15 @@ func _silhouette() -> Rect2:
 	var top := (_bars_height() + 2.0) if sprite != null else size.y * 0.12 + _bars_height()
 	var avail := size.y - top - STATUS_H
 	if sprite != null:
+		if sprite_at.size.x > 0.0:
+			return sprite_at
 		var s := _scale()
 		var ts := _sprite_size() * s
 		var used := _used()
+		if feet_y >= 0.0:
+			# On the floor: the drawing's lowest pixel on the feet line (less a flyer's lift), so
+			# a short sprite and a tall one stand on the same ground.
+			return Rect2(Vector2(floorf((size.x - ts.x) * 0.5), floorf(feet_y - hover - used.end.y * s)), ts)
 		# Centre the drawing, not the frame: shift by the frame's own transparent margins.
 		var margin_top := used.position.y * s
 		var margin_bottom := (_sprite_size().y - used.end.y) * s
@@ -161,6 +182,17 @@ func _silhouette() -> Rect2:
 	var w := size.x * 0.46
 	var h := minf(avail, size.y * (0.78 if massive else 0.62))
 	return Rect2(Vector2((size.x - w) * 0.5, top + (avail - h) * 0.5), Vector2(w, h))
+
+
+## The top of what the view draws over the drawing (its gauges, or the drawing itself), in its
+## own space: where a readout over the unit rests.
+func drawn_top() -> float:
+	var vis := _visible()
+	if bars.is_empty() or dead:
+		return vis.position.y
+	if bars_above:
+		return vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _boxes_step()
+	return vis.position.y - FLOAT_LIFT
 
 
 ## The opaque part of the drawing on screen: what gauges and chips hug.
@@ -318,7 +350,7 @@ func _draw_glitched(frame: Rect2) -> void:
 		if drop:
 			mod = Color(1, 1, 1, 0.12 + 0.18 * Hud.noise(tick + k * 0.5))
 		elif Hud.noise(tick * 3.3 + k * 0.17) > 0.8:
-			mod = Color(1.5, 0.55, 0.55)
+			mod = Color(1.3, 0.6, 1.6)   # a slice in the enemy's violet (30 October; it was red)
 		draw_texture_rect_region(sprite, dst, src, mod)
 	if drop:
 		var r := frame.abs()
@@ -383,31 +415,42 @@ func _draw() -> void:
 	var mono := Hud.mono()
 	var sil := _silhouette()
 	var vis := _visible()
+	if sprite != null and ground_shadow:
+		var foot := ground_at if ground_at.x >= 0.0 else Vector2(vis.get_center().x, vis.end.y + hover - 1.0)
+		var rx := shadow_rx if shadow_rx > 0.0 else vis.size.x * (0.4 if hover > 0.0 else 0.5)
+		_draw_shadow(foot, rx, 0.2 if dead else (0.28 if hover > 0.0 else 0.42))
 	if sprite != null:
-		var frame := sil
-		if breathe and not dead:
-			# A 2% rise from the feet and a small lean, slow and out of phase between foes: enough
-			# to be seen as deliberate, not enough to animate a painted sprite.
-			# Each foe at its own rate as well as its own phase, so neighbours drift apart
-			# instead of falling into step (Ryan, 23 September; and a touch less of it).
-			var rate := 1.35 + 0.5 * Hud.noise(breathe_phase * 0.37 + 0.11)
-			var k := 1.0 + 0.022 * sin(_t * rate + breathe_phase)
-			var lean := 0.007 * sil.size.x * sin(_t * rate * 0.55 + breathe_phase * 0.7)
-			frame = Rect2(Vector2(sil.position.x + lean, sil.end.y - sil.size.y * k), Vector2(sil.size.x, sil.size.y * k))
+		var breath := breath_frame()
+		var frame: Rect2 = breath[0]
 		if flip_h:
 			frame = Rect2(Vector2(frame.end.x, frame.position.y), Vector2(-frame.size.x, frame.size.y))
 		if _glitch >= 0.0 and not dead:
 			_draw_glitched(frame)
 		else:
+			var lean: Transform2D = breath[1]
+			if lean != Transform2D.IDENTITY:
+				draw_set_transform_matrix(lean)
 			draw_texture_rect(sprite, frame, false, Color(0.3, 0.3, 0.3) if dead else (Color(1, 1, 1, 0.22) if away else Color.WHITE))
+			if lean != Transform2D.IDENTITY:
+				draw_set_transform_matrix(Transform2D.IDENTITY)
 		if away and not dead:
-			_draw_dashed(sil.grow(4.0), Palette.ENEMY, 3.0)
+			_draw_dashed(vis.grow(6.0), Palette.ENEMY, 3.0)   # round the drawing itself: the field's views are wider than their machines
+	elif empty_pad:
+		# A place on the floor: a shadow with a dashed rim where a foe would stand.
+		var foot := Vector2(size.x * 0.5, feet_y if feet_y >= 0.0 else sil.end.y - 6.0)
+		var rx := size.x * 0.36
+		_draw_shadow(foot, rx, 0.3)
+		for k in range(16):
+			if k % 2 == 0:
+				var a0 := TAU * float(k) / 16.0
+				var a1 := TAU * float(k + 1) / 16.0
+				draw_line(foot + Vector2(cos(a0) * rx, sin(a0) * rx * shadow_ratio), foot + Vector2(cos(a1) * rx, sin(a1) * rx * shadow_ratio), Color(0, 0, 0, 0.5), 2.0)
 	else:
-		var edge := Color(Palette.ENEMY_DIM if dead else hud, 0.4)
+		var edge := Color(Palette.LOSS_DIM if dead else hud, 0.4)
 		Hud.box(self, sil, 10.0, Color(Palette.PANEL_RAISED, 0.9), edge, 1.0)
 	if dead:
-		draw_line(vis.position, vis.end, Palette.ENEMY_DIM, 2.0)
-		draw_line(Vector2(vis.position.x, vis.end.y), Vector2(vis.end.x, vis.position.y), Palette.ENEMY_DIM, 2.0)
+		draw_line(vis.position, vis.end, Palette.LOSS_DIM, 2.0)
+		draw_line(Vector2(vis.position.x, vis.end.y), Vector2(vis.end.x, vis.position.y), Palette.LOSS_DIM, 2.0)
 	if mined and sprite == null:
 		_draw_dashed(sil.grow(5.0), Palette.HEAT, 3.0)
 	if highlight:
@@ -518,6 +561,35 @@ func _draw() -> void:
 			Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(col, 1.0 - acq * 0.7), 1.5)
 		x += widths[i] + 6.0
 	_draw_spend(mono)
+
+
+## The drawing's frame this moment and its lean, a shear about the feet line (a Transform2D
+## to draw it through): a 2% rise from
+## the feet and a small lean, slow and out of phase between foes, enough to be seen as
+## deliberate and not enough to animate a painted sprite. Planted (Ryan, 29 October): the rise
+## scales from the drawing's feet and the lean shears about them, so the feet never slide or
+## lift off the floor. Each foe at its own rate as well as its own phase, so neighbours drift
+## apart instead of falling into step (Ryan, 23 September; and a touch less of it).
+func breath_frame() -> Array:
+	var sil := _silhouette()
+	if not breathe or dead or sprite == null:
+		return [sil, Transform2D.IDENTITY]
+	var vis := _visible()
+	var rate := 1.35 + 0.5 * Hud.noise(breathe_phase * 0.37 + 0.11)
+	var k := 1.0 + 0.022 * sin(_t * rate + breathe_phase)
+	var lean := 0.007 * sil.size.x * sin(_t * rate * 0.55 + breathe_phase * 0.7)
+	var frame := Rect2(Vector2(sil.position.x, vis.end.y - (vis.end.y - sil.position.y) * k), Vector2(sil.size.x, sil.size.y * k))
+	var shear := lean / maxf(1.0, vis.size.y)   # x moves by shear * (feet - y): the top by the lean, the feet not at all
+	return [frame, Transform2D(Vector2(1.0, 0.0), Vector2(-shear, 1.0), Vector2(shear * vis.end.y, 0.0))]
+
+
+## A shadow lying on the floor, centred on `foot`, flattened by the floor's perspective there.
+func _draw_shadow(foot: Vector2, rx: float, alpha: float) -> void:
+	var ry := maxf(2.5, rx * shadow_ratio)
+	draw_set_transform(foot, 0.0, Vector2(1.0, ry / rx))
+	draw_circle(Vector2.ZERO, rx, Color(0, 0, 0, alpha * 0.55))
+	draw_circle(Vector2.ZERO, rx * 0.72, Color(0, 0, 0, alpha * 0.6))
+	draw_set_transform_matrix(Transform2D.IDENTITY)
 
 
 ## A rect drawn in dashes (a mined slot's outline, a preview chip's edge): structure, so it never

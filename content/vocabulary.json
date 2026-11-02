@@ -63,7 +63,7 @@
    "id": "reroll",
    "category": "resource",
    "name": "Reroll",
-   "codex": "Three rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds.",
+   "codex": "Three rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds, unless a Giant Petrel fights: its Maverick's Playbook banks up to three left unspent as your turn ends, for the next round.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -313,7 +313,7 @@
    "id": "swap",
    "category": "keyword",
    "name": "Swap",
-   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it or set it back.",
+   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1495,6 +1495,46 @@
    }
   },
   {
+   "id": "regenerates",
+   "category": "component_property",
+   "name": "Regenerates",
+   "codex": "A rule printed on a component (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a foe, its own machine gains Regenerating, the shield it says at the start of each of the rounds it says after this one, a grant of its own each time.",
+   "status": "implemented",
+   "design": {
+    "holes": "Self only and never Rapid: the die is its brake (Ryan, 19 October)."
+   }
+  },
+  {
+   "id": "ally_action",
+   "category": "component_property",
+   "name": "An ally's action",
+   "codex": "A rule printed on a buff (the Giant Petrel's Immelmann Booster): spent on an ally whose die is spent, the team pays the rerolls it says, banked or fresh, and the ally's die rolls again, never onto the entry it showed, and it acts again. Spent on its own machine it grants what it says.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its price is the lever if it reads as Rapid embodied in a machine (the bible's Kestrel row); the order is the play, the ally spending first."
+   }
+  },
+  {
+   "id": "rolls_target",
+   "category": "component_property",
+   "name": "Rolls its die",
+   "codex": "A rule printed on a buff (the Giant Petrel's Reheat Uplink): the die of the machine it lands on rolls again, never onto the entry showing. A die already spent rolls nothing.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "kill_rerolls",
+   "category": "component_property",
+   "name": "Rerolls a kill",
+   "codex": "A rule printed on a weapon (the Giant Petrel's Spindrift Salvo): if its spend kills, the team gains the rerolls it says this round, once however many fell.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
    "id": "component",
    "category": "kit",
    "name": "Component",
@@ -2020,15 +2060,15 @@
    "id": "regenerating",
    "category": "status",
    "name": "Regenerating",
-   "codex": "Status, from a foe's own move. It regrows its value in HP at each of its next three actions, after its Burning and Vitriol have ticked, so a burn is a race and never a wall. Each grant keeps its own clock.",
+   "codex": "Status, on either side. A foe's, from its own move: it regrows its value in HP at each of its next three actions, after its Burning and Vitriol have ticked, so a burn is a race and never a wall. A machine's, from the Storm Petrel's St. Elmo's Regenerator: it regains its value in shield at the start of each of the next three rounds, up to its maximum. Each grant keeps its own clock, so two add until the first runs out.",
    "status": "implemented",
    "design": {
-    "holes": "The machine half, the Storm Petrel's, is planned until the engine has a round-start shield on a timed status and the rider on a weapon's own spender: it regains 2 shield at the start of each round for three rounds, each grant its own clock, so two grants regain 4 a round until the first runs out. The numbers are placeholders.",
+    "holes": "The machine half, the Storm Petrel's, built 30 October: a timed grant of its own each spend, the shield at each round's start after it, bought by a die entry so a foe's purge takes it. The numbers are placeholders.",
     "table": {
      "kind": "buff",
      "on": "both",
      "stacks": "Yes: each grant its own clock",
-     "lasts": "A foe's three of its actions; a machine's three rounds from its grant (planned)"
+     "lasts": "A foe's three of its actions; a machine's three rounds from its grant"
     }
    }
   },

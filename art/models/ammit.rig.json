@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/ammit.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/ammit.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "hip_l": {
    "axis": "pitch",
@@ -79435,5 +79435,11 @@
   "eye_strip",
   "pilot_flame",
   "throat_slot"
- ]
+ ],
+ "pins": {
+  "hp_1": "plasma_arquebus",
+  "hp_2": "blazethrower",
+  "hp_3": "oblation_ward",
+  "hp_4": ""
+ }
 }

@@ -20,11 +20,11 @@ const FADE_IN := 0.1
 const FADE_OUT := 0.18
 const DROP := 6.0     # design pixels the plaque settles down from as it fades in
 
-const WHITE := Color("f8f8f8")
-const DARK := Color("101030")
-const BLUE_TOP := Color("2444a8")
-const BLUE_BOTTOM := Color("0a1448")
-const SHADOW := Color("101030")
+static var WHITE := Color("f8f8f8")
+static var DARK := Color("101030")
+static var BLUE_TOP := Color("2444a8")
+static var BLUE_BOTTOM := Color("0a1448")
+static var SHADOW := Color("101030")
 
 ## The pixel face: 7 rows of 5, '#' lit. Uppercase only; a character it lacks is a space.
 const FONT := {

@@ -1,10 +1,13 @@
-# Brief: the Onryō and its Grudge (proposal reworked into a direction)
+# Brief: the Onryō and its curse (proposal reworked into a direction)
 
 The session settles what the Onryō's curse does, now that the flat on-hit is Flak's (19
 October) and a damage over time at the foe's action Burning's, and what lays it.
 
 **Status**: direction (14 October); in session since 15 October (Claude's first round and its
 review, below; Ryan has answered none of it, and Flak took the round's curse on 19 October).
+Ryan, 31 October: "Onryo will not land on Grudge for its effect. That was a working term based
+on the mythology, not for a machine." Grudge below is that working term; the effect takes a word
+of its own (the slate's Pilgrim carries a foe's Grudge, a blow growing with the team's kills).
 **Maker**: the Arsenal. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; "The
 design as proposed" below, with Ryan's calls and the Pall in full; `docs/roster_analysis.md`
 section 4 (its rating); the bible's rows on retaliation and thorns, and on damage redirection

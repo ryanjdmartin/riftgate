@@ -1326,11 +1326,20 @@ function renderModels(main) {
   }
   main.append(under);
 }
-// What each mount carries in the stock kit, by the game's rule (MechView3D.mount_plan): the
-// shaped components of the loadout take the mounts in the die's order; armour and vents
-// take none; a mount past them is bare.
-function stockOnMounts(entry) {
-  const comps = ctx().comps;
+// What each mount's stock part is: the sidecar's record of what each pin was built carrying,
+// as the game reads it (MechView3D.pin_record; null a bare mount); else, by the game's rule
+// for a model without one, the shaped components of the loadout in the die's order, armour
+// and vents taking none and a mount past them bare.
+function stockOnMounts(entry, side) {
+  const comps = ctx().comps, rec = side && side.pins;
+  if (rec && typeof rec === "object" && !Array.isArray(rec)) {
+    const out = [];
+    for (const [k, id] of Object.entries(rec)) {
+      const n = Number(String(k).replace(/^hp_/, ""));
+      if (n >= 1) out[n - 1] = id ? ((comps.get(id) || {}).entry || {name: id}) : null;
+    }
+    return out;
+  }
   return (entry.loadout || []).slice(0, Number(entry.hardpoints || 0)).map(id => (comps.get(id) || {}).entry).filter(c => c && c.shape && c.shape !== "none");
 }
 const actWords = (n) => String(n).replace(/_/g, " ");
@@ -1338,7 +1347,7 @@ const actWords = (n) => String(n).replace(/_/g, " ");
 // only moves the scrubber otherwise, so dragging it never loses the handle.
 function paintMotion(force) {
   const st = MOTION.stage, rig = st.rig, panel = MOTION.panel;
-  const key = [MOTION.id, st.id, st.mode, st.loop, st.playing, st.speedK, rig ? rig.acts.length : -1, rig && rig.current ? rig.current.name : "", JSON.stringify(st.fits || {})].join("|");
+  const key = [MOTION.id, st.id, st.mode, st.loop, st.playing, st.speedK, rig ? rig.actSet().map(a => a.name).join(",") : "-", rig && rig.current ? rig.current.name : "", JSON.stringify(st.fits || {}), JSON.stringify(rig ? rig.formOn || {} : {})].join("|");
   if (!force && key === MOTION.key) {
     const r = $("#mo-scrub"), o = $("#mo-scrub-out");
     if (r && rig && rig.current) { if (document.activeElement !== r) r.value = String(rig.t); o.textContent = `${rig.t.toFixed(2)} s of ${rig.current.duration}`; }
@@ -1360,11 +1369,15 @@ function paintMotion(force) {
     speed));
   if (!rig) { panel.append(el("p", {class: "mhelp"}, "Loading…")); return; }
   if (st.mode === "acts") {
+    // The acts it may play now: a held form's own while it holds (the sealed Armadillo's), none while one turns.
+    const set = rig.actSet(), own = Object.keys(rig.forms || {}).find(n => rig.formHeld(n) && rig.forms[n].acts.length);
+    const turning = Object.keys(rig.forms || {}).some(n => rig.formHeld(n) ? rig.formT[n] < rig.forms[n].duration : rig.formT[n] > 0);
     const acts = el("div", {class: "acts"});
     acts.append(el("button", {class: "fchip", id: "mo-act-all", "aria-pressed": String(!st.loop), onclick: () => st.setLoop("")}, "All, in turn"));
-    for (const a of rig.acts) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name),
+    for (const a of set) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name),
       title: a.places && a.places.length ? "Plays on the " + a.places.join(" and the ") + " only" : ""}, actWords(a.name), a.places && a.places.length ? el("span", {class: "n"}, a.places.join("/")) : null));
-    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, rig.acts.length ? `Acts · ${rig.acts.length}` : "Acts"), rig.acts.length ? acts : el("p", {class: "mhelp"}, "This machine has no acts yet.")));
+    const label = set.length ? `Acts${own ? " · " + actWords(own) : ""} · ${set.length}` : "Acts";
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, label), set.length ? acts : el("p", {class: "mhelp"}, turning ? "The form is turning…" : "This machine has no acts yet.")));
     if (rig.current) {
       const r = el("input", {type: "range", id: "mo-scrub", min: "0", max: String(rig.current.duration), step: "0.01", value: String(rig.t), "aria-label": "Time into " + actWords(rig.current.name)});
       r.addEventListener("input", () => { st.playing = false; st.seek(Number(r.value)); });
@@ -1374,6 +1387,14 @@ function paintMotion(force) {
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
       el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
       el("button", {class: "btn", id: "mo-shot", onclick: () => st.strike(true)}, "Shot"))));
+  }
+  // A form is a pose held while the machine carries the status of its name (the Armadillo's
+  // seal); held here as the status would hold it, in any mode.
+  const formNames = Object.keys(rig.forms || {});
+  if (formNames.length) {
+    const fg = el("div", {class: "acts"});
+    for (const name of formNames) fg.append(el("button", {class: "fchip", id: "mo-form-" + safeId(name), "aria-pressed": String(rig.formHeld(name)), onclick: () => st.setForm(name, !rig.formHeld(name))}, actWords(name)));
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Forms"), fg, el("p", {class: "mhelp"}, "Held while the machine carries the status of its name, as in the game; tap to hold it or let it go. While one is held it plays the form's own acts, from its held pose.")));
   }
   // A machine with gait options (b.gait_option) walks by any of them here, to judge beside its own.
   const options = Object.keys(rig.gaitOptions || {});
@@ -1386,7 +1407,7 @@ function paintMotion(force) {
   // The mounts: each takes its stock part, nothing, or any class in any maker's metal.
   const pinsHere = (state.pins && state.pins[MOTION.id]) || [];
   if (pinsHere.length && state.shapes) {
-    const stock = stockOnMounts(entry), fits = st.fits || {};
+    const stock = stockOnMounts(entry, st.side), fits = st.fits || {};
     const grid = el("div", {class: "mounts"});
     for (const n of pinsHere) {
       const sel = el("select", {id: "mo-fit-" + n, "aria-label": "Mount " + n});

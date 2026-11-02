@@ -14,8 +14,21 @@ extends RefCounted
 ## colour sits on the compositor's posterize grid (six levels a channel, bleed.gdshader), so
 ## what is drawn is what the map shows, and was picked by the three colourblind simulations
 ## against the HUD options, the enemy red and the rift's violets on the ground it is drawn on
-## (docs/measurements.md, 30 October). RIFTGATE_BLEED_DEBUG=1 gives the whole field to the
+## (docs/measurements.md, 30 October). The fight's backdrop keeps its palettes here too (BACKDROPS),
+## its water the map's liquid (LIQUIDS), so a domain's colours change in one place. RIFTGATE_BLEED_DEBUG=1 gives the whole field to the
 ## painted world (Bleed.gradient), and tools/tileset_shot.gd draws every tileset side by side.
+
+## Each domain's liquid, written once for the map's water and the fight's lake (30 October: the
+## fight's lava had stayed the yellow-orange Ryan called acid after the map's went orange-red, and
+## its Marsh kept a poison purple on the rift's violet): body, the rim at its edge, the deep under
+## it and two glints, every colour on the posterize grid. The Peak's lava is orange-red, its crust
+## the deep and the rim, its glints the hot light that runs through the fissures and the vents.
+const LIQUIDS := {
+	"plains": {"body": "3366ff", "rim": "ccffff", "deep": "3366cc", "glints": ["ccffff", "ffffff"]},
+	"sand": {"body": "339999", "rim": "66cccc", "deep": "336666", "glints": ["66cccc", "ccffff"]},
+	"marsh": {"body": "003333", "rim": "336666", "deep": "000000", "glints": ["336666", "669999"]},
+	"lava": {"body": "ff6600", "rim": "990000", "deep": "330000", "glints": ["ff9900", "ffcc00"]},
+}
 
 ## Each domain's tileset, by its bleed:
 ##   ground, grounds: the domain's ground, and each ground's own tone of it (two steps at
@@ -31,11 +44,11 @@ extends RefCounted
 const TILESETS := {
 	"plains": {
 		"ground": "339933",
-		"grounds": {BattleMap.Terrain.ROAD: "669933", BattleMap.Terrain.ROUGH: "336633", BattleMap.Terrain.RUINS: "669966", BattleMap.Terrain.WATER: "3366ff"},
+		"grounds": {BattleMap.Terrain.ROAD: "669933", BattleMap.Terrain.ROUGH: "336633", BattleMap.Terrain.RUINS: "669966", BattleMap.Terrain.WATER: LIQUIDS.plains.body},
 		"grid": "003300",
 		"specks": ["336633", "66cc66"],
 		"road": ["996633", "cc9966"],
-		"rim": "ccffff",
+		"rim": LIQUIDS.plains.rim,
 		"ripples": ["ripple", "ripple", "glint"],
 		"plain": [["tuft", 3], ["tuft_small", 3], ["bloom", 2], ["bloom_y", 2]],
 		"rough": [["tree", 5], ["tree_small", 3]],
@@ -46,11 +59,11 @@ const TILESETS := {
 	},
 	"sand": {
 		"ground": "cc9966",
-		"grounds": {BattleMap.Terrain.ROAD: "cc9933", BattleMap.Terrain.ROUGH: "669933", BattleMap.Terrain.RUINS: "ffcc99", BattleMap.Terrain.WATER: "339999"},
+		"grounds": {BattleMap.Terrain.ROAD: "cc9933", BattleMap.Terrain.ROUGH: "669933", BattleMap.Terrain.RUINS: "ffcc99", BattleMap.Terrain.WATER: LIQUIDS.sand.body},
 		"grid": "663300",
 		"specks": ["996633", "ffcc99"],
 		"road": ["996633", "ffcc99"],
-		"rim": "66cccc",
+		"rim": LIQUIDS.sand.rim,
 		"ripples": ["ripple", "ripple", "glint"],
 		"plain": [["dune", 2, 0.7], ["rock", 1, 0.5], ["pebble", 3]],
 		"rough": [["saguaro", 3], ["saguaro_small", 2], ["barrel", 2], ["shrub", 1]],
@@ -61,12 +74,12 @@ const TILESETS := {
 	},
 	"marsh": {
 		"ground": "333300",
-		"grounds": {BattleMap.Terrain.ROUGH: "336633", BattleMap.Terrain.RUINS: "333333", BattleMap.Terrain.WATER: "003333"},
+		"grounds": {BattleMap.Terrain.ROUGH: "336633", BattleMap.Terrain.RUINS: "333333", BattleMap.Terrain.WATER: LIQUIDS.marsh.body},
 		"grid": "000000",
 		"specks": ["336633", "000000"],
 		"road": ["333300", "663300"],
 		"road_stone": "stone",
-		"rim": "336666",
+		"rim": LIQUIDS.marsh.rim,
 		"ripples": ["ripple", "lily", "bubble", "ripple", "lily"],
 		"plain": [["pool", 1, 0.7], ["reeds", 2, 0.5], ["grass", 3, 0.6]],
 		"rough": [["deadtree", 2], ["deadtree_b", 2], ["reeds", 1], ["grass", 2]],
@@ -77,11 +90,11 @@ const TILESETS := {
 	},
 	"lava": {
 		"ground": "333333",
-		"grounds": {BattleMap.Terrain.ROUGH: "330000", BattleMap.Terrain.RUINS: "663333", BattleMap.Terrain.WATER: "ff6600"},
+		"grounds": {BattleMap.Terrain.ROUGH: "330000", BattleMap.Terrain.RUINS: "663333", BattleMap.Terrain.WATER: LIQUIDS.lava.body},
 		"grid": "000000",
 		"specks": ["000000", "663333", "666666"],
 		"road": ["000000", "666666"],
-		"rim": "990000",
+		"rim": LIQUIDS.lava.rim,
 		"ripples": ["crust_big", "streak", "crust", "hot", "bubble", "streak"],
 		"plain": [["boulder", 1, 0.4], ["shard", 1, 0.5], ["rock", 1, 0.6], ["pebble", 4]],
 		"rough": [["fissure", 1], ["fissure_b", 1, 0.4], ["vent", 1, 0.6], ["boulder", 1], ["shard", 2], ["rock", 2, 0.6]],
@@ -109,7 +122,91 @@ const INKS := {
 	"plains": {"o": "003300", "1": "003300", "2": "339933", "3": "66cc33", "4": "ccff66", "t": "663300", "s": "336633", "g": "66cc66", "G": "336633", "f": "ffffff", "y": "ffff99", "k": "333300", "w": "ffffcc", "W": "cccc99", "r": "cc9933", "R": "996633", "h": "ffcc66", "d": "663300", "n": "333300", "m": "cc9966", "M": "663300", "S": "ffffff", "Z": "cccccc", "B": "ccffff", "x": "ffffff", "c": "3366cc"},
 	"sand": {"o": "663300", "s": "cc9966", "S": "ffcc99", "D": "996633", "q": "003300", "c": "339933", "C": "66cc66", "e": "336633", "f": "ffff99", "n": "ffffcc", "N": "ffcc99", "K": "cc9966", "B": "ffffff", "b": "cccc99", "k": "333300", "y": "996633", "Y": "663300", "z": "330000", "m": "993300", "M": "663300", "l": "cc9966", "t": "cc9966", "T": "ffcc99", "W": "66cccc", "x": "ccffff", "v": "336666"},
 	"marsh": {"o": "000000", "d": "333333", "m": "666666", "l": "999999", "G": "669933", "g": "336633", "p": "003333", "P": "336666", "t": "663300", "S": "cccccc", "s": "999999", "e": "666666", "B": "ffffff", "b": "cccccc", "w": "ccff99", "W": "ffffcc"},
-	"lava": {"o": "000000", "d": "333333", "m": "666666", "l": "999999", "h": "cccccc", "c": "993300", "L": "ff9900", "H": "ffcc00", "W": "ffff99", "k": "330000", "q": "990000", "g": "ff9900", "y": "ffcc00"},
+	"lava": {"o": "000000", "d": "333333", "m": "666666", "l": "999999", "h": "cccccc", "c": "993300", "L": LIQUIDS.lava.glints[0], "H": LIQUIDS.lava.glints[1], "W": "ffff99", "k": LIQUIDS.lava.deep, "q": LIQUIDS.lava.rim, "g": LIQUIDS.lava.glints[0], "y": LIQUIDS.lava.glints[1]},
+}
+
+## Each domain's backdrop behind the fight (BattleBackdrop), kept beside its tileset so a domain's
+## colours change in one place: sky, top to horizon; floor, far, middle, near; the rest dark to
+## light unless named. Its water is the map's liquid (LIQUIDS), and the Peak's glow and crust
+## are the lava's own. No domain wears the rift's violet, the enemy's register (30 October):
+## the Marsh's sky is a cold night, its pools its bog's water and moss, never the genre's
+## poison purple.
+const BACKDROPS := {
+	"plains": {
+		"sky": ["2b5ec9", "3f78dc", "5c95e8", "86b6f2", "b8d8fa"],
+		"cloud": ["fbfdff", "dce8f6", "a9bfdc"],
+		"far": ["7ea6c6", "98bcd8"],
+		"hill": ["4f8f58", "64a35e", "3d7549"],
+		"floor": ["8ec466", "6aa84c", "4f8c3c"],
+		"stripe": 0.05,
+		"tuft": ["3e7834", "86c25a"],
+		"speck": ["f4f4ee", "f2d850", "f28ca0"],
+		"tree": ["21562d", "2f7036", "47903f", "6cb352"],
+		"trunk": "5c3c24",
+		"rock": ["5e5650", "857a70", "aea294"],
+		"snow": ["bccde6", "eef4fc"],
+		"stone": ["6c6c66", "94948a", "bcbcb0"],
+		"roof": ["7e2a22", "b04234"],
+		"water": [LIQUIDS.plains.deep, LIQUIDS.plains.body] + LIQUIDS.plains.glints,
+		"road": ["9c8052", "bea26c", "d6bc86"],
+	},
+	"sand": {
+		"sky": ["4472c0", "5c8acc", "84a8d4", "b6c6d0", "e4d8b4"],
+		"cloud": ["fff8e8", "eadcc0", "cfbf9e"],
+		"far": ["c8a07e", "dcb894"],
+		"hill": ["d8a860", "eac27a", "b8884a"],
+		"floor": ["e8c47a", "dcb062", "c89a4e"],
+		"stripe": 0.045,
+		"tuft": ["b0843e", "f0d290"],
+		"speck": ["f6f2e6", "8c6a3a", "f6f2e6"],
+		"tree": ["2a6a40", "3a8248", "54a058", "78bc6c"],
+		"trunk": "6e5032",
+		"rock": ["8c4c2c", "b46a3e", "d8925a"],
+		"snow": ["e8c8a0", "f6e2c2"],
+		"stone": ["a07a52", "c8a074", "e6c898"],
+		"roof": ["8c4c2c", "b46a3e"],
+		"water": [LIQUIDS.sand.deep, LIQUIDS.sand.body] + LIQUIDS.sand.glints,
+		"road": ["b48a52", "c89e62", "dab478"],
+	},
+	"marsh": {
+		"sky": ["0e1a1c", "1a2a2c", "2e3e3e", "4e5a58", "7a8478"],
+		"cloud": ["d8dcc8", "a8b0a0", "7c8478"],
+		"far": ["4a4e58", "5c6068"],
+		"hill": ["3a4038", "4c5446", "2e342e"],
+		"floor": ["687458", "55603f", "434d32"],
+		"stripe": 0.05,
+		"tuft": ["38422a", "7a8a56"],
+		"speck": ["ccff99", "c8d0b8", "6e7e4a"],
+		"tree": ["24262a", "33363a", "484c50", "62686a"],
+		"trunk": "2a2a2e",
+		"rock": ["34363a", "4a4c52", "686a70"],
+		"snow": ["8a90a0", "aab0bc"],
+		"stone": ["56585e", "76787e", "9a9ca0"],
+		"roof": ["3a3a38", "545450"],
+		"water": [LIQUIDS.marsh.deep, LIQUIDS.marsh.body] + LIQUIDS.marsh.glints,
+		"road": ["4a4030", "5e5238", "766846"],
+		"bog": ["336633", "669933"],
+	},
+	"lava": {
+		"sky": ["180800", "2e1000", "4a1800", "772200", "aa3300"],
+		"cloud": ["cc4400", "4a2c2a", "2a1a1c"],
+		"far": ["3c2a2a", "5a3a32"],
+		"hill": ["2a2024", "3a2c2e", "1e181a"],
+		"floor": ["5a3e34", "443028", "32241e"],
+		"stripe": 0.06,
+		"tuft": ["241a18", "6e4a3a"],
+		"speck": LIQUIDS.lava.glints + [LIQUIDS.lava.rim],
+		"tree": ["1c1618", "2a2224", "3e3234", "5a4442"],
+		"trunk": "2a2022",
+		"rock": ["1e1819", "2e2627", "4a3a38"],
+		"snow": ["6a4a42", "8a6052"],
+		"stone": ["2e2a2e", "45403f", "62585a"],
+		"roof": ["2a2022", "3e3234"],
+		"water": [LIQUIDS.lava.deep, LIQUIDS.lava.body] + LIQUIDS.lava.glints,
+		"road": ["4e4240", "62544e", "786a62"],
+		"glow": [LIQUIDS.lava.rim, LIQUIDS.lava.body] + LIQUIDS.lava.glints,
+		"crust": [LIQUIDS.lava.deep, LIQUIDS.lava.rim],
+	},
 }
 
 ## Each domain's sprites, a row of letters a row of design pixels, "." clear: authored with an

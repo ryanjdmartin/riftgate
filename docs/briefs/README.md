@@ -154,7 +154,7 @@ What the go's holes left once the landings of 18 to 23 October filled the rest (
 line, Wainwright & Sutler's ten, the stock pass's kit; git keeps the full list):
 
 - Soft control: Minos, the jellyfish, the echidna's draw.
-- Amplify for others: the echidna's Sonic Needle; the Onryō's Grudge in another shape, since
+- Amplify for others: the echidna's Sonic Needle; the Onryō's curse in another shape, since
   Flak took the flat on-hit.
 - Area on a hardpoint: which explosives carry Spread and Penetrate (the bible's section 12).
 - New prices: negative cooling. Reads nobody uses yet: the die's own state on the Gundam and
@@ -259,9 +259,9 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | nothing: the cooldown property it waited on is built |
 | `kestrel_strafer.md` | landed 25 October as the Skua, its engine built (each roll halved, rounded down, and struck twice; the Pod's spray), retired (`git show f87b831:docs/briefs/kestrel_strafer.md`) | Kestrel | 1 | Ryan's play and its look (the to-do); its runner rows read 25 October (`docs/measurements.md`) |
-| `kestrel_shield_spender.md` | decided; the go 21 October (the Storm Petrel, a hovercraft; the off-tank package of 19 October); in content as planned 23 October | Kestrel | 1 | the engine session (the burn and its zap, the plate, Regenerating; its burn on basics read on the guns' heat as priced), free since the pricing pass landed 28 October with the guns' heat standing (the bible's pricing row), then the brief retires; its look (the to-do) |
+| `kestrel_shield_spender.md` | landed 30 October as the Storm Petrel's engine (the burn and its zap, the plate, Regenerating's machine half on its lock, the bot's reads), retired (`git show d84ad16:docs/briefs/kestrel_shield_spender.md`) | Kestrel | 1 | Ryan's call on its burn on basics (the bible's section 12), his play and its look (the to-do); its runner rows read 30 October (`docs/measurements.md`) |
 | `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`) | Kestrel | 3 (Ryan, 15 October) | its stock, model and assets (the to-do; the stock pass's table had no row for it); its runner rows once fights have a wait list worth trapping |
-| `kestrel_gun_platform.md` | decided; the go 21 October (the Giant Petrel, the formation leader, an ekranoplan); in content as planned 23 October | Kestrel | 3 | the engine session (Maverick's Playbook, the Immelmann Booster, the Salvo's rider, the Uplink's roll), then the brief retires; its look (the to-do) |
+| `kestrel_gun_platform.md` | landed 30 October as the Giant Petrel's engine (the bank, the Immelmann Booster's ally action, the Salvo's kill rider, the Uplink's roll, the bot's look-or-action valuation), retired (`git show d84ad16:docs/briefs/kestrel_gun_platform.md`) | Kestrel | 3 | his play and its look, the catamaran (the to-do); its runner rows read 30 October (`docs/measurements.md`) |
 | `kestrel_kite.md` | landed 21 October, its engine and content built, retired (`git show 95d4ed3:docs/briefs/kestrel_kite.md`) | Kestrel | 2 (from 1) | its model with the Pinion Driver built in (the to-do; its stock and its team rows landed with the stock pass, 22 October) |
 | `kestrel_interceptor.md` | landed 23 October as the Needletail, runnable, retired (`git show 9ced5e5:docs/briefs/kestrel_interceptor.md`) | Kestrel | 2 (Ryan, 21 October) | its runner rows and its look (the to-do) |
 | `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the last slots; every chassis decided by 21 October and that evening the Buzzard's stock filled, the stock holes taken, the names settled and the last two slots marked | Kestrel | all | nothing: the hub until the line's briefs land |
@@ -395,3 +395,10 @@ overrule)
 - Two tests from those rounds (Claude's, 13 October): a passive that is pure upside with no
   interest fails (the fan-boat's Ballistic splash); so does a payoff not worth its setup (the
   gunship's missile-marked reach).
+
+**The foes** (noted in the heat session, 30 October)
+
+- Weaken, a status that weakens a machine's blows: something the foes might carry (Ryan, 30
+  October: "Weaken is something the foes might want to carry. Note it down for that reason").
+  Weighed the same day as an overheat penalty, where he is "not against it", though it is "more
+  of a hard punish than corrupted"; the softer Corrupted is read first (the heat brief).

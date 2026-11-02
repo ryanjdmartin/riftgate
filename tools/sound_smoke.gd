@@ -38,16 +38,15 @@ func _skirmish() -> void:
 	for r in range(ROUNDS):
 		if sk.outcome != Skirmish.Outcome.NONE:
 			break
-		screen._on_die_tapped(0)
-		screen._on_die_tapped(0)
+		screen._toggle_lock(0)
+		screen._toggle_lock(0)
 		screen._on_reroll()
-		screen._on_die_held(0)
-		screen._on_hold_released()
+		screen._on_die_tapped(0)
+		screen._on_die_tapped(0)
 		if not sk.field_foes().is_empty():
 			screen._on_foe_held(screen._foe_view_for(sk.field_foes()[0]))
-			screen._on_hold_released()
 		screen._on_mech_held(0)
-		screen._on_hold_released()
+		screen._close_pop()
 		Sound.hover(true)
 		await _wait(0.3)
 		Sound.hover(false)

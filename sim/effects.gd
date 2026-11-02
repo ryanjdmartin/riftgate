@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge", "burn_shield", "bank_rerolls"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -294,8 +294,9 @@ const STATUS := {
 	# A foe's regrowth over time (28 October; the Marsh's by lean): at each of its actions it
 	# regrows its value in HP, after its Burning and Vitriol have ticked, so a burn is a race and
 	# never a wall; a stack an action left, three from the grant, each grant its own clock
-	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield) is
-	# planned until its engine session. A buff the player's Purge takes.
+	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield, built
+	# 30 October) is regenerating_shield's: shield at each round's start, a timed grant of its own.
+	# A buff the player's Purge takes, and the enemy's a bought one.
 	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Burning and Vitriol; a stack an action left.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
@@ -430,7 +431,9 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
 ## setup_once (the Needletail's gate, 21 October; listed 23 October, when its content landed):
 ## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
-const SUPPORTED_WHEN := ["rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once"]
+## shield_up (the Storm Petrel's plate, built 30 October): the machine's own shield stands, read
+## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
+const SUPPORTED_WHEN := ["rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -862,10 +865,17 @@ static func _fires(trigger: String) -> bool:
 ## Does an effect's `when` hold for the component in hand? Reach conditions read the
 ## effective reach, so a reach condition follows a component a passive's set_reach moved.
 ## `target` is the foe an attack is aimed at, for conditions on it; null outside an attack.
-static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
+## `ctx` carries what a what-if reads in place of the unit's own: the shield a forecast's blow
+## meets ("shield"), for shield_up.
+static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionary = {}) -> bool:
 	match str(eff.get("when", "")):
 		"":
 			return true
+		"shield_up":
+			# The machine's own shield stands (the Storm Petrel's plate, 30 October): the shield
+			# the blow meets, before it lands.
+			var own = ctx.get("shield", u.get("shield"))
+			return own != null and int(own) > 0
 		"rolled":
 			return face != null and face.is_ranged()
 		"reach_direct":
@@ -912,14 +922,14 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 
 
 ## Every effect taking part in a query: [effect dictionary, modifier], gated as above.
-static func _taking_part(u, trigger: String, face: Face, target = null) -> Array:
+static func _taking_part(u, trigger: String, face: Face, target = null, ctx: Dictionary = {}) -> Array:
 	var out: Array = []
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != trigger or not _fires(trigger):
 				continue
 			var name := str(eff.get("effect", ""))
-			if not _usable(u, m, name) or not _holds(u, eff, face, target):
+			if not _usable(u, m, name) or not _holds(u, eff, face, target, ctx):
 				continue
 			out.append([eff, m])
 	return out
@@ -1046,12 +1056,14 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 ## add whatever it deals, a strike of 0 included (Ryan, 25 October: "Flak and overcharge exist
 ## in part to get past armour"). An effect marked aimed_only (Shocked's double) is read only on a
 ## weapon's strike `aimed` at the unit, never on a blow that only reaches it (29 October).
-static func damage_taken(u, amount: int, source = null, weapon: bool = false, aimed: bool = true) -> int:
+## `shield`, when given, is the shield the blow meets in a forecast's walk, which a plate that
+## stands with the shield reads (shield_up); the unit's own otherwise.
+static func damage_taken(u, amount: int, source = null, weapon: bool = false, aimed: bool = true, shield: int = -1) -> int:
 	if amount <= 0 and not weapon:
 		return 0
 	var add := 0.0
 	var mult := 1.0
-	for pair in _taking_part(u, "static", null, source):
+	for pair in _taking_part(u, "static", null, source, {"shield": shield} if shield >= 0 else {}):
 		var eff: Dictionary = pair[0]
 		if bool(eff.get("aimed_only", false)) and not (aimed and weapon):
 			continue   # Shocked (29 October): read by a weapon's strike aimed at the unit, nothing else
@@ -1515,6 +1527,39 @@ static func free_rerolls(u) -> int:
 		if str(pair[0].get("effect", "")) == "free_reroll":
 			n += int(pair[0].get("value", 0)) * pair[1].stacks
 	return maxi(0, n)
+
+
+## Does this machine's shield pay its weapons' heat (burn_shield, static; the Storm Petrel's Riot
+## Field Generator, Ryan's go of 21 October, built 30 October)? While its shield stands, every
+## point of heat a weapon's spend would add comes off the shield instead, as far as it holds, and
+## the target takes a blow of what the shield paid (Skirmish._resolve_attack).
+static func burns_shield(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "burn_shield":
+			return true
+	return false
+
+
+## The most of the team's unspent rerolls this machine banks at the round's end (bank_rerolls,
+## static, its value the cap; the Giant Petrel's Maverick's Playbook, Ryan's go of 21 October,
+## built 30 October); 0 for a machine that banks none.
+static func bank_cap(u) -> int:
+	var cap := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "bank_rerolls":
+			cap = maxi(cap, int(pair[0].get("value", 0)))
+	return cap
+
+
+## A machine's Regenerating (the Storm Petrel's St. Elmo's Regenerator, built 30 October): the
+## status in the machine's own words, `value` shield at the start of each round (an
+## on_round_start add_shield, round_start below), granted on a timer the skirmish sets, a grant
+## of its own each time, so two grants regain twice as much until the first runs out.
+static func regenerating_shield(value: int) -> Dictionary:
+	var d: Dictionary = STATUS["regenerating"].duplicate(true)
+	d["description"] = "Regains %d shield at the start of each round." % maxi(1, value)
+	d["effects"] = [{"trigger": "on_round_start", "effect": "add_shield", "value": maxi(1, value)}]
+	return d
 
 
 ## What the start of a round does for this machine (on_round_start, after the roll), with

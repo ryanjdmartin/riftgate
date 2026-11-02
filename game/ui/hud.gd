@@ -129,32 +129,48 @@ static func oversample(win: Window) -> void:
 	win.size_changed.connect(apply)
 
 
-## The 3D viewports' anti-aliasing: 4x on the desktop, none on a phone. Godot's
-## Compatibility renderer leaks native memory every frame a 3D viewport draws with MSAA
-## on Android (godotengine/godot#97967, open since October 2024; seen here on a Pixel 9,
-## Mali-G715: the GL driver aborts out of memory after some minutes, Ryan, 26 September).
-## The phone renders at the design's 720 and upscales nearest anyway, so MSAA bought
-## little there. RIFTGATE_MSAA=on or off forces it, to compare. Returns a
-## SubViewport.MSAA value, typed int (a class-scoped enum type fails in a headless runner).
+## The 3D's anti-aliasing, the player's AA MODE in SETTINGS (Settings.AA_MODES; Ryan, 30
+## October: "Can we add an AA mode setting, not just for debug?"): none, the map's FXAA, or MSAA
+## at 2x or 4x, MSAA 4x by default. RIFTGATE_AA=<mode> forces one for a run, to compare.
+static func aa_mode() -> String:
+	var env := OS.get_environment("RIFTGATE_AA")
+	if Settings.AA_MODES.has(env):
+		return env
+	var mode := str(Settings.display.get("aa_mode", Settings.DISPLAY_DEFAULTS["aa_mode"]))
+	return mode if Settings.AA_MODES.has(mode) else str(Settings.DISPLAY_DEFAULTS["aa_mode"])
+
+
+## The 3D viewports' MSAA, from the AA mode. A phone had none on Godot 4.7: its Compatibility
+## renderer leaked native memory every frame a 3D viewport drew with MSAA on Android
+## (godotengine/godot#97967). Measured on the Pixel 9 (29 September, MSAA 2x with the fine
+## map), the native heap grew about 170 MB every twenty seconds until the GL driver aborted out
+## of memory at 1.8 GB, three and a half minutes in: a phone's GPU resolves MSAA on the chip,
+## so the renderer made no MSAA buffer, took the missing buffer for "not set up" and set the
+## target up again, a framebuffer every frame. Godot 4.8 fixes it (godotengine/godot#124643),
+## and the project runs it from 4.8-beta2 for that (Ryan, 30 October: "Let's update Godot so
+## we can get the msaa fix"). Returns a SubViewport.MSAA value, typed int (a class-scoped
+## enum type fails in a headless runner).
 static func msaa_3d() -> int:
-	var env := OS.get_environment("RIFTGATE_MSAA")
-	if env == "off":
-		return SubViewport.MSAA_DISABLED
-	if env != "on" and OS.has_feature("mobile"):
-		# Measured on the Pixel 9 (29 September, MSAA 2x with the fine map): the native heap
-		# grew about 170 MB every twenty seconds until the GL driver aborted out of memory
-		# at 1.8 GB, three and a half minutes in. No setting reaches this; a phone never
-		# has MSAA until Godot fixes the leak.
-		return SubViewport.MSAA_DISABLED
-	return SubViewport.MSAA_4X
+	match aa_mode():
+		"msaa4":
+			return SubViewport.MSAA_4X
+		"msaa2":
+			return SubViewport.MSAA_2X
+	return SubViewport.MSAA_DISABLED
 
 
-## Device pixels per design pixel a 3D render should use: the window's stretch when the
-## FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1. From the node's own viewport
-## when it is in the tree, else the window's.
+## Whether the map's compositor runs FXAA of its own (bleed.gdshader), the phone's renderer
+## refusing Godot's: the FXAA mode, MSAA off (Ryan, 30 October: "a lot of aliasing on models
+## and hex grid lines on the phone", before MSAA ran there).
+static func fxaa() -> bool:
+	return aa_mode() == "fxaa"
+
+
+## Device pixels per design pixel a 3D render uses: the window's stretch, so the map and the
+## machines render at the glass's density and the stretch lands one to one (the fine map,
+## always: Ryan, 30 October, "set fine map on as the default and remove the option"). From
+## the node's own viewport when it is in the tree, else the window's.
 static func density(node: Node) -> float:
-	if OS.get_environment("RIFTGATE_FINE_MAP") != "1" and not bool(Settings.display.get("fine_map", false)):
-		return 1.0
 	var vp: Viewport = node.get_viewport() if node != null and node.is_inside_tree() else null
 	if vp == null:
 		var loop := Engine.get_main_loop()
