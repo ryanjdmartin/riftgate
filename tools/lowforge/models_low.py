@@ -2367,9 +2367,13 @@ def cottonmouth(b):
             for k, a in enumerate(angles):
                 bx, bz = RR * math.cos(a), ZA + RR * math.sin(a)
                 b.prism("y", bx, (y0 + y1) / 2.0, bz, RB, y1 - y0, "steel.dark", 8, "barrel", phase=math.pi / 8)
-                _cottonmouth_ring(b, bx, bz, y1, ym, RB + 0.2, RB - 1.0, 8, "bone.bone" if k == 0 else "steel.dark", "muzzle_index" if k == 0 else "muzzle", phase=math.pi / 8)
-            _cottonmouth_prisms(b, [("y", (RR * math.cos(a), ym - 1.8, ZA + RR * math.sin(a)), RB - 0.95, 0.4, 8, math.pi / 8) for a in angles], "amber.heat", "bore_glow")   # a short way in, where the cameras see it
-            b.box(-1.3, 1.3, y0 + 0.4, y1 - 0.4, ZA + RR + RB * math.cos(math.pi / 8.0) - 0.1, ZA + RR + RB * math.cos(math.pi / 8.0) + 0.3, "bone.bone", "index_stripe")
+                # The index barrel ringed and striped in the maker's brown, so the turn reads
+                # (Ryan, 2 November, of the white it wore: "Does the cottonmouth need the white muzzle?").
+                _cottonmouth_ring(b, bx, bz, y1, ym, RB + 0.2, RB - 1.0, 8, "livery.livery2" if k == 0 else "steel.dark", "muzzle_index" if k == 0 else "muzzle", phase=math.pi / 8)
+                # Each bore its own glow, so a shot lights the barrel that fires, never all six
+                # (Ryan, 2 November: "why do all the barrels light up during ranging?").
+                _cottonmouth_prisms(b, [("y", (bx, ym - 1.8, bz), RB - 0.95, 0.4, 8, math.pi / 8)], "amber.heat", "bore_glow_%d" % k)   # a short way in, where the cameras see it
+            b.box(-1.3, 1.3, y0 + 0.4, y1 - 0.4, ZA + RR + RB * math.cos(math.pi / 8.0) - 0.1, ZA + RR + RB * math.cos(math.pi / 8.0) + 0.3, "livery.livery2", "index_stripe")
             b.prism("y", 0.0, (y0 + ym) / 2.0, ZA, 2.3, ym - y0, "steel.dark", 8, "spindle", phase=math.pi / 8)
             b.prism("y", 0.0, ym, ZA, 3.0, 1.4, "steel.plate", 8, "spindle_cap", phase=math.pi / 8)
             for yc in (y0 + 3.6, y1 + 1.6):
@@ -2419,7 +2423,8 @@ def cottonmouth(b):
     # seconds; a key is (t, value) on the joint's own axis; a body key is (t, dx, dy, dz) or
     # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
     rudders = ("rudder_l1", "rudder_l2", "rudder_r1", "rudder_r2")
-    hot = ["chamber_lamp", "chamber_window", "bore_glow"]
+    bores = ["bore_glow_%d" % k for k in range(6)]
+    hot = ["chamber_lamp", "chamber_window"] + bores
     HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 here under the phone's eased light (the Armadillo's vents)
     # Spin-up: the drum lifts a touch and spins up through four whole turns, its chambers and
     # bores burning hotter as it whirls, the hull shuddering on its cushion; it spins down onto
@@ -2446,7 +2451,7 @@ def cottonmouth(b):
              (4.6, 0.0, -2.0, 0.0), (5.6, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0), (5.9, 0.0, -1.0, 0.0, 12.0, 0.0, 0.0), (6.05, 0.0, -2.2, -0.2, 12.0, 0.8, 0.0),
              (6.6, 0.0, -1.6, 0.0, 0.0, 0.0, 0.0), (6.75, 0.0, -2.8, -0.2, 0.0, 0.8, 0.0), (7.3, 0.0, -2.0, 0.0, -12.0, 0.0, 0.0), (7.45, 0.0, -3.0, -0.2, -12.0, 0.8, 0.0),
              (8.2, 0.0, -1.0, 0.0, -2.0, 0.0, 0.0), (9.0, 0.0, 0.0, 0.0)],
-       glow=[(["bore_glow"], flash(2.4) + flash(3.6)[:] + flash(5.9) + flash(6.6) + flash(7.3)),
+       glow=[([bores[k]], flash(t)) for (t, k) in ((2.4, 0), (3.6, 1), (5.9, 2), (6.6, 3), (7.3, 4))] + [
              (["sight"], [(0.4, 0.0), (0.9, 6.0), (8.0, 6.0), (8.6, 0.0)])])
     # Coming about: the rudders go hard over and the hull swings round on its cushion to its
     # left, tipping out as it turns, the searchlight sweeping the water as it holds; then hard

@@ -311,7 +311,12 @@
      "parts": [
       "chamber_lamp",
       "chamber_window",
-      "bore_glow"
+      "bore_glow_0",
+      "bore_glow_1",
+      "bore_glow_2",
+      "bore_glow_3",
+      "bore_glow_4",
+      "bore_glow_5"
      ],
      "keys": [
       [
@@ -1109,7 +1114,7 @@
    "glow": [
     {
      "parts": [
-      "bore_glow"
+      "bore_glow_0"
      ],
      "keys": [
       [
@@ -1127,7 +1132,14 @@
       [
        3.0,
        0.0
-      ],
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "bore_glow_1"
+     ],
+     "keys": [
       [
        3.6,
        0.0
@@ -1143,7 +1155,14 @@
       [
        4.2,
        0.0
-      ],
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "bore_glow_2"
+     ],
+     "keys": [
       [
        5.9,
        0.0
@@ -1159,7 +1178,14 @@
       [
        6.5,
        0.0
-      ],
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "bore_glow_3"
+     ],
+     "keys": [
       [
        6.6,
        0.0
@@ -1175,7 +1201,14 @@
       [
        7.199999999999999,
        0.0
-      ],
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "bore_glow_4"
+     ],
+     "keys": [
       [
        7.3,
        0.0
@@ -2143,7 +2176,12 @@
   "heft": 0.13
  },
  "glow_parts": [
-  "bore_glow",
+  "bore_glow_0",
+  "bore_glow_1",
+  "bore_glow_2",
+  "bore_glow_3",
+  "bore_glow_4",
+  "bore_glow_5",
   "chamber_lamp",
   "chamber_window",
   "fan_ring",
