@@ -60,8 +60,8 @@ func _draw() -> void:
 		_text(mono, Vector2(x, y), _settled(key + "n", r["name"], frame), 13, Color(hud, 0.95), 118.0)
 		x += 124.0
 		var u: Unit = r["unit"]
-		_bar(Rect2(x, y - 9.0, BAR_W, BAR_H), float(u.shield) / maxf(1.0, float(u.shield_max)), Palette.SHIELD)
-		_bar(Rect2(x, y - 1.0, BAR_W, BAR_H), float(u.hull) / maxf(1.0, float(u.hull_max)), Palette.HULL)
+		_bar(Rect2(x, y - 9.0, BAR_W, BAR_H), u.shield, u.shield_max, Palette.SHIELD)
+		_bar(Rect2(x, y - 1.0, BAR_W, BAR_H), u.hull, u.hull_max, Palette.HULL)
 		x += BAR_W + 12.0
 		_text(mono, Vector2(x, y), _settled(key + "o", r["order"], frame), 13, r["colour"], 90.0)
 		if not str(r["meets"]).is_empty():
@@ -81,11 +81,12 @@ func _text(font: Font, at: Vector2, s: String, px: int, col: Color, width: float
 	draw_string(font, at, s, HORIZONTAL_ALIGNMENT_LEFT, maxf(20.0, width), px, col)
 
 
-## A thin gauge on a dark ground, the colour of what it measures.
-func _bar(r: Rect2, frac: float, col: Color) -> void:
+## A thin gauge on a dark ground, the colour of what it measures, wearing its scale (Hud.ticks).
+func _bar(r: Rect2, now: int, top: int, col: Color) -> void:
 	draw_rect(r.grow(1.0), Color(Palette.BG, 0.9))
 	draw_rect(r, Color(col, 0.25))
-	draw_rect(Rect2(r.position, Vector2(r.size.x * clampf(frac, 0.0, 1.0), r.size.y)), col)
+	draw_rect(Rect2(r.position, Vector2(r.size.x * clampf(float(now) / maxf(1.0, float(top)), 0.0, 1.0), r.size.y)), col)
+	Hud.ticks(self, r, now, top, col)
 
 
 ## A line's text, scrambled for a moment after it changed, so a number is seen to settle.

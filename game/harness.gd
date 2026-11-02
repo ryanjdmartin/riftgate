@@ -110,6 +110,7 @@ func _build_menu() -> void:
 		col.add_child(scroll)
 		_pages.append(scroll)
 		builder.call(page)
+		Hud.pass_touches(page)   # a finger drags the page from anywhere on it, as the quick campaign's lists (2 November)
 
 	col.add_child(HSeparator.new())
 	_summary = _label("", 15, Palette.MUTED)
@@ -303,6 +304,7 @@ func _fill_editor(id: String) -> void:
 		_refresh_row(id)
 		_refresh_summary(), ROW_H, 16))
 	editor.add_child(tools)
+	Hud.pass_touches(editor)   # its pickers and buttons pass a drag on to the page, as the page's own
 
 
 ## Every component, grouped by maker; a built-in one (fixed on its chassis, stocked by no
@@ -452,6 +454,7 @@ func _fill_packs() -> void:
 		_packs_box.add_child(line)
 	if setup.packs.is_empty():
 		_packs_box.add_child(_hint("No packs: a fight takes the boss alone; a battle needs one."))
+	Hud.pass_touches(_packs_box)   # as the page's own: a drag scrolls from its pickers too
 
 
 func _on_add_pack() -> void:
@@ -582,6 +585,9 @@ func _picker() -> OptionButton:
 	ob.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ob.clip_text = true
 	ob.fit_to_longest_item = false
+	# Opens on the lift, as a tap (a picker opens on the touch by default): a drag that starts on
+	# it scrolls the page instead, its press let go as the scroll begins (2 November).
+	ob.action_mode = BaseButton.ACTION_MODE_BUTTON_RELEASE
 	return ob
 
 

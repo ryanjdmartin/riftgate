@@ -486,6 +486,8 @@ class _SquadRow extends Control:
 		var w := size.x - x - 8.0
 		Hud.gauge(self, Rect2(x, 6, w, 14), float(unit.hull) / float(maxi(1, unit.hull_max)), Palette.HULL)
 		Hud.gauge(self, Rect2(x, 32, w, 14), float(unit.shield) / float(maxi(1, unit.shield_max)), Palette.SHIELD)
+		Hud.ticks(self, Rect2(x, 6, w, 14).grow(-2.0), unit.hull, unit.hull_max, Palette.HULL, 2.4)   # each gauge's scale (Hud.ticks)
+		Hud.ticks(self, Rect2(x, 32, w, 14).grow(-2.0), unit.shield, unit.shield_max, Palette.SHIELD, 2.4)
 		draw_string(Hud.mono(), Vector2(0, 48), "HULL %d/%d  ·  SHIELD %d/%d" % [unit.hull, unit.hull_max, unit.shield, unit.shield_max], HORIZONTAL_ALIGNMENT_LEFT, 250, 13, Palette.MUTED)
 
 

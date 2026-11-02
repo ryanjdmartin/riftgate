@@ -219,7 +219,8 @@ static func label(text: String, size_px: int, color: Color, font: Font = null) -
 ## HudPanel's card, a HudButton), so only the gaps between the cards scrolled. Every control
 ## under `list` that would stop it passes it on to the scroller instead. A button still takes the
 ## touch first, so a tap presses it, and lets go of the press when the scroll begins, so a drag
-## never does. Called again whenever the list is rebuilt.
+## never does; a picker, which opens on the touch itself, is set to open on the lift where a
+## list holds one (the harness's). Called again whenever the list is rebuilt.
 static func pass_touches(list: Node) -> void:
 	if list is Control and (list as Control).mouse_filter == Control.MOUSE_FILTER_STOP:
 		(list as Control).mouse_filter = Control.MOUSE_FILTER_PASS

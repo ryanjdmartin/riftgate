@@ -1398,6 +1398,7 @@ func _unit_gauges(u: Unit) -> void:
 		draw_rect(r.grow(1.5), Color(Palette.BG, 0.9))
 		draw_rect(r, Color(pair[2], 0.25))
 		draw_rect(Rect2(r.position, Vector2(r.size.x * clampf(float(pair[0]) / maxf(1.0, float(pair[1])), 0.0, 1.0), r.size.y)), pair[2])
+		Hud.ticks(self, r, int(pair[0]), int(pair[1]), pair[2])   # its scale, as every gauge wears it
 		r.position.y += 9.0
 	_map_space()
 

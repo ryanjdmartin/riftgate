@@ -216,6 +216,45 @@ func test_the_harness_drives_the_setup() -> void:
 	h.free()
 
 
+## The harness's pages scroll from anywhere on them, as the quick campaign's lists (2 November):
+## a picker opens on a tap's lift, never on the touch, so a drag that starts on one scrolls the
+## page and opens nothing. Live: the harness in the tree over the saved setup or the defaults, a
+## finger's events pushed through its viewport as the phone's arrive.
+func live_test_a_drag_over_a_picker_scrolls_the_page_and_a_tap_opens_it() -> void:
+	var vp := SubViewport.new()
+	vp.size = Vector2i(720, 1280)
+	vp.gui_embed_subwindows = true   # the picker's list opens inside it
+	(Engine.get_main_loop() as SceneTree).root.add_child(vp)
+	var h: Control = HARNESS.new()
+	vp.add_child(h)
+	var id := str(h._rows.keys()[0])
+	h._toggle_loadout(id)
+	_lay_out(vp)
+	var ob: OptionButton = null
+	for line in h._rows[id]["editor"].get_children():
+		for ch in line.get_children():
+			if ch is OptionButton and ob == null:
+				ob = ch
+	assert_true(ob != null and ob.is_visible_in_tree(), "the first machine's editor open with a picker")
+	var presses := [0]
+	ob.pressed.connect(func() -> void: presses[0] += 1)
+	var page: ScrollContainer = h._pages[0]
+	var before := page.scroll_vertical
+	_drag(vp, ob.get_global_rect().get_center(), Vector2(0, -200))
+	assert_true(page.scroll_vertical >= before + 150, "a drag that starts on a picker scrolls the page (%d to %d)" % [before, page.scroll_vertical])
+	assert_eq(presses[0], 0, "and opens nothing")
+	assert_false(ob.get_popup().visible, "its list shut")
+	_lay_out(vp)
+	var at := ob.get_global_rect().get_center()
+	_finger(vp, at, true)
+	assert_eq(presses[0], 0, "a touch alone opens nothing yet")
+	_finger(vp, at, false)
+	assert_eq(presses[0], 1, "a tap opens it on the lift")
+	assert_true(ob.get_popup().visible, "its list out")
+	ob.get_popup().hide()
+	vp.free()
+
+
 func test_modules_reach_the_machine_and_survive_a_save() -> void:
 	var db := _db()
 	var id := ""
