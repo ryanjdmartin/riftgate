@@ -169,7 +169,6 @@ var _details: HudPanel
 var _details_label: Label
 var _details_entry: EntryReadout     # the die's hold: the entry showing, its effects listed (Ryan, 25 October)
 var _details_ring: CylinderView      # a stepping die's chambers in its readout (the Cassowary's)
-var _roll_label: Label
 var _codex: CodexBox                 # the spec plate, shared with the battle screen
 var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the mech is a sprite
 var _bg: HudBackdrop = null
@@ -672,7 +671,7 @@ func _build() -> void:
 	_fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_fx)
 
-	# Overlays: arrows, drag ghost, roll flash, details, codex, confirm, outcome.
+	# Overlays: arrows, drag ghost, details, codex, confirm, outcome.
 	_arrows = ArrowLayer.new()
 	_arrows.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_arrows)
@@ -687,10 +686,6 @@ func _build() -> void:
 	_ghost.modulate = Color.WHITE   # solid: with its slot emptied, this is the die itself
 	_ghost.visible = false
 	_place(_ghost, Vector2.ZERO, DieFaceView.view_size())
-	_roll_label = Hud.label("", 44, Palette.INK, Hud.mono())
-	_roll_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_roll_label.visible = false
-	_place(_roll_label, Vector2.ZERO, Vector2(200, 60))
 
 	_details = HudPanel.new(14.0)
 	_details.fill_alpha = 1.0   # the log's lines sit behind it; a readout of text reads over nothing
@@ -1145,6 +1140,11 @@ func _refresh(save: bool = true) -> void:
 			[ms.unit.hull, ms.unit.hull_max, Palette.HULL, fc.get("hull_after", ms.unit.hull)],
 			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]
+		if _shown_gauges.has(i):
+			# A last act on its way: the gauges hold what they were until it lands.
+			var held: Array = _shown_gauges[i]
+			v.bars[0] = [int(held[0]), ms.unit.shield_max, Palette.SHIELD, int(held[0])]
+			v.bars[1] = [int(held[1]), ms.unit.hull_max, Palette.HULL, int(held[1])]
 		# The Muster (the Swallowtail's, 21 October): a filling gauge under the heat, a notch a
 		# charge, the points it holds against its cap.
 		var rule := Effects.muster_rule(ms.unit)
@@ -1376,6 +1376,9 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# dimming and lit, a heal hatched, the whole bar when it falls (Ryan, 26 October).
 	var after := int(_round.get("foes", {}).get(foe, {}).get("hp", foe.hp)) if foe.alive() else foe.hp
 	v.bars = [[foe.hp, foe.hp_max, Palette.HUD, after]]
+	if _shown_hp.has(foe):
+		# A spend's blows still landing: the gauge shows what they have left so far, no forecast.
+		v.bars = [[int(_shown_hp[foe]), foe.hp_max, Palette.HUD, int(_shown_hp[foe])]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)
 	v.intent = ""
@@ -1886,24 +1889,6 @@ func _show_details(text: String, near: Control, ring: Array = [], entry: Array =
 	pos.x = clampf(pos.x, 8.0, W - width - 8.0)
 	pos.y = clampf(pos.y, 8.0, H - 8.0 - height)
 	_details.position = pos
-
-
-## The damage number pops over the struck foe, then fades.
-func _flash_roll(fv: UnitView) -> void:
-	if sk.last_roll.is_empty() or fv == null:
-		return
-	_roll_label.text = "%d" % int(sk.last_roll["final"])
-	_roll_label.add_theme_color_override("font_color", Palette.INK)
-	_roll_label.position = fv.position + Vector2(fv.size.x * 0.5 - 100.0, 4.0)
-	_roll_label.modulate = Color.WHITE
-	_roll_label.visible = true
-	if is_inside_tree():
-		var tw := create_tween()
-		tw.tween_interval(0.5)
-		tw.tween_property(_roll_label, "modulate:a", 0.0, 0.7)
-		tw.tween_callback(func() -> void: _roll_label.visible = false)
-		var rise := create_tween()
-		rise.tween_property(_roll_label, "position:y", _roll_label.position.y - 22.0, 1.2).set_ease(Tween.EASE_OUT)
 
 
 # ---------------------------------------------------------------- gestures
@@ -2780,15 +2765,25 @@ const VOICE_AFTER_BLOW := 0.4
 
 
 ## Spend die `i` on `target` (a Foe or a MechState). Returns whether the simulation accepted it.
+## Its blows land a strike at a time (Ryan, 2 November: "flechette pod and other multistrikes need
+## to clearly show the strikes in order, with individual ticks of damage. The damage animation is
+## individual, but the damage is not - damage needs to be timed to the animation across the
+## board"): each strike fires on its own beat, STRIKE_GAP apart, and its blows land with it, every
+## foe it struck flashing, its gauge stepping down to what the blow left and the blow's number
+## rising off it; a foe the spend killed is stood in for, gauge and all, until its killing blow
+## lands, then dies; a last act lands its damage on the machines as it is named.
 func _use_die(i: int, target, second = null) -> bool:
-	# Every foe's view and drawing before the die lands: a kill clears its slot at once, so
-	# the death has to be played from what was there (the ghost of the sprite).
+	_flush_blows()
+	# Every foe's view and look before the die lands: a kill clears its slot at once, so the
+	# death is played from what stood there (a stand-in dressed as its view).
 	var was: Dictionary = {}
+	var hp_before: Dictionary = {}
 	var readied: Array = []   # the foes ready to get back up: one that does falls and stands again in its slot
 	for foe in sk.field_foes():
+		hp_before[foe] = foe.hp
 		var fv := _foe_view_for(foe)
 		if fv != null:
-			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h, _home.get(fv, fv.position)]
+			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
 		if Effects.has(foe, "risen"):
 			readied.append(foe)
 	var spent: Face = sk.mechs[i].face()
@@ -2798,6 +2793,24 @@ func _use_die(i: int, target, second = null) -> bool:
 	var ok := sk.assign(i, target, second)
 	if ok:
 		locked[i] = false
+	var blows: Array = sk.spend_blows.duplicate() if ok else []
+	var dead: Array = []
+	if ok:
+		for foe in was.keys():
+			if not foe.alive() or (readied.has(foe) and not Effects.has(foe, "risen")):
+				dead.append(foe)   # a foe that got back up dies on screen first, then stands again
+	# The gauges the blows struck hold what they showed until each blow lands, and a machine a last
+	# act struck its gauges until the act lands.
+	if ok and is_inside_tree():
+		for b in blows:
+			var foe: Foe = b["foe"]
+			if hp_before.has(foe) and not dead.has(foe) and foe.alive():
+				_shown_hp[foe] = int(hp_before[foe])
+		for act in sk.last_acts:
+			var g: Array = act.get("gauges", [])
+			for k in range(mini(g.size(), (act["mechs"] as Array).size())):
+				if not _shown_gauges.has(int(act["mechs"][k])):
+					_shown_gauges[int(act["mechs"][k])] = g[k]
 	_refresh()
 	if ok:
 		Sound.play("die_spend")   # the console letting the die go; the component's own sound lands after
@@ -2812,16 +2825,13 @@ func _use_die(i: int, target, second = null) -> bool:
 	var heat_hook := _heat_hook(heat_before) if ok and not won else ""
 	var quiet := won or not heat_hook.is_empty()   # nothing but the heat may take her line
 	var fire_at := BLOW_AT
-	var landed := fire_at + Sound.lands(blow)   # where the blow lands, from the die let go
+	var landed := fire_at + Sound.lands(blow)   # where the first strike lands, from the die let go
+	var strikes := _strikes_of(blows)
 	if ok and target is Foe:
 		var tv: UnitView = was[target][0] if was.has(target) else null
-		_flash_roll(tv)
-		var dead: Array = []
 		var fallen := ""
-		for foe in was.keys():
-			if not foe.alive() or (readied.has(foe) and not Effects.has(foe, "risen")):
-				dead.append(foe)   # a foe that got back up dies on screen first, then stands again
-				fallen = ContentDB.load_default().faction_of_foe(foe.content_id)
+		for foe in dead:
+			fallen = ContentDB.load_default().faction_of_foe(foe.content_id)
 		if not quiet:
 			if dead.is_empty():
 				var said := Sound.claim_line("die_spent", PRE_LINE_AT)
@@ -2829,34 +2839,17 @@ func _use_die(i: int, target, second = null) -> bool:
 					fire_at = PRE_LINE_AT + said * PRE_FIRE
 			else:
 				var hook := "foe_down_" + fallen
-				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + AFTER_DEATH)
+				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + (strikes - 1) * STRIKE_GAP + AFTER_DEATH)
 		landed = fire_at + Sound.lands(blow)
 		var ranged := not bool(sk.last_roll.get("melee", false))   # a melee weapon (the tag) lunges, anything else kicks back
-		var hit := (target as Foe).alive()
-		if fire_at > BLOW_AT and is_inside_tree():
-			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
-			tw.tween_interval(fire_at - BLOW_AT)
-			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow)))
-		else:
-			_animate_attack(_mech_views[i], tv, ranged, hit, landed)
-		Sound.play_after(fire_at, blow)
-		for k in range(dead.size()):
-			var w: Array = was[dead[k]]
-			_animate_death(w[0], w[1], w[2], w[3], landed, w[4])
-			Sound.play_after(landed + 0.07 * k, "kill", -2.0 * k)
-		# A last act (15 October): it lands as its foe falls, so the plaque names it after the
-		# death and the machines it struck take it.
-		if is_inside_tree():
-			for act in sk.last_acts:
-				var tw2 := create_tween()
-				tw2.tween_interval(landed + 0.35)
-				tw2.tween_callback(_announce.bind(str(act["name"])))
-				for mi in act["mechs"]:
-					if int(mi) >= 0 and int(mi) < _mech_views.size():
-						tw2.tween_callback(_animate_hit.bind(_mech_views[int(mi)], 0.1))
+		for k in range(strikes):
+			# Each strike fires on its own beat: the machine kicks back (or lunges at the foe the
+			# strike is aimed at) and the weapon sounds, so a burst reads as its strikes in order.
+			_attack_at(fire_at - BLOW_AT + k * STRIKE_GAP, _mech_views[i], _view_struck(blows, k, was, tv), ranged)
+			Sound.play_after(fire_at + k * STRIKE_GAP, blow, 0.0 if k == 0 else -3.0)
 	elif ok and target is Vector2i:
 		# A shot laid in an empty slot (the Lammergeier's), or the pull's gather there: the
-		# weapon fires and the machine kicks back, nothing struck.
+		# weapon fires and the machine kicks back, nothing struck; a swap's mines land as blows.
 		var slot: Vector2i = target
 		_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed)
 		Sound.play_after(fire_at, blow)
@@ -2869,26 +2862,245 @@ func _use_die(i: int, target, second = null) -> bool:
 			fire_at = PRE_LINE_AT + said * PRE_FIRE if said > 0.0 else 0.0
 			Sound.play_after(fire_at, effect, -3.0 if spent.kind == Face.Kind.BUFF else 0.0)
 			landed = fire_at + Sound.lands(effect)
+		if not blows.is_empty():
+			_attack_at(maxf(0.0, fire_at - BLOW_AT), _mech_views[i], _view_struck(blows, 0, was, null), true)   # a vent's blast
+	var ends := landed
+	if ok:
+		var deaths := _land_blows(blows, landed, was, dead, hp_before)
+		for b in blows:
+			ends = maxf(ends, _blow_time(b, landed))
+		for k in range(dead.size()):
+			var at := float(deaths.get(dead[k], ends))
+			ends = maxf(ends, at)
+			Sound.play_after(at + 0.07 * k, "kill", -2.0 * k)
 	if not heat_hook.is_empty():
-		Sound.say_after(landed + (AFTER_DEATH if target is Foe and not (target as Foe).alive() else 0.0), heat_hook)
+		Sound.say_after(ends + (AFTER_DEATH if not dead.is_empty() else 0.0), heat_hook)
 	# A split's halves step up where it fell (the Gel's, 25 October), and a foe getting back up
-	# stands again in its slot (26 October), in once the death has landed.
+	# stands again in its slot (26 October), in once the deaths have landed.
 	if ok:
 		var stepped := 0
 		for foe in sk.field_foes():
 			if not was.has(foe) or (readied.has(foe) and not Effects.has(foe, "risen")):
-				_animate_arrival(_foe_view_for(foe), landed + 0.3)
-				Sound.play_after(landed + 0.55 + 0.09 * stepped, "arrival", -3.0 * stepped)
+				_animate_arrival(_foe_view_for(foe), ends + 0.3)
+				Sound.play_after(ends + 0.55 + 0.09 * stepped, "arrival", -3.0 * stepped)
 				stepped += 1
 	if ok and sk.outcome != Skirmish.Outcome.NONE:
 		# Decided by this die: the fight ends once the last blow has landed and played.
 		if is_inside_tree():
 			var tw := create_tween()
-			tw.tween_interval(landed + 0.75)
+			tw.tween_interval(ends + 0.75)
 			tw.tween_callback(_show_outcome.bind(sk.outcome))
 		else:
 			_show_outcome(sk.outcome)
 	return ok
+
+
+const STRIKE_GAP := 0.24   # seconds between a spend's strikes, each its own flash, tick and number (Ryan, 2 November; a placeholder, judged running)
+var _shown_hp: Dictionary = {}       # Foe -> the HP its gauge shows while a spend's blows land
+var _shown_gauges: Dictionary = {}   # machine index -> [shield, hull] its gauges show until a last act lands on it
+var _stand_ins: Dictionary = {}      # Foe -> the view standing in for it, killed by a spend, until its death plays
+var _blows_tw: Tween = null          # the spend's blows as they land
+
+
+## The strikes a spend's blows came in: one past the last strike any landed on (the zap after them
+## aside), and one at least.
+static func _strikes_of(blows: Array) -> int:
+	var n := 1
+	for b in blows:
+		if str(b["kind"]) != "zap":
+			n = maxi(n, int(b["strike"]) + 1)
+	return n
+
+
+## When a blow lands, from the die let go: its strike's beat after the first strike lands.
+static func _blow_time(b: Dictionary, landed: float) -> float:
+	return landed + int(b["strike"]) * STRIKE_GAP
+
+
+## The view a strike is aimed at, for the attacker's lunge: its first blow's foe as the spend found
+## it, else `fallback`.
+func _view_struck(blows: Array, k: int, was: Dictionary, fallback) -> UnitView:
+	for b in blows:
+		if int(b["strike"]) == k and str(b["kind"]) in ["strike", "mine"]:
+			var foe: Foe = b["foe"]
+			if was.has(foe):
+				return was[foe][0]
+			return _foe_view_for(foe)
+	return fallback
+
+
+## The attacker's move for a strike, `t` seconds from now.
+func _attack_at(t: float, attacker: UnitView, aimed, ranged: bool) -> void:
+	if not is_inside_tree() or t <= 0.001:
+		_animate_attack(attacker, aimed, ranged, false)
+		return
+	var tw := create_tween()
+	tw.tween_interval(t)
+	tw.tween_callback(_animate_attack.bind(attacker, aimed, ranged, false))
+
+
+## The spend's blows, landing (the spend's doc above): a stand-in for every foe it killed, then
+## every blow at its strike's beat, every death at its killing blow, every last act after its
+## foe's death, and the gauges let go after the last. Returns Foe -> when each killed foe dies.
+## Off the tree it all lands at once (the gauges already read the fight).
+func _land_blows(blows: Array, landed: float, was: Dictionary, dead: Array, hp_before: Dictionary) -> Dictionary:
+	var deaths := {}
+	var last := landed
+	for foe in dead:
+		deaths[foe] = landed
+		var hit := false
+		for b in blows:
+			if b["foe"] == foe:
+				hit = true
+				deaths[foe] = _blow_time(b, landed)
+				if int(b["hp"]) <= 0:
+					break
+		if not hit:
+			deaths[foe] = landed + (_strikes_of(blows) - 1) * STRIKE_GAP
+	if not is_inside_tree():
+		return deaths
+	for foe in dead:
+		if not was.has(foe):
+			continue
+		var si := UnitView.new()
+		si.dress(was[foe][1])
+		si.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		si.highlight = false
+		si.bars = [[int(hp_before.get(foe, foe.hp_max)), foe.hp_max, Palette.HUD, int(hp_before.get(foe, foe.hp_max))]]
+		si.position = was[foe][2]
+		add_child(si)
+		move_child(si, _pair_marks.get_index())   # among the foes, under the arrows and the readouts
+		si.queue_refresh()
+		_stand_ins[foe] = si
+	var events: Array = []   # [time, callable], played in time order
+	var count := {}
+	for b in blows:
+		var foe: Foe = b["foe"]
+		var n := int(count.get(foe, 0))
+		count[foe] = n + 1
+		events.append([_blow_time(b, landed), _land_spend_blow.bind(b, n)])
+		last = maxf(last, _blow_time(b, landed))
+	for foe in dead:
+		events.append([float(deaths[foe]) + 0.01, _stand_in_dies.bind(foe)])
+		last = maxf(last, float(deaths[foe]))
+	for act in sk.last_acts:
+		var at := float(deaths.get(act["foe"], last)) + 0.35
+		events.append([at, _land_last_act.bind(act)])
+		last = maxf(last, at)
+	events.append([last + 0.05, _release_blows])
+	events.sort_custom(func(a: Array, b: Array) -> bool: return float(a[0]) < float(b[0]))
+	_blows_tw = create_tween()
+	var now := 0.0
+	for e in events:
+		if float(e[0]) > now:
+			_blows_tw.tween_interval(float(e[0]) - now)
+			now = float(e[0])
+		_blows_tw.tween_callback(e[1])
+	return deaths
+
+
+## One blow landing: its foe's gauge steps down to what it left, the foe flashes and the blow's
+## number rises off it, the `n`-th on that foe this spend set apart from the ones before.
+func _land_spend_blow(b: Dictionary, n: int) -> void:
+	var foe: Foe = b["foe"]
+	var v: UnitView = _stand_ins.get(foe, null)
+	if v == null:
+		v = _foe_view_for(foe)
+	var hp := maxi(0, int(b["hp"]))
+	if _shown_hp.has(foe):
+		_shown_hp[foe] = hp
+	if v == null or not is_instance_valid(v):
+		return
+	if not v.bars.is_empty():
+		var bar: Array = v.bars[0]
+		bar[0] = hp
+		if bar.size() >= 4:
+			bar[3] = hp
+		v.queue_redraw()
+	_animate_hit(v)
+	_pop_damage(v, int(b["taken"]), n)
+
+
+## A blow's number rising off the unit it struck, in ink on a dark edge (a blow that did nothing in
+## grey), each after the first on that unit set a little aside so a burst's numbers stand apart.
+func _pop_damage(v: UnitView, taken: int, n: int) -> void:
+	var l := Hud.label(str(taken), 40, Palette.INK if taken > 0 else Palette.MUTED, Hud.mono())
+	l.add_theme_constant_override("outline_size", 8)
+	l.add_theme_color_override("font_outline_color", Color(Palette.BG, 0.9))
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.size = Vector2(120.0, 52.0)
+	var d := v.drawing_rect()
+	var base: Vector2 = v.position if _stand_ins.values().has(v) else _home.get(v, v.position)
+	var at := base + Vector2(d.get_center().x - 60.0 + float(n % 3 - 1) * 20.0, d.position.y - 16.0 - n * 8.0)
+	l.position = at
+	add_child(l)
+	var tw := create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(l, "position:y", at.y - 34.0, 0.9).set_ease(Tween.EASE_OUT)
+	tw.tween_property(l, "modulate:a", 0.0, 0.45).set_delay(0.5)
+	tw.set_parallel(false)
+	tw.tween_callback(l.queue_free)
+
+
+## A killed foe's stand-in dies at its killing blow: its marks go, its drawing flashes, drops and
+## fades in the red-red, and it is gone.
+func _stand_in_dies(foe: Foe) -> void:
+	var si: UnitView = _stand_ins.get(foe, null)
+	if si == null or not is_instance_valid(si):
+		return
+	si.bars = []
+	si.statuses = []
+	si.intent_kind = ""
+	si.breathe = false
+	si.queue_redraw()
+	var tw := create_tween()
+	tw.tween_property(si, "modulate", Color(2.0, 1.2, 1.2), 0.06)
+	tw.tween_property(si, "modulate", Color(Palette.LOSS_DIM, 1.0), 0.12)
+	tw.set_parallel(true)
+	tw.tween_property(si, "modulate", Color(Palette.LOSS_DIM, 0.0), 0.4)
+	tw.tween_property(si, "position:y", si.position.y + 16.0, 0.4).set_ease(Tween.EASE_IN)
+	tw.set_parallel(false)
+	tw.tween_callback(func() -> void:
+		if _stand_ins.get(foe, null) == si:
+			_stand_ins.erase(foe)
+		si.queue_free())
+
+
+## A last act lands (15 October): named on the plaque after its foe's death, and the machines it
+## struck take it now, their gauges let go to what it left.
+func _land_last_act(act: Dictionary) -> void:
+	_announce(str(act["name"]))
+	for mi in act["mechs"]:
+		if int(mi) >= 0 and int(mi) < _mech_views.size():
+			_shown_gauges.erase(int(mi))
+			_animate_hit(_mech_views[int(mi)], 0.1)
+	_refresh(false)
+
+
+## The spend's blows have all landed: the gauges read the fight again.
+func _release_blows() -> void:
+	_blows_tw = null
+	_shown_hp.clear()
+	_shown_gauges.clear()
+	_refresh(false)
+
+
+## Every blow still waiting lands at once (a new spend, the turn's end): the gauges read the fight
+## and the stand-ins go.
+func _flush_blows() -> void:
+	if _blows_tw != null and _blows_tw.is_valid():
+		_blows_tw.kill()
+	_blows_tw = null
+	var lagged := not _shown_hp.is_empty() or not _shown_gauges.is_empty()
+	_shown_hp.clear()
+	_shown_gauges.clear()
+	for foe in _stand_ins.keys():
+		var si = _stand_ins[foe]
+		if is_instance_valid(si):
+			si.queue_free()
+	_stand_ins.clear()
+	if lagged:
+		_refresh(false)
 
 
 # ---------------------------------------------------------------- filler animation
@@ -2947,7 +3159,7 @@ func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool, lands
 
 ## What a control looks like at rest: an empty foe slot sits faint, everything else plain.
 func _rest_modulate(v: Control) -> Color:
-	if v is UnitView and v.is_enemy and not _view_foe.has(v):
+	if v is UnitView and v.is_enemy and not _view_foe.has(v) and not _stand_ins.values().has(v):
 		return Color(1, 1, 1, 0.3)
 	return Color.WHITE
 
@@ -3343,6 +3555,7 @@ func _on_end_turn() -> void:
 func _end_turn_now() -> void:
 	if sk.state != Skirmish.State.ASSIGN:
 		return
+	_flush_blows()   # the last spend's blows land before the enemy moves
 	_close_pop()   # a readout is for planning the turn: the enemy's plays without one
 	Sound.play("resolve", -4.0)
 	for i in range(sk.mechs.size()):
@@ -3470,6 +3683,7 @@ func _on_withdraw() -> void:
 func _withdraw_now() -> void:
 	if not sk.can_withdraw():
 		return
+	_flush_blows()
 	var before := _before_enemy_turn()
 	if sk.withdraw():
 		_refresh_log()

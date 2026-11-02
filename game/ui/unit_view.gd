@@ -111,6 +111,29 @@ func _init() -> void:
 	set_process(false)
 
 
+## What the view draws, to dress another as it (dress()): a foe the spend kills is stood in for by
+## a copy of its view as it stood, its gauge ticking down a blow at a time, until its killing blow
+## lands (Ryan, 2 November: "damage needs to be timed to the animation across the board").
+const LOOK := ["display_name", "is_enemy", "massive", "bars", "bars_above", "pips", "boxes", "sprite_density",
+	"intent_kind", "intent_value", "intent_note", "intent_riders", "intent", "intent_dim", "statuses", "chip_wrap",
+	"sprite", "pixel_snap", "used_override", "breathe", "flip_h", "breathe_phase", "ground_shadow", "feet_y",
+	"hover", "sprite_at", "ground_at", "shadow_rx", "shadow_ratio", "empty_pad", "size", "texture_filter"]
+
+
+func look() -> Dictionary:
+	var out := {}
+	for key in LOOK:
+		var v = get(key)
+		out[key] = v.duplicate(true) if v is Array else v
+	return out
+
+
+func dress(d: Dictionary) -> void:
+	for key in d.keys():
+		set(key, d[key])
+	queue_redraw()
+
+
 ## Centre of the drawing, in global coordinates, for arrows.
 func anchor_global() -> Vector2:
 	return get_global_transform() * _visible().get_center()

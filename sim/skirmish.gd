@@ -113,8 +113,17 @@ var _blast_strike := false   # a vent's blast: one weapon hit inside the vent's 
 ## for the plaque (decided 9 October; `all` 15 October).
 var turn_events: Array = []
 ## The last acts of foes that fell during the latest spend (15 October), for the screen to name
-## and land: {foe, name, mechs (indices struck)}.
+## and land: {foe, name, mechs (indices struck), gauges (each struck machine's [shield, hull] as
+## the act met it, so the screen lands the act's damage with the act)}.
 var last_acts: Array = []
+## Every blow the latest spend landed on a foe, in the order it landed, for the screen to land a
+## blow at a time in step with the strikes (Ryan, 2 November: "flechette pod and other multistrikes
+## need to clearly show the strikes in order, with individual ticks of damage ... damage needs to
+## be timed to the animation across the board"): {foe, strike (from 0, the zap after the last),
+## taken (what the blow took off its HP), hp (after it), kind ("strike", "area", "chain", "spill",
+## "zap", "mine")}. Cleared as a spend begins; the rules never read it.
+var spend_blows: Array = []
+var _strike_no := 0   # the strike under way in a spend, for the blows it records
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
 var turn_specials: Array = []
@@ -1673,6 +1682,8 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 	if state != State.ASSIGN:
 		return false
 	last_acts.clear()
+	spend_blows.clear()
+	_strike_no = 0
 	var ms := mechs[mech_index]
 	if not ms.alive() or ms.assigned:
 		return false
@@ -2477,6 +2488,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var aimed := target              # the strike's own foe: the target, or where a spray's strike fell
 	var sprayed: Array[String] = []  # a spray's strikes, the foe and what it took, for the log
 	for s in range(maxi(1, f.strikes)):
+		_strike_no = s
 		if f.spray and s > 0:
 			# The spray (the Skua's Flechette Pod, built 25 October): each strike after the first
 			# falls on a random foe in reach at that moment, the same foe again allowed; a kill
@@ -2548,6 +2560,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
+			if was_alive:
+				_note_blow(foe, s, taken, "strike" if foe == aimed else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
 			var eaten := int(reads.get(foe, [0, 0])[1]) if s == 0 else 0   # each foe struck eats its own, on its first blow
 			if eaten > 0:
 				Effects.remove(foe, f.consumes)
@@ -2706,6 +2720,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if _barrier_eats(target, true):
 				zap = 0
 			target.hp -= zap
+			_note_blow(target, maxi(1, f.strikes), zap, "zap")   # after the strikes
 			dealt += clampi(zap, 0, maxi(0, zap_before))
 			log.append("%s zaps %s for %d" % [ms.unit.display_name, target.display_name, zap])
 	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
@@ -3736,6 +3751,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if barred:
 			taken = 0   # a foe's Barrier takes the shot's blow whole (28 October)
 		t.hp -= taken
+		_note_blow(t, 0, taken, "mine")
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
 		if weapon and t == foe and Effects.remove(t, "shocked"):   # the arrival, the shot's own foe; an area's foe or an arc's keeps its shock (29 October)
 			log.append(("%s: the shock is spent on the Barrier" % t.display_name) if barred else ("%s: the shock lands, %d doubled" % [t.display_name, blow]))
@@ -3807,6 +3823,7 @@ func _mine_spill(foe: Foe, amount: int, hit: Array[Foe], shot: Dictionary, sourc
 	if _barrier_eats(behind, true):
 		taken = 0
 	behind.hp -= taken
+	_note_blow(behind, 0, taken, "spill")
 	log.append("a mine of %s's spills over: %d into %s" % [str(shot.get("by", "")), taken, behind.display_name])
 	if not behind.alive() and Effects.has(behind, "syrinx_drone"):
 		var plain := {"damage": amount, "keywords": [], "by": shot.get("by", ""), "mech": shot.get("mech", -1), "face": {}, "burn": 0, "cryo": 0, "flak": 0}
@@ -3975,6 +3992,7 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whol
 	if _barrier_eats(behind, true):
 		behind_taken = 0   # the spill is the weapon's damage, so a Barrier takes it
 	behind.hp -= behind_taken
+	_note_blow(behind, _strike_no, behind_taken, "spill")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
 	if not behind.alive() and Effects.has(behind, "syrinx_drone"):
 		_drone_mine(behind, _shot(ms, f, amount, null, 1, 0, true))   # the spill is plain damage, so its mine carries no keyword
@@ -4665,9 +4683,11 @@ func _last_act(f: Foe) -> void:
 	f.charge = 0
 	log.append("%s falls, and its last act lands: %s" % [f.display_name, str(blow.get("name", ""))])
 	var struck: Array[int] = []
+	var gauges: Array = []   # each struck machine's [shield, hull] as the act met it
 	if f.hits_all():
 		for m in live_mechs():
 			struck.append(mechs.find(m))
+			gauges.append([m.unit.shield, m.unit.hull])
 			_strike(f, m)
 	else:
 		var t := f.target as MechState
@@ -4675,8 +4695,9 @@ func _last_act(f: Foe) -> void:
 			t = _repick(f)
 		if t != null:
 			struck.append(mechs.find(t))
+			gauges.append([t.unit.shield, t.unit.hull])
 			_strike(f, t)
-	last_acts.append({"foe": f, "name": str(blow.get("name", "")), "mechs": struck})
+	last_acts.append({"foe": f, "name": str(blow.get("name", "")), "mechs": struck, "gauges": gauges})
 
 
 ## A core that falls for good takes its parts with it, on the field and waiting alike.
@@ -4697,6 +4718,11 @@ func _fall_with_cores() -> void:
 		core.regrow_due = []
 		if not parts.is_empty() or not waiting.is_empty():
 			log.append("%s falls, and its parts with it" % core.display_name)
+
+
+## A blow the spend under way landed on `foe`, for the screen (spend_blows).
+func _note_blow(foe: Foe, strike: int, taken: int, kind: String) -> void:
+	spend_blows.append({"foe": foe, "strike": strike, "taken": maxi(0, taken), "hp": foe.hp, "kind": kind})
 
 
 ## The pack a foe fights for, or null (a test's foes come from none).

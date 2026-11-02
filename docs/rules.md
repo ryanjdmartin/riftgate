@@ -124,7 +124,11 @@ defeat when every machine is wrecked. There is no round limit.
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
 - **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
   vent or a buff onto a machine its chip allows. Each die is spent once a round (Rapid excepted). A blank does
-  nothing; an unspent die is lost.
+  nothing; an unspent die is lost. On screen a spend's strikes land one at a time, a beat apart:
+  each foe a strike reaches flashes, its gauge steps down to what the blow left and the blow's
+  number rises off it; a foe the spend kills stands until its killing blow lands, and a last act
+  lands its damage on the machines as it is named. A new spend or the turn's end lands whatever
+  is still waiting at once.
 - **On a machine**: a shield adds its number up to the target's maximum; a vent removes its
   number in heat; a combined entry spends two halves on one machine (the Wake Diffuser: a vent
   that shields, the vent first, then the shield, sized on the heat the vent left, so the

@@ -172,7 +172,13 @@ func _apply_pose() -> void:
 			s._on_withdraw()
 			s._confirm_yes()
 		"strike":
-			# Spend the first mech's face on the first front foe: the attack animation plays.
+			# Spend the first mech's face on the first front foe: the attack animation plays, a
+			# strike at a time (RIFTGATE_SHOT_FRAME catches a burst between its blows), the entry
+			# RIFTGATE_HOLD_ENTRY=<place> names showing first (RIFTGATE_TEAM=skua and its Flechette Pod).
+			var place := int(OS.get_environment("RIFTGATE_HOLD_ENTRY")) - 1
+			if place >= 0 and place < s.sk.mechs[0].die.faces.size():
+				s.sk.mechs[0].face_index = place
+				s._refresh()
 			var foe: Foe = s.sk.front[0]
 			s._use_die(0, foe)
 		"plaque":

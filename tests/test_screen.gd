@@ -165,7 +165,7 @@ func test_attack_then_reroll_flow() -> void:
 	assert_true(attacker >= 0, "someone rolled an attack")
 	var target: Foe = s.sk.targets_for(attacker)[0]
 	assert_true(s._use_die(attacker, target), "attack lands first")
-	assert_true(s._roll_label.visible, "the number flashed over the target")
+	assert_false(s.sk.spend_blows.is_empty(), "its blows recorded, to land a strike at a time")
 	assert_false(s._reroll_btn.disabled, "reroll still available after attacking")
 	s._on_reroll()
 	assert_eq(s.sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 1, "reroll spent after the attack")
@@ -2099,3 +2099,58 @@ func test_a_tap_on_the_reinforcements_pulls_out_their_list() -> void:
 	s._reserve.tapped.emit()
 	assert_true(s._pop.is_empty() and not s._drawer.visible, "a tap on the plaques again puts it away")
 	s.free()
+
+
+
+## A spend's blows land a strike at a time (Ryan, 2 November: "flechette pod and other multistrikes
+## need to clearly show the strikes in order, with individual ticks of damage ... damage needs to be
+## timed to the animation across the board"): the sim records every blow in the order it landed, its
+## strike, what it took and the HP it left; the screen lands each at its strike's beat, and a foe the
+## spend killed dies at its killing blow.
+func test_a_bursts_blows_land_a_strike_at_a_time() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	var gun := Face.attack(2)
+	gun.strikes = 3
+	m.die = Die.single(gun)
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 5, 1)
+	var other := Foe.make("revenant", 30, 1)
+	sk.add_foes([foe, other])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_true(s._use_die(0, foe), "spent")
+	var blows: Array = sk.spend_blows
+	assert_eq(blows.size(), 3, "three blows for three strikes: %s" % str(blows))
+	if blows.size() == 3:
+		assert_eq([int(blows[0]["strike"]), int(blows[1]["strike"]), int(blows[2]["strike"])], [0, 1, 2], "in order, a strike each")
+		assert_eq([int(blows[0]["hp"]), int(blows[1]["hp"]), int(blows[2]["hp"])], [3, 1, -1], "each with the HP it left")
+		assert_eq(int(blows[0]["taken"]), 2, "and what it took")
+	assert_eq(SkirmishScreen._strikes_of(blows), 3, "three strikes")
+	var deaths := s._land_blows(blows, 0.5, {}, [foe], {foe: 5})
+	assert_true(is_equal_approx(float(deaths[foe]), 0.5 + 2.0 * SkirmishScreen.STRIKE_GAP), "it dies at its killing blow, the third: %s" % str(deaths))
+	assert_true(s._shown_hp.is_empty() and s._stand_ins.is_empty(), "off the tree nothing is held back: the gauges read the fight")
+	s.free()
+
+
+## A last act lands its damage with the act: the sim records each struck machine's gauges as the
+## act met them, for the screen to hold until it is named.
+func test_a_last_act_records_the_gauges_it_met() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	sk.add_mech(m)
+	var bomb := Foe.make("revenant", 4, 3)
+	bomb.on_death = {"blow": {"name": "Parting Shot", "factor": 1.0, "keywords": ["all"]}}
+	sk.add_foes([bomb, Foe.make("revenant", 30, 1)])
+	sk.begin()
+	sk.start_round()
+	var shield := m.shield
+	var hull := m.hull
+	assert_true(sk.assign(0, bomb), "spent on it")
+	assert_eq(sk.last_acts.size(), 1, "its last act landed")
+	if sk.last_acts.size() == 1:
+		assert_eq(sk.last_acts[0]["gauges"], [[shield, hull]], "the gauges it met")
+		assert_true(m.shield < shield or m.hull < hull, "and it struck")
