@@ -46,8 +46,8 @@ heat grid's read as it landed), and main took it as a fast-forward on 30 October
 ("merge this into main"). It then carried the bosses' slate on his word the same evening, the
 first seven ("build what can be built, and specify exactly what you need to flesh the rest out,
 including any holes") and the last five ("Yes to all waiting bosses"), for main to take on his
-word; its bible is v0.417 (the page's version 429) and its hangar the page's
-version 181.
+word; its bible is v0.424 (the page's version 436) and its hangar the page's
+version 187.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -539,10 +539,19 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.417 (the page's version
-  429, published 31 October from `claude/brave-cori-fr18de` with the slate's calls of
-  the 31st: the escorts, the Djinn, Gilgamesh wandering, the massive lines, the Tortoise's armour
-  by the tier and the swallow's release; three-way merged onto the live v0.416, which other
+  `docs/design-bible.html` after every change. This file is v0.424 (the page's version
+  436, published 2 November from `claude/brave-cori-fr18de` with the review's calls of the
+  2nd: the Ruby Colossus, the Djinn in the ranks, the wanderer by chance, elites reusable, the
+  flee rule, the Thief's Flee as a section 12 question; three-way merged onto the live v0.423,
+  which other sessions had moved past this branch's v0.417 at 429 with the Honey Badger's hopper
+  and Ore Plate, the five Wainwright & Sutler models' first cuts and the weapon-fire row, four
+  conflicts settled by hand (the version; the Swallowed and Hopper table rows, each side's own;
+  the Built list and section 12's content questions, the live's with this branch's items added);
+  the bible's tables regenerated for the content and seven rows ported by hand, since the
+  script on this branch reads the other branches' engines as planned. Before it, v0.417 (429,
+  31 October, the slate's calls of the 31st: the escorts, the Djinn, Gilgamesh wandering, the
+  massive lines, the Tortoise's armour by the tier and the swallow's release; three-way merged
+  onto the live v0.416, which other
   sessions had moved past this branch's v0.409 at 421 with the Storm Petrel's and the Giant
   Petrel's engines and their table rows, the map halves made minimal, the glow on every hot part
   and a lit part's colour, and two of section 12's questions, the Storm Petrel's burn on basics
@@ -567,7 +576,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 181 (31 October, from
+  acts on a reloaded page). At the page's version 187 (2 November, from
+  `claude/brave-cori-fr18de`, with the review's calls of the 2nd: `content/foes.json` and
+  `content/factions.json`, each live copy checked identical to 181's first, `edits` empty, the
+  page itself another session's republish of 13:07 kept as it stood, its motion panel's forms
+  and pin records this branch's `tools/hangar.html` does not carry); 181 (31 October, from
   `claude/brave-cori-fr18de`, with the slate's calls of the 31st: `content/foes.json`,
   `content/factions.json` and `content/vocabulary.json`, each live copy checked identical to
   174's first, every other file kept as another session's republish of 04:10 left it, the
