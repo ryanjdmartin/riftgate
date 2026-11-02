@@ -89,7 +89,8 @@ never look worse than the stock): a hardpoint declares, per class, the variant i
 scale (lowforge's `fits`), the round launcher the first variant, the Armadillo's ports, the
 Goshawk's pods and the Dingo's nose made to take every class, and `tools/fit_sheet.gd`, every
 machine wearing every class in one sheet; green at 841 tests and 207,420 checks; not yet on main;
-its bible is v0.428 (merged onto the live v0.427 another session published). Next on it: Ryan's read of the glows, the weapons
+its bible is v0.428 (the page's 440, merged onto the live v0.427 another session published);
+the hangar at 191. Next on it: Ryan's read of the glows, the weapons
 firing and the swaps, then the shot crossing the field and a hit moving the machine (the to-do).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
@@ -633,13 +634,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.423 (the
-  page's version 435, published 2 November from `claude/charming-rubin-h954bp`: the weapon-fire
-  row on Ryan's notes of 2 November (the turn before the sound, the hand-built guns' flares, each
-  shot's own colours, a weapon's tags layered, the pivots), three-way merged onto the live v0.422
-  that `claude/affectionate-ramanujan-5d24t6` published at 434 (its v0.421 and v0.422 at 433 and
-  434: the Honey Badger's hopper and Ore Plate, the Cassowary and the track notes among them), the
-  version line the only conflict; on its own v0.420 at 432, the weapon that
+  `docs/design-bible.html` after every change. This file and the live page are v0.428 (the
+  page's version 440, published 2 November from `claude/charming-rubin-h954bp`: the mounts row on
+  Ryan's swap notes (every mount takes every class: a hardpoint's variant and scale per class, the
+  round launcher, the fit sheet; the open row on each class's size settled), three-way merged onto
+  the live v0.427 another session published at 439, the version line the only conflict; on its own
+  v0.423 at 435, the weapon-fire row on his notes of 2 November, merged onto the v0.422 that
+  `claude/affectionate-ramanujan-5d24t6` published at 434, the version line the only conflict; on its own v0.420 at 432, the weapon that
   fired the one that moves, turning onto its foe, flaring in its tags' look and, fixed, firing with
   a cut of its own act, in place of the open attack-acts row and section 12's weapon-fire question;
   onto its own v0.419 at 431, the glows' sixth
@@ -672,8 +673,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 186 (2 November, from
-  `claude/charming-rubin-h954bp`: `motion.js` with the turn before the blow, the hand-built guns'
+  acts on a reloaded page). At the page's version 191 (2 November, from
+  `claude/charming-rubin-h954bp`: the round launcher in every maker's metal with its fire and
+  muzzle, the Classes tab listing it, `motion.js` wearing each mount's declared variant and scale,
+  the Armadillo's, the Goshawk's and the Dingo's models, rigs and renders and the renders'
+  manifest; onto 190, another session's, every file this publish replaced as 186 had sent it and
+  `pins.json`, which carries that session's models, left as it was, `edits` empty), on 186 (2
+  November, from `claude/charming-rubin-h954bp`: `motion.js` with the turn before the blow, the hand-built guns'
   flares, each shot's colours and a weapon's tags layered, the pivots and the fixed weapons' aim
   joints, and the eleven rigs that carry them; onto 185, which `claude/affectionate-ramanujan-5d24t6`
   published (its 184 and 185: the five Wainwright & Sutler models, their rigs and renders, the
