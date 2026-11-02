@@ -1077,7 +1077,7 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 
 ## What a cooldown costs an entry (21 October): every round it stays dark after this one, the
 ## share of the die's rolls it would have shown, at what it is worth now; its own or the one
-## its machine's passives grant (the Kite's), the longer. Rapid's switch-off ends with this
+## its machine's passives grant (the Kite's), the longer. A cooldown of one ends with this
 ## round and costs nothing here.
 static func cooldown_cost(ms: Skirmish.MechState, f: Face, worth: float) -> float:
 	var later := maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f)) - 1
@@ -1332,7 +1332,7 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				if f.rolls_target:
 					score += roll_gain(who)   # the Reheat Uplink's roll on the machine it lands on
 				if f.action_price > 0:
-					# Spent on itself, the Booster goes dark for the round (Rapid's switch-off): the
+					# Spent on itself, the Booster goes dark for the round (its cooldown of one): the
 					# ally's action it could still buy once an ally has spent is given up.
 					score -= action_ahead(sk, ms, f)
 			if Effects.quick_turn_live(ms.unit, f):

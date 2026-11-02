@@ -74,7 +74,7 @@ const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every st
 const DECAY_HALF := 5    # halves at its owner's tick, rounded down, gone at zero (Overcharged, 18 October: a halving rule has no duration)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
-## the machine did to itself (a rapid component's own switch-off keeps the turn finite).
+## the machine did to itself (a component's own cooldown, the price a Rapid piece pays).
 const CLEANSABLE := "cleansable"
 
 ## The engine's own statuses, granted by keywords and foe attacks. Names are placeholders
@@ -1847,9 +1847,9 @@ static func ordinal(n: int) -> String:
 ## Switch one die entry off until the end of `until_round`: the entry shows dark, the
 ## component itself is untouched. Applied to the target's showing entry by a foe's disable
 ## (through the mech's next turn) and by a spent entry's own cooldown (`source` "cooldown":
-## the rounds it prints, this one included, Rapid's switch-off a cooldown of one). A foe's
-## disable can be cleansed; a cooldown cannot (it is the piece's price, and a cleanse that
-## lifted Rapid's would start an infinite turn).
+## the rounds it prints, this one included). A foe's disable can be cleansed; a cooldown
+## cannot (it is the piece's price, and a cleanse that lifted a Rapid piece's would start an
+## infinite turn).
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var cooldown := source == "cooldown"
 	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Disabled",
@@ -1992,8 +1992,8 @@ static func is_entry_disabled(u, index: int) -> bool:
 	return false
 
 
-## Is the entry switched off by something a cleanse clears (a foe's disable), rather than by a
-## rapid component's own switch-off, which keeps the turn finite and no cleanse touches?
+## Is the entry switched off by something a cleanse clears (a foe's disable), rather than by
+## its own cooldown, which keeps a Rapid turn finite and no cleanse touches?
 static func cleansable_disable(u, index: int) -> bool:
 	for m in live(u):
 		if not m.tags.has(CLEANSABLE):

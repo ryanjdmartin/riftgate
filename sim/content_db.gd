@@ -1122,22 +1122,21 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		if Array(fd.get("keywords", [])).has("rapid"):
 			errs.append("%s: a rapid entry already rolls again; rolls_again_on is for one that pays a status" % where)
 	# The cooldown (Ryan, 14 October): a printed property, the rounds the entry goes dark once
-	# spent, this one included. Rapid's switch-off is a cooldown of one unless the entry prints
-	# its own, and a cooldown of 0 says none, which only a Rapid entry has to lift.
+	# spent, this one included, a cost the die prints by its clock; Rapid carries none of its own
+	# (Ryan, 2 November: "Rapid does not have a native Cooldown, it needs to be displayed always"),
+	# so an entry with none leaves it out.
 	var rapid := Array(fd.get("keywords", [])).has("rapid")
 	if fd.has("cooldown"):
 		var cd = fd["cooldown"]
-		if not (cd is int or cd is float) or float(cd) < 0.0 or float(cd) != floorf(float(cd)):
-			errs.append("%s: cooldown is a whole number of rounds, 0 or more" % where)
-		elif int(cd) == 0 and not rapid:
-			errs.append("%s: cooldown 0 lifts Rapid's switch-off, and an entry without Rapid has none to lift" % where)
+		if not (cd is int or cd is float) or float(cd) < 1.0 or float(cd) != floorf(float(cd)):
+			errs.append("%s: cooldown is a whole number of rounds, 1 or more; an entry with none leaves it out" % where)
 	# Every Rapid piece carries a limiter (Ryan, 15 October): a cooldown, heat or Volatile, so
 	# no chain is free; one that prints no cooldown pays heat or hull every spend. A piece locked
 	# on a stepping die has the cylinder and its odds for its limiter (the Cassowary's Spin-Up,
 	# Ryan, 19 October: a combo piece, its spin a true roll that lands on itself one time in its
 	# die's size, to be spent again, the high roll he allowed; the exit, a stepping-die piece that
 	# ever chains for sure gets a limiter of its own).
-	if rapid and not planned and not stepped and fd.has("cooldown") and int(fd["cooldown"]) == 0 \
+	if rapid and not planned and not stepped and int(fd.get("cooldown", 0)) <= 0 \
 			and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0:
 		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
 	# A reach over every foe or every ally is a keyword since 2 November (Ryan: "a targeting mode,

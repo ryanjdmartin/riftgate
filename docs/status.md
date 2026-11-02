@@ -25,7 +25,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 899 tests, 209,075 checks, green on `ccr-bb178c9b-l6airv` (2 November: Ryan's playtest
+- Tests: 899 tests, 209,072 checks, green on `ccr-bb178c9b-l6airv` (2 November: Ryan's playtest
   list of 2 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -210,11 +210,14 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   but we need more options first"). His follow-ups the same day: the die's faces in one
   standard format ("the faces are crowded and they don't need to be"): a main icon that holds
   whom it is aimed at, the number under it, the costs along the foot as a mark and a number (the
-  cooldown's clock among them, the hull a riveted plate), keywords down the edge. The main icons
-  are containers (a weapon's reticle, equipment's diamond, the shield, a vent's housing) and
-  the targeting marks one width (a straight arrow Direct, a curved one Indirect, his three
-  hexes for a machine: "standardize the width ... so that either can fit inside any main
-  symbol"); equipment prints no number, a buff's status a chip with its stacks; a reload is a
+  cooldown's clock among them, always shown: Rapid carries no cooldown of its own, each Rapid
+  piece printing its own, "Rapid does not have a native Cooldown"; the hull a machine's body),
+  keywords down the edge. The main icons are containers drawn in the HUD's own lines ("look too
+  amateurish ... fits the rest of our visual design": a weapon's chamfered sight, equipment's
+  module, the double-lined shield, a vent's heat sink) and the targeting marks one width (a
+  tracer Direct, a lobbed trajectory Indirect, his three hex cells for a machine:
+  "standardize the width ... so that either can fit inside any main symbol"); equipment
+  prints no number, a buff's status a chip with its stacks; a reload is a
   vent, its ammo its number; the self and ally chips and the buff and debuff arrows gone, the
   foes' intents keeping theirs ("The arrow can be changed but not to the equipment one"); a
   reach over every foe a keyword, Every Foe, and its mirror Every Ally ("Every foe is a targeting

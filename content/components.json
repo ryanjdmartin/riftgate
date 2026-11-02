@@ -425,6 +425,7 @@
     "niche": ""
    },
    "face": {
+    "cooldown": 1,
     "kind": "shield",
     "power": 6,
     "keywords": [
@@ -527,6 +528,7 @@
     "niche": "The tempo tool: a rapid entry so a control frame gets another look at its die."
    },
    "face": {
+    "cooldown": 1,
     "kind": "attack",
     "reach": "direct",
     "power": 2,
@@ -590,8 +592,7 @@
      "cryo"
     ],
     "heat": 1,
-    "cryo": 1,
-    "cooldown": 0
+    "cryo": 1
    },
    "passive": null,
    "tags": [
@@ -1428,7 +1429,6 @@
     "keywords": [
      "rapid"
     ],
-    "cooldown": 0,
     "spins": true
    },
    "passive": null,
@@ -1674,6 +1674,7 @@
     "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat."
    },
    "face": {
+    "cooldown": 1,
     "kind": "vent",
     "power": 0,
     "targets": "self",
@@ -1722,6 +1723,7 @@
     "niche": "The Lammergeier's second lock, the mark (Ryan, 17 and 21 October): the foe carries the Syrinx Drone, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties, one mine a drone; if the foe already carries Exposed the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. Its pair is the Needletail: the interceptor Exposes a foe on its die, the bomber drones it free on its own, and the team's kill leaves its shot for whoever steps in."
    },
    "face": {
+    "cooldown": 1,
     "kind": "attack",
     "reach": "indirect",
     "power": 0,
@@ -1827,6 +1829,7 @@
     "notes": "Built 30 October: the self use is the Reveille Horn's Rallied; the ally use (ally_action, the Horn's charged act-again priced in rerolls) takes an ally whose die is spent while the team holds the price, and its Rapid gives the Petrel its turn back."
    },
    "face": {
+    "cooldown": 1,
     "kind": "buff",
     "status": "rallied",
     "stacks": 1,

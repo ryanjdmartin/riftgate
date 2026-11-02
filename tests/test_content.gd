@@ -1698,6 +1698,7 @@ func test_rapid_rides_on_anything_and_shock_on_weapons_only() -> void:
 	var db := _fresh()
 	var vent: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	vent["face"]["keywords"] = ["rapid"]
+	vent["face"]["cooldown"] = 1   # its limiter, printed (Rapid carries none of its own, 2 November)
 	vent["tier"] = 1
 	db.components["test_vent"] = vent
 	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
@@ -2066,19 +2067,20 @@ func test_the_flakshot_lays_flak_and_the_validator_asks_for_its_stacks() -> void
 
 
 ## The cooldown (Ryan, 14 October) and Rapid's limiter (15 October): a cooldown is a whole
-## number of rounds, 0 lifts Rapid's switch-off and nothing else's, and a Rapid entry that
-## prints no cooldown pays heat or Volatile every spend.
+## number of rounds, one or more, printed on the piece, Rapid carrying none of its own (Ryan, 2
+## November: "Rapid does not have a native Cooldown, it needs to be displayed always"); a Rapid
+## entry that prints none pays heat, Volatile or a shield cost every spend.
 func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -> void:
 	var db := _fresh()
 	var base: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	base["tier"] = 1
 	var cases := {
-		"test_free": [{"keywords": ["rapid"], "cooldown": 0}, "carries another limiter"],
-		"test_hot": [{"keywords": ["rapid"], "cooldown": 0, "heat": 5}, ""],
-		"test_bite": [{"keywords": ["rapid"], "volatile": 3, "cooldown": 0}, ""],
-		"test_toll": [{"keywords": ["rapid"], "shield_cost": 2, "cooldown": 0}, ""],
-		"test_switch": [{"keywords": ["rapid"]}, ""],
-		"test_lift": [{"cooldown": 0}, "has none to lift"],
+		"test_free": [{"keywords": ["rapid"]}, "carries another limiter"],
+		"test_hot": [{"keywords": ["rapid"], "heat": 5}, ""],
+		"test_bite": [{"keywords": ["rapid"], "volatile": 3}, ""],
+		"test_toll": [{"keywords": ["rapid"], "shield_cost": 2}, ""],
+		"test_switch": [{"keywords": ["rapid"], "cooldown": 1}, ""],
+		"test_zero": [{"cooldown": 0}, "leaves it out"],
 		"test_negative": [{"cooldown": -1}, "whole number of rounds"],
 		"test_two": [{"cooldown": 2}, ""],
 	}
@@ -2097,8 +2099,13 @@ func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -
 		else:
 			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused for '%s': %s" % [id, want, str(mine)])
 	var flinger: Dictionary = db.components["cryo_flinger"]["face"]
-	assert_eq(int(flinger.get("cooldown", -1)), 0, "the Cryo Flinger prints no cooldown, its heat the limiter (Ryan's design, 20 October)")
+	assert_false(flinger.has("cooldown"), "the Cryo Flinger prints no cooldown, its heat the limiter (Ryan's design, 20 October)")
 	assert_eq(db.build_face(flinger).cooldown_rounds(), 0, "and the engine runs it so")
+	var shipped := ContentDB.load_default()
+	for cid in shipped.components.keys():
+		var fd: Dictionary = shipped.components[cid].get("face", {})
+		if Array(fd.get("keywords", [])).has("rapid") and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0 and not bool(fd.get("spins", false)):
+			assert_true(int(fd.get("cooldown", 0)) >= 1, "%s: a cold Rapid piece prints its cooldown" % cid)
 
 
 ## A piece locked on a stepping die has the cylinder for its Rapid's limiter (the Cassowary's

@@ -143,10 +143,12 @@ defeat when every machine is wrecked. There is no round limit.
   Equipment, Shield, Vent, and the blank. Every entry reads one way: one main icon at the top
   says what it is and holds whom it is aimed at, how much sits under it, its costs run along
   the foot, its keywords down the edge. The main icons hold their targeting mark, all the
-  targeting marks one width: a weapon is a reticle, a ring with four ticks; equipment, a buff or
-  a debuff, a diamond; a shield its shield; a vent a housing with its heat rising off it. Aimed
-  at a foe it holds a straight arrow (Direct) or a curved one (Indirect); spent on a machine,
-  the three hexes. A weapon, a shield and a vent print their number under it; equipment prints
+  targeting marks one width, drawn in the HUD's own lines (chamfered as the die is, a thin line
+  inside each): a weapon is a sight, a chamfered frame open at each side's middle; equipment, a
+  buff or a debuff, a module, a diamond with its tips cut; a shield its shield; a vent a heat
+  sink, a housing with fins standing off it. Aimed at a foe it holds a tracer (Direct, a
+  straight shaft with an open chevron head) or a trajectory (Indirect, a lobbed curve); spent on
+  a machine, the three hex cells sharing their edges, a lit one filled. A weapon, a shield and a vent print their number under it; equipment prints
   none, and the status a buff grants is a chip on the edge with its stacks. A reload is a vent
   (the Musk Ox's Quick Reload, its one piece), its number the ammo it loads behind the shells'
   mark. What else a spend does sits small beside the number (strikes, the shield a vent also
@@ -354,20 +356,22 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   laid shot purges the foe it lands on.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
-  Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the
-  component prints its own; one that prints none pays heat, hull or shield every spend (the
-  Cryo Flinger, 1 heat). A Rapid component always carries a limiter, a cooldown, heat or a
-  cost; a piece locked on a stepping die (the Cassowary's Spin-Up) needs none: its spin
+  Rapid carries no cooldown of its own: a Rapid component prints its cooldown (most print one,
+  dark for the rest of the round), shown on the die by its clock like any cooldown, or pays
+  heat, hull or shield every spend (the Cryo Flinger, 1 heat). A Rapid component always
+  carries a limiter, a cooldown, heat or a cost; a piece locked on a stepping die (the
+  Cassowary's Spin-Up) needs none: its spin
   is a true roll over every chamber, so it lands on itself one time in six, to be spent again,
   a fifth of a spin more a spend on average, and every other way back to it in a round runs
-  through the other chambers' switch-offs or the team's rerolls.
+  through the other chambers' cooldowns or the team's rerolls.
   A Rapid vent is never below tier three (the one is the Musk Ox's quick reload, locked on a
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
 - **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
-  and equipment its machine aims at a foe, the Kite's two; the longer stands): once spent, the entry is dark for
-  that many rounds, this one included, shown on the die with the turns left; the die may
-  land on it, and a dark entry does nothing. No cleanse lifts it.
+  and equipment its machine aims at a foe, the Kite's two; the longer stands), a cost printed
+  along the entry's foot by its clock: once spent, the entry is dark for that many rounds, this
+  one included, shown on the die with the turns left; the die may land on it, and a dark entry
+  does nothing. No cleanse lifts it.
 - **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
@@ -390,7 +394,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   of Flak after the blow (Flak 2: two stacks), so the blow that lays it never
   feeds on it and a later strike of the same spend does.
 - **Costs** are printed along the entry's foot with its heat, each a mark and a number with no
-  word and no sign (the heat's thermometer, the shield's, the hull's riveted plate, a forging
+  word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
   gun's shells, the cooldown's clock), never a keyword and never a chip: a
   **hull cost** (Volatile 3: spending it costs its owner 3 hull, past shield and armour,
   before it acts, and a machine it leaves at nothing is wrecked; the Umbra Inducer, the

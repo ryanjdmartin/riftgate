@@ -866,7 +866,8 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 
 
 ## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
-## the share of the die's rolls it would have shown; Rapid's switch-off costs nothing.
+## the share of the die's rolls it would have shown; a cooldown of one, ending with the round,
+## costs nothing.
 func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1)
@@ -874,6 +875,7 @@ func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void
 	var slow := Face.attack(30, L)
 	slow.cooldown = 3
 	var zap := Face.attack(30, L, [K.RAPID])
+	zap.cooldown = 1
 	sk.add_mech(_mech("A", Die.of([plain, slow, Face.attack(10, L), Face.attack(10, L)]), 40, 100))
 	sk.add_foes([_ghoul(500, 1)])
 	sk.begin()
@@ -881,7 +883,7 @@ func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var base := pol.attack_score(sk, ms, plain, sk.front[0])
 	assert_true(absf(pol.attack_score(sk, ms, slow, sk.front[0]) - base * 0.5) < 0.01, "two rounds dark after this one on a four-entry die: half its worth")
-	assert_eq(Policy.cooldown_cost(ms, zap, base), 0.0, "Rapid's switch-off ends with the round")
+	assert_eq(Policy.cooldown_cost(ms, zap, base), 0.0, "a cooldown of one ends with the round")
 
 
 ## A stepping die's reroll is worth the entry it steps to, known in advance (the Cassowary's

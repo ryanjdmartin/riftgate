@@ -1926,11 +1926,10 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		log.append("%s siphons: +%d heat for every blow it takes this round" % [ms.unit.display_name, f.heat_per_blow])
 	ms.assigned = true
 	# A cooldown (Ryan, 14 October): the entry goes dark for the rounds it prints, this one
-	# included, shown on the die with the rounds left; Rapid's switch-off is a cooldown of one,
-	# the rest of this round, there to stop an infinite turn (Face.cooldown_rounds).
+	# included, shown on the die with the rounds left. Rapid carries none of its own (Ryan, 2
+	# November: "Rapid does not have a native Cooldown, it needs to be displayed always"): a Rapid
+	# piece prints its cooldown, or pays heat or hull every spend (Face.cooldown_rounds).
 	var cd := cooldown_of(ms, f)
-	if free:
-		cd = maxi(cd, 1)   # made Rapid by its target: Rapid's switch-off, the rest of the round
 	if cd > 0:
 		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd - 1)
 	# The reset gun (the Kite's Pinion Driver, 21 October): if its spend killed, every entry dark
@@ -3888,8 +3887,8 @@ func _drone_mine(foe: Foe, shot: Dictionary) -> void:
 
 
 ## The rounds an entry goes dark once this machine spends it, this one included: its own
-## cooldown (Rapid's switch-off one) or the one its machine's passives grant every weapon and
-## debuff (the Kite's two), the longer.
+## printed cooldown or the one its machine's passives grant every weapon and debuff (the Kite's
+## two), the longer.
 func cooldown_of(ms: MechState, f: Face) -> int:
 	if f == null:
 		return 0

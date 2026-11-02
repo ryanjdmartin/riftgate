@@ -144,7 +144,7 @@ var fires_hopper: int = 0     # an attack: the most loads one shot fires from th
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
 var braces: int = 0           # any entry: spending it Braces its owner, this many stacks, until the round's end (the Breaching Plow, 12 October)
 var rolls_again_on: String = ""   # any entry: spending it spends a stack of this status, if its owner has one, and the die rolls again (the Nemesis's fists on rage, 12 October)
-var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October); -1 reads its keywords (Rapid's switch-off, 1), 0 none
+var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October), printed on it; -1 or 0, none (Rapid carries none of its own, 2 November)
 var spins: bool = false       # a Rapid entry whose free reroll is a true spin over every entry, itself included (the Cassowary's Spin-Up: Ryan's exception to the reroll rule, 19 October)
 ## Reaches every foe in the fight from its target (an attack: the Whip Scorpion's Heliographic
 ## Siphon, a lure-all, 20 October) or every machine it may be spent on (a shield or a buff: the
@@ -547,39 +547,27 @@ func column_number() -> int:
 
 
 ## The rounds this entry goes dark once spent, this one included (the cooldown row, 14
-## October): what it prints, or else Rapid's switch-off, a cooldown of one, the rest of this
-## round; none for any other entry.
+## October): what it prints, a cost the die shows by its clock; none when it prints none.
 func cooldown_rounds() -> int:
-	if cooldown >= 0:
-		return cooldown
-	return 1 if has(Keyword.RAPID) else 0
+	return maxi(cooldown, 0)   # the entry's own, printed; Rapid carries none (Ryan, 2 November: "Rapid does not have a native Cooldown")
 
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
 ## Vents all, the missing-hull bonus, the talons' kill rule, the hopper, the brace, rolling
-## again on a status (the Nemesis's rage), a Rapid entry's "no cooldown", a spin (the Spin-Up's),
-## the Siphon's heat a blow, or a labelled effect. A cooldown is a cost the die prints with its
-## clock, and a reload the ammo the die prints with its shells (Ryan, 2 November), so neither is.
+## again on a status (the Nemesis's rage), a spin (the Spin-Up's), the Siphon's heat a blow, or a
+## labelled effect. A cooldown is a cost the die prints with its clock, and a reload the ammo the
+## die prints with its shells (Ryan, 2 November), so neither is.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
-		or no_cooldown() or spins or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
+		or spins or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or spray \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
 
 
-## Whether the entry prints a cooldown of its own: a number past Rapid's switch-off, or a
-## Rapid entry's "no cooldown".
+## Whether the entry prints a cooldown: one round or more.
 func printed_cooldown() -> bool:
-	if has(Keyword.RAPID):
-		return cooldown == 0 or cooldown > 1
 	return cooldown > 0
-
-
-## A Rapid entry printing no switch-off (cooldown 0): a rule of its own, the star's, since no
-## clock along its foot says it.
-func no_cooldown() -> bool:
-	return has(Keyword.RAPID) and cooldown == 0
 
 
 func is_attack() -> bool:
@@ -848,8 +836,6 @@ func rule_phrases() -> Array[String]:
 			out.append(_action_text())
 		if rolls_target:
 			out.append("its die rolls again")
-	if no_cooldown():
-		out.append(cooldown_text().strip_edges())   # a cooldown is a cost the die prints by its clock, never a rule
 	out.append_array(_spin_phrases())
 	if not charged.is_empty():
 		out.append("%s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), charged_form().describe()])
@@ -870,12 +856,9 @@ func _action_text() -> String:
 	return "on an ally whose die is spent, %d reroll%s: its die rolls again and it acts again" % [action_price, "" if action_price == 1 else "s"]
 
 
-## A printed cooldown as the entry's text says it: " cooldown 2", or " no cooldown" on a Rapid
-## entry that prints none; nothing for Rapid's own switch-off or an entry with no cooldown.
+## A printed cooldown as the entry's text says it, " cooldown 2"; nothing for an entry with none.
 func cooldown_text() -> String:
-	if not printed_cooldown():
-		return ""
-	return " no cooldown" if cooldown == 0 else " cooldown %d" % cooldown
+	return " cooldown %d" % cooldown if printed_cooldown() else ""
 
 
 func number_text() -> String:

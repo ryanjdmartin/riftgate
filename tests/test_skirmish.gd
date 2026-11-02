@@ -2124,6 +2124,7 @@ func test_rapid_may_roll_onto_a_copy_of_itself() -> void:
 func test_rapid_rolls_again_for_free_and_switches_itself_off_for_the_round() -> void:
 	var sk := Skirmish.new(2)
 	var gun := Face.attack(10, L, K.RAPID)
+	gun.cooldown = 1   # its own, printed: Rapid carries none (2 November)
 	var d := Die.of([gun, Face.attack(30, L)])
 	var m := _mech("A", d)
 	sk.add_mech(m)
@@ -2533,7 +2534,7 @@ func test_cleanse_clears_what_foes_did_and_not_a_cooldown() -> void:
 	assert_true("\n".join(sk.log).contains("cleanses B: "), "the log says what went")
 	Effects.disable_entry(a, 0, "cooldown", sk.round)
 	var gone := Effects.cleanse(a)
-	assert_true(gone.is_empty(), "a cooldown (Rapid's switch-off among them) is not the cleanse's to lift")
+	assert_true(gone.is_empty(), "a cooldown is not the cleanse's to lift")
 	assert_true(Effects.is_entry_disabled(a, 0), "and it stays")
 
 
@@ -6566,13 +6567,17 @@ func test_a_printed_cooldown_darkens_its_entry_for_the_rounds_it_says() -> void:
 	assert_eq(round_trip.cooldown_rounds(), 2, "and a save keeps it")
 
 
-## Rapid's switch-off is a cooldown of one, the rest of this round (the cooldown row); a Rapid
-## entry that prints no cooldown chains onto a copy of itself and back, its heat the limiter.
+## Rapid carries no cooldown of its own (Ryan, 2 November: "Rapid does not have a native
+## Cooldown, it needs to be displayed always"): a Rapid piece prints its cooldown, a cost the die
+## shows by its clock, and goes dark for the rounds it says; one that prints none chains onto a
+## copy of itself and back, its heat the limiter.
 func test_rapid_is_a_cooldown_of_one_unless_it_prints_none() -> void:
 	var zap := Face.attack(10, L, [K.RAPID])
-	assert_eq(zap.cooldown_rounds(), 1, "Rapid's own cooldown")
-	assert_eq(zap.describe(), "10 rapid", "unsaid: the keyword says it")
-	assert_false(zap.has_unique_rule(), "and no star for it")
+	assert_eq(zap.cooldown_rounds(), 0, "Rapid alone darkens nothing")
+	zap.cooldown = 1
+	assert_eq(zap.cooldown_rounds(), 1, "the piece's own cooldown")
+	assert_eq(zap.describe(), "10 rapid cooldown 1", "said as the piece's")
+	assert_false(zap.has_unique_rule(), "a cost, its clock along the foot, never the star")
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.of([zap, Face.attack(10, L)]), 40, 100)
 	sk.add_mech(m)
@@ -6587,11 +6592,10 @@ func test_rapid_is_a_cooldown_of_one_unless_it_prints_none() -> void:
 	sk.end_round()
 	sk.start_round()
 	assert_false(Effects.is_entry_disabled(m, 0), "lit the next round")
-	var hot := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["rapid"], "heat": 5, "cooldown": 0})
+	var hot := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["rapid"], "heat": 5})
 	assert_eq(hot.cooldown_rounds(), 0, "it prints none")
-	assert_eq(hot.describe(), "10 rapid no cooldown (+5 heat)", "and says so")
-	assert_true(hot.has_unique_rule(), "a printed rule")
-	assert_eq(int(hot.to_dict()["cooldown"]), 0, "kept through a save")
+	assert_eq(hot.describe(), "10 rapid (+5 heat)", "and says none")
+	assert_false(hot.has_unique_rule(), "no rule to star")
 	var s2 := Skirmish.new(1)
 	var n := _mech("B", Die.of([hot, hot.duplicate_face()]), 40, 100)
 	s2.add_mech(n)
@@ -6666,9 +6670,9 @@ func test_a_stepping_die_spins_once_then_steps_on_every_roll() -> void:
 ## A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October): a Rapid entry whose
 ## free reroll is a true roll over every entry, itself included, on a stepping die or any.
 func test_a_spinning_rapid_entry_rolls_true_and_may_land_on_itself() -> void:
-	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["rapid"], "cooldown": 0, "spins": true})
+	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["rapid"], "spins": true})
 	assert_true(spin.spins and spin.has_unique_rule(), "a printed rule: the star")
-	assert_eq(spin.describe(), "Spun Up ×1 rapid no cooldown spins the die (self only)", "the entry says what it does")
+	assert_eq(spin.describe(), "Spun Up ×1 rapid spins the die (self only)", "the entry says what it does")
 	var landed := {}
 	for seed_value in range(60):
 		var sk := Skirmish.new(seed_value)
@@ -8279,6 +8283,7 @@ func test_a_weapons_mine_of_0_takes_the_foes_flak() -> void:
 func test_the_drone_leaves_the_killing_shot_and_is_rapid_on_a_foe_already_exposed() -> void:
 	var drone := Face.attack(0, I)
 	drone.drones = true
+	drone.cooldown = 1   # the Syrinx Drone prints its cooldown, as content does (2 November)
 	var sk := Skirmish.new(1, 2)
 	var m := _mech("Droner", Die.of([drone, Face.attack(10, L), Face.shield(10)]), 40, 100)
 	m.grant_passive(MINER)
@@ -8402,7 +8407,7 @@ func test_a_setup_is_rapid_once_a_round_on_the_gate() -> void:
 	ms.face_index = 0
 	assert_true(sk.assign(0, sk.front[0]), "the debuff spent")
 	assert_false(ms.assigned, "is Rapid: the machine acts again")
-	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "the entry dark for the rest of the round")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 0, "lit still: the gate's Rapid carries no cooldown (2 November), the gate itself the limit")
 	assert_true("\n".join(sk.log).contains("a quick turn, rolls again"), "the log says so")
 	assert_false(sk.shown_face(ms, coil).has(K.RAPID), "the gate closed for the round")
 	ms.face_index = 1

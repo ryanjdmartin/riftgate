@@ -10,64 +10,69 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 	match id:
 		# ---- the die's targeting marks (Ryan, 2 November): one width, so any fits in any main mark
 		"aim_direct":
-			# Direct: a straight arrow, the shot along a line.
-			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s * 0.45, 0), color, width)
-			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(s, 0), c + Vector2(s * 0.32, -s * 0.4), c + Vector2(s * 0.32, s * 0.4)]), color)
+			# Direct: a tracer, a straight shaft and an open chevron head, the HUD's own line.
+			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s - width * 0.5, 0), color, width)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(s * 0.42, -s * 0.5), c + Vector2(s, 0), c + Vector2(s * 0.42, s * 0.5)]), color, width)
 		"aim_indirect":
-			# Indirect: a curved arrow, lobbed over the front and falling on any foe.
-			var a0 := c + Vector2(-s, s * 0.32)
-			var a1 := c + Vector2(-s * 0.15, -s * 0.85)
-			var a2 := c + Vector2(s * 0.62, s * 0.18)
+			# Indirect: a trajectory lobbed over the front, an open chevron where it falls.
+			var a0 := c + Vector2(-s, s * 0.45)
+			var a1 := c + Vector2(-s * 0.1, -s * 0.95)
+			var a2 := c + Vector2(s * 0.78, s * 0.3)
 			var arc := PackedVector2Array()
-			for i in range(15):
-				var t := i / 14.0
+			for i in range(21):
+				var t := i / 20.0
 				arc.append(a0.lerp(a1, t).lerp(a1.lerp(a2, t), t))
 			ci.draw_polyline(arc, color, width)
 			var dir := (a2 - a1).normalized()
 			var nrm := Vector2(-dir.y, dir.x)
-			var tip := a2 + dir * s * 0.42
-			ci.draw_colored_polygon(PackedVector2Array([tip, a2 - dir * s * 0.12 + nrm * s * 0.38, a2 - dir * s * 0.12 - nrm * s * 0.38]), color)
+			var tip := a2 + dir * width
+			ci.draw_polyline(PackedVector2Array([tip - dir * s * 0.5 + nrm * s * 0.42, tip, tip - dir * s * 0.5 - nrm * s * 0.42]), color, width)
 		# ---- the die's main marks (Ryan, 2 November): each holds a targeting mark inside it
 		"weapon":
-			# A weapon: a reticle, its ring holding whom it is aimed at, four ticks standing off it.
-			var ring := s * 0.78
-			ci.draw_arc(c, ring, 0.0, TAU, 40, color, width)
-			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
-				ci.draw_line(c + d * ring, c + d * s, color, width)
-		"hull":
-			# The hull (2 November, a cost's mark): a riveted plate.
-			Hud.stroke_poly(ci, Hud.cut(Rect2(c - Vector2(s * 0.9, s * 0.72), Vector2(s * 1.8, s * 1.44)), s * 0.3), color, width)
-			for d in [Vector2(-0.48, -0.32), Vector2(0.48, -0.32), Vector2(-0.48, 0.32), Vector2(0.48, 0.32)]:
-				ci.draw_circle(c + d * s, maxf(1.0, s * 0.13), color)
+			# A weapon: a sight cut as the die's own plate (its top-left and bottom-right corners
+			# chamfered), open at each side's middle, a thin line inside it at the die's size.
+			var frame := Hud.cut(Rect2(c - Vector2(s * 0.9, s * 0.9), Vector2(s * 1.8, s * 1.8)), s * 0.42)
+			_stroke_gapped(ci, frame, s * 0.34, color, width)
+			if size >= INNER_FROM:
+				Hud.stroke_poly(ci, Hud.cut(Rect2(c - Vector2(s * 0.7, s * 0.7), Vector2(s * 1.4, s * 1.4)), s * 0.3), Color(color, color.a * INNER_ALPHA), 1.0)
 		"equipment":
 			# Equipment, one mark for a buff and a debuff (Ryan, 2 November: "merging buff/debuff
-			# into one 'equipment' face type"; the arrows "look like push/pull"): a diamond, holding
-			# whom it is aimed at, an arrow at a foe or the three hexes for a machine.
-			ci.draw_polyline(PackedVector2Array([c + Vector2(0, -s), c + Vector2(s, 0), c + Vector2(0, s), c + Vector2(-s, 0), c + Vector2(0, -s)]), color, width)
+			# into one 'equipment' face type"; the arrows "look like push/pull"): a module, a diamond
+			# with its tips cut, holding whom it is aimed at, an arrow at a foe or the three hexes.
+			Hud.stroke_poly(ci, _module(c, s * 0.98, s * 0.2), color, width)
+			if size >= INNER_FROM:
+				Hud.stroke_poly(ci, _module(c, s * 0.8, s * 0.16), Color(color, color.a * INNER_ALPHA), 1.0)
+		"hull":
+			# The hull (2 November, a cost's mark): a machine's body, shoulders over its torso.
+			Hud.stroke_poly(ci, PackedVector2Array([c + Vector2(-s * 0.95, -s * 0.45), c + Vector2(-s * 0.35, -s * 0.85), c + Vector2(s * 0.35, -s * 0.85), c + Vector2(s * 0.95, -s * 0.45), c + Vector2(s * 0.55, s * 0.9), c + Vector2(-s * 0.55, s * 0.9)]), color, width)
+			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.1), c + Vector2(s * 0.3, -s * 0.1), color, width)
 		"aim_self", "aim_ally", "aim_any":
 			# Whom a piece spent on machines reaches (Ryan, 2 November: "just 3 connected hexes:
 			# center filled for self-only, left/right filled for ally only, all filled for self or
-			# ally"): three hexes in a row, the middle its own machine, a filled one a machine it
-			# may be spent on. As wide as the size given; each cell drawn a little inside its place,
-			# so three lit read as three, never one band.
+			# ally"): three hex cells sharing their edges, as the map's are, the middle its own
+			# machine; a cell it may be spent on lit, filled inside its edge. As wide as the size given.
 			var r := size / (3.0 * sqrt(3.0))
-			var cell := r - maxf(1.2, width * 0.8)
 			for k in range(3):
 				var hc := c + Vector2((k - 1) * sqrt(3.0) * r, 0.0)
 				var hex := PackedVector2Array()
-				for i in range(7):
+				for i in range(6):
 					var a := PI / 6.0 + i * PI / 3.0
-					hex.append(hc + Vector2(cos(a), sin(a)) * cell)
-				var lit := id == "aim_any" or (id == "aim_self") == (k == 1)
-				if lit:
-					ci.draw_colored_polygon(hex, color)
-				ci.draw_polyline(hex, color, width)
+					hex.append(hc + Vector2(cos(a), sin(a)) * r)
+				if id == "aim_any" or (id == "aim_self") == (k == 1):
+					var lit := PackedVector2Array()
+					for q in hex:
+						lit.append(hc + (q - hc) * 0.72)
+					ci.draw_colored_polygon(lit, color)
+				Hud.stroke_poly(ci, hex, color, maxf(1.0, width * 0.7))
 		"shield":
 			var pts := PackedVector2Array([
 				c + Vector2(-s, -s * 0.85), c + Vector2(s, -s * 0.85), c + Vector2(s, s * 0.1),
 				c + Vector2(0, s), c + Vector2(-s, s * 0.1), c + Vector2(-s, -s * 0.85),
 			])
 			ci.draw_polyline(pts, color, width)
+			if size >= INNER_FROM:
+				# At the die's size, a thin line inside it, as every main mark wears one.
+				Hud.stroke_poly(ci, PackedVector2Array([c + Vector2(-s * 0.8, -s * 0.68), c + Vector2(s * 0.8, -s * 0.68), c + Vector2(s * 0.8, s * 0.04), c + Vector2(0, s * 0.77), c + Vector2(-s * 0.8, s * 0.04)]), Color(color, color.a * INNER_ALPHA), 1.0)
 		"seal", "unseal":
 			# The Armadillo's shell (Ryan, 2 November: "armadillo needs indication when a die face
 			# will transform it"): a seam, and an arrow either side driving shut onto it (seal) or
@@ -110,12 +115,15 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_colored_polygon(PackedVector2Array([head + Vector2(-s * 0.42, -s * 0.12), head + Vector2(s * 0.12, -s * 0.38), head + Vector2(s * 0.1, s * 0.22)]), color)
 			ci.draw_circle(c, s * 0.2, color)
 		"vent":
-			# A vent (2 November): a housing holding whom it cools, its heat rising off the top in
-			# three chevrons, the old vent mark's.
-			Hud.stroke_poly(ci, Hud.cut(Rect2(c + Vector2(-s * 0.92, -s * 0.3), Vector2(s * 1.84, s * 1.2)), s * 0.22), color, width)
-			for k in range(3):
-				var x := (k - 1) * s * 0.55
-				ci.draw_polyline(PackedVector2Array([c + Vector2(x - s * 0.2, -s * 0.52), c + Vector2(x, -s * 0.8), c + Vector2(x + s * 0.2, -s * 0.52)]), color, width)
+			# A vent (2 November): a heat sink, its housing cut as the die's plate holding whom it
+			# cools, four fins standing off its top; a thin line inside it at the die's size.
+			var housing := Rect2(c + Vector2(-s * 0.92, -s * 0.42), Vector2(s * 1.84, s * 1.3))
+			Hud.stroke_poly(ci, Hud.cut(housing, s * 0.26), color, width)
+			for k in range(4):
+				var x := -s * 0.63 + k * s * 0.42
+				ci.draw_line(c + Vector2(x, -s * 0.6), c + Vector2(x, -s * 0.95), color, width)
+			if size >= INNER_FROM:
+				Hud.stroke_poly(ci, Hud.cut(housing.grow(-s * 0.16), s * 0.18), Color(color, color.a * INNER_ALPHA), 1.0)
 		"blank":
 			ci.draw_line(c + Vector2(-s, -s), c + Vector2(s, s), color, width)
 			ci.draw_line(c + Vector2(-s, s), c + Vector2(s, -s), color, width)
@@ -589,8 +597,34 @@ static func primary_for(face: Face) -> String:
 ## Where a main mark holds its targeting mark, as a share of its size below its centre (the
 ## shield's wide top, the vent's housing under its heat), and how wide that mark is: one width
 ## for the arrows and the hexes, so any fits in any (Ryan, 2 November).
-const INNER := {"shield": -0.15, "vent": 0.15}
-const AIM_SHARE := 0.64
+const INNER := {"shield": -0.15, "vent": 0.115}
+const AIM_SHARE := 0.62
+const INNER_FROM := 30.0    # a main mark this wide or wider wears its thin inner line
+const INNER_ALPHA := 0.4
+
+
+## A closed outline with a gap at the middle of each straight side long enough to take one:
+## the weapon's sight, open where a reticle's ticks would be.
+static func _stroke_gapped(ci: CanvasItem, pts: PackedVector2Array, gap: float, color: Color, width: float) -> void:
+	var n := pts.size()
+	for i in range(n):
+		var a: Vector2 = pts[i]
+		var b: Vector2 = pts[(i + 1) % n]
+		if a.distance_to(b) > gap * 2.4 and (absf(a.x - b.x) < 0.5 or absf(a.y - b.y) < 0.5):
+			var mid := (a + b) * 0.5
+			var dir := (b - a).normalized()
+			ci.draw_line(a, mid - dir * gap * 0.5, color, width)
+			ci.draw_line(mid + dir * gap * 0.5, b, color, width)
+		else:
+			ci.draw_line(a, b, color, width)
+
+
+## A module: a diamond `r` from its centre to each tip, each tip cut flat by `tip`.
+static func _module(c: Vector2, r: float, tip: float) -> PackedVector2Array:
+	return PackedVector2Array([
+		c + Vector2(-tip, -r + tip), c + Vector2(tip, -r + tip), c + Vector2(r - tip, -tip), c + Vector2(r - tip, tip),
+		c + Vector2(tip, r - tip), c + Vector2(-tip, r - tip), c + Vector2(-r + tip, tip), c + Vector2(-r + tip, -tip),
+	])
 
 
 ## An entry's main mark as its die draws it (Ryan, 2 November: "Rework main symbols so that they

@@ -385,7 +385,7 @@
    "id": "volatile",
    "category": "component_property",
    "name": "Volatile",
-   "codex": "A cost printed on any kind of component, along its foot beside its heat, the hull's plate and a number. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a disabled entry costs nothing.",
+   "codex": "A cost printed on any kind of component, along its foot beside its heat, the hull's mark (a machine's body) and a number. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a disabled entry costs nothing.",
    "status": "implemented",
    "design": {
     "holes": "Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does."
@@ -436,7 +436,7 @@
    "id": "rapid",
    "category": "keyword",
    "name": "Rapid",
-   "codex": "After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries a cooldown of one, so the component is dark for the rest of this round, unless it prints its own cooldown; one that prints none pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon.",
+   "codex": "After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries no cooldown of its own: a Rapid component prints its cooldown, a cost the die shows by its clock, or pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon.",
    "status": "implemented",
    "design": {
     "holes": "Every Rapid piece carries a limiter (a cooldown, heat or Volatile), which the validator holds content to; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row)."
@@ -1448,7 +1448,7 @@
    "id": "cooldown",
    "category": "component_property",
    "name": "Cooldown",
-   "codex": "A cost on a component, printed along its foot as a clock and a number: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the clock and the turns left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and \"no cooldown\" lifts even that. No cleanse lifts a cooldown.",
+   "codex": "A cost on a component, printed along its foot as a clock and a number: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the clock and the turns left; the die can still land on it, and nothing in it acts. Rapid carries none of its own. No cleanse lifts a cooldown.",
    "status": "implemented",
    "design": {
     "holes": "A price as heat is. The city's battlefield abilities count their own cooldowns in phases."
