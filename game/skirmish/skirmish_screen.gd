@@ -176,7 +176,11 @@ var _bg: HudBackdrop = null
 var _plaque: Plaque = null           # the other world's window: a foe's named move, announced
 var _plaque_debug_at := 0.0
 var _prey: PreyLayer = null          # the predator sense: the foes' ground dimmed, eyes on the foes looking away
-var _reserve: ReserveView = null     # the reinforcements waiting, by rank, in the formation's right gutter
+var _reserve: ReserveView = null     # the reinforcements waiting, by rank, at the formation's right edge
+const RESERVE_W := 50.0              # its plaques' width
+var _drawer: HudPanel = null         # the waiting foes' list, pulled out by a tap on the plaques
+var _drawer_rows: VBoxContainer = null
+const DRAWER_W := 330.0
 
 
 var _fight_t := 0.0                  # seconds since the feed opened: the header's clock
@@ -513,10 +517,11 @@ func _build() -> void:
 	_place(_pair_marks, Vector2.ZERO, Vector2(W, H))
 	# The reinforcements waiting, by rank (Ryan, 15 October), in the gutter right of the formation:
 	# a plaque at each rank's height, a tall one between them for a massive foe.
+	# Big enough to read and to tap (Ryan, 2 November: "reinforcement icons need to be bigger and
+	# more obvious"): they stand over the last column's empty margin, and a tap pulls out the list.
 	_reserve = ReserveView.new()
-	var right := _col_x(sk.columns - 1) + SLOT_SIZE.x * 0.5 + 2.0
-	var gutter := minf(W - right - 1.0, 44.0)
-	_place(_reserve, Vector2(W - 1.0 - gutter, BACK_Y), Vector2(gutter, FRONT_Y + SLOT_SIZE.y - BACK_Y))
+	_place(_reserve, Vector2(W - 1.0 - RESERVE_W, BACK_Y), Vector2(RESERVE_W, FRONT_Y + SLOT_SIZE.y - BACK_Y))
+	_reserve.tapped.connect(_on_reserve_tapped)
 	_reserve.back_y = Vector2(0.0, SLOT_SIZE.y)
 	_reserve.front_y = Vector2(FRONT_Y - BACK_Y, FRONT_Y - BACK_Y + SLOT_SIZE.y)
 	# The corrupted side's tear, over the foes and their ground alike (Ryan, 23 September:
@@ -711,6 +716,7 @@ func _build() -> void:
 	_details_entry.visible = false
 	dv.add_child(_details_entry)
 
+	_build_drawer()
 	_build_codex()
 	_build_confirm()
 	_build_outcome()
@@ -2067,6 +2073,7 @@ func _close_pop() -> void:
 	var die := _pop.has("die")
 	_pop = {}
 	_details.visible = false
+	_hide_drawer()
 	if die:
 		_refresh(false)   # its marks and its lure's preview go with it
 	else:
@@ -2085,6 +2092,10 @@ func _read_die() -> int:
 func _show_pop() -> void:
 	if _pop.is_empty():
 		return
+	if _pop.has("reserve"):
+		_show_reserve()
+		return
+	_hide_drawer()
 	_details.fill_alpha = 1.0 if _pop.has("die") else POP_ALPHA   # a die's over the log's lines: a readout of text reads over nothing
 	_details.queue_redraw()
 	if _pop.has("die"):
@@ -2109,6 +2120,118 @@ func _show_pop() -> void:
 			_close_pop()
 			return
 		_show_details(_mine_text(at.x, at.y, shots), _slot_views[at.x][at.y])
+
+
+## A tap on the reinforcements' plaques pulls their list out, a tap on them again puts it away, one
+## readout at a time with the units' and the dice's.
+func _on_reserve_tapped() -> void:
+	if _replay_shade.visible:
+		return
+	if _pop.has("reserve"):
+		_close_pop()
+	else:
+		_open_pop({"reserve": true})
+
+
+func _build_drawer() -> void:
+	_drawer = HudPanel.new(14.0)
+	_drawer.fill_alpha = 0.97
+	_drawer.mouse_filter = Control.MOUSE_FILTER_STOP   # a tap on it reaches nothing under it, as a readout's
+	_drawer.visible = false
+	add_child(_drawer)
+	_drawer_rows = VBoxContainer.new()
+	_drawer_rows.add_theme_constant_override("separation", 6)
+	_drawer_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_drawer.add_child(_drawer_rows)
+
+
+## The waiting foes' list (Ryan, 2 November: "Ideally we can tap them to pull them out and see the
+## queue"): out from the right edge beside the plaques, the foes waiting by what they step into
+## (a massive one's column first, then each rank), each kind its picture, its name and its count,
+## and how they come in. It follows the fight while out.
+func _show_reserve() -> void:
+	_details.visible = false
+	var was_out := _drawer.visible
+	for c in _drawer_rows.get_children():
+		_drawer_rows.remove_child(c)
+		c.queue_free()
+	var waiting := sk.reinforcements.size()
+	_drawer_rows.add_child(Hud.label("REINFORCEMENTS // %d WAITING" % waiting, 17, Palette.INK, Hud.display_bold()))
+	for kind in ["massive", "front", "back"]:
+		var order: Array[String] = []
+		var count := {}
+		var any := {}
+		for f in sk.reinforcements:
+			var k := "massive" if f.is_massive() else ("back" if f.prefers_back else "front")
+			if k != kind:
+				continue
+			if not count.has(f.content_id):
+				order.append(f.content_id)
+				any[f.content_id] = f
+			count[f.content_id] = int(count.get(f.content_id, 0)) + 1
+		if order.is_empty():
+			continue
+		var head: String = {"massive": "MASSIVE // TAKES A WHOLE COLUMN", "front": "FRONT RANK", "back": "BACK RANK"}[kind]
+		_drawer_rows.add_child(Hud.label(head, 12, Color(Palette.HUD, 0.8), Hud.mono()))
+		for id in order:
+			_drawer_rows.add_child(_reserve_row(any[id], int(count[id])))
+	var note := Hud.label("At the round's end each empty slot takes one of its rank at random, an empty column a massive one first.", 13, Palette.MUTED)
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note.custom_minimum_size = Vector2(DRAWER_W - 28.0, 0.0)
+	_drawer_rows.add_child(note)
+	_drawer.size = Vector2(DRAWER_W, 0.0)
+	_drawer.reset_size()
+	_drawer.size = Vector2(DRAWER_W, _drawer.get_combined_minimum_size().y)
+	var at := Vector2(W - RESERVE_W - 6.0 - DRAWER_W, BACK_Y + 4.0)
+	at.y = clampf(at.y, 8.0, maxf(8.0, H - 8.0 - _drawer.size.y))
+	_drawer.visible = true
+	_drawer.move_to_front()
+	_reserve.open = true
+	_reserve.queue_redraw()
+	if was_out or not is_inside_tree():
+		_drawer.position = at
+		return
+	# Pulled out from the right edge (Ryan's "pull them out").
+	_drawer.position = Vector2(W, at.y)
+	var tw := create_tween()
+	tw.tween_property(_drawer, "position", at, 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+
+## One kind of foe waiting: its picture, its name and its count.
+func _reserve_row(f: Foe, n: int) -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var pic := TextureRect.new()
+	pic.custom_minimum_size = Vector2(52.0, 52.0)
+	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tex := Sprites.combat_foe(f.content_id)
+	if tex != null:
+		var cut := AtlasTexture.new()
+		cut.atlas = tex
+		cut.region = Sprites.used_rect(tex)
+		pic.texture = cut
+		pic.flip_h = bool(ContentDB.load_default().foes.get(f.content_id, {}).get("flip", false))
+	row.add_child(pic)
+	var name := Hud.label(f.display_name, 18, Palette.INK)
+	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(name)
+	var count := Hud.label("×%d" % n, 22, Palette.ENEMY, Hud.mono())
+	count.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(count)
+	return row
+
+
+func _hide_drawer() -> void:
+	if _drawer != null:
+		_drawer.visible = false
+	if _reserve != null and _reserve.open:
+		_reserve.open = false
+		_reserve.queue_redraw()
 
 
 ## A tap on nothing (the ground, the black) closes an open readout; with none open, it sets a

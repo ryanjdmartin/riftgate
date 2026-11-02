@@ -753,10 +753,12 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
   left on a tie, its round over like a split's half's; with no room it waits in the
   reinforcements. A foe joining the reinforcements is shown going in: it flies into its rank's
-  count in the gutter, which goes up as it lands.
+  count at the formation's edge, which goes up as it lands.
 - **Reinforcements**: at the round's end every empty column takes a waiting massive foe
   first, then each empty slot, left to right, a random waiting foe of its rank. The formation
-  shows how many wait for each rank, and the massive ones apart, in its right gutter.
+  shows how many wait for each rank, and the massive ones apart, on plaques at its right edge;
+  a tap on them pulls out the list of the foes waiting, each kind by what it steps into with
+  its picture and its count, one readout at a time with the units' and the dice's.
 
 ### Withdrawal
 Open at any point of the player's turn, but in the boss's fight, which ends in the boss unit's
