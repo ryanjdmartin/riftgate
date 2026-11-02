@@ -52,6 +52,12 @@ extends RefCounted
 ## the capacitor turns while Spun Up), eased up to speed and down again. RIFTGATE_COUNT_DEBUG=1
 ## counts every display up a part a second until it falls; RIFTGATE_SPIN_DEBUG=1 holds every
 ## status's spin and lets it go in turn; both on both screens, to judge them running.
+##
+## An act may lock a spinner with a step (the sidecar's `spin_step` and an act's `locks`, b.spin's
+## step: the Cottonmouth's drum, its chamber 60 degrees, Ryan, 2 November): as the act starts the
+## spin parks on its next step ahead, the way it turns, over PARK_TIME, and holds there while the
+## act plays, the act's own track on it adding whole steps; when the act ends that turn goes into
+## the spin's own, so nothing unwinds, and the idle turn takes up again from where it stands.
 
 const GAP_MIN := 6.0          # seconds between acts, at least (Ryan, 7 October: from 2.5, as the acts overlapped too often)
 const GAP_MAX := 12.0         # and at most (from 6.5)
@@ -94,6 +100,7 @@ const COUNT_FALL := 0.35        # and to go dark again, a flare's fading include
 const COUNT_DEBUG_PERIOD := 1.0 # seconds a step under RIFTGATE_COUNT_DEBUG
 const SPIN_HELD_EASE := 0.45    # seconds a status's spin takes to come up to speed, and to run down
 const SPIN_DEBUG_PERIOD := 3.0  # seconds a status's spin is held, then let go, under RIFTGATE_SPIN_DEBUG
+const PARK_TIME := 0.3          # seconds a locked spin takes to park on its next step ahead
 const STEP := 1.0 / 60.0      # the longest step the acts and the servos advance by, so a long tick (a frozen frame) plays the same as frames
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
@@ -113,6 +120,8 @@ var _handoff_at := 0.0             # the travel (`_dist`) the stride it changes 
 var _handing := false              # whether it is rolling and the handoff counts (false standing)
 var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
 var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
+var spin_steps: Dictionary = {}    # joint -> degrees a step: a spinner an act may lock (b.spin's step; the sidecar's spin_step)
+var _locked: Dictionary = {}       # joint -> [from, to, seconds into its park]: a spinner the act playing parks and holds (its `locks`)
 var held_spins: Dictionary = {}    # status -> {joint: degrees a second}: turned while the machine carries the status (b.spin_held: the Cassowary's capacitor while Spun Up)
 var _held_on: Dictionary = {}      # status -> whether it is held (hold_spin)
 var _held_speed: Dictionary = {}   # joint -> degrees a second it turns at now, eased toward what its held statuses ask
@@ -497,6 +506,12 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		if joints.has(name) and sp[name] is Array and (sp[name] as Array).size() >= 2:
 			spinners[name] = [float(sp[name][0]), float(sp[name][1])]
 			_spun[name] = 0.0
+	spin_steps = {}
+	_locked.clear()
+	var ss: Dictionary = side.get("spin_step", {}) if side.get("spin_step", {}) is Dictionary else {}
+	for name in ss.keys():
+		if spinners.has(name) and float(ss[name]) > 0.0:
+			spin_steps[name] = float(ss[name])
 	held_spins = {}
 	_held_on.clear()
 	_held_speed.clear()
@@ -871,10 +886,17 @@ func tick(delta: float) -> void:
 				up[d["source"]] = (maxi(0, int(d["n"])) + 1) % ((d["parts"] as Array).size() + 1)   # up to every part lit, then it falls
 			show_counts(up)
 	_counts_step(delta)
-	# What turns without end turns whatever else is happening, faster as the move blends in.
+	# What turns without end turns whatever else is happening, faster as the move blends in,
+	# unless the act playing locks it: then it eases onto its step and holds there.
 	for name in spinners.keys():
-		var r: Array = spinners[name]
-		_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta, 360.0)
+		if _locked.has(name):
+			var lk: Array = _locked[name]
+			lk[2] = minf(float(lk[2]) + delta, PARK_TIME)
+			var u := float(lk[2]) / PARK_TIME
+			_spun[name] = lerpf(float(lk[0]), float(lk[1]), u * u * (3.0 - 2.0 * u))
+		else:
+			var r: Array = spinners[name]
+			_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta, 360.0)
 		moved = true
 	if debug_move and not gait.is_empty():
 		drive(top_speed, 0.0, 0.0, delta)
@@ -969,8 +991,10 @@ func play(name: String) -> bool:
 
 
 func _start(a: Dictionary) -> void:
+	_unlock_spins()
 	_current = a
 	_t = 0.0
+	_lock_spins(a)
 	last_act = str(a["name"])
 	var duration := float(a.get("duration", 0.0))
 	var ease := str(a.get("ease", "smooth"))
@@ -998,6 +1022,7 @@ func _start(a: Dictionary) -> void:
 ## way round (a loop or a spin ends a whole turn on, which is the pose it started in, so it
 ## never unwinds; Ryan, 5 October).
 func _end_act() -> void:
+	_unlock_spins()
 	for name in _servo.keys():
 		var st: Array = _servo[name]
 		var r: Vector3 = st[0]
@@ -1013,6 +1038,48 @@ func _end_act() -> void:
 	_body_want_rot = Vector3.ZERO
 	_body_want_slide = Vector3.ZERO
 	_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)
+
+
+## Park every spinner the act locks (its `locks`): from where its turn stands to its next step
+## ahead, the way it turns (never back), eased over PARK_TIME in tick, then held.
+func _lock_spins(a: Dictionary) -> void:
+	for jn in a.get("locks", []):
+		var name := str(jn)
+		if not spinners.has(name) or not spin_steps.has(name):
+			continue
+		var step := float(spin_steps[name])
+		var from := float(_spun[name])
+		var r: Array = spinners[name]
+		var to := (ceilf(from / step - 0.0001) if lerpf(float(r[0]), float(r[1]), _blend) >= 0.0 else floorf(from / step + 0.0001)) * step
+		_locked[name] = [from, to, 0.0]
+
+
+## Let every locked spinner go: the act's own turn on it (whole steps) goes into its turn, so it
+## never unwinds, and its idle turn takes up again from where it stands.
+func _unlock_spins() -> void:
+	for name in _locked.keys():
+		var ax := ["pitch", "yaw", "roll"].find(str(meta.get(name, {}).get("axis", "pitch")))
+		var turned := float(_spun[name])
+		if _servo.has(name):
+			var st: Array = _servo[name]
+			var r: Vector3 = st[0]
+			var v: Vector3 = st[1]
+			turned += r[ax]
+			r[ax] = 0.0
+			v[ax] = 0.0
+			st[0] = r
+			st[1] = v
+		if _act_rot.has(name):
+			var ar: Vector3 = _act_rot[name]
+			ar[ax] = 0.0
+			_act_rot[name] = ar
+		_spun[name] = fposmod(turned, 360.0)
+	_locked.clear()
+
+
+## Whether the act playing holds a spinner parked (its `locks`).
+func spin_locked(name: String) -> bool:
+	return _locked.has(name)
 
 
 ## What the act asks of each part at this moment: the servos chase it (_follow).
