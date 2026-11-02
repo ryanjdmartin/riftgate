@@ -162,7 +162,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   October (`docs/measurements.md`, directions): the default team kills each boss in 4 to 5
   rounds, the stock four in 7 to 12; the fourth machine is the run's biggest step in wear (a
   trio of the same kit loses three to ten times the hull), and in rounds by its role; the
-  slate's blanket point of armour costs the small-blow kits about 40% more rounds at tier one.
+  slate's blanket point of armour costs the small-blow kits about 40% more rounds at tier one;
+  the escorts read on the 2nd (`--boss-tiers`, every boss at tiers two and three with its escort
+  and alone): most cost a round or two and some hull, three make walls (the Vampire Lord's and the
+  Fallen Weapon's at tier three, the Matador's for a trio), since menace does not sort them and a
+  boss's own mechanic amplifies them, and the Ruby Colossus is a wall alone at its first numbers.
   Found on the way: the balance runner had never set the foe factory (fixed); the test runner
   passes a test that crashes after its first check (the to-do); a second swallow moved the
   first's release (fixed on the 2nd). Waiting on Ryan: the blanket armour at tier one and a

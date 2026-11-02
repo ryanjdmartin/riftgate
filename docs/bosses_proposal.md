@@ -166,6 +166,19 @@ content pass. Open:
 4. **The Cinder Tortoise at tier three** (flagged 2 November, left for now on Ryan's word):
    armour 3, and 5 withdrawn, against blows of 2 to 6, so a round of basics is zeroed; its
    tier-three read with a tier-matched kit is the to-do's, on the runner's `--boss-tiers` cells.
+5. **The escorts' weight** (Ryan, 2 November: "Do the escorts hold up, and support the boss's
+   game plan?"; the read in `docs/measurements.md`, the same day). Most are a tax of a round or
+   two and some hull on a stock team; three are walls at tier three, and not the heaviest by
+   menace but the ones the boss's own mechanic amplifies: the Vampire Lord's (the Lich readies it
+   to rise again and the Wight mends it, on a boss that drains), the Fallen Weapon's (Drive rallies
+   two Great Needlers' countdowns), the Matador's for a trio (a Death Knight's guard and a Spectre's
+   cleanse under the cape). Claude's moves, his to mark: the Lich out of the Lord's (Wights ×2 in
+   its place), Barbed Needlers for the Fallen Weapon's Great Needlers, Wights ×3 and the Spectre
+   for the Matador's; the Phantom Train's to Ghosts (the raising starts at once, which is its
+   plan) and the Obsidian Tyrant's to stokers (a Drake and the lizards, so its Crunch burns while
+   the rider is killed), since those two are the Marsh's and the Peak's rank and file rather than
+   their boss's plan. The Ruby Colossus is a wall alone at its first numbers: the tentacles' blows
+   and their regrowth are the levers (the what-if of the 2nd).
 
 ## Art the forge owes
 

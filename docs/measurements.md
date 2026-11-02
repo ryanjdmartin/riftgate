@@ -3825,3 +3825,57 @@ Read. The blanket point costs the small-blow kits about 40% more rounds and the 
 about a quarter; Wainwright & Sutler's trio loses fights only with it (the Fallen Weapon 40% won,
 Rotbloom 80%, the Behemoth 95%), and wins every one without. At 0 the stock four takes 5 to 7
 rounds and the default team 3.3 to 4.7, against the kill-time test's three to five.
+
+**The bosses' escorts at tiers two and three** (2 November; `tools/balance.gd --boss-tiers`, 20 seeds,
+the greedy rung; the default team (the Honey Badger, the Clydesdale, the Kite) and the stock four
+(the Armadillo, the Prairie Dog, the Badger, the Baboon), each with its tier-zero kit, so a
+tier-three cell is a trio or a four above its station and the escort's delta, never the cell, is
+the read; a direction). Each boss at the tier's numbers (`ContentDB.scale_boss`, its parts with
+it) with its own escort composition and alone. Won, mean rounds of the fights won, mean hull lost
+over every fight, the escort's figure before the lone boss's:
+
+| Boss, tier | Its escort | Default team: won, rounds, hull | Stock four: won, rounds, hull |
+|---|---|---|---|
+| Rotbloom, 2 | Mandrake, Goblin Guard | 100 / 100%, 7.3 / 5.8, 24 / 13% | 100 / 100%, 11.8 / 11.1, 16 / 13% |
+| Rotbloom, 3 | Alraune ×2, Mandrake, Goblin Guard | 75 / 95%, 12.5 / 9.0, 65 / 39% | 90 / 100%, 15.6 / 12.6, 52 / 25% |
+| Floraison, 2 | Warg ×2 | 100 / 100%, 6.9 / 6.0, 20 / 17% | 100 / 100%, 10.8 / 9.4, 9 / 8% |
+| Floraison, 3 | Alpha Warg ×2, Goblin Captain, Goblin Guard | 90 / 100%, 11.4 / 7.2, 57 / 22% | 100 / 100%, 15.1 / 11.3, 15 / 12% |
+| The King Gel, 2 | Gel ×3, Bubble Gel ×2 | 100 / 100%, 9.8 / 5.3, 24 / 4% | 100 / 100%, 13.3 / 8.8, 2 / 1% |
+| The King Gel, 3 | Bubble Gel ×3, Metal Gel ×2, Gel | 100 / 100%, 13.4 / 6.8, 41 / 13% | 100 / 100%, 15.9 / 10.3, 8 / 2% |
+| The Ruby Colossus, 2 | Basilisk, Pit Antlion | 30 / 65%, 12.5 / 11.4, 90 / 64% | 15 / 80%, 18.0 / 18.6, 93 / 57% |
+| The Ruby Colossus, 3 | Gorgon ×2, Antlion Queen, Pit Antlion | 0 / 15%, – / 12.0, 100 / 94% | 0 / 20%, – / 21.8, 100 / 93% |
+| The Fallen Weapon, 2 | Barbed Needler, Basilisk | 100 / 100%, 10.2 / 8.2, 32 / 25% | 100 / 100%, 14.8 / 13.2, 21 / 11% |
+| The Fallen Weapon, 3 | Great Needler ×2, Gorgon ×2 | 35 / 95%, 11.9 / 12.5, 86 / 45% | 20 / 100%, 19.5 / 17.2, 95 / 20% |
+| The Pilgrim, 2 | Needler ×2 | 100 / 100%, 6.4 / 5.7, 19 / 15% | 100 / 100%, 9.0 / 8.6, 15 / 14% |
+| The Pilgrim, 3 | Barbed Needler ×2, Great Needler ×2 | 100 / 100%, 8.8 / 7.1, 37 / 26% | 100 / 100%, 11.4 / 10.2, 28 / 18% |
+| The Matador, 2 | Wight ×2 | 100 / 100%, 7.5 / 6.0, 17 / 9% | 100 / 100%, 11.1 / 9.7, 3 / 1% |
+| The Matador, 3 | Wight ×2, Death Knight, Spectre | 35 / 100%, 13.0 / 8.5, 86 / 25% | 90 / 100%, 20.4 / 11.8, 51 / 3% |
+| The Phantom Train, 2 | Revenant, Spectre | 100 / 100%, 8.3 / 5.9, 14 / 6% | 100 / 100%, 11.8 / 10.6, 2 / 1% |
+| The Phantom Train, 3 | Wight ×2, Wraith, Spectre | 90 / 100%, 14.3 / 7.0, 50 / 12% | 100 / 100%, 18.9 / 13.1, 28 / 3% |
+| The Vampire Lord, 2 | Death Knight, Wight | 95 / 100%, 14.6 / 6.5, 37 / 7% | 100 / 100%, 15.8 / 14.4, 8 / 3% |
+| The Vampire Lord, 3 | Dread Knight, Death Knight, Lich, Wight | 0 / 85%, – / 13.8, 100 / 43% | 5 / 100%, 50.0 / 15.4, 99 / 2% |
+| The Behemoth, 2 | Bomb, Grenade | 100 / 100%, 9.9 / 7.8, 32 / 23% | 100 / 100%, 9.9 / 10.0, 10 / 10% |
+| The Behemoth, 3 | Grenade ×2, Balloon ×2 | 100 / 100%, 13.1 / 8.3, 59 / 34% | 100 / 100%, 14.8 / 12.4, 25 / 18% |
+| The Cinder Tortoise, 2 | Fire Lizard ×2 | 100 / 100%, 11.1 / 7.3, 18 / 7% | 100 / 100%, 16.7 / 17.1, 3 / 0% |
+| The Cinder Tortoise, 3 | Magma Lizard ×2, Fire Lizard, Wyvern | 80 / 100%, 29.9 / 19.3, 70 / 34% | 90 / 100%, 31.5 / 25.3, 25 / 2% |
+| The Obsidian Tyrant, 2 | Wyvern, Fire Lizard | 100 / 100%, 7.2 / 6.3, 9 / 3% | 100 / 100%, 12.8 / 10.4, 12 / 5% |
+| The Obsidian Tyrant, 3 | Red Dragon, Wyvern ×2, Magma Lizard | 100 / 100%, 11.2 / 7.2, 31 / 6% | 100 / 100%, 17.2 / 12.8, 37 / 14% |
+
+Read. What an escort adds runs from a round or two and a few points of hull (the Pilgrim's
+Needlers, Floraison's Wargs, the Behemoth's Bombs, the Tyrant's lizards, the Tortoise's at tier
+two) to a wall: the Vampire Lord's four risers at tier three take the default team from 85% won
+to none and the four from 100% to 5% at fifty rounds; the Fallen Weapon's Great Needlers and
+Gorgons under its Drive take them from 95 and 100% to 35 and 20%; the Matador's Wights, Death
+Knight and Spectre take the trio from 100% to 35%. The escorts were never weighed against each
+other, and menace does not sort them: by the runner's menace summed from content they run from
+9 to 20 at tier two and 23 to 46 at tier three, the heaviest the Tyrant's (46), which costs no
+wins, where the walls sit on the escorts a boss's own mechanic amplifies: the Lich's Reraise and
+the Wight's mend on a boss that drains and rises (35), Drive's rally on the Great Needlers'
+countdowns (38), a Death Knight's grave guard and a Spectre's cleanse under the cape (27). The King Gel's court
+costs rounds and little hull, the merge's fuel being the merge's target, and the Tyrant's escort
+costs hull and no wins: the two shapes an escort should take. And the Ruby Colossus is a wall
+alone, at tier two (65 and 80% won at 64 and 57% hull) and at tier three (15 and 20%), where the
+Fallen Weapon alone wins 95 and 100%: its two tentacles are two more attackers a round (a breach
+of 7 to 8 and two strikes of 5 to 6 at the tiers) that grow back in two rounds, its Whirlsand
+takes a third of a trio's dice for two rounds, which the greedy cannot answer (it values no
+swallow), and Ultima lands 13 to 15 on every machine; its numbers are the evening's placeholders.
