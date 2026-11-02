@@ -21,7 +21,7 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 819 tests, 206,074 checks, green (31 October, the slate's calls of the 31st on
+- Tests: 820 tests, 206,084 checks, green (2 November, the review of the slate's calls on
   `claude/brave-cori-fr18de`; 787 and 205,261 on main), about four minutes in a cloud session,
   twenty on a slow one. A cloud session gets Godot 4.7's Linux build and the project's first
   import from the repository's session-start hook (`.claude/hooks/session-start.sh`,

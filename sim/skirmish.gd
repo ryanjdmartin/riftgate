@@ -3381,8 +3381,12 @@ func _swallow(f: Foe, t: MechState, rounds: int) -> void:
 	if is_out(t) or swallowable().size() < 2:
 		log.append("%s: %s, and finds nothing it may take" % [f.display_name, what])
 		return
+	# A quarter of its HP lost from here lets the machine go (31 October); a second machine
+	# taken while it holds one joins the first's count, so the release its chip promised never
+	# moves back (the review of 2 November).
+	if swallowed_by(f) == null:
+		f.swallow_mark = f.hp
 	Effects.grant_for_rounds(t.unit, Effects.STATUS["swallowed"], swallow_source(f), round + rounds)
-	f.swallow_mark = f.hp   # a quarter of its HP lost from here lets the machine go (31 October)
 	t.assigned = true
 	for foe in field_foes():
 		if foe.alive() and foe.target == t:
@@ -3397,9 +3401,10 @@ static func swallow_release_at(f: Foe) -> int:
 	return f.swallow_mark - ceili(f.hp_max / 4.0)
 
 
-## The damage still to deal a swallower before it lets its machine go: its chip's number.
+## The damage still to deal a swallower before it lets its machine go: its chip's number, never
+## more than it has left (a swallower already under a quarter lets go only as it falls).
 static func swallow_left(f: Foe) -> int:
-	return maxi(0, f.hp - swallow_release_at(f))
+	return clampi(f.hp - swallow_release_at(f), 0, maxi(0, f.hp))
 
 
 ## The machine a foe holds swallowed, or null.

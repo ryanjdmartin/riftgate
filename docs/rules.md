@@ -433,8 +433,9 @@ On a machine:
   at every machine passes it by; its cooling, ticks and overheats are its own) for the swallow's
   rounds, its die standing down as each round opens, until its swallower falls, or until its
   swallower has lost a quarter of its maximum HP since the swallow (its chip counting the damage
-  still to deal); either lets it go at once, and in the player's turn it acts that round. The
-  swallower loses nothing else. Nothing cleanses it.
+  still to deal, never more than the swallower has left; a second machine taken while it holds
+  one joins that count, and the quarter lets both go); either lets it go at once, and in the
+  player's turn it acts that round. The swallower loses nothing else. Nothing cleanses it.
 - **Muster** (store, the Swallowtail's): its charges. Every die that rolls fills
   it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
   charges; it starts each fight empty and never decays. It shows as a smooth bar under the

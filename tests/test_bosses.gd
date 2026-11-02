@@ -722,6 +722,41 @@ func test_a_swallow_lets_go_once_its_swallower_loses_a_quarter_of_its_hp() -> vo
 	assert_true("\n".join(sk.log).contains("reels, and lets A go"), "the log says so")
 
 
+## A second machine swallowed while the first is held joins the first's count (the review of
+## 2 November): the mark stays the first swallow's, so the release the chip promised never moves
+## back, and a quarter lost since lets every machine it holds go. The chip never asks for more
+## damage than the swallower has left.
+func test_a_second_swallow_keeps_the_first_release() -> void:
+	var sk := Skirmish.new(1, 3)
+	for n in ["A", "B", "C"]:
+		sk.add_mech(_mech(n, Die.single(Face.attack(6, I))))
+	var flo := Foe.make("floraison", 40, 10)
+	flo.actions = [{"id": "swallow", "name": "Swallow", "kind": "debuff", "effect": "swallow", "value": 3, "weight": 1, "text": ""}, _move("lash")]
+	sk.add_foes([flo])
+	sk.begin()
+	sk.start_round()
+	flo.action = flo.actions[0]
+	flo.target = sk.mechs[0]
+	sk.end_round()
+	sk.start_round()
+	assert_true(sk.assign(2, flo), "C strikes for 6")
+	assert_eq(Skirmish.swallow_left(flo), 4, "four still to deal")
+	flo.action = flo.actions[0]
+	flo.target = sk.mechs[1]
+	sk.end_round()
+	assert_true(Skirmish.is_swallowed(sk.mechs[1]), "B is swallowed too")
+	assert_eq(flo.swallow_mark, 40, "the first swallow's mark stands")
+	assert_eq(Skirmish.swallow_left(flo), 4, "and the chip still says four")
+	sk.start_round()
+	assert_true(sk.assign(2, flo), "C strikes again")
+	assert_false(Skirmish.is_swallowed(sk.mechs[0]), "a quarter lost: A is let go")
+	assert_false(Skirmish.is_swallowed(sk.mechs[1]), "and B with it")
+	assert_eq(flo.swallow_mark, -1, "the swallower holds nothing")
+	flo.hp = 8
+	flo.swallow_mark = 8
+	assert_eq(Skirmish.swallow_left(flo), 8, "under a quarter already, the chip asks for what it has, no more")
+
+
 ## The wandering elite (31 October: Gilgamesh, the one elite any domain fields, Ryan agreeing
 ## Claude's lean): every foe that wanders leads an elite composition in every domain at every
 ## tier, the last of its elites, and stands at its battle's tier as a boss does, where the other
