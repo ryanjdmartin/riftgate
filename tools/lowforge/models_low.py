@@ -3261,8 +3261,9 @@ goshawk.maker = "kestrel"
 # ---------------------------------------------------------------- the Swallowtail (31 October)
 # Wainwright & Sutler's helicarrier, from the look Ryan picked on 13 October (the third of the
 # multi-rotor's looks, tools/lowforge/looks/ws_multirotor.py's wslook_deck, docs/looks/
-# ws_multirotor.png): a flat iron deck held up by four rotors in rings at its corners, an
-# island on the starboard edge, the crane at the stern with its hook under the hull.
+# ws_multirotor.png): a flat iron deck held up by four rotors at its corners, an island on the
+# starboard edge, the crane at the stern with its hook under the hull. The second round (2
+# November) sank the rotors into wells in housings swept out of the deck's corners.
 
 def _swallowtail_boxes(b, specs, material, label):
     """Several boxes as one part, each (x0, x1, y0, y1, z0, z1): a set of lamps that light
@@ -3289,7 +3290,9 @@ def _swallowtail_band(b, a, c, w, normal, label, material="steel.stripe"):
 
 
 def _swallowtail_inset(pts, d):
-    """A convex outline of (x, y) points, counter-clockwise, moved in by `d` all round."""
+    """An outline of (x, y) points, counter-clockwise, moved in by `d` all round (out, for a
+    `d` under nought): each edge offset and its neighbours met, right for a convex outline and
+    for the deck's gentle concave corners at its waist."""
     lines = []
     for i in range(len(pts)):
         (x0, y0), (x1, y1) = pts[i], pts[(i + 1) % len(pts)]
@@ -3301,6 +3304,42 @@ def _swallowtail_inset(pts, d):
         (p, e), (q, f) = lines[i - 1], lines[i]
         t = ((q[0] - p[0]) * f[1] - (q[1] - p[1]) * f[0]) / (e[0] * f[1] - e[1] * f[0])
         out.append((p[0] + t * e[0], p[1] + t * e[1]))
+    return out
+
+
+def _swallowtail_hull(points):
+    """The convex hull of (x, y) points, counter-clockwise (the monotone chain)."""
+    pts = sorted(set(points))
+    cross = lambda o, a, c: (a[0] - o[0]) * (c[1] - o[1]) - (a[1] - o[1]) * (c[0] - o[0])
+    lower, upper = [], []
+    for q in pts:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], q) <= 0:
+            lower.pop()
+        lower.append(q)
+    for q in reversed(pts):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], q) <= 0:
+            upper.pop()
+        upper.append(q)
+    return lower[:-1] + upper[:-1]
+
+
+def _swallowtail_ngon(c, r, n=16, phase=math.pi / 16):
+    """A regular `n`-gon of (x, y) points about `c`, counter-clockwise: a housing or its
+    well (the phase matches a _tube's sixteen about z, so a lining sits square in its well)."""
+    return [(round(c[0] + r * math.cos(phase + 2.0 * math.pi * k / n), 4), round(c[1] + r * math.sin(phase + 2.0 * math.pi * k / n), 4)) for k in range(n)]
+
+
+def _swallowtail_sweep(c, r, start, end):
+    """A rotor's housing swept into the deck: the outline from `start`, a point on the deck's
+    edge, round the outside of the housing of radius `r` about `c` to `end`, counter-clockwise,
+    its straight runs tangent to the housing (the convex hull of the three), so the deck's side
+    flows out into the housing and back."""
+    h = _swallowtail_hull([start, end] + _swallowtail_ngon(c, r))
+    i, j = h.index(start), h.index(end)
+    out = [h[i]]
+    while i != j:
+        i = (i + 1) % len(h)
+        out.append(h[i])
     return out
 
 
@@ -3332,9 +3371,15 @@ def swallowtail(b):
     tools/lowforge/looks/ws_multirotor.py) and his to-do line: a long flat iron deck with a
     blunt bow on a keel of riveted slab sides banded in the livery, a livery coaming round
     its edge so the maker's brown reads from above, a centre line in hazard dashes and a
-    landing square framed in hazard stripes aft to port; at each corner a rotor drawn as
-    blades in an iron ring on an arm from the hull, the rings' lips in the livery, the rotors
-    always turning, the diagonal pairs against each other. The island on the starboard edge,
+    landing square framed in hazard stripes aft to port; a rotor at each corner, drawn as
+    blades, always turning, the diagonal pairs against each other. Second round, 2 November
+    (Ryan, of the first cut's rings on arms: "the fans look tacked on. The overall shape is
+    good, but it's a barge with fans glued to the side right now"): each rotor turns in a
+    well through the deck, its housing swept out of the deck's corner by straight runs
+    tangent to it, so the deck's plate, its edge and its coaming carry round the four, and
+    under each housing a sponson grows out of the hull's side to carry the well below the
+    deck, banded in the livery as the hull is; the wells lined in dark iron, a cross of
+    girders under each hub. The island on the starboard edge,
     its bridge glazed round, a mast with a lamp and a stack on its roof. The four locked
     pieces modelled in, no pins: the Mooring Screens' projectors, a squared post at each
     corner of the deck with a cup on a mast that rises out of it, its lens banked in the
@@ -3348,44 +3393,66 @@ def swallowtail(b):
     vents' heat so its mouth burns orange when it sounds. Mounts in the die's order: hp_1 the
     port bow gun (the stock's Howitzer as its barrel class), hp_2 the starboard bow (the Twin
     Autoguns), hp_3 bare on the port edge amidships (the Canopy shows nowhere), each on a
-    turret on a bolted pedestal. Every number is a proportion Ryan may change; the look, the
+    turret on a bolted pedestal. It flies as a carrier: it faces its heading, drifts and
+    slips through its turns, and never banks or pitches, under way or in its acts (Ryan, 2
+    November: "it's a carrier, so it shouldn't bank at all, unlike other fliers. Drift and slip
+    yes, but no bank and pitch"). Every number is a proportion Ryan may change; the look, the
     rig, the acts and the gait are his to judge running."""
     DECK = 27.0                # the flight deck's top
     # The hull: a keel under the deck, slab sides of riveted iron, its bottom corners
-    # chamfered, a band of the livery down each side; the deck over it, blunt at the bow.
+    # chamfered, blunt at the bow (its livery band goes on with the sponsons', below).
     keel = lambda w, z0, z1, c: [(-w / 2 + c, z0), (w / 2 - c, z0), (w / 2, z0 + c), (w / 2, z1), (-w / 2, z1), (-w / 2, z0 + c)]
     b.loft([(-47.0, keel(40.0, 11.0, 22.0, 4.0)), (34.0, keel(40.0, 11.0, 22.0, 4.0)), (52.0, keel(20.0, 15.0, 22.0, 2.0))], "steel.panel", "hull")
-    b.loft([(-52.0, rect(0.0, 54.0, 22.0, DECK)), (40.0, rect(0.0, 54.0, 22.0, DECK)), (60.0, rect(0.0, 26.0, 23.0, DECK))], "steel.plate", "deck")
+    # The plan: the deck's rectangle and blunt bow as the look has them, its corners swept out
+    # into the four rotor housings (the fore pair from the waist and the bow's taper, the aft
+    # pair from the waist and the stern), a well through each; the deck one plate round them.
+    F, A, RH, RW = (37.0, 28.0), (37.0, -36.0), 18.5, 15.0     # the starboard housings' centres, their radius and their wells'
+    right = (_swallowtail_sweep(A, RH, (20.0, -52.0), (27.0, -14.0)) + _swallowtail_sweep(F, RH, (27.0, 6.0), (20.0, 50.0)) + [(13.0, 60.0)])
+    outline = right + [(-x, y) for x, y in reversed(right)]
+    wells = [(sx * c[0], c[1]) for c in (F, A) for sx in (-1.0, 1.0)]
+    at = lambda pts, z: [(x, y, z) for x, y in pts]
+    for z in (22.0, DECK):
+        _plate(b, at(outline, z), [at(_swallowtail_ngon(c, RW), z) for c in wells], "steel.plate", "deck")
+    _rings(b, [at(outline, 22.0), at(outline, DECK)], "steel.plate", "deck", cap=False)
+    # A sponson under each housing, out of the hull's side: walls standing from the deck's
+    # underside to a chamfer, a floor round the well's mouth, the livery band carried round it.
+    for c, roots in ((F, ((18.0, 2.0), (18.0, 34.0))), (A, ((18.0, -46.0), (18.0, -10.0)))):
+        for sx in (-1.0, 1.0):
+            cc = (sx * c[0], c[1])
+            top = _swallowtail_hull([(sx * x, y) for x, y in roots] + _swallowtail_ngon(cc, RH - 0.6))
+            low = _swallowtail_inset(top, 1.6)
+            _rings(b, [at(low, 13.4), at(top, 16.0), at(top, 22.4)], "steel.panel", "sponson", cap=False)
+            _plate(b, at(low, 13.4), [at(_swallowtail_ngon(cc, RW), 13.4)], "steel.panel", "sponson")
+            band = _swallowtail_inset(top, -0.3)
+            _rings(b, [at(band, 16.6), at(band, 19.6)], "livery.livery2", "band", cap=False)
     for s in (-1.0, 1.0):
         x0, x1 = sorted((s * 20.0, s * 20.4))
-        b.box(x0, x1, -45.0, 32.0, 14.0, 19.0, "livery.livery2", "band")
-    # The coaming: a low livery rim round the deck's edge.
-    outline = [(-27.0, -52.0), (27.0, -52.0), (27.0, 40.0), (13.0, 60.0), (-13.0, 60.0), (-27.0, 40.0)]
+        b.box(x0, x1, -10.5, 3.0, 16.6, 19.6, "livery.livery2", "band")
+    # The coaming: a low livery rim round the deck's edge, the housings' with it.
     inner = _swallowtail_inset(outline, 1.6)
     _rings(b, [[(x, y, DECK - 0.01) for x, y in outline], [(x, y, DECK + 1.3) for x, y in outline],
                [(x, y, DECK + 1.3) for x, y in inner], [(x, y, DECK - 0.01) for x, y in inner]], "livery.livery2", "coaming", cap=False)
     # The deck's markings: the centre line in hazard dashes, the landing square aft to port
     # framed in hazard stripes.
     b.box(-1.0, 1.0, -48.0, 36.0, DECK, DECK + 0.3, "steel.stripe", "centre_line")
-    LX0, LX1, LY0, LY1, LW = -20.0, -4.0, -44.0, -28.0, 2.6
+    LX0, LX1, LY0, LY1, LW = -17.0, -3.0, -40.0, -26.0, 2.6
     for y in (LY0, LY1):
         _swallowtail_band(b, (LX0 - LW / 2, y, DECK + 0.15), (LX1 + LW / 2, y, DECK + 0.15), LW, (0.0, 0.0, 1.0), "landing")
     for x in (LX0, LX1):
         _swallowtail_band(b, (x, LY0 + LW / 2, DECK + 0.15), (x, LY1 - LW / 2, DECK + 0.15), LW, (0.0, 0.0, 1.0), "landing")
     # The lamps: a pair on the bow, the tail lights on the stern.
     _swallowtail_boxes(b, [(s * 8.0 - 1.8, s * 8.0 + 1.8, 59.4, 60.7, 23.4, 26.4) for s in (-1.0, 1.0)], "amber.light", "bow_lamp")
-    _swallowtail_boxes(b, [(s * 20.0 - 2.4, s * 20.0 + 2.4, -52.7, -51.6, 22.8, 26.2) for s in (-1.0, 1.0)], "amber.light", "tail_light")
-    # The rotors: an iron ring at each corner on an arm from the hull, a strut under it, a spar
-    # across the ring carrying the hub, the ring's lip in the livery; the rotor turning in it.
+    _swallowtail_boxes(b, [(s * 12.0 - 2.4, s * 12.0 + 2.4, -52.7, -51.6, 22.8, 26.2) for s in (-1.0, 1.0)], "amber.light", "tail_light")
+    # The wells: each lined in dark iron from below the sponson's floor to a lip just proud of
+    # the deck, a cross of girders under the hub, the rotor turning in it a little under the
+    # deck's plane.
     for sx in (-1.0, 1.0):
-        for tag, yy, hand in (("f", 30.0, sx * -1.0), ("a", -38.0, sx)):
-            cx = sx * 44.0
-            _tube(b, (cx, yy, 16.0), (cx, yy, 23.6), 16.0, 14.4, 16, "steel.panel", "ring", floor=False)
-            _tube(b, (cx, yy, 23.6), (cx, yy, 25.2), 16.4, 14.2, 16, "livery.livery2", "ring_lip", floor=False)
-            b.box(min(sx * 19.0, sx * 30.0), max(sx * 19.0, sx * 30.0), yy - 3.2, yy + 3.2, 17.0, 22.5, "steel.dark", "arm")
-            _beam(b, (sx * 19.0, yy, 12.5), (sx * 29.0, yy, 17.5), _sq(4.0, 2.4), _sq(4.0, 2.4), "steel.dark", "strut")
-            b.box(cx - 1.2, cx + 1.2, yy - 15.0, yy + 15.0, 19.0, 20.6, "steel.dark", "ring_spar")
-            _swallowtail_rotor(b, "rotor_%s%s" % ("l" if sx < 0 else "r", tag), cx, yy, 22.0, 14.0, hand)
+        for tag, c, hand in (("f", F, -sx), ("a", A, sx)):
+            cx, cy = sx * c[0], c[1]
+            _tube(b, (cx, cy, 13.0), (cx, cy, DECK + 0.4), RW + 0.2, RW - 0.6, 16, "steel.dark", "well", floor=False, phase=math.pi / 16)
+            _swallowtail_boxes(b, [(cx - 1.3, cx + 1.3, cy - RW + 0.4, cy + RW - 0.4, 21.4, 23.0), (cx - RW + 0.4, cx + RW - 0.4, cy - 1.3, cy + 1.3, 21.4, 23.0)],
+                               "steel.dark", "well_girder")
+            _swallowtail_rotor(b, "rotor_%s%s" % ("l" if sx < 0 else "r", tag), cx, cy, 24.5, 14.0, hand)
     # The island on the starboard edge: a riveted block, the bridge glazed round under its roof.
     IX0, IX1, IY0, IY1, ITOP = 16.0, 26.0, -14.0, 12.0, 42.0
     b.box(IX0, IX1, IY0, IY1, DECK, ITOP, "steel.panel", "island")
@@ -3470,9 +3537,9 @@ def swallowtail(b):
                     b.box(tip.x - 0.8, tip.x + 0.8, tip.y - 2.6, tip.y - 2.2, HZ0 + 2.2, HZ0 + 3.6, "amber.light", "hook_lamp")
     # The Mooring Screens (fixed, no pin): a squared post at each corner of the deck, a cup on
     # a mast that rises out of it, its lens banked in the corona's blue-white; a rail of the
-    # same along the coaming's inner edge between them, so the screens raised draw the deck's
-    # outline lit.
-    for tag, x, y in (("fl", -21.5, 41.0), ("fr", 21.5, 41.0), ("al", -21.5, -47.5), ("ar", 21.5, -47.5)):
+    # same along the coaming's inner edge between them and round the housings, inside each
+    # well's lip, so the screens raised draw the deck's outline lit.
+    for tag, x, y in (("fl", -22.0, 42.5), ("fr", 22.0, 42.5), ("al", -18.5, -45.5), ("ar", 18.5, -45.5)):
         b.box(x - 2.6, x + 2.6, y - 2.6, y + 2.6, DECK, DECK + 4.6, "steel.panel", "screen_post")
         b.box(x - 3.1, x + 3.1, y - 3.1, y + 3.1, DECK + 3.6, DECK + 4.6, "livery.livery2", "screen_collar")
         with b.joint("screen_" + tag, (x, y, DECK + 4.6), slide=(0.0, 0.0, 1.0)):
@@ -3480,10 +3547,8 @@ def swallowtail(b):
             b.loft([(DECK + 7.6, _poly(1.6, 8, math.pi / 8)), (DECK + 8.6, _poly(3.4, 8, math.pi / 8)), (DECK + 9.4, _poly(4.2, 8, math.pi / 8))],
                    "steel.plate", "screen_cup", Matrix.Translation((x, y, 0.0)) @ Matrix.Rotation(math.pi / 2, 4, "X"), cap=False)
             _disc(b, (x, y, DECK + 8.7), (0.0, 0.0, 1.0), 2.6, 8, "amber.spark", "screen_lens_" + tag, phase=math.pi / 8)
-    rail = _swallowtail_inset(outline, 2.0)
-    _rings(b, [[(x, y, DECK + 0.05) for x, y in rail], [(x, y, DECK + 0.6) for x, y in rail],
-               [(x, y, DECK + 0.6) for x, y in _swallowtail_inset(outline, 2.7)], [(x, y, DECK + 0.05) for x, y in _swallowtail_inset(outline, 2.7)]],
-           "amber.spark", "screen_rail", cap=False)
+    rail, rail_in = _swallowtail_inset(outline, 1.75), _swallowtail_inset(outline, 2.95)   # 1.2 wide, between the coaming and a well's lip
+    _rings(b, [at(rail, DECK + 0.05), at(rail, DECK + 0.6), at(rail_in, DECK + 0.6), at(rail_in, DECK + 0.05)], "amber.spark", "screen_rail", cap=False)
     # The mounts, bolted on and squared off: a pedestal, a dark ring, the turret on it. In the
     # die's order: hp_1 the port bow (the Howitzer as its barrel class), hp_2 the starboard
     # bow (the Twin Autoguns), hp_3 bare on the port edge amidships (the Canopy shows
@@ -3507,8 +3572,9 @@ def swallowtail(b):
     # yaw, pitch, roll); a glow key is (t, k), k the light added over rest (-1 dark).
     # The hoist: the crane slews out over the port quarter, the hook swinging behind it and
     # past as it stops, the jib dipping to reach; the hook drops with its lamp flashing and the
-    # deck lists to the load, then it rises, the deck rights itself, and the crane slews home,
-    # the hook swinging again. (A crane slewing clockwise leaves its hook to roll negative.)
+    # deck sinks as the load comes on, then it rises, the deck lifts back, and the crane slews
+    # home, the hook swinging again. (A crane slewing clockwise leaves its hook to roll
+    # negative.) The deck stays level throughout, as a carrier does.
     slack = lambda t, pitch, roll: (t, pitch, 0.0, roll)
     b.act("hoist", 9.0, {
         "crane": [(0.5, 0.0), (2.4, -55.0), (5.9, -55.0), (7.8, 0.0)],
@@ -3517,8 +3583,7 @@ def swallowtail(b):
                  slack(4.2, -9.0, 1.5), slack(4.8, -9.0, 0.0), slack(5.6, -9.0, 0.0), slack(6.6, 0.0, 6.0), slack(7.8, 0.0, 2.0),
                  slack(8.3, 0.0, -4.0), slack(8.8, 0.0, 0.0)],
         "hook_drop": [(2.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (3.7, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0), (4.5, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0), (5.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
-    }, body=[(2.6, 0.0, 0.0, 0.0), (3.8, 0.0, 0.0, -0.9, 0.0, 1.0, -3.2), (4.5, 0.0, 0.0, -0.8, 0.0, 1.0, -3.4), (5.6, 0.0, 0.0, 0.3, 0.0, -0.3, 0.8),
-             (6.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+    }, body=[(2.6, 0.0, 0.0, 0.0), (3.8, 0.0, 0.0, -1.8), (4.5, 0.0, 0.0, -1.6), (5.6, 0.0, 0.0, 0.4), (6.3, 0.0, 0.0, 0.0)],   # it sinks as the load comes on, level
        glow=[(["crane_lamp"], [(0.2, 0.0), (0.5, 8.0), (7.9, 8.0), (8.5, 0.0)]),
              (["hook_lamp"], [(2.6, 0.0), (2.8, 10.0), (3.1, 1.0), (3.4, 10.0), (3.7, 1.0), (4.0, 10.0), (5.4, 10.0), (5.9, 0.0)])])
     # The screens: the posts' cups rise in turn round the deck, each lens flaring as it tops
@@ -3528,14 +3593,14 @@ def swallowtail(b):
     flare = lambda t0, t1: [(t0 + 0.4, 0.0), (t0 + 0.7, 12.0), (t0 + 1.0, 6.0), (2.7, 8.0), (2.85, 0.5), (3.0, 12.0), (3.15, 2.0), (3.4, 10.0), (t1, 10.0), (t1 + 0.7, 0.0)]
     b.act("screens", 7.0, {
         "screen_fl": rise(0.4, 4.8), "screen_fr": rise(0.6, 5.0), "screen_ar": rise(0.8, 5.2), "screen_al": rise(1.0, 5.4),
-    }, body=[(0.6, 0.0, 0.0, 0.0), (1.9, 0.0, 0.0, 1.4, 0.0, 0.6, 0.0), (4.9, 0.0, 0.0, 1.1, 0.0, 0.4, 0.0), (6.4, 0.0, 0.0, 0.0)],
+    }, body=[(0.6, 0.0, 0.0, 0.0), (1.9, 0.0, 0.0, 1.6), (4.9, 0.0, 0.0, 1.3), (6.4, 0.0, 0.0, 0.0)],
        glow=[(["screen_lens_fl"], flare(0.4, 4.8)), (["screen_lens_fr"], flare(0.6, 5.0)), (["screen_lens_ar"], flare(0.8, 5.2)), (["screen_lens_al"], flare(1.0, 5.4)),
              (["screen_rail"], [(1.4, 0.0), (1.9, 12.0), (2.7, 12.0), (2.85, 0.0), (3.0, 14.0), (3.15, 1.0), (3.4, 12.0), (4.9, 12.0), (5.9, 0.0)])])
     # The flare: the deck swings its bow a little toward the mark, the rack rears to the
     # upright and fires its three in turn, each round popping out of its tube white-hot as the
     # deck kicks, then drawn back spent and dark; the mast lamp blinks the mark; the rack
     # settles and the rounds come back lit. On a sharp servo, as a shot is.
-    kick = lambda t: [(t, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0), (t + 0.08, 0.0, -0.5, 0.5, 7.0, 1.2, 0.0), (t + 0.35, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0)]
+    kick = lambda t: [(t, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0), (t + 0.08, 0.0, -0.6, 0.6, 7.0, 0.0, 0.0), (t + 0.35, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0)]   # a shove and a lift, never a pitch
     pop = lambda t: [(t, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)] + [(tt, 0.0, 0.0, 0.0) + tuple(round(v * d, 3) for v in along) for tt, d in ((t + 0.14, 11.0), (t + 0.75, 11.0), (t + 2.0, 0.0))]   # held 0.6 s at the top before it turns back
     burn = lambda t: [(t - 0.02, 0.0), (t + 0.08, 18.0), (t + 0.6, 12.0), (t + 1.0, -1.0), (5.2, -1.0), (5.8, 0.0)]
     b.act("flare", 6.4, {
@@ -3547,8 +3612,7 @@ def swallowtail(b):
     # Reveille: the horn swings aft over the deck and sounds, three blasts, the throat burning
     # and the island shuddering with each; the guns traverse out to their stations in turn,
     # the bow lamps up; the horn swings forward and sounds once more, and all stand down.
-    blast = lambda t, n: [(t + 0.0, 0.0, 0.0, 0.0), (t + 0.08, 0.0, 0.0, 0.5, 0.0, 0.0, 0.7), (t + 0.2, 0.0, 0.0, -0.3, 0.0, 0.0, -0.6),
-                          (t + 0.34, 0.0, 0.0, 0.3, 0.0, 0.0, 0.5), (t + n, 0.0, 0.0, 0.0)]
+    blast = lambda t, n: [(t + 0.0, 0.0, 0.0, 0.0), (t + 0.08, 0.0, 0.0, 0.6), (t + 0.2, 0.0, 0.0, -0.4), (t + 0.34, 0.0, 0.0, 0.3), (t + n, 0.0, 0.0, 0.0)]   # a shudder up and down, level
     b.act("reveille", 8.0, {
         "horn": [(0.4, 0.0), (1.4, 28.0), (3.4, 28.0), (4.8, -30.0), (6.2, -30.0), (7.2, 0.0)],   # its mouth aft over the deck, then forward
         "turret_1": [(2.0, 0.0), (3.2, 35.0), (5.4, 35.0), (6.6, 0.0)],
@@ -3561,13 +3625,14 @@ def swallowtail(b):
     # The rotors turn all the time, the diagonal pairs against each other, faster under way.
     for name, hand in (("rotor_lf", 1.0), ("rotor_rf", -1.0), ("rotor_la", -1.0), ("rotor_ra", 1.0)):
         b.spin(name, 400.0 * hand, 640.0 * hand)
-    # Movement: a flyer's, heavy and slow to gather way, barely a bank; it noses down into its
-    # travel as a rotorcraft does and lifts its nose to stop (the rock under nought), and the
-    # deck rides a long swell under way, two slow waves a stride so it never ticks.
-    swell = lambda p: (round(p, 3), 0.0, 0.0, round(1.1 * math.sin(2.0 * math.pi * p) + 0.4 * math.sin(4.0 * math.pi * p + 1.0), 2),
-                       0.0, round(1.2 * math.sin(2.0 * math.pi * p + 0.9), 2), round(0.8 * math.sin(2.0 * math.pi * p + 2.2), 2))
-    b.gait(stride=220.0, body=[swell(k / 12.0) for k in range(13)], rock=-3.0)
-    b.move(slide=0.3, bank=10.0, tilt=(7.0, 5.0, 0.5), accel=1.8, heft=0.28, oversteer=0.2)
+    # Movement: a carrier's (Ryan, 2 November: "it shouldn't bank at all, unlike other fliers.
+    # Drift and slip yes, but no bank and pitch"): heavy and slow to gather way, it faces its
+    # heading, drifts off its path through a turn and steps its tail out, and the deck stays
+    # level, no bank, no nose down under way, no nose up to stop; under way it rides a long
+    # heave, two slow waves a stride so it never ticks, and nothing else.
+    heave = lambda p: (round(p, 3), 0.0, 0.0, round(1.1 * math.sin(2.0 * math.pi * p) + 0.4 * math.sin(4.0 * math.pi * p + 1.0), 2))
+    b.gait(stride=220.0, body=[heave(k / 12.0) for k in range(13)])
+    b.move(slide=0.45, bank=0.0, accel=1.8, heft=0.28, oversteer=0.3)
 
 swallowtail.maker = "wainwright_sutler"
 
