@@ -75,7 +75,7 @@ static func hint_ink() -> Color:
 ## change in. A state is its words, or [words, mark()] when the die shows a mark for it (the
 ## lock, the corruption); `extra` is what the screen adds for a mark the die prints from its
 ## machine (a vent's blast), each a line with its mark, after the entry's own.
-static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = [], extra: Array = []) -> Array:
+static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = [], extra: Array = [], cooldown: int = -1) -> Array:
 	var out: Array = []
 	if f == null:
 		return out
@@ -91,7 +91,7 @@ static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Arr
 	var codex := str(comp.get("codex", ""))
 	if not codex.is_empty():
 		out.append(text_line("codex", codex))
-	out.append_array(effects_of(f, shown, base))
+	out.append_array(effects_of(f, shown, base, cooldown))
 	out.append_array(extra)
 	for g in grants:
 		out.append(marked(text_line("rule", str(g), "rule"), [mark("star", Glyphs.colour_for("star"))]))
@@ -110,7 +110,9 @@ static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Arr
 ## against; null reads `f` as its own. Each line carries its group, for the codex's three lines:
 ## "attr" (its number, its heat and ammo, its target), "kw" (its keywords) and "rule" (its own
 ## rules).
-static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
+## `cooldown`: the rounds a spend darkens it as its machine has it (Skirmish.cooldown_of, the
+## Kite's two); -1 reads the entry's own.
+static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: int = -1) -> Array:
 	var out: Array = []
 	if base == null:
 		base = f
@@ -164,10 +166,15 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 			else:
 				out.append(marked(parts_line("effect", [word("Shield"), num(str(f.power), f.power, base.power)], "attr"), [main]))
 		Face.Kind.VENT:
+			# A reload is a vent whose number is the ammo it loads, by the shells' mark the die
+			# prints before it (Ryan, 2 November: one piece on one machine wears no main mark of its own).
+			var loads := marked(parts_line("effect", [word("Reloads"), num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo), word("ammo")], "attr"), [mark("ammo", Palette.SELECT, false)])
 			if f.power <= 0 and f.reloads_ammo > 0:
-				out.append(marked(parts_line("effect", [word("Reloads"), num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo), word("ammo")], "attr"), [main]))
+				out.append(marked(loads, [main]))
 			else:
 				out.append(marked(parts_line("effect", [word("Vent"), num(str(f.power), f.power, base.power)], "attr"), [main]))
+				if f.reloads_ammo > 0:
+					out.append(loads)
 			if f.shields > 0:
 				# The combined entry's second half, after the vent, by the shield's mark the die
 				# prints beside its heat.
@@ -189,12 +196,17 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 	# cost printed beside the heat, a keyword with a chip until then, and a shield cost beside it):
 	# the hull a spend bites, the shield it takes first. Less is the gain.
 	if f.volatile > 0 or base.volatile > 0:
-		out.append(marked(parts_line("effect", [word("Costs"), num(str(f.volatile), f.volatile, base.volatile, true), word("hull")], "attr"), [mark("volatile", Palette.HULL, false)]))
+		out.append(marked(parts_line("effect", [word("Costs"), num(str(f.volatile), f.volatile, base.volatile, true), word("hull")], "attr"), [mark("hull", Palette.HULL, false)]))
 	if f.shield_cost > 0 or base.shield_cost > 0:
 		var shield_cost := [word("Costs"), num(str(f.shield_cost), f.shield_cost, base.shield_cost, true), word("shield")]
 		if f.short:
 			shield_cost.append(word("(the shield cannot pay it)"))
 		out.append(marked(parts_line("effect", shield_cost, "attr"), [mark("shield", Palette.LOSS if f.short else Palette.SHIELD, false)]))
+	# The rounds it goes dark once spent, a cost by its clock along the die's foot (Ryan, 2
+	# November: "Cooldown should be a cost in the bottom section as well").
+	var cd := cooldown if cooldown >= 0 else f.cooldown_rounds()
+	if cd > 0:
+		out.append(marked(parts_line("effect", [word("Cooldown"), num(str(cd), cd, base.cooldown_rounds(), true)], "attr"), [mark("cooldown", Palette.INK, false)]))
 	# Whom it is aimed at: a piece spent on machines headed by the three hexes the die draws
 	# under its main glyph (Glyphs.aim_for), bare as the glyph is; a weapon's or a debuff's reach
 	# is its frame's, on its first line. A reach past the target is its keyword's line (Every

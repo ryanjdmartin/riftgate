@@ -6539,7 +6539,7 @@ func test_a_printed_cooldown_darkens_its_entry_for_the_rounds_it_says() -> void:
 	var gun := Face.attack(10, L)
 	gun.cooldown = 2
 	assert_eq(gun.describe(), "10 cooldown 2", "the entry says its cooldown")
-	assert_true(gun.has_unique_rule(), "a printed rule: the star chip")
+	assert_false(gun.has_unique_rule(), "a cost, its clock along the die's foot, never the star (2 November)")
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.of([gun, Face.attack(10, L)]), 40, 100)
 	sk.add_mech(m)
@@ -7760,8 +7760,8 @@ func test_a_debuff_deals_nothing_under_any_effect_and_prints_no_number() -> void
 	assert_eq(sk.shown_number_text(sk.mechs[0], lure, g), "", "it prints no number, over a foe or not")
 	assert_eq(lure.number_text(), "", "nor on the die's own entry")
 	assert_eq(lure.describe(), "indirect lure (+5 heat)", "its line is its reach and keywords")
-	assert_eq(Glyphs.primary_for(lure), "equipment_indirect", "an Indirect debuff wears the arc over the equipment's mark")
-	assert_eq(Glyphs.primary_for(Face.attack(0, L, [K.SHOCK])), "equipment_line", "a Direct one the ring round it")
+	assert_eq([Glyphs.primary_for(lure), Glyphs.aim_for(lure)], ["equipment", "aim_indirect"], "an Indirect debuff is equipment's diamond holding the curved arrow")
+	assert_eq([Glyphs.primary_for(Face.attack(0, L, [K.SHOCK])), Glyphs.aim_for(Face.attack(0, L, [K.SHOCK]))], ["equipment", "aim_direct"], "a Direct one the straight arrow")
 	assert_true(sk.assign(0, g), "spent on a foe in reach")
 	assert_eq(g.hp, 100, "it dealt nothing")
 	assert_eq(Effects.stacks_of(g, "burning"), 0, "and burned nothing")
@@ -8676,7 +8676,7 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	reload.heat = 15
 	reload.reloads_ammo = 2
 	assert_eq(reload.number_text(), "+2", "a reload prints the ammo it adds")
-	assert_eq(Glyphs.primary_for(reload), "ammo", "and is drawn as one")
+	assert_eq([Glyphs.primary_for(reload), DieFaceView.number_mark(reload), DieFaceView.die_number(reload)], ["vent", "ammo", "2"], "and is drawn as a vent, its number the ammo behind the shells (2 November: no mark of its own)")
 	var sk := Skirmish.new(2, 3)
 	var m := _mech("Ox", Die.of([cannon, salvo, reload]), 40, 200)
 	m.grant_passive(FORGE)

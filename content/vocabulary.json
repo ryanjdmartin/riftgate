@@ -385,7 +385,7 @@
    "id": "volatile",
    "category": "component_property",
    "name": "Volatile",
-   "codex": "A cost printed on any kind of component, beside its heat. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a disabled entry costs nothing.",
+   "codex": "A cost printed on any kind of component, along its foot beside its heat, the hull's plate and a number. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a disabled entry costs nothing.",
    "status": "implemented",
    "design": {
     "holes": "Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does."
@@ -395,7 +395,7 @@
    "id": "shield_cost",
    "category": "component_property",
    "name": "Shield cost",
-   "codex": "A cost printed on any kind of component, beside its heat: spending it takes that much shield from its owner first, overshield included. Short of it, the entry cannot be played: the die shows the cost struck through, and it has nowhere to land.",
+   "codex": "A cost printed on any kind of component, along its foot beside its heat, the shield's mark and a number: spending it takes that much shield from its owner first, overshield included. Short of it, the entry cannot be played: the die shows the cost struck through, and it has nowhere to land.",
    "status": "implemented",
    "design": {
     "fantasy": "Ryan, 26 October: a price paid in the buffer, which overshield cheats out at the cost of two actions for one effect; the first entry with a condition on its play, so advanced pieces may follow.",
@@ -416,7 +416,7 @@
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
-   "codex": "Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, or any other ally. The die draws its icon in the middle of three connected hexes, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only.",
+   "codex": "Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, or any other ally. Its main icon on the die holds three connected hexes, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1448,7 +1448,7 @@
    "id": "cooldown",
    "category": "component_property",
    "name": "Cooldown",
-   "codex": "A rule printed on a component: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the turns left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and \"no cooldown\" lifts even that. No cleanse lifts a cooldown.",
+   "codex": "A cost on a component, printed along its foot as a clock and a number: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the clock and the turns left; the die can still land on it, and nothing in it acts. Rapid carries a cooldown of one unless the component prints its own, and \"no cooldown\" lifts even that. No cleanse lifts a cooldown.",
    "status": "implemented",
    "design": {
     "holes": "A price as heat is. The city's battlefield abilities count their own cooldowns in phases."

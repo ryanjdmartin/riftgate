@@ -4,10 +4,10 @@ extends Control
 ## A die drawn as an object under the tactical overlay. The face is a chamfered square that
 ## bobs gently; its keywords sit as small annotation chips hugging its right edge, one per
 ## keyword, bright and flickering now and then. On the face, as Ryan sketched it: the primary
-## mark large at the top centre saying what it is and whom it reaches (a weapon's reach frame;
-## equipment's mark in the frame; a piece spent on machines in the middle of three hexes), how
-## much beneath it, its costs along the foot as marks and numbers, the lock top-right, the
-## entry's place on its die top-left. A locked die gets bracket corners and a LOCKED readout. A
+## mark large at the top centre saying what it is and whom it is aimed at (a weapon's reticle,
+## equipment's diamond, a shield, a vent's housing, each holding an arrow or three hexes), how
+## much beneath it, its costs along the foot as marks and numbers (its cooldown's clock among
+## them), the lock top-right, the entry's place on its die top-left. A locked die gets bracket corners and a LOCKED readout. A
 ## unique effect adds a star chip; equipment spent on a machine, its status's chip.
 ##
 ## Gestures (the skirmish's, Ryan, 30 October):
@@ -37,21 +37,21 @@ const TAG_STEP := 28.0
 const BOB_PX := 3.0
 const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
-const SLOT_AT := Vector2(13, 30)   # the place's numeral, its baseline tucked under the cut corner
+const SLOT_AT := Vector2(10, 28)   # the place's numeral, its baseline tucked under the cut corner, clear of the main mark
 const SLOT_SIZE := 18
-const GLYPH_Y := 38.0      # the primary glyph's centre, a weapon's frame or equipment's aimed at a foe
-const TRIAD_Y := 49.0      # the three hexes' centre, a piece spent on machines (Glyphs.draw_triad), clear of the place's numeral
-const TRIAD_W := 88.0      # their width: the middle hex holds the piece's glyph
-const NUMBER_Y := 96.0     # how much: the number's baseline
-const CLOCK := 26.0        # a dark entry's clock, in the number's place
-const COST_Y := 112.0      # the costs' baseline along the foot
+const MAIN_Y := 42.0       # the main mark's centre (Glyphs.draw_main), clear of the place's numeral
+const MAIN_W := 54.0       # its width, every kind alike; its targeting mark Glyphs.AIM_SHARE of it
+const NUMBER_Y := 100.0    # how much: the number's baseline
+const NUMBER_SIZE := 34
+const COST_Y := 114.0      # the costs' baseline along the foot
 const COST_ICON := 14.0    # a cost's mark
 const COST_SIZE := 16      # and its number
 
 var face: Face = null
 var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
 var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
-var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the rounds it has left, this one included, drawn as its number
+var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the rounds it has left, this one included, its clock along the foot
+var cooldown: int = -1       # the rounds a spend darkens it, its machine's passives in (Skirmish.cooldown_of); -1 reads the entry's own
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), as a chip at the rail's foot; null for a die that rolls
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
@@ -282,18 +282,15 @@ func _draw() -> void:
 	var mono := Hud.mono()
 	# One standard face (Ryan, 2 November: "We need a standard format, using combined or layered
 	# icons, that works for every component across the board and doesn't crowd the die"): what it
-	# is and whom it reaches in one mark at the top, how much under it, its costs along the foot
-	# as marks and numbers, its keywords down the rail. A weapon is its reach frame; equipment
-	# aimed at a foe the frame holding the equipment's mark; a piece spent on machines three
-	# hexes holding its own glyph (Glyphs.draw_triad).
-	var aim := Glyphs.aim_for(face)
-	if aim.is_empty():
-		Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, GLYPH_Y + bob), 34, ink, 2.6)
-	else:
-		Glyphs.draw_triad(self, aim, Glyphs.primary_for(face), Vector2(FACE * 0.5, TRIAD_Y + bob), TRIAD_W, ink, fill, 2.0)
+	# is and whom it is aimed at in one mark at the top, a main mark holding a targeting mark
+	# ("Rework main symbols so that they can all contain a targeting symbol": a weapon's reticle,
+	# equipment's diamond, a shield, a vent's housing, holding a straight arrow, a curved arrow
+	# or the three hexes, one width), how much under it, its costs along the foot as a mark and a
+	# number each, its keywords down the rail.
+	Glyphs.draw_main(self, Glyphs.primary_for(face), Glyphs.aim_for(face), Vector2(FACE * 0.5, MAIN_Y + bob), MAIN_W, ink, 2.4)
 	var dark_now := face.disabled and dark > 0
-	var num := shown_number if not shown_number.is_empty() else die_number(face)
-	var num_size := 28 if num.contains("–") or num.contains("+") else 38   # a range, or a blow joined to its zap (the Storm Petrel's "4+2")
+	var num := "" if dark_now else (shown_number if not shown_number.is_empty() else die_number(face))
+	var num_size := NUMBER_SIZE - 8 if num.contains("–") or num.contains("+") else NUMBER_SIZE   # a range, or a blow joined to its zap (the Storm Petrel's "4+2")
 	if _recalc >= 0.0:
 		# The display recomputes this face: its ink dips a little and the frame flashes once;
 		# the static itself is drawn last, over the whole die (`_draw_static`). The number
@@ -301,28 +298,29 @@ func _draw() -> void:
 		var rt := _recalc / _recalc_for
 		ink.a *= 0.75 + 0.25 * Hud.noise(int(_recalc * STATIC_RATE) * 0.7 + 0.3)
 		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.5 * (1.0 - rt)), 1.0)
-	if dark_now:
-		# Dark (the cooldown row, 14 October; Ryan's "turns", 26 October): the clock and the turns
-		# it has left where the number sits, so it never reads as the component's number.
-		var count := str(dark)
-		var cw := mono.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, 38).x
-		var x0 := FACE * 0.5 - (CLOCK + 6.0 + cw) * 0.5
-		Glyphs.draw(self, "cooldown", Vector2(x0 + CLOCK * 0.5, NUMBER_Y - 14.0 + bob), CLOCK, ink, 2.4)
-		draw_string(mono, Vector2(x0 + CLOCK + 6.0, NUMBER_Y + bob), count, HORIZONTAL_ALIGNMENT_LEFT, -1, 38, ink)
-	elif not num.is_empty():
-		draw_string(mono, Vector2(0, NUMBER_Y + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
+	# The number, the mark of what it counts before it when it is not the entry's own kind's (a
+	# reload's ammo: one piece on one machine wears no main mark of its own, Ryan, 2 November).
+	var nmark := number_mark(face) if not dark_now else ""
+	var nw := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_LEFT, -1, num_size).x if not num.is_empty() else 0.0
+	var mark_w := 24.0 if not nmark.is_empty() else 0.0
+	var nx := FACE * 0.5 - (nw + mark_w) * 0.5
+	if not nmark.is_empty():
+		Glyphs.draw(self, nmark, Vector2(nx + 10.0, NUMBER_Y - 12.0 + bob), 20, Color(Palette.SELECT, alpha), 2.2)
+	if not num.is_empty():
+		draw_string(mono, Vector2(nx + mark_w, NUMBER_Y + bob), num, HORIZONTAL_ALIGNMENT_LEFT, -1, num_size, ink)
 	# What else the spend does, small beside the number, each by its mark: blows a use ("10 ×3"),
-	# the shield a vent also gives (the combined entry, Ryan's go of 20 October), a vent's blast at
-	# a random foe (the Whip Scorpion's).
+	# the shield a vent also gives (the combined entry, Ryan's go of 20 October), the ammo a vent
+	# also loads, a vent's blast at a random foe (the Whip Scorpion's).
 	var also: Array = []
 	if face.strikes > 1:
 		also.append(["", "×%d" % face.strikes, ink])
 	if face.shields > 0 and not dark_now:
 		also.append(["shield", str(face.shields), Color(Palette.SHIELD, alpha)])
+	if face.reloads_ammo > 0 and face.power > 0 and not dark_now:
+		also.append(["ammo", str(face.reloads_ammo), Color(Palette.SELECT, alpha)])
 	if blast > 0 and face.kind == Face.Kind.VENT and not dark_now:
 		also.append(["blast", str(blast), Color(Palette.HEAT, alpha)])
-	var nw := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_CENTER, -1, num_size).x if not num.is_empty() else 0.0
-	var ax := FACE * 0.5 + nw * 0.5 + 3.0
+	var ax := nx + mark_w + nw + 3.0
 	for i in range(also.size()):
 		var a: Array = also[i]
 		var ay := NUMBER_Y - i * 17.0 + bob
@@ -333,20 +331,27 @@ func _draw() -> void:
 		draw_string(mono, Vector2(tx, ay), str(a[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, a[2])
 	# Its costs along the foot, a mark and a number each, no word and no sign (Ryan, 2 November:
 	# "For costs (heat, shield, hull), don't spell out the word. Use an icon + number. We don't
-	# need +/- symbols either"): a forging gun's ammo, the shield a burn or a cost takes, the heat,
-	# the hull; struck through in the red-red when its pool cannot pay (DRY, SHORT).
+	# need +/- symbols either"; "Cooldown should be a cost in the bottom section as well"): a
+	# forging gun's ammo, the shield a burn or a cost takes, the heat, the hull, the rounds it goes
+	# dark; struck through in the red-red when its pool cannot pay (DRY, SHORT). A dark entry
+	# shows its clock there with the turns it has left.
 	var costs: Array = []   # [glyph, number, colour, struck]
-	if face.ammo > 0:
-		costs.append(["ammo", face.ammo, Palette.LOSS if face.dry else Palette.SELECT, face.dry])
-	if face.burns > 0:
-		costs.append(["shield", face.burns, Palette.SHIELD, false])
-	if face.heat > 0:
-		costs.append(["heat", face.heat, Palette.HEAT, false])
-	if not dark_now:
+	if dark_now:
+		costs.append(["cooldown", dark, Palette.INK, false])
+	else:
+		if face.ammo > 0:
+			costs.append(["ammo", face.ammo, Palette.LOSS if face.dry else Palette.SELECT, face.dry])
+		if face.burns > 0:
+			costs.append(["shield", face.burns, Palette.SHIELD, false])
+		if face.heat > 0:
+			costs.append(["heat", face.heat, Palette.HEAT, false])
 		if face.volatile > 0:
-			costs.append(["volatile", face.volatile, Palette.HULL, false])
+			costs.append(["hull", face.volatile, Palette.HULL, false])
 		if face.shield_cost > 0:
 			costs.append(["shield", face.shield_cost, Palette.LOSS if face.short else Palette.SHIELD, face.short])
+		var cd := cooldown if cooldown >= 0 else face.cooldown_rounds()
+		if cd > 0:
+			costs.append(["cooldown", cd, Palette.INK, false])
 	var cx := 10.0
 	for cst in costs:
 		var cc := Color(cst[2], alpha)
@@ -356,7 +361,7 @@ func _draw() -> void:
 		var tw := COST_ICON + 2.0 + mono.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, COST_SIZE).x
 		if bool(cst[3]):
 			draw_line(Vector2(cx - 1.0, COST_Y - 6.0 + bob), Vector2(cx + tw + 1.0, COST_Y - 6.0 + bob), cc, 2.0)
-		cx += tw + 9.0
+		cx += tw + 8.0
 	if locked and not spent:
 		Glyphs.draw(self, "lock", Vector2(FACE - 20.0, 20.0 + bob), 14, hud, 2.0)
 	var tags := rail_tags()
@@ -395,6 +400,14 @@ static func die_number(f: Face) -> String:
 	if f.kind == Face.Kind.VENT and f.power <= 0 and f.reloads_ammo > 0:
 		return str(f.reloads_ammo)
 	return f.number_text()
+
+
+## The mark the number wears before it when it counts something other than its kind's own: a
+## reload's ammo, its shells (the Musk Ox's Quick Reload, a vent that cools nothing); "" else.
+static func number_mark(f: Face) -> String:
+	if f != null and f.kind == Face.Kind.VENT and f.power <= 0 and f.reloads_ammo > 0:
+		return "ammo"
+	return ""
 
 
 ## The status a piece of equipment spent on a machine grants, as its chip on the rail (its

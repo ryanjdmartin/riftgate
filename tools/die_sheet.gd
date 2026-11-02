@@ -31,8 +31,8 @@ func _init() -> void:
 	_sheet.draw.connect(_draw_sheet)
 	root.add_child(_sheet)
 	var y := MARGIN
-	y = _section(y, "WHAT AN ENTRY IS: THE MAIN ICON", _kinds())
-	y = _section(y, "A PIECE SPENT ON MACHINES: ITS GLYPH IN THE MIDDLE OF THREE HEXES, A FILLED ONE A MACHINE IT REACHES", _targets(), 6)
+	y = _section(y, "WHAT AN ENTRY IS: THE MAIN ICON, HOLDING WHOM IT IS AIMED AT (ONE WIDTH FOR EVERY TARGETING MARK)", _kinds())
+	y = _section(y, "A PIECE SPENT ON MACHINES: ITS ICON HOLDS THREE HEXES, THE MIDDLE ITS OWN, A FILLED ONE A MACHINE IT REACHES", _targets(), 6)
 	y = _section(y, "THE REST OF A FACE: COSTS ALONG THE FOOT (A MARK AND A NUMBER), STATES, THE CHIPS", _rest())
 	process_frame.connect(_tick)
 
@@ -101,15 +101,15 @@ func _kinds() -> Array:
 	var down := _die(Face.attack(4))
 	down.dead = true
 	return [
-		["Weapon, direct", "a crosshair: Direct,\nthe front rank first", _die(Face.attack(4))],
-		["Weapon, indirect", "an arc: Indirect,\nany foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
+		["Weapon, direct", "the reticle holding a\nstraight arrow: Direct", _die(Face.attack(4))],
+		["Weapon, indirect", "a curved arrow:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
 		["Weapon, rolled", "rolls in its range\nas it is spent", _die(rolled)],
 		["Weapon, strikes", "three blows a spend,\neach rolled on its own", _die(burst)],
-		["Equipment, direct", "the crosshair holding\nthe mark: no damage", _die(Face.attack(0))],
-		["Equipment, indirect", "the arc over the\nmark: no damage", _die(Face.attack(0, Face.Reach.INDIRECT))],
+		["Equipment, direct", "the diamond holding the\narrow: no number", _die(Face.attack(0))],
+		["Equipment, indirect", "the diamond, the curved\narrow: no number", _die(Face.attack(0, Face.Reach.INDIRECT))],
 		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
 		["Vent", "spent on a machine:\nheat off", _die(Face.vent(3))],
-		["Reload", "a vent that fills the\nmagazine (the Musk Ox)", _die(reload)],
+		["Reload", "a vent, its ammo its\nnumber (the Musk Ox)", _die(reload)],
 		["Equipment", "spent on a machine: no\nnumber, its status a chip", _die(Face.buff("overcharged", 2))],
 		["Blank", "an empty hardpoint, or\na destroyed component", _die(Face.empty_slot())],
 		["Machine down", "its die, wrecked", down],
@@ -158,9 +158,7 @@ func _rest() -> Array:
 	locked.locked = true
 	var charged := _die(Face.shield(4))
 	charged.charged = true
-	var dark_face := Face.attack(4)
-	dark_face.disabled = true
-	var dark := _die(dark_face)
+	var dark := _die(Face.disabled_stand_in(Face.attack(4)))
 	dark.dark = 2
 	var chips := Face.attack(4)
 	chips.add_keyword(Face.Keyword.BURN)

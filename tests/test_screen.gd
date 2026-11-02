@@ -75,12 +75,13 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	s.free()
 
 
-## Whom a piece spent on machines reaches is three hexes under the die's main glyph, never a chip
-## on its rail (Ryan, 2 November: "just 3 connected hexes: center filled for self-only, left/right
-## filled for ally only, all filled for self or ally"): every shield, vent, reload and buff wears
-## them, the default included; a weapon's or a debuff's reach is its frame's shape. A buff and a
-## debuff are one equipment mark ("merging buff/debuff into one 'equipment' face type"), held by
-## the hexes or by a reach frame. A reach over every ally or every foe is a keyword's chip.
+## Every entry's main icon holds whom it is aimed at, never a chip on its rail (Ryan, 2 November:
+## "Use a straight arrow for direct, and the curved arrow for indirect, and then standardize the
+## width of those with the width of the 3 hex symbol so that either can fit inside any main
+## symbol"): a weapon's reticle or equipment's diamond holding an arrow, a shield, a vent or
+## equipment spent on machines holding three hexes ("center filled for self-only, left/right
+## filled for ally only, all filled for self or ally"), the default included; a buff and a debuff
+## one equipment icon; a reload a vent. A reach over every ally or every foe is a keyword's chip.
 func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	var shield := Face.shield(4)
 	assert_eq(Glyphs.aim_for(shield), "aim_any", "itself or an ally, the default: all three lit")
@@ -93,23 +94,21 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	assert_true(shield.has(Face.Keyword.EVERY_ALLY) and not shield.has(Face.Keyword.EVERY_FOE), "and carries Every Ally, a keyword")
 	var vent := Face.vent(3)
 	vent.targets = Face.Target.SELF
-	assert_eq(Glyphs.aim_for(vent), "aim_self", "a vent's")
+	assert_eq([Glyphs.primary_for(vent), Glyphs.aim_for(vent)], ["vent", "aim_self"], "a vent's housing holding the middle hex")
 	var buff := Face.buff("overcharged", 1)
 	buff.targets = Face.Target.ALLY
-	assert_eq(Glyphs.aim_for(buff), "aim_ally", "a buff's")
-	assert_eq(Glyphs.primary_for(buff), "equipment", "a buff wears the equipment mark")
+	assert_eq([Glyphs.primary_for(buff), Glyphs.aim_for(buff)], ["equipment", "aim_ally"], "a buff: equipment's diamond holding the hexes")
 	var gun := Face.attack(0)
 	gun.reaches_all = true
-	assert_eq(Glyphs.aim_for(gun), "", "a debuff wears no hexes")
-	assert_eq(Glyphs.primary_for(gun), "equipment_line", "its mark in its reach frame, the same mark as a buff's")
-	assert_eq(Glyphs.primary_for(Face.attack(0, Face.Reach.INDIRECT)), "equipment_indirect", "under the arc")
-	assert_eq(Glyphs.aim_for(Face.attack(4)), "", "nor a weapon")
+	assert_eq([Glyphs.primary_for(gun), Glyphs.aim_for(gun)], ["equipment", "aim_direct"], "a debuff: the same diamond holding the straight arrow")
+	assert_eq([Glyphs.primary_for(Face.attack(0, Face.Reach.INDIRECT)), Glyphs.aim_for(Face.attack(0, Face.Reach.INDIRECT))], ["equipment", "aim_indirect"], "or the curved arrow")
+	assert_eq([Glyphs.primary_for(Face.attack(4)), Glyphs.aim_for(Face.attack(4))], ["weapon", "aim_direct"], "a weapon: its reticle holding the arrow")
 	assert_true(gun.has(Face.Keyword.EVERY_FOE), "its reach over every foe a keyword, Every Foe")
 	var lure := DieFaceView.new()
 	lure.set_face(gun)
 	assert_eq(lure.rail_tags(), ["every_foe"] as Array[String], "its chip on the rail, never the star")
 	lure.free()
-	assert_eq(Glyphs.aim_for(Face.empty_slot()), "", "nor a blank")
+	assert_eq(Glyphs.aim_for(Face.empty_slot()), "", "a blank holds nothing")
 	var d := DieFaceView.new()
 	var own := Face.shield(4)
 	own.targets = Face.Target.SELF
@@ -126,7 +125,9 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
 			continue
 		var f := db.build_face(comp["face"])
-		assert_eq(Glyphs.aim_for(f).is_empty(), not f.on_machines(), "%s: hexes on a piece spent on machines alone" % cid)
+		var aim := Glyphs.aim_for(f)
+		assert_true(aim.begins_with("aim_"), "%s: its main icon holds whom it is aimed at (%s)" % [cid, aim])
+		assert_eq(aim in ["aim_self", "aim_ally", "aim_any"], f.on_machines(), "%s: the hexes on a piece spent on machines, an arrow on one aimed at a foe" % cid)
 		if f.on_machines() and f.targets != Face.Target.SELF_ALLY:
 			narrowed += 1
 	assert_true(narrowed > 0, "content narrows some (%d)" % narrowed)
@@ -509,7 +510,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Cooldown 1 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}
@@ -1613,10 +1614,12 @@ func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds
 	Effects.disable_entry(ms.unit, ms.face_index, "cooldown", s.sk.round + 1)
 	s._refresh()
 	assert_eq(s._dice[0].dark, 2, "the die shows the entry dark with two rounds left")
-	assert_true(s._entry_states(ms, ms.face_index).has("On Cooldown (2 turns left)"), "and so does the hold, in Ryan's words")
+	var dark_state: Array = s._entry_states(ms, ms.face_index)[0]
+	assert_eq(str(dark_state[0]), "On Cooldown (2 turns left)", "and so does the hold, in Ryan's words")
+	assert_eq(str((dark_state[1] as Dictionary).get("glyph", "")), "cooldown", "by the clock the die shows along its foot")
 	Effects.disable_entry(ms.unit, ms.face_index, "foe:x", s.sk.round)
 	s._refresh()
-	assert_true(" · ".join(s._entry_states(ms, ms.face_index)).begins_with("Disabled"), "a foe's switch-off says so, cleansable")
+	assert_true(str(s._entry_states(ms, ms.face_index)[0][0]).begins_with("Disabled"), "a foe's switch-off says so, cleansable")
 	s.free()
 
 
@@ -1970,7 +1973,9 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 		if f.heat > 0:
 			wanted.append("heat")
 		if f.volatile > 0:
-			wanted.append("volatile")
+			wanted.append("hull")
+		if f.cooldown_rounds() > 0:
+			wanted.append("cooldown")   # the cooldown's clock, a cost (2 November)
 		if f.shield_cost > 0:
 			wanted.append("shield")
 		for g in wanted:

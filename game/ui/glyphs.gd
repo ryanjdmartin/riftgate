@@ -8,36 +8,42 @@ extends RefCounted
 static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Color, width: float = 2.0) -> void:
 	var s := size / 2.0
 	match id:
-		"line":
-			ci.draw_arc(c, s * 0.62, 0.0, TAU, 28, color, width)
-			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
-			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)
-		"indirect":
-			ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
-			ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
-			ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
+		# ---- the die's targeting marks (Ryan, 2 November): one width, so any fits in any main mark
+		"aim_direct":
+			# Direct: a straight arrow, the shot along a line.
+			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s * 0.45, 0), color, width)
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(s, 0), c + Vector2(s * 0.32, -s * 0.4), c + Vector2(s * 0.32, s * 0.4)]), color)
+		"aim_indirect":
+			# Indirect: a curved arrow, lobbed over the front and falling on any foe.
+			var a0 := c + Vector2(-s, s * 0.32)
+			var a1 := c + Vector2(-s * 0.15, -s * 0.85)
+			var a2 := c + Vector2(s * 0.62, s * 0.18)
+			var arc := PackedVector2Array()
+			for i in range(15):
+				var t := i / 14.0
+				arc.append(a0.lerp(a1, t).lerp(a1.lerp(a2, t), t))
+			ci.draw_polyline(arc, color, width)
+			var dir := (a2 - a1).normalized()
+			var nrm := Vector2(-dir.y, dir.x)
+			var tip := a2 + dir * s * 0.42
+			ci.draw_colored_polygon(PackedVector2Array([tip, a2 - dir * s * 0.12 + nrm * s * 0.38, a2 - dir * s * 0.12 - nrm * s * 0.38]), color)
+		# ---- the die's main marks (Ryan, 2 November): each holds a targeting mark inside it
+		"weapon":
+			# A weapon: a reticle, its ring holding whom it is aimed at, four ticks standing off it.
+			var ring := s * 0.78
+			ci.draw_arc(c, ring, 0.0, TAU, 40, color, width)
+			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
+				ci.draw_line(c + d * ring, c + d * s, color, width)
+		"hull":
+			# The hull (2 November, a cost's mark): a riveted plate.
+			Hud.stroke_poly(ci, Hud.cut(Rect2(c - Vector2(s * 0.9, s * 0.72), Vector2(s * 1.8, s * 1.44)), s * 0.3), color, width)
+			for d in [Vector2(-0.48, -0.32), Vector2(0.48, -0.32), Vector2(-0.48, 0.32), Vector2(0.48, 0.32)]:
+				ci.draw_circle(c + d * s, maxf(1.0, s * 0.13), color)
 		"equipment":
 			# Equipment, one mark for a buff and a debuff (Ryan, 2 November: "merging buff/debuff
-			# into one 'equipment' face type"; the arrows "look like push/pull"): a diamond with a
-			# solid core, its aim said by what holds it, a reach frame for a foe, the three hexes
-			# for a machine.
-			ci.draw_polyline(PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.8, 0), c + Vector2(0, s), c + Vector2(-s * 0.8, 0), c + Vector2(0, -s)]), color, width)
-			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -s * 0.42), c + Vector2(s * 0.34, 0), c + Vector2(0, s * 0.42), c + Vector2(-s * 0.34, 0)]), color)
-		"equipment_line", "equipment_indirect":
-			# Equipment aimed at a foe (Ryan, 20 and 21 October, the die's grammar): its reach frame
-			# carries the equipment's mark where a gun carries its number, so the frame says whom
-			# and the mark what. The crosshair's cross is cut to four ticks so the mark sits inside
-			# the ring; the arc lobs over it.
-			if id == "equipment_line":
-				ci.draw_arc(c, s * 0.68, 0.0, TAU, 28, color, width)
-				for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
-					ci.draw_line(c + d * s * 0.68, c + d * s, color, width)
-				draw(ci, "equipment", c, s * 0.95, color, width)
-			else:
-				ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
-				ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
-				ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
-				draw(ci, "equipment", c + Vector2(0, s * 0.1), s * 0.9, color, width)
+			# into one 'equipment' face type"; the arrows "look like push/pull"): a diamond, holding
+			# whom it is aimed at, an arrow at a foe or the three hexes for a machine.
+			ci.draw_polyline(PackedVector2Array([c + Vector2(0, -s), c + Vector2(s, 0), c + Vector2(0, s), c + Vector2(-s, 0), c + Vector2(0, -s)]), color, width)
 		"aim_self", "aim_ally", "aim_any":
 			# Whom a piece spent on machines reaches (Ryan, 2 November: "just 3 connected hexes:
 			# center filled for self-only, left/right filled for ally only, all filled for self or
@@ -104,11 +110,12 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_colored_polygon(PackedVector2Array([head + Vector2(-s * 0.42, -s * 0.12), head + Vector2(s * 0.12, -s * 0.38), head + Vector2(s * 0.1, s * 0.22)]), color)
 			ci.draw_circle(c, s * 0.2, color)
 		"vent":
-			for i in range(3):
-				var y := -s * 0.6 + i * s * 0.6
-				ci.draw_polyline(PackedVector2Array([
-					c + Vector2(-s * 0.8, y + s * 0.35), c + Vector2(0, y - s * 0.15), c + Vector2(s * 0.8, y + s * 0.35),
-				]), color, width)
+			# A vent (2 November): a housing holding whom it cools, its heat rising off the top in
+			# three chevrons, the old vent mark's.
+			Hud.stroke_poly(ci, Hud.cut(Rect2(c + Vector2(-s * 0.92, -s * 0.3), Vector2(s * 1.84, s * 1.2)), s * 0.22), color, width)
+			for k in range(3):
+				var x := (k - 1) * s * 0.55
+				ci.draw_polyline(PackedVector2Array([c + Vector2(x - s * 0.2, -s * 0.52), c + Vector2(x, -s * 0.8), c + Vector2(x + s * 0.2, -s * 0.52)]), color, width)
 		"blank":
 			ci.draw_line(c + Vector2(-s, -s), c + Vector2(s, s), color, width)
 			ci.draw_line(c + Vector2(-s, s), c + Vector2(s, -s), color, width)
@@ -342,13 +349,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var x := -s * 0.5 + i * s * 0.5
 				ci.draw_line(c + Vector2(x, -s * 0.1), c + Vector2(x, s * 0.55), color, width * 0.9)
 			ci.draw_line(c + Vector2(-s * 0.85, -s * 0.1), c + Vector2(s * 0.85, -s * 0.1), color, width)
-		"volatile":
-			# A burst with a spark at its heart: the component that costs its owner to use.
-			for i in range(8):
-				var a := i * TAU / 8.0
-				var r0 := s * (0.55 if i % 2 == 0 else 0.4)
-				ci.draw_line(c + Vector2(cos(a), sin(a)) * r0, c + Vector2(cos(a), sin(a)) * s, color, width * 0.9)
-			ci.draw_circle(c, s * 0.22, color)
 		"corrupt":
 			# A jagged crack through the entry: the rot a foe's corrupt leaves in a component.
 			ci.draw_polyline(PackedVector2Array([
@@ -577,48 +577,41 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.SHIELD:
 			return "shield"
 		Face.Kind.VENT:
-			return "ammo" if face.power <= 0 and face.reloads_ammo > 0 else "vent"   # a reload is drawn as one (the Musk Ox's quick reload)
+			return "vent"   # a reload too: one piece on one machine wears no mark of its own (Ryan, 2 November); its ammo is its number's mark
 		Face.Kind.BLANK:
 			return "blank"
 		Face.Kind.BUFF:
-			return "equipment"   # spent on a machine: the three hexes under it say whom (aim_for)
+			return "equipment"
 		_:
-			# Equipment aimed at a foe (a debuff) wears its reach frame with the equipment's mark inside.
-			if face.reach == Face.Reach.INDIRECT:
-				return "equipment_indirect" if face.is_debuff() else "indirect"
-			return "equipment_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags
+			return "equipment" if face.is_debuff() else "weapon"   # aimed at a foe: what holds the arrow says what it delivers
 
 
-## A piece spent on machines as its die draws it (Ryan, 2 November: one standard format, the
-## faces uncrowded; "just 3 connected hexes: center filled for self-only, left/right filled for
-## ally only, all filled for self or ally"): three connected hexes `width` wide, the middle its
-## own machine holding the piece's own glyph (`symbol`), a filled hex a machine it may be spent
-## on. What and whom in one mark, as a weapon's reach frame is; a lit middle carries its glyph
-## cut out in `ground`.
-static func draw_triad(ci: CanvasItem, aim: String, symbol: String, c: Vector2, width: float, ink: Color, ground: Color, line: float = 2.0) -> void:
-	var r := width / (3.0 * sqrt(3.0))
-	var cell := r - maxf(1.2, line * 0.7)
-	for k in range(3):
-		var hc := c + Vector2((k - 1) * sqrt(3.0) * r, 0.0)
-		var hex := PackedVector2Array()
-		for i in range(7):
-			var a := PI / 6.0 + i * PI / 3.0
-			hex.append(hc + Vector2(cos(a), sin(a)) * cell)
-		var lit := aim == "aim_any" or (aim == "aim_self") == (k == 1)
-		if lit:
-			ci.draw_colored_polygon(hex, ink)
-		ci.draw_polyline(hex, ink, line)
-		if k == 1:
-			draw(ci, symbol, hc, cell * 1.15, ground if lit else ink, line)   # inside with the hex's own ground showing round it
+## Where a main mark holds its targeting mark, as a share of its size below its centre (the
+## shield's wide top, the vent's housing under its heat), and how wide that mark is: one width
+## for the arrows and the hexes, so any fits in any (Ryan, 2 November).
+const INNER := {"shield": -0.15, "vent": 0.15}
+const AIM_SHARE := 0.64
 
 
-## Whom a piece spent on machines reaches, as the three hexes under its main glyph draw it
-## (Ryan, 2 November): its own machine only, its allies only, or either; "" for a weapon or
-## equipment aimed at a foe (its reach is its frame's shape) and a blank. A reach over every
-## ally is its keyword's chip besides (Every Ally).
+## An entry's main mark as its die draws it (Ryan, 2 November: "Rework main symbols so that they
+## can all contain a targeting symbol"): what it is (a weapon's reticle, equipment's diamond, a
+## shield, a vent's housing) holding whom it is aimed at (Glyphs.aim_for), `size` its width.
+static func draw_main(ci: CanvasItem, mark: String, aim: String, c: Vector2, size: float, color: Color, width: float = 2.0) -> void:
+	draw(ci, mark, c, size, color, width)
+	if not aim.is_empty():
+		draw(ci, aim, c + Vector2(0.0, size * float(INNER.get(mark, 0.0))), size * AIM_SHARE, color, width * 0.85)
+
+
+## Whom an entry is aimed at, the targeting mark its main mark holds (Ryan, 2 November: "a
+## straight arrow for direct, and the curved arrow for indirect ... the width of the 3 hex
+## symbol"): a foe by its reach, Direct or Indirect; a machine by three hexes, its own only, its
+## allies only, or either; "" for a blank. A reach past the target is its keyword's chip (an
+## area, Every Foe, Every Ally).
 static func aim_for(face: Face) -> String:
-	if face == null or not face.on_machines():
+	if face == null or face.kind == Face.Kind.BLANK:
 		return ""
+	if face.kind == Face.Kind.ATTACK:
+		return "aim_indirect" if face.reach == Face.Reach.INDIRECT else "aim_direct"
 	match face.targets:
 		Face.Target.SELF:
 			return "aim_self"

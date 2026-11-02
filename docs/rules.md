@@ -29,10 +29,10 @@ skirmish.
   damage and is spent on a foe in its reach; **equipment** is a buff or a debuff and deals
   none, a buff spent on a machine and a debuff on a foe in its reach; a **shield** and a
   **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
-  default, or self only, or allies only, as its main icon shows: its glyph in the middle of
-  three connected hexes, the middle its own machine, the two beside it its allies, a filled one
-  a machine it may be spent on (all three for either), a targeting rule as a weapon's reach is
-  its icon's shape; a reach over every foe or every ally is a keyword (Every Foe, Every Ally). A passive may make a piece count as
+  default, or self only, or allies only, as its main icon shows: it holds three connected
+  hexes, the middle its own machine, the two beside it its allies, a filled one a machine it may
+  be spent on (all three for either), as a weapon's holds its reach's arrow; a reach over every
+  foe or every ally is a keyword (Every Foe, Every Ally). A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
   too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
   codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
@@ -140,16 +140,18 @@ defeat when every machine is wrecked. There is no round limit.
 - **A debuff** is equipment aimed at a foe (a setter, a swap), spent on a foe in reach as a
   weapon is: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
   Up, Primed's burn), and its heat is paid as a weapon's. The die's kinds: Direct, Indirect,
-  Equipment, Shield, Vent, and the blank. Every entry reads one way: one mark at the top says
-  what it is and whom it reaches, how much sits under it, its costs run along the foot, its
-  keywords down the edge. A gun is its reach frame over its number; equipment, a buff or a
-  debuff, is one mark, a diamond with a solid core, and prints no number: aimed at a foe it sits
-  in its reach frame (the crosshair's ring with its cross cut to four ticks round it, or the arc
-  over it), spent on a machine it stands in the middle of the three hexes and the status it
-  grants is a chip on the edge with its stacks; a shield, a vent and a reload stand there too,
-  their number under them. What else a spend does sits small beside the number (strikes, the
-  shield a vent also gives, a vent's blast); a shield or vent that also buffs is its own glyph
-  with a buff chip. A dark entry shows a clock and its turns in the number's place. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  Equipment, Shield, Vent, and the blank. Every entry reads one way: one main icon at the top
+  says what it is and holds whom it is aimed at, how much sits under it, its costs run along
+  the foot, its keywords down the edge. The main icons hold their targeting mark, all the
+  targeting marks one width: a weapon is a reticle, a ring with four ticks; equipment, a buff or
+  a debuff, a diamond; a shield its shield; a vent a housing with its heat rising off it. Aimed
+  at a foe it holds a straight arrow (Direct) or a curved one (Indirect); spent on a machine,
+  the three hexes. A weapon, a shield and a vent print their number under it; equipment prints
+  none, and the status a buff grants is a chip on the edge with its stacks. A reload is a vent
+  (the Musk Ox's Quick Reload, its one piece), its number the ammo it loads behind the shells'
+  mark. What else a spend does sits small beside the number (strikes, the shield a vent also
+  gives, a vent's blast); a shield or vent that also buffs is its own icon with a buff chip. A
+  dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
 
@@ -211,8 +213,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
 - **Tapping a die** opens its readout, the entry showing alone, its marks as text, each line headed
-  by the mark on the die it says (the big glyph, a keyword's chip, the star, equipment's status
-  chip, the three hexes on its target, each cost's mark, the lock, a corruption): its place and name,
+  by the mark on the die it says (the main icon, its targeting mark on its target, a keyword's
+  chip, the star, equipment's status chip, each cost's mark, the lock, a corruption): its place and name,
   what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
   codex, then a line a mark: its number as the die prints it, its heat, its target, then its
   keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a
@@ -388,8 +390,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   of Flak after the blow (Flak 2: two stacks), so the blow that lays it never
   feeds on it and a later strike of the same spend does.
 - **Costs** are printed along the entry's foot with its heat, each a mark and a number with no
-  word and no sign (the heat's thermometer, the shield's, the hull's burst, a forging gun's
-  shells), never a keyword and never a chip: a
+  word and no sign (the heat's thermometer, the shield's, the hull's riveted plate, a forging
+  gun's shells, the cooldown's clock), never a keyword and never a chip: a
   **hull cost** (Volatile 3: spending it costs its owner 3 hull, past shield and armour,
   before it acts, and a machine it leaves at nothing is wrecked; the Umbra Inducer, the
   Oblation Mantle and the Entropy Condenser cost 3) and a **shield cost** (3 shield, taken

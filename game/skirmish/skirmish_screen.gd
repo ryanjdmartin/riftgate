@@ -1205,6 +1205,7 @@ func _refresh(save: bool = true) -> void:
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
+		d.cooldown = sk.cooldown_of(ms, sf)   # the rounds a spend darkens it, its passives in: a cost along its foot
 		d.next_face = sk.next_face(ms) if ms.alive() else null   # a stepping die's next chamber
 		d.slot = ms.face_index + 1   # its place on the die: a reroll onto a copy shows by it
 		d.spent = ms.assigned
@@ -1951,15 +1952,16 @@ func _toggle_lock(i: int) -> void:
 ## What holds on die entry `i` now, for its readout: a cooldown with its turns left (Ryan, 26
 ## October: "On Cooldown (X turns left)"), a foe's switch-off, its corruption. A
 ## stepping die's next chamber is its cylinder's arrow.
-func _entry_states(ms: Skirmish.MechState, i: int) -> Array[String]:
-	var out: Array[String] = []
+func _entry_states(ms: Skirmish.MechState, i: int) -> Array:
+	var out: Array = []
 	if i < 0 or i >= ms.die.faces.size():
 		return out
 	var f: Face = ms.die.faces[i]
 	if Effects.is_entry_disabled(ms.unit, i):
+		# By the clock the die shows along its foot with the turns left (Ryan, 2 November).
 		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
-		out.append(("Disabled" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
-			+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""))
+		out.append([("Disabled" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
+			+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
 	return out
 
 
@@ -2018,7 +2020,7 @@ func _show_die(i: int) -> bool:
 			extra.append(EntryReadout.marked(EntryReadout.text_line("effect", said, "rule"), [EntryReadout.mark(shift, Glyphs.colour_for(shift))]))
 		var states: Array = _entry_states(ms, at)
 		states.append_array(_entry_marks(ms, at, i))
-		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra)
+		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra, sk.cooldown_of(ms, sf))
 	if entry.is_empty() and ring.is_empty():
 		return false
 	_show_details("", _dice[i], ring, entry)
@@ -2518,6 +2520,7 @@ func _on_drag_started(i: int) -> void:
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.blast = sk.blast_number(sk.mechs[i], sk.blast_amount(sk.mechs[i], sf))
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
+	_ghost.cooldown = sk.cooldown_of(sk.mechs[i], sf)
 	_ghost.charged = sk.charge_lands(sk.mechs[i])
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.slot = sk.mechs[i].face_index + 1
@@ -2695,6 +2698,7 @@ func _send_second_home() -> void:
 	fly.blast = d.blast
 	fly.charged = d.charged
 	fly.dark = d.dark
+	fly.cooldown = d.cooldown
 	fly.position = from
 	fly.size = DieFaceView.view_size()
 	add_child(fly)

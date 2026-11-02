@@ -18,7 +18,7 @@ extends RefCounted
 ## added or renamed there fails the build until it has its row here. A glyph "" draws none.
 const TABLE := {
 	# Reach.
-	"direct": ["line", "plain"], "indirect": ["indirect", "plain"],
+	"direct": ["aim_direct", "plain"], "indirect": ["aim_indirect", "plain"],
 	# Keywords.
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
 	"every_foe": ["every_foe", "plain"], "every_ally": ["every_ally", "plain"],
@@ -35,7 +35,7 @@ const TABLE := {
 	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"],
 	"spray": ["", "plain"], "cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
 	"hopper_property": ["hopper", "plain"],
-	"volatile": ["volatile", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
+	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"kill_overcharge": ["overcharge", "heat"], "self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],
 	"roll_again_property": ["rapid", "heat"], "pull": ["mine", "heat"], "drone": ["syrinx_drone", "heat"],
 	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
