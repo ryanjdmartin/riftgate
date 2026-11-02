@@ -1493,8 +1493,9 @@ func test_every_component_names_a_silhouette_class() -> void:
 
 func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	# The set of 2 October (the bible, section 9): rank and file carry one or two moves and a
-	# boss three; every foe reads an aim the engine knows; the ghoul's claw is a swarm blow; the
-	# bosses wear armour.
+	# boss three; every foe reads an aim the engine knows; the ghoul's claw is a swarm blow; a
+	# boss wears armour only where its kit is armour (Ryan, 2 November), a point or two, and one
+	# whose armour steps by the tier starts from at least a point.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	assert_true(db.validate().is_empty(), "the set validates: %s" % str(db.validate()))
@@ -1503,7 +1504,9 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 		assert_true(Foe.AIMS.has(f.aim), "%s aims by a word the engine knows" % id)
 		if f.boss:
 			assert_eq(f.actions.size(), 3, "%s, a boss, has three moves" % id)
-			assert_true(f.armour > 0, "%s, a boss, wears armour" % id)
+			assert_true(f.armour >= 0 and f.armour <= 2, "%s, a boss, wears no armour or a point or two" % id)
+			if f.armour_step > 0:
+				assert_true(f.armour > 0, "%s, a boss whose armour steps, starts from a point" % id)
 		elif f.hero and db.foes[id].has("promotes"):
 			# A promoted form (the bible's section 9): its hero's moves and one more, massive and
 			# armoured.

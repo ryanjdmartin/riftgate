@@ -620,7 +620,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 
 ### Foes
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
-  flat armour (every boss 1 or 2, the promoted forms 2) and perhaps an aim. Its damage
+  flat armour (a boss only where its kit is armour, the Cinder Tortoise's stepping by the tier; the promoted forms 2) and perhaps an aim. Its damage
   never rolls.
 - **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
   the same special twice running while anything else is open. A move without a condition
@@ -635,8 +635,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   breaks it off, and the foe stays on the field. A move may name a follow-up: once it lands, the
   move it names is its foe's next round's intent (the Matador's Red Capote, then Andalucia); a
   follow-up comes only that way, never by the roll, and a Suppress on the first move, or a
-  Disrupt that turns it, means it never comes. A borrowed swing with nothing taken is no
-  follow-up, and the roll decides. A swallow is never drawn while fewer than two machines stand
+  Disrupt that turns it, means it never comes; once announced it cannot be Disrupted, only
+  Suppressed (its chip says so, and a Disrupt held over the foe shows its chip struck through),
+  so the first move is the window. A borrowed swing with nothing taken is no follow-up, and the
+  roll decides. A swallow is never drawn while fewer than two machines stand
   in the fight, nor a merge while nothing of its kinds stands on the field.
 - **Its target**, drawn as the round opens: at random, unless the foe or its move carries an
   aim, as its threat calls for: exposed (weighted by the hull its blows would reach

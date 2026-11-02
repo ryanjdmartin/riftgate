@@ -51,6 +51,67 @@ func test_a_follow_up_comes_the_round_after_its_move_lands() -> void:
 	assert_eq(sk.mechs[0].unit.hull, 500 - 4 * 5, "four strikes of five")
 
 
+## An announced follow-up is committed (Ryan, 2 November: "cannot be Disrupted"): a Disrupt on
+## the flurry's round turns nothing, the die's gate shuts the keyword over it, the bot values it
+## at nothing and a save keeps it, while a Suppress still takes the move; the first move stays
+## the window, a Disrupt on the capote's round turning it as before, so no flurry comes.
+func test_an_announced_follow_up_cannot_be_disrupted_and_a_suppress_still_takes_it() -> void:
+	var probe := Face.attack(0, I, [Face.Keyword.DISRUPT])
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(probe)))
+	var m := _matador()
+	sk.add_foes([m])
+	sk.begin()
+	sk.start_round()
+	m.action = m.actions[1]   # the capote, announced
+	m.last_special = "capote"
+	sk.end_round()
+	sk.start_round()
+	assert_eq(str(m.action.get("id", "")), "flurry", "the flurry is announced")
+	assert_true(m.committed, "and committed")
+	assert_true(sk.shut_gates(sk.mechs[0], probe, m).has(Face.Keyword.DISRUPT), "the Disrupt's chip is struck over it")
+	assert_eq(Policy.disrupt_score(sk, m), 0.0, "the bot values the disrupt at nothing")
+	var copy: Skirmish = SaveGame.clone_skirmish(sk)
+	assert_true(copy.field_foes()[0].committed, "a save keeps it")
+	assert_true(sk.assign(0, m), "the Disrupt is spent on it")
+	assert_eq(str(m.action.get("id", "")), "flurry", "and the flurry holds")
+	assert_true("\n".join(sk.log).contains("committed to"), "the log says so")
+	sk.end_round()
+	assert_eq(sk.mechs[0].unit.hull, 500 - 4 * 5, "four strikes of five land")
+	sk.start_round()
+	assert_false(m.committed, "the next round's pick is its own again")
+	# A Suppress still takes the announced flurry.
+	var sk2 := Skirmish.new(1, 3)
+	sk2.add_mech(_mech("A", Die.single(Face.attack(0, I, [Face.Keyword.SUPPRESS]))))
+	var m2 := _matador()
+	sk2.add_foes([m2])
+	sk2.begin()
+	sk2.start_round()
+	m2.action = m2.actions[1]
+	m2.last_special = "capote"
+	sk2.end_round()
+	sk2.start_round()
+	assert_true(m2.committed, "the flurry is committed")
+	assert_true(sk2.assign(0, m2), "the Suppress is spent on it")
+	assert_true(m2.is_suppressed(), "and takes it")
+	sk2.end_round()
+	assert_eq(sk2.mechs[0].unit.hull, 500, "no strike lands")
+	# The first move stays the window: a Disrupt on the capote's round turns it.
+	var sk3 := Skirmish.new(1, 3)
+	sk3.add_mech(_mech("A", Die.single(Face.attack(0, I, [Face.Keyword.DISRUPT]))))
+	var m3 := _matador()
+	sk3.add_foes([m3])
+	sk3.begin()
+	sk3.start_round()
+	m3.action = m3.actions[1]
+	m3.last_special = "capote"
+	assert_false(m3.committed, "the capote is the roll's, not committed")
+	assert_true(sk3.assign(0, m3), "the Disrupt is spent on the capote's round")
+	assert_true(str(m3.action.get("id", "")) != "capote", "and turns it")
+	sk3.end_round()
+	assert_eq(m3.next_move, "", "so no flurry is named")
+
+
 func test_a_follow_up_never_comes_by_the_roll() -> void:
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.blank())))

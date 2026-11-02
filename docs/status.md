@@ -21,7 +21,7 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 820 tests, 206,164 checks, green (2 November, the review's calls of the 2nd on
+- Tests: 821 tests, 206,185 checks, green (2 November, the slate's last calls on
   `claude/brave-cori-fr18de`; 787 and 205,261 on main), about four minutes in a cloud session,
   twenty on a slow one. A cloud session gets Godot 4.7's Linux build and the project's first
   import from the repository's session-start hook (`.claude/hooks/session-start.sh`,
@@ -46,8 +46,8 @@ heat grid's read as it landed), and main took it as a fast-forward on 30 October
 ("merge this into main"). It then carried the bosses' slate on his word the same evening, the
 first seven ("build what can be built, and specify exactly what you need to flesh the rest out,
 including any holes") and the last five ("Yes to all waiting bosses"), for main to take on his
-word; its bible is v0.425 (the page's version 437) and its hangar the page's
-version 189.
+word; its bible is v0.426 (the page's version 438) and its hangar the page's
+version 190.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -149,8 +149,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   own (the Barrow, Grave and Charnel Giant), and the Bone Wyvern to the Marsh's elites. The
   worms' and the Antlion Queen's bites are Maw and Devour (Swallow is Floraison's word);
   Withdraw is 2, the Tortoise at tier three flagged (the to-do); no foe flees but a loot-runner
-  (Ryan's rule of the 2nd), so the Needler's Scatter and the Thief's Flee are struck, the
-  Thief's third move open. Built for them, on any foe: a follow-up, a steal with its borrowed swing, a swallow
+  (Ryan's rule of the 2nd), so the Needler's Scatter and the Thief's Flee are struck, Showtime
+  the Thief's third. Built for them, on any foe: a follow-up, a steal with its borrowed swing, a swallow
   that lets go once its swallower loses a quarter of its HP (a second machine taken joining the
   first's count), a merge, a drain from the hull, a grudge (`per_kill`), a condition that reads
   a fallen part, a move used once a fight, an escort that names its boss, a boss's armour step a
@@ -170,9 +170,14 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   (its tentacles lightened and slowed on a what-if, and the Lich out of the Lord's escort: landed).
   Found on the way: the balance runner had never set the foe factory (fixed); the test runner
   passes a test that crashes after its first check (the to-do); a second swallow moved the
-  first's release (fixed on the 2nd). Waiting on Ryan: the blanket armour at tier one and a
-  follow-up that cannot be Disrupted (the proposal's two calls, each with Claude's lean), the
-  Thief's third move, his marks on the session's placeholders and the elites brief.
+  first's release (fixed on the 2nd). Settled that evening (Ryan, 2 November): armour only where a
+  boss's kit is armour (the Colossus, the Fallen Weapon, the Phantom Train, the Obsidian Tyrant
+  and the Tortoise keep a point, the rest none), a follow-up that cannot be Disrupted once
+  announced (the chip says so, a Disrupt held over the foe strikes through, the bot values it at
+  nothing, a Suppress still takes it), Showtime the Thief's third (a blow at every machine below
+  half) and the escorts' moves (Barbed Needlers for the Fallen Weapon's Great Needlers, the Death
+  Knight out of the Matador's, Ghosts for the Phantom Train, stokers for the Tyrant at tier
+  three). Waiting on Ryan: his marks on the session's placeholders and the elites brief.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -544,10 +549,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.425 (the page's version
-  437, published 2 November from `claude/brave-cori-fr18de` with Ryan's two calls of the
-  evening, every elite scaled by the tier and the Thief's Flee struck, over 436 of the same
-  day, which carried the review's calls of the 2nd: the Ruby Colossus, the Djinn in the ranks, the wanderer by chance, elites reusable, the
+  `docs/design-bible.html` after every change. This file is v0.426 (the page's version
+  438, published 2 November from `claude/brave-cori-fr18de` with the slate's last calls,
+  armour by kit, the committed follow-up, Showtime and the escorts' moves, over 437 of the same
+  evening, which carried every elite scaled by the tier and the Thief's Flee struck, over 436 of
+  the same day, which carried the review's calls of the 2nd: the Ruby Colossus, the Djinn in the ranks, the wanderer by chance, elites reusable, the
   flee rule, the Thief's Flee as a section 12 question; three-way merged onto the live v0.423,
   which other sessions had moved past this branch's v0.417 at 429 with the Honey Badger's hopper
   and Ore Plate, the five Wainwright & Sutler models' first cuts and the weapon-fire row, four
@@ -582,8 +588,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each checked identical to the last publish's
   before it is replaced and `edits` read first. Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 189 (2 November, from
-  `claude/brave-cori-fr18de`, the Thief's Flee struck: `content/foes.json` over 188 of the same
+  acts on a reloaded page). At the page's version 190 (2 November, from
+  `claude/brave-cori-fr18de`, the slate's last calls: `content/foes.json`, `content/factions.json`
+  and `content/vocabulary.json`, the vocabulary's live copy checked identical to 181's first,
+  over 189 of the same evening, the Thief's Flee struck, `content/foes.json` over 188 of the same
   day, the escorts' read's `content/foes.json` and `content/factions.json`, over 187 of the same day, which carried the review's calls of the 2nd, each live copy
   checked identical to 181's first, `edits` empty, the page itself another session's republish
   of 13:07 kept as it stood, its motion panel's forms and pin records this branch's

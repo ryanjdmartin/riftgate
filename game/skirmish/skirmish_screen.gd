@@ -1278,6 +1278,9 @@ func _foe_rows(foe: Foe) -> Array:
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
 		rows.append(["warning", str(foe.charge), "Gathering: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
+	if foe.committed:
+		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes it.
+		rows.append(["lock", "", "Committed: %s was announced a round ahead and cannot be Disrupted; a Suppress still takes it" % str(foe.action.get("name", "")), Palette.ENEMY])
 	if Effects.has(foe, "braced"):
 		# Armoured, the machines' status (16 October; Braced until 18 October): their chip's
 		# glyph, with the armour every grant adds (its own brace, a Protect).

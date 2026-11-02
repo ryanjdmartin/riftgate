@@ -113,14 +113,14 @@ mechanic, and stands alone at tier one:
 | Rotbloom | Mandrakes and Goblin Guards; Alraunes at tier three | The Scream and the Shriek pile more trouble on the die it breathes on |
 | Floraison | Wargs; Alpha Wargs and goblins at tier three | Howls and bites on a team a machine down |
 | The Ruby Colossus | A Basilisk and a Pit Antlion; Gorgons, the Antlion Queen and a Pit Antlion | Stone and a pit's breach beside a buried machine, so the tempo Whirlsand takes is pressed |
-| The Fallen Weapon | Barbed Needlers and Basilisks; Great Needlers and Gorgons | The Waste's breach and theft beside the eyes', so the eyes are a race |
+| The Fallen Weapon | Barbed Needlers and Basilisks; Barbed Needlers and Gorgons (the Great Needlers out, 2 November: their countdowns under Drive made a wall) | The Waste's breach and theft beside the eyes', so the eyes are a race |
 | The Pilgrim | Needlers; Barbed and Great Needlers | Every kill feeds Karma, so the kill order turns over |
-| The Matador | Wights; a Death Knight and a Spectre at tier three | A wall of claws while the cape is up |
-| The Phantom Train | A Revenant and a Spectre; Wights, a Wraith and a Spectre | The dead it carries, raising more |
+| The Matador | Wights; Wights and a Spectre at tier three (the Death Knight out, 2 November: its guard under the cape walled a trio) | A wall of claws while the cape is up |
+| The Phantom Train | Ghosts; Ghosts, a Wraith and a Spectre (2 November) | The Ghosts raise from the first round, which is the Train's plan |
 | The Vampire Lord | A Death Knight and a Wight; a Dread Knight, a Death Knight and Wights (the Lich out, 2 November: readying the Lord to rise again was half a wall) | The Marsh's other risers, so the burst it asks for is spread thin |
 | The Behemoth | A Bomb and a Grenade; Grenades and Balloons | A second blast to shield for |
 | The Cinder Tortoise | Fire Lizards; Magma Lizards and a Wyvern | Scorch under the quake, so the shelled round is a heat question |
-| The Obsidian Tyrant | A Wyvern and a Fire Lizard; a Red Dragon and its kind | Fire while the count runs |
+| The Obsidian Tyrant | A Wyvern and a Fire Lizard; Magma Lizards and Wyverns (the Red Dragon out, 2 November) | Stokers: its Crunch burns while the rider is killed and the count runs |
 
 The slate stands at 48 HP at tier one, the boss in parts' core at 40 and its eyes at 8, the
 Obsidian Tyrant's rider at 12 and the Vampire Lord at 40, under the scale row's 80 to 100 (the
@@ -143,32 +143,20 @@ bosses bringing their own escorts; the Dusk Treant off violet; and no foe flees 
 loot-runner, so the Needler's Scatter is struck. Every name and number above waits on his
 content pass. Open:
 
-1. **The slate's blanket point of armour at tier one** (Ryan: "be careful giving all bosses
-   blanket 1 armour early on"). Read (`docs/measurements.md`, 31 October, 20 seeds, a
-   direction): it costs the small-blow kits about 40% more rounds against the slate and
-   Wainwright & Sutler's trio a few fights it wins without it. The forms: armour only where a
-   boss's kit is armour, at every tier, every other boss at 0; or none at tier one and the
-   standard point from tier two. Claude's lean: the first, a boss's armour by its fantasy as a
-   machine's is by its role, the Tortoise's step the form for any that grows it.
-2. **A follow-up that cannot be Disrupted** (Ryan: "we need to watch whether stunning a
-   follow-up is too strong or not, since its so telegraphed. The follow-up chip could grant
-   Numbed if it needed to, but that doesn't stop disrupt, which is the bigger issue. I would
-   probably add 'cannot be Disrupted' to the follow-up chip"). A follow-up comes only after
-   the move that names it, never by the roll (built so). Claude's view, in chat first: the
-   announced follow-up committed, Disrupt unable to turn it, its chip saying so and a Disrupt
-   held over it struck through, as a gated keyword shows; the first move stays the window that
-   breaks the pair, a round earlier and on that round's dice; Suppress stays, Numbed its limit.
-   The hole named: a countdown is as telegraphed and a Disrupt breaks it off, which is its
-   design (interrupt the big hit), so the two part by their questions and the countdown stays.
-3. **The Thief's third move** (its Flee struck 2 November: "that just raises complicated
-   questions (does he come back for the finale? does the rift even close?)"). A hero carries
-   three, the third a signature below half. Claude's lean: Smoke Bomb, a Barrier on itself (built;
-   a cheap blow pops it), so the slippery thief stays slippery without leaving; the alternatives
-   Showtime, a blow at every machine, or a steal of the entry shown, which is Gilgamesh's.
-4. **The Cinder Tortoise at tier three** (flagged 2 November, left for now on Ryan's word):
+Settled 2 November, evening, on Ryan's word ("Agreed everything else"), each built that night:
+armour only where a boss's kit is armour (the Ruby Colossus, the Fallen Weapon, the Phantom
+Train and the Obsidian Tyrant keep a point, the Cinder Tortoise its step, the other seven none);
+a follow-up that cannot be Disrupted once announced (`Foe.committed`: the chip says so, a Disrupt
+held over the foe strikes through, the bot values it at nothing, a Suppress still takes it, the
+countdown stays Disruptable); Showtime the Thief's third ("showtime is great"), a blow at every
+machine below half; and the escorts' moves (Barbed Needlers for the Fallen Weapon's Great
+Needlers, the Death Knight out of the Matador's, Ghosts for the Phantom Train, Magma Lizards and
+Wyverns for the Tyrant at tier three). Open:
+
+1. **The Cinder Tortoise at tier three** (flagged 2 November, left for now on Ryan's word):
    armour 3, and 5 withdrawn, against blows of 2 to 6, so a round of basics is zeroed; its
    tier-three read with a tier-matched kit is the to-do's, on the runner's `--boss-tiers` cells.
-5. **The escorts' weight** (Ryan, 2 November: "Do the escorts hold up, and support the boss's
+2. **The escorts' weight** (Ryan, 2 November: "Do the escorts hold up, and support the boss's
    game plan?"; the read in `docs/measurements.md`, the same day). Most are a tax of a round or
    two and some hull on a stock team; three are walls at tier three, and not the heaviest by
    menace but the ones the boss's own mechanic amplifies: the Vampire Lord's (the Lich readies it

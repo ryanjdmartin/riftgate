@@ -55,6 +55,7 @@ var guard: String = ""          # a core takes no damage while "all" its parts s
 var regrow_parts: int = 0        # rounds after a part falls before it grows back, while the core stands (0: never)
 var regrow_due: Array = []       # [part id, round it returns] for each part on its way back
 var next_move: String = ""       # the follow-up it announces next round: the move its last move names in `then` (30 October)
+var committed: bool = false      # its action this round is the follow-up it announced, which no Disrupt turns (Ryan, 2 November)
 var held: Dictionary = {}        # what a steal took off a machine, {"name", "power"}, until the borrowed swing spends it (30 October)
 var grudge: int = 0              # foes the team has killed this fight, for a blow that grows with them (`per_kill`); the skirmish keeps it
 var spent_once: Array = []       # the moves marked `once` it has used this fight (30 October: the Vampire Lord readies its rise once)

@@ -585,6 +585,8 @@ func shut_gates(ms: MechState, f: Face, foe: Foe) -> Array[int]:
 	for k in f.keywords:
 		if not Effects.gate_holds(ms.unit, f, k, foe):
 			out.append(k)
+		elif k == Face.Keyword.DISRUPT and foe.committed:
+			out.append(k)   # an announced follow-up holds (2 November): the chip struck over it
 	return out
 
 
@@ -1273,10 +1275,12 @@ func _choose_foe_action(f: Foe) -> void:
 	# any; a borrowed swing with nothing taken has nothing to swing, and the roll decides.
 	var next := f.next_move
 	f.next_move = ""
+	f.committed = false
 	if not next.is_empty():
 		for a in f.actions:
 			if str(a.get("id", "")) == next and (not Foe.swings_held(a) or not f.held.is_empty()):
 				f.action = a
+				f.committed = true   # announced a round ahead, so no Disrupt turns it (Ryan, 2 November): the first move was the window
 				f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
 				_begin_countdown(f)
 				return
@@ -4148,6 +4152,11 @@ func _lure(ms: MechState, foes: Array) -> void:
 func _disrupt(foes: Array) -> void:
 	for foe in foes:
 		if not foe.alive() or foe.fresh:
+			continue
+		if foe.committed:
+			# A follow-up announced a round ahead holds (Ryan, 2 November: "cannot be Disrupted"):
+			# the move that named it was the window, and a Suppress still takes it.
+			log.append("%s is committed to %s, and nothing turns it" % [foe.display_name, str(foe.action.get("name", ""))])
 			continue
 		var next := disrupt_next(foe)
 		if next.is_empty():
