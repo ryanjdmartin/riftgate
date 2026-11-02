@@ -486,7 +486,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 - Models: every machine's by lowforge; the five Wainwright & Sutler machines' are first cuts, the
   Musk Ox's and the Cassowary's of 31 October and the Cottonmouth's, the Swallowtail's and the
   Whip Scorpion's of 2 November, to judge running
-  (the Cassowary's drum clicking a chamber each time its die rolls, `b.index`; the Cottonmouth's
+  (the Cassowary's capacitor charging a cell a counted shot and spinning while Spun Up, `b.count` and `b.spin_held`; the Cottonmouth's
   mounts hidden in its drum, `b.pin(..., hidden=True)`; the to-do's lines); the Lammergeier's, the
   Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
   to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
