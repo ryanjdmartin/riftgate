@@ -201,8 +201,7 @@ func test_a_halo_is_drawn_toward_the_eye_unless_its_part_names_its_own_distance(
 		if worn.size() == 1:
 			var ahead := float(((worn[0] as MeshInstance3D).material_override as ShaderMaterial).get_shader_parameter("ahead"))
 			assert_eq(ahead, MechRig.HALO_AHEAD if part == "slot" else 0.0, "the %s's halo is drawn its distance toward the eye" % part)
-	rig.model.free()
-	rig.free()
+	rig.model.free()   # the rig is RefCounted and goes with its last reference
 
 
 func test_only_the_weapon_that_fired_kicks_after_its_aim() -> void:

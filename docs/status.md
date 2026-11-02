@@ -84,10 +84,13 @@ turret, a waist or a hover's pivot is cheap, and sixteen machines' fixed weapons
 of an idle act; then his notes of 2 November: the hand-built stock guns flaring where lowforge
 finds their muzzles, the flares in the colours each shot has (off the colour tuner, the colourblind
 rules scoped to gameplay information in `CLAUDE.md`), a component's tags layered, the turn before
-the blow's sound, the tracked machines and the Dingo pivoting; green at 838 tests and 207,118
-checks; not yet on main; its bible is v0.423 (the page's 435). Next on
-it: Ryan's read of the glows and the weapons firing, then the shot crossing the field and a hit
-moving the machine (the to-do).
+the blow's sound, the tracked machines and the Dingo pivoting; then his swap notes (a refit must
+never look worse than the stock): a hardpoint declares, per class, the variant it wears and its
+scale (lowforge's `fits`), the round launcher the first variant, the Armadillo's ports, the
+Goshawk's pods and the Dingo's nose made to take every class, and `tools/fit_sheet.gd`, every
+machine wearing every class in one sheet; green at 841 tests and 207,420 checks; not yet on main;
+its bible is v0.428 (merged onto the live v0.427 another session published). Next on it: Ryan's read of the glows, the weapons
+firing and the swaps, then the shot crossing the field and a hit moving the machine (the to-do).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times

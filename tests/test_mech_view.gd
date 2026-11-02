@@ -53,6 +53,102 @@ func test_every_silhouette_class_has_a_model_in_every_makers_metal() -> void:
 			assert_true(MechView3D.has_model(MechView3D.shape_model(shape, maker)), "%s in %s is built" % [shape, maker])
 
 
+func test_a_hardpoint_wears_the_variant_and_scale_it_declares_for_a_class() -> void:
+	# A model's sidecar may declare, per hardpoint and class, a variant and a scale on the pin's
+	# own (lowforge's `fits`; Ryan, 2 November: "Hardpoint just needs to declare shape (if
+	# offered) and scaling"); every other class wears itself at the pin's scale.
+	var side := {"fits": {"hp_2": {"rack": {"shape": "rack_round", "scale": 0.8}, "dish": {"shape": "dish", "scale": 0.5}}}}
+	assert_eq(MechView3D.fit_in(side, 2, "rack"), ["rack_round", 0.8], "the declared variant at its scale")
+	assert_eq(MechView3D.fit_in(side, 2, "dish"), ["dish", 0.5], "the class itself, smaller")
+	assert_eq(MechView3D.fit_in(side, 2, "barrel"), ["barrel", 1.0], "an undeclared class wears itself")
+	assert_eq(MechView3D.fit_in(side, 1, "rack"), ["rack", 1.0], "and so does every class on an undeclared mount")
+	assert_eq(MechView3D.fit_in({}, 1, "blade"), ["blade", 1.0], "a sidecar with no fits changes nothing")
+
+
+func test_every_declared_fit_names_a_built_variant_of_its_class() -> void:
+	# Each variant lowforge built (art/models/shapes/variants.json) is in every maker's metal
+	# with its muzzle and, where its class burns, a fire; each model's fits name a class content
+	# knows, and a variant of that class or the class itself, at a scale above nothing.
+	var db := ContentDB.load_default()
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string("res://art/models/shapes/variants.json"))
+	assert_true(parsed is Dictionary, "the variants' manifest reads")
+	var variants: Dictionary = {}
+	for key in (parsed as Dictionary).keys():
+		if not str(key).begins_with("_"):
+			variants[str(key)] = str(parsed[key])
+	assert_false(variants.is_empty(), "there is a variant to check")
+	for v in variants.keys():
+		assert_true(ContentDB.SHAPES.has(variants[v]) and variants[v] != ContentDB.SHAPE_NONE, "%s is a variant of a class content knows" % v)
+		for maker in db.makers.keys():
+			assert_true(MechView3D.has_model(MechView3D.shape_model(v, maker)), "%s in %s is built" % [v, maker])
+		assert_false(MuzzleFlare.places(v).is_empty(), "%s has a muzzle to flare at" % v)
+		if MechView3D.has_model("shapes/burn_%s" % variants[v]):
+			assert_true(MechView3D.has_model("shapes/burn_%s" % v), "%s has a fire, as its class does" % v)
+	var declared := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var fits = MechRig.load_sidecar(f.trim_suffix(".rig.json")).get("fits", {})
+		for pin in fits.keys():
+			for cls in fits[pin].keys():
+				declared += 1
+				var how: Dictionary = fits[pin][cls]
+				var worn := str(how.get("shape", cls))
+				assert_true(ContentDB.SHAPES.has(cls) and cls != ContentDB.SHAPE_NONE, "%s %s fits %s, a class" % [f, pin, cls])
+				assert_true(worn == cls or str(variants.get(worn, "")) == cls, "%s %s wears its %s as %s, a variant of it" % [f, pin, cls, worn])
+				assert_true(float(how.get("scale", 1.0)) > 0.0, "%s %s wears its %s at a scale above nothing" % [f, pin, cls])
+	assert_true(declared > 0, "some model declares a fit")
+
+
+func test_a_swap_wears_the_mounts_variant_at_its_scale() -> void:
+	# Every model that declares a fit hangs that variant at that scale when its class is fitted
+	# there, on the game's own wear (the map shares it), and its flares follow the shape and scale.
+	var db := ContentDB.load_default()
+	var checked := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var model := f.trim_suffix(".rig.json")
+		var fits = MechRig.load_sidecar(model).get("fits", {})
+		if fits.is_empty():
+			continue
+		var root: Node3D = (load("res://art/models/%s.glb" % model) as PackedScene).instantiate()
+		var pins := MechView3D.pins_of(root)
+		for pin in fits.keys():
+			var n := int(str(pin).substr(3))
+			for cls in fits[pin].keys():
+				var how: Dictionary = fits[pin][cls]
+				var cid := ""
+				for id in db.components.keys():
+					if str(db.components[id].get("shape", "")) == cls and str(db.components[id].get("status", "")) != "planned":
+						cid = str(id)
+						break
+				if cid.is_empty() or not pins.has(n):
+					continue
+				var maker := str(db.components[cid].get("maker", ""))
+				MechView3D.wear(pins, [[n, cid, cls, maker]], "clean", {}, false, true, model)
+				var worn: Node3D = null
+				for c in (pins[n] as Node3D).get_children():
+					if c.has_meta("mounted"):
+						worn = c
+				assert_true(worn != null, "%s %s hangs something for its %s" % [model, pin, cls])
+				if worn != null:
+					assert_eq(worn.scene_file_path, "res://art/models/%s.glb" % MechView3D.shape_model(str(how.get("shape", cls)), maker), "%s %s wears its %s's variant" % [model, pin, cls])
+					assert_true(absf(worn.scale.x - float(how.get("scale", 1.0))) < 0.001, "%s %s wears its %s at its scale" % [model, pin, cls])
+					(pins[n] as Node3D).remove_child(worn)
+					worn.free()
+				var flares := MechView3D.flare_rows(model, [[n, cid, cls, maker]], db, false)
+				for row in flares:
+					if int(row[0]) == n:
+						var want: Array = MuzzleFlare.places(str(how.get("shape", cls)))
+						assert_eq((row[3] as Array).size(), want.size(), "%s %s flares at its shape's muzzles" % [model, pin])
+						if not want.is_empty():
+							assert_true(absf(float(row[3][0][1]) - float(want[0][1]) * float(how.get("scale", 1.0))) < 0.001, "%s %s flares at its scale" % [model, pin])
+				checked += 1
+		root.free()
+	assert_true(checked > 0, "a declared fit was worn")
+
+
 func test_mount_plan_names_only_the_mounts_that_differ_from_stock() -> void:
 	var db := ContentDB.load_default()
 	# Stock: a gun, a rack, a gun, and a jack that takes no mount: three mounts filled.
@@ -204,7 +300,7 @@ func test_a_burn_weapon_wears_its_fire_on_its_class_and_nothing_else_does() -> v
 	assert_false(MechView3D.burning("cold_gun", db), "one without burn does not")
 	assert_false(MechView3D.burning("bare_gun", db), "nor one whose entry names no keywords")
 	var rows := [[1, "fire_gun", "barrel", "minerva"], [2, "cold_gun", "barrel", "minerva"]]
-	assert_eq(MechView3D.burn_rows("", rows, db), [[1, "fire_gun", "barrel"]], "a swapped burn weapon's mount takes its class's fire, and only it")
+	assert_eq(MechView3D.burn_rows("", rows, db), [[1, "fire_gun", "barrel", "barrel", 1.0]], "a swapped burn weapon's mount takes its class's fire, and only it")
 
 
 func test_a_flash_rises_holds_and_settles_back_to_rest() -> void:

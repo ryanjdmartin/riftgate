@@ -862,6 +862,13 @@ def armadillo(b):
     flingers' rack stays live, since a sealed Armadillo still lures; opening runs it back."""
     Z0 = 26.0   # the shell's floor: the legs lift it this high
     PLUG_DEEP, PLUG_DEEP_F = 12.0, 9.0   # how far down its line each port's iris plug rests, rear and fore: under the floor, out of sight in the shell
+    # How each class sits in a port (Ryan, 2 November: "some hardpoints want circular missile
+    # racks, that fixes the armadillo"): a round launcher for a rack, and every class at the
+    # scale that passes the port's bore whole (its octagon's flats: the rear ports' 11.8 across,
+    # the fore ports' 10.3), so a fitted part rises out of its port as the guns do, never jammed
+    # in its mouth, and sinks under the iris when the shell seals.
+    REAR_FITS = {"rack": ("rack_round", 0.78), "dish": 0.7, "blade": 0.8, "twin_barrel": 0.7, "barrel": 0.9}
+    FORE_FITS = {"rack": ("rack_round", 0.68), "dish": 0.6, "blade": 0.7, "twin_barrel": 0.6, "barrel": 0.8}
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
     bands = [(-50.0, -38.0, 50.0, Z0 + 21.0, 9.0), (-39.0, -22.0, 54.0, Z0 + 24.0, 10.0), (-23.0, -4.0, 60.0, Z0 + 28.0, 12.0),
@@ -935,11 +942,11 @@ def armadillo(b):
         # slide joint at the mount, the socket inside it.
         with b.joint("run_%s" % ("l" if s < 0 else "r"), tuple(mount), slide=D):
             if kind == "rivet":
-                with b.socket("hp_1", tuple(mount), forward=D, scale=1.2, carries="rivet_gun"):
+                with b.socket("hp_1", tuple(mount), forward=D, scale=1.2, carries="rivet_gun", fits=REAR_FITS):
                     _beam(b, tuple(mount), tuple(mount + DV * 16.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
                     _beam(b, tuple(mount + DV * 16.0), tuple(mount + DV * 18.5), _poly(4.0, 6), _poly(3.6, 6), "steel.plate", "rivet_muzzle")
             else:
-                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2, carries="twin_autoguns"):
+                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2, carries="twin_autoguns", fits=REAR_FITS):
                     for xo in (-2.4, 2.4):   # the pair inside the port's bore, no wider than a fitted pair
                         off = Vector((xo, 0.0, 0.0))
                         _beam(b, tuple(mount + off), tuple(mount + off + DV * 18.0), _poly(1.9, 6), _poly(1.9, 6), "steel.dark", "autogun_barrel")
@@ -986,24 +993,28 @@ def armadillo(b):
     for s, n in ((-1.0, 3), (1.0, 4)):
         px = s * 14.0
         # Lowered so the collar sits inside the plate behind the cowl, its wall run back
-        # into the band (Ryan, 1 October: the tube and the body did not meet).
-        ZF = Z0 + 17.5
+        # into the band (Ryan, 1 October: the tube and the body did not meet); wide enough
+        # that any class fits it at a size that reads (Ryan's go of 2 November: the fore
+        # ports' bore had been 9 across, too small for a launcher or a dish to show), and
+        # lower again so the wider collar stays inside the band's top.
+        ZF = Z0 + 16.0
         p0 = (px, 22.0, ZF)
         p1 = (px, 31.0, ZF)
-        b.cut(band_obs, p0, p1, 4.8)
-        _tube(b, (px, 14.0, ZF), p1, 6.0, 4.6, 8, "steel.plate", "fore_port", floor_depth=8.0)
-        _tube(b, (px, 30.1, ZF), (px, 31.3, ZF), 6.6, 4.6, 8, "steel.stripe", "fore_rim", floor=False)
+        b.cut(band_obs, p0, p1, 5.8)
+        _tube(b, (px, 14.0, ZF), p1, 7.0, 5.6, 8, "steel.plate", "fore_port", floor_depth=8.0)
+        _tube(b, (px, 30.1, ZF), (px, 31.3, ZF), 7.6, 5.6, 8, "steel.stripe", "fore_rim", floor=False)
         # A firing channel cut down through the front band ahead of the port, so a gun
         # fitted there lies in a trough instead of running into the shell (Ryan, 1
-        # October: the barrels would have clipped the band in front).
-        b.cut_box(band_obs, px - 4.6, px + 4.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
+        # October: the barrels would have clipped the band in front), stopping at the
+        # cowl's back.
+        b.cut_box(band_obs, px - 5.6, px + 5.6, 30.0, 46.0, ZF - 5.0, Z0 + 30.0)
         tag = "f" + ("l" if s < 0 else "r")
-        shutters[tag] = _plug(b, tag, Vector((px, 29.6, ZF)), (0.0, 1.0, 0.0), 5.0, PLUG_DEEP_F)   # closes just behind the rim; rests behind the floor
+        shutters[tag] = _plug(b, tag, Vector((px, 29.6, ZF)), (0.0, 1.0, 0.0), 6.0, PLUG_DEEP_F)   # closes just behind the rim; rests behind the floor
         with b.joint("run_" + tag, (px, 24.5, ZF), slide=(0.0, 1.0, 0.0)):   # a gun fitted here runs in and out along its line, and sinks as the seal turns in
-            b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2, carries="")
+            b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2, carries="", fits=FORE_FITS)
     # The slab between the two channels cut away too, so the front band steps down to one
     # wide firing deck ahead of the ports (Ryan, 1 October).
-    b.cut_box(band_obs, -9.6, 9.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
+    b.cut_box(band_obs, -9.6, 9.6, 30.0, 46.0, ZF - 5.0, Z0 + 30.0)
     # Plating on the flanks between the hips: detail, no mounts.
     for s in (-1.0, 1.0):
         b.box(min(s * 29.0, s * 32.5), max(s * 29.0, s * 32.5), -10.0, 10.0, Z0 + 2.0, Z0 + 18.0, "livery.livery2", "ablative")
@@ -1648,15 +1659,18 @@ def dingo(b):
         b.prism("x", 0.0, -20.0, 18.0, 7.6, 2.5, "amber.strip", 8, "capacitor_ring", phase=math.pi / 8)
         for s in (-1.0, 1.0):
             b.prism("x", s * 13.0, -20.0, 18.0, 4.0, 2.0, "steel.plate", 8, "capacitor_cap")
-    # The nose ports, either side of the visor in the raked front: two hardpoints, one gun a
-    # port (Ryan, 28 October: no variable-width hardpoints), the stock's Twin Autoguns in the
-    # left as their class (hp_2), the right a bare port (hp_3).
+    # The nose guns, either side of the visor's tip: two hardpoints, one gun a mount (Ryan, 28
+    # October: no variable-width hardpoints), the stock's Twin Autoguns in the left as their
+    # class (hp_2), the right bare (hp_3). Each sits on a low pedestal on the nose ahead of the
+    # visor (Ryan's go of 2 November: the mounts had sat inside the raked nose, which buried a
+    # fitted dish and half sank a rack), so whatever is fitted stands clear of the nose.
     for s in (-1.0, 1.0):
-        b.prism("y", s * 6.0, 23.4, 10.5, 2.2, 1.2, "steel.dark", 6, "nose_port")
+        px = s * 6.0
+        b.box(px - 2.6, px + 2.6, 31.0, 34.5, 9.0, 12.0, "steel.dark", "nose_mount")
         if s < 0:
-            b.stock("hp_2", (s * 6.0, 26.0, 10.5), "twin_barrel", scale=0.45, carries="twin_autoguns")
+            b.stock("hp_2", (px, 33.0, 13.6), "twin_barrel", scale=0.45, carries="twin_autoguns")
         else:
-            b.pad("hp_3", (s * 6.0, 26.0, 10.5), scale=0.45, size=(3.0, 1.0))
+            b.pin("hp_3", (px, 33.0, 13.6), scale=0.45, carries="")
     # The launcher on a gimbal on the flat of the roof, left of the harpoon (Ryan, 29 October:
     # "put the back quarter hardpoint on the flat part of the roof instead, still on that
     # side of the harpoon, on a rotating gimbal"; it had stood on the rear-left deck): a
@@ -2097,16 +2111,26 @@ def goshawk(b):
         _wing(b, root, knuckle, "livery.livery", "wing_inner")
         _wing(b, knuckle, tip, "livery.livery", "wing_outer")
         for k, (px, r) in enumerate(((20.0, 2.4), (46.0, 2.1))):
+            # A class on a pod's nose: a round launcher for a rack, as a rocket pod; the wide
+            # classes a little smaller so they sit on a pod rather than swallow it.
+            POD_FITS = {"rack": ("rack_round", 0.75), "twin_barrel": 0.8, "blade": 0.8, "dish": 0.8}
             wz = wing_z(px)
             pz = wz - 1.0 - r - 2.0   # the pod hangs clear under the wing on a pylon
             b.box(s * px - 1.2, s * px + 1.2, -1.0, 7.0, pz + r - 0.5, wz - 0.6, "steel.plate", "pylon")
             n = (1 if s < 0 else 2) if k == 0 else (3 if s < 0 else 4)
-            with b.socket("hp_%d" % n, (s * px, 6.0, pz), scale=0.7, carries={1: "overclocked_railgun", 2: "transonic_rifle", 3: "arc_fault_cannon", 4: ""}[n]):
-                b.prism("y", s * px, 3.0, pz, r, 18.0, "steel.dark", 6, "pod")
+            # The pod is airframe and stays when its gun is swapped (Ryan's go of 2 November: a
+            # swap had taken the pod with it and hung the class under the wing, where the camera
+            # lost it); the mount is the pod's nose, so a fitted class rides ahead of the wing.
+            b.prism("y", s * px, 3.0, pz, r, 18.0, "steel.dark", 6, "pod")
+            nose = (s * px, 12.0, pz)
+            if n == 4:
+                b.pin("hp_4", nose, scale=0.7, carries="", fits=POD_FITS)
+                continue
+            with b.socket("hp_%d" % n, nose, scale=0.7, carries={1: "overclocked_railgun", 2: "transonic_rifle", 3: "arc_fault_cannon"}[n], fits=POD_FITS):
                 if n == 3:
                     for s2 in (-1.0, 1.0):   # the Arc-fault Cannon's prongs
                         b.prism("y", s * px + s2 * 1.1, 14.0, pz, r * 0.3, 6.0, "steel.dark", 6, "prong")
-                elif n < 3:
+                else:
                     b.prism("y", s * px, 14.0, pz, r * 0.55, 6.0, "steel.dark", 6, "pod_gun")
     # The nacelles: two boosters on the aft shoulders, their mouths dark, exhausts lit, and a
     # fin canted outward off each nacelle's top; a short ventral strake under the tail.
@@ -5955,6 +5979,59 @@ def shape_blade(b, s=1.0):
 SHAPES = {"barrel": shape_barrel, "twin_barrel": shape_twin_barrel, "rack": shape_rack, "blade": shape_blade, "dish": shape_dish}
 
 
+# A class's variants (Ryan, 2 November: "maybe some hardpoints want circular missile racks,
+# that fixes the armadillo and i'm sure is useful somewhere else"; "Can't we just model different
+# shapes as options, as needed?"): the same class in another form, modelled for the mounts its
+# standard shape does not fit, named for the form so any hardpoint may take it. A hardpoint
+# declares, per class, the variant it wears and the scale it wears it at (b.pin's `fits`); every
+# other hardpoint wears the class itself at its own scale. Content never sees a variant: a rack is
+# a rack. `forge.py shapes` builds each in every maker's metal beside the classes.
+
+def shape_rack_round(b, s=1.0):
+    """A round launcher, for a round port or a pod's nose: a twelve-sided drum on the socket, a
+    hazard band round its back, a plate face with seven tubes on it (one in the middle, six round
+    it), each one tube of the square rack's missile tile, so the two read as the same launcher."""
+    b.prism("y", 0.0, 4.4 * s, 0.0, 6.0 * s, 12.8 * s, "steel.panel", 12, "rack", phase=math.pi / 12)
+    b.prism("y", 0.0, -0.25 * s, 0.0, 6.25 * s, 3.5 * s, "steel.stripe", 12, "rack_band", phase=math.pi / 12)
+    b.prism("y", 0.0, 11.1 * s, 0.0, 5.7 * s, 0.6 * s, "steel.plate", 12, "rack_face", phase=math.pi / 12)
+    for x, z in _ROUND_TUBES:
+        _tile_cell(b, (x * s, 11.5 * s, z * s), 1.75 * s, 3.6 * s, "steel.missile", "rack_tube")
+
+
+# The round launcher's seven tubes across its face: the middle and six round it.
+_ROUND_TUBES = [(0.0, 0.0)] + [(3.6 * math.cos(k * math.pi / 3.0), 3.6 * math.sin(k * math.pi / 3.0)) for k in range(6)]
+
+
+def _tile_cell(b, centre, radius, cell, material, label, sides=12, thick=0.1):
+    """A thin disc facing +y at `centre` wearing the middle cell of a three-by-three tile (one
+    cell `cell` across), so a round face can carry a square tile's tubes one at a time."""
+    c = Vector(centre)
+    right, up, fwd = Vector((1.0, 0.0, 0.0)), Vector((0.0, 0.0, 1.0)), Vector((0.0, 1.0, 0.0))
+    bm = bmesh.new()
+    rings = [[bm.verts.new(c + fwd * dy + right * (radius * math.cos(2.0 * math.pi * i / sides)) + up * (radius * math.sin(2.0 * math.pi * i / sides)))
+              for i in range(sides)] for dy in (-thick, 0.0)]
+    for i in range(sides):
+        j = (i + 1) % sides
+        bm.faces.new([rings[0][i], rings[0][j], rings[1][j], rings[1][i]])
+    bm.faces.new(rings[0])
+    bm.faces.new(list(reversed(rings[1])))
+    o = c - right * (1.5 * cell) - up * (1.5 * cell)
+    return b._finish(bm, material, label, None, (o, up, right, fwd, (3.0 * cell, 3.0 * cell)))
+
+## Each variant by name: (its class, its builder).
+VARIANTS = {"rack_round": ("rack", shape_rack_round)}
+
+
+def shape_builder(name):
+    """A class's builder or a variant's, by name."""
+    return SHAPES[name] if name in SHAPES else VARIANTS[name][1]
+
+
+def shape_class(name):
+    """The class a shape is: itself, or a variant's class."""
+    return name if name in SHAPES else VARIANTS[name][0]
+
+
 # A burn weapon's fire (Ryan, 31 October: "every burn-causing weapon", "on the actual swappable
 # classes, not on the model ... So its not chassis-specific"; "Fire weapons, like the
 # blazethrower, need a red glow, not a white one"): one lit part a class, built where that
@@ -5988,7 +6065,14 @@ def burn_blade(b, s=1.0):
                 (23.5 * s, rect(side * 0.6 * s, 0.4 * s, -0.15 * s, 0.15 * s))], "amber.fire", "burn_edge")
 
 
-BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade}
+def burn_rack_round(b, s=1.0):
+    """The round launcher's shells glowing: a lit tip down each of its seven tubes."""
+    for x, z in _ROUND_TUBES:
+        b.prism("y", x * s, 11.7 * s, z * s, 1.05 * s, 0.5 * s, "amber.fire", 6, "burn_shell")
+
+
+## A class's fire and each variant's whose class burns (a variant of a dish takes none).
+BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round}
 
 
 # Where each class's muzzle flare blooms as its weapon fires (Ryan, 31 October: "If the flare
@@ -6004,6 +6088,7 @@ MUZZLES = {
     "rack": [((0.0, 13.0, 0.0), 30.0)],
     "dish": [((0.0, 10.0, 0.0), 26.0)],
     "blade": [((0.0, 25.0, 0.0), 16.0)],
+    "rack_round": [((0.0, 13.2, 0.0), 26.0)],
 }
 
 

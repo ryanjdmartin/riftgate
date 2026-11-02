@@ -114,7 +114,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
   every ground into PNGs, headless; `screenshot.gd` renders a
-  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
+  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `fit_sheet.gd` renders every
+  machine wearing each silhouette class on all its mounts, one sheet; `tileset_shot.gd` draws every
   domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
@@ -474,10 +475,14 @@ godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwrig
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
-# the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
+# the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES) and their variants (VARIANTS: the round
+# launcher, which a mount's `fits` may declare for its class), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
+# the fit sheet: every machine's stock, then each class on all its mounts at once, a row a machine, into one PNG (about a minute
+# for all of them); run it after a model's mounts change, before the model goes to Ryan; name chassis to sheet only those
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -- fit_sheet.png [armadillo goshawk] [--cell 220]
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
 # nose up), then the art/models/wslook_* and ktlook_* files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles

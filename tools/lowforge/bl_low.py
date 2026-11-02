@@ -443,6 +443,7 @@ class Build:
         self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
         self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
+        self.fits = {}         # pin -> {class: {"shape": its variant, "scale": its scale}}: what a class wears there (pin()'s `fits`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -648,7 +649,7 @@ class Build:
             bm.to_mesh(ob.data)
             bm.free()
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, fits=None):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
         weapon points) and its scale the size a mounted component wears there, so the
         engine can hang a component's shape under it with no arithmetic. `parts` are the
@@ -657,9 +658,18 @@ class Build:
         content id of the component those parts are, "" for a bare mount: the sidecar lists
         it (rig()'s pins), and the engine compares a machine's fitted die against it, never
         against content's stock, so a stock that moves on shows its class shapes until the
-        model follows (Ryan's go, 28 October). Every pin of a rigged machine names one."""
+        model follows (Ryan's go, 28 October). Every pin of a rigged machine names one.
+
+        `fits`, given, says how a class sits at this mount where its standard shape at the
+        pin's scale does not (Ryan, 2 November: "Hardpoint just needs to declare shape (if
+        offered) and scaling"): {class: a variant's name (models_low.VARIANTS), a scale on the
+        pin's own, or (variant, scale)}, so a round port takes a round launcher and a dish
+        small enough to pass its bore. The sidecar carries it (rig()'s `fits`); the engine
+        hangs what it names."""
         if name.startswith("hp_"):
             self.carries[name] = carries
+            if fits:
+                self.fits[name] = _fits(self.name, name, fits)
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
         m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
@@ -1065,17 +1075,19 @@ class Build:
             out["muzzles"] = muzzles
         if self.stock_shapes:
             out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
+        # How a class sits at a mount that declares it (pin()'s `fits`): its variant and scale.
+        if self.fits:
+            out["fits"] = {n: self.fits[n] for n in sorted(self.fits, key=lambda n: int(n[3:]))}
         return out
 
     def muzzles(self):
-        """Each hand-built stock gun's muzzle flare places (Ryan, 2 November: "We should probably
-        replace or fix those hand built stock guns, right?"), found from its parts: in the pin's
-        own frame (the gun pointing down its +y), each part reaching within a unit and a half of
-        the gun's farthest reach is a barrel's end (its vertices there make its middle and its
-        width), and ends that overlap are one (a barrel and its muzzle collar); a flare sits just
-        past each, sized to its width. A class's places are its own (models_low.MUZZLES); a bare
-        mount has none. In the models' frame as the glTF carries it: a point at (x, y, z) here
-        is at (x, z, -y) there."""
+        """Each hand-built stock gun's muzzle flare places, so it flares as a class does, found
+        from its parts: in the pin's own frame (the gun pointing down its +y), each part reaching
+        within a unit and a half of the gun's farthest reach is a barrel's end (its vertices there
+        make its middle and its width), and ends that overlap are one (a barrel and its muzzle
+        collar); a flare sits just past each, sized to its width. A class's places are its own
+        and a variant's its own (models_low.MUZZLES); a bare mount has none. In the models'
+        frame as the glTF carries it: a point at (x, y, z) here is at (x, z, -y) there."""
         out = {}
         for e in self.pins:
             name = e.name
@@ -1120,13 +1132,13 @@ class Build:
             out[name] = places
         return out
 
-    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
+    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
         """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock
         component inside the block and pins it: every object made in the block hangs under
-        the pin. `carries` names the component it is (pin())."""
-        return _Socket(self, name, at, forward, scale, carries)
+        the pin. `carries` names the component it is, `fits` how a class sits there (pin())."""
+        return _Socket(self, name, at, forward, scale, carries, fits)
 
-    def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel"):
+    def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel", fits=None):
         """A bare gun mount: a hardpoint whose stock loadout puts nothing there (the rule,
         30 September: armour and vents show nowhere, so a machine with more hardpoints than
         stock guns carries empty mounts). A low block at the socket so a fitted gun sits on
@@ -1138,27 +1150,52 @@ class Build:
         self.box(-w / 2.0, w / 2.0, -w / 2.0, w / 2.0, -t, 0.0, material, "pad")
         for ob in self.objects[start:]:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale, carries="")
+        return self.pin(name, at, forward, scale, carries="", fits=fits)
 
-    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
+    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
         """A pin whose stock component is one of the silhouette classes (models_low.SHAPES),
         built at the origin along +y and moved onto the pin's frame at its scale: the way a
-        swapped component will sit there, so the machine is judged wearing one. `carries`
-        names the component (pin()); its class is `shape`."""
+        swapped component will sit there, so the machine is judged wearing one, in the variant
+        and at the scale the pin's `fits` give its class. `carries` names the component
+        (pin()); its class is `shape`."""
         import models_low
         start = len(self.objects)
         self.stock_shapes[name] = shape
-        models_low.SHAPES[shape](self, 1.0)
-        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+        fit = _fits(self.name, name, fits or {}).get(shape, {})
+        models_low.shape_builder(fit.get("shape", shape))(self, 1.0)
+        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale * fit.get("scale", 1.0), 4)
         parts = self.objects[start:]
         for ob in parts:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale, parts, carries=carries)
+        return self.pin(name, at, forward, scale, parts, carries=carries, fits=fits)
+
+
+def _fits(model, pin, fits):
+    """A pin's `fits` as the sidecar carries them, {class: {"shape": variant, "scale": k}}, each
+    checked: a class content knows, a variant of that class, a scale above nothing."""
+    import models_low
+    out = {}
+    for cls, how in fits.items():
+        if cls not in models_low.SHAPES:
+            raise ValueError("%s: %s fits %r, which is no class (%s)" % (model, pin, cls, ", ".join(models_low.SHAPES)))
+        shape, scale = cls, 1.0
+        if isinstance(how, str):
+            shape = how
+        elif isinstance(how, (int, float)):
+            scale = float(how)
+        else:
+            shape, scale = how[0], float(how[1])
+        if shape != cls and (shape not in models_low.VARIANTS or models_low.VARIANTS[shape][0] != cls):
+            raise ValueError("%s: %s fits its %s with %r, which is no variant of it" % (model, pin, cls, shape))
+        if scale <= 0.0:
+            raise ValueError("%s: %s fits its %s at a scale of %s" % (model, pin, cls, scale))
+        out[cls] = {"shape": shape, "scale": round(scale, 3)}
+    return out
 
 
 class _Socket:
-    def __init__(self, b, name, at, forward, scale, carries=None):
-        self.b, self.name, self.at, self.forward, self.scale, self.carries = b, name, at, forward, scale, carries
+    def __init__(self, b, name, at, forward, scale, carries=None, fits=None):
+        self.b, self.name, self.at, self.forward, self.scale, self.carries, self.fits = b, name, at, forward, scale, carries, fits
 
     def __enter__(self):
         self.start = len(self.b.objects)
@@ -1166,7 +1203,7 @@ class _Socket:
 
     def __exit__(self, *exc):
         if exc[0] is None:
-            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:], carries=self.carries)
+            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:], carries=self.carries, fits=self.fits)
         return False
 
 
@@ -1350,14 +1387,22 @@ def main():
     if "shapes" in a:
         # The silhouette classes (decided 29 September), one file a class a maker, so a
         # swapped component wears its own maker's metal: art/models/shapes/<shape>_<maker>.glb.
+        # A class's variants (models_low.VARIANTS) the same way, for the hardpoints that declare
+        # one, and their names and classes into variants.json.
+        import json
         import models_low
+        every = dict(models_low.SHAPES, **{v: fn for v, (_, fn) in models_low.VARIANTS.items()})
         for maker in MAKERS:
-            for shape, fn in models_low.SHAPES.items():
+            for shape, fn in every.items():
                 bpy.ops.wm.read_factory_settings(use_empty=True)
                 tiles = Tiles(a.get("tiles", os.path.join(HERE, "tiles")), maker)
                 builder = Build("%s_%s" % (shape, maker), tiles)
                 fn(builder, 1.0)
                 _export(os.path.join(a["shapes"], "%s_%s.glb" % (shape, maker)))
+        with open(os.path.join(a["shapes"], "variants.json"), "w") as f:
+            json.dump(dict({"_about": "Each variant of a silhouette class and the class it is (models_low.VARIANTS), written by tools/lowforge: a hardpoint's `fits` in its model's sidecar may name one for its class."},
+                           **{v: c for v, (c, _) in models_low.VARIANTS.items()}), f, indent=1)
+            f.write("\n")
         # A burn weapon's fire over its class (models_low.BURNS), one file a class: its red is
         # no maker's metal.
         for shape, fn in models_low.BURNS.items():
@@ -1366,7 +1411,7 @@ def main():
             fn(builder, 1.0)
             _export(os.path.join(a["shapes"], "burn_%s.glb" % shape))
         write_muzzles(os.path.join(a["shapes"], "muzzles.json"))
-        print(f"lowforge: {len(MAKERS) * len(models_low.SHAPES)} shapes, {len(models_low.BURNS)} burns and the muzzles -> {a['shapes']}")
+        print(f"lowforge: {len(MAKERS) * len(every)} shapes ({len(models_low.VARIANTS)} variants), {len(models_low.BURNS)} burns and the muzzles -> {a['shapes']}")
         return
     out = a["out"]
     if "blend" in a and "model" not in a:

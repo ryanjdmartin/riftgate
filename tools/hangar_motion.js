@@ -1271,19 +1271,27 @@ class Stage {
     this.emit();
     this.start();
   }
-  // Fit a mount as the game does (MechView3D.mount): the stock part under hp_<n> hides and a
-  // silhouette class in a maker's metal hangs under the pin, wearing its frame and scale, so it
-  // swings and recoils with whatever joint carries the pin. `shape` "" bares the mount; null
-  // puts the stock part back.
+  // How a class sits at a mount (MechView3D.fit_of): the variant and the scale on the pin's own
+  // the sidecar's `fits` declare for it there, else the class itself at the pin's scale.
+  fitOf(n, shape) {
+    const how = ((((this.side || {}).fits || {})["hp_" + n]) || {})[shape] || {};
+    return {shape: how.shape || shape, scale: Number(how.scale) || 1};
+  }
+  // Fit a mount as the game does (MechView3D.wear): the stock part under hp_<n> hides and a
+  // silhouette class in a maker's metal hangs under the pin, in the variant and at the scale the
+  // mount declares for it, wearing the pin's frame, so it swings and recoils with whatever joint
+  // carries the pin. `shape` "" bares the mount; null puts the stock part back.
   async fit(n, shape, maker) {
     const rig = this.rig, pin = rig && rig.hardpoints[n];
     if (!pin) return;
     const id = this.id;
     let part = null;
     if (shape) {
-      const gltf = await this.loadModel("shapes/" + shape + "_" + maker);
+      const how = this.fitOf(n, shape);
+      const gltf = await this.loadModel("shapes/" + how.shape + "_" + maker);
       if (this.id !== id) return;
       part = gltf.scene;
+      part.scale.setScalar(how.scale);
       prepareMaterials(part);
       part.userData.mounted = true;
     }
@@ -1434,8 +1442,9 @@ class Stage {
     for (const f of this.flares) if (f.pin === n) rig.fireFlare(f.mesh, f.look, lead + f.delay);
     for (const part of this.burns || []) if (part.parent === pin && part.visible !== false) rig.flashUnder(part);
   }
-  // A weapon's muzzle flares on its mount (MechView3D.wear_flares): at its class's places, in the
-  // look its tags give it (a fitted class alone, its class's). A component that is no weapon takes none.
+  // A weapon's muzzle flares on its mount (MechView3D.wear_flares): at its class's places (the
+  // mount's variant's, at its scale there), in the look its tags give it (a fitted class alone,
+  // its class's). A component that is no weapon takes none.
   async hangFlares(n, shape, cid, own = null) {   // `own`: a hand-built gun's places from its sidecar, in place of a class's
     const rig = this.rig, pin = rig && rig.hardpoints[n];
     if (!pin || (!shape && !own)) return;
@@ -1449,8 +1458,9 @@ class Stage {
     if (this.rig !== rig) return;
     const c = cid ? kit[cid] : null;
     if (c && (c.face || {}).kind !== "attack") return;
-    const looks = flareLooks(c ? c.tags : [], shape), T = window.THREE;
-    for (const [at, size] of own || places[shape] || []) looks.forEach((look, k) => {
+    const looks = flareLooks(c ? c.tags : [], shape), T = window.THREE, how = this.fitOf(n, shape);
+    const worn = own || (places[how.shape] || []).map(([p, size]) => [[p[0] * how.scale, p[1] * how.scale, p[2] * how.scale], size * how.scale]);
+    for (const [at, size] of worn) looks.forEach((look, k) => {
       const b = FLARES.beats[look], w = size * b.scale * Math.pow(FLARES.layerScale, k), col = FLARES.colours[look];
       const mat = new T.ShaderMaterial({uniforms: {colour: {value: new T.Vector3(col[0], col[1], col[2])}, strength: {value: 0}, rays: {value: b.rays}, spin: {value: 0}, ahead: {value: 4}, core: {value: FLARES.cores[look]}},
         vertexShader: FLARE_VERT, fragmentShader: FLARE_FRAG, transparent: true, depthWrite: false, side: T.DoubleSide});   // laid over, as the game lays it (flare.gdshader)
@@ -1478,10 +1488,12 @@ class Stage {
       const cid = pins[pin], n = Number(pin.slice(3));
       if (!cid || !burning.has(cid) || this.rig !== rig) continue;
       let gltf;
-      try { gltf = await this.loadModel("shapes/burn_" + shape); } catch (e) { continue; }
+      const how = this.fitOf(n, shape);
+      try { gltf = await this.loadModel("shapes/burn_" + how.shape); } catch (e) { continue; }
       const node = rig && rig.hardpoints[n];
       if (this.rig !== rig || !node) return;   // a later visit replaced this rig
       const part = gltf.scene;
+      part.scale.setScalar(how.scale);
       prepareMaterials(part);
       part.userData.burn = cid;
       node.add(part);

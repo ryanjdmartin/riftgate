@@ -1450,14 +1450,15 @@ function paintClasses(panel) {
   panel.append(el("div", {}, el("h2", {}, "Classes"), el("p", {class: "plate2"}, "What a fitted component wears at a gun mount, in its own maker's metal")));
   if (!state.shapes) { panel.append(el("p", {class: "mhelp"}, "Loading the classes…")); return; }
   const pickC = el("div", {class: "seg"});
-  for (const c of state.shapes.classes) pickC.append(el("button", {class: "btn", id: "mo-class-" + c, "aria-pressed": String(c === MOTION.shape),
+  // The classes, then each class's variants (a round launcher), which a mount may declare for its class.
+  for (const c of [...state.shapes.classes, ...Object.keys(state.shapes.variants || {})]) pickC.append(el("button", {class: "btn", id: "mo-class-" + c, "aria-pressed": String(c === MOTION.shape),
     onclick: () => { MOTION.shape = c; rememberMotion(); render(); }}, plain(c)));
   const pickM = el("div", {class: "makers"});
   for (const m of state.shapes.makers) pickM.append(el("button", {class: "btn", id: "mo-metal-" + m, "aria-pressed": String(m === MOTION.maker), style: `--mk:var(--${MAKER_TAB[m] || "other"})`,
     onclick: () => { MOTION.maker = m; rememberMotion(); render(); }}, makerShort(m)));
   panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Class"), pickC),
     el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Metal"), pickM),
-    el("p", {class: "mhelp"}, "Any machine's mounts take these too: pick a machine and fit a mount."));
+    el("p", {class: "mhelp"}, "Any machine's mounts take these too: pick a machine and fit a mount. A variant is a class in another form, worn where a mount declares it (a round port takes the round rack)."));
   panel.append(el("div", {class: "seg"}, el("button", {class: "btn primary", id: "mo-play", title: "The class turns while it plays", onclick: () => { st.playing = !st.playing; st.emit(); }}, st.playing ? "Pause" : "Play")));
 }
 

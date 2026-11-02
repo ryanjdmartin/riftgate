@@ -49,6 +49,21 @@
       "alt": "Wild Boar refitted"
      }
     ]
+   },
+   {
+    "when": "Variants, 2 November.",
+    "note": "Ryan, 2 November: “Can't we just model different shapes as options, as needed?” A variant is a class in another form, modelled for the mounts its standard shape does not fit and named for its form, so any hardpoint may take it; a hardpoint declares, for each class, the variant it wears and its scale there, and every other hardpoint wears the class itself at its own scale. The first is the round launcher, for a round port or a pod's nose (the Armadillo's ports, the Goshawk's pods), its face the square rack's missile tile one tube at a time. Shown in Minerva's and Wainwright & Sutler's metal; Classes on the Models tab shows it alone.",
+    "small": true,
+    "images": [
+     {
+      "file": "shapes/rack_round_minerva.png",
+      "alt": "round rack, Minerva"
+     },
+     {
+      "file": "shapes/rack_round_wainwright_sutler.png",
+      "alt": "round rack, Wainwright & Sutler"
+     }
+    ]
    }
   ]
  },
@@ -170,8 +185,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's tenth notes, 30 October; the vent act on his eleventh and twelfth.",
-   "note": "Ryan, 30 October: \"The rear ones can protrude a bit more. During the vent animation, can you desync the vent openings, then close them all at the same-ish time?\", then \"Open them in pairs, not one at a time, and leave them open longer once they're all open\", then \"slow down the standing back up at the end and start it as the vents are closing. the vents can stay open a touch less long. desync the pairs closing just a bit.\" The two rear vents now stand out of the back panel as boxes, their mouths two and a half behind it (the rim had stood six tenths proud). In vent_heat the vents open a pair at a time, each left with its right: the rear vents at 1.4 seconds, the side vents at 1.85, the radiators at 2.3, each vent's heat flaring as it opens; all open, they hold a second and a half, then shut a pair at a time in the same order, a beat apart (4.5, 4.62, 4.74), the glow dying with them, as the shell starts back up with the first pair's shutting and rises over two seconds (from 1.1, after the shutting). Watch it on the Models tab; RIFTGATE_ACTS_DEBUG=vent_heat loops it in the game. The shots are the tenth notes' (the eleventh and twelfth moved only the act's timing); the venting ones are caught at 3.4 seconds, every vent open (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game.",
+   "when": "Ryan's swap notes, 2 November.",
+   "note": "Ryan, 2 November: “what happens if they get swapped out, like putting a missile rack on the armadillo gun port”, then “maybe some hardpoints want circular missile racks, that fixes the armadillo” and “Hardpoint just needs to declare shape (if offered) and scaling”. A class fitted in a port now wears the port's own fit: a rack is the round launcher (a drum with seven tubes, the square rack's missile tile one tube at a time), and every class is sized to pass the port's bore whole, so it rises out of the port as the guns do and sinks under the iris when the shell seals; a rack had been a square box half again as wide as the port, jammed in its mouth. The fore ports are wider (11 across, from 9) and a little lower, so a launcher or a dish fitted there reads; stock, they are bare as before. The shots: the stock (front, rear, side, sealed, venting from behind and from the front), then a round launcher in every port, then a launcher, the Twin Autoguns, a barrel and a dish. Fit any mount on the Models tab to try the rest.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -195,11 +210,19 @@
     },
     {
      "file": "armadillo/armadillo_venting_front.png",
-     "alt": "armadillo, venting, front"
+     "alt": "armadillo, venting front"
+    },
+    {
+     "file": "armadillo/armadillo_swapped.png",
+     "alt": "armadillo, swapped"
+    },
+    {
+     "file": "armadillo/armadillo_swapped_mixed.png",
+     "alt": "armadillo, swapped mixed"
     }
    ],
    "before": {
-    "summary": "Before: the ninth notes of 30 October (the rear vents sunk in the panel, every vent opening at once)",
+    "summary": "Before: the tenth notes of 30 October (every class one size in the ports, the fore ports 9 across)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -291,8 +314,8 @@
    }
   },
   "dingo": {
-   "when": "Ryan's glow notes, 31 October.",
-   "note": "The Translocator's coil lit in lightning blue (Ryan, 31 October: \"classic 'tesla lightning blue'\"), banked so its flare holds the colour; the last picture is its coil check.",
+   "when": "Ryan's swap notes, 2 November.",
+   "note": "Ryan's go of 2 November: the nose mounts sat inside the raked nose, which buried a fitted dish and half sank a rack. Each now stands on a low pedestal on the nose ahead of the visor, the stock's Twin Autoguns on the left one, so whatever is fitted stands clear. The shots: the stock from the front and behind, two racks, then a dish and a blade.",
    "images": [
     {
      "file": "dingo/dingo_front.png",
@@ -303,12 +326,16 @@
      "alt": "dingo, rear"
     },
     {
-     "file": "dingo/dingo_coil_check.png",
-     "alt": "dingo, coil check"
+     "file": "dingo/dingo_swapped.png",
+     "alt": "dingo, swapped"
+    },
+    {
+     "file": "dingo/dingo_swapped_mixed.png",
+     "alt": "dingo, swapped mixed"
     }
    ],
    "before": {
-    "summary": "Before: Ryan's second notes, 29 October",
+    "summary": "Before: Ryan's glow notes, 31 October (the nose mounts inside the nose)",
     "images": [
      {
       "file": "dingo/before_dingo_front.png",
@@ -317,13 +344,17 @@
      {
       "file": "dingo/before_dingo_rear.png",
       "alt": "Earlier: dingo, rear"
+     },
+     {
+      "file": "dingo/before_dingo_coil_check.png",
+      "alt": "Earlier: dingo, coil check"
      }
     ]
    }
   },
   "goshawk": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's go, 28 October: since the stock pass its fourth stock piece is a Canopy, which shows nowhere, so the right wing's outer pod is empty; the deflector's dish there went with the old stock. The pods' guns and the belly mount as before.",
+   "when": "Ryan's swap notes, 2 November.",
+   "note": "Ryan's go of 2 November: a swap had taken a pod with its gun and hung the class under the wing, where the game's camera lost the inner pair. The pods are airframe now and stay; each mount is its pod's nose, so a fitted class rides ahead of the wing, a rack as the round launcher (a rocket pod), the wide classes a little smaller so they sit on a pod. The stock looks as before. The shots: the stock from the front and behind, a round launcher on every pod, then the Twin Autoguns, a launcher, a dish and a barrel.",
    "images": [
     {
      "file": "goshawk/goshawk_front.png",
@@ -332,10 +363,18 @@
     {
      "file": "goshawk/goshawk_rear.png",
      "alt": "goshawk, rear"
+    },
+    {
+     "file": "goshawk/goshawk_swapped.png",
+     "alt": "goshawk, swapped"
+    },
+    {
+     "file": "goshawk/goshawk_swapped_mixed.png",
+     "alt": "goshawk, swapped mixed"
     }
    ],
    "before": {
-    "summary": "Before: the eighth notes, 6 October (the deflector's dish on the right outer pod)",
+    "summary": "Before: the stock rebuild, 28 October (each pod part of its gun)",
     "images": [
      {
       "file": "goshawk/before_goshawk_front.png",

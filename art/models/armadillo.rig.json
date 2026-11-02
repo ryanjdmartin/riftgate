@@ -48717,5 +48717,95 @@
     13.4
    ]
   ]
+ },
+ "fits": {
+  "hp_1": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.78
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.7
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.8
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.7
+   },
+   "barrel": {
+    "shape": "barrel",
+    "scale": 0.9
+   }
+  },
+  "hp_2": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.78
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.7
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.8
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.7
+   },
+   "barrel": {
+    "shape": "barrel",
+    "scale": 0.9
+   }
+  },
+  "hp_3": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.68
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.6
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.7
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.6
+   },
+   "barrel": {
+    "shape": "barrel",
+    "scale": 0.8
+   }
+  },
+  "hp_4": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.68
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.6
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.7
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.6
+   },
+   "barrel": {
+    "shape": "barrel",
+    "scale": 0.8
+   }
+  }
  }
 }
