@@ -757,10 +757,12 @@ func test_a_second_swallow_keeps_the_first_release() -> void:
 	assert_eq(Skirmish.swallow_left(flo), 8, "under a quarter already, the chip asks for what it has, no more")
 
 
-## The wandering elite (31 October: Gilgamesh, the one elite any domain fields, Ryan agreeing
-## Claude's lean): every foe that wanders leads an elite composition in every domain at every
-## tier, the last of its elites, and stands at its battle's tier as a boss does, where the other
-## elites keep their own numbers.
+## The wandering elite (31 October: Gilgamesh; 2 November, Ryan: a wanderer never waits for a
+## domain's own to run out, and an elite may come again in a later battle): one composition in
+## one domain's list is every domain's by ContentDB.next_elite, the domain's next own on a high
+## roll, a wanderer on a roll under WANDER_CHANCE, always once the own are spent, nothing twice
+## in a battle; it stands at the battle's tier as a boss does, where another elite keeps its
+## own numbers.
 func test_a_wandering_elite_walks_out_of_every_domain_at_the_tier() -> void:
 	var db := ContentDB.load_default()
 	var wanderers: Array = []
@@ -771,12 +773,32 @@ func test_a_wandering_elite_walks_out_of_every_domain_at_the_tier() -> void:
 	for w in wanderers:
 		assert_true(db.is_elite(str(w)), "%s is an elite" % w)
 		assert_false(db.is_boss(str(w)), "and no domain's boss")
+	for t in [1, 2, 3]:
+		var pool := db.wandering_compositions(t)
+		assert_false(pool.is_empty(), "a wanderer walks at tier %d" % t)
+		var ids: Array = pool.map(func(c) -> String: return str(c["id"]))
 		for fid in db.factions.keys():
-			for t in [1, 2, 3]:
-				var elites := db.elite_compositions(str(fid), t)
-				assert_false(elites.is_empty(), "%s fields an elite at tier %d" % [fid, t])
-				if not elites.is_empty():
-					assert_eq(str(elites[elites.size() - 1]["members"][0][0]), w, "%s's last elite at tier %d is the wanderer" % [fid, t])
+			var own := db.elite_compositions(str(fid), t)
+			for c in own:
+				assert_false(ids.has(str(c["id"])), "%s's own elites hold no wanderer" % fid)
+			var sent: Array = []
+			var first := db.next_elite(str(fid), t, sent, 0.99)
+			assert_false(first.is_empty(), "%s sends an elite at tier %d" % [fid, t])
+			if own.is_empty():
+				assert_true(ids.has(str(first["id"])), "%s, with none of its own, sends a wanderer" % fid)
+			else:
+				assert_eq(str(first["id"]), str(own[0]["id"]), "%s's first own on a high roll" % fid)
+				assert_true(ids.has(str(db.next_elite(str(fid), t, sent, 0.0)["id"])), "a wanderer on a low roll")
+				for c in own:
+					sent.append(str(c["id"]))
+				assert_true(ids.has(str(db.next_elite(str(fid), t, sent, 0.99)["id"])), "and once its own are spent, whatever the roll")
+			for c in pool:
+				sent.append(str(c["id"]))
+			for c in own:
+				if not sent.has(str(c["id"])):
+					sent.append(str(c["id"]))
+			assert_true(db.next_elite(str(fid), t, sent, 0.0).is_empty(), "nothing twice in one battle")
+			assert_eq(str(db.elite_composition(str(fid), t, str(pool[0]["id"]))["id"]), str(pool[0]["id"]), "a wanderer found by id from any domain")
 	var w := str(wanderers[0])
 	var base := db.make_foe(w)
 	for t in range(ContentDB.BOSS_TIERS.size()):

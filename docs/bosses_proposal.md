@@ -68,7 +68,7 @@ stands or shielding it until one falls.
 
 Six of the twelve are Final Fantasy's and six come from six other series.
 
-## What landed (30 and 31 October)
+## What landed (30 October to 2 November)
 
 The kits are placeholders for Ryan's marks, every number too; each boss carries three moves,
 the third opening on a condition or following another, and a point of armour (the set of 2
@@ -82,14 +82,14 @@ condition that reads a fallen part, and a move used once a fight.
 | The Meadow | Rotbloom | Tendrils, two strikes; Bad Breath at every machine, carrying Burn, Scorch, Disable and Corrupt; below half, Seedfall, two mandragoras called up | The third move and its name |
 | The Meadow | Floraison | Thorn Combo, three strikes; Swallow, a machine out of the fight for two rounds, until Floraison falls, or until it has lost a quarter of its HP since (Ryan, 31 October); below half, Full Bloom, five strikes | Two rounds; never the last machine able to act; no damage while held; the release at a quarter, its chip counting the damage left, the swallower losing nothing else |
 | The Meadow | The King Gel | Body Slam; Merge, every Gel and half on the field taken in, regrowing what they had left and its next move a point harder for each; below half, Belly Flop at every machine | Its court is its own escort (Gels at every tier), so the merge has fuel; a Gel taken in is no kill of the team's |
-| The Waste | The Djinn (31 October, in Gilgamesh's place) | Scimitar; Unmake, a purge on the machine carrying the most buffs, cast when one carries a buff; below half, Mirage, a Barrier on itself | The kit and its name; the Waste's purge on a boss |
+| The Waste | The Ruby Colossus (2 November, in the Djinn's place; Ryan: "Ruby weapon is cool". The Djinn, a trope archetype, went to the rank and file: a tier-two back-rank caster, the Waste's purge in the ranks) | Big Claw; Whirlsand, a swallow; below half, Ultima, every machine three rounds on. Two tentacles as parts with no guard, the Burrowing (breach) and the Thrashing (two strikes), back two rounds after they fall | The kit and its name; parts that guard nothing, so the arms or the body is the question; Ultima's three rounds |
 | The Waste | The Fallen Weapon | The core: Haft; Drive, a rally; below half, The Fall, every machine two rounds on. Two eyes as parts, the Piercing Eye (breach) and the Prising Eye (disable); the core Guarded while both stand, an eye back three rounds after it falls | One eye down opens the core (guard all); the eyes' blows |
 | The Waste | The Pilgrim | Lantern; Chef's Knife, twice its blow on a countdown of two, through the shield; below half, Karma, a point heavier for every foe the team has killed this fight, through the shield | Human-sized; the knife's two rounds |
 | The Marsh | The Matador | Estocada; Red Capote, armour +3, then Andalucia, four strikes at one machine | A Suppress or a Disrupt on the cape breaks the pair |
 | The Marsh | The Phantom Train | Run Down; Whistle, two Ghosts called up; below half, Last Run, every machine a round on | Two Ghosts, which raise Revenants of their own |
 | The Marsh | The Vampire Lord | Drain, a bite that heals what it takes from the hull; Undying, once a fight when hurt, readying it to get back up whole; below half, Blood Feast, a drain at every machine | 40 HP, since it may rise once; once a fight, so it never readies again after it rises; the drain from the hull alone, so a shield starves it (one of shield and hull walled the slowest trio at every HP tried) |
 | The Peak | Behemoth | Gore; Flame, Scorch 2; below half, Charge, a round's warning, through the shield; Meteor on every machine as it falls | The Flame and the Charge |
-| The Peak | Cinder Tortoise | Bite; Withdraw, armour +3 on its own, then Earthquake on every machine, Scorch 1 | In, its name kept (Ryan, 30 October); its armour 1, 2 and 3 by the tier (Ryan, 31 October), since at 2 at tier one its base was the hurdle and its shell was not |
+| The Peak | Cinder Tortoise | Bite; Withdraw, armour +2 on its own (3 until 2 November; Ryan: "nerf withdraw to 2 armour so it doesn't completely goof my test runs"), then Earthquake on every machine, Scorch 1 | In, its name kept (Ryan, 30 October); its armour 1, 2 and 3 by the tier (Ryan, 31 October), since at 2 at tier one its base was the hurdle and its shell was not |
 | The Peak | The Obsidian Tyrant | Crunch; Roar, a reroll off the team; once its rider has fallen, Firestorm, a countdown of five to half again its blow at every machine, Scorch 2. Its part, the Saurian Queen in the back rank: Lash, and Goad, a rally | Guarded while she stands; the firestorm drawn as good as at once after she falls |
 
 The stand-ins left the boss lists (30 October): the Treant, the Sandworm and the Magma Elemental
@@ -101,8 +101,10 @@ three. The Marsh has a massive line of its own (31 October): the Barrow Giant (a
 Knit, a regeneration), the Grave Giant and the Charnel Giant (Rise Again, getting back up
 once), each in a formation at its tier.
 
-Gilgamesh is an elite since 31 October, the one that wanders: the last elite of every domain,
-at an elite's 40 HP scaled by the tier as a boss is. Every boss but the King Gel has its own
+Gilgamesh is an elite since 31 October, the one that wanders: drawn by any domain's Fracture one
+time in three in place of its next own elite and always once its own are spent (2 November), at
+an elite's 40 HP scaled by the tier as a boss is; an elite may come again in a later battle,
+never twice in one, where a run never repeats a boss (Ryan, 2 November). Every boss but the King Gel has its own
 escort at tiers two and three, at the tier's counts (two and four), picked to sharpen its
 mechanic, and stands alone at tier one:
 
@@ -110,7 +112,7 @@ mechanic, and stands alone at tier one:
 |---|---|---|
 | Rotbloom | Mandrakes and Goblin Guards; Alraunes at tier three | The Scream and the Shriek pile more trouble on the die it breathes on |
 | Floraison | Wargs; Alpha Wargs and goblins at tier three | Howls and bites on a team a machine down |
-| The Djinn | A Basilisk and a Needler; Gorgons at tier three | Stone disables what the die shows while it unmakes what the die bought |
+| The Ruby Colossus | A Basilisk and a Pit Antlion; Gorgons, the Antlion Queen and a Pit Antlion | Stone and a pit's breach beside a buried machine, so the tempo Whirlsand takes is pressed |
 | The Fallen Weapon | Barbed Needlers and Basilisks; Great Needlers and Gorgons | The Waste's breach and theft beside the eyes', so the eyes are a race |
 | The Pilgrim | Needlers; Barbed and Great Needlers | Every kill feeds Karma, so the kill order turns over |
 | The Matador | Wights; a Death Knight and a Spectre at tier three | A wall of claws while the cape is up |
@@ -130,11 +132,16 @@ you think works best for scaling", so 48 stands, 60 and 72 at tiers two and thre
 ## Calls still open
 
 Ryan's answers of 30 and 31 October ("I agree with everything in your last two messages")
-settled the six calls of the 30th: Gilgamesh an elite that wanders and the Djinn in his place,
-the swallow's release at a quarter of the swallower's HP, the steal's fake and the follow-up's
-break as built, the escorts written for his marks, the massive lines, and the Cinder Tortoise's
-armour by the tier. Every name and number above waits on his content pass. Open, from his notes
-of 31 October:
+settled the six calls of the 30th: Gilgamesh an elite that wanders, the swallow's release at a
+quarter of the swallower's HP, the steal's fake and the follow-up's break as built, the escorts
+written for his marks, the massive lines, and the Cinder Tortoise's armour by the tier. His
+calls of 2 November, on the review: the Ruby Colossus in the Djinn's place and the Djinn to the
+ranks; the wanderer drawn by chance and elites reusable across battles; the worms' and the
+Antlion Queen's bites renamed Maw and Devour, since Swallow is the vocabulary's word for
+Floraison's move; Withdraw 2; the King Gel's court six at tier three; the quick campaign's
+bosses bringing their own escorts; the Dusk Treant off violet; and no foe flees but a
+loot-runner, so the Needler's Scatter is struck. Every name and number above waits on his
+content pass. Open:
 
 1. **The slate's blanket point of armour at tier one** (Ryan: "be careful giving all bosses
    blanket 1 armour early on"). Read (`docs/measurements.md`, 31 October, 20 seeds, a
@@ -153,13 +160,20 @@ of 31 October:
    breaks the pair, a round earlier and on that round's dice; Suppress stays, Numbed its limit.
    The hole named: a countdown is as telegraphed and a Disrupt breaks it off, which is its
    design (interrupt the big hit), so the two part by their questions and the countdown stays.
+3. **The Thief's Flee under the flee rule** (Ryan, 2 November: a foe flees only as a
+   loot-runner whose prize goes with it). The Thief's prize is the final's count, so Claude reads
+   it as the rule's one shape; his to confirm, else it is struck as the Needler's Scatter was.
+4. **The Cinder Tortoise at tier three** (flagged 2 November, left for now on Ryan's word):
+   armour 3, and 5 withdrawn, against blows of 2 to 6, so a round of basics is zeroed; its
+   tier-three read with a tier-matched kit is the to-do's, on the runner's `--boss-tiers` cells.
 
 ## Art the forge owes
 
 Every boss and part with no picked render is drawn as a rough placeholder, a reminder with a
 yellow "?" (Ryan, 30 October: "It can be a comically rough entry as a reminder"):
 `tools/placeholder_art.py` draws Rotbloom, Gilgamesh, the Fallen Weapon's two eyes, the King
-Gel, the Pilgrim, the Phantom Train, the Vampire Lord, the Obsidian Tyrant and the Saurian Queen.
+Gel, the Pilgrim, the Phantom Train, the Vampire Lord, the Obsidian Tyrant, the Saurian Queen,
+the Djinn, the Ruby Colossus and its two tentacles, and the Marsh's three giants.
 Each entry's `design.sprite` and `design.variants` are its brief for the forge, whose `generate`
 and `fix` have had no machine since the Mac went out of reach (the status's Start here), so the
 renders wait on the route for the image model Ryan chooses; a pick through the picker replaces

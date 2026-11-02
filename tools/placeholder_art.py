@@ -227,6 +227,47 @@ def djinn(d, w, h):
     d.line((60, 26, 58, 30), fill=(110, 70, 40, 255), width=3)
 
 
+def ruby_colossus(d, w, h):
+    # Ruby Weapon by archetype: a red colossus half-buried in the sand, two tentacles rising.
+    red, dark, sand, eye = (190, 30, 36, 255), (120, 16, 24, 255), (214, 184, 120, 255), (255, 230, 90, 255)
+    d.ellipse((4, 106, 92, 140), fill=sand)
+    d.polygon([(26, 120), (22, 70), (34, 46), (62, 46), (74, 70), (70, 120)], fill=red)
+    d.polygon([(34, 62), (62, 62), (66, 104), (30, 104)], fill=dark)
+    d.line((48, 62, 48, 104), fill=red, width=2)
+    d.ellipse((34, 22, 62, 52), fill=red)
+    d.polygon([(36, 30), (24, 8), (42, 26)], fill=dark)
+    d.polygon([(60, 30), (72, 8), (54, 26)], fill=dark)
+    d.rectangle((40, 36, 44, 39), fill=eye)
+    d.rectangle((52, 36, 56, 39), fill=eye)
+    d.line((14, 122, 8, 82), fill=red, width=7)
+    d.line((82, 122, 88, 82), fill=red, width=7)
+    d.ellipse((2, 74, 16, 88), fill=dark)
+    d.ellipse((80, 74, 94, 88), fill=dark)
+
+
+def _tentacle(d, w, h, thrash):
+    red, dark, sand = (190, 30, 36, 255), (120, 16, 24, 255), (214, 184, 120, 255)
+    d.ellipse((8, 72, 64, 94), fill=sand)
+    if thrash:
+        d.line((36, 84, 30, 50), fill=red, width=9)
+        d.line((30, 50, 46, 28), fill=red, width=9)
+        d.line((46, 28, 32, 10), fill=red, width=8)
+        d.ellipse((24, 2, 40, 18), fill=dark)
+        d.line((46, 28, 62, 22), fill=red, width=5)
+    else:
+        d.line((36, 84, 36, 40), fill=red, width=10)
+        d.polygon([(24, 44), (48, 44), (36, 10)], fill=dark)
+        d.line((14, 80, 58, 80), fill=dark, width=2)
+
+
+def burrowing_tentacle(d, w, h):
+    _tentacle(d, w, h, False)
+
+
+def thrashing_tentacle(d, w, h):
+    _tentacle(d, w, h, True)
+
+
 def _giant(d, w, h, pal):
     """The Marsh's massive line (31 October): an undead giant in plate, its cleaver down."""
     plate, dark, skin, eye, iron = pal
@@ -304,6 +345,9 @@ FOES = {
     "charnel_giant": (charnel_giant, True),
     "piercing_eye": (piercing_eye, False),
     "prising_eye": (prising_eye, False),
+    "ruby_colossus": (ruby_colossus, True),
+    "burrowing_tentacle": (burrowing_tentacle, False),
+    "thrashing_tentacle": (thrashing_tentacle, False),
 }
 
 

@@ -849,7 +849,54 @@ static func composition_tiers(c: Dictionary) -> Array:
 
 ## A faction's elite compositions at a tier, in content order: the elites its Fractures spawn.
 func elite_compositions(faction_id: String, tier: int) -> Array:
-	return compositions(faction_id, tier, "elite")
+	return compositions(faction_id, tier, "elite").filter(func(c) -> bool: return not is_wandering(c))
+
+
+## The chance a Fracture sends a wanderer in place of the domain's next own elite (Ryan,
+## 2 November: a wanderer never waits for a domain's own to run out); a placeholder.
+const WANDER_CHANCE := 1.0 / 3.0
+
+
+## The wanderers at a tier: every domain's elite compositions led by a foe that wanders
+## (`wanders`), each once, in content order, so one composition in one domain's list walks
+## out of every rift (Gilgamesh, 31 October and 2 November).
+func wandering_compositions(tier: int) -> Array:
+	var out: Array = []
+	var seen: Array = []
+	for fid in factions.keys():
+		for c in compositions(str(fid), tier, "elite"):
+			if is_wandering(c) and not seen.has(str(c["id"])):
+				seen.append(str(c["id"]))
+				out.append(c)
+	return out
+
+
+## Is an elite composition a wanderer's: its lead foe wanders.
+func is_wandering(c: Dictionary) -> bool:
+	var members: Array = c.get("members", [])
+	return not members.is_empty() and bool(foes.get(str(members[0][0]), {}).get("wanders", false))
+
+
+## The elite composition a Fracture sends (Ryan, 2 November): the domain's next own not yet
+## sent this battle, or a wanderer not yet sent on a `roll` (0 to 1) under WANDER_CHANCE; a
+## wanderer always once the domain's own are spent, and nothing when both are. An elite may
+## come again in a later battle, never twice in one; a boss never twice in a run.
+func next_elite(faction_id: String, tier: int, sent: Array, roll: float) -> Dictionary:
+	var own: Array = elite_compositions(faction_id, tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
+	var wanderers: Array = wandering_compositions(tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
+	if own.is_empty():
+		return wanderers[0] if not wanderers.is_empty() else {}
+	if not wanderers.is_empty() and roll < WANDER_CHANCE:
+		return wanderers[0]
+	return own[0]
+
+
+## An elite composition by id at a tier: the domain's own or a wanderer's, else empty.
+func elite_composition(faction_id: String, tier: int, id: String) -> Dictionary:
+	for c in elite_compositions(faction_id, tier) + wandering_compositions(tier):
+		if str(c["id"]) == id:
+			return c
+	return {}
 
 
 ## A boss's hand-tailored escort at a tier (an `escort` composition), or empty: the tier's units

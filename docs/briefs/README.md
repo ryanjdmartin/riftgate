@@ -252,6 +252,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
+| `elites.md` | the elites' holes (2 November, on Ryan's word): three a domain, the Peak's own and a Waste hunter first, more wanderers; Claude's first round of candidates, unanswered | the foes | — | Ryan's marks on the candidates, then a session of its own |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
 | `minerva_honey_badger.md` | rework, its numbers open | Minerva | 1 | nothing |
 | `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |

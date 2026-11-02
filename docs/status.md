@@ -21,7 +21,7 @@ are in `README.md`.
   (force-added in `fb45141`, its picks cut on 26 October), only the Augur's stay in git, her
   only surviving renders, kept for her next pass (the rest: `git show fb45141`); foeforge's
   `generate` and `fix` have no machine until a route for the image model is chosen.
-- Tests: 820 tests, 206,084 checks, green (2 November, the review of the slate's calls on
+- Tests: 820 tests, 206,164 checks, green (2 November, the review's calls of the 2nd on
   `claude/brave-cori-fr18de`; 787 and 205,261 on main), about four minutes in a cloud session,
   twenty on a slow one. A cloud session gets Godot 4.7's Linux build and the project's first
   import from the repository's session-start hook (`.claude/hooks/session-start.sh`,
@@ -130,23 +130,33 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
-- The bosses' slate, all twelve (30 and 31 October, on Ryan's word, his yes and his agreement
-  with Claude's leans; `docs/bosses_proposal.md`, its sections on what landed and the calls
-  still open; the bible's section 9 rows), three a domain as runnable placeholder kits:
-  Rotbloom, Floraison and the King Gel in the Meadow; the Djinn, the Fallen Weapon and the
-  Pilgrim in the Waste; the Matador, the Phantom Train and the Vampire Lord in the Marsh; the
-  Behemoth, the Cinder Tortoise and the Obsidian Tyrant (its rider the Saurian Queen, a part) in
-  the Peak. Gilgamesh is an elite that wanders, the last of every domain's elites, scaled by the
-  tier as a boss is. Every boss has its own escort at tiers two and three at the tier's counts
-  (the King Gel's court at every tier) and stands alone at tier one. The stand-ins went to the
-  ranks with a line of recolours each at tiers two and three (their cut third moves the twist),
-  the Marsh a massive line of its own (the Barrow, Grave and Charnel Giant), and the Bone Wyvern
-  to the Marsh's elites. Built for them, on any foe: a follow-up, a steal with its borrowed
-  swing, a swallow that lets go once its swallower loses a quarter of its HP, a merge, a drain
-  from the hull, a grudge (`per_kill`), a condition that reads a fallen part, a move used once a
-  fight, an escort that names its boss, a boss's armour step a tier (`armour_step`: the
-  Tortoise 1, 2, 3), a wandering elite (`wanders`), and a foe's purge in content (the Djinn's
-  Unmake); Numbed's third stack goes to every boss. Bosses and parts with no pick, and the
+- The bosses' slate, all twelve (30 October to 2 November, on Ryan's word, his yes, his
+  agreement with Claude's leans and his calls on the review of the 2nd; `docs/bosses_proposal.md`,
+  its sections on what landed and the calls still open; the bible's section 9 rows), three a
+  domain as runnable placeholder kits: Rotbloom, Floraison and the King Gel in the Meadow; the
+  Ruby Colossus (Ruby Weapon by archetype, in the Djinn's place since the 2nd: two tentacles as
+  parts that guard nothing, Whirlsand a swallow, Ultima at every machine three rounds on), the
+  Fallen Weapon and the Pilgrim in the Waste; the Matador, the Phantom Train and the Vampire
+  Lord in the Marsh; the Behemoth, the Cinder Tortoise and the Obsidian Tyrant (its rider the
+  Saurian Queen, a part) in the Peak. The Djinn, a trope archetype, is the Waste's tier-two
+  back-rank caster, the ranks' first purge. Gilgamesh is an elite that wanders: drawn by any
+  domain's Fracture one time in three in place of its next own elite and always once its own are
+  spent (`ContentDB.next_elite`), scaled by the tier as a boss is; an elite may come again in a
+  later battle, a boss never in a run. Every boss has its own escort at tiers two and three at
+  the tier's counts (the King Gel's court at every tier, six at tier three) and stands alone at
+  tier one, in the quick campaign too. The stand-ins went to the ranks with a line of recolours
+  each at tiers two and three (their cut third moves the twist), the Marsh a massive line of its
+  own (the Barrow, Grave and Charnel Giant), and the Bone Wyvern to the Marsh's elites. The
+  worms' and the Antlion Queen's bites are Maw and Devour (Swallow is Floraison's word);
+  Withdraw is 2, the Tortoise at tier three flagged (the to-do); no foe flees but a loot-runner
+  (Ryan's rule of the 2nd), so the Needler's Scatter is struck and the Thief's Flee waits on
+  his word. Built for them, on any foe: a follow-up, a steal with its borrowed swing, a swallow
+  that lets go once its swallower loses a quarter of its HP (a second machine taken joining the
+  first's count), a merge, a drain from the hull, a grudge (`per_kill`), a condition that reads
+  a fallen part, a move used once a fight, an escort that names its boss, a boss's armour step a
+  tier (`armour_step`: the Tortoise 1, 2, 3), a wandering elite (`wanders`), and a foe's purge
+  in content (the Djinn's Unmake); Numbed's third stack goes to every boss. The elites' holes
+  (the Peak has none of its own) have a brief for a session (`docs/briefs/elites.md`). Bosses and parts with no pick, and the
   giants, wear rough placeholders stamped "?" (`tools/placeholder_art.py`). The slate stands at
   48 HP at tier one (Ryan: "Whatever you think works best for scaling"). The reads of 30 and 31
   October (`docs/measurements.md`, directions): the default team kills each boss in 4 to 5
@@ -154,9 +164,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   trio of the same kit loses three to ten times the hull), and in rounds by its role; the
   slate's blanket point of armour costs the small-blow kits about 40% more rounds at tier one.
   Found on the way: the balance runner had never set the foe factory (fixed); the test runner
-  passes a test that crashes after its first check (the to-do). Waiting on Ryan: the blanket
-  armour at tier one and a follow-up that cannot be Disrupted (the proposal's two calls, each
-  with Claude's lean), and his marks on the session's placeholders.
+  passes a test that crashes after its first check (the to-do); a second swallow moved the
+  first's release (fixed on the 2nd). Waiting on Ryan: the blanket armour at tier one and a
+  follow-up that cannot be Disrupted (the proposal's two calls, each with Claude's lean), the
+  Thief's Flee, his marks on the session's placeholders and the elites brief.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show

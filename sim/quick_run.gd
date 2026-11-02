@@ -313,7 +313,7 @@ func _encounters(t: int) -> Array:
 	var out: Array = []
 	var formations := 0
 	var dealt := {}   # domain -> formations dealt it this battle, so its compositions come in turn
-	var elites_dealt := 0
+	var elites_dealt: Array = []   # the elite compositions dealt this battle
 	for k in kinds:
 		var enc := {"kind": k, "domain": lead}
 		if k == "formation":
@@ -323,12 +323,14 @@ func _encounters(t: int) -> Array:
 			enc["index"] = int(dealt.get(enc["domain"], 0))   # which of the domain's formation compositions
 			dealt[enc["domain"]] = int(enc["index"]) + 1
 		else:
-			# An elite's slot takes the lead's elite compositions in turn (30 October); with none
-			# left, the lead's formation holds the slot as before.
-			var elites := db.elite_compositions(lead, t + 1)
-			enc["foe"] = str(elites[elites_dealt]["id"]) if elites_dealt < elites.size() else ""
+			# An elite's slot takes the lead's next own elite, or a wanderer on the run's roll
+			# (ContentDB.next_elite, 2 November), each once a battle; with none left, the lead's
+			# formation holds the slot as before.
+			var c := db.next_elite(lead, t + 1, elites_dealt, rng.randf())
+			enc["foe"] = str(c["id"]) if not c.is_empty() else ""
 			enc["index"] = 0
-			elites_dealt += 1
+			if not c.is_empty():
+				elites_dealt.append(str(c["id"]))
 		out.append(enc)
 	if is_finale():
 		# The line is drawn as the finale is rolled, so whoever shows it reads the one fought.
@@ -372,9 +374,9 @@ func encounter_foes(enc: Dictionary) -> Array:
 				db.scale_boss(f, tier())
 				out.append(f)
 	elif kind == "elite" and not str(enc.get("foe", "")).is_empty():
-		for c in db.elite_compositions(lead, tier() + 1):
-			if str(c["id"]) == str(enc["foe"]):
-				out.append_array(_composition_foes(c))
+		var c := db.elite_composition(lead, tier() + 1, str(enc["foe"]))
+		if not c.is_empty():
+			out.append_array(_composition_foes(c))
 		if out.is_empty():
 			out.append_array(formation_foes(str(enc.get("domain", lead)), int(enc.get("index", 0))))
 	else:
@@ -386,13 +388,23 @@ func encounter_foes(enc: Dictionary) -> Array:
 			out.append(f)
 		out.append_array(formation_foes(str(enc.get("domain", lead)), int(enc.get("index", 0))))
 	if boss:
-		out.append_array(escort_foes(str(enc.get("domain", lead))))
+		out.append_array(escort_foes(str(enc.get("domain", lead)), str(enc.get("foe", ""))))
 	return out
 
 
-## A boss's escort at the battle's tier, beyond its formation: the domain's own units of the
-## tier, ContentDB.escort_at(tier) of them, as the campaign's boss unit brings it.
-func escort_foes(domain: String) -> Array:
+## A boss's escort at the battle's tier, beyond its formation, as the campaign's boss unit
+## brings it: its own `escort` composition at the tier when one is written (2 November), its
+## members at the ramp's density, else the domain's own units of the tier, ContentDB.escort_at(tier)
+## of them.
+func escort_foes(domain: String, boss_id: String = "") -> Array:
+	var out: Array = []
+	var tailored := db.escort_composition(domain, tier() + 1, boss_id)
+	if not tailored.is_empty():
+		for m in tailored["members"]:
+			for i in range(Ramp.scaled(int(m[1]), ramp())):
+				if db.foes.has(str(m[0])):
+					out.append(db.make_foe(str(m[0])))
+		return out
 	return Array(db.escort_units(domain, tier(), ContentDB.escort_at(tier())))
 
 
