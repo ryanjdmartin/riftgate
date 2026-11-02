@@ -410,6 +410,7 @@ class Build:
         self.gait_spec = {}    # how the machine moves (see gait())
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
+        self.spin_steps = {}   # joint -> degrees a step: a spinner an act may lock, parked on a step (see spin(), act()'s `locks`)
         self.spins_held = {}   # status -> {joint: degrees a second}: turned while the machine carries the status (see spin_held())
         self.counts = []       # the count displays: parts lit in order for a number the game passes (see count())
         self.forms = {}        # poses held while a status lasts (see form())
@@ -685,7 +686,7 @@ class Build:
                 return "yaw"
         return "pitch"
 
-    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None):
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None, locks=None):
         """One idle act, what the pilot does with the machine every few seconds (the
         idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
         (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
@@ -701,10 +702,18 @@ class Build:
         Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both. `form`,
         given, makes it one of that form's acts, played while the form is held in place of the
         machine's own and added to the form's held pose (Ryan, 29 October: sealed, the
-        Armadillo's acts are its own, from its hunkered pose)."""
+        Armadillo's acts are its own, from its hunkered pose). `locks` names spinners with a
+        step (spin()'s `step`) the act holds still: each parks quickly on its next step ahead as
+        the act starts, never turning back, and holds there while it plays, the act's own track
+        on it adding whole steps over that; when the act ends its turn there runs on from where
+        it stands (MechRig: the Cottonmouth's drum stops on a chamber to fire, Ryan, 2 November:
+        "Keep the idle turn ... Quickly spin it forward a fixed number of barrels when it
+        fires")."""
         out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
         if heft is not None:
             out["heft"] = float(heft)
+        if locks:
+            out["locks"] = [str(j) for j in ([locks] if isinstance(locks, str) else locks)]
         if places:
             places = [places] if isinstance(places, str) else list(places)
             for pl in places:
@@ -930,12 +939,18 @@ class Build:
         self.gait_spec = kept
         return self.gait_options[name]
 
-    def spin(self, joint, idle, moving=None):
+    def spin(self, joint, idle, moving=None, step=None):
         """A joint turned without end on its own axis, whatever the machine is doing (Ryan, 6
         October, the seventh notes: the Stingray's lift fans): `idle` degrees a second standing,
         `moving` (as idle if not given) once it is fully under way, the rate easing between them
-        with the move. Give the joint no limits: the turn is wrapped, never clamped."""
+        with the move. Give the joint no limits: the turn is wrapped, never clamped. `step`,
+        given, is its pitch in degrees, rest one of its steps (a drum's chamber, 60 for six): an
+        act may lock it (act()'s `locks`), parking it on a step while the act plays."""
         self.spins[joint] = [float(idle), float(idle if moving is None else moving)]
+        if step is not None:
+            if not 0.0 < float(step) <= 180.0:
+                raise ValueError("%s: the spin of %s steps %g degrees, which is no step" % (self.name, joint, step))
+            self.spin_steps[joint] = float(step)
 
     def spin_held(self, status, joint, speed):
         """A joint turned without end at `speed` degrees a second while the machine carries the
@@ -1038,6 +1053,18 @@ class Build:
         unnamed = sorted((n for n, c in self.carries.items() if c is None), key=lambda n: int(n[3:]))
         if unnamed:
             raise ValueError("%s: %s name no component they carry (b.socket/b.stock/b.pin carries=, \"\" for a bare mount)" % (self.name, ", ".join(unnamed)))
+        # A lock parks a stepped spinner (act()'s `locks`): the act's own turn on it must end on a
+        # whole step, held to the act's end, so the turn runs on from a step when the act ends.
+        for a in every_act:
+            for jn in a.get("locks", []):
+                if jn not in self.spins or jn not in self.spin_steps:
+                    raise ValueError("%s: act %r locks %s, which is no spinner with a step (b.spin's step)" % (self.name, a["name"], jn))
+                rows = a["tracks"].get(jn, [])
+                if rows:
+                    turn = rows[-1][1 + ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])]
+                    whole = turn / self.spin_steps[jn]
+                    if abs(whole - round(whole)) > 1e-6 or rows[-1][0] < a["duration"] - 1e-6:
+                        raise ValueError("%s: act %r ends its locked %s on %g degrees at %gs, which must be a whole step held to the act's end" % (self.name, a["name"], jn, turn, rows[-1][0]))
         out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it" % self.name,
                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts,
                "pins": {n: self.carries[n] for n in sorted(self.carries, key=lambda n: int(n[3:]))}}
@@ -1047,6 +1074,8 @@ class Build:
             out["gait_options"] = self.gait_options
         if self.spins:
             out["spin"] = self.spins
+        if self.spin_steps:
+            out["spin_step"] = self.spin_steps
         if self.spins_held:
             out["spin_held"] = self.spins_held
         if self.counts:

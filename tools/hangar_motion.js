@@ -25,6 +25,7 @@ const THREE_URLS = [
 const RECOIL_SLIDE = 1.5;   // MechRig: world units a gun that only runs in and out of its port kicks back on a shot
 const COUNT_RISE = 0.08, COUNT_FALL = 0.35, COUNT_DEBUG_PERIOD = 1.0;   // MechRig: a count display's part lighting and fading, and the beat it counts to with no fight to count (RIFTGATE_COUNT_DEBUG's)
 const SPIN_HELD_EASE = 0.45;   // MechRig: seconds a status's spin takes to come up to speed and to run down
+const PARK_TIME = 0.3;   // MechRig: seconds a locked spin takes to park on its next step ahead
 const GAP_MIN = 6.0, GAP_MAX = 12.0, GAP_DEBUG = 0.4, WAIT_TICK_MAX = 0.1;   // MechRig: a long frame spends at most this much of the gap
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
@@ -208,6 +209,8 @@ class Rig {
     this.gaitOptions = side.gait_options || {};   // other ways it could move, to judge beside it (b.gait_option); the game moves by the gait alone
     this.spinners = {}; this.spun = {};   // joints turned without end (MechRig.spinners, b.spin: the Stingray's fans)
     for (const [name, r] of Object.entries(side.spin || {})) if (this.joints[name] && Array.isArray(r) && r.length >= 2) { this.spinners[name] = [Number(r[0]), Number(r[1])]; this.spun[name] = 0; }
+    this.spinSteps = {}; this.locked = {};   // a spinner an act may lock, parked on its step (MechRig.spin_steps, _locked: the Cottonmouth's drum)
+    for (const [name, step] of Object.entries(side.spin_step || {})) if (this.spinners[name] && Number(step) > 0) this.spinSteps[name] = Number(step);
     this.heldSpins = {}; this.heldOn = {}; this.heldSpeed = {};   // a status's spin (MechRig.held_spins, b.spin_held: the Cassowary's capacitor while Spun Up)
     for (const [status, js] of Object.entries(side.spin_held || {})) {
       const turned = {};
@@ -410,8 +413,32 @@ class Rig {
     if (!a) return false;
     this.endAct(true); this.start(a); this.evaluateAct(); this.pose(); return true;
   }
+  // MechRig._lock_spins: park every spinner the act locks on its next step ahead, the way it turns.
+  lockSpins(a) {
+    for (const name of a.locks || []) {
+      if (!this.spinners[name] || !this.spinSteps[name]) continue;
+      const step = this.spinSteps[name], from = this.spun[name], r = this.spinners[name];
+      const ahead = r[0] + (r[1] - r[0]) * this.blend >= 0;
+      this.locked[name] = [from, (ahead ? Math.ceil(from / step - 0.0001) : Math.floor(from / step + 0.0001)) * step, 0];
+    }
+  }
+  // MechRig._unlock_spins: the act's own turn on a locked spinner goes into its turn, so it never
+  // unwinds, and its idle turn takes up again from where it stands.
+  unlockSpins() {
+    for (const name of Object.keys(this.locked)) {
+      const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)];
+      let turned = this.spun[name];
+      const st = this.servo[name];
+      if (st) { turned += st[0][k]; st[0] = {...st[0], [k]: 0}; st[1] = {...st[1], [k]: 0}; }
+      if (this.actRot[name]) this.actRot[name] = {...this.actRot[name], [k]: 0};
+      this.spun[name] = fposmod(turned, 360);
+    }
+    this.locked = {};
+  }
   start(a) {
+    this.unlockSpins();
     this.current = a; this.t = 0; this.lastAct = a.name; this.glow = [];
+    this.lockSpins(a);
     this.actHeft = a.heft ?? this.heft;   // an act may ask for its own heft (MechRig._act_heft): a blow sharper than the machine's weight
     const d = a.duration || 0, ease = a.ease || "smooth";
     this.curves = {};
@@ -425,6 +452,7 @@ class Rig {
   restoreGlow() { for (const g of this.glow) g.mats.forEach((m, i) => { m.emissiveIntensity = g.base[i]; }); this.glow = []; }
   // The act is over (MechRig._end_act): its asks go to nothing and the servos bring every part home.
   endAct(quiet) {
+    this.unlockSpins();
     const wrap = (a) => fposmod(a + 180, 360) - 180;   // the short way round: a loop or a spin ends a whole turn on and never unwinds
     for (const st of Object.values(this.servo)) st[0] = v3(wrap(st[0].x), wrap(st[0].y), wrap(st[0].z));
     this.restoreGlow();
@@ -476,6 +504,7 @@ class Rig {
     const a = this.current;
     if (!a) return;
     this.restoreGlow(); this.settle(); this.start(a);
+    for (const [name, lk] of Object.entries(this.locked)) { lk[2] = PARK_TIME; this.spun[name] = lk[1]; }   // a scrubbed act stands parked
     let left = clamp(t, 0, a.duration || 0);
     while (left > 1e-9) { const dt = Math.min(left, STEP); left -= dt; this.t += dt; this.evaluateAct(); this.follow(dt); }
     this.pose();
@@ -498,8 +527,16 @@ class Rig {
       this.countsStep(delta);
     }
     for (const [name, r] of Object.entries(this.spinners)) {
-      const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
-      this.spun[name] = ((s % 360) + 360) % 360; moved = true;
+      const lk = this.locked[name];
+      if (lk) {   // the act playing locks it: it eases onto its step and holds there
+        lk[2] = Math.min(lk[2] + delta, PARK_TIME);
+        const u = lk[2] / PARK_TIME;
+        this.spun[name] = lerp(lk[0], lk[1], u * u * (3 - 2 * u));
+      } else {
+        const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
+        this.spun[name] = ((s % 360) + 360) % 360;
+      }
+      moved = true;
     }
     if (moved) this.pose();
   }

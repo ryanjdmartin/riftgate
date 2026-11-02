@@ -1265,3 +1265,89 @@ func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
 	var under_way: float = turned.call(fan_r, 1.0, true)
 	assert_true(absf(under_way - float(rig.spinners["fan_r"][1])) < 40.0, "under way it turns at its moving rate (%f a second)" % under_way)
 	pair[1].free()
+
+
+func test_a_locked_spin_parks_on_a_step_ahead_and_runs_on_from_there() -> void:
+	# Ryan, 2 November, of the Cottonmouth's drum: "Keep the idle turn ... Quickly spin it forward a
+	# fixed number of barrels when it fires", and "only ever light the top barrel mouth", so a
+	# barrel must stand on top when a shot fires. A spinner with a step (b.spin's step, the
+	# sidecar's spin_step) that an act locks (its `locks`) parks on its next step ahead as the act
+	# starts, never turning back, and holds there while the act plays, the act's own turn adding
+	# whole steps; when the act ends the idle turn takes up again from where it stands, nothing
+	# unwound. An act that locks nothing leaves the spin turning.
+	var id := ""
+	var act := ""
+	var jn := ""
+	var free := ""
+	for m in MACHINES:
+		var side := MechRig.load_sidecar(m)
+		for a in side.get("acts", []):
+			for j in a.get("locks", []):
+				if id.is_empty() and (side.get("spin_step", {}) as Dictionary).has(j) and (side.get("spin", {}) as Dictionary).has(j) and (a.get("tracks", {}) as Dictionary).has(j):
+					id = m
+					act = str(a["name"])
+					jn = str(j)
+	assert_false(id.is_empty(), "a model locks a stepped spin in an act")
+	if id.is_empty():
+		return
+	for a in MechRig.load_sidecar(id).get("acts", []):
+		if free.is_empty() and not (a.get("locks", []) as Array).has(jn) and not (a.get("tracks", {}) as Dictionary).has(jn):
+			free = str(a["name"])
+	var pair := _rig_for(id, 5)
+	var rig: MechRig = pair[0]
+	rig._wait = 1.0e9   # no act of its own choosing: only those played here
+	var step := float(rig.spin_steps.get(jn, 0.0))
+	assert_true(step > 0.0, "%s: %s has its step" % [id, jn])
+	var ax := ["pitch", "yaw", "roll"].find(str(rig.meta[jn]["axis"]))
+	var rate := float(rig.spinners[jn][0])
+	var total := func() -> float: return float(rig._spun[jn]) + (rig._act_rot.get(jn, Vector3.ZERO) as Vector3)[ax]
+	var dt := 1.0 / 60.0
+	# Idle, mid-step.
+	var t := 0.0
+	while t < 0.4 or absf(fposmod(float(rig._spun[jn]), step)) < 2.0 or absf(fposmod(float(rig._spun[jn]), step) - step) < 2.0:
+		rig.tick(dt)
+		t += dt
+	var s0 := float(rig._spun[jn])
+	var parked := (ceilf(s0 / step) if rate >= 0.0 else floorf(s0 / step)) * step
+	assert_true(rig.play(act), "%s plays %s" % [id, act])
+	assert_true(rig.spin_locked(jn), "%s: %s locks %s" % [id, act, jn])
+	var last := s0
+	var backwards := false
+	t = 0.0
+	while t < MechRig.PARK_TIME + 0.1:
+		rig.tick(dt)
+		t += dt
+		var now := float(rig._spun[jn])
+		if (now - last) * signf(rate) < -0.001:
+			backwards = true
+		last = now
+	assert_false(backwards, "%s: the park never turns back" % id)
+	assert_true(absf(float(rig._spun[jn]) - parked) < 0.01, "%s: parked on the next step ahead (%f from %f, want %f)" % [id, float(rig._spun[jn]), s0, parked])
+	var held := float(rig._spun[jn])
+	var duration := 0.0
+	for a in rig.acts:
+		if str(a["name"]) == act:
+			duration = float(a["duration"])
+	while t < duration - 0.05:
+		rig.tick(dt)
+		t += dt
+	assert_true(absf(float(rig._spun[jn]) - held) < 0.001, "%s: the idle turn holds still while the act plays" % id)
+	var before: float = total.call()
+	assert_true(absf(fposmod(before, step)) < 0.5 or absf(fposmod(before, step) - step) < 0.5, "%s: the act's own turn ends on whole steps (%f)" % [id, before])
+	while rig.in_act():
+		rig.tick(dt)
+	assert_false(rig.spin_locked(jn), "%s: the lock goes with the act" % id)
+	var after: float = total.call()
+	assert_true(absf(wrapf(after - before, -180.0, 180.0)) < 2.0, "%s: nothing jumps or unwinds as the act ends (%f to %f)" % [id, before, after])
+	var from := float(rig._spun[jn])
+	for i in range(30):
+		rig.tick(dt)
+	assert_true(absf(wrapf(float(rig._spun[jn]) - from, -180.0, 180.0) - rate * 0.5) < 2.0, "%s: the idle turn takes up again from where it stands" % id)
+	if not free.is_empty():
+		assert_true(rig.play(free), "%s plays %s" % [id, free])
+		assert_false(rig.spin_locked(jn), "%s: %s locks nothing" % [id, free])
+		var s1 := float(rig._spun[jn])
+		for i in range(30):
+			rig.tick(dt)
+		assert_true(absf(wrapf(float(rig._spun[jn]) - s1, -180.0, 180.0) - rate * 0.5) < 2.0, "%s: an act that locks nothing leaves the spin turning" % id)
+	pair[1].free()

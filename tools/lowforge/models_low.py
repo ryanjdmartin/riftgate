@@ -2270,12 +2270,19 @@ def cottonmouth(b):
     (the passive, no entry on the die) on trunnions in a yoke on a ring, elevating to lob (joint
     elev_drum) and turning on its own axis (joint drum, always turning slowly, b.spin): a
     riveted breech casing banded in the livery, a window in the band over each chamber, its back
-    a face of six chamber caps round a hub, the index chamber's lamp lit and the others banked
-    (the windows and lamps burn as it spins up, so the spin reads as light running round it);
-    six fat barrels out of its front through two collars to bored muzzles, each bore dark at
-    rest and burning when it fires, the index barrel striped white down its top and ringed white
-    at its muzzle, so the turn reads from above, behind and in front; the lift intakes either
-    side of the yoke and an ammunition locker either side of the barrels, lidded in the livery.
+    a face of six chamber caps round a hub, each lamp banked; six fat barrels out of its front
+    through two collars to bored muzzles. Its turn reads from the barrels alone (Ryan, 2
+    November: "How on earth does six rotating barrels look still?"), so no barrel is marked.
+    The third round (Ryan, 2 November: "Keep the idle turn ... Quickly spin it forward a fixed
+    number of barrels when it fires ... only ever light the top barrel mouth"; of the back's lit
+    lamp, "that's part of the flash and should be lit when the muzzle is"): an act that turns
+    the drum on locks its idle turn (b.spin's step, the act's `locks`), parking it on a chamber,
+    and the windows and every chamber lamp burn while it turns (the strip); a shot lights the top
+    chamber alone, front and back: the top mouth and the top lamp, fixed on the elevation (not
+    the rolling drum), rest hidden in the collar and the casing and slide into the top chamber
+    only while the drum stands parked for a shot (joints top_mouth and top_lamp), so neither
+    shows in a seam between barrels as the drum turns. The lift intakes either side of the yoke
+    and an ammunition locker either side of the barrels, lidded in the livery.
     The heat is the heat tile's, an orange of red and green alone (#ff7800 at its height). The stern is the
     fan-boat's: two ducted fans side by side on a fairing, hazard-striped lips, five blades each
     with yellow tips turning against each other (joints fan_l and fan_r, b.spin), a lit ring
@@ -2342,7 +2349,9 @@ def cottonmouth(b):
 
     # The drum: elevating in the yoke, turning on its own axis inside it.
     RR, RB = 7.6, 3.7            # the barrels' ring radius and each barrel's
-    angles = [math.pi / 2.0 + k * math.pi / 3.0 for k in range(6)]   # the index barrel on top at rest
+    angles = [math.pi / 2.0 + k * math.pi / 3.0 for k in range(6)]   # a barrel on top at rest, and at every step of 60 degrees
+    y0, y1, ym = PY + 10.0, PY + 21.0, PY + 27.5   # the barrels from the casing's face, the muzzles, their mouths
+    yb, cr = PY - 7.0, 6.6                         # the drum's back and its chambers' circle there
     with b.joint("elev_drum", (0.0, PY, ZA), axis="pitch", limits=(0.0, 30.0)):
         with b.joint("drum", (0.0, PY, ZA), axis="roll"):
             # The breech casing: chamfered at its back so the drum lifts clear of the deck.
@@ -2355,29 +2364,31 @@ def cottonmouth(b):
             # so the spin reads as a light running round it.
             _cottonmouth_boxes(b, [((RC * 0.97 * math.cos(a), PY + 2.5, ZA + RC * 0.97 * math.sin(a)), ((-math.sin(a), 0.0, math.cos(a)), (0.0, 1.0, 0.0), (math.cos(a), 0.0, math.sin(a))), (1.6, 1.3, 0.5))
                                    for a in angles], "amber.heat", "chamber_window")
-            # Its back: a hub and six chamber caps, the index chamber's lamp lit, the rest banked.
-            yb = PY - 7.0
+            # Its back: a hub and six chamber caps, every lamp banked, burning with the strip (Ryan,
+            # 2 November: the lit index lamp went, "that's part of the flash").
             b.prism("y", 0.0, yb - 0.6, ZA, 3.0, 1.2, "steel.dark", 8, "drum_hub", phase=math.pi / 8)
-            cr = 6.6
             _cottonmouth_prisms(b, [("y", (cr * math.cos(a), yb - 0.3, ZA + cr * math.sin(a)), 2.3, 0.6, 8, math.pi / 8) for a in angles], "steel.plate", "chamber_cap")
-            _cottonmouth_prisms(b, [("y", (cr * math.cos(a), yb - 0.75, ZA + cr * math.sin(a)), 1.5, 0.4, 8, math.pi / 8) for a in angles[1:]], "amber.heat", "chamber_lamp")
-            _cottonmouth_prisms(b, [("y", (cr * math.cos(angles[0]), yb - 0.75, ZA + cr * math.sin(angles[0])), 1.5, 0.4, 8, math.pi / 8)], "amber.lit", "index_lamp")
-            # The barrels out of the casing's face, through two collars, to bored muzzles.
-            y0, y1, ym = PY + 10.0, PY + 21.0, PY + 27.5
-            for k, a in enumerate(angles):
+            _cottonmouth_prisms(b, [("y", (cr * math.cos(a), yb - 0.75, ZA + cr * math.sin(a)), 1.5, 0.4, 8, math.pi / 8) for a in angles], "amber.heat", "chamber_lamp")
+            # The barrels out of the casing's face, through two collars, to bored muzzles, each
+            # bore's floor dark and never lit (a shot lights the top mouth, below).
+            for a in angles:
                 bx, bz = RR * math.cos(a), ZA + RR * math.sin(a)
                 b.prism("y", bx, (y0 + y1) / 2.0, bz, RB, y1 - y0, "steel.dark", 8, "barrel", phase=math.pi / 8)
-                # The index barrel ringed and striped in the maker's brown, so the turn reads
-                # (Ryan, 2 November, of the white it wore: "Does the cottonmouth need the white muzzle?").
-                _cottonmouth_ring(b, bx, bz, y1, ym, RB + 0.2, RB - 1.0, 8, "livery.livery2" if k == 0 else "steel.dark", "muzzle_index" if k == 0 else "muzzle", phase=math.pi / 8)
-                # Each bore its own glow, so a shot lights the barrel that fires, never all six
-                # (Ryan, 2 November: "why do all the barrels light up during ranging?").
-                _cottonmouth_prisms(b, [("y", (bx, ym - 1.8, bz), RB - 0.95, 0.4, 8, math.pi / 8)], "amber.heat", "bore_glow_%d" % k)   # a short way in, where the cameras see it
-            b.box(-1.3, 1.3, y0 + 0.4, y1 - 0.4, ZA + RR + RB * math.cos(math.pi / 8.0) - 0.1, ZA + RR + RB * math.cos(math.pi / 8.0) + 0.3, "livery.livery2", "index_stripe")
+                _cottonmouth_ring(b, bx, bz, y1, ym, RB + 0.2, RB - 1.0, 8, "steel.dark", "muzzle", phase=math.pi / 8)
+            _cottonmouth_prisms(b, [("y", (RR * math.cos(a), ym - 1.8, ZA + RR * math.sin(a)), RB - 0.95, 0.4, 8, math.pi / 8) for a in angles], "bore.dark", "bore_floor")
             b.prism("y", 0.0, (y0 + ym) / 2.0, ZA, 2.3, ym - y0, "steel.dark", 8, "spindle", phase=math.pi / 8)
             b.prism("y", 0.0, ym, ZA, 3.0, 1.4, "steel.plate", 8, "spindle_cap", phase=math.pi / 8)
             for yc in (y0 + 3.6, y1 + 1.6):
                 b.prism("y", 0.0, yc, ZA, RR + RB + 0.5, 2.2, "steel.plate", 12, "collar", phase=math.pi / 12)
+        # The shot's light, fixed at the top chamber on the elevation (never the rolling drum):
+        # the top mouth rests hidden in the collar's solid and the top lamp inside the casing;
+        # while the drum stands parked for a shot each slides into the top chamber (forward into
+        # its bore, in front of the bore's own floor; back out through its cap, behind its lamp),
+        # flashes, and slides home, so neither shows in a seam between barrels as the drum turns.
+        with b.joint("top_mouth", (0.0, y1 + 1.6, ZA + RR), slide=(0.0, 1.0, 0.0)):
+            _cottonmouth_prisms(b, [("y", (0.0, y1 + 1.6, ZA + RR), RB - 1.15, 0.4, 8, math.pi / 8)], "amber.heat", "top_mouth_glow")
+        with b.joint("top_lamp", (0.0, yb + 0.4, ZA + cr), slide=(0.0, -1.0, 0.0)):
+            _cottonmouth_prisms(b, [("y", (0.0, yb + 0.4, ZA + cr), 2.1, 0.4, 8, math.pi / 8)], "amber.heat", "top_lamp_glow")   # wider than the lamp it lights, inside the cap it passes through
         # The four mounts, hidden inside the casing (nothing drawn there, stock or fitted), on
         # the elevation so a shot kicks the drum up; in the die's order.
         for n, (dx, dz), carries in ((1, (-4.2, 4.2), "ankle_mortar"), (2, (4.2, 4.2), "twin_autoguns"), (3, (-4.2, -4.2), "halo_shield"), (4, (4.2, -4.2), "")):
@@ -2423,36 +2434,68 @@ def cottonmouth(b):
     # seconds; a key is (t, value) on the joint's own axis; a body key is (t, dx, dy, dz) or
     # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
     rudders = ("rudder_l1", "rudder_l2", "rudder_r1", "rudder_r2")
-    bores = ["bore_glow_%d" % k for k in range(6)]
-    hot = ["chamber_lamp", "chamber_window"] + bores
     HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 here under the phone's eased light (the Armadillo's vents)
-    # Spin-up: the drum lifts a touch and spins up through four whole turns, its chambers and
-    # bores burning hotter as it whirls, the hull shuddering on its cushion; it spins down onto
-    # its index and settles.
+    STRIP = ["chamber_window", "chamber_lamp"]   # burning whenever the drum turns on past its idle, every chamber
+    FLASH = ["top_mouth_glow", "top_lamp_glow"]  # the top chamber, front and back, lit for a shot alone
+    CHAMBERS = 2                                 # chambers the drum turns on to slot a shot (Ryan: "say the second or third next one")
+    MOUTH_IN, LAMP_OUT = 3.9, 1.9                # how far the top mouth and lamp slide out of hiding
+    SLICE = 1.12                                 # seconds a shot takes, its turn included
+
+    def shot(t0, turned, at, pose):
+        """One shot, self-contained from t0 to t0 + SLICE (so the hookup of every weapon's fire can
+        cut it): the drum turns CHAMBERS on in 0.36 s, the strip burning as it turns; parked, the top
+        mouth and lamp slide out of hiding into the top chamber; at t0 + 0.58 the shot flashes them,
+        kicks the drum up four degrees and shoves the hull back on its cushion; they slide home by
+        t0 + 1.08. `turned` is the drum's turn so far in the act, `at` its elevation, `pose` the
+        body's (dx, dy, dz, yaw, pitch, roll) held through it. Returns the keys by track."""
+        dx, dy, dz, yaw, pitch, roll = pose
+        out_key = lambda t, d: (t, 0.0, 0.0, 0.0, 0.0, d, 0.0)
+        return {"drum": [(t0, turned), (t0 + 0.36, turned + CHAMBERS * 60.0)],
+                "elev_drum": [(t0 + 0.58, at), (t0 + 0.64, at + 4.0), (t0 + 1.06, at)],
+                "top_mouth": [out_key(t0 + 0.38, 0.0), out_key(t0 + 0.46, MOUTH_IN), out_key(t0 + 1.0, MOUTH_IN), out_key(t0 + 1.08, 0.0)],
+                "top_lamp": [out_key(t0 + 0.38, 0.0), out_key(t0 + 0.46, -LAMP_OUT), out_key(t0 + 1.0, -LAMP_OUT), out_key(t0 + 1.08, 0.0)],
+                "strip": [(t0, 0.0), (t0 + 0.06, HEAT), (t0 + 0.36, HEAT), (t0 + 0.56, 0.0)],
+                "flash": [(t0 + 0.58, 0.0), (t0 + 0.62, HEAT), (t0 + 0.86, 0.3 * HEAT), (t0 + 0.98, 0.0)],
+                "body": [(t0 + 0.58, dx, dy, dz, yaw, pitch, roll), (t0 + 0.70, dx, dy - 2.2, dz - 0.3, yaw, pitch + 1.4, roll), (t0 + 1.06, dx, dy, dz, yaw, pitch, roll)]}
+    # Spin-up: the drum, locked off its idle turn and parked on a chamber, lifts a touch and spins
+    # up through four whole turns, the strip burning as it whirls (no mouth: only a shot lights
+    # one), the hull shuddering on its cushion; it spins down onto a chamber and settles.
     b.act("spin_up", 6.6, {
         "elev_drum": [(0.4, 0.0), (1.3, 12.0), (5.2, 12.0), (6.2, 0.0)],
         "drum": [(0.8, 0.0), (1.5, 40.0), (2.2, 210.0), (2.9, 560.0), (3.6, 950.0), (4.3, 1260.0), (5.0, 1410.0), (5.6, 1440.0), (6.6, 1440.0)],
     }, body=[(2.0, 0.0, 0.0, 0.0), (2.3, 0.0, -0.4, 0.3, 0.0, 0.6, 0.8), (2.6, 0.0, -0.6, 0.0, 0.0, 0.8, -0.8), (2.9, 0.0, -0.8, 0.3, 0.0, 1.0, 0.9),
              (3.2, 0.0, -0.8, 0.0, 0.0, 1.0, -0.9), (3.5, 0.0, -0.8, 0.3, 0.0, 1.0, 0.9), (3.8, 0.0, -0.8, 0.0, 0.0, 1.0, -0.9), (4.1, 0.0, -0.6, 0.3, 0.0, 0.8, 0.7),
              (4.4, 0.0, -0.4, 0.0, 0.0, 0.6, -0.5), (5.0, 0.0, 0.0, 0.0)], heft=0.08,
-       glow=[(hot, [(0.8, 0.0), (2.2, 0.25 * HEAT), (3.0, HEAT), (4.6, HEAT), (5.6, 0.2 * HEAT), (6.3, 0.0)]),
-             (["sight"], [(0.4, 0.0), (0.8, 6.0), (5.6, 6.0), (6.2, 0.0)])])
-    # The ranging: up for the back rank, two shots punched out, each kicking the drum and
-    # shoving the hull back on its cushion, the drum turning a chamber after each; then down for
-    # the front rank, three shots sprayed along the row as the hull yaws across it on its
-    # rudders, and home, the drum turning on to its index.
-    shot = lambda t, at: [(t, at), (t + 0.06, at + 4.0), (t + 0.5, at)]
-    flash = lambda t: [(t, 0.0), (t + 0.05, HEAT), (t + 0.3, 0.3 * HEAT), (t + 0.6, 0.0)]
-    b.act("ranging", 9.0, {
-        "elev_drum": [(0.4, 0.0), (1.6, 26.0)] + shot(2.4, 26.0) + shot(3.6, 26.0) + [(4.4, 26.0), (5.4, 6.0)] + shot(5.9, 6.0) + shot(6.6, 6.0) + shot(7.3, 6.0) + [(8.6, 0.0)],
-        "drum": [(2.5, 0.0), (2.9, 60.0), (3.7, 60.0), (4.1, 120.0), (6.0, 120.0), (6.4, 180.0), (6.7, 180.0), (7.1, 240.0), (7.4, 240.0), (7.8, 300.0), (8.2, 300.0), (8.7, 360.0), (9.0, 360.0)],
-        **{r: [(5.2, 0.0), (5.7, -18.0), (6.0, -18.0), (6.5, 0.0), (6.8, 0.0), (7.2, 18.0), (7.6, 18.0), (8.3, 0.0)] for r in rudders},
-    }, body=[(2.4, 0.0, 0.0, 0.0), (2.55, 0.0, -2.2, -0.3, 0.0, 1.4, 0.0), (3.3, 0.0, -1.2, 0.0, 0.0, 0.0, 0.0), (3.6, 0.0, -1.2, 0.0), (3.75, 0.0, -3.4, -0.3, 0.0, 1.4, 0.0),
-             (4.6, 0.0, -2.0, 0.0), (5.6, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0), (5.9, 0.0, -1.0, 0.0, 12.0, 0.0, 0.0), (6.05, 0.0, -2.2, -0.2, 12.0, 0.8, 0.0),
-             (6.6, 0.0, -1.6, 0.0, 0.0, 0.0, 0.0), (6.75, 0.0, -2.8, -0.2, 0.0, 0.8, 0.0), (7.3, 0.0, -2.0, 0.0, -12.0, 0.0, 0.0), (7.45, 0.0, -3.0, -0.2, -12.0, 0.8, 0.0),
-             (8.2, 0.0, -1.0, 0.0, -2.0, 0.0, 0.0), (9.0, 0.0, 0.0, 0.0)],
-       glow=[([bores[k]], flash(t)) for (t, k) in ((2.4, 0), (3.6, 1), (5.9, 2), (6.6, 3), (7.3, 4))] + [
-             (["sight"], [(0.4, 0.0), (0.9, 6.0), (8.0, 6.0), (8.6, 0.0)])])
+       glow=[(STRIP, [(0.8, 0.0), (2.2, 0.25 * HEAT), (3.0, HEAT), (4.6, HEAT), (5.6, 0.2 * HEAT), (6.3, 0.0)]),
+             (["sight"], [(0.4, 0.0), (0.8, 6.0), (5.6, 6.0), (6.2, 0.0)])], locks=["drum"])
+    # The ranging: the drum locked off its idle turn and parked on a chamber, up for the back
+    # rank and two shots punched out; down for the front rank, three shots sprayed along the row
+    # as the hull yaws across it on its rudders between them; and home, the drum's idle turn
+    # taking up again from the chamber it stands on. Each shot is a slice of its own (shot()).
+    SHOTS = [(1.5, 26.0, 0.0), (2.7, 26.0, 0.0), (4.75, 6.0, 12.0), (6.4, 6.0, 0.0), (8.05, 6.0, -12.0)]   # (t0, elevation, yaw)
+    tracks = {"elev_drum": [(0.4, 0.0), (1.4, 26.0)], "drum": [], "top_mouth": [], "top_lamp": []}
+    body, strip, flash = [], [], []
+    for n, (t0, at, yaw) in enumerate(SHOTS):
+        if n == 2:   # down onto the front rank and round to the row's first foe
+            tracks["elev_drum"] += [(3.85, 26.0), (4.6, 6.0)]
+            body += [(3.85, 0.0, 0.0, 0.0), (4.6, 0.0, 0.0, 0.0, yaw, 0.0, 0.0)]
+        elif n > 2:   # round to the row's next foe
+            body += [(SHOTS[n - 1][0] + SLICE + 0.03, 0.0, 0.0, 0.0, SHOTS[n - 1][2], 0.0, 0.0), (t0 - 0.05, 0.0, 0.0, 0.0, yaw, 0.0, 0.0)]
+        k = shot(t0, 120.0 * n, at, (0.0, 0.0, 0.0, yaw, 0.0, 0.0))
+        for jn in ("elev_drum", "drum", "top_mouth", "top_lamp"):
+            tracks[jn] += k[jn]
+        body += k["body"]
+        strip += k["strip"]
+        flash += k["flash"]
+    end = SHOTS[-1][0] + SLICE
+    tracks["elev_drum"] += [(end + 0.05, 6.0), (end + 0.8, 0.0)]
+    tracks["drum"] += [(end + 1.0, CHAMBERS * 60.0 * len(SHOTS))]   # held: whole chambers on, where the idle turn takes up again
+    body += [(end + 0.05, 0.0, 0.0, 0.0, SHOTS[-1][2], 0.0, 0.0), (end + 0.8, 0.0, 0.0, 0.0)]
+    # The rudders lay each yaw, held a beat before they come back.
+    lay = lambda t, deg: [(t, 0.0), (t + 0.15, deg), (t + 0.28, deg), (t + 0.45, 0.0)]   # done before the next shot's slice opens
+    tracks.update({r: lay(3.95, -18.0) + lay(SHOTS[2][0] + SLICE + 0.03, 16.0) + lay(SHOTS[3][0] + SLICE + 0.03, 16.0) + lay(end + 0.05, -16.0) for r in rudders})
+    b.act("ranging", end + 1.0, tracks, body=body, heft=0.08, locks=["drum"],
+          glow=[(STRIP, strip), (FLASH, flash), (["sight"], [(0.4, 0.0), (0.9, 6.0), (end, 6.0), (end + 0.6, 0.0)])])
     # Coming about: the rudders go hard over and the hull swings round on its cushion to its
     # left, tipping out as it turns, the searchlight sweeping the water as it holds; then hard
     # over the other way and back round to its station, settling with a heave.
@@ -2480,7 +2523,7 @@ def cottonmouth(b):
     b.gait(steer={r: -16.0 for r in rudders}, body_hold=(0.0, 0.0, 0.6, 0.0, 2.5, 0.0), glow={"parts": ["fan_ring"], "k": 0.7 * HEAT}, rock=3.0)
     b.spin("fan_l", 360.0, 1260.0)
     b.spin("fan_r", -360.0, -1260.0)
-    b.spin("drum", 36.0)
+    b.spin("drum", 36.0, step=60.0)   # a chamber a step: an act that turns it on parks it on one (the ranging, the spin-up)
     b.move(slide=0.35, bank=0.0, accel=0.7, heft=0.13, oversteer=1.3)
 
 cottonmouth.maker = "wainwright_sutler"
