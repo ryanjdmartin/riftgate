@@ -129,8 +129,8 @@ Skua's burst, the Buzzard's cannon, its turn held through it), acts that only fi
 gone at rest and Aphelion's boosters plumed by rule with Kestrel's blooming larger (the Kite's
 drivers plumed), the Stingray's fans re-banked, the Puffin's bank and pucks, the Lammergeier's
 drones, and the hangar's Melee retired; green at 938 tests and 255,417 checks; not yet on main;
-its bible is v0.433 (the Pages line); the hangar the Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
-the hit and fire round (the to-do's Ryan list).
+its bible is v0.433 (the Pages line); the hangar the Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps,
+the hit and fire round and his notes of 3 November (the to-do's Ryan list).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -795,8 +795,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.432 (the
-  page's version 445, published 3 November from `claude/charming-rubin-h954bp`: a melee weapon
+  `docs/design-bible.html` after every change. This file and the live page are v0.433 (the
+  page's version 446, published 3 November from `claude/charming-rubin-h954bp`: Ryan's notes of
+  that day, a lost machine's slump in the hit-reaction row, a weapon's slices in turn, its
+  wind-up and its coming home in the weapon-fire row, a new row on boosters by maker, the
+  machines table; on its own v0.432 at 445, the same day: a melee weapon
   lunges only as a blade with nothing that crosses the field, a shotgun firing as a gun, in the
   tags row and the trail row; on its own v0.431 at 444, the same day: the hit-reaction
   row, the open row on the shot crossing the field, the fixed pieces in the weapon-fire row and the
@@ -835,7 +838,16 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 195 (3 November, from
+  before it is replaced and `edits` read first. At the page's version 196 (3 November, from
+  `claude/charming-rubin-h954bp`; `edits` empty): Ryan's notes of that day in the page and
+  `hangar/motion.js` (a lost machine slumping, a fired weapon coming home on the paused stage,
+  slices in turn and their wind-ups, the plumes gone at rest, a launched part flying, the Melee
+  button retired), onto 195's; the rigs of the Nemesis, the Ammit, the Skua, the Goshawk, the
+  Sparrowhawk, the Puffin, the Lammergeier, the Storm Petrel, the Needletail, the Giant Petrel and
+  the Stingray, the Lammergeier's, the Puffin's and the Sparrowhawk's models, and the four
+  Wainwright & Sutler machines that branch rebuilt for their stock classes as main merged in
+  (the Musk Ox, the Cassowary, the Swallowtail, the Whip Scorpion), each checked identical to
+  195's before it was replaced; every other file as 195 left it. At 195 (3 November, from
   `claude/affectionate-ramanujan-5d24t6`; `edits` empty): the Cottonmouth's ranging keyed a
   chamber a shot, held still through each flash, and the Models panel redrawn as a machine is
   lost or revived; onto 194, which `claude/charming-rubin-h954bp` merged onto 193 with its melee
