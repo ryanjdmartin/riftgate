@@ -2091,62 +2091,53 @@ func reroll_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 ## round is worth, and where the dial rests after, as {value, rest}. A Rapid chamber acts again
 ## on the chamber after it, known in advance, and a spin (the Spin-Up's) on a chamber drawn
 ## from all of them, itself included, so its value carries the die's spun mean and the dial
-## rests anywhere (rest -1). Chambers read at their worth now, a dark one as blank.
-func cycle_chain(sk: Skirmish, ms: Skirmish.MechState, at: int) -> Dictionary:
+## rests anywhere (rest -1). Chambers read at their worth now, a dark one as blank. `read` is
+## cycle_read's, so a plan scores each chamber once.
+func cycle_chain(sk: Skirmish, ms: Skirmish.MechState, at: int, read: Dictionary = {}) -> Dictionary:
+	if read.is_empty():
+		read = cycle_read(sk, ms)
 	var n := ms.die.faces.size()
+	var kinds: Array = read["kinds"]
+	var vals: Array = read["values"]
 	var value := 0.0
-	var seen := 0
-	while seen < n:
-		var f := _chamber_face(sk, ms, at)
-		value += face_value(sk, ms, f)
-		seen += 1
-		if f == null:
-			return {"value": value, "rest": at}
-		if f.spins:
-			return {"value": value + spin_tail(sk, ms), "rest": -1}
-		if not f.has(Face.Keyword.RAPID):
-			return {"value": value, "rest": at}
-		at = (at + 1) % n
+	for seen in range(n):
+		value += float(vals[at])
+		match int(kinds[at]):
+			1:
+				return {"value": value + float(read["tail"]), "rest": -1}
+			2:
+				at = (at + 1) % n
+			_:
+				return {"value": value, "rest": at}
 	return {"value": value, "rest": at}
 
 
-## What a spin is worth after its own spend: a chamber drawn from all of them, each played out as
-## cycle_chain would (a Rapid one onward), the spinning one landing on itself spinning again, so
-## E = (S + E) / n + M / n over the S of the spinning chambers and the M of the rest, solved.
-func spin_tail(sk: Skirmish, ms: Skirmish.MechState) -> float:
+## Every chamber of a stepping die read once: its worth now, its kind (0 plain or dark, 1 a spin,
+## 2 Rapid), what a spin brings after its own spend (a chamber drawn from all of them, each
+## played out one step deep, the spinning one landing on itself spinning again: E = (S + E) / n
+## + M / n over the S of the spinning chambers and the M of the rest, solved), and the die's
+## mean over its chambers played out, for a next round whose chamber a spin left to chance.
+func cycle_read(sk: Skirmish, ms: Skirmish.MechState) -> Dictionary:
 	var n := ms.die.faces.size()
-	if n == 0:
-		return 0.0
-	var spinning := 0
-	var spin_own := 0.0
-	var rest := 0.0
+	var vals: Array = []
+	var kinds: Array = []
 	for i in range(n):
 		var f := _chamber_face(sk, ms, i)
-		if f != null and f.spins:
-			spinning += 1
-			spin_own += face_value(sk, ms, f)
-		else:
-			var v := face_value(sk, ms, f)
-			# A Rapid chamber after the spin acts again on its neighbour (one step deep is enough here).
-			if f != null and f.has(Face.Keyword.RAPID):
-				v += face_value(sk, ms, _chamber_face(sk, ms, (i + 1) % n))
-			rest += v
-	if spinning >= n:
-		return 0.0
-	return (spin_own + rest) / float(n - spinning)
-
-
-## The die's mean over its chambers played out (cycle_chain), for a next round whose chamber the
-## spin left to chance.
-func cycle_mean(sk: Skirmish, ms: Skirmish.MechState) -> float:
-	var n := ms.die.faces.size()
-	if n == 0:
-		return 0.0
+		vals.append(face_value(sk, ms, f))
+		kinds.append(0 if f == null else (1 if f.spins else (2 if f.has(Face.Keyword.RAPID) else 0)))
+	var spinning := 0
 	var total := 0.0
 	for i in range(n):
-		var f := _chamber_face(sk, ms, i)
-		total += face_value(sk, ms, f) + (spin_tail(sk, ms) if f != null and f.spins else 0.0)
-	return total / float(n)
+		if int(kinds[i]) == 1:
+			spinning += 1
+			total += float(vals[i])
+		else:
+			total += float(vals[i]) + (float(vals[(i + 1) % n]) if int(kinds[i]) == 2 else 0.0)
+	var tail := 0.0 if spinning >= n or n == 0 else total / float(n - spinning)
+	var mean := 0.0
+	for i in range(n):
+		mean += float(vals[i]) + (tail if int(kinds[i]) == 1 else 0.0)
+	return {"values": vals, "kinds": kinds, "tail": tail, "mean": mean / float(maxi(1, n))}
 
 
 ## A chamber as it would be spent: the one showing as the spend goes out (a charged form), any
@@ -2168,17 +2159,13 @@ func cycle_plan(sk: Skirmish, ms: Skirmish.MechState, budget: int) -> Dictionary
 	var n := ms.die.faces.size()
 	if n == 0 or ms.face_index < 0 or not Effects.steps_die(ms.unit):
 		return {"steps": 0, "gain": 0.0}
-	var spun := -1.0
+	var read := cycle_read(sk, ms)
 	var worth: Array[float] = []
 	for k in range(mini(budget, n - 1) + 1):
-		var c := cycle_chain(sk, ms, (ms.face_index + k) % n)
-		var ahead := 0.0
-		if int(c["rest"]) < 0:
-			if spun < 0.0:
-				spun = cycle_mean(sk, ms)
-			ahead = spun
-		else:
-			ahead = float(cycle_chain(sk, ms, (int(c["rest"]) + 1) % n)["value"])
+		var c := cycle_chain(sk, ms, (ms.face_index + k) % n, read)
+		var ahead := float(read["mean"])
+		if int(c["rest"]) >= 0:
+			ahead = float(cycle_chain(sk, ms, (int(c["rest"]) + 1) % n, read)["value"])
 		worth.append(float(c["value"]) + CYCLE_AHEAD * ahead)
 	var best := 0
 	for k in range(worth.size()):
