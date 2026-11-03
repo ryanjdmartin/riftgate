@@ -760,8 +760,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   mounts row: every mount takes every class, a hardpoint's variant and scale per class, the
   round launcher, the fit sheet), with no conflict; so this file carries both branches' rows
   ahead of their landing; 442 the same file dated the 2nd). The live has since moved on to
-  v0.431 at 444, which `claude/charming-rubin-h954bp` merged onto 443 the same morning, so the
-  next publish from main merges onto that. Before them, v0.427 (439, 2 November, from
+  v0.432 at 445, which `claude/charming-rubin-h954bp` merged onto 443 the same day (its v0.431
+  at 444 between), so the next publish from main merges onto that. Before them, v0.427 (439, 2 November, from
   `claude/brave-cori-fr18de` as main merged in: the slate's last calls, the elites by the tier
   and the review's calls, over the live v0.423 at 435, `claude/charming-rubin-h954bp`'s
   weapon-fire row on the v0.422 this branch published at 434 with the Honey Badger's hopper and
@@ -774,8 +774,12 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 193 (3 November, from
-  `claude/affectionate-ramanujan-5d24t6` as main took it; `edits` empty): the Cottonmouth's
+  before it is replaced and `edits` read first. At the page's version 195 (3 November, from
+  `claude/affectionate-ramanujan-5d24t6`; `edits` empty): the Cottonmouth's ranging keyed a
+  chamber a shot, held still through each flash, and the Models panel redrawn as a machine is
+  lost or revived; onto 194, which `claude/charming-rubin-h954bp` merged onto 193 with its melee
+  rule (a weapon lunges only as a blade), its motion script taken into `tools/hangar_motion.js`
+  whole. At 193 (3 November, from this branch as main took it; `edits` empty): the Cottonmouth's
   third round (its model and rig), `content/vocabulary.json` as main has it (the Ore Plate, the
   hopper's new text and the Petrels' printed rules beside the slate's terms), and the page and
   `hangar/motion.js` three-way merged onto `claude/charming-rubin-h954bp`'s of 192 and committed
