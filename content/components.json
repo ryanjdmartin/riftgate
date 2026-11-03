@@ -1635,12 +1635,12 @@
     "reach": "indirect",
     "power": 2,
     "keywords": [
-     "splash"
+     "splash",
+     "sweep"
     ],
     "splash": 1,
     "heat": 0,
-    "spends_magazine": true,
-    "random_targets": true
+    "spends_magazine": true
    },
    "passive": null,
    "tags": [
@@ -1736,9 +1736,10 @@
     "reach": "direct",
     "power": 4,
     "strikes": 2,
-    "keywords": [],
-    "heat": 1,
-    "spray": true
+    "keywords": [
+     "sweep"
+    ],
+    "heat": 1
    },
    "passive": null,
    "tags": [

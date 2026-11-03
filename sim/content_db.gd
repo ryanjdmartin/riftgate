@@ -1185,8 +1185,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: drones (true) is an attack's, a weapon's or a debuff's: the foe carries the Syrinx Drone" % where)
 	# The spray (the Skua's Flechette Pod, built 25 October): the strikes after the first fall on
 	# random foes in reach, so a spray strikes at least twice.
-	if fd.has("spray") and (kind != "attack" or not (fd["spray"] is bool) or int(fd.get("strikes", 1)) < 2):
-		errs.append("%s: spray (true) is an attack's of two strikes or more: each strike after the first falls on a random foe in reach" % where)
+	# Sweep (Ryan, 2 November), in place of the spray and the random targets of October: a keyword,
+	# an attack's, whose strikes walk the rank it is dropped on.
+	if fd.has("spray") or fd.has("random_targets"):
+		errs.append("%s: spray and random_targets are gone (3 November): Sweep, a keyword, walks the rank" % where)
+	if Array(fd.get("keywords", [])).has("sweep") and kind != "attack":
+		errs.append("%s: Sweep rides an attack" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)

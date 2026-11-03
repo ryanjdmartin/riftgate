@@ -29,7 +29,7 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## 29 October retired 3 November for the Charged primer): Shock's other payoff, every other
 ## Shocked foe on the field taking N as its blow's number, wherever it stands and whatever the
 ## gun's reach, plain, no strike being aimed at it, so its Shock stands. A weapon's alone.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, SWEEP }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open.
@@ -49,7 +49,7 @@ const KEYWORD_NAMES := {
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
 	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach", Keyword.SPLASH: "splash",
-	Keyword.DISPEL: "dispel",
+	Keyword.DISPEL: "dispel", Keyword.SWEEP: "sweep",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 ## Purge (28 October) is one id on both sides, dispel, as breach is.
@@ -157,8 +157,6 @@ var charged: Dictionary = {}  # a locked piece's charged form, what a muster buy
 # The Musk Ox's (Ryan's go, 21 October; built that day):
 var ammo_per_foe_hit: int = 0 # an attack: ammo back to its forging machine for every foe its blows reach (the Shrapnel Recuperator)
 var spends_magazine: bool = false   # an attack: every ammo in the magazine as a strike, the magazine its price (the Unrestricted Expenditure)
-var random_targets: bool = false    # an attack: each strike at a random live foe, the target the die is dropped on only the gesture
-var spray: bool = false       # an attack: its first strike lands where it is spent, each after it on a random foe in reach at that moment, a kill clearing its slot at once (the Skua's Flechette Pod, 25 October)
 var split: int = 1            # the effective entry only, never printed: each roll serves this many strikes at its number divided among them, rounded down (the Skua's Split-cycle Breech; Effects.split_of)
 var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
@@ -341,8 +339,6 @@ static func from_dict(d: Dictionary) -> Face:
 	f.charged = (cd as Dictionary).duplicate(true) if cd is Dictionary else {}
 	f.ammo_per_foe_hit = maxi(0, int(d.get("ammo_per_foe_hit", 0))) if f.kind == Kind.ATTACK else 0
 	f.spends_magazine = bool(d.get("spends_magazine", false)) and f.kind == Kind.ATTACK
-	f.random_targets = bool(d.get("random_targets", false)) and f.kind == Kind.ATTACK
-	f.spray = bool(d.get("spray", false)) and f.kind == Kind.ATTACK
 	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
 	var regen = d.get("regenerates", {})
 	if f.kind == Kind.ATTACK and regen is Dictionary:
@@ -452,10 +448,6 @@ func to_dict() -> Dictionary:
 		d["ammo_per_foe_hit"] = ammo_per_foe_hit
 	if spends_magazine:
 		d["spends_magazine"] = true
-	if random_targets:
-		d["random_targets"] = true
-	if spray:
-		d["spray"] = true
 	if reloads_ammo > 0:
 		d["reloads_ammo"] = reloads_ammo
 	if regen_shield > 0 and regen_rounds > 0:
@@ -544,7 +536,7 @@ func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
-		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or spray or reloads_ammo > 0 \
+		or ammo_per_foe_hit > 0 or spends_magazine or reloads_ammo > 0 \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
 
 
@@ -671,8 +663,6 @@ func duplicate_face() -> Face:
 	f.charged = charged.duplicate(true)
 	f.ammo_per_foe_hit = ammo_per_foe_hit
 	f.spends_magazine = spends_magazine
-	f.random_targets = random_targets
-	f.spray = spray
 	f.split = split
 	f.reloads_ammo = reloads_ammo
 	f.ammo = ammo
@@ -802,10 +792,6 @@ func rule_phrases() -> Array[String]:
 			out.append("leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it")
 		if spends_magazine:
 			out.append("a strike for every ammo in the magazine")
-		if random_targets:
-			out.append("at random live foes")
-		if spray:
-			out.append("sprays the rest in reach")
 		if ammo_per_foe_hit > 0:
 			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
 		if kill_rerolls > 0:
@@ -953,10 +939,6 @@ func describe() -> String:
 				s += " leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it"
 			if spends_magazine:
 				s += " a strike for every ammo in the magazine"
-			if random_targets:
-				s += " at random live foes"
-			if spray:
-				s += " sprays the rest in reach"
 			if ammo_per_foe_hit > 0:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			if kill_rerolls > 0:

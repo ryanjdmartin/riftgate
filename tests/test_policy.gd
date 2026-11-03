@@ -424,12 +424,12 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 ## The spray (the Skua's Flechette Pod): the first strike on the target, each after it on a random
 ## foe in reach, so the bot reads each foe its share; on a foe one strike kills, a spray among
 ## others wastes less past the kill than the same strikes all on it.
-func test_greedy_reads_a_spray_as_its_share_on_every_foe_in_reach() -> void:
+func test_greedy_reads_a_sweep_as_its_share_on_every_foe_in_the_rank() -> void:
 	var sk := Skirmish.new(1, 3)
 	var plain := Face.attack(5, L)
 	plain.strikes = 3
 	var pod := plain.duplicate_face()
-	pod.spray = true
+	pod.add_keyword(K.SWEEP)
 	sk.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
 	var weak := _ghoul(3, 10)
 	sk.add_foes([_ghoul(50, 10), weak, _ghoul(50, 10)])
@@ -437,14 +437,14 @@ func test_greedy_reads_a_spray_as_its_share_on_every_foe_in_reach() -> void:
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(pol.attack_score(sk, ms, pod, weak) > pol.attack_score(sk, ms, plain, weak), "the spray's later strikes go on to the others")
+	assert_true(pol.attack_score(sk, ms, pod, weak) > pol.attack_score(sk, ms, plain, weak), "the sweep's strikes walk on to the others")
 	var lone := Skirmish.new(1, 1)
 	lone.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
 	var big := _ghoul(100, 10)
 	lone.add_foes([big])
 	lone.begin()
 	lone.start_round()
-	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the spray is the plain gun")
+	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the sweep is the plain gun")
 
 
 ## A flat buff lands on every strike, so the bot counts Empowered once a strike of the ally's
@@ -1127,7 +1127,7 @@ func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
 	ray.heat = 30
 	var salvo := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
 	salvo.spends_magazine = true
-	salvo.random_targets = true
+	salvo.add_keyword(K.SWEEP)
 	var sk := Skirmish.new(3, 2)
 	var m := _mech("Ox", Die.of([ray, salvo]), 40, 200)
 	m.grant_passive(forge)

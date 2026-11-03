@@ -161,7 +161,7 @@ var _acted: Array = []
 ## random draw is never made there: the copy holds it back and notes it, and the preview
 ## promises nothing a roll decides.
 var previewing := false
-var preview_notes: Array = []   # what the copy held back: {kind: pick, blast, spray, random_target; foe or mech}
+var preview_notes: Array = []   # what the copy held back: {kind: pick, blast; foe or mech}
 ## Rerolls a foe's roar has cost the team for the coming round.
 var reroll_debt: int = 0
 ## The team's rerolls banked as the last player's turn ended (Maverick's Playbook, the Giant
@@ -1123,9 +1123,14 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 				continue
 			if reach_of(ms, f) == Face.Reach.INDIRECT or in_direct_reach(foe):
 				out.append(foe)
+	var ef := Effects.effective_face(ms.unit, f)
 	# A Swap moves its target, and a massive foe fills its column and stays (the Dingo's row).
-	if Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP):
+	if ef.has(Face.Keyword.SWAP):
 		out = out.filter(func(foe: Foe) -> bool: return not foe.is_massive())
+	# A direct Sweep walks the front rank while any foe stands in it (Ryan, 2 November: "if it's
+	# direct, you don't get a choice in rank"), so only those are its targets then.
+	if ef.has(Face.Keyword.SWEEP) and reach_of(ms, f) == Face.Reach.DIRECT and out.any(func(foe: Foe) -> bool: return foe.rank == 0):
+		out = out.filter(func(foe: Foe) -> bool: return foe.rank == 0)
 	return out
 
 
@@ -1855,11 +1860,9 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 				else:
 					_lay(ms, f, target)
 			elif f.spends_magazine:
-				_salvo(mech_index, ms, f, raw)
+				_salvo(mech_index, ms, f, raw, target)
 			else:
-				if f.random_targets:
-					target = _random_foe(target)   # the drop is the gesture; the shot goes where it will
-				if target != null:   # the round preview's copy holds a random target back
+				if target != null:
 					_resolve_attack(mech_index, ms, f, target)
 					if f.pulls_mines and target.alive():
 						_pull(ms, Vector2i(0 if target.is_massive() else target.rank, target.column))
@@ -2447,15 +2450,15 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	if f.vents_all:
 		ms.heat = 0
 	# Every foe one strike reaches (a Spread's neighbours, a Penetrate's column), the same for
-	# each strike, since a kill clears its slot only after the spend; a spray's later strikes
+	# each strike, since a kill clears its slot only after the spend; a sweep's later strikes
 	# find their own (below).
 	var hit := reached_by(f, target)
 	var shapes := area_shapes(f, target)   # the shape each foe past the target stands in, for its number
 	# What this machine's passives lay on each foe reached, judged alone and read now, before
 	# any strike's riders land (the funnel-web's Ambush, 18 October: a Suppress gun never feeds
 	# its own read): foe -> [[status id, stacks a hit], ...]; and what was laid, for the log.
-	# A spray may land on any foe in the fight, so every one is judged.
-	var judged: Array[Foe] = field_foes() if f.spray else hit
+	# A sweep's strikes walk the rank, so every foe is judged.
+	var judged: Array[Foe] = field_foes() if f.has(Face.Keyword.SWEEP) else hit
 	var lays := {}
 	for foe in judged:
 		var l := Effects.laid_statuses(ms.unit, f, foe)
@@ -2484,17 +2487,21 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var thawed := 0   # Cryo stacks this spend's weapon hits spent, cooling the hitter after its heat lands
 	var split := maxi(1, f.split)    # the strikes one roll serves (the Skua's Split-cycle Breech; Effects.split_of)
 	var roll := 0                    # the roll the strikes of one split share
-	var aimed := target              # the strike's own foe: the target, or where a spray's strike fell
-	var sprayed: Array[String] = []  # a spray's strikes, the foe and what it took, for the log
+	var sweep := f.has(Face.Keyword.SWEEP) and not _salvo_strike   # a salvo walks the rank itself, an ammo a strike
+	var sweep_rank := sweep_rank_of(ms, f, target) if sweep else -1
+	var sweep_col := -1
+	var aimed := target              # the strike's own foe: the target, or the next along a sweep's rank
+	var swept: Array[String] = []    # a sweep's strikes, the foe and what it took, for the log
 	for s in range(maxi(1, f.strikes)):
-		if f.spray and s > 0:
-			# The spray (the Skua's Flechette Pod, built 25 October): each strike after the first
-			# falls on a random foe in reach at that moment, the same foe again allowed; a kill
-			# clears its slot at once, so a hole in the front opens the foe behind it.
+		if sweep:
+			# Sweep (Ryan, 2 November, in place of the spray's random darts): the strikes walk the
+			# rank from its first filled slot, left to right, one a slot, wrapping; a kill clears
+			# its slot at once, so the walk skips it, and a rank emptied loses the strikes left.
 			_clear_dead()
-			aimed = _spray_pick(ms, real)
+			aimed = sweep_next(sweep_rank, sweep_col)
 			if aimed == null:
 				break
+			sweep_col = aimed.column
 			hit = reached_by(f, aimed)
 			shapes = area_shapes(f, aimed)
 		if s % split == 0:
@@ -2502,7 +2509,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			roll = f.power
 			base_total += roll + own
 		var heat := f.heat if s == 0 else 0
-		# The blow's order (Ryan, 28 October), the strike's own foe (the target, or a spray's pick)
+		# The blow's order (Ryan, 28 October), the strike's own foe (the target, or a sweep's next)
 		# first: the roll and what the entry prints from its firer (the heat Vents all fired, the
 		# hopper's loads), a split's share of it (rounded down, never below one), then the firer's
 		# pipeline, every live modifier's adds, multiplies and floors in that order, its conditions
@@ -2636,14 +2643,14 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		# A Primed machine's Burning lands blow by blow, on each strike's own foe (the mechanics
-		# audit's 8, 27 October): a spray's strikes burn the foes they fell on, and a kill leaves
+		# audit's 8, 27 October): a sweep's strikes burn the foes they fell on, and a kill leaves
 		# nothing to burn.
 		if int(modded["burn"]) > 0 and aimed.alive():
 			Effects.stack(aimed, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", int(modded["burn"])) * doubled)
 			_note_status(gained, aimed, "burning", turned)
 		total += landed
-		if f.spray:
-			sprayed.append("%s %d" % [aimed.display_name, landed])
+		if sweep:
+			swept.append("%s %d" % [aimed.display_name, landed])
 	for foe in laid.keys():
 		var bits: Array[String] = []
 		for sid in laid[foe].keys():
@@ -2689,8 +2696,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			_foe_gained_status(foe, status_id)
 	last_roll = {"mech": mech_index, "target": target, "base": base_total, "final": total, "melee": f.tags.has("melee")}
 	var how := f.describe()
-	if f.spray:
-		log.append("%s sprays %s (%s)%s" % [ms.unit.display_name, ", ".join(sprayed), how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
+	if sweep:
+		log.append("%s sweeps the %s: %s (%s)%s" % [ms.unit.display_name, "front" if sweep_rank == 0 else "back", ", ".join(swept), how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	elif _blast_strike:
 		log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, target.display_name, total, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	else:
@@ -3321,53 +3328,65 @@ func _machine_spend_after(ms: MechState, f: Face, target) -> void:
 		_reload(ms, int(rule.get("shield", 0)), "the shield")
 
 
-## A random live foe from the seeded stream, or `fallback` when none stands. The round preview's
-## copy draws nothing: a lone foe is a sure strike, and among more the strike is held back.
-func _random_foe(fallback: Foe) -> Foe:
-	var live: Array[Foe] = []
-	for foe in field_foes():
-		if foe.alive():
-			live.append(foe)
-	if live.is_empty():
-		return fallback
-	if previewing:
-		if live.size() == 1:
-			return live[0]
-		preview_notes.append({"kind": "random_target"})
-		return null
-	return live[rng.randi_range(0, live.size() - 1)]
+## The rank a Sweep walks (Ryan, 2 November: "target a rank, not a unit ... If it's direct, you
+## don't get a choice in rank, if it's indirect, then you do"): a direct entry's is the front
+## while any foe stands in it, else the back; an indirect entry's is the rank of the foe it was
+## dropped on, a massive foe's the front. The drop picks the rank and nothing else: the walk
+## starts at the rank's first filled slot.
+func sweep_rank_of(ms: MechState, f: Face, target: Foe) -> int:
+	if reach_of(ms, f) == Face.Reach.DIRECT:
+		for col in range(columns):
+			if front[col] != null and front[col].alive():
+				return 0
+		return 1
+	return 0 if target == null or target.is_massive() or target.rank < 0 else target.rank
 
 
-## Where a spray's strike falls (the Skua's Flechette Pod): a random live foe the entry reaches
-## now, from the seeded stream, the same foe again allowed; null when none stands in reach. The
-## round preview's copy draws nothing: a lone foe in reach takes it for sure, else it is held back.
-func _spray_pick(ms: MechState, real: Face) -> Foe:
-	var pool := targets_for_face(ms, real)
-	if pool.is_empty():
-		return null
-	if previewing:
-		if pool.size() == 1:
-			return pool[0]
-		preview_notes.append({"kind": "spray", "mech": mechs.find(ms)})
-		return null
-	return pool[rng.randi_range(0, pool.size() - 1)]
+## The next foe a Sweep's strike lands on: the first filled slot of the rank after `after_col`,
+## wrapping past the last column; null when the rank is empty. A massive foe stands in the front.
+func sweep_next(rank: int, after_col: int) -> Foe:
+	for step in range(1, columns + 1):
+		var col := (after_col + step) % columns
+		var foe := foe_at(rank, col)
+		if foe != null and foe.alive() and (rank == 0 or not foe.is_massive()):
+			return foe
+	return null
+
+
+## The foes a Sweep's strikes walk, in order from the rank's first filled slot (the bot's read).
+func sweep_targets(ms: MechState, f: Face, target: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	var rank := sweep_rank_of(ms, f, target)
+	var col := -1
+	for i in range(columns):
+		var foe := sweep_next(rank, col)
+		if foe == null or out.has(foe):
+			break
+		out.append(foe)
+		col = foe.column
+	return out
 
 
 ## The Unrestricted Expenditure (the Musk Ox's, Ryan's go of 21 October): every ammo in the
-## magazine as a strike, each at a random live foe from the seeded stream, with the entry's
-## keywords (Spread and Penetrate on every strike), the magazine its price and no heat; a kill
-## clears its slot as the strike lands, so the later strikes fall among the foes left.
-func _salvo(mech_index: int, ms: MechState, f: Face, real: Face) -> void:
+## magazine as a strike, the strikes walking the rank it was dropped on (Sweep, Ryan,
+## 2 November; at random live foes until then), with the entry's keywords (Splash on every
+## strike), the magazine its price and no heat; a kill clears its slot as the strike lands, so
+## the walk skips it.
+func _salvo(mech_index: int, ms: MechState, f: Face, real: Face, target: Foe = null) -> void:
 	var n := ms.ammo
 	ms.ammo = 0
-	log.append("%s empties the magazine: %d strike%s at random" % [ms.unit.display_name, n, "" if n == 1 else "s"])
+	var rank := sweep_rank_of(ms, real, target)
+	log.append("%s empties the magazine: %d strike%s along the %s" % [ms.unit.display_name, n, "" if n == 1 else "s", "front" if rank == 0 else "back"])
 	var was_chaining := _chaining
 	var was_salvo := _salvo_strike
 	_salvo_strike = true
+	var col := -1
 	for i in range(n):
-		var t := _random_foe(null)
+		_clear_dead()
+		var t := sweep_next(rank, col)
 		if t == null:
 			break
+		col = t.column
 		_resolve_attack(mech_index, ms, Effects.effective_face(ms.unit, real, t), t, real)
 		_chaining = true   # one spend: the strikes after the first are its blows, not spends
 	_chaining = was_chaining

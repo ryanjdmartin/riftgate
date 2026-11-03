@@ -1455,13 +1455,13 @@
    }
   },
   {
-   "id": "spray",
-   "category": "component_property",
-   "name": "Spray",
-   "codex": "A rule printed on a weapon (the Skua's Flechette Pod): its first strike lands on the foe it is spent on, and each strike after it falls on a random foe in reach at that moment, the same foe again allowed. A kill clears its slot at once, so a hole burnt in the front rank opens the foe behind it to the strikes still to come.",
+   "id": "sweep",
+   "category": "keyword",
+   "name": "Sweep",
+   "codex": "Player keyword, a weapon's. Its strikes walk the rank it is dropped on from the rank's first filled slot, left to right, one a slot, wrapping past the last; a kill clears its slot at once, so the walk skips it, a lone foe takes them all, and a rank emptied loses the strikes left. A direct entry walks the front rank while any foe stands in it, else the back; an indirect one the rank of the foe it was dropped on. Each strike is aimed at its foe, so a Shock there pops and the riders land, and an area keyword's shape rides each strike. The Skua's Flechette Pod, and the Musk Ox's salvo an ammo a strike.",
    "status": "implemented",
    "design": {
-    "holes": "The die shows the first strike's number, as a Spread does (Ryan, 17 October); a later strike may spend a Shock on another foe, an understood risk (\"no different than using a cleave\")."
+    "holes": "Ryan, 2 November: \"I would make target a rank, not a unit. Starts left to right always. If it's direct, you don't get a choice in rank, if it's indirect, then you do\"; in place of the spray's random darts (25 October) and the salvo's random targets (21 October), retired by the randomness pass. The rank is fixed at the spend: the Pod's old hole in the front no longer opens the foe behind to the strikes left, which is Claude's reading of 'the front' and his to move."
    }
   },
   {

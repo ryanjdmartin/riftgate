@@ -4435,17 +4435,16 @@ func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make()
 	mage.target = sh.mechs[0]
 	pv = sh.preview_round()
 	assert_eq(pv["foes"][mage]["struck"], [1], "B, the next in line, not the hottest")
-	# A weapon that strikes at random, with one foe standing, strikes it for sure.
+	# A Sweep with one foe standing lands every strike on it, and the preview says so.
 	var s1 := Skirmish.new(4, 2)
-	var gun := Face.attack(5, L)
-	gun.random_targets = true
+	var gun := Face.attack(5, L, K.SWEEP)
 	s1.add_mech(_mech("A", Die.single(gun), 0, 100))
 	var lone := _ghoul(5, 9)
 	s1.add_foes([lone])
 	s1.begin()
 	s1.start_round()
 	pv = s1.preview_round(0, lone)
-	assert_false(bool(pv["foes"][lone]["alive"]), "the lone foe is the random strike's only answer")
+	assert_false(bool(pv["foes"][lone]["alive"]), "the lone foe takes the sweep's every strike")
 
 
 ## Every status the round lands is in the preview (Ryan, 26 October: "All incoming chips should
@@ -7937,38 +7936,65 @@ func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
 	assert_eq(bare.hp, 98, "and no damage")
 
 
-## The spray (the Skua's Flechette Pod, built 25 October): the first strike lands on the foe it is
-## spent on, each after it on a random foe in reach at that moment; a kill clears its slot at
-## once, so the foe behind a front foe the first strike killed takes the strikes still to come.
-func test_a_spray_falls_on_foes_in_reach_and_a_kill_opens_the_one_behind() -> void:
-	var pod := Face.attack(5, L)
+## Sweep (Ryan, 2 November, in place of the spray): the strikes walk the rank the entry is dropped
+## on from its first filled slot, left to right, one a slot, wrapping; a kill clears its slot at
+## once, so the walk skips it, and a rank emptied loses the strikes left; a direct entry walks the
+## front while any foe stands in it, else the back, and the drop only picks the rank.
+func test_a_sweep_walks_its_rank_from_the_left_one_a_slot_wrapping() -> void:
+	var pod := Face.attack(5, L, [K.SWEEP])
 	pod.strikes = 3
-	pod.spray = true
-	assert_true(pod.has_unique_rule() and pod.describe().contains("sprays the rest in reach"), "the entry prints its rule")
-	var sk := Skirmish.new(1, 1)   # one column: a front foe and one behind it
+	assert_true(pod.describe().contains("sweep"), "the entry prints its keyword")
+	var sk := Skirmish.new(2, 3)
 	sk.add_mech(_mech("S", Die.single(pod), 40, 100))
-	var front_foe := _ghoul(4, 10)
-	var behind := _archer(100, 10)
-	sk.add_foes([front_foe, behind])
+	var row := [_ghoul(100, 10), _ghoul(100, 10), _ghoul(100, 10)]
+	sk.add_foes(row)
 	sk.begin()
 	sk.start_round()
-	assert_true(sk.front[0] == front_foe and sk.back[0] == behind, "a front foe with one behind it")
-	assert_true(sk.assign(0, front_foe), "sprayed at the front foe")
-	assert_false(front_foe.alive(), "the first strike kills it")
-	assert_eq(behind.hp, 90, "its slot cleared at once, the two strikes after fall on the foe behind")
-	assert_true("\n".join(sk.log).contains("sprays"), "the log tells the spray")
-	var sk2 := Skirmish.new(2, 3)
-	sk2.add_mech(_mech("S", Die.single(pod), 40, 100))
-	var row := [_ghoul(100, 10), _ghoul(100, 10), _ghoul(100, 10)]
-	sk2.add_foes(row)
+	assert_true(sk.assign(0, row[2]), "dropped on the right of a full front")
+	assert_eq([row[0].hp, row[1].hp, row[2].hp], [95, 95, 95], "the walk starts at the left whatever the drop: one strike a slot")
+	assert_true("\n".join(sk.log).contains("sweeps the front"), "the log tells the sweep")
+	# Four strikes on two foes wrap, a kill mid-walk is skipped, and a direct entry never sweeps the back while the front stands.
+	var sk2 := Skirmish.new(1, 2)
+	var pod4 := Face.attack(5, L, [K.SWEEP])
+	pod4.strikes = 4
+	sk2.add_mech(_mech("S", Die.single(pod4), 40, 100))
+	var a := _ghoul(7, 10)
+	var b := _ghoul(100, 10)
+	var behind := _archer(100, 10)
+	sk2.add_foes([a, b, behind])
 	sk2.begin()
 	sk2.start_round()
-	assert_true(sk2.assign(0, row[1]), "sprayed at the middle of a full front")
-	var dealt := 0
-	for f in row:
-		dealt += 100 - f.hp
-	assert_eq(dealt, 15, "every strike lands on a foe in reach")
-	assert_true(row[1].hp <= 95, "the first on the foe it was spent on")
+	assert_true(sk2.front[0] == a and sk2.front[1] == b and sk2.back[0] == behind, "two in front, one behind the first")
+	assert_false(sk2.targets_for_face(sk2.mechs[0], pod4).has(behind), "a direct Sweep offers the front rank alone while it stands")
+	assert_true(sk2.assign(0, b), "dropped on b")
+	assert_false(a.alive(), "a took the first and the third strike and fell")
+	assert_eq([b.hp, behind.hp], [90, 100], "b took the second and the fourth; the back rank is never swept")
+	# A rank emptied mid-walk loses the strikes left; with no front foe a direct entry walks the back.
+	var sk3 := Skirmish.new(1, 1)
+	sk3.add_mech(_mech("S", Die.single(pod), 40, 100))
+	var lone := _ghoul(4, 10)
+	var back_foe := _archer(100, 10)
+	sk3.add_foes([lone, back_foe])
+	sk3.begin()
+	sk3.start_round()
+	assert_true(sk3.assign(0, lone), "swept at a lone front foe with one behind it")
+	assert_true(not lone.alive() and back_foe.hp == 100, "the first strike kills it and the two left are lost: the rank is fixed at the spend")
+	sk3.end_round()
+	sk3.start_round()
+	assert_true(sk3.assign(0, back_foe), "the front empty, the direct entry walks the back")
+	assert_eq(back_foe.hp, 85, "three strikes on the one foe there")
+	# An indirect entry walks the rank of the foe it is dropped on.
+	var sk4 := Skirmish.new(1, 2)
+	var lob := Face.attack(5, I, [K.SWEEP])
+	lob.strikes = 2
+	sk4.add_mech(_mech("S", Die.single(lob), 40, 100))
+	var g := _ghoul(100, 10)
+	var arch := [_archer(100, 10), _archer(100, 10)]
+	sk4.add_foes([g, arch[0], arch[1]])
+	sk4.begin()
+	sk4.start_round()
+	assert_true(sk4.assign(0, arch[1]), "dropped on a back foe")
+	assert_eq([g.hp, arch[0].hp, arch[1].hp], [100, 95, 95], "the back rank swept from the left, the front untouched")
 
 
 ## Expose and Exposed (the Kestrel session, 20 and 21 October): every foe the entry reaches and
@@ -8565,7 +8591,7 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	var salvo := Face.attack(5, I, [K.SPLASH])
 	salvo.splash = 3
 	salvo.spends_magazine = true
-	salvo.random_targets = true
+	salvo.add_keyword(K.SWEEP)
 	var reload := Face.vent(0)
 	reload.targets = Face.Target.SELF
 	reload.add_keyword(K.RAPID)
@@ -8634,26 +8660,25 @@ func test_a_multi_strike_gun_pays_its_heat_once_a_spend() -> void:
 
 
 ## A Primed machine's Burning lands blow by blow on each strike's own foe (the mechanics audit's
-## 8, 27 October): a spray whose first strike kills lays nothing on the corpse and burns the foes
-## the strikes after it fell on.
-func test_a_primed_sprays_burn_lands_on_each_strikes_own_foe() -> void:
-	var pod := Face.attack(5, L)
+## 8, 27 October): a sweep whose first strike kills lays nothing on the corpse and burns the foe
+## the strikes after it walked on to.
+func test_a_primed_sweeps_burn_lands_on_each_strikes_own_foe() -> void:
+	var pod := Face.attack(5, L, [K.SWEEP])
 	pod.strikes = 3
-	pod.spray = true
-	var sk := Skirmish.new(1, 1)
+	var sk := Skirmish.new(1, 2)
 	var s := _mech("S", Die.single(pod), 40, 100)
 	sk.add_mech(s)
-	var front_foe := _ghoul(4, 10)
-	var behind := _archer(100, 10)
-	sk.add_foes([front_foe, behind])
+	var first := _ghoul(4, 10)
+	var second := _ghoul(100, 10)
+	sk.add_foes([first, second])
 	sk.begin()
 	sk.start_round()
 	Effects.grant_buff(s, "primed", 1, "test", sk.round)
-	assert_true(sk.assign(0, front_foe), "sprayed at the front foe")
-	assert_false(front_foe.alive(), "the first strike kills it")
-	assert_eq(Effects.stacks_of(front_foe, "burning"), 0, "a corpse burns for nothing")
-	assert_eq(behind.hp, 90, "the two strikes after it fall on the foe behind")
-	assert_eq(Effects.stacks_of(behind, "burning"), 2, "and burn it, a stack a strike")
+	assert_true(sk.assign(0, first), "swept")
+	assert_false(first.alive(), "the first strike kills the first")
+	assert_eq(Effects.stacks_of(first, "burning"), 0, "a corpse burns for nothing")
+	assert_eq(second.hp, 90, "the two strikes after it fall on the second, the walk skipping the kill")
+	assert_eq(Effects.stacks_of(second, "burning"), 2, "and burn it, a stack a strike")
 
 
 ## The enemy's turn goes on past a foe with no machine to strike (the audit's 13, 27 October):

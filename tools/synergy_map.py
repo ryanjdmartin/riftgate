@@ -90,7 +90,7 @@ KEYWORDS = {
     "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "splash": [("strikes", "sets")],
     "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
     "cleanse": [("burning_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
-    "overshield": [], "rapid": [], "breach": [], "spray": [("strikes", "sets")],
+    "overshield": [], "rapid": [], "breach": [], "sweep": [("strikes", "sets")],
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {
@@ -101,8 +101,8 @@ FACE_FIELDS = {
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
     "spends_magazine": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_burn": [("burning_mech", "sets"), ("heat", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
-    "shields": [], "vents": [], "spins": [], "reaches_all": [], "random_targets": [], "cooldown": [], "charged": [("muster", "reads")],
-    "rolls_target": [], "spray": [("strikes", "sets")],
+    "shields": [], "vents": [], "spins": [], "reaches_all": [], "cooldown": [], "charged": [("muster", "reads")],
+    "rolls_target": [],
 }
 # A gate or a consume on a status reads it.
 # A buff face's status is set (kind buff), its stacks and rounds its own.
@@ -249,7 +249,7 @@ class Map:
                 self.add(status.get("status"), "reads", dict(p, how="gated on it"))
             if f.get("consumes"):
                 self.add(f["consumes"], "reads", dict(p, how="consumes it"))
-            if int(f.get("strikes", 1) or 1) > 1 or f.get("spray") or f.get("spends_magazine"):
+            if int(f.get("strikes", 1) or 1) > 1 or "sweep" in (f.get("keywords") or []) or f.get("spends_magazine"):
                 self.add("flakked", "reads", dict(p, how="strikes"))
                 self.add("overcharged", "reads", dict(p, how="strikes"))
                 self.add("primed", "reads", dict(p, how="strikes"))

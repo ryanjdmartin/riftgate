@@ -132,6 +132,14 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_rect(Rect2(c - Vector2(s * 0.28, s * 0.28), Vector2(s * 0.56, s * 0.56)), color, true)
 			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
 				ci.draw_line(c + d * s * 0.5, c + d * s, color, width)
+		"sweep":
+			# Sweep (3 November): the strikes walking a rank, three ticks along a bar with the
+			# arrow on its end, left to right.
+			ci.draw_line(c + Vector2(-s, s * 0.6), c + Vector2(s, s * 0.6), color, width)
+			for i in range(3):
+				var x := -s * 0.75 + i * s * 0.6
+				ci.draw_line(c + Vector2(x, -s * 0.5), c + Vector2(x, s * 0.6), color, width * 0.8)
+			ci.draw_line(c + Vector2(s * 0.55, s * 0.2), c + Vector2(s, s * 0.6), color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)

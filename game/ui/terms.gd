@@ -32,7 +32,7 @@ const TABLE := {
 	# Rules on a component.
 	"targets": ["", "plain"], "strikes": ["", "plain"],
 	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"],
-	"spray": ["", "plain"], "cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
+	"sweep": ["sweep", "plain"], "cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["volatile", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"kill_overcharge": ["overcharge", "heat"], "self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],

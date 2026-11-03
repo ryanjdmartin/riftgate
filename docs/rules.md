@@ -335,10 +335,13 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
   no limit.
-- **Spray** (the Skua's Flechette Pod): the first strike lands on the foe the entry is spent
-  on; each strike after it falls on a random foe in reach at that moment, the same foe again
-  allowed, and a kill clears its slot at once, so a hole in the front opens the foe behind it
-  to the strikes still to come. The die shows the first strike's number.
+- **Sweep** (a weapon's; the Skua's Flechette Pod, the Musk Ox's salvo an ammo a strike): the
+  strikes walk the rank the entry is dropped on from the rank's first filled slot, left to
+  right, one a slot, wrapping past the last; a kill clears its slot at once, so the walk skips
+  it, a lone foe takes them all, and a rank emptied loses the strikes left. A direct entry walks
+  the front while any foe stands in it, else the back, and offers only that rank; an indirect
+  one walks the rank of the foe it is dropped on. Each strike is aimed at its foe, and an area
+  keyword's shape rides each. The die shows a strike's number.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
@@ -435,7 +438,7 @@ On a machine:
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
-  target, a spray's on each strike's own foe; a blow that kills leaves nothing to burn. A foe's,
+  target, a sweep's on each strike's own foe; a blow that kills leaves nothing to burn. A foe's,
   from a stoker's priming, is spent by its next move, whatever it is, on Empowered's clock, and a
   machine's Ward turns its Burning away as it does a burn.
 - **Phased** (buff): cannot act, take damage or be targeted until the
@@ -529,7 +532,7 @@ On a foe:
   stun resist in Numbed, after the round's decay.
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
   shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or the draw of
-  a vent's blast, a random hit, a spray's strike or a mine's arrival, which the game targets
+  a vent's blast, a sweep's strike or a mine's arrival, which the game targets
   rather than the player. A blow that only reaches it (an area's, a Chain's arc, a spill)
   neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
@@ -624,8 +627,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round after
   the first; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
   spent (the die says DRY). Its Shrapnel Recuperator returns 1 for every foe its blows reach;
-  its Unrestricted Expenditure fires every ammo in the magazine as a strike, each at a random
-  live foe with Splash, the magazine its price and no heat; its quick reload,
+  its Unrestricted Expenditure fires every ammo in the magazine as a strike, the strikes
+  walking the rank it is dropped on (Sweep) with Splash, the magazine its price and no heat; its quick reload,
   Rapid, adds 2 for 3 heat, and the Forge counts it as no vent.
 - A shield, a vent or a buff that prints heat (the quick reload) adds it to its spender as it
   is spent.
