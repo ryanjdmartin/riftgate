@@ -1,31 +1,28 @@
-"""Night Shift's tenth round as a pair (Ryan, 3 November, on the ninth): the bass's voice, R as a
-jam, the map without its muted guitar.
+"""Night Shift's eleventh round as a pair (Ryan, 3 November, on the tenth): the bass clean.
 
-  "Can I hear the whole battle track with the Synth bass instead of the driven bass? Or, a whole new
-  voice that's more of a slightly distorted bass/slap bass? R also can be rewritten and extended,
-  adding more instrument and tune play (i.e. different riff variations, different voices taking
-  priority, etc), to really sell the "jam" vibe. Map half - Can I hear it without the backing
-  guitar on the quarters throughout?"
+  "Can I get night shift battle with some clean bass options? Or at least only very slightly
+  distorted?"
 
 The bass: every part the driven bass played (the walk, the hold under the two synth lines, the
-breakdown's held roots) on the synth bass (the crunch synth dark and soft, Hold The Line's map
-K's) for the full pair, and on a slapped bass a little driven in a set of whole battle halves
-beside the driven bass as the ninth round had it: the slap at the driven bass's level, the synth
-bass, which a phone plays little of, 3 dB under it there and 3 dB over it in full (BASS_VOICES).
+breakdown's held roots, R's turn) on a finger bass with no drive for the full pair: the driven
+bass's two strings, its finger's thump, its body and its cabinet, evened as a compressor would. In
+a set of whole battle halves beside the tenth round's pair (the synth bass): the finger bass with a
+touch of drive, a slapped bass with its clip taken out, and the slap with the same touch. On a sine
+at a note's peak the driven bass's amp makes 39% harmonic distortion and the tenth round's slap a
+little driven 41%; the clean voices make none and the touch about 5%, an amp just breaking up. Each
+meets the driven bass's level on a phone and in full alike (BASS_VOICES).
 
-R twice as long, sixteen bars in turns of two, each turn giving a different voice the lead: the
-head (the walk with the guitar a tenth over the bass, the hook pushed on the synth lead); the hook
-traded, its call on the synth lead and the lead guitar's answer a chord tone higher; the lead
-guitar's lick over the hold; the bass's turn, alone with the kick, the hats and the backbeat, a
-soloist's 4 dB forward; the house piano's, the hook's rhythm in chords over the walk; the plucked
-string's arpeggio over the walk; stop-time, the band hitting each bar's one, the FM synth answering
-in the gap of the first and the drums filling the second; the head again, climbing into the
-outro. The chime keeps the hook under the two heads alone, the sub's pulse and the piano's
-off-beats rest where a turn leaves the room.
-
-The map half's muted guitar out, the rhythm it played in eighths through the groove, the lead's
-section and the groove again; its R twice as long, the groove again repeating, so the halves keep
-one timeline.
+The tenth round's, kept: R twice as long, sixteen bars in turns of two, each turn giving a different
+voice the lead: the head (the walk with the guitar a tenth over the bass, the hook pushed on the
+synth lead); the hook traded, its call on the synth lead and the lead guitar's answer a chord tone
+higher; the lead guitar's lick over the hold; the bass's turn, alone with the kick, the hats and the
+backbeat, a soloist's 4 dB forward; the house piano's, the hook's rhythm in chords over the walk;
+the plucked string's arpeggio over the walk; stop-time, the band hitting each bar's one, the FM
+synth answering in the gap of the first and the drums filling the second; the head again, climbing
+into the outro. The chime keeps the hook under the two heads alone, the sub's pulse and the piano's
+off-beats rest where a turn leaves the room. The map half without its muted guitar, the rhythm it
+played in eighths through the groove, the lead's section and the groove again, its set still beside
+it (m); its R twice as long, the groove again repeating, so the halves keep one timeline.
 
 Kept from the earlier rounds: the battle half as a jam in turns of two bars, the walk with the
 arpeggio or the hook and never both, the hold under the two together on three-three-two 6 dB down,
@@ -34,7 +31,7 @@ through; D the piano's turn and the factory's blended, the riff dark and low as 
 guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
 its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night10.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night11.json beside the pairs
     tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py m        # the named sets only (b m, and full for the pair)
 """
 import json
@@ -481,17 +478,76 @@ def slap_drive(f, dur):
 
 F.NOTE_INST["slap_drive"] = lambda f, d, p: slap_drive(f, d)
 
+# The clean bass (Ryan, 3 November, on the tenth round: "Can I get night shift battle with some clean
+# bass options? Or at least only very slightly distorted?"). Measured on a sine at a note's peak, the
+# driven bass's amp makes 39% harmonic distortion, the tenth round's slap a little driven 41%, the
+# forge's plain slap 26% by its own clip and the synth bass's stage 17%; the clean voices make none,
+# and the touch (TOUCH) about 5%, an amp just breaking up.
+TOUCH = (0.5, 0.8)   # the touch of drive: the stage's input at the note's peak, and its drive
+
+
+def evened(x, amount, most=4.0):
+    """A compressor's evenness on one note, without saturation: the note's level followed (about
+    13 ms) and pulled toward its loudest by `amount`, never more than `most` times up, so the line
+    holds through each note's sustain."""
+    env = np.maximum(F.lp(np.abs(x), 12.0), 0.0)
+    env = np.maximum(env / (np.max(env) + 1e-9), 1e-4)
+    return x * np.minimum(env ** -amount, most)
+
+
+def amp(y, touch):
+    """The amp: clean, or with a touch of drive (TOUCH), on a note brought to one peak first."""
+    y = y / (np.max(np.abs(y)) + 1e-9) * TOUCH[0]
+    return F.asat(y, TOUCH[1]) if touch else y
+
+
+def finger_bass(f, dur, touch=False):
+    """A finger bass: the driven bass's two strings, the finger's thump and the body's peak, evened
+    as a compressor would, into the amp clean or with a touch of drive, then a tone open enough for
+    the string's own overtones, which a phone plays where it plays little of the fundamental, and
+    the driven bass's cabinet."""
+    n = F.n_of(dur)
+    bright = F.RNG.uniform(0.5, 0.62)
+    x = F.pluck(f, dur, bright=bright, damp=0.998)[:n] + F.pluck(f * 1.001, dur, bright=bright * 0.6, damp=0.998)[:n] * 0.5
+    x = x + F.bp(x, 80.0, 140.0) * 0.8
+    thump = F.lp(F.noise(F.n_of(0.02)), 900.0) * F.env_ad(F.n_of(0.02), 0.0005, 0.006) * 0.5
+    y = amp(evened(F.at(x, thump, 0.0)[:n], 0.45), touch)
+    y = F.lp(y, 3200.0) + F.bp(y, 600.0, 1200.0) * 0.3
+    return F.hp(F.bass_cabinet(y), 40.0)
+
+
+def slap_clean(f, dur, touch=False):
+    """A slapped bass with its clip taken out: the forge's slap (the thumb's thump, the string's
+    bright snap against the frets, its quick decay), evened as a compressor would, into the same
+    amp."""
+    n = F.n_of(dur)
+    x = F.pluck(f, dur, bright=0.95, damp=0.996)[:n]
+    snap = F.bp(F.noise(F.n_of(0.01)), 2500.0, 9000.0) * F.env_ad(F.n_of(0.01), 0.0002, 0.002) * 0.9
+    thump = F.lp(F.noise(F.n_of(0.025)), 700.0) * F.env_ad(F.n_of(0.025), 0.0005, 0.007) * 0.7
+    y = amp(evened(F.at(F.at(x, snap, 0.0), thump, 0.0)[:n], 0.3), touch)
+    return F.hp(F.lp(y, 4500.0), 50.0) * F.env_ad(n, 0.001, dur * 0.45, curve=2.0)
+
+
+F.NOTE_INST["finger_bass"] = lambda f, d, p: finger_bass(f, d, p.get("touch", False))
+F.NOTE_INST["slap_clean"] = lambda f, d, p: slap_clean(f, d, p.get("touch", False))
+
 # Every part the driven bass plays on another voice, measured against it alone over the whole battle
-# half (`level`). The slap meets it on a phone's speaker and in full alike. The synth bass is dark: a
+# half (`level`). The slaps meet it on a phone's speaker and in full alike. The synth bass is dark: a
 # phone plays little of it, so at the driven bass's level on a phone it would sit 6 dB over it in
 # full, and at its level in full 6 dB under it on a phone; it sits between, 3 dB under on a phone and
-# 3 dB over in full.
+# 3 dB over in full. The clean voices and their touch meet it on a phone and in full alike, within a
+# fifth of a dB: the string's own overtones and the cabinet carry them on a phone as the amp carries
+# the driven bass.
 BASS_VOICES = {
     "driven": {"inst": "bass_real", "params": {"drive": 3.5}, "level": 1.0},           # the ninth round's
     "synth": {"inst": "bass", "params": {"drive": 2.5, "cutoff": 600.0}, "level": 2.29},   # the synth bass: the crunch synth dark and soft
     "slap": {"inst": "slap_drive", "params": {}, "level": 0.71},                       # a slapped bass a little driven
+    "finger": {"inst": "finger_bass", "params": {}, "level": 9.10},                    # a finger bass, clean
+    "finger_touch": {"inst": "finger_bass", "params": {"touch": True}, "level": 6.55}, # the finger bass with a touch of drive
+    "slap_clean": {"inst": "slap_clean", "params": {}, "level": 11.51},                # the slap, clean
+    "slap_touch": {"inst": "slap_clean", "params": {"touch": True}, "level": 8.25},    # the slap with a touch of drive
 }
-BASS = "synth"   # the full pair's ("Can I hear the whole battle track with the Synth bass instead of the driven bass?")
+BASS = "finger"   # the full pair's ("Can I get night shift battle with some clean bass options?")
 
 
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS):
@@ -657,17 +713,19 @@ def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR):
 
 
 SETS = [
-    {"id": "b", "half": "battle", "title": "The bass, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
+    {"id": "b", "half": "battle", "title": "The bass clean, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
      "note": "The battle half from the top, the bass on each voice wherever it plays (the walk, the hold, the breakdown's held roots). Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("b0", "The driven bass", "As the ninth round had it, 3 dB down.", {"bass": "driven"}),
-              ("b1", "The synth bass", "The crunch synth dark and soft, Hold The Line's map K's: 3 dB under the driven bass on a phone, 3 dB over it in headphones (the full pair's).", {"bass": "synth"}),
-              ("b2", "A slap bass, a little driven", "A slapped string, its snap and thump, through an amp pushed a little, at the driven bass's level.", {"bass": "slap"})]},
+     "rows": [("b0", "The synth bass", "As the tenth round's pair had it: the crunch synth dark and soft, 3 dB under the driven bass on a phone and 3 dB over it in headphones.", {"bass": "synth"}),
+              ("b1", "A finger bass, clean", "The driven bass's strings, body and cabinet with no drive at all, evened as a compressor would, at the driven bass's level (the full pair's).", {"bass": "finger"}),
+              ("b2", "The finger bass, a touch of drive", "The same notes through an amp just breaking up: about an eighth of the driven bass's distortion.", {"bass": "finger_touch"}),
+              ("b3", "A slap bass, clean", "The slap with its clip taken out, the thumb's thump and the string's snap, evened as a compressor would.", {"bass": "slap_clean"}),
+              ("b4", "The slap bass, a touch of drive", "The same notes through the same touch of drive.", {"bass": "slap_touch"})]},
     {"id": "m", "half": "map", "title": "The map's groove without its muted guitar", "form": "A" * 16, "seed": NAME,
      "note": "The groove's sixteen bars: the piano off the beat, the chime's hook, the sub's pulse, the knocks and ticks.",
      "rows": [("m0", "The muted guitar as it was", "Its rhythm in eighths on the roots, as the shipped map half plays it.", {"guitar": True}),
               ("m1", "Without it", "Everywhere in the full pair: the groove, the lead's section and the groove again.", {"guitar": False})]},
 ]
-PAIR = {"id": "night_shift_r10", "title": "Night Shift, round ten"}
+PAIR = {"id": "night_shift_r11", "title": "Night Shift, round eleven"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -727,7 +785,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night10.json")
+    path = os.path.join(P.OUT, "night11.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -739,7 +797,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night10_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night11_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))

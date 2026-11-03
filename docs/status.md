@@ -58,8 +58,9 @@ as it landed (to `62ef7ee`: the foes' fresh start and the pacing session, the bo
 the elites by the tier, the Petrels' engines, the skirmish's field, Godot 4.8-beta2, the model
 rebuilds and the five Wainwright & Sutler models), and main took it as a fast-forward on
 3 November on his word ("Good place to merge into main, I think, before we continue with
-finalizing the other tracks"); its bible is v0.437 (the page's version 450). The other tracks'
-rounds go on from main.
+finalizing the other tracks"); its bible was v0.437 then (the page's version 450). It goes on
+from main's head (`d03ebed`, the suite green there) with the other tracks' rounds: Night Shift's
+eleventh, the bass clean (3 November).
 
 `claude/affectionate-ramanujan-5d24t6` (30 October to 3 November) carried the two Petrels'
 engines on Ryan's go ("go for the ready to build ones", after his question of the 30th on which
@@ -679,13 +680,15 @@ The tasks are the to-do's; this is the index of what waits.
   synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff
   3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
   R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
-  it was beside it). Night Shift on its tenth (the map's intro without its front and its muted guitar out;
+  it was beside it). Night Shift on its eleventh (the map's intro without its front and its muted guitar out;
   the battle half a whole jam in turns of two bars, 30 October: the guitar and the bass walking
   one line on his rhythms with the arpeggio or the FM hook, never both, holding three-three-two
   6 dB down under the two together, the intro on three-three-two, D the piano's turn and the
   factory's blended over Hold The Line's riff as the map's nod, R a sixteen-bar jam whose turns
   hand the lead round the band, the guitar a tenth over the bass where it walks, the bass 3 dB down
-  everywhere and its voice on trial, the synth bass, a slap bass or the driven bass, the synth
+  everywhere and its voice on trial, clean or with a touch of drive, a finger bass or a slap,
+  against the tenth round's synth bass (3 November: "Can I get night shift battle with some clean
+  bass options? Or at least only very slightly distorted?"), the synth
   lines voiced for each turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half
   on its fourth round, its flip retired (31 October: the bells calm in the groove and the lift
   alone, the strings section and the climax off the battle's orchestra, the tune on a plucked
@@ -793,15 +796,17 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.437 (the
-  page's version 450, published 3 November from `ccr-7effd31a-u5z4gw` as main took it: Hold The
-  Line settled in the track table, three-way merged onto the live v0.436 that another session
-  published at 449 with the motion notes of that day (a walker's slump on planted feet, the
+  `docs/design-bible.html` after every change. This file and the live page are v0.439 (the
+  page's version 452, published 3 November from `ccr-7effd31a-u5z4gw`: Night Shift's bass clean
+  on trial in the track table, three-way merged onto the live v0.438 that another session
+  published at 451 with its reads of that day on the Cassowary's, the Whip Scorpion's, the
+  Swallowtail's and the Musk Ox's rows; over v0.437 at 450, Hold The Line settled as main took
+  this branch, merged onto the live v0.436 at 449 with the motion notes of that day (a walker's slump on planted feet, the
   Buzzard's cannon firing as its charge sped up, the Wainwright & Sutler pieces firing from their
   acts, the Kite's plumes larger, the Arsenal's rear vents a sickly orange-yellow), over the
   v0.435 this branch had merged at 448 onto the live v0.434). Main's own v0.430 (443, from
   `claude/affectionate-ramanujan-5d24t6`) is inside it, every publish since merged onto the live.
-  So this file carries rows ahead of main's code: the elites session's (`docs/briefs/elites.md`:
+  So this file carries rows ahead of main's code: v0.438's reads, the elites session's (`docs/briefs/elites.md`:
   every domain three elites at least, five wanderers, the Goblin Nob's Bellow and Enraged, a boss
   a named JRPG entity, the Fiend of Fire, the Gargantuan King, with its rows in the tables) and
   `claude/charming-rubin-h954bp`'s since it landed (a blow on a machine moving it, whether a shot
@@ -865,8 +870,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  thirteenth, which settled it, `hold_sketches.py`; Night Shift's tenth, `night_sketches.py`; The
-  Far Bank's map half's fourth, `far_sketches.py`), at the page's version 22. A round whose files pass a
+  thirteenth, which settled it, `hold_sketches.py`; Night Shift's eleventh, `night_sketches.py`;
+  The Far Bank's map half's fourth, `far_sketches.py`), at the page's version 23. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
