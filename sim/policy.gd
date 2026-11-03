@@ -2362,12 +2362,14 @@ static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
 ## gate makes it Rapid, whether it paints (an Expose on a foe), and whether it cashes a paint
 ## (a Direct weapon spend by another machine on a foe standing Exposed by one).
 func _paint_marks(sk: Skirmish, ms: Skirmish.MechState, f: Face, target) -> Dictionary:
-	if f == null or not (target is Foe):
+	if f == null:
 		return {}
-	var foe := target as Foe
 	var marks := {}
 	if Effects.quick_turn_live(ms.unit, f):
-		marks["quick"] = true
+		marks["quick"] = true   # read before the target: a buff spent on a machine goes out free too
+	if not (target is Foe):
+		return marks
+	var foe := target as Foe
 	if f.has(Face.Keyword.EXPOSE):
 		marks["paint"] = true
 	elif f.is_weapon() and f.reach == Face.Reach.DIRECT and _painted.has(foe) and _painted[foe] != ms and Effects.has(foe, "exposure"):
