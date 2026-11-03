@@ -1214,6 +1214,12 @@ func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
 	s2.start_round()
 	assert_true(pol.attack_score(sk, ms, ray, sk.front[0]) < free.attack_score(s2, s2.mechs[0], ray, s2.front[0]), "the forged gun is worth its blow less its three ammo")
 	assert_true(pol.salvo_score(sk, ms, salvo) > 0.0, "three strikes on a full field are worth firing")
+	# The reserve (3 November): only the ammo the ray's next spend needs counts against the salvo,
+	# so every ammo past it adds a whole strike.
+	var at_three := pol.salvo_score(sk, ms, salvo)
+	ms.ammo = 10
+	var at_ten := pol.salvo_score(sk, ms, salvo)
+	assert_true(absf((at_ten - at_three) - 7.0 * pol.salvo_per_strike(sk, ms, salvo)) < 0.001, "past the ray's reserve of three, each ammo is a whole strike")
 	ms.ammo = 0
 	ms.face_index = 0
 	assert_true(pol.options_for(sk, 0).is_empty(), "a dry gun is no option")

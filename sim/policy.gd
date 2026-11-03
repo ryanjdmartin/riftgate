@@ -1426,8 +1426,12 @@ func salvo_per_strike(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 	return total / float(live.size())
 
 
-## The salvo spent now: every ammo a strike, capped at what the field has left, less what those
-## ammo would buy on the die's other guns.
+## The salvo spent now: every ammo a strike, capped at what the field has left, less what the
+## ammo it empties would buy on the die's other guns. Only a reserve counts (3 November): the
+## ammo the dearest of those guns needs for its next spend, since the die fires about one gun a
+## round and the forge's trickle and casings refill faster, so the magazine past that reserve has
+## no other use before it fills; priced whole, a full magazine read barely positive and the bot
+## rerolled the salvo away while random play fired it and beat the greedy rung alone.
 func salvo_score(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 	var n := ms.ammo
 	if n <= 0:
@@ -1437,12 +1441,14 @@ func salvo_score(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 		if foe.alive():
 			field_hp += float(foe.hp)
 	var other := 0.0
+	var reserve := 0
 	for face in ms.die.faces:
 		if face.is_attack() and not face.is_debuff() and not face.spends_magazine:
 			var price := Effects.ammo_price(ms.unit, face)
 			if price > 0:
 				other = maxf(other, expected_damage(ms, face, null) / float(price))
-	return minf(float(n) * salvo_per_strike(sk, ms, f), field_hp) - float(n) * other * AMMO_SHARE
+				reserve = maxi(reserve, price)
+	return minf(float(n) * salvo_per_strike(sk, ms, f), field_hp) - float(mini(n, reserve)) * other * AMMO_SHARE
 
 
 ## What a cleanse clears from a machine, in hull: the heat its Burning would add at the end of
