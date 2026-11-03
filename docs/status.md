@@ -25,12 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 911 tests, 254,286 checks, green (3 November, main merged into
-  `claude/affectionate-ramanujan-5d24t6` as it lands: the Honey Badger's hopper and the five
-  Wainwright & Sutler models with the rig's counts, held and stepped spins and hidden mounts, both
-  runners' smokes clean; 893 and 209,059 on main before it, 2 November, with
-  `claude/brave-cori-fr18de`'s slate, elites by the tier, escorts and review's calls),
-  about four minutes
+- Tests: 914 tests, 254,294 checks, green (3 November, on `claude/chassis-runner-rows`: the
+  Cassowary's cycle bot and its three tests; 911 and 254,286 on main at `62ef7ee`), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -45,6 +41,11 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/chassis-runner-rows` (3 November) carries the chassis to-dos on Ryan's word ("spawn a
+new session to continue the chassis to-dos"), from main's `62ef7ee`: the Cassowary's cycle bot
+and its rows, the Cottonmouth's read beside them, the runner's tallies and `--pilot` for the
+other chassis' rows (How things stand). Not merged; main takes it on his word.
 
 `claude/affectionate-ramanujan-5d24t6` (30 October to 3 November) carried the two Petrels'
 engines on Ryan's go ("go for the ready to build ones", after his question of the 30th on which
@@ -183,6 +184,21 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the Onryō's kind and trigger.
 
 ## How things stand
+
+- The Cassowary's bot plans its cycle (3 November, the to-do's engine line; `Policy.cycle_plan`):
+  the steps a round's rerolls take are weighed with the chamber the dial then opens the next round
+  on, a Rapid chamber with the one after it and a spin at the die's spun mean, where the bot had
+  turned the dial only toward a better next chamber and priced the Spin-Up at its stack alone.
+  Read at 200 seeds with the Cottonmouth beside it (`docs/measurements.md`): alone it carries a
+  decision and reads under the Cottonmouth, the stronger tier-one gun alone, neither a wall nor a
+  free win; beside the Prairie Dog it takes half the bosses greedy; the Spin-Up is its most spent
+  entry (36% alone), a question for Ryan's play of it (the to-do). Found on the way: the bot never
+  counts the action again a plain Rapid entry brings on a die that rolls (the Laminar Deflector,
+  the Pulse Vacillator, the Cryo Flinger and the Musk Ox's Quick Reload; the rage, the reset gun,
+  the gate, the Drone and the Horn have their own), left as it is and raised in chat. The runner tallies a muster's charged spend apart by piece, the spends a
+  once-a-round gate made free and the paints an ally's Direct weapon spend cashed (the
+  Swallowtail's and the Needletail's rows), and `--pilot chassis=N` reads the Whip Scorpion's
+  pilot light as a what-if (`Skirmish.pilot`, never content). Those rows are next (the to-do).
 
 - The Honey Badger's rework built (31 October, Ryan: "agreed on all proposed. Build it"; its
   brief retired). Its passive, the Ore Hopper, puts a load in for each foe a spend of its weapons
@@ -761,7 +777,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   round launcher, the fit sheet), with no conflict; so this file carries both branches' rows
   ahead of their landing; 442 the same file dated the 2nd). The live has since moved on to
   v0.432 at 445, which `claude/charming-rubin-h954bp` merged onto 443 the same day (its v0.431
-  at 444 between), so the next publish from main merges onto that. Before them, v0.427 (439, 2 November, from
+  at 444 between), so the next publish from main merges onto that. `claude/chassis-runner-rows` edited the Cassowary's row on 3 November (its bot's cycle, the
+  stale "plans no cycle" retired), unpublished: its publish merges onto the live as it then stands. Before them, v0.427 (439, 2 November, from
   `claude/brave-cori-fr18de` as main merged in: the slate's last calls, the elites by the tier
   and the review's calls, over the live v0.423 at 435, `claude/charming-rubin-h954bp`'s
   weapon-fire row on the v0.422 this branch published at 434 with the Honey Badger's hopper and

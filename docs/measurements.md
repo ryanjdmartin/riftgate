@@ -4398,3 +4398,59 @@ the Bone Dragon and Gilgamesh more often than not at the second fallback, where 
 lost them, the detachment niche he gave it or still too easy; the claw's number is the next lever
 measured. The team barely moves either way, the plate adding about ten points greedy on the
 formations.
+
+## 3 November, the Cassowary's cycle and the Cottonmouth beside it
+
+**The bot's cycle** (`b6242a4`, the to-do's engine line): the greedy reroll had turned the
+Cassowary's dial toward a better next chamber and never planned, so it stepped off a chamber
+whose neighbour would open the next round better, never stepped through a weak chamber to a big
+one, and priced the Spin-Up at its stack alone, rerolling away from the spin. It now weighs every
+count of steps the rerolls in hand allow (`Policy.cycle_plan`). Old bot (`62ef7ee`) against new,
+30 seeds a cell (a direction), no party, greedy won, by the matrix's 76 packs in six groups: tier
+one's rank and file (13), its four big foes, its four formations, the ladder's recolours at tiers
+two and three (35), their formations (8) and the twelve bosses alone at tier one.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Rounds won |
+|---|---|---|---|---|---|---|---|---|
+| Cassowary | 36 → 46 | 0 → 0 | 0 → 0 | 22 → 32 | 0 → 0 | 0 → 1 | 16 → 23 | 6.8 → 4.8 |
+| Cottonmouth | 75 → 75 | 0 → 0 | 0 → 0 | 39 → 39 | 0 → 0 | 0 → 0 | 31 → 31 | 3.4 → 3.4 |
+| Cassowary + Prairie Dog | 89 → 92 | 25 → 35 | 0 → 0 | 56 → 66 | 0 → 0 | 32 → 53 | 47 → 57 | 9.6 → 8.1 |
+| Cassowary + Cottonmouth + Prairie Dog | 99 → 100 | 72 → 82 | 10 → 18 | 80 → 83 | 0 → 0 | 81 → 88 | 71 → 75 | 5.6 → 5.2 |
+| Badger + Cassowary + Puffin | 100 → 100 | 100 → 100 | 20 → 40 | 95 → 96 | 0 → 0 | 98 → 99 | 82 → 84 | 5.2 → 5.0 |
+
+The random rung (it never rerolls) and the Cottonmouth alone come out identical cell for cell
+(380 random cells, 152 of the Cottonmouth's), so the change reaches a stepping die's rerolls
+alone. The Wainwright & Sutler team row (the Clydesdale, the Prairie Dog, the Dingo) fields
+neither machine, hence the `--team` rows.
+
+**At 200 seeds**, the new bot (`ef28a6b`; `fcdbbfb` reads each chamber once and plays the same,
+its 43 cells of ten seeds identical), 152,000 fights, no party: won, random / greedy.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Cassowary | 29 / 44 | 0 / 0 | 0 / 0 | 15 / 30 | 0 / 0 | 0 / 0 | 12 / 21 | 84% | 4.8 |
+| Cottonmouth | 47 / 75 | 0 / 0 | 0 / 0 | 20 / 40 | 0 / 0 | 0 / 0 | 17 / 31 | 76% | 3.4 |
+| Cassowary + Prairie Dog | 52 / 90 | 0 / 35 | 0 / 0 | 37 / 66 | 0 / 0 | 1 / 51 | 26 / 56 | 56% | 8.2 |
+| Cassowary + Cottonmouth + Prairie Dog | 92 / 100 | 27 / 79 | 0 / 18 | 65 / 83 | 0 / 0 | 43 / 88 | 54 / 74 | 32% | 5.2 |
+| Badger + Cassowary + Puffin | 97 / 100 | 73 / 100 | 0 / 34 | 75 / 96 | 0 / 0 | 73 / 99 | 66 / 84 | 25% | 5.0 |
+
+Pick share, greedy, every pack: the Cassowary alone spends the Spin-Up 36%, the Halo Shield 16%,
+the Twin Autoguns 15%, the Rivet Gun 12%, the Ankle Mortar 11% and the Coolant Jacket 7% (the old
+bot at 30 seeds: the Autoguns 29%, the Shield 27%, the Mortar 13%, the Rivet Gun and the Spin-Up
+12% each); the Spin-Up is 16 to 23% of its teams' spends. The Cottonmouth alone: the Twin
+Autoguns 33%, the Ankle Mortar 31%, the Halo Shield 31%, the Coolant Jacket 4%. Rerolls a round,
+greedy, alone: the Cassowary 1.37 (0.98 on the old bot), the Cottonmouth 0.98. The runner plays
+the Cassowary's fights about 2.3 times as slowly as before (ten seeds of its packs, 32 s against
+14 s), its rounds holding more spends.
+
+Read: the old bot left the dial unplayed. Planned, the Cassowary alone carries a decision (greedy
+about twice random) and sits under the Cottonmouth, the stronger tier-one gun alone (31% against
+21% over every pack, 75% against 44% on tier one's rank and file, faster and losing less hull);
+neither takes a big foe, a formation or a boss alone. Neither reads as a wall or a free win on
+tier one's rank and file (the roster row's exit): random play takes 29 and 47% of it, greedy 44
+and 75%. In company, beside the Prairie Dog the Cassowary takes half the bosses greedy where random
+play takes one in a hundred, and the maker's tier-one trio takes 88% of them and 79% of tier one's
+big foes (random 43 and 27%); no row here swaps the Cassowary out, so its share of those wins is
+unread. The plan steers the dial onto the Spin-Up, its most spent entry: a spin is an action again and a
+stack of Spun Up whatever it lands on. Worth Ryan's eye in play: whether steering onto the spin
+every round is the chase the design wanted or a line that flattens the dial.
