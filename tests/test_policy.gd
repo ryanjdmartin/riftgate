@@ -903,6 +903,68 @@ func test_greedy_turns_a_stepping_die_toward_a_better_chamber() -> void:
 	assert_eq(sk.rerolls_left, 2, "one reroll spent")
 
 
+## A stepping die's cycle (3 November): the greedy bot weighs where the dial rests for the next
+## round, so it holds a chamber when the one after it opens the next round better than now.
+func test_greedy_holds_a_stepping_die_to_open_the_next_round_on_its_better_chamber() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := _stepper([20, 21, 2, 2])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	pol._greedy_rerolls(sk)
+	assert_eq(ms.face_index, 0, "the twenty holds: a step would spend the twenty-one now and open on a two")
+	assert_eq(sk.rerolls_left, 3, "no reroll spent")
+
+
+## The cycle reaches past the next chamber: two steps through a weak one to the big gun.
+func test_greedy_steps_a_stepping_die_through_a_weak_chamber_to_a_big_one() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := _stepper([10, 5, 40, 5])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_eq(int(pol.cycle_plan(sk, ms, 3)["steps"]), 2, "two steps to the forty")
+	pol._greedy_rerolls(sk)
+	assert_eq(ms.face_index, 2, "the ten steps past the five to the forty")
+	assert_eq(sk.rerolls_left, 1, "two rerolls spent")
+
+
+## A spinning chamber (the Spin-Up's) is worth its own spend and the spin after it, so the bot
+## does not step away from it toward a chamber worth only a little more than its stack.
+func test_greedy_keeps_a_spinning_chamber_for_the_spin_after_it() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var spin := Face.buff("spun_up", 1, 1)
+	spin.keywords = [Face.Keyword.RAPID]
+	spin.spins = true
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([spin, Face.attack(6, L), Face.attack(6, L), Face.attack(6, L)]), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	var own := pol.face_value(sk, ms, ms.die.faces[0])
+	var chain := float(pol.cycle_chain(sk, ms, 0)["value"])
+	assert_true(chain > own + 5.9, "the spin's chamber carries the spin: at least a six after its own spend")
+	assert_eq(int(pol.cycle_chain(sk, ms, 0)["rest"]), -1, "and leaves the dial anywhere")
+	pol._greedy_rerolls(sk)
+	assert_eq(ms.face_index, 0, "the spin holds against a six")
+
+
+func _stepper(powers: Array) -> Skirmish:
+	var sk := Skirmish.new(1)
+	var faces: Array = []
+	for p in powers:
+		faces.append(Face.attack(int(p), L))
+	var u := _mech("A", Die.of(faces), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	return sk
+
+
 ## The seal (the Armadillo's Lockdown, valued 21 October): a shield a machine with a seal
 ## spends on itself is worth the armour it stands behind this round's blows, less its heat.
 func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:

@@ -69,6 +69,7 @@ const PRIMED_WORTH := 2.0        # a stack of Primed on a foe (28 October): the 
 const REGEN_WEIGHT := 0.5        # a point of shield a regeneration brings in a round to come, as a share of the hull it keeps: those blows are guessed from this round's (the Storm Petrel's, 30 October)
 const REGEN_ACTIONS := 3         # the actions a foe's Regenerating runs from its grant (Effects.regenerating's clock)
 const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a share of one this round (the fight may end, the foes pick afresh)
+const CYCLE_AHEAD := 0.6         # a stepping die's next round, as a share of this one: where the dial rests now is the chamber it opens on (the Cassowary's cycle, 3 November)
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -2076,6 +2077,106 @@ func reroll_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	return die_mean(sk, ms)
 
 
+## A stepping die's cycle (the Cassowary's, 3 November): what spending from chamber `at` this
+## round is worth, and where the dial rests after, as {value, rest}. A Rapid chamber acts again
+## on the chamber after it, known in advance, and a spin (the Spin-Up's) on a chamber drawn
+## from all of them, itself included, so its value carries the die's spun mean and the dial
+## rests anywhere (rest -1). Chambers read at their worth now, a dark one as blank.
+func cycle_chain(sk: Skirmish, ms: Skirmish.MechState, at: int) -> Dictionary:
+	var n := ms.die.faces.size()
+	var value := 0.0
+	var seen := 0
+	while seen < n:
+		var f := _chamber_face(sk, ms, at)
+		value += face_value(sk, ms, f)
+		seen += 1
+		if f == null:
+			return {"value": value, "rest": at}
+		if f.spins:
+			return {"value": value + spin_tail(sk, ms), "rest": -1}
+		if not f.has(Face.Keyword.RAPID):
+			return {"value": value, "rest": at}
+		at = (at + 1) % n
+	return {"value": value, "rest": at}
+
+
+## What a spin is worth after its own spend: a chamber drawn from all of them, each played out as
+## cycle_chain would (a Rapid one onward), the spinning one landing on itself spinning again, so
+## E = (S + E) / n + M / n over the S of the spinning chambers and the M of the rest, solved.
+func spin_tail(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	var n := ms.die.faces.size()
+	if n == 0:
+		return 0.0
+	var spinning := 0
+	var spin_own := 0.0
+	var rest := 0.0
+	for i in range(n):
+		var f := _chamber_face(sk, ms, i)
+		if f != null and f.spins:
+			spinning += 1
+			spin_own += face_value(sk, ms, f)
+		else:
+			var v := face_value(sk, ms, f)
+			# A Rapid chamber after the spin acts again on its neighbour (one step deep is enough here).
+			if f != null and f.has(Face.Keyword.RAPID):
+				v += face_value(sk, ms, _chamber_face(sk, ms, (i + 1) % n))
+			rest += v
+	if spinning >= n:
+		return 0.0
+	return (spin_own + rest) / float(n - spinning)
+
+
+## The die's mean over its chambers played out (cycle_chain), for a next round whose chamber the
+## spin left to chance.
+func cycle_mean(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	var n := ms.die.faces.size()
+	if n == 0:
+		return 0.0
+	var total := 0.0
+	for i in range(n):
+		var f := _chamber_face(sk, ms, i)
+		total += face_value(sk, ms, f) + (spin_tail(sk, ms) if f != null and f.spins else 0.0)
+	return total / float(n)
+
+
+## A chamber as it would be spent: the one showing as the spend goes out (a charged form), any
+## other as the die would show it; null for a dark one.
+func _chamber_face(sk: Skirmish, ms: Skirmish.MechState, i: int) -> Face:
+	if Effects.is_entry_disabled(ms.unit, i):
+		return null
+	if i == ms.face_index:
+		return sk.spend_face(ms)
+	return sk.shown_face(ms, ms.die.faces[i])
+
+
+## A stepping die's plan for the round's opening rerolls (the Cassowary's cycle, 3 November):
+## for every count of steps the rerolls in hand allow, this round's chain from the chamber it
+## brings, plus the next round's from the chamber after where the dial rests, at CYCLE_AHEAD
+## (a spin's rest at the die's played-out mean). Returns {steps, gain}: the steps worth taking
+## (the fewest on a tie) and what they add over standing.
+func cycle_plan(sk: Skirmish, ms: Skirmish.MechState, budget: int) -> Dictionary:
+	var n := ms.die.faces.size()
+	if n == 0 or ms.face_index < 0 or not Effects.steps_die(ms.unit):
+		return {"steps": 0, "gain": 0.0}
+	var spun := -1.0
+	var worth: Array[float] = []
+	for k in range(mini(budget, n - 1) + 1):
+		var c := cycle_chain(sk, ms, (ms.face_index + k) % n)
+		var ahead := 0.0
+		if int(c["rest"]) < 0:
+			if spun < 0.0:
+				spun = cycle_mean(sk, ms)
+			ahead = spun
+		else:
+			ahead = float(cycle_chain(sk, ms, (int(c["rest"]) + 1) % n)["value"])
+		worth.append(float(c["value"]) + CYCLE_AHEAD * ahead)
+	var best := 0
+	for k in range(worth.size()):
+		if worth[k] > worth[best] + 0.001:
+			best = k
+	return {"steps": best, "gain": worth[best] - worth[0]}
+
+
 ## The team's hull as a percentage of its maximum, dead machines included.
 static func hull_percent(sk: Skirmish) -> int:
 	var hull := 0
@@ -2095,7 +2196,7 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 	# A machine's own free rerolls first, one die at a time, while it shows less than its mean.
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
-		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, sk.spend_face(ms)) + 0.001 < reroll_worth(sk, ms):
+		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and _wants_reroll(sk, ms, ms.free_rerolls + sk.rerolls_left):
 			if not sk.reroll([i]):
 				break
 			rerolls += 1
@@ -2114,6 +2215,13 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned:
 				continue
+			if Effects.steps_die(ms.unit):
+				# A stepping die plans its cycle: the steps the rerolls left can take (3 November).
+				var plan := cycle_plan(sk, ms, sk.rerolls_left - reserve)
+				if int(plan["steps"]) > 0:
+					idx.append(i)
+					gain += float(plan["gain"]) / float(plan["steps"])
+				continue
 			var now := face_value(sk, ms, sk.spend_face(ms))   # a charged form as it will go out
 			var worth := reroll_worth(sk, ms)
 			if now + 0.001 < worth:
@@ -2126,6 +2234,14 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 		if not sk.reroll(idx):
 			return
 		rerolls += 1
+
+
+## Whether a machine's own free reroll is worth taking: a stepping die by its cycle plan over
+## `budget` steps, any other die while it shows less than its mean.
+func _wants_reroll(sk: Skirmish, ms: Skirmish.MechState, budget: int) -> bool:
+	if Effects.steps_die(ms.unit):
+		return int(cycle_plan(sk, ms, budget)["steps"]) > 0
+	return face_value(sk, ms, sk.spend_face(ms)) + 0.001 < reroll_worth(sk, ms)
 
 
 ## Rerolls to keep from the looks this round (the look-or-action valuation): the price of an ally's
