@@ -1347,7 +1347,7 @@ const actWords = (n) => String(n).replace(/_/g, " ");
 // only moves the scrubber otherwise, so dragging it never loses the handle.
 function paintMotion(force) {
   const st = MOTION.stage, rig = st.rig, panel = MOTION.panel;
-  const key = [MOTION.id, st.id, st.mode, st.loop, st.playing, st.speedK, rig ? rig.actSet().map(a => a.name).join(",") : "-", rig && rig.current ? rig.current.name : "", JSON.stringify(st.fits || {}), JSON.stringify(rig ? rig.formOn || {} : {})].join("|");
+  const key = [MOTION.id, st.id, st.mode, st.loop, st.playing, st.speedK, rig ? rig.actSet().map(a => a.name).join(",") : "-", rig && rig.current ? rig.current.name : "", JSON.stringify(st.fits || {}), JSON.stringify(rig ? rig.formOn || {} : {}), JSON.stringify(rig ? rig.heldOn || {} : {})].join("|");
   if (!force && key === MOTION.key) {
     const r = $("#mo-scrub"), o = $("#mo-scrub-out");
     if (r && rig && rig.current) { if (document.activeElement !== r) r.value = String(rig.t); o.textContent = `${rig.t.toFixed(2)} s of ${rig.current.duration}`; }
@@ -1386,7 +1386,16 @@ function paintMotion(force) {
     }
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
       el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
-      el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"))));
+      el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"),
+      el("button", {class: "btn", id: "mo-hit", title: "A blow lands on the machine: a hull hit from the left, then its armour turning one from the right", onclick: () => st.hit()}, "Hit"),
+      el("button", {class: "btn", id: "mo-lose", "aria-pressed": String(!!rig.dead), title: "The machine is lost: its lit parts gutter out; press again to light it", onclick: () => st.lose()}, rig.dead ? "Revive" : "Lose"))));
+    // The plume trial (3 November): a booster's flame along its thrust in place of its halo's ring.
+    if (((st.side || {}).plumes || []).length) {
+      const on = window.HangarMotion.plumes();
+      panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Exhaust"), el("div", {class: "seg"},
+        el("button", {class: "btn", id: "mo-plume", "aria-pressed": String(on), title: "The trial: the exhaust as a plume along its thrust; off shows its halo's ring as before",
+          onclick: () => { window.HangarMotion.plumes(!on); const id = st.id; st.id = ""; st.show(id).then(() => render()); }}, on ? "Plume" : "Ring"))));
+    }
   }
   // What a status holds while the machine carries it (MechView3D.hold_statuses): a form, a pose
   // (the Armadillo's seal), or a spin (the Cassowary's capacitor while Spun Up); held here as the

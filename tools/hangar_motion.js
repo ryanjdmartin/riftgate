@@ -140,8 +140,34 @@ void main() { vec2 p = vUv * 2.0 - 1.0; float r = length(p); float bloom = 1.0 -
   if (rays > 0.5) { float a = atan(p.y, p.x) + spin; star = pow(abs(cos(a * rays * 0.5)), rays < 2.5 ? 16.0 : 6.0) * (1.0 - smoothstep(0.2, 1.0, r)); }
   else star = 0.7 * (1.0 - smoothstep(0.4, 1.0, r));
   gl_FragColor = vec4(mix(colour, vec3(1.0), core * (1.0 - smoothstep(0.0, 0.4, r))), clamp(bloom + star, 0.0, 1.0) * strength); }`;
+// A booster's plume along its thrust (MechView3D.setup_plumes, plume.gdshader; Ryan, 31 October, of the
+// Stingray's exhaust: "can it be directional?"): a flame out of its plume node's mouth down the node's
+// -z, turned about that line to face the eye, stretching and brightening with its booster's light, in
+// place of that booster's halo; a trial, the Plume button turning it off to compare with the ring.
+const PLUME_VERT = `uniform float strength; uniform float reach; uniform float breadth; varying vec2 vUv;
+void main() { vUv = uv; vec4 origin = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+  vec3 axis = normalize((modelViewMatrix * vec4(0.0, 0.0, -1.0, 0.0)).xyz); float s = length(modelViewMatrix[2].xyz);
+  vec3 toEye = mix(normalize(-origin.xyz), vec3(0.0, 0.0, 1.0), projectionMatrix[3][3]);
+  vec3 side = cross(axis, toEye); side = length(side) > 0.001 ? normalize(side) : vec3(1.0, 0.0, 0.0);
+  float along = uv.y; float halfW = 0.5 * breadth * s * (1.0 - 0.6 * along); float stretch = 0.4 + 0.6 * clamp(strength, 0.0, 1.0);
+  vec3 p = origin.xyz + axis * (along * reach * stretch * s) + side * ((uv.x * 2.0 - 1.0) * halfW);
+  gl_Position = projectionMatrix * vec4(p, 1.0); }`;
+const PLUME_FRAG = `uniform float strength; uniform float ceiling; varying vec2 vUv;
+void main() { float across = 1.0 - abs(vUv.x * 2.0 - 1.0); float along = 1.0 - vUv.y;
+  vec3 c = mix(vec3(0.8, 0.08, 0.02), vec3(1.0, 0.42, 0.1), smoothstep(0.05, 0.55, across)); c = mix(c, vec3(1.0, 0.9, 0.7), smoothstep(0.55, 0.95, across * along));
+  gl_FragColor = vec4(c, clamp(strength * pow(across, 0.9) * pow(along, 1.2) * 1.6, 0.0, 1.0) * ceiling); }`;
+function plumeK(light, rest) { return rest > 0 ? clamp(0.3 + 0.7 * (light / rest - 1) / 7, 0, 1) : 0; }   // the page's light is not eased: eight rests over its own is full
 const RECOIL_BODY = 1.2;   // MechRig: model units a machine kicks back along a gun's line when it fires from a mount on the body
 const AIM_UP = 0.22, AIM_DOWN = 0.5;   // MechRig.aim: the turn onto a target, the blow waiting on it (Ryan, 2 November: "make sure that the turns or aims happen before the sound effects")
+// A blow on the hull (MechRig.jolt, MechView3D.hit; the to-do's hit reaction, on Ryan's go of 3
+// November): the machine shoved back a share of its longest side, its nose rocking up, its hull
+// laid over in heat's red-orange for a beat (the game lays an overlay; the page tints the materials);
+// a machine lost guttering its lit parts out (MechRig.kill).
+const JOLT = {share: 0.045, pitch: 6, up: 0.05, down: 0.34};
+const HIT = {peak: 0.8, up: 0.04, hold: 0.08, down: 0.3, colour: [1.0, 0.25, 0.0]};
+const GUTTER = 0.9;
+function hitK(t) { if (t < 0 || t >= HIT.up + HIT.hold + HIT.down) return 0; if (t < HIT.up) return t / HIT.up; if (t < HIT.up + HIT.hold) return 1; const g = (t - HIT.up - HIT.hold) / HIT.down; return (1 - g) * (1 - g); }
+function gutterK(t) { if (t >= GUTTER) return 0; const f = t / GUTTER; return (1 - f) * (1 - f) * ((t % 0.13) < 0.05 ? 0.35 : 1); }
 // A lit material's light at rest, kept the first time it is asked (MechRig._rest_of), so a standing
 // glow that raises it is never taken for its rest.
 function restOf(m) { if (m.userData.restLight === undefined) m.userData.restLight = m.emissiveIntensity; return m.userData.restLight; }
@@ -301,8 +327,10 @@ function labelled(name, part) {
   return /^[._]?\d+$/.test(name.slice(part.length));
 }
 
+let PLUMES_ON = true;   // the plume trial on (RIFTGATE_PLUME's page twin); the Plume button turns it off to compare with the ring
 class Rig {
   constructor(root, side, rngSeed = 1) {
+    this.plumesOff = !PLUMES_ON;
     this.model = root; this.body = root; this.standing = new Map(); this.halos = new Map(); this.flashes = []; this.haloGrow = 0; this.flares = []; this.aimAt = null;
     this.joints = {}; this.hardpoints = {}; this.rest = {}; this.restPos = {};
     root.traverse(n => {
@@ -356,7 +384,25 @@ class Rig {
     this.setupCounts(side.counts || []);
     this.setupHalos(side);
     this.setupStanding(side);
+    this.setupPlumes(side);
   }
+  // Each booster's plume (MechView3D.setup_plumes): a flame at its plume node, lit with its part.
+  setupPlumes(side) {
+    const T = window.THREE;
+    this.plumes = [];
+    if (this.plumesOff) return;
+    for (const pl of side.plumes || []) {
+      const node = this.model.getObjectByName(pl.node), lit = this.litMaterials(pl.part);
+      if (!node || !lit.length) continue;
+      const mat = new T.ShaderMaterial({uniforms: {strength: {value: 0.3}, reach: {value: +pl.reach || 20}, breadth: {value: +pl.breadth || 8}, ceiling: {value: 0.9}},
+        vertexShader: PLUME_VERT, fragmentShader: PLUME_FRAG, transparent: true, depthWrite: false, side: T.DoubleSide});
+      const mesh = new T.Mesh(new T.PlaneGeometry(1, 1), mat);
+      mesh.userData.halo = true; mesh.frustumCulled = false; mesh.renderOrder = 2;
+      node.add(mesh);
+      this.plumes.push([mat, lit[0], restOf(lit[0])]);
+    }
+  }
+  stepPlumes() { for (const [mat, m, rest] of this.plumes || []) mat.uniforms.strength.value = plumeK(m.emissiveIntensity, rest); }
   // A lit material's light (MechRig._light_to): its rest times the multiple, and its halos with it,
   // their light eased as the game eases it (the page's own light eases in PHONE_GLOW).
   lightTo(m, base, k) {
@@ -374,9 +420,11 @@ class Rig {
     this.halos = new Map();
     this.haloGrow = HALO_SPREAD * this.modelSize();
     const named = Array.isArray(side.halo) ? side.halo : [];
+    const plumed = this.plumesOff ? [] : (side.plumes || []).map(pl => pl.part);   // a booster burning as a plume wears no ring (MechRig.halo_skip)
     for (const entry of named) {
       // A part, [part, scale] or [part, scale, ahead] (MechRig._setup_halos).
       const p = Array.isArray(entry) ? entry[0] : entry, scale = Array.isArray(entry) && entry.length > 1 ? +entry[1] : 1;
+      if (plumed.includes(p)) continue;
       const ahead = Array.isArray(entry) && entry.length > 2 ? +entry[2] : HALO_AHEAD;
       const tag = parseTag(p);
       if (tag.length === 2) { const root = tag[0] === "joint" ? this.joints[tag[1]] : this.hardpoints[tag[1]]; if (root) this.wearHalo(root, scale, ahead); }
@@ -728,8 +776,45 @@ class Rig {
     this.pose();
   }
   // Advance (MechRig.tick): in steps no longer than STEP, so a slow frame lands where frames would.
+  // A blow on the hull (MechRig.jolt): `away` in the body's own axes, shoved back a share of the
+  // machine's longest side, the nose rocking up, settling back; `k` scales it (the armour's block at half).
+  jolt(away, k = 1) {
+    const T = window.THREE, size = this.size || (this.size = this.modelSize());
+    const a = new T.Vector3(away.x, away.y, away.z).normalize().applyQuaternion(this.body.quaternion).multiply(this.body.scale).multiplyScalar(JOLT.share * size * k);
+    this.strikes.push({joint: "@body", vec: v3(JOLT.pitch * k, 0, 0), recoil: {x: a.x, y: a.y, z: a.z}, up: JOLT.up, down: JOLT.down, t: 0});
+    this.pose();
+  }
+  // The machine lost (MechRig.kill): its act stops, none starts, every lit part gutters out.
+  kill() {
+    if (this.dead) return;
+    this.dead = true;
+    if (this.current) this.endAct(true);
+    this.flashes = [];
+    const mats = [];
+    this.model.traverse(n => { if (n.isMesh && !n.userData.halo) for (const m of [].concat(n.material)) if (m.userData.lit && !mats.includes(m)) mats.push(m); });
+    this.gutter = {t: 0, mats: mats.map(m => [m, m.emissiveIntensity])};
+  }
+  revive() {
+    if (!this.dead) return;
+    this.dead = false;
+    for (const [m] of (this.gutter || {mats: []}).mats) this.lightTo(m, restOf(m), 1);
+    this.gutter = null;
+  }
+  stepGutter(dt) {
+    if (!this.gutter || this.gutter.t >= GUTTER) return false;
+    this.gutter.t += dt;
+    const k = gutterK(this.gutter.t);
+    for (const [m, e] of this.gutter.mats) {
+      m.emissiveIntensity = e * k;
+      for (const h of this.halos.get(m) || []) { h.uniforms.light.value = Math.pow(m.emissiveIntensity, 1 / 2.2); h.uniforms.presence.value = 0; }
+    }
+    return true;
+  }
   tick(delta, acting = true) {
     let moved = this.stepFlashes(delta), left = delta;
+    if (this.stepGutter(delta)) moved = true;
+    this.stepPlumes();
+    acting = acting && !this.dead;
     if (this.stepFlares(delta)) moved = true;
     this.waitBudget = Math.min(delta, WAIT_TICK_MAX);
     while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
@@ -782,7 +867,8 @@ class Rig {
   // played while an act was running, since a paused stage advanced nothing).
   tickStrikes(delta) {
     const turning = this.formsStep(delta);   // a form held or let go on a paused stage turns all the same
-    const flaring = this.stepFlares(delta);
+    const flaring = this.stepFlares(delta) || this.stepGutter(delta);
+    this.stepPlumes();
     if (this.aimAt) { this.aimAt.t += delta; if (this.aimAt.t >= AIM_UP + this.aimAt.hold + AIM_DOWN) this.aimAt = null; }
     if (this.current && this.until >= 0) {   // a firing slice is a blow, and plays out on a paused stage too, in steps no longer than STEP
       let left = delta;
@@ -870,9 +956,11 @@ class Rig {
     const turn = this.aimAt && this.aimAt.joint === "@body" ? v3(0, this.aimAt.deg * this.aimEnvelope(), 0) : v3();
     let bo = offsetOf(add3(add3(this.bodyActSlide, this.bodyMoveSlide), this.formBodySlide));
     const be = eulerOf(add3(add3(add3(this.bodyActRot, this.bodyMoveRot), this.formBodyRot), turn));
-    for (const st of this.strikes) if (st.joint === "@body") { const k = Rig.envelope(st); bo = {x: bo.x + st.recoil.x * k, y: bo.y + st.recoil.y * k, z: bo.z + st.recoil.z * k}; }
+    let rock = v3();
+    for (const st of this.strikes) if (st.joint === "@body") { const k = Rig.envelope(st); bo = {x: bo.x + st.recoil.x * k, y: bo.y + st.recoil.y * k, z: bo.z + st.recoil.z * k}; rock = add3(rock, mul3(st.vec, k)); }
+    const re = eulerOf(rock);   // a jolt's nose rocking up (MechRig._pose)
     this.body.position.set(this.bodyRestPos.x + bo.x, this.bodyRestPos.y + bo.y, this.bodyRestPos.z + bo.z);
-    this.body.rotation.set(this.bodyRestRot.x + be.x, this.bodyRestRot.y + be.y, this.bodyRestRot.z + be.z, "YXZ");
+    this.body.rotation.set(this.bodyRestRot.x + be.x + re.x, this.bodyRestRot.y + be.y + re.y, this.bodyRestRot.z + be.z + re.z, "YXZ");
   }
   // One frame of movement (MechRig.drive): speed in model units a second, aim the travel's
   // bearing against the facing (+ left), turn the facing's turning (+ left), radians.
@@ -1403,7 +1491,7 @@ class Stage {
     if (!pin) return;
     const id = this.id;
     let part = null;
-    if (shape && !((this.side && this.side.hidden_pins) || []).includes("hp_" + n)) {
+    if (shape && !this.hidden(n)) {
       const how = this.fitOf(n, shape);
       const gltf = await this.loadModel("shapes/" + how.shape + "_" + maker);
       if (this.id !== id) return;
@@ -1429,6 +1517,43 @@ class Stage {
     this.emit();
   }
   resetFits() { for (const n of Object.keys(this.fits)) this.fit(Number(n), null); }
+  // A mount the model hides (the sidecar's hidden_pins: the Cottonmouth's guns inside its drum)
+  // wears nothing and flares nothing, so no part or effect shows through what hides it.
+  hidden(n) { return typeof n === "number" && (((this.side || {}).hidden_pins) || []).includes("hp_" + n); }
+  // A blow on the hull (MechView3D.hit): the machine shoved back from it and its hull laid over in
+  // heat's red-orange for a beat, the armour's block at half; each press the next of a hull hit from
+  // the left and a block from the right. The page tints each material toward heat's colour where the
+  // game lays an overlay over it.
+  hit() {
+    const rig = this.rig;
+    if (!rig || rig.dead) return;
+    const kinds = [["hull", -1], ["block", 1]], [kind, side] = kinds[(this.hits = (this.hits || 0) + 1) % 2];
+    this.hitK = kind === "block" ? 0.5 : 1;
+    rig.jolt({x: -side * 0.5, y: 0, z: 1}, this.hitK);
+    if (!(this.hitT >= 0)) {
+      const T = window.THREE;
+      this.hitMats = [];
+      rig.model.traverse(n => { if (n.isMesh && !n.userData.halo) for (const m of [].concat(n.material)) if (m.color && !this.hitMats.some(h => h[0] === m)) this.hitMats.push([m, m.color.clone(), m.emissive ? m.emissive.clone() : null]); });
+      this.heat = new T.Color(HIT.colour[0], HIT.colour[1], HIT.colour[2]);
+    }
+    this.hitT = 0;
+  }
+  stepHit(dt) {
+    this.hitT += dt;
+    const k = HIT.peak * this.hitK * hitK(this.hitT), done = this.hitT >= HIT.up + HIT.hold + HIT.down;
+    for (const [m, c, e] of this.hitMats || []) {
+      m.color.copy(c).lerp(this.heat, done ? 0 : k);
+      if (e && !m.userData.lit) m.emissive.copy(e).lerp(this.heat, done ? 0 : k * 0.6);
+    }
+    if (done) { this.hitT = -1; this.hitMats = []; }
+  }
+  // The machine lost (MechView3D.lose): its lit parts gutter out; again lights it.
+  lose() {
+    const rig = this.rig;
+    if (!rig) return;
+    if (rig.dead) rig.revive(); else rig.kill();
+    this.emit();
+  }
   // The glTF as JSON with its binary embedded: an artifact does not serve .glb (tools/hangar_data.py).
   // The page fetches it itself, as it fetches the content files, and three.js only parses it.
   // Its textures sit in the embedded binary, and r128 decodes those by fetch() on a blob:
@@ -1493,6 +1618,7 @@ class Stage {
       const dt = Math.min(0.05, (now - this.last) / 1000); this.last = now;
       if (this.playing && this.rig) this.advance(dt * this.speedK);
       else if (this.rig) this.rig.tickStrikes(dt * this.speedK);
+      if (this.hitT >= 0) this.stepHit(dt * this.speedK);
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
       this.raf = requestAnimationFrame(step);
@@ -1534,14 +1660,25 @@ class Stage {
   // weapon's fire flares with its mount, or on Melee.
   strike(ranged) {
     if (!this.rig) return;
-    const rig = this.rig, mounts = [...new Set(this.flares.map(f => f.pin))].sort((a, b) => a - b);
-    const fixed = Object.keys(rig.fires || {}), shots = [...mounts, ...fixed];
+    const rig = this.rig, mounts = [...new Set(this.flares.map(f => f.pin).filter(p => typeof p === "number"))].sort((a, b) => a - b);
+    const marked = Object.keys((this.side || {}).fx || {}).map(c => "fx:" + c);   // fixed weapons with a business end marked: they kick their joint and flare (MechView3D.strike)
+    const fixed = Object.keys(rig.fires || {}), shots = [...mounts, ...marked, ...fixed];
     if (!ranged || !shots.length) {
       rig.strike(ranged);
       for (const part of this.burns || []) if (part.visible !== false && part.parent && part.parent.visible !== false) rig.flashUnder(part);
       return;
     }
     const next = shots[this.shot++ % shots.length];
+    if (typeof next === "string" && next.startsWith("fx:")) {   // a fixed weapon with its business end marked: its aim joint or the waist or the pivot turns, its own joint kicks, it flares
+      const cid = next.slice(3), node = rig.model.getObjectByName("fx_" + cid);
+      let joint = rig.joints[rig.aims[cid]] ? rig.aims[cid] : (rig.joints.waist && rig.meta.waist.axis === "yaw" ? "waist" : ((this.hover || this.flyer || rig.pivots) ? "@body" : ""));
+      let lead = 0;
+      if (joint) { this.aimSide = -this.aimSide; rig.aim(joint, 22 * this.aimSide, 0.8); lead = AIM_UP; }
+      const owner = node ? rig.jointOf(node) : "";
+      rig.strike(true, owner ? [owner] : [], null, lead);
+      for (const f of this.flares) if (f.pin === next) rig.fireFlare(f.mesh, f.look, lead + f.delay);
+      return;
+    }
     if (typeof next === "string") {   // a fixed weapon: the waist or a hover's pivot turns, then its own act fires (MechView3D.strike)
       let joint = rig.joints[rig.aims[next]] ? rig.aims[next] : (rig.joints.waist && rig.meta.waist.axis === "yaw" ? "waist" : ((this.hover || this.flyer || rig.pivots) ? "@body" : ""));
       let lead = 0;
@@ -1569,9 +1706,9 @@ class Stage {
   // A weapon's muzzle flares on its mount (MechView3D.wear_flares): at its class's places (the
   // mount's variant's, at its scale there), in the look its tags give it (a fitted class alone,
   // its class's). A component that is no weapon takes none.
-  async hangFlares(n, shape, cid, own = null) {   // `own`: a hand-built gun's places from its sidecar, in place of a class's
-    const rig = this.rig, pin = rig && rig.hardpoints[n];
-    if (!pin || (!shape && !own)) return;
+  async hangFlares(n, shape, cid, own = null) {   // `own`: a hand-built gun's places from its sidecar, in place of a class's; `n` "fx:<component>" a fixed weapon's marked business end
+    const rig = this.rig, pin = rig && (typeof n === "string" && n.startsWith("fx:") ? rig.model.getObjectByName("fx_" + n.slice(3)) : rig.hardpoints[n]);
+    if (!pin || (!shape && !own) || this.hidden(n)) return;
     if (!this.muzzles) this.muzzles = fetch("hangar/models/shapes/muzzles.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).catch(() => ({}));
     if (!this.kitOf) this.kitOf = fetch("content/components.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).then(j => {
       const out = {};
@@ -1599,6 +1736,8 @@ class Stage {
   // says what burns (its entry's keywords hold "burn"). It flares on a strike, here on either button.
   async wearBurns(side, id) {
     const shapes = side.stock_shapes || {}, pins = side.pins || {};
+    // A fixed weapon's business end (MechView3D.wear_fx_flares): its flares at the fx_ node riding its joint.
+    for (const [cid, size] of Object.entries(side.fx || {})) this.hangFlares("fx:" + cid, "", cid, [[[0, 0, 0], size]]);
     for (const [pin, own] of Object.entries(side.muzzles || {})) if (pins[pin] && !shapes[pin]) this.hangFlares(Number(pin.slice(3)), "", pins[pin], own);   // a hand-built stock gun (MechView3D.flare_rows)
     if (!Object.keys(shapes).length) return;
     for (const [pin, shape] of Object.entries(shapes)) this.hangFlares(Number(pin.slice(3)), shape, pins[pin] || "");
@@ -1610,7 +1749,7 @@ class Stage {
     const rig = this.rig, burning = await this.burnsOf;
     for (const [pin, shape] of Object.entries(shapes)) {
       const cid = pins[pin], n = Number(pin.slice(3));
-      if (!cid || !burning.has(cid) || this.rig !== rig) continue;
+      if (!cid || !burning.has(cid) || this.rig !== rig || this.hidden(n)) continue;
       let gltf;
       const how = this.fitOf(n, shape);
       try { gltf = await this.loadModel("shapes/burn_" + how.shape); } catch (e) { continue; }
@@ -1628,5 +1767,6 @@ class Stage {
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }
 }
 
-window.HangarMotion = {Rig, Route, Stage, MovePath, HoverBalance, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
+window.HangarMotion = {Rig, Route, Stage, MovePath, HoverBalance, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED,
+  plumes: (on) => { if (on !== undefined) PLUMES_ON = !!on; return PLUMES_ON; }};
 })();
