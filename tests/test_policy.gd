@@ -447,7 +447,7 @@ func test_greedy_reads_a_spray_as_its_share_on_every_foe_in_reach() -> void:
 	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the spray is the plain gun")
 
 
-## A flat buff lands on every strike, so the bot counts Overcharged once a strike of the ally's
+## A flat buff lands on every strike, so the bot counts Empowered once a strike of the ally's
 ## gun showing: twice on a split gun (the Skua's), once on a plain one.
 func test_greedy_counts_a_flat_buff_once_a_strike_of_the_allys_gun() -> void:
 	var split := {"id": "split", "name": "Split", "description": "", "effects": [
@@ -810,7 +810,7 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 ## The bot's worth of the player's Purge (the ladder's brief, C; 28 October; placeholders), by
 ## what the foe carries: Getting Back Up its maximum HP whatever the blow does, a Barrier the
 ## biggest weapon blow an ally still to act shows on it (nothing when its own weapon pops it),
-## Armoured its stacks for each allied blow to come, Kindled its value, Primed 2 a stack,
+## Armoured its stacks for each allied blow to come, Empowered its value, Primed 2 a stack,
 ## Regenerating its value for each action left, a Ward nothing, a bare foe nothing; the attack
 ## score carries it.
 func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
@@ -837,7 +837,7 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 2.0, "Armoured: its stacks for the one allied blow to come")
 	Effects.remove(g, "braced")
 	Effects.grant(g, Effects.make(Effects.kindled(3), Effects.SKIRMISH, "foe:caster"))
-	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Kindled: its value")
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Empowered: its value")
 	Effects.remove(g, "kindled")
 	Effects.grant(g, Effects.primed_foe(2, "foe:caster"))
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 4.0, "Primed: 2 a stack")

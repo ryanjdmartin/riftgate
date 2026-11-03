@@ -97,7 +97,7 @@ marked Ryan's, and the numbers are the proposal's placeholders.
 
 The bench, the forms set aside:
 
-- Gaining shield gives a stack of Overcharged (+5 damage a stack, fading a stack at the
+- Gaining shield gives a stack of Empowered (+5 damage a stack, fading a stack at the
   round's end), so any shield source becomes damage (round one): set aside by Ryan's Beam call
   (12 October).
 - Its beam blows deal +5 (round two, the plain form; the hole raised with it was that a passive

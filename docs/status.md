@@ -187,8 +187,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a stack, resist a foe stat, Numbed a buff), Purge N flat on every buff on both sides, a Ward
   turning a stun and a Purge and standing, Sweep on a rank (left to right, direct the front,
   indirect the player's pick) for the Flechette Pod and the Unrestricted Expenditure, Charged as
-  the Shock primer with Chain the arcs alone, then undo to the last roll with its HUD; Overcharged
-  waits on a name that works on both sides; the Scorpion's blast is tabled for a rework and stays
+  the Shock primer with Chain the arcs alone, then undo to the last roll with its HUD; Overcharged and Kindled are
+  Empowered on both sides since 3 November, the ids kept; the Scorpion's blast is tabled for a rework and stays
   the one draw besides the die.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
@@ -198,7 +198,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   while its shield stands; its lock's Regenerating regains 2 shield a round for three rounds, a
   grant of its own each time. The Giant Petrel banks up to three unspent rerolls while it fights;
   its Immelmann Booster rallies itself or, for three rerolls, gives a spent ally its die again and
-  its action; its Spindrift Salvo's kill brings two; its Reheat Uplink overcharges an ally and rolls
+  its action; its Spindrift Salvo's kill brings two; its Reheat Uplink empowers an ally and rolls
   its die. The die shows the burn behind the shield's mark ("-2") and, over a foe, the blow joined
   to its zap ("3+2"); the hold says what it burns. The bot reads the burn as shield lost, the zap
   as damage and the regen as hull kept, and weighs looks against actions, a reroll a spend pays or

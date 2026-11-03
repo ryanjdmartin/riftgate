@@ -153,7 +153,7 @@
    "id": "buff",
    "category": "component_kind",
    "name": "Buff component",
-   "codex": "Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Overcharged for damage, Armoured against damage, Primed to burn on hit. A status that runs down on its own (Overcharged, halving) takes no rounds. The die shows the status name and the stacks.",
+   "codex": "Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Empowered for damage, Armoured against damage, Primed to burn on hit. A status that runs down on its own (Empowered, halving) takes no rounds. The die shows the status name and the stacks.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -375,8 +375,8 @@
   {
    "id": "kill_overcharge",
    "category": "component_property",
-   "name": "Overcharged a kill",
-   "codex": "A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner so many stacks of Overcharged (two), which the Ammit keeps for the battle.",
+   "name": "Empowered a kill",
+   "codex": "A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner so many stacks of Empowered (two), which the Ammit keeps for the battle.",
    "status": "implemented",
    "design": {
     "holes": "A spread that kills two feeds twice; a chain feeds on every link."
@@ -469,7 +469,7 @@
    "codex": "On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses every buff it carries but Numbed and Guarded, after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A machine's Ward turns it away; a foe's Ward is one of the buffs it takes.",
    "status": "implemented",
    "design": {
-    "holes": "One id, dispel, on both sides, as breach is (28 October). On a foe (Effects.purge_foe) it takes Armoured, Kindled, Getting Back Up, Primed, Barrier, Ward and Regenerating, never Numbed, never Guarded. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question."
+    "holes": "One id, dispel, on both sides, as breach is (28 October). On a foe (Effects.purge_foe) it takes Armoured, Empowered, Getting Back Up, Primed, Barrier, Ward and Regenerating, never Numbed, never Guarded. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question."
    }
   },
   {
@@ -559,7 +559,7 @@
   {
    "id": "overcharged",
    "category": "status",
-   "name": "Overcharged",
+   "name": "Empowered",
    "codex": "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. At the end of each round it halves, rounded down, whatever granted it, until it is gone. On the Ammit nothing of it fades: its Quintessence Tap keeps every stack for the battle.",
    "status": "implemented",
    "design": {
@@ -835,7 +835,7 @@
    "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
    "status": "implemented",
    "design": {
-    "holes": "Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Overcharged at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
+    "holes": "Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -1318,7 +1318,7 @@
    "id": "on_stack",
    "category": "trigger",
    "name": "On applying stacks",
-   "codex": "Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Burning (from a burn or from Primed), an ally's or its own buff, its own Overcharged from a kill. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction.",
+   "codex": "Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Burning (from a burn or from Primed), an ally's or its own buff, its own Empowered from a kill. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction.",
    "status": "implemented",
    "design": {
     "holes": "Shocked and Suppressed are not stacks, so it never touches them."
@@ -1835,7 +1835,7 @@
   {
    "id": "kindled",
    "category": "status",
-   "name": "Kindled",
+   "name": "Empowered",
    "codex": "Foe status, from a rally, landing on every other foe on the field the moment the rally does. Its next move hits harder by the rally's value, and that move spends it, whatever it is: a blow lands it, a special gains nothing from it, a Suppress that takes the move takes it too, and a countdown carries it to the blow it lands. A foe acting after the rallier spends it this turn; one that has acted carries it to its next move. An intent counts the rallies on their way, a pulsing chip on a dashed edge saying why, and drops them the moment the rallier is killed, Suppressed or Disrupted.",
    "status": "implemented",
    "design": {

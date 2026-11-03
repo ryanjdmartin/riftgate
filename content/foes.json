@@ -101,7 +101,7 @@
     {
       "id": "metal_gel", "name": "Metal Gel", "faction": "meadow", "tier": 3,
       "design": { "fantasy": "The metal slime, the genre's armoured joke made a wall. Tier three of the gel line; no split, since the plate is the whole of it." },
-      "codex": "A gel of living metal: little inside it, but three points of plate on every blow. Flak and Overcharged are the answer, or one big blow.",
+      "codex": "A gel of living metal: little inside it, but three points of plate on every blow. Flak and Empowered are the answer, or one big blow.",
       "hp": 3, "attack": 5, "armour": 3, "rank": "front", "zone": 1, "movespeed": 2,
       "actions": [
         { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }

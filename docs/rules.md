@@ -83,7 +83,7 @@ skirmish.
 1. Rerolls reset to three (less any a foe drained). Every machine sheds heat by its cooling.
    Every die rolls; entries are equally likely. Round-start passives fire.
 2. Every foe picks its move, then its target; both show, exact, before the player acts. A
-   blow's number counts the rallies on their way to it this round (Kindled, below).
+   blow's number counts the rallies on their way to it this round (Empowered, below).
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. Withdrawal is open at any point. END TURN pulses once no die has anywhere to be
    spent, rerolls aside.
@@ -126,9 +126,9 @@ defeat when every machine is wrecked. There is no round limit.
   number in heat; a combined entry spends two halves on one machine (the Wake Diffuser: a vent
   that shields, the vent first, then the shield, sized on the heat the vent left, so the
   Puffin's Slipstream grows it on what is left); a buff grants its status, so many stacks, through so many rounds, or with
-  no rounds when the status runs down on its own (Overcharged).
+  no rounds when the status runs down on its own (Empowered).
 - **A debuff** is equipment aimed at a foe (a setter, a swap), spent on a foe in reach as a
-  weapon is: its keywords are its whole effect, no effect adds damage to it (Overcharged, Spun
+  weapon is: its keywords are its whole effect, no effect adds damage to it (Empowered, Spun
   Up, Primed's burn), and its heat is paid as a weapon's. The die's kinds: Direct, Indirect, Debuff,
   Buff, Shield, Vent, and the blank. On the die a gun is its reach frame with its number, a
   debuff the frame with the status mark inside and no number (the crosshair's ring with its
@@ -177,7 +177,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    armour comes off. A weapon's blow takes them whatever it deals, a 0 included (the Skua's
    halved 1); a debuff's blow stays nothing. Its riders land on every foe struck.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
-  Overcharged) feeds the next strike and never the same strike's other blows. A foe's own
+  Empowered) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
   any strike lands.
 - A mine carries its numbers as laid: its own on the foe it lands on and its area's on every
@@ -312,7 +312,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
 - **Purge** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter): every foe the
-  entry reaches loses every buff it carries but Numbed and Guarded (Armoured, Kindled, Getting
+  entry reaches loses every buff it carries but Numbed and Guarded (Armoured, Empowered, Getting
   Back Up, Primed, Barrier, Ward, Regenerating), after the blow and with the riders, a debuff's
   included, so a foe the blow kills stays down and a Barrier the blow pops is gone already; a
   laid shot purges the foe it lands on.
@@ -369,8 +369,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
-then its own heat lands. **Overcharged a kill** (the Soulcutter Talons'
-rule, no word of its own): each foe it kills gives its owner a stack of Overcharged. **Missing HP** adds its bonus for every
+then its own heat lands. **Empowered a kill** (the Soulcutter Talons'
+rule, no word of its own): each foe it kills gives its owner a stack of Empowered. **Missing HP** adds its bonus for every
 step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
 modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
 Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
@@ -404,7 +404,7 @@ and the ally's die rolls again by Rapid's path, never onto the entry it showed, 
 again, while the Booster's own Rapid gives the Petrel its turn back. **The Spindrift Salvo** (the
 Giant Petrel's): a spend of it that kills gives the team two rerolls this round, once however
 many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies only): the ally
-gains Overcharged 2 and its die rolls again, never onto the entry showing; a spent die rolls
+gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
 nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
 foe, its own machine gains Regenerating, the shield it prints at the start of each of the
 rounds it prints after this one. **Spillover** (the Wild
@@ -428,7 +428,7 @@ armour, and its cooling stays stopped. No store grants an active effect yet. The
 cap yet, so it shows as a chip.
 
 On a machine:
-- **Overcharged** (buff): +1 damage a stack, so the count is the bonus. At the end of each
+- **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
   round it halves, rounded down, whatever granted it, until it is gone; a buff component
   grants it stacks and no rounds. On the Ammit nothing of it fades: its Quintessence Tap
   keeps every stack for the battle, whatever granted it.
@@ -437,7 +437,7 @@ On a machine:
   its brace) until its next action.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
   target, a spray's on each strike's own foe; a blow that kills leaves nothing to burn. A foe's,
-  from a stoker's priming, is spent by its next move, whatever it is, on Kindled's clock, and a
+  from a stoker's priming, is spent by its next move, whatever it is, on Empowered's clock, and a
   machine's Ward turns its Burning away as it does a burn.
 - **Phased** (buff): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
@@ -511,7 +511,7 @@ On a machine:
   the silence away. A foe's purge takes every buff a die face bought, every
   stack, for good; what a store, a form or a passive grants goes for the rest of the enemy's
   turn and comes back at the start of the player's turn after its start resolves; the stores
-  stay, and the Ammit's kept Overcharged is its passive's own and stays; a Ward turns it away
+  stay, and the Ammit's kept Empowered is its passive's own and stays; a Ward turns it away
   too. A die face bought it when a buff component's spend or a braces rule granted it.
 - **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
   a stack for each attack that killed; no cleanse, silence or purge lifts it.
@@ -555,7 +555,7 @@ On a foe:
 - **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
   multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a
   debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
-- **Kindled** (buff, Rally): lands on every other foe on the field the moment the rally does,
+- **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
   and its next move hits harder by the rally's value, an add before the move's factor as
   every add is. That move spends it, whatever it is: a blow lands it, a special gains nothing
   from it, a Suppress that takes the move takes it too, and a countdown still gathering
@@ -564,7 +564,7 @@ On a foe:
   rallies on their way: a blow this round those of the ralliers acting before it, a
   countdown's blow every rally this round, each from a rallier alive, not Suppressed and not
   about to burn to death, so it drops the moment the rallier is killed, Suppressed or
-  Disrupted. The foe wears the coming Kindled as a preview chip on a dashed edge, its opacity
+  Disrupted. The foe wears the coming Empowered as a preview chip on a dashed edge, its opacity
   pulsing on the gauges' clock, until it lands; a foe whose move shows no blow wears none.
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot and at once, unless it self-destructed; its round is
@@ -678,7 +678,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   aimed at it, and the preview shows where its blow lands after. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
-- **A blow** is its base attack, plus its Kindled and its swarm for each other live foe of its
+- **A blow** is its base attack, plus its Empowered and its swarm for each other live foe of its
   type, times the move's factor: the adds, then the multiplies, the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
   two): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
@@ -696,7 +696,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   revive an ally (Getting Back Up on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally (Kindled at its value on every other foe on the field, at once), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
+  rally (Empowered at its value on every other foe on the field, at once), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   disable, silence (Silenced), purge (every buff a die face bought gone, a store's, a form's
   or a passive's grant until the start of the player's turn; never a last act's), cleanse

@@ -1448,10 +1448,10 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append([status_glyph("braced"), "+%d" % arm, "%s: armour +%d until its next action" % [Effects.STATUS["braced"]["name"], arm], _foe_chip_colour("braced")])
 	if Effects.has(foe, "kindled"):
 		var kindled := Effects.foe_attack_bonus(foe)
-		rows.append(["overcharge", "+%d" % kindled, "Kindled: its next move hits %d harder, then it is spent (a special gains nothing from it; a countdown carries it to its blow)" % kindled, _foe_chip_colour("kindled")])
+		rows.append(["overcharge", "+%d" % kindled, "Empowered: its next move hits %d harder, then it is spent (a special gains nothing from it; a countdown carries it to its blow)" % kindled, _foe_chip_colour("kindled")])
 	# A rally on its way (Ryan, 26 October: "a pulsing version of the incoming buff as a preview
 	# chip, so the player knows it's incoming and that's the reason for the increased damage"):
-	# the Kindled the rallies will land before its blow, already in the number its intent
+	# the Empowered the rallies will land before its blow, already in the number its intent
 	# shows. The chip pulses on a dashed edge until the rally lands, so it never reads as one
 	# the foe carries by hue alone; a foe showing no blow wears none, its move gaining nothing.
 	var coming := sk.incoming_rally(foe)
@@ -1462,7 +1462,7 @@ func _foe_rows(foe: Foe) -> Array:
 		for r in sk.rallies_on(foe):
 			who.append(r.display_name)
 		var from := ", ".join(who) if not who.is_empty() else "nobody (RIFTGATE_PREVIEW_DEBUG)"
-		rows.append(["overcharge", "+%d" % maxi(1, coming), "Kindled on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], _foe_chip_colour("kindled"), "preview"])
+		rows.append(["overcharge", "+%d" % maxi(1, coming), "Empowered on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], _foe_chip_colour("kindled"), "preview"])
 	if Effects.has(foe, "risen"):
 		rows.append(["star", "", "%s: returns from the pool once after dying" % Effects.STATUS["risen"]["name"], _foe_chip_colour("risen")])
 	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
@@ -1503,7 +1503,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# Every status the round will land on it (Ryan, 26 October: "All incoming chips should appear
 	# as pulsing opacity versions"): the copy's grants, each a chip pulsing on a dashed edge with
 	# the stacks it gains, beside the skull when the round kills it, since one may be the cause.
-	# A Kindled lifting this round's blow is the rally chip above; one landing after its move
+	# A Empowered lifting this round's blow is the rally chip above; one landing after its move
 	# (for the next round's) is a chip like any other.
 	if foe.alive():
 		rows.append_array(_coming_rows(fate.get("coming", {}), ["kindled"] if rally_chip else [], _foe_glyph, _foe_chip_colour))
@@ -1642,7 +1642,7 @@ func _mech_rows(i: int) -> Array:
 		rows.append(["paradox", str(meter[1]), "%s: a foe gaining any status but Paradox gains Paradox; at %d its past self knocks it out (Suppressed), and the Paradox clears" % [", ".join(loop_names), meter[1]], Terms.colour("paradox")])
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
 	# the fight's statuses live here, as chips that the hold expands into their descriptions),
-	# and every status whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so
+	# and every status whatever its scope (Ryan, 16 October: the Ammit is Empowered, "so
 	# anything that interacts with overcharged needs it displayed"): the talons' kills' stacks kept for
 	# the battle are a chip like a buff's for the round. A chassis passive, a module's rule or
 	# a battle reward that is no status stays in the codex.

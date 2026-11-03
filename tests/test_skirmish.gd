@@ -2021,11 +2021,11 @@ func test_a_status_stacks_renews_or_never_stacks_as_its_definition_says() -> voi
 		if mod.id == "once":
 			again += 1
 	assert_eq(again, 1, "and one grant of it: never stacking is renewing with nothing to renew")
-	# The engine's own: Shocked, Suppressed and Retaliate renew, Overcharged adds.
+	# The engine's own: Shocked, Suppressed and Retaliate renew, Empowered adds.
 	assert_eq(Effects.status_stacking(Effects.STATUS["shocked"]), "renew", "Shocked renews, one stack")
 	assert_eq(Effects.status_stacking(Effects.STATUS["suppressed"]), "renew", "Suppressed renews")
 	assert_eq(Effects.status_stacking(Effects.STATUS["retaliate"]), "renew", "Retaliate renews")
-	assert_eq(Effects.status_stacking(Effects.STATUS["overcharged"]), "add", "Overcharged adds")
+	assert_eq(Effects.status_stacking(Effects.STATUS["overcharged"]), "add", "Empowered adds")
 
 
 func test_stacked_adds_scale_with_stacks() -> void:
@@ -2698,7 +2698,7 @@ func test_a_buff_component_grants_its_status_through_the_round() -> void:
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(coil.describe(), "Overcharged ×10", "the entry names the status and its stacks")
+	assert_eq(coil.describe(), "Empowered ×10", "the entry names the status and its stacks")
 	assert_eq(coil.number_text(), "×10", "the die shows the stacks")
 	assert_true(coil.on_machines() and coil.is_equipment(), "a buff is equipment, spent on a machine")
 	assert_true(sk.assign(0, sk.mechs[1]), "spent on B")
@@ -2911,7 +2911,7 @@ func test_the_talons_kill_rule_feeds_overcharged_per_kill_and_it_halves_each_rou
 	sk.add_foes([_ghoul(15, 10), _ghoul(30, 10), _ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(talon.describe(), "30 spread 15 Overcharged ×1 a kill", "the rule reads on the entry, in plain words (Ryan, 18 October: devour is not a thing)")
+	assert_eq(talon.describe(), "30 spread 15 Empowered ×1 a kill", "the rule reads on the entry, in plain words (Ryan, 18 October: devour is not a thing)")
 	assert_true(talon.has_unique_rule(), "a rule printed on the entry: the die's star chip")
 	assert_eq(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["devour"]}).devours, 1, "an old save's devour keyword reads as the rule, a stack a kill")
 	assert_eq(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": true}).devours, 1, "and an old save's true as one")
@@ -2926,8 +2926,8 @@ func test_the_talons_kill_rule_feeds_overcharged_per_kill_and_it_halves_each_rou
 		if sk.front[col] == null:
 			kills += 1
 	assert_eq(kills, 2, "two ghouls fell to the spread")
-	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack of Overcharged per kill")
-	assert_true("\n".join(sk.log).contains("kills revenant: Overcharged"), "the log says what the kill gave")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack of Empowered per kill")
+	assert_true("\n".join(sk.log).contains("kills revenant: Empowered"), "the log says what the kill gave")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "it halves at the round's end")
 	sk.start_round()
@@ -2970,7 +2970,7 @@ func test_a_timed_buff_granted_again_later_keeps_each_grants_own_rounds() -> voi
 	# Ryan, 16 October: "Timed stacks should decay based on when they started. Not stack and
 	# refresh." A buff for two rounds granted in round 1 runs through round 2; granted again in
 	# round 2 it runs through round 3, and never lengthens the first grant's stack.
-	# Primed is the timed buff here: Overcharged halves on its own clock and takes no rounds
+	# Primed is the timed buff here: Empowered halves on its own clock and takes no rounds
 	# since 18 October (Ryan: a status decays to zero or is timed, never both).
 	var gun := Face.attack(20, L)
 	var m := _mech("A", Die.single(gun))
@@ -3040,7 +3040,7 @@ func test_a_two_round_buff_spent_in_two_rounds_goes_a_grant_at_a_time() -> void:
 	# The same through the skirmish: a buff entry for two rounds, spent in round 1 and again in
 	# round 2, leaves two stacks in round 2, and round 1's goes at the end of round 2.
 	var sk := Skirmish.new(1)
-	var lattice := Face.buff("primed", 1, 2)   # a timed buff: Overcharged halves on its own clock since 18 October
+	var lattice := Face.buff("primed", 1, 2)   # a timed buff: Empowered halves on its own clock since 18 October
 	var m := _mech("A", Die.single(lattice), 40, 300)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
@@ -3061,7 +3061,7 @@ func test_a_two_round_buff_spent_in_two_rounds_goes_a_grant_at_a_time() -> void:
 
 func test_removing_a_status_clears_every_grant_of_it() -> void:
 	var m := _mech("A", Die.single(Face.attack(20, L)))
-	Effects.grant_buff(m, "primed", 1, "buff", 2)   # a timed buff (Overcharged halves on its own since 18 October)
+	Effects.grant_buff(m, "primed", 1, "buff", 2)   # a timed buff (Empowered halves on its own since 18 October)
 	Effects.grant_buff(m, "primed", 2, "buff", 3)
 	assert_eq(m.modifiers.size(), 2, "two grants")
 	assert_true(Effects.remove(m, "primed"), "the status went")
@@ -3469,7 +3469,7 @@ func test_spillover_strikes_are_lost_once_the_foe_behind_falls() -> void:
 	var fed: Foe = s2.back[c2]
 	assert_true(s2.assign(0, s2.front[c2]), "the talons at the ghoul")
 	assert_false(fed.alive(), "the archer falls to the spill")
-	assert_true("\n".join(s2.log).contains("A kills archer: Overcharged"), "and feeds the talons' rule")
+	assert_true("\n".join(s2.log).contains("A kills archer: Empowered"), "and feeds the talons' rule")
 	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack for each foe killed, the ghoul and the archer")
 	assert_eq("\n".join(s2.log).count("A spills over: "), 2, "and nothing spills past the fallen archer")
 
@@ -4052,7 +4052,7 @@ func test_a_rally_lands_at_once_and_a_foe_that_has_acted_carries_it_to_its_next_
 	# The rallier strikes nothing, so it stands right of the ghoul and acts after it (Ryan, 26
 	# October: "howl is more clear if it gives kindled for the next action, which could be the
 	# turn its granted"): the ghoul has struck by the time the rally lands, so it carries its
-	# Kindled to its next move and spends it there.
+	# Empowered to its next move and spends it there.
 	var sk := Skirmish.new(7, 2)
 	var m := _mech("A", Die.single(Face.blank()), 0, 300)
 	sk.add_mech(m)
@@ -4084,7 +4084,7 @@ func test_a_rally_lands_at_once_and_a_foe_that_has_acted_carries_it_to_its_next_
 
 func test_a_rally_lifts_the_foes_acting_after_it_this_turn_and_their_intents_show_it() -> void:
 	# The rallier is the heaviest hitter, so it stands left and acts first: the foe after it is
-	# Kindled before its blow, at the move's own value, and its intent shows the lifted number
+	# Empowered before its blow, at the move's own value, and its intent shows the lifted number
 	# from the round's start (Ryan, 26 October: "The intents should take into account incoming
 	# buffs").
 	var sk := Skirmish.new(11, 2)
@@ -4177,7 +4177,7 @@ func test_a_rally_reaches_every_foe_after_it_at_its_value_and_two_rallies_add() 
 
 
 func test_a_suppress_takes_a_kindled_move_and_a_countdown_carries_its_rally_to_the_blow() -> void:
-	# A Suppress that takes the move takes the Kindled riding on it (Ryan, 17 October: "they
+	# A Suppress that takes the move takes the Empowered riding on it (Ryan, 17 October: "they
 	# lose their next action"); a countdown gathering carries a rally to the blow it lands, any
 	# rally this round reaching it, whoever acts first.
 	var sk := Skirmish.new(5, 3)
@@ -4205,7 +4205,7 @@ func test_a_suppress_takes_a_kindled_move_and_a_countdown_carries_its_rally_to_t
 	assert_eq(sk.foe_blow(lancer), 34, "the Jump lands lifted")
 	sk.end_round()
 	assert_eq(m.hull, 490 - 34 - 1, "the lifted Jump and the lord's 1; the ghoul lost its move")
-	assert_false(Effects.has(g, "kindled"), "and the Kindled riding on it")
+	assert_false(Effects.has(g, "kindled"), "and the Empowered riding on it")
 	assert_false(Effects.has(lancer, "kindled"), "the Jump spent the lancer's")
 
 
@@ -4219,11 +4219,11 @@ func test_a_special_spends_a_kindled_move_for_nothing() -> void:
 	sk.add_foes([g])
 	sk.begin()
 	Effects.grant(g, Effects.make(Effects.kindled(6), Effects.SKIRMISH, "foe:test"))
-	assert_eq(Effects.STATUS["kindled"]["spent_by"], "move", "Kindled rides the next move")
+	assert_eq(Effects.STATUS["kindled"]["spent_by"], "move", "Empowered rides the next move")
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.hull, 300, "a regrow lands no blow")
-	assert_false(Effects.has(g, "kindled"), "and spends the Kindled all the same")
+	assert_false(Effects.has(g, "kindled"), "and spends the Empowered all the same")
 
 
 ## The round preview (Ryan, 26 October: it "should account for every single thing that will
@@ -6255,7 +6255,7 @@ func test_a_later_strike_of_a_flak_spend_lands_on_the_flak_the_first_laid() -> v
 	assert_eq(Effects.stacks_of(g, "flakked"), 3, "a stack a strike")
 
 
-## Flak halves at the end of each round, rounded down, until gone (Overcharged's clock): a
+## Flak halves at the end of each round, rounded down, until gone (Empowered's clock): a
 ## foe's statuses tick at its action, and its Flak waits for the round's end.
 func test_flak_halves_at_the_rounds_end_rounded_down_until_gone() -> void:
 	var sk := Skirmish.new(1)
@@ -7039,7 +7039,7 @@ func test_a_silence_mutes_the_keywords_for_the_round_and_leaves_the_buffs() -> v
 	assert_true(Effects.has(u, "silenced"), "Silenced")
 	assert_true(str(sk.log).contains("silences A"), "the log says so")
 	assert_eq(u.hull, 200, "no blow")
-	assert_true(Effects.has(u, "overcharged"), "its Overcharged counts: a silence leaves the buffs")
+	assert_true(Effects.has(u, "overcharged"), "its Empowered counts: a silence leaves the buffs")
 	Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	assert_eq(Effects.stacks_of(u, "rage"), 2, "a store fills and spends as ever under a silence")
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -7065,7 +7065,7 @@ func test_a_silence_mutes_the_keywords_for_the_round_and_leaves_the_buffs() -> v
 	assert_true(s2.assign(0, g), "the torch fires")
 	assert_true(s2.mechs[0].assigned, "Rapid muted: no second action")
 	assert_false(Effects.has(g, "burning"), "Burn muted: no stack")
-	assert_eq(g.hp, 500 - 12, "its Overcharged still adds: ten and two")
+	assert_eq(g.hp, 500 - 12, "its Empowered still adds: ten and two")
 	# A silenced Spread lands its blow alone, and a silenced Suppress suppresses nothing.
 	var sweep := Face.attack(4, L, [K.CLEAVE])
 	sweep.cleave = 2
@@ -7169,12 +7169,12 @@ func test_a_purge_takes_what_a_die_face_bought_and_sleeps_what_the_machine_is() 
 	Effects.stack(u, Effects.STATUS["rage"], Effects.BATTLE, "mech", 2, Effects.DECAY_NONE)
 	sk.start_round()
 	sk.end_round()
-	assert_false(Effects.has(u, "overcharged"), "the Coil's Overcharged is gone")
+	assert_false(Effects.has(u, "overcharged"), "the Coil's Empowered is gone")
 	assert_true(Effects.asleep(u).is_empty(), "for good: nothing of it sleeps")
 	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "rage")], [3, 2], "the stores stay, the battle's rage too")
 	assert_eq(u.armour, 5, "the passive stays")
 	assert_eq(u.hull, 200, "no blow")
-	assert_true("\n".join(sk.log).contains("purges A: Overcharged gone"), "the log says what went")
+	assert_true("\n".join(sk.log).contains("purges A: Empowered gone"), "the log says what went")
 	sk.start_round()
 	assert_false(Effects.has(u, "overcharged"), "and nothing comes back")
 	# The seal sleeps: its armour gone for the enemy's turn, its price (the cooling it stops)
@@ -7865,7 +7865,7 @@ func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
 	sk.start_round()
 	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2)
 	shown = sk.shown_face(ms, gun)
-	assert_eq(sk.shown_number(ms, shown, plate), 2, "Overcharged on each strike, the armour off each")
+	assert_eq(sk.shown_number(ms, shown, plate), 2, "Empowered on each strike, the armour off each")
 	ms.face_index = 0
 	assert_true(sk.assign(0, plate), "fired on plate")
 	assert_eq(plate.hp, 96, "(1 + 2 - 1) twice")

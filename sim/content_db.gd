@@ -471,7 +471,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
 		elif Effects.is_status(str(d[5])):
-			# A status the battle keeps (the Ammit's Overcharged, 16 October): its count, kept for
+			# A status the battle keeps (the Ammit's Empowered, 16 October): its count, kept for
 			# the battle.
 			effects.append({"name": head + (" ×%d" % int(d[4]) if int(d[4]) > 1 else ""), "text": str(d[1]), "kind": "reward", "note": "KEPT FOR THE BATTLE"})
 		else:
@@ -1019,7 +1019,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
 	# loads a shot for a bonus each.
 	if fd.has("devours") and (kind != "attack" or int(fd["devours"]) <= 0):
-		errs.append("%s: devours is the stacks of Overcharged a kill gives its owner: a positive number on an attack" % where)
+		errs.append("%s: devours is the stacks of Empowered a kill gives its owner: a positive number on an attack" % where)
 	if Array(fd.get("keywords", [])).has("devour"):
 		errs.append("%s: devour is no keyword since 11 October: write devours: <the stacks a kill gives>" % where)
 	# Burn is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
@@ -1224,7 +1224,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# whole at the round's end is never granted for longer.
 		if str(Effects.STATUS.get(st, {}).get("decay", "")) == "round" and int(fd.get("rounds", 1)) > 1:
 			errs.append("%s: %s lasts until the round's end, so a buff grants it for one round" % [where, st])
-		# A status that decays to zero on its own clock (Overcharged halving) has no duration
+		# A status that decays to zero on its own clock (Empowered halving) has no duration
 		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
 		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
 			errs.append("%s: %s halves at the round's end on its own, so a buff grants it stacks and no rounds" % [where, st])

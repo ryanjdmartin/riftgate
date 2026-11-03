@@ -693,7 +693,7 @@ func incoming_rally(x: Foe) -> int:
 ## one for a countdown still gathering, whose blow lands after the round. Nothing reaches a
 ## foe that has acted, or one that stepped up this round (its next move is next round's). A
 ## rallier killed, Suppressed or Disrupted drops out at once, so the intents do too; once a
-## rally lands it is the foe's own Kindled.
+## rally lands it is the foe's own Empowered.
 func rallies_on(x: Foe) -> Array[Foe]:
 	var out: Array[Foe] = []
 	if x == null or not x.alive() or x.fresh or _acted.has(x):
@@ -1959,7 +1959,7 @@ func end_round() -> int:
 	_enemy_turn()
 	_tick_mechs()
 	for f in field_foes():
-		Effects.halve(f)   # a foe's halving statuses (Flak) halve at the round's end, Overcharged's clock
+		Effects.halve(f)   # a foe's halving statuses (Flak) halve at the round's end, Empowered's clock
 	_trim_overshield()
 	_regrow_parts()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
@@ -2022,7 +2022,7 @@ func _enemy_turn() -> void:
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + regrow)
 			log.append("%s regenerates %d" % [f.display_name, f.hp - before])
-		# Its move this turn, landing or lost to a Suppress, spends what a rally gave it (Kindled,
+		# Its move this turn, landing or lost to a Suppress, spends what a rally gave it (Empowered,
 		# 26 October); a countdown still gathering carries it to the blow it lands, and a foe
 		# that stepped up this round has had its round, so it keeps it for its next.
 		var moves := not f.fresh and not f.gathering()
@@ -2492,7 +2492,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		# reaches takes its shape's number (Spread's, Penetrate's, Splash's, Chain's on a Shocked
 		# conductor, whose Shock stands, no strike being aimed at it) in place of the roll,
 		# through the same order, the firer's modifiers on it and its own reads. Every blow of the
-		# strike is read before any lands, so a kill in it (the talons' Overcharged) feeds the next
+		# strike is read before any lands, so a kill in it (the talons' Empowered) feeds the next
 		# strike, never this one's other blows.
 		var blows := {}
 		for foe in hit:
@@ -3096,7 +3096,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			else:
 				log.append("%s: %s, and nothing answers" % [f.display_name, str(a.get("name", "calls"))])
 		"rally":
-			# Kindled lands at once on every other foe on the field, at the move's own value
+			# Empowered lands at once on every other foe on the field, at the move's own value
 			# (Ryan, 26 October: "howl is more clear if it gives kindled for the next action,
 			# which could be the turn its granted"): one acting after the rallier this turn hits
 			# harder now, one that has acted carries it to its next move, and every intent
@@ -3156,7 +3156,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			log.append("%s: %s, %d of its own warded against the team's marks" % [f.display_name, str(a.get("name", "hallows")), warded])
 		"prime":
 			# A stoker (28 October, the Peak's by lean): Primed at its value on every other foe on
-			# the field at once, as a rally's Kindled lands, each foe's next move spending it.
+			# the field at once, as a rally's Empowered lands, each foe's next move spending it.
 			var primed := 0
 			for other in field_foes():
 				if other != f and other.alive():
@@ -3929,8 +3929,8 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whol
 
 ## The Soulcutter Talons' rule (28 September; built 29 September; a rule printed on its one
 ## carrier and no keyword to learn since 11 October, Ryan: "devour is not a thing"): every foe
-## the entry kills gives its owner `per_kill` stacks of Overcharged (a spread that kills two
-## feeds twice, a Chain on every conductor it kills). The stacks halve each round like any Overcharged;
+## the entry kills gives its owner `per_kill` stacks of Empowered (a spread that kills two
+## feeds twice, a Chain on every conductor it kills). The stacks halve each round like any Empowered;
 ## on the Ammit its Quintessence Tap keeps them for the battle (Effects.stack applies the keep).
 func _overcharge_on_kill(ms: MechState, foe: Foe, per_kill: int) -> void:
 	var stacks := _stacks_from(ms, "overcharged", per_kill)

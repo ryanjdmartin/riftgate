@@ -69,7 +69,7 @@ const DECAY_TICK := 1    # loses a stack each tick, gone at zero
 const DECAY_ROUND := 2   # gone at its owner's next tick, every stack at once (Braced: one turn from any source, 12 October)
 const DECAY_TURN := 3    # ticks at the end of its owner's turn and loses a stack there, not at the round's end (a machine's Burning, 13 October)
 const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every stack going there at once (a machine's Scorched, 13 October: it never piles up)
-const DECAY_HALF := 5    # halves at its owner's tick, rounded down, gone at zero (Overcharged, 18 October: a halving rule has no duration)
+const DECAY_HALF := 5    # halves at its owner's tick, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a rapid component's own switch-off keeps the turn finite).
@@ -133,7 +133,7 @@ const STATUS := {
 	# source feeding so many stacks a round settles near twice that, where a stack fading a
 	# round climbed without limit ("stacking to the moon and fueling massive ramp strategies").
 	# The Ammit's Quintessence Tap keeps every grant of it for the battle (stack()).
-	"overcharged": {"id": "overcharged", "name": "Overcharged", "description": "Attacks deal +1 damage a stack. Halves at the end of each round, rounded down.", "decay": "half",
+	"overcharged": {"id": "overcharged", "name": "Empowered", "description": "Attacks deal +1 damage a stack. Halves at the end of each round, rounded down.", "decay": "half",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]},
 	# Armoured (Braced until 18 October; the engine id stays) is temporary armour (2 October):
 	# flat off every blow, the same word and icon as the chassis stat, never a percentage, and
@@ -195,8 +195,8 @@ const STATUS := {
 	"rallied": {"id": "rallied", "name": "Rallied", "description": "The team has one reroll more this round.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
-	# its brace (above): Kindled rides its next move; Risen is a charge spent by a death.
-	# Kindled carries its rally's own value (13 October; kindled() below) and lands the moment
+	# its brace (above): Empowered rides its next move; Risen is a charge spent by a death.
+	# Empowered carries its rally's own value (13 October; kindled() below) and lands the moment
 	# the rally does, on every other foe on the field (Ryan, 26 October: "howl is more clear if
 	# it gives kindled for the next action, which could be the turn its granted"): a foe acting
 	# after the rallier spends it this turn, one that has acted carries it to its next move.
@@ -205,9 +205,9 @@ const STATUS := {
 	# the move takes it too, and a countdown still gathering carries it to the blow it lands.
 	# The intents read a rally on its way (Skirmish.incoming_rally), so no foe strikes above
 	# the number it showed. An add before the factor, one damage formula for the whole game
-	# (Ryan, 26 October), as Overcharged is on the machines' side. Each grant is its own, its
+	# (Ryan, 26 October), as Empowered is on the machines' side. Each grant is its own, its
 	# rally's value; the 2 here is only the default a bare grant would carry.
-	"kindled": {"id": "kindled", "name": "Kindled", "description": "Its next move hits {value} harder, then it is spent.", "decay": "none", "spent_by": "move",
+	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its next move hits {value} harder, then it is spent.", "decay": "none", "spent_by": "move",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
@@ -243,7 +243,7 @@ const STATUS := {
 	# strike of 0 included (Ryan, 25 October: "Flak and overcharge exist in part to get past
 	# armour"), an add before the multiplies (a Shocked foe takes a strike aimed at it plus Flak, doubled) and
 	# before its armour comes off (the bible's armour row); equipment's blow stays nothing
-	# (damage_taken). The stacks halve at the end of each round, rounded down (Overcharged's
+	# (damage_taken). The stacks halve at the end of each round, rounded down (Empowered's
 	# clock: Skirmish.end_round halves a foe's), so a sprayer feeding three a round settles near
 	# six and a boss never ramps. The clock is this entry's decay, read where Flak is laid, by
 	# the bot and by the hold (stacks_next_round), so the stock pass's loop can read a stack a
@@ -313,7 +313,7 @@ const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier
 
 ## Is this id one of the engine's statuses: an id in STATUS, or a die entry's Corrupted or
 ## Disabled (corrupted_<n>, disabled_<n>, one an entry)? A status is a chip in the fight
-## whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so anything that
+## whatever its scope (Ryan, 16 October: the Ammit is Empowered, "so anything that
 ## interacts with overcharged needs it displayed"); a passive, a module's rule or a battle
 ## reward is none.
 static func is_status(id: String) -> bool:
@@ -325,7 +325,7 @@ static func is_status(id: String) -> bool:
 	return false
 
 
-## Kindled at a rally's own value: the status above with the move's value in place of the
+## Empowered at a rally's own value: the status above with the move's value in place of the
 ## default, so the Howl's 5 is 5 and the chip says so.
 static func kindled(value: int) -> Dictionary:
 	var d: Dictionary = STATUS["kindled"].duplicate(true)
@@ -360,7 +360,7 @@ static func regrowth(u) -> int:
 
 ## Primed on a foe at a stoker's value (28 October): its next move's blows each leave that much
 ## Burning on the machine they hit, as a Burn rider would, and the move spends it, whatever it
-## is (Kindled's clock); a grant of its own, so two stokings add.
+## is (Empowered's clock); a grant of its own, so two stokings add.
 static func primed_foe(value: int, source: String) -> Modifier:
 	var d: Dictionary = STATUS["primed"].duplicate(true)
 	d["description"] = "Its next move's blows each leave %d Burning on the machine they hit; the move spends it." % maxi(1, value)
@@ -413,7 +413,7 @@ static func brace_stacks(value: int) -> int:
 
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
-## own buffs (Braced, Kindled, Getting Back Up).
+## own buffs (Braced, Empowered, Getting Back Up).
 const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "syrinx_drone"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
@@ -582,7 +582,7 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 	return grant(u, m)
 
 
-## Every live stack of a status, across scopes and grants: a buff's Overcharged for the round
+## Every live stack of a status, across scopes and grants: a buff's Empowered for the round
 ## and devour's for the skirmish, or a timed buff spent in two rounds, are one status to the
 ## machine.
 static func stacks_of(u, id: String) -> int:
@@ -745,7 +745,7 @@ static func turn_tick(u) -> Dictionary:
 ## every tick-decaying status loses a stack and the empty ones go. A machine's turn is the
 ## round's end, so its halving statuses halve here too; a foe's comes at its action, so it
 ## passes `halving` false and its halving statuses wait for the round's end (halve: Flak on
-## Overcharged's clock, 21 October).
+## Empowered's clock, 21 October).
 static func tick(u, halving: bool = true) -> Dictionary:
 	var out := tick_preview(u)
 	var keep: Array = []
@@ -767,7 +767,7 @@ static func tick(u, halving: bool = true) -> Dictionary:
 
 
 ## The round's end for a foe (Flak, 21 October: it halves at the end of each round, rounded
-## down, Overcharged's clock): every halving status halves and the empty ones go. Its other
+## down, Empowered's clock): every halving status halves and the empty ones go. Its other
 ## statuses tick at its action (tick).
 static func halve(u) -> void:
 	var keep: Array = []
@@ -1014,7 +1014,7 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	if face != null and face.is_debuff():
 		# A debuff deals nothing under any effect (Ryan's die grammar, 20 and 21 October): no
-		# flat add (Overcharged, Spun Up), no multiply, no floor, no burn of a Primed machine;
+		# flat add (Empowered, Spun Up), no multiply, no floor, no burn of a Primed machine;
 		# its heat runs as a weapon's and its keywords are its whole effect. Read on the entry as
 		# spent, so a debuff the Cottonmouth's drum fires is its shot, a gun.
 		out_dmg = 0
@@ -1320,7 +1320,7 @@ static func extra_stacks(u, status_id: String, heat: int) -> int:
 	return maxi(0, n)
 
 
-## What a foe's blows gain from its statuses (add_attack, static; a Kindled foe), per stack.
+## What a foe's blows gain from its statuses (add_attack, static; a Empowered foe), per stack.
 static func foe_attack_bonus(f) -> int:
 	var n := 0
 	for pair in _taking_part(f, "static", null):
@@ -1355,7 +1355,7 @@ static func armour_against(u, rank: int) -> int:
 
 
 ## Does a passive keep a status from fading on this machine and carry it through the battle
-## (keep_status, static; the Ammit's Quintessence Tap on Overcharged)?
+## (keep_status, static; the Ammit's Quintessence Tap on Empowered)?
 static func keeps(u, status_id: String) -> bool:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "keep_status" and str(pair[0].get("value", "")) == status_id:
@@ -1623,7 +1623,7 @@ static func keywords_muted(u) -> bool:
 	return false
 
 
-## Is this modifier one a purge reaches: a buff (a kept Overcharged
+## Is this modifier one a purge reaches: a buff (a kept Empowered
 ## too), never a store (Ryan, 21 October: a store is a capped resource, as heat and the
 ## magazine are, so the rage, the hopper and the Muster stay), a passive, a module's rule or a
 ## count?
@@ -1686,7 +1686,7 @@ static func bought(m) -> bool:
 
 
 ## The stacks of buffs a purge can reach on a machine: what a foe that aims at the buffed reads,
-## and what a purger's condition asks (28 October). Neither a kept one (the Ammit's Overcharged,
+## and what a purger's condition asks (28 October). Neither a kept one (the Ammit's Empowered,
 ## its passive's own) nor one already asleep counts.
 static func buff_stacks(u) -> int:
 	var n := 0
@@ -1964,7 +1964,7 @@ static func cleansable_disable(u, index: int) -> bool:
 ## A buff component's grant (29 September): `stacks` of a machine status through the end of
 ## `until_round`. A grant ending the same round as one already there stacks onto it; one
 ## ending another round is its own, and each goes when its own rounds run out (16 October).
-## A status that decays to zero on its own (Overcharged, halving) takes no rounds: the grant
+## A status that decays to zero on its own (Empowered, halving) takes no rounds: the grant
 ## carries the status's decay and lasts the skirmish or until it runs out (18 October).
 static func grant_buff(u, status_id: String, stacks: int, source: String, until_round: int) -> Modifier:
 	if not STATUS.has(status_id):

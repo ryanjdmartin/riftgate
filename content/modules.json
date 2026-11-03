@@ -355,7 +355,7 @@
     "hull": 4
    },
    "text": {
-    "description": "Taking hull damage Overcharges it, a stack a blow.",
+    "description": "Taking hull damage Empowers it, a stack a blow.",
     "effects": [
      {
       "trigger": "on_hull_damage",

@@ -309,7 +309,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_eq(int(gauges["Shield"]["parts"][1]["trend"]), 0, "one nothing moved: plain")
 	assert_true(s._details_entry.text().contains("Armour %d · Cooling %d" % [m.armour, m.cooling]), "its armour and cooling as stats, nothing moved: %s" % s._details_entry.text())
 	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
-	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Overcharged")), "every chip listed with what it does: %s" % str(chips))
+	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Empowered")), "every chip listed with what it does: %s" % str(chips))
 	# A foe: its HP, its attack a rally raised (the foe's gain: up and green), its intent.
 	Effects.grant_for_rounds(foe, Effects.kindled(2), "test", sk.round + 1)
 	s._refresh()
@@ -906,9 +906,9 @@ func _chips_for(s: SkirmishScreen, i: int, id: String) -> Array[String]:
 	return texts
 
 
-## Every status is a chip whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so
+## Every status is a chip whatever its scope (Ryan, 16 October: the Ammit is Empowered, "so
 ## anything that interacts with overcharged needs it displayed"). The talons' kills'
-## Overcharged, kept for the battle when its owner keeps the status, is a chip with its count;
+## Empowered, kept for the battle when its owner keeps the status, is a chip with its count;
 ## a buff's joins it in the one chip (kept too, since 18 October: the Tap keeps every grant),
 ## and the hold and the codex each list it once.
 func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
@@ -923,7 +923,7 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	Effects.remove(m, "overcharged")
-	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Overcharged")
+	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Empowered")
 	sk._overcharge_on_kill(sk.mechs[0], sk.front[0], 1)
 	sk._overcharge_on_kill(sk.mechs[0], sk.front[0], 1)
 	var scopes: Array = []
@@ -932,25 +932,25 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 			scopes.append(int(d[3]))
 	assert_eq(scopes, [Effects.BATTLE], "two kills kept for the battle: one grant, below the skirmish's scope")
 	s._refresh()
-	assert_eq(_chips_for(s, 0, "overcharged"), ["×2"] as Array[String], "an Overcharged chip with its count")
+	assert_eq(_chips_for(s, 0, "overcharged"), ["×2"] as Array[String], "an Empowered chip with its count")
 	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round)
 	s._refresh()
 	assert_eq(_chips_for(s, 0, "overcharged"), ["×3"] as Array[String], "a buff's for the round joins it in one chip")
 	var held := 0
 	for l in s._mech_hold_lines(0):
-		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Overcharged"):
+		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Empowered"):
 			held += 1
 	assert_eq(held, 1, "the hold lists it once")
 	var named := 0
 	for note in Effects.explain(m, m.die.faces[0]):
-		if note.contains("Overcharged"):
+		if note.contains("Empowered"):
 			named += 1
 	assert_eq(named, 1, "the die's row names it once")
 	var listed := 0
 	for e in db.codex_for_unit(m)["effects"]:
-		if str(e["name"]).begins_with("OVERCHARGED"):
+		if str(e["name"]).begins_with("EMPOWERED"):
 			listed += 1
-			assert_eq([str(e["name"]), str(e["note"])], ["OVERCHARGED ×3", "KEPT FOR THE BATTLE"], "a kept status among the active effects, never a reward, with its count, the buff's stack kept with the kills' (Ryan, 18 October)")
+			assert_eq([str(e["name"]), str(e["note"])], ["EMPOWERED ×3", "KEPT FOR THE BATTLE"], "a kept status among the active effects, never a reward, with its count, the buff's stack kept with the kills' (Ryan, 18 October)")
 	assert_eq(listed, 1, "and the codex once: the kept stacks, which the battle carries past this fight")
 	# What is no status stays in the codex: the passive that keeps it, and a battle reward.
 	Effects.grant(m, Effects.make({"id": "spoils", "name": "Spoils", "description": "Hull +10.",

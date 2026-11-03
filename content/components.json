@@ -802,7 +802,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
-    "niche": "The Ammit's locked melee: flat, and each kill Overcharges the Ammit, its scaling threat for the battle and nothing more."
+    "niche": "The Ammit's locked melee: flat, and each kill Empowers the Ammit, its scaling threat for the battle and nothing more."
    },
    "face": {
     "kind": "attack",
@@ -920,7 +920,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Kestrel's answer to a regulator: a coil that pushes an ally's guns past the line for one round.",
-    "niche": "The first buff component: two stacks of Overcharged on a machine for the round."
+    "niche": "The first buff component: two stacks of Empowered on a machine for the round."
    },
    "face": {
     "kind": "buff",
@@ -1863,7 +1863,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Reheat is the afterburner (Ryan named it 21 October), sent to an ally over the flagship's uplink.",
-    "niche": "The Giant Petrel's third lock, a buff (Ryan, 21 October): an ally gains Overcharged 2 and its die rolls again, never onto the entry showing; on an ally whose die is spent the roll gives nothing and the Overcharged halves to one for next round. A locked piece on a tier three, so it may outdo the Overcharge Coil (Ryan: components grow in power as tiers go up).",
+    "niche": "The Giant Petrel's third lock, a buff (Ryan, 21 October): an ally gains Empowered 2 and its die rolls again, never onto the entry showing; on an ally whose die is spent the roll gives nothing and the Empowered halves to one for next round. A locked piece on a tier three, so it may outdo the Overcharge Coil (Ryan: components grow in power as tiers go up).",
     "notes": "Built 30 October: the roll on its target (rolls_target), a reroll of that die never onto the entry showing; a spent die rolls nothing."
    },
    "face": {

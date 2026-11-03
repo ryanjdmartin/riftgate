@@ -48,7 +48,7 @@ CURRENCIES = OrderedDict([
     ("lure", ("A foe's turn drawn (Lure)", "on a foe")),
     ("disrupt", ("A foe's move changed (Disrupt)", "on a foe")),
     ("swap", ("A foe's place changed (Swap)", "on a foe")),
-    ("overcharged", ("Overcharged", "on a machine")),
+    ("overcharged", ("Empowered", "on a machine")),
     ("braced", ("Armoured", "on a machine")),
     ("primed", ("Primed", "on a machine")),
     ("retaliate", ("Retaliate", "on a machine")),
@@ -78,7 +78,7 @@ CURRENCIES = OrderedDict([
     ("muster", ("The Muster", "a store")),
     ("rage", ("Rage", "a store")),
     ("hopper", ("The hopper", "a store")),
-    ("foe_buff", ("A foe's buffs (Armoured, Kindled, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands)", "on a foe")),
+    ("foe_buff", ("A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands)", "on a foe")),
     ("tags", ("Tags", "a label")),
 ])
 

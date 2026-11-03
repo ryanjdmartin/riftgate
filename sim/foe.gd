@@ -14,7 +14,7 @@ extends RefCounted
 ## A move may carry a `when`, the condition that lets the foe pick it this round, and a
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
-## Damage is base attack, plus its Kindled and its swarm, times the action's factor (damage_of);
+## Damage is base attack, plus its Empowered and its swarm, times the action's factor (damage_of);
 ## strikes are separate blows; keywords are tags on the blow (breach: ignores the shield and the
 ## armour, the whole blow to hull).
 
@@ -172,7 +172,7 @@ static func whens_of(a: Dictionary) -> Array:
 	return Array(w) if w is Array else []
 
 
-## What one blow of an action does: base attack, plus what its statuses add (a rally's Kindled),
+## What one blow of an action does: base attack, plus what its statuses add (a rally's Empowered),
 ## `extra` (the rallies the skirmish sees on their way to it, Skirmish.foe_blow) and its swarm,
 ## times its factor, rounded to the nearest whole number: the adds, then the multiplies, one
 ## damage formula for the whole game (Ryan, 26 October: "One formula means one damage formula

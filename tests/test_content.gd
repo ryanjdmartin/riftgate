@@ -1934,7 +1934,7 @@ func test_a_burn_weapon_says_its_stacks() -> void:
 
 
 ## A halving status has no duration (Ryan, 18 October: "Things either decrease to zero, or are
-## timed, not both"): a buff of Overcharged grants stacks and no rounds.
+## timed, not both"): a buff of Empowered grants stacks and no rounds.
 func test_a_buff_of_a_halving_status_takes_no_rounds() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -1947,8 +1947,8 @@ func test_a_buff_of_a_halving_status_takes_no_rounds() -> void:
 	for e in db.validate():
 		if e.begins_with("component timed_coil") and e.contains("stacks and no rounds"):
 			refused = true
-	assert_true(refused, "a buff granting Overcharged for rounds is refused")
-	assert_true(Effects.decays_to_zero(Effects.STATUS["overcharged"]), "Overcharged runs down on its own")
+	assert_true(refused, "a buff granting Empowered for rounds is refused")
+	assert_true(Effects.decays_to_zero(Effects.STATUS["overcharged"]), "Empowered runs down on its own")
 	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed is timed by the component")
 	assert_false(Effects.decays_to_zero(Effects.STATUS["braced"]), "Armoured ends with the round")
 

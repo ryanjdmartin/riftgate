@@ -586,7 +586,7 @@
    "passive": {
     "id": "quintessence_tap",
     "name": "Quintessence Tap",
-    "description": "Overcharged never fades on this machine, whatever granted it, and lasts the battle.",
+    "description": "Empowered never fades on this machine, whatever granted it, and lasts the battle.",
     "effects": [
      {
       "trigger": "static",
@@ -1230,7 +1230,7 @@
    "tier": 3,
    "design": {
     "fantasy": "Kestrel's capital (Ryan, 20 October: from irony, the capital hovers where most of the line flies), the ekranoplan, the Giant Petrel since 21 October, the family's big one over the same sea; the formation leader, aggressive where the Swallowtail is the supportive mobile HQ, pushing its allies to act and keeping the tempo up (Ryan, 21 October).",
-    "niche": "Kestrel's action-economy capstone, the reroll economy all the way (Ryan, 20 October): the team's unspent rerolls bank, up to three; the Immelmann Booster gives the team a reroll on itself, or for three rerolls a spent ally's die rolls again and it acts again; the Spindrift Salvo's kill brews two rerolls; the Reheat Uplink Overcharges an ally and rolls its die. Its own guns are ordinary; its prices are a slot, a fleet that moves at 20 and the rerolls a team needs for its own dice.",
+    "niche": "Kestrel's action-economy capstone, the reroll economy all the way (Ryan, 20 October): the team's unspent rerolls bank, up to three; the Immelmann Booster gives the team a reroll on itself, or for three rerolls a spent ally's die rolls again and it acts again; the Spindrift Salvo's kill brews two rerolls; the Reheat Uplink Empowers an ally and rolls its die. Its own guns are ordinary; its prices are a slot, a fleet that moves at 20 and the rerolls a team needs for its own dice.",
     "notes": "Ryan's go, 21 October (the bible's Kestrel row; its brief, retired 30 October as its engine landed, holds the rounds: git show d84ad16:docs/briefs/kestrel_gun_platform.md). Landed 23 October as planned; its engine built 30 October (the bank, the Booster's price, the Salvo's kill rider, the Uplink's roll and the bot's look-or-action valuation), so it is fielded since. Numbers are placeholders at the stock pass's scale, an assault hover at 44 hull. The stock by kind, a tier three stocking tiers zero to two (a big flat gun, a cold rolled gun, a vent): the Overclocked Railgun, the Twin Autoguns and the Bleed Valve. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, giant_petrel), Ryan's to judge running. After the Lun."
    },
    "codex": "",
