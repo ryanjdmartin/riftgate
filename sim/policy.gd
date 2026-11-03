@@ -465,8 +465,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
 		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
-		# penetrate; the ones that survive the blow are the ones a lure or a disrupt moves
-		# and a shock charges.
+		# penetrate; a lure, a disrupt or a shock lands on a felled foe too (death is the last
+		# check, 3 November) but is worth something only on the ones that survive the blow.
 		var hit: Array = sk.reached_by(f, target).filter(func(n: Foe) -> bool: return n == target or n.alive())
 		if f.has(Face.Keyword.DISRUPT):
 			for foe in hit:

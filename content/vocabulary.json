@@ -243,7 +243,7 @@
    "id": "lure",
    "category": "keyword",
    "name": "Lure",
-   "codex": "Player keyword, on any entry aimed at a foe, a weapon or equipment. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
+   "codex": "Player keyword, on any entry aimed at a foe, a weapon or equipment. Every foe the entry reaches turns on this machine for the round, a felled one too, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
    "status": "implemented",
    "design": {
     "holes": "No status and no chip: the arrow is the record. A draw by an ally is parked (the bible's redirection row)."
@@ -253,7 +253,7 @@
    "id": "shock",
    "category": "keyword",
    "name": "Shock",
-   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next weapon strike aimed at it deals double. The entry's own blow never spends the shock it leaves.",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches is Shocked, a felled one too: the next weapon strike aimed at it deals double. The entry's own blow never spends the shock it leaves.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -263,7 +263,7 @@
    "id": "expose",
    "category": "keyword",
    "name": "Expose",
-   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Exposed through the next round: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches is Exposed through the next round, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
    "status": "implemented",
    "design": {
     "holes": "The formation word exposed stays rules text, so the status's id is exposure."
@@ -2020,7 +2020,7 @@
    "id": "charged",
    "category": "status",
    "name": "Charged",
-   "codex": "Machine buff. While it lasts the machine's weapons fire with Shock, shown on the die: every foe a fire reaches and leaves standing is Shocked after the blows. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the Shock. A Purge lowers it.",
+   "codex": "Machine buff. While it lasts the machine's weapons fire with Shock, shown on the die: every foe a fire reaches is Shocked after the blows, a felled one too. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the Shock. A Purge lowers it.",
    "status": "implemented",
    "design": {
     "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. No piece grants it yet: capacitor pieces are content to propose.",

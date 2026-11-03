@@ -193,10 +193,14 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   once the spend's strikes are done, an application a strike, so no strike of a spend cashes
   or feeds on what the spend lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3 Flak 1
   lands 5, 5 and 5 and leaves Flak 3). Every rider lands so, Burn, Suppress, Web, a passive's
-  lays, Purge and a Primed machine's Burning with them, in the order the strikes earned them,
-  and on the foe its strike killed, so the preview shows the riders beside the skull; a strike
-  on a foe an earlier strike killed lays nothing. Shock, Expose, Lure and Disrupt land after
-  the blow, on what stands.
+  lays, Purge and a Primed machine's Burning with them, in the order the strikes earned them;
+  Shock, Expose, Lure and Disrupt land after the blow.
+- **Death is the last thing checked**: everything a spend or a turn does lands, on a foe or a
+  machine it fells too (every strike's riders, a Shock, an Expose, a Lure's turn, a foe's
+  blow and its riders on a wreck), so the preview shows the chips beside the skull and no
+  trigger goes unfired; the dead are cleared once the spend or the turn is done. Where the
+  next strike goes still reads the field: a sweep walks past an emptied slot, and a foe
+  whose machine fell before its action strikes the next in line.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
   Empowered) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
@@ -265,7 +269,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **The gauges forecast the round**: everything the rest of the round will do as it stands,
   played on a copy of the fight with every rule as it runs: the end of the player's turn (its
   burns and overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
-  rally, a web's burst, a death before it acts, the last act it sets off, a self-destruct) and
+  rally, a web's burst, a death at its tick with its blow landing all the same, the last act it
+  sets off, a self-destruct) and
   the round's end. The die in hand counts only over somewhere it may be spent, as it would be
   spent there. A foe whose machine falls before it acts strikes the next machine in line: its
   arrow stays on its pick, and a second, dashed, goes to the machine its blow lands on.
@@ -315,19 +320,19 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
   nothing; a Ward turns it away; one already suppressed for that action gains nothing more.
-- **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
+- **Shock**: every foe the spend reaches is Shocked after the blow, the ones it fells included.
 - **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
   each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
   and an arc adds no heat. Its footprint, like an area's, is read from the strike's own foe: an arc
   spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
   Shocked takes one blow, the area's.
-- **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
+- **Lure**: every foe reached turns on the spender for the round, a felled one too. The Whip
   Scorpion's Siphon reaches every foe in the fight, and every blow a foe lands on it that
   round adds 2 heat to it (Siphoning), in the enemy's turn, after the overheat.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare): every foe reached
-  and left standing is Exposed through the next round; a second Expose refreshes it, never
+  is Exposed through the next round, a felled one too; a second Expose refreshes it, never
   adds.
-- **Disrupt**: every foe reached and left standing takes the next move in its list that its
+- **Disrupt**: every foe reached takes the next move in its list that its
   conditions allow, keeping its pick while the machine stands and is in the fight; a new one
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
@@ -745,7 +750,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   that falls may grow back after so many rounds while the core stands; a core that falls takes
   its parts with it.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
-  statuses tick (Burning first, which may kill it; then decaying stacks drop; Vitriol after
+  statuses tick (Burning first, which may fell it, and it acts all the same, its death the
+  turn's last check; then decaying stacks drop; Vitriol after
   Burning, on what it leaves); a suppressed foe does nothing, and at the round's end, after every
   Numbed loses a stack, it gains its stun resist in Numbed; a web
   on it bursts at the end of its action, skipped or not. A foe with no machine to strike (every one fallen or out of the fight) loses its blow

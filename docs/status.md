@@ -25,8 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 877 tests, 208,117 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, every
-  rider after the hits and on the foe it felled, Sweep a reach with its rank bracketed, after UNDO, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
+- Tests: 880 tests, 208,137 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, every
+  rider after the hits, death the last check, Sweep a reach with its rank bracketed, after UNDO, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
   overheat what-ifs, shield persona and support ladders landed on the 31st, over the Petrels of
   `claude/affectionate-ramanujan-5d24t6`, the foes' move-order fix of
   `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
@@ -205,7 +205,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   with Shock would apply it after both hits ... Cryo should work the same way, resulting in 2
   applications"; the bible's row beside the blow's order): every rider gathers on its strike's foe
   and lands once the strikes are done, one path ("It should be standard, not branching code"), on
-  the foe its strike killed too, so the preview shows the riders beside the skull; a spend never
+  the foe its strike killed too, and death is the last thing checked since his word of the 3rd
+  (the bible's death-last row: every effect lands on the fallen, a Shock, an Expose, a Lure's turn
+  and a foe's blow on a wreck included, a foe its Burning fells at its action acts all the same,
+  and the dead are cleared after the spend or the turn), so the preview shows every chip beside
+  the skull and no trigger goes unfired; a spend never
   cashes or feeds on what it lays (Flak's self-feed on a later strike went with it: "5,5,5 makes
   way more sense to me"); Charged and Supercooled ride the weapon fired as its keywords, Shock and
   Cryo one more a strike, shown on the die. A sweep dragged over a foe lights and brackets that

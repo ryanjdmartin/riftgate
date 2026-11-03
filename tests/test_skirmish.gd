@@ -957,7 +957,9 @@ func test_forecast_predicts_wreck_and_overheat() -> void:
 	assert_eq(sk.forecast(ms, false)["overheat"], 10, "with or without the die counted: it is spent")
 
 
-func test_forecast_ignores_foes_that_burn_to_death_first() -> void:
+## A foe its Burning fells at its action strikes all the same (Ryan, 3 November: death is the
+## turn's last check), so the forecast counts its blow.
+func test_forecast_counts_a_foe_that_burns_to_death_at_its_action() -> void:
 	var sk := Skirmish.new(3)
 	var m := Unit.mech(1, "A", Vector2i.ZERO)
 	m.die = Die.single(Face.attack(10))
@@ -966,7 +968,7 @@ func test_forecast_ignores_foes_that_burn_to_death_first() -> void:
 	sk.begin()
 	sk.start_round()
 	Effects.stack(sk.front[0], Effects.STATUS["burning"], Effects.SKIRMISH, "test", 10)   # ten stacks, a point each (18 October)
-	assert_eq(sk.forecast(ms)["incoming"], 0, "ten stacks of one kill a ten-hp foe before it strikes")
+	assert_eq(sk.forecast(ms)["incoming"], 25, "ten stacks of one fell a ten-hp foe at its action, and its blow lands all the same")
 
 
 ## A reroll skips only the entry showing; a copy of it may come up, at the odds its copies
@@ -4343,7 +4345,7 @@ func test_the_round_preview_reads_a_cure_that_saves_a_burning_foe() -> void:
 	x.hp = 2
 	Effects.stack(x, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
 	var per := _rule("burning", "tick_hp")
-	assert_eq(sk.hp_after_ticks(x), 0, "alone, its Burning would kill it before it acts")
+	assert_eq(sk.hp_after_ticks(x), 0, "alone, its Burning fells it at its action")
 	var pv := sk.preview_round()
 	assert_true(bool(pv["foes"][x]["alive"]), "cured first, it stands")
 	assert_eq(int(pv["foes"][x]["hp"]), 2 + 5 - 3 * per, "2, cured 5, burnt 3")
@@ -4370,9 +4372,9 @@ func test_the_round_preview_lands_a_last_act_and_reads_a_self_destruct() -> void
 	var pv := sk.preview_round()
 	assert_false(bool(pv["foes"][beast]["alive"]), "it burns to death at its action")
 	assert_false(bool(pv["foes"][bomb]["alive"]), "the bomb spends itself")
-	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 20 - 6, "the Meteor its fall sets off, and the bomb's blow")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 20 - 20 - 6, "its blow lands all the same (death the last check), the Meteor its fall sets off, and the bomb's blow")
 	sk.end_round()
-	assert_eq(m.hull, 100 - 20 - 6, "as they landed")
+	assert_eq(m.hull, 100 - 20 - 20 - 6, "as they landed")
 
 
 ## The preview reads a stun exactly (2 November): a web's burst on a foe with no Numbed is a sure
@@ -4419,8 +4421,9 @@ func test_the_round_preview_spends_the_die_in_hand_only_over_its_target() -> voi
 
 ## Ryan's own case (26 October): "if a player hits with a weapon that grants burn, it should then
 ## show impending death if the burn is sufficient". Over the foe, the Burn the hit lays ticks at
-## its action and kills it before it strikes; spent, the same reads with nothing in hand.
-func test_the_round_preview_reads_a_burn_that_kills_before_the_foe_acts() -> void:
+## its action and fells it, and it strikes all the same (3 November: death is the turn's last
+## check); spent, the same reads with nothing in hand.
+func test_the_round_preview_reads_a_burn_that_fells_the_foe_at_its_action() -> void:
 	var sk := Skirmish.new(4, 2)
 	var torch := Face.attack(1, L, K.BURN)
 	torch.burn = 3
@@ -4435,14 +4438,14 @@ func test_the_round_preview_reads_a_burn_that_kills_before_the_foe_acts() -> voi
 	assert_true(bool(pv["foes"][x]["alive"]), "nothing in hand: it stands")
 	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9 - 6, "and strikes")
 	pv = sk.preview_round(0, x)
-	assert_false(bool(pv["foes"][x]["alive"]), "over it, the Burn the hit lays kills it at its action")
-	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 6, "before it strikes")
+	assert_false(bool(pv["foes"][x]["alive"]), "over it, the Burn the hit lays fells it at its action")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9 - 6, "and it strikes all the same")
 	sk.assign(0, x)
 	pv = sk.preview_round()
 	assert_false(bool(pv["foes"][x]["alive"]), "spent, the same with nothing in hand")
 	sk.end_round()
 	assert_false(x.alive(), "as it fell")
-	assert_eq(m.hull, 100 - 6, "before its blow")
+	assert_eq(m.hull, 100 - 9 - 6, "its blow landed first")
 
 
 ## No pick is ever open (Ryan, 26 October: "the targeting recalculates immediately, showing the
@@ -9121,8 +9124,8 @@ func test_a_reroll_or_a_rapid_spend_is_the_undos_floor_and_a_step_is_not() -> vo
 
 
 ## A rider lands on the foe its strike killed, every one (Ryan, 3 November: "the point is to show
-## that the riders hit, AND it dies"), so the round preview shows them beside the skull; a strike
-## on a foe an earlier strike killed lays nothing.
+## that the riders hit, AND it dies"), so the round preview shows them beside the skull; the
+## whole attack plays out on it, death the last check.
 func test_every_rider_lands_on_the_foe_its_strike_killed_and_the_preview_shows_them() -> void:
 	var sk := Skirmish.new(1, 2)
 	var gun := Face.attack(5, L, [K.BURN, K.CRYO, K.FLAK, K.SUPPRESS, K.WEB])
@@ -9141,6 +9144,84 @@ func test_every_rider_lands_on_the_foe_its_strike_killed_and_the_preview_shows_t
 	for sid in ["burning", "cryoed", "flakked", "suppressed", "webbed"]:
 		assert_true(coming.has(sid), "the %s on its way beside the skull: %s" % [sid, str(coming.keys())])
 	if coming.has("burning"):
-		assert_eq(int(coming["burning"]["stacks"]), 1, "the killing strike's Burn alone: the second strike hit a corpse")
+		assert_eq(int(coming["burning"]["stacks"]), 2, "both strikes' Burn: the whole attack plays out on it (death the last check)")
 	assert_true(sk.assign(0, weak), "fired")
-	assert_eq([Effects.stacks_of(weak, "burning"), Effects.stacks_of(weak, "cryoed"), Effects.stacks_of(weak, "flakked")], [1, 1, 1], "each rider once, from the strike that killed it")
+	assert_eq([Effects.stacks_of(weak, "burning"), Effects.stacks_of(weak, "cryoed"), Effects.stacks_of(weak, "flakked")], [2, 2, 2], "each rider a strike, the felling strike's and the one after")
+
+
+## Death is the last thing checked (Ryan, 3 November: "'death' is just another chip, and is the
+## last thing ever to be checked - the whole attack, or whole turn if it's a predicted death from
+## burn or the like, should be played out"): a felled foe takes everything the spend does to it,
+## both strikes' riders, its Shock, its Expose and the Lure's turn, so the preview shows them
+## beside the skull and no trigger goes unfired; the dead are cleared once the spend is done.
+func test_death_is_the_last_check_a_felled_foe_takes_everything_the_spend_does() -> void:
+	var sk := Skirmish.new(1, 2)
+	var gun := Face.attack(5, L, [K.BURN, K.SHOCK, K.EXPOSE, K.LURE])
+	gun.burn = 1
+	gun.strikes = 2
+	var m := _mech("A", Die.single(gun), 40, 100)
+	sk.add_mech(m)
+	sk.add_mech(_mech("B", Die.single(Face.attack(1, L)), 40, 100))
+	var weak := _ghoul(3, 10)
+	var other := _ghoul(100, 10)
+	sk.add_foes([weak, other])
+	sk.begin()
+	sk.start_round()
+	weak.target = sk.mechs[1]
+	other.target = sk.mechs[1]
+	var pv := sk.preview_round(0, weak)
+	assert_false(bool(pv["foes"][weak]["alive"]), "the first strike kills it")
+	var coming: Dictionary = pv["foes"][weak]["coming"]
+	for sid in ["burning", "shocked", "exposure"]:
+		assert_true(coming.has(sid), "the %s on its way beside the skull: %s" % [sid, str(coming.keys())])
+	assert_eq(int(coming.get("burning", {}).get("stacks", 0)), 2, "both strikes' Burn: the whole attack plays out on it")
+	assert_true(sk.assign(0, weak), "fired")
+	assert_true(not weak.alive() and not sk.field_foes().has(weak), "felled and cleared once the spend is done")
+	assert_eq([Effects.stacks_of(weak, "burning"), Effects.has(weak, "shocked"), Effects.has(weak, "exposure")], [2, true, true], "and it took every effect first")
+	assert_true(weak.target == sk.mechs[0], "the Lure turned it on the spender, felled or not: the altered target shows")
+	assert_eq([other.hp, other.target == sk.mechs[0]], [100, false], "the other foe untouched")
+
+
+## A foe its Burning fells at its action acts all the same (Ryan, 3 November: the whole turn
+## played out, death the last check), so the forecast counts its blow and it lands; the dead
+## are cleared once the turn is done, and a felled foe regrows nothing (the Regenerating race).
+func test_a_foe_its_burn_fells_at_its_action_still_strikes() -> void:
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(m)
+	var g := _ghoul(2, 7)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[0]
+	Effects.stack(g, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	assert_eq(sk.hp_after_ticks(g), 0, "its Burning fells it at its action")
+	assert_true(sk.acting_on(sk.mechs[0]).has(g), "and it acts all the same: the forecast counts its blow")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 7, "its blow in the incoming")
+	var pv := sk.preview_round()
+	assert_eq([int(pv["mechs"][0]["hull_after"]), bool(pv["foes"][g]["alive"])], [93, false], "the preview: its blow lands and it dies")
+	sk.end_round()
+	assert_eq(m.hull, 93, "the blow landed")
+	assert_true(not g.alive() and not sk.field_foes().has(g), "and it is gone once the turn is done")
+	assert_true("\n".join(sk.log).contains("burns for"), "the log told the burn")
+
+
+## A foe's second strike lands on the machine its first wrecked, its rider with it (death the
+## turn's last check), so the forecast shows the chips beside the wreck's skull.
+func test_a_foes_later_strikes_and_riders_land_on_the_machine_its_first_wrecked() -> void:
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.blank()), 0, 5)
+	sk.add_mech(m)
+	sk.add_mech(_mech("B", Die.single(Face.blank()), 40, 100))   # the fight goes on past the wreck, so its chips stand to be read
+	var g := _ghoul(100, 10)
+	g.actions[0]["strikes"] = 2
+	g.actions[0]["keywords"] = ["burn"]
+	g.actions[0]["burn"] = 1
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[0]
+	sk.end_round()
+	assert_false(m.hull > 0, "the first strike wrecks it")
+	assert_eq(sk.turn_events.size(), 2, "and the second lands on the wreck all the same")
+	assert_eq(Effects.stacks_of(m, "burning_mech"), 2, "both strikes' Burning on it, a chip beside the skull")

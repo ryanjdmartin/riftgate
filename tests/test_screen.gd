@@ -1197,7 +1197,7 @@ func test_a_foes_gauge_previews_what_its_ticks_will_take() -> void:
 	Effects.stack(b, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 4)
 	s._refresh()
 	assert_eq(int(s._foe_view_for(a).bars[0][3]), 10 - 2 * per, "its Burning's tick pending on its gauge")
-	assert_eq(int(s._foe_view_for(b).bars[0][3]), 0, "Burning that kills it before it acts: the whole bar")
+	assert_eq(int(s._foe_view_for(b).bars[0][3]), 0, "Burning that fells it at its action: the whole bar")
 	assert_eq(sk.hp_after_ticks(b), 0, "the same number the forecast reads")
 	sk.end_round()
 	assert_false(b.alive(), "and it burnt to death at its action")
