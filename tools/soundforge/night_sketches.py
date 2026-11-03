@@ -1,27 +1,41 @@
-"""Night Shift's ninth round as a pair (Ryan, 2 November, on the eighth): the tenth, and the bass down.
+"""Night Shift's tenth round as a pair (Ryan, 3 November, on the ninth): the bass's voice, R as a
+jam, the map without its muted guitar.
 
-  "Night shift - the tenth up is good, and maybe bring the bass down 3db. Actually I'd like to hear
-  the whole track with driven bass down 3 db everywhere."
+  "Can I hear the whole battle track with the Synth bass instead of the driven bass? Or, a whole new
+  voice that's more of a slightly distorted bass/slap bass? R also can be rewritten and extended,
+  adding more instrument and tune play (i.e. different riff variations, different voices taking
+  priority, etc), to really sell the "jam" vibe. Map half - Can I hear it without the backing
+  guitar on the quarters throughout?"
 
-In R the guitar plays a tenth over the bass, an octave and a third along E minor, an approach note
-off the scale a minor third up. The driven bass is 3 dB down wherever it plays: the walk, the hold
-under the two synth lines, the breakdown's held roots; a set puts the return beside the bass as it
-was.
+The bass: every part the driven bass played (the walk, the hold under the two synth lines, the
+breakdown's held roots) on the synth bass (the crunch synth dark and soft, Hold The Line's map
+K's) for the full pair, and on a slapped bass a little driven in a set of whole battle halves
+beside the driven bass as the ninth round had it: the slap at the driven bass's level, the synth
+bass, which a phone plays little of, 3 dB under it there and 3 dB over it in full (BASS_VOICES).
+
+R twice as long, sixteen bars in turns of two, each turn giving a different voice the lead: the
+head (the walk with the guitar a tenth over the bass, the hook pushed on the synth lead); the hook
+traded, its call on the synth lead and the lead guitar's answer a chord tone higher; the lead
+guitar's lick over the hold; the bass's turn, alone with the kick, the hats and the backbeat, a
+soloist's 4 dB forward; the house piano's, the hook's rhythm in chords over the walk; the plucked
+string's arpeggio over the walk; stop-time, the band hitting each bar's one, the FM synth answering
+in the gap of the first and the drums filling the second; the head again, climbing into the
+outro. The chime keeps the hook under the two heads alone, the sub's pulse and the piano's
+off-beats rest where a turn leaves the room.
+
+The map half's muted guitar out, the rhythm it played in eighths through the groove, the lead's
+section and the groove again; its R twice as long, the groove again repeating, so the halves keep
+one timeline.
 
 Kept from the earlier rounds: the battle half as a jam in turns of two bars, the walk with the
 arpeggio or the hook and never both, the hold under the two together on three-three-two 6 dB down,
-the outro's hold into the top; the synth lines' voicings by job (the arpeggio highlighted on the
-plucked string in the intro and the outro, the hook pushed on the synth lead over the arpeggio on
-the FM synth in the head and the return, the arpeggio behind the lead guitar on the synth lead, the
-hook answering the walk on the FM synth); the intro on three-three-two all through; D the piano's
-turn and the factory's blended, the riff dark and low as the map's nod; the map half (the intro
-without its front), no crash at the top and no drone, the drums elsewhere (Night Shift's four on
-the floor under Hold The Line's density, the map's industry over the kit), the breakdown's held
-roots and ringing chords, the piano off the beat, the chime's hook, the lead's long notes on the
-lead guitar, the choir.
+the outro's hold into the top; the synth lines' voicings by job; the intro on three-three-two all
+through; D the piano's turn and the factory's blended, the riff dark and low as the map's nod; the
+guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
+its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night9.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py b        # the named sets only (b, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night10.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py m        # the named sets only (b m, and full for the pair)
 """
 import json
 import os
@@ -38,16 +52,27 @@ from hold_sketches import copied, master_together, run_steps  # noqa: E402
 NAME = "music_night_shift"
 MAP_LEVEL = F.LEVELS[NAME]
 BATTLE_LEVEL = P.PAIRS["night_shift"]["level"]
+R_BARS = 16   # R twice as long (Ryan, 3 November: "R also can be rewritten and extended")
+FORM10 = F.MUSIC[NAME]["form"].replace("R" * 8, "R" * R_BARS)
 
 
 # ---------------------------------------------------------------- the map half
 
-def map_intro(call):
+MAP_GUITAR = False   # the map's muted guitar (Ryan, 3 November: "without the backing guitar on the quarters throughout")
+
+
+def map_intro(call, guitar=MAP_GUITAR):
     """The shipped map with its front cut (Ryan: don't start with the sub and the drone, it breaks
     the loop; the drone's crescendo from about 0:10 works): the sub's pulse joins at the intro's
     fifth bar, and the pad is silent for three bars and fades in through the fourth, where its
-    slow filter is at its darkest, so from 0:10 it opens just as it did."""
+    slow filter is at its darkest, so from 0:10 it opens just as it did. Without `guitar`, the
+    muted guitar's rhythm is gone from every section; its voices stay in the list, empty, so every
+    other voice keeps its humanising."""
     kw = copied(call)
+    if not guitar:
+        for v in kw["voices"]:
+            if v["inst"] == "guitar_real":
+                v["pat"] = {}
     for v in kw["voices"]:
         if v["inst"] == "sub_bass" and "I" in v["pat"]:
             v["pat"]["I"] = "." * 64 + v["pat"]["I"] * (64 // len(v["pat"]["I"]))
@@ -151,7 +176,14 @@ TURNS = {
     "C": [("332.lift", ""), ("pairs.pops", ""), ("gallop.walk", ""), ("threes.climb", ""),   # under the lead guitar's long notes
           ("offbeats.zigzag", "arp:back"), ("bursts.chug", "arp:back"), ("pairs.stairs", "arp:back"), ("threes.steps", "arp:back")],
     "D": [("332.home", "")] * 4,
-    "R": [("pairs.pops", "hook:push"), ("gallop.octs", "hook:push"), ("bursts.turn", "hook:push"), ("threes.climb", "hook:push")],
+    "R": [("pairs.pops", "hook:push"),     # the head
+          ("gallop.octs", ""),             # the hook traded (R_PARTS)
+          ("hold", ""),                    # the lead guitar's lick (R_PARTS)
+          ("bass:threes.steps", ""),       # the bass's turn: the walk on the bass alone
+          ("offbeats.run", ""),            # the house piano's turn (R_PARTS)
+          ("bursts.rise", "arp:high"),     # the plucked string's arpeggio
+          ("stop", ""),                    # stop-time: the FM synth's answer, then the drums' fill (R_PARTS)
+          ("threes.climb", "hook:push")],  # the head again, climbing into the outro
     "O": [("hold", "both:high")] * 4,
 }
 # The synth lines' voicings, (the arpeggio's voice, the hook's), each picked for its job (Ryan, 30
@@ -290,12 +322,17 @@ def form_roots(call):
     return form, roots
 
 
+BAND_PARTS = ("walk", "ghost", "bass_walk", "bass_ghost", "hold_guitar", "hold_bass", "stop_guitar", "stop_bass")
+
+
 def turn_parts(call, turns, hold="332"):
     """The turns' patterns by section, {part: {section: pattern}}: the walk split into its accented
-    hits ("walk") and the rest ("ghost"), the hold's guitar and bass, and the bars the arpeggio and
-    the hook play. A walking note holds two steps where it has room."""
+    hits ("walk") and the rest ("ghost"), on the bass alone where a turn's choice is "bass:" and a
+    figure ("bass_walk", "bass_ghost"); the hold's guitar and bass; stop-time's hits on each bar's
+    one ("stop"); and the bars the arpeggio and the hook play. A walking note holds two steps where
+    it has room."""
     form, roots = form_roots(call)
-    out = {key: {} for key in ("walk", "ghost", "hold_guitar", "hold_bass") + SYNTH_PARTS}
+    out = {key: {} for key in BAND_PARTS + SYNTH_PARTS}
     rest = "." * 16
     for k, sec in enumerate(form):
         if sec not in turns or (k > 0 and form[k - 1] == sec) or sec in out["walk"]:
@@ -318,18 +355,22 @@ def turn_parts(call, turns, hold="332"):
             elif choice == "hold":
                 guitar, bass = HOLDS[hold]
                 played = {"hold_guitar": guitar(root, next_root), "hold_bass": bass(root, next_root)}
+            elif choice == "stop":
+                hit = P.spell(root % 12) + "--" + "." * 13
+                played = {"stop_guitar": hit, "stop_bass": hit}
             elif synth == "both":
                 raise ValueError("%s %s: the walk takes the arpeggio or the hook, never both" % (sec, choice))
             else:
+                alone, _, fig = choice.rpartition(":")
                 for key, acc in (("walk", True), ("ghost", False)):
                     bar = ["."] * 16
-                    for h, note, room, accented in jam_bar(choice, root % 12, next_root % 12):
+                    for h, note, room, accented in jam_bar(fig, root % 12, next_root % 12):
                         if accented == acc:
                             bar[h] = P.spell(note)
                             for q in range(1, min(room, 2)):
                                 bar[h + q] = "-"
-                    played[key] = "".join(bar)
-            for key in ("walk", "ghost", "hold_guitar", "hold_bass"):
+                    played[("bass_" if alone == "bass" else "") + key] = "".join(bar)
+            for key in BAND_PARTS:
                 bars_[key].append(played.get(key, rest))
             for v in ARP_VOICES:
                 bars_["arp:" + v].append(ARP if synth in ("arp", "both") and v == arp_voice else rest)
@@ -340,10 +381,124 @@ def turn_parts(call, turns, hold="332"):
     return out
 
 
-def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB):
+# ---------------------------------------------------------------- R, the jam
+
+# R's sixteen bars run Em C D Bm Em A G D twice; a turn is two bars, bars counted from 0 here. Who
+# takes the lead in each (Ryan, 3 November: "adding more instrument and tune play (i.e. different
+# riff variations, different voices taking priority, etc), to really sell the 'jam' vibe"); the
+# walk, the hold and the stops under them are TURNS["R"]'s.
+TRADE = (2, 3)        # the hook's call on the synth lead, the lead guitar's answer a chord tone higher
+LICK_AT = (4, 5)      # the lead guitar's lick over the hold
+BASS_TURN = (6, 7)    # the bass alone with the kick, the hats and the backbeat
+BASS_SOLO = 1.6       # the bass a soloist's 4 dB forward in its turn: at the walk's level its two bars sat 5 to 6 dB under the head on a phone
+PIANO_AT = (8, 9)     # the house piano on the hook's rhythm, then on three-three-two
+STOPS = (12, 13)      # the band on each bar's one: the FM synth answers in the first, the drums fill the second
+HEADS = (0, 1, 14, 15)   # where the chime keeps the hook
+# The lead guitar's two bars over Em and A, two octaves over E2: up E minor's pentatonic to the
+# octave and back, then a run up to A held over the A chord.
+LICK = ("7ac-e-cac--efeca", "c-efi-ef------..")
+PIANO_TURN = ("x...x.x.....x...", "x..x..x.x..x..x.")
+FM_FILL = "....0...2.1.3.4."   # the hook a beat late, in the stop's gap
+LICK_GAIN, ANSWER_GAIN = 0.3, 0.3   # the lead guitar at its gain in C
+PIANO_JAM = 0.55   # each of the piano's three chord tones, leading
+STOP_PIANO = "x" + "." * 15
+
+
+def r_bars(bars):
+    """A pattern through R's sixteen bars: {bar: its sixteen steps}, rests elsewhere."""
+    return "".join(bars.get(b, "." * 16) for b in range(R_BARS))
+
+
+def r_tiled(pat, keep):
+    """A pattern repeated through R's sixteen bars, kept only in the bars `keep` passes."""
+    whole = (pat * (16 * R_BARS // len(pat) + 1))[:16 * R_BARS]
+    return "".join(whole[16 * b:16 * b + 16] if keep(b) else "." * 16 for b in range(R_BARS))
+
+
+def degrees_up(pat, k):
+    """A chord-mode pattern's degrees `k` higher: a line moved up its chords' tones."""
+    return "".join(str(int(c) + k) if c.isdigit() else c for c in pat)
+
+
+def r_voices(call):
+    """The voices that take R's turns over the band: see the notes above."""
+    hook = P.part(call, "chime_metal", "R", mode="chord")
+    stop_piano = {b: STOP_PIANO for b in STOPS}
+    return [
+        dict(HOOK_VOICES["lead"], mode="chord", octave=1, dur=3.0, pat={"R": r_bars({TRADE[0]: hook})}),
+        {"inst": "lead_real", "mode": "chord", "octave": 1, "dur": 3.0, "gain": ANSWER_GAIN, "pat": {"R": r_bars({TRADE[1]: degrees_up(hook, 1)})}},
+        {"inst": "lead_real", "mode": "riff", "octave": 2, "hold": 1.0, "gain": LICK_GAIN, "pat": {"R": r_bars(dict(zip(LICK_AT, LICK)))}},
+        dict(HOOK_VOICES["fm"], mode="chord", octave=1, dur=3.0, pat={"R": r_bars({STOPS[0]: FM_FILL})}),
+    ] + [{"inst": "epiano", "mode": "chord", "octave": 1, "gain": PIANO_JAM, "dur": 1.5,
+          "pat": {"R": r_bars({b: x.replace("x", str(k)) for b, x in list(zip(PIANO_AT, PIANO_TURN)) + list(stop_piano.items())})}} for k in range(3)]
+
+
+def r_drums():
+    """R's kit bar by bar: the groove under the heads and the turns; four on the floor, eighths on
+    the hat and the backbeat under the bass's turn, a fill out of it; each stop's one alone, the
+    hat keeping time, the second stop a snare build and a tom fill into the head; a fill into the
+    outro. The industry rests through the stops."""
+    groove = lambda pat, b: pat[16 * (b % 8):16 * (b % 8) + 16]   # noqa: E731
+    bars = {k: [] for k in ("kick", "snare", "hat", "crash", "china", "stack", "tom", "tom2", "knock", "tick", "clank")}
+    second = {b: b - 8 if b >= 8 else b for b in range(R_BARS)}   # the groove's bar under each of R's
+    second.update({14: 6, 15: 7})
+    for b in range(R_BARS):
+        turn_start = b % 2 == 0
+        if b in STOPS:
+            row = {"kick": "x" + "." * 15, "snare": "." * 16 if b == STOPS[0] else "..........6.7.8x",
+                   "hat": "....x...x...x..." if b == STOPS[0] else "....x...x.......", "crash": "x" + "." * 15,
+                   "tom": FILL_TOM if b == STOPS[1] else "." * 16, "tom2": FILL_TOM2 if b == STOPS[1] else "." * 16}
+        elif b in BASS_TURN:
+            last = b == BASS_TURN[1]
+            row = {"kick": "x...x...x......." if last else "x...x...x...x...", "snare": "....x.......x...",
+                   "hat": "x.x.x.x........." if last else "x.x.x.x.x.x.x.x.", "stack": "..x...x...x...x.",
+                   "tom": FILL_TOM if last else "." * 16, "tom2": FILL_TOM2 if last else "." * 16}
+        else:
+            g = second[b]
+            last = b == R_BARS - 1
+            row = {"kick": groove(GROOVE_KICK, g), "snare": groove(GROOVE_SNARE, g), "hat": "xxxxxxxx........" if last else "x" * 16,
+                   "china": "........x......." if turn_start else "." * 16, "stack": "..x...x...x...x.",
+                   "tom": FILL_TOM if last else "." * 16, "tom2": FILL_TOM2 if last else "." * 16}
+        if b not in STOPS:
+            row.update(knock="......x.......x.", tick="x" * 16, clank="..............x." if turn_start else "." * 16)
+        if turn_start and b not in STOPS:
+            row["crash"] = "x" + "." * 15
+        for k in bars:
+            bars[k].append(row.get(k, "." * 16))
+    return {k: "".join(v) for k, v in bars.items()}
+
+
+# ---------------------------------------------------------------- the bass
+
+def slap_drive(f, dur):
+    """A slapped bass a little driven (Ryan, 3 November: "a whole new voice that's more of a slightly
+    distorted bass/slap bass"): the forge's slap (the thumb's thump, the string's snap against the
+    frets, a quick decay) through one more asymmetric stage, an amp pushed a little, its growl lifted
+    where a phone's speaker plays."""
+    y = F.asat(F.slap_bass(f, dur) * 1.6, 2.2)
+    return F.hp(F.lp(y + F.bp(y, 600.0, 1400.0) * 0.35, 5000.0), 45.0) * 0.8
+
+
+F.NOTE_INST["slap_drive"] = lambda f, d, p: slap_drive(f, d)
+
+# Every part the driven bass plays on another voice, measured against it alone over the whole battle
+# half (`level`). The slap meets it on a phone's speaker and in full alike. The synth bass is dark: a
+# phone plays little of it, so at the driven bass's level on a phone it would sit 6 dB over it in
+# full, and at its level in full 6 dB under it on a phone; it sits between, 3 dB under on a phone and
+# 3 dB over in full.
+BASS_VOICES = {
+    "driven": {"inst": "bass_real", "params": {"drive": 3.5}, "level": 1.0},           # the ninth round's
+    "synth": {"inst": "bass", "params": {"drive": 2.5, "cutoff": 600.0}, "level": 2.29},   # the synth bass: the crunch synth dark and soft
+    "slap": {"inst": "slap_drive", "params": {}, "level": 0.71},                       # a slapped bass a little driven
+}
+BASS = "synth"   # the full pair's ("Can I hear the whole battle track with the Synth bass instead of the driven bass?")
+
+
+def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
-    later spot (SPLITS); `d` D's turn; `bass_db` the driven bass's level, wherever it plays."""
+    later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
+    voice (BASS_VOICES)."""
     up_octave, by = SPLITS[split]
     p = lambda *a, **k: P.part(call, *a, **k)   # noqa: E731
     riff = p("bass", "D", gain=0.34)
@@ -360,22 +515,33 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
             v["gain"] = 0.24   # the pulse under the line
         elif inst == "lead":
             v.update(inst="lead_real", gain=0.3)
+        if "R" in v["pat"]:
+            # R's jam: the chime's hook under the two heads alone, the sub's pulse and the piano's
+            # off-beats resting where a turn leaves the room.
+            rest_in = {"chime_metal": lambda b: b in HEADS, "sub_bass": lambda b: b not in BASS_TURN + STOPS,
+                       "epiano": lambda b: b not in BASS_TURN + PIANO_AT + STOPS}.get(inst)
+            if rest_in:
+                v["pat"] = dict(v["pat"], R=r_tiled(v["pat"]["R"], rest_in))
         voices.append(v)
     parts = turn_parts(call, dict(turns or TURNS, D=D_TURNS[d]), hold)
     for key, g in (("walk", 1.0), ("ghost", GHOST)):
         # The guitar palm-muted and the driven bass in unison through the walk, a group's first
         # sixteenth on top: the guitar on its interval over the bass in the later spot, the bass on
-        # the riff in D.
+        # the riff in D, and on its own in the bass's turn.
         voices += [
             {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * g, "octave": -1, "pat": {s: x for s, x in parts[key].items() if s != UP}},
             {"inst": "bass_real", "mode": "riff", "gain": 0.27 * g, "hold": 0.9, "octave": -1, "params": {"drive": 3.5},
              "pat": {s: x for s, x in parts[key].items() if s != "D" or d != "copy"}},
             {"inst": "guitar_real", "mode": "riff", "gain": UP_GAIN * g, "octave": up_octave, "pat": {s: moved(x, by) for s, x in parts[key].items() if s == UP}},
+            {"inst": "bass_real", "mode": "riff", "gain": 0.27 * g * BASS_SOLO, "hold": 0.9, "octave": -1, "params": {"drive": 3.5}, "pat": parts["bass_" + key]},
         ]
     voices += [
         # The hold under the hook and the arpeggio together.
         {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * HOLD, "octave": -1, "pat": parts["hold_guitar"]},
         {"inst": "bass_real", "mode": "riff", "gain": 0.27 * HOLD, "hold": 0.9, "octave": -1, "params": {"drive": 3.5}, "pat": parts["hold_bass"]},
+        # Stop-time's hits: the guitar let ring and the bass on each bar's one.
+        {"inst": "guitar_real", "mode": "riff", "gain": 0.45, "octave": -1, "hold": 1.0, "params": {"mute": False}, "pat": parts["stop_guitar"]},
+        {"inst": "bass_real", "mode": "riff", "gain": 0.27, "hold": 1.0, "octave": -1, "params": {"drive": 3.5}, "pat": parts["stop_bass"]},
         # The riff in D (on the driven bass and the crunch synth as the fourth round had it, the
         # map's dark synth alone, or the crunch synth alone two bars in four), held roots through
         # the breakdown.
@@ -393,35 +559,39 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
     # D's piano: the house piano's chord, each tone a voice an octave up, stabbing three-three-two.
     voices += [{"inst": "epiano", "mode": "chord", "octave": 1, "gain": PIANO_BLEND if d == "blend" else PIANO_D, "dur": 1.5,
                 "pat": {"D": THREE_THREE_TWO.replace("r", str(k))} if d in ("piano", "blend") else {}} for k in range(3)]
-    voices = [dict(v, gain=v["gain"] * 10.0 ** (bass_db / 20.0)) if v["inst"] == "bass_real" else v for v in voices]
+    voices += r_voices(call)
+    bv = BASS_VOICES[bass]
+    voices = [dict(v, inst=bv["inst"], params=bv["params"], gain=v["gain"] * 10.0 ** (bass_db / 20.0) * bv["level"]) if v["inst"] == "bass_real" else v for v in voices]
     drums = {
-        "kick": {"I": "x...x...x...x..." * 7 + "x...x...x.......", "A": GROOVE_KICK, "C": LEAD_KICK, "R": GROOVE_KICK,
+        "kick": {"I": "x...x...x...x..." * 7 + "x...x...x.......", "A": GROOVE_KICK, "C": LEAD_KICK,
                  "B": "x.....x...x....." * 6 + "x...x...x...x..." + "x.x.x.x.x.x.x.x.",
                  "D": "x.xx..x.x.xx..x." * 3 + "x.xx..x.x.xx.xx." + "x.xx..x.x.xx..x." * 2 + "x.xx.xx.x.xx.xx." + "x...x...x.......",
                  "O": bars("x...x...x...x..x", "x...x..xx...x...") * 4},
         "kick_hard": {"D": "." * 120 + "xxxxxxxx"},   # a double-kick run out of the riff
-        "snare": {"I": "....x.......x..." * 8, "A": GROOVE_SNARE, "C": GROOVE_SNARE, "R": GROOVE_SNARE,
+        "snare": {"I": "....x.......x..." * 8, "A": GROOVE_SNARE, "C": GROOVE_SNARE,
                   "B": "........x......." * 6 + "4.4.5.5.6.6.7.7." + "5566778899xxxxxx",   # half time, then a build
                   "D": "....x..o.o..x..o" * 7 + "....x.......x.x.",
                   "O": bars("....x..o....x..o", "....x..o.o..x...") * 4},
-        "hat": {"I": HATS, "A": HATS, "R": "x" * 112 + "xxxxxxxx........", "O": "xx.xxx.xxx.xxx.x",
+        "hat": {"I": HATS, "A": HATS, "O": "xx.xxx.xxx.xxx.x",
                 "B": "x.x.x.x.x.x.x.x." * 6 + "." * 32, "D": "x" * 120 + "........"},
         "open": {"I": OPENS, "A": OPENS, "O": "..x...x...x...x.", "C": "..............x." * 7 + "." * 16},
         "ride": {"C": "x.x.x.x.x.x.x.x." * 7 + "x.x.x.x........."},
         # A crash at every door but the top's (Ryan: it broke the loop), and each phrase.
         "crash": {"*": P.door_pattern(call, "ABCDRO"), "A": "x" + "." * 127, "C": "x" + "." * 127,
-                  "D": "x" + "." * 31, "R": "x" + "." * 31},
+                  "D": "x" + "." * 31},
         "china": {"A": "." * 62 + "x." + "." * 64, "C": "." * 62 + "x." + "." * 64, "O": "." * 62 + "x." + "." * 64,
-                  "D": "........x......." + "." * 16, "R": "........x......." + "." * 16},
-        "stack": {"D": "..x...x...x...x.", "R": "..x...x...x...x."},
-        "tom": {s: FILLS["tom"] for s in "IACR"},
-        "tom2": {s: FILLS["tom2"] for s in "IACR"},
+                  "D": "........x......." + "." * 16},
+        "stack": {"D": "..x...x...x...x."},
+        "tom": {s: FILLS["tom"] for s in "IAC"},
+        "tom2": {s: FILLS["tom2"] for s in "IAC"},
         # The map's industry over the kit.
-        "knock": {s: "......x.......x." for s in "ACRO"} | {"D": "..x...x...x...x."},
-        "tick": {s: "x" * 16 for s in "ACRO"},
-        "clank": {"A": "..............x" + "." * 49, "R": "..............x" + "." * 17, "D": "..............x" + "." * 17},
+        "knock": {s: "......x.......x." for s in "ACO"} | {"D": "..x...x...x...x."},
+        "tick": {s: "x" * 16 for s in "ACO"},
+        "clank": {"A": "..............x" + "." * 49, "D": "..............x" + "." * 17},
         "glitch": {"I": "........x.......", "A": "...x.......x....x.........x.....", "D": "...x.......x....", "O": "........x......."},
     }
+    for name, pat in r_drums().items():
+        drums.setdefault(name, {})["R"] = pat
     if d != "copy":
         # Night Shift's four on the floor under the map's sixteenths and its stack, the backbeat
         # over it, a crash every phrase; no gallop, china or double kick.
@@ -448,12 +618,10 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
             "air": (0.12, 0.06), "master": 1.1, "headroom": 0.6, "tilt": 1.5, "presence": 0.25, "low": (150.0, -6.0)}
 
 
-
-
 # ---------------------------------------------------------------- the renders
 
 def on_form(form):
-    """The recipe's call on another form (an excerpt)."""
+    """The recipe's call on another form (an excerpt, or R twice as long)."""
     saved = F.MUSIC[NAME]["form"]
     F.MUSIC[NAME]["form"] = form
     try:
@@ -462,15 +630,11 @@ def on_form(form):
         F.MUSIC[NAME]["form"] = saved
 
 
-def battle(form=None, mastered=True, **opts):
-    """The battle half on the recipe's form or an excerpt's, every pattern read from its section's
-    start as the track reads it. Unmastered, the mix stops before its master and comes back with
-    the master's settings, so a set's rows go through one master together (`master_together`): a
-    master that brought each row under its knee by its own peak would take back what a louder part
-    adds."""
-    call = on_form(form) if form else P.recipe_call(F.music_night_shift)
-    kw = dict(call)
-    kw.update(battle_half(call, **opts))
+def settled(kw, mastered):
+    """A call rendered, every pattern read from its section's start as the track reads it.
+    Unmastered, the mix stops before its master and comes back with the master's settings, so a
+    set's rows go through one master together (`master_together`): a master that brought each row
+    under its knee by its own peak would take back what a louder part adds."""
     settings = (kw.get("headroom"), kw.get("master", 1.25))
     if not mastered:
         kw.update(headroom=None, master=1e-3)   # tanh at a thousandth of its drive: linear to a part in a million
@@ -479,33 +643,68 @@ def battle(form=None, mastered=True, **opts):
     return x if mastered else (x, settings)
 
 
-def map_half():
-    return F.groove(**map_intro(P.recipe_call(F.music_night_shift)))
+def battle(form=FORM10, mastered=True, **opts):
+    """The battle half on a form (the round's, or an excerpt's)."""
+    call = on_form(form)
+    kw = dict(call)
+    kw.update(battle_half(call, **opts))
+    return settled(kw, mastered)
+
+
+def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR):
+    """The map half on a form: the shipped map with its front cut, its muted guitar or not."""
+    return settled(map_intro(on_form(form), guitar), mastered)
 
 
 SETS = [
-    {"id": "b", "half": "battle", "title": "The battle's walk with the driven bass", "form": "R" * 8,
-     "note": "The groove again, the walk with the hook pushed on the synth lead, the guitar a tenth over the driven bass.",
-     "rows": [("b0", "The driven bass as it was", "As the eighth round had it.", {"bass_db": 0.0}),
-              ("b1", "The driven bass 3 dB down", "As it is everywhere in the full pair.", {})]},
+    {"id": "b", "half": "battle", "title": "The bass, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The battle half from the top, the bass on each voice wherever it plays (the walk, the hold, the breakdown's held roots). Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("b0", "The driven bass", "As the ninth round had it, 3 dB down.", {"bass": "driven"}),
+              ("b1", "The synth bass", "The crunch synth dark and soft, Hold The Line's map K's: 3 dB under the driven bass on a phone, 3 dB over it in headphones (the full pair's).", {"bass": "synth"}),
+              ("b2", "A slap bass, a little driven", "A slapped string, its snap and thump, through an amp pushed a little, at the driven bass's level.", {"bass": "slap"})]},
+    {"id": "m", "half": "map", "title": "The map's groove without its muted guitar", "form": "A" * 16, "seed": NAME,
+     "note": "The groove's sixteen bars: the piano off the beat, the chime's hook, the sub's pulse, the knocks and ticks.",
+     "rows": [("m0", "The muted guitar as it was", "Its rhythm in eighths on the roots, as the shipped map half plays it.", {"guitar": True}),
+              ("m1", "Without it", "Everywhere in the full pair: the groove, the lead's section and the groove again.", {"guitar": False})]},
 ]
-PAIR = {"id": "night_shift_r9", "title": "Night Shift, round nine"}
+PAIR = {"id": "night_shift_r10", "title": "Night Shift, round ten"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
+MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
+                A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
+                C="the lead in long notes over the sub's pulse and a ride",
+                R="the groove again, sixteen bars")
 TURNS_SAID = {   # each section's turns in the battle half, on the page beside the map half's
     "I": "three-three-two on the root all through, the arpeggio on the plucked string from the fifth bar",
     "A": "the hook pushed on the synth lead over the arpeggio on the FM synth and the hold, then the walk with the hook on the FM synth from the ninth bar",
     "B": "the breakdown: held roots and ringing chords under the choir",
     "C": "the lead guitar's long notes over the walk, the arpeggio joining behind them on the synth lead at the ninth bar",
     "D": "the piano and the factory blended: the house piano stabbing the chords in three-three-two over the hold, the knocks in its gaps, the riff dark and low as the map's nod",
-    "R": "the walk with the guitar a tenth over the bass, the hook pushed on the synth lead",
+    "R": "the jam in turns of two bars: the head, the hook traded between the synth lead and the lead guitar, the lead guitar's lick over the hold, the bass alone with the drums, the house piano on the hook's rhythm, the plucked string's arpeggio, stop-time with the FM synth's answer and the drums' fill, the head again",
     "O": "the arpeggio on the plucked string and the hook on the FM synth over the hold, into the top",
 }
 
 
+def sections_on(form):
+    """Every run of bars in a form: its section, its bars and where it starts, and the bars' times."""
+    form = form.replace(" ", "")
+    bar_s = 16 * 15.0 / F.MUSIC[NAME]["bpm"]
+    runs, b = [], 0
+    while b < len(form):
+        e = b
+        while e < len(form) and form[e] == form[b]:
+            e += 1
+        runs.append((form[b], b + 1, e, b * bar_s))
+        b = e
+    return runs, [k * bar_s for k in range(len(form))], len(form) * bar_s
+
+
 def render_row(job):
     si, ri = job
-    F.seed("night9_" + SETS[si]["id"])
-    return si, ri, battle(SETS[si]["form"], mastered=False, **SETS[si]["rows"][ri][3])
+    s = SETS[si]
+    F.seed(s["seed"])
+    opts = s["rows"][ri][3]
+    render = battle if s["half"] == "battle" else map_half
+    return si, ri, render(s["form"], mastered=False, **opts)
 
 
 def render_full(which):
@@ -528,19 +727,19 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night9.json")
+    path = os.path.join(P.OUT, "night10.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
             continue
-        # One master and one gain for the set, the gain the one that brings its first row to the
-        # battle's level, so the rows differ only by what changed.
+        # One master and one gain for the set, the gain the one that brings its first row to its
+        # half's level, so the rows differ only by what changed.
         mastered = master_together([raw[si, ri] for ri in range(len(s["rows"]))])
-        gain = 10.0 ** ((BATTLE_LEVEL - F.mean_level(mastered[0])) / 20.0)
+        gain = 10.0 ** (((BATTLE_LEVEL if s["half"] == "battle" else MAP_LEVEL) - F.mean_level(mastered[0])) / 20.0)
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night9_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night10_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -551,12 +750,12 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        runs, total = F.sections(NAME)
+        runs, bar_at, total = sections_on(FORM10)
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": F.MUSIC[NAME]["bpm"], "length": round(total, 3),
-                               "loop_from_bar": 1, "bar_at": [round(float(t), 4) for t in P.bar_times(NAME)],
+                               "loop_from_bar": 1, "bar_at": [round(float(t), 4) for t in bar_at],
                                "sections": [{"section": s, "bars": [b0, b1], "at": round(at, 2),
-                                             "what": "%s; the battle: %s" % (INTRO if s == "I" else what, TURNS_SAID[s])} for s, b0, b1, at, what in runs],
+                                             "what": "%s; the battle: %s" % (MAP_SAID[s], TURNS_SAID[s])} for s, b0, b1, at in runs],
                                "levels": levels}]
         print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
     with open(path, "w") as f:
