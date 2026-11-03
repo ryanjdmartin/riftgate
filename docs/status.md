@@ -38,8 +38,8 @@ first round, the Hold The Line pair, merged on the 27th), main merged into it on
 go on the pairs (every track a map half and a battle half, the bible's pair row), every new half
 sketched on its shipped recipe's groove call and published on the pair page; then his notes of
 29 October to 2 November on Hold The Line's two halves, Night Shift's battle half and The Far Bank's
-map half, sketched as further rounds on the same page (Hold The Line's twelfth, Night Shift's tenth,
-The Far Bank's map half's fourth), and the pairs in the game
+map half, sketched as further rounds on the same page (Hold The Line's thirteenth, which settled it,
+Night Shift's tenth, The Far Bank's map half's fourth), and the pairs in the game
 once he has heard them.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
@@ -305,17 +305,18 @@ The tasks are the to-do's; this is the index of what waits.
 - The six machines' models, the Armadillo's rebuilt with its seal, and the Translocator's mount.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The
-  Line on its twelfth round (3 November: its battle half picked, J gone, V and Q kept, K at its
-  slower tempo on the drums in between with the plucked string 3 dB down beside the crunch synth
-  on the walk, eleven bars on the switch and twelve or eight on trial, its long crash choked to a
-  second and a half, the first lift on the crunch synth and
-  the synth lead and the second on the crunch synth and the lead guitar over the backing chug
-  6 dB down, M as it ships with the crunch synth; his map picks, X on the violins, U on the clean
-  guitar, the drone moved to R, W low with a roll; the map half minimal, the lifts as they were
-  with the riff on the tine piano and the first lift's bell calmer, K's walk on the synth bass over
-  its backing, the climax without the harp, the ticking guitar alone on its riff 3 dB up, the bell
-  3 dB down and the tine piano on Z's riff down, 3 or 6 dB on trial) and
-  Night Shift on its tenth (the map's intro without its front and its muted guitar out;
+  Line settled on its thirteenth round (3 November: "I think that's it for this track"): its
+  battle half picked, J gone, V and Q kept, K its first eight bars at its slower tempo ("The 8
+  bars is perfect") on the drums in between with the plucked string 3 dB down beside the crunch
+  synth on the walk, its long crash choked to a second and a half, the first lift on the crunch
+  synth and the synth lead and the second on the crunch synth and the lead guitar over the
+  backing chug 6 dB down, M as it ships with the crunch synth; his map picks, X on the violins, U
+  on the clean guitar, the drone moved to R, W low with a roll; the map half minimal, the lifts as
+  they were with the riff on the tine piano and the first lift's bell calmer, K's walk on the
+  synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff
+  3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
+  R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
+  it was beside it). Night Shift on its tenth (the map's intro without its front and its muted guitar out;
   the battle half a whole jam in turns of two bars, 30 October: the guitar and the bass walking
   one line on his rhythms with the arpeggio or the FM hook, never both, holding three-three-two
   6 dB down under the two together, the intro on three-three-two, D the piano's turn and the
@@ -326,8 +327,9 @@ The tasks are the to-do's; this is the index of what waits.
   on its fourth round, its flip retired (31 October: the bells calm in the groove and the lift
   alone, the strings section and the climax off the battle's orchestra, the tune on a plucked
   string, the tine piano or the clean guitar over the harp, one note at a time since 3 November and
-  3 dB down in the strings section, the climax's bells full); all waiting on his ear; then the engine (a pair as one synchronized stream, the map choosing
-  the track, the 3 s flip) and each picked half into the forge's SHIP table.
+  3 dB down in the strings section, the climax's bells full); those two waiting on his ear; then
+  the engine (a pair as one synchronized stream, the map choosing the track, the 3 s flip) and
+  each picked half into the forge's SHIP table, Hold The Line's first.
 
 ## Next, in order
 
@@ -377,14 +379,17 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.435 (the
-  page's version 448, published 3 November from `ccr-7effd31a-u5z4gw`: the pairs' round of that
-  day in the track table, three-way merged onto the live v0.434 that other sessions published
-  past this branch's v0.429 at 441, with the elites session (every domain three elites at least,
-  five wanderers, the Goblin Nob's Bellow and Enraged, a boss a named JRPG entity, the Fiend of
-  Fire, the Gargantuan King), a blow on a machine moving it, shots across the field tabled, a
-  booster's plume or halo by maker, and the Wainwright & Sutler models' second rounds; the
-  duplicated Date line its header carried dropped). Before that, v0.428 past v0.421 had brought
+  `docs/design-bible.html` after every change. This file and the live page are v0.437 (the
+  page's version 450, published 3 November from `ccr-7effd31a-u5z4gw`: Hold The Line settled in
+  the track table, three-way merged onto the live v0.436 that another session published past this
+  branch's v0.435 at 448, with the motion notes of that day (a walker's slump on planted feet,
+  the Buzzard's cannon firing as its charge sped up, the Wainwright & Sutler pieces firing from
+  their acts, the Kite's plumes larger, the Arsenal's rear vents a sickly orange-yellow). v0.435
+  had itself merged onto the live v0.434, with the elites session (every domain three elites at
+  least, five wanderers, the Goblin Nob's Bellow and Enraged, a boss a named JRPG entity, the
+  Fiend of Fire, the Gargantuan King), a blow on a machine moving it, shots across the field
+  tabled, a booster's plume or halo by maker, and the Wainwright & Sutler models' second rounds;
+  the duplicated Date line its header carried dropped). Before that, v0.428 past v0.421 had brought
   the Honey Badger's hopper and Ore Plate, hidden mounts and every mount taking all five classes,
   the Ruby Colossus a Waste boss and the Djinn wildlife, a follow-up that cannot be Disrupted, the
   Thief's Flee struck for Showtime, elites reusable and scaled by tier. So this file
@@ -398,7 +403,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   the rift's violet), the foes' pass of 31 October from another session (Gilgamesh the elite
   that wanders, the Barrow Giant's line, the bosses' escorts and the swallow's release, with its
   rows in the tables), and the weapons firing from another (the firing weapon's mount moving, its
-  flare in its tags' look, the halos on the hot parts), and v0.428's and v0.434's (above). The tables script, which
+  flare in its tags' look, the halos on the hot parts), and v0.428's, v0.434's and v0.436's
+  (above). The tables script, which
   writes the tables from main's content, waits until `claude/charming-rubin-h954bp` lands or
   reverts that row. The version numbers on the publishing branch's file and the live agree after
   every publish. Before republishing, read the live page; if another session moved it, publish a
@@ -436,8 +442,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twelfth, `hold_sketches.py`; Night Shift's tenth, `night_sketches.py`; The Far Bank's map
-  half's fourth, `far_sketches.py`), at the page's version 21. A round whose files pass a
+  thirteenth, which settled it, `hold_sketches.py`; Night Shift's tenth, `night_sketches.py`; The
+  Far Bank's map half's fourth, `far_sketches.py`), at the page's version 22. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg

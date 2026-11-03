@@ -1,35 +1,32 @@
-"""Hold The Line's twelfth round as a pair (Ryan, 3 November, on the eleventh round's page): the
-map's climax evened out, and K's plucked string and length.
+"""Hold The Line's thirteenth round as a pair (Ryan, 3 November, on the twelfth round's page): the
+track settled ("I think that's it for this track").
 
-  the climax     "3db boost is fine, but bring the bells down 3db, they're too loud. Bring the extra
-                 riff voice down (whatever it is) in the final bit (Z)": the ticking guitar alone on
-                 the riff 3 dB up through S, R and Z; the bell, which plays the hook in R's second
-                 half and through Z, 3 dB down; the tine piano, which joins the guitar on the riff in
-                 Z and sat 6 dB over it on a phone, 3 or 6 dB down, the pair's at 6 (the guitar's
-                 level there).
-  K              "Plucked string is good for K, but bring it down like 3 db. I'd like to hear 12
-                 bars, and 8 bars as options": the plucked string on the battle's walk 3 dB down; a
-                 set of K at eleven bars (the pair's, closing on the first of F major's two bars, a
-                 half step over the breath's E minor), twelve (both of F's bars, the half step on a
-                 finished phrase) and eight (closing on E's tritone chord, E with B flat and F,
-                 which the breath's E5 resolves).
+  the climax     "bell down 3db, piano down 6db, and don't increase the volume of the choral drone
+                 in Z": the ticking guitar alone on the riff 3 dB up through S, R and Z, the bell on
+                 its hook 3 dB down, the tine piano on Z's riff 6 dB down; and the drone held level
+                 from R into Z. In R the drone and the strings hold under the riff; in Z the choir
+                 joins them, which put the pads 1 dB up on a phone, so the drone, the strings and
+                 the choir sit 1 dB down through Z and the choir's colour arrives without the drone
+                 growing. A set puts it beside the twelfth round's pair.
+  K              "The 8 bars is perfect": K's first eight bars in both halves, closing on E's
+                 tritone chord (E with B flat and F), which the breath's E5 resolves.
 
 Kept from the earlier rounds: the battle half as the seventh round has it (the loop without J, V
 and Q kept, Q's fill landing on the wrap at bar nine with a crash; the first lift on the crunch
 synth and the synth lead and the second on the crunch synth and the lead guitar over the backing
 guitar 6 dB down, a crash every four bars; M as it ships with the crunch synth; K at its slower
 tempo on the drums in between with its long crash choked to a second and a half, the plucked
-string beside the crunch synth on its walk); his map picks (X's held walk on the violins, U's lead
-on the clean guitar, the climax's drone moved from S to R, W on the low note with the roll; the
-first lift's bell once a bar and both lifts' riff on the tine piano; K's walk on the synth bass;
-the climax without the harp). The map halves are minimal (Ryan, 30 October: "in general the map
-tracks need to be minimalist").
+string beside the crunch synth on its walk 3 dB down); his map picks (X's held walk on the violins,
+U's lead on the clean guitar, the climax's drone moved from S to R, W on the low note with the
+roll; the first lift's bell once a bar and both lifts' riff on the tine piano; K's walk on the
+synth bass; the climax without the harp). The map halves are minimal (Ryan, 30 October: "in
+general the map tracks need to be minimalist").
 
-The full pair on the switch takes every pick. The sets are excerpts for A/B, every row the same
+The full pair on the switch takes every pick. The set is an excerpt for A/B, its rows the same
 bars from the same seed through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold12.json beside the pairs (about five minutes on four cores)
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py mz       # the named sets only (mz kb, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the set and the pair, then hold13.json beside the pairs (about five minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py mz       # the named sets only (mz, and full for the pair)
 """
 import json
 import os
@@ -46,7 +43,7 @@ NAME = "music_hold_the_line"
 SHIPPED_FORM = F.MUSIC[NAME]["form"]
 METER = dict(F.MUSIC[NAME]["meter"])            # the seven in 7/8, K and V at the solo's slower tempo (Ryan, 30 October: "keep the tempo drop")
 FORM_K16 = SHIPPED_FORM.replace(" JJ", "")       # the loop without J: Q's fill into the wrap
-K_BARS = 11   # K's first eleven bars (Ryan, 30 October: "the first 14 bars"; 2 November: "chop 4 more bars off the end of K", then "add one more bar back"; 3 November: "I'd like to hear 12 bars, and 8 bars as options")
+K_BARS = 8   # K's first eight bars (Ryan, 30 October: "the first 14 bars"; 2 November: "chop 4 more bars off the end of K", then "add one more bar back"; 3 November, of eleven, twelve and eight: "The 8 bars is perfect")
 
 
 def k_form(bars=K_BARS):
@@ -54,7 +51,7 @@ def k_form(bars=K_BARS):
     return FORM_K16.replace("K" * 16, "K" * bars)
 
 
-FORM_K11 = k_form()
+FORM_K = k_form()
 BATTLE_LEVEL = F.LEVELS[NAME]
 MAP_LEVEL = P.MAP_LEVEL
 
@@ -431,8 +428,10 @@ def map_edits(*edits):
 # volume"), the harp out, 3 dB up (3 November: "3db boost is fine"); the bell, the hook in R's second
 # half and through Z, 3 dB down ("bring the bells down 3db, they're too loud"); the tine piano, which
 # joins the guitar on the riff in Z, down ("Bring the extra riff voice down (whatever it is) in the
-# final bit (Z)"): it sat 6 dB over the guitar there on a phone, so 6 dB down meets it.
-TICKING_UP, BELLS_DOWN, Z_TINE_DOWN = 3.0, -3.0, -6.0
+# final bit (Z)"): it sat 6 dB over the guitar there on a phone, so 6 dB down meets it ("bell down
+# 3db, piano down 6db"). The pads held level from R into Z ("don't increase the volume of the choral
+# drone in Z"): the choir joining the drone and the strings in Z put them 1 dB up on a phone.
+TICKING_UP, BELLS_DOWN, Z_TINE_DOWN, Z_PADS_DOWN = 3.0, -3.0, -6.0, -1.0
 
 
 def moved_off(kw, test, what, sections, db):
@@ -443,23 +442,26 @@ def moved_off(kw, test, what, sections, db):
     kw["voices"].append(dict(voice, gain=round(voice["gain"] * 10.0 ** (db / 20.0), 4), pat={sec: voice["pat"].pop(sec) for sec in sections if sec in voice["pat"]}))
 
 
-def map_climax(ticking_db=TICKING_UP, bells_db=BELLS_DOWN, tine_db=Z_TINE_DOWN):
+def map_climax(ticking_db=TICKING_UP, bells_db=BELLS_DOWN, tine_db=Z_TINE_DOWN, pads_db=Z_PADS_DOWN):
     """The climax's three sets without the harp, the ticking guitar alone on the riff `ticking_db`
-    up, the bell `bells_db` and Z's tine piano `tine_db` from where they were; every other section
-    as it was."""
+    up, the bell `bells_db` and Z's tine piano `tine_db` from where they were, and the pads playing
+    in Z (the drone, the strings, the choir) `pads_db` there; every other section as it was."""
     def edit(kw, call):
         map_climax_less("harp")(kw, call)
         moved_off(kw, ticking("S"), "the ticking guitar in the climax", "SRZ", ticking_db)
         moved_off(kw, lambda v: v["inst"] == "bell" and "Z" in v["pat"], "the bell in the climax", "RZ", bells_db)
         moved_off(kw, lambda v: v["inst"] == "epiano" and v.get("mode", "riff") == "riff" and "Z" in v["pat"], "the tine piano on Z's riff", "Z", tine_db)
+        for p in kw["pad"]:
+            if "Z" in p.get("sections", ""):
+                p["gains"] = dict(p.get("gains", {}), Z=round(10.0 ** (pads_db / 20.0), 4))
         return kw
     return edit
 
 
-# The map half of the twelfth round: every pick so far, the first lift's bell calmer, both lifts'
-# riff on the tine piano, the climax on the ticking guitar alone 3 dB up with the bell and Z's tine
-# piano down, K's walk on the synth bass.
-map_twelve = map_edits(map_picks, map_calm_bell, map_lead("C", "tine"), map_lead("L", "tine"), map_climax(), map_k_walk("synth"))
+# The map half as Ryan settled it: every pick, the first lift's bell calmer, both lifts' riff on the
+# tine piano, the climax on the ticking guitar alone 3 dB up with the bell and Z's tine piano down
+# and the drone held level into Z, K's walk on the synth bass.
+map_settled = map_edits(map_picks, map_calm_bell, map_lead("C", "tine"), map_lead("L", "tine"), map_climax(), map_k_walk("synth"))
 
 
 # ---------------------------------------------------------------- the renders
@@ -496,11 +498,6 @@ def map_half(form, edit=None, meter=None):
     return F.groove(**map_call(form, edit, meter))
 
 
-def k_context(bars=K_BARS):
-    """Four bars of the climax, the breath, K's first `bars` bars, V and Q's fill."""
-    return "ZZZZ Y " + "K" * bars + " V Q"
-
-
 CLIMAX = "WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y"
 
 
@@ -521,22 +518,14 @@ def battle_picks(k_voice=K_VOICE):
 
 CLIMAX_EDIT = (map_picks, map_calm_bell)
 SETS = [
-    {"id": "mz", "half": "map", "title": "The map's climax", "form": CLIMAX,
-     "note": "The keys' turn, the climax's three sets (S, R and Z) and the breath: the ticking guitar alone on the riff 3 dB up over the sub, the drone and the strings joining in R with the bell on the hook in its second half, the bell, the choir and the tine piano on the riff in Z.", "rows": [
-        ("mz0", "As the eleventh round's 3 dB row", "The ticking guitar 3 dB up, the bell and the tine piano as they were: the piano 6 dB over the guitar in Z on a phone.", map_edits(*CLIMAX_EDIT, map_climax(TICKING_UP, 0.0, 0.0))),
-        ("mz1", "The bells 3 dB down", "The bell 3 dB down in R and Z, the tine piano as it was.", map_edits(*CLIMAX_EDIT, map_climax(TICKING_UP, BELLS_DOWN, 0.0))),
-        ("mz2", "The tine piano 3 dB down too", "The bell 3 dB down, and the piano on Z's riff 3 dB down: 3 dB over the guitar on a phone.", map_edits(*CLIMAX_EDIT, map_climax(TICKING_UP, BELLS_DOWN, -3.0))),
-        ("mz3", "The tine piano 6 dB down", "The bell 3 dB down, and the piano on Z's riff 6 dB down: at the guitar's level on a phone (the full pair's).", map_edits(*CLIMAX_EDIT, map_climax(TICKING_UP, BELLS_DOWN, Z_TINE_DOWN))),
-    ]},
-    {"id": "kb", "half": "battle", "title": "K's length, in context", "form": k_context(),
-     "note": "Four bars of the climax, the breath, K at its slower tempo, V and Q's fill: the crunch synth and the plucked string on the walk, the plucked string 3 dB down, the piano's solo, K's drums.", "rows": [
-        ("kb0", "Eleven bars", "As the pair has it: K closes on the first of F major's two bars, a half step over the breath's E minor.", battle_picks(), k_context(11)),
-        ("kb1", "Twelve bars", "K plays both of F major's bars: the same half step, on a finished phrase.", battle_picks(), k_context(12)),
-        ("kb2", "Eight bars", "K closes on E's tritone chord (E with B flat and F), which the breath's E5 resolves.", battle_picks(), k_context(8)),
+    {"id": "mz", "half": "map", "title": "The map's climax, the drone into Z", "form": CLIMAX,
+     "note": "The keys' turn, the climax's three sets (S, R and Z) and the breath: the ticking guitar alone on the riff 3 dB up over the sub, the drone and the strings joining in R with the bell on the hook in its second half, the bell 3 dB down, the choir and the tine piano 6 dB down on the riff in Z.", "rows": [
+        ("mz0", "As the twelfth round's pair had it", "The choir joining the drone and the strings in Z, the pads 1 dB up there on a phone.", map_edits(*CLIMAX_EDIT, map_climax(pads_db=0.0))),
+        ("mz1", "The drone held level into Z", "The drone, the strings and the choir 1 dB down through Z, so the choir arrives without the drone growing (the full pair's).", map_edits(*CLIMAX_EDIT, map_climax())),
     ]},
 ]
-PAIR = {"id": "hold_the_line_r12", "title": "Hold The Line, round twelve",
-        "k": "the keyboard solo's first eleven bars at its slower tempo, the crunch synth and the plucked string 3 dB down on the walk, K's drums with a pushing kick, eighths on the hat and a china, its crash choked to a second and a half"}
+PAIR = {"id": "hold_the_line_r13", "title": "Hold The Line, round thirteen",
+        "k": "the keyboard solo's first eight bars at its slower tempo, the crunch synth and the plucked string 3 dB down on the walk, K's drums with a pushing kick, eighths on the hat and a china, its crash choked to a second and a half"}
 
 
 def level(x, db):
@@ -546,7 +535,7 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold12_" + SETS[si]["id"])
+    F.seed("hold13_" + SETS[si]["id"])
     row = SETS[si]["rows"][ri]
     edit, form = row[3], row[4] if len(row) > 4 else SETS[si]["form"]   # a row may cut its own bars (K's lengths)
     with P.Patched(_steps=run_steps):
@@ -558,19 +547,19 @@ def render_row(job):
 
 
 def full_path(half):
-    return os.path.join(P.OUT, "hold12_full_%s.wav" % half)
+    return os.path.join(P.OUT, "hold13_full_%s.wav" % half)
 
 
 def render_full(half):
     """One full half, in a worker, from the shipped half's seed, at its half's level."""
     if half == "battle":
         F.seed(NAME)
-        call = copied(call_on(FORM_K11, METER))
+        call = copied(call_on(FORM_K, METER))
         battle_picks()(call)
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
-        x = level(map_half(FORM_K11, map_twelve), MAP_LEVEL)
+        x = level(map_half(FORM_K, map_settled), MAP_LEVEL)
     P.write(os.path.basename(full_path(half))[:-4], x, aac=False)
     return half
 
@@ -605,7 +594,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold12.json")
+    manifest_path = os.path.join(P.OUT, "hold13.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -617,7 +606,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, *_edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold12_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold13_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -629,7 +618,7 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        secs, total, at = sections_of(FORM_K11, METER, bpm, PAIR["k"])
+        secs, total, at = sections_of(FORM_K, METER, bpm, PAIR["k"])
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
                                "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels}]
