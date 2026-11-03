@@ -752,105 +752,55 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.427 (the page's version
-  439, published 2 November from `claude/brave-cori-fr18de` as main merged in: the tables run
-  on the merged content, the Every Machine row moving with main's foes and the Honey Badger's
-  hopper rows kept by hand, that branch not yet on main; over 438 of the same evening, the
-  slate's last calls,
-  armour by kit, the committed follow-up, Showtime and the escorts' moves, over 437 of the same
-  evening, which carried every elite scaled by the tier and the Thief's Flee struck, over 436 of
-  the same day, which carried the review's calls of the 2nd: the Ruby Colossus, the Djinn in the ranks, the wanderer by chance, elites reusable, the
-  flee rule, the Thief's Flee as a section 12 question; three-way merged onto the live v0.423,
-  which other sessions had moved past this branch's v0.417 at 429 with the Honey Badger's hopper
-  and Ore Plate, the five Wainwright & Sutler models' first cuts and the weapon-fire row, four
-  conflicts settled by hand (the version; the Swallowed and Hopper table rows, each side's own;
-  the Built list and section 12's content questions, the live's with this branch's items added);
-  the bible's tables regenerated for the content and seven rows ported by hand, since the
-  script on this branch reads the other branches' engines as planned. Before it, v0.417 (429,
-  31 October, the slate's calls of the 31st: the escorts, the Djinn, Gilgamesh wandering, the
-  massive lines, the Tortoise's armour by the tier and the swallow's release; three-way merged
-  onto the live v0.416, which other
-  sessions had moved past this branch's v0.409 at 421 with the Storm Petrel's and the Giant
-  Petrel's engines and their table rows, the map halves made minimal, the glow on every hot part
-  and a lit part's colour, and two of section 12's questions, the Storm Petrel's burn on basics
-  and the weapon-fire package). Earlier merges onto the live page brought in the same way the
-  Arsenal's flare toward hot pink and the phone's eased light, a die's readout on a tap, a term
-  in shown text wearing its colour and icon, the shield's blue taking the control that holds a
-  foe, the Translocator's tap on the ground, the fight's backdrop palette, two tracks' rows, the HUD's mint green, the Armadillo's
-  radiators, the lava's call, Godot 4.8 and the AA setting, the enemy's violet, the overlay at one width, the
-  models' glows, looks and acts, the Armadillo's seal on screen, the skirmish's field, the reds,
-  the tracks in pairs and the map's FXAA and lines at every zoom, so this file carried those
-  branches' rows ahead of their code until main merged in on 2 November. The version numbers on the publishing branch's file and the
-  live agree after every publish. Before republishing, read the live page; if another session
-  moved it, publish a three-way merge onto it (`git merge-file` with the last-published file as
-  the base, the wrapper's first line and its trailing `</body></html>` stripped from the saved
-  live source). With main merged in (2 November), the tables script's run is checked against
-  the file's tables before it is kept: a row it reverts belongs to a branch not yet landed.
+  `docs/design-bible.html` after every change. This file is v0.430 (the page's version
+  443, published 3 November from `claude/affectionate-ramanujan-5d24t6` as main took it: the
+  five Wainwright & Sutler models' rows on Ryan's notes of 2 and 3 November, three-way merged
+  onto the live v0.429 that `ccr-7effd31a-u5z4gw` published (Hold The Line's eleventh round in
+  the music table's row) over the v0.428 `claude/charming-rubin-h954bp` published at 440 (the
+  mounts row: every mount takes every class, a hardpoint's variant and scale per class, the
+  round launcher, the fit sheet), with no conflict; so this file carries both branches' rows
+  ahead of their landing; 442 the same file dated the 2nd). The live has since moved on to
+  v0.431 at 444, which `claude/charming-rubin-h954bp` merged onto 443 the same morning, so the
+  next publish from main merges onto that. Before them, v0.427 (439, 2 November, from
+  `claude/brave-cori-fr18de` as main merged in: the slate's last calls, the elites by the tier
+  and the review's calls, over the live v0.423 at 435, `claude/charming-rubin-h954bp`'s
+  weapon-fire row on the v0.422 this branch published at 434 with the Honey Badger's hopper and
+  the five models' first cuts). The version numbers on the publishing branch's file and the live
+  agree after every publish. Before republishing, read the live page; if another session moved it, publish
+  a three-way merge onto it (`git merge-file` with the last-published file as the base, the
+  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
+  With main merged in (2 November), the tables script's run is checked against the file's
+  tables before it is kept: a row it reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 185 (2 November, the five
-  Wainwright & Sutler models' second rounds and the Cottonmouth's rails, models and rigs alone over
-  184, each rig checked against 184's first). At 184 (2 November, from
-  `claude/affectionate-ramanujan-5d24t6`; `edits` empty): `content/chassis.json`,
-  `content/components.json` and `content/modules.json` as this branch has them (the Honey Badger's
-  rework, the Reinforced Skeleton module), `hangar/pins.json`, and the five Wainwright & Sutler
-  machines' models and rigs (no renders yet), each replaced file checked against this branch's
-  history first. The page's own HTML went up as the live had it, since other sessions' newer page
-  (the foes list's armour step, the Models tab's Fire) is not in this branch; for the same reason
-  `hangar/motion.js` (the weapon-fire work and the halo's trial), `content/vocabulary.json`,
-  `content/foes.json` and `content/factions.json` stay the live's, other sessions' work ahead of
-  its code, until their branches land. So the page shows neither the Cassowary's drum clicking
-  nor the Cottonmouth's mounts hidden (both this branch's motion script), and its vocabulary
-  lacks the Ore Plate and the Petrels' four printed rules and carries the old hopper text, until
-  the two vocabularies meet on one head. Its lit parts show as the phone's renderer shows them (29 October: a lit
-  tile is the tile as stored times its light, clipped, before the page's own light; it had
-  shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
-  game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
-  stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 190 (2 November, from
-  `claude/brave-cori-fr18de`, the slate's last calls: `content/foes.json`, `content/factions.json`
-  and `content/vocabulary.json`, the vocabulary's live copy checked identical to 181's first,
-  over 189 of the same evening, the Thief's Flee struck, `content/foes.json` over 188 of the same
-  day, the escorts' read's `content/foes.json` and `content/factions.json`, over 187 of the same day, which carried the review's calls of the 2nd, each live copy
-  checked identical to 181's first, `edits` empty, the page itself another session's republish
-  of 13:07 kept as it stood, its motion panel's forms and pin records, which main's
-  `tools/hangar.html` carries since the merge of 2 November but for the Fire button's title);
-  181 (31 October, from
-  `claude/brave-cori-fr18de`, with the slate's calls of the 31st: `content/foes.json`,
-  `content/factions.json` and `content/vocabulary.json`, each live copy checked identical to
-  174's first, every other file kept as another session's republish of 04:10 left it, the
-  page's foe line showing an armour step, `edits` empty; 174 brought the slate's twelve onto a
-  republish of 21:51 the same way; 171 brought the first seven onto another session's republish, whose `index.html` it
-  kept but for the factions line, which reads a list of bosses (in `tools/hangar.html` too);
-  172 (30 October, from
-  `claude/charming-rubin-h954bp`: `motion.js` with the lit parts' eased light and the Armadillo's
-  rig with its vent heat's new peak, onto 171, which another session published with its page's
-  boss-list line, a domain's bosses a list since its slate, carried into `tools/hangar.html` here
-  so a publish from this branch keeps it; every other file as 171 had it, `edits` empty), on
-  170 (30 October, from main as it took
-  `claude/charming-rubin-h954bp`: `content/chassis.json` and `content/components.json` as merged,
-  main's pricing numbers with that branch's Pinion Driver in two shots and the Stingray's lance on
-  its dome, so the Codex reads both; onto that branch's own 169 to 165, Ryan's notes of 30 October
-  on the Armadillo, the last opening its vents a pair at a time, held open together, then shut a
-  pair at a time as the shell slowly rises, with its renders, the old ones to before; on 164,
-  which `claude/brave-cori-fr18de` published with main's pricing pass (the foes with the elites
-  and the compositions' notes, the factions with the compositions, the vocabulary with the
-  pacing session's terms and Chain, the modules with the pricing pass's lines); every other file
-  as the live page had it, `edits`
-  empty); 160, from `ccr-7821127e-kwj874`:
-  `content/factions.json`'s note naming the bleeds as the tilesets, onto version 159, its
-  `index.html` and every other file kept as they stood, `edits` empty; 154 took the domains' map
-  shapes out), on 153 (29 October:
-  `content/foes.json` with the hunters at a ring of two and its map note current, replacing
-  that branch's copy, whose note alone differed, and `content/vocabulary.json` with the Ring
-  and Behaviour entries, onto version 152 of `claude/charming-rubin-h954bp`, its rebuilds'
-  notes, its `index.html` and every other file kept as they stood, `edits` empty; 151 brought
-  the horde's wade and the flyer's passing;
-  at 147 the walls' four terms, onto version 146 of `claude/charming-rubin-h954bp`'s page and files; that branch's
-  `content/chassis.json` carries its own Stingray note, so main's chassis file, whose `_about`
-  alone moved, waits for that branch to land; `edits` empty). Its database (Ryan's saved edits,
-  collection `edits`; name candidates, `candidates`) opens only from the personal account.
+  before it is replaced and `edits` read first. At the page's version 193 (3 November, from
+  `claude/affectionate-ramanujan-5d24t6` as main took it; `edits` empty): the Cottonmouth's
+  third round (its model and rig), `content/vocabulary.json` as main has it (the Ore Plate, the
+  hopper's new text and the Petrels' printed rules beside the slate's terms), and the page and
+  `hangar/motion.js` three-way merged onto `claude/charming-rubin-h954bp`'s of 192 and committed
+  so: this branch's count displays, held and stepped spins, act locks and hidden mounts (a
+  hidden mount wears and flares nothing, `Stage.hidden`) and the Models tab's Statuses chips (a
+  form or a spin held as its status would hold it, the panel redrawn as either changes) beside
+  that branch's halos, weapon-fire acts, blows, losses, plume trial and each mount's declared
+  variant and scale, which `tools/hangar.html` and `tools/hangar_motion.js` carry ahead of that
+  branch's code. Every other file stays as 192 left it: that branch's round launcher shapes,
+  muzzle places, renders' manifest and the models, rigs and renders it rebuilt (the Armadillo's,
+  the Goshawk's and the Dingo's at 191; the Honey Badger's, the Prairie Dog's, the Stingray's,
+  the Puffin's and the Giant Petrel's at 192), ahead of main, so a publish from main sends none of
+  those; `hangar/pins.json` as main has it. Before it: 192 (3 November, from
+  `claude/charming-rubin-h954bp`: a blow moves the machine, fixed pieces fire, the plume trial),
+  191 (2 November, from `claude/charming-rubin-h954bp`: the round launcher in every maker's metal, the
+  Classes tab, the mounts' declared variants and scales, those three machines), 190 (2 November,
+  from `claude/brave-cori-fr18de`: the slate's last calls in the foes, the factions and the
+  vocabulary), 185 and 184 (2 November, from this branch: the Honey Badger's rework in content,
+  the Reinforced Skeleton, the five Wainwright & Sutler models' first cuts and second rounds).
+  Its lit parts show as the phone's renderer shows them (29 October: a lit tile is the tile as
+  stored times its light, clipped, before the page's own light), the light eased by the power
+  1/2.2 as the game eases it so a flare holds its colour (30 October, `MechRig.light`). Every
+  file the page reads is fetched with a stamp on the URL past any cache between (28 October,
+  after Ryan saw an older round's Skua acts on a reloaded page). Its database (Ryan's saved
+  edits, collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
   republished after the page changes and retired with it once the last brief that cites it
