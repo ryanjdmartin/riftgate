@@ -281,16 +281,19 @@ func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
 			acts[str(a["name"])] = float(a.get("duration", 0.0))
 		for cid in (fires as Dictionary).keys():
 			named += 1
-			var f: Dictionary = fires[cid]
 			assert_true(fixed.has(cid), "%s: %s fires with an act, and is one of its fixed weapons" % [id, cid])
-			assert_true(acts.has(str(f["act"])), "%s: %s's act %s is one of its own" % [id, cid, f["act"]])
-			assert_true(float(f["from"]) < float(f["to"]) and float(f["to"]) <= float(acts.get(str(f["act"]), 0.0)), "%s: %s's slice lies inside its act" % [id, cid])
+			var slices: Array = fires[cid] if fires[cid] is Array else [fires[cid]]
+			for f in slices:
+				assert_true(acts.has(str(f["act"])), "%s: %s's act %s is one of its own" % [id, cid, f["act"]])
+				assert_true(float(f["from"]) < float(f["to"]) and float(f["to"]) <= float(acts.get(str(f["act"]), 0.0)), "%s: %s's slice lies inside its act" % [id, cid])
+				if f.has("blow"):
+					assert_true(float(f["from"]) <= float(f["blow"]) and float(f["blow"]) <= float(f["to"]), "%s: %s's blow lies inside its slice" % [id, cid])
 	assert_true(named >= 10, "the cheapest locked weapons fire with their acts (%d)" % named)
 	# The slice plays from its start and ends at its end, cutting the act short.
 	var pair := _rig_for("nemesis")
 	var rig: MechRig = pair[0]
 	var cid := str((rig.fires as Dictionary).keys()[0])
-	var f: Dictionary = rig.fires[cid]
+	var f: Dictionary = rig.fire_slice(cid)
 	assert_true(rig.fire_act(cid), "the fixed weapon fires with its act")
 	assert_eq(str(rig._current["name"]), str(f["act"]), "the act it names plays")
 	assert_true(absf(rig._t - float(f["from"])) < 0.001, "from the slice's start")
@@ -1151,9 +1154,10 @@ func test_the_hovercraft_have_acts_and_cornering_numbers() -> void:
 		assert_true(side.get("acts", []).size() >= 3, "%s has several acts" % id)
 	# Ryan, 5 October: both oversteer through corners, like the Dingo; the Stingray faces its
 	# heading (no longer a helicopter holding its final facing) and noses down into its travel.
-	# The fifth notes: a hovercraft keeps flat, so the Puffin no longer banks.
+	# Ryan, 3 November: the Puffin, "more speedboat-ey now", banks a little in its turns (the fifth
+	# notes had kept it flat), far less than the jets.
 	var puffin: Dictionary = MechRig.load_sidecar("puffin")["move"]
-	assert_true(is_zero_approx(float(puffin.get("bank", 0.0))) and float(puffin.get("oversteer", 0.0)) > 0.0, "the Puffin oversteers and does not bank")
+	assert_true(float(puffin.get("bank", 0.0)) > 0.0 and float(puffin.get("bank", 0.0)) < 20.0 and float(puffin.get("oversteer", 0.0)) > 0.0, "the Puffin oversteers and banks a little")
 	var stingray: Dictionary = MechRig.load_sidecar("stingray")["move"]
 	assert_true(float(stingray.get("oversteer", 0.0)) > 0.0 and is_zero_approx(float(stingray.get("strafe", 0.0))), "the Stingray oversteers and faces its heading")
 	assert_true(stingray.has("tilt") and float(stingray["tilt"][0]) > 20.0, "and noses down hard into its travel, its fans its propulsion")
@@ -1182,7 +1186,7 @@ func test_the_stingray_noses_into_its_travel() -> void:
 	rig = pair[0]
 	assert_true(is_zero_approx(float(rig.move.get("strafe", 0.0))), "the Puffin faces its heading")
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0, 1.0)
-	assert_true(absf(pair[1].rotation.z) < deg_to_rad(0.5), "and stays flat through a left turn (%f)" % rad_to_deg(pair[1].rotation.z))
+	assert_true(pair[1].rotation.z > deg_to_rad(2.0) and pair[1].rotation.z < deg_to_rad(15.0), "and leans a little into a left turn (%f)" % rad_to_deg(pair[1].rotation.z))
 	pair[1].free()
 
 
@@ -1620,3 +1624,64 @@ func test_a_locked_spin_parks_on_a_step_ahead_and_runs_on_from_there() -> void:
 			rig.tick(dt)
 		assert_true(absf(wrapf(float(rig._spun[jn]) - s1, -180.0, 180.0) - rate * 0.5) < 2.0, "%s: an act that locks nothing leaves the spin turning" % id)
 	pair[1].free()
+
+
+func test_a_weapons_slices_take_turns_and_wind_up_to_their_blow() -> void:
+	# Ryan, 3 November: the Ammit "can also afford two different Claw animations", and a weapon fired
+	# seldom is "worth a little longer time". Synthetic acts and slices.
+	var r := _boxed_rig()
+	var rig: MechRig = r[0]
+	rig.acts = [{"name": "a", "duration": 2.0, "tracks": {}, "body": [], "glow": []}, {"name": "b", "duration": 2.0, "tracks": {}, "body": [], "glow": [], "idle": false}]
+	rig.fires = {"claws": [{"act": "a", "from": 0.2, "to": 1.2, "blow": 0.6}, {"act": "b", "from": 0.4, "to": 1.0}]}
+	assert_eq(str(rig.fire_slice("claws")["act"]), "a", "the first slice first")
+	assert_true(absf(rig.fire_wind("claws") - 0.4) < 0.001, "it winds up from its start to its blow")
+	assert_true(absf(rig.fire_span("claws") - 1.0) < 0.001, "and plays its whole span")
+	assert_true(rig.fire_act("claws"), "fired")
+	assert_eq(str(rig._current["name"]), "a", "playing its act")
+	assert_eq(str(rig.fire_slice("claws")["act"]), "b", "the other next")
+	assert_eq(rig.fire_wind("claws"), 0.0, "a slice naming no blow starts on it")
+	assert_true(rig.fire_act("claws"), "fired again")
+	assert_eq(str(rig._current["name"]), "b", "the other plays")
+	assert_eq(str(rig.fire_slice("claws")["act"]), "a", "then round again")
+	rig.fires = {"gun": {"act": "a", "from": 0.2, "to": 1.2}}
+	assert_eq(rig.fire_slices("gun").size(), 1, "one slice as before")
+	assert_true(rig.fire_slices("none").is_empty() and rig.fire_wind("none") == 0.0, "a weapon with none has none")
+	# An act that is a weapon's firing alone never plays at rest.
+	rig._end_act()
+	var chosen := {}
+	for k in range(12):
+		chosen[str(rig.choose().get("name", ""))] = true
+	assert_eq(chosen.keys(), ["a"], "an act marked idle false is never an idle")
+	(r[1] as Node).free()
+
+
+func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
+	# Ryan, 3 November: after the lights go, "they should slump or collapse after, limbs dropping,
+	# flyers and hovers landing, fans stopping, idle spins stopping".
+	var pair := _rig_for("badger")
+	var rig: MechRig = pair[0]
+	rig.kill()
+	rig.tick(MechRig.COLLAPSE_AT + 2.0)
+	var fell := 0
+	for name in rig.joints.keys():
+		if rig._want_rot.has(name):
+			fell += 1
+	assert_true(fell >= 2, "its loose joints fall (%d)" % fell)
+	assert_true(rig.body.position.y < -0.5, "its body sinks (%.2f)" % rig.body.position.y)
+	assert_true(rig.body.rotation.x < 0.0, "and tips nose down")
+	rig.revive()
+	rig.tick(2.0)
+	assert_true(rig._want_rot.is_empty() and absf(rig.body.position.y) < 0.05, "and stands again, revived")
+	pair[1].free()
+	pair = _rig_for("stingray")
+	rig = pair[0]
+	var turned := func(seconds: float) -> float:
+		var a := float(rig._spun["fan_r"])
+		rig.tick(seconds)
+		return absf(fposmod(float(rig._spun["fan_r"]) - a + 180.0, 360.0) - 180.0)
+	assert_true(turned.call(0.05) > 1.0, "its fans turn while it stands")
+	rig.kill()
+	rig.tick(MechRig.SPIN_STOP + 0.1)
+	assert_true(turned.call(0.05) < 0.001, "and stop once it is lost")
+	pair[1].free()
+

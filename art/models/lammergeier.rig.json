@@ -501,7 +501,7 @@
     "booster_ring",
     "exhaust"
    ],
-   "k": 4.0
+   "k": 7.0
   },
   "rock": 0.0,
   "body_hold": [
@@ -535,8 +535,14 @@
   "hp_4": "arc_fault_cannon"
  },
  "halo": [
-  "booster_ring",
-  "exhaust",
+  [
+   "booster_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ],
   "drone_tube_floor"
  ],
  "fires": {
@@ -556,5 +562,33 @@
   "hp_2": "barrel",
   "hp_3": "dish",
   "hp_4": "twin_barrel"
+ },
+ "launches": {
+  "syrinx_drone": [
+   {
+    "node": "launch_syrinx_drone_1",
+    "reach": 150.0,
+    "seconds": 0.6,
+    "delay": 0.3
+   },
+   {
+    "node": "launch_syrinx_drone_2",
+    "reach": 150.0,
+    "seconds": 0.6,
+    "delay": 0.65
+   },
+   {
+    "node": "launch_syrinx_drone_3",
+    "reach": 150.0,
+    "seconds": 0.6,
+    "delay": 0.3
+   },
+   {
+    "node": "launch_syrinx_drone_4",
+    "reach": 150.0,
+    "seconds": 0.6,
+    "delay": 0.65
+   }
+  ]
  }
 }

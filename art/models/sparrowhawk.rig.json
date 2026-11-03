@@ -1966,7 +1966,7 @@
     "driver_ring",
     "driver_exhaust"
    ],
-   "k": 5.0
+   "k": 8.0
   },
   "rock": 0.0,
   "body_hold": [
@@ -1997,10 +1997,14 @@
   "hp_2": ""
  },
  "halo": [
-  "booster_ring",
-  "exhaust",
-  "driver_ring",
-  "driver_exhaust"
+  [
+   "booster_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ]
  ],
  "fires": {
   "pinion_driver": {
@@ -2011,5 +2015,19 @@
  },
  "stock_shapes": {
   "hp_1": "barrel"
- }
+ },
+ "plumes": [
+  {
+   "node": "plume_1",
+   "part": "driver_ring",
+   "reach": 20.0,
+   "breadth": 7.5
+  },
+  {
+   "node": "plume_2",
+   "part": "driver_ring",
+   "reach": 20.0,
+   "breadth": 7.5
+  }
+ ]
 }

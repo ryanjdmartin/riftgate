@@ -2607,6 +2607,10 @@ func _use_die(i: int, target, second = null) -> bool:
 		aim_view = _slot_views[(target as Vector2i).x][(target as Vector2i).y]
 	var aim := _aim_plan(i, aim_view, spent)
 	fire_at += float(aim[1])
+	# A fixed weapon whose firing slice winds up before its blow (MechRig.fire_wind: the Buzzard's
+	# cannon charging up its spine) plays it from the turn's end, the blow and its sound waiting on it.
+	var wind := _fire_wind(i, spent) if ok and (target is Foe or target is Vector2i) else 0.0
+	fire_at += wind
 	var landed := fire_at + Sound.lands(blow)   # where the blow lands, from the die let go
 	if ok and target is Foe:
 		var tv: UnitView = was[target][0] if was.has(target) else null
@@ -2621,7 +2625,7 @@ func _use_die(i: int, target, second = null) -> bool:
 			if dead.is_empty():
 				var said := Sound.claim_line("die_spent", PRE_LINE_AT)
 				if said > 0.0:
-					fire_at = maxf(PRE_LINE_AT + said * PRE_FIRE, BLOW_AT + float(aim[1]))
+					fire_at = maxf(PRE_LINE_AT + said * PRE_FIRE, BLOW_AT + float(aim[1]) + wind)
 			else:
 				var hook := "foe_down_" + fallen
 				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + AFTER_DEATH)
@@ -2632,13 +2636,16 @@ func _use_die(i: int, target, second = null) -> bool:
 		var shape := str(ContentDB.load_default().components.get(spent.component, {}).get("shape", "")) if spent != null else ""
 		var ranged := not MuzzleFlare.lunges(fired if fired is Array else [], shape)
 		var hit := (target as Foe).alive()
-		_aim_before(i, aim, fire_at - BLOW_AT, landed, spent.component if spent != null else "")
+		var cid := spent.component if spent != null else ""
+		_aim_before(i, aim, fire_at - BLOW_AT - wind, landed, cid)
+		if wind > 0.0:
+			_wind_up(i, ranged, cid, fire_at - BLOW_AT - wind)
 		if fire_at > BLOW_AT and is_inside_tree():
 			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
 			tw.tween_interval(fire_at - BLOW_AT)
-			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow), spent.component if spent != null else ""))
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow), cid, wind > 0.0))
 		else:
-			_animate_attack(_mech_views[i], tv, ranged, hit, landed, spent.component if spent != null else "")
+			_animate_attack(_mech_views[i], tv, ranged, hit, landed, cid, wind > 0.0)
 		Sound.play_after(fire_at, blow)
 		for k in range(dead.size()):
 			var w: Array = was[dead[k]]
@@ -2658,13 +2665,16 @@ func _use_die(i: int, target, second = null) -> bool:
 		# A shot laid in an empty slot (the Lammergeier's), or the pull's gather there: the
 		# weapon fires and the machine kicks back, nothing struck.
 		var slot: Vector2i = target
-		_aim_before(i, aim, fire_at - BLOW_AT, landed, spent.component if spent != null else "")
+		var cid := spent.component if spent != null else ""
+		_aim_before(i, aim, fire_at - BLOW_AT - wind, landed, cid)
+		if wind > 0.0:
+			_wind_up(i, true, cid, fire_at - BLOW_AT - wind)
 		if fire_at > BLOW_AT and is_inside_tree():
 			var tw := create_tween()   # the machine fires once it has turned
 			tw.tween_interval(fire_at - BLOW_AT)
-			tw.tween_callback(_animate_attack.bind(_mech_views[i], _slot_views[slot.x][slot.y], true, false, BLOW_AT + Sound.lands(blow), spent.component if spent != null else ""))
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], _slot_views[slot.x][slot.y], true, false, BLOW_AT + Sound.lands(blow), cid, wind > 0.0))
 		else:
-			_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed, spent.component if spent != null else "")
+			_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed, cid, wind > 0.0)
 		Sound.play_after(fire_at, blow)
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
@@ -2714,14 +2724,14 @@ func _use_die(i: int, target, second = null) -> bool:
 ## attacker at the target; anything else kicks it back, a shotgun tagged melee among them. The target
 ## flashes and shakes a beat later, when the blow lands. `cid`, the component that struck, flares a
 ## burn weapon's fire on its mount.
-func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08, cid: String = "") -> void:
+func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08, cid: String = "", wound: bool = false) -> void:
 	if not is_inside_tree() or attacker == null:
 		return
 	_settle(attacker)
 	var origin: Vector2 = _home.get(attacker, attacker.position)
 	var mi := _mech_views.find(attacker)
-	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
-		_mech_3d[mi].strike(ranged, cid)   # the weapon that fired kicks and flares, its aim already turned (_aim_before); a fixed one fires with its act
+	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null and not wound:
+		_mech_3d[mi].strike(ranged, cid)   # the weapon that fired kicks and flares, its aim already turned (_aim_before); a fixed one fires with its act, unless its wind-up began it (_wind_up)
 	if mi >= 0 and ranged and target != null and not cid.is_empty() and ShotTrail.on():
 		_shoot_trail(mi, target, cid, lands)
 	var tw := _track(attacker, create_tween())
@@ -2775,7 +2785,9 @@ func _aim_before(i: int, aim: Array, attack_at: float, landed: float, cid: Strin
 		return
 	var view: MechView3D = _mech_3d[i]
 	var start := maxf(0.0, attack_at - float(aim[1]))
-	var hold := maxf(0.0, landed + AIM_HOLD - attack_at)
+	# Held until the blow has landed and its firing slice has played out, a beat after either (Ryan,
+	# 3 November: the Buzzard's cannon "turns back before the hit is complete").
+	var hold := maxf(0.0, maxf(landed, attack_at + view.fire_span(cid)) + AIM_HOLD - attack_at)
 	if start <= 0.0:
 		view.aim_at(cid, float(aim[0]), hold)
 		return
@@ -2787,6 +2799,31 @@ func _aim_before(i: int, aim: Array, attack_at: float, landed: float, cid: Strin
 func _use_view(view: MechView3D, cid: String) -> void:
 	if is_instance_valid(view):
 		view.use(cid)
+
+
+## How long machine `i`'s spend winds up before its blow (MechView3D.fire_wind), nought with no 3D.
+func _fire_wind(i: int, spent: Face) -> float:
+	if spent == null or i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null:
+		return 0.0
+	return _mech_3d[i].fire_wind(spent.component)
+
+
+## Start machine `i`'s firing slice `at` seconds from now, its wind-up playing before the blow lands
+## (the blow's kick, flash and landing come at the blow, _animate_attack told it is wound).
+func _wind_up(i: int, ranged: bool, cid: String, at: float) -> void:
+	if i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null or not is_inside_tree():
+		return
+	if at <= 0.0:
+		_mech_3d[i].strike(ranged, cid)
+		return
+	var tw := create_tween()
+	tw.tween_interval(at)
+	tw.tween_callback(_strike_view.bind(_mech_3d[i], ranged, cid))
+
+
+func _strike_view(view: MechView3D, ranged: bool, cid: String) -> void:
+	if is_instance_valid(view):
+		view.strike(ranged, cid)
 
 
 func _aim_view(view: MechView3D, cid: String, deg: float, hold: float) -> void:

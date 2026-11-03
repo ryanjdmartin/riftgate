@@ -554,3 +554,33 @@ func test_a_melee_weapon_lunges_only_when_nothing_about_it_crosses_the_field() -
 	assert_false(MuzzleFlare.lunges(["missile", "melee"]) or MuzzleFlare.lunges(["beam", "melee"]), "a rocket and a beam cross the field")
 	assert_false(MuzzleFlare.lunges(["flame", "melee"], "barrel"), "a flamethrower tagged melee fires its stream")
 	assert_false(MuzzleFlare.lunges(["ballistic"], "barrel") or MuzzleFlare.lunges([], "blade"), "no melee, no lunge")
+
+
+func test_a_plume_is_gone_at_rest_and_full_at_a_burn() -> void:
+	# Ryan, 3 November: the plume "needs to dissapear when idle".
+	assert_eq(MechView3D.plume_k(2.0, 2.0), 0.0, "a booster at its rest light shows none")
+	assert_true(MechView3D.plume_k(2.0 * MechRig.light(4.0), 2.0) > 0.0, "a booster burning shows some")
+	assert_eq(MechView3D.plume_k(2.0 * MechRig.light(8.0), 2.0), 1.0, "and all of it at eight rests over its own")
+
+
+func test_what_a_weapon_fires_out_is_hidden_until_it_flies() -> void:
+	# lowforge's launch() (Ryan, 3 November, of the Lammergeier: "a new drone model that fires out"):
+	# every model whose sidecar names launches carries their nodes, hidden at rest; a launch flies
+	# out along its line and comes home hidden.
+	var checked := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var model_id := f.trim_suffix(".rig.json")
+		var side := MechRig.load_sidecar(model_id)
+		if (side.get("launches", {}) as Dictionary).is_empty():
+			continue
+		var model: Node3D = (load("res://art/models/%s.glb" % model_id) as PackedScene).instantiate()
+		var ls := MechView3D.launches_of(model, side)
+		for cid in (side["launches"] as Dictionary).keys():
+			assert_eq((ls.get(cid, []) as Array).size(), (side["launches"][cid] as Array).size(), "%s: every launch of %s is in the model" % [model_id, cid])
+			for row in ls.get(cid, []):
+				assert_false((row[0] as Node3D).visible, "%s: %s hidden at rest" % [model_id, (row[0] as Node3D).name])
+		checked += 1
+		model.free()
+	assert_true(checked > 0, "some model fires something out of itself")

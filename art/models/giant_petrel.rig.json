@@ -620,7 +620,7 @@
     "booster_ring",
     "exhaust"
    ],
-   "k": 4.0
+   "k": 7.0
   },
   "rock": 2.0,
   "body_hold": [
@@ -657,8 +657,14 @@
   "hp_3": ""
  },
  "halo": [
-  "booster_ring",
-  "exhaust"
+  [
+   "booster_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ]
  ],
  "fires": {
   "spindrift_salvo": {

@@ -443,11 +443,12 @@ class Build:
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
-        self.fires = {}        # a fixed component -> (act, from, to): the slice of an act that is its firing, played on the spend (MechRig.fire_act)
+        self.fires = {}        # a fixed component -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
         self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
         self.fx_sizes = {}     # a fixed weapon -> its muzzle flare's size: an fx_<component> Empty at its business end (fx())
         self.plumes = []       # [{node, part, reach, breadth}]: a booster's plume along its thrust (plume())
+        self.launches = {}     # a fixed weapon -> [{node, reach, seconds, delay}]: what it fires out of the machine (launch())
         self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
         self.fits = {}         # pin -> {class: {"shape": its variant, "scale": its scale}}: what a class wears there (pin()'s `fits`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
@@ -731,7 +732,7 @@ class Build:
                 return "yaw"
         return "pitch"
 
-    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None, locks=None):
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None, locks=None, idle=True):
         """One idle act, what the pilot does with the machine every few seconds (the
         idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
         (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
@@ -753,10 +754,13 @@ class Build:
         on it adding whole steps over that; when the act ends its turn there runs on from where
         it stands (MechRig: the Cottonmouth's drum stops on a chamber to fire, Ryan, 2 November:
         "Keep the idle turn ... Quickly spin it forward a fixed number of barrels when it
-        fires")."""
+        fires"). `idle=False` makes an act a weapon's firing alone, never played at rest (Ryan, 3
+        November: the Nemesis's punch, the Skua's burst, the Ammit's second claw)."""
         out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
         if heft is not None:
             out["heft"] = float(heft)
+        if not idle:
+            out["idle"] = False
         if locks:
             out["locks"] = [str(j) for j in ([locks] if isinstance(locks, str) else locks)]
         if places:
@@ -1141,14 +1145,28 @@ class Build:
             out["standing"] = dict(self.standing)
         # A fixed weapon fires with a slice of one of its acts (Ryan, 31 October: "go for ones that
         # are cheapest to do first, where pre-existing animation work has already been looked at").
+        # A slice is (act, from, to), or (act, from, to, blow) when it winds up before its blow (the
+        # act's second the blow lands: the engine holds the blow's sound and landing till then); a
+        # list of slices takes turns (Ryan, 3 November: the Ammit "can also afford two different
+        # Claw animations since it's got 4 and will use them often").
         fires = {}
-        for cid, (name, t0, t1) in self.fires.items():
-            act = next((a for a in self.acts if a["name"] == name), None)
-            if act is None:
-                raise ValueError("%s: %s fires with an act it has not got, %r" % (self.name, cid, name))
-            if not (0.0 <= t0 < t1 <= act["duration"]):
-                raise ValueError("%s: %s fires from %.2f to %.2f, outside %r's %.2f seconds" % (self.name, cid, t0, t1, name, act["duration"]))
-            fires[cid] = {"act": name, "from": t0, "to": t1}
+        for cid, spec in self.fires.items():
+            out_slices = []
+            for sl in (spec if isinstance(spec, list) else [spec]):
+                name, t0, t1 = sl[0], sl[1], sl[2]
+                blow = sl[3] if len(sl) > 3 else None
+                act = next((a for a in self.acts if a["name"] == name), None)
+                if act is None:
+                    raise ValueError("%s: %s fires with an act it has not got, %r" % (self.name, cid, name))
+                if not (0.0 <= t0 < t1 <= act["duration"]):
+                    raise ValueError("%s: %s fires from %.2f to %.2f, outside %r's %.2f seconds" % (self.name, cid, t0, t1, name, act["duration"]))
+                if blow is not None and not (t0 <= blow <= t1):
+                    raise ValueError("%s: %s's blow at %.2f lies outside its slice of %r, %.2f to %.2f" % (self.name, cid, blow, name, t0, t1))
+                d = {"act": name, "from": t0, "to": t1}
+                if blow is not None:
+                    d["blow"] = blow
+                out_slices.append(d)
+            fires[cid] = out_slices[0] if len(out_slices) == 1 else out_slices
         if fires:
             out["fires"] = fires
         for cid, name in self.aims.items():
@@ -1170,6 +1188,8 @@ class Build:
             if stray:
                 raise ValueError("%s: a plume burns with %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
             out["plumes"] = list(self.plumes)
+        if self.launches:
+            out["launches"] = {cid: list(rows) for cid, rows in self.launches.items()}
         # Each fixed weapon's business end (fx()): its muzzle flare's size, the Empty carrying the place.
         if self.fx_sizes:
             out["fx"] = {cid: round(size, 2) for cid, size in sorted(self.fx_sizes.items())}
@@ -1260,6 +1280,16 @@ class Build:
         self.plumes.append({"node": name, "part": part, "reach": round(float(reach), 2), "breadth": round(float(breadth), 2)})
         return e
 
+    def launch(self, cid, at, forward=(0.0, 1.0, 0.0), reach=120.0, seconds=0.6, delay=0.0):
+        """`with b.launch("syrinx_drone", at, forward, ...): ...` builds what a fixed weapon fires out
+        of the machine (Ryan, 3 November, of the Lammergeier: "I guess a new drone model that fires
+        out, something simple"): every object made in the block hangs under an Empty named
+        launch_<component>_<n> at `at`, its +y along `forward`, which the engine hides at rest; as
+        the weapon fires it shows, `delay` seconds on, and flies out along that line gathering
+        speed, `reach` world units in `seconds`, then hides again at home (MechView3D.launches_of).
+        The sidecar's `launches` lists each under its component."""
+        return _Launch(self, cid, at, forward, reach, seconds, delay)
+
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
         """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock
         component inside the block and pins it: every object made in the block hangs under
@@ -1319,6 +1349,35 @@ def _fits(model, pin, fits):
             raise ValueError("%s: %s fits its %s at a scale of %s" % (model, pin, cls, scale))
         out[cls] = {"shape": shape, "scale": round(scale, 3)}
     return out
+
+
+class _Launch:
+    def __init__(self, b, cid, at, forward, reach, seconds, delay):
+        self.b, self.cid, self.at, self.forward = b, cid, at, forward
+        self.reach, self.seconds, self.delay = reach, seconds, delay
+
+    def __enter__(self):
+        self.start = len(self.b.objects)
+        return self
+
+    def __exit__(self, *exc):
+        if exc[0] is not None:
+            return False
+        b = self.b
+        rows = b.launches.setdefault(self.cid, [])
+        name = "launch_%s_%d" % (self.cid, len(rows) + 1)
+        e = bpy.data.objects.new(name, None)
+        e.empty_display_size = 1.0
+        m = Matrix.Translation(Vector(self.at)) @ pin_frame(self.forward).to_4x4()
+        e.matrix_world = m
+        bpy.context.scene.collection.objects.link(e)
+        b.pins.append(e)
+        inv = m.inverted()
+        for ob in b.objects[self.start:]:
+            ob.parent = e
+            ob.matrix_parent_inverse = inv
+        rows.append({"node": name, "reach": round(float(self.reach), 2), "seconds": round(float(self.seconds), 3), "delay": round(float(self.delay), 3)})
+        return False
 
 
 class _Socket:

@@ -1385,7 +1385,6 @@ function paintMotion(force) {
         el("div", {class: "scrub"}, r, el("output", {id: "mo-scrub-out", for: "mo-scrub"}, `${rig.t.toFixed(2)} s of ${rig.current.duration}`))));
     }
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
-      el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
       el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"),
       el("button", {class: "btn", id: "mo-hit", title: "A blow lands on the machine: a hull hit from the left, then its armour turning one from the right", onclick: () => st.hit()}, "Hit"),
       el("button", {class: "btn", id: "mo-lose", "aria-pressed": String(!!rig.dead), title: "The machine is lost: its lit parts gutter out; press again to light it", onclick: () => st.lose()}, rig.dead ? "Revive" : "Lose"))));

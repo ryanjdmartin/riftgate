@@ -1046,7 +1046,7 @@
     "joint_nacelle_l",
     "joint_nacelle_r"
    ],
-   "k": 5.0
+   "k": 8.0
   },
   "rock": 0.0,
   "body_hold": [
@@ -1095,14 +1095,21 @@
   "barrel_groove",
   "cannon_bore",
   "cannon_glow",
-  "joint_nacelle_l",
-  "joint_nacelle_r"
+  [
+   "joint_nacelle_l",
+   1.8
+  ],
+  [
+   "joint_nacelle_r",
+   1.8
+  ]
  ],
  "fires": {
   "afterburner_cannon": {
    "act": "charge_cannon",
-   "from": 4.1,
-   "to": 5.6
+   "from": 3.3,
+   "to": 5.8,
+   "blow": 4.6
   }
  },
  "muzzles": {

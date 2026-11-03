@@ -117,11 +117,17 @@ const PLUME_SHADER := preload("res://game/ui/plume.gdshader")
 ## (a trial, 3 November), to compare.
 static var PLUMES := OS.get_environment("RIFTGATE_PLUME") != "off"
 var _plumes: Array = []               # [plume material, the lit material it burns with, that material's light at rest]
+var _launches: Dictionary = {}        # a fixed weapon -> [[node, its transform at rest, delay, seconds, reach]]: what it fires out of the machine (launches_of)
+var _flights: Array = []              # [node, its rest, seconds since it left (negative while it waits), seconds, reach]: launches in the air
 const HIT_PEAK := 0.8        # a blow on the hull lays heat's colour this thick over it at the top (hit),
 const HIT_UP := 0.04         # in this many seconds,
 const HIT_HOLD := 0.08       # held this long,
 const HIT_DOWN := 0.3        # and gone over this long
 const OUTLINE_LOST := 0.35   # a machine lost keeps this much of its outline (lose)
+const LAND := 1.1            # seconds a lost flyer or hover takes to come down onto the floor (lose)
+const LAUNCH_LIGHT := 14.0   # a launch's lit tail burns this many rests over its own the whole way out (launch)
+var _land_t := -1.0          # seconds into a lost machine coming down; negative when not
+var _sway_k := 1.0           # how much of its idle drift a machine keeps: none once a lost one has landed
 var _hit_mat: ShaderMaterial          # the flash laid over the hull as a blow lands (hit)
 var _hit_t := -1.0                    # seconds into it; negative when none
 var _hit_k := 1.0                     # its strength, a blow the armour turned at half
@@ -571,13 +577,80 @@ static func setup_plumes(model: Node, side: Dictionary, r: MechRig, ceiling := 0
 	return out
 
 
-## A plume's strength from its booster's light now against its rest: faint at rest, full as the
-## booster burns at eight rests over its own (a surge, a run at full speed).
+## A plume's strength from its booster's light now against its rest: gone at rest (Ryan, 3
+## November: "It needs to dissapear when idle"), full as the booster burns at eight rests over its
+## own (a surge, a run at full speed).
 static func plume_k(light: float, rest: float) -> float:
 	if rest <= 0.0:
 		return 0.0
 	var top := MechRig.light(8.0)
-	return clampf(0.3 + 0.7 * (light / rest - 1.0) / maxf(0.01, top - 1.0), 0.0, 1.0)
+	return clampf((light / rest - 1.0) / maxf(0.01, top - 1.0), 0.0, 1.0)
+
+
+## What each fixed weapon fires out of the machine (lowforge's launch(): the Lammergeier's drones),
+## by its sidecar's `launches`: [node, its transform at rest, delay, seconds, reach] each, the node
+## hidden until it flies (launch). Hidden before a weld, so its parts stay its own.
+static func launches_of(model: Node, side: Dictionary) -> Dictionary:
+	var out := {}
+	var ls = side.get("launches", {})
+	if not (ls is Dictionary) or model == null:
+		return out
+	for cid in (ls as Dictionary).keys():
+		var rows: Array = []
+		for l in ls[cid]:
+			if not (l is Dictionary):
+				continue
+			var n := model.find_child(str(l.get("node", "")), true, false) as Node3D
+			if n == null:
+				continue
+			n.visible = false
+			rows.append([n, n.transform, float(l.get("delay", 0.0)), maxf(0.05, float(l.get("seconds", 0.6))), float(l.get("reach", 100.0))])
+		out[str(cid)] = rows
+	return out
+
+
+## Fire `cid`'s launches: each leaves its delay on (after `lead`), its tail flaring.
+func launch(cid: String, lead := 0.0) -> void:
+	for row in _launches.get(cid, []):
+		_flights.append([row[0], row[1], -float(row[2]) - lead, row[3], row[4]])
+	if not _flights.is_empty():
+		set_process(true)
+
+
+## Each launch in the air flies out along its line, gathering speed (reach × u²), and is hidden at
+## home once its time is up.
+func _fly(delta: float) -> void:
+	for f in _flights:
+		var node: Node3D = f[0]
+		if not is_instance_valid(node):
+			f[2] = INF
+			continue
+		var was := float(f[2])
+		f[2] = was + delta
+		var t := float(f[2])
+		if t < 0.0:
+			continue
+		var rest: Transform3D = f[1]
+		if t >= float(f[3]):
+			node.visible = false
+			node.transform = rest
+			f[2] = INF
+			_burn(node, 1.0)
+			continue
+		if was < 0.0:
+			node.visible = true
+			_burn(node, LAUNCH_LIGHT)   # its tail lit the whole way out
+		var u := t / float(f[3])
+		node.transform = Transform3D(rest.basis, rest.origin - rest.basis.z.normalized() * float(f[4]) * u * u)   # its +y in lowforge is its -z here
+	_flights = _flights.filter(func(f): return float(f[2]) != INF)
+
+
+## Light every lit part under a launch at `k` rests over its own (1 puts it back).
+func _burn(node: Node3D, k: float) -> void:
+	var mats: Array = []
+	rig._lit_under(node, mats)
+	for m in mats:
+		rig._light_to(m, MechRig._rest_of(m), k)
 
 
 ## Each fixed weapon's business end, by its sidecar's `fx` (lowforge's fx()): the node named
@@ -802,9 +875,10 @@ func _setup(chassis_id: String, maker: String) -> void:
 			_stage.scale = Vector3.ONE * _field_scale
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
+	var side := MechRig.load_sidecar(chassis_id)
+	_launches = launches_of(_model, side)   # hidden before the weld, which keeps a hidden node's parts as they are
 	MechWeld.weld(_model, MechWeld.kept_parts(chassis_id))   # a mesh a material in each moving group (the battery plan), before the rig and the traces read it
 	rig.place = "skirmish"
-	var side := MechRig.load_sidecar(chassis_id)
 	if PLUMES:
 		for pl in side.get("plumes", []):
 			rig.halo_skip.append(str(pl.get("part", "")))   # a plume burns where its ring was
@@ -915,20 +989,33 @@ func _process(delta: float) -> void:
 	if spin:
 		_pivot.rotation.y += SPIN_SPEED * delta
 	elif sway:
-		_pivot.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
+		_pivot.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw * _sway_k
 		if balance != null:
 			balance.quiet = rig.in_act()
 			balance.step(delta)
-			_pivot.rotation.x = balance.pitch
-			_pivot.rotation.z = balance.roll
-			_pivot.position.y = balance.heave * sway_bob
+			_pivot.rotation.x = balance.pitch * _sway_k
+			_pivot.rotation.z = balance.roll * _sway_k
+			_pivot.position.y = balance.heave * sway_bob * _sway_k
 		else:
-			_pivot.rotation.x = sin(_t * 0.7 + sway_phase * 0.5) * sway_pitch
-			_pivot.position.y = sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5
+			_pivot.rotation.x = sin(_t * 0.7 + sway_phase * 0.5) * sway_pitch * _sway_k
+			_pivot.position.y = (sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5) * _sway_k
+	# A lost machine comes down onto the floor (Ryan, 3 November: "flyers and hovers landing"): its
+	# lift and its hover's drift ease out together after its lights have begun to go.
+	if _land_t >= 0.0:
+		_land_t += delta
+		var g := clampf((_land_t - MechRig.COLLAPSE_AT) / LAND, 0.0, 1.0)
+		var k := g * g * (3.0 - 2.0 * g)
+		_sway_k = 1.0 - k
+		if _stage != null and not field.is_empty():
+			_stage.position.y = float(field.get("lift", 0.0)) * (1.0 - k)
+		if g >= 1.0:
+			_land_t = -1.0
 	# A grounded machine's idle is its acts, what the pilot does with it every few seconds
 	# (the idle-acts row, 2 October); the rig plays them and the strikes from the model's
 	# sidecar. It never sways.
 	rig.tick(delta)
+	if not _flights.is_empty():
+		_fly(delta)
 	for pl in _plumes:
 		(pl[0] as ShaderMaterial).set_shader_parameter("strength", plume_k((pl[1] as StandardMaterial3D).emission_energy_multiplier, float(pl[2])))
 	if _hit_t >= 0.0:
@@ -990,13 +1077,34 @@ func lose() -> void:
 		return
 	rig.kill()
 	_lose_t = 0.0
+	_land_t = 0.0
 	set_process(true)
 
 
 func revive() -> void:
 	rig.revive()
 	_lose_t = -1.0
+	_land_t = -1.0
+	_sway_k = 1.0
+	if _stage != null and not field.is_empty():
+		_stage.position.y = float(field.get("lift", 0.0))
 	_outline_to(1.0)
+
+
+## How long a spend's firing winds up before its blow (MechRig.fire_wind): a fixed weapon whose
+## slice names its blow, the caller holding the blow's sound and its landing until then; nought for
+## a gun on a mount or a marked business end, which fire on the blow.
+func fire_wind(cid: String) -> float:
+	if rig == null or not carrying(cid).is_empty() or fx_nodes.has(cid):
+		return 0.0
+	return rig.fire_wind(cid)
+
+
+## How long a spend's firing slice plays (MechRig.fire_span), for an aim held until it ends.
+func fire_span(cid: String) -> float:
+	if rig == null or not carrying(cid).is_empty() or fx_nodes.has(cid):
+		return 0.0
+	return rig.fire_span(cid)
 
 
 func _outline_to(k: float) -> void:
@@ -1051,6 +1159,7 @@ func strike(ranged: bool, cid: String = "") -> void:
 	elif mounts.is_empty():
 		if not rig.fire_act(cid, lead):   # a fixed weapon fires with its own act where the model names one
 			rig.strike(ranged, [], Vector3.ZERO, lead)
+		launch(cid, lead)   # and what it fires out of the machine flies (the Lammergeier's drones)
 	else:
 		var only: Array = []
 		var recoil := Vector3.ZERO

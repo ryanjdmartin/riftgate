@@ -164,7 +164,7 @@ const PLUME_FRAG = `uniform float strength; uniform float ceiling; varying vec2 
 void main() { float across = 1.0 - abs(vUv.x * 2.0 - 1.0); float along = 1.0 - vUv.y;
   vec3 c = mix(vec3(0.8, 0.08, 0.02), vec3(1.0, 0.42, 0.1), smoothstep(0.05, 0.55, across)); c = mix(c, vec3(1.0, 0.9, 0.7), smoothstep(0.55, 0.95, across * along));
   gl_FragColor = vec4(c, clamp(strength * pow(across, 0.9) * pow(along, 1.2) * 1.6, 0.0, 1.0) * ceiling); }`;
-function plumeK(light, rest) { return rest > 0 ? clamp(0.3 + 0.7 * (light / rest - 1) / 7, 0, 1) : 0; }   // the page's light is not eased: eight rests over its own is full
+function plumeK(light, rest) { return rest > 0 ? clamp((light / rest - 1) / 7, 0, 1) : 0; }   // gone at rest (Ryan, 3 November: "It needs to dissapear when idle"); the page's light is not eased: eight rests over its own is full
 const RECOIL_BODY = 1.2;   // MechRig: model units a machine kicks back along a gun's line when it fires from a mount on the body
 const AIM_UP = 0.22, AIM_DOWN = 0.5;   // MechRig.aim: the turn onto a target, the blow waiting on it (Ryan, 2 November: "make sure that the turns or aims happen before the sound effects")
 // A blow on the hull (MechRig.jolt, MechView3D.hit; the to-do's hit reaction, on Ryan's go of 3
@@ -174,6 +174,11 @@ const AIM_UP = 0.22, AIM_DOWN = 0.5;   // MechRig.aim: the turn onto a target, t
 const JOLT = {share: 0.045, pitch: 6, up: 0.05, down: 0.34};
 const HIT = {peak: 0.8, up: 0.04, hold: 0.08, down: 0.3, colour: [1.0, 0.25, 0.0]};
 const GUTTER = 0.9;
+// And then a lost machine slumps (MechRig._collapse_wants; Ryan, 3 November: "they should slump or
+// collapse after, limbs dropping, flyers and hovers landing, fans stopping, idle spins stopping").
+const COLLAPSE = {at: 0.3, heft: 0.3, droop: 0.8, free: 40, fold: 0.45, sink: 0.07, pitch: 7, roll: 5, spinStop: 1.4, land: 1.1};
+const COLLAPSE_SKIP = ["hip", "knee", "ankle", "toe", "foot", "coxa", "wheel", "steer", "caster", "tread", "rotor", "fan", "drum", "louvre",
+  "shutter", "vent", "valve", "run", "salvo", "top_mouth", "top_lamp", "cell", "recoil", "capacitor", "rudder", "waist", "yaw", "turret", "sensor", "eye"];
 function hitK(t) { if (t < 0 || t >= HIT.up + HIT.hold + HIT.down) return 0; if (t < HIT.up) return t / HIT.up; if (t < HIT.up + HIT.hold) return 1; const g = (t - HIT.up - HIT.hold) / HIT.down; return (1 - g) * (1 - g); }
 function gutterK(t) { if (t >= GUTTER) return 0; const f = t / GUTTER; return (1 - f) * (1 - f) * ((t % 0.13) < 0.05 ? 0.35 : 1); }
 // A lit material's light at rest, kept the first time it is asked (MechRig._rest_of), so a standing
@@ -370,6 +375,7 @@ class Rig {
     }
     this.useGait(side.gait || {});
     this.fires = side.fires || {}; this.until = -1;   // a fixed weapon's firing slice (MechRig.fire_act), and where one playing now ends
+    this.fireTurn = {}; this.collapse = -1; this.spinK = 1;   // each weapon's slices taking turns (MechRig.fire_slice); a lost machine's slump and its spins running down
     this.aims = side.aims || {}; this.pivots = !!side.pivots;   // a fixed weapon's aim joint; the whole machine turning on the spot (tracks, casters)
     root.rotation.order = "YXZ";
     this.bodyRestPos = root.position.clone();
@@ -533,7 +539,7 @@ class Rig {
       let v = want + (this.heldSpeed[jn] - want) * Math.exp(-delta / SPIN_HELD_EASE);
       if (Math.abs(v - want) < 3) v = want;   // the exponential's tail, a creep, cut off (MechRig)
       this.heldSpeed[jn] = v;
-      if (v !== 0) { this.spun[jn] = ((((this.spun[jn] || 0) + v * delta) % 360) + 360) % 360; turning = true; }
+      if (v !== 0 && this.spinK > 0) { this.spun[jn] = ((((this.spun[jn] || 0) + v * delta * this.spinK) % 360) + 360) % 360; turning = true; }
     }
     return turning;
   }
@@ -659,7 +665,7 @@ class Rig {
     return "";
   }
   choose() {
-    const here = this.actSet();
+    const here = this.actSet().filter(a => a.idle !== false);   // a weapon's firing alone never plays at rest (MechRig.choose)
     if (!here.length) return null;
     if (this.debug && this.debug !== "1") { const a = here.find(x => x.name === this.debug); if (a) return a; }
     if (here.length === 1) return here[0];
@@ -722,11 +728,16 @@ class Rig {
   }
   // A fixed weapon fires with its own act (MechRig.fire_act): the slice the sidecar names, from `lead`
   // before its start, snappier than an idle act; false when it has none or a held form keeps its joints.
+  fireSlice(cid) {   // MechRig.fire_slice: one slice, or several taking turns
+    const f = this.fires[cid], all = Array.isArray(f) ? f : (f ? [f] : []);
+    return all.length ? all[(this.fireTurn[cid] || 0) % all.length] : null;
+  }
   fireAct(cid, lead = 0) {
-    const f = this.fires[cid];
+    const f = this.fireSlice(cid);
     if (!f) return false;
     const act = this.actSet().find(a => a.name === f.act);
     if (!act) return false;
+    this.fireTurn[cid] = (this.fireTurn[cid] || 0) + 1;
     if (this.current) this.endAct(true);
     this.start(act);
     this.t = Math.max(0, f.from - lead); this.until = f.to;
@@ -751,7 +762,7 @@ class Rig {
   // The servos (MechRig._follow): each part a mass on a damped spring chasing what the act asks,
   // the machine's heft its time constant; a part home and still drops out.
   follow(dt) {
-    const w = 1 / Math.max(0.02, this.current ? (this.actHeft ?? this.heft) : this.heft), len = (a) => Math.hypot(a.x, a.y, a.z);
+    const w = 1 / Math.max(0.02, this.dead ? COLLAPSE.heft : (this.current ? (this.actHeft ?? this.heft) : this.heft)), len = (a) => Math.hypot(a.x, a.y, a.z);
     const names = new Set([...Object.keys(this.servo), ...Object.keys(this.wantRot)]);
     if (len(this.bodyWantRot) || len(this.bodyWantSlide)) names.add("@body");
     const chase = (x, v, want) => { const nv = add3(v, mul3(add3(mul3(add3(want, mul3(x, -1)), w * w), mul3(v, -2 * DAMPING * w)), dt)); return [add3(x, mul3(nv, dt)), nv]; };
@@ -801,12 +812,61 @@ class Rig {
     const mats = [];
     this.model.traverse(n => { if (n.isMesh && !n.userData.halo) for (const m of [].concat(n.material)) if (m.userData.lit && !mats.includes(m)) mats.push(m); });
     this.gutter = {t: 0, mats: mats.map(m => [m, m.emissiveIntensity])};
+    this.collapse = 0;
   }
   revive() {
     if (!this.dead) return;
     this.dead = false;
     for (const [m] of (this.gutter || {mats: []}).mats) this.lightTo(m, restOf(m), 1);
     this.gutter = null;
+    this.collapse = -1; this.spinK = 1; this.wantRot = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3();
+  }
+  // The slump's clock (MechRig._step): the spins run down, and once the lights are going the
+  // limbs fall; true while anything moves.
+  stepCollapse(dt) {
+    if (!this.dead) return false;
+    let moving = false;
+    if (this.spinK > 0) { this.spinK = Math.max(0, this.spinK - dt / COLLAPSE.spinStop); moving = true; }
+    if (this.collapse >= 0 && this.collapse < COLLAPSE.at) {
+      this.collapse += dt;
+      if (this.collapse >= COLLAPSE.at) this.collapseWants();
+      moving = true;
+    }
+    return moving;
+  }
+  // MechRig._collapse_wants: each loose joint falls toward the limit on the side that lowers what it
+  // carries, a knee folds toward its deeper limit, and the body sinks and tips nose down, leaning.
+  collapseWants() {
+    const T = window.THREE;
+    this.model.updateMatrixWorld(true);
+    if (!(this.size > 0)) this.size = this.modelSize();
+    for (const name of Object.keys(this.joints)) {
+      if (this.spinners[name]) continue;
+      const m = this.meta[name] || {}, axis = m.axis, i = AXES.indexOf(axis);
+      if (i < 0 || axis === "yaw") continue;
+      const lim = (m.limits || {})[axis], bounded = Array.isArray(lim) && lim.length === 2;
+      const v = v3();
+      if (name.startsWith("knee")) {
+        if (bounded) { v[["x", "y", "z"][i]] = (Math.abs(lim[1]) >= Math.abs(lim[0]) ? lim[1] : lim[0]) * COLLAPSE.fold; this.wantRot[name] = v; }
+        continue;
+      }
+      if (COLLAPSE_SKIP.some(w => name.startsWith(w))) continue;
+      const j = this.joints[name], sum = new T.Vector3(); let n = 0;
+      j.traverse(o => { if (o.isMesh && !o.userData.halo && o.geometry) { if (!o.geometry.boundingBox) o.geometry.computeBoundingBox(); sum.add(o.geometry.boundingBox.getCenter(new T.Vector3()).applyMatrix4(o.matrixWorld)); n++; } });
+      if (!n) continue;
+      const p = new T.Vector3().setFromMatrixPosition(j.matrixWorld), r = sum.multiplyScalar(1 / n).sub(p);
+      const q = new T.Quaternion(); j.getWorldQuaternion(q);
+      const u = [new T.Vector3(1, 0, 0), new T.Vector3(0, 1, 0), new T.Vector3(0, 0, 1)][i].applyQuaternion(q);
+      const dy = new T.Vector3().crossVectors(u, r).y;   // how what it carries rises, per radian turned the positive way
+      if (Math.abs(dy) < 0.05 * Math.max(1, r.length())) continue;
+      const sgn = -Math.sign(dy);
+      let deg = COLLAPSE.free * sgn;
+      if (bounded) { const edge = sgn > 0 ? lim[1] : lim[0]; if (edge * sgn <= 0) continue; deg = edge * COLLAPSE.droop; }
+      v[["x", "y", "z"][i]] = deg;
+      this.wantRot[name] = v;
+    }
+    this.bodyWantSlide = v3(0, 0, -COLLAPSE.sink * this.size);   // authored: x right, y forward, z up (MechRig.offset_of)
+    this.bodyWantRot = v3(-COLLAPSE.pitch, 0, (this.random() * 2 - 1) * COLLAPSE.roll);
   }
   stepGutter(dt) {
     if (!this.gutter || this.gutter.t >= GUTTER) return false;
@@ -821,6 +881,7 @@ class Rig {
   tick(delta, acting = true) {
     let moved = this.stepFlashes(delta), left = delta;
     if (this.stepGutter(delta)) moved = true;
+    if (this.stepCollapse(delta)) moved = true;
     this.stepPlumes();
     acting = acting && !this.dead;
     if (this.stepFlares(delta)) moved = true;
@@ -845,7 +906,7 @@ class Rig {
         const u = lk[2] / PARK_TIME;
         this.spun[name] = lerp(lk[0], lk[1], u * u * (3 - 2 * u));
       } else {
-        const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
+        const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta * this.spinK;
         this.spun[name] = ((s % 360) + 360) % 360;
       }
       moved = true;
@@ -876,6 +937,7 @@ class Rig {
   tickStrikes(delta) {
     const turning = this.formsStep(delta);   // a form held or let go on a paused stage turns all the same
     const flaring = this.stepFlares(delta) || this.stepGutter(delta);
+    const falling = this.stepCollapse(delta);
     this.stepPlumes();
     if (this.aimAt) { this.aimAt.t += delta; if (this.aimAt.t >= AIM_UP + this.aimAt.hold + AIM_DOWN) this.aimAt = null; }
     if (this.current && this.until >= 0) {   // a firing slice is a blow, and plays out on a paused stage too, in steps no longer than STEP
@@ -885,7 +947,12 @@ class Rig {
       this.strikes = this.strikes.filter(st => st.t < st.up + st.down);
       this.pose(); return;
     }
-    if (!this.strikes.length && !this.aimAt) { if (turning || flaring) this.pose(); return; }
+    // What a slice or a slump left raised comes home (or falls) on a paused stage too (Ryan, 3 November:
+    // the Badger's claw "needs to come back down after attacking"; the slice ended, nothing ran its servos).
+    const bw = this.bodyWantRot, bs = this.bodyWantSlide;
+    const homing = Object.keys(this.servo).length || Object.keys(this.wantRot).length || bw.x || bw.y || bw.z || bs.x || bs.y || bs.z;
+    if (homing) { let left = delta; while (left > 1e-9) { const dt = Math.min(left, STEP); left -= dt; this.follow(dt); } }
+    if (!this.strikes.length && !this.aimAt) { if (turning || flaring || falling || homing) this.pose(); return; }
     for (const st of this.strikes) st.t += delta;
     this.strikes = this.strikes.filter(st => st.t < st.up + st.down);
     this.pose();
@@ -1469,6 +1536,18 @@ class Stage {
     this.pivot.add(root);
     this.rig = new Rig(root, sidecar, 7);
     this.burns = []; this.flares = []; this.shot = 0; this.aimSide = 1;
+    // What a fixed weapon fires out of the machine (MechView3D.launches_of: the Lammergeier's drones),
+    // hidden until it flies.
+    this.launches = {}; this.flights = [];
+    for (const [cid, rows] of Object.entries(sidecar.launches || {})) {
+      this.launches[cid] = [];
+      for (const l of rows || []) {
+        const node = root.getObjectByName(l.node);
+        if (!node) continue;
+        node.visible = false;
+        this.launches[cid].push({node, rest: node.position.clone(), delay: +l.delay || 0, seconds: Math.max(0.05, +l.seconds || 0.6), reach: +l.reach || 100});
+      }
+    }
     if (!shape) this.wearBurns(sidecar, id);
     this.gaitName = "";
     this.rig.debug = this.loop || "1";
@@ -1546,6 +1625,24 @@ class Stage {
     }
     this.hitT = 0;
   }
+  // Each launch in the air flies out along its line gathering speed, hidden at home once its time is
+  // up (MechView3D._fly); its tail flares as it leaves.
+  fly(dt) {
+    const T = window.THREE;
+    for (const f of this.flights) {
+      const was = f.t; f.t += dt;
+      if (f.t < 0) continue;
+      if (f.t >= f.seconds) { f.node.visible = false; f.node.position.copy(f.rest); f.done = true; this.burn(f.node, 1); continue; }
+      if (was < 0) { f.node.visible = true; this.burn(f.node, 14); }   // its tail lit the whole way out (MechView3D.LAUNCH_LIGHT)
+      const u = f.t / f.seconds, fwd = new T.Vector3(0, 0, -1).applyQuaternion(f.node.quaternion);
+      f.node.position.copy(f.rest).addScaledVector(fwd, f.reach * u * u);
+    }
+    this.flights = this.flights.filter(f => !f.done);
+  }
+  burn(node, k) {   // MechView3D._burn: every lit part under a launch at k rests over its own
+    if (!this.rig) return;
+    node.traverse(n => { if (n.isMesh && !n.userData.halo) for (const m of [].concat(n.material)) if (m.userData.lit) this.rig.lightTo(m, restOf(m), k); });
+  }
   stepHit(dt) {
     this.hitT += dt;
     const k = HIT.peak * this.hitK * hitK(this.hitT), done = this.hitT >= HIT.up + HIT.hold + HIT.down;
@@ -1559,7 +1656,7 @@ class Stage {
   lose() {
     const rig = this.rig;
     if (!rig) return;
-    if (rig.dead) rig.revive(); else rig.kill();
+    if (rig.dead) { rig.revive(); this.landT = -1; this.swayK = 1; } else { rig.kill(); this.landT = 0; }
     this.emit();
   }
   // The glTF as JSON with its binary embedded: an artifact does not serve .glb (tools/hangar_data.py).
@@ -1627,6 +1724,7 @@ class Stage {
       if (this.playing && this.rig) this.advance(dt * this.speedK);
       else if (this.rig) this.rig.tickStrikes(dt * this.speedK);
       if (this.hitT >= 0) this.stepHit(dt * this.speedK);
+      if (this.flights && this.flights.length) this.fly(dt * this.speedK);
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
       this.raf = requestAnimationFrame(step);
@@ -1650,10 +1748,17 @@ class Stage {
     if (this.balance) {   // a hovercraft balancing on its cushion, as the map and the skirmish draw it
       this.balance.quiet = !!rig.current;
       this.balance.step(dt);
+      if (this.landT >= 0) {   // a lost hover settles off its cushion (MechView3D.lose): its drift eases out
+        this.landT += dt;
+        const g = clamp((this.landT - COLLAPSE.at) / COLLAPSE.land, 0, 1);
+        this.swayK = 1 - g * g * (3 - 2 * g);
+        if (g >= 1) this.landT = -1;
+      }
+      const k = this.swayK ?? 1;
       this.pivot.rotation.order = "YXZ";
-      this.pivot.rotation.x = this.balance.pitch;
-      this.pivot.rotation.z = this.balance.roll;
-      this.pivot.position.y = this.balance.heave;
+      this.pivot.rotation.x = this.balance.pitch * k;
+      this.pivot.rotation.z = this.balance.roll * k;
+      this.pivot.position.y = this.balance.heave * k;
     }
     if (rig.current) this.emitTick();
   }
@@ -1664,9 +1769,10 @@ class Stage {
   // A blow (MechView3D.strike): Fire fires the machine's weapons one press at a time, mount by
   // mount and then each fixed weapon with its own act, each turning onto a target first where it
   // can (a turret, a waist, a hover's pivot; here a bearing to one side and then the other) and
-  // only it kicking and flaring; Melee swings as a fixed weapon without an act does. A burn
-  // weapon's fire flares with its mount, or on Melee.
-  strike(ranged) {
+  // only it moving and flaring, a gun kicking and a blade that lunges jabbing (MuzzleFlare.lunges),
+  // as the game does. A burn weapon's fire flares with its mount. (Melee, the old swing every
+  // machine made before its weapons fired, is gone: no weapon strikes that way now.)
+  strike(ranged = true) {
     if (!this.rig) return;
     const rig = this.rig, mounts = [...new Set(this.flares.map(f => f.pin).filter(p => typeof p === "number"))].sort((a, b) => a - b);
     const marked = Object.keys((this.side || {}).fx || {}).map(c => "fx:" + c);   // fixed weapons with a business end marked: they kick their joint and flare (MechView3D.strike)
@@ -1692,6 +1798,7 @@ class Stage {
       let lead = 0;
       if (joint) { this.aimSide = -this.aimSide; rig.aim(joint, 22 * this.aimSide, 0.8); lead = AIM_UP; }
       if (!rig.fireAct(next, lead)) rig.strike(true, [], null, lead);
+      for (const l of this.launches[next] || []) this.flights.push({...l, t: -l.delay - lead});   // and what it fires out flies (MechView3D.launch)
       return;
     }
     const n = next, pin = rig.hardpoints[n];
@@ -1707,7 +1814,8 @@ class Stage {
       const back = fwd.multiplyScalar(-RECOIL_BODY).applyQuaternion(rig.body.quaternion).multiply(rig.body.scale);
       recoil = {x: back.x, y: back.y, z: back.z};
     }
-    rig.strike(true, owner ? [owner] : [], recoil, lead);
+    const jab = this.flares.some(f => f.pin === n && f.lunges);   // a blade fitted to a mount jabs, as the game strikes it
+    rig.strike(!jab, owner ? [owner] : [], jab ? null : recoil, lead);
     for (const f of this.flares) if (f.pin === n) rig.fireFlare(f.mesh, f.look, lead + f.delay);
     for (const part of this.burns || []) if (part.parent === pin && part.visible !== false) rig.flashUnder(part);
   }
@@ -1736,7 +1844,7 @@ class Stage {
       const mesh = new T.Mesh(new T.PlaneGeometry(w, w), mat);
       mesh.position.set(at[0], at[1], at[2]); mesh.visible = false; mesh.userData.halo = true; mesh.renderOrder = 2 + k; mesh.frustumCulled = false;
       pin.add(mesh);
-      this.flares.push({pin: n, mesh, look, delay: FLARES.layerDelay * k});
+      this.flares.push({pin: n, mesh, look, delay: FLARES.layerDelay * k, lunges: lunges(c ? c.tags : [], shape)});
     });
   }
   // A burn weapon's fire over its class on each stock mount whose component burns (MechView3D.burn_rows):

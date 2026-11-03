@@ -1794,6 +1794,7 @@ func _make_unit(u: Unit) -> Node3D:
 		var maker := ContentDB.load_default().maker_of(u.chassis_id)
 		var model_id := MechView3D.model_for(u.chassis_id)
 		var node := _model(model_id, maker, u.paint, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [], model_id == u.chassis_id)
+		MechView3D.launches_of(node, MechRig.load_sidecar(model_id))   # what a weapon fires out of the machine stays hidden on the map (the Lammergeier's drones)
 		MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's

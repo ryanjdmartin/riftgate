@@ -146,7 +146,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
   numbers, what each hardpoint's stock part is, `hidden_pins` where a model hides its mounts
-  (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status, `spin_step` and an act's `locks` where an act stops a spinner on a step; written by lowforge, read by `mech_rig.gd`
+  (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status, `spin_step` and an act's `locks` where an act stops a spinner on a step, `fires` (each fixed weapon's slices of its acts, in turn, and a slice's `blow`), an act's `idle: false` where it only fires, `launches` where a weapon fires a part out (the Lammergeier's drones, `b.launch(...)`); written by lowforge, read by `mech_rig.gd`
   and by `mech_view_3d.gd`, which wears a fitted die against that record), `models/shapes/` the
   silhouette classes in each maker's metal, a burn weapon's fire for each and `muzzles.json`,
   where each class's muzzle flare blooms (`forge.py shapes` writes all three), `foes/` the combat sprites foeforge cuts from Ryan's picks and the

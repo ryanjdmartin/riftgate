@@ -866,7 +866,7 @@
     "repulsor_l",
     "repulsor_r"
    ],
-   "k": 5.0
+   "k": 8.0
   },
   "rock": 3.0,
   "body_hold": [
@@ -880,7 +880,7 @@
  },
  "move": {
   "slide": 0.3,
-  "bank": 0.0,
+  "bank": 14.0,
   "strafe": 0.0,
   "oversteer": 1.5,
   "accel": 0.8,
@@ -905,8 +905,14 @@
   "hp_4": ""
  },
  "halo": [
-  "booster_ring",
-  "exhaust",
+  [
+   "booster_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ],
   "lift_nozzle",
   [
    "repulsor_l",

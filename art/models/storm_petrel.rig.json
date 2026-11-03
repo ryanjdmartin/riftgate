@@ -867,7 +867,7 @@
     "nozzle_ring",
     "exhaust"
    ],
-   "k": 5.0
+   "k": 8.0
   },
   "rock": 3.0,
   "body_hold": [
@@ -914,8 +914,14 @@
   "hp_4": ""
  },
  "halo": [
-  "nozzle_ring",
-  "exhaust",
+  [
+   "nozzle_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ],
   "projector_glow"
  ],
  "fires": {

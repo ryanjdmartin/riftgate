@@ -78,6 +78,22 @@ const JOLT_PITCH := 6.0       # rocking its nose up this many degrees,
 const JOLT_UP := 0.05         # in this many seconds,
 const JOLT_DOWN := 0.34       # and settling back over this long
 const GUTTER := 0.9           # a machine lost: its lit parts gutter out over this many seconds (kill)
+# And then it slumps (Ryan, 3 November: "they should slump or collapse after, limbs dropping, flyers
+# and hovers landing, fans stopping, idle spins stopping"): a heuristic every model shares.
+const COLLAPSE_AT := 0.3       # seconds into the gutter that a lost machine starts to go
+const COLLAPSE_HEFT := 0.3     # its servos' time constant as it goes: a drop with weight, not a pose
+const COLLAPSE_DROOP := 0.8    # a loose joint falls this share of the way to its limit on the side that lowers what it carries
+const COLLAPSE_FREE := 40.0    # or this many degrees, with no limit that way
+const COLLAPSE_FOLD := 0.45    # a knee folds this share of the way to its deeper limit
+const COLLAPSE_SINK := 0.07    # the body sinks this share of the machine's size
+const COLLAPSE_PITCH := 7.0    # and tips this many degrees nose down
+const COLLAPSE_ROLL := 5.0     # and leans up to this many to one side
+const SPIN_STOP := 1.4         # seconds its fans, rotors and idle spins take to run down
+## The joints a collapse leaves alone (a limb it cannot drop sensibly without its feet in the ground,
+## a spin, a mechanism), by how their names begin; a knee folds instead (COLLAPSE_FOLD).
+const COLLAPSE_SKIP := ["hip", "knee", "ankle", "toe", "foot", "coxa", "wheel", "steer", "caster", "tread", "rotor",
+	"fan", "drum", "louvre", "shutter", "vent", "valve", "run", "salvo", "top_mouth", "top_lamp", "cell", "recoil",
+	"capacitor", "rudder", "waist", "yaw", "turret", "sensor", "eye"]
 const FLASH_PEAK := 12.0      # a weapon's fire flaring as it fires (flash): this many rests over its own at the top,
 const FLASH_UP := 0.05        # reached in this many seconds,
 const FLASH_HOLD := 0.15      # held this long,
@@ -181,9 +197,12 @@ var halo_skip: Array = []          # lit parts that wear no halo, set before set
 var _gutter := -1.0                # seconds into its lit parts guttering out (kill); negative when not
 var _gutter_mats: Array = []       # [material, its light at rest] for every lit part, as the kill found them
 var _size := -1.0                  # the model's longest side, measured once (_model_size), for the jolt
+var _collapse := -1.0              # seconds since a lost machine was killed, for its slump (kill); negative while standing
+var _spin_k := 1.0                 # how much of its turn every spinner keeps: running down to nothing as a lost machine dies
+var _fire_turn: Dictionary = {}    # a fixed component -> how many times it has fired, so its slices take turns (fire_slice)
 var _flares: Array = []            # [{node, mat, look, t}] a muzzle flare on its look's beat (fire_flare)
 var _aim: Dictionary = {}          # {joint (or BODY), deg, hold, t}: the turn onto a target (aim)
-var fires: Dictionary = {}         # a fixed component -> {act, from, to}: the slice of an act that is its firing (the sidecar's `fires`)
+var fires: Dictionary = {}         # a fixed component -> {act, from, to[, blow]} or a list of them taking turns: the slices of acts that are its firing (the sidecar's `fires`)
 var aims: Dictionary = {}          # a fixed component -> the joint that turns to aim it, when no waist does (the sidecar's `aims`)
 var pivots := false                # the whole machine turns on the spot to aim (the sidecar's `pivots`: a tank's tracks, a castered chassis)
 var _until := -1.0                 # where a firing slice playing now ends (fire_act); below nought, the act's own end
@@ -694,8 +713,8 @@ func _spins_held_step(delta: float) -> bool:
 		if absf(v - want) < 3.0:   # the exponential's tail, a creep, cut off
 			v = want
 		_held_speed[jn] = v
-		if v != 0.0:
-			_spun[jn] = fposmod(float(_spun.get(jn, 0.0)) + v * delta, 360.0)
+		if v != 0.0 and _spin_k > 0.0:
+			_spun[jn] = fposmod(float(_spun.get(jn, 0.0)) + v * delta * _spin_k, 360.0)
 			turning = true
 	return turning
 
@@ -935,7 +954,7 @@ func tick(delta: float) -> void:
 			_spun[name] = lerpf(float(lk[0]), float(lk[1]), u * u * (3.0 - 2.0 * u))
 		else:
 			var r: Array = spinners[name]
-			_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta, 360.0)
+			_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta * _spin_k, 360.0)
 		moved = true
 	if debug_move and not gait.is_empty():
 		drive(top_speed, 0.0, 0.0, delta)
@@ -1010,7 +1029,103 @@ func _step(dt: float) -> bool:
 		if _gutter >= GUTTER:
 			_gutter = -1.0
 		moved = true
+	if dead:
+		if _spin_k > 0.0:
+			_spin_k = maxf(0.0, _spin_k - dt / SPIN_STOP)
+			moved = true
+		if _collapse >= 0.0 and _collapse < COLLAPSE_AT:
+			_collapse += dt
+			if _collapse >= COLLAPSE_AT:
+				_collapse_wants()
+			moved = true
 	return moved
+
+
+## A lost machine's slump (kill), once its lights are going: each loose joint falls toward the limit
+## on the side that lowers what it carries (an arm hangs, a gun dips, a head droops, a plate drops),
+## a knee folds toward its deeper limit, and the body sinks and tips nose down, leaning a little to
+## one side; the servos carry it there heavily (COLLAPSE_HEFT). The legs' other joints, the spins
+## and the mechanisms stay where they are (COLLAPSE_SKIP); the view lands what flies (MechView3D.lose).
+func _collapse_wants() -> void:
+	if model == null:
+		return
+	if _size < 0.0:
+		_size = _model_size()
+	for name in joints.keys():
+		if spinners.has(name) or _spin.has(name):
+			continue
+		var key := str(name)
+		var m: Dictionary = meta.get(name, {})
+		var axis := str(m.get("axis", axis_for(key)))
+		var i := ["pitch", "yaw", "roll"].find(axis)
+		if i < 0 or axis == "yaw":
+			continue
+		var lim: Dictionary = m.get("limits", {})
+		var edges = lim.get(axis, null)
+		var bounded: bool = edges is Array and (edges as Array).size() == 2
+		var v := Vector3.ZERO
+		if key.begins_with("knee"):
+			if bounded:
+				var lo := float(edges[0])
+				var hi := float(edges[1])
+				v[i] = (hi if absf(hi) >= absf(lo) else lo) * COLLAPSE_FOLD
+				_want_rot[name] = v
+			continue
+		var skip := false
+		for w in COLLAPSE_SKIP:
+			if key.begins_with(w):
+				skip = true
+		if skip:
+			continue
+		var j: Node3D = joints[name]
+		var centre = _subtree_centre(j)
+		if centre == null:
+			continue
+		var at := _in_model(j)   # in the model's own frame, its up the world's, in the tree or not
+		var r: Vector3 = (centre as Vector3) - at.origin
+		var u: Vector3 = [at.basis.x, at.basis.y, at.basis.z][i].normalized()
+		var dy := u.cross(r).y   # how what it carries rises, per radian turned the positive way
+		if absf(dy) < 0.05 * maxf(1.0, r.length()):
+			continue   # already hanging: nothing to fall
+		var sgn := -signf(dy)
+		var deg := COLLAPSE_FREE * sgn
+		if bounded:
+			var edge := float(edges[1]) if sgn > 0.0 else float(edges[0])
+			if edge * sgn <= 0.0:
+				continue   # it cannot fall that way
+			deg = edge * COLLAPSE_DROOP
+		v[i] = deg
+		_want_rot[name] = v
+	_body_want_slide = Vector3(0.0, 0.0, -COLLAPSE_SINK * _size)   # authored: x right, y forward, z up (offset_of)
+	_body_want_rot = Vector3(-COLLAPSE_PITCH, 0.0, (_rng.randf_range(-COLLAPSE_ROLL, COLLAPSE_ROLL) if _rng != null else COLLAPSE_ROLL * 0.5))
+
+
+## The middle of what a joint carries, in the model's frame: the centres of every surface under it
+## (a halo, a flare or a plume aside); null when it carries none.
+func _subtree_centre(j: Node3D):
+	var sum := Vector3.ZERO
+	var n := 0
+	var stack: Array = [j]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		for c in node.get_children():
+			stack.append(c)
+		if node is MeshInstance3D and not node.has_meta("halo") and not node.has_meta("plume"):
+			var mi := node as MeshInstance3D
+			sum += _in_model(mi) * mi.get_aabb().get_center()
+			n += 1
+	return sum / float(n) if n > 0 else null
+
+
+## A node's transform in the model's own frame, by its parent chain (outside the tree too).
+func _in_model(node: Node) -> Transform3D:
+	var xf := Transform3D.IDENTITY
+	var n := node
+	while n != null and n != model:
+		if n is Node3D:
+			xf = (n as Node3D).transform * xf
+		n = n.get_parent()
+	return xf
 
 
 ## A blow on the hull (the to-do's hit reaction, on Ryan's go of 3 November): the whole
@@ -1045,6 +1160,7 @@ func kill() -> void:
 			_rest_of(m)   # its rest kept before it dims, for revive()
 			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
 	_gutter = 0.0
+	_collapse = 0.0
 
 
 func revive() -> void:
@@ -1055,6 +1171,11 @@ func revive() -> void:
 	for pair in _gutter_mats:
 		_light_to(pair[0], _rest_of(pair[0]), 1.0)
 	_gutter_mats.clear()
+	_collapse = -1.0
+	_spin_k = 1.0
+	_want_rot.clear()
+	_body_want_rot = Vector3.ZERO
+	_body_want_slide = Vector3.ZERO
 	_wait = GAP_MIN
 
 
@@ -1081,7 +1202,8 @@ func choose() -> Dictionary:
 				return a
 	# An act may be for the map or the skirmish alone (Ryan, 5 October: the Sparrowhawk's loop
 	# and circle mean nothing in the skirmish's frame); this machine plays what fits its place.
-	var here: Array = set_now.filter(func(a): return place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place))
+	# An act that is a weapon's firing alone (its `idle` false: the Nemesis's punches) never plays at rest.
+	var here: Array = set_now.filter(func(a): return bool(a.get("idle", true)) and (place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place)))
 	if here.is_empty():
 		return {}
 	if here.size() == 1:
@@ -1118,8 +1240,8 @@ func act_set() -> Array:
 ## idle act's so the wind-up lands on the blow. False when it has none, or a held form keeps the
 ## joints its act moves (the sealed Armadillo's rack): the spend strikes as before.
 func fire_act(cid: String, lead := 0.0) -> bool:
-	var f = fires.get(cid, null)
-	if not (f is Dictionary):
+	var f := fire_slice(cid)
+	if f.is_empty():
 		return false
 	var act: Dictionary = {}
 	for a in act_set():
@@ -1127,6 +1249,7 @@ func fire_act(cid: String, lead := 0.0) -> bool:
 			act = a
 	if act.is_empty():
 		return false
+	_fire_turn[cid] = int(_fire_turn.get(cid, 0)) + 1
 	if not _current.is_empty():
 		_end_act()
 	_start(act)
@@ -1136,6 +1259,43 @@ func fire_act(cid: String, lead := 0.0) -> bool:
 	_evaluate_act()
 	_pose()
 	return true
+
+
+## The firing slices a sidecar names for a fixed component: one {act, from, to[, blow]}, or several
+## that take turns (Ryan, 3 November, of the Ammit: it "can also afford two different Claw
+## animations since it's got 4 and will use them often").
+func fire_slices(cid: String) -> Array:
+	var f = fires.get(cid, null)
+	if f is Dictionary:
+		return [f]
+	if f is Array:
+		return (f as Array).filter(func(s): return s is Dictionary)
+	return []
+
+
+## The slice that fires next, the slices taking turns; empty when the component fires with none.
+func fire_slice(cid: String) -> Dictionary:
+	var all := fire_slices(cid)
+	if all.is_empty():
+		return {}
+	return all[int(_fire_turn.get(cid, 0)) % all.size()]
+
+
+## How long the next slice winds up before its blow (its `blow`, the act's seconds at which the blow
+## lands, after its `from`): the caller holds the blow's sound and its landing until then (Ryan, 3
+## November: a weapon that "won't be fired every round" is "worth a little longer time"). Nought for
+## a slice that starts just before its blow.
+func fire_wind(cid: String) -> float:
+	var s := fire_slice(cid)
+	if s.is_empty() or not s.has("blow"):
+		return 0.0
+	return maxf(0.0, float(s["blow"]) - float(s.get("from", 0.0)))
+
+
+## How long the next slice plays, start to end: an aim held on its target waits it out.
+func fire_span(cid: String) -> float:
+	var s := fire_slice(cid)
+	return 0.0 if s.is_empty() else maxf(0.0, float(s.get("to", 0.0)) - float(s.get("from", 0.0)))
 
 
 ## Start a named act now, among those it may play first, then its own and its forms'; false
@@ -1269,7 +1429,7 @@ func _evaluate_act() -> void:
 ## a little past its mark and settles, `heft` seconds its time constant. A wheel the gait
 ## spins takes the act's keys as they are. A part home and still drops out.
 func _follow(dt: float) -> void:
-	var w := 1.0 / maxf(0.02, _act_heft if not _current.is_empty() else heft)
+	var w := 1.0 / maxf(0.02, COLLAPSE_HEFT if dead else (_act_heft if not _current.is_empty() else heft))
 	var names := {}
 	for name in _servo.keys():
 		names[name] = true

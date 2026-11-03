@@ -789,7 +789,7 @@
     "booster_ring",
     "exhaust"
    ],
-   "k": 5.0
+   "k": 8.0
   },
   "rock": 0.0,
   "start": {
@@ -887,14 +887,20 @@
      "booster_ring",
      "exhaust"
     ],
-    "k": 5.0
+    "k": 8.0
    },
    "rock": 0.0
   }
  },
  "halo": [
-  "booster_ring",
-  "exhaust"
+  [
+   "booster_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ]
  ],
  "fires": {
   "fovea_designator": {

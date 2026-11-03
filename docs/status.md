@@ -120,8 +120,16 @@ then his note on the Bullion Fragmenter ("It's a shotgun, thematically"): a mele
 only as a blade with no tag that crosses the field, any other fires as a gun (the sim's blow record
 carries the tags it was fired with, the drum's among them), and a joint the firing weapon names
 kicks though it carries no mount (the Badger's wrist, which a ranged shot had skipped);
-green at 849 tests and 207,616 checks; not yet on main; its bible is v0.432 (the page's 445,
-merged onto the live v0.430 other sessions published); the hangar at 194. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
+then main pulled in on his word (3 November: "Pull in main, another session finished some
+modeling and wrapped up there"; the merge's conflicts and the four Wainwright & Sutler models
+rebuilt for their stock classes, in its commit), and his notes on what he saw: a lost machine
+slumping after its lights go, the hangar's paused stage bringing a fired weapon home, a weapon's
+slices in turn and a slice's wind-up (the Nemesis's jab and cross, the Ammit's bite and rake, the
+Skua's burst, the Buzzard's cannon, its turn held through it), acts that only fire, the plumes
+gone at rest and Aphelion's boosters plumed by rule with Kestrel's blooming larger (the Kite's
+drivers plumed), the Stingray's fans re-banked, the Puffin's bank and pucks, the Lammergeier's
+drones, and the hangar's Melee retired; green at 938 tests and 255,417 checks; not yet on main;
+its bible is v0.433 (the Pages line); the hangar the Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
 the hit and fire round (the to-do's Ryan list).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
