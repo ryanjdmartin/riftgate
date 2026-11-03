@@ -85,8 +85,12 @@ skirmish.
 2. Every foe picks its move, then its target; both show, exact, before the player acts. A
    blow's number counts the rallies on their way to it this round (Empowered, below).
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
-   the next. Withdrawal is open at any point. END TURN pulses once no die has anywhere to be
-   spent, rerolls aside.
+   the next. UNDO takes back the last spend or reroll, in the order made, back to the last
+   roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
+   (Rapid's reroll, a roll again, the Scorpion's blast); a stepping die's step draws nothing,
+   so it is taken back like a spend. The trail shows a bar at every roll, and UNDO's badge
+   says how many spends it reaches. Withdrawal is open at any point. END TURN pulses once no
+   die has anywhere to be spent, rerolls aside.
 4. END TURN: a machine's Burning adds its heat and loses a stack, and its Scorched goes;
    then heat over a machine's maximum burns hull one for one and the gauge settles at the
    maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy

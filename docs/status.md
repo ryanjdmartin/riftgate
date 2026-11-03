@@ -25,8 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 869 tests, 207,995 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, its
-  fourth chunk, Sweep, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
+- Tests: 873 tests, 208,068 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, its
+  fifth chunk, UNDO, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
   overheat what-ifs, shield persona and support ladders landed on the 31st, over the Petrels of
   `claude/affectionate-ramanujan-5d24t6`, the foes' move-order fix of
   `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
@@ -194,9 +194,14 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   random charge retired. Sweep built the same day (a keyword: the strikes walk the rank the entry is dropped on from its
   first filled slot, left to right, one a slot, wrapping; direct the front, indirect the drop's
   rank; the Flechette Pod and the Musk Ox's salvo carry it; the spray and the random targets gone).
-  Next in the pass: undo to the last roll with its HUD; Overcharged and Kindled are
-  Empowered on both sides since 3 November, the ids kept; the Scorpion's blast is tabled for a rework and stays
-  the one draw besides the die.
+  UNDO built the same day, the pass's last piece (the fight keeps a snapshot before each spend and reroll of
+  the player's turn, the save's own dictionaries written back in place; a draw is the floor: the
+  round's roll, a reroll, Rapid's reroll, a roll again, the Scorpion's blast; a stepping die's step
+  is taken back; the button at the reroll row's right end, its badge the spends it reaches, a bar in
+  the trail at every roll). Overcharged and Kindled are Empowered on both sides since 3 November, the ids
+  kept. What is left of the pass is Ryan's: the Scorpion's rework (tabled; its blast is the one draw
+  besides the die), rules for the two planned modules, the resist defaults, the Emitter's Purge 2
+  and the halves rounded up (the to-do), then the 200-seed reread of the flattened numbers.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
   `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield

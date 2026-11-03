@@ -8944,3 +8944,108 @@ func test_a_numbered_grant_sets_the_keywords_number() -> void:
 	var plain := sk.shown_face(ms, ms.die.faces[2], sk.back[1])
 	assert_true(plain.has(K.PENETRATE) and plain.penetrate == 7 and not plain.has(K.CLEAVE), "a plain gun at the back punches through at the drum's 7")
 	assert_eq(Effects.effect_text(DRUM_PASSIVE["effects"][2]), "aimed at the front rank: gains spread 7", "the grant's text carries its number")
+
+
+# ---------------------------------------------------------------- the undo
+
+## The undo (Ryan, 2 November: "undo to your last roll"): every spend since the last roll can
+## be taken back, in the order made, the fight put back as it was before each: the foe's hull,
+## the machine's heat and its die, the log and the stream. The machines' units are the field's
+## own objects, their numbers written back; the round's roll leaves its bar at the trail's end,
+## and the next round's start is a floor. A runner's fight keeps no snapshots and still marks.
+func test_undo_takes_back_the_spends_since_the_last_roll_in_order() -> void:
+	var sk := Skirmish.new(3)
+	sk.keeps_undo = true
+	var a := _mech("A", Die.single(Face.attack(10, L, [], 4)))
+	var b := _mech("B", Die.single(Face.attack(20, L, [], 6)))
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(100, 5), _ghoul(100, 5)])
+	sk.begin()
+	sk.start_round()
+	assert_false(sk.can_undo(), "nothing spent: nothing to take back")
+	assert_eq(sk.roll_marks, [sk.log.size()], "the round's roll leaves its bar at the trail's end")
+	var opened := sk.log.size()
+	var stream := sk.rng.state
+	assert_true(sk.assign(0, sk.front[0]), "A fires")
+	var after_a := sk.log.size()
+	assert_true(sk.assign(1, sk.front[1]), "B fires")
+	assert_eq([sk.front[0].hp, sk.front[1].hp], [90, 80], "both struck")
+	assert_eq([sk.mechs[0].heat, sk.mechs[1].heat], [4, 6], "both heated")
+	assert_eq(sk.undo_depth(), 2, "two spends to take back")
+	assert_true(sk.undo(), "B's spend taken back")
+	assert_eq([sk.front[0].hp, sk.front[1].hp], [90, 100], "the second foe whole again, the first still struck")
+	assert_eq([sk.mechs[1].heat, sk.mechs[1].assigned], [0, false], "B cool and unspent")
+	assert_true(sk.mechs[1].unit == b and sk.mechs[0].unit == a, "the machines' units are the same objects")
+	assert_eq(sk.log.size(), after_a, "the trail back to A's spend")
+	assert_eq(sk.undo_depth(), 1, "one left")
+	assert_true(sk.undo(), "A's spend taken back")
+	assert_eq([sk.front[0].hp, sk.mechs[0].heat, sk.mechs[0].assigned], [100, 0, false], "the fight as the round opened")
+	assert_eq(sk.log.size(), opened, "the trail as the round opened")
+	assert_true(sk.rng.state == stream, "the stream as it was")
+	assert_false(sk.can_undo(), "and nothing more to take back")
+	assert_false(sk.undo(), "an undo with nothing to take back does nothing")
+	assert_true(sk.assign(0, sk.front[0]), "A fires again, the same blow")
+	assert_eq(sk.front[0].hp, 90, "the same blow")
+	sk.end_round()
+	sk.start_round()
+	assert_false(sk.can_undo(), "the next round's roll is a floor")
+	assert_eq(sk.roll_marks.size(), 2, "and leaves its bar")
+	assert_eq(sk.roll_marks[1], sk.log.size(), "at the trail's end")
+	var runner := Skirmish.new(3)
+	runner.add_mech(_mech("A", Die.single(Face.attack(10, L))))
+	runner.add_foes([_ghoul(100, 5)])
+	runner.begin()
+	runner.start_round()
+	assert_true(runner.assign(0, runner.front[0]), "a runner's fight spends")
+	assert_eq([runner.undo_depth(), runner.roll_marks.size()], [0, 1], "keeps no snapshot, and marks its rolls all the same")
+
+
+## A draw is the undo's floor (Ryan, 2 November: "Obviously we can't undo past a reroll ... Rapid
+## also does"): a reroll that draws, and a spend that rolls the die again, leave a bar at the
+## trail's end and clear the stack, so the spends before them stand; a stepping die's reroll
+## draws nothing, so it is taken back like a spend.
+func test_a_reroll_or_a_rapid_spend_is_the_undos_floor_and_a_step_is_not() -> void:
+	var sk := Skirmish.new(2)
+	sk.keeps_undo = true
+	sk.add_mech(_mech("A", Die.of([Face.attack(10, L, K.RAPID), Face.attack(30, L), Face.attack(30, L)])))   # three entries: a reroll of two others draws
+	sk.add_mech(_mech("B", Die.single(Face.attack(5, L))))
+	sk.add_mech(_mech("C", Die.of([Face.attack(1, L), Face.attack(1, L), Face.attack(1, L)])))
+	var stepper := _mech("D", Die.of([Face.attack(1, L), Face.attack(2, L), Face.attack(3, L)]))
+	stepper.grant_passive(STEP_PASSIVE)
+	sk.add_mech(stepper)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var foe: Foe = sk.front[0]
+	assert_true(sk.assign(1, foe), "B fires")
+	assert_eq(sk.undo_depth(), 1, "one spend back")
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "A fires its Rapid gun, which rolls the die again")
+	assert_eq(sk.front[0].hp, 485, "both blows landed")
+	assert_eq(sk.undo_depth(), 0, "the roll inside the spend is the floor: B's spend stands too")
+	assert_eq(sk.roll_marks.back(), sk.log.size(), "and leaves its bar at the trail's end")
+	var rolled := sk.mechs[0].face_index
+	assert_true(rolled >= 1, "the die rolled to another entry")
+	assert_true(sk.assign(0, sk.front[0]), "A fires its plain gun")
+	assert_eq(sk.undo_depth(), 1, "that spend can go back")
+	assert_true(sk.undo(), "taken back")
+	assert_eq([sk.front[0].hp, sk.mechs[0].face_index, sk.mechs[0].assigned], [485, rolled, false], "the Rapid's blow stands, the die as the roll left it")
+	assert_false(sk.can_undo(), "no further")
+	assert_true(sk.assign(0, sk.front[0]), "A fires its plain gun again")
+	var before_reroll := sk.rerolls_left
+	assert_true(sk.reroll([2]), "C rerolls")
+	assert_eq(sk.undo_depth(), 0, "a reroll draws: the floor")
+	assert_eq(sk.roll_marks.back(), sk.log.size(), "and leaves its bar")
+	var marks := sk.roll_marks.size()
+	assert_true(sk.assign(2, sk.front[0]), "C fires")
+	assert_eq(sk.undo_depth(), 1, "C's spend can go back, nothing before it")
+	assert_true(sk.undo(), "taken back")
+	assert_eq(sk.rerolls_left, before_reroll - 1, "the reroll stays spent")
+	# The stepping die: its reroll steps, no draw, so the reroll itself is taken back.
+	var showing := sk.mechs[3].face_index
+	assert_true(sk.reroll([3]), "D rerolls: a step")
+	assert_eq(sk.mechs[3].face_index, (showing + 1) % 3, "to the next chamber")
+	assert_eq([sk.undo_depth(), sk.roll_marks.size()], [1, marks], "no draw: the step is an undo step and no bar")
+	assert_true(sk.undo(), "the step taken back")
+	assert_eq([sk.mechs[3].face_index, sk.rerolls_left], [showing, before_reroll - 1], "the die back where it stood, the reroll back")

@@ -46,6 +46,9 @@ var DIE_Y := 640.0
 const DIE_SIZE := 120.0
 var REROLL_Y := 786.0
 const REROLL_SIZE := Vector2(250, 54)
+const UNDO_SIZE := Vector2(150, 54)
+const UNDO_AFTER := 0.8   # the undo opens this long after a spend's blow has landed: its views have settled
+const ROLL_BAR := "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"   # a roll's bar in the trail (Ryan, 2 November): where the undo stops
 const REROLL_GAP := 30.0   # black between Reroll and the mechs' ground (Ryan, 23 September: 14 was too tight)
 var MECH_Y := 892.0
 const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip row 38; neighbours overlap 4 px at PITCH
@@ -270,6 +273,8 @@ var _confirm: HudPanel
 var _confirm_text: Label
 var _confirm_action: Callable = Callable()
 var _reroll_btn: HudButton
+var _undo_btn: HudButton
+var _undo_from: int = 0   # the tick (ms) the undo opens again after a spend, once its blow has played
 var _end_btn: HudButton
 var _withdraw_btn: HudButton
 var _overlay: Control
@@ -293,6 +298,7 @@ var _turns: Array[Foe] = []           # the foes a Lure in hand would turn, thei
 
 func setup(skirmish: Skirmish) -> void:
 	sk = skirmish
+	sk.keeps_undo = true   # the screen's fight keeps the undo's snapshots (the runners never)
 	locked.clear()
 	for m in sk.mechs:
 		locked.append(false)
@@ -553,6 +559,15 @@ func _build() -> void:
 	_reroll_btn.center_text = true
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
+	# Undo (Ryan, 2 November: "undo to your last roll"): the row's right end, well clear of
+	# Reroll, whose draw it can never take back; its badge says how many spends it reaches.
+	_undo_btn = HudButton.new("UNDO", _on_undo)
+	_undo_btn.sound = ""   # the undo plays its own dismiss
+	_undo_btn.ghost = true
+	_undo_btn.font_size = 20
+	_undo_btn.badge_size = 20
+	_undo_btn.tooltip_text = "Take back the last spend, back to the last roll."
+	_place(_undo_btn, Vector2(W - 16.0 - UNDO_SIZE.x, REROLL_Y), UNDO_SIZE)
 
 	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
@@ -1164,6 +1179,7 @@ func _refresh(save: bool = true) -> void:
 	_refresh_log()
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
 	_reroll_btn.set_enabled(assigning and sk.can_reroll())
+	_refresh_undo()
 	_end_btn.set_enabled(assigning)
 	# Nothing left to spend, rerolls aside: END TURN is the next thing to press (Ryan, 25 October).
 	var left := false
@@ -1261,21 +1277,32 @@ const PROMPT := "> _"   # the strip's last line: a terminal prompt whose cursor 
 ## The whole log as bbcode, one line per event, the last `bright` lines fading up to full
 ## and everything older at the dim end; `bright` 0 leaves every line at full. `prompt`
 ## adds the cursor line at the end (the strip; never the full-screen log).
+## The log as the trail shows it: the last `bright` lines fading up to full and the rest dim, a
+## roll's bar where a draw was made (Ryan, 2 November: "undo to your last roll"; the round's
+## roll, a reroll, a spend that drew), which is where the undo stops; `prompt` adds the cursor.
 func _log_text(bright: int, prompt: bool = false) -> String:
 	var n := sk.log.size()
 	var out := ""
 	if n == 0:
 		out = "[color=#%s]> round %d // %d in reserve // awaiting orders[/color]\n" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.reinforcements.size()]
-	var start := maxi(0, n - bright)
-	var count := n - start
-	for j in range(n):
+	var lines: Array = []   # [text, whether a bar], a bar before the line it came before
+	for j in range(n + 1):
+		if sk.roll_marks.has(j):
+			lines.append([ROLL_BAR, true])
+		if j < n:
+			lines.append(["> " + sk.log[j], false])
+	var start := maxi(0, lines.size() - bright)
+	var count := lines.size() - start
+	for j in range(lines.size()):
 		var a := 1.0
 		if bright > 0:
 			if j < start:
 				a = 0.4
 			elif count > 1:
 				a = lerpf(0.4, 1.0, float(j - start) / float(count - 1))
-		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, a).to_html(true), sk.log[j]]
+		if lines[j][1]:
+			a *= 0.6   # a bar sits under the lines
+		out += "[color=#%s]%s[/color]\n" % [Color(Palette.HUD, a).to_html(true), lines[j][0]]
 	if prompt:
 		out += "[color=#%s]%s[/color]" % [Color(Palette.HUD, 0.8).to_html(true), PROMPT]
 	return out
@@ -2559,6 +2586,8 @@ func _use_die(i: int, target, second = null) -> bool:
 	var ok := sk.assign(i, target, second)
 	if ok:
 		locked[i] = false
+		if is_inside_tree():
+			_undo_from = Time.get_ticks_msec() + int((BLOW_AT + 2.0) * 1000.0)   # until the blow's timing is known, below
 	_refresh()
 	if ok:
 		Sound.play("die_spend")   # the console letting the die go; the component's own sound lands after
@@ -2649,6 +2678,14 @@ func _use_die(i: int, target, second = null) -> bool:
 			tw.tween_callback(_show_outcome.bind(sk.outcome))
 		else:
 			_show_outcome(sk.outcome)
+	if ok and is_inside_tree():
+		# The undo opens once the blow has landed and played out: a view mid-tween takes no
+		# refresh well, and the die should be seen to land before it is taken back.
+		_undo_from = Time.get_ticks_msec() + int((landed + UNDO_AFTER) * 1000.0)
+		_refresh_undo()
+		var tw_undo := create_tween()
+		tw_undo.tween_interval(landed + UNDO_AFTER)
+		tw_undo.tween_callback(_refresh_undo)
 	return ok
 
 
@@ -3011,6 +3048,31 @@ func _on_reroll() -> void:
 			d.scale = Vector2(0.15, 1.0)
 			var tw := create_tween()
 			tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## UNDO's reach: the spends and rerolls since the last roll, its badge; off while a spend's
+## blow still plays, while the enemy's turn replays, and with nothing to take back.
+func _refresh_undo() -> void:
+	if _undo_btn == null:
+		return
+	var depth := sk.undo_depth()
+	_undo_btn.badge = "×%d" % depth if depth > 0 else ""
+	_undo_btn.set_enabled(sk.can_undo() and not _replay_shade.visible and Time.get_ticks_msec() >= _undo_from)
+
+
+## UNDO (Ryan, 2 November: "undo to your last roll"): the last spend or reroll taken back, in
+## the order made, the fight as it was before it, never past a roll (the round's, a reroll's
+## draw, a spend's own: Rapid's reroll, a roll again, the Scorpion's blast). A reading or a
+## pending Swap is put away first.
+func _on_undo() -> void:
+	if _replay_shade.visible or not sk.can_undo() or Time.get_ticks_msec() < _undo_from:
+		return
+	if not _pending.is_empty():
+		_cancel_second()
+	_close_pop()
+	sk.undo()
+	Sound.play("ui_back")
+	_refresh()
 
 
 ## A die rolled again by a stack it spent (the Nemesis's rage, Ryan, 13 October): the stack's

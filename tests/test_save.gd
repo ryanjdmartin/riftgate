@@ -427,3 +427,51 @@ func test_a_clone_plays_on_alike_and_leaves_the_original_alone() -> void:
 	for i in range(sk.mechs.size()):
 		assert_eq(c.mechs[i].unit.hull, sk.mechs[i].unit.hull, "%s's hull" % sk.mechs[i].unit.display_name)
 		assert_eq(c.mechs[i].heat, sk.mechs[i].heat, "%s's heat" % sk.mechs[i].unit.display_name)
+
+
+## A fight saved mid-turn keeps its undo (the snapshots ride in the save, JSON's way) and the
+## trail's bars, and a foe's stun resist and a machine's overheat culprit come back with it.
+func test_a_saved_fight_keeps_its_undo_its_bars_and_the_numbers_of_2_november() -> void:
+	var b := _battle(9)
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	sk.keeps_undo = true
+	sk.begin()
+	sk.start_round()
+	var foe: Foe = sk.field_foes()[0]
+	var slot := Vector2i(foe.rank, foe.column)
+	for f in sk.field_foes():
+		f.resist = 2   # every foe, since the spend below may fell the first
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = ms.heat_max + 5
+	ms.hot_entry = 1
+	var opened := sk.log.size()
+	var spent := false
+	for i in range(ms.die.faces.size()):
+		ms.face_index = i
+		var f := ms.face()
+		if f == null or f.kind == Face.Kind.BLANK or f.disabled:
+			continue
+		if f.is_attack():
+			var reached: Array[Foe] = sk.targets_for(0)
+			spent = not reached.is_empty() and sk.assign(0, reached[0])
+		else:
+			spent = sk.assign(0, null)
+		if spent:
+			break
+	assert_true(spent, "a die spent")
+	assert_true(sk.can_undo(), "and can be taken back")
+	var d: Dictionary = JSON.parse_string(JSON.stringify(SaveGame.to_dict(b)))
+	var back := SaveGame.from_dict(d)
+	var sk2: Skirmish = back.current
+	assert_eq(sk2.roll_marks, sk.roll_marks, "the bars came back")
+	assert_eq(sk2.mechs[0].hot_entry, 1, "the overheat's culprit came back")
+	assert_eq(sk2.field_foes()[0].resist, 2, "a foe's stun resist came back")
+	assert_true(sk2.can_undo(), "the undo came back")
+	assert_true(sk2.undo(), "and takes the spend back")
+	assert_eq([sk2.mechs[0].assigned, sk2.log.size()], [false, opened], "the die unspent, the trail as the round opened")
+	assert_eq(sk2.foe_at(slot.x, slot.y).resist, 2, "the snapshot carries the stun resist too")
+	assert_eq(sk2.mechs[0].hot_entry, 1, "and the culprit")
+	assert_false(sk2.can_undo(), "nothing more")

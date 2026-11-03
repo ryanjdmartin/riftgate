@@ -1831,3 +1831,31 @@ func test_a_foe_getting_back_up_in_the_enemy_turn_is_shown() -> void:
 	assert_eq(foe.hp, foe.hp_max, "whole")
 	assert_false(Effects.has(foe, "risen"), "its charge spent")
 	s.free()
+
+
+## UNDO (Ryan, 2 November: "undo to your last roll"): a spend taken back on the screen, the
+## button's badge saying how far it reaches, the button off once nothing is left, and the
+## trail showing the round's bar under its opening lines.
+func test_undo_takes_back_the_last_spend_and_its_badge_says_how_far_it_reaches() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.die = Die.single(Face.attack(1, Face.Reach.DIRECT))   # a scratch: the foe stands to be read after
+	ms.die = ms.unit.die
+	ms.face_index = 0
+	s._refresh()
+	assert_true(s._undo_btn.disabled, "nothing to take back as the round opens")
+	assert_eq(s._undo_btn.badge, "", "and no reach to say")
+	var foe: Foe = s.sk.front[0]
+	var hp := foe.hp
+	var opened := s.sk.log.size()
+	assert_true(s._log_text(0).find(SkirmishScreen.ROLL_BAR) >= 0, "the round's bar in the trail")
+	assert_true(s._use_die(0, foe), "the die spent")
+	assert_eq(s.sk.front[0].hp, hp - 1, "the blow landed")
+	assert_false(s._undo_btn.disabled, "the undo opens")
+	assert_eq(s._undo_btn.badge, "×1", "one spend back")
+	var text := s._log_text(0)
+	assert_true(text.find(SkirmishScreen.ROLL_BAR) < text.rfind("> "), "the bar sits under the opening lines, the spend's after it")
+	s._on_undo()
+	assert_eq([s.sk.front[0].hp, s.sk.mechs[0].assigned, s.sk.log.size()], [hp, false, opened], "the spend taken back")
+	assert_true(s._undo_btn.disabled, "and nothing is left")
+	s.free()

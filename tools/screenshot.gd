@@ -272,6 +272,13 @@ func _apply_pose() -> void:
 			s.sk.mechs[0].die.faces[s.sk.mechs[0].face_index] = Face.attack(200)
 			s._use_die(0, s.sk.front[0])
 			s._toggle_all_arrows(true)
+		"undo":
+			# One die spent on a scratch (3 November): UNDO lit at the reroll row's right end with
+			# the one spend it reaches on its badge, the round's bar in the trail over the spend's line.
+			s.sk.mechs[0].die.faces[s.sk.mechs[0].face_index] = Face.attack(1)
+			s._use_die(0, s.sk.front[0])
+			s._undo_from = 0   # the blow's wait skipped: the shot is of the button open
+			s._refresh_undo()
 
 
 ## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),

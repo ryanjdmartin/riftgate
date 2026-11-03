@@ -16,6 +16,9 @@ extends RefCounted
 ##                       burn ticks, foes act, the dead are cleared, mech statuses tick, the
 ##                       reinforcements refill, outcome is checked
 ##   can_withdraw()      at any point of the player's turn
+##   undo()              takes back the last spend or reroll, in the order made, back to the
+##                       last roll (the round's, a reroll's draw, a spend's own); the screen's
+##                       fight keeps the snapshots (keeps_undo); can_undo(), undo_depth()
 ##
 ## The player's damage is in fives, everything else in tens. Nothing rolls but the dice.
 
@@ -176,6 +179,17 @@ var foe_factory: Callable = Callable()
 var targeting_override: String = ""
 ## The shared pick of a rank that fires as one this round, by rank; cleared as the round opens.
 var _focus: Dictionary = {}
+## The undo (Ryan, 2 November, the randomness pass: "undo to your last roll"): every spend and
+## reroll since the last draw from the stream can be taken back, in the order made, the fight
+## put back as it was before each. A draw is the floor, since a draw taken back would show its
+## result for free: the round's roll, a reroll that draws, a spend that draws inside itself
+## (Rapid's reroll, a roll again, the Scorpion's blast's pick). A stepping die draws nothing, so
+## its step is no floor. The screen's fight keeps the snapshots (the save's own dictionaries,
+## SaveGame.snapshot_skirmish); the runners and the preview's copy keep none, and the bars are
+## kept whoever plays.
+var keeps_undo := false
+var history: Array[Dictionary] = []   # the fight before each spend or reroll since the last roll, in order
+var roll_marks: Array[int] = []       # the log's length at each roll of the fight: the trail's bars
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -1255,6 +1269,7 @@ func start_round() -> void:
 			f.target = _pick_mech_target(f, _doomed(ahead))
 		_draw_blows(f, ahead)
 	state = State.ASSIGN
+	_mark_roll()   # the round's roll: the undo reaches back to here, and the trail shows the bar
 
 
 ## The machines the blows drawn so far this round would wreck.
@@ -1545,6 +1560,20 @@ static func _same_kind(a: Foe, b: Foe) -> bool:
 func reroll(mech_indices: Array) -> bool:
 	if state != State.ASSIGN:
 		return false
+	var snap := SaveGame.snapshot_skirmish(self) if keeps_undo and not previewing else {}
+	var before := rng.state
+	if not _reroll(mech_indices):
+		return false
+	if rng.state != before:
+		_mark_roll()   # a draw: the undo's floor
+	elif not snap.is_empty():
+		history.append(snap)   # a stepping die's step draws nothing: taken back like a spend
+	return true
+
+
+## The reroll itself: a machine's own free reroll when one die alone is named and it has one,
+## else one of the team's on every die named.
+func _reroll(mech_indices: Array) -> bool:
 	var live: Array[MechState] = []
 	for i in mech_indices:
 		var ms := mechs[i]
@@ -1630,8 +1659,36 @@ func can_reroll() -> bool:
 	return false
 
 
-## Spend a mech's face. `target` is a Foe for attacks, a MechState (or null for self) for
-## shield and vent. Returns false if the assignment is not legal.
+## Whether UNDO has anything to take back: the player's turn, and a spend or a reroll since
+## the last roll.
+func can_undo() -> bool:
+	return state == State.ASSIGN and not history.is_empty()
+
+
+## How far the undo reaches: the spends and rerolls it can take back, in order.
+func undo_depth() -> int:
+	return history.size() if state == State.ASSIGN else 0
+
+
+## Take back the last spend or reroll: the fight as it was before it, the machines' units (the
+## field's own) with their numbers written back, the foes as they stood (new objects: the
+## screen draws by slot), the log and the stream as they were. False with nothing to take back.
+func undo() -> bool:
+	if not can_undo():
+		return false
+	var snap: Dictionary = history.pop_back()
+	SaveGame.restore_skirmish(self, snap)
+	return true
+
+
+## A draw made (the round's roll, a reroll's, a spend's own): the undo reaches no further
+## back, and the trail shows a bar where the draw was.
+func _mark_roll() -> void:
+	history.clear()
+	if roll_marks.is_empty() or roll_marks[-1] != log.size():
+		roll_marks.append(log.size())
+
+
 ## Whether die `mech_index` may be spent on `target` now (a Foe for an attack, a MechState or
 ## null for a shield, a vent or a buff): the checks `assign` makes before it acts, changing nothing. The
 ## screen asks it while a die is dragged, for the hover over a valid target.
@@ -1672,7 +1729,25 @@ func can_spend(mech_index: int) -> bool:
 
 ## A locked piece of the Swallowtail's goes out in its charged form whenever a muster pays for it
 ## and it has somewhere to land (charge_lands), the muster spent with it.
+## Spend a mech's face. `target` is a Foe for attacks, a MechState (or null for self) for
+## shield and vent. Returns false if the assignment is not legal. The undo's snapshot is taken
+## before it; a spend that draws from the stream (Rapid's reroll, a roll again, the Scorpion's
+## blast's pick) is the undo's floor instead.
 func assign(mech_index: int, target = null, second = null) -> bool:
+	if state != State.ASSIGN:
+		return false
+	var snap := SaveGame.snapshot_skirmish(self) if keeps_undo and not previewing else {}
+	var before := rng.state
+	if not _assign(mech_index, target, second):
+		return false
+	if rng.state != before:
+		_mark_roll()
+	elif not snap.is_empty():
+		history.append(snap)
+	return true
+
+
+func _assign(mech_index: int, target = null, second = null) -> bool:
 	if state != State.ASSIGN:
 		return false
 	last_acts.clear()
@@ -1986,6 +2061,7 @@ func end_round() -> int:
 ## made room for it or a cleanse took it off. Shared by END TURN and a withdrawal.
 func _end_player_turn() -> void:
 	overheats.clear()
+	history.clear()   # the enemy's turn draws: nothing before it comes back
 	# Maverick's Playbook (the Giant Petrel's, built 30 October): the team's rerolls left unspent
 	# as the turn ends are banked, up to its cap, for the next round while it still fights.
 	banked = mini(rerolls_left, bank_cap())
