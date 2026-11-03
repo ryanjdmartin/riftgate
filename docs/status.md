@@ -25,13 +25,13 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 911 tests, 254,286 checks, green (3 November, main merged into
-  `claude/affectionate-ramanujan-5d24t6` as it lands: the Honey Badger's hopper and the five
-  Wainwright & Sutler models with the rig's counts, held and stepped spins and hidden mounts, both
-  runners' smokes clean; 893 and 209,059 on main before it, 2 November, with
-  `claude/brave-cori-fr18de`'s slate, elites by the tier, escorts and review's calls; not run
-  on `ccr-7effd31a-u5z4gw`'s landing the same day, which changed no file the suite reads, since
-  its session predated the hook and could not run the downloaded build), about four minutes
+- Tests: 911 tests, 254,286 checks, green (3 November, on main's head after
+  `ccr-7effd31a-u5z4gw`'s pairs landed, which changed no file the suite reads; the same counts
+  as main merged into `claude/affectionate-ramanujan-5d24t6` as it landed that day: the Honey
+  Badger's hopper and the five Wainwright & Sutler models with the rig's counts, held and stepped
+  spins and hidden mounts, both runners' smokes clean; 893 and 209,059 on main before it,
+  2 November, with `claude/brave-cori-fr18de`'s slate, elites by the tier, escorts and review's
+  calls), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
