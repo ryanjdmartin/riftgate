@@ -126,7 +126,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the map tokens and the
   contact sheet from the grids in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/`
   generates enemy candidates with an image model and cuts one into `art/foes/` (the combat
-  sprites come from here, not the sheet); `recolour.py` writes a recolour's two sprites from its
+  sprites come from here, not the sheet); `placeholder_art.py` draws a rough placeholder, a
+  reminder stamped "?", for a foe with no picked render; `recolour.py` writes a recolour's two sprites from its
   base's by a hue shift (the ladder's palette swaps, its table the hues the three colourblind
   simulations chose); `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
@@ -232,6 +233,11 @@ python3 tools/pages/bible_tables.py
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
 # --cool-above 50 (the cautious persona: each machine keeps its heat under half its maximum,
 # venting early and holding a hot spend above the line; the pricing driver passes it on too),
+# --overheat 2 (a what-if: an overheat burns two hull a point past the maximum; the driver's too),
+# --burnout and --overheat-corrupt 1 (what-ifs on the component that took the gauge past the maximum:
+# burnt out once the burn reaches the injury threshold, or Corrupted a stack every overheat; the driver's too),
+# --shield-ahead (the shield persona: a shield left standing valued by the blows it turns next round,
+# where the rungs bank it at a fifth of a point; the driver's too, for the support ladders),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
@@ -468,6 +474,11 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 tools/spriter/.venv/bin/python tools/recolour.py goblin goblin_guard --hue 240 --light 0.8 --tint 0.45
 tools/spriter/.venv/bin/python tools/recolour.py --all
 
+# rough placeholder sprites, a reminder each, for the bosses and parts with no picked render (30
+# October): a few flat shapes at the cut's sizes, outlined, a yellow "?" in a corner; only the
+# foes with no art unless named or --force. Then the import. Pillow alone.
+python3 tools/placeholder_art.py
+
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 # joints are code too: `with b.joint("shoulder_l", pivot, axis="pitch", limits=(-12, 40)):` in models_low.py hangs a limb under a
@@ -524,12 +535,13 @@ tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the l
 # the real thing: a debug APK exported, installed over USB and launched (USB debugging on
 # the phone). Beyond the templates this needs the Android SDK at ~/Library/Android/sdk
 # (brew install --cask android-commandlinetools, then sdkmanager "platform-tools"
-# "build-tools;35.0.0" "platforms;android-35"), a JDK (brew's openjdk does; Godot's
+# "build-tools;36.1.0" "platforms;android-36"), a JDK (brew's openjdk does; Godot's
 # editor settings point export/android/java_sdk_path at it) and the debug keystore
-# (keytool, at the path Godot's editor settings name). All of that was set up on the Mac.
+# (keytool, at the path Godot's editor settings name). All of that was set up on the Mac,
+# at 35 for Godot 4.7: 4.8 refuses to export without build-tools 36.1.0 and platform 36.
 # On Windows, where it is set up now: the SDK at ~/Android/Sdk, out of AppData (Google's
 # command-line tools unzipped to cmdline-tools\latest, then `android sdk install platform-tools
-# build-tools/35.0.1 platforms/android-35`: the Android CLI replaced sdkmanager in 2026 and
+# build-tools/36.1.0 platforms/android-36`: the Android CLI replaced sdkmanager in 2026 and
 # names packages with slashes; pass --no-metrics, it reports usage otherwise), Temurin's JDK 17
 # unzipped under %LOCALAPPDATA%\Programs\Eclipse Adoptium (an unzip, so the Java 8 this PC's
 # other software opens .jar files with stays the default), and the keystore in Godot's

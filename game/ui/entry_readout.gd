@@ -288,6 +288,8 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 			line.append(word("×%d" % n))
 		if int(a.get("swarm", 0)) > 0 and not live:
 			line.append(word("(+%d a kin standing)" % int(a["swarm"])))
+		if int(a.get("per_kill", 0)) > 0 and not live:
+			line.append(word("(+%d a foe the team has killed)" % int(a["per_kill"])))   # a grudge (30 October)
 		out.append(parts_line("effect", line, "attr"))
 		if Array(a.get("keywords", [])).has("all"):
 			out.append(text_line("effect", "Target: %s" % str(db.vocabulary.get("all", {}).get("name", "Every machine")), "attr"))   # the term, so it reads as one (Terms)
@@ -304,6 +306,8 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 		out.append(text_line("effect", "Target: %s%s" % [whom, aimed if whom == "Any machine" or whom == target else ""], "attr"))
 	if str(a.get("id", "")) == "last_act":
 		out.append(text_line("effect", "Lands the moment it falls", "attr"))   # its last act (15 October)
+	if bool(a.get("once", false)):
+		out.append(text_line("effect", "Once a fight", "attr"))   # a special used once (30 October)
 	var count := Foe.countdown_of(a)
 	if count > 0:
 		var left := f.charge if live and f.gathering() and f.pending.get("id", "") == a.get("id", "") else count
@@ -356,7 +360,7 @@ static func codex_move_lines(f: Foe, a: Dictionary, db: ContentDB) -> Array:
 const MOVE_TARGETS := {
 	"brace": "Self", "regrow": "Self", "revive_once": "Self",
 	"regrow_ally": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
-	"summon": "The waiting pool", "rally": "Every other foe",
+	"summon": "The waiting pool", "rally": "Every other foe", "merge": "Its kinds on the field",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
 }
 

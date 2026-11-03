@@ -281,6 +281,8 @@ func make_foe(foe_id: String) -> Foe:
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
 	f.armour = maxi(0, int(d.get("armour", 0)))
+	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
+	f.wanders = bool(d.get("wanders", false))
 	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
@@ -318,12 +320,14 @@ func make_foe(foe_id: String) -> Foe:
 				act["countdown"] = int(a["countdown"])
 			if a.has("power"):
 				act["power"] = str(a["power"])   # a borrowed swing: the number of what a steal took (30 October)
+			if a.has("per_kill"):
+				act["per_kill"] = int(a["per_kill"])   # a point a foe the team has killed this fight (the Pilgrim's Karma, 30 October)
 		else:
 			# A defend, buff or debuff: its effect and the fields it reads (Foe.ACTION_EFFECTS).
 			act = {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
 				"value": int(a.get("value", 0)), "weight": int(a.get("weight", 1)), "text": str(a.get("text", ""))}
 			if a.has("foe"):
-				act["foe"] = str(a["foe"])
+				act["foe"] = Foe.kinds_named(a) if a["foe"] is Array else str(a["foe"])   # a merge names a list of kinds
 			if a.has("count"):
 				act["count"] = int(a["count"])
 		# The move's own sense and condition (2 October), when it has them.
@@ -333,6 +337,8 @@ func make_foe(foe_id: String) -> Foe:
 			act["when"] = Foe.whens_of(a)
 		if a.has("then"):
 			act["then"] = str(a["then"])   # the follow-up it announces next round (30 October)
+		if bool(a.get("once", false)):
+			act["once"] = true   # a special used once a fight (30 October)
 		acts.append(act)
 	# The first attack leads, so a foe's opening intent is its blow; the rest keep content's
 	# order, the pattern a Disrupt steps through (Skirmish.disrupt_next).
@@ -369,9 +375,14 @@ func codex_for_foe(f: Foe) -> Dictionary:
 	var faction_name := str(fac.get("name", "")).strip_edges()
 	if faction_name.is_empty():
 		faction_name = str(d.get("faction", "")).capitalize()
+	if bool(d.get("wanders", false)):
+		faction_name = "Any domain"   # a wanderer walks out of any rift (31 October)
 	var items: Array = [["hp", stat_parts(int(d.get("hp", f.hp_max)), f.hp_max)], ["attack", stat_parts(int(d.get("attack", f.attack)), f.attack)]]
 	if f.armour > 0 or int(d.get("armour", 0)) > 0:
-		items.append(["armour", stat_parts(int(d.get("armour", 0)), f.armour)])
+		var arm := stat_parts(int(d.get("armour", 0)), f.armour)
+		if f.armour_step > 0:
+			arm.append({"text": "+%d A TIER" % f.armour_step, "trend": 0, "gain": false})
+		items.append(["armour", arm])
 	items.append(["rank", "BACK" if f.prefers_back else "FRONT"])
 	if f.aim != Foe.AIM_ANYTHING:
 		items.append(["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()])
@@ -563,6 +574,8 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			continue
 		for i in range(int(e[1])):
 			var f := make_foe(fid)
+			if is_elite(fid):
+				scale_boss(f, sq.boss_tier)   # every elite stands at its battle's tier as a boss does (Ryan, 2 November)
 			f.pack_id = sq.id
 			f.escorts = sq.is_boss
 			out.append(f)
@@ -592,12 +605,15 @@ static func escort_at(t: int) -> int:
 
 
 ## A commander at its battle's tier: its HP and attack as the tier gives them, set as it is made,
-## so the plaque, the codex and a save read them as its own.
+## so the plaque, the codex and a save read them as its own. A boss whose kit is armour grows it
+## by its `armour_step` a tier above one, from a lighter start (Ryan, 31 October: "just the ones
+## that have it", since a tier-one team has little against armour; the Cinder Tortoise's 1, 2, 3).
 func scale_boss(f: Foe, t: int) -> void:
 	var s := boss_tier(t)
 	f.hp_max = maxi(1, roundi(f.hp_max * float(s["hp"])))
 	f.hp = f.hp_max
 	f.attack += int(s["attack"])
+	f.armour += f.armour_step * clampi(t, 0, BOSS_TIERS.size() - 1)
 
 
 ## A boss's escort from its domain's units of the tier (Ryan, 26 October: "Make sure that boss
@@ -819,7 +835,7 @@ func _compositions_at(faction_id: String, tier: int, size: String) -> Array:
 				members.append([str(m["foe"]), maxi(1, int(m.get("strength", 1)))])
 		if members.is_empty():
 			continue
-		out.append({"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members})
+		out.append({"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "boss": str(c.get("boss", ""))})
 	return out
 
 
@@ -835,14 +851,68 @@ static func composition_tiers(c: Dictionary) -> Array:
 
 ## A faction's elite compositions at a tier, in content order: the elites its Fractures spawn.
 func elite_compositions(faction_id: String, tier: int) -> Array:
-	return compositions(faction_id, tier, "elite")
+	return compositions(faction_id, tier, "elite").filter(func(c) -> bool: return not is_wandering(c))
+
+
+## The chance a Fracture sends a wanderer in place of the domain's next own elite (Ryan,
+## 2 November: a wanderer never waits for a domain's own to run out); a placeholder.
+const WANDER_CHANCE := 1.0 / 3.0
+
+
+## The wanderers at a tier: every domain's elite compositions led by a foe that wanders
+## (`wanders`), each once, in content order, so one composition in one domain's list walks
+## out of every rift (Gilgamesh, 31 October and 2 November).
+func wandering_compositions(tier: int) -> Array:
+	var out: Array = []
+	var seen: Array = []
+	for fid in factions.keys():
+		for c in compositions(str(fid), tier, "elite"):
+			if is_wandering(c) and not seen.has(str(c["id"])):
+				seen.append(str(c["id"]))
+				out.append(c)
+	return out
+
+
+## Is an elite composition a wanderer's: its lead foe wanders.
+func is_wandering(c: Dictionary) -> bool:
+	var members: Array = c.get("members", [])
+	return not members.is_empty() and bool(foes.get(str(members[0][0]), {}).get("wanders", false))
+
+
+## The elite composition a Fracture sends (Ryan, 2 November): the domain's next own not yet
+## sent this battle, or a wanderer not yet sent on a `roll` (0 to 1) under WANDER_CHANCE; a
+## wanderer always once the domain's own are spent, and nothing when both are. An elite may
+## come again in a later battle, never twice in one; a boss never twice in a run.
+func next_elite(faction_id: String, tier: int, sent: Array, roll: float) -> Dictionary:
+	var own: Array = elite_compositions(faction_id, tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
+	var wanderers: Array = wandering_compositions(tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
+	if own.is_empty():
+		return wanderers[0] if not wanderers.is_empty() else {}
+	if not wanderers.is_empty() and roll < WANDER_CHANCE:
+		return wanderers[0]
+	return own[0]
+
+
+## An elite composition by id at a tier: the domain's own or a wanderer's, else empty.
+func elite_composition(faction_id: String, tier: int, id: String) -> Dictionary:
+	for c in elite_compositions(faction_id, tier) + wandering_compositions(tier):
+		if str(c["id"]) == id:
+			return c
+	return {}
 
 
 ## A boss's hand-tailored escort at a tier (an `escort` composition), or empty: the tier's units
-## stand in round robin (escort_units).
-func escort_composition(faction_id: String, tier: int) -> Dictionary:
+## stand in round robin (escort_units). An escort may name its `boss` (30 October: the King Gel's
+## Gels, which its merge takes in); the boss's own comes first, then one that names none.
+func escort_composition(faction_id: String, tier: int, boss_id: String = "") -> Dictionary:
 	var found := compositions(faction_id, tier, "escort")
-	return found[0] if not found.is_empty() else {}
+	for c in found:
+		if not boss_id.is_empty() and str(c.get("boss", "")) == boss_id:
+			return c
+	for c in found:
+		if str(c.get("boss", "")).is_empty():
+			return c
+	return {}
 
 
 ## Whether a foe leads an elite composition (content `elite`): a mini-boss event a Fracture
@@ -1767,6 +1837,15 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: unknown condition '%s' (moves know %s)" % [aw, str(w), ", ".join(Foe.WHENS)])
 		if a.has("swarm") and (str(a.get("kind", "")) != "attack" or int(a["swarm"]) < 0):
 			errs.append("%s: swarm is an attack's, so much more per kin on the field, never negative" % aw)
+		# A special used once a fight (30 October: the Vampire Lord readies its rise once).
+		if a.has("once") and (not (a["once"] is bool) or str(a.get("kind", "attack")) == "attack"):
+			errs.append("%s: once is a special's, true or left out" % aw)
+		# A grudge (30 October): an attack a point heavier for every foe the team has killed this fight.
+		if a.has("per_kill") and (str(a.get("kind", "attack")) != "attack" or int(a["per_kill"]) < 1):
+			errs.append("%s: per_kill is an attack's, its number a foe the team has killed this fight: 1 or more" % aw)
+		# A condition reading a fallen part (30 October) means something only on a core with parts.
+		if Foe.whens_of(a).has("part_fallen") and (f.get("parts", []) as Array).is_empty():
+			errs.append("%s: part_fallen reads its parts, and this foe has none" % aw)
 		# A follow-up (30 October): `then` names another move of the same foe, which comes only the
 		# round after this one lands; one deep, so the move it names names none of its own.
 		if a.has("then"):
@@ -1817,6 +1896,17 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 							errs.append("%s: a cleanse's condition, if any, is ally_marked, got '%s'" % [aw, str(w)])
 				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
 					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
+				# A merge (30 October) names the kinds it takes in, one id or a list, and the lift a
+				# kind gives its next move.
+				if effect == "merge":
+					var kinds := Foe.kinds_named(a)
+					if kinds.is_empty():
+						errs.append("%s: a merge names the kinds it takes in: foe, an id or a list" % aw)
+					for k in kinds:
+						if not foes.has(str(k)):
+							errs.append("%s: merge names unknown foe '%s'" % [aw, str(k)])
+					if int(a.get("value", 0)) < 1:
+						errs.append("%s: a merge says how much harder its next move hits a foe taken in: value, 1 or more" % aw)
 				# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
 				# October, so its value is its stacks: a positive number.
 				if effect == "brace" or effect == "brace_all":
@@ -1879,6 +1969,14 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: hp must be positive" % where)
 		if int(f.get("armour", 0)) < 0:
 			errs.append("%s: armour cannot be negative" % where)
+		if f.has("armour_step"):
+			# A boss whose kit is armour grows it a tier (31 October): only a foe that scales in
+			# place with the tier, a domain's boss, one of the party or an elite (2 November),
+			# carries a step.
+			if not (f["armour_step"] is float or f["armour_step"] is int) or int(f["armour_step"]) < 1:
+				errs.append("%s: armour_step must be a whole number of at least 1" % where)
+			elif not (is_boss(str(id)) or bool(f.get("hero", false)) or f.has("promotes") or bool(f.get("elite", false))):
+				errs.append("%s: armour_step only on a foe that scales with the tier (a boss, a hero, an elite)" % where)
 		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
 		_validate_actions(where, f, errs)
@@ -1919,6 +2017,10 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: elite is true or false" % where)
 		if bool(f.get("elite", false)) and bool(f.get("hero", false)):
 			errs.append("%s: a hero is a domain's final, never an elite" % where)
+		if f.has("wanders") and not (f["wanders"] is bool):
+			errs.append("%s: wanders is true or false" % where)
+		elif bool(f.get("wanders", false)) and not bool(f.get("elite", false)):
+			errs.append("%s: only an elite wanders (31 October: the one elite any domain fields, scaled by the tier)" % where)
 		if f.has("winged") and not (f["winged"] is bool):
 			errs.append("%s: winged is true or false" % where)
 		for key in ["strikes", "breach"]:
@@ -2055,6 +2157,14 @@ func _validate_factions(errs: Array[String]) -> void:
 				if size != "elite" and bool(foes[fid].get("elite", false)):
 					errs.append("%s: %s is an elite and stands only in an elite composition" % [cw, fid])
 				first = false
+			if c.has("boss"):
+				# An escort written for one boss (30 October); no other composition names one.
+				var named_boss := str(c["boss"])
+				var listed: Array = f.get("boss", []) if f.get("boss", []) is Array else [f.get("boss", "")]
+				if size != "escort":
+					errs.append("%s: only an escort names its boss" % cw)
+				elif not listed.has(named_boss):
+					errs.append("%s: boss '%s' is none of this domain's bosses" % [cw, named_boss])
 			if tier_one.has(size) and composition_tiers(c).has(1):
 				tier_one[size] = true
 		for size in ["formation", "patrol"]:

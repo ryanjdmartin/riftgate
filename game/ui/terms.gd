@@ -57,6 +57,7 @@ const TABLE := {
 	"scorch": ["scorch", "heat"], "silence": ["silence", "enemy"], "swallow": ["swallowed", "enemy"],
 	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
 	"follow_up": ["next", "enemy"], "last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
+	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull
 }
 
 ## An engine status keyed apart from its term: a machine's Burning, the Badger's hopper.

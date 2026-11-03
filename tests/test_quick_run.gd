@@ -86,22 +86,28 @@ func test_a_battle_holds_its_fractures_with_the_elites_folded_in() -> void:
 		else:
 			assert_eq(last["kind"], "boss", "the boss closes it")
 			assert_true(r.db.bosses_of(r.lead).has(str(last["foe"])), "the lead's boss")
-		var elite_comps: Array = r.db.elite_compositions(r.lead, t + 1)
-		var dealt := 0
+		var own: Array = r.db.elite_compositions(r.lead, t + 1).map(func(c) -> String: return str(c["id"]))
+		var wanderers: Array = r.db.wandering_compositions(t + 1).map(func(c) -> String: return str(c["id"]))
+		var dealt: Array = []
 		for e in enc:
 			if e["kind"] == "elite":
 				assert_eq(e["domain"], r.lead, "an elite is the lead's")
-				if dealt < elite_comps.size():
-					# The slot takes the lead's elite compositions in turn (30 October).
-					assert_eq(str(e.get("foe", "")), str(elite_comps[dealt]["id"]), "the lead's next elite composition")
+				var id := str(e.get("foe", ""))
+				if dealt.size() < own.size() + wanderers.size():
+					# The slot takes the lead's next own elite, or a wanderer on the run's roll
+					# (2 November), each once a battle.
+					var next_own: Array = own.filter(func(x) -> bool: return not dealt.has(x))
+					var ok := (not next_own.is_empty() and id == str(next_own[0])) or (wanderers.has(id) and not dealt.has(id))
+					assert_true(ok, "the lead's next own elite or a wanderer (got %s)" % id)
+					var comp: Dictionary = r.db.elite_composition(r.lead, t + 1, id)
 					var want := 0
-					for m in elite_comps[dealt]["members"]:
+					for m in comp.get("members", []):
 						want += Ramp.scaled(int(m[1]), r.ramp())
 					assert_eq(r.encounter_foes(e).size(), want, "its members at the ramp's density")
+					dealt.append(id)
 				else:
-					assert_eq(str(e.get("foe", "")), "", "with no elite left, nothing stands in (Ryan, 27 October)")
+					assert_eq(id, "", "with no elite left, nothing stands in (Ryan, 27 October)")
 					assert_eq(r.encounter_foes(e).size(), r.formation_foes(r.lead).size(), "the lead's formation holds the slot")
-				dealt += 1
 
 
 func test_the_guest_joins_from_tier_two_and_takes_every_other_formation() -> void:
@@ -187,7 +193,14 @@ func test_a_boss_brings_the_tiers_escort() -> void:
 		var boss := {"kind": "boss", "domain": r.lead, "foe": r.draw_boss(r.lead)}
 		var foes: Array = r.encounter_foes(boss)
 		var n: int = foes.size() - 1 - r.formation_foes(r.lead).size()
-		assert_eq(n, ContentDB.escort_at(t), "tier %d's escort beside the formation" % (t + 1))
+		# Its own escort composition when one is written (2 November), else the tier's count.
+		var tailored: Dictionary = r.db.escort_composition(r.lead, t + 1, str(boss["foe"]))
+		var expected := ContentDB.escort_at(t)
+		if not tailored.is_empty():
+			expected = 0
+			for m in tailored["members"]:
+				expected += Ramp.scaled(int(m[1]), r.ramp())
+		assert_eq(n, expected, "tier %d's escort beside the formation" % (t + 1))
 		counts.append(n)
 		var content: Dictionary = r.db.foes[str(boss["foe"])]
 		assert_eq(foes[0].hp_max, roundi(int(content["hp"]) * float(ContentDB.boss_tier(t)["hp"])), "the boss's HP at the tier")

@@ -4041,6 +4041,310 @@ fewer rounds. The bought actions are a fifth of a fight, so most of that is its 
 support capstone's kit; the must-pick guard to watch is this team's, read again at 200 seeds with
 the matrix (the to-do), the levers the Booster's price, the bank's cap and the Salvo's two.
 
+## 30 October, the overheat's price as what-ifs
+
+**A harsher burn, burnout and self-Corrupted** (Ryan, 30 October: "let's try a more severe
+overheat penalty just to see what happens", then his calls on the forms, the heat brief's
+section on the overheat's penalties): test-only settings of the balance runner, off as the
+engine runs (`--overheat N`, an overheat burning N hull a point past the maximum; `--burnout`,
+an overheat whose burn reaches the injury threshold burning out the component whose spend took
+the gauge over; `--overheat-corrupt N`, every overheat Corrupting that component N stacks), the
+bot pricing each. Two benches: the car's vanilla heat grid (`tools/pricing_run.py run oh2g
+--parts vanillaheat --benches prairie_dog --bench-stocks --shapes direct --seeds 30 --overheat
+2`, Direct guns at 3, 5 and 7 and heat 0 to 8 in the Prairie Dog's slot of Wainwright &
+Sutler's row) and Kestrel's row as stocked, the hot row (`--parts none --benches goshawk
+--bench-stocks`), each under the greedy and the cautious persona (`--cool-above 50`), whose
+line is priced at what an overheat burns. The sixteen big fights but the finale; 30 seeds, a
+direction; about two and a half hours on four cores.
+
+On the car (each heat's price in vanilla points, the mean of the three guns, as the heat grid of
+the morning reads it; the heat-8 guns' overheats, hull lost, rounds and wins; the row as stocked):
+
+| Setting | Heat 2 | Heat 4 | Heat 6 | Heat 8 | Overheats at 8 | Hull lost at 8 | Rounds at 8 | Win at 8 | The row as stocked: rounds, hull, overheats |
+|---|---|---|---|---|---|---|---|---|---|
+| the greedy, one for one (as today) | 0.1 | 0.2 | 0.8 | 1.4 | 0.51 | 19.1% | 5.22 | 96.6 | 5.88, 22.2%, 0.18 |
+| the cautious bot, one for one | 0.1 | 1.0 | 1.9 | 2.8 | 0.08 | 19.9% | 5.70 | 95.9 | 5.98, 22.7%, 0.11 |
+| the greedy, two a point | 0.1 | 0.3 | 0.9 | 1.9 | 0.23 | 19.5% | 5.36 | 95.8 | 5.91, 23.0%, 0.11 |
+| the cautious bot, two a point | 0.1 | 1.1 | 2.1 | 3.9 | 0.02 | 22.6% | 6.06 | 94.1 | 6.02, 23.7%, 0.02 |
+| the greedy, three a point | 0.1 | 0.4 | 1.0 | 2.1 | 0.14 | 19.5% | 5.42 | 95.8 | 5.90, 23.2%, 0.09 |
+| the cautious bot, three a point | 0.1 | 1.5 | 2.5 | 4.9 | 0.02 | 24.1% | 6.32 | 93.4 | 6.01, 24.1%, 0.02 |
+| the greedy, two a point and burnout | 0.1 | 0.3 | 1.0 | 1.9 | 0.21 | 19.4% | 5.37 | 95.8 | 5.90, 23.0%, 0.11 |
+| the cautious bot, two a point and burnout | 0.1 | 1.1 | 2.2 | 3.9 | 0.02 | 22.6% | 6.06 | 94.1 | 6.02, 23.7%, 0.02 |
+| the greedy, one for one and Corrupted | 0.1 | 0.3 | 0.9 | 1.8 | 0.30 | 18.8% | 5.33 | 96.7 | 5.90, 22.4%, 0.15 |
+| the cautious bot, one for one and Corrupted | 0.1 | 1.0 | 2.0 | 2.9 | 0.06 | 20.2% | 5.73 | 95.8 | 6.03, 22.9%, 0.07 |
+
+Kestrel's row as stocked (its Buzzard's Arc Fault and Afterburner Cannon, the Kite's flat heat
+on every shot):
+
+| Kestrel's row as stocked | Win | Rounds | Hull lost | Overheats a fight | Peak | Components destroyed a fight |
+|---|---|---|---|---|---|---|
+| the greedy, one for one | 100.0 | 3.28 | 9.8% | 0.34 | 94% | 0.46 |
+| the greedy, two a point | 100.0 | 3.35 | 9.8% | 0.21 | 88% | 0.47 |
+| the greedy, two a point and burnout | 100.0 | 3.39 | 9.9% | 0.20 | 86% | 0.50 |
+| the greedy, one for one and Corrupted | 100.0 | 3.31 | 9.7% | 0.31 | 92% | 0.46 |
+| the cautious bot, one for one | 100.0 | 3.53 | 10.1% | 0.10 | 79% | 0.52 |
+| the cautious bot, two a point | 99.8 | 3.77 | 11.2% | 0.02 | 68% | 0.59 |
+| the cautious bot, two a point and burnout | 99.8 | 3.78 | 11.2% | 0.01 | 68% | 0.59 |
+| the cautious bot, one for one and Corrupted | 100.0 | 3.56 | 10.2% | 0.07 | 77% | 0.53 |
+
+Read:
+
+- **Every penalty does the same thing to play: the bot rides to the maximum and holds there.**
+  At two a point the greedy overheats half as often on the car's hot guns (0.23 a fight at heat
+  8 against 0.51) and in Kestrel's row (0.21 against 0.34), and holds the hot die instead, so
+  heat costs tempo rather than hull: heat 8 from 1.4 vanilla points to 1.9 (2.1 at three a point),
+  heat 6 from 0.8 to 0.9 or 1.0, while heat 2 and 4 stay all but free on a cold die. Kestrel's row
+  pays a tenth of a round at most (3.35 rounds against 3.28) and wins as it did.
+- **Caution never pays, under any penalty.** The cautious bot, whose line is priced at what an
+  overheat burns, grows more cautious as the burn grows and loses more each step (on the car at
+  heat 8, 5.70, 6.06 and 6.32 rounds and 19.9%, 22.6% and 24.1% hull against the greedy's 5.22,
+  5.36 and 5.42 and about 19.5%; Kestrel's row 3.53 and 3.77 rounds against 3.28 and 3.35). The
+  play the penalties reward is holding at the edge, not venting early.
+- **Burnout adds nothing over two a point.** The bot prices the lost component and stays clear of
+  the threshold (the overheats 0.21 against 0.23 on the car, 0.20 against 0.21 in Kestrel's row,
+  its components destroyed a fight 0.50 against 0.47), so its weight is a threat the forecast must
+  show, never a cost the runs see.
+- **Corrupted at one for one deters as a burn of two does,** for less hull: heat 8 at 1.8 points,
+  the overheats 0.30 a fight, the hull lost 18.8% against the greedy's 19.1% as today, and
+  Kestrel's row 3.31 rounds; the softer form lands where the harsher burn lands.
+- So the form is a question of feel and readability, Ryan's play, more than of balance: each
+  makes the maximum a wall the player plans around, which is the meeting with the system his
+  frame asks for, and none makes the warm classes bite on a cold die, which stays the maxima's
+  and the cooling's.
+
+## 30 October, the support ladders
+
+**Every slottable shield, vent and buff in one slot** (the pricing row's next step, the equipment
+ramp Ryan wants first: "especially to shield and vent"; `tools/pricing_run.py run sup30 --parts
+ladders --benches puffin --pieces <the seventeen> --bench-stocks --seeds 30`): the seventeen
+pieces of tiers 0 to 2 in the Puffin's slot of Kestrel's row (the Laser Carbine's, the bench
+where equipment reads), each against the row as stocked, with today's bots and again with the
+personas that value support (`--shield-ahead --cool-above 50`, `sup30p`). The sixteen big fights
+but the finale; 30 seeds, a direction; 36 variants, about sixteen minutes on four cores.
+
+The row as stocked: 100% won, 3.28 rounds and 9.8% hull today; 3.59 and 10.0% with the personas.
+Each piece's rounds and hull against the row with the gun in its slot, and its share of the
+row's spends:
+
+| Piece | Tier | What it is | Today: rounds and hull off the gun | Its share | With the personas: rounds and hull off the gun | Its share |
+|---|---|---|---|---|---|---|
+| Blast Door | 1 | buff  | +0.27 r, -1.7% | 9% | +0.24 r, -2.3% | 7% |
+| Decoherence Veil | 1 | buff  | +0.24 r, -0.7% | 6% | +0.19 r, -1.0% | 5% |
+| Overcharge Coil | 1 | buff  | +0.24 r, +2.5% | 8% | +0.25 r, +2.3% | 5% |
+| Retribution Thurible | 1 | buff  | +0.19 r, +2.0% | 4% | +0.16 r, +2.0% | 3% |
+| Shoring Jack | 1 | buff  | +0.31 r, +2.3% | 4% | +0.27 r, +2.5% | 3% |
+| Aurora Lattice | 2 | buff  | +0.26 r, +2.8% | 3% | +0.24 r, +2.8% | 2% |
+| Canopy | 0 | shield 8 | +0.29 r, +2.1% | 4% | +0.27 r, +2.0% | 4% |
+| Halo Shield | 0 | shield 6 | +0.28 r, +2.1% | 8% | +0.24 r, +2.0% | 8% |
+| Oblation Mantle | 1 | shield 10 | +0.28 r, +2.5% | 1% | +0.23 r, +2.7% | 1% |
+| Corona Shield | 2 | shield 6, cleanse | +0.28 r, +2.1% | 4% | +0.24 r, +1.9% | 4% |
+| Laminar Deflector | 2 | shield 6, rapid | +0.26 r, +1.4% | 4% | +0.24 r, +1.6% | 4% |
+| Bleed Valve | 0 | vent 6 | +0.24 r, +2.6% | 8% | +0.24 r, +2.9% | 10% |
+| Coolant Jacket | 0 | vent 4 | +0.25 r, +2.5% | 4% | +0.25 r, +2.6% | 4% |
+| Phased Sublimator | 1 | vent 4, cleanse | +0.25 r, +2.5% | 3% | +0.26 r, +2.6% | 2% |
+| Radiator Sail | 1 | vent 5 | +0.25 r, +2.4% | 2% | +0.26 r, +2.5% | 2% |
+| Wake Diffuser | 1 | vent 3 | +0.26 r, +2.3% | 4% | +0.25 r, +2.6% | 4% |
+| Entropy Condenser | 2 | vent 10 | +0.24 r, +2.6% | 0% | +0.25 r, +2.8% | 0% |
+
+Read:
+
+- **No equipment beats the gun it replaces on this bench.** Every piece costs a quarter of a round
+  (+0.19 to +0.31), and all but two cost hull too (+1.4% to +2.8%): the Blast Door, whose Barrier
+  takes a big blow whole, saves 1.7% hull for its quarter round (2.3% with the personas), and the
+  Decoherence Veil's Ward 0.7%. Kestrel's row wins every one of these fights in about three
+  rounds, so support has little to save and the gun ending the fight sooner saves more.
+- **The ladder is flat by tier.** The tier-two shields read as the basics do (the Corona Shield and
+  the Laminar Deflector +0.26 to +0.28 rounds beside the Canopy's and the Halo Shield's +0.28 and
+  +0.29), and the tier-two capstone vent as the basic ones (the Entropy Condenser +0.24 rounds,
+  never spent, beside the Coolant Jacket's +0.25). The tiers carry keywords at the basics'
+  numbers (the shields 6 to 10, the vents 3 to 6 and the Condenser's 10), so the ramp Ryan asked
+  for, "plain number increases beside the keywords, especially to shield and vent" (28 October),
+  is not there in content.
+- **The personas change no ranking.** Valuing a standing shield by next round's blows and venting
+  early slow the row by a third of a round and leave every piece where it stood, so the bot was
+  not hiding the support's worth: the fights are.
+- So the equipment ramp is read where support has work: on harder fights (the ladder's tier-two
+  and tier-three formations, which walled the stock trios on 28 October), with tier-matched kits,
+  and its numbers by tier are a fills proposal for Ryan's go.
+
+## 30 October, the slate's last five
+
+**The last five read alone, beside two of the first seven** (`tools/balance.gd`, 30 seeds, the
+greedy rung, each boss alone, its parts with it; a direction). The same rows as the first seven's
+read. Mean rounds of the fights won, the win rate where under 100%, and the row's hull lost (h,
+percent of the squad's):
+
+| As built | King Gel | Pilgrim | Phantom Train | Vampire Lord (40) | Obsidian Tyrant | Rotbloom | Matador |
+|---|---|---|---|---|---|---|---|
+| Default team | 4.2 h1 | 4.3 h9 | 4.7 h3 | 10.2 (86%) h24 | 5.2 h2 | 4.4 h3 | 4.8 h6 |
+| Minerva's trio | 8.9 h4 | 8.1 h18 | 11.3 h7 | 43.0 (3%) h49 | 9.5 h6 | 9.7 h17 | 11.2 h9 |
+| Kestrel's trio | 4.1 h2 | 4.1 h11 | 4.7 h4 | 8.6 h8 | 4.8 h2 | 4.2 h4 | 4.5 h6 |
+| Wainwright & Sutler's trio | 8.8 h3 | 8.2 h24 | 12.6 (96%) h21 | (0%) h74 | 10.7 h8 | 11.3 (83%) h49 | 10.7 h21 |
+| The stock four | 7.0 h0 | 7.1 h8 | 8.3 h0 | 19.3 h2 | 8.4 h1 | 8.0 h6 | 8.2 h1 |
+
+Read. The King Gel alone (no Gels to take in), the Pilgrim, the Phantom Train and the Obsidian
+Tyrant sit with the first seven, the default team 4 to 5 rounds; Rotbloom and the Matador read as
+they did that morning, so the stand-ins' move left them be. The Vampire Lord at 40 is a wall: its
+drain and a whole second life outrun the small blows, Minerva's trio winning 3% of its fights and
+Wainwright & Sutler's none. Traces (one fight each, the default team) showed every new mechanic
+firing in content: the Tyrant open and counting the moment its rider fell, the King Gel taking
+its Gels in, the Pilgrim's knife walking in, the Vampire Lord draining and rising once.
+
+**The Vampire Lord's drain, nine forms against the rows** (`tools/balance.gd`, 30 seeds, the
+greedy rung, alone; `--set` on the HP and on Blood Feast; a direction). The first five keep the
+drain as built that morning (it regrew what a blow dealt, shield and hull); the last four take
+it from the hull alone. Mean rounds of the fights won, the win rate where under 100%, and the
+fights past 60 rounds (st):
+
+| Form | Default team | Minerva's trio | Kestrel's trio | Wainwright & Sutler's trio | The stock four |
+|---|---|---|---|---|---|
+| Shield and hull, 40 HP | 10.2 (86%) | 43.0 (3%) st29 | 8.6 | (0%) st17 | 19.3 |
+| Shield and hull, 28 HP | 4.7 | 44.2 (36%) st19 | 4.8 | (0%) st17 | 12.3 |
+| Shield and hull, 28 HP, Blood Feast at 0.34 | 4.5 | 38.3 (80%) st6 | 4.7 | 49.0 (3%) st15 | 11.7 |
+| Shield and hull, 32 HP, Blood Feast no drain | 5.5 | 43.4 (73%) st8 | 5.5 | 43.7 (10%) st17 | 12.7 |
+| Shield and hull, 24 HP | 3.8 | 44.5 (60%) st12 | 3.0 | 30.7 (10%) st12 | 10.2 |
+| Hull alone, 40 HP | 4.8 | 14.5 | 4.6 | 14.4 | 9.6 |
+| Hull alone, 36 HP | 4.1 | 13.9 | 4.2 | 13.1 | 8.5 |
+| Hull alone, 32 HP | 3.7 | 11.2 | 3.4 | 10.5 | 7.3 |
+| Hull alone, 28 HP | 2.9 | 8.8 | 2.7 | 8.4 | 6.4 |
+
+Read. No HP fixed the drain of shield and hull: Wainwright & Sutler's trio won 0 to 10% at every
+size down to 24, stalling past 60 rounds, since every blow regrew the lord whether the shield took
+it or not, and a trio that deals less a round than it drinks never closes. From the hull alone,
+the shield starves it, and every row wins every fight at 40, the slow trios in 14 rounds (9 to 13
+against the rest of the slate), the hard-to-keep-down boss it was meant as. Landed: the hull alone,
+40 HP kept.
+
+**The two escorted bosses** (the same rows and rung; a direction): the King Gel with three Gels,
+so its merge has fuel, 6.0 rounds for the default team, 10.4 and 12.1 for the slow trios, 9.5 for
+the stock four, hull lost 1 to 11%; the Pilgrim with three Needlers, 5.6, 8.7, 10.3 and 7.7, hull
+lost 10 to 35%. Every row won every fight.
+
+**Three machines or four, against the slate** (31 October; `tools/balance.gd`, 20 seeds, the
+greedy rung, each boss alone, its parts with it; a direction). Ryan's question of 30 October:
+"the biggest power spike the player gets is probably going from 3 to 4 units, right?" The stock
+four (Honey Badger, Baboon, Armadillo, Prairie Dog, stock kits) against each of its trios, the
+same kit a machine short, over the twelve bosses at tier one:
+
+| Row | Won | Mean rounds of the fights won | Hull lost |
+|---|---|---|---|
+| The stock four | 100% | 8.6 (7.0 to 12.1) | 2.4% |
+| Less the Armadillo | 100% | 10.3 | 8.0% |
+| Less the Prairie Dog | 100% | 10.4 | 8.8% |
+| Less the Honey Badger | 92% | 14.9 | 17.7% |
+| Less the Baboon | 92% | 18.5 | 24.4% |
+
+Read. The fourth machine is the run's biggest step in wear: a trio loses three to ten times the
+hull the four loses on the same bosses, the halving of 13 October and more. In rounds the step
+is the machine's role: a fourth that deals damage cuts a fight by 40 to 55%, a support or a scout
+by about a sixth. The trios' losses fall on the trios short of a damage dealer: the Fallen Weapon,
+Rotbloom and the Phantom Train (45 to 90% won) and the Behemoth (95%). On the stock four the slate runs 7 to 12 rounds at 48 HP, long
+against the kill-time test's three to five and safe, the basics' damage the limiter; the default
+team (two tier-two machines) takes 4 to 5.
+
+**The Cinder Tortoise's armour at tier one** (31 October; `tools/balance.gd`, 30 seeds, the
+greedy rung, alone; `--set` on its base armour and on Withdraw's value; a direction). Ryan's
+question of 31 October: "If 2 is a massive hurdle for a first battle", for the bosses that carry
+armour scaling by tier. Mean rounds of the fights won (every fight won):
+
+| Base, shell | Default team | Minerva's trio | Kestrel's trio | Wainwright & Sutler's trio | The stock four |
+|---|---|---|---|---|---|
+| 2, +3 (as built) | 5.8 | 19.3 | 5.1 | 14.4 | 11.9 |
+| 2, +2 | 5.6 | 18.4 | 4.9 | 14.4 | 12.1 |
+| 1, +3 | 4.6 | 11.4 | 4.5 | 10.8 | 8.2 |
+| 0, +3 | 3.9 | 7.4 | 3.7 | 7.5 | 5.7 |
+
+Read. The base is the hurdle and the shell is not: a point off Withdraw moves nothing, since the
+shell stands one round in a few, while the base taxes every blow of every round. At base 2 the
+small-blow kits (Minerva's trio, Wainwright & Sutler's, the stock four) take the Tortoise half
+again to twice as long as the rest of the slate; at base 1 it sits in the slate's middle on
+every row; at 0 it is the slate's quickest. Hull lost stays 0 to 9% throughout: a slog, never a
+threat. A tier-one team has little against armour: no Expose below tier two's locked pieces, the
+one breach a tier-one blueprint no tier-one chassis stocks, Flak on the Prairie Dog alone.
+
+**The slate's blanket point of armour at tier one** (31 October; `tools/balance.gd`, 20 seeds,
+the greedy rung, each boss alone; every boss at its standard 1 against every boss at 0, the
+Cinder Tortoise at 1 in both; a direction). Ryan, 31 October: "be careful giving all bosses
+blanket 1 armour early on". Mean rounds of the fights won over the twelve, the win rate where
+under 100%:
+
+| Row | Armour 1 | Armour 0 |
+|---|---|---|
+| Default team | 4.7 | 3.8 |
+| Minerva's trio | 10.5 | 7.6 |
+| Wainwright & Sutler's trio | 11.0 (92%) | 7.9 |
+| The stock four | 8.3 | 6.0 |
+
+Read. The blanket point costs the small-blow kits about 40% more rounds and the default team
+about a quarter; Wainwright & Sutler's trio loses fights only with it (the Fallen Weapon 40% won,
+Rotbloom 80%, the Behemoth 95%), and wins every one without. At 0 the stock four takes 5 to 7
+rounds and the default team 3.3 to 4.7, against the kill-time test's three to five.
+
+**The bosses' escorts at tiers two and three** (2 November; `tools/balance.gd --boss-tiers`, 20 seeds,
+the greedy rung; the default team (the Honey Badger, the Clydesdale, the Kite) and the stock four
+(the Armadillo, the Prairie Dog, the Badger, the Baboon), each with its tier-zero kit, so a
+tier-three cell is a trio or a four above its station and the escort's delta, never the cell, is
+the read; a direction). Each boss at the tier's numbers (`ContentDB.scale_boss`, its parts with
+it) with its own escort composition and alone. Won, mean rounds of the fights won, mean hull lost
+over every fight, the escort's figure before the lone boss's:
+
+| Boss, tier | Its escort | Default team: won, rounds, hull | Stock four: won, rounds, hull |
+|---|---|---|---|
+| Rotbloom, 2 | Mandrake, Goblin Guard | 100 / 100%, 7.3 / 5.8, 24 / 13% | 100 / 100%, 11.8 / 11.1, 16 / 13% |
+| Rotbloom, 3 | Alraune ×2, Mandrake, Goblin Guard | 75 / 95%, 12.5 / 9.0, 65 / 39% | 90 / 100%, 15.6 / 12.6, 52 / 25% |
+| Floraison, 2 | Warg ×2 | 100 / 100%, 6.9 / 6.0, 20 / 17% | 100 / 100%, 10.8 / 9.4, 9 / 8% |
+| Floraison, 3 | Alpha Warg ×2, Goblin Captain, Goblin Guard | 90 / 100%, 11.4 / 7.2, 57 / 22% | 100 / 100%, 15.1 / 11.3, 15 / 12% |
+| The King Gel, 2 | Gel ×3, Bubble Gel ×2 | 100 / 100%, 9.8 / 5.3, 24 / 4% | 100 / 100%, 13.3 / 8.8, 2 / 1% |
+| The King Gel, 3 | Bubble Gel ×3, Metal Gel ×2, Gel | 100 / 100%, 13.4 / 6.8, 41 / 13% | 100 / 100%, 15.9 / 10.3, 8 / 2% |
+| The Ruby Colossus, 2 | Basilisk, Pit Antlion | 30 / 65%, 12.5 / 11.4, 90 / 64% | 15 / 80%, 18.0 / 18.6, 93 / 57% |
+| The Ruby Colossus, 3 | Gorgon ×2, Antlion Queen, Pit Antlion | 0 / 15%, – / 12.0, 100 / 94% | 0 / 20%, – / 21.8, 100 / 93% |
+| The Fallen Weapon, 2 | Barbed Needler, Basilisk | 100 / 100%, 10.2 / 8.2, 32 / 25% | 100 / 100%, 14.8 / 13.2, 21 / 11% |
+| The Fallen Weapon, 3 | Great Needler ×2, Gorgon ×2 | 35 / 95%, 11.9 / 12.5, 86 / 45% | 20 / 100%, 19.5 / 17.2, 95 / 20% |
+| The Pilgrim, 2 | Needler ×2 | 100 / 100%, 6.4 / 5.7, 19 / 15% | 100 / 100%, 9.0 / 8.6, 15 / 14% |
+| The Pilgrim, 3 | Barbed Needler ×2, Great Needler ×2 | 100 / 100%, 8.8 / 7.1, 37 / 26% | 100 / 100%, 11.4 / 10.2, 28 / 18% |
+| The Matador, 2 | Wight ×2 | 100 / 100%, 7.5 / 6.0, 17 / 9% | 100 / 100%, 11.1 / 9.7, 3 / 1% |
+| The Matador, 3 | Wight ×2, Death Knight, Spectre | 35 / 100%, 13.0 / 8.5, 86 / 25% | 90 / 100%, 20.4 / 11.8, 51 / 3% |
+| The Phantom Train, 2 | Revenant, Spectre | 100 / 100%, 8.3 / 5.9, 14 / 6% | 100 / 100%, 11.8 / 10.6, 2 / 1% |
+| The Phantom Train, 3 | Wight ×2, Wraith, Spectre | 90 / 100%, 14.3 / 7.0, 50 / 12% | 100 / 100%, 18.9 / 13.1, 28 / 3% |
+| The Vampire Lord, 2 | Death Knight, Wight | 95 / 100%, 14.6 / 6.5, 37 / 7% | 100 / 100%, 15.8 / 14.4, 8 / 3% |
+| The Vampire Lord, 3 | Dread Knight, Death Knight, Lich, Wight | 0 / 85%, – / 13.8, 100 / 43% | 5 / 100%, 50.0 / 15.4, 99 / 2% |
+| The Behemoth, 2 | Bomb, Grenade | 100 / 100%, 9.9 / 7.8, 32 / 23% | 100 / 100%, 9.9 / 10.0, 10 / 10% |
+| The Behemoth, 3 | Grenade ×2, Balloon ×2 | 100 / 100%, 13.1 / 8.3, 59 / 34% | 100 / 100%, 14.8 / 12.4, 25 / 18% |
+| The Cinder Tortoise, 2 | Fire Lizard ×2 | 100 / 100%, 11.1 / 7.3, 18 / 7% | 100 / 100%, 16.7 / 17.1, 3 / 0% |
+| The Cinder Tortoise, 3 | Magma Lizard ×2, Fire Lizard, Wyvern | 80 / 100%, 29.9 / 19.3, 70 / 34% | 90 / 100%, 31.5 / 25.3, 25 / 2% |
+| The Obsidian Tyrant, 2 | Wyvern, Fire Lizard | 100 / 100%, 7.2 / 6.3, 9 / 3% | 100 / 100%, 12.8 / 10.4, 12 / 5% |
+| The Obsidian Tyrant, 3 | Red Dragon, Wyvern ×2, Magma Lizard | 100 / 100%, 11.2 / 7.2, 31 / 6% | 100 / 100%, 17.2 / 12.8, 37 / 14% |
+
+Read. What an escort adds runs from a round or two and a few points of hull (the Pilgrim's
+Needlers, Floraison's Wargs, the Behemoth's Bombs, the Tyrant's lizards, the Tortoise's at tier
+two) to a wall: the Vampire Lord's four risers at tier three take the default team from 85% won
+to none and the four from 100% to 5% at fifty rounds; the Fallen Weapon's Great Needlers and
+Gorgons under its Drive take them from 95 and 100% to 35 and 20%; the Matador's Wights, Death
+Knight and Spectre take the trio from 100% to 35%. The escorts were never weighed against each
+other, and menace does not sort them: by the runner's menace summed from content they run from
+9 to 20 at tier two and 23 to 46 at tier three, the heaviest the Tyrant's (46), which costs no
+wins, where the walls sit on the escorts a boss's own mechanic amplifies: the Lich's Reraise and
+the Wight's mend on a boss that drains and rises (35), Drive's rally on the Great Needlers'
+countdowns (38), a Death Knight's grave guard and a Spectre's cleanse under the cape (27). The King Gel's court
+costs rounds and little hull, the merge's fuel being the merge's target, and the Tyrant's escort
+costs hull and no wins: the two shapes an escort should take. And the Ruby Colossus is a wall
+alone, at tier two (65 and 80% won at 64 and 57% hull) and at tier three (15 and 20%), where the
+Fallen Weapon alone wins 95 and 100%: its two tentacles are two more attackers a round (a breach
+of 7 to 8 and two strikes of 5 to 6 at the tiers) that grow back in two rounds, its Whirlsand
+takes a third of a trio's dice for two rounds, which the greedy cannot answer (it values no
+swallow), and Ultima lands 13 to 15 on every machine; its numbers are the evening's placeholders.
+
+What-ifs (the same day, the same rows and seeds, a direction). The Colossus with its tentacles
+at 4 and 3 (from 6 and 4) and a regrowth of three rounds (from two): alone at tier two 95 and
+100% won at 32 and 26% hull (from 65 and 80% at 64 and 57%), at tier three 60 and 95% at 69 and
+45% (from 15 and 20%); with its escort 45 and 85% at tier two (from 30 and 15%), and at tier three
+still none, as the Fallen Weapon's cells read under its Great Needlers. Landed. The Vampire
+Lord's tier-three escort at the Lord's tier-one numbers (a `--pack` cell, the boss unscaled), with
+the Lich and with a second Wight in its place: 20 and 30% won with the Lich, 40 and 60% without,
+hull 92 and 88% against 87 and 70%; the Lich readying the Lord to rise again is half the wall,
+the risers' guard and last act the rest. The Lich out, landed; a lighter form (a Death Knight and
+three Wights) is Ryan's to mark.
+
 ## 31 October, the Honey Badger's rework
 
 **Its build session's reads** (the Ore Hopper built 31 October on

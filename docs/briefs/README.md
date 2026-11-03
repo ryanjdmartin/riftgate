@@ -252,6 +252,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
+| `elites.md` | the elites' holes (2 November, on Ryan's word): three a domain, the Peak's own and a Waste hunter first, more wanderers; Claude's first round of candidates, unanswered | the foes | — | Ryan's marks on the candidates, then a session of its own |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
 | `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate a load; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |
 | `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |
@@ -394,3 +395,10 @@ overrule)
 - Two tests from those rounds (Claude's, 13 October): a passive that is pure upside with no
   interest fails (the fan-boat's Ballistic splash); so does a payoff not worth its setup (the
   gunship's missile-marked reach).
+
+**The foes** (noted in the heat session, 30 October)
+
+- Weaken, a status that weakens a machine's blows: something the foes might carry (Ryan, 30
+  October: "Weaken is something the foes might want to carry. Note it down for that reason").
+  Weighed the same day as an overheat penalty, where he is "not against it", though it is "more
+  of a hard punish than corrupted"; the softer Corrupted is read first (the heat brief).

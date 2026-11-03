@@ -24,7 +24,9 @@ extends RefCounted
 ## percentage; `cool_above` keeps each machine's gauge under a share of its maximum, pricing the
 ## heat a spend leaves above that line as an overheat's hull, so it vents early and holds a hot
 ## gun there (the heat report's cautious persona, 30 October; the rungs as they are play the
-## reckless one, cooling only against an overheat). The weights here trade mech hull against
+## reckless one, cooling only against an overheat); `shield_ahead` values a shield left standing
+## by the blows it turns next round, where the rungs bank it at a fifth of a point (the support
+## ladders' bot, 30 October). The weights here trade mech hull against
 ## foe hit points and are knobs for the tool, not the game. Nothing here is shown to the player.
 
 const RANDOM := 0
@@ -66,10 +68,12 @@ const AMMO_SHARE := 0.5          # an ammo (the Musk Ox's magazine), as a share 
 const PRIMED_WORTH := 2.0        # a stack of Primed on a foe (28 October): the Burning its next move leaves, a placeholder
 const REGEN_WEIGHT := 0.5        # a point of shield a regeneration brings in a round to come, as a share of the hull it keeps: those blows are guessed from this round's (the Storm Petrel's, 30 October)
 const REGEN_ACTIONS := 3         # the actions a foe's Regenerating runs from its grant (Effects.regenerating's clock)
+const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a share of one this round (the fight may end, the foes pick afresh)
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
 var cool_above: int = 0          # persona: keep the gauge under this percent of the maximum (0: cool only against an overheat)
+var shield_ahead: bool = false   # persona: a standing shield valued by the blows it turns next round (the support ladders' bot, 30 October)
 var rng := RandomNumberGenerator.new()
 
 ## What the fight cost and how it was played, for the runner to tally.
@@ -123,7 +127,7 @@ func play(sk: Skirmish) -> int:
 		sk.end_round()
 		banked += sk.banked
 		for o in sk.overheats:
-			overheat_hull += int(o["over"])
+			overheat_hull += int(o.get("burn", o["over"]))
 			overheats += 1
 	return sk.outcome
 
@@ -277,6 +281,7 @@ func rollout(sk: Skirmish, c: Dictionary, seed_value: int) -> float:
 	copy.rng.seed = seed_value
 	var g := Policy.make(GREEDY, seed_value)
 	g.cool_above = cool_above   # the persona's habit plays the future out too
+	g.shield_ahead = shield_ahead
 	if not copy.assign(int(c["mech"]), _mirror(copy, sk, c.get("target")), _mirror(copy, sk, c.get("second"))):
 		return -INF
 	g.play_round(copy, false)
@@ -791,15 +796,34 @@ func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0)
 	var fc := sk.forecast(ms, false)
 	var added := int(roundf(heat_of(ms, f) * uses))
 	var over := maxi(0, int(fc["heat_end"]) + added - ms.heat_max)
-	var cost := float(over - int(fc["overheat"])) * HULL_WEIGHT
-	if not fc["destroyed"] and int(fc["hull_after"]) - (over - int(fc["overheat"])) <= 0:
+	var burn := (over - int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the added excess burns
+	var cost := float(burn) * HULL_WEIGHT
+	if not fc["destroyed"] and int(fc["hull_after"]) - burn <= 0:
 		cost += DEATH_WEIGHT
+	cost += overheat_marks_cost(ms, int(fc["overheat"]), over)
 	# The cautious persona: the heat this spend leaves above its line (under the maximum, past
 	# which the overheat above prices it), as an overheat's hull.
 	var line := caution_line(ms)
 	if line >= 0:
 		var top := mini(int(fc["heat_end"]) + added, ms.heat_max)
-		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT
+		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT * Skirmish.overheat_scale
+	return cost
+
+
+## What the overheat's what-ifs (Ryan, 30 October; Skirmish.overheat_burnout and overheat_corrupt)
+## add when the turn's excess goes from `before` to `after`: a component burnt out for the battle
+## once the burn reaches the injury threshold, priced as its share of the machine's worth (its
+## share of the die, of DEATH_WEIGHT), and the corruption an overheat lays, the bites its stacks
+## take over the rounds to come, as a foe's corrupt rider is priced. Placeholders, as every weight.
+func overheat_marks_cost(ms: Skirmish.MechState, before: int, after: int) -> float:
+	var cost := 0.0
+	var faces := maxi(1, ms.die.faces.size())
+	if Skirmish.overheat_burnout:
+		var bar := ms.unit.hull_max * Skirmish.injury_pct
+		if after * Skirmish.overheat_scale * 100 >= bar and before * Skirmish.overheat_scale * 100 < bar:
+			cost += DEATH_WEIGHT / float(faces)
+	if Skirmish.overheat_corrupt > 0 and before <= 0 and after > 0:
+		cost += float(Skirmish.corrupt_bite() * Skirmish.overheat_corrupt) * HULL_WEIGHT * CLEANSE_ROUNDS / float(faces)
 	return cost
 
 
@@ -1437,7 +1461,7 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	if tick > 0:
 		var fc := sk.forecast(who, false)
 		var over := mini(int(fc["overheat"]), tick)
-		score += float(over) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
+		score += float(over * Skirmish.overheat_scale) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
 	var scorch := Effects.stacks_of(who.unit, "scorched")
 	if scorch > 0:
 		for eff in Effects.STATUS["scorched"]["effects"]:
@@ -1467,7 +1491,15 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, overshield:
 		score += DEATH_WEIGHT
 	# What stands afterwards: an overshield's excess fades at the round's end, so only the
 	# shield up to the maximum banks.
-	score += float(maxi(0, mini(power, who.unit.shield_max - who.unit.shield))) * BANK_WEIGHT
+	if shield_ahead:
+		# The persona (30 October): what this shield leaves standing past the round's blows turns
+		# next round's, the hull the foes' blows would take off an average machine, at a share for
+		# the round away; the rest banks as ever.
+		var stand := maxi(0, mini(int(after["shield_after"]), who.unit.shield_max) - mini(int(before["shield_after"]), who.unit.shield_max))
+		var ahead := minf(float(stand), next_round_hull(sk, who))
+		score += ahead * HULL_WEIGHT * AHEAD_SHARE + (float(stand) - ahead) * BANK_WEIGHT
+	else:
+		score += float(maxi(0, mini(power, who.unit.shield_max - who.unit.shield))) * BANK_WEIGHT
 	# An escort's passive sheds the ally's heat as it shields (on_shield_granted): worth what
 	# a vent of that much would be, on an ally only.
 	if by != null and by != who:
@@ -1475,6 +1507,17 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, overshield:
 		if vent > 0:
 			score += vent_score(sk, who, vent)
 	return score
+
+
+## The hull the foes' blows would take off an average machine next round (the shield persona's read
+## of a standing shield): every live foe's blow on the field as its intent shows it, less this
+## machine's armour a blow, spread over the live machines, since a foe without an aim picks at random.
+func next_round_hull(sk: Skirmish, who: Skirmish.MechState) -> float:
+	var total := 0.0
+	for foe in sk.field_foes():
+		if foe.alive():
+			total += float(maxi(0, sk.foe_blow(foe) - who.unit.armour) * maxi(1, foe.strikes()))
+	return total / float(maxi(1, sk.live_mechs().size()))
 
 
 ## A lure on the foes an entry reaches: the team's hull the redirect saves this round, and
@@ -1500,8 +1543,8 @@ func lure_score(sk: Skirmish, who: Skirmish.MechState, foes: Array) -> float:
 ## discount, less the blow of the move the disrupt turns it to (Skirmish.disrupt_next), when that
 ## lands this round.
 static func disrupt_score(sk: Skirmish, foe: Foe) -> float:
-	if foe.is_suppressed() or not foe.alive():
-		return 0.0
+	if foe.is_suppressed() or not foe.alive() or foe.committed:
+		return 0.0   # an announced follow-up holds (2 November): a disrupt turns nothing
 	var now := countdown_threat(foe, sk) if foe.gathering() else _threat_now(foe, sk)
 	if now <= 0.0:
 		return 0.0
@@ -1972,16 +2015,18 @@ func siphon_score(sk: Skirmish, ms: Skirmish.MechState, per_blow: int) -> float:
 ## room it makes.
 func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	var fc := sk.forecast(who, false)
-	var score := float(mini(power, int(fc["overheat"]))) * HULL_WEIGHT
-	if fc["destroyed"] and int(fc["overheat"]) > 0 and int(fc["hull_after"]) + mini(power, int(fc["overheat"])) > 0:
+	var saved := mini(power, int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the vent keeps from the burn
+	var score := float(saved) * HULL_WEIGHT
+	if fc["destroyed"] and int(fc["overheat"]) > 0 and int(fc["hull_after"]) + saved > 0:
 		score += DEATH_WEIGHT
+	score += overheat_marks_cost(who, maxi(0, int(fc["overheat"]) - power), int(fc["overheat"]))
 	score += float(mini(power, who.heat)) * BANK_WEIGHT
 	# The cautious persona: what the vent takes off above its line and under the maximum (the
 	# overheat above counts the rest), as an overheat's hull.
 	var line := caution_line(who)
 	if line >= 0:
 		var held := mini(int(fc["heat_end"]), who.heat_max) - line
-		score += float(clampi(power - int(fc["overheat"]), 0, maxi(0, held))) * HULL_WEIGHT
+		score += float(clampi(power - int(fc["overheat"]), 0, maxi(0, held))) * HULL_WEIGHT * Skirmish.overheat_scale
 	return score
 
 

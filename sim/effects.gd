@@ -192,7 +192,7 @@ const STATUS := {
 		"tags": ["buff"], "effects": []},
 	# Swallowed (a foe's swallow, Floraison's, 30 October): out of the fight as a Phased machine is,
 	# laid by a foe and timed by its move, ended early by its swallower's fall.
-	"swallowed": {"id": "swallowed", "name": "Swallowed", "description": "Out of the fight: it cannot act, take damage or be targeted until its rounds run out or its swallower falls.", "stacking": "renew",
+	"swallowed": {"id": "swallowed", "name": "Swallowed", "description": "Out of the fight: it cannot act, take damage or be targeted until its rounds run out, its swallower falls, or its swallower loses a quarter of its HP.", "stacking": "renew",
 		"tags": ["debuff"], "effects": []},
 	"rallied": {"id": "rallied", "name": "Rallied", "description": "The team has one reroll more this round.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},

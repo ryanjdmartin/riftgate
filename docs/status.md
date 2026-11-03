@@ -25,11 +25,12 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 870 tests, 208,336 checks, green on main (31 October: `claude/affectionate-ramanujan-5d24t6`'s Petrels
-  landed onto main's head, on Godot 4.8-beta2; 850 and 208,176 on main alone, the foes'
-  move-order fix of `claude/zealous-wright-ixxo3l` in it, then the passive line in ink, the keywords
-  in text and the bosses' slate of `claude/brave-cori-fr18de` merged in for its terms, and the dice's
-  gestures, all from `claude/jolly-lovelace-scn82y`), about four minutes
+- Tests: 911 tests, 254,286 checks, green (3 November, main merged into
+  `claude/affectionate-ramanujan-5d24t6` as it lands: the Honey Badger's hopper and the five
+  Wainwright & Sutler models with the rig's counts, held and stepped spins and hidden mounts, both
+  runners' smokes clean; 893 and 209,059 on main before it, 2 November, with
+  `claude/brave-cori-fr18de`'s slate, elites by the tier, escorts and review's calls),
+  about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -45,11 +46,16 @@ are in `README.md`.
 
 ## Branches
 
-`claude/affectionate-ramanujan-5d24t6` (30 and 31 October) carried the two Petrels' engines on
-Ryan's go ("go for the ready to build ones", after his question of the 30th on which chassis come
-next), from main's `d84ad16`; it took main as it landed (the foes' move-order fix, the bosses'
-slate, the keywords in their colours and the dice's gestures, to `1f78e41`), and main took it as
-a fast-forward on 31 October on his word ("merge this into main"); its bible is v0.410 (the Pages paragraph).
+`claude/affectionate-ramanujan-5d24t6` (30 October to 3 November) carried the two Petrels'
+engines on Ryan's go ("go for the ready to build ones", after his question of the 30th on which
+chassis come next), from main's `d84ad16`, and main took it as a fast-forward on 31 October on
+his word ("merge this into main"). It then carried his calls of the 31st (Onryō's Grudge a
+working term; the Storm Petrel's burn on basics struck), the Giant Petrel's looks as a military
+catamaran, the Honey Badger's hopper rework with his second fallback on the runner's read, and
+the five Wainwright & Sutler models through his notes of 2 and 3 November; it took main as it
+landed (to `e75be15`: the slate's last calls, the elites by the tier, the review's calls), and
+main took it as a fast-forward on 3 November on his word ("merge this to main and clean up, I'll
+resume chassis work later"); its bible is v0.428 (the Pages paragraph).
 
 `claude/zealous-wright-ixxo3l` (30 October) carried the foes' move-order fix and its boss
 cells' read (How things stand), took main as it landed (to `d84ad16`: the skirmish's field,
@@ -88,12 +94,15 @@ word ("Merge into main"); its bible is v0.397 (the page's 409).
 (the tilesets' second build before its records pass; the pricing pass, Chain and the cautious
 heat persona after them, on Ryan's word to bring the repricing in; the tilesets' walls and the
 heat grid's read as it landed), and main took it as a fast-forward on 30 October on his word
-("merge this into main"). It then carried the slate's first seven bosses on his word the same
-evening ("build what can be built, and specify exactly what you need to flesh the rest out,
-including any holes"); its bible is v0.401 (the page's version 413), three-way merged onto the
-live v0.400, and its hangar the page's version 171. `claude/jolly-lovelace-scn82y` merged it on
-30 October for its terms (Ryan: "Fix the missing ones now, that's this sessions job, the other
-one doesn't have your context"), and main took the two together that evening.
+("merge this into main"). It then carried the bosses' slate on his word the same evening, the
+first seven ("build what can be built, and specify exactly what you need to flesh the rest out,
+including any holes") and the last five ("Yes to all waiting bosses"), then the review's calls
+of 2 November and the slate's last calls that evening; main took it all on 2 November (Ryan:
+"merge into main"), with the elites session next in a session of its own
+(`docs/briefs/elites.md`). Its bible is v0.427 (the page's version 439) and its hangar the
+page's version 190. `claude/jolly-lovelace-scn82y` had merged its first seven on 30 October for
+its terms (Ryan: "Fix the missing ones now, that's this sessions job, the other one doesn't have
+your context"), and main took the two together that evening.
 
 `ccr-7821127e-kwj874` (28 October) carried the movement landing (moves in hexes, the proposal,
 its build and its records), took main the same evening (the ladder: its 26 recolours' moves in
@@ -189,6 +198,54 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   stays 8 (at 6 within a point or two). Still his eye: random play takes three lone big foes more
   often than not, where the old Badger lost them. Ore Hopper
   and Ore Plate are working names.
+- The bosses' slate, all twelve (30 October to 2 November, on Ryan's word, his yes, his
+  agreement with Claude's leans and his calls on the review of the 2nd; `docs/bosses_proposal.md`,
+  its sections on what landed and the calls still open; the bible's section 9 rows), three a
+  domain as runnable placeholder kits: Rotbloom, Floraison and the King Gel in the Meadow; the
+  Ruby Colossus (Ruby Weapon by archetype, in the Djinn's place since the 2nd: two tentacles as
+  parts that guard nothing, Whirlsand a swallow, Ultima at every machine three rounds on), the
+  Fallen Weapon and the Pilgrim in the Waste; the Matador, the Phantom Train and the Vampire
+  Lord in the Marsh; the Behemoth, the Cinder Tortoise and the Obsidian Tyrant (its rider the
+  Saurian Queen, a part) in the Peak. The Djinn, a trope archetype, is the Waste's tier-two
+  back-rank caster, the ranks' first purge. Gilgamesh is an elite that wanders: drawn by any
+  domain's Fracture one time in three in place of its next own elite and always once its own are
+  spent (`ContentDB.next_elite`); every elite is scaled by the tier as a boss is (Ryan, 2
+  November), an elite may come again in a later battle, a boss never in a run. Every boss has its own escort at tiers two and three at
+  the tier's counts (the King Gel's court at every tier, six at tier three) and stands alone at
+  tier one, in the quick campaign too. The stand-ins went to the ranks with a line of recolours
+  each at tiers two and three (their cut third moves the twist), the Marsh a massive line of its
+  own (the Barrow, Grave and Charnel Giant), and the Bone Wyvern to the Marsh's elites. The
+  worms' and the Antlion Queen's bites are Maw and Devour (Swallow is Floraison's word);
+  Withdraw is 2, the Tortoise at tier three flagged (the to-do); no foe flees but a loot-runner
+  (Ryan's rule of the 2nd), so the Needler's Scatter and the Thief's Flee are struck, Showtime
+  the Thief's third. Built for them, on any foe: a follow-up, a steal with its borrowed swing, a swallow
+  that lets go once its swallower loses a quarter of its HP (a second machine taken joining the
+  first's count), a merge, a drain from the hull, a grudge (`per_kill`), a condition that reads
+  a fallen part, a move used once a fight, an escort that names its boss, a boss's armour step a
+  tier (`armour_step`: the Tortoise 1, 2, 3), a wandering elite (`wanders`), and a foe's purge
+  in content (the Djinn's Unmake); Numbed's third stack goes to every boss. The elites' holes
+  (the Peak has none of its own) have a brief for a session (`docs/briefs/elites.md`). Bosses and parts with no pick, and the
+  giants, wear rough placeholders stamped "?" (`tools/placeholder_art.py`). The slate stands at
+  48 HP at tier one (Ryan: "Whatever you think works best for scaling"). The reads of 30 and 31
+  October (`docs/measurements.md`, directions): the default team kills each boss in 4 to 5
+  rounds, the stock four in 7 to 12; the fourth machine is the run's biggest step in wear (a
+  trio of the same kit loses three to ten times the hull), and in rounds by its role; the
+  slate's blanket point of armour costs the small-blow kits about 40% more rounds at tier one;
+  the escorts read on the 2nd (`--boss-tiers`, every boss at tiers two and three with its escort
+  and alone): most cost a round or two and some hull, three make walls (the Vampire Lord's and the
+  Fallen Weapon's at tier three, the Matador's for a trio), since menace does not sort them and a
+  boss's own mechanic amplifies them, and the Ruby Colossus was a wall alone at its first numbers
+  (its tentacles lightened and slowed on a what-if, and the Lich out of the Lord's escort: landed).
+  Found on the way: the balance runner had never set the foe factory (fixed); the test runner
+  passes a test that crashes after its first check (the to-do); a second swallow moved the
+  first's release (fixed on the 2nd). Settled that evening (Ryan, 2 November): armour only where a
+  boss's kit is armour (the Colossus, the Fallen Weapon, the Phantom Train, the Obsidian Tyrant
+  and the Tortoise keep a point, the rest none), a follow-up that cannot be Disrupted once
+  announced (the chip says so, a Disrupt held over the foe strikes through, the bot values it at
+  nothing, a Suppress still takes it), Showtime the Thief's third (a blow at every machine below
+  half) and the escorts' moves (Barbed Needlers for the Fallen Weapon's Great Needlers, the Death
+  Knight out of the Matador's, Ghosts for the Phantom Train, stokers for the Tyrant at tier
+  three). Waiting on Ryan: his marks on the session's placeholders and the elites brief.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
   `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield
@@ -254,8 +311,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   renders came out the same as on 4.7.2, MSAA is back on the phone, and the import files are in
   4.8's form. Then the anti-aliasing became the player's (his ask: "Can we add an AA mode setting,
   not just for debug?"): SETTINGS → AA MODE, off, FXAA, MSAA 2X or MSAA 4X (the default), in
-  place of the debug MSAA and AA toggles, the mipmaps on in every mode. The desk's install and
-  the Pixel's read are the to-do's.
+  place of the debug MSAA and AA toggles, the mipmaps on in every mode. The desk runs 4.8-beta2
+  too (30 October, its build on the Pixel); the Pixel's read is the to-do's.
   With main in (30 October), the backdrop took the map's palettes: the Peak's lava orange-red,
   the Marsh's sky a cold night and its pools teal bog water and moss, the lakes the map's water.
   Then (his calls the same evening) the lava kept ("lava looks great"), the GREEN preset went
@@ -289,27 +346,6 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the touch meanwhile, so a double-tap's lock never flashes the readout; and a tap on the ground
   sends a waiting Swap home (the first closing an open readout), since only the drag back had set
   it back, unseen; the Swap's keywords-list line says so.
-- The bosses' slate, seven of twelve (30 October, on Ryan's word; `docs/bosses_proposal.md`, its
-  sections on what landed, what each waiting boss needs and the calls on what landed; the
-  bible's section 9 rows): Rotbloom and Floraison in the Meadow, Gilgamesh and the Fallen
-  Weapon in the Waste, the Matador in the Marsh, the Behemoth and the Cinder Tortoise in the
-  Peak, as runnable placeholder kits, each domain keeping its old massive stand-in last until it
-  has three of its own. Built for them, on any foe: a follow-up (`then`: a move names its foe's
-  next round's move, a Suppress or a Disrupt breaking the pair), a steal with its borrowed swing
-  (the entry a machine shows taken, swung back at its number, a fake for 1 when it was no
-  weapon) and a swallow (a machine Swallowed, out of the fight for two rounds or until its
-  swallower falls, never the last in the fight; drawn as a ghost under a dashed edge); the
-  Behemoth carries the first last act in content and the Fallen Weapon the first boss in parts,
-  its two eyes Guarding its core. The harness fields the boss its picker names (it fielded each
-  domain's first whatever was picked, unnoticed while each had one), the tables script reads a
-  last act where content keeps it, and `--set foes/...` reaches a foe's numbers on the runner.
-  The slate stands at 48 HP at tier one (the core in parts 40, its eyes 8), under the scale
-  row's 80 to 100, which at 80 took the default team 7 to 13 rounds against each boss alone where
-  the kill-time test asks three to five (`docs/measurements.md`, 30 seeds, a direction). Found on
-  the way: the balance runner never set the foe factory, so in every matrix until now a Gel never
-  split, nothing was summoned and no part stood; fixed, and the Gel's, the summoners' and the
-  parts' cells wait on the next 200-seed matrix. Waiting on Ryan: the five unbuilt bosses' marks and the calls on what
-  landed; Rotbloom, Gilgamesh and the eyes have no art until the image model has a route.
 - The pacing session and the foes' fresh start, one build (29 and 30 October; the bible's
   section 4 rows: the three clocks, a stall priced never free, the tears, the whole wall, the
   tier and the ramp; section 9's pack, tally, tiers and boss rows; the brief retired: `git show
@@ -476,18 +512,22 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a won battle" line where the threshold moves, so the destroyed-is-gone threshold is the
   economy pass's first number to read.
 - Content: five makers; 24 chassis, every one runnable since the Petrels' engines (30 October); 81 components,
-  32 of them locked; 17 modules; four domains with 49 wildlife (18 at tier one, the four
-  stand-in bosses among them, the ladder's 26 recolours and five elites as placeholder kits, each tier's
-  compositions partitioned from its list as placeholders), seven of the slate's bosses and the
-  Fallen Weapon's two eyes as placeholder kits, and 8 heroes with their promoted forms; 6 foe moves
+  0 of them locked; 17 modules; four domains with 53 wildlife (18 at tier one, the three old
+  stand-ins and the Barrow Giant among them, the ladder's recolours, the massive lines and the
+  Djinn, each tier's compositions partitioned from its list as placeholders) and 7 elites as
+  placeholder kits, the slate's twelve bosses and their 5 parts as placeholder kits, and 8
+  heroes with their promoted forms; 4 foe moves
   planned (two flees, an interpose, two retaliates and the Lich's Dark Rite). The
   numbers are the stock pass's (22 October, `tools/stock_fills.py`), the four Kestrel machines'
   set by hand at its scale; every one a placeholder.
-- Models: every machine's by lowforge; the five Wainwright & Sutler machines' are first cuts, the
-  Musk Ox's and the Cassowary's of 31 October and the Cottonmouth's, the Swallowtail's and the
-  Whip Scorpion's of 2 November, to judge running
-  (the Cassowary's capacitor charging a cell a counted shot and spinning while Spun Up, `b.count` and `b.spin_held`; the Cottonmouth's
-  mounts hidden in its drum, `b.pin(..., hidden=True)`; the to-do's lines); the Lammergeier's, the
+- Models: every machine's by lowforge; the five Wainwright & Sutler machines' are to judge
+  running, on Ryan's notes of 2 and 3 November: the Musk Ox's, the Cassowary's, the Swallowtail's
+  and the Whip Scorpion's second rounds and the Cottonmouth's third (its drum turning at idle,
+  parked a barrel ahead for each of the ranging act's test shots, only the top barrel's mouth and
+  lamp lit with the flash, the strip lit through every spin but the idle; `b.spin(..., step=)` and
+  an act's `locks`); the Cassowary's capacitor charges a cell a counted shot and spins while Spun
+  Up (`b.count`, `b.spin_held`), the Cottonmouth's mounts hide in its drum
+  (`b.pin(..., hidden=True)`), and the to-do's lines say what waits; the Lammergeier's, the
   Skua's, the Puffin's and the Storm Petrel's are the Kestrel second round's picks of 28 October,
   to judge running; the Needletail's and the Giant Petrel's are the first cut of 23 October
   until Ryan's next session (the to-do). Since 28 October (Ryan's brief, `claude/charming-rubin-h954bp`) a
@@ -602,8 +642,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The Peak's elite and a Waste hunter, the escort compositions by tier and the Fracture's
-  prize (the bible's section 12), with the bosses' slate's five waiting (`docs/bosses_proposal.md`) and the
+- The elites session (`docs/briefs/elites.md`: the Peak's own elite and a Waste hunter, three a
+  domain at least, more wanderers; every elite scaled by the tier since 2 November) and the
+  Fracture's prize (the bible's section 12), with the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them, a special with a countdown); a
   silence carrier and a purge carrier once Ryan marks them (section 12); the jellyfish's EMP,
@@ -671,9 +712,13 @@ and the streets) main's.
    on Ryan's answers to its six questions. The cautious persona built 30 October (`--cool-above
    N`) and its first read in the brief and `docs/measurements.md`: on the car's heat grid caution
    costs more than the overheat (more rounds and more hull), so the overheat's price comes before
-   the cooling's cut, and cooling 0 bites modestly on a cold die. Next: the hot rows under both
-   bots; a persona that shields before the blow and the planner on the equipment ladders, for the
-   equipment ramp Ryan wants first; the ladders per tier on the fresh start's formations once
+   the cooling's cut, and cooling 0 bites modestly on a cold die. The overheat's price read as
+   what-ifs the same day (a harsher burn, burnout, self-Corrupted: Ryan's calls in the brief):
+   each makes the bot ride the maximum and hold, caution never pays, so the form is his call by
+   feel. The shield persona built (`--shield-ahead`) and the support ladders read on the Puffin
+   bench: flat by tier, no shield, vent or buff beating the gun it replaces in fights Kestrel's row
+   wins in three rounds. Next: the equipment ramp on harder fights with tier-matched kits and the
+   planner, and the shields' and vents' numbers by tier as a fills proposal; the ladders per tier on the fresh start's formations once
    the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
    line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
 3. **The foes' fresh start and the pacing session: Ryan's marks and the reads.** Built 30
@@ -696,7 +741,7 @@ and the streets) main's.
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
 7. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves;
-   the bosses' slate's five waiting, content once marked, seven landed 30 October); the ramp's numbers on Ryan's word; the battery plan's rest (the props' fade, the 3D at 30); audio;
+   the bosses' calls still open, the slate's twelve landed 30 October); the ramp's numbers on Ryan's word; the battery plan's rest (the props' fade, the 3D at 30); audio;
    art; the commander layer after a balance baseline; onboarding before a phone leaves the desk.
 
 ## Pages
@@ -707,21 +752,40 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.422 (the page's
-  version 434, published 2 November from
-  `claude/affectionate-ramanujan-5d24t6`: the Honey Badger's rework and its plate at Ryan's second
-  fallback, the Onryō's Grudge a working term, the Storm Petrel's question struck, the five
-  Wainwright & Sutler machines' first cuts and the hidden mount), three-way merged onto the live
-  v0.421, which other sessions had published ahead of this branch (the slate's calls of 31 October,
-  the weapon-fire work and the tracks' notes among them), with this branch's last publish, v0.410
-  at the page's version 422, as the base. So this file carries rows other sessions published
-  ahead of their code, each landing with its branch. The version numbers on the publishing
-  branch's file and the live agree after every publish. Before republishing, read the live page;
-  if another session moved it, publish a three-way merge onto it (`git merge-file` with the
-  last-published file as the base, the wrapper's first line and its trailing `</body></html>`
-  stripped from the saved live source). The tables script, which writes the buff, debuff and
-  keyword tables from the content, reverts rows published ahead of their code on this head:
-  splice those tables by hand until those branches land.
+  `docs/design-bible.html` after every change. This file is v0.427 (the page's version
+  439, published 2 November from `claude/brave-cori-fr18de` as main merged in: the tables run
+  on the merged content, the Every Machine row moving with main's foes and the Honey Badger's
+  hopper rows kept by hand, that branch not yet on main; over 438 of the same evening, the
+  slate's last calls,
+  armour by kit, the committed follow-up, Showtime and the escorts' moves, over 437 of the same
+  evening, which carried every elite scaled by the tier and the Thief's Flee struck, over 436 of
+  the same day, which carried the review's calls of the 2nd: the Ruby Colossus, the Djinn in the ranks, the wanderer by chance, elites reusable, the
+  flee rule, the Thief's Flee as a section 12 question; three-way merged onto the live v0.423,
+  which other sessions had moved past this branch's v0.417 at 429 with the Honey Badger's hopper
+  and Ore Plate, the five Wainwright & Sutler models' first cuts and the weapon-fire row, four
+  conflicts settled by hand (the version; the Swallowed and Hopper table rows, each side's own;
+  the Built list and section 12's content questions, the live's with this branch's items added);
+  the bible's tables regenerated for the content and seven rows ported by hand, since the
+  script on this branch reads the other branches' engines as planned. Before it, v0.417 (429,
+  31 October, the slate's calls of the 31st: the escorts, the Djinn, Gilgamesh wandering, the
+  massive lines, the Tortoise's armour by the tier and the swallow's release; three-way merged
+  onto the live v0.416, which other
+  sessions had moved past this branch's v0.409 at 421 with the Storm Petrel's and the Giant
+  Petrel's engines and their table rows, the map halves made minimal, the glow on every hot part
+  and a lit part's colour, and two of section 12's questions, the Storm Petrel's burn on basics
+  and the weapon-fire package). Earlier merges onto the live page brought in the same way the
+  Arsenal's flare toward hot pink and the phone's eased light, a die's readout on a tap, a term
+  in shown text wearing its colour and icon, the shield's blue taking the control that holds a
+  foe, the Translocator's tap on the ground, the fight's backdrop palette, two tracks' rows, the HUD's mint green, the Armadillo's
+  radiators, the lava's call, Godot 4.8 and the AA setting, the enemy's violet, the overlay at one width, the
+  models' glows, looks and acts, the Armadillo's seal on screen, the skirmish's field, the reds,
+  the tracks in pairs and the map's FXAA and lines at every zoom, so this file carried those
+  branches' rows ahead of their code until main merged in on 2 November. The version numbers on the publishing branch's file and the
+  live agree after every publish. Before republishing, read the live page; if another session
+  moved it, publish a three-way merge onto it (`git merge-file` with the last-published file as
+  the base, the wrapper's first line and its trailing `</body></html>` stripped from the saved
+  live source). With main merged in (2 November), the tables script's run is checked against
+  the file's tables before it is kept: a row it reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
@@ -744,7 +808,22 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 172 (30 October, from
+  acts on a reloaded page). At the page's version 190 (2 November, from
+  `claude/brave-cori-fr18de`, the slate's last calls: `content/foes.json`, `content/factions.json`
+  and `content/vocabulary.json`, the vocabulary's live copy checked identical to 181's first,
+  over 189 of the same evening, the Thief's Flee struck, `content/foes.json` over 188 of the same
+  day, the escorts' read's `content/foes.json` and `content/factions.json`, over 187 of the same day, which carried the review's calls of the 2nd, each live copy
+  checked identical to 181's first, `edits` empty, the page itself another session's republish
+  of 13:07 kept as it stood, its motion panel's forms and pin records, which main's
+  `tools/hangar.html` carries since the merge of 2 November but for the Fire button's title);
+  181 (31 October, from
+  `claude/brave-cori-fr18de`, with the slate's calls of the 31st: `content/foes.json`,
+  `content/factions.json` and `content/vocabulary.json`, each live copy checked identical to
+  174's first, every other file kept as another session's republish of 04:10 left it, the
+  page's foe line showing an armour step, `edits` empty; 174 brought the slate's twelve onto a
+  republish of 21:51 the same way; 171 brought the first seven onto another session's republish, whose `index.html` it
+  kept but for the factions line, which reads a list of bosses (in `tools/hangar.html` too);
+  172 (30 October, from
   `claude/charming-rubin-h954bp`: `motion.js` with the lit parts' eased light and the Armadillo's
   rig with its vent heat's new peak, onto 171, which another session published with its page's
   boss-list line, a domain's bosses a list since its slate, carried into `tools/hangar.html` here
@@ -759,7 +838,18 @@ into this file in the same commit as its first publish; the procedures are in `R
   and the compositions' notes, the factions with the compositions, the vocabulary with the
   pacing session's terms and Chain, the modules with the pricing pass's lines); every other file
   as the live page had it, `edits`
-  empty). Its database (Ryan's saved edits,
+  empty); 160, from `ccr-7821127e-kwj874`:
+  `content/factions.json`'s note naming the bleeds as the tilesets, onto version 159, its
+  `index.html` and every other file kept as they stood, `edits` empty; 154 took the domains' map
+  shapes out), on 153 (29 October:
+  `content/foes.json` with the hunters at a ring of two and its map note current, replacing
+  that branch's copy, whose note alone differed, and `content/vocabulary.json` with the Ring
+  and Behaviour entries, onto version 152 of `claude/charming-rubin-h954bp`, its rebuilds'
+  notes, its `index.html` and every other file kept as they stood, `edits` empty; 151 brought
+  the horde's wade and the flyer's passing;
+  at 147 the walls' four terms, onto version 146 of `claude/charming-rubin-h954bp`'s page and files; that branch's
+  `content/chassis.json` carries its own Stingray note, so main's chassis file, whose `_about`
+  alone moved, waits for that branch to land; `edits` empty). Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,

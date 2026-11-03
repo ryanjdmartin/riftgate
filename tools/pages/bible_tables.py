@@ -45,7 +45,7 @@ FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "brac
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating"}   # the ladder's (28 October)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
-MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow"}
+MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "silence": "silence"}
 VIA_STATUS = {"primed": [("burning", "foe")], "retaliate": [("shocked", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
 ENGINE_ALIASES = {"burning_mech": "burning"}   # the same word on the other body
 
@@ -71,7 +71,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("kill_rerolls", "Rerolls a kill", lambda f: int(f.get("kill_rerolls", 0) or 0) > 0),
            # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
            ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
-FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "steal", "silence", "dispel", "swallow", "self_destruct", "all", "countdown", "follow_up", "last_act", "parts"]
+FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "steal", "drain", "silence", "dispel", "swallow", "merge", "self_destruct", "all", "countdown", "follow_up", "grudge", "last_act", "parts"]
 FOE_ONLY_TEXT = {"burn": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Burning on the machine it hits (Burning, above).",
                  "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away.",
                  "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn; its stores stay; a Ward turns it away."}
@@ -222,6 +222,8 @@ def tally(words):
                 t.count("countdown", "foe", planned, name)
             if a.get("then"):
                 t.count("follow_up", "foe", planned, name)
+            if int(a.get("per_kill", 0)) > 0:
+                t.count("grudge", "foe", planned, name)
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)

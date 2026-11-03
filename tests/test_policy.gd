@@ -103,6 +103,84 @@ func test_the_cautious_persona_prices_heat_above_its_line() -> void:
 	assert_eq(careful.heat_cost(sk, ms, gun), 4.0 * Policy.HULL_WEIGHT, "from under the line, only the part past it")
 
 
+## The overheat's what-if switch (30 October): the bot prices an overheat at the hull it burns, on
+## the spend that causes it and on the vent that saves it.
+func test_the_bot_prices_an_overheat_at_its_burn() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Hot", Die.single(Face.vent(30)), 40, 100))
+	sk.add_foes([_ghoul(300, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.make(Policy.GREEDY)
+	var gun := Face.attack(10, L, [], 10)
+	ms.heat = 55   # the gun would end the turn five past the cap of sixty
+	var cost_plain := pol.heat_cost(sk, ms, gun)
+	ms.heat = 70   # ten past it: the vent of ten saves the whole burn
+	var vent_plain := pol.vent_score(sk, ms, 10)
+	Skirmish.overheat_scale = 2
+	var vent_doubled := pol.vent_score(sk, ms, 10)
+	ms.heat = 55
+	var cost_doubled := pol.heat_cost(sk, ms, gun)
+	Skirmish.overheat_scale = 1
+	assert_true(absf(cost_plain - 5.0 * Policy.HULL_WEIGHT) < 0.001, "five past the cap, one for one: %f" % cost_plain)
+	assert_true(absf(cost_doubled - 10.0 * Policy.HULL_WEIGHT) < 0.001, "doubled, the hull it burns: %f" % cost_doubled)
+	assert_true(absf(vent_doubled - vent_plain - 10.0 * Policy.HULL_WEIGHT) < 0.001, "the vent saves twice the hull")
+
+
+## The overheat's other what-ifs priced (30 October): the spend that takes the burn to the injury
+## threshold pays for the component it burns out, and the one that starts an overheat for the
+## corruption it lays; nothing while both are off.
+func test_the_bot_prices_a_burnout_and_an_overheats_corruption() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Hot", Die.of([Face.vent(30), Face.attack(10, L, [], 10)]), 40, 100))
+	sk.add_foes([_ghoul(300, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.make(Policy.GREEDY)
+	assert_eq(pol.overheat_marks_cost(ms, 0, 30), 0.0, "both off: nothing")
+	Skirmish.overheat_burnout = true
+	var burnt := pol.overheat_marks_cost(ms, 0, 30)
+	var short := pol.overheat_marks_cost(ms, 0, 20)
+	var already := pol.overheat_marks_cost(ms, 25, 30)
+	Skirmish.overheat_burnout = false
+	Skirmish.overheat_corrupt = 1
+	var corrupt := pol.overheat_marks_cost(ms, 0, 5)
+	var again := pol.overheat_marks_cost(ms, 5, 10)
+	Skirmish.overheat_corrupt = 0
+	assert_true(absf(burnt - Policy.DEATH_WEIGHT / 2.0) < 0.001, "thirty past the cap on a 100-hull machine reaches the quarter: half the machine's worth on a die of two: %f" % burnt)
+	assert_eq(short, 0.0, "twenty burns short of the quarter")
+	assert_eq(already, 0.0, "a burnout the turn was making anyway costs this spend nothing")
+	assert_true(corrupt > 0.0, "the spend that starts the overheat pays for its corruption")
+	assert_eq(again, 0.0, "one overheat a turn: a spend that only deepens it lays no more")
+
+
+## The shield persona (30 October, the support ladders' bot): a shield left standing past this
+## round's blows is worth the hull it turns next round, the foes' blows on an average machine at
+## a share for the round away, where the rungs bank it at a fifth of a point.
+func test_the_shield_persona_values_a_standing_shield_by_next_rounds_blows() -> void:
+	var sk := Skirmish.new(3)
+	var a := _mech("A", Die.single(Face.shield(8)), 40, 100)
+	a.shield = 0
+	sk.add_mech(a)
+	sk.add_mech(_mech("B", Die.single(Face.attack(5, L)), 40, 100))
+	var g := _ghoul(300, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[1]   # the blow this round falls on the other machine: the shield on A saves nothing now
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var plain := Policy.make(Policy.GREEDY)
+	var ahead := Policy.make(Policy.GREEDY)
+	ahead.shield_ahead = true
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 5.0) < 0.001, "a blow of ten over two machines")
+	var p := plain.shield_score(sk, ms, 8)
+	var q := ahead.shield_score(sk, ms, 8)
+	assert_true(absf(p - 8.0 * Policy.BANK_WEIGHT) < 0.001, "the rungs bank the eight: %f" % p)
+	assert_true(absf(q - (5.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE + 3.0 * Policy.BANK_WEIGHT)) < 0.001, "the persona: five of it turns next round's blow, the rest banks: %f" % q)
+
+
 func test_greedy_rerolls_a_face_under_the_average() -> void:
 	# A die of one blank and one big gun: whichever shows first, the bot ends the round on
 	# the gun, having rerolled the blank away (a reroll never lands on the same entry).
