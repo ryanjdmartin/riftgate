@@ -612,7 +612,7 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
 		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {},
 		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0,
-		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0}
+		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0, "gate_free": 0, "paints": 0, "paints_cashed": 0}
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -660,6 +660,9 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		agg["plan_changes"] += pol.plan_changes
 		agg["actions"] += pol.actions_bought
 		agg["banked"] += pol.banked
+		agg["gate_free"] += pol.gate_free
+		agg["paints"] += pol.paints
+		agg["paints_cashed"] += pol.paints_cashed
 		var end_heat := 0.0
 		for ms in sk.mechs:
 			end_heat += 100.0 * float(ms.heat) / float(maxi(1, ms.heat_max))
@@ -801,8 +804,14 @@ func _report(fights: int, secs: float) -> String:
 		var fought := 0
 		var actions := 0
 		var banked := 0
+		var gate_free := 0
+		var paints := 0
+		var cashed := 0
 		for p in packs:
 			var a: Dictionary = cells[_key(r, p, top)]
+			gate_free += int(a.get("gate_free", 0))
+			paints += int(a.get("paints", 0))
+			cashed += int(a.get("paints_cashed", 0))
 			rounds += int(a["rounds"])
 			rerolls += int(a["rerolls"])
 			fought += int(a["fights"])
@@ -815,7 +824,9 @@ func _report(fights: int, secs: float) -> String:
 		var blanks: Array = []
 		for c in spends.keys():
 			if not c in ["empty", "destroyed", "disabled"]:
-				named.append([db.component_name(c), spends[c], c])
+				var charged := str(c).ends_with(" (charged)")   # a muster's spend (the Swallowtail's), apart
+				var cid := str(c).trim_suffix(" (charged)")
+				named.append([db.component_name(cid) + (" charged" if charged else ""), spends[c], c])
 		for c in ["empty", "destroyed", "disabled"]:
 			if spends.has(c):
 				blanks.append([c, spends[c]])
@@ -832,6 +843,12 @@ func _report(fights: int, secs: float) -> String:
 			economy += " An ally's action bought %.2f a fight." % (float(actions) / maxi(1, fought))
 		if banked > 0:
 			economy += " Rerolls banked %.2f a round." % (float(banked) / maxi(1, rounds))
+		# The gate and the paints (the Needletail's rows, 3 November): its spends a once-a-round
+		# gate made Rapid, and its paints an ally's Direct weapon spend cashed while they stood.
+		if gate_free > 0:
+			economy += " Spends the gate made free: %d%%." % _pct(gate_free, total)
+		if paints > 0:
+			economy += " Paints %.2f a fight, %d%% cashed by an ally's Direct spend." % [float(paints) / maxi(1, fought), _pct(cashed, paints)]
 		L.append("- **%s**: %s. Rerolls %.2f a round.%s" % [r["name"], ", ".join(parts), float(rerolls) / maxi(1, rounds), economy])
 	L.append("")
 	L.append_array(_reach_report(top))

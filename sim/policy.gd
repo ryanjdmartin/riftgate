@@ -93,6 +93,10 @@ var plans: int = 0               # the planner's decisions that weighed more tha
 var plan_changes: int = 0        # of those, the ones where it spent otherwise than the greedy would
 var actions_bought: int = 0      # an ally's action bought with the team's rerolls (the Immelmann Booster, 30 October)
 var banked: int = 0              # rerolls the bank carried as each turn ended, summed (Maverick's Playbook, 30 October)
+var gate_free: int = 0           # spends a once-a-round gate made Rapid (the Needletail's, 3 November)
+var paints: int = 0              # Expose spends on a foe (the Needletail's Fovea Designator)
+var paints_cashed: int = 0       # of those, the ones an ally's Direct weapon spend cashed while the foe stood Exposed
+var _painted: Dictionary = {}    # foe -> the machine whose Expose stands on it, uncashed
 
 
 static func make(kind_arg: int, seed_value: int = 0) -> Policy:
@@ -201,8 +205,11 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 			best = _plan(sk, best, alternatives)
 		var ms: Skirmish.MechState = sk.mechs[best["mech"]]
 		var spent := ms.face()
+		var charged := sk.charge_lands(ms)
+		var marks := _paint_marks(sk, ms, spent, best["target"])
 		if sk.assign(best["mech"], best["target"], best.get("second", null)):
-			_tally(spent)
+			_tally(spent, charged)
+			_note_paints(ms, best["target"], marks)
 			if spent != null and spent.action_price > 0 and best["target"] is Skirmish.MechState and best["target"] != ms:
 				actions_bought += 1
 			# An entry that buys an ally's action (the Immelmann Booster) waits for an ally to spend:
@@ -349,10 +356,13 @@ func _blind_round(sk: Skirmish) -> void:
 				continue
 			var pick := _blind_pick(sk, i)
 			var face := ms.face()
+			var charged := sk.charge_lands(ms)
+			var marks := {} if pick.is_empty() else _paint_marks(sk, ms, face, pick.get("target"))
 			if pick.is_empty() or not sk.assign(i, pick.get("target"), pick.get("second")):
 				held.append(i)
 				continue
-			_tally(face)
+			_tally(face, charged)
+			_note_paints(ms, pick.get("target"), marks)
 			spent_one = true
 			break
 		if not spent_one:
@@ -2355,10 +2365,40 @@ static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
 	return worth
 
 
-func _tally(f: Face) -> void:
+## What a spend about to go out means for the Needletail's tallies (3 November): whether its
+## gate makes it Rapid, whether it paints (an Expose on a foe), and whether it cashes a paint
+## (a Direct weapon spend by another machine on a foe standing Exposed by one).
+func _paint_marks(sk: Skirmish, ms: Skirmish.MechState, f: Face, target) -> Dictionary:
+	if f == null or not (target is Foe):
+		return {}
+	var foe := target as Foe
+	var marks := {}
+	if Effects.quick_turn_live(ms.unit, f):
+		marks["quick"] = true
+	if f.has(Face.Keyword.EXPOSE):
+		marks["paint"] = true
+	elif f.is_weapon() and f.reach == Face.Reach.DIRECT and _painted.has(foe) and _painted[foe] != ms and Effects.has(foe, "exposure"):
+		marks["cash"] = true
+	return marks
+
+
+func _note_paints(ms: Skirmish.MechState, target, marks: Dictionary) -> void:
+	if marks.is_empty():
+		return
+	if marks.has("quick"):
+		gate_free += 1
+	if marks.has("paint"):
+		paints += 1
+		_painted[target] = ms
+	if marks.has("cash"):
+		paints_cashed += 1
+		_painted.erase(target)
+
+
+func _tally(f: Face, charged: bool = false) -> void:
 	if f == null:
 		return
-	var key := f.component
+	var key := f.component + (" (charged)" if charged else "")   # a muster's spend apart (the Swallowtail's rows, 3 November)
 	if f.kind == Face.Kind.BLANK:
 		key = "disabled" if f.disabled else ("empty" if f.empty else "destroyed")
 	spends[key] = int(spends.get(key, 0)) + 1
