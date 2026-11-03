@@ -1279,3 +1279,62 @@ func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
 	var under_way: float = turned.call(fan_r, 1.0, true)
 	assert_true(absf(under_way - float(rig.spinners["fan_r"][1])) < 40.0, "under way it turns at its moving rate (%f a second)" % under_way)
 	pair[1].free()
+
+
+func _boxed_rig(lit: bool = false) -> Array:
+	var root := Node3D.new()
+	var body := Node3D.new()
+	root.add_child(body)
+	var mi := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(10.0, 10.0, 10.0)
+	mi.mesh = box
+	if lit:
+		var m := StandardMaterial3D.new()
+		m.emission_enabled = true
+		m.emission_energy_multiplier = 2.0
+		mi.set_surface_override_material(0, m)
+	body.add_child(mi)
+	var rig := MechRig.new()
+	rig.model = root
+	rig.body = body
+	return [rig, root, body, mi]
+
+
+func test_a_blow_on_the_hull_shoves_the_machine_back_and_settles() -> void:
+	# The to-do's hit reaction (Ryan's go of 3 November): the body shoved back a share of
+	# its longest side, its nose rocking up, on its servo, settling back to rest.
+	var r := _boxed_rig()
+	var rig: MechRig = r[0]
+	var body: Node3D = r[2]
+	rig.jolt(Vector3(0.0, 0.0, 1.0), 1.0)
+	rig.tick(MechRig.JOLT_UP)
+	assert_true(absf(body.position.z - MechRig.JOLT_SHARE * 10.0) < 0.05, "shoved back its share of its size at the top")
+	assert_true(body.rotation.x > 0.0, "its nose rocks up")
+	rig.tick(MechRig.JOLT_DOWN + 0.05)
+	assert_true(body.position.length() < 0.001 and absf(body.rotation.x) < 0.001, "and settles back to rest")
+	rig.jolt(Vector3(0.0, 0.0, 1.0), 0.5)
+	rig.tick(MechRig.JOLT_UP)
+	assert_true(absf(body.position.z - MechRig.JOLT_SHARE * 5.0) < 0.05, "a blow the armour turned shoves at half")
+	(r[1] as Node).free()
+
+
+func test_a_machine_lost_guts_its_lit_parts_and_stops_its_acts() -> void:
+	var r := _boxed_rig(true)
+	var rig: MechRig = r[0]
+	var m: StandardMaterial3D = (r[3] as MeshInstance3D).get_surface_override_material(0)
+	rig.acts = [{"name": "wave", "duration": 1.0, "tracks": {}, "body": [], "glow": []}]
+	rig.kill()
+	assert_true(rig.dead, "it is lost")
+	rig.tick(MechRig.GUTTER * 0.25)
+	assert_true(m.emission_energy_multiplier < 2.0, "its light gutters as it goes")
+	rig.tick(MechRig.GUTTER)
+	assert_eq(m.emission_energy_multiplier, 0.0, "and is out once the beat is done")
+	rig.tick(5.0)
+	assert_true(rig._current.is_empty(), "a lost machine starts no act")
+	rig.revive()
+	assert_false(rig.dead, "lit again")
+	assert_true(absf(m.emission_energy_multiplier - 2.0) < 0.001, "its light back at its rest")
+	assert_eq(MechRig.gutter_k(MechRig.GUTTER), 0.0, "nothing left at the beat's end")
+	assert_true(MechRig.gutter_k(0.0) > 0.0, "and all of it at its start")
+	(r[1] as Node).free()

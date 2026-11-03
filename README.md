@@ -399,6 +399,13 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on
 # every foe showing a blow (+1 where none is coming, its number unchanged), to judge the pulse
 # running; RIFTGATE_FOES=wolf:4 fields the real thing, howls lifting the bites after them.
+# RIFTGATE_HIT_DEBUG=1 (any skirmish) lands a blow on a machine every second and a half, in turn a hull
+# hit from the left, one its shield holds, one its armour turns and a hull hit from the right, and
+# every fifth beat loses one and lights it again, to judge the hit reactions running.
+# RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
+# trial), to compare the two.
+# RIFTGATE_SHOTS=1 (any skirmish) draws the shot crossing the field, tabled and off by default (a debug
+# build's Settings → SHOT TRAILS turns it on too).
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the

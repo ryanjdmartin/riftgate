@@ -104,12 +104,29 @@ const SPIN_SPEED := 0.7           # radians per second
 var rig := MechRig.new()
 var joints: Dictionary = {}       # "shoulder_l" -> Node3D (the rig's)
 var hardpoints: Dictionary = {}   # 1 -> Node3D (the rig's)
+var fx_nodes: Dictionary = {}     # a fixed weapon -> the fx_<component> node at its business end (its sidecar's `fx`), riding its joint
 var plan: Array = []              # what the pins wear instead of their built parts (plan_for's rows), applied in _setup
 var wears_stock := true           # whether the model's own stock parts are its machine's kit (false on a borrowed model)
 var _burns: Array = []            # the burn weapons' fire hung over their classes (wear_burns), each node carrying its component's id
 var _flares: Array = []           # [node, component, look]: each weapon's muzzle flares on its class (wear_flares)
 var pivots := false               # aims by turning its whole body (a hover or a flyer): the skirmish sets it; a model may say so too (its sidecar's `pivots`)
 const FLARE_SHADER := preload("res://game/ui/flare.gdshader")
+const HIT_SHADER := preload("res://game/ui/hit_flash.gdshader")
+const PLUME_SHADER := preload("res://game/ui/plume.gdshader")
+## RIFTGATE_PLUME=off draws a booster's exhaust as it was, its halo's ring in place of the plume
+## (a trial, 3 November), to compare.
+static var PLUMES := OS.get_environment("RIFTGATE_PLUME") != "off"
+var _plumes: Array = []               # [plume material, the lit material it burns with, that material's light at rest]
+const HIT_PEAK := 0.8        # a blow on the hull lays heat's colour this thick over it at the top (hit),
+const HIT_UP := 0.04         # in this many seconds,
+const HIT_HOLD := 0.08       # held this long,
+const HIT_DOWN := 0.3        # and gone over this long
+const OUTLINE_LOST := 0.35   # a machine lost keeps this much of its outline (lose)
+var _hit_mat: ShaderMaterial          # the flash laid over the hull as a blow lands (hit)
+var _hit_t := -1.0                    # seconds into it; negative when none
+var _hit_k := 1.0                     # its strength, a blow the armour turned at half
+var _outline_mat: ShaderMaterial      # the 2D outline pass, dimmed when the machine is lost
+var _lose_t := -1.0                   # seconds into the outline dimming as it is lost; negative when not
 var model_id: String = ""         # the glTF drawn: the chassis, or the fallback when it has no model
 
 var _inner: SubViewport
@@ -396,6 +413,8 @@ func _apply_plan() -> void:
 	for part in _burns:
 		rig.wear_hot(part)
 	_flares = [] if token else wear_flares(hardpoints, flare_rows(model_id, plan, db, wears_stock), db)
+	if not token and wears_stock:
+		_flares += wear_fx_flares(fx_nodes, MechRig.load_sidecar(model_id).get("fx", {}), db)
 
 
 ## Whether a component burns: its entry's keywords hold "burn" (content says, never an id).
@@ -479,6 +498,80 @@ static func flare_rows(model_name: String, rows: Array, db: ContentDB, stock_too
 				if p is Array and (p as Array).size() == 2 and p[0] is Array and (p[0] as Array).size() == 3:
 					places.append([Vector3(float(p[0][0]), float(p[0][1]), float(p[0][2])), float(p[1])])
 			out.append([n, str(stock[n - 1]), "", places])
+	return out
+
+
+## Each booster's plume along its thrust (its sidecar's `plumes`, lowforge's plume(); Ryan, 31
+## October, of the Stingray's exhaust: "can it be directional?"): a flame out of the plume node's
+## mouth (plume.gdshader), lit with the part it burns with. [material, lit material, its rest] each.
+static func setup_plumes(model: Node, side: Dictionary, r: MechRig, ceiling := 0.48) -> Array:
+	var out: Array = []
+	for pl in side.get("plumes", []):
+		var node := model.find_child(str(pl.get("node", "")), true, false)
+		var lit: Array = r._lit_materials(str(pl.get("part", ""))) if r != null else []
+		if not (node is Node3D) or lit.is_empty():
+			continue
+		var reach := float(pl.get("reach", 20.0))
+		var breadth := float(pl.get("breadth", 8.0))
+		var mi := MeshInstance3D.new()
+		mi.name = "plume"
+		mi.mesh = QuadMesh.new()
+		mi.custom_aabb = AABB(Vector3(-breadth, -breadth, -reach - 2.0), Vector3(breadth * 2.0, breadth * 2.0, reach + 3.0))   # down its -z, as the shader runs it
+		var mat := ShaderMaterial.new()
+		mat.shader = PLUME_SHADER
+		mat.set_shader_parameter("reach", reach)
+		mat.set_shader_parameter("breadth", breadth)
+		mat.set_shader_parameter("ceiling", ceiling)
+		mi.material_override = mat
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mi.set_meta("halo", true)   # no trace, no hull flash, no halo of its own
+		mi.set_meta("plume", true)   # and no part of the frame
+		(node as Node3D).add_child(mi)
+		var m: StandardMaterial3D = lit[0]
+		out.append([mat, m, MechRig._rest_of(m)])
+		mat.set_shader_parameter("strength", plume_k(m.emission_energy_multiplier, MechRig._rest_of(m)))
+	return out
+
+
+## A plume's strength from its booster's light now against its rest: faint at rest, full as the
+## booster burns at eight rests over its own (a surge, a run at full speed).
+static func plume_k(light: float, rest: float) -> float:
+	if rest <= 0.0:
+		return 0.0
+	var top := MechRig.light(8.0)
+	return clampf(0.3 + 0.7 * (light / rest - 1.0) / maxf(0.01, top - 1.0), 0.0, 1.0)
+
+
+## Each fixed weapon's business end, by its sidecar's `fx` (lowforge's fx()): the node named
+## fx_<component> in the model, which rides the joint carrying the weapon.
+static func fx_of(model: Node, side: Dictionary) -> Dictionary:
+	var out := {}
+	var fx = side.get("fx", {})
+	if model == null or not (fx is Dictionary):
+		return out
+	for cid in (fx as Dictionary).keys():
+		var node := model.find_child("fx_" + str(cid), true, false)
+		if node is Node3D:
+			out[str(cid)] = node
+	return out
+
+
+## A fixed weapon's muzzle flares at its business end (fx_of), as a mounted gun's hang on its pin:
+## [node, component, look, delay] each, in the looks its tags give it, sized by its sidecar's `fx`.
+## Equipment takes none.
+static func wear_fx_flares(nodes: Dictionary, sizes: Dictionary, db: ContentDB) -> Array:
+	var out: Array = []
+	for cid in nodes.keys():
+		var c: Dictionary = db.components.get(str(cid), {})
+		var face = c.get("face", {})
+		if not (face is Dictionary) or str(face.get("kind", "")) != "attack":
+			continue
+		var tags = c.get("tags", [])
+		var looks := MuzzleFlare.looks_for(tags if tags is Array else [], str(c.get("shape", "")))
+		for k in range(looks.size()):
+			var node := flare_node([Vector3.ZERO, float(sizes.get(cid, 16.0))], str(looks[k]), pow(MuzzleFlare.LAYER_SCALE, k))
+			(nodes[cid] as Node3D).add_child(node)
+			out.append([node, str(cid), str(looks[k]), MuzzleFlare.LAYER_DELAY * k])
 	return out
 
 
@@ -671,6 +764,10 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_apply_materials(_model, maker)
 	MechWeld.weld(_model, MechWeld.kept_parts(chassis_id))   # a mesh a material in each moving group (the battery plan), before the rig and the traces read it
 	rig.place = "skirmish"
+	var side := MechRig.load_sidecar(chassis_id)
+	if PLUMES:
+		for pl in side.get("plumes", []):
+			rig.halo_skip.append(str(pl.get("part", "")))   # a plume burns where its ring was
 	rig.setup(_model, chassis_id)   # after the materials: the acts' glows look for the lit surfaces
 	if widest > 0.0:
 		# The debug drive (RIFTGATE_MOVE_DEBUG) runs at the machine's own pace on the map.
@@ -678,7 +775,10 @@ func _setup(chassis_id: String, maker: String) -> void:
 		rig.top_speed = MechRig.map_speed(widest, int(c.get("movespeed", Unit.MECH_MOVE)), Map3D.fit_for(str(c.get("size", ""))))
 	joints = rig.joints
 	hardpoints = rig.hardpoints
+	fx_nodes = fx_of(_model, side)
 	_apply_plan()   # before the traces attach and the camera frames, so a mounted shape gets both
+	if PLUMES and not token:
+		_plumes = setup_plumes(_model, side, rig, 0.48 if _inner != self else 0.9)
 	if not token:
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
 		# screen's scan bar lights it through set_sweep_screen.
@@ -758,6 +858,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		mat.shader = load("res://game/ui/outline.gdshader")
 		mat.set_shader_parameter("width", float(CLEAN_SCALE) * density)
 		rect.material = mat
+		_outline_mat = mat
 		add_child(rect)
 	texture = get_texture()
 
@@ -788,6 +889,90 @@ func _process(delta: float) -> void:
 	# (the idle-acts row, 2 October); the rig plays them and the strikes from the model's
 	# sidecar. It never sways.
 	rig.tick(delta)
+	for pl in _plumes:
+		(pl[0] as ShaderMaterial).set_shader_parameter("strength", plume_k((pl[1] as StandardMaterial3D).emission_energy_multiplier, float(pl[2])))
+	if _hit_t >= 0.0:
+		_hit_t += delta
+		_hit_mat.set_shader_parameter("strength", HIT_PEAK * _hit_k * hit_k(_hit_t))
+		if _hit_t >= HIT_UP + HIT_HOLD + HIT_DOWN:
+			_hit_t = -1.0
+			_overlay(_model, null)
+	if _lose_t >= 0.0:
+		_lose_t += delta
+		_outline_to(lerpf(1.0, OUTLINE_LOST, clampf(_lose_t / MechRig.GUTTER, 0.0, 1.0)))
+		if _lose_t >= MechRig.GUTTER:
+			_lose_t = -1.0
+
+
+## A blow lands on this machine (the to-do's hit reaction, on Ryan's go of 3 November):
+## `kind` "hull" (the hull took it) or "block" (its armour turned it on the bare hull, at half): the
+## whole machine is shoved back from it on its body's servo (MechRig.jolt) and its hull flashes for
+## a beat in heat's red-orange, strongest on the side the blow came from; "shield" (its shield took
+## it whole) moves nothing here, the shield's ripple being the unit view's. `side`, -1 to 1, where
+## across the screen the blow came from, left to right.
+func hit(kind: String, side: float = 0.0) -> void:
+	if _model == null or kind == "shield" or rig.dead:
+		return
+	_hit_k = 0.5 if kind == "block" else 1.0
+	side = clampf(side, -1.0, 1.0)
+	if rig.body != null:
+		rig.jolt((rig.body.transform.basis * Vector3(-side * 0.5, 0.0, 1.0)).normalized(), _hit_k)
+	if _hit_mat == null:
+		_hit_mat = ShaderMaterial.new()
+		_hit_mat.shader = HIT_SHADER
+		var c := Palette.HEAT
+		_hit_mat.set_shader_parameter("colour", Vector3(c.r, c.g, c.b))
+	_hit_mat.set_shader_parameter("toward", Vector3(side * 0.8, 0.45, 0.6))
+	_hit_mat.set_shader_parameter("strength", 0.0)
+	if _hit_t < 0.0:
+		_overlay(_model, _hit_mat)
+	_hit_t = 0.0
+	set_process(true)
+
+
+## The flash's strength `t` seconds into a blow, 0 to 1: up fast, held, eased out.
+static func hit_k(t: float) -> float:
+	if t < 0.0 or t >= HIT_UP + HIT_HOLD + HIT_DOWN:
+		return 0.0
+	if t < HIT_UP:
+		return t / HIT_UP
+	if t < HIT_UP + HIT_HOLD:
+		return 1.0
+	var g := (t - HIT_UP - HIT_HOLD) / HIT_DOWN
+	return (1.0 - g) * (1.0 - g)
+
+
+## The machine is lost (the kill's beat, Ryan's go of 3 November): its lit parts gutter out
+## (MechRig.kill) and its outline dims to OUTLINE_LOST over the same beat. revive() puts both back,
+## for the hit debug switch.
+func lose() -> void:
+	if _model == null or rig.dead:
+		return
+	rig.kill()
+	_lose_t = 0.0
+	set_process(true)
+
+
+func revive() -> void:
+	rig.revive()
+	_lose_t = -1.0
+	_outline_to(1.0)
+
+
+func _outline_to(k: float) -> void:
+	if _outline_mat == null:
+		return
+	var c := Color(0.102, 0.114, 0.137) * k   # the outline's line (outline.gdshader), premultiplied as its pass stores it
+	_outline_mat.set_shader_parameter("line", Color(c.r, c.g, c.b, k))
+
+
+## Lay `mat` over every surface of the machine (null takes it off): its hull, its fitted parts, never
+## a halo, a flare or a trace.
+static func _overlay(node: Node, mat: Material) -> void:
+	if node is MeshInstance3D and not node.has_meta("halo") and not node.has_meta("is_trace"):
+		(node as MeshInstance3D).material_overlay = mat
+	for c in node.get_children():
+		_overlay(c, mat)
 
 
 ## The node-space axis a joint turns about when its sidecar names none: a turret
@@ -813,7 +998,17 @@ func strike(ranged: bool, cid: String = "") -> void:
 		return
 	var lead := 0.0
 	var mounts := carrying(cid)
-	if mounts.is_empty():
+	if mounts.is_empty() and fx_nodes.has(cid):
+		# A fixed weapon with its business end marked (fx): the joint carrying it kicks, or the whole
+		# machine back along its line where no joint does, and it flares there (below).
+		var fx: Node3D = fx_nodes[cid]
+		var owner := rig.joint_of(fx)
+		var recoil := Vector3.ZERO
+		if owner.is_empty() and rig.body != null:
+			var forward := (rig.body.global_transform.basis.inverse() * fx.global_transform.basis * Vector3(0.0, 0.0, -1.0)).normalized()
+			recoil = rig.body.transform.basis * (-forward * MechRig.RECOIL_BODY)
+		rig.strike(ranged, [owner] if not owner.is_empty() else [], recoil, lead)
+	elif mounts.is_empty():
 		if not rig.fire_act(cid, lead):   # a fixed weapon fires with its own act where the model names one
 			rig.strike(ranged, [], Vector3.ZERO, lead)
 	else:
@@ -837,6 +1032,34 @@ func strike(ranged: bool, cid: String = "") -> void:
 		if not cid.is_empty() and str((part as Node).get_meta("burn", "")) == cid:
 			rig.flash_under(part)
 	set_process(true)
+
+
+## Where component `cid`'s shot leaves, in this view's frame pixels (its design size, as a unit
+## view draws it): the middle of its muzzle flares through the view's camera (its class's muzzles
+## on its mount, or a fixed weapon's marked business end), else high on the drawing's middle. For
+## a shot crossing the field (ShotTrail); read as it fires, so a turn to aim is already in it.
+func muzzle_px(cid: String) -> Vector2:
+	if _camera != null and is_inside_tree():
+		var sum := Vector2.ZERO
+		var n := 0
+		for fl in _flares:
+			if str(fl[1]) == cid and is_instance_valid(fl[0]):
+				sum += _camera.unproject_position((fl[0] as Node3D).global_position)
+				n += 1
+		if n > 0:
+			return sum / float(n) / density
+	return Vector2(_model_rect.get_center().x, _model_rect.position.y + _model_rect.size.y * 0.3) / density
+
+
+## A piece of equipment used (a shield, a buff, a vent): one built in moves with its slice of an act
+## where the model names one (its sidecar's `fires`; Ryan's go of 3 November: the Puffin's Ionizer
+## sweeping its dish, the Giant Petrel's booster banks burning and its uplink swinging onto an ally).
+## True when it plays.
+func use(cid: String) -> bool:
+	if not is_inside_tree() or rig.dead or not rig.fire_act(cid):
+		return false
+	set_process(true)
+	return true
 
 
 ## Turn onto a target before a spend (Ryan, 31 October: "If there's a cheap way of aiming (torso
@@ -1118,6 +1341,8 @@ func _collect_corners_local(node: Node, root: Node3D, out: Array[Vector3]) -> vo
 
 
 func _collect_corners(node: Node, out: Array[Vector3]) -> void:
+	if node.has_meta("plume"):
+		return   # a booster's flame trails off the machine; the frame is the machine's
 	if node is MeshInstance3D and (node as MeshInstance3D).visible:
 		var mi: MeshInstance3D = node
 		for c in MechWeld.corners(mi):

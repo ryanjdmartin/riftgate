@@ -482,5 +482,13 @@
   "hp_2": "dish",
   "hp_3": "twin_barrel",
   "hp_4": "rack"
- }
+ },
+ "plumes": [
+  {
+   "node": "plume_1",
+   "part": "nozzle_glow",
+   "reach": 30.0,
+   "breadth": 12.0
+  }
+ ]
 }

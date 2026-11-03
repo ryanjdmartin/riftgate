@@ -135,6 +135,9 @@ def badger(b):
                         _rings(b, [[(x, wy + 30.0, z) for x, z in octo(5.8)], [(x, wy + 30.0, z) for x, z in octo(4.4)]], "steel.panel", "muzzle_rim", cap=False)
                         b.loft([(wy + 25.0, octo(4.1)), (wy + 30.0, octo(4.4))], "steel.dark", "bore_lining", cap=False)
                         b.loft([(wy + 24.8, octo(4.1)), (wy + 25.0, octo(4.1))], "steel.dark", "bore_floor")
+                        # Its business end, riding the wrist: the blast flares at the sawn mouth and
+                        # the wrist kicks as it fires (Ryan's go of 3 November).
+                        b.fx("bullion_fragmenter", (wx, wy + 31.5, wz), size=26.0)
     # The deck gun on a ring right of centre (hp_1): the stock's Rivet Gun as its class, its
     # barrel forward over the brow; no joint, as the missile box it replaced had none (Ryan,
     # 1 October), so it never spins.
@@ -1528,6 +1531,9 @@ def prairie_dog(b):
         shape_barrel(b, 0.7)
         for ob in b.objects[start:]:
             ob.matrix_world = Matrix.Translation(Vector((-8.8, -9.0, 33.0 + L)))
+        # The scattergun's business end on the turret, as a barrel's muzzle sits (MUZZLES): it
+        # flares there and the turret kicks as it fires (Ryan's go of 3 November).
+        b.fx("flakshot_repeater", (-8.8, -9.0 + 33.0 * 0.7, 33.0 + L), size=24.0 * 0.7)
         b.stock("hp_1", (8.8, -9.0, 33.0 + L), "twin_barrel", scale=0.7, carries="twin_autoguns")
     # The mast, out of the tail's centre, lower: a post, a sensor head, a red light.
     b.prism("z", 0.0, -27.0, 28.5 + L, 1.2, 11.0, "steel.dark", 4, "mast")   # rooted in the roof; a little shorter (Ryan, 1 October)
@@ -3277,6 +3283,10 @@ def stingray(b):
     # October: "Stingray fans hot", and "always on with heat glow"); the exhaust's halo at its plain
     # size (twice it made "a big ring around it").
     b.halo = ["nozzle_glow", ("fan_duct_floor", 0.6), ("fan_lining", 0.6)]   # the fans' halos close, inside the rim more than over it (over the white they read pink)
+    # The exhaust's plume (Ryan, 31 October: "can it be directional? If not, then we can tone it back
+    # down"; his go of 3 November): a flame trailing out of the mouth along the thrust, in place of the
+    # ring its halo made, lit with the exhaust; a trial, RIFTGATE_PLUME=off to compare.
+    b.plume("nozzle_glow", (0.0, -49.4, 15.0), (0.0, -1.0, 0.0), reach=30.0, breadth=12.0)
     b.standing = {"fan_duct_floor": 8.0, "fan_lining": 8.0}   # the fans always on with their heat (Ryan, 31 October)
     b.gait(glow={"parts": ["nozzle_glow"], "k": 5.0})
     # The lift fans turn all the time, counter-rotating, and faster under way (Ryan, 6 October,
@@ -3629,7 +3639,11 @@ def giant_petrel(b):
     # craft runs; it drifts through its corners and never banks (a hovercraft keeps flat).
     b.halo = ["booster_ring", "exhaust"]   # its boosters, hot
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, 2.0, 0.0), glow={"parts": boosters, "k": 4.0}, rock=2.0)
-    b.fires = {"spindrift_salvo": ("salvo", 1.8, 3.6)}   # its fixed weapon fires with a slice of its act: the three launches (Ryan, 31 October: "go for ones that are cheapest to do first")
+    # Its fixed weapon fires with a slice of its act, the three launches (Ryan, 31 October: "go for
+    # ones that are cheapest to do first"), and its fixed equipment with theirs as it is used (Ryan's
+    # go of 3 November): the booster banks pitching and burning for the Immelmann, the dish swinging
+    # onto an ally for the uplink.
+    b.fires = {"spindrift_salvo": ("salvo", 1.8, 3.6), "immelmann_booster": ("immelmann", 1.0, 3.8), "reheat_uplink": ("uplink", 1.2, 3.6)}
     b.move(slide=0.3, bank=0.0, accel=1.6, heft=0.25, oversteer=0.5)
 
 giant_petrel.maker = "kestrel"
@@ -3979,6 +3993,9 @@ def puffin(b):
     b.standing = {"repulsor_l": 4.0, "repulsor_r": 4.0}
     b.gait(hold={"plate_l": 0.0, "plate_r": 0.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": boosters + reps, "k": 5.0}, rock=3.0)
     b.move(slide=0.3, bank=0.0, accel=0.8, heft=0.13, oversteer=1.5)
+    # Its fixed equipment moves as it is used (Ryan's go of 3 November): the Ionizer's dish sweeping
+    # round and back as its core blazes, a slice of its backwash.
+    b.fires = {"backwash_ionizer": ("backwash", 1.0, 3.0)}
 
 puffin.maker = "kestrel"
 

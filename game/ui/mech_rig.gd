@@ -59,6 +59,11 @@ const HALO_FULL := 8.0        # a halo is full once its part's light stands this
 const HALO_SPREAD := 0.025    # how far a halo stands out, a share of its machine's longest side (_setup_halos)
 const HALO_REACH := 0.45      # the share of its part's colour a halo adds at its fullest (halo.gdshader)
 const HALO_AHEAD := 3.0       # how far toward the eye a halo is drawn, in its part's units: out of a slot over its walls; a part standing proud names its own (_setup_halos)
+const JOLT_SHARE := 0.045     # a blow on the hull shoves the machine back this share of its longest side (jolt),
+const JOLT_PITCH := 6.0       # rocking its nose up this many degrees,
+const JOLT_UP := 0.05         # in this many seconds,
+const JOLT_DOWN := 0.34       # and settling back over this long
+const GUTTER := 0.9           # a machine lost: its lit parts gutter out over this many seconds (kill)
 const FLASH_PEAK := 12.0      # a weapon's fire flaring as it fires (flash): this many rests over its own at the top,
 const FLASH_UP := 0.05        # reached in this many seconds,
 const FLASH_HOLD := 0.15      # held this long,
@@ -140,6 +145,11 @@ var _halos: Dictionary = {}        # a lit material -> the halos' ShaderMaterial
 var _standing: Dictionary = {}     # a lit material -> the multiple of its rest light it never falls under (_setup_standing)
 var _halo_grow := 0.0              # how far a halo stands out on this model (_setup_halos), for hot parts hung later (wear_hot)
 var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (flash)
+var dead := false                  # the machine is lost: no acts, its lit parts dark (kill)
+var halo_skip: Array = []          # lit parts that wear no halo, set before setup: a booster burning as a plume (MechView3D)
+var _gutter := -1.0                # seconds into its lit parts guttering out (kill); negative when not
+var _gutter_mats: Array = []       # [material, its light at rest] for every lit part, as the kill found them
+var _size := -1.0                  # the model's longest side, measured once (_model_size), for the jolt
 var _flares: Array = []            # [{node, mat, look, t}] a muzzle flare on its look's beat (fire_flare)
 var _aim: Dictionary = {}          # {joint (or BODY), deg, hold, t}: the turn onto a target (aim)
 var fires: Dictionary = {}         # a fixed component -> {act, from, to}: the slice of an act that is its firing (the sidecar's `fires`)
@@ -669,7 +679,7 @@ func in_act() -> bool:
 
 
 func alive() -> bool:
-	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _flares.is_empty() or not _aim.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty())
+	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _flares.is_empty() or not _aim.is_empty() or not _current.is_empty() or not _servo.is_empty() or _gutter >= 0.0 or (debug_move and not gait.is_empty())
 
 
 ## The wait before this machine's first act. The machines a screen sets up together open
@@ -730,7 +740,7 @@ func _step(dt: float) -> bool:
 		moved = true
 		if _t >= (_until if _until >= 0.0 else float(_current.get("duration", 0.0))):
 			_end_act()
-	elif not act_set().is_empty() and not moving:   # a pilot on the move has no hands free for an act
+	elif not dead and not act_set().is_empty() and not moving:   # a pilot on the move has no hands free for an act, a lost one none at all
 		var spent := minf(dt, _wait_budget)
 		_wait_budget -= spent
 		_wait -= spent
@@ -776,7 +786,76 @@ func _step(dt: float) -> bool:
 				live.append(f)
 		_flashes = live
 		moved = true
+	if _gutter >= 0.0:
+		_gutter += dt
+		var k := gutter_k(_gutter)
+		for pair in _gutter_mats:
+			var m: StandardMaterial3D = pair[0]
+			var e := float(pair[1]) * k
+			m.emission_energy_multiplier = e
+			for h in _halos.get(m, []):
+				(h as ShaderMaterial).set_shader_parameter("light", e)
+				(h as ShaderMaterial).set_shader_parameter("presence", 0.0)
+		if _gutter >= GUTTER:
+			_gutter = -1.0
+		moved = true
 	return moved
+
+
+## A blow on the hull (the to-do's hit reaction, on Ryan's go of 3 November): the whole
+## machine shoved back from it, `away` in the model's own axes (backward, a little to the side the
+## blow came from), its nose rocking up, on its body's servo, settling over JOLT_DOWN. `k` scales
+## it (a blow the armour turned shoves at half).
+func jolt(away: Vector3, k: float = 1.0) -> void:
+	if body == null or model == null or away == Vector3.ZERO:
+		return
+	if _size < 0.0:
+		_size = _model_size()
+	_strikes.append({"joint": BODY, "vec": Vector3(JOLT_PITCH * k, 0.0, 0.0), "slide": away.normalized() * JOLT_SHARE * _size * k,
+		"up": JOLT_UP, "down": JOLT_DOWN, "t": 0.0})
+	_pose()
+
+
+## The machine is lost (the kill's beat, Ryan's go of 3 November): its act stops, no other starts,
+## and every lit part gutters out over GUTTER, flickering as it dies, its halo with it; it stays
+## dark. revive() lights it again (the hit debug switch's machines come back).
+func kill() -> void:
+	if dead:
+		return
+	dead = true
+	if not _current.is_empty():
+		_end_act()
+	_flashes.clear()
+	_gutter_mats.clear()
+	if model != null:
+		var mats: Array = []
+		_lit_under(model, mats)
+		for m in mats:
+			_rest_of(m)   # its rest kept before it dims, for revive()
+			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
+	_gutter = 0.0
+
+
+func revive() -> void:
+	if not dead:
+		return
+	dead = false
+	_gutter = -1.0
+	for pair in _gutter_mats:
+		_light_to(pair[0], _rest_of(pair[0]), 1.0)
+	_gutter_mats.clear()
+	_wait = GAP_MIN
+
+
+## How much of its light a lost machine's lit part keeps `t` seconds into guttering out: a stutter
+## of dips and catches, each catch dimmer, to nothing at GUTTER.
+static func gutter_k(t: float) -> float:
+	if t >= GUTTER:
+		return 0.0
+	var f := t / GUTTER
+	var fade := (1.0 - f) * (1.0 - f)
+	var stutter := 0.35 if fmod(t, 0.13) < 0.05 else 1.0
+	return fade * stutter
 
 
 ## The next act: random among the machine's own, never the one just played (Ryan, 2
@@ -994,12 +1073,14 @@ func _pose() -> void:
 			j.position = _rest_pos[name] + offset_of(slide)
 	if body != null:
 		var recoil := Vector3.ZERO
+		var rock := Vector3.ZERO
 		for st in _strikes:
 			if st["joint"] == BODY:
 				recoil += (st["slide"] as Vector3) * _strike_envelope(st)
+				rock += (st["vec"] as Vector3) * _strike_envelope(st)   # a jolt's nose rocking up
 		var turn := Vector3(0.0, float(_aim["deg"]) * aim_envelope(), 0.0) if not _aim.is_empty() and _aim["joint"] == BODY else Vector3.ZERO
 		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil
-		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot + turn)
+		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot + turn + rock)
 
 
 # ---------------------------------------------------------------- movement
@@ -1305,6 +1386,8 @@ func _setup_halos(side: Dictionary) -> void:
 	var grow := _halo_grow
 	var done := {}
 	for entry in named:
+		if halo_skip.has(str(entry[0]) if entry is Array else str(entry)):
+			continue   # a part that burns as a plume instead (MechView3D._setup_plumes)
 		# A part, or [part, scale] for one larger, or [part, scale, ahead] for one drawn its own
 		# distance toward the eye: nought for a part standing proud of a thin plate, whose halo the
 		# usual three carried through the plate when it faced away (the Puffin's repulsors under

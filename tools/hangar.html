@@ -1386,7 +1386,16 @@ function paintMotion(force) {
     }
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
       el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
-      el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"))));
+      el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"),
+      el("button", {class: "btn", id: "mo-hit", title: "A blow lands on the machine: a hull hit from the left, then its armour turning one from the right", onclick: () => st.hit()}, "Hit"),
+      el("button", {class: "btn", id: "mo-lose", "aria-pressed": String(!!rig.dead), title: "The machine is lost: its lit parts gutter out; press again to light it", onclick: () => st.lose()}, rig.dead ? "Revive" : "Lose"))));
+    // The plume trial (3 November): a booster's flame along its thrust in place of its halo's ring.
+    if (((st.side || {}).plumes || []).length) {
+      const on = window.HangarMotion.plumes();
+      panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Exhaust"), el("div", {class: "seg"},
+        el("button", {class: "btn", id: "mo-plume", "aria-pressed": String(on), title: "The trial: the exhaust as a plume along its thrust; off shows its halo's ring as before",
+          onclick: () => { window.HangarMotion.plumes(!on); const id = st.id; st.id = ""; st.show(id).then(() => render()); }}, on ? "Plume" : "Ring"))));
+    }
   }
   // A form is a pose held while the machine carries the status of its name (the Armadillo's
   // seal); held here as the status would hold it, in any mode.

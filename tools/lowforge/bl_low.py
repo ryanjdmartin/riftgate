@@ -442,6 +442,8 @@ class Build:
         self.fires = {}        # a fixed component -> (act, from, to): the slice of an act that is its firing, played on the spend (MechRig.fire_act)
         self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
+        self.fx_sizes = {}     # a fixed weapon -> its muzzle flare's size: an fx_<component> Empty at its business end (fx())
+        self.plumes = []       # [{node, part, reach, breadth}]: a booster's plume along its thrust (plume())
         self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
         self.fits = {}         # pin -> {class: {"shape": its variant, "scale": its scale}}: what a class wears there (pin()'s `fits`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
@@ -1075,6 +1077,15 @@ class Build:
             out["muzzles"] = muzzles
         if self.stock_shapes:
             out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
+        # Each booster's plume (plume()): the Empty at its mouth, the lit part it burns with, its size.
+        if self.plumes:
+            stray = [pl["part"] for pl in self.plumes if pl["part"] not in glow_parts]
+            if stray:
+                raise ValueError("%s: a plume burns with %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
+            out["plumes"] = list(self.plumes)
+        # Each fixed weapon's business end (fx()): its muzzle flare's size, the Empty carrying the place.
+        if self.fx_sizes:
+            out["fx"] = {cid: round(size, 2) for cid, size in sorted(self.fx_sizes.items())}
         # How a class sits at a mount that declares it (pin()'s `fits`): its variant and scale.
         if self.fits:
             out["fits"] = {n: self.fits[n] for n in sorted(self.fits, key=lambda n: int(n[3:]))}
@@ -1131,6 +1142,36 @@ class Build:
                 places.append([[round((x0 + x1) / 2.0, 3), round((z0 + z1) / 2.0, 3), round(-(reach + 1.5 / scale), 3)], round(size, 2)])
             out[name] = places
         return out
+
+    def fx(self, cid, at, forward=(0.0, 1.0, 0.0), size=16.0):
+        """A fixed weapon's business end (Ryan's go of 3 November: the fixed weapons with no act to
+        cut "each want an act that shows it, or a mount to kick and flare from"): an Empty named
+        `fx_<component>` at `at`, its +y along `forward`, made inside the joint block that carries
+        the weapon so it rides that joint. The engine flares the weapon there in its tags' look and
+        kicks that joint as it fires, as it does a mounted gun's (MechView3D.strike); `size` is the
+        flare's width in world units, written to the sidecar's `fx`."""
+        e = bpy.data.objects.new("fx_" + cid, None)
+        e.empty_display_size = 1.0
+        e.matrix_world = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4()
+        bpy.context.scene.collection.objects.link(e)
+        self.pins.append(e)
+        self.fx_sizes[cid] = float(size)
+        return e
+
+    def plume(self, part, at, thrust, reach, breadth):
+        """A booster's plume along its thrust (Ryan, 31 October, of the Stingray's exhaust: "can it be
+        directional?"): an Empty named plume_<n> at the mouth `at`, its +y along `thrust` (the way
+        the blast goes, out of the mouth), made inside the joint block that carries the booster.
+        The engine draws a flame there `reach` long and `breadth` wide, lit with the lit `part`
+        (its glow track's light), in place of that part's halo (MechView3D._setup_plumes)."""
+        name = "plume_%d" % (len(self.plumes) + 1)
+        e = bpy.data.objects.new(name, None)
+        e.empty_display_size = 1.0
+        e.matrix_world = Matrix.Translation(Vector(at)) @ pin_frame(thrust).to_4x4()
+        bpy.context.scene.collection.objects.link(e)
+        self.pins.append(e)
+        self.plumes.append({"node": name, "part": part, "reach": round(float(reach), 2), "breadth": round(float(breadth), 2)})
+        return e
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
         """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock

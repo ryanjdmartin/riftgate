@@ -391,3 +391,83 @@ func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -
 		view.free()
 	assert_true(named >= 2, "the fixed weapons riding a head or a turret name it (%d)" % named)
 
+
+
+func test_a_blow_flashes_the_hull_on_a_beat_and_the_shield_takes_its_own() -> void:
+	# The hull's flash: up fast, held, eased out, nothing before or after (MechView3D.hit_k); what took
+	# a blow picks the reaction (SkirmishScreen.blow_took).
+	assert_eq(MechView3D.hit_k(-0.01), 0.0, "nothing before the blow lands")
+	assert_eq(MechView3D.hit_k(MechView3D.HIT_UP + MechView3D.HIT_HOLD * 0.5), 1.0, "full at its top")
+	assert_eq(MechView3D.hit_k(MechView3D.HIT_UP + MechView3D.HIT_HOLD + MechView3D.HIT_DOWN), 0.0, "gone once the beat is done")
+	assert_true(MechView3D.hit_k(MechView3D.HIT_UP + MechView3D.HIT_HOLD + MechView3D.HIT_DOWN * 0.5) < 1.0, "easing out")
+	assert_eq(SkirmishScreen.blow_took(true, false, 0), "shield", "a shield that held ripples")
+	assert_eq(SkirmishScreen.blow_took(false, true, 0), "none", "a shield that broke taking it all only shatters")
+	assert_eq(SkirmishScreen.blow_took(false, true, 3), "hull", "one that broke and let some through lands on the hull")
+	assert_eq(SkirmishScreen.blow_took(false, false, 2), "hull", "a blow on the bare hull")
+	assert_eq(SkirmishScreen.blow_took(false, false, 0), "block", "the armour turning it")
+
+
+func test_a_struck_machine_wears_heats_flash_and_a_lost_one_dims() -> void:
+	var db := ContentDB.load_default()
+	var view := MechView3D.make("armadillo", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
+	var meshes: Array = view._model.find_children("*", "MeshInstance3D", true, false)
+	view.hit("shield", 0.0)
+	assert_eq(view._hit_t, -1.0, "a blow its shield took moves nothing on the model")
+	view.hit("hull", -1.0)
+	var worn := 0
+	for mi in meshes:
+		if (mi as MeshInstance3D).material_overlay != null:
+			worn += 1
+	assert_true(worn > 0, "the hull wears the flash")
+	view._process(MechView3D.HIT_UP + MechView3D.HIT_HOLD + MechView3D.HIT_DOWN + 0.01)
+	for mi in meshes:
+		assert_true((mi as MeshInstance3D).material_overlay == null, "and sheds it once the beat is done")
+	view.lose()
+	assert_true(view.rig.dead, "a machine lost guts out")
+	view._process(MechRig.GUTTER + 0.01)
+	var line: Color = view._outline_mat.get_shader_parameter("line") if view._outline_mat != null else Color(0, 0, 0, MechView3D.OUTLINE_LOST)
+	assert_true(absf(line.a - MechView3D.OUTLINE_LOST) < 0.01, "its outline dimmed")
+	view.revive()
+	assert_false(view.rig.dead, "and comes back for the debug switch")
+	view.free()
+	assert_true(db != null, "content loads")
+
+
+func test_a_fixed_weapon_with_its_business_end_marked_flares_there_on_its_joint() -> void:
+	# lowforge's fx(): a model whose sidecar names a fixed weapon's business end carries the
+	# fx_<component> node, riding a joint (or the body), where the weapon's flares hang in its tags'
+	# look; equipment takes none. And a fixed piece's firing slice names an act the model has.
+	var db := ContentDB.load_default()
+	var checked := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var model := f.trim_suffix(".rig.json")
+		var side := MechRig.load_sidecar(model)
+		var fx = side.get("fx", {})
+		if not (fx is Dictionary) or (fx as Dictionary).is_empty():
+			continue
+		var r := _rig_for(model)
+		var rig: MechRig = r[0]
+		var nodes := MechView3D.fx_of(r[1], side)
+		for cid in (fx as Dictionary).keys():
+			assert_true(nodes.has(cid), "%s carries fx_%s" % [model, cid])
+			assert_true(db.components.has(cid), "%s's fx names %s, a component content knows" % [model, cid])
+			if nodes.has(cid):
+				var owner := rig.joint_of(nodes[cid])
+				assert_true(owner.is_empty() or rig.joints.has(owner), "%s's %s rides a joint of its own, or the body" % [model, cid])
+		var flares := MechView3D.wear_fx_flares(nodes, fx, db)
+		for fl in flares:
+			var c: Dictionary = db.components[str(fl[1])]
+			assert_eq(str(c.get("face", {}).get("kind", "")), "attack", "%s flares only a weapon at its business end" % model)
+			assert_false((fl[0] as Node3D).visible, "waiting hidden until it fires")
+		checked += 1
+		(r[1] as Node).free()
+	assert_true(checked > 0, "some model marks a fixed weapon's business end")
+
+
+func _rig_for(model_id: String) -> Array:
+	var model: Node3D = (load("res://art/models/%s.glb" % model_id) as PackedScene).instantiate()
+	var rig := MechRig.new()
+	rig.setup(model, model_id, model, 1)
+	return [rig, model]

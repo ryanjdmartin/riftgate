@@ -88,10 +88,16 @@ the blow's sound, the tracked machines and the Dingo pivoting; then his swap not
 never look worse than the stock): a hardpoint declares, per class, the variant it wears and its
 scale (lowforge's `fits`), the round launcher the first variant, the Armadillo's ports, the
 Goshawk's pods and the Dingo's nose made to take every class, and `tools/fit_sheet.gd`, every
-machine wearing every class in one sheet; green at 841 tests and 207,420 checks; not yet on main;
-its bible is v0.428 (the page's 440, merged onto the live v0.427 another session published);
-the hangar at 191. Next on it: Ryan's read of the glows, the weapons
-firing and the swaps, then the shot crossing the field and a hit moving the machine (the to-do).
+machine wearing every class in one sheet; then the rest of the weapon-fire to-dos (3 November,
+his go: "Build the rest of the to-dos"): a blow on a machine moving it (the jolt, heat's flash
+over the hull, the shield's ripple over its hex, the kill's gutter and dimmed outline;
+`RIFTGATE_HIT_DEBUG=1`), the fixed weapons with no act kicking and flaring at business ends their
+models mark and the fixed equipment playing its slice as it is used, the Stingray's plume on
+trial in place of its ring (`RIFTGATE_PLUME=off`), and the shot crossing the field as a simple
+version, tabled ("it might be too busy") and off unless a debug build's SHOT TRAILS turns it on;
+green at 847 tests and 207,599 checks; not yet on main; its bible is v0.431 (the Pages line), the
+hangar the Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
+the hit and fire round (the to-do's Ryan list).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times

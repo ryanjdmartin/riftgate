@@ -665,6 +665,16 @@
    "act": "salvo",
    "from": 1.8,
    "to": 3.6
+  },
+  "immelmann_booster": {
+   "act": "immelmann",
+   "from": 1.0,
+   "to": 3.8
+  },
+  "reheat_uplink": {
+   "act": "uplink",
+   "from": 1.2,
+   "to": 3.6
   }
  },
  "stock_shapes": {

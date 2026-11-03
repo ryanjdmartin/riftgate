@@ -831,5 +831,8 @@
  "stock_shapes": {
   "hp_1": "twin_barrel",
   "hp_2": "dish"
+ },
+ "fx": {
+  "flakshot_repeater": 16.8
  }
 }

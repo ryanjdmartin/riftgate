@@ -923,6 +923,13 @@
   "repulsor_l": 4.0,
   "repulsor_r": 4.0
  },
+ "fires": {
+  "backwash_ionizer": {
+   "act": "backwash",
+   "from": 1.0,
+   "to": 3.0
+  }
+ },
  "muzzles": {
   "hp_1": [
    [

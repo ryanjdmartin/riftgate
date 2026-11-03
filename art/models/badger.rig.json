@@ -1561,5 +1561,8 @@
  "pivots": true,
  "stock_shapes": {
   "hp_1": "barrel"
+ },
+ "fx": {
+  "bullion_fragmenter": 26.0
  }
 }
