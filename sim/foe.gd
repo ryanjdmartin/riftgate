@@ -28,6 +28,7 @@ var aim: String = AIM_ANYTHING   # the sense its target pick follows (content; a
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
+var resist: int = -1             # its stun resist (Ryan, 2 November): the Numbed it recovers from a stun with; content's, or by its size (stun_resist)
 var actions: Array = []          # implemented attack actions; at least the basic one
 
 # Live state.
@@ -36,6 +37,7 @@ var column: int = -1
 var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
+var recovering: bool = false     # lost its action to a stun this turn: its stun resist lands as Numbed at the round's end
 var die = null                   # foes have no die; the pipeline asks, so the field exists
 var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would get back up does not (Execute retired 10 October)
 var last_special: String = ""    # the special it announced last round, so none fires twice running
@@ -84,10 +86,12 @@ func is_suppressed() -> bool:
 	return Effects.tick_preview(self)["skip"]
 
 
-## The chance a suppress fails against this foe right now: its Numbed, and nothing else (no foe
-## resists by nature since 10 October, Ryan: the chip shows who resists, how much and how long).
-func resist_total() -> int:
-	return clampi(int(Effects.tick_preview(self)["resist"]), 0, 100)
+## Its stun resist (Ryan, 2 November): the stacks of Numbed it gains as it recovers from a stun,
+## each a round until one stun lands again; content's `resist`, else by its size.
+const RESIST_DEFAULT := 1
+const RESIST_MASSIVE := 3
+func stun_resist() -> int:
+	return resist if resist >= 0 else (RESIST_MASSIVE if is_massive() else RESIST_DEFAULT)
 
 
 static func make(name: String, hp_value: int, attack_value: int, back: bool = false) -> Foe:

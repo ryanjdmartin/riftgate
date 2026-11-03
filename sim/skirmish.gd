@@ -38,8 +38,6 @@ static var overheat_scale: int = 1   # hull an overheat burns a point of heat pa
 # maximum (--burnout), and every overheat Corrupts that component, so many stacks (--overheat-corrupt N).
 static var overheat_burnout: bool = false
 static var overheat_corrupt: int = 0
-const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
-const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
 
 class MechState:
@@ -163,7 +161,7 @@ var _acted: Array = []
 ## random draw is never made there: the copy holds it back and notes it, and the preview
 ## promises nothing a roll decides.
 var previewing := false
-var preview_notes: Array = []   # what the copy held back: {kind: pick, resist, blast, spray, random_target; foe or mech}
+var preview_notes: Array = []   # what the copy held back: {kind: pick, blast, spray, random_target; foe or mech}
 ## Rerolls a foe's roar has cost the team for the coming round.
 var reroll_debt: int = 0
 ## The team's rerolls banked as the last player's turn ended (Maverick's Playbook, the Giant
@@ -1384,12 +1382,19 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 	return true
 
 
-## The player's Purge on one foe (28 October): every buff it carries but Numbed and Guarded,
-## told when anything went.
-func _purge_foe(by: String, foe: Foe) -> void:
-	var gone := Effects.purge_foe(foe)
-	if not gone.is_empty():
-		log.append("%s purges %s: %s" % [by, foe.display_name, ", ".join(gone)])
+## The player's Purge N on one foe (28 October; by its number since 2 November): every buff it
+## carries but Guarded loses N stacks, told when anything moved; a Ward turns it away and stands
+## (Ryan, 2 November: nothing but damage lands on a Warded foe).
+func _purge_foe(by: String, foe: Foe, n: int, turned = null) -> void:
+	if Effects.has(foe, "ward"):
+		if turned is Dictionary:
+			_note_turned(turned, foe, "Purge")   # no status of its own: the tell names it as it is
+		else:
+			log.append("%s's Ward turns the Purge away" % foe.display_name)
+		return
+	var touched := Effects.purge_foe(foe, n)
+	if not touched.is_empty():
+		log.append("%s purges %s ×%d: %s" % [by, foe.display_name, n, ", ".join(touched)])
 
 
 ## A foe's Barrier (28 October): the next weapon blow it takes deals nothing, the blow's riders
@@ -2026,6 +2031,8 @@ func _enemy_turn() -> void:
 		# 26 October); a countdown still gathering carries it to the blow it lands, and a foe
 		# that stepped up this round has had its round, so it keeps it for its next.
 		var moves := not f.fresh and not f.gathering()
+		if tick["skip"]:
+			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed at the round's end
 		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			_foe_turn(f)
 			# A move that landed names its follow-up for next round (30 October); one lost to a
@@ -2038,6 +2045,20 @@ func _enemy_turn() -> void:
 		_web_burst(f)
 	_acted.clear()
 	_clear_dead()
+	# Numbed's clock (Ryan, 2 November): a stack goes at the round's end, then a foe that lost its
+	# action to a stun this turn gains its stun resist in stacks, so its chip reads the rounds
+	# until one stun lands.
+	for f in field_foes():
+		if not f.alive():
+			continue
+		if Effects.stacks_of(f, "numbed") > 0:
+			Effects.spend_stacks(f, "numbed", 1)
+		if f.recovering:
+			f.recovering = false
+			var r := f.stun_resist()
+			if r > 0:
+				Effects.stack(f, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", r, Effects.DECAY_NONE)
+				log.append("%s recovers: Numbed ×%d" % [f.display_name, Effects.stacks_of(f, "numbed")])
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
 	for f in field_foes():
@@ -2283,18 +2304,22 @@ func _silence(t: MechState, f: Foe) -> void:
 	log.append("%s silences %s: its keywords are muted through its next round" % [f.display_name, t.unit.display_name])
 
 
-## A purge (by source, 28 October): what a die face bought goes for good, what the machine is
-## sleeps until the player's turn, the kept and the stores stay.
-func _purge(t: MechState, f: Foe) -> void:
-	var r := Effects.purge(t.unit)
+## A foe's Purge N (by source, 28 October; by its number since 2 November): what a die face bought
+## loses N stacks for good, what the machine is sleeps N stacks until the player's turn, the kept
+## and the stores stay.
+func _purge(t: MechState, f: Foe, n: int = 1) -> void:
+	var r := Effects.purge(t.unit, n)
 	var gone: Array = r["gone"]
 	var slept: Array = r["slept"]
+	var lowered: Array = r["lowered"]
 	var said: Array[String] = []
 	if not gone.is_empty():
 		said.append(", ".join(gone) + " gone")
 	if not slept.is_empty():
 		said.append(", ".join(slept) + " asleep until its turn")
-	log.append("%s purges %s%s" % [f.display_name, t.unit.display_name, ": " + "; ".join(said) if not said.is_empty() else ", and finds nothing to take"])
+	if not lowered.is_empty():
+		said.append(", ".join(lowered) + " lowered")
+	log.append("%s purges %s ×%d%s" % [f.display_name, t.unit.display_name, n, ": " + "; ".join(said) if not said.is_empty() else ", and finds nothing to take"])
 
 
 ## The round ends with the machines' statuses ticking, after the enemy has struck. Burning and
@@ -2578,7 +2603,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
 				if s == 0 and foe.alive():
 					log.append("%s's suppress does not land on %s (%s)" % [ms.unit.display_name, foe.display_name, Effects.gate_text(f.gates.get("suppress", {}))])
-			elif f.has(Face.Keyword.SUPPRESS) and _suppress(foe):
+			elif f.has(Face.Keyword.SUPPRESS) and _suppress(foe, turned):
 				_note_status(gained, foe, "suppressed")
 			# Web (18 October): the foe is Webbed, one web however often it is webbed, and the
 			# skirmish bursts it at the end of the foe's action (_web_burst).
@@ -2607,7 +2632,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			# after the blow and with the riders, equipment's included; a foe the blow killed loses
 			# its Getting Back Up, so it stays down.
 			if f.has(Face.Keyword.DISPEL) and was_alive:
-				_purge_foe(ms.unit.display_name, foe)
+				_purge_foe(ms.unit.display_name, foe, maxi(1, f.dispel), turned)
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		# A Primed machine's Burning lands blow by blow, on each strike's own foe (the mechanics
@@ -3178,11 +3203,12 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			else:
 				_silence(t, f)
 		"dispel":
-			# A hero's or a boss's purge (17 October): no blow, every buff gone, the stores kept.
+			# A hero's or a boss's Purge N (17 October; numbered 2 November): no blow, every buff N
+			# stacks down, the stores kept.
 			if Effects.has(t.unit, "ward"):
 				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "purges")), t.unit.display_name])
 			else:
-				_purge(t, f)
+				_purge(t, f, maxi(1, value))
 		"scorch_all":
 			var names: Array[String] = []
 			for ms in specials_reach():
@@ -3523,6 +3549,7 @@ func _shot(ms: MechState, f: Face, dmg: int, real: Face, doubled: int = 1, extra
 		"burn": _stacks_from(ms, "burning", burn) * doubled if burn > 0 and not plain else 0,
 		"cryo": _stacks_from(ms, "cryoed", f.cryo) * doubled if f.has(Face.Keyword.CRYO) and not plain else 0,
 		"flak": _stacks_from(ms, "flakked", f.flak) * doubled if f.has(Face.Keyword.FLAK) and not plain else 0,
+		"dispel": f.dispel if f.has(Face.Keyword.DISPEL) and not plain else 0,
 		"row": int(area[0]) if area.size() >= 2 and not plain else 0,
 		"column": int(area[1]) if area.size() >= 2 and not plain else 0,
 		"chain": int(area[2]) if area.size() >= 3 and not plain else 0}
@@ -3717,7 +3744,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 			log.append(("%s: the shock is spent on the Barrier" % t.display_name) if barred else ("%s: the shock lands, %d doubled" % [t.display_name, blow]))
 		log.append("a mine of %s's hits %s for %d" % [str(shot.get("by", "")), t.display_name, taken])
 		if not t.alive() and kws.has(Face.Keyword.DISPEL):
-			_purge_foe("a mine of %s's" % str(shot.get("by", "")), t)   # a foe its shot killed stays down
+			_purge_foe("a mine of %s's" % str(shot.get("by", "")), t, maxi(1, int(shot.get("dispel", 1))), turned)   # a foe its shot killed stays down
 		if not t.alive():
 			if Effects.has(t, "syrinx_drone"):
 				var again := shot.duplicate(true)
@@ -3733,7 +3760,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if int(shot.get("burn", 0)) > 0:
 			Effects.stack(t, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", int(shot["burn"]))
 			_note_status(gained, t, "burning", turned)
-		if kws.has(Face.Keyword.SUPPRESS) and not shut.has(t) and _suppress(t):
+		if kws.has(Face.Keyword.SUPPRESS) and not shut.has(t) and _suppress(t, turned):
 			_note_status(gained, t, "suppressed")
 		if kws.has(Face.Keyword.WEB) and not Effects.has(t, "webbed"):
 			Effects.stack(t, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
@@ -3747,7 +3774,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 			Effects.stack(t, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", int(shot["flak"]), Effects.status_decay(Effects.STATUS["flakked"]))
 			_note_status(gained, t, "flakked", turned)
 		if kws.has(Face.Keyword.DISPEL):
-			_purge_foe("a mine of %s's" % str(shot.get("by", "")), t)   # every foe the entry reaches, a laid shot's arrival included (28 October)
+			_purge_foe("a mine of %s's" % str(shot.get("by", "")), t, maxi(1, int(shot.get("dispel", 1))), turned)   # every foe the entry reaches, a laid shot's arrival included (28 October)
 		touched.append(t)
 	for t in webbed:
 		var caught := web_catch(t)
@@ -3952,15 +3979,16 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 
 
 ## Suppress: the foe loses its next action (this round's, or the next round's when it has
-## already acted this turn), then grows Numbed (two stacks, three for a massive foe). It
-## resists at its own base resistance plus 10% a stack, on the skirmish's own die (Ryan, 26
-## September): a suppress it shrugs off does nothing at all and numbs it no further, and
-## Numbed loses a stack at each of the foe's turns, so a stun repeated on one foe stops
-## landing while stuns spread across the formation keep working. A foe already suppressed
-## gains nothing more, Numbed included: Suppressed never stacks and never carries (Ryan, 17
-## October: "Suppressed is suppressed - they lose their next action. It does not stack, it
-## does not carry"), so a Paradox tripping on a suppressed foe is wasted, its meter spent.
-func _suppress(foe: Foe) -> bool:
+## already acted this turn). A Ward turns the stun away as it turns any mark (Ryan,
+## 2 November). A Numbed foe (Ryan, 2 November, in place of the roll of 26 September): the stun
+## strips a stack and lands nothing, so a foe with Numbed N takes N+1 stuns in a round to stun
+## again; the foe gains its stun resist in stacks as it recovers, after the round's decay, and
+## a stack goes at each round's end (_enemy_turn), so the chip counts the rounds until one stun
+## lands. A foe already suppressed gains nothing more: Suppressed never stacks and never
+## carries (Ryan, 17 October: "Suppressed is suppressed - they lose their next action. It does
+## not stack, it does not carry"), so a Paradox tripping on a suppressed foe is wasted, its
+## meter spent.
+func _suppress(foe: Foe, turned = null) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken,
 	# and so does one a mine stuns as it steps in or one that stepped up mid-round (a split's
 	# half), the round's turn being over.
@@ -3968,15 +3996,18 @@ func _suppress(foe: Foe) -> bool:
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
-	var resist := foe.resist_total()
-	if resist > 0 and resist < 100 and previewing:
-		preview_notes.append({"kind": "resist", "foe": foe})   # a stun Numbed may shrug off is never promised
+	if Effects.has(foe, "ward"):
+		if turned is Dictionary:
+			_note_turned(turned, foe, "suppressed")
+		else:
+			log.append("%s's Ward turns the stun away" % foe.display_name)
 		return false
-	if resist > 0 and rng.randi_range(1, 100) <= resist:
-		log.append("%s shrugs off the suppression (%d%% resistant)" % [foe.display_name, resist])
+	var numbed := Effects.stacks_of(foe, "numbed")
+	if numbed > 0:
+		Effects.spend_stacks(foe, "numbed", 1)
+		log.append("%s: the stun strips a stack of Numbed (%d left)" % [foe.display_name, numbed - 1])
 		return false
 	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round + 1 if next else round)
-	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", NUMBED_PER_SUPPRESS_MASSIVE if foe.is_massive() else NUMBED_PER_SUPPRESS, Effects.DECAY_TICK)
 	return true
 
 

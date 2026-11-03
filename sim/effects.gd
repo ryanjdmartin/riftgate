@@ -59,7 +59,7 @@ const SUPPORTED_EFFECTS := {
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
 	"on_heat_gain": ["add_shield", "stack_status"],
 	"out_of_combat": ["add_shield"],
-	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "regrow"],
+	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat"],
@@ -106,10 +106,12 @@ const STATUS := {
 		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.", "stacking": "renew",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
-	# Numbed is a resistance, not a status or a buff (Ryan, 10 October): it lives here as a
-	# modifier for the pipeline's arithmetic, and nothing reads it but suppress (FOE_STATUSES).
-	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists a suppress, {value}% per stack, the only resistance a foe has; loses a stack each turn.",
-		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
+	# Numbed (Ryan, 2 November, in place of the ten per cent a stack of 10 October): a foe buff, the
+	# rounds until one stun lands. A stun on a Numbed foe strips a stack and lands nothing; the foe
+	# gains its stun resist in stacks as it recovers from a stun, after the round's decay, and a
+	# stack goes at the end of each round (Skirmish._enemy_turn). A Purge strips it like any buff.
+	"numbed": {"id": "numbed", "name": "Numbed", "description": "A stun on it strips a stack and lands nothing; a stack goes at the end of each round, so the count is the rounds until one stun lands.", "decay": "none",
+		"tags": ["buff"], "effects": []},
 	# The Baboon's Pocket Paradox as a meter (Ryan, 10 October): a status like any other, and
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
 	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building: at the count it is Suppressed, and the Paradox clears.",
@@ -455,6 +457,7 @@ class Modifier:
 	var stacks: int = 1
 	var decay: int = DECAY_NONE
 	var slept: bool = false        # put to sleep by a purge (28 October): it takes part in nothing, its clocks running, until the player's turn wakes it
+	var slept_stacks: int = 0      # the stacks a Purge N put to sleep (2 November): back when it wakes
 
 	func matches(key: String) -> bool:
 		return id == key or tags.has(key)
@@ -650,7 +653,7 @@ static func shocks_striker(u, blocked: bool) -> bool:
 ## `at_turn_end` asks the statuses that tick at the end of the owner's turn (turn decay, a
 ## machine's Burning and Scorched), and only those; otherwise every other.
 static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
-	var out := {"hp": 0, "heat": 0, "skip": false, "resist": 0, "share": 0}
+	var out := {"hp": 0, "heat": 0, "skip": false, "share": 0}
 	var pct := 0
 	for pair in _taking_part(u, "status", null):
 		var eff: Dictionary = pair[0]
@@ -667,8 +670,6 @@ static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
 				out["heat"] += v
 			"skip_action":
 				out["skip"] = true
-			"resist_suppress":
-				out["resist"] += v
 	if pct > 0:
 		var hp_now = u.get("hp")   # a foe's hull; a machine carries no share tick, and has no hp
 		var left := (int(hp_now) if hp_now != null else 0) - int(out["hp"])
@@ -1631,25 +1632,34 @@ static func purgeable(m) -> bool:
 	return m.scope != LOADOUT and m.tags.has("buff")
 
 
-## The buffs the player's Purge takes off a foe (28 October): every one it carries but Numbed,
-## a resistance, and Guarded, its parts' lock. The ids are the engine's (braced is Armoured,
-## risen Getting Back Up).
-const FOE_PURGED := ["braced", "kindled", "risen", "primed", "barrier", "ward", "regenerating"]
+## The buffs a Purge lowers on a foe (28 October; by its number since 2 November): every one it
+## carries but Guarded, its parts' lock, and its Ward, which turns the Purge away. The ids are
+## the engine's (braced is Armoured, risen Getting Back Up, kindled Empowered).
+const FOE_PURGED := ["braced", "kindled", "risen", "primed", "barrier", "regenerating", "numbed"]
 
 
-## The player's Purge on a foe (28 October): every buff of FOE_PURGED gone, every stack, whatever
-## granted it. Returns the names that went, once each.
-static func purge_foe(u) -> Array[String]:
-	var gone: Array[String] = []
+## A Purge N on a foe (28 October; Ryan, 2 November: "lower everything by N"): every buff of
+## FOE_PURGED loses N stacks across its grants, gone at none, an unstackable one a stack of one.
+## Returns what it touched, once each, with what it left ("Armoured 1", "Barrier gone").
+static func purge_foe(u, n: int = 1) -> Array[String]:
+	var touched: Array[String] = []
+	var left := {}
 	var keep: Array = []
 	for m in u.modifiers:
-		if FOE_PURGED.has(m.id):
-			if not gone.has(m.name):
-				gone.append(m.name)
+		if not FOE_PURGED.has(m.id):
+			keep.append(m)
 			continue
-		keep.append(m)
+		var take: int = mini(m.stacks, int(left.get(m.id, maxi(1, n))))
+		left[m.id] = int(left.get(m.id, maxi(1, n))) - take
+		m.stacks -= take
+		if m.stacks > 0:
+			keep.append(m)
 	u.modifiers = keep
-	return gone
+	for id in left.keys():
+		var name := str(STATUS.get(id, {}).get("name", id))
+		var stacks := stacks_of(u, id)
+		touched.append(name + (" gone" if stacks <= 0 else " %d" % stacks))
+	return touched
 
 
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
@@ -1702,23 +1712,41 @@ static func buff_stacks(u) -> int:
 ## after its start resolves (wake, Skirmish.start_round); a kept one is the passive's own and
 ## stays (Ryan: "overcharge never decays and cannot be purged"); the stores stay. Returns
 ## {"gone": names, "slept": names}, once each.
-static func purge(u) -> Dictionary:
+static func purge(u, n: int = 1) -> Dictionary:
 	var gone: Array[String] = []
 	var slept: Array[String] = []
+	var lowered: Array[String] = []
 	var keep: Array = []
+	var left := {}   # the stacks a Purge N still takes, by status (2 November)
 	for m in u.modifiers:
 		if not purgeable(m) or m.slept or keeps(u, m.id):
 			keep.append(m)
-		elif bought(m):
-			if not gone.has(m.name):
-				gone.append(m.name)
-		else:
-			m.slept = true
+			continue
+		var take: int = mini(m.stacks, int(left.get(m.id, maxi(1, n))))
+		left[m.id] = int(left.get(m.id, maxi(1, n))) - take
+		if take <= 0:
 			keep.append(m)
+			continue
+		if bought(m):
+			m.stacks -= take
+			if m.stacks <= 0:
+				if not gone.has(m.name):
+					gone.append(m.name)
+				continue   # gone for good
+			if not lowered.has(m.name):
+				lowered.append(m.name)
+		elif take >= m.stacks:
+			m.slept = true   # what the machine is sleeps whole, as it stands, and wakes at the player's turn
 			if not slept.has(m.name):
 				slept.append(m.name)
+		else:
+			m.stacks -= take   # a part of it sleeps: back when it wakes
+			m.slept_stacks += take
+			if not lowered.has(m.name):
+				lowered.append(m.name)
+		keep.append(m)
 	u.modifiers = keep
-	return {"gone": gone, "slept": slept}
+	return {"gone": gone, "slept": slept, "lowered": lowered}
 
 
 ## Every buff a purge put to sleep wakes (the start of the player's turn, after its start has
@@ -1726,7 +1754,9 @@ static func purge(u) -> Dictionary:
 static func wake(u) -> Array[String]:
 	var woke: Array[String] = []
 	for m in u.modifiers:
-		if m.slept:
+		if m.slept or m.slept_stacks > 0:
+			m.stacks += m.slept_stacks
+			m.slept_stacks = 0
 			m.slept = false
 			if not woke.has(m.name):
 				woke.append(m.name)
@@ -2076,7 +2106,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"tick_hp_share": body = "loses %s%% of its current HP per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"
-		"resist_suppress": body = "resists suppress %s%% per stack" % vs
 		"disable_entry": body = "die entry %s switched off" % str(int(v) + 1)
 		"corrupt_entry": body = "die entry %s bites its owner when spent" % str(int(v) + 1)
 		"corrupt_bite": body = "bites its owner %s a stack when its entry is spent" % vs

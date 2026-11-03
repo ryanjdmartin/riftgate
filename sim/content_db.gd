@@ -281,6 +281,7 @@ func make_foe(foe_id: String) -> Foe:
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
 	f.armour = maxi(0, int(d.get("armour", 0)))
+	f.resist = int(d.get("resist", -1))   # its stun resist (2 November): content's, else by its size
 	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
@@ -1058,6 +1059,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# every conductor for no blow, so a debuff carries none.
 	if kw_names.has("chain") and kind == "attack" and debuff:
 		errs.append("%s: Chain is a weapon's keyword, an arc of a blow; a debuff carries none" % where)
+	# Purge is numbered (Ryan, 2 November: "lower everything by N"): the stacks every buff of each
+	# foe reached loses, on a weapon or equipment alike.
+	if kw_names.has("dispel") and int(fd.get("dispel", 0)) <= 0:
+		errs.append("%s: an entry with Purge says its stacks: dispel, a positive number" % where)
+	if fd.has("dispel") and not kw_names.has("dispel"):
+		errs.append("%s: dispel (the stacks) rides with the Purge keyword" % where)
 	elif kw_names.has("chain") and kind == "attack" and int(fd.get("chain", 0)) <= 0:
 		errs.append("%s: Chain says the number every other Shocked foe takes: chain, a positive number" % where)
 	if fd.has("chain") and not kw_names.has("chain"):
@@ -1381,7 +1388,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			# keyword's must (Ryan, 28 October); a keyword with no number takes none.
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
-				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Burn, Cryo, Flak, Spread, Penetrate, Splash, Chain)" % where)
+				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Burn, Cryo, Flak, Spread, Penetrate, Splash, Chain, Purge)" % where)
 			if ["cleave", "penetrate", "splash"].has(kw) and not eff.has("number"):
 				errs.append("%s: a grant of %s says what each foe past the target takes: number" % [where, "Spread" if kw == "cleave" else kw.capitalize()])
 			if kw == "chain" and not eff.has("number"):
@@ -1874,6 +1881,8 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: hp must be positive" % where)
 		if int(f.get("armour", 0)) < 0:
 			errs.append("%s: armour cannot be negative" % where)
+		if f.has("resist") and int(f.get("resist", 0)) < 0:
+			errs.append("%s: resist is the Numbed it recovers from a stun with, a count, never negative" % where)
 		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
 		_validate_actions(where, f, errs)

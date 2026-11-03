@@ -249,8 +249,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   spent there. A foe whose machine falls before it acts strikes the next machine in line: its
   arrow stays on its pick, and a second, dashed, goes to the machine its blow lands on.
   Nothing a roll decides
-  is promised: a stun Numbed may shrug off and a strike at a random foe among several are
-  left out (a lone foe takes it). The reinforcements are the next round's. A foe's gauge shows the HP the round will
+  is promised: a strike at a random foe among several is left out (a lone foe takes it). The reinforcements are the next round's. A foe's gauge shows the HP the round will
   leave it, a heal hatched as a machine's gain is, and a foe the round kills wears the
   destroyed chip, its intent kept. Every status the round will land, on a machine or a foe,
   wears a preview chip: the status's own glyph and colour, pulsing in opacity on a dashed
@@ -292,8 +291,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
   machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2
   a stack, after the spend's own heat lands; equipment spends none.
-- **Suppress**: each foe hit is Suppressed unless its Numbed resists; one already suppressed for
-  that action gains nothing more, Numbed included.
+- **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
+  nothing; a Ward turns it away; one already suppressed for that action gains nothing more.
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
   each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
@@ -311,11 +310,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   conditions allow, keeping its pick while the machine stands and is in the fight; a new one
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
-- **Purge** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter): every foe the
-  entry reaches loses every buff it carries but Numbed and Guarded (Armoured, Empowered, Getting
-  Back Up, Primed, Barrier, Ward, Regenerating), after the blow and with the riders, a debuff's
-  included, so a foe the blow kills stays down and a Barrier the blow pops is gone already; a
-  laid shot purges the foe it lands on.
+- **Purge N** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter, Purge 2): every
+  foe the entry reaches loses N stacks of every buff it carries but Guarded (Armoured, Empowered,
+  Getting Back Up, Primed, Barrier, Regenerating, Numbed; an unstackable buff is one stack), after
+  the blow and with the riders, a debuff's included, so a foe the blow kills stays down and a
+  Barrier the blow pops is gone already; a Ward turns it away and stands; a laid shot purges the
+  foe it lands on.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
   Rapid carries a cooldown of one (the entry is dark for the rest of the round) unless the
@@ -482,9 +482,10 @@ On a machine:
   move of its own (breach, burn, scorch, disable, corrupt, silence, purge), so its shield
   absorbs a breach like any blow; a blow's damage lands. Until the round's end. The Decoherence
   Veil grants it, self or ally. A foe's, from a special that wards every foe on the field: no mark
-  the team lays lands on it but Suppressed (Burning, Flak, Cryo, Vitriol, Shocked, Exposed,
-  Webbed, the Paradox, the Syrinx Drone), so a turned mark feeds no Paradox; the damage lands;
-  until the end of the player's next turn.
+  the team lays lands on it (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox,
+  the Syrinx Drone), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
+  lands; until the end of the player's next turn. On either side a Ward turns the whole thing
+  and stands.
 - **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
   never decays, and nothing cleanses it. It shows as five boxes under the heat, one lit a
@@ -521,7 +522,8 @@ On a foe:
   stack fades. It never stops healing.
 - **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
   it has already acted this turn. It never stacks and never carries: a second suppress on a
-  foe already suppressed, a Paradox's included, does nothing and numbs it no further.
+  foe already suppressed, a Paradox's included, does nothing. As the foe recovers it gains its
+  stun resist in Numbed, after the round's decay.
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
   shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or the draw of
   a vent's blast, a random hit, a spray's strike or a mine's arrival, which the game targets
@@ -535,8 +537,8 @@ On a foe:
   skirmish, and a death by a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
-  (Numbed may resist, and a foe already suppressed gains nothing) and the Paradox clears
-  either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
+  (a stun like any other: a Numbed foe strips a stack instead, a Warded one turns it, and a foe
+  already suppressed gains nothing) and the Paradox clears either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
   keyword's does.
 - **Vitriol** (debuff): at its action it loses 10% of its current HP a stack, past armour,
   after Burning on what it leaves, the whole share rounded down and never the last hit point,
@@ -546,7 +548,7 @@ On a foe:
   Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
   and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
   this round's action, or with none standing there its left-hand one, which has acted and
-  loses its next (Numbed may resist, each for itself; a foe already suppressed gains nothing,
+  loses its next (a stun like any other, each for itself: a Numbed foe strips a stack instead; a foe already suppressed gains nothing,
   as from any second suppress; each half feeds the Paradox as the Suppress keyword's does).
   Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
   the neighbour the burst catches.
@@ -569,11 +571,11 @@ On a foe:
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot and at once, unless it self-destructed; its round is
   over, as a split's half's is, and it takes a mine its fall left there.
-- **Numbed** (buff, nothing removes it, drawn in brackets): each stack is a 10%
-  chance a suppress fails. A landed suppress adds two stacks (three on a massive foe); a
-  shrugged one adds none, and one wasted on a foe already suppressed adds none; a stack fades
-  at each of its turns. Nothing reads, deepens, spreads or cleanses it, and no foe resists by
-  nature.
+- **Numbed** (buff): the rounds until one stun lands. A stun on a Numbed foe strips a stack and
+  lands nothing, so a foe with Numbed N takes N+1 stuns in a round. As a stunned foe recovers it
+  gains its stun resist in stacks (content's `resist`; 1 by default, 3 for a massive foe), after
+  the round's decay; a stack goes at the end of each round. A Purge lowers it like any buff;
+  nothing deepens, spreads or cleanses it, and a fresh foe is stunned by one.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
 Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or the Syrinx Drone.
@@ -718,8 +720,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   that falls may grow back after so many rounds while the core stands; a core that falls takes
   its parts with it.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
-  statuses tick (Burning first, which may kill it; then decaying stacks drop, Numbed
-  included; Vitriol after Burning, on what it leaves); a suppressed foe does nothing; a web
+  statuses tick (Burning first, which may kill it; then decaying stacks drop; Vitriol after
+  Burning, on what it leaves); a suppressed foe does nothing, and at the round's end, after every
+  Numbed loses a stack, it gains its stun resist in Numbed; a web
   on it bursts at the end of its action, skipped or not. A foe with no machine to strike (every one fallen or out of the fight) loses its blow
   alone: its countdown gathers, a special on its own side acts, and the turn goes on to the foes
   after it.

@@ -525,12 +525,7 @@ func _draw() -> void:
 		var col: Color = ch[2]
 		var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
 		_chip_rects[ch[0]] = [rect, col]
-		if ch.size() >= 4 and ch[3] == "resist":
-			# A resistance is no status (Numbed, 10 October): bracket corners on a bare ground,
-			# never the box a status wears, so the difference is the frame, not a hue.
-			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-			Hud.brackets(self, rect, 5.0, col, 1.6)
-		elif ch.size() >= 4 and ch[3] == "preview":
+		if ch.size() >= 4 and ch[3] == "preview":
 			# A buff on its way (a rally's Empowered, Ryan, 26 October: "a pulsing version of the
 			# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
 			# in concept to the health and shield bars"), on the gauges' one clock, a full swing

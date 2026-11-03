@@ -499,9 +499,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 					score += float(o[1]) * (KILL_BONUS + _threat_now(behind, sk) * HULL_WEIGHT)
 	var suppress_open := f.has(Face.Keyword.SUPPRESS) and Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, target)
 	if suppress_open:
-		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds. A
-		# gated Suppress (the Battery's on Flak) is worth nothing where its gate is shut.
-		var lands := 1.0 - float(target.resist_total()) / 100.0
+		# A stun on a Numbed foe strips a stack and lands nothing (2 November), so each is a step
+		# toward the one that lands: worth the stopped blow over the stuns still needed. A gated
+		# Suppress (the Battery's on Flak) is worth nothing where its gate is shut.
+		var lands := 1.0 / float(Effects.stacks_of(target, "numbed") + 1)
 		score += (1.0 - p_kill) * suppress_worth(sk, target) * HULL_WEIGHT * maxf(0.0, lands)
 	if not f.consumes.is_empty():
 		# A consumer gives up the ticks the stacks it eats would have dealt (the Backdraft
@@ -743,8 +744,9 @@ static func roll_gain(who: Skirmish.MechState) -> float:
 ## its stacks for each allied blow still to land on it this round, Empowered its value, Primed 2 a
 ## stack, Regenerating its value for each action it has left, a Ward nothing.
 func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives: float) -> float:
-	if foe == null:
-		return 0.0
+	if foe == null or Effects.has(foe, "ward"):
+		return 0.0   # a Ward turns a Purge away and stands (2 November)
+	var n := maxi(1, f.dispel)   # Purge N (2 November): each buff loses N stacks, so its worth is capped there
 	var allied_blows := 0
 	for other in sk.live_mechs():
 		if other == ms or other.assigned:
@@ -754,7 +756,12 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 			allied_blows += maxi(1, of.strikes)
 	var back := 0.0
 	var rest := 0.0
+	var seen := {}
 	for m in Effects.live(foe):
+		var stacks: int = mini(n, Effects.stacks_of(foe, m.id))
+		if seen.has(m.id):
+			continue   # a status's grants priced once, at the stacks the Purge reaches
+		seen[m.id] = true
 		match m.id:
 			"risen":
 				back = float(foe.hp_max)
@@ -762,13 +769,16 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 				if not f.is_weapon():
 					rest += barrier_stakes(sk, foe, ms)
 			"braced":
-				rest += float(m.stacks * Effects.braced_armour() * allied_blows)
+				rest += float(stacks * Effects.braced_armour() * allied_blows)
 			"kindled", "regenerating":
 				for eff in m.effects:
 					if str(eff.get("effect", "")) in ["add_attack", "regrow"]:
-						rest += float(int(eff.get("value", 0)) * m.stacks)
+						rest += float(int(eff.get("value", 0)) * stacks)
 			"primed":
-				rest += PRIMED_WORTH * float(m.stacks)
+				rest += PRIMED_WORTH * float(stacks)
+			"numbed":
+				# Each stack stripped is a step toward a stun that lands (the stun's own price).
+				rest += _threat_next(foe, sk) * HULL_WEIGHT * float(stacks) / float(Effects.stacks_of(foe, "numbed") + 1)
 	return back + lives * rest
 
 
@@ -1606,10 +1616,10 @@ func web_score(sk: Skirmish, target: Foe) -> float:
 		return 0.0
 	var score := 0.0
 	if not target.is_suppressed():
-		score += _threat_next(target, sk) * HULL_WEIGHT * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0)
+		score += _threat_next(target, sk) * HULL_WEIGHT / float(Effects.stacks_of(target, "numbed") + 1)
 	var beside := sk.web_catch(target)
 	if beside != null and not beside.is_suppressed():
-		score += _threat_next(beside, sk) * HULL_WEIGHT * maxf(0.0, 1.0 - float(beside.resist_total()) / 100.0)
+		score += _threat_next(beside, sk) * HULL_WEIGHT / float(Effects.stacks_of(beside, "numbed") + 1)
 	return score
 
 
@@ -1857,7 +1867,7 @@ static func _paradox_share(sk: Skirmish, target: Foe, apps: int) -> float:
 	if at <= 0 or apps <= 0 or not target.alive() or Effects.turns_mark(target, "paradox"):
 		return 0.0   # a Ward turns the Paradox itself away (28 October)
 	var need := maxi(1, at - Effects.stacks_of(target, "paradox"))
-	return minf(1.0, float(apps * adds) / float(need)) * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0)
+	return minf(1.0, float(apps * adds) / float(need)) / float(Effects.stacks_of(target, "numbed") + 1)
 
 
 ## What a vent's blast is worth (the Whip Scorpion's, 21 October): the heat it takes off, as

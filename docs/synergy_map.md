@@ -25,7 +25,7 @@ or briefs; the pricing run of 27 and 28 October read the first set (the bible's 
 | A foe's turn drawn (Lure) | on a foe | Proximity Klaxon (tier 1); Cryo Flinger (locked, Armadillo); Heliographic Siphon (locked, Whip Scorpion); St. Elmo's Regenerator (locked, Storm Petrel) | every foe reached turns on the spender, so whatever reads being struck pays (Retaliate, a Barrier, the Armoured and Sealed plate, and every reader of hull damage) |
 | A foe's move changed (Disrupt) | on a foe | Differentiation Probe (tier 2) | the foe takes its next open move |
 | A foe's place changed (Swap) | on a foe | Combat Translocator (locked, Dingo) | the two trade places: reach, the acting order, area |
-| Overcharged | on a machine | Soulcutter Talons (locked, Ammit); Overcharge Coil (tier 1), stocked; Reheat Uplink (locked, Giant Petrel); Grievance Reliquary (module, tier 2) | every blow +1 a stack: most on strikes; halves each round; Pinion Driver (locked, Kite): strikes; Maxigun (tier 1), stocked: strikes; Unrestricted Expenditure (locked, Musk Ox): strikes; Flechette Pod (locked, Skua): strikes; Cyclic Cannon (tier 2): strikes; Ammit's Quintessence Tap: keeps it |
+| Empowered | on a machine | Soulcutter Talons (locked, Ammit); Overcharge Coil (tier 1), stocked; Reheat Uplink (locked, Giant Petrel); Grievance Reliquary (module, tier 2) | every blow +1 a stack: most on strikes; halves each round; Pinion Driver (locked, Kite): strikes; Maxigun (tier 1), stocked: strikes; Unrestricted Expenditure (locked, Musk Ox): strikes; Flechette Pod (locked, Skua): strikes; Cyclic Cannon (tier 2): strikes; Ammit's Quintessence Tap: keeps it |
 | Armoured | on a machine | Breaching Plow (locked, Wild Boar); Shoring Jack (tier 1); Heliographic Siphon (locked, Whip Scorpion); Armadillo's Lockdown; Phase Conjugator (module, tier 2) | armour +1 a stack until the round's end |
 | Primed | on a machine | Aurora Lattice (tier 2) | every blow lays a Burning stack a stack: most on strikes; Pinion Driver (locked, Kite): strikes; Maxigun (tier 1), stocked: strikes; Unrestricted Expenditure (locked, Musk Ox): strikes; Flechette Pod (locked, Skua): strikes; Cyclic Cannon (tier 2): strikes |
 | Retaliate | on a machine | Retribution Thurible (tier 1), stocked | a foe striking bare hull is Shocked, so every reader of Shocked |
@@ -55,7 +55,7 @@ or briefs; the pricing run of 27 and 28 October read the first set (the bible's 
 | The Muster | a store | Swallowtail's Muster Deck | Mooring Screens (locked, Swallowtail); Spotting Flare (locked, Swallowtail); Sutler's Hoist (locked, Swallowtail); Reveille Horn (locked, Swallowtail) |
 | Rage | a store | Nemesis's Crucible Capacitor | Knuckle of Fury (locked, Nemesis) |
 | The hopper | a store | Chainsaw Claw (locked, Honey Badger) | Bullion Fragmenter (locked, Honey Badger) |
-| A foe's buffs (Armoured, Kindled, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands) | on a foe | Goblin Guard's Shield Wall (foe); Goblin Captain's Warcry (foe); Dire Wolf's Howl (foe); Warg's Howl (foe); Alpha Warg's Howl (foe); Antlion's Burrow (foe); Pit Antlion's Burrow (foe); Antlion Queen's Burrow (foe); Sandworm's Burrow (foe); Wight's Grave Mend (foe); Lich's Reraise (foe); Zombie Knight's Reraise (foe); Death Knight's Grave Guard (foe); Death Knight's Reraise (foe); Dread Knight's Reraise (foe); Magma Elemental's Stoke the Forge (foe); Goblin Shaman's Warcry (foe); Goblin Shaman's Ward-dance (foe); Old Man of the Desert's Burrow (foe); The Fallen Weapon's Drive (foe); The Matador's Red Capote (foe); Cinder Tortoise's Withdraw (foe) | each has an answer beside a purge: kill, suppress or disrupt the rallier, Expose or breach the brace, pop a Barrier with a cheap blow, wait out a Ward, burst what regenerates; Null Field Emitter (tier 2) |
+| A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands) | on a foe | Goblin Guard's Shield Wall (foe); Goblin Captain's Warcry (foe); Dire Wolf's Howl (foe); Warg's Howl (foe); Alpha Warg's Howl (foe); Antlion's Burrow (foe); Pit Antlion's Burrow (foe); Antlion Queen's Burrow (foe); Sandworm's Burrow (foe); Wight's Grave Mend (foe); Lich's Reraise (foe); Zombie Knight's Reraise (foe); Death Knight's Grave Guard (foe); Death Knight's Reraise (foe); Dread Knight's Reraise (foe); Magma Elemental's Stoke the Forge (foe); Goblin Shaman's Warcry (foe); Goblin Shaman's Ward-dance (foe); Old Man of the Desert's Burrow (foe); The Fallen Weapon's Drive (foe); The Matador's Red Capote (foe); Cinder Tortoise's Withdraw (foe) | each has an answer beside a purge: kill, suppress or disrupt the rallier, Expose or breach the brace, pop a Barrier with a cheap blow, wait out a Ward, burst what regenerates; Null Field Emitter (tier 2) |
 
 Tags, by the slottable pieces that wear them (locked in brackets); nothing but the screen's lunge reads one:
 
@@ -72,15 +72,15 @@ Tags, by the slottable pieces that wear them (locked in brackets); nothing but t
 
 What the map computes (what it means is the section after the map):
 
-- Unique to a chassis (set by locked pieces and passives alone, so a build reaches it only by fielding that machine): Exposed, Cryo, Webbed, Vitriol, Syrinx Drone, Paradox, A foe's place changed (Swap), Spun Up, Rallied, Phased, Sealed, Regenerating, A foe's buffs (Armoured, Kindled, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands).
+- Unique to a chassis (set by locked pieces and passives alone, so a build reaches it only by fielding that machine): Exposed, Cryo, Webbed, Vitriol, Syrinx Drone, Paradox, A foe's place changed (Swap), Spun Up, Rallied, Phased, Sealed, Regenerating, A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands).
 - **A foe's turn drawn (Lure)** has one slottable setter, Proximity Klaxon (tier 1).
 - **A foe's move changed (Disrupt)** has one slottable setter, Differentiation Probe (tier 2).
-- **Overcharged** has one slottable setter, Overcharge Coil (tier 1), stocked.
+- **Empowered** has one slottable setter, Overcharge Coil (tier 1), stocked.
 - **Armoured** has one slottable setter, Shoring Jack (tier 1).
 - **Primed** has one slottable setter, Aurora Lattice (tier 2).
 - **Retaliate** has one slottable setter, Retribution Thurible (tier 1), stocked.
 - **Barrier** has one slottable setter, Blast Door (tier 1).
 - **Ward** has one slottable setter, Decoherence Veil (tier 1).
 
-Unmapped by this script (add the word to its tables): Arc Fault Cannon: face field chain
+Unmapped by this script (add the word to its tables): Arc Fault Cannon: face field chain; Muzzle Velocity Booster: effect add_ceiling; Null Field Emitter: face field dispel; Tactical Databank: effect add_floor
 <!-- synergy-map:end -->

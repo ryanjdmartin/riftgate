@@ -2111,7 +2111,8 @@
     "heat": 2,
     "keywords": [
      "dispel"
-    ]
+    ],
+    "dispel": 2
    },
    "codex": "A debuff. Every buff the foe carries is unmade: a brace, a rally, a readied return, a primed claw, a barrier, a ward, a regrowth. Numbed shrugs it off, and a guarded core keeps its guard.",
    "flavour": "Decoherence is not destruction. The field simply declines to remember what the subject was doing.",

@@ -1921,6 +1921,9 @@ func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
 	assert_eq(Effects.stacks_of(n, "burning_mech"), 0, "skirmish-scoped statuses end with the skirmish")
 
 
+## Numbed on Ryan's clock (2 November): a stunned foe recovers with its stun resist in stacks,
+## after the round's decay, a stack goes at each round's end, and a stun on a Numbed foe strips a
+## stack and lands nothing, so the count is the rounds until one stun lands.
 func test_suppress_skips_the_action_and_numbs() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
@@ -1932,21 +1935,22 @@ func test_suppress_skips_the_action_and_numbs() -> void:
 	sk.start_round()
 	sk.assign(0, sk.front[0])
 	assert_true(boss.is_suppressed(), "suppressed this round")
-	assert_eq(Effects.stacks_of(boss, "numbed"), 3, "a massive foe gains three Numbed stacks")
-	assert_eq(boss.resist_total(), 30, "which is 30% to shrug the next one off")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 0, "Numbed lands as it recovers, not as the stun does")
 	sk.end_round()
 	assert_eq(m.hull, 100, "it skipped")
 	assert_false(boss.is_suppressed(), "the suppression ran out with the round")
-	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "Numbed lost a stack at the foe's turn, suppressed or not")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 3, "a massive foe recovers with its stun resist in stacks: three rounds until one stun lands")
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_false(boss.is_suppressed(), "a stun on a Numbed foe lands nothing")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "and strips a stack")
+	assert_true("\n".join(sk.log).contains("strips a stack of Numbed"), "the log says so")
+	sk.end_round()
+	assert_eq(m.hull, 70, "it struck")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 1, "a stack goes at the round's end")
 	sk.start_round()
 	sk.end_round()
-	assert_eq(m.hull, 70, "next round it strikes")
-	assert_eq(Effects.stacks_of(boss, "numbed"), 1, "and loses another")
-	sk.start_round()
-	sk.end_round()
-	sk.start_round()
-	sk.end_round()
-	assert_eq(Effects.stacks_of(boss, "numbed"), 0, "gone two turns later")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 0, "and the last the round after: one stun lands again")
 
 
 func test_a_second_suppress_on_a_suppressed_foe_adds_nothing() -> void:
@@ -1965,9 +1969,8 @@ func test_a_second_suppress_on_a_suppressed_foe_adds_nothing() -> void:
 	sk.start_round()
 	sk.assign(0, g)
 	assert_true(g.is_suppressed(), "suppressed by the first")
-	assert_eq(Effects.stacks_of(g, "numbed"), 2, "and numbed for it")
 	sk.assign(1, g)
-	assert_eq(Effects.stacks_of(g, "numbed"), 2, "the second suppress numbs it no further")
+	assert_eq(Effects.stacks_of(g, "numbed"), 0, "the second suppress lands nothing and numbs it no further")
 	var grants := 0
 	for m in g.modifiers:
 		if m.id == "suppressed":
@@ -1975,9 +1978,9 @@ func test_a_second_suppress_on_a_suppressed_foe_adds_nothing() -> void:
 	assert_eq(grants, 1, "and leaves one Suppressed, never two")
 	assert_true("\n".join(sk.log).contains("already suppressed"), "the log says the spend was wasted")
 	assert_false(sk._suppress(g), "a Paradox's trip on it is a suppress like any other: wasted")
-	assert_eq(Effects.stacks_of(g, "numbed"), 2, "and numbs it no further")
+	assert_eq(Effects.stacks_of(g, "numbed"), 0, "and numbs it no further")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(g, "numbed"), 1, "a stack faded at its turn")
+	assert_eq(Effects.stacks_of(g, "numbed"), g.stun_resist(), "it recovers with its stun resist")
 	sk.start_round()
 	assert_false(g.is_suppressed(), "it lost the one action and nothing carried into the next round")
 
@@ -2389,40 +2392,42 @@ func test_withdrawing_burns_the_overheat_first() -> void:
 	assert_eq(hot.shield, 30, "and the parting blow still landed on the shield")
 
 
-func test_a_numbed_foe_shrugs_off_a_suppress_at_its_odds() -> void:
-	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
-	sk.add_mech(m)
+## A stun lock costs its stuns (Ryan, 2 November): a foe with Numbed N takes N stuns to strip and
+## one more to stun, every round it is held, since it recovers with its resist again; a fresh
+## foe is stunned by one, boss or not; a Warded foe turns the stun away.
+func test_a_numbed_foe_is_stunned_by_one_stun_more_than_its_stacks() -> void:
+	var sk := Skirmish.new(1, 3)
+	for name in ["A", "B", "C"]:
+		sk.add_mech(_mech(name, Die.single(Face.attack(0, L, K.SUPPRESS)), 0, 100))
 	var g := _ghoul(500, 30)
+	g.resist = 2
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(g, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 10, Effects.DECAY_NONE)
-	sk.assign(0, sk.front[0])
-	assert_false(g.is_suppressed(), "at ten stacks nothing lands")
-	assert_eq(Effects.stacks_of(g, "numbed"), 10, "a shrugged-off suppress numbs no further")
-	assert_true("\n".join(sk.log).contains("shrugs off"), "the log says so")
+	assert_true(sk.assign(0, g) and g.is_suppressed(), "a fresh foe is stunned by one, whatever its resist")
 	sk.end_round()
-	assert_eq(m.hull, 70, "it struck")
-	# Three stacks: about seven in ten land, on the skirmish's own die.
-	var landed := 0
-	for seed_value in range(200):
-		var s := Skirmish.new(seed_value)
-		s.add_mech(_mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100))
-		var f := _ghoul(500, 30)
-		s.add_foes([f])
-		s.begin()
-		s.start_round()
-		Effects.stack(f, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
-		s.assign(0, s.front[0])
-		if f.is_suppressed():
-			landed += 1
-			assert_eq(Effects.stacks_of(f, "numbed"), 5, "a suppress that lands numbs two more")
-	assert_true(landed > 110 and landed < 170, "about 140 of 200 land at 30%% resistance, got %d" % landed)
-	# No foe resists by nature (Ryan, 10 October): a first suppress always lands, boss or not.
-	var boss := _ghoul(500, 30)
-	boss.size = 2
-	assert_eq(boss.resist_total(), 0, "a fresh boss resists nothing")
+	assert_eq([Effects.stacks_of(g, "numbed"), g.stun_resist()], [2, 2], "it recovers with its resist in stacks")
+	sk.start_round()
+	sk.assign(0, g)
+	sk.assign(1, g)
+	assert_false(g.is_suppressed(), "two stuns strip two stacks and land nothing")
+	assert_eq(Effects.stacks_of(g, "numbed"), 0, "stripped bare")
+	sk.assign(2, g)
+	assert_true(g.is_suppressed(), "the third lands: the lock costs its resist and one")
+	sk.end_round()
+	assert_eq(sk.mechs[0].unit.hull + sk.mechs[1].unit.hull + sk.mechs[2].unit.hull, 300, "it skipped again")
+	assert_eq(Effects.stacks_of(g, "numbed"), 2, "and recovers with its resist again")
+	var warded := _ghoul(500, 30)
+	var s2 := Skirmish.new(2)
+	s2.add_mech(_mech("A", Die.single(Face.attack(0, L, K.SUPPRESS)), 0, 100))
+	s2.add_foes([warded])
+	s2.begin()
+	s2.start_round()
+	Effects.stack(warded, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
+	assert_true(s2.assign(0, warded), "a stun at a Warded foe")
+	assert_false(warded.is_suppressed(), "the Ward turns the stun away (2 November)")
+	assert_true("\n".join(s2.log).contains("Ward turns away Suppressed"), "and the spend says so: %s" % s2.log.back())
+	assert_true(Effects.has(warded, "ward"), "the Ward stands")
 
 
 func test_a_corrupt_blow_rots_the_showing_entry_and_it_bites_when_spent() -> void:
@@ -2586,7 +2591,7 @@ func test_stacks_a_hot_machine_applies_run_deeper() -> void:
 	s3.start_round()
 	s3.mechs[0].heat = 60
 	s3.assign(0, s3.front[0])
-	assert_eq(Effects.stacks_of(g3, "numbed"), 2, "Numbed is exempt: the suppress leaves its two, no more")
+	assert_eq(Effects.stacks_of(g3, "numbed"), 0, "Numbed is exempt: the stun lays none, the recovery counts its resist and nothing deepens it")
 	assert_eq(Effects.extra_stacks(z, "numbed", 100), 0, "asked directly, Numbed gains nothing")
 	assert_eq(Effects.extra_stacks(z, "burning", 19), 0, "under one step, nothing")
 	assert_eq(Effects.extra_stacks(z, "burning", 100), 5, "five steps at 100")
@@ -2617,11 +2622,11 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	sk._foe_gained_status(g, "paradox")
 	assert_eq(Effects.stacks_of(g, "paradox"), 2, "Paradox never feeds itself")
 	sk._foe_gained_status(g, "numbed")
-	assert_eq(Effects.stacks_of(g, "paradox"), 2, "nor Numbed, which is no status")
+	assert_eq(Effects.stacks_of(g, "paradox"), 2, "nor Numbed, the foe's own buff")
 	sk._foe_gained_status(g, "burning")
 	assert_true(g.is_suppressed(), "the third trips it: its past self knocks it out")
 	assert_eq(Effects.stacks_of(g, "paradox"), 0, "the Paradox clears, and the Suppressed it caused added none")
-	assert_eq(Effects.stacks_of(g, "numbed"), 2, "numbed like any suppressed foe")
+	assert_eq(Effects.stacks_of(g, "numbed"), 0, "Numbed lands as it recovers, not as the stun does")
 	assert_true("\n".join(sk.log).contains("trapped in a paradox"), "the log says so")
 	sk.end_round()
 	assert_eq(m.hull, 100, "it skipped its blow")
@@ -4301,9 +4306,10 @@ func test_the_round_preview_lands_a_last_act_and_reads_a_self_destruct() -> void
 	assert_eq(m.hull, 100 - 20 - 6, "as they landed")
 
 
-## The preview never promises a roll: a web's burst on a foe with no Numbed is a sure stun, so the
-## caught foe's blow comes off; a foe with Numbed may shrug it off, so its blow stays counted.
-func test_the_round_preview_never_promises_a_roll() -> void:
+## The preview reads a stun exactly (2 November): a web's burst on a foe with no Numbed is a sure
+## stun, so the caught foe's blow comes off; on a Numbed foe it strips a stack for sure, so its
+## blow stays counted, and nothing is held back.
+func test_the_round_preview_reads_a_stun_exactly() -> void:
 	var sk := Skirmish.new(4, 2)
 	var m := _mech("A", Die.single(Face.blank()), 0, 100)
 	sk.add_mech(m)
@@ -4315,11 +4321,11 @@ func test_the_round_preview_never_promises_a_roll() -> void:
 	Effects.stack(a, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	var pv := sk.preview_round()
 	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9, "the burst stops the next foe's blow, for sure")
-	Effects.stack(b, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_TICK)
+	Effects.stack(b, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	pv = sk.preview_round()
-	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9 - 6, "Numbed may shrug it off: the stun is never promised")
-	var held: Array = (pv["notes"] as Array).filter(func(n) -> bool: return str(n["kind"]) == "resist" and n["foe"] == b)
-	assert_eq(held.size(), 1, "and the copy notes the roll it held back")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9 - 6, "on a Numbed foe the burst strips a stack and the blow stays, for sure")
+	assert_true((pv["notes"] as Array).is_empty(), "nothing held back")
+	assert_eq(Effects.stacks_of(b, "numbed"), 2, "and the fight itself is untouched")
 
 
 ## The die in hand counts only over a valid target (Ryan, 26 October: "Die faces only apply to
@@ -5914,8 +5920,8 @@ func test_a_web_bursts_after_the_foes_action_and_catches_the_next_to_act_beside_
 	assert_false(Effects.has(big, "webbed"), "the web is spent")
 	assert_true(big.is_suppressed(), "the webbed foe is held: it has acted, so it loses its next action")
 	assert_false(mid.is_suppressed(), "the caught one lost this round's action, and nothing carries")
-	assert_eq(Effects.stacks_of(big, "numbed"), 2, "a landed suppress numbs the webbed foe")
-	assert_eq(Effects.stacks_of(mid, "numbed"), 1, "and the caught one, a stack already faded at the turn it skipped")
+	assert_eq(Effects.stacks_of(big, "numbed"), 0, "the webbed foe recovers at the end of the round it skips, not now")
+	assert_eq(Effects.stacks_of(mid, "numbed"), mid.stun_resist(), "the caught one skipped this round and recovered with its stun resist")
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.hull, 420, "the round after, the big one skips and the other two strike")
@@ -7146,7 +7152,7 @@ func test_a_silence_mutes_the_keywords_for_the_round_and_leaves_the_buffs() -> v
 ## A purger: its one move a purge, aimed at the buffed and cast where a machine carries one.
 func _purger() -> Foe:
 	var f := Foe.make("priest", 500, 1)
-	f.actions = [{"id": "purge", "name": "Purge", "kind": "debuff", "effect": "dispel", "weight": 1, "aim": "buffed", "when": "machine_buffed", "text": ""}]
+	f.actions = [{"id": "purge", "name": "Purge", "kind": "debuff", "effect": "dispel", "value": 9, "weight": 1, "aim": "buffed", "when": "machine_buffed", "text": ""}]
 	f.action = f.actions[0]
 	return f
 
@@ -7174,7 +7180,7 @@ func test_a_purge_takes_what_a_die_face_bought_and_sleeps_what_the_machine_is() 
 	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "rage")], [3, 2], "the stores stay, the battle's rage too")
 	assert_eq(u.armour, 5, "the passive stays")
 	assert_eq(u.hull, 200, "no blow")
-	assert_true("\n".join(sk.log).contains("purges A: Empowered gone"), "the log says what went")
+	assert_true("\n".join(sk.log).contains("purges A ×9: Empowered gone"), "the log says what went")
 	sk.start_round()
 	assert_false(Effects.has(u, "overcharged"), "and nothing comes back")
 	# The seal sleeps: its armour gone for the enemy's turn, its price (the cooling it stops)
@@ -7324,7 +7330,29 @@ func test_a_foes_barrier_takes_the_next_weapon_blow_and_lasts_to_the_players_tur
 ## itself included; no mark the team lays lands (Burning, Flak, Shock, the Paradox), Suppressed
 ## excepted, since Numbed stays the one stun resistance; the damage lands; the spend tells it
 ## once; a passive's lay is turned too; it goes at the end of the player's next turn.
-func test_a_foes_ward_turns_the_teams_marks_away_and_lets_suppressed_land() -> void:
+## A foe's Purge N on a machine (2 November): what a die face bought loses N stacks for good,
+## what the machine is sleeps N stacks until the player's turn, and wakes whole.
+func test_a_foes_purge_n_lowers_a_bought_buff_and_sleeps_part_of_a_granted_one() -> void:
+	var sk := Skirmish.new(1, 1)
+	var u := _mech("A", Die.single(Face.attack(10, L)), 40, 200)
+	sk.add_mech(u)
+	var p := _purger()
+	p.actions[0]["value"] = 2
+	p.action = p.actions[0]
+	sk.add_foes([p])
+	sk.begin()
+	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff:overcharge_coil", 4, Effects.DECAY_NONE)
+	Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(u, "overcharged"), 2, "the bought Empowered loses two for good")
+	assert_eq(Effects.stacks_of(u, "primed"), 1, "the granted Primed sleeps two")
+	assert_true("\n".join(sk.log).contains("purges A ×2: Empowered, Primed lowered"), "the log says what it lowered: %s" % sk.log.back())
+	sk.start_round()
+	assert_eq([Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "primed")], [2, 3], "at the player's turn the slept stacks wake and the bought ones stay gone")
+
+
+func test_a_foes_ward_turns_the_teams_marks_away_and_the_stun_with_them() -> void:
 	var meter := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
 		{"trigger": "on_foe_status", "effect": "paradox", "value": 3}]}
 	var sk := Skirmish.new(1, 2)
@@ -7351,7 +7379,7 @@ func test_a_foes_ward_turns_the_teams_marks_away_and_lets_suppressed_land() -> v
 		assert_false(Effects.has(g, id), "no %s" % id)
 	assert_eq("\n".join(sk.log).count("Ward turns away"), 1, "the spend tells it once")
 	assert_true(sk.assign(1, g), "a Suppress")
-	assert_true(g.is_suppressed(), "Suppressed lands")
+	assert_false(g.is_suppressed(), "the Ward turns the stun away too (2 November)")
 	assert_false(Effects.has(g, "paradox"), "and the Paradox it would feed is turned away")
 	Effects.stack(g, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2)
 	assert_false(Effects.has(g, "vitriol"), "a lay from anywhere is turned")
@@ -7460,11 +7488,20 @@ func test_a_foes_regeneration_regrows_after_its_ticks_for_three_actions() -> voi
 ## buff it carries but Numbed and Guarded, the four a foe's specials grant among them, after the
 ## blow and with the riders, equipment's included; a Barrier the weapon's blow pops is gone first,
 ## and a foe the blow kills stays down.
-func test_a_players_purge_takes_every_buff_a_foe_carries_but_numbed_and_guarded() -> void:
+## A player's Purge N (28 October; Ryan, 2 November: "lower everything by N"): every buff a foe
+## carries loses N stacks, Numbed among them since it is a buff, Guarded never; a Ward turns the
+## Purge away and stands; a weapon's blow lands first, so a Barrier it pops is gone already.
+func test_a_players_purge_lowers_every_buff_a_foe_carries_by_its_number_but_guarded() -> void:
 	var sk := Skirmish.new(1, 3)
-	var a := _mech("A", Die.single(Face.attack(0, I, [K.DISPEL])), 40, 200)
-	var b := _mech("B", Die.single(Face.attack(10, L, [K.DISPEL])), 40, 200)
-	var c := _mech("C", Die.single(Face.attack(10, L, [K.DISPEL])), 40, 200)
+	var null9 := Face.attack(0, I, [K.DISPEL])
+	null9.dispel = 9
+	var gun9 := Face.attack(10, L, [K.DISPEL])
+	gun9.dispel = 9
+	var gun1 := Face.attack(10, L, [K.DISPEL])
+	gun1.dispel = 1
+	var a := _mech("A", Die.single(null9), 40, 200)
+	var b := _mech("B", Die.single(gun9), 40, 200)
+	var c := _mech("C", Die.single(gun1), 40, 200)
 	for m in [a, b, c]:
 		sk.add_mech(m)
 	var caster := Foe.make("caster", 500, 1)
@@ -7486,23 +7523,38 @@ func test_a_players_purge_takes_every_buff_a_foe_carries_but_numbed_and_guarded(
 	act.call(g, "ward_all", "buff", 0)
 	act.call(g, "prime", "buff", 2)
 	act.call(g, "rally", "buff", 3)
-	Effects.stack(caster, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_TICK)
+	Effects.stack(caster, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	Effects.stack(caster, Effects.STATUS["guarded"], Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_NONE)
 	for id in Effects.FOE_PURGED:
 		assert_true(Effects.has(caster, id), "the caster carries %s" % id)
-	assert_true(sk.assign(0, caster), "a Purge of equipment")
+	assert_true(Effects.has(caster, "ward"), "and the Ward the hallow laid on every foe")
+	assert_true(sk.assign(0, caster), "a Purge of equipment at a Warded foe")
+	for id in Effects.FOE_PURGED:
+		assert_true(Effects.has(caster, id), "%s stands: the Ward turns the Purge away" % id)
+	assert_true(Effects.has(caster, "ward"), "and the Ward stands")
+	assert_true("\n".join(sk.log).contains("Ward turns away Purge"), "the spend says so: %s" % sk.log.back())
+	Effects.remove(caster, "ward")
+	sk.mechs[0].assigned = false
+	assert_true(sk.assign(0, caster), "a Purge 9 of equipment, the Ward gone")
 	for id in Effects.FOE_PURGED:
 		assert_false(Effects.has(caster, id), "%s gone" % id)
-	assert_true(Effects.has(caster, "numbed"), "Numbed stays: a resistance")
-	assert_true(Effects.has(caster, "guarded"), "and Guarded: its parts' lock")
+	assert_false(Effects.has(caster, "numbed"), "Numbed goes with them: a buff since 2 November")
+	assert_true(Effects.has(caster, "guarded"), "and Guarded stays: its parts' lock")
 	assert_true("\n".join(sk.log).contains("A purges"), "the log says what went")
 	# A weapon's Purge: the blow first, so the Barrier takes it, then the rest goes.
+	Effects.remove(g, "ward")
 	act.call(g, "barrier", "defend", 0)
 	act.call(g, "brace", "defend", 2)
 	var before := g.hp
-	assert_true(sk.assign(1, g), "a Purge on a gun")
+	assert_true(sk.assign(1, g), "a Purge 9 on a gun")
 	assert_eq(g.hp, before, "the Barrier takes the blow")
-	assert_false(Effects.has(g, "barrier") or Effects.has(g, "braced") or Effects.has(g, "ward"), "and the Purge takes the rest")
+	assert_false(Effects.has(g, "barrier") or Effects.has(g, "braced"), "and the Purge takes the rest")
+	# A Purge 1 lowers by one: Armoured 2 to 1.
+	act.call(g, "brace", "defend", 2)
+	assert_true(sk.assign(2, g), "a Purge 1 on a gun")
+	assert_eq(Effects.stacks_of(g, "braced"), 1, "Armoured 2 to 1")
+	assert_true("\n".join(sk.log).contains("×1: Armoured 1"), "the log says what it left: %s" % sk.log.back())
+	sk.mechs[2].assigned = false
 	# A foe the blow kills stays down.
 	act.call(h, "revive_once", "buff", 0)
 	Effects.remove(h, "ward")
@@ -7517,7 +7569,9 @@ func test_a_laid_purge_purges_the_foe_it_lands_on() -> void:
 	var pull := Face.attack(0, I)
 	pull.pulls_mines = true
 	var sk := Skirmish.new(1, 2)
-	var a := _mech("Bomber", Die.single(Face.attack(0, I, [K.DISPEL])), 40, 100)
+	var purge9 := Face.attack(0, I, [K.DISPEL])
+	purge9.dispel = 9
+	var a := _mech("Bomber", Die.single(purge9), 40, 100)
 	a.grant_passive(MINER)
 	sk.add_mech(a)
 	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))

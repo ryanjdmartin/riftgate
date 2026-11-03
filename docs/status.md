@@ -25,8 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 871 tests, 208,125 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, its
-  first chunk, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
+- Tests: 872 tests, 208,011 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, its
+  second chunk, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
   overheat what-ifs, shield persona and support ladders landed on the 31st, over the Petrels of
   `claude/affectionate-ramanujan-5d24t6`, the foes' move-order fix of
   `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
@@ -182,10 +182,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   Booster and the Tactical Databank planned until they have rules; a blow's sound by its tags, since
   rolled-or-flat was its label); an injury breaks the entry the die shows, so what faces the enemy
   is the player's choice and the threshold can come down once played; the withdrawal's screen code
-  deleted (a defunct passive); the round preview exact on all three. Next in the pass, decided:
-  Numbed on Ryan's clock (stacks are the rounds until one stun lands, a stun on a Numbed foe strips
-  a stack, resist a foe stat, Numbed a buff), Purge N flat on every buff on both sides, a Ward
-  turning a stun and a Purge and standing, Sweep on a rank (left to right, direct the front,
+  deleted (a defunct passive); the round preview exact on all three. Built 3 November: Numbed on Ryan's
+  clock (the stacks are the rounds until one stun lands; a stun on a Numbed foe strips a stack and
+  lands nothing; a stunned foe recovers with its stun resist, content's `resist`, 1 by default and 3
+  for a massive foe, after the round's decay; Numbed a buff a Purge lowers), Purge N on both sides
+  (N stacks off every buff, the Null Field Emitter at Purge 2, the bot pricing each at the stacks it
+  reaches), a Ward turning a stun and a Purge and standing on either side; the preview exact on a
+  stun. Next in the pass, decided: Sweep on a rank (left to right, direct the front,
   indirect the player's pick) for the Flechette Pod and the Unrestricted Expenditure, Charged as
   the Shock primer with Chain the arcs alone, then undo to the last roll with its HUD; Overcharged and Kindled are
   Empowered on both sides since 3 November, the ids kept; the Scorpion's blast is tabled for a rework and stays

@@ -1391,8 +1391,7 @@ func _mine_text(rank: int, col: int, shots: Array) -> String:
 	return text + "\nwhoever steps in takes them all in laid order, before it acts"
 
 
-## Statuses on a foe as [glyph, chip text, readout text, colour], and a fifth "resist" for a
-## chip that is no status at all (Numbed, 10 October: drawn in brackets, never boxed).
+## Statuses on a foe as [glyph, chip text, readout text, colour].
 func _foe_rows(foe: Foe) -> Array:
 	var rows: Array = []
 	# A fall the round will bring (the round preview; Ryan, 26 October: "It should get a destroyed
@@ -1489,7 +1488,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["shocked", "×2", "Shocked: the next weapon strike aimed at it lands double", _foe_chip_colour("shocked")])
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
-		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a buff or a debuff (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time, 10%% a stack, a stack less each of its turns (%d to go)" % [foe.resist_total(), numbed], _foe_chip_colour("numbed"), "resist"])
+		rows.append(["numbed", "×%d" % numbed, "Numbed ×%d: a stun on it strips a stack and lands nothing; a stack goes at the end of each round, so the count is the rounds until one stun lands" % numbed, _foe_chip_colour("numbed")])
 	if Effects.has(foe, "syrinx_drone"):
 		# The Syrinx Drone (the Lammergeier's, 21 October): its own chip, the killing shot to come.
 		var drone: Dictionary = Effects.STATUS["syrinx_drone"]

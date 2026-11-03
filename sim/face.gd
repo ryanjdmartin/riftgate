@@ -68,7 +68,7 @@ const KEYWORD_STATUS := {
 const NUMBER_FIELDS := {
 	Keyword.BURN: "burn", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
 	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.SPLASH: "splash",
-	Keyword.CHAIN: "chain",
+	Keyword.CHAIN: "chain", Keyword.DISPEL: "dispel",
 }
 ## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
 const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
@@ -112,6 +112,7 @@ var cleave: int = 0           # an attack with Spread: the number each foe besid
 var penetrate: int = 0        # an attack with Penetrate: the number the other rank of its target's column takes (Penetrate N)
 var splash: int = 0           # an attack with Splash: the number each foe of the plus round its target takes, the row's and the column's (Splash N)
 var chain: int = 0            # an attack with Chain: the number every other Shocked foe on the field takes as its blow's (Chain N, 28 October)
+var dispel: int = 0           # an attack or equipment with Purge: the stacks every buff of each foe it reaches loses (Purge N, 2 November)
 var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first, overshield included; short of it the entry cannot be played
 var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
@@ -312,6 +313,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.penetrate = maxi(0, int(d.get("penetrate", 0)))
 		f.splash = maxi(0, int(d.get("splash", 0)))
 		f.chain = maxi(0, int(d.get("chain", 0)))   # add_keyword gives Chain a number of one when it says none
+		f.dispel = maxi(0, int(d.get("dispel", 0)))   # Purge N (2 November); one when it says none
 		var g = d.get("gates", {})
 		f.gates = (g as Dictionary).duplicate(true) if g is Dictionary else {}
 		f.consumes = str(d.get("consumes", ""))
@@ -397,6 +399,8 @@ func to_dict() -> Dictionary:
 				d[NUMBER_FIELDS[kw]] = number_of(kw)   # a debuff's area deals nothing, so it prints no number
 		if has(Keyword.CHAIN) and chain > 0:
 			d["chain"] = chain
+	if has(Keyword.DISPEL) and dispel > 0:
+		d["dispel"] = dispel
 	if volatile > 0:
 		d["volatile"] = volatile
 	if shield_cost > 0:
@@ -639,6 +643,7 @@ func duplicate_face() -> Face:
 	f.penetrate = penetrate
 	f.splash = splash
 	f.chain = chain
+	f.dispel = dispel
 	f.volatile = volatile
 	f.shield_cost = shield_cost
 	f.short = short

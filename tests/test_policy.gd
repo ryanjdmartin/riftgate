@@ -817,7 +817,10 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 3)
 	var null_field := Face.attack(0, I, [K.DISPEL])
+	null_field.dispel = 9
 	var gun := Face.attack(10, L, [K.DISPEL])
+	gun.dispel = 9
+	var null1 := Face.attack(0, I, [K.DISPEL])   # Purge 1
 	sk.add_mech(_mech("A", Die.single(null_field), 40, 200))
 	sk.add_mech(_mech("B", Die.single(Face.attack(12, L)), 40, 200))
 	var g := _ghoul(100, 10)
@@ -835,6 +838,7 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	Effects.remove(g, "barrier")
 	Effects.stack(g, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:revenant", 2, Effects.DECAY_ROUND)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 2.0, "Armoured: its stacks for the one allied blow to come")
+	assert_eq(pol.purge_worth(sk, a, null1, g, 1.0), 1.0, "a Purge 1 takes one of the two (2 November)")
 	Effects.remove(g, "braced")
 	Effects.grant(g, Effects.make(Effects.kindled(3), Effects.SKIRMISH, "foe:caster"))
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Empowered: its value")
@@ -847,7 +851,10 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 12.0, "Regenerating: its value for each of three actions left")
 	Effects.remove(g, "regenerating")
 	Effects.stack(g, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
-	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a Ward: nothing")
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a Ward: nothing, since it turns the Purge away")
+	Effects.remove(g, "ward")
+	Effects.stack(g, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	assert_true(pol.purge_worth(sk, a, null1, g, 1.0) > 0.0, "Numbed: a stack stripped is a step toward a stun")
 	var bare := pol.attack_score(sk, a, null_field, g)
 	Effects.grant(g, Effects.primed_foe(5, "foe:caster"))
 	assert_eq(pol.attack_score(sk, a, null_field, g), bare + 10.0, "the attack score carries it")
