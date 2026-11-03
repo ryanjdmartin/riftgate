@@ -6,18 +6,24 @@ extends SceneTree
 ## November: "Can you show me the complete set of main die face iconography?"); run it again
 ## whenever a glyph changes.
 ##
-##   xvfb-run -a -s "-screen 0 2000x2000x24" godot --rendering-method gl_compatibility --path . \
-##     --resolution 1360x1540 -s tools/die_sheet.gd -- build/die_sheet.png
+##   xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/die_sheet.gd -- build/die_sheet.png [scale]
 ##
-## The window's size is the sheet's in design pixels (one to one, whatever the project's stretch).
+## Drawn at the phone's density (Ryan, 3 November: "Why aren't we drawing the dice at native
+## size?"): `scale` device pixels a design pixel, 1.5 by default, a 1080-wide phone's, through a
+## SubViewport as the screenshot tool's RIFTGATE_SHOT_SCALE draws, so the lines and the text are
+## rasterised at that density as the device's canvas_items stretch rasterises them, never a
+## design-pixel sheet that shows every die at two thirds of its size on the glass.
 
+const SHEET := Vector2i(1360, 1540)   # the sheet in design pixels
 const COLS := 8
 const CELL := Vector2(164, 222)
 const MARGIN := 24.0
 const HEAD := 46.0
 
 var _out := "build/die_sheet.png"
+var _scale := 1.5
 var _frames := 0
+var _vp: SubViewport
 var _sheet: Control
 var _labels: Array = []     # [position, text, size, colour]
 
@@ -26,10 +32,18 @@ func _init() -> void:
 	var args := OS.get_cmdline_user_args()
 	if not args.is_empty():
 		_out = args[0]
+	if args.size() > 1 and float(args[1]) > 0.0:
+		_scale = float(args[1])
+	_vp = SubViewport.new()
+	_vp.size = Vector2i(roundi(SHEET.x * _scale), roundi(SHEET.y * _scale))
+	_vp.size_2d_override = SHEET
+	_vp.size_2d_override_stretch = true
+	_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(_vp)
 	_sheet = Control.new()
-	_sheet.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_sheet.size = Vector2(SHEET)
 	_sheet.draw.connect(_draw_sheet)
-	root.add_child(_sheet)
+	_vp.add_child(_sheet)
 	var y := MARGIN
 	y = _section(y, "WHAT AN ENTRY IS: THE MAIN ICON, HOLDING WHOM IT IS AIMED AT (ONE WIDTH FOR EVERY TARGETING MARK)", _kinds())
 	y = _section(y, "A PIECE SPENT ON MACHINES: ITS ICON HOLDS THREE HEXES, THE MIDDLE ITS OWN, A FILLED ONE A MACHINE IT REACHES", _targets(), 6)
@@ -39,16 +53,12 @@ func _init() -> void:
 
 func _tick() -> void:
 	_frames += 1
-	if _frames == 1:
-		root.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
-		root.content_scale_factor = 1.0
 	if _frames == 2:
-		_sheet.size = Vector2(root.size)
 		_sheet.queue_redraw()
 	if _frames < 8:
 		return
 	DirAccess.make_dir_recursive_absolute(_out.get_base_dir())
-	var img := root.get_texture().get_image()
+	var img := _vp.get_texture().get_image()
 	img.save_png(_out)
 	print("die sheet: ", _out, " ", img.get_size())
 	quit()
@@ -101,12 +111,12 @@ func _kinds() -> Array:
 	var down := _die(Face.attack(4))
 	down.dead = true
 	return [
-		["Weapon, direct", "the reticle holding a\nstraight arrow: Direct", _die(Face.attack(4))],
-		["Weapon, indirect", "a curved arrow:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
+		["Weapon, direct", "the sight holding the\ntracer: Direct", _die(Face.attack(4))],
+		["Weapon, indirect", "the trajectory:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
 		["Weapon, rolled", "rolls in its range\nas it is spent", _die(rolled)],
 		["Weapon, strikes", "three blows a spend,\neach rolled on its own", _die(burst)],
-		["Equipment, direct", "the diamond holding the\narrow: no number", _die(Face.attack(0))],
-		["Equipment, indirect", "the diamond, the curved\narrow: no number", _die(Face.attack(0, Face.Reach.INDIRECT))],
+		["Equipment, direct", "the module holding the\ntracer: no number", _die(Face.attack(0))],
+		["Equipment, indirect", "the module, the\ntrajectory: no number", _die(Face.attack(0, Face.Reach.INDIRECT))],
 		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
 		["Vent", "spent on a machine:\nheat off", _die(Face.vent(3))],
 		["Reload", "a vent, its ammo its\nnumber (the Musk Ox)", _die(reload)],

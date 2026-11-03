@@ -444,8 +444,9 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/quick/quick_run_screen.tscn shot.png hangar
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
 # the die's iconography on one sheet (2 November: every main icon, whom a piece reaches, the rest of
-# a face's marks), one design pixel a pixel; in a cloud session under xvfb-run -a -s "-screen 0 2000x2000x24"
-godot --path . --rendering-method gl_compatibility --resolution 1360x1540 -s tools/die_sheet.gd -- build/die_sheet.png
+# a face's marks), at the phone's density (1.5 device pixels a design pixel; a second argument sets
+# another); in a cloud session under xvfb-run -a
+godot --path . --rendering-method gl_compatibility -s tools/die_sheet.gd -- build/die_sheet.png
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel
