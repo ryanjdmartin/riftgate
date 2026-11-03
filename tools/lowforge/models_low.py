@@ -2481,7 +2481,7 @@ def cottonmouth(b):
             body += [(3.85, 0.0, 0.0, 0.0), (4.6, 0.0, 0.0, 0.0, yaw, 0.0, 0.0)]
         elif n > 2:   # round to the row's next foe
             body += [(SHOTS[n - 1][0] + SLICE + 0.03, 0.0, 0.0, 0.0, SHOTS[n - 1][2], 0.0, 0.0), (t0 - 0.05, 0.0, 0.0, 0.0, yaw, 0.0, 0.0)]
-        k = shot(t0, 120.0 * n, at, (0.0, 0.0, 0.0, yaw, 0.0, 0.0))
+        k = shot(t0, CHAMBERS * 60.0 * n, at, (0.0, 0.0, 0.0, yaw, 0.0, 0.0))   # each shot opens where the last one parked, so the drum stands still through its flash
         for jn in ("elev_drum", "drum", "top_mouth", "top_lamp"):
             tracks[jn] += k[jn]
         body += k["body"]
