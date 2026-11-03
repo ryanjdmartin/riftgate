@@ -983,8 +983,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if kind == "attack":
 		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag.
 		var reach := str(fd.get("reach", ""))
-		if not ["direct", "indirect"].has(reach):
-			errs.append("%s: attack face needs reach direct or indirect, got '%s'" % [where, reach])
+		if not ["direct", "indirect", "sweep"].has(reach):
+			errs.append("%s: attack face needs reach direct, indirect or sweep, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) < 0:
 		errs.append("%s: power cannot be negative" % where)
 	if int(fd.get("strikes", 1)) < 1:
@@ -1186,12 +1186,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: drones (true) is an attack's, a weapon's or a debuff's: the foe carries the Syrinx Drone" % where)
 	# The spray (the Skua's Flechette Pod, built 25 October): the strikes after the first fall on
 	# random foes in reach, so a spray strikes at least twice.
-	# Sweep (Ryan, 2 November), in place of the spray and the random targets of October: a keyword,
-	# an attack's, whose strikes walk the rank it is dropped on.
+	# Sweep (Ryan, 2 November), in place of the spray and the random targets of October: a reach
+	# since the 3rd ("a targeting mode, since that's what it is"), whose strikes walk the rank picked.
 	if fd.has("spray") or fd.has("random_targets"):
-		errs.append("%s: spray and random_targets are gone (3 November): Sweep, a keyword, walks the rank" % where)
-	if Array(fd.get("keywords", [])).has("sweep") and kind != "attack":
-		errs.append("%s: Sweep rides an attack" % where)
+		errs.append("%s: spray and random_targets are gone (3 November): Sweep, a reach, walks the rank picked" % where)
+	if Array(fd.get("keywords", [])).has("sweep"):
+		errs.append("%s: sweep is a reach since 3 November (reach: sweep), never a keyword" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)

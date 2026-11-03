@@ -421,15 +421,15 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 	assert_eq(pol.expected_damage(ms, burst, g), 80.0, "only the first of three blows is doubled")
 
 
-## The spray (the Skua's Flechette Pod): the first strike on the target, each after it on a random
-## foe in reach, so the bot reads each foe its share; on a foe one strike kills, a spray among
-## others wastes less past the kill than the same strikes all on it.
+## A sweep (the Skua's Flechette Pod; a reach since 3 November): the strikes walk the rank picked,
+## so the bot reads each foe its share; on a foe one strike kills, a sweep among others wastes
+## less past the kill than the same strikes all on it.
 func test_greedy_reads_a_sweep_as_its_share_on_every_foe_in_the_rank() -> void:
 	var sk := Skirmish.new(1, 3)
 	var plain := Face.attack(5, L)
 	plain.strikes = 3
 	var pod := plain.duplicate_face()
-	pod.add_keyword(K.SWEEP)
+	pod.reach = Face.Reach.SWEEP
 	sk.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
 	var weak := _ghoul(3, 10)
 	sk.add_foes([_ghoul(50, 10), weak, _ghoul(50, 10)])
@@ -1125,9 +1125,8 @@ func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
 	var forge := {"id": "forge", "name": "Forge", "description": "", "effects": [{"trigger": "static", "effect": "forge", "value": 10, "start": 3, "per_round": 1, "per_heat": 10, "vent": 3, "shield": 2}]}
 	var ray := Face.attack(30, L)
 	ray.heat = 30
-	var salvo := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
+	var salvo := Face.attack(5, Face.Reach.SWEEP, [K.CLEAVE, K.PENETRATE])
 	salvo.spends_magazine = true
-	salvo.add_keyword(K.SWEEP)
 	var sk := Skirmish.new(3, 2)
 	var m := _mech("Ox", Die.of([ray, salvo]), 40, 200)
 	m.grant_passive(forge)

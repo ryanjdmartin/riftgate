@@ -1074,6 +1074,8 @@ static func effective_reach(u, face: Face) -> int:
 	if face == null:
 		return Face.Reach.NONE
 	face = rewritten(u, face)
+	if face.reach == Face.Reach.SWEEP:
+		return face.reach   # a sweep is its own targeting mode (Ryan, 3 November: "Not direct or indirect"): no passive turns it into either
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "set_reach":

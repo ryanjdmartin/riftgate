@@ -4,6 +4,7 @@ extends TestCase
 
 const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
+const S := Face.Reach.SWEEP   # a sweep: a rank picked and walked (Ryan, 3 November)
 const K := Face.Keyword
 
 
@@ -4504,7 +4505,7 @@ func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make()
 	assert_eq(pv["foes"][mage]["struck"], [1], "B, the next in line, not the hottest")
 	# A Sweep with one foe standing lands every strike on it, and the preview says so.
 	var s1 := Skirmish.new(4, 2)
-	var gun := Face.attack(5, L, K.SWEEP)
+	var gun := Face.attack(5, S)
 	s1.add_mech(_mech("A", Die.single(gun), 0, 100))
 	var lone := _ghoul(5, 9)
 	s1.add_foes([lone])
@@ -8003,14 +8004,15 @@ func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
 	assert_eq(bare.hp, 98, "and no damage")
 
 
-## Sweep (Ryan, 2 November, in place of the spray): the strikes walk the rank the entry is dropped
-## on from its first filled slot, left to right, one a slot, wrapping; a kill clears its slot at
-## once, so the walk skips it, and a rank emptied loses the strikes left; a direct entry walks the
-## front while any foe stands in it, else the back, and the drop only picks the rank.
-func test_a_sweep_walks_its_rank_from_the_left_one_a_slot_wrapping() -> void:
-	var pod := Face.attack(5, L, [K.SWEEP])
+## Sweep (Ryan, 2 November, in place of the spray; a reach since the 3rd: "You pick a rank and
+## that's the rank it hits. Empty columns at any point are skipped, so it's allowed to concentrate
+## fire on the remainder"): the strikes walk the rank of the foe the entry is dropped on from its
+## first filled slot, left to right, one a slot, wrapping; a kill clears its slot at once, so the
+## walk skips it; a rank emptied loses the strikes left; either rank may be picked.
+func test_a_sweep_walks_the_rank_picked_from_the_left_one_a_slot_wrapping() -> void:
+	var pod := Face.attack(5, S)
 	pod.strikes = 3
-	assert_true(pod.describe().contains("sweep"), "the entry prints its keyword")
+	assert_true(pod.describe().contains("sweep"), "the entry prints its reach")
 	var sk := Skirmish.new(2, 3)
 	sk.add_mech(_mech("S", Die.single(pod), 40, 100))
 	var row := [_ghoul(100, 10), _ghoul(100, 10), _ghoul(100, 10)]
@@ -8020,9 +8022,9 @@ func test_a_sweep_walks_its_rank_from_the_left_one_a_slot_wrapping() -> void:
 	assert_true(sk.assign(0, row[2]), "dropped on the right of a full front")
 	assert_eq([row[0].hp, row[1].hp, row[2].hp], [95, 95, 95], "the walk starts at the left whatever the drop: one strike a slot")
 	assert_true("\n".join(sk.log).contains("sweeps the front"), "the log tells the sweep")
-	# Four strikes on two foes wrap, a kill mid-walk is skipped, and a direct entry never sweeps the back while the front stands.
+	# Four strikes on two foes wrap, a kill mid-walk is skipped, and either rank may be picked.
 	var sk2 := Skirmish.new(1, 2)
-	var pod4 := Face.attack(5, L, [K.SWEEP])
+	var pod4 := Face.attack(5, S)
 	pod4.strikes = 4
 	sk2.add_mech(_mech("S", Die.single(pod4), 40, 100))
 	var a := _ghoul(7, 10)
@@ -8032,11 +8034,11 @@ func test_a_sweep_walks_its_rank_from_the_left_one_a_slot_wrapping() -> void:
 	sk2.begin()
 	sk2.start_round()
 	assert_true(sk2.front[0] == a and sk2.front[1] == b and sk2.back[0] == behind, "two in front, one behind the first")
-	assert_false(sk2.targets_for_face(sk2.mechs[0], pod4).has(behind), "a direct Sweep offers the front rank alone while it stands")
-	assert_true(sk2.assign(0, b), "dropped on b")
+	assert_true(sk2.targets_for_face(sk2.mechs[0], pod4).has(behind), "a sweep offers either rank: the Skua reaches the back after a fashion")
+	assert_true(sk2.assign(0, b), "dropped on b: the front picked")
 	assert_false(a.alive(), "a took the first and the third strike and fell")
-	assert_eq([b.hp, behind.hp], [90, 100], "b took the second and the fourth; the back rank is never swept")
-	# A rank emptied mid-walk loses the strikes left; with no front foe a direct entry walks the back.
+	assert_eq([b.hp, behind.hp], [90, 100], "b took the second and the fourth; the back rank was not the one picked")
+	# A rank emptied mid-walk loses the strikes left: the rank is the one picked.
 	var sk3 := Skirmish.new(1, 1)
 	sk3.add_mech(_mech("S", Die.single(pod), 40, 100))
 	var lone := _ghoul(4, 10)
@@ -8045,14 +8047,14 @@ func test_a_sweep_walks_its_rank_from_the_left_one_a_slot_wrapping() -> void:
 	sk3.begin()
 	sk3.start_round()
 	assert_true(sk3.assign(0, lone), "swept at a lone front foe with one behind it")
-	assert_true(not lone.alive() and back_foe.hp == 100, "the first strike kills it and the two left are lost: the rank is fixed at the spend")
+	assert_true(not lone.alive() and back_foe.hp == 100, "the first strike kills it and the two left are lost: the rank is the one picked")
 	sk3.end_round()
 	sk3.start_round()
-	assert_true(sk3.assign(0, back_foe), "the front empty, the direct entry walks the back")
+	assert_true(sk3.assign(0, back_foe), "the back rank picked")
 	assert_eq(back_foe.hp, 85, "three strikes on the one foe there")
-	# An indirect entry walks the rank of the foe it is dropped on.
+	# Dropped on a back foe with the front standing: the back rank is swept, the front untouched.
 	var sk4 := Skirmish.new(1, 2)
-	var lob := Face.attack(5, I, [K.SWEEP])
+	var lob := Face.attack(5, S)
 	lob.strikes = 2
 	sk4.add_mech(_mech("S", Die.single(lob), 40, 100))
 	var g := _ghoul(100, 10)
@@ -8655,10 +8657,9 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	cannon.splash = 3
 	cannon.heat = 10
 	cannon.ammo_per_foe_hit = 1
-	var salvo := Face.attack(5, I, [K.SPLASH])
+	var salvo := Face.attack(5, S, [K.SPLASH])
 	salvo.splash = 3
 	salvo.spends_magazine = true
-	salvo.add_keyword(K.SWEEP)
 	var reload := Face.vent(0)
 	reload.targets = Face.Target.SELF
 	reload.add_keyword(K.RAPID)
@@ -8730,7 +8731,7 @@ func test_a_multi_strike_gun_pays_its_heat_once_a_spend() -> void:
 ## 8, 27 October): a sweep whose first strike kills lays nothing on the corpse and burns the foe
 ## the strikes after it walked on to.
 func test_a_primed_sweeps_burn_lands_on_each_strikes_own_foe() -> void:
-	var pod := Face.attack(5, L, [K.SWEEP])
+	var pod := Face.attack(5, S)
 	pod.strikes = 3
 	var sk := Skirmish.new(1, 2)
 	var s := _mech("S", Die.single(pod), 40, 100)

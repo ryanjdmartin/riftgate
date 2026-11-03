@@ -1456,12 +1456,12 @@
   },
   {
    "id": "sweep",
-   "category": "keyword",
+   "category": "reach",
    "name": "Sweep",
-   "codex": "Player keyword, a weapon's. Its strikes walk the rank it is dropped on from the rank's first filled slot, left to right, one a slot, wrapping past the last; a kill clears its slot at once, so the walk skips it, a lone foe takes them all, and a rank emptied loses the strikes left. A direct entry walks the front rank while any foe stands in it, else the back; an indirect one the rank of the foe it was dropped on. Each strike is aimed at its foe, so a Shock there pops and the riders land, and an area keyword's shape rides each strike. The Skua's Flechette Pod, and the Musk Ox's salvo an ammo a strike.",
+   "codex": "Targets a rank, either one: the strikes walk the rank of the foe the entry is dropped on from the rank's first filled slot, left to right, one a slot, wrapping past the last. An empty column is skipped at any point, a kill's included, so the strikes concentrate on what stands and a lone foe takes them all; a rank emptied loses the strikes left. Each strike is aimed at its foe, so a Shock there pops and the riders land, and an area keyword's shape rides each strike. The Skua's Flechette Pod, and the Musk Ox's salvo an ammo a strike.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 2 November: \"I would make target a rank, not a unit. Starts left to right always. If it's direct, you don't get a choice in rank, if it's indirect, then you do\"; in place of the spray's random darts (25 October) and the salvo's random targets (21 October), retired by the randomness pass. The rank is fixed at the spend: the Pod's old hole in the front no longer opens the foe behind to the strikes left, which is Claude's reading of 'the front' and his to move."
+    "holes": "Ryan, 2 November: \"I would make target a rank, not a unit. Starts left to right always\"; 3 November, a reach in place of a keyword: \"let's move sweep from a keyword to a targeting mode, since that's what it is. Not direct or indirect. You pick a rank and that's the rank it hits. Empty columns at any point are skipped, so it's allowed to concentrate fire on the remainder. That's what differentiates it from spread or a potential hit-all, in that the shots aren't ever wasted. Yes, this means that the Skua gets indirect targeting after a fashion, and I think that's ok for its role.\" In place of the spray's random darts (25 October) and the salvo's random targets (21 October), retired by the randomness pass. A rank emptied mid-walk loses the strikes left, since the rank is the one picked; carrying them to the other rank is his to call."
    }
   },
   {

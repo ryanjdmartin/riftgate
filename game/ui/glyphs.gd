@@ -133,13 +133,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
 				ci.draw_line(c + d * s * 0.5, c + d * s, color, width)
 		"sweep":
-			# Sweep (3 November): the strikes walking a rank, three ticks along a bar with the
-			# arrow on its end, left to right.
+			# Sweep (3 November), the third reach: the strikes walking a rank, three ticks along a
+			# bar with the arrow on its end, left to right.
 			ci.draw_line(c + Vector2(-s, s * 0.6), c + Vector2(s, s * 0.6), color, width)
 			for i in range(3):
 				var x := -s * 0.75 + i * s * 0.6
 				ci.draw_line(c + Vector2(x, -s * 0.5), c + Vector2(x, s * 0.6), color, width * 0.8)
 			ci.draw_line(c + Vector2(s * 0.55, s * 0.2), c + Vector2(s, s * 0.6), color, width)
+		"debuff_sweep":
+			# A debuff that sweeps: the rank's bar and arrow over the status mark, as the arc lobs over it.
+			ci.draw_line(c + Vector2(-s, -s * 0.45), c + Vector2(s, -s * 0.45), color, width)
+			for i in range(3):
+				var x := -s * 0.75 + i * s * 0.6
+				ci.draw_line(c + Vector2(x, -s), c + Vector2(x, -s * 0.45), color, width * 0.8)
+			ci.draw_line(c + Vector2(s * 0.55, -s * 0.75), c + Vector2(s, -s * 0.45), color, width)
+			draw(ci, "debuff", c + Vector2(0, s * 0.35), s * 0.7, color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
@@ -550,4 +558,6 @@ static func primary_for(face: Face) -> String:
 			# A debuff (equipment aimed at a foe) wears its reach frame with the status mark inside.
 			if face.reach == Face.Reach.INDIRECT:
 				return "debuff_indirect" if face.is_debuff() else "indirect"
+			if face.reach == Face.Reach.SWEEP:
+				return "debuff_sweep" if face.is_debuff() else "sweep"   # a rank swept (3 November): the bar with its ticks and arrow
 			return "debuff_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags

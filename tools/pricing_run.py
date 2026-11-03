@@ -195,8 +195,8 @@ class Content:
             bf = b['face']
             if bf.get('kind') != f.get('kind'):
                 continue
-            if f.get('kind') == 'attack' and bf.get('reach') != f.get('reach'):
-                continue
+            if f.get('kind') == 'attack' and bf.get('reach') != ('indirect' if f.get('reach') == 'sweep' else f.get('reach')):
+                continue   # a sweep reaches either rank, so its floor is the indirect vanilla (3 November)
             if f.get('kind') in ('shield', 'vent') and bf.get('targets', 'self_ally') != f.get('targets', 'self_ally'):
                 continue
             return b['id']

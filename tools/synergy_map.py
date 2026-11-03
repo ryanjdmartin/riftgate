@@ -90,7 +90,7 @@ KEYWORDS = {
     "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "splash": [("strikes", "sets")],
     "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
     "cleanse": [("burning_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
-    "overshield": [], "rapid": [], "breach": [], "sweep": [("strikes", "sets")],
+    "overshield": [], "rapid": [], "breach": [],
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {
@@ -249,7 +249,7 @@ class Map:
                 self.add(status.get("status"), "reads", dict(p, how="gated on it"))
             if f.get("consumes"):
                 self.add(f["consumes"], "reads", dict(p, how="consumes it"))
-            if int(f.get("strikes", 1) or 1) > 1 or "sweep" in (f.get("keywords") or []) or f.get("spends_magazine"):
+            if int(f.get("strikes", 1) or 1) > 1 or f.get("reach") == "sweep" or f.get("spends_magazine"):
                 self.add("flakked", "reads", dict(p, how="strikes"))
                 self.add("overcharged", "reads", dict(p, how="strikes"))
                 self.add("primed", "reads", dict(p, how="strikes"))

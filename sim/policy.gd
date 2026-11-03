@@ -436,11 +436,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		return salvo_score(sk, ms, f)   # the Musk Ox's salvo: the magazine its price, its strikes walking the rank
 	var outcomes := damage_outcomes(ms, f, target)
 	var sweep_score := 0.0
-	if f.has(Face.Keyword.SWEEP):
-		# Sweep (2 November): the strikes walk the rank from its first filled slot, one a slot,
-		# wrapping, so each foe in the rank takes its share of the strikes, each aimed at it, and
-		# the drop's foe only picks the rank; read on the rank as it stands now.
-		var ranked := sk.sweep_targets(ms, real, target)
+	if f.reach == Face.Reach.SWEEP:
+		# Sweep (2 November; a reach since the 3rd): the strikes walk the rank picked from its
+		# first filled slot, one a slot, wrapping, so each foe in the rank takes its share of the
+		# strikes, each aimed at it, and the drop's foe only picks the rank; read on the rank as
+		# it stands now.
+		var ranked := sk.sweep_targets(target)
 		if not ranked.is_empty():
 			target = ranked[0]
 			var strikes := maxi(1, f.strikes)

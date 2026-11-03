@@ -18,7 +18,7 @@ extends RefCounted
 ## added or renamed there fails the build until it has its row here. A glyph "" draws none.
 const TABLE := {
 	# Reach.
-	"direct": ["line", "plain"], "indirect": ["indirect", "plain"],
+	"direct": ["line", "plain"], "indirect": ["indirect", "plain"], "sweep": ["sweep", "plain"],
 	# Keywords.
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
 	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"],
@@ -32,7 +32,7 @@ const TABLE := {
 	# Rules on a component.
 	"targets": ["", "plain"], "strikes": ["", "plain"],
 	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"],
-	"sweep": ["sweep", "plain"], "cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
+	"cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["volatile", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"kill_overcharge": ["overcharge", "heat"], "self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],

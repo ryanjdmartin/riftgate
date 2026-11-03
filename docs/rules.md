@@ -148,6 +148,12 @@ defeat when every machine is wrecked. There is no round limit.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (which
   explosives carry which is open: no shell carries Splash, and the Musk Ox's two locked guns
   do).
+- **Sweep** reaches any foe and targets its rank: the strikes walk the rank of the foe the
+  entry is dropped on from the rank's first filled slot, left to right, one a slot, wrapping
+  past the last; an empty column is skipped at any point, a kill's included, so the strikes
+  concentrate on what stands, a lone foe takes them all, and a rank emptied loses the strikes
+  left. Each strike is aimed at its foe, and an area keyword's shape rides each. The die shows
+  a strike's number. The Skua's Flechette Pod, and the Musk Ox's salvo an ammo a strike.
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
   whatever the gun's reach.
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
@@ -184,8 +190,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Riders land after the hits**: each strike's Cryo and Flak gather on its own foe and land
   once the spend's strikes are done, an application a strike, so no strike of a spend cashes
   or feeds on what the spend lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3 Flak 1
-  lands 5, 5 and 5 and leaves Flak 3). Shock, Expose, Lure and Disrupt land after the blow
-  too. Burn, Suppress and Web land a strike at a time, since no hit reads them.
+  lands 5, 5 and 5 and leaves Flak 3). Every rider lands so, Burn, Suppress, Web, a passive's
+  lays, Purge and a Primed machine's Burning with them, in the order the strikes earned them;
+  Shock, Expose, Lure and Disrupt land after the blow as before.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
   Empowered) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
@@ -346,13 +353,6 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
   no limit.
-- **Sweep** (a weapon's; the Skua's Flechette Pod, the Musk Ox's salvo an ammo a strike): the
-  strikes walk the rank the entry is dropped on from the rank's first filled slot, left to
-  right, one a slot, wrapping past the last; a kill clears its slot at once, so the walk skips
-  it, a lone foe takes them all, and a rank emptied loses the strikes left. A direct entry walks
-  the front while any foe stands in it, else the back, and offers only that rank; an indirect
-  one walks the rank of the foe it is dropped on. Each strike is aimed at its foe, and an area
-  keyword's shape rides each. The die shows a strike's number.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).

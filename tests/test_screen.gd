@@ -343,11 +343,10 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	var s := _screen()
 	var db := ContentDB.load_default()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
-	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3)
+	var gun := Face.attack(3, Face.Reach.SWEEP, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3)
 	gun.burn = 2
 	gun.cleave = 2
 	gun.strikes = 2
-	gun.add_keyword(Face.Keyword.SWEEP)
 	gun.component = str(db.components.keys()[0])
 	gun.tags.append_array(["beam", "flame"])
 	ms.die = Die.single(gun)
@@ -365,7 +364,7 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Sweep", "Apply Burn 2 on hit", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: A rank, Sweep", "Spread 2", "Apply Burn 2 on hit", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
@@ -441,18 +440,17 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 ## out. The plate lays the die out a row a component, one column.
 func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var db := ContentDB.load_default()
-	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3)
+	var gun := Face.attack(3, Face.Reach.SWEEP, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3)
 	gun.burn = 2
 	gun.cleave = 2
 	gun.strikes = 2
-	gun.add_keyword(Face.Keyword.SWEEP)
 	gun.component = str(db.components.keys()[0])
 	gun.tags.append_array(["beam", "flame"])
 	var lines := EntryReadout.codex_lines(gun, db, ["Test: a passive's line."])
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Sweep · Apply Burn 2 on hit · Rapid", "Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: A rank, Sweep", "Spread 2 · Apply Burn 2 on hit · Rapid", "Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}

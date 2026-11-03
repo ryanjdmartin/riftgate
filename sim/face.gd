@@ -11,7 +11,7 @@ extends RefCounted
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 ## Two reaches since 10 October (Ryan): Close, a worse Direct by design, is removed and melee
 ## is a tag. Direct was line of sight until 9 October.
-enum Reach { NONE, DIRECT, INDIRECT }
+enum Reach { NONE, DIRECT, INDIRECT, SWEEP }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
 ## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
@@ -29,7 +29,7 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## 29 October retired 3 November for the Charged primer): Shock's other payoff, every other
 ## Shocked foe on the field taking N as its blow's number, wherever it stands and whatever the
 ## gun's reach, plain, no strike being aimed at it, so its Shock stands. A weapon's alone.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, SWEEP }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open.
@@ -39,7 +39,7 @@ const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
 const REACH_NAMES := {
-	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect",
+	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.SWEEP: "sweep",
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
@@ -49,7 +49,7 @@ const KEYWORD_NAMES := {
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
 	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach", Keyword.SPLASH: "splash",
-	Keyword.DISPEL: "dispel", Keyword.SWEEP: "sweep",
+	Keyword.DISPEL: "dispel",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 ## Purge (28 October) is one id on both sides, dispel, as breach is.

@@ -783,7 +783,7 @@ func test_melee_is_a_tag_and_never_a_reach() -> void:
 	db.components["fist"] = claw
 	var refused := false
 	for e in db.validate():
-		if e.begins_with("component fist") and e.contains("reach direct or indirect"):
+		if e.begins_with("component fist") and e.contains("reach direct, indirect or sweep"):
 			refused = true
 	assert_true(refused, "melee is no reach")
 	claw["face"]["reach"] = "direct"

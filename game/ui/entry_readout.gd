@@ -170,7 +170,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null) -> Array:
 		if f.short:
 			shield_cost.append(word("(the shield cannot pay it)"))
 		out.append(parts_line("effect", shield_cost, "attr"))
-	out.append(text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f), "attr"))
+	out.append(text_line("effect", ("Target: A rank, Sweep" if f.reach == Face.Reach.SWEEP else "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach])) if f.kind == Face.Kind.ATTACK else whom(f), "attr"))
 	var land: Array = []   # how it lands
 	var lays: Array = []   # what it leaves on each foe hit
 	var after: Array = []  # Rapid's turn

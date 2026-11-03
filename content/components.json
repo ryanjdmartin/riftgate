@@ -1632,11 +1632,10 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "indirect",
+    "reach": "sweep",
     "power": 2,
     "keywords": [
-     "splash",
-     "sweep"
+     "splash"
     ],
     "splash": 1,
     "heat": 0,
@@ -1733,12 +1732,10 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "direct",
+    "reach": "sweep",
     "power": 4,
     "strikes": 2,
-    "keywords": [
-     "sweep"
-    ],
+    "keywords": [],
     "heat": 1
    },
    "passive": null,
