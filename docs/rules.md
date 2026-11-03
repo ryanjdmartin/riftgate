@@ -31,7 +31,7 @@ skirmish.
   **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
   default, or self only, or allies only, as the mark under its main mark shows: three connected
   hexes, the middle its own machine, the two beside it its allies, a filled one a machine it may
-  be spent on (all three for either), as a weapon's reach is the arrow under its sight; a reach
+  be spent on (all three for either), as a weapon's reach is the line of fire under its sight; a reach
   over every foe or every ally is a keyword (Every Foe, Every Ally). A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
   too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
@@ -143,25 +143,25 @@ defeat when every machine is wrecked. There is no round limit.
   Equipment, Shield, Vent, and the blank. Every entry reads one way: one main mark at the top
   says what it is and holds what it delivers, whom it is aimed at stands under it, its costs run
   along the foot, its keywords down the edge. Each main mark wears a lining, a thin line inside
-  it, and the die's frame does too, its cut corners drawn heavy and its square ones accented. A
-  weapon is a sight, a ring with four heavy ticks crossing it, in a little and out to its edge,
-  its blow inside, and a weapon that strikes more than once its strikes after it (2×4, a
+  it, and the die's frame does too, with accents standing outside its four corners. A weapon is
+  a sight, its ring broken where four heavy ticks cross it, in a little and out to its edge, a
+  broken circle inside it and a thin whole one round it, its blow inside, and a weapon that strikes more than once its strikes after it (2×4, a
   strike's blow and the strikes a spend). Every number a main mark holds is one size, the size
   the widest fits, a strike's blow and its strikes; equipment, a
   buff or a debuff, is gear, a cog of eight teeth, holding what it grants or lays and no
   number: a buff's status (its stacks beside the gear), a debuff's first keyword that does
   something to a foe in content's order (a reach, an area and Rapid stay on the edge), or the
   star when its effect is a rule of its own; the edge never shows it twice. A shield is its
-  shield with its number inside, in the shield's colour; a vent is a plate cut as the die is,
-  its number inside in heat's colour and three waves of steam rising off its top. An entry
-  that shields and cools (the Wake Diffuser, the Sutler's Hoist) is one mark, the shield with
-  the steam rising off its whole top: its shield's number on the left, its cooling on the right,
-  each in its colour, a bar between. A reload
+  shield with its number inside, in the shield's colour; a vent is a plate cut on its two top
+  corners, its number inside in heat's colour, three waves of steam rising off its top with two
+  thin ones among them. An entry that shields and cools (the Wake Diffuser, the Sutler's Hoist)
+  is one mark, the shield with the steam rising off its whole top: its shield's number on the
+  left, its cooling on the right, each in its colour, a bar between, a size down from the rest. A reload
   cools nothing (the Musk Ox's Quick Reload, its one piece): its shells and the ammo it loads
-  are its whole mark. The targeting marks are one width, hex cells sharing their edges, a lit one
-  a target it may take: under an entry aimed at a foe, the enemy's formation from above, three
-  front cells and two behind them, the front lit for Direct and every cell for Indirect; under
-  one spent on a machine, three cells in a row, the middle its own machine.
+  are its whole mark. The targeting marks are one width: under an entry aimed at a foe, a line of
+  fire, a solid run breaking into ever smaller dashes, straight for Direct and gently lobbed for
+  Indirect; under one spent on a machine, three hex cells sharing their edges, the middle its
+  own machine, a lit one a machine it may be spent on.
   What else a spend does sits small beside the main mark (a status's stacks, a vent's blast). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
