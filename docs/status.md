@@ -100,7 +100,7 @@ only as a blade with no tag that crosses the field, any other fires as a gun (th
 carries the tags it was fired with, the drum's among them), and a joint the firing weapon names
 kicks though it carries no mount (the Badger's wrist, which a ranged shot had skipped);
 green at 849 tests and 207,616 checks; not yet on main; its bible is v0.432 (the page's 445,
-merged onto the live v0.430 other sessions published); the hangar at 192. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
+merged onto the live v0.430 other sessions published); the hangar at 194. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
 the hit and fire round (the to-do's Ryan list).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
@@ -644,8 +644,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.431 (the
-  page's version 444, published 3 November from `claude/charming-rubin-h954bp`: the hit-reaction
+  `docs/design-bible.html` after every change. This file and the live page are v0.432 (the
+  page's version 445, published 3 November from `claude/charming-rubin-h954bp`: a melee weapon
+  lunges only as a blade with nothing that crosses the field, a shotgun firing as a gun, in the
+  tags row and the trail row; on its own v0.431 at 444, the same day: the hit-reaction
   row, the open row on the shot crossing the field, the fixed pieces in the weapon-fire row and the
   plume trial in the reference-glass row, three-way merged onto the live v0.430 other sessions
   published at 441 to 443 (the Hold The Line notes and five Wainwright & Sutler rows), with no
@@ -687,7 +689,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 192 (3 November, from
+  acts on a reloaded page). At the page's version 194 (3 November, from
+  `claude/charming-rubin-h954bp`: `motion.js` with a melee weapon lunging only as a blade with
+  nothing that crosses the field and a fixed gun's joint kicking without a mount, three-way merged
+  onto 193, which another session published (its held statuses: the count displays, the held and
+  locked spins, the page's Statuses panel), its page sent as 193 had it, the merge without a
+  conflict, `edits` empty), on 192 (3 November, from
   `claude/charming-rubin-h954bp`: `motion.js` with the hit reactions (Hit and Lose under Blows),
   the fixed weapons' marked business ends and the plume trial (Exhaust: Plume or Ring), the Honey
   Badger's, the Prairie Dog's and the Stingray's models and the five rigs that carry them; onto
