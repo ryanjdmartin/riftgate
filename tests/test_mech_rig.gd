@@ -1657,21 +1657,51 @@ func test_a_weapons_slices_take_turns_and_wind_up_to_their_blow() -> void:
 
 func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
 	# Ryan, 3 November: after the lights go, "they should slump or collapse after, limbs dropping,
-	# flyers and hovers landing, fans stopping, idle spins stopping".
-	var pair := _rig_for("badger")
+	# flyers and hovers landing, fans stopping, idle spins stopping"; the second notes the same day:
+	# "don't fall through the floor, and don't do weird impossible leans ... it can keep its feet
+	# planted and just sink using its ankles and knees. Same with the bipeds, sink using knees and
+	# ankles and only slump forward at the waist. The bipeds also swing their arms behind them when
+	# they should just go slack at the elbows".
+	var pair := _rig_for("nemesis")
 	var rig: MechRig = pair[0]
+	var feet := {}
+	for side in ["l", "r"]:
+		feet[side] = rig._in_model(rig.joints["ankle_" + side])
 	rig.kill()
-	rig.tick(MechRig.COLLAPSE_AT + 2.0)
-	var fell := 0
-	for name in rig.joints.keys():
-		if rig._want_rot.has(name):
-			fell += 1
-	assert_true(fell >= 2, "its loose joints fall (%d)" % fell)
-	assert_true(rig.body.position.y < -0.5, "its body sinks (%.2f)" % rig.body.position.y)
-	assert_true(rig.body.rotation.x < 0.0, "and tips nose down")
+	rig.tick(MechRig.COLLAPSE_AT + 3.0)
+	assert_true(rig.body.position.y < -3.0, "a walker sinks (%.2f)" % rig.body.position.y)
+	assert_true(rig.body.rotation.length() < 0.001, "straight down: nothing tips it")
+	for side in ["l", "r"]:
+		var now: Transform3D = rig._in_model(rig.joints["ankle_" + side])
+		var moved: float = (now.origin + rig.body.position).distance_to((feet[side] as Transform3D).origin)
+		var turned := rad_to_deg(now.basis.get_rotation_quaternion().angle_to((feet[side] as Transform3D).basis.get_rotation_quaternion()))
+		assert_true(moved < 0.3 and turned < 1.0, "each foot stays where it stands and as it stands (%s: %.2f, %.1f degrees)" % [side, moved, turned])
+	assert_true(float(rig._want_rot.get("waist", Vector3.ZERO).x) < -10.0, "a biped slumps forward at the waist")
+	for side in ["l", "r"]:
+		assert_true(absf(float(rig._want_rot.get("shoulder_" + side, Vector3.ZERO).x)) < 15.0, "its arm hangs where it is, never swung back (%s)" % side)
+		assert_true(absf(float(rig._want_rot.get("elbow_" + side, Vector3.ZERO).x)) > 20.0, "it goes slack at the elbow (%s)" % side)
+	assert_true(rig._lowest_under(rig.model) + rig.body.position.y > -0.5, "and nothing goes through the floor")
 	rig.revive()
 	rig.tick(2.0)
 	assert_true(rig._want_rot.is_empty() and absf(rig.body.position.y) < 0.05, "and stands again, revived")
+	pair[1].free()
+	# A tracked machine sinks nowhere; what it carries hangs, kept above the floor.
+	pair = _rig_for("badger")
+	rig = pair[0]
+	var low := rig._lowest_under(rig.model)
+	rig.kill()
+	rig.tick(MechRig.COLLAPSE_AT + 3.0)
+	assert_true(absf(rig.body.position.y) < 0.01, "a machine on tracks stays on them")
+	assert_true(rig._lowest_under(rig.model) > minf(0.0, low) - 0.3, "and its claw rests on the floor, never through it")
+	pair[1].free()
+	# A flyer comes down onto what hangs lowest once it has slumped (MechView3D lands it there).
+	pair = _rig_for("goshawk")
+	rig = pair[0]
+	rig.airborne = true
+	rig.kill()
+	rig.tick(MechRig.COLLAPSE_AT + 3.0)
+	assert_true(absf(rig.body.position.y) < 0.01, "an airborne machine does not sink on itself")
+	assert_true(absf(rig.collapse_floor - rig._lowest_under(rig.model)) < 0.5, "it lands on its lowest point (%.2f, %.2f)" % [rig.collapse_floor, rig._lowest_under(rig.model)])
 	pair[1].free()
 	pair = _rig_for("stingray")
 	rig = pair[0]

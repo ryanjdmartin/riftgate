@@ -556,6 +556,26 @@ func test_a_melee_weapon_lunges_only_when_nothing_about_it_crosses_the_field() -
 	assert_false(MuzzleFlare.lunges(["ballistic"], "barrel") or MuzzleFlare.lunges([], "blade"), "no melee, no lunge")
 
 
+func test_a_lost_flyer_comes_down_onto_its_lowest_point() -> void:
+	# Ryan, 3 November, the second notes: "don't fall through the floor": a flyer's wings reach below its
+	# origin and a hover's skirt stands above it, so a lost one lands on what hangs lowest.
+	var field := {"focal": 900.0, "height": 2.0, "principal": Vector2(360.0, 300.0), "at": Vector2(0.0, 6.0),
+		"window": Rect2(0.0, 0.0, 200.0, 200.0), "fill": 0.8, "lift": 0.4, "turn": 0.0}
+	for id in ["goshawk", "puffin"]:
+		var view := MechView3D.make_on_floor(id, "kestrel", "clean", field)
+		view.lose()
+		for _i in range(60):
+			view._process(0.05)
+		var lands := -view.rig.collapse_floor * view._field_scale
+		assert_true(view.rig.airborne, "a machine off the floor is airborne (%s)" % id)
+		assert_true(absf(view._stage.position.y - lands) < 0.001, "it comes down until its lowest point rests on the floor (%s: %.3f, %.3f)" % [id, view._stage.position.y, lands])
+		if id == "goshawk":
+			assert_true(lands > 0.0, "a flyer's wings below its origin hold it short of the floor under that origin")
+		else:
+			assert_true(lands < 0.0, "a hover settles past its origin onto its skirt")
+		view.free()
+
+
 func test_a_plume_is_gone_at_rest_and_full_at_a_burn() -> void:
 	# Ryan, 3 November: the plume "needs to dissapear when idle".
 	assert_eq(MechView3D.plume_k(2.0, 2.0), 0.0, "a booster at its rest light shows none")

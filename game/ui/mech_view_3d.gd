@@ -1000,14 +1000,18 @@ func _process(delta: float) -> void:
 			_pivot.rotation.x = sin(_t * 0.7 + sway_phase * 0.5) * sway_pitch * _sway_k
 			_pivot.position.y = (sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5) * _sway_k
 	# A lost machine comes down onto the floor (Ryan, 3 November: "flyers and hovers landing"): its
-	# lift and its hover's drift ease out together after its lights have begun to go.
+	# lift and its hover's drift ease out together after its lights have begun to go, until its lowest
+	# point standing rests on the floor (MechRig.collapse_floor), never through it (the second notes:
+	# "don't fall through the floor"; a flyer's wings reach below its origin, a hover's skirt stands
+	# above it).
 	if _land_t >= 0.0:
 		_land_t += delta
 		var g := clampf((_land_t - MechRig.COLLAPSE_AT) / LAND, 0.0, 1.0)
 		var k := g * g * (3.0 - 2.0 * g)
 		_sway_k = 1.0 - k
 		if _stage != null and not field.is_empty():
-			_stage.position.y = float(field.get("lift", 0.0)) * (1.0 - k)
+			var lift := float(field.get("lift", 0.0))
+			_stage.position.y = lerpf(lift, -rig.collapse_floor * _field_scale if rig.airborne else 0.0, k)
 		if g >= 1.0:
 			_land_t = -1.0
 	# A grounded machine's idle is its acts, what the pilot does with it every few seconds
@@ -1075,6 +1079,7 @@ static func hit_k(t: float) -> float:
 func lose() -> void:
 	if _model == null or rig.dead:
 		return
+	rig.airborne = float(field.get("lift", 0.0)) > 0.0   # a flyer or a hover comes down onto its lowest point
 	rig.kill()
 	_lose_t = 0.0
 	_land_t = 0.0

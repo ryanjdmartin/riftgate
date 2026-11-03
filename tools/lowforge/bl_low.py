@@ -366,6 +366,16 @@ class Tiles:
             # part that burns always at ten times its rest light (#ff5900) and flares to sixteen
             # (#ff6e00), red and green alone and short of the orange that reads yellow to Ryan.
             img = np.tile(np.array([0.26, 0.091, 0.0], np.float32), (TILE, TILE, 1))
+        elif kind == "fume":
+            # The Arsenal's rear vents, its creepy glowing exhaust (Ryan, 3 November: "The standard
+            # vents could use more yellow too, it looked more 'sinister' before when it was more of a
+            # sickly orange-yellow than a deep red"; they had worn the lit tile's yellow, which burned
+            # near white at eight times its rest light, then the furnace's orange-red): one even
+            # orange-yellow, red and green alone, banked for a part that burns always at five times its
+            # rest light (the game's render, #ffa?00 in the light: a sickly orange-yellow) and flares to
+            # sixteen as a gold short of lemon (a yellow that pale can read green to Ryan, good's
+            # colour), never white. Its colour carries nothing in play, so it is free to read yellow.
+            img = np.tile(np.array([0.28, 0.168, 0.0], np.float32), (TILE, TILE, 1))
         elif kind == "tesla":
             # Lightning in a coil (Ryan, 31 October, of the Dingo's Translocator: "classic 'tesla
             # lightning blue'"): an electric cyan, banked so its flare to sixteen times its rest

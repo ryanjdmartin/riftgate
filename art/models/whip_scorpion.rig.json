@@ -135155,6 +135155,24 @@
   "hp_3": "",
   "hp_4": "maxigun"
  },
+ "halo": [
+  "vent_heat_l1",
+  "vent_heat_l2",
+  "vent_heat_r1",
+  "vent_heat_r2",
+  "vent_bore_l1_floor",
+  "vent_bore_l2_floor",
+  "vent_bore_r1_floor",
+  "vent_bore_r2_floor"
+ ],
+ "fires": {
+  "heliographic_siphon": {
+   "act": "flash",
+   "from": 0.9,
+   "to": 3.0,
+   "blow": 2.0
+  }
+ },
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_4": "barrel"

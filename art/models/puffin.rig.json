@@ -233,7 +233,29 @@
     {
      "parts": [
       "repulsor_l",
-      "repulsor_r",
+      "repulsor_r"
+     ],
+     "keys": [
+      [
+       1.45,
+       0.0
+      ],
+      [
+       1.8,
+       18.0
+      ],
+      [
+       3.6,
+       18.0
+      ],
+      [
+       4.5,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
       "lift_nozzle"
      ],
      "keys": [

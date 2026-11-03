@@ -128,9 +128,18 @@ slices in turn and a slice's wind-up (the Nemesis's jab and cross, the Ammit's b
 Skua's burst, the Buzzard's cannon, its turn held through it), acts that only fire, the plumes
 gone at rest and Aphelion's boosters plumed by rule with Kestrel's blooming larger (the Kite's
 drivers plumed), the Stingray's fans re-banked, the Puffin's bank and pucks, the Lammergeier's
-drones, and the hangar's Melee retired; green at 938 tests and 255,417 checks; not yet on main;
-its bible is v0.433 (the Pages line); the hangar the Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps,
-the hit and fire round and his notes of 3 November (the to-do's Ryan list).
+drones, and the hangar's Melee retired; then his second notes that day: the slump rebuilt on its
+feet (a walker sinking on its planted limbs by two-link reach, a biped slumping at the waist, every
+other loose joint hanging where its weight takes it, outermost first, above the floor; a flyer or
+hover landing on what hangs lowest; the game and the hangar measured to agree on every model, the
+hangar standing flyers and hovers off its grid as a fight does), the Buzzard's cannon on an act of
+its own and the hangar's turn held through a slice, the Nemesis's longer punch, the Kite's larger
+plumes, the Puffin's repulsors after its plates, the Arsenal's rear vents on a sickly amber tile
+and its chest's hotter flares, and the Wainwright & Sutler pieces that fired with nothing firing
+from their acts (the Musk Ox's howitzer on its own), the Whip Scorpion's vents haloed; green at 939
+tests and 255,506 checks; not yet on main; its bible is v0.434 (the Pages line); the hangar the
+Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps, the hit and fire
+round and both sets of his notes of 3 November (the to-do's Ryan list).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times

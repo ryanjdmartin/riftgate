@@ -79,18 +79,20 @@ const JOLT_UP := 0.05         # in this many seconds,
 const JOLT_DOWN := 0.34       # and settling back over this long
 const GUTTER := 0.9           # a machine lost: its lit parts gutter out over this many seconds (kill)
 # And then it slumps (Ryan, 3 November: "they should slump or collapse after, limbs dropping, flyers
-# and hovers landing, fans stopping, idle spins stopping"): a heuristic every model shares.
+# and hovers landing, fans stopping, idle spins stopping"), one rule every model shares, worked on
+# its own frame; the second notes the same day: "don't fall through the floor, and don't do weird
+# impossible leans ... it can keep its feet planted and just sink using its ankles and knees. Same
+# with the bipeds, sink using knees and ankles and only slump forward at the waist. The bipeds also
+# swing their arms behind them when they should just go slack at the elbows" (_collapse_wants).
 const COLLAPSE_AT := 0.3       # seconds into the gutter that a lost machine starts to go
 const COLLAPSE_HEFT := 0.3     # its servos' time constant as it goes: a drop with weight, not a pose
-const COLLAPSE_DROOP := 0.8    # a loose joint falls this share of the way to its limit on the side that lowers what it carries
-const COLLAPSE_FREE := 40.0    # or this many degrees, with no limit that way
-const COLLAPSE_FOLD := 0.45    # a knee folds this share of the way to its deeper limit
-const COLLAPSE_SINK := 0.07    # the body sinks this share of the machine's size
-const COLLAPSE_PITCH := 7.0    # and tips this many degrees nose down
-const COLLAPSE_ROLL := 5.0     # and leans up to this many to one side
+const COLLAPSE_SINK := 0.28    # a walker sinks this share of its shortest planted limb's height, each foot where it stands
+const COLLAPSE_WAIST := 16.0   # a biped's waist slumps forward this many degrees (a walker with a hand on the floor keeps its back)
+const COLLAPSE_PASSES := 2     # how often the slack joints settle, each hanging what it carries from where the last pass left it
+const COLLAPSE_TOUCH := 0.02   # a limb whose end comes within this share of the machine's size of the floor stands on it
 const SPIN_STOP := 1.4         # seconds its fans, rotors and idle spins take to run down
-## The joints a collapse leaves alone (a limb it cannot drop sensibly without its feet in the ground,
-## a spin, a mechanism), by how their names begin; a knee folds instead (COLLAPSE_FOLD).
+## The joints the slack leaves alone (a leg's, which sinks planted or stays, a waist, which slumps,
+## a spin, a mechanism, a turn about up), by how their names begin.
 const COLLAPSE_SKIP := ["hip", "knee", "ankle", "toe", "foot", "coxa", "wheel", "steer", "caster", "tread", "rotor",
 	"fan", "drum", "louvre", "shutter", "vent", "valve", "run", "salvo", "top_mouth", "top_lamp", "cell", "recoil",
 	"capacitor", "rudder", "waist", "yaw", "turret", "sensor", "eye"]
@@ -198,6 +200,9 @@ var _gutter := -1.0                # seconds into its lit parts guttering out (k
 var _gutter_mats: Array = []       # [material, its light at rest] for every lit part, as the kill found them
 var _size := -1.0                  # the model's longest side, measured once (_model_size), for the jolt
 var _collapse := -1.0              # seconds since a lost machine was killed, for its slump (kill); negative while standing
+var _centroids: Dictionary = {}     # mesh -> [its vertex centroid, its vertex count] (_centroid_of)
+var airborne := false              # a flyer or a hover (the view sets it): lost, it comes down onto its lowest point rather than sinking on its limbs
+var collapse_floor := 0.0          # the floor a lost machine's slump keeps to, in its own frame: an airborne one's lowest point standing, where the view lands it (MechView3D.lose)
 var _spin_k := 1.0                 # how much of its turn every spinner keeps: running down to nothing as a lost machine dies
 var _fire_turn: Dictionary = {}    # a fixed component -> how many times it has fired, so its slices take turns (fire_slice)
 var _flares: Array = []            # [{node, mat, look, t}] a muzzle flare on its look's beat (fire_flare)
@@ -1041,35 +1046,60 @@ func _step(dt: float) -> bool:
 	return moved
 
 
-## A lost machine's slump (kill), once its lights are going: each loose joint falls toward the limit
-## on the side that lowers what it carries (an arm hangs, a gun dips, a head droops, a plate drops),
-## a knee folds toward its deeper limit, and the body sinks and tips nose down, leaning a little to
-## one side; the servos carry it there heavily (COLLAPSE_HEFT). The legs' other joints, the spins
-## and the mechanisms stay where they are (COLLAPSE_SKIP); the view lands what flies (MechView3D.lose).
+## A lost machine's slump (kill), worked out once from its pose at rest (a held form's with it) as
+## its lights go, its servos carrying it there heavily (COLLAPSE_HEFT):
+## - a walker sinks on the limbs it stands on (_planted_limbs: a leg's hip, knee and ankle, and an
+##   arm's shoulder, elbow and wrist when its hand is on the floor), every foot kept where it stands
+##   and as it stands, by as much of COLLAPSE_SINK as every such limb reaches within its limits;
+## - a biped (a walker with no hand on the floor) slumps forward at the waist (COLLAPSE_WAIST);
+## - every other loose joint hangs what it carries where its weight takes it, the outermost first,
+##   so an elbow goes slack before its shoulder and an arm hangs instead of swinging back; within its
+##   limits and never below the floor (what already reached below it at rest going no lower);
+## - nothing tips the body: a walker sinks straight down, anything else stays where it stands, and a
+##   flyer or a hover (airborne) comes down onto its lowest point, the view landing it on
+##   collapse_floor (MechView3D.lose), its loose parts hanging no lower than that.
+## The legs' other joints, the spins and the mechanisms stay where they are (COLLAPSE_SKIP).
 func _collapse_wants() -> void:
 	if model == null:
 		return
 	if _size < 0.0:
 		_size = _model_size()
+	var held := {}
+	var deg := {}   # joint -> the authored degrees it is turned to over its rest while this works
 	for name in joints.keys():
-		if spinners.has(name) or _spin.has(name):
-			continue
+		held[name] = (joints[name] as Node3D).rotation
+		deg[name] = _form_rot.get(name, Vector3.ZERO)
+		_turn_to(name, deg[name])
+	var standing := _lowest_under(model)
+	collapse_floor = standing if airborne else 0.0
+	var sink := 0.0
+	var limbs: Array = []
+	if not airborne:
+		limbs = _planted_limbs(COLLAPSE_TOUCH * maxf(1.0, _size))
+		var turns := _sink_turns(limbs, deg)
+		sink = float(turns[0])
+		var add: Dictionary = turns[1]
+		for name in add.keys():
+			deg[name] = (deg[name] as Vector3) + (add[name] as Vector3)
+			_turn_to(name, deg[name])
+	var planted := {}
+	var hands := false
+	for trio in limbs:
+		for name in trio:
+			planted[name] = true
+		hands = hands or not str(trio[0]).begins_with("hip")
+	var legs := not limbs.is_empty()
+	if legs and not hands:
+		for name in joints.keys():
+			if str(name).begins_with("waist"):
+				deg[name] = (deg[name] as Vector3) + Vector3(-COLLAPSE_WAIST, 0.0, 0.0)   # pitch, whatever turn it is built for: forward is down at the front
+				_turn_to(name, deg[name])
+	var floor_y := collapse_floor + sink   # the floor in the model's frame once it has sunk
+	var slack: Array = []   # [depth, name], the outermost first
+	var floor_of := {}      # joint -> the floor what it carries keeps to: the floor, or lower if it reached lower at rest
+	for name in joints.keys():
 		var key := str(name)
-		var m: Dictionary = meta.get(name, {})
-		var axis := str(m.get("axis", axis_for(key)))
-		var i := ["pitch", "yaw", "roll"].find(axis)
-		if i < 0 or axis == "yaw":
-			continue
-		var lim: Dictionary = m.get("limits", {})
-		var edges = lim.get(axis, null)
-		var bounded: bool = edges is Array and (edges as Array).size() == 2
-		var v := Vector3.ZERO
-		if key.begins_with("knee"):
-			if bounded:
-				var lo := float(edges[0])
-				var hi := float(edges[1])
-				v[i] = (hi if absf(hi) >= absf(lo) else lo) * COLLAPSE_FOLD
-				_want_rot[name] = v
+		if spinners.has(name) or _spin.has(name) or planted.has(name):
 			continue
 		var skip := false
 		for w in COLLAPSE_SKIP:
@@ -1077,44 +1107,275 @@ func _collapse_wants() -> void:
 				skip = true
 		if skip:
 			continue
-		var j: Node3D = joints[name]
-		var centre = _subtree_centre(j)
-		if centre == null:
+		var low := _lowest_under(joints[name])
+		if low == INF:
 			continue
-		var at := _in_model(j)   # in the model's own frame, its up the world's, in the tree or not
-		var r: Vector3 = (centre as Vector3) - at.origin
-		var u: Vector3 = [at.basis.x, at.basis.y, at.basis.z][i].normalized()
-		var dy := u.cross(r).y   # how what it carries rises, per radian turned the positive way
-		if absf(dy) < 0.05 * maxf(1.0, r.length()):
-			continue   # already hanging: nothing to fall
-		var sgn := -signf(dy)
-		var deg := COLLAPSE_FREE * sgn
-		if bounded:
-			var edge := float(edges[1]) if sgn > 0.0 else float(edges[0])
-			if edge * sgn <= 0.0:
-				continue   # it cannot fall that way
-			deg = edge * COLLAPSE_DROOP
-		v[i] = deg
-		_want_rot[name] = v
-	_body_want_slide = Vector3(0.0, 0.0, -COLLAPSE_SINK * _size)   # authored: x right, y forward, z up (offset_of)
-	_body_want_rot = Vector3(-COLLAPSE_PITCH, 0.0, (_rng.randf_range(-COLLAPSE_ROLL, COLLAPSE_ROLL) if _rng != null else COLLAPSE_ROLL * 0.5))
+		floor_of[name] = minf(floor_y, low)
+		slack.append([_joint_depth(joints[name]), name])
+	slack.sort_custom(func(a, b): return int(a[0]) > int(b[0]))
+	for _pass in range(COLLAPSE_PASSES):
+		for row in slack:
+			_hang(row[1], deg, float(floor_of[row[1]]))
+	if airborne:
+		collapse_floor = _lowest_under(model)   # it lands on what hangs lowest once it has slumped (never lower than it stood)
+	for name in joints.keys():
+		var want: Vector3 = (deg[name] as Vector3) - (_form_rot.get(name, Vector3.ZERO) as Vector3)
+		if want.length() > 0.01:
+			_want_rot[name] = want
+		(joints[name] as Node3D).rotation = held[name]
+	_body_want_slide = Vector3(0.0, 0.0, -sink)   # authored: x right, y forward, z up (offset_of)
+	_body_want_rot = Vector3.ZERO
 
 
-## The middle of what a joint carries, in the model's frame: the centres of every surface under it
-## (a halo, a flare or a plume aside); null when it carries none.
+## Turns a joint to `deg` authored degrees over its rest (the slump's sums; put back after).
+func _turn_to(name, deg_v: Vector3) -> void:
+	(joints[name] as Node3D).rotation = _rest[name] + euler_of(deg_v)
+
+
+## How many joints stand above a joint in the model, for the slack's order.
+func _joint_depth(node: Node) -> int:
+	var n := 0
+	var p := node.get_parent()
+	while p != null and p != model:
+		if p is Node3D and joints.values().has(p):
+			n += 1
+		p = p.get_parent()
+	return n
+
+
+## The lowest point of what a node carries, in the model's frame: the shown surfaces under it (a
+## halo, a flare, a plume, an outline's hull or anything hidden aside); INF when it carries none.
+func _lowest_under(node: Node) -> float:
+	var low := INF
+	var stack: Array = [node]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is Node3D and not (n as Node3D).visible:
+			continue
+		for c in n.get_children():
+			stack.append(c)
+		if n is MeshInstance3D and not n.has_meta("halo") and not n.has_meta("plume") and not n.has_meta("is_trace"):
+			var mi := n as MeshInstance3D
+			if mi.mesh == null:
+				continue
+			var xf := _in_model(mi)
+			var bb := mi.get_aabb()
+			for k in range(8):
+				low = minf(low, (xf * bb.get_endpoint(k)).y)
+	return low
+
+
+## The limbs a walker stands on, each [root, middle, end]: a leg's hip, knee and ankle, and an arm's
+## shoulder, elbow and wrist (or hand) when what its end carries is on the floor (within `touch`): the
+## Baboon's knuckles, the Ammit's low hands.
+func _planted_limbs(touch: float) -> Array:
+	var out: Array = []
+	for name in joints.keys():
+		var key := str(name)
+		var trio: Array = []
+		if key.begins_with("knee"):
+			var s := key.substr(4)
+			trio = ["hip" + s, key, "ankle" + s]
+		elif key.begins_with("elbow"):
+			var s := key.substr(5)
+			trio = ["shoulder" + s, key, ("wrist" + s) if joints.has("wrist" + s) else ("hand" + s)]
+		else:
+			continue
+		if not joints.has(trio[0]) or not joints.has(trio[2]):
+			continue
+		if _lowest_under(joints[trio[2]]) > touch:
+			continue   # it does not stand on this
+		out.append(trio)
+	var legs := false
+	for trio in out:
+		legs = legs or str(trio[0]).begins_with("hip")
+	return out if legs else []   # a hand alone on the floor (the Badger's claw resting) is no stance
+
+
+## How far a walker sinks and the turns that keep it standing: [sink, {joint: degrees added}], the
+## most of COLLAPSE_SINK that every limb in `limbs` reaches within its limits with its belly still
+## clear of the floor (the Armadillo's shell rides low over its stubby legs), halved down to it
+## (nought, and no turns, when none can).
+func _sink_turns(limbs: Array, deg: Dictionary) -> Array:
+	if limbs.is_empty():
+		return [0.0, {}]
+	var span := INF
+	for trio in limbs:
+		span = minf(span, _in_model(joints[trio[0]]).origin.y - _in_model(joints[trio[2]]).origin.y)
+	var want := COLLAPSE_SINK * maxf(0.0, span)
+	var floor_y := minf(0.0, _lowest_under(model))   # what stood a touch below the floor stays there
+	var best := [0.0, {}]
+	var lo := 0.0
+	var hi := want
+	for step in range(12):
+		var d := hi if step == 0 else (lo + hi) * 0.5
+		var turns := {}
+		var ok := d > 0.0
+		for trio in limbs:
+			if not ok:
+				break
+			var t := _sink_limb(trio, d, deg)
+			if t.is_empty():
+				ok = false
+			else:
+				turns.merge(t)
+		if ok:
+			for name in turns.keys():
+				_turn_to(name, (deg[name] as Vector3) + (turns[name] as Vector3))
+			ok = _lowest_under(model) - d >= floor_y - 0.05   # in the model's frame the floor rises by what it sinks
+			for name in turns.keys():
+				_turn_to(name, deg[name])
+		if ok:
+			best = [d, turns]
+			if step == 0:
+				break
+			lo = d
+		else:
+			hi = d
+	return best
+
+
+## The degrees a planted limb's root, middle and end add so that its end stays where it stands, and
+## as it stands, while the machine sinks `d` in its own frame: a two-link reach in the plane its
+## middle joint turns in, the knee folding the way it folds at rest, the end turning back what the
+## root and middle turned. Empty when it cannot (out of reach, out of that plane, past a limit).
+func _sink_limb(trio: Array, d: float, deg: Dictionary) -> Dictionary:
+	var xr := _in_model(joints[trio[0]])
+	var xm := _in_model(joints[trio[1]])
+	var xe := _in_model(joints[trio[2]])
+	var u := (xm.basis * axis_vector("pitch")).normalized()   # the limb's plane: its middle joint's axle
+	var ur := (xr.basis * axis_vector("pitch")).normalized()
+	var ue := (xe.basis * axis_vector("pitch")).normalized()
+	if absf(u.dot(ur)) < 0.95 or absf(u.dot(ue)) < 0.95:
+		return {}
+	var a := Vector3.UP
+	var b := u.cross(a)
+	if b.length() < 0.5:
+		return {}
+	b = b.normalized()   # (up, b) so that a turn the positive way about u climbs from up toward b
+	var h := xr.origin
+	var k2 := Vector2((xm.origin - h).dot(a), (xm.origin - h).dot(b))
+	var e2 := Vector2((xe.origin - h).dot(a), (xe.origin - h).dot(b))
+	var t2 := e2 + Vector2(d, 0.0)   # the end stays put as the machine sinks: d nearer the root
+	var l1 := k2.length()
+	var l2 := (e2 - k2).length()
+	var reach := t2.length()
+	if l1 < 0.001 or l2 < 0.001 or reach >= l1 + l2 - 0.001 or reach <= absf(l1 - l2) + 0.001:
+		return {}
+	var shin0 := e2 - k2
+	var bend := signf(k2.x * shin0.y - k2.y * shin0.x)
+	var aim := atan2(t2.y, t2.x)
+	var spread := acos(clampf((l1 * l1 + reach * reach - l2 * l2) / (2.0 * l1 * reach), -1.0, 1.0))
+	for sg in [1.0, -1.0]:
+		var a1: float = aim + sg * spread
+		var k := Vector2(cos(a1), sin(a1)) * l1
+		var shin := t2 - k
+		if bend != 0.0 and signf(k.x * shin.y - k.y * shin.x) != bend:
+			continue
+		var d_root := wrapf(a1 - atan2(k2.y, k2.x), -PI, PI)
+		var d_mid := wrapf((atan2(shin.y, shin.x) - a1) - (atan2(shin0.y, shin0.x) - atan2(k2.y, k2.x)), -PI, PI)
+		var d_end := -(d_root + d_mid)
+		var out := {
+			trio[0]: Vector3(rad_to_deg(d_root) * signf(u.dot(ur)), 0.0, 0.0),
+			trio[1]: Vector3(rad_to_deg(d_mid), 0.0, 0.0),
+			trio[2]: Vector3(rad_to_deg(d_end) * signf(u.dot(ue)), 0.0, 0.0),
+		}
+		for name in out.keys():
+			var m: Dictionary = meta.get(name, {})
+			if str(m.get("axis", "pitch")) != "pitch":
+				return {}
+			var total: Vector3 = (deg[name] as Vector3) + (out[name] as Vector3)
+			if clamp_degrees(total, m.get("limits", {})).distance_to(total) > 0.5:
+				return {}   # past a limit: it cannot sink this far
+		return out
+	return {}
+
+
+## Hangs what a slack joint carries where its weight takes it (_collapse_wants): the turn about its
+## own axle that brings the middle of what it carries under it, within its limits, eased back so what
+## it carries keeps above `floor_y`; `deg` takes the result and the joint is left turned to it.
+func _hang(name, deg: Dictionary, floor_y: float) -> void:
+	var j: Node3D = joints[name]
+	var m: Dictionary = meta.get(name, {})
+	var axis := str(m.get("axis", axis_for(str(name))))
+	var i := ["pitch", "yaw", "roll"].find(axis)
+	if i < 0:
+		return
+	var centre = _subtree_centre(j)
+	if centre == null:
+		return
+	var xj := _in_model(j)
+	var u := (xj.basis * axis_vector(axis)).normalized()
+	var r: Vector3 = (centre as Vector3) - xj.origin
+	var g := Vector3.DOWN
+	var rp := r - u * r.dot(u)
+	var gp := g - u * g.dot(u)
+	if gp.length() < 0.3 or rp.length() < 0.05:
+		return   # it turns about up, or carries nothing off its axle
+	var turn := rad_to_deg(atan2(u.dot(rp.cross(gp)), rp.dot(gp)))
+	var now: Vector3 = deg[name]
+	var lim: Dictionary = m.get("limits", {})
+	var edges = lim.get(axis, null)
+	if absf(turn) > 170.0 and edges is Array and (edges as Array).size() == 2:
+		# balanced on top, as like to fall one way as the other: the way its limits give it room
+		turn = absf(turn) * (1.0 if float(edges[1]) - now[i] >= now[i] - float(edges[0]) else -1.0)
+	var to := now
+	to[i] = now[i] + turn
+	to = clamp_degrees(to, lim)
+	_turn_to(name, to)
+	if _lowest_under(j) < floor_y - 0.01:
+		var lo := 0.0   # the share of the turn that keeps above the floor
+		var hi := 1.0
+		for _s in range(10):
+			var f := (lo + hi) * 0.5
+			_turn_to(name, now.lerp(to, f))
+			if _lowest_under(j) < floor_y - 0.01:
+				hi = f
+			else:
+				lo = f
+		to = now.lerp(to, lo)
+		_turn_to(name, to)
+	deg[name] = to
+
+
+## The middle of what a joint carries, in the model's frame: the centroid of every vertex shown
+## under it (a halo, a flare, a plume, an outline's hull or anything hidden aside), so it reads the
+## same whether the parts are welded into a few meshes (the game) or not (the hangar); null when it
+## carries none.
 func _subtree_centre(j: Node3D):
 	var sum := Vector3.ZERO
 	var n := 0
 	var stack: Array = [j]
 	while not stack.is_empty():
 		var node: Node = stack.pop_back()
+		if node is Node3D and not (node as Node3D).visible:
+			continue
 		for c in node.get_children():
 			stack.append(c)
-		if node is MeshInstance3D and not node.has_meta("halo") and not node.has_meta("plume"):
+		if node is MeshInstance3D and (node as MeshInstance3D).mesh != null and not node.has_meta("halo") and not node.has_meta("plume") and not node.has_meta("is_trace"):
 			var mi := node as MeshInstance3D
-			sum += _in_model(mi) * mi.get_aabb().get_center()
-			n += 1
+			var c: Array = _centroid_of(mi.mesh)
+			if int(c[1]) > 0:
+				sum += (_in_model(mi) * (c[0] as Vector3)) * float(c[1])
+				n += int(c[1])
 	return sum / float(n) if n > 0 else null
+
+
+## A mesh's own vertex centroid and count, [Vector3, int], worked out once a mesh.
+func _centroid_of(mesh: Mesh) -> Array:
+	if _centroids.has(mesh):
+		return _centroids[mesh]
+	var sum := Vector3.ZERO
+	var n := 0
+	for si in range(mesh.get_surface_count()):
+		var verts = mesh.surface_get_arrays(si)[Mesh.ARRAY_VERTEX]
+		if verts is PackedVector3Array:
+			for v in verts:
+				sum += v
+			n += (verts as PackedVector3Array).size()
+	var out := [sum / float(n) if n > 0 else Vector3.ZERO, n]
+	_centroids[mesh] = out
+	return out
 
 
 ## A node's transform in the model's own frame, by its parent chain (outside the tree too).
@@ -1172,6 +1433,7 @@ func revive() -> void:
 		_light_to(pair[0], _rest_of(pair[0]), 1.0)
 	_gutter_mats.clear()
 	_collapse = -1.0
+	collapse_floor = 0.0
 	_spin_k = 1.0
 	_want_rot.clear()
 	_body_want_rot = Vector3.ZERO

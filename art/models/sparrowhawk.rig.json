@@ -2020,14 +2020,14 @@
   {
    "node": "plume_1",
    "part": "driver_ring",
-   "reach": 20.0,
-   "breadth": 7.5
+   "reach": 25.0,
+   "breadth": 9.5
   },
   {
    "node": "plume_2",
    "part": "driver_ring",
-   "reach": 20.0,
-   "breadth": 7.5
+   "reach": 25.0,
+   "breadth": 9.5
   }
  ]
 }
