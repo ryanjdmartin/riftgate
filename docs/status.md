@@ -95,8 +95,8 @@ over the hull, the shield's ripple over its hex, the kill's gutter and dimmed ou
 models mark and the fixed equipment playing its slice as it is used, the Stingray's plume on
 trial in place of its ring (`RIFTGATE_PLUME=off`), and the shot crossing the field as a simple
 version, tabled ("it might be too busy") and off unless a debug build's SHOT TRAILS turns it on;
-green at 847 tests and 207,599 checks; not yet on main; its bible is v0.431 (the Pages line), the
-hangar the Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
+green at 847 tests and 207,599 checks; not yet on main; its bible is v0.431 (the page's 444,
+merged onto the live v0.430 other sessions published); the hangar at 192. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
 the hit and fire round (the to-do's Ryan list).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
@@ -640,8 +640,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.428 (the
-  page's version 440, published 2 November from `claude/charming-rubin-h954bp`: the mounts row on
+  `docs/design-bible.html` after every change. This file and the live page are v0.431 (the
+  page's version 444, published 3 November from `claude/charming-rubin-h954bp`: the hit-reaction
+  row, the open row on the shot crossing the field, the fixed pieces in the weapon-fire row and the
+  plume trial in the reference-glass row, three-way merged onto the live v0.430 other sessions
+  published at 441 to 443 (the Hold The Line notes and five Wainwright & Sutler rows), with no
+  conflict; on its own v0.428 at 440, published 2 November: the mounts row on
   Ryan's swap notes (every mount takes every class: a hardpoint's variant and scale per class, the
   round launcher, the fit sheet; the open row on each class's size settled), three-way merged onto
   the live v0.427 another session published at 439, the version line the only conflict; on its own
@@ -679,7 +683,12 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 191 (2 November, from
+  acts on a reloaded page). At the page's version 192 (3 November, from
+  `claude/charming-rubin-h954bp`: `motion.js` with the hit reactions (Hit and Lose under Blows),
+  the fixed weapons' marked business ends and the plume trial (Exhaust: Plume or Ring), the Honey
+  Badger's, the Prairie Dog's and the Stingray's models and the five rigs that carry them; onto
+  191, every file it replaced as 191 had sent it, `pins.json` (another session's models) left as
+  it was, `edits` empty), on 191 (2 November, from
   `claude/charming-rubin-h954bp`: the round launcher in every maker's metal with its fire and
   muzzle, the Classes tab listing it, `motion.js` wearing each mount's declared variant and scale,
   the Armadillo's, the Goshawk's and the Dingo's models, rigs and renders and the renders'
