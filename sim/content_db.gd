@@ -989,8 +989,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: strikes must be at least 1" % where)
 	if int(fd.get("strikes", 1)) > 1 and kind != "attack":
 		errs.append("%s: only attacks strike more than once" % where)
-	if fd.has("power_max") and int(fd["power_max"]) < int(fd.get("power", 0)):
-		errs.append("%s: power_max below power" % where)
+	if fd.has("power_max"):
+		errs.append("%s: power_max is gone (2 November): a weapon is one number" % where)
 	# No crits since 10 October (bible section 5, the damage ranges row): chances live on
 	# riders, so a face that still carries one is stale content.
 	if fd.has("crit") or fd.has("crit_bonus"):
@@ -1452,9 +1452,9 @@ const SOUNDS := ["barrel", "twin_barrel", "rack", "blade", "blunt", "laser", "pl
 
 ## The sound a component's use plays, as layers (the first the blow, each after it riding on
 ## the landing): its `sound` where content names one, else derived as SOUNDS says. A shield
-## is a deflector and a buff a coil, whatever the mount; an attack is its shape, an energy
-## barrel a laser and the Arsenal's a plasma (the flat face: no power_max above
-## power); a dish that attacks (the Klaxon's lure) is a coil; an attack with no
+## is a deflector and a buff a coil, whatever the mount; an attack is its shape, a barrel
+## tagged Plasma a plasma and one tagged Beam a laser (by the tags since 2 November, when
+## rolled damage went and flat stopped meaning energy); a dish that attacks (the Klaxon's lure) is a coil; an attack with no
 ## mount sounds by its reach. A vent, or an id content does not know, is [].
 func sound_of(component_id: String) -> Array[String]:
 	var out: Array[String] = []
@@ -1476,10 +1476,11 @@ func sound_of(component_id: String) -> Array[String]:
 	if kind != "attack":
 		return out
 	var shape := str(c.get("shape", SHAPE_NONE))
-	var power := int(face.get("power", 0))
-	var energy := int(face.get("power_max", power)) <= power
-	if shape == "barrel" and energy:
-		out.append("plasma" if str(c.get("maker", "")) == "arsenal" else "laser")
+	var tags: Array = c.get("tags", []) if c.get("tags", null) is Array else []
+	if shape == "barrel" and tags.has("plasma"):
+		out.append("plasma")
+	elif shape == "barrel" and tags.has("beam"):
+		out.append("laser")
 	elif shape == "dish":
 		out.append("coil")
 	elif ["barrel", "twin_barrel", "rack", "blade"].has(shape):

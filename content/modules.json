@@ -111,6 +111,7 @@
    "flavour": "",
    "stats": {},
    "text": {
+    "status": "planned",
     "description": "Its rolled weapons reach 1 higher.",
     "effects": [
      {
@@ -123,7 +124,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Everything leaves the barrel faster. Including the barrel, eventually.",
-    "niche": "The ceiling to the Tactical Databank's floor: a rolled weapon's highest roll raised a little."
+    "niche": "The ceiling to the Tactical Databank's floor: a rolled weapon's highest roll raised a little.",
+    "notes": "Awaits a rule since 2 November: rolled damage is gone (Ryan, decided in play testing: \"I want rolled damage gone for sure\"), so a ceiling or a floor has nothing to move. Its old rule: Its rolled weapons reach 1 higher."
    }
   },
   {
@@ -197,6 +199,7 @@
    "flavour": "",
    "stats": {},
    "text": {
+    "status": "planned",
     "description": "Its rolled weapons' lowest roll is 1 higher.",
     "effects": [
      {
@@ -209,7 +212,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Every firing solution the regiment ever logged, in a box that hums.",
-    "niche": "The floor to the Muzzle Velocity Booster's ceiling: a rolled weapon's lowest roll raised a little."
+    "niche": "The floor to the Muzzle Velocity Booster's ceiling: a rolled weapon's lowest roll raised a little.",
+    "notes": "Awaits a rule since 2 November: rolled damage is gone (Ryan, decided in play testing: \"I want rolled damage gone for sure\"), so a ceiling or a floor has nothing to move. Its old rule: Its rolled weapons' lowest roll is 1 higher."
    }
   },
   {

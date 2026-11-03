@@ -15,7 +15,7 @@ Options: --parts knockouts,ladders,modules,heat (every part by default; vanilla 
 asked for by name: the vanilla ladder, a flat heatless gun of each shape reshaped from a basic
 no bench row stocks at every number from 2 to 10, and the same vanilla at 3, 5 and 7 across the
 heat classes, for the knee where a kit starts paying; Ryan, 28 October: price heat empirically
-from heatless vanillas, and a rolled gun is its mean); --benches id,id (the
+from heatless vanillas); --benches id,id (the
 ladders' and the modules' benches, BENCHES below, every one by default); --tiers 0,1,2,3 (the
 ladders' candidates); --seeds 30; --policies greedy (random,greedy adds the decision read at
 twice the cost); --packs big (the big fights but the finale, the default: the slate's bosses, tier one's formations and
@@ -69,7 +69,7 @@ BENCHES = OrderedDict([
     ('clydesdale', ('clydesdale', 4, ['clydesdale', 'prairie_dog', 'dingo'])),     # the warm nine-piece die's Howitzer slot: the Indirect bench (the Rangefinder, the shells) and the heat knee's warm check (28 October)
 ])
 # The vanilla ladder (Ryan, 28 October: vanillas exist in the pool, "sometimes you just need a
-# big stick"; the baseline is heatless, heat priced from it, a rolled gun its mean): a flat
+# big stick"; the baseline is heatless, heat priced from it): a flat
 # heatless gun of each shape, reshaped by --set from a basic no bench row stocks, so the row's
 # other dice stay as they are. The summary reports every real piece in vanilla points, the
 # heatless number that reads as it does on the bench.
@@ -288,7 +288,7 @@ def variants(db, opts):
                     grid += [(n, h) for n in (opts.numbers or VANILLA_HEAT_NUMBERS) for h in VANILLA_HEATS if (n, h) not in grid]
                 for n, h in grid:
                     fitted = load[:slot] + [base] + load[slot + 1:]
-                    args = set_loadout(cid, fitted) + ['--set', 'components/%s/face/power=%d' % (base, n), '--set', 'components/%s/face/power_max=%d' % (base, n),
+                    args = set_loadout(cid, fitted) + ['--set', 'components/%s/face/power=%d' % (base, n),
                                                        '--set', 'components/%s/face/heat=%d' % (base, h), '--set', 'components/%s/face/keywords=[]' % base]
                     out.append({'id': 'vanilla:%s:%s:%d:%d' % (b, base, n, h), 'part': 'vanilla', 'row': ids, 'bench': b, 'chassis': cid,
                                 'shape': shape, 'base': base, 'number': n, 'heat': h, 'args': args})
@@ -508,14 +508,14 @@ def fmt(x, d=1):
     return '-' if x is None or (isinstance(x, float) and math.isnan(x)) else ('%.*f' % (d, x))
 
 
-FACE_PLAIN = ('kind', 'reach', 'power', 'power_max', 'strikes', 'heat', 'keywords')
+FACE_PLAIN = ('kind', 'reach', 'power', 'strikes', 'heat', 'keywords')
 
 
 def face_text(f):
-    """An attack face in one line: the number (its range, its strikes), the heat, the keywords with
+    """An attack face in one line: the number (its strikes), the heat, the keywords with
     their numbers, and every other field the face carries (a Coriolis's point a missing five, a
     Stoker's self_burn), so a piece that is no vanilla never reads as one."""
-    num = '%s%s' % (f.get('power', 0), ('-%s' % f['power_max']) if f.get('power_max', f.get('power')) != f.get('power') else '')
+    num = '%s' % f.get('power', 0)
     if int(f.get('strikes', 1) or 1) > 1:
         num += ' x%d' % f['strikes']
     kws = [kw + (' %s' % f[kw] if kw in f else '') for kw in f.get('keywords', [])]

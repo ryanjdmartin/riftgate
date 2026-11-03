@@ -30,7 +30,7 @@ const TABLE := {
 	"expose": ["expose", "harm"],
 	"disable": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"], "steal": ["steal", "enemy"],
 	# Rules on a component.
-	"damage_range": ["", "plain"], "targets": ["", "plain"], "strikes": ["", "plain"],
+	"targets": ["", "plain"], "strikes": ["", "plain"],
 	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"],
 	"spray": ["", "plain"], "cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
 	"hopper_property": ["hopper", "plain"],

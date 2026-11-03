@@ -160,16 +160,6 @@
    }
   },
   {
-   "id": "damage_range",
-   "category": "component_property",
-   "name": "Damage range",
-   "codex": "A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
    "id": "direct",
    "category": "reach",
    "name": "Direct",
@@ -193,7 +183,7 @@
    "id": "cleave",
    "category": "keyword",
    "name": "Spread",
-   "codex": "Keyword with a number. Spread 2 also hits the foes beside the target in its rank, each taking 2 where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing.",
+   "codex": "Keyword with a number. Spread 2 also hits the foes beside the target in its rank, each taking 2 where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file."
@@ -203,7 +193,7 @@
    "id": "penetrate",
    "category": "keyword",
    "name": "Penetrate",
-   "codex": "Keyword with a number. Penetrate 3 also hits the other rank of the target's column, which takes 3 where the target takes the roll: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number.",
+   "codex": "Keyword with a number. Penetrate 3 also hits the other rank of the target's column, which takes 3 where the target takes the number: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon."
@@ -213,7 +203,7 @@
    "id": "splash",
    "category": "keyword",
    "name": "Splash",
-   "codex": "Keyword with a number. Splash 1 also hits every foe round the target, those beside it in its rank and the other rank of its column, each taking 1 where the target takes the roll: the attacker's bonuses land on that 1 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number.",
+   "codex": "Keyword with a number. Splash 1 also hits every foe round the target, those beside it in its rank and the other rank of its column, each taking 1 where the target takes the number: the attacker's bonuses land on that 1 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number.",
    "status": "implemented",
    "design": {
     "holes": "Spread and Penetrate at one number, one chip on the die (Ryan, 28 October: Splash N back 'for the sake of display simplicity'); the validator refuses the two at one number and Splash beside either. Its number rides on the entry (splash)."
@@ -406,7 +396,7 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. Then one other foe, at random, neither the target nor already Shocked, is Shocked.",
+   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. Then one other foe, at random, neither the target nor already Shocked, is Shocked.",
    "status": "implemented",
    "design": {
     "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain)."
@@ -436,7 +426,7 @@
    "id": "steal",
    "category": "keyword",
    "name": "Steal",
-   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn, as a Disable, and the foe takes it: its next swing lands that weapon's number, a rolled one at its middle, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
+   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn, as a Disable, and the foe takes it: its next swing lands that weapon's number, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
    "status": "implemented",
    "design": {
     "holes": "Gilgamesh's (30 October). One piece held at a time, the swing spending it; the swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it."
@@ -858,7 +848,7 @@
    "id": "destroyed_component",
    "category": "status",
    "name": "Destroyed component",
-   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the machine's die is rolled and the component it lands on is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them.",
+   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the entry the die shows is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a machine showing a broken entry shrugs it off, and what faces the enemy is the player's choice.",
    "status": "implemented",
    "design": {
     "holes": "The threshold is a placeholder, set by what it asks of the player, never by a loss or win rate (Ryan, 25 October). The campaign's hangar screen is not built."
@@ -1258,7 +1248,7 @@
    "id": "on_attack",
    "category": "trigger",
    "name": "On attack",
-   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage.",
+   "codex": "Passive trigger. Fires on every attack, after its number is read. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1768,7 +1758,7 @@
    "id": "strikes",
    "category": "component_property",
    "name": "Strikes",
-   "codex": "An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often (the Skua's strikes share each roll, halved and never below one). Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too.",
+   "codex": "An attack's blows per use. A weapon with three strikes lands three separate hits: each lands its own number and carries its own effects, so a rapid-fire weapon procs often (the Skua's strikes share the number, halved and never below one). Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too.",
    "status": "implemented",
    "design": {
     "holes": "Heat is paid once per use, not per strike."
@@ -1788,7 +1778,7 @@
    "id": "order_of_operations",
    "category": "rules",
    "name": "Order of operations",
-   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the roll (or the flat number, with what fired heat or a target's missing hull adds) comes before the pipeline's adds and multiplies; a raised ceiling or floor moves a rolled range before the roll, and the die shows it. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
+   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the number (with what fired heat or a target's missing hull adds) comes before the pipeline's adds and multiplies; Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
    "status": "implemented",
    "design": {
     "holes": "Refit (the hangar) is what changes loadout-scoped effects; not built."

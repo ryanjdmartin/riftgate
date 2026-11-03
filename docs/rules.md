@@ -40,10 +40,9 @@ skirmish.
 - **Hits**: a rule reads one of three: damaging a foe with a weapon (its blow dealt
   something); hitting a foe with a weapon (any blow of a weapon, a blow of 0 included); hitting
   a foe with a weapon or equipment (anything spent on it, a debuff included).
-- **Rolled or flat**: a rolled weapon shows a range and rolls in it when spent; a flat weapon
-  is one number with no roll, however many things feed it (heat fired, missing hull, buffs,
-  armour). Neither shape owns heat: a weapon's heat is its own number, set by its niche like
-  its reach. There are no crits and no weapon classes.
+- **One number**: a weapon is one number with no roll, however many things feed it (heat
+  fired, missing hull, buffs, armour); nothing on a die rolls but the die. A weapon's heat is
+  its own number, set by its niche like its reach. There are no crits and no weapon classes.
 - **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set, and
   the only tags a component may wear) are build flavour, shown on its readout's last line and
   beside its name in its codex row. A tag carries no rule of its own; a module or passive may
@@ -64,9 +63,9 @@ skirmish.
   of tiers one to three are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
-  and its tier-two chassis stock them. The basic kit is eight pieces, each a maker's: two
-  rolled guns (the Twin Autoguns, Direct; the Ankle Mortar, Indirect), two flat (the Rivet Gun;
-  the Laser Carbine, warm), two shields (the Halo Shield, self or ally; the Canopy, self only, the
+  and its tier-two chassis stock them. The basic kit is eight pieces, each a maker's: four
+  guns (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
+  Carbine, Direct and warm), two shields (the Halo Shield, self or ally; the Canopy, self only, the
   bigger) and two vents (the Coolant Jacket, self or ally; the Bleed Valve, self only, the
   bigger).
 - **Damage states**: a component is intact or destroyed, for the whole battle.
@@ -152,7 +151,7 @@ defeat when every machine is wrecked. There is no round limit.
 - **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): every weapon and equipment it
   aims at a foe may also be spent on an empty slot in the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
   front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
-  to move or carry it. The shot waits there, its number as rolled and modified when laid
+  to move or carry it. The shot waits there, its number as modified when laid
   (each strike a shot), with its keywords, behind what already waits; its heat lands now.
   Whoever steps in takes every shot waiting, in laid order, before it acts, and a massive
   arrival takes both slots'; shots still waiting when it falls wait on for the next. The
@@ -165,7 +164,7 @@ defeat when every machine is wrecked. There is no round limit.
 
 ### A blow
 Every foe a strike reaches takes a blow of its own, read in one order:
-1. The number: on the foe the strike is aimed at, the roll or the flat number; on every other
+1. The number: on the foe the strike is aimed at, the weapon's number; on every other
    foe its area reaches, the number of the shape it stands in (Spread's beside the target,
    Penetrate's in the other rank of its column, Splash's both); on every other Shocked foe on
    the field, Chain's (a foe in a shape and Shocked takes the shape's, one blow). Then what the
@@ -184,13 +183,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - A mine carries its numbers as laid: its own on the foe it lands on and its area's on every
   other foe its keywords reach there, each through its spender's modifiers when it was laid
   with no foe in hand, then each foe's own as it lands.
-- Strikes are separate blows; each rolls and carries the keywords. Heat is paid once a spend.
-  A split weapon (the Skua's) rolls once for the two strikes each of its strikes becomes, and
-  each takes half the roll, rounded down and never below one (a roll of nothing shares
+- Strikes are separate blows; each lands the number and carries the keywords. Heat is paid once a spend.
+  A split weapon (the Skua's) halves its number between the two strikes each of its strikes
+  becomes, rounded down and never below one (a number of nothing shares
   nothing).
-- A raised ceiling or floor (the Muzzle Velocity Booster, the Tactical Databank) moves a
-  rolled range by its value before the roll, never past the top; a flat weapon gains
-  nothing.
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
   and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
@@ -253,9 +249,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   spent there. A foe whose machine falls before it acts strikes the next machine in line: its
   arrow stays on its pick, and a second, dashed, goes to the machine its blow lands on.
   Nothing a roll decides
-  is promised: a rolled blow counts its lowest roll, and a stun Numbed may shrug off, the entry
-  an injury lands on and a strike at a random foe among several are left out (a lone foe takes
-  it). The reinforcements are the next round's. A foe's gauge shows the HP the round will
+  is promised: a stun Numbed may shrug off and a strike at a random foe among several are
+  left out (a lone foe takes it). The reinforcements are the next round's. A foe's gauge shows the HP the round will
   leave it, a heal hatched as a machine's gain is, and a foe the round kills wears the
   destroyed chip, its intent kept. Every status the round will land, on a machine or a foe,
   wears a preview chip: the status's own glyph and colour, pulsing in opacity on a dashed
@@ -285,7 +280,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 
 ### Player keywords
 - **Spread N** (id `cleave`): also hits the foes beside the target in its rank, each taking N
-  where the target takes the roll (a blow, above).
+  where the target takes the number (a blow, above).
 - **Penetrate N**: also hits the other rank of the target's column, which takes N.
 - **Splash N**: the plus round the target, Spread and Penetrate at one number; the two at one
   number are written Splash. A weapon's area keyword carries its number; a debuff's carries
@@ -641,8 +636,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 
 ### Injury
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into its
-  hull (a breach's whole blow included) rolls the machine's die: the entry it lands on is
-  destroyed, a blank shrugs it off. A shield absorbs its share first and what reaches the hull counts; a
+  hull (a breach's whole blow included) destroys the entry the machine's die shows (the one it
+  spent, held or locked), a blank shrugs it off, and a second such blow in the turn finds it
+  broken already. What faces the enemy is the player's choice. A shield absorbs its share first and what reaches the hull counts; a
   Barrier's blow never does. Bites and overheats never injure.
 - **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
   Badger's components are never destroyed, so an injury passes it by.
@@ -688,8 +684,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   two): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
   Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it), steal (the
   entry the machine shows switched off through its next turn, as a disable, and taken: its foe
-  holds it until its borrowed swing, whose number is what it took, a weapon's printed blow, a
-  rolled one at its middle, and anything that was no weapon a fake, for 1),
+  holds it until its borrowed swing, whose number is what it took, a weapon's printed blow,
+  and anything that was no weapon a fake, for 1),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, burn and corrupt each say their stacks a blow, as the player's Burn
@@ -770,13 +766,13 @@ and every one of them that fell is a kill).
   it) after those, undoubled (the Kite's), and may grant a cooldown to every weapon and equipment its machine
   aims at a foe. It may split every weapon and equipment aimed at a foe instead (the Skua's):
   each strikes twice as often, each
-  roll, what the entry prints included, divided between the two strikes, rounded down and
+  number, what the entry prints included, divided between the two strikes, rounded down and
   never below one, and
   every buff and the foe's conditions counting on each strike, its armour too; the die shows
   a strike's share with the strikes beside it ("1 ×2"). A debuff has no number to halve and
   fires twice all the same, its riders landing on each strike (a Web, a Lure, a Disrupt, a
   Shock, an Expose and a Swap still land once a spend).
-- Conditions: the weapon is rolled; the reach is direct or
+- Conditions: the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
   arrow is drawn, on its pick or on every machine, a gathering countdown included, and none

@@ -1897,7 +1897,7 @@ func _show_die(i: int) -> bool:
 	var entry: Array = []
 	if f != null:
 		var sf := sk.shown_face(ms, f)
-		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
+		var shown: int = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else -1
 		entry = EntryReadout.lines_for(sf, at + 1, shown, f, _entry_states(ms, at), Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit))
 	if entry.is_empty() and ring.is_empty():
 		return false

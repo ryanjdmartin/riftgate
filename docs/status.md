@@ -25,8 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 876 tests, 208,371 checks, green (2 November: `ccr-c04908be-3r43xf`'s review fixes on
-  main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
+- Tests: 871 tests, 208,125 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, its
+  first chunk, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
   overheat what-ifs, shield persona and support ladders landed on the 31st, over the Petrels of
   `claude/affectionate-ramanujan-5d24t6`, the foes' move-order fix of
   `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
@@ -176,6 +176,20 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- The randomness pass, under way (2 and 3 November; Ryan's calls in chat, the bible's section 2
+  randomness row and section 5's weapons row): rolled damage is gone, every weapon one number (each
+  range landed at its mean, the halves rounded up, to be read again at 200 seeds; the Muzzle Velocity
+  Booster and the Tactical Databank planned until they have rules; a blow's sound by its tags, since
+  rolled-or-flat was its label); an injury breaks the entry the die shows, so what faces the enemy
+  is the player's choice and the threshold can come down once played; the withdrawal's screen code
+  deleted (a defunct passive); the round preview exact on all three. Next in the pass, decided:
+  Numbed on Ryan's clock (stacks are the rounds until one stun lands, a stun on a Numbed foe strips
+  a stack, resist a foe stat, Numbed a buff), Purge N flat on every buff on both sides, a Ward
+  turning a stun and a Purge and standing, Sweep on a rank (left to right, direct the front,
+  indirect the player's pick) for the Flechette Pod and the Unrestricted Expenditure, Charged as
+  the Shock primer with Chain the arcs alone, then undo to the last roll with its HUD; Overcharged
+  waits on a name that works on both sides; the Scorpion's blast is tabled for a rework and stays
+  the one draw besides the die.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
   `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield
@@ -708,8 +722,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   version 422, published 31 October as `claude/affectionate-ramanujan-5d24t6` landed on main: the
   Petrels' engines, their rows and section 12's question on the Storm Petrel's burn on basics;
   this file carries two edits of 31 October since, the Onryō's Grudge a working term and Ryan's
-  word on the Storm Petrel's question, which go up with the Badger's rows, and one of
-  2 November, his words on a blast's or a random hit's foe reading Shock in the Chain row),
+  word on the Storm Petrel's question, which go up with the Badger's rows, and those of
+  2 and 3 November: his words on a blast's or a random hit's foe reading Shock in the Chain row,
+  and the randomness pass's rows, section 5's weapons row rewritten for rolled damage gone, the
+  randomness and chances rows, the die's number, the preview, the basic kit, the Booster and the
+  Databank, section 12's kit and sound questions; `tools/pages/bible_tables.py` was not run, since
+  it also rewrites the rows other branches hold ahead of content, so its table rows were edited by
+  hand where the vocabulary changed),
   three-way merged onto the live v0.409 at 421, which another session published with the slate's
   last five bosses (the King Gel, the Pilgrim, the Phantom Train, the Vampire Lord and the
   Obsidian Tyrant) and Numbed's third stack on a boss as on a massive foe, ahead of their code;

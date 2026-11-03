@@ -867,24 +867,21 @@ func _refused(db: ContentDB, prefix: String, word: String) -> bool:
 	return false
 
 
-## No weapon classes since 10 October (bible section 5): a weapon is rolled or flat by its
-## niche, whatever its filing tags say, so the content holds sane numbers and both shapes.
-func test_content_dice_are_sane_and_both_shapes_are_present() -> void:
+## No weapon classes since 10 October (bible section 5) and one number a weapon since
+## 2 November (rolled damage gone, Ryan: decided in play testing), whatever a piece's filing
+## tags say, so the content holds sane numbers and no range.
+func test_content_dice_are_sane_and_one_number_each() -> void:
 	var db := _db()
-	var rolled := 0
-	var flat := 0
+	var guns := 0
 	for id in db.components.keys():
 		var c: Dictionary = db.components[id]
 		for fd in [c.get("face", {})]:
 			assert_true(int(fd.get("power", 0)) >= 0, "%s power is not negative" % id)
 			if str(fd.get("kind", "")) != "attack":
 				continue
-			if fd.has("power_max"):
-				rolled += 1
-				assert_true(int(fd["power_max"]) > int(fd["power"]), "%s: a rolled face has a real range" % id)
-			else:
-				flat += 1
-	assert_true(rolled >= 5 and flat >= 3, "both shapes present (%d rolled, %d flat)" % [rolled, flat])
+			assert_false(fd.has("power_max"), "%s: rolled damage is gone, a weapon is one number" % id)
+			guns += 1
+	assert_true(guns >= 8, "the weapons are there (%d)" % guns)
 
 
 func test_unsupported_passive_effect_is_rejected() -> void:
@@ -1128,7 +1125,7 @@ func test_gates_and_consumers_validate() -> void:
 		"test_backdraft": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "status": "burning", "stacks": 2}}, "consumes": "burning", "per_consumed": 1}, ""],
 		"test_gate_absent": [{"keywords": [], "gates": flak_gate}, "does not carry"],
 		"test_gate_burn": [{"keywords": ["burn"], "burn": 2, "gates": {"burn": {"when": "target_status"}}}, "rides on Suppress today"],
-		"test_gate_when": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "rolled"}}}, "a condition on the foe in hand"],
+		"test_gate_when": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "ally_present"}}}, "a condition on the foe in hand"],
 		"test_gate_status": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "status": "numbed"}}}, "a status the team puts on a foe"],
 		"test_gate_count": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "stacks": 2}}}, "a positive count of the status it names"],
 		"test_eat_odd": [{"consumes": "numbed"}, "names a status the team puts on a foe"],
@@ -1838,26 +1835,26 @@ func test_a_split_is_validated_one_deep_and_read_into_the_foe() -> void:
 ## from shape and face. Synthetic components, so no entry's sound is pinned here.
 func test_a_component_sound_is_its_label_or_derived() -> void:
 	var db := ContentDB.new()
-	var kinetic := {"kind": "attack", "reach": "direct", "power": 10, "power_max": 20}
+	var kinetic := {"kind": "attack", "reach": "direct", "power": 10}
 	var energy := {"kind": "attack", "reach": "direct", "power": 15}
 	db.components = {
-		"slug": {"shape": "barrel", "maker": "minerva", "face": kinetic},
+		"slug": {"shape": "barrel", "maker": "minerva", "tags": ["ballistic"], "face": kinetic},
 		"twin": {"shape": "twin_barrel", "maker": "kestrel", "face": kinetic},
-		"beam": {"shape": "barrel", "maker": "kestrel", "face": energy},
-		"hot": {"shape": "barrel", "maker": "arsenal", "face": energy},
-		"hot_rack": {"shape": "rack", "maker": "arsenal", "face": energy},
-		"plow": {"shape": "blade", "maker": "minerva", "face": {"kind": "attack", "reach": "direct", "power": 5, "power_max": 10}, "sound": "blunt"},
+		"beam": {"shape": "barrel", "maker": "kestrel", "tags": ["beam"], "face": energy},
+		"hot": {"shape": "barrel", "maker": "arsenal", "tags": ["plasma"], "face": energy},
+		"hot_rack": {"shape": "rack", "maker": "arsenal", "tags": ["plasma"], "face": energy},
+		"plow": {"shape": "blade", "maker": "minerva", "face": {"kind": "attack", "reach": "direct", "power": 5}, "sound": "blunt"},
 		"fist": {"shape": "blade", "maker": "arsenal", "face": energy, "sound": ["blunt", "plasma"]},
 		"field": {"shape": "none", "maker": "minerva", "face": {"kind": "shield", "power": 20}},
 		"coil": {"shape": "dish", "maker": "kestrel", "face": {"kind": "buff"}},
 		"lure": {"shape": "dish", "maker": "minerva", "face": {"kind": "attack", "reach": "indirect", "power": 0}},
-		"bare": {"shape": "none", "maker": "minerva", "face": {"kind": "attack", "reach": "indirect", "power": 5, "power_max": 10}},
+		"bare": {"shape": "none", "maker": "minerva", "face": {"kind": "attack", "reach": "indirect", "power": 5}},
 		"vent": {"shape": "none", "maker": "minerva", "face": {"kind": "vent", "power": 10}},
 	}
 	assert_eq(db.sound_of("slug"), ["barrel"], "a kinetic barrel is a barrel")
 	assert_eq(db.sound_of("twin"), ["twin_barrel"], "a twin a twin")
-	assert_eq(db.sound_of("beam"), ["laser"], "an energy barrel a laser")
-	assert_eq(db.sound_of("hot"), ["plasma"], "the Arsenal's energy barrel a plasma")
+	assert_eq(db.sound_of("beam"), ["laser"], "a Beam barrel a laser")
+	assert_eq(db.sound_of("hot"), ["plasma"], "a Plasma barrel a plasma")
 	assert_eq(db.sound_of("hot_rack"), ["rack"], "the Arsenal's rack still a rack")
 	assert_eq(db.sound_of("plow"), ["blunt"], "a label wins")
 	assert_eq(db.sound_of("fist"), ["blunt", "plasma"], "a list is layers")

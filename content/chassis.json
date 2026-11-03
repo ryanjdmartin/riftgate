@@ -1109,7 +1109,7 @@
    "passive": {
     "id": "split_cycle_breech",
     "name": "Split-cycle Breech",
-    "description": "Every weapon and equipment the Skua aims at a foe strikes twice at half: its number, as rolled, halves, rounded down and never below one, and every buff, passive and foe's condition counts on each strike.",
+    "description": "Every weapon and equipment the Skua aims at a foe strikes twice at half: its number halves, rounded down and never below one, and every buff, passive and foe's condition counts on each strike.",
     "effects": [
      {
       "trigger": "on_attack",

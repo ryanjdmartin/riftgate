@@ -125,8 +125,7 @@ func test_a_steal_takes_the_showing_entry_and_the_borrowed_swing_lands_its_numbe
 	assert_eq(sk.mechs[0].face().describe(), "30", "the entry is back the turn after")
 
 
-func test_a_rolled_weapon_swings_at_its_middle_and_anything_else_is_a_fake() -> void:
-	assert_eq(Skirmish.stolen_number(Face.attack(2, L, [], 0, 6)), 4, "a rolled two to six swings for four")
+func test_a_stolen_weapon_swings_at_its_number_and_anything_else_is_a_fake() -> void:
 	assert_eq(Skirmish.stolen_number(Face.attack(5, L)), 5, "a flat five for five")
 	assert_eq(Skirmish.stolen_number(Face.shield(8)), 1, "a shield is a fake, for one")
 	assert_eq(Skirmish.stolen_number(Face.vent(6)), 1, "a vent too")

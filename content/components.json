@@ -16,8 +16,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
-    "power_max": 4,
+    "power": 3,
     "keywords": [
      "cleave"
     ],
@@ -47,8 +46,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 2,
-    "power_max": 6,
+    "power": 4,
     "keywords": [],
     "heat": 2
    },
@@ -100,8 +98,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
-    "power_max": 6,
+    "power": 4,
     "keywords": [],
     "heat": 1
    },
@@ -126,8 +123,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 1,
-    "power_max": 3,
+    "power": 2,
     "keywords": [],
     "heat": 0
    },
@@ -180,8 +176,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 1,
-    "power_max": 3,
+    "power": 2,
     "keywords": [],
     "heat": 1
    },
@@ -226,8 +221,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 2,
-    "power_max": 6,
+    "power": 4,
     "keywords": [
      "splash"
     ],
@@ -255,8 +249,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 1,
-    "power_max": 3,
+    "power": 2,
     "keywords": [
      "burn"
     ],
@@ -285,8 +278,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 1,
-    "power_max": 3,
+    "power": 2,
     "keywords": [
      "suppress"
     ],
@@ -614,8 +606,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
-    "power_max": 5,
+    "power": 4,
     "keywords": [
      "cleave"
     ],
@@ -673,8 +664,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 1,
-    "power_max": 2,
+    "power": 2,
     "keywords": [
      "shock"
     ],
@@ -977,10 +967,9 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
+    "power": 4,
     "keywords": [],
-    "heat": 2,
-    "power_max": 6
+    "heat": 2
    },
    "passive": null,
    "tags": [
@@ -1349,11 +1338,10 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 1,
+    "power": 2,
     "strikes": 3,
     "keywords": [],
-    "heat": 1,
-    "power_max": 2
+    "heat": 1
    },
    "passive": null,
    "tags": [
@@ -1746,8 +1734,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 3,
-    "power_max": 4,
+    "power": 4,
     "strikes": 2,
     "keywords": [],
     "heat": 1,
@@ -1856,8 +1843,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 2,
-    "power_max": 6,
+    "power": 4,
     "keywords": [],
     "heat": 4,
     "kill_rerolls": 2
@@ -1931,8 +1917,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 1,
-    "power_max": 2,
+    "power": 2,
     "keywords": [
      "cleave",
      "flak"

@@ -72,7 +72,6 @@ CURRENCIES = OrderedDict([
     ("reroll", ("The team's rerolls", "a resource")),
     ("missing_hp", ("A foe's missing HP", "a resource")),
     ("rank", ("The rank a blow is aimed at", "a resource")),
-    ("rolled", ("A rolled weapon", "a resource")),
     ("strikes", ("Several blows a spend", "a resource")),
     ("mine", ("A mine", "a resource")),
     ("ammo", ("Ammo", "a store")),
@@ -115,7 +114,7 @@ EFFECTS = {
     "add_stacks": [], "vent_blast": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "lay_mines": [("mine", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "keep_status": [], "rewrite_weapon": [], "grant_keyword": [],
-    "add_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [], "add_ceiling": [("rolled", "reads")], "add_floor": [("rolled", "reads")],
+    "add_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "weapon_cooldown": [], "min_damage": [], "add_burn": [],
     "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
@@ -167,7 +166,6 @@ ENGINE_READERS = {
     "kill": ["the slot clears: Direct opens on the foe behind (every weapon sets it)"],
     "reroll": ["three a round, banked up to three while a Giant Petrel fights"],
     "rank": ["Direct reaches the front, Indirect any"],
-    "rolled": [],
     "strikes": ["each strike takes the foe's conditions and armour on its own"],
     "mine": ["whoever steps in takes every shot waiting"],
     "ammo": [], "muster": [], "rage": [], "hopper": [], "missing_hp": [], "ally_heat": [], "shield_granted": [], "tags": ["the screen's lunge reads Melee; nothing else reads a tag"],
@@ -226,7 +224,7 @@ class Map:
                     else:
                         self.add(cur, how, p)
             for k, v in f.items():
-                if k in ("kind", "reach", "power", "power_max", "keywords", "heat", "targets", "status", "stacks", "rounds",
+                if k in ("kind", "reach", "power", "keywords", "heat", "targets", "status", "stacks", "rounds",
                          "burn", "flak", "cryo", "cleave", "penetrate", "splash", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load"):
                     continue
                 if k not in FACE_FIELDS:
@@ -245,8 +243,6 @@ class Map:
                 self.add("shield_granted", "sets", p)
             if f.get("kind") == "vent" and f.get("targets", "self_ally") != "self":
                 self.add("ally_heat", "reads", p)
-            if f.get("kind") == "attack" and "power_max" in f and f["power_max"] != f.get("power"):
-                self.add("rolled", "sets", p)
             if int(f.get("heat", 0) or 0) > 0 and f.get("kind") == "attack":
                 self.heat_guns += 1
             for status in (f.get("gates") or {}).values():

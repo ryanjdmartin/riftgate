@@ -27,10 +27,8 @@ extends RefCounted
 ##   3. multiplies, every source multiplied
 ##   4. floors and caps (min_damage; a stat never below zero)
 ##   5. overrides (set_reach): the shortest-lived source wins, then the latest granted
-## In an attack, the roll (or the flat number, with what heat fired or the target's missing
-## hull adds) comes first, from the skirmish, so the pipeline's adds and multiplies come last. A raised
-## ceiling or floor (add_ceiling, add_floor) is the one exception: it moves the range before
-## the roll, so it lives on the effective face (effective_face) and the face shows it.
+## In an attack, the number (with what heat fired or the target's missing hull adds) comes
+## first, from the skirmish, so the pipeline's adds and multiplies come last.
 ##
 ## Stacking. A modifier has stacks (one by default). Granting the same id in the same scope
 ## again adds stacks instead of a second copy; an add is worth its value per stack, a
@@ -51,9 +49,9 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge", "burn_shield", "bank_rerolls"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge", "burn_shield", "bank_rerolls"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -433,7 +431,7 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
 ## shield_up (the Storm Petrel's plate, built 30 October): the machine's own shield stands, read
 ## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
-const SUPPORTED_WHEN := ["rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up"]
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -876,8 +874,6 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			# the blow meets, before it lands.
 			var own = ctx.get("shield", u.get("shield"))
 			return own != null and int(own) > 0
-		"rolled":
-			return face != null and face.is_ranged()
 		"reach_direct":
 			return face != null and effective_reach(u, face) == Face.Reach.DIRECT
 		"reach_indirect":
@@ -958,13 +954,6 @@ static func stat(u, name: String, upto: int = ROUNDS) -> int:
 	return maxi(0, int(roundf((base + add) * mult)))
 
 
-## What a machine's live effects add to the top of its rolled weapons' ranges (add_ceiling,
-## on_attack; the Muzzle Velocity Booster, 10 October), summed. A flat face has no range to
-## widen, so it gets nothing.
-static func ceiling_bonus(u, face: Face) -> int:
-	return _range_bonus(u, face, "add_ceiling")
-
-
 ## How many strikes each roll of an entry spent at a foe is split into (split_strikes, on_attack; the Skua's
 ## Split-cycle Breech, built 25 October): the weapon strikes that many times as often, each roll
 ## of its number divided among the strikes it serves, rounded down and never below one (Ryan,
@@ -980,23 +969,6 @@ static func split_of(u, face: Face) -> int:
 		if str(pair[0].get("effect", "")) == "split_strikes":
 			n = maxi(n, int(pair[0].get("value", 1)))
 	return n
-
-
-## What they add to the bottom (add_floor; the Tactical Databank, 10 October): the floor and
-## the ceiling are the two ways to push a range. Never past the top, so a narrow range can
-## end up flat.
-static func floor_bonus(u, face: Face) -> int:
-	return _range_bonus(u, face, "add_floor")
-
-
-static func _range_bonus(u, face: Face, effect: String) -> int:
-	if face == null or not face.is_attack() or not face.is_ranged():
-		return 0
-	var total := 0
-	for pair in _taking_part(u, "on_attack", face):
-		if str(pair[0].get("effect", "")) == effect:
-			total += int(pair[0].get("value", 0)) * pair[1].stacks
-	return maxi(0, total)
 
 
 ## An attack after the roll and the keyword rules: adds, then multiplies, then floors, on
@@ -1189,7 +1161,7 @@ static func reads_intent(u, face: Face = null) -> bool:
 
 
 ## The component as it is right now for this machine: its own entry, unless a live passive
-## changes its reach, grants it a keyword or pushes its range (a raised ceiling or floor), in
+## changes its reach or grants it a keyword, in
 ## which case a copy carrying all of it. What the resolver spends, the bot weighs and the
 ## screen draws; the die keeps the real one.
 static func effective_face(u, face: Face, target = null) -> Face:
@@ -1213,10 +1185,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	for kw in numbers.keys():
 		if base.has(kw) and int(numbers[kw]) != base.number_of(kw):
 			raised[kw] = numbers[kw]
-	var ceiling := ceiling_bonus(u, base)
-	var floor_up := floor_bonus(u, base)
 	var split := split_of(u, base) if base.split <= 1 else 1   # never twice: an entry already split stays as it is
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and ceiling == 0 and floor_up == 0 and split <= 1 and not mutes:
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not mutes:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	if mutes:
@@ -1231,8 +1201,6 @@ static func effective_face(u, face: Face, target = null) -> Face:
 			c.printed.append(kw)
 	for kw in raised.keys():
 		c.set_number(kw, int(raised[kw]))
-	c.power_max += ceiling
-	c.power = mini(c.power + floor_up, c.power_max)
 	if split > 1:
 		c.strikes = maxi(1, c.strikes) * split
 		c.split = split
@@ -1262,7 +1230,6 @@ static func rewritten(u, face: Face) -> Face:
 static func _rewrite(face: Face, eff: Dictionary) -> Face:
 	var c := face.duplicate_face()
 	c.power = maxi(0, int(eff.get("value", c.power)))
-	c.power_max = c.power
 	var rr := Face.reach_from_name(str(eff.get("reach", "")))
 	if rr > 0:
 		c.reach = rr
@@ -1422,16 +1389,6 @@ static func is_sealed(u) -> bool:
 		if m.id == "sealed" and m.stacks > 0:
 			return true
 	return false
-
-
-## The chance, percent, that an ally slips out under this machine's screen when the team
-## withdraws (screen_withdraw, static; the Prairie Dog): zero when it has none.
-static func screen_chance(u) -> int:
-	var best := 0
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "screen_withdraw":
-			best = maxi(best, int(pair[0].get("value", 0)))
-	return clampi(best, 0, 100)
 
 
 ## Whether no hunter ever picks this machine as its prey (never_hunted, static; the Prairie
@@ -2078,8 +2035,6 @@ static func effect_text(eff: Dictionary) -> String:
 			var n := int(eff.get("stacks", 1))
 			body = "lays %s on each foe %s, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a weapon hits" if bool(eff.get("damaging", false)) else "hit", "a stack" if n <= 1 else "%d stacks" % n]
 		"vent_heat": body = "sheds %s heat" % vs
-		"add_ceiling": body = "rolls reach %s higher" % vs
-		"add_floor": body = "the lowest roll %s higher" % vs
 		"no_destroy": body = "components are never destroyed"
 		"set_reach": body = "reach becomes %s" % vs
 		"add_stat": body = "%s +%s" % [str(eff.get("stat", "")), vs]
@@ -2097,7 +2052,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"seal_form": body = "a shield spent on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a vent or a weapon opens it" % [vs, str(eff.get("heat", 0))]
-		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
 			var k := maxi(1, int(eff.get("stacks", 1)))
@@ -2148,7 +2102,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"out_of_combat": lead = "each phase out of combat: "
 		"on_kill": lead = "after an attack that killed: "
 	match str(eff.get("when", "")):
-		"rolled": lead += "rolled weapons: "
 		"reach_direct": lead += "direct attacks: "
 		"reach_indirect": lead += "indirect attacks: "
 		"target_status": lead += "foes carrying a status: "
@@ -2201,9 +2154,7 @@ static func explain(u, face: Face) -> Array[String]:
 					out.append("%s (%s)" % [m.description if bool(eff.get("printed", false)) and not m.description.is_empty() else effect_text(eff), m.name])
 			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
-				# the row has no target in hand. A raised ceiling means nothing to a flat face.
-				if (name == "add_ceiling" or name == "add_floor") and not face.is_ranged():
-					continue
+				# the row has no target in hand.
 				var w := str(eff.get("when", ""))
 				var on_target := w in ["target_status", "target_no_intent", "target_rank"]
 				if w == "target_rank" and not str(eff.get("reach", "")).is_empty():

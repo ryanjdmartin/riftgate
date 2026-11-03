@@ -1,12 +1,12 @@
 class_name Face
 extends RefCounted
 
-## One face of a die. Reads as: primary icon (kind and reach), a number or a range (power to
-## power_max), a list of keywords and a heat cost.
+## One face of a die. Reads as: primary icon (kind and reach), a number (power), a list of
+## keywords and a heat cost.
 ##
-## Numbers are in tens. A flat face has power_max equal to power and involves no roll; a rolled
-## face rolls between power and power_max when spent. There are no crits (10 October): chances
-## live on riders, never on the damage (bible section 5, the damage ranges row).
+## Numbers are in tens. A face is one number and involves no roll (rolled ranges gone since
+## 2 November, Ryan: decided in play testing). There are no crits (10 October): chances live
+## on riders, never on the damage (bible section 5).
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 ## Two reaches since 10 October (Ryan): Close, a worse Direct by design, is removed and melee
@@ -101,7 +101,6 @@ static func keyword_label(k: int) -> String:
 var kind: int = Kind.ATTACK
 var reach: int = Reach.DIRECT
 var power: int = 20
-var power_max: int = 20       # equal to power for a flat face
 var keywords: Array[int] = []
 var printed: Array[int] = []  # of those, the ones a passive grants written out (the Boar's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
 var heat: int = 0
@@ -174,14 +173,13 @@ var burns: int = 0            # shown only: the shield the spend burns in place 
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
-## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
-static func attack(pwr: int, rch: int = Reach.DIRECT, kws = [], ht: int = 0, pwr_max: int = 0) -> Face:
+## `kws` may be a single Keyword or an Array of them.
+static func attack(pwr: int, rch: int = Reach.DIRECT, kws = [], ht: int = 0) -> Face:
 	var f := Face.new()
 	f.kind = Kind.ATTACK
 	f.targets = Target.FOE
 	f.reach = rch
 	f.power = pwr
-	f.power_max = maxi(pwr, pwr_max)
 	f.heat = ht
 	if kws is Array:
 		for k in kws:
@@ -196,7 +194,6 @@ static func shield(pwr: int) -> Face:
 	f.kind = Kind.SHIELD
 	f.reach = Reach.NONE
 	f.power = pwr
-	f.power_max = pwr
 	return f
 
 
@@ -205,7 +202,6 @@ static func vent(pwr: int) -> Face:
 	f.kind = Kind.VENT
 	f.reach = Reach.NONE
 	f.power = pwr
-	f.power_max = pwr
 	return f
 
 
@@ -216,7 +212,6 @@ static func buff(status: String, stacks: int = 1, rounds: int = 1) -> Face:
 	f.kind = Kind.BUFF
 	f.reach = Reach.NONE
 	f.power = 0
-	f.power_max = 0
 	f.buff_status = status
 	f.buff_stacks = maxi(1, stacks)
 	f.buff_rounds = maxi(1, rounds)
@@ -228,7 +223,6 @@ static func blank() -> Face:
 	f.kind = Kind.BLANK
 	f.reach = Reach.NONE
 	f.power = 0
-	f.power_max = 0
 	return f
 
 
@@ -278,7 +272,7 @@ static func target_from_name(name: String) -> int:
 	return -1
 
 
-## Build from content JSON: {"kind": "attack", "reach": "direct", "power": 20, "power_max": 50,
+## Build from content JSON: {"kind": "attack", "reach": "direct", "power": 20,
 ## "keywords": ["cleave"], "heat": 10}. Unknown names are ignored here; the
 ## content validator reports them.
 static func from_dict(d: Dictionary) -> Face:
@@ -288,7 +282,6 @@ static func from_dict(d: Dictionary) -> Face:
 	var r := reach_from_name(str(d.get("reach", "direct" if f.kind == Kind.ATTACK else "none")))
 	f.reach = r if r >= 0 else Reach.NONE
 	f.power = int(d.get("power", 0))
-	f.power_max = maxi(f.power, int(d.get("power_max", f.power)))
 	f.heat = int(d.get("heat", 0))
 	f.strikes = maxi(1, int(d.get("strikes", 1)))
 	if f.kind == Kind.ATTACK:
@@ -374,8 +367,6 @@ func to_dict() -> Dictionary:
 		"kind": KIND_NAMES[kind], "reach": REACH_NAMES[reach], "power": power,
 		"keywords": names, "heat": heat,
 	}
-	if power_max != power:
-		d["power_max"] = power_max
 	if strikes > 1:
 		d["strikes"] = strikes
 	if kind != Kind.ATTACK and targets != Target.SELF_ALLY:
@@ -579,7 +570,7 @@ func is_weapon() -> bool:
 ## effect; the die draws its reach frame with the status mark inside. A gun whose blow is
 ## nothing here (its 5 against armour 5) is no debuff: it prints "0".
 func is_debuff() -> bool:
-	return kind == Kind.ATTACK and power_max <= 0 and not vents_all and fires_hopper <= 0 and power_per_missing <= 0
+	return kind == Kind.ATTACK and power <= 0 and not vents_all and fires_hopper <= 0 and power_per_missing <= 0
 
 
 ## Equipment (Ryan, 26 October: "the label for all 4 forms of buff and debuff faces"): a buff,
@@ -601,11 +592,6 @@ func can_target_ally() -> bool:
 	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY)
 
 
-## Rolled: the face rolls when spent. A flat face involves no roll, whatever feeds its number.
-func is_ranged() -> bool:
-	return power_max > power
-
-
 ## What this blow adds against `target` for the hull it is missing (power_per_missing), read
 ## as the die is spent: a known number, so the face is still flat. Nothing without a target.
 func missing_bonus(target) -> int:
@@ -623,16 +609,11 @@ func consume_bonus(target) -> int:
 	return per_consumed * Effects.stacks_of(target, consumes)
 
 
-func average() -> int:
-	return ceili((power + power_max) / 2.0)
-
-
 func duplicate_face() -> Face:
 	var f := Face.new()
 	f.kind = kind
 	f.reach = reach
 	f.power = power
-	f.power_max = power_max
 	f.heat = heat
 	f.strikes = strikes
 	f.printed = printed.duplicate()
@@ -721,7 +702,6 @@ func charged_form() -> Face:
 		c.buff_stacks = maxi(1, int(charged.get("stacks", 1)))
 		c.buff_rounds = maxi(1, int(charged.get("rounds", 1)))
 		c.power = 0
-		c.power_max = 0
 		c.vents = 0
 		c.reaches_all = bool(charged.get("reaches_all", reaches_all))
 		c.not_acted = bool(charged.get("not_acted", false))
@@ -871,13 +851,11 @@ func number_text() -> String:
 	if power <= 0 and reloads_ammo > 0:
 		return "+%d" % reloads_ammo   # a reload (the Musk Ox's quick reload): the ammo it adds
 	if split > 1:
-		# A split entry (the Skua's): a strike's share of the roll, rounded down.
+		# A split entry (the Skua's): a strike's share of the number, rounded down.
 		# A strike's share, rounded down and never below one while the number is one or more
 		# (Skirmish.split_share; Ryan, 27 October).
-		var lo := (maxi(1, power / split) if power > 0 else 0)
-		var hi := (maxi(1, power_max / split) if power_max > 0 else 0)
-		return "%d–%d" % [lo, hi] if is_ranged() and hi != lo else str(lo)
-	return "%d–%d" % [power, power_max] if is_ranged() else str(power)
+		return str(maxi(1, power / split) if power > 0 else 0)
+	return str(power)
 
 
 func describe() -> String:

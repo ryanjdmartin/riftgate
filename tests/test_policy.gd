@@ -650,26 +650,6 @@ func test_a_shock_is_worth_the_hitter_in_hand_and_survives_the_rerolls() -> void
 	assert_true(lone.mechs[0].face_index != 0, "and the projector is rerolled for the gun")
 
 
-func test_greedy_rolls_before_it_spends_a_sure_number() -> void:
-	# Ryan, 9 October: a sure number is worth most after the rolls have landed, when it can
-	# finish what they left; the bot spends rolled damage first and the flat finisher after.
-	var sk := Skirmish.new(3)
-	sk.add_mech(_mech("Sure", Die.single(Face.attack(15, L))))
-	sk.add_mech(_mech("Rolls", Die.single(Face.attack(10, L, [], 0, 20))))
-	var small := _ghoul(15, 10)
-	sk.add_foes([small, _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	Policy.make(Policy.GREEDY).play_round(sk)
-	var first := ""
-	for line in sk.log:
-		if str(line).contains(" hits "):
-			first = str(line)
-			break
-	assert_true(first.begins_with("Rolls hits"), "the rolled die goes first: %s" % first)
-	assert_false(small.alive(), "and the sure one finishes whatever the roll left")
-
-
 ## The funnel-web's valuations (18 October): an ambush bite on a foe looking away is worth
 ## Vitriol's ticks on what the blow leaves, as the engine ticks it; a web the blows its burst
 ## will stop.

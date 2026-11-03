@@ -65,13 +65,13 @@ static func hint_ink() -> Color:
 
 
 ## The readout's lines for `f`, the entry as its machine shows it now (Skirmish.shown_face), at
-## `place` on its die (from one). `shown` is its blow as the die prints it ([low, high],
-## Skirmish.shown_number: every modifier in; empty, the entry's own), `base` the component as
+## `place` on its die (from one). `shown` is its blow as the die prints it (Skirmish.shown_number:
+## every modifier in; -1, the entry's own), `base` the component as
 ## built, whose numbers a highlight is read against, `states` what holds on it now, `grants`
 ## the written-out grants' lines (Effects.printed_grants), `types` what kind of piece it is on
 ## its machine (face_types), beside its name; its tags are the shown entry's, a passive's
 ## change in.
-static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = []) -> Array:
+static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = []) -> Array:
 	var out: Array = []
 	if f == null:
 		return out
@@ -101,7 +101,7 @@ static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Arr
 ## against; null reads `f` as its own. Each line carries its group, for the codex's three lines:
 ## "attr" (its number, its heat and ammo, its target), "kw" (its keywords) and "rule" (its own
 ## rules).
-static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
+static func effects_of(f: Face, shown: int = -1, base: Face = null) -> Array:
 	var out: Array = []
 	if base == null:
 		base = f
@@ -122,11 +122,10 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null) -> Array:
 			if f.is_debuff():
 				out.append(parts_line("effect", [word("Debuff")] + strikes, "attr"))
 			else:
-				var lo: int = int(shown[0]) if shown.size() == 2 else f.power
-				var hi: int = int(shown[1]) if shown.size() == 2 else f.power_max
-				# A strike's blow, its middle against the component's own: more is the gain.
-				var blow := word(str(lo) if lo == hi else "%d–%d" % [lo, hi])
-				_trend(blow, lo + hi, base.power + base.power_max)
+				var n: int = shown if shown >= 0 else f.power
+				# A strike's blow against the component's own: more is the gain.
+				var blow := word(str(n))
+				_trend(blow, n, base.power)
 				out.append(parts_line("effect", [word("Attack"), blow] + strikes, "attr"))
 		Face.Kind.BUFF:
 			if f.act_again:

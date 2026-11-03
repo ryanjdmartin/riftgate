@@ -343,7 +343,7 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	var s := _screen()
 	var db := ContentDB.load_default()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
-	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3, 5)
+	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3)
 	gun.burn = 2
 	gun.cleave = 2
 	gun.strikes = 2
@@ -365,14 +365,14 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
 	assert_eq(int(attack[2]["trend"]), 0, "its strikes its own: plain")
 	assert_eq(int(lines[2]["parts"][1]["trend"]), 0, "the heat its own: plain")
 	assert_eq(EntryReadout.trend_ink(attack[1]), Palette.GAIN, "a gain in the gain's green")
-	assert_true(s._details_entry.text().contains("%d–%d▲ ×2" % [n[0], n[1]]), "the arrow on the number that moved and no other: %s" % s._details_entry.text())
+	assert_true(s._details_entry.text().contains("%d▲ ×2" % n), "the arrow on the number that moved and no other: %s" % s._details_entry.text())
 	assert_true(s._details_entry.custom_minimum_size.y > 100.0, "sized to its lines: %s" % str(s._details_entry.custom_minimum_size))
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "and the panel to it")
 	s._on_die_tapped(1)
@@ -419,7 +419,7 @@ func test_the_readout_names_the_entrys_type_with_a_passives_hybrid() -> void:
 func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
-	var breech := Face.attack(4, Face.Reach.DIRECT, [], 1, 6)
+	var breech := Face.attack(4, Face.Reach.DIRECT, [], 1)
 	breech.component = str(ContentDB.load_default().components.keys()[0])
 	ms.die = Die.single(breech)
 	ms.face_index = 0
@@ -427,10 +427,10 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 	s._refresh()
 	s._on_die_tapped(1)
 	var parts: Array = s._details_entry.lines[1]["parts"]
-	assert_eq(str(s._details_entry.lines[1]["text"]), "Attack 2–3 ×2", "a strike's share of the roll, struck twice: %s" % str(s._details_entry.lines[1]["text"]))
+	assert_eq(str(s._details_entry.lines[1]["text"]), "Attack 2 ×2", "a strike's share of the number, struck twice: %s" % str(s._details_entry.lines[1]["text"]))
 	assert_eq([int(parts[1]["trend"]), bool(parts[1]["gain"])], [-1, false], "the blow down, a loss")
 	assert_eq([int(parts[2]["trend"]), bool(parts[2]["gain"])], [1, true], "the strikes up, a gain")
-	assert_true(s._details_entry.text().contains("2–3▼ ×2▲"), "each arrow on its own number: %s" % s._details_entry.text())
+	assert_true(s._details_entry.text().contains("2▼ ×2▲"), "each arrow on its own number: %s" % s._details_entry.text())
 	s._on_die_tapped(1)
 	s.free()
 
@@ -441,7 +441,7 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 ## out. The plate lays the die out a row a component, one column.
 func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var db := ContentDB.load_default()
-	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3, 5)
+	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3)
 	gun.burn = 2
 	gun.cleave = 2
 	gun.strikes = 2
@@ -452,7 +452,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}
@@ -497,14 +497,14 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 	var wreck := Face.blank()
 	wreck.component = str(db.components.keys()[0])
 	assert_eq(str(EntryReadout.effects_of(wreck)[0]["text"]), "Destroyed: comes up blank for the rest of the battle", "and a destroyed one what is left of it")
-	assert_eq(str(EntryReadout.lines_for(wreck, 2, [], wreck, [], [], db)[0]["text"]), db.component_name(wreck.component).to_upper(), "its name still the title")
+	assert_eq(str(EntryReadout.lines_for(wreck, 2, -1, wreck, [], [], db)[0]["text"]), db.component_name(wreck.component).to_upper(), "its name still the title")
 	var coil := Face.buff("overcharged", 2)
 	assert_eq(str(EntryReadout.effects_of(coil)[0]["text"]), "Grants %s ×2" % str(Effects.STATUS["overcharged"]["name"]), "a buff grants its status")
 	var u := Unit.new()
 	u.grant_passive({"id": "t_spill", "name": "Spill", "description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "spillover", "printed": true}]})
 	var gun := Face.attack(4)
 	assert_eq(Effects.printed_grants(u, gun), ["Damage past a kill spills behind."], "a written-out grant is its passive's line")
-	assert_eq(str(EntryReadout.lines_for(gun, 1, [], gun, [], Effects.printed_grants(u, gun), db).back()["text"]), "Damage past a kill spills behind.", "among the rules, last")
+	assert_eq(str(EntryReadout.lines_for(gun, 1, -1, gun, [], Effects.printed_grants(u, gun), db).back()["text"]), "Damage past a kill spills behind.", "among the rules, last")
 
 
 ## The keywords list (Ryan, 26 October): the pause menu's page, every term the dice and the chips
@@ -586,7 +586,7 @@ func test_a_long_codex_description_takes_two_lines_never_more() -> void:
 
 
 func test_face_descriptions_drop_the_line_word() -> void:
-	assert_eq(Face.attack(10, Face.Reach.DIRECT, [], 0, 30).describe(), "10–30", "line of fire goes unsaid")
+	assert_eq(Face.attack(10, Face.Reach.DIRECT).describe(), "10", "line of fire goes unsaid")
 	assert_true(Face.attack(20, Face.Reach.INDIRECT).describe().begins_with("indirect 20"), "indirect is called out")
 
 

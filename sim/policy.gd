@@ -156,7 +156,6 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 	while sk.state == Skirmish.State.ASSIGN and guard < OPTION_GUARD:
 		guard += 1
 		var best: Dictionary = {}
-		var best_rolled: Dictionary = {}   # the best damaging spend that rolls, to go before a sure one
 		var alternatives: Array = []       # the planner's: each machine's best two spends worth making
 		for i in range(sk.mechs.size()):
 			var ms: Skirmish.MechState = sk.mechs[i]
@@ -184,17 +183,10 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 					alternatives.append_array(_top_two(opts))
 			if best.is_empty() or pick["score"] > best["score"]:
 				best = pick
-			if _rolls_damage(ms.face()) and pick["score"] > 0.0 and (best_rolled.is_empty() or pick["score"] > best_rolled["score"]):
-				best_rolled = pick
 			if kind == RANDOM:
 				break   # the first unspent die, any option: no weighing across the team
 		if best.is_empty():
 			break
-		# Rolled before sure (Ryan, 9 October): a sure number is worth most after the rolls
-		# have landed, when it can finish what they left, so a damaging flat spend waits while
-		# a damaging rolled one is there to make. Setup (buffs, shock, lure) keeps its order.
-		if kind != RANDOM and not best_rolled.is_empty() and _sure_damage(sk.mechs[best["mech"]].face()):
-			best = best_rolled
 		if kind == PLANNER:
 			best = _plan(sk, best, alternatives)
 		var ms: Skirmish.MechState = sk.mechs[best["mech"]]
@@ -218,13 +210,13 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 ## damage it would have dealt at its mean (the heat report's, 13 October).
 func _note_forced(sk: Skirmish, ms: Skirmish.MechState) -> void:
 	var f := ms.face()
-	if f == null or not f.is_attack() or (f.power <= 0 and f.power_max <= 0):
+	if f == null or not f.is_attack() or f.power <= 0:
 		return
 	var fc := sk.forecast(ms, false)
 	if int(fc["heat_end"]) + heat_of(ms, f) <= ms.heat_max:
 		return
 	forced_holds += 1
-	forgone += float(Effects.effective_face(ms.unit, f).average() * maxi(1, f.strikes))
+	forgone += float(Effects.effective_face(ms.unit, f).power * maxi(1, f.strikes))
 
 
 ## A machine's two best spends worth making (a score of nought or more), for the planner's list.
@@ -390,15 +382,6 @@ func _blind_pick(sk: Skirmish, i: int) -> Dictionary:
 				return {}
 			return {"target": ms if who.has(ms) else who[0]}
 	return {}
-
-
-## A damaging attack that rolls a range (the gamble), and one that is a single number.
-static func _rolls_damage(f: Face) -> bool:
-	return f != null and f.kind == Face.Kind.ATTACK and f.is_ranged()
-
-
-static func _sure_damage(f: Face) -> bool:
-	return f != null and f.kind == Face.Kind.ATTACK and not f.is_ranged() and f.power > 0
 
 
 ## Every legal spend of one mech's showing entry, scored: {mech, target, score}. A blank is
@@ -749,7 +732,7 @@ static func roll_gain(who: Skirmish.MechState) -> float:
 	if who.assigned or who.face() == null:
 		return 0.0
 	var shown := who.face()
-	var now := float(shown.average() * maxi(1, shown.strikes)) if shown.is_weapon() else 0.0
+	var now := float(shown.power * maxi(1, shown.strikes)) if shown.is_weapon() else 0.0
 	return _raw_attack_mean(who) - now
 
 
@@ -1051,7 +1034,7 @@ func flak_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left: f
 		if other == ms or other.assigned:
 			continue
 		var of := other.face()
-		if of != null and of.is_attack() and (of.power > 0 or of.power_max > 0):
+		if of != null and of.is_attack() and of.power > 0:
 			now += float(maxi(1, of.strikes))
 	var share := 1.0 if is_target else 0.5
 	var gain := float(stacks) * now * share + float(Effects.stacks_next_round(Effects.STATUS["flakked"], stacks)) * next * share
@@ -1192,7 +1175,7 @@ static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
 	var total := 0.0
 	for f in ms.die.faces:
 		if f.is_attack():
-			total += float(f.average() * maxi(1, f.strikes))
+			total += float(f.power * maxi(1, f.strikes))
 	return total / float(ms.die.faces.size())
 
 
@@ -1211,8 +1194,7 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 
 
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
-## A rolled entry is read at five points (its ends, its quarters, its middle); a flat entry is
-## one point. Overcharge, a target's missing hull and the pipeline's modifiers apply as the
+## One point, the entry's number. Overcharge, a target's missing hull and the pipeline's modifiers apply as the
 ## resolver applies them; the strikes multiply the blow, a split entry's (the Skua's) each
 ## taking its share of the roll, rounded down. `strikes_on` is how many of them land on this
 ## foe when not all do (a spray's share, fractional), and `aimed` whether the first is one.
@@ -1224,13 +1206,9 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 		f = Effects.effective_face(ms.unit, f, target)
 	var rolls: Array[int] = []
 	if area >= 0:
-		rolls.append(Skirmish.area_number(f, area))   # a foe past the target: its shape's number, flat
-	elif not f.is_ranged():
-		rolls.append(f.power)
+		rolls.append(Skirmish.area_number(f, area))   # a foe past the target: its shape's number
 	else:
-		var span := f.power_max - f.power
-		for q in [0.0, 0.25, 0.5, 0.75, 1.0]:
-			rolls.append(f.power + int(roundf(span * q)))
+		rolls.append(f.power)
 	var fired := Skirmish.heat_bonus(ms, f)   # what the heat it fires adds
 	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	# The foe's own reads (the blow's order, 28 October): its missing hull on every blow, and the
@@ -1835,7 +1813,7 @@ func shock_cash(sk: Skirmish, ms: Skirmish.MechState, foe: Foe) -> float:
 		var of := sk.spend_face(other)
 		if of == null or not of.is_attack() or not sk.targets_for_face(other, of).has(foe):
 			continue
-		best = maxf(best, float(of.average()))
+		best = maxf(best, float(of.power))
 	return best if best > 0.0 else _team_raw_attack_mean(sk)
 
 
@@ -2194,7 +2172,7 @@ static func barrier_stakes(sk: Skirmish, foe: Foe, except: Skirmish.MechState = 
 			continue
 		var of := sk.spend_face(ms)
 		if of != null and of.is_weapon() and sk.targets_for_face(ms, of).has(foe):
-			best = maxf(best, float(of.average()))
+			best = maxf(best, float(of.power))
 	return best
 
 
@@ -2220,7 +2198,7 @@ static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
 				for ms in to_act:
 					var of := sk.spend_face(ms)
 					if of != null and of.is_attack() and sk.targets_for_face(ms, of).has(marked):
-						best = maxf(best, float(of.average()))
+						best = maxf(best, float(of.power))
 				worth += best
 			"flakked":
 				worth += float(Effects.stacks_of(marked, id) * to_act.size())

@@ -10,7 +10,6 @@ extends RefCounted
 ##                       before or after spending others: a low damage roll is information;
 ##                       a reroll always lands on a different face (see Die.reroll)
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
-##                       a rolled face rolls its damage here, immediately and visibly
 ##                       a kill clears its slot at once; a decided fight ends at once
 ##   end_round()         the player's turn ends: a machine's Burning adds its heat and loses a
 ##                       stack, Scorched goes, then heat over the cap burns hull; then
@@ -18,8 +17,7 @@ extends RefCounted
 ##                       reinforcements refill, outcome is checked
 ##   can_withdraw()      at any point of the player's turn
 ##
-## The player's damage is in fives, everything else in tens. Enemy damage is static; only
-## the player's rolled faces roll.
+## The player's damage is in fives, everything else in tens. Nothing rolls but the dice.
 
 enum State { SETUP, ROUND_START, ASSIGN, DONE }
 enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
@@ -103,9 +101,7 @@ var sponsorship := {"guarded": 0, "damaging_spends": 0, "quiet_spends": 0}
 ## by reach name, the spends, the hull its blows took off foes, the spends aimed at the back
 ## rank and the heat paid. Never read by the game.
 var reach_tally: Dictionary = {}
-## The same by the shape of the number (rolled or flat), and the damage the foes dealt by
-## the rank they struck from. The runner's alone.
-var class_tally: Dictionary = {}
+## The damage the foes dealt by the rank they struck from. The runner's alone.
 var taken_by_rank: Dictionary = {}
 var _chaining := false
 var _salvo_strike := false   # a strike of the Musk Ox's salvo, paid for by the whole magazine at the spend
@@ -164,13 +160,10 @@ var _acted: Array = []
 ## The round preview (Ryan, 26 October: it "should account for every single thing that will
 ## happen other than 1) random active effects ... and 2) player decisions"): set on a copy of the
 ## fight that plays the rest of the round (preview_round), so every rule runs as it will, and a
-## random draw is never made there: the copy holds it back and notes it, a rolled blow counts its
-## lowest roll, and the preview promises nothing a roll decides.
+## random draw is never made there: the copy holds it back and notes it, and the preview
+## promises nothing a roll decides.
 var previewing := false
-var preview_notes: Array = []   # what the copy held back: {kind: pick, resist, injury, blast, spray, random_target; foe or mech}
-## The machines a static screen covers during a withdrawal (the Prairie Dog): a blow aimed at
-## one is lost. Empty outside a withdrawal.
-var _screened: Array = []
+var preview_notes: Array = []   # what the copy held back: {kind: pick, resist, blast, spray, random_target; foe or mech}
 ## Rerolls a foe's roar has cost the team for the coming round.
 var reroll_debt: int = 0
 ## The team's rerolls banked as the last player's turn ended (Maverick's Playbook, the Giant
@@ -570,21 +563,18 @@ static func split_share(roll: int, split: int) -> int:
 	return maxi(1, roll / split) if roll > 0 else 0
 
 
-func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
+func shown_number(ms: MechState, f: Face, target: Foe = null) -> int:
 	if f == null or not f.is_attack():
-		return [0, 0]
+		return 0
 	var add := heat_bonus(ms, f) + hopper_bonus(ms.unit, f)   # what the entry prints from its firer, inside the pipeline
 	var own := (f.missing_bonus(target) + f.consume_bonus(target)) if not f.is_debuff() else 0   # the foe's own reads, flat after it (the blow's order)
-	var out: Array[int] = []
-	for v in [f.power, f.power_max]:
-		# A split entry (the Skua's) shows a strike's share of the roll, rounded down, never below one.
-		var d := int(Effects.attack(ms.unit, f, split_share(v + add, f.split), 0, target)["damage"]) + own
-		if target != null:
-			if not f.is_debuff():
-				d += Effects.damage_taken_add(target, ms.unit)
-			d = maxi(0, d - target.armour_for(f))
-		out.append(d)
-	return out
+	# A split entry (the Skua's) shows a strike's share of the number, rounded down, never below one.
+	var d := int(Effects.attack(ms.unit, f, split_share(f.power + add, f.split), 0, target)["damage"]) + own
+	if target != null:
+		if not f.is_debuff():
+			d += Effects.damage_taken_add(target, ms.unit)
+		d = maxi(0, d - target.armour_for(f))
+	return d
 
 
 ## The shield an entry gives the machine it is spent on: its number (a shield's, or a vent's
@@ -626,8 +616,7 @@ func shut_gates(ms: MechState, f: Face, foe: Foe) -> Array[int]:
 func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
 	if f == null or not f.is_attack() or f.is_debuff():
 		return f.number_text() if f != null else ""
-	var n := shown_number(ms, f, target)
-	var text := str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]
+	var text := str(shown_number(ms, f, target))
 	# Over a foe, a weapon whose heat the shield pays shows its zap joined to the blow (the Storm
 	# Petrel's, "4+2"), each with the foe's armour off; the zap is lost if the blow kills.
 	if target != null and f.burns > 0:
@@ -737,8 +726,8 @@ func rallies_now(r: Foe) -> bool:
 ## move as announced: its heal, its death before it acts, a last act, a web's burst, a rally, a
 ## self-destruct) and the round's end. A pick made again (a foe whose machine fell first) is the
 ## next machine in line, so the copy strikes the machine the round will. Nothing random is
-## drawn: a rolled blow counts its lowest roll, and a stun Numbed may shrug off, an
-## injury's entry and a strike at a random foe among several are held back (`notes`); the
+## drawn: a stun Numbed may shrug off and a strike at a random foe among several are held
+## back (`notes`); the
 ## reinforcements are the next round's. Returns {"mechs": the forecast's keys for each machine by
 ## index, plus "coming" (the statuses the round lands on it: {id: {"stacks", "name",
 ## "description"}}), "foes": {foe on the field: {"hp", "alive", "struck" (the machines its blows
@@ -1909,7 +1898,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		log.append("%s: its own fire, %s ×%d" % [ms.unit.display_name, Effects.STATUS["burning_mech"]["name"], f.self_burn])
 	_shift_form(ms, f, target)
 	if f.kind != Face.Kind.BLANK:
-		var deals := blasted or (f.is_attack() and (f.power > 0 or f.power_max > 0))
+		var deals := blasted or (f.is_attack() and f.power > 0)
 		var measure := "damaging_spends" if deals else "quiet_spends"
 		sponsorship[measure] = int(sponsorship[measure]) + 1
 	# The Siphon (the Whip Scorpion's, 20 October): every blow a foe lands on its owner this
@@ -2083,9 +2072,6 @@ func _foe_turn(f: Foe) -> void:
 		# machine in turn, left to right, so no aim or lure moves it; a screened machine is
 		# out of it.
 		for m in live_mechs():
-			if _screened.has(m):
-				log.append("%s's blow on %s is lost in the static" % [f.display_name, m.unit.display_name])
-				continue
 			if is_out(m):
 				continue   # out of the fight
 			_strike(f, m)
@@ -2096,9 +2082,6 @@ func _foe_turn(f: Foe) -> void:
 				_foe_acts(f, null)
 			else:
 				log.append("%s has no machine to strike" % f.display_name)
-			return
-		if _screened.has(t):
-			log.append("%s's blow is lost in the static" % f.display_name)
 			return
 		if not f.attacks():
 			_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
@@ -2358,7 +2341,7 @@ func _shift_form(ms: MechState, f: Face, target) -> void:
 		if not Effects.is_sealed(ms.unit):
 			Effects.stack(ms.unit, Effects.sealed_status(int(seal["armour"]), int(seal["heat"])), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
 			log.append("%s seals: armour +%d, its own cooling stopped, +%d heat a turn" % [ms.unit.display_name, int(seal["armour"]), int(seal["heat"])])
-	elif f.kind == Face.Kind.VENT or (f.is_attack() and (f.power > 0 or f.power_max > 0)):
+	elif f.kind == Face.Kind.VENT or (f.is_attack() and f.power > 0):
 		if Effects.remove(ms.unit, "sealed"):
 			log.append("%s opens" % ms.unit.display_name)
 
@@ -2389,9 +2372,7 @@ func withdraw() -> bool:
 	_end_player_turn()
 	if outcome != Outcome.NONE:
 		return true   # burnt out on the way: the fight is lost, and the enemy never strikes
-	_screen_cover()
 	_enemy_turn()
-	_screened.clear()
 	outcome = Outcome.DEFEAT if live_mechs().is_empty() else Outcome.WITHDRAWN
 	_finish()
 	if outcome == Outcome.WITHDRAWN:
@@ -2423,7 +2404,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var aimed_back := target.rank == 1
 	var dealt := 0             # hull the blows took off every foe they reached, for the reach tally
 	var total := 0
-	var rolled_total := 0
+	var base_total := 0   # the strikes' numbers before the pipeline, for the screen's flash
 	var heat_total := 0
 	var vent := 0
 	var armoured_total := 0   # what the primary target's armour took off, for the log
@@ -2492,11 +2473,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			hit = reached_by(f, aimed)
 			shapes = area_shapes(f, aimed)
 		if s % split == 0:
-			# Roll once, then split (Ryan, 24 October): the strikes of one split share the roll.
+			# One number, split (Ryan, 24 October): the strikes of one split share it.
 			roll = f.power
-			if f.is_ranged() and not previewing:   # the copy counts the lowest roll
-				roll = rng.randi_range(f.power, f.power_max)
-			rolled_total += roll + own
+			base_total += roll + own
 		var heat := f.heat if s == 0 else 0
 		# The blow's order (Ryan, 28 October), the strike's own foe (the target, or a spray's pick)
 		# first: the roll and what the entry prints from its firer (the heat Vents all fired, the
@@ -2681,10 +2660,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for foe in gained.keys():
 		for status_id in gained[foe]:
 			_foe_gained_status(foe, status_id)
-	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "melee": f.tags.has("melee")}
+	last_roll = {"mech": mech_index, "target": target, "base": base_total, "final": total, "melee": f.tags.has("melee")}
 	var how := f.describe()
-	if f.is_ranged():
-		how = "rolled %d, " % rolled_total + how
 	if f.spray:
 		log.append("%s sprays %s (%s)%s" % [ms.unit.display_name, ", ".join(sprayed), how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	elif _blast_strike:
@@ -2716,9 +2693,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	# opens the back rank to direct fire until reinforcements plug it. Indirect fire at the
 	# front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
 	_clear_dead()
-	if (f.power > 0 or f.power_max > 0) and not _blast_strike:   # a lure or a probe deals nothing: it is no spend of damage; a blast is no spend of its own
+	if f.power > 0 and not _blast_strike:   # a lure or a probe deals nothing: it is no spend of damage; a blast is no spend of its own
 		_tally_reach(reach, dealt, aimed_back, heat_total)
-		_tally_class(f.is_ranged(), dealt, heat_total, maxi(1, f.strikes))
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	if forged:
@@ -2806,7 +2782,7 @@ func blast_targets() -> Array[Foe]:
 func blast_number(ms: MechState, amount: int, foe: Foe = null) -> int:
 	if amount <= 0:
 		return 0
-	return shown_number(ms, blast_shot(amount), foe)[0]
+	return shown_number(ms, blast_shot(amount), foe)
 
 
 ## The foes a Lure entry spent on `aimed` would turn on this machine, as the arrows show them:
@@ -3461,7 +3437,7 @@ func _release_swallowed(f: Foe) -> void:
 ## A steal (Gilgamesh's, 30 October, the slate's signature: "takes the weapon a machine shows and
 ## fights with it; now and then the piece it took is a fake"): the entry the machine's die shows
 ## is switched off through its next turn, as a disable, and the foe holds it: its borrowed swing
-## lands that weapon's number (a rolled one at its mean, a blow a strike), and anything else it
+## lands that weapon's number (a blow a strike), and anything else it
 ## took, a shield, a vent, equipment or a blank, is a fake, for 1.
 func _steal(f: Foe, t: MechState) -> void:
 	var face: Face = t.die.faces[t.face_index]
@@ -3471,12 +3447,11 @@ func _steal(f: Foe, t: MechState) -> void:
 	log.append("%s takes %s's %s%s" % [f.display_name, t.unit.display_name, face.describe(), "" if weapon else ", a fake"])
 
 
-## The number a stolen entry swings for: a weapon's printed blow (a rolled one at its mean,
-## rounded), anything else 1, the fake.
+## The number a stolen entry swings for: a weapon's printed blow, anything else 1, the fake.
 static func stolen_number(face: Face) -> int:
 	if face == null or not face.is_weapon():
 		return 1
-	return maxi(1, roundi((face.power + face.power_max) / 2.0))
+	return maxi(1, face.power)
 
 
 ## A die rolled, any machine's (the Swallowtail's Muster, Ryan's go of 21 October): every machine
@@ -3571,10 +3546,7 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 	var roll := 0
 	for s in range(maxi(1, f.strikes)):
 		if s % split == 0:
-			roll = f.power
-			if f.is_ranged() and not previewing:   # the copy counts the lowest roll
-				roll = rng.randi_range(f.power, f.power_max)
-			roll += fired + from_hopper
+			roll = f.power + fired + from_hopper
 		var rolled := split_share(roll, split)   # a split entry's strike takes its share of the roll, rounded down, never below one
 		var modded := Effects.attack(ms.unit, f, rolled, f.heat if s == 0 else 0, null)
 		if s == 0:
@@ -3883,25 +3855,6 @@ func cooldown_of(ms: MechState, f: Face) -> int:
 	return maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f))
 
 
-## The Prairie Dog's screen on a withdrawal (28 September; built 30 September): a machine with
-## the passive is out before the enemy strikes, every other live machine rolls the screen's
-## chance on the skirmish's die to slip out with it, and a blow aimed at a covered machine
-## is lost rather than retargeted. Nothing happens without a screener.
-func _screen_cover() -> void:
-	_screened.clear()
-	var chance := 0
-	for ms in live_mechs():
-		chance = maxi(chance, Effects.screen_chance(ms.unit))
-	if chance <= 0:
-		return
-	var names: Array[String] = []
-	for ms in live_mechs():
-		if Effects.screen_chance(ms.unit) > 0 or rng.randi_range(1, 100) <= chance:
-			_screened.append(ms)
-			names.append(ms.unit.display_name)
-	log.append("the static screen covers %s" % ", ".join(names))
-
-
 ## One attack's share of the reach tally (the runner's; the game never reads it).
 func _tally_reach(reach: int, dealt: int, aimed_back: bool, heat: int) -> void:
 	var k := str(Face.REACH_NAMES.get(reach, reach))
@@ -3913,18 +3866,6 @@ func _tally_reach(reach: int, dealt: int, aimed_back: bool, heat: int) -> void:
 	t["damage"] += dealt
 	t["heat"] += heat
 	reach_tally[k] = t
-
-
-## One attack's share of the class tally (the runner's; the game never reads it).
-func _tally_class(rolled: bool, dealt: int, heat: int, strikes: int) -> void:
-	var k := "rolled" if rolled else "flat"
-	var t: Dictionary = class_tally.get(k, {"spends": 0, "damage": 0, "heat": 0, "strikes": 0})
-	if not _chaining:
-		t["spends"] += 1
-	t["damage"] += dealt
-	t["heat"] += heat
-	t["strikes"] += strikes
-	class_tally[k] = t
 
 
 ## Hull lost, to a blow, a bite or an overheat (Ryan, 10 October: taking hull damage is any of
@@ -4401,19 +4342,17 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "breach": breach}
 
 
-## The injury rolls the die and destroys the component it lands on: blank, until the hangar
-## mends it (one state, Ryan, 25 October: "Cracked is gone"). A destroyed component or an empty
-## hardpoint takes the blow and nothing happens, so a mech with little left to break shrugs
-## off more of them. The damage lives on the unit and persists until repaired in the hangar.
-## (Decided 17 September: one threshold, one roll.) A passive may say no_destroy on_injury:
-## then the component holds.
+## The injury destroys the entry the die shows (Ryan, 2 November, in place of the die's roll of
+## 17 September: what faces the enemy is the player's choice, the entry it spent, held or
+## locked): blank, until the hangar mends it (one state, Ryan, 25 October: "Cracked is gone").
+## A destroyed component or an empty hardpoint showing takes the blow and nothing happens, so a
+## second such blow in the turn finds nothing to break. The damage lives on the unit and
+## persists until repaired in the hangar. A passive may say no_destroy on_injury: then the
+## component holds. The preview's copy breaks the same entry, so the forecast is exact.
 func apply_injury(ms: MechState) -> String:
 	if ms.die.faces.is_empty():
 		return ""
-	if previewing:
-		preview_notes.append({"kind": "injury", "mech": mechs.find(ms)})   # the entry it lands on is the die's roll
-		return ""
-	return _injure_entry(ms, ms.die.roll(rng))
+	return _injure_entry(ms, ms.face_index)
 
 
 ## The injury on one entry: a component is destroyed (unless a passive holds it), a blank

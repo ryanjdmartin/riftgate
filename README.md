@@ -563,8 +563,8 @@ valid targets light up while dragging. A Swap waits on its first target for a ta
 a tap on the ground sends it home to the tray. Read or drag an ambusher's die (the funnel-web's)
 and the foes' ground dims: the foes its entry can reach that show no intent on it get pulsing
 eyes, the ones its blows bite.
-Keywords float beside each die as annotation tags. A rolled weapon rolls its damage when it
-lands and the number flashes over the target; a flat one shows its number. Reroll up to three
+Keywords float beside each die as annotation tags. A weapon's number flashes over the target
+as it lands. Reroll up to three
 times per round, before or after attacking; a reroll lands on any other face, never the
 one showing; a copy of it may come up. End turn runs the enemy: its turn replays blow
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,
