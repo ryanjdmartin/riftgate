@@ -2667,9 +2667,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	if f.has(Face.Keyword.SHOCK):
 		for foe in touched:
 			_shock(foe, ms, turned)
-	# Chain's charge (Ryan, 29 October): after its arcs, one other foe at random is Shocked.
-	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
-		_chain_charge(target, ms, ms.unit.display_name, turned, mech_index)
+	# The primers (Ryan, 2 November): Charged and Supercooled spend a stack a weapon fired, the
+	# mark landing on the foe the first strike was aimed at, after the blows, as the Shock keyword
+	# lays its own; a salvo is one fire, a blast none, and equipment spends nothing.
+	if not f.is_debuff() and not _blast_strike and not _chaining:
+		_prime(ms, target, turned)
 	# Expose (the Needletail's Fovea Designator, 21 October): every foe reached and left
 	# standing is Exposed through the next round, a second Expose refreshing it.
 	if f.has(Face.Keyword.EXPOSE):
@@ -2896,30 +2898,6 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 		if not hit.has(foe):
 			hit.append(foe)
 	return hit
-
-
-## Chain's charge (Ryan, 29 October: "then Shock one other random non-targeted enemy that doesn't
-## already have Shock"): after a Chain spend's arcs, one foe on the field, alive, neither the
-## target nor already Shocked, drawn from the seeded stream, is Shocked; a Ward turns it away. The
-## round preview's copy draws nothing: a lone such foe takes it for sure, else it is held back and
-## noted. `by` may be null (a mine whose spender is gone); `who` names the spender in the log.
-func _chain_charge(target: Foe, by: MechState, who: String, turned, mech_index: int) -> void:
-	var pool: Array[Foe] = []
-	for foe in field_foes():
-		if foe != target and foe.alive() and not Effects.has(foe, "shocked"):
-			pool.append(foe)
-	if pool.is_empty():
-		return
-	if previewing and pool.size() > 1:
-		preview_notes.append({"kind": "charge", "mech": mech_index})
-		return
-	var foe: Foe = pool[0] if pool.size() == 1 else pool[rng.randi_range(0, pool.size() - 1)]
-	if Effects.turns_mark(foe, "shocked"):
-		_turned_away(foe, "shocked", turned, by)
-		return
-	Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
-	log.append("%s leaves a charge on %s: Shocked" % [who, foe.display_name])
-	_foe_gained_status(foe, "shocked")
 
 
 ## Chain's conductors (Ryan, 28 October; the kill and repeat retired): every other foe on the
@@ -3580,6 +3558,16 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 			heat_total += int(modded["heat"])   # heat once a spend
 		vent += int(modded["vent"])
 		laid.append(_shot(ms, f, int(modded["damage"]), ms.face(), doubled, int(modded["burn"]), false, _area_shot(ms, f, fired + from_hopper, split)))
+	# The primers (2 November): a laid weapon spends a stack as it is laid, the mark riding its
+	# first shot to whoever steps in.
+	if not f.is_debuff() and not laid.is_empty():
+		if Effects.stacks_of(ms.unit, "charged") > 0:
+			Effects.spend_stacks(ms.unit, "charged", 1)
+			if not laid[0]["keywords"].has(int(Face.Keyword.SHOCK)):
+				laid[0]["keywords"].append(int(Face.Keyword.SHOCK))
+		if Effects.stacks_of(ms.unit, "supercooled") > 0:
+			Effects.spend_stacks(ms.unit, "supercooled", 1)
+			laid[0]["cryo"] = int(laid[0]["cryo"]) + _stacks_from(ms, "cryoed", 1)
 	var waiting: Array = mines.get(slot, [])
 	waiting.append_array(laid)
 	mines[slot] = waiting
@@ -3786,10 +3774,6 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if kws.has(Face.Keyword.EXPOSE):
 			Effects.grant_for_rounds(t, Effects.STATUS["exposure"], "mech", round + 1)
 			_note_status(gained, t, "exposure", turned)
-	# Chain's charge as the shot lands (29 October): one other foe at random, not the arrival,
-	# before the Ward's line, so a charge it turns away is told with the rest.
-	if kws.has(Face.Keyword.CHAIN) and shot.has("chain") and bool(shot.get("weapon", true)):
-		_chain_charge(foe, by, "a mine of %s's" % str(shot.get("by", "")), turned, int(shot.get("mech", -1)))
 	_tell_turned(turned)
 	for t in gained.keys():
 		for status_id in gained[t]:
@@ -3929,6 +3913,30 @@ func _shock(foe: Foe, by: MechState, turned = null) -> void:
 	Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	log.append("%s shocks %s" % [by.unit.display_name, foe.display_name])
 	_foe_gained_status(foe, "shocked")
+
+
+## The primers (Ryan, 2 November): Charged and Supercooled on a machine spend a stack a weapon it
+## fires, and the Shock or the Cryo 1 lands on the foe the first strike was aimed at, after the
+## blows, as the Shock keyword lays its own, so a weapon never cashes what it just laid. A salvo
+## is one fire, a blast none, equipment spends nothing, and a laid shot spends the stack as it is
+## laid and carries the mark (_lay). A stack spent on a fallen foe is spent all the same.
+func _prime(ms: MechState, foe: Foe, turned = null) -> void:
+	for id in ["charged", "supercooled"]:
+		if Effects.stacks_of(ms.unit, id) <= 0:
+			continue
+		Effects.spend_stacks(ms.unit, id, 1)
+		var name := str(Effects.STATUS[id]["name"])
+		if foe == null or not foe.alive():
+			log.append("%s: %s spent, its foe fallen" % [ms.unit.display_name, name])
+			continue
+		if id == "charged":
+			_shock(foe, ms, turned)
+		elif Effects.turns_mark(foe, "cryoed"):
+			_turned_away(foe, "cryoed", turned, ms)
+		else:
+			Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", _stacks_from(ms, "cryoed", 1), Effects.DECAY_NONE)
+			log.append("%s frosts %s: Cryo ×%d" % [ms.unit.display_name, foe.display_name, Effects.stacks_of(foe, "cryoed")])
+			_foe_gained_status(foe, "cryoed")
 
 
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe

@@ -1513,10 +1513,9 @@ func test_chain_arcs_to_every_shocked_foe_on_the_field_whatever_its_reach() -> v
 	assert_eq(behind.hp, 28, "and so does the one behind the target, out of the gun's reach")
 	assert_true(Effects.has(beside, "shocked") and Effects.has(behind, "shocked"), "each conductor keeps its charge")
 	assert_eq(idle.hp, 30, "a foe with no charge takes nothing")
-	assert_true(Effects.has(idle, "shocked"), "and is the one other foe left to charge")
+	assert_false(Effects.has(idle, "shocked"), "and gains no charge: Chain is the arcs alone (3 November)")
 	assert_eq(sk.mechs[0].heat, 3, "heat once a spend; an arc adds none")
 	assert_eq("\n".join(sk.log).count("arcs to"), 2, "the log tells each arc")
-	assert_true("\n".join(sk.log).contains("leaves a charge on"), "and the charge")
 
 
 func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
@@ -1535,42 +1534,6 @@ func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
 	assert_eq(other.hp, 28, "the other conductor takes Chain 2, plain")
 	assert_true(Effects.has(other, "shocked"), "and keeps its charge")
 	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc")
-	assert_false("\n".join(sk.log).contains("leaves a charge on"), "no foe left to charge: the target never is")
-
-
-func test_chain_with_no_shocked_foe_lands_on_its_target_and_charges_another() -> void:
-	var sk := Skirmish.new(1, 2)
-	sk.add_mech(_mech("A", Die.single(_chain_gun())))
-	var target := _ghoul(30, 5)
-	var other := _ghoul(30, 5)
-	sk.add_foes([target, other])
-	sk.begin()
-	sk.start_round()
-	assert_true(sk.assign(0, target), "the Chain gun spent")
-	assert_eq([target.hp, other.hp], [26, 30], "the target alone takes a blow")
-	assert_false("\n".join(sk.log).contains("arcs to"), "no arc")
-	assert_true(Effects.has(other, "shocked") and not Effects.has(target, "shocked"), "the other foe is charged, never the target")
-
-
-func test_chain_charges_one_other_foe_at_random() -> void:
-	var picked := {}
-	for seed in range(1, 13):
-		var sk := Skirmish.new(seed, 4)
-		sk.add_mech(_mech("A", Die.single(_chain_gun())))
-		var foes: Array = [_ghoul(30, 5), _ghoul(30, 5), _ghoul(30, 5), _ghoul(30, 5)]
-		sk.add_foes(foes)
-		sk.begin()
-		sk.start_round()
-		var target: Foe = sk.front[0]
-		assert_true(sk.assign(0, target), "the Chain gun spent")
-		var charged: Array = []
-		for col in range(4):
-			if Effects.has(sk.front[col], "shocked"):
-				charged.append(col)
-		assert_eq(charged.size(), 1, "one foe charged a spend (seed %d)" % seed)
-		assert_false(charged.has(0), "never the target")
-		picked[charged[0]] = true
-	assert_eq(picked.size(), 3, "the charge falls on each of the others over the seeds: a draw, not a rule")
 
 
 func test_the_firers_modifiers_ride_every_arc() -> void:
@@ -1636,6 +1599,58 @@ func test_an_arc_meets_armour_unless_it_breaches() -> void:
 		assert_eq(30 - plated.hp, 2 if breach else 1, "a Breach meets no armour" if breach else "Chain 2, plain, less armour 1")
 
 
+## The primers (Ryan, 2 November): Charged and Supercooled spend a stack a weapon fired, the Shock
+## and the Cryo 1 landing on the foe the first strike was aimed at after its blows, never on the
+## fire's own blows; equipment spends none; a laid shot spends the stack and carries the mark.
+func test_charged_and_supercooled_spend_a_stack_a_weapon_fired_after_its_blows() -> void:
+	var sk := Skirmish.new(1, 2)
+	var gun := Face.attack(4, L)
+	gun.strikes = 2
+	var m := _mech("A", Die.of([gun, Face.buff("rallied")]), 40, 100)
+	sk.add_mech(m)
+	var g := _ghoul(100, 0)
+	var h := _ghoul(100, 0)
+	sk.add_foes([g, h])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(m, Effects.STATUS["charged"], Effects.SKIRMISH, "buff", 1, Effects.DECAY_NONE)
+	Effects.stack(m, Effects.STATUS["supercooled"], Effects.SKIRMISH, "buff", 2, Effects.DECAY_NONE)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 1
+	assert_true(sk.assign(0, null), "equipment spent on itself")
+	assert_eq([Effects.stacks_of(m, "charged"), Effects.stacks_of(m, "supercooled")], [1, 2], "equipment spends nothing")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, g), "the gun fired at g")
+	assert_eq(g.hp, 92, "two strikes of 4, neither doubled: the Shock lands after the blows")
+	assert_true(Effects.has(g, "shocked"), "Charged: the foe is Shocked after the fire")
+	assert_eq(Effects.stacks_of(g, "cryoed"), 1, "Supercooled: Cryo 1 on it")
+	assert_eq([Effects.stacks_of(m, "charged"), Effects.stacks_of(m, "supercooled")], [0, 1], "a stack of each spent, one fire")
+	assert_true("\n".join(sk.log).contains("A shocks revenant") and "\n".join(sk.log).contains("A frosts revenant: Cryo ×1"), "the log tells both: %s" % str(sk.log.slice(-4)))
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, h), "fired again, at h")
+	assert_false(Effects.has(h, "shocked"), "no Charged left")
+	assert_eq([Effects.stacks_of(h, "cryoed"), Effects.stacks_of(m, "supercooled")], [1, 0], "the last Supercooled spent on h")
+	# A laid shot spends the stack as it is laid and carries the mark to whoever steps in.
+	var s2 := Skirmish.new(1, 2)
+	var bomber := _mech("Bomber", Die.single(Face.attack(4, I)), 40, 100)
+	bomber.grant_passive(MINER)
+	s2.add_mech(bomber)
+	s2.add_foes([_ghoul(100, 0)])
+	s2.begin()
+	s2.start_round()
+	Effects.stack(bomber, Effects.STATUS["charged"], Effects.SKIRMISH, "buff", 1, Effects.DECAY_NONE)
+	Effects.stack(bomber, Effects.STATUS["supercooled"], Effects.SKIRMISH, "buff", 1, Effects.DECAY_NONE)
+	var slot := Vector2i(0, 1)
+	assert_true(s2.assign(0, slot), "a mine laid")
+	assert_eq([Effects.stacks_of(bomber, "charged"), Effects.stacks_of(bomber, "supercooled")], [0, 0], "both spent at the lay")
+	var shot: Dictionary = s2.mines_at(slot)[0]
+	assert_true(shot["keywords"].has(int(K.SHOCK)) and int(shot["cryo"]) == 1, "the shot carries the Shock and the Cryo 1: %s" % str(shot))
+
+
 func test_a_conductors_barrier_takes_the_arc_and_its_charge_stands() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(_chain_gun())))
@@ -1652,21 +1667,7 @@ func test_a_conductors_barrier_takes_the_arc_and_its_charge_stands() -> void:
 	assert_true(Effects.has(sheltered, "shocked"), "the charge stands: no strike was aimed at it")
 
 
-func test_a_ward_turns_a_chains_charge_away() -> void:
-	var sk := Skirmish.new(1, 2)
-	sk.add_mech(_mech("A", Die.single(_chain_gun())))
-	var target := _ghoul(30, 5)
-	var warded := _ghoul(30, 5)
-	sk.add_foes([target, warded])
-	sk.begin()
-	sk.start_round()
-	Effects.grant_buff(warded, "ward", 1, "test", sk.round)
-	assert_true(sk.assign(0, target), "the Chain gun spent")
-	assert_false(Effects.has(warded, "shocked"), "the one foe to charge is warded: the charge is turned away")
-	assert_true("\n".join(sk.log).contains("Ward turns away Shocked"), "the log says so")
-
-
-func test_a_silenced_machine_arcs_and_charges_nothing() -> void:
+func test_a_silenced_machine_arcs_nothing() -> void:
 	var sk := Skirmish.new(1, 3)
 	var m := _mech("A", Die.single(_chain_gun()))
 	sk.add_mech(m)
@@ -8272,32 +8273,6 @@ func test_a_chain_mine_arcs_its_number_as_laid_to_the_shocked_foes_as_it_lands()
 	assert_true(Effects.has(other, "shocked"), "its charge stands")
 	assert_true("\n".join(sk.log).contains("arcs to"), "the log says so")
 	assert_eq([heat_laid, sk.mechs[0].heat], [5, 5], "the lay paid its heat; the arc pays none")
-
-
-## A Chain mine charges as it lands (29 October): one other foe at random, never the arrival; a
-## Ward turns the charge away, and the log tells it with the spend's other turned marks.
-func test_a_chain_mine_charges_one_other_foe_as_it_lands() -> void:
-	for warded in [false, true]:
-		var sk := Skirmish.new(1, 2)
-		var m := _mech("Bomber", Die.single(_chain_gun(4, 2, 5)), 40, 100)
-		m.grant_passive(MINER)
-		sk.add_mech(m)
-		sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
-		var weak := _ghoul(10, 0)
-		var other := _ghoul(300, 0)
-		var arrival := _ghoul(30, 0)
-		sk.add_foes([weak, other, arrival])
-		sk.begin()
-		sk.start_round()
-		assert_true(sk.assign(1, weak), "a slot emptied")
-		assert_true(sk.assign(0, Vector2i(0, 0)), "a Chain mine laid")
-		if warded:
-			Effects.grant_buff(other, "ward", 1, "test", sk.round + 1)
-		sk.end_round()
-		assert_eq(arrival.hp, 26, "the arrival takes the shot")
-		assert_false(Effects.has(arrival, "shocked"), "never charged by its own shot")
-		assert_eq(Effects.has(other, "shocked"), not warded, "a Ward turns the charge away" if warded else "the one other foe is charged")
-		assert_eq("\n".join(sk.log).contains("Ward turns away Shocked"), warded, "the log tells a turned charge" if warded else "nothing turned")
 
 
 ## The Needletail's gate (the Quick-turn Avionics Relay, Ryan's go of 21 October; built that

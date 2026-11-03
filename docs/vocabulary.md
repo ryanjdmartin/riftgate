@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 175 implemented, 5 planned, 0 idea.
+Status: 177 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -96,7 +96,7 @@ Status: 175 implemented, 5 planned, 0 idea.
 | **Web** | The funnel-web's Web Bomb, locked: the foe hit is Webbed, no damage. After its action the web bursts, Suppressing it and the next foe to act beside it. | implemented |
 | **Swap** | Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back. | implemented |
 | **Flak** | Flak N: each foe hit gains N stacks of Flak. | implemented |
-| **Chain** | Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. Then one other foe, at random, neither the target nor already Shocked, is Shocked. | implemented |
+| **Chain** | Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. | implemented |
 | **Rapid** | After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). Rapid carries a cooldown of one, so the component is dark for the rest of this round, unless it prints its own cooldown; one that prints none pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon. | implemented |
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
 | **Steal** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn, as a Disable, and the foe takes it: its next swing lands that weapon's number, and anything that was no weapon is a fake, for 1. A Ward turns it away. | implemented |
@@ -143,6 +143,8 @@ Status: 175 implemented, 5 planned, 0 idea.
 | **Barrier** | Status, on either side. The next blow it takes deals no damage; the blow's riders land. On a machine, the next blow a foe lands on it, so it never injures, until the round's end; never granted to every ally at once. On a foe, from its own move, the next blow of a weapon the team lands on it, equipment popping nothing, until it pops or the end of the player's next turn. | implemented |
 | **Ward** | Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn. | implemented |
 | **Rallied** | Machine status, the Swallowtail's Reveille Horn: its team has one reroll more this round. | implemented |
+| **Charged** | Machine buff. The next weapon this machine fires Shocks the foe it was aimed at, after its blows, a stack a fire: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment spends nothing. A laid shot spends the stack as it is laid and the Shock rides it. A Purge lowers it. | implemented |
+| **Supercooled** | Machine buff. The next weapon this machine fires lays Cryo 1 on the foe it was aimed at, after its blows, a stack a fire: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment spends nothing. A laid shot spends the stack as it is laid and the frost rides it. A Purge lowers it. | implemented |
 | **Regenerating** | Status, on either side. A foe's, from its own move: it regrows its value in HP at each of its next three actions, after its Burning and Vitriol have ticked, so a burn is a race and never a wall. A machine's, from the Storm Petrel's St. Elmo's Regenerator: it regains its value in shield at the start of each of the next three rounds, up to its maximum. Each grant keeps its own clock, so two add until the first runs out. | implemented |
 
 ## Formation
@@ -292,7 +294,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Volatile** (implemented): Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does.
 - **Shield cost** (implemented): No piece carries it yet; the numbers are content's.
 - **Empowered a kill** (implemented): A spread that kills two feeds twice; a chain feeds on every link.
-- **Chain** (implemented): Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain).
+- **Chain** (implemented): Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: "Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate.
 - **Rapid** (implemented): Every Rapid piece carries a limiter (a cooldown, heat or Volatile), which the validator holds content to; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row).
 - **Steal** (implemented): Gilgamesh's (30 October). One piece held at a time, the swing spending it; the swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it.
 - **Silence** (implemented): Who carries it is section 12's question. It mutes the machine's keywords and never its buffs (Ryan, 27 and 28 October); cast with no condition, aimed as its move says.
@@ -387,5 +389,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Seal** (implemented): The seal's look on the ring is a first cut for the phone.
 - **Muster** (implemented): Every number is a placeholder; carrying it between fights is section 12's heat question.
 - **Rallied** (implemented): The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.
+- **Charged** (implemented): The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; on weapon fire and never per hit, so a strikes gun never cashes what it just laid. No piece grants it yet: capacitor pieces are content to propose.
+- **Supercooled** (implemented): The Cryo primer (Ryan, 2 November: "laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger. No piece grants it yet.
 - **Regenerating** (implemented): The machine half, the Storm Petrel's, built 30 October: a timed grant of its own each spend, the shield at each round's start after it, bought by a die entry so a foe's purge takes it. The numbers are placeholders.
 - **Ammo** (implemented): Never a buff, so no Silence or Purge reaches it. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down.

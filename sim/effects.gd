@@ -196,6 +196,12 @@ const STATUS := {
 		"tags": ["debuff"], "effects": []},
 	"rallied": {"id": "rallied", "name": "Rallied", "description": "The team has one reroll more this round.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
+	# The primers (Ryan, 2 November): a stack a weapon fired, the mark landing on the foe the first
+	# strike was aimed at after the blows (Skirmish._prime), never on the fire's own blows.
+	"charged": {"id": "charged", "name": "Charged", "description": "The next weapon this machine fires Shocks the foe it was aimed at, a stack a fire.", "decay": "none",
+		"tags": ["buff"], "effects": []},
+	"supercooled": {"id": "supercooled", "name": "Supercooled", "description": "The next weapon this machine fires lays Cryo 1 on the foe it was aimed at, a stack a fire.", "decay": "none",
+		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
 	# its brace (above): Empowered rides its next move; Risen is a charge spent by a death.
 	# Empowered carries its rally's own value (13 October; kindled() below) and lands the moment

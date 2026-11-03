@@ -25,11 +25,10 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## Area by shape, numbered (Ryan, 28 October; the half retired): Spread N (id `cleave`) the
 ## foes beside the target in its rank, Penetrate N the other rank of its column, Splash N the
 ## two together (the plus round it), each foe past the target taking N as its blow's number.
-## Chain N (Ryan, 28 October; the kill and repeat and the ping retired; its charge, 29 October):
-## Shock's other payoff, every other Shocked foe on the field taking N as its blow's number,
-## wherever it stands and whatever the gun's reach, plain, no strike being aimed at it, so its
-## Shock stands; then one other foe at random, neither the target nor already Shocked, is
-## Shocked. A weapon's alone.
+## Chain N (Ryan, 28 October; the kill and repeat and the ping retired; its random charge of
+## 29 October retired 3 November for the Charged primer): Shock's other payoff, every other
+## Shocked foe on the field taking N as its blow's number, wherever it stands and whatever the
+## gun's reach, plain, no strike being aimed at it, so its Shock stands. A weapon's alone.
 enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may

@@ -1241,9 +1241,9 @@ func test_the_bot_counts_both_halves_of_a_pair() -> void:
 
 ## The bot reads Chain as the resolver deals it (the conductor, 28 October; its charge, and a Shock
 ## read by an aimed strike alone, 29 October): each Shocked foe on the field past the target takes
-## Chain's number plain, its charge standing; with no conductor the Chain gun is still worth its
-## charge, one other foe Shocked for the team's next blow.
-func test_the_bot_reads_a_chains_arcs_and_its_charge() -> void:
+## Chain's number plain, the conductors' charges standing; with no conductor the Chain gun is a
+## plain gun (the charge retired 3 November: Chain is the arcs alone).
+func test_the_bot_reads_a_chains_arcs() -> void:
 	var sk := Skirmish.new(1, 3)
 	var gun := Face.attack(4, L, [K.CHAIN], 3)
 	gun.chain = 2
@@ -1259,15 +1259,13 @@ func test_the_bot_reads_a_chains_arcs_and_its_charge() -> void:
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var pol := Policy.new()
 	var lead := pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
-	assert_true(absf(lead - pol.charge_worth(sk, ms, aim)) < 0.001, "with no conductor the Chain gun is a plain gun and its charge: %f" % lead)
-	assert_true(absf(lead - 4.0) < 0.001, "the charge: one other foe Shocked for the team's next blow, its average 4: %f" % lead)
+	assert_true(absf(lead) < 0.001, "with no conductor the Chain gun is a plain gun: %f" % lead)
 	for foe in [a, b]:
 		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	assert_eq(pol.damage_outcomes(ms, gun, a, -1.0, true, Skirmish.AREA_CHAIN), [[2.0, 1.0]], "a conductor: Chain 2 plain, no strike aimed at it")
 	assert_eq(pol.damage_outcomes(ms, gun, a), [[8.0, 1.0]], "the same foe aimed at: the blow doubled")
-	assert_eq(pol.charge_worth(sk, ms, aim), 0.0, "every other foe Shocked: no foe left to charge")
 	lead = pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
-	assert_true(absf(lead - 4.0) < 0.001, "two conductors, Chain 2 each, and no charge: %f" % lead)
+	assert_true(absf(lead - 4.0) < 0.001, "two conductors, Chain 2 each: %f" % lead)
 
 
 ## The bot reads a foe past the target as the resolver deals it (area by shape, numbered: Ryan,

@@ -396,10 +396,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. Then one other foe, at random, neither the target nor already Shocked, is Shocked.",
+   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands.",
    "status": "implemented",
    "design": {
-    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain)."
+    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate."
    }
   },
   {
@@ -2013,6 +2013,38 @@
      "on": "machine",
      "stacks": "No",
      "lasts": "The round"
+    }
+   }
+  },
+  {
+   "id": "charged",
+   "category": "status",
+   "name": "Charged",
+   "codex": "Machine buff. The next weapon this machine fires Shocks the foe it was aimed at, after its blows, a stack a fire: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment spends nothing. A laid shot spends the stack as it is laid and the Shock rides it. A Purge lowers it.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; on weapon fire and never per hit, so a strikes gun never cashes what it just laid. No piece grants it yet: capacitor pieces are content to propose.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: a fire spends one",
+     "lasts": "Until spent"
+    }
+   }
+  },
+  {
+   "id": "supercooled",
+   "category": "status",
+   "name": "Supercooled",
+   "codex": "Machine buff. The next weapon this machine fires lays Cryo 1 on the foe it was aimed at, after its blows, a stack a fire: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment spends nothing. A laid shot spends the stack as it is laid and the frost rides it. A Purge lowers it.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger. No piece grants it yet.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: a fire spends one",
+     "lasts": "Until spent"
     }
    }
   },

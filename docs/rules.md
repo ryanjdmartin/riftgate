@@ -158,7 +158,7 @@ defeat when every machine is wrecked. There is no round limit.
   reinforcement step places every arrival first, then the mines land left to right; any other
   way in (a Swap) sets them off at once. Every keyword acts as the shot lands, as on a blow:
   a stun takes the arrival's first action, and a Chain mine arcs its number as laid to every
-  other Shocked foe on the field as it lands, then charges one other foe at random; Lure and
+  other Shocked foe on the field as it lands; Lure and
   Disrupt do nothing, their round being over, and Rapid and Volatile acted at the spend.
   Nothing expires.
 
@@ -296,8 +296,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Shock**: every foe the spend reaches and leaves standing is Shocked after the blow.
 - **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
   each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
-  and an arc adds no heat; then one other foe at random, neither the target nor already
-  Shocked, is Shocked. Its footprint, like an area's, is read from the strike's own foe: an arc
+  and an arc adds no heat. Its footprint, like an area's, is read from the strike's own foe: an arc
   spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
   Shocked takes one blow, the area's.
 - **Lure**: every foe reached and left standing turns on the spender for the round. The Whip
@@ -463,6 +462,10 @@ On a machine:
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
   Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.
 - **Rallied** (buff): the team has one reroll more this round.
+- **Charged** (buff): the next weapon this machine fires Shocks the foe it was aimed at, after
+  its blows, a stack a fire (a Rapid's second fire is a second fire, a salvo one, a blast none;
+  equipment spends nothing); a laid shot spends the stack as it is laid and the Shock rides it.
+- **Supercooled** (buff): the same with Cryo 1 on that foe.
 - **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
   stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.

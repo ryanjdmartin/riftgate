@@ -457,11 +457,6 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	for n in sk.reached_by(f, target):
 		if n != target and n.alive():
 			score += _capped(damage_outcomes(ms, f, n, -1.0, true, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
-	# Chain's charge (29 October): after the arcs one other foe at random, neither the target nor
-	# already Shocked, is Shocked: the team's next blow aimed at it doubled, capped at what it has,
-	# averaged over the foes it may land on (a Ward's turns it away for nothing).
-	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
-		score += charge_worth(sk, ms, target)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
 	# last act (the boss mechanics of 15 October; valued 22 October).
 	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
@@ -628,24 +623,6 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += zap_worth(sk, ms, target, burnt, outcomes) - burn_cost(sk, ms, burnt)
 	score -= heat_cost(sk, ms, f)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
-
-
-## What Chain's charge is worth (29 October): one foe drawn from those on the field, alive, not
-## `but` and not already Shocked, Shocked for the team's next blow aimed at it, each foe's worth
-## the doubled blow an ally may spend on it (shock_cash), capped at its HP, nothing for a foe whose
-## Ward turns the mark away; the mean over the draw.
-func charge_worth(sk: Skirmish, ms: Skirmish.MechState, but: Foe) -> float:
-	var pool: Array = []
-	for foe in sk.field_foes():
-		if foe != but and foe.alive() and not Effects.has(foe, "shocked"):
-			pool.append(foe)
-	if pool.is_empty():
-		return 0.0
-	var worth := 0.0
-	for foe in pool:
-		if not Effects.turns_mark(foe, "shocked"):
-			worth += minf(float(foe.hp), shock_cash(sk, ms, foe))
-	return worth / float(pool.size())
 
 
 ## The zap a burn pays (the Storm Petrel's Riot Field Generator, 30 October): on every roll that
@@ -875,12 +852,11 @@ func mine_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, slot: Vector2i) -
 			if n.alive():
 				score += p * minf(col, float(n.hp))
 	# Chain's arc as laid (28 and 29 October): the Shocked foes on the field now, each its number
-	# plain (no strike aimed at them), at the odds the shot lands; then its charge.
+	# plain (no strike aimed at them), at the odds the shot lands.
 	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
 		var arc := _area_mean(ms, f, Skirmish.AREA_CHAIN)
 		for n in sk.shocked_foes(null):
 			score += p * minf(arc, float(n.hp))
-		score += p * charge_worth(sk, ms, null)
 	score *= MINE_WEIGHT
 	return score - heat_cost(sk, ms, f) - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
@@ -1665,6 +1641,13 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 	if f.buff_rounds > 1:
 		attack_later = _attack_mean(sk, who) * float(f.buff_rounds - 1)
 	var score := 0.0
+	# The primers (2 November): a stack a weapon fired. Charged is a Shock on the next fire's foe,
+	# about this machine's own blow again; Supercooled a Cryo 1 the next hit cashes, a vent of its
+	# cooling. Placeholders, as every weight.
+	if f.buff_status == "charged":
+		score += float(n) * _raw_attack_mean(who)
+	elif f.buff_status == "supercooled":
+		score += float(n) * vent_score(sk, who, Effects.status_value("cryoed", "cool_hitter"))
 	for eff in status.get("effects", []):
 		var v := float(eff.get("value", 0))
 		match str(eff.get("effect", "")):
