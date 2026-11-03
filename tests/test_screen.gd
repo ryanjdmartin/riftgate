@@ -197,9 +197,14 @@ func test_every_number_a_main_mark_holds_fits_at_one_size() -> void:
 	assert_eq(widest, "8×%d" % most, "a strike's blow, then its strikes")
 	assert_true(width.call(widest) <= DieFaceView.NUMBER_ROOM, "the widest, a buffed blow struck the most times, fits (%.0f)" % width.call(widest))
 	assert_true(width.call("4+2") <= DieFaceView.NUMBER_ROOM, "and the Storm Petrel's blow and zap over a foe")
-	var ring := DieFaceView.MAIN_W * 0.5 * Glyphs.SIGHT_RING - 1.2   # the ring's inner edge, half its line in
+	var s := DieFaceView.MAIN_W * 0.5
+	var ring := s * Glyphs.SIGHT_RING - 1.2   # the ring's inner edge, half its line in
 	var corner := Vector2(DieFaceView.NUMBER_ROOM * 0.5, mono.get_ascent(px) * 0.4).length()
 	assert_true(corner + 2.0 <= ring, "the room's corners clear the sight's ring (%.1f inside %.1f)" % [corner, ring])
+	# The ticks cross the ring inward (Ryan, 3 November: "have the sight lines extend inwards of
+	# the circle"): the side ones stop short of the widest number.
+	var side_tick := s * Glyphs.SIGHT_RING - s * 0.12
+	assert_true(side_tick >= DieFaceView.NUMBER_ROOM * 0.5 + 1.0, "the side ticks' ends clear the room (%.1f past %.1f)" % [side_tick, DieFaceView.NUMBER_ROOM * 0.5])
 
 
 ## The die's tap waits out the double-tap window (Ryan, 30 October), so a double-tap never shows a

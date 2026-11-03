@@ -8,47 +8,48 @@ extends RefCounted
 static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Color, width: float = 2.0) -> void:
 	var s := size / 2.0
 	match id:
-		# ---- the die's targeting marks (Ryan, 2 November): one width, so any fits in any main mark
-		"aim_direct":
-			# Direct: a tracer, a straight shaft and an open chevron head, the HUD's own line.
-			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s - width * 0.5, 0), color, width)
-			ci.draw_polyline(PackedVector2Array([c + Vector2(s * 0.42, -s * 0.5), c + Vector2(s, 0), c + Vector2(s * 0.42, s * 0.5)]), color, width)
-		"aim_indirect":
-			# Indirect: a trajectory lobbed over the front, an open chevron where it falls.
-			var a0 := c + Vector2(-s, s * 0.45)
-			var a1 := c + Vector2(-s * 0.1, -s * 0.95)
-			var a2 := c + Vector2(s * 0.78, s * 0.3)
-			var arc := PackedVector2Array()
-			for i in range(21):
-				var t := i / 20.0
-				arc.append(a0.lerp(a1, t).lerp(a1.lerp(a2, t), t))
-			ci.draw_polyline(arc, color, width)
-			var dir := (a2 - a1).normalized()
-			var nrm := Vector2(-dir.y, dir.x)
-			var tip := a2 + dir * width
-			ci.draw_polyline(PackedVector2Array([tip - dir * s * 0.5 + nrm * s * 0.42, tip, tip - dir * s * 0.5 - nrm * s * 0.42]), color, width)
+		# ---- the die's targeting marks (Ryan, 2 November): one width, under the main mark
+		"aim_direct", "aim_indirect":
+			# Whom a weapon or a debuff reaches (Ryan, 3 November: the tracer and the lobbed arrow
+			# "looks cheap and not actually clear what it means"): the enemy's formation from above,
+			# hex cells sharing their edges as the machines' three do, its front rank the row nearer
+			# the machines (the lower), a cell it may take lit: the front rank for Direct, every
+			# cell for Indirect.
+			_formation(ci, c, size, color, width, id == "aim_indirect")
 		# ---- the die's main marks (Ryan, 3 November): each holds what the entry delivers
 		"weapon":
-			# A weapon (Ryan, 3 November: the faces did not "read weapon"): a sight, a ring and
-			# four ticks standing off it, its blow inside the ring. The ticks stand outside only, so
-			# a wide number (a range, a two-digit blow) never meets them.
+			# A weapon (Ryan, 3 November: the faces did not "read weapon"): a sight, a ring and four
+			# heavy ticks crossing it, in a little and out to the edge ("bigger sight lines, or have
+			# the sight lines extend inwards"), its blow inside. The side ticks reach in less, clear
+			# of the widest number; at the die's size a lining of four short arcs inside the ring
+			# on its diagonals, clear of the number too.
 			var ring := s * SIGHT_RING
-			ci.draw_arc(c, ring, 0.0, TAU, maxi(16, int(size)), color, width)
+			ci.draw_arc(c, ring, 0.0, TAU, maxi(24, int(size * 1.2)), color, width)
 			for d in [Vector2.RIGHT, Vector2.LEFT, Vector2.DOWN, Vector2.UP]:
-				ci.draw_line(c + d * ring, c + d * s, color, width)
+				var inside := s * (0.12 if absf(d.x) > 0.5 else 0.2)
+				ci.draw_line(c + d * (ring - inside), c + d * s, color, width * 1.25)
+			if size >= INNER_FROM:
+				for k in range(4):
+					var am := PI * 0.25 + k * PI * 0.5
+					ci.draw_arc(c, ring - s * 0.13, am - 0.21, am + 0.21, 8, Color(color, color.a * INNER_ALPHA), 1.2)
 		"equipment":
 			# Equipment, one mark for a buff and a debuff (Ryan, 2 November: "merging buff/debuff
 			# into one 'equipment' face type"): gear, a cog of eight square teeth (3 November: the
-			# module before it did not read), what it grants or lays inside it.
+			# module before it did not read), what it grants or lays inside it; at the die's size a
+			# lining, a ring inside its teeth.
 			Hud.stroke_poly(ci, _cog(c, s, s * GEAR_ROOT), color, width)
+			if size >= INNER_FROM:
+				ci.draw_arc(c, s * GEAR_ROOT * 0.84, 0.0, TAU, 40, Color(color, color.a * INNER_ALPHA), 1.0)
 		"shield_vent":
 			# A shield and a vent in one entry (Ryan, 3 November: "If the vent was simplified to just
-			# wavy lines, it could be combined with shield as a combo face"): the shield, shorter,
-			# the vent's steam rising off its top over the cooling, so each number sits under its
-			# own mark (the shield's to the left, the cooling to the right), never parted by its
-			# colour alone.
-			Hud.stroke_poly(ci, PackedVector2Array([c + Vector2(-s, -s * 0.5), c + Vector2(s, -s * 0.5), c + Vector2(s, s * 0.25), c + Vector2(0, s), c + Vector2(-s, s * 0.25)]), color, width)
-			_steam(ci, c + Vector2(s * 0.48, -s * 0.86), s * 0.2, s * 0.3, 2, color, width * 0.9)
+			# wavy lines, it could be combined with shield as a combo face"; "Shield-vent should have
+			# the vent lines over the whole thing, not just half"): the shield, shorter, the vent's
+			# steam rising off its whole top; its numbers shield | cool, each in its colour.
+			var pts := PackedVector2Array([c + Vector2(-s, -s * 0.45), c + Vector2(s, -s * 0.45), c + Vector2(s, s * 0.28), c + Vector2(0, s), c + Vector2(-s, s * 0.28)])
+			Hud.stroke_poly(ci, pts, color, width)
+			_steam(ci, c + Vector2(0.0, -s * 0.8), s * 0.6, s * 0.28, 3, color, width * 0.9)
+			if size >= INNER_FROM:
+				Hud.stroke_poly(ci, _inset(pts, c + Vector2(0.0, s * 0.2), 0.84), Color(color, color.a * INNER_ALPHA), 1.0)
 		"hull":
 			# The hull (2 November, a cost's mark): a machine's body, shoulders over its torso.
 			Hud.stroke_poly(ci, PackedVector2Array([c + Vector2(-s * 0.95, -s * 0.45), c + Vector2(-s * 0.35, -s * 0.85), c + Vector2(s * 0.35, -s * 0.85), c + Vector2(s * 0.95, -s * 0.45), c + Vector2(s * 0.55, s * 0.9), c + Vector2(-s * 0.55, s * 0.9)]), color, width)
@@ -77,6 +78,10 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(0, s), c + Vector2(-s, s * 0.1), c + Vector2(-s, -s * 0.85),
 			])
 			ci.draw_polyline(pts, color, width)
+			if size >= INNER_FROM:
+				# At the die's size, its lining (Ryan, 3 November: "I liked the previous iterations
+				# inner lining ... extra little flairs").
+				Hud.stroke_poly(ci, PackedVector2Array([c + Vector2(-s * 0.8, -s * 0.68), c + Vector2(s * 0.8, -s * 0.68), c + Vector2(s * 0.8, s * 0.04), c + Vector2(0, s * 0.77), c + Vector2(-s * 0.8, s * 0.04)]), Color(color, color.a * INNER_ALPHA), 1.0)
 		"seal", "unseal":
 			# The Armadillo's shell (Ryan, 2 November: "armadillo needs indication when a die face
 			# will transform it"): a seam, and an arrow either side driving shut onto it (seal) or
@@ -119,10 +124,15 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_colored_polygon(PackedVector2Array([head + Vector2(-s * 0.42, -s * 0.12), head + Vector2(s * 0.12, -s * 0.38), head + Vector2(s * 0.1, s * 0.22)]), color)
 			ci.draw_circle(c, s * 0.2, color)
 		"vent":
-			# A vent (Ryan, 3 November: "simplified to just wavy lines"): steam, three waves rising.
-			# The die draws it over its number, the heat rising off what it sheds; standing either
-			# side of the number the waves read as braces round it.
-			_steam(ci, c, s * 0.7, s * 0.62, 3, color, width)
+			# A vent (Ryan, 3 November: "simplified to just wavy lines"; then "Plain vent looks weird
+			# that close to the number, maybe it needs a chamfered box back"): a plate cut as the
+			# die's, its number inside, three waves of steam rising off its top; at the die's size a
+			# lining inside the plate.
+			var plate := Rect2(c + Vector2(-s * 0.9, -s * 0.3), Vector2(s * 1.8, s * 1.12))
+			Hud.stroke_poly(ci, Hud.cut(plate, s * 0.26), color, width)
+			_steam(ci, c + Vector2(0.0, -s * 0.66), s * 0.5, s * 0.3, 3, color, width * 0.9)
+			if size >= INNER_FROM:
+				Hud.stroke_poly(ci, Hud.cut(plate.grow(-s * 0.12), s * 0.2), Color(color, color.a * INNER_ALPHA), 1.0)
 		"blank":
 			ci.draw_line(c + Vector2(-s, -s), c + Vector2(s, s), color, width)
 			ci.draw_line(c + Vector2(-s, s), c + Vector2(s, -s), color, width)
@@ -600,10 +610,59 @@ static func primary_for(face: Face) -> String:
 			return "equipment" if face.is_debuff() else "weapon"   # aimed at a foe: whether it deals damage says which
 
 
-## The weapon's sight: its ring's radius as a share of the mark's half-width, the ticks standing
-## off it to the edge. Equipment's gear: the root of its teeth as a share of their tips' reach.
-const SIGHT_RING := 0.85
+## The weapon's sight: its ring's radius as a share of the mark's half-width, the ticks crossing
+## it out to the edge. Equipment's gear: the root of its teeth as a share of their tips' reach.
+## A main mark this wide or wider wears its lining, a thin line inside it at INNER_ALPHA (Ryan, 3
+## November: "I liked the previous iterations inner lining, that's the kind of thing that moves
+## it out of amateurish, extra little flairs"). A vent's number sits VENT_NUMBER of its
+## half-width under its centre, in its plate's middle.
+const SIGHT_RING := 0.82
 const GEAR_ROOT := 0.76
+const INNER_FROM := 30.0
+const INNER_ALPHA := 0.4
+const VENT_NUMBER := 0.26
+
+
+## A closed outline `pts` drawn in toward `ctr` by `k`, a main mark's lining.
+static func _inset(pts: PackedVector2Array, ctr: Vector2, k: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for p in pts:
+		out.append(ctr + (p - ctr) * k)
+	return out
+
+
+## The enemy's formation from above as a targeting mark, `size` wide: hex cells sharing their
+## edges, the front rank's three and the back rank's two nested over them, a cell it may take lit
+## (filled inside its edge, as the machines' hexes are): the front rank, or every cell (`all`).
+## Under FORMATION_CELLS wide (a term's icon in text, a chip) the cells stand apart, a lit one
+## solid, so the five never run together into one blob.
+const FORMATION_CELLS := 26.0
+
+
+static func _formation(ci: CanvasItem, c: Vector2, size: float, color: Color, width: float, all: bool) -> void:
+	var small := size < FORMATION_CELLS
+	var r := size * (0.19 if small else 0.168)
+	var dx := sqrt(3.0) * r
+	var cells: Array = []   # [centre, lit]
+	for k in range(3):
+		cells.append([c + Vector2((k - 1) * dx, r * 0.75), true])
+	for k in range(2):
+		cells.append([c + Vector2((k - 0.5) * dx, -r * 0.75), all])
+	for cell in cells:
+		var hc: Vector2 = cell[0]
+		var hex := PackedVector2Array()
+		for i in range(6):
+			var a := PI / 6.0 + i * PI / 3.0
+			hex.append(hc + Vector2(cos(a), sin(a)) * r * (0.8 if small else 1.0))
+		if small:
+			if bool(cell[1]):
+				ci.draw_colored_polygon(hex, color)
+			else:
+				Hud.stroke_poly(ci, hex, color, 1.0)
+			continue
+		if bool(cell[1]):
+			ci.draw_colored_polygon(_inset(hex, hc, 0.72), color)
+		Hud.stroke_poly(ci, hex, color, maxf(1.0, width * 0.7))
 
 
 ## A cog `tip` from its centre to its teeth's faces, `root` to the ring between them: eight square
@@ -629,11 +688,11 @@ static func _steam(ci: CanvasItem, c: Vector2, half_w: float, half_h: float, n: 
 		ci.draw_polyline(pts, color, width)
 
 
-## Whom an entry is aimed at, the targeting mark its main mark holds (Ryan, 2 November: "a
-## straight arrow for direct, and the curved arrow for indirect ... the width of the 3 hex
-## symbol"): a foe by its reach, Direct or Indirect; a machine by three hexes, its own only, its
-## allies only, or either; "" for a blank. A reach past the target is its keyword's chip (an
-## area, Every Foe, Every Ally).
+## Whom an entry is aimed at, the targeting mark under its main mark (Ryan, 2 November: one
+## width, "the width of the 3 hex symbol"; 3 November: "putting targeting underneath"): a foe by
+## its reach, the enemy's formation with the front rank lit (Direct) or every cell (Indirect); a
+## machine by three hexes, its own only, its allies only, or either; "" for a blank. A reach past
+## the target is its keyword's chip (an area, Every Foe, Every Ally).
 static func aim_for(face: Face) -> String:
 	if face == null or face.kind == Face.Kind.BLANK:
 		return ""

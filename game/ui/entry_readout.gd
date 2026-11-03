@@ -215,7 +215,9 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: 
 	# under its main glyph (Glyphs.aim_for), bare as the glyph is; a weapon's or a debuff's reach
 	# is its frame's, on its first line. A reach past the target is its keyword's line (Every
 	# Foe, Every Ally, an area's), as the die chips it.
-	var target := text_line("effect", "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f), "attr")
+	# The words bare: the reach's term stays a term (tap it), its icon the line's own mark, never
+	# a second one shrunk into the words (the formation reads as a blob at the text's size).
+	var target := parts_line("effect", [_bare(word("Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f)))], "attr")
 	var aim := Glyphs.aim_for(f)
 	if not aim.is_empty():
 		marked(target, [mark(aim, Palette.HUD, false)])

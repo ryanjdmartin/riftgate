@@ -142,22 +142,26 @@ defeat when every machine is wrecked. There is no round limit.
   Up, Primed's burn), and its heat is paid as a weapon's. The die's kinds: Direct, Indirect,
   Equipment, Shield, Vent, and the blank. Every entry reads one way: one main mark at the top
   says what it is and holds what it delivers, whom it is aimed at stands under it, its costs run
-  along the foot, its keywords down the edge. A weapon is a sight, a ring with four ticks
-  standing off it, its blow inside, and a weapon that strikes more than once its strikes after
-  it (2×4, a strike's blow and the strikes a spend). Every number a main mark holds is one size,
-  the size the widest fits, a strike's blow and its strikes; equipment, a
+  along the foot, its keywords down the edge. Each main mark wears a lining, a thin line inside
+  it, and the die's frame does too, its cut corners drawn heavy and its square ones accented. A
+  weapon is a sight, a ring with four heavy ticks crossing it, in a little and out to its edge,
+  its blow inside, and a weapon that strikes more than once its strikes after it (2×4, a
+  strike's blow and the strikes a spend). Every number a main mark holds is one size, the size
+  the widest fits, a strike's blow and its strikes; equipment, a
   buff or a debuff, is gear, a cog of eight teeth, holding what it grants or lays and no
   number: a buff's status (its stacks beside the gear), a debuff's first keyword that does
   something to a foe in content's order (a reach, an area and Rapid stay on the edge), or the
   star when its effect is a rule of its own; the edge never shows it twice. A shield is its
-  shield with its number inside, in the shield's colour; a vent is steam, three waves rising off
-  its number, in heat's colour. An entry that shields and cools (the Wake Diffuser, the Sutler's
-  Hoist) is one mark, the shield with the steam rising off its top: its shield's number on the
-  left, its cooling on the right under the steam, each in its colour, a bar between. A reload
+  shield with its number inside, in the shield's colour; a vent is a plate cut as the die is,
+  its number inside in heat's colour and three waves of steam rising off its top. An entry
+  that shields and cools (the Wake Diffuser, the Sutler's Hoist) is one mark, the shield with
+  the steam rising off its whole top: its shield's number on the left, its cooling on the right,
+  each in its colour, a bar between. A reload
   cools nothing (the Musk Ox's Quick Reload, its one piece): its shells and the ammo it loads
-  are its whole mark. The targeting marks are one width: a tracer (Direct, a straight shaft
-  with an open chevron head) or a trajectory (Indirect, a lobbed curve) under an entry aimed at
-  a foe, three hex cells sharing their edges under one spent on a machine, a lit one filled.
+  are its whole mark. The targeting marks are one width, hex cells sharing their edges, a lit one
+  a target it may take: under an entry aimed at a foe, the enemy's formation from above, three
+  front cells and two behind them, the front lit for Direct and every cell for Indirect; under
+  one spent on a machine, three cells in a row, the middle its own machine.
   What else a spend does sits small beside the main mark (a status's stacks, a vent's blast). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.

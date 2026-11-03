@@ -40,9 +40,11 @@ const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 const SLOT_AT := Vector2(10, 28)   # the place's numeral, its baseline tucked under the cut corner, clear of the main mark
 const SLOT_SIZE := 18
-const MAIN_Y := 45.0       # the main mark's centre, what the entry delivers inside it, clear of the place's numeral
+const MAIN_Y := 43.0       # the main mark's centre, what the entry delivers inside it, clear of the place's numeral
 const MAIN_W := 68.0       # the sight's width, its ring holding NUMBER_ROOM (a ring reads smaller than a plate as wide)
-const PLATE_W := 56.0      # the shield's, alone or with the steam, clear of the place's numeral (VIII)
+const PLATE_W := 56.0      # the shield with the steam (its top lower, clear of the place's numeral)
+const SHIELD_W := 54.0     # the shield alone, seated SHIELD_DY lower, its top corner clear of the numeral (VIII)
+const SHIELD_DY := 3.0
 const GEAR_W := 60.0       # the gear's, its teeth weighing more than the sight's ticks, clear of the numeral too
 ## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:
 ## "Rolled damage was just cut in another session so you can measure max width just with the
@@ -51,10 +53,11 @@ const GEAR_W := 60.0       # the gear's, its teeth weighing more than the sight'
 ## measures it. Past it (a two-digit blow struck three times) a number steps down until it fits.
 const NUMBER_SIZE := 28
 const NUMBER_ROOM := 45.0
-const AIM_Y := 91.0        # whom it reaches, under the main mark
+const AIM_Y := 90.0        # whom it reaches, under the main mark
 const AIM_W := 34.0        # every targeting mark one width, the arrows and the three hexes alike (Ryan, 2 November)
-const STEAM_Y := -19.0     # a vent's steam over its number, from the main mark's centre
-const STEAM_SIZE := 38.0
+const VENT_W := 60.0       # the vent's plate and its steam, its number in the plate (Glyphs.VENT_NUMBER)
+const LINING := 4.0        # the frame's lining, this far inside its border (Ryan, 3 November: "The actual chamfered outer box of the die can be adjusted too")
+const ACCENT := 10.0       # the arms of the accents on the frame's square corners
 const BESIDE := Vector2(28.0, 30.0)   # what else a spend does, from the main mark's centre: its strikes, a status's stacks, a blast
 const COST_Y := 114.0      # the costs' baseline along the foot
 const COST_ICON := 14.0    # a cost's mark
@@ -271,6 +274,7 @@ func _draw() -> void:
 	# A soft shadow under the object, so the bob reads as height.
 	Hud.fill_poly(self, Hud.cut(Rect2(Vector2(4, 8 + bob * 0.4), Vector2(FACE, FACE)), CUT), Color(0, 0, 0, 0.4))
 	Hud.box(self, rect, CUT, fill, border, 3.0 if (locked and not spent) else 1.5)
+	_dress(rect, border)
 	if _lit() and not dead:
 		Hud.fill_poly(self, Hud.cut(rect.grow(-1.5), CUT), Color(hud, 0.24))
 		Hud.stroke_poly(self, Hud.cut(rect, CUT), hud, 3.0)
@@ -314,12 +318,14 @@ func _draw() -> void:
 	var faded := func(c: Color) -> Color: return Color(c, c.a * alpha * dip)
 	match mark:
 		"vent":
-			Glyphs.draw(self, "vent", mc + Vector2(0.0, STEAM_Y), STEAM_SIZE, ink, 2.2)
+			Glyphs.draw(self, "vent", mc, VENT_W, ink, 2.4)
 		"ammo":
 			pass   # a reload cools nothing: its shells and its number are the whole mark
 		"blank":
 			Glyphs.draw(self, "blank", mc + Vector2(0.0, 8.0), 40, ink, 3.0)
-		"shield", "shield_vent":
+		"shield":
+			Glyphs.draw(self, mark, mc + Vector2(0.0, SHIELD_DY), SHIELD_W, ink, 2.4)
+		"shield_vent":
 			Glyphs.draw(self, mark, mc, PLATE_W, ink, 2.4)
 		"equipment":
 			Glyphs.draw(self, mark, mc, GEAR_W, ink, 2.4)
@@ -352,9 +358,9 @@ func _draw() -> void:
 				var held := [str(face.power if face.kind == Face.Kind.SHIELD else face.shields), str(face.vents if face.kind == Face.Kind.SHIELD else face.power)]
 				var half := PLATE_W * 0.5
 				var px: int = mini(mono_px.call(held[0], half * 0.8, NUMBER_SIZE), mono_px.call(held[1], half * 0.8, NUMBER_SIZE))
-				_number(mono, held[0], mc + Vector2(-half * 0.44, 2.0), px, faded.call(Palette.SHIELD))
-				draw_line(mc + Vector2(0.0, -9.0), mc + Vector2(0.0, 13.0), faded.call(Palette.MUTED), 1.6)
-				_number(mono, held[1], mc + Vector2(half * 0.44, 2.0), px, faded.call(Palette.HEAT))
+				_number(mono, held[0], mc + Vector2(-half * 0.44, 4.0), px, faded.call(Palette.SHIELD))
+				draw_line(mc + Vector2(0.0, -7.0), mc + Vector2(0.0, 15.0), faded.call(Palette.MUTED), 1.6)
+				_number(mono, held[1], mc + Vector2(half * 0.44, 4.0), px, faded.call(Palette.HEAT))
 		"ammo":
 			if not num.is_empty():
 				var px: int = mono_px.call(num, NUMBER_ROOM - 26.0, NUMBER_SIZE)
@@ -365,7 +371,7 @@ func _draw() -> void:
 		"weapon", "shield", "vent":
 			if not num.is_empty():
 				var text := blow_text(face, num)
-				var at := mc + (Vector2(0.0, -4.0) if mark == "shield" else (Vector2(0.0, 6.0) if mark == "vent" else Vector2.ZERO))
+				var at := mc + (Vector2(0.0, SHIELD_DY - 4.0) if mark == "shield" else (Vector2(0.0, VENT_W * 0.5 * Glyphs.VENT_NUMBER) if mark == "vent" else Vector2.ZERO))
 				var col := Palette.SHIELD if mark == "shield" else (Palette.HEAT if mark == "vent" else Palette.HUD)
 				_number(mono, text, at, mono_px.call(text, NUMBER_ROOM, NUMBER_SIZE), faded.call(col))
 	# What else the spend does, small beside the main mark, each by its mark: a status's stacks, the
@@ -382,11 +388,12 @@ func _draw() -> void:
 			Glyphs.draw(self, str(a[0]), Vector2(at.x + 6.0, at.y - 5.0), 12, a[2], 1.6)
 			tx += 13.0
 		draw_string(mono, Vector2(tx, at.y), str(a[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, a[2])
-	# Whom it is aimed at, under the main mark (Ryan, 2 November): a tracer Direct, a lobbed
-	# trajectory Indirect, the three hexes for a piece spent on machines, one width.
+	# Whom it is aimed at, under the main mark, one width (Ryan, 2 and 3 November): the enemy's
+	# formation, its front rank lit (Direct) or all of it (Indirect); the three hexes for a piece
+	# spent on machines.
 	var aim := Glyphs.aim_for(face)
 	if not aim.is_empty():
-		Glyphs.draw(self, aim, Vector2(FACE * 0.5, AIM_Y + bob), AIM_W, ink, 2.4 if aim in ["aim_direct", "aim_indirect"] else 1.8)
+		Glyphs.draw(self, aim, Vector2(FACE * 0.5, AIM_Y + bob), AIM_W, ink, 1.8)
 	# Its costs along the foot, a mark and a number each, no word and no sign (Ryan, 2 November:
 	# "For costs (heat, shield, hull), don't spell out the word. Use an icon + number. We don't
 	# need +/- symbols either"; "Cooldown should be a cost in the bottom section as well"): a
@@ -445,6 +452,20 @@ func _draw() -> void:
 		_draw_next(bob, tags.size())
 	if _recalc >= 0.0:
 		_draw_static(rect)
+
+
+## The frame dressed as the marks inside it are (Ryan, 3 November: "so the whole thing doesn't
+## read cheap line drawing"): a lining inside its border, its chamfers kept, as every main mark
+## wears one; its two cut corners drawn heavy; short accents on its two square corners.
+func _dress(rect: Rect2, border: Color) -> void:
+	Hud.stroke_poly(self, Hud.cut(rect.grow(-LINING), CUT - LINING * 0.42), Color(border, border.a * 0.3), 1.0)
+	var p := rect.position
+	var e := rect.end
+	draw_line(Vector2(p.x, p.y + CUT), Vector2(p.x + CUT, p.y), border, 3.0)
+	draw_line(Vector2(e.x, e.y - CUT), Vector2(e.x - CUT, e.y), border, 3.0)
+	var h := 0.75   # half the accent's width past the 1.5 border, so its outer edge meets the border's
+	draw_polyline(PackedVector2Array([Vector2(e.x - ACCENT, p.y + h), Vector2(e.x - h, p.y + h), Vector2(e.x - h, p.y + ACCENT)]), border, 3.0)
+	draw_polyline(PackedVector2Array([Vector2(p.x + h, e.y - ACCENT), Vector2(p.x + h, e.y - h), Vector2(p.x + ACCENT, e.y - h)]), border, 3.0)
 
 
 ## A number centred on `c`, its digits' middle there.

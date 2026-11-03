@@ -117,15 +117,15 @@ func _kinds() -> Array:
 	var down := _die(Face.attack(4))
 	down.dead = true
 	return [
-		["Weapon, direct", "the sight, its blow inside;\nthe tracer: Direct", _die(Face.attack(4))],
-		["Weapon, indirect", "the trajectory:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
+		["Weapon, direct", "the sight, its blow inside;\nthe front rank lit: Direct", _die(Face.attack(4))],
+		["Weapon, indirect", "the formation all lit:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
 		["Weapon, strikes", "a strike's blow, four\nstrikes a spend: the widest", _die(burst)],
 		["Weapon, over a foe", "the Storm Petrel's blow\nand its zap, as wide", zap],
 		["Debuff, direct", "gear, what it lays inside\n(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
-		["Debuff, indirect", "the gear holding Lure,\nthe trajectory", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
+		["Debuff, indirect", "the gear holding Lure,\nthe formation all lit", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
 		["Buff", "spent on a machine: its\nstatus inside, its stacks", _die(Face.buff("overcharged", 2))],
 		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
-		["Vent", "spent on a machine: heat\noff, its steam over it", _die(Face.vent(3))],
+		["Vent", "its plate holding the heat\noff, steam rising off it", _die(Face.vent(3))],
 		["Shield and vent", "both at once (the Wake\nDiffuser): shield | cool", _die(wake)],
 		["Shield and vent, ally", "the Sutler's Hoist: the\nsteam over the cooling", _die(hoist)],
 		["Reload", "cools nothing: its shells\nand its ammo (the Musk Ox)", _die(reload)],
