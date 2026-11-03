@@ -55,7 +55,7 @@ catamaran, the Honey Badger's hopper rework with his second fallback on the runn
 the five Wainwright & Sutler models through his notes of 2 and 3 November; it took main as it
 landed (to `e75be15`: the slate's last calls, the elites by the tier, the review's calls), and
 main took it as a fast-forward on 3 November on his word ("merge this to main and clean up, I'll
-resume chassis work later"); its bible is v0.428 (the Pages paragraph).
+resume chassis work later"); its bible is v0.429 (the Pages paragraph).
 
 `claude/zealous-wright-ixxo3l` (30 October) carried the foes' move-order fix and its boss
 cells' read (How things stand), took main as it landed (to `d84ad16`: the skirmish's field,
