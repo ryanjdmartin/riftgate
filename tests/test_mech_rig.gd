@@ -218,6 +218,37 @@ func test_only_the_weapon_that_fired_kicks_after_its_aim() -> void:
 	assert_eq(rig.aim_joint_over(rig.hardpoints[1]), "turret", "the turret aims the gun on it")
 	assert_eq(rig.aim_joint_over(rig.hardpoints[2]), "", "a gun on the chassis aims by nothing")
 	pair[1].free()
+	# A fixed gun whose business end rides a joint carrying no mount (the Badger's fragmenter on its
+	# wrist) still kicks when it fires, since the strike names that joint; an unnamed shot leaves it.
+	var checked := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var model_id := f.trim_suffix(".rig.json")
+		var side := MechRig.load_sidecar(model_id)
+		var fx = side.get("fx", {})
+		if not (fx is Dictionary) or (fx as Dictionary).is_empty():
+			continue
+		pair = _rig_for(model_id)
+		rig = pair[0]
+		var nodes := MechView3D.fx_of(pair[1], side)
+		for cid in nodes.keys():
+			var owner := rig.joint_of(nodes[cid])
+			var carries := owner.is_empty()
+			for n in rig.hardpoints.keys():
+				if rig.joint_of(rig.hardpoints[n]) == owner:
+					carries = true
+			if carries:
+				continue
+			rig._strikes.clear()
+			rig.strike(true)
+			assert_true(rig._strikes.filter(func(st) -> bool: return str(st["joint"]) == owner).is_empty(), "%s: a shot naming no joint kicks only those carrying mounts, never %s" % [model_id, owner])
+			rig._strikes.clear()
+			rig.strike(true, [owner])
+			assert_eq(rig._strikes.filter(func(st) -> bool: return str(st["joint"]) == owner).size(), 1, "%s: its %s kicks the %s carrying it, mount or none" % [model_id, cid, owner])
+			checked += 1
+		pair[1].free()
+	assert_true(checked > 0, "some fixed gun rides a joint carrying no mount")
 	pair = _rig_for("armadillo")
 	rig = pair[0]
 	assert_eq(rig.aim_joint_over(rig.hardpoints[1]), "", "a quad's port guns never turn to aim (Ryan: don't bother)")

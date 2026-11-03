@@ -5,7 +5,8 @@ extends Node2D
 ## be too busy. Maybe just build a simple version so I can judge"): off unless a debug build's
 ## Settings turns SHOT TRAILS on (RIFTGATE_SHOTS=1 on the desk). From the firing machine to what it
 ## fires at, a tracer for a direct shot, an arc for a launcher's, a beam held for the blow's length,
-## nothing for melee (its lunge is the travel), landing when the blow's sound says it lands. Its
+## nothing for a weapon that lunges (MuzzleFlare.lunges; its lunge is the travel), landing when the
+## blow's sound says it lands. Its
 ## colour is the shot's flare's (MuzzleFlare), which carries no meaning in play.
 
 enum { TRACER, ARC, BEAM }
@@ -28,13 +29,14 @@ static func on() -> bool:
 	return OS.get_environment("RIFTGATE_SHOTS") == "1" or (OS.is_debug_build() and bool(Settings.display.get("shot_trails", false)))
 
 
-## The trail a component's shot takes: none for melee (its tag; the lunge is the travel), a beam
-## for a laser's (its tag), an arc for an indirect weapon's (its reach: lobbed over the front), else
-## a tracer; -1 for none.
+## The trail a component's shot takes: none for a weapon that lunges (MuzzleFlare.lunges: melee
+## with nothing that crosses the field; the lunge is the travel), a beam for a laser's (its tag),
+## an arc for an indirect weapon's (its reach: lobbed over the front), else a tracer, a shotgun
+## tagged melee among them; -1 for none.
 static func kind_for(c: Dictionary) -> int:
 	var tags = c.get("tags", [])
 	tags = tags if tags is Array else []
-	if (tags as Array).has("melee"):
+	if MuzzleFlare.lunges(tags, str(c.get("shape", ""))):
 		return -1
 	if (tags as Array).has("beam"):
 		return BEAM

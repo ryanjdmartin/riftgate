@@ -24,8 +24,13 @@ const COLOURS := {
 const CORES := {"ballistic": 0.7, "missile": 0.5, "flame": 0.35, "beam": 0.6, "plasma": 0.55, "arc": 0.75, "blade": 0.8}
 
 ## The tags in the order a component's looks layer: how it delivers its blow, then what the blow
-## carries (content's working set, sim/content_db.gd). Melee throws a blade's sparks.
+## carries (content's working set, sim/content_db.gd). Melee throws a blade's sparks, on a weapon
+## that lunges (lunges): on one that fires, melee is its range and shows nothing of its own.
 const ORDER := ["ballistic", "missile", "beam", "blade", "melee", "flame", "plasma", "arc"]
+## The tags that send a blow across the field (a shell, a rocket, a beam), and the classes built
+## to fire one; a blade's class strikes in reach.
+const CROSSING := ["ballistic", "missile", "beam"]
+const FIRING := ["barrel", "twin_barrel", "rack", "dish"]
 ## A class's look for a component with no tag.
 const CLASS_LOOK := {"barrel": "ballistic", "twin_barrel": "ballistic", "rack": "missile", "dish": "arc", "blade": "blade"}
 ## Each layer after the first blooms this much later and this much smaller than the one before.
@@ -46,10 +51,29 @@ const BEATS := {
 }
 
 
+## Whether a weapon lunges at its foe rather than firing at it: melee (its tag: short range, a
+## shotgun included) with nothing that sends its blow across the field, no tag of CROSSING and no
+## firing class (a blade's class, or none named). The rest fire as guns do, kicking back and
+## flaring: a shotgun tagged melee and ballistic as the gun it is (Ryan, 3 November, of the Bullion
+## Fragmenter: "It's a shotgun, thematically"), a flamethrower tagged melee as its stream, and a
+## claw the Cottonmouth's drum fires as its shot (the drum adds Ballistic). The screen's lunge, the
+## shot trail's none and a blade's sparks in the flare all read it.
+static func lunges(tags: Array, shape: String = "") -> bool:
+	if not tags.has("melee") or FIRING.has(shape):
+		return false
+	for t in CROSSING:
+		if tags.has(t):
+			return false
+	return true
+
+
 ## Every look a component's tags give it, in the order they layer (ORDER), or its class's alone.
 static func looks_for(tags: Array, shape: String) -> Array:
 	var out: Array = []
+	var edge := lunges(tags, shape)
 	for t in ORDER:
+		if t == "melee" and not edge:
+			continue
 		var look := "blade" if t == "melee" else str(t)
 		if tags.has(t) and not out.has(look):
 			out.append(look)

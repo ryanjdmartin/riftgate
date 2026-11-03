@@ -1401,7 +1401,8 @@ const SHAPE_NONE := "none"
 ## The tags a component may wear (the working set, decided 10 and 12 October; the stock pass's
 ## validator list, 22 October): build flavour shown in the codex, never a rule of their own. A
 ## module or a passive reads one through a `tag_<tag>` condition, the screen's lunge reads
-## `melee`, and the Cottonmouth's drum adds `ballistic` to the shot it fires. The old internal
+## `melee` (on a blade with no tag that crosses the field: a shotgun fires), and the Cottonmouth's
+## drum adds `ballistic` to the shot it fires. The old internal
 ## filing tags (kinetic, energy, single, support and the rest) are retired; the stock pass's
 ## landing assigns these by each piece's fantasy.
 const TAGS := ["ballistic", "missile", "beam", "plasma", "flame", "arc", "blade", "melee"]

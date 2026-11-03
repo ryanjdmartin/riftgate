@@ -114,9 +114,17 @@ const FLARES = {
     blade: {rays: 8, up: 0.02, hold: 0.03, down: 0.12, flicker: 0, scale: 0.8},
   },
 };
-function flareLooks(tags, shape) {   // MuzzleFlare.looks_for: every look its tags give it, in the order they layer
-  const out = [];
-  for (const t of FLARES.order) { const look = t === "melee" ? "blade" : t; if ((tags || []).includes(t) && !out.includes(look)) out.push(look); }
+// MuzzleFlare.lunges: melee with nothing that sends its blow across the field (no tag of CROSSING,
+// no firing class) lunges; the rest fire as guns, a shotgun tagged melee and ballistic among them
+// (Ryan, 3 November, of the Bullion Fragmenter: "It's a shotgun, thematically").
+const CROSSING = ["ballistic", "missile", "beam"], FIRING = ["barrel", "twin_barrel", "rack", "dish"];
+function lunges(tags, shape) {
+  tags = tags || [];
+  return tags.includes("melee") && !FIRING.includes(shape) && !CROSSING.some(t => tags.includes(t));
+}
+function flareLooks(tags, shape) {   // MuzzleFlare.looks_for: every look its tags give it, in the order they layer; melee's sparks only on a weapon that lunges
+  const out = [], edge = lunges(tags, shape);
+  for (const t of FLARES.order) { if (t === "melee" && !edge) continue; const look = t === "melee" ? "blade" : t; if ((tags || []).includes(t) && !out.includes(look)) out.push(look); }
   return out.length ? out : [FLARES.classLook[shape] || "ballistic"];
 }
 function flareLasts(look) { const b = FLARES.beats[look] || FLARES.beats.ballistic; return b.up + b.hold + b.down; }
@@ -776,11 +784,11 @@ class Rig {
       if (named && !only.includes(name)) continue;
       const m = this.meta[name], axis = m.axis;
       let swing;
-      if (ranged && armed[name] && m.slide) {   // a gun that only runs in and out of its port kicks back along its line (MechRig.strike)
+      if (ranged && (armed[name] || only.includes(name)) && m.slide) {   // a gun that only runs in and out of its port kicks back along its line (MechRig.strike)
         this.strikes.push({joint: name, vec: v3(), slide: v3(-m.slide[0] * RECOIL_SLIDE, -m.slide[1] * RECOIL_SLIDE, -m.slide[2] * RECOIL_SLIDE), up: 0.05, down: 0.2, t: -lead});
         continue;
       }
-      if (ranged) { if (!armed[name]) continue; swing = 5; }
+      if (ranged) { if (!armed[name] && !only.includes(name)) continue; swing = 5; }   // a joint named kicks though it carries no mount (a fixed gun on a wrist)
       else if (m.swing) swing = -29;
       else if (named) swing = -15;   // a blade on a joint that is not an arm's: a jab
       else continue;

@@ -2558,7 +2558,11 @@ func _use_die(i: int, target, second = null) -> bool:
 				var hook := "foe_down_" + fallen
 				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + AFTER_DEATH)
 		landed = fire_at + Sound.lands(blow)
-		var ranged := not bool(sk.last_roll.get("melee", false))   # a melee weapon (the tag) lunges, anything else kicks back
+		# A weapon that lunges (melee with nothing that crosses the field, read from the tags it was
+		# fired with) lunges; anything else kicks back, a shotgun tagged melee among them.
+		var fired = sk.last_roll.get("tags", [])
+		var shape := str(ContentDB.load_default().components.get(spent.component, {}).get("shape", "")) if spent != null else ""
+		var ranged := not MuzzleFlare.lunges(fired if fired is Array else [], shape)
 		var hit := (target as Foe).alive()
 		_aim_before(i, aim, fire_at - BLOW_AT, landed, spent.component if spent != null else "")
 		if fire_at > BLOW_AT and is_inside_tree():
@@ -2638,7 +2642,8 @@ func _use_die(i: int, target, second = null) -> bool:
 # ---------------------------------------------------------------- filler animation
 # Nothing here changes state. It makes the exchange readable: who struck, who was struck.
 
-## A melee weapon (the tag) lunges the attacker at the target; anything else kicks it back. The target
+## A weapon that lunges (MuzzleFlare.lunges: melee with nothing that crosses the field) lunges the
+## attacker at the target; anything else kicks it back, a shotgun tagged melee among them. The target
 ## flashes and shakes a beat later, when the blow lands. `cid`, the component that struck, flares a
 ## burn weapon's fire on its mount.
 func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08, cid: String = "") -> void:
@@ -2670,8 +2675,8 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 func _shoot_trail(mi: int, target: UnitView, cid: String, lands: float) -> void:
 	var db := ContentDB.load_default()
 	var c: Dictionary = db.components.get(cid, {})
-	var k := ShotTrail.kind_for(c)
-	if k < 0 or not is_inside_tree():
+	var k := maxi(ShotTrail.kind_for(c), ShotTrail.TRACER)   # fired as a gun though its own tags lunge (the drum's shot): a tracer
+	if not is_inside_tree():
 		return
 	var v := _mech_views[mi]
 	var from := v.anchor_global()

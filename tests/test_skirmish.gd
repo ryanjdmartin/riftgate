@@ -495,7 +495,7 @@ func test_rolled_face_rolls_within_bounds() -> void:
 		var dealt: int = 200 - sk.front[0].hp
 		assert_true(dealt >= 20 and dealt <= 50, "roll %d within 20 to 50" % dealt)
 		assert_eq(sk.last_roll["rolled"], dealt, "last_roll records the roll")
-		assert_false(sk.last_roll["melee"], "no melee tag, so the screen kicks it back")
+		assert_false((sk.last_roll["tags"] as Array).has("melee"), "no melee tag, so the screen kicks it back")
 		lowest = mini(lowest, dealt)
 		highest = maxi(highest, dealt)
 	assert_true(highest - lowest >= 15, "forty seeds spread across the range (%d to %d)" % [lowest, highest])
@@ -6751,6 +6751,7 @@ func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> 
 	assert_eq(sk.shown_face(ms, ms.face(), mid).cleave, 7, "at the grant's number")
 	assert_true(sk.shown_face(ms, ms.face(), sk.back[2]).has(K.PENETRATE), "over the back rank, Penetrate")
 	assert_true(sk.assign(0, mid), "fired at the front")
+	assert_true((sk.last_roll["tags"] as Array).has("ballistic"), "the blow's record carries the tags it was fired with, the drum's Ballistic among them, so the screen fires it as a gun")
 	for f in sk.front:
 		assert_eq(f.hp, 85 if f == mid else 93, "the spray lands 15 on the target and its Spread 7 on each neighbour")
 		assert_true(Effects.has(f, "burning"), "with the Burn it kept")

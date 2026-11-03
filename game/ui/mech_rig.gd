@@ -1561,7 +1561,9 @@ static func _strike_envelope(st: Dictionary) -> float:
 ## arms forward. Ranged: every joint that carries a weapon socket kicks about its own axis,
 ## a recoil, toward whichever side its limits allow (a Clydesdale turret flinches outward).
 ## `only` names the joints of the weapon that fired, and only they kick (Ryan, 31 October: "It
-## would obviously be really cool if the actual weapon from the die fired"); `recoil`, given,
+## would obviously be really cool if the actual weapon from the die fired"), a joint named that
+## carries no socket included (a fixed gun's business end on a wrist: the Badger's fragmenter);
+## `recoil`, given,
 ## kicks the whole machine back along a gun's line, for a gun on a mount on the body. `lead`
 ## holds the blow that many seconds, while the machine turns onto its target (aim). Does nothing
 ## on an untagged model.
@@ -1584,7 +1586,7 @@ func strike(ranged: bool, only: Array = [], recoil := Vector3.ZERO, lead := 0.0)
 		var axis := str(m.get("axis", axis_for(name)))
 		var swing_deg: float
 		if ranged:
-			if not armed.has(name):
+			if not armed.has(name) and not only.has(name):
 				continue
 			var line: Array = m.get("slide", [])
 			if line.size() == 3:

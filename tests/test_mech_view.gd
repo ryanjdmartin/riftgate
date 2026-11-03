@@ -352,6 +352,9 @@ func test_a_weapon_flares_on_its_class_in_its_tags_look_and_equipment_never() ->
 func test_the_tags_pick_a_flare_and_every_class_has_its_places() -> void:
 	assert_eq(MuzzleFlare.looks_for(["arc", "ballistic"], "barrel"), ["ballistic", "arc"], "the slug's flash, then its lightning")
 	assert_eq(MuzzleFlare.looks_for(["melee", "blade"], "blade"), ["blade"], "a melee piece throws a blade's sparks, once")
+	assert_eq(MuzzleFlare.looks_for(["arc", "melee"], "blade"), ["blade", "arc"], "a gauntlet's lightning rides its punch's sparks")
+	assert_eq(MuzzleFlare.looks_for(["ballistic", "melee"], "barrel"), ["ballistic"], "a shotgun tagged melee flashes as the gun it is, no sparks")
+	assert_eq(MuzzleFlare.looks_for(["flame", "melee"], "barrel"), ["flame"], "a flamethrower tagged melee throws its fire alone")
 	assert_eq(MuzzleFlare.looks_for([], "rack"), ["missile"], "a rack with no tag puffs as a launcher")
 	assert_eq(MuzzleFlare.looks_for([], "barrel"), ["ballistic"], "a barrel with none flashes as a gun")
 	for t in MuzzleFlare.ORDER:
@@ -471,3 +474,19 @@ func _rig_for(model_id: String) -> Array:
 	var rig := MechRig.new()
 	rig.setup(model, model_id, model, 1)
 	return [rig, model]
+
+
+func test_a_melee_weapon_lunges_only_when_nothing_about_it_crosses_the_field() -> void:
+	# Ryan, 3 November, of the Bullion Fragmenter (melee and ballistic): "It's a shotgun,
+	# thematically". Melee is short range; a weapon lunges only as a blade with no tag that sends its
+	# blow across the field. Synthetic tags: never a named entry.
+	assert_true(MuzzleFlare.lunges(["blade", "melee"], "blade"), "a claw lunges")
+	assert_true(MuzzleFlare.lunges(["arc", "melee"], "blade"), "so does a gauntlet's lightning, carried by the punch")
+	assert_true(MuzzleFlare.lunges(["melee", "plasma"], "blade"), "and a plasma fist")
+	assert_true(MuzzleFlare.lunges(["melee"]), "melee with no class named lunges, as it always did")
+	assert_false(MuzzleFlare.lunges(["ballistic", "melee"], "barrel"), "a shotgun fires")
+	assert_false(MuzzleFlare.lunges(["ballistic", "melee"], "blade"), "a blade that fires a shell fires it")
+	assert_false(MuzzleFlare.lunges(["blade", "melee", "ballistic"], "blade"), "so does a claw the drum fires as its shot")
+	assert_false(MuzzleFlare.lunges(["missile", "melee"]) or MuzzleFlare.lunges(["beam", "melee"]), "a rocket and a beam cross the field")
+	assert_false(MuzzleFlare.lunges(["flame", "melee"], "barrel"), "a flamethrower tagged melee fires its stream")
+	assert_false(MuzzleFlare.lunges(["ballistic"], "barrel") or MuzzleFlare.lunges([], "blade"), "no melee, no lunge")

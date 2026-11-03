@@ -1759,3 +1759,9 @@ func test_a_shot_crossing_the_field_is_tabled_off_and_follows_its_weapon() -> vo
 	assert_true(t.arc_at(0.5).x > (t.from.x + t.to.x) * 0.5, "and bows out to the side it came from, so it never lies along the shot")
 	t._process(ShotTrail.MIN_FLIGHT + ShotTrail.HOLD + ShotTrail.FADE + 0.01)
 	assert_true(t.is_queued_for_deletion(), "gone once it has landed and faded")
+
+
+func test_a_shotgun_tagged_melee_fires_a_tracer() -> void:
+	# Ryan, 3 November: "It's a shotgun, thematically". Synthetic components.
+	assert_eq(ShotTrail.kind_for({"tags": ["ballistic", "melee"], "shape": "barrel", "face": {"reach": "direct"}}), ShotTrail.TRACER, "a shotgun tagged melee fires a tracer")
+	assert_eq(ShotTrail.kind_for({"tags": ["blade", "melee"], "shape": "blade", "face": {"reach": "direct"}}), -1, "a claw lunges, no trail")

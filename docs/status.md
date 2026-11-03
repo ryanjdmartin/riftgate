@@ -95,7 +95,11 @@ over the hull, the shield's ripple over its hex, the kill's gutter and dimmed ou
 models mark and the fixed equipment playing its slice as it is used, the Stingray's plume on
 trial in place of its ring (`RIFTGATE_PLUME=off`), and the shot crossing the field as a simple
 version, tabled ("it might be too busy") and off unless a debug build's SHOT TRAILS turns it on;
-green at 847 tests and 207,599 checks; not yet on main; its bible is v0.431 (the page's 444,
+then his note on the Bullion Fragmenter ("It's a shotgun, thematically"): a melee weapon lunges
+only as a blade with no tag that crosses the field, any other fires as a gun (the sim's blow record
+carries the tags it was fired with, the drum's among them), and a joint the firing weapon names
+kicks though it carries no mount (the Badger's wrist, which a ranged shot had skipped);
+green at 849 tests and 207,616 checks; not yet on main; its bible is v0.432 (the page's 445,
 merged onto the live v0.430 other sessions published); the hangar at 192. Next on it: Ryan's read of the glows, the weapons firing, the swaps and
 the hit and fire round (the to-do's Ryan list).
 
