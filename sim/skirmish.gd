@@ -1316,6 +1316,8 @@ func legal_actions(f: Foe) -> Array:
 		if bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", ""))):
 			continue   # used once this fight already
 		if _when_holds(f, a):
+			if bool(a.get("opens", false)):
+				return [a]   # an opener (3 November): its first move of the fight, before any other
 			legal.append(a)
 	if legal.size() > 1 and not f.last_special.is_empty():
 		var kept: Array = []
@@ -1762,6 +1764,8 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
 	var killed := 0        # the foes a weapon spend or a vent's blast felled, arcs and spills included (a kill trigger, the reset gun)
 	var free := false      # a spend made Rapid by its target (the Syrinx Drone on a foe already Exposed)
+	if f.kind != Face.Kind.BLANK and not f.is_weapon():
+		_feed_rage(ms, f)   # a shield, a vent or equipment feeds every raging foe on the field, before it acts, so a Purge clears its own feed (3 November)
 	match f.kind:
 		Face.Kind.BLANK:
 			pass
@@ -3170,6 +3174,11 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
+		"enrage":
+			# The Nob's Bellow (3 November): from now on every shield, vent or equipment entry the
+			# team spends stacks Enraged on it (feed_rage), a point of attack a stack for the fight.
+			f.rage = maxi(1, value)
+			log.append("%s: %s, every shield, vent or equipment entry the team spends makes its blows %d harder" % [f.display_name, str(a.get("name", "bellows")), f.rage])
 		"burn":
 			# A Ward turns away every rider a foe lays on its machine, a special's as a blow's
 			# (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks").
@@ -3374,6 +3383,28 @@ func _machine_spend_after(ms: MechState, f: Face, target) -> void:
 		_reload(ms, int(rule.get("vent", 0)), "the vent")
 	elif on_self and f.kind == Face.Kind.SHIELD:
 		_reload(ms, int(rule.get("shield", 0)), "the shield")
+
+
+## The Nob's rage (3 November): every shield, vent or equipment entry the team spends stacks
+## Enraged on each live foe on the field that has bellowed, by its rage, a point of attack a
+## stack for the rest of the fight (Effects.foe_attack_bonus reads it into every blow and every
+## intent); a weapon or a blank feeds nothing. The feed is the round's own grant, stacked, so a
+## Purge clears what has gathered and the rage goes on.
+func _feed_rage(ms: MechState, f: Face) -> void:
+	for foe in field_foes():
+		if foe.alive() and foe.rage > 0:
+			Effects.stack(foe, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:" + foe.content_id, foe.rage, Effects.DECAY_NONE)
+			log.append("%s: %s feeds %s's rage: its blows hit %d harder" % [ms.unit.display_name, f.describe(), foe.display_name, Effects.foe_attack_bonus(foe)])
+
+
+## Every raging foe's feed on one more non-weapon spend, for the bot: the rage of each live
+## foe on the field that has bellowed, summed.
+func rage_on_field() -> int:
+	var n := 0
+	for foe in field_foes():
+		if foe.alive():
+			n += foe.rage
+	return n
 
 
 ## A random live foe from the seeded stream, or `fallback` when none stands. The round preview's

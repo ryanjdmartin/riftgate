@@ -881,16 +881,24 @@ func is_wandering(c: Dictionary) -> bool:
 
 ## The elite composition a Fracture sends (Ryan, 2 November): the domain's next own not yet
 ## sent this battle, or a wanderer not yet sent on a `roll` (0 to 1) under WANDER_CHANCE; a
-## wanderer always once the domain's own are spent, and nothing when both are. An elite may
-## come again in a later battle, never twice in one; a boss never twice in a run.
+## wanderer always once the domain's own are spent, and nothing when both are. Which wanderer
+## is the roll's too (3 November, the pool past one): the roll's place in its band picks among
+## those not yet sent, so a resumed battle draws the same and the player never learns an order.
+## An elite may come again in a later battle, never twice in one; a boss never twice in a run.
 func next_elite(faction_id: String, tier: int, sent: Array, roll: float) -> Dictionary:
 	var own: Array = elite_compositions(faction_id, tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
 	var wanderers: Array = wandering_compositions(tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
 	if own.is_empty():
-		return wanderers[0] if not wanderers.is_empty() else {}
+		return _wanderer_at(wanderers, roll) if not wanderers.is_empty() else {}
 	if not wanderers.is_empty() and roll < WANDER_CHANCE:
-		return wanderers[0]
+		return _wanderer_at(wanderers, roll / WANDER_CHANCE)
 	return own[0]
+
+
+## One of the wanderers by a share `t` (0 to 1) of the pool: the roll spread over those left.
+static func _wanderer_at(pool: Array, t: float) -> Dictionary:
+	var i := clampi(int(floor(clampf(t, 0.0, 0.999999) * pool.size())), 0, pool.size() - 1)
+	return pool[i]
 
 
 ## An elite composition by id at a tier: the domain's own or a wanderer's, else empty.
@@ -916,7 +924,7 @@ func escort_composition(faction_id: String, tier: int, boss_id: String = "") -> 
 
 
 ## Whether a foe leads an elite composition (content `elite`): a mini-boss event a Fracture
-## spawns, outside the spawn lists, never scaled by the tier (the bible's tiers row).
+## spawns, outside the spawn lists, scaled by the tier as a boss is (the bible's tiers row).
 func is_elite(foe_id: String) -> bool:
 	return bool(foes.get(foe_id, {}).get("elite", false))
 
@@ -1834,6 +1842,10 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 		# A special used once a fight (30 October: the Vampire Lord readies its rise once).
 		if a.has("once") and (not (a["once"] is bool) or str(a.get("kind", "attack")) == "attack"):
 			errs.append("%s: once is a special's, true or left out" % aw)
+		# An opener (3 November, the Nob's Bellow): the foe's first move of the fight, so a
+		# special used once; a blow or a repeatable move opens nothing.
+		if a.has("opens") and (not (a["opens"] is bool) or not bool(a.get("once", false))):
+			errs.append("%s: opens is a special's used once (once true), true or left out" % aw)
 		# A grudge (30 October): an attack a point heavier for every foe the team has killed this fight.
 		if a.has("per_kill") and (str(a.get("kind", "attack")) != "attack" or int(a["per_kill"]) < 1):
 			errs.append("%s: per_kill is an attack's, its number a foe the team has killed this fight: 1 or more" % aw)
@@ -1876,7 +1888,7 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
 				# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
-				if (effect == "prime" or effect == "regenerate") and int(a.get("value", 0)) < 1:
+				if (effect == "prime" or effect == "regenerate" or effect == "enrage") and int(a.get("value", 0)) < 1:
 					errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
 				if (effect == "barrier" or effect == "ward_all") and a.has("value"):
 					errs.append("%s: %s takes no value" % [aw, effect])

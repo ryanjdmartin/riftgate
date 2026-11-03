@@ -235,7 +235,7 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 	assert_true(b.menace_killed > 0, "the tally counts the kills' menace")
 	if b.menace_killed >= int(b.thresholds[0]):
 		assert_true(b.fractures >= 1, "a Fracture is earned once the tally crosses its threshold")
-		assert_eq(b.elites_spawned, ["the_reaper"], "and the Marsh's first elite emerges at it")
+		assert_eq(b.elites_spawned, [str(db.elite_compositions("marsh", 1)[0]["id"])], "and the Marsh's first own elite emerges at it (the roll at this seed is above the wanderers' chance)")
 		var elite: Unit = b.field.packs()[b.field.packs().size() - 1]
 		assert_eq(elite.composition_size, "elite", "an elite composition")
 		assert_true(db.is_elite(elite.foe_id), "led by its elite")

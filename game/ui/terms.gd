@@ -41,7 +41,7 @@ const TABLE := {
 	"kill_rerolls": ["reroll", "plain"],
 	# Statuses.
 	"burning": ["burn", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
-	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
+	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"],
 	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "syrinx_drone": ["syrinx_drone", "heat"],
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],

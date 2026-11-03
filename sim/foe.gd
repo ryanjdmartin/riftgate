@@ -61,6 +61,7 @@ var grudge: int = 0              # foes the team has killed this fight, for a bl
 var spent_once: Array = []       # the moves marked `once` it has used this fight (30 October: the Vampire Lord readies its rise once)
 var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding none: a quarter of its HP lost since lets it go (31 October)
 var wanders: bool = false        # an elite any domain's Fracture may send, drawn by chance (Gilgamesh, 31 October and 2 November)
+var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows, once it has bellowed (enrage, 3 November: the Goblin Nob); 0 until then
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -313,6 +314,10 @@ func strikes() -> int:
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
 ##           prime: Primed `value` on every other foe on the field, its next move's blows each
 ##           leaving that much Burning on the machine they hit (28 October)
+##           enrage: it rages at `value` (Foe.rage): while it stands, every shield, vent or
+##           equipment entry the team spends stacks Enraged on it by that much, a point of
+##           attack a stack for the rest of the fight, never spent by a move; the player's
+##           Purge clears the stacks and the rage goes on (3 November, the Goblin Nob's Bellow)
 ##           ward_all: a Ward on every foe on the field, itself included: no mark the team lays
 ##           lands, Suppressed excepted, until the end of the player's next turn (28 October)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
@@ -331,13 +336,13 @@ func strikes() -> int:
 ##           move hits `value` harder for each (the King Gel's, 30 October: thin the Gels first)
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
-	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge"],
+	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "enrage"],
 	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel", "swallow"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge"]
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "enrage"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick

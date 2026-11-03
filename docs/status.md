@@ -25,7 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 893 tests, 209,059 checks, green (2 November, main merged into
+- Tests: 897 tests, 209,531 checks, green (3 November, on `claude/elites-session`: the elites
+  session's twenty kits, the Nob's rage, the wanderers' random draw; 893 and 209,059 on main, 2 November, main merged into
   `claude/brave-cori-fr18de` as it lands: the bosses' slate's twelve, the elites by chance and by
   the tier, the escorts and the review's calls; 875 and 208,362 on main before it, 31 October:
   `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders merged onto
@@ -47,6 +48,11 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/elites-session` (3 November) carries the elites session from main's `e75be15` on Ryan's
+marks of the 3rd (How things stand, first bullet; the bible's register row): the demotions, the
+Fiend of Fire, twenty elite kits with five wanderers, the Nob's rage, the wanderers' random
+draw, the placeholders' art, the records, the pages republished. Not on main until Ryan says so.
 
 `claude/affectionate-ramanujan-5d24t6` (30 and 31 October) carried the two Petrels' engines on
 Ryan's go ("go for the ready to build ones", after his question of the 30th on which chassis come
@@ -181,6 +187,26 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
 
 ## How things stand
 
+- The elites session (3 November, `claude/elites-session`, on Ryan's marks; the bible's register
+  row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table; its brief retired,
+  `git show e75be15:docs/briefs/elites.md`). The register: a boss is a named JRPG entity; an
+  elite is the domain's own grown or a homage from anywhere, made retro; what misses the cut may
+  be rank and file. Landed: Rotbloom to the Meadow's ranks (a massive at tiers two and three),
+  the Pilgrim to the Waste's elites as its hunter and the Cinder Tortoise to the Peak's, the
+  Behemoth renamed the Gargantuan King (the King Behemoth by archetype; the name from Ryan's
+  "<adjective> King" pattern, his to settle), the Fiend of Fire (Marilith) the Peak's third boss,
+  the Goblin Shaman pushed into Warcraft's Thrall on his wolf; new placed elites the Goblin Nob
+  (the Spire's), the Rust Monster (D&D's), the Skeleton King (Diablo's), the Fell Rider
+  (Tolkien's Nazgûl on the fell beast), the Collector (Darkest Dungeon's), the Thunder Ape
+  (Monster Hunter's Rajang), the Bane (Tolkien's Balrog), the Firelord (Warcraft's Ragnaros);
+  the wanderers five, the Reaper (Persona) and the Wild Hunt (three riders, swarm) and the
+  Ravener (Deviljho) and the Shambler beside Gilgamesh (Enkidu at tier three), drawn at random
+  among those not yet sent on the Fracture's roll. Engine: Enraged, the Nob's rage (a stack on
+  every shield, vent or equipment spend, a point of attack each for the fight; fed before the
+  entry acts so a Purge resets it; the chip, the bot's cost, the save) and the opener (`opens`).
+  Every elite drawn as a rough placeholder; the Matador stays a boss on Claude's call. Open for
+  Ryan: the Meadow's and the Waste's third boss, the Fell Rider's mount, the rage's shape, the
+  Monster Hunter nods, the names (the to-do). Not run: the elite cells on the balance runner.
 - The bosses' slate, all twelve (30 October to 2 November, on Ryan's word, his yes, his
   agreement with Claude's leans and his calls on the review of the 2nd; `docs/bosses_proposal.md`,
   its sections on what landed and the calls still open; the bible's section 9 rows), three a
@@ -731,7 +757,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.427 (the page's version
+  `docs/design-bible.html` after every change. This file is v0.434 (the page's version
+  447, published 3 November from `claude/elites-session`: the elites session's register row,
+  the tiers row and the domain table, the Built list's counts, section 12's content question,
+  the tables rerun on the content with the Honey Badger's hopper rows kept by hand again;
+  three-way merged onto the live v0.433, which other sessions had moved past main's v0.427 at
+  446 with the tracks' rows, the Tags row, the Cassowary's and the Cottonmouth's models, the
+  weapon-fire and the blow-on-a-machine rows and the boosters' plumes, the one conflict the
+  version line; over v0.427, the page's version
   439, published 2 November from `claude/brave-cori-fr18de` as main merged in: the tables run
   on the merged content, the Every Machine row moving with main's foes and the Honey Badger's
   hopper rows kept by hand, that branch not yet on main; over 438 of the same evening, the
@@ -782,7 +815,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 190 (2 November, from
+  acts on a reloaded page). At the page's version 197 (3 November, from `claude/elites-session`:
+  `content/foes.json` and `content/factions.json`, their live copies checked identical to main's
+  `e75be15` first, and `content/vocabulary.json` as a three-way merge of this branch's onto the
+  live copy, which carries the Honey Badger's hopper branch's entries ahead of main (the Ore
+  Plate and the hopper's rules), so the page holds both; the page itself the live page as it
+  stood, another session's republish with its motion panel ahead of `tools/hangar.html`;
+  `edits` empty), over 190 (2 November, from
   `claude/brave-cori-fr18de`, the slate's last calls: `content/foes.json`, `content/factions.json`
   and `content/vocabulary.json`, the vocabulary's live copy checked identical to 181's first,
   over 189 of the same evening, the Thief's Flee struck, `content/foes.json` over 188 of the same

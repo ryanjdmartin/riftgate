@@ -329,6 +329,198 @@ def prising_eye(d, w, h):
     _eye(d, w, h, (60, 200, 90, 255))
 
 
+
+# The elites session's placeholders (3 November): the Fiend of Fire, the Peak's third boss, and
+# the new elites and wanderers, each a few flat shapes, a reminder until a render is picked.
+
+def fiend_of_fire(d, w, h):
+    ember, scale, flame, blade = (200, 60, 40, 255), (40, 30, 34, 255), (250, 170, 40, 255), (210, 220, 230, 255)
+    d.polygon([(10, 140), (30, 96), (48, 70), (66, 96), (86, 140)], fill=scale)
+    d.ellipse((20, 118, 76, 142), fill=scale)
+    d.rectangle((40, 44, 56, 80), fill=ember)
+    d.ellipse((38, 26, 58, 48), fill=ember)
+    d.polygon([(40, 28), (48, 8), (52, 26), (60, 12), (58, 30)], fill=flame)
+    for i, (x0, y0, x1, y1) in enumerate(((40, 52, 14, 40), (40, 60, 10, 62), (40, 68, 16, 86), (56, 52, 82, 40), (56, 60, 86, 62), (56, 68, 80, 86))):
+        d.line((x0, y0, x1, y1), fill=ember, width=4)
+        d.line((x1, y1, x1 + (-6 if x1 < 48 else 6), y1 - 14), fill=blade, width=3)
+    d.ellipse((42, 34, 46, 38), fill=flame)
+    d.ellipse((50, 34, 54, 38), fill=flame)
+
+
+def bane(d, w, h):
+    smoke, fire, horn = (36, 30, 40, 255), (240, 120, 30, 255), (90, 70, 60, 255)
+    d.polygon([(14, 140), (28, 70), (48, 44), (68, 70), (82, 140)], fill=smoke)
+    d.polygon([(8, 110), (28, 60), (34, 100)], fill=smoke)
+    d.polygon([(88, 110), (68, 60), (62, 100)], fill=smoke)
+    d.polygon([(34, 20), (48, 0), (62, 20), (58, 46), (38, 46)], fill=fire)
+    d.ellipse((40, 30, 56, 46), fill=smoke)
+    d.ellipse((43, 35, 47, 39), fill=fire)
+    d.ellipse((49, 35, 53, 39), fill=fire)
+    d.polygon([(36, 32), (22, 12), (40, 26)], fill=horn)
+    d.polygon([(60, 32), (74, 12), (56, 26)], fill=horn)
+    d.line((26, 80, 4, 40), fill=fire, width=4)   # the whip
+    d.line((70, 84, 88, 30), fill=fire, width=6)  # the sword
+
+
+def firelord(d, w, h):
+    lava, rock, flame = (235, 110, 30, 255), (50, 36, 32, 255), (250, 200, 60, 255)
+    d.ellipse((4, 112, 92, 142), fill=lava)
+    d.polygon([(22, 124), (30, 60), (66, 60), (74, 124)], fill=rock)
+    d.rectangle((28, 70, 68, 76), fill=lava)
+    d.rectangle((28, 92, 68, 98), fill=lava)
+    d.ellipse((34, 30, 62, 62), fill=rock)
+    d.polygon([(34, 36), (40, 8), (48, 30), (56, 6), (62, 36)], fill=flame)
+    d.ellipse((40, 42, 46, 48), fill=flame)
+    d.ellipse((50, 42, 56, 48), fill=flame)
+    d.line((68, 70, 90, 30), fill=rock, width=6)   # the hammer's haft
+    d.rectangle((80, 14, 96, 40), fill=rock)
+    d.rectangle((82, 18, 94, 36), fill=lava)
+
+
+def thunder_ape(d, w, h):
+    fur, gold, horn, bolt = (40, 36, 44, 255), (240, 200, 50, 255), (120, 100, 80, 255), (120, 220, 255, 255)
+    d.ellipse((12, 36, 60, 88), fill=fur)
+    d.ellipse((18, 20, 50, 50), fill=fur)
+    d.polygon([(20, 26), (12, 8), (26, 22)], fill=horn)
+    d.polygon([(46, 26), (54, 8), (40, 22)], fill=horn)
+    d.ellipse((24, 30, 30, 36), fill=gold)
+    d.ellipse((36, 30, 42, 36), fill=gold)
+    d.ellipse((6, 62, 24, 92), fill=fur)
+    d.ellipse((48, 62, 66, 92), fill=fur)
+    d.rectangle((30, 42, 38, 46), fill=gold)
+    d.line((34, 44, 50, 24, 44, 24, 60, 4), fill=bolt, width=3)
+
+
+def rust_monster(d, w, h):
+    rust, dark, antenna = (170, 90, 40, 255), (110, 56, 26, 255), (220, 160, 80, 255)
+    d.ellipse((10, 50, 62, 84), fill=rust)
+    d.chord((10, 50, 62, 84), 180, 360, fill=dark)
+    d.ellipse((48, 56, 70, 76), fill=rust)
+    d.ellipse((58, 62, 62, 66), fill=OUTLINE)
+    d.line((64, 60, 70, 36, 60, 24), fill=antenna, width=2)
+    d.line((66, 62, 72, 44, 64, 30), fill=antenna, width=2)
+    d.polygon([(10, 66), (0, 60), (0, 74)], fill=dark)   # the paddle tail
+    for x in (16, 28, 40, 52):
+        d.rectangle((x, 82, x + 6, 92), fill=dark)
+
+
+def skeleton_king(d, w, h):
+    bone, plate, gold, cloak = (225, 215, 190, 255), (110, 80, 60, 255), (230, 190, 40, 255), (70, 30, 50, 255)
+    d.polygon([(18, 92), (22, 40), (50, 40), (54, 92)], fill=cloak)
+    d.rectangle((26, 40, 46, 70), fill=plate)
+    d.ellipse((28, 18, 44, 36), fill=bone)
+    d.ellipse((31, 24, 35, 28), fill=OUTLINE)
+    d.ellipse((37, 24, 41, 28), fill=OUTLINE)
+    d.polygon([(28, 20), (30, 8), (34, 16), (36, 6), (38, 16), (42, 8), (44, 20)], fill=gold)
+    d.line((48, 50, 64, 20), fill=plate, width=4)   # the mace
+    d.ellipse((58, 10, 72, 24), fill=plate)
+    d.rectangle((28, 70, 34, 92), fill=bone)
+    d.rectangle((38, 70, 44, 92), fill=bone)
+
+
+def fell_rider(d, w, h):
+    beast, cloak, blade = (60, 50, 70, 255), (20, 16, 24, 255), (200, 210, 230, 255)
+    d.polygon([(4, 50), (24, 60), (18, 40)], fill=beast)    # the wings
+    d.polygon([(68, 50), (48, 60), (54, 40)], fill=beast)
+    d.ellipse((18, 56, 56, 84), fill=beast)
+    d.polygon([(54, 62), (70, 52), (66, 70)], fill=beast)   # the head
+    d.line((16, 70, 2, 90), fill=beast, width=4)             # the tail
+    d.polygon([(28, 58), (30, 26), (44, 26), (46, 58)], fill=cloak)
+    d.ellipse((30, 14, 44, 30), fill=cloak)
+    d.line((46, 40, 62, 16), fill=blade, width=3)
+    for x in (22, 34, 46):
+        d.rectangle((x, 84, x + 4, 94), fill=beast)
+
+
+def collector(d, w, h):
+    cloak, cage, light = (34, 30, 40, 255), (90, 90, 100, 255), (230, 240, 200, 255)
+    d.polygon([(22, 94), (28, 30), (44, 30), (50, 94)], fill=cloak)
+    d.rectangle((28, 10, 44, 32), fill=cage)
+    d.rectangle((31, 13, 41, 29), fill=light)
+    for x in (33, 36, 39):
+        d.line((x, 13, x, 29), fill=cage, width=1)
+    d.line((52, 20, 56, 94), fill=cage, width=3)   # the staff
+    for x in (24, 34, 44):
+        d.ellipse((x, 66, x + 8, 76), fill=(200, 180, 160, 255))   # the heads at its belt
+
+
+def wild_hunt_rider(d, w, h):
+    horse, plate, frost = (200, 200, 210, 255), (30, 28, 36, 255), (170, 220, 250, 255)
+    d.ellipse((10, 52, 56, 76), fill=horse)
+    d.polygon([(52, 56), (68, 44), (62, 66)], fill=horse)
+    for x in (14, 26, 38, 48):
+        d.rectangle((x, 74, x + 4, 90), fill=horse)
+    d.polygon([(26, 56), (28, 26), (40, 26), (42, 56)], fill=plate)
+    d.ellipse((28, 14, 40, 28), fill=plate)
+    d.polygon([(28, 18), (24, 4), (32, 16)], fill=plate)
+    d.polygon([(40, 18), (44, 4), (36, 16)], fill=plate)
+    d.line((42, 40, 70, 20), fill=frost, width=3)   # the lance
+    d.ellipse((4, 80, 14, 90), fill=frost)
+
+
+def ravener(d, w, h):
+    hide, belly, teeth = (56, 90, 50, 255), (120, 130, 90, 255), (240, 240, 230, 255)
+    d.ellipse((14, 60, 80, 110), fill=hide)
+    d.polygon([(14, 86), (0, 120), (26, 104)], fill=hide)   # the tail
+    d.ellipse((50, 28, 96, 72), fill=hide)                  # the head
+    d.polygon([(60, 60), (94, 56), (90, 76), (62, 78)], fill=belly)   # the jaw
+    for x in (64, 72, 80, 88):
+        d.polygon([(x, 58), (x + 3, 68), (x + 6, 58)], fill=teeth)
+    d.ellipse((70, 38, 76, 44), fill=(240, 200, 40, 255))
+    for x in (30, 44, 58):
+        d.polygon([(x, 62), (x + 6, 50), (x + 12, 62)], fill=belly)   # the spines
+    d.rectangle((28, 106, 40, 136), fill=hide)
+    d.rectangle((56, 106, 68, 136), fill=hide)
+
+
+def shambler(d, w, h):
+    flesh, dark, eye = (90, 50, 80, 255), (50, 26, 46, 255), (230, 220, 90, 255)
+    d.ellipse((12, 50, 84, 126), fill=flesh)
+    for x0, y0, x1, y1 in ((20, 110, 4, 140), (40, 118, 34, 142), (58, 118, 66, 142), (76, 110, 92, 140), (14, 70, 0, 56), (84, 70, 96, 54)):
+        d.line((x0, y0, x1, y1), fill=dark, width=5)
+    for cx, cy in ((34, 70), (56, 64), (46, 92), (68, 90), (28, 96)):
+        d.ellipse((cx - 6, cy - 6, cx + 6, cy + 6), fill=eye)
+        d.ellipse((cx - 2, cy - 2, cx + 2, cy + 2), fill=OUTLINE)
+
+
+def shambler_spawn(d, w, h):
+    flesh, eye = (90, 50, 80, 255), (230, 220, 90, 255)
+    d.ellipse((20, 44, 52, 76), fill=flesh)
+    d.line((26, 72, 16, 90), fill=flesh, width=4)
+    d.line((46, 72, 56, 90), fill=flesh, width=4)
+    d.ellipse((30, 54, 42, 66), fill=eye)
+    d.ellipse((34, 58, 38, 62), fill=OUTLINE)
+
+
+def enkidu(d, w, h):
+    fur, skin = (120, 80, 50, 255), (170, 130, 90, 255)
+    d.ellipse((14, 40, 58, 84), fill=fur)
+    d.ellipse((22, 20, 50, 48), fill=skin)
+    d.polygon([(22, 30), (18, 10), (30, 24), (36, 8), (42, 24), (54, 10), (50, 30)], fill=fur)
+    d.ellipse((28, 30, 33, 35), fill=OUTLINE)
+    d.ellipse((39, 30, 44, 35), fill=OUTLINE)
+    d.ellipse((6, 60, 20, 88), fill=fur)
+    d.ellipse((52, 60, 66, 88), fill=fur)
+
+
+def goblin_nob(d, w, h):
+    green, dark, iron, wood = (90, 140, 60, 255), (50, 90, 40, 255), (120, 120, 130, 255), (110, 70, 40, 255)
+    d.ellipse((14, 36, 62, 90), fill=green)
+    d.rectangle((16, 36, 40, 50), fill=iron)   # the shoulder plate
+    d.ellipse((22, 12, 54, 44), fill=green)
+    d.polygon([(26, 40), (52, 40), (50, 52), (28, 52)], fill=dark)   # the jaw
+    d.ellipse((30, 24, 35, 29), fill=(240, 60, 40, 255))
+    d.ellipse((42, 24, 47, 29), fill=(240, 60, 40, 255))
+    d.polygon([(20, 22), (8, 14), (24, 30)], fill=green)   # the ears
+    d.polygon([(56, 22), (68, 14), (52, 30)], fill=green)
+    d.line((56, 56, 70, 14), fill=wood, width=5)            # the club
+    d.ellipse((62, 4, 78, 24), fill=wood)
+    for x, y in ((64, 6), (74, 10), (70, 20)):
+        d.rectangle((x, y, x + 2, y + 2), fill=iron)
+    d.rectangle((22, 88, 32, 94), fill=dark)
+    d.rectangle((44, 88, 54, 94), fill=dark)
+
+
 FOES = {
     # id: (draw, massive)
     "king_gel": (king_gel, True),
@@ -348,6 +540,20 @@ FOES = {
     "ruby_colossus": (ruby_colossus, True),
     "burrowing_tentacle": (burrowing_tentacle, False),
     "thrashing_tentacle": (thrashing_tentacle, False),
+    "fiend_of_fire": (fiend_of_fire, True),
+    "bane": (bane, True),
+    "firelord": (firelord, True),
+    "thunder_ape": (thunder_ape, False),
+    "rust_monster": (rust_monster, False),
+    "skeleton_king": (skeleton_king, False),
+    "fell_rider": (fell_rider, False),
+    "collector": (collector, False),
+    "wild_hunt_rider": (wild_hunt_rider, False),
+    "ravener": (ravener, True),
+    "shambler": (shambler, True),
+    "shambler_spawn": (shambler_spawn, False),
+    "enkidu": (enkidu, False),
+    "goblin_nob": (goblin_nob, False),
 }
 
 

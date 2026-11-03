@@ -7588,6 +7588,8 @@ func test_a_players_purge_takes_every_buff_a_foe_carries_but_numbed_and_guarded(
 	act.call(g, "ward_all", "buff", 0)
 	act.call(g, "prime", "buff", 2)
 	act.call(g, "rally", "buff", 3)
+	act.call(caster, "enrage", "buff", 1)   # the Nob's rage (3 November): the stacks the team's safe spends feed, laid here by hand
+	Effects.stack(caster, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:caster", 2, Effects.DECAY_NONE)
 	Effects.stack(caster, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_TICK)
 	Effects.stack(caster, Effects.STATUS["guarded"], Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_NONE)
 	for id in Effects.FOE_PURGED:
@@ -7595,6 +7597,7 @@ func test_a_players_purge_takes_every_buff_a_foe_carries_but_numbed_and_guarded(
 	assert_true(sk.assign(0, caster), "a Purge of equipment")
 	for id in Effects.FOE_PURGED:
 		assert_false(Effects.has(caster, id), "%s gone" % id)
+	assert_eq(caster.rage, 1, "the rage itself goes on; only what it gathered is purged")
 	assert_true(Effects.has(caster, "numbed"), "Numbed stays: a resistance")
 	assert_true(Effects.has(caster, "guarded"), "and Guarded: its parts' lock")
 	assert_true("\n".join(sk.log).contains("A purges"), "the log says what went")

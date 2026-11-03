@@ -1560,7 +1560,7 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 			assert_eq(f.size, 1, "%s, a hero, is human-sized" % id)
 		elif db.is_elite(id):
 			# An elite is a mini-boss tier (the bible's tiers row): up to a boss's three moves, its
-			# numbers its own and never scaled by the tier.
+			# numbers scaled by the tier as a boss's are (2 November).
 			assert_true(f.actions.size() >= 1 and f.actions.size() <= 3, "%s, an elite, has one to three moves" % id)
 			assert_false(f.boss, "%s, an elite, is no boss" % id)
 		elif int(db.foes[id].get("tier", 1)) <= 1:

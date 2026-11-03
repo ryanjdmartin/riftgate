@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 175 implemented, 5 planned, 0 idea.
+Status: 180 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -137,6 +137,7 @@ Status: 175 implemented, 5 planned, 0 idea.
 | **Flak** | Foe status, Wainwright & Sutler's on-hit. Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down. | implemented |
 | **Destroyed component** | Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the machine's die is rolled and the component it lands on is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them. | implemented |
 | **Scorched** | Machine status, from a foe's scorch: every weapon and equipment it aims at a foe runs 1 hotter per stack, until the end of the player's turn, when every stack goes. Spending a shield, a vent, a buff or a cool weapon plays round it. Can be cleansed. | implemented |
+| **Enraged** | Foe status, from a bellow (the Goblin Nob's). Once the foe has bellowed, every shield, vent or equipment entry the team spends lays a stack on it, and each stack is a point on every blow it lands for the rest of the fight; a weapon feeds nothing. Never spent by a move. Its chip climbs as the stacks do, so the number an intent shows is the number that lands. A Purge clears the stacks; the bellow goes on, so they gather again. | implemented |
 | **Kindled** | Foe status, from a rally, landing on every other foe on the field the moment the rally does. Its next move hits harder by the rally's value, and that move spends it, whatever it is: a blow lands it, a special gains nothing from it, a Suppress that takes the move takes it too, and a countdown carries it to the blow it lands. A foe acting after the rallier spends it this turn; one that has acted carries it to its next move. An intent counts the rallies on their way, a pulsing chip on a dashed edge saying why, and drops them the moment the rallier is killed, Suppressed or Disrupted. | implemented |
 | **Getting Back Up** | Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round. | implemented |
 | **Silenced** | Machine status, from a foe's silence: its components' keywords are muted through its next round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, its own Cleanse is a plain shield), then wake; its buffs count and its stores fill and spend as ever. Can be cleansed by an ally's Cleanse; a Ward turns the silence away. | implemented |
@@ -386,6 +387,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rage** (implemented): Capped at 5 (the passive's stack_status cap).
 - **Hopper** (implemented): No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.
 - **Scorched** (implemented): Placeholder numbers.
+- **Enraged** (implemented): The rage's value and the Nob's numbers are placeholders. Whether the rage should be permanent, as built (Claude's lean: an elite's job is to make the player change plan), or ride its next move only, is Ryan's call (3 November).
 - **Silenced** (implemented): Its stores are untouched. Keywords alone since 28 October (buffs alone from 25 to 28 October, a one-round purge that returns); Volatile is a cost, so nothing it mutes is a price.
 - **Swallowed** (implemented): Its own cooling, ticks and overheats still land, as a Phased machine's do; nothing cleanses it.
 - **Ward** (implemented): A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS) and never Suppressed, since Numbed stays the one stun resistance.

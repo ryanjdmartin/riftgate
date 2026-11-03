@@ -643,6 +643,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if burnt > 0:
 		score += zap_worth(sk, ms, target, burnt, outcomes) - burn_cost(sk, ms, burnt)
 	score -= heat_cost(sk, ms, f)
+	if not f.is_weapon():
+		score -= rage_cost(sk)   # a debuff is equipment, and feeds a raging foe (3 November)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
 
@@ -784,6 +786,10 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 				for eff in m.effects:
 					if str(eff.get("effect", "")) in ["add_attack", "regrow"]:
 						rest += float(int(eff.get("value", 0)) * m.stacks)
+			"enraged":
+				# The Nob's gathered rage (3 November): a point of attack a stack on every blow to
+				# come, so worth its stacks over the blows the fight has left (RAGE_BLOWS).
+				rest += float(m.stacks) * RAGE_BLOWS
 			"primed":
 				rest += PRIMED_WORTH * float(m.stacks)
 	return back + lives * rest
@@ -1349,7 +1355,19 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 		score += float(mini(n, ms.ammo_max - ms.ammo)) * ammo_worth(sk, ms)
 	if f.heat > 0:
 		score -= heat_cost(sk, ms, f)
+	score -= rage_cost(sk)   # a shield, a vent or a buff feeds a raging foe (3 November)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
+
+
+## The feed a non-weapon spend gives every raging foe on the field (the Nob's Bellow, 3
+## November): each point of rage is a point on every blow it has left, read over RAGE_BLOWS
+## blows, so the bot leans on its weapons against a Nob as the player should.
+const RAGE_BLOWS := 2.0
+
+
+func rage_cost(sk: Skirmish) -> float:
+	var rage := sk.rage_on_field()
+	return float(rage) * RAGE_BLOWS if rage > 0 else 0.0
 
 
 ## What an ammo is worth to a forging machine (the Musk Ox's): a share of the best damage a gun

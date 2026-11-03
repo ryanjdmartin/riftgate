@@ -211,6 +211,12 @@ const STATUS := {
 	# rally's value; the 2 here is only the default a bare grant would carry.
 	"kindled": {"id": "kindled", "name": "Kindled", "description": "Its next move hits {value} harder, then it is spent.", "decay": "none", "spent_by": "move",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}]},
+	# Enraged (3 November, the Goblin Nob's Bellow): a stack for every shield, vent or equipment
+	# entry the team spends while the foe rages (Foe.rage, set by the enrage effect), a point of
+	# attack a stack for the rest of the fight, never spent by a move, so the chip climbs as the
+	# player plays safe; the player's Purge clears the stacks (FOE_PURGED) and the rage goes on.
+	"enraged": {"id": "enraged", "name": "Enraged", "description": "Its blows hit {value} harder for the rest of the fight: a stack for every shield, vent or equipment entry the team has spent since it bellowed.", "decay": "none",
+		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October): loads the Chainsaw Claw digs out of what it
@@ -1677,7 +1683,7 @@ static func purgeable(m) -> bool:
 ## The buffs the player's Purge takes off a foe (28 October): every one it carries but Numbed,
 ## a resistance, and Guarded, its parts' lock. The ids are the engine's (braced is Armoured,
 ## risen Getting Back Up).
-const FOE_PURGED := ["braced", "kindled", "risen", "primed", "barrier", "ward", "regenerating"]
+const FOE_PURGED := ["braced", "kindled", "enraged", "risen", "primed", "barrier", "ward", "regenerating"]
 
 
 ## The player's Purge on a foe (28 October): every buff of FOE_PURGED gone, every stack, whatever

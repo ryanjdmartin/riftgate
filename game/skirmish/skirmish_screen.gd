@@ -1458,6 +1458,11 @@ func _foe_rows(foe: Foe) -> Array:
 	if Effects.has(foe, "kindled"):
 		var kindled := Effects.foe_attack_bonus(foe)
 		rows.append(["overcharge", "+%d" % kindled, "Kindled: its next move hits %d harder, then it is spent (a special gains nothing from it; a countdown carries it to its blow)" % kindled, _foe_chip_colour("kindled")])
+	if foe.rage > 0:
+		# The Nob's rage (3 November): the chip climbs with every shield, vent or equipment entry
+		# the team spends, for the rest of the fight; a Purge clears what has gathered.
+		var raged := Effects.stacks_of(foe, "enraged")
+		rows.append(["overcharge", "+%d" % raged, "Enraged: every shield, vent or equipment entry the team spends makes its blows %d harder, for the rest of the fight (now +%d); a Purge clears it" % [foe.rage, raged], _foe_chip_colour("enraged")])
 	# A rally on its way (Ryan, 26 October: "a pulsing version of the incoming buff as a preview
 	# chip, so the player knows it's incoming and that's the reason for the increased damage"):
 	# the Kindled the rallies will land before its blow, already in the number its intent

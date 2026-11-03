@@ -317,7 +317,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
 - **Purge** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter): every foe the
-  entry reaches loses every buff it carries but Numbed and Guarded (Armoured, Kindled, Getting
+  entry reaches loses every buff it carries but Numbed and Guarded (Armoured, Kindled, Enraged, Getting
   Back Up, Primed, Barrier, Ward, Regenerating), after the blow and with the riders, a debuff's
   included, so a foe the blow kills stays down and a Barrier the blow pops is gone already; a
   laid shot purges the foe it lands on.
@@ -573,6 +573,13 @@ On a foe:
   about to burn to death, so it drops the moment the rallier is killed, Suppressed or
   Disrupted. The foe wears the coming Kindled as a preview chip on a dashed edge, its opacity
   pulsing on the gauges' clock, until it lands; a foe whose move shows no blow wears none.
+- **Enraged** (buff, a bellow: the Goblin Nob's): once the foe has bellowed, every shield, vent
+  or equipment entry the team spends lays a stack on it, before the entry acts, and each stack
+  is a point on every blow it lands for the rest of the fight, an add before the factor; a
+  weapon or a blank feeds nothing, and no move spends it. Its chip climbs with the stacks, so
+  the number an intent shows is the number that lands. A Purge clears the stacks and the
+  bellow goes on. A bellow is an opener: a move marked `opens` (with `once`) is the foe's
+  first move of the fight, taken before any other.
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot and at once, unless it self-destructed; its round is
   over, as a split's half's is, and it takes a mine its fall left there.
@@ -712,7 +719,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   revive an ally (Getting Back Up on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally (Kindled at its value on every other foe on the field, at once), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
+  rally (Kindled at its value on every other foe on the field, at once), enrage (the bellow: Enraged's feed from then on), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   disable, silence (Silenced), purge (every buff a die face bought gone, a store's, a form's
   or a passive's grant until the start of the player's turn; never a last act's), cleanse
@@ -997,9 +1004,11 @@ a stat.
   with a third of the field left to leave. A Fracture pays out as a fight ends. At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
-  rift, or a wanderer (`wanders`: Gilgamesh, one composition in one domain's list, every
-  domain's), drawn on the Fracture's roll one time in three in place of the domain's own and
-  always once its own are spent, so every domain may meet him and none waits on him. An elite
+  rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the Ravener and the
+  Shambler, each one composition in one domain's list and every domain's), drawn on the
+  Fracture's roll one time in three in place of the domain's own and always once its own are
+  spent, the same roll picking which among those not yet sent, so every domain may meet them,
+  none waits on them and nobody learns an order. An elite
   may come again in a later battle, never twice in one; a run never repeats a boss. Every elite
   stands at the battle's tier as a boss does, its HP and attack the tier's, the other members of
   its composition at their own. The last Fracture is the Rupture:
@@ -1103,7 +1112,8 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
 - **A formation** is one of the domain's formation compositions at the battle's tier, in
   turn, every member at the ramp's density (the battle's number as the Convergence); the
   lead's and the guest's take turns. **An elite**'s slot holds the lead's elite compositions in
-  turn (a domain with none, the Peak today, the lead's formation).
+  turn, or a wanderer on the run's roll (every domain has three of its own at least; a domain
+  with none would take the lead's formation).
 - **A fight** takes the squad's machines still standing, their damage carried and their heat
   from zero. There is no withdrawal. A won fight gives each standing machine one field recharge
   before the next; a wipe ends the run.

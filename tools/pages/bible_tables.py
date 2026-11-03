@@ -41,7 +41,7 @@ FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", 
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "silence": "silenced", "swallow": "swallowed"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
-                       "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
+                       "rally": "kindled", "enrage": "enraged", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating"}   # the ladder's (28 October)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "silence": "silence"}
