@@ -54,8 +54,8 @@
  },
  "chassis": {
   "badger": {
-   "when": "Twelfth round, third pass, 6 October.",
-   "note": "The Bullion Fragmenter's bore inset so it reads hollow (Ryan): a pale sawn rim at the muzzle, the bore lined dark five units in with a dark floor. The breech block, its hazard band and the crusher hopper as the second pass. Ryan called it good the same day.",
+   "when": "The stock rebuild, 28 October.",
+   "note": "Ryan's go, 28 October: since the stock pass its stock is the Rivet Gun alone, on the deck's ring as its class, the gimbals bare (the Canopy and the Coolant Jacket show nowhere); the missile box and the gimbals' autoguns went with the old stock.",
    "images": [
     {
      "file": "badger/badger_front.png",
@@ -67,7 +67,7 @@
     }
    ],
    "before": {
-    "summary": "Before: twelfth round, second pass, 6 October (the sawed-off cannon with a flat bore)",
+    "summary": "Before: twelfth round, third pass, 6 October (the missile box and the gimbals' autoguns)",
     "images": [
      {
       "file": "badger/before_badger_front.png",
@@ -81,8 +81,8 @@
    }
   },
   "clydesdale": {
-   "when": "The fifteenth notes, 6 October.",
-   "note": "The shins stand plumb, each hoof under its knee, the knee three forward of the hip, so only the thigh angles (Ryan: the stance leaned too far forward; a straight leg, a straight calf or less of a lean). It gallops, pushed toward a lumbering giant (the sixteenth notes): barely airborne, the hull rocking and sinking onto every hoof; the trot is an option on the hangar's Walk.",
+   "when": "The stock rebuild, 28 October.",
+   "note": "Ryan's go, 28 October: the stations keep their kinds and each mount its stock part in order: the Maxigun as its class on the left turret where the autoguns were, the cheek bracket's left mount the Incendiary Shells' rack, the right bare; the lance, the mortar, the howitzer and the deck rack (the Airburst Shell's) as before.",
    "images": [
     {
      "file": "clydesdale/clydesdale_front.png",
@@ -98,8 +98,16 @@
     }
    ],
    "before": {
-    "summary": "Before: the eleventh notes, 6 October (the knee four forward, the shin raking back to a hoof under the hip)",
+    "summary": "Before: the fifteenth notes, 6 October (the second pair of autoguns and the bare cheeks)",
     "images": [
+     {
+      "file": "clydesdale/before_clydesdale_front.png",
+      "alt": "Earlier: clydesdale, front"
+     },
+     {
+      "file": "clydesdale/before_clydesdale_rear.png",
+      "alt": "Earlier: clydesdale, rear"
+     },
      {
       "file": "clydesdale/before_clydesdale_side.png",
       "alt": "Earlier: clydesdale, left side"
@@ -108,8 +116,8 @@
    }
   },
   "sparrowhawk": {
-   "when": "The ninth notes, 6 October.",
-   "note": "The wings' roots sit inside the fuselage at their leading edge (Ryan: not sure its wings meet the front of the fuselage; they stood just proud of it, by under a unit, where the fuselage narrows). The exhausts' fitted glow as before.",
+   "when": "Ryan's second notes, 29 October.",
+   "note": "Ryan, 29 October, the second notes: each tooth round a driver's inlet runs its back face aft as a strake, tapering down the drum until it meets it. The rest as the first notes left it: each Pinion Driver a ramjet-gun, a chrome drum with a lit ring tapering to a lit exhaust, the barrel out of the inlet's centre; two shots at half, one from each tip.",
    "images": [
     {
      "file": "sparrowhawk/sparrowhawk_front.png",
@@ -121,7 +129,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the fourth acts pass, 5 October (the wing roots just proud of the fuselage at the front)",
+    "summary": "Before: the first notes of 29 October (the teeth a ring round the lip)",
     "images": [
      {
       "file": "sparrowhawk/before_sparrowhawk_front.png",
@@ -135,8 +143,8 @@
    }
   },
   "baboon": {
-   "when": "Fourth round, 30 September.",
-   "note": "Unchanged (good); rendered bare.",
+   "when": "The stock rebuild, 28 October.",
+   "note": "Ryan's go, 28 October: every station keeps its kind, the pins renumbered to the stock's order and each part its class: the shoulders' elevating mounts carry the Halo Shield's dish (left) and the Ankle Mortar's rack (right) where the Umbra Projectors rode; the fists' outer sides the Twin Autoguns (right) and the Rivet Gun (left) where the Pulse Repeaters were; the right fist's top the Laser Carbine where the Zenith Emitter was; the left fist's top bare.",
    "images": [
     {
      "file": "baboon/baboon_front.png",
@@ -148,7 +156,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Fifth pass, 30 September",
+    "summary": "Before: fourth round, 30 September (the Umbra Projectors, the Pulse Repeaters and the Zenith Emitter)",
     "images": [
      {
       "file": "baboon/before_baboon_front.png",
@@ -162,8 +170,8 @@
    }
   },
   "armadillo": {
-   "when": "The sixth notes, 5 October; a come-about on planted footwork, 20 October.",
-   "note": "A square channel cut through the shell along the missile cell's own line, so the cell slides up out of it instead of through the top panel; the stripe frame a sleeve over its lower part, floored dark deep in the shell. The third picture is still the fourteenth round's, with a Slug Cannon and a Missile Rack fitted to the forward ports. Ryan, 20 October: with no head and no waist it turns its whole shell to look, in the diagonal pairs it walks in, eight degrees on the planted pair a step, twenty-four round, guns up and lamps lit while it holds, then back (come_about; every hip's own yaw and roll keep its foot planted and pointing where it landed). Judge it running in the Animation tab.",
+   "when": "Ryan's tenth notes, 30 October; the vent act on his eleventh and twelfth.",
+   "note": "Ryan, 30 October: \"The rear ones can protrude a bit more. During the vent animation, can you desync the vent openings, then close them all at the same-ish time?\", then \"Open them in pairs, not one at a time, and leave them open longer once they're all open\", then \"slow down the standing back up at the end and start it as the vents are closing. the vents can stay open a touch less long. desync the pairs closing just a bit.\" The two rear vents now stand out of the back panel as boxes, their mouths two and a half behind it (the rim had stood six tenths proud). In vent_heat the vents open a pair at a time, each left with its right: the rear vents at 1.4 seconds, the side vents at 1.85, the radiators at 2.3, each vent's heat flaring as it opens; all open, they hold a second and a half, then shut a pair at a time in the same order, a beat apart (4.5, 4.62, 4.74), the glow dying with them, as the shell starts back up with the first pair's shutting and rises over two seconds (from 1.1, after the shutting). Watch it on the Models tab; RIFTGATE_ACTS_DEBUG=vent_heat loops it in the game. The shots are the tenth notes' (the eleventh and twelfth moved only the act's timing); the venting ones are caught at 3.4 seconds, every vent open (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -174,16 +182,24 @@
      "alt": "armadillo, rear"
     },
     {
-     "file": "armadillo/armadillo_forward_ports_fitted.png",
-     "alt": "armadillo, forward ports fitted"
+     "file": "armadillo/armadillo_side.png",
+     "alt": "armadillo, side"
     },
     {
-     "file": "armadillo/armadillo_come_about.png",
-     "alt": "armadillo, coming about, a pair stepping"
+     "file": "armadillo/armadillo_sealed.png",
+     "alt": "armadillo, sealed"
+    },
+    {
+     "file": "armadillo/armadillo_venting.png",
+     "alt": "armadillo, venting"
+    },
+    {
+     "file": "armadillo/armadillo_venting_front.png",
+     "alt": "armadillo, venting, front"
     }
    ],
    "before": {
-    "summary": "Before: the fifth notes, 5 October (the cell's frame sitting on the shell)",
+    "summary": "Before: the ninth notes of 30 October (the rear vents sunk in the panel, every vent opening at once)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -192,6 +208,22 @@
      {
       "file": "armadillo/before_armadillo_rear.png",
       "alt": "Earlier: armadillo, rear"
+     },
+     {
+      "file": "armadillo/before_armadillo_side.png",
+      "alt": "Earlier: armadillo, side"
+     },
+     {
+      "file": "armadillo/before_armadillo_sealed.png",
+      "alt": "Earlier: armadillo, sealed"
+     },
+     {
+      "file": "armadillo/before_armadillo_venting.png",
+      "alt": "Earlier: armadillo, venting"
+     },
+     {
+      "file": "armadillo/before_armadillo_venting_front.png",
+      "alt": "Earlier: armadillo, venting, front"
      }
     ]
    }
@@ -224,8 +256,8 @@
    }
   },
   "prairie_dog": {
-   "when": "9 October, sixth pass.",
-   "note": "The front arches and the aprons trimmed to the hood (Ryan: minimise the fronts' overlap with it): each front arch's inner edge now follows the hood's own edge a quarter of a unit inside it, with a section at the hood's kink so it follows the taper, where it had run a unit to a unit and a half over the hood on one straight line; the aprons stop a quarter of a unit inside the body's flank, not a whole unit. The arches' depth, a whole unit lower, and the rev at five degrees as Ryan settled them; the livery aprons, the axle covers and the wheels as before.",
+   "when": "The stock rebuild, 28 October.",
+   "note": "Ryan's go, 28 October: the projector on the rear-left corner is the stock's Halo Shield as its class, a dish facing forward; the launcher there went with the old stock. The Flakshot Repeater and the turret as before.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -241,7 +273,7 @@
     }
    ],
    "before": {
-    "summary": "Before: 9 October, fifth pass (the front arches and aprons reaching a unit or more over the hood)",
+    "summary": "Before: 9 October, sixth pass (the rear-left launcher)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",
@@ -259,8 +291,8 @@
    }
   },
   "dingo": {
-   "when": "Fourth round, 30 September.",
-   "note": "Unchanged (great); rendered bare.",
+   "when": "Ryan's second notes, 29 October.",
+   "note": "Ryan, 29 October, the second notes: the antenna that ran up through the Translocator's cabinet is gone, the one on the other side kept. As the first notes left it: the Airburst Shell's rack on its gimbal on the roof, left of the harpoon, and the coil's rings threaded on a core; the Translocator makes its die a d5 (Ryan: \"I guess that's ok\").",
    "images": [
     {
      "file": "dingo/dingo_front.png",
@@ -272,7 +304,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Third pass, 30 September",
+    "summary": "Before: the first notes of 29 October (an antenna through the cabinet)",
     "images": [
      {
       "file": "dingo/before_dingo_front.png",
@@ -286,8 +318,8 @@
    }
   },
   "goshawk": {
-   "when": "The eighth notes, 6 October.",
-   "note": "The cannon's lights banked down at rest (a new ember tile, the glow at under a third of its light) so its charge burns far hotter against them; the spine stays lit through the whole charge. At rest the vents and the bore read dark red.",
+   "when": "The stock rebuild, 28 October.",
+   "note": "Ryan's go, 28 October: since the stock pass its fourth stock piece is a Canopy, which shows nowhere, so the right wing's outer pod is empty; the deflector's dish there went with the old stock. The pods' guns and the belly mount as before.",
    "images": [
     {
      "file": "goshawk/goshawk_front.png",
@@ -299,7 +331,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the fifth notes, 5 October (the cannon's lights at the full glow at rest)",
+    "summary": "Before: the eighth notes, 6 October (the deflector's dish on the right outer pod)",
     "images": [
      {
       "file": "goshawk/before_goshawk_front.png",
@@ -313,8 +345,8 @@
    }
   },
   "nemesis": {
-   "when": "Sixth round, 1 October; a square-up and a braced meteor stance on planted footwork, 20 October.",
-   "note": "The condenser's slots on the lit tile too. Otherwise as the fifth round. Ryan, 20 October (lateral motion for an angry boy): it squares up to something at its left, the left foot stamping out wide and back as the whole machine turns on its planted right and drops into the stance, the fists up, the torso leaning in and wound a little further, the core burning while it glares, then the stamp back (square_up; a sideways pace was built first and looked like dancing); and the meteor's firing stance is a real one, the right foot back and out as the whole machine turns ten degrees to its mark on its planted left, the waist's turn on top (raise_meteor). Judge them running in the Animation tab.",
+   "when": "Ryan's third notes, 29 October.",
+   "note": "Ryan, 29 October: \"give the nemesis some flare during relevant animations, like roar\". Its lit visor flares white-hot in its fierce acts: blazing through the roar (the third picture, a second in), at each blow of pound_fists and each crack of crack_shoulders with the core, glaring through square_up, a flash with each meteor shot. A red light already at full red can only flare toward white, so the peaks are white and the fades pass through pink back to its resting red. RIFTGATE_ACTS_DEBUG=roar loops it.",
    "images": [
     {
      "file": "nemesis/nemesis_front.png",
@@ -325,27 +357,23 @@
      "alt": "nemesis, rear"
     },
     {
-     "file": "nemesis/nemesis_square_up.png",
-     "alt": "nemesis, squared up, the left foot stamped out"
+     "file": "nemesis/nemesis_roar.png",
+     "alt": "nemesis, roaring"
     }
    ],
    "before": {
-    "summary": "Before: Fifth round, 1 October",
+    "summary": "Before: the roar at the second notes of 29 October (the visor at its resting glow)",
     "images": [
      {
-      "file": "nemesis/before_nemesis_front.png",
-      "alt": "Earlier: nemesis, front"
-     },
-     {
-      "file": "nemesis/before_nemesis_rear.png",
-      "alt": "Earlier: nemesis, rear"
+      "file": "nemesis/before_nemesis_roar.png",
+      "alt": "Earlier: nemesis, roaring"
      }
     ]
    }
   },
   "ammit": {
-   "when": "The fifth notes, 5 October; a circling act on planted footwork, 20 October.",
-   "note": "Wrists on the middle hands, so the talons stay flat on the ground as it sinks, threatens and walks, and the front toes splayed a little (Ryan, 5 October). A waist under the upper body, so it turns without pivoting on its feet. Ryan, 20 October (lateral motion for a creepy stalker): it circles its prey with the snout kept on it, the body sliding round an arc about a point ahead and turning to face it, the feet and the hands scuttling sideways under it, the hands two short steps to a foot's one, two moves round to one side, a pause, and two back (one each way through the centre came first; Ryan: two and back is more effective), nose down, the claws at their guard with the talons slowly working (circle). Judge it running in the Animation tab.",
+   "when": "Ryan's second notes, 29 October.",
+   "note": "Ryan, 29 October: every Arsenal cockpit's glass lit, so the Ammit's eye strips glow red at rest and flare with the throat in its acts (they had asked for a flare that glass never gave). The rest as the stock rebuild left it: the left jaw mount the Oblation Mantle as a dish, the right bare.",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -354,14 +382,10 @@
     {
      "file": "ammit/ammit_rear.png",
      "alt": "ammit, rear"
-    },
-    {
-     "file": "ammit/ammit_circle.png",
-     "alt": "ammit, circling its prey, a hand and a foot stepping"
     }
    ],
    "before": {
-    "summary": "Before: fourth acts pass, 5 October",
+    "summary": "Before: the stock rebuild, 28 October (the eye strips unlit glass)",
     "images": [
      {
       "file": "ammit/before_ammit_front.png",
@@ -375,8 +399,8 @@
    }
   },
   "stingray": {
-   "when": "The eighth notes, 6 October.",
-   "note": "The starboard lift fan's blades mirrored (Ryan: its pitch was the port fan's while it spins the other way), so each rotor's blades lead with their raised edge as it turns. The third picture is from straight behind and above.",
+   "when": "The stock rebuild, 28 October.",
+   "note": "Ryan, 28 October: the locked Photosphere Lance on the dome turret, out of its slot; the stock in its order, each part its class: the Laser Carbine under the nose where the lance lay, the Halo Shield's dish on the right forewing, the Twin Autoguns and the Ankle Mortar at the wing tips, the left forewing's mount bare (the Coolant Jacket shows nowhere). The Zenith Emitter, the Pulse Repeater, the flare pods and the lattice dish went with the old stock. The third picture is from straight behind.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -392,7 +416,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the tenth pass, 5 October (both rotors' blades pitched the same way)",
+    "summary": "Before: the eighth notes, 6 October (the lance under the nose and the old stock's emitters and pods)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
@@ -401,6 +425,10 @@
      {
       "file": "stingray/before_stingray_rear.png",
       "alt": "Earlier: stingray, rear"
+     },
+     {
+      "file": "stingray/before_stingray_from_behind.png",
+      "alt": "Earlier: stingray, from behind and above"
      }
     ]
    }
@@ -445,8 +473,8 @@
    }
   },
   "funnel_web": {
-   "when": "Fourth cut, 19 October; revised on Ryan's fifth to eleventh notes, 19 and 20 October, and good to go on the eleventh.",
-   "note": "Ryan's fourth notes (19 October): the body in W&S's military camp, the Prairie Dog's and the gunship's, not the Clydesdale's and the Dingo's funky steam, more aggressive; the side guns pitch only, the torso twist aims them; nothing hanging like a proboscis; the upper legs in the walk beside the solver, the Ammit's way, so it walks creepy. His fifth: the fore feet's two short steps hot-stepped, far too busy, and the head's turn looked weird, both cut, the feet kept down; the body is great; two static forward guns instead of the single centred one, the jaw reworked for them, one mount left on top, and the web launcher one of the side guns. As it stands: a dark lower hull running into a wide flat jaw under an armoured upper hull with a wedge brow, two slit eyes in a dark visor band, livery appliqué on the flanks, an exhaust grille and a whip antenna at the tail; the Maxigun and the Twin Autoguns static in the jaw's two mantlets, the Howitzer alone on the roof on its elevation, the web launcher's four tubes out of the left pod on its elevation, the dish on the right pod. The creep: every foot one step a stride, out of step, and the coxae rowing (his sixth notes, his pick of the options: the feet had flicked forward): each leg's base swings forward as its foot lands, back through the stance and forward through the swing, the solver planting the foot under it, so the whole leg sweeps as one; the stride lengthened and the foot's carry widened, so the swing is slower with the feet still down seven tenths of the time. His seventh: the walk does not look too bad; the bow guns pulled back in, the jaw shorter and the mantlets near flush; the roof mount moved aft of the pods; and the row at its extreme to see, twenty degrees, the Walk's option row_extreme in the Animation tab. His eighth: the two rows told apart by nobody, so the extreme option is gone; the roof mount sunk into the roof (a gap showed); the flank plates embraced as raked fins in the livery, rising up and behind, a little flair on a utilitarian maker; the guns clipped the fore legs in the scan and the sighting, so a twist is now the head's twenty degrees and a shuffle of the legs for the rest, a little predatory skittering; and the vertical range this walker alone has, its legs and its torso mount looking up and down, so it rears, sinks and coils through the acts. His ninth (20 October): the fins good, their base to be squared off; the antenna floated, its base now runs into the hull; and the shuffle slid since the feet were not planted, so each leg has a yaw joint at its root and a pivot solver keeps every foot not stepping planted while the body turns. His tenth, the same day: a toned-back cut of the fins came out too small, so they are the eighth's shape and size again on a level base sunk in the bracket; and the scan's first turn, the slow one, now goes in under a second. His eleventh, the same day: the antenna a little inboard, clear of the fin, and the model is good to go. Rendered bare; the coil of its stalk and a side-on moment of the creep beside the front and rear. Judge the acts and the walk running in the Animation tab.",
+   "when": "The stock rebuild, 28 October.",
+   "note": "Ryan's go, 28 October: since the stock pass its fourth stock piece is a Canopy, which shows nowhere, so the right pod's mount is bare; the deflector's dish there went with the old stock. The model is otherwise the good-to-go of 20 October.",
    "images": [
     {
      "file": "funnel_web/funnel_web_front.png",
@@ -455,18 +483,10 @@
     {
      "file": "funnel_web/funnel_web_rear.png",
      "alt": "funnel-web, rear"
-    },
-    {
-     "file": "funnel_web/funnel_web_stalk.png",
-     "alt": "funnel-web, coiled low in its stalk"
-    },
-    {
-     "file": "funnel_web/funnel_web_walk.png",
-     "alt": "funnel-web, a moment of the creep, side on"
     }
    ],
    "before": {
-    "summary": "Before: the third cut, 19 October, legs under a turret with a steam body (a boiler, a stack, a boom-mounted web battery) and the chin gun hanging; Ryan's fourth notes sent the body to W&S's military camp, the side guns to pitch only, the chin gun level, and the upper legs into a creeping walk.",
+    "summary": "Before: fourth cut, 19 October; revised on Ryan's fifth to eleventh notes, 19 and 20 October, and good to go on the eleventh (the deflector's dish on the right pod)",
     "images": [
      {
       "file": "funnel_web/before_funnel_web_front.png",
@@ -478,11 +498,11 @@
      },
      {
       "file": "funnel_web/before_funnel_web_stalk.png",
-      "alt": "Earlier: funnel-web, the lunge of its stalk"
+      "alt": "Earlier: funnel-web, coiled low in its stalk"
      },
      {
       "file": "funnel_web/before_funnel_web_walk.png",
-      "alt": "Earlier: funnel-web, a stride of its walk, side on"
+      "alt": "Earlier: funnel-web, a moment of the creep, side on"
      }
     ]
    }

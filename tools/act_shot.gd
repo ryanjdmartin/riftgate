@@ -8,7 +8,9 @@ extends SceneTree
 ## The frame is 420 square unless a size is given; "skirmish 160x192" is the skirmish's own
 ## view (its angle, its frame fitted to the machine at rest), to see what an act leaves of it.
 ## An act name of "-" renders the rest pose; "gait" renders the machine that many seconds
-## into a straight run at its full speed on the map (its stride). Needs a window (xvfb-run does, on a Linux box).
+## into a straight run at its full speed on the map (its stride). RIFTGATE_FORM=<name> holds
+## that form first, all the way in, so the act is one of its own (the sealed Armadillo's) or
+## "-" its held pose. Needs a window (xvfb-run does, on a Linux box).
 
 var _frames := 0
 var _view: MechView3D
@@ -29,9 +31,12 @@ func _init() -> void:
 		frame = Vector2i(int(args[6].get_slice("x", 0)), int(args[6].get_slice("x", 1)))
 	_out = args[4]
 	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, frame, false, {}, [])
-	_view.strip_silhouette()
 	root.add_child(_view)
 	_view.set_process(false)
+	var form := OS.get_environment("RIFTGATE_FORM")
+	if not form.is_empty():
+		_view.rig.set_form(form, true)
+		_view.rig.tick(float(_view.rig.forms.get(form, {}).get("duration", 1.0)) + 0.05)
 	if args[2] == "gait":
 		# Under way at its own full speed on the map for that long, frame by frame: a stride's pose.
 		var t := 0.0
@@ -46,6 +51,9 @@ func _init() -> void:
 
 
 func _tick() -> void:
+	# The view's _ready, run with the first frame, turns its processing back on, and the act
+	# would run on through the frames before the save (a frame at "0.3 s" showed 0.6).
+	_view.set_process(false)
 	_frames += 1
 	if _frames < 6:
 		return

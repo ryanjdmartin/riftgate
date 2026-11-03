@@ -31,10 +31,17 @@ const REROLLS_PER_ROUND := 3
 const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's
 const AREA_COLUMN := 2   # the other rank of its column: Penetrate's, Splash's
 const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
+const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
 const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
 static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
+static var overheat_scale: int = 1   # hull an overheat burns a point of heat past the maximum; tools/balance.gd's --overheat sets it for one run's what-if (30 October)
+# Two more what-ifs on the overheat (Ryan, 30 October), set by tools/balance.gd for one run: a
+# burn reaching the injury threshold burns out the component that took the gauge past the
+# maximum (--burnout), and every overheat Corrupts that component, so many stacks (--overheat-corrupt N).
+static var overheat_burnout: bool = false
+static var overheat_corrupt: int = 0
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
-const NUMBED_PER_SUPPRESS_MASSIVE := 3
+const NUMBED_PER_SUPPRESS_MASSIVE := 3   # on a boss of any size or a massive foe (numbed_per_suppress)
 
 
 class MechState:
@@ -48,6 +55,7 @@ class MechState:
 	var free_rerolls: int = 0   # rerolls of this die alone left this round, from a passive, on top of the team's
 	var ammo: int = 0           # the magazine (the Musk Ox's Desublimation Forge): a resource beside heat, never a status
 	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
+	var hot_entry: int = -1     # the entry whose spend last took the gauge past its maximum this turn (the overheat's what-ifs)
 
 	## The entry showing, as it is right now: a disabled one shows as blank (the component
 	## itself is untouched; the status is what says so).
@@ -112,9 +120,22 @@ var last_acts: Array = []
 var turn_specials: Array = []
 var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
 var _falls: int = 0   # foes that have fallen this fight, counted as their slots clear: a spend's kills are the difference
+## A merge's lift on the merger (30 October), granted once its own move has spent what it carried,
+## so the lift rides its next move: foe -> the Kindled it gains.
+var _lift_after: Dictionary = {}
+## The foes the team has killed this fight (30 October), every fall but a foe that went whole (a
+## Bomb's burst, a part falling with its core) and a foe another took in: what a grudge reads.
+var team_kills: int = 0
 ## Foes that joined a pack in this fight (a Gel's half, a summon, a part) and fell for good, by
 ## pack id: the kills its own count cannot see (kills_for).
 var joined_fallen: Dictionary = {}
+## The same by type, pack id -> {content id: fallen}, for the menace a kill is worth
+## (kills_by_type).
+var joined_fallen_types: Dictionary = {}
+## What each pack came into the fight with, pack id -> {content id: count} of its own foes
+## (add_foes), so the kills by type are what came less what is left; a resumed fight carries it
+## in its save, and one from before reads the pack itself (_came_with_of).
+var came_with: Dictionary = {}
 ## Mines (the Lammergeier's Fuse-delayed Bay, 21 October): Vector2i(rank, column) -> the shots
 ## waiting in that empty slot, in laid order, each {damage, keywords, burn, cryo, flak, by, seq}:
 ## its number as rolled and modified when laid, and its keywords, acting as it lands.
@@ -154,6 +175,9 @@ var preview_notes: Array = []   # what the copy held back: {kind: pick, resist, 
 var _screened: Array = []
 ## Rerolls a foe's roar has cost the team for the coming round.
 var reroll_debt: int = 0
+## The team's rerolls banked as the last player's turn ended (Maverick's Playbook, the Giant
+## Petrel's; built 30 October), back at the next round's start while a banker fights.
+var banked: int = 0
 ## Makes a foe from a content id, for a summoning action; set by the battle (the content
 ## database), left empty by tests, in which case a summon calls nothing up.
 var foe_factory: Callable = Callable()
@@ -194,6 +218,10 @@ func add_foes(list: Array, from_pack: Unit = null) -> void:
 	for f in list:
 		if from_pack != null:
 			f.pack_id = from_pack.id
+			if is_own(from_pack, f):
+				var tally: Dictionary = came_with.get(from_pack.id, {})
+				tally[f.content_id] = int(tally.get(f.content_id, 0)) + 1
+				came_with[from_pack.id] = tally
 		reinforcements.append(f)
 	if from_pack != null and not packs.has(from_pack):
 		packs.append(from_pack)
@@ -287,12 +315,13 @@ func live_mechs() -> Array[MechState]:
 	return out
 
 
-## The live machines a foe may pick or a teammate may land a shield, a vent or a buff on: a Phased one is neither
-## (the Swallowtail's Mooring Screens, 21 October).
+## The live machines a foe may pick or a teammate may land a shield, a vent or a buff on: one out
+## of the fight is neither, Phased (the Swallowtail's Mooring Screens, 21 October) or Swallowed
+## (a foe's swallow, 30 October).
 func targetable_mechs() -> Array[MechState]:
 	var out: Array[MechState] = []
 	for m in live_mechs():
-		if not Effects.has(m.unit, "phased"):
+		if not is_out(m):
 			out.append(m)
 	return out
 
@@ -300,6 +329,18 @@ func targetable_mechs() -> Array[MechState]:
 ## Is the machine Phased (cannot act, take damage or be targeted until the round's end)?
 static func is_phased(ms: MechState) -> bool:
 	return ms != null and Effects.has(ms.unit, "phased")
+
+
+## Is the machine Swallowed (a foe's swallow, 30 October: out of the fight until its rounds run
+## out or its swallower falls)?
+static func is_swallowed(ms: MechState) -> bool:
+	return ms != null and Effects.has(ms.unit, "swallowed")
+
+
+## Is the machine out of the fight: Phased or Swallowed? Nothing reaches it, nobody may target
+## it, and it takes no damage; its own cooling, ticks and overheats are its own.
+static func is_out(ms: MechState) -> bool:
+	return is_phased(ms) or is_swallowed(ms)
 
 
 ## The pack's own foes left standing, on the field or waiting: what it keeps on the map. A pack
@@ -321,9 +362,80 @@ func survivors_for(sq: Unit) -> int:
 ## among them), rather than one that joined it in the fight (a Gel's half, a summon, a part)?
 ## A boss unit's own are its commanders and its escort; a pack's, its foe type.
 static func is_own(sq: Unit, f: Foe) -> bool:
+	if f.joined:
+		return false   # a half, a summon or a part: never own, whatever its type
 	if sq.is_boss:
 		return f.commands or f.escorts
+	if not sq.members.is_empty():
+		return sq.member_ids().has(f.content_id)   # a composition's own are its members' types
 	return sq.foe_id.is_empty() or f.content_id == sq.foe_id
+
+
+## A pack's members left after this fight, [[content id, count], ...] in the pack's own order
+## (a boss unit's: its escort, never its commanders): its own foes alive on the field or
+## waiting. What the map keeps of a composition (Battlefield.apply_skirmish_result).
+func members_left(sq: Unit) -> Array:
+	var counts := {}
+	for f in field_foes():
+		if f.pack_id == sq.id and f.alive() and is_own(sq, f) and not f.commands:
+			counts[f.content_id] = int(counts.get(f.content_id, 0)) + 1
+	for f in reinforcements:
+		if f.pack_id == sq.id and is_own(sq, f) and not f.commands:
+			counts[f.content_id] = int(counts.get(f.content_id, 0)) + 1
+	var out: Array = []
+	for m in sq.member_list():
+		var cid := str(m[0])
+		if int(counts.get(cid, 0)) > 0:
+			out.append([cid, int(counts[cid])])
+			counts.erase(cid)
+	for cid in counts.keys():
+		if int(counts[cid]) > 0:
+			out.append([str(cid), int(counts[cid])])
+	return out
+
+
+## What a pack came into this fight with, by type: recorded as its foes were added, or read off
+## the pack itself for a fight resumed from a save made before the record (its members, or its
+## one type times its strength; a boss unit's commanders and its escort).
+func _came_with_of(sq: Unit) -> Dictionary:
+	if came_with.has(sq.id):
+		return came_with[sq.id]
+	var tally := {}
+	if sq.is_boss:
+		for cid in sq.lineup:
+			tally[str(cid)] = int(tally.get(str(cid), 0)) + 1
+		if sq.lineup.is_empty():
+			for f in field_foes():
+				if f.pack_id == sq.id and f.commands:
+					tally[f.content_id] = int(tally.get(f.content_id, 0)) + 1
+	for m in sq.member_list():
+		if not str(m[0]).is_empty():
+			tally[str(m[0])] = int(tally.get(str(m[0]), 0)) + int(m[1])
+	return tally
+
+
+## The foes of a pack this fight killed, by type (content id -> count), for the menace each is
+## worth (the Rupture meter, Anathema and salvage, 30 October): its own that are gone, what it
+## came with less what is left, and every foe that joined it and fell for good. Read before the
+## map takes the result.
+func kills_by_type(sq: Unit) -> Dictionary:
+	var left := {}
+	for f in field_foes():
+		if f.pack_id == sq.id and f.alive() and is_own(sq, f):
+			left[f.content_id] = int(left.get(f.content_id, 0)) + 1
+	for f in reinforcements:
+		if f.pack_id == sq.id and is_own(sq, f):
+			left[f.content_id] = int(left.get(f.content_id, 0)) + 1
+	var out := {}
+	var came := _came_with_of(sq)
+	for cid in came.keys():
+		var n := int(came[cid]) - int(left.get(cid, 0))
+		if n > 0:
+			out[str(cid)] = n
+	var joined: Dictionary = joined_fallen_types.get(sq.id, {})
+	for cid in joined.keys():
+		out[str(cid)] = int(out.get(str(cid), 0)) + int(joined[cid])
+	return out
 
 
 ## A boss unit's commanders still standing in this fight (Foe.commands: its boss, a final's
@@ -358,10 +470,10 @@ func escort_left(sq: Unit) -> int:
 ## before the map takes the result, while its lineup and strength are still the ones it came
 ## with).
 func kills_for(sq: Unit) -> int:
-	var joined := int(joined_fallen.get(sq.id, 0))
-	if sq.is_boss:
-		return maxi(0, maxi(1, sq.lineup.size()) - commanders_left(sq).size()) + maxi(0, sq.strength - escort_left(sq)) + joined
-	return maxi(0, sq.strength - survivors_for(sq)) + joined
+	var n := 0
+	for cid in kills_by_type(sq).keys():
+		n += int(kills_by_type(sq)[cid])
+	return n
 
 
 func any_assigned() -> bool:
@@ -389,7 +501,34 @@ func pending_heat(ms: MechState) -> int:
 	if ammo_price_of(ms, f) > 0:
 		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun pays ammo; only a foe's debuff heats it
 	var added: int = Effects.attack(ms.unit, f, 0, f.heat)["heat"]
+	added -= shield_burn(ms, Effects.effective_face(ms.unit, f), added)   # what the shield pays never reaches the gauge (the Storm Petrel's)
 	return added - ms.heat if f.vents_all else added
+
+
+## The shield a weapon's spend burns in place of `heat` (the Storm Petrel's Riot Field Generator,
+## Ryan's go of 21 October; built 30 October): as much of the heat as the shield holds as it
+## stands, overshield included; the rest reaches the gauge. Nothing for equipment, a forging
+## machine's gun (its heat is paid in ammo) or a machine whose shield pays nothing.
+static func shield_burn(ms: MechState, f: Face, heat: int) -> int:
+	if ms == null or f == null or not f.is_weapon() or heat <= 0 or ms.ammo_max > 0 or not Effects.burns_shield(ms.unit):
+		return 0
+	return mini(heat, maxi(0, ms.unit.shield))
+
+
+## The shield the entry in hand would burn as it is spent (shield_burn), for the forecast.
+func pending_burn(ms: MechState) -> int:
+	var f := spend_face(ms) if ms.face() != null else null
+	if f == null or ms.assigned or not f.is_attack():
+		return 0
+	return shield_burn(ms, Effects.effective_face(ms.unit, f), int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]))
+
+
+## The blow the burn pays a foe after a weapon's strikes (the zap): what the shield paid, plain,
+## through what the foe takes and its armour; nothing on a Guarded core, as every blow there.
+static func zap_on(foe: Foe, burnt: int, by: MechState) -> int:
+	if foe == null or burnt <= 0:
+		return 0
+	return maxi(0, Effects.damage_taken(foe, burnt, by.unit if by != null else null) - foe.armour_total())
 
 
 ## What a vent-on-fire attack adds to every blow from the heat it fires: its power_per_heat
@@ -413,6 +552,15 @@ static func hopper_loads(u, f: Face) -> int:
 ## What the hopper adds to every blow of that shot.
 static func hopper_bonus(u, f: Face) -> int:
 	return hopper_loads(u, f) * f.power_per_load if f != null else 0
+
+
+## The loads each foe a spend of this entry damages puts in its machine's hopper: the weapon's
+## own number where it prints one (the Chainsaw Claw's two), else the machine's passive's for
+## any weapon (the Ore Hopper's one, 31 October); equipment deals no damage and loads nothing.
+static func hopper_fill_of(u, f: Face) -> int:
+	if f == null or not f.is_weapon():
+		return 0
+	return f.fills_hopper if f.fills_hopper > 0 else Effects.hopper_fill(u)
 
 
 ## What one blow of an attack entry will deal, as the die shows it (decided 10 October, bible
@@ -483,6 +631,8 @@ func shut_gates(ms: MechState, f: Face, foe: Foe) -> Array[int]:
 	for k in f.keywords:
 		if not Effects.gate_holds(ms.unit, f, k, foe):
 			out.append(k)
+		elif k == Face.Keyword.DISRUPT and foe.committed:
+			out.append(k)   # an announced follow-up holds (2 November): the chip struck over it
 	return out
 
 
@@ -490,7 +640,12 @@ func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
 	if f == null or not f.is_attack() or f.is_debuff():
 		return f.number_text() if f != null else ""
 	var n := shown_number(ms, f, target)
-	return str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]
+	var text := str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]
+	# Over a foe, a weapon whose heat the shield pays shows its zap joined to the blow (the Storm
+	# Petrel's, "4+2"), each with the foe's armour off; the zap is lost if the blow kills.
+	if target != null and f.burns > 0:
+		text += "+%d" % zap_on(target, f.burns, ms)
+	return text
 
 
 ## Every live machine learns how many allies stand with it, for passives that read it.
@@ -516,8 +671,8 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 ## on nobody in particular shows none: Foe.intent_on), and not about to die to burn first.
 func acting_on(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
-	if is_phased(ms):
-		return out   # nothing reaches a Phased machine
+	if is_out(ms):
+		return out   # nothing reaches a machine out of the fight
 	for f in field_foes():
 		if not f.intent_on(ms.unit):
 			continue
@@ -786,6 +941,10 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	# A volatile entry costs hull outright as it is spent, shield or no shield.
 	var volatile := pending_volatile(ms) if with_face else 0
 	hull -= volatile
+	# A weapon that burns shield in place of heat (the Storm Petrel's) takes it as it is spent, after
+	# a bite: the shield the enemy's blows meet is what it leaves.
+	if with_face:
+		shield -= mini(shield, pending_burn(ms))
 	var incoming := 0
 	var component_risk := false
 	# The die in hand's own grant on its machine, for this round's blows: a brace's armour (the
@@ -813,7 +972,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	if spent != null and spent.self_burn > 0:
 		heat_end += spent.self_burn * Effects.status_value("burning_mech", "tick_heat")   # the Stoker's own fire ticks with the rest
 	var over := maxi(0, heat_end - ms.heat_max)
-	hull -= over
+	hull -= over * overheat_scale
 	var blows := 0
 	for f in attackers_of(ms):
 		blows += f.strikes()
@@ -861,7 +1020,7 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 	var breach := f.breaches() and not Effects.has(ms.unit, "ward")
 	var armour := ms.unit.armour + Effects.armour_against(ms.unit, f.rank) + int(walk.get("armour", 0))
 	for s in range(f.strikes()):
-		var amount := Effects.damage_taken(ms.unit, foe_blow(f), f)
+		var amount := Effects.damage_taken(ms.unit, foe_blow(f), f, false, true, maxi(0, int(walk["shield"])))   # a plate that stands with the shield reads the shield this blow meets
 		if amount > 0 and bool(walk.get("barrier", false)):
 			walk["barrier"] = false
 			amount = 0
@@ -878,10 +1037,12 @@ func machine_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 	if f == null or not f.on_machines() or shield_short(ms, f):
 		return out
 	for who in live_mechs():
-		if who != ms and is_phased(who):
-			continue   # a Phased ally cannot be targeted (Ryan, 20 October)
+		if who != ms and is_out(who):
+			continue   # an ally out of the fight cannot be targeted (Ryan, 20 October)
 		if f.act_again and (who == ms or not who.assigned):
 			continue   # an ally acting again: one whose die is spent (the Reveille Horn's charged form)
+		if f.action_price > 0 and who != ms and (not who.assigned or rerolls_left < f.action_price):
+			continue   # an ally's action bought (the Immelmann Booster): one whose die is spent, while the team's rerolls pay its price
 		if (who == ms and f.can_target_self()) or (who != ms and f.can_target_ally()):
 			out.append(who)
 	return out
@@ -1028,6 +1189,15 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 		sf.dry = not can_fire(ms, sf)
 		sf.heat = Effects.debuff_heat(ms.unit, sf)
 		return sf
+	var burn := shield_burn(ms, sf, heat)
+	if burn > 0:
+		# A weapon whose heat the shield pays (the Storm Petrel's): the burn in the heat slot's place
+		# with the shield's mark, and the heat past what the shield holds beside it.
+		if sf == f:
+			sf = f.duplicate_face()
+		sf.burns = burn
+		sf.heat = heat - burn
+		return sf
 	if heat == sf.heat:
 		return sf
 	if sf == f:
@@ -1041,7 +1211,13 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 func start_round() -> void:
 	assert(state == State.ROUND_START, "start_round called out of order")
 	round += 1
-	rerolls_left = maxi(0, REROLLS_PER_ROUND - reroll_debt)   # a roar last round costs rerolls now
+	# The bank (Maverick's Playbook): what the last turn left unspent comes back while a banker
+	# still fights, a reroll like any other; a roar's cost comes off the whole.
+	var from_bank := mini(banked, bank_cap())
+	banked = 0
+	rerolls_left = maxi(0, REROLLS_PER_ROUND + from_bank - reroll_debt)   # a roar last round costs rerolls now
+	if from_bank > 0:
+		log.append("the bank carries %d reroll%s" % [from_bank, "" if from_bank == 1 else "s"])
 	if reroll_debt > 0:
 		log.append("the roar costs the team %d reroll%s" % [reroll_debt, "" if reroll_debt == 1 else "s"])
 	reroll_debt = 0
@@ -1051,7 +1227,8 @@ func start_round() -> void:
 	# the end): every machine sheds its chassis's cooling rating, one log line for all.
 	var cooled: Array[String] = []
 	for ms in mechs:
-		ms.assigned = false
+		# A swallowed machine cannot act while it is out (30 October): its die is spent before it rolls.
+		ms.assigned = is_swallowed(ms)
 		if not ms.alive():
 			continue
 		# A sealed machine's own cooling stops (the Armadillo's Lockdown, 20 October); an ally's
@@ -1060,6 +1237,7 @@ func start_round() -> void:
 		if drop > 0:
 			ms.heat -= drop
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
+		ms.hot_entry = -1
 		ms.face_index = _roll(ms)
 		ms.free_rerolls = Effects.free_rerolls(ms.unit)
 		# The forge's trickle (the Musk Ox's), from the second round: the first holds its start, 3
@@ -1136,7 +1314,16 @@ func _draw_blows(f: Foe, ahead: Dictionary) -> void:
 ## so the swing after the roar can be counted on). Nothing legal falls back to its blow.
 func legal_actions(f: Foe) -> Array:
 	var legal: Array = []
+	var follow := Foe.follow_ups(f.actions)
 	for a in f.actions:
+		if follow.has(str(a.get("id", ""))):
+			continue   # a follow-up comes only after the move that names it (30 October)
+		if str(a.get("effect", "")) == "swallow" and swallowable().size() < 2:
+			continue   # never the last machine able to act
+		if str(a.get("effect", "")) == "merge" and mergeable(f, a).is_empty():
+			continue   # nothing of its kinds stands to take in
+		if bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", ""))):
+			continue   # used once this fight already
 		if _when_holds(f, a):
 			legal.append(a)
 	if legal.size() > 1 and not f.last_special.is_empty():
@@ -1157,6 +1344,19 @@ func _choose_foe_action(f: Foe) -> void:
 	if not f.pending.is_empty():
 		f.action = f.pending   # a countdown move holds until it lands
 		return
+	# A follow-up (30 October): the move its last move named in `then` comes now, announced like
+	# any; a borrowed swing with nothing taken has nothing to swing, and the roll decides.
+	var next := f.next_move
+	f.next_move = ""
+	f.committed = false
+	if not next.is_empty():
+		for a in f.actions:
+			if str(a.get("id", "")) == next and (not Foe.swings_held(a) or not f.held.is_empty()):
+				f.action = a
+				f.committed = true   # announced a round ahead, so no Disrupt turns it (Ryan, 2 November): the first move was the window
+				f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
+				_begin_countdown(f)
+				return
 	f.choose_from(legal_actions(f), rng)
 	f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
 	_begin_countdown(f)
@@ -1211,6 +1411,8 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 			return false
 		"ally_marked":
 			return cleanse_target(f) != null
+		"part_fallen":
+			return parts_down(f) > 0
 	return true
 
 
@@ -1275,6 +1477,7 @@ func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 		var n = foe_factory.call(who)
 		if n is Foe:
 			n.pack_id = f.pack_id
+			n.joined = true
 			made.append(n)
 	if made.is_empty():
 		return
@@ -1350,6 +1553,9 @@ func _refresh_kin() -> void:
 			if o != f and o.alive() and _same_kind(o, f):
 				n += 1
 		f.kin = n
+		f.grudge = team_kills   # a blow that grows with the team's kills (`per_kill`) reads them as it is shown
+	for f in reinforcements:
+		f.grudge = team_kills
 
 
 static func _same_kind(a: Foe, b: Foe) -> bool:
@@ -1425,6 +1631,16 @@ func next_face(ms: MechState) -> Face:
 	if Effects.is_entry_disabled(ms.unit, at):
 		return Face.disabled_stand_in(ms.die.faces[at])
 	return shown_face(ms, ms.die.faces[at])
+
+
+## The most of the team's unspent rerolls the bank carries to the next round (Maverick's
+## Playbook): the largest cap of a live machine that banks, so two never bank twice; 0 when none
+## fights.
+func bank_cap() -> int:
+	var cap := 0
+	for ms in live_mechs():
+		cap = maxi(cap, Effects.bank_cap(ms.unit))
+	return cap
 
 
 ## Is any reroll open: the team's, or a machine's own?
@@ -1553,7 +1769,7 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 		Effects.spend_stacks(ms.unit, "muster", price * maxi(1, int(Effects.muster_rule(ms.unit).get("value", 30))))
 		log.append("%s spends a muster: %s" % [ms.unit.display_name, f.describe()])
 	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
-	var killed := 0        # the foes a weapon spend or a vent's blast felled, chains and spills included (a kill trigger, the reset gun)
+	var killed := 0        # the foes a weapon spend or a vent's blast felled, arcs and spills included (a kill trigger, the reset gun)
 	var free := false      # a spend made Rapid by its target (the Syrinx Drone on a foe already Exposed)
 	match f.kind:
 		Face.Kind.BLANK:
@@ -1613,6 +1829,15 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 				who.assigned = false
 				who.face_index = _roll(who)
 				log.append("%s rallies %s: its die rolls again, and it acts again" % [ms.unit.display_name, who.unit.display_name])
+			elif f.action_price > 0 and who != ms:
+				# The Immelmann Booster's ally use (the Giant Petrel's, Ryan's go of 21 October; built
+				# 30 October): on an ally whose die is spent, the team's rerolls pay its price, banked
+				# or fresh, and the ally's die rolls again by Rapid's path, never onto the entry it
+				# showed, and it acts again. The Booster's own Rapid gives the Petrel its turn back too,
+				# so no turn is traded for the ally's.
+				rerolls_left -= f.action_price
+				_act_again(who, f)
+				log.append("%s pays %d reroll%s: %s's die rolls again, and it acts again" % [ms.unit.display_name, f.action_price, "" if f.action_price == 1 else "s", who.unit.display_name])
 			else:
 				var until := round + f.buff_rounds - 1
 				var src := "buff:" + f.component if not f.component.is_empty() else "buff"
@@ -1634,6 +1859,12 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 						_phase(w)
 					elif f.buff_status == "rallied":
 						rerolls_left += stacks   # the team's reroll more this round (the Reveille Horn)
+					# The Reheat Uplink's roll (the Giant Petrel's, Ryan's go of 21 October; built 30
+					# October): the die of the machine it lands on rolls again, never onto the entry
+					# showing; a spent die rolls nothing.
+					if f.rolls_target and w.alive() and not w.assigned:
+						_roll_again(w)
+						log.append("%s's die rolls again" % w.unit.display_name)
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
@@ -1666,6 +1897,18 @@ func assign(mech_index: int, target = null, second = null) -> bool:
 						free = _drone(ms, target, exposed_before)
 			killed = _falls - falls_before
 			_after_kills(ms, killed)
+			# The Spindrift Salvo's kill rider (the Giant Petrel's, Ryan's go of 21 October; built 30
+			# October): a spend that kills gives the team its rerolls this round, banked if unspent.
+			if f.kill_rerolls > 0 and killed > 0:
+				rerolls_left += f.kill_rerolls
+				log.append("%s: the kill brings the team %d reroll%s" % [ms.unit.display_name, f.kill_rerolls, "" if f.kill_rerolls == 1 else "s"])
+			# The rider on its own spender (the Storm Petrel's St. Elmo's Regenerator, Ryan's go of 21
+			# October; built 30 October): spent on a foe, its machine gains Regenerating, the entry's
+			# shield at the start of each of the rounds it says after this one, a grant of its own, so
+			# a second keeps its own end. Bought by a die entry, so a foe's purge takes it.
+			if f.regen_shield > 0 and f.regen_rounds > 0 and target is Foe and ms.alive():
+				Effects.grant_for_rounds(ms.unit, Effects.regenerating_shield(f.regen_shield), "buff:" + f.component, round + f.regen_rounds)
+				log.append("%s regenerates: %d shield at the start of each of the next %d rounds" % [ms.unit.display_name, f.regen_shield, f.regen_rounds])
 			if f.has(Face.Keyword.SWAP) and target is Foe and target.alive():
 				_swap(target, second)
 			if Effects.counts_shots(ms.unit) > 0:
@@ -1770,6 +2013,9 @@ func end_round() -> int:
 ## made room for it or a cleanse took it off. Shared by END TURN and a withdrawal.
 func _end_player_turn() -> void:
 	overheats.clear()
+	# Maverick's Playbook (the Giant Petrel's, built 30 October): the team's rerolls left unspent
+	# as the turn ends are banked, up to its cap, for the next round while it still fights.
+	banked = mini(rerolls_left, bank_cap())
 	for f in field_foes():
 		Effects.player_turn_end_foe(f)   # a foe's Barrier and Ward last to the end of the player's turn (28 October)
 	_burn_mechs()
@@ -1817,9 +2063,17 @@ func _enemy_turn() -> void:
 		var moves := not f.fresh and not f.gathering()
 		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			_foe_turn(f)
+			# A move that landed names its follow-up for next round (30 October); one lost to a
+			# Suppress or turned by a Disrupt names nothing, so either answer breaks the pair.
+			if f.alive() and not f.gathering() and f.action.has("then"):
+				f.next_move = str(f.action["then"])
 		if moves:
 			Effects.remove(f, "kindled")
 			Effects.remove(f, "primed")   # a stoker's priming rides the same move (28 October)
+		if _lift_after.has(f):
+			# A merge's lift (30 October), its own Kindled, riding its next move.
+			Effects.grant(f, Effects.make(Effects.kindled(int(_lift_after[f])), Effects.SKIRMISH, "foe:" + f.content_id))
+			_lift_after.erase(f)
 		_web_burst(f)
 	_acted.clear()
 	_clear_dead()
@@ -1837,8 +2091,8 @@ func _enemy_turn() -> void:
 ## own (the mechanics audit's 13, 27 October).
 func _foe_turn(f: Foe) -> void:
 	var t := f.target as MechState
-	if t == null or not t.alive() or is_phased(t):
-		t = _repick(f)   # its machine fell, or is Phased: the next in line
+	if t == null or not t.alive() or is_out(t):
+		t = _repick(f)   # its machine fell, or is out of the fight: the next in line
 	_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
 	if not f.pending.is_empty():
 		if f.charge > 0:
@@ -1860,8 +2114,8 @@ func _foe_turn(f: Foe) -> void:
 			if _screened.has(m):
 				log.append("%s's blow on %s is lost in the static" % [f.display_name, m.unit.display_name])
 				continue
-			if is_phased(m):
-				continue   # out of the fight until the round's end
+			if is_out(m):
+				continue   # out of the fight
 			_strike(f, m)
 	else:
 		if t == null:
@@ -1878,6 +2132,8 @@ func _foe_turn(f: Foe) -> void:
 			_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
 			return
 		_strike(f, t)
+	if Foe.swings_held(f.action):
+		f.held = {}   # the borrowed swing spends what it took (30 October)
 	if f.has_keyword(f.action, "self_destruct") and f.alive():
 		# The blow spends the striker (the Bomb): it dies whole and never gets back up.
 		f.hp = 0
@@ -1938,8 +2194,20 @@ func _strike(f: Foe, t: MechState) -> void:
 	for s in range(f.strikes()):
 		if not t.alive():
 			break
+		var hull_before := t.unit.hull
+		var events_before := turn_events.size()
 		_damage_mech(t, f.damage(), f)
 		var ev: Dictionary = turn_events[turn_events.size() - 1]
+		# A drain (the Vampire Lord's, 30 October): the striker regrows what the blow took from the
+		# hull, no more than the machine had, so a shield starves it (one of shield and hull walled
+		# the slow trios, the shield no answer to the heal). It lays nothing on the machine, so no
+		# Ward turns it away; a Barrier's blow deals nothing, and Burning on the striker races it.
+		if f.has_keyword(f.action, "drain") and f.alive() and turn_events.size() > events_before:
+			var dealt := clampi(int(ev["through"]), 0, maxi(0, hull_before))
+			var had := f.hp
+			f.hp = mini(f.hp_max, f.hp + dealt)
+			if f.hp > had:
+				log.append("%s drains %d" % [f.display_name, f.hp - had])
 		# The live hull (the Armadillo's, a machine under Retaliate): a blow that reaches
 		# hull shocks the foe that struck; a shutters' blocked blow (the shield took it whole)
 		# shocks too, and a blow a Barrier took never touched either. Shocked is a setup and
@@ -1975,13 +2243,15 @@ func _strike(f: Foe, t: MechState) -> void:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
 			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id, f.rider(f.action, "corrupt"))
 			log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
+		if f.has_keyword(f.action, "steal") and t.alive() and t.face_index >= 0:
+			_steal(f, t)
 
 
 
 ## Whether this foe's blows carry a rider a Ward turns away: a scorch, a burn, a disable or a
 ## corrupt (the breach is the Ward's too, in _damage_mech; a silence and a purge are specials).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "burn", "disable", "corrupt"]:
+	for kw in ["scorch", "burn", "disable", "corrupt", "steal"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return Effects.has(f, "primed")   # a primed foe's blows carry Burning as a rider (28 October)
@@ -2206,7 +2476,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
 	var from_hopper := loads * f.power_per_load
 	var own := fired + from_hopper   # what the entry prints from its firer, on every blow of the spend
-	var reached: Array = []    # every foe the blows reached, killed or not, for a weapon that fills the hopper
+	var reached: Array = []    # every foe the blows reached, killed or not, for the casings' refund
+	var damaged: Array = []    # every foe the blows took HP off, for the hopper's loads (Ryan, 31 October: "per foe damaged")
 	var vented_all := ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
@@ -2280,7 +2551,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		vent += modded["vent"]
 		var landed := dmg
 		# Area by shape, numbered (Ryan, 28 October; the half retired): every other foe the strike
-		# reaches takes its shape's number (Spread's, Penetrate's, Splash's) in place of the roll,
+		# reaches takes its shape's number (Spread's, Penetrate's, Splash's, Chain's on a Shocked
+		# conductor, whose Shock stands, no strike being aimed at it) in place of the roll,
 		# through the same order, the firer's modifiers on it and its own reads. Every blow of the
 		# strike is read before any lands, so a kill in it (the talons' Overcharged) feeds the next
 		# strike, never this one's other blows.
@@ -2292,6 +2564,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			var hp_before := foe.hp
 			if not reached.has(foe):
 				reached.append(foe)
+			if int(shapes.get(foe, 0)) == AREA_CHAIN:
+				log.append("%s arcs to %s" % [ms.unit.display_name, foe.display_name])   # Chain (28 October): a conductor's blow
 			var blow: int = blows[foe]
 			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
 			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
@@ -2307,17 +2581,20 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 					landed = blow
 				continue
 			# What the foe takes of the blow: its own statuses read last (its Flak adds to a
-			# weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe
-			# takes double, and the shock is spent by the blow), then its armour comes off, flat,
+			# weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe takes the
+			# strike aimed at it double, spending the shock, while a blow that only reaches it, an
+			# area's or a Chain's arc, neither doubles nor spends it: Ryan, 29 October), then its armour comes off, flat,
 			# so small blows bounce off a braced foe the way they do off a heavy machine; a
 			# breaching blow meets none (one breach, 22 October).
-			var taken := Effects.damage_taken(foe, blow, ms.unit, not f.is_debuff())
+			var taken := Effects.damage_taken(foe, blow, ms.unit, not f.is_debuff(), foe == aimed)
 			var barred := _barrier_eats(foe, not f.is_debuff())
 			if barred:
 				taken = 0   # a foe's Barrier takes the weapon's blow whole; its riders land (28 October)
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
+			if was_alive and taken > 0 and not damaged.has(foe):
+				damaged.append(foe)
 			var eaten := int(reads.get(foe, [0, 0])[1]) if s == 0 else 0   # each foe struck eats its own, on its first blow
 			if eaten > 0:
 				Effects.remove(foe, f.consumes)
@@ -2327,10 +2604,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if foe == aimed:
 				landed = taken
 				armoured_total += foe_armoured
-			# A weapon's blow spends a shock, even one that deals nothing (Ryan, 25 October: "The
-			# important part is that it was a damaging weapon"); equipment (a lure, a probe) leaves
-			# it standing.
-			if not f.is_debuff() and Effects.remove(foe, "shocked"):
+			# A weapon's strike aimed at the foe spends a shock, even one that deals nothing (Ryan,
+			# 25 October: "The important part is that it was a damaging weapon"; 29 October: "when
+			# targeted and struck by a weapon"); equipment (a lure, a probe) and a blow that only
+			# reaches the foe leave it standing.
+			if not f.is_debuff() and foe == aimed and Effects.remove(foe, "shocked"):
 				log.append(("%s: the shock is spent on the Barrier" % foe.display_name) if barred else ("%s: the shock lands, %d doubled" % [foe.display_name, blow]))
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
 			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
@@ -2413,21 +2691,27 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for foe in webbed:
 		var caught := web_catch(foe)
 		log.append("%s webs %s: it bursts after its action%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
-	# The hopper (11 October): a shot that fires it spends the loads it took; a weapon that
-	# fills it puts its loads in for every foe its blows reached, after the blow, so a claw
-	# never feeds the shot it is part of.
+	# The hopper (11 October; the Ore Hopper, 31 October): a shot that fires it spends the loads
+	# it took; then each foe the spend's blows damaged puts loads in, after the blow, so a claw
+	# never feeds the shot it is part of: a weapon's own number where it prints one (the
+	# Chainsaw Claw's two), the passive's for any other weapon, never past the hopper's cap. The
+	# Ore Plate follows the loads both ways.
 	if loads > 0:
-		Effects.spend_stacks(ms.unit, "hopper", loads)
+		Effects.spend_loads(ms.unit, loads)
 		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])
-	if f.fills_hopper > 0 and not reached.is_empty():
-		var n := f.fills_hopper * reached.size()
-		Effects.stack(ms.unit, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", n, Effects.DECAY_NONE)
-		log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
+	var per_foe := hopper_fill_of(ms.unit, f)
+	if per_foe > 0 and not damaged.is_empty():
+		var n := Effects.add_loads(ms.unit, per_foe * damaged.size())
+		if n > 0:
+			log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
 	# Shock (9 October): every foe the blows reached and left alive carries a charge for the
 	# team's next blow, after this one landed, so a shocking weapon never spends its own.
 	if f.has(Face.Keyword.SHOCK):
 		for foe in touched:
 			_shock(foe, ms, turned)
+	# Chain's charge (Ryan, 29 October): after its arcs, one other foe at random is Shocked.
+	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+		_chain_charge(target, ms, ms.unit.display_name, turned, mech_index)
 	# Expose (the Needletail's Fovea Designator, 21 October): every foe reached and left
 	# standing is Exposed through the next round, a second Expose refreshing it.
 	if f.has(Face.Keyword.EXPOSE):
@@ -2455,6 +2739,25 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
 		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, vented_all, fired])
+	# The Riot Field Generator (the Storm Petrel's, Ryan's go of 21 October; built 30 October):
+	# while its shield stands its weapons burn shield in place of heat, every point the spend adds
+	# (a Scorched machine's extra included) coming off the shield as it stands, overshield
+	# included, and the rest reaching the gauge; then, the strikes landed, the target takes a blow
+	# of what the shield paid (the zap), plain, no keyword and no Shock read, through what it takes
+	# and its armour, and lost on a kill.
+	var burnt := 0 if forged or _blast_strike else shield_burn(ms, f, heat_total)
+	if burnt > 0:
+		ms.unit.shield -= burnt
+		heat_total -= burnt
+		log.append("%s burns %d shield in place of heat" % [ms.unit.display_name, burnt])
+		if target.alive():
+			var zap_before := target.hp
+			var zap := zap_on(target, burnt, ms)
+			if _barrier_eats(target, true):
+				zap = 0
+			target.hp -= zap
+			dealt += clampi(zap, 0, maxi(0, zap_before))
+			log.append("%s zaps %s for %d" % [ms.unit.display_name, target.display_name, zap])
 	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
 	# opens the back rank to direct fire until reinforcements plug it. Indirect fire at the
 	# front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
@@ -2468,7 +2771,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		heat_total = 0 if _salvo_strike else Effects.debuff_heat(ms.unit, f)   # the forge took the gun's own heat; a foe's debuff still heats it
 	if _blast_strike:
 		heat_total = 0   # the vent's spend paid its own heat, once
-	_add_heat(ms, heat_total)
+	_add_heat(ms, heat_total, ms.face_index)
 	# The Shrapnel Recuperator's refund: ammo back for every foe its blows reached.
 	if f.ammo_per_foe_hit > 0 and ms.ammo_max > 0 and not reached.is_empty():
 		_reload(ms, f.ammo_per_foe_hit * reached.size(), "its casings")
@@ -2476,17 +2779,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		var cooled := mini(ms.heat, thawed * cryo_cool())
 		ms.heat -= cooled
 		log.append("%s cashes Cryo ×%d: -%d heat" % [ms.unit.display_name, thawed, cooled])
-	# Chain: a kill repeats the attack on a new valid target, heat and all (the heat is the
-	# risk, and a laser is telegraphed), until it misses a kill.
-	if f.has(Face.Keyword.CHAIN) and not target.alive():
-		for cand in targets_for_face(ms, real):
-			if cand.alive() and cand != target:
-				log.append("%s chains to %s" % [ms.unit.display_name, cand.display_name])
-				var was_chaining := _chaining
-				_chaining = true   # a chain is the same spend: its blows count, not a second spend
-				_resolve_attack(mech_index, ms, f, cand, real)
-				_chaining = was_chaining
-				break
 
 
 ## A vent's blast (the Whip Scorpion's Thermal Ejection Manifold): the heat it took off, as
@@ -2642,15 +2934,67 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 			hit.append(other)
 	if f.has_area():
 		_with_twins(hit)   # an area blow reaches a twin slot whole
+	# Chain's conductors (28 October): every other Shocked foe on the field, after the shapes, so
+	# a foe both beside the target and Shocked takes one blow, the shape's; a twin's half only if
+	# it carries the charge itself.
+	for foe in conductors(f, target):
+		if not hit.has(foe):
+			hit.append(foe)
 	return hit
+
+
+## Chain's charge (Ryan, 29 October: "then Shock one other random non-targeted enemy that doesn't
+## already have Shock"): after a Chain spend's arcs, one foe on the field, alive, neither the
+## target nor already Shocked, drawn from the seeded stream, is Shocked; a Ward turns it away. The
+## round preview's copy draws nothing: a lone such foe takes it for sure, else it is held back and
+## noted. `by` may be null (a mine whose spender is gone); `who` names the spender in the log.
+func _chain_charge(target: Foe, by: MechState, who: String, turned, mech_index: int) -> void:
+	var pool: Array[Foe] = []
+	for foe in field_foes():
+		if foe != target and foe.alive() and not Effects.has(foe, "shocked"):
+			pool.append(foe)
+	if pool.is_empty():
+		return
+	if previewing and pool.size() > 1:
+		preview_notes.append({"kind": "charge", "mech": mech_index})
+		return
+	var foe: Foe = pool[0] if pool.size() == 1 else pool[rng.randi_range(0, pool.size() - 1)]
+	if Effects.turns_mark(foe, "shocked"):
+		_turned_away(foe, "shocked", turned, by)
+		return
+	Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	log.append("%s leaves a charge on %s: Shocked" % [who, foe.display_name])
+	_foe_gained_status(foe, "shocked")
+
+
+## Chain's conductors (Ryan, 28 October; the kill and repeat retired): every other foe on the
+## field alive and Shocked, wherever it stands and whatever the entry's reach, in the field's
+## order. None for an entry without Chain, or for a debuff, whose blow is nothing. Read as the
+## die is spent, before any blow lands, so a Shock the spend lays never conducts its own arc.
+func conductors(f: Face, target: Foe) -> Array[Foe]:
+	if f != null and f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+		return shocked_foes(target)
+	var none: Array[Foe] = []
+	return none
+
+
+## Every foe on the field alive and Shocked but `but`, in the field's order: a Chain's
+## conductors, a mine's as it lands included.
+func shocked_foes(but: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	for foe in field_foes():
+		if foe != but and foe.alive() and Effects.has(foe, "shocked") and not out.has(foe):
+			out.append(foe)
+	return out
 
 
 ## The shape each foe one strike reaches past its target stands in (area by shape, numbered:
 ## Ryan, 28 October), for the number it takes in place of the roll: AREA_ROW beside the target
 ## in its rank (Spread's, Splash's), AREA_COLUMN the other rank of its column (Penetrate's,
 ## Splash's), a twin slot's other half as the half it pairs with (the target's own twin beside it
-## in the row, or the column's when the entry reaches no row), AREA_ALL any other foe a reach
-## over every foe adds. The target is not in it. The resolver and the bot read the same map.
+## in the row, or the column's when the entry reaches no row), AREA_CHAIN every other Shocked foe
+## on the field (Chain's conductors), AREA_ALL any other foe a reach over every foe adds. The
+## target is not in it. The resolver and the bot read the same map.
 func area_shapes(f: Face, target: Foe) -> Dictionary:
 	var out := {}
 	if f == null or target == null:
@@ -2673,6 +3017,9 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 		var pair := twin_of(target)
 		if pair != null and not out.has(pair):
 			out[pair] = AREA_ROW if f.reaches_row() else AREA_COLUMN
+	for foe in conductors(f, target):
+		if not out.has(foe):
+			out[foe] = AREA_CHAIN
 	if f.reaches_all:
 		for foe in field_foes():
 			if foe != target and not out.has(foe):
@@ -2681,14 +3028,16 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 
 
 ## The number a foe in a shape takes in place of the roll: the row's (Spread's or Splash's),
-## the column's (Penetrate's or Splash's), nothing for a foe a reach over every foe adds (the
-## Siphon's lure-all, equipment, whose blow is nothing).
+## the column's (Penetrate's or Splash's), Chain's on a conductor, nothing for a foe a reach over
+## every foe adds (the Siphon's lure-all, equipment, whose blow is nothing).
 static func area_number(f: Face, shape: int) -> int:
 	match shape:
 		AREA_ROW:
 			return f.row_number()
 		AREA_COLUMN:
 			return f.column_number()
+		AREA_CHAIN:
+			return f.number_of(Face.Keyword.CHAIN)
 	return 0
 
 
@@ -2710,15 +3059,17 @@ func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split
 	return int(Effects.attack(ms.unit, f, split_share(area_number(f, shape) + prints, split), 0, foe)["damage"])
 
 
-## A shot's area numbers as a mine carries them, [the row's, the column's], each through its
-## spender's modifiers with no foe in hand, as the shot's own number is laid; nothing for a
+## A shot's area numbers as a mine carries them, [the row's, the column's, Chain's], each through
+## its spender's modifiers with no foe in hand, as the shot's own number is laid; nothing for a
 ## shape the entry does not reach.
 func _area_shot(ms: MechState, f: Face, own: int, split: int) -> Array:
-	var out := [0, 0]
+	var out := [0, 0, 0]
 	if f.reaches_row():
 		out[0] = _area_blow(ms, f, AREA_ROW, null, own, split)
 	if f.reaches_column():
 		out[1] = _area_blow(ms, f, AREA_COLUMN, null, own, split)
+	if f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+		out[2] = _area_blow(ms, f, AREA_CHAIN, null, own, split)
 	return out
 
 
@@ -2737,11 +3088,13 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var a := f.action
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
-	if t == null and effect in ["burn", "disable", "silence", "dispel"]:
+	if t == null and effect in ["burn", "disable", "silence", "dispel", "swallow"]:
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
 	_seq += 1
+	if bool(a.get("once", false)):
+		f.spent_once.append(str(a.get("id", "")))   # a move used once a fight is spent as it acts
 	match effect:
 		"brace":
 			# Armoured, the machines' status (Ryan, 16 October: an effect and the buff it creates
@@ -2805,6 +3158,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 					var n = foe_factory.call(who)
 					if n is Foe:
 						n.pack_id = f.pack_id
+						n.joined = true
 						if _step_up(n, f.column):
 							stood += 1
 						else:
@@ -2813,6 +3167,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 					"" if stood == 0 else (", stepping up" if stood == count else ", %d stepping up" % stood)])
 			else:
 				log.append("%s: %s, and nothing answers" % [f.display_name, str(a.get("name", "calls"))])
+		"merge":
+			_merge(f, a)
 		"rally":
 			# Kindled lands at once on every other foe on the field, at the move's own value
 			# (Ryan, 26 October: "howl is more clear if it gives kindled for the next action,
@@ -2837,6 +3193,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			else:
 				_fire_on(t, "burning_mech", maxi(1, value), f)
 				log.append("%s: %s, %s burning ×%d" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, maxi(1, value)])
+		"swallow":
+			_swallow(f, t, maxi(1, value))
 		"disable":
 			# The entry the die shows is switched off through the machine's next turn, no blow.
 			if Effects.has(t.unit, "ward"):
@@ -2942,9 +3300,18 @@ func _unready_ally(caster: Foe) -> Foe:
 func specials_reach() -> Array[MechState]:
 	var out: Array[MechState] = []
 	for ms in live_mechs():
-		if not is_phased(ms):
+		if not is_out(ms):
 			out.append(ms)
 	return out
+
+
+## A machine's unspent die rolled again in place (the Reheat Uplink's roll, 30 October): never
+## onto the entry showing, a stepping die stepping, as a team reroll does; the round preview's
+## copy keeps its entry, a roll never promised.
+func _roll_again(ms: MechState) -> void:
+	if previewing:
+		return
+	_reroll_die(ms)
 
 
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
@@ -3010,7 +3377,7 @@ func _reload(ms: MechState, n: int, why: String) -> void:
 ## it spends on itself.
 func _machine_spend_after(ms: MechState, f: Face, target) -> void:
 	if f.heat > 0 and ms.alive():
-		_add_heat(ms, f.heat)
+		_add_heat(ms, f.heat, ms.face_index)
 	if ms.ammo_max <= 0:
 		return
 	if f.reloads_ammo > 0:
@@ -3089,6 +3456,172 @@ func _phase(w: MechState) -> void:
 	log.append("%s is Phased: out of the fight until the round's end" % w.unit.display_name)
 
 
+# ---------------------------------------------------------------- a swallow and a steal (30 October)
+
+## The machines a swallow may take: alive and in the fight. A swallow needs two of them, so it
+## never takes the last machine able to act (Floraison's, 30 October).
+func swallowable() -> Array[MechState]:
+	return targetable_mechs()
+
+
+## The foes a merge would take in now (the King Gel's, 30 October): every other live foe on the
+## field of the kinds its move names.
+func mergeable(f: Foe, a: Dictionary) -> Array[Foe]:
+	var kinds := Foe.kinds_named(a)
+	var out: Array[Foe] = []
+	for o in field_foes():
+		if o != f and o.alive() and kinds.has(o.content_id):
+			out.append(o)
+	return out
+
+
+## A merge (the King Gel's, 30 October): every foe of the move's kinds on the field is taken into
+## the merger, leaving its slot with no fall (no last act, no split, no kill of the team's, a twin
+## keeping the slot alone); the merger regrows the HP they had left and its next move hits the
+## move's value harder for each, a Kindled of its own, so thinning them first is the answer.
+func _merge(f: Foe, a: Dictionary) -> void:
+	var regrown := 0
+	var taken := 0
+	for o in mergeable(f, a):
+		regrown += o.hp
+		_lift_out(o)
+		taken += 1
+	var before := f.hp
+	f.hp = mini(f.hp_max, f.hp + regrown)
+	var lift := maxi(1, int(a.get("value", 1))) * taken
+	if lift > 0:
+		_lift_after[f] = int(_lift_after.get(f, 0)) + lift   # granted after this move spends what it carried
+	log.append("%s: %s, %d taken in, regrows %d, its next move %d harder" % [f.display_name, str(a.get("name", "merges")), taken, f.hp - before, lift])
+	_refresh_kin()
+
+
+## A foe leaves the field without falling (taken into another, 30 October): its slot clears, a
+## twin keeping it alone, a massive foe out of both ranks; it stands nowhere after and acts no more.
+func _lift_out(o: Foe) -> void:
+	if o.rank >= 0 and o.column >= 0 and o.column < columns:
+		var at := Vector2i(o.rank, o.column)
+		var c := _slot_contents(at)
+		if c[0] == o:
+			_set_contents(at, [c[1], null])
+		elif c[1] == o:
+			_set_contents(at, [c[0], null])
+		for r in [0, 1]:
+			if foe_at(r, o.column) == o:
+				_set_slot(Vector2i(r, o.column), null)
+	o.rank = -1
+	o.hp = 0
+	o.stays_down = true
+	o.target = null
+
+
+## The source a swallow's status carries: the swallower by its pack and type, so its fall finds
+## the machine it holds after a save, with no references kept.
+static func swallow_source(f: Foe) -> String:
+	return "swallow:%d:%s" % [f.pack_id, f.content_id]
+
+
+## A foe's swallow on its machine (Floraison's, 30 October, the slate's signature: "swallows a
+## machine, out of the fight for a few rounds"): Swallowed for `rounds` rounds, out of the fight
+## as a Phased machine is, cannot act, take damage or be targeted, until its rounds run out or
+## its swallower falls. A Ward turns it away; it never takes the last machine able to act.
+func _swallow(f: Foe, t: MechState, rounds: int) -> void:
+	var what := str(f.action.get("name", "swallows"))
+	if Effects.has(t.unit, "ward"):
+		log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, what, t.unit.display_name])
+		return
+	if is_out(t) or swallowable().size() < 2:
+		log.append("%s: %s, and finds nothing it may take" % [f.display_name, what])
+		return
+	# A quarter of its HP lost from here lets the machine go (31 October); a second machine
+	# taken while it holds one joins the first's count, so the release its chip promised never
+	# moves back (the review of 2 November).
+	if swallowed_by(f) == null:
+		f.swallow_mark = f.hp
+	Effects.grant_for_rounds(t.unit, Effects.STATUS["swallowed"], swallow_source(f), round + rounds)
+	t.assigned = true
+	for foe in field_foes():
+		if foe.alive() and foe.target == t:
+			foe.target = _repick(foe)
+	log.append("%s: %s, %s swallowed: out of the fight for %d round%s, or until %s falls" % [f.display_name, what, t.unit.display_name, rounds, "" if rounds == 1 else "s", f.display_name])
+
+
+## The HP a swallower lets its machine go at: a quarter of its HP below its HP as it swallowed
+## (Ryan, 31 October, agreeing Claude's lean: a damage threshold, Clair Obscur's stagger in its
+## smallest form; a quarter is a round of the team's focus, a third as long as waiting).
+static func swallow_release_at(f: Foe) -> int:
+	return f.swallow_mark - ceili(f.hp_max / 4.0)
+
+
+## The damage still to deal a swallower before it lets its machine go: its chip's number, never
+## more than it has left (a swallower already under a quarter lets go only as it falls).
+static func swallow_left(f: Foe) -> int:
+	return clampi(f.hp - swallow_release_at(f), 0, maxi(0, f.hp))
+
+
+## The machine a foe holds swallowed, or null.
+func swallowed_by(f: Foe) -> MechState:
+	var src := swallow_source(f)
+	for ms in mechs:
+		for m in Effects.live(ms.unit):
+			if m.id == "swallowed" and m.source == src:
+				return ms
+	return null
+
+
+## A swallower that has lost a quarter of its HP since it swallowed lets its machine go at
+## once, and loses nothing else (a lost action on top would be a stun, the stun row's care);
+## a swallower whose machine came back on its own clock holds nothing (31 October).
+func _release_staggered() -> void:
+	for f in field_foes():
+		if f.swallow_mark < 0 or not f.alive():
+			continue
+		if swallowed_by(f) == null:
+			f.swallow_mark = -1
+		elif f.hp <= swallow_release_at(f):
+			f.swallow_mark = -1
+			_release_swallowed(f, "reels")
+
+
+## A swallower down, or reeling from a quarter of its HP lost, lets go of what it holds, at
+## once (30 and 31 October).
+func _release_swallowed(f: Foe, why: String = "falls") -> void:
+	var src := swallow_source(f)
+	for ms in mechs:
+		var keep: Array = []
+		var freed := false
+		for m in ms.unit.modifiers:
+			if m.id == "swallowed" and m.source == src:
+				freed = true
+				continue
+			keep.append(m)
+		if freed:
+			ms.unit.modifiers = keep
+			if state == State.ASSIGN:
+				ms.assigned = false   # let go in the player's turn, it acts this round
+			log.append("%s %s, and lets %s go" % [f.display_name, why, ms.unit.display_name])
+
+
+## A steal (Gilgamesh's, 30 October, the slate's signature: "takes the weapon a machine shows and
+## fights with it; now and then the piece it took is a fake"): the entry the machine's die shows
+## is switched off through its next turn, as a disable, and the foe holds it: its borrowed swing
+## lands that weapon's number (a rolled one at its mean, a blow a strike), and anything else it
+## took, a shield, a vent, equipment or a blank, is a fake, for 1.
+func _steal(f: Foe, t: MechState) -> void:
+	var face: Face = t.die.faces[t.face_index]
+	Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+	var weapon := face.is_weapon()
+	f.held = {"name": face.describe(), "power": stolen_number(face), "fake": not weapon}
+	log.append("%s takes %s's %s%s" % [f.display_name, t.unit.display_name, face.describe(), "" if weapon else ", a fake"])
+
+
+## The number a stolen entry swings for: a weapon's printed blow (a rolled one at its mean,
+## rounded), anything else 1, the fake.
+static func stolen_number(face: Face) -> int:
+	if face == null or not face.is_weapon():
+		return 1
+	return maxi(1, roundi((face.power + face.power_max) / 2.0))
+
+
 ## A die rolled, any machine's (the Swallowtail's Muster, Ryan's go of 21 October): every machine
 ## that musters gains a sliver.
 func _rolled() -> void:
@@ -3142,9 +3675,9 @@ func slot_targets(ms: MechState, f: Face) -> Array:
 ## One shot as a mine carries it: the number as dealt by its spender; its keywords, every one
 ## acting as the shot lands but the spend's own (Rapid and Volatile acted at the spend, and Lure
 ## and Disrupt do nothing once their round is over); its numbered stacks, deepened as its
-## spender lays them (`extra_burn` a Primed machine's); its area numbers (`area`, the row's and
-## the column's as its spender's modifiers make them: _area_shot); and its spender and entry,
-## for a Chain that repeats the attack. Plain damage (a spill's) carries no keyword.
+## spender lays them (`extra_burn` a Primed machine's); its area numbers (`area`, the row's, the
+## column's and Chain's as its spender's modifiers make them: _area_shot); and its spender and
+## entry, for its gate and its consumer. Plain damage (a spill's) carries no keyword.
 func _shot(ms: MechState, f: Face, dmg: int, real: Face, doubled: int = 1, extra_burn: int = 0, plain: bool = false, area: Array = []) -> Dictionary:
 	var kws: Array = []
 	if not plain:
@@ -3158,8 +3691,9 @@ func _shot(ms: MechState, f: Face, dmg: int, real: Face, doubled: int = 1, extra
 		"burn": _stacks_from(ms, "burning", burn) * doubled if burn > 0 and not plain else 0,
 		"cryo": _stacks_from(ms, "cryoed", f.cryo) * doubled if f.has(Face.Keyword.CRYO) and not plain else 0,
 		"flak": _stacks_from(ms, "flakked", f.flak) * doubled if f.has(Face.Keyword.FLAK) and not plain else 0,
-		"row": int(area[0]) if area.size() == 2 and not plain else 0,
-		"column": int(area[1]) if area.size() == 2 and not plain else 0}
+		"row": int(area[0]) if area.size() >= 2 and not plain else 0,
+		"column": int(area[1]) if area.size() >= 2 and not plain else 0,
+		"chain": int(area[2]) if area.size() >= 3 and not plain else 0}
 
 
 ## A weapon or a debuff laid as a mine (the Fuse-delayed Bay): each strike a shot, its number as rolled and
@@ -3198,10 +3732,10 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 		ms.ammo -= mini(ms.ammo, ammo_price_of(ms, f))   # a forging machine's gun pays ammo, laid or fired
 		heat_total = Effects.debuff_heat(ms.unit, f)
 	if loads > 0:
-		Effects.spend_stacks(ms.unit, "hopper", loads)
+		Effects.spend_loads(ms.unit, loads)
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
-	_add_heat(ms, heat_total)
+	_add_heat(ms, heat_total, ms.face_index)
 	var says: Array[String] = []
 	for shot in laid:
 		says.append(_shot_text(shot))
@@ -3210,7 +3744,7 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 
 ## A spend's heat alone, for an entry whose spend lands no blow (the pull on an empty slot).
 func _spend_heat(ms: MechState, f: Face) -> void:
-	_add_heat(ms, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]))
+	_add_heat(ms, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]), ms.face_index)
 
 
 static func _shot_text(shot: Dictionary) -> String:
@@ -3266,12 +3800,14 @@ func _mine_spender(shot: Dictionary) -> MechState:
 
 
 ## One mine's shot on the foe that takes it, a blow as a weapon lands one: through each foe's
-## damage taken (a Shocked foe takes double, spending the shock) and its armour, then the shot's
+## damage taken (a Shocked arrival takes double, spending the shock) and its armour, then the shot's
 ## keywords acting as on a blow: Spread its rank neighbours too, Penetrate the other rank of its
 ## column and Splash both (a cluster), each taking the shot's number for its shape as laid, Spillover past a front kill, Burning, a stun, a web, Cryo (cashed
-## for its spender, as any weapon's hit cashes it), Flak, Shock, Exposed, and Chain, a kill
-## repeating its spender's attack on the next foe in reach, rolled and paying heat again. A
-## kill on a foe carrying the Syrinx Drone leaves the shot in its slot again.
+## for its spender, as any weapon's hit cashes it), Flak, Shock, Exposed, and Chain, its number
+## as laid on every other Shocked foe on the field as the shot lands, then a charge on one other
+## foe at random (28 and 29 October). The arrival is the shot's own foe: a Shock it carries doubles
+## the shot and is spent, while a foe the shot only reaches keeps its own. A kill on a foe
+## carrying the Syrinx Drone leaves the shot in its slot again.
 func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 	var kws: Array = shot.get("keywords", [])
 	var by := _mine_spender(shot)
@@ -3301,6 +3837,14 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 				hit.append(t)
 				shape[t] = shape.get(x, AREA_ROW if row else AREA_COLUMN)
 		hit = hit.filter(func(x: Foe) -> bool: return x.alive())
+	# Chain (28 October): the shot arcs its number as laid to every other Shocked foe on the field
+	# as it lands, after the shapes, so a foe in both takes one blow, its shape's; a shot laid
+	# before the conductor, in an old save, carries no arc's number and arcs nothing.
+	if kws.has(Face.Keyword.CHAIN) and shot.has("chain") and bool(shot.get("weapon", true)):
+		for t in shocked_foes(foe):
+			if not hit.has(t):
+				hit.append(t)
+				shape[t] = AREA_CHAIN
 	var dmg := int(shot.get("damage", 0))
 	var gained := {}
 	var turned := {}   # foe -> the marks its Ward turned away, told once (28 October)
@@ -3320,21 +3864,27 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 	for t in hit:
 		var hp_before := t.hp
 		# Area by shape, numbered: the arrival takes the shot, every other foe its shape's number
-		# as laid (a shot laid before the numbers, in an old save, half the shot).
-		var blow := dmg if t == foe else int(shot.get("row" if int(shape.get(t, AREA_ROW)) == AREA_ROW else "column", dmg / 2))
+		# as laid (a shot laid before the numbers, in an old save, half the shot), a conductor
+		# Chain's.
+		var at := int(shape.get(t, AREA_ROW))
+		var blow := dmg
+		if t != foe:
+			blow = int(shot.get("chain", 0)) if at == AREA_CHAIN else int(shot.get("row" if at == AREA_ROW else "column", dmg / 2))
+		if t != foe and at == AREA_CHAIN:
+			log.append("a mine of %s's arcs to %s" % [str(shot.get("by", "")), t.display_name])
 		var eaten := Effects.stacks_of(t, eat) if not eat.is_empty() else 0   # each foe it strikes eats its own
 		if eaten > 0:
 			blow += eaten * maxi(1, int(laid_face.get("per_consumed", 1)))
 			Effects.remove(t, eat)
 			log.append("a mine of %s's consumes %s ×%d on %s" % [str(shot.get("by", "")), str(Effects.STATUS.get(eat, {}).get("name", eat)), eaten, t.display_name])
 		var weapon := bool(shot.get("weapon", blow > 0))   # a weapon's shot, a blow of 0 included; equipment's is none
-		var taken := maxi(0, Effects.damage_taken(t, blow, source, weapon) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
+		var taken := maxi(0, Effects.damage_taken(t, blow, source, weapon, t == foe) - (0 if kws.has(Face.Keyword.BREACH) else t.armour_total()))
 		var barred := _barrier_eats(t, weapon)
 		if barred:
 			taken = 0   # a foe's Barrier takes the shot's blow whole (28 October)
 		t.hp -= taken
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
-		if weapon and Effects.remove(t, "shocked"):
+		if weapon and t == foe and Effects.remove(t, "shocked"):   # the arrival, the shot's own foe; an area's foe or an arc's keeps its shock (29 October)
 			log.append(("%s: the shock is spent on the Barrier" % t.display_name) if barred else ("%s: the shock lands, %d doubled" % [t.display_name, blow]))
 		log.append("a mine of %s's hits %s for %d" % [str(shot.get("by", "")), t.display_name, taken])
 		if not t.alive() and kws.has(Face.Keyword.DISPEL):
@@ -3380,6 +3930,10 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if kws.has(Face.Keyword.EXPOSE):
 			Effects.grant_for_rounds(t, Effects.STATUS["exposure"], "mech", round + 1)
 			_note_status(gained, t, "exposure", turned)
+	# Chain's charge as the shot lands (29 October): one other foe at random, not the arrival,
+	# before the Ward's line, so a charge it turns away is told with the rest.
+	if kws.has(Face.Keyword.CHAIN) and shot.has("chain") and bool(shot.get("weapon", true)):
+		_chain_charge(foe, by, "a mine of %s's" % str(shot.get("by", "")), turned, int(shot.get("mech", -1)))
 	_tell_turned(turned)
 	for t in gained.keys():
 		for status_id in gained[t]:
@@ -3388,20 +3942,6 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		var cooled := mini(by.heat, thawed * cryo_cool())
 		by.heat -= cooled
 		log.append("%s cashes Cryo ×%d: -%d heat" % [by.unit.display_name, thawed, cooled])
-	# Chain does what Chain does on a blow (Ryan, 21 October): the kill repeats its spender's
-	# attack on the next foe in reach, its heat landing on the spender now, on the gauge until
-	# the next END TURN; nothing repeats once the spender is gone.
-	var real: Dictionary = shot.get("face", {})
-	if kws.has(Face.Keyword.CHAIN) and not foe.alive() and by != null and not real.is_empty():
-		var again_face := Face.from_dict(real)
-		for cand in targets_for_face(by, again_face):
-			if cand.alive() and cand != foe:
-				log.append("a mine of %s's chains to %s" % [by.unit.display_name, cand.display_name])
-				var was_chaining := _chaining
-				_chaining = true
-				_resolve_attack(mechs.find(by), by, Effects.effective_face(by.unit, again_face, cand), cand, again_face)
-				_chaining = was_chaining
-				break
 
 
 ## Spillover in a mine: what the shot had past the kill of a front-rank foe carries into the
@@ -3410,11 +3950,10 @@ func _mine_spill(foe: Foe, amount: int, hit: Array[Foe], shot: Dictionary, sourc
 	var behind: Foe = back[foe.column]
 	if amount <= 0 or behind == null or not behind.alive() or hit.has(behind):
 		return
-	var taken := maxi(0, Effects.damage_taken(behind, amount, source) - behind.armour_total())
+	var taken := maxi(0, Effects.damage_taken(behind, amount, source, false, false) - behind.armour_total())
 	if _barrier_eats(behind, true):
 		taken = 0
 	behind.hp -= taken
-	Effects.remove(behind, "shocked")
 	log.append("a mine of %s's spills over: %d into %s" % [str(shot.get("by", "")), taken, behind.display_name])
 	if not behind.alive() and Effects.has(behind, "syrinx_drone"):
 		var plain := {"damage": amount, "keywords": [], "by": shot.get("by", ""), "mech": shot.get("mech", -1), "face": {}, "burn": 0, "cryo": 0, "flak": 0}
@@ -3541,7 +4080,7 @@ func _hull_damaged(ms: MechState) -> void:
 
 
 ## Shocked (the Armadillo's retaliation, 28 September; built 29 September): the foe that struck
-## carries one shock, never more, until a blow spends it double. A machine's loop passive
+## carries one shock, never more, until a weapon's strike aimed at it spends it double. A machine's loop passive
 ## may catch the status like any other.
 ## Exposed on a foe through the next round (renewing, never adding): in Direct reach of every
 ## machine and its armour counting for nothing.
@@ -3569,7 +4108,8 @@ func _shock(foe: Foe, by: MechState, turned = null) -> void:
 
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
 ## behind it in the column as plain damage, through that foe's own damage taken and its armour;
-## it spends a shock and feeds the talons' kill rule, and carries no other keyword of the blow. A foe behind
+## it feeds the talons' kill rule and carries no keyword of the blow, and, aimed at nobody, it
+## neither doubles on a Shock nor spends one (29 October). A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
 ## `whole`: a later strike's whole number, a weapon's, which lands as its blow even at 0 (its
@@ -3578,11 +4118,10 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whol
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind):
 		return
-	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit, whole) - behind.armour_total())
+	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit, whole, false) - behind.armour_total())
 	if _barrier_eats(behind, true):
 		behind_taken = 0   # the spill is the weapon's damage, so a Barrier takes it
 	behind.hp -= behind_taken
-	Effects.remove(behind, "shocked")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
 	if not behind.alive() and Effects.has(behind, "syrinx_drone"):
 		_drone_mine(behind, _shot(ms, f, amount, null, 1, 0, true))   # the spill is plain damage, so its mine carries no keyword
@@ -3593,7 +4132,7 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whol
 ## The Soulcutter Talons' rule (28 September; built 29 September; a rule printed on its one
 ## carrier and no keyword to learn since 11 October, Ryan: "devour is not a thing"): every foe
 ## the entry kills gives its owner `per_kill` stacks of Overcharged (a spread that kills two
-## feeds twice, a chain feeds on every link). The stacks halve each round like any Overcharged;
+## feeds twice, a Chain on every conductor it kills). The stacks halve each round like any Overcharged;
 ## on the Ammit its Quintessence Tap keeps them for the battle (Effects.stack applies the keep).
 func _overcharge_on_kill(ms: MechState, foe: Foe, per_kill: int) -> void:
 	var stacks := _stacks_from(ms, "overcharged", per_kill)
@@ -3614,8 +4153,16 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 	return n + extra
 
 
+## The Numbed a landed suppress adds: three on a boss of any size (a domain's boss, a final's
+## hero, the finale's line: whoever commands the boss unit) or a massive foe, two on the rest. A
+## boss's turn is the most a stun can take, whatever its size (Ryan, 30 October: "Numbed should
+## be by boss, obviously"); the massive rank and file keep their three ("I guess that's ok").
+static func numbed_per_suppress(foe: Foe) -> int:
+	return NUMBED_PER_SUPPRESS_MASSIVE if foe.boss or foe.commands or foe.is_massive() else NUMBED_PER_SUPPRESS
+
+
 ## Suppress: the foe loses its next action (this round's, or the next round's when it has
-## already acted this turn), then grows Numbed (two stacks, three for a massive foe). It
+## already acted this turn), then grows Numbed (two stacks, three for a boss or a massive foe). It
 ## resists at its own base resistance plus 10% a stack, on the skirmish's own die (Ryan, 26
 ## September): a suppress it shrugs off does nothing at all and numbs it no further, and
 ## Numbed loses a stack at each of the foe's turns, so a stun repeated on one foe stops
@@ -3639,7 +4186,7 @@ func _suppress(foe: Foe) -> bool:
 		log.append("%s shrugs off the suppression (%d%% resistant)" % [foe.display_name, resist])
 		return false
 	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round + 1 if next else round)
-	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", NUMBED_PER_SUPPRESS_MASSIVE if foe.is_massive() else NUMBED_PER_SUPPRESS, Effects.DECAY_TICK)
+	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", numbed_per_suppress(foe), Effects.DECAY_TICK)
 	return true
 
 
@@ -3753,6 +4300,11 @@ func _disrupt(foes: Array) -> void:
 	for foe in foes:
 		if not foe.alive() or foe.fresh:
 			continue
+		if foe.committed:
+			# A follow-up announced a round ahead holds (Ryan, 2 November: "cannot be Disrupted"):
+			# the move that named it was the window, and a Suppress still takes it.
+			log.append("%s is committed to %s, and nothing turns it" % [foe.display_name, str(foe.action.get("name", ""))])
+			continue
 		var next := disrupt_next(foe)
 		if next.is_empty():
 			log.append("%s is disrupted, and has nothing else to do" % foe.display_name)
@@ -3769,7 +4321,7 @@ func _disrupt(foes: Array) -> void:
 		# move it leaves aimed at no one machine (a brace, a blow at every machine), so the pick it
 		# carried was never an intent the player saw.
 		var t := foe.target as MechState
-		if t == null or not t.alive() or is_phased(t) or not aimed:
+		if t == null or not t.alive() or is_out(t) or not aimed:
 			foe.target = _repick(foe)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
@@ -3816,8 +4368,10 @@ static func _bite(shield: int, hull: int, amount: int) -> Dictionary:
 ## 22 September: every overheat lands at once, never as a spike when a component is spent),
 ## so a machine run hot can still be vented before it pays. Gaining heat fires the
 ## on_heat_gain passives (which may raise shield, never heat).
-func _add_heat(ms: MechState, amount: int) -> void:
+func _add_heat(ms: MechState, amount: int, entry: int = -1) -> void:
 	if amount > 0:
+		if entry >= 0 and ms.heat <= ms.heat_max and ms.heat + amount > ms.heat_max:
+			ms.hot_entry = entry   # a spend took the gauge past its maximum: the overheat's what-ifs land on it
 		ms.heat += amount
 		_fired(ms, Effects.fire(ms.unit, "on_heat_gain", amount), "on the heat")
 
@@ -3883,19 +4437,38 @@ func _apply(ms: MechState, result: Dictionary) -> Array[String]:
 	return parts
 
 
-## The end of the player's turn: heat above the maximum burns hull one for one and the gauge
-## settles at its cap.
+## The end of the player's turn: heat above the maximum burns hull one for one (overheat_scale
+## a point, for a runner's what-if) and the gauge settles at its cap.
 func _settle_heat() -> void:
 	for ms in live_mechs():
 		var over := ms.heat - ms.heat_max
 		if over <= 0:
 			continue
-		ms.unit.hull -= over
+		var burn := over * overheat_scale
+		ms.unit.hull -= burn
 		ms.heat = ms.heat_max
-		overheats.append({"mech": mechs.find(ms), "over": over, "hull": ms.unit.hull})
-		log.append("%s overheats: hull -%d" % [ms.unit.display_name, over])
+		overheats.append({"mech": mechs.find(ms), "over": over, "burn": burn, "hull": ms.unit.hull})
+		log.append("%s overheats: hull -%d" % [ms.unit.display_name, burn])
 		if ms.alive():
 			_hull_damaged(ms)   # an overheat is hull damage like any other (10 October)
+		_overheat_marks(ms, burn)
+
+
+## The overheat's what-ifs (Ryan, 30 October), on the component whose spend took the gauge past
+## its maximum this turn, none when a status's heat did: a burn reaching the injury threshold
+## burns it out for the battle as an injury does, else the overheat Corrupts it.
+func _overheat_marks(ms: MechState, burn: int) -> void:
+	var idx := ms.hot_entry
+	ms.hot_entry = -1
+	if idx < 0 or idx >= ms.die.faces.size() or not ms.alive():
+		return
+	if overheat_burnout and burn * 100 >= ms.unit.hull_max * injury_pct:
+		log.append("%s: the overheat burns out its %s" % [ms.unit.display_name, ms.die.faces[idx].describe()])
+		if _injure_entry(ms, idx) == "destroyed":
+			return
+	if overheat_corrupt > 0 and ms.die.faces[idx].kind != Face.Kind.BLANK:
+		Effects.corrupt_entry(ms.unit, idx, "overheat", overheat_corrupt)
+		log.append("%s: the overheat corrupts its %s (×%d)" % [ms.unit.display_name, ms.die.faces[idx].describe(), Effects.corrupt_stacks(ms.unit, idx)])
 
 
 ## One blow. The honest shield (Ryan, 14 October; built 21 October): the shield absorbs its
@@ -3906,8 +4479,8 @@ func _settle_heat() -> void:
 ## whole blow reaches the hull. A Barrier takes the next blow whole; a Ward turns a breach
 ## away. A shield sized to a telegraphed blow, or a Barrier, is the counterplay.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
-	if is_phased(ms):
-		return   # a Phased machine takes no damage (ticks and overheats are its own, and land elsewhere)
+	if is_out(ms):
+		return   # a machine out of the fight takes no damage (ticks and overheats are its own, and land elsewhere)
 	amount = Effects.damage_taken(ms.unit, amount, source)   # buffs and debuffs on damage taken, before shield and armour; the striker read for its statuses
 	var brought := amount   # the blow as it arrives, for the round preview's incoming
 	# A Barrier takes the next blow that deals anything, whole, and is spent; a blow of nothing
@@ -4083,7 +4656,7 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 			return most[r.randi_range(0, most.size() - 1)]
 		"focus":
 			var shared = _focus.get(f.rank, null)
-			if shared != null and shared.alive() and not is_phased(shared) and live.has(shared):
+			if shared != null and shared.alive() and not is_out(shared) and live.has(shared):
 				return shared
 			var pick := _pick_exposed(f, live, r)
 			_focus[f.rank] = pick
@@ -4161,6 +4734,7 @@ func hull_reached(f: Foe, ms: MechState) -> int:
 func _clear_dead() -> void:
 	_fall_with_cores()
 	_clear_dead_slots()
+	_release_staggered()
 	_refresh_kin()
 	_refresh_guards()
 
@@ -4178,6 +4752,18 @@ func parts_of(core: Foe) -> Array[Foe]:
 		if f != core and f.alive() and f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
 			out.append(f)
 	return out
+
+
+## How many of a core's parts are down (30 October, the Obsidian Tyrant's rider): its parts less
+## those standing and those waiting to step in, a part growing back counted down until it stands.
+func parts_down(core: Foe) -> int:
+	if not core.has_parts():
+		return 0
+	var up := parts_of(core).size()
+	for f in reinforcements:
+		if f.alive() and f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
+			up += 1
+	return maxi(0, core.part_ids.size() - up)
 
 
 ## Every core's guard as its parts stand now: Guarded while all its parts stand ("all"), or
@@ -4234,6 +4820,7 @@ func _regrow_parts() -> void:
 			var n = foe_factory.call(str(d[0]))
 			if n is Foe:
 				n.pack_id = core.pack_id
+				n.joined = true
 				reinforcements.append(n)
 				log.append("%s grows back its %s" % [core.display_name, n.display_name])
 		core.regrow_due = keep
@@ -4307,6 +4894,9 @@ func _clear_dead_slots() -> void:
 				cleared = true
 				if f.rank >= 0:
 					_falls += 1   # a foe down, gone or getting back up: what a spend counts as a kill
+					if not f.stays_down:
+						team_kills += 1   # the Pilgrim's grudge reads it
+					_release_swallowed(f)   # a swallower down lets its machine go, whatever comes next
 					# A foe that readied itself to get back up does so once, whole, in its own slot
 					# and at once (Ryan, 26 October: "just like the gel splitting. It makes clearing
 					# that column harder"), unless it went whole (a Bomb's burst).
@@ -4322,6 +4912,9 @@ func _clear_dead_slots() -> void:
 						var sq := _pack_of(f)
 						if sq != null and not is_own(sq, f):
 							joined_fallen[sq.id] = int(joined_fallen.get(sq.id, 0)) + 1
+							var types: Dictionary = joined_fallen_types.get(sq.id, {})
+							types[f.content_id] = int(types.get(f.content_id, 0)) + 1
+							joined_fallen_types[sq.id] = types
 						_last_act(f)
 						if not f.on_death.is_empty() and f.on_death.has("summon"):
 							splits.append([f, 0 if is_same(rank, front) else 1, col])

@@ -74,6 +74,38 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"blank":
 			ci.draw_line(c + Vector2(-s, -s), c + Vector2(s, s), color, width)
 			ci.draw_line(c + Vector2(-s, s), c + Vector2(s, -s), color, width)
+		"swap":
+			# Swap (the Dingo's Combat Translocator, 30 October): two arrows passing, one each way,
+			# two places trading what stands in them.
+			ci.draw_line(c + Vector2(-s * 0.85, -s * 0.38), c + Vector2(s * 0.85, -s * 0.38), color, width)
+			ci.draw_line(c + Vector2(s * 0.85, -s * 0.38), c + Vector2(s * 0.42, -s * 0.8), color, width)
+			ci.draw_line(c + Vector2(s * 0.85, s * 0.38), c + Vector2(-s * 0.85, s * 0.38), color, width)
+			ci.draw_line(c + Vector2(-s * 0.85, s * 0.38), c + Vector2(-s * 0.42, s * 0.8), color, width)
+		"steal":
+			# Steal (a foe's, 30 October): the die entry's box with an arrow pulling out of it, the
+			# piece taken to be swung back.
+			ci.draw_rect(Rect2(c + Vector2(-s * 0.9, -s * 0.2), Vector2(s * 1.1, s * 1.1)), color, false, width)
+			ci.draw_line(c + Vector2(-s * 0.35, s * 0.35), c + Vector2(s * 0.85, -s * 0.85), color, width)
+			ci.draw_line(c + Vector2(s * 0.85, -s * 0.85), c + Vector2(s * 0.25, -s * 0.85), color, width)
+			ci.draw_line(c + Vector2(s * 0.85, -s * 0.85), c + Vector2(s * 0.85, -s * 0.25), color, width)
+		"all":
+			# A blow at every machine (30 October): one bar, three blows falling from it.
+			ci.draw_line(c + Vector2(-s * 0.9, -s * 0.75), c + Vector2(s * 0.9, -s * 0.75), color, width)
+			for k in range(3):
+				var x := -s * 0.6 + k * s * 0.6
+				ci.draw_line(c + Vector2(x, -s * 0.45), c + Vector2(x, s * 0.55), color, width)
+				ci.draw_colored_polygon(PackedVector2Array([c + Vector2(x - s * 0.22, s * 0.45), c + Vector2(x + s * 0.22, s * 0.45), c + Vector2(x, s * 0.9)]), color)
+		"parts":
+			# A foe in parts (30 October): the core's ring and the two parts standing by it.
+			ci.draw_arc(c + Vector2(0, s * 0.15), s * 0.5, 0.0, TAU, 20, color, width)
+			ci.draw_circle(c + Vector2(-s * 0.72, -s * 0.62), s * 0.22, color)
+			ci.draw_circle(c + Vector2(s * 0.72, -s * 0.62), s * 0.22, color)
+		"cooldown":
+			# A cooldown (30 October): a clock face, its hands at twelve and three, the rounds an
+			# entry stays dark.
+			ci.draw_arc(c, s * 0.88, 0.0, TAU, 24, color, width)
+			ci.draw_line(c, c + Vector2(0, -s * 0.58), color, width)
+			ci.draw_line(c, c + Vector2(s * 0.46, 0), color, width)
 		"warning":
 			# A hazard triangle with its bar and dot: the hexes a pack can strike the gate from.
 			var tri := PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.95, s * 0.75), c + Vector2(-s * 0.95, s * 0.75), c + Vector2(0, -s)])
@@ -296,7 +328,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_colored_polygon(flame, color)
 			flame.append(flame[0])
 			ci.draw_polyline(flame, color, width)
-			var cut := Color(Palette.ACCENT_INK, color.a)
+			var cut := Color(Palette.BG, color.a)
 			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
 			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":
@@ -321,6 +353,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(s, 0), c + Vector2(s * 0.55, s * 0.7), c + Vector2(-s * 0.55, s * 0.7), c + Vector2(-s, 0),
 			]), color, width)
 			ci.draw_arc(c, s * 0.3, 0.0, TAU, 16, color, width)
+		"controls_middle", "controls_bottom":
+			# The skirmish's controls switch (29 October): a phone's frame, the controls a solid band
+			# where they sit, a chevron toward where a press moves them.
+			var w := s * 0.62
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-w, -s), c + Vector2(w, -s), c + Vector2(w, s), c + Vector2(-w, s), c + Vector2(-w, -s),
+			]), color, width)
+			var low := id == "controls_bottom"
+			var band_y := s * 0.52 if low else -s * 0.16
+			ci.draw_rect(Rect2(c + Vector2(-w + width * 1.5, band_y), Vector2((w - width * 1.5) * 2.0, s * 0.34)), color)
+			var tip := -s * 0.62 if low else s * 0.78
+			var d := 1.0 if low else -1.0   # the chevron's arms open away from its tip
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-s * 0.3, tip + s * 0.26 * d), c + Vector2(0.0, tip), c + Vector2(s * 0.3, tip + s * 0.26 * d),
+			]), color, width)
 		"prev", "next":
 			# Skip back or on: a filled triangle against a bar, the transport's own mark.
 			var d := 1.0 if id == "next" else -1.0
@@ -408,6 +455,16 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var x := -s * 0.6 + i * s * 0.6
 				ci.draw_rect(Rect2(c + Vector2(x - s * 0.17, -s * 0.25), Vector2(s * 0.34, s * 1.05)), color, false, width)
 				ci.draw_arc(c + Vector2(x, -s * 0.25), s * 0.17, PI, TAU, 8, color, width)
+		"swallowed":
+			# Swallowed (a foe's swallow, 30 October): a maw closing on the machine's mark, its teeth
+			# meeting, out of the fight until its rounds run out or its swallower falls.
+			ci.draw_arc(c, s * 0.82, PI * 0.15, PI * 0.85, 10, color, width)
+			ci.draw_arc(c, s * 0.82, PI * 1.15, PI * 1.85, 10, color, width)
+			for i in range(4):
+				var x := -s * 0.48 + i * s * 0.32
+				ci.draw_line(c + Vector2(x, -s * 0.5), c + Vector2(x + s * 0.16, -s * 0.18), color, width)
+				ci.draw_line(c + Vector2(x, s * 0.5), c + Vector2(x + s * 0.16, s * 0.18), color, width)
+			ci.draw_circle(c, s * 0.14, color)
 		"phased":
 			# Phased (the Swallowtail's Mooring Screens, 21 October): the machine's outline gone to
 			# dashes, out of the fight until the round's end.
@@ -431,19 +488,27 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_rect(Rect2(c - Vector2(s, s), Vector2(size, size)), color, false, width)
 
 
-## The colour a chip for this glyph takes. Most sit in the HUD colour; effects that mean
-## damage or danger take their own, so a burn reads as fire at a glance and related effects
-## can share a shape in different colours.
+## The colour a mark for this id takes: a term's, by its group in the one table (Terms), so the
+## die's keyword marks, the chips and the text agree, never the HUD colour (Ryan, 30 October:
+## "Stay away from HUD colour"); a mark that is no term keeps its own: heat's for what heats, the
+## enemy's violet for a foe's doing, the red-red for a death, white for a written-out rule, and
+## the HUD colour for the chrome's own marks (a lock).
 static func colour_for(id: String) -> Color:
+	if Terms.has(id):
+		return Terms.colour(id)
 	match id:
-		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock", "vitriol", "flak", "spin", "mine", "primed":
+		"self", "ally":
+			return Terms.colour("targets")   # whom a piece reaches
+		"exposed":
+			return Terms.colour("exposure")
+		"overcharge", "heat", "scorch", "devour", "spin", "mine":
 			return Palette.HEAT
-		"skull", "shieldbreak", "corrupt", "volatile", "silence":
+		"shieldbreak", "silence":
 			return Palette.ENEMY
+		"skull":
+			return Palette.LOSS
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "web", "barrier", "ward", "dispel":
-			return Palette.SHIELD
 		_:
 			return Palette.HUD
 

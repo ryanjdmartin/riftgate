@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/dingo.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/dingo.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "caster_fl": {
    "axis": "yaw",
@@ -95,16 +95,27 @@
    "swing": false,
    "parent": "chassis"
   },
-  "elev_mortar": {
-   "axis": "pitch",
+  "turret_rack": {
+   "axis": "yaw",
    "limits": {
-    "pitch": [
-     -6.0,
-     28.0
+    "yaw": [
+     -30.0,
+     120.0
     ]
    },
    "swing": false,
    "parent": "chassis"
+  },
+  "elev_rack": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -8.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "turret_rack"
   }
  },
  "acts": [
@@ -1557,11 +1568,49 @@
    "heft": 0.06
   },
   {
-   "name": "mortar_check",
-   "duration": 4.4,
+   "name": "rack_check",
+   "duration": 5.6,
    "ease": "smooth",
    "tracks": {
-    "elev_mortar": [
+    "turret_rack": [
+     [
+      0.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.8,
+      0.0,
+      45.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.8,
+      0.0,
+      45.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      5.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elev_rack": [
      [
       0.4,
       0.0,
@@ -1734,7 +1783,7 @@
       0.0
      ],
      [
-      4.2,
+      4.6,
       0.0,
       0.0,
       0.0,
@@ -2222,6 +2271,154 @@
     ]
    ],
    "glow": [],
+   "heft": 0.06
+  },
+  {
+   "name": "coil_check",
+   "duration": 3.6,
+   "ease": "smooth",
+   "tracks": {
+    "chassis": [
+     [
+      0.45,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.6,
+      0.0,
+      0.0,
+      1.5,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.8,
+      0.0,
+      0.0,
+      -1.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.25,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.4,
+      0.0,
+      0.0,
+      -1.5,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.6,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": [
+    {
+     "parts": [
+      "coil"
+     ],
+     "keys": [
+      [
+       0.4,
+       0.0
+      ],
+      [
+       0.48,
+       9.0
+      ],
+      [
+       0.55,
+       1.0
+      ],
+      [
+       0.62,
+       12.0
+      ],
+      [
+       0.7,
+       2.0
+      ],
+      [
+       0.78,
+       14.0
+      ],
+      [
+       1.4,
+       14.0
+      ],
+      [
+       1.5,
+       1.0
+      ],
+      [
+       2.2,
+       1.0
+      ],
+      [
+       2.28,
+       10.0
+      ],
+      [
+       2.34,
+       2.0
+      ],
+      [
+       2.42,
+       16.0
+      ],
+      [
+       3.0,
+       16.0
+      ],
+      [
+       3.2,
+       0.0
+      ]
+     ]
+    }
+   ],
    "heft": 0.06
   },
   {
@@ -2735,6 +2932,12 @@
   "heft": 0.09
  },
  "glow_parts": [
-  "capacitor_ring"
- ]
+  "capacitor_ring",
+  "coil"
+ ],
+ "pins": {
+  "hp_1": "airburst_shell",
+  "hp_2": "twin_autoguns",
+  "hp_3": ""
+ }
 }

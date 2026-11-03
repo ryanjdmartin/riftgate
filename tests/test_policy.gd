@@ -77,6 +77,110 @@ func test_greedy_vents_before_it_burns() -> void:
 	assert_eq(hot.hull, 100, "no burn: the vent was spent on the one who needed it")
 
 
+## The cautious persona (30 October, the heat report's): heat above its line is priced as an
+## overheat's hull, so a vent is worth taking where no overheat looms, and a hot spend above
+## the line costs what an overheat would; the rungs as they are pay nothing under the cap.
+func test_the_cautious_persona_prices_heat_above_its_line() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Hot", Die.single(Face.vent(30)), 40, 100))
+	sk.add_foes([_ghoul(300, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 45   # under the cap of sixty: no overheat looms
+	assert_eq(int(sk.forecast(ms, false)["overheat"]), 0, "nothing would burn")
+	var plain := Policy.make(Policy.GREEDY)
+	var careful := Policy.make(Policy.GREEDY)
+	careful.cool_above = 50
+	assert_eq(plain.caution_line(ms), -1, "the persona off")
+	assert_eq(careful.caution_line(ms), 30, "half of sixty")
+	assert_true(absf(careful.vent_score(sk, ms, 30) - plain.vent_score(sk, ms, 30) - 15.0 * Policy.HULL_WEIGHT) < 0.001, "the vent's worth gains the fifteen over the line, as hull")
+	assert_true(absf(careful.vent_score(sk, ms, 10) - plain.vent_score(sk, ms, 10) - 10.0 * Policy.HULL_WEIGHT) < 0.001, "a smaller vent, what it takes off")
+	var gun := Face.attack(10, L, [], 8)
+	assert_eq(plain.heat_cost(sk, ms, gun), 0.0, "the greedy pays nothing under the cap")
+	assert_eq(careful.heat_cost(sk, ms, gun), 8.0 * Policy.HULL_WEIGHT, "the persona pays for every point above its line")
+	ms.heat = 26
+	assert_eq(careful.heat_cost(sk, ms, gun), 4.0 * Policy.HULL_WEIGHT, "from under the line, only the part past it")
+
+
+## The overheat's what-if switch (30 October): the bot prices an overheat at the hull it burns, on
+## the spend that causes it and on the vent that saves it.
+func test_the_bot_prices_an_overheat_at_its_burn() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Hot", Die.single(Face.vent(30)), 40, 100))
+	sk.add_foes([_ghoul(300, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.make(Policy.GREEDY)
+	var gun := Face.attack(10, L, [], 10)
+	ms.heat = 55   # the gun would end the turn five past the cap of sixty
+	var cost_plain := pol.heat_cost(sk, ms, gun)
+	ms.heat = 70   # ten past it: the vent of ten saves the whole burn
+	var vent_plain := pol.vent_score(sk, ms, 10)
+	Skirmish.overheat_scale = 2
+	var vent_doubled := pol.vent_score(sk, ms, 10)
+	ms.heat = 55
+	var cost_doubled := pol.heat_cost(sk, ms, gun)
+	Skirmish.overheat_scale = 1
+	assert_true(absf(cost_plain - 5.0 * Policy.HULL_WEIGHT) < 0.001, "five past the cap, one for one: %f" % cost_plain)
+	assert_true(absf(cost_doubled - 10.0 * Policy.HULL_WEIGHT) < 0.001, "doubled, the hull it burns: %f" % cost_doubled)
+	assert_true(absf(vent_doubled - vent_plain - 10.0 * Policy.HULL_WEIGHT) < 0.001, "the vent saves twice the hull")
+
+
+## The overheat's other what-ifs priced (30 October): the spend that takes the burn to the injury
+## threshold pays for the component it burns out, and the one that starts an overheat for the
+## corruption it lays; nothing while both are off.
+func test_the_bot_prices_a_burnout_and_an_overheats_corruption() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Hot", Die.of([Face.vent(30), Face.attack(10, L, [], 10)]), 40, 100))
+	sk.add_foes([_ghoul(300, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.make(Policy.GREEDY)
+	assert_eq(pol.overheat_marks_cost(ms, 0, 30), 0.0, "both off: nothing")
+	Skirmish.overheat_burnout = true
+	var burnt := pol.overheat_marks_cost(ms, 0, 30)
+	var short := pol.overheat_marks_cost(ms, 0, 20)
+	var already := pol.overheat_marks_cost(ms, 25, 30)
+	Skirmish.overheat_burnout = false
+	Skirmish.overheat_corrupt = 1
+	var corrupt := pol.overheat_marks_cost(ms, 0, 5)
+	var again := pol.overheat_marks_cost(ms, 5, 10)
+	Skirmish.overheat_corrupt = 0
+	assert_true(absf(burnt - Policy.DEATH_WEIGHT / 2.0) < 0.001, "thirty past the cap on a 100-hull machine reaches the quarter: half the machine's worth on a die of two: %f" % burnt)
+	assert_eq(short, 0.0, "twenty burns short of the quarter")
+	assert_eq(already, 0.0, "a burnout the turn was making anyway costs this spend nothing")
+	assert_true(corrupt > 0.0, "the spend that starts the overheat pays for its corruption")
+	assert_eq(again, 0.0, "one overheat a turn: a spend that only deepens it lays no more")
+
+
+## The shield persona (30 October, the support ladders' bot): a shield left standing past this
+## round's blows is worth the hull it turns next round, the foes' blows on an average machine at
+## a share for the round away, where the rungs bank it at a fifth of a point.
+func test_the_shield_persona_values_a_standing_shield_by_next_rounds_blows() -> void:
+	var sk := Skirmish.new(3)
+	var a := _mech("A", Die.single(Face.shield(8)), 40, 100)
+	a.shield = 0
+	sk.add_mech(a)
+	sk.add_mech(_mech("B", Die.single(Face.attack(5, L)), 40, 100))
+	var g := _ghoul(300, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[1]   # the blow this round falls on the other machine: the shield on A saves nothing now
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var plain := Policy.make(Policy.GREEDY)
+	var ahead := Policy.make(Policy.GREEDY)
+	ahead.shield_ahead = true
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 5.0) < 0.001, "a blow of ten over two machines")
+	var p := plain.shield_score(sk, ms, 8)
+	var q := ahead.shield_score(sk, ms, 8)
+	assert_true(absf(p - 8.0 * Policy.BANK_WEIGHT) < 0.001, "the rungs bank the eight: %f" % p)
+	assert_true(absf(q - (5.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE + 3.0 * Policy.BANK_WEIGHT)) < 0.001, "the persona: five of it turns next round's blow, the rest banks: %f" % q)
+
+
 func test_greedy_rerolls_a_face_under_the_average() -> void:
 	# A die of one blank and one big gun: whichever shows first, the bot ends the round on
 	# the gun, having rerolled the blank away (a reroll never lands on the same entry).
@@ -1138,6 +1242,37 @@ func test_the_bot_counts_both_halves_of_a_pair() -> void:
 	var lead: Foe = sk.front[1]
 	sk._set_contents(Vector2i(0, 1), [lead, _ghoul(5, 2)])
 	assert_true(pol.hopper_fill_score(sk, ms, fill, target) > plain, "the pair beside it loads twice")
+
+
+## The bot reads Chain as the resolver deals it (the conductor, 28 October; its charge, and a Shock
+## read by an aimed strike alone, 29 October): each Shocked foe on the field past the target takes
+## Chain's number plain, its charge standing; with no conductor the Chain gun is still worth its
+## charge, one other foe Shocked for the team's next blow.
+func test_the_bot_reads_a_chains_arcs_and_its_charge() -> void:
+	var sk := Skirmish.new(1, 3)
+	var gun := Face.attack(4, L, [K.CHAIN], 3)
+	gun.chain = 2
+	var plain := Face.attack(4, L, [], 3)
+	var m := _mech("A", Die.of([gun, plain]), 40, 100)
+	sk.add_mech(m)
+	var aim := _ghoul(100)
+	var a := _ghoul(100)
+	var b := _ghoul(100)
+	sk.add_foes([aim, a, b])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var pol := Policy.new()
+	var lead := pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
+	assert_true(absf(lead - pol.charge_worth(sk, ms, aim)) < 0.001, "with no conductor the Chain gun is a plain gun and its charge: %f" % lead)
+	assert_true(absf(lead - 4.0) < 0.001, "the charge: one other foe Shocked for the team's next blow, its average 4: %f" % lead)
+	for foe in [a, b]:
+		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(pol.damage_outcomes(ms, gun, a, -1.0, true, Skirmish.AREA_CHAIN), [[2.0, 1.0]], "a conductor: Chain 2 plain, no strike aimed at it")
+	assert_eq(pol.damage_outcomes(ms, gun, a), [[8.0, 1.0]], "the same foe aimed at: the blow doubled")
+	assert_eq(pol.charge_worth(sk, ms, aim), 0.0, "every other foe Shocked: no foe left to charge")
+	lead = pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
+	assert_true(absf(lead - 4.0) < 0.001, "two conductors, Chain 2 each, and no charge: %f" % lead)
 
 
 ## The bot reads a foe past the target as the resolver deals it (area by shape, numbered: Ryan,

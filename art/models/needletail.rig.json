@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/needletail.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/needletail.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "sensor": {
    "axis": "yaw",
@@ -819,6 +819,11 @@
   "exhaust",
   "fovea"
  ],
+ "pins": {
+  "hp_1": "transonic_rifle",
+  "hp_2": "overcharge_coil",
+  "hp_3": ""
+ },
  "gait_options": {
   "hover": {
    "stride": 40.0,

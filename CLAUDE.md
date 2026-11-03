@@ -1,6 +1,6 @@
 # Riftgate
 
-Godot 4.7 / GDScript. Portrait tactical hex battler for Android. `docs/rules.md` states the game's
+Godot 4.8 (4.8-beta2 until 4.8 ships, for its MSAA fix) / GDScript. Portrait tactical hex battler for Android. `docs/rules.md` states the game's
 rules as they are now: read it first. `docs/design-bible.html` records every decision and why
 (its first row says how to read a row; section 12 holds the questions only Ryan can settle);
 `docs/status.md` says how things stand and the order of work; `docs/todo.md` holds the tasks;
@@ -32,7 +32,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 ## Rules
 
 - Declare enum-typed fields and params as `int`. Class-scoped enum types fail to compile when
-  class_name scripts load from a headless `-s` runner in Godot 4.7.
+  class_name scripts load from a headless `-s` runner (seen in Godot 4.7, not rechecked since).
 - `content/*.json` is data; `sim/content_db.gd` validates it and `tests/test_content.gd` runs the
   validator, so bad content fails the build. Every entry's internal text lives under `design`
   (`fantasy`, `niche`, `holes`, ...: Ryan's pitch, inspiration and homages) and is never shown;
@@ -115,12 +115,19 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   truths in the file. On resume the last exchanges are the truth: never re-run a pipeline or
   restore a look the chat has already retired.
 - Ryan is colourblind (said 29 September; the type not stated). His colour words are
-  suggestions. Never separate two marks by hue alone: give them structure too (an edge,
-  dashes, motion, a glyph, a weight). Check a new colour by simulation (the Machado
-  protan, deutan and tritan matrices in a few lines of numpy) against every HUD option
-  and the enemy red, and pick by the worst case; report lightness and simulated distance,
-  not how it looks. Red against the green HUD and violet against the blue HUD are the
-  pairs that fold first.
+  suggestions. Compose a red or an orange from red and green alone, never blue, brighter and
+  darker included (Ryan, 29 October: moving the blue too is what made the reds hard to
+  judge); past pure red the green steps 30, 40, 50 and 60 are each distinct to him, and past
+  about #ff8200 an orange reads as yellow or green; even a lighter, less red orange can read as
+  green, which is good's colour, so heat leans red (Ryan, 30 October). Never separate two marks
+  by hue alone: give them structure too (an edge, dashes, motion, a glyph, a weight). What fails is a
+  colour over its ground, never two UI colours apart, since every mark carries an icon
+  (Ryan, 30 October): check a new colour by simulation (the Machado protan, deutan and
+  tritan matrices in a few lines of numpy) against the grounds it is drawn on (the field's,
+  the map's, a chip's plate), pick by the worst case, and report luminance contrast and
+  simulated distance against them, not how it looks. A debug build's Settings → COLOURS sets
+  the colours that carry a meaning and the HUD presets (`ColourTuner`); Ryan tunes there and sends its COPY text (`KEY #rrggbb`
+  lines) for the picks to land as the defaults.
 - A phone read arrives as a screenshot. Work it this way: crop and zoom it with nearest
   sampling to see the pixels, reproduce it on the desk machine at the phone's layout and density
   (`RIFTGATE_SHOT_H`, `RIFTGATE_SAFE`, `RIFTGATE_SHOT_SCALE`, and
@@ -147,6 +154,13 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - Before ending a session, or whenever a large task completes, update `docs/status.md`: what
   changed, what was decided, what is next. Keep it short and replace stale lines rather than
   appending forever.
+- Check for a newer Godot every two weeks (Ryan, 30 October: "check for godot updates
+  periodically"): when the Godot line in `docs/status.md`'s Start here is dated two weeks back
+  or more, read `github.com/godotengine/godot-builds/releases` (every build, pre-releases
+  included) and date the line again. A newer build goes to Ryan with what it fixes or changes
+  for the game (the Compatibility renderer, Android, GDScript, the importer); the move is his
+  call, since it costs the desk's install and the phone's export templates (4.8 stable is
+  already agreed: the to-do).
 - `docs/todo.md` is the task list: one line per task, grouped by who moves it. A task that
   lands or dies is ticked or struck in the same commit as the work; a new task goes in when
   it is agreed, not when it is remembered. Status says how things stand; the to-do says what

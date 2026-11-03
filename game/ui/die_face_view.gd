@@ -8,10 +8,13 @@ extends Control
 ## top-right, the entry's place on its die top-left. A locked die gets bracket corners and a
 ## LOCKED readout. A unique effect adds a star chip.
 ##
-## Gestures:
-##   tap   -> `tapped`         lock or unlock
-##   hold  -> `held` / `hold_released`   show details while the finger stays down
-##   drag  -> `drag_started` / `drag_moved(pos)` / `drag_ended(pos)`   spend the face on a target
+## Gestures (the skirmish's, Ryan, 30 October):
+##   tap         -> `tapped`          read the die: its readout opens, or closes
+##   double-tap  -> `double_tapped`   lock or unlock
+##   hold        -> `held` / `hold_released`   lock or unlock
+##   drag        -> `drag_started` / `drag_moved(pos)` / `drag_ended(pos)`   spend the face on a target
+## With `confirm_taps` a tap lands only once the double-tap window has passed with no second tap,
+## so a double-tap never shows a tap's work; the face lights from the touch until the tap lands.
 
 signal tapped
 signal double_tapped
@@ -23,7 +26,7 @@ signal drag_ended(global_pos: Vector2)
 
 const HOLD_SECONDS := 0.45
 const DRAG_THRESHOLD := 14.0
-const DOUBLE_TAP_SECONDS := 0.35
+const DOUBLE_TAP_SECONDS := 0.3   # Android's own double-tap window
 
 const FACE := 120.0        # the square face
 const RAIL := 18.0         # how far the chips hang past the right edge
@@ -47,7 +50,8 @@ var blast: int = 0             # a vent's blast on its own machine (the Whip Sco
 var shut: Array[int] = []      # keywords whose gate is shut over the foe in hand (the gated stuns, 22 October): their chips struck through and dimmed
 var spent: bool = false
 var dead: bool = false
-var can_tap: bool = true     # tap locks
+var can_tap: bool = true     # a tap reads the die
+var confirm_taps: bool = false   # a tap waits out the double-tap window before it lands (the tray's dice, whose double-tap locks)
 var can_drag: bool = true    # drag spends
 var animate: bool = true
 
@@ -57,6 +61,7 @@ var _press_at := 0.0
 var _dragging := false
 var _holding := false
 var _last_tap_at := -10.0
+var _tap_due := -1.0         # when a tap waiting out the double-tap window lands; negative, none
 var _t := 0.0
 var _phase := 0.0
 
@@ -103,18 +108,24 @@ func _gui_input(event: InputEvent) -> void:
 				var now := Time.get_ticks_msec() / 1000.0
 				if now - _last_tap_at <= DOUBLE_TAP_SECONDS:
 					_last_tap_at = -10.0
+					_tap_due = -1.0   # the double-tap stands in for its first tap
 					double_tapped.emit()
 				else:
 					_last_tap_at = now
-					if can_tap:
+					_land_tap()   # a tap still waiting (its window ran out under this press) lands first
+					if confirm_taps:
+						_tap_due = now + DOUBLE_TAP_SECONDS
+					elif can_tap:
 						tapped.emit()
 			_pressed = false
 			_dragging = false
 			_holding = false
+			queue_redraw()
 		accept_event()
 	elif event is InputEventMouseMotion and _pressed and not _holding:
 		if not _dragging and can_drag and event.global_position.distance_to(_press_pos) > DRAG_THRESHOLD:
 			_dragging = true
+			_tap_due = -1.0   # a tap and then a drag is the drag
 			drag_started.emit()
 		if _dragging:
 			drag_moved.emit(event.global_position)
@@ -174,7 +185,10 @@ func _process(delta: float) -> void:
 	if _pressed and not _dragging and not _holding:
 		if Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 			_holding = true
+			_tap_due = -1.0   # a tap and then a hold is the hold
 			held.emit()
+	if _tap_due >= 0.0 and not _pressed and Time.get_ticks_msec() / 1000.0 >= _tap_due:
+		_land_tap()
 	if _recalc >= 0.0:
 		_recalc += delta
 		if _recalc > _recalc_for:
@@ -190,6 +204,22 @@ func _process(delta: float) -> void:
 	if animate and visible and not dead:
 		_t += delta
 		queue_redraw()
+
+
+## A tap waiting out the double-tap window lands now, if one is waiting.
+func _land_tap() -> void:
+	if _tap_due < 0.0:
+		return
+	_tap_due = -1.0
+	queue_redraw()
+	if can_tap:
+		tapped.emit()
+
+
+## The touch answered at once (Ryan, 30 October): lit while the finger is on the face, and while
+## its tap waits out the double-tap window, so the beat before the readout never reads as lag.
+func _lit() -> bool:
+	return (_pressed and not _dragging) or _tap_due >= 0.0
 
 
 ## Chip i is steady, with a brief dip every few seconds.
@@ -212,11 +242,14 @@ func _draw() -> void:
 	var border := Color(hud, alpha)
 	var fill := Palette.PANEL
 	if dead:
-		border = Palette.ENEMY_DIM
+		border = Palette.LOSS_DIM
 		fill = Palette.PANEL
 	# A soft shadow under the object, so the bob reads as height.
 	Hud.fill_poly(self, Hud.cut(Rect2(Vector2(4, 8 + bob * 0.4), Vector2(FACE, FACE)), CUT), Color(0, 0, 0, 0.4))
 	Hud.box(self, rect, CUT, fill, border, 3.0 if (locked and not spent) else 1.5)
+	if _lit() and not dead:
+		Hud.fill_poly(self, Hud.cut(rect.grow(-1.5), CUT), Color(hud, 0.24))
+		Hud.stroke_poly(self, Hud.cut(rect, CUT), hud, 3.0)
 	if locked and not spent and not dead:
 		Hud.brackets(self, rect.grow(6.0), 14.0, hud, 1.5)
 		draw_string(Hud.mono(), Vector2(0, FACE + 12.0), "LOCKED", HORIZONTAL_ALIGNMENT_CENTER, FACE, 10, hud)
@@ -232,7 +265,7 @@ func _draw() -> void:
 		draw_string(Hud.quote(), SLOT_AT + Vector2(0, bob), Hud.roman(slot), HORIZONTAL_ALIGNMENT_LEFT, -1, SLOT_SIZE, Color(Palette.MUTED, alpha))
 	if face == null or dead:
 		if dead:
-			Glyphs.draw(self, "blank", Vector2(FACE * 0.5, FACE * 0.5 + bob), 44, Palette.ENEMY_DIM, 4.0)
+			Glyphs.draw(self, "blank", Vector2(FACE * 0.5, FACE * 0.5 + bob), 44, Palette.LOSS_DIM, 4.0)
 		return
 	var ink := Color(hud, alpha)
 	var mono := Hud.mono()
@@ -244,7 +277,7 @@ func _draw() -> void:
 		# component's number.
 		num = str(dark)
 		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "TURN LEFT" if dark == 1 else "TURNS LEFT", HORIZONTAL_ALIGNMENT_CENTER, FACE, 11, ink)
-	var num_size := 28 if num.contains("–") else 38
+	var num_size := 28 if num.contains("–") or num.contains("+") else 38   # a range, or a blow joined to its zap (the Storm Petrel's "4+2")
 	if _recalc >= 0.0:
 		# The display recomputes this face: its ink dips a little and the frame flashes once;
 		# the static itself is drawn last, over the whole die (`_draw_static`). The number
@@ -261,7 +294,7 @@ func _draw() -> void:
 	if face.ammo > 0:
 		# A forging machine's gun (the Musk Ox's, 21 October): its price in ammo where the heat
 		# sits, the shells' mark beside it; struck through and DRY when the magazine cannot pay.
-		var ac := Color(Palette.ENEMY if face.dry else Palette.SELECT, alpha)
+		var ac := Color(Palette.LOSS if face.dry else Palette.SELECT, alpha)
 		Glyphs.draw(self, "ammo", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, ac, 1.6)
 		var ammo_text := ("%d DRY" if face.dry else "%d AMMO") % face.ammo
 		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), ammo_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, ac)
@@ -269,6 +302,16 @@ func _draw() -> void:
 		if face.dry:
 			draw_line(Vector2(slot_x, FACE - 13.0 + bob), Vector2(slot_x + 16.0 + aw, FACE - 13.0 + bob), ac, 2.0)
 		slot_x += aw + 22.0
+	if face.burns > 0:
+		# A weapon whose heat the shield pays (the Storm Petrel's Riot Field Generator, 30 October):
+		# the shield it takes in the heat slot's place, the costs' grammar ("-3") behind the
+		# shield's mark, which parts it from a shield cost's words and from the Burn keyword's
+		# fire; the heat past what the shield holds follows it.
+		var bc := Color(Palette.SHIELD, alpha)
+		Glyphs.draw(self, "shield", Vector2(slot_x + 6.0, FACE - 13.0 + bob), 11, bc, 1.6)
+		var burn_text := "-%d" % face.burns
+		draw_string(mono, Vector2(slot_x + 14.0, FACE - 9.0 + bob), burn_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, bc)
+		slot_x += 14.0 + mono.get_string_size(burn_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
 	if face.heat > 0:
 		var hc := Color(Palette.HEAT, alpha)
 		var heat_text := "+%d HEAT" % face.heat
@@ -276,15 +319,16 @@ func _draw() -> void:
 		slot_x += mono.get_string_size(heat_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
 	if face.volatile > 0 and not (face.disabled and dark > 0):
 		# A hull cost (Volatile, a cost beside the heat since 26 October, Ryan: "converting it
-		# from a keyword with a chip to a cost, alongside heat"): the enemy's colour, what it takes.
-		var vc := Color(Palette.ENEMY, alpha)
+		# from a keyword with a chip to a cost, alongside heat"): the hull's colour, what it spends, as
+		# heat and shield costs wear theirs (Ryan, 30 October, agreeing Claude's lean).
+		var vc := Color(Palette.HULL, alpha)
 		var hull_text := "-%d HULL" % face.volatile
 		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), hull_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, vc)
 		slot_x += mono.get_string_size(hull_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 8.0
 	if face.shield_cost > 0 and not (face.disabled and dark > 0):
 		# A shield cost (26 October): the shield's colour while the shield can pay; struck through
-		# and SHORT in the enemy's when it cannot and the entry is locked (the dry gun's pattern).
-		var cc := Color(Palette.ENEMY if face.short else Palette.SHIELD, alpha)
+		# and SHORT in the red-red when it cannot and the entry is locked (the dry gun's pattern).
+		var cc := Color(Palette.LOSS if face.short else Palette.SHIELD, alpha)
 		var cost_text := ("-%d SHORT" if face.short else "-%d SHIELD") % face.shield_cost
 		draw_string(mono, Vector2(slot_x, FACE - 9.0 + bob), cost_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, cc)
 		var cw := mono.get_string_size(cost_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x

@@ -49,7 +49,7 @@ func test_a_tap_selects_and_a_lit_hex_plans_the_move() -> void:
 	s._on_hex_tapped(m.pos)
 	assert_eq(s._map.selected, m, "mech selected")
 	assert_true(s._map.destinations.size() > 0, "destinations lit")
-	assert_false(s._map.threat.is_empty(), "and in red where it could attack from past them")
+	assert_false(s._map.threat.is_empty(), "and in violet where it could attack from past them")
 	var dest: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(dest)
 	assert_eq(m.pos, dest, "the battle has it there at once")
@@ -293,10 +293,42 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	s.free()
 
 
+## A hunter whose prey is sealed off takes the machine nearest it (Ryan, 29 October: "It's just
+## punishing hiding"): its tag and the board follow the machine it comes for, and its readout
+## says whom it takes and why.
+func test_a_hunter_taking_a_machine_in_its_preys_place_says_so() -> void:
+	var s := _screen()
+	var b := s.battle
+	var hunter: Unit = b.field.packs()[0]
+	for p in b.field.packs():
+		p.behaviour = "push"
+	hunter.behaviour = "hunt"
+	var sealed: Unit = b.mechs()[0]
+	var taken: Unit = b.mechs()[1]
+	hunter.prey = sealed.id
+	var w := Battlefield.Walk.new()
+	w.end = hunter.pos
+	w.prey = taken.id
+	w.catches = taken.id
+	s._map.walks = {hunter.id: w}
+	var text := ""
+	for line in s.pack_lines(hunter):
+		text += str((line as Dictionary).get("text", "")) + " / "
+	assert_true(text.contains("Hunts"), "it still names its prey: %s" % text)
+	assert_true(text.contains("Takes %s in its place: %s is sealed off" % [taken.display_name, sealed.display_name]), "and whom it takes instead: %s" % text)
+	var meets := {}
+	for row in s._board._rows():
+		meets[(row["unit"] as Unit).id] = str(row["meets"])
+	assert_true(str(meets[taken.id]).begins_with("HUNTED BY"), "the board marks the machine it comes for")
+	assert_eq(str(meets[sealed.id]), "", "and not the one sealed off")
+	s.free()
+
+
 ## The boss's fight plays the family's theme when there is one (Ryan, 25 September).
 func test_the_boss_fight_plays_its_theme() -> void:
 	var s := _screen()
 	var b := s.battle
+	b.rupture()   # the seal broken: the boss can be fought
 	_engage(b, b.boss, b.mechs()[0])
 	s._refresh()
 	s._on_hex_tapped(b.mechs()[0].pos)
@@ -335,7 +367,7 @@ func test_offscreen_packs_get_edge_tags() -> void:
 	var still: Array = s._map.offscreen_tags()
 	for t in still:
 		assert_true(t[1] != sq, "the pack scrolled to has no tag")
-	assert_true(BattleMapView.foe_sprite_id(s.battle.boss) == "bone_dragon", "boss uses the faction's boss art")
+	assert_eq(BattleMapView.foe_sprite_id(s.battle.boss), str(ContentDB.load_default().bosses_of("marsh")[0]), "boss uses its own art, the domain's first boss's")
 	s.free()
 
 
@@ -357,12 +389,15 @@ func test_hold_shows_a_readout() -> void:
 	assert_false(s._details.visible, "hidden on release")
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
-	assert_true(s._details_entry.text().contains("×%d" % sq.strength), "pack strength")
+	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
 	assert_true(s._details_entry.text().contains("Ring %d" % sq.zone), "and its ring")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	s._on_unit_held(s.battle.boss)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Boss", "the boss says so beside its name")
-	assert_true(s._details_entry.text().contains("Massive"), "boss readout")
+	# Its size is its own in content, apart from its being the boss (15 October): a massive boss
+	# says so, a human-sized one does not (the slate's Matador leads the Marsh since 30 October).
+	var massive := int(ContentDB.load_default().foes[BattleMapView.foe_sprite_id(s.battle.boss)].get("size", 1)) >= 2
+	assert_eq(s._details_entry.text().contains("Massive"), massive, "boss readout gives its own size")
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "the panel holds its lines")
 	s.free()
 
@@ -376,12 +411,13 @@ func test_the_ground_and_a_refusal_read_as_lines() -> void:
 		text += EntryReadout.line_text(l) + "\n"
 	assert_true(text.contains("Wade: Tracked, Walker, Wheeled (two move a hex)"), "the ground ways wade it, the price said: %s" % text)
 	assert_true(text.contains("Cross: Hover, Flyer"), "a line a word, the ways under it: %s" % text)
-	assert_true(text.contains("Packs never enter it; a winged pack crosses it"), "and what the horde does: %s" % text)
+	assert_true(text.contains("Packs wade it (two move a hex); a winged pack crosses it"), "and what the horde does, as a ground machine does (Ryan, 29 October): %s" % text)
 	var mountain := BattleScreen.ground_lines(BattleMap.Terrain.MOUNTAIN, "towers")
 	assert_eq(str(mountain[0]["text"]), "TOWERS", "a wall is named by what it is (Ryan, 29 October)")
 	assert_eq(str(BattleScreen.ground_lines(BattleMap.Terrain.MOUNTAIN)[0]["text"]), "CRAGS", "rock spikes when the map gives no look")
 	assert_eq(EntryReadout.line_text(mountain[1]), "Cross: Flyer", "a wall is the flyer's")
 	assert_true(EntryReadout.line_text(mountain[2]).begins_with("Wall: Tracked, Walker, Wheeled, Hover"), "and a wall to the rest")
+	assert_eq(EntryReadout.line_text(mountain[3]), "Packs never enter it; a winged pack crosses it", "and the horde's wall")
 	var rough := BattleScreen.ground_lines(BattleMap.Terrain.ROUGH)
 	assert_eq(EntryReadout.line_text(rough[1]), "Cross: every machine", "rough is ground to every machine")
 	assert_eq(EntryReadout.line_text(rough[2]), "Packs cross it", "and to the horde")
@@ -418,7 +454,7 @@ func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
 	assert_true(s._codex.visible, "the codex opens for a pack")
 	assert_eq(s._codex._title.text, sq.display_name, "headed by the pack")
 	assert_true(s._codex._sub.text.contains("×%d" % sq.strength), "with its strength in the subtitle")
-	assert_true(not s._codex._body.text.is_empty(), "and its foe type's codex text")
+	assert_true(not s._codex._body.text().is_empty(), "and its foe type's codex text")
 	s._codex.close()
 	s.free()
 

@@ -41,7 +41,9 @@ var map_seed: int = 0
 var opened: Dictionary = {}            # hex -> the ground the horde's guarantee opened there (the map survey reads it)
 var water_feature := ""               # "river", "fjord", "ponds", "a pond", or "" for none (the map survey reads it)
 var fords: Array = []                  # a river's fords, each an Array of its hexes: the roads run to them
+var ford_widths: Array = []            # each ford's width along the river, in hexes (_crossing_runs)
 var gaps: Array = []                   # a city band's gaps, each an Array of its hexes: the streets run through them
+var gap_widths: Array = []             # each gap's width across its band, in hexes (_crossing_runs)
 var kind := "steppe"                   # the map's shape, a key of KINDS: the intel the player will read
 
 ## The map shapes (Ryan, 28 and 29 October): six, each testing one thing the movement rule
@@ -316,11 +318,69 @@ func _field_spots(lo: int, hi: int, west: int = 0, east: int = -1) -> Array:
 	return out
 
 
+## The crossings through a line `n` hexes long, a river's fords or a band's streets (Ryan, 29
+## October: "we can allow more than one ford in a line, especially for the city map, and each
+## can be smaller, as long as we have a total of say, 3 or 4 empty spaces. It symbolizes
+## 'streets', and splitting the team up to cover them all forces the team to fight apart"):
+## at most `most` runs of one to three hexes, three or four in all, every split of the total
+## alike, spread at random along the line with at least a hex of it between two. A band takes
+## up to four streets; a river two fords, since more broke it into ponds (29 October, its
+## laying printed seed by seed). Each run as the indices it covers, west to east.
+const CROSSING_RUN_MAX := 3
+const STREETS_MOST := 4
+const FORDS_MOST := 2
+
+
+func _crossing_runs(rng: RandomNumberGenerator, n: int, most: int) -> Array:
+	var splits: Array = []
+	for total in [CROSSING_WIDTH, CROSSING_WIDTH + 1]:
+		_splits_of(total, [], splits)
+	var fit: Array = []
+	for s in splits:
+		if (s as Array).size() <= most and _span_of(s) <= n:
+			fit.append(s)
+	if fit.is_empty():
+		return [range(0, n)]
+	var widths: Array = fit[rng.randi_range(0, fit.size() - 1)]
+	var slots: Array = []   # the spare hexes before, between and after the runs
+	slots.resize(widths.size() + 1)
+	slots.fill(0)
+	for i in range(n - _span_of(widths)):
+		var k := rng.randi_range(0, slots.size() - 1)
+		slots[k] = int(slots[k]) + 1
+	var runs: Array = []
+	var at := int(slots[0])
+	for i in range(widths.size()):
+		runs.append(range(at, at + int(widths[i])))
+		at += int(widths[i]) + 1 + int(slots[i + 1])
+	return runs
+
+
+## Every way to split `left` into runs of one to CROSSING_RUN_MAX, appended to `out`.
+static func _splits_of(left: int, so_far: Array, out: Array) -> void:
+	if left == 0:
+		out.append(so_far.duplicate())
+		return
+	for w in range(1, mini(CROSSING_RUN_MAX, left) + 1):
+		so_far.append(w)
+		_splits_of(left - w, so_far, out)
+		so_far.pop_back()
+
+
+## The hexes a split takes along its line: its runs and a hex between each two.
+static func _span_of(widths: Array) -> int:
+	var span := widths.size() - 1
+	for w in widths:
+		span += int(w)
+	return span
+
+
 ## RIVER CROSSING: a river across the field and on past both edges, two hexes thick and three
-## in places, with one ford three wide or two two wide (the horde's crossings: the guarantee
-## widens what a bend narrows), and at most a crag on a bank. Tests the crossing held and the
-## wade. The line drifts about its row eastward, one hex at a time, and a hex chain is a wall
-## to a hex chain, so the river stops every foe that is not at a ford.
+## in places, with one or two fords three or four hexes wide in all (_crossing_runs), and at
+## most a crag on a bank. Everyone but a hovercraft and a flyer wades
+## the river at two a hex, the horde too, so a ford is the quick way across for both sides and
+## a ford held only slows the horde. Tests the wade and where to cross. The line drifts about
+## its row eastward, one hex at a time.
 const RIVER_DEEP := 0.35   # a river hex with a third row below it
 const BANK_CRAG := 0.4     # the chance of a crag on a bank
 
@@ -353,25 +413,14 @@ func _lay_river(rng: RandomNumberGenerator) -> void:
 		for wet in hexes:
 			_flood(wet)
 	water_feature = "river"
-	# The fords: runs of the line inside the field, one of CROSSING_WIDTH hexes or two of two,
-	# back to open ground through the river's whole thickness. Along the line, so a ford is as
-	# many hexes wide as it is long, whichever way the river bends there.
+	# The fords: runs of the line inside the field (_crossing_runs), back to open ground through
+	# the river's whole thickness. Along the line, so a ford is as many hexes wide as it is
+	# long, whichever way the river bends there.
 	var inside: Array[Vector2i] = []
 	for hx in line:
 		if has(hx):
 			inside.append(hx)
-	var n := inside.size()
-	var runs: Array = []
-	if n < CROSSING_WIDTH + 5 or rng.randf() < 0.5:
-		var j := rng.randi_range(0, maxi(0, n - CROSSING_WIDTH))
-		runs.append(range(j, mini(n, j + CROSSING_WIDTH)))
-	else:
-		# Two fords, one in each half of the field, so the river holds between them.
-		var a := rng.randi_range(0, n / 2 - 2)
-		var b := rng.randi_range(n / 2 + 1, n - 2)
-		runs.append([a, a + 1])
-		runs.append([b, b + 1])
-	for run in runs:
+	for run in _crossing_runs(rng, inside.size(), FORDS_MOST):
 		var ford: Array[Vector2i] = []
 		for j in run:
 			for hx in rows_of[inside[j]]:
@@ -381,6 +430,7 @@ func _lay_river(rng: RandomNumberGenerator) -> void:
 					ford.append(hx)
 		if not ford.is_empty():
 			fords.append(ford)
+			ford_widths.append((run as Array).size())
 	if rng.randf() < BANK_CRAG:
 		var banks: Array = []
 		for hx in _field_spots(lo, hi, 1, width - 2):
@@ -407,9 +457,8 @@ func _lay_river(rng: RandomNumberGenerator) -> void:
 
 ## FJORD: water down the field from the rift's mouth to the team's ground, two hexes wide and
 ## three in places, drifting a column at most a row (so no land crosses it) with lanes two
-## wide at least either side: the packs walk the lanes, a ground squad wades from one to the
-## other and a hunter on the far bank picks again. Tests lane choice and a detachment across
-## water.
+## wide at least either side: the packs walk the lanes, and a ground squad and a hunter alike
+## wade from one to the other at two a hex. Tests lane choice and a detachment across water.
 const FJORD_DRIFT := 0.35   # the chance a row's water sits a column over from the row above's
 const FJORD_WIDE := 0.3     # the chance a row is three wide
 
@@ -468,10 +517,10 @@ func _lay_steppe(rng: RandomNumberGenerator) -> void:
 
 
 ## RUINED CITY: bands of towers across the field and on past both edges, one or two hexes
-## thick, two bands on a long field and one on a short, each with one gap three wide or two
-## gaps two wide (the streets run through them); rubble everywhere else, and towers standing
-## in the scenery as the city goes on. Tests the gaps held and the flyer's one crossing of its
-## own.
+## thick, two bands on a long field and one on a short, each with streets through it three or
+## four hexes wide in all, one to four of them (_crossing_runs); rubble everywhere else, and
+## towers standing in the scenery as the city goes on. Tests the streets held, a machine to a
+## street and the team fighting apart, and the flyer's one crossing of its own.
 const CITY_SCENERY_TOWERS := 0.22   # the share of the scenery a tower stands on
 
 
@@ -490,23 +539,15 @@ func _lay_city(rng: RandomNumberGenerator) -> void:
 		var top := maxi(lo, hi - t1)
 		bands = [[rng.randi_range(mini(lo + 1, top), top), t1]]
 	for band in bands:
-		var runs: Array = []
-		if rng.randf() < 0.5:
-			var c := rng.randi_range(0, width - CROSSING_WIDTH)
-			runs.append(range(c, c + CROSSING_WIDTH))
-		else:
-			var a := rng.randi_range(0, width - 5)
-			var b := rng.randi_range(a + 3, width - 2)
-			runs.append([a, a + 1])
-			runs.append([b, b + 1])
 		var open := {}
-		for run in runs:
+		for run in _crossing_runs(rng, width, STREETS_MOST):
 			var gap: Array[Vector2i] = []
 			for c in run:
 				open[c] = true
 				for row in range(int(band[0]), int(band[0]) + int(band[1])):
 					gap.append(Hex.offset_to_axial(c, row))
 			gaps.append(gap)
+			gap_widths.append((run as Array).size())
 		for row in range(int(band[0]), int(band[0]) + int(band[1])):
 			for col in range(-MARGIN_COLS, width + MARGIN_COLS):
 				if not open.has(col):
@@ -570,24 +611,35 @@ func _clear_ends() -> void:
 		wall_look.erase(hx)
 
 
-## The roads lead somewhere (Ryan, 29 October): the river's from the gate to each ford and on
-## across it, the steppe's one road north from the gate, the city's streets from the gate
-## through a gap of every band and on toward the rift, its other gaps joined to them. The
-## fjord, the badlands and the gorge lay none. A road keeps its gaps (nobody paves between
-## attacks) but for its first slabs off the gate, never paves water or a wall, and is never a
-## lone slab.
+## The roads lead somewhere (Ryan, 29 October): the river's from the gate to each ford two
+## hexes wide or more (to the nearest ford when none is) and on across it, the steppe's one road
+## north from the gate, the city's streets from the gate through a gap of every band and on
+## toward the rift, its other gaps joined to them. The fjord, the badlands and the gorge lay
+## none. A road keeps its gaps (nobody paves between attacks) but for its first slabs off the
+## gate, never routes through or paves water or a wall, and is never a lone slab.
 func _lay_roads(rng: RandomNumberGenerator) -> void:
 	var o := Hex.axial_to_offset(gate)
 	var front := Hex.offset_to_axial(o.x, o.y - GATE_ROWS)   # in front of the gate, above its apron
+	var wet := _wet()
 	var paths: Array = []
 	match kind:
 		"river":
-			for ford in fords:
-				var ends := _ends_of(ford)
+			var roaded: Array = []
+			for i in range(fords.size()):
+				if int(ford_widths[i]) >= 2:
+					roaded.append(i)
+			if roaded.is_empty() and not fords.is_empty():
+				var near := 0
+				for i in range(fords.size()):
+					if Hex.distance(front, _ends_of(fords[i])[0]) < Hex.distance(front, _ends_of(fords[near])[0]):
+						near = i
+				roaded.append(near)
+			for i in roaded:
+				var ends := _ends_of(fords[i])
 				var path: Array = [front]
-				path.append_array(find_path(front, ends[0], []))
-				path.append_array(find_path(ends[0], ends[1], []))
-				path.append_array(find_path(ends[1], _north_of(ends[1], rng.randi_range(3, 5)), []))
+				path.append_array(find_path(front, ends[0], [], wet))
+				path.append_array(find_path(ends[0], ends[1], [], wet))
+				path.append_array(find_path(ends[1], _north_of(ends[1], rng.randi_range(3, 5)), [], wet))
 				paths.append(path)
 		"steppe":
 			paths.append(_trunk(front, rng))
@@ -610,11 +662,11 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 					if Hex.distance(cur, _ends_of(gaps[i])[0]) < Hex.distance(cur, _ends_of(gaps[best])[0]):
 						best = i
 				var ends := _ends_of(gaps[best])
-				street.append_array(find_path(cur, ends[0], []))
-				street.append_array(find_path(ends[0], ends[1], []))
+				street.append_array(find_path(cur, ends[0], [], wet))
+				street.append_array(find_path(ends[0], ends[1], [], wet))
 				cur = ends[1]
 				joined[best] = true
-			street.append_array(find_path(cur, _north_of(cur, height), []))
+			street.append_array(find_path(cur, _north_of(cur, height), [], wet))
 			paths.append(street)
 			for i in range(gaps.size()):
 				if joined.has(i):
@@ -625,13 +677,13 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 					if Hex.distance(ends[0], hx) < Hex.distance(ends[0], near):
 						near = hx
 				var branch: Array = [near]
-				branch.append_array(find_path(near, ends[0], []))
-				branch.append_array(find_path(ends[0], ends[1], []))
+				branch.append_array(find_path(near, ends[0], [], wet))
+				branch.append_array(find_path(ends[0], ends[1], [], wet))
 				paths.append(branch)
 	for path in paths:
 		for i in range(path.size()):
 			var h: Vector2i = path[i]
-			if not has(h) or is_structure(h) or not passable(terrain[h], []):
+			if not has(h) or is_structure(h) or not _dry(h):
 				continue
 			if i >= 3 and rng.randf() < ROAD_GAP_CHANCE:
 				continue
@@ -663,7 +715,7 @@ func _trunk(front: Vector2i, rng: RandomNumberGenerator) -> Array:
 		for n in Hex.neighbors(cur):
 			if has(n) and n.y < cur.y and not is_structure(n):
 				any.append(n)
-				if passable(terrain[n], []):
+				if _dry(n):
 					options.append(n)
 		if options.is_empty():
 			options = any
@@ -672,6 +724,20 @@ func _trunk(front: Vector2i, rng: RandomNumberGenerator) -> Array:
 		cur = options[rng.randi_range(0, options.size() - 1)]
 		trunk.append(cur)
 	return trunk
+
+
+## Land a road may pave: neither water nor a wall.
+func _dry(h: Vector2i) -> bool:
+	return terrain[h] != Terrain.WATER and terrain[h] != Terrain.MOUNTAIN
+
+
+## The water hexes, which a road never routes through.
+func _wet() -> Dictionary:
+	var out := {}
+	for h in terrain.keys():
+		if terrain[h] == Terrain.WATER:
+			out[h] = true
+	return out
 
 
 ## Where a road enters a ford or a gap from the south and leaves it to the north: the middle
@@ -898,9 +964,10 @@ const WADE := 2
 const WALL := -1
 ## The machines' ways of moving, exactly one a chassis (the validator and the survey read them).
 const WAYS := ["tracked", "walker", "wheeled", "hover", "flyer"]
-## The crossing table: a word -> [water, crags], each a step's cost or WALL; every other
+## The crossing table: a word -> [water, walls], each a step's cost or WALL; every other
 ## ground is a STEP to everyone. "winged" is a pack's word, never a chassis's; "" is the
-## horde's rule.
+## horde's rule, which wades water as a ground machine does (Ryan, 29 October: "Enemies can
+## cross water just like player units, since that seems fair").
 const CROSSINGS := {
 	"tracked": [WADE, WALL],
 	"walker": [WADE, WALL],
@@ -908,7 +975,7 @@ const CROSSINGS := {
 	"hover": [STEP, WALL],
 	"flyer": [STEP, STEP],
 	"winged": [STEP, STEP],
-	"": [WALL, WALL],
+	"": [WADE, WALL],
 }
 
 
@@ -951,7 +1018,7 @@ static func spend(t: int, traits: Array, left: int) -> int:
 
 ## The terrain's word for every machine's way of moving, for the ground tap: [word, ways] for
 ## "wade", "cross" and "wall" in that order, each only when some way gets it, the ways in WAYS
-## order. The packs' rule is the screen's, read from `passable` with no trait and with
+## order. The packs' rule is the screen's, read from `step_cost` with no trait and with
 ## "winged".
 static func ground_ways(t: int) -> Array:
 	var by_word := {"wade": [], "cross": [], "wall": []}
@@ -1018,9 +1085,8 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 	return path
 
 
-## The horde's way to the gate (decided 2 October with the binary foe rule, widened 3
-## October: water and crags are walls to a pack). Two guarantees. A path exists: when water
-## and crags together cut the rift from the gate (7 of 200 seeds at the game's size), a
+## The horde's way to the gate (3 October; since 29 October the horde wades water, so only
+## walls cut it). Two guarantees. A path exists: when walls cut the rift from the gate, a
 ## corridor is carved, opening whatever is in the way. The narrowest crossing is at least
 ## CROSSING_WIDTH hexes: fewer than that many hexes never cut every foe route, so holding
 ## all the packs takes a line of three machines, never one or two. Each cut found is
@@ -1060,7 +1126,7 @@ const CROSSING_WIDTH := 3
 
 
 ## The ground a pack may stand on between the rift and the gate: field, not structure,
-## passable by the horde's rule.
+## passable by the horde's rule (land and water; never a wall).
 func _horde_ground(h: Vector2i) -> bool:
 	return has(h) and not is_structure(h) and passable(terrain[h], [])
 
@@ -1159,10 +1225,9 @@ func _horde_flow(limit: int) -> Array:
 
 
 ## Route the horde round a cut by the cheapest openings: the cheapest way from the rift to
-## the gate where the horde's ground costs nothing, a wall costs one and water two (a gap
-## in a wall before another ford in the water), and the cut's own hexes are refused; its
-## blocked hexes are opened. Seeded ties, so the same
-## map widens the same way. False when there is no such way (the field's own edge).
+## the gate where the horde's ground costs nothing and a wall one, and the cut's own hexes
+## are refused; its walls are opened. Seeded ties, so the same map widens the same way.
+## False when there is no such way (the field's own edge).
 func _carve_around(cut: Array[Vector2i], rng: RandomNumberGenerator) -> bool:
 	var refused := {}
 	for h in cut:
@@ -1221,9 +1286,7 @@ func _carve_around(cut: Array[Vector2i], rng: RandomNumberGenerator) -> bool:
 
 
 func _opening_cost(h: Vector2i) -> int:
-	if passable(terrain[h], []):
-		return 0
-	return 2 if terrain[h] == Terrain.WATER else 1
+	return 0 if passable(terrain[h], []) else 1
 
 
 ## Open a hex to the horde: plain ground, no crag, level.

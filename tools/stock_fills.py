@@ -78,7 +78,7 @@ P = {
  'blast_door': {}, 'decoherence_veil': {},   # the Barrier and the Ward: no numbers
  'transonic_rifle': A(5, heat=4), 'airburst_shell': A(1, 2, 1, flak=1), 'cyclic_cannon': A(2, heat=3, strikes=4),
  'flak_cannon': A(3, heat=2, flak=2), 'stoker': A(3, heat=1, burn=2, self_burn=1), 'backdraft_charge': A(2, heat=2),
- 'pinion_driver': A(4, heat=0), 'lorentz_contractor': A(0, heat=2), 'syrinx_drone': A(0, heat=0),   # not in the brief: today's over four
+ 'pinion_driver': A(2, heat=0, strikes=2), 'lorentz_contractor': A(0, heat=2), 'syrinx_drone': A(0, heat=0),   # not in the brief: today's over four (the Driver's four in two shots, Ryan, 29 October)
 }
 raw, d = jload(R + 'content/components.json')
 seen = set()

@@ -61,7 +61,7 @@ func _draw() -> void:
 		var cur := i == current
 		var col := Palette.HUD if cur else Color(Palette.HUD, 0.5)
 		if f.kind == Face.Kind.BLANK and not f.empty:
-			col = Palette.ENEMY_DIM
+			col = Palette.LOSS_DIM
 		# A hardpoint is a socket: a dashed frame around the tile, so a free slot reads as a
 		# slot and an empty one as an empty slot. A fixed component has no frame; it is the
 		# machine itself.
@@ -88,7 +88,7 @@ func _draw() -> void:
 		if f.empty:
 			pass
 		elif f.kind == Face.Kind.BLANK:
-			Glyphs.draw(self, "blank", rect.get_center(), 18.0, Palette.ENEMY_DIM, 2.5)
+			Glyphs.draw(self, "blank", rect.get_center(), 18.0, Palette.LOSS_DIM, 2.5)
 		else:
 			Glyphs.draw(self, Glyphs.primary_for(f), rect.position + Vector2(10.0, 10.0), 10.0, col, 1.4)
 			var num := f.number_text()

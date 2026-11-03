@@ -25,6 +25,11 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## Area by shape, numbered (Ryan, 28 October; the half retired): Spread N (id `cleave`) the
 ## foes beside the target in its rank, Penetrate N the other rank of its column, Splash N the
 ## two together (the plus round it), each foe past the target taking N as its blow's number.
+## Chain N (Ryan, 28 October; the kill and repeat and the ping retired; its charge, 29 October):
+## Shock's other payoff, every other Shocked foe on the field taking N as its blow's number,
+## wherever it stands and whatever the gun's reach, plain, no strike being aimed at it, so its
+## Shock stands; then one other foe at random, neither the target nor already Shocked, is
+## Shocked. A weapon's alone.
 enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
@@ -57,11 +62,13 @@ const KEYWORD_STATUS := {
 	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure",
 }
 ## The keywords that carry a number, each in the field of its name on the entry: the stacks a
-## rider lays (Burn, Cryo, Flak) or the blow an area keyword deals each foe past the target
-## (Spread, Penetrate, Splash; Ryan, 28 October).
+## rider lays (Burn, Cryo, Flak), the blow an area keyword deals each foe past the target
+## (Spread, Penetrate, Splash; Ryan, 28 October) or the blow Chain deals each conductor (Chain,
+## 28 October).
 const NUMBER_FIELDS := {
 	Keyword.BURN: "burn", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
 	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.SPLASH: "splash",
+	Keyword.CHAIN: "chain",
 }
 ## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
 const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
@@ -105,6 +112,7 @@ var flak: int = 0             # an attack with Flak: the stacks of Flak each foe
 var cleave: int = 0           # an attack with Spread: the number each foe beside its target in its rank takes as its blow's (Ryan, 28 October: Spread N, the half retired)
 var penetrate: int = 0        # an attack with Penetrate: the number the other rank of its target's column takes (Penetrate N)
 var splash: int = 0           # an attack with Splash: the number each foe of the plus round its target takes, the row's and the column's (Splash N)
+var chain: int = 0            # an attack with Chain: the number every other Shocked foe on the field takes as its blow's (Chain N, 28 October)
 var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first, overshield included; short of it the entry cannot be played
 var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
@@ -156,6 +164,13 @@ var split: int = 1            # the effective entry only, never printed: each ro
 var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
 var dry: bool = false         # shown only: the magazine cannot pay that price, so the gun cannot be spent
+# The Storm Petrel's and the Giant Petrel's locked pieces (Ryan's go, 21 October; built 30 October):
+var regen_shield: int = 0     # an attack: spent on a foe, its machine gains Regenerating, this much shield at the start of each round...
+var regen_rounds: int = 0     # ...through this many rounds after the spend, a grant of its own (the St. Elmo's Regenerator)
+var action_price: int = 0     # a buff: on an ally whose die is spent, the team's rerolls it pays, and the ally's die rolls again, never onto the entry it showed, and it acts again (the Immelmann Booster); on itself, its status
+var rolls_target: bool = false   # a buff: the die of the machine it lands on rolls again, never onto the entry showing; nothing on a spent die (the Reheat Uplink)
+var kill_rerolls: int = 0     # an attack: if its spend kills, the team gains this many rerolls this round, banked if unspent (the Spindrift Salvo)
+var burns: int = 0            # shown only: the shield the spend burns in place of heat now (the Storm Petrel's Riot Field Generator, Skirmish.shown_face), drawn in the heat slot
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -303,6 +318,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.cleave = maxi(0, int(d.get("cleave", 0)))   # add_keyword gives an area keyword a number of one when it says none
 		f.penetrate = maxi(0, int(d.get("penetrate", 0)))
 		f.splash = maxi(0, int(d.get("splash", 0)))
+		f.chain = maxi(0, int(d.get("chain", 0)))   # add_keyword gives Chain a number of one when it says none
 		var g = d.get("gates", {})
 		f.gates = (g as Dictionary).duplicate(true) if g is Dictionary else {}
 		f.consumes = str(d.get("consumes", ""))
@@ -334,6 +350,14 @@ static func from_dict(d: Dictionary) -> Face:
 	f.random_targets = bool(d.get("random_targets", false)) and f.kind == Kind.ATTACK
 	f.spray = bool(d.get("spray", false)) and f.kind == Kind.ATTACK
 	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
+	var regen = d.get("regenerates", {})
+	if f.kind == Kind.ATTACK and regen is Dictionary:
+		f.regen_shield = maxi(0, int((regen as Dictionary).get("shield", 0)))
+		f.regen_rounds = maxi(0, int((regen as Dictionary).get("rounds", 0))) if f.regen_shield > 0 else 0
+	var deal = d.get("ally_action", {})
+	f.action_price = maxi(0, int((deal as Dictionary).get("rerolls", 0))) if f.kind == Kind.BUFF and deal is Dictionary else 0
+	f.rolls_target = bool(d.get("rolls_target", false)) and f.kind == Kind.BUFF
+	f.kill_rerolls = maxi(0, int(d.get("kill_rerolls", 0))) if f.kind == Kind.ATTACK else 0
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -380,6 +404,8 @@ func to_dict() -> Dictionary:
 		for kw in AREA_KEYWORDS:
 			if has(kw) and number_of(kw) > 0:
 				d[NUMBER_FIELDS[kw]] = number_of(kw)   # a debuff's area deals nothing, so it prints no number
+		if has(Keyword.CHAIN) and chain > 0:
+			d["chain"] = chain
 	if volatile > 0:
 		d["volatile"] = volatile
 	if shield_cost > 0:
@@ -438,6 +464,14 @@ func to_dict() -> Dictionary:
 		d["spray"] = true
 	if reloads_ammo > 0:
 		d["reloads_ammo"] = reloads_ammo
+	if regen_shield > 0 and regen_rounds > 0:
+		d["regenerates"] = {"status": "regenerating", "shield": regen_shield, "rounds": regen_rounds}
+	if action_price > 0:
+		d["ally_action"] = {"rerolls": action_price}
+	if rolls_target:
+		d["rolls_target"] = true
+	if kill_rerolls > 0:
+		d["kill_rerolls"] = kill_rerolls
 	return d
 
 
@@ -450,8 +484,8 @@ func add_keyword(kw: int) -> void:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
 		flak = 1
-	if AREA_KEYWORDS.has(kw) and int(get(NUMBER_FIELDS[kw])) <= 0:
-		set(NUMBER_FIELDS[kw], 1)   # an area keyword says its number; one when nothing says (a synthetic entry, an old save)
+	if (AREA_KEYWORDS.has(kw) or kw == Keyword.CHAIN) and int(get(NUMBER_FIELDS[kw])) <= 0:
+		set(NUMBER_FIELDS[kw], 1)   # an area keyword or Chain says its number; one when nothing says (a synthetic entry, an old save)
 
 
 func has(kw: int) -> bool:
@@ -516,7 +550,8 @@ func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
-		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or spray or reloads_ammo > 0
+		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or spray or reloads_ammo > 0 \
+		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
 
 
 ## Whether the entry prints a cooldown of its own: a number past Rapid's switch-off, or a
@@ -622,6 +657,7 @@ func duplicate_face() -> Face:
 	f.cleave = cleave
 	f.penetrate = penetrate
 	f.splash = splash
+	f.chain = chain
 	f.volatile = volatile
 	f.shield_cost = shield_cost
 	f.short = short
@@ -656,6 +692,12 @@ func duplicate_face() -> Face:
 	f.reloads_ammo = reloads_ammo
 	f.ammo = ammo
 	f.dry = dry
+	f.regen_shield = regen_shield
+	f.regen_rounds = regen_rounds
+	f.action_price = action_price
+	f.rolls_target = rolls_target
+	f.kill_rerolls = kill_rerolls
+	f.burns = burns
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -782,12 +824,35 @@ func rule_phrases() -> Array[String]:
 			out.append("sprays the rest in reach")
 		if ammo_per_foe_hit > 0:
 			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
+		if kill_rerolls > 0:
+			out.append(_kill_rerolls_text())
+		if regen_shield > 0 and regen_rounds > 0:
+			out.append(_regen_text())
+	else:
+		if action_price > 0:
+			out.append(_action_text())
+		if rolls_target:
+			out.append("its die rolls again")
 	if printed_cooldown():
 		out.append(cooldown_text().strip_edges())
 	out.append_array(_spin_phrases())
 	if not charged.is_empty():
 		out.append("%s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), charged_form().describe()])
 	return out
+
+
+## The Petrels' rules as the entry's text says them (built 30 October): the Salvo's kill rider,
+## the Regenerator's rider on its own spender, the Booster's price for an ally's action.
+func _kill_rerolls_text() -> String:
+	return "a kill brings %d reroll%s" % [kill_rerolls, "" if kill_rerolls == 1 else "s"]
+
+
+func _regen_text() -> String:
+	return "Regenerating on itself, %d shield a round for %d round%s" % [regen_shield, regen_rounds, "" if regen_rounds == 1 else "s"]
+
+
+func _action_text() -> String:
+	return "on an ally whose die is spent, %d reroll%s: its die rolls again and it acts again" % [action_price, "" if action_price == 1 else "s"]
 
 
 ## A printed cooldown as the entry's text says it: " cooldown 2", or " no cooldown" on a Rapid
@@ -847,6 +912,10 @@ func describe() -> String:
 			for k in keywords:
 				if not printed.has(k):
 					s += " " + keyword_label(k)
+			if action_price > 0:
+				s += " " + _action_text()   # the Immelmann Booster's ally use, after what it does on itself
+			if rolls_target:
+				s += " its die rolls again"   # the Reheat Uplink's roll on the machine it lands on
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
@@ -872,8 +941,8 @@ func describe() -> String:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
 					s += " %d" % flak
-				if AREA_KEYWORDS.has(k) and not is_debuff():
-					s += " %d" % number_of(k)   # area by shape, numbered: what each foe past the target takes (a debuff's deals nothing)
+				if (AREA_KEYWORDS.has(k) or k == Keyword.CHAIN) and not is_debuff():
+					s += " %d" % number_of(k)   # area by shape and Chain, numbered: what each foe past the target or each conductor takes (a debuff's deals nothing)
 				if gates.has(KEYWORD_NAMES[k]):
 					s += " (%s)" % Effects.gate_text(gates[KEYWORD_NAMES[k]])   # a gated keyword says where it lands
 			if vents_all:
@@ -908,6 +977,10 @@ func describe() -> String:
 				s += " sprays the rest in reach"
 			if ammo_per_foe_hit > 0:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
+			if kill_rerolls > 0:
+				s += " " + _kill_rerolls_text()   # the Spindrift Salvo's kill rider
+			if regen_shield > 0 and regen_rounds > 0:
+				s += " " + _regen_text()   # the St. Elmo's Regenerator's rider on its own spender
 			s += cooldown_text() + spin_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat

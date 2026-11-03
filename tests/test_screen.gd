@@ -27,23 +27,126 @@ func test_screen_builds_and_starts_round_one() -> void:
 	assert_eq(s._dice.size(), 3, "three dice views")
 	assert_eq(s._end_btn.text, "END TURN", "one end button")
 	assert_eq(s._mech_views.size(), 3, "three mech views")   # mechs are models; headless has no renderer and no sprite
-	assert_true(s._dice[0].can_tap and s._dice[0].can_drag, "dice lock and drag in the same phase")
+	assert_true(s._dice[0].can_tap and s._dice[0].can_drag, "dice read and drag in the same phase")
 	s.free()
 
 
-func test_tap_locks_and_unlocks_a_die() -> void:
+## A die takes a unit's gestures (Ryan, 30 October: "change lock/unlock to hold and double-tap,
+## and tap to inspect for dice ... That way it's standard across the board"): a tap opens its
+## readout and a tap again closes it, one readout at a time with the units'; a double-tap or a
+## hold locks or unlocks it, the readouts left as they stand (its tap waits out the double-tap
+## window, so a double-tap's first tap never lands); no codex.
+func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	var s := _screen()
-	s._on_die_tapped(0)
-	assert_true(s.locked[0], "locked after one tap")
-	assert_true(s._dice[0].locked, "view shows the lock")
-	s._on_die_tapped(0)
-	assert_false(s.locked[0], "unlocked after a second tap")
+	var d: DieFaceView = s._dice[0]
+	assert_true(d.confirm_taps, "the tray's dice wait out the double-tap window")
+	d.tapped.emit()
+	assert_eq(s._pop, {"die": 0}, "a tap opens the die's readout")
+	assert_true(s._details.visible and s._details_entry.visible, "shown, the entry's lines")
+	assert_eq(s._details.fill_alpha, 1.0, "opaque over the log's lines")
+	assert_false(s.locked[0], "and locks nothing")
+	d.tapped.emit()
+	assert_true(s._pop.is_empty() and not s._details.visible, "a tap on it again closes it")
+	d.double_tapped.emit()
+	assert_true(s.locked[0], "a double-tap locks")
+	assert_true(d.locked, "the view shows the lock")
+	assert_true(s._pop.is_empty() and not s._details.visible, "and opens no readout")
+	assert_false(s._codex.visible, "no codex: the whole die is the machine's double-tap")
+	d.double_tapped.emit()
+	assert_false(s.locked[0], "a double-tap again unlocks")
+	s._on_mech_tapped(1)
+	d.double_tapped.emit()
+	assert_eq(s._pop, {"mech": 1}, "a double-tap leaves the machine's readout open")
+	assert_true(s.locked[0], "and locks")
+	d.held.emit()
+	assert_false(s.locked[0], "a hold unlocks")
+	assert_eq(s._pop, {"mech": 1}, "and leaves the readout open")
+	d.held.emit()
+	assert_true(s.locked[0], "a hold again locks")
+	s._close_pop()
+	s._replay_shade.visible = true
+	d.tapped.emit()
+	assert_true(s._pop.is_empty(), "a tap landing late, as the enemy's turn replays, opens nothing")
+	s._replay_shade.visible = false
+	s._on_mech_double_tapped(0)
+	d.tapped.emit()
+	assert_true(s._pop.is_empty(), "nor one under a codex opened meanwhile")
+	s._close_codex()
 	s.free()
+
+
+## The die's tap waits out the double-tap window (Ryan, 30 October), so a double-tap never shows a
+## tap's work, and the face lights from the touch until the tap lands, so the beat never reads as
+## lag; a tap and then a hold or a drag is the hold or the drag. Without the wait (the waiting
+## Swap's die, whose double-tap does nothing) a tap lands at once.
+func test_a_dies_tap_waits_out_the_double_tap_window_lit() -> void:
+	var d := DieFaceView.new()
+	d.confirm_taps = true
+	var count := {"tap": 0, "double": 0, "held": 0, "drag": 0}
+	d.tapped.connect(func() -> void: count["tap"] += 1)
+	d.double_tapped.connect(func() -> void: count["double"] += 1)
+	d.held.connect(func() -> void: count["held"] += 1)
+	d.drag_started.connect(func() -> void: count["drag"] += 1)
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	press.global_position = Vector2(50, 50)
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	release.global_position = Vector2(50, 50)
+	d._gui_input(press)
+	assert_true(d._lit(), "lit the moment it is touched")
+	d._gui_input(release)
+	assert_eq(count["tap"], 0, "a tap waits out the window")
+	assert_true(d._lit(), "the face lit while it waits")
+	d._process(0.0)
+	assert_eq(count["tap"], 0, "still waiting inside the window")
+	d._tap_due = 0.0   # the window run out
+	d._process(0.0)
+	assert_eq(count["tap"], 1, "then it lands")
+	assert_false(d._lit(), "and the light goes")
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	d._gui_input(press)
+	d._gui_input(release)
+	assert_eq(count["double"], 1, "two quick taps are a double-tap")
+	d._tap_due = 0.0 if d._tap_due >= 0.0 else -1.0   # any tap still waiting, its window run out
+	d._process(0.0)
+	assert_eq(count["tap"], 1, "and its first tap never lands")
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	d._gui_input(press)
+	d._press_at -= 1.0   # held past the hold's time
+	d._process(0.0)
+	d._gui_input(release)
+	d._tap_due = 0.0 if d._tap_due >= 0.0 else -1.0   # any tap still waiting, its window run out
+	d._process(0.0)
+	assert_eq([count["held"], count["tap"]], [1, 1], "a tap and then a hold is the hold")
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	d._gui_input(press)
+	var move := InputEventMouseMotion.new()
+	move.global_position = Vector2(50, 90)
+	d._gui_input(move)
+	d._gui_input(release)
+	d._tap_due = 0.0 if d._tap_due >= 0.0 else -1.0   # any tap still waiting, its window run out
+	d._process(0.0)
+	assert_eq([count["drag"], count["tap"]], [1, 1], "a tap and then a drag is the drag")
+	d.confirm_taps = false
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	assert_eq(count["tap"], 2, "without the wait a tap lands at once")
+	d.free()
 
 
 func test_reroll_skips_locked_and_spent_dice() -> void:
 	var s := _screen(11)
-	s._on_die_tapped(0)
+	s._toggle_lock(0)
 	var kept_face := s.sk.mechs[0].face_index
 	var before := s.sk.rerolls_left
 	s._on_reroll()
@@ -91,7 +194,9 @@ func test_drag_onto_a_target_spends_the_face() -> void:
 			continue
 		assert_true(ms.assigned, "mech %d assigned" % i)
 		assert_false(s._dice[i].can_drag, "spent die no longer drags")
-		assert_false(s._dice[i].can_tap, "spent die no longer locks")
+		s._toggle_lock(i)
+		assert_false(s.locked[i], "spent die no longer locks")
+		assert_true(s._dice[i].can_tap, "but still reads with a tap")
 	s.free()
 
 
@@ -108,18 +213,61 @@ func test_drop_target_lookup_finds_a_foe_view() -> void:
 	s.free()
 
 
-func test_hold_shows_details_and_arrows() -> void:
+## A unit's readout is a tap toggle, one unit's at a time (Ryan, 29 October: "Change the
+## hold-press on player units and enemy units into a tap toggle, only one unit popup allowed at a
+## time"): a tap opens it with the arrows that concern the unit, a tap on it again closes it, a
+## tap on another unit or a die moves it there, a hold opens it and letting go keeps it, a tap on
+## nothing closes it, and it is translucent so the arrows under it show.
+func test_a_tap_toggles_a_units_readout() -> void:
 	var s := _screen()
 	var foe: Foe = s.sk.front[0]
 	var v := s._foe_view_for(foe)
+	s._on_foe_tapped(v, 0, 0)
+	assert_true(s._details.visible, "a tap opens the foe's readout")
+	assert_true(s._details.fill_alpha < 1.0, "translucent, the arrows under it showing")
+	assert_eq(s._arrows.arrows.size(), 1, "with the arrow it brings")
+	s._on_foe_tapped(v, 0, 0)
+	assert_false(s._details.visible, "a tap on it again closes it")
+	assert_eq(s._arrows.arrows.size(), 0, "and its arrow")
+	s._on_foe_tapped(v, 0, 0)
+	s._on_mech_tapped(1)
+	assert_eq(s._pop, {"mech": 1}, "a tap on another unit moves it there, one at a time")
+	var name := s.sk.mechs[1].unit.display_name.to_upper()
+	assert_true(s._details_entry.text().begins_with(name), "the machine's readout")
+	s._on_mech_held(1)
+	assert_eq(s._pop, {"mech": 1}, "a hold on the same unit leaves it open")
+	s._on_die_tapped(0)
+	assert_eq(s._pop, {"die": 0}, "a tap on a die moves it to the die")
+	assert_eq(s._details.fill_alpha, 1.0, "its readout opaque over the log")
+	s._on_mech_tapped(1)
+	assert_true(s._details.visible and s._details_entry.text().begins_with(name), "a tap on the machine moves it back")
+	assert_true(s._details.fill_alpha < 1.0, "translucent again")
+	s._refresh()
+	assert_true(s._details.visible and s._details_entry.text().begins_with(name), "and it stays open as the fight refreshes")
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	s._gui_input(press)
+	assert_false(s._details.visible, "a tap on nothing closes it")
 	s._on_foe_held(v)
-	assert_true(s._details.visible, "details shown on hold")
-	assert_eq(s._arrows.arrows.size(), 1, "one arrow for the held foe")
-	s._on_hold_released()
-	assert_false(s._details.visible, "details hidden on release")
-	assert_eq(s._arrows.arrows.size(), 0, "arrows cleared")
+	assert_true(s._details.visible and s._pop == {"foe": foe}, "a hold opens it too")
+	s._on_mech_double_tapped(0)
+	assert_true(s._pop.is_empty() and not s._details.visible, "the codex takes over from it")
+	s._close_codex()
 	s._toggle_all_arrows(true)
 	assert_true(s._arrows.arrows.size() >= 3, "eye shows every arrow")
+	s.free()
+
+
+## A machine's readout rests on its gauges (Ryan, 29 October: "Tighten the bottom of the player
+## unit popups to the top of the unit's bounding box, just a bit").
+func test_a_machines_readout_rests_on_its_gauges() -> void:
+	var s := _screen()
+	s._on_mech_tapped(0)
+	var v: UnitView = s._mech_views[0]
+	var bottom := s._details.position.y + s._details.size.y
+	var top := v.position.y + v.drawn_top()
+	assert_true(top - bottom >= 0.0 and top - bottom <= SkirmishScreen.POP_GAP + 0.5, "its foot just over the unit's gauges: %.1f over %.1f" % [bottom, top])
 	s.free()
 
 
@@ -162,7 +310,6 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_true(s._details_entry.text().contains("Armour %d · Cooling %d" % [m.armour, m.cooling]), "its armour and cooling as stats, nothing moved: %s" % s._details_entry.text())
 	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
 	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Overcharged")), "every chip listed with what it does: %s" % str(chips))
-	s._on_hold_released()
 	# A foe: its HP, its attack a rally raised (the foe's gain: up and green), its intent.
 	Effects.grant_for_rounds(foe, Effects.kindled(2), "test", sk.round + 1)
 	s._refresh()
@@ -182,18 +329,17 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	var blow: Dictionary = flines[at + 2]["parts"][1]
 	assert_eq([int(blow["trend"]), bool(blow["gain"])], [1, true], "harder than its own: the foe's gain, relative to the unit")
 	assert_eq(str(flines[at + 3]["text"]), "Target: %s" % foe.target.unit.display_name, "the machine it is aimed at, named")
-	s._on_hold_released()
 	s.free()
 
 
-## The die's hold (Ryan, 25 October: "only show the visible component"; 26 October: "it just
+## The die's readout, a tap (Ryan, 25 October: "only show the visible component"; 26 October: "it just
 ## turns the iconography into text"): the entry showing, alone, as a list in the order a spend
 ## runs it: its place and name from content, its number as the die prints it, its heat, its
 ## target, its keywords, its own rules, then its tags. A number the live sources moved off the
 ## component's own is coloured, never its sources listed: green where it is good for the unit,
-## the enemy red where it is bad, an arrow on the number for which way. The whole die is the
+## the red-red where it is bad, an arrow on the number for which way. The whole die is the
 ## codex's.
-func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
+func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> void:
 	var s := _screen()
 	var db := ContentDB.load_default()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
@@ -208,7 +354,7 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	ms.face_index = 0
 	ms.unit.grant_passive({"id": "t_amp", "name": "Test Amp", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]})
 	s._refresh()
-	s._on_die_held(1)
+	s._on_die_tapped(1)
 	assert_true(s._details.visible and s._details_entry.visible, "the entry's readout shown")
 	assert_false(s._details_label.visible, "no heading over it: the entry's name is its first line")
 	var lines: Array = s._details_entry.lines
@@ -229,25 +375,25 @@ func test_die_hold_shows_the_entry_showing_with_its_effects_listed() -> void:
 	assert_true(s._details_entry.text().contains("%d–%d▲ ×2" % [n[0], n[1]]), "the arrow on the number that moved and no other: %s" % s._details_entry.text())
 	assert_true(s._details_entry.custom_minimum_size.y > 100.0, "sized to its lines: %s" % str(s._details_entry.custom_minimum_size))
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "and the panel to it")
-	s._on_hold_released()
-	assert_false(s._details.visible, "hidden on release")
-	# A heat a passive raised is bad for the machine: the red, its arrow up.
+	s._on_die_tapped(1)
+	assert_false(s._details.visible, "a tap again hides it")
+	# A heat a passive raised is bad for the machine: the red-red, its arrow up.
 	ms.unit.grant_passive({"id": "t_hot", "name": "Test Hot", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 2}]})
-	s._on_die_held(1)
+	s._on_die_tapped(1)
 	var heat: Dictionary = {}
 	for l in s._details_entry.lines:
 		if str(l["text"]).begins_with("Heat"):
 			heat = l["parts"][1]
 	assert_eq([int(heat.get("trend", 0)), bool(heat.get("gain", true))], [1, false], "more heat than the component's own: a loss")
-	assert_eq(EntryReadout.trend_ink(heat), Palette.ENEMY, "in the enemy red")
-	s._on_hold_released()
+	assert_eq(EntryReadout.trend_ink(heat), Palette.LOSS, "in the red-red, harm to its unit")
+	s._on_die_tapped(1)
 	s.free()
 
 
-## The hold says what kind of piece the entry is on its machine, a passive's hybrid in (Ryan, 26
-## October: the Whip Scorpion's vents are "vent, weapon" on that machine, shown on the hold and
+## The readout says what kind of piece the entry is on its machine, a passive's hybrid in (Ryan, 26
+## October: the Whip Scorpion's vents are "vent, weapon" on that machine, shown on the readout and
 ## never in the codex, which shows the component as built).
-func test_the_hold_names_the_entrys_type_with_a_passives_hybrid() -> void:
+func test_the_readout_names_the_entrys_type_with_a_passives_hybrid() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
 	var vent := Face.vent(4)
@@ -255,13 +401,13 @@ func test_the_hold_names_the_entrys_type_with_a_passives_hybrid() -> void:
 	ms.die = Die.single(vent)
 	ms.face_index = 0
 	s._refresh()
-	s._on_die_held(1)
+	s._on_die_tapped(1)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Vent", "a vent is a vent")
-	s._on_hold_released()
+	s._on_die_tapped(1)
 	ms.unit.grant_passive({"id": "t_blast", "name": "Test Blast", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 1.0}]})
-	s._on_die_held(1)
+	s._on_die_tapped(1)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Vent, Weapon", "on a machine whose vents blast, a weapon too")
-	s._on_hold_released()
+	s._on_die_tapped(1)
 	var rows := EntryReadout.codex_lines(vent, ContentDB.load_default())
 	assert_eq(str(rows[0]["type"]), "Vent", "the codex keeps the component as built")
 	s.free()
@@ -279,13 +425,13 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 	ms.face_index = 0
 	ms.unit.grant_passive({"id": "t_split", "name": "Test Split", "description": "", "effects": [{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]})
 	s._refresh()
-	s._on_die_held(1)
+	s._on_die_tapped(1)
 	var parts: Array = s._details_entry.lines[1]["parts"]
 	assert_eq(str(s._details_entry.lines[1]["text"]), "Attack 2–3 ×2", "a strike's share of the roll, struck twice: %s" % str(s._details_entry.lines[1]["text"]))
 	assert_eq([int(parts[1]["trend"]), bool(parts[1]["gain"])], [-1, false], "the blow down, a loss")
 	assert_eq([int(parts[2]["trend"]), bool(parts[2]["gain"])], [1, true], "the strikes up, a gain")
 	assert_true(s._details_entry.text().contains("2–3▼ ×2▲"), "each arrow on its own number: %s" % s._details_entry.text())
-	s._on_hold_released()
+	s._on_die_tapped(1)
 	s.free()
 
 
@@ -361,9 +507,8 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 	assert_eq(str(EntryReadout.lines_for(gun, 1, [], gun, [], Effects.printed_grants(u, gun), db).back()["text"]), "Damage past a kill spills behind.", "among the rules, last")
 
 
-## The keywords list (Ryan, 26 October): the pause menu's page and the button under the eye open
-## it, every term the dice and the chips print, by kind, each with its codex line; nothing
-## planned shows.
+## The keywords list (Ryan, 26 October): the pause menu's page, every term the dice and the chips
+## print, by kind, each with its codex line; nothing planned shows.
 func test_the_keywords_list_holds_every_term_the_dice_print() -> void:
 	var db := ContentDB.load_default()
 	var names := {}
@@ -385,15 +530,16 @@ func test_the_keywords_list_holds_every_term_the_dice_print() -> void:
 		if str(db.vocabulary[id].get("status", "")) != "implemented":
 			assert_false(ids.has(id), "the planned %s is never shown" % id)
 	var s := _screen()
-	s._keys.pressed.emit()
-	assert_true(s._menu != null and s._menu.visible, "the button under the eye opens it")
-	assert_eq(s._menu._page, "keywords", "straight on the keywords")
+	# A term in shown text takes a tap for its own line, so the list lives in the menu alone (Ryan,
+	# 30 October: "And yes remove keywords button").
+	for c in s.get_children():
+		assert_false(c is HudButton and (c as HudButton).text == "KEYWORDS", "no KEYWORDS button on the field")
+	s._open_menu()
+	assert_eq(s._menu._page, "paused", "MENU opens on PAUSED")
+	s._menu._show_page("keywords")
+	assert_true(s._menu._list != null and s._menu._list.get_child(0).get_child_count() > 20, "its KEYWORDS page from there, the list built")
 	s._menu.close()
 	assert_false(s._menu.visible, "and it closes back to the fight")
-	s._open_menu()
-	assert_eq(s._menu._page, "paused", "MENU still opens on PAUSED")
-	s._menu._show_page("keywords")
-	assert_true(s._menu._list != null and s._menu._list.get_child(0).get_child_count() > 20, "its page from there, the list built")
 	s.free()
 
 
@@ -451,7 +597,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_true(s._codex.visible, "codex opens for a foe")
 	assert_eq(s._codex._title.text, foe.display_name, "titled with the foe's name")
 	assert_eq(s._codex._sub.text, "THE MARSH", "the domain's name as the subtitle")
-	assert_true(not s._codex._body.text.is_empty(), "foe codex text present")
+	assert_true(not s._codex._body.text().is_empty(), "foe codex text present")
 	assert_true(s._codex._moves.visible and s._codex._moves.text().contains("CLAW"), "implemented moves listed")
 	assert_true(s._codex._moves.text().contains("a kin standing"), "the swarm is said too")
 	assert_true(s._codex._flavour.text.begins_with("“"), "flavour shown as a quote")
@@ -468,26 +614,12 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_true(headless or (s._codex._sprite.visible and s._codex._sprite.texture != null), "head-on model shown")
 	assert_true(s._codex._passives.visible, "sparrowhawk's passive is shown")
 	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", "")).to_lower()
-	var shown := ""
-	for l in s._codex._passives.get_children():
-		shown += (l as Label).text.to_lower() + "\n"
+	var shown := s._codex._passives.text().to_lower()
 	assert_true(not passive_name.is_empty() and shown.contains(passive_name), "by its name from content")
-	var first: Label = s._codex._passives.get_child(0)
-	assert_eq(first.get_theme_color("font_color"), CodexBox.passive_colour("chassis"), "the chassis's own passive in its colour, first")
-	assert_true(CodexBox.passive_colour("component") != CodexBox.passive_colour("chassis"), "a component's passive reads in another")
+	var first: Dictionary = s._codex._passives.lines[0]
+	assert_eq(first.get("ink", Color.BLACK), Palette.INK, "the chassis's own passive first, in ink (Ryan, 30 October: \"the passive line can go in normal colour\")")
 	assert_true(s._codex._faces.visible and s._codex._faces.get_child_count() == s.sk.mechs[2].die.faces.size(), "a row an entry, one column")
 	s._close_codex()
-	s.free()
-
-
-func test_a_quick_second_tap_on_a_die_is_a_tap() -> void:
-	# The die codex is gone (Ryan, 22 September): tap locks, tap again unlocks, hold reads.
-	var s := _screen()
-	assert_false(s.locked[0], "unlocked to start")
-	s._on_die_tapped(0)
-	s._on_die_tapped(0)
-	assert_false(s.locked[0], "two taps: locked then unlocked")
-	assert_false(s._codex.visible, "no codex opened")
 	s.free()
 
 
@@ -665,7 +797,6 @@ func test_a_suppressed_foe_shows_its_chip_in_place_of_its_intent() -> void:
 	var text := s._details_entry.text()
 	assert_false(text.contains("INTENT") or text.contains("Target:"), "the hold lists no intent and names no target: %s" % text)
 	assert_true(text.contains("Suppressed"), "its Suppressed chip says what it does this round")
-	s._on_hold_released()
 	s.free()
 
 
@@ -1180,13 +1311,19 @@ func test_the_menu_survives_a_colour_change_and_quits_to_the_host() -> void:
 
 
 func test_the_eye_and_reroll_keep_off_the_grounds() -> void:
+	var was: Variant = Settings.display.get("skirmish_controls", "middle")
+	Settings.display["skirmish_controls"] = "middle"   # the controls between the sides: a desk machine may have saved them at the bottom
 	var s := _screen()
 	assert_true(s._eye.position.y >= s.LOG_Y - 10.0, "the eye sits in the black under the foes' ground")
-	assert_true(s._log_scroll.position.x + s._log_scroll.size.x <= s._eye.position.x, "the log strip stops short of it")
+	assert_true(s._switch.position.x + s._switch.size.x <= s._eye.position.x and s._switch.position.y == s._eye.position.y, "the controls' switch beside it")
+	assert_true(s._log_scroll.position.x + s._log_scroll.size.x <= s._switch.position.x, "the log strip stops short of them")
+	var glass: Rect2 = s._bg.glass[0]
+	assert_true(glass.encloses(s._eye.get_rect()) and glass.encloses(s._switch.get_rect()), "both inside the log's glass (Ryan, 29 October: they did not fit it)")
 	var seam := s.REROLL_Y + SkirmishScreen.REROLL_SIZE.y + SkirmishScreen.REROLL_GAP
-	assert_true(seam <= s.MECH_Y, "the mechs' ground starts before the mechs")
+	assert_true(seam <= s.MECH_Y, "Reroll clear of the machines' row")
 	assert_true(s.DIE_Y >= s.LOG_Y + SkirmishScreen.LOG_H, "the dice sit under the log")
 	s.free()
+	Settings.display["skirmish_controls"] = was
 
 
 func test_replay_steps_order_specials_among_blows_and_name_only_the_named() -> void:
@@ -1238,10 +1375,10 @@ func test_the_plaque_shows_a_name_in_its_pixel_face() -> void:
 	p.free()
 
 
-## The predator sense (the funnel-web, 18 October): while an ambusher's die is held or dragged
+## The predator sense (the funnel-web, 18 October): while an ambusher's die is read or dragged
 ## the foes' ground dims and the foes its entry can reach that show no intent on it are marked;
 ## and a webbed or acid-eaten foe wears its chip, the web's pointing at the neighbour it catches.
-func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_or_dragged() -> void:
+func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_read_or_dragged() -> void:
 	var ambush := {"id": "ambush_t", "name": "Ambush", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_no_intent", "damaging": true}]}
 	var s := _screen(7)
@@ -1256,14 +1393,14 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_held_o
 	for foe in s.sk.field_foes():
 		foe.target = s.sk.mechs[1]
 	s._refresh()
-	assert_false(s._prey.on, "off until the die is held or dragged")
+	assert_false(s._prey.on, "off until the die is read or dragged")
 	var reach := s.sk.targets_for(i)
 	assert_true(reach.size() >= 2, "foes in reach to mark")
-	s._on_die_held(i)
-	assert_true(s._prey.on, "on while the die is held")
+	s._on_die_tapped(i)
+	assert_true(s._prey.on, "on while the die's readout is open")
 	assert_eq(s._prey.marks.size(), reach.size(), "every foe in reach looks at another machine: every one marked")
-	s._on_hold_released()
-	assert_false(s._prey.on, "off when the die is let go")
+	s._on_die_tapped(i)
+	assert_false(s._prey.on, "off when it closes")
 	var t: Foe = reach[0]
 	t.target = ms
 	s._on_drag_started(i)
@@ -1322,12 +1459,12 @@ func test_a_blasting_vent_rings_every_foe_with_its_number_until_it_is_over_an_al
 	s._refresh()
 	assert_eq(s._dice[0].blast, 20, "the die prints the blow its vent would fire")
 	assert_false(s._prey.on, "no rings until the die is in hand")
-	s._on_die_held(0)
-	assert_true(s._prey.on and s._prey.style == "blast", "held: the blast's rings")
+	s._on_die_tapped(0)
+	assert_true(s._prey.on and s._prey.style == "blast", "read: the blast's rings")
 	assert_eq(s._prey.marks.size(), 2, "on every live foe")
 	assert_true(s._prey.labels.has("20") and s._prey.labels.has("15"), "each with what it would deal there, armour off: %s" % str(s._prey.labels))
-	s._on_hold_released()
-	assert_false(s._prey.on, "gone when let go")
+	s._on_die_tapped(0)
+	assert_false(s._prey.on, "gone when its readout closes")
 	s._on_drag_started(0)
 	assert_true(s._prey.on, "dragged: the rings")
 	assert_eq(s._ghost.blast, 20, "and the die under the finger prints it")
@@ -1342,8 +1479,8 @@ func test_a_blasting_vent_rings_every_foe_with_its_number_until_it_is_over_an_al
 
 
 ## The lure preview (the Siphon's forecast, 22 October): while a die whose entry Lures every foe
-## is held or dragged, the foes it would turn draw dashed arrows to its machine, its gauges read
-## the lured blows and their heat, and the machine they left reads none; let go, all goes back.
+## is read or dragged, the foes it would turn draw dashed arrows to its machine, its gauges read
+## the lured blows and their heat, and the machine they left reads none; closed, all goes back.
 func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -1359,13 +1496,13 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	s._refresh()
 	var heat_before := int(s._mech_views[0].bars[2][3])
 	assert_eq(heat_before, sk.mechs[0].heat, "the heat as it stands")
-	s._on_die_held(0)
+	s._on_die_tapped(0)
 	var dashed := s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3]))
 	assert_eq(dashed.size(), 2, "both foes' arrows dashed to the lure, unasked")
 	assert_eq(int(s._mech_views[0].bars[2][3]), sk.mechs[0].heat + 20, "its heat gauge drinks ten a lured blow")
 	assert_eq(int(s._mech_views[1].bars[1][3]), sk.mechs[1].unit.hull, "the machine they left keeps its hull")
-	s._on_hold_released()
-	assert_eq(int(s._mech_views[0].bars[2][3]), heat_before, "let go, the gauge goes back")
+	s._on_die_tapped(0)
+	assert_eq(int(s._mech_views[0].bars[2][3]), heat_before, "its readout closed, the gauge goes back")
 	assert_true(s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3])).is_empty(), "and the dashed arrows with it")
 	for f in sk.field_foes():
 		assert_eq(f.target, sk.mechs[1], "nothing turned for real")
@@ -1373,10 +1510,10 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	assert_eq(s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3])).size(), 2, "dragged anywhere, the same preview")
 	s._on_drag_ended(Vector2(-100, -100))
 	sk.front[0].target = sk.mechs[0]
-	s._on_die_held(0)
+	s._on_die_tapped(0)
 	assert_eq(s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3])).size(), 1, "the one it would turn dashed")
 	assert_eq(s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() <= 3 or not bool(x[3])).size(), 1, "and the one on it already solid, every blow it would take shown")
-	s._on_hold_released()
+	s._on_die_tapped(0)
 	s.free()
 
 
@@ -1443,16 +1580,16 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 		assert_false(str(r[2]).begins_with("Shots"), "the count is pips, never a chip")
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
 	assert_true(s._mech_views[1].pips.is_empty(), "nor pips")
-	# The hold's cylinder (Ryan's ring, 19 October): every chamber in order, the one showing lit,
+	# The readout's cylinder (Ryan's ring, 19 October): every chamber in order, the one showing lit,
 	# the arrow to the next; a die that rolls has none.
-	s._on_die_held(0)
-	assert_true(s._details_ring.visible, "the stepping die's hold shows its cylinder")
+	s._on_die_tapped(0)
+	assert_true(s._details_ring.visible, "the stepping die's readout shows its cylinder")
 	assert_eq(s._details_ring.faces.size(), n, "every chamber on it")
 	assert_eq([s._details_ring.current, s._details_ring.next], [ms.face_index, (ms.face_index + 1) % n], "the one showing lit, the arrow to the next")
-	s._on_hold_released()
-	s._on_die_held(1)
+	s._on_die_tapped(0)
+	s._on_die_tapped(1)
 	assert_false(s._details_ring.visible, "a die that rolls shows no cylinder")
-	s._on_hold_released()
+	s._on_die_tapped(1)
 	# The codex prints the order: its cylinder, no chamber lit and every gap's arrow, between fights.
 	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
 	assert_true(bool(entry["steps"]), "the codex knows the die steps")
@@ -1465,8 +1602,9 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 
 
 ## A Swap's two targets on the screen (Ryan, 21 October): drop the die on the first target and
-## it waits there, the second targets lit; a tap on one spends it; dragging the die again picks
-## it back up; a reroll or the turn's end sets it back in the tray first.
+## it waits there, the second targets lit; a tap on one spends it; a tap on the die reads it;
+## a tap on nothing sets it back, once no readout is open (30 October); dragging the die again
+## picks it back up; a reroll or the turn's end sets it back in the tray first.
 func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
@@ -1498,8 +1636,29 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	var tm: Skirmish.MechState = t.sk.mechs[0]
 	tm.die.faces[tm.face_index] = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SWAP])
 	t._begin_second(0, t.sk.targets_for(0)[0])
+	t._ghost.tapped.emit()
+	assert_eq(t._pop, {"die": 0}, "a tap on the waiting die reads it")
+	assert_true(t._details.visible and t._details_entry.visible, "its readout shown")
+	assert_false(t._pending.is_empty(), "and the Swap still waits")
+	t._ghost.tapped.emit()
+	assert_true(t._pop.is_empty(), "a tap again closes it")
+	t._ghost.held.emit()
+	assert_eq(t._pop, {"die": 0}, "a hold opens it too: a die being spent has nothing to lock")
+	assert_false(t.locked[0], "and locks nothing")
+	var nothing := InputEventMouseButton.new()
+	nothing.button_index = MOUSE_BUTTON_LEFT
+	nothing.pressed = true
+	t._gui_input(nothing)
+	assert_true(t._pop.is_empty() and not t._pending.is_empty(), "a tap on nothing closes the readout first, the Swap still waiting")
+	t._gui_input(nothing)
+	assert_true(t._pending.is_empty(), "a second sets the Swap back")
+	assert_false(t._ghost.visible, "the die gone from its first target")
+	assert_false(tm.assigned, "home in the tray, unspent")
+	assert_eq(t._dice[0].modulate.a, 1.0, "and shown there")
+	t._begin_second(0, t.sk.targets_for(0)[0])
 	t._on_ghost_drag_started()
 	assert_true(t._pending.is_empty() and t._drag_from == 0, "dragging it again picks it back up")
+	assert_true(t._pop.is_empty() and not t._details.visible, "and the die in hand closes its readout")
 	t._on_drag_ended(Vector2(-100, -100))
 	assert_false(tm.assigned, "set back in the tray, unspent")
 	t._begin_second(0, t.sk.targets_for(0)[0])

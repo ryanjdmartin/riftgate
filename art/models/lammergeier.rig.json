@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/lammergeier.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/lammergeier.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "sensor_contractor": {
    "axis": "yaw",
@@ -312,7 +312,7 @@
    "glow": [
     {
      "parts": [
-      "drone_tube"
+      "drone_tube_floor"
      ],
      "keys": [
       [
@@ -525,7 +525,13 @@
   "bay_seam",
   "booster_ring",
   "contractor_core",
-  "drone_tube",
+  "drone_tube_floor",
   "exhaust"
- ]
+ ],
+ "pins": {
+  "hp_1": "incendiary_shells",
+  "hp_2": "enfilade_beam",
+  "hp_3": "polarity_projector",
+  "hp_4": "arc_fault_cannon"
+ }
 }

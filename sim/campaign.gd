@@ -53,7 +53,7 @@ const BLEED := 50             # a city under an open rift it was not defended at
 const DRAIN := 25             # each fallen city's horde takes this from the capital a turn
 const SQUAD := 4              # machines a battle takes at most (four columns, section 5)
 const WIPE_PHASES := 6        # phases the horde strikes the gate unopposed after a team wipe
-const SALVAGE_PER_FOE := 10   # salvage for each foe killed, in any fight however it ended (7 October: a kill is a kill); large on purpose, salvage is no combat stat
+const SALVAGE_PER_MENACE := 2  # salvage a point of menace killed, in any fight however it ended (7 October: a kill is a kill; 30 October: weighted by danger, the reinforcements light, so the farm pays a trickle and the rift's bounty is where the salvage is); set so a battle banks about what it banked at ten a kill
 const START_SALVAGE := 0      # salvage builds; a run starts with nothing to build with but its blueprints
 const FAVOUR_PER_WIN := 100   # the Council's Favour for a won battle (7 October: the second currency, earned by results, spent on purchases and services)
 const FAVOUR_DOCK := 1        # Favour docked per point of gate damage the city took in that battle; never below nothing
@@ -106,6 +106,7 @@ var blueprints: Array = []        # component ids the run can build without limi
 var tokens: Array = []            # research tokens, by the faction whose boss dropped them (unpacked in the hangar, not built)
 var offers: Array = []            # city ids whose maker owes an offer (the offer itself waits on the catalogues)
 var bosses_beaten: Dictionary = {}   # faction id -> bosses beaten this run
+var anathema: Dictionary = {}        # faction id -> the menace of its foes killed this run, every battle however it ended (the Rupture meter's weight; recorded beside the count of three bosses, which still decides the final)
 var bosses_ended: Dictionary = {}    # faction id -> the bosses its battles ended on this run, by foe id, so the next draws another
 var finals_won: Array = []        # factions beaten (their final won): they lead and guest no new rift
 var party: Dictionary = {}        # faction id -> the hero dealt it at the run's start (its final; promoted, its column at the finale)
@@ -319,7 +320,10 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		team.append(db.make_mech(m.chassis, m.uid, Vector2i.ZERO, m.loadout))
 	var c: City = cities[city_id]
 	var b := Battle.new(rng.randi_range(1, 1 << 30))
-	b.tier = tier()
+	# The tier is the rift's, locked as it opened and shown on its card (Ryan's form, the curve
+	# proposal; 30 October); the ramp is the live Convergence, the same for every open front.
+	b.tier = int(c.rift.get("tier", tier())) if not c.capital else tier()
+	b.ramp = convergence
 	b.guest = str(c.rift.get("guest", ""))
 	var lead := str(c.rift.get("faction", ""))
 	if c.capital:
@@ -366,7 +370,11 @@ func finish_battle() -> Dictionary:
 			b.field.phase += 1
 	var report := {"turn": turn, "city": c.id, "faction": b.faction, "guest": b.guest, "wiped": wiped,
 		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0,
-		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital, "closed": [], "finals": []}
+		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital, "closed": [], "finals": [],
+		"menace": b.menace_killed, "kills": b.foes_killed, "fractures": b.fractures, "fractures_of": b.thresholds.size(),
+		"rupture_turn": b.rupture_turn, "stall_guard": b.stall_guard, "elites": b.elites_spawned.size(),
+		"peaks": b.field.peaks, "rift_spawns": b.field.rift_spawns, "tear_spawns": b.field.tear_spawns, "tears": b.field.tears.size()}
+	anathema[b.faction] = int(anathema.get(b.faction, 0)) + b.menace_killed
 	# The machines. (Salvage is the kills of every fight however it ended, tallied here at the
 	# battle's end and never shown while it is fought, 7 October: one less number on the
 	# screen, and no visible count to farm against.)
@@ -393,7 +401,7 @@ func finish_battle() -> Dictionary:
 		var final := bool(c.rift.get("final", false))
 		c.rift = {}
 		c.quiet = QUIET_TURNS
-		var banked := b.foes_killed * SALVAGE_PER_FOE
+		var banked := b.menace_killed * SALVAGE_PER_MENACE
 		salvage += banked
 		report["salvage"] = banked
 		# The Council pays for results: its Favour for the win, docked for the gate damage the
@@ -420,7 +428,7 @@ func finish_battle() -> Dictionary:
 		_fall(c)
 	else:
 		report["result"] = "held"
-		var banked := b.foes_killed * SALVAGE_PER_FOE
+		var banked := b.menace_killed * SALVAGE_PER_MENACE
 		salvage += banked
 		report["salvage"] = banked
 	report["gate_left"] = c.gate
@@ -653,7 +661,7 @@ func _roll_rift() -> Dictionary:
 		if not others.is_empty():
 			guest = str(others[rng.randi_range(0, others.size() - 1)])
 	var final := int(bosses_beaten.get(lead, 0)) >= FINAL_AFTER and not finals_won.has(lead)
-	return {"faction": lead, "guest": guest, "final": final}
+	return {"faction": lead, "guest": guest, "final": final, "tier": tier()}
 
 
 # ---------------------------------------------------------------- the hangar

@@ -154,7 +154,7 @@ func _run(trio: Array, cell: Dictionary, opened: bool) -> Dictionary:
 			sk.end_round()
 			for o in sk.overheats:
 				agg["overheats"] += 1
-				agg["over_hull"] += int(o["over"])
+				agg["over_hull"] += int(o.get("burn", o["over"]))
 				burnt = true
 		if burnt:
 			agg["fights_overheated"] += 1

@@ -53,7 +53,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -150,7 +150,7 @@ const STATUS := {
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
 	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
-	# machine's bare hull is Shocked, and the team's next blow on it lands double.
+	# machine's bare hull is Shocked, and the team's next weapon strike aimed at it lands double.
 	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.", "stacking": "renew",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
@@ -158,8 +158,10 @@ const STATUS := {
 	# and lifts it as its parts fall and grow back, so every number reads it, the die's too.
 	"guarded": {"id": "guarded", "name": "Guarded", "description": "Takes no damage while its parts stand.", "stacking": "renew",
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
-	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow of a weapon it takes deals double, then the shock is spent.", "stacking": "renew",
-		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
+	# Shocked (Ryan, 29 October): only a weapon's strike aimed at the foe reads it (aimed_only), so a
+	# blow that merely reaches it, an area's, a Chain's arc or a spill, neither doubles nor spends it.
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "When a weapon's strike aimed at it lands, the blow deals double and the shock is spent; a blow that only reaches it neither doubles nor spends it.", "stacking": "renew",
+		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2, "aimed_only": true}]},
 	# Exposed (the Kestrel session, 20 and 21 October; built 21 October), the debuff: the foe
 	# stands in Direct reach of every machine as if its column's front were empty, and its
 	# armour counts for nothing, its own and any Armoured (Foe.armour_total), through the next
@@ -188,6 +190,10 @@ const STATUS := {
 		"tags": ["store"], "effects": []},
 	"phased": {"id": "phased", "name": "Phased", "description": "Cannot act, take damage or be targeted until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
+	# Swallowed (a foe's swallow, Floraison's, 30 October): out of the fight as a Phased machine is,
+	# laid by a foe and timed by its move, ended early by its swallower's fall.
+	"swallowed": {"id": "swallowed", "name": "Swallowed", "description": "Out of the fight: it cannot act, take damage or be targeted until its rounds run out, its swallower falls, or its swallower loses a quarter of its HP.", "stacking": "renew",
+		"tags": ["debuff"], "effects": []},
 	"rallied": {"id": "rallied", "name": "Rallied", "description": "The team has one reroll more this round.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
@@ -207,12 +213,18 @@ const STATUS := {
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
-	# The Honey Badger's hopper (Ryan, 11 October): loads the Chainsaw Claw digs out of what it
-	# hits, which the Bullion Fragmenter fires a few a shot. A store on the machine with no
-	# effect of its own (the weapon that fires it reads it); it lasts the skirmish, never
-	# decays, and nothing cleanses it.
+	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
+	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
+	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads
+	# are worth stands as the Ore Plate); it lasts the skirmish, never decays, and nothing
+	# cleanses it.
 	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
 		"tags": ["store"], "effects": []},
+	# What the hopper's loads are worth (Ryan, 21 October: "Each one grants armour, displayed as a
+	# buff"; 31 October, a point a load): the first buff a store grants, its stacks kept at the
+	# loads' worth (sync_plate), so a purge puts it to sleep a turn while the loads stay.
+	"ore_plate": {"id": "ore_plate", "name": "Ore Plate", "description": "Armour +1 a stack: what the loads in its hopper are worth, while it holds them.", "decay": "none",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Armadillo's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
 	# framework): a shield it spends on itself seals it, a vent or a weapon opens it.
 	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
@@ -237,7 +249,7 @@ const STATUS := {
 	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
 	# Flak keyword's number. Every blow of a weapon the foe takes deals a point more a stack, a
 	# strike of 0 included (Ryan, 25 October: "Flak and overcharge exist in part to get past
-	# armour"), an add before the multiplies (a Shocked foe takes blow plus Flak, doubled) and
+	# armour"), an add before the multiplies (a Shocked foe takes a strike aimed at it plus Flak, doubled) and
 	# before its armour comes off (the bible's armour row); equipment's blow stays nothing
 	# (damage_taken). The stacks halve at the end of each round, rounded down (Overcharged's
 	# clock: Skirmish.end_round halves a foe's), so a sprayer feeding three a round settles near
@@ -288,8 +300,9 @@ const STATUS := {
 	# A foe's regrowth over time (28 October; the Marsh's by lean): at each of its actions it
 	# regrows its value in HP, after its Burning and Vitriol have ticked, so a burn is a race and
 	# never a wall; a stack an action left, three from the grant, each grant its own clock
-	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield) is
-	# planned until its engine session. A buff the player's Purge takes.
+	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield, built
+	# 30 October) is regenerating_shield's: shield at each round's start, a timed grant of its own.
+	# A buff the player's Purge takes, and the enemy's a bought one.
 	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Burning and Vitriol; a stack an action left.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
@@ -424,7 +437,9 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
 ## setup_once (the Needletail's gate, 21 October; listed 23 October, when its content landed):
 ## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
-const SUPPORTED_WHEN := ["rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once"]
+## shield_up (the Storm Petrel's plate, built 30 October): the machine's own shield stands, read
+## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
+const SUPPORTED_WHEN := ["rolled", "reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -856,10 +871,17 @@ static func _fires(trigger: String) -> bool:
 ## Does an effect's `when` hold for the component in hand? Reach conditions read the
 ## effective reach, so a reach condition follows a component a passive's set_reach moved.
 ## `target` is the foe an attack is aimed at, for conditions on it; null outside an attack.
-static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
+## `ctx` carries what a what-if reads in place of the unit's own: the shield a forecast's blow
+## meets ("shield"), for shield_up.
+static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionary = {}) -> bool:
 	match str(eff.get("when", "")):
 		"":
 			return true
+		"shield_up":
+			# The machine's own shield stands (the Storm Petrel's plate, 30 October): the shield
+			# the blow meets, before it lands.
+			var own = ctx.get("shield", u.get("shield"))
+			return own != null and int(own) > 0
 		"rolled":
 			return face != null and face.is_ranged()
 		"reach_direct":
@@ -906,14 +928,14 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 
 
 ## Every effect taking part in a query: [effect dictionary, modifier], gated as above.
-static func _taking_part(u, trigger: String, face: Face, target = null) -> Array:
+static func _taking_part(u, trigger: String, face: Face, target = null, ctx: Dictionary = {}) -> Array:
 	var out: Array = []
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != trigger or not _fires(trigger):
 				continue
 			var name := str(eff.get("effect", ""))
-			if not _usable(u, m, name) or not _holds(u, eff, face, target):
+			if not _usable(u, m, name) or not _holds(u, eff, face, target, ctx):
 				continue
 			out.append([eff, m])
 	return out
@@ -1038,14 +1060,19 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 ## A blow of nothing (a lure, a web, a probe) stays nothing: an add on what a blow deals
 ## (Flak's point a stack) never turns no blow into one. A `weapon` blow, a weapon's, takes every
 ## add whatever it deals, a strike of 0 included (Ryan, 25 October: "Flak and overcharge exist
-## in part to get past armour").
-static func damage_taken(u, amount: int, source = null, weapon: bool = false) -> int:
+## in part to get past armour"). An effect marked aimed_only (Shocked's double) is read only on a
+## weapon's strike `aimed` at the unit, never on a blow that only reaches it (29 October).
+## `shield`, when given, is the shield the blow meets in a forecast's walk, which a plate that
+## stands with the shield reads (shield_up); the unit's own otherwise.
+static func damage_taken(u, amount: int, source = null, weapon: bool = false, aimed: bool = true, shield: int = -1) -> int:
 	if amount <= 0 and not weapon:
 		return 0
 	var add := 0.0
 	var mult := 1.0
-	for pair in _taking_part(u, "static", null, source):
+	for pair in _taking_part(u, "static", null, source, {"shield": shield} if shield >= 0 else {}):
 		var eff: Dictionary = pair[0]
+		if bool(eff.get("aimed_only", false)) and not (aimed and weapon):
+			continue   # Shocked (29 October): read by a weapon's strike aimed at the unit, nothing else
 		var n: int = pair[1].stacks
 		match str(eff.get("effect", "")):
 			"add_damage_taken":
@@ -1495,7 +1522,65 @@ static func store_cap(u, id: String) -> int:
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
 				return int(eff["cap"])
+			if id == "hopper" and str(eff.get("effect", "")) == "fill_hopper" and int(eff.get("cap", 0)) > 0:
+				return int(eff["cap"])
 	return 0
+
+
+## The loads each foe its weapons damage puts in this machine's hopper (fill_hopper, static: the
+## Honey Badger's Ore Hopper, Ryan, 31 October: "per foe damaged"), 0 when nothing fills it. A
+## weapon that fills the hopper itself (the Chainsaw Claw's two) reads its own number instead.
+static func hopper_fill(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "fill_hopper":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return n
+
+
+## The armour `loads` in this machine's hopper are worth (hopper_plate, static: `value` for each
+## `per` loads held; a point a load, Ryan, 31 October), the loads it holds when none are given;
+## 0 when nothing plates it.
+static func hopper_plate(u, loads: int = -1) -> int:
+	var held := stacks_of(u, "hopper") if loads < 0 else loads
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "hopper_plate":
+			n += int(eff.get("value", 0)) * int(pair[1].stacks) * int(held / maxi(1, int(eff.get("per", 1))))
+	return n
+
+
+## Loads into the hopper, never past its cap, and the Ore Plate brought up to what they are
+## worth. Returns how many went in.
+static func add_loads(u, n: int) -> int:
+	var cap := store_cap(u, "hopper")
+	if cap > 0:
+		n = mini(n, cap - banked(u, "hopper"))
+	if n <= 0:
+		return 0
+	stack(u, STATUS["hopper"], SKIRMISH, "mech", n, DECAY_NONE)
+	sync_plate(u)
+	return n
+
+
+## Loads fired out of the hopper, and the Ore Plate brought down with them. Returns how many.
+static func spend_loads(u, n: int) -> int:
+	var spent := spend_stacks(u, "hopper", n)
+	sync_plate(u)
+	return spent
+
+
+## The Ore Plate stands at what the loads held are worth: a store's grant, never bought, so a
+## purge puts it to sleep while the loads stay (Ryan's row on stores, 21 October), and asleep it
+## keeps its stacks in step with them.
+static func sync_plate(u) -> void:
+	var want := hopper_plate(u)
+	var have := banked(u, "ore_plate")
+	if want > have:
+		stack(u, STATUS["ore_plate"], SKIRMISH, "store:hopper", want - have, DECAY_NONE)
+	elif want < have:
+		spend_stacks(u, "ore_plate", have - want)
 
 
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
@@ -1506,6 +1591,39 @@ static func free_rerolls(u) -> int:
 		if str(pair[0].get("effect", "")) == "free_reroll":
 			n += int(pair[0].get("value", 0)) * pair[1].stacks
 	return maxi(0, n)
+
+
+## Does this machine's shield pay its weapons' heat (burn_shield, static; the Storm Petrel's Riot
+## Field Generator, Ryan's go of 21 October, built 30 October)? While its shield stands, every
+## point of heat a weapon's spend would add comes off the shield instead, as far as it holds, and
+## the target takes a blow of what the shield paid (Skirmish._resolve_attack).
+static func burns_shield(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "burn_shield":
+			return true
+	return false
+
+
+## The most of the team's unspent rerolls this machine banks at the round's end (bank_rerolls,
+## static, its value the cap; the Giant Petrel's Maverick's Playbook, Ryan's go of 21 October,
+## built 30 October); 0 for a machine that banks none.
+static func bank_cap(u) -> int:
+	var cap := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "bank_rerolls":
+			cap = maxi(cap, int(pair[0].get("value", 0)))
+	return cap
+
+
+## A machine's Regenerating (the Storm Petrel's St. Elmo's Regenerator, built 30 October): the
+## status in the machine's own words, `value` shield at the start of each round (an
+## on_round_start add_shield, round_start below), granted on a timer the skirmish sets, a grant
+## of its own each time, so two grants regain twice as much until the first runs out.
+static func regenerating_shield(value: int) -> Dictionary:
+	var d: Dictionary = STATUS["regenerating"].duplicate(true)
+	d["description"] = "Regains %d shield at the start of each round." % maxi(1, value)
+	d["effects"] = [{"trigger": "on_round_start", "effect": "add_shield", "value": maxi(1, value)}]
+	return d
 
 
 ## What the start of a round does for this machine (on_round_start, after the roll), with
@@ -2015,6 +2133,10 @@ static func effect_text(eff: Dictionary) -> String:
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
 		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]
+		"fill_hopper": body = "every foe its weapons damage puts %s in its hopper, up to %d" % ["a load" if vs == "1" else vs + " loads", int(eff.get("cap", 0))]
+		"hopper_plate":
+			var per := int(eff.get("per", 1))
+			body = ("each load held is %s armour" if per <= 1 else "every %d loads held are %%s armour" % per) % ("a point of" if vs == "1" else vs)
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs

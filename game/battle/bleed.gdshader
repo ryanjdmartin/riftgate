@@ -34,6 +34,21 @@ uniform float blur_max = 3.0;                // the blur's tap spacing at its ma
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
 uniform float edge_fade = 30.0;              // map pixels past the field over which the side blur reaches full strength (smaller is harder)
 uniform float edge_blur = 1.6;               // the side blur's maximum
+// FXAA in the FXAA mode (Hud.fxaa: the AA MODE setting, MSAA off): the scene and the machines read
+// again through linear samplers of the same textures, smoothing their edges in the sharp zone.
+uniform bool fxaa = false;
+uniform sampler2D scene_lin : filter_linear;
+uniform sampler2D units_lin : filter_linear;
+// The machines' light outline (Ryan, 30 October: "I don't want the outline to thicken as I
+// zoom in"): a ring round the machines' layer, `outline_px` of the scene's pixels wide at
+// every zoom, smoothed, unbroken, and round the whole machine where the wall stands in front
+// of it, since the wall is not in that layer. Looked for only near a machine: `boxes` holds
+// each one's box on screen (Map3D.outline_boxes), so the rest of the map pays a comparison a
+// machine.
+uniform float outline_px = 0.0;              // 0: no outline
+uniform vec4 outline_color = vec4(0.36, 1.0, 0.42, 1.0);
+uniform vec4 boxes[32];                      // left, top, right, bottom, in the scene's pixels
+uniform int box_count = 0;
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -61,6 +76,95 @@ float blur_radius(vec2 px) {
 	float f = clamp((focus_y - focus_band - px.y) / focus_falloff, 0.0, 1.0);
 	float s = clamp((px.y - south_y) / (focus_falloff * 0.5), 0.0, 1.0);
 	return max(f, s) * blur_max;
+}
+
+// FXAA (Lottes's console form) with a contrast threshold, so only real edges blend: a
+// machine's silhouette, its outline, the grid's ribbons, a crag against the ground; a
+// texture's quiet texels stay as they are. `texel` is the texture's own pixel.
+const vec3 LUMA = vec3(0.299, 0.587, 0.114);
+const float FXAA_EDGE_MIN = 0.0625;
+const float FXAA_EDGE = 0.125;
+const float FXAA_REDUCE_MIN = 1.0 / 128.0;
+const float FXAA_REDUCE_MUL = 1.0 / 8.0;
+const float FXAA_SPAN = 8.0;
+
+vec4 fxaa_at(sampler2D tex, vec2 uv, vec2 texel) {
+	vec4 m = texture(tex, uv);
+	float lm = dot(m.rgb, LUMA);
+	float lnw = dot(texture(tex, uv + vec2(-0.5, -0.5) * texel).rgb, LUMA);
+	float lne = dot(texture(tex, uv + vec2(0.5, -0.5) * texel).rgb, LUMA);
+	float lsw = dot(texture(tex, uv + vec2(-0.5, 0.5) * texel).rgb, LUMA);
+	float lse = dot(texture(tex, uv + vec2(0.5, 0.5) * texel).rgb, LUMA);
+	float lo = min(lm, min(min(lnw, lne), min(lsw, lse)));
+	float hi = max(lm, max(max(lnw, lne), max(lsw, lse)));
+	if (hi - lo < max(FXAA_EDGE_MIN, hi * FXAA_EDGE)) {
+		return m;
+	}
+	vec2 dir = vec2(-((lnw + lne) - (lsw + lse)), (lnw + lsw) - (lne + lse));
+	float reduce = max((lnw + lne + lsw + lse) * 0.25 * FXAA_REDUCE_MUL, FXAA_REDUCE_MIN);
+	float rcp = 1.0 / (min(abs(dir.x), abs(dir.y)) + reduce);
+	dir = clamp(dir * rcp, vec2(-FXAA_SPAN), vec2(FXAA_SPAN)) * texel;
+	vec4 a = 0.5 * (texture(tex, uv + dir * (1.0 / 3.0 - 0.5)) + texture(tex, uv + dir * (2.0 / 3.0 - 0.5)));
+	vec4 b = a * 0.5 + 0.25 * (texture(tex, uv - dir * 0.5) + texture(tex, uv + dir * 0.5));
+	float lb = dot(b.rgb, LUMA);
+	return (lb < lo || lb > hi) ? a : b;
+}
+
+// How much of a machine the machines' layer holds at a texel: a flyer's shadow (alpha 0.45)
+// is not one.
+float solid_at(ivec2 p, ivec2 hi) {
+	return clamp((texelFetch(units, clamp(p, ivec2(0), hi), 0).a - 0.5) * 4.0, 0.0, 1.0);
+}
+
+// The outline's cover at a pixel: the machines' layer grown by `outline_px` (each texel
+// within reach counts, the farthest by how far it falls inside), less the machine itself,
+// whose own cover is smoothed over its four neighbours so the ring's inner edge does not
+// stair-step along the silhouette.
+float outline_at(vec2 uv, vec2 texel) {
+	vec2 p = uv / texel;
+	float pad = outline_px + 2.0;
+	bool near = false;
+	for (int i = 0; i < box_count; i++) {
+		vec4 b = boxes[i];
+		if (p.x > b.x - pad && p.x < b.z + pad && p.y > b.y - pad && p.y < b.w + pad) {
+			near = true;
+			break;
+		}
+	}
+	if (!near) {
+		return 0.0;
+	}
+	ivec2 hi = textureSize(units, 0) - ivec2(1);
+	ivec2 c = ivec2(floor(p));
+	float inner = (2.0 * solid_at(c, hi) + solid_at(c + ivec2(1, 0), hi) + solid_at(c - ivec2(1, 0), hi)
+		+ solid_at(c + ivec2(0, 1), hi) + solid_at(c - ivec2(0, 1), hi)) / 6.0;
+	if (inner >= 1.0) {
+		return 0.0;
+	}
+	float reach = outline_px + 1.0;
+	int n = int(ceil(reach));
+	// First, whether anything at all is in reach: a linear read at a corner where four texels
+	// meet averages the four, so a quarter of the reads cover the square, and most pixels near
+	// a machine are not near its edge.
+	float found = 0.0;
+	for (int y = -n; y <= n; y += 2) {
+		for (int x = -n; x <= n; x += 2) {
+			found = max(found, texture(units_lin, (vec2(c + ivec2(x, y)) + 1.0) * texel).a);
+		}
+	}
+	if (found <= 0.0) {
+		return 0.0;
+	}
+	float grown = 0.0;
+	for (int y = -n; y <= n; y++) {
+		for (int x = -n; x <= n; x++) {
+			float w = clamp(reach - length(vec2(float(x), float(y))), 0.0, 1.0);
+			if (w > grown) {
+				grown = max(grown, solid_at(c + ivec2(x, y), hi) * w);
+			}
+		}
+	}
+	return grown * (1.0 - inner);
 }
 
 // A dense 7x7 box at `rad` spacing: thick and smooth, never a ghosted multiple image.
@@ -128,7 +232,7 @@ void fragment() {
 	float outside = max(play_x.x - px.x, px.x - play_x.y);
 	float edge = smoothstep(0.0, edge_fade, outside);
 	float rad = max(blur_radius(px), edge * edge_blur);
-	vec4 scene = blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
+	bool aa_here = fxaa && rad < 0.05;   // the blurred zones are soft already
 	// The corrupted side is input the display cannot hold: rarely, a piece of a band of it
 	// tears, shearing sideways and dimming. Only the painted side ever shows it (the tear
 	// is on `other`), so a lone enemy tile between 3D tiles can glitch on its own; and a
@@ -178,12 +282,21 @@ void fragment() {
 	// nothing in front of it; on the reconstruction the scene's pixel wins, with its real
 	// depth, so the wall and the crags stand in front of a machine behind them. The
 	// units layer's translucent part (a flyer's shadow) falls on the painting the same way.
-	vec4 u = blurred_units(UV, 1.0 / view_size, rad);
+	// Each side reads only its own: the machines' layer where the painting shows, the scene
+	// where it does not (the units layer is the scene's size, so one texel serves both).
 	if (k > bayer(c)) {
+		vec4 u = aa_here ? fxaa_at(units_lin, UV, TEXTURE_PIXEL_SIZE) : blurred_units(UV, 1.0 / view_size, rad);
 		COLOR = other;
 		COLOR.rgb = mix(COLOR.rgb, u.rgb, u.a);
 	} else {
-		COLOR = scene;
+		COLOR = aa_here ? fxaa_at(scene_lin, UV, TEXTURE_PIXEL_SIZE) : blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
+	}
+	if (outline_px > 0.0) {
+		// Over either world, and gone where the ground blurs: a sharp ring round a soft machine
+		// reads as a sticker.
+		float ring = outline_at(UV, TEXTURE_PIXEL_SIZE) * (1.0 - clamp(rad / 1.5, 0.0, 1.0));
+		COLOR.rgb = mix(COLOR.rgb, outline_color.rgb, ring);
+		COLOR.a = max(COLOR.a, ring);
 	}
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
 	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;

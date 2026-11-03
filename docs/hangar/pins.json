@@ -19,9 +19,7 @@
   ],
   "sparrowhawk": [
    1,
-   2,
-   3,
-   4
+   2
   ],
   "baboon": [
    1,
@@ -35,8 +33,7 @@
    1,
    2,
    3,
-   4,
-   5
+   4
   ],
   "wild_boar": [
    1,
@@ -93,11 +90,36 @@
    3,
    4
   ],
-  "cassowary": null,
-  "cottonmouth": null,
-  "whip_scorpion": null,
-  "swallowtail": null,
-  "musk_ox": null,
+  "cassowary": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "cottonmouth": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "whip_scorpion": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "swallowtail": [
+   1,
+   2,
+   3
+  ],
+  "musk_ox": [
+   1,
+   2,
+   3,
+   4
+  ],
   "lammergeier": [
    1,
    2,

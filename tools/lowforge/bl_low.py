@@ -221,7 +221,8 @@ class Tiles:
             img[18:46, 14:50, :] = np.array([1.0, 0.98, 0.85], np.float32)
         elif kind == "glass":
             # Cockpit glass: a cool blue gradient with a diagonal glint, or red for the
-            # Arsenal (Ryan, 30 September: red glass is the Arsenal's staple).
+            # Arsenal (Ryan, 30 September: red glass is the Arsenal's staple), lit there
+            # (Build.material: Ryan, 29 October).
             img = np.zeros((TILE, TILE, 3), np.float32)
             red = self.maker == "arsenal"
             for y in range(TILE):
@@ -324,6 +325,17 @@ class Tiles:
             r = np.sqrt((yy - TILE / 2) ** 2 + (xx - TILE / 2) ** 2) / (TILE / 2)
             t = np.clip(1.0 - r, 0.0, 1.0)[..., None]
             img = 0.28 * (np.array([0.80, 0.12, 0.04], np.float32) * (1.0 - t) + np.array([1.0, 0.55, 0.18], np.float32) * t)
+        elif kind == "heat":
+            # A vent's heat banked down (Ryan, 29 October, of the Armadillo's vents: the glow
+            # "needs to lean way more yellow/orange", then, golden, "way too yellow"): one even
+            # colour, no red rim to fill a small face, red and green alone as every red and
+            # orange is (the bible's colour rows: past about #ff8200 an orange reads to Ryan as
+            # yellow). The game's renderer (the phone's, and the desk's since that day) shows a
+            # lit tile as the tile times its light, each channel clipped at one (measured from a
+            # render: the ember's rim showed as 255, 123, 41 at an act's peak, 1.8 times eight),
+            # so this is #ff7800 at that peak over 14.4 (red a little past one, for the glow's
+            # bloom), a deeper orange halfway up and near black at rest.
+            img = np.tile(np.array([0.080, 0.0327, 0.0], np.float32), (TILE, TILE, 1))
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
@@ -389,6 +401,8 @@ class Build:
         self.materials = {}
         self.objects = []
         self.pins = []      # every hp_* and joint_* Empty made, in order, so a joint block can take the pins made inside it
+        self.carries = {}   # hp_<n> -> the component its stock part is, "" a bare mount: the rig sidecar's pins (see pin())
+        self.hidden = []    # the hp_<n> pins that show nothing, stock or fitted: the sidecar's hidden_pins (see pin())
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
         self.acts = []         # the machine's idle acts, in authoring order (see act())
@@ -396,13 +410,24 @@ class Build:
         self.gait_spec = {}    # how the machine moves (see gait())
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
+        self.spin_steps = {}   # joint -> degrees a step: a spinner an act may lock, parked on a step (see spin(), act()'s `locks`)
+        self.spins_held = {}   # status -> {joint: degrees a second}: turned while the machine carries the status (see spin_held())
+        self.counts = []       # the count displays: parts lit in order for a number the game passes (see count())
+        self.forms = {}        # poses held while a status lasts (see form())
+        self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
     def material(self, name):
+        role, _, tile = name.partition(".")
+        if role == "glass" and self.tiles.maker == "arsenal":
+            # The Arsenal's cockpit glass glows, its red lit from within at rest (Ryan, 29
+            # October: "apply that material change to all Arsenal cockpit glass so that they
+            # all light up and have a passive glow"): the amber role is the one the game and
+            # the hangar light, so an act can flare it (the Ammit's eyes).
+            name, role = "amber." + tile, "amber"
         if name in self.materials:
             return self.materials[name]
-        role, _, tile = name.partition(".")
         mat = bpy.data.materials.new(name)
         mat.use_nodes = True
         bsdf = mat.node_tree.nodes["Principled BSDF"]
@@ -513,21 +538,26 @@ class Build:
             m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
         return self.loft(sections, material, label, m)
 
-    def cut(self, targets, p0, p1, radius, sides=8, phase=0.0):
+    def cut(self, targets, p0, p1, radius, sides=8, phase=0.0, section=None):
         """A hole: a cylinder from `p0` to `p1` subtracted from every object in `targets`
         before export (a boolean modifier, applied), so a recessed port is a real hollow in
         the chassis and nothing of the hull shows inside it (Ryan, 1 October). Pair it with
         a `_tube` of the same axis a hair smaller, whose inner wall and floor line the hole.
         `phase` turns the section about the axis: four sides at a quarter pi is a square
-        with its sides across and over the axis."""
+        with its sides across and over the axis. `section`, given, replaces the polygon with
+        any convex outline as (across, over) pairs about the axis, `radius` unused: a
+        rectangular vent's mouth."""
         d = (Vector(p1) - Vector(p0)).normalized()
         up = Vector((0.0, 0.0, 1.0))
         side = Vector((1.0, 0.0, 0.0)) if abs(d.dot(up)) > 0.999 else d.cross(up).normalized()
         over = side.cross(d).normalized()
+        if section is None:
+            section = [(radius * math.cos(phase + i * 2.0 * math.pi / sides), radius * math.sin(phase + i * 2.0 * math.pi / sides)) for i in range(sides)]
+        sides = len(section)
         bm = bmesh.new()
         rings = []
         for p in (Vector(p0) - d * 1.0, Vector(p1) + d * 4.0):
-            rings.append([bm.verts.new(p + side * (radius * math.cos(phase + i * 2.0 * math.pi / sides)) + over * (radius * math.sin(phase + i * 2.0 * math.pi / sides))) for i in range(sides)])
+            rings.append([bm.verts.new(p + side * u + over * v) for u, v in section])
         for i in range(sides):
             bm.faces.new([rings[0][i], rings[0][(i + 1) % sides], rings[1][(i + 1) % sides], rings[1][i]])
         bm.faces.new(rings[0])
@@ -590,12 +620,29 @@ class Build:
             bm.to_mesh(ob.data)
             bm.free()
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=()):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, hidden=False):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
         weapon points) and its scale the size a mounted component wears there, so the
         engine can hang a component's shape under it with no arithmetic. `parts` are the
         stock component's objects: parented under the pin, keeping their world transform,
-        so MechView3D.mount() hides them when another component is fitted."""
+        so MechView3D.mount() hides them when another component is fitted. `carries` is the
+        content id of the component those parts are, "" for a bare mount: the sidecar lists
+        it (rig()'s pins), and the engine compares a machine's fitted die against it, never
+        against content's stock, so a stock that moves on shows its class shapes until the
+        model follows (Ryan's go, 28 October). Every pin of a rigged machine names one.
+        `hidden` makes a mount that shows nothing, its stock or a fitted component's class (the
+        Cottonmouth's guns, mounted inside its drum: Ryan, 19 October, "the guns mounted
+        (invisibly) inside"): still a hardpoint, counted and recording what it carries, with no
+        parts of its own; the sidecar lists it under `hidden_pins` and the engine hangs nothing
+        on it (MechView3D.wear)."""
+        if hidden and not name.startswith("hp_"):
+            raise ValueError("%s: only a hardpoint (hp_<n>) hides, not %s" % (self.name, name))
+        if hidden and parts:
+            raise ValueError("%s: %s is hidden, so it carries no parts to show" % (self.name, name))
+        if name.startswith("hp_"):
+            self.carries[name] = carries
+            if hidden:
+                self.hidden.append(name)
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
         m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
@@ -608,7 +655,7 @@ class Build:
             ob.matrix_parent_inverse = inv
         return e
 
-    def joint(self, name, at, axis=None, limits=None, swing=None):
+    def joint(self, name, at, axis=None, limits=None, swing=None, slide=None):
         """`with b.joint("shoulder_l", pivot): ...` builds a limb inside the block and hangs
         everything made there, pins included, under an Empty named `joint_<name>` at the
         pivot, its axes the world's. A joint inside another joint's block nests under it
@@ -625,9 +672,11 @@ class Build:
         `limits` clamp what the engine may add to the rest pose, in degrees: a (lo, hi)
         pair on the joint's own axis, or {"pitch": (lo, hi), "yaw": (lo, hi)} for more
         than one. `swing` says whether a melee blow swings this joint (the arms); unnamed,
-        a joint named shoulder_* swings. All of it goes to the rig sidecar (see rig()); the
-        engine (MechRig) reads it."""
-        return _Joint(self, name, at, axis, limits, swing)
+        a joint named shoulder_* swings. `slide`, given, is the one line the joint moves along,
+        never turning (a gun that only runs in and out of its port: the Armadillo's, Ryan, 29
+        October): every turn is held to nothing and a shot kicks it back along the line. All of
+        it goes to the rig sidecar (see rig()); the engine (MechRig) reads it."""
+        return _Joint(self, name, at, axis, limits, swing, slide)
 
     @staticmethod
     def axis_for(name):
@@ -637,7 +686,7 @@ class Build:
                 return "yaw"
         return "pitch"
 
-    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None):
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None, locks=None):
         """One idle act, what the pilot does with the machine every few seconds (the
         idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
         (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
@@ -650,10 +699,21 @@ class Build:
         (eased between keys) or "linear" (a wheel spinning). `heft`, if given, is the act's
         own servo time constant in place of the machine's (b.move): a blow sharper than its
         weight (Ryan, 5 October). `places` limits the act to "map" or "skirmish" (the
-        Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both."""
+        Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both. `form`,
+        given, makes it one of that form's acts, played while the form is held in place of the
+        machine's own and added to the form's held pose (Ryan, 29 October: sealed, the
+        Armadillo's acts are its own, from its hunkered pose). `locks` names spinners with a
+        step (spin()'s `step`) the act holds still: each parks quickly on its next step ahead as
+        the act starts, never turning back, and holds there while it plays, the act's own track
+        on it adding whole steps over that; when the act ends its turn there runs on from where
+        it stands (MechRig: the Cottonmouth's drum stops on a chamber to fire, Ryan, 2 November:
+        "Keep the idle turn ... Quickly spin it forward a fixed number of barrels when it
+        fires")."""
         out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
         if heft is not None:
             out["heft"] = float(heft)
+        if locks:
+            out["locks"] = [str(j) for j in ([locks] if isinstance(locks, str) else locks)]
         if places:
             places = [places] if isinstance(places, str) else list(places)
             for pl in places:
@@ -663,24 +723,7 @@ class Build:
         for jn, keys in (tracks or {}).items():
             if jn not in self.joint_meta:
                 raise ValueError("act %r of %s keys a joint the model has not got: %s" % (name, self.name, jn))
-            axis_i = ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])
-            rows = []
-            for key in keys:
-                key = [float(v) for v in key]
-                if len(key) == 2:
-                    row = [key[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                    row[1 + axis_i] = key[1]
-                elif len(key) == 4:
-                    row = key + [0.0, 0.0, 0.0]
-                elif len(key) == 7:
-                    row = key
-                else:
-                    raise ValueError("act %r of %s: a key is (t, v), (t, pitch, yaw, roll) or 7 wide" % (name, self.name))
-                for ax, (lo, hi) in self.joint_meta[jn]["limits"].items():
-                    v = row[1 + ("pitch", "yaw", "roll").index(ax)]
-                    if not lo <= v <= hi:
-                        raise ValueError("act %r of %s asks %s for %s %g, outside its limits %g..%g" % (name, self.name, jn, ax, v, lo, hi))
-                rows.append(row)
+            rows = [self._row("act", name, jn, key) for key in keys]
             if jn.startswith("turret"):
                 self._turret_rule(name, jn, rows, float(duration))
             out["tracks"][jn] = rows
@@ -694,7 +737,67 @@ class Build:
         for parts, keys in glow or []:
             parts = [parts] if isinstance(parts, str) else list(parts)
             out["glow"].append({"parts": parts, "keys": [[float(t), float(k)] for t, k in keys]})
-        self.acts.append(out)
+        if form is None:
+            self.acts.append(out)
+        else:
+            self.form_acts.setdefault(form, []).append(out)
+        return out
+
+    def _row(self, kind, name, jn, key):
+        """One key of a joint's track, seven wide (t, pitch, yaw, roll, dx, dy, dz), from (t, v)
+        on the joint's own axis, (t, pitch, yaw, roll) or the whole row, held to its limits."""
+        axis_i = ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])
+        key = [float(v) for v in key]
+        if len(key) == 2:
+            row = [key[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            row[1 + axis_i] = key[1]
+        elif len(key) == 4:
+            row = key + [0.0, 0.0, 0.0]
+        elif len(key) == 7:
+            row = key
+        else:
+            raise ValueError("%s %r of %s: a key is (t, v), (t, pitch, yaw, roll) or 7 wide" % (kind, name, self.name))
+        for ax, (lo, hi) in self.joint_meta[jn]["limits"].items():
+            v = row[1 + ("pitch", "yaw", "roll").index(ax)]
+            if not lo <= v <= hi:
+                raise ValueError("%s %r of %s asks %s for %s %g, outside its limits %g..%g" % (kind, name, self.name, jn, ax, v, lo, hi))
+        return row
+
+    def form(self, name, duration, tracks, glow=None, body=None):
+        """A pose the machine holds while it carries the status of the same name (the
+        Armadillo's seal, 28 October: its guns sink and its ports shut while Sealed). `tracks`
+        map a joint to keys as an act's do, from rest at 0 to the held pose at `duration` (a
+        last key earlier is held on to it); MechRig turns the form in over `duration` and back
+        out the same way, holds it in between, and plays no act that moves one of its joints
+        while it is in. `glow` is a list of (parts, k): lit parts named by label and their
+        light's offset at the held pose (-1 dark, as an act's glow keys), eased in with the
+        turn. `body` moves the whole machine as an act's body keys do, to the held pose (the
+        sealed Armadillo hunkers down: Ryan, 29 October). Its own acts are act()'s with
+        `form` naming it."""
+        out = {"duration": float(duration), "tracks": {}, "glow": []}
+        if body:
+            rows = []
+            for key in body:
+                key = [float(v) for v in key]
+                if len(key) == 4:
+                    key = key + [0.0, 0.0, 0.0]
+                if len(key) != 7:
+                    raise ValueError("form %r of %s: a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll)" % (name, self.name))
+                rows.append(key)
+            if rows[-1][0] < float(duration):
+                rows.append([float(duration)] + rows[-1][1:])
+            out["body"] = rows
+        for jn, keys in tracks.items():
+            if jn not in self.joint_meta:
+                raise ValueError("form %r of %s keys a joint the model has not got: %s" % (name, self.name, jn))
+            rows = [self._row("form", name, jn, key) for key in keys]
+            if rows[-1][0] < float(duration):
+                rows.append([float(duration)] + rows[-1][1:])
+            out["tracks"][jn] = rows
+        for parts, k in glow or []:
+            parts = [parts] if isinstance(parts, str) else list(parts)
+            out["glow"].append({"parts": parts, "k": float(k)})
+        self.forms[name] = out
         return out
 
     # A turret's traverse in an act (Ryan, 4 October, the third pass: too fast and wild; not so
@@ -836,12 +939,47 @@ class Build:
         self.gait_spec = kept
         return self.gait_options[name]
 
-    def spin(self, joint, idle, moving=None):
+    def spin(self, joint, idle, moving=None, step=None):
         """A joint turned without end on its own axis, whatever the machine is doing (Ryan, 6
         October, the seventh notes: the Stingray's lift fans): `idle` degrees a second standing,
         `moving` (as idle if not given) once it is fully under way, the rate easing between them
-        with the move. Give the joint no limits: the turn is wrapped, never clamped."""
+        with the move. Give the joint no limits: the turn is wrapped, never clamped. `step`,
+        given, is its pitch in degrees, rest one of its steps (a drum's chamber, 60 for six): an
+        act may lock it (act()'s `locks`), parking it on a step while the act plays."""
         self.spins[joint] = [float(idle), float(idle if moving is None else moving)]
+        if step is not None:
+            if not 0.0 < float(step) <= 180.0:
+                raise ValueError("%s: the spin of %s steps %g degrees, which is no step" % (self.name, joint, step))
+            self.spin_steps[joint] = float(step)
+
+    def spin_held(self, status, joint, speed):
+        """A joint turned without end at `speed` degrees a second while the machine carries the
+        status `status` (an id in sim/effects.gd's STATUS, a test holding it), eased up to speed
+        as the status lands and run down as it goes (MechRig.hold_spin: the Cassowary's capacitor
+        while Spun Up, Ryan, 2 November). Give the joint no limits on its axis: the turn is
+        wrapped, never clamped."""
+        if joint not in self.joint_meta:
+            raise ValueError("%s: spin_held names a joint the model has not got: %s" % (self.name, joint))
+        if self.joint_meta[joint]["axis"] in self.joint_meta[joint]["limits"]:
+            raise ValueError("%s: the held spin's joint %s has limits on its axis, which would clamp its turn" % (self.name, joint))
+        self.spins_held.setdefault(str(status), {})[joint] = float(speed)
+
+    COUNT_SOURCES = ("shots", "ammo")   # the numbers the game passes a count display (MechRig.COUNT_SOURCES)
+
+    def count(self, source, parts, on=1.5, off=-0.85, flare=8.0):
+        """A count display: `parts` (lit labels, the first lit first) shown lit for as many as the
+        number `source` the game passes as the screen refreshes (`shots`, a machine's counted
+        shots toward the next that counts; `ammo`, its magazine's rounds: COUNT_SOURCES), the rest
+        dark; a number that falls flares every part and lets them all go dark (MechRig.show_counts:
+        the Cassowary's capacitor, a cell a counted shot, discharging on the sixth, Ryan, 2
+        November). `on`, `off` and `flare` are each part's light as an offset from its light at
+        rest, as a glow key's: -1 dark. The parts are kept apart by the weld, as a glow's are."""
+        if source not in self.COUNT_SOURCES:
+            raise ValueError("%s: a count display shows one of %s, not %r" % (self.name, ", ".join(self.COUNT_SOURCES), source))
+        parts = [parts] if isinstance(parts, str) else list(parts)
+        if not parts or len(set(parts)) != len(parts):
+            raise ValueError("%s: a count display names its parts, each once: %r" % (self.name, parts))
+        self.counts.append({"source": source, "parts": parts, "on": float(on), "off": float(off), "flare": float(flare)})
 
     def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
@@ -878,8 +1016,22 @@ class Build:
         cornering numbers, written beside the glTF as art/models/<id>.rig.json so no
         runtime code keys on a chassis id. The names the acts' glows look up are listed
         for the weld, which must keep those parts apart."""
-        glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]}
-                            | set(self.gait_spec.get("glow", {}).get("parts", [])) | set(self.gait_spec.get("treads", {}).get("parts", [])))
+        for fname in self.form_acts:
+            if fname not in self.forms:
+                raise ValueError("%s: acts are given to a form it has not got: %s" % (self.name, fname))
+        every_act = self.acts + [a for acts in self.form_acts.values() for a in acts]
+        lit_parts = ({p for a in every_act for g in a["glow"] for p in g["parts"]}
+                     | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
+                     | set(self.gait_spec.get("glow", {}).get("parts", []))
+                     | {p for c in self.counts for p in c["parts"]})
+        glow_parts = sorted(lit_parts | set(self.gait_spec.get("treads", {}).get("parts", [])))
+        # A count display's part has one master: an act, a form or the gait lighting it too would
+        # fight the display over its light.
+        glowing = ({p for a in every_act for g in a["glow"] for p in g["parts"]} | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
+                   | set(self.gait_spec.get("glow", {}).get("parts", [])))
+        shared = sorted(glowing & {p for c in self.counts for p in c["parts"]})
+        if shared:
+            raise ValueError("%s: %s light for a count display and a glow both" % (self.name, ", ".join(shared)))
         # A part a glow names is a label matched whole (the rig's MechRig.labelled: the label,
         # or the label with the importer's numbering), never a prefix: "repulsor" lights no
         # "repulsor_l" (the Puffin's amplify lit nothing for a day; Ryan, 28 October).
@@ -890,18 +1042,53 @@ class Build:
             if not any(_labelled(n, part) for n in names):
                 near = sorted({n for n in names if n.startswith(part)})
                 raise ValueError("%s: a glow names %r, which labels no part%s" % (self.name, part, " (a label matches whole, not by its prefix: %s)" % ", ".join(near[:4]) if near else ""))
-        out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it" % self.name,
-               "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
+            # And a part that can light: only the amber role glows in the game (MechView3D),
+            # so a glow on a plate changes nothing (the Armadillo's vent lit its unlit collar,
+            # not the ember floor inside it, which _tube labels "<label>_floor").
+            worn = {m.name.partition(".")[0] for ob in self.objects if _labelled(ob.name, part) for m in ob.data.materials if m is not None}
+            if part in lit_parts and "amber" not in worn:
+                raise ValueError("%s: a glow names %r, which wears no lit (amber) material, only %s" % (self.name, part, ", ".join(sorted(worn))))
+        # What each pin's stock part is (pin()'s `carries`): every pin names one, so the engine
+        # never guesses a model's kit from content.
+        unnamed = sorted((n for n, c in self.carries.items() if c is None), key=lambda n: int(n[3:]))
+        if unnamed:
+            raise ValueError("%s: %s name no component they carry (b.socket/b.stock/b.pin carries=, \"\" for a bare mount)" % (self.name, ", ".join(unnamed)))
+        # A lock parks a stepped spinner (act()'s `locks`): the act's own turn on it must end on a
+        # whole step, held to the act's end, so the turn runs on from a step when the act ends.
+        for a in every_act:
+            for jn in a.get("locks", []):
+                if jn not in self.spins or jn not in self.spin_steps:
+                    raise ValueError("%s: act %r locks %s, which is no spinner with a step (b.spin's step)" % (self.name, a["name"], jn))
+                rows = a["tracks"].get(jn, [])
+                if rows:
+                    turn = rows[-1][1 + ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])]
+                    whole = turn / self.spin_steps[jn]
+                    if abs(whole - round(whole)) > 1e-6 or rows[-1][0] < a["duration"] - 1e-6:
+                        raise ValueError("%s: act %r ends its locked %s on %g degrees at %gs, which must be a whole step held to the act's end" % (self.name, a["name"], jn, turn, rows[-1][0]))
+        out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it" % self.name,
+               "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts,
+               "pins": {n: self.carries[n] for n in sorted(self.carries, key=lambda n: int(n[3:]))}}
+        if self.hidden:
+            out["hidden_pins"] = sorted(self.hidden, key=lambda n: int(n[3:]))   # mounts that show nothing, stock or fitted (pin()'s `hidden`)
         if self.gait_options:
             out["gait_options"] = self.gait_options
         if self.spins:
             out["spin"] = self.spins
+        if self.spin_steps:
+            out["spin_step"] = self.spin_steps
+        if self.spins_held:
+            out["spin_held"] = self.spins_held
+        if self.counts:
+            out["counts"] = self.counts
+        if self.forms:
+            out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
         return out
 
-    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):
-        """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the
-        block and pins it: every object made in the block hangs under the pin."""
-        return _Socket(self, name, at, forward, scale)
+    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
+        """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock
+        component inside the block and pins it: every object made in the block hangs under
+        the pin. `carries` names the component it is (pin())."""
+        return _Socket(self, name, at, forward, scale, carries)
 
     def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel"):
         """A bare gun mount: a hardpoint whose stock loadout puts nothing there (the rule,
@@ -915,12 +1102,13 @@ class Build:
         self.box(-w / 2.0, w / 2.0, -w / 2.0, w / 2.0, -t, 0.0, material, "pad")
         for ob in self.objects[start:]:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale)
+        return self.pin(name, at, forward, scale, carries="")
 
-    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0):
+    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
         """A pin whose stock component is one of the silhouette classes (models_low.SHAPES),
         built at the origin along +y and moved onto the pin's frame at its scale: the way a
-        swapped component will sit there, so the machine is judged wearing one."""
+        swapped component will sit there, so the machine is judged wearing one. `carries`
+        names the component (pin()); its class is `shape`."""
         import models_low
         start = len(self.objects)
         models_low.SHAPES[shape](self, 1.0)
@@ -928,12 +1116,12 @@ class Build:
         parts = self.objects[start:]
         for ob in parts:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale, parts)
+        return self.pin(name, at, forward, scale, parts, carries=carries)
 
 
 class _Socket:
-    def __init__(self, b, name, at, forward, scale):
-        self.b, self.name, self.at, self.forward, self.scale = b, name, at, forward, scale
+    def __init__(self, b, name, at, forward, scale, carries=None):
+        self.b, self.name, self.at, self.forward, self.scale, self.carries = b, name, at, forward, scale, carries
 
     def __enter__(self):
         self.start = len(self.b.objects)
@@ -941,13 +1129,16 @@ class _Socket:
 
     def __exit__(self, *exc):
         if exc[0] is None:
-            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:])
+            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:], carries=self.carries)
         return False
 
 
 class _Joint:
-    def __init__(self, b, name, at, axis=None, limits=None, swing=None):
+    def __init__(self, b, name, at, axis=None, limits=None, swing=None, slide=None):
         self.b, self.name, self.at = b, name, at
+        self.slide = [round(v, 4) for v in Vector(slide).normalized()] if slide is not None else None
+        if self.slide is not None:
+            limits = {"pitch": (0.0, 0.0), "yaw": (0.0, 0.0), "roll": (0.0, 0.0)}   # it runs along its line and never turns
         self.axis = axis or Build.axis_for(name)
         self.swing = bool(name.startswith("shoulder")) if swing is None else bool(swing)
         if self.axis not in ("pitch", "yaw", "roll"):
@@ -965,6 +1156,8 @@ class _Joint:
             raise ValueError("joint %s of %s is made twice" % (self.name, self.b.name))
         self.b.joint_meta[self.name] = {"axis": self.axis, "limits": self.limits, "swing": self.swing,
                                         "parent": self.b._joint_stack[-1] if self.b._joint_stack else ""}
+        if self.slide is not None:
+            self.b.joint_meta[self.name]["slide"] = self.slide
         self.b._joint_stack.append(self.name)
         return self
 

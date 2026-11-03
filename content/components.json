@@ -11,19 +11,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "Two swings a round if the dice agree. Ghouls in threes.",
-    "niche": ""
+    "niche": "The chase spend against a boss (Ryan, 15 October: \"keep it as the chase spend for bosses, tuning as necessary\"): two strikes and no area since 31 October, flat 3 a strike, the least that still damages a boss carrying 2; it digs two loads a foe it damages, the most efficient fill and not the most effective weapon."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
-    "power_max": 4,
-    "keywords": [
-     "cleave"
-    ],
-    "cleave": 2,
+    "power": 3,
+    "strikes": 2,
+    "keywords": [],
     "heat": 0,
-    "fills_hopper": 1
+    "fills_hopper": 2
    },
    "passive": null,
    "tags": [
@@ -48,7 +45,7 @@
     "kind": "attack",
     "reach": "indirect",
     "power": 2,
-    "power_max": 4,
+    "power_max": 6,
     "keywords": [],
     "heat": 2
    },
@@ -67,7 +64,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
-    "niche": ""
+    "niche": "Fires half the hopper (Ryan, 15 October: \"Fragmenter can start by losing 5 stacks, so half of max\"): two loads at +2 since 31 October, 8 with both, the plate they stood for spent with them."
    },
    "face": {
     "kind": "attack",
@@ -75,8 +72,8 @@
     "power": 4,
     "keywords": [],
     "heat": 2,
-    "fires_hopper": 3,
-    "power_per_load": 1
+    "fires_hopper": 2,
+    "power_per_load": 2
    },
    "passive": null,
    "tags": [
@@ -101,7 +98,7 @@
     "kind": "attack",
     "reach": "direct",
     "power": 2,
-    "power_max": 5,
+    "power_max": 6,
     "keywords": [],
     "heat": 1
    },
@@ -227,9 +224,12 @@
     "kind": "attack",
     "reach": "indirect",
     "power": 2,
-    "power_max": 5,
-    "keywords": [],
-    "heat": 1
+    "power_max": 6,
+    "keywords": [
+     "splash"
+    ],
+    "heat": 1,
+    "splash": 1
    },
    "passive": null,
    "tags": [
@@ -316,7 +316,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 10,
+    "power": 8,
     "keywords": [
      "breach"
     ],
@@ -344,7 +344,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 3,
+    "power": 4,
     "keywords": [],
     "heat": 1,
     "power_per_missing": 1,
@@ -366,12 +366,13 @@
    "design": {
     "stage": "draft",
     "fantasy": "A pinion is a wing's flight feathers, and a gear: the reset gun that keeps the Kite in the air by killing.",
-    "niche": "The Kite's lock, its reset gun: a sure kill the drag shows on most trash; if its shot kills, every weapon comes back and the Kite acts again, and a team reroll back onto it chains it again with every kill, with no limit (Ryan, 24 October)."
+    "niche": "The Kite's lock, its reset gun: a sure kill the drag shows on most trash; two shots at half each, one from each wing tip, the old total in two; if either kills, every weapon comes back and the Kite acts again, and a team reroll back onto it chains it again with every kill, with no limit (Ryan, 24 October)."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 4,
+    "power": 2,
+    "strikes": 2,
     "keywords": [],
     "heat": 0,
     "resets_on_kill": true
@@ -399,7 +400,8 @@
     "keywords": [
      "chain"
     ],
-    "heat": 2
+    "heat": 2,
+    "chain": 2
    },
    "passive": null,
    "tags": [
@@ -975,7 +977,7 @@
     "power": 2,
     "keywords": [],
     "heat": 2,
-    "power_max": 4
+    "power_max": 6
    },
    "passive": null,
    "tags": [
@@ -1760,12 +1762,11 @@
    "shape": "dish",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, and the glow that mends the shield.",
     "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating, shield at the start of each round for three rounds, stacking. Self only, never Rapid, no cooldown: the die is its brake.",
-    "notes": "Planned: the rider on its own spender is a draft field until the engine has Regenerating (a round-start shield on a timed status) and the rider."
+    "notes": "Built 30 October: the rider on its own spender (regenerates) grants its machine a timed Regenerating, the shield at each round's start after the spend, a grant of its own each time; a foe's purge takes it, a die entry having bought it."
    },
    "face": {
     "kind": "attack",
@@ -1815,12 +1816,11 @@
    "shape": "none",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "The Immelmann turn reverses a fighter's course and climbs (Ryan named it 21 October), as a spent ally comes round to act again: the flagship's eight boosters, lit.",
     "niche": "The Giant Petrel's first lock, Rapid (Ryan, 21 October): spent on itself the team gains a reroll; spent on an ally whose die is spent, three of the team's rerolls are paid, banked or fresh, and the ally's die rolls again, never onto the entry it showed, and it acts again. The order is the play: spend the ally first.",
-    "notes": "Planned: the self use is the Reveille Horn's Rallied, built; the ally use (the Horn's charged act-again priced in rerolls) is a draft field until the engine has the price."
+    "notes": "Built 30 October: the self use is the Reveille Horn's Rallied; the ally use (ally_action, the Horn's charged act-again priced in rerolls) takes an ally whose die is spent while the team holds the price, and its Rapid gives the Petrel its turn back."
    },
    "face": {
     "kind": "buff",
@@ -1844,12 +1844,11 @@
    "shape": "rack",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "Spray blown off the wave crests its missiles skim (Ryan named it 21 October): the ekranoplan's launch tubes on its back.",
     "niche": "The Giant Petrel's second lock, the battery (Ryan, 21 October: \"your battery shape, works well\"): a rolled Indirect gun; if its shot kills, the team gains two rerolls this round, banked if unspent. The gamble is Kestrel's: the range against the foe's hull is on the die, and a kill brews most of the Booster's price.",
-    "notes": "Planned: the kill rider is a draft field until the engine has it."
+    "notes": "Built 30 October: the kill rider (kill_rerolls) adds to the round's rerolls once a spend that kills, and the bank keeps what goes unspent."
    },
    "face": {
     "kind": "attack",
@@ -1872,12 +1871,11 @@
    "shape": "dish",
    "codex": "",
    "flavour": "",
-   "status": "planned",
    "design": {
     "stage": "draft",
     "fantasy": "Reheat is the afterburner (Ryan named it 21 October), sent to an ally over the flagship's uplink.",
     "niche": "The Giant Petrel's third lock, a buff (Ryan, 21 October): an ally gains Overcharged 2 and its die rolls again, never onto the entry showing; on an ally whose die is spent the roll gives nothing and the Overcharged halves to one for next round. A locked piece on a tier three, so it may outdo the Overcharge Coil (Ryan: components grow in power as tiers go up).",
-    "notes": "Planned: the roll on its target is a draft field until the engine has it."
+    "notes": "Built 30 October: the roll on its target (rolls_target), a reroll of that die never onto the entry showing; a spent die rolls nothing."
    },
    "face": {
     "kind": "buff",
