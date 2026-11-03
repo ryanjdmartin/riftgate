@@ -4454,3 +4454,150 @@ big foes (random 43 and 27%); no row here swaps the Cassowary out, so its share 
 unread. The plan steers the dial onto the Spin-Up, its most spent entry: a spin is an action again and a
 stack of Spun Up whatever it lands on. Worth Ryan's eye in play: whether steering onto the spin
 every round is the chase the design wanted or a line that flattens the dial.
+
+## 3 November, the chassis' runner rows: the Whip Scorpion, the Swallowtail, the Musk Ox, the Needletail
+
+The to-do's engine lines, each read with the levers its line and its bible row name. `tools/balance.gd`,
+30 seeds a cell (a direction throughout), random and greedy, no party, the 76 packs in the six groups
+of the Cassowary's entry above; the what-ifs by `--set` (content in memory, never written) and the
+runner's `--pilot`. Run on this branch from `bd267ee` to `9ce9033`: no commit between changes a row's
+play but the salvo's pricing, which reaches the Musk Ox alone, and its rows are on `061693c`.
+
+**The band**, every other tier two and tier three alone on the same packs, so "cold" and "too easy"
+read against their peers (the matrix on file, 27 October, predates these packs). Tier two:
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Nemesis | 84 / 98 | 34 / 52 | 0 / 0 | 59 / 69 | 0 / 0 | 29 / 52 | 48 / 60 | 60% | 4.7 |
+| Wild Boar | 81 / 93 | 0 / 14 | 0 / 0 | 48 / 61 | 0 / 0 | 8 / 40 | 37 / 51 | 63% | 7.2 |
+| Goshawk | 53 / 75 | 8 / 41 | 0 / 0 | 39 / 65 | 0 / 0 | 6 / 36 | 28 / 51 | 63% | 5.0 |
+| Clydesdale | 59 / 85 | 0 / 6 | 0 / 0 | 42 / 57 | 0 / 0 | 1 / 22 | 29 / 45 | 69% | 5.8 |
+| **Whip Scorpion** | 58 / 86 | 0 / 6 | 0 / 0 | 42 / 59 | 0 / 0 | 1 / 15 | 29 / 44 | 69% | 4.4 |
+| Funnel Web | 49 / 61 | 0 / 32 | 0 / 0 | 35 / 51 | 0 / 0 | 5 / 47 | 25 / 43 | 71% | 7.5 |
+| Sparrowhawk | 54 / 61 | 2 / 22 | 0 / 0 | 39 / 57 | 0 / 0 | 0 / 3 | 27 / 39 | 66% | 2.6 |
+| **Needletail** | 32 / 46 | 0 / 0 | 0 / 0 | 20 / 35 | 0 / 0 | 0 / 0 | 15 / 24 | 80% | 3.3 |
+| Dingo | 18 / 33 | 0 / 0 | 0 / 0 | 9 / 19 | 0 / 0 | 0 / 0 | 7 / 14 | 91% | 4.8 |
+
+Tier three (the boss cells are the bosses at tier one, below this tier):
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| **Musk Ox** (the salvo fixed) | 81 / 79 | 2 / 19 | 0 / 0 | 55 / 64 | 0 / 0 | 14 / 54 | 41 / 52 | 64% | 7.1 |
+| Giant Petrel | 49 / 76 | 3 / 32 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 20 | 26 / 46 | 67% | 4.8 |
+| Ammit | 57 / 80 | 0 / 1 | 0 / 0 | 41 / 54 | 0 / 0 | 0 / 6 | 29 / 40 | 72% | 4.5 |
+| Lammergeier | 12 / 67 | 0 / 5 | 0 / 0 | 5 / 53 | 0 / 0 | 0 / 7 | 4 / 37 | 71% | 4.0 |
+| **Swallowtail** | 37 / 69 | 0 / 0 | 0 / 0 | 24 / 46 | 0 / 0 | 0 / 14 | 17 / 35 | 76% | 9.0 |
+
+**The Whip Scorpion** (its row's exits: the solo row cold, the pilot light; the boss cells too easy, half
+the blast; the lure-all too swingy, the rank form). Alone and with the Clydesdale and the Dingo:
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Stock | 58 / 86 | 0 / 6 | 0 / 0 | 42 / 59 | 0 / 0 | 1 / 15 | 29 / 44 | 69% | 4.4 |
+| A pilot light of 1 (`--pilot whip_scorpion=1`) | 61 / 86 | 0 / 2 | 0 / 0 | 43 / 58 | 0 / 0 | 1 / 15 | 30 / 44 | 69% | 4.3 |
+| A pilot light of 2 | 63 / 86 | 0 / 3 | 0 / 0 | 44 / 58 | 0 / 0 | 1 / 12 | 31 / 43 | 69% | 4.2 |
+| Half the blast | 50 / 74 | 0 / 0 | 0 / 0 | 37 / 57 | 0 / 0 | 0 / 4 | 26 / 40 | 70% | 4.0 |
+| Stock, the trio | 99 / 100 | 82 / 100 | 0 / 68 | 81 / 98 | 0 / 0 | 72 / 99 | 70 / 87 | 23% | 4.1 |
+| A pilot light of 1, the trio | 99 / 100 | 80 / 100 | 0 / 67 | 80 / 98 | 0 / 0 | 71 / 99 | 69 / 87 | 23% | 4.2 |
+| A pilot light of 2, the trio | 98 / 100 | 69 / 100 | 0 / 54 | 79 / 98 | 0 / 1 | 70 / 99 | 68 / 86 | 23% | 4.0 |
+| Half the blast, the trio | 99 / 100 | 78 / 100 | 0 / 59 | 80 / 97 | 0 / 1 | 70 / 98 | 69 / 86 | 24% | 4.2 |
+
+Its spends alone (greedy): the Coolant Jacket 35%, the Thermal Ray 32%, the Maxigun 22%, the Heliographic Siphon 11%; with a pilot light of 1, the Coolant Jacket 43%, the Thermal Ray 28%, the Maxigun 20%, the Heliographic Siphon 9%; of 2, the Coolant Jacket 51%, the Thermal Ray 23%, the Maxigun 17%, the Heliographic Siphon 8%. Its gauge alone peaks
+at 77% of its maximum on average and ends a fight at 56%; a pilot light of 1 and 2 raises the overheats from
+0.20 a fight to 0.33 and 0.40. The rank form (the Siphon as `lure` and `cleave` on its target, `reaches_all`
+off) plays the same as stock alone, every number (a lone machine is every foe's target, so a lure moves
+nothing there), and in the trio the Siphon is 3% of the spends stock and 4% in rank form, the spread of
+hull lost within a cell 4.8 points against 4.7 (the runner's `hull_lost_sq`).
+
+Read: none of the three exits is reached. The solo row sits in the middle of the tier twos' band (44%
+greedy over every pack, fifth of nine) and its bosses alone (15%) below the band's middle, so neither
+lever is called for. The pilot light is no lever at all: heat is not what limits it, and the extra heat
+turns gun spends into vent spends; a cold row would want another lever. Half the blast bites
+alone (its bosses 15% to 4%) and not in the trio. The lure-all's swing reads no wider than the rank
+form's at the rate the bot spends the Siphon, so its swing is unread rather than absent.
+
+**The Swallowtail** (its line: its team rows with and without it, the musters it spends and on which
+piece, the Phased read against its price):
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Swallowtail | 37 / 69 | 0 / 0 | 0 / 0 | 24 / 46 | 0 / 0 | 0 / 14 | 17 / 35 | 76% | 9.0 |
+| Clydesdale + Dingo | 86 / 99 | 16 / 76 | 0 / 0 | 61 / 79 | 0 / 0 | 24 / 70 | 47 / 68 | 46% | 5.3 |
+| Swallowtail + Clydesdale + Dingo | 97 / 100 | 78 / 100 | 0 / 54 | 79 / 96 | 0 / 1 | 71 / 98 | 68 / 85 | 24% | 5.1 |
+| The Screens charged at two musters, the trio | 97 / 100 | 77 / 100 | 0 / 59 | 79 / 97 | 0 / 2 | 72 / 97 | 68 / 86 | 23% | 5.2 |
+
+Charged spends a fight, greedy, in the trio: the Flare 0.32, the Hoist 0.21, the Screens 0.07, the Horn 0.02 (0.62 in all); alone, the Flare alone (0.31), the rest needing an ally. With the
+Screens at two musters: the Flare 0.34, the Hoist 0.21, the Horn 0.02, the Screens 0.00. The bot
+weighs Phased by the round's forecast with it and without it, less the ally's action it stands down.
+
+Read: alone it is the tier threes' weakest (a support machine), and beside the Clydesdale and the Dingo
+it lifts the pair seventeen points greedy, the formations from none to half, and halves their hull lost.
+The Flare's Suppress takes about half its musters and the Hoist's refit a third; the charged dock is the
+rarest charge bought (Phased about once in fifteen fights) and at two musters never, the rows unmoved: no
+free round at one muster, so its price is not the question.
+
+**The Musk Ox** (its row's exits: ammo running plentiful, the reloads or the trickle; the salvo
+multiplying the foes' Flak past its worth, the strike's number; the Quick Reload kept or cut once
+tested). First the bot (`061693c`): the greedy rung had priced the whole magazine against the salvo,
+each ammo at half what it would buy on the other guns, so a full magazine of 10 read barely positive and
+it rerolled the salvo away (2% of its spends) while random play fired it; it now counts only a reserve,
+the ammo its dearest other gun's next spend needs. Alone and with the Clydesdale and the Dingo:
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Old bot | 81 / 68 | 2 / 0 | 0 / 0 | 55 / 58 | 0 / 0 | 14 / 16 | 41 / 41 | 71% | 6.5 |
+| Salvo fixed | 81 / 79 | 2 / 19 | 0 / 0 | 55 / 64 | 0 / 0 | 14 / 54 | 41 / 52 | 64% | 7.1 |
+| Trickle 0 | 74 / 75 | 0 / 5 | 0 / 0 | 49 / 60 | 0 / 0 | 1 / 31 | 36 / 45 | 68% | 7.2 |
+| Trickle 2 | 83 / 82 | 8 / 28 | 0 / 0 | 56 / 65 | 0 / 0 | 24 / 65 | 44 / 56 | 62% | 6.9 |
+| The Quick Reload cut | 78 / 79 | 0 / 16 | 0 / 0 | 54 / 64 | 0 / 0 | 10 / 56 | 40 / 53 | 64% | 7.3 |
+| Old bot, the trio | 99 / 100 | 100 / 100 | 18 / 58 | 86 / 93 | 0 / 3 | 91 / 96 | 77 / 84 | 27% | 5.0 |
+| Salvo fixed, the trio | 99 / 100 | 100 / 100 | 18 / 73 | 86 / 97 | 0 / 5 | 91 / 100 | 77 / 87 | 23% | 4.7 |
+| Trickle 0, the trio | 99 / 100 | 88 / 100 | 2 / 65 | 82 / 95 | 0 / 3 | 79 / 98 | 72 / 85 | 25% | 4.8 |
+| Trickle 2, the trio | 100 / 100 | 100 / 100 | 21 / 81 | 89 / 98 | 0 / 10 | 93 / 100 | 79 / 88 | 22% | 4.6 |
+| The Quick Reload cut, the trio | 100 / 100 | 98 / 100 | 3 / 76 | 87 / 97 | 0 / 8 | 85 / 99 | 76 / 88 | 23% | 4.7 |
+
+Its spends alone, greedy: on the old bot the Canopy 31%, the Enfilade Beam 22%, the Coolant Jacket 14%, the Shrapnel Recuperator 12%, the Thermal Ray 10%, the Quick Reload 9%, the Unrestricted Expenditure 2%; fixed, the Canopy 26%, the Coolant Jacket 17%, the Enfilade Beam 14%, the Unrestricted Expenditure 13%, the Quick Reload 11%, the Thermal Ray 9%, the Shrapnel Recuperator 9%.
+
+The Flak read: the salvo beside allies that lay Flak, the Musk Ox with the Clydesdale (its Airburst
+Shell) and the Prairie Dog (its Flakshot Repeater), stock, with Flak struck from all three pieces (the
+Recuperator's, the Shell's and the Repeater's), and with the salvo's strike at 1 and at 3 (stock 2):
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Stock | 99 / 100 | 96 / 100 | 16 / 66 | 85 / 95 | 0 / 9 | 87 / 100 | 76 / 86 | 23% | 5.6 |
+| No Flak anywhere | 99 / 100 | 92 / 100 | 13 / 65 | 83 / 93 | 0 / 8 | 84 / 99 | 74 / 85 | 25% | 5.8 |
+| The salvo struck at 1 | 98 / 100 | 80 / 100 | 0 / 48 | 80 / 90 | 0 / 6 | 80 / 94 | 71 / 82 | 26% | 6.0 |
+| The salvo struck at 3 | 100 / 100 | 100 / 100 | 30 / 83 | 91 / 99 | 0 / 21 | 94 / 100 | 80 / 90 | 19% | 5.1 |
+
+The salvo is 5% of the trio's spends stock, under 2% struck at 1 and 7% at 3. Striking Flak from all
+three pieces costs the trio at most two points in any group; the strike's number moves it most, the
+formations at tier one 48, 66 and 83% greedy at a strike of 1, 2 and 3.
+
+Read: the old bot left the salvo unplayed, a verdict on the bot and fixed. The salvo does not multiply
+the team's Flak past its worth: the Flak is worth a point or two beside it, and the strike's number is
+the lever if the salvo ever needs one. The trickle is the strong
+lever and works through the bosses (alone, 31, 54 and 65% at a trickle of 0, 1 and 2), the salvo the boss
+killer its row means it to be; whether that is ammo "running plentiful" is a call on feel, since the
+boss cells here are tier one's and the Musk Ox is a tier three. The Quick Reload cut reads as nothing, on
+a bot that never counts the action again a plain Rapid entry brings, so that test waits on the bot. Alone
+the Recuperator's Flak never pays: one weapon a round, and Flak halves away at the round's end.
+
+**The Needletail** (its line: alone as a diagnostic and in Kestrel's team, the share of its spends the gate
+made free and of its paints an ally's Direct spend cashed). The gate tally was fixed on the way
+(`9ce9033`: it had missed a free buff on a machine, the Overcharge Coil); the rerun plays the same, all
+456 cells identical but for that count.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Needletail | 32 / 46 | 0 / 0 | 0 / 0 | 20 / 35 | 0 / 0 | 0 / 0 | 15 / 24 | 80% | 3.3 |
+| Sparrowhawk + Goshawk | 91 / 100 | 57 / 98 | 0 / 0 | 77 / 93 | 0 / 0 | 65 / 96 | 64 / 80 | 28% | 3.0 |
+| Needletail + Sparrowhawk + Goshawk | 99 / 100 | 98 / 100 | 0 / 54 | 94 / 100 | 0 / 3 | 89 / 100 | 79 / 87 | 19% | 2.6 |
+
+Greedy: alone the gate makes 82% of its setups (the Fovea Designator and the Overcharge Coil) free,
+17% of all its spends; in the trio 78% of its setups. It paints 0.41 foes a fight alone,
+none cashed (no ally), and 0.52 in the trio, 67% of them cashed by an ally's Direct weapon spend
+while the foe stood Exposed.
+
+Read: alone it is the tier twos' second weakest, a 20-hull interceptor read as a diagnostic; in Kestrel's
+trio it lifts the Sparrowhawk and the Goshawk seven points greedy, the formations from none to half, and
+cuts their hull lost by a third. Its gate fires on most of its setups, and two paints in three are cashed.
