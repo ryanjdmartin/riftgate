@@ -349,7 +349,7 @@ static func _whole(v, key: String = ""):
 			out[k] = _whole(v[k], str(k))
 		return out
 	if v is float:
-		return v if key in ["hull_lost_pct", "foes_killed_pct", "heat_peak", "forgone", "end_heat"] else int(roundf(v))
+		return v if key in ["hull_lost_pct", "hull_lost_sq", "foes_killed_pct", "heat_peak", "forgone", "end_heat"] else int(roundf(v))
 	return v
 
 
@@ -617,7 +617,8 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
 		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {},
 		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0,
-		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0, "gate_free": 0, "paints": 0, "paints_cashed": 0}
+		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0, "gate_free": 0, "paints": 0, "paints_cashed": 0,
+		"hull_lost_sq": 0.0}   # the squares, so a cell's spread of hull lost reads beside its mean (a swing, 3 November)
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -645,7 +646,9 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 			hull += maxi(0, ms.unit.hull)
 			if not ms.alive():
 				lost += 1
-		agg["hull_lost_pct"] += 100.0 * (hull_max - hull) / maxi(1, hull_max)
+		var lost_pct := 100.0 * (hull_max - hull) / maxi(1, hull_max)
+		agg["hull_lost_pct"] += lost_pct
+		agg["hull_lost_sq"] += lost_pct * lost_pct
 		agg["mechs_lost"] += lost
 		var dead := 0
 		for f in foes:
