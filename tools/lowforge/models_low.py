@@ -2437,7 +2437,7 @@ def cottonmouth(b):
     HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 here under the phone's eased light (the Armadillo's vents)
     STRIP = ["chamber_window", "chamber_lamp"]   # burning whenever the drum turns on past its idle, every chamber
     FLASH = ["top_mouth_glow", "top_lamp_glow"]  # the top chamber, front and back, lit for a shot alone
-    CHAMBERS = 2                                 # chambers the drum turns on to slot a shot (Ryan: "say the second or third next one")
+    CHAMBERS = 1                                 # chambers the drum turns on between its test shots (Ryan, 3 November: "Ranging can just move one barrel at a time during its animation. Shots moving two makes sense": a weapon's real shot, the hookup's, turns two)
     MOUTH_IN, LAMP_OUT = 3.9, 1.9                # how far the top mouth and lamp slide out of hiding
     SLICE = 1.12                                 # seconds a shot takes, its turn included
 
