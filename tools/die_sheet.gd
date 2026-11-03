@@ -103,9 +103,10 @@ func _die(f: Face) -> DieFaceView:
 
 
 func _kinds() -> Array:
-	var rolled := Face.attack(2, Face.Reach.DIRECT, [], 0, 6)
-	var burst := Face.attack(3)
-	burst.strikes = 3
+	var burst := Face.attack(2)
+	burst.strikes = 4
+	var zap := _die(Face.attack(4))
+	zap.set_number("4+2")
 	var reload := Face.vent(0)
 	reload.reloads_ammo = 2
 	var wake := Face.vent(3)
@@ -116,32 +117,19 @@ func _kinds() -> Array:
 	var down := _die(Face.attack(4))
 	down.dead = true
 	return [
-		["Weapon, direct", "the sight, its blow inside;
-the tracer: Direct", _die(Face.attack(4))],
-		["Weapon, indirect", "the trajectory:
-Indirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
-		["Weapon, rolled", "rolls in its range
-as it is spent", _die(rolled)],
-		["Weapon, strikes", "three blows a spend,
-each rolled on its own", _die(burst)],
-		["Debuff, direct", "gear, what it lays inside
-(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
-		["Debuff, indirect", "the gear holding Lure,
-the trajectory", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
-		["Buff", "spent on a machine: its
-status inside, its stacks", _die(Face.buff("overcharged", 2))],
-		["Shield", "spent on a machine:
-shield", _die(Face.shield(4))],
-		["Vent", "spent on a machine: heat
-off, its steam over it", _die(Face.vent(3))],
-		["Shield and vent", "both at once (the Wake
-Diffuser): shield | cool", _die(wake)],
-		["Shield and vent, ally", "the Sutler's Hoist: the
-steam over the cooling", _die(hoist)],
-		["Reload", "cools nothing: its shells
-and its ammo (the Musk Ox)", _die(reload)],
-		["Blank", "an empty hardpoint, or
-a destroyed component", _die(Face.empty_slot())],
+		["Weapon, direct", "the sight, its blow inside;\nthe tracer: Direct", _die(Face.attack(4))],
+		["Weapon, indirect", "the trajectory:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
+		["Weapon, strikes", "a strike's blow, four\nstrikes a spend: the widest", _die(burst)],
+		["Weapon, over a foe", "the Storm Petrel's blow\nand its zap, as wide", zap],
+		["Debuff, direct", "gear, what it lays inside\n(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
+		["Debuff, indirect", "the gear holding Lure,\nthe trajectory", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
+		["Buff", "spent on a machine: its\nstatus inside, its stacks", _die(Face.buff("overcharged", 2))],
+		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
+		["Vent", "spent on a machine: heat\noff, its steam over it", _die(Face.vent(3))],
+		["Shield and vent", "both at once (the Wake\nDiffuser): shield | cool", _die(wake)],
+		["Shield and vent, ally", "the Sutler's Hoist: the\nsteam over the cooling", _die(hoist)],
+		["Reload", "cools nothing: its shells\nand its ammo (the Musk Ox)", _die(reload)],
+		["Blank", "an empty hardpoint, or\na destroyed component", _die(Face.empty_slot())],
 		["Machine down", "its die, wrecked", down],
 	]
 

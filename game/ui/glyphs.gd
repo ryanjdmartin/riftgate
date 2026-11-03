@@ -602,7 +602,7 @@ static func primary_for(face: Face) -> String:
 
 ## The weapon's sight: its ring's radius as a share of the mark's half-width, the ticks standing
 ## off it to the edge. Equipment's gear: the root of its teeth as a share of their tips' reach.
-const SIGHT_RING := 0.76
+const SIGHT_RING := 0.85
 const GEAR_ROOT := 0.76
 
 

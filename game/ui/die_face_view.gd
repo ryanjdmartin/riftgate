@@ -41,11 +41,16 @@ const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 const SLOT_AT := Vector2(10, 28)   # the place's numeral, its baseline tucked under the cut corner, clear of the main mark
 const SLOT_SIZE := 18
 const MAIN_Y := 45.0       # the main mark's centre, what the entry delivers inside it, clear of the place's numeral
-const MAIN_W := 64.0       # its width: the sight's and the gear's (a ring reads smaller than a plate as wide)
+const MAIN_W := 68.0       # the sight's width, its ring holding NUMBER_ROOM (a ring reads smaller than a plate as wide)
 const PLATE_W := 56.0      # the shield's, alone or with the steam, clear of the place's numeral (VIII)
 const GEAR_W := 60.0       # the gear's, its teeth weighing more than the sight's ticks, clear of the numeral too
-const NUMBER_SIZE := 30    # the number inside it, a long one smaller until it fits
-const NUMBER_ROOM := 40.0  # how wide a number may run inside the sight, the gear or the shield
+## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:
+## "Rolled damage was just cut in another session so you can measure max width just with the
+## multi-strikes text"): a multi-strike blow with its strikes, three characters ("2×4"), as wide
+## as the Storm Petrel's blow and zap over a foe ("4+2"), 45 pixels in the mono face at 28; a test
+## measures it. Past it (a two-digit blow struck three times) a number steps down until it fits.
+const NUMBER_SIZE := 28
+const NUMBER_ROOM := 45.0
 const AIM_Y := 91.0        # whom it reaches, under the main mark
 const AIM_W := 34.0        # every targeting mark one width, the arrows and the three hexes alike (Ryan, 2 November)
 const STEAM_Y := -19.0     # a vent's steam over its number, from the main mark's centre
@@ -346,26 +351,25 @@ func _draw() -> void:
 			if not dark_now:
 				var held := [str(face.power if face.kind == Face.Kind.SHIELD else face.shields), str(face.vents if face.kind == Face.Kind.SHIELD else face.power)]
 				var half := PLATE_W * 0.5
-				var px: int = mini(mono_px.call(held[0], half * 0.8, 26), mono_px.call(held[1], half * 0.8, 26))
+				var px: int = mini(mono_px.call(held[0], half * 0.8, NUMBER_SIZE), mono_px.call(held[1], half * 0.8, NUMBER_SIZE))
 				_number(mono, held[0], mc + Vector2(-half * 0.44, 2.0), px, faded.call(Palette.SHIELD))
 				draw_line(mc + Vector2(0.0, -9.0), mc + Vector2(0.0, 13.0), faded.call(Palette.MUTED), 1.6)
 				_number(mono, held[1], mc + Vector2(half * 0.44, 2.0), px, faded.call(Palette.HEAT))
 		"ammo":
 			if not num.is_empty():
-				var px: int = mono_px.call(num, NUMBER_ROOM - 8.0, NUMBER_SIZE + 2)
+				var px: int = mono_px.call(num, NUMBER_ROOM - 26.0, NUMBER_SIZE)
 				var w := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 				var x0 := mc.x - (26.0 + w) * 0.5
 				Glyphs.draw(self, "ammo", Vector2(x0 + 10.0, mc.y), 22, faded.call(Palette.SELECT), 2.2)
 				_number(mono, num, Vector2(x0 + 26.0 + w * 0.5, mc.y), px, faded.call(Palette.SELECT))
 		"weapon", "shield", "vent":
 			if not num.is_empty():
+				var text := blow_text(face, num)
 				var at := mc + (Vector2(0.0, -4.0) if mark == "shield" else (Vector2(0.0, 6.0) if mark == "vent" else Vector2.ZERO))
 				var col := Palette.SHIELD if mark == "shield" else (Palette.HEAT if mark == "vent" else Palette.HUD)
-				_number(mono, num, at, mono_px.call(num, NUMBER_ROOM, NUMBER_SIZE), faded.call(col))
-	# What else the spend does, small beside the main mark, each by its mark: blows a use ("×3"), a
-	# status's stacks, the ammo a vent also loads, a vent's blast at a random foe (the Whip Scorpion's).
-	if face.strikes > 1:
-		beside.append(["", "×%d" % face.strikes, ink])
+				_number(mono, text, at, mono_px.call(text, NUMBER_ROOM, NUMBER_SIZE), faded.call(col))
+	# What else the spend does, small beside the main mark, each by its mark: a status's stacks, the
+	# ammo a vent also loads, a vent's blast at a random foe (the Whip Scorpion's).
 	if face.reloads_ammo > 0 and face.power > 0 and not dark_now:
 		beside.append(["ammo", str(face.reloads_ammo), faded.call(Palette.SELECT)])
 	if blast > 0 and face.kind == Face.Kind.VENT and not dark_now:
@@ -447,6 +451,15 @@ func _draw() -> void:
 func _number(font: Font, t: String, c: Vector2, px: int, col: Color) -> void:
 	var w := font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 	draw_string(font, Vector2(c.x - w * 0.5, c.y + font.get_ascent(px) * 0.36), t, HORIZONTAL_ALIGNMENT_LEFT, -1, px, col)
+
+
+## What a main mark holds as text: the number (`num`, what the die prints or the screen's live
+## blow), and a weapon's strikes after it ("2×4": a strike's blow, so many strikes a spend; the
+## widest a main mark holds, which sets NUMBER_SIZE).
+static func blow_text(f: Face, num: String) -> String:
+	if f != null and f.is_weapon() and f.strikes > 1 and not num.is_empty():
+		return "%s×%d" % [num, f.strikes]
+	return num
 
 
 ## How much a spend does, as the die prints it inside its main mark: a weapon's blow or range, a

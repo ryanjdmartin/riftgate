@@ -25,7 +25,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 900 tests, 209,084 checks, green on `ccr-bb178c9b-l6airv` (3 November: Ryan's playtest
+- Tests: 901 tests, 209,147 checks, green on `ccr-bb178c9b-l6airv` (3 November: Ryan's playtest
   list of 2 November and the die's marks of 3 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -215,7 +215,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   each Rapid piece printing its own, "Rapid does not have a native Cooldown"; the hull a
   machine's body), keywords down the edge. The main marks (3 November: "The weapon faces don't
   really read weapon to me, nor the equipment faces"): a weapon's sight (a ring, four ticks
-  standing off it) holding its number, equipment's gear holding what it grants or lays (a
+  standing off it) holding its blow and its strikes (2×4; every number one size, set by that
+  text, the widest now rolled damage is cut: "you can measure max width just with the
+  multi-strikes text"), equipment's gear holding what it grants or lays (a
   buff's status, a debuff's first effect keyword, the star for a rule of its own; never twice
   on the edge), the shield holding its number in the shield's colour, a vent's steam rising off
   its number in heat's ("simplified to just wavy lines"), the Wake Diffuser's and the Sutler's

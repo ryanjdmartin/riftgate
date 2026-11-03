@@ -169,6 +169,39 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 	assert_eq(Glyphs.primary_for(reload), "ammo", "a reload cools nothing: its shells and its number, no steam")
 
 
+## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:
+## "Rolled damage was just cut in another session so you can measure max width just with the
+## multi-strikes text"): a strike's blow and its strikes ("2×4") is the widest, measured at
+## DieFaceView.NUMBER_SIZE; it fits DieFaceView.NUMBER_ROOM, the room sits inside the sight's
+## ring, and every weapon's, shield's and vent's number in content fits it.
+func test_every_number_a_main_mark_holds_fits_at_one_size() -> void:
+	var mono := Hud.mono()
+	var px := DieFaceView.NUMBER_SIZE
+	var width := func(t: String) -> float: return mono.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
+	var db := ContentDB.load_default()
+	var most := 1
+	for cid in db.components.keys():
+		var comp: Dictionary = db.components[cid]
+		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
+			continue
+		var f := db.build_face(comp["face"])
+		if not (f.is_weapon() or f.kind == Face.Kind.SHIELD or f.kind == Face.Kind.VENT):
+			continue
+		most = maxi(most, f.strikes)
+		var text := DieFaceView.blow_text(f, str(f.power))
+		assert_true(width.call(text) <= DieFaceView.NUMBER_ROOM, "%s: %s fits at the one size (%.0f)" % [cid, text, width.call(text)])
+	assert_true(most > 1, "content strikes more than once (%d)" % most)
+	var burst := Face.attack(8)
+	burst.strikes = most
+	var widest := DieFaceView.blow_text(burst, "8")
+	assert_eq(widest, "8×%d" % most, "a strike's blow, then its strikes")
+	assert_true(width.call(widest) <= DieFaceView.NUMBER_ROOM, "the widest, a buffed blow struck the most times, fits (%.0f)" % width.call(widest))
+	assert_true(width.call("4+2") <= DieFaceView.NUMBER_ROOM, "and the Storm Petrel's blow and zap over a foe")
+	var ring := DieFaceView.MAIN_W * 0.5 * Glyphs.SIGHT_RING - 1.2   # the ring's inner edge, half its line in
+	var corner := Vector2(DieFaceView.NUMBER_ROOM * 0.5, mono.get_ascent(px) * 0.4).length()
+	assert_true(corner + 2.0 <= ring, "the room's corners clear the sight's ring (%.1f inside %.1f)" % [corner, ring])
+
+
 ## The die's tap waits out the double-tap window (Ryan, 30 October), so a double-tap never shows a
 ## tap's work, and the face lights from the touch until the tap lands, so the beat never reads as
 ## lag; a tap and then a hold or a drag is the hold or the drag. Without the wait (the waiting

@@ -143,7 +143,9 @@ defeat when every machine is wrecked. There is no round limit.
   Equipment, Shield, Vent, and the blank. Every entry reads one way: one main mark at the top
   says what it is and holds what it delivers, whom it is aimed at stands under it, its costs run
   along the foot, its keywords down the edge. A weapon is a sight, a ring with four ticks
-  standing off it, its number inside (a range or a long number smaller, to fit); equipment, a
+  standing off it, its blow inside, and a weapon that strikes more than once its strikes after
+  it (2×4, a strike's blow and the strikes a spend). Every number a main mark holds is one size,
+  the size the widest fits, a strike's blow and its strikes; equipment, a
   buff or a debuff, is gear, a cog of eight teeth, holding what it grants or lays and no
   number: a buff's status (its stacks beside the gear), a debuff's first keyword that does
   something to a foe in content's order (a reach, an area and Rapid stay on the edge), or the
@@ -156,8 +158,7 @@ defeat when every machine is wrecked. There is no round limit.
   are its whole mark. The targeting marks are one width: a tracer (Direct, a straight shaft
   with an open chevron head) or a trajectory (Indirect, a lobbed curve) under an entry aimed at
   a foe, three hex cells sharing their edges under one spent on a machine, a lit one filled.
-  What else a spend does sits small beside the main mark (its strikes, a status's stacks, a
-  vent's blast). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  What else a spend does sits small beside the main mark (a status's stacks, a vent's blast). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
 
