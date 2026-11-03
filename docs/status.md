@@ -776,20 +776,19 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.430 (the page's version
-  443, published 3 November from `claude/affectionate-ramanujan-5d24t6` as main took it: the
-  five Wainwright & Sutler models' rows on Ryan's notes of 2 and 3 November, three-way merged
-  onto the live v0.429 that `ccr-7effd31a-u5z4gw` published (Hold The Line's eleventh round in
-  the music table's row) over the v0.428 `claude/charming-rubin-h954bp` published at 440 (the
-  mounts row: every mount takes every class, a hardpoint's variant and scale per class, the
-  round launcher, the fit sheet), with no conflict; so this file carries both branches' rows
-  ahead of their landing; 442 the same file dated the 2nd). The live has since moved on to
-  v0.432 at 445, which `claude/charming-rubin-h954bp` merged onto 443 the same day (its v0.431
-  at 444 between), so the next publish from main merges onto that. `claude/chassis-runner-rows` edited the Cassowary's row on 3 November (its bot's cycle, the
-  stale "plans no cycle" retired), unpublished: its publish merges onto the live as it then stands. Before them, v0.427 (439, 2 November, from
+  `docs/design-bible.html` after every change. This file is v0.438 (the page's version 451,
+  published 3 November from `claude/chassis-runner-rows`: its four row edits, the Cassowary's
+  cycle bot and the Whip Scorpion's, the Swallowtail's and the Musk Ox's reads, three-way merged
+  with no conflict onto the live v0.437 that other sessions had published since 445: the
+  weapon-fire rows, the booster's plume, the bosses read by homage and the regenerated keyword and
+  status tables, which this file carries ahead of their landing). Before it, v0.430 (443, 3
+  November, from `claude/affectionate-ramanujan-5d24t6` as main took it: the five Wainwright &
+  Sutler models' rows, three-way merged onto `ccr-7effd31a-u5z4gw`'s v0.429 over
+  `claude/charming-rubin-h954bp`'s v0.428 at 440), then `claude/charming-rubin-h954bp`'s v0.431
+  and v0.432 at 444 and 445. Before them, v0.427 (439, 2 November, from
   `claude/brave-cori-fr18de` as main merged in: the slate's last calls, the elites by the tier
   and the review's calls, over the live v0.423 at 435, `claude/charming-rubin-h954bp`'s
-  weapon-fire row on the v0.422 this branch published at 434 with the Honey Badger's hopper and
+  weapon-fire row on the v0.422 `claude/affectionate-ramanujan-5d24t6` published at 434 with the Honey Badger's hopper and
   the five models' first cuts). The version numbers on the publishing branch's file and the live
   agree after every publish. Before republishing, read the live page; if another session moved it, publish
   a three-way merge onto it (`git merge-file` with the last-published file as the base, the
