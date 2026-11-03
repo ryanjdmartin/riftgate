@@ -179,7 +179,13 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    blow, the stacks a consumer eats on it on its first blow) and its Flak; then its multiplies
    (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
    armour comes off. A weapon's blow takes them whatever it deals, a 0 included (the Skua's
-   halved 1); a debuff's blow stays nothing. Its riders land on every foe struck.
+   halved 1); a debuff's blow stays nothing. Its riders land on every foe struck, after the
+   spend's strikes (below).
+- **Riders land after the hits**: each strike's Cryo and Flak gather on its own foe and land
+  once the spend's strikes are done, an application a strike, so no strike of a spend cashes
+  or feeds on what the spend lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3 Flak 1
+  lands 5, 5 and 5 and leaves Flak 3). Shock, Expose, Lure and Disrupt land after the blow
+  too. Burn, Suppress and Web land a strike at a time, since no hit reads them.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
   Empowered) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
@@ -292,7 +298,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   foes' rider below. The Overclocked Railgun carries it.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning (Burn 3: three
   stacks).
-- **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo. Any
+- **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo a
+  strike, laid once the strikes are done, so a fire never cashes its own frost. Any
   machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2
   a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
@@ -357,8 +364,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   again to move it or set it back. A tap on the ground sets it back too, the die flying home,
   once no readout is open: the first such tap closes the open readout.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
-  of Flak after the blow (Flak 2: two stacks), so the blow that lays it never
-  feeds on it and a later strike of the same spend does.
+  of Flak a strike (Flak 2: two stacks), laid once the strikes are done, so no strike of the
+  spend feeds on what it lays.
 - **Costs** are printed on the entry beside its heat, never a keyword and never a chip: a
   **hull cost** (Volatile 3: spending it costs its owner 3 hull, past shield and armour,
   before it acts, and a machine it leaves at nothing is wrecked; the Umbra Inducer, the
@@ -469,10 +476,12 @@ On a machine:
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
   Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.
 - **Rallied** (buff): the team has one reroll more this round.
-- **Charged** (buff): the next weapon this machine fires Shocks the foe it was aimed at, after
-  its blows, a stack a fire (a Rapid's second fire is a second fire, a salvo one, a blast none;
-  equipment spends nothing); a laid shot spends the stack as it is laid and the Shock rides it.
-- **Supercooled** (buff): the same with Cryo 1 on that foe.
+- **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
+  and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
+  second fire is a second fire, a salvo one, a blast none; equipment carries it not and spends
+  nothing); a laid shot spends the stack as it is laid and carries the Shock.
+- **Supercooled** (buff): the same with Cryo, one more stack a strike on each foe hit (Cryo 1
+  on a gun without it), laid after the hits.
 - **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
   stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
@@ -583,7 +592,8 @@ On a foe:
   over, as a split's half's is, and it takes a mine its fall left there.
 - **Numbed** (buff): the rounds until one stun lands. A stun on a Numbed foe strips a stack and
   lands nothing, so a foe with Numbed N takes N+1 stuns in a round. As a stunned foe recovers it
-  gains its stun resist in stacks (content's `resist`; 1 by default, 3 for a massive foe), after
+  gains its stun resist in stacks (content's `resist`; by its kind when content says none: 1, a
+  massive foe 2, an elite, a hero or a boss 3), after
   the round's decay; a stack goes at the end of each round. A Purge lowers it like any buff;
   nothing deepens, spreads or cleanses it, and a fresh foe is stunned by one.
 

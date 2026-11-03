@@ -676,7 +676,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"resist": f.resist,
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
-		"boss": f.boss, "hero": f.hero, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down, "joined": f.joined, "fresh": f.fresh,
+		"boss": f.boss, "hero": f.hero, "elite": f.elite, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down, "joined": f.joined, "fresh": f.fresh,
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
 		"next_move": f.next_move, "held": f.held,
@@ -700,6 +700,7 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.kin = int(d.get("kin", 0))
 	f.boss = bool(d.get("boss", f.size >= 2))   # a save from before 15 October read a massive foe as the boss
 	f.hero = bool(d.get("hero", false))
+	f.elite = bool(d.get("elite", false))   # a mini-boss (3 November); a save from before has none
 	f.commands = bool(d.get("commands", f.boss))   # a save from before 21 October: a boss commanded its unit
 	f.escorts = bool(d.get("escorts", false))
 	var od = d.get("on_death", {})

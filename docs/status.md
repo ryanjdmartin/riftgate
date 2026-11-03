@@ -25,8 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 873 tests, 208,068 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, its
-  fifth chunk, UNDO, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
+- Tests: 875 tests, 208,095 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, its
+  riders after the hits and the resist defaults after UNDO, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
   overheat what-ifs, shield persona and support ladders landed on the 31st, over the Petrels of
   `claude/affectionate-ramanujan-5d24t6`, the foes' move-order fix of
   `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
@@ -184,8 +184,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   is the player's choice and the threshold can come down once played; the withdrawal's screen code
   deleted (a defunct passive); the round preview exact on all three. Built 3 November: Numbed on Ryan's
   clock (the stacks are the rounds until one stun lands; a stun on a Numbed foe strips a stack and
-  lands nothing; a stunned foe recovers with its stun resist, content's `resist`, 1 by default and 3
-  for a massive foe, after the round's decay; Numbed a buff a Purge lowers), Purge N on both sides
+  lands nothing; a stunned foe recovers with its stun resist, content's `resist`, by its kind when
+  content says none: 1, a massive foe 2, an elite or a boss 3 (Ryan's defaults of 3 November), after
+  the round's decay; Numbed a buff a Purge lowers), Purge N on both sides
   (N stacks off every buff, the Null Field Emitter at Purge 2, the bot pricing each at the stacks it
   reaches), a Ward turning a stun and a Purge and standing on either side; the preview exact on a
   stun. Built the same day: Charged and
@@ -198,10 +199,16 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the player's turn, the save's own dictionaries written back in place; a draw is the floor: the
   round's roll, a reroll, Rapid's reroll, a roll again, the Scorpion's blast; a stepping die's step
   is taken back; the button at the reroll row's right end, its badge the spends it reaches, a bar in
-  the trail at every roll). Overcharged and Kindled are Empowered on both sides since 3 November, the ids
-  kept. What is left of the pass is Ryan's: the Scorpion's rework (tabled; its blast is the one draw
-  besides the die), rules for the two planned modules, the resist defaults, the Emitter's Purge 2
-  and the halves rounded up (the to-do), then the 200-seed reread of the flattened numbers.
+  the trail at every roll). Riders land after the hits since the 3rd (Ryan: "a multi-hit weapon
+  with Shock would apply it after both hits ... Cryo should work the same way, resulting in 2
+  applications"; the bible's row beside the blow's order): each strike's Cryo and Flak gather on
+  its foe and land once the strikes are done, so a spend never cashes or feeds on what it lays
+  (Flak's self-feed on a later strike went with it); Charged and Supercooled ride the weapon fired
+  as its keywords, Shock and Cryo one more a strike, shown on the die. Overcharged and Kindled are
+  Empowered on both sides since 3 November, the ids kept. What is left of the pass is Ryan's: the
+  Scorpion's rework (tabled; its blast is the one draw besides the die), rules for the two planned
+  modules, the Emitter's Purge 2 and the halves rounded up (the to-do), then the 200-seed reread
+  of the flattened numbers.
 - The Storm Petrel and the Giant Petrel fielded (30 October, Ryan: "go for the ready to build ones";
   their briefs retired: `git show d84ad16:docs/briefs/kestrel_shield_spender.md` and
   `kestrel_gun_platform.md`; `docs/rules.md` and the bible's Kestrel row). The Storm Petrel's shield

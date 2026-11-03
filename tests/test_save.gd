@@ -444,6 +444,7 @@ func test_a_saved_fight_keeps_its_undo_its_bars_and_the_numbers_of_2_november() 
 	var slot := Vector2i(foe.rank, foe.column)
 	for f in sk.field_foes():
 		f.resist = 2   # every foe, since the spend below may fell the first
+		f.elite = true
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.heat = ms.heat_max + 5
 	ms.hot_entry = 1
@@ -468,7 +469,7 @@ func test_a_saved_fight_keeps_its_undo_its_bars_and_the_numbers_of_2_november() 
 	var sk2: Skirmish = back.current
 	assert_eq(sk2.roll_marks, sk.roll_marks, "the bars came back")
 	assert_eq(sk2.mechs[0].hot_entry, 1, "the overheat's culprit came back")
-	assert_eq(sk2.field_foes()[0].resist, 2, "a foe's stun resist came back")
+	assert_eq([sk2.field_foes()[0].resist, sk2.field_foes()[0].elite], [2, true], "a foe's stun resist and its elite flag came back")
 	assert_true(sk2.can_undo(), "the undo came back")
 	assert_true(sk2.undo(), "and takes the spend back")
 	assert_eq([sk2.mechs[0].assigned, sk2.log.size()], [false, opened], "the die unspent, the trail as the round opened")

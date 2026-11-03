@@ -1943,6 +1943,11 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 						_pull(ms, Vector2i(0 if target.is_massive() else target.rank, target.column))
 					if f.drones and target.alive():
 						free = _drone(ms, target, exposed_before)
+			# The primers (Ryan, 2 November): a weapon fired or laid spends a stack of Charged and
+			# of Supercooled, which rode it as its keywords (Effects.effective_face); a salvo is one
+			# fire, the pull's gather none, and equipment spends nothing.
+			if f.is_weapon() and not (target is Vector2i and f.pulls_mines):
+				_spend_primers(ms)
 			killed = _falls - falls_before
 			_after_kills(ms, killed)
 			# The Spindrift Salvo's kill rider (the Giant Petrel's, Ryan's go of 21 October; built 30
@@ -2552,6 +2557,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		reads[foe] = [f.missing_bonus(foe), Effects.stacks_of(foe, f.consumes) if not f.consumes.is_empty() else 0]
 	var laid := {}
 	var webbed: Array[Foe] = []
+	var after := {}   # foe -> {status id: stacks}: each strike's Cryo and Flak, laid once the strikes are done
 	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (the sixth shot)
 	# A gated keyword (the stock pass's engine, 22 October: the Suppression Battery's Suppress
 	# on a foe carrying Flak): each foe reached judged at the spend, before any strike's riders,
@@ -2697,20 +2703,18 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 					webbed.append(foe)
 			# Cryo (20 October): a weapon's hit spends every stack the foe carries (Ryan, 25
 			# October), and the hitter cools for them once the spend's own heat has landed (below);
-			# equipment spends none. Then the blow's own Cryo lands, after the cash, so a Cryo
-			# weapon never eats what it lays.
+			# equipment spends none. The blow's own Cryo, this strike's stacks on this foe, lands
+			# once every strike is done (below), so a spend never eats what it lays.
 			if was_alive and not f.is_debuff() and Effects.has(foe, "cryoed"):
 				thawed += Effects.stacks_of(foe, "cryoed")
 				Effects.remove(foe, "cryoed")
 			if f.has(Face.Keyword.CRYO) and foe.alive():
-				Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", _stacks_from(ms, "cryoed", f.cryo) * doubled, Effects.DECAY_NONE)
-				_note_status(gained, foe, "cryoed", turned)
+				_gather(after, foe, "cryoed", _stacks_from(ms, "cryoed", f.cryo) * doubled)
 			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
-			# number in stacks, after the blow, so the blow that lays it
-			# never feeds on it; a later strike of the same spend does.
+			# number in stacks a strike, laid once every strike is done (below), so no strike of
+			# the spend feeds on what it lays (Ryan, 3 November).
 			if f.has(Face.Keyword.FLAK) and foe.alive():
-				Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", _stacks_from(ms, "flakked", f.flak) * doubled, Effects.status_decay(Effects.STATUS["flakked"]))
-				_note_status(gained, foe, "flakked", turned)
+				_gather(after, foe, "flakked", _stacks_from(ms, "flakked", f.flak) * doubled)
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
 			# after the blow and with the riders, equipment's included; a foe the blow killed loses
 			# its Getting Back Up, so it stays down.
@@ -2727,6 +2731,18 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		total += landed
 		if sweep:
 			swept.append("%s %d" % [aimed.display_name, landed])
+	# Riders land after the hits (Ryan, 3 November: "a multi-hit weapon with Shock would apply it
+	# after both hits ... Cryo should work the same way, resulting in 2 applications, not
+	# apply-cash-apply-cash, and not hit-hit-apply once"): each strike's Cryo and Flak, gathered on
+	# its own foe above, laid now the strikes are done, an application a strike, so a spend never
+	# cashes or feeds on what it lays. Shock, Expose, Lure and Disrupt land below, after the blow,
+	# as they did; Burn, Suppress and Web land a strike at a time, since no hit reads them.
+	for foe in after.keys():
+		if not foe.alive():
+			continue
+		for sid in after[foe].keys():
+			Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", int(after[foe][sid]), Effects.status_decay(Effects.STATUS[sid]))
+			_note_status(gained, foe, sid, turned)
 	for foe in laid.keys():
 		var bits: Array[String] = []
 		for sid in laid[foe].keys():
@@ -2750,11 +2766,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	if f.has(Face.Keyword.SHOCK):
 		for foe in touched:
 			_shock(foe, ms, turned)
-	# The primers (Ryan, 2 November): Charged and Supercooled spend a stack a weapon fired, the
-	# mark landing on the foe the first strike was aimed at, after the blows, as the Shock keyword
-	# lays its own; a salvo is one fire, a blast none, and equipment spends nothing.
-	if not f.is_debuff() and not _blast_strike and not _chaining:
-		_prime(ms, target, turned)
 	# Expose (the Needletail's Fovea Designator, 21 October): every foe reached and left
 	# standing is Exposed through the next round, a second Expose refreshing it.
 	if f.has(Face.Keyword.EXPOSE):
@@ -3653,16 +3664,6 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 			heat_total += int(modded["heat"])   # heat once a spend
 		vent += int(modded["vent"])
 		laid.append(_shot(ms, f, int(modded["damage"]), ms.face(), doubled, int(modded["burn"]), false, _area_shot(ms, f, fired + from_hopper, split)))
-	# The primers (2 November): a laid weapon spends a stack as it is laid, the mark riding its
-	# first shot to whoever steps in.
-	if not f.is_debuff() and not laid.is_empty():
-		if Effects.stacks_of(ms.unit, "charged") > 0:
-			Effects.spend_stacks(ms.unit, "charged", 1)
-			if not laid[0]["keywords"].has(int(Face.Keyword.SHOCK)):
-				laid[0]["keywords"].append(int(Face.Keyword.SHOCK))
-		if Effects.stacks_of(ms.unit, "supercooled") > 0:
-			Effects.spend_stacks(ms.unit, "supercooled", 1)
-			laid[0]["cryo"] = int(laid[0]["cryo"]) + _stacks_from(ms, "cryoed", 1)
 	var waiting: Array = mines.get(slot, [])
 	waiting.append_array(laid)
 	mines[slot] = waiting
@@ -4010,28 +4011,25 @@ func _shock(foe: Foe, by: MechState, turned = null) -> void:
 	_foe_gained_status(foe, "shocked")
 
 
-## The primers (Ryan, 2 November): Charged and Supercooled on a machine spend a stack a weapon it
-## fires, and the Shock or the Cryo 1 lands on the foe the first strike was aimed at, after the
-## blows, as the Shock keyword lays its own, so a weapon never cashes what it just laid. A salvo
-## is one fire, a blast none, equipment spends nothing, and a laid shot spends the stack as it is
-## laid and carries the mark (_lay). A stack spent on a fallen foe is spent all the same.
-func _prime(ms: MechState, foe: Foe, turned = null) -> void:
+## The primers (Ryan, 2 November; keywords since 3 November): Charged and Supercooled ride the
+## weapons a machine fires as Shock and as Cryo, one more a strike (Effects.effective_face), and
+## a weapon fired or laid spends a stack of each: a Rapid's second fire is a second fire, a salvo
+## one, a blast none, and equipment spends nothing.
+func _spend_primers(ms: MechState) -> void:
 	for id in ["charged", "supercooled"]:
 		if Effects.stacks_of(ms.unit, id) <= 0:
 			continue
 		Effects.spend_stacks(ms.unit, id, 1)
-		var name := str(Effects.STATUS[id]["name"])
-		if foe == null or not foe.alive():
-			log.append("%s: %s spent, its foe fallen" % [ms.unit.display_name, name])
-			continue
-		if id == "charged":
-			_shock(foe, ms, turned)
-		elif Effects.turns_mark(foe, "cryoed"):
-			_turned_away(foe, "cryoed", turned, ms)
-		else:
-			Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", _stacks_from(ms, "cryoed", 1), Effects.DECAY_NONE)
-			log.append("%s frosts %s: Cryo ×%d" % [ms.unit.display_name, foe.display_name, Effects.stacks_of(foe, "cryoed")])
-			_foe_gained_status(foe, "cryoed")
+		log.append("%s: %s spent on the fire (%d left)" % [ms.unit.display_name, str(Effects.STATUS[id]["name"]), Effects.stacks_of(ms.unit, id)])
+
+
+## A strike's rider gathered on its foe, to land once the strikes are done: foe -> {status id: stacks}.
+static func _gather(after: Dictionary, foe: Foe, sid: String, n: int) -> void:
+	if n <= 0:
+		return
+	var per: Dictionary = after.get(foe, {})
+	per[sid] = int(per.get(sid, 0)) + n
+	after[foe] = per
 
 
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe

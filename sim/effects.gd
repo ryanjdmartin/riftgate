@@ -198,9 +198,9 @@ const STATUS := {
 		"tags": ["buff"], "effects": []},
 	# The primers (Ryan, 2 November): a stack a weapon fired, the mark landing on the foe the first
 	# strike was aimed at after the blows (Skirmish._prime), never on the fire's own blows.
-	"charged": {"id": "charged", "name": "Charged", "description": "The next weapon this machine fires Shocks the foe it was aimed at, a stack a fire.", "decay": "none",
+	"charged": {"id": "charged", "name": "Charged", "description": "Its weapons fire with Shock while it lasts; a weapon fired spends a stack.", "decay": "none",
 		"tags": ["buff"], "effects": []},
-	"supercooled": {"id": "supercooled", "name": "Supercooled", "description": "The next weapon this machine fires lays Cryo 1 on the foe it was aimed at, a stack a fire.", "decay": "none",
+	"supercooled": {"id": "supercooled", "name": "Supercooled", "description": "Its weapons fire with Cryo while it lasts, one more a strike; a weapon fired spends a stack.", "decay": "none",
 		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
 	# its brace (above): Empowered rides its next move; Risen is a charge spent by a death.
@@ -1193,7 +1193,15 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		if base.has(kw) and int(numbers[kw]) != base.number_of(kw):
 			raised[kw] = numbers[kw]
 	var split := split_of(u, base) if base.split <= 1 else 1   # never twice: an entry already split stays as it is
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not mutes:
+	# The primers (Ryan, 2 November; as keywords since 3 November: "a multi-hit weapon with Shock
+	# would apply it after both hits ... Cryo should work the same way, resulting in 2
+	# applications"): while the machine carries Charged its weapons fire with Shock, while it
+	# carries Supercooled with Cryo, one more a strike on each foe hit; the skirmish spends a
+	# stack of each a weapon fired (Skirmish._spend_primers). Equipment carries neither, and
+	# Silence mutes them with the rest.
+	var primed_shock := not muted and base.is_weapon() and stacks_of(u, "charged") > 0 and not base.has(Face.Keyword.SHOCK)
+	var primed_cryo := not muted and base.is_weapon() and stacks_of(u, "supercooled") > 0
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not mutes and not primed_shock and not primed_cryo:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	if mutes:
@@ -1208,6 +1216,12 @@ static func effective_face(u, face: Face, target = null) -> Face:
 			c.printed.append(kw)
 	for kw in raised.keys():
 		c.set_number(kw, int(raised[kw]))
+	if primed_shock:
+		c.add_keyword(Face.Keyword.SHOCK)
+	if primed_cryo:
+		var frosted := c.has(Face.Keyword.CRYO)   # one more a strike on a Cryo gun; Cryo 1 on any other
+		c.add_keyword(Face.Keyword.CRYO)
+		c.cryo = c.cryo + 1 if frosted else maxi(1, c.cryo)
 	if split > 1:
 		c.strikes = maxi(1, c.strikes) * split
 		c.split = split

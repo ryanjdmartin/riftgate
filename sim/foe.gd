@@ -28,6 +28,7 @@ var aim: String = AIM_ANYTHING   # the sense its target pick follows (content; a
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
+var elite: bool = false          # leads an elite composition (content `elite`): a mini-boss, resisting a stun as one
 var resist: int = -1             # its stun resist (Ryan, 2 November): the Numbed it recovers from a stun with; content's, or by its size (stun_resist)
 var actions: Array = []          # implemented attack actions; at least the basic one
 
@@ -88,10 +89,15 @@ func is_suppressed() -> bool:
 
 ## Its stun resist (Ryan, 2 November): the stacks of Numbed it gains as it recovers from a stun,
 ## each a round until one stun lands again; content's `resist`, else by its size.
-const RESIST_DEFAULT := 1
-const RESIST_MASSIVE := 3
+const RESIST_DEFAULT := 1   # the stun resist by kind (Ryan, 3 November: "1 small, 2 massive, 3 for elites and bosses")
+const RESIST_MASSIVE := 2
+const RESIST_BOSS := 3      # an elite's, a hero's and a boss's
 func stun_resist() -> int:
-	return resist if resist >= 0 else (RESIST_MASSIVE if is_massive() else RESIST_DEFAULT)
+	if resist >= 0:
+		return resist
+	if boss or hero or elite:
+		return RESIST_BOSS
+	return RESIST_MASSIVE if is_massive() else RESIST_DEFAULT
 
 
 static func make(name: String, hp_value: int, attack_value: int, back: bool = false) -> Foe:

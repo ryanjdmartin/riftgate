@@ -285,6 +285,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
+	f.elite = is_elite(foe_id)   # a mini-boss: its stun resist is a boss's (3 November)
 	# A boss in parts (15 October): its parts' types, its guard and how its parts grow back.
 	f.part_ids = Array(d.get("parts", [])).map(func(x): return str(x))
 	f.guard = str(d.get("guard", ""))

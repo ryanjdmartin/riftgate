@@ -223,7 +223,7 @@
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
-   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
+   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo a strike (Cryo 1: one stack), laid once the strikes are done, so a fire never cashes its own frost. Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
    "status": "implemented",
    "design": {
     "holes": "Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder."
@@ -313,7 +313,7 @@
    "id": "flak",
    "category": "keyword",
    "name": "Flak",
-   "codex": "Flak N: each foe hit gains N stacks of Flak.",
+   "codex": "Flak N: each foe hit gains N stacks of Flak a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays.",
    "status": "implemented",
    "design": {
     "holes": "The stacks land after the blow, so the blow that lays them never feeds on them and a later strike of the same spend does."
@@ -2020,10 +2020,10 @@
    "id": "charged",
    "category": "status",
    "name": "Charged",
-   "codex": "Machine buff. The next weapon this machine fires Shocks the foe it was aimed at, after its blows, a stack a fire: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment spends nothing. A laid shot spends the stack as it is laid and the Shock rides it. A Purge lowers it.",
+   "codex": "Machine buff. While it lasts the machine's weapons fire with Shock, shown on the die: every foe a fire reaches and leaves standing is Shocked after the blows. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the Shock. A Purge lowers it.",
    "status": "implemented",
    "design": {
-    "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; on weapon fire and never per hit, so a strikes gun never cashes what it just laid. No piece grants it yet: capacitor pieces are content to propose.",
+    "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. No piece grants it yet: capacitor pieces are content to propose.",
     "table": {
      "kind": "buff",
      "on": "machine",
@@ -2036,10 +2036,10 @@
    "id": "supercooled",
    "category": "status",
    "name": "Supercooled",
-   "codex": "Machine buff. The next weapon this machine fires lays Cryo 1 on the foe it was aimed at, after its blows, a stack a fire: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment spends nothing. A laid shot spends the stack as it is laid and the frost rides it. A Purge lowers it.",
+   "codex": "Machine buff. While it lasts the machine's weapons fire with Cryo, one more stack a strike on each foe hit (Cryo 1 on a gun without it), shown on the die and laid after the hits, so a fire never cashes its own frost. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the frost. A Purge lowers it.",
    "status": "implemented",
    "design": {
-    "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger. No piece grants it yet.",
+    "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger; a stack a strike after the hits (3 November: \"resulting in 2 applications, not apply-cash-apply-cash, and not hit-hit-apply once\"). No piece grants it yet.",
     "table": {
      "kind": "buff",
      "on": "machine",

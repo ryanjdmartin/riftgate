@@ -1599,10 +1599,12 @@ func test_an_arc_meets_armour_unless_it_breaches() -> void:
 		assert_eq(30 - plated.hp, 2 if breach else 1, "a Breach meets no armour" if breach else "Chain 2, plain, less armour 1")
 
 
-## The primers (Ryan, 2 November): Charged and Supercooled spend a stack a weapon fired, the Shock
-## and the Cryo 1 landing on the foe the first strike was aimed at after its blows, never on the
-## fire's own blows; equipment spends none; a laid shot spends the stack and carries the mark.
-func test_charged_and_supercooled_spend_a_stack_a_weapon_fired_after_its_blows() -> void:
+## The primers (Ryan, 2 November; as keywords since 3 November: "a multi-hit weapon with Shock
+## would apply it after both hits ... Cryo should work the same way, resulting in 2 applications"):
+## while a machine carries Charged its weapons fire with Shock, while it carries Supercooled with
+## Cryo, one more a strike, both shown on the die and landing after the strikes; a weapon fired
+## spends a stack of each; equipment carries neither and spends none; a laid shot carries them.
+func test_charged_and_supercooled_ride_the_weapon_fired_as_its_keywords() -> void:
 	var sk := Skirmish.new(1, 2)
 	var gun := Face.attack(4, L)
 	gun.strikes = 2
@@ -1616,6 +1618,9 @@ func test_charged_and_supercooled_spend_a_stack_a_weapon_fired_after_its_blows()
 	Effects.stack(m, Effects.STATUS["charged"], Effects.SKIRMISH, "buff", 1, Effects.DECAY_NONE)
 	Effects.stack(m, Effects.STATUS["supercooled"], Effects.SKIRMISH, "buff", 2, Effects.DECAY_NONE)
 	var ms: Skirmish.MechState = sk.mechs[0]
+	var shown := sk.shown_face(ms, gun)
+	assert_true(shown.has(K.SHOCK) and shown.has(K.CRYO) and shown.cryo == 1, "the die shows the gun firing with Shock and Cryo 1: %s" % shown.describe())
+	assert_false(sk.shown_face(ms, ms.die.faces[1]).has(K.SHOCK), "equipment carries neither")
 	ms.face_index = 1
 	assert_true(sk.assign(0, null), "equipment spent on itself")
 	assert_eq([Effects.stacks_of(m, "charged"), Effects.stacks_of(m, "supercooled")], [1, 2], "equipment spends nothing")
@@ -1625,16 +1630,19 @@ func test_charged_and_supercooled_spend_a_stack_a_weapon_fired_after_its_blows()
 	assert_true(sk.assign(0, g), "the gun fired at g")
 	assert_eq(g.hp, 92, "two strikes of 4, neither doubled: the Shock lands after the blows")
 	assert_true(Effects.has(g, "shocked"), "Charged: the foe is Shocked after the fire")
-	assert_eq(Effects.stacks_of(g, "cryoed"), 1, "Supercooled: Cryo 1 on it")
+	assert_eq(Effects.stacks_of(g, "cryoed"), 2, "Supercooled: Cryo 1 a strike, laid after the hits, so the second strike cashes nothing")
+	assert_false("\n".join(sk.log).contains("cashes Cryo"), "no cash on the fire's own frost")
 	assert_eq([Effects.stacks_of(m, "charged"), Effects.stacks_of(m, "supercooled")], [0, 1], "a stack of each spent, one fire")
-	assert_true("\n".join(sk.log).contains("A shocks revenant") and "\n".join(sk.log).contains("A frosts revenant: Cryo ×1"), "the log tells both: %s" % str(sk.log.slice(-4)))
+	var hit_line := sk.log.filter(func(l: String) -> bool: return l.begins_with("A hits revenant"))
+	assert_true(not hit_line.is_empty() and hit_line[0].contains("shock") and hit_line[0].contains("cryo 1"), "the hit's line names the keywords the fire carried: %s" % str(hit_line))
+	assert_false(sk.shown_face(ms, gun).has(K.SHOCK), "the Charged spent, the die shows the gun plain of it")
 	sk.end_round()
 	sk.start_round()
 	ms.face_index = 0
 	assert_true(sk.assign(0, h), "fired again, at h")
 	assert_false(Effects.has(h, "shocked"), "no Charged left")
-	assert_eq([Effects.stacks_of(h, "cryoed"), Effects.stacks_of(m, "supercooled")], [1, 0], "the last Supercooled spent on h")
-	# A laid shot spends the stack as it is laid and carries the mark to whoever steps in.
+	assert_eq([Effects.stacks_of(h, "cryoed"), Effects.stacks_of(m, "supercooled")], [2, 0], "the last Supercooled spent on h, a stack a strike")
+	# A laid shot carries the keywords and spends the stack as it is laid.
 	var s2 := Skirmish.new(1, 2)
 	var bomber := _mech("Bomber", Die.single(Face.attack(4, I)), 40, 100)
 	bomber.grant_passive(MINER)
@@ -1649,6 +1657,65 @@ func test_charged_and_supercooled_spend_a_stack_a_weapon_fired_after_its_blows()
 	assert_eq([Effects.stacks_of(bomber, "charged"), Effects.stacks_of(bomber, "supercooled")], [0, 0], "both spent at the lay")
 	var shot: Dictionary = s2.mines_at(slot)[0]
 	assert_true(shot["keywords"].has(int(K.SHOCK)) and int(shot["cryo"]) == 1, "the shot carries the Shock and the Cryo 1: %s" % str(shot))
+
+
+## Riders land after the hits (Ryan, 3 November: "resulting in 2 applications, not
+## apply-cash-apply-cash, and not hit-hit-apply once, since that just removes the purpose of
+## multi-hit strikes"): a strikes gun's Cryo lands a stack a strike once its strikes are done, so
+## it never cashes its own frost; a foe already frosted is cashed on the first strike alone.
+func test_a_strikes_guns_cryo_lands_a_stack_a_strike_after_its_hits_and_never_cashes_its_own() -> void:
+	var sk := Skirmish.new(1, 2)
+	var gun := Face.attack(5, L, K.CRYO, 4)
+	gun.cryo = 1
+	gun.strikes = 2
+	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
+	var g := _ghoul(100, 0)
+	var h := _ghoul(100, 0)
+	sk.add_foes([g, h])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 20
+	assert_true(sk.assign(0, g), "fired at a plain foe")
+	assert_eq([g.hp, Effects.stacks_of(g, "cryoed")], [90, 2], "two strikes, Cryo 2: a stack a strike, laid after the hits")
+	assert_eq(ms.heat, 24, "its own heat and no cash: the second strike found nothing of the first's")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(h, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
+	ms.heat = 20
+	assert_true(sk.assign(0, h), "fired at a frosted foe")
+	assert_eq(Effects.stacks_of(h, "cryoed"), 2, "its three cashed by the first strike, then the fire's two laid")
+	assert_eq(ms.heat, 24 - 3 * Skirmish.cryo_cool(), "cooled for the three alone")
+
+
+## The stun resist by kind (Ryan, 3 November: "1 small, 2 massive, 3 for elites and bosses, by
+## default"), content's own number over it, and the elite flag from content.
+func test_a_foes_stun_resist_is_by_its_kind_unless_content_says() -> void:
+	var small := _ghoul(100)
+	assert_eq(small.stun_resist(), 1, "a small foe")
+	var big := _ghoul(100)
+	big.size = 2
+	assert_eq(big.stun_resist(), 2, "a massive foe")
+	var elite := _ghoul(100)
+	elite.elite = true
+	assert_eq(elite.stun_resist(), 3, "an elite")
+	var boss := _ghoul(100)
+	boss.boss = true
+	assert_eq(boss.stun_resist(), 3, "a boss")
+	var hero := _ghoul(100)
+	hero.hero = true
+	assert_eq(hero.stun_resist(), 3, "a hero")
+	big.resist = 5
+	assert_eq(big.stun_resist(), 5, "content's own number over the kind's")
+	var db := ContentDB.load_default()
+	var elites := 0
+	for id in db.foes.keys():
+		if db.is_elite(id):
+			var f := db.make_foe(id)
+			assert_true(f.elite, "%s is made an elite" % id)
+			assert_true(f.resist >= 0 or f.stun_resist() == 3, "%s resists as a boss unless content says" % id)
+			elites += 1
+	assert_true(elites > 0, "content has elites to check")
 
 
 func test_a_conductors_barrier_takes_the_arc_and_its_charge_stands() -> void:
@@ -1927,7 +1994,7 @@ func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
 ## stack and lands nothing, so the count is the rounds until one stun lands.
 func test_suppress_skips_the_action_and_numbs() -> void:
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	var m := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 60, 100)   # a shield, so the blow it takes injures nothing
 	sk.add_mech(m)
 	var boss := Foe.make("maw", 200, 30)
 	boss.size = 2
@@ -1938,20 +2005,20 @@ func test_suppress_skips_the_action_and_numbs() -> void:
 	assert_true(boss.is_suppressed(), "suppressed this round")
 	assert_eq(Effects.stacks_of(boss, "numbed"), 0, "Numbed lands as it recovers, not as the stun does")
 	sk.end_round()
-	assert_eq(m.hull, 100, "it skipped")
+	assert_eq([m.hull, m.shield], [100, 60], "it skipped")
 	assert_false(boss.is_suppressed(), "the suppression ran out with the round")
-	assert_eq(Effects.stacks_of(boss, "numbed"), 3, "a massive foe recovers with its stun resist in stacks: three rounds until one stun lands")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "a massive foe recovers with its stun resist in stacks (2, Ryan's default of 3 November): two rounds until one stun lands")
 	sk.start_round()
 	sk.assign(0, sk.front[0])
 	assert_false(boss.is_suppressed(), "a stun on a Numbed foe lands nothing")
-	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "and strips a stack")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 1, "and strips a stack")
 	assert_true("\n".join(sk.log).contains("strips a stack of Numbed"), "the log says so")
 	sk.end_round()
-	assert_eq(m.hull, 70, "it struck")
-	assert_eq(Effects.stacks_of(boss, "numbed"), 1, "a stack goes at the round's end")
+	assert_eq([m.hull, m.shield], [100, 30], "it struck")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 0, "the last stack goes at the round's end: one stun lands again")
 	sk.start_round()
-	sk.end_round()
-	assert_eq(Effects.stacks_of(boss, "numbed"), 0, "and the last the round after: one stun lands again")
+	sk.assign(0, sk.front[0])
+	assert_true(boss.is_suppressed(), "and the next stun lands")
 
 
 func test_a_second_suppress_on_a_suppressed_foe_adds_nothing() -> void:
@@ -6245,9 +6312,9 @@ func test_flak_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_har
 	assert_eq(sk.shown_number(sk.mechs[1], gun, mid), 7, "its armour comes off after the Flak, and the shock stays on its chip")
 
 
-## A spend of several strikes lays its Flak a strike at a time, so the later strikes land on
-## what the earlier ones laid.
-func test_a_later_strike_of_a_flak_spend_lands_on_the_flak_the_first_laid() -> void:
+## A spend of several strikes lays its Flak a stack a strike once the strikes are done (Ryan, 3
+## November: riders land after the hits), so no strike of the spend feeds on what it lays.
+func test_a_later_strike_of_a_flak_spend_lands_plain_and_the_flak_lands_after() -> void:
 	var sk := Skirmish.new(1)
 	var burst := _strikes(Face.attack(5, L, K.FLAK), 3)
 	burst.flak = 1
@@ -6257,7 +6324,7 @@ func test_a_later_strike_of_a_flak_spend_lands_on_the_flak_the_first_laid() -> v
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, g), "three strikes")
-	assert_eq(g.hp, 100 - 5 - 6 - 7, "5, then 5 and a stack, then 5 and two")
+	assert_eq(g.hp, 100 - 5 - 5 - 5, "5, 5 and 5: the Flak lands after the hits")
 	assert_eq(Effects.stacks_of(g, "flakked"), 3, "a stack a strike")
 
 
