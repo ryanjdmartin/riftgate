@@ -137,7 +137,7 @@ its own and the hangar's turn held through a slice, the Nemesis's longer punch, 
 plumes, the Puffin's repulsors after its plates, the Arsenal's rear vents on a sickly amber tile
 and its chest's hotter flares, and the Wainwright & Sutler pieces that fired with nothing firing
 from their acts (the Musk Ox's howitzer on its own), the Whip Scorpion's vents haloed; green at 939
-tests and 255,506 checks; not yet on main; its bible is v0.434 (the Pages line); the hangar the
+tests and 255,506 checks; not yet on main; its bible is v0.436 (the Pages line); the hangar the
 Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps, the hit and fire
 round and both sets of his notes of 3 November (the to-do's Ryan list).
 
@@ -804,9 +804,15 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.433 (the
-  page's version 446, published 3 November from `claude/charming-rubin-h954bp`: Ryan's notes of
-  that day, a lost machine's slump in the hit-reaction row, a weapon's slices in turn, its
+  `docs/design-bible.html` after every change. This file and the live page are v0.436 (the
+  page's version 449, published 3 November from `claude/charming-rubin-h954bp`: Ryan's second
+  notes of that day, the slump on its feet in the hit-reaction row, the Buzzard's cannon and the
+  Wainwright & Sutler pieces firing from their acts in the weapon-fire row, the Kite's larger
+  plumes in the boosters row, the Arsenal's sickly vents in the glow colours row, three-way merged
+  onto the live v0.435 another session published after 446 (the elites' pass: a boss a named JRPG
+  entity and an elite the domain's own, the Goblin Nob's Enraged in the generated tables), the
+  version line the only conflict; on its own v0.433 at 446, the same day: Ryan's notes of that
+  day, a lost machine's slump in the hit-reaction row, a weapon's slices in turn, its
   wind-up and its coming home in the weapon-fire row, a new row on boosters by maker, the
   machines table; on its own v0.432 at 445, the same day: a melee weapon
   lunges only as a blade with nothing that crosses the field, a shotgun firing as a gun, in the
@@ -847,7 +853,14 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 196 (3 November, from
+  before it is replaced and `edits` read first. At the page's version 198 (3 November, from
+  `claude/charming-rubin-h954bp`; `edits` empty): Ryan's second notes of that day in
+  `hangar/motion.js` (the slump on its feet, flyers and hovers at the skirmish's lift, a fixed
+  weapon's turn held through its slice, the route hex by class), the rigs of the Nemesis, the
+  Ammit, the Goshawk, the Puffin, the Sparrowhawk, the Cassowary, the Musk Ox, the Swallowtail and
+  the Whip Scorpion, and the Nemesis's and the Ammit's models (their fume vents), onto the 197
+  another session published (its page the same as 196's), each checked identical to 196's before
+  it was replaced; the page and every other file as 197 left them. At 196 (3 November, from
   `claude/charming-rubin-h954bp`; `edits` empty): Ryan's notes of that day in the page and
   `hangar/motion.js` (a lost machine slumping, a fired weapon coming home on the paused stage,
   slices in turn and their wind-ups, the plumes gone at rest, a launched part flying, the Melee
