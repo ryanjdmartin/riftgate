@@ -63,7 +63,7 @@
    "id": "reroll",
    "category": "resource",
    "name": "Reroll",
-   "codex": "Three rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds.",
+   "codex": "Three rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds, unless a Giant Petrel fights: its Maverick's Playbook banks up to three left unspent as your turn ends, for the next round.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -283,7 +283,7 @@
    "id": "disrupt",
    "category": "keyword",
    "name": "Disrupt",
-   "codex": "Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved.",
+   "codex": "Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved, and a follow-up it announced is not either: the move it came after was the window.",
    "status": "implemented",
    "design": {
     "holes": "Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern."
@@ -293,7 +293,7 @@
    "id": "suppress",
    "category": "keyword",
    "name": "Suppress",
-   "codex": "Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off at 10% a Numbed stack; no foe resists by nature.",
+   "codex": "Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three on a boss or a massive foe). A foe may shrug it off at 10% a Numbed stack; no foe resists by nature.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -313,7 +313,7 @@
    "id": "swap",
    "category": "keyword",
    "name": "Swap",
-   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it or set it back.",
+   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -340,7 +340,7 @@
     "table": {
      "kind": "buff",
      "on": "foe",
-     "stacks": "Yes: two a landed suppress, three on a massive foe",
+     "stacks": "Yes: two a landed suppress, three on a boss or a massive foe",
      "lasts": "A stack fades at each of its turns"
     }
    }
@@ -433,6 +433,26 @@
    }
   },
   {
+   "id": "steal",
+   "category": "keyword",
+   "name": "Steal",
+   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn, as a Disable, and the foe takes it: its next swing lands that weapon's number, a rolled one at its middle, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
+   "status": "implemented",
+   "design": {
+    "holes": "Gilgamesh's (30 October). One piece held at a time, the swing spending it; the swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it."
+   }
+  },
+  {
+   "id": "drain",
+   "category": "keyword",
+   "name": "Drain",
+   "codex": "Enemy keyword. The foe regrows what the blow took from the hull, no more than the machine had, so a shield starves it. It lays nothing on the machine, so no Ward turns it away; a Barrier's blow deals nothing to drain, and Burning on the foe takes back what it heals.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Vampire Lord's (30 October), its bite and, below half, a drain at every machine. The genre's word (Drain), and the soft counter section 2 asks for: burn never stops healing. The hull alone, so the shield answers it: a drain of shield and hull walled the slowest trio at every HP tried, the shield, its answer to every blow, doing nothing against the heal."
+   }
+  },
+  {
    "id": "corrupt",
    "category": "keyword",
    "name": "Corrupt",
@@ -450,6 +470,26 @@
    "status": "implemented",
    "design": {
     "holes": "Who carries it is section 12's question. It mutes the machine's keywords and never its buffs (Ryan, 27 and 28 October); cast with no condition, aimed as its move says."
+   }
+  },
+  {
+   "id": "swallow",
+   "category": "foe",
+   "name": "Swallow",
+   "codex": "Foe move of its own, never a rider on a blow. The machine it lands on is Swallowed: out of the fight for the rounds it says, until the swallower falls, or until the swallower has lost a quarter of its HP since the swallow, the damage still to deal counting down on its chip. It never takes the last machine able to act. A Ward turns it away; a Lure turns it, and a Suppress or a Disrupt stops it, as any move.",
+   "status": "implemented",
+   "design": {
+    "holes": "Floraison's (30 October). The rounds, 1 to 3, are the move's, and no damage lands on the machine while it is held. The early release (31 October, Ryan agreeing Claude's lean): a quarter of the swallower's HP lost since the swallow, Clair Obscur's stagger in its smallest form, a round of the team's focus; the swallower loses nothing else, since a lost action on top would be a stun. A machine let go in the player's turn acts that round."
+   }
+  },
+  {
+   "id": "merge",
+   "category": "foe",
+   "name": "Merge",
+   "codex": "Foe move of its own. Every other foe on the field of the kinds it names is taken into it, gone without falling: it regrows the HP they had left, and its next move hits harder for each one. Thin them first; a Suppress or a Disrupt stops it, as any move.",
+   "status": "implemented",
+   "design": {
+    "holes": "The King Gel's (30 October): every Gel, Bubble Gel, Metal Gel and half on the field. Content: effect merge, foe (an id or a list), value (the lift a foe taken in). A foe taken in leaves no last act and no split and is no kill of the team's; its pack's tally still counts it gone. It needs its kinds beside it, so the King Gel's escort is its own (an escort that names its boss)."
    }
   },
   {
@@ -607,6 +647,22 @@
      "on": "both",
      "stacks": "Yes: an armour point a stack, every stack going at once",
      "lasts": "A machine's until the round's end; a foe's until its next action"
+    }
+   }
+  },
+  {
+   "id": "ore_plate",
+   "category": "status",
+   "name": "Ore Plate",
+   "codex": "Status, a machine's buff (the Honey Badger's): armour +1 a stack, what the loads in its hopper are worth (a point for every two), standing while it holds them and going as they are fired. Granted by a store, so a Purge puts it to sleep until the player's turn while the loads stay.",
+   "status": "implemented",
+   "design": {
+    "holes": "A working name (31 October), as is the Ore Hopper's.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: an armour point for every two loads held",
+     "lasts": "While the loads are held; a purge sleeps it a turn"
     }
    }
   },
@@ -1455,6 +1511,46 @@
    }
   },
   {
+   "id": "regenerates",
+   "category": "component_property",
+   "name": "Regenerates",
+   "codex": "A rule printed on a component (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a foe, its own machine gains Regenerating, the shield it says at the start of each of the rounds it says after this one, a grant of its own each time.",
+   "status": "implemented",
+   "design": {
+    "holes": "Self only and never Rapid: the die is its brake (Ryan, 19 October)."
+   }
+  },
+  {
+   "id": "ally_action",
+   "category": "component_property",
+   "name": "An ally's action",
+   "codex": "A rule printed on a buff (the Giant Petrel's Immelmann Booster): spent on an ally whose die is spent, the team pays the rerolls it says, banked or fresh, and the ally's die rolls again, never onto the entry it showed, and it acts again. Spent on its own machine it grants what it says.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its price is the lever if it reads as Rapid embodied in a machine (the bible's Kestrel row); the order is the play, the ally spending first."
+   }
+  },
+  {
+   "id": "rolls_target",
+   "category": "component_property",
+   "name": "Rolls its die",
+   "codex": "A rule printed on a buff (the Giant Petrel's Reheat Uplink): the die of the machine it lands on rolls again, never onto the entry showing. A die already spent rolls nothing.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "kill_rerolls",
+   "category": "component_property",
+   "name": "Rerolls a kill",
+   "codex": "A rule printed on a weapon (the Giant Petrel's Spindrift Salvo): if its spend kills, the team gains the rerolls it says this round, once however many fell.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
    "id": "component",
    "category": "kit",
    "name": "Component",
@@ -1581,7 +1677,7 @@
    "codex": "A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after.",
    "status": "implemented",
    "design": {
-    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. No foe carries it yet."
+    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Behemoth's Meteor (30 October)."
    }
   },
   {
@@ -1591,7 +1687,7 @@
    "codex": "A foe in parts: a core and the parts that stand with it. While its parts stand (all of them, or any, by the foe) the core is Guarded and takes no damage; a fallen part may grow back after a few rounds; when the core falls, its parts fall with it. Choose what to focus: a part to open the core, or the core to end them all.",
    "status": "implemented",
    "design": {
-    "holes": "Content: parts (foe ids), guard (all or any), regrow_parts (rounds). Parts are found by pack and type, one deep, and deploy by the ordinary rules, so beside the core is likely but not placed. No foe carries it yet."
+    "holes": "Content: parts (foe ids), guard (all or any), regrow_parts (rounds). Parts are found by pack and type, one deep, and deploy by the ordinary rules, so beside the core is likely but not placed. The Fallen Weapon's two eyes and the Obsidian Tyrant's rider (30 October); a move may open once a part has fallen (part_fallen)."
    }
   },
   {
@@ -1602,6 +1698,26 @@
    "status": "implemented",
    "design": {
     "holes": "The foe stays on the field while it gathers; its pick holds while the machine stands, and a Lure moves it."
+   }
+  },
+  {
+   "id": "follow_up",
+   "category": "foe",
+   "name": "Follow-up",
+   "codex": "A move that names the move its foe announces next round. The first lands, and the second is the next round's intent, so the warning comes a round ahead: Red Capote, then Andalucia. A Suppress on the first, or a Disrupt that turns it, and the second never comes; once announced, the second cannot be Disrupted, only Suppressed.",
+   "status": "implemented",
+   "design": {
+    "holes": "Content: then, on the first move, naming the second (30 October). One deep: a follow-up names none of its own and comes only after the move that names it, never by the roll. A borrowed swing with nothing taken is no follow-up, and the roll decides."
+   }
+  },
+  {
+   "id": "grudge",
+   "category": "foe",
+   "name": "Grudge",
+   "codex": "A blow that grows with the fight: a point heavier for every foe the team has killed this fight, its intent showing the number as it stands. Kill order answers it: the grudge-bearer first, the rest after.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Pilgrim's Karma (30 October), the Tonberry's Everyone's Grudge under a name of ours. Content: per_kill on an attack, the points a kill. Every fall counts but a foe that went whole (a burst, a part falling with its core) and one taken in by a merge."
    }
   },
   {
@@ -1668,10 +1784,10 @@
    "id": "hopper_property",
    "category": "component_property",
    "name": "The hopper",
-   "codex": "Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire.",
+   "codex": "A rule printed on a weapon, for a machine with a hopper. One fills it: the loads it prints for each foe its blows damage, after the blow, in place of what the machine's own passive puts in. The other fires it: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent, with the armour they stood for. The hopper shows under the heat; the die shows what a shot would fire.",
    "status": "implemented",
    "design": {
-    "holes": "The numbers are placeholders; the Honey Badger's rework (its brief) may change the fill."
+    "holes": "The numbers are placeholders at the stock pass's scale."
    }
   },
   {
@@ -1744,14 +1860,14 @@
    "id": "hopper",
    "category": "resource",
    "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches it.",
+   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and every two loads held are a point of armour, shown as the Ore Plate. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches the loads.",
    "status": "implemented",
    "design": {
-    "holes": "No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.",
+    "holes": "Its numbers since 31 October (Ryan's go, then his second fallback on the runner's read the same day): a cap of four, a point of armour for every two loads.",
     "table": {
      "kind": "store",
      "on": "machine",
-     "stacks": "Yes: a load a foe the claw reaches, up to three spent a shot",
+     "stacks": "Yes: a load a foe its weapons damage (the claw's two), up to 4; two spent a shot",
      "lasts": "The skirmish; never decays"
     }
    }
@@ -1817,6 +1933,22 @@
      "on": "machine",
      "stacks": "No",
      "lasts": "Through the machine's next round"
+    }
+   }
+  },
+  {
+   "id": "swallowed",
+   "category": "status",
+   "name": "Swallowed",
+   "codex": "Machine status, from a foe's swallow. It cannot act, take damage or be targeted: a blow or a move at every machine passes it by, and no ally can shield, vent or buff it. It comes back when its rounds run out, the moment its swallower falls, or once its swallower has lost a quarter of its HP since the swallow; let go in the player's turn, it acts that round.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its own cooling, ticks and overheats still land, as a Phased machine's do; nothing cleanses it.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "The swallow's rounds, or until the swallower falls or loses a quarter of its HP"
     }
    }
   },
@@ -1944,15 +2076,15 @@
    "id": "regenerating",
    "category": "status",
    "name": "Regenerating",
-   "codex": "Status, from a foe's own move. It regrows its value in HP at each of its next three actions, after its Burning and Vitriol have ticked, so a burn is a race and never a wall. Each grant keeps its own clock.",
+   "codex": "Status, on either side. A foe's, from its own move: it regrows its value in HP at each of its next three actions, after its Burning and Vitriol have ticked, so a burn is a race and never a wall. A machine's, from the Storm Petrel's St. Elmo's Regenerator: it regains its value in shield at the start of each of the next three rounds, up to its maximum. Each grant keeps its own clock, so two add until the first runs out.",
    "status": "implemented",
    "design": {
-    "holes": "The machine half, the Storm Petrel's, is planned until the engine has a round-start shield on a timed status and the rider on a weapon's own spender: it regains 2 shield at the start of each round for three rounds, each grant its own clock, so two grants regain 4 a round until the first runs out. The numbers are placeholders.",
+    "holes": "The machine half, the Storm Petrel's, built 30 October: a timed grant of its own each spend, the shield at each round's start after it, bought by a die entry so a foe's purge takes it. The numbers are placeholders.",
     "table": {
      "kind": "buff",
      "on": "both",
      "stacks": "Yes: each grant its own clock",
-     "lasts": "A foe's three of its actions; a machine's three rounds from its grant (planned)"
+     "lasts": "A foe's three of its actions; a machine's three rounds from its grant"
     }
    }
   },

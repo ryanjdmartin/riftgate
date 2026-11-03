@@ -34,7 +34,7 @@ func test_the_defaults_are_the_contents() -> void:
 	for e in db.spawn_table(fac, 1):
 		table.append([str(e[0]), int(e[1])])
 	assert_eq(s.packs, table, "against the first faction's spawn list")
-	assert_eq(s.boss, str(db.factions[fac]["boss"]), "and its boss")
+	assert_eq(s.boss, str(db.bosses_of(fac)[0]), "and its first boss")
 	assert_eq(s.lead_faction(), fac, "which leads")
 	for b in s.bosses():
 		assert_false(s.pack_foes().has(b), "a boss is never a pack's foe")
@@ -97,7 +97,7 @@ func test_a_battle_takes_the_packs_the_boss_and_the_guest() -> void:
 	var s := HarnessSetup.defaults(db)
 	var a := str(db.spawn_foes(str(facs[0]), 1)[0])
 	s.packs = [[a, 2]]
-	s.boss = str(db.factions[facs[1]]["boss"])
+	s.boss = str(db.bosses_of(str(facs[1]))[0])
 	s.guest = str(facs[2]) if facs.size() > 2 else ""
 	s.map_kind = str(BattleMap.KINDS.keys()[1])
 	s.seed_value = 11

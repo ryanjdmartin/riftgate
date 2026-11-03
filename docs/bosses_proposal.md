@@ -7,6 +7,12 @@ inside the skirmish. This file holds what fills the elite and boss tiers until R
 it all; then its picks become content and bible rows, and it retires (git keeps it). Names are
 working names, and everything here is Ryan's to move.
 
+The slate's twelve landed 30 October as runnable placeholder kits: seven on Ryan's word ("build
+what can be built, and specify exactly what you need to flesh the rest out, including any
+holes"), the last five on his yes ("Yes to all waiting bosses"). The stand-ins went to the rank
+and file and the Bone Wyvern to the elites. Their kits are in `content/foes.json`; what landed
+and the calls still open are below the slate.
+
 ## Elites
 
 Ryan's definition (23 and 24 October; the bible's tiers row): a spawn of one or more unique packs
@@ -24,15 +30,16 @@ team, which is what a tier-one elite looks like. About one an early battle, more
 | The Meadow | The Elder Treant, the beefed-up alpha | Massive | Ryan, 24 October: the harder-fight elite (the ent is Tolkien's coinage, and the treant D&D's rename of it, so the name is ours) |
 | The Meadow | The Leshy (Slavic folklore's forest lord) | Open | Ryan, 24 October: liked, and may be a foe of its own beside the Elder Treant for diversity |
 | The Waste | The Old Man of the Desert, the king sandworm | Massive | Ryan, 24 October: the harder-fight elite, named for Dune's own words for its worm, plain words the names rule below lets stay |
-| The Marsh | Bone Wyvern | Massive | Built, standing in as the boss; an elite unless a better setup comes (Ryan, 24 October) |
+| The Marsh | Bone Wyvern | Massive | An elite since 30 October (Ryan, 24 October), the Marsh's second, at tiers two and three with three Revenants |
 | The Marsh | The Reaper (Persona's chained one among many: every JRPG has a reaper, Ryan) | Not massive | Ryan, 15 October: in, a trope by the tiers' own test, so an elite that can turn up in many fights, leaving the boss slot to the Matador; 24 October: the deadly hunter elite. Art picked and cut 18 October (image to image from his first pick, its third hand gone) |
 | The Marsh | The Coven: three hags, each unique (a triple trope: Macbeth's Weird Sisters, the Graeae sharing one eye; the genre's own are Final Fantasy IV's Magus Sisters) | Not massive | Noted for later (Ryan, 15 October: not yet) |
 | Any | A pair of gate gargoyles (a pair trope) | Not massive | Noted for later (Ryan, 15 October: not yet) |
 
 Out of the tier (Ryan, 23 and 24 October): the Treant, the Magma Elemental (the Magma Golem
-until 23 October: a golem implies a master) and the Sandworm are rank and file, massive. Each
-stands in as its domain's boss until the slate lands, then joins its spawn list (a massive foe
-may stand in one since 24 October).
+until 23 October: a golem implies a master) and the Sandworm are rank and file, massive, in their
+domains' formations at tiers one and two since 30 October (Ryan: "they are rank and file after
+all"), two moves each as the rank and file carry at tier one, each one's third left for a
+higher line's twist.
 
 ## Bosses: the slate (third cut, 15 October)
 
@@ -46,20 +53,136 @@ stands or shielding it until one falls.
 
 | Domain | Boss | From | Its signature | Engine |
 |---|---|---|---|---|
-| The Meadow | King Slime | Dragon Quest | When enough Gels stand on the field they merge into the king: thin them first | A merge (new) |
-| The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Runs today |
-| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own). Its shape is humanoid (Ryan, 18 October, of the first takes: none matched; a humanoid body with the round thorn-rimmed maw of take 1 for a face), the fourth round of takes; his pick of it (4), redrawn less muscular, lanky as a sapling, for the fifth; his pick of that (2) wanted 1's eyeless maw (19 October), so the sixth is the edit model on 2 (the eyes inside the mouth removed) beside a composite of 1's head onto 2 re-rendered close; his pick of that (3, the composite) lost spines and vines on the head's left where the paste box clipped, so the seventh completed them (the edit model, and the composite redone wider), which did not work either (Ryan, 19 October: "maybe go back and try the head-swap compositing again"); the eighth is the composite of 1's head onto 2 again, a generous box, shown raw and after a close pass at 0.9: the spines and vines complete at last, all three clean to Claude's eye; Ryan (19 October): still weird even at phone scale, cut off or blurred by turns, is there another way? The ninth round is another way: the two eyes inside the maw painted out with the maw's own black on his pick itself (an erase over dark, as an erase over white is the one hand edit that has passed his bar; nothing re-rendered, so nothing blurs), beside image to image from his pick at 0.7 with the maw described eyeless (0.8 kept the eyes, set aside); Ryan's pick (26 October) the paint-out (bossart10 1), cut into `art/foes` and recorded in picks.json: Floraison is done | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow (new) |
-| The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry (new; the Thief's Steal takes rerolls) |
-| The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | A countdown (the delayed blow, held longer) and a blow that grows with the team's kills |
-| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough; 18 October, by his pick on the picker: the double-bitted axe standing haft-down, an eye in each blade, cut. The two bits are the parts, a mirrored pair whose blows differ by the eye that drives them (Claude's lean, to propose with its kit: one bit's blow passes the shield, the other's prises loose the component a machine shows, the Waste's two halves), the haft the core | The parts (above) |
-| The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Runs today |
-| The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | A drain (new); getting back up runs today |
-| The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. Ryan, 15 October: in, the legacy pick; the Reaper goes to the elites. Art: his pick of 18 October (the flourish, 4) lacks the hand on the arm bent across his chest; an added arm and a cape grip through the edit model both missed, so the third round was image to image from the pick, as he asked, and landed the hand; his pick of it (3) wanted 2's head and boots (19 October), so the fourth round was the edit model on 3 (red eye sockets, shoes under the greaves) beside a composite of 2's head and shoes onto 3 re-rendered close (image to image at 0.8), the first composite tried since hand edits failed in October; his pick of that (2, the edit) wanted 3's bolder jaw and nose bone, and the fifth round's edit of the skull was "way too much, full of artifacts" (Ryan, 19 October), so the sixth is a composite of 3's skull onto 2, the two aligned siblings, shown raw and after a close pass at 0.9: the jaw and nose bone carried over clean, no artifacts; Ryan's pick (19 October) the second close pass (fixhand6 3), cut into `art/foes` and recorded in picks.json: the Matador is done | Runs today |
-| The Peak | The Behemoth | Final Fantasy | Meteor on every machine as it dies: shield up, then kill it | A blow on death (small, beside the Gel's split) |
-| The Peak | The Adamantoise | Final Fantasy | Withdraws into its shell (armour up, so that round's blows are wasted), then Earthquake on every machine | Runs today |
-| The Peak | Black Tyrano | Chrono Trigger | Azala rides it, the brain: while she stands it is armoured; once she falls it counts down from five and breathes fire on every machine at zero | A countdown (the delayed blow); armour while an ally stands |
+| The Meadow | King Slime | Dragon Quest | When enough Gels stand on the field they merge into the king: thin them first | Landed 30 October as the King Gel, its merge built |
+| The Meadow | A Malboro (working name Rotbloom) | Final Fantasy | Bad Breath: a blow at every machine carrying every rider at once; cleanse is the answer | Landed 30 October as Rotbloom |
+| The Meadow | Floraison (Ryan's name, 15 October: the flowering; Bourgeon, French for a branch's bud, is its game's own). Its shape is humanoid (Ryan, 18 October, of the first takes: none matched; a humanoid body with the round thorn-rimmed maw of take 1 for a face), the fourth round of takes; his pick of it (4), redrawn less muscular, lanky as a sapling, for the fifth; his pick of that (2) wanted 1's eyeless maw (19 October), so the sixth is the edit model on 2 (the eyes inside the mouth removed) beside a composite of 1's head onto 2 re-rendered close; his pick of that (3, the composite) lost spines and vines on the head's left where the paste box clipped, so the seventh completed them (the edit model, and the composite redone wider), which did not work either (Ryan, 19 October: "maybe go back and try the head-swap compositing again"); the eighth is the composite of 1's head onto 2 again, a generous box, shown raw and after a close pass at 0.9: the spines and vines complete at last, all three clean to Claude's eye; Ryan (19 October): still weird even at phone scale, cut off or blurred by turns, is there another way? The ninth round is another way: the two eyes inside the maw painted out with the maw's own black on his pick itself (an erase over dark, as an erase over white is the one hand edit that has passed his bar; nothing re-rendered, so nothing blurs), beside image to image from his pick at 0.7 with the maw described eyeless (0.8 kept the eyes, set aside); Ryan's pick (26 October) the paint-out (bossart10 1), cut into `art/foes` and recorded in picks.json: Floraison is done | Clair Obscur | Swallows a machine, out of the fight for a few rounds; three- and five-hit combos. Its game's miasma would repeat the Rotbloom's Bad Breath in the same domain, so the swallow and the combos are its own (Ryan, 15 October: agreed; the third round's takes show the swallow and the vines); the swallow is hard control, weighed first (the bible's stun row). The game places one in its Meadows | A swallow, built; landed 30 October |
+| The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry and a borrowed swing, built; landed 30 October |
+| The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | Landed 30 October as the Pilgrim, its grudge built |
+| The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough; 18 October, by his pick on the picker: the double-bitted axe standing haft-down, an eye in each blade, cut. The two bits are the parts, a mirrored pair whose blows differ by the eye that drives them (Claude's lean, to propose with its kit: one bit's blow passes the shield, the other's prises loose the component a machine shows, the Waste's two halves), the haft the core | The parts; landed 30 October as the Fallen Weapon |
+| The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Landed 30 October |
+| The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | Landed 30 October as the Vampire Lord, its drain built and its readying once a fight |
+| The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. Ryan, 15 October: in, the legacy pick; the Reaper goes to the elites. Art: his pick of 18 October (the flourish, 4) lacks the hand on the arm bent across his chest; an added arm and a cape grip through the edit model both missed, so the third round was image to image from the pick, as he asked, and landed the hand; his pick of it (3) wanted 2's head and boots (19 October), so the fourth round was the edit model on 3 (red eye sockets, shoes under the greaves) beside a composite of 2's head and shoes onto 3 re-rendered close (image to image at 0.8), the first composite tried since hand edits failed in October; his pick of that (2, the edit) wanted 3's bolder jaw and nose bone, and the fifth round's edit of the skull was "way too much, full of artifacts" (Ryan, 19 October), so the sixth is a composite of 3's skull onto 2, the two aligned siblings, shown raw and after a close pass at 0.9: the jaw and nose bone carried over clean, no artifacts; Ryan's pick (19 October) the second close pass (fixhand6 3), cut into `art/foes` and recorded in picks.json: the Matador is done | Landed 30 October, its cape and flurry a follow-up (built) |
+| The Peak | The Behemoth | Final Fantasy | Meteor on every machine as it dies: shield up, then kill it | A last act; landed 30 October |
+| The Peak | The Adamantoise | Final Fantasy | Withdraws into its shell (armour up, so that round's blows are wasted), then Earthquake on every machine | Landed 30 October as the Cinder Tortoise, its shell and quake a follow-up |
+| The Peak | Black Tyrano | Chrono Trigger | Azala rides it, the brain: while she stands it is armoured; once she falls it counts down from five and breathes fire on every machine at zero | Landed 30 October as the Obsidian Tyrant with the Saurian Queen as its part, its countdown opening once she falls (built) |
 
 Six of the twelve are Final Fantasy's and six come from six other series.
+
+## What landed (30 October to 2 November)
+
+The kits are placeholders for Ryan's marks, every number too; each boss carries three moves,
+the third opening on a condition or following another, and a point of armour (the set of 2
+October). The engine pieces built for them run on any foe: a follow-up (a move that names the
+move its foe announces next round), a steal with its borrowed swing, a swallow, a merge, a
+drain, a grudge (a blow a point heavier for every foe the team has killed this fight), a
+condition that reads a fallen part, and a move used once a fight.
+
+| Domain | Boss | Its kit | Claude's leans inside it |
+|---|---|---|---|
+| The Meadow | Rotbloom | Tendrils, two strikes; Bad Breath at every machine, carrying Burn, Scorch, Disable and Corrupt; below half, Seedfall, two mandragoras called up | The third move and its name |
+| The Meadow | Floraison | Thorn Combo, three strikes; Swallow, a machine out of the fight for two rounds, until Floraison falls, or until it has lost a quarter of its HP since (Ryan, 31 October); below half, Full Bloom, five strikes | Two rounds; never the last machine able to act; no damage while held; the release at a quarter, its chip counting the damage left, the swallower losing nothing else |
+| The Meadow | The King Gel | Body Slam; Merge, every Gel and half on the field taken in, regrowing what they had left and its next move a point harder for each; below half, Belly Flop at every machine | Its court is its own escort (Gels at every tier), so the merge has fuel; a Gel taken in is no kill of the team's |
+| The Waste | The Ruby Colossus (2 November, in the Djinn's place; Ryan: "Ruby weapon is cool". The Djinn, a trope archetype, went to the rank and file: a tier-two back-rank caster, the Waste's purge in the ranks) | Big Claw; Whirlsand, a swallow; below half, Ultima, every machine three rounds on. Two tentacles as parts with no guard, the Burrowing (breach, 4) and the Thrashing (two strikes of 3), back three rounds after they fall (6, 4 and two rounds walled the stock teams alone: the read of 2 November) | The kit and its name; parts that guard nothing, so the arms or the body is the question; Ultima's three rounds |
+| The Waste | The Fallen Weapon | The core: Haft; Drive, a rally; below half, The Fall, every machine two rounds on. Two eyes as parts, the Piercing Eye (breach) and the Prising Eye (disable); the core Guarded while both stand, an eye back three rounds after it falls | One eye down opens the core (guard all); the eyes' blows |
+| The Waste | The Pilgrim | Lantern; Chef's Knife, twice its blow on a countdown of two, through the shield; below half, Karma, a point heavier for every foe the team has killed this fight, through the shield | Human-sized; the knife's two rounds |
+| The Marsh | The Matador | Estocada; Red Capote, armour +3, then Andalucia, four strikes at one machine | A Suppress or a Disrupt on the cape breaks the pair |
+| The Marsh | The Phantom Train | Run Down; Whistle, two Ghosts called up; below half, Last Run, every machine a round on | Two Ghosts, which raise Revenants of their own |
+| The Marsh | The Vampire Lord | Drain, a bite that heals what it takes from the hull; Undying, once a fight when hurt, readying it to get back up whole; below half, Blood Feast, a drain at every machine | 40 HP, since it may rise once; once a fight, so it never readies again after it rises; the drain from the hull alone, so a shield starves it (one of shield and hull walled the slowest trio at every HP tried) |
+| The Peak | Behemoth | Gore; Flame, Scorch 2; below half, Charge, a round's warning, through the shield; Meteor on every machine as it falls | The Flame and the Charge |
+| The Peak | Cinder Tortoise | Bite; Withdraw, armour +2 on its own (3 until 2 November; Ryan: "nerf withdraw to 2 armour so it doesn't completely goof my test runs"), then Earthquake on every machine, Scorch 1 | In, its name kept (Ryan, 30 October); its armour 1, 2 and 3 by the tier (Ryan, 31 October), since at 2 at tier one its base was the hurdle and its shell was not |
+| The Peak | The Obsidian Tyrant | Crunch; Roar, a reroll off the team; once its rider has fallen, Firestorm, a countdown of five to half again its blow at every machine, Scorch 2. Its part, the Saurian Queen in the back rank: Lash, and Goad, a rally | Guarded while she stands; the firestorm drawn as good as at once after she falls |
+
+The stand-ins left the boss lists (30 October): the Treant, the Sandworm and the Magma Elemental
+stand in their domains' formations at tier one, each with a recolour at tiers two and three
+that takes back its third move as the twist (31 October: the Dusk and the Frost Treant with
+Root Storm, the Night and the Salt Sandworm with Quake, the Basalt and the Sulphur Elemental
+with Stoke the Forge), and the Bone Wyvern leads an elite of the Marsh's at tiers two and
+three. The Marsh has a massive line of its own (31 October): the Barrow Giant (a cleaver and
+Knit, a regeneration), the Grave Giant and the Charnel Giant (Rise Again, getting back up
+once), each in a formation at its tier.
+
+Gilgamesh is an elite since 31 October, the one that wanders: drawn by any domain's Fracture one
+time in three in place of its next own elite and always once its own are spent (2 November), at
+an elite's 40 HP scaled by the tier as a boss is; an elite may come again in a later battle,
+never twice in one, where a run never repeats a boss (Ryan, 2 November). Every boss but the King Gel has its own
+escort at tiers two and three, at the tier's counts (two and four), picked to sharpen its
+mechanic, and stands alone at tier one:
+
+| Boss | Its escort | Why |
+|---|---|---|
+| Rotbloom | Mandrakes and Goblin Guards; Alraunes at tier three | The Scream and the Shriek pile more trouble on the die it breathes on |
+| Floraison | Wargs; Alpha Wargs and goblins at tier three | Howls and bites on a team a machine down |
+| The Ruby Colossus | A Basilisk and a Pit Antlion; Gorgons, the Antlion Queen and a Pit Antlion | Stone and a pit's breach beside a buried machine, so the tempo Whirlsand takes is pressed |
+| The Fallen Weapon | Barbed Needlers and Basilisks; Barbed Needlers and Gorgons (the Great Needlers out, 2 November: their countdowns under Drive made a wall) | The Waste's breach and theft beside the eyes', so the eyes are a race |
+| The Pilgrim | Needlers; Barbed and Great Needlers | Every kill feeds Karma, so the kill order turns over |
+| The Matador | Wights; Wights and a Spectre at tier three (the Death Knight out, 2 November: its guard under the cape walled a trio) | A wall of claws while the cape is up |
+| The Phantom Train | Ghosts; Ghosts, a Wraith and a Spectre (2 November) | The Ghosts raise from the first round, which is the Train's plan |
+| The Vampire Lord | A Death Knight and a Wight; a Dread Knight, a Death Knight and Wights (the Lich out, 2 November: readying the Lord to rise again was half a wall) | The Marsh's other risers, so the burst it asks for is spread thin |
+| The Behemoth | A Bomb and a Grenade; Grenades and Balloons | A second blast to shield for |
+| The Cinder Tortoise | Fire Lizards; Magma Lizards and a Wyvern | Scorch under the quake, so the shelled round is a heat question |
+| The Obsidian Tyrant | A Wyvern and a Fire Lizard; Magma Lizards and Wyverns (the Red Dragon out, 2 November) | Stokers: its Crunch burns while the rider is killed and the count runs |
+
+The slate stands at 48 HP at tier one, the boss in parts' core at 40 and its eyes at 8, the
+Obsidian Tyrant's rider at 12 and the Vampire Lord at 40, under the scale row's 80 to 100 (the
+bible's section 11): at 80 the default team took 7 to 13 rounds against each boss alone and a
+stock four 11 to 22, where the kill-time test asks three to five; at 48 the default team takes 4
+to 7 (`docs/measurements.md`, 30 October, 30 seeds, a direction). Ryan, 30 October: "Whatever
+you think works best for scaling", so 48 stands, 60 and 72 at tiers two and three.
+
+## Calls still open
+
+Ryan's answers of 30 and 31 October ("I agree with everything in your last two messages")
+settled the six calls of the 30th: Gilgamesh an elite that wanders, the swallow's release at a
+quarter of the swallower's HP, the steal's fake and the follow-up's break as built, the escorts
+written for his marks, the massive lines, and the Cinder Tortoise's armour by the tier. His
+calls of 2 November, on the review: the Ruby Colossus in the Djinn's place and the Djinn to the
+ranks; the wanderer drawn by chance and elites reusable across battles; the worms' and the
+Antlion Queen's bites renamed Maw and Devour, since Swallow is the vocabulary's word for
+Floraison's move; Withdraw 2; the King Gel's court six at tier three; the quick campaign's
+bosses bringing their own escorts; the Dusk Treant off violet; and no foe flees but a
+loot-runner, so the Needler's Scatter is struck. Every name and number above waits on his
+content pass. Open:
+
+Settled 2 November, evening, on Ryan's word ("Agreed everything else"), each built that night:
+armour only where a boss's kit is armour (the Ruby Colossus, the Fallen Weapon, the Phantom
+Train and the Obsidian Tyrant keep a point, the Cinder Tortoise its step, the other seven none);
+a follow-up that cannot be Disrupted once announced (`Foe.committed`: the chip says so, a Disrupt
+held over the foe strikes through, the bot values it at nothing, a Suppress still takes it, the
+countdown stays Disruptable); Showtime the Thief's third ("showtime is great"), a blow at every
+machine below half; and the escorts' moves (Barbed Needlers for the Fallen Weapon's Great
+Needlers, the Death Knight out of the Matador's, Ghosts for the Phantom Train, Magma Lizards and
+Wyverns for the Tyrant at tier three). Open:
+
+1. **The Cinder Tortoise at tier three** (flagged 2 November, left for now on Ryan's word):
+   armour 3, and 5 withdrawn, against blows of 2 to 6, so a round of basics is zeroed; its
+   tier-three read with a tier-matched kit is the to-do's, on the runner's `--boss-tiers` cells.
+2. **The escorts' weight** (Ryan, 2 November: "Do the escorts hold up, and support the boss's
+   game plan?"; the read in `docs/measurements.md`, the same day). Most are a tax of a round or
+   two and some hull on a stock team; three are walls at tier three, and not the heaviest by
+   menace but the ones the boss's own mechanic amplifies: the Vampire Lord's (the Lich readies it
+   to rise again and the Wight mends it, on a boss that drains), the Fallen Weapon's (Drive rallies
+   two Great Needlers' countdowns), the Matador's for a trio (a Death Knight's guard and a Spectre's
+   cleanse under the cape). Landed on the what-ifs of the same day: the Lich out of the Lord's (a
+   second Wight in its place; the losses halved), and the Colossus's tentacles at 4 and 3 with a
+   regrowth of three rounds (alone, from 65 and 80% won to 95 and 100% at tier two). Claude's
+   moves still his to mark: a Death Knight and three Wights for the Lord's, Barbed Needlers for
+   the Fallen Weapon's Great Needlers, Wights ×3 and the Spectre for the Matador's; the Phantom Train's to Ghosts (the raising starts at once, which is its
+   plan) and the Obsidian Tyrant's to stokers (a Drake and the lizards, so its Crunch burns while
+   the rider is killed), since those two are the Marsh's and the Peak's rank and file rather than
+   their boss's plan. The Colossus's tier-three escort (Gorgons, the Antlion Queen, a Pit Antlion)
+   walls a stock team as the Fallen Weapon's does; a tier-matched kit reads it, the to-do's cells.
+
+## Art the forge owes
+
+Every boss and part with no picked render is drawn as a rough placeholder, a reminder with a
+yellow "?" (Ryan, 30 October: "It can be a comically rough entry as a reminder"):
+`tools/placeholder_art.py` draws Rotbloom, Gilgamesh, the Fallen Weapon's two eyes, the King
+Gel, the Pilgrim, the Phantom Train, the Vampire Lord, the Obsidian Tyrant, the Saurian Queen,
+the Djinn, the Ruby Colossus and its two tentacles, and the Marsh's three giants.
+Each entry's `design.sprite` and `design.variants` are its brief for the forge, whose `generate`
+and `fix` have had no machine since the Mac went out of reach (the status's Start here), so the
+renders wait on the route for the image model Ryan chooses; a pick through the picker replaces
+a placeholder.
 
 Names: the series' coinages take names of ours (the Malboro, the Tonberry, the Adamantoise,
 Bourgeon, Exor, Neclord, the Tyrano), as the Cactuar became the Needler; myths and plain words stay
@@ -169,7 +292,8 @@ balance the series out a little, never purge it):
 
 ## Questions for Ryan
 
-- Marks on the rest of the twelve.
+- The calls still open (above): Gilgamesh, the swallow's release, the escorts, more massive
+  foes, a boss's armour by the tier.
 - The conversions above; where Omega lives; the Mime.
 
 ## Bench

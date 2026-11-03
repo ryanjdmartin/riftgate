@@ -59,6 +59,7 @@ CURRENCIES = OrderedDict([
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
     ("regenerating", ("Regenerating", "on a machine")),
+    ("ore_plate", ("Ore Plate", "on a machine")),
     ("burning_mech", ("Burning", "on a machine")),
     ("scorched", ("Scorched", "on a machine")),
     ("disabled", ("Disabled", "on a machine")),
@@ -118,12 +119,14 @@ EFFECTS = {
     "add_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [], "add_ceiling": [("rolled", "reads")], "add_floor": [("rolled", "reads")],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "weapon_cooldown": [], "min_damage": [], "add_burn": [],
+    "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
+    "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("ore_plate", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None, "on_round_start": None,
             "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None, "setup_once": None,
-              "target_no_intent": None}
+              "target_no_intent": None, "shield_up": None}
 # A foe move's riders and effects, on machines.
 FOE_RIDERS = {"burn": "burning_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced", "breach": None}
 FOE_EFFECTS = {"burn": "burning_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
@@ -155,7 +158,7 @@ ENGINE_READERS = {
     "rallied": ["one reroll more this round"],
     "phased": ["untouchable until the round's end"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
-    "regenerating": ["2 shield a round for three rounds (planned)"],
+    "regenerating": ["2 shield a round for three rounds"],
     "burning_mech": ["+1 heat a stack at the turn's end"],
     "scorched": ["every weapon fired runs 1 hotter a stack this turn"],
     "disabled": ["the entry comes up blank"],
@@ -164,7 +167,7 @@ ENGINE_READERS = {
     "heat": ["the overheat: hull one for one past the maximum"],
     "hull_damage": ["the injury roll at a quarter of maximum hull in one blow"],
     "kill": ["the slot clears: Direct opens on the foe behind (every weapon sets it)"],
-    "reroll": ["three a round, unbanked"],
+    "reroll": ["three a round, banked up to three while a Giant Petrel fights"],
     "rank": ["Direct reaches the front, Indirect any"],
     "rolled": [],
     "strikes": ["each strike takes the foe's conditions and armour on its own"],

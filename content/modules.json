@@ -50,6 +50,32 @@
    }
   },
   {
+   "id": "reinforced_skeleton",
+   "name": "Reinforced Skeleton",
+   "maker": "minerva",
+   "tier": 2,
+   "codex": "",
+   "flavour": "Legendary Minervan strength.",
+   "stats": {
+    "hull": 8
+   },
+   "text": {
+    "description": "Its components are never destroyed.",
+    "effects": [
+     {
+      "trigger": "on_injury",
+      "effect": "no_destroy",
+      "value": 1
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "The Honey Badger's old passive, Minerva's legendary frame: whatever breaks, it keeps working.",
+    "niche": "Campaign insurance more than a fight effect (Ryan, 15 October: \"Never destroyed - module, yes. Tier 2 or 3, not sure. Can have positive stats since that's not that impactful an effect\"): tier two on Ryan's go of 31 October, the Ram Frame's hull line beside its rule."
+   }
+  },
+  {
    "id": "spall_liner",
    "name": "Spall Liner",
    "maker": "minerva",

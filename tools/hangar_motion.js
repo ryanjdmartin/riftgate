@@ -23,6 +23,9 @@ const THREE_URLS = [
 
 // ---------------------------------------------------------------- the rig (MechRig's numbers)
 const RECOIL_SLIDE = 1.5;   // MechRig: world units a gun that only runs in and out of its port kicks back on a shot
+const COUNT_RISE = 0.08, COUNT_FALL = 0.35, COUNT_DEBUG_PERIOD = 1.0;   // MechRig: a count display's part lighting and fading, and the beat it counts to with no fight to count (RIFTGATE_COUNT_DEBUG's)
+const SPIN_HELD_EASE = 0.45;   // MechRig: seconds a status's spin takes to come up to speed and to run down
+const PARK_TIME = 0.3;   // MechRig: seconds a locked spin takes to park on its next step ahead
 const GAP_MIN = 6.0, GAP_MAX = 12.0, GAP_DEBUG = 0.4, WAIT_TICK_MAX = 0.1;   // MechRig: a long frame spends at most this much of the gap
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
@@ -357,6 +360,14 @@ class Rig {
     this.gaitOptions = side.gait_options || {};   // other ways it could move, to judge beside it (b.gait_option); the game moves by the gait alone
     this.spinners = {}; this.spun = {};   // joints turned without end (MechRig.spinners, b.spin: the Stingray's fans)
     for (const [name, r] of Object.entries(side.spin || {})) if (this.joints[name] && Array.isArray(r) && r.length >= 2) { this.spinners[name] = [Number(r[0]), Number(r[1])]; this.spun[name] = 0; }
+    this.spinSteps = {}; this.locked = {};   // a spinner an act may lock, parked on its step (MechRig.spin_steps, _locked: the Cottonmouth's drum)
+    for (const [name, step] of Object.entries(side.spin_step || {})) if (this.spinners[name] && Number(step) > 0) this.spinSteps[name] = Number(step);
+    this.heldSpins = {}; this.heldOn = {}; this.heldSpeed = {};   // a status's spin (MechRig.held_spins, b.spin_held: the Cassowary's capacitor while Spun Up)
+    for (const [status, js] of Object.entries(side.spin_held || {})) {
+      const turned = {};
+      for (const [jn, v] of Object.entries(js || {})) if (this.joints[jn]) { turned[jn] = Number(v); this.spun[jn] = this.spun[jn] || 0; this.heldSpeed[jn] = 0; }
+      if (Object.keys(turned).length) { this.heldSpins[status] = turned; this.heldOn[status] = false; }
+    }
     this.useGait(side.gait || {});
     this.fires = side.fires || {}; this.until = -1;   // a fixed weapon's firing slice (MechRig.fire_act), and where one playing now ends
     this.aims = side.aims || {}; this.pivots = !!side.pivots;   // a fixed weapon's aim joint; the whole machine turning on the spot (tracks, casters)
@@ -378,6 +389,7 @@ class Rig {
     });
     for (const part of ((this.gait.glow || {}).parts || [])) for (const m of this.litMaterials(part)) this.moveGlow.push([m, restOf(m)]);
     this.setupForms(side.forms || {});
+    this.setupCounts(side.counts || []);
     this.setupHalos(side);
     this.setupStanding(side);
     this.setupPlumes(side);
@@ -509,6 +521,64 @@ class Rig {
     if (this.current) this.endAct();
   }
   formHeld(name) { return !!this.formOn[name]; }
+  // A status's spin held or let go (MechRig.hold_spin); true when it changes.
+  holdSpin(status, on) { if (!this.heldSpins[status] || this.heldOn[status] === on) return false; this.heldOn[status] = on; return true; }
+  spinHeld(status) { return !!this.heldOn[status]; }
+  // MechRig._spins_held_step: each held spin's joints ease toward what their held statuses ask, and turn.
+  spinsHeldStep(delta) {
+    let turning = false;
+    for (const jn of Object.keys(this.heldSpeed)) {
+      let want = 0;
+      for (const [status, js] of Object.entries(this.heldSpins)) if (this.heldOn[status] && jn in js) want += js[jn];
+      let v = want + (this.heldSpeed[jn] - want) * Math.exp(-delta / SPIN_HELD_EASE);
+      if (Math.abs(v - want) < 3) v = want;   // the exponential's tail, a creep, cut off (MechRig)
+      this.heldSpeed[jn] = v;
+      if (v !== 0) { this.spun[jn] = ((((this.spun[jn] || 0) + v * delta) % 360) + 360) % 360; turning = true; }
+    }
+    return turning;
+  }
+  // The count displays (MechRig._setup_counts): each part's lit materials and its light at rest, every part dark.
+  setupCounts(cs) {
+    this.countDisplays = []; this.countDebugT = 0;
+    for (const c of Array.isArray(cs) ? cs : []) {
+      if (!c || !Array.isArray(c.parts) || !c.parts.length) continue;
+      const off = c.off ?? -0.85;
+      this.countDisplays.push({source: c.source || "", parts: c.parts.map(p => this.litMaterials(p).map(m => [m, m.emissiveIntensity])),
+        on: c.on ?? 1.5, off, flare: c.flare ?? 0, n: -1, k: c.parts.map(() => off)});
+    }
+    this.lightCounts();
+  }
+  // MechRig.show_counts: the first n parts lit, the rest dark; a number that falls flares them all and lets them go dark.
+  showCounts(values) {
+    let changed = false;
+    for (const d of this.countDisplays) {
+      if (!(d.source in values)) continue;
+      const size = d.parts.length, n = clamp(Math.round(values[d.source]), 0, size), was = d.n;
+      if (n === was) continue;
+      if (was < 0) d.k = d.k.map((_, i) => i < n ? d.on : d.off);
+      else if (n < was && d.flare > 0) d.k = d.k.map(() => d.flare);
+      d.n = n; changed = true;
+    }
+    if (changed) this.lightCounts();
+    return changed;
+  }
+  // MechRig._counts_step: each part chases its light, quick to light and slower to fade.
+  countsStep(delta) {
+    let moving = false;
+    for (const d of this.countDisplays) {
+      const n = Math.max(0, d.n);
+      d.k = d.k.map((k, i) => {
+        const want = i < n ? d.on : d.off;
+        if (k === want) return k;
+        moving = true;
+        const nk = want + (k - want) * Math.exp(-delta / (want > k ? COUNT_RISE : COUNT_FALL));
+        return Math.abs(nk - want) < 0.05 ? want : nk;   // the fade's tail, past seeing, cut off (MechRig)
+      });
+    }
+    if (moving) this.lightCounts();
+    return moving;
+  }
+  lightCounts() { for (const d of this.countDisplays || []) d.parts.forEach((mats, i) => { for (const [m, base] of mats) m.emissiveIntensity = base * Math.max(0, 1 + d.k[i]); }); }
   static keysAny(a, held) { return Object.keys(a.tracks || {}).some(jn => held[jn]); }
   // The acts it may play now (MechRig.act_set): none while a form turns; a form held all the way
   // in plays its own when it has any (the sealed Armadillo's, from its hunkered pose); else its
@@ -573,7 +643,8 @@ class Rig {
     this.startOffset = 0; this.mainOffset = 0; this.handing = false;
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
-  alive() { return this.acts.length > 0 || Object.keys(this.forms).length > 0 || this.strikes.length > 0 || this.flares.length > 0 || !!this.aimAt || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0; }
+  alive() { return this.acts.length > 0 || Object.keys(this.forms).length > 0 || this.strikes.length > 0 || this.flares.length > 0 || !!this.aimAt || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0
+    || Object.keys(this.heldSpins).length > 0 || this.countDisplays.length > 0; }
   litMaterials(part) {
     if (this.glowCache[part]) return this.glowCache[part];
     const out = [], tag = parseTag(part);
@@ -602,8 +673,32 @@ class Rig {
     if (!a) return false;
     this.endAct(true); this.start(a); this.evaluateAct(); this.pose(); return true;
   }
+  // MechRig._lock_spins: park every spinner the act locks on its next step ahead, the way it turns.
+  lockSpins(a) {
+    for (const name of a.locks || []) {
+      if (!this.spinners[name] || !this.spinSteps[name]) continue;
+      const step = this.spinSteps[name], from = this.spun[name], r = this.spinners[name];
+      const ahead = r[0] + (r[1] - r[0]) * this.blend >= 0;
+      this.locked[name] = [from, (ahead ? Math.ceil(from / step - 0.0001) : Math.floor(from / step + 0.0001)) * step, 0];
+    }
+  }
+  // MechRig._unlock_spins: the act's own turn on a locked spinner goes into its turn, so it never
+  // unwinds, and its idle turn takes up again from where it stands.
+  unlockSpins() {
+    for (const name of Object.keys(this.locked)) {
+      const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)];
+      let turned = this.spun[name];
+      const st = this.servo[name];
+      if (st) { turned += st[0][k]; st[0] = {...st[0], [k]: 0}; st[1] = {...st[1], [k]: 0}; }
+      if (this.actRot[name]) this.actRot[name] = {...this.actRot[name], [k]: 0};
+      this.spun[name] = fposmod(turned, 360);
+    }
+    this.locked = {};
+  }
   start(a) {
+    this.unlockSpins();
     this.current = a; this.t = 0; this.lastAct = a.name; this.glow = []; this.until = -1;
+    this.lockSpins(a);
     this.actHeft = a.heft ?? this.heft;   // an act may ask for its own heft (MechRig._act_heft): a blow sharper than the machine's weight
     const d = a.duration || 0, ease = a.ease || "smooth";
     this.curves = {};
@@ -617,6 +712,7 @@ class Rig {
   restoreGlow() { for (const g of this.glow) g.mats.forEach((m, i) => { this.lightTo(m, g.base[i], 1); }); this.glow = []; }
   // The act is over (MechRig._end_act): its asks go to nothing and the servos bring every part home.
   endAct(quiet) {
+    this.unlockSpins();
     const wrap = (a) => fposmod(a + 180, 360) - 180;   // the short way round: a loop or a spin ends a whole turn on and never unwinds
     for (const st of Object.values(this.servo)) st[0] = v3(wrap(st[0].x), wrap(st[0].y), wrap(st[0].z));
     this.restoreGlow();
@@ -682,6 +778,7 @@ class Rig {
     const a = this.current;
     if (!a) return;
     this.restoreGlow(); this.settle(); this.start(a);
+    for (const [name, lk] of Object.entries(this.locked)) { lk[2] = PARK_TIME; this.spun[name] = lk[1]; }   // a scrubbed act stands parked
     let left = clamp(t, 0, a.duration || 0);
     while (left > 1e-9) { const dt = Math.min(left, STEP); left -= dt; this.t += dt; this.evaluateAct(); this.follow(dt); }
     this.pose();
@@ -730,9 +827,28 @@ class Rig {
     this.waitBudget = Math.min(delta, WAIT_TICK_MAX);
     while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
     if (this.formsStep(delta)) moved = true;   // the held forms turn on their own clock
+    if (this.spinsHeldStep(delta)) moved = true;   // a status's spin, held on the page by its chip
+    if (this.countDisplays.length) {   // no fight on this page: every display counts up a part a second until it falls, as RIFTGATE_COUNT_DEBUG has it in the game
+      this.countDebugT += delta;
+      if (this.countDebugT >= COUNT_DEBUG_PERIOD) {
+        this.countDebugT -= COUNT_DEBUG_PERIOD;
+        const up = {};
+        for (const d of this.countDisplays) up[d.source] = (Math.max(0, d.n) + 1) % (d.parts.length + 1);
+        this.showCounts(up);
+      }
+      this.countsStep(delta);
+    }
     for (const [name, r] of Object.entries(this.spinners)) {
-      const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
-      this.spun[name] = ((s % 360) + 360) % 360; moved = true;
+      const lk = this.locked[name];
+      if (lk) {   // the act playing locks it: it eases onto its step and holds there
+        lk[2] = Math.min(lk[2] + delta, PARK_TIME);
+        const u = lk[2] / PARK_TIME;
+        this.spun[name] = lerp(lk[0], lk[1], u * u * (3 - 2 * u));
+      } else {
+        const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
+        this.spun[name] = ((s % 360) + 360) % 360;
+      }
+      moved = true;
     }
     if (moved) this.pose();
   }
@@ -1376,13 +1492,14 @@ class Stage {
   // Fit a mount as the game does (MechView3D.wear): the stock part under hp_<n> hides and a
   // silhouette class in a maker's metal hangs under the pin, in the variant and at the scale the
   // mount declares for it, wearing the pin's frame, so it swings and recoils with whatever joint
-  // carries the pin. `shape` "" bares the mount; null puts the stock part back.
+  // carries the pin. `shape` "" bares the mount; null puts the stock part back. A hidden mount
+  // (the sidecar's hidden_pins: the Cottonmouth's guns inside its drum) wears nothing, as in the game.
   async fit(n, shape, maker) {
     const rig = this.rig, pin = rig && rig.hardpoints[n];
     if (!pin) return;
     const id = this.id;
     let part = null;
-    if (shape) {
+    if (shape && !this.hidden(n)) {
       const how = this.fitOf(n, shape);
       const gltf = await this.loadModel("shapes/" + how.shape + "_" + maker);
       if (this.id !== id) return;
@@ -1408,6 +1525,9 @@ class Stage {
     this.emit();
   }
   resetFits() { for (const n of Object.keys(this.fits)) this.fit(Number(n), null); }
+  // A mount the model hides (the sidecar's hidden_pins: the Cottonmouth's guns inside its drum)
+  // wears nothing and flares nothing, so no part or effect shows through what hides it.
+  hidden(n) { return typeof n === "number" && (((this.side || {}).hidden_pins) || []).includes("hp_" + n); }
   // A blow on the hull (MechView3D.hit): the machine shoved back from it and its hull laid over in
   // heat's red-orange for a beat, the armour's block at half; each press the next of a hull hit from
   // the left and a block from the right. The page tints each material toward heat's colour where the
@@ -1473,6 +1593,13 @@ class Stage {
     this.gaitName = name && this.rig.gaitOptions[name] ? name : "";
     this.rig.useGait(this.gaitName ? this.rig.gaitOptions[this.gaitName] : (this.side.gait || {}));
     this.emit();
+  }
+  // Hold what a status holds or let it go, as the machine carrying it would in the game
+  // (MechView3D.hold_statuses): its form, its spin.
+  holdStatus(name, on) {
+    if (!this.rig) return;
+    if (this.rig.forms[name]) this.setForm(name, on);
+    if (this.rig.heldSpins[name]) { this.rig.holdSpin(name, on); this.emit(); }
   }
   // Hold one of the sidecar's forms or let it go, as the status of its name would in the game.
   setForm(name, on) {
@@ -1589,7 +1716,7 @@ class Stage {
   // its class's). A component that is no weapon takes none.
   async hangFlares(n, shape, cid, own = null) {   // `own`: a hand-built gun's places from its sidecar, in place of a class's; `n` "fx:<component>" a fixed weapon's marked business end
     const rig = this.rig, pin = rig && (typeof n === "string" && n.startsWith("fx:") ? rig.model.getObjectByName("fx_" + n.slice(3)) : rig.hardpoints[n]);
-    if (!pin || (!shape && !own)) return;
+    if (!pin || (!shape && !own) || this.hidden(n)) return;
     if (!this.muzzles) this.muzzles = fetch("hangar/models/shapes/muzzles.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).catch(() => ({}));
     if (!this.kitOf) this.kitOf = fetch("content/components.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).then(j => {
       const out = {};
@@ -1630,7 +1757,7 @@ class Stage {
     const rig = this.rig, burning = await this.burnsOf;
     for (const [pin, shape] of Object.entries(shapes)) {
       const cid = pins[pin], n = Number(pin.slice(3));
-      if (!cid || !burning.has(cid) || this.rig !== rig) continue;
+      if (!cid || !burning.has(cid) || this.rig !== rig || this.hidden(n)) continue;
       let gltf;
       const how = this.fitOf(n, shape);
       try { gltf = await this.loadModel("shapes/burn_" + how.shape); } catch (e) { continue; }

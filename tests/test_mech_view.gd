@@ -229,6 +229,70 @@ func test_every_model_names_what_each_of_its_pins_carries() -> void:
 		model.free()
 
 
+func test_a_hidden_mount_shows_nothing_stock_or_fitted() -> void:
+	# The Cottonmouth's guns sit inside its drum (Ryan, 19 October: "the guns mounted
+	# (invisibly) inside"): a model may hide a mount (lowforge's b.pin(hidden=True), the
+	# sidecar's hidden_pins). It stays a hardpoint, counted and recording what it carries, but
+	# nothing hangs on it, its stock or a fitted component's class, in the fight, the codex and
+	# on the map alike (each wears its plan through MechView3D.wear). A mount not hidden still
+	# wears the class, on every model.
+	var db := ContentDB.load_default()
+	var fit: Array = []   # a component from content that takes a mount, fitted to every pin
+	for cid in db.components.keys():
+		var c: Dictionary = db.components[cid]
+		if MechView3D._shaped(str(cid), db) and MechView3D.has_model(MechView3D.shape_model(str(c.get("shape", "")), str(c.get("maker", "")))):
+			fit = [str(cid), str(c["shape"]), str(c["maker"])]
+			break
+	assert_false(fit.is_empty(), "content has a component that takes a mount")
+	if fit.is_empty():
+		return
+	var hiding := ""
+	for id in db.chassis.keys():
+		if not MechView3D.has_model(str(id)):
+			continue
+		var model: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
+		var pins := MechView3D.pins_of(model)
+		var hidden := MechView3D.hidden_pins(str(id))
+		if not hidden.is_empty() and hiding.is_empty():
+			hiding = str(id)
+		for n in hidden.keys():
+			assert_true(pins.has(n), "%s: its hidden hp_%d is one of its pins" % [id, int(n)])
+			if pins.has(n):
+				assert_eq(_shown_meshes(pins[n]), 0, "%s: hidden hp_%d shows no stock part" % [id, int(n)])
+		var rows: Array = []
+		for n in pins.keys():
+			rows.append([int(n), fit[0], fit[1], fit[2]])
+		MechView3D.wear(pins, rows, "clean", {}, false, true, str(id))
+		for n in pins.keys():
+			if hidden.has(n):
+				assert_eq(_shown_meshes(pins[n]), 0, "%s: hidden hp_%d wears nothing fitted" % [id, int(n)])
+			else:
+				assert_true(_shown_meshes(pins[n]) > 0, "%s: hp_%d wears the fitted class" % [id, int(n)])
+		model.free()
+	assert_false(hiding.is_empty(), "a model hides its mounts (the Cottonmouth's drum)")
+	assert_true(MechView3D.hidden_pins("").is_empty() and MechView3D.hidden_pins("no_such_model").is_empty(), "no model, nothing hidden")
+	if hiding.is_empty():
+		return
+	# A view's own mount() refuses a hidden pin as wear() does.
+	var v := MechView3D.make(hiding, fit[2], "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
+	var shape: PackedScene = load("res://art/models/%s.glb" % MechView3D.shape_model(fit[1], fit[2]))
+	for n in v.hardpoints.keys():
+		assert_eq(v.mount(int(n), shape, fit[2]), not MechView3D.hidden_pins(hiding).has(n), "%s: mount() on hp_%d hangs a part only where the pin shows" % [hiding, int(n)])
+	v.free()
+
+
+## The meshes drawn under a node: a hidden one, and everything under it, left out.
+func _shown_meshes(node: Node) -> int:
+	var n := 0
+	for c in node.get_children():
+		if c is Node3D and not (c as Node3D).visible:
+			continue
+		if c is MeshInstance3D:
+			n += 1
+		n += _shown_meshes(c)
+	return n
+
+
 func test_a_turret_joint_traverses_and_a_limb_swings() -> void:
 	assert_eq(MechView3D.joint_axis("turret"), Vector3(0, 1, 0), "a turret turns about its up axis")
 	assert_eq(MechView3D.joint_axis("turret_l"), Vector3(0, 1, 0), "a named turret too")

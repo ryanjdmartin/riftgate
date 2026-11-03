@@ -33,13 +33,13 @@ burst, a delayed action, a combined entry, own rerolls).
 | Tier | Machine | Reads | Produces | Pays | Currency |
 |---|---|---|---|---|---|
 | one | the strafer, the Skua (its go 21 October, named that evening, the Butcherbird a BattleTech 'Mech's; landed 25 October, its brief retired) | nothing new: its own blows | two strikes a weapon, riders and flat buffs twice | the foe's armour twice | strikes (the many-blows want's home) |
-| one | the off-tank, the Storm Petrel (its go 21 October; `kestrel_shield_spender.md`) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
+| one | the off-tank, the Storm Petrel (its go 21 October; `git show d84ad16:docs/briefs/kestrel_shield_spender.md`, retired with its engine on 30 October) | its own shield as plate and magazine | a lure that regens itself; the zap | shield burnt, an injury risked | shield; its lock the model combined entry |
 | two | the interceptor, the Needletail (decided 21 October, tier two and named that day; landed 23 October, its brief retired) | debuffs and buffs | a free setup a round; a foe Exposed: in the team's Direct reach, armourless | two spends' heat, glass | the gate: a debuff or a buff |
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (reworked and built 21 October; its brief retired) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
 | three | the bomber, the Lammergeier (its go 21 October; the Magpie until that evening; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
-| three | the gun platform, the capital, the Giant Petrel (its go 21 October, the formation leader; `kestrel_gun_platform.md`) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
+| three | the gun platform, the capital, the Giant Petrel (its go 21 October, the formation leader; `git show d84ad16:docs/briefs/kestrel_gun_platform.md`, retired with its engine on 30 October) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
 | open | the Magpie (marked 21 October, Ryan: a support engine; to design) | | | | |
 | open | the Snowy Owl (marked 21 October, Ryan: a stealth unit; to design) | | | | |
 
@@ -88,7 +88,7 @@ One pointer each; the proposal is in the brief named.
   The plate's arithmetic read against the foes: a wall against the packs that strike for 10
   (six of the eighteen wildlife), no wall against a swarm (six goblins strike 30 each with
   their swarm, 25 past the plate); the lever named. Its lock is the direction's model combined
-  entry; never Rapid. `kestrel_shield_spender.md`, the sixth and seventh rounds. Its go (Ryan,
+  entry; never Rapid. `git show d84ad16:docs/briefs/kestrel_shield_spender.md`, retired with its engine on 30 October, the sixth and seventh rounds. Its go (Ryan,
   21 October): the Storm Petrel, a hovercraft at 50, the kit as written; the burn is every
   shot's, through the passive, and the lock the lure alone.
 - **The interceptor** had no kit; its first Ryan read as thin and its second as possibly
@@ -149,7 +149,7 @@ One pointer each; the proposal is in the brief named.
   leader, aggressive, where the Swallowtail is the supportive HQ; lock 1 Rapid, a team reroll on
   itself or an ally's action for three rerolls; lock 2 the battery; lock 3 Overcharged 2 and a
   roll for an ally. Its go the same day, on his answers: three rerolls paid, a spent ally, the
-  bank, the hardpoints. `kestrel_gun_platform.md`.
+  bank, the hardpoints. `git show d84ad16:docs/briefs/kestrel_gun_platform.md`, retired with its engine on 30 October.
 
 ## The Buzzard's and the Puffin's kits, as the stock pass would leave them
 

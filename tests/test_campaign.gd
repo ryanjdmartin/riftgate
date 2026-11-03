@@ -473,26 +473,23 @@ func test_each_battle_draws_a_boss_its_domain_has_not_ended_on_this_run() -> voi
 	var c := _run(9)
 	var front := str(c.fronts()[0])
 	var fid := str(c.cities[front].rift["faction"])
-	var one := c.db.bosses_of(fid)
-	assert_eq(one.size(), 1, "the content gives each domain one boss today")
+	# A domain with one boss (a copy of the content naming one): drawn as itself, the seed untouched.
+	var single := ContentDB.new()
+	single.load_dir(ContentDB.DIR)
+	single.factions[fid]["boss"] = [str(single.bosses_of(fid)[0])]
+	var own := c.db
+	c.db = single
 	var state := c.rng.state
-	assert_eq(c.draw_boss(fid), one[0], "one boss: drawn as itself")
+	assert_eq(c.draw_boss(fid), single.bosses_of(fid)[0], "one boss: drawn as itself")
 	assert_eq(c.rng.state, state, "and the seed untouched, so a run plays as it did")
-	# Three built bosses stand in as one domain's slate, on a copy of the content.
-	var db := ContentDB.new()
-	db.load_dir(ContentDB.DIR)
-	var three: Array = []
-	for f in db.factions.keys():
-		for b in db.bosses_of(str(f)):
-			if three.size() < 3 and not three.has(b):
-				three.append(b)
-	assert_eq(three.size(), 3, "three built bosses to stand in")
-	db.factions[fid]["boss"] = three
-	assert_true(db.validate().is_empty(), "a list of bosses validates: %s" % str(db.validate()))
-	assert_eq(Array(db.bosses_of(fid)), three, "in content order")
-	c.db = db
+	c.db = own
+	# The slate (30 October): the domain's bosses as content lists them, a stand-in last while
+	# the domain has fewer than three of its own.
+	var db := c.db
+	var three: Array = Array(db.bosses_of(fid))
+	assert_true(three.size() >= 2, "each domain fields two bosses or more since the slate landed")
 	var drawn: Array = []
-	for k in range(3):
+	for k in range(three.size()):
 		var id := c.draw_boss(fid)
 		assert_false(drawn.has(id), "never one the domain has ended: %s" % id)
 		drawn.append(id)
@@ -880,7 +877,7 @@ func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_b
 	var bosses: Array = []
 	for fid in c.db.factions.keys():
 		if str(fid) != beaten:
-			bosses.append(str(c.db.factions[fid]["boss"]))
+			bosses.append_array(c.db.bosses_of(str(fid)))
 	assert_true(bosses.has(str(line[0])), "the beaten hero's column goes to a standing domain's boss")
 	assert_eq(line.slice(1), want.slice(1), "the rest of the party stands in line")
 	c.convergence = Campaign.FINALE_AT - 1
@@ -896,8 +893,12 @@ func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_b
 ## take the tier's HP and attack, and it brings more escort, its domain's units of the tier
 ## round robin, unless the escort is named (a hand-tailored one).
 func test_a_boss_unit_stands_at_its_battles_tier() -> void:
-	var db := ContentDB.load_default()
+	# A copy of the content with the domain's hand-tailored escorts taken out, so the round robin
+	# reads (31 October: every boss has its own escort now); the shared content is never written to.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
 	var faction := str(db.factions.keys()[0])
+	db.factions[faction]["compositions"] = Array(db.factions[faction].get("compositions", [])).filter(func(c) -> bool: return str(c.get("size", "")) != "escort")
 	var boss_id := str(db.bosses_of(faction)[0])
 	var units_at := func(t: int) -> Array:
 		var out: Array = []
@@ -910,6 +911,7 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	for t in range(ContentDB.BOSS_TIERS.size()):
 		var units: Array = units_at.call(t)
 		var b := Battle.new(3)
+		b.db = db
 		b.tier = t
 		b.setup([], faction)
 		assert_true(b.boss != null, "the boss takes the field")
@@ -930,6 +932,7 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	assert_true(hp[0] < hp[1] and hp[1] < hp[2], "a harder boss each tier")
 	# A named escort is a hand-tailored one, kept whole.
 	var named := Battle.new(3)
+	named.db = db
 	named.tier = 2
 	named.escort = [spawn_foes[0], 1]
 	named.setup([], faction)

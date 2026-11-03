@@ -182,7 +182,7 @@ section is Claude's, for him to move, and every number is a placeholder.
 - The action-economy row (section 5, Ryan, 20 October): counters count blows, not spends, so
   strikes and area pieces are their fuel. The briefs README's table lists the combo under
   "spends counted", and the Kestrel session parts the tempo machines by currency with the line
-  frame on blows (`kestrel_gun_platform.md`, its fifth round). The row makes cantrips combined
+  frame on blows (`git show d84ad16:docs/briefs/kestrel_gun_platform.md`, retired with its engine on 30 October, its fifth round). The row makes cantrips combined
   entries before Rapid ones, so the 15 October note above (cantrips as the combo's fuel) is
   superseded: the fuel is blows.
 - Kestrel's interceptor (tier one; Ryan, 18 October: "a great tier-one design") spends twice a

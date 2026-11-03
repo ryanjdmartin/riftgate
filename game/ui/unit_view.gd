@@ -49,6 +49,7 @@ var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...
 var highlight: bool = false       # valid drop target while dragging a die
 var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
+var away: bool = false             # out of the fight, swallowed (30 October): drawn as a faint ghost under a dashed edge
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
 var pixel_snap := false           # a foe's pixel art: scaled by whole device pixels, not design pixels (below)
 var used_override := Rect2()      # the drawing's extent inside the sprite, when the caller knows it (a 3D view's model bounds)
@@ -466,9 +467,11 @@ func _draw() -> void:
 			var lean: Transform2D = breath[1]
 			if lean != Transform2D.IDENTITY:
 				draw_set_transform_matrix(lean)
-			draw_texture_rect(sprite, frame, false, Color(0.3, 0.3, 0.3) if dead else Color.WHITE)
+			draw_texture_rect(sprite, frame, false, Color(0.3, 0.3, 0.3) if dead else (Color(1, 1, 1, 0.22) if away else Color.WHITE))
 			if lean != Transform2D.IDENTITY:
 				draw_set_transform_matrix(Transform2D.IDENTITY)
+		if away and not dead:
+			_draw_dashed(vis.grow(6.0), Palette.ENEMY, 3.0)   # round the drawing itself: the field's views are wider than their machines
 	elif empty_pad:
 		# A place on the floor: a shadow with a dashed rim where a foe would stand.
 		var foot := Vector2(size.x * 0.5, feet_y if feet_y >= 0.0 else sil.end.y - 6.0)

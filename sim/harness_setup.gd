@@ -59,9 +59,14 @@ func bosses() -> Array:
 	return out
 
 
-## The foes a pack can be made of: every foe that is no faction's boss, in content order.
+## The foes a pack can be made of: every foe that is no faction's boss and no boss's part (a part
+## stands only with its core, 30 October), in content order.
 func pack_foes() -> Array:
 	var skip := bosses()
+	for fid in db.foes.keys():
+		for part in db.foes[fid].get("parts", []):
+			if not skip.has(str(part)):
+				skip.append(str(part))
 	var out: Array = []
 	for fid in db.foes.keys():
 		if not skip.has(fid):
@@ -190,6 +195,12 @@ func make_skirmish() -> Skirmish:
 		sid += 1
 	if not boss.is_empty():
 		var b := Unit.boss(sid, str(db.foes[boss]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(boss))
+		b.lineup = [boss]   # the boss picked, whichever of its domain's (30 October: the slate lists several)
+		# Its own escort, where content writes one that names it (the King Gel's Gels, which its
+		# merge takes in), at the harness's tier one; a domain's other escorts are the packs' to pick.
+		var own := db.escort_composition(db.faction_of_foe(boss), 1, boss)
+		if str(own.get("boss", "")) == boss:
+			b.set_members(own["members"])
 		sk.add_foes(db.foes_for(b), b)
 	if sk.reinforcements.is_empty():
 		return null
@@ -207,6 +218,8 @@ func make_battle() -> Battle:
 	b.map_kind = map_kind
 	b.formation = packs.duplicate(true)
 	b.with_boss = not boss.is_empty()
+	if not boss.is_empty():
+		b.lineup = [boss]   # the boss picked, whichever of its domain's (30 October: the slate lists several)
 	b.guest = guest
 	b.setup(mechs, lead_faction())
 	return b

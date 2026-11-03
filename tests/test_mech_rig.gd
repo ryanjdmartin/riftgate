@@ -6,7 +6,8 @@ extends TestCase
 ## only the drawing needs a window.
 
 const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
-	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier"]
+	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
+	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
@@ -304,15 +305,19 @@ func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
 func test_every_hand_built_stock_gun_has_a_muzzle_and_every_aim_joint_turns() -> void:
 	# A stock gun built by hand rather than as a class flares where lowforge found its business
 	# end (Ryan, 2 November); a fixed weapon's named aim joint turns about its up axis. A shield
-	# built by hand never fires, so it needs no muzzle.
+	# built by hand never fires, so it needs no muzzle, and a hidden mount shows and flares nothing
+	# (the Cottonmouth's guns inside its drum).
 	var db := ContentDB.load_default()
 	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
 		var pins: Dictionary = side.get("pins", {})
 		var shapes: Dictionary = side.get("stock_shapes", {})
 		var muzzles: Dictionary = side.get("muzzles", {})
+		var hidden = side.get("hidden_pins", [])
 		for pin in pins.keys():
 			if str(pins[pin]).is_empty() or shapes.has(pin) or str(db.components.get(str(pins[pin]), {}).get("face", {}).get("kind", "")) != "attack":
+				continue
+			if hidden is Array and (hidden as Array).has(pin):
 				continue
 			assert_true(muzzles.has(pin) and not (muzzles[pin] as Array).is_empty(), "%s: the hand-built %s on %s flares somewhere" % [id, pins[pin], pin])
 		var joints: Dictionary = side.get("joints", {})
@@ -1282,6 +1287,166 @@ func test_a_hovercraft_eases_down_and_takes_no_gust_through_an_act() -> void:
 	assert_true(worst_jolt < 0.02, "and a gust never changes the attitude's rate at a stroke (%f radians a second in a frame)" % worst_jolt)
 
 
+func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> void:
+	# The Cassowary's capacitor (Ryan, 2 November: "charging up for the sixth hit of its passive"):
+	# a cell lights for each counted shot, and the sixth shot, the one that counts double,
+	# discharges them, all six flaring and going dark. Headless the cells have no lit surfaces, so
+	# their light is read off the display itself.
+	var pair := _rig_for("cassowary", 2)
+	var rig: MechRig = pair[0]
+	assert_eq(rig.count_displays.size(), 1, "one count display")
+	var d: Dictionary = rig.count_displays[0]
+	assert_eq(str(d["source"]), "shots", "showing the counted shots")
+	assert_eq((d["parts"] as Array).size(), 6, "on six cells")
+	var on := float(d["on"])
+	var off := float(d["off"])
+	var flare := float(d["flare"])
+	assert_true(flare > on and on > off, "a flare brighter than a charged cell, a charged one brighter than a spent one")
+	var lit := func(i: int) -> float: return rig.count_light("shots", i)
+	var settle := func(seconds: float) -> void:
+		var t := 0.0
+		while t < seconds:
+			rig.tick(1.0 / 60.0)
+			t += 1.0 / 60.0
+	for i in range(6):
+		assert_eq(lit.call(i), off, "dark before anything is counted (cell %d)" % (i + 1))
+	assert_true(rig.show_counts({"shots": 2}), "the first look")
+	assert_eq([lit.call(0), lit.call(1), lit.call(2)], [on, on, off], "shows its number as it stands")
+	assert_false(rig.show_counts({"shots": 2}), "the same number changes nothing")
+	assert_false(rig.show_counts({"ammo": 9}), "nor a number it does not show")
+	assert_true(rig.show_counts({"shots": 5}), "three shots more")
+	settle.call(0.05)
+	assert_true(lit.call(2) > off and lit.call(2) < on, "a cell lights over a moment (%f)" % lit.call(2))
+	settle.call(0.6)
+	assert_eq(rig.count_shown("shots"), 5, "five lit")
+	assert_eq([lit.call(4), lit.call(5)], [on, off], "the sixth dark: the next shot is the one that counts")
+	assert_true(rig.show_counts({"shots": 0}), "the sixth shot")
+	for i in range(6):
+		assert_eq(lit.call(i), flare, "flares every cell (%d)" % (i + 1))
+	settle.call(0.3)
+	assert_true(lit.call(0) > off and lit.call(0) < flare, "and fades (%f)" % lit.call(0))
+	settle.call(2.0)
+	for i in range(6):
+		assert_eq(lit.call(i), off, "dark again (cell %d)" % (i + 1))
+	assert_true(rig.show_counts({"shots": 9}) and rig.count_shown("shots") == 6, "a number past its cells lights them all")
+	# RIFTGATE_COUNT_DEBUG counts it up a cell a second until it falls, to judge it running.
+	rig.show_counts({"shots": 0})
+	rig.count_debug = true
+	settle.call(1.05)
+	assert_eq(rig.count_shown("shots"), 1, "the switch counts a cell a second")
+	settle.call(6.0)
+	assert_eq(rig.count_shown("shots"), 0, "past its last cell it falls")
+	pair[1].free()
+	var plain := _rig_for("clydesdale", 2)
+	assert_false((plain[0] as MechRig).show_counts({"shots": 3, "ammo": 3}), "a model with no display shows nothing")
+	plain[1].free()
+
+
+func test_a_spin_is_held_while_the_machine_carries_its_status() -> void:
+	# The Cassowary's capacitor turns while it is Spun Up, the status its Spin-Up grants (Ryan, 2
+	# November: "It could spin for the spin up component"): up to speed as the status lands, run
+	# down and still once it is spent.
+	var pair := _rig_for("cassowary", 2)
+	var rig: MechRig = pair[0]
+	assert_true(rig.held_spins.has("spun_up") and (rig.held_spins["spun_up"] as Dictionary).has("capacitor"), "the capacitor spins while Spun Up")
+	rig.acts = []   # an act turns the capacitor too: the held spin alone here
+	var cap: Node3D = rig.joints["capacitor"]
+	var speed := float(rig.held_spins["spun_up"]["capacitor"])
+	var turned := func(seconds: float) -> float:
+		var total := 0.0
+		var t := 0.0
+		while t < seconds:
+			var before := cap.rotation.z
+			rig.tick(1.0 / 60.0)
+			total += absf(wrapf(cap.rotation.z - before, -PI, PI))
+			t += 1.0 / 60.0
+		return rad_to_deg(total) / seconds
+	assert_true(turned.call(0.5) < 0.01, "still while nothing holds it")
+	assert_true(rig.hold_spin("spun_up", true), "Spun Up lands")
+	assert_false(rig.hold_spin("spun_up", true), "held once")
+	assert_true(rig.spin_held("spun_up") and rig.alive(), "held, and the rig keeps ticking")
+	turned.call(1.5)
+	var fast: float = turned.call(1.0)
+	assert_true(absf(fast - speed) < speed * 0.05, "up to its speed (%f a second)" % fast)
+	assert_true(rig.hold_spin("spun_up", false), "the spin is spent")
+	var slowing: float = turned.call(0.4)
+	assert_true(slowing > 30.0 and slowing < fast, "it runs down rather than stopping dead (%f a second)" % slowing)
+	turned.call(3.0)
+	assert_true(turned.call(0.5) < 0.01, "and stands still")
+	# RIFTGATE_SPIN_DEBUG holds it and lets it go in turn, to judge it running.
+	rig.spin_debug = true
+	turned.call(MechRig.SPIN_DEBUG_PERIOD + 1.5)
+	assert_true(rig.spin_held("spun_up") and turned.call(0.5) > speed * 0.8, "the switch holds it after a period")
+	turned.call(MechRig.SPIN_DEBUG_PERIOD)
+	assert_false(rig.spin_held("spun_up"), "and lets it go after another")
+	pair[1].free()
+	var plain := _rig_for("clydesdale", 2)
+	assert_false((plain[0] as MechRig).hold_spin("spun_up", true), "a model with no held spin holds none")
+	plain[1].free()
+
+
+func test_every_count_display_and_held_spin_names_what_the_game_passes() -> void:
+	# A count display shows a number the skirmish passes (MechRig.COUNT_SOURCES, as
+	# MechView3D.count_values reads them) and a held spin lasts while a status in sim/effects.gd
+	# does, so a renamed source or status fails here rather than leaving a capacitor dark or still.
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		for c in side.get("counts", []):
+			assert_true(MechRig.COUNT_SOURCES.has(str(c.get("source", ""))), "%s: its count display shows %s, a number the game passes" % [id, c.get("source", "")])
+		for status in (side.get("spin_held", {}) as Dictionary).keys():
+			assert_true(Effects.STATUS.has(str(status)), "%s: its spin is held by %s, a status the game lays" % [id, status])
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	u.grant_passive({"id": "test_count", "name": "Count", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "nth_shot", "every": 6}]})
+	Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 7, Effects.DECAY_NONE)
+	var ms := Skirmish.MechState.new()
+	ms.unit = u
+	ms.ammo = 3
+	var values := MechView3D.count_values(ms)
+	assert_eq(values.keys(), MechRig.COUNT_SOURCES, "every source the displays may show, and no other")
+	assert_eq(values, {"shots": 1, "ammo": 3}, "the shots toward the next that counts (seven shots, a sixth counted: one), the magazine")
+
+
+func test_the_cassowary_plants_its_toes_and_rolls_onto_them() -> void:
+	# Its stride (31 October): each foot's toes planted flat while the body passes over them, the
+	# heel lifting into the push-off before they leave the ground, the body never rolling.
+	var pair := _rig_for("cassowary", 2)
+	var rig: MechRig = pair[0]
+	var model: Node3D = pair[1]
+	for key in rig.gait.get("body", []):
+		assert_true(is_zero_approx(float(key[6])), "the walk's body never rolls")
+	var ball: Node3D = rig.joints["toe_l"]
+	var hock: Node3D = rig.joints["ankle_l"]
+	var rest_h := _in_model(ball, model).origin.y
+	_drive(rig, rig.top_speed, 1.0)
+	var samples: Array = []
+	var lowest := 1e9
+	var t := 0.0
+	while t < 2.0 * float(rig.gait["stride"]) / rig.top_speed:
+		rig.drive(rig.top_speed, 0.0, 0.0, 1.0 / 240.0)
+		var at := _in_model(ball, model).origin
+		samples.append([at.y, at.z - rig._dist, _in_model(hock, model).origin.y])
+		lowest = minf(lowest, at.y)
+		t += 1.0 / 240.0
+	var runs: Array = [[]]
+	for sm in samples:
+		if float(sm[0]) < lowest + 0.3:
+			(runs[runs.size() - 1] as Array).append(sm)
+		elif not (runs[runs.size() - 1] as Array).is_empty():
+			runs.append([])
+	var whole := 0
+	for run in runs:
+		if (run as Array).size() < 5 or run == runs[0] or run == runs[runs.size() - 1]:
+			continue   # a stance the window cut into
+		whole += 1
+		var ys: Array = (run as Array).map(func(sm): return float(sm[1]))
+		assert_true(float(ys.max()) - float(ys.min()) < 0.8, "the toes stay put while the body passes over them (%f units)" % (float(ys.max()) - float(ys.min())))
+		var heights: Array = (run as Array).map(func(sm): return float(sm[2]))
+		assert_true(float(heights[heights.size() - 1]) - float(heights.min()) > 1.5, "the heel lifts before they leave the ground (%f)" % (float(heights[heights.size() - 1]) - float(heights.min())))
+	assert_true(whole >= 1, "a whole stance in two strides")
+	assert_true(absf(lowest - rest_h) < 0.6, "down on the ground where it stands at rest (%f against %f)" % [lowest, rest_h])
+	pair[1].free()
+
+
 func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
 	# Ryan, 6 October, the seventh notes: the Stingray's lift fans turn. A spinner (b.spin) turns
 	# on its own axis whatever the machine does, at its idle rate standing and its moving rate
@@ -1369,3 +1534,89 @@ func test_a_machine_lost_guts_its_lit_parts_and_stops_its_acts() -> void:
 	assert_eq(MechRig.gutter_k(MechRig.GUTTER), 0.0, "nothing left at the beat's end")
 	assert_true(MechRig.gutter_k(0.0) > 0.0, "and all of it at its start")
 	(r[1] as Node).free()
+
+
+func test_a_locked_spin_parks_on_a_step_ahead_and_runs_on_from_there() -> void:
+	# Ryan, 2 November, of the Cottonmouth's drum: "Keep the idle turn ... Quickly spin it forward a
+	# fixed number of barrels when it fires", and "only ever light the top barrel mouth", so a
+	# barrel must stand on top when a shot fires. A spinner with a step (b.spin's step, the
+	# sidecar's spin_step) that an act locks (its `locks`) parks on its next step ahead as the act
+	# starts, never turning back, and holds there while the act plays, the act's own turn adding
+	# whole steps; when the act ends the idle turn takes up again from where it stands, nothing
+	# unwound. An act that locks nothing leaves the spin turning.
+	var id := ""
+	var act := ""
+	var jn := ""
+	var free := ""
+	for m in MACHINES:
+		var side := MechRig.load_sidecar(m)
+		for a in side.get("acts", []):
+			for j in a.get("locks", []):
+				if id.is_empty() and (side.get("spin_step", {}) as Dictionary).has(j) and (side.get("spin", {}) as Dictionary).has(j) and (a.get("tracks", {}) as Dictionary).has(j):
+					id = m
+					act = str(a["name"])
+					jn = str(j)
+	assert_false(id.is_empty(), "a model locks a stepped spin in an act")
+	if id.is_empty():
+		return
+	for a in MechRig.load_sidecar(id).get("acts", []):
+		if free.is_empty() and not (a.get("locks", []) as Array).has(jn) and not (a.get("tracks", {}) as Dictionary).has(jn):
+			free = str(a["name"])
+	var pair := _rig_for(id, 5)
+	var rig: MechRig = pair[0]
+	rig._wait = 1.0e9   # no act of its own choosing: only those played here
+	var step := float(rig.spin_steps.get(jn, 0.0))
+	assert_true(step > 0.0, "%s: %s has its step" % [id, jn])
+	var ax := ["pitch", "yaw", "roll"].find(str(rig.meta[jn]["axis"]))
+	var rate := float(rig.spinners[jn][0])
+	var total := func() -> float: return float(rig._spun[jn]) + (rig._act_rot.get(jn, Vector3.ZERO) as Vector3)[ax]
+	var dt := 1.0 / 60.0
+	# Idle, mid-step.
+	var t := 0.0
+	while t < 0.4 or absf(fposmod(float(rig._spun[jn]), step)) < 2.0 or absf(fposmod(float(rig._spun[jn]), step) - step) < 2.0:
+		rig.tick(dt)
+		t += dt
+	var s0 := float(rig._spun[jn])
+	var parked := (ceilf(s0 / step) if rate >= 0.0 else floorf(s0 / step)) * step
+	assert_true(rig.play(act), "%s plays %s" % [id, act])
+	assert_true(rig.spin_locked(jn), "%s: %s locks %s" % [id, act, jn])
+	var last := s0
+	var backwards := false
+	t = 0.0
+	while t < MechRig.PARK_TIME + 0.1:
+		rig.tick(dt)
+		t += dt
+		var now := float(rig._spun[jn])
+		if (now - last) * signf(rate) < -0.001:
+			backwards = true
+		last = now
+	assert_false(backwards, "%s: the park never turns back" % id)
+	assert_true(absf(float(rig._spun[jn]) - parked) < 0.01, "%s: parked on the next step ahead (%f from %f, want %f)" % [id, float(rig._spun[jn]), s0, parked])
+	var held := float(rig._spun[jn])
+	var duration := 0.0
+	for a in rig.acts:
+		if str(a["name"]) == act:
+			duration = float(a["duration"])
+	while t < duration - 0.05:
+		rig.tick(dt)
+		t += dt
+	assert_true(absf(float(rig._spun[jn]) - held) < 0.001, "%s: the idle turn holds still while the act plays" % id)
+	var before: float = total.call()
+	assert_true(absf(fposmod(before, step)) < 0.5 or absf(fposmod(before, step) - step) < 0.5, "%s: the act's own turn ends on whole steps (%f)" % [id, before])
+	while rig.in_act():
+		rig.tick(dt)
+	assert_false(rig.spin_locked(jn), "%s: the lock goes with the act" % id)
+	var after: float = total.call()
+	assert_true(absf(wrapf(after - before, -180.0, 180.0)) < 2.0, "%s: nothing jumps or unwinds as the act ends (%f to %f)" % [id, before, after])
+	var from := float(rig._spun[jn])
+	for i in range(30):
+		rig.tick(dt)
+	assert_true(absf(wrapf(float(rig._spun[jn]) - from, -180.0, 180.0) - rate * 0.5) < 2.0, "%s: the idle turn takes up again from where it stands" % id)
+	if not free.is_empty():
+		assert_true(rig.play(free), "%s plays %s" % [id, free])
+		assert_false(rig.spin_locked(jn), "%s: %s locks nothing" % [id, free])
+		var s1 := float(rig._spun[jn])
+		for i in range(30):
+			rig.tick(dt)
+		assert_true(absf(wrapf(float(rig._spun[jn]) - s1, -180.0, 180.0) - rate * 0.5) < 2.0, "%s: an act that locks nothing leaves the spin turning" % id)
+	pair[1].free()

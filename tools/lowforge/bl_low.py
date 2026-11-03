@@ -428,6 +428,7 @@ class Build:
         self.objects = []
         self.pins = []      # every hp_* and joint_* Empty made, in order, so a joint block can take the pins made inside it
         self.carries = {}   # hp_<n> -> the component its stock part is, "" a bare mount: the rig sidecar's pins (see pin())
+        self.hidden = []    # the hp_<n> pins that show nothing, stock or fitted: the sidecar's hidden_pins (see pin())
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
         self.acts = []         # the machine's idle acts, in authoring order (see act())
@@ -435,6 +436,9 @@ class Build:
         self.gait_spec = {}    # how the machine moves (see gait())
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
+        self.spin_steps = {}   # joint -> degrees a step: a spinner an act may lock, parked on a step (see spin(), act()'s `locks`)
+        self.spins_held = {}   # status -> {joint: degrees a second}: turned while the machine carries the status (see spin_held())
+        self.counts = []       # the count displays: parts lit in order for a number the game passes (see count())
         self.forms = {}        # poses held while a status lasts (see form())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
@@ -651,7 +655,7 @@ class Build:
             bm.to_mesh(ob.data)
             bm.free()
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, fits=None):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, fits=None, hidden=False):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
         weapon points) and its scale the size a mounted component wears there, so the
         engine can hang a component's shape under it with no arithmetic. `parts` are the
@@ -667,11 +671,23 @@ class Build:
         offered) and scaling"): {class: a variant's name (models_low.VARIANTS), a scale on the
         pin's own, or (variant, scale)}, so a round port takes a round launcher and a dish
         small enough to pass its bore. The sidecar carries it (rig()'s `fits`); the engine
-        hangs what it names."""
+        hangs what it names.
+
+        `hidden` makes a mount that shows nothing, its stock or a fitted component's class (the
+        Cottonmouth's guns, mounted inside its drum: Ryan, 19 October, "the guns mounted
+        (invisibly) inside"): still a hardpoint, counted and recording what it carries, with no
+        parts of its own; the sidecar lists it under `hidden_pins` and the engine hangs nothing
+        on it (MechView3D.wear)."""
+        if hidden and not name.startswith("hp_"):
+            raise ValueError("%s: only a hardpoint (hp_<n>) hides, not %s" % (self.name, name))
+        if hidden and parts:
+            raise ValueError("%s: %s is hidden, so it carries no parts to show" % (self.name, name))
         if name.startswith("hp_"):
             self.carries[name] = carries
             if fits:
                 self.fits[name] = _fits(self.name, name, fits)
+            if hidden:
+                self.hidden.append(name)
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
         m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
@@ -715,7 +731,7 @@ class Build:
                 return "yaw"
         return "pitch"
 
-    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None):
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None, locks=None):
         """One idle act, what the pilot does with the machine every few seconds (the
         idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
         (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
@@ -731,10 +747,18 @@ class Build:
         Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both. `form`,
         given, makes it one of that form's acts, played while the form is held in place of the
         machine's own and added to the form's held pose (Ryan, 29 October: sealed, the
-        Armadillo's acts are its own, from its hunkered pose)."""
+        Armadillo's acts are its own, from its hunkered pose). `locks` names spinners with a
+        step (spin()'s `step`) the act holds still: each parks quickly on its next step ahead as
+        the act starts, never turning back, and holds there while it plays, the act's own track
+        on it adding whole steps over that; when the act ends its turn there runs on from where
+        it stands (MechRig: the Cottonmouth's drum stops on a chamber to fire, Ryan, 2 November:
+        "Keep the idle turn ... Quickly spin it forward a fixed number of barrels when it
+        fires")."""
         out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
         if heft is not None:
             out["heft"] = float(heft)
+        if locks:
+            out["locks"] = [str(j) for j in ([locks] if isinstance(locks, str) else locks)]
         if places:
             places = [places] if isinstance(places, str) else list(places)
             for pl in places:
@@ -960,12 +984,47 @@ class Build:
         self.gait_spec = kept
         return self.gait_options[name]
 
-    def spin(self, joint, idle, moving=None):
+    def spin(self, joint, idle, moving=None, step=None):
         """A joint turned without end on its own axis, whatever the machine is doing (Ryan, 6
         October, the seventh notes: the Stingray's lift fans): `idle` degrees a second standing,
         `moving` (as idle if not given) once it is fully under way, the rate easing between them
-        with the move. Give the joint no limits: the turn is wrapped, never clamped."""
+        with the move. Give the joint no limits: the turn is wrapped, never clamped. `step`,
+        given, is its pitch in degrees, rest one of its steps (a drum's chamber, 60 for six): an
+        act may lock it (act()'s `locks`), parking it on a step while the act plays."""
         self.spins[joint] = [float(idle), float(idle if moving is None else moving)]
+        if step is not None:
+            if not 0.0 < float(step) <= 180.0:
+                raise ValueError("%s: the spin of %s steps %g degrees, which is no step" % (self.name, joint, step))
+            self.spin_steps[joint] = float(step)
+
+    def spin_held(self, status, joint, speed):
+        """A joint turned without end at `speed` degrees a second while the machine carries the
+        status `status` (an id in sim/effects.gd's STATUS, a test holding it), eased up to speed
+        as the status lands and run down as it goes (MechRig.hold_spin: the Cassowary's capacitor
+        while Spun Up, Ryan, 2 November). Give the joint no limits on its axis: the turn is
+        wrapped, never clamped."""
+        if joint not in self.joint_meta:
+            raise ValueError("%s: spin_held names a joint the model has not got: %s" % (self.name, joint))
+        if self.joint_meta[joint]["axis"] in self.joint_meta[joint]["limits"]:
+            raise ValueError("%s: the held spin's joint %s has limits on its axis, which would clamp its turn" % (self.name, joint))
+        self.spins_held.setdefault(str(status), {})[joint] = float(speed)
+
+    COUNT_SOURCES = ("shots", "ammo")   # the numbers the game passes a count display (MechRig.COUNT_SOURCES)
+
+    def count(self, source, parts, on=1.5, off=-0.85, flare=8.0):
+        """A count display: `parts` (lit labels, the first lit first) shown lit for as many as the
+        number `source` the game passes as the screen refreshes (`shots`, a machine's counted
+        shots toward the next that counts; `ammo`, its magazine's rounds: COUNT_SOURCES), the rest
+        dark; a number that falls flares every part and lets them all go dark (MechRig.show_counts:
+        the Cassowary's capacitor, a cell a counted shot, discharging on the sixth, Ryan, 2
+        November). `on`, `off` and `flare` are each part's light as an offset from its light at
+        rest, as a glow key's: -1 dark. The parts are kept apart by the weld, as a glow's are."""
+        if source not in self.COUNT_SOURCES:
+            raise ValueError("%s: a count display shows one of %s, not %r" % (self.name, ", ".join(self.COUNT_SOURCES), source))
+        parts = [parts] if isinstance(parts, str) else list(parts)
+        if not parts or len(set(parts)) != len(parts):
+            raise ValueError("%s: a count display names its parts, each once: %r" % (self.name, parts))
+        self.counts.append({"source": source, "parts": parts, "on": float(on), "off": float(off), "flare": float(flare)})
 
     def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
@@ -1008,8 +1067,16 @@ class Build:
         every_act = self.acts + [a for acts in self.form_acts.values() for a in acts]
         lit_parts = ({p for a in every_act for g in a["glow"] for p in g["parts"]}
                      | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
-                     | set(self.gait_spec.get("glow", {}).get("parts", [])))
+                     | set(self.gait_spec.get("glow", {}).get("parts", []))
+                     | {p for c in self.counts for p in c["parts"]})
         glow_parts = sorted(lit_parts | set(self.gait_spec.get("treads", {}).get("parts", [])))
+        # A count display's part has one master: an act, a form or the gait lighting it too would
+        # fight the display over its light.
+        glowing = ({p for a in every_act for g in a["glow"] for p in g["parts"]} | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
+                   | set(self.gait_spec.get("glow", {}).get("parts", [])))
+        shared = sorted(glowing & {p for c in self.counts for p in c["parts"]})
+        if shared:
+            raise ValueError("%s: %s light for a count display and a glow both" % (self.name, ", ".join(shared)))
         # A part a glow names is a label matched whole (the rig's MechRig.labelled: the label,
         # or the label with the importer's numbering), never a prefix: "repulsor" lights no
         # "repulsor_l" (the Puffin's amplify lit nothing for a day; Ryan, 28 October).
@@ -1031,13 +1098,33 @@ class Build:
         unnamed = sorted((n for n, c in self.carries.items() if c is None), key=lambda n: int(n[3:]))
         if unnamed:
             raise ValueError("%s: %s name no component they carry (b.socket/b.stock/b.pin carries=, \"\" for a bare mount)" % (self.name, ", ".join(unnamed)))
+        # A lock parks a stepped spinner (act()'s `locks`): the act's own turn on it must end on a
+        # whole step, held to the act's end, so the turn runs on from a step when the act ends.
+        for a in every_act:
+            for jn in a.get("locks", []):
+                if jn not in self.spins or jn not in self.spin_steps:
+                    raise ValueError("%s: act %r locks %s, which is no spinner with a step (b.spin's step)" % (self.name, a["name"], jn))
+                rows = a["tracks"].get(jn, [])
+                if rows:
+                    turn = rows[-1][1 + ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])]
+                    whole = turn / self.spin_steps[jn]
+                    if abs(whole - round(whole)) > 1e-6 or rows[-1][0] < a["duration"] - 1e-6:
+                        raise ValueError("%s: act %r ends its locked %s on %g degrees at %gs, which must be a whole step held to the act's end" % (self.name, a["name"], jn, turn, rows[-1][0]))
         out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it" % self.name,
                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts,
                "pins": {n: self.carries[n] for n in sorted(self.carries, key=lambda n: int(n[3:]))}}
+        if self.hidden:
+            out["hidden_pins"] = sorted(self.hidden, key=lambda n: int(n[3:]))   # mounts that show nothing, stock or fitted (pin()'s `hidden`)
         if self.gait_options:
             out["gait_options"] = self.gait_options
         if self.spins:
             out["spin"] = self.spins
+        if self.spin_steps:
+            out["spin_step"] = self.spin_steps
+        if self.spins_held:
+            out["spin_held"] = self.spins_held
+        if self.counts:
+            out["counts"] = self.counts
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
         # A halo is the glow's own bloom, so it names only parts a glow lights.

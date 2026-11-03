@@ -17,8 +17,10 @@ extends Control
 ## (Ryan, 25 September: on the page itself, not a settings item).
 ##
 ## KEYWORDS (Ryan, 26 October: "We need a keywords list in the pause menu"): every term the
-## dice and the chips print, by kind, each with its codex line, in a scroller; the skirmish's
-## button under the eye opens it straight, and then CLOSE (or a tap outside) resumes.
+## dice and the chips print, by kind, each with its codex line, in a scroller. In play a term in
+## shown text takes a tap for its own line (KeywordTip), so the list lives here alone (Ryan, 30
+## October: "if we have contextual help that can get repurposed or removed and just live in the
+## menu"; "And yes remove keywords button").
 ##
 ## COLOURS, a debug build's page under SETTINGS (Ryan, 30 October: "put in a whole colour wheel
 ## or hex entry"; then "simplified to only what we need"): the colours that carry a meaning and
@@ -39,7 +41,7 @@ const TOOL_ROW := 66.0     # the colours page's row of tools above its BACK
 
 ## The keywords list's kinds, in the order the page shows them: the vocabulary's category and the
 ## page's heading for it.
-const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"]]
+const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"], ["foe", "FOES' MOVES"]]
 
 var _scrim: ColorRect
 var _panel: HudPanel
@@ -53,7 +55,6 @@ var _music_next: HudButton
 var _music_loop := "?"    # the loop the plate shows; "?" so the first poll draws it
 var _page := "paused"
 var _busy := false
-var _direct := false      # opened straight on a page (the keywords button): its BACK closes
 var _list: ScrollContainer = null   # the keywords or colours page's scroller, sized to the glass in _fit
 var _peeking := false     # the colours page's PEEK: the menu hidden until a tap
 var _peek_tag: HudPanel
@@ -71,7 +72,7 @@ func _init() -> void:
 	_scrim.gui_input.connect(func(e: InputEvent) -> void:
 		if _peeking and e is InputEventMouseButton and e.pressed:
 			_peek(false)
-		elif e is InputEventMouseButton and e.pressed and (_page == "paused" or _direct) and not _busy:
+		elif e is InputEventMouseButton and e.pressed and _page == "paused" and not _busy:
 			close())
 	add_child(_scrim)
 	_panel = HudPanel.new(24.0)
@@ -97,11 +98,10 @@ func _init() -> void:
 	add_child(_mask)
 
 
-## Open on `page`: PAUSED from MENU, or straight on KEYWORDS from the skirmish's button.
-func open(page: String = "paused") -> void:
+## Open on PAUSED, from MENU.
+func open() -> void:
 	_music_loop = "?"
-	_direct = page != "paused"
-	_show_page(page)
+	_show_page("paused")
 	visible = true
 	Sound.play("menu_open")
 	Sound.duck(true)
@@ -149,6 +149,7 @@ func _show_page(page: String) -> void:
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
 				_toggle("TRACES", "traces")   # the map's creases, one device pixel at every zoom: off draws none, to judge the zoomed-out grain on the phone
 				_toggle("SHOT TRAILS", "shot_trails")   # a shot crossing the field from its muzzle to its target (ShotTrail): tabled as maybe too busy, here to judge
+				_toggle("KEYWORD INK", "keyword_ink")   # a term in shown text bold in ink, its icon in its colour, against the word in its colour (Ryan judges which)
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"colours":
@@ -161,10 +162,7 @@ func _show_page(page: String) -> void:
 			_title("KEYWORDS")
 			_list = _keywords_list()
 			_rows.add_child(_list)
-			if _direct:
-				_button("CLOSE", close, true, "")
-			else:
-				_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
+			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"quit":
 			_title("QUIT?")
 			var l := Hud.label("Leave for the harness. A battle is kept where it stands.", 18, Palette.MUTED)
@@ -394,7 +392,9 @@ class BusyMask extends Control:
 
 
 ## The keywords list as data: each kind's heading and its terms, [name, codex, id] sorted by
-## name; only what the engine runs (a planned term is never shown).
+## name; only what the engine runs (a planned term is never shown), and of the foes' words only the
+## keywords their moves carry, those with an icon of their own (Terms), never the engine's (its aim,
+## its menace).
 static func glossary(db: ContentDB) -> Array:
 	var out: Array = []
 	for kind in GLOSSARY:
@@ -402,6 +402,8 @@ static func glossary(db: ContentDB) -> Array:
 		for id in db.vocabulary.keys():
 			var e: Dictionary = db.vocabulary[id]
 			if str(e.get("category", "")) == str(kind[0]) and str(e.get("status", "")) == "implemented":
+				if str(kind[0]) == "foe" and not Terms.has(str(id)):
+					continue
 				entries.append([str(e.get("name", id)), str(e.get("codex", "")), str(id)])
 		entries.sort_custom(func(a: Array, b: Array) -> bool: return str(a[0]).naturalnocasecmp_to(str(b[0])) < 0)
 		if not entries.is_empty():
@@ -409,7 +411,9 @@ static func glossary(db: ContentDB) -> Array:
 	return out
 
 
-## The keywords page's scroller: a heading a kind, then each term's name over its codex line.
+## The keywords page's scroller: a heading a kind, then each term's icon and name in its colour
+## over its codex line (Terms; Ryan, 30 October), the terms a line names highlighted and opening
+## their own entries where they stand (KeywordTip), as everywhere.
 func _keywords_list() -> ScrollContainer:
 	var sc := _scroller()
 	var col: VBoxContainer = sc.get_child(0)
@@ -418,13 +422,8 @@ func _keywords_list() -> ScrollContainer:
 		var head := Hud.label(str(kind["title"]), 15, Palette.HUD, Hud.mono())
 		col.add_child(head)
 		for e in kind["entries"]:
-			var term := VBoxContainer.new()   # a name over its line, close together
-			term.add_theme_constant_override("separation", 0)
-			term.add_child(Hud.label(str(e[0]), 20, Palette.INK, Hud.display_bold()))
-			var codex := Hud.label(str(e[1]), 17, Palette.INK.lerp(Palette.MUTED, 0.35))
-			codex.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			codex.custom_minimum_size = Vector2(width, 0)   # a wrapping label needs its width before its first layout
-			term.add_child(codex)
+			var term := EntryReadout.new()   # a name over its line, close together
+			term.set_lines([EntryReadout.term_line(str(e[2])), EntryReadout.prose_line(str(e[1]), 17, Palette.INK.lerp(Palette.MUTED, 0.35))], width)
 			col.add_child(term)
 	return sc
 

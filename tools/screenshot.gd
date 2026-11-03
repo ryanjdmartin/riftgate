@@ -83,6 +83,15 @@ func _apply_pose() -> void:
 			s._on_foe_double_tapped(s._foe_view_for(s.sk.front[0]))
 		"mechcodex":
 			s._on_mech_double_tapped(0)
+		"termtip":
+			# A term's tip (30 October): the first machine's codex, then the first term its passive
+			# names opened as a tap on it opens it, once the plate has laid out (RIFTGATE_TEAM
+			# chooses the machine).
+			s._on_mech_double_tapped(0)
+			_later(2, func() -> void:
+				var r: EntryReadout = s._codex._passives
+				if not r._hits.is_empty():
+					r.open_tip(r._hits[0]["terms"], r._hits[0]["rect"]))
 		"pair", "pair_spread":
 			# The Gel's pair (26 October): the first Gel on the front falls and its halves stand
 			# in its slot (RIFTGATE_FOES=gel:2,goblin:3); pair_spread holds a Spread weapon over
@@ -100,13 +109,14 @@ func _apply_pose() -> void:
 				s._drag_from = 0
 			s._refresh()
 		"hold":
-			# RIFTGATE_HOLD_ENTRY=<place> (from 1) shows that entry of the second machine's die
-			# first, to read any piece's hold (with RIFTGATE_TEAM to choose the machine).
+			# The second machine's die read, a tap (its readout). RIFTGATE_HOLD_ENTRY=<place> (from
+			# 1) shows that entry of its die first, to read any piece's (with RIFTGATE_TEAM to
+			# choose the machine).
 			var at := int(OS.get_environment("RIFTGATE_HOLD_ENTRY")) - 1
 			if at >= 0 and at < s.sk.mechs[1].die.faces.size():
 				s.sk.mechs[1].face_index = at
 				s._refresh()
-			s._on_die_held(1)
+			s._on_die_tapped(1)
 		"mechhold":
 			s._on_mech_held(0)
 		"foehold":
@@ -114,7 +124,20 @@ func _apply_pose() -> void:
 		"confirm":
 			s._on_end_turn()
 		"lock":
-			s._on_die_tapped(0)
+			s._toggle_lock(0)
+		"touch":
+			# The first die lit as its tap waits out the double-tap window (30 October).
+			s._dice[0]._tap_due = 1.0e12
+			s._dice[0].queue_redraw()
+		"swaphome":
+			# A Swap waiting on its first target, then a tap on nothing sending it home (30 October):
+			# RIFTGATE_SHOT_FRAME=6 or so catches the die in flight.
+			var ms: Skirmish.MechState = s.sk.mechs[0]
+			ms.die.faces[ms.face_index] = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SWAP])
+			s._refresh()
+			_later(1, func() -> void:
+				s._begin_second(0, s.sk.targets_for(0)[0])
+				_later(2, func() -> void: s._send_second_home()))
 			s._toggle_all_arrows(true)
 		"acquire":
 			# The display locking onto every intent, mid-collapse (RIFTGATE_SHOT_FRAME=10).
@@ -128,7 +151,8 @@ func _apply_pose() -> void:
 			# boxes, 8 for the tear, the signal drop and the recalculation).
 			s._fx.force(_pose.trim_prefix("feed_"))
 		"keywords":
-			s._open_menu("keywords")   # as the button under the eye opens it
+			s._open_menu()
+			s._menu._show_page("keywords")   # as the menu's KEYWORDS opens it
 		"menu", "settings", "quit", "colours":
 			s._open_menu()
 			if _pose != "menu":
@@ -223,6 +247,12 @@ func _apply_pose() -> void:
 				var st: Dictionary = Effects.STATUS[ids[k]]
 				Effects.stack(foe, st, Effects.SKIRMISH, "shot", 1 if ids[k] == "shocked" else 2, Effects.status_decay(st))
 				k += 1
+		"swallowed":
+			# A foe's swallow on the first machine (30 October, Floraison's): out of the fight for two
+			# rounds, drawn as a ghost under a dashed edge, its chip the maw.
+			var sw: Unit = s.sk.mechs[0].unit
+			Effects.grant_for_rounds(sw, Effects.STATUS["swallowed"], "swallow:0:shot", s.sk.round + 2)
+			s.sk.mechs[0].assigned = true
 			s._refresh()
 		"enemyturn":
 			# Thin every shield so the enemy turn breaks some: the replay and shatter play.
@@ -524,6 +554,13 @@ func _apply_quick_pose() -> void:
 					r.finish_fight()
 				s._choice = 1
 			s._refresh()
+
+
+## Run `f` `frames` frames on, once the containers have laid out what a pose opened.
+func _later(frames: int, f: Callable) -> void:
+	for i in range(frames):
+		await process_frame
+	f.call()
 
 
 func _tick() -> void:

@@ -140,23 +140,28 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "marsh")
 	var only := db.foes_for(boss)
 	assert_eq(only.size(), 1, "a boss unpacks to just its boss")
-	assert_eq(only[0].display_name, str(db.foes[str(db.factions["marsh"]["boss"])]["name"]), "the Marsh's boss, whatever the content names it")
+	assert_eq(only[0].display_name, str(db.foes[db.bosses_of("marsh")[0]]["name"]), "the Marsh's first boss, whatever the content names it (a domain's bosses are a list since the slate)")
 	assert_true(only[0].boss, "and the content marks it the boss")
 	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "peak"))
-	assert_eq(pit[0].display_name, str(db.foes[str(db.factions["peak"]["boss"])]["name"]), "the Peak's boss")
+	assert_eq(pit[0].display_name, str(db.foes[db.bosses_of("peak")[0]]["name"]), "the Peak's first boss")
 
 
 func test_spawn_table_lists_the_factions_units() -> void:
 	# Derived from the compositions since 30 October: the tier's formations' then patrols'
 	# members, each foe once, first seen first, for the harness, the runners and the escorts.
 	var db := _db()
-	var table := db.spawn_table("marsh", 1)
-	var ids: Array = table.map(func(e) -> String: return str(e[0]))
-	assert_eq(ids.size(), 3, "three units come through at tier one: %s" % str(ids))
-	assert_eq(ids[0], "revenant", "the formation's lead first")
-	assert_true(ids.has("ghost") and ids.has("zombie_knight"), "the back and the patrol's knights with it")
-	for e in table:
-		assert_true(int(e[1]) >= 1, "%s at a strength" % str(e[0]))
+	for fac in db.factions.keys():
+		var table := db.spawn_table(str(fac), 1)
+		var ids: Array = table.map(func(e) -> String: return str(e[0]))
+		var want: Array = []
+		for size in ["formation", "patrol"]:
+			for c in db.compositions(str(fac), 1, size):
+				for m in c["members"]:
+					if not want.has(str(m[0])):
+						want.append(str(m[0]))
+		assert_eq(ids, want, "%s at tier one: the formations' then the patrols' members, each once, first seen first" % fac)
+		for e in table:
+			assert_true(int(e[1]) >= 1, "%s at a strength" % str(e[0]))
 	assert_eq(db.faction_of_foe("drake"), "peak", "foe to faction lookup")
 	for fid in db.factions.keys():
 		for t in [1, 2, 3]:
@@ -467,8 +472,13 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 	# human-sized boss validates and is the boss; a hero is a final, dealt from the bench.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
+	# An escort written for one boss names it (30 October); this test rewrites the boss lists, so
+	# its copy's escorts name none.
+	for fac in db.factions.values():
+		for c in fac.get("compositions", []):
+			c.erase("boss")
 	var fid := str(db.factions.keys()[0])
-	var small: Dictionary = db.foes[str(db.factions[fid]["boss"])].duplicate(true)
+	var small: Dictionary = db.foes[str(db.bosses_of(fid)[0])].duplicate(true)
 	small["size"] = 1
 	db.foes["small_boss"] = small
 	db.factions[fid]["boss"] = "small_boss"
@@ -1524,8 +1534,9 @@ func test_every_component_names_a_silhouette_class() -> void:
 
 func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	# The set of 2 October (the bible, section 9): rank and file carry one or two moves and a
-	# boss three; every foe reads an aim the engine knows; the ghoul's claw is a swarm blow; the
-	# bosses wear armour.
+	# boss three; every foe reads an aim the engine knows; the ghoul's claw is a swarm blow; a
+	# boss wears armour only where its kit is armour (Ryan, 2 November), a point or two, and one
+	# whose armour steps by the tier starts from at least a point.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	assert_true(db.validate().is_empty(), "the set validates: %s" % str(db.validate()))
@@ -1534,7 +1545,9 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 		assert_true(Foe.AIMS.has(f.aim), "%s aims by a word the engine knows" % id)
 		if f.boss:
 			assert_eq(f.actions.size(), 3, "%s, a boss, has three moves" % id)
-			assert_true(f.armour > 0, "%s, a boss, wears armour" % id)
+			assert_true(f.armour >= 0 and f.armour <= 2, "%s, a boss, wears no armour or a point or two" % id)
+			if f.armour_step > 0:
+				assert_true(f.armour > 0, "%s, a boss whose armour steps, starts from a point" % id)
 		elif f.hero and db.foes[id].has("promotes"):
 			# A promoted form (the bible's section 9): its hero's moves and one more, massive and
 			# armoured.
@@ -1564,9 +1577,22 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	assert_eq(g.damage(), int(db.foes["revenant"]["attack"]) + 3 * swarm, "four on the field hit for the blow and three kin's swarm each")
 	var entry := db.codex_for_foe(g)
 	assert_true(_moves_text(db, entry).contains("Attack %d (+%d a kin standing)" % [int(db.foes["revenant"]["attack"]), swarm]), "the codex says the swarm, at its own number with no kin: %s" % _moves_text(db, entry))
-	var maw := db.codex_for_foe(db.make_foe("sandworm"))
-	assert_true(_moves_text(db, maw).contains("When below half"), "the codex says a move's condition: %s" % _moves_text(db, maw))
-	assert_true(str(maw["stats"]).contains("ARM %d" % int(db.foes["sandworm"]["armour"])), "and the boss's armour")
+	# A move's condition and a foe's armour show in its codex, read off whichever armoured foe
+	# carries a condition (by structure, never an entry by id: the stand-ins moved to the ranks, 30 October).
+	var held_id := ""
+	var held_when := ""
+	for id in db.foes.keys():
+		if not held_id.is_empty() or int(db.foes[id].get("armour", 0)) <= 0:
+			continue
+		for a in db.foes[id].get("actions", []):
+			if held_id.is_empty() and a.has("when") and str(a.get("status", "")) == "implemented":
+				held_id = str(id)
+				held_when = str(Foe.whens_of(a)[0])
+	assert_ne(held_id, "", "an armoured foe with a condition is in content")
+	var maw := db.codex_for_foe(db.make_foe(held_id))
+	var said := str(Foe.WHEN_TEXT[held_when])
+	assert_true(_moves_text(db, maw).contains(said.substr(0, 1).to_upper() + said.substr(1)), "the codex says a move's condition: %s" % _moves_text(db, maw))
+	assert_true(str(maw["stats"]).contains("ARM %d" % int(db.foes[held_id]["armour"])), "and its armour")
 
 
 # The name plate shows the traits, not a silhouette word (Ryan, 2 October): maker, then

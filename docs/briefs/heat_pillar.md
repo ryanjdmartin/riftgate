@@ -137,6 +137,46 @@ The order is Claude's lean; each line is his to move.
 What Claude would not do: a universal heat-as-fuel rule. That is Kestrel's identity, and giving
 it to everyone flattens the maker.
 
+## The overheat's penalties (30 October)
+
+The read of the day (caution costs more than the overheat, `docs/measurements.md`) opened the
+overheat's price. Claude offered five forms beside a harsher burn; Ryan's calls, in his words:
+
+1. **Burnout through the injury rule**: an overheat whose burn reaches the injury threshold (a
+   quarter of the maximum hull) burns out the component whose spend took the gauge past the
+   maximum, for the battle, as an injury destroys an entry; the culprit fixed so the forecast can
+   name it, a pairing with a harsher burn since one for one rarely reaches the threshold, the
+   bot's price for a lost component, and the hot kits perhaps giving back: "yes, makes perfect
+   sense on all counts".
+2. **Self-Corrupted** on the same component, a stack an overheat, so running the same hot gun
+   again bites, a Cleanse its answer (the Phased Sublimator, the Corona Shield): "Also makes
+   sense". For any form that lands: "Jenny needs to do some lifting, and we need warning chips
+   and such".
+3. **Disabled** next turn (the bench's dark entry): "don't bother with disabled, the soft
+   punishes above are better" (Claude's hole: its weight swings with the die's size, and the
+   round's rerolls dodge it).
+4. **A weaken** (weapons a point weaker a stack): "Weaken is something the foes might want to
+   carry. Note it down for that reason, and I'm not against it here, but yes its more of a hard
+   punish than corrupted" (noted on the briefs README's bench).
+5. **Escalation on repeat** (the second overheat in a row burns double): "Yeah no point in
+   this".
+
+The plan he agreed: the harsher burn read first (`--overheat 2` and `3`), then burnout and
+self-Corrupted as test-only settings, each with the bot's price (`--burnout`,
+`--overheat-corrupt N`; built 30 October), read on the car and the hot rows. None is a rule
+before his go; whichever lands brings Jenny's lines and the warning chips with it.
+
+Read the same day (`docs/measurements.md`, the overheat's price as what-ifs; 30 seeds, a
+direction): every form does the same thing to play, the bot riding to the maximum and holding
+there rather than eating the overheat (half the overheats at two a point, on the car's hot guns
+and in Kestrel's row), so heat costs tempo rather than hull (heat 8 from 1.4 vanilla points to
+1.9, 2.1 at three a point; Kestrel's row a tenth of a round at most). Caution never pays under
+any of them. Burnout adds nothing over two a point, the bot staying clear of the threshold, so its
+weight is a threat the forecast must show; Corrupted at one for one deters as a burn of two does,
+for less hull. So the form is a question of feel and readability, his play, more than of
+balance; none makes the warm classes bite on a cold die, which stays the maxima's and the
+cooling's.
+
 ## The questions for Ryan
 
 1. Is passive cooling cut by default, and which chassis keep theirs?
