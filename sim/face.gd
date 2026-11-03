@@ -555,12 +555,13 @@ func cooldown_rounds() -> int:
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
 ## Vents all, the missing-hull bonus, the talons' kill rule, the hopper, the brace, rolling
 ## again on a status (the Nemesis's rage), a spin (the Spin-Up's), the Siphon's heat a blow, or a
-## labelled effect. A cooldown is a cost the die prints with its clock, and a reload the ammo the
-## die prints with its shells (Ryan, 2 November), so neither is.
+## labelled effect. A cooldown is a cost the die prints with its clock, a reload the ammo the die
+## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
+## (3 November), so none of them is.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or spins or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
-		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
+		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or spray \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
 
@@ -783,7 +784,8 @@ func _spin_phrases() -> Array[String]:
 ## The rules an entry prints past its number, its reach, whom it is spent on and its keywords,
 ## one phrase each in describe()'s own words (a test holds every phrase to describe()): the
 ## die's hold lists them a line each, last (Ryan, 25 October: "unique effects last"). A reload
-## with no vent of its own is that vent's number, not a rule.
+## with no vent of its own is that vent's number, and a shield's cooling a number the die prints
+## beside its shield's (3 November), so neither is a rule.
 func rule_phrases() -> Array[String]:
 	var out: Array[String] = []
 	if kind == Kind.BLANK:
@@ -803,11 +805,8 @@ func rule_phrases() -> Array[String]:
 			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
 		if fires_hopper > 0:
 			out.append("fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper])
-	else:
-		if vents > 0:
-			out.append("cools %d" % vents)
-		if cools_all:
-			out.append("cools to nothing")
+	elif cools_all:
+		out.append("cools to nothing")
 	if braces > 0:
 		out.append("braces" + ("" if braces == 1 else " ×%d" % braces))
 	if not rolls_again_on.is_empty():

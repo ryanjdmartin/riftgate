@@ -7764,7 +7764,7 @@ func test_a_debuff_deals_nothing_under_any_effect_and_prints_no_number() -> void
 	assert_eq(sk.shown_number_text(sk.mechs[0], lure, g), "", "it prints no number, over a foe or not")
 	assert_eq(lure.number_text(), "", "nor on the die's own entry")
 	assert_eq(lure.describe(), "indirect lure (+5 heat)", "its line is its reach and keywords")
-	assert_eq([Glyphs.primary_for(lure), Glyphs.aim_for(lure)], ["equipment", "aim_indirect"], "an Indirect debuff is equipment's diamond holding the curved arrow")
+	assert_eq([Glyphs.primary_for(lure), Glyphs.aim_for(lure)], ["equipment", "aim_indirect"], "an Indirect debuff is equipment's gear over the curved arrow")
 	assert_eq([Glyphs.primary_for(Face.attack(0, L, [K.SHOCK])), Glyphs.aim_for(Face.attack(0, L, [K.SHOCK]))], ["equipment", "aim_direct"], "a Direct one the straight arrow")
 	assert_true(sk.assign(0, g), "spent on a foe in reach")
 	assert_eq(g.hp, 100, "it dealt nothing")
@@ -8681,7 +8681,7 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	reload.heat = 15
 	reload.reloads_ammo = 2
 	assert_eq(reload.number_text(), "+2", "a reload prints the ammo it adds")
-	assert_eq([Glyphs.primary_for(reload), DieFaceView.number_mark(reload), DieFaceView.die_number(reload)], ["vent", "ammo", "2"], "and is drawn as a vent, its number the ammo behind the shells (2 November: no mark of its own)")
+	assert_eq([Glyphs.primary_for(reload), DieFaceView.number_mark(reload), DieFaceView.die_number(reload)], ["ammo", "ammo", "2"], "and is drawn as its shells and the ammo it loads: it cools nothing, so no steam, and no mark of its own (2 and 3 November)")
 	var sk := Skirmish.new(2, 3)
 	var m := _mech("Ox", Die.of([cannon, salvo, reload]), 40, 200)
 	m.grant_passive(FORGE)

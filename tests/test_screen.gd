@@ -75,13 +75,14 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	s.free()
 
 
-## Every entry's main icon holds whom it is aimed at, never a chip on its rail (Ryan, 2 November:
-## "Use a straight arrow for direct, and the curved arrow for indirect, and then standardize the
-## width of those with the width of the 3 hex symbol so that either can fit inside any main
-## symbol"): a weapon's reticle or equipment's diamond holding an arrow, a shield, a vent or
-## equipment spent on machines holding three hexes ("center filled for self-only, left/right
-## filled for ally only, all filled for self or ally"), the default included; a buff and a debuff
-## one equipment icon; a reload a vent. A reach over every ally or every foe is a keyword's chip.
+## Every entry's targeting mark stands under its main mark, never a chip on its rail (Ryan, 2
+## November: "Use a straight arrow for direct, and the curved arrow for indirect, and then
+## standardize the width of those with the width of the 3 hex symbol"; 3 November: "putting
+## targeting underneath"): an arrow under a weapon's sight or equipment's gear aimed at a foe,
+## three hexes under a shield, a vent or equipment spent on machines ("center filled for
+## self-only, left/right filled for ally only, all filled for self or ally"), the default
+## included; a buff and a debuff one equipment mark. A reach over every ally or every foe is a
+## keyword's chip.
 func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	var shield := Face.shield(4)
 	assert_eq(Glyphs.aim_for(shield), "aim_any", "itself or an ally, the default: all three lit")
@@ -94,15 +95,15 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	assert_true(shield.has(Face.Keyword.EVERY_ALLY) and not shield.has(Face.Keyword.EVERY_FOE), "and carries Every Ally, a keyword")
 	var vent := Face.vent(3)
 	vent.targets = Face.Target.SELF
-	assert_eq([Glyphs.primary_for(vent), Glyphs.aim_for(vent)], ["vent", "aim_self"], "a vent's housing holding the middle hex")
+	assert_eq([Glyphs.primary_for(vent), Glyphs.aim_for(vent)], ["vent", "aim_self"], "a vent's steam over the middle hex")
 	var buff := Face.buff("overcharged", 1)
 	buff.targets = Face.Target.ALLY
-	assert_eq([Glyphs.primary_for(buff), Glyphs.aim_for(buff)], ["equipment", "aim_ally"], "a buff: equipment's diamond holding the hexes")
+	assert_eq([Glyphs.primary_for(buff), Glyphs.aim_for(buff)], ["equipment", "aim_ally"], "a buff: equipment's gear over the hexes")
 	var gun := Face.attack(0)
 	gun.reaches_all = true
-	assert_eq([Glyphs.primary_for(gun), Glyphs.aim_for(gun)], ["equipment", "aim_direct"], "a debuff: the same diamond holding the straight arrow")
+	assert_eq([Glyphs.primary_for(gun), Glyphs.aim_for(gun)], ["equipment", "aim_direct"], "a debuff: the same gear over the straight arrow")
 	assert_eq([Glyphs.primary_for(Face.attack(0, Face.Reach.INDIRECT)), Glyphs.aim_for(Face.attack(0, Face.Reach.INDIRECT))], ["equipment", "aim_indirect"], "or the curved arrow")
-	assert_eq([Glyphs.primary_for(Face.attack(4)), Glyphs.aim_for(Face.attack(4))], ["weapon", "aim_direct"], "a weapon: its reticle holding the arrow")
+	assert_eq([Glyphs.primary_for(Face.attack(4)), Glyphs.aim_for(Face.attack(4))], ["weapon", "aim_direct"], "a weapon: its sight over the arrow")
 	assert_true(gun.has(Face.Keyword.EVERY_FOE), "its reach over every foe a keyword, Every Foe")
 	var lure := DieFaceView.new()
 	lure.set_face(gun)
@@ -131,6 +132,41 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 		if f.on_machines() and f.targets != Face.Target.SELF_ALLY:
 			narrowed += 1
 	assert_true(narrowed > 0, "content narrows some (%d)" % narrowed)
+
+
+## The main mark holds what the entry delivers (Ryan, 3 November: "moving the number inside of
+## the icon"): equipment, which prints no number, holds what it grants or lays inside its gear (a
+## buff's status; a debuff's first keyword that does something to a foe, in content's order; the
+## star for a rule of its own), and the rail never shows it twice; a shield and a vent in one entry
+## is one mark, the shield and the steam (the Wake Diffuser, the Sutler's Hoist), its cooling a
+## number the die prints, never the star; a reload cools nothing, its shells its whole mark.
+func test_the_main_mark_holds_what_an_entry_delivers() -> void:
+	var buff := Face.buff("overcharged", 2)
+	assert_eq(DieFaceView.inside_effect(buff), "overcharged", "a buff: its status inside the gear")
+	var d := DieFaceView.new()
+	d.set_face(buff)
+	assert_false(d.rail_tags().has("overcharged"), "and never on the rail too")
+	var lure := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.EVERY_FOE, Face.Keyword.LURE, Face.Keyword.CRYO])
+	assert_eq(DieFaceView.inside_effect(lure), "lure", "a debuff: its first keyword that does something to a foe, its reach passed over")
+	d.set_face(lure)
+	assert_eq(d.rail_tags(), ["every_foe", "cryo"] as Array[String], "the reach and the second effect on the rail, the first inside")
+	var mines := Face.attack(0)
+	mines.pulls_mines = true
+	assert_eq(DieFaceView.inside_effect(mines), "star", "a debuff whose effect is a rule of its own holds the star")
+	d.set_face(mines)
+	assert_false(d.rail_tags().has("star"), "and the rail does not star it again")
+	assert_eq(DieFaceView.inside_effect(Face.attack(4, Face.Reach.DIRECT, [Face.Keyword.BURN])), "", "a weapon holds its number, never a keyword")
+	d.free()
+	var wake := Face.vent(3)
+	wake.shields = 3
+	var hoist := Face.shield(3)
+	hoist.vents = 2
+	assert_eq([Glyphs.primary_for(wake), Glyphs.primary_for(hoist)], ["shield_vent", "shield_vent"], "a shield and a vent in one entry: one mark, the shield and the steam, whichever half leads")
+	assert_false(hoist.has_unique_rule(), "the Hoist's cooling is a number the die prints, never the star")
+	assert_false(hoist.rule_phrases().has("cools 2"), "nor a rule the hold lists")
+	var reload := Face.vent(0)
+	reload.reloads_ammo = 2
+	assert_eq(Glyphs.primary_for(reload), "ammo", "a reload cools nothing: its shells and its number, no steam")
 
 
 ## The die's tap waits out the double-tap window (Ryan, 30 October), so a double-tap never shows a
@@ -1968,7 +2004,11 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 			wanted.append("star")
 		var granted := DieFaceView.status_chip(f)
 		if not granted.is_empty():
-			wanted.append(Terms.glyph(granted))   # equipment's status, its chip on the rail
+			wanted.append(Terms.glyph(granted))   # equipment's status, inside its gear
+		if f.vents > 0:
+			wanted.append("vent")     # a shield's cooling, under the steam off its top (3 November)
+		if f.shields > 0:
+			wanted.append("shield")   # a vent's shield, in the shield's half of its mark
 		# The costs along the foot, each a mark and a number (Ryan, 2 November).
 		if f.heat > 0:
 			wanted.append("heat")

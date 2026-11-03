@@ -25,8 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 899 tests, 209,072 checks, green on `ccr-bb178c9b-l6airv` (2 November: Ryan's playtest
-  list of 2 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
+- Tests: 900 tests, 209,084 checks, green on `ccr-bb178c9b-l6airv` (3 November: Ryan's playtest
+  list of 2 November and the die's marks of 3 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
@@ -207,18 +207,22 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   runner cannot see it; every starter trio walls tier one's rank and file whoever sits in the
   middle; sealed armour at or over a tier's blows is immunity at any number. It is section 12's
   question, parked on his word ("Just note down the armadillo for now, I suspect tier 2 is smarter
-  but we need more options first"). His follow-ups the same day: the die's faces in one
-  standard format ("the faces are crowded and they don't need to be"): a main icon that holds
-  whom it is aimed at, the number under it, the costs along the foot as a mark and a number (the
-  cooldown's clock among them, always shown: Rapid carries no cooldown of its own, each Rapid
-  piece printing its own, "Rapid does not have a native Cooldown"; the hull a machine's body),
-  keywords down the edge. The main icons are containers drawn in the HUD's own lines ("look too
-  amateurish ... fits the rest of our visual design": a weapon's chamfered sight, equipment's
-  module, the double-lined shield, a vent's heat sink) and the targeting marks one width (a
-  tracer Direct, a lobbed trajectory Indirect, his three hex cells for a machine:
-  "standardize the width ... so that either can fit inside any main symbol"); equipment
-  prints no number, a buff's status a chip with its stacks; a reload is a
-  vent, its ammo its number; the self and ally chips and the buff and debuff arrows gone, the
+  but we need more options first"). His follow-ups the same day and the next: the die's faces in
+  one standard format ("the faces are crowded and they don't need to be"): a main mark holding
+  what the entry delivers, whom it is aimed at under it (3 November: "moving the number inside
+  of the icon and putting targeting underneath"), the costs along the foot as a mark and a
+  number (the cooldown's clock among them, always shown: Rapid carries no cooldown of its own,
+  each Rapid piece printing its own, "Rapid does not have a native Cooldown"; the hull a
+  machine's body), keywords down the edge. The main marks (3 November: "The weapon faces don't
+  really read weapon to me, nor the equipment faces"): a weapon's sight (a ring, four ticks
+  standing off it) holding its number, equipment's gear holding what it grants or lays (a
+  buff's status, a debuff's first effect keyword, the star for a rule of its own; never twice
+  on the edge), the shield holding its number in the shield's colour, a vent's steam rising off
+  its number in heat's ("simplified to just wavy lines"), the Wake Diffuser's and the Sutler's
+  Hoist's shield with the steam off its top, "shield | cool" each under its own mark; a reload
+  its shells and its ammo. The targeting marks are one width (a tracer Direct, a lobbed
+  trajectory Indirect, his three hex cells for a machine); the benched marks are
+  `docs/looks/die_marks_candidates.png`. The self and ally chips and the buff and debuff arrows gone, the
   foes' intents keeping theirs ("The arrow can be changed but not to the equipment one"); a
   reach over every foe a keyword, Every Foe, and its mirror Every Ally ("Every foe is a targeting
   mode, just like spread, penetrate, and splash"; working names after the foes' Every Machine;

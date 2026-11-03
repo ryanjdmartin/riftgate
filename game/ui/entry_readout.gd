@@ -165,19 +165,23 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: 
 				out.append(marked(text_line("effect", "Shield to its maximum", "attr"), [main, star]))
 			else:
 				out.append(marked(parts_line("effect", [word("Shield"), num(str(f.power), f.power, base.power)], "attr"), [main]))
+			if f.vents > 0:
+				# A shield that also cools (the Sutler's Hoist), the cooling first: its number under
+				# the steam the die draws off the shield's top (Ryan, 3 November).
+				out.append(marked(parts_line("effect", [word("Vent"), num(str(f.vents), f.vents, base.vents), word("before the shield")], "attr"), [mark("vent", Palette.HUD, false)]))
 		Face.Kind.VENT:
-			# A reload is a vent whose number is the ammo it loads, by the shells' mark the die
-			# prints before it (Ryan, 2 November: one piece on one machine wears no main mark of its own).
+			# A reload is a vent that cools nothing, its ammo its number, the shells' mark its whole
+			# main mark (Ryan, 2 November: one piece on one machine wears no main mark of its own).
 			var loads := marked(parts_line("effect", [word("Reloads"), num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo), word("ammo")], "attr"), [mark("ammo", Palette.SELECT, false)])
 			if f.power <= 0 and f.reloads_ammo > 0:
-				out.append(marked(loads, [main]))
+				out.append(loads)
 			else:
 				out.append(marked(parts_line("effect", [word("Vent"), num(str(f.power), f.power, base.power)], "attr"), [main]))
 				if f.reloads_ammo > 0:
 					out.append(loads)
 			if f.shields > 0:
-				# The combined entry's second half, after the vent, by the shield's mark the die
-				# prints beside its heat.
+				# The combined entry's second half, after the vent (the Wake Diffuser), by the
+				# shield's mark: the die prints it in the shield's half of its mark.
 				out.append(marked(parts_line("effect", [word("Shield"), num(str(f.shields), f.shields, base.shields)], "attr"), [mark("shield", Palette.SHIELD, false)]))
 	if f.ammo > 0:
 		# A forging machine's gun (the Musk Ox's): its price in ammo, by the shells' mark.
@@ -206,7 +210,7 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: 
 	# November: "Cooldown should be a cost in the bottom section as well").
 	var cd := cooldown if cooldown >= 0 else f.cooldown_rounds()
 	if cd > 0:
-		out.append(marked(parts_line("effect", [word("Cooldown"), num(str(cd), cd, base.cooldown_rounds(), true)], "attr"), [mark("cooldown", Palette.INK, false)]))
+		out.append(marked(parts_line("effect", [_bare(word("Cooldown")), num(str(cd), cd, base.cooldown_rounds(), true)], "attr"), [mark("cooldown", Palette.INK, false)]))
 	# Whom it is aimed at: a piece spent on machines headed by the three hexes the die draws
 	# under its main glyph (Glyphs.aim_for), bare as the glyph is; a weapon's or a debuff's reach
 	# is its frame's, on its first line. A reach past the target is its keyword's line (Every

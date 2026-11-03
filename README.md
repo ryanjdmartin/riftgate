@@ -121,7 +121,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   on the cities; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
   every ground into PNGs, headless; `screenshot.gd` renders a
   scene to PNG at 720x1280; `die_sheet.gd` draws the die's whole iconography on one sheet with
-  the die's own drawing (every main icon, whom a piece reaches, the rest of a face's marks);
+  the die's own drawing (every main mark and what it holds, whom a piece reaches, the rest of a face's marks);
   `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
   domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
@@ -443,8 +443,8 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/
 # chooser, fight (no withdrawal), track, rewards, over
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/quick/quick_run_screen.tscn shot.png hangar
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
-# the die's iconography on one sheet (2 November: every main icon, whom a piece reaches, the rest of
-# a face's marks), at the phone's density (1.5 device pixels a design pixel; a second argument sets
+# the die's iconography on one sheet (every main mark and what it holds, whom a piece reaches, the
+# rest of a face's marks), at the phone's density (1.5 device pixels a design pixel; a second argument sets
 # another); in a cloud session under xvfb-run -a
 godot --path . --rendering-method gl_compatibility -s tools/die_sheet.gd -- build/die_sheet.png
 

@@ -1,7 +1,7 @@
 extends SceneTree
 
 ## The die's iconography on one sheet, drawn by the game's own die (DieFaceView), still: every
-## main icon an entry wears, whom a piece reaches written under it, and the rest of a face's
+## main mark an entry wears and what it holds, whom a piece reaches, and the rest of a face's
 ## marks (its costs, its states, the chips down its edge). Ryan asked to see the set whole (2
 ## November: "Can you show me the complete set of main die face iconography?"); run it again
 ## whenever a glyph changes.
@@ -45,8 +45,8 @@ func _init() -> void:
 	_sheet.draw.connect(_draw_sheet)
 	_vp.add_child(_sheet)
 	var y := MARGIN
-	y = _section(y, "WHAT AN ENTRY IS: THE MAIN ICON, HOLDING WHOM IT IS AIMED AT (ONE WIDTH FOR EVERY TARGETING MARK)", _kinds())
-	y = _section(y, "A PIECE SPENT ON MACHINES: ITS ICON HOLDS THREE HEXES, THE MIDDLE ITS OWN, A FILLED ONE A MACHINE IT REACHES", _targets(), 6)
+	y = _section(y, "WHAT AN ENTRY IS: ITS MAIN MARK HOLDING WHAT IT DELIVERS, WHOM IT IS AIMED AT UNDER IT", _kinds())
+	y = _section(y, "A PIECE SPENT ON MACHINES: THREE HEXES UNDER ITS MARK, THE MIDDLE ITS OWN, A FILLED ONE A MACHINE IT REACHES", _targets(), 6)
 	y = _section(y, "THE REST OF A FACE: COSTS ALONG THE FOOT (A MARK AND A NUMBER), STATES, THE CHIPS", _rest())
 	process_frame.connect(_tick)
 
@@ -108,20 +108,40 @@ func _kinds() -> Array:
 	burst.strikes = 3
 	var reload := Face.vent(0)
 	reload.reloads_ammo = 2
+	var wake := Face.vent(3)
+	wake.shields = 3
+	var hoist := Face.shield(3)
+	hoist.vents = 2
+	hoist.targets = Face.Target.ALLY
 	var down := _die(Face.attack(4))
 	down.dead = true
 	return [
-		["Weapon, direct", "the sight holding the\ntracer: Direct", _die(Face.attack(4))],
-		["Weapon, indirect", "the trajectory:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
-		["Weapon, rolled", "rolls in its range\nas it is spent", _die(rolled)],
-		["Weapon, strikes", "three blows a spend,\neach rolled on its own", _die(burst)],
-		["Equipment, direct", "the module holding the\ntracer: no number", _die(Face.attack(0))],
-		["Equipment, indirect", "the module, the\ntrajectory: no number", _die(Face.attack(0, Face.Reach.INDIRECT))],
-		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
-		["Vent", "spent on a machine:\nheat off", _die(Face.vent(3))],
-		["Reload", "a vent, its ammo its\nnumber (the Musk Ox)", _die(reload)],
-		["Equipment", "spent on a machine: no\nnumber, its status a chip", _die(Face.buff("overcharged", 2))],
-		["Blank", "an empty hardpoint, or\na destroyed component", _die(Face.empty_slot())],
+		["Weapon, direct", "the sight, its blow inside;
+the tracer: Direct", _die(Face.attack(4))],
+		["Weapon, indirect", "the trajectory:
+Indirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
+		["Weapon, rolled", "rolls in its range
+as it is spent", _die(rolled)],
+		["Weapon, strikes", "three blows a spend,
+each rolled on its own", _die(burst)],
+		["Debuff, direct", "gear, what it lays inside
+(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
+		["Debuff, indirect", "the gear holding Lure,
+the trajectory", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
+		["Buff", "spent on a machine: its
+status inside, its stacks", _die(Face.buff("overcharged", 2))],
+		["Shield", "spent on a machine:
+shield", _die(Face.shield(4))],
+		["Vent", "spent on a machine: heat
+off, its steam over it", _die(Face.vent(3))],
+		["Shield and vent", "both at once (the Wake
+Diffuser): shield | cool", _die(wake)],
+		["Shield and vent, ally", "the Sutler's Hoist: the
+steam over the cooling", _die(hoist)],
+		["Reload", "cools nothing: its shells
+and its ammo (the Musk Ox)", _die(reload)],
+		["Blank", "an empty hardpoint, or
+a destroyed component", _die(Face.empty_slot())],
 		["Machine down", "its die, wrecked", down],
 	]
 
@@ -160,8 +180,6 @@ func _rest() -> Array:
 	dry.dry = true
 	var burn := Face.attack(4)
 	burn.burns = 2
-	var both := Face.vent(2)
-	both.shields = 3
 	var blast_vent := _die(Face.vent(3))
 	blast_vent.blast = 4
 	var locked := _die(Face.attack(4))
@@ -192,7 +210,6 @@ func _rest() -> Array:
 		["Short", "the shield cannot pay:\nstruck through", _die(short)],
 		["Ammo, dry", "a forging gun's price;\nthe magazine cannot pay", _die(dry)],
 		["Burn", "the Storm Petrel's: shield\npays the heat", _die(burn)],
-		["Shield too", "a vent that also\nshields", _die(both)],
 		["Blast", "a vent's blow at a\nrandom foe", blast_vent],
 		["LOCKED", "a reroll skips it", locked],
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
