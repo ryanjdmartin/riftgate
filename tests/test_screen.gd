@@ -1857,3 +1857,42 @@ func test_undo_takes_back_the_last_spend_and_its_badge_says_how_far_it_reaches()
 	assert_eq([s.sk.front[0].hp, s.sk.mechs[0].assigned, s.sk.log.size()], [hp, false, opened], "the spend taken back")
 	assert_true(s._undo_btn.disabled, "and nothing is left")
 	s.free()
+
+
+## A sweep targets a rank (Ryan, 3 November: "fix the UI for sweep so its intuitively targeting a
+## rank"): the die dragged over a back foe lights the back rank alone and brackets it whole; over
+## nobody, every foe is a legal drop.
+func test_a_sweep_die_over_a_foe_lights_and_brackets_its_rank() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.die = Die.single(Face.attack(1, Face.Reach.SWEEP))
+	ms.die = ms.unit.die
+	ms.face_index = 0
+	s._drag_from = 0
+	s._drag_over = null
+	s._refresh()
+	var lit := 0
+	for f in s.sk.field_foes():
+		if s._foe_view_for(f).highlight:
+			lit += 1
+	assert_eq(lit, s.sk.field_foes().size(), "over nobody, every foe is a legal drop")
+	assert_eq(s._pair_marks.rects.size(), 0, "and no rank is bracketed")
+	var back_foe: Foe = s.sk.back[0]
+	s._drag_over = back_foe
+	s._refresh()
+	for f in s.sk.field_foes():
+		assert_false(s._foe_view_for(f).highlight, "%s: no foe's own mark; the rank under the finger wears one bracket, the other rank is plain" % f.display_name)
+	assert_eq(s._pair_marks.rects.size(), 1, "one bracket round the rank")
+	var rank_rect: Rect2 = s._pair_marks.rects[0]
+	for f in s.sk.field_foes():
+		var v := s._foe_view_for(f)
+		var inside := rank_rect.encloses(Rect2(s._home.get(v, v.position) + v.drawing_rect().position, v.drawing_rect().size))
+		assert_eq(inside, f.rank == 1, "%s %s the bracket" % [f.display_name, "inside" if f.rank == 1 else "outside"])
+	s._drag_over = s.sk.front[0]
+	s._refresh()
+	assert_eq(s._pair_marks.rects.size(), 1, "the bracket moves with the finger")
+	var front_rect: Rect2 = s._pair_marks.rects[0]
+	assert_true(front_rect.encloses(Rect2(s._home.get(s._foe_view_for(s.sk.front[0]), Vector2.ZERO) + s._foe_view_for(s.sk.front[0]).drawing_rect().position, s._foe_view_for(s.sk.front[0]).drawing_rect().size)), "round the front rank now")
+	s._drag_from = -1
+	s._drag_over = null
+	s.free()

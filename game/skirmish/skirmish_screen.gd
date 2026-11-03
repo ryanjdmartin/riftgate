@@ -1024,6 +1024,12 @@ func _refresh(save: bool = true) -> void:
 		if f != null and f.is_attack():
 			targets = sk.targets_for_face(dm, f)
 			slots = sk.slot_targets(dm, Effects.effective_face(dm.unit, f))
+			# A sweep targets a rank (Ryan, 3 November: "fix the UI for sweep so its intuitively
+			# targeting a rank"): over a foe, the rank it stands in is the target, lit whole and
+			# bracketed (below), the other rank plain until the finger moves there.
+			if sk.reach_of(dm, f) == Face.Reach.SWEEP and _drag_over is Foe:
+				var swept_rank: int = 0 if (_drag_over as Foe).is_massive() else (_drag_over as Foe).rank
+				targets = targets.filter(func(foe: Foe) -> bool: return (0 if foe.is_massive() else foe.rank) == swept_rank)
 		elif f != null and f.on_machines():
 			support = sk.machine_targets_for(dm, Effects.effective_face(dm.unit, f))
 
@@ -1103,6 +1109,29 @@ func _refresh(save: bool = true) -> void:
 			var a := lv.drawing_rect()
 			var b := rv.drawing_rect()
 			marks.append(Rect2(_home.get(lv, lv.position) + a.position, a.size).merge(Rect2(_home.get(rv, rv.position) + b.position, b.size)).grow(6.0))
+	# A sweep's rank, bracketed whole while the die is over a foe in it (3 November): the strikes
+	# walk the rank, so the rank is what the drop picks, one bracket round it as round a twin
+	# slot's pair, its foes' own marks off so the rank reads as one target.
+	if _drag_from >= 0 and _drag_over is Foe:
+		var sm: Skirmish.MechState = sk.mechs[_drag_from]
+		var sf := sk.spend_face(sm)
+		if sf != null and sf.is_attack() and sk.reach_of(sm, sf) == Face.Reach.SWEEP:
+			var swept_rank: int = 0 if (_drag_over as Foe).is_massive() else (_drag_over as Foe).rank
+			var whole := Rect2()
+			var any := false
+			for v in _view_foe.keys():
+				var foe: Foe = _view_foe[v]
+				if not foe.alive() or (0 if foe.is_massive() else foe.rank) != swept_rank:
+					continue
+				var uv: UnitView = v
+				uv.highlight = false
+				uv.queue_redraw()
+				var vr: Rect2 = uv.drawing_rect()
+				var r := Rect2(_home.get(v, uv.position) + vr.position, vr.size)
+				whole = r if not any else whole.merge(r)
+				any = true
+			if any:
+				marks.append(whole.grow(6.0))
 	if _pair_marks != null:
 		_pair_marks.set_rects(marks)
 

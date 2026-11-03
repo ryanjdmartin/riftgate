@@ -25,8 +25,8 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 875 tests, 208,091 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, every
-  rider after the hits and Sweep a reach after UNDO, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
+- Tests: 877 tests, 208,117 checks, green (3 November: `ccr-c04908be-3r43xf`'s randomness pass, every
+  rider after the hits and on the foe it felled, Sweep a reach with its rank bracketed, after UNDO, on main's head of 31 October, on Godot 4.8-beta2; main holds 875 and 208,362 since that branch's
   overheat what-ifs, shield persona and support ladders landed on the 31st, over the Petrels of
   `claude/affectionate-ramanujan-5d24t6`, the foes' move-order fix of
   `claude/zealous-wright-ixxo3l`, the passive line in ink, the keywords in text and the bosses'
@@ -203,10 +203,13 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   is taken back; the button at the reroll row's right end, its badge the spends it reaches, a bar in
   the trail at every roll). Riders land after the hits since the 3rd (Ryan: "a multi-hit weapon
   with Shock would apply it after both hits ... Cryo should work the same way, resulting in 2
-  applications"; the bible's row beside the blow's order): each strike's Cryo and Flak gather on
-  its foe and land once the strikes are done, so a spend never cashes or feeds on what it lays
-  (Flak's self-feed on a later strike went with it); Charged and Supercooled ride the weapon fired
-  as its keywords, Shock and Cryo one more a strike, shown on the die. Overcharged and Kindled are
+  applications"; the bible's row beside the blow's order): every rider gathers on its strike's foe
+  and lands once the strikes are done, one path ("It should be standard, not branching code"), on
+  the foe its strike killed too, so the preview shows the riders beside the skull; a spend never
+  cashes or feeds on what it lays (Flak's self-feed on a later strike went with it: "5,5,5 makes
+  way more sense to me"); Charged and Supercooled ride the weapon fired as its keywords, Shock and
+  Cryo one more a strike, shown on the die. A sweep dragged over a foe lights and brackets that
+  foe's rank whole, and a rank emptied loses the strikes left on his word. Overcharged and Kindled are
   Empowered on both sides since 3 November, the ids kept. What is left of the pass is Ryan's: the
   Scorpion's rework (tabled; its blast is the one draw besides the die), rules for the two planned
   modules and the Emitter's Purge 2 (the to-do), then the 200-seed reread of the flattened numbers

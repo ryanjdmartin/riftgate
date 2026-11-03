@@ -152,8 +152,10 @@ defeat when every machine is wrecked. There is no round limit.
   entry is dropped on from the rank's first filled slot, left to right, one a slot, wrapping
   past the last; an empty column is skipped at any point, a kill's included, so the strikes
   concentrate on what stands, a lone foe takes them all, and a rank emptied loses the strikes
-  left. Each strike is aimed at its foe, and an area keyword's shape rides each. The die shows
-  a strike's number. The Skua's Flechette Pod, and the Musk Ox's salvo an ammo a strike.
+  left (the attack dies with the rank). Each strike is aimed at its foe, and an area keyword's
+  shape rides each. The die shows a strike's number, and dragged over a foe it lights that
+  foe's rank whole and brackets it. The Skua's Flechette Pod, and the Musk Ox's salvo an ammo
+  a strike.
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
   whatever the gun's reach.
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
@@ -191,8 +193,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   once the spend's strikes are done, an application a strike, so no strike of a spend cashes
   or feeds on what the spend lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3 Flak 1
   lands 5, 5 and 5 and leaves Flak 3). Every rider lands so, Burn, Suppress, Web, a passive's
-  lays, Purge and a Primed machine's Burning with them, in the order the strikes earned them;
-  Shock, Expose, Lure and Disrupt land after the blow as before.
+  lays, Purge and a Primed machine's Burning with them, in the order the strikes earned them,
+  and on the foe its strike killed, so the preview shows the riders beside the skull; a strike
+  on a foe an earlier strike killed lays nothing. Shock, Expose, Lure and Disrupt land after
+  the blow, on what stands.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
   Empowered) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
@@ -449,7 +453,8 @@ On a machine:
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
-  target, a sweep's on each strike's own foe; a blow that kills leaves nothing to burn. A foe's,
+  target, a sweep's on each strike's own foe, a blow that kills on the foe it felled; a strike
+  on a corpse leaves nothing. A foe's,
   from a stoker's priming, is spent by its next move, whatever it is, on Empowered's clock, and a
   machine's Ward turns its Burning away as it does a burn.
 - **Phased** (buff): cannot act, take damage or be targeted until the

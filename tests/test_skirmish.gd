@@ -8727,9 +8727,10 @@ func test_a_multi_strike_gun_pays_its_heat_once_a_spend() -> void:
 	assert_eq(ms.heat, 5 + sc, "and the spend adds them, once")
 
 
-## A Primed machine's Burning lands blow by blow on each strike's own foe (the mechanics audit's
-## 8, 27 October): a sweep whose first strike kills lays nothing on the corpse and burns the foe
-## the strikes after it walked on to.
+## A Primed machine's Burning lands a stack a strike on each strike's own foe (the mechanics
+## audit's 8, 27 October): a sweep whose first strike kills leaves its stack on the foe it felled
+## (Ryan, 3 November: the riders hit, and it dies) and burns the foe the strikes after it walked
+## on to.
 func test_a_primed_sweeps_burn_lands_on_each_strikes_own_foe() -> void:
 	var pod := Face.attack(5, S)
 	pod.strikes = 3
@@ -8744,7 +8745,7 @@ func test_a_primed_sweeps_burn_lands_on_each_strikes_own_foe() -> void:
 	Effects.grant_buff(s, "primed", 1, "test", sk.round)
 	assert_true(sk.assign(0, first), "swept")
 	assert_false(first.alive(), "the first strike kills the first")
-	assert_eq(Effects.stacks_of(first, "burning"), 0, "a corpse burns for nothing")
+	assert_eq(Effects.stacks_of(first, "burning"), 1, "the killing strike's stack lands on the foe it felled")
 	assert_eq(second.hp, 90, "the two strikes after it fall on the second, the walk skipping the kill")
 	assert_eq(Effects.stacks_of(second, "burning"), 2, "and burn it, a stack a strike")
 
@@ -9117,3 +9118,29 @@ func test_a_reroll_or_a_rapid_spend_is_the_undos_floor_and_a_step_is_not() -> vo
 	assert_eq([sk.undo_depth(), sk.roll_marks.size()], [1, marks], "no draw: the step is an undo step and no bar")
 	assert_true(sk.undo(), "the step taken back")
 	assert_eq([sk.mechs[3].face_index, sk.rerolls_left], [showing, before_reroll - 1], "the die back where it stood, the reroll back")
+
+
+## A rider lands on the foe its strike killed, every one (Ryan, 3 November: "the point is to show
+## that the riders hit, AND it dies"), so the round preview shows them beside the skull; a strike
+## on a foe an earlier strike killed lays nothing.
+func test_every_rider_lands_on_the_foe_its_strike_killed_and_the_preview_shows_them() -> void:
+	var sk := Skirmish.new(1, 2)
+	var gun := Face.attack(5, L, [K.BURN, K.CRYO, K.FLAK, K.SUPPRESS, K.WEB])
+	gun.burn = 1
+	gun.cryo = 1
+	gun.flak = 1
+	gun.strikes = 2
+	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
+	var weak := _ghoul(3, 10)
+	sk.add_foes([weak, _ghoul(100, 10)])
+	sk.begin()
+	sk.start_round()
+	var pv := sk.preview_round(0, weak)
+	assert_false(bool(pv["foes"][weak]["alive"]), "the first strike kills it")
+	var coming: Dictionary = pv["foes"][weak]["coming"]
+	for sid in ["burning", "cryoed", "flakked", "suppressed", "webbed"]:
+		assert_true(coming.has(sid), "the %s on its way beside the skull: %s" % [sid, str(coming.keys())])
+	if coming.has("burning"):
+		assert_eq(int(coming["burning"]["stacks"]), 1, "the killing strike's Burn alone: the second strike hit a corpse")
+	assert_true(sk.assign(0, weak), "fired")
+	assert_eq([Effects.stacks_of(weak, "burning"), Effects.stacks_of(weak, "cryoed"), Effects.stacks_of(weak, "flakked")], [1, 1, 1], "each rider once, from the strike that killed it")

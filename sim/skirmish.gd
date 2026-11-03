@@ -2586,6 +2586,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			sweep_col = aimed.column
 			hit = reached_by(f, aimed)
 			shapes = area_shapes(f, aimed)
+		var aimed_stood := aimed.alive()   # the riders aimed at it land even when this strike fells it (below)
 		if s % split == 0:
 			# One number, split (Ryan, 24 October): the strikes of one split share it.
 			roll = f.power
@@ -2678,7 +2679,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			# The killing strike: what it had past the kill carries on.
 			if spills and was_alive and not foe.alive():
 				_spill(ms, f, foe, taken - hp_before, hit)
-			if f.has(Face.Keyword.BURN):
+			# Every rider lands on the foe its strike struck, the one it felled included (Ryan, 3
+			# November: "the point is to show that the riders hit, AND it dies": the preview shows
+			# them beside the skull); a strike on a foe an earlier strike felled lays nothing.
+			if f.has(Face.Keyword.BURN) and was_alive:
 				# Burn is a numbered keyword (Ryan, 18 October): the stacks it says, whatever the
 				# blow dealt (it was a stack per 10 of the damage, rounded up, until then).
 				var burn_laid := _stacks_from(ms, "burning", f.burn) * doubled
@@ -2686,13 +2690,13 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
 				if s == 0 and foe.alive():
 					log.append("%s's suppress does not land on %s (%s)" % [ms.unit.display_name, foe.display_name, Effects.gate_text(f.gates.get("suppress", {}))])
-			elif f.has(Face.Keyword.SUPPRESS):
+			elif f.has(Face.Keyword.SUPPRESS) and was_alive:
 				riders.append(func() -> void:
 					if _suppress(foe, turned):
 						_note_status(gained, foe, "suppressed"))
 			# Web (18 October): the foe is Webbed, one web however often it is webbed, and the
 			# skirmish bursts it at the end of the foe's action (_web_burst).
-			if f.has(Face.Keyword.WEB) and foe.alive():
+			if f.has(Face.Keyword.WEB) and was_alive:
 				riders.append(func() -> void: _land_web(foe, gained, turned, webbed))
 			# Cryo (20 October): a weapon's hit spends every stack the foe carries (Ryan, 25
 			# October), and the hitter cools for them once the spend's own heat has landed (below);
@@ -2701,13 +2705,13 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if was_alive and not f.is_debuff() and Effects.has(foe, "cryoed"):
 				thawed += Effects.stacks_of(foe, "cryoed")
 				Effects.remove(foe, "cryoed")
-			if f.has(Face.Keyword.CRYO) and foe.alive():
+			if f.has(Face.Keyword.CRYO) and was_alive:
 				var cryo_laid := _stacks_from(ms, "cryoed", f.cryo) * doubled
 				riders.append(func() -> void: _land_rider(foe, "cryoed", cryo_laid, gained, turned))
 			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
 			# number in stacks a strike, with the riders, so no strike of the spend feeds on what
 			# it lays (Ryan, 3 November: "5,5,5 makes way more sense to me").
-			if f.has(Face.Keyword.FLAK) and foe.alive():
+			if f.has(Face.Keyword.FLAK) and was_alive:
 				var flak_laid := _stacks_from(ms, "flakked", f.flak) * doubled
 				riders.append(func() -> void: _land_rider(foe, "flakked", flak_laid, gained, turned))
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
@@ -2719,9 +2723,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		# A Primed machine's Burning, a stack a strike on each strike's own foe (the mechanics
-		# audit's 8, 27 October): a sweep's strikes burn the foes they fell on, and a kill leaves
-		# nothing to burn.
-		if int(modded["burn"]) > 0 and aimed.alive():
+		# audit's 8, 27 October): a sweep's strikes burn the foes they fell on, the foe this
+		# strike felled included, and a corpse an earlier strike left burns for nothing.
+		if int(modded["burn"]) > 0 and aimed_stood:
 			var primed_laid := _stacks_from(ms, "burning", int(modded["burn"])) * doubled
 			var struck := aimed
 			riders.append(func() -> void: _land_rider(struck, "burning", primed_laid, gained, turned))
@@ -4030,12 +4034,12 @@ func _land_rider(foe: Foe, sid: String, n: int, gained: Dictionary, turned: Dict
 
 ## A Web landing once the strikes are done: one web however often the foe was webbed.
 func _land_web(foe: Foe, gained: Dictionary, turned: Dictionary, webbed: Array[Foe]) -> void:
-	if not foe.alive() or Effects.has(foe, "webbed"):
+	if Effects.has(foe, "webbed"):
 		return
 	Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	_note_status(gained, foe, "webbed", turned)
-	if Effects.has(foe, "webbed") and not webbed.has(foe):
-		webbed.append(foe)
+	if foe.alive() and Effects.has(foe, "webbed") and not webbed.has(foe):
+		webbed.append(foe)   # a fallen foe's web never bursts: nothing to tell
 
 
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
