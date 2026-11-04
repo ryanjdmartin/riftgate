@@ -72,6 +72,22 @@ def main():
     files["hangar/pins.json"] = "docs/hangar/pins.json"
     files["hangar/renders.json"] = "docs/hangar/renders.json"
     files["hangar/motion.js"] = "tools/hangar_motion.js"
+    # The foes' combat sprites (4 November, Ryan: the sprites in the hangar's foe list, compared
+    # and inventoried): every foe with art, and a manifest saying which sprite is a rough
+    # placeholder (tools/placeholder_art.py's table, read as text so no PIL is needed here).
+    ph_src = open(os.path.join(ROOT, "tools", "placeholder_art.py")).read()
+    placeholders = set(re.findall(r'^\s+"([a-z0-9_]+)": \(\w+, (?:True|False)\),', ph_src, re.M))
+    art = {}
+    for e in json.load(open(os.path.join(ROOT, "content", "foes.json")))["entries"]:
+        src = os.path.join("art", "foes", "%s_combat.png" % e["id"])
+        if os.path.exists(os.path.join(ROOT, src)):
+            files["hangar/foes/%s.png" % e["id"]] = src
+            art[e["id"]] = "placeholder" if e["id"] in placeholders else "picked"
+    foes_manifest = os.path.join(ROOT, "docs", "hangar", "foes.json")
+    if not check_only:
+        json.dump({"_about": "Which foes have a combat sprite in art/foes (hangar/foes/<id>.png beside the page) and whether it is a picked render (or a recolour of one) or a rough placeholder from tools/placeholder_art.py; written by tools/hangar_data.py (4 November).",
+                   "art": art}, open(foes_manifest, "w"), indent=1)
+    files["hangar/foes.json"] = "docs/hangar/foes.json"
     for cid, p in pins.items():
         if p is None:
             continue

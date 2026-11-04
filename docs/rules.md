@@ -1004,8 +1004,8 @@ a stat.
   with a third of the field left to leave. A Fracture pays out as a fight ends. At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
-  rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the Ravener and the
-  Shambler, each one composition in one domain's list and every domain's), drawn on the
+  rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater and
+  the Shuffler, each one composition in one domain's list and every domain's), drawn on the
   Fracture's roll one time in three in place of the domain's own and always once its own are
   spent, the same roll picking which among those not yet sent, so every domain may meet them,
   none waits on them and nobody learns an order. An elite

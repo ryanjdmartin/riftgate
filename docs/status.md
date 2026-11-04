@@ -25,8 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 897 tests, 209,531 checks, green (3 November, on `claude/elites-session`: the elites
-  session's twenty kits, the Nob's rage, the wanderers' random draw; 893 and 209,059 on main, 2 November, main merged into
+- Tests: 897 tests, 209,597 checks, green (4 November, on `claude/elites-session`: the elites
+  session's twenty kits, the Nob's rage, the wanderers' random draw, the Mantis Ant and the
+  Marsh Serpent; 893 and 209,059 on main, 2 November, main merged into
   `claude/brave-cori-fr18de` as it lands: the bosses' slate's twelve, the elites by chance and by
   the tier, the escorts and the review's calls; 875 and 208,362 on main before it, 31 October:
   `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders merged onto
@@ -207,6 +208,15 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   Every elite drawn as a rough placeholder; the Matador stays a boss on Claude's call. Open for
   Ryan: the Meadow's and the Waste's third boss, the Fell Rider's mount, the rage's shape, the
   Monster Hunter nods, the names (the to-do). Not run: the elite cells on the balance runner.
+  His calls of 4 November, landed: the rage permanent; the Fell Rider on the fell beast at
+  every tier ("Flying is the map identity"; no horse, no Witch-king); the Collector renamed the
+  Antiquarian and the Shambler the Shuffler (his names), the Ravener the World Eater (one of
+  Deviljho's in-world epithets, from his list); the Mantis Ant (Secret of Mana) the Meadow's
+  third boss and the Marsh Serpent (Final Fantasy VII's Midgar Zolom) the Marsh's fourth, each
+  a placeholder kit with escorts and rough art; the Waste's third still his pick (Claude's lean
+  Golden Sun's King Scorpion, the proposal's calls). The hangar page shows every foe's combat
+  sprite in its Foes list, a grid to compare them, and filters by tier, kind (rank and file,
+  elite, wanderer, boss, hero, part) and art (picked, placeholder, none).
 - The bosses' slate, all twelve (30 October to 2 November, on Ryan's word, his yes, his
   agreement with Claude's leans and his calls on the review of the 2nd; `docs/bosses_proposal.md`,
   its sections on what landed and the calls still open; the bible's section 9 rows), three a
@@ -757,7 +767,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.434 (the page's version
+  `docs/design-bible.html` after every change. This file is v0.440 (the page's version
+  453, published 4 November from `claude/elites-session`: his calls of the 4th, the three
+  names, the Mantis Ant and the Marsh Serpent in the slate's rows and the domain table, the
+  Built list's counts, section 12's Waste question, the tables rerun on the content with the
+  Honey Badger's hopper rows kept by hand; three-way merged onto the live v0.439, which other
+  sessions had moved past 447 with Hold The Line's pair settled, the Wainwright & Sutler
+  machines' rows and their table, the weapon-fire rows and the boosters' glow rows, the one
+  conflict the version line; over v0.434 (the page's version
   447, published 3 November from `claude/elites-session`: the elites session's register row,
   the tiers row and the domain table, the Built list's counts, section 12's content question,
   the tables rerun on the content with the Honey Badger's hopper rows kept by hand again;
@@ -815,7 +832,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 197 (3 November, from `claude/elites-session`:
+  acts on a reloaded page). At the page's version 199 (4 November, from `claude/elites-session`: every foe's combat sprite
+  beside the page, `hangar/foes/<id>.png` for the 97 foes with art, and `hangar/foes.json`
+  saying which is a rough placeholder; `content/foes.json`, `content/factions.json` and
+  `content/vocabulary.json` from this branch's content of the 4th, the vocabulary again a
+  three-way merge onto the live copy; the page itself the live page, which another session
+  had republished after 197 with the page unchanged, with the foe sprites, the grid and the
+  Kind, Tier and Art filters applied to it as `tools/hangar.html` carries them; `edits`
+  empty), over 197 (3 November, from `claude/elites-session`:
   `content/foes.json` and `content/factions.json`, their live copies checked identical to main's
   `e75be15` first, and `content/vocabulary.json` as a three-way merge of this branch's onto the
   live copy, which carries the Honey Badger's hopper branch's entries ahead of main (the Ore

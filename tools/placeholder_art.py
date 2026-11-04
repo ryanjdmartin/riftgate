@@ -521,6 +521,39 @@ def goblin_nob(d, w, h):
     d.rectangle((44, 88, 54, 94), fill=dark)
 
 
+
+def mantis_ant(d, w, h):
+    brown, dark, blade = (130, 80, 40, 255), (80, 48, 24, 255), (200, 190, 150, 255)
+    d.ellipse((24, 70, 72, 110), fill=brown)        # the abdomen
+    d.ellipse((36, 46, 64, 76), fill=brown)         # the thorax
+    d.ellipse((38, 20, 62, 48), fill=dark)          # the head
+    d.ellipse((42, 28, 48, 34), fill=blade)
+    d.ellipse((52, 28, 58, 34), fill=blade)
+    d.line((44, 22, 30, 4), fill=dark, width=2)     # the antennae
+    d.line((56, 22, 70, 4), fill=dark, width=2)
+    d.polygon([(36, 52), (8, 30), (14, 26), (40, 46)], fill=blade)   # the mantis blades
+    d.polygon([(64, 52), (92, 30), (86, 26), (60, 46)], fill=blade)
+    for x0, y0, x1, y1 in ((36, 84, 12, 104), (40, 96, 18, 124), (64, 84, 88, 104), (60, 96, 82, 124)):
+        d.line((x0, y0, x1, y1), fill=dark, width=3)
+    d.polygon([(6, 136), (30, 118), (66, 118), (90, 136)], fill=(90, 70, 40, 255))   # the broken earth
+
+
+def marsh_serpent(d, w, h):
+    scale, belly, fang, water = (40, 90, 60, 255), (130, 160, 90, 255), (240, 240, 230, 255), (30, 40, 44, 255)
+    d.ellipse((0, 118, 96, 142), fill=water)
+    d.ellipse((10, 96, 60, 132), fill=scale)        # the coils
+    d.ellipse((40, 100, 90, 134), fill=scale)
+    d.polygon([(44, 110), (50, 40), (70, 40), (76, 110)], fill=scale)   # the raised body
+    d.rectangle((54, 50, 66, 108), fill=belly)
+    d.polygon([(34, 44), (60, 10), (86, 44), (80, 60), (40, 60)], fill=scale)   # the hood
+    d.ellipse((46, 24, 74, 56), fill=scale)         # the head
+    d.ellipse((52, 34, 58, 40), fill=(240, 200, 40, 255))
+    d.ellipse((62, 34, 68, 40), fill=(240, 200, 40, 255))
+    d.polygon([(52, 52), (55, 62), (58, 52)], fill=fang)
+    d.polygon([(62, 52), (65, 62), (68, 52)], fill=fang)
+    d.line((60, 56, 60, 70, 56, 76), fill=(220, 60, 60, 255), width=2)   # the tongue
+
+
 FOES = {
     # id: (draw, massive)
     "king_gel": (king_gel, True),
@@ -554,6 +587,8 @@ FOES = {
     "shambler_spawn": (shambler_spawn, False),
     "enkidu": (enkidu, False),
     "goblin_nob": (goblin_nob, False),
+    "mantis_ant": (mantis_ant, True),
+    "marsh_serpent": (marsh_serpent, True),
 }
 
 

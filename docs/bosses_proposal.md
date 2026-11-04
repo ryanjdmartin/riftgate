@@ -39,9 +39,9 @@ the cut may be rank and file. The roster since 3 November, every kit a placehold
 | The Waste | The Old Man of the Desert | A harder fight, with needlers | 1 to 3 | The Sandworm grown, Dune's words (Ryan, 24 October) |
 | The Waste | The Pilgrim | The hunter: walks after the nearest machine, its knife two rounds out, Karma fed by its three Needlers | 1 to 3 | Final Fantasy's Tonberry by archetype, demoted from the bosses (Ryan, 3 November: "an obvious elite"); the Waste hunter he marked 24 October |
 | The Waste | The Rust Monster | Aims at a loaded weapon; its bite corrupts, its antennae switch off, it feeds to regrow | 1 to 3 | Dungeons and Dragons' (Ryan, 3 November: placed, in the Roc's place) |
-| The Marsh | The Fell Rider | A winged hunter of the strongest: a corrupting blade, a shriek that drains a reroll, the Black Breath at everyone | 1 to 3 | Tolkien's Nazgûl on the fell beast by archetype (Ryan, 3 November: "Nazgul is good"; the mount his: the fell beast Claude's lean) |
+| The Marsh | The Fell Rider | A winged hunter of the strongest: a corrupting blade, a shriek that drains a reroll, the Black Breath at everyone | 1 to 3 | Tolkien's Nazgûl on the fell beast by archetype (Ryan, 3 November: "Nazgul is good"; 4 November: the fell beast at every tier, "Flying is the map identity", no horse and no Witch-king) |
 | The Marsh | The Skeleton King | A commander: Cleave twice, Raise the Dead, Rise (Reraise on one of its own), with zombie knights and revenants | 2 to 3 | Diablo's Leoric by archetype (Ryan, 3 November: placed) |
-| The Marsh | The Collector | Collect, three revenants; Reach through the shield; Collect the Living at everyone, corrupting | 2 to 3 | Darkest Dungeon's (Ryan, 3 November: placed or wandering; placed, Claude's lean) |
+| The Marsh | The Antiquarian | Collect, three revenants; Reach through the shield; Collect the Living at everyone, corrupting | 2 to 3 | Darkest Dungeon's Collector by archetype (Ryan, 3 November: placed or wandering; placed, Claude's lean); the Antiquarian his name of 4 November, a double reference the plain word carries straight |
 | The Marsh | The Bone Wyvern | A harder fight, with revenants | 2 to 3 | The genre's bone dragon (Ryan, 24 October) |
 | The Peak | The Cinder Tortoise | A harder fight: Withdraw then Earthquake, its armour stepping by the tier, with two Salamanders | 1 to 3 | Final Fantasy's Adamantoise by archetype, demoted from the bosses (Ryan, 3 November: no named entity) |
 | The Peak | The Thunder Ape | A hunter of the strongest: Lightning Beam switches off the entry shown, Grab and Throw a round out, Golden Rage below half | 1 to 3 | Monster Hunter's Rajang by archetype (Ryan, 3 November: placed; careful, his series) |
@@ -50,8 +50,8 @@ the cut may be rank and file. The roster since 3 November, every kit a placehold
 | Any | Gilgamesh | A harder fight: the steal and the borrowed swing; Enkidu beside him at tier three | 1 to 3 | Final Fantasy's (an elite since 31 October; Enkidu 3 November) |
 | Any | The Reaper | A hunter of the weakest: the Knell two rounds out through the shield | 1 to 3 | Persona's (Ryan, 3 November: "might as well go full Persona and be a wanderer") |
 | Any | The Wild Hunt | Three riders, winged, hunting the slowest; lances that swarm, Frost that switches off | 1 to 3 | Folklore's, the Witcher's take (Ryan, 3 November: "a good place to make an elite pack of multiple clones") |
-| Any | The Ravener | Pushes for the gate at a run: Chomp, Dragon Breath at everyone corrupting, Savage Bite below half | 2 to 3 | Monster Hunter's Deviljho by archetype, the invader (Ryan, 3 November: "Jho (wanderer)") |
-| Any | The Shambler | Spawn, two buds a move; Dark Caress corrupts; Fracture at everyone | 2 to 3 | Darkest Dungeon's (Ryan, 3 November: "Shambler should be on the table") |
+| Any | The World Eater | Pushes for the gate at a run: Chomp, Dragon Breath at everyone corrupting, Savage Bite below half | 2 to 3 | Monster Hunter's Deviljho by archetype, the invader (Ryan, 3 November: "Jho (wanderer)"); named by one of its in-world epithets from his list of 4 November |
+| Any | The Shuffler | Spawn, two buds a move; Dark Caress corrupts; Fracture at everyone | 2 to 3 | Darkest Dungeon's Shambler by archetype (Ryan, 3 November: "Shambler should be on the table"); the Shuffler his name of 4 November |
 
 The wanderers are drawn at random among those not yet sent, on the Fracture's own roll (3
 November). On the bench, for the rank and file if anywhere (Ryan, 3 November): Cerberus, the
@@ -89,6 +89,8 @@ stands or shielding it until one falls.
 | The Peak | The Behemoth | Final Fantasy | Meteor on every machine as it dies: shield up, then kill it | A last act; landed 30 October; the Gargantuan King since 3 November (the King Behemoth by archetype, the form its games name a boss; renamed on Ryan's pattern, "<adjective> King", the name his to settle) |
 | The Peak | The Adamantoise | Final Fantasy | Withdraws into its shell (armour up, so that round's blows are wasted), then Earthquake on every machine | Landed 30 October as the Cinder Tortoise, its shell and quake a follow-up; to the elites 3 November (no named entity) |
 | The Peak | Marilith, the Fiend of Fire | Final Fantasy I | Six arms, six strikes, so a shield stops the first and five reach the hull; Fire at every machine below half | Landed 3 November in the Tortoise's place (Ryan: "an obvious insert for the peak"); the shown name Final Fantasy I's title, since Marilith is Dungeons and Dragons' coinage |
+| The Meadow | The Mantis Ant | Secret of Mana | The genre's first boss, the ant with a mantis's blades that bursts out of the ground: Burrow, then Upheaval under a machine through the shield | Landed 4 November as the Meadow's third (Ryan: "a fine addition") |
+| The Marsh | The Marsh Serpent (Midgar Zolom by archetype) | Final Fantasy VII | The serpent that lives in the marsh: Coil a round out, Beta at every machine below half, corrupting; its toss left out, a third swallow | Landed 4 November as the Marsh's fourth (Ryan: "so is Marsh Serpent"; more than three a domain is fine) |
 | The Peak | Black Tyrano | Chrono Trigger | Azala rides it, the brain: while she stands it is armoured; once she falls it counts down from five and breathes fire on every machine at zero | Landed 30 October as the Obsidian Tyrant with the Saurian Queen as its part, its countdown opening once she falls (built) |
 
 Six of the twelve are Final Fantasy's and six come from six other series.
@@ -113,6 +115,8 @@ condition that reads a fallen part, and a move used once a fight.
 | The Marsh | The Vampire Lord | Drain, a bite that heals what it takes from the hull; Undying, once a fight when hurt, readying it to get back up whole; below half, Blood Feast, a drain at every machine | 40 HP, since it may rise once; once a fight, so it never readies again after it rises; the drain from the hull alone, so a shield starves it (one of shield and hull walled the slowest trio at every HP tried) |
 | The Peak | The Gargantuan King (the Behemoth until 3 November) | Gore; Flame, Scorch 2; below half, Charge, a round's warning, through the shield; Meteor on every machine as it falls | The Flame and the Charge; the name, Claude's pick of Ryan's pattern |
 | The Peak | The Fiend of Fire | Six Blades, six strikes of a third; Flame Lash, Burn 2; below half, Fire at every machine, Scorch 1 | Massive; six strikes against plate; stokers for her escort, so the strikes carry Burning |
+| The Meadow | The Mantis Ant | Mandibles; Burrow, armour +2 when hurt, then Upheaval under a machine, a quarter again its blow through the shield | Massive; the follow-up pair, so a Suppress or a Disrupt on the burrow breaks it |
+| The Marsh | The Marsh Serpent | Bite; Coil, half again its blow a round out; below half, Beta at every machine, Corrupt 1 | Massive; the coil in place of its game's toss (the third swallow); Beta the genre's own name |
 | The Peak | The Obsidian Tyrant | Crunch; Roar, a reroll off the team; once its rider has fallen, Firestorm, a countdown of five to half again its blow at every machine, Scorch 2. Its part, the Saurian Queen in the back rank: Lash, and Goad, a rally | Guarded while she stands; the firestorm drawn as good as at once after she falls |
 
 Rotbloom, the Pilgrim and the Cinder Tortoise left the lists 3 November (the register: a boss
@@ -145,6 +149,8 @@ mechanic, and stands alone at tier one:
 | The Vampire Lord | A Death Knight and a Wight; a Dread Knight, a Death Knight and Wights (the Lich out, 2 November: readying the Lord to rise again was half a wall) | The Marsh's other risers, so the burst it asks for is spread thin |
 | The Gargantuan King | A Bomb and a Grenade; Grenades and Balloons | A second blast to shield for |
 | The Fiend of Fire | Fire Lizards; Magma Lizards and a Wyvern | Stokers under the six strikes, so each carries Burning |
+| The Mantis Ant | Goblin Guards; a Goblin Captain, Alraunes and a Guard | A shield wall and a warcry round the burrow, the Meadow's count |
+| The Marsh Serpent | Ghosts; Wights, a Spectre and a Ghost | Raisers and a cleanser beside the coil, so the burst is spread thin |
 | The Obsidian Tyrant | A Wyvern and a Fire Lizard; Magma Lizards and Wyverns (the Red Dragon out, 2 November) | Stokers: its Crunch burns while the rider is killed and the count runs |
 
 The slate stands at 48 HP at tier one, the boss in parts' core at 40 and its eyes at 8, the
@@ -181,17 +187,20 @@ Wyverns for the Tyrant at tier three). Open:
 1. **The Cinder Tortoise at tier three** (flagged 2 November, left for now on Ryan's word):
    armour 3, and 5 withdrawn, against blows of 2 to 6, so a round of basics is zeroed; its
    tier-three read with a tier-matched kit is the to-do's, on the runner's `--boss-tiers` cells.
-2. **The Meadow's and the Waste's third boss** (3 November, since the Malboro and the Tonberry
-   left the lists): a named icon each. Claude's leans, one line each, for Ryan's pick: the
-   Meadow Secret of Mana's Mantis Ant, the genre's first boss, a burrower in the plains (else
-   Dragon Quest's Golem, the stone guard of Cantlin, a boss whose kit is armour; Chrono
-   Trigger's Masa and Mune merge, which is the King Gel's); the Waste the Manticore, Golden Sun's
-   desert boss on a myth's name, a sting that corrupts the die and two claws (else Chrono
-   Trigger's Retinite, a sand beast in parts, though the Waste holds two bosses in parts already;
-   Final Fantasy XII's Hashmal, whose quake is the Old Man's). A fourth for the Marsh if wanted,
-   since more than three is fine: the Marsh Serpent, Final Fantasy VII's Midgar Zolom by
-   archetype, its breath at everyone and a coil on a countdown (its toss would be the third
-   swallow). Not Orochi (the Colossus's parts again) nor Scarmiglione (the Vampire Lord's rise).
+2. **The Waste's third boss** (3 November, since the Tonberry left the list; the Meadow's third,
+   Secret of Mana's Mantis Ant, and the Marsh's fourth, the Marsh Serpent, landed 4 November on
+   Ryan's word). Golden Sun is a series he wants pulled from and the game holds no homage to it
+   yet beyond the Summoner's job line, but "Manticore isn't the strongest one". Claude's lean,
+   4 November: the **King Scorpion**, the Yampi Desert's boss in Golden Sun: The Lost Age, a
+   massive desert scorpion whose sting corrupts the entry shown and whose pincers strike twice,
+   and below half a burrow that names a strike from under the sand; the first Golden Sun homage
+   on the foes' side, in the desert it came from. Else Chrono Trigger's Retinite (a sand beast in
+   parts, though the Waste holds two bosses in parts already) or Final Fantasy XII's Hashmal
+   (whose quake is the Old Man's). Golden Sun's other named bosses by domain, for later: Tret
+   (a tree, the Meadow), the Killer Ape (the Meadow), Toadonpa and Deadbeard (the Marsh, a
+   giant toad and the ghost pirate superboss), Avimander and the Storm and Tempest Lizards (the
+   Peak), Saturos and Menardi (a pair of fire adepts, the pair trope); Golden Sun's Dullahan,
+   its superboss, is another armoured headless knight beside the Skeleton King's silhouette.
 3. **The escorts' weight** (Ryan, 2 November: "Do the escorts hold up, and support the boss's
    game plan?"; the read in `docs/measurements.md`, the same day). Most are a tax of a round or
    two and some hull on a stock team; three are walls at tier three, and not the heaviest by

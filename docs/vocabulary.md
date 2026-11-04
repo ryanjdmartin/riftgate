@@ -387,7 +387,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rage** (implemented): Capped at 5 (the passive's stack_status cap).
 - **Hopper** (implemented): No cap and no grant yet: the Honey Badger's rework (its brief) gives it a cap and an armour a load; today it shows as a chip.
 - **Scorched** (implemented): Placeholder numbers.
-- **Enraged** (implemented): The rage's value and the Nob's numbers are placeholders. Whether the rage should be permanent, as built (Claude's lean: an elite's job is to make the player change plan), or ride its next move only, is Ryan's call (3 November).
+- **Enraged** (implemented): The rage's value and the Nob's numbers are placeholders. Permanent for the fight, as built (Ryan, 4 November: "Nob permanent"; Claude's lean, since an elite's job is to make the player change plan).
 - **Silenced** (implemented): Its stores are untouched. Keywords alone since 28 October (buffs alone from 25 to 28 October, a one-round purge that returns); Volatile is a cost, so nothing it mutes is a price.
 - **Swallowed** (implemented): Its own cooling, ticks and overheats still land, as a Phased machine's do; nothing cleanses it.
 - **Ward** (implemented): A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS) and never Suppressed, since Numbed stays the one stun resistance.
