@@ -903,6 +903,119 @@ func test_greedy_turns_a_stepping_die_toward_a_better_chamber() -> void:
 	assert_eq(sk.rerolls_left, 2, "one reroll spent")
 
 
+## A plain Rapid entry (4 November): spent, its machine acts again, so the bot values it at its
+## blow plus the die's own average blow, where it had valued the blow alone.
+func test_greedy_values_a_rapid_entry_by_its_action_again() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var quick := Face.attack(5, L, [K.RAPID])
+	var plain := Face.attack(5, L)
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.of([quick, plain, Face.attack(5, L)]), 40, 100))
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var foe: Foe = sk.front[0]
+	var extra := pol.attack_score(sk, ms, quick, foe) - pol.attack_score(sk, ms, plain, foe)
+	assert_true(absf(extra - Policy.ROLL_AGAIN_WEIGHT * 5.0) < 0.001, "the action again: the die's average blow, 5")
+
+
+## The same for a Rapid shield (the Laminar Deflector's kind), spent on its own machine.
+func test_greedy_values_a_rapid_shield_by_its_action_again() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var quick := Face.shield(6)
+	quick.keywords = [K.RAPID]
+	var plain := Face.shield(6)
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.of([quick, Face.attack(4, L), Face.attack(4, L)]), 0, 100))
+	sk.add_foes([_ghoul(500, 6)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var extra := pol.machine_spend_score(sk, ms, ms, quick) - pol.machine_spend_score(sk, ms, ms, plain)
+	assert_true(absf(extra - Policy.ROLL_AGAIN_WEIGHT * 8.0 / 3.0) < 0.001, "the action again: two fours over three entries")
+
+
+## A stepping die's Rapid is the cycle plan's (cycle_chain reads the chamber it steps to), so a
+## spend's own score adds nothing for it.
+func test_a_stepping_die_rapid_entry_adds_no_action_again_to_its_spend() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var quick := Face.attack(5, L, [K.RAPID])
+	var plain := Face.attack(5, L)
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([quick, plain, Face.attack(5, L)]), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var foe: Foe = sk.front[0]
+	assert_true(absf(pol.attack_score(sk, ms, quick, foe) - pol.attack_score(sk, ms, plain, foe)) < 0.001, "the cycle plan reads it, not the spend")
+
+
+## A stepping die's cycle (3 November): the greedy bot weighs where the dial rests for the next
+## round, so it holds a chamber when the one after it opens the next round better than now.
+func test_greedy_holds_a_stepping_die_to_open_the_next_round_on_its_better_chamber() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := _stepper([20, 21, 2, 2])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	pol._greedy_rerolls(sk)
+	assert_eq(ms.face_index, 0, "the twenty holds: a step would spend the twenty-one now and open on a two")
+	assert_eq(sk.rerolls_left, 3, "no reroll spent")
+
+
+## The cycle reaches past the next chamber: two steps through a weak one to the big gun.
+func test_greedy_steps_a_stepping_die_through_a_weak_chamber_to_a_big_one() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := _stepper([10, 5, 40, 5])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_eq(int(pol.cycle_plan(sk, ms, 3)["steps"]), 2, "two steps to the forty")
+	pol._greedy_rerolls(sk)
+	assert_eq(ms.face_index, 2, "the ten steps past the five to the forty")
+	assert_eq(sk.rerolls_left, 1, "two rerolls spent")
+
+
+## A spinning chamber (the Spin-Up's) is worth its own spend and the spin after it, so the bot
+## does not step away from it toward a chamber worth only a little more than its stack.
+func test_greedy_keeps_a_spinning_chamber_for_the_spin_after_it() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var spin := Face.buff("spun_up", 1, 1)
+	spin.keywords = [Face.Keyword.RAPID]
+	spin.spins = true
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([spin, Face.attack(6, L), Face.attack(6, L), Face.attack(6, L)]), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	var own := pol.face_value(sk, ms, ms.die.faces[0])
+	var chain := float(pol.cycle_chain(sk, ms, 0)["value"])
+	assert_true(chain > own + 5.9, "the spin's chamber carries the spin: at least a six after its own spend")
+	assert_eq(int(pol.cycle_chain(sk, ms, 0)["rest"]), -1, "and leaves the dial anywhere")
+	pol._greedy_rerolls(sk)
+	assert_eq(ms.face_index, 0, "the spin holds against a six")
+
+
+func _stepper(powers: Array) -> Skirmish:
+	var sk := Skirmish.new(1)
+	var faces: Array = []
+	for p in powers:
+		faces.append(Face.attack(int(p), L))
+	var u := _mech("A", Die.of(faces), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	return sk
+
+
 ## The seal (the Armadillo's Lockdown, valued 21 October): a shield a machine with a seal
 ## spends on itself is worth the armour it stands behind this round's blows, less its heat.
 func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
@@ -1152,6 +1265,12 @@ func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
 	s2.start_round()
 	assert_true(pol.attack_score(sk, ms, ray, sk.front[0]) < free.attack_score(s2, s2.mechs[0], ray, s2.front[0]), "the forged gun is worth its blow less its three ammo")
 	assert_true(pol.salvo_score(sk, ms, salvo) > 0.0, "three strikes on a full field are worth firing")
+	# The reserve (3 November): only the ammo the ray's next spend needs counts against the salvo,
+	# so every ammo past it adds a whole strike.
+	var at_three := pol.salvo_score(sk, ms, salvo)
+	ms.ammo = 10
+	var at_ten := pol.salvo_score(sk, ms, salvo)
+	assert_true(absf((at_ten - at_three) - 7.0 * pol.salvo_per_strike(sk, ms, salvo)) < 0.001, "past the ray's reserve of three, each ammo is a whole strike")
 	ms.ammo = 0
 	ms.face_index = 0
 	assert_true(pol.options_for(sk, 0).is_empty(), "a dry gun is no option")
