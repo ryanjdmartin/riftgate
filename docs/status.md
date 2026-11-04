@@ -25,9 +25,10 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 915 tests, 254,067 checks, green (4 November: `ccr-c04908be-3r43xf`'s randomness pass over
-  main's head of 3 November, `d03ebed`, the pairs (911 and 254,286 there), the pass's own tests and
-  the Badger's purge test turned to Purge N, on Godot 4.8-beta2), about four minutes in a cloud
+- Tests: 921 tests, 254,079 checks, green (4 November: `ccr-c04908be-3r43xf`'s randomness pass over
+  main's head of 4 November, `9a529ca`, the chassis runner rows (917 and 254,298 there; 911 and
+  254,286 on 3 November after the pairs), the pass's own tests and the Badger's purge test turned
+  to Purge N, on Godot 4.8-beta2), about four minutes in a cloud
   session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -52,9 +53,20 @@ strike fells, death the last check in a spend and in the prediction; the stun re
 open items logged), from main's `3929042`; it took main as it landed (the Badger's rework, the
 bosses' slate, the elites, the pairs and the motion, to `d03ebed`, 4 November: the old Numbed's
 helper and the views' range check cut, a boss unit's commander resisting as a boss, the Badger's
-purge test turned to Purge N and its range assert to one number), and main took it as a
+purge test turned to Purge N and its range assert to one number; then the chassis runner rows, to
+`9a529ca`, the same evening: the bot's Sweep share beside its salvo reserve), and main took it as a
 fast-forward on 4 November on his word ("clean up and merge into main"); its bible is v0.445 (the
 Pages paragraph).
+
+`claude/chassis-runner-rows` (3 and 4 November) carried the chassis to-dos on Ryan's word
+("spawn a new session to continue the chassis to-dos"), from main's `62ef7ee`: the Cassowary's
+cycle bot, the Musk Ox's salvo priced against a reserve, a Rapid entry's action again (4
+November, his word: "If the bot doesn't value rapid property, it probably should be fixed"), the
+runner's tallies and `--pilot`, and the runner rows of the Cassowary, the Cottonmouth, the Whip
+Scorpion, the Swallowtail, the Musk Ox and the Needletail (How things stand), with the gunship's
+first round in its brief. It took main as it landed (to `d03ebed`: `ccr-7effd31a-u5z4gw`'s track
+pairs), and main took it as a fast-forward on 4 November on his word ("Ok, if there's nothing else
+open, clean up and merge into main"); its bible is v0.438 (the page's version 451).
 
 `ccr-7effd31a-u5z4gw` (28 October to 3 November) carried the pairs. Restarted from main's
 head on 28 October (its first round, the Hold The Line pair, merged on the 27th), it carried
@@ -195,8 +207,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
-- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
-  session is free to run.
+- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Musk Ox, the
+  Whip Scorpion (a rework coming) and the Swallowtail are not finalized, and with the gunship (very
+  rough, maybe back to the drawing board; Claude's first round of 3 November in its brief) each
+  needs a design session for its kit and its visual design, which Ryan starts himself (4 November;
+  the Needletail likewise, Kestrel's).
 - Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced
   Skeleton module; its brief retired), the echidna left open, the siege battery parked on Ryan's charge brief, the battlecruiser never
   with the Carrier's session (Ryan, 20 October).
@@ -252,6 +267,33 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   Scorpion's rework (tabled; its blast is the one draw besides the die), rules for the two planned
   modules and the Emitter's Purge 2 (the to-do), then the 200-seed reread of the flattened numbers
   on the desk machine, with the injury threshold's what-if (the to-do's engine line).
+- The chassis' runner rows (3 November, the to-do's engine lines; `docs/measurements.md`, two
+  entries). The Cassowary's bot plans its cycle (`Policy.cycle_plan`: the steps a round's rerolls
+  take weighed with the chamber the dial then opens the next round on, a spin at the die's spun
+  mean), where it had turned the dial only toward a better next chamber; read at 200 seeds, alone it
+  carries a decision under the Cottonmouth, the stronger tier-one gun alone, neither a wall nor a
+  free win, and the Spin-Up is its most spent entry (36% alone), the chase it was meant to be (Ryan,
+  4 November: "that was the chase, yes"; his to judge in play). The Musk Ox's salvo had been priced against the whole magazine, so the bot rerolled it away
+  and random play matched greedy alone: it now counts a reserve, the ammo its dearest other gun's
+  next spend needs. The rest read at 30 seeds (directions) beside a band of every tier two and three
+  alone on today's packs: the Whip Scorpion reaches none of its three exits and its pilot light is no
+  lever (heat is not its limit); the Swallowtail lifts the Clydesdale and the Dingo seventeen points
+  and its Phased is the rarest charge bought; the Musk Ox's strike number and trickle are its levers,
+  the team's Flak worth a point or two; the Needletail's gate frees about four in five of its setups
+  and an ally cashes two paints in three; those four are not finalized, and their performance is not
+  Ryan's concern until their design sessions (4 November; the design sessions' Wainwright & Sutler
+  line). Found on the way and fixed on Ryan's word (4 November: "If the bot doesn't value rapid
+  property, it probably should be fixed"): the bot valued a plain Rapid entry at what it did once,
+  never its action again; it now adds the die's own average blow (`Policy.rapid_worth`, as the rage,
+  the reset gun, the gate and the Horn were valued), for the Laminar Deflector, the Pulse Vacillator,
+  the Cryo Flinger, the Musk Ox's Quick Reload and the Immelmann Booster's own action; read at 30
+  seeds on their three carriers (`docs/measurements.md`, 4 November), the pieces are picked more
+  (the Cryo Flinger 9 to 13% of the Armadillo's spends, the Quick Reload 11 to 17%, the Booster from
+  under 2% to 14% alone) and the win rows move a point or two, random play identical. New in
+  the runner: a muster's charged spend tallied apart by piece, the gate's free spends and the paints
+  cashed, each cell's squared hull lost for its spread, and `--pilot chassis=N` (a what-if heat a
+  round, `Skirmish.pilot`, never content).
+
 - The Honey Badger's rework built (31 October, Ryan: "agreed on all proposed. Build it"; its
   brief retired). Its passive, the Ore Hopper, puts a load in for each foe a spend of its weapons
   damages, four at most, boxes under the heat; every two loads held are a point of armour, the
@@ -859,9 +901,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   on the foe its strike felled, death the last check of a spend and of the prediction, Sweep a
   reach, the primers riding the weapon fired, the stun resist by kind, the weapons row's rounding
   and section 12's question on a foe's ticks; three-way merged row by row onto the live v0.444,
-  which other sessions had moved from main's v0.437 at 450 through the day (their rows of 4
-  November: the elites' register and their first read, the Monster Hunter and Golden Sun foes,
-  the micro models, the elites' cells in the runner)). Main's own v0.430 (443, from
+  which other sessions had moved from main's v0.437 at 450 through the day
+  (`claude/chassis-runner-rows`'s v0.438 at 451, the Cassowary's cycle bot and the Whip
+  Scorpion's, the Swallowtail's and the Musk Ox's reads, then the rows of 4 November: the elites'
+  register and their first read, the Monster Hunter and Golden Sun foes, the micro models, the
+  elites' cells in the runner)). Main's own v0.430 (443, from
   `claude/affectionate-ramanujan-5d24t6`) is inside it, every publish since merged onto the live.
   The live page may carry rows ahead of main's code while their branches have not landed. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
@@ -870,8 +914,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   rows kept, a row both sides changed merged word by word with `git merge-file`; a line-based
   merge of the whole file conflicts on every neighbouring row: `tools/pages/bible_merge.py`, the
   README's command), with the last-published file as the base and the wrapper's first line and
-  its trailing `</body></html>` stripped from the saved live source. With main merged in, the tables script's run is checked against the file's tables
-  before it is kept: a row it reverts belongs to a branch not yet landed.
+  its trailing `</body></html>` stripped from the saved live source; a page that size counts as
+  read only once every line of its saved copy is read, so a subagent can read it and publish the
+  merge. With main merged in, the tables script's run is checked against the file's tables before
+  it is kept: a row it reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's

@@ -36,6 +36,7 @@ const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conduct
 const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
 static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
 static var overheat_scale: int = 1   # hull an overheat burns a point of heat past the maximum; tools/balance.gd's --overheat sets it for one run's what-if (30 October)
+static var pilot: Dictionary = {}   # chassis id -> heat it gains as each round opens, a what-if for tools/balance.gd's --pilot (the Whip Scorpion's pilot light, 3 November); never content
 # Two more what-ifs on the overheat (Ryan, 30 October), set by tools/balance.gd for one run: a
 # burn reaching the injury threshold burns out the component that took the gauge past the
 # maximum (--burnout), and every overheat Corrupts that component, so many stacks (--overheat-corrupt N).
@@ -1247,6 +1248,9 @@ func start_round() -> void:
 		if drop > 0:
 			ms.heat -= drop
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
+		if pilot.has(ms.unit.chassis_id):
+			ms.heat += int(pilot[ms.unit.chassis_id])
+			log.append("%s's pilot light: +%d heat (a what-if)" % [ms.unit.display_name, int(pilot[ms.unit.chassis_id])])
 		ms.hot_entry = -1
 		ms.face_index = _roll(ms)
 		ms.free_rerolls = Effects.free_rerolls(ms.unit)
