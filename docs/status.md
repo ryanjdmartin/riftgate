@@ -25,9 +25,10 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 987 tests, 256,932 checks, green (4 November, on main's head as `ccr-bb178c9b-l6airv`
-  landed: Ryan's playtest list of 2 November and the die's marks of 3 and 4 November, over main's
-  959 and 256,122 of the same day as `claude/elites-session` landed, on Godot 4.8-beta2), about
+- Tests: 988 tests, 256,942 checks, green (4 November, on main's head as `ccr-bb178c9b-l6airv`
+  landed the second time: the targeting modes and the day's die marks, over its first landing's
+  987 and 256,932, Ryan's playtest list of 2 November and the die's marks of 3 and 4 November, and
+  main's 959 and 256,122 as `claude/elites-session` landed, on Godot 4.8-beta2), about
   four minutes in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's
   Linux build and
   the project's first import from the repository's session-start hook
@@ -51,10 +52,11 @@ scrolling) was built in a worktree on a branch of its own and merged in (`aa39bc
 deleted. It took main as it landed (to `d28308e`: the randomness pass, Sweep and UNDO, the
 elites session, the weapon-fire work, the chassis runner rows and the pairs), and main took it as
 a fast-forward on 4 November on his word ("Great if there's nothing else open, clean up and merge
-into main"); its bible is v0.449 (the page's version 462; the Pages paragraph). Since the
-landing it carries his notes of the same day, ahead of main: Sweep's mark lobbed with a strike
-rising for each column, every lob even, and Every Foe, Every Ally and Every Other Ally as
-targeting modes a Silence leaves whole, their marks built to his picks.
+into main"), and again that evening with his notes of the day on top ("ok, this is fine. Clean up
+and merge into main"): Sweep's mark lobbed with a strike rising for each column, every lob even,
+the lines of fire four pieces again, Every Foe, Every Ally and Every Other Ally as targeting modes
+a Silence leaves whole with their marks, and the passive box past the chips; its bible is v0.459
+(the page's version 472; the Pages paragraph).
 
 `claude/elites-session` (3 and 4 November) carried the elites session from main's `e75be15` on
 Ryan's marks of the 3rd and his calls and reads of the 4th (How things stand; the bible's
@@ -1069,9 +1071,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   tidied), no row changed on both sides; over v0.454 at 467 (Sweep, every lob even, Every Foe,
   Every Ally and Every Other Ally as targeting modes, merged onto another session's v0.453 and its
   condensed die-entry row, the tables script not rerun since its rows from that session's content
-  are not on this branch) and v0.449 at 462, published as main took this branch). Main's file is
-  v0.449, so the live page carries this branch's rows and those sessions' ahead of main's code
-  until they land. The live page may carry rows ahead of main's code while
+  are not on this branch) and v0.449 at 462, published as main took this branch the first time).
+  Main's file is this publish since this branch landed again, so the live page carries nothing
+  of this branch's ahead of main; those sessions' rows stand ahead of their code until their
+  branches land. The live page may carry rows ahead of main's code while
   their branches have not landed. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
