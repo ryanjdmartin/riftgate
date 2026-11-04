@@ -404,7 +404,7 @@ func _draw() -> void:
 	# spent on machines.
 	var aim := Glyphs.aim_for(face)
 	if not aim.is_empty():
-		Glyphs.draw(self, aim, Vector2(FACE * 0.5, AIM_Y + bob), AIM_W, ink, 2.4 if aim in ["aim_direct", "aim_indirect"] else 1.8)
+		Glyphs.draw(self, aim, Vector2(FACE * 0.5, AIM_Y + bob), AIM_W, ink, 2.4 if aim in ["aim_direct", "aim_indirect", "aim_sweep"] else 1.8)
 	var costs := cost_marks()
 	var cx := 10.0
 	for cst in costs:

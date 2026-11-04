@@ -214,7 +214,7 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   count of spends: no reroll, no chain, nothing to limit, the price each half's number.
 - **Rolls again, paid in a banked resource** (the second action, priced). The Nemesis's rule
   (spend a stack, the die rolls again, no switch-off, the stacks the limit) as a family, one
-  banked resource a maker: rage, the hopper's loads, Spun Up, the H-tank's shells, Overcharged,
+  banked resource a maker: rage, the hopper's loads, Spun Up, the H-tank's shells, Empowered,
   Kestrel's heat (roll again for 20 heat) or its rerolls. A plain roll, a visible price, gated
   by its setup.
 - **Cooldown bursts** (the second action, front-loaded). Two actions' worth in one spend, then
@@ -252,27 +252,28 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
+| `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty elites, five wanderers, the Nob's rage, the Fiend of Fire, the demotions), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the Meadow's and the Waste's third boss, the Fell Rider's mount, the rage's shape, the Monster Hunter nods, the names) |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
-| `minerva_honey_badger.md` | rework, its numbers open | Minerva | 1 | nothing |
+| `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate a load; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |
 | `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |
 | `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | nothing: the cooldown property it waited on is built |
 | `kestrel_strafer.md` | landed 25 October as the Skua, its engine built (each roll halved, rounded down, and struck twice; the Pod's spray), retired (`git show f87b831:docs/briefs/kestrel_strafer.md`) | Kestrel | 1 | Ryan's play and its look (the to-do); its runner rows read 25 October (`docs/measurements.md`) |
-| `kestrel_shield_spender.md` | landed 30 October as the Storm Petrel's engine (the burn and its zap, the plate, Regenerating's machine half on its lock, the bot's reads), retired (`git show d84ad16:docs/briefs/kestrel_shield_spender.md`) | Kestrel | 1 | Ryan's call on its burn on basics (the bible's section 12), his play and its look (the to-do); its runner rows read 30 October (`docs/measurements.md`) |
+| `kestrel_shield_spender.md` | landed 30 October as the Storm Petrel's engine (the burn and its zap, the plate, Regenerating's machine half on its lock, the bot's reads), retired (`git show d84ad16:docs/briefs/kestrel_shield_spender.md`) | Kestrel | 1 | his play and its look (the to-do; its burn on basics stays as built, Ryan, 31 October); its runner rows read 30 October (`docs/measurements.md`) |
 | `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`) | Kestrel | 3 (Ryan, 15 October) | its stock, model and assets (the to-do; the stock pass's table had no row for it); its runner rows once fights have a wait list worth trapping |
 | `kestrel_gun_platform.md` | landed 30 October as the Giant Petrel's engine (the bank, the Immelmann Booster's ally action, the Salvo's kill rider, the Uplink's roll, the bot's look-or-action valuation), retired (`git show d84ad16:docs/briefs/kestrel_gun_platform.md`) | Kestrel | 3 | his play and its look, the catamaran (the to-do); its runner rows read 30 October (`docs/measurements.md`) |
 | `kestrel_kite.md` | landed 21 October, its engine and content built, retired (`git show 95d4ed3:docs/briefs/kestrel_kite.md`) | Kestrel | 2 (from 1) | its model with the Pinion Driver built in (the to-do; its stock and its team rows landed with the stock pass, 22 October) |
-| `kestrel_interceptor.md` | landed 23 October as the Needletail, runnable, retired (`git show 9ced5e5:docs/briefs/kestrel_interceptor.md`) | Kestrel | 2 (Ryan, 21 October) | its runner rows and its look (the to-do) |
+| `kestrel_interceptor.md` | landed 23 October as the Needletail, runnable, retired (`git show 9ced5e5:docs/briefs/kestrel_interceptor.md`) | Kestrel | 2 (Ryan, 21 October) | its look (the to-do; its rows read 3 November) |
 | `kestrel_line.md` | review of the Kestrel line (20 October): each chassis, the stock holes, the last slots; every chassis decided by 21 October and that evening the Buzzard's stock filled, the stock holes taken, the names settled and the last two slots marked | Kestrel | all | nothing: the hub until the line's briefs land |
 | `kestrel_magpie.md` | direction (Ryan, 21 October: a support engine, the thief or its intelligence; "Magpie" a working name); the first round that day (the thief, the mimic, the cache) | Kestrel | open | Ryan's pick of a direction |
 | `kestrel_owl.md` | direction (Ryan, 21 October: a stealth unit, the silent hunter, on the map or in the fight; the Snowy Owl); the first round that day (cold is quiet, the hunter on the map, Hidden as a status) | Kestrel | open | Ryan's pick of where the stealth lives |
-| `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its runner rows and assets (the to-do; its engine built 21 October, its forecasts 22 October) |
-| `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its bot cycle, runner row and assets (the to-do; its engine built 21 October, its reads 22 October) |
-| `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its runner rows and assets (the to-do; its engine built 21 October) |
-| `ws_artillery.md` | landed 21 October as the Musk Ox, retired (`git show bc97727:docs/briefs/ws_artillery.md`) | Wainwright & Sutler | 3 | its runner rows and assets (the to-do; its engine built 21 October) |
+| `ws_boiler.md` | landed 20 October as the Whip Scorpion, retired (`git show 82ff916:docs/briefs/ws_boiler.md`) | Wainwright & Sutler | 2 | its assets (the to-do; its engine built 21 October, its forecasts 22 October, its rows read 3 November) |
+| `ws_revolver.md` | landed 19 October as the Cassowary, retired (`git show 021f075:docs/briefs/ws_revolver.md`) | Wainwright & Sutler | 1 | its assets (the to-do; its engine built 21 October, its reads 22 October, its bot cycle and rows 3 November) |
+| `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its assets (the to-do; its engine built 21 October, its rows read 3 November) |
+| `ws_artillery.md` | landed 21 October as the Musk Ox, retired (`git show bc97727:docs/briefs/ws_artillery.md`) | Wainwright & Sutler | 3 | its assets (the to-do; its engine built 21 October, its rows read 3 November) |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | Ryan's play (the to-do); its engine built 18 October, its assets 19 October |
-| `ws_gunship.md` | proposal | Wainwright & Sutler | 2 | nothing since the stock pass's tags and the numbers' rescale landed (22 October; Ryan, 21 October) |
-| `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its runner row and assets (the to-do; its engine built 21 October) |
+| `ws_gunship.md` | proposal, Claude's first round 3 November | Wainwright & Sutler | 2 | Ryan's own design session (4 November: very rough, maybe back to the drawing board) |
+| `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its assets (the to-do; its engine built 21 October, its row read 3 November) |
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | nothing: Flak built and measured 21 October (`docs/measurements.md`) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October) |
 | `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
@@ -356,7 +357,7 @@ in its brief; the full rounds are in git (above).
 - Haunted: a striker spends its next blow on the foe beside it; a novel verb (foes turning on
   each other) that does nothing against a lone boss.
 - The guardian's stay: a blow that would wreck an ally leaves it at 10 hull; rare, binary, and
-  close to the Honey Badger's open identity.
+  close to the Honey Badger's last stand, benched in its identity session.
 - The bell tower (medieval): an assault walker with a bell caged on its back, its toll a big
   indirect blow with Spread, Penetrate and Shock; set aside for the four on 11 October, no
   other reason recorded.

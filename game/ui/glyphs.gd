@@ -17,6 +17,16 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# a line of fire, a long solid run breaking into ever smaller dashes, thinning as it
 			# goes; straight for Direct, a gentle lob for Indirect, as wide as the three hexes.
 			_fire_line(ci, c, size, color, width, id == "aim_indirect")
+		"aim_sweep":
+			# Sweep (3 November), the third reach, in the lines' own language: the line along the rank,
+			# whole where Direct's breaks into dashes, and three ticks rising from it at even steps, a
+			# strike to a slot, left to right; no arrowhead (Ryan, 3 November, of the arrows: "looks
+			# cheap"). Drawn as main's Sweep landed, for his eye.
+			var ry := s * 0.3
+			ci.draw_line(c + Vector2(-s, ry), c + Vector2(s, ry), color, width)
+			for i in range(3):
+				var x := (i - 1) * s * 0.7
+				ci.draw_line(c + Vector2(x, ry), c + Vector2(x, -s * 0.3), color, width)
 		# ---- the die's main marks (Ryan, 3 November): each holds what the entry delivers
 		"weapon":
 			# A weapon (Ryan, 3 November: the faces did not "read weapon"): a sight, its ring broken
@@ -744,13 +754,15 @@ static func _steam(ci: CanvasItem, c: Vector2, half_w: float, half_h: float, n: 
 
 ## Whom an entry is aimed at, the targeting mark under its main mark (Ryan, 2 November: one
 ## width, "the width of the 3 hex symbol"; 3 November: "putting targeting underneath"): a foe by
-## its reach, the enemy's formation with the front rank lit (Direct) or every cell (Indirect); a
+## its reach, a line of fire, straight (Direct), lobbed (Indirect) or walking a rank (Sweep); a
 ## machine by three hexes, its own only, its allies only, or either; "" for a blank. A reach past
 ## the target is its keyword's chip (an area, Every Foe, Every Ally).
 static func aim_for(face: Face) -> String:
 	if face == null or face.kind == Face.Kind.BLANK:
 		return ""
 	if face.kind == Face.Kind.ATTACK:
+		if face.reach == Face.Reach.SWEEP:
+			return "aim_sweep"   # a rank swept (3 November)
 		return "aim_indirect" if face.reach == Face.Reach.INDIRECT else "aim_direct"
 	match face.targets:
 		Face.Target.SELF:

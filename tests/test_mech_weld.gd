@@ -7,7 +7,7 @@ extends TestCase
 ## boxes kept. Small built models check the cases no machine has yet (a mirror, a scaled
 ## part, levels of detail on several parts).
 
-const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web"]
+const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web", "musk_ox", "cassowary", "cottonmouth", "swallowtail", "whip_scorpion"]
 
 
 func _init() -> void:

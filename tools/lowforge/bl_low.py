@@ -12,6 +12,7 @@ ink passes still know the role.
 
 import math
 import os
+import re
 import sys
 
 import bmesh
@@ -340,17 +341,53 @@ class Tiles:
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
         elif kind == "spark":
-            # St. Elmo's fire banked down: the corona at a third of its light, for the port's
-            # sparks that rest dim and crackle lit (Ryan, 28 October: the lit corona read as a
-            # white block, and lighting it further showed nothing).
-            img = 0.32 * np.tile(np.array([0.62, 0.86, 1.0], np.float32), (TILE, TILE, 1))
-            img += self.rng.uniform(-0.02, 0.02, size=(TILE, TILE, 1)).astype(np.float32)
+            # St. Elmo's fire banked down, for the port's sparks that rest dim and crackle lit
+            # (Ryan, 28 October: the lit corona read as a white block, and lighting it further
+            # showed nothing): banked far enough that its crackle, at twenty-eight times its rest
+            # light, holds an electric blue rather than white (31 October: "a tinge of something
+            # other than white").
+            img = 0.16 * np.tile(np.array([0.40, 0.75, 1.0], np.float32), (TILE, TILE, 1))
+            img += self.rng.uniform(-0.01, 0.01, size=(TILE, TILE, 1)).astype(np.float32)
         elif kind == "corona":
-            # St. Elmo's fire (the Storm Petrel's mast, 23 October): an electric blue-white,
-            # near uniform like the lit tile, so a small part reads the same wherever the world
-            # grid lands on it; the one lit colour on a machine that is no flame.
-            img = np.tile(np.array([0.62, 0.86, 1.0], np.float32), (TILE, TILE, 1))
-            img += self.rng.uniform(-0.04, 0.04, size=(TILE, TILE, 1)).astype(np.float32)
+            # St. Elmo's fire (the Storm Petrel's mast, 23 October): an electric blue, near uniform
+            # like the lit tile, so a small part reads the same wherever the world grid lands on
+            # it; the one lit colour on a machine that is no flame. Banked so it burns blue at rest
+            # and pales only toward its flare (31 October: it had read white).
+            img = 0.45 * np.tile(np.array([0.40, 0.70, 1.0], np.float32), (TILE, TILE, 1))
+            img += self.rng.uniform(-0.02, 0.02, size=(TILE, TILE, 1)).astype(np.float32)
+        elif kind == "fire":
+            # A fire weapon's flame (Ryan, 31 October: "Fire weapons, like the blazethrower, need a
+            # red glow, not a white one"): one even red-orange, banked so a flare to eight times
+            # its rest light shows #ff380d and sixteen still a red-orange, never white; red and
+            # green alone, as every red is.
+            img = np.tile(np.array([0.28, 0.062, 0.0], np.float32), (TILE, TILE, 1))
+        elif kind == "furnace":
+            # A furnace seen through its grille (Ryan, 31 October, of the Nemesis's chest: "that
+            # thing has to look HOT"): one even orange, no rim to read as a red grille, banked for a
+            # part that burns always at ten times its rest light (#ff5900) and flares to sixteen
+            # (#ff6e00), red and green alone and short of the orange that reads yellow to Ryan.
+            img = np.tile(np.array([0.26, 0.091, 0.0], np.float32), (TILE, TILE, 1))
+        elif kind == "fume":
+            # The Arsenal's rear vents, its creepy glowing exhaust (Ryan, 3 November: "The standard
+            # vents could use more yellow too, it looked more 'sinister' before when it was more of a
+            # sickly orange-yellow than a deep red"; they had worn the lit tile's yellow, which burned
+            # near white at eight times its rest light, then the furnace's orange-red): one even
+            # orange-yellow, red and green alone, banked for a part that burns always at five times its
+            # rest light (the game's render, #ffa?00 in the light: a sickly orange-yellow) and flares to
+            # sixteen as a gold short of lemon (a yellow that pale can read green to Ryan, good's
+            # colour), never white. Its colour carries nothing in play, so it is free to read yellow.
+            img = np.tile(np.array([0.28, 0.168, 0.0], np.float32), (TILE, TILE, 1))
+        elif kind == "tesla":
+            # Lightning in a coil (Ryan, 31 October, of the Dingo's Translocator: "classic 'tesla
+            # lightning blue'"): an electric cyan, banked so its flare to sixteen times its rest
+            # light holds the colour; paler and greener than the shield's blue, so the two part.
+            img = np.tile(np.array([0.095, 0.18, 0.21], np.float32), (TILE, TILE, 1))
+        elif kind == "shield":
+            # A shield's light (Ryan, 31 October, of the Puffin's amplifier and the Storm Petrel's
+            # field: "since both are related to their shield-related passive, could they glow in a
+            # shield-ish colour?"): the game's shield blue (Palette.SHIELD, #2f63d8) brightened,
+            # banked so a flare to thirty times its rest light shows #3775ff and a rest reads dark.
+            img = np.tile(np.array([0.035, 0.074, 0.161], np.float32), (TILE, TILE, 1))
         else:
             img = self.metal()
         image = bpy.data.images.new(name, TILE, TILE, alpha=True)
@@ -402,6 +439,7 @@ class Build:
         self.objects = []
         self.pins = []      # every hp_* and joint_* Empty made, in order, so a joint block can take the pins made inside it
         self.carries = {}   # hp_<n> -> the component its stock part is, "" a bare mount: the rig sidecar's pins (see pin())
+        self.hidden = []    # the hp_<n> pins that show nothing, stock or fitted: the sidecar's hidden_pins (see pin())
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
         self.acts = []         # the machine's idle acts, in authoring order (see act())
@@ -409,9 +447,24 @@ class Build:
         self.gait_spec = {}    # how the machine moves (see gait())
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self.spins = {}        # joints turned without end (see spin())
+        self.spin_steps = {}   # joint -> degrees a step: a spinner an act may lock, parked on a step (see spin(), act()'s `locks`)
+        self.spins_held = {}   # status -> {joint: degrees a second}: turned while the machine carries the status (see spin_held())
+        self.counts = []       # the count displays: parts lit in order for a number the game passes (see count())
         self.forms = {}        # poses held while a status lasts (see form())
         self.ajar_spec = None  # the pose it stands in while a form is not held (see ajar())
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
+        self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
+        self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
+        self.fires = {}        # a fixed component -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
+        self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
+        self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
+        self.fx_sizes = {}     # a fixed weapon -> its muzzle flare's size: an fx_<component> Empty at its business end (fx())
+        self.plumes = []       # [{node, part, reach, breadth}]: a booster's plume along its thrust (plume())
+        self.launches = {}     # a fixed weapon -> [{node, reach, seconds, delay, ...}]: what it fires out of the machine (launch())
+        self.landings = {}     # a name -> where a launch falls into it (landing())
+        self.launch_lit = set()   # the labels of the lit parts launches carry, which their flights light (launch())
+        self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
+        self.fits = {}         # pin -> {class: {"shape": its variant, "scale": its scale}}: what a class wears there (pin()'s `fits`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -617,7 +670,7 @@ class Build:
             bm.to_mesh(ob.data)
             bm.free()
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, fits=None, hidden=False):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
         weapon points) and its scale the size a mounted component wears there, so the
         engine can hang a component's shape under it with no arithmetic. `parts` are the
@@ -626,9 +679,30 @@ class Build:
         content id of the component those parts are, "" for a bare mount: the sidecar lists
         it (rig()'s pins), and the engine compares a machine's fitted die against it, never
         against content's stock, so a stock that moves on shows its class shapes until the
-        model follows (Ryan's go, 28 October). Every pin of a rigged machine names one."""
+        model follows (Ryan's go, 28 October). Every pin of a rigged machine names one.
+
+        `fits`, given, says how a class sits at this mount where its standard shape at the
+        pin's scale does not (Ryan, 2 November: "Hardpoint just needs to declare shape (if
+        offered) and scaling"): {class: a variant's name (models_low.VARIANTS), a scale on the
+        pin's own, or (variant, scale)}, so a round port takes a round launcher and a dish
+        small enough to pass its bore. The sidecar carries it (rig()'s `fits`); the engine
+        hangs what it names.
+
+        `hidden` makes a mount that shows nothing, its stock or a fitted component's class (the
+        Cottonmouth's guns, mounted inside its drum: Ryan, 19 October, "the guns mounted
+        (invisibly) inside"): still a hardpoint, counted and recording what it carries, with no
+        parts of its own; the sidecar lists it under `hidden_pins` and the engine hangs nothing
+        on it (MechView3D.wear)."""
+        if hidden and not name.startswith("hp_"):
+            raise ValueError("%s: only a hardpoint (hp_<n>) hides, not %s" % (self.name, name))
+        if hidden and parts:
+            raise ValueError("%s: %s is hidden, so it carries no parts to show" % (self.name, name))
         if name.startswith("hp_"):
             self.carries[name] = carries
+            if fits:
+                self.fits[name] = _fits(self.name, name, fits)
+            if hidden:
+                self.hidden.append(name)
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
         m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
@@ -672,7 +746,7 @@ class Build:
                 return "yaw"
         return "pitch"
 
-    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None):
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None, form=None, locks=None, idle=True):
         """One idle act, what the pilot does with the machine every few seconds (the
         idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
         (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
@@ -688,10 +762,21 @@ class Build:
         Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both. `form`,
         given, makes it one of that form's acts, played while the form is held in place of the
         machine's own and added to the form's held pose (Ryan, 29 October: sealed, the
-        Armadillo's acts are its own, from its hunkered pose)."""
+        Armadillo's acts are its own, from its hunkered pose). `locks` names spinners with a
+        step (spin()'s `step`) the act holds still: each parks quickly on its next step ahead as
+        the act starts, never turning back, and holds there while it plays, the act's own track
+        on it adding whole steps over that; when the act ends its turn there runs on from where
+        it stands (MechRig: the Cottonmouth's drum stops on a chamber to fire, Ryan, 2 November:
+        "Keep the idle turn ... Quickly spin it forward a fixed number of barrels when it
+        fires"). `idle=False` makes an act a weapon's firing alone, never played at rest (Ryan, 3
+        November: the Nemesis's punch, the Skua's burst, the Ammit's second claw)."""
         out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
         if heft is not None:
             out["heft"] = float(heft)
+        if not idle:
+            out["idle"] = False
+        if locks:
+            out["locks"] = [str(j) for j in ([locks] if isinstance(locks, str) else locks)]
         if places:
             places = [places] if isinstance(places, str) else list(places)
             for pl in places:
@@ -937,12 +1022,47 @@ class Build:
         self.gait_spec = kept
         return self.gait_options[name]
 
-    def spin(self, joint, idle, moving=None):
+    def spin(self, joint, idle, moving=None, step=None):
         """A joint turned without end on its own axis, whatever the machine is doing (Ryan, 6
         October, the seventh notes: the Stingray's lift fans): `idle` degrees a second standing,
         `moving` (as idle if not given) once it is fully under way, the rate easing between them
-        with the move. Give the joint no limits: the turn is wrapped, never clamped."""
+        with the move. Give the joint no limits: the turn is wrapped, never clamped. `step`,
+        given, is its pitch in degrees, rest one of its steps (a drum's chamber, 60 for six): an
+        act may lock it (act()'s `locks`), parking it on a step while the act plays."""
         self.spins[joint] = [float(idle), float(idle if moving is None else moving)]
+        if step is not None:
+            if not 0.0 < float(step) <= 180.0:
+                raise ValueError("%s: the spin of %s steps %g degrees, which is no step" % (self.name, joint, step))
+            self.spin_steps[joint] = float(step)
+
+    def spin_held(self, status, joint, speed):
+        """A joint turned without end at `speed` degrees a second while the machine carries the
+        status `status` (an id in sim/effects.gd's STATUS, a test holding it), eased up to speed
+        as the status lands and run down as it goes (MechRig.hold_spin: the Cassowary's capacitor
+        while Spun Up, Ryan, 2 November). Give the joint no limits on its axis: the turn is
+        wrapped, never clamped."""
+        if joint not in self.joint_meta:
+            raise ValueError("%s: spin_held names a joint the model has not got: %s" % (self.name, joint))
+        if self.joint_meta[joint]["axis"] in self.joint_meta[joint]["limits"]:
+            raise ValueError("%s: the held spin's joint %s has limits on its axis, which would clamp its turn" % (self.name, joint))
+        self.spins_held.setdefault(str(status), {})[joint] = float(speed)
+
+    COUNT_SOURCES = ("shots", "ammo")   # the numbers the game passes a count display (MechRig.COUNT_SOURCES)
+
+    def count(self, source, parts, on=1.5, off=-0.85, flare=8.0):
+        """A count display: `parts` (lit labels, the first lit first) shown lit for as many as the
+        number `source` the game passes as the screen refreshes (`shots`, a machine's counted
+        shots toward the next that counts; `ammo`, its magazine's rounds: COUNT_SOURCES), the rest
+        dark; a number that falls flares every part and lets them all go dark (MechRig.show_counts:
+        the Cassowary's capacitor, a cell a counted shot, discharging on the sixth, Ryan, 2
+        November). `on`, `off` and `flare` are each part's light as an offset from its light at
+        rest, as a glow key's: -1 dark. The parts are kept apart by the weld, as a glow's are."""
+        if source not in self.COUNT_SOURCES:
+            raise ValueError("%s: a count display shows one of %s, not %r" % (self.name, ", ".join(self.COUNT_SOURCES), source))
+        parts = [parts] if isinstance(parts, str) else list(parts)
+        if not parts or len(set(parts)) != len(parts):
+            raise ValueError("%s: a count display names its parts, each once: %r" % (self.name, parts))
+        self.counts.append({"source": source, "parts": parts, "on": float(on), "off": float(off), "flare": float(flare)})
 
     def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
@@ -985,8 +1105,16 @@ class Build:
         every_act = self.acts + [a for acts in self.form_acts.values() for a in acts]
         lit_parts = ({p for a in every_act for g in a["glow"] for p in g["parts"]}
                      | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
-                     | set(self.gait_spec.get("glow", {}).get("parts", [])))
+                     | set(self.gait_spec.get("glow", {}).get("parts", []))
+                     | {p for c in self.counts for p in c["parts"]})
         glow_parts = sorted(lit_parts | set(self.gait_spec.get("treads", {}).get("parts", [])))
+        # A count display's part has one master: an act, a form or the gait lighting it too would
+        # fight the display over its light.
+        glowing = ({p for a in every_act for g in a["glow"] for p in g["parts"]} | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
+                   | set(self.gait_spec.get("glow", {}).get("parts", [])))
+        shared = sorted(glowing & {p for c in self.counts for p in c["parts"]})
+        if shared:
+            raise ValueError("%s: %s light for a count display and a glow both" % (self.name, ", ".join(shared)))
         # A part a glow names is a label matched whole (the rig's MechRig.labelled: the label,
         # or the label with the importer's numbering), never a prefix: "repulsor" lights no
         # "repulsor_l" (the Puffin's amplify lit nothing for a day; Ryan, 28 October).
@@ -1008,26 +1136,238 @@ class Build:
         unnamed = sorted((n for n, c in self.carries.items() if c is None), key=lambda n: int(n[3:]))
         if unnamed:
             raise ValueError("%s: %s name no component they carry (b.socket/b.stock/b.pin carries=, \"\" for a bare mount)" % (self.name, ", ".join(unnamed)))
+        # A lock parks a stepped spinner (act()'s `locks`): the act's own turn on it must end on a
+        # whole step, held to the act's end, so the turn runs on from a step when the act ends.
+        for a in every_act:
+            for jn in a.get("locks", []):
+                if jn not in self.spins or jn not in self.spin_steps:
+                    raise ValueError("%s: act %r locks %s, which is no spinner with a step (b.spin's step)" % (self.name, a["name"], jn))
+                rows = a["tracks"].get(jn, [])
+                if rows:
+                    turn = rows[-1][1 + ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])]
+                    whole = turn / self.spin_steps[jn]
+                    if abs(whole - round(whole)) > 1e-6 or rows[-1][0] < a["duration"] - 1e-6:
+                        raise ValueError("%s: act %r ends its locked %s on %g degrees at %gs, which must be a whole step held to the act's end" % (self.name, a["name"], jn, turn, rows[-1][0]))
         out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it" % self.name,
                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts,
                "pins": {n: self.carries[n] for n in sorted(self.carries, key=lambda n: int(n[3:]))}}
+        if self.hidden:
+            out["hidden_pins"] = sorted(self.hidden, key=lambda n: int(n[3:]))   # mounts that show nothing, stock or fitted (pin()'s `hidden`)
         if self.gait_options:
             out["gait_options"] = self.gait_options
         if self.spins:
             out["spin"] = self.spins
+        if self.spin_steps:
+            out["spin_step"] = self.spin_steps
+        if self.spins_held:
+            out["spin_held"] = self.spins_held
+        if self.counts:
+            out["counts"] = self.counts
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
         if self.ajar_spec:
             out["ajar"] = self.ajar_spec
+        # A halo is the glow's own bloom, so it names only parts a glow lights, or a lit part a launch
+        # carries, which its flight lights (the Swallowtail's flare stars).
+        halo = [list(h) if isinstance(h, (tuple, list)) else h for h in self.halo]
+        stray = [h for h in halo if (h[0] if isinstance(h, list) else h) not in glow_parts and (h[0] if isinstance(h, list) else h) not in self.launch_lit]
+        if stray:
+            raise ValueError("%s: a halo names %s, which no glow lights" % (self.name, ", ".join(repr(h) for h in stray)))
+        if halo:
+            out["halo"] = halo
+        stray = [p for p in self.standing if p not in glow_parts]
+        if stray:
+            raise ValueError("%s: a standing glow names %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
+        if self.standing:
+            out["standing"] = dict(self.standing)
+        # A fixed weapon fires with a slice of one of its acts (Ryan, 31 October: "go for ones that
+        # are cheapest to do first, where pre-existing animation work has already been looked at").
+        # A slice is (act, from, to), or (act, from, to, blow) when it winds up before its blow (the
+        # act's second the blow lands: the engine holds the blow's sound and landing till then); a
+        # list of slices takes turns (Ryan, 3 November: the Ammit "can also afford two different
+        # Claw animations since it's got 4 and will use them often").
+        fires = {}
+        for cid, spec in self.fires.items():
+            out_slices = []
+            for sl in (spec if isinstance(spec, list) else [spec]):
+                name, t0, t1 = sl[0], sl[1], sl[2]
+                blow = sl[3] if len(sl) > 3 else None
+                act = next((a for a in self.acts if a["name"] == name), None)
+                if act is None:
+                    raise ValueError("%s: %s fires with an act it has not got, %r" % (self.name, cid, name))
+                if not (0.0 <= t0 < t1 <= act["duration"]):
+                    raise ValueError("%s: %s fires from %.2f to %.2f, outside %r's %.2f seconds" % (self.name, cid, t0, t1, name, act["duration"]))
+                if blow is not None and not (t0 <= blow <= t1):
+                    raise ValueError("%s: %s's blow at %.2f lies outside its slice of %r, %.2f to %.2f" % (self.name, cid, blow, name, t0, t1))
+                d = {"act": name, "from": t0, "to": t1}
+                if blow is not None:
+                    d["blow"] = blow
+                out_slices.append(d)
+            fires[cid] = out_slices[0] if len(out_slices) == 1 else out_slices
+        if fires:
+            out["fires"] = fires
+        for cid, name in self.aims.items():
+            if self.joint_meta.get(name, {}).get("axis") != "yaw":
+                raise ValueError("%s: %s aims with %r, which is no joint turning about its up axis" % (self.name, cid, name))
+        if self.aims:
+            out["aims"] = dict(self.aims)
+        if self.pivots:
+            out["pivots"] = True
+        # Where each hand-built stock gun's muzzle flare blooms (a class's are art/models/shapes/muzzles.json).
+        muzzles = self.muzzles()
+        if muzzles:
+            out["muzzles"] = muzzles
+        if self.stock_shapes:
+            out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
+        # Each booster's plume (plume()): the Empty at its mouth, the lit part it burns with, its size.
+        if self.plumes:
+            stray = [pl["part"] for pl in self.plumes if pl["part"] not in glow_parts]
+            if stray:
+                raise ValueError("%s: a plume burns with %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
+            out["plumes"] = list(self.plumes)
+        if self.launches:
+            out["launches"] = {cid: list(rows) for cid, rows in self.launches.items()}
+        # Each fixed weapon's business end (fx()): its muzzle flare's size, the Empty carrying the place.
+        if self.fx_sizes:
+            out["fx"] = {cid: round(size, 2) for cid, size in sorted(self.fx_sizes.items())}
+        # How a class sits at a mount that declares it (pin()'s `fits`): its variant and scale.
+        if self.fits:
+            out["fits"] = {n: self.fits[n] for n in sorted(self.fits, key=lambda n: int(n[3:]))}
         return out
 
-    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
+    def muzzles(self):
+        """Each hand-built stock gun's muzzle flare places, so it flares as a class does, found
+        from its parts: in the pin's own frame (the gun pointing down its +y), each part reaching
+        within a unit and a half of the gun's farthest reach is a barrel's end (its vertices there
+        make its middle and its width), and ends that overlap are one (a barrel and its muzzle
+        collar); a flare sits just past each, sized to its width. A class's places are its own
+        and a variant's its own (models_low.MUZZLES); a bare mount has none. In the models'
+        frame as the glTF carries it: a point at (x, y, z) here is at (x, z, -y) there."""
+        out = {}
+        for e in self.pins:
+            name = e.name
+            if not name.startswith("hp_") or name in self.stock_shapes or not self.carries.get(name):
+                continue
+            inv = e.matrix_world.inverted()
+            scale = e.matrix_world.to_scale()[1] or 1.0
+            parts = []
+            stack = list(e.children)
+            while stack:
+                ob = stack.pop()
+                stack.extend(ob.children)
+                if ob.type == "MESH" and ob.data.vertices:
+                    parts.append([inv @ (ob.matrix_world @ v.co) for v in ob.data.vertices])
+            if not parts:
+                continue
+            reach = max(p.y for pts in parts for p in pts)
+            ends = []
+            for pts in parts:
+                tip = [p for p in pts if p.y > reach - 1.5 / scale]
+                if tip:
+                    xs, zs = [p.x for p in tip], [p.z for p in tip]
+                    ends.append([min(xs), max(xs), min(zs), max(zs)])
+            merged = True
+            while merged:   # ends that overlap are one
+                merged = False
+                for a in range(len(ends)):
+                    for b in range(a + 1, len(ends)):
+                        A, B = ends[a], ends[b]
+                        if A[0] <= B[1] and B[0] <= A[1] and A[2] <= B[3] and B[2] <= A[3]:
+                            ends[a] = [min(A[0], B[0]), max(A[1], B[1]), min(A[2], B[2]), max(A[3], B[3])]
+                            del ends[b]
+                            merged = True
+                            break
+                    if merged:
+                        break
+            places = []
+            for x0, x1, z0, z1 in ends:
+                width = max(x1 - x0, z1 - z0, 1.0 / scale)
+                size = min(max(2.4 * width + 6.0 / scale, 8.0 / scale), 30.0 / scale)
+                places.append([[round((x0 + x1) / 2.0, 3), round((z0 + z1) / 2.0, 3), round(-(reach + 1.5 / scale), 3)], round(size, 2)])
+            out[name] = places
+        return out
+
+    def fx(self, cid, at, forward=(0.0, 1.0, 0.0), size=16.0):
+        """A fixed weapon's business end (Ryan's go of 3 November: the fixed weapons with no act to
+        cut "each want an act that shows it, or a mount to kick and flare from"): an Empty named
+        `fx_<component>` at `at`, its +y along `forward`, made inside the joint block that carries
+        the weapon so it rides that joint. The engine flares the weapon there in its tags' look and
+        kicks that joint as it fires, as it does a mounted gun's (MechView3D.strike); `size` is the
+        flare's width in world units, written to the sidecar's `fx`."""
+        e = bpy.data.objects.new("fx_" + cid, None)
+        e.empty_display_size = 1.0
+        e.matrix_world = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4()
+        bpy.context.scene.collection.objects.link(e)
+        self.pins.append(e)
+        self.fx_sizes[cid] = float(size)
+        return e
+
+    def plume(self, part, at, thrust, reach, breadth):
+        """A booster's plume along its thrust (Ryan, 31 October, of the Stingray's exhaust: "can it be
+        directional?"): an Empty named plume_<n> at the mouth `at`, its +y along `thrust` (the way
+        the blast goes, out of the mouth), made inside the joint block that carries the booster.
+        The engine draws a flame there `reach` long and `breadth` wide, lit with the lit `part`
+        (its glow track's light), in place of that part's halo (MechView3D._setup_plumes)."""
+        name = "plume_%d" % (len(self.plumes) + 1)
+        e = bpy.data.objects.new(name, None)
+        e.empty_display_size = 1.0
+        e.matrix_world = Matrix.Translation(Vector(at)) @ pin_frame(thrust).to_4x4()
+        bpy.context.scene.collection.objects.link(e)
+        self.pins.append(e)
+        self.plumes.append({"node": name, "part": part, "reach": round(float(reach), 2), "breadth": round(float(breadth), 2)})
+        return e
+
+    def launch(self, cid, at, forward=(0.0, 1.0, 0.0), reach=120.0, seconds=0.6, delay=0.0, to=None,
+               ease="in", drop=0.0, spin=0.0, hang=0.0, sink=0.0, fade=0.0, light=None, lands=None):
+        """`with b.launch("syrinx_drone", at, forward, ...): ...` builds what a fixed weapon fires out
+        of the machine (Ryan, 3 November, of the Lammergeier: "I guess a new drone model that fires
+        out, something simple"; the next day: "Go for some micro models and let's see what they look
+        like"): every object made in the block hangs under an Empty named launch_<component>_<n> at
+        `at`, its +y along `forward`, which the engine hides at rest; as the weapon fires it shows,
+        `delay` seconds on, flies `reach` world units along that line in `seconds`, then hides
+        again at home (MechView3D.launches_of). Made inside a joint's block it rides that joint.
+
+        Its flight's shape (MechView3D.flight_at): `ease` how it gathers along its line, "in"
+        gathering speed as a drone or a rocket does, "out" slowing as a lobbed round does, "line" at
+        one speed as a shell leaves a muzzle; `drop` the units gravity pulls it down by the flight's
+        end, growing as the square of the time, so a "line" with a drop is a thrown thing's arc;
+        `to`, given, the point (in the model at rest) the flight ends at, which sets its line and its
+        reach, the drop kept; `spin` the degrees it turns end over end about its own x across the
+        flight; `hang` the seconds it holds where the flight ends, sinking `sink` units meanwhile (a
+        flare under its chute); `fade` the last seconds over which its light dies before it hides;
+        `light` the rests over its own its lit parts burn at (the engine's LAUNCH_LIGHT, 14, when
+        None); `lands`, the name of a landing() made earlier, a place it falls into: its flight ends
+        there at rest (as `to` does), and the engine takes its line again as it leaves, from where
+        it is to where that place is then, so a casing thrown from a gun that has turned still finds
+        the forge. The sidecar's `launches` lists each under its component, a shape's keys only
+        where they differ from a drone's."""
+        land = None
+        if lands is not None:
+            if lands not in self.landings:
+                raise ValueError("launch of %s in %s: no landing named %r (landing() first)" % (cid, self.name, lands))
+            land, to = "land_" + lands, self.landings[lands]
+        return _Launch(self, cid, at, forward, reach, seconds, delay, to, ease, drop, spin, hang, sink, fade, light, land)
+
+    def landing(self, name, at):
+        """A place a launch falls into (launch()'s `lands`): an Empty named `land_<name>` at `at`, made
+        inside the joint block that carries what it lands in, so it rides that joint."""
+        if name in self.landings:
+            raise ValueError("%s: landing %s is made twice" % (self.name, name))
+        e = bpy.data.objects.new("land_" + name, None)
+        e.empty_display_size = 1.0
+        e.matrix_world = Matrix.Translation(Vector(at))
+        bpy.context.scene.collection.objects.link(e)
+        self.pins.append(e)
+        self.landings[name] = tuple(at)
+        return e
+
+    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
         """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock
         component inside the block and pins it: every object made in the block hangs under
-        the pin. `carries` names the component it is (pin())."""
-        return _Socket(self, name, at, forward, scale, carries)
+        the pin. `carries` names the component it is, `fits` how a class sits there (pin())."""
+        return _Socket(self, name, at, forward, scale, carries, fits)
 
-    def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel"):
+    def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel", fits=None):
         """A bare gun mount: a hardpoint whose stock loadout puts nothing there (the rule,
         30 September: armour and vents show nowhere, so a machine with more hardpoints than
         stock guns carries empty mounts). A low block at the socket so a fitted gun sits on
@@ -1039,26 +1379,102 @@ class Build:
         self.box(-w / 2.0, w / 2.0, -w / 2.0, w / 2.0, -t, 0.0, material, "pad")
         for ob in self.objects[start:]:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale, carries="")
+        return self.pin(name, at, forward, scale, carries="", fits=fits)
 
-    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None):
+    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
         """A pin whose stock component is one of the silhouette classes (models_low.SHAPES),
         built at the origin along +y and moved onto the pin's frame at its scale: the way a
-        swapped component will sit there, so the machine is judged wearing one. `carries`
-        names the component (pin()); its class is `shape`."""
+        swapped component will sit there, so the machine is judged wearing one, in the variant
+        and at the scale the pin's `fits` give its class. `carries` names the component
+        (pin()); its class is `shape`."""
         import models_low
         start = len(self.objects)
-        models_low.SHAPES[shape](self, 1.0)
-        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+        self.stock_shapes[name] = shape
+        fit = _fits(self.name, name, fits or {}).get(shape, {})
+        models_low.shape_builder(fit.get("shape", shape))(self, 1.0)
+        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale * fit.get("scale", 1.0), 4)
         parts = self.objects[start:]
         for ob in parts:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale, parts, carries=carries)
+        return self.pin(name, at, forward, scale, parts, carries=carries, fits=fits)
+
+
+def _fits(model, pin, fits):
+    """A pin's `fits` as the sidecar carries them, {class: {"shape": variant, "scale": k}}, each
+    checked: a class content knows, a variant of that class, a scale above nothing."""
+    import models_low
+    out = {}
+    for cls, how in fits.items():
+        if cls not in models_low.SHAPES:
+            raise ValueError("%s: %s fits %r, which is no class (%s)" % (model, pin, cls, ", ".join(models_low.SHAPES)))
+        shape, scale = cls, 1.0
+        if isinstance(how, str):
+            shape = how
+        elif isinstance(how, (int, float)):
+            scale = float(how)
+        else:
+            shape, scale = how[0], float(how[1])
+        if shape != cls and (shape not in models_low.VARIANTS or models_low.VARIANTS[shape][0] != cls):
+            raise ValueError("%s: %s fits its %s with %r, which is no variant of it" % (model, pin, cls, shape))
+        if scale <= 0.0:
+            raise ValueError("%s: %s fits its %s at a scale of %s" % (model, pin, cls, scale))
+        out[cls] = {"shape": shape, "scale": round(scale, 3)}
+    return out
+
+
+class _Launch:
+    EASES = ("in", "out", "line")
+
+    def __init__(self, b, cid, at, forward, reach, seconds, delay, to=None, ease="in", drop=0.0, spin=0.0,
+                 hang=0.0, sink=0.0, fade=0.0, light=None, lands=None):
+        if ease not in _Launch.EASES:
+            raise ValueError("launch of %s in %s: ease is one of %s, not %r" % (cid, b.name, ", ".join(_Launch.EASES), ease))
+        if to is not None:
+            # The line and the reach that end the flight at `to`: what is left once gravity's drop
+            # is taken off (every ease ends its line at the whole reach).
+            d = Vector(to) - Vector(at) - Vector((0.0, 0.0, -1.0)) * float(drop)
+            if d.length < 1e-6:
+                raise ValueError("launch of %s in %s: `to` is where it starts" % (cid, b.name))
+            forward, reach = tuple(d.normalized()), d.length
+        self.b, self.cid, self.at, self.forward = b, cid, at, forward
+        self.reach, self.seconds, self.delay = reach, seconds, delay
+        self.shape = {"ease": ease, "drop": float(drop), "spin": float(spin), "hang": float(hang), "sink": float(sink),
+                      "fade": float(fade), "light": None if light is None else float(light), "lands": lands}
+
+    def __enter__(self):
+        self.start = len(self.b.objects)
+        return self
+
+    def __exit__(self, *exc):
+        if exc[0] is not None:
+            return False
+        b = self.b
+        rows = b.launches.setdefault(self.cid, [])
+        name = "launch_%s_%d" % (self.cid, len(rows) + 1)
+        e = bpy.data.objects.new(name, None)
+        e.empty_display_size = 1.0
+        m = Matrix.Translation(Vector(self.at)) @ pin_frame(self.forward).to_4x4()
+        e.matrix_world = m
+        bpy.context.scene.collection.objects.link(e)
+        b.pins.append(e)
+        inv = m.inverted()
+        for ob in b.objects[self.start:]:
+            ob.parent = e
+            ob.matrix_parent_inverse = inv
+            if ob.type == "MESH" and any(mat is not None and mat.name.startswith("amber") for mat in ob.data.materials):
+                b.launch_lit.add(re.sub(r"\.\d+$", "", ob.name))
+        row = {"node": name, "reach": round(float(self.reach), 2), "seconds": round(float(self.seconds), 3), "delay": round(float(self.delay), 3)}
+        for key, plain in (("ease", "in"), ("drop", 0.0), ("spin", 0.0), ("hang", 0.0), ("sink", 0.0), ("fade", 0.0), ("light", None), ("lands", None)):
+            v = self.shape[key]
+            if v != plain:
+                row[key] = v if isinstance(v, str) else round(v, 3)
+        rows.append(row)
+        return False
 
 
 class _Socket:
-    def __init__(self, b, name, at, forward, scale, carries=None):
-        self.b, self.name, self.at, self.forward, self.scale, self.carries = b, name, at, forward, scale, carries
+    def __init__(self, b, name, at, forward, scale, carries=None, fits=None):
+        self.b, self.name, self.at, self.forward, self.scale, self.carries, self.fits = b, name, at, forward, scale, carries, fits
 
     def __enter__(self):
         self.start = len(self.b.objects)
@@ -1066,7 +1482,7 @@ class _Socket:
 
     def __exit__(self, *exc):
         if exc[0] is None:
-            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:], carries=self.carries)
+            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:], carries=self.carries, fits=self.fits)
         return False
 
 
@@ -1220,6 +1636,20 @@ def terrain_tiles(out_dir, seed=11):
     print(f"lowforge: terrain tiles -> {out_dir}: {', '.join(tiles)}")
 
 
+def write_muzzles(path):
+    """The muzzle flares' places on each class (models_low.MUZZLES) in the models' own frame, as
+    the glTF carries them (a point built at (x, y, z) is at (x, z, -y)): [[point, size], ...] a
+    class, read by MechView3D and the hangar."""
+    import json
+    import models_low
+    out = {"_about": "Where each silhouette class's muzzle flare blooms: [point, size] in the class's own frame under its pin, written by tools/lowforge (models_low.MUZZLES)."}
+    for shape, places in models_low.MUZZLES.items():
+        out[shape] = [[[round(p[0], 3), round(p[2], 3), round(-p[1], 3)], size] for p, size in places]
+    with open(path, "w") as f:
+        json.dump(out, f, indent=1)
+        f.write("\n")
+
+
 def _export(out):
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
     bpy.ops.object.select_all(action="SELECT")
@@ -1236,15 +1666,31 @@ def main():
     if "shapes" in a:
         # The silhouette classes (decided 29 September), one file a class a maker, so a
         # swapped component wears its own maker's metal: art/models/shapes/<shape>_<maker>.glb.
+        # A class's variants (models_low.VARIANTS) the same way, for the hardpoints that declare
+        # one, and their names and classes into variants.json.
+        import json
         import models_low
+        every = dict(models_low.SHAPES, **{v: fn for v, (_, fn) in models_low.VARIANTS.items()})
         for maker in MAKERS:
-            for shape, fn in models_low.SHAPES.items():
+            for shape, fn in every.items():
                 bpy.ops.wm.read_factory_settings(use_empty=True)
                 tiles = Tiles(a.get("tiles", os.path.join(HERE, "tiles")), maker)
                 builder = Build("%s_%s" % (shape, maker), tiles)
                 fn(builder, 1.0)
                 _export(os.path.join(a["shapes"], "%s_%s.glb" % (shape, maker)))
-        print(f"lowforge: {len(MAKERS) * len(models_low.SHAPES)} shapes -> {a['shapes']}")
+        with open(os.path.join(a["shapes"], "variants.json"), "w") as f:
+            json.dump(dict({"_about": "Each variant of a silhouette class and the class it is (models_low.VARIANTS), written by tools/lowforge: a hardpoint's `fits` in its model's sidecar may name one for its class."},
+                           **{v: c for v, (c, _) in models_low.VARIANTS.items()}), f, indent=1)
+            f.write("\n")
+        # A burn weapon's fire over its class (models_low.BURNS), one file a class: its red is
+        # no maker's metal.
+        for shape, fn in models_low.BURNS.items():
+            bpy.ops.wm.read_factory_settings(use_empty=True)
+            builder = Build("burn_%s" % shape, Tiles(a.get("tiles", os.path.join(HERE, "tiles")), next(iter(MAKERS))))
+            fn(builder, 1.0)
+            _export(os.path.join(a["shapes"], "burn_%s.glb" % shape))
+        write_muzzles(os.path.join(a["shapes"], "muzzles.json"))
+        print(f"lowforge: {len(MAKERS) * len(every)} shapes ({len(models_low.VARIANTS)} variants), {len(models_low.BURNS)} burns and the muzzles -> {a['shapes']}")
         return
     out = a["out"]
     if "blend" in a and "model" not in a:

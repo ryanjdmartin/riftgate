@@ -50,6 +50,32 @@
    }
   },
   {
+   "id": "reinforced_skeleton",
+   "name": "Reinforced Skeleton",
+   "maker": "minerva",
+   "tier": 2,
+   "codex": "",
+   "flavour": "Legendary Minervan strength.",
+   "stats": {
+    "hull": 8
+   },
+   "text": {
+    "description": "Its components are never destroyed.",
+    "effects": [
+     {
+      "trigger": "on_injury",
+      "effect": "no_destroy",
+      "value": 1
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "The Honey Badger's old passive, Minerva's legendary frame: whatever breaks, it keeps working.",
+    "niche": "Campaign insurance more than a fight effect (Ryan, 15 October: \"Never destroyed - module, yes. Tier 2 or 3, not sure. Can have positive stats since that's not that impactful an effect\"): tier two on Ryan's go of 31 October, the Ram Frame's hull line beside its rule."
+   }
+  },
+  {
    "id": "spall_liner",
    "name": "Spall Liner",
    "maker": "minerva",
@@ -111,6 +137,7 @@
    "flavour": "",
    "stats": {},
    "text": {
+    "status": "planned",
     "description": "Its rolled weapons reach 1 higher.",
     "effects": [
      {
@@ -123,7 +150,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Everything leaves the barrel faster. Including the barrel, eventually.",
-    "niche": "The ceiling to the Tactical Databank's floor: a rolled weapon's highest roll raised a little."
+    "niche": "The ceiling to the Tactical Databank's floor: a rolled weapon's highest roll raised a little.",
+    "notes": "Awaits a rule since 2 November: rolled damage is gone (Ryan, decided in play testing: \"I want rolled damage gone for sure\"), so a ceiling or a floor has nothing to move. Its old rule: Its rolled weapons reach 1 higher."
    }
   },
   {
@@ -197,6 +225,7 @@
    "flavour": "",
    "stats": {},
    "text": {
+    "status": "planned",
     "description": "Its rolled weapons' lowest roll is 1 higher.",
     "effects": [
      {
@@ -209,7 +238,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Every firing solution the regiment ever logged, in a box that hums.",
-    "niche": "The floor to the Muzzle Velocity Booster's ceiling: a rolled weapon's lowest roll raised a little."
+    "niche": "The floor to the Muzzle Velocity Booster's ceiling: a rolled weapon's lowest roll raised a little.",
+    "notes": "Awaits a rule since 2 November: rolled damage is gone (Ryan, decided in play testing: \"I want rolled damage gone for sure\"), so a ceiling or a floor has nothing to move. Its old rule: Its rolled weapons' lowest roll is 1 higher."
    }
   },
   {
@@ -351,7 +381,7 @@
     "hull": 4
    },
    "text": {
-    "description": "Taking hull damage Overcharges it, a stack a blow.",
+    "description": "Taking hull damage Empowers it, a stack a blow.",
     "effects": [
      {
       "trigger": "on_hull_damage",

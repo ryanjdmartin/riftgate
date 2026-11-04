@@ -620,7 +620,7 @@
     "booster_ring",
     "exhaust"
    ],
-   "k": 4.0
+   "k": 7.0
   },
   "rock": 2.0,
   "body_hold": [
@@ -655,5 +655,36 @@
   "hp_1": "overclocked_railgun",
   "hp_2": "twin_autoguns",
   "hp_3": ""
+ },
+ "halo": [
+  [
+   "booster_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ]
+ ],
+ "fires": {
+  "spindrift_salvo": {
+   "act": "salvo",
+   "from": 1.8,
+   "to": 3.6
+  },
+  "immelmann_booster": {
+   "act": "immelmann",
+   "from": 1.0,
+   "to": 3.8
+  },
+  "reheat_uplink": {
+   "act": "uplink",
+   "from": 1.2,
+   "to": 3.6
+  }
+ },
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "twin_barrel"
  }
 }

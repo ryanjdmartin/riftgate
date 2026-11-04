@@ -56,7 +56,7 @@ static func attach_hull(node: Node, material: Material) -> Array:
 		targets.append(node)
 	for child in targets:
 		var mi: MeshInstance3D = child
-		if mi.mesh == null or mi.has_meta("is_trace"):
+		if mi.mesh == null or mi.has_meta("is_trace") or mi.has_meta("halo"):
 			continue
 		var hull := MeshInstance3D.new()
 		hull.mesh = mi.mesh
@@ -82,7 +82,7 @@ static func attach(node: Node, material: Material) -> Array:
 		targets.append(node)
 	for child in targets:
 		var mi: MeshInstance3D = child
-		if mi.mesh == null:
+		if mi.mesh == null or mi.has_meta("halo"):
 			continue
 		var edges := edge_mesh(mi.mesh)
 		if edges == null:

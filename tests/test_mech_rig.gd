@@ -6,7 +6,8 @@ extends TestCase
 ## only the drawing needs a window.
 
 const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
-	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier"]
+	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
+	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
@@ -113,6 +114,232 @@ func test_the_glow_parts_name_lit_meshes_in_every_model() -> void:
 						break
 				assert_true(found, "%s: a mesh labelled %s carries the glow (the label whole, never a prefix)" % [id, part])
 		model.free()
+
+
+func test_a_standing_glow_holds_its_light_and_a_flare_rises_past_it() -> void:
+	var rig := MechRig.new()
+	var lit := StandardMaterial3D.new()
+	lit.emission_energy_multiplier = 2.0
+	rig._standing[lit] = 5.0
+	rig._light_to(lit, MechRig._rest_of(lit), 1.0)
+	assert_true(absf(lit.emission_energy_multiplier - 2.0 * MechRig.light(5.0)) < 0.0001, "at rest it holds its standing glow")
+	rig._light_to(lit, MechRig._rest_of(lit), 9.0)
+	assert_true(absf(lit.emission_energy_multiplier - 2.0 * MechRig.light(9.0)) < 0.0001, "an act's flare rises past it")
+	assert_true(absf(MechRig._rest_of(lit) - 2.0) < 0.0001, "its rest is kept under the raised light")
+
+
+func test_a_halo_names_only_parts_a_glow_lights() -> void:
+	# A part a glow lights, or a lit part a launch carries, which its flight lights (the Swallowtail's
+	# flare stars: lowforge's launch()).
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var halo = side.get("halo", [])
+		assert_true(halo is Array, "%s: the halo is a list of parts" % id)
+		var flown := []
+		if not (side.get("launches", {}) as Dictionary).is_empty():
+			var model: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
+			for rows in (side["launches"] as Dictionary).values():
+				for l in rows:
+					var n := model.find_child(str(l.get("node", "")), true, false)
+					for mi in (n.find_children("*", "MeshInstance3D", true, false) if n != null else []):
+						flown.append(str(mi.name))
+			model.free()
+		for entry in (halo if halo is Array else []):
+			var p = entry[0] if entry is Array else entry
+			var lit := (side.get("glow_parts", []) as Array).has(p)
+			var carried := flown.any(func(f): return MechRig.labelled(f, str(p)))
+			assert_true(lit or carried, "%s: the halo's %s is a part a glow lights or a launch carries" % [id, p])
+
+
+func test_a_halo_closes_round_a_flat_part_and_shows_only_as_its_light_climbs() -> void:
+	# Each corner of the shell takes the sum of the faces meeting there, so a flat-shaded box's
+	# shell grows out along its diagonals, closed, never split open along its edges.
+	var box := ArrayMesh.new()
+	box.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, BoxMesh.new().get_mesh_arrays())
+	var shell := MechRig._halo_mesh(box, 0).surface_get_arrays(0)
+	var verts: PackedVector3Array = shell[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = shell[Mesh.ARRAY_NORMAL]
+	var out := 0
+	for i in range(verts.size()):
+		if normals[i].dot(verts[i].normalized()) > 0.999:
+			out += 1
+	assert_true(verts.size() >= 24, "a box's shell keeps its faces' corners")
+	assert_eq(out, verts.size(), "every corner of a box's shell points straight out from its middle")
+	# A flat part's shell spreads round its rim, never floating off its face: a quad's corners lean
+	# outward in its plane as well as off it.
+	var quad := ArrayMesh.new()
+	quad.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, QuadMesh.new().get_mesh_arrays())
+	var flat := MechRig._halo_mesh(quad, 0).surface_get_arrays(0)
+	var fv: PackedVector3Array = flat[Mesh.ARRAY_VERTEX]
+	var fn: PackedVector3Array = flat[Mesh.ARRAY_NORMAL]
+	var leaning := 0
+	for i in range(fv.size()):
+		if fn[i].dot(Vector3(fv[i].x, fv[i].y, 0.0).normalized()) > 0.5 and absf(fn[i].z) > 0.3:
+			leaning += 1
+	assert_eq(leaning, fv.size(), "every corner of a flat quad's shell leans out round its rim")
+	# At rest a lit part wears no halo; it fades in as the part's light climbs over its rest,
+	# whole at HALO_FULL rests over, burning at the part's own light.
+	var rig := MechRig.new()
+	var lit := StandardMaterial3D.new()
+	var halo := ShaderMaterial.new()
+	halo.shader = MechRig.HALO_SHADER
+	rig._halos[lit] = [halo]
+	rig._light_to(lit, 2.0, 1.0)
+	assert_eq(halo.get_shader_parameter("presence"), 0.0, "no halo at rest")
+	rig._light_to(lit, 2.0, 1.0 + MechRig.HALO_FULL / 2.0)
+	assert_true(absf(float(halo.get_shader_parameter("presence")) - 0.5) < 0.001, "half a halo halfway to full")
+	rig._light_to(lit, 2.0, 1.0 + MechRig.HALO_FULL * 3.0)
+	assert_eq(halo.get_shader_parameter("presence"), 1.0, "a whole halo past full")
+	assert_true(absf(float(halo.get_shader_parameter("light")) - lit.emission_energy_multiplier) < 0.0001, "the halo burns at its part's light")
+
+
+func test_a_halo_is_drawn_toward_the_eye_unless_its_part_names_its_own_distance() -> void:
+	# A part in a slot glows out over its walls; a part standing proud of a thin plate names nought,
+	# so its halo never shows through the plate when it faces away.
+	var rig := MechRig.new()
+	rig.model = Node3D.new()
+	var shells := {}
+	for part in ["slot", "puck"]:
+		var mi := MeshInstance3D.new()
+		mi.name = part
+		mi.mesh = BoxMesh.new()
+		var lit := StandardMaterial3D.new()
+		lit.emission_enabled = true
+		mi.set_surface_override_material(0, lit)
+		rig.model.add_child(mi)
+		shells[part] = mi
+	rig._setup_halos({"halo": ["slot", ["puck", 1.0, 0.0]]})
+	for part in shells.keys():
+		var worn: Array = (shells[part] as Node).find_children("halo", "MeshInstance3D", false, false)
+		assert_eq(worn.size(), 1, "the %s wears one halo" % part)
+		if worn.size() == 1:
+			var ahead := float(((worn[0] as MeshInstance3D).material_override as ShaderMaterial).get_shader_parameter("ahead"))
+			assert_eq(ahead, MechRig.HALO_AHEAD if part == "slot" else 0.0, "the %s's halo is drawn its distance toward the eye" % part)
+	rig.model.free()   # the rig is RefCounted and goes with its last reference
+
+
+func test_only_the_weapon_that_fired_kicks_after_its_aim() -> void:
+	# The Prairie Dog's twin autoguns ride its turret; its other mounts sit on the chassis.
+	var pair := _rig_for("prairie_dog")
+	var rig: MechRig = pair[0]
+	rig.strike(true, ["turret"], Vector3.ZERO, 0.1)
+	for st in rig._strikes:
+		assert_eq(str(st["joint"]), "turret", "only the joint carrying the weapon that fired kicks")
+	assert_false(rig._strikes.is_empty(), "and it does kick")
+	assert_eq(MechRig._strike_envelope(rig._strikes[0]), 0.0, "held while the machine turns onto its target")
+	rig._step(0.15)
+	assert_true(MechRig._strike_envelope(rig._strikes[0]) > 0.0, "then the blow")
+	assert_eq(rig.aim_joint_over(rig.hardpoints[1]), "turret", "the turret aims the gun on it")
+	assert_eq(rig.aim_joint_over(rig.hardpoints[2]), "", "a gun on the chassis aims by nothing")
+	pair[1].free()
+	# A fixed gun whose business end rides a joint carrying no mount (the Badger's fragmenter on its
+	# wrist) still kicks when it fires, since the strike names that joint; an unnamed shot leaves it.
+	var checked := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var model_id := f.trim_suffix(".rig.json")
+		var side := MechRig.load_sidecar(model_id)
+		var fx = side.get("fx", {})
+		if not (fx is Dictionary) or (fx as Dictionary).is_empty():
+			continue
+		pair = _rig_for(model_id)
+		rig = pair[0]
+		var nodes := MechView3D.fx_of(pair[1], side)
+		for cid in nodes.keys():
+			var owner := rig.joint_of(nodes[cid])
+			var carries := owner.is_empty()
+			for n in rig.hardpoints.keys():
+				if rig.joint_of(rig.hardpoints[n]) == owner:
+					carries = true
+			if carries:
+				continue
+			rig._strikes.clear()
+			rig.strike(true)
+			assert_true(rig._strikes.filter(func(st) -> bool: return str(st["joint"]) == owner).is_empty(), "%s: a shot naming no joint kicks only those carrying mounts, never %s" % [model_id, owner])
+			rig._strikes.clear()
+			rig.strike(true, [owner])
+			assert_eq(rig._strikes.filter(func(st) -> bool: return str(st["joint"]) == owner).size(), 1, "%s: its %s kicks the %s carrying it, mount or none" % [model_id, cid, owner])
+			checked += 1
+		pair[1].free()
+	assert_true(checked > 0, "some fixed gun rides a joint carrying no mount")
+	pair = _rig_for("armadillo")
+	rig = pair[0]
+	assert_eq(rig.aim_joint_over(rig.hardpoints[1]), "", "a quad's port guns never turn to aim (Ryan: don't bother)")
+	pair[1].free()
+	pair = _rig_for("nemesis")
+	rig = pair[0]
+	assert_eq(rig.aim_joint_over(rig.hardpoints[2]), "waist", "past the shoulder's elevation, the waist")
+	rig.aim("waist", 20.0, 1.0)
+	rig._step(MechRig.AIM_UP + 0.05)
+	rig._pose()
+	var turned := rad_to_deg(rig.joints["waist"].rotation.y - rig._rest["waist"].y)
+	assert_true(absf(turned - 20.0) < 1.0, "the waist turns its aim to the left (%.1f)" % turned)
+	rig._step(1.0 + MechRig.AIM_DOWN)
+	assert_true(rig._aim.is_empty(), "and lets it go once the blow has landed")
+	pair[1].free()
+
+
+func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
+	# Every firing a sidecar names is one of its chassis's fixed components, on an act it has, so a
+	# renamed component or act fails here until the model follows.
+	var db := ContentDB.load_default()
+	var named := 0
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var fires = side.get("fires", {})
+		var fixed: Array = db.chassis.get(id, {}).get("fixed", [])
+		var acts := {}
+		for a in side.get("acts", []):
+			acts[str(a["name"])] = float(a.get("duration", 0.0))
+		for cid in (fires as Dictionary).keys():
+			named += 1
+			assert_true(fixed.has(cid), "%s: %s fires with an act, and is one of its fixed weapons" % [id, cid])
+			var slices: Array = fires[cid] if fires[cid] is Array else [fires[cid]]
+			for f in slices:
+				assert_true(acts.has(str(f["act"])), "%s: %s's act %s is one of its own" % [id, cid, f["act"]])
+				assert_true(float(f["from"]) < float(f["to"]) and float(f["to"]) <= float(acts.get(str(f["act"]), 0.0)), "%s: %s's slice lies inside its act" % [id, cid])
+				if f.has("blow"):
+					assert_true(float(f["from"]) <= float(f["blow"]) and float(f["blow"]) <= float(f["to"]), "%s: %s's blow lies inside its slice" % [id, cid])
+	assert_true(named >= 10, "the cheapest locked weapons fire with their acts (%d)" % named)
+	# The slice plays from its start and ends at its end, cutting the act short.
+	var pair := _rig_for("nemesis")
+	var rig: MechRig = pair[0]
+	var cid := str((rig.fires as Dictionary).keys()[0])
+	var f: Dictionary = rig.fire_slice(cid)
+	assert_true(rig.fire_act(cid), "the fixed weapon fires with its act")
+	assert_eq(str(rig._current["name"]), str(f["act"]), "the act it names plays")
+	assert_true(absf(rig._t - float(f["from"])) < 0.001, "from the slice's start")
+	rig._step(float(f["to"]) - float(f["from"]) - 0.05)
+	assert_false(rig._current.is_empty(), "through the slice")
+	rig._step(0.1)
+	assert_true(rig._current.is_empty(), "and no further than its end")
+	assert_false(rig.fire_act("no_such_weapon"), "a weapon with no firing act strikes as before")
+	pair[1].free()
+
+
+func test_every_hand_built_stock_gun_has_a_muzzle_and_every_aim_joint_turns() -> void:
+	# A stock gun built by hand rather than as a class flares where lowforge found its business
+	# end (Ryan, 2 November); a fixed weapon's named aim joint turns about its up axis. A shield
+	# built by hand never fires, so it needs no muzzle, and a hidden mount shows and flares nothing
+	# (the Cottonmouth's guns inside its drum).
+	var db := ContentDB.load_default()
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var pins: Dictionary = side.get("pins", {})
+		var shapes: Dictionary = side.get("stock_shapes", {})
+		var muzzles: Dictionary = side.get("muzzles", {})
+		var hidden = side.get("hidden_pins", [])
+		for pin in pins.keys():
+			if str(pins[pin]).is_empty() or shapes.has(pin) or str(db.components.get(str(pins[pin]), {}).get("face", {}).get("kind", "")) != "attack":
+				continue
+			if hidden is Array and (hidden as Array).has(pin):
+				continue
+			assert_true(muzzles.has(pin) and not (muzzles[pin] as Array).is_empty(), "%s: the hand-built %s on %s flares somewhere" % [id, pins[pin], pin])
+		var joints: Dictionary = side.get("joints", {})
+		var aims: Dictionary = side.get("aims", {})
+		for cid in aims.keys():
+			assert_eq(str(joints.get(str(aims[cid]), {}).get("axis", "")), "yaw", "%s: %s aims with a joint that turns about its up axis" % [id, cid])
 
 
 func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
@@ -940,9 +1167,10 @@ func test_the_hovercraft_have_acts_and_cornering_numbers() -> void:
 		assert_true(side.get("acts", []).size() >= 3, "%s has several acts" % id)
 	# Ryan, 5 October: both oversteer through corners, like the Dingo; the Stingray faces its
 	# heading (no longer a helicopter holding its final facing) and noses down into its travel.
-	# The fifth notes: a hovercraft keeps flat, so the Puffin no longer banks.
+	# Ryan, 3 November: the Puffin, "more speedboat-ey now", banks a little in its turns (the fifth
+	# notes had kept it flat), far less than the jets.
 	var puffin: Dictionary = MechRig.load_sidecar("puffin")["move"]
-	assert_true(is_zero_approx(float(puffin.get("bank", 0.0))) and float(puffin.get("oversteer", 0.0)) > 0.0, "the Puffin oversteers and does not bank")
+	assert_true(float(puffin.get("bank", 0.0)) > 0.0 and float(puffin.get("bank", 0.0)) < 20.0 and float(puffin.get("oversteer", 0.0)) > 0.0, "the Puffin oversteers and banks a little")
 	var stingray: Dictionary = MechRig.load_sidecar("stingray")["move"]
 	assert_true(float(stingray.get("oversteer", 0.0)) > 0.0 and is_zero_approx(float(stingray.get("strafe", 0.0))), "the Stingray oversteers and faces its heading")
 	assert_true(stingray.has("tilt") and float(stingray["tilt"][0]) > 20.0, "and noses down hard into its travel, its fans its propulsion")
@@ -971,7 +1199,7 @@ func test_the_stingray_noses_into_its_travel() -> void:
 	rig = pair[0]
 	assert_true(is_zero_approx(float(rig.move.get("strafe", 0.0))), "the Puffin faces its heading")
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0, 1.0)
-	assert_true(absf(pair[1].rotation.z) < deg_to_rad(0.5), "and stays flat through a left turn (%f)" % rad_to_deg(pair[1].rotation.z))
+	assert_true(pair[1].rotation.z > deg_to_rad(2.0) and pair[1].rotation.z < deg_to_rad(15.0), "and leans a little into a left turn (%f)" % rad_to_deg(pair[1].rotation.z))
 	pair[1].free()
 
 
@@ -1076,6 +1304,166 @@ func test_a_hovercraft_eases_down_and_takes_no_gust_through_an_act() -> void:
 	assert_true(worst_jolt < 0.02, "and a gust never changes the attitude's rate at a stroke (%f radians a second in a frame)" % worst_jolt)
 
 
+func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> void:
+	# The Cassowary's capacitor (Ryan, 2 November: "charging up for the sixth hit of its passive"):
+	# a cell lights for each counted shot, and the sixth shot, the one that counts double,
+	# discharges them, all six flaring and going dark. Headless the cells have no lit surfaces, so
+	# their light is read off the display itself.
+	var pair := _rig_for("cassowary", 2)
+	var rig: MechRig = pair[0]
+	assert_eq(rig.count_displays.size(), 1, "one count display")
+	var d: Dictionary = rig.count_displays[0]
+	assert_eq(str(d["source"]), "shots", "showing the counted shots")
+	assert_eq((d["parts"] as Array).size(), 6, "on six cells")
+	var on := float(d["on"])
+	var off := float(d["off"])
+	var flare := float(d["flare"])
+	assert_true(flare > on and on > off, "a flare brighter than a charged cell, a charged one brighter than a spent one")
+	var lit := func(i: int) -> float: return rig.count_light("shots", i)
+	var settle := func(seconds: float) -> void:
+		var t := 0.0
+		while t < seconds:
+			rig.tick(1.0 / 60.0)
+			t += 1.0 / 60.0
+	for i in range(6):
+		assert_eq(lit.call(i), off, "dark before anything is counted (cell %d)" % (i + 1))
+	assert_true(rig.show_counts({"shots": 2}), "the first look")
+	assert_eq([lit.call(0), lit.call(1), lit.call(2)], [on, on, off], "shows its number as it stands")
+	assert_false(rig.show_counts({"shots": 2}), "the same number changes nothing")
+	assert_false(rig.show_counts({"ammo": 9}), "nor a number it does not show")
+	assert_true(rig.show_counts({"shots": 5}), "three shots more")
+	settle.call(0.05)
+	assert_true(lit.call(2) > off and lit.call(2) < on, "a cell lights over a moment (%f)" % lit.call(2))
+	settle.call(0.6)
+	assert_eq(rig.count_shown("shots"), 5, "five lit")
+	assert_eq([lit.call(4), lit.call(5)], [on, off], "the sixth dark: the next shot is the one that counts")
+	assert_true(rig.show_counts({"shots": 0}), "the sixth shot")
+	for i in range(6):
+		assert_eq(lit.call(i), flare, "flares every cell (%d)" % (i + 1))
+	settle.call(0.3)
+	assert_true(lit.call(0) > off and lit.call(0) < flare, "and fades (%f)" % lit.call(0))
+	settle.call(2.0)
+	for i in range(6):
+		assert_eq(lit.call(i), off, "dark again (cell %d)" % (i + 1))
+	assert_true(rig.show_counts({"shots": 9}) and rig.count_shown("shots") == 6, "a number past its cells lights them all")
+	# RIFTGATE_COUNT_DEBUG counts it up a cell a second until it falls, to judge it running.
+	rig.show_counts({"shots": 0})
+	rig.count_debug = true
+	settle.call(1.05)
+	assert_eq(rig.count_shown("shots"), 1, "the switch counts a cell a second")
+	settle.call(6.0)
+	assert_eq(rig.count_shown("shots"), 0, "past its last cell it falls")
+	pair[1].free()
+	var plain := _rig_for("clydesdale", 2)
+	assert_false((plain[0] as MechRig).show_counts({"shots": 3, "ammo": 3}), "a model with no display shows nothing")
+	plain[1].free()
+
+
+func test_a_spin_is_held_while_the_machine_carries_its_status() -> void:
+	# The Cassowary's capacitor turns while it is Spun Up, the status its Spin-Up grants (Ryan, 2
+	# November: "It could spin for the spin up component"): up to speed as the status lands, run
+	# down and still once it is spent.
+	var pair := _rig_for("cassowary", 2)
+	var rig: MechRig = pair[0]
+	assert_true(rig.held_spins.has("spun_up") and (rig.held_spins["spun_up"] as Dictionary).has("capacitor"), "the capacitor spins while Spun Up")
+	rig.acts = []   # an act turns the capacitor too: the held spin alone here
+	var cap: Node3D = rig.joints["capacitor"]
+	var speed := float(rig.held_spins["spun_up"]["capacitor"])
+	var turned := func(seconds: float) -> float:
+		var total := 0.0
+		var t := 0.0
+		while t < seconds:
+			var before := cap.rotation.z
+			rig.tick(1.0 / 60.0)
+			total += absf(wrapf(cap.rotation.z - before, -PI, PI))
+			t += 1.0 / 60.0
+		return rad_to_deg(total) / seconds
+	assert_true(turned.call(0.5) < 0.01, "still while nothing holds it")
+	assert_true(rig.hold_spin("spun_up", true), "Spun Up lands")
+	assert_false(rig.hold_spin("spun_up", true), "held once")
+	assert_true(rig.spin_held("spun_up") and rig.alive(), "held, and the rig keeps ticking")
+	turned.call(1.5)
+	var fast: float = turned.call(1.0)
+	assert_true(absf(fast - speed) < speed * 0.05, "up to its speed (%f a second)" % fast)
+	assert_true(rig.hold_spin("spun_up", false), "the spin is spent")
+	var slowing: float = turned.call(0.4)
+	assert_true(slowing > 30.0 and slowing < fast, "it runs down rather than stopping dead (%f a second)" % slowing)
+	turned.call(3.0)
+	assert_true(turned.call(0.5) < 0.01, "and stands still")
+	# RIFTGATE_SPIN_DEBUG holds it and lets it go in turn, to judge it running.
+	rig.spin_debug = true
+	turned.call(MechRig.SPIN_DEBUG_PERIOD + 1.5)
+	assert_true(rig.spin_held("spun_up") and turned.call(0.5) > speed * 0.8, "the switch holds it after a period")
+	turned.call(MechRig.SPIN_DEBUG_PERIOD)
+	assert_false(rig.spin_held("spun_up"), "and lets it go after another")
+	pair[1].free()
+	var plain := _rig_for("clydesdale", 2)
+	assert_false((plain[0] as MechRig).hold_spin("spun_up", true), "a model with no held spin holds none")
+	plain[1].free()
+
+
+func test_every_count_display_and_held_spin_names_what_the_game_passes() -> void:
+	# A count display shows a number the skirmish passes (MechRig.COUNT_SOURCES, as
+	# MechView3D.count_values reads them) and a held spin lasts while a status in sim/effects.gd
+	# does, so a renamed source or status fails here rather than leaving a capacitor dark or still.
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		for c in side.get("counts", []):
+			assert_true(MechRig.COUNT_SOURCES.has(str(c.get("source", ""))), "%s: its count display shows %s, a number the game passes" % [id, c.get("source", "")])
+		for status in (side.get("spin_held", {}) as Dictionary).keys():
+			assert_true(Effects.STATUS.has(str(status)), "%s: its spin is held by %s, a status the game lays" % [id, status])
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	u.grant_passive({"id": "test_count", "name": "Count", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "nth_shot", "every": 6}]})
+	Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 7, Effects.DECAY_NONE)
+	var ms := Skirmish.MechState.new()
+	ms.unit = u
+	ms.ammo = 3
+	var values := MechView3D.count_values(ms)
+	assert_eq(values.keys(), MechRig.COUNT_SOURCES, "every source the displays may show, and no other")
+	assert_eq(values, {"shots": 1, "ammo": 3}, "the shots toward the next that counts (seven shots, a sixth counted: one), the magazine")
+
+
+func test_the_cassowary_plants_its_toes_and_rolls_onto_them() -> void:
+	# Its stride (31 October): each foot's toes planted flat while the body passes over them, the
+	# heel lifting into the push-off before they leave the ground, the body never rolling.
+	var pair := _rig_for("cassowary", 2)
+	var rig: MechRig = pair[0]
+	var model: Node3D = pair[1]
+	for key in rig.gait.get("body", []):
+		assert_true(is_zero_approx(float(key[6])), "the walk's body never rolls")
+	var ball: Node3D = rig.joints["toe_l"]
+	var hock: Node3D = rig.joints["ankle_l"]
+	var rest_h := _in_model(ball, model).origin.y
+	_drive(rig, rig.top_speed, 1.0)
+	var samples: Array = []
+	var lowest := 1e9
+	var t := 0.0
+	while t < 2.0 * float(rig.gait["stride"]) / rig.top_speed:
+		rig.drive(rig.top_speed, 0.0, 0.0, 1.0 / 240.0)
+		var at := _in_model(ball, model).origin
+		samples.append([at.y, at.z - rig._dist, _in_model(hock, model).origin.y])
+		lowest = minf(lowest, at.y)
+		t += 1.0 / 240.0
+	var runs: Array = [[]]
+	for sm in samples:
+		if float(sm[0]) < lowest + 0.3:
+			(runs[runs.size() - 1] as Array).append(sm)
+		elif not (runs[runs.size() - 1] as Array).is_empty():
+			runs.append([])
+	var whole := 0
+	for run in runs:
+		if (run as Array).size() < 5 or run == runs[0] or run == runs[runs.size() - 1]:
+			continue   # a stance the window cut into
+		whole += 1
+		var ys: Array = (run as Array).map(func(sm): return float(sm[1]))
+		assert_true(float(ys.max()) - float(ys.min()) < 0.8, "the toes stay put while the body passes over them (%f units)" % (float(ys.max()) - float(ys.min())))
+		var heights: Array = (run as Array).map(func(sm): return float(sm[2]))
+		assert_true(float(heights[heights.size() - 1]) - float(heights.min()) > 1.5, "the heel lifts before they leave the ground (%f)" % (float(heights[heights.size() - 1]) - float(heights.min())))
+	assert_true(whole >= 1, "a whole stance in two strides")
+	assert_true(absf(lowest - rest_h) < 0.6, "down on the ground where it stands at rest (%f against %f)" % [lowest, rest_h])
+	pair[1].free()
+
+
 func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
 	# Ryan, 6 October, the seventh notes: the Stingray's lift fans turn. A spinner (b.spin) turns
 	# on its own axis whatever the machine does, at its idle rate standing and its moving rate
@@ -1137,3 +1525,239 @@ func test_the_vents_stand_ajar_while_open_and_shut_with_the_seal() -> void:
 		if span[k] != 0.0:
 			assert_true(absf(off[k]) < absf(span[k]) and signf(off[k]) == signf(span[k]), "%s: the share opens the way the act does, and less far" % jn)
 	pair[1].free()
+
+
+func _boxed_rig(lit: bool = false) -> Array:
+	var root := Node3D.new()
+	var body := Node3D.new()
+	root.add_child(body)
+	var mi := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(10.0, 10.0, 10.0)
+	mi.mesh = box
+	if lit:
+		var m := StandardMaterial3D.new()
+		m.emission_enabled = true
+		m.emission_energy_multiplier = 2.0
+		mi.set_surface_override_material(0, m)
+	body.add_child(mi)
+	var rig := MechRig.new()
+	rig.model = root
+	rig.body = body
+	return [rig, root, body, mi]
+
+
+func test_a_blow_on_the_hull_shoves_the_machine_back_and_settles() -> void:
+	# The to-do's hit reaction (Ryan's go of 3 November): the body shoved back a share of
+	# its longest side, its nose rocking up, on its servo, settling back to rest.
+	var r := _boxed_rig()
+	var rig: MechRig = r[0]
+	var body: Node3D = r[2]
+	rig.jolt(Vector3(0.0, 0.0, 1.0), 1.0)
+	rig.tick(MechRig.JOLT_UP)
+	assert_true(absf(body.position.z - MechRig.JOLT_SHARE * 10.0) < 0.05, "shoved back its share of its size at the top")
+	assert_true(body.rotation.x > 0.0, "its nose rocks up")
+	rig.tick(MechRig.JOLT_DOWN + 0.05)
+	assert_true(body.position.length() < 0.001 and absf(body.rotation.x) < 0.001, "and settles back to rest")
+	rig.jolt(Vector3(0.0, 0.0, 1.0), 0.5)
+	rig.tick(MechRig.JOLT_UP)
+	assert_true(absf(body.position.z - MechRig.JOLT_SHARE * 5.0) < 0.05, "a blow the armour turned shoves at half")
+	(r[1] as Node).free()
+
+
+func test_a_machine_lost_guts_its_lit_parts_and_stops_its_acts() -> void:
+	var r := _boxed_rig(true)
+	var rig: MechRig = r[0]
+	var m: StandardMaterial3D = (r[3] as MeshInstance3D).get_surface_override_material(0)
+	rig.acts = [{"name": "wave", "duration": 1.0, "tracks": {}, "body": [], "glow": []}]
+	rig.kill()
+	assert_true(rig.dead, "it is lost")
+	rig.tick(MechRig.GUTTER * 0.25)
+	assert_true(m.emission_energy_multiplier < 2.0, "its light gutters as it goes")
+	rig.tick(MechRig.GUTTER)
+	assert_eq(m.emission_energy_multiplier, 0.0, "and is out once the beat is done")
+	rig.tick(5.0)
+	assert_true(rig._current.is_empty(), "a lost machine starts no act")
+	rig.revive()
+	assert_false(rig.dead, "lit again")
+	assert_true(absf(m.emission_energy_multiplier - 2.0) < 0.001, "its light back at its rest")
+	assert_eq(MechRig.gutter_k(MechRig.GUTTER), 0.0, "nothing left at the beat's end")
+	assert_true(MechRig.gutter_k(0.0) > 0.0, "and all of it at its start")
+	(r[1] as Node).free()
+
+
+func test_a_locked_spin_parks_on_a_step_ahead_and_runs_on_from_there() -> void:
+	# Ryan, 2 November, of the Cottonmouth's drum: "Keep the idle turn ... Quickly spin it forward a
+	# fixed number of barrels when it fires", and "only ever light the top barrel mouth", so a
+	# barrel must stand on top when a shot fires. A spinner with a step (b.spin's step, the
+	# sidecar's spin_step) that an act locks (its `locks`) parks on its next step ahead as the act
+	# starts, never turning back, and holds there while the act plays, the act's own turn adding
+	# whole steps; when the act ends the idle turn takes up again from where it stands, nothing
+	# unwound. An act that locks nothing leaves the spin turning.
+	var id := ""
+	var act := ""
+	var jn := ""
+	var free := ""
+	for m in MACHINES:
+		var side := MechRig.load_sidecar(m)
+		for a in side.get("acts", []):
+			for j in a.get("locks", []):
+				if id.is_empty() and (side.get("spin_step", {}) as Dictionary).has(j) and (side.get("spin", {}) as Dictionary).has(j) and (a.get("tracks", {}) as Dictionary).has(j):
+					id = m
+					act = str(a["name"])
+					jn = str(j)
+	assert_false(id.is_empty(), "a model locks a stepped spin in an act")
+	if id.is_empty():
+		return
+	for a in MechRig.load_sidecar(id).get("acts", []):
+		if free.is_empty() and not (a.get("locks", []) as Array).has(jn) and not (a.get("tracks", {}) as Dictionary).has(jn):
+			free = str(a["name"])
+	var pair := _rig_for(id, 5)
+	var rig: MechRig = pair[0]
+	rig._wait = 1.0e9   # no act of its own choosing: only those played here
+	var step := float(rig.spin_steps.get(jn, 0.0))
+	assert_true(step > 0.0, "%s: %s has its step" % [id, jn])
+	var ax := ["pitch", "yaw", "roll"].find(str(rig.meta[jn]["axis"]))
+	var rate := float(rig.spinners[jn][0])
+	var total := func() -> float: return float(rig._spun[jn]) + (rig._act_rot.get(jn, Vector3.ZERO) as Vector3)[ax]
+	var dt := 1.0 / 60.0
+	# Idle, mid-step.
+	var t := 0.0
+	while t < 0.4 or absf(fposmod(float(rig._spun[jn]), step)) < 2.0 or absf(fposmod(float(rig._spun[jn]), step) - step) < 2.0:
+		rig.tick(dt)
+		t += dt
+	var s0 := float(rig._spun[jn])
+	var parked := (ceilf(s0 / step) if rate >= 0.0 else floorf(s0 / step)) * step
+	assert_true(rig.play(act), "%s plays %s" % [id, act])
+	assert_true(rig.spin_locked(jn), "%s: %s locks %s" % [id, act, jn])
+	var last := s0
+	var backwards := false
+	t = 0.0
+	while t < MechRig.PARK_TIME + 0.1:
+		rig.tick(dt)
+		t += dt
+		var now := float(rig._spun[jn])
+		if (now - last) * signf(rate) < -0.001:
+			backwards = true
+		last = now
+	assert_false(backwards, "%s: the park never turns back" % id)
+	assert_true(absf(float(rig._spun[jn]) - parked) < 0.01, "%s: parked on the next step ahead (%f from %f, want %f)" % [id, float(rig._spun[jn]), s0, parked])
+	var held := float(rig._spun[jn])
+	var duration := 0.0
+	for a in rig.acts:
+		if str(a["name"]) == act:
+			duration = float(a["duration"])
+	while t < duration - 0.05:
+		rig.tick(dt)
+		t += dt
+	assert_true(absf(float(rig._spun[jn]) - held) < 0.001, "%s: the idle turn holds still while the act plays" % id)
+	var before: float = total.call()
+	assert_true(absf(fposmod(before, step)) < 0.5 or absf(fposmod(before, step) - step) < 0.5, "%s: the act's own turn ends on whole steps (%f)" % [id, before])
+	while rig.in_act():
+		rig.tick(dt)
+	assert_false(rig.spin_locked(jn), "%s: the lock goes with the act" % id)
+	var after: float = total.call()
+	assert_true(absf(wrapf(after - before, -180.0, 180.0)) < 2.0, "%s: nothing jumps or unwinds as the act ends (%f to %f)" % [id, before, after])
+	var from := float(rig._spun[jn])
+	for i in range(30):
+		rig.tick(dt)
+	assert_true(absf(wrapf(float(rig._spun[jn]) - from, -180.0, 180.0) - rate * 0.5) < 2.0, "%s: the idle turn takes up again from where it stands" % id)
+	if not free.is_empty():
+		assert_true(rig.play(free), "%s plays %s" % [id, free])
+		assert_false(rig.spin_locked(jn), "%s: %s locks nothing" % [id, free])
+		var s1 := float(rig._spun[jn])
+		for i in range(30):
+			rig.tick(dt)
+		assert_true(absf(wrapf(float(rig._spun[jn]) - s1, -180.0, 180.0) - rate * 0.5) < 2.0, "%s: an act that locks nothing leaves the spin turning" % id)
+	pair[1].free()
+
+
+func test_a_weapons_slices_take_turns_and_wind_up_to_their_blow() -> void:
+	# Ryan, 3 November: the Ammit "can also afford two different Claw animations", and a weapon fired
+	# seldom is "worth a little longer time". Synthetic acts and slices.
+	var r := _boxed_rig()
+	var rig: MechRig = r[0]
+	rig.acts = [{"name": "a", "duration": 2.0, "tracks": {}, "body": [], "glow": []}, {"name": "b", "duration": 2.0, "tracks": {}, "body": [], "glow": [], "idle": false}]
+	rig.fires = {"claws": [{"act": "a", "from": 0.2, "to": 1.2, "blow": 0.6}, {"act": "b", "from": 0.4, "to": 1.0}]}
+	assert_eq(str(rig.fire_slice("claws")["act"]), "a", "the first slice first")
+	assert_true(absf(rig.fire_wind("claws") - 0.4) < 0.001, "it winds up from its start to its blow")
+	assert_true(absf(rig.fire_span("claws") - 1.0) < 0.001, "and plays its whole span")
+	assert_true(rig.fire_act("claws"), "fired")
+	assert_eq(str(rig._current["name"]), "a", "playing its act")
+	assert_eq(str(rig.fire_slice("claws")["act"]), "b", "the other next")
+	assert_eq(rig.fire_wind("claws"), 0.0, "a slice naming no blow starts on it")
+	assert_true(rig.fire_act("claws"), "fired again")
+	assert_eq(str(rig._current["name"]), "b", "the other plays")
+	assert_eq(str(rig.fire_slice("claws")["act"]), "a", "then round again")
+	rig.fires = {"gun": {"act": "a", "from": 0.2, "to": 1.2}}
+	assert_eq(rig.fire_slices("gun").size(), 1, "one slice as before")
+	assert_true(rig.fire_slices("none").is_empty() and rig.fire_wind("none") == 0.0, "a weapon with none has none")
+	# An act that is a weapon's firing alone never plays at rest.
+	rig._end_act()
+	var chosen := {}
+	for k in range(12):
+		chosen[str(rig.choose().get("name", ""))] = true
+	assert_eq(chosen.keys(), ["a"], "an act marked idle false is never an idle")
+	(r[1] as Node).free()
+
+
+func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
+	# Ryan, 3 November: after the lights go, "they should slump or collapse after, limbs dropping,
+	# flyers and hovers landing, fans stopping, idle spins stopping"; the second notes the same day:
+	# "don't fall through the floor, and don't do weird impossible leans ... it can keep its feet
+	# planted and just sink using its ankles and knees. Same with the bipeds, sink using knees and
+	# ankles and only slump forward at the waist. The bipeds also swing their arms behind them when
+	# they should just go slack at the elbows".
+	var pair := _rig_for("nemesis")
+	var rig: MechRig = pair[0]
+	var feet := {}
+	for side in ["l", "r"]:
+		feet[side] = rig._in_model(rig.joints["ankle_" + side])
+	rig.kill()
+	rig.tick(MechRig.COLLAPSE_AT + 3.0)
+	assert_true(rig.body.position.y < -3.0, "a walker sinks (%.2f)" % rig.body.position.y)
+	assert_true(rig.body.rotation.length() < 0.001, "straight down: nothing tips it")
+	for side in ["l", "r"]:
+		var now: Transform3D = rig._in_model(rig.joints["ankle_" + side])
+		var moved: float = (now.origin + rig.body.position).distance_to((feet[side] as Transform3D).origin)
+		var turned := rad_to_deg(now.basis.get_rotation_quaternion().angle_to((feet[side] as Transform3D).basis.get_rotation_quaternion()))
+		assert_true(moved < 0.3 and turned < 1.0, "each foot stays where it stands and as it stands (%s: %.2f, %.1f degrees)" % [side, moved, turned])
+	assert_true(float(rig._want_rot.get("waist", Vector3.ZERO).x) < -10.0, "a biped slumps forward at the waist")
+	for side in ["l", "r"]:
+		assert_true(absf(float(rig._want_rot.get("shoulder_" + side, Vector3.ZERO).x)) < 15.0, "its arm hangs where it is, never swung back (%s)" % side)
+		assert_true(absf(float(rig._want_rot.get("elbow_" + side, Vector3.ZERO).x)) > 20.0, "it goes slack at the elbow (%s)" % side)
+	assert_true(rig._lowest_under(rig.model) + rig.body.position.y > -0.5, "and nothing goes through the floor")
+	rig.revive()
+	rig.tick(2.0)
+	assert_true(rig._want_rot.is_empty() and absf(rig.body.position.y) < 0.05, "and stands again, revived")
+	pair[1].free()
+	# A tracked machine sinks nowhere; what it carries hangs, kept above the floor.
+	pair = _rig_for("badger")
+	rig = pair[0]
+	var low := rig._lowest_under(rig.model)
+	rig.kill()
+	rig.tick(MechRig.COLLAPSE_AT + 3.0)
+	assert_true(absf(rig.body.position.y) < 0.01, "a machine on tracks stays on them")
+	assert_true(rig._lowest_under(rig.model) > minf(0.0, low) - 0.3, "and its claw rests on the floor, never through it")
+	pair[1].free()
+	# A flyer comes down onto what hangs lowest once it has slumped (MechView3D lands it there).
+	pair = _rig_for("goshawk")
+	rig = pair[0]
+	rig.airborne = true
+	rig.kill()
+	rig.tick(MechRig.COLLAPSE_AT + 3.0)
+	assert_true(absf(rig.body.position.y) < 0.01, "an airborne machine does not sink on itself")
+	assert_true(absf(rig.collapse_floor - rig._lowest_under(rig.model)) < 0.5, "it lands on its lowest point (%.2f, %.2f)" % [rig.collapse_floor, rig._lowest_under(rig.model)])
+	pair[1].free()
+	pair = _rig_for("stingray")
+	rig = pair[0]
+	var turned := func(seconds: float) -> float:
+		var a := float(rig._spun["fan_r"])
+		rig.tick(seconds)
+		return absf(fposmod(float(rig._spun["fan_r"]) - a + 180.0, 360.0) - 180.0)
+	assert_true(turned.call(0.05) > 1.0, "its fans turn while it stands")
+	rig.kill()
+	rig.tick(MechRig.SPIN_STOP + 0.1)
+	assert_true(turned.call(0.05) < 0.001, "and stop once it is lost")
+	pair[1].free()
+

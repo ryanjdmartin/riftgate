@@ -213,7 +213,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 				boss.foe_id = str(escort[0])
 			boss.strength = maxi(0, int(escort[1]))
 		boss.boss_tier = tier
-		var tailored := db.escort_composition(faction, tier + 1)
+		var tailored := db.escort_composition(faction, tier + 1, boss_id)
 		if escort.size() < 2 and not tailored.is_empty():
 			# A hand-tailored escort written in content (an `escort` composition at the tier):
 			# its members at the ramp's density, in place of the tier's units round robin.
@@ -283,15 +283,24 @@ func _fractures() -> void:
 ## The next elite composition of the lead's domain not yet fought this battle emerges at the
 ## rift (the elites' moment is a Fracture, 30 October); none when the domain's are spent.
 func _spawn_elite() -> void:
-	for c in db.elite_compositions(faction, tier + 1):
-		if elites_spawned.has(str(c["id"])):
-			continue
-		var sq := field.emerge(c, map.rift)
-		if sq == null:
-			continue
-		elites_spawned.append(str(c["id"]))
-		field.log.append("An elite emerges at the rift: %s" % sq.display_name)
+	# The domain's next own elite, or a wanderer on the Fracture's roll (ContentDB.next_elite,
+	# 2 November); each once a battle.
+	var c := db.next_elite(faction, tier + 1, elites_spawned, _elite_roll())
+	if c.is_empty():
 		return
+	var sq := field.emerge(c, map.rift)
+	if sq == null:
+		return
+	sq.boss_tier = tier   # a wandering elite stands at the battle's tier (31 October)
+	elites_spawned.append(str(c["id"]))
+	field.log.append("An elite emerges at the rift: %s" % sq.display_name)
+
+
+## The Fracture's roll for a wanderer, from the battle's seed and its count of Fractures, so
+## a resumed battle rolls as the unbroken one did (the save keeps both and no third stream)
+## and the battle's own streams run on untouched.
+func _elite_roll() -> float:
+	return float(absi(hash(Vector2i(seed_value, fractures))) % 1000) / 1000.0
 
 
 func _pack_name(foe_id: String) -> String:

@@ -9,12 +9,12 @@ const I := Face.Reach.INDIRECT
 const K := Face.Keyword
 
 
-## Four hardpoints, all teeth. Rolled numbers. Numbers in tens.
+## Four hardpoints, all teeth. Numbers in tens.
 static func brawler_die() -> Die:
 	return Die.of([
-		Face.attack(20, L, K.CLEAVE, 0, 40),
-		Face.attack(20, L, K.CLEAVE, 0, 40),
-		Face.attack(30, L, K.NONE, 10, 60),
+		Face.attack(30, L, K.CLEAVE),
+		Face.attack(30, L, K.CLEAVE),
+		Face.attack(45, L, K.NONE, 10),
 		Face.shield(20),
 	])
 
@@ -22,10 +22,10 @@ static func brawler_die() -> Die:
 ## Six hardpoints. A bit of everything, so each face shows less often.
 static func gunner_die() -> Die:
 	return Die.of([
-		Face.attack(10, L, [], 0, 30),
-		Face.attack(10, L, [], 0, 30),
+		Face.attack(20, L),
+		Face.attack(20, L),
 		Face.attack(30, L, K.PENETRATE, 10),
-		Face.attack(10, I, [], 0, 30),
+		Face.attack(20, I),
 		Face.shield(20),
 		Face.vent(20),
 	])
@@ -34,20 +34,20 @@ static func gunner_die() -> Die:
 ## Six hardpoints. Artillery and support: hits the back rank, keeps the team cool.
 static func mortar_die() -> Die:
 	return Die.of([
-		Face.attack(20, I, [], 0, 50),
-		Face.attack(20, I, [], 0, 50),
-		Face.attack(10, I, K.BURN, 0, 30),
-		Face.attack(30, I, K.SUPPRESS, 20, 50),
+		Face.attack(35, I),
+		Face.attack(35, I),
+		Face.attack(20, I, K.BURN),
+		Face.attack(40, I, K.SUPPRESS, 20),
 		Face.vent(30),
 		Face.shield(10),
 	])
 
 
-## A skirmisher aircraft: big shield, low hull, few faces, runs hot. Flat numbers.
+## A skirmisher aircraft: big shield, low hull, few faces, runs hot.
 static func sparrowhawk_die() -> Die:
 	return Die.of([
 		Face.attack(100, L, [], 40),
-		Face.attack(20, L, [], 0, 40),
+		Face.attack(30, L),
 		Face.attack(30, L, K.CHAIN, 10),
 		Face.shield(30),
 	])

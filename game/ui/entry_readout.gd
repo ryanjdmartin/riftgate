@@ -68,15 +68,15 @@ static func hint_ink() -> Color:
 
 
 ## The readout's lines for `f`, the entry as its machine shows it now (Skirmish.shown_face), at
-## `place` on its die (from one). `shown` is its blow as the die prints it ([low, high],
-## Skirmish.shown_number: every modifier in; empty, the entry's own), `base` the component as
+## `place` on its die (from one). `shown` is its blow as the die prints it (Skirmish.shown_number:
+## every modifier in; -1, the entry's own), `base` the component as
 ## built, whose numbers a highlight is read against, `states` what holds on it now, `grants`
 ## the written-out grants' lines (Effects.printed_grants), `types` what kind of piece it is on
 ## its machine (face_types), beside its name; its tags are the shown entry's, a passive's
 ## change in. A state is its words, or [words, mark()] when the die shows a mark for it (the
 ## lock, the corruption); `extra` is what the screen adds for a mark the die prints from its
 ## machine (a vent's blast), each a line with its mark, after the entry's own.
-static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = [], extra: Array = [], cooldown: int = -1) -> Array:
+static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = [], extra: Array = [], cooldown: int = -1) -> Array:
 	var out: Array = []
 	if f == null:
 		return out
@@ -113,7 +113,7 @@ static func lines_for(f: Face, place: int, shown: Array, base: Face, states: Arr
 ## rules).
 ## `cooldown`: the rounds a spend darkens it as its machine has it (Skirmish.cooldown_of, the
 ## Kite's two); -1 reads the entry's own.
-static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: int = -1) -> Array:
+static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: int = -1) -> Array:
 	var out: Array = []
 	if base == null:
 		base = f
@@ -140,11 +140,10 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: 
 			if f.is_debuff():
 				out.append(marked(parts_line("effect", [word("Debuff")] + strikes, "attr"), [main]))
 			else:
-				var lo: int = int(shown[0]) if shown.size() == 2 else f.power
-				var hi: int = int(shown[1]) if shown.size() == 2 else f.power_max
-				# A strike's blow, its middle against the component's own: more is the gain.
-				var blow := word(str(lo) if lo == hi else "%d–%d" % [lo, hi])
-				_trend(blow, lo + hi, base.power + base.power_max)
+				var n: int = shown if shown >= 0 else f.power
+				# A strike's blow against the component's own: more is the gain.
+				var blow := word(str(n))
+				_trend(blow, n, base.power)
 				out.append(marked(parts_line("effect", [word("Attack"), blow] + strikes, "attr"), [main]))
 		Face.Kind.BUFF:
 			if f.act_again:
@@ -214,13 +213,14 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: 
 	var cd := cooldown if cooldown >= 0 else f.cooldown_rounds()
 	if cd > 0:
 		out.append(marked(parts_line("effect", [_bare(word("Cooldown")), num(str(cd), cd, base.cooldown_rounds(), true)], "attr"), [mark("cooldown", Palette.INK, false)]))
-	# Whom it is aimed at: a piece spent on machines headed by the three hexes the die draws
-	# under its main glyph (Glyphs.aim_for), bare as the glyph is; a weapon's or a debuff's reach
-	# is its frame's, on its first line. A reach past the target is its keyword's line (Every
-	# Foe, Every Ally, an area's), as the die chips it.
+	# Whom it is aimed at, headed by the targeting mark the die draws under its number
+	# (Glyphs.aim_for: a line of fire for Direct, lobbed for Indirect, ticks along a rank for a
+	# Sweep, the three hexes for a piece spent on machines), bare as the mark is. A reach past the
+	# target is its keyword's line (Every Foe, Every Ally, an area's), as the die chips it.
 	# The words bare: the reach's term stays a term (tap it), its icon the line's own mark, never
 	# a second one shrunk into the words (the formation reads as a blob at the text's size).
-	var target := parts_line("effect", [_bare(word("Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach]) if f.kind == Face.Kind.ATTACK else whom(f)))], "attr")
+	var aimed := ("Target: A rank, Sweep" if f.reach == Face.Reach.SWEEP else "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach])) if f.kind == Face.Kind.ATTACK else whom(f)
+	var target := parts_line("effect", [_bare(word(aimed))], "attr")
 	var aim := Glyphs.aim_for(f)
 	if not aim.is_empty():
 		marked(target, [mark(aim, Palette.HUD, false)])
@@ -356,6 +356,8 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 			line.append(word("×%d" % n))
 		if int(a.get("swarm", 0)) > 0 and not live:
 			line.append(word("(+%d a kin standing)" % int(a["swarm"])))
+		if int(a.get("per_kill", 0)) > 0 and not live:
+			line.append(word("(+%d a foe the team has killed)" % int(a["per_kill"])))   # a grudge (30 October)
 		out.append(parts_line("effect", line, "attr"))
 		if Array(a.get("keywords", [])).has("all"):
 			out.append(text_line("effect", "Target: %s" % str(db.vocabulary.get("all", {}).get("name", "Every machine")), "attr"))   # the term, so it reads as one (Terms)
@@ -372,6 +374,8 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 		out.append(text_line("effect", "Target: %s%s" % [whom, aimed if whom == "Any machine" or whom == target else ""], "attr"))
 	if str(a.get("id", "")) == "last_act":
 		out.append(text_line("effect", "Lands the moment it falls", "attr"))   # its last act (15 October)
+	if bool(a.get("once", false)):
+		out.append(text_line("effect", "Once a fight", "attr"))   # a special used once (30 October)
 	var count := Foe.countdown_of(a)
 	if count > 0:
 		var left := f.charge if live and f.gathering() and f.pending.get("id", "") == a.get("id", "") else count
@@ -424,7 +428,7 @@ static func codex_move_lines(f: Foe, a: Dictionary, db: ContentDB) -> Array:
 const MOVE_TARGETS := {
 	"brace": "Self", "regrow": "Self", "revive_once": "Self",
 	"regrow_ally": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
-	"summon": "The waiting pool", "rally": "Every other foe",
+	"summon": "The waiting pool", "rally": "Every other foe", "merge": "Its kinds on the field",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
 }
 

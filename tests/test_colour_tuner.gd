@@ -62,7 +62,8 @@ func test_the_maps_violets_take_their_picks() -> void:
 
 func test_the_page_holds_only_what_is_in_play() -> void:
 	# Ryan, 30 October: "Make sure the colours tab is simplified to only what we need": the HUD
-	# presets, the enemy's four violets and the meanings, and nothing that draws nothing.
+	# presets, the enemy's four violets and the meanings, and nothing that draws nothing (the
+	# weapons' flares carry no meaning in play and are never tuned: Ryan, 2 November).
 	var keys: Array = []
 	for s in ColourTuner.SLOTS:
 		keys.append(str(s[0]))

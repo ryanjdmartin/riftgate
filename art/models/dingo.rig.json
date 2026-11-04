@@ -2939,5 +2939,25 @@
   "hp_1": "airburst_shell",
   "hp_2": "twin_autoguns",
   "hp_3": ""
+ },
+ "halo": [
+  "coil"
+ ],
+ "fires": {
+  "megataser_harpoon": {
+   "act": "harpoon",
+   "from": 2.0,
+   "to": 3.2
+  },
+  "combat_translocator": {
+   "act": "coil_check",
+   "from": 2.0,
+   "to": 3.2
+  }
+ },
+ "pivots": true,
+ "stock_shapes": {
+  "hp_1": "rack",
+  "hp_2": "twin_barrel"
  }
 }

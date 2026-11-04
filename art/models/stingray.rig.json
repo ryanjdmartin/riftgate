@@ -313,6 +313,34 @@
        0.0
       ]
      ]
+    },
+    {
+     "parts": [
+      "fan_duct_floor",
+      "fan_lining"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       0.9,
+       22.0
+      ],
+      [
+       1.6,
+       22.0
+      ],
+      [
+       2.4,
+       9.0
+      ],
+      [
+       3.6,
+       0.0
+      ]
+     ]
     }
    ]
   },
@@ -383,7 +411,9 @@
   "treads": {},
   "glow": {
    "parts": [
-    "nozzle_glow"
+    "nozzle_glow",
+    "fan_duct_floor",
+    "fan_lining"
    ],
    "k": 5.0
   },
@@ -405,6 +435,8 @@
  "glow_parts": [
   "dome_light",
   "eye",
+  "fan_duct_floor",
+  "fan_lining",
   "lance_muzzle",
   "nozzle_glow"
  ],
@@ -424,5 +456,43 @@
    480.0,
    840.0
   ]
- }
+ },
+ "halo": [
+  "nozzle_glow",
+  [
+   "fan_duct_floor",
+   0.9,
+   0.0
+  ],
+  [
+   "fan_lining",
+   0.9,
+   0.0
+  ]
+ ],
+ "standing": {
+  "fan_duct_floor": 3.0,
+  "fan_lining": 3.0
+ },
+ "fires": {
+  "photosphere_lance": {
+   "act": "lance_charge",
+   "from": 2.5,
+   "to": 3.9
+  }
+ },
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "dish",
+  "hp_3": "twin_barrel",
+  "hp_4": "rack"
+ },
+ "plumes": [
+  {
+   "node": "plume_1",
+   "part": "nozzle_glow",
+   "reach": 25.0,
+   "breadth": 10.0
+  }
+ ]
 }

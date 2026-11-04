@@ -98,7 +98,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   a `live_test_` method runs on the first frame, once the scene tree is up, for a test that
   routes input as the engine does (a drag over a scrolled list).
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
-  writes the bible's two vocabulary tables from content; `balance.gd` plays every
+  writes the bible's two vocabulary tables from content; `pages/bible_merge.py` merges the bible
+  row by row onto a live page another session moved; `balance.gd` plays every
   chassis and the team against every pack under each policy and writes `docs/balance.md`
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
   many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
@@ -122,7 +123,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   every ground into PNGs, headless; `screenshot.gd` renders a
   scene to PNG at 720x1280; `die_sheet.gd` draws the die's whole iconography on one sheet with
   the die's own drawing (every main mark and what it holds, whom a piece reaches, the rest of a face's marks);
-  `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
+  `hero_shot.gd` renders one unit large; `fit_sheet.gd` renders every
+  machine wearing each silhouette class on all its mounts, one sheet; `tileset_shot.gd` draws every
   domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
@@ -130,7 +132,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the map tokens and the
   contact sheet from the grids in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/`
   generates enemy candidates with an image model and cuts one into `art/foes/` (the combat
-  sprites come from here, not the sheet); `recolour.py` writes a recolour's two sprites from its
+  sprites come from here, not the sheet); `placeholder_art.py` draws a rough placeholder, a
+  reminder stamped "?", for a foe with no picked render; `recolour.py` writes a recolour's two sprites from its
   base's by a hue shift (the ladder's palette swaps, its table the hues the three colourblind
   simulations chose); `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
@@ -147,8 +150,11 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
-  numbers, what each hardpoint's stock part is; written by lowforge, read by `mech_rig.gd`
-  and by `mech_view_3d.gd`, which wears a fitted die against that record), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
+  numbers, what each hardpoint's stock part is, `hidden_pins` where a model hides its mounts
+  (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status, `spin_step` and an act's `locks` where an act stops a spinner on a step, `fires` (each fixed weapon's slices of its acts, in turn, and a slice's `blow`), an act's `idle: false` where it only fires, `launches` where a weapon fires a part out (the Lammergeier's drones, `b.launch(...)`); written by lowforge, read by `mech_rig.gd`
+  and by `mech_view_3d.gd`, which wears a fitted die against that record), `models/shapes/` the
+  silhouette classes in each maker's metal, a burn weapon's fire for each and `muzzles.json`,
+  where each class's muzzle flare blooms (`forge.py shapes` writes all three), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
   16x16 map tokens the sheet export writes, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
@@ -224,6 +230,12 @@ perl -e 'alarm 300; exec @ARGV' godot --headless --path . -s tools/export_vocabu
 
 # the bible's two vocabulary tables (buffs and debuffs; keywords and their counts), from content, after any content change
 python3 tools/pages/bible_tables.py
+
+# the bible republished when another session moved the live page: a three-way merge row by row (a row keyed by its lead, one
+# both sides changed merged word by word, the version bumped past the higher), BASE the last publish both started from, OURS
+# this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing </body></html> stripped; a row
+# it cannot settle keeps conflict markers and is named on stderr
+python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html > merged.html
 
 # the balance report: every chassis alone and the starting team against every pack (tier one's lists,
 # and since 28 October a cell for every recolour at its tier's strength, "goblin_guard x4"), against
@@ -323,7 +335,7 @@ python3 tools/endgame_fours.py endgame30
 # the pricing run (27 October; the bible's pricing row of 28 October): every stocked piece knocked out of its team row, every slottable
 # component and every module through the same hardpoint of six benches (BENCHES in the script) on the team rows, and
 # every attack a heat class up, each variant one balance-runner process (--set and --fit in memory, content never written)
-# against the sixteen big fights but the finale, greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
+# against the big fights but the finale (the slate's bosses, tier one's formations from the factions' compositions, the finals), greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
 # as built, about two and a half hours on four cores), `run` is resumable (a variant with its JSON is skipped), `summarise`
 # writes build/pricing/<name>/summary.md from whatever has run. --parts knockouts,ladders,modules,heat, --benches, --tiers,
 # --packs all, tiers, tier2 or tier3 (the ladder's formations by tier), --policies random,greedy, --knock basic (the basic of
@@ -418,6 +430,13 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on
 # every foe showing a blow (+1 where none is coming, its number unchanged), to judge the pulse
 # running; RIFTGATE_FOES=wolf:4 fields the real thing, howls lifting the bites after them.
+# RIFTGATE_HIT_DEBUG=1 (any skirmish) lands a blow on a machine every second and a half, in turn a hull
+# hit from the left, one its shield holds, one its armour turns and a hull hit from the right, and
+# every fifth beat loses one and lights it again, to judge the hit reactions running.
+# RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
+# trial), to compare the two.
+# RIFTGATE_SHOTS=1 (any skirmish) draws the shot crossing the field, tabled and off by default (a debug
+# build's Settings → SHOT TRAILS turns it on too).
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
@@ -449,7 +468,7 @@ RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . 
 godot --path . --rendering-method gl_compatibility -s tools/die_sheet.gd -- build/die_sheet.png
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # front, rear, or a yaw in degrees
 godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom, with the 3D views' own (the map's world, its machines' layer)
@@ -487,6 +506,11 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 tools/spriter/.venv/bin/python tools/recolour.py goblin goblin_guard --hue 240 --light 0.8 --tint 0.45
 tools/spriter/.venv/bin/python tools/recolour.py --all
 
+# rough placeholder sprites, a reminder each, for the bosses and parts with no picked render (30
+# October): a few flat shapes at the cut's sizes, outlined, a yellow "?" in a corner; only the
+# foes with no art unless named or --force. Then the import. Pillow alone.
+python3 tools/placeholder_art.py
+
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 # joints are code too: `with b.joint("shoulder_l", pivot, axis="pitch", limits=(-12, 40)):` in models_low.py hangs a limb under a
@@ -494,15 +518,26 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 # machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:
 RIFTGATE_ACTS_DEBUG=1 godot --path .            # every act back to back in the skirmish and on the map (=<act name> loops one)
 RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantly: the walks, wheels, treads and held poses (`b.gait(...)` in models_low.py); the cornering (the Dingo's drift, the banks) needs a real move
-godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride
+# a model may show a count and a status: `b.count(source, parts)` lights the first n of its parts for the number the game passes
+# (`shots`, the counted shots toward the sixth; `ammo`, the magazine), a falling number flaring them all dark (the Cassowary's
+# capacitor); `b.spin_held(status, joint, speed)` turns a joint while the machine carries that status (its capacitor, Spun Up)
+# `b.spin(joint, idle, moving, step=60)` gives a spinner its pitch, and an act naming `locks=[joint]` parks it on the next step ahead
+# and holds it while the act plays, the act's turn folded into the spin as it ends (the Cottonmouth's drum, stopped on a chamber to fire)
+RIFTGATE_COUNT_DEBUG=1 godot --path .           # every count display counts up a part a second until it falls
+RIFTGATE_SPIN_DEBUG=1 godot --path .            # every status's spin held in turn, then let go
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride, "lose 3" its slump 3 s after it is lost, "fire:spotting_flare 2.9" that weapon 2.9 s after it fires (its slice and what it launches)
 godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwright_sutler clip/clydesdale 8 front 480x400 trot   # a machine walking at its map pace, every frame a PNG (a gait option by name, "-" for its own); then ffmpeg -framerate 30 -i clip/clydesdale_%04d.png -pix_fmt yuv420p clydesdale.mp4
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
-# the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
+# the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES) and their variants (VARIANTS: the round
+# launcher, which a mount's `fits` may declare for its class), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
+# the fit sheet: every machine's stock, then each class on all its mounts at once, a row a machine, into one PNG (about a minute
+# for all of them); run it after a model's mounts change, before the model goes to Ryan; name chassis to sheet only those
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -- fit_sheet.png [armadillo goshawk] [--cell 220]
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
 # nose up), then the art/models/wslook_* and ktlook_* files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles
@@ -514,7 +549,10 @@ tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: bu
 tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # Jenny's lines into art/audio/voice at 24 kHz with lines.json (the pools, chances and signals the game reads), then re-import
 perl -e 'alarm 300; exec @ARGV' godot --path . --resolution 360x640 -s tools/sound_smoke.gd   # every sound hook run with a window, muted (headless, Sound is a no-op): a SCRIPT ERROR in the log is a broken hook
 tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [set]  # A/B sketches of one change at a time for the phone's speaker, as AAC into tools/soundforge/out/phone/ with a listening page (index.html) to publish
-tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py [run]   # a track as a pair (24 October): Hold The Line's map version on the battle's own timeline, the two as one stereo file for the page's live crossfade, and a battle as the game would play it, as AAC into tools/soundforge/out/pairs/ with the page (index.html) to publish; `run` rebuilds the pair and the run from the rendered map version
+tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py [all]   # every track as a pair (24 and 28 October): each track's new half on its shipped recipe's own groove call (map halves for Hold The Line, Full Bore, The Far Bank and The Crossing, battle halves for Night Shift and Low Ground), each pair as one stereo file for the page's live switch, and Hold The Line's run as the game would play it, as AAC into tools/soundforge/out/pairs/ with the page (index.html) to publish; a missing half is rendered first, `all` renders every new half again, `render <track>` one track's new half alone (a process a track runs them side by side)
+tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py [set ...]   # Hold The Line's thirteenth round (3 November), the pair as Ryan settled it: the battle half (the loop without J, V and Q kept, the first lift on the crunch synth and the synth lead and the second on the crunch synth and the lead guitar over a quieter backing guitar, M as it ships with the crunch synth, K's first eight bars at its slower tempo on the drums in between with the plucked string 3 dB down beside the crunch synth on the walk and its long crash choked to a second and a half) and the map half minimal (both lifts as they were with the riff on the tine piano, the first lift's bell once a bar, K's walk on the synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff 3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down, the drone held level into Z); the pair and an A/B set of the map's climax (mz: the drone into Z as the twelfth round had it or held level) through one master, as AAC into tools/soundforge/out/pairs/ with hold13.json for the pair page (`full` for the pair; no argument runs everything, about seven minutes on four cores)
+tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py [set ...]  # Night Shift's tenth round (3 November): the battle half as a whole jam in turns of two bars (the guitar and the bass walking one line on Ryan's rhythms with the arpeggio or the hook, holding three-three-two 6 dB down under both, the synth lines voiced for each turn's job, the intro on three-three-two, D the piano's turn and the factory's blended over Hold The Line's riff as the map's nod, R a sixteen-bar jam whose turns hand the lead round the band, the bass on the synth bass 3 dB down everywhere) beside the second round's map half without its muted guitar as a full pair, an A/B set of the whole battle half on the driven bass, the synth bass or a slap bass (b) and one of the map's groove with and without its muted guitar (m), with night10.json for the pair page
+tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py   # The Far Bank's map half, its fourth round (3 November): the first round's with the bells at half speed and one echo in the groove and the lift, and the strings section and the climax re-voiced (the violins' tune on one lead over the harp's arpeggios, one note at a time, 3 dB under the violins' level in the strings section, the horns' break-ins on the bells, a soft sub for the cellos and the contrabass, the choir for the string pads, the climax's bells full) under the shipped battle half as a full pair, and A/B cuts of the strings section (fe) and the climax (fg) with the tune on the plucked string, the tine piano or the clean guitar on one string against the third round's pair, with far4.json for the pair page
 tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect sketched again beside the shipped one, and four rounds in context, as AAC into tools/soundforge/out/fx/ with the listening page (index.html) to publish (AAC by afconvert on the Mac, by ffmpeg at 256 kbps elsewhere, since ffmpeg's encoder smears a transient's front at 128; numpy and scipy are all it needs)
 tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]   # every track's melodic parts as notes, one JSON per track into tools/soundforge/out/desk/, for the Melody Desk page's store (collection `parts`)
 tools/spriter/.venv/bin/python tools/soundforge/forge.py measure        # each file's loudness, peak and share under 150 Hz
@@ -578,8 +616,8 @@ valid targets light up while dragging. A Swap waits on its first target for a ta
 a tap on the ground sends it home to the tray. Read or drag an ambusher's die (the funnel-web's)
 and the foes' ground dims: the foes its entry can reach that show no intent on it get pulsing
 eyes, the ones its blows bite.
-Keywords float beside each die as annotation tags. A rolled weapon rolls its damage when it
-lands and the number flashes over the target; a flat one shows its number. Reroll up to three
+Keywords float beside each die as annotation tags. A weapon's number flashes over the target
+as it lands. Reroll up to three
 times per round, before or after attacking; a reroll lands on any other face, never the
 one showing; a copy of it may come up. End turn runs the enemy: its turn replays blow
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,

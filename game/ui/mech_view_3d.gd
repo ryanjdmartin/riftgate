@@ -104,7 +104,35 @@ const SPIN_SPEED := 0.7           # radians per second
 var rig := MechRig.new()
 var joints: Dictionary = {}       # "shoulder_l" -> Node3D (the rig's)
 var hardpoints: Dictionary = {}   # 1 -> Node3D (the rig's)
+var fx_nodes: Dictionary = {}     # a fixed weapon -> the fx_<component> node at its business end (its sidecar's `fx`), riding its joint
 var plan: Array = []              # what the pins wear instead of their built parts (plan_for's rows), applied in _setup
+var wears_stock := true           # whether the model's own stock parts are its machine's kit (false on a borrowed model)
+var _burns: Array = []            # the burn weapons' fire hung over their classes (wear_burns), each node carrying its component's id
+var _flares: Array = []           # [node, component, look]: each weapon's muzzle flares on its class (wear_flares)
+var pivots := false               # aims by turning its whole body (a hover or a flyer): the skirmish sets it; a model may say so too (its sidecar's `pivots`)
+const FLARE_SHADER := preload("res://game/ui/flare.gdshader")
+const HIT_SHADER := preload("res://game/ui/hit_flash.gdshader")
+const PLUME_SHADER := preload("res://game/ui/plume.gdshader")
+## RIFTGATE_PLUME=off draws a booster's exhaust as it was, its halo's ring in place of the plume
+## (a trial, 3 November), to compare.
+static var PLUMES := OS.get_environment("RIFTGATE_PLUME") != "off"
+var _plumes: Array = []               # [plume material, the lit material it burns with, that material's light at rest]
+var _launches: Dictionary = {}        # a fixed weapon -> its launches, each a flight's row (launches_of): what it fires out of the machine
+var _flights: Array = []              # {row, t: seconds since it left, negative while it waits}: launches in the air
+const HIT_PEAK := 0.8        # a blow on the hull lays heat's colour this thick over it at the top (hit),
+const HIT_UP := 0.04         # in this many seconds,
+const HIT_HOLD := 0.08       # held this long,
+const HIT_DOWN := 0.3        # and gone over this long
+const OUTLINE_LOST := 0.35   # a machine lost keeps this much of its outline (lose)
+const LAND := 1.1            # seconds a lost flyer or hover takes to come down onto the floor (lose)
+const LAUNCH_LIGHT := 14.0   # a launch's lit parts burn this many rests over its own the whole way out, unless its row names its own (launch)
+var _land_t := -1.0          # seconds into a lost machine coming down; negative when not
+var _sway_k := 1.0           # how much of its idle drift a machine keeps: none once a lost one has landed
+var _hit_mat: ShaderMaterial          # the flash laid over the hull as a blow lands (hit)
+var _hit_t := -1.0                    # seconds into it; negative when none
+var _hit_k := 1.0                     # its strength, a blow the armour turned at half
+var _outline_mat: ShaderMaterial      # the 2D outline pass, dimmed when the machine is lost
+var _lose_t := -1.0                   # seconds into the outline dimming as it is lost; negative when not
 var model_id: String = ""         # the glTF drawn: the chassis, or the fallback when it has no model
 
 var _inner: SubViewport
@@ -228,6 +256,7 @@ static func make(chassis_id: String, maker: String, look: String, fallback: Stri
 	var id := model_for(chassis_id, fallback)
 	v.model_id = id
 	v.plan = plan_arg if id == chassis_id else []   # a borrowed model never wears another machine's kit
+	v.wears_stock = id == chassis_id
 	v._setup(id, maker)
 	return v
 
@@ -242,15 +271,36 @@ static func make_on_floor(chassis_id: String, maker: String, look: String, field
 	var id := model_for(chassis_id, "")
 	v.model_id = id
 	v.plan = plan_arg if id == chassis_id else []
+	v.wears_stock = id == chassis_id
 	v._setup(id, maker)
 	return v
 
 
 ## The silhouette classes (decided 29 September; ContentDB.SHAPES is the list): a fitted
 ## component wears its class at the pin, in its own maker's metal, from
-## art/models/shapes/<shape>_<maker>.glb.
+## art/models/shapes/<shape>_<maker>.glb; a class's variant the same way.
 static func shape_model(shape: String, maker: String) -> String:
 	return "shapes/%s_%s" % [shape, maker]
+
+
+## How a class sits at a mount, [shape, scale]: the variant and the scale on the pin's own that
+## the model's sidecar declares for it there (lowforge's `fits`; Ryan, 2 November: "Hardpoint
+## just needs to declare shape (if offered) and scaling"), else the class itself at the pin's
+## scale. A round port takes a round launcher (the variant rack_round) and a dish small enough
+## to pass its bore.
+static func fit_of(model_name: String, n: int, shape: String) -> Array:
+	return fit_in(MechRig.load_sidecar(model_name) if not model_name.is_empty() else {}, n, shape)
+
+
+## The same from a sidecar already read.
+static func fit_in(side: Dictionary, n: int, shape: String) -> Array:
+	var fits = side.get("fits", {})
+	var pin = fits.get("hp_%d" % n, {}) if fits is Dictionary else {}
+	var how = pin.get(shape, {}) if pin is Dictionary else {}
+	if not (how is Dictionary):
+		return [shape, 1.0]
+	var variant := str(how.get("shape", shape))
+	return [shape if variant.is_empty() else variant, maxf(0.01, float(how.get("scale", 1.0)))]
 
 
 ## What a machine's mounts must change to show its fitted die instead of a stock loadout
@@ -321,6 +371,24 @@ static func pin_record(model_id: String) -> Variant:
 	return out
 
 
+## The model's mounts that show nothing, stock or fitted, by number (1 -> true): lowforge's
+## b.pin(hidden=True), the sidecar's `hidden_pins`. The Cottonmouth's guns sit inside its drum
+## (Ryan, 19 October: "the guns mounted (invisibly) inside"), so its die is mounted and recorded
+## as any machine's and nothing is hung on those pins (wear, mount). Empty for most models.
+static func hidden_pins(model_id: String) -> Dictionary:
+	var out := {}
+	if model_id.is_empty():
+		return out
+	var hidden = MechRig.load_sidecar(model_id).get("hidden_pins", [])
+	if not (hidden is Array):
+		return out
+	for key in hidden:
+		var tag := MechRig.parse_tag(str(key))
+		if tag.size() == 2 and str(tag[0]) == "hp":
+			out[int(tag[1])] = true
+	return out
+
+
 ## The plan for a unit: against what its model's pins were built carrying, or, for a model
 ## whose sidecar names none, its chassis's stock loadout in content.
 static func plan_for(u: Unit, db: ContentDB) -> Array:
@@ -350,19 +418,456 @@ static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 	return out
 
 
-## Hold each of the model's forms while its machine carries the status of the same name (the
-## Armadillo's Sealed: its guns sink and its ports shut), and let it go when it does not. A
-## borrowed model holds nothing.
-func hold_forms(u: Unit) -> void:
+## Hold what each status the machine carries holds on its model, and let it go when it does not:
+## a form of the same name (the Armadillo's Sealed: its guns sink and its ports shut) and a spin
+## (the Cassowary's Spun Up: its capacitor turns). A borrowed model holds nothing.
+func hold_statuses(u: Unit) -> void:
 	if u == null or rig == null or model_id != u.chassis_id:
 		return
 	for name in rig.forms.keys():
 		rig.set_form(str(name), Effects.has(u, str(name)))
+	for status in rig.held_spins.keys():
+		if rig.hold_spin(str(status), Effects.has(u, str(status))) and is_inside_tree():
+			set_process(true)
 
 
-## Wear the plan: each row hangs its class shape on its pin, or bares the socket.
+## Show its machine's numbers on the model's count displays (the Cassowary's capacitor, a cell a
+## counted shot: MechRig.show_counts), as count_values reads them. A borrowed model shows none.
+func show_counts(ms: Skirmish.MechState) -> void:
+	if ms == null or rig == null or model_id != ms.unit.chassis_id:
+		return
+	if rig.show_counts(count_values(ms)) and is_inside_tree():
+		set_process(true)
+
+
+## The numbers a count display may show (MechRig.COUNT_SOURCES), for one machine in a fight:
+## `shots` its counted shots toward the next that counts (the pips under its heat bar, the
+## Cassowary's sixth shot), `ammo` its magazine's rounds (the Musk Ox's).
+static func count_values(ms: Skirmish.MechState) -> Dictionary:
+	var every := Effects.counts_shots(ms.unit)
+	return {"shots": Effects.stacks_of(ms.unit, "shots") % every if every > 0 else 0, "ammo": ms.ammo}
+
+
+## Wear the plan: each row hangs its class shape on its pin, or bares the socket; then a burn
+## weapon's fire over its class, wearing the halo, and every weapon's muzzle flares on its class.
 func _apply_plan() -> void:
 	wear(hardpoints, plan, mode, paint, token, hide_detail, model_id)
+	var db := ContentDB.load_default()
+	_burns = wear_burns(hardpoints, burn_rows(model_id, plan, db, wears_stock), mode, paint, token)
+	for part in _burns:
+		rig.wear_hot(part)
+	_flares = [] if token else wear_flares(hardpoints, flare_rows(model_id, plan, db, wears_stock), db)
+	if not token and wears_stock:
+		_flares += wear_fx_flares(fx_nodes, MechRig.load_sidecar(model_id).get("fx", {}), db)
+
+
+## Whether a component burns: its entry's keywords hold "burn" (content says, never an id).
+static func burning(cid: String, db: ContentDB) -> bool:
+	var face = db.components.get(cid, {}).get("face", {})
+	var words = face.get("keywords", []) if face is Dictionary else []
+	return words is Array and (words as Array).has("burn")
+
+
+## A burn weapon's fire (Ryan, 31 October: "every burn-causing weapon", "on the actual swappable
+## classes, not on the model"): the shaped rows whose component burns and whose class has a fire
+## built (art/models/shapes/burn_<class>.glb).
+static func burn_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
+	var out: Array = []
+	for row in shaped_rows(model_name, rows, db, stock_too):
+		if burning(str(row[1]), db) and has_model("shapes/burn_%s" % str(row[3])):
+			out.append(row)
+	return out
+
+
+## Every mount that shows a class and carries a component, as [pin, component, class, shape,
+## scale]: a swapped row's class, or the stock part's when lowforge built it as one (the sidecar's
+## `stock_shapes`; a hand-built weapon, the Ammit's flamer, is no class), with the shape and scale
+## the mount wears it in (fit_of: a variant, or the class itself).
+static func shaped_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
+	var out: Array = []
+	var swapped := {}
+	for row in rows:
+		if row.size() >= 4:
+			swapped[int(row[0])] = row
+	var stock = pin_record(model_name) if stock_too else null
+	var side := MechRig.load_sidecar(model_name) if not model_name.is_empty() else {}
+	var shapes = side.get("stock_shapes", {})
+	var count := maxi(stock.size() if stock is Array else 0, 0)
+	for n in swapped.keys():
+		count = maxi(count, int(n))
+	for n in range(1, count + 1):
+		var cid := ""
+		var shape := ""
+		if swapped.has(n):
+			cid = str(swapped[n][1])
+			shape = str(swapped[n][2])
+		elif stock is Array and n <= (stock as Array).size() and shapes is Dictionary:
+			cid = str(stock[n - 1])
+			shape = str((shapes as Dictionary).get("hp_%d" % n, ""))
+		if cid.is_empty() or shape.is_empty():
+			continue
+		var fit := fit_in(side, n, shape)
+		out.append([n, cid, shape, str(fit[0]), float(fit[1])])
+	return out
+
+
+## Every mount that shows a gun and where its muzzle flares bloom, as [pin, component, class,
+## places]: a class's places on a swapped row or a stock class (shaped_rows), or for a stock gun
+## built by hand the places its model's sidecar names (lowforge found its business end), so every
+## gun that fires flares, a hand-built one as well as a class.
+static func flare_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
+	var out: Array = []
+	var shown := {}
+	for row in shaped_rows(model_name, rows, db, stock_too):
+		var places: Array = []
+		for p in MuzzleFlare.places(str(row[3])):   # the shape the mount wears, at its scale there
+			places.append([(p[0] as Vector3) * float(row[4]), float(p[1]) * float(row[4])])
+		out.append([int(row[0]), str(row[1]), str(row[2]), places])
+		shown[int(row[0])] = true
+	for row in rows:
+		if row.size() >= 2:
+			shown[int(row[0])] = true   # a swapped mount shows its class, never the hand-built gun under it
+	var stock = pin_record(model_name) if stock_too else null
+	var built = MechRig.load_sidecar(model_name).get("muzzles", {})
+	if stock is Array and built is Dictionary:
+		for key in (built as Dictionary).keys():
+			var tag := MechRig.parse_tag(str(key))
+			if tag.is_empty() or str(tag[0]) != "hp":
+				continue
+			var n := int(tag[1])
+			if shown.has(n) or n > (stock as Array).size() or str(stock[n - 1]).is_empty():
+				continue
+			var places: Array = []
+			for p in built[key]:
+				if p is Array and (p as Array).size() == 2 and p[0] is Array and (p[0] as Array).size() == 3:
+					places.append([Vector3(float(p[0][0]), float(p[0][1]), float(p[0][2])), float(p[1])])
+			out.append([n, str(stock[n - 1]), "", places])
+	return out
+
+
+## Each booster's plume along its thrust (its sidecar's `plumes`, lowforge's plume(); Ryan, 31
+## October, of the Stingray's exhaust: "can it be directional?"): a flame out of the plume node's
+## mouth (plume.gdshader), lit with the part it burns with. [material, lit material, its rest] each.
+static func setup_plumes(model: Node, side: Dictionary, r: MechRig, ceiling := 0.48) -> Array:
+	var out: Array = []
+	for pl in side.get("plumes", []):
+		var node := model.find_child(str(pl.get("node", "")), true, false)
+		var lit: Array = r._lit_materials(str(pl.get("part", ""))) if r != null else []
+		if not (node is Node3D) or lit.is_empty():
+			continue
+		var reach := float(pl.get("reach", 20.0))
+		var breadth := float(pl.get("breadth", 8.0))
+		var mi := MeshInstance3D.new()
+		mi.name = "plume"
+		mi.mesh = QuadMesh.new()
+		mi.custom_aabb = AABB(Vector3(-breadth, -breadth, -reach - 2.0), Vector3(breadth * 2.0, breadth * 2.0, reach + 3.0))   # down its -z, as the shader runs it
+		var mat := ShaderMaterial.new()
+		mat.shader = PLUME_SHADER
+		mat.set_shader_parameter("reach", reach)
+		mat.set_shader_parameter("breadth", breadth)
+		mat.set_shader_parameter("ceiling", ceiling)
+		mi.material_override = mat
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mi.set_meta("halo", true)   # no trace, no hull flash, no halo of its own
+		mi.set_meta("plume", true)   # and no part of the frame
+		(node as Node3D).add_child(mi)
+		var m: StandardMaterial3D = lit[0]
+		out.append([mat, m, MechRig._rest_of(m)])
+		mat.set_shader_parameter("strength", plume_k(m.emission_energy_multiplier, MechRig._rest_of(m)))
+	return out
+
+
+## A plume's strength from its booster's light now against its rest: gone at rest (Ryan, 3
+## November: "It needs to dissapear when idle"), full as the booster burns at eight rests over its
+## own (a surge, a run at full speed).
+static func plume_k(light: float, rest: float) -> float:
+	if rest <= 0.0:
+		return 0.0
+	var top := MechRig.light(8.0)
+	return clampf((light / rest - 1.0) / maxf(0.01, top - 1.0), 0.0, 1.0)
+
+
+## What each fixed weapon fires out of the machine (lowforge's launch(): the Lammergeier's drones,
+## the Swallowtail's flares, the Musk Ox's rockets, shell and casing), by its sidecar's `launches`:
+## a flight's row each (flight_at), the node hidden until it flies (launch). Hidden before a weld,
+## so its parts stay its own.
+static func launches_of(model: Node, side: Dictionary) -> Dictionary:
+	var out := {}
+	var ls = side.get("launches", {})
+	if not (ls is Dictionary) or model == null:
+		return out
+	for cid in (ls as Dictionary).keys():
+		var rows: Array = []
+		for l in ls[cid]:
+			if not (l is Dictionary):
+				continue
+			var n := model.find_child(str(l.get("node", "")), true, false) as Node3D
+			if n == null:
+				continue
+			n.visible = false
+			var row := flight_row(n, l)
+			if l.has("lands"):
+				row["lands"] = model.find_child(str(l["lands"]), true, false) as Node3D
+			rows.append(row)
+		out[str(cid)] = rows
+	return out
+
+
+## A launch's flight, from its sidecar row (lowforge's launch()): the node and its transform at
+## rest, the seconds it waits after the firing and flies, how far along its line it goes and how
+## it gathers there (`ease`: "in" gathering speed, a drone or a rocket; "out" slowing, a lobbed
+## round; "line" at one speed, a shell), how far gravity pulls it down by the flight's end
+## (`drop`), the degrees it turns end over end (`spin`), the seconds it hangs where the flight
+## ends and how far it sinks meanwhile (`hang`, `sink`: a flare under its chute), the last seconds
+## its light dies over (`fade`), and the light it burns at (`light`). A row that `lands` somewhere
+## (the node it lands in, set by launches_of) takes its line at the moment it leaves, from where it
+## is to where that node is then, so the Musk Ox's casing finds the forge mouth however the gun has
+## turned (_fly).
+static func flight_row(node: Node3D, l: Dictionary) -> Dictionary:
+	return {
+		"node": node, "rest": node.transform if node != null else Transform3D.IDENTITY,
+		"delay": float(l.get("delay", 0.0)), "seconds": maxf(0.05, float(l.get("seconds", 0.6))),
+		"reach": float(l.get("reach", 100.0)), "ease": str(l.get("ease", "in")),
+		"drop": float(l.get("drop", 0.0)), "spin": float(l.get("spin", 0.0)),
+		"hang": maxf(0.0, float(l.get("hang", 0.0))), "sink": float(l.get("sink", 0.0)),
+		"fade": maxf(0.0, float(l.get("fade", 0.0))), "light": float(l.get("light", LAUNCH_LIGHT)),
+		"lands": null,
+	}
+
+
+## How long a launch is out: its flight and its hang.
+static func flight_span(row: Dictionary) -> float:
+	return float(row["seconds"]) + float(row["hang"])
+
+
+## The way a launch goes and how far, in its parent's frame: its own line (lowforge's +y, its -z
+## here) its reach long.
+static func flight_line(row: Dictionary) -> Vector3:
+	var rest: Transform3D = row["rest"]
+	return -rest.basis.z.normalized() * float(row["reach"])
+
+
+## Where a launch is `t` seconds after it left, in its parent's frame as it was when it left: carried
+## along `line` (flight_line, or the way to where it lands) by its ease, pulled `drop` along `down`
+## (the world's down in that frame, one unit long) by the square of the flight's share, turned
+## `spin` degrees about its own x; then held where the flight ended while it hangs, sinking `sink`.
+static func flight_at(row: Dictionary, t: float, down: Vector3, line: Vector3) -> Transform3D:
+	var rest: Transform3D = row["rest"]
+	var u := clampf(t / float(row["seconds"]), 0.0, 1.0)
+	var e := u * u
+	match str(row["ease"]):
+		"out":
+			e = u * (2.0 - u)
+		"line":
+			e = u
+	var p := rest.origin + line * e + down * float(row["drop"]) * u * u
+	var hang := float(row["hang"])
+	if hang > 0.0 and t > float(row["seconds"]):
+		p += down * float(row["sink"]) * clampf((t - float(row["seconds"])) / hang, 0.0, 1.0)
+	var basis := rest.basis
+	if float(row["spin"]) != 0.0:
+		basis = basis * Basis(Vector3.RIGHT, deg_to_rad(float(row["spin"]) * u))
+	return Transform3D(basis, p)
+
+
+## The light a launch burns at `t` seconds after it left, in rests over its own: its row's the whole
+## way, dying to nothing over its last `fade` seconds.
+static func flight_light(row: Dictionary, t: float) -> float:
+	var fade := float(row["fade"])
+	var left := flight_span(row) - t
+	if fade > 0.0 and left < fade:
+		return float(row["light"]) * clampf(left / fade, 0.0, 1.0)
+	return float(row["light"])
+
+
+## Fire `cid`'s launches: each leaves its delay on (after `lead`), lit.
+func launch(cid: String, lead := 0.0) -> void:
+	for row in _launches.get(cid, []):
+		_flights.append({"row": row, "t": -float(row["delay"]) - lead, "frame": Transform3D.IDENTITY, "down": Vector3.DOWN, "line": flight_line(row)})
+	if not _flights.is_empty():
+		set_process(true)
+
+
+## Each launch in the air flies its flight (flight_at), lit as it leaves, its light dying over its
+## fade, and is hidden at home once its time is up. Once it leaves it is the world's, not the
+## machine's: it flies in its parent's frame as that stood at the moment it left, so a rack
+## lowering or a hull settling never drags it (a flare hanging over the field stays where it hangs).
+func _fly(delta: float) -> void:
+	for f in _flights:
+		var row: Dictionary = f["row"]
+		var node: Node3D = row["node"]
+		if not is_instance_valid(node):
+			f["t"] = INF
+			continue
+		var was := float(f["t"])
+		f["t"] = was + delta
+		var t := float(f["t"])
+		if t < 0.0:
+			continue
+		if t >= flight_span(row):
+			node.visible = false
+			node.transform = row["rest"]
+			f["t"] = INF
+			_burn(node, 1.0)
+			continue
+		if was < 0.0:
+			_leave(f)
+			node.visible = true
+			_burn(node, float(row["light"]))
+		elif float(row["fade"]) > 0.0:
+			_burn(node, flight_light(row, t))
+		node.transform = _frame_of(node.get_parent()).affine_inverse() * (f["frame"] as Transform3D) * flight_at(row, t, f["down"], f["line"])
+	_flights = _flights.filter(func(f): return float(f["t"]) != INF)
+
+
+## The moment a launch leaves: the frame it flies in (its parent's, as it stands now), the world's
+## down in that frame, and its line, or the way to where it lands as that stands now.
+static func _leave(f: Dictionary) -> void:
+	var row: Dictionary = f["row"]
+	var node: Node3D = row["node"]
+	var frame := _frame_of(node.get_parent())
+	var down := (frame.basis.orthonormalized().inverse() * Vector3.DOWN).normalized()
+	var line := flight_line(row)
+	var lands = row.get("lands", null)
+	if lands is Node3D and is_instance_valid(lands):
+		line = (frame.affine_inverse() * _frame_of(lands).origin - (row["rest"] as Transform3D).origin) - down * float(row["drop"])
+	f["frame"] = frame
+	f["down"] = down
+	f["line"] = line
+
+
+## A node's transform in its world, from its own chain of 3D ancestors (its global transform in the
+## tree, and the same out of it), identity for none.
+static func _frame_of(node: Node) -> Transform3D:
+	var frame := Transform3D.IDENTITY
+	while node is Node3D:
+		frame = (node as Node3D).transform * frame
+		node = node.get_parent()
+	return frame
+
+
+## Light every lit part under a launch at `k` rests over its own (1 puts it back).
+func _burn(node: Node3D, k: float) -> void:
+	var mats: Array = []
+	rig._lit_under(node, mats)
+	for m in mats:
+		rig._light_to(m, MechRig._rest_of(m), k)
+
+
+## Each fixed weapon's business end, by its sidecar's `fx` (lowforge's fx()): the node named
+## fx_<component> in the model, which rides the joint carrying the weapon.
+static func fx_of(model: Node, side: Dictionary) -> Dictionary:
+	var out := {}
+	var fx = side.get("fx", {})
+	if model == null or not (fx is Dictionary):
+		return out
+	for cid in (fx as Dictionary).keys():
+		var node := model.find_child("fx_" + str(cid), true, false)
+		if node is Node3D:
+			out[str(cid)] = node
+	return out
+
+
+## A fixed weapon's muzzle flares at its business end (fx_of), as a mounted gun's hang on its pin:
+## [node, component, look, delay] each, in the looks its tags give it, sized by its sidecar's `fx`.
+## Equipment takes none.
+static func wear_fx_flares(nodes: Dictionary, sizes: Dictionary, db: ContentDB) -> Array:
+	var out: Array = []
+	for cid in nodes.keys():
+		var c: Dictionary = db.components.get(str(cid), {})
+		var face = c.get("face", {})
+		if not (face is Dictionary) or str(face.get("kind", "")) != "attack":
+			continue
+		var tags = c.get("tags", [])
+		var looks := MuzzleFlare.looks_for(tags if tags is Array else [], str(c.get("shape", "")))
+		for k in range(looks.size()):
+			var node := flare_node([Vector3.ZERO, float(sizes.get(cid, 16.0))], str(looks[k]), pow(MuzzleFlare.LAYER_SCALE, k))
+			(nodes[cid] as Node3D).add_child(node)
+			out.append([node, str(cid), str(looks[k]), MuzzleFlare.LAYER_DELAY * k])
+	return out
+
+
+## Hang each weapon's muzzle flares on its pin at its places, hidden until it fires, a layer a
+## look its tags give it (MuzzleFlare.looks_for: the delivery first and full size, what it carries
+## smaller and a beat behind). Returns [node, component, look, delay] for each. A component that
+## is not a weapon (a shield's dish) takes none.
+static func wear_flares(pins: Dictionary, rows: Array, db: ContentDB) -> Array:
+	var out: Array = []
+	for row in rows:
+		if not pins.has(int(row[0])):
+			continue
+		var c: Dictionary = db.components.get(str(row[1]), {})
+		var face = c.get("face", {})
+		if not (face is Dictionary) or str(face.get("kind", "")) != "attack":
+			continue
+		var tags = c.get("tags", [])
+		var looks := MuzzleFlare.looks_for(tags if tags is Array else [], str(row[2]))
+		for place in row[3]:
+			for k in range(looks.size()):
+				var node := flare_node(place, str(looks[k]), pow(MuzzleFlare.LAYER_SCALE, k))
+				(pins[int(row[0])] as Node3D).add_child(node)
+				out.append([node, str(row[1]), str(looks[k]), MuzzleFlare.LAYER_DELAY * k])
+	return out
+
+
+## One flare: a quad facing the eye at a place (MuzzleFlare), in its look's colour, core and rays,
+## `size_k` of its place's size.
+static func flare_node(place: Array, look: String, size_k: float = 1.0) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.name = "flare"
+	var q := QuadMesh.new()
+	var w := float(place[1]) * float(MuzzleFlare.BEATS.get(look, MuzzleFlare.BEATS["ballistic"])["scale"]) * size_k
+	q.size = Vector2(w, w)
+	mi.mesh = q
+	var mat := ShaderMaterial.new()
+	mat.shader = FLARE_SHADER
+	var c := MuzzleFlare.colour(look)
+	mat.set_shader_parameter("colour", Vector3(c.r, c.g, c.b))
+	mat.set_shader_parameter("core", float(MuzzleFlare.CORES.get(look, 0.6)))
+	mat.set_shader_parameter("rays", float(MuzzleFlare.BEATS.get(look, MuzzleFlare.BEATS["ballistic"])["rays"]))
+	mi.material_override = mat
+	mi.position = place[0]
+	mi.visible = false
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.set_meta("halo", true)   # no trace, no hull, no halo of its own
+	return mi
+
+
+## The mounts carrying a component, by number: a swapped row's, else what the pin was built
+## carrying (when the model's stock is its machine's).
+func carrying(cid: String) -> Array:
+	var out: Array = []
+	if cid.is_empty():
+		return out
+	var swapped := {}
+	for row in plan:
+		if row.size() >= 2:
+			swapped[int(row[0])] = str(row[1])
+	var stock = pin_record(model_id) if wears_stock else null
+	for n in hardpoints.keys():
+		var here := str(swapped[n]) if swapped.has(n) else (str(stock[int(n) - 1]) if stock is Array and int(n) <= (stock as Array).size() else "")
+		if here == cid:
+			out.append(int(n))
+	out.sort()
+	return out
+
+
+## Hang each burn row's fire on its pin (art/models/shapes/burn_<shape>.glb), over the shape the
+## pin shows, so it points and scales as the shape does. Returns the hung nodes.
+static func wear_burns(pins: Dictionary, burns: Array, look: String, paint_arg: Dictionary = {}, as_token: bool = false) -> Array:
+	var out: Array = []
+	for row in burns:
+		if not pins.has(int(row[0])):
+			continue
+		var worn := str(row[3]) if row.size() >= 5 else str(row[2])
+		var part: Node3D = (load("res://art/models/shapes/burn_%s.glb" % worn) as PackedScene).instantiate()
+		part.scale = Vector3.ONE * (float(row[4]) if row.size() >= 5 else 1.0)
+		part.set_meta("mounted", true)
+		part.set_meta("burn", str(row[1]))
+		(pins[int(row[0])] as Node3D).add_child(part)
+		toon(part, "", look, paint_arg, as_token, false)
+		out.append(part)
+	return out
 
 
 ## A model's pins by number (1 -> the hp_1 node), found by name as the rig finds them.
@@ -378,9 +883,13 @@ static func pins_of(root: Node) -> Dictionary:
 
 ## Wear a plan on a model's pins (`hardpoints`: the pin's number to its node, as the rig finds
 ## them): each row hides the pin's stock part and hangs its component's class shape there in
-## that component's own metal, or leaves the socket bare. Shared with the map, which builds
-## its machines without a view (Map3D).
+## that component's own metal, in the variant and at the scale the mount declares for the class
+## (fit_of), or leaves the socket bare. A hidden mount (hidden_pins, read by `model_name`) is left
+## bare whatever the row fits. Shared with the map, which builds its machines without a view
+## (Map3D).
 static func wear(pins: Dictionary, rows: Array, look: String, paint_arg: Dictionary = {}, as_token: bool = false, drop_detail: bool = true, model_name: String = "") -> void:
+	var side := MechRig.load_sidecar(model_name) if not model_name.is_empty() else {}
+	var hidden := hidden_pins(model_name)
 	for row in rows:
 		if row.size() < 4 or not pins.has(int(row[0])):
 			continue
@@ -388,13 +897,15 @@ static func wear(pins: Dictionary, rows: Array, look: String, paint_arg: Diction
 		for c in pin.get_children():
 			if c is Node3D:
 				(c as Node3D).visible = false
-		if str(row[1]).is_empty():
+		if str(row[1]).is_empty() or hidden.has(int(row[0])):
 			continue
-		var id := shape_model(str(row[2]), str(row[3]))
+		var fit := fit_in(side, int(row[0]), str(row[2]))
+		var id := shape_model(str(fit[0]), str(row[3]))
 		if not has_model(id):
-			push_warning("no shape model for %s (%s) on hp_%d of %s" % [row[1], row[2], int(row[0]), model_name])
+			push_warning("no shape model for %s (%s) on hp_%d of %s" % [row[1], fit[0], int(row[0]), model_name])
 			continue
 		var part: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
+		part.scale = Vector3.ONE * float(fit[1])
 		part.set_meta("mounted", true)
 		pin.add_child(part)
 		toon(part, str(row[3]), look, paint_arg, as_token, drop_detail)
@@ -465,8 +976,13 @@ func _setup(chassis_id: String, maker: String) -> void:
 			_stage.scale = Vector3.ONE * _field_scale
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
+	var side := MechRig.load_sidecar(chassis_id)
+	_launches = launches_of(_model, side)   # hidden before the weld, which keeps a hidden node's parts as they are
 	MechWeld.weld(_model, MechWeld.kept_parts(chassis_id))   # a mesh a material in each moving group (the battery plan), before the rig and the traces read it
 	rig.place = "skirmish"
+	if PLUMES:
+		for pl in side.get("plumes", []):
+			rig.halo_skip.append(str(pl.get("part", "")))   # a plume burns where its ring was
 	rig.setup(_model, chassis_id)   # after the materials: the acts' glows look for the lit surfaces
 	if widest > 0.0:
 		# The debug drive (RIFTGATE_MOVE_DEBUG) runs at the machine's own pace on the map.
@@ -474,7 +990,10 @@ func _setup(chassis_id: String, maker: String) -> void:
 		rig.top_speed = MechRig.map_speed(widest, int(c.get("movespeed", Unit.MECH_MOVE)), Map3D.fit_for(str(c.get("size", ""))))
 	joints = rig.joints
 	hardpoints = rig.hardpoints
+	fx_nodes = fx_of(_model, side)
 	_apply_plan()   # before the traces attach and the camera frames, so a mounted shape gets both
+	if PLUMES and not token:
+		_plumes = setup_plumes(_model, side, rig, 0.48 if _inner != self else 0.9)
 	if not token:
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
 		# screen's scan bar lights it through set_sweep_screen.
@@ -563,6 +1082,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		mat.shader = load("res://game/ui/outline.gdshader")
 		mat.set_shader_parameter("width", float(CLEAN_SCALE) * density)
 		rect.material = mat
+		_outline_mat = mat
 		add_child(rect)
 	texture = get_texture()
 
@@ -579,20 +1099,143 @@ func _process(delta: float) -> void:
 	if spin:
 		_pivot.rotation.y += SPIN_SPEED * delta
 	elif sway:
-		_pivot.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
+		_pivot.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw * _sway_k
 		if balance != null:
 			balance.quiet = rig.in_act()
 			balance.step(delta)
-			_pivot.rotation.x = balance.pitch
-			_pivot.rotation.z = balance.roll
-			_pivot.position.y = balance.heave * sway_bob
+			_pivot.rotation.x = balance.pitch * _sway_k
+			_pivot.rotation.z = balance.roll * _sway_k
+			_pivot.position.y = balance.heave * sway_bob * _sway_k
 		else:
-			_pivot.rotation.x = sin(_t * 0.7 + sway_phase * 0.5) * sway_pitch
-			_pivot.position.y = sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5
+			_pivot.rotation.x = sin(_t * 0.7 + sway_phase * 0.5) * sway_pitch * _sway_k
+			_pivot.position.y = (sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5) * _sway_k
+	# A lost machine comes down onto the floor (Ryan, 3 November: "flyers and hovers landing"): its
+	# lift and its hover's drift ease out together after its lights have begun to go, until its lowest
+	# point standing rests on the floor (MechRig.collapse_floor), never through it (the second notes:
+	# "don't fall through the floor"; a flyer's wings reach below its origin, a hover's skirt stands
+	# above it).
+	if _land_t >= 0.0:
+		_land_t += delta
+		var g := clampf((_land_t - MechRig.COLLAPSE_AT) / LAND, 0.0, 1.0)
+		var k := g * g * (3.0 - 2.0 * g)
+		_sway_k = 1.0 - k
+		if _stage != null and not field.is_empty():
+			var lift := float(field.get("lift", 0.0))
+			_stage.position.y = lerpf(lift, -rig.collapse_floor * _field_scale if rig.airborne else 0.0, k)
+		if g >= 1.0:
+			_land_t = -1.0
 	# A grounded machine's idle is its acts, what the pilot does with it every few seconds
 	# (the idle-acts row, 2 October); the rig plays them and the strikes from the model's
 	# sidecar. It never sways.
 	rig.tick(delta)
+	if not _flights.is_empty():
+		_fly(delta)
+	for pl in _plumes:
+		(pl[0] as ShaderMaterial).set_shader_parameter("strength", plume_k((pl[1] as StandardMaterial3D).emission_energy_multiplier, float(pl[2])))
+	if _hit_t >= 0.0:
+		_hit_t += delta
+		_hit_mat.set_shader_parameter("strength", HIT_PEAK * _hit_k * hit_k(_hit_t))
+		if _hit_t >= HIT_UP + HIT_HOLD + HIT_DOWN:
+			_hit_t = -1.0
+			_overlay(_model, null)
+	if _lose_t >= 0.0:
+		_lose_t += delta
+		_outline_to(lerpf(1.0, OUTLINE_LOST, clampf(_lose_t / MechRig.GUTTER, 0.0, 1.0)))
+		if _lose_t >= MechRig.GUTTER:
+			_lose_t = -1.0
+
+
+## A blow lands on this machine (the to-do's hit reaction, on Ryan's go of 3 November):
+## `kind` "hull" (the hull took it) or "block" (its armour turned it on the bare hull, at half): the
+## whole machine is shoved back from it on its body's servo (MechRig.jolt) and its hull flashes for
+## a beat in heat's red-orange, strongest on the side the blow came from; "shield" (its shield took
+## it whole) moves nothing here, the shield's ripple being the unit view's. `side`, -1 to 1, where
+## across the screen the blow came from, left to right.
+func hit(kind: String, side: float = 0.0) -> void:
+	if _model == null or kind == "shield" or rig.dead:
+		return
+	_hit_k = 0.5 if kind == "block" else 1.0
+	side = clampf(side, -1.0, 1.0)
+	if rig.body != null:
+		rig.jolt((rig.body.transform.basis * Vector3(-side * 0.5, 0.0, 1.0)).normalized(), _hit_k)
+	if _hit_mat == null:
+		_hit_mat = ShaderMaterial.new()
+		_hit_mat.shader = HIT_SHADER
+		var c := Palette.HEAT
+		_hit_mat.set_shader_parameter("colour", Vector3(c.r, c.g, c.b))
+	_hit_mat.set_shader_parameter("toward", Vector3(side * 0.8, 0.45, 0.6))
+	_hit_mat.set_shader_parameter("strength", 0.0)
+	if _hit_t < 0.0:
+		_overlay(_model, _hit_mat)
+	_hit_t = 0.0
+	set_process(true)
+
+
+## The flash's strength `t` seconds into a blow, 0 to 1: up fast, held, eased out.
+static func hit_k(t: float) -> float:
+	if t < 0.0 or t >= HIT_UP + HIT_HOLD + HIT_DOWN:
+		return 0.0
+	if t < HIT_UP:
+		return t / HIT_UP
+	if t < HIT_UP + HIT_HOLD:
+		return 1.0
+	var g := (t - HIT_UP - HIT_HOLD) / HIT_DOWN
+	return (1.0 - g) * (1.0 - g)
+
+
+## The machine is lost (the kill's beat, Ryan's go of 3 November): its lit parts gutter out
+## (MechRig.kill) and its outline dims to OUTLINE_LOST over the same beat. revive() puts both back,
+## for the hit debug switch.
+func lose() -> void:
+	if _model == null or rig.dead:
+		return
+	rig.airborne = float(field.get("lift", 0.0)) > 0.0   # a flyer or a hover comes down onto its lowest point
+	rig.kill()
+	_lose_t = 0.0
+	_land_t = 0.0
+	set_process(true)
+
+
+func revive() -> void:
+	rig.revive()
+	_lose_t = -1.0
+	_land_t = -1.0
+	_sway_k = 1.0
+	if _stage != null and not field.is_empty():
+		_stage.position.y = float(field.get("lift", 0.0))
+	_outline_to(1.0)
+
+
+## How long a spend's firing winds up before its blow (MechRig.fire_wind): a fixed weapon whose
+## slice names its blow, the caller holding the blow's sound and its landing until then; nought for
+## a gun on a mount or a marked business end, which fire on the blow.
+func fire_wind(cid: String) -> float:
+	if rig == null or not carrying(cid).is_empty() or fx_nodes.has(cid):
+		return 0.0
+	return rig.fire_wind(cid)
+
+
+## How long a spend's firing slice plays (MechRig.fire_span), for an aim held until it ends.
+func fire_span(cid: String) -> float:
+	if rig == null or not carrying(cid).is_empty() or fx_nodes.has(cid):
+		return 0.0
+	return rig.fire_span(cid)
+
+
+func _outline_to(k: float) -> void:
+	if _outline_mat == null:
+		return
+	var c := Color(0.102, 0.114, 0.137) * k   # the outline's line (outline.gdshader), premultiplied as its pass stores it
+	_outline_mat.set_shader_parameter("line", Color(c.r, c.g, c.b, k))
+
+
+## Lay `mat` over every surface of the machine (null takes it off): its hull, its fitted parts, never
+## a halo, a flare or a trace.
+static func _overlay(node: Node, mat: Material) -> void:
+	if node is MeshInstance3D and not node.has_meta("halo") and not node.has_meta("is_trace"):
+		(node as MeshInstance3D).material_overlay = mat
+	for c in node.get_children():
+		_overlay(c, mat)
 
 
 ## The node-space axis a joint turns about when its sidecar names none: a turret
@@ -605,19 +1248,128 @@ static func joint_axis(name: String) -> Vector3:
 ## A blow: the shoulders swing the arms forward and back. Ranged: every joint carrying a
 ## weapon socket kicks about its own axis, a recoil; a turret with a mount flinches on its
 ## traverse. A melee blow leaves turrets alone. Does nothing on an untagged model (MechRig).
-func strike(ranged: bool) -> void:
+## `cid`, the component that struck: a burn weapon's fire flares on its mount as it fires.
+## A spend: the weapon that fired moves and flares (Ryan, 31 October: "It would obviously be
+## really cool if the actual weapon from the die fired"). The joints of the mounts carrying it
+## kick, a gun on the body kicks the whole machine back along its line, its muzzle flares bloom
+## and a burn weapon's fire flares; a weapon on no mount (a fixed one: the fists, the claws) fires
+## with its own act (MechRig.fire_act), or where the model names none strikes as every machine
+## did before, its arms swinging or its guns kicking. A caller that aims first strikes once the
+## turn is done (aim_at), so the turn comes before the blow and its sound.
+func strike(ranged: bool, cid: String = "") -> void:
 	if not is_inside_tree():
 		return
-	rig.strike(ranged)
+	var lead := 0.0
+	var mounts := carrying(cid)
+	if mounts.is_empty() and fx_nodes.has(cid):
+		# A fixed weapon with its business end marked (fx): the joint carrying it kicks, or the whole
+		# machine back along its line where no joint does, and it flares there (below).
+		var fx: Node3D = fx_nodes[cid]
+		var owner := rig.joint_of(fx)
+		var recoil := Vector3.ZERO
+		if owner.is_empty() and rig.body != null:
+			var forward := (rig.body.global_transform.basis.inverse() * fx.global_transform.basis * Vector3(0.0, 0.0, -1.0)).normalized()
+			recoil = rig.body.transform.basis * (-forward * MechRig.RECOIL_BODY)
+		rig.strike(ranged, [owner] if not owner.is_empty() else [], recoil, lead)
+	elif mounts.is_empty():
+		if not rig.fire_act(cid, lead):   # a fixed weapon fires with its own act where the model names one
+			rig.strike(ranged, [], Vector3.ZERO, lead)
+		launch(cid, lead)   # and what it fires out of the machine flies (the Lammergeier's drones)
+	else:
+		var only: Array = []
+		var recoil := Vector3.ZERO
+		for n in mounts:
+			var pin: Node3D = hardpoints[n]
+			var owner := rig.joint_of(pin)
+			if not owner.is_empty():
+				if not only.has(owner):
+					only.append(owner)
+			elif rig.body != null:
+				# Back along the gun's line: the pin points its class down its own -z.
+				var forward := (rig.body.global_transform.basis.inverse() * pin.global_transform.basis * Vector3(0.0, 0.0, -1.0)).normalized()
+				recoil += rig.body.transform.basis * (-forward * MechRig.RECOIL_BODY)
+		rig.strike(ranged, only, recoil, lead)
+	for fl in _flares:
+		if str(fl[1]) == cid:
+			rig.fire_flare(fl[0], str(fl[2]), lead + float(fl[3]))
+	for part in _burns:
+		if not cid.is_empty() and str((part as Node).get_meta("burn", "")) == cid:
+			rig.flash_under(part)
 	set_process(true)
+
+
+## Where component `cid`'s shot leaves, in this view's frame pixels (its design size, as a unit
+## view draws it): the middle of its muzzle flares through the view's camera (its class's muzzles
+## on its mount, or a fixed weapon's marked business end), else high on the drawing's middle. For
+## a shot crossing the field (ShotTrail); read as it fires, so a turn to aim is already in it.
+func muzzle_px(cid: String) -> Vector2:
+	if _camera != null and is_inside_tree():
+		var sum := Vector2.ZERO
+		var n := 0
+		for fl in _flares:
+			if str(fl[1]) == cid and is_instance_valid(fl[0]):
+				sum += _camera.unproject_position((fl[0] as Node3D).global_position)
+				n += 1
+		if n > 0:
+			return sum / float(n) / density
+	return Vector2(_model_rect.get_center().x, _model_rect.position.y + _model_rect.size.y * 0.3) / density
+
+
+## A piece of equipment used (a shield, a buff, a vent): one built in moves with its slice of an act
+## where the model names one (its sidecar's `fires`; Ryan's go of 3 November: the Puffin's Ionizer
+## sweeping its dish, the Giant Petrel's booster banks burning and its uplink swinging onto an ally).
+## True when it plays.
+func use(cid: String) -> bool:
+	if not is_inside_tree() or rig.dead or not rig.fire_act(cid):
+		return false
+	set_process(true)
+	return true
+
+
+## Turn onto a target before a spend (Ryan, 31 October: "If there's a cheap way of aiming (torso
+## twist, hover pivot, gimbal) then yeah lets do that. If a quad has to step around to fire like
+## the armadillo, then don't bother"): `deg` to the machine's left, held `hold` seconds. The
+## joint that turns is the nearest above the weapon's mount that turns about its up axis (a
+## turret, a waist, a head with guns); a weapon on no mount turns the joint its model names for
+## it (its sidecar's `aims`: the Funnel-web's Web Bomb rides the head) or the waist; with none, a
+## machine that turns on the spot (a hover, a flyer, a tank's tracks, a castered chassis) turns
+## its whole body, and anything else fires where it points. True when it turns: the caller
+## strikes once the turn is done (MechRig.AIM_UP), before the blow's sound.
+func aim_at(cid: String, deg: float, hold: float) -> bool:
+	if not is_inside_tree() or absf(deg) < 1.0:
+		return false
+	var joint := aim_joint_for(cid)
+	if joint.is_empty():
+		return false
+	rig.aim(joint, deg, hold)
+	set_process(true)
+	return true
+
+
+## The joint that turns to aim a component (aim_at), or "" when it fires where it points.
+func aim_joint_for(cid: String) -> String:
+	var mounts := carrying(cid)
+	for n in mounts:
+		var joint := rig.aim_joint_over(hardpoints[n])
+		if not joint.is_empty():
+			return joint
+	if mounts.is_empty():
+		var named := str(rig.aims.get(cid, ""))
+		if rig.joints.has(named):
+			return named
+		if rig.joints.has("waist") and str(rig.meta.get("waist", {}).get("axis", "")) == "yaw":
+			return "waist"
+	if pivots or rig.pivots:
+		return MechRig.BODY
+	return ""
 
 
 ## Hang a component's model on a socket: the stock part under `hp_<n>` is hidden and the
 ## scene is added under the pin, so it points where the pin points and wears the pin's
 ## scale (lowforge sets both; a Sparrowhawk's pins are half size). Returns false when the
-## model has no such socket.
+## model has no such socket, or hides it (hidden_pins).
 func mount(n: int, scene: PackedScene, maker: String) -> bool:
-	if not hardpoints.has(n):
+	if not hardpoints.has(n) or hidden_pins(model_id).has(n):
 		return false
 	var pin: Node3D = hardpoints[n]
 	for c in pin.get_children():
@@ -853,6 +1605,8 @@ func _collect_corners_local(node: Node, root: Node3D, out: Array[Vector3]) -> vo
 
 
 func _collect_corners(node: Node, out: Array[Vector3]) -> void:
+	if node.has_meta("plume"):
+		return   # a booster's flame trails off the machine; the frame is the machine's
 	if node is MeshInstance3D and (node as MeshInstance3D).visible:
 		var mi: MeshInstance3D = node
 		for c in MechWeld.corners(mi):

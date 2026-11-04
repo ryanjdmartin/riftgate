@@ -79802,5 +79802,20 @@
   "hp_2": "howitzer",
   "hp_3": "twin_autoguns",
   "hp_4": ""
+ },
+ "fires": {
+  "web_bomb": {
+   "act": "sight_in",
+   "from": 2.0,
+   "to": 3.8
+  }
+ },
+ "aims": {
+  "web_bomb": "head"
+ },
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "barrel",
+  "hp_3": "twin_barrel"
  }
 }

@@ -48805,5 +48805,140 @@
     2.12
    ]
   }
+ },
+ "halo": [
+  "radiator_heat_l",
+  "radiator_heat_r",
+  "rear_vent_heat_l",
+  "rear_vent_heat_r",
+  "side_vent_heat_l",
+  "side_vent_heat_r"
+ ],
+ "fires": {
+  "cryo_flinger": {
+   "act": "weapons_check",
+   "from": 3.9,
+   "to": 5.6
+  }
+ },
+ "muzzles": {
+  "hp_1": [
+   [
+    [
+     -0.0,
+     -0.0,
+     -16.664
+    ],
+    19.4
+   ]
+  ],
+  "hp_2": [
+   [
+    [
+     2.0,
+     -0.0,
+     -17.914
+    ],
+    13.4
+   ],
+   [
+    [
+     -2.0,
+     -0.0,
+     -17.914
+    ],
+    13.4
+   ]
+  ]
+ },
+ "fits": {
+  "hp_1": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.78
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.7
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.8
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.7
+   },
+   "barrel": {
+    "shape": "barrel",
+    "scale": 0.9
+   }
+  },
+  "hp_2": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.78
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.7
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.8
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.7
+   },
+   "barrel": {
+    "shape": "barrel",
+    "scale": 0.9
+   }
+  },
+  "hp_3": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.68
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.6
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.7
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.6
+   },
+   "barrel": {
+    "shape": "barrel",
+    "scale": 0.8
+   }
+  },
+  "hp_4": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.68
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.6
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.7
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.6
+   },
+   "barrel": {
+    "shape": "barrel",
+    "scale": 0.8
+   }
+  }
  }
 }

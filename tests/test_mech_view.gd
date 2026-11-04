@@ -53,6 +53,102 @@ func test_every_silhouette_class_has_a_model_in_every_makers_metal() -> void:
 			assert_true(MechView3D.has_model(MechView3D.shape_model(shape, maker)), "%s in %s is built" % [shape, maker])
 
 
+func test_a_hardpoint_wears_the_variant_and_scale_it_declares_for_a_class() -> void:
+	# A model's sidecar may declare, per hardpoint and class, a variant and a scale on the pin's
+	# own (lowforge's `fits`; Ryan, 2 November: "Hardpoint just needs to declare shape (if
+	# offered) and scaling"); every other class wears itself at the pin's scale.
+	var side := {"fits": {"hp_2": {"rack": {"shape": "rack_round", "scale": 0.8}, "dish": {"shape": "dish", "scale": 0.5}}}}
+	assert_eq(MechView3D.fit_in(side, 2, "rack"), ["rack_round", 0.8], "the declared variant at its scale")
+	assert_eq(MechView3D.fit_in(side, 2, "dish"), ["dish", 0.5], "the class itself, smaller")
+	assert_eq(MechView3D.fit_in(side, 2, "barrel"), ["barrel", 1.0], "an undeclared class wears itself")
+	assert_eq(MechView3D.fit_in(side, 1, "rack"), ["rack", 1.0], "and so does every class on an undeclared mount")
+	assert_eq(MechView3D.fit_in({}, 1, "blade"), ["blade", 1.0], "a sidecar with no fits changes nothing")
+
+
+func test_every_declared_fit_names_a_built_variant_of_its_class() -> void:
+	# Each variant lowforge built (art/models/shapes/variants.json) is in every maker's metal
+	# with its muzzle and, where its class burns, a fire; each model's fits name a class content
+	# knows, and a variant of that class or the class itself, at a scale above nothing.
+	var db := ContentDB.load_default()
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string("res://art/models/shapes/variants.json"))
+	assert_true(parsed is Dictionary, "the variants' manifest reads")
+	var variants: Dictionary = {}
+	for key in (parsed as Dictionary).keys():
+		if not str(key).begins_with("_"):
+			variants[str(key)] = str(parsed[key])
+	assert_false(variants.is_empty(), "there is a variant to check")
+	for v in variants.keys():
+		assert_true(ContentDB.SHAPES.has(variants[v]) and variants[v] != ContentDB.SHAPE_NONE, "%s is a variant of a class content knows" % v)
+		for maker in db.makers.keys():
+			assert_true(MechView3D.has_model(MechView3D.shape_model(v, maker)), "%s in %s is built" % [v, maker])
+		assert_false(MuzzleFlare.places(v).is_empty(), "%s has a muzzle to flare at" % v)
+		if MechView3D.has_model("shapes/burn_%s" % variants[v]):
+			assert_true(MechView3D.has_model("shapes/burn_%s" % v), "%s has a fire, as its class does" % v)
+	var declared := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var fits = MechRig.load_sidecar(f.trim_suffix(".rig.json")).get("fits", {})
+		for pin in fits.keys():
+			for cls in fits[pin].keys():
+				declared += 1
+				var how: Dictionary = fits[pin][cls]
+				var worn := str(how.get("shape", cls))
+				assert_true(ContentDB.SHAPES.has(cls) and cls != ContentDB.SHAPE_NONE, "%s %s fits %s, a class" % [f, pin, cls])
+				assert_true(worn == cls or str(variants.get(worn, "")) == cls, "%s %s wears its %s as %s, a variant of it" % [f, pin, cls, worn])
+				assert_true(float(how.get("scale", 1.0)) > 0.0, "%s %s wears its %s at a scale above nothing" % [f, pin, cls])
+	assert_true(declared > 0, "some model declares a fit")
+
+
+func test_a_swap_wears_the_mounts_variant_at_its_scale() -> void:
+	# Every model that declares a fit hangs that variant at that scale when its class is fitted
+	# there, on the game's own wear (the map shares it), and its flares follow the shape and scale.
+	var db := ContentDB.load_default()
+	var checked := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var model := f.trim_suffix(".rig.json")
+		var fits = MechRig.load_sidecar(model).get("fits", {})
+		if fits.is_empty():
+			continue
+		var root: Node3D = (load("res://art/models/%s.glb" % model) as PackedScene).instantiate()
+		var pins := MechView3D.pins_of(root)
+		for pin in fits.keys():
+			var n := int(str(pin).substr(3))
+			for cls in fits[pin].keys():
+				var how: Dictionary = fits[pin][cls]
+				var cid := ""
+				for id in db.components.keys():
+					if str(db.components[id].get("shape", "")) == cls and str(db.components[id].get("status", "")) != "planned":
+						cid = str(id)
+						break
+				if cid.is_empty() or not pins.has(n):
+					continue
+				var maker := str(db.components[cid].get("maker", ""))
+				MechView3D.wear(pins, [[n, cid, cls, maker]], "clean", {}, false, true, model)
+				var worn: Node3D = null
+				for c in (pins[n] as Node3D).get_children():
+					if c.has_meta("mounted"):
+						worn = c
+				assert_true(worn != null, "%s %s hangs something for its %s" % [model, pin, cls])
+				if worn != null:
+					assert_eq(worn.scene_file_path, "res://art/models/%s.glb" % MechView3D.shape_model(str(how.get("shape", cls)), maker), "%s %s wears its %s's variant" % [model, pin, cls])
+					assert_true(absf(worn.scale.x - float(how.get("scale", 1.0))) < 0.001, "%s %s wears its %s at its scale" % [model, pin, cls])
+					(pins[n] as Node3D).remove_child(worn)
+					worn.free()
+				var flares := MechView3D.flare_rows(model, [[n, cid, cls, maker]], db, false)
+				for row in flares:
+					if int(row[0]) == n:
+						var want: Array = MuzzleFlare.places(str(how.get("shape", cls)))
+						assert_eq((row[3] as Array).size(), want.size(), "%s %s flares at its shape's muzzles" % [model, pin])
+						if not want.is_empty():
+							assert_true(absf(float(row[3][0][1]) - float(want[0][1]) * float(how.get("scale", 1.0))) < 0.001, "%s %s flares at its scale" % [model, pin])
+				checked += 1
+		root.free()
+	assert_true(checked > 0, "a declared fit was worn")
+
+
 func test_mount_plan_names_only_the_mounts_that_differ_from_stock() -> void:
 	var db := ContentDB.load_default()
 	# Stock: a gun, a rack, a gun, and a jack that takes no mount: three mounts filled.
@@ -133,6 +229,70 @@ func test_every_model_names_what_each_of_its_pins_carries() -> void:
 		model.free()
 
 
+func test_a_hidden_mount_shows_nothing_stock_or_fitted() -> void:
+	# The Cottonmouth's guns sit inside its drum (Ryan, 19 October: "the guns mounted
+	# (invisibly) inside"): a model may hide a mount (lowforge's b.pin(hidden=True), the
+	# sidecar's hidden_pins). It stays a hardpoint, counted and recording what it carries, but
+	# nothing hangs on it, its stock or a fitted component's class, in the fight, the codex and
+	# on the map alike (each wears its plan through MechView3D.wear). A mount not hidden still
+	# wears the class, on every model.
+	var db := ContentDB.load_default()
+	var fit: Array = []   # a component from content that takes a mount, fitted to every pin
+	for cid in db.components.keys():
+		var c: Dictionary = db.components[cid]
+		if MechView3D._shaped(str(cid), db) and MechView3D.has_model(MechView3D.shape_model(str(c.get("shape", "")), str(c.get("maker", "")))):
+			fit = [str(cid), str(c["shape"]), str(c["maker"])]
+			break
+	assert_false(fit.is_empty(), "content has a component that takes a mount")
+	if fit.is_empty():
+		return
+	var hiding := ""
+	for id in db.chassis.keys():
+		if not MechView3D.has_model(str(id)):
+			continue
+		var model: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
+		var pins := MechView3D.pins_of(model)
+		var hidden := MechView3D.hidden_pins(str(id))
+		if not hidden.is_empty() and hiding.is_empty():
+			hiding = str(id)
+		for n in hidden.keys():
+			assert_true(pins.has(n), "%s: its hidden hp_%d is one of its pins" % [id, int(n)])
+			if pins.has(n):
+				assert_eq(_shown_meshes(pins[n]), 0, "%s: hidden hp_%d shows no stock part" % [id, int(n)])
+		var rows: Array = []
+		for n in pins.keys():
+			rows.append([int(n), fit[0], fit[1], fit[2]])
+		MechView3D.wear(pins, rows, "clean", {}, false, true, str(id))
+		for n in pins.keys():
+			if hidden.has(n):
+				assert_eq(_shown_meshes(pins[n]), 0, "%s: hidden hp_%d wears nothing fitted" % [id, int(n)])
+			else:
+				assert_true(_shown_meshes(pins[n]) > 0, "%s: hp_%d wears the fitted class" % [id, int(n)])
+		model.free()
+	assert_false(hiding.is_empty(), "a model hides its mounts (the Cottonmouth's drum)")
+	assert_true(MechView3D.hidden_pins("").is_empty() and MechView3D.hidden_pins("no_such_model").is_empty(), "no model, nothing hidden")
+	if hiding.is_empty():
+		return
+	# A view's own mount() refuses a hidden pin as wear() does.
+	var v := MechView3D.make(hiding, fit[2], "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
+	var shape: PackedScene = load("res://art/models/%s.glb" % MechView3D.shape_model(fit[1], fit[2]))
+	for n in v.hardpoints.keys():
+		assert_eq(v.mount(int(n), shape, fit[2]), not MechView3D.hidden_pins(hiding).has(n), "%s: mount() on hp_%d hangs a part only where the pin shows" % [hiding, int(n)])
+	v.free()
+
+
+## The meshes drawn under a node: a hidden one, and everything under it, left out.
+func _shown_meshes(node: Node) -> int:
+	var n := 0
+	for c in node.get_children():
+		if c is Node3D and not (c as Node3D).visible:
+			continue
+		if c is MeshInstance3D:
+			n += 1
+		n += _shown_meshes(c)
+	return n
+
+
 func test_a_turret_joint_traverses_and_a_limb_swings() -> void:
 	assert_eq(MechView3D.joint_axis("turret"), Vector3(0, 1, 0), "a turret turns about its up axis")
 	assert_eq(MechView3D.joint_axis("turret_l"), Vector3(0, 1, 0), "a named turret too")
@@ -193,3 +353,361 @@ func test_the_settings_page_offers_every_aa_mode() -> void:
 	for mode in Settings.AA_MODES:
 		assert_true(labels.has(str(Settings.AA_LABELS[mode])), "the settings page offers %s" % Settings.AA_LABELS[mode])
 	menu.free()
+
+
+func test_a_burn_weapon_wears_its_fire_on_its_class_and_nothing_else_does() -> void:
+	var db := ContentDB.new()
+	db.components = {"fire_gun": {"shape": "barrel", "face": {"keywords": ["burn"]}},
+		"cold_gun": {"shape": "barrel", "face": {"keywords": ["pierce"]}},
+		"bare_gun": {"shape": "barrel", "face": {}}}
+	assert_true(MechView3D.burning("fire_gun", db), "a component whose entry's keywords hold burn burns")
+	assert_false(MechView3D.burning("cold_gun", db), "one without burn does not")
+	assert_false(MechView3D.burning("bare_gun", db), "nor one whose entry names no keywords")
+	var rows := [[1, "fire_gun", "barrel", "minerva"], [2, "cold_gun", "barrel", "minerva"]]
+	assert_eq(MechView3D.burn_rows("", rows, db), [[1, "fire_gun", "barrel", "barrel", 1.0]], "a swapped burn weapon's mount takes its class's fire, and only it")
+
+
+func test_a_flash_rises_holds_and_settles_back_to_rest() -> void:
+	var rig := MechRig.new()
+	var node := MeshInstance3D.new()
+	node.mesh = BoxMesh.new()
+	var lit := StandardMaterial3D.new()
+	lit.emission_enabled = true
+	lit.emission_energy_multiplier = 1.5
+	node.set_surface_override_material(0, lit)
+	rig.flash_under(node)
+	rig._step(MechRig.FLASH_UP + MechRig.FLASH_HOLD * 0.5)
+	assert_true(absf(lit.emission_energy_multiplier - 1.5 * MechRig.light(1.0 + MechRig.FLASH_PEAK)) < 0.001, "at its top it burns FLASH_PEAK rests over its own")
+	rig._step(MechRig.FLASH_HOLD + MechRig.FLASH_DOWN)
+	assert_true(absf(lit.emission_energy_multiplier - 1.5) < 0.001, "and settles back to its rest")
+	node.free()
+
+
+
+func test_a_weapon_flares_on_its_class_in_its_tags_look_and_equipment_never() -> void:
+	var db := ContentDB.new()
+	db.components = {"gun": {"shape": "twin_barrel", "tags": ["ballistic", "flame"], "face": {"kind": "attack"}},
+		"lance": {"shape": "barrel", "tags": ["beam"], "face": {"kind": "attack"}},
+		"ward": {"shape": "dish", "tags": [], "face": {"kind": "shield"}},
+		"built": {"shape": "barrel", "tags": ["plasma"], "face": {"kind": "attack"}}}
+	var pins := {1: Node3D.new(), 2: Node3D.new(), 3: Node3D.new(), 4: Node3D.new()}
+	var by_hand := [[Vector3(0.0, 1.0, -20.0), 10.0]]
+	var rows := [[1, "gun", "twin_barrel", MuzzleFlare.places("twin_barrel")], [2, "lance", "barrel", MuzzleFlare.places("barrel")],
+		[3, "ward", "dish", MuzzleFlare.places("dish")], [4, "built", "", by_hand]]
+	var flares := MechView3D.wear_flares(pins, rows, db)
+	var by := {}
+	for fl in flares:
+		by[str(fl[1])] = int(by.get(str(fl[1]), 0)) + 1
+		assert_false((fl[0] as Node3D).visible, "a flare waits hidden until its weapon fires")
+	assert_eq(by.get("gun", 0), MuzzleFlare.places("twin_barrel").size() * 2, "a twin barrel flares at each muzzle, a layer a tag")
+	assert_eq(by.get("lance", 0), 1, "a barrel at its one, in its one look")
+	assert_false(by.has("ward"), "a shield's dish is no weapon and takes none")
+	assert_eq(by.get("built", 0), 1, "a gun built by hand flares where its model says")
+	for fl in flares:
+		if str(fl[1]) == "gun":
+			var first := str(fl[2]) == "ballistic"
+			assert_eq(float(fl[3]), 0.0 if first else MuzzleFlare.LAYER_DELAY, "the shell flashes first, its fire a beat behind")
+		if str(fl[1]) == "built":
+			assert_eq((fl[0] as Node3D).position, Vector3(0.0, 1.0, -20.0), "at the place its model names")
+	for n in pins.keys():
+		(pins[n] as Node3D).free()
+
+
+func test_the_tags_pick_a_flare_and_every_class_has_its_places() -> void:
+	assert_eq(MuzzleFlare.looks_for(["arc", "ballistic"], "barrel"), ["ballistic", "arc"], "the slug's flash, then its lightning")
+	assert_eq(MuzzleFlare.looks_for(["melee", "blade"], "blade"), ["blade"], "a melee piece throws a blade's sparks, once")
+	assert_eq(MuzzleFlare.looks_for(["arc", "melee"], "blade"), ["blade", "arc"], "a gauntlet's lightning rides its punch's sparks")
+	assert_eq(MuzzleFlare.looks_for(["ballistic", "melee"], "barrel"), ["ballistic"], "a shotgun tagged melee flashes as the gun it is, no sparks")
+	assert_eq(MuzzleFlare.looks_for(["flame", "melee"], "barrel"), ["flame"], "a flamethrower tagged melee throws its fire alone")
+	assert_eq(MuzzleFlare.looks_for([], "rack"), ["missile"], "a rack with no tag puffs as a launcher")
+	assert_eq(MuzzleFlare.looks_for([], "barrel"), ["ballistic"], "a barrel with none flashes as a gun")
+	for t in MuzzleFlare.ORDER:
+		assert_true(MuzzleFlare.BEATS.has("blade" if t == "melee" else t), "the tag %s has a beat" % t)
+	for shape in ContentDB.SHAPES:
+		if shape == ContentDB.SHAPE_NONE:
+			continue
+		assert_false(MuzzleFlare.places(shape).is_empty(), "the class %s has a muzzle to flare at" % shape)
+	for look in MuzzleFlare.BEATS.keys():
+		assert_eq(MuzzleFlare.strength(look, -0.01), 0.0, "%s: nothing before it fires" % look)
+		assert_eq(MuzzleFlare.strength(look, MuzzleFlare.lasts(look)), 0.0, "%s: nothing once it is over" % look)
+		var b: Dictionary = MuzzleFlare.BEATS[look]
+		assert_true(MuzzleFlare.strength(look, float(b["up"]) + float(b["hold"]) * 0.5) > 0.2, "%s: lit through its hold" % look)
+
+
+func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -> void:
+	# A fixed weapon turns the joint its model names (the sidecar's `aims`) or a waist; a machine
+	# that turns on the spot (its sidecar's `pivots`: tracks, casters) turns its body for a gun on
+	# its hull; a quad with neither fires where it points (Ryan, 31 October: "don't bother").
+	var named := 0
+	for id in ["badger", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "nemesis", "ammit", "funnel_web"]:
+		var view := MechView3D.make(id, "", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
+		var side := MechRig.load_sidecar(id)
+		for cid in (side.get("aims", {}) as Dictionary).keys():
+			named += 1
+			assert_eq(view.aim_joint_for(str(cid)), str(side["aims"][cid]), "%s: %s turns its named joint" % [id, cid])
+		var pins: Dictionary = side.get("pins", {})
+		for pin in pins.keys():
+			var cid := str(pins[pin])
+			if cid.is_empty():
+				continue
+			var joint := view.aim_joint_for(cid)
+			if bool(side.get("pivots", false)):
+				assert_false(joint.is_empty(), "%s: %s aims, a turret or the body turning" % [id, cid])
+			if id == "armadillo":
+				assert_eq(joint, "", "the Armadillo's %s fires where it points" % cid)
+		view.free()
+	assert_true(named >= 2, "the fixed weapons riding a head or a turret name it (%d)" % named)
+
+
+
+func test_a_blow_flashes_the_hull_on_a_beat_and_the_shield_takes_its_own() -> void:
+	# The hull's flash: up fast, held, eased out, nothing before or after (MechView3D.hit_k); what took
+	# a blow picks the reaction (SkirmishScreen.blow_took).
+	assert_eq(MechView3D.hit_k(-0.01), 0.0, "nothing before the blow lands")
+	assert_eq(MechView3D.hit_k(MechView3D.HIT_UP + MechView3D.HIT_HOLD * 0.5), 1.0, "full at its top")
+	assert_eq(MechView3D.hit_k(MechView3D.HIT_UP + MechView3D.HIT_HOLD + MechView3D.HIT_DOWN), 0.0, "gone once the beat is done")
+	assert_true(MechView3D.hit_k(MechView3D.HIT_UP + MechView3D.HIT_HOLD + MechView3D.HIT_DOWN * 0.5) < 1.0, "easing out")
+	assert_eq(SkirmishScreen.blow_took(true, false, 0), "shield", "a shield that held ripples")
+	assert_eq(SkirmishScreen.blow_took(false, true, 0), "none", "a shield that broke taking it all only shatters")
+	assert_eq(SkirmishScreen.blow_took(false, true, 3), "hull", "one that broke and let some through lands on the hull")
+	assert_eq(SkirmishScreen.blow_took(false, false, 2), "hull", "a blow on the bare hull")
+	assert_eq(SkirmishScreen.blow_took(false, false, 0), "block", "the armour turning it")
+
+
+func test_a_struck_machine_wears_heats_flash_and_a_lost_one_dims() -> void:
+	var db := ContentDB.load_default()
+	var view := MechView3D.make("armadillo", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
+	var meshes: Array = view._model.find_children("*", "MeshInstance3D", true, false)
+	view.hit("shield", 0.0)
+	assert_eq(view._hit_t, -1.0, "a blow its shield took moves nothing on the model")
+	view.hit("hull", -1.0)
+	var worn := 0
+	for mi in meshes:
+		if (mi as MeshInstance3D).material_overlay != null:
+			worn += 1
+	assert_true(worn > 0, "the hull wears the flash")
+	view._process(MechView3D.HIT_UP + MechView3D.HIT_HOLD + MechView3D.HIT_DOWN + 0.01)
+	for mi in meshes:
+		assert_true((mi as MeshInstance3D).material_overlay == null, "and sheds it once the beat is done")
+	view.lose()
+	assert_true(view.rig.dead, "a machine lost guts out")
+	view._process(MechRig.GUTTER + 0.01)
+	var line: Color = view._outline_mat.get_shader_parameter("line") if view._outline_mat != null else Color(0, 0, 0, MechView3D.OUTLINE_LOST)
+	assert_true(absf(line.a - MechView3D.OUTLINE_LOST) < 0.01, "its outline dimmed")
+	view.revive()
+	assert_false(view.rig.dead, "and comes back for the debug switch")
+	view.free()
+	assert_true(db != null, "content loads")
+
+
+func test_a_fixed_weapon_with_its_business_end_marked_flares_there_on_its_joint() -> void:
+	# lowforge's fx(): a model whose sidecar names a fixed weapon's business end carries the
+	# fx_<component> node, riding a joint (or the body), where the weapon's flares hang in its tags'
+	# look; equipment takes none. And a fixed piece's firing slice names an act the model has.
+	var db := ContentDB.load_default()
+	var checked := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var model := f.trim_suffix(".rig.json")
+		var side := MechRig.load_sidecar(model)
+		var fx = side.get("fx", {})
+		if not (fx is Dictionary) or (fx as Dictionary).is_empty():
+			continue
+		var r := _rig_for(model)
+		var rig: MechRig = r[0]
+		var nodes := MechView3D.fx_of(r[1], side)
+		for cid in (fx as Dictionary).keys():
+			assert_true(nodes.has(cid), "%s carries fx_%s" % [model, cid])
+			assert_true(db.components.has(cid), "%s's fx names %s, a component content knows" % [model, cid])
+			if nodes.has(cid):
+				var owner := rig.joint_of(nodes[cid])
+				assert_true(owner.is_empty() or rig.joints.has(owner), "%s's %s rides a joint of its own, or the body" % [model, cid])
+		var flares := MechView3D.wear_fx_flares(nodes, fx, db)
+		for fl in flares:
+			var c: Dictionary = db.components[str(fl[1])]
+			assert_eq(str(c.get("face", {}).get("kind", "")), "attack", "%s flares only a weapon at its business end" % model)
+			assert_false((fl[0] as Node3D).visible, "waiting hidden until it fires")
+		checked += 1
+		(r[1] as Node).free()
+	assert_true(checked > 0, "some model marks a fixed weapon's business end")
+
+
+func _rig_for(model_id: String) -> Array:
+	var model: Node3D = (load("res://art/models/%s.glb" % model_id) as PackedScene).instantiate()
+	var rig := MechRig.new()
+	rig.setup(model, model_id, model, 1)
+	return [rig, model]
+
+
+func test_a_melee_weapon_lunges_only_when_nothing_about_it_crosses_the_field() -> void:
+	# Ryan, 3 November, of the Bullion Fragmenter (melee and ballistic): "It's a shotgun,
+	# thematically". Melee is short range; a weapon lunges only as a blade with no tag that sends its
+	# blow across the field. Synthetic tags: never a named entry.
+	assert_true(MuzzleFlare.lunges(["blade", "melee"], "blade"), "a claw lunges")
+	assert_true(MuzzleFlare.lunges(["arc", "melee"], "blade"), "so does a gauntlet's lightning, carried by the punch")
+	assert_true(MuzzleFlare.lunges(["melee", "plasma"], "blade"), "and a plasma fist")
+	assert_true(MuzzleFlare.lunges(["melee"]), "melee with no class named lunges, as it always did")
+	assert_false(MuzzleFlare.lunges(["ballistic", "melee"], "barrel"), "a shotgun fires")
+	assert_false(MuzzleFlare.lunges(["ballistic", "melee"], "blade"), "a blade that fires a shell fires it")
+	assert_false(MuzzleFlare.lunges(["blade", "melee", "ballistic"], "blade"), "so does a claw the drum fires as its shot")
+	assert_false(MuzzleFlare.lunges(["missile", "melee"]) or MuzzleFlare.lunges(["beam", "melee"]), "a rocket and a beam cross the field")
+	assert_false(MuzzleFlare.lunges(["flame", "melee"], "barrel"), "a flamethrower tagged melee fires its stream")
+	assert_false(MuzzleFlare.lunges(["ballistic"], "barrel") or MuzzleFlare.lunges([], "blade"), "no melee, no lunge")
+
+
+func test_a_lost_flyer_comes_down_onto_its_lowest_point() -> void:
+	# Ryan, 3 November, the second notes: "don't fall through the floor": a flyer's wings reach below its
+	# origin and a hover's skirt stands above it, so a lost one lands on what hangs lowest.
+	var field := {"focal": 900.0, "height": 2.0, "principal": Vector2(360.0, 300.0), "at": Vector2(0.0, 6.0),
+		"window": Rect2(0.0, 0.0, 200.0, 200.0), "fill": 0.8, "lift": 0.4, "turn": 0.0}
+	for id in ["goshawk", "puffin"]:
+		var view := MechView3D.make_on_floor(id, "kestrel", "clean", field)
+		view.lose()
+		for _i in range(60):
+			view._process(0.05)
+		var lands := -view.rig.collapse_floor * view._field_scale
+		assert_true(view.rig.airborne, "a machine off the floor is airborne (%s)" % id)
+		assert_true(absf(view._stage.position.y - lands) < 0.001, "it comes down until its lowest point rests on the floor (%s: %.3f, %.3f)" % [id, view._stage.position.y, lands])
+		if id == "goshawk":
+			assert_true(lands > 0.0, "a flyer's wings below its origin hold it short of the floor under that origin")
+		else:
+			assert_true(lands < 0.0, "a hover settles past its origin onto its skirt")
+		view.free()
+
+
+func test_a_plume_is_gone_at_rest_and_full_at_a_burn() -> void:
+	# Ryan, 3 November: the plume "needs to dissapear when idle".
+	assert_eq(MechView3D.plume_k(2.0, 2.0), 0.0, "a booster at its rest light shows none")
+	assert_true(MechView3D.plume_k(2.0 * MechRig.light(4.0), 2.0) > 0.0, "a booster burning shows some")
+	assert_eq(MechView3D.plume_k(2.0 * MechRig.light(8.0), 2.0), 1.0, "and all of it at eight rests over its own")
+
+
+func test_what_a_weapon_fires_out_is_hidden_until_it_flies() -> void:
+	# lowforge's launch() (Ryan, 3 November, of the Lammergeier: "a new drone model that fires out"):
+	# every model whose sidecar names launches carries their nodes, hidden at rest; a launch flies
+	# out along its line and comes home hidden.
+	var checked := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var model_id := f.trim_suffix(".rig.json")
+		var side := MechRig.load_sidecar(model_id)
+		if (side.get("launches", {}) as Dictionary).is_empty():
+			continue
+		var model: Node3D = (load("res://art/models/%s.glb" % model_id) as PackedScene).instantiate()
+		var ls := MechView3D.launches_of(model, side)
+		for cid in (side["launches"] as Dictionary).keys():
+			assert_eq((ls.get(cid, []) as Array).size(), (side["launches"][cid] as Array).size(), "%s: every launch of %s is in the model" % [model_id, cid])
+			for i in range((ls.get(cid, []) as Array).size()):
+				var row: Dictionary = ls[cid][i]
+				assert_false((row["node"] as Node3D).visible, "%s: %s hidden at rest" % [model_id, (row["node"] as Node3D).name])
+				if (side["launches"][cid][i] as Dictionary).has("lands"):
+					assert_true(row["lands"] is Node3D, "%s: %s lands in a place the model carries" % [model_id, (row["node"] as Node3D).name])
+		checked += 1
+		model.free()
+	assert_true(checked > 2, "the Lammergeier, the Swallowtail and the Musk Ox fire things out of themselves")
+
+
+func test_a_launch_flies_its_shape() -> void:
+	# The micro-models (Ryan, 4 November: "Go for some micro models and let's see what they look like"):
+	# a launch gathers along its line by its ease, falls by its drop, turns end over end by its spin,
+	# hangs sinking, and its light dies over its fade.
+	var n := Node3D.new()
+	var at := func(r: Dictionary, t: float) -> Vector3: return MechView3D.flight_at(r, t, Vector3.DOWN, MechView3D.flight_line(r)).origin
+	var row := MechView3D.flight_row(n, {"reach": 100.0, "seconds": 1.0})
+	assert_true(MechView3D.flight_line(row).is_equal_approx(Vector3(0.0, 0.0, -100.0)), "a launch's line is its own forward, its reach long")
+	assert_true(at.call(row, 0.5).is_equal_approx(Vector3(0.0, 0.0, -25.0)), "a drone gathers speed: a quarter of the way at half its time")
+	row["ease"] = "out"
+	assert_true(at.call(row, 0.5).is_equal_approx(Vector3(0.0, 0.0, -75.0)), "a lobbed round slows: three quarters of the way at half its time")
+	row["ease"] = "line"
+	assert_true(at.call(row, 0.5).is_equal_approx(Vector3(0.0, 0.0, -50.0)), "a shell goes at one speed")
+	assert_true(at.call(row, 1.0).is_equal_approx(Vector3(0.0, 0.0, -100.0)), "and every ease ends at the whole reach")
+	var thrown := MechView3D.flight_row(n, {"reach": 10.0, "seconds": 1.0, "ease": "line", "drop": 8.0})
+	assert_true(at.call(thrown, 0.5).is_equal_approx(Vector3(0.0, -2.0, -5.0)), "a thrown thing falls as the square of its time")
+	assert_true(at.call(thrown, 1.0).is_equal_approx(Vector3(0.0, -8.0, -10.0)), "its whole drop by the end")
+	var tumble := MechView3D.flight_row(n, {"reach": 0.0, "seconds": 2.0, "spin": 180.0})
+	var b := MechView3D.flight_at(tumble, 1.0, Vector3.DOWN, Vector3.ZERO).basis
+	assert_true((b * Vector3(0.0, 0.0, -1.0)).is_equal_approx(Vector3(0.0, 1.0, 0.0)), "it turns end over end about its own x, half its spin at half its time")
+	var flare := MechView3D.flight_row(n, {"reach": 40.0, "seconds": 1.0, "ease": "out", "hang": 2.0, "sink": 6.0, "fade": 0.5, "light": 16.0})
+	assert_eq(MechView3D.flight_span(flare), 3.0, "a flare is out for its flight and its hang")
+	assert_true(at.call(flare, 2.0).is_equal_approx(Vector3(0.0, -3.0, -40.0)), "it hangs where its flight ended, halfway sunk halfway through")
+	assert_eq(MechView3D.flight_light(flare, 1.0), 16.0, "its own light while it burns")
+	assert_eq(MechView3D.flight_light(flare, 2.75), 8.0, "dying over its fade")
+	assert_eq(MechView3D.flight_light(flare, 3.0), 0.0, "and out at the end")
+	assert_eq(MechView3D.flight_row(n, {})["light"], MechView3D.LAUNCH_LIGHT, "a drone burns at the launches' light")
+	n.free()
+
+
+func test_a_launch_that_lands_finds_its_place_however_its_gun_turned() -> void:
+	# The Musk Ox's casing: thrown from the breech into the forge mouth, the line taken as it leaves, so
+	# a gun traversed onto its mark still drops it in.
+	var holder := Node3D.new()
+	holder.scale = Vector3(2.0, 2.0, 2.0)   # a view's scale
+	var gun := Node3D.new()
+	holder.add_child(gun)
+	var casing := Node3D.new()
+	casing.position = Vector3(1.0, 0.5, 0.0)
+	gun.add_child(casing)
+	var forge := Node3D.new()
+	forge.position = Vector3(6.0, -2.0, 9.0)
+	holder.add_child(forge)
+	for turn in [0.0, 14.0, -14.0]:
+		gun.rotation_degrees = Vector3(0.0, turn, 0.0)
+		var row := MechView3D.flight_row(casing, {"reach": 5.0, "seconds": 0.8, "ease": "line", "drop": 40.0})
+		row["lands"] = forge
+		var f := {"row": row, "t": 0.0}
+		MechView3D._leave(f)
+		var end: Vector3 = (f["frame"] as Transform3D) * MechView3D.flight_at(row, 0.8, f["down"], f["line"]).origin
+		var there := MechView3D._frame_of(forge).origin
+		assert_true(end.distance_to(there) < 0.001, "it lands in the forge with the gun at %d degrees (%s, %s)" % [int(turn), end, there])
+		var top: Vector3 = (f["frame"] as Transform3D) * MechView3D.flight_at(row, 0.3, f["down"], f["line"]).origin
+		assert_true(top.y > MechView3D._frame_of(casing).origin.y, "thrown up and over, not dropped (%d degrees)" % int(turn))
+	holder.free()
+
+
+func test_a_flare_hangs_where_it_was_fired() -> void:
+	# Once a launch leaves it is the world's: a flare (the Swallowtail's) hangs over the field, only
+	# sinking, whatever the rack it left and the deck do meanwhile, and goes out and home when its time
+	# is up. The first model whose sidecar hangs a launch.
+	var found := []
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json") or not found.is_empty():
+			continue
+		var side := MechRig.load_sidecar(f.trim_suffix(".rig.json"))
+		for cid in (side.get("launches", {}) as Dictionary).keys():
+			if found.is_empty() and float((side["launches"][cid][0] as Dictionary).get("hang", 0.0)) > 0.0:
+				found = [f.trim_suffix(".rig.json"), str(cid)]
+	assert_false(found.is_empty(), "some launch hangs (the Swallowtail's flares)")
+	if found.is_empty():
+		return
+	var view := MechView3D.make(found[0], ContentDB.load_default().maker_of(found[0]), "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
+	var row: Dictionary = view._launches[found[1]][0]
+	var node: Node3D = row["node"]
+	# What strike does for a fixed weapon (it waits for a view in the tree; the runner has none).
+	view.rig.fire_act(found[1], 0.0)
+	view.launch(found[1])
+	var leaves := float(row["delay"])
+	var t := _run_view(view, 0.0, leaves * 0.5)
+	assert_false(node.visible, "%s: it waits for its moment" % found[1])
+	t = _run_view(view, t, leaves + float(row["seconds"]) + 0.05)
+	assert_true(node.visible, "%s: then flies, and hangs" % found[1])
+	var hung := MechView3D._frame_of(node).origin
+	t = _run_view(view, t, leaves + MechView3D.flight_span(row) - float(row["fade"]) - 0.05)
+	var moved := MechView3D._frame_of(node).origin - hung
+	assert_true(Vector2(moved.x, moved.z).length() < 0.001 and moved.y < 0.0, "%s: it only sinks while it hangs (moved %s)" % [found[1], moved])
+	t = _run_view(view, t, leaves + MechView3D.flight_span(row) + 0.05)
+	assert_false(node.visible, "%s: out and gone when its time is up" % found[1])
+	assert_true(node.transform.is_equal_approx(row["rest"]), "%s: and home" % found[1])
+	view.free()
+
+
+## A view's rig and launches run on from `from` to `until` seconds, frame by frame, as its process
+## would run them; the time reached.
+func _run_view(view: MechView3D, from: float, until: float) -> float:
+	var now := from
+	while now < until:
+		view.rig.tick(1.0 / 60.0)
+		view._fly(1.0 / 60.0)
+		now += 1.0 / 60.0
+	return now

@@ -1,17 +1,17 @@
 class_name Face
 extends RefCounted
 
-## One face of a die. Reads as: primary icon (kind and reach), a number or a range (power to
-## power_max), a list of keywords and a heat cost.
+## One face of a die. Reads as: primary icon (kind and reach), a number (power), a list of
+## keywords and a heat cost.
 ##
-## Numbers are in tens. A flat face has power_max equal to power and involves no roll; a rolled
-## face rolls between power and power_max when spent. There are no crits (10 October): chances
-## live on riders, never on the damage (bible section 5, the damage ranges row).
+## Numbers are in tens. A face is one number and involves no roll (rolled ranges gone since
+## 2 November, Ryan: decided in play testing). There are no crits (10 October): chances live
+## on riders, never on the damage (bible section 5).
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 ## Two reaches since 10 October (Ryan): Close, a worse Direct by design, is removed and melee
 ## is a tag. Direct was line of sight until 9 October.
-enum Reach { NONE, DIRECT, INDIRECT }
+enum Reach { NONE, DIRECT, INDIRECT, SWEEP }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
 ## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
@@ -25,11 +25,10 @@ enum Reach { NONE, DIRECT, INDIRECT }
 ## Area by shape, numbered (Ryan, 28 October; the half retired): Spread N (id `cleave`) the
 ## foes beside the target in its rank, Penetrate N the other rank of its column, Splash N the
 ## two together (the plus round it), each foe past the target taking N as its blow's number.
-## Chain N (Ryan, 28 October; the kill and repeat and the ping retired; its charge, 29 October):
-## Shock's other payoff, every other Shocked foe on the field taking N as its blow's number,
-## wherever it stands and whatever the gun's reach, plain, no strike being aimed at it, so its
-## Shock stands; then one other foe at random, neither the target nor already Shocked, is
-## Shocked. A weapon's alone.
+## Chain N (Ryan, 28 October; the kill and repeat and the ping retired; its random charge of
+## 29 October retired 3 November for the Charged primer): Shock's other payoff, every other
+## Shocked foe on the field taking N as its blow's number, wherever it stands and whatever the
+## gun's reach, plain, no strike being aimed at it, so its Shock stands. A weapon's alone.
 ## Every Foe and Every Ally (Ryan, 2 November: "Every foe is a targeting mode, just like spread,
 ## penetrate, and splash, it should be listed as such and given a keyword"): a reach over every
 ## foe in the fight from the target (a debuff's, the Siphon's lure-all), or over every machine a
@@ -44,7 +43,7 @@ const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
 const REACH_NAMES := {
-	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect",
+	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.SWEEP: "sweep",
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
@@ -72,7 +71,7 @@ const KEYWORD_STATUS := {
 const NUMBER_FIELDS := {
 	Keyword.BURN: "burn", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
 	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.SPLASH: "splash",
-	Keyword.CHAIN: "chain",
+	Keyword.CHAIN: "chain", Keyword.DISPEL: "dispel",
 }
 ## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
 const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
@@ -105,7 +104,6 @@ static func keyword_label(k: int) -> String:
 var kind: int = Kind.ATTACK
 var reach: int = Reach.DIRECT
 var power: int = 20
-var power_max: int = 20       # equal to power for a flat face
 var keywords: Array[int] = []
 var printed: Array[int] = []  # of those, the ones a passive grants written out (the Boar's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
 var heat: int = 0
@@ -117,6 +115,7 @@ var cleave: int = 0           # an attack with Spread: the number each foe besid
 var penetrate: int = 0        # an attack with Penetrate: the number the other rank of its target's column takes (Penetrate N)
 var splash: int = 0           # an attack with Splash: the number each foe of the plus round its target takes, the row's and the column's (Splash N)
 var chain: int = 0            # an attack with Chain: the number every other Shocked foe on the field takes as its blow's (Chain N, 28 October)
+var dispel: int = 0           # an attack or equipment with Purge: the stacks every buff of each foe it reaches loses (Purge N, 2 November)
 var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first, overshield included; short of it the entry cannot be played
 var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
@@ -138,7 +137,7 @@ var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this t
 var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
-var devours: int = 0          # an attack: each kill gives its owner this many stacks of Overcharged (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
+var devours: int = 0          # an attack: each kill gives its owner this many stacks of Empowered (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
@@ -173,8 +172,6 @@ var charged: Dictionary = {}  # a locked piece's charged form, what a muster buy
 # The Musk Ox's (Ryan's go, 21 October; built that day):
 var ammo_per_foe_hit: int = 0 # an attack: ammo back to its forging machine for every foe its blows reach (the Shrapnel Recuperator)
 var spends_magazine: bool = false   # an attack: every ammo in the magazine as a strike, the magazine its price (the Unrestricted Expenditure)
-var random_targets: bool = false    # an attack: each strike at a random live foe, the target the die is dropped on only the gesture
-var spray: bool = false       # an attack: its first strike lands where it is spent, each after it on a random foe in reach at that moment, a kill clearing its slot at once (the Skua's Flechette Pod, 25 October)
 var split: int = 1            # the effective entry only, never printed: each roll serves this many strikes at its number divided among them, rounded down (the Skua's Split-cycle Breech; Effects.split_of)
 var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
@@ -189,14 +186,13 @@ var burns: int = 0            # shown only: the shield the spend burns in place 
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
-## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
-static func attack(pwr: int, rch: int = Reach.DIRECT, kws = [], ht: int = 0, pwr_max: int = 0) -> Face:
+## `kws` may be a single Keyword or an Array of them.
+static func attack(pwr: int, rch: int = Reach.DIRECT, kws = [], ht: int = 0) -> Face:
 	var f := Face.new()
 	f.kind = Kind.ATTACK
 	f.targets = Target.FOE
 	f.reach = rch
 	f.power = pwr
-	f.power_max = maxi(pwr, pwr_max)
 	f.heat = ht
 	if kws is Array:
 		for k in kws:
@@ -211,7 +207,6 @@ static func shield(pwr: int) -> Face:
 	f.kind = Kind.SHIELD
 	f.reach = Reach.NONE
 	f.power = pwr
-	f.power_max = pwr
 	return f
 
 
@@ -220,7 +215,6 @@ static func vent(pwr: int) -> Face:
 	f.kind = Kind.VENT
 	f.reach = Reach.NONE
 	f.power = pwr
-	f.power_max = pwr
 	return f
 
 
@@ -231,7 +225,6 @@ static func buff(status: String, stacks: int = 1, rounds: int = 1) -> Face:
 	f.kind = Kind.BUFF
 	f.reach = Reach.NONE
 	f.power = 0
-	f.power_max = 0
 	f.buff_status = status
 	f.buff_stacks = maxi(1, stacks)
 	f.buff_rounds = maxi(1, rounds)
@@ -243,7 +236,6 @@ static func blank() -> Face:
 	f.kind = Kind.BLANK
 	f.reach = Reach.NONE
 	f.power = 0
-	f.power_max = 0
 	return f
 
 
@@ -293,7 +285,7 @@ static func target_from_name(name: String) -> int:
 	return -1
 
 
-## Build from content JSON: {"kind": "attack", "reach": "direct", "power": 20, "power_max": 50,
+## Build from content JSON: {"kind": "attack", "reach": "direct", "power": 20,
 ## "keywords": ["cleave"], "heat": 10}. Unknown names are ignored here; the
 ## content validator reports them.
 static func from_dict(d: Dictionary) -> Face:
@@ -303,7 +295,6 @@ static func from_dict(d: Dictionary) -> Face:
 	var r := reach_from_name(str(d.get("reach", "direct" if f.kind == Kind.ATTACK else "none")))
 	f.reach = r if r >= 0 else Reach.NONE
 	f.power = int(d.get("power", 0))
-	f.power_max = maxi(f.power, int(d.get("power_max", f.power)))
 	f.heat = int(d.get("heat", 0))
 	f.strikes = maxi(1, int(d.get("strikes", 1)))
 	if f.kind == Kind.ATTACK:
@@ -334,6 +325,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.penetrate = maxi(0, int(d.get("penetrate", 0)))
 		f.splash = maxi(0, int(d.get("splash", 0)))
 		f.chain = maxi(0, int(d.get("chain", 0)))   # add_keyword gives Chain a number of one when it says none
+		f.dispel = maxi(0, int(d.get("dispel", 0)))   # Purge N (2 November); one when it says none
 		var g = d.get("gates", {})
 		f.gates = (g as Dictionary).duplicate(true) if g is Dictionary else {}
 		f.consumes = str(d.get("consumes", ""))
@@ -361,8 +353,6 @@ static func from_dict(d: Dictionary) -> Face:
 	f.charged = (cd as Dictionary).duplicate(true) if cd is Dictionary else {}
 	f.ammo_per_foe_hit = maxi(0, int(d.get("ammo_per_foe_hit", 0))) if f.kind == Kind.ATTACK else 0
 	f.spends_magazine = bool(d.get("spends_magazine", false)) and f.kind == Kind.ATTACK
-	f.random_targets = bool(d.get("random_targets", false)) and f.kind == Kind.ATTACK
-	f.spray = bool(d.get("spray", false)) and f.kind == Kind.ATTACK
 	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
 	var regen = d.get("regenerates", {})
 	if f.kind == Kind.ATTACK and regen is Dictionary:
@@ -390,8 +380,6 @@ func to_dict() -> Dictionary:
 		"kind": KIND_NAMES[kind], "reach": REACH_NAMES[reach], "power": power,
 		"keywords": names, "heat": heat,
 	}
-	if power_max != power:
-		d["power_max"] = power_max
 	if strikes > 1:
 		d["strikes"] = strikes
 	if kind != Kind.ATTACK and targets != Target.SELF_ALLY:
@@ -422,6 +410,8 @@ func to_dict() -> Dictionary:
 				d[NUMBER_FIELDS[kw]] = number_of(kw)   # a debuff's area deals nothing, so it prints no number
 		if has(Keyword.CHAIN) and chain > 0:
 			d["chain"] = chain
+	if has(Keyword.DISPEL) and dispel > 0:
+		d["dispel"] = dispel
 	if volatile > 0:
 		d["volatile"] = volatile
 	if shield_cost > 0:
@@ -472,10 +462,6 @@ func to_dict() -> Dictionary:
 		d["ammo_per_foe_hit"] = ammo_per_foe_hit
 	if spends_magazine:
 		d["spends_magazine"] = true
-	if random_targets:
-		d["random_targets"] = true
-	if spray:
-		d["spray"] = true
 	if reloads_ammo > 0:
 		d["reloads_ammo"] = reloads_ammo
 	if regen_shield > 0 and regen_rounds > 0:
@@ -562,7 +548,7 @@ func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or spins or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
-		or ammo_per_foe_hit > 0 or spends_magazine or random_targets or spray \
+		or ammo_per_foe_hit > 0 or spends_magazine \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
 
 
@@ -588,7 +574,7 @@ func is_weapon() -> bool:
 ## effect; the die draws its reach frame with the status mark inside. A gun whose blow is
 ## nothing here (its 5 against armour 5) is no debuff: it prints "0".
 func is_debuff() -> bool:
-	return kind == Kind.ATTACK and power_max <= 0 and not vents_all and fires_hopper <= 0 and power_per_missing <= 0
+	return kind == Kind.ATTACK and power <= 0 and not vents_all and fires_hopper <= 0 and power_per_missing <= 0
 
 
 ## Equipment (Ryan, 26 October: "the label for all 4 forms of buff and debuff faces"): a buff,
@@ -610,11 +596,6 @@ func can_target_ally() -> bool:
 	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY)
 
 
-## Rolled: the face rolls when spent. A flat face involves no roll, whatever feeds its number.
-func is_ranged() -> bool:
-	return power_max > power
-
-
 ## What this blow adds against `target` for the hull it is missing (power_per_missing), read
 ## as the die is spent: a known number, so the face is still flat. Nothing without a target.
 func missing_bonus(target) -> int:
@@ -632,16 +613,11 @@ func consume_bonus(target) -> int:
 	return per_consumed * Effects.stacks_of(target, consumes)
 
 
-func average() -> int:
-	return ceili((power + power_max) / 2.0)
-
-
 func duplicate_face() -> Face:
 	var f := Face.new()
 	f.kind = kind
 	f.reach = reach
 	f.power = power
-	f.power_max = power_max
 	f.heat = heat
 	f.strikes = strikes
 	f.printed = printed.duplicate()
@@ -667,6 +643,7 @@ func duplicate_face() -> Face:
 	f.penetrate = penetrate
 	f.splash = splash
 	f.chain = chain
+	f.dispel = dispel
 	f.volatile = volatile
 	f.shield_cost = shield_cost
 	f.short = short
@@ -694,8 +671,6 @@ func duplicate_face() -> Face:
 	f.charged = charged.duplicate(true)
 	f.ammo_per_foe_hit = ammo_per_foe_hit
 	f.spends_magazine = spends_magazine
-	f.random_targets = random_targets
-	f.spray = spray
 	f.split = split
 	f.reloads_ammo = reloads_ammo
 	f.ammo = ammo
@@ -729,7 +704,6 @@ func charged_form() -> Face:
 		c.buff_stacks = maxi(1, int(charged.get("stacks", 1)))
 		c.buff_rounds = maxi(1, int(charged.get("rounds", 1)))
 		c.power = 0
-		c.power_max = 0
 		c.vents = 0
 		c.reaches_all = bool(charged.get("reaches_all", reaches_all))
 		c.not_acted = bool(charged.get("not_acted", false))
@@ -800,7 +774,7 @@ func rule_phrases() -> Array[String]:
 		if self_burn > 0:
 			out.append("Burning %d on itself" % self_burn)
 		if devours > 0:
-			out.append("Overcharged ×%d a kill" % devours)
+			out.append("Empowered ×%d a kill" % devours)
 		if fills_hopper > 0:
 			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
 		if fires_hopper > 0:
@@ -820,10 +794,6 @@ func rule_phrases() -> Array[String]:
 			out.append("leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it")
 		if spends_magazine:
 			out.append("a strike for every ammo in the magazine")
-		if random_targets:
-			out.append("at random live foes")
-		if spray:
-			out.append("sprays the rest in reach")
 		if ammo_per_foe_hit > 0:
 			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
 		if kill_rerolls > 0:
@@ -868,13 +838,11 @@ func number_text() -> String:
 	if power <= 0 and reloads_ammo > 0:
 		return "+%d" % reloads_ammo   # a reload (the Musk Ox's quick reload): the ammo it adds
 	if split > 1:
-		# A split entry (the Skua's): a strike's share of the roll, rounded down.
+		# A split entry (the Skua's): a strike's share of the number, rounded down.
 		# A strike's share, rounded down and never below one while the number is one or more
 		# (Skirmish.split_share; Ryan, 27 October).
-		var lo := (maxi(1, power / split) if power > 0 else 0)
-		var hi := (maxi(1, power_max / split) if power_max > 0 else 0)
-		return "%d–%d" % [lo, hi] if is_ranged() and hi != lo else str(lo)
-	return "%d–%d" % [power, power_max] if is_ranged() else str(power)
+		return str(maxi(1, power / split) if power > 0 else 0)
+	return str(power)
 
 
 func describe() -> String:
@@ -949,7 +917,7 @@ func describe() -> String:
 			if self_burn > 0:
 				s += " Burning %d on itself" % self_burn   # the Stoker's: its own machine set burning as it fires
 			if devours > 0:
-				s += " Overcharged ×%d a kill" % devours
+				s += " Empowered ×%d a kill" % devours
 			if fills_hopper > 0:
 				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
 			if fires_hopper > 0:
@@ -966,10 +934,6 @@ func describe() -> String:
 				s += " leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it"
 			if spends_magazine:
 				s += " a strike for every ammo in the magazine"
-			if random_targets:
-				s += " at random live foes"
-			if spray:
-				s += " sprays the rest in reach"
 			if ammo_per_foe_hit > 0:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			if kill_rerolls > 0:

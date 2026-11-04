@@ -53,7 +53,7 @@ marked Ryan's, and the numbers are the proposal's placeholders.
   to the foes beside its target without its damage (Spread, id `cleave`, carries the blow).
 - **The dispel**, decided by Ryan (12 October), its shape open:
   - What it strips, as proposed: a foe's own buffs, today Braced (from a brace; Folded until
-    16 October), Kindled (Rally) and Getting Back Up (Reraise); later Protect's Braced (a
+    16 October), Empowered (Rally) and Getting Back Up (Reraise); later Protect's Braced (a
     planned foe move, a brace on every foe) and Shell (open for the foes' fresh start, bible
     section 12).
   - In round one Claude had weighed an EMP and dropped it, as a new keyword and because
@@ -113,7 +113,7 @@ October at Ryan's ask, written down on 20 October. Ryan's call on the name came 
 
 - **Purge and Guarded.** A core in parts wears Guarded (built 15 October), a buff on a foe in
   the vocabulary's table, so a Purge worded "strips a foe's buffs" would strip a boss core
-  bare and undo the boss in parts. Its reach must be named (Armoured from a brace, Kindled,
+  bare and undo the boss in parts. Its reach must be named (Armoured from a brace, Empowered,
   Getting Back Up), Guarded out unless Ryan wants the EMP to be the answer to a boss in parts.
 - **Disrupt waits on the fresh start less than this brief said.** It already breaks off a
   countdown (built 15 October: the Lancer's Jump, the bosses' gathers), and a boss or a hero
@@ -141,7 +141,7 @@ October at Ryan's ask, written down on 20 October. Ryan's call on the name came 
 2. The EMP's verbs: Purge and Disrupt both (proposed), or one.
 3. A spread Lure turning three foes onto a medium flyer: kept as a decision (proposed), or too
    much.
-4. Purge's reach named (Armoured from a brace, Kindled, Getting Back Up; Numbed out; Guarded
+4. Purge's reach named (Armoured from a brace, Empowered, Getting Back Up; Numbed out; Guarded
    out, or in by Ryan's choice), and its carriers; its name is Purge on both sides for now
    (Ryan, 20 October).
 5. Its stock and its designation.

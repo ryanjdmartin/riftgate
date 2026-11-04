@@ -56,7 +56,7 @@ var intent_riders: Array = []
 var chip_wrap := 0.0              # the widest a row of chips runs before the next row starts; 0, the view's width
 var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Kindled), pulsing, "asleep" a buff a purge put to sleep, still at half light
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "preview" a buff on its way (a rally's Empowered), pulsing, "asleep" a buff a purge put to sleep, still at half light
 var highlight: bool = false       # valid drop target while dragging a die
 ## The foe acting in the enemy's turn, lit from just before its move until the next acts (Ryan, 2
 ## November: "enemies need to highlight during their attacks, starting right before"): a glow in
@@ -93,7 +93,9 @@ var shadow_rx := 0.0              # the shadow's half-width when set; otherwise 
 var shadow_ratio := 0.22          # the shadow's height over its width: the floor's foreshortening where it lies
 var empty_pad: bool = false       # an empty slot drawn as a place on the floor rather than a panel
 var _shatter: float = -1.0        # seconds since the shield broke on this unit; negative when idle
+var _ripple: float = -1.0         # seconds since a blow its shield took landed (ripple_shield); negative when idle
 const SHATTER_SECONDS := 0.55
+const RIPPLE_SECONDS := 0.5
 var _acquire: float = -1.0        # seconds since the display locked onto this unit's intent; negative when idle
 const ACQUIRE_SECONDS := 0.3
 const SCRAMBLE_PART := 0.55       # the first part of the acquire, while the number is still settling
@@ -296,6 +298,11 @@ func _process(delta: float) -> void:
 		if _shatter > SHATTER_SECONDS:
 			_shatter = -1.0
 		queue_redraw()
+	if _ripple >= 0.0:
+		_ripple += delta
+		if _ripple > RIPPLE_SECONDS:
+			_ripple = -1.0
+		queue_redraw()
 	if _acquire >= 0.0:
 		_acquire += delta
 		if _acquire > ACQUIRE_SECONDS:
@@ -319,7 +326,7 @@ func _process(delta: float) -> void:
 	if (_has_pending() or breathe or acting) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed and _shatter < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
+	elif not _pressed and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
 		set_process(false)
 
 
@@ -333,6 +340,15 @@ func queue_refresh() -> void:
 ## shield's colour, over the drawing. Called by the skirmish screen as the blow lands.
 func shatter_shield() -> void:
 	_shatter = 0.0
+	set_process(true)
+	queue_redraw()
+
+
+## A blow its shield took whole (the to-do's hit reaction, on Ryan's go of 3 November: it shows on
+## the shield instead of the hull): the shield's hex lit over the drawing and rippling outward twice in the
+## shield's blue, the machine under it untouched. Called by the skirmish screen as the blow lands.
+func ripple_shield() -> void:
+	_ripple = 0.0
 	set_process(true)
 	queue_redraw()
 
@@ -484,6 +500,27 @@ func _draw_shatter(vis: Rect2) -> void:
 		draw_line(a, b, Color(Palette.SHIELD, (1.0 - t) * 0.8), 2.0)
 
 
+func _draw_ripple(vis: Rect2) -> void:
+	var t := clampf(_ripple / RIPPLE_SECONDS, 0.0, 1.0)
+	var c := vis.get_center()
+	var r0 := minf(vis.size.x, vis.size.y) * 0.46
+	# The shield's face lit for a moment, then two rings running out over it, the second behind.
+	if t < 0.45:
+		draw_colored_polygon(Hex.corners(c, r0), Color(Palette.SHIELD, 0.32 * (1.0 - t / 0.45)))
+	draw_polyline(_closed_hex(c, r0), Color(Palette.SHIELD, 0.9 * (1.0 - t)), 3.0, true)
+	for lag in [0.0, 0.25]:
+		var u := clampf((t - lag) / (1.0 - lag), 0.0, 1.0)
+		if u <= 0.0 or u >= 1.0:
+			continue
+		draw_polyline(_closed_hex(c, r0 * (1.0 + u * 0.35)), Color(Palette.SHIELD, 0.95 * (1.0 - u)), 3.5 * (1.0 - u * 0.5), true)
+
+
+static func _closed_hex(c: Vector2, r: float) -> PackedVector2Array:
+	var pts := Hex.corners(c, r)
+	pts.append(pts[0])
+	return pts
+
+
 ## The stack going (spend_chip): hot and loud, since every effect judged on the phone has come
 ## back hotter. Drawn over the chip, or where the chip was when that was its last stack.
 func _draw_spend(mono: Font) -> void:
@@ -569,6 +606,8 @@ func _draw() -> void:
 		_draw_shatter(vis)
 	if (shell or _shift >= 0.0) and not dead:
 		_draw_shell(vis)
+	if _ripple >= 0.0:
+		_draw_ripple(vis)
 
 	# Every gauge has a dark ground of its own shape (Ryan, 23 September: the plate under the
 	# stack was a box; the bars keep the chamfer and the ground keeps them readable on
@@ -690,19 +729,14 @@ static func chip_width(mono: Font, ch: Array) -> float:
 
 
 ## One chip in `rect` on `ci` (the field's views, a readout's mark): its frame by its kind (a
-## resistance's brackets, a coming status's dashed pulse, a buff asleep's dashed half light, a
-## status's box), its glyph, its text (`txt`, or its own), then each rider after a divider, its
-## mark and its number in its own colour.
+## coming status's dashed pulse, a buff asleep's dashed half light, a status's box), its glyph,
+## its text (`txt`, or its own), then each rider after a divider, its mark and its number in its
+## own colour.
 static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> void:
 	var col: Color = ch[2]
 	var kind := str(ch[3]) if ch.size() > 3 else "status"
-	if kind == "resist":
-		# A resistance is no status (Numbed, 10 October): bracket corners on a bare ground,
-		# never the box a status wears, so the difference is the frame, not a hue.
-		Hud.fill_poly(ci, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-		Hud.brackets(ci, rect, 5.0, col, 1.6)
-	elif kind == "preview":
-		# A buff on its way (a rally's Kindled, Ryan, 26 October: "a pulsing version of the
+	if kind == "preview":
+		# A buff on its way (a rally's Empowered, Ryan, 26 October: "a pulsing version of the
 		# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
 		# in concept to the health and shield bars"), on the gauges' one clock, a full swing
 		# between faint and lit on its dark ground, its edge dashed, so "coming" reads by

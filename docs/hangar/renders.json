@@ -49,6 +49,21 @@
       "alt": "Wild Boar refitted"
      }
     ]
+   },
+   {
+    "when": "Variants, 2 November.",
+    "note": "Ryan, 2 November: “Can't we just model different shapes as options, as needed?” A variant is a class in another form, modelled for the mounts its standard shape does not fit and named for its form, so any hardpoint may take it; a hardpoint declares, for each class, the variant it wears and its scale there, and every other hardpoint wears the class itself at its own scale. The first is the round launcher, for a round port or a pod's nose (the Armadillo's ports, the Goshawk's pods), its face the square rack's missile tile one tube at a time. Shown in Minerva's and Wainwright & Sutler's metal; Classes on the Models tab shows it alone.",
+    "small": true,
+    "images": [
+     {
+      "file": "shapes/rack_round_minerva.png",
+      "alt": "round rack, Minerva"
+     },
+     {
+      "file": "shapes/rack_round_wainwright_sutler.png",
+      "alt": "round rack, Wainwright & Sutler"
+     }
+    ]
    }
   ]
  },
@@ -82,7 +97,7 @@
   },
   "clydesdale": {
    "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's go, 28 October: the stations keep their kinds and each mount its stock part in order: the Maxigun as its class on the left turret where the autoguns were, the cheek bracket's left mount the Incendiary Shells' rack, the right bare; the lance, the mortar, the howitzer and the deck rack (the Airburst Shell's) as before.",
+   "note": "Ryan's go, 28 October: the stations keep their kinds and each mount its stock part in order: the Maxigun as its class on the left turret where the autoguns were, the cheek bracket's left mount the Incendiary Shells' rack, the right bare; the lance, the mortar, the howitzer and the deck rack (the Airburst Shell's) as before. Since 31 October its stock Incendiary Shells wear a burn weapon's fire over their rack, glowing shells dim at rest and flaring as they fire.",
    "images": [
     {
      "file": "clydesdale/clydesdale_front.png",
@@ -170,8 +185,8 @@
    }
   },
   "armadillo": {
-   "when": "Ryan's tenth notes, 30 October; the vent act on his eleventh and twelfth.",
-   "note": "Ryan, 30 October: \"The rear ones can protrude a bit more. During the vent animation, can you desync the vent openings, then close them all at the same-ish time?\", then \"Open them in pairs, not one at a time, and leave them open longer once they're all open\", then \"slow down the standing back up at the end and start it as the vents are closing. the vents can stay open a touch less long. desync the pairs closing just a bit.\" The two rear vents now stand out of the back panel as boxes, their mouths two and a half behind it (the rim had stood six tenths proud). In vent_heat the vents open a pair at a time, each left with its right: the rear vents at 1.4 seconds, the side vents at 1.85, the radiators at 2.3, each vent's heat flaring as it opens; all open, they hold a second and a half, then shut a pair at a time in the same order, a beat apart (4.5, 4.62, 4.74), the glow dying with them, as the shell starts back up with the first pair's shutting and rises over two seconds (from 1.1, after the shutting). Watch it on the Models tab; RIFTGATE_ACTS_DEBUG=vent_heat loops it in the game. The shots are the tenth notes' (the eleventh and twelfth moved only the act's timing); the venting ones are caught at 3.4 seconds, every vent open (the rear view, second; the side, third; venting, fifth and sixth; sealed, fourth). Hold the seal under Forms in the panel, or RIFTGATE_SEAL_DEBUG=1 in the game.",
+   "when": "Ryan's swap notes, 2 November.",
+   "note": "Ryan, 2 November: “what happens if they get swapped out, like putting a missile rack on the armadillo gun port”, then “maybe some hardpoints want circular missile racks, that fixes the armadillo” and “Hardpoint just needs to declare shape (if offered) and scaling”. A class fitted in a port now wears the port's own fit: a rack is the round launcher (a drum with seven tubes, the square rack's missile tile one tube at a time), and every class is sized to pass the port's bore whole, so it rises out of the port as the guns do and sinks under the iris when the shell seals; a rack had been a square box half again as wide as the port, jammed in its mouth. The fore ports are wider (11 across, from 9) and a little lower, so a launcher or a dish fitted there reads; stock, they are bare as before. The shots: the stock (front, rear, side, sealed, venting from behind and from the front), then a round launcher in every port, then a launcher, the Twin Autoguns, a barrel and a dish. Fit any mount on the Models tab to try the rest.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -195,11 +210,19 @@
     },
     {
      "file": "armadillo/armadillo_venting_front.png",
-     "alt": "armadillo, venting, front"
+     "alt": "armadillo, venting front"
+    },
+    {
+     "file": "armadillo/armadillo_swapped.png",
+     "alt": "armadillo, swapped"
+    },
+    {
+     "file": "armadillo/armadillo_swapped_mixed.png",
+     "alt": "armadillo, swapped mixed"
     }
    ],
    "before": {
-    "summary": "Before: the ninth notes of 30 October (the rear vents sunk in the panel, every vent opening at once)",
+    "summary": "Before: the tenth notes of 30 October (every class one size in the ports, the fore ports 9 across)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -291,8 +314,8 @@
    }
   },
   "dingo": {
-   "when": "Ryan's second notes, 29 October.",
-   "note": "Ryan, 29 October, the second notes: the antenna that ran up through the Translocator's cabinet is gone, the one on the other side kept. As the first notes left it: the Airburst Shell's rack on its gimbal on the roof, left of the harpoon, and the coil's rings threaded on a core; the Translocator makes its die a d5 (Ryan: \"I guess that's ok\").",
+   "when": "Ryan's swap notes, 2 November.",
+   "note": "Ryan's go of 2 November: the nose mounts sat inside the raked nose, which buried a fitted dish and half sank a rack. Each now stands on a low pedestal on the nose ahead of the visor, the stock's Twin Autoguns on the left one, so whatever is fitted stands clear. The shots: the stock from the front and behind, two racks, then a dish and a blade.",
    "images": [
     {
      "file": "dingo/dingo_front.png",
@@ -301,10 +324,18 @@
     {
      "file": "dingo/dingo_rear.png",
      "alt": "dingo, rear"
+    },
+    {
+     "file": "dingo/dingo_swapped.png",
+     "alt": "dingo, swapped"
+    },
+    {
+     "file": "dingo/dingo_swapped_mixed.png",
+     "alt": "dingo, swapped mixed"
     }
    ],
    "before": {
-    "summary": "Before: the first notes of 29 October (an antenna through the cabinet)",
+    "summary": "Before: Ryan's glow notes, 31 October (the nose mounts inside the nose)",
     "images": [
      {
       "file": "dingo/before_dingo_front.png",
@@ -313,13 +344,17 @@
      {
       "file": "dingo/before_dingo_rear.png",
       "alt": "Earlier: dingo, rear"
+     },
+     {
+      "file": "dingo/before_dingo_coil_check.png",
+      "alt": "Earlier: dingo, coil check"
      }
     ]
    }
   },
   "goshawk": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's go, 28 October: since the stock pass its fourth stock piece is a Canopy, which shows nowhere, so the right wing's outer pod is empty; the deflector's dish there went with the old stock. The pods' guns and the belly mount as before.",
+   "when": "Ryan's swap notes, 2 November.",
+   "note": "Ryan's go of 2 November: a swap had taken a pod with its gun and hung the class under the wing, where the game's camera lost the inner pair. The pods are airframe now and stay; each mount is its pod's nose, so a fitted class rides ahead of the wing, a rack as the round launcher (a rocket pod), the wide classes a little smaller so they sit on a pod. The stock looks as before. The shots: the stock from the front and behind, a round launcher on every pod, then the Twin Autoguns, a launcher, a dish and a barrel.",
    "images": [
     {
      "file": "goshawk/goshawk_front.png",
@@ -328,10 +363,18 @@
     {
      "file": "goshawk/goshawk_rear.png",
      "alt": "goshawk, rear"
+    },
+    {
+     "file": "goshawk/goshawk_swapped.png",
+     "alt": "goshawk, swapped"
+    },
+    {
+     "file": "goshawk/goshawk_swapped_mixed.png",
+     "alt": "goshawk, swapped mixed"
     }
    ],
    "before": {
-    "summary": "Before: the eighth notes, 6 October (the deflector's dish on the right outer pod)",
+    "summary": "Before: the stock rebuild, 28 October (each pod part of its gun)",
     "images": [
      {
       "file": "goshawk/before_goshawk_front.png",
@@ -345,8 +388,8 @@
    }
   },
   "nemesis": {
-   "when": "Ryan's third notes, 29 October.",
-   "note": "Ryan, 29 October: \"give the nemesis some flare during relevant animations, like roar\". Its lit visor flares white-hot in its fierce acts: blazing through the roar (the third picture, a second in), at each blow of pound_fists and each crack of crack_shoulders with the core, glaring through square_up, a flash with each meteor shot. A red light already at full red can only flare toward white, so the peaks are white and the fades pass through pink back to its resting red. RIFTGATE_ACTS_DEBUG=roar loops it.",
+   "when": "Ryan's next glow notes, 31 October.",
+   "note": "Hot at rest, really hot as it acts (Ryan, 31 October: \"not burn crazy hot all the time. Just like, hot, then really hot\"): the chest furnace and the condenser on its back smoulder always and flare in its fierce acts, the vent toned down (\"still too much\"). The last picture is the fist pound's blow.",
    "images": [
     {
      "file": "nemesis/nemesis_front.png",
@@ -357,23 +400,31 @@
      "alt": "nemesis, rear"
     },
     {
-     "file": "nemesis/nemesis_roar.png",
-     "alt": "nemesis, roaring"
+     "file": "nemesis/nemesis_pound.png",
+     "alt": "nemesis, pound"
     }
    ],
    "before": {
-    "summary": "Before: the roar at the second notes of 29 October (the visor at its resting glow)",
+    "summary": "Before: Ryan's glow notes, 31 October",
     "images": [
      {
+      "file": "nemesis/before_nemesis_front.png",
+      "alt": "Earlier: nemesis, front"
+     },
+     {
+      "file": "nemesis/before_nemesis_rear.png",
+      "alt": "Earlier: nemesis, rear"
+     },
+     {
       "file": "nemesis/before_nemesis_roar.png",
-      "alt": "Earlier: nemesis, roaring"
+      "alt": "Earlier: nemesis, roar"
      }
     ]
    }
   },
   "ammit": {
-   "when": "Ryan's second notes, 29 October.",
-   "note": "Ryan, 29 October: every Arsenal cockpit's glass lit, so the Ammit's eye strips glow red at rest and flare with the throat in its acts (they had asked for a flare that glass never gave). The rest as the stock rebuild left it: the left jaw mount the Oblation Mantle as a dish, the right bare.",
+   "when": "Ryan's next glow notes, 31 October.",
+   "note": "The vent at its tail, the condenser's twin, always lit in the furnace's orange and flaring in its fierce acts (Ryan, 31 October: \"Ammit vents don't seem to be glowing\"; the glow had gone to the throat vent under the jaw, which no camera sees). The last picture is the threat.",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -382,10 +433,14 @@
     {
      "file": "ammit/ammit_rear.png",
      "alt": "ammit, rear"
+    },
+    {
+     "file": "ammit/ammit_threat.png",
+     "alt": "ammit, threat"
     }
    ],
    "before": {
-    "summary": "Before: the stock rebuild, 28 October (the eye strips unlit glass)",
+    "summary": "Before: Ryan's glow notes, 31 October",
     "images": [
      {
       "file": "ammit/before_ammit_front.png",
@@ -399,8 +454,8 @@
    }
   },
   "stingray": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan, 28 October: the locked Photosphere Lance on the dome turret, out of its slot; the stock in its order, each part its class: the Laser Carbine under the nose where the lance lay, the Halo Shield's dish on the right forewing, the Twin Autoguns and the Ankle Mortar at the wing tips, the left forewing's mount bare (the Coolant Jacket shows nowhere). The Zenith Emitter, the Pulse Repeater, the flare pods and the lattice dish went with the old stock. The third picture is from straight behind.",
+   "when": "Ryan's next glow notes, 31 October.",
+   "note": "A lit lining round the fans' blades and the floor under them in one even orange (Ryan, 31 October: \"Anything to be done about the stingray fans?\"): the downwash blows under the wing, where no camera looks, so the duct's walls carry the heat; the glow tile's hot centre had read yellow. The last picture is the thrusters' surge.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -411,12 +466,12 @@
      "alt": "stingray, rear"
     },
     {
-     "file": "stingray/stingray_from_behind.png",
-     "alt": "stingray, from behind and above"
+     "file": "stingray/stingray_surge.png",
+     "alt": "stingray, surge"
     }
    ],
    "before": {
-    "summary": "Before: the eighth notes, 6 October (the lance under the nose and the old stock's emitters and pods)",
+    "summary": "Before: Ryan's glow notes, 31 October",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
@@ -425,17 +480,13 @@
      {
       "file": "stingray/before_stingray_rear.png",
       "alt": "Earlier: stingray, rear"
-     },
-     {
-      "file": "stingray/before_stingray_from_behind.png",
-      "alt": "Earlier: stingray, from behind and above"
      }
     ]
    }
   },
   "puffin": {
-   "when": "The swap, the amplify lit for real, 28 October.",
-   "note": "Ryan's swap (26 October: the Storm Petrel's first cut, a speedboat with a mast, reads as a research boat, which is the Puffin): the long chined boat at the light size, the skirt bow to stern, the hull thicker amidships with its bottom rising to the prow and the stern (his notes of the 27th), the Ionizer's dish down on its mast's yoke, the side plates hinged low at the chine and level under way as repulsors (their undersides carrying the lit discs), folding up in a fight as shield amplifiers (the last picture, the amplify act), one booster drawn in over the afterdeck. Ryan's notes on the landing (28 October): the plates fold nearer plumb, and the amplify lights a rim round each plate's edge with the strips, the bosses, the discs underneath and the nozzles, hot. His second notes (no glow seen; the forward disc stuck out of the plate's edge; the discs should glow): the amplify's lights had been named by a prefix the rig never matches, so nothing lit; named whole now, the rims, the strips, the bosses, the discs and the nozzles all blaze (the last picture), the build refuses a glow that labels no part, and the forward disc sits inside the plate's outline.",
+   "when": "Ryan's next glow notes, 31 October.",
+   "note": "The repulsors are pucks standing proud of the plates (Ryan, 31 October: \"if the solution is to give them geometry, then go ahead\"), in one even orange, always on as it hovers; a flat disc's halo stood off it as a copy, and the engine tile's metal rim flared white. The last picture is the amplify.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -446,28 +497,24 @@
      "alt": "puffin, rear"
     },
     {
-     "file": "puffin/puffin_above.png",
-     "alt": "puffin, from above"
-    },
-    {
      "file": "puffin/puffin_amplify.png",
-     "alt": "puffin, the plates folded up to amplify"
+     "alt": "puffin, amplify"
     }
    ],
    "before": {
-    "summary": "Before: the eighth pass, 5 October (the wide low hull on two giant boosters, the base the Storm Petrel took).",
+    "summary": "Before: Ryan's glow notes, 31 October",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "puffin, before, front"
+      "alt": "Earlier: puffin, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "puffin, before, rear"
+      "alt": "Earlier: puffin, rear"
      },
      {
-      "file": "puffin/before_puffin_from_behind.png",
-      "alt": "puffin, before, from behind and above"
+      "file": "puffin/before_puffin_amplify.png",
+      "alt": "Earlier: puffin, amplify"
      }
     ]
    }
@@ -508,8 +555,8 @@
    }
   },
   "skua": {
-   "when": "Second round, the jaeger; its run a flown circle, 28 October.",
-   "note": "Ryan's pick from five rounds of looks (23 to 27 October, docs/looks/kestrel_skua*.png): the jaeger, the seabird's wings as the swing. A short deep fuselage into one booster, a jet's straight nose with the bird's dark cap (his last note: the bent tip at the nose ditched), the fixed arms flat from low on the flank to a wrist drum and the long hands swinging from it, the white flash across their roots, a V tail, two streamers, the fin carried back over the booster and tall, the Flechette Pod twin pods on the spine. The last picture is the strafing run, the hands swept. Ryan's notes on the landing (28 October: the strafing run and the sweep-dash read the same; it wants the Kite's treatment, bigger animations): five acts like the Kite's, the strafing run rolling in and diving hard with the pods firing at the bottom, the Kite's barrel roll with the hands swept, the stoops wider and rolled far over, the Kite's loop on the map only, and the flare nose-high with the hands rocking. The last picture is the strafing run's dive. His second notes the same day (the run \"just kind of wiggles\"; the wings stay extended for a barrel roll): the strafing run now climbs back and up off its hex, wings over with the hands sweeping back, dives steeply on its foe with the pods firing twice at the bottom, and climbs away rolled over with the hands spreading to brake; the barrel roll flies with the hands spread. The last picture is the run's bottom. His third notes, from the phone (the run read as bobbing and swaying, never leaving its hex; the five acts and the wings-out roll confirmed): the run and the stoops at the Kite's loop's scale, the run climbing a hex back and high, diving through its hex a full hex on and arcing back over the top, the stoops a hex wide each way. His fourth (the keyed run and stoops janky, sudden changes of direction, a reverse back to the start): both flown as paths, on the map only like the Kite's circle and eight: the run one banked circle beside its hex, climbing, diving on the far side with the pods firing, sinking back onto its hex; the stoops a figure eight over its hex, each lobe lifting and stooping at its far end. The last picture is the dive's bottom. His fifth (less jerky, no flicks): the height runs on a spline, the nose turns no faster than fifty-five degrees a second, and the hands sweep over a fifth of the way round.",
+   "when": "Ryan's glow notes, 31 October.",
+   "note": "The round hinges at the wings' wrists gone (Ryan, 31 October: \"they look cheap\").",
    "images": [
     {
      "file": "skua/skua_front.png",
@@ -518,34 +565,26 @@
     {
      "file": "skua/skua_rear.png",
      "alt": "skua, rear"
-    },
-    {
-     "file": "skua/skua_above.png",
-     "alt": "skua, from above"
-    },
-    {
-     "file": "skua/skua_strafing_run.png",
-     "alt": "skua, the strafing run"
     }
    ],
    "before": {
-    "summary": "Before: the first cut, 23 October (the conventional swing-wing jet, Ryan: an F-14 poly for poly).",
+    "summary": "Before: Second round, the jaeger; its run a flown circle, 28 October",
     "images": [
      {
       "file": "skua/before_skua_front.png",
-      "alt": "skua, before, front"
+      "alt": "Earlier: skua, front"
      },
      {
       "file": "skua/before_skua_rear.png",
-      "alt": "skua, before, rear"
+      "alt": "Earlier: skua, rear"
      },
      {
       "file": "skua/before_skua_above.png",
-      "alt": "skua, before, from above"
+      "alt": "Earlier: skua, from above"
      },
      {
       "file": "skua/before_skua_strafing_run.png",
-      "alt": "skua, before, the strafing run, wings swept"
+      "alt": "Earlier: skua, the strafing run"
      }
     ]
    }
@@ -573,44 +612,40 @@
    ]
   },
   "storm_petrel": {
-   "when": "The swap, the field lit, the arch sleeved, 28 October.",
-   "note": "Ryan's swap: the Puffin's wide hull with the two giant boosters, at the medium size, for the shield off-tank; his notes of the 27th (\"great\"): the nose snubbed so the port doubled, the louvred vent housings back on the booster covers and vents on the prow's top and flanks. No plate: the Riot Field is the four emitter pylons on the cheeks, the lit rails along their creases and the arch over the canopy; St. Elmo's fire is the open port in the nose, a chine-shaped mouth with the corona inside (the last picture, the st_elmo act). Ryan's notes on the landing (28 October: more lit areas, much brighter when lit; the corona a white block whose act showed nothing; more livery): lit strips along the flanks and caps on the fin tips join the rails, the emitters and the arch, all far hotter when the field is up; St. Elmo's fire is a small core deep in the mouth with eight sparks round the lip and a ring inside it, dim at rest, that crackle white one after another as the hull heaves and shudders; a cobalt chine stripe, a prow panel, booster bands and the emitter pylons in the livery. His second notes: the emitter pylon ahead of each tub was a livery chunk in the way of the mount, so the emitters stand clear ahead of the muzzle and behind the breech, low and in the hull's colour; the arch's glow ran along its underside, hidden, so the arch is now a thin lit line under eight sleeves of plate with the light showing between them; the booster bands lie flush as paint. His third: the sleeves longer, covering most of the band. His fourth: the sleeves about two thirds of each span, and the arch on feet that stand on the deck (it floated).",
+   "when": "Ryan's glow notes, 31 October.",
+   "note": "The Riot Field, its emitters, rails, strips, fin tips and the arch, in the shield's blue (Ryan, 31 October), the arch wearing the halo; St. Elmo's fire banked to an electric blue (\"a tinge of something other than white\"). The last picture is the field up.",
    "images": [
     {
      "file": "storm_petrel/storm_petrel_front.png",
-     "alt": "storm_petrel, front"
+     "alt": "storm petrel, front"
     },
     {
      "file": "storm_petrel/storm_petrel_rear.png",
-     "alt": "storm_petrel, rear"
+     "alt": "storm petrel, rear"
     },
     {
-     "file": "storm_petrel/storm_petrel_above.png",
-     "alt": "storm_petrel, from above"
-    },
-    {
-     "file": "storm_petrel/storm_petrel_st_elmo.png",
-     "alt": "storm_petrel, St. Elmo's fire in the port"
+     "file": "storm_petrel/storm_petrel_field_up.png",
+     "alt": "storm petrel, field up"
     }
    ],
    "before": {
-    "summary": "Before: the first cut, 23 October (the long narrow hull under two raised riot plates and a mast, the base the Puffin took).",
+    "summary": "Before: The swap, the field lit, the arch sleeved, 28 October",
     "images": [
      {
       "file": "storm_petrel/before_storm_petrel_front.png",
-      "alt": "storm petrel, front"
+      "alt": "Earlier: storm_petrel, front"
      },
      {
       "file": "storm_petrel/before_storm_petrel_rear.png",
-      "alt": "storm petrel, rear"
+      "alt": "Earlier: storm_petrel, rear"
      },
      {
       "file": "storm_petrel/before_storm_petrel_above.png",
-      "alt": "storm petrel, from above"
+      "alt": "Earlier: storm_petrel, from above"
      },
      {
-      "file": "storm_petrel/before_storm_petrel_shields_up.png",
-      "alt": "storm petrel, shields up"
+      "file": "storm_petrel/before_storm_petrel_st_elmo.png",
+      "alt": "Earlier: storm_petrel, St. Elmo's fire in the port"
      }
     ]
    }
@@ -639,7 +674,7 @@
   },
   "lammergeier": {
    "when": "First model, the flying wing, the launcher nacelles on the skin, 28 October.",
-   "note": "The chrome chevron drawn as a hovercraft for the Giant Petrel (the third round, docs/looks/kestrel_giant.png), given to the Lammergeier airborne on Ryan's thought of 27 October (\"looks good but careful on the weapon mount placement so they don't clip\"): a deeper centre body with the canopy forward and the bomb bay under it on a lit seam, four booster drums across the trailing edge, the Syrinx Drone's tubes in the leading edge's roots, the Lorentz Contractor's dish on a dorsal pylon, the mounts on the wing in the bays between the drums. The last picture is the lay_mines act. 28 October: the drone tubes sit in a pod on each leading-edge root, its face raked with the edge, so the wing's skin no longer shows inside them (Ryan's note). His second notes (the pods did not work as meant): each is now a nacelle on the leading-edge root that carries the wing's full thickness forward to a blunt raked face, top and bottom, the two tubes let into the face. His third (the box was fine; the hull-coloured tube ends clipping through its raked face were the mistake): each tube's mouth follows the face's rake, a touch proud of it, in the nacelle's dark. His fourth: the tubes bored twelve deep (an end cap is no tube). His fifth (the mouths read as end caps, not inset): each mouth is a hole cut through the face plate, the bore flush in it in the lighter plate so its far wall catches the light. His sixth (the open bores showed the wing's skin again, which the caps had hidden: the skin climbs over the bore's depth): the nacelle rides on the wing's upper skin, its underside following the skin's rise from the edge, the tubes above the skin the whole way. His seventh: the bores dark, not the hull's light plate.",
+   "note": "The chrome chevron drawn as a hovercraft for the Giant Petrel (the third round, docs/looks/kestrel_giant.png), given to the Lammergeier airborne on Ryan's thought of 27 October (\"looks good but careful on the weapon mount placement so they don't clip\"): a deeper centre body with the canopy forward and the bomb bay under it on a lit seam, four booster drums across the trailing edge, the Syrinx Drone's tubes in the leading edge's roots, the Lorentz Contractor's dish on a dorsal pylon, the mounts on the wing in the bays between the drums. The last picture is the lay_mines act. 28 October: the drone tubes sit in a pod on each leading-edge root, its face raked with the edge, so the wing's skin no longer shows inside them (Ryan's note). His second notes (the pods did not work as meant): each is now a nacelle on the leading-edge root that carries the wing's full thickness forward to a blunt raked face, top and bottom, the two tubes let into the face. His third (the box was fine; the hull-coloured tube ends clipping through its raked face were the mistake): each tube's mouth follows the face's rake, a touch proud of it, in the nacelle's dark. His fourth: the tubes bored twelve deep (an end cap is no tube). His fifth (the mouths read as end caps, not inset): each mouth is a hole cut through the face plate, the bore flush in it in the lighter plate so its far wall catches the light. His sixth (the open bores showed the wing's skin again, which the caps had hidden: the skin climbs over the bore's depth): the nacelle rides on the wing's upper skin, its underside following the skin's rise from the edge, the tubes above the skin the whole way. His seventh: the bores dark, not the hull's light plate. Since 31 October its stock Incendiary Shells wear a burn weapon's fire over their rack, glowing shells dim at rest and flaring as they fire.",
    "images": [
     {
      "file": "lammergeier/lammergeier_front.png",
