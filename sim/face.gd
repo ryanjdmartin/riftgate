@@ -11,7 +11,7 @@ extends RefCounted
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 ## Two reaches since 10 October (Ryan): Close, a worse Direct by design, is removed and melee
 ## is a tag. Direct was line of sight until 9 October.
-enum Reach { NONE, DIRECT, INDIRECT, SWEEP }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked
+enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked; Every Foe (4 November), below
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
 ## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
@@ -29,21 +29,23 @@ enum Reach { NONE, DIRECT, INDIRECT, SWEEP }   # Sweep (Ryan, 3 November): a tar
 ## 29 October retired 3 November for the Charged primer): Shock's other payoff, every other
 ## Shocked foe on the field taking N as its blow's number, wherever it stands and whatever the
 ## gun's reach, plain, no strike being aimed at it, so its Shock stands. A weapon's alone.
-## Every Foe and Every Ally (Ryan, 2 November: "Every foe is a targeting mode, just like spread,
-## penetrate, and splash, it should be listed as such and given a keyword"): a reach over every
-## foe in the fight from the target (a debuff's, the Siphon's lure-all), or over every machine a
-## shield or a buff may be spent on (the Mooring Screens'); `reaches_all` reads them.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, EVERY_FOE, EVERY_ALLY }
+## Every Foe and Every Ally are targeting modes (Ryan, 4 November: "Silence should not narrow
+## targeting modes, that's why I'm switching them to targeting modes"; keywords from 2 November):
+## Every Foe a reach (a debuff's, the Siphon's lure-all: dropped on any foe, it lands on every
+## foe in the fight), Every Ally a `targets` (a shield's or a buff's, the Mooring Screens': spent
+## on an ally, it lands on every other machine). `reaches_all` reads either.
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
-## narrow one to self only or allies only, so the design space stays open.
-enum Target { SELF_ALLY, SELF, ALLY, FOE }
+## narrow one to self only or allies only, so the design space stays open; Every Ally (4
+## November), a targeting mode, lands on every machine but its own.
+enum Target { SELF_ALLY, SELF, ALLY, FOE, EVERY_ALLY }
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
 const REACH_NAMES := {
-	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.SWEEP: "sweep",
+	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.SWEEP: "sweep", Reach.EVERY_FOE: "every_foe",
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
@@ -53,11 +55,11 @@ const KEYWORD_NAMES := {
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
 	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach", Keyword.SPLASH: "splash",
-	Keyword.DISPEL: "dispel", Keyword.EVERY_FOE: "every_foe", Keyword.EVERY_ALLY: "every_ally",
+	Keyword.DISPEL: "dispel",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 ## Purge (28 October) is one id on both sides, dispel, as breach is.
-const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge", Keyword.EVERY_FOE: "every foe", Keyword.EVERY_ALLY: "every ally" }
+const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
 ## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
@@ -76,7 +78,7 @@ const NUMBER_FIELDS := {
 ## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
 const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
 const TARGET_NAMES := {
-	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe",
+	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe", Target.EVERY_ALLY: "every_ally",
 }
 ## Keywords that ride on a shield or vent component (spent on a machine, not a foe); every
 ## other keyword is an attack's, except the few that ride on anything. The validator holds
@@ -84,7 +86,7 @@ const TARGET_NAMES := {
 ## entry aimed at a foe, a weapon or equipment, whatever else it does.
 ## Shock (9 October) is an attack keyword too: every foe the blows reach and leave alive is
 ## Shocked.
-const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD, Keyword.EVERY_ALLY]
+const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
 ## Of those, the ones only a shield may carry: overshield (5 October, the Puffin's Prow
 ## Projector first, rare) lets a shield pass its target's maximum, and the excess fades at the
 ## round's end. A vent has nothing to pass.
@@ -145,18 +147,25 @@ var braces: int = 0           # any entry: spending it Braces its owner, this ma
 var rolls_again_on: String = ""   # any entry: spending it spends a stack of this status, if its owner has one, and the die rolls again (the Nemesis's fists on rage, 12 October)
 var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October), printed on it; -1 or 0, none (Rapid carries none of its own, 2 November)
 var spins: bool = false       # a Rapid entry whose free reroll is a true spin over every entry, itself included (the Cassowary's Spin-Up: Ryan's exception to the reroll rule, 19 October)
-## Reaches every foe in the fight from its target (an attack: the Whip Scorpion's Heliographic
-## Siphon, a lure-all, 20 October) or every machine it may be spent on (a shield or a buff: the
-## Swallowtail's Mooring Screens): its keyword, Every Foe or Every Ally (2 November), so a
-## Silence mutes it as it mutes Spread. Setting it gives or takes the keyword its kind carries.
+## Reaches every foe in the fight (an attack: the Whip Scorpion's Heliographic Siphon, a
+## lure-all, 20 October) or every machine but its own (a shield or a buff: the Swallowtail's
+## Mooring Screens): its targeting mode, Every Foe or Every Ally (4 November), so a Silence, which
+## mutes keywords, leaves it whole. Setting it on gives the entry the mode its kind takes; off,
+## one foe it may be dropped on anywhere (Indirect) or one ally.
 var reaches_all: bool:
 	get:
-		return keywords.has(Keyword.EVERY_FOE) or keywords.has(Keyword.EVERY_ALLY)
+		return reach == Reach.EVERY_FOE or targets == Target.EVERY_ALLY
 	set(on):
-		keywords.erase(Keyword.EVERY_FOE)
-		keywords.erase(Keyword.EVERY_ALLY)
-		if on:
-			keywords.append(Keyword.EVERY_FOE if kind == Kind.ATTACK else Keyword.EVERY_ALLY)
+		if kind == Kind.ATTACK:
+			if on:
+				reach = Reach.EVERY_FOE
+			elif reach == Reach.EVERY_FOE:
+				reach = Reach.INDIRECT
+		elif kind != Kind.BLANK:
+			if on:
+				targets = Target.EVERY_ALLY
+			elif targets == Target.EVERY_ALLY:
+				targets = Target.ALLY
 var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
 var resets_on_kill: bool = false   # an attack: if its spend kills, every entry dark from a cooldown comes back and its machine acts again (the Kite's Pinion Driver, 21 October)
@@ -278,6 +287,11 @@ static func reach_from_name(name: String) -> int:
 	return -1
 
 
+## A reach as text reads it (every foe, not every_foe).
+static func reach_label(r: int) -> String:
+	return str(REACH_NAMES.get(r, "")).replace("_", " ")
+
+
 static func target_from_name(name: String) -> int:
 	for t in TARGET_NAMES.keys():
 		if TARGET_NAMES[t] == name:
@@ -366,8 +380,11 @@ static func from_dict(d: Dictionary) -> Face:
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
 			f.add_keyword(kw)
-	if bool(d.get("reaches_all", false)) and f.kind != Kind.BLANK and not f.reaches_all:
-		f.reaches_all = true   # a save from before the keywords (2 November): Every Foe or Every Ally by its kind, after the rest
+	# A save from before the targeting modes (4 November) writes Every Foe or Every Ally among its
+	# keywords, and one from before 2 November says `reaches_all`: either reads as the mode its kind takes.
+	var old_kw: Array = d.get("keywords", [])
+	if (old_kw.has("every_foe") or old_kw.has("every_ally") or bool(d.get("reaches_all", false))) and f.kind != Kind.BLANK and not f.reaches_all:
+		f.reaches_all = true
 	f.label = str(d.get("label", ""))
 	return f
 
@@ -593,7 +610,7 @@ func can_target_self() -> bool:
 
 
 func can_target_ally() -> bool:
-	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY)
+	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY or targets == Target.EVERY_ALLY)
 
 
 ## What this blow adds against `target` for the hull it is missing (power_per_missing), read
@@ -872,9 +889,11 @@ func describe() -> String:
 				s += " cools %d" % vents
 			if cools_all:
 				s += " cools to nothing"
+			if targets == Target.EVERY_ALLY:
+				s += " every ally" + (" yet to act" if not_acted else "")   # its targeting mode, where its keyword stood
 			for k in keywords:
 				if not printed.has(k):
-					s += " " + keyword_label(k) + (" yet to act" if k == Keyword.EVERY_ALLY and not_acted else "")
+					s += " " + keyword_label(k)
 			if action_price > 0:
 				s += " " + _action_text()   # the Immelmann Booster's ally use, after what it does on itself
 			if rolls_target:
@@ -891,7 +910,7 @@ func describe() -> String:
 		_:
 			# Direct is the default and goes unsaid; only indirect reach is called out. A debuff
 			# has no number to say, so its reach and keywords are its whole line.
-			s = " ".join(PackedStringArray([REACH_NAMES[reach] if reach != Reach.DIRECT else "", number_text()])).strip_edges()
+			s = " ".join(PackedStringArray([reach_label(reach) if reach != Reach.DIRECT else "", number_text()])).strip_edges()
 			if strikes > 1:
 				s += " ×%d" % strikes
 			for k in keywords:

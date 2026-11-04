@@ -52,8 +52,9 @@ deleted. It took main as it landed (to `d28308e`: the randomness pass, Sweep and
 elites session, the weapon-fire work, the chassis runner rows and the pairs), and main took it as
 a fast-forward on 4 November on his word ("Great if there's nothing else open, clean up and merge
 into main"); its bible is v0.449 (the page's version 462; the Pages paragraph). Since the
-landing it carries Sweep's mark lobbed with its strikes falling (his notes of the same day) and
-section 12's question on Every Foe and Every Ally as targeting modes, ahead of main.
+landing it carries his notes of the same day, ahead of main: Sweep's mark lobbed with a strike
+rising for each column, and Every Foe and Every Ally as targeting modes a Silence leaves whole,
+their marks his to pick (section 12).
 
 `claude/elites-session` (3 and 4 November) carried the elites session from main's `e75be15` on
 Ryan's marks of the 3rd and his calls and reads of the 4th (How things stand; the bible's
@@ -320,17 +321,20 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   two numbers in their colours. The
   sight drawn small is plain (a whole ring and its ticks); the vent keeps its three waves. The self and ally chips and the buff and debuff arrows gone, the
   foes' intents keeping theirs ("The arrow can be changed but not to the equipment one"); a
-  reach over every foe a keyword, Every Foe, and its mirror Every Ally ("Every foe is a targeting
-  mode, just like spread, penetrate, and splash"; working names after the foes' Every Machine;
-  `Face.reaches_all` reads the keyword, so a Silence mutes it as it mutes Spread; content writes
-  it under keywords, the old key refused); the unit readouts at 85% (from 70%, "Increase the
+  reach over every foe, Every Foe, and its mirror Every Ally, targeting modes with marks of their
+  own in the die's targeting slot, so a Silence, which mutes keywords, leaves them whole (4
+  November: "Silence should not narrow targeting modes, that's why I'm switching them to
+  targeting modes"; keywords from 2 November, retired for it; working names after the foes'
+  Every Machine; content writes `reach: every_foe` and `targets: every_ally`, an old save's
+  keyword or flag read into them, the old forms refused; Every Ally lands on every machine but
+  its own); the unit readouts at 85% (from 70%, "Increase the
   opacity of the popups in skirmish a bit"). `tools/die_sheet.gd` draws the die's whole
   iconography. The reload entry is the Musk Ox's alone (the Quick Reload, fixed). Landing on main
   it took the randomness pass, Sweep, UNDO and the elites under the same rules: their foe chips
   read by name and count in the readouts as the rest do (Swallow, the committed Follow-up,
-  Enraged, Golden, Numbed); Sweep's targeting mark is lobbed, since a sweep picks any rank, three
-  short lines of fire falling from it, a strike to a slot (his notes of 4 November: curved, its
-  strikes segmented as the others; falling rather than rising on Claude's call); a spend's strikes wait on the machine's turn to aim and a
+  Enraged, Golden, Numbed); Sweep's targeting mark is lobbed, since a sweep picks any rank, with
+  a line of fire rising off it for each of the rank's four columns, a solid run and a dash (his
+  notes of 4 November); a spend's strikes wait on the machine's turn to aim and a
   wind-up, and UNDO opens once the last strike has landed. What waits on Ryan: his phone read of
   the list (the to-do).
 - The elites session (3 November, `claude/elites-session`, on Ryan's marks; the bible's register
@@ -1061,8 +1065,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   Rapid and cooldown rows); three-way merged row by row onto the live v0.448 at 461, which a music
   session had moved from main's v0.446 at 459 with Hold The Line's row of the tracks table, so
   main's file carries that row ahead of its branch). This file is v0.450 since (on `ccr-bb178c9b-l6airv`,
-  ahead of main: Sweep's mark lobbed, section 12's question on Every Foe and Every Ally as
-  targeting modes), unpublished: it goes up with Ryan's calls on that question. The live page may carry rows ahead of main's code while
+  ahead of main: Sweep's mark, Every Foe and Every Ally as targeting modes, section 12's
+  question on their marks), unpublished: it goes up with Ryan's picks of the marks. The live page may carry rows ahead of main's code while
   their branches have not landed. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto

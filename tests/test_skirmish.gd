@@ -6864,13 +6864,16 @@ func test_a_vent_spent_on_itself_blasts_a_random_foe_for_the_heat_it_took_off() 
 ## damage, every foe in the fight turns on it for the round, it braces, and every blow a foe
 ## lands on it that round adds the entry's heat, next round's fuel, after the overheat.
 func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
-	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "every_foe"], "braces": 2, "heat_per_blow": 10})
-	assert_eq(siphon.describe(), "indirect lure every foe braces ×2 +10 heat a blow taken this round", "the entry says its rules, Every Foe a keyword (2 November)")
-	var old := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10})
-	assert_eq(old.keywords, siphon.keywords, "a save from before the keyword reads the same")
-	assert_true(old.reaches_all and old.has(Face.Keyword.EVERY_FOE), "its reach the keyword")
-	assert_false(old.to_dict().has("reaches_all"), "written back as the keyword")
-	assert_true((old.to_dict()["keywords"] as Array).has("every_foe"), "every_foe among its keywords")
+	var siphon := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2, "heat_per_blow": 10})
+	assert_eq(siphon.describe(), "every foe lure braces ×2 +10 heat a blow taken this round", "the entry says its rules, Every Foe its targeting mode (4 November)")
+	for saved in [
+		{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "every_foe"], "braces": 2, "heat_per_blow": 10},   # 2 to 4 November: a keyword
+		{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10},   # before: a flag
+	]:
+		var old := Face.from_dict(saved)
+		assert_eq([old.reach, old.keywords], [Face.Reach.EVERY_FOE, siphon.keywords], "a save from before the targeting mode reads the same")
+		var back := old.to_dict()
+		assert_true(back["reach"] == "every_foe" and not back.has("reaches_all") and not (back["keywords"] as Array).has("every_foe"), "written back as its reach, never a keyword or the flag")
 	var sk := Skirmish.new(1, 2)
 	var u := _mech("A", Die.single(siphon), 40, 200)
 	var other := _mech("B", Die.single(Face.attack(10, L)), 40, 200)
@@ -6892,6 +6895,31 @@ func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
 	sk.end_round()
 	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each, after the overheat")
 	assert_false(Effects.has(u, "siphoning"), "gone at the round's end")
+
+
+## A Silence leaves a targeting mode whole (Ryan, 4 November: "Silence should not narrow targeting
+## modes, that's why I'm switching them to targeting modes"): a Silenced machine's team shield still
+## shields every ally, and an Every Foe entry still reaches every foe, where its keywords go quiet.
+func test_a_silence_leaves_every_foe_and_every_ally_whole() -> void:
+	var sk := Skirmish.new(1, 2)
+	var screens := Face.shield(5)
+	screens.targets = Face.Target.EVERY_ALLY
+	var c := _mech("Carrier", Die.single(screens), 40, 100)
+	sk.add_mech(c)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	a.shield_max = 40
+	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	b.shield_max = 40
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(300, 20)])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_for_rounds(c, Effects.STATUS["silenced"], "foe:test", sk.round + 1)
+	assert_true(sk.assign(0, sk.mechs[1]), "the team shield spent, Silenced")
+	assert_eq([a.shield, b.shield], [5, 5], "every ally shielded all the same: a Silence mutes keywords, never a targeting mode")
+	var acting := Effects.effective_face(c, Face.attack(0, Face.Reach.EVERY_FOE, [K.LURE]))
+	assert_eq([acting.reach, acting.keywords.size()], [Face.Reach.EVERY_FOE, 0], "Every Foe stands under a Silence too, its Lure, a keyword, quiet")
 
 
 ## The blast read in one place (the Whip Scorpion's forecast, 22 October): the heat a vent would

@@ -1434,11 +1434,10 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "indirect",
+    "reach": "every_foe",
     "power": 0,
     "keywords": [
-     "lure",
-     "every_foe"
+     "lure"
     ],
     "heat": 0,
     "braces": 1,
@@ -1489,10 +1488,7 @@
    "face": {
     "kind": "shield",
     "power": 2,
-    "targets": "ally",
-    "keywords": [
-     "every_ally"
-    ],
+    "targets": "every_ally",
     "charged": {
      "muster": 1,
      "status": "phased",

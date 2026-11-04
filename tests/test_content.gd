@@ -793,7 +793,7 @@ func test_melee_is_a_tag_and_never_a_reach() -> void:
 	db.components["fist"] = claw
 	var refused := false
 	for e in db.validate():
-		if e.begins_with("component fist") and e.contains("reach direct, indirect or sweep"):
+		if e.begins_with("component fist") and e.contains("reach direct, indirect, sweep or every_foe"):
 			refused = true
 	assert_true(refused, "melee is no reach")
 	claw["face"]["reach"] = "direct"
@@ -2173,13 +2173,13 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 
 
 ## The Siphon's rules and the vent blast (the Whip Scorpion's, 20 October): a reach over every
-## machine is never a vent's, the old reach key is the keywords' now (2 November), a heat a blow
+## machine is never a vent's, the old reach key a targeting mode's now (4 November), a heat a blow
 ## taken is a positive number, and a blast a positive share.
 func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
 	var db := _fresh()
 	var plate: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	plate["tier"] = 1
-	plate["face"]["keywords"] = ["every_ally"]
+	plate["face"]["targets"] = "every_ally"
 	plate["face"]["heat_per_blow"] = 0
 	db.components["test_vent_all"] = plate
 	var old: Dictionary = db.components["heliographic_siphon"].duplicate(true)
@@ -2191,7 +2191,7 @@ func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
 	db.chassis["test_boiler"] = boiler
 	var errs := db.validate()
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("Every Ally is a shield's or a buff's")), "a vent never reaches every ally")
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_old_reach") and e.contains("reaches_all is a keyword now")), "the old reach key is refused for the keyword")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_old_reach") and e.contains("reaches_all is a targeting mode now")), "the old reach key is refused for the targeting mode")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow")), "a heat a blow is positive")
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("vent_blast")), "and a blast's share")
 
@@ -2296,8 +2296,9 @@ func test_the_area_keywords_say_their_number() -> void:
 		"test_plus_two_numbers": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 1}, ""],
 		"test_debuff_n": [{"power": 0, "keywords": ["lure", "cleave"], "cleave": 1}, "carries no number"],
 		"test_debuff_area": [{"power": 0, "keywords": ["lure", "cleave"]}, ""],
-		"test_wide_weapon": [{"keywords": ["every_foe"]}, "Every Foe is a debuff's"],
-		"test_wide_debuff": [{"power": 0, "keywords": ["lure", "every_foe"]}, ""],
+		"test_wide_weapon": [{"reach": "every_foe"}, "Every Foe is a debuff's"],
+		"test_wide_debuff": [{"power": 0, "reach": "every_foe", "keywords": ["lure"]}, ""],
+		"test_wide_keyword": [{"power": 0, "keywords": ["lure", "every_foe"]}, "a targeting mode since 4 November"],
 	}
 	for id in cases:
 		var c: Dictionary = base.duplicate(true)

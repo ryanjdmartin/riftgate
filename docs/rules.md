@@ -31,8 +31,10 @@ skirmish.
   **vent** are spent on a machine. A shield, a vent or a buff goes to itself and allies by
   default, or self only, or allies only, as the mark under its main mark shows: three connected
   hexes, the middle its own machine, the two beside it its allies, a filled one a machine it may
-  be spent on (all three for either), as a weapon's reach is the line of fire under its sight; a reach
-  over every foe or every ally is a keyword (Every Foe, Every Ally). A passive may make a piece count as
+  be spent on (all three for either), as a weapon's reach is the line of fire under its sight.
+  **Every Ally** (a shield's or a buff's, never a vent's) is a targeting mode of its own: spent
+  on an ally, the entry lands on every machine but its own, each taking all of it. It and Every
+  Foe (Reach, below) are targeting modes, never keywords, so a Silence leaves them whole. A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
   too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
   codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
@@ -166,11 +168,12 @@ defeat when every machine is wrecked. There is no round limit.
   cools nothing (the Musk Ox's Quick Reload, its one piece): its shells and the ammo it loads
   are its whole mark. The targeting marks are one width: under an entry aimed at a foe, a line of
   fire, a solid run breaking into two ever shorter dashes with room between, every piece one
-  thickness, straight for Direct and lobbed low for Indirect, and for a Sweep the line lobbed
-  whole, since a sweep picks any rank, three short lines of fire falling from it at even steps, a
-  strike to a slot; under one spent on a
-  machine, three hex cells sharing their edges, the middle its own machine, a lit one a machine
-  it may be spent on.
+  thickness, straight for Direct and lobbed low for Indirect, for a Sweep the line lobbed whole,
+  since a sweep picks any rank, four short lines of fire rising from it, one for each of the
+  rank's columns, each a solid run and a dash, and for Every Foe the enemy's formation, both ranks
+  of its four columns lit; under one spent on a machine, three hex cells sharing their edges, the
+  middle its own machine, a lit one a machine it may be spent on, and for Every Ally the three
+  cells solid under an arch that comes down over their sides and touches none of them.
   What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks).
   What the machine's passive adds sits in its passive box at the foot of the edge, a dashed box
   with an arrow into it, as wide as what it holds: a blow added after the strikes, its number
@@ -197,6 +200,10 @@ defeat when every machine is wrecked. There is no round limit.
   shape rides each. The die shows a strike's number, and dragged over a foe it lights that
   foe's rank whole and brackets it. The Skua's Flechette Pod, and the Musk Ox's salvo an ammo
   a strike.
+- **Every Foe** (a debuff's) reaches any foe and lands on every foe in the fight, front rank and
+  back, as on its target. A weapon reaches wide by Spread, Penetrate or Splash instead. Like
+  Sweep it is a targeting mode of its own: no passive turns it into Direct or Indirect, and a
+  Silence, which mutes keywords, leaves it whole. The Whip Scorpion's Siphon.
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
   whatever the gun's reach.
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
@@ -363,11 +370,6 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Splash N**: the plus round the target, Spread and Penetrate at one number; the two at one
   number are written Splash. A weapon's area keyword carries its number; a debuff's carries
   none, its effects reaching those foes and its blow nothing.
-- **Every Foe** (a debuff's): aimed at a foe in its reach, the entry lands on every foe in the
-  fight, front rank and back, as on its target. A weapon reaches wide by Spread, Penetrate or
-  Splash instead. Like every keyword, a Silence mutes it, and the entry reaches its target alone.
-- **Every Ally** (a shield's or a buff's, never a vent's): the entry lands on every machine it
-  may be spent on, each taking all of it, every other ally for one that goes to allies only.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
   foes' rider below. The Overclocked Railgun carries it.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning (Burn 3: three
@@ -385,7 +387,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
   Shocked takes one blow, the area's.
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. The Whip
-  Scorpion's Siphon carries Every Foe, and every blow a foe lands on it that round adds 2 heat
+  Scorpion's Siphon lures Every Foe, and every blow a foe lands on it that round adds 2 heat
   to it (Siphoning), in the enemy's turn, after the overheat.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare): every foe reached
   is Exposed through the next round, a felled one too; a second Expose refreshes it, never
@@ -612,8 +614,8 @@ On a machine:
   the next round, when every stack goes; a Ward turns the crush away. Cleansable.
 - **Silenced** (debuff, a foe's silence): its components' keywords are muted through its next
   round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, a
-  Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count
-  and its stores fill and spend as ever. Cleansable, an ally's Cleanse the way; a Ward turns
+  Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count,
+  its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally). Cleansable, an ally's Cleanse the way; a Ward turns
   the silence away. A foe's purge takes every buff a die face bought, every
   stack, for good; what a store, a form or a passive grants goes for the rest of the enemy's
   turn and comes back at the start of the player's turn after its start resolves; the stores
