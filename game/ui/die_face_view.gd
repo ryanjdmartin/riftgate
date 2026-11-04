@@ -76,7 +76,7 @@ var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in 
 var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the rounds it has left, this one included, its clock along the foot
 var cooldown: int = -1       # the rounds a spend darkens it, its machine's passives in (Skirmish.cooldown_of); -1 reads the entry's own
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
-var after_blow: int = -1     # the blow its machine's passive adds after the strikes (the Storm Petrel's), "+N" in the passive box; -1 reads the entry's own (Skirmish.after_blow off a foe)
+var after_blow: int = -1     # the blow its machine's passive adds after the strikes (the Storm Petrel's), its number in the passive box; -1 reads the entry's own (Skirmish.after_blow off a foe)
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
@@ -576,10 +576,12 @@ static func chip_glyph(tag: String) -> String:
 ## What the machine's passive adds to the entry, a box each, [mark, text, colour] (Ryan, 4
 ## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
 ## box' for all these types of effects?"): a stepping die's next chamber, its main mark (the
-## Cassowary's); the blow the passive adds after the strikes, "+N" in the blow's own ink, no mark
-## of its own (the Storm Petrel's: "that's not a mechanic term, it doesn't need an icon"); a vent's
-## blast at a random foe, its mark and number in heat's colour, since a bare "+N" beside a vent
-## would read as more cooling (the Whip Scorpion's).
+## Cassowary's); the blow the passive adds after the strikes, its number alone in the blow's own
+## ink, no mark and no sign (the Storm Petrel's: "that's not a mechanic term, it doesn't need an
+## icon"; "Just the number is fine, and the tap popup will clarify"); a vent's blast at a random
+## foe, its mark and number in heat's colour, since a bare number beside a vent would read as
+## more cooling (the Whip Scorpion's). The readout heads its line for each with the same box
+## (EntryReadout.passive_mark).
 func passive_marks() -> Array:
 	var out: Array = []
 	if face == null or dead:
@@ -588,7 +590,7 @@ func passive_marks() -> Array:
 	if not dark_now:
 		var after := after_blow if after_blow >= 0 else Skirmish.after_blow(null, face)
 		if after > 0 and face.is_weapon():
-			out.append(["", "+%d" % after, Palette.HUD])
+			out.append(["", str(after), Palette.HUD])   # the number alone (Ryan, 4 November: "it doesn't even need the + since it's both a spend and an add")
 		if blast > 0 and face.kind == Face.Kind.VENT:
 			out.append(["blast", str(blast), Palette.HEAT])
 	if next_face != null:

@@ -183,9 +183,14 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	var hot := Face.attack(4)
 	hot.burns = 3
 	d.set_face(hot)
-	assert_eq(picked.call(d), [["", "+3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes")
+	assert_eq(picked.call(d), [["", "3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes, the number alone")
+	var lines := EntryReadout.effects_of(hot)
+	var boxed := lines.filter(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return m.has("passive")))
+	assert_eq(boxed.size(), 1, "the readout says it on one line")
+	assert_eq(str(boxed[0]["text"]), "After the strikes the target takes 3 more, what the shield paid", "the tap popup clarifies the number")
+	assert_eq((boxed[0]["marks"] as Array)[0]["passive"], ["", "3"], "headed by the box the die shows")
 	d.after_blow = 2
-	assert_eq(picked.call(d), [["", "+2"]], "over a foe, that foe's share")
+	assert_eq(picked.call(d), [["", "2"]], "over a foe, that foe's share")
 	d.after_blow = -1
 	d.set_face(Face.vent(3))
 	d.blast = 4
@@ -195,6 +200,12 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	d.next_face = Face.shield(5)
 	assert_eq(picked.call(d), [["shield", ""]], "a stepping die's next entry by its main mark")
 	d.free()
+	var db := ContentDB.load_default()
+	var next := Face.shield(5)
+	next.component = str(db.components.keys()[0])
+	var said := EntryReadout.next_chamber_line(next, 2, db)
+	assert_eq(str(said["text"]), "A roll or reroll steps it to II, %s" % db.component_name(next.component), "the tap popup names where the die steps (Ryan, 4 November)")
+	assert_eq((said["marks"] as Array)[0]["passive"], ["shield", ""], "headed by the box the die shows")
 
 
 ## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:

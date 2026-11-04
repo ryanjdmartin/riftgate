@@ -36,6 +36,7 @@ const CHIP := 22.0        # a chip's box, its text beside it
 const CHIP_INDENT := 32.0
 const MARK_GAP := 4.0     # between two marks at a line's head
 const MARKED := ["effect", "rule"]   # the lines that share the marks' column, when any of them has a mark
+const PASSIVE_PX := 15    # a number in a passive box mark
 const ICON := 0.86        # a term's icon, a share of its text's size
 const ICON_GAP := 3.0     # between a term's icon and its word
 const TAP_GROW := 6.0     # a term's tap area past its word, for a thumb
@@ -195,7 +196,10 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: 
 	if f.burns > 0:
 		# The Storm Petrel's Riot Field Generator (30 October): the shield its weapon burns in place
 		# of that heat, and the target takes as much after the strikes.
-		out.append(marked(parts_line("effect", [word("Burns"), num(str(f.burns), f.burns, base.burns, true), word("shield in its place; the target takes as much")], "attr"), [mark("shield", Palette.SHIELD, false)]))
+		out.append(marked(parts_line("effect", [word("Burns"), num(str(f.burns), f.burns, base.burns, true), word("shield in its place")], "attr"), [mark("shield", Palette.SHIELD, false)]))
+		# What the shield paid lands after the strikes, the number in the die's passive box (Ryan,
+		# 4 November), headed by that box.
+		out.append(marked(parts_line("effect", [word("After the strikes the target takes"), num(str(f.burns), f.burns, base.burns), word("more, what the shield paid")], "attr"), [passive_mark("", str(f.burns), Palette.HUD)]))
 	# The entry's costs past heat, beside it as the die prints them (Ryan, 26 October: Volatile a
 	# cost printed beside the heat, a keyword with a chip until then, and a shield cost beside it):
 	# the hull a spend bites, the shield it takes first. Less is the gain.
@@ -449,6 +453,21 @@ static func mark(glyph: String, ink: Color, boxed: bool = true) -> Dictionary:
 	return {"glyph": glyph, "ink": ink, "box": boxed}
 
 
+## The die's passive box as a mark (DieFaceView.passive_marks: [glyph, text, Color]): what the
+## machine's passive adds to the entry, a dashed box holding its mark or its number or both, at
+## the head of the line that says it (Ryan, 4 November: "the tap popup will clarify").
+static func passive_mark(glyph: String, text: String, ink: Color) -> Dictionary:
+	return {"passive": [glyph, text], "ink": ink}
+
+
+## How wide a passive box mark is: a chip's width, or what it holds and a margin.
+static func passive_width(m: Dictionary) -> float:
+	var held: Array = m.get("passive", ["", ""])
+	var tw := Hud.mono().get_string_size(str(held[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX).x if not str(held[1]).is_empty() else 0.0
+	var inner := (13.0 if not str(held[0]).is_empty() else 0.0) + (2.0 if not str(held[0]).is_empty() and tw > 0.0 else 0.0) + tw
+	return maxf(CHIP, inner + 8.0)
+
+
 ## A field's chip as a mark (UnitView.draw_chip's [glyph, text, Color, kind, riders]): a foe's
 ## intent drawn in its readout as it stands under the foe, riders and all.
 static func chip_mark(chip: Array) -> Dictionary:
@@ -554,11 +573,14 @@ func set_lines(list: Array, width: float = WIDTH) -> void:
 					for m in marks:
 						var chip: Array = m.get("chip", [])
 						var sz := Vector2(UnitView.chip_width(Hud.mono(), chip), UnitView.CHIP_H) if not chip.is_empty() else Vector2(CHIP, CHIP)
+						if m.has("passive"):
+							sz = Vector2(passive_width(m), CHIP)
 						_chips.append({"rect": Rect2(Vector2(x, y), sz), "glyph": str(m.get("glyph", "")),
-							"colour": m.get("ink", Palette.INK), "box": bool(m.get("box", true)), "chip": chip})
+							"colour": m.get("ink", Palette.INK), "box": bool(m.get("box", true)), "chip": chip, "passive": m.get("passive", [])})
 						x += sz.x + MARK_GAP
 						tall = maxf(tall, sz.y)
-					var indent := mark_indent(n) if MARKED.has(style) else x - MARK_GAP + (CHIP_INDENT - CHIP)
+					var own := x - MARK_GAP + (CHIP_INDENT - CHIP)   # past a wider mark (a passive box holding a number)
+					var indent := maxf(mark_indent(n), own) if MARKED.has(style) else own
 					var bottom := _flow(_spans(l), width, y + 1.0 + (tall - CHIP) * 0.5, indent)
 					y = maxf(bottom, y + tall) if not marks.is_empty() else bottom
 	custom_minimum_size = Vector2(width, ceilf(y))
@@ -805,6 +827,8 @@ func _draw() -> void:
 		var r: Rect2 = c["rect"]
 		if not (c.get("chip", []) as Array).is_empty():
 			UnitView.draw_chip(self, r, c["chip"], Hud.mono())   # the field's own chip
+		elif not (c.get("passive", []) as Array).is_empty():
+			_draw_passive(r, c["passive"], c["colour"])   # the die's passive box, dashed
 		elif bool(c.get("box", true)):
 			Hud.box(self, r, 3.0, Color(Palette.BG, 0.92), c["colour"], 1.2)
 			Glyphs.draw(self, str(c["glyph"]), r.get_center(), 13, c["colour"], 1.7)
@@ -823,6 +847,40 @@ func _draw() -> void:
 		draw_string(w["font"], at, w["text"], HORIZONTAL_ALIGNMENT_LEFT, -1, w["px"], w["ink"])
 		if int(w["arrow"]) != 0:
 			draw_arrow(self, Vector2(at.x + float(w["w"]) - icon - arrow_width(float(w["px"])) + ARROW_GAP, at.y), float(w["px"]), int(w["arrow"]), w["ink"])
+
+
+## The die's passive box at a line's head: a dashed frame, its mark and its number inside.
+func _draw_passive(r: Rect2, held: Array, ink: Color) -> void:
+	Hud.fill_poly(self, Hud.cut(r, 3.0), Color(Palette.BG, 0.92))
+	var frame := Palette.HUD
+	var corners := [r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)]
+	for k in range(4):
+		var a: Vector2 = corners[k]
+		var b: Vector2 = corners[(k + 1) % 4]
+		var step := 6.0 / maxf(1.0, a.distance_to(b))
+		var t := 0.0
+		while t < 1.0:
+			draw_line(a.lerp(b, t), a.lerp(b, minf(1.0, t + step * 0.6)), frame, 1.1)
+			t += step
+	var mono := Hud.mono()
+	var glyph := str(held[0])
+	var text := str(held[1])
+	var tw := mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX).x if not text.is_empty() else 0.0
+	var inner := (13.0 if not glyph.is_empty() else 0.0) + (2.0 if not glyph.is_empty() and tw > 0.0 else 0.0) + tw
+	var x := r.get_center().x - inner * 0.5
+	if not glyph.is_empty():
+		Glyphs.draw(self, glyph, Vector2(x + 6.5, r.get_center().y), 12, ink, 1.6)
+		x += 15.0
+	if not text.is_empty():
+		draw_string(mono, Vector2(x, r.get_center().y + mono.get_ascent(PASSIVE_PX) * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX, ink)
+
+
+## A stepping die's next chamber as a line (the Cassowary's, Ryan, 4 November: "should also
+## explain its next-chamber chip in the tap popup"): where a roll or a reroll steps it, by its
+## place and its name, headed by the passive box the die shows it in.
+static func next_chamber_line(next: Face, place: int, db: ContentDB) -> Dictionary:
+	var named := db.component_name(next.component) if next != null and not next.component.is_empty() else (next.describe() if next != null else "")
+	return marked(text_line("effect", "A roll or reroll steps it to %s, %s" % [Hud.roman(place), named], "rule"), [passive_mark(Glyphs.primary_for(next), "", Palette.HUD)])
 
 
 ## The terms under `point`, in the readout's own space; none off them.

@@ -164,9 +164,10 @@ defeat when every machine is wrecked. There is no round limit.
   own machine, a lit one a machine it may be spent on.
   What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks).
   What the machine's passive adds sits in its passive box at the foot of the edge, a dashed box
-  with an arrow into it, as wide as what it holds: a blow added after the strikes, "+2" (the
-  Storm Petrel's zap); a vent's blast at a random foe, by the blast's mark (the Whip
-  Scorpion's); a stepping die's next entry, by its main mark (the Cassowary's). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  with an arrow into it, as wide as what it holds: a blow added after the strikes, its number
+  alone (the Storm Petrel's zap); a vent's blast at a random foe, by the blast's mark (the Whip
+  Scorpion's); a stepping die's next entry, by its main mark (the Cassowary's). The readout says
+  each on a line of its own, headed by the same box. A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
 
@@ -663,7 +664,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   through what the foe takes and its armour, and lost if the strikes killed it. And while its
   shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
   meets. The die shows the shield a weapon will take in its heat slot's place, behind the
-  shield's mark ("-3"), with the heat past it beside, and the zap in its passive box ("+2"),
+  shield's mark ("-3"), with the heat past it beside, and the zap's number in its passive box,
   over a foe with that foe's armour off, as the blow's is; never joined to the blow's number.
 - **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the

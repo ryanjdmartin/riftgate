@@ -2007,12 +2007,17 @@ func _show_die(i: int) -> bool:
 	if f != null:
 		var sf := sk.shown_face(ms, f)
 		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
-		# A vent's blast (the Whip Scorpion's): the die prints it by its own mark in its passive's box,
-		# so the readout says it with that mark (Ryan, 2 November: every icon on a die face in the popup).
+		# A vent's blast (the Whip Scorpion's): the die prints it in its passive's box, so the readout
+		# heads its line with that box (Ryan, 2 November: every icon on a die face in the popup).
 		var extra: Array = []
 		var blast := _dice[i].blast if i < _dice.size() else 0
 		if blast > 0 and sf.kind == Face.Kind.VENT:
-			extra.append(EntryReadout.marked(EntryReadout.parts_line("effect", [EntryReadout.word("Blasts a random foe for"), EntryReadout.word(str(blast))], "attr"), [EntryReadout.mark("blast", Palette.HEAT, false)]))
+			extra.append(EntryReadout.marked(EntryReadout.parts_line("effect", [EntryReadout.word("Blasts a random foe for"), EntryReadout.word(str(blast))], "attr"), [EntryReadout.passive_mark("blast", str(blast), Palette.HEAT)]))
+		# A stepping die's next chamber (the Cassowary's), by the passive box the die shows it in
+		# (Ryan, 4 November: "should also explain its next-chamber chip in the tap popup").
+		var next_at := sk.next_index(ms)
+		if next_at >= 0:
+			extra.append(EntryReadout.next_chamber_line(sk.next_face(ms), next_at + 1, ContentDB.load_default()))
 		# Its machine's form (the Armadillo's): the seal or the opening this entry brings, by the
 		# chip the die shows for it, Sealed a term a tap opens.
 		var shift := form_mark(ms, sf) if not ms.assigned else ""
