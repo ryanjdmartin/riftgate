@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge", "burn_shield", "bank_rerolls"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -192,7 +192,7 @@ const STATUS := {
 		"tags": ["buff"], "effects": []},
 	# Swallowed (a foe's swallow, Floraison's, 30 October): out of the fight as a Phased machine is,
 	# laid by a foe and timed by its move, ended early by its swallower's fall.
-	"swallowed": {"id": "swallowed", "name": "Swallowed", "description": "Out of the fight: it cannot act, take damage or be targeted until its rounds run out or its swallower falls.", "stacking": "renew",
+	"swallowed": {"id": "swallowed", "name": "Swallowed", "description": "Out of the fight: it cannot act, take damage or be targeted until its rounds run out, its swallower falls, or its swallower loses a quarter of its HP.", "stacking": "renew",
 		"tags": ["debuff"], "effects": []},
 	"rallied": {"id": "rallied", "name": "Rallied", "description": "The team has one reroll more this round.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
@@ -219,12 +219,18 @@ const STATUS := {
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
-	# The Honey Badger's hopper (Ryan, 11 October): loads the Chainsaw Claw digs out of what it
-	# hits, which the Bullion Fragmenter fires a few a shot. A store on the machine with no
-	# effect of its own (the weapon that fires it reads it); it lasts the skirmish, never
-	# decays, and nothing cleanses it.
+	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
+	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
+	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads
+	# are worth stands as the Ore Plate); it lasts the skirmish, never decays, and nothing
+	# cleanses it.
 	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
 		"tags": ["store"], "effects": []},
+	# What the hopper's loads are worth (Ryan, 21 October: "Each one grants armour, displayed as a
+	# buff"; 31 October, a point a load): the first buff a store grants, its stacks kept at the
+	# loads' worth (sync_plate), so a purge puts it to sleep a turn while the loads stay.
+	"ore_plate": {"id": "ore_plate", "name": "Ore Plate", "description": "Armour +1 a stack: what the loads in its hopper are worth, while it holds them.", "decay": "none",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Armadillo's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
 	# framework): a shield it spends on itself seals it, a vent or a weapon opens it.
 	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
@@ -1484,7 +1490,7 @@ static func banked(u, id: String) -> int:
 	var n := 0
 	for m in u.modifiers:
 		if m.id == id:
-			n += m.stacks
+			n += m.stacks + m.slept_stacks   # a store's grant a Purge N put part to sleep is still held (2 November)
 	return n
 
 
@@ -1496,7 +1502,65 @@ static func store_cap(u, id: String) -> int:
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
 				return int(eff["cap"])
+			if id == "hopper" and str(eff.get("effect", "")) == "fill_hopper" and int(eff.get("cap", 0)) > 0:
+				return int(eff["cap"])
 	return 0
+
+
+## The loads each foe its weapons damage puts in this machine's hopper (fill_hopper, static: the
+## Honey Badger's Ore Hopper, Ryan, 31 October: "per foe damaged"), 0 when nothing fills it. A
+## weapon that fills the hopper itself (the Chainsaw Claw's two) reads its own number instead.
+static func hopper_fill(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "fill_hopper":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return n
+
+
+## The armour `loads` in this machine's hopper are worth (hopper_plate, static: `value` for each
+## `per` loads held; a point a load, Ryan, 31 October), the loads it holds when none are given;
+## 0 when nothing plates it.
+static func hopper_plate(u, loads: int = -1) -> int:
+	var held := stacks_of(u, "hopper") if loads < 0 else loads
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "hopper_plate":
+			n += int(eff.get("value", 0)) * int(pair[1].stacks) * int(held / maxi(1, int(eff.get("per", 1))))
+	return n
+
+
+## Loads into the hopper, never past its cap, and the Ore Plate brought up to what they are
+## worth. Returns how many went in.
+static func add_loads(u, n: int) -> int:
+	var cap := store_cap(u, "hopper")
+	if cap > 0:
+		n = mini(n, cap - banked(u, "hopper"))
+	if n <= 0:
+		return 0
+	stack(u, STATUS["hopper"], SKIRMISH, "mech", n, DECAY_NONE)
+	sync_plate(u)
+	return n
+
+
+## Loads fired out of the hopper, and the Ore Plate brought down with them. Returns how many.
+static func spend_loads(u, n: int) -> int:
+	var spent := spend_stacks(u, "hopper", n)
+	sync_plate(u)
+	return spent
+
+
+## The Ore Plate stands at what the loads held are worth: a store's grant, never bought, so a
+## purge puts it to sleep while the loads stay (Ryan's row on stores, 21 October), N stacks of
+## it a Purge N (2 November), and asleep or part asleep it keeps its stacks in step with them.
+static func sync_plate(u) -> void:
+	var want := hopper_plate(u)
+	var have := banked(u, "ore_plate")
+	if want > have:
+		stack(u, STATUS["ore_plate"], SKIRMISH, "store:hopper", want - have, DECAY_NONE)
+	elif want < have:
+		spend_stacks(u, "ore_plate", have - want)
 
 
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
@@ -2078,6 +2142,10 @@ static func effect_text(eff: Dictionary) -> String:
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
 		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]
+		"fill_hopper": body = "every foe its weapons damage puts %s in its hopper, up to %d" % ["a load" if vs == "1" else vs + " loads", int(eff.get("cap", 0))]
+		"hopper_plate":
+			var per := int(eff.get("per", 1))
+			body = ("each load held is %s armour" if per <= 1 else "every %d loads held are %%s armour" % per) % ("a point of" if vs == "1" else vs)
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs

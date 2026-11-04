@@ -44,6 +44,20 @@ extends RefCounted
 ## turret turns with the hull on the move (Ryan, 4 October: holding its aim was not worth
 ## the complexity). RIFTGATE_MOVE_DEBUG=1 drives every machine constantly at its own full
 ## speed on the map (`top_speed`, map_speed), on both screens, for judging a gait running.
+##
+## A count display (the sidecar's `counts`, b.count: the Cassowary's capacitor, 2 November) lights
+## the first n of its parts for a number the screen passes as it refreshes (show_counts, one of
+## COUNT_SOURCES), and a number that falls flares them all and lets them go dark, a discharge. A
+## spin may be held while the machine carries a status (the sidecar's `spin_held`, b.spin_held:
+## the capacitor turns while Spun Up), eased up to speed and down again. RIFTGATE_COUNT_DEBUG=1
+## counts every display up a part a second until it falls; RIFTGATE_SPIN_DEBUG=1 holds every
+## status's spin and lets it go in turn; both on both screens, to judge them running.
+##
+## An act may lock a spinner with a step (the sidecar's `spin_step` and an act's `locks`, b.spin's
+## step: the Cottonmouth's drum, its chamber 60 degrees, Ryan, 2 November): as the act starts the
+## spin parks on its next step ahead, the way it turns, over PARK_TIME, and holds there while the
+## act plays, the act's own track on it adding whole steps; when the act ends that turn goes into
+## the spin's own, so nothing unwinds, and the idle turn takes up again from where it stands.
 
 const GAP_MIN := 6.0          # seconds between acts, at least (Ryan, 7 October: from 2.5, as the acts overlapped too often)
 const GAP_MAX := 12.0         # and at most (from 6.5)
@@ -80,6 +94,13 @@ const HEFT_DEFAULT := 0.12    # seconds: the inertia of a machine whose sidecar 
 const DAMPING := 0.7          # the joints' servos: a touch under critical, so a heavy part gives a little past its mark and settles
 const FORM_DEBUG_PERIOD := 2.5  # seconds a form is held, then let go, under RIFTGATE_SEAL_DEBUG
 const RECOIL_SLIDE := 1.5       # world units a gun that only runs in and out of its port kicks back along its line on a shot
+const COUNT_SOURCES := ["shots", "ammo"]   # the numbers a count display may show, as the skirmish passes them (MechView3D.count_values)
+const COUNT_RISE := 0.08        # seconds a count display's part takes to light, its servo's time constant
+const COUNT_FALL := 0.35        # and to go dark again, a flare's fading included
+const COUNT_DEBUG_PERIOD := 1.0 # seconds a step under RIFTGATE_COUNT_DEBUG
+const SPIN_HELD_EASE := 0.45    # seconds a status's spin takes to come up to speed, and to run down
+const SPIN_DEBUG_PERIOD := 3.0  # seconds a status's spin is held, then let go, under RIFTGATE_SPIN_DEBUG
+const PARK_TIME := 0.3          # seconds a locked spin takes to park on its next step ahead
 const STEP := 1.0 / 60.0      # the longest step the acts and the servos advance by, so a long tick (a frozen frame) plays the same as frames
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
@@ -99,6 +120,16 @@ var _handoff_at := 0.0             # the travel (`_dist`) the stride it changes 
 var _handing := false              # whether it is rolling and the handoff counts (false standing)
 var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
 var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
+var spin_steps: Dictionary = {}    # joint -> degrees a step: a spinner an act may lock (b.spin's step; the sidecar's spin_step)
+var _locked: Dictionary = {}       # joint -> [from, to, seconds into its park]: a spinner the act playing parks and holds (its `locks`)
+var held_spins: Dictionary = {}    # status -> {joint: degrees a second}: turned while the machine carries the status (b.spin_held: the Cassowary's capacitor while Spun Up)
+var _held_on: Dictionary = {}      # status -> whether it is held (hold_spin)
+var _held_speed: Dictionary = {}   # joint -> degrees a second it turns at now, eased toward what its held statuses ask
+var spin_debug: bool = false       # RIFTGATE_SPIN_DEBUG: every status's spin held and let go in turn
+var _spin_debug_t := 0.0
+var count_displays: Array = []     # [{"source", "parts": [[[material, its light at rest], ...] a part], "on", "off", "flare", "n", "k": [each part's light now]}]: the sidecar's counts (b.count)
+var count_debug: bool = false      # RIFTGATE_COUNT_DEBUG: every display counts up a part a second until it falls
+var _count_debug_t := 0.0
 var forms: Dictionary = {}         # name -> {"duration", "curves": {joint: curve, BODY: the body's}, "glow": [[material, its light at rest, k]], "acts": [act]}: poses held while the machine carries the status of the same name, each with the acts it plays while held (the sidecar's forms: the Armadillo's seal)
 var _form_on: Dictionary = {}      # name -> whether it is held (set_form)
 var _form_t: Dictionary = {}       # name -> seconds into its turn: 0 let go, its duration held
@@ -475,6 +506,30 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		if joints.has(name) and sp[name] is Array and (sp[name] as Array).size() >= 2:
 			spinners[name] = [float(sp[name][0]), float(sp[name][1])]
 			_spun[name] = 0.0
+	spin_steps = {}
+	_locked.clear()
+	var ss: Dictionary = side.get("spin_step", {}) if side.get("spin_step", {}) is Dictionary else {}
+	for name in ss.keys():
+		if spinners.has(name) and float(ss[name]) > 0.0:
+			spin_steps[name] = float(ss[name])
+	held_spins = {}
+	_held_on.clear()
+	_held_speed.clear()
+	var hs: Dictionary = side.get("spin_held", {}) if side.get("spin_held", {}) is Dictionary else {}
+	for status in hs.keys():
+		if not (hs[status] is Dictionary):
+			continue
+		var turned := {}
+		for jn in (hs[status] as Dictionary).keys():
+			if joints.has(jn):
+				turned[jn] = float(hs[status][jn])
+				_spun[jn] = float(_spun.get(jn, 0.0))
+				_held_speed[jn] = 0.0
+		if not turned.is_empty():
+			held_spins[str(status)] = turned
+			_held_on[str(status)] = false
+	spin_debug = OS.get_environment("RIFTGATE_SPIN_DEBUG") == "1"
+	_spin_debug_t = 0.0
 	use_gait(side.get("gait", {}) if side.get("gait", {}) is Dictionary else {})
 	_body_rest_pos = body.position
 	_body_rest_rot = body.rotation
@@ -514,6 +569,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		for m in _lit_materials(str(part)):
 			_move_glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
 	_setup_forms(side.get("forms", {}) if side.get("forms", {}) is Dictionary else {})
+	_setup_counts(side.get("counts", []))
 
 
 ## The forms a sidecar names, ready to hold: their tracks as curves over their turn, and
@@ -569,6 +625,136 @@ func set_form(name: String, on: bool) -> void:
 ## Whether a form is held (or on its way in).
 func form_held(name: String) -> bool:
 	return bool(_form_on.get(name, false))
+
+
+## Hold a status's spin or let it go (the Cassowary's capacitor turns while it is Spun Up, Ryan,
+## 2 November): the joints it names come up to speed and run down again over SPIN_HELD_EASE,
+## stopping wherever they are. True when it changes.
+func hold_spin(status: String, on: bool) -> bool:
+	if not held_spins.has(status) or bool(_held_on[status]) == on:
+		return false
+	_held_on[status] = on
+	return true
+
+
+## Whether a status's spin is held.
+func spin_held(status: String) -> bool:
+	return bool(_held_on.get(status, false))
+
+
+## Ease every held spin's joints toward the speed their held statuses ask and turn them; true
+## while any turns.
+func _spins_held_step(delta: float) -> bool:
+	var turning := false
+	for jn in _held_speed.keys():
+		var want := 0.0
+		for status in held_spins.keys():
+			if bool(_held_on[status]) and (held_spins[status] as Dictionary).has(jn):
+				want += float(held_spins[status][jn])
+		var v := want + (float(_held_speed[jn]) - want) * exp(-delta / SPIN_HELD_EASE)
+		if absf(v - want) < 3.0:   # the exponential's tail, a creep, cut off
+			v = want
+		_held_speed[jn] = v
+		if v != 0.0:
+			_spun[jn] = fposmod(float(_spun.get(jn, 0.0)) + v * delta, 360.0)
+			turning = true
+	return turning
+
+
+## The count displays a sidecar names, ready to light: each part's lit materials with their
+## light at rest, and every part shown dark, nothing counted yet.
+func _setup_counts(cs: Variant) -> void:
+	count_displays = []
+	count_debug = OS.get_environment("RIFTGATE_COUNT_DEBUG") == "1"
+	_count_debug_t = 0.0
+	if not (cs is Array):
+		return
+	for c in cs:
+		if not (c is Dictionary) or not (c.get("parts", null) is Array) or (c["parts"] as Array).is_empty():
+			continue
+		var off := float(c.get("off", -0.85))
+		var parts: Array = []
+		var k: Array = []
+		for part in c["parts"]:
+			var lit: Array = []
+			for m in _lit_materials(str(part)):
+				lit.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
+			parts.append(lit)
+			k.append(off)
+		count_displays.append({"source": str(c.get("source", "")), "parts": parts, "on": float(c.get("on", 1.5)), "off": off,
+			"flare": float(c.get("flare", 0.0)), "n": -1, "k": k})
+	_light_counts()
+
+
+## Show the numbers the screen passes (COUNT_SOURCES: the Cassowary's capacitor reads `shots`, a
+## cell a counted shot) on the model's count displays: the first n parts lit, the rest dark. A
+## number that falls flares every part of its display and lets them all go dark (the capacitor
+## discharging on its sixth shot, the one that counts double); the first look shows its number
+## as it stands. True when a display changes.
+func show_counts(values: Dictionary) -> bool:
+	var changed := false
+	for d in count_displays:
+		if not values.has(d["source"]):
+			continue
+		var size := (d["parts"] as Array).size()
+		var n := clampi(int(values[d["source"]]), 0, size)
+		var was := int(d["n"])
+		if n == was:
+			continue
+		if was < 0:
+			for i in range(size):
+				d["k"][i] = float(d["on"]) if i < n else float(d["off"])
+		elif n < was and float(d["flare"]) > 0.0:
+			for i in range(size):
+				d["k"][i] = float(d["flare"])
+		d["n"] = n
+		changed = true
+	if changed:
+		_light_counts()
+	return changed
+
+
+## How many of a source's parts are lit now (its display's number; 0 before the first look).
+func count_shown(source: String) -> int:
+	for d in count_displays:
+		if d["source"] == source:
+			return maxi(0, int(d["n"]))
+	return 0
+
+
+## A display's part's light now, as an offset from its light at rest (`on` lit, `off` dark, its
+## `flare` as a discharge begins).
+func count_light(source: String, part: int) -> float:
+	for d in count_displays:
+		if d["source"] == source and part >= 0 and part < (d["k"] as Array).size():
+			return float(d["k"][part])
+	return 0.0
+
+
+## Each part chases its light, quick to light and slower to fade (a flare dies away); true
+## while any moves.
+func _counts_step(delta: float) -> bool:
+	var moving := false
+	for d in count_displays:
+		var n := maxi(0, int(d["n"]))
+		for i in range((d["k"] as Array).size()):
+			var want := float(d["on"]) if i < n else float(d["off"])
+			var k := float(d["k"][i])
+			if k == want:
+				continue
+			k = want + (k - want) * exp(-delta / (COUNT_RISE if want > k else COUNT_FALL))
+			d["k"][i] = want if absf(k - want) < 0.05 else k   # the fade's tail, past seeing, cut off
+			moving = true
+	if moving:
+		_light_counts()
+	return moving
+
+
+func _light_counts() -> void:
+	for d in count_displays:
+		for i in range((d["parts"] as Array).size()):
+			for pair in d["parts"][i]:
+				(pair[0] as StandardMaterial3D).emission_energy_multiplier = float(pair[1]) * light(1.0 + float(d["k"][i]))
 
 
 ## Whether an act keys any of these joints.
@@ -640,7 +826,8 @@ func in_act() -> bool:
 
 
 func alive() -> bool:
-	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty())
+	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty()) \
+		or not held_spins.is_empty() or not count_displays.is_empty()
 
 
 ## The wait before this machine's first act. The machines a screen sets up together open
@@ -682,10 +869,34 @@ func tick(delta: float) -> void:
 			set_form(name, fmod(_form_debug_t, FORM_DEBUG_PERIOD * 2.0) >= FORM_DEBUG_PERIOD)
 	if _forms_step(delta):
 		moved = true
-	# What turns without end turns whatever else is happening, faster as the move blends in.
+	# A status's spin (the capacitor while Spun Up) and the count displays run on their own
+	# clocks; the switches hold every spin and let it go in turn, and count every display up.
+	if spin_debug and not held_spins.is_empty():
+		_spin_debug_t += delta
+		for status in held_spins.keys():
+			hold_spin(str(status), fmod(_spin_debug_t, SPIN_DEBUG_PERIOD * 2.0) >= SPIN_DEBUG_PERIOD)
+	if _spins_held_step(delta):
+		moved = true
+	if count_debug and not count_displays.is_empty():
+		_count_debug_t += delta
+		if _count_debug_t >= COUNT_DEBUG_PERIOD:
+			_count_debug_t -= COUNT_DEBUG_PERIOD
+			var up := {}
+			for d in count_displays:
+				up[d["source"]] = (maxi(0, int(d["n"])) + 1) % ((d["parts"] as Array).size() + 1)   # up to every part lit, then it falls
+			show_counts(up)
+	_counts_step(delta)
+	# What turns without end turns whatever else is happening, faster as the move blends in,
+	# unless the act playing locks it: then it eases onto its step and holds there.
 	for name in spinners.keys():
-		var r: Array = spinners[name]
-		_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta, 360.0)
+		if _locked.has(name):
+			var lk: Array = _locked[name]
+			lk[2] = minf(float(lk[2]) + delta, PARK_TIME)
+			var u := float(lk[2]) / PARK_TIME
+			_spun[name] = lerpf(float(lk[0]), float(lk[1]), u * u * (3.0 - 2.0 * u))
+		else:
+			var r: Array = spinners[name]
+			_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta, 360.0)
 		moved = true
 	if debug_move and not gait.is_empty():
 		drive(top_speed, 0.0, 0.0, delta)
@@ -780,8 +991,10 @@ func play(name: String) -> bool:
 
 
 func _start(a: Dictionary) -> void:
+	_unlock_spins()
 	_current = a
 	_t = 0.0
+	_lock_spins(a)
 	last_act = str(a["name"])
 	var duration := float(a.get("duration", 0.0))
 	var ease := str(a.get("ease", "smooth"))
@@ -809,6 +1022,7 @@ func _start(a: Dictionary) -> void:
 ## way round (a loop or a spin ends a whole turn on, which is the pose it started in, so it
 ## never unwinds; Ryan, 5 October).
 func _end_act() -> void:
+	_unlock_spins()
 	for name in _servo.keys():
 		var st: Array = _servo[name]
 		var r: Vector3 = st[0]
@@ -824,6 +1038,48 @@ func _end_act() -> void:
 	_body_want_rot = Vector3.ZERO
 	_body_want_slide = Vector3.ZERO
 	_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)
+
+
+## Park every spinner the act locks (its `locks`): from where its turn stands to its next step
+## ahead, the way it turns (never back), eased over PARK_TIME in tick, then held.
+func _lock_spins(a: Dictionary) -> void:
+	for jn in a.get("locks", []):
+		var name := str(jn)
+		if not spinners.has(name) or not spin_steps.has(name):
+			continue
+		var step := float(spin_steps[name])
+		var from := float(_spun[name])
+		var r: Array = spinners[name]
+		var to := (ceilf(from / step - 0.0001) if lerpf(float(r[0]), float(r[1]), _blend) >= 0.0 else floorf(from / step + 0.0001)) * step
+		_locked[name] = [from, to, 0.0]
+
+
+## Let every locked spinner go: the act's own turn on it (whole steps) goes into its turn, so it
+## never unwinds, and its idle turn takes up again from where it stands.
+func _unlock_spins() -> void:
+	for name in _locked.keys():
+		var ax := ["pitch", "yaw", "roll"].find(str(meta.get(name, {}).get("axis", "pitch")))
+		var turned := float(_spun[name])
+		if _servo.has(name):
+			var st: Array = _servo[name]
+			var r: Vector3 = st[0]
+			var v: Vector3 = st[1]
+			turned += r[ax]
+			r[ax] = 0.0
+			v[ax] = 0.0
+			st[0] = r
+			st[1] = v
+		if _act_rot.has(name):
+			var ar: Vector3 = _act_rot[name]
+			ar[ax] = 0.0
+			_act_rot[name] = ar
+		_spun[name] = fposmod(turned, 360.0)
+	_locked.clear()
+
+
+## Whether the act playing holds a spinner parked (its `locks`).
+func spin_locked(name: String) -> bool:
+	return _locked.has(name)
 
 
 ## What the act asks of each part at this moment: the servos chase it (_follow).

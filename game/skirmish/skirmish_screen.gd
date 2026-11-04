@@ -1162,9 +1162,11 @@ func _refresh(save: bool = true) -> void:
 				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms)))
 			v.bars.append([ms.ammo, ms.ammo_max, Palette.SELECT, after, 1])
 		v.dead = not ms.alive()
-		# A form the model holds while the machine carries its status (the Armadillo's seal).
+		# What the model holds while the machine carries a status (the Armadillo's seal, the
+		# Cassowary's spin), and its numbers on its count displays (the Cassowary's capacitor).
 		if i < _mech_3d.size() and _mech_3d[i] != null:
-			_mech_3d[i].hold_forms(ms.unit)
+			_mech_3d[i].hold_statuses(ms.unit)
+			_mech_3d[i].show_counts(ms)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
@@ -1492,10 +1494,19 @@ func _foe_rows(foe: Foe) -> Array:
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
 		rows.append(["lock", "", "Guarded: takes no damage while %s" % ("all its parts stand" if foe.guard == "all" else "any of its parts stands"), _foe_chip_colour("guarded")])
+	var holding := sk.swallowed_by(foe) if foe.swallow_mark >= 0 else null
+	if holding != null:
+		# A swallow (30 October) and its release (31 October): the damage still to deal before it
+		# lets its machine go, a quarter of its HP counted from the swallow.
+		var left := Skirmish.swallow_left(foe)
+		rows.append([status_glyph("swallowed"), str(left), "Holding %s: lets it go after %d more damage, when its rounds run out, or when it falls" % [holding.unit.display_name, left], Palette.ENEMY])
 	if foe.gathering():
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
 		rows.append(["warning", str(foe.charge), "Gathering: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
+	if foe.committed:
+		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes it.
+		rows.append(["lock", "", "Committed: %s was announced a round ahead and cannot be Disrupted; a Suppress still takes it" % str(foe.action.get("name", "")), Palette.ENEMY])
 	if Effects.has(foe, "braced"):
 		# Armoured, the machines' status (16 October; Braced until 18 October): their chip's
 		# glyph, with the armour every grant adds (its own brace, a Protect).
@@ -1637,7 +1648,7 @@ static func status_glyph(id: String) -> String:
 			return "regenerating"
 		"retaliate":
 			return "shocked"
-		"hopper":
+		"hopper", "ore_plate":
 			return "hopper"
 		"sealed":
 			return "lock"

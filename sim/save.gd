@@ -454,6 +454,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"joined_fallen_types": _typed_tallies(sk.joined_fallen_types),
 		"came_with": _typed_tallies(sk.came_with),
 		"roll_marks": sk.roll_marks, "history": sk.history,   # the trail's bars and the undo's snapshots (2 November)
+		"team_kills": sk.team_kills,
 	}
 
 
@@ -640,6 +641,7 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 		for h in d["history"]:
 			if h is Dictionary:
 				sk.history.append(h)
+	sk.team_kills = int(d.get("team_kills", 0))   # the foes the team has killed this fight (30 October)
 
 
 ## A tally by pack and type (pack id -> {content id: count}), with string keys for JSON.
@@ -679,7 +681,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"boss": f.boss, "hero": f.hero, "elite": f.elite, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down, "joined": f.joined, "fresh": f.fresh,
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
-		"next_move": f.next_move, "held": f.held,
+		"next_move": f.next_move, "committed": f.committed, "held": f.held, "grudge": f.grudge, "spent_once": f.spent_once, "swallow_mark": f.swallow_mark,
 	}
 
 
@@ -733,6 +735,10 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.regrow_parts = int(d.get("regrow_parts", 0))
 	f.regrow_due = Array(d.get("regrow_due", [])).map(func(x): return [str(x[0]), int(x[1])])
 	f.next_move = str(d.get("next_move", ""))   # a follow-up it announces next round (30 October)
+	f.committed = bool(d.get("committed", false))   # its action the announced follow-up, which no Disrupt turns (2 November)
+	f.grudge = int(d.get("grudge", 0))   # the team's kills its grudge reads (30 October)
+	f.spent_once = Array(d.get("spent_once", [])).map(func(x): return str(x))   # its moves used once a fight (30 October)
+	f.swallow_mark = int(d.get("swallow_mark", -1))   # its HP as it swallowed, -1 holding none (31 October)
 	var hd = d.get("held", {})   # what a steal took (30 October)
 	if hd is Dictionary and not hd.is_empty():
 		f.held = {"name": str(hd.get("name", "")), "power": int(hd.get("power", 0)), "fake": bool(hd.get("fake", false))}

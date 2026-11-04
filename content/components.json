@@ -11,18 +11,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "Two swings a round if the dice agree. Ghouls in threes.",
-    "niche": ""
+    "niche": "The chase spend against a boss (Ryan, 15 October: \"keep it as the chase spend for bosses, tuning as necessary\"): two strikes and no area since 31 October, flat 3 a strike, the least that still damages a boss carrying 2; it digs two loads a foe it damages, the most efficient fill and not the most effective weapon."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 3,
-    "keywords": [
-     "cleave"
-    ],
-    "cleave": 2,
+    "strikes": 2,
+    "keywords": [],
     "heat": 0,
-    "fills_hopper": 1
+    "fills_hopper": 2
    },
    "passive": null,
    "tags": [
@@ -65,7 +63,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
-    "niche": ""
+    "niche": "Fires half the hopper (Ryan, 15 October: \"Fragmenter can start by losing 5 stacks, so half of max\"): two loads at +2 since 31 October, 8 with both, the plate they stood for spent with them."
    },
    "face": {
     "kind": "attack",
@@ -73,8 +71,8 @@
     "power": 4,
     "keywords": [],
     "heat": 2,
-    "fires_hopper": 3,
-    "power_per_load": 1
+    "fires_hopper": 2,
+    "power_per_load": 2
    },
    "passive": null,
    "tags": [

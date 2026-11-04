@@ -288,10 +288,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   the round as the lure would leave it (the Siphon's heat a blow included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
-  tier three, 30 to 40 massive, 12
-  to 24 heroes, the slate's bosses 48 at tier one (a core in parts 40, each part 8; under the
-  80 to 100 first written for them, on the kill-time test's read, for Ryan's word), the four
-  massive foes standing in as bosses 32 to 40; a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
+  tier three, 30 to 40 massive at tier one and to 56 at tier three, 12
+  to 24 heroes, the slate's bosses 48 at tier one (a core in parts 40, a part 8 to 12, a boss
+  that may rise once 40; the kill-time test's read, under the 80 to 100 first written for
+  them); a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
   and to 10 at tier three, a massive
   foe's 7 or 8, a hero's 4 to 10, the slate's bosses' 6 to 10; machine hull 20 to 50 by size (the
   Kite's paper hull 12, its row's one-off), shield 6 to 16, field recharge 4 to 8 (about half
@@ -409,10 +409,11 @@ from it eats each foe's own as it lands. The Suppression Battery's Suppress is
 gated on Flak, and the Backdraft Charge consumes Burning, its Suppress gated at two.
 **Burns its firer** (the Stoker's): spending it sets its own machine Burning, the stacks it
 prints, after the blow; the die in hand's forecast counts the first tick with the turn's heat.
-**The hopper**: a weapon that fills it puts a load in its
-machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
-up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
-Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +1). **Braces**:
+**The hopper**: a weapon that fills it puts the loads it prints in its machine's hopper for
+each foe its blows damage, after the blow, in place of what the machine's passive puts in (the
+Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most loads a shot,
+each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
+the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
 end (the Wild Boar's Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
@@ -448,8 +449,9 @@ it to sleep until the start of the player's turn, after the turn's start resolve
 the roll and the round-start passives), and before the foes draw, since its source grants it
 again; asleep it takes part in nothing, its clocks running, and its chip shows half lit on a
 dashed edge. A form's price keeps biting while it sleeps: the Armadillo's seal sleeps its
-armour, and its cooling stays stopped. No store grants an active effect yet. The hopper has no
-cap yet, so it shows as a chip.
+armour, and its cooling stays stopped. The hopper's loads grant the Ore Plate, the one store
+grant: a purge sleeps the plate and leaves the loads, and a load filled or fired while it
+sleeps keeps it in step.
 
 On a machine:
 - **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
@@ -459,6 +461,8 @@ On a machine:
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
+- **Ore Plate** (buff, the Honey Badger's): armour +1 a stack, what the loads in its hopper
+  are worth (a point for every two loads), standing while they are held and going as they are fired.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
   target, a sweep's on each strike's own foe, a blow that kills on the foe it felled; a strike
   on a corpse leaves nothing. A foe's,
@@ -472,8 +476,11 @@ On a machine:
 - **Swallowed** (debuff, from a foe's swallow): out of the fight as a Phased machine is (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
   at every machine passes it by; its cooling, ticks and overheats are its own) for the swallow's
-  rounds, its die standing down as each round opens, or until its swallower falls, which lets
-  it go at once: in the player's turn it acts that round. Nothing cleanses it.
+  rounds, its die standing down as each round opens, until its swallower falls, or until its
+  swallower has lost a quarter of its maximum HP since the swallow (its chip counting the damage
+  still to deal, never more than the swallower has left; a second machine taken while it holds
+  one joins that count, and the quarter lets both go); either lets it go at once, and in the
+  player's turn it acts that round. The swallower loses nothing else. Nothing cleanses it.
 - **Muster** (store, the Swallowtail's): its charges. Every die that rolls fills
   it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
   charges; it starts each fight empty and never decays. It shows as a smooth bar under the
@@ -521,8 +528,12 @@ On a machine:
   of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
   never decays, and nothing cleanses it. It shows as five boxes under the heat, one lit a
   stack.
-- **Hopper** (store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
-  the skirmish, never decays, and nothing cleanses it.
+- **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
+  of its weapons damages, after the blow (a weapon that prints its own number puts that in
+  instead), up to four, and every two loads held stand as a point of Ore Plate; a weapon that fires
+  the hopper spends them. A mine laid with the loads' bonus loads nothing when it goes off
+  later. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
+  under the heat, one lit a load.
 - **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +3,
   its own cooling stopped, 3 heat more at the end of each turn before the overheat; a vent or
   a weapon opens it; a shield on an ally and equipment leave the form as it is. An ally's
@@ -674,26 +685,32 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   spent, held or locked), a blank shrugs it off, and a second such blow in the turn finds it
   broken already. What faces the enemy is the player's choice. A shield absorbs its share first and what reaches the hull counts; a
   Barrier's blow never does. Bites and overheats never injure.
-- **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
-  Badger's components are never destroyed, so an injury passes it by.
+- **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. A machine
+  wearing the Reinforced Skeleton (Minerva's module) never has a component destroyed, so an
+  injury passes it by.
 
 ### Foes
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
-  flat armour (every boss 1 or 2, the promoted forms 2) and perhaps an aim. Its damage
+  flat armour (a boss only where its kit is armour, the Cinder Tortoise's stepping by the tier; the promoted forms 2) and perhaps an aim. Its damage
   never rolls.
 - **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
   the same special twice running while anything else is open. A move without a condition
   fires on its weight; the conditions read the foe's own side or what its move needs: below
   half, hurt, a foe behind it, another foe on the field, one
-  of its own hurt, a machine carrying a buff, one of its own not readied. A move may
+  of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
+  marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
+  comes once a fight. No foe flees the field but a loot-runner whose prize goes with it (the
+  one shape a flee may take; none is built, and no move flees). A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
   breaks it off, and the foe stays on the field. A move may name a follow-up: once it lands, the
   move it names is its foe's next round's intent (the Matador's Red Capote, then Andalucia); a
   follow-up comes only that way, never by the roll, and a Suppress on the first move, or a
-  Disrupt that turns it, means it never comes. A borrowed swing with nothing taken is no
-  follow-up, and the roll decides. A swallow is never drawn while fewer than two machines stand
-  in the fight.
+  Disrupt that turns it, means it never comes; once announced it cannot be Disrupted, only
+  Suppressed (its chip says so, and a Disrupt held over the foe shows its chip struck through),
+  so the first move is the window. A borrowed swing with nothing taken is no follow-up, and the
+  roll decides. A swallow is never drawn while fewer than two machines stand
+  in the fight, nor a merge while nothing of its kinds stands on the field.
 - **Its target**, drawn as the round opens: at random, unless the foe or its move carries an
   aim, as its threat calls for: exposed (weighted by the hull its blows would reach
   plus half the shield they would break), heat (the hottest machine), armed (a machine
@@ -712,14 +729,18 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   aimed at it, and the preview shows where its blow lands after. A special that acts on nobody
   in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
   it is aimed at no machine.
-- **A blow** is its base attack, plus its Empowered and its swarm for each other live foe of its
-  type, times the move's factor: the adds, then the multiplies, the one damage formula on both
+- **A blow** is its base attack, plus its Empowered, its swarm for each other live foe of its
+  type and its grudge (its number for every foe the team has killed this fight, every fall but a
+  foe gone whole, a burst or a part falling with its core, and one taken in by a merge), times
+  the move's factor: the adds, then the multiplies, the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
-  two): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
+  three): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
   Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it), steal (the
   entry the machine shows switched off through its next turn, as a disable, and taken: its foe
   holds it until its borrowed swing, whose number is what it took, a weapon's printed blow,
   and anything that was no weapon a fake, for 1),
+  drain (the striker regrows what the blow took from the hull, no more than the machine had,
+  so a shield starves it; it lays nothing on the machine, so a Barrier's blow drains nothing),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, burn and corrupt each say their stacks a blow, as the player's Burn
@@ -740,7 +761,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   Barrier on itself), regenerate (Regenerating at its value on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed at its value on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
-  fight), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
+  fight, let go early once the swallower has lost a quarter of its HP), merge (every other foe on the field of the kinds it names taken into it, gone with no
+  fall, no last act, no split and no kill of the team's: it regrows the HP they had left, and
+  its next move hits its value harder for each), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
   content carries a silence, a purge or a ward all yet.
@@ -976,11 +999,15 @@ a stat.
   its escort. It stands at the battle's tier (the tiers as the quick campaign shows them, one
   to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
   finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
-  ×1.5 at tier three, their attack +1 and +2, and two more escort at tier two and four at tier
-  three. An escort it does not name (a final's wildlife, the tier's more) is its domain's `escort`
-  composition at the battle's tier when one is written (none is yet), its members at the
-  ramp's density, else the foes of its domain's units at the tier, round robin in content
-  order and never massive; a named escort is kept. The rank and file never scale in place: a tier's units are their own,
+  ×1.5 at tier three, their attack +1 and +2, a boss whose kit is armour its `armour_step` more
+  armour a tier above one (the Cinder Tortoise 1, 2 and 3), and two more escort at tier two and
+  four at tier three. An escort it does not name (a final's wildlife, the tier's more) is its
+  domain's `escort` composition at the battle's tier when one is written, one that names the
+  boss first and then one that names none, its members at the ramp's density, else the foes of
+  its domain's units at the tier, round robin in content order and never massive; a named
+  escort is kept. Every domain boss has its own at tiers two and three, at the tier's counts,
+  and stands alone at tier one but the King Gel, whose court of Gels comes at every tier for its
+  merge. The rank and file never scale in place: a tier's units are their own,
   each with its numbers and its name (a recolour: a base type in a new hue under a new name, with
   a twist). A domain's compositions are by tier, the battle's tier choosing them and a guest's by
   the same tier; a tier with none takes the highest under it.
@@ -1010,16 +1037,20 @@ a stat.
   later Fractures cost more and a battle that kills the field as it stood earns the Rupture
   with a third of the field left to leave. A Fracture pays out as a fight ends. At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
-  fourth) the next elite composition of the lead's domain not yet fought this battle emerges at
-  the rift (a domain with none, the Peak today, sends none). The last Fracture is the Rupture:
+  fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
+  rift, or a wanderer (`wanders`: Gilgamesh, one composition in one domain's list, every
+  domain's), drawn on the Fracture's roll one time in three in place of the domain's own and
+  always once its own are spent, so every domain may meet him and none waits on him. An elite
+  may come again in a later battle, never twice in one; a run never repeats a boss. Every elite
+  stands at the battle's tier as a boss does, its HP and attack the tier's, the other members of
+  its composition at their own. The last Fracture is the Rupture:
   the boss's seal breaks. The stall guard breaks it too, when no pack but the boss's stands as
   a fight ends, so a team that cleared the field never waits on the clock. Rift Pressure keeps
   running after. A Fracture brings no prize (not built).
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.
-- Not built: city defences (along the wall when they come), the Fracture's prize, rift tiles;
-  the escort compositions have no content yet, so every boss brings the tier's units.
+- Not built: city defences (along the wall when they come), the Fracture's prize, rift tiles.
 
 ## The campaign
 
@@ -1064,8 +1095,10 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   after.
 - **A rift's boss**: each battle brings one of its domain's bosses that its battles have not
   ended on this run, drawn by the seed; once every one has been, any of them. A domain's bosses
-  are the slate's it has, its old massive stand-in last while it has fewer than three (the
-  Meadow's, the Waste's and the Peak's three, the Marsh's two).
+  are three of the slate's own; the massive foes that stood in for them stand in its ranks, each
+  with a line of recolours at tiers two and three (its third move back as their twist), the
+  Marsh with a massive line of its own (the Barrow Giant's), and the Bone Wyvern among the
+  Marsh's elites.
 - **Anathema**: the menace of a domain's foes killed this run, every battle however it ended,
   is recorded by domain beside the count of its bosses beaten; the count still sets the final.
 - **Finals and finale**: three bosses of one domain beaten set its final: every rift it leads
@@ -1102,7 +1135,7 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
   elites: a formation first, then elites and formations in turn, the elites left over at the
-  end. Then the boss with its formation and the tier's escort, at the tier's numbers, as the
+  end. Then the boss with its formation and its own escort (else the tier's), at the tier's numbers, as the
   campaign's boss unit stands: one of the lead's bosses its battles have not ended on this run,
   or from tier two its final, its dealt hero leading the lead's formation, drawn as one more
   boss while that hero stands; once all are beaten, any of its bosses again. The finale's last

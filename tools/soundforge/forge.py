@@ -790,7 +790,10 @@ def overheat():
 # `bass` and the `chime` and `stab` of the second cut stay available.
 
 E2 = 82.41
-NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5, "l": -1, "m": -3, "n": -4, "o": -7}   # l, m, n, o: notes under the root (Eb, Db, C, A)
+NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5, "l": -1, "m": -3, "n": -4, "o": -7,   # l, m, n, o: notes under the root (Eb, Db, C, A)
+        "p": 13, "q": 16, "s": 18, "t": 20, "u": 21, "v": 23}   # the second octave's gaps, for a line that walks (Night Shift's jam, 30 October)
+NOTE.update(zip("BCDEFGHIJKLM", range(25, 37)))                 # the third octave, in capitals, for a line moved by an interval
+NOTE.update(zip("NOPQRS", (-6, -8, -9, -10, -11, -12)))         # and the octave under the root's gaps (Night Shift's guitar over its bass, 31 October)
 _E_MINOR = [0, 2, 3, 5, 7, 8, 10]
 _SPELL = {v: k for k, v in NOTE.items()}
 
@@ -1510,6 +1513,16 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                     g0 = shape(pad["swell"], run_pos(starts[b]))
                     g1 = shape(pad["swell"], run_pos(starts[e]) if e < bars else 1.0)
                     p *= np.linspace(g0, g1, len(p))
+                enter = pad.get("enter", {}).get(form[b]) if first else None
+                if enter:
+                    # Silent through the run's first bars, then up over the next: the pad arrives
+                    # inside its run with its filter's motion where it would have been (Night
+                    # Shift's intro, Ryan, 29 October: a pad from the top broke the loop's seam).
+                    def bar_t(k):
+                        return tm(starts[k]) if k < bars else tm(total)
+                    i0 = int(round((bar_t(b + enter[0]) - t0) * SR))
+                    i1 = int(round((bar_t(b + enter[0] + enter[1]) - t0) * SR))
+                    p *= np.clip((np.arange(len(p)) - i0) / float(max(1, i1 - i0)), 0.0, 1.0) ** 2
                 buf = at(buf, p, tm(starts[b] + pad.get("late", 0)), 1.0, wrap=True)
             b = e
     r = room(buf, decay=air[0], mix=air[1], cut=6000.0)

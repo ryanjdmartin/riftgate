@@ -77,6 +77,7 @@ var trace := ""
 var targeting := ""   # "" is the aims; "lowest" the rule before 2 October
 var damage_scale := 1.0   # the player's blows, scaled; a question asked of the matrix, never written to content here
 var only_rows: Array = []   # --rows: the row ids to run, all when empty
+var boss_tiers := false     # --boss-tiers: every boss at tiers two and three, with its escort and alone (2 November)
 var only_packs: Array = []  # --packs: the pack ids to run ("big" and "rank_and_file" for the two kinds), all when empty
 var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids
 var custom_packs: Array = []  # --pack: extra packs, each a spec "foe:n+foe:n"
@@ -258,6 +259,8 @@ func _parse_args() -> void:
 			"--rows":
 				only_rows = Array(v.split(","))
 				i += 1
+			"--boss-tiers":
+				boss_tiers = true
 			"--packs":
 				only_packs = Array(v.split(","))
 				i += 1
@@ -442,6 +445,23 @@ func _build_matrix() -> void:
 			var tier_id := "" if t == 1 else " tier %d" % t
 			var tier_name := "" if t == 1 else ", tier %d" % t
 			packs.append({"id": fac + " formation" + tier_id, "name": "%s formation%s (%s)" % [str(db.factions[fac].get("name", fac)), tier_name, ", ".join(names)], "foe": "", "strength": 0, "mix": mix})
+	# A boss at a tier (2 November, the escorts' read; --boss-tiers): "<boss> tier 2" and "tier 3"
+	# field the boss at the tier's numbers (ContentDB.scale_boss, its parts with it) beside its
+	# own escort composition, and "<boss> tier 2 alone" the boss scaled with no escort, so the
+	# pair reads what the escort adds. Tier one is the plain boss cell.
+	if boss_tiers:
+		for fac in db.factions.keys():
+			for boss_id in db.bosses_of(str(fac)):
+				for t in [2, 3]:
+					var esc := db.escort_composition(str(fac), t, boss_id)
+					var mix: Array = [[boss_id, 1]]
+					var names: Array[String] = []
+					for m in esc.get("members", []):
+						mix.append([str(m[0]), int(m[1])])
+						names.append("%s x%d" % [str(db.foes[m[0]].get("name", m[0])), int(m[1])])
+					var bname := str(db.foes[boss_id].get("name", boss_id))
+					packs.append({"id": "%s tier %d" % [boss_id, t], "name": "%s, tier %d (%s)" % [bname, t, ", ".join(names) if not names.is_empty() else "alone"], "foe": "", "strength": 0, "mix": mix, "tier": t - 1})
+					packs.append({"id": "%s tier %d alone" % [boss_id, t], "name": "%s, tier %d, alone" % [bname, t], "foe": "", "strength": 0, "mix": [[boss_id, 1]], "tier": t - 1})
 	# The party's cells (21 October, the bible's section 9; --noparty drops them): each bench hero's final as
 	# the campaign fields it, the hero with its domain's first pack in the other columns, and
 	# the finale's line, a column a domain, each domain's first bench hero promoted.
@@ -517,7 +537,10 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	if p.has("mix"):
 		for entry in p["mix"]:
 			for n in range(int(entry[1])):
-				foes.append(db.make_foe(str(entry[0])))
+				var f := db.make_foe(str(entry[0]))
+				if p.has("tier") and db.is_boss(str(entry[0])):
+					db.scale_boss(f, int(p["tier"]))   # a boss at its tier (2 November), its parts below
+				foes.append(f)
 	else:
 		for n in range(int(p["strength"])):
 			foes.append(db.make_foe(p["foe"]))
@@ -526,7 +549,10 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	var fielded: Array = []
 	for f in foes:
 		fielded.append(f)
-		fielded.append_array(db.parts_for(f))
+		for part in db.parts_for(f):
+			if p.has("tier") and db.is_boss(f.content_id):
+				db.scale_boss(part, int(p["tier"]))   # a core's parts at its tier, as a battle's
+			fielded.append(part)
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 	sk.add_foes(fielded)
 	sk.begin()

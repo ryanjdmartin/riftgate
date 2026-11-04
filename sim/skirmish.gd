@@ -121,6 +121,12 @@ var last_acts: Array = []
 var turn_specials: Array = []
 var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
 var _falls: int = 0   # foes that have fallen this fight, counted as their slots clear: a spend's kills are the difference
+## A merge's lift on the merger (30 October), granted once its own move has spent what it carried,
+## so the lift rides its next move: foe -> the Kindled it gains.
+var _lift_after: Dictionary = {}
+## The foes the team has killed this fight (30 October), every fall but a foe that went whole (a
+## Bomb's burst, a part falling with its core) and a foe another took in: what a grudge reads.
+var team_kills: int = 0
 ## Foes that joined a pack in this fight (a Gel's half, a summon, a part) and fell for good, by
 ## pack id: the kills its own count cannot see (kills_for).
 var joined_fallen: Dictionary = {}
@@ -557,6 +563,15 @@ static func hopper_bonus(u, f: Face) -> int:
 	return hopper_loads(u, f) * f.power_per_load if f != null else 0
 
 
+## The loads each foe a spend of this entry damages puts in its machine's hopper: the weapon's
+## own number where it prints one (the Chainsaw Claw's two), else the machine's passive's for
+## any weapon (the Ore Hopper's one, 31 October); equipment deals no damage and loads nothing.
+static func hopper_fill_of(u, f: Face) -> int:
+	if f == null or not f.is_weapon():
+		return 0
+	return f.fills_hopper if f.fills_hopper > 0 else Effects.hopper_fill(u)
+
+
 ## What one blow of an attack entry will deal, as the die shows it (decided 10 October, bible
 ## section 5: the game does the arithmetic and the player reads it): [low, high], equal for a
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
@@ -622,6 +637,8 @@ func shut_gates(ms: MechState, f: Face, foe: Foe) -> Array[int]:
 	for k in f.keywords:
 		if not Effects.gate_holds(ms.unit, f, k, foe):
 			out.append(k)
+		elif k == Face.Keyword.DISRUPT and foe.committed:
+			out.append(k)   # an announced follow-up holds (2 November): the chip struck over it
 	return out
 
 
@@ -1314,6 +1331,10 @@ func legal_actions(f: Foe) -> Array:
 			continue   # a follow-up comes only after the move that names it (30 October)
 		if str(a.get("effect", "")) == "swallow" and swallowable().size() < 2:
 			continue   # never the last machine able to act
+		if str(a.get("effect", "")) == "merge" and mergeable(f, a).is_empty():
+			continue   # nothing of its kinds stands to take in
+		if bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", ""))):
+			continue   # used once this fight already
 		if _when_holds(f, a):
 			legal.append(a)
 	if legal.size() > 1 and not f.last_special.is_empty():
@@ -1338,10 +1359,12 @@ func _choose_foe_action(f: Foe) -> void:
 	# any; a borrowed swing with nothing taken has nothing to swing, and the roll decides.
 	var next := f.next_move
 	f.next_move = ""
+	f.committed = false
 	if not next.is_empty():
 		for a in f.actions:
 			if str(a.get("id", "")) == next and (not Foe.swings_held(a) or not f.held.is_empty()):
 				f.action = a
+				f.committed = true   # announced a round ahead, so no Disrupt turns it (Ryan, 2 November): the first move was the window
 				f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
 				_begin_countdown(f)
 				return
@@ -1399,6 +1422,8 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 			return false
 		"ally_marked":
 			return cleanse_target(f) != null
+		"part_fallen":
+			return parts_down(f) > 0
 	return true
 
 
@@ -1546,6 +1571,9 @@ func _refresh_kin() -> void:
 			if o != f and o.alive() and _same_kind(o, f):
 				n += 1
 		f.kin = n
+		f.grudge = team_kills   # a blow that grows with the team's kills (`per_kill`) reads them as it is shown
+	for f in reinforcements:
+		f.grudge = team_kills
 
 
 static func _same_kind(a: Foe, b: Foe) -> bool:
@@ -2129,6 +2157,10 @@ func _enemy_turn() -> void:
 		if moves:
 			Effects.remove(f, "kindled")
 			Effects.remove(f, "primed")   # a stoker's priming rides the same move (28 October)
+		if _lift_after.has(f):
+			# A merge's lift (30 October), its own Kindled, riding its next move.
+			Effects.grant(f, Effects.make(Effects.kindled(int(_lift_after[f])), Effects.SKIRMISH, "foe:" + f.content_id))
+			_lift_after.erase(f)
 		_web_burst(f)
 	_acted.clear()
 	_clear_dead()
@@ -2257,8 +2289,20 @@ func _strike(f: Foe, t: MechState) -> void:
 	for s in range(f.strikes()):
 		if not t.alive():
 			break   # the enemy's turn is sequenced as it happens (Ryan, 4 November): a wreck takes no more
+		var hull_before := t.unit.hull
+		var events_before := turn_events.size()
 		_damage_mech(t, f.damage(), f)
 		var ev: Dictionary = turn_events[turn_events.size() - 1]
+		# A drain (the Vampire Lord's, 30 October): the striker regrows what the blow took from the
+		# hull, no more than the machine had, so a shield starves it (one of shield and hull walled
+		# the slow trios, the shield no answer to the heal). It lays nothing on the machine, so no
+		# Ward turns it away; a Barrier's blow deals nothing, and Burning on the striker races it.
+		if f.has_keyword(f.action, "drain") and f.alive() and turn_events.size() > events_before:
+			var dealt := clampi(int(ev["through"]), 0, maxi(0, hull_before))
+			var had := f.hp
+			f.hp = mini(f.hp_max, f.hp + dealt)
+			if f.hp > had:
+				log.append("%s drains %d" % [f.display_name, f.hp - had])
 		# The live hull (the Armadillo's, a machine under Retaliate): a blow that reaches
 		# hull shocks the foe that struck; a shutters' blocked blow (the shield took it whole)
 		# shocks too, and a blow a Barrier took never touched either. Shocked is a setup and
@@ -2529,7 +2573,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
 	var from_hopper := loads * f.power_per_load
 	var own := fired + from_hopper   # what the entry prints from its firer, on every blow of the spend
-	var reached: Array = []    # every foe the blows reached, killed or not, for a weapon that fills the hopper
+	var reached: Array = []    # every foe the blows reached, killed or not, for the casings' refund
+	var damaged: Array = []    # every foe the blows took HP off, for the hopper's loads (Ryan, 31 October: "per foe damaged")
 	var vented_all := ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
@@ -2650,6 +2695,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
+			if was_alive and taken > 0 and not damaged.has(foe):
+				damaged.append(foe)
 			var eaten := int(reads.get(foe, [0, 0])[1]) if s == 0 else 0   # each foe struck eats its own, on its first blow
 			if eaten > 0:
 				Effects.remove(foe, f.consumes)
@@ -2751,16 +2798,19 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for foe in webbed:
 		var caught := web_catch(foe)
 		log.append("%s webs %s: it bursts after its action%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
-	# The hopper (11 October): a shot that fires it spends the loads it took; a weapon that
-	# fills it puts its loads in for every foe its blows reached, after the blow, so a claw
-	# never feeds the shot it is part of.
+	# The hopper (11 October; the Ore Hopper, 31 October): a shot that fires it spends the loads
+	# it took; then each foe the spend's blows damaged puts loads in, after the blow, so a claw
+	# never feeds the shot it is part of: a weapon's own number where it prints one (the
+	# Chainsaw Claw's two), the passive's for any other weapon, never past the hopper's cap. The
+	# Ore Plate follows the loads both ways.
 	if loads > 0:
-		Effects.spend_stacks(ms.unit, "hopper", loads)
+		Effects.spend_loads(ms.unit, loads)
 		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])
-	if f.fills_hopper > 0 and not reached.is_empty():
-		var n := f.fills_hopper * reached.size()
-		Effects.stack(ms.unit, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", n, Effects.DECAY_NONE)
-		log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
+	var per_foe := hopper_fill_of(ms.unit, f)
+	if per_foe > 0 and not damaged.is_empty():
+		var n := Effects.add_loads(ms.unit, per_foe * damaged.size())
+		if n > 0:
+			log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
 	# Shock (9 October): every foe the blows reached and left alive carries a charge for the
 	# team's next blow, after this one landed, so a shocking weapon never spends its own.
 	if f.has(Face.Keyword.SHOCK):
@@ -3120,6 +3170,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 		return
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
 	_seq += 1
+	if bool(a.get("once", false)):
+		f.spent_once.append(str(a.get("id", "")))   # a move used once a fight is spent as it acts
 	match effect:
 		"brace":
 			# Armoured, the machines' status (Ryan, 16 October: an effect and the buff it creates
@@ -3192,6 +3244,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 					"" if stood == 0 else (", stepping up" if stood == count else ", %d stepping up" % stood)])
 			else:
 				log.append("%s: %s, and nothing answers" % [f.display_name, str(a.get("name", "calls"))])
+		"merge":
+			_merge(f, a)
 		"rally":
 			# Empowered lands at once on every other foe on the field, at the move's own value
 			# (Ryan, 26 October: "howl is more clear if it gives kindled for the next action,
@@ -3494,6 +3548,56 @@ func swallowable() -> Array[MechState]:
 	return targetable_mechs()
 
 
+## The foes a merge would take in now (the King Gel's, 30 October): every other live foe on the
+## field of the kinds its move names.
+func mergeable(f: Foe, a: Dictionary) -> Array[Foe]:
+	var kinds := Foe.kinds_named(a)
+	var out: Array[Foe] = []
+	for o in field_foes():
+		if o != f and o.alive() and kinds.has(o.content_id):
+			out.append(o)
+	return out
+
+
+## A merge (the King Gel's, 30 October): every foe of the move's kinds on the field is taken into
+## the merger, leaving its slot with no fall (no last act, no split, no kill of the team's, a twin
+## keeping the slot alone); the merger regrows the HP they had left and its next move hits the
+## move's value harder for each, a Kindled of its own, so thinning them first is the answer.
+func _merge(f: Foe, a: Dictionary) -> void:
+	var regrown := 0
+	var taken := 0
+	for o in mergeable(f, a):
+		regrown += o.hp
+		_lift_out(o)
+		taken += 1
+	var before := f.hp
+	f.hp = mini(f.hp_max, f.hp + regrown)
+	var lift := maxi(1, int(a.get("value", 1))) * taken
+	if lift > 0:
+		_lift_after[f] = int(_lift_after.get(f, 0)) + lift   # granted after this move spends what it carried
+	log.append("%s: %s, %d taken in, regrows %d, its next move %d harder" % [f.display_name, str(a.get("name", "merges")), taken, f.hp - before, lift])
+	_refresh_kin()
+
+
+## A foe leaves the field without falling (taken into another, 30 October): its slot clears, a
+## twin keeping it alone, a massive foe out of both ranks; it stands nowhere after and acts no more.
+func _lift_out(o: Foe) -> void:
+	if o.rank >= 0 and o.column >= 0 and o.column < columns:
+		var at := Vector2i(o.rank, o.column)
+		var c := _slot_contents(at)
+		if c[0] == o:
+			_set_contents(at, [c[1], null])
+		elif c[1] == o:
+			_set_contents(at, [c[0], null])
+		for r in [0, 1]:
+			if foe_at(r, o.column) == o:
+				_set_slot(Vector2i(r, o.column), null)
+	o.rank = -1
+	o.hp = 0
+	o.stays_down = true
+	o.target = null
+
+
 ## The source a swallow's status carries: the swallower by its pack and type, so its fall finds
 ## the machine it holds after a save, with no references kept.
 static func swallow_source(f: Foe) -> String:
@@ -3512,6 +3616,11 @@ func _swallow(f: Foe, t: MechState, rounds: int) -> void:
 	if is_out(t) or swallowable().size() < 2:
 		log.append("%s: %s, and finds nothing it may take" % [f.display_name, what])
 		return
+	# A quarter of its HP lost from here lets the machine go (31 October); a second machine
+	# taken while it holds one joins the first's count, so the release its chip promised never
+	# moves back (the review of 2 November).
+	if swallowed_by(f) == null:
+		f.swallow_mark = f.hp
 	Effects.grant_for_rounds(t.unit, Effects.STATUS["swallowed"], swallow_source(f), round + rounds)
 	t.assigned = true
 	for foe in field_foes():
@@ -3520,8 +3629,46 @@ func _swallow(f: Foe, t: MechState, rounds: int) -> void:
 	log.append("%s: %s, %s swallowed: out of the fight for %d round%s, or until %s falls" % [f.display_name, what, t.unit.display_name, rounds, "" if rounds == 1 else "s", f.display_name])
 
 
-## A swallower down lets go of what it holds, at once (30 October).
-func _release_swallowed(f: Foe) -> void:
+## The HP a swallower lets its machine go at: a quarter of its HP below its HP as it swallowed
+## (Ryan, 31 October, agreeing Claude's lean: a damage threshold, Clair Obscur's stagger in its
+## smallest form; a quarter is a round of the team's focus, a third as long as waiting).
+static func swallow_release_at(f: Foe) -> int:
+	return f.swallow_mark - ceili(f.hp_max / 4.0)
+
+
+## The damage still to deal a swallower before it lets its machine go: its chip's number, never
+## more than it has left (a swallower already under a quarter lets go only as it falls).
+static func swallow_left(f: Foe) -> int:
+	return clampi(f.hp - swallow_release_at(f), 0, maxi(0, f.hp))
+
+
+## The machine a foe holds swallowed, or null.
+func swallowed_by(f: Foe) -> MechState:
+	var src := swallow_source(f)
+	for ms in mechs:
+		for m in Effects.live(ms.unit):
+			if m.id == "swallowed" and m.source == src:
+				return ms
+	return null
+
+
+## A swallower that has lost a quarter of its HP since it swallowed lets its machine go at
+## once, and loses nothing else (a lost action on top would be a stun, the stun row's care);
+## a swallower whose machine came back on its own clock holds nothing (31 October).
+func _release_staggered() -> void:
+	for f in field_foes():
+		if f.swallow_mark < 0 or not f.alive():
+			continue
+		if swallowed_by(f) == null:
+			f.swallow_mark = -1
+		elif f.hp <= swallow_release_at(f):
+			f.swallow_mark = -1
+			_release_swallowed(f, "reels")
+
+
+## A swallower down, or reeling from a quarter of its HP lost, lets go of what it holds, at
+## once (30 and 31 October).
+func _release_swallowed(f: Foe, why: String = "falls") -> void:
 	var src := swallow_source(f)
 	for ms in mechs:
 		var keep: Array = []
@@ -3535,7 +3682,7 @@ func _release_swallowed(f: Foe) -> void:
 			ms.unit.modifiers = keep
 			if state == State.ASSIGN:
 				ms.assigned = false   # let go in the player's turn, it acts this round
-			log.append("%s falls, and lets %s go" % [f.display_name, ms.unit.display_name])
+			log.append("%s %s, and lets %s go" % [f.display_name, why, ms.unit.display_name])
 
 
 ## A steal (Gilgamesh's, 30 October, the slate's signature: "takes the weapon a machine shows and
@@ -3666,7 +3813,7 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 		ms.ammo -= mini(ms.ammo, ammo_price_of(ms, f))   # a forging machine's gun pays ammo, laid or fired
 		heat_total = Effects.debuff_heat(ms.unit, f)
 	if loads > 0:
-		Effects.spend_stacks(ms.unit, "hopper", loads)
+		Effects.spend_loads(ms.unit, loads)
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat_total, ms.face_index)
@@ -4230,6 +4377,11 @@ func _disrupt(foes: Array) -> void:
 	for foe in foes:
 		if foe.fresh:
 			continue
+		if foe.committed:
+			# A follow-up announced a round ahead holds (Ryan, 2 November: "cannot be Disrupted"):
+			# the move that named it was the window, and a Suppress still takes it.
+			log.append("%s is committed to %s, and nothing turns it" % [foe.display_name, str(foe.action.get("name", ""))])
+			continue
 		var next := disrupt_next(foe)
 		if next.is_empty():
 			log.append("%s is disrupted, and has nothing else to do" % foe.display_name)
@@ -4658,6 +4810,7 @@ func hull_reached(f: Foe, ms: MechState) -> int:
 func _clear_dead() -> void:
 	_fall_with_cores()
 	_clear_dead_slots()
+	_release_staggered()
 	_refresh_kin()
 	_refresh_guards()
 
@@ -4675,6 +4828,18 @@ func parts_of(core: Foe) -> Array[Foe]:
 		if f != core and f.alive() and f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
 			out.append(f)
 	return out
+
+
+## How many of a core's parts are down (30 October, the Obsidian Tyrant's rider): its parts less
+## those standing and those waiting to step in, a part growing back counted down until it stands.
+func parts_down(core: Foe) -> int:
+	if not core.has_parts():
+		return 0
+	var up := parts_of(core).size()
+	for f in reinforcements:
+		if f.alive() and f.pack_id == core.pack_id and core.part_ids.has(f.content_id):
+			up += 1
+	return maxi(0, core.part_ids.size() - up)
 
 
 ## Every core's guard as its parts stand now: Guarded while all its parts stand ("all"), or
@@ -4805,6 +4970,8 @@ func _clear_dead_slots() -> void:
 				cleared = true
 				if f.rank >= 0:
 					_falls += 1   # a foe down, gone or getting back up: what a spend counts as a kill
+					if not f.stays_down:
+						team_kills += 1   # the Pilgrim's grudge reads it
 					_release_swallowed(f)   # a swallower down lets its machine go, whatever comes next
 					# A foe that readied itself to get back up does so once, whole, in its own slot
 					# and at once (Ryan, 26 October: "just like the gel splitting. It makes clearing

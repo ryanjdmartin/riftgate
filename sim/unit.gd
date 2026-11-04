@@ -82,7 +82,7 @@ var faction: String = ""
 var foe_id: String = ""      # content id of the foe this pack is made of (a boss's escort)
 var strength: int = 6        # how many foes the pack holds (a boss: its escort, none for a boss alone)
 var lineup: Array = []       # a boss unit's commanders, foe ids in order (a final's hero, the finale's line); empty for the faction's boss
-var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders' numbers and its escort follow it (ContentDB.BOSS_TIERS)
+var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders' numbers and its escort follow it (ContentDB.BOSS_TIERS); an elite's too, for a wandering elite's numbers (31 October)
 ## The pack's members (the foes' fresh start, 30 October): [[foe_id, strength], ...] in content
 ## order, the first the lead, whose sprite and behaviour the pack wears; `foe_id` is the lead's
 ## and `strength` the count of every member, kept in step by set_members. Empty is the one-type

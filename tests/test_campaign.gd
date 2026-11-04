@@ -893,8 +893,12 @@ func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_b
 ## take the tier's HP and attack, and it brings more escort, its domain's units of the tier
 ## round robin, unless the escort is named (a hand-tailored one).
 func test_a_boss_unit_stands_at_its_battles_tier() -> void:
-	var db := ContentDB.load_default()
+	# A copy of the content with the domain's hand-tailored escorts taken out, so the round robin
+	# reads (31 October: every boss has its own escort now); the shared content is never written to.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
 	var faction := str(db.factions.keys()[0])
+	db.factions[faction]["compositions"] = Array(db.factions[faction].get("compositions", [])).filter(func(c) -> bool: return str(c.get("size", "")) != "escort")
 	var boss_id := str(db.bosses_of(faction)[0])
 	var units_at := func(t: int) -> Array:
 		var out: Array = []
@@ -907,6 +911,7 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	for t in range(ContentDB.BOSS_TIERS.size()):
 		var units: Array = units_at.call(t)
 		var b := Battle.new(3)
+		b.db = db
 		b.tier = t
 		b.setup([], faction)
 		assert_true(b.boss != null, "the boss takes the field")
@@ -927,6 +932,7 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	assert_true(hp[0] < hp[1] and hp[1] < hp[2], "a harder boss each tier")
 	# A named escort is a hand-tailored one, kept whole.
 	var named := Battle.new(3)
+	named.db = db
 	named.tier = 2
 	named.escort = [spawn_foes[0], 1]
 	named.setup([], faction)
