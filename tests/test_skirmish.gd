@@ -6776,6 +6776,7 @@ func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> 
 	assert_eq(sk.shown_face(ms, ms.face(), mid).cleave, 7, "at the grant's number")
 	assert_true(sk.shown_face(ms, ms.face(), sk.back[2]).has(K.PENETRATE), "over the back rank, Penetrate")
 	assert_true(sk.assign(0, mid), "fired at the front")
+	assert_true((sk.last_roll["tags"] as Array).has("ballistic"), "the blow's record carries the tags it was fired with, the drum's Ballistic among them, so the screen fires it as a gun")
 	for f in sk.front:
 		assert_eq(f.hp, 85 if f == mid else 93, "the spray lands 15 on the target and its Spread 7 on each neighbour")
 		assert_true(Effects.has(f, "burning"), "with the Burn it kept")

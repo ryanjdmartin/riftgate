@@ -12,9 +12,10 @@ the same glTF in JSON with its binary embedded (build/hangar/models/<id>.model.j
 ignores build/; three.js loads it as it would the .glb), and the sidecar goes as it is
 (art/models/<id>.rig.json as hangar/models/<id>.rig.json). The silhouette classes go the same
 way (art/models/shapes/<class>_<maker>.glb as hangar/models/shapes/<class>_<maker>.model.json),
-with a manifest naming them (build/hangar/shapes.json as hangar/shapes.json: the classes in
-the engine's order from sim/content_db.gd's SHAPES, the makers from the content), so the
-Models tab can show a class alone or fit it to any mount. Run it after a content, model
+and each class's variants beside them, with a manifest naming them (build/hangar/shapes.json as
+hangar/shapes.json: the classes in the engine's order from sim/content_db.gd's SHAPES, the
+variants and their classes from art/models/shapes/variants.json, the makers from the content),
+so the Models tab can show a class or a variant alone or fit a class to any mount. Run it after a content, model
 or render change, then publish tools/hangar.html with the printed map to the page's URL.
 
     python3 tools/hangar_data.py            # write pins.json and the models' JSON, check the manifest, print the map
@@ -109,8 +110,12 @@ def main():
     shapes_src = open(os.path.join(ROOT, "sim", "content_db.gd")).read()
     classes = [c for c in json.loads(re.search(r'const SHAPES := (\[[^\]]*\])', shapes_src).group(1)) if c != "none"]
     makers = [m["id"] for m in json.load(open(os.path.join(ROOT, "content", "chassis.json")))["makers"]]
-    present = {"classes": [], "makers": []}
-    for c in classes:
+    # A class's variants (art/models/shapes/variants.json, lowforge's VARIANTS), published the
+    # same way, for the mounts whose sidecar `fits` name one and for the Classes tab.
+    vpath = os.path.join(ROOT, "art", "models", "shapes", "variants.json")
+    variants = {k: v for k, v in json.load(open(vpath)).items() if not k.startswith("_")} if os.path.exists(vpath) else {}
+    present = {"classes": [], "makers": [], "variants": {}}
+    for c in classes + list(variants):
         for m in makers:
             src = os.path.join(ROOT, "art", "models", "shapes", "%s_%s.glb" % (c, m))
             if not os.path.exists(src):
@@ -119,10 +124,21 @@ def main():
             if not check_only:
                 glb_to_json(src, os.path.join(ROOT, built))
             files["hangar/models/shapes/%s_%s.model.json" % (c, m)] = built
-            if c not in present["classes"]:
+            if c in variants:
+                present["variants"][c] = variants[c]
+            elif c not in present["classes"]:
                 present["classes"].append(c)
             if m not in present["makers"]:
                 present["makers"].append(m)
+        # A burn weapon's fire over the class (models_low.BURNS), one file a class.
+        src = os.path.join(ROOT, "art", "models", "shapes", "burn_%s.glb" % c)
+        if os.path.exists(src):
+            built = os.path.join("build", "hangar", "models", "shapes", "burn_%s.model.json" % c)
+            if not check_only:
+                glb_to_json(src, os.path.join(ROOT, built))
+            files["hangar/models/shapes/burn_%s.model.json" % c] = built
+    # Where each class's muzzle flare blooms (lowforge's MUZZLES), read as the game reads it.
+    files["hangar/models/shapes/muzzles.json"] = os.path.join("art", "models", "shapes", "muzzles.json")
     manifest_path = os.path.join("build", "hangar", "shapes.json")
     if not check_only:
         os.makedirs(os.path.dirname(os.path.join(ROOT, manifest_path)), exist_ok=True)

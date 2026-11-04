@@ -25,13 +25,14 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 928 tests, 254,843 checks, green (4 November, on main's head as `claude/elites-session`
+- Tests: 959 tests, 256,122 checks, green (4 November, on main's head as `claude/elites-session`
   landed: the elites session's twenty-one kits, the Nob's rage, the wanderers' random draw, the
   Mantis Ant, the Marsh Serpent and the Emperor Scorpion, the golden rage and the crush, the
-  Astromancer and its orbs, over main's 921 and 254,079 of the same day, `ccr-c04908be-3r43xf`'s
-  randomness pass over the chassis runner rows' 917 and 254,298 (911 and 254,286 on 3 November
-  after the pairs), on Godot 4.8-beta2), about four minutes
-  in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
+  Astromancer and its orbs, over main's 952 and 255,358 of the same day, `claude/charming-rubin-h954bp`'s
+  weapon-fire, slump and micro-model work over `ccr-c04908be-3r43xf`'s randomness pass (921 and
+  254,079) and the chassis runner rows (917 and 254,298; 911 and 254,286 on 3 November after the
+  pairs), on Godot 4.8-beta2), about four minutes in a cloud session, twenty on a slow one. A cloud
+  session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
   GitHub release asset `godotengine/godot-builds`, `Godot_v4.8-beta2_linux.x86_64.zip`, into
@@ -52,13 +53,34 @@ register row and tiers row): the demotions, the Fiend of Fire, twenty-one elite 
 six wanderers, the Nob's rage, the golden rage and the crush, the Mantis Ant, the Marsh Serpent
 and the Emperor Scorpion, the Astromancer, the wanderers' random draw, the placeholders' art, the
 hangar's foe sprites and filters, the runner's elite cells with their first read and the what-if
-at 40 HP, the records, the pages republished. It took main as it landed (to `6c97852`: the Honey
-Badger's hopper, the five Wainwright & Sutler models, the pairs, the weapon-fire package,
-`claude/chassis-runner-rows`'s cycle bot, Rapid fix and runner rows, and `ccr-c04908be-3r43xf`'s
-randomness pass, under which the Nob's rage and the golden rage are buffs a Purge N lowers), and
-main took it as a
+at 40 HP, the records, the pages republished. It took main as it landed (to `a3ef10d`: the Honey
+Badger's hopper, the five Wainwright & Sutler models, the pairs, `claude/chassis-runner-rows`'s
+cycle bot, Rapid fix and runner rows, `ccr-c04908be-3r43xf`'s randomness pass, under which the
+Nob's rage and the golden rage are buffs a Purge N lowers, and `claude/charming-rubin-h954bp`'s
+weapon-fire, slump and micro-model work), and main took it as a
 fast-forward on 4 November on his word ("If there's nothing else open, clean up and merge into
-main"); its bible is v0.445, the live page's (the Pages paragraph).
+main"); its bible is v0.446 (the page's version 459; the Pages paragraph).
+
+`claude/charming-rubin-h954bp` (28 October to 4 November) carried the model rebuilds of Ryan's
+brief of the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to
+their stock, the Armadillo's seal) and his rounds of notes on them, and main took it twice on 30
+October (his word, "Merge into main", and again as the lit parts' eased light landed). Since then
+it carried the halos (a soft shell round every hot part: the boosters and vents, then the parts he
+vetted), the burn weapons' fire on their silhouette classes, the weapon-fire package (the weapon
+that fired the only one that moves, its muzzle flares in its tags' look, the cheap aim, the fixed
+weapons' slices of their acts and the business ends their models mark), the swaps (a hardpoint's
+variant and scale per class, the round launcher, `tools/fit_sheet.gd`), a blow moving the machine
+and a lost machine's slump on its feet, the boosters by maker (Aphelion's plumes, Kestrel's
+halos), his two rounds of notes of 3 November, and the micro-models on his go of 4 November (a
+launch's flight shapes and landing, the world's once it leaves; the Swallowtail's flares, the Musk
+Ox's rockets, shell and casing; `tools/act_shot.gd`'s `fire:`). It took main as it landed (to
+`6c97852`: `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw`'s pairs and `ccr-c04908be-3r43xf`'s
+randomness pass), and main took it as a
+fast-forward on 4 November on his word ("Ok might as well clean up and merge into main now, I'll
+look at these issues after"); its bible was v0.442 (the page's version 455), inside main's v0.445 (the Pages paragraph), and the
+hangar's version 201. What it leaves is his: the to-do's judge lines (the glows, the weapons firing, the swaps, the
+hit and fire round, both rounds of notes of 3 November, the micro-models and the calls on that
+line) and section 12's render margin.
 
 `ccr-c04908be-3r43xf` (2 to 4 November) carried the randomness pass on Ryan's calls in chat (the
 review's fixes of the 2nd; rolled damage gone, the injury on the entry showing and the withdrawal's
@@ -130,16 +152,6 @@ merged in for its terms, with the foe moves' keywords in the list; and the dice'
 reads a die once the double-tap window passes, a double-tap or a hold locks it, a tap on the
 ground sends a waiting Swap home), KEYWORDS gone from the field to the menu. Its bible is v0.408
 (the page's 420).
-
-`claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
-the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
-stock, the Armadillo's seal) and his rounds of notes on them of the 29th and 30th (the Kite's
-Pinion Driver in two shots and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding
-weapons, hunkered seal with acts of its own and its vents opening and shutting a pair at a time,
-the Arsenal's lit cockpit glass and the Nemesis's flaring visor, the desk on the phone's
-renderer), took main each evening (to `b2762d5`) and again as it landed (to `b1682c3`: the
-pacing session, the pricing pass, the tilesets' walls), and main took it on 30 October on his
-word ("Merge into main"); its bible is v0.397 (the page's 409).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -959,8 +971,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.445 (the
-  page's version 458, published 4 November from `ccr-c04908be-3r43xf` as main took it: the
+  `docs/design-bible.html` after every change. This file and the live page are v0.446 (the
+  page's version 459, published 4 November from `claude/elites-session` as main took it, straight
+  onto 458, the live source read whole by a subagent: the Nob's rage lowered by a Purge's number
+  in the register row and the Enraged table row, the tables rerun on the merged content, so the
+  Charged, Supercooled, Ward, Numbed, Webbed, Chain, Cryo, Flak and Lure rows read the randomness
+  pass's content as landed, the kill rule is named Empowered a kill and the spray row is gone with
+  the spray; over v0.445 (458, published 4 November from `ccr-c04908be-3r43xf` as main took it: the
   randomness pass's rows, UNDO as a way of scumming information, every rider after the hits and
   on the foe its strike felled, death the last check of a spend and of the prediction, Sweep a
   reach, the primers riding the weapon fired, the stun resist by kind, the weapons row's rounding
@@ -969,10 +986,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   (`claude/chassis-runner-rows`'s v0.438 at 451, the Cassowary's cycle bot and the Whip
   Scorpion's, the Swallowtail's and the Musk Ox's reads, then the rows of 4 November: the elites'
   register and their first read, the Monster Hunter and Golden Sun foes, the micro models, the
-  elites' cells in the runner)). Main's file is that publish, so the live page carries nothing ahead of main's code until the
-  next branch publishes; `claude/elites-session` landed under it the same day and published
-  nothing, its rows (the Astromancer, the elites' cells, their first read and the what-if at 40
-  HP) inside it since 456 and 457. The live page may carry rows ahead of main's code while
+  elites' cells in the runner)). Main's file is this publish, so the live page carries nothing ahead of main's code until the
+  next branch publishes; this branch's rows (the Astromancer, the elites' cells, their first read
+  and the what-if at 40 HP) are inside it since 456 and 457. The live page may carry rows ahead of main's code while
   their branches have not landed. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
@@ -999,13 +1015,28 @@ into this file in the same commit as its first publish; the procedures are in `R
   counting them; as main took the branch, every content file on the page and `hangar/pins.json`
   were read back and checked identical to the merged repo's, so the landing republished nothing,
   and `tools/hangar.html` is the live page taken whole, which carries another session's motion
-  panel without its Melee button ahead of its code), over 201 (another session's, no content
-  change of ours), 200 and 199 (4 November, from `claude/elites-session`: every foe's combat
-  sprite beside the page, `hangar/foes/<id>.png`, the foes with no art drawn as placeholders and
-  the eight promoted forms wearing their heroes' sprites, marked in `hangar/foes.json`, the Foes
-  list's grid and its Kind, Tier and Art filters, the vocabulary a three-way merge onto the live
-  copy; `edits` empty), over 197 (3 November, the elites session's content onto the live page as
-  it stood), onto 195 (3 November, from
+  panel without its Melee button ahead of its code), over 201 (4 November, from
+  `claude/charming-rubin-h954bp`; `edits` empty): the micro-models in `hangar/motion.js` (a
+  launch's flight shapes, flying in the world once it leaves, a landing taken as it leaves) and
+  the Swallowtail's and the Musk Ox's rigs and models, onto the 200 another session published
+  (its page's foe sprites of 4 November, a branch not yet on main, kept as it stood: the page
+  sent was the live one), each checked identical to 198's before it was replaced. At 198 (3 November, from
+  `claude/charming-rubin-h954bp`; `edits` empty): Ryan's second notes of that day in
+  `hangar/motion.js` (the slump on its feet, flyers and hovers at the skirmish's lift, a fixed
+  weapon's turn held through its slice, the route hex by class), the rigs of the Nemesis, the
+  Ammit, the Goshawk, the Puffin, the Sparrowhawk, the Cassowary, the Musk Ox, the Swallowtail and
+  the Whip Scorpion, and the Nemesis's and the Ammit's models (their fume vents), onto the 197
+  another session published (its page the same as 196's), each checked identical to 196's before
+  it was replaced; the page and every other file as 197 left them. At 196 (3 November, from
+  `claude/charming-rubin-h954bp`; `edits` empty): Ryan's notes of that day in the page and
+  `hangar/motion.js` (a lost machine slumping, a fired weapon coming home on the paused stage,
+  slices in turn and their wind-ups, the plumes gone at rest, a launched part flying, the Melee
+  button retired), onto 195's; the rigs of the Nemesis, the Ammit, the Skua, the Goshawk, the
+  Sparrowhawk, the Puffin, the Lammergeier, the Storm Petrel, the Needletail, the Giant Petrel and
+  the Stingray, the Lammergeier's, the Puffin's and the Sparrowhawk's models, and the four
+  Wainwright & Sutler machines that branch rebuilt for their stock classes as main merged in
+  (the Musk Ox, the Cassowary, the Swallowtail, the Whip Scorpion), each checked identical to
+  195's before it was replaced; every other file as 195 left it. At 195 (3 November, from
   `claude/affectionate-ramanujan-5d24t6`; `edits` empty): the Cottonmouth's ranging keyed a
   chamber a shot, held still through each flash, and the Models panel redrawn as a machine is
   lost or revived; onto 194, which `claude/charming-rubin-h954bp` merged onto 193 with its melee

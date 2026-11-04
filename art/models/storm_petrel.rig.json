@@ -867,7 +867,7 @@
     "nozzle_ring",
     "exhaust"
    ],
-   "k": 5.0
+   "k": 8.0
   },
   "rock": 3.0,
   "body_hold": [
@@ -912,5 +912,28 @@
   "hp_2": "ankle_mortar",
   "hp_3": "twin_autoguns",
   "hp_4": ""
+ },
+ "halo": [
+  [
+   "nozzle_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ],
+  "projector_glow"
+ ],
+ "fires": {
+  "st_elmos_regenerator": {
+   "act": "st_elmo",
+   "from": 1.1,
+   "to": 2.7
+  }
+ },
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "rack",
+  "hp_3": "twin_barrel"
  }
 }

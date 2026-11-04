@@ -104,6 +104,13 @@ static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
 ## RIFTGATE_SLEEP_DEBUG=1: every buff on a machine is drawn as a purge leaves it asleep (half its
 ## light on a dashed edge, still), to judge the look running (28 October; placeholders).
 static var SLEEP_DEBUG := OS.get_environment("RIFTGATE_SLEEP_DEBUG") == "1"
+## RIFTGATE_HIT_DEBUG=1: every second and a half a machine takes a blow, in turn a hull hit from the
+## left, a blow its shield takes, a blow its armour turns and a hull hit from the right, and every
+## fifth beat one is lost and comes back, to judge the hit reactions running (3 November).
+static var HIT_DEBUG := OS.get_environment("RIFTGATE_HIT_DEBUG") == "1"
+const HIT_DEBUG_KINDS := [["hull", -1.0], ["shield", 0.0], ["block", 0.6], ["hull", 1.0]]
+var _hit_debug_at := 0.0
+var _hit_debug_n := 0
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 const HOME_FLIGHT := 0.22   # seconds a waiting Swap's die takes to fly home when a tap on nothing sets it back
 var _rage_debug_at := -10.0
@@ -196,6 +203,9 @@ func _process(delta: float) -> void:
 		if names.is_empty():
 			names = ["Protect", "1000 Needles", "Self-Destruct", "Bone Storm"]
 		_announce(str(names[int(_fight_t / (PLAQUE_HOLD + 1.2)) % names.size()]))
+	if HIT_DEBUG and _fight_t - _hit_debug_at > 1.5 and not _mech_views.is_empty():
+		_hit_debug_at = _fight_t
+		_hit_debug()
 	if POOL_DEBUG and _fight_t - _pool_debug_at > 2.2 and not sk.field_foes().is_empty():
 		_pool_debug_at = _fight_t
 		var live := sk.field_foes()
@@ -598,6 +608,7 @@ func _build() -> void:
 				"turn": _mech_turn(i),
 			}, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
+			view.pivots = flies or ms.unit.traits.has("hover")   # aims by turning its whole body
 			v.sprite_at = MECH_WINDOW
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
@@ -2610,6 +2621,7 @@ func _heat_hook(before: Array) -> String:
 ##     (the damage applied), or after the death on a kill.
 ## The die that wins the fight has none of her.
 const BLOW_AT := 0.08
+const AIM_HOLD := 0.35       # a machine that turned to fire holds its aim this long past the blow's landing
 const PRE_LINE_AT := 0.1     # her line, just after the die's own sound
 const PRE_FIRE := 0.85       # the weapon, this far through her line
 const AFTER_DEATH := 0.45   # her line, this long after a foe's death begins
@@ -2653,6 +2665,20 @@ func _use_die(i: int, target, second = null) -> bool:
 	var heat_hook := _heat_hook(heat_before) if ok and not won else ""
 	var quiet := won or not heat_hook.is_empty()   # nothing but the heat may take her line
 	var fire_at := BLOW_AT
+	# A machine turns onto what it fires at before its weapon fires (Ryan, 2 November: "make sure
+	# that the turns or aims happen before the sound effects. It's part of the whole immersion
+	# package"): the blow, its kick and its sound wait on the turn.
+	var aim_view: UnitView = null
+	if ok and target is Foe:
+		aim_view = was[target][0] if was.has(target) else null
+	elif ok and target is Vector2i:
+		aim_view = _slot_views[(target as Vector2i).x][(target as Vector2i).y]
+	var aim := _aim_plan(i, aim_view, spent)
+	fire_at += float(aim[1])
+	# A fixed weapon whose firing slice winds up before its blow (MechRig.fire_wind: the Buzzard's
+	# cannon charging up its spine) plays it from the turn's end, the blow and its sound waiting on it.
+	var wind := _fire_wind(i, spent) if ok and (target is Foe or target is Vector2i) else 0.0
+	fire_at += wind
 	var landed := fire_at + Sound.lands(blow)   # where the blow lands, from the die let go
 	if ok and target is Foe:
 		var tv: UnitView = was[target][0] if was.has(target) else null
@@ -2667,19 +2693,27 @@ func _use_die(i: int, target, second = null) -> bool:
 			if dead.is_empty():
 				var said := Sound.claim_line("die_spent", PRE_LINE_AT)
 				if said > 0.0:
-					fire_at = PRE_LINE_AT + said * PRE_FIRE
+					fire_at = maxf(PRE_LINE_AT + said * PRE_FIRE, BLOW_AT + float(aim[1]) + wind)
 			else:
 				var hook := "foe_down_" + fallen
 				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + AFTER_DEATH)
 		landed = fire_at + Sound.lands(blow)
-		var ranged := not bool(sk.last_roll.get("melee", false))   # a melee weapon (the tag) lunges, anything else kicks back
+		# A weapon that lunges (melee with nothing that crosses the field, read from the tags it was
+		# fired with) lunges; anything else kicks back, a shotgun tagged melee among them.
+		var fired = sk.last_roll.get("tags", [])
+		var shape := str(ContentDB.load_default().components.get(spent.component, {}).get("shape", "")) if spent != null else ""
+		var ranged := not MuzzleFlare.lunges(fired if fired is Array else [], shape)
 		var hit := (target as Foe).alive()
+		var cid := spent.component if spent != null else ""
+		_aim_before(i, aim, fire_at - BLOW_AT - wind, landed, cid)
+		if wind > 0.0:
+			_wind_up(i, ranged, cid, fire_at - BLOW_AT - wind)
 		if fire_at > BLOW_AT and is_inside_tree():
 			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
 			tw.tween_interval(fire_at - BLOW_AT)
-			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow)))
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow), cid, wind > 0.0))
 		else:
-			_animate_attack(_mech_views[i], tv, ranged, hit, landed)
+			_animate_attack(_mech_views[i], tv, ranged, hit, landed, cid, wind > 0.0)
 		Sound.play_after(fire_at, blow)
 		for k in range(dead.size()):
 			var w: Array = was[dead[k]]
@@ -2699,7 +2733,16 @@ func _use_die(i: int, target, second = null) -> bool:
 		# A shot laid in an empty slot (the Lammergeier's), or the pull's gather there: the
 		# weapon fires and the machine kicks back, nothing struck.
 		var slot: Vector2i = target
-		_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed)
+		var cid := spent.component if spent != null else ""
+		_aim_before(i, aim, fire_at - BLOW_AT - wind, landed, cid)
+		if wind > 0.0:
+			_wind_up(i, true, cid, fire_at - BLOW_AT - wind)
+		if fire_at > BLOW_AT and is_inside_tree():
+			var tw := create_tween()   # the machine fires once it has turned
+			tw.tween_interval(fire_at - BLOW_AT)
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], _slot_views[slot.x][slot.y], true, false, BLOW_AT + Sound.lands(blow), cid, wind > 0.0))
+		else:
+			_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed, cid, wind > 0.0)
 		Sound.play_after(fire_at, blow)
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
@@ -2710,6 +2753,16 @@ func _use_die(i: int, target, second = null) -> bool:
 			fire_at = PRE_LINE_AT + said * PRE_FIRE if said > 0.0 else 0.0
 			Sound.play_after(fire_at, effect, -3.0 if spent.kind == Face.Kind.BUFF else 0.0)
 			landed = fire_at + Sound.lands(effect)
+			# A fixed piece of equipment moves as it is used, with its slice of an act where the
+			# model names one (Ryan's go of 3 November: the Puffin's Ionizer, the Giant Petrel's
+			# boosters and uplink), starting with its sound.
+			if i < _mech_3d.size() and _mech_3d[i] != null and is_inside_tree():
+				if fire_at <= 0.0:
+					_mech_3d[i].use(spent.component)
+				else:
+					var uw := create_tween()
+					uw.tween_interval(fire_at)
+					uw.tween_callback(_use_view.bind(_mech_3d[i], spent.component))
 	if not heat_hook.is_empty():
 		Sound.say_after(landed + (AFTER_DEATH if target is Foe and not (target as Foe).alive() else 0.0), heat_hook)
 	# A split's halves step up where it fell (the Gel's, 25 October), and a foe getting back up
@@ -2743,16 +2796,20 @@ func _use_die(i: int, target, second = null) -> bool:
 # ---------------------------------------------------------------- filler animation
 # Nothing here changes state. It makes the exchange readable: who struck, who was struck.
 
-## A melee weapon (the tag) lunges the attacker at the target; anything else kicks it back. The target
-## flashes and shakes a beat later, when the blow lands.
-func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08) -> void:
+## A weapon that lunges (MuzzleFlare.lunges: melee with nothing that crosses the field) lunges the
+## attacker at the target; anything else kicks it back, a shotgun tagged melee among them. The target
+## flashes and shakes a beat later, when the blow lands. `cid`, the component that struck, flares a
+## burn weapon's fire on its mount.
+func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08, cid: String = "", wound: bool = false) -> void:
 	if not is_inside_tree() or attacker == null:
 		return
 	_settle(attacker)
 	var origin: Vector2 = _home.get(attacker, attacker.position)
 	var mi := _mech_views.find(attacker)
-	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
-		_mech_3d[mi].strike(ranged)   # the arms swing when the model has joints
+	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null and not wound:
+		_mech_3d[mi].strike(ranged, cid)   # the weapon that fired kicks and flares, its aim already turned (_aim_before); a fixed one fires with its act, unless its wind-up began it (_wind_up)
+	if mi >= 0 and ranged and target != null and not cid.is_empty() and ShotTrail.on():
+		_shoot_trail(mi, target, cid, lands)
 	var tw := _track(attacker, create_tween())
 	if ranged or target == null:
 		var kick := Vector2(0.0, 8.0) if attacker in _mech_views else Vector2(0.0, -8.0)
@@ -2764,6 +2821,105 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 		tw.tween_property(attacker, "position", origin, 0.16).set_ease(Tween.EASE_IN_OUT)
 	if target != null and hit:
 		_animate_hit(target, lands)
+
+
+## A shot crossing the field (ShotTrail; tabled, so off unless SHOT TRAILS or RIFTGATE_SHOTS=1
+## turns it on): from the muzzle of the weapon machine `mi` fired, as its view projects it, to the
+## middle of what it fired at, landing `lands` seconds from now as the blow's sound says it lands.
+func _shoot_trail(mi: int, target: UnitView, cid: String, lands: float) -> void:
+	var db := ContentDB.load_default()
+	var c: Dictionary = db.components.get(cid, {})
+	var k := maxi(ShotTrail.kind_for(c), ShotTrail.TRACER)   # fired as a gun though its own tags lunge (the drum's shot): a tracer
+	if not is_inside_tree():
+		return
+	var v := _mech_views[mi]
+	var from := v.anchor_global()
+	if mi < _mech_3d.size() and _mech_3d[mi] != null and v.sprite_at.size.x > 0.0:
+		from = v.get_global_transform() * (v.sprite_at.position + _mech_3d[mi].muzzle_px(cid))
+	var tags = c.get("tags", [])
+	var look: String = MuzzleFlare.looks_for(tags if tags is Array else [], str(c.get("shape", "")))[0]
+	var back := get_global_transform().affine_inverse()
+	add_child(ShotTrail.make(k, back * from, back * target.anchor_global(), MuzzleFlare.colour(look), 0.0, lands))
+
+
+## How machine `i` turns to fire at `target`: [degrees to its left, the seconds the turn takes],
+## the seconds nought when it fires where it points (no joint turns for the weapon spent, or the
+## foe is dead ahead).
+func _aim_plan(i: int, target: UnitView, spent: Face) -> Array:
+	if target == null or spent == null or i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null:
+		return [0.0, 0.0]
+	var deg := _aim_turn(i, target)
+	if absf(deg) < 1.0 or _mech_3d[i].aim_joint_for(spent.component).is_empty():
+		return [deg, 0.0]
+	return [deg, MechRig.AIM_UP]
+
+
+## Start machine `i`'s turn so it ends as its weapon fires (`attack_at` seconds from now) and holds
+## until the blow has landed and a beat after.
+func _aim_before(i: int, aim: Array, attack_at: float, landed: float, cid: String) -> void:
+	if float(aim[1]) <= 0.0 or not is_inside_tree():
+		return
+	var view: MechView3D = _mech_3d[i]
+	var start := maxf(0.0, attack_at - float(aim[1]))
+	# Held until the blow has landed and its firing slice has played out, a beat after either (Ryan,
+	# 3 November: the Buzzard's cannon "turns back before the hit is complete").
+	var hold := maxf(0.0, maxf(landed, attack_at + view.fire_span(cid)) + AIM_HOLD - attack_at)
+	if start <= 0.0:
+		view.aim_at(cid, float(aim[0]), hold)
+		return
+	var tw := create_tween()
+	tw.tween_interval(start)
+	tw.tween_callback(_aim_view.bind(view, cid, float(aim[0]), hold))
+
+
+func _use_view(view: MechView3D, cid: String) -> void:
+	if is_instance_valid(view):
+		view.use(cid)
+
+
+## How long machine `i`'s spend winds up before its blow (MechView3D.fire_wind), nought with no 3D.
+func _fire_wind(i: int, spent: Face) -> float:
+	if spent == null or i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null:
+		return 0.0
+	return _mech_3d[i].fire_wind(spent.component)
+
+
+## Start machine `i`'s firing slice `at` seconds from now, its wind-up playing before the blow lands
+## (the blow's kick, flash and landing come at the blow, _animate_attack told it is wound).
+func _wind_up(i: int, ranged: bool, cid: String, at: float) -> void:
+	if i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null or not is_inside_tree():
+		return
+	if at <= 0.0:
+		_mech_3d[i].strike(ranged, cid)
+		return
+	var tw := create_tween()
+	tw.tween_interval(at)
+	tw.tween_callback(_strike_view.bind(_mech_3d[i], ranged, cid))
+
+
+func _strike_view(view: MechView3D, ranged: bool, cid: String) -> void:
+	if is_instance_valid(view):
+		view.strike(ranged, cid)
+
+
+func _aim_view(view: MechView3D, cid: String, deg: float, hold: float) -> void:
+	if is_instance_valid(view):
+		view.aim_at(cid, deg, hold)
+
+
+## How far machine `i` turns to its left to face `target` across the floor: the bearing from its
+## hex to the foe's feet (the floor's camera run backward from the screen), less the turn it
+## already stands at toward the middle.
+func _aim_turn(i: int, target: UnitView) -> float:
+	var origin: Vector2 = _home.get(target, target.position)
+	var feet := origin + Vector2(target.size.x * 0.5, target.feet_y if target.feet_y >= 0.0 else target.size.y * 0.5)
+	var below: float = feet.y - float(_cam.horizon)
+	if below <= 1.0:
+		return 0.0
+	var z: float = float(_cam.focal) * float(_cam.height) / below
+	var x: float = (feet.x - W * 0.5) * z / float(_cam.focal)
+	var bearing := rad_to_deg(atan2(x - _slot_hex_x(_mech_slot(i)), z - float(_cam.depth)))   # to the right, as the floor's x runs
+	return -bearing - _mech_turn(i)
 
 
 ## A foe dies: a ghost of its drawing, where it stood, flashes, drops and fades, in the
@@ -2801,9 +2957,25 @@ func _rest_modulate(v: Control) -> Color:
 	return Color.WHITE
 
 
-## The struck unit flashes bright, then shakes side to side and settles.
-func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
+## The struck unit flashes bright, then shakes side to side and settles. A machine drawn in 3D
+## takes the blow on its model instead (the to-do's hit reaction, on Ryan's go of 3 November):
+## `kind` "hull" or "block" shoves it back and flashes its hull in heat's colour, the
+## armour's block at half (MechView3D.hit), "shield" ripples its shield in the shield's blue and
+## moves nothing, "none" nothing at all (a shield that broke taking the whole blow, its shatter
+## being the only mark); `side`, -1 to 1, where across the screen the blow came from.
+func _animate_hit(v: UnitView, delay: float = 0.0, kind: String = "hull", side: float = 0.0) -> void:
 	if not is_inside_tree() or v == null:
+		return
+	var mi := _mech_views.find(v)
+	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
+		if kind == "none":
+			return
+		if delay <= 0.0:
+			_hit_machine(mi, kind, side)
+		else:
+			var hw := create_tween()
+			hw.tween_interval(delay)
+			hw.tween_callback(_hit_machine.bind(mi, kind, side))
 		return
 	_settle(v)
 	var origin: Vector2 = _home.get(v, v.position)
@@ -2817,6 +2989,53 @@ func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
 		var dx := (5.0 - k * 1.2) * (1.0 if k % 2 == 0 else -1.0)
 		shake.tween_property(v, "position", origin + Vector2(dx, 0.0), 0.035)
 	shake.tween_property(v, "position", origin, 0.05)
+
+
+## What took a blow on a machine, for its reaction (_animate_hit): a shield that held ("shield",
+## its ripple), a shield that broke taking it all ("none": its shatter is the only mark), the hull
+## ("hull": a jolt and heat's flash) or the armour turning it on the bare hull ("block", at half).
+static func blow_took(held: bool, broke: bool, through: int) -> String:
+	if held:
+		return "shield"
+	if broke and through <= 0:
+		return "none"
+	return "hull" if through > 0 else "block"
+
+
+func _hit_machine(mi: int, kind: String, side: float) -> void:
+	if mi < 0 or mi >= _mech_views.size():
+		return
+	if kind == "shield":
+		_mech_views[mi].ripple_shield()
+	elif mi < _mech_3d.size() and is_instance_valid(_mech_3d[mi]):
+		_mech_3d[mi].hit(kind, side)
+
+
+## Where across the screen `from` stands from `to`, -1 (far left) to 1 (far right): the side a blow
+## came from, for the struck machine's flash and the way it is shoved.
+func _side_of(from: Control, to: Control) -> float:
+	if from == null or to == null:
+		return 0.0
+	var a: Vector2 = _home.get(from, from.position) + from.size * 0.5
+	var b: Vector2 = _home.get(to, to.position) + to.size * 0.5
+	return clampf((a.x - b.x) / (W * 0.4), -1.0, 1.0)
+
+
+## The hit debug switch's beat (HIT_DEBUG): the next machine takes the next kind of blow, and every
+## fifth beat one is lost and lit again two seconds later.
+func _hit_debug() -> void:
+	var i := _hit_debug_n % _mech_views.size()
+	_hit_debug_n += 1
+	if _hit_debug_n % 5 == 0 and i < _mech_3d.size() and _mech_3d[i] != null:
+		_mech_3d[i].lose()
+		var tw := create_tween()
+		tw.tween_interval(2.0)
+		tw.tween_callback(func() -> void:
+			if is_instance_valid(_mech_3d[i]):
+				_mech_3d[i].revive())
+		return
+	var k: Array = HIT_DEBUG_KINDS[_hit_debug_n % HIT_DEBUG_KINDS.size()]
+	_animate_hit(_mech_views[i], 0.0, str(k[0]), float(k[1]))
 
 
 ## What the replay needs before the sim runs the enemy's turn: every field foe's view now (a
@@ -2971,10 +3190,10 @@ func _land_blow(h: Array) -> void:
 	var maker: String = h[10]
 	var foe_blow := Sound.family("heavy" if int(h[6]) >= HEAVY_DAMAGE else "hit", h[9])
 	var landed := maxf(0.08, Sound.lands(foe_blow))
+	var took := blow_took(held, broke, through)
 	if fv != null and fv.visible:
-		_animate_attack(fv, mv, false, true, landed)
-	else:
-		_animate_hit(mv, landed)
+		_animate_attack(fv, mv, false, false, landed)
+	_animate_hit(mv, landed, took, _side_of(fv, mv) if fv != null else 0.0)
 	Sound.play(foe_blow)
 	var struck := "shield_break" if broke else ("shield_hit" if held else (Sound.struck("hit", maker) if through > 0 else Sound.struck("block", maker)))
 	Sound.play_after(landed, struck, 0.0 if broke else -3.0)
@@ -2999,10 +3218,21 @@ func _land_blow(h: Array) -> void:
 var _dying: Dictionary = {}
 
 func _land_death(mv: UnitView, maker: String) -> void:
-	mv.dead = true
-	mv.queue_redraw()
 	Sound.play(Sound.struck("kill", maker))
 	Sound.say_after(Sound.death_voice_at(maker), "machine_lost")
+	# The kill's own beat (Ryan's go of 3 November): a machine drawn in 3D has its lit parts gutter
+	# out and its outline dim (MechView3D.lose), the wreck shown once they have.
+	var mi := _mech_views.find(mv)
+	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null and is_inside_tree():
+		_mech_3d[mi].lose()
+		var tw := create_tween()
+		tw.tween_interval(MechRig.GUTTER)
+		tw.tween_callback(func() -> void:
+			mv.dead = true
+			mv.queue_redraw())
+		return
+	mv.dead = true
+	mv.queue_redraw()
 
 
 ## The turn's overheats land together before the enemy's blows (the sim burns them as the

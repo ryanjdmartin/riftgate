@@ -1831,6 +1831,38 @@ func test_a_foe_getting_back_up_in_the_enemy_turn_is_shown() -> void:
 	s.free()
 
 
+func test_a_shot_crossing_the_field_is_tabled_off_and_follows_its_weapon() -> void:
+	# Tabled as maybe too busy (Ryan, 3 November): only a debug build's SHOT TRAILS (or
+	# RIFTGATE_SHOTS=1) draws it.
+	assert_eq(Settings.DISPLAY_DEFAULTS["shot_trails"], false, "off by default")
+	var was = Settings.display.get("shot_trails", false)
+	Settings.display["shot_trails"] = false
+	if OS.get_environment("RIFTGATE_SHOTS") != "1":
+		assert_false(ShotTrail.on(), "no trail unless switched on")
+	Settings.display["shot_trails"] = was
+	# Synthetic components: the trail reads the tags and the reach, never an id.
+	assert_eq(ShotTrail.kind_for({"tags": ["blade", "melee"], "face": {"reach": "direct"}}), -1, "melee lunges, no trail")
+	assert_eq(ShotTrail.kind_for({"tags": ["beam"], "face": {"reach": "indirect"}}), ShotTrail.BEAM, "a laser is a beam whatever its reach")
+	assert_eq(ShotTrail.kind_for({"tags": ["ballistic"], "face": {"reach": "indirect"}}), ShotTrail.ARC, "an indirect shot lobs")
+	assert_eq(ShotTrail.kind_for({"tags": [], "face": {"reach": "direct"}}), ShotTrail.TRACER, "a direct shot is a tracer")
+	var t := ShotTrail.make(ShotTrail.ARC, Vector2(300, 900), Vector2(100, 300), Color.ORANGE, 0.0, 0.05)
+	assert_eq(t.flight, ShotTrail.MIN_FLIGHT, "a blow whose sound lands at once still flies")
+	assert_true(t.arc_at(0.0).is_equal_approx(t.from) and t.arc_at(1.0).is_equal_approx(t.to), "the arc leaves the muzzle and lands on its target")
+	var top := INF
+	for k in range(21):
+		top = minf(top, t.arc_at(float(k) / 20.0).y)
+	assert_true(top < t.to.y, "the lob peaks above its target and drops onto it")
+	assert_true(t.arc_at(0.5).x > (t.from.x + t.to.x) * 0.5, "and bows out to the side it came from, so it never lies along the shot")
+	t._process(ShotTrail.MIN_FLIGHT + ShotTrail.HOLD + ShotTrail.FADE + 0.01)
+	assert_true(t.is_queued_for_deletion(), "gone once it has landed and faded")
+
+
+func test_a_shotgun_tagged_melee_fires_a_tracer() -> void:
+	# Ryan, 3 November: "It's a shotgun, thematically". Synthetic components.
+	assert_eq(ShotTrail.kind_for({"tags": ["ballistic", "melee"], "shape": "barrel", "face": {"reach": "direct"}}), ShotTrail.TRACER, "a shotgun tagged melee fires a tracer")
+	assert_eq(ShotTrail.kind_for({"tags": ["blade", "melee"], "shape": "blade", "face": {"reach": "direct"}}), -1, "a claw lunges, no trail")
+
+
 ## UNDO (Ryan, 2 November: "undo to your last roll"): a spend taken back on the screen, the
 ## button's badge saying how far it reaches, the button off once nothing is left, and the
 ## trail showing the round's bar under its opening lines.

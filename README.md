@@ -119,7 +119,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
   on the cities; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
   every ground into PNGs, headless; `screenshot.gd` renders a
-  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `tileset_shot.gd` draws every
+  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `fit_sheet.gd` renders every
+  machine wearing each silhouette class on all its mounts, one sheet; `tileset_shot.gd` draws every
   domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
@@ -146,8 +147,10 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
   numbers, what each hardpoint's stock part is, `hidden_pins` where a model hides its mounts
-  (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status, `spin_step` and an act's `locks` where an act stops a spinner on a step; written by lowforge, read by `mech_rig.gd`
-  and by `mech_view_3d.gd`, which wears a fitted die against that record), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
+  (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status, `spin_step` and an act's `locks` where an act stops a spinner on a step, `fires` (each fixed weapon's slices of its acts, in turn, and a slice's `blow`), an act's `idle: false` where it only fires, `launches` where a weapon fires a part out (the Lammergeier's drones, `b.launch(...)`); written by lowforge, read by `mech_rig.gd`
+  and by `mech_view_3d.gd`, which wears a fitted die against that record), `models/shapes/` the
+  silhouette classes in each maker's metal, a burn weapon's fire for each and `muzzles.json`,
+  where each class's muzzle flare blooms (`forge.py shapes` writes all three), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
   16x16 map tokens the sheet export writes, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
@@ -416,6 +419,13 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on
 # every foe showing a blow (+1 where none is coming, its number unchanged), to judge the pulse
 # running; RIFTGATE_FOES=wolf:4 fields the real thing, howls lifting the bites after them.
+# RIFTGATE_HIT_DEBUG=1 (any skirmish) lands a blow on a machine every second and a half, in turn a hull
+# hit from the left, one its shield holds, one its armour turns and a hull hit from the right, and
+# every fifth beat loses one and lights it again, to judge the hit reactions running.
+# RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
+# trial), to compare the two.
+# RIFTGATE_SHOTS=1 (any skirmish) draws the shot crossing the field, tabled and off by default (a debug
+# build's Settings → SHOT TRAILS turns it on too).
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
@@ -500,15 +510,19 @@ RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantl
 # and holds it while the act plays, the act's turn folded into the spin as it ends (the Cottonmouth's drum, stopped on a chamber to fire)
 RIFTGATE_COUNT_DEBUG=1 godot --path .           # every count display counts up a part a second until it falls
 RIFTGATE_SPIN_DEBUG=1 godot --path .            # every status's spin held in turn, then let go
-godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride, "lose 3" its slump 3 s after it is lost, "fire:spotting_flare 2.9" that weapon 2.9 s after it fires (its slice and what it launches)
 godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwright_sutler clip/clydesdale 8 front 480x400 trot   # a machine walking at its map pace, every frame a PNG (a gait option by name, "-" for its own); then ffmpeg -framerate 30 -i clip/clydesdale_%04d.png -pix_fmt yuv420p clydesdale.mp4
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
-# the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
+# the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES) and their variants (VARIANTS: the round
+# launcher, which a mount's `fits` may declare for its class), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
+# the fit sheet: every machine's stock, then each class on all its mounts at once, a row a machine, into one PNG (about a minute
+# for all of them); run it after a model's mounts change, before the model goes to Ryan; name chassis to sheet only those
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -- fit_sheet.png [armadillo goshawk] [--cell 220]
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
 # nose up), then the art/models/wslook_* and ktlook_* files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles

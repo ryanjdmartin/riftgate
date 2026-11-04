@@ -84340,5 +84340,18 @@
    "off": -1.0,
    "flare": 14.0
   }
- ]
+ ],
+ "fires": {
+  "spin_up": {
+   "act": "test_charge",
+   "from": 0.9,
+   "to": 3.8
+  }
+ },
+ "stock_shapes": {
+  "hp_1": "twin_barrel",
+  "hp_2": "barrel",
+  "hp_3": "rack",
+  "hp_4": "dish"
+ }
 }

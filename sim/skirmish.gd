@@ -90,8 +90,9 @@ var outcome: int = Outcome.NONE
 var destroyed: int = 0   # components destroyed this fight, for the balance runner (the hangar's destroyed-is-gone rule, bible section 10, depends on the rate)
 var log: Array[String] = []
 
-## The most recent attack, for the screen to show: {mech, target, rolled, final, melee}; melee
-## (the tag) is how the screen animates it, a lunge in place of a kick back.
+## The most recent attack, for the screen to show: {mech, target, rolled, final, tags}; the tags it
+## was fired with (the Cottonmouth's drum adds its own) say how the screen animates it, a lunge in
+## place of a kick back for melee with nothing that crosses the field.
 var last_roll: Dictionary = {}
 var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
 ## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
@@ -2848,7 +2849,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for foe in gained.keys():
 		for status_id in gained[foe]:
 			_foe_gained_status(foe, status_id)
-	last_roll = {"mech": mech_index, "target": target, "base": base_total, "final": total, "melee": f.tags.has("melee")}
+	last_roll = {"mech": mech_index, "target": target, "base": base_total, "final": total, "tags": f.tags.duplicate()}
 	var how := f.describe()
 	if sweep:
 		log.append("%s sweeps the %s: %s (%s)%s" % [ms.unit.display_name, "front" if sweep_rank == 0 else "back", ", ".join(swept), how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])

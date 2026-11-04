@@ -48,8 +48,10 @@ skirmish.
   beside its name in its codex row. A tag carries no rule of its own; a module or passive may
   read one. Every weapon and debuff wears its tags by its fantasy, a shield, a vent and a buff none, but five locked ones the stock
   pass's table did not reach (the Pinion Driver, the Lorentz Contractor, the Syrinx Drone,
-  the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today (which
-  blows lunge on screen).
+  the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today: a blow
+  lunges on screen when its weapon is melee and nothing about it crosses the field (a blade's
+  class, and no Ballistic, Missile or Beam); any other fires as a gun, a shotgun tagged melee and
+  ballistic among them.
   Melee means short range, a shotgun included, never only a blade.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, field recharge, cooling) and at most one rule, tier 1

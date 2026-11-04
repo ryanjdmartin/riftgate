@@ -69,6 +69,39 @@ const WAIT_TICK_MAX := 0.1    # seconds of the gap a single tick may spend, howe
 const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon), before light() eases it
 const LIGHT_EASE := 1.0 / 2.2 # the power a lit part's light is eased by on the phone's renderer (light())
 static var _eases_light := -1   # whether light() eases: unknown until first asked (the renderer's known once the screen is up)
+const HALO_FULL := 8.0        # a halo is full once its part's light stands this many rests over its own (_light_to)
+const HALO_SPREAD := 0.025    # how far a halo stands out, a share of its machine's longest side (_setup_halos)
+const HALO_REACH := 0.45      # the share of its part's colour a halo adds at its fullest (halo.gdshader)
+const HALO_AHEAD := 3.0       # how far toward the eye a halo is drawn, in its part's units: out of a slot over its walls; a part standing proud names its own (_setup_halos)
+const JOLT_SHARE := 0.045     # a blow on the hull shoves the machine back this share of its longest side (jolt),
+const JOLT_PITCH := 6.0       # rocking its nose up this many degrees,
+const JOLT_UP := 0.05         # in this many seconds,
+const JOLT_DOWN := 0.34       # and settling back over this long
+const GUTTER := 0.9           # a machine lost: its lit parts gutter out over this many seconds (kill)
+# And then it slumps (Ryan, 3 November: "they should slump or collapse after, limbs dropping, flyers
+# and hovers landing, fans stopping, idle spins stopping"), one rule every model shares, worked on
+# its own frame; the second notes the same day: "don't fall through the floor, and don't do weird
+# impossible leans ... it can keep its feet planted and just sink using its ankles and knees. Same
+# with the bipeds, sink using knees and ankles and only slump forward at the waist. The bipeds also
+# swing their arms behind them when they should just go slack at the elbows" (_collapse_wants).
+const COLLAPSE_AT := 0.3       # seconds into the gutter that a lost machine starts to go
+const COLLAPSE_HEFT := 0.3     # its servos' time constant as it goes: a drop with weight, not a pose
+const COLLAPSE_SINK := 0.28    # a walker sinks this share of its shortest planted limb's height, each foot where it stands
+const COLLAPSE_WAIST := 16.0   # a biped's waist slumps forward this many degrees (a walker with a hand on the floor keeps its back)
+const COLLAPSE_PASSES := 2     # how often the slack joints settle, each hanging what it carries from where the last pass left it
+const COLLAPSE_TOUCH := 0.02   # a limb whose end comes within this share of the machine's size of the floor stands on it
+const SPIN_STOP := 1.4         # seconds its fans, rotors and idle spins take to run down
+## The joints the slack leaves alone (a leg's, which sinks planted or stays, a waist, which slumps,
+## a spin, a mechanism, a turn about up), by how their names begin.
+const COLLAPSE_SKIP := ["hip", "knee", "ankle", "toe", "foot", "coxa", "wheel", "steer", "caster", "tread", "rotor",
+	"fan", "drum", "louvre", "shutter", "vent", "valve", "run", "salvo", "top_mouth", "top_lamp", "cell", "recoil",
+	"capacitor", "rudder", "waist", "yaw", "turret", "sensor", "eye"]
+const FLASH_PEAK := 12.0      # a weapon's fire flaring as it fires (flash): this many rests over its own at the top,
+const FLASH_UP := 0.05        # reached in this many seconds,
+const FLASH_HOLD := 0.15      # held this long,
+const FLASH_DOWN := 0.6       # and gone in this long, easing out
+const HALO_SHADER := preload("res://game/ui/halo.gdshader")
+static var _halo_meshes: Dictionary = {}   # "<mesh id>:<surface>" -> the halo's shell, its normals smoothed, built once a mesh
 const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
 const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
 const MOVE_BLEND_OUT := 0.35  # and to settle back when the machine stops
@@ -94,6 +127,10 @@ const HEFT_DEFAULT := 0.12    # seconds: the inertia of a machine whose sidecar 
 const DAMPING := 0.7          # the joints' servos: a touch under critical, so a heavy part gives a little past its mark and settles
 const FORM_DEBUG_PERIOD := 2.5  # seconds a form is held, then let go, under RIFTGATE_SEAL_DEBUG
 const RECOIL_SLIDE := 1.5       # world units a gun that only runs in and out of its port kicks back along its line on a shot
+const RECOIL_BODY := 1.2        # model units the whole machine kicks back along a gun's line when it fires from a mount on the body
+const AIM_UP := 0.22            # seconds a machine takes to turn onto its target before it fires (aim), the blow and its sound waiting on it (Ryan, 2 November: "make sure that the turns or aims happen before the sound effects"),
+const AIM_DOWN := 0.5           # and to turn back once the blow has landed
+const FIRE_HEFT := 0.1          # a firing slice's weight: snappier than an idle act's, so its wind-up lands on the blow
 const COUNT_SOURCES := ["shots", "ammo"]   # the numbers a count display may show, as the skirmish passes them (MechView3D.count_values)
 const COUNT_RISE := 0.08        # seconds a count display's part takes to light, its servo's time constant
 const COUNT_FALL := 0.35        # and to go dark again, a flare's fading included
@@ -153,6 +190,27 @@ var _act_slide: Dictionary = {}    # joint -> world-unit slide (dx, dy, dz, Blen
 var _strikes: Array = []           # [{joint, vec (degrees), slide (world units, a gun kicking back along its line), up, down, t}]
 var _glow: Array = []              # [{mats: [StandardMaterial3D], base: [float]}] per glow track of the act playing
 var _glow_cache: Dictionary = {}   # part prefix -> [StandardMaterial3D]
+var _halos: Dictionary = {}        # a lit material -> the halos' ShaderMaterials round its surfaces (_setup_halos)
+var _standing: Dictionary = {}     # a lit material -> the multiple of its rest light it never falls under (_setup_standing)
+var _halo_grow := 0.0              # how far a halo stands out on this model (_setup_halos), for hot parts hung later (wear_hot)
+var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (flash)
+var dead := false                  # the machine is lost: no acts, its lit parts dark (kill)
+var halo_skip: Array = []          # lit parts that wear no halo, set before setup: a booster burning as a plume (MechView3D)
+var _gutter := -1.0                # seconds into its lit parts guttering out (kill); negative when not
+var _gutter_mats: Array = []       # [material, its light at rest] for every lit part, as the kill found them
+var _size := -1.0                  # the model's longest side, measured once (_model_size), for the jolt
+var _collapse := -1.0              # seconds since a lost machine was killed, for its slump (kill); negative while standing
+var _centroids: Dictionary = {}     # mesh -> [its vertex centroid, its vertex count] (_centroid_of)
+var airborne := false              # a flyer or a hover (the view sets it): lost, it comes down onto its lowest point rather than sinking on its limbs
+var collapse_floor := 0.0          # the floor a lost machine's slump keeps to, in its own frame: an airborne one's lowest point standing, where the view lands it (MechView3D.lose)
+var _spin_k := 1.0                 # how much of its turn every spinner keeps: running down to nothing as a lost machine dies
+var _fire_turn: Dictionary = {}    # a fixed component -> how many times it has fired, so its slices take turns (fire_slice)
+var _flares: Array = []            # [{node, mat, look, t}] a muzzle flare on its look's beat (fire_flare)
+var _aim: Dictionary = {}          # {joint (or BODY), deg, hold, t}: the turn onto a target (aim)
+var fires: Dictionary = {}         # a fixed component -> {act, from, to[, blow]} or a list of them taking turns: the slices of acts that are its firing (the sidecar's `fires`)
+var aims: Dictionary = {}          # a fixed component -> the joint that turns to aim it, when no waist does (the sidecar's `aims`)
+var pivots := false                # the whole machine turns on the spot to aim (the sidecar's `pivots`: a tank's tracks, a castered chassis)
+var _until := -1.0                 # where a firing slice playing now ends (fire_act); below nought, the act's own end
 var _body_act_rot := Vector3.ZERO  # the act's body track, degrees (pitch, yaw, roll)
 var _body_act_slide := Vector3.ZERO
 var _body_move_rot := Vector3.ZERO # the gait's body: bob, rock, bank
@@ -531,6 +589,9 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	spin_debug = OS.get_environment("RIFTGATE_SPIN_DEBUG") == "1"
 	_spin_debug_t = 0.0
 	use_gait(side.get("gait", {}) if side.get("gait", {}) is Dictionary else {})
+	fires = side.get("fires", {}) if side.get("fires", {}) is Dictionary else {}
+	aims = side.get("aims", {}) if side.get("aims", {}) is Dictionary else {}
+	pivots = bool(side.get("pivots", false))
 	_body_rest_pos = body.position
 	_body_rest_rot = body.rotation
 	_rng.seed = hash(model_id) ^ (randi() if phase < 0 else phase * 7919)
@@ -567,8 +628,10 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	var mg: Dictionary = gait.get("glow", {})
 	for part in mg.get("parts", []):
 		for m in _lit_materials(str(part)):
-			_move_glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
+			_move_glow.append([m, _rest_of(m)])
 	_setup_forms(side.get("forms", {}) if side.get("forms", {}) is Dictionary else {})
+	_setup_halos(side)
+	_setup_standing(side)
 	_setup_counts(side.get("counts", []))
 
 
@@ -596,7 +659,7 @@ func _setup_forms(fs: Dictionary) -> void:
 		for g in f.get("glow", []):
 			for part in g.get("parts", []):
 				for m in _lit_materials(str(part)):
-					glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier, float(g.get("k", -1.0))])
+					glow.append([m, _rest_of(m), float(g.get("k", -1.0))])
 		var own: Array = []
 		for a in f.get("acts", []):
 			if a is Dictionary and a.has("name"):
@@ -655,8 +718,8 @@ func _spins_held_step(delta: float) -> bool:
 		if absf(v - want) < 3.0:   # the exponential's tail, a creep, cut off
 			v = want
 		_held_speed[jn] = v
-		if v != 0.0:
-			_spun[jn] = fposmod(float(_spun.get(jn, 0.0)) + v * delta, 360.0)
+		if v != 0.0 and _spin_k > 0.0:
+			_spun[jn] = fposmod(float(_spun.get(jn, 0.0)) + v * delta * _spin_k, 360.0)
 			turning = true
 	return turning
 
@@ -799,7 +862,7 @@ func _forms_step(delta: float) -> bool:
 				_form_slide[jn] = (_form_slide.get(jn, Vector3.ZERO) as Vector3) + Vector3(float(v[3]), float(v[4]), float(v[5]))
 		var p := t / float(f["duration"])
 		for g in f["glow"]:
-			(g[0] as StandardMaterial3D).emission_energy_multiplier = float(g[1]) * light(1.0 + float(g[2]) * p)
+			_light_to(g[0], float(g[1]), 1.0 + float(g[2]) * p)
 	if settled:
 		_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)   # in or out, a pause before the first act of the new set
 	return true
@@ -826,7 +889,7 @@ func in_act() -> bool:
 
 
 func alive() -> bool:
-	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty()) \
+	return not acts.is_empty() or not forms.is_empty() or not _strikes.is_empty() or not _flares.is_empty() or not _aim.is_empty() or not _current.is_empty() or not _servo.is_empty() or _gutter >= 0.0 or (debug_move and not gait.is_empty()) \
 		or not held_spins.is_empty() or not count_displays.is_empty()
 
 
@@ -896,7 +959,7 @@ func tick(delta: float) -> void:
 			_spun[name] = lerpf(float(lk[0]), float(lk[1]), u * u * (3.0 - 2.0 * u))
 		else:
 			var r: Array = spinners[name]
-			_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta, 360.0)
+			_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta * _spin_k, 360.0)
 		moved = true
 	if debug_move and not gait.is_empty():
 		drive(top_speed, 0.0, 0.0, delta)
@@ -910,9 +973,9 @@ func _step(dt: float) -> bool:
 		_t += dt
 		_evaluate_act()
 		moved = true
-		if _t >= float(_current.get("duration", 0.0)):
+		if _t >= (_until if _until >= 0.0 else float(_current.get("duration", 0.0))):
 			_end_act()
-	elif not act_set().is_empty() and not moving:   # a pilot on the move has no hands free for an act
+	elif not dead and not act_set().is_empty() and not moving:   # a pilot on the move has no hands free for an act, a lost one none at all
 		var spent := minf(dt, _wait_budget)
 		_wait_budget -= spent
 		_wait -= spent
@@ -930,7 +993,463 @@ func _step(dt: float) -> bool:
 			st["t"] = float(st["t"]) + dt
 		_strikes = _strikes.filter(func(st): return float(st["t"]) < float(st["up"]) + float(st["down"]))
 		moved = true
+	if not _flares.is_empty():
+		var lit: Array = []
+		for fl in _flares:
+			fl["t"] = float(fl["t"]) + dt
+			var k := MuzzleFlare.strength(str(fl["look"]), float(fl["t"]))
+			(fl["mat"] as ShaderMaterial).set_shader_parameter("strength", k)
+			(fl["node"] as Node3D).visible = k > 0.0
+			if float(fl["t"]) < MuzzleFlare.lasts(str(fl["look"])):
+				lit.append(fl)
+			else:
+				(fl["node"] as Node3D).visible = false
+		_flares = lit
+	if not _aim.is_empty():
+		_aim["t"] = float(_aim["t"]) + dt
+		if float(_aim["t"]) >= AIM_UP + float(_aim["hold"]) + AIM_DOWN:
+			_aim = {}
+		moved = true
+	if not _flashes.is_empty():
+		var live: Array = []
+		for f in _flashes:
+			f["t"] = float(f["t"]) + dt
+			var done := float(f["t"]) >= FLASH_UP + FLASH_HOLD + FLASH_DOWN
+			for i in range(f["mats"].size()):
+				_light_to(f["mats"][i], float(f["base"][i]), 1.0 if done else 1.0 + flash_k(float(f["t"])))
+			if not done:
+				live.append(f)
+		_flashes = live
+		moved = true
+	if _gutter >= 0.0:
+		_gutter += dt
+		var k := gutter_k(_gutter)
+		for pair in _gutter_mats:
+			var m: StandardMaterial3D = pair[0]
+			var e := float(pair[1]) * k
+			m.emission_energy_multiplier = e
+			for h in _halos.get(m, []):
+				(h as ShaderMaterial).set_shader_parameter("light", e)
+				(h as ShaderMaterial).set_shader_parameter("presence", 0.0)
+		if _gutter >= GUTTER:
+			_gutter = -1.0
+		moved = true
+	if dead:
+		if _spin_k > 0.0:
+			_spin_k = maxf(0.0, _spin_k - dt / SPIN_STOP)
+			moved = true
+		if _collapse >= 0.0 and _collapse < COLLAPSE_AT:
+			_collapse += dt
+			if _collapse >= COLLAPSE_AT:
+				_collapse_wants()
+			moved = true
 	return moved
+
+
+## A lost machine's slump (kill), worked out once from its pose at rest (a held form's with it) as
+## its lights go, its servos carrying it there heavily (COLLAPSE_HEFT):
+## - a walker sinks on the limbs it stands on (_planted_limbs: a leg's hip, knee and ankle, and an
+##   arm's shoulder, elbow and wrist when its hand is on the floor), every foot kept where it stands
+##   and as it stands, by as much of COLLAPSE_SINK as every such limb reaches within its limits;
+## - a biped (a walker with no hand on the floor) slumps forward at the waist (COLLAPSE_WAIST);
+## - every other loose joint hangs what it carries where its weight takes it, the outermost first,
+##   so an elbow goes slack before its shoulder and an arm hangs instead of swinging back; within its
+##   limits and never below the floor (what already reached below it at rest going no lower);
+## - nothing tips the body: a walker sinks straight down, anything else stays where it stands, and a
+##   flyer or a hover (airborne) comes down onto its lowest point, the view landing it on
+##   collapse_floor (MechView3D.lose), its loose parts hanging no lower than that.
+## The legs' other joints, the spins and the mechanisms stay where they are (COLLAPSE_SKIP).
+func _collapse_wants() -> void:
+	if model == null:
+		return
+	if _size < 0.0:
+		_size = _model_size()
+	var held := {}
+	var deg := {}   # joint -> the authored degrees it is turned to over its rest while this works
+	for name in joints.keys():
+		held[name] = (joints[name] as Node3D).rotation
+		deg[name] = _form_rot.get(name, Vector3.ZERO)
+		_turn_to(name, deg[name])
+	var standing := _lowest_under(model)
+	collapse_floor = standing if airborne else 0.0
+	var sink := 0.0
+	var limbs: Array = []
+	if not airborne:
+		limbs = _planted_limbs(COLLAPSE_TOUCH * maxf(1.0, _size))
+		var turns := _sink_turns(limbs, deg)
+		sink = float(turns[0])
+		var add: Dictionary = turns[1]
+		for name in add.keys():
+			deg[name] = (deg[name] as Vector3) + (add[name] as Vector3)
+			_turn_to(name, deg[name])
+	var planted := {}
+	var hands := false
+	for trio in limbs:
+		for name in trio:
+			planted[name] = true
+		hands = hands or not str(trio[0]).begins_with("hip")
+	var legs := not limbs.is_empty()
+	if legs and not hands:
+		for name in joints.keys():
+			if str(name).begins_with("waist"):
+				deg[name] = (deg[name] as Vector3) + Vector3(-COLLAPSE_WAIST, 0.0, 0.0)   # pitch, whatever turn it is built for: forward is down at the front
+				_turn_to(name, deg[name])
+	var floor_y := collapse_floor + sink   # the floor in the model's frame once it has sunk
+	var slack: Array = []   # [depth, name], the outermost first
+	var floor_of := {}      # joint -> the floor what it carries keeps to: the floor, or lower if it reached lower at rest
+	for name in joints.keys():
+		var key := str(name)
+		if spinners.has(name) or _spin.has(name) or planted.has(name):
+			continue
+		var skip := false
+		for w in COLLAPSE_SKIP:
+			if key.begins_with(w):
+				skip = true
+		if skip:
+			continue
+		var low := _lowest_under(joints[name])
+		if low == INF:
+			continue
+		floor_of[name] = minf(floor_y, low)
+		slack.append([_joint_depth(joints[name]), name])
+	slack.sort_custom(func(a, b): return int(a[0]) > int(b[0]))
+	for _pass in range(COLLAPSE_PASSES):
+		for row in slack:
+			_hang(row[1], deg, float(floor_of[row[1]]))
+	if airborne:
+		collapse_floor = _lowest_under(model)   # it lands on what hangs lowest once it has slumped (never lower than it stood)
+	for name in joints.keys():
+		var want: Vector3 = (deg[name] as Vector3) - (_form_rot.get(name, Vector3.ZERO) as Vector3)
+		if want.length() > 0.01:
+			_want_rot[name] = want
+		(joints[name] as Node3D).rotation = held[name]
+	_body_want_slide = Vector3(0.0, 0.0, -sink)   # authored: x right, y forward, z up (offset_of)
+	_body_want_rot = Vector3.ZERO
+
+
+## Turns a joint to `deg` authored degrees over its rest (the slump's sums; put back after).
+func _turn_to(name, deg_v: Vector3) -> void:
+	(joints[name] as Node3D).rotation = _rest[name] + euler_of(deg_v)
+
+
+## How many joints stand above a joint in the model, for the slack's order.
+func _joint_depth(node: Node) -> int:
+	var n := 0
+	var p := node.get_parent()
+	while p != null and p != model:
+		if p is Node3D and joints.values().has(p):
+			n += 1
+		p = p.get_parent()
+	return n
+
+
+## The lowest point of what a node carries, in the model's frame: the shown surfaces under it (a
+## halo, a flare, a plume, an outline's hull or anything hidden aside); INF when it carries none.
+func _lowest_under(node: Node) -> float:
+	var low := INF
+	var stack: Array = [node]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is Node3D and not (n as Node3D).visible:
+			continue
+		for c in n.get_children():
+			stack.append(c)
+		if n is MeshInstance3D and not n.has_meta("halo") and not n.has_meta("plume") and not n.has_meta("is_trace"):
+			var mi := n as MeshInstance3D
+			if mi.mesh == null:
+				continue
+			var xf := _in_model(mi)
+			var bb := mi.get_aabb()
+			for k in range(8):
+				low = minf(low, (xf * bb.get_endpoint(k)).y)
+	return low
+
+
+## The limbs a walker stands on, each [root, middle, end]: a leg's hip, knee and ankle, and an arm's
+## shoulder, elbow and wrist (or hand) when what its end carries is on the floor (within `touch`): the
+## Baboon's knuckles, the Ammit's low hands.
+func _planted_limbs(touch: float) -> Array:
+	var out: Array = []
+	for name in joints.keys():
+		var key := str(name)
+		var trio: Array = []
+		if key.begins_with("knee"):
+			var s := key.substr(4)
+			trio = ["hip" + s, key, "ankle" + s]
+		elif key.begins_with("elbow"):
+			var s := key.substr(5)
+			trio = ["shoulder" + s, key, ("wrist" + s) if joints.has("wrist" + s) else ("hand" + s)]
+		else:
+			continue
+		if not joints.has(trio[0]) or not joints.has(trio[2]):
+			continue
+		if _lowest_under(joints[trio[2]]) > touch:
+			continue   # it does not stand on this
+		out.append(trio)
+	var legs := false
+	for trio in out:
+		legs = legs or str(trio[0]).begins_with("hip")
+	return out if legs else []   # a hand alone on the floor (the Badger's claw resting) is no stance
+
+
+## How far a walker sinks and the turns that keep it standing: [sink, {joint: degrees added}], the
+## most of COLLAPSE_SINK that every limb in `limbs` reaches within its limits with its belly still
+## clear of the floor (the Armadillo's shell rides low over its stubby legs), halved down to it
+## (nought, and no turns, when none can).
+func _sink_turns(limbs: Array, deg: Dictionary) -> Array:
+	if limbs.is_empty():
+		return [0.0, {}]
+	var span := INF
+	for trio in limbs:
+		span = minf(span, _in_model(joints[trio[0]]).origin.y - _in_model(joints[trio[2]]).origin.y)
+	var want := COLLAPSE_SINK * maxf(0.0, span)
+	var floor_y := minf(0.0, _lowest_under(model))   # what stood a touch below the floor stays there
+	var best := [0.0, {}]
+	var lo := 0.0
+	var hi := want
+	for step in range(12):
+		var d := hi if step == 0 else (lo + hi) * 0.5
+		var turns := {}
+		var ok := d > 0.0
+		for trio in limbs:
+			if not ok:
+				break
+			var t := _sink_limb(trio, d, deg)
+			if t.is_empty():
+				ok = false
+			else:
+				turns.merge(t)
+		if ok:
+			for name in turns.keys():
+				_turn_to(name, (deg[name] as Vector3) + (turns[name] as Vector3))
+			ok = _lowest_under(model) - d >= floor_y - 0.05   # in the model's frame the floor rises by what it sinks
+			for name in turns.keys():
+				_turn_to(name, deg[name])
+		if ok:
+			best = [d, turns]
+			if step == 0:
+				break
+			lo = d
+		else:
+			hi = d
+	return best
+
+
+## The degrees a planted limb's root, middle and end add so that its end stays where it stands, and
+## as it stands, while the machine sinks `d` in its own frame: a two-link reach in the plane its
+## middle joint turns in, the knee folding the way it folds at rest, the end turning back what the
+## root and middle turned. Empty when it cannot (out of reach, out of that plane, past a limit).
+func _sink_limb(trio: Array, d: float, deg: Dictionary) -> Dictionary:
+	var xr := _in_model(joints[trio[0]])
+	var xm := _in_model(joints[trio[1]])
+	var xe := _in_model(joints[trio[2]])
+	var u := (xm.basis * axis_vector("pitch")).normalized()   # the limb's plane: its middle joint's axle
+	var ur := (xr.basis * axis_vector("pitch")).normalized()
+	var ue := (xe.basis * axis_vector("pitch")).normalized()
+	if absf(u.dot(ur)) < 0.95 or absf(u.dot(ue)) < 0.95:
+		return {}
+	var a := Vector3.UP
+	var b := u.cross(a)
+	if b.length() < 0.5:
+		return {}
+	b = b.normalized()   # (up, b) so that a turn the positive way about u climbs from up toward b
+	var h := xr.origin
+	var k2 := Vector2((xm.origin - h).dot(a), (xm.origin - h).dot(b))
+	var e2 := Vector2((xe.origin - h).dot(a), (xe.origin - h).dot(b))
+	var t2 := e2 + Vector2(d, 0.0)   # the end stays put as the machine sinks: d nearer the root
+	var l1 := k2.length()
+	var l2 := (e2 - k2).length()
+	var reach := t2.length()
+	if l1 < 0.001 or l2 < 0.001 or reach >= l1 + l2 - 0.001 or reach <= absf(l1 - l2) + 0.001:
+		return {}
+	var shin0 := e2 - k2
+	var bend := signf(k2.x * shin0.y - k2.y * shin0.x)
+	var aim := atan2(t2.y, t2.x)
+	var spread := acos(clampf((l1 * l1 + reach * reach - l2 * l2) / (2.0 * l1 * reach), -1.0, 1.0))
+	for sg in [1.0, -1.0]:
+		var a1: float = aim + sg * spread
+		var k := Vector2(cos(a1), sin(a1)) * l1
+		var shin := t2 - k
+		if bend != 0.0 and signf(k.x * shin.y - k.y * shin.x) != bend:
+			continue
+		var d_root := wrapf(a1 - atan2(k2.y, k2.x), -PI, PI)
+		var d_mid := wrapf((atan2(shin.y, shin.x) - a1) - (atan2(shin0.y, shin0.x) - atan2(k2.y, k2.x)), -PI, PI)
+		var d_end := -(d_root + d_mid)
+		var out := {
+			trio[0]: Vector3(rad_to_deg(d_root) * signf(u.dot(ur)), 0.0, 0.0),
+			trio[1]: Vector3(rad_to_deg(d_mid), 0.0, 0.0),
+			trio[2]: Vector3(rad_to_deg(d_end) * signf(u.dot(ue)), 0.0, 0.0),
+		}
+		for name in out.keys():
+			var m: Dictionary = meta.get(name, {})
+			if str(m.get("axis", "pitch")) != "pitch":
+				return {}
+			var total: Vector3 = (deg[name] as Vector3) + (out[name] as Vector3)
+			if clamp_degrees(total, m.get("limits", {})).distance_to(total) > 0.5:
+				return {}   # past a limit: it cannot sink this far
+		return out
+	return {}
+
+
+## Hangs what a slack joint carries where its weight takes it (_collapse_wants): the turn about its
+## own axle that brings the middle of what it carries under it, within its limits, eased back so what
+## it carries keeps above `floor_y`; `deg` takes the result and the joint is left turned to it.
+func _hang(name, deg: Dictionary, floor_y: float) -> void:
+	var j: Node3D = joints[name]
+	var m: Dictionary = meta.get(name, {})
+	var axis := str(m.get("axis", axis_for(str(name))))
+	var i := ["pitch", "yaw", "roll"].find(axis)
+	if i < 0:
+		return
+	var centre = _subtree_centre(j)
+	if centre == null:
+		return
+	var xj := _in_model(j)
+	var u := (xj.basis * axis_vector(axis)).normalized()
+	var r: Vector3 = (centre as Vector3) - xj.origin
+	var g := Vector3.DOWN
+	var rp := r - u * r.dot(u)
+	var gp := g - u * g.dot(u)
+	if gp.length() < 0.3 or rp.length() < 0.05:
+		return   # it turns about up, or carries nothing off its axle
+	var turn := rad_to_deg(atan2(u.dot(rp.cross(gp)), rp.dot(gp)))
+	var now: Vector3 = deg[name]
+	var lim: Dictionary = m.get("limits", {})
+	var edges = lim.get(axis, null)
+	if absf(turn) > 170.0 and edges is Array and (edges as Array).size() == 2:
+		# balanced on top, as like to fall one way as the other: the way its limits give it room
+		turn = absf(turn) * (1.0 if float(edges[1]) - now[i] >= now[i] - float(edges[0]) else -1.0)
+	var to := now
+	to[i] = now[i] + turn
+	to = clamp_degrees(to, lim)
+	_turn_to(name, to)
+	if _lowest_under(j) < floor_y - 0.01:
+		var lo := 0.0   # the share of the turn that keeps above the floor
+		var hi := 1.0
+		for _s in range(10):
+			var f := (lo + hi) * 0.5
+			_turn_to(name, now.lerp(to, f))
+			if _lowest_under(j) < floor_y - 0.01:
+				hi = f
+			else:
+				lo = f
+		to = now.lerp(to, lo)
+		_turn_to(name, to)
+	deg[name] = to
+
+
+## The middle of what a joint carries, in the model's frame: the centroid of every vertex shown
+## under it (a halo, a flare, a plume, an outline's hull or anything hidden aside), so it reads the
+## same whether the parts are welded into a few meshes (the game) or not (the hangar); null when it
+## carries none.
+func _subtree_centre(j: Node3D):
+	var sum := Vector3.ZERO
+	var n := 0
+	var stack: Array = [j]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		if node is Node3D and not (node as Node3D).visible:
+			continue
+		for c in node.get_children():
+			stack.append(c)
+		if node is MeshInstance3D and (node as MeshInstance3D).mesh != null and not node.has_meta("halo") and not node.has_meta("plume") and not node.has_meta("is_trace"):
+			var mi := node as MeshInstance3D
+			var c: Array = _centroid_of(mi.mesh)
+			if int(c[1]) > 0:
+				sum += (_in_model(mi) * (c[0] as Vector3)) * float(c[1])
+				n += int(c[1])
+	return sum / float(n) if n > 0 else null
+
+
+## A mesh's own vertex centroid and count, [Vector3, int], worked out once a mesh.
+func _centroid_of(mesh: Mesh) -> Array:
+	if _centroids.has(mesh):
+		return _centroids[mesh]
+	var sum := Vector3.ZERO
+	var n := 0
+	for si in range(mesh.get_surface_count()):
+		var verts = mesh.surface_get_arrays(si)[Mesh.ARRAY_VERTEX]
+		if verts is PackedVector3Array:
+			for v in verts:
+				sum += v
+			n += (verts as PackedVector3Array).size()
+	var out := [sum / float(n) if n > 0 else Vector3.ZERO, n]
+	_centroids[mesh] = out
+	return out
+
+
+## A node's transform in the model's own frame, by its parent chain (outside the tree too).
+func _in_model(node: Node) -> Transform3D:
+	var xf := Transform3D.IDENTITY
+	var n := node
+	while n != null and n != model:
+		if n is Node3D:
+			xf = (n as Node3D).transform * xf
+		n = n.get_parent()
+	return xf
+
+
+## A blow on the hull (the to-do's hit reaction, on Ryan's go of 3 November): the whole
+## machine shoved back from it, `away` in the model's own axes (backward, a little to the side the
+## blow came from), its nose rocking up, on its body's servo, settling over JOLT_DOWN. `k` scales
+## it (a blow the armour turned shoves at half).
+func jolt(away: Vector3, k: float = 1.0) -> void:
+	if body == null or model == null or away == Vector3.ZERO:
+		return
+	if _size < 0.0:
+		_size = _model_size()
+	_strikes.append({"joint": BODY, "vec": Vector3(JOLT_PITCH * k, 0.0, 0.0), "slide": away.normalized() * JOLT_SHARE * _size * k,
+		"up": JOLT_UP, "down": JOLT_DOWN, "t": 0.0})
+	_pose()
+
+
+## The machine is lost (the kill's beat, Ryan's go of 3 November): its act stops, no other starts,
+## and every lit part gutters out over GUTTER, flickering as it dies, its halo with it; it stays
+## dark. revive() lights it again (the hit debug switch's machines come back).
+func kill() -> void:
+	if dead:
+		return
+	dead = true
+	if not _current.is_empty():
+		_end_act()
+	_flashes.clear()
+	_gutter_mats.clear()
+	if model != null:
+		var mats: Array = []
+		_lit_under(model, mats)
+		for m in mats:
+			_rest_of(m)   # its rest kept before it dims, for revive()
+			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
+	_gutter = 0.0
+	_collapse = 0.0
+
+
+func revive() -> void:
+	if not dead:
+		return
+	dead = false
+	_gutter = -1.0
+	for pair in _gutter_mats:
+		_light_to(pair[0], _rest_of(pair[0]), 1.0)
+	_gutter_mats.clear()
+	_collapse = -1.0
+	collapse_floor = 0.0
+	_spin_k = 1.0
+	_want_rot.clear()
+	_body_want_rot = Vector3.ZERO
+	_body_want_slide = Vector3.ZERO
+	_wait = GAP_MIN
+
+
+## How much of its light a lost machine's lit part keeps `t` seconds into guttering out: a stutter
+## of dips and catches, each catch dimmer, to nothing at GUTTER.
+static func gutter_k(t: float) -> float:
+	if t >= GUTTER:
+		return 0.0
+	var f := t / GUTTER
+	var fade := (1.0 - f) * (1.0 - f)
+	var stutter := 0.35 if fmod(t, 0.13) < 0.05 else 1.0
+	return fade * stutter
 
 
 ## The next act: random among the machine's own, never the one just played (Ryan, 2
@@ -945,7 +1464,8 @@ func choose() -> Dictionary:
 				return a
 	# An act may be for the map or the skirmish alone (Ryan, 5 October: the Sparrowhawk's loop
 	# and circle mean nothing in the skirmish's frame); this machine plays what fits its place.
-	var here: Array = set_now.filter(func(a): return place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place))
+	# An act that is a weapon's firing alone (its `idle` false: the Nemesis's punches) never plays at rest.
+	var here: Array = set_now.filter(func(a): return bool(a.get("idle", true)) and (place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place)))
 	if here.is_empty():
 		return {}
 	if here.size() == 1:
@@ -975,6 +1495,71 @@ func act_set() -> Array:
 	return acts.filter(func(a): return not _keys_any(a, held))
 
 
+## A fixed weapon fires with its own act (Ryan, 31 October: "For the locked weapons, go for ones
+## that are cheapest to do first, where pre-existing animation work has already been looked at
+## that you can leverage"): the slice of an idle act the sidecar names for it (`fires`) plays now,
+## from `lead` seconds before its start, the act playing cut short, its servos snappier than an
+## idle act's so the wind-up lands on the blow. False when it has none, or a held form keeps the
+## joints its act moves (the sealed Armadillo's rack): the spend strikes as before.
+func fire_act(cid: String, lead := 0.0) -> bool:
+	var f := fire_slice(cid)
+	if f.is_empty():
+		return false
+	var act: Dictionary = {}
+	for a in act_set():
+		if str(a["name"]) == str(f.get("act", "")):
+			act = a
+	if act.is_empty():
+		return false
+	_fire_turn[cid] = int(_fire_turn.get(cid, 0)) + 1
+	if not _current.is_empty():
+		_end_act()
+	_start(act)
+	_t = maxf(0.0, float(f.get("from", 0.0)) - lead)
+	_until = float(f.get("to", act.get("duration", 0.0)))
+	_act_heft = minf(_act_heft, FIRE_HEFT)
+	_evaluate_act()
+	_pose()
+	return true
+
+
+## The firing slices a sidecar names for a fixed component: one {act, from, to[, blow]}, or several
+## that take turns (Ryan, 3 November, of the Ammit: it "can also afford two different Claw
+## animations since it's got 4 and will use them often").
+func fire_slices(cid: String) -> Array:
+	var f = fires.get(cid, null)
+	if f is Dictionary:
+		return [f]
+	if f is Array:
+		return (f as Array).filter(func(s): return s is Dictionary)
+	return []
+
+
+## The slice that fires next, the slices taking turns; empty when the component fires with none.
+func fire_slice(cid: String) -> Dictionary:
+	var all := fire_slices(cid)
+	if all.is_empty():
+		return {}
+	return all[int(_fire_turn.get(cid, 0)) % all.size()]
+
+
+## How long the next slice winds up before its blow (its `blow`, the act's seconds at which the blow
+## lands, after its `from`): the caller holds the blow's sound and its landing until then (Ryan, 3
+## November: a weapon that "won't be fired every round" is "worth a little longer time"). Nought for
+## a slice that starts just before its blow.
+func fire_wind(cid: String) -> float:
+	var s := fire_slice(cid)
+	if s.is_empty() or not s.has("blow"):
+		return 0.0
+	return maxf(0.0, float(s["blow"]) - float(s.get("from", 0.0)))
+
+
+## How long the next slice plays, start to end: an aim held on its target waits it out.
+func fire_span(cid: String) -> float:
+	var s := fire_slice(cid)
+	return 0.0 if s.is_empty() else maxf(0.0, float(s.get("to", 0.0)) - float(s.get("from", 0.0)))
+
+
 ## Start a named act now, among those it may play first, then its own and its forms'; false
 ## when the machine has no act of that name.
 func play(name: String) -> bool:
@@ -994,6 +1579,7 @@ func _start(a: Dictionary) -> void:
 	_unlock_spins()
 	_current = a
 	_t = 0.0
+	_until = -1.0
 	_lock_spins(a)
 	last_act = str(a["name"])
 	var duration := float(a.get("duration", 0.0))
@@ -1013,7 +1599,7 @@ func _start(a: Dictionary) -> void:
 			mats.append_array(_lit_materials(str(part)))
 		var base: Array = []
 		for m in mats:
-			base.append((m as StandardMaterial3D).emission_energy_multiplier)
+			base.append(_rest_of(m))
 		_glow.append({"curve": curve(g.get("keys", []), duration, ease), "mats": mats, "base": base})
 
 
@@ -1029,10 +1615,11 @@ func _end_act() -> void:
 		st[0] = Vector3(wrapf(r.x, -180.0, 180.0), wrapf(r.y, -180.0, 180.0), wrapf(r.z, -180.0, 180.0))
 	for g in _glow:
 		for i in range(g["mats"].size()):
-			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i])
+			_light_to(g["mats"][i], float(g["base"][i]), 1.0)
 	_glow = []
 	_current = {}
 	_curves = {}
+	_until = -1.0
 	_want_rot.clear()
 	_want_slide.clear()
 	_body_want_rot = Vector3.ZERO
@@ -1095,7 +1682,7 @@ func _evaluate_act() -> void:
 	for g in _glow:
 		var k := float(curve_at(g["curve"], _t)[0]) + 1.0   # the keys are offsets from rest: 0 is the base light
 		for i in range(g["mats"].size()):
-			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i]) * light(k)
+			_light_to(g["mats"][i], float(g["base"][i]), k)
 
 
 ## The machine's weight (Ryan, 4 October, the third pass: heavy, with inertia, real machines
@@ -1104,7 +1691,7 @@ func _evaluate_act() -> void:
 ## a little past its mark and settles, `heft` seconds its time constant. A wheel the gait
 ## spins takes the act's keys as they are. A part home and still drops out.
 func _follow(dt: float) -> void:
-	var w := 1.0 / maxf(0.02, _act_heft if not _current.is_empty() else heft)
+	var w := 1.0 / maxf(0.02, COLLAPSE_HEFT if dead else (_act_heft if not _current.is_empty() else heft))
 	var names := {}
 	for name in _servo.keys():
 		names[name] = true
@@ -1152,6 +1739,8 @@ func _pose() -> void:
 			if st["joint"] == name:
 				deg += (st["vec"] as Vector3) * _strike_envelope(st)
 				kick += (st.get("slide", Vector3.ZERO) as Vector3) * _strike_envelope(st)
+		if not _aim.is_empty() and _aim["joint"] == name:
+			deg.y += float(_aim["deg"]) * aim_envelope()
 		var m: Dictionary = meta.get(name, {})
 		deg = clamp_degrees(deg, m.get("limits", {}))
 		if _spun.has(name):
@@ -1161,8 +1750,15 @@ func _pose() -> void:
 		if slide != Vector3.ZERO or j.position != _rest_pos[name]:
 			j.position = _rest_pos[name] + offset_of(slide)
 	if body != null:
-		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide)
-		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot)
+		var recoil := Vector3.ZERO
+		var rock := Vector3.ZERO
+		for st in _strikes:
+			if st["joint"] == BODY:
+				recoil += (st["slide"] as Vector3) * _strike_envelope(st)
+				rock += (st["vec"] as Vector3) * _strike_envelope(st)   # a jolt's nose rocking up
+		var turn := Vector3(0.0, float(_aim["deg"]) * aim_envelope(), 0.0) if not _aim.is_empty() and _aim["joint"] == BODY else Vector3.ZERO
+		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil
+		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot + turn + rock)
 
 
 # ---------------------------------------------------------------- movement
@@ -1363,7 +1959,7 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 	if not _move_glow.is_empty():
 		var k := 1.0 + float(gait.get("glow", {}).get("k", 1.0)) * _blend
 		for row in _move_glow:
-			(row[0] as StandardMaterial3D).emission_energy_multiplier = float(row[1]) * light(k)
+			_light_to(row[0], float(row[1]), k)
 
 
 ## A lit part's light as the screen shows it, given as a multiple of its light at rest (or
@@ -1378,6 +1974,240 @@ static func light(m: float) -> float:
 	if _eases_light < 0:
 		_eases_light = 1 if RenderingServer.get_current_rendering_method() == "gl_compatibility" else 0
 	return pow(maxf(0.0, m), LIGHT_EASE) if _eases_light == 1 else maxf(0.0, m)
+
+
+## Set a lit material's light: `base`, its light at rest, times `multiple` over that rest,
+## eased (light()), and its halos with it, whose presence climbs with the multiple until it
+## stands HALO_FULL rests over (_setup_halos).
+func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
+	multiple = maxf(multiple, float(_standing.get(m, 1.0)))
+	var e := base * light(multiple)
+	m.emission_energy_multiplier = e
+	for h in _halos.get(m, []):
+		(h as ShaderMaterial).set_shader_parameter("light", e)
+		(h as ShaderMaterial).set_shader_parameter("presence", clampf((multiple - 1.0) / HALO_FULL, 0.0, 1.0))
+
+
+## The glows a sidecar holds always (`standing`: a lit part and how many rests over its own),
+## an act's flare rising past them and settling back to them, their halos lit with them (Ryan,
+## 31 October: the Stingray's fans "always on with heat glow"; the Arsenal's back vents "a creepy
+## glowing exhaust").
+func _setup_standing(side: Dictionary) -> void:
+	_standing.clear()
+	var st = side.get("standing", {})
+	if not (st is Dictionary):
+		return
+	for part in st.keys():
+		for m in _lit_materials(str(part)):
+			var rest := _rest_of(m)
+			_standing[m] = 1.0 + float(st[part])
+			_light_to(m, rest, 1.0)
+
+
+## A hot part hung after setup (a burn weapon's fire over its class: MechView3D.wear_burns) wears
+## the halo as the sidecar's hot parts do.
+func wear_hot(node: Node) -> void:
+	if _halo_grow > 0.0:
+		_halo_under(node, _halo_grow, HALO_REACH, {})
+
+
+## Flare the lit parts under a node as a weapon fires (Ryan, 31 October: a burn weapon's fire
+## "flaring as it fires"): up to FLASH_PEAK rests over their own, held, then easing back.
+func flash_under(node: Node) -> void:
+	var mats: Array = []
+	_lit_under(node, mats)
+	if mats.is_empty():
+		return
+	var base: Array = []
+	for m in mats:
+		base.append(_rest_of(m))
+	_flashes.append({"mats": mats, "base": base, "t": 0.0})
+
+
+## A flash's light over its rest at `t` seconds in.
+static func flash_k(t: float) -> float:
+	if t < FLASH_UP:
+		return FLASH_PEAK * t / FLASH_UP
+	t -= FLASH_UP
+	if t < FLASH_HOLD:
+		return FLASH_PEAK
+	var u := clampf(1.0 - (t - FLASH_HOLD) / FLASH_DOWN, 0.0, 1.0)
+	return FLASH_PEAK * u * u
+
+
+## A lit material's light at rest, kept on the material the first time it is asked, so a standing
+## glow that raises its light is never taken for its rest.
+static func _rest_of(m: StandardMaterial3D) -> float:
+	if not m.has_meta("rest_light"):
+		m.set_meta("rest_light", m.emission_energy_multiplier)
+	return float(m.get_meta("rest_light"))
+
+
+## The halos (Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try it"; the next
+## day, on every machine's hot parts: "all glowing boosters and vents"). The lit parts a sidecar
+## names (`halo`) wear round each lit surface a soft copy of the part grown out along its
+## smoothed normals (halo.gdshader), in the part's colour held to its hue, added over what it
+## lies on and faded in as the part's light climbs over its rest, so a flare spills past the
+## part's edge and the machine's outline; Godot's own glow, on the phone's renderer, cannot tell
+## a lit part from white paint and stops at the outline. It stands out a share of the machine's
+## size (HALO_SPREAD), so it keeps its share of every machine however each is framed; a part
+## named with a scale ([part, 2.0]) wears one that much larger and stronger, for a part only its
+## spill shows (Ryan, 31 October, of the Puffin's repulsors: "too subtle"). RIFTGATE_HALO=off
+## strips them to compare, =all puts them on every lit part of every model.
+func _setup_halos(side: Dictionary) -> void:
+	_halos.clear()
+	var env := OS.get_environment("RIFTGATE_HALO")
+	var named = side.get("glow_parts", []) if env == "all" else side.get("halo", [])
+	_halo_grow = 0.0 if env == "off" else HALO_SPREAD * _model_size()
+	if env == "off" or not (named is Array) or (named as Array).is_empty():
+		return
+	var grow := _halo_grow
+	var done := {}
+	for entry in named:
+		if halo_skip.has(str(entry[0]) if entry is Array else str(entry)):
+			continue   # a part that burns as a plume instead (MechView3D._setup_plumes)
+		# A part, or [part, scale] for one larger, or [part, scale, ahead] for one drawn its own
+		# distance toward the eye: nought for a part standing proud of a thin plate, whose halo the
+		# usual three carried through the plate when it faced away (the Puffin's repulsors under
+		# their plates, a violet wash over the blue).
+		var p := str(entry[0]) if entry is Array else str(entry)
+		var scale := float(entry[1]) if entry is Array and (entry as Array).size() > 1 else 1.0
+		var ahead := float(entry[2]) if entry is Array and (entry as Array).size() > 2 else HALO_AHEAD
+		var tag := parse_tag(p)
+		if tag.size() == 2:
+			var root: Node = joints.get(tag[1], null) if tag[0] == "joint" else hardpoints.get(tag[1], null)
+			if root != null:
+				_halo_under(root, grow * scale, minf(1.0, HALO_REACH * scale), done, ahead)
+		else:
+			_halo_named(model, p, grow * scale, minf(1.0, HALO_REACH * scale), done, ahead)
+
+
+## The longest side of the model's bounds at rest, in its own units.
+func _model_size() -> float:
+	var box := AABB()
+	var first := true
+	for mi in model.find_children("*", "MeshInstance3D", true, false):
+		var m: MeshInstance3D = mi
+		if m.mesh == null or m.has_meta("halo") or m.has_meta("is_trace"):
+			continue
+		var to_model := Transform3D.IDENTITY
+		var n: Node = m
+		while n != null and n != model:
+			if n is Node3D:
+				to_model = (n as Node3D).transform * to_model
+			n = n.get_parent()
+		var b := to_model * m.mesh.get_aabb()
+		box = b if first else box.merge(b)
+		first = false
+	return maxf(box.size.x, maxf(box.size.y, box.size.z))
+
+
+func _halo_named(node: Node, part: String, grow: float, reach: float, done: Dictionary, ahead := HALO_AHEAD) -> void:
+	if node is MeshInstance3D and labelled(node.name, part):
+		_halo_under(node, grow, reach, done, ahead)
+	else:
+		for c in node.get_children():
+			_halo_named(c, part, grow, reach, done, ahead)
+
+
+func _halo_under(node: Node, grow: float, reach: float, done: Dictionary, ahead := HALO_AHEAD) -> void:
+	if node.has_meta("halo"):
+		return
+	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+		var mi: MeshInstance3D = node
+		for i in range(mi.get_surface_override_material_count()):
+			var sm := mi.get_surface_override_material(i)
+			var key := "%d:%d" % [mi.get_instance_id(), i]
+			if done.has(key) or not (sm is StandardMaterial3D and (sm as StandardMaterial3D).emission_enabled):
+				continue
+			done[key] = true
+			var lit: StandardMaterial3D = sm
+			var hm := ShaderMaterial.new()
+			hm.shader = HALO_SHADER
+			hm.set_shader_parameter("tile", lit.emission_texture if lit.emission_texture != null else lit.albedo_texture)
+			hm.set_shader_parameter("light", lit.emission_energy_multiplier)
+			hm.set_shader_parameter("grow", grow)
+			hm.set_shader_parameter("reach", reach)
+			hm.set_shader_parameter("ahead", ahead)
+			var h := MeshInstance3D.new()
+			h.name = "halo"
+			h.mesh = _halo_mesh(mi.mesh, i)
+			h.material_override = hm
+			h.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			h.layers = mi.layers
+			h.set_meta("halo", true)   # no trace, no hull, no second halo
+			mi.add_child(h)
+			if not _halos.has(lit):
+				_halos[lit] = []
+			(_halos[lit] as Array).append(hm)
+	for c in node.get_children():
+		_halo_under(c, grow, reach, done, ahead)
+
+
+## A surface's halo shell: its own triangles and UVs, each corner's normal the sum of the faces
+## meeting there, so the shell grows out closed round a flat-shaded part; where the surface ends,
+## at an edge one triangle alone uses, the corner leans outward in the surface's own plane too, so
+## a flat disc's shell spreads round its rim rather than floating off its face (Ryan, 31 October,
+## of the Puffin's repulsor discs: "extended way far out"). Built once a mesh.
+static func _halo_mesh(mesh: Mesh, surface: int) -> ArrayMesh:
+	var key := "%d:%d" % [mesh.get_instance_id(), surface]
+	if _halo_meshes.has(key):
+		return _halo_meshes[key]
+	var arrays := mesh.surface_get_arrays(surface)
+	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var index: PackedInt32Array = arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
+	var sums := {}
+	for i in range(verts.size()):
+		var at := Vector3i((verts[i] * 64.0).round())
+		sums[at] = (sums.get(at, Vector3.ZERO) as Vector3) + normals[i]
+	var edges := {}   # "a|b" -> [uses, outward in the face's plane, a, b]
+	var corners := index.size() if index.size() > 0 else verts.size()
+	for f in range(0, corners - 2, 3):
+		var tri: Array[Vector3] = []
+		for c in range(3):
+			tri.append(verts[index[f + c]] if index.size() > 0 else verts[f + c])
+		var fn := (tri[1] - tri[0]).cross(tri[2] - tri[0])
+		if fn.length_squared() < 1e-12:
+			continue
+		fn = fn.normalized()
+		for e in range(3):
+			var p: Vector3 = tri[e]
+			var q: Vector3 = tri[(e + 1) % 3]
+			var a := Vector3i((p * 64.0).round())
+			var b := Vector3i((q * 64.0).round())
+			var ek := "%s|%s" % [a, b] if str(a) < str(b) else "%s|%s" % [b, a]
+			if edges.has(ek):
+				edges[ek][0] = int(edges[ek][0]) + 1
+				continue
+			var out := (q - p).cross(fn).normalized()
+			if out.dot(tri[(e + 2) % 3] - p) > 0.0:
+				out = -out
+			edges[ek] = [1, out, a, b]
+	var rims := {}
+	for ek in edges.keys():
+		var e: Array = edges[ek]
+		if int(e[0]) == 1:
+			for at in [e[2], e[3]]:
+				rims[at] = (rims.get(at, Vector3.ZERO) as Vector3) + (e[1] as Vector3)
+	var smooth := PackedVector3Array()
+	smooth.resize(verts.size())
+	for i in range(verts.size()):
+		var at := Vector3i((verts[i] * 64.0).round())
+		var n: Vector3 = sums[at]
+		n = n.normalized() if n.length() > 0.0001 else normals[i]
+		var rim: Vector3 = rims.get(at, Vector3.ZERO)
+		smooth[i] = (n + rim.normalized()).normalized() if rim.length() > 0.0001 else n
+	var out := []
+	out.resize(Mesh.ARRAY_MAX)
+	out[Mesh.ARRAY_VERTEX] = verts
+	out[Mesh.ARRAY_NORMAL] = smooth
+	out[Mesh.ARRAY_TEX_UV] = arrays[Mesh.ARRAY_TEX_UV]
+	out[Mesh.ARRAY_INDEX] = arrays[Mesh.ARRAY_INDEX]
+	var am := ArrayMesh.new()
+	am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, out)
+	_halo_meshes[key] = am
+	return am
 
 
 ## The tread materials, by the meshes' names: scrolling their first UV runs the tread.
@@ -1396,6 +2226,8 @@ static func _strike_envelope(st: Dictionary) -> float:
 	var t := float(st["t"])
 	var up := float(st["up"])
 	var down := float(st["down"])
+	if t <= 0.0:
+		return 0.0
 	if t < up:
 		var f := t / up
 		return 1.0 - (1.0 - f) * (1.0 - f)   # out: fast away
@@ -1406,33 +2238,47 @@ static func _strike_envelope(st: Dictionary) -> float:
 ## A blow. Melee: the joints that swing (the shoulders, by the sidecar or by name) throw the
 ## arms forward. Ranged: every joint that carries a weapon socket kicks about its own axis,
 ## a recoil, toward whichever side its limits allow (a Clydesdale turret flinches outward).
-## Does nothing on an untagged model.
-func strike(ranged: bool) -> void:
+## `only` names the joints of the weapon that fired, and only they kick (Ryan, 31 October: "It
+## would obviously be really cool if the actual weapon from the die fired"), a joint named that
+## carries no socket included (a fixed gun's business end on a wrist: the Badger's fragmenter);
+## `recoil`, given,
+## kicks the whole machine back along a gun's line, for a gun on a mount on the body. `lead`
+## holds the blow that many seconds, while the machine turns onto its target (aim). Does nothing
+## on an untagged model.
+func strike(ranged: bool, only: Array = [], recoil := Vector3.ZERO, lead := 0.0) -> void:
+	if recoil != Vector3.ZERO:
+		_strikes.append({"joint": BODY, "vec": Vector3.ZERO, "slide": recoil, "up": 0.05, "down": 0.22, "t": -lead})
 	if joints.is_empty():
+		_pose()
 		return
 	var armed := {}
 	for n in hardpoints.keys():
 		var owner := joint_of(hardpoints[n])
 		if not owner.is_empty():
 			armed[owner] = true
+	var named := not only.is_empty() or recoil != Vector3.ZERO
 	for name in joints.keys():
+		if named and not only.has(name):
+			continue
 		var m: Dictionary = meta.get(name, {})
 		var axis := str(m.get("axis", axis_for(name)))
 		var swing_deg: float
 		if ranged:
-			if not armed.has(name):
+			if not armed.has(name) and not only.has(name):
 				continue
 			var line: Array = m.get("slide", [])
 			if line.size() == 3:
 				# A gun that only runs in and out of its port (the Armadillo's, Ryan, 29 October:
 				# "they should only move along their axis of firing") kicks back along its line.
-				_strikes.append({"joint": name, "vec": Vector3.ZERO, "slide": -Vector3(float(line[0]), float(line[1]), float(line[2])) * RECOIL_SLIDE, "up": 0.05, "down": 0.2, "t": 0.0})
+				_strikes.append({"joint": name, "vec": Vector3.ZERO, "slide": -Vector3(float(line[0]), float(line[1]), float(line[2])) * RECOIL_SLIDE, "up": 0.05, "down": 0.2, "t": -lead})
 				continue
 			swing_deg = 5.0
-		elif not bool(m.get("swing", false)):
-			continue
-		else:
+		elif bool(m.get("swing", false)):
 			swing_deg = -29.0
+		elif named:
+			swing_deg = -15.0   # a blade on a joint that is not an arm's: a jab, not a swing
+		else:
+			continue
 		var lim: Dictionary = m.get("limits", {})
 		if lim.has(axis) and lim[axis] is Array and (lim[axis] as Array).size() == 2:
 			var lo := float(lim[axis][0])
@@ -1443,8 +2289,58 @@ func strike(ranged: bool) -> void:
 				swing_deg = -swing_deg
 		var vec := Vector3.ZERO
 		vec[["pitch", "yaw", "roll"].find(axis)] = swing_deg
-		_strikes.append({"joint": name, "vec": vec, "up": 0.05 if ranged else 0.10, "down": 0.2 if ranged else 0.28, "t": 0.0})
+		_strikes.append({"joint": name, "vec": vec, "up": 0.05 if ranged else 0.10, "down": 0.2 if ranged else 0.28, "t": -lead})
 	_pose()
+
+
+## A muzzle flare on its look's beat (MuzzleFlare), from `lead` seconds on.
+func fire_flare(node: MeshInstance3D, look: String, lead := 0.0) -> void:
+	var mat := node.material_override as ShaderMaterial
+	if mat == null:
+		return
+	mat.set_shader_parameter("spin", _rng.randf_range(0.0, TAU))
+	_flares.append({"node": node, "mat": mat, "look": look, "t": -lead})
+
+
+## Turn onto a target before firing (Ryan, 31 October: "If there's a cheap way of aiming (torso
+## twist, hover pivot, gimbal) then yeah lets do that"): a joint turning about its up axis (a
+## waist, a turret, a head with guns) or the whole machine (BODY, a hover's or a flyer's pivot)
+## turns `deg` to its left over AIM_UP, holds `hold` seconds and turns back over AIM_DOWN. A
+## joint's limits still clamp it.
+func aim(joint: String, deg: float, hold: float) -> void:
+	if joint != BODY and not joints.has(joint):
+		return
+	_aim = {"joint": joint, "deg": deg, "hold": maxf(0.0, hold), "t": 0.0}
+
+
+func aim_envelope() -> float:
+	if _aim.is_empty():
+		return 0.0
+	var t := float(_aim["t"])
+	var hold := float(_aim["hold"])
+	if t < AIM_UP:
+		var f := t / AIM_UP
+		return 1.0 - (1.0 - f) * (1.0 - f)
+	if t < AIM_UP + hold:
+		return 1.0
+	var g := clampf((t - AIM_UP - hold) / AIM_DOWN, 0.0, 1.0)
+	return 1.0 - g * g * (3.0 - 2.0 * g)
+
+
+## The joint a machine turns to aim the gun on `node` (a pin): the nearest above it that turns
+## about its up axis and is no spinner or steering knuckle; "" when there is none (a gun on the
+## body, a quad's legs).
+func aim_joint_over(node: Node) -> String:
+	var steer: Dictionary = gait.get("steer", {})
+	var p := node.get_parent()
+	while p != null and p != model:
+		var tag := parse_tag(p.name)
+		if tag.size() == 2 and tag[0] == "joint":
+			var name := str(tag[1])
+			if joints.has(name) and str(meta.get(name, {}).get("axis", "")) == "yaw" and not spinners.has(name) and not steer.has(name):
+				return name
+		p = p.get_parent()
+	return ""
 
 
 ## The joint a node hangs under, by name, or "" when it is on the body.

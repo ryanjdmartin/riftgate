@@ -33,6 +33,7 @@ const DISPLAY_DEFAULTS := {
 	"keyword_ink": false,   # a debug build's comparison: on, a term in shown text is bold in ink with its icon in its colour, against the word in its colour (EntryReadout)
 	"aa_mode": "msaa4",   # AA_MODES: the 3D's anti-aliasing (Hud.aa_mode)
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
+	"shot_trails": false,   # a debug build's trial: a shot crossing the field from the muzzle to its target (ShotTrail), tabled as maybe too busy (Ryan, 3 November)
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
