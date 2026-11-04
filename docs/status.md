@@ -48,8 +48,9 @@ are in `README.md`.
 and Claude's first round on them, from main's `1fa1155`: `docs/aphelion_minerva_chassis_proposal.md`
 (his list verbatim; the words that moved, the counts, the shared holes; each machine's holes,
 questions and Claude's leans; then Ryan's target of ten a maker, the shake-out to it, his calls
-on that, and the time-shifter's first round), the echidna's new shape in its brief, the
-status detonator's fold in the jellyfish's, and the pointers (the briefs
+on that, the time-shifter's first round, the detonator folded into the jellyfish and the
+time-shifter kept unrefined), the echidna's new shape in its brief, the status detonator's notes
+in the jellyfish's, the to-do's roster block for ten a maker, and the pointers (the briefs
 README, the README's documents, this file, the to-do). Docs only: nothing decided, nothing built,
 the bible untouched until his marks.
 
@@ -268,9 +269,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   seven ideas of 4 November (Static, the Macross flagship, the Cryo detonator, the time-shifter
   again, a Barrier and Ward support, the status detonator, a shock unit) wait on his marks in
   `docs/aphelion_minerva_chassis_proposal.md`, with Claude's shake-out to his target of ten a
-  maker (4 November: two moved to the Arsenal, three merged; the freed slot to the time area if
-  the status detonator folds into the jellyfish, whose brief now holds the fold; the time-shifter's
-  first round in the proposal).
+  maker (4 November: two moved to the Arsenal, three merged; the status detonator folded into the
+  jellyfish, unrefined, its notes in that brief; the time-shifter kept unrefined, its first round
+  in the proposal; one slot open). The roster's tasks, maker by maker, are the to-do's "The roster:
+  ten a maker".
 - The Arsenal: Misharu, the Onryō, Mastema and Minos, Claude's first round and review in their
   briefs, unanswered: Misharu's two calls first (Penance's shape, how often it may fire), then
   the Onryō's kind and trigger. Ryan's frost and thunder homages of 4 November (each beside an

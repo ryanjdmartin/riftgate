@@ -4,8 +4,8 @@ The session refines Aphelion's jellyfish into the roster's soft-control speciali
 the dispel it carries.
 
 **Status**: direction (14 October); in session since 15 October (Claude's first round, its
-review and Ryan's call on the name, below; Ryan's status detonator of 4 November may fold in,
-below, with what has moved on main since). **Maker**: Aphelion.
+review and Ryan's call on the name, below; Ryan's status detonator of 4 November folded in,
+unrefined, below, with what has moved on main since). **Maker**: Aphelion.
 **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; the bible's rows on the
 dispel and on Numbed (section 5) and on Aphelion's next chassis (section 7).
 
@@ -149,14 +149,17 @@ October at Ryan's ask, written down on 20 October. Ryan's call on the name came 
 - Disrupt is deterministic (the randomness pass): the next move in the foe's list that its
   conditions allow. The foes' fresh start landed on 30 October.
 
-## Ryan, 4 November: the status detonator may fold in
+## Ryan, 4 November: the status detonator folds in
 
 His idea of that day, in his words: "Aphelion: Cannot mount weapons. enemies hit by its equipment
 gain a debuff that explodes after their action, dealing 1 damage per stack of buff and debuff on
 them, Purging them of all buffs and Cleansing their debuffs." Claude proposed folding it into
 this machine the same day (`docs/aphelion_minerva_chassis_proposal.md`, "Ten a maker"). Ryan
-then asked what this brief holds ("its very WIP"). If it folds in, the freed Aphelion slot goes
-to the time area.
+then asked what this brief holds ("its very WIP"), and after its summary: "Lots to sort out here,
+but this isn't the time. Let's say we're folding the unrefined detonator concept into the Science
+vessel, yes, and keeping the unrefined time shifter."
+So the detonator is this machine's, unrefined. Its shape is the session's: the blast as the EMP,
+or the lay as the passive.
 
 Claude's read of the fit, for him to move:
 
@@ -174,9 +177,46 @@ Claude's read of the fit, for him to move:
   Probe) still bring Disrupt for the spread to carry. The other way round, the detonator's lay
   becomes the passive and the spread goes: the machine goes wide by bombs, and its soft control
   is left to the pieces fitted.
-- **The blast's holes** are in the proposal's status detonator section: the count's reach (the
-  bomb itself a stack, Enraged in it, Burning a loss), Numbed and Guarded out of the full purge,
-  the team's marks cleansed with it, and its clock after a skipped action.
+
+**The detonator's holes** (Claude's of 4 November, moved here from the proposal with the fold; the
+"machine" in them is the detonator as it was proposed, a chassis of its own):
+
+1. **"Cannot mount weapons"** breaks the Decided row "Hardpoints are untyped": the die is the slot
+   limit, and a niche the player can leave is an invitation. It also breaks content's "any
+   component in any slot". A passive may break a rule as a one-off, so it is allowed if argued in
+   the open. A softer form keeps the hardpoints untyped and has the passive read equipment only,
+   so a weapon on this machine is a mismatch that costs time, never ability. Claude's lean: the
+   softer form.
+2. **Not a tier one.** No basic is equipment (the basics are four guns, two shields and two vents).
+   With basics alone it would hold nothing its passive reads, so it is a tier two that stocks
+   tier-one equipment, or it carries a locked debuff.
+3. **What the count holds.** "A stack of buff and debuff":
+   - The bomb itself is a stack, so the blast is never blank.
+   - An unstackable status counts as one.
+   - Enraged counts. The Nob's bellow lays a stack for every equipment entry the team spends, so
+     this machine's own spends feed its count: a neat answer to the Nob.
+   - Burning is the case to watch. N stacks would deal N(N+1)/2 over the foe's actions; the blast
+     turns them into N now, which is a loss.
+
+   The blast does best on statuses that deal nothing (Flak, Shocked, the Paradox, Exposed, Webbed)
+   and on the foe's own buffs.
+4. **All at once.** Purge takes N stacks by Ryan's call (28 October: "I would keep it simple and
+   lower everything by N"), so it is never all-or-nothing. A full purge is all-or-nothing, earned
+   here by the setup and the delay. Numbed has been in Purge's reach since 2 November, so a full
+   purge would strip a foe's stun resist and make the detonator a stun enabler. Claude's lean:
+   leave Numbed and Guarded out.
+5. **The team's marks go too.** The Cleanse takes every mark the team laid, so the blast is a
+   cash-out the team times, never a friend to stackers: the Static machine, the Baboon and every
+   Flak gun lose their work. That is the decision this machine asks for.
+6. **When it goes off.** "After their action" needs three answers. Does it go off when a suppressed
+   foe's action is skipped? (The Web bursts whether the action is skipped or not.) Is the blast
+   past armour, as a tick is? And the kill counts for the team.
+7. **The pattern.** Its blast after the foe's action is the echidna's new timing too (see that
+   brief). It parts from the jellyfish's own soft control, which changes the move and purges N,
+   and from the Tensor's read and the benched Zenith Emitter, a gun that adds for each kind of
+   status. The bench's line
+   that "the Arsenal consumes statuses where Aphelion reads them" (Claude's, 22 October, logged as
+   a possibility and never decided) would have this machine cross it.
 
 ## Open for the session (the refinement)
 
@@ -190,8 +230,8 @@ Claude's read of the fit, for him to move:
    (Ryan, 20 October). Since 28 October Purge N is built and its reach takes Numbed (2
    November), so what is open is the EMP's own number and carriers.
 5. Its stock and its designation.
-6. The status detonator's fold (4 November): its blast as the EMP, its lay as the passive, or no
-   fold.
+6. The folded detonator's shape (Ryan, 4 November: folded in, unrefined): its blast as the EMP
+   (Claude's lean) or its lay as the passive; its holes above.
 
 ## Waits on
 

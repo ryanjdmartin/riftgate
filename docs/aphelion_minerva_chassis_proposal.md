@@ -236,25 +236,21 @@ eight decided plus the Magpie and the Snowy Owl. Wainwright & Sutler is 3-5-2 wi
 - **Three merges.**
   - **The shock unit** is the Static machine.
   - **The aura-shifter** becomes the Macross's shifts.
-  - **The status detonator folds into the jellyfish**, if the jellyfish's brief takes it. Ryan
-    asked what that brief holds (it is very WIP), so the fold and its fit are written in it
-    (`docs/briefs/aphelion_jellyfish.md`, 4 November). The jellyfish is the Science Vessel
-    homage, and StarCraft's Science Vessel is unarmed; its EMP Shockwave strips shields and
-    energy. So "cannot mount weapons", and a blast after the foe's action that purges and
-    cleanses, are its homage made concrete, and Aphelion's two Purge machines become one. The
-    Vessel's other two abilities also turn up in Ryan's list, Irradiate as Static and Defensive
-    Matrix as the Barrier, each on a machine of its own.
+  - **The status detonator folds into the jellyfish**, unrefined (Ryan, 4 November: "Let's say
+    we're folding the unrefined detonator concept into the Science vessel, yes"). The
+    jellyfish is the Science Vessel homage, and StarCraft's Science Vessel is unarmed; its EMP
+    Shockwave strips shields and energy. So "cannot mount weapons", and a blast that purges and
+    cleanses, are its homage made concrete, and Aphelion keeps one Purge machine. Its notes are
+    in the jellyfish's brief.
 - **The defensive tier one is the Barrier and Ward support**, a protector at tier one, as the
   Puffin is Kestrel's. Its identity should lean on the Barrier half: every domain throws a big
   blow, while the Ward's worth waits on the domains' riders (its row), a dependency the immune
   one shares. With it in place, the Baboon's move to tier two is free; the hole its brief
   recorded was Aphelion's tender deal.
-- **The open slot goes to the time area** if the detonator folds into the jellyfish. Ryan would
-  "rather flesh out the time-shifter support since that's an entire unexplored area". The two
-  candidates Claude pegged (the reinforcement phase, the long guns) are struck. The time-shifter
-  is already one of the ten, so the slot is either the time area's second machine or stays open
-  while the time-shifter is fleshed out. Claude's first round on the area, and the split it
-  would make, are under "The time-shifter" below.
+- **The open slot stays open.** The detonator's fold freed it, and Ryan is "keeping the
+  unrefined time shifter" (4 November) as one of the ten. The time area may take the slot when
+  the time-shifter is fleshed out ("an entire unexplored area"). The two candidates Claude pegged
+  (the reinforcement phase, the long guns) are struck.
 
 ### The Arsenal: six to ten (0-5-5)
 
@@ -446,7 +442,9 @@ Minerva's Armadillo lays it.
 ### The time-shifter
 
 Ryan listed it again on 4 November, and after the shake-out the same day: "i'd rather flesh out
-the time-shifter support since that's an entire unexplored area." It sits on the briefs README's
+the time-shifter support since that's an entire unexplored area." Last that day, he kept it as
+it stands: "keeping the unrefined time shifter". It is one of Aphelion's ten, and Claude's first
+round below waits for its session. It sits on the briefs README's
 Aphelion bench (Ryan, 17 October: a machine
 "that wants to control the battlefield by delaying and redirecting blows... Soft control, moving
 or delaying hits as a whole identity") and is parked in the bible's Aphelion row, with its holes
@@ -524,8 +522,8 @@ paid for in an ally's own turn.
    ally at a muster's price with the action lost; and from the Lammergeier's mines, which act on
    arrivals.
 
-**One machine or two.** The time-shifter is already one of Aphelion's ten. If the freed slot goes
-to the time area too, Claude would split it by whose clock. The time-shifter keeps the foes'
+**One machine or two**, for its session. The time-shifter is one of Aphelion's ten, and the open
+slot is the time area's if it wants it. Claude would split it by whose clock. The time-shifter keeps the foes'
 clocks (delay and stasis). A time support takes the team's: the bank, and its mirror, a borrow,
 where an ally that has acted rolls again and acts now, and its die stands down next round. Each is
 a second action paid in the ally's own turn. Otherwise it is one machine with the kit above, and
@@ -560,47 +558,10 @@ Ryan, 19 October), and the tier sort puts a support at tier two.
 
 ### The status detonator (no weapons)
 
-"Ten a maker" folds this machine into the jellyfish as its Science Vessel EMP, if the jellyfish's
-brief takes it. The fold and its fit are written in that brief (`docs/briefs/aphelion_jellyfish.md`,
-4 November). These holes hold either way.
-
-**The holes.**
-
-1. **"Cannot mount weapons"** breaks the Decided row "Hardpoints are untyped": the die is the slot
-   limit, and a niche the player can leave is an invitation. It also breaks content's "any
-   component in any slot". A passive may break a rule as a one-off, so it is allowed if argued in
-   the open. A softer form keeps the hardpoints untyped and has the passive read equipment only,
-   so a weapon on this machine is a mismatch that costs time, never ability. Claude's lean: the
-   softer form.
-2. **Not a tier one.** No basic is equipment (the basics are four guns, two shields and two vents).
-   With basics alone it would hold nothing its passive reads, so it is a tier two that stocks
-   tier-one equipment, or it carries a locked debuff.
-3. **What the count holds.** "A stack of buff and debuff":
-   - The bomb itself is a stack, so the blast is never blank.
-   - An unstackable status counts as one.
-   - Enraged counts. The Nob's bellow lays a stack for every equipment entry the team spends, so
-     this machine's own spends feed its count: a neat answer to the Nob.
-   - Burning is the case to watch. N stacks would deal N(N+1)/2 over the foe's actions; the blast
-     turns them into N now, which is a loss.
-
-   The blast does best on statuses that deal nothing (Flak, Shocked, the Paradox, Exposed, Webbed)
-   and on the foe's own buffs.
-4. **All at once.** Purge takes N stacks by Ryan's call (28 October: "I would keep it simple and
-   lower everything by N"), so it is never all-or-nothing. A full purge is all-or-nothing, earned
-   here by the setup and the delay. Numbed has been in Purge's reach since 2 November, so a full
-   purge would strip a foe's stun resist and make the detonator a stun enabler. Claude's lean:
-   leave Numbed and Guarded out.
-5. **The team's marks go too.** The Cleanse takes every mark the team laid, so the blast is a
-   cash-out the team times, never a friend to stackers: the Static machine, the Baboon and every
-   Flak gun lose their work. That is the decision this machine asks for.
-6. **When it goes off.** "After their action" needs three answers. Does it go off when a suppressed
-   foe's action is skipped? (The Web bursts whether the action is skipped or not.) Is the blast
-   past armour, as a tick is? And the kill counts for the team.
-7. **The pattern.** Its blast after the foe's action is the echidna's new timing too (see that
-   brief). It parts from the jellyfish, which changes the move and purges N, and from the Tensor's
-   read and the benched Zenith Emitter, a gun that adds for each kind of status. The bench's line
-   that "the Arsenal consumes statuses where Aphelion reads them" (Claude's, 22 October, logged as
-   a possibility and never decided) would have this machine cross it.
+Folded into the jellyfish, the Science Vessel homage, unrefined. Ryan, 4 November: "Lots to sort
+out here, but this isn't the time. Let's say we're folding the unrefined detonator concept into
+the Science vessel, yes, and keeping the unrefined time shifter."
+Its notes and holes moved to that brief, the design's home (`docs/briefs/aphelion_jellyfish.md`).
 
 ### The shock-synergy unit (Aphelion and/or the Arsenal's thunder homage)
 
@@ -752,9 +713,8 @@ In the order they unblock work:
 1. **Ten a maker** (Ryan's target and calls, 4 November). The Armadillo's move to tier two: now,
    or with the Wild Boar or the mole coming down, and which of the two comes down. The moves to
    the Arsenal (the Zoids walker, the Cryo detonator as the frost figure) and the merges (Static
-   as the shock unit, the aura-shifter into the Macross), still unanswered. The status
-   detonator's fold, once the jellyfish's brief is read. The time area: one machine, or a second
-   in the freed slot.
+   as the shock unit, the aura-shifter into the Macross), unmarked. Aphelion's open slot, the time
+   area's if it wants it.
 2. **The lure tank.** Its base armour, and whether the floor of 1 (section 12's Armadillo question)
    lands with it. It is one of the tier-one fronts beside the Armadillo's move to tier two.
 3. **Static.** Whether a discharge cascades, the triangle on strikes guns, whether it goes through
@@ -763,15 +723,15 @@ In the order they unblock work:
    hands the form the Swallowtail's row refused (one ally, a shield number, or the row
    overruled); whether the mode sets the way of moving on the map; and whether it is the flagship
    in the Carrier's place or beside it.
-5. **The detonators.** Whether "cannot mount weapons" stays as the rule-break or softens; how far
-   the full purge reaches (Numbed, Guarded); the Cryo trade.
+5. **The Cryo detonator** (the Arsenal's frost figure): the cooling traded for the blow, its
+   planter, its gate. The status detonator's questions moved to the jellyfish's brief with it.
 6. **The immune one.** Whose statuses it is immune to; breach; what happens when its machine is
    wrecked.
 7. **The shield bash.** A weapon or a module, and its numbers.
 8. **The echidna** (its brief). Its drawback, the damage's size and timing, its locked piece's
    verb, and whether the Sonic Needle is kept or replaced.
-9. **The rest.** The time-shifter's first round (its principle, the delay, the bank, stasis) and
-   whether it becomes a brief; the Barrier and Ward support's shape and tier; the mole's hook
+9. **The rest.** The time-shifter's first round (its principle, the delay, the bank, stasis), kept
+   unrefined until its session; the Barrier and Ward support's shape and tier; the mole's hook
    (later, Ryan's word).
 10. **Names** (all his). The reserved list's collisions.
 
