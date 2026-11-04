@@ -1,24 +1,26 @@
-"""The Far Bank's map half, its fifth round (Ryan, 4 November, on the fourth): the choir in the intro
-alone, the plucked string, the cellos re-voiced.
+"""The Far Bank's map half, its sixth round (Ryan, 4 November, on the fifth): the cellos and the
+contrabass on true bass instruments, the choir back, the climax's swells shallower.
 
-  "Far bank, map half: remove the choir from the entire map half except the P intro. In the climax,
-  keep volumes consistent. I think I want the single note plucked guitar for both strings and climax
-  section, but lower it 3db for the strings section. I think cellos might need a new voice too for
-  the map half, to match more with the plucked string."
+  "Far Bank - Map cellos replacement needs to be a true bass-level instrument, not a dropped lead
+  voice. Soft sub is ok, are there others? Also, didn't realize that the contrabass is in the same
+  boat. Basically, my goal here is to make the map half not just sound like the battle half with the
+  percussion taken out. I think the choirs need to go back, that was a mistake. Map climax - keep
+  the swells, but reduce the max on it, so it doesn't swell as far. Map strings - 6db under good"
 
-The choir's pads leave every section but the intro (P), the strings section and the climax left on
-the harp, the bells, the tune and the soft sub. The tune is the plucked string on single notes in
-both, as the fourth round's pair had it, the strings section's 3 dB under what he heard there (6 dB
-under the violins' level, "lower it 3db" read as his "bring it down like 3 db" was on Hold The Line's
-K, from what he heard), the climax's at the violins' level. "Keep volumes consistent" is read as the
-climax keeping its level once the choir leaves it: against the rest of the half it fell 0.45 dB on a
-phone and rose 1.0 dB in full, the rest's cellos plucked and lighter in the lows, so its voices come
-down 0.28 dB, which holds it halfway between the two as the cellos' voices are held (CLIMAX_HOLD),
-its rotating swells kept, a row levelling them too. The cellos (the groove's line from the intro's second half, the quiet six-eight, the interlude,
-the closer) go to the plucked string in their register for the full pair, beside the bowed cellos,
-the harp low and the soft sub with a pluck in a set of whole map halves (CELLOS); the contrabass of
-the lift stays bowed. Sets of the strings section (the two levels) and the whole climax (the fourth
-round's pair, the level held, the swells levelled) beside them.
+The forge's cello and contrabass are its violins' detuned saws with vibrato, the battle's string
+section dropped an octave or two; held, their 800 to 2000 Hz stays within 1 to 7 dB of the
+fundamental. Their lines (the cellos': the groove's from the intro's second half, the quiet six-eight,
+the interlude, the closer; the contrabass's: the lift and the triplet turn) go to a true bass
+instrument at their own octaves, each met halfway between the bowed pair's level on a phone and in
+full (BASSES): the soft sub with a pluck for the full pair, his "ok", beside an upright bass
+plucked, a fretless electric, an electric on flatwounds under a thumb (the three from
+real_bass.py) and the synth bass. The choir is back wherever the fourth round had it. The climax
+keeps its swells, each rising half as far over its floor (SWELL), a set with them as they were and
+three quarters as far; with the choir back nothing is made up for its level. The plucked string
+stays 6 dB under the violins in the strings section, his call.
+
+The fifth round's, kept: the tune on the plucked string one note at a time in the strings section
+and the climax; its cello options and its climax hold went with the choir's return.
 
 The fourth round's, kept (map_four): each lead on single notes, a note that rang on under the next
 stopping where the next begins, the tritone at the strings section's end on a soft bell; the shipped
@@ -27,7 +29,7 @@ at half speed and one echo in the groove and the lift alone, the climax's full; 
 and the climax without the battle's orchestra, the horns' break-ins in the strings section on the
 bells, no horns' melody in the climax, a soft sub on the roots for the cellos and the contrabass.
 
-    tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py      # the pair and the sets, then far5.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py      # the pair and the sets, then far6.json beside the pairs
 """
 import json
 import os
@@ -42,7 +44,7 @@ import pair_sketches as P  # noqa: E402
 from hold_sketches import master_together, unmastered  # noqa: E402
 
 NAME = "music_far_bank"
-PAIR = {"id": "far_bank_r5", "title": "The Far Bank, round five"}
+PAIR = {"id": "far_bank_r6", "title": "The Far Bank, round six"}
 FOURTH = os.path.join(P.OUT, "far_bank_r4_map.wav")   # the fourth round's pair's map half, as it was heard
 MAP_LEVEL = P.PAIRS["far_bank"]["level"]   # the first round's map level, 3 dB under the battle half on a phone
 QUIET_ECHO = (3, 0.42, 1)   # the bells' echo, once
@@ -219,6 +221,60 @@ def map_five(call, cello=CELLO, strings_db=STRINGS_DB, climax="held"):
     return dict(kw, voices=voices, pad=pads, crescendo=crescendo)
 
 
+# The sixth round (Ryan, 4 November, on the fifth): "Map cellos replacement needs to be a true
+# bass-level instrument, not a dropped lead voice. Soft sub is ok, are there others? Also, didn't
+# realize that the contrabass is in the same boat. Basically, my goal here is to make the map half not
+# just sound like the battle half with the percussion taken out. I think the choirs need to go back,
+# that was a mistake. Map climax - keep the swells, but reduce the max on it, so it doesn't swell as
+# far. Map strings - 6db under good". The forge's cello and contrabass are its violins' saws with
+# vibrato, the battle's string section dropped; their lines go to a true bass instrument, each met
+# halfway with the bowed pair's level between a phone and full (BASSES).
+BASSES = {
+    "bowed": None,                                                                                   # the bowed pair as it was, the reference
+    "sub": {"inst": "sub_pluck", "params": {}, "level": 0.745},                                       # the soft sub with a finger's pluck: 3.8 dB under the bowed pair on a phone, over in full
+    "upright": {"inst": "real_bass", "params": {"preset": "upright", "amp": "di"}, "level": 3.85},     # an upright bass, plucked, its body (real_bass.py): 3.4 each way
+    "fretless": {"inst": "real_bass", "params": {"preset": "fretless", "amp": "di"}, "level": 2.13},   # a fretless electric, its notes blooming into pitch: 0.4 each way
+    "flat": {"inst": "real_bass", "params": {"preset": "flat", "amp": "di"}, "level": 2.74},           # flatwounds and a soft thumb, the tone rolled back: 1.1 each way
+    "synth": {"inst": "bass", "params": {"drive": 2.5, "cutoff": 600.0}, "level": 0.55},               # the synth bass, the crunch synth dark and soft: 0.3 each way
+}
+BASS6 = "sub"   # the full pair's ("Soft sub is ok")
+SWELL = 0.5     # the climax's swells rising half as far over their floor ("reduce the max on it, so it doesn't swell as far")
+FLOOR = 0.7     # the swells' floor (forge's swells())
+
+
+def shallower(shape, k):
+    """A voice's swells rising `k` as far over their floor, the floor and the closer's cut kept."""
+    return [(pos, FLOOR + (lvl - FLOOR) * k if lvl > FLOOR else lvl) for pos, lvl in shape]
+
+
+def map_six(call, bass=BASS6, swell=SWELL):
+    """The fourth round's map half, the choir back everywhere, with the plucked string on single
+    notes 6 dB under the violins in the strings section and at them in the climax, the cellos' and
+    the contrabass's lines on `bass` (BASSES), and the climax's swells rising `swell` as far."""
+    kw = map_four(call, "pluck", True)
+    b = BASSES[bass]
+    voices = []
+    for v in kw["voices"]:
+        v = dict(v)
+        if v["inst"] == "pluck" and "E" in v["pat"]:
+            v["gain"] = round(v["gain"] * 10.0 ** ((STRINGS_DB - LEAD_DB["E"]) / 20.0), 4)
+        elif v["inst"] in ("cello", "contrabass") and b:
+            v.update(inst=b["inst"], params=dict(b["params"]), gain=round(v["gain"] * b["level"], 4))
+        if swell != 1.0 and "G" in v["pat"] and v.get("shape"):
+            v["shape"] = shallower(v["shape"], swell)
+        voices.append(v)
+    return dict(kw, voices=voices)
+
+
+def render_six(job):
+    """A sixth-round map half, unmastered, from the first round's seed."""
+    F.seed(NAME + "_map")
+    call = P.recipe_call(F.music_far_bank)
+    kw = dict(call)
+    kw.update(map_six(call, *job))
+    return job, unmastered(kw)
+
+
 def render_five(job):
     """A fifth-round map half, unmastered, from the first round's seed; ("four",) is the fourth round's pair."""
     F.seed(NAME + "_map")
@@ -230,20 +286,18 @@ def render_five(job):
 
 # Each set: (id, title, note, the bars cut by index from 0, or None for the whole half, and its rows:
 # (the render, title, note)).
-PAIR_JOB = (CELLO, STRINGS_DB, "held")
+PAIR_JOB = (BASS6, SWELL)
 SETS = [
-    ("fc", "The cellos, through the whole map half", "The map half from the top on each voice for the cellos (the groove's line from the intro's second half, the quiet six-eight, the interlude and the closer). Switch rows anywhere: each carries on from the same beat.", None,
-     [(("bowed", STRINGS_DB, "held"), "The cellos bowed", "As they were."),
-      (PAIR_JOB, "The plucked string", "The lead's own voice in the cellos' register (the full pair's)."),
-      (("harp", STRINGS_DB, "held"), "The harp", "The harp low, its arpeggios' voice."),
-      (("sub", STRINGS_DB, "held"), "The soft sub with a pluck", "The soft sub on the roots, a finger's pluck on its front.")]),
-    ("fe", "The map's strings section", "The tune on the plucked string over the harp's arpeggios, the break-ins on the bells, the choir out.", (24, 40),
-     [(("pluck", -3.0, "held"), "3 dB under the violins", "As the fourth round had it."),
-      (PAIR_JOB, "6 dB under", "3 dB more (the full pair's).")]),
-    ("fg", "The map's climax", "All thirty-two bars: the full bells, the harp's arpeggios, the tune on the plucked string at the violins' level, the soft sub.", (53, 85),
-     [(("four",), "As the fourth round's pair had it", "The choir under it, every voice swelling in turn from the repeat edge, at the level it played."),
-      (PAIR_JOB, "The choir out, its level held", "The climax where it sat against the rest of the half, halfway between a phone and headphones; its swells kept (the full pair's)."),
-      (("pluck", STRINGS_DB, "flat"), "Every voice at one level", "The swells levelled too: the plucked string and the harp each at the level its swells averaged.")]),
+    ("fb", "The cellos and the contrabass, through the whole map half", "The map half from the top, the cellos' lines (the groove's from the intro's second half, the quiet six-eight, the interlude, the closer) and the contrabass's (the lift, the triplet turn) on a true bass instrument, each met halfway between the bowed pair's level on a phone and in headphones. Switch rows anywhere: each carries on from the same beat.", None,
+     [(("sub", SWELL), "The soft sub", "The soft sub with a finger's pluck (the full pair's)."),
+      (("upright", SWELL), "An upright bass, plucked", "An acoustic double bass, its body sounding where no pickup is: a short, woody note and the finger's thump."),
+      (("fretless", SWELL), "A fretless bass", "An electric with no frets, the fingertip stopping the string: a singing sustain, each note blooming up into pitch."),
+      (("flat", SWELL), "Flatwounds and a thumb", "An electric on flatwound strings under a soft thumb, the tone rolled back: dark, round and short."),
+      (("synth", SWELL), "The synth bass", "The crunch synth dark and soft, Night Shift's: held as the bow held.")]),
+    ("fs", "The map's climax, its swells", "All thirty-two bars on the soft sub: the full bells, the harp's arpeggios, the tune on the plucked string at the violins' level, the choir back, every voice swelling in turn from the repeat edge.", (53, 85),
+     [((BASS6, 1.0), "As far as they were", "Each swell's peak where the fourth and fifth rounds had it, up to 9 dB over its floor."),
+      ((BASS6, 0.75), "Three quarters as far", "Each swell rising three quarters as far over the same floor."),
+      ((BASS6, 0.5), "Half as far", "Half as far, the floor kept (the full pair's).")]),
 ]
 
 
@@ -251,7 +305,7 @@ def main():
     os.makedirs(P.OUT, exist_ok=True)
     jobs = list(dict.fromkeys([PAIR_JOB] + [job for _s, _t, _n, _c, rows in SETS for job, _rt, _rn in rows]))
     with ProcessPoolExecutor(max_workers=4) as pool:
-        raw = dict(pool.map(render_five, jobs))
+        raw = dict(pool.map(render_six, jobs))
     # One master and one gain for every render, the gain the one that brings the full pair's to the
     # map's level, so the rows differ only by what changed.
     mastered = dict(zip(jobs, master_together([raw[job] for job in jobs])))
@@ -281,7 +335,7 @@ def main():
             x = halves[job]
             if cut:
                 x = x[int(round(edges[cut[0]] * F.SR)):int(round(edges[cut[1]] * F.SR))]
-            rows.append({"id": rid, "title": rtitle, "note": rnote, "file": os.path.basename(P.write("far5_" + rid, x)),
+            rows.append({"id": rid, "title": rtitle, "note": rnote, "file": os.path.basename(P.write("far6_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         sets.append({"id": sid, "half": "map", "title": title, "note": note, "rows": rows})
         print("%-2s %s" % (sid, "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -292,7 +346,7 @@ def main():
         "loop_from_bar": 1 + int(P.LOOP_FROM.get(NAME, 0)), "bar_at": [round(float(t), 4) for t in at],
         "sections": [{"section": s, "bars": [b0, b1], "at": round(t0, 2), "what": what} for s, b0, b1, t0, what in runs],
         "levels": levels}]}
-    path = os.path.join(P.OUT, "far5.json")
+    path = os.path.join(P.OUT, "far6.json")
     with open(path, "w") as f:
         json.dump(manifest, f, indent=1)
     print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))

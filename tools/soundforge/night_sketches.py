@@ -1,24 +1,29 @@
-"""Night Shift's fourteenth round as a pair (Ryan, 4 November, on the thirteenth): the rhythm guitar back
-in the breakdown, D's bass out, R at one level, the plucked string quieter, on the synth bass.
+"""Night Shift's fifteenth round as a pair (Ryan, 4 November, on the fourteenth): the bass on the
+fingers through an amp, and how far it can be driven.
 
-  "Night shift: Yes, keep the lead guitar. Put the the rhythm guitar back in on B. The bass 3-3-2s in
-  D don't make sense, they cause a bad kind of discord, I think the piano can carry that rhythm on
-  its own. Don't flex the volume for voices in R, I'll pick out what needs to come up or down.
-  Plucked guitar needs to be a bit quieter whenever it's used, it pierces so it sounds loud."
-  "Regarding the bass voices, ironically the Synth bass sounds the most like a real bass to me. The
-  others still sound like dropped guitars with gain on."
+  "Night Shift: Plucked string -3Db is good. Fingers through an amp is a clear winner. What happens
+  if we distort it a little? Will it take it? Can we achieve the "omnific" sound?"
 
-The battle half stays a bass jam with the lead guitar's lines, his call now; the rhythm guitar comes
-back in the breakdown (B), its ringing chords as they were, and stays out everywhere else (GUITARS
-"breakdown"). D's hold leaves the bass (D_BASS), so the house piano carries three-three-two alone
-over the nod's riff. R holds every voice at one level through its turns (R_FLAT): the bass at the
-walk's level in its own turn, where it was 4 dB forward, and under the lead guitar's lick, where the
-hold had it 6 dB down; the piano's turn at its off-beats' level, where it led them by 10.5 dB on
-the same rhythm. The plucked string comes down 3 dB wherever the arpeggio takes it (PLUCK_DB): it
-met the synth lead on a phone and in full, and reads 1.6 dB over it by the ear's weighting (BS.1770),
-its 2 to 5 kHz 6 dB hotter; a set has it as the thirteenth round had it and 6 dB down. The full pair
-is on the synth bass, the voice he hears as a real bass: the modelled basses are the forge's guitar
-string tuned down, its overtones ringing far longer than a bass's do.
+The full pair is on the fingers through an amp with a touch of grit, his pick of the real basses
+(real_bass.py), the plucked string 3 dB down, his call. The drive set steps the same fingers and amp
+up, a little more and then driven with the mids pushed, and then into a modern prog bass's drive,
+the kind The Omnific (a Melbourne trio of two basses and drums, working with Darkglass) are heard
+in: the lows clean under a lower split, the attack raised into a harder drive, the low mids scooped
+and the upper mids lifted after it, a brighter top, a little clean top blended back for the clank;
+and an active bass played near the bridge on new strings into it, the Music Man and Dingwall kind
+they play. On a held E1 every step keeps the real bass's shape, the grind at the attack and the
+overtones falling away as the note rings (driven, its 800 to 2000 Hz from 4 dB under the
+fundamental to 45 under in a second and a half), where the forge's driven bass climbs to 14 over.
+
+The fourteenth round's, kept: the rhythm guitar back in the breakdown (B) alone, the lead guitar's
+lines kept; D's hold without the bass; R at one level; the plucked string 3 dB down wherever the
+arpeggio takes it. In detail: the rhythm guitar's ringing chords in the breakdown alone (GUITARS
+"breakdown"); D's hold without the bass (D_BASS), the house piano carrying three-three-two over the
+nod's riff; R with no voice's level moving for its turn (R_FLAT: the bass at the walk's level in
+its own turn and under the lick, the piano's turn at its off-beats' level, which it had led by
+10.5 dB); the plucked string 3 dB down (PLUCK_DB), since at the synth lead's level on a phone and in
+full it read 1.6 dB over it by the ear's weighting (BS.1770), its 2 to 5 kHz 6 dB hotter. Why the
+modelled basses read as guitars is real_bass.py's.
 
 The thirteenth round's, kept: the map half without its muted guitar (his call); the rhythm guitar
 out of the walk and its ghost notes, R's tenth, the hold and the stop-time hits; the bass voices.
@@ -58,8 +63,8 @@ through; D the piano's turn and the factory's blended, the riff dark and low as 
 guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
 its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night14.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py p        # the named sets only (p, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night15.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py bd       # the named sets only (bd, and full for the pair)
 """
 import json
 import os
@@ -288,7 +293,7 @@ ARP_VOICES = {
 # be a bit quieter whenever it's used, it pierces so it sounds loud"). At 0.64 it met the synth lead
 # on a phone and in full within a third of a dB, and read 1.6 dB over it by the ear's weighting
 # (BS.1770's), its 2 to 5 kHz 6 dB hotter than the synth lead's.
-PLUCK_DB = -3.0
+PLUCK_DB = -3.0   # his call (4 November: "Plucked string -3Db is good")
 HOOK_VOICES = {
     "fm": {"inst": "synlead", "gain": 0.28},     # the FM synth, the fourth round's
     "lead": {"inst": "lead", "gain": 0.25},      # the synth lead
@@ -597,8 +602,16 @@ BASS_VOICES = {
     "real_pick": {"inst": "real_bass", "params": {"preset": "pick", "amp": "di"}, "level": 6.06},       # a pick between the pickups
     "real_flat": {"inst": "real_bass", "params": {"preset": "flat", "amp": "di"}, "level": 8.71},       # flatwounds and a soft thumb, the tone rolled back
     "real_grit": {"inst": "real_bass", "params": {"preset": "finger", "amp": "grit"}, "level": 5.19},   # the fingers through an amp just breaking up
+    # The fingers through an amp driven harder (Ryan, 4 November: "What happens if we distort it a
+    # little? Will it take it? Can we achieve the 'omnific' sound?").
+    # Each met halfway as the rest, phone and full closer the harder it is driven (from 1.7 dB each
+    # way for a little more drive to 0.6 for the active bass).
+    "real_dirt": {"inst": "real_bass", "params": {"preset": "finger", "amp": "dirt"}, "level": 3.37},        # a little more drive
+    "real_driven": {"inst": "real_bass", "params": {"preset": "finger", "amp": "driven"}, "level": 1.80},    # driven, the mids pushed
+    "real_modern": {"inst": "real_bass", "params": {"preset": "finger", "amp": "modern"}, "level": 2.07},    # the fingers into a modern prog drive
+    "real_omnific": {"inst": "real_bass", "params": {"preset": "active", "amp": "modern"}, "level": 1.54},   # an active bass near the bridge into it
 }
-BASS = "synth"   # the full pair's (Ryan, 4 November: "ironically the Synth bass sounds the most like a real bass to me")
+BASS = "real_grit"   # the full pair's (Ryan, 4 November, of the real basses: "Fingers through an amp is a clear winner")
 
 # The guitar's strings (Ryan, 4 November, of the eleventh round's clean basses: "Are these bass
 # lines playing chords? Can I hear them as singles if so?"). The bass plays single notes; the guitar
@@ -809,21 +822,15 @@ def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR):
 
 
 SETS = [
-    {"id": "p", "half": "battle", "title": "The plucked string, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The battle half from the top as the full pair has it, the plucked string at each level wherever the arpeggio takes it: the intro's last four bars, R's turn and the outro. Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("p0", "3 dB down", "The full pair's.", {"pluck_db": -3.0}),
-              ("p1", "As the thirteenth round had it", "At the synth lead's level on a phone and in headphones, 1.6 dB over it by the ear's weighting.", {"pluck_db": 0.0}),
-              ("p2", "6 dB down", "3 dB more.", {"pluck_db": -6.0})]},
-    {"id": "rb", "half": "battle", "title": "A real bass, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The battle half from the top as the full pair has it, the bass on each voice wherever it plays: the walk, the hold, the breakdown's held roots, R's turn. Each real bass is built as a bass, its overtones dying in a fraction of a second while the fundamental rings, and met halfway between the driven bass's level on a phone and in headphones, as the synth bass is. Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("rb0", "The synth bass", "The full pair's.", {"bass": "synth"}),
-              ("rb1", "Fingers over the neck pickup", "Round and warm, roundwound strings, straight into a direct box.", {"bass": "real_finger"}),
-              ("rb2", "Fingers near the bridge", "The bridge pickup: less fundamental, more growl in the mids.", {"bass": "real_bridge"}),
-              ("rb3", "A pick", "Played with a pick between the pickups: a sharper front, the same quick fall.", {"bass": "real_pick"}),
-              ("rb4", "Flatwounds and a thumb", "Flatwound strings, a soft thumb over the neck, the tone rolled back: dark, thumpy and short.", {"bass": "real_flat"}),
-              ("rb5", "Fingers through an amp, a touch of grit", "The neck pickup's fingers through a bass amp just breaking up in the mids, its lows clean.", {"bass": "real_grit"})]},
+    {"id": "bd", "half": "battle", "title": "The bass's drive, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The battle half from the top as the full pair has it, the bass on the fingers through an amp driven a step at a time, then into a modern prog bass's drive: the lows clean under every one, each met halfway between the driven bass's level on a phone and in headphones. Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("bd0", "A touch of grit", "Your pick, the full pair's: the amp just breaking up in the mids.", {"bass": "real_grit"}),
+              ("bd1", "A little more", "The same fingers and amp driven harder, a hint of the mids pushed.", {"bass": "real_dirt"}),
+              ("bd2", "Driven", "Driven hard with the mids pushed, as Hold The Line's real bass is.", {"bass": "real_driven"}),
+              ("bd3", "The fingers into a modern drive", "The same bass into a modern prog drive: the attack raised into it, the low mids scooped and the upper mids lifted after it, a brighter top, a little of the clean top for the clank.", {"bass": "real_modern"}),
+              ("bd4", "An active bass into it", "The Omnific's kind of bass in place of ours: an active bass played near the bridge on new strings, into the same drive.", {"bass": "real_omnific"})]},
 ]
-PAIR = {"id": "night_shift_r14", "title": "Night Shift, round fourteen"}
+PAIR = {"id": "night_shift_r15", "title": "Night Shift, round fifteen"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -883,7 +890,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night14.json")
+    path = os.path.join(P.OUT, "night15.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -895,7 +902,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night14_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night15_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))

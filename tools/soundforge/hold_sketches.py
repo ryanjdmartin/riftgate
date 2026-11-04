@@ -549,7 +549,12 @@ def fifth_above(lo, hi):
 
 
 FIFTH_CHUG = 0.4 / 0.6   # the climax's fifth chug against its own root chug (S, R and Z)
-LIFT_BASS = 0.38         # the roots in the lifts and F, at the root line's gain
+# Every other voice that carries the bass, replaced by the real bass on its own line (Ryan, 4 November:
+# "I meant replacing the existing bass voices, but without any chords where they exist"): the crunch
+# synth's (the lifts' riff, M, K's walk, V) and the sub's in F, each met halfway with the voice it
+# replaces between a phone and full (the crunch synth then 1.1 dB over on a phone and under in
+# full, the sub, all fundamental, 4.3).
+REPLACE = {"bass": 0.863, "sub_bass": 1.062}
 CHORD_LEVEL = 1.149      # one bass playing both strings came out 1.4 dB under the two basses it replaces on a phone and 1.0 in full: this meets them halfway
 
 
@@ -560,15 +565,15 @@ def section_chug(call, s):
     return max(gains) if gains else 0.6
 
 
-def real_bass_on(preset, roots=False, fifths=None, lifts=False, down=False):
+def real_bass_on(preset, roots=False, fifths=None, throughout=False, down=False):
     """The battle's driven bass on the real bass, driven: on every part, or on the roots alone
     (`roots`), the lines a fifth above then out or moved (`fifths`): "chord", one bass playing
     each root and its fifth on two strings into one amp; "chug", the climax's fifth chug, a
     palm-muted power chord on each fifth an octave down, at the climax's balance against the
     section's own chug; "string", one guitar string on the fifth line where the bass played it.
-    `lifts` puts the roots into the lifts (each bar's root wherever the kick hits, under their
-    chug) and F (on the sub's punch, once a bar); `down` puts every bass part an octave down, in
-    the intro's register (Ryan, 4 November, of the roots row's four ways)."""
+    `throughout` replaces every other voice that carries the bass with the real bass on its own
+    line (REPLACE); `down` puts every bass part an octave down, in the intro's register (Ryan,
+    4 November, of the roots row's four ways)."""
     def edit(call):
         bass = [v for v in call["voices"] if v["inst"] == "bass_real"]
         added, chords = [], []
@@ -585,13 +590,10 @@ def real_bass_on(preset, roots=False, fifths=None, lifts=False, down=False):
                 elif fifths == "string":
                     added.append({"inst": "guitar_one", "mode": "riff", "gain": section_chug(call, s) * FIFTH_CHUG,
                                   "octave": hi.get("octave", 0), "pat": {s: line}})
-        if lifts:
-            more = [{"inst": "bass_real", "mode": "riff", "gain": LIFT_BASS, "hold": 1.1, "octave": 0, "pat": {s: kick_chug(call, s)}} for s in ("C", "L")]
-            punch = [v for v in call["voices"] if v["inst"] == "sub_bass" and "F" in v["pat"] and (v.get("params") or {}).get("punch", 0) > 1.0]
-            if punch:
-                more.append({"inst": "bass_real", "mode": "riff", "gain": LIFT_BASS, "hold": 1.0, "octave": 0, "pat": {"F": punch[0]["pat"]["F"]}})
-            bass += more
-            added = more + added
+        if throughout:
+            for v in call["voices"]:
+                if v["inst"] in REPLACE and any(any(c not in ".-" for c in pat) for pat in v["pat"].values()):
+                    v.update(inst="real_bass", params={"preset": preset, "amp": "driven"}, gain=v["gain"] * REPLACE[v["inst"]])
         call["voices"] += chords + added
         for v in bass + chords:
             v.update(inst="real_bass", params={"preset": preset, "amp": "driven", "fifth": any(v is c for c in chords)},
@@ -625,7 +627,7 @@ SETS = [
     {"id": "hv", "half": "battle", "title": "The bass on the roots, four ways", "form": FORM_K,
      "note": "The settled battle half from the top on the picked, driven real bass, each row one change from the roots alone (Ryan, 4 November). Switch rows anywhere: each carries on from the same beat.", "rows": [
         ("hv0", "Picked and driven, on the roots", "As the bass set's third row has it: the lines a fifth above out.", battle_with(battle_picks(), real_bass_on("pick", roots=True))),
-        ("hv1", "On the roots throughout", "The roots into the lifts too, each bar's root wherever the kick hits, locked with their chug, and into F on the sub's punch once a bar.", battle_with(battle_picks(), real_bass_on("pick", roots=True, lifts=True))),
+        ("hv1", "On the roots throughout", "Every voice that carries the bass on the real bass: the driven bass's parts on their roots, and the crunch synth's (the lifts' riff, M, K's walk, V) and the sub's in F on their own lines, each met halfway with the voice it replaces.", battle_with(battle_picks(), real_bass_on("pick", roots=True, throughout=True))),
         ("hv2", "A second bass on the fifths", "The fifths on a second bass beside the first, each through its own amp: the bass set's second row, and how the driven bass always played them.", battle_with(battle_picks(), real_bass_on("pick"))),
         ("hv3", "One bass playing both strings", "Each root and its fifth plucked together on one bass into one amp, so the drive grinds them into each other, met halfway with the two basses' level.", battle_with(battle_picks(), real_bass_on("pick", fifths="chord"))),
         ("hv4", "The climax's guitar on the fifths", "The fifths taken over by the guitar that plays them at the climax: a palm-muted power chord on each, an octave down, at the climax's balance against the section's own chug.", battle_with(battle_picks(), real_bass_on("pick", fifths="chug"))),
