@@ -34,19 +34,39 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				else:
 					ci.draw_polyline(rise, color, width)
 		"aim_every_foe":
-			# Every Foe (a targeting mode since 4 November): the enemy's formation whole, both ranks of
-			# its four columns lit, the far rank smaller and narrower, as the field is seen from behind
-			# the machines (Ryan, 4 November: "I actually like the 8 squares with the 4 rear ones
-			# smaller"), the near rank the marks' one width.
-			var fc := s * 0.376
-			var fp := (size - fc) / 3.0
+			# Every Foe (a targeting mode since 4 November): the enemy's formation whole, both ranks
+			# of its four columns lit, the far rank smaller and narrower, as the field is seen from
+			# behind the machines (Ryan, 4 November: "I actually like the 8 squares with the 4 rear
+			# ones smaller"), held in brackets at its sides ("Can we get side-brackets on All Foes?
+			# Round or square, not sure": square, round behind EVERY_FOE_ROUND), the whole the marks'
+			# one width.
+			var fw := size * 0.68
+			var fc := fw * 0.19
+			var fp := (fw - fc) / 3.0
 			var bc := fc * 0.72
-			var bp := (size * 0.74 - bc) / 3.0
+			var bp := (fw * 0.74 - bc) / 3.0
 			for k in range(4):
-				var back := c + Vector2((k - 1.5) * bp, -s * 0.27)
+				var back := c + Vector2((k - 1.5) * bp, -s * 0.24)
 				ci.draw_rect(Rect2(back - Vector2(bc, bc) * 0.5, Vector2(bc, bc)), color, true)
-				var front := c + Vector2((k - 1.5) * fp, s * 0.26)
+				var front := c + Vector2((k - 1.5) * fp, s * 0.24)
 				ci.draw_rect(Rect2(front - Vector2(fc, fc) * 0.5, Vector2(fc, fc)), color, true)
+			var top := -s * 0.47   # the mark kept inside the slot's band, clear of the main mark and the costs
+			var bottom := s * 0.47
+			for side in [-1.0, 1.0]:
+				var x: float = side * (s - width * 0.5)
+				if EVERY_FOE_ROUND:
+					var half := (bottom - top) * 0.5
+					var r := half * 1.6
+					var th := asin(half / r)
+					var centre := c + Vector2(x - side * r, (bottom + top) * 0.5)   # its outermost point on the width's edge
+					var a0: float = (0.0 if side > 0.0 else PI) - th
+					var bow := PackedVector2Array()
+					for i in range(17):
+						bow.append(centre + Vector2(cos(a0 + 2.0 * th * i / 16.0), sin(a0 + 2.0 * th * i / 16.0)) * r)
+					ci.draw_polyline(bow, color, width)
+				else:
+					var serif: float = -side * s * 0.2
+					ci.draw_polyline(PackedVector2Array([c + Vector2(x + serif, top), c + Vector2(x, top), c + Vector2(x, bottom), c + Vector2(x + serif, bottom)]), color, width)
 		"aim_every_ally", "aim_every_other_ally":
 			# Every Ally and Every Other Ally (targeting modes since 4 November): the three hexes, the
 			# middle its own machine, lit for the whole team and dark for every other ally (Ryan: "the
@@ -56,20 +76,20 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# actually touching them"); the cells a little smaller than a single target's, so the arch
 			# keeps the marks' one width.
 			var k34 := size / 34.0
-			var r := 5.4 * k34
+			var r := 5.0 * k34
 			var pitch := sqrt(3.0) * r
-			var hc := c + Vector2(0.0, s * 0.34)
+			var hc := c + Vector2(0.0, 2.8 * k34)   # the whole centred on the slot, inside its band
 			for k in range(3):
 				var h := hc + Vector2((k - 1) * pitch, 0.0)
 				if k != 1 or id == "aim_every_ally":
 					ci.draw_colored_polygon(_hex_pts(h, r * 0.72), color)
 				Hud.stroke_poly(ci, _hex_pts(h, r), color, maxf(1.0, width * 0.7))
 			var rx := pitch + sqrt(3.0) * 0.5 * r + 2.6 * k34
-			var base := hc + Vector2(0.0, -r * 0.5 - 2.2 * k34)
+			var base := hc + Vector2(0.0, -r * 0.5 - 1.8 * k34)
 			var arch := PackedVector2Array()
 			for i in range(25):
 				var a := PI + PI * i / 24.0
-				arch.append(base + Vector2(cos(a) * rx, sin(a) * (r * 0.5 + 4.6 * k34)))
+				arch.append(base + Vector2(cos(a) * rx, sin(a) * (r * 0.5 + 3.0 * k34)))
 			ci.draw_polyline(arch, color, width)
 		# ---- the die's main marks (Ryan, 3 November): each holds what the entry delivers
 		"weapon":
@@ -698,8 +718,9 @@ static func _inset(pts: PackedVector2Array, ctr: Vector2, k: float) -> PackedVec
 ## segments"), every one the same thickness ("make sure that each segment is the same height");
 ## straight (Direct), or along a gentle lob about a sixth as high as it is wide (Indirect: "Flatten
 ## the indirect a little").
-const FIRE_RUNS := [0.46, 0.2, 0.08]
-const FIRE_GAPS := [0.13, 0.11]
+const FIRE_RUNS := [0.42, 0.22, 0.12, 0.06]   # a line of fire: a solid run and three ever shorter dashes, one height (Ryan, 4 November: "You lost your 4-segment direct and indirect that I approved")
+const FIRE_GAPS := [0.07, 0.06, 0.05]
+const EVERY_FOE_ROUND := false   # Every Foe's side brackets round, not square (Ryan's pick to come, 4 November)
 const STRIKE_RUNS := [0.6, 0.26]   # a Sweep's rising strike: a short line of fire, a solid run and one dash (Ryan, 4 November)
 const STRIKE_GAPS := [0.18]
 

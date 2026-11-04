@@ -168,11 +168,12 @@ defeat when every machine is wrecked. There is no round limit.
   left, its cooling on the right, each in its colour, a bar between, a size down from the rest. A reload
   cools nothing (the Musk Ox's Quick Reload, its one piece): its shells and the ammo it loads
   are its whole mark. The targeting marks are one width: under an entry aimed at a foe, a line of
-  fire, a solid run breaking into two ever shorter dashes with room between, every piece one
+  fire, a solid run breaking into three ever shorter dashes with room between, every piece one
   thickness, straight for Direct and lobbed low for Indirect, for a Sweep the line lobbed whole,
   since a sweep picks any rank, four short lines of fire rising from it, one for each of the
   rank's columns, each a solid run and a dash, and for Every Foe the enemy's formation, both ranks
-  of its four columns lit, the far rank smaller and narrower; every lob is even about its middle;
+  of its four columns lit, the far rank smaller and narrower, in square brackets at its sides;
+  every lob is even about its middle;
   under one spent on a machine, three hex cells sharing their edges, the middle its own machine, a
   lit one a machine it may be spent on, and for Every Ally and Every Other Ally the three cells a
   little smaller under one low arch carried out past the outer cells' edges, touching none, the

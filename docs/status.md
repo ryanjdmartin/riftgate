@@ -304,8 +304,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the Sutler's Hoist's shield with the steam over its whole top, "shield | cool" a size down; a
   reload its shells and its ammo; every mark lined inside and the die's frame dressed to match
   (a lining, accents standing outside its four corners). The targeting marks are one width, the
-  costs below given room and clear of the frame: a line of fire, a solid run and two shorter
-  dashes, every piece one thickness, straight for Direct and lobbed low for Indirect ("we had it
+  costs below given room and clear of the frame: a line of fire, a solid run and three shorter
+  dashes, every piece one height ("You lost your 4-segment direct and indirect that I approved":
+  the fourth pass had cut it to three), straight for Direct and lobbed low for Indirect ("we had it
   right with straight versus curved before"), his three hex cells for a machine; the benched
   marks are `docs/looks/die_marks_candidates.png` and `docs/looks/die_polish_candidates.png`,
   `_2.png` and `_3.png` (the last with the sight without its outer circle and five dash
@@ -1069,7 +1070,8 @@ into this file in the same commit as its first publish; the procedures are in `R
   since its rows from that session's content are not on this branch; over v0.449 at 462,
   published as main took this branch, onto the live v0.448 and its Hold The Line row). Main's
   file is v0.449, so the live page carries this branch's rows and that session's ahead of main's
-  code until they land. The live page may carry rows ahead of main's code while
+  code until they land. This file is v0.455 since (four pieces back in the lines of fire, Every Foe's side
+  brackets), unpublished: it goes up with Ryan's pick of the brackets. The live page may carry rows ahead of main's code while
   their branches have not landed. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
