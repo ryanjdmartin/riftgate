@@ -7589,6 +7589,7 @@ func test_a_players_purge_takes_every_buff_a_foe_carries_but_numbed_and_guarded(
 	act.call(g, "prime", "buff", 2)
 	act.call(g, "rally", "buff", 3)
 	act.call(caster, "enrage", "buff", 1)   # the Nob's rage (3 November): the stacks the team's safe spends feed, laid here by hand
+	act.call(caster, "golden", "buff", 2)   # a golden rage (4 November): the mode a Purge strips
 	Effects.stack(caster, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:caster", 2, Effects.DECAY_NONE)
 	Effects.stack(caster, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_TICK)
 	Effects.stack(caster, Effects.STATUS["guarded"], Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_NONE)

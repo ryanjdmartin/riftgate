@@ -25,9 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 897 tests, 209,597 checks, green (4 November, on `claude/elites-session`: the elites
-  session's twenty kits, the Nob's rage, the wanderers' random draw, the Mantis Ant and the
-  Marsh Serpent; 893 and 209,059 on main, 2 November, main merged into
+- Tests: 900 tests, 209,722 checks, green (4 November, on `claude/elites-session`: the elites
+  session's twenty kits, the Nob's rage, the wanderers' random draw, the Mantis Ant, the Marsh
+  Serpent and the Emperor Scorpion, the golden rage and the crush; 893 and 209,059 on main, 2 November, main merged into
   `claude/brave-cori-fr18de` as it lands: the bosses' slate's twelve, the elites by chance and by
   the tier, the escorts and the review's calls; 875 and 208,362 on main before it, 31 October:
   `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders merged onto
@@ -216,7 +216,18 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   a placeholder kit with escorts and rough art; the Waste's third still his pick (Claude's lean
   Golden Sun's King Scorpion, the proposal's calls). The hangar page shows every foe's combat
   sprite in its Foes list, a grid to compare them, and filters by tier, kind (rank and file,
-  elite, wanderer, boss, hero, part) and art (picked, placeholder, none).
+  elite, wanderer, boss, hero, part) and art (picked, its hero's, placeholder, none).
+  His reads of the 4th, built the same day: the Thunder Ape's Golden Rage a mode (Golden, the
+  session's third mechanism: its blows harder under a point of plate for three rounds, a
+  quarter of its HP lost since or a stun breaking it and the stagger its next action lost, a
+  Purge stripping it, gold again only once calm; Rampage the multi-punch; the spin and the
+  dive on the bench), the World Eater's pin laying Crushed (Defense Down: a point more on
+  every blow the machine takes a stack through the next round, Flak's shape on the other
+  body, cleansable), the Emperor Scorpion (Golden Sun's King Scorpion) the Waste's third boss
+  on his word, so every domain holds three; the foes without art drawn as placeholders (the
+  first elites, the Scorpion) and the hangar's promoted forms wearing their heroes' sprites,
+  so no foe lacks art. Open for Ryan: Golden Sun's elite candidates, the Scorpion's name (the
+  to-do, section 12).
 - The bosses' slate, all twelve (30 October to 2 November, on Ryan's word, his yes, his
   agreement with Claude's leans and his calls on the review of the 2nd; `docs/bosses_proposal.md`,
   its sections on what landed and the calls still open; the bible's section 9 rows), three a
@@ -767,7 +778,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.440 (the page's version
+  `docs/design-bible.html` after every change. This file is v0.441 (the page's version
+  454, published 4 November from `claude/elites-session`, later that day: the golden rage and
+  the crush in the boss mechanics row and the tiers row, the Emperor Scorpion in the register
+  and tiers rows, the domain table and the Built list, section 12's Golden Sun candidates, the
+  tables rerun with the Honey Badger's hopper rows kept by hand, straight onto 453; over v0.440
+  (the page's version
   453, published 4 November from `claude/elites-session`: his calls of the 4th, the three
   names, the Mantis Ant and the Marsh Serpent in the slate's rows and the domain table, the
   Built list's counts, section 12's Waste question, the tables rerun on the content with the
@@ -832,7 +848,14 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 199 (4 November, from `claude/elites-session`: every foe's combat sprite
+  acts on a reloaded page). At the page's version 200 (4 November, later, from `claude/elites-session`: the five foes that
+  had no art drawn as placeholders (the Goblin Shaman, the Elder Treant, the Leshy, the Old Man
+  of the Desert, the Emperor Scorpion) and the eight promoted forms wearing their heroes'
+  sprites under their own paths, marked in `hangar/foes.json` and an Art filter state, so every
+  foe shows one; `content/foes.json`, `content/factions.json` and `content/vocabulary.json` with
+  the day's reads, the vocabulary again a three-way merge onto the live copy; the page the live
+  page with the hero state applied as `tools/hangar.html` carries it; `edits` empty), over 199
+  (4 November, from `claude/elites-session`: every foe's combat sprite
   beside the page, `hangar/foes/<id>.png` for the 97 foes with art, and `hangar/foes.json`
   saying which is a rough placeholder; `content/foes.json`, `content/factions.json` and
   `content/vocabulary.json` from this branch's content of the 4th, the vocabulary again a

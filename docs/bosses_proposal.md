@@ -44,13 +44,13 @@ the cut may be rank and file. The roster since 3 November, every kit a placehold
 | The Marsh | The Antiquarian | Collect, three revenants; Reach through the shield; Collect the Living at everyone, corrupting | 2 to 3 | Darkest Dungeon's Collector by archetype (Ryan, 3 November: placed or wandering; placed, Claude's lean); the Antiquarian his name of 4 November, a double reference the plain word carries straight |
 | The Marsh | The Bone Wyvern | A harder fight, with revenants | 2 to 3 | The genre's bone dragon (Ryan, 24 October) |
 | The Peak | The Cinder Tortoise | A harder fight: Withdraw then Earthquake, its armour stepping by the tier, with two Salamanders | 1 to 3 | Final Fantasy's Adamantoise by archetype, demoted from the bosses (Ryan, 3 November: no named entity) |
-| The Peak | The Thunder Ape | A hunter of the strongest: Lightning Beam switches off the entry shown, Grab and Throw a round out, Golden Rage below half | 1 to 3 | Monster Hunter's Rajang by archetype (Ryan, 3 November: placed; careful, his series) |
+| The Peak | The Thunder Ape | A hunter of the strongest: Lightning Beam switches off the entry shown, Rampage three fists at half, Golden Rage a mode (three rounds harder under a point of plate; a quarter of its HP lost or a stun breaks it and it staggers) | 1 to 3 | Monster Hunter's Rajang by archetype (Ryan, 3 November: placed; careful, his series; his read of 4 November built, the spin and the cannonball dive on the bench) |
 | The Peak | The Bane | A hunter of the strongest: Flame Whip burns, Shadow Blade breaches, Shadow and Flame scorches everyone | 2 to 3 | Tolkien's Balrog by archetype (Ryan, 3 November: "Balrog yes") |
 | The Peak | The Firelord | A harder fight: the Hammer scorches, Submerge then two Sons of Flame | 2 to 3 | Warcraft's Ragnaros by archetype, the elemental line grown (Ryan, 3 November: placed) |
 | Any | Gilgamesh | A harder fight: the steal and the borrowed swing; Enkidu beside him at tier three | 1 to 3 | Final Fantasy's (an elite since 31 October; Enkidu 3 November) |
 | Any | The Reaper | A hunter of the weakest: the Knell two rounds out through the shield | 1 to 3 | Persona's (Ryan, 3 November: "might as well go full Persona and be a wanderer") |
 | Any | The Wild Hunt | Three riders, winged, hunting the slowest; lances that swarm, Frost that switches off | 1 to 3 | Folklore's, the Witcher's take (Ryan, 3 November: "a good place to make an elite pack of multiple clones") |
-| Any | The World Eater | Pushes for the gate at a run: Chomp, Dragon Breath at everyone corrupting, Savage Bite below half | 2 to 3 | Monster Hunter's Deviljho by archetype, the invader (Ryan, 3 November: "Jho (wanderer)"); named by one of its in-world epithets from his list of 4 November |
+| Any | The World Eater | Pushes for the gate at a run: Chomp, Dragon Breath at everyone corrupting, Pin below half (Crushed: every blow the machine takes lands two harder through the next round) | 2 to 3 | Monster Hunter's Deviljho by archetype, the invader (Ryan, 3 November: "Jho (wanderer)"); named by one of its in-world epithets from his list of 4 November; the pin's Defense Down his read of the 4th |
 | Any | The Shuffler | Spawn, two buds a move; Dark Caress corrupts; Fracture at everyone | 2 to 3 | Darkest Dungeon's Shambler by archetype (Ryan, 3 November: "Shambler should be on the table"); the Shuffler his name of 4 November |
 
 The wanderers are drawn at random among those not yet sent, on the Fracture's own roll (3
@@ -83,6 +83,7 @@ stands or shielding it until one falls.
 | The Waste | Gilgamesh | Final Fantasy V | Takes the weapon a machine shows and fights with it; now and then the piece it took is a fake | A steal of the showing entry and a borrowed swing, built; landed 30 October |
 | The Waste | A Tonberry (working name Pilgrim) | Final Fantasy | Creeps closer, its countdown shown, then the knife; Everyone's Grudge grows with every foe the team has killed and passes the shield. Ryan hates it, which may be the point: keep the dread, drop the unfairness (its games kill outright; here the countdown is shown) | Landed 30 October as the Pilgrim, its grudge built; to the elites 3 November ("an obvious elite"), the Waste's hunter |
 | The Waste | An Exor homage | Super Mario RPG | The parts boss: a colossal weapon fallen into the badlands, its eyes shielding the core that drives them, the core untouchable until a part falls. Ryan, 15 October: in, distinct from its game's look, and a hammer or an axe is distinct enough; 18 October, by his pick on the picker: the double-bitted axe standing haft-down, an eye in each blade, cut. The two bits are the parts, a mirrored pair whose blows differ by the eye that drives them (Claude's lean, to propose with its kit: one bit's blow passes the shield, the other's prises loose the component a machine shows, the Waste's two halves), the haft the core | The parts; landed 30 October as the Fallen Weapon |
+| The Waste | The Emperor Scorpion (the King Scorpion by archetype) | Golden Sun: The Lost Age | The Yampi Desert's boss: Twin Shear, the Paralytail's paralysis a disable, Desert Gasp over everyone corrupting; its burrow left to the Mantis Ant and the Sandworm line | Landed 4 November on Ryan's word ("If there's an iconic golden sun boss or elite candidate, we should include it"), the Waste's third; the first Golden Sun homage on the foes' side |
 | The Marsh | The Phantom Train | Final Fantasy VI | Runs a machine down; its whistle calls the dead aboard (Ghosts into the pool) | Landed 30 October |
 | The Marsh | Neclord | Suikoden | Drinks what it deals, and gets back up once | Landed 30 October as the Vampire Lord, its drain built and its readying once a fight |
 | The Marsh | The Matador | Shin Megami Tensei III | Red Capote: hardens for a round, then Andalucia, a flurry of strikes. Ryan, 15 October: in, the legacy pick; the Reaper goes to the elites. Art: his pick of 18 October (the flourish, 4) lacks the hand on the arm bent across his chest; an added arm and a cape grip through the edit model both missed, so the third round was image to image from the pick, as he asked, and landed the hand; his pick of it (3) wanted 2's head and boots (19 October), so the fourth round was the edit model on 3 (red eye sockets, shoes under the greaves) beside a composite of 2's head and shoes onto 3 re-rendered close (image to image at 0.8), the first composite tried since hand edits failed in October; his pick of that (2, the edit) wanted 3's bolder jaw and nose bone, and the fifth round's edit of the skull was "way too much, full of artifacts" (Ryan, 19 October), so the sixth is a composite of 3's skull onto 2, the two aligned siblings, shown raw and after a close pass at 0.9: the jaw and nose bone carried over clean, no artifacts; Ryan's pick (19 October) the second close pass (fixhand6 3), cut into `art/foes` and recorded in picks.json: the Matador is done | Landed 30 October, its cape and flurry a follow-up (built) |
@@ -110,6 +111,7 @@ condition that reads a fallen part, and a move used once a fight.
 | The Meadow | The King Gel | Body Slam; Merge, every Gel and half on the field taken in, regrowing what they had left and its next move a point harder for each; below half, Belly Flop at every machine | Its court is its own escort (Gels at every tier), so the merge has fuel; a Gel taken in is no kill of the team's |
 | The Waste | The Ruby Colossus (2 November, in the Djinn's place; Ryan: "Ruby weapon is cool". The Djinn, a trope archetype, went to the rank and file: a tier-two back-rank caster, the Waste's purge in the ranks) | Big Claw; Whirlsand, a swallow; below half, Ultima, every machine three rounds on. Two tentacles as parts with no guard, the Burrowing (breach, 4) and the Thrashing (two strikes of 3), back three rounds after they fall (6, 4 and two rounds walled the stock teams alone: the read of 2 November) | The kit and its name; parts that guard nothing, so the arms or the body is the question; Ultima's three rounds |
 | The Waste | The Fallen Weapon | The core: Haft; Drive, a rally; below half, The Fall, every machine two rounds on. Two eyes as parts, the Piercing Eye (breach) and the Prising Eye (disable); the core Guarded while both stand, an eye back three rounds after it falls | One eye down opens the core (guard all); the eyes' blows |
+| The Waste | The Emperor Scorpion (4 November, on Ryan's word) | Twin Shear, two strikes at 0.6; Paralytail, a disable; below half Desert Gasp at every machine, Corrupt 1. Armour 1 by its carapace. Its brood at tiers two and three: a Pit Antlion and a Barbed Needler, then a Gorgon, a Pit Antlion and a Great Needler | The kit and its name (the King Scorpion straight is the other); its burrow and its Scoop left out |
 | The Marsh | The Matador | Estocada; Red Capote, armour +3, then Andalucia, four strikes at one machine | A Suppress or a Disrupt on the cape breaks the pair |
 | The Marsh | The Phantom Train | Run Down; Whistle, two Ghosts called up; below half, Last Run, every machine a round on | Two Ghosts, which raise Revenants of their own |
 | The Marsh | The Vampire Lord | Drain, a bite that heals what it takes from the hull; Undying, once a fight when hurt, readying it to get back up whole; below half, Blood Feast, a drain at every machine | 40 HP, since it may rise once; once a fight, so it never readies again after it rises; the drain from the hull alone, so a shield starves it (one of shield and hull walled the slowest trio at every HP tried) |
@@ -187,20 +189,23 @@ Wyverns for the Tyrant at tier three). Open:
 1. **The Cinder Tortoise at tier three** (flagged 2 November, left for now on Ryan's word):
    armour 3, and 5 withdrawn, against blows of 2 to 6, so a round of basics is zeroed; its
    tier-three read with a tier-matched kit is the to-do's, on the runner's `--boss-tiers` cells.
-2. **The Waste's third boss** (3 November, since the Tonberry left the list; the Meadow's third,
-   Secret of Mana's Mantis Ant, and the Marsh's fourth, the Marsh Serpent, landed 4 November on
-   Ryan's word). Golden Sun is a series he wants pulled from and the game holds no homage to it
-   yet beyond the Summoner's job line, but "Manticore isn't the strongest one". Claude's lean,
-   4 November: the **King Scorpion**, the Yampi Desert's boss in Golden Sun: The Lost Age, a
-   massive desert scorpion whose sting corrupts the entry shown and whose pincers strike twice,
-   and below half a burrow that names a strike from under the sand; the first Golden Sun homage
-   on the foes' side, in the desert it came from. Else Chrono Trigger's Retinite (a sand beast in
-   parts, though the Waste holds two bosses in parts already) or Final Fantasy XII's Hashmal
-   (whose quake is the Old Man's). Golden Sun's other named bosses by domain, for later: Tret
-   (a tree, the Meadow), the Killer Ape (the Meadow), Toadonpa and Deadbeard (the Marsh, a
-   giant toad and the ghost pirate superboss), Avimander and the Storm and Tempest Lizards (the
-   Peak), Saturos and Menardi (a pair of fire adepts, the pair trope); Golden Sun's Dullahan,
-   its superboss, is another armoured headless knight beside the Skeleton King's silhouette.
+2. **Golden Sun's candidates** (4 November; the Waste's third boss settled that day on Ryan's
+   word, "If there's an iconic golden sun boss or elite candidate, we should include it. Whether
+   that's the waste boss or something else": the **Emperor Scorpion**, the Yampi Desert's King
+   Scorpion in Golden Sun: The Lost Age by archetype, landed as the Waste's third with its brood,
+   the first Golden Sun homage on the foes' side; its name Claude's pick for his name pass, the
+   King Scorpion straight the other). Still his to mark, Claude's leans: the **Star Magician**
+   (The Lost Age's Treasure Isle superboss, "one of the most challenging, thought-provoking, and
+   tricky encounters" to its fans) as an elite, a caster behind summoned orbs each with one job,
+   a guard that makes it Guarded, a mender that regrows it, a bomb that self-destructs, the orbs
+   resummoned, so the parts system under a summoner: kill order through the orbs, placed in the
+   Waste beside the Djinn or a wanderer; and the **Dullahan** as the genre's superboss when that
+   pinned system comes (the bible's section 9), its Djinn Storm a drain of every reroll and
+   store, never an elite, since an armoured headless knight is the Skeleton King's silhouette.
+   The rest of the series by domain, for later: Tret (a tree, the Meadow), the Killer Ape (the
+   Meadow), Toadonpa and Deadbeard (the Marsh, a giant toad and the ghost pirate superboss),
+   Avimander and the Storm and Tempest Lizards (the Peak), Poseidon and the Kraken (no sea
+   domain), Saturos and Menardi (a pair of fire adepts, the pair trope).
 3. **The escorts' weight** (Ryan, 2 November: "Do the escorts hold up, and support the boss's
    game plan?"; the read in `docs/measurements.md`, the same day). Most are a tax of a round or
    two and some hull on a stock team; three are walls at tier three, and not the heaviest by

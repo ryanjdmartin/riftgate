@@ -112,12 +112,16 @@
           "members": [ { "foe": "basilisk", "strength": 1 }, { "foe": "pit_antlion", "strength": 1 } ] },
         { "id": "ruby_colossus_sands_3", "size": "escort", "boss": "ruby_colossus", "tiers": [3],
           "members": [ { "foe": "gorgon", "strength": 2 }, { "foe": "antlion_queen", "strength": 1 }, { "foe": "pit_antlion", "strength": 1 } ] },
+        { "id": "king_scorpions_brood_2", "size": "escort", "boss": "king_scorpion", "tiers": [2],
+          "members": [ { "foe": "pit_antlion", "strength": 1 }, { "foe": "barbed_needler", "strength": 1 } ] },
+        { "id": "king_scorpions_brood_3", "size": "escort", "boss": "king_scorpion", "tiers": [3],
+          "members": [ { "foe": "gorgon", "strength": 1 }, { "foe": "pit_antlion", "strength": 1 }, { "foe": "great_needler", "strength": 1 } ] },
         { "id": "gilgamesh_wanders", "size": "elite", "tiers": [1, 2],
           "members": [ { "foe": "gilgamesh", "strength": 1 } ] },
         { "id": "gilgamesh_and_enkidu", "size": "elite", "tiers": [3],
           "members": [ { "foe": "gilgamesh", "strength": 1 }, { "foe": "enkidu", "strength": 1 } ] }
       ],
-      "boss": ["ruby_colossus", "fallen_weapon"],
+      "boss": ["ruby_colossus", "fallen_weapon", "king_scorpion"],
       "bench": ["thief", "lancer"],
       "flavour": "Field manual, appendix K: the cactus has never been seen to move. Do not take your eyes off the cactus."
     },

@@ -1,5 +1,5 @@
 {
- "_about": "Which foes have a combat sprite in art/foes (hangar/foes/<id>.png beside the page) and whether it is a picked render (or a recolour of one) or a rough placeholder from tools/placeholder_art.py; written by tools/hangar_data.py (4 November).",
+ "_about": "Which foes have a combat sprite in art/foes (hangar/foes/<id>.png beside the page) and whether it is a picked render (or a recolour of one), a rough placeholder from tools/placeholder_art.py, or its hero's (a promoted form, until the boss register's is cut); written by tools/hangar_data.py (4 November).",
  "art": {
   "goblin": "picked",
   "goblin_guard": "picked",
@@ -54,6 +54,10 @@
   "magma_golem": "picked",
   "basalt_elemental": "picked",
   "sulphur_elemental": "picked",
+  "goblin_shaman": "placeholder",
+  "elder_treant": "placeholder",
+  "leshy": "placeholder",
+  "old_man_of_the_desert": "placeholder",
   "reaper": "picked",
   "goblin_nob": "placeholder",
   "bane": "placeholder",
@@ -80,6 +84,7 @@
   "fiend_of_fire": "placeholder",
   "mantis_ant": "placeholder",
   "marsh_serpent": "placeholder",
+  "king_scorpion": "placeholder",
   "king_gel": "placeholder",
   "pilgrim": "placeholder",
   "djinn": "placeholder",
@@ -97,6 +102,14 @@
   "white_mage": "picked",
   "augur": "picked",
   "black_mage": "picked",
-  "summoner": "picked"
+  "summoner": "picked",
+  "warrior_promoted": "hero",
+  "martial_artist_promoted": "hero",
+  "thief_promoted": "hero",
+  "lancer_promoted": "hero",
+  "white_mage_promoted": "hero",
+  "augur_promoted": "hero",
+  "black_mage_promoted": "hero",
+  "summoner_promoted": "hero"
  }
 }

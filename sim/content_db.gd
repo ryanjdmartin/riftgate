@@ -1888,8 +1888,11 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
 				# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
-				if (effect == "prime" or effect == "regenerate" or effect == "enrage") and int(a.get("value", 0)) < 1:
+				if (effect == "prime" or effect == "regenerate" or effect == "enrage" or effect == "golden") and int(a.get("value", 0)) < 1:
 					errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
+				# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
+				if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
+					errs.append("%s: golden's rounds are the rounds the rage lasts, 1 to 5" % aw)
 				if (effect == "barrier" or effect == "ward_all") and a.has("value"):
 					errs.append("%s: %s takes no value" % [aw, effect])
 				# A cleanse (28 October) takes every mark the team laid, so it says no number, and

@@ -1463,6 +1463,12 @@ func _foe_rows(foe: Foe) -> Array:
 		# the team spends, for the rest of the fight; a Purge clears what has gathered.
 		var raged := Effects.stacks_of(foe, "enraged")
 		rows.append(["overcharge", "+%d" % raged, "Enraged: every shield, vent or equipment entry the team spends makes its blows %d harder, for the rest of the fight (now +%d); a Purge clears it" % [foe.rage, raged], _foe_chip_colour("enraged")])
+	if Effects.has(foe, "golden"):
+		# A golden rage (4 November): the add it carries, the rounds left and the damage that
+		# breaks it, so burst-or-shield reads off the chip.
+		var gold := Effects.golden_value(foe)
+		var rounds_left := sk.golden_rounds_left(foe)
+		rows.append(["overcharge", "+%d" % gold, "Golden: its blows hit %d harder and it wears a point of armour for %d more round%s; %d more damage breaks it and it staggers; a Suppress or a Purge breaks it too" % [gold, rounds_left, "" if rounds_left == 1 else "s", Skirmish.golden_left(foe)], _foe_chip_colour("golden")])
 	# A rally on its way (Ryan, 26 October: "a pulsing version of the incoming buff as a preview
 	# chip, so the player knows it's incoming and that's the reason for the increased damage"):
 	# the Kindled the rallies will land before its blow, already in the number its intent

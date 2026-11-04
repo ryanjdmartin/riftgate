@@ -590,7 +590,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
 		"next_move": f.next_move, "committed": f.committed, "held": f.held, "grudge": f.grudge, "spent_once": f.spent_once, "swallow_mark": f.swallow_mark,
-		"rage": f.rage,
+		"rage": f.rage, "golden_mark": f.golden_mark,
 	}
 
 
@@ -647,6 +647,7 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.spent_once = Array(d.get("spent_once", [])).map(func(x): return str(x))   # its moves used once a fight (30 October)
 	f.swallow_mark = int(d.get("swallow_mark", -1))   # its HP as it swallowed, -1 holding none (31 October)
 	f.rage = int(d.get("rage", 0))   # what the team's safe spends add to its blows once it has bellowed (3 November)
+	f.golden_mark = int(d.get("golden_mark", -1))   # its HP as it went gold, -1 while calm (4 November)
 	var hd = d.get("held", {})   # what a steal took (30 October)
 	if hd is Dictionary and not hd.is_empty():
 		f.held = {"name": str(hd.get("name", "")), "power": int(hd.get("power", 0)), "fake": bool(hd.get("fake", false))}

@@ -790,6 +790,10 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 				# The Nob's gathered rage (3 November): a point of attack a stack on every blow to
 				# come, so worth its stacks over the blows the fight has left (RAGE_BLOWS).
 				rest += float(m.stacks) * RAGE_BLOWS
+			"golden":
+				# A golden rage (4 November): its add on every blow of the rounds it has left, read
+				# over RAGE_BLOWS, and the point of plate it wears.
+				rest += float(Effects.golden_value(foe)) * RAGE_BLOWS + 1.0
 			"primed":
 				rest += PRIMED_WORTH * float(m.stacks)
 	return back + lives * rest
@@ -1459,6 +1463,9 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 		for eff in Effects.STATUS["scorched"]["effects"]:
 			if str(eff.get("effect", "")) == "add_heat":
 				score += float(int(eff.get("value", 0)) * scorch) * BANK_WEIGHT
+	var crushed := Effects.stacks_of(who.unit, "crushed")
+	if crushed > 0:
+		score += float(crushed) * HULL_WEIGHT * CLEANSE_ROUNDS   # a point more on every blow it takes (4 November)
 	var n := who.die.faces.size()
 	if n > 0:
 		for i in range(n):

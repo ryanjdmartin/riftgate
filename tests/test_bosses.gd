@@ -1014,3 +1014,132 @@ func test_the_elites_compositions_hold_their_shapes() -> void:
 	for fid in db.factions.keys():
 		for t in [1, 2, 3]:
 			assert_true(db.elite_compositions(str(fid), t).size() >= 1, "%s has an elite of its own at tier %d" % [fid, t])
+
+
+## The Thunder Ape's Golden Rage (4 November, Ryan's read of Rajang: "a mode, not an attack ...
+## a cycle that forces the player into a cycle of attack and defense, broken by a bold player
+## with great timing"): gold, its blows hit the move's value harder under a point of plate for
+## the move's rounds; a quarter of its HP lost since it went gold breaks it and it staggers out
+## of its next action; a stun breaks it too; a Purge strips it; it roars again only once calm.
+func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(6, I))))
+	sk.add_mech(_mech("B", Die.single(Face.attack(6, I))))
+	var ape := Foe.make("ape", 24, 7)
+	var rage := {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 1, "when": "calm", "text": ""}
+	ape.actions = [_move("fist"), rage]
+	sk.add_foes([ape])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk._when_holds(ape, rage), "calm, it may go gold")
+	ape.action = rage
+	sk.end_round()
+	assert_true(Effects.has(ape, "golden"), "it is gold")
+	assert_eq(ape.damage_of(ape.actions[0]), 9, "its blows two harder")
+	assert_eq(ape.armour_total(), 1, "and a point of plate")
+	assert_eq(ape.golden_mark, 24, "it marks its HP as it goes gold")
+	assert_eq(Skirmish.golden_left(ape), 6, "a quarter of its 24 breaks it")
+	assert_false(sk._when_holds(ape, rage), "gold, it may not roar again")
+	sk.start_round()
+	assert_eq(sk.golden_rounds_left(ape), 3, "three rounds of gold")
+	var copy: Skirmish = SaveGame.clone_skirmish(sk)
+	var cp: Foe = copy.field_foes()[0]
+	assert_eq(cp.golden_mark, 24, "a save keeps the mark")
+	assert_true(Effects.has(cp, "golden"), "and the gold")
+	assert_true(Effects.purge_foe(cp).has(Effects.STATUS["golden"]["name"]), "a Purge strips the gold")
+	assert_true(sk.assign(0, ape), "A strikes for 6, 5 through the plate")
+	assert_eq(ape.hp, 19, "a point of plate off the six")
+	assert_true(Effects.has(ape, "golden"), "short of a quarter, it holds")
+	assert_eq(Skirmish.golden_left(ape), 1, "one more breaks it")
+	assert_true(sk.assign(1, ape), "B strikes")
+	assert_false(Effects.has(ape, "golden"), "a quarter lost: the gold goes")
+	assert_eq(ape.golden_mark, -1, "and it is calm")
+	assert_true(ape.is_suppressed(), "staggered out of its next action")
+	assert_eq(ape.damage_of(ape.actions[0]), 7, "its blows its own again")
+	assert_eq(ape.armour_total(), 0, "the plate gone with the gold")
+	assert_true("\n".join(sk.log).contains("staggers"), "the log says so")
+	# Gold again, and a stun breaks it.
+	sk.end_round()
+	sk.start_round()
+	assert_true(sk._when_holds(ape, rage), "calm again, it may roar")
+	ape.action = rage
+	sk.end_round()
+	assert_true(Effects.has(ape, "golden"), "gold again")
+	sk.start_round()
+	assert_true(sk._suppress(ape), "a stun lands")
+	assert_false(Effects.has(ape, "golden"), "and breaks the gold")
+	assert_eq(ape.golden_mark, -1, "calm")
+	# Gold runs out on its own clock.
+	sk.end_round()
+	sk.start_round()
+	ape.action = rage
+	sk.end_round()
+	for i in range(3):
+		sk.start_round()
+		assert_true(Effects.has(ape, "golden"), "gold through round %d of three" % (i + 1))
+		assert_eq(sk.golden_rounds_left(ape), 3 - i, "counting down")
+		ape.action = ape.actions[0]
+		sk.end_round()
+	sk.start_round()
+	assert_false(Effects.has(ape, "golden"), "three rounds on, the gold is gone")
+	assert_true(sk._when_holds(ape, rage), "and it may roar again")
+	# The validator holds the rounds to 1 to 5.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	db.foes["x_gold"] = {"id": "x_gold", "name": "X", "faction": "peak", "hp": 9, "attack": 3, "codex": "", "flavour": "", "design": {},
+		"actions": [{"id": "a", "name": "A", "kind": "attack", "text": "", "status": "implemented"},
+			{"id": "g", "name": "G", "kind": "buff", "effect": "golden", "value": 2, "rounds": 9, "weight": 1, "text": "", "status": "implemented"}]}
+	var errs: Array = db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.contains("x_gold") and e.contains("golden's rounds")), "nine rounds of gold is refused")
+
+
+## The World Eater's pin (4 November, Ryan: "rework the below half attack into a form of its pin,
+## since that inflicts Defense Down in game, something we don't have"): a crush rider lays
+## Crushed on the machine, a point more on every blow it takes a stack, through the next round;
+## a Ward turns it away and a Cleanse lifts it.
+func test_a_crush_makes_every_blow_the_machine_takes_land_harder_through_the_next_round() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.blank())))
+	var jho := Foe.make("jho", 40, 8)
+	jho.actions = [_move("chomp"), _move("pin", {"factor": 1.25, "keywords": ["crush"], "crush": 2})]
+	var gob := Foe.make("gob", 9, 3)
+	gob.actions = [_move("stab")]
+	sk.add_foes([jho, gob])
+	sk.begin()
+	var a: Skirmish.MechState = sk.mechs[0]
+	var turn := func(jho_move: int) -> void:
+		jho.action = jho.actions[jho_move]
+		jho.target = a
+		gob.action = gob.actions[0]
+		gob.target = a
+		sk.end_round()
+	sk.start_round()
+	turn.call(1)
+	assert_eq(Effects.stacks_of(a.unit, "crushed"), 2, "pinned: Crushed ×2")
+	assert_eq(a.unit.hull, 485, "the pin's 10, then the stab's 3 and 2 more")
+	sk.start_round()
+	assert_eq(Effects.stacks_of(a.unit, "crushed"), 2, "through the next round")
+	turn.call(0)
+	assert_eq(a.unit.hull, 470, "the chomp's 8 and the stab's 3, each 2 harder")
+	sk.start_round()
+	assert_eq(Effects.stacks_of(a.unit, "crushed"), 0, "then it goes")
+	turn.call(0)
+	assert_eq(a.unit.hull, 459, "their own numbers again")
+	# A Ward turns the crush away; a Cleanse lifts it.
+	sk.start_round()
+	Effects.grant_for_rounds(a.unit, Effects.STATUS["ward"], "test", sk.round)
+	turn.call(1)
+	assert_eq(Effects.stacks_of(a.unit, "crushed"), 0, "the Ward turns the crush away")
+	sk.start_round()
+	turn.call(1)
+	assert_eq(Effects.stacks_of(a.unit, "crushed"), 2, "crushed again")
+	assert_true(Effects.cleanse(a.unit).has(Effects.STATUS["crushed"]["name"]), "a Cleanse lifts it")
+	assert_eq(Effects.stacks_of(a.unit, "crushed"), 0, "and it is gone")
+
+
+## Every domain holds three bosses at least (Ryan, 3 November: more is fine): the slate's twelve
+## and the Emperor Scorpion since 4 November.
+func test_every_domain_holds_three_bosses_at_least() -> void:
+	var db := ContentDB.load_default()
+	for fid in db.factions:
+		assert_true(Array(db.factions[fid].get("boss", [])).size() >= 3, "%s holds three bosses at least" % str(fid))

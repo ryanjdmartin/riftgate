@@ -317,7 +317,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
 - **Purge** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter): every foe the
-  entry reaches loses every buff it carries but Numbed and Guarded (Armoured, Kindled, Enraged, Getting
+  entry reaches loses every buff it carries but Numbed and Guarded (Armoured, Kindled, Enraged, Golden, Getting
   Back Up, Primed, Barrier, Ward, Regenerating), after the blow and with the riders, a debuff's
   included, so a foe the blow kills stays down and a Barrier the blow pops is gone already; a
   laid shot purges the foe it lands on.
@@ -366,7 +366,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   shield cannot pay cannot be played: the die shows the cost struck through, it has nowhere
   to land, and END TURN pulses as if the die were spent. It is the first entry with a
   condition on its play, and the pattern for any to come.
-- **Cleanse** (on a shield or a vent, today): the machine it lands on loses Burning, Scorched,
+- **Cleanse** (on a shield or a vent, today): the machine it lands on loses Burning, Scorched, Crushed,
   Silenced, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end, and as
   the fight ends, mid-turn or by a withdrawal, so it never leaves the fight.
@@ -512,6 +512,9 @@ On a machine:
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.
+- **Crushed** (debuff, a foe's crush: the World Eater's pin): every blow the machine takes
+  deals a point more a stack, the shield taking the extra first as it takes any blow, through
+  the next round, when every stack goes; a Ward turns the crush away. Cleansable.
 - **Silenced** (debuff, a foe's silence): its components' keywords are muted through its next
   round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, a
   Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count
@@ -580,6 +583,13 @@ On a foe:
   the number an intent shows is the number that lands. A Purge clears the stacks and the
   bellow goes on. A bellow is an opener: a move marked `opens` (with `once`) is the foe's
   first move of the fight, taken before any other.
+- **Golden** (buff, a golden rage: the Thunder Ape's): for the rounds its move says its blows
+  hit the move's value harder, an add before the factor, and it wears a point of armour. A
+  quarter of its HP lost since it went gold breaks it and it staggers: the gold goes and it
+  loses its next action (never Numbed: a stagger is no stun piece's, and one already
+  suppressed loses nothing more). A Suppress breaks it too; a Purge strips it. Its chip counts
+  the rounds left and the damage that breaks it. It goes gold only while calm (the `calm`
+  condition: not gold), so one rage at a time.
 - **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot and at once, unless it self-destructed; its round is
   over, as a split's half's is, and it takes a mine its fall left there.
@@ -703,7 +713,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   the move's factor: the adds, then the multiplies, the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
   three): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), burn (stacks of
-  Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it), steal (the
+  Burning), disable (the entry the machine shows), corrupt (Corrupted stacks on it), crush
+  (Crushed stacks on the machine: a point more on every blow it takes a stack, through the
+  next round), steal (the
   entry the machine shows switched off through its next turn, as a disable, and taken: its foe
   holds it until its borrowed swing, whose number is what it took, a weapon's printed blow, a
   rolled one at its middle, and anything that was no weapon a fake, for 1),
@@ -711,15 +723,15 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   so a shield starves it; it lays nothing on the machine, so a Barrier's blow drains nothing),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
-  Lure moves it). Scorch, burn and corrupt each say their stacks a blow, as the player's Burn
-  does (Scorch 2: two).
+  Lure moves it). Scorch, burn, corrupt and crush each say their stacks a blow, as the player's
+  Burn does (Scorch 2: two).
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until its
   next action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
   value), brace all (the same on every foe in the fight, through the next round), revive once,
   revive an ally (Getting Back Up on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally (Kindled at its value on every other foe on the field, at once), enrage (the bellow: Enraged's feed from then on), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
+  rally (Kindled at its value on every other foe on the field, at once), enrage (the bellow: Enraged's feed from then on), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   disable, silence (Silenced), purge (every buff a die face bought gone, a store's, a form's
   or a passive's grant until the start of the player's turn; never a last act's), cleanse

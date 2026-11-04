@@ -217,6 +217,14 @@ const STATUS := {
 	# player plays safe; the player's Purge clears the stacks (FOE_PURGED) and the rage goes on.
 	"enraged": {"id": "enraged", "name": "Enraged", "description": "Its blows hit {value} harder for the rest of the fight: a stack for every shield, vent or equipment entry the team has spent since it bellowed.", "decay": "none",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
+	# Golden (4 November, Ryan's read of Rajang: the golden rage "is a mode, not an attack ... a
+	# cycle that forces the player into a cycle of attack and defense, broken by a bold player
+	# with great timing"): a timed grant, its blows harder and a point of plate for the rounds its
+	# move says; a quarter of its HP lost since it went gold, or a Suppress, breaks it and it
+	# staggers (Skirmish._break_golden, _stagger); the player's Purge strips it (FOE_PURGED). Its
+	# add is the move's value (golden()); one rage at a time (renew), the next once it is calm.
+	"golden": {"id": "golden", "name": "Golden", "description": "Its blows hit {value} harder and it wears a point of armour until its rage ends; a quarter of its HP lost since it went gold, or a Suppress, breaks it, and it staggers.", "stacking": "renew", "decay": "none",
+		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}, {"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October): loads the Chainsaw Claw digs out of what it
@@ -246,6 +254,14 @@ const STATUS := {
 	# 22 October). Cleansable.
 	"corrupted": {"id": "corrupted", "name": "Corrupted", "description": "This component bites its owner {value} a stack when spent.",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "corrupt_bite", "value": 3}]},
+	# Crushed (4 November, the World Eater's pin: Monster Hunter's Defense Down by archetype,
+	# Ryan: "something we don't have"): a foe's crush rider lays it, a point more on every blow
+	# the machine takes a stack, through the next round (a timed grant, laid in Skirmish's blow
+	# loop); Flak's shape on the other body, so the chip is a number and every machine feels it,
+	# the shield taking the extra first as it takes any blow. An ally's Cleanse lifts it; a Ward
+	# turns the crush away as it turns any rider.
+	"crushed": {"id": "crushed", "name": "Crushed", "description": "Every blow it takes deals a point more a stack, through the next round.", "decay": "none",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
 	# Flak keyword's number. Every blow of a weapon the foe takes deals a point more a stack, a
 	# strike of 0 included (Ryan, 25 October: "Flak and overcharge exist in part to get past
@@ -340,6 +356,25 @@ static func kindled(value: int) -> Dictionary:
 	d["effects"][0]["value"] = value
 	d["description"] = filled(str(STATUS["kindled"]["description"]), d["effects"])
 	return d
+
+
+## Golden at a move's own value (4 November): the status above with the move's add in place of
+## the default; the plate stays a point whatever the move says.
+static func golden(value: int) -> Dictionary:
+	var d: Dictionary = STATUS["golden"].duplicate(true)
+	d["effects"][0]["value"] = value
+	d["description"] = filled(str(STATUS["golden"]["description"]), d["effects"])
+	return d
+
+
+## What a foe's gold adds to its blows: its live Golden grant's add, 0 while it is calm.
+static func golden_value(f) -> int:
+	for m in live(f):
+		if m.id == "golden":
+			for eff in m.effects:
+				if str(eff.get("effect", "")) == "add_attack":
+					return int(eff.get("value", 0))
+	return 0
 
 
 ## Regenerating at a move's own value (28 October): a grant of its own, three of its owner's
@@ -1683,7 +1718,7 @@ static func purgeable(m) -> bool:
 ## The buffs the player's Purge takes off a foe (28 October): every one it carries but Numbed,
 ## a resistance, and Guarded, its parts' lock. The ids are the engine's (braced is Armoured,
 ## risen Getting Back Up).
-const FOE_PURGED := ["braced", "kindled", "enraged", "risen", "primed", "barrier", "ward", "regenerating"]
+const FOE_PURGED := ["braced", "kindled", "enraged", "golden", "risen", "primed", "barrier", "ward", "regenerating"]
 
 
 ## The player's Purge on a foe (28 October): every buff of FOE_PURGED gone, every stack, whatever

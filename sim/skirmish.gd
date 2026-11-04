@@ -1406,6 +1406,8 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 			return cleanse_target(f) != null
 		"part_fallen":
 			return parts_down(f) > 0
+		"calm":
+			return not Effects.has(f, "golden")   # a rage at a time (4 November): it goes gold again only once calm
 	return true
 
 
@@ -2238,6 +2240,13 @@ func _strike(f: Foe, t: MechState) -> void:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
 			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id, f.rider(f.action, "corrupt"))
 			log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
+		if f.has_keyword(f.action, "crush") and t.alive():
+			# A crush (4 November, the World Eater's pin): Crushed on the machine, a point more on
+			# every blow it takes a stack, through the next round, so the pack's blows after the
+			# pin and the next turn's land harder; an ally's Cleanse lifts it.
+			var nc := f.rider(f.action, "crush")
+			Effects.stack(t.unit, Effects.STATUS["crushed"], Effects.ROUNDS, "foe:" + f.content_id, nc, Effects.DECAY_NONE, round + 1)
+			log.append("%s crushes %s ×%d: every blow it takes through the next round lands harder" % [f.display_name, t.unit.display_name, nc])
 		if f.has_keyword(f.action, "steal") and t.alive() and t.face_index >= 0:
 			_steal(f, t)
 
@@ -2246,7 +2255,7 @@ func _strike(f: Foe, t: MechState) -> void:
 ## Whether this foe's blows carry a rider a Ward turns away: a scorch, a burn, a disable or a
 ## corrupt (the breach is the Ward's too, in _damage_mech; a silence and a purge are specials).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "burn", "disable", "corrupt", "steal"]:
+	for kw in ["scorch", "burn", "disable", "corrupt", "crush", "steal"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return Effects.has(f, "primed")   # a primed foe's blows carry Burning as a rider (28 October)
@@ -3179,6 +3188,14 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			# team spends stacks Enraged on it (feed_rage), a point of attack a stack for the fight.
 			f.rage = maxi(1, value)
 			log.append("%s: %s, every shield, vent or equipment entry the team spends makes its blows %d harder" % [f.display_name, str(a.get("name", "bellows")), f.rage])
+		"golden":
+			# The Thunder Ape's Golden Rage (4 November): a mode for the rounds the move says, its
+			# blows harder by the move's value and a point of plate; a quarter of its HP lost from
+			# here breaks it and it staggers (_break_golden), a Suppress breaks it too (_suppress).
+			var rounds := clampi(int(a.get("rounds", 3)), 1, 5)
+			Effects.grant_for_rounds(f, Effects.golden(maxi(1, value)), "golden", round + rounds)
+			f.golden_mark = f.hp
+			log.append("%s: %s, its blows %d harder and a point of armour for %d round%s; %d more damage breaks it" % [f.display_name, str(a.get("name", "goes gold")), maxi(1, value), rounds, "" if rounds == 1 else "s", golden_left(f)])
 		"burn":
 			# A Ward turns away every rider a foe lays on its machine, a special's as a blow's
 			# (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks").
@@ -3582,6 +3599,51 @@ func swallowed_by(f: Foe) -> MechState:
 			if m.id == "swallowed" and m.source == src:
 				return ms
 	return null
+
+
+## The HP a gold foe's rage breaks at: a quarter of its HP below its HP as it went gold (the
+## swallow's release, the same stagger in its smallest form; 4 November).
+static func golden_break_at(f: Foe) -> int:
+	return f.golden_mark - ceili(f.hp_max / 4.0)
+
+
+## The damage still to deal a gold foe before its rage breaks: its chip's number, never more
+## than it has left.
+static func golden_left(f: Foe) -> int:
+	return clampi(f.hp - golden_break_at(f), 0, maxi(0, f.hp))
+
+
+## The rounds a gold foe's rage has left, this one counted; 0 while it is calm.
+func golden_rounds_left(f: Foe) -> int:
+	for m in Effects.live(f):
+		if m.id == "golden":
+			return maxi(1, m.expires_round - round + 1) if m.expires_round >= 0 else 1
+	return 0
+
+
+## A gold foe that has lost a quarter of its HP since it went gold staggers (4 November, Ryan's
+## read of Rajang: the rage is "broken by a bold player with great timing"): the rage ends and
+## it loses its next action, the bold play's pay, where the swallow's release loses none (the
+## exit if it reads as a free stun). One whose rage ran out on its clock, or was purged, is calm.
+func _break_golden() -> void:
+	for f in field_foes():
+		if f.golden_mark < 0 or not f.alive():
+			continue
+		if not Effects.has(f, "golden"):
+			f.golden_mark = -1
+		elif f.hp <= golden_break_at(f):
+			_stagger(f, "reels")
+
+
+## The rage broken: the gold goes and the foe loses its next action, never Numbed (a stagger is
+## the mode's own, no stun piece's), and one already suppressed loses nothing more.
+func _stagger(f: Foe, why: String) -> void:
+	Effects.remove(f, "golden")
+	f.golden_mark = -1
+	var next := _acted.has(f) or _reinforcing or f.fresh
+	if not _suppressed_through(f, round + 1 if next else round):
+		Effects.grant_for_rounds(f, Effects.STATUS["suppressed"], "stagger", round + 1 if next else round)
+	log.append("%s %s: its golden rage breaks, and it staggers out of its next action" % [f.display_name, why])
 
 
 ## A swallower that has lost a quarter of its HP since it swallowed lets its machine go at
@@ -4203,6 +4265,12 @@ func _suppress(foe: Foe) -> bool:
 		return false
 	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round + 1 if next else round)
 	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", numbed_per_suppress(foe), Effects.DECAY_TICK)
+	if Effects.has(foe, "golden"):
+		# A stun breaks a golden rage (4 November, Ryan's read: it "transforms back after a time
+		# or getting staggered"), the Suppress already its lost action.
+		Effects.remove(foe, "golden")
+		foe.golden_mark = -1
+		log.append("%s's golden rage breaks under the stun" % foe.display_name)
 	return true
 
 
@@ -4751,6 +4819,7 @@ func _clear_dead() -> void:
 	_fall_with_cores()
 	_clear_dead_slots()
 	_release_staggered()
+	_break_golden()
 	_refresh_kin()
 	_refresh_guards()
 

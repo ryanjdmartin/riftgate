@@ -483,6 +483,16 @@
    }
   },
   {
+   "id": "golden_rage",
+   "category": "foe",
+   "name": "Golden Rage",
+   "codex": "Foe move of its own, never a rider on a blow: the foe goes gold (Golden) for the rounds it says, so the round it roars is the window to shield up or to start the burst. It goes gold only while calm, so one rage at a time; a Suppress or a Disrupt stops the roar, as any move.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Thunder Ape's (4 November); see Golden. Its weight is content's, 2 so it comes about a round in three while calm."
+   }
+  },
+  {
    "id": "merge",
    "category": "foe",
    "name": "Merge",
@@ -506,7 +516,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Crushed, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -695,6 +705,22 @@
      "on": "machine",
      "stacks": "Yes: its bite a stack",
      "lasts": "The skirmish"
+    }
+   }
+  },
+  {
+   "id": "crushed",
+   "category": "status",
+   "name": "Crushed",
+   "codex": "Machine status, from a foe's crush (the World Eater's pin): every blow it takes deals a point more a stack, the shield taking the extra first as it takes any blow, through the next round, when every stack goes. A Ward turns the crush away; an ally's Cleanse lifts it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Monster Hunter's Defense Down by archetype, the pin's mark (Ryan, 4 November: rework the World Eater's below-half bite \"into a form of its pin, since that inflicts Defense Down in game, something we don't have\"). Claude's form: Flak's shape on the other body, a point a blow a stack, so every machine feels it and the chip is a number; the forms not taken, its armour counting for nothing through the round (nothing on a car) and its shield halved (fiddly at single digits). Numbers placeholders.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "Yes: a point more a blow a stack",
+     "lasts": "Through the next round, every stack at once"
     }
    }
   },
@@ -1889,6 +1915,22 @@
    }
   },
   {
+   "id": "golden",
+   "category": "status",
+   "name": "Golden",
+   "codex": "Foe status, from a golden rage (the Thunder Ape's). Its blows hit 2 harder and it wears a point of armour for the rounds its rage says, its chip counting them down with the damage that breaks it. A quarter of its HP lost since it went gold breaks the rage and it staggers: the gold goes and it loses its next action. A Suppress breaks it too; a Purge strips it. Calm again, it may go gold again.",
+   "status": "implemented",
+   "design": {
+    "holes": "Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage \"is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing\"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.",
+    "table": {
+     "kind": "buff",
+     "on": "foe",
+     "stacks": "No: one rage at a time",
+     "lasts": "The rage's rounds; a quarter of its HP lost since, a Suppress or a Purge ends it early"
+    }
+   }
+  },
+  {
    "id": "kindled",
    "category": "status",
    "name": "Kindled",
@@ -2008,6 +2050,16 @@
    "status": "implemented",
    "design": {
     "holes": ""
+   }
+  },
+  {
+   "id": "crush",
+   "category": "foe",
+   "name": "Crush",
+   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Crushed on the machine it hit (Crush 2: two): every blow it takes through the next round deals a point more a stack. A Ward turns it away; an ally's Cleanse lifts the mark.",
+   "status": "implemented",
+   "design": {
+    "holes": "The World Eater's pin (4 November); see Crushed."
    }
   },
   {

@@ -41,7 +41,7 @@ const TABLE := {
 	"kill_rerolls": ["reroll", "plain"],
 	# Statuses.
 	"burning": ["burn", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
-	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
+	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"],
 	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "syrinx_drone": ["syrinx_drone", "heat"],
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
@@ -49,12 +49,12 @@ const TABLE := {
 	"retaliate": ["shocked", "guard"], "suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
 	"exposure": ["exposed", "harm"], "destroyed_component": ["crack", "harm"],
-	"corrupted": ["corrupt", "enemy"], "disabled": ["blank", "enemy"], "silenced": ["silence", "enemy"],
+	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "disabled": ["blank", "enemy"], "silenced": ["silence", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
 	"rallied": ["reroll", "plain"], "quick_turned": ["rapid", "plain"],
 	# A foe's moves: the keywords they carry, the list's last heading. A foe-side word without a row
 	# here (its aim, its menace, the seal) is the engine's and stays out of the list.
-	"scorch": ["scorch", "heat"], "silence": ["silence", "enemy"], "swallow": ["swallowed", "enemy"],
+	"scorch": ["scorch", "heat"], "crush": ["flak", "enemy"], "golden_rage": ["overcharge", "heat"], "silence": ["silence", "enemy"], "swallow": ["swallowed", "enemy"],
 	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
 	"follow_up": ["next", "enemy"], "last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
 	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull

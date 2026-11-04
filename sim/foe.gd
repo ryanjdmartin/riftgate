@@ -62,6 +62,7 @@ var spent_once: Array = []       # the moves marked `once` it has used this figh
 var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding none: a quarter of its HP lost since lets it go (31 October)
 var wanders: bool = false        # an elite any domain's Fracture may send, drawn by chance (Gilgamesh, 31 October and 2 November)
 var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows, once it has bellowed (enrage, 3 November: the Goblin Nob); 0 until then
+var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -73,9 +74,9 @@ const AIM_TEXT := {
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
-const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready", "ally_marked", "part_fallen"]
+const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready", "ally_marked", "part_fallen", "calm"]
 const WHEN_TEXT := {
-	"below_half": "when below half", "missing_hull": "when hurt",
+	"below_half": "when below half", "missing_hull": "when hurt", "calm": "when it is calm",
 	"back_behind": "when something stands behind it",
 	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
 	"machine_buffed": "when a machine carries a buff", "ally_unready": "when one of its own is not readied",
@@ -336,13 +337,13 @@ func strikes() -> int:
 ##           move hits `value` harder for each (the King Gel's, 30 October: thin the Gels first)
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
-	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "enrage"],
+	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "enrage", "golden"],
 	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel", "swallow"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "enrage"]
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "enrage", "golden"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick
@@ -383,12 +384,12 @@ func intent_on(u) -> bool:
 ## on the machine, so no Ward turns it away, and Burning on the striker is its race.
 ## A silence and a purge are specials, never riders (28 October: a rider on a hitter's blow is a
 ## tax with no decision), so neither is an attack keyword; the validator refuses them on a blow.
-const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "self_destruct", "all", "steal", "drain"]
+const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["silence", "dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
 ## player's Burn N: Scorch 2 lays two stacks a blow).
-const NUMBERED_RIDERS := ["scorch", "burn", "corrupt"]
+const NUMBERED_RIDERS := ["scorch", "burn", "corrupt", "crush"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

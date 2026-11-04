@@ -396,7 +396,7 @@ const foeArtState = (id) => (state.foeArt ? (state.foeArt[id] || "none") : "none
 function spriteEl(id, big = false) {
   const st = foeArtState(id);
   if (st === "none") return el("div", {class: "sprite none", title: state.foeArt ? "no sprite in art/foes yet: the views draw the placeholder shape" : "loading"}, state.foeArt ? "no art" : "");
-  return el("div", {class: "sprite" + (st === "placeholder" ? " ph" : ""), title: st === "placeholder" ? "a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked" : "a picked render, or a recolour of one"},
+  return el("div", {class: "sprite" + (st === "placeholder" ? " ph" : ""), title: st === "placeholder" ? "a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked" : st === "hero" ? "its hero's sprite: a promoted form wears it until the boss register's is cut" : "a picked render, or a recolour of one"},
     el("img", {src: fresh("hangar/foes/" + id + ".png"), alt: "", loading: "lazy", width: big ? null : "36"}));
 }
 // A foe's kind (4 November): its flags and where the content lists it, by structure.
@@ -558,7 +558,7 @@ const FILTER_SPECS = {
       {id: "faction", label: "Faction", of: e => [e.faction], name: factionName, order: () => [...ctx().factions.keys()]},
       {id: "kind", label: "Kind", of: e => [foeKind(e)], order: ["rank and file", "elite", "wanderer", "boss", "hero", "promoted", "part"]},
       {id: "tier", label: "Tier", of: e => foeTiers(e), name: v => v === "final" ? "Final" : "T" + v, order: ["1", "2", "3", "final", "1*", "2*", "3*"]},
-      {id: "art", label: "Art", of: e => [foeArtState(e.id)], name: v => v === "none" ? "No art" : v === "ph" ? "Placeholder" : v[0].toUpperCase() + v.slice(1), order: ["picked", "placeholder", "none"]},
+      {id: "art", label: "Art", of: e => [foeArtState(e.id)], name: v => v === "none" ? "No art" : v === "hero" ? "Hero's" : v[0].toUpperCase() + v.slice(1), order: ["picked", "hero", "placeholder", "none"]},
       {id: "rank", label: "Rank", of: e => [e.rank], order: ["front", "back"]},
       {id: "size", label: "Size", of: e => [String(e.size || 1)], name: v => v === "2" ? "Massive" : "Size " + v},
       {id: "aim", label: "Aim", of: e => [e.aim || "exposed"]},

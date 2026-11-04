@@ -554,6 +554,98 @@ def marsh_serpent(d, w, h):
     d.line((60, 56, 60, 70, 56, 76), fill=(220, 60, 60, 255), width=2)   # the tongue
 
 
+def king_scorpion(d, w, h):
+    shell, dark, sting, sand, eye = (170, 130, 70, 255), (90, 60, 30, 255), (40, 30, 20, 255), (214, 190, 130, 255), (240, 60, 40, 255)
+    d.ellipse((8, 120, 88, 142), fill=sand)                      # the dune it rises from
+    d.ellipse((18, 84, 78, 126), fill=shell)                     # the body
+    d.ellipse((28, 92, 68, 118), fill=dark)                      # the plated back
+    d.ellipse((34, 70, 62, 96), fill=shell)                      # the head
+    d.ellipse((38, 78, 44, 84), fill=eye)
+    d.ellipse((52, 78, 58, 84), fill=eye)
+    d.line((30, 84, 10, 60), fill=shell, width=7)                # the pincers, raised wide
+    d.polygon([(4, 44), (18, 62), (6, 66)], fill=shell)
+    d.polygon([(4, 44), (20, 56), (18, 62)], fill=dark)
+    d.line((66, 84, 86, 60), fill=shell, width=7)
+    d.polygon([(92, 44), (78, 62), (90, 66)], fill=shell)
+    d.polygon([(92, 44), (76, 56), (78, 62)], fill=dark)
+    for i, (x, y, r) in enumerate(((70, 104, 9), (80, 88, 9), (84, 70, 8), (80, 52, 8), (70, 38, 7), (58, 30, 7))):
+        d.ellipse((x - r, y - r, x + r, y + r), fill=shell if i % 2 == 0 else dark)   # the tail curled over its back
+    d.polygon([(54, 26), (44, 12), (50, 32)], fill=sting)        # the sting, hooked forward
+    for x0, x1 in ((22, 6), (26, 10), (32, 18), (64, 90), (70, 86), (74, 78)):
+        d.line((x0, 112, x1, 134), fill=dark, width=3)           # the legs
+
+
+def goblin_shaman(d, w, h):
+    grey, dgrey, green, bone, wood, bolt = (120, 120, 130, 255), (80, 80, 90, 255), (90, 140, 60, 255), (230, 225, 200, 255), (110, 70, 40, 255), (120, 220, 255, 255)
+    d.ellipse((6, 50, 62, 82), fill=grey)                        # the wolf
+    d.ellipse((50, 40, 70, 60), fill=grey)
+    d.polygon([(54, 42), (56, 30), (62, 44)], fill=dgrey)        # an ear
+    d.ellipse((60, 46, 64, 50), fill=(240, 200, 50, 255))        # its eye
+    d.line((6, 60, 2, 44), fill=grey, width=4)                   # the tail
+    for x in (14, 24, 44, 54):
+        d.rectangle((x, 78, x + 5, 92), fill=dgrey)               # the legs
+    d.ellipse((24, 26, 44, 54), fill=green)                      # the rider
+    d.ellipse((28, 12, 42, 28), fill=green)
+    d.polygon([(26, 18), (18, 12), (28, 24)], fill=green)        # the ears
+    d.polygon([(42, 18), (50, 12), (40, 24)], fill=green)
+    d.ellipse((26, 8, 44, 18), fill=bone)                        # the wolf-skull headdress
+    d.ellipse((30, 22, 33, 25), fill=(240, 60, 40, 255))
+    d.ellipse((37, 22, 40, 25), fill=(240, 60, 40, 255))
+    d.line((20, 48, 12, 8), fill=wood, width=3)                  # the totem staff
+    for y in (10, 16, 22):
+        d.line((12, y, 4, y + 6), fill=bone, width=2)             # its feathers
+    d.line((46, 40, 56, 30, 50, 30, 62, 18), fill=bolt, width=2) # lightning in the other hand
+
+
+def elder_treant(d, w, h):
+    bark, dbark, leaf, dleaf, eye = (110, 75, 40, 255), (70, 45, 25, 255), (60, 120, 50, 255), (35, 80, 35, 255), (240, 200, 50, 255)
+    d.ellipse((6, 6, 90, 70), fill=leaf)                         # the crown
+    d.ellipse((16, 2, 80, 40), fill=dleaf)
+    d.polygon([(34, 40), (62, 40), (70, 136), (26, 136)], fill=bark)   # the trunk
+    d.line((40, 48, 36, 130), fill=dbark, width=3)
+    d.line((58, 50, 60, 130), fill=dbark, width=3)
+    d.ellipse((38, 60, 46, 68), fill=eye)                        # the face in the bark
+    d.ellipse((52, 60, 60, 68), fill=eye)
+    d.polygon([(42, 80), (56, 80), (49, 90)], fill=dbark)
+    d.line((34, 56, 8, 36), fill=bark, width=6)                  # the arms
+    d.line((62, 56, 88, 40), fill=bark, width=6)
+    d.polygon([(26, 136), (8, 142), (30, 128)], fill=dbark)      # the roots
+    d.polygon([(70, 136), (90, 142), (66, 128)], fill=dbark)
+
+
+def leshy(d, w, h):
+    body, dark, antler, eye, root = (60, 50, 40, 255), (35, 30, 25, 255), (120, 100, 70, 255), (240, 200, 50, 255), (90, 70, 40, 255)
+    d.polygon([(28, 28), (44, 28), (50, 92), (22, 92)], fill=body)   # a tall thin body
+    d.ellipse((26, 10, 46, 34), fill=dark)                           # the skull
+    d.ellipse((30, 18, 35, 23), fill=eye)
+    d.ellipse((38, 18, 43, 23), fill=eye)
+    d.line((30, 12, 14, 2), fill=antler, width=3)                    # the antlers
+    d.line((22, 7, 16, 14), fill=antler, width=2)
+    d.line((26, 9, 20, 0), fill=antler, width=2)
+    d.line((42, 12, 58, 2), fill=antler, width=3)
+    d.line((50, 7, 56, 14), fill=antler, width=2)
+    d.line((46, 9, 52, 0), fill=antler, width=2)
+    d.line((28, 44, 10, 70), fill=body, width=4)                     # the arms
+    d.line((44, 44, 64, 60), fill=body, width=4)
+    d.line((64, 60, 70, 92), fill=root, width=3)                     # a staff of root
+    for x in (12, 22, 50, 60):
+        d.line((36, 90, x, 95), fill=root, width=2)                  # roots snaring the ground
+
+
+def old_man_of_the_desert(d, w, h):
+    skin, dskin, sand, mouth, tooth = (190, 160, 110, 255), (140, 110, 70, 255), (214, 190, 130, 255), (60, 20, 20, 255), (240, 230, 200, 255)
+    d.ellipse((4, 118, 92, 142), fill=sand)                      # the sand it rises from
+    for i, (y, rx) in enumerate(((112, 30), (92, 32), (72, 33), (52, 32), (34, 30))):
+        d.ellipse((48 - rx, y - 14, 48 + rx, y + 14), fill=skin if i % 2 == 0 else dskin)   # the segments, rising
+    d.ellipse((18, 6, 78, 48), fill=mouth)                        # the maw, open at the top
+    for k in range(12):
+        a = math.radians(k * 30)
+        ox, oy = 48 + 29 * math.cos(a), 27 + 20 * math.sin(a)
+        ix, iy = 48 + 16 * math.cos(a), 27 + 11 * math.sin(a)
+        px, py = -math.sin(a) * 3, math.cos(a) * 2
+        d.polygon([(ox + px, oy + py), (ox - px, oy - py), (ix, iy)], fill=tooth)   # the ring of teeth
+
+
 FOES = {
     # id: (draw, massive)
     "king_gel": (king_gel, True),
@@ -589,6 +681,11 @@ FOES = {
     "goblin_nob": (goblin_nob, False),
     "mantis_ant": (mantis_ant, True),
     "marsh_serpent": (marsh_serpent, True),
+    "king_scorpion": (king_scorpion, True),
+    "goblin_shaman": (goblin_shaman, False),
+    "elder_treant": (elder_treant, True),
+    "leshy": (leshy, False),
+    "old_man_of_the_desert": (old_man_of_the_desert, True),
 }
 
 

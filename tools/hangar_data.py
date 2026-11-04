@@ -83,9 +83,17 @@ def main():
         if os.path.exists(os.path.join(ROOT, src)):
             files["hangar/foes/%s.png" % e["id"]] = src
             art[e["id"]] = "placeholder" if e["id"] in placeholders else "picked"
+            continue
+        # A promoted form wears its hero's sprite until the boss register's is cut (the game's
+        # Sprites._foe does the same): published under the form's own path, marked "hero".
+        hero = str(e.get("promotes", ""))
+        hero_src = os.path.join("art", "foes", "%s_combat.png" % hero)
+        if hero and os.path.exists(os.path.join(ROOT, hero_src)):
+            files["hangar/foes/%s.png" % e["id"]] = hero_src
+            art[e["id"]] = "hero"
     foes_manifest = os.path.join(ROOT, "docs", "hangar", "foes.json")
     if not check_only:
-        json.dump({"_about": "Which foes have a combat sprite in art/foes (hangar/foes/<id>.png beside the page) and whether it is a picked render (or a recolour of one) or a rough placeholder from tools/placeholder_art.py; written by tools/hangar_data.py (4 November).",
+        json.dump({"_about": "Which foes have a combat sprite in art/foes (hangar/foes/<id>.png beside the page) and whether it is a picked render (or a recolour of one), a rough placeholder from tools/placeholder_art.py, or its hero's (a promoted form, until the boss register's is cut); written by tools/hangar_data.py (4 November).",
                    "art": art}, open(foes_manifest, "w"), indent=1)
     files["hangar/foes.json"] = "docs/hangar/foes.json"
     for cid, p in pins.items():
