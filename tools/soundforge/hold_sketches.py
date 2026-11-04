@@ -561,6 +561,12 @@ FIFTH_CHUG = 0.4 / 0.6   # the climax's fifth chug against its own root chug (S,
 # full, the sub, all fundamental, 4.3).
 REPLACE = {"pick": {"bass": 0.863, "sub_bass": 1.062},
            "omnific": {"bass": 0.788, "sub_bass": 0.942}}   # the Omnific's: the crunch synth 1.7 dB each way, the sub 4.9
+# A replaced voice heard in one section alone, met there on its own where its notes move the meeting
+# point: K's walk holds every note a beat at the solo's slower tempo, and on notes that long the
+# active bass falls further under the crunch synth than on its lines elsewhere, so the Omnific meets
+# the walk at 0.927, 1.6 dB each way (the crunch synth's 0.788 would leave it 1.4 dB under, 0.2 over
+# on a phone and 3.0 under in full).
+REPLACE_IN = {"omnific": {("bass", "K"): 0.927}}
 BOTH = 0.708   # two basses an octave apart, each 3 dB down so the pair holds one bass's level
 CHORD_LEVEL = 1.149      # one bass playing both strings came out 1.4 dB under the two basses it replaces on a phone and 1.0 in full: this meets them halfway
 
@@ -579,7 +585,8 @@ def real_bass_on(preset, roots=False, fifths=None, throughout=False, down=False,
     palm-muted power chord on each fifth an octave down, at the climax's balance against the
     section's own chug; "string", one guitar string on the fifth line where the bass played it.
     `throughout` replaces every other voice that carries the bass with the real bass on its own
-    line (REPLACE), but a voice heard only in `spare`'s sections; `down` puts every bass part an
+    line (REPLACE, or REPLACE_IN for a voice heard in one section alone), but a voice heard only
+    in `spare`'s sections; `down` puts every bass part an
     octave down, in the intro's register (Ryan, 4 November, of the roots row's four ways); `both`
     plays every bass part on two basses, one an octave down and one at the written root, each 3 dB
     down (BOTH)."""
@@ -604,7 +611,8 @@ def real_bass_on(preset, roots=False, fifths=None, throughout=False, down=False,
             for v in call["voices"]:
                 heard = {sec for sec, pat in v["pat"].items() if any(c not in ".-" for c in pat)}
                 if v["inst"] in REPLACE[preset] and heard and not heard <= set(spare):
-                    v.update(inst="real_bass", params=dict(PARAMS[preset]), gain=v["gain"] * REPLACE[preset][v["inst"]])
+                    own = REPLACE_IN.get(preset, {}).get((v["inst"], *heard)) if len(heard) == 1 else None
+                    v.update(inst="real_bass", params=dict(PARAMS[preset]), gain=v["gain"] * (own or REPLACE[preset][v["inst"]]))
                     replaced.append(v)
         call["voices"] += chords + added
         for v in bass + chords:
@@ -651,11 +659,11 @@ SETS = [
         ("hv6", "On the roots an octave down", "Every bass part in the intro's low register throughout, at the chug's root.", battle_with(battle_picks(), real_bass_on("pick", roots=True, down=True))),
     ]},
     {"id": "ho", "half": "battle", "title": "The Omnific bass, through the whole battle half", "form": FORM_K,
-     "note": "The settled battle half from the top, every voice that carries the bass on an active bass played near the bridge into a modern prog drive, the soft sub and the crunch synth with it, but K's crunch synth walk, its signature (Ryan, 4 November). Each meets the voice it replaces halfway between a phone and headphones. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("ho0", "On the roots, as written", "Single notes on the roots at their written octaves.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("K",)))),
-        ("ho1", "On the roots, the low octave", "The same an octave down throughout, the intro's register.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("K",), down=True))),
-        ("ho2", "A second bass on the fifths", "The roots, and a second bass on the fifths where the guitar plays power chords, each through its own amp.", battle_with(battle_picks(), real_bass_on("omnific", throughout=True, spare=("K",)))),
-        ("ho3", "Two basses, the low octave and the root", "Every root on two basses an octave apart, each 3 dB down so the pair holds one bass's level.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("K",), both=True))),
+     "note": "The settled battle half from the top, every voice that carries the bass on an active bass played near the bridge into a modern prog drive, the crunch synth with it (K's walk included), but F's punchy sub, its signature (Ryan, 4 November: \"I meant F keeps it's old sub bass\"). Each meets the voice it replaces halfway between a phone and headphones. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("ho0", "On the roots, as written", "Single notes on the roots at their written octaves.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("F",)))),
+        ("ho1", "On the roots, the low octave", "The same an octave down throughout, the intro's register.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("F",), down=True))),
+        ("ho2", "A second bass on the fifths", "The roots, and a second bass on the fifths where the guitar plays power chords, each through its own amp.", battle_with(battle_picks(), real_bass_on("omnific", throughout=True, spare=("F",)))),
+        ("ho3", "Two basses, the low octave and the root", "Every root on two basses an octave apart, each 3 dB down so the pair holds one bass's level.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("F",), both=True))),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r13", "title": "Hold The Line, round thirteen",
