@@ -25,9 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 914 tests, 254,295 checks, green (3 November, on `claude/chassis-runner-rows`: the
-  Cassowary's cycle bot and its three tests, the salvo's reserve; 911 and 254,286 on main at
-  `62ef7ee`), about four minutes
+- Tests: 917 tests, 254,298 checks, green (4 November, on `claude/chassis-runner-rows`: the
+  Cassowary's cycle bot, the salvo's reserve and a Rapid entry's action again, each with its
+  tests; 911 and 254,286 on main at `62ef7ee`), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -45,7 +45,8 @@ are in `README.md`.
 
 `claude/chassis-runner-rows` (3 November) carries the chassis to-dos on Ryan's word ("spawn a
 new session to continue the chassis to-dos"), from main's `62ef7ee`: the Cassowary's cycle bot,
-the Musk Ox's salvo priced against a reserve, the runner's tallies and `--pilot`, and the runner
+the Musk Ox's salvo priced against a reserve, a Rapid entry's action again (4 November), the
+runner's tallies and `--pilot`, and the runner
 rows of the Cassowary, the Cottonmouth, the Whip Scorpion, the Swallowtail, the Musk Ox and the
 Needletail (How things stand). Not merged; main takes it on his word.
 
@@ -174,8 +175,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
-- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
-  first round proposed 3 November (its brief), waiting on Ryan's four answers.
+- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Musk Ox, the
+  Whip Scorpion (a rework coming) and the Swallowtail are not finalized, and with the gunship (very
+  rough, maybe back to the drawing board; Claude's first round of 3 November in its brief) each
+  needs a design session for its kit and its visual design, which Ryan starts himself (4 November;
+  the Needletail likewise, Kestrel's).
 - Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced
   Skeleton module; its brief retired), the echidna left open, the siege battery parked on Ryan's charge brief, the battlecruiser never
   with the Carrier's session (Ryan, 20 October).
@@ -192,18 +196,21 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   take weighed with the chamber the dial then opens the next round on, a spin at the die's spun
   mean), where it had turned the dial only toward a better next chamber; read at 200 seeds, alone it
   carries a decision under the Cottonmouth, the stronger tier-one gun alone, neither a wall nor a
-  free win, and the Spin-Up is its most spent entry (36% alone), a question for Ryan's play (the
-  to-do). The Musk Ox's salvo had been priced against the whole magazine, so the bot rerolled it away
+  free win, and the Spin-Up is its most spent entry (36% alone), the chase it was meant to be (Ryan,
+  4 November: "that was the chase, yes"; his to judge in play). The Musk Ox's salvo had been priced against the whole magazine, so the bot rerolled it away
   and random play matched greedy alone: it now counts a reserve, the ammo its dearest other gun's
   next spend needs. The rest read at 30 seeds (directions) beside a band of every tier two and three
   alone on today's packs: the Whip Scorpion reaches none of its three exits and its pilot light is no
   lever (heat is not its limit); the Swallowtail lifts the Clydesdale and the Dingo seventeen points
   and its Phased is the rarest charge bought; the Musk Ox's strike number and trickle are its levers,
   the team's Flak worth a point or two; the Needletail's gate frees about four in five of its setups
-  and an ally cashes two paints in three. Found on the way: the bot never counts the action again a
-  plain Rapid entry brings on a die that rolls (the Laminar Deflector, the Pulse Vacillator, the Cryo
-  Flinger and the Musk Ox's Quick Reload; the rage, the reset gun, the gate, the Drone and the Horn
-  have their own), so the Quick Reload's test waits on it; left as it is and raised in chat. New in
+  and an ally cashes two paints in three; those four are not finalized, and their performance is not
+  Ryan's concern until their design sessions (4 November; the design sessions' Wainwright & Sutler
+  line). Found on the way and fixed on Ryan's word (4 November: "If the bot doesn't value rapid
+  property, it probably should be fixed"): the bot valued a plain Rapid entry at what it did once,
+  never its action again; it now adds the die's own average blow (`Policy.rapid_worth`, as the rage,
+  the reset gun, the gate and the Horn were valued), for the Laminar Deflector, the Pulse Vacillator,
+  the Cryo Flinger, the Musk Ox's Quick Reload and the Immelmann Booster's own action. New in
   the runner: a muster's charged spend tallied apart by piece, the gate's free spends and the paints
   cashed, each cell's squared hull lost for its spread, and `--pilot chassis=N` (a what-if heat a
   round, `Skirmish.pilot`, never content).

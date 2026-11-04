@@ -131,9 +131,10 @@ the Ballistic row's anchor (five at 3 a weapon tie the Armadillo's armour 15 tod
 
 ## Waits on
 
-Ryan's answers to Claude's first round (3 November, below): the rescale broke the per-weapon rows,
-and the first round's four questions set the second. Played, it wants a hangar that shows what each
-fitted weapon adds.
+Ryan's design session, which he starts himself (4 November: "very rough right now and might need
+to go back to the drawing board"): Claude's first round below (the rescale broke the per-weapon rows)
+is input to it, not a round awaiting answers. Played, it wants a hangar that shows what each fitted
+weapon adds.
 
 ## What the session hands back
 
@@ -141,7 +142,7 @@ A proposal in chat; on Ryan's go, content planned, and this brief retired.
 
 ## Claude's first round (3 November)
 
-Proposed in chat; Ryan's answers to its four questions set the second round.
+Proposed in chat; input to Ryan's own session (4 November), which may take the gunship back to the drawing board.
 
 Your shape (13 October) stands: tier two, Wainwright & Sutler, five hardpoints, nothing locked;
 its weapons' tags raise its numbers (Ballistic armour and cooling, Beam shield and recharge,

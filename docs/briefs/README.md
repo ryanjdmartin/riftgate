@@ -272,7 +272,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_multirotor.md` | landed 21 October as the Swallowtail, retired (`git show 5d989be:docs/briefs/ws_multirotor.md`) | Wainwright & Sutler | 3 | its assets (the to-do; its engine built 21 October, its rows read 3 November) |
 | `ws_artillery.md` | landed 21 October as the Musk Ox, retired (`git show bc97727:docs/briefs/ws_artillery.md`) | Wainwright & Sutler | 3 | its assets (the to-do; its engine built 21 October, its rows read 3 November) |
 | `ws_funnel_web.md` | landed 18 October, retired (`git show bfa8cf2:docs/briefs/ws_funnel_web.md`) | Wainwright & Sutler | 2 | Ryan's play (the to-do); its engine built 18 October, its assets 19 October |
-| `ws_gunship.md` | proposal, Claude's first round 3 November | Wainwright & Sutler | 2 | Ryan's answers to the first round's four questions (the rescale broke its per-weapon rows) |
+| `ws_gunship.md` | proposal, Claude's first round 3 November | Wainwright & Sutler | 2 | Ryan's own design session (4 November: very rough, maybe back to the drawing board) |
 | `ws_fan_boat.md` | landed 19 October as the Cottonmouth, retired (`git show 021f075:docs/briefs/ws_fan_boat.md`) | Wainwright & Sutler | 1 | its assets (the to-do; its engine built 21 October, its row read 3 November) |
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | nothing: Flak built and measured 21 October (`docs/measurements.md`) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October) |
