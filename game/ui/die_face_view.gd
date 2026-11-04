@@ -65,6 +65,7 @@ const ACCENT_OUT := 3.5    # how far outside the border the accents stand
 const BESIDE := Vector2(28.0, 30.0)   # what else a spend does, from the main mark's centre: its strikes, a status's stacks, a blast
 const BESIDE_SIZE := 18    # its text, a size up so it reads (Ryan, 4 November: equipment's "X2 ... a bit hard to see")
 const BESIDE_STEP := 19.0  # one above another
+const PASSIVE_SIZE := 17   # a number in the passive's box at the rail's foot (passive_marks)
 const COST_Y := 111.0      # the costs' baseline along the foot, clear of the frame's lining (Ryan, 4 November: "Make sure the costs row doesn't touch the bottom")
 const COST_ICON := 14.0    # a cost's mark
 const COST_SIZE := 16      # and its number
@@ -74,11 +75,12 @@ var shown_number: String = ""   # what the blow will deal now, or against the fo
 var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
 var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the rounds it has left, this one included, its clock along the foot
 var cooldown: int = -1       # the rounds a spend darkens it, its machine's passives in (Skirmish.cooldown_of); -1 reads the entry's own
-var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), as a chip at the rail's foot; null for a die that rolls
+var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
+var after_blow: int = -1     # the blow its machine's passive adds after the strikes (the Storm Petrel's), "+N" in the passive box; -1 reads the entry's own (Skirmish.after_blow off a foe)
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
-var blast: int = 0             # a vent's blast on its own machine (the Whip Scorpion's): the blow it fires at a random foe, its mark and number in the bottom row
+var blast: int = 0             # a vent's blast on its own machine (the Whip Scorpion's): the blow it fires at a random foe, its mark and number in the passive box
 var form_mark: String = ""     # "seal" or "unseal": spending the entry shuts its machine's shell or opens it (the Armadillo's Lockdown), a chip on the rail
 var shut: Array[int] = []      # keywords whose gate is shut over the foe in hand (the gated stuns, 22 October): their chips struck through and dimmed
 var spent: bool = false
@@ -383,13 +385,11 @@ func _draw() -> void:
 				_number(mono, text, at, mono_px.call(text, NUMBER_ROOM, NUMBER_SIZE), faded.call(col))
 	# What else the spend does, small beside the main mark, each by its mark: a weapon's strikes (4
 	# November: as equipment's stacks are, "how would that look for weapons?"), a status's stacks,
-	# the ammo a vent also loads, a vent's blast at a random foe (the Whip Scorpion's).
+	# the ammo a vent also loads. What a machine's passive adds is its box's (passive_marks).
 	if face.strikes > 1 and face.is_weapon() and not dark_now:
 		beside.push_front(["", "×%d" % face.strikes, ink])
 	if face.reloads_ammo > 0 and face.power > 0 and not dark_now:
 		beside.append(["ammo", str(face.reloads_ammo), faded.call(Palette.SELECT)])
-	if blast > 0 and face.kind == Face.Kind.VENT and not dark_now:
-		beside.append(["blast", str(blast), faded.call(Palette.HEAT)])
 	for i in range(beside.size()):
 		var a: Array = beside[i]
 		var at := mc + BESIDE + Vector2(0.0, -i * BESIDE_STEP)
@@ -458,8 +458,7 @@ func _draw() -> void:
 			draw_line(chip_rect.position + Vector2(2.0, CHIP.y - 2.0), chip_rect.position + Vector2(CHIP.x - 2.0, 2.0), Color(Palette.INK, 0.9), 2.5)
 		if tags[i] == "corrupt" and corrupted > 1:
 			draw_string(mono, chip_rect.position + Vector2(CHIP.x + 2.0, CHIP.y - 7.0), "×%d" % corrupted, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, col)
-	if next_face != null:
-		_draw_next(bob, tags.size())
+	_draw_passive(bob, tags.size())
 	if _recalc >= 0.0:
 		_draw_static(rect)
 
@@ -574,25 +573,67 @@ static func chip_glyph(tag: String) -> String:
 	return Terms.glyph(tag) if Terms.has(tag) and not Terms.glyph(tag).is_empty() else tag
 
 
-## A stepping die's next chamber (21 October): at the rail's foot, an arrow into a chip with
-## that entry's primary glyph, so the dial (a reroll steps it) is read before it is turned. Its
-## frame is dashed, unlike every keyword chip, so it never reads as one of this entry's.
-func _draw_next(bob: float, above: int) -> void:
-	var col := Color(Palette.HUD, (0.45 if spent else 1.0))
-	var y := maxf(FACE - CHIP.y - 6.0, 8.0 + above * TAG_STEP)   # below the keyword chips, however many
-	var chip_rect := Rect2(Vector2(FACE - CHIP.x + RAIL - 2.0, y + bob * 0.5), CHIP)
-	Hud.fill_poly(self, Hud.cut(chip_rect, 4.0), Color(Palette.BG, 0.94))
-	var corners := [chip_rect.position, Vector2(chip_rect.end.x, chip_rect.position.y), chip_rect.end, Vector2(chip_rect.position.x, chip_rect.end.y)]
-	for k in range(4):
-		var a: Vector2 = corners[k]
-		var b: Vector2 = corners[(k + 1) % 4]
-		var t := 0.0
-		while t < 1.0:
-			draw_line(a.lerp(b, t), a.lerp(b, minf(1.0, t + 0.18)), col, 1.2)
-			t += 0.3
-	var tip := chip_rect.position + Vector2(-3.0, CHIP.y * 0.5)
-	draw_colored_polygon(PackedVector2Array([tip + Vector2(-7.0, -5.0), tip, tip + Vector2(-7.0, 5.0)]), col)
-	Glyphs.draw(self, Glyphs.primary_for(next_face), chip_rect.get_center(), 13, col, 1.8)
+## What the machine's passive adds to the entry, a box each, [mark, text, colour] (Ryan, 4
+## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
+## box' for all these types of effects?"): a stepping die's next chamber, its main mark (the
+## Cassowary's); the blow the passive adds after the strikes, "+N" in the blow's own ink, no mark
+## of its own (the Storm Petrel's: "that's not a mechanic term, it doesn't need an icon"); a vent's
+## blast at a random foe, its mark and number in heat's colour, since a bare "+N" beside a vent
+## would read as more cooling (the Whip Scorpion's).
+func passive_marks() -> Array:
+	var out: Array = []
+	if face == null or dead:
+		return out
+	var dark_now := face.disabled and dark > 0
+	if not dark_now:
+		var after := after_blow if after_blow >= 0 else Skirmish.after_blow(null, face)
+		if after > 0 and face.is_weapon():
+			out.append(["", "+%d" % after, Palette.HUD])
+		if blast > 0 and face.kind == Face.Kind.VENT:
+			out.append(["blast", str(blast), Palette.HEAT])
+	if next_face != null:
+		out.append([Glyphs.primary_for(next_face), "", Palette.HUD])
+	return out
+
+
+## The passive's boxes at the rail's foot, the lowest first and the rest above it, below the keyword
+## chips however many (21 October, the next chamber's first): a dashed frame, unlike every keyword
+## chip, so it never reads as one of the entry's own, with an arrow into it; rectangular, as wide
+## as what it holds ("It also doesn't have to be square, since it's not a true chip").
+func _draw_passive(bob: float, above: int) -> void:
+	var marks := passive_marks()
+	if marks.is_empty():
+		return
+	var frame := Color(Palette.HUD, (0.45 if spent else 1.0))
+	var mono := Hud.mono()
+	var y := maxf(FACE - CHIP.y - 6.0, 8.0 + (above + marks.size() - 1) * TAG_STEP)
+	for m in marks:
+		var glyph := str(m[0])
+		var text := str(m[1])
+		var ink := Color(m[2] as Color, frame.a)
+		var tw := mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE).x if not text.is_empty() else 0.0
+		var inner := (14.0 if not glyph.is_empty() else 0.0) + (3.0 if not glyph.is_empty() and not text.is_empty() else 0.0) + tw
+		var w := maxf(CHIP.x, inner + 12.0)
+		var box := Rect2(Vector2(FACE + RAIL - 2.0 - w, y + bob * 0.5), Vector2(w, CHIP.y))
+		Hud.fill_poly(self, Hud.cut(box, 4.0), Color(Palette.BG, 0.94))
+		var corners := [box.position, Vector2(box.end.x, box.position.y), box.end, Vector2(box.position.x, box.end.y)]
+		for k in range(4):
+			var a: Vector2 = corners[k]
+			var b: Vector2 = corners[(k + 1) % 4]
+			var step := 7.0 / maxf(1.0, a.distance_to(b))   # dashes about as long whatever the side
+			var t := 0.0
+			while t < 1.0:
+				draw_line(a.lerp(b, t), a.lerp(b, minf(1.0, t + step * 0.6)), frame, 1.2)
+				t += step
+		var tip := box.position + Vector2(-3.0, CHIP.y * 0.5)
+		draw_colored_polygon(PackedVector2Array([tip + Vector2(-7.0, -5.0), tip, tip + Vector2(-7.0, 5.0)]), frame)
+		var x := box.get_center().x - inner * 0.5
+		if not glyph.is_empty():
+			Glyphs.draw(self, glyph, Vector2(x + 7.0, box.get_center().y), 13, ink, 1.8)
+			x += 17.0
+		if not text.is_empty():
+			draw_string(mono, Vector2(x, box.get_center().y + mono.get_ascent(PASSIVE_SIZE) * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE, ink)
+		y -= TAG_STEP
 
 
 ## Static over the die's face while it is recomputed: the signal-drop noise a foe gets,

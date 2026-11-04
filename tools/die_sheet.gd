@@ -105,8 +105,10 @@ func _die(f: Face) -> DieFaceView:
 func _kinds() -> Array:
 	var burst := Face.attack(2)
 	burst.strikes = 4
-	var zap := _die(Face.attack(4))
-	zap.set_number("4+2")
+	var petrel := Face.attack(4)
+	petrel.burns = 2
+	var zap := _die(petrel)
+	zap.after_blow = 2
 	var reload := Face.vent(0)
 	reload.reloads_ammo = 2
 	var wake := Face.vent(3)
@@ -120,7 +122,7 @@ func _kinds() -> Array:
 		["Weapon, direct", "the sight, its blow inside;\nthe line straight: Direct", _die(Face.attack(4))],
 		["Weapon, indirect", "the line lobbed:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
 		["Weapon, strikes", "a strike's blow inside,\nits strikes beside", _die(burst)],
-		["Weapon, over a foe", "the Storm Petrel's blow\nand zap, stepped down", zap],
+		["Weapon, over a foe", "its passive's box: the Storm\nPetrel's blow after it", zap],
 		["Debuff, direct", "gear, what it lays inside\n(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
 		["Debuff, indirect", "the gear holding Lure,\nthe line lobbed", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
 		["Buff", "spent on a machine: its\nstatus inside, its stacks", _die(Face.buff("overcharged", 2))],
@@ -198,14 +200,14 @@ func _rest() -> Array:
 		["Short", "the shield cannot pay:\nstruck through", _die(short)],
 		["Ammo, dry", "a forging gun's price;\nthe magazine cannot pay", _die(dry)],
 		["Burn", "the Storm Petrel's: shield\npays the heat", _die(burn)],
-		["Blast", "a vent's blow at a\nrandom foe", blast_vent],
+		["Blast", "its passive's box: a blast\nat a random foe", blast_vent],
 		["LOCKED", "a reroll skips it", locked],
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
 		["Dark", "a cooldown or a switch-\noff: the clock, its turns", dark],
 		["Chips", "keywords, the star for a\nrule, a corruption", chipped],
 		["Every Foe", "a keyword: lands on\nevery foe (the Siphon)", _die(lure_all)],
 		["Every Ally", "a keyword: lands on every\nally (the Mooring Screens)", _die(team)],
-		["Next chamber", "a stepping die's next\nentry (the Cassowary)", stepping],
+		["Next chamber", "its passive's box: the\nnext entry (the Cassowary)", stepping],
 		["Seals", "spent on itself, the\nArmadillo shuts", seal],
 		["Opens", "spent, the Armadillo's\nshell opens", unseal],
 	]

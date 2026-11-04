@@ -112,7 +112,7 @@ defeat when every machine is wrecked. There is no round limit.
   to lock it, and again to unlock it; spending unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
-  lock holds it. The die shows its next entry beside it, and its readout and codex show its entries as a
+  lock holds it. The die shows its next entry in its passive box, and its readout and codex show its entries as a
   cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up spins the whole die, the entry
   showing included, the one piece that breaks the reroll rule, so it may land on itself and
   be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
@@ -162,8 +162,11 @@ defeat when every machine is wrecked. There is no round limit.
   fire, a solid run breaking into two ever shorter dashes with room between, every piece one
   thickness, straight for Direct and lobbed low for Indirect; under one spent on a machine, three hex cells sharing their edges, the middle its
   own machine, a lit one a machine it may be spent on.
-  What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks, a
-  vent's blast). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks).
+  What the machine's passive adds sits in its passive box at the foot of the edge, a dashed box
+  with an arrow into it, as wide as what it holds: a blow added after the strikes, "+2" (the
+  Storm Petrel's zap); a vent's blast at a random foe, by the blast's mark (the Whip
+  Scorpion's); a stepping die's next entry, by its main mark (the Cassowary's). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
 
@@ -660,8 +663,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   through what the foe takes and its armour, and lost if the strikes killed it. And while its
   shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
   meets. The die shows the shield a weapon will take in its heat slot's place, behind the
-  shield's mark ("-3"), with the heat past it beside, and over a foe the blow joined to its
-  zap ("3+2"), each with the foe's armour off.
+  shield's mark ("-3"), with the heat past it beside, and the zap in its passive box ("+2"),
+  over a foe with that foe's armour off, as the blow's is; never joined to the blow's number.
 - **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and

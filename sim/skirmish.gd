@@ -632,12 +632,19 @@ func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
 	if f == null or not f.is_attack() or f.is_debuff():
 		return f.number_text() if f != null else ""
 	var n := shown_number(ms, f, target)
-	var text := str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]
-	# Over a foe, a weapon whose heat the shield pays shows its zap joined to the blow (the Storm
-	# Petrel's, "4+2"), each with the foe's armour off; the zap is lost if the blow kills.
-	if target != null and f.burns > 0:
-		text += "+%d" % zap_on(target, f.burns, ms)
-	return text
+	# The blow alone: a blow a passive adds after the strikes (the Storm Petrel's zap) is its own
+	# number in the die's passive box (after_blow), never joined to this one (Ryan, 4 November:
+	# "not made the player do math").
+	return str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]
+
+
+## The blow a machine's passive adds after a weapon's strikes, as the die's passive box prints it
+## ("+2"): the Storm Petrel's zap, what its shield pays for the weapon's heat, over a foe through
+## that foe's damage taken and armour (zap_on); 0 for an entry with none.
+static func after_blow(ms: MechState, f: Face, target: Foe = null) -> int:
+	if f == null or not f.is_weapon() or f.burns <= 0:
+		return 0
+	return zap_on(target, f.burns, ms) if target != null else f.burns
 
 
 ## Every live machine learns how many allies stand with it, for passives that read it.

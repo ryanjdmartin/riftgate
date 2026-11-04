@@ -169,6 +169,34 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 	assert_eq(Glyphs.primary_for(reload), "ammo", "a reload cools nothing: its shells and its number, no steam")
 
 
+## What a machine's passive adds to an entry stands in its passive box at the rail's foot (Ryan, 4
+## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
+## box' for all these types of effects?"): a blow added after the strikes as "+N", no mark (the
+## Storm Petrel's), a vent's blast by its mark (the Whip Scorpion's), a stepping die's next entry by
+## its main mark (the Cassowary's); never beside the main mark, never joined to its number.
+func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
+	var picked := func(d: DieFaceView) -> Array:
+		return d.passive_marks().map(func(m: Array) -> Array: return [m[0], m[1]])
+	var d := DieFaceView.new()
+	d.set_face(Face.attack(4))
+	assert_eq(picked.call(d), [], "a plain weapon: no box")
+	var hot := Face.attack(4)
+	hot.burns = 3
+	d.set_face(hot)
+	assert_eq(picked.call(d), [["", "+3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes")
+	d.after_blow = 2
+	assert_eq(picked.call(d), [["", "+2"]], "over a foe, that foe's share")
+	d.after_blow = -1
+	d.set_face(Face.vent(3))
+	d.blast = 4
+	assert_eq(picked.call(d), [["blast", "4"]], "a vent's blast by its mark, a bare +4 beside a vent reading as cooling")
+	d.blast = 0
+	d.set_face(Face.attack(3))
+	d.next_face = Face.shield(5)
+	assert_eq(picked.call(d), [["shield", ""]], "a stepping die's next entry by its main mark")
+	d.free()
+
+
 ## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:
 ## "you can measure max width just with the multi-strikes text"; 4 November, a weapon's strikes
 ## beside its sight as equipment's stacks are): a two-digit blow is the widest the sight holds,

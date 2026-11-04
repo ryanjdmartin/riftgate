@@ -142,8 +142,10 @@ func test_the_die_shows_the_burn_and_the_zap() -> void:
 	var foe: Foe = sk.front[0]
 	var sf := sk.shown_face(ms, ms.face(), foe)
 	assert_eq([sf.burns, sf.heat], [3, 0], "the burn in the heat slot's place, no heat past it")
-	assert_eq(sk.shown_number_text(ms, sf, foe), "3+2", "over the foe: the blow and the zap, each with its armour off")
+	assert_eq(sk.shown_number_text(ms, sf, foe), "3", "over the foe: the blow alone, its armour off")
+	assert_eq(Skirmish.after_blow(ms, sf, foe), 2, "and the zap its own number, the die's passive box (Ryan, 4 November), its armour off too")
 	assert_eq(sk.shown_number_text(ms, sf), "4", "without a foe, the blow alone")
+	assert_eq(Skirmish.after_blow(ms, sf), 3, "and the zap what the shield pays")
 	assert_eq([sk.pending_heat(ms), sk.pending_burn(ms)], [0, 3], "the gauge waits for nothing; the shield for 3")
 	assert_eq(int(sk.forecast(ms)["shield_after"]), 7, "the round's forecast spends the burn")
 	u.shield = 2

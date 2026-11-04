@@ -1201,6 +1201,7 @@ func _refresh(save: bool = true) -> void:
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.blast = sk.blast_number(ms, sk.blast_amount(ms, sf, ms)) if not ms.assigned and ms.alive() else 0   # a vent's blast on its own machine
+		d.after_blow = -1   # the blow its passive adds after the strikes, as the entry carries it (no foe in hand)
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
@@ -2006,8 +2007,8 @@ func _show_die(i: int) -> bool:
 	if f != null:
 		var sf := sk.shown_face(ms, f)
 		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
-		# A vent's blast (the Whip Scorpion's): the die prints it by its own mark beside the heat, so
-		# the readout says it with that mark (Ryan, 2 November: every icon on a die face in the popup).
+		# A vent's blast (the Whip Scorpion's): the die prints it by its own mark in its passive's box,
+		# so the readout says it with that mark (Ryan, 2 November: every icon on a die face in the popup).
 		var extra: Array = []
 		var blast := _dice[i].blast if i < _dice.size() else 0
 		if blast > 0 and sf.kind == Face.Kind.VENT:
@@ -2519,6 +2520,7 @@ func _on_drag_started(i: int) -> void:
 	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.blast = sk.blast_number(sk.mechs[i], sk.blast_amount(sk.mechs[i], sf))
+	_ghost.after_blow = -1
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sk.cooldown_of(sk.mechs[i], sf)
 	_ghost.charged = sk.charge_lands(sk.mechs[i])
@@ -2562,6 +2564,9 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
 		else:
 			_ghost.set_face(sf, sk.shown_number_text(ms, sf, over_foe))
+		# The blow its passive adds after the strikes, over the foe through its armour, in the
+		# passive's box (the Storm Petrel's; Ryan, 4 November).
+		_ghost.after_blow = Skirmish.after_blow(ms, sf, over_foe) if over_foe != null else -1
 		# A vent's blast fires only on its own machine: over an ally the die prints none. The heat
 		# bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the die) through
 		# the forecast the refresh above reads (_forecast_for).
@@ -2696,6 +2701,7 @@ func _send_second_home() -> void:
 	fly.slot = d.slot
 	fly.corrupted = d.corrupted
 	fly.blast = d.blast
+	fly.after_blow = d.after_blow
 	fly.charged = d.charged
 	fly.dark = d.dark
 	fly.cooldown = d.cooldown

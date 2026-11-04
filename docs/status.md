@@ -25,7 +25,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 901 tests, 209,147 checks, green on `ccr-bb178c9b-l6airv` (4 November: Ryan's playtest
+- Tests: 902 tests, 209,154 checks, green on `ccr-bb178c9b-l6airv` (4 November: Ryan's playtest
   list of 2 November and the die's marks of 3 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -229,8 +229,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   dashes, every piece one thickness, straight for Direct and lobbed low for Indirect ("we had it
   right with straight versus curved before"), his three hex cells for a machine; the benched
   marks are `docs/looks/die_marks_candidates.png` and `docs/looks/die_polish_candidates.png`,
-  `_2.png` and `_3.png` (the last with the sight without its outer circle, five dash patterns and
-  the Storm Petrel's zap three ways: his question, the bible's section 12). The self and ally chips and the buff and debuff arrows gone, the
+  `_2.png` and `_3.png` (the last with the sight without its outer circle and five dash
+  patterns). What a machine's passive adds sits in its passive box at the foot of the edge, his
+  "passive helper box" (4 November: "for all these types of effects"): the Storm Petrel's zap a
+  bare "+2" (never joined to the blow: "not made the player do math"), the Whip Scorpion's blast
+  by its mark, the Cassowary's next entry. The self and ally chips and the buff and debuff arrows gone, the
   foes' intents keeping theirs ("The arrow can be changed but not to the equipment one"); a
   reach over every foe a keyword, Every Foe, and its mirror Every Ally ("Every foe is a targeting
   mode, just like spread, penetrate, and splash"; working names after the foes' Every Machine;
