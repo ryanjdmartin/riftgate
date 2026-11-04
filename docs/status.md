@@ -25,9 +25,10 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 917 tests, 254,298 checks, green (4 November, on `claude/chassis-runner-rows`: the
-  Cassowary's cycle bot, the salvo's reserve and a Rapid entry's action again, each with its
-  tests; 911 and 254,286 on main at `62ef7ee`), about four minutes
+- Tests: 917 tests, 254,298 checks, green (4 November, main merged into
+  `claude/chassis-runner-rows` as it lands: the Cassowary's cycle bot, the salvo's reserve and a
+  Rapid entry's action again, each with its tests; 911 and 254,286 on main before it, 3 November,
+  after `ccr-7effd31a-u5z4gw`'s pairs landed, which changed no file the suite reads), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -43,12 +44,29 @@ are in `README.md`.
 
 ## Branches
 
-`claude/chassis-runner-rows` (3 November) carries the chassis to-dos on Ryan's word ("spawn a
-new session to continue the chassis to-dos"), from main's `62ef7ee`: the Cassowary's cycle bot,
-the Musk Ox's salvo priced against a reserve, a Rapid entry's action again (4 November), the
-runner's tallies and `--pilot`, and the runner
-rows of the Cassowary, the Cottonmouth, the Whip Scorpion, the Swallowtail, the Musk Ox and the
-Needletail (How things stand). Not merged; main takes it on his word.
+`claude/chassis-runner-rows` (3 and 4 November) carried the chassis to-dos on Ryan's word
+("spawn a new session to continue the chassis to-dos"), from main's `62ef7ee`: the Cassowary's
+cycle bot, the Musk Ox's salvo priced against a reserve, a Rapid entry's action again (4
+November, his word: "If the bot doesn't value rapid property, it probably should be fixed"), the
+runner's tallies and `--pilot`, and the runner rows of the Cassowary, the Cottonmouth, the Whip
+Scorpion, the Swallowtail, the Musk Ox and the Needletail (How things stand), with the gunship's
+first round in its brief. It took main as it landed (to `d03ebed`: `ccr-7effd31a-u5z4gw`'s track
+pairs), and main took it as a fast-forward on 4 November on his word ("Ok, if there's nothing else
+open, clean up and merge into main"); its bible is v0.438 (the page's version 451).
+
+`ccr-7effd31a-u5z4gw` (28 October to 3 November) carried the pairs. Restarted from main's
+head on 28 October (its first round, the Hold The Line pair, merged on the 27th), it carried
+Ryan's go on them (every track a map half and a battle half, the bible's pair row), every new
+half sketched on its shipped recipe's groove call and published on the pair page, then his notes
+of 29 October to 3 November on Hold The Line's two halves, Night Shift's battle half and The Far
+Bank's map half as further rounds on the same page (Hold The Line's thirteenth, which settled
+it; Night Shift's tenth; The Far Bank's map half's fourth). It took main on the 29th and again
+as it landed (to `62ef7ee`: the foes' fresh start and the pacing session, the bosses' slate and
+the elites by the tier, the Petrels' engines, the skirmish's field, Godot 4.8-beta2, the model
+rebuilds and the five Wainwright & Sutler models), and main took it as a fast-forward on
+3 November on his word ("Good place to merge into main, I think, before we continue with
+finalizing the other tracks"); its bible is v0.437 (the page's version 450). The other tracks'
+rounds go on from main.
 
 `claude/affectionate-ramanujan-5d24t6` (30 October to 3 November) carried the two Petrels'
 engines on Ryan's go ("go for the ready to build ones", after his question of the 30th on which
@@ -686,6 +704,32 @@ The tasks are the to-do's; this is the index of what waits.
 - Ryan's read of the five Wainwright & Sutler models running (the to-do's lines carry what each
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
+- Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The
+  Line settled on its thirteenth round (3 November: "I think that's it for this track"): its
+  battle half picked, J gone, V and Q kept, K its first eight bars at its slower tempo ("The 8
+  bars is perfect") on the drums in between with the plucked string 3 dB down beside the crunch
+  synth on the walk, its long crash choked to a second and a half, the first lift on the crunch
+  synth and the synth lead and the second on the crunch synth and the lead guitar over the
+  backing chug 6 dB down, M as it ships with the crunch synth; his map picks, X on the violins, U
+  on the clean guitar, the drone moved to R, W low with a roll; the map half minimal, the lifts as
+  they were with the riff on the tine piano and the first lift's bell calmer, K's walk on the
+  synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff
+  3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
+  R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
+  it was beside it). Night Shift on its tenth (the map's intro without its front and its muted guitar out;
+  the battle half a whole jam in turns of two bars, 30 October: the guitar and the bass walking
+  one line on his rhythms with the arpeggio or the FM hook, never both, holding three-three-two
+  6 dB down under the two together, the intro on three-three-two, D the piano's turn and the
+  factory's blended over Hold The Line's riff as the map's nod, R a sixteen-bar jam whose turns
+  hand the lead round the band, the guitar a tenth over the bass where it walks, the bass 3 dB down
+  everywhere and its voice on trial, the synth bass, a slap bass or the driven bass, the synth
+  lines voiced for each turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half
+  on its fourth round, its flip retired (31 October: the bells calm in the groove and the lift
+  alone, the strings section and the climax off the battle's orchestra, the tune on a plucked
+  string, the tine piano or the clean guitar over the harp, one note at a time since 3 November and
+  3 dB down in the strings section, the climax's bells full); those two waiting on his ear; then
+  the engine (a pair as one synchronized stream, the map choosing the track, the 3 s flip) and
+  each picked half into the forge's SHIP table, Hold The Line's first.
 
 ## Next, in order
 
@@ -786,25 +830,29 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.438 (the page's version 451,
-  published 3 November from `claude/chassis-runner-rows`: its four row edits, the Cassowary's
-  cycle bot and the Whip Scorpion's, the Swallowtail's and the Musk Ox's reads, three-way merged
-  with no conflict onto the live v0.437 that other sessions had published since 445: the
-  weapon-fire rows, the booster's plume, the bosses read by homage and the regenerated keyword and
-  status tables, which this file carries ahead of their landing). Before it, v0.430 (443, 3
-  November, from `claude/affectionate-ramanujan-5d24t6` as main took it: the five Wainwright &
-  Sutler models' rows, three-way merged onto `ccr-7effd31a-u5z4gw`'s v0.429 over
-  `claude/charming-rubin-h954bp`'s v0.428 at 440), then `claude/charming-rubin-h954bp`'s v0.431
-  and v0.432 at 444 and 445. Before them, v0.427 (439, 2 November, from
-  `claude/brave-cori-fr18de` as main merged in: the slate's last calls, the elites by the tier
-  and the review's calls, over the live v0.423 at 435, `claude/charming-rubin-h954bp`'s
-  weapon-fire row on the v0.422 `claude/affectionate-ramanujan-5d24t6` published at 434 with the Honey Badger's hopper and
-  the five models' first cuts). The version numbers on the publishing branch's file and the live
-  agree after every publish. Before republishing, read the live page; if another session moved it, publish
-  a three-way merge onto it (`git merge-file` with the last-published file as the base, the
-  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
-  With main merged in (2 November), the tables script's run is checked against the file's
-  tables before it is kept: a row it reverts belongs to a branch not yet landed.
+  `docs/design-bible.html` after every change. This file and the live page are v0.438 (the
+  page's version 451, published 3 November from `claude/chassis-runner-rows`: its four row edits,
+  the Cassowary's cycle bot and the Whip Scorpion's, the Swallowtail's and the Musk Ox's reads,
+  three-way merged with no conflict onto the live v0.437 at 450, which `ccr-7effd31a-u5z4gw`
+  published as main took it: Hold The Line settled in the track table, merged onto the live v0.436
+  that another session published at 449 with the motion notes of that day (a walker's slump on
+  planted feet, the Buzzard's cannon firing as its charge sped up, the Wainwright & Sutler pieces
+  firing from their acts, the Kite's plumes larger, the Arsenal's rear vents a sickly
+  orange-yellow), over the v0.435 that branch had merged at 448 onto the live v0.434). Main's own
+  v0.430 (443, from `claude/affectionate-ramanujan-5d24t6`) is inside it, every publish since
+  merged onto the live. So this file carries rows ahead of main's code: the elites session's
+  (`docs/briefs/elites.md`: every domain three elites at least, five wanderers, the Goblin Nob's
+  Bellow and Enraged, a boss a named JRPG entity, the Fiend of Fire, the Gargantuan King, with its
+  rows in the tables) and `claude/charming-rubin-h954bp`'s since it landed (a blow on a machine
+  moving it, whether a shot crosses the field, a booster's plume or halo by maker, the weapon that
+  fired kicking at its model's business end, the motion notes above). The version numbers on the
+  publishing branch's file and the live agree after every publish. Before republishing, read the
+  live page; if another session moved it, publish a three-way merge onto it (`git merge-file` with
+  the last-published file as the base, the wrapper's first line and its trailing `</body></html>`
+  stripped from the saved live source); a page that size counts as read only once every line of
+  its saved copy is read, so a subagent can read it and publish the merge. With main merged in
+  (2 November), the tables script's run is checked against the file's tables before it is kept: a
+  row it reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
@@ -854,5 +902,12 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
+- The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
+  built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
+  Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
+  thirteenth, which settled it, `hold_sketches.py`; Night Shift's tenth, `night_sketches.py`; The
+  Far Bank's map half's fourth, `far_sketches.py`), at the page's version 22. A round whose files pass a
+  publish's 64 MB goes up in two publishes: the new files first under the live page, then the
+  new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
