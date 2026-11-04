@@ -615,7 +615,7 @@ static func _ids(list: Array) -> String:
 func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
 		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
-		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {},
+		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "taken": {},
 		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0,
 		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0, "gate_free": 0, "paints": 0, "paints_cashed": 0,
 		"hull_lost_sq": 0.0}   # the squares, so a cell's spread of hull lost reads beside its mean (a swing, 3 November)
@@ -677,7 +677,7 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		agg["end_heat"] += end_heat / float(maxi(1, sk.mechs.size()))
 		for c in pol.spends.keys():
 			agg["spends"][c] = int(agg["spends"].get(c, 0)) + int(pol.spends[c])
-		for pair in [["reach", sk.reach_tally], ["class", sk.class_tally]]:
+		for pair in [["reach", sk.reach_tally]]:
 			var src: Dictionary = pair[1]
 			for rk in src.keys():
 				var into: Dictionary = agg[pair[0]].get(rk, {})
@@ -1018,31 +1018,6 @@ func _reach_report(top: int) -> Array[String]:
 				taken[rk] = int(taken.get(rk, 0)) + int(a["taken"][rk])
 	var all_taken := int(taken.get("front", 0)) + int(taken.get("back", 0))
 	L.append("In the packs with a back rank, %d%% of the damage the machines took (shield and hull) came from the back rank." % _pct(int(taken.get("back", 0)), all_taken))
-	L.append("")
-	L.append("## Rolled and flat, %s" % Policy.kind_name(top))
-	L.append("")
-	L.append("The same by the shape of the number: a weapon that rolls a range against one that is a single number, over every row and pack.")
-	L.append("")
-	var tot := {}
-	for r in rows:
-		for p in packs:
-			var a: Dictionary = cells[_key(r, p, top)]
-			for ck in a.get("class", {}).keys():
-				var into: Dictionary = tot.get(ck, {})
-				for f in a["class"][ck].keys():
-					into[f] = int(into.get(f, 0)) + int(a["class"][ck][f])
-				tot[ck] = into
-	var all_spends := 0
-	for ck in tot.keys():
-		all_spends += int(tot[ck].get("spends", 0))
-	L.append("| Shape | Share of damaging spends | HP a spend | Heat a spend |")
-	L.append("|---|---|---|---|")
-	for ck in ["rolled", "flat"]:
-		if not tot.has(ck):
-			continue
-		var t: Dictionary = tot[ck]
-		var n := maxi(1, int(t.get("spends", 0)))
-		L.append("| %s | %d%% | %.1f | %.1f |" % [ck, _pct(int(t.get("spends", 0)), all_spends), float(t.get("damage", 0)) / n, float(t.get("heat", 0)) / n])
 	L.append("")
 	return L
 

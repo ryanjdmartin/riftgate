@@ -44,8 +44,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 2,
-    "power_max": 6,
+    "power": 4,
     "keywords": [],
     "heat": 2
    },
@@ -97,8 +96,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
-    "power_max": 6,
+    "power": 4,
     "keywords": [],
     "heat": 1
    },
@@ -123,8 +121,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 1,
-    "power_max": 3,
+    "power": 2,
     "keywords": [],
     "heat": 0
    },
@@ -177,8 +174,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 1,
-    "power_max": 3,
+    "power": 2,
     "keywords": [],
     "heat": 1
    },
@@ -223,8 +219,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 2,
-    "power_max": 6,
+    "power": 4,
     "keywords": [
      "splash"
     ],
@@ -252,8 +247,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 1,
-    "power_max": 3,
+    "power": 2,
     "keywords": [
      "burn"
     ],
@@ -282,8 +276,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 1,
-    "power_max": 3,
+    "power": 2,
     "keywords": [
      "suppress"
     ],
@@ -611,8 +604,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
-    "power_max": 5,
+    "power": 4,
     "keywords": [
      "cleave"
     ],
@@ -670,8 +662,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 1,
-    "power_max": 2,
+    "power": 2,
     "keywords": [
      "shock"
     ],
@@ -809,7 +800,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
-    "niche": "The Ammit's locked melee: flat, and each kill Overcharges the Ammit, its scaling threat for the battle and nothing more."
+    "niche": "The Ammit's locked melee: flat, and each kill Empowers the Ammit, its scaling threat for the battle and nothing more."
    },
    "face": {
     "kind": "attack",
@@ -927,7 +918,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Kestrel's answer to a regulator: a coil that pushes an ally's guns past the line for one round.",
-    "niche": "The first buff component: two stacks of Overcharged on a machine for the round."
+    "niche": "The first buff component: two stacks of Empowered on a machine for the round."
    },
    "face": {
     "kind": "buff",
@@ -974,10 +965,9 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
+    "power": 4,
     "keywords": [],
-    "heat": 2,
-    "power_max": 6
+    "heat": 2
    },
    "passive": null,
    "tags": [
@@ -1346,11 +1336,10 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 1,
+    "power": 2,
     "strikes": 3,
     "keywords": [],
-    "heat": 1,
-    "power_max": 2
+    "heat": 1
    },
    "passive": null,
    "tags": [
@@ -1641,15 +1630,14 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "indirect",
+    "reach": "sweep",
     "power": 2,
     "keywords": [
      "splash"
     ],
     "splash": 1,
     "heat": 0,
-    "spends_magazine": true,
-    "random_targets": true
+    "spends_magazine": true
    },
    "passive": null,
    "tags": [
@@ -1742,13 +1730,11 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "direct",
-    "power": 3,
-    "power_max": 4,
+    "reach": "sweep",
+    "power": 4,
     "strikes": 2,
     "keywords": [],
-    "heat": 1,
-    "spray": true
+    "heat": 1
    },
    "passive": null,
    "tags": [
@@ -1853,8 +1839,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 2,
-    "power_max": 6,
+    "power": 4,
     "keywords": [],
     "heat": 4,
     "kill_rerolls": 2
@@ -1874,7 +1859,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Reheat is the afterburner (Ryan named it 21 October), sent to an ally over the flagship's uplink.",
-    "niche": "The Giant Petrel's third lock, a buff (Ryan, 21 October): an ally gains Overcharged 2 and its die rolls again, never onto the entry showing; on an ally whose die is spent the roll gives nothing and the Overcharged halves to one for next round. A locked piece on a tier three, so it may outdo the Overcharge Coil (Ryan: components grow in power as tiers go up).",
+    "niche": "The Giant Petrel's third lock, a buff (Ryan, 21 October): an ally gains Empowered 2 and its die rolls again, never onto the entry showing; on an ally whose die is spent the roll gives nothing and the Empowered halves to one for next round. A locked piece on a tier three, so it may outdo the Overcharge Coil (Ryan: components grow in power as tiers go up).",
     "notes": "Built 30 October: the roll on its target (rolls_target), a reroll of that die never onto the entry showing; a spent die rolls nothing."
    },
    "face": {
@@ -1928,8 +1913,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 1,
-    "power_max": 2,
+    "power": 2,
     "keywords": [
      "cleave",
      "flak"
@@ -2123,7 +2107,8 @@
     "heat": 2,
     "keywords": [
      "dispel"
-    ]
+    ],
+    "dispel": 2
    },
    "codex": "A debuff. Every buff the foe carries is unmade: a brace, a rally, a readied return, a primed claw, a barrier, a ward, a regrowth. Numbed shrugs it off, and a guarded core keeps its guard.",
    "flavour": "Decoherence is not destruction. The field simply declines to remember what the subject was doing.",

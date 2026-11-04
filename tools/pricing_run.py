@@ -15,12 +15,12 @@ Options: --parts knockouts,ladders,modules,heat (every part by default; vanilla 
 asked for by name: the vanilla ladder, a flat heatless gun of each shape reshaped from a basic
 no bench row stocks at every number from 2 to 10, and the same vanilla at 3, 5 and 7 across the
 heat classes, for the knee where a kit starts paying; Ryan, 28 October: price heat empirically
-from heatless vanillas, and a rolled gun is its mean); --benches id,id (the
+from heatless vanillas); --benches id,id (the
 ladders' and the modules' benches, BENCHES below, every one by default); --tiers 0,1,2,3 (the
 ladders' candidates); --seeds 30; --policies greedy (random,greedy adds the decision read at
-twice the cost); --packs big (the sixteen big fights but the finale, the default; tiers, tier2 or tier3 for the ladder's
-formations by tier since 28 October: the four
-massive foes, the four formations, the eight finals), rank_and_file (the twelve wildlife packs),
+twice the cost); --packs big (the big fights but the finale, the default: the slate's bosses, tier one's formations and
+the finals, the formations read from the factions' compositions as the runner reads them since the foes' fresh start;
+tiers, tier2 or tier3 for the ladder's formations by tier since 28 October), rank_and_file (the wildlife packs),
 all (both), or pack ids as the runner names them; --jobs N (processes at once, the cores by
 default); --knock blank|basic (a knock-out leaves the hardpoint empty, or fits the basic of the
 piece's kind in its place); --pieces id,id (the ladders' candidates narrowed to those, after a
@@ -69,7 +69,7 @@ BENCHES = OrderedDict([
     ('clydesdale', ('clydesdale', 4, ['clydesdale', 'prairie_dog', 'dingo'])),     # the warm nine-piece die's Howitzer slot: the Indirect bench (the Rangefinder, the shells) and the heat knee's warm check (28 October)
 ])
 # The vanilla ladder (Ryan, 28 October: vanillas exist in the pool, "sometimes you just need a
-# big stick"; the baseline is heatless, heat priced from it, a rolled gun its mean): a flat
+# big stick"; the baseline is heatless, heat priced from it): a flat
 # heatless gun of each shape, reshaped by --set from a basic no bench row stocks, so the row's
 # other dice stay as they are. The summary reports every real piece in vanilla points, the
 # heatless number that reads as it does on the bench.
@@ -123,8 +123,9 @@ class Content:
     def packs(self, which):
         """Pack ids as the runner names them: a massive boss 'id x1', a domain 'id formation' (tier one's; since the
         ladder, 28 October, 'id formation tier 2' and 'tier 3' from the spawn lists by tier), a hero 'id final'.
-        'big' is the sixteen fights but the finale on tier one's formations; 'tiers' the tier-two and tier-three
-        formations (eight); 'tier2' or 'tier3' one of them; 'rank_and_file' every pack; 'all' everything; or ids."""
+        'big' is the big fights but the finale (the slate's bosses, tier one's formations, the finals); 'tiers' the
+        tier-two and tier-three formations; 'tier2' or 'tier3' one of them; 'rank_and_file' every pack; 'all'
+        everything; or ids."""
         big, tiers, trash = [], {}, []
         for f in self.factions:
             b = f.get('boss')
@@ -132,17 +133,18 @@ class Content:
                 if boss in self.foes:
                     big.append('%s x1' % boss)
         for f in self.factions:
-            spawn = f.get('spawn', [])
-            lists = spawn if isinstance(spawn, dict) else {'1': spawn}
-            for tier, lst in sorted(lists.items(), key=lambda kv: str(kv[0])):
+            for tier in (1, 2, 3):
+                lst = self.spawn_table(f, tier)
                 if len(lst) >= 2:
-                    if str(tier) == '1':
+                    if tier == 1:
                         big.append('%s formation' % f['id'])
                     else:
                         tiers.setdefault(str(tier), []).append('%s formation tier %s' % (f['id'], tier))
-                for e in lst:
-                    pid = '%s x%d' % (e['foe'], e['strength'])
-                    if e['foe'] in self.foes and pid not in trash:
+                for foe, strength in lst:
+                    if tier > 1 and int(self.foes[foe].get('tier', 1)) != tier:
+                        continue   # the runner's tier-two and tier-three cells are the recolours of that tier alone
+                    pid = '%s x%d' % (foe, strength)
+                    if pid not in trash:
                         trash.append(pid)
         for f in self.factions:
             for h in f.get('bench', []):
@@ -160,6 +162,27 @@ class Content:
             return big + [p for tier in sorted(tiers) for p in tiers[tier]] + trash
         return [p.strip() for p in which.split(',') if p.strip()]
 
+    def spawn_table(self, f, tier):
+        """The runner's formation at a tier (ContentDB.spawn_table, since the foes' fresh start of 30 October): the member
+        types of the faction's formation and patrol compositions at the tier, each size from the nearest tier at or below
+        it that has one, a foe once at its first strength. The factions' `spawn` lists are gone; the runner reads this."""
+        def tiers_of(c):
+            t = c.get('tiers', [1])
+            return [int(x) for x in (t if isinstance(t, list) else [t])]
+        out, seen = [], set()
+        for size in ('formation', 'patrol'):
+            found = []
+            for t in range(max(1, min(tier, 3)), 0, -1):
+                found = [c for c in f.get('compositions', []) if c.get('size') == size and t in tiers_of(c)]
+                if found:
+                    break
+            for c in found:
+                for m in c.get('members', []):
+                    if m.get('foe') in self.foes and m['foe'] not in seen:
+                        seen.add(m['foe'])
+                        out.append((m['foe'], max(1, int(m.get('strength', 1)))))
+        return out
+
     def slottable(self, tiers):
         return [e for e in self.components.values() if 'tier' in e and e.get('status') != 'planned' and int(e['tier']) in tiers]
 
@@ -172,8 +195,8 @@ class Content:
             bf = b['face']
             if bf.get('kind') != f.get('kind'):
                 continue
-            if f.get('kind') == 'attack' and bf.get('reach') != f.get('reach'):
-                continue
+            if f.get('kind') == 'attack' and bf.get('reach') != ('indirect' if f.get('reach') == 'sweep' else f.get('reach')):
+                continue   # a sweep reaches either rank, so its floor is the indirect vanilla (3 November)
             if f.get('kind') in ('shield', 'vent') and bf.get('targets', 'self_ally') != f.get('targets', 'self_ally'):
                 continue
             return b['id']
@@ -265,7 +288,7 @@ def variants(db, opts):
                     grid += [(n, h) for n in (opts.numbers or VANILLA_HEAT_NUMBERS) for h in VANILLA_HEATS if (n, h) not in grid]
                 for n, h in grid:
                     fitted = load[:slot] + [base] + load[slot + 1:]
-                    args = set_loadout(cid, fitted) + ['--set', 'components/%s/face/power=%d' % (base, n), '--set', 'components/%s/face/power_max=%d' % (base, n),
+                    args = set_loadout(cid, fitted) + ['--set', 'components/%s/face/power=%d' % (base, n),
                                                        '--set', 'components/%s/face/heat=%d' % (base, h), '--set', 'components/%s/face/keywords=[]' % base]
                     out.append({'id': 'vanilla:%s:%s:%d:%d' % (b, base, n, h), 'part': 'vanilla', 'row': ids, 'bench': b, 'chassis': cid,
                                 'shape': shape, 'base': base, 'number': n, 'heat': h, 'args': args})
@@ -485,14 +508,14 @@ def fmt(x, d=1):
     return '-' if x is None or (isinstance(x, float) and math.isnan(x)) else ('%.*f' % (d, x))
 
 
-FACE_PLAIN = ('kind', 'reach', 'power', 'power_max', 'strikes', 'heat', 'keywords')
+FACE_PLAIN = ('kind', 'reach', 'power', 'strikes', 'heat', 'keywords')
 
 
 def face_text(f):
-    """An attack face in one line: the number (its range, its strikes), the heat, the keywords with
+    """An attack face in one line: the number (its strikes), the heat, the keywords with
     their numbers, and every other field the face carries (a Coriolis's point a missing five, a
     Stoker's self_burn), so a piece that is no vanilla never reads as one."""
-    num = '%s%s' % (f.get('power', 0), ('-%s' % f['power_max']) if f.get('power_max', f.get('power')) != f.get('power') else '')
+    num = '%s' % f.get('power', 0)
     if int(f.get('strikes', 1) or 1) > 1:
         num += ' x%d' % f['strikes']
     kws = [kw + (' %s' % f[kw] if kw in f else '') for kw in f.get('keywords', [])]

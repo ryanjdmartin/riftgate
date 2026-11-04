@@ -49,7 +49,7 @@ shield rule: where the go or a rule has since changed it, it says so, and what t
 is in the questions below.
 
 **Ryan, 12 October**, as the proposal recorded his notes: the first Misharu (gaining shield
-Overcharged it) was an alternate Nemesis; the Arsenal needs archetypes other than Overcharge
+Empowered it) was an alternate Nemesis; the Arsenal needs archetypes other than Overcharge
 scaling. Push the divine personification of justice, with a trigger such as a foe's blow that
 would have killed an ally this round, a component breaking or a shield breaking, inflicting a
 punishing debuff on those it deems sinners. Later that day: the suppress liked, needing lots
@@ -122,7 +122,7 @@ halberd taller than the machine; its detail is in git. Looks are Ryan's.
 
 ## The bench, with what set each aside
 
-- **The first Misharu**: gaining shield Overcharged it; an alternate Nemesis (Ryan, 12
+- **The first Misharu**: gaining shield Empowered it; an alternate Nemesis (Ryan, 12
   October).
 - **The suppress on a broken shield**, the drafted passive (Ryan, 12 October: liked, to be
   tested hard): replaced by Penance (Ryan, 14 October).
@@ -150,7 +150,7 @@ blows of two domains of four, which is Ryan's boss hole from the other side.
 1. Penance: *its next attack deals half, then the Penance goes; it never stacks*, Shocked's
    mirror on the foe's offence. "Its next attack" in place of the 14 October lean's "its next
    action", so a heal, a rally or a summon drawn next does not waste it; every strike of that
-   attack is halved, an attack at every machine included, and Kindled with it (adds before
+   attack is halved, an attack at every machine included, and Empowered with it (adds before
    multiplies).
 2. No once-a-round cap: the honest shield rule did the cap's job, since each Penance now costs
    a shield that absorbed only its own number, and the overflow on hull.

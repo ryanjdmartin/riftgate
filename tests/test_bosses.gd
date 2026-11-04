@@ -186,8 +186,7 @@ func test_a_steal_takes_the_showing_entry_and_the_borrowed_swing_lands_its_numbe
 	assert_eq(sk.mechs[0].face().describe(), "30", "the entry is back the turn after")
 
 
-func test_a_rolled_weapon_swings_at_its_middle_and_anything_else_is_a_fake() -> void:
-	assert_eq(Skirmish.stolen_number(Face.attack(2, L, [], 0, 6)), 4, "a rolled two to six swings for four")
+func test_a_stolen_weapon_swings_at_its_number_and_anything_else_is_a_fake() -> void:
 	assert_eq(Skirmish.stolen_number(Face.attack(5, L)), 5, "a flat five for five")
 	assert_eq(Skirmish.stolen_number(Face.shield(8)), 1, "a shield is a fake, for one")
 	assert_eq(Skirmish.stolen_number(Face.vent(6)), 1, "a vent too")
@@ -630,7 +629,10 @@ func test_a_move_marked_once_is_used_once_a_fight() -> void:
 	assert_false(ids.has("undying"), "and never again this fight")
 
 
-func test_a_boss_takes_three_numbed_whatever_its_size() -> void:
+## The stun resist by kind (Ryan, 3 November: "1 small, 2 massive, 3 for elites and bosses"): a
+## boss of any size and whoever commands a boss unit (a final's hero, the finale's line) recover
+## with three, a massive foe with two, the rest with one; content's `resist` overrides.
+func test_a_boss_recovers_with_three_numbed_whatever_its_size() -> void:
 	var boss := Foe.make("boss", 50, 5)
 	boss.boss = true
 	var hero := Foe.make("hero", 20, 8)
@@ -638,10 +640,10 @@ func test_a_boss_takes_three_numbed_whatever_its_size() -> void:
 	var big := Foe.make("big", 30, 7)
 	big.size = 2
 	var grunt := Foe.make("grunt", 5, 2)
-	assert_eq(Skirmish.numbed_per_suppress(boss), 3, "a human-sized boss takes three")
-	assert_eq(Skirmish.numbed_per_suppress(hero), 3, "so does a final's hero, the boss of its battle")
-	assert_eq(Skirmish.numbed_per_suppress(big), 3, "a massive foe keeps its three")
-	assert_eq(Skirmish.numbed_per_suppress(grunt), 2, "the rest take two")
+	assert_eq(boss.stun_resist(), 3, "a human-sized boss recovers with three")
+	assert_eq(hero.stun_resist(), 3, "so does a final's hero, the boss of its battle")
+	assert_eq(big.stun_resist(), 2, "a massive foe with two")
+	assert_eq(grunt.stun_resist(), 1, "the rest with one")
 
 
 func test_a_save_keeps_a_grudge_a_move_used_once_and_the_teams_kills() -> void:

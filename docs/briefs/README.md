@@ -214,7 +214,7 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   count of spends: no reroll, no chain, nothing to limit, the price each half's number.
 - **Rolls again, paid in a banked resource** (the second action, priced). The Nemesis's rule
   (spend a stack, the die rolls again, no switch-off, the stacks the limit) as a family, one
-  banked resource a maker: rage, the hopper's loads, Spun Up, the H-tank's shells, Overcharged,
+  banked resource a maker: rage, the hopper's loads, Spun Up, the H-tank's shells, Empowered,
   Kestrel's heat (roll again for 20 heat) or its rerolls. A plain roll, a visible price, gated
   by its setup.
 - **Cooldown bursts** (the second action, front-loaded). Two actions' worth in one spend, then

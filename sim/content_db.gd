@@ -281,11 +281,13 @@ func make_foe(foe_id: String) -> Foe:
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
 	f.armour = maxi(0, int(d.get("armour", 0)))
+	f.resist = int(d.get("resist", -1))   # its stun resist (2 November): content's, else by its size
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
 	f.wanders = bool(d.get("wanders", false))
 	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
+	f.elite = is_elite(foe_id)   # a mini-boss: its stun resist is a boss's (3 November)
 	# A boss in parts (15 October): its parts' types, its guard and how its parts grow back.
 	f.part_ids = Array(d.get("parts", [])).map(func(x): return str(x))
 	f.guard = str(d.get("guard", ""))
@@ -482,7 +484,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
 		elif Effects.is_status(str(d[5])):
-			# A status the battle keeps (the Ammit's Overcharged, 16 October): its count, kept for
+			# A status the battle keeps (the Ammit's Empowered, 16 October): its count, kept for
 			# the battle.
 			effects.append({"name": head + (" ×%d" % int(d[4]) if int(d[4]) > 1 else ""), "text": str(d[1]), "kind": "reward", "note": "KEPT FOR THE BATTLE"})
 		else:
@@ -1051,16 +1053,16 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if kind == "attack":
 		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag.
 		var reach := str(fd.get("reach", ""))
-		if not ["direct", "indirect"].has(reach):
-			errs.append("%s: attack face needs reach direct or indirect, got '%s'" % [where, reach])
+		if not ["direct", "indirect", "sweep"].has(reach):
+			errs.append("%s: attack face needs reach direct, indirect or sweep, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) < 0:
 		errs.append("%s: power cannot be negative" % where)
 	if int(fd.get("strikes", 1)) < 1:
 		errs.append("%s: strikes must be at least 1" % where)
 	if int(fd.get("strikes", 1)) > 1 and kind != "attack":
 		errs.append("%s: only attacks strike more than once" % where)
-	if fd.has("power_max") and int(fd["power_max"]) < int(fd.get("power", 0)):
-		errs.append("%s: power_max below power" % where)
+	if fd.has("power_max"):
+		errs.append("%s: power_max is gone (2 November): a weapon is one number" % where)
 	# No crits since 10 October (bible section 5, the damage ranges row): chances live on
 	# riders, so a face that still carries one is stale content.
 	if fd.has("crit") or fd.has("crit_bonus"):
@@ -1089,7 +1091,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
 	# loads a shot for a bonus each.
 	if fd.has("devours") and (kind != "attack" or int(fd["devours"]) <= 0):
-		errs.append("%s: devours is the stacks of Overcharged a kill gives its owner: a positive number on an attack" % where)
+		errs.append("%s: devours is the stacks of Empowered a kill gives its owner: a positive number on an attack" % where)
 	if Array(fd.get("keywords", [])).has("devour"):
 		errs.append("%s: devour is no keyword since 11 October: write devours: <the stacks a kill gives>" % where)
 	# Burn is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
@@ -1128,6 +1130,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# every conductor for no blow, so a debuff carries none.
 	if kw_names.has("chain") and kind == "attack" and debuff:
 		errs.append("%s: Chain is a weapon's keyword, an arc of a blow; a debuff carries none" % where)
+	# Purge is numbered (Ryan, 2 November: "lower everything by N"): the stacks every buff of each
+	# foe reached loses, on a weapon or equipment alike.
+	if kw_names.has("dispel") and int(fd.get("dispel", 0)) <= 0:
+		errs.append("%s: an entry with Purge says its stacks: dispel, a positive number" % where)
+	if fd.has("dispel") and not kw_names.has("dispel"):
+		errs.append("%s: dispel (the stacks) rides with the Purge keyword" % where)
 	elif kw_names.has("chain") and kind == "attack" and int(fd.get("chain", 0)) <= 0:
 		errs.append("%s: Chain says the number every other Shocked foe takes: chain, a positive number" % where)
 	if fd.has("chain") and not kw_names.has("chain"):
@@ -1248,8 +1256,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: drones (true) is an attack's, a weapon's or a debuff's: the foe carries the Syrinx Drone" % where)
 	# The spray (the Skua's Flechette Pod, built 25 October): the strikes after the first fall on
 	# random foes in reach, so a spray strikes at least twice.
-	if fd.has("spray") and (kind != "attack" or not (fd["spray"] is bool) or int(fd.get("strikes", 1)) < 2):
-		errs.append("%s: spray (true) is an attack's of two strikes or more: each strike after the first falls on a random foe in reach" % where)
+	# Sweep (Ryan, 2 November), in place of the spray and the random targets of October: a reach
+	# since the 3rd ("a targeting mode, since that's what it is"), whose strikes walk the rank picked.
+	if fd.has("spray") or fd.has("random_targets"):
+		errs.append("%s: spray and random_targets are gone (3 November): Sweep, a reach, walks the rank picked" % where)
+	if Array(fd.get("keywords", [])).has("sweep"):
+		errs.append("%s: sweep is a reach since 3 November (reach: sweep), never a keyword" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
@@ -1294,7 +1306,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# whole at the round's end is never granted for longer.
 		if str(Effects.STATUS.get(st, {}).get("decay", "")) == "round" and int(fd.get("rounds", 1)) > 1:
 			errs.append("%s: %s lasts until the round's end, so a buff grants it for one round" % [where, st])
-		# A status that decays to zero on its own clock (Overcharged halving) has no duration
+		# A status that decays to zero on its own clock (Empowered halving) has no duration
 		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
 		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
 			errs.append("%s: %s halves at the round's end on its own, so a buff grants it stacks and no rounds" % [where, st])
@@ -1457,7 +1469,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			# keyword's must (Ryan, 28 October); a keyword with no number takes none.
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
-				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Burn, Cryo, Flak, Spread, Penetrate, Splash, Chain)" % where)
+				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Burn, Cryo, Flak, Spread, Penetrate, Splash, Chain, Purge)" % where)
 			if ["cleave", "penetrate", "splash"].has(kw) and not eff.has("number"):
 				errs.append("%s: a grant of %s says what each foe past the target takes: number" % [where, "Spread" if kw == "cleave" else kw.capitalize()])
 			if kw == "chain" and not eff.has("number"):
@@ -1529,9 +1541,9 @@ const SOUNDS := ["barrel", "twin_barrel", "rack", "blade", "blunt", "laser", "pl
 
 ## The sound a component's use plays, as layers (the first the blow, each after it riding on
 ## the landing): its `sound` where content names one, else derived as SOUNDS says. A shield
-## is a deflector and a buff a coil, whatever the mount; an attack is its shape, an energy
-## barrel a laser and the Arsenal's a plasma (the flat face: no power_max above
-## power); a dish that attacks (the Klaxon's lure) is a coil; an attack with no
+## is a deflector and a buff a coil, whatever the mount; an attack is its shape, a barrel
+## tagged Plasma a plasma and one tagged Beam a laser (by the tags since 2 November, when
+## rolled damage went and flat stopped meaning energy); a dish that attacks (the Klaxon's lure) is a coil; an attack with no
 ## mount sounds by its reach. A vent, or an id content does not know, is [].
 func sound_of(component_id: String) -> Array[String]:
 	var out: Array[String] = []
@@ -1553,10 +1565,11 @@ func sound_of(component_id: String) -> Array[String]:
 	if kind != "attack":
 		return out
 	var shape := str(c.get("shape", SHAPE_NONE))
-	var power := int(face.get("power", 0))
-	var energy := int(face.get("power_max", power)) <= power
-	if shape == "barrel" and energy:
-		out.append("plasma" if str(c.get("maker", "")) == "arsenal" else "laser")
+	var tags: Array = c.get("tags", []) if c.get("tags", null) is Array else []
+	if shape == "barrel" and tags.has("plasma"):
+		out.append("plasma")
+	elif shape == "barrel" and tags.has("beam"):
+		out.append("laser")
 	elif shape == "dish":
 		out.append("coil")
 	elif ["barrel", "twin_barrel", "rack", "blade"].has(shape):
@@ -1970,6 +1983,8 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: hp must be positive" % where)
 		if int(f.get("armour", 0)) < 0:
 			errs.append("%s: armour cannot be negative" % where)
+		if f.has("resist") and int(f.get("resist", 0)) < 0:
+			errs.append("%s: resist is the Numbed it recovers from a stun with, a count, never negative" % where)
 		if f.has("armour_step"):
 			# A boss whose kit is armour grows it a tier (31 October): only a foe that scales in
 			# place with the tier, a domain's boss, one of the party or an elite (2 November),

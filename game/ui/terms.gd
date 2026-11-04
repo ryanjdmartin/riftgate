@@ -18,7 +18,7 @@ extends RefCounted
 ## added or renamed there fails the build until it has its row here. A glyph "" draws none.
 const TABLE := {
 	# Reach.
-	"direct": ["line", "plain"], "indirect": ["indirect", "plain"],
+	"direct": ["line", "plain"], "indirect": ["indirect", "plain"], "sweep": ["sweep", "plain"],
 	# Keywords.
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
 	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"],
@@ -30,9 +30,9 @@ const TABLE := {
 	"expose": ["expose", "harm"],
 	"disable": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"], "steal": ["steal", "enemy"],
 	# Rules on a component.
-	"damage_range": ["", "plain"], "targets": ["", "plain"], "strikes": ["", "plain"],
+	"targets": ["", "plain"], "strikes": ["", "plain"],
 	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"],
-	"spray": ["", "plain"], "cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
+	"cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["volatile", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"kill_overcharge": ["overcharge", "heat"], "self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],
@@ -42,6 +42,7 @@ const TABLE := {
 	# Statuses.
 	"burning": ["burn", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
+	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"],
 	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "syrinx_drone": ["syrinx_drone", "heat"],
 	"braced": ["shield", "guard"], "ore_plate": ["hopper", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],

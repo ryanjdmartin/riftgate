@@ -92,7 +92,7 @@ func _draw() -> void:
 		else:
 			Glyphs.draw(self, Glyphs.primary_for(f), rect.position + Vector2(10.0, 10.0), 10.0, col, 1.4)
 			var num := f.number_text()
-			draw_string(mono, Vector2(rect.position.x, rect.position.y + 35.0), num, HORIZONTAL_ALIGNMENT_CENTER, MINI, 13 if f.is_ranged() else 17, col)
+			draw_string(mono, Vector2(rect.position.x, rect.position.y + 35.0), num, HORIZONTAL_ALIGNMENT_CENTER, MINI, 17, col)
 		if tiles_only:
 			continue
 		var ink := Palette.INK if cur else Palette.MUTED

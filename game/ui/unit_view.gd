@@ -45,7 +45,7 @@ var intent_value: int = 0
 var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
 var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Kindled), pulsing, "asleep" a buff a purge put to sleep, still at half light
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Empowered), pulsing, "asleep" a buff a purge put to sleep, still at half light
 var highlight: bool = false       # valid drop target while dragging a die
 var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
@@ -564,13 +564,8 @@ func _draw() -> void:
 		var col: Color = ch[2]
 		var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
 		_chip_rects[ch[0]] = [rect, col]
-		if ch.size() >= 4 and ch[3] == "resist":
-			# A resistance is no status (Numbed, 10 October): bracket corners on a bare ground,
-			# never the box a status wears, so the difference is the frame, not a hue.
-			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-			Hud.brackets(self, rect, 5.0, col, 1.6)
-		elif ch.size() >= 4 and ch[3] == "preview":
-			# A buff on its way (a rally's Kindled, Ryan, 26 October: "a pulsing version of the
+		if ch.size() >= 4 and ch[3] == "preview":
+			# A buff on its way (a rally's Empowered, Ryan, 26 October: "a pulsing version of the
 			# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
 			# in concept to the health and shield bars"), on the gauges' one clock, a full swing
 			# between faint and lit on its dark ground, its edge dashed, so "coming" reads by

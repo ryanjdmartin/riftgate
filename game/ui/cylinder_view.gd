@@ -89,7 +89,7 @@ func _draw() -> void:
 			Glyphs.draw(self, "blank", p, 14.0, Palette.LOSS_DIM, 2.0)
 		else:
 			Glyphs.draw(self, Glyphs.primary_for(f), p + Vector2(0, -6.0), 12.0, col, 1.5)
-			draw_string(mono, p + Vector2(-CHAMBER, 12.0), f.number_text(), HORIZONTAL_ALIGNMENT_CENTER, CHAMBER * 2.0, 10 if f.is_ranged() else 12, col)
+			draw_string(mono, p + Vector2(-CHAMBER, 12.0), f.number_text(), HORIZONTAL_ALIGNMENT_CENTER, CHAMBER * 2.0, 12, col)
 		# The place's numeral outside the chamber, radially, in the die's grey italic.
 		var out := (p - c).normalized()
 		var at := p + out * (CHAMBER + 12.0)

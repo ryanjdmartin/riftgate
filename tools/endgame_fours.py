@@ -20,12 +20,12 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # chassis id: (the pieces in its hardpoints, its modules)
 KITS = {
     'nemesis': (['meteor_artillery', 'blazethrower', 'backdraft_charge', 'oblation_ward'], ['ward_plate', 'grievance_reliquary']),
-    'wild_boar': (['tesla_gauntlets', 'slugthrower', 'shotfire_rack', 'canopy', 'coolant_jacket'], ['ram_frame', 'tactical_databank']),
-    'badger': (['transonic_rifle', 'canopy', 'coolant_jacket'], ['ram_frame', 'tactical_databank']),
+    'wild_boar': (['tesla_gauntlets', 'slugthrower', 'shotfire_rack', 'canopy', 'coolant_jacket'], ['ram_frame', 'spall_liner']),
+    'badger': (['transonic_rifle', 'canopy', 'coolant_jacket'], ['ram_frame', 'spall_liner']),
     'goshawk': (['overclocked_railgun', 'transonic_rifle', 'cyclic_cannon', 'canopy', 'bleed_valve'], ['boundary_layer_bleed', 'ward_plate']),
     'prairie_dog': (['flak_cannon', 'corona_shield', 'coolant_jacket'], ['susceptibility_tensor', 'flak_skirt']),
     'clydesdale': (['maxigun', 'cyclic_cannon', 'enfilade_beam', 'howitzer', 'howitzer', 'airburst_shell', 'canopy',
-                    'suppression_battery', 'coolant_jacket'], ['tactical_databank', 'susceptibility_tensor', 'flak_skirt']),
+                    'suppression_battery', 'coolant_jacket'], ['spall_liner', 'susceptibility_tensor', 'flak_skirt']),
     'baboon': (['polarity_projector', 'pulse_vacillator', 'corona_shield', 'coolant_jacket', 'airburst_shell',
                 'differentiation_probe'], ['phase_conjugator', 'susceptibility_tensor']),
     'dingo': (['airburst_shell', 'cyclic_cannon', 'coolant_jacket'], ['susceptibility_tensor', 'flak_skirt']),

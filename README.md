@@ -96,7 +96,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
-  writes the bible's two vocabulary tables from content; `balance.gd` plays every
+  writes the bible's two vocabulary tables from content; `pages/bible_merge.py` merges the bible
+  row by row onto a live page another session moved; `balance.gd` plays every
   chassis and the team against every pack under each policy and writes `docs/balance.md`
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
   many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
@@ -226,6 +227,12 @@ perl -e 'alarm 300; exec @ARGV' godot --headless --path . -s tools/export_vocabu
 # the bible's two vocabulary tables (buffs and debuffs; keywords and their counts), from content, after any content change
 python3 tools/pages/bible_tables.py
 
+# the bible republished when another session moved the live page: a three-way merge row by row (a row keyed by its lead, one
+# both sides changed merged word by word, the version bumped past the higher), BASE the last publish both started from, OURS
+# this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing </body></html> stripped; a row
+# it cannot settle keeps conflict markers and is named on stderr
+python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html > merged.html
+
 # the balance report: every chassis alone and the starting team against every pack (tier one's lists,
 # and since 28 October a cell for every recolour at its tier's strength, "goblin_guard x4"), against
 # each faction's whole formation in one fight at each tier ("meadow formation" tier one's, "meadow
@@ -324,7 +331,7 @@ python3 tools/endgame_fours.py endgame30
 # the pricing run (27 October; the bible's pricing row of 28 October): every stocked piece knocked out of its team row, every slottable
 # component and every module through the same hardpoint of six benches (BENCHES in the script) on the team rows, and
 # every attack a heat class up, each variant one balance-runner process (--set and --fit in memory, content never written)
-# against the sixteen big fights but the finale, greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
+# against the big fights but the finale (the slate's bosses, tier one's formations from the factions' compositions, the finals), greedy at 30 seeds; `plan` prints the variants and fights (393 and 188,640
 # as built, about two and a half hours on four cores), `run` is resumable (a variant with its JSON is skipped), `summarise`
 # writes build/pricing/<name>/summary.md from whatever has run. --parts knockouts,ladders,modules,heat, --benches, --tiers,
 # --packs all, tiers, tier2 or tier3 (the ladder's formations by tier), --policies random,greedy, --knock basic (the basic of
@@ -594,8 +601,8 @@ valid targets light up while dragging. A Swap waits on its first target for a ta
 a tap on the ground sends it home to the tray. Read or drag an ambusher's die (the funnel-web's)
 and the foes' ground dims: the foes its entry can reach that show no intent on it get pulsing
 eyes, the ones its blows bite.
-Keywords float beside each die as annotation tags. A rolled weapon rolls its damage when it
-lands and the number flashes over the target; a flat one shows its number. Reroll up to three
+Keywords float beside each die as annotation tags. A weapon's number flashes over the target
+as it lands. Reroll up to three
 times per round, before or after attacking; a reroll lands on any other face, never the
 one showing; a copy of it may come up. End turn runs the enemy: its turn replays blow
 by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,

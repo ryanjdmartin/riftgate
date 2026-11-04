@@ -287,6 +287,13 @@ static func _unit_dict(u: Unit) -> Dictionary:
 
 static func _unit_from(d: Dictionary) -> Unit:
 	var u := Unit.new()
+	_unit_into(u, d)
+	return u
+
+
+## A unit's dictionary written into `u`: a fresh unit on a load, the field's own on an undo
+## (restore_skirmish), so every collection it fills is emptied first.
+static func _unit_into(u: Unit, d: Dictionary) -> void:
 	u.id = int(d.get("id", 0))
 	u.display_name = str(d.get("name", ""))
 	u.side = int(d.get("side", Unit.Side.PLAYER))
@@ -294,8 +301,10 @@ static func _unit_from(d: Dictionary) -> Unit:
 	u.hull = int(d.get("hull", 100))
 	u.shield = int(d.get("shield", 0))
 	var base: Dictionary = d.get("base", {})
+	u.base.clear()
 	for k in base.keys():
 		u.base[str(k)] = int(base[k])
+	u.modifiers.clear()
 	for md in d.get("modifiers", []):
 		u.modifiers.append(_modifier_from(md))
 	u.allies = int(d.get("allies", 0))
@@ -309,6 +318,7 @@ static func _unit_from(d: Dictionary) -> Unit:
 	u.faction = str(d.get("faction", ""))
 	u.foe_id = str(d.get("foe_id", ""))
 	u.strength = int(d.get("strength", 0))
+	u.members.clear()
 	for m in d.get("members", []):   # a composition's members (30 October); a save from before has none
 		if m is Array and (m as Array).size() >= 2:
 			u.members.append([str(m[0]), int(m[1])])
@@ -329,17 +339,19 @@ static func _unit_from(d: Dictionary) -> Unit:
 		for fd in faces:
 			list.append(_face_from(fd))
 		u.die = Die.of(list)
+	u.paint.clear()
 	for k in d.get("paint", {}).keys():
 		u.paint[str(k)] = Color.html(str(d["paint"][k]))
 	var p = d.get("passive", {})
 	u.passive = p if p is Dictionary else {}
 	u.chassis_id = str(d.get("chassis_id", ""))
 	u.hardpoints = int(d.get("hardpoints", 0))
+	u.damaged_faces.clear()
 	for idx in d.get("damaged_faces", {}).keys():
 		u.damaged_faces[int(str(idx))] = _face_from(d["damaged_faces"][idx])
+	u.modules.clear()
 	for mid in d.get("modules", []):   # the fitted modules' ids, for the codex (their effects are the modifiers above)
 		u.modules.append(str(mid))
-	return u
 
 
 ## A die entry with everything the die keeps beyond the content shape: its component,
@@ -371,7 +383,7 @@ static func _modifier_dict(m: Effects.Modifier) -> Dictionary:
 		"id": m.id, "name": m.name, "description": m.description, "source": m.source,
 		"component": m.component, "scope": m.scope, "expires_round": m.expires_round,
 		"tags": m.tags, "effects": m.effects, "seq": m.seq, "stacks": m.stacks, "decay": m.decay,
-		"slept": m.slept,
+		"slept": m.slept, "slept_stacks": m.slept_stacks,
 	}
 
 
@@ -391,6 +403,7 @@ static func _modifier_from(d: Dictionary) -> Effects.Modifier:
 	m.stacks = int(d.get("stacks", 1))
 	m.decay = int(d.get("decay", Effects.DECAY_NONE))
 	m.slept = bool(d.get("slept", false))
+	m.slept_stacks = int(d.get("slept_stacks", 0))
 	# Grant order decides override ties; the counter carries on past the loaded ones.
 	Effects._seq = maxi(Effects._seq, m.seq)
 	return m
@@ -402,7 +415,8 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	var mechs: Array = []
 	for ms in sk.mechs:
 		mechs.append({"unit": ms.unit.id, "heat": ms.heat, "heat_max": ms.heat_max, "face_index": ms.face_index,
-			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls, "ammo": ms.ammo, "ammo_max": ms.ammo_max})
+			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls, "ammo": ms.ammo, "ammo_max": ms.ammo_max,
+			"hot_entry": ms.hot_entry})
 	var packs: Array = []
 	for sq in sk.packs:
 		packs.append(sq.id)
@@ -439,6 +453,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"joined_fallen": _int_keys(sk.joined_fallen),
 		"joined_fallen_types": _typed_tallies(sk.joined_fallen_types),
 		"came_with": _typed_tallies(sk.came_with),
+		"roll_marks": sk.roll_marks, "history": sk.history,   # the trail's bars and the undo's snapshots (2 November)
 		"team_kills": sk.team_kills,
 	}
 
@@ -447,25 +462,38 @@ static func _skirmish_from(d: Dictionary, field: Battlefield) -> Skirmish:
 	return _skirmish_build(d, func(uid: int) -> Unit: return field.unit_by_id(uid))
 
 
+## A fight and its units in one dictionary, the units by place (the machines first and the packs
+## after, never by id: a test's machines may share one) under `units`, each machine's `unit` its
+## index there; the undo's own stack left out. The clone's and the snapshot's shared source; its
+## arrays are the fight's own until duplicated.
+static func _fight_dict(sk: Skirmish) -> Dictionary:
+	var d := _skirmish_dict(sk, null)
+	d.erase("history")
+	var units: Array = []
+	for i in range(sk.mechs.size()):
+		units.append(_unit_dict(sk.mechs[i].unit))
+		d["mechs"][i]["unit"] = i
+	var packs: Array = []
+	for sq in sk.packs:
+		units.append(_unit_dict(sq))
+		packs.append(units.size() - 1)
+	d["packs"] = packs
+	d["units"] = units
+	return d
+
+
 ## A deep copy of a skirmish and its machines through the save's own round trip (the planner's
 ## rollouts, the stock pass's second chunk, 22 October): every unit and live modifier, the dice,
 ## the foes and their intents, the ranks, the queue, the mines and the random stream's state,
 ## so the copy plays on exactly as the original would. What the save leaves to the battle (the
 ## runner's targeting rule, the summoning factory, a roar's reroll debt) is carried across;
-## the log is not. The copy finds its units by place, the machines first and the packs after,
-## never by id: a test's machines may share one.
+## the log and the undo are not.
 static func clone_skirmish(sk: Skirmish) -> Skirmish:
-	var d := _skirmish_dict(sk, null)
+	var d := _fight_dict(sk)
 	d["log"] = []
 	var units: Array[Unit] = []
-	for i in range(sk.mechs.size()):
-		units.append(_unit_from(_unit_dict(sk.mechs[i].unit)))
-		d["mechs"][i]["unit"] = units.size() - 1
-	var packs: Array = []
-	for sq in sk.packs:
-		units.append(_unit_from(_unit_dict(sq)))
-		packs.append(units.size() - 1)
-	d["packs"] = packs
+	for ud in d["units"]:
+		units.append(_unit_from(ud))
 	var c := _skirmish_build(d, func(at: int) -> Unit: return units[at] if at >= 0 and at < units.size() else null)
 	c.targeting_override = sk.targeting_override
 	c.foe_factory = sk.foe_factory
@@ -473,10 +501,58 @@ static func clone_skirmish(sk: Skirmish) -> Skirmish:
 	return c
 
 
+## The fight as it stands, for the undo (Skirmish.history, 2 November): the fight's dictionary
+## with every unit's numbers inside, deep-copied, so the fight's own arrays (the log, a slot's
+## mines, a foe's moves) move on without it. The game's tallies ride under `tallies`, so an
+## undone spend counts for nothing; the runner's own (reach_tally, taken_by_rank, mine_tally)
+## are left out, since the runner never undoes.
+static func snapshot_skirmish(sk: Skirmish) -> Dictionary:
+	var d := _fight_dict(sk)
+	d["tallies"] = {"destroyed": sk.destroyed, "falls": sk._falls, "seq": sk._seq, "reroll_debt": sk.reroll_debt,
+		"sponsorship": sk.sponsorship}
+	return d.duplicate(true)
+
+
+## The fight put back as a snapshot had it, in place: the machines' units are the field's own,
+## their numbers written back; the machines, the foes, the ranks, the queue, the mines, the
+## stream and the log as they were; the packs' units, the callables and the undo stack stand.
+## The last blow, blast and acts, the screen's, are cleared: they were the spend's.
+static func restore_skirmish(sk: Skirmish, d: Dictionary) -> void:
+	var units: Array[Unit] = []
+	for ms in sk.mechs:
+		units.append(ms.unit)
+	var dicts: Array = d.get("units", [])
+	for i in range(mini(units.size(), dicts.size())):
+		_unit_into(units[i], dicts[i])
+	units.append_array(sk.packs)
+	_skirmish_into(sk, d, func(at: int) -> Unit: return units[at] if at >= 0 and at < units.size() else null)
+	var t: Dictionary = d.get("tallies", {})
+	sk.destroyed = int(t.get("destroyed", sk.destroyed))
+	sk._falls = int(t.get("falls", sk._falls))
+	sk._seq = int(t.get("seq", sk._seq))
+	sk.reroll_debt = int(t.get("reroll_debt", sk.reroll_debt))
+	var sp = t.get("sponsorship", null)
+	if sp is Dictionary:
+		for k in sp.keys():
+			sk.sponsorship[str(k)] = int(sp[k])
+	sk.last_roll.clear()
+	sk.last_blast.clear()
+	sk.last_acts.clear()
+
+
 ## A skirmish from its dictionary, its units found by id through `lookup` (the battlefield's on
 ## a resume, a copy's own on a clone).
 static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 	var sk := Skirmish.new(0, int(d.get("columns", Skirmish.DEFAULT_COLUMNS)))
+	_skirmish_into(sk, d, lookup)
+	return sk
+
+
+## A skirmish's dictionary written into `sk`: a fresh one on a load or a clone, the fight itself
+## on an undo (restore_skirmish), so every collection it fills is emptied first. The undo stack
+## is read only where the dictionary carries one (a save's): a snapshot carries none, and the
+## undo keeps the stack it pops from.
+static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> void:
 	sk.rng.state = str(d.get("rng", "0")).to_int()
 	sk.terrain = int(d.get("terrain", BattleMap.Terrain.PLAIN))
 	sk.ground = str(d.get("ground", BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")))
@@ -486,8 +562,10 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 	sk.committed = bool(d.get("committed", false))
 	sk.state = int(d.get("state", Skirmish.State.SETUP))
 	sk.outcome = int(d.get("outcome", Skirmish.Outcome.NONE))
+	sk.log.clear()
 	for line in d.get("log", []):
 		sk.log.append(str(line))
+	sk.mechs.clear()
 	for md in d.get("mechs", []):
 		var u: Unit = lookup.call(int(md.get("unit", 0)))
 		if u == null:
@@ -501,10 +579,16 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 		ms.free_rerolls = int(md.get("free_rerolls", 0))
 		ms.ammo_max = int(md.get("ammo_max", ms.ammo_max))
 		ms.ammo = int(md.get("ammo", ms.ammo))
+		ms.hot_entry = int(md.get("hot_entry", -1))   # the overheat's culprit (a save from before 3 November has none)
+	sk.packs.clear()
 	for pid in d.get("packs", []):
 		var sq: Unit = lookup.call(int(pid))
 		if sq != null:
 			sk.packs.append(sq)
+	sk.twins.clear()
+	sk.reinforcements.clear()
+	sk.mines.clear()
+	sk.joined_fallen.clear()
 	var foes: Array[Foe] = []
 	for fd in d.get("foes", []):
 		foes.append(_foe_from(fd, sk))
@@ -533,7 +617,7 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 			shot["keywords"] = kws
 			for key in ["damage", "seq", "burn", "cryo", "flak"]:
 				shot[key] = int(shot.get(key, 0))
-			for key in ["row", "column", "chain"]:
+			for key in ["row", "column", "chain", "dispel"]:
 				if shot.has(key):
 					shot[key] = int(shot[key])   # its area numbers and Chain's (28 October); a shot laid before them has none: its area lands half and it arcs nothing (Skirmish._mine_hit)
 			shot["mech"] = int(shot.get("mech", -1))
@@ -549,8 +633,15 @@ static func _skirmish_build(d: Dictionary, lookup: Callable) -> Skirmish:
 		sk.joined_fallen[int(str(pid))] = int(joined[pid])
 	sk.joined_fallen_types = _typed_tallies_from(d.get("joined_fallen_types", {}))
 	sk.came_with = _typed_tallies_from(d.get("came_with", {}))
+	sk.roll_marks.clear()
+	for m in d.get("roll_marks", []):
+		sk.roll_marks.append(int(m))
+	if d.has("history"):
+		sk.history.clear()
+		for h in d["history"]:
+			if h is Dictionary:
+				sk.history.append(h)
 	sk.team_kills = int(d.get("team_kills", 0))   # the foes the team has killed this fight (30 October)
-	return sk
 
 
 ## A tally by pack and type (pack id -> {content id: count}), with string keys for JSON.
@@ -584,9 +675,10 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 	return {
 		"name": f.display_name, "content_id": f.content_id, "hp": f.hp, "hp_max": f.hp_max, "attack": f.attack,
 		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "armour": f.armour, "aim": f.aim, "last_special": f.last_special, "kin": f.kin,
+		"resist": f.resist,
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
-		"boss": f.boss, "hero": f.hero, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down, "joined": f.joined, "fresh": f.fresh,
+		"boss": f.boss, "hero": f.hero, "elite": f.elite, "commands": f.commands, "escorts": f.escorts, "on_death": f.on_death, "stays_down": f.stays_down, "joined": f.joined, "fresh": f.fresh,
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
 		"next_move": f.next_move, "committed": f.committed, "held": f.held, "grudge": f.grudge, "spent_once": f.spent_once, "swallow_mark": f.swallow_mark,
@@ -604,11 +696,13 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.pack_id = int(d.get("pack_id", 0))
 	f.size = int(d.get("size", 1))
 	f.armour = int(d.get("armour", 0))
+	f.resist = int(d.get("resist", -1))   # its stun resist (2 November); a save from before reads the default by size
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.last_special = str(d.get("last_special", ""))
 	f.kin = int(d.get("kin", 0))
 	f.boss = bool(d.get("boss", f.size >= 2))   # a save from before 15 October read a massive foe as the boss
 	f.hero = bool(d.get("hero", false))
+	f.elite = bool(d.get("elite", false))   # a mini-boss (3 November); a save from before has none
 	f.commands = bool(d.get("commands", f.boss))   # a save from before 21 October: a boss commanded its unit
 	f.escorts = bool(d.get("escorts", false))
 	var od = d.get("on_death", {})

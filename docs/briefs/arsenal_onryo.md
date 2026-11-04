@@ -157,7 +157,7 @@ Ryan's.
 
 ## The bench, with what set each aside
 
-- **The first Onryō**: an ally's wound Overcharged it. As for Misharu (Ryan, 12 October), the
+- **The first Onryō**: an ally's wound Empowered it. As for Misharu (Ryan, 12 October), the
   Arsenal needs archetypes other than Overcharge scaling.
 - **All its allies' hull damage taken as a core mechanic**: too much (Ryan, 12 October: it
   cannot always take its allies' hull damage); the Pall keeps a conditional part.

@@ -44,7 +44,7 @@ burst, a delayed action, a combined entry, own rerolls).
 | open | the Snowy Owl (marked 21 October, Ryan: a stealth unit; to design) | | | | |
 
 **Kestrel's identity, re-read under the direction.** The leans row (13 October) gives
-Kestrel "Rapid, Overcharged and Overshield, and the chain rule (tempo, burst, escort)". The
+Kestrel "Rapid, Empowered and Overshield, and the chain rule (tempo, burst, escort)". The
 line as it stands reads otherwise: Kestrel's currencies are heat as a resource (the Buzzard
 banks it, the Afterburner and the Kite spend it, the off-tank burns shield in its
 place), the die as a gamble (the platform's growth, the Kite's d3, the strafer's
@@ -52,7 +52,7 @@ spray), rerolls (Ryan, 19 October: Kestrel's), strikes (the strafer) and speed o
 (move 50, field recharge 30: the detachment). Rapid is its gated cantrip, not its spine.
 Ryan, 20 October: "the maker didn't really have an identity before other than the look, and
 now we are indeed looking at heat, rerolls, multi-strikes, and risk". The leans row carries it
-since that day; Overcharged leaves the Kestrel lean (the Coil is its one carrier, and the
+since that day; Empowered leaves the Kestrel lean (the Coil is its one carrier, and the
 Ammit's talons and the Reliquary are the Arsenal's). Three of the eight hover (the Puffin, the
 off-tank, the capital) and five fly; the capital hovers from irony (Ryan, 20 October).
 
@@ -147,7 +147,7 @@ One pointer each; the proposal is in the brief named.
   an offensive one around rolls, rerolls and actions, the cash-in a Rapid lock that spends
   three rerolls on a spent ally (proposal). Its ninth round (21 October), Ryan's: the formation
   leader, aggressive, where the Swallowtail is the supportive HQ; lock 1 Rapid, a team reroll on
-  itself or an ally's action for three rerolls; lock 2 the battery; lock 3 Overcharged 2 and a
+  itself or an ally's action for three rerolls; lock 2 the battery; lock 3 Empowered 2 and a
   roll for an ally. Its go the same day, on his answers: three rerolls paid, a spent ally, the
   bank, the hardpoints. `git show d84ad16:docs/briefs/kestrel_gun_platform.md`, retired with its engine on 30 October.
 
@@ -366,7 +366,7 @@ The bench for either, one line each:
 | The Magpie's lock, the pull | every mine gathered into one slot and set off | the Roost Beacon: every mine comes home to roost | the Larder Hook: the hoard gathered into one larder |
 | The Giant Petrel's first lock, the Hot-Pit | Rapid: a team reroll on itself, or for three rerolls a spent ally acts again | the Hot-Pit Boom: hot-pit refuelling turns a jet around with its engines running | the Turnaround Rig |
 | Its second, the battery | a rolled Indirect gun; its kill gives two rerolls | the Wavetop Launcher: the ekranoplan's sea-skimming missiles ("battery" is Wainwright & Sutler's word) | the Spindrift Salvo |
-| Its third, the buff | Overcharged 2 and a roll for an ally | the Reheat Uplink: reheat is the afterburner, sent to an ally | the Throttle Uplink |
+| Its third, the buff | Empowered 2 and a roll for an ally | the Reheat Uplink: reheat is the afterburner, sent to an ally | the Throttle Uplink |
 | The strafer's passive | every weapon strikes twice at half | the Interrupter Gear: the gear that let a gun fire between a propeller's blades | the Split-cycle Breech |
 | The Storm Petrel's passive | the plate, the burn and the zap | the Plenum Discharge: the plenum is the hovercraft's cushion chamber | the Skirt Capacitor |
 | The interceptor's passive | a debuff or a buff Rapid once a round | the Handoff Relay: the target handed to the team, the jet free to go again | the Quick-turn Avionics |

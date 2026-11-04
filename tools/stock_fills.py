@@ -53,30 +53,30 @@ for c in d['entries']:
         if c['id'] == 'musk_ox' and e == 'forge': eff['per_heat'] = 2
 jsave(R + 'content/chassis.json', d, False)
 
-# ---- components: (power, power_max, heat) and extra face fields (section 3)
-def A(p, pm=None, heat=0, **k): return dict(power=p, power_max=pm if pm is not None else p, heat=heat, **k)
+# ---- components: (power, heat) and extra face fields (section 3); one number a weapon since 2 November
+def A(p, heat=0, **k): return dict(power=p, heat=heat, **k)
 def E(p, **k): return dict(power=p, **k)   # equipment: its number
 P = {
- 'twin_autoguns': A(1, 3, 0), 'rivet_gun': A(2, heat=0), 'ankle_mortar': A(1, 3, 1), 'laser_carbine': A(3, heat=2),
+ 'twin_autoguns': A(2, 0), 'rivet_gun': A(2, heat=0), 'ankle_mortar': A(2, 1), 'laser_carbine': A(3, heat=2),
  'halo_shield': E(6), 'canopy': E(8), 'coolant_jacket': E(4), 'bleed_valve': E(6),
- 'howitzer': A(2, 5, 1), 'incendiary_shells': A(1, 3, 1, burn=2), 'slugthrower': A(2, 5, 1), 'shotfire_rack': A(2, 4, 2),
- 'maxigun': A(1, 2, 1, strikes=3), 'enfilade_beam': A(4, heat=2), 'arc_fault_cannon': A(4, heat=2),
- 'overclocked_railgun': A(10, heat=8, keywords=['breach']), 'plasma_arquebus': A(2, 4, 2), 'blazethrower': A(3, heat=3, burn=2),
+ 'howitzer': A(4, 1), 'incendiary_shells': A(2, 1, burn=2), 'slugthrower': A(4, 1), 'shotfire_rack': A(4, 2),
+ 'maxigun': A(2, 1, strikes=3), 'enfilade_beam': A(4, heat=2), 'arc_fault_cannon': A(4, heat=2),
+ 'overclocked_railgun': A(10, heat=8, keywords=['breach']), 'plasma_arquebus': A(4, 2), 'blazethrower': A(3, heat=3, burn=2),
  'polarity_projector': A(0, heat=2), 'proximity_klaxon': A(0, heat=1), 'phased_sublimator': E(4), 'radiator_sail': E(5),
  'wake_diffuser': E(3, shields=3), 'overcharge_coil': dict(stacks=2), 'shoring_jack': dict(stacks=2), 'thermal_ray': A(6, heat=6),
  'retribution_thurible': {}, 'oblation_ward': E(10),
  'pulse_vacillator': A(2, heat=2), 'umbra_inducer': A(3, heat=0, keywords=['suppress', 'volatile']), 'differentiation_probe': A(0, heat=2), 'tesla_gauntlets': A(4, heat=3),
- 'meteor_artillery': A(5, heat=6, burn=3), 'suppression_battery': A(1, 3, 2), 'coriolis_accelerator': A(3, heat=1, power_per_missing=1),
+ 'meteor_artillery': A(5, heat=6, burn=3), 'suppression_battery': A(2, 2), 'coriolis_accelerator': A(3, heat=1, power_per_missing=1),
  'laminar_deflector': E(6), 'corona_shield': E(6), 'aurora_lattice': {}, 'entropy_condenser': E(10), 'gravity_knuckles': A(5, heat=4, burn=3),
- 'chainsaw_claw': A(2, 4, 0), 'bullion_fragmenter': A(4, heat=2, power_per_load=1), 'breaching_plow': A(2, 5, 0, braces=2),
- 'cryo_flinger': A(0, heat=1), 'flakshot_repeater': A(1, heat=0, flak=1), 'megataser_harpoon': A(1, 2, 2), 'combat_translocator': A(0, heat=1),
+ 'chainsaw_claw': A(3, 0), 'bullion_fragmenter': A(4, heat=2, power_per_load=1), 'breaching_plow': A(4, 0, braces=2),
+ 'cryo_flinger': A(0, heat=1), 'flakshot_repeater': A(1, heat=0, flak=1), 'megataser_harpoon': A(2, 2), 'combat_translocator': A(0, heat=1),
  'afterburner_cannon': A(2, heat=0, power_per_heat=1, per_heat=2), 'backwash_ionizer': E(3), 'web_bomb': A(0, heat=1),
  'heliographic_siphon': A(0, heat=0, braces=1, heat_per_blow=2), 'solar_flare_array': A(3, heat=3, burn=2), 'photosphere_lance': A(4, heat=6, burn=2),
  'knuckle_of_fury': A(5, heat=3), 'soulcutter_talons': A(3, heat=1, devours=1), 'spin_up': {},
  'mooring_screens': E(2), 'spotting_flare': A(0, heat=1), 'sutlers_hoist': E(3, vents=2), 'reveille_horn': {},
  'shrapnel_recuperator': A(1, heat=2, flak=1), 'unrestricted_expenditure': A(2, heat=0), 'quick_reload': dict(heat=3),
  'blast_door': {}, 'decoherence_veil': {},   # the Barrier and the Ward: no numbers
- 'transonic_rifle': A(5, heat=4), 'airburst_shell': A(1, 2, 1, flak=1), 'cyclic_cannon': A(2, heat=3, strikes=4),
+ 'transonic_rifle': A(5, heat=4), 'airburst_shell': A(2, 1, flak=1), 'cyclic_cannon': A(2, heat=3, strikes=4),
  'flak_cannon': A(3, heat=2, flak=2), 'stoker': A(3, heat=1, burn=2, self_burn=1), 'backdraft_charge': A(2, heat=2),
  'pinion_driver': A(2, heat=0, strikes=2), 'lorentz_contractor': A(0, heat=2), 'syrinx_drone': A(0, heat=0),   # not in the brief: today's over four (the Driver's four in two shots, Ryan, 29 October)
 }
@@ -85,9 +85,6 @@ seen = set()
 for e in d['entries']:
     f = e['face']; fill = P[e['id']]; seen.add(e['id'])
     for k, v in fill.items():
-        if k == 'power_max' and v == fill.get('power'):
-            f.pop('power_max', None)   # a flat fill: one number, no roll
-            continue
         f[k] = v
     if 'volatile' in f.get('keywords', []):
         f['volatile'] = 3          # Volatile bites 3 (a numbered keyword since 22 October)

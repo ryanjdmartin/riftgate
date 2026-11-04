@@ -272,6 +272,26 @@ func _apply_pose() -> void:
 			s.sk.mechs[0].die.faces[s.sk.mechs[0].face_index] = Face.attack(200)
 			s._use_die(0, s.sk.front[0])
 			s._toggle_all_arrows(true)
+		"sweep":
+			# A sweep dragged over a foe (3 November): the first machine's entry showing made a
+			# Sweep of two strikes, held over a back foe (the front's first when no back rank
+			# stands), so that foe's rank lights whole and wears the bracket, the other rank plain.
+			var ms0: Skirmish.MechState = s.sk.mechs[0]
+			var pod := Face.attack(4, Face.Reach.SWEEP)
+			pod.strikes = 2
+			pod.heat = 1
+			ms0.die.faces[ms0.face_index] = pod
+			s._refresh()
+			s._on_drag_started(0)
+			var swept: Foe = s.sk.back[0] if s.sk.back[0] != null else s.sk.front[0]
+			s._on_drag_moved(s._foe_view_for(swept).get_global_rect().get_center())
+		"undo":
+			# One die spent on a scratch (3 November): UNDO lit at the reroll row's right end with
+			# the one spend it reaches on its badge, the round's bar in the trail over the spend's line.
+			s.sk.mechs[0].die.faces[s.sk.mechs[0].face_index] = Face.attack(1)
+			s._use_die(0, s.sk.front[0])
+			s._undo_from = 0   # the blow's wait skipped: the shot is of the button open
+			s._refresh_undo()
 
 
 ## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),

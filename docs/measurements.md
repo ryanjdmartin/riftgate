@@ -3232,7 +3232,7 @@ components/arc_fault_cannon/face/chain=N`: `de29n3`, `de29n4`, `de29psn3`, `de29
 `de29bn4`), a row without the Arc Fault reusing its stock read, the runner being deterministic.
 The sixteen big fights but the finale; about two hours on four cores. And 96 fights traced on the
 car with the Arc Fault in the Prairie Dog's slot (the sixteen, seeds 1 to 3, with and without the
-spread harpoon), counting each Arc Fault spend's arcs and charges.
+spread harpoon), counting each Arc Fault spend's arcs and charges. Run on `6f4de7e`, the branch's head of the 29th: before main's move-order fix (`0a9ca80`) and the foes' fresh start (`85e28fd`), whose slate is the big bench since, so the command names fights the driver no longer lists as `big`.
 
 Greedy, 200 seeds (the win rate, the rounds of the fights won, the hull lost, the delta against the
 row as stocked, the Arc Fault's share of the row's spends, the Projector's and the Afterburner
@@ -3685,7 +3685,7 @@ Wainwright & Sutler's row, each at heat 0, 2, 4, 6 and 8, against the row as sto
 big fights but the finale), four ways: as today (the greedy, the Prairie Dog's cooling 1), with
 its cooling 0 (`--set chassis/prairie_dog/cooling=0`, `heat30g0`), and both again under the
 cautious persona, each machine keeping its heat under half its maximum (`--cool-above 50`,
-`heat30c`, `heat30c0`). 124 variants, about two hours on four cores; 30 seeds, a direction.
+`heat30c`, `heat30c0`). 124 variants, about two hours on four cores; 30 seeds, a direction. Run on `28a677f`, the persona's commit: before main's move-order fix (`0a9ca80`) and the foes' fresh start (`85e28fd`), whose slate is the big bench since.
 
 Each heat's price in vanilla points (its rounds over the heatless gun's of the same number, over
 the rounds a point buys between 3 and 7), the mean of the six guns, and the heat-8 guns'
@@ -4055,7 +4055,7 @@ bot pricing each. Two benches: the car's vanilla heat grid (`tools/pricing_run.p
 Sutler's row) and Kestrel's row as stocked, the hot row (`--parts none --benches goshawk
 --bench-stocks`), each under the greedy and the cautious persona (`--cool-above 50`), whose
 line is priced at what an overheat burns. The sixteen big fights but the finale; 30 seeds, a
-direction; about two and a half hours on four cores.
+direction; about two and a half hours on four cores. Run on `e964de5`, the switch's commit: before main's move-order fix (`0a9ca80`) and the foes' fresh start (`85e28fd`), whose slate is the big bench since.
 
 On the car (each heat's price in vanilla points, the mean of the three guns, as the heat grid of
 the morning reads it; the heat-8 guns' overheats, hull lost, rounds and wins; the row as stocked):
@@ -4120,7 +4120,7 @@ ladders --benches puffin --pieces <the seventeen> --bench-stocks --seeds 30`): t
 pieces of tiers 0 to 2 in the Puffin's slot of Kestrel's row (the Laser Carbine's, the bench
 where equipment reads), each against the row as stocked, with today's bots and again with the
 personas that value support (`--shield-ahead --cool-above 50`, `sup30p`). The sixteen big fights
-but the finale; 30 seeds, a direction; 36 variants, about sixteen minutes on four cores.
+but the finale; 30 seeds, a direction; 36 variants, about sixteen minutes on four cores. Run on `a6884b3`, the persona's commit: before main's move-order fix (`0a9ca80`) and the foes' fresh start (`85e28fd`), whose slate is the big bench since, the four formations with it.
 
 The row as stocked: 100% won, 3.28 rounds and 9.8% hull today; 3.59 and 10.0% with the personas.
 Each piece's rounds and hull against the row with the gun in its slot, and its share of the
