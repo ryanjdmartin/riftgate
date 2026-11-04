@@ -44,6 +44,13 @@ are in `README.md`.
 
 ## Branches
 
+`claude/aphelion-minerva-chassis-9qf6cy` (4 November) carries Ryan's chassis ideas of that day
+and Claude's first round on them, from main's `1fa1155`: `docs/aphelion_minerva_chassis_proposal.md`
+(his list verbatim; the words that moved, the counts, the shared holes; each machine's holes,
+questions and Claude's leans), the echidna's new shape in its brief, and the pointers (the briefs
+README, the README's documents, this file, the to-do). Docs only: nothing decided, nothing built,
+the bible untouched until his marks.
+
 `ccr-bb178c9b-l6airv` (2 to 4 November) carried Ryan's playtest list of 2 November and the
 die's marks of 3 and 4 November (How things stand), from main's `3929042`; its battle map's share
 (EXECUTE and the END TURN question, the catch drawn as an attack order, the quick campaign's lists
@@ -247,13 +254,22 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   needs a design session for its kit and its visual design, which Ryan starts himself (4 November;
   the Needletail likewise, Kestrel's).
 - Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced
-  Skeleton module; its brief retired), the echidna left open, the siege battery parked on Ryan's charge brief, the battlecruiser never
-  with the Carrier's session (Ryan, 20 October).
+  Skeleton module; its brief retired), the echidna left open (Ryan's new shape of 4 November in
+  its brief, Claude's first round beside it), the siege battery parked on Ryan's charge brief, the battlecruiser never
+  with the Carrier's session (Ryan, 20 October). Ryan's five other Minerva ideas of 4 November
+  (a tier-one lure tank, the Cryo party defence, a drill mole, a shield-basher, the immune one)
+  wait on his marks in `docs/aphelion_minerva_chassis_proposal.md`.
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
-  then the jellyfish; the Carrier on its own; a defensive tier one unproposed (the to-do).
+  then the jellyfish; the Carrier on its own; a defensive tier one unproposed (the to-do). Ryan's
+  seven ideas of 4 November (Static, the Macross flagship, the Cryo detonator, the time-shifter
+  again, a Barrier and Ward support, the status detonator, a shock unit) wait on his marks in
+  `docs/aphelion_minerva_chassis_proposal.md`, with the counts they bring (eleven to fourteen
+  if all land).
 - The Arsenal: Misharu, the Onryō, Mastema and Minos, Claude's first round and review in their
   briefs, unanswered: Misharu's two calls first (Penance's shape, how often it may fire), then
-  the Onryō's kind and trigger.
+  the Onryō's kind and trigger. Ryan's frost and thunder homages of 4 November (each beside an
+  Aphelion idea, the Cryo detonator and the shock unit) would take it to eight; in the same
+  proposal.
 
 ## How things stand
 

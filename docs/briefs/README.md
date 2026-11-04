@@ -255,7 +255,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty elites, five wanderers, the Nob's rage, the Fiend of Fire, the demotions), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the Meadow's and the Waste's third boss, the Fell Rider's mount, the rage's shape, the Monster Hunter nods, the names) |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
 | `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate a load; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |
-| `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |
+| `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna); his new shape of 4 November (strikers debuffed to hurt themselves after they act) and Claude's first round on it in the brief | Minerva | 2 | Ryan's calls on the new shape (the brief's open item 2) |
 | `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | nothing: the cooldown property it waited on is built |
 | `kestrel_strafer.md` | landed 25 October as the Skua, its engine built (each roll halved, rounded down, and struck twice; the Pod's spray), retired (`git show f87b831:docs/briefs/kestrel_strafer.md`) | Kestrel | 1 | Ryan's play and its look (the to-do); its runner rows read 25 October (`docs/measurements.md`) |
@@ -291,7 +291,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `chain_conductor.md` | keyword rework, decided 28 October (the bible's Chain row), built 29 October and retired (`git show 0cea0ee:docs/briefs/chain_conductor.md`) | Aphelion's lean, the Arc Fault Cannon the first carrier | keyword | its read (the to-do) |
 | `heat_pillar.md` | design session on heat as a pillar (Ryan, 28 October: a core pillar, undervalued; the bible's triangle row and section 12's heat question): what is built, what is measured, his frame, Claude's bench, the questions and the reads | every maker | rule | Ryan's answers to its six questions, then the prices, the cooling and the vent payoffs land on his go, read on the vanilla ladder's heat grid first |
 
-Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
+Not briefed here: Ryan's chassis ideas of 4 November (seven Aphelion, six Minerva and two Arsenal homages; Claude's first round in `docs/aphelion_minerva_chassis_proposal.md`, a brief each once he marks them, the echidna's new shape in its own brief); the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
 each maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no
 cooldown, noted in the line frame's brief; combined entries before Rapid ones by the
 action-economy row, none landed with the stock pass); the Scapegoat Brand
