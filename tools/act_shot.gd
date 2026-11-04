@@ -11,11 +11,15 @@ extends SceneTree
 ## into a straight run at its full speed on the map (its stride); "lose" that many seconds after
 ## it is lost (MechView3D.lose: its lights out and its slump). RIFTGATE_FORM=<name> holds
 ## that form first, all the way in, so the act is one of its own (the sealed Armadillo's) or
-## "-" its held pose. Needs a window (xvfb-run does, on a Linux box).
+## "-" its held pose. An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
+## with its act's slice and what it fires out of the machine, lowforge's launches) and renders it that
+## many seconds on. Needs a window (xvfb-run does, on a Linux box).
 
 var _frames := 0
 var _view: MechView3D
 var _out := "act.png"
+var _fire := ""        # a weapon to fire once the view is up ("fire:<component>"), and how long after to render
+var _fire_t := 0.0
 
 
 func _init() -> void:
@@ -47,6 +51,9 @@ func _init() -> void:
 	elif args[2] == "lose":
 		_view.lose()
 		_view.rig.tick(float(args[3]))
+	elif args[2].begins_with("fire:"):
+		_fire = args[2].trim_prefix("fire:")
+		_fire_t = float(args[3])
 	elif args[2] != "-":
 		if not _view.rig.play(args[2]):
 			push_error("no act " + args[2])
@@ -59,6 +66,15 @@ func _tick() -> void:
 	# would run on through the frames before the save (a frame at "0.3 s" showed 0.6).
 	_view.set_process(false)
 	_frames += 1
+	if _frames == 2 and not _fire.is_empty():
+		# Fired once the view is in the tree, so a launch leaves from where its parent stands; then
+		# the rig and the launches run on frame by frame to the moment asked.
+		_view.strike(true, _fire)
+		var t := 0.0
+		while t < _fire_t:
+			_view.rig.tick(1.0 / 60.0)
+			_view._fly(1.0 / 60.0)
+			t += 1.0 / 60.0
 	if _frames < 6:
 		return
 	var err := _view.get_texture().get_image().save_png(_out)

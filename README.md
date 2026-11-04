@@ -503,7 +503,7 @@ RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantl
 # and holds it while the act plays, the act's turn folded into the spin as it ends (the Cottonmouth's drum, stopped on a chamber to fire)
 RIFTGATE_COUNT_DEBUG=1 godot --path .           # every count display counts up a part a second until it falls
 RIFTGATE_SPIN_DEBUG=1 godot --path .            # every status's spin held in turn, then let go
-godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride, "lose 3" its slump 3 s after it is lost
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride, "lose 3" its slump 3 s after it is lost, "fire:spotting_flare 2.9" that weapon 2.9 s after it fires (its slice and what it launches)
 godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwright_sutler clip/clydesdale 8 front 480x400 trot   # a machine walking at its map pace, every frame a PNG (a gait option by name, "-" for its own); then ffmpeg -framerate 30 -i clip/clydesdale_%04d.png -pix_fmt yuv420p clydesdale.mp4
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger

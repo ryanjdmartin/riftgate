@@ -13,7 +13,7 @@ import os
 import bmesh
 from mathutils import Matrix, Vector
 
-from bl_low import TILE_WORLD, boom, diamond, hexagon, rect
+from bl_low import TILE_WORLD, boom, diamond, hexagon, pin_frame, rect
 
 
 def badger(b):
@@ -3644,6 +3644,21 @@ def swallowtail(b):
             with b.joint("fire_%d" % (k + 1), tuple(rack @ Vector((x, 0.0, 0.0))), slide=tuple(along)):
                 b.loft([(1.6, _poly(1.25, 8, math.pi / 8)), (7.0, _poly(1.25, 8, math.pi / 8))], "amber.ember", "flare_round_%d" % (k + 1), rack @ Matrix.Translation((x, 0.0, 0.0)))
         b.box(-5.0, 5.0, 3.6, 4.8, -1.9, 1.9, "steel.dark", "flare_strap", rack)
+        # The flares it fires (Ryan, 4 November: "Go for some micro models and let's see what they
+        # look like"): from each round's tip at the top of its pop a burning star flies up and out
+        # over the bow, the three fanned a little apart, slowing as it climbs and curving over, then
+        # hangs there sinking as under its chute, lit and haloed, until it dies and is gone; the
+        # round left in its tube goes dark as the star leaves (the act's burn). Made at the rack's
+        # rest, so each line is turned back the twenty degrees the rack rears to fire.
+        for k, x in enumerate((-3.3, 0.0, 3.3)):
+            a, el = math.radians((k - 1) * 14.0), math.radians(62.0)
+            line = Matrix.Rotation(math.radians(-20.0), 3, "X") @ Vector((math.sin(a) * math.cos(el), math.cos(a) * math.cos(el), math.sin(el)))
+            tip = rack @ Vector((x, 17.0, 0.0))
+            with b.launch("spotting_flare", tuple(tip), tuple(line), reach=40.0, seconds=0.85, delay=round(1.04 + 0.5 * k, 2),
+                          ease="out", drop=8.0, hang=1.5, sink=6.0, fade=0.35, light=16.0):
+                # A ball of a star, so its halo grows round (a short prism's grew as a frosted box).
+                b.loft([(y, _poly(r, 8, math.pi / 8)) for y, r in ((-2.2, 0.5), (-1.5, 1.7), (0.0, 2.3), (1.5, 1.7), (2.2, 0.5))], "amber.ember", "flare_star",
+                       Matrix.Translation(tip) @ pin_frame(line).to_4x4())
     # The Reveille Horn (fixed, no pin): a great horn on a post at the roof's aft corner to
     # port, a long pipe flaring to a wide bell turned out over the deck toward the squad and a
     # little up, so its profile reads from above and behind; it swings on the post, its throat
@@ -3763,7 +3778,7 @@ def swallowtail(b):
     # settles and the rounds come back lit. On a sharp servo, as a shot is.
     kick = lambda t: [(t, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0), (t + 0.08, 0.0, -0.6, 0.6, 7.0, 0.0, 0.0), (t + 0.35, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0)]   # a shove and a lift, never a pitch
     pop = lambda t: [(t, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)] + [(tt, 0.0, 0.0, 0.0) + tuple(round(v * d, 3) for v in along) for tt, d in ((t + 0.14, 11.0), (t + 0.75, 11.0), (t + 2.0, 0.0))]   # held 0.6 s at the top before it turns back
-    burn = lambda t: [(t - 0.02, 0.0), (t + 0.08, 18.0), (t + 0.6, 12.0), (t + 1.0, -1.0), (5.2, -1.0), (5.8, 0.0)]
+    burn = lambda t: [(t - 0.02, 0.0), (t + 0.08, 18.0), (t + 0.16, 4.0), (t + 0.45, -1.0), (5.2, -1.0), (5.8, 0.0)]   # its star away at the top of the pop (the launches), the round dark
     b.act("flare", 6.4, {
         "elev_flare": [(0.6, 0.0), (1.6, 20.0), (4.4, 20.0), (5.4, 0.0)],
         "fire_1": pop(1.9), "fire_2": pop(2.4), "fire_3": pop(2.9),
@@ -3800,6 +3815,7 @@ def swallowtail(b):
     # Hoist swinging its crane out and lowering the hook; the Reveille Horn turned and sounded.
     b.fires = {"spotting_flare": ("flare", 1.0, 3.6, 1.98), "mooring_screens": ("screens", 0.6, 3.6),
                "sutlers_hoist": ("hoist", 1.2, 5.6), "reveille_horn": ("reveille", 0.8, 3.6)}
+    b.halo = [("flare_star", 2.0)]   # the stars it fires burn hot, haloed (the launches above)
 
 swallowtail.maker = "wainwright_sutler"
 
@@ -4368,6 +4384,8 @@ def musk_ox(b):
             b.box(min(s * xa, s * xb), max(s * xa, s * xb), -17.0, -12.5, DECK, DECK + 2.0, "steel.panel", "forge_wall")
         fx0, fx1 = sorted((s * 15.0, s * 23.0))
         _musk_ox_fitted(b, (fx0, -17.0, DECK + 1.3), (0.0, 1.0, 0.0), (1.0, 0.0, 0.0), (fx1 - fx0, 4.5), "amber.ember", "forge_mouth")
+        if s > 0.0:
+            b.landing("forge", (s * 19.0, -14.75, DECK + 0.2))   # the Shrapnel Recuperator's casings fall in here (below), down into the fire
     # The cells: a dark body each, its upper third a lit core; the right rack's rear outer cell
     # is the one an act ejects, on a joint at its middle so it tumbles about it. The right, since
     # the codex and the skirmish both show that flank, and the skirmish's camera, behind it,
@@ -4404,7 +4422,25 @@ def musk_ox(b):
             for s in (-1.0, 1.0):
                 b.prism("y", s * 2.6, CY + 6.0, CZ + 6.4, 1.8, 22.0, "steel.plate", 6, "recuperator")
                 b.prism("y", s * 2.6, CY + 17.4, CZ + 6.4, 1.2, 0.8, "steel.dark", 6, "recuperator_cap")
+            # What it fires (Ryan, 4 November: "Go for some micro models and let's see what they look
+            # like"): the shell out of the muzzle at the shot, a lit tracer on its base, straight and at
+            # one speed down the barrel's line; and as the barrel runs out again its spent casing out of
+            # the breech, its mouth still hot, tumbling up and over into the right forge mouth (the
+            # forge pulls the casings back as ammo: the piece's fantasy), which flares as it takes it
+            # (fire_howitzer). The shell rides the elevation and leaves where the barrel points; the
+            # casing rides the recoil and is thrown from wherever the breech stands, the engine taking
+            # its line to the forge as it leaves, however the gun has turned.
+            with b.launch("shrapnel_recuperator", (0.0, CY + 47.0, CZ), (0.0, 1.0, 0.0), reach=260.0, seconds=0.7, delay=0.75, ease="line"):
+                b.loft([(CY + 44.0, _oct(CZ, 4.4, 4.4)), (CY + 48.6, _oct(CZ, 4.4, 4.4)), (CY + 50.6, _oct(CZ, 1.4, 1.4))], "steel.plate", "shell")
+                b.loft([(CY + 43.4, _oct(CZ, 3.2, 3.2)), (CY + 44.0, _oct(CZ, 3.2, 3.2))], "amber.lit", "shell_tracer")
             with b.joint("recoil_cannon", (0.0, CY, CZ), slide=(0.0, 1.0, 0.0)):
+                breech = Vector((0.0, CY - 10.6, CZ))
+                toss = (Vector((19.0, -14.75, DECK + 0.2)) - breech + Vector((0.0, 0.0, 40.0))).normalized()   # the line launch() takes for the forge at rest
+                with b.launch("shrapnel_recuperator", tuple(breech), tuple(toss), seconds=0.8, delay=1.0, ease="line", drop=40.0, spin=1080.0, light=10.0, lands="forge"):
+                    # Dark iron, so it shows over the light deck, its open end still glowing.
+                    frame = Matrix.Translation(breech) @ pin_frame(toss).to_4x4()
+                    b.loft([(-4.0, _poly(2.4, 8, math.pi / 8)), (1.4, _poly(2.4, 8, math.pi / 8))], "steel.dark", "casing", frame)
+                    b.loft([(1.4, _poly(2.4, 8, math.pi / 8)), (4.0, _poly(2.4, 8, math.pi / 8)), (4.3, _poly(1.8, 8, math.pi / 8))], "amber.ember", "casing_mouth", frame)
                 b.box(-5.5, 5.5, CY - 10.0, CY - 4.0, CZ - 5.4, CZ + 5.4, "steel.panel", "breech")
                 b.prism("x", 6.0, CY - 7.0, CZ, 2.0, 0.8, "steel.dark", 6, "breech_wheel")
                 oc = lambda r: _oct(CZ, 2.0 * r, 2.0 * r)
@@ -4441,6 +4477,21 @@ def musk_ox(b):
                 b.box(x0, x1, PY0, PY1, PZ0, PZ1, "steel.panel", "pod")
                 cxp = s * (PX0 + PX1) / 2.0
                 _missile_face(b, (cxp - FACE / 2.0, PY1 + 0.05, PZ0), Vector((0.0, 0.0, 1.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 1.0, 0.0)), FACE, "pod_face")
+                # Its rockets (Ryan, 4 November: "Go for some micro models"; the piece: "The rocket racks
+                # emptied at once, every tube"): one behind each of the face's nine tubes (the missile
+                # tile's three by three), out along the pod's line gathering speed, a lit tail on each,
+                # the pod's nine in two bursts on its two back-blasts in the ripple, the middle and the
+                # corners first. Each waits inside the pod, so it shows coming out of its tube.
+                bursts = (3.08, 3.73) if s < 0 else (3.38, 4.03)   # the ripple's flashes on this pod's back-blast
+                order = (4, 0, 8, 2, 6, 1, 7, 3, 5)
+                for i, tube in enumerate(order):
+                    tx = cxp + (tube % 3 - 1) * FACE * 21.0 / 64.0
+                    tz = PZ0 + FACE * (11.0 + 21.0 * (tube // 3)) / 64.0
+                    t0 = bursts[0] + 0.06 * i if i < 5 else bursts[1] + 0.06 * (i - 5)
+                    y0 = PY1 - 8.5
+                    with b.launch("unrestricted_expenditure", (tx, y0 + 4.0, tz), (0.0, 1.0, 0.0), reach=230.0, seconds=0.8, delay=round(t0 - 1.6, 3)):
+                        b.loft([(y0, _hexr(tx, tz, 1.05)), (y0 + 6.6, _hexr(tx, tz, 1.05)), (y0 + 8.0, _hexr(tx, tz, 0.3))], "steel.plate", "rocket")
+                        b.loft([(y0 - 4.2, _hexr(tx, tz, 0.15)), (y0, _hexr(tx, tz, 0.95))], "amber.exhaust", "rocket_tail")   # its flame, a cone back from the tail
                 b.box(min(s * PX1, s * (PX1 + 0.3)), max(s * PX1, s * (PX1 + 0.3)), PY0 + 3.0, PY1 - 3.0, PZ0 + 2.0, PZ1 - 2.0, "livery.livery2", "pod_panel")
                 b.box(cxp - 6.2, cxp + 6.2, PY0 + 3.0, PY1 - 5.0, PZ1, PZ1 + 0.3, "livery.livery2", "pod_panel")
                 _musk_ox_fitted(b, (cxp + 6.5, PY0 - 0.1, PZ0 + 1.2), (0.0, 0.0, 1.0), (-1.0, 0.0, 0.0), (13.0, FACE - 2.4), "amber.ember", "blast_" + side)
@@ -4544,15 +4595,16 @@ def musk_ox(b):
     # Shrapnel Recuperator with a short act of its own, since laying the gun creeps the whole
     # machine forward: the turret onto its mark (b.aims), the barrel up, the shot and the barrel's
     # recoil, the chassis rocking and the hull shoved back.
-    b.act("fire_howitzer", 2.0, {
+    b.act("fire_howitzer", 3.0, {
         "elev_cannon": [(0.1, 0.0), (0.55, 18.0), (1.3, 18.0), (2.0, 0.0)],
         "recoil_cannon": [(0.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.75, 0.0, 0.0, 0.0, 0.0, -6.0, 0.0), (0.85, 0.0, 0.0, 0.0, 0.0, -6.0, 0.0),
                           (1.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
         "chassis": [(0.7, 0.0), (0.78, 2.4), (0.95, 2.2), (1.7, 0.0)],
     }, body=[(0.72, 0.0, 0.0, 0.0), (0.8, 0.0, -1.0, 0.0), (1.6, 0.0, 0.0, 0.0)], heft=0.1, idle=False,
-       glow=[(["gun_sight"], [(0.1, 0.0), (0.3, 6.0), (1.5, 6.0), (2.0, 0.0)])])
+       glow=[(["gun_sight"], [(0.1, 0.0), (0.3, 6.0), (1.5, 6.0), (2.0, 0.0)]),
+             (["forge_mouth"], [(1.72, 0.0), (1.86, 10.0), (2.15, 4.0), (2.45, 8.0), (2.95, 0.0)])])   # the casing in (its launch), as the cell does in eject_cell
     b.aims = {"shrapnel_recuperator": "turret_cannon"}
-    b.fires = {"shrapnel_recuperator": ("fire_howitzer", 0.0, 2.0, 0.75), "unrestricted_expenditure": ("ripple", 1.6, 4.8, 3.08),
+    b.fires = {"shrapnel_recuperator": ("fire_howitzer", 0.0, 3.0, 0.75), "unrestricted_expenditure": ("ripple", 1.6, 4.8, 3.08),
                "quick_reload": ("eject_cell", 0.7, 4.0)}
 
 musk_ox.maker = "wainwright_sutler"

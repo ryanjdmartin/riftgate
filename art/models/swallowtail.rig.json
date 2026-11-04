@@ -1384,11 +1384,11 @@
        18.0
       ],
       [
-       2.5,
-       12.0
+       2.06,
+       4.0
       ],
       [
-       2.9,
+       2.35,
        -1.0
       ],
       [
@@ -1415,11 +1415,11 @@
        18.0
       ],
       [
-       3.0,
-       12.0
+       2.56,
+       4.0
       ],
       [
-       3.4,
+       2.85,
        -1.0
       ],
       [
@@ -1446,11 +1446,11 @@
        18.0
       ],
       [
-       3.5,
-       12.0
+       3.06,
+       4.0
       ],
       [
-       3.9,
+       3.35,
        -1.0
       ],
       [
@@ -2130,6 +2130,12 @@
    640.0
   ]
  },
+ "halo": [
+  [
+   "flare_star",
+   2.0
+  ]
+ ],
  "fires": {
   "spotting_flare": {
    "act": "flare",
@@ -2156,5 +2162,45 @@
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "twin_barrel"
+ },
+ "launches": {
+  "spotting_flare": [
+   {
+    "node": "launch_spotting_flare_1",
+    "reach": 40.0,
+    "seconds": 0.85,
+    "delay": 1.04,
+    "ease": "out",
+    "drop": 8.0,
+    "hang": 1.5,
+    "sink": 6.0,
+    "fade": 0.35,
+    "light": 16.0
+   },
+   {
+    "node": "launch_spotting_flare_2",
+    "reach": 40.0,
+    "seconds": 0.85,
+    "delay": 1.54,
+    "ease": "out",
+    "drop": 8.0,
+    "hang": 1.5,
+    "sink": 6.0,
+    "fade": 0.35,
+    "light": 16.0
+   },
+   {
+    "node": "launch_spotting_flare_3",
+    "reach": 40.0,
+    "seconds": 0.85,
+    "delay": 2.04,
+    "ease": "out",
+    "drop": 8.0,
+    "hang": 1.5,
+    "sink": 6.0,
+    "fade": 0.35,
+    "light": 16.0
+   }
+  ]
  }
 }

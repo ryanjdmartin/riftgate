@@ -129,13 +129,26 @@ func test_a_standing_glow_holds_its_light_and_a_flare_rises_past_it() -> void:
 
 
 func test_a_halo_names_only_parts_a_glow_lights() -> void:
+	# A part a glow lights, or a lit part a launch carries, which its flight lights (the Swallowtail's
+	# flare stars: lowforge's launch()).
 	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
 		var halo = side.get("halo", [])
 		assert_true(halo is Array, "%s: the halo is a list of parts" % id)
+		var flown := []
+		if not (side.get("launches", {}) as Dictionary).is_empty():
+			var model: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
+			for rows in (side["launches"] as Dictionary).values():
+				for l in rows:
+					var n := model.find_child(str(l.get("node", "")), true, false)
+					for mi in (n.find_children("*", "MeshInstance3D", true, false) if n != null else []):
+						flown.append(str(mi.name))
+			model.free()
 		for entry in (halo if halo is Array else []):
 			var p = entry[0] if entry is Array else entry
-			assert_true((side.get("glow_parts", []) as Array).has(p), "%s: the halo's %s is a part a glow lights" % [id, p])
+			var lit := (side.get("glow_parts", []) as Array).has(p)
+			var carried := flown.any(func(f): return MechRig.labelled(f, str(p)))
+			assert_true(lit or carried, "%s: the halo's %s is a part a glow lights or a launch carries" % [id, p])
 
 
 func test_a_halo_closes_round_a_flat_part_and_shows_only_as_its_light_climbs() -> void:

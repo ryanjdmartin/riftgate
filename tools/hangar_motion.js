@@ -1475,6 +1475,55 @@ class Route {
   where() { return this.curve && this.here ? this.here : this.pos; }
 }
 
+// ---------------------------------------------------------------- launches
+// A launch's flight from its sidecar row (MechView3D.flight_row): how far along its own line it
+// goes and how it gathers there ("in" gathering speed, "out" slowing, "line" at one speed), how far
+// gravity pulls it down by the flight's end, the degrees it turns end over end, how long it hangs
+// where the flight ends and how far it sinks meanwhile, the last seconds its light dies over, and
+// the light it burns at (MechView3D.LAUNCH_LIGHT, 14, unless it names its own).
+function flightRow(node, l) {
+  return {node, rest: node.position.clone(), restQ: node.quaternion.clone(), delay: +l.delay || 0,
+          seconds: Math.max(0.05, +l.seconds || 0.6), reach: l.reach == null ? 100 : +l.reach, ease: l.ease || "in",
+          drop: +l.drop || 0, spin: +l.spin || 0, hang: Math.max(0, +l.hang || 0), sink: +l.sink || 0,
+          fade: Math.max(0, +l.fade || 0), light: l.light == null ? 14 : +l.light};
+}
+// The moment a launch leaves (MechView3D._leave): the frame it flies in (its parent's, as it stands
+// now), the world's down in that frame, and its line (its own -z, its reach long), or the way to
+// where it lands as that stands now.
+function leaveFlight(f) {
+  const T = window.THREE, parent = f.node.parent;
+  f.frame = new T.Matrix4();
+  if (parent) { parent.updateWorldMatrix(true, false); f.frame.copy(parent.matrixWorld); }
+  const p = new T.Vector3(), q = new T.Quaternion(), sc = new T.Vector3();
+  f.frame.decompose(p, q, sc);
+  f.down = new T.Vector3(0, -1, 0).applyQuaternion(q.invert());
+  f.line = new T.Vector3(0, 0, -1).applyQuaternion(f.restQ).multiplyScalar(f.reach);
+  if (f.lands) {
+    f.lands.updateWorldMatrix(true, false);
+    const there = new T.Vector3().setFromMatrixPosition(f.lands.matrixWorld).applyMatrix4(f.frame.clone().invert());
+    f.line = there.sub(f.rest).addScaledVector(f.down, -f.drop);
+  }
+}
+// Where a launch is t seconds after it left (MechView3D.flight_at), in that frame: carried along its
+// line by its ease, pulled `drop` along `down` by the square of the flight's share, turned `spin`
+// degrees about its own x; then held where the flight ended while it hangs, sinking.
+function flightAt(f, t) {
+  const T = window.THREE;
+  const u = Math.min(1, Math.max(0, t / f.seconds));
+  const e = f.ease === "out" ? u * (2 - u) : (f.ease === "line" ? u : u * u);
+  const position = f.rest.clone().addScaledVector(f.line, e).addScaledVector(f.down, f.drop * u * u);
+  if (f.hang > 0 && t > f.seconds) position.addScaledVector(f.down, f.sink * Math.min(1, (t - f.seconds) / f.hang));
+  const quaternion = f.restQ.clone();
+  if (f.spin) quaternion.multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1, 0, 0), f.spin * u * Math.PI / 180));
+  return {position, quaternion};
+}
+// The light a launch burns at t (MechView3D.flight_light): its own the whole way, dying to nothing
+// over its last `fade` seconds.
+function flightLight(f, t) {
+  const left = f.seconds + f.hang - t;
+  return f.fade > 0 && left < f.fade ? f.light * Math.min(1, Math.max(0, left / f.fade)) : f.light;
+}
+
 // ---------------------------------------------------------------- the stage
 // The models' own tiles, nearest sampled on flat facets; the amber role lights, as the game's
 // toon pass makes it (MechView3D.toon), in the phone's colours (PHONE_GLOW), each material its
@@ -1691,8 +1740,8 @@ class Stage {
     this.pivot.add(root);
     this.rig = new Rig(root, sidecar, 7);
     this.burns = []; this.flares = []; this.shot = 0; this.aimSide = 1;
-    // What a fixed weapon fires out of the machine (MechView3D.launches_of: the Lammergeier's drones),
-    // hidden until it flies.
+    // What a fixed weapon fires out of the machine (MechView3D.launches_of: the Lammergeier's drones,
+    // the Swallowtail's flares, the Musk Ox's rockets, shell and casing), hidden until it flies.
     this.launches = {}; this.flights = [];
     for (const [cid, rows] of Object.entries(sidecar.launches || {})) {
       this.launches[cid] = [];
@@ -1700,7 +1749,9 @@ class Stage {
         const node = root.getObjectByName(l.node);
         if (!node) continue;
         node.visible = false;
-        this.launches[cid].push({node, rest: node.position.clone(), delay: +l.delay || 0, seconds: Math.max(0.05, +l.seconds || 0.6), reach: +l.reach || 100});
+        const row = flightRow(node, l);
+        if (l.lands) row.lands = root.getObjectByName(l.lands) || null;
+        this.launches[cid].push(row);
       }
     }
     if (!shape) this.wearBurns(sidecar, id);
@@ -1780,17 +1831,21 @@ class Stage {
     }
     this.hitT = 0;
   }
-  // Each launch in the air flies out along its line gathering speed, hidden at home once its time is
-  // up (MechView3D._fly); its tail flares as it leaves.
+  // Each launch in the air flies its flight (MechView3D._fly, flightAt), lit as it leaves, its light
+  // dying over its fade, and is hidden at home once its time is up.
   fly(dt) {
     const T = window.THREE;
     for (const f of this.flights) {
       const was = f.t; f.t += dt;
       if (f.t < 0) continue;
-      if (f.t >= f.seconds) { f.node.visible = false; f.node.position.copy(f.rest); f.done = true; this.burn(f.node, 1); continue; }
-      if (was < 0) { f.node.visible = true; this.burn(f.node, 14); }   // its tail lit the whole way out (MechView3D.LAUNCH_LIGHT)
-      const u = f.t / f.seconds, fwd = new T.Vector3(0, 0, -1).applyQuaternion(f.node.quaternion);
-      f.node.position.copy(f.rest).addScaledVector(fwd, f.reach * u * u);
+      if (f.t >= f.seconds + f.hang) { f.node.visible = false; f.node.position.copy(f.rest); f.node.quaternion.copy(f.restQ); f.node.scale.set(1, 1, 1); f.done = true; this.burn(f.node, 1); continue; }
+      if (was < 0) { leaveFlight(f); f.node.visible = true; this.burn(f.node, f.light); }
+      else if (f.fade > 0) this.burn(f.node, flightLight(f, f.t));
+      // The world's once it leaves (MechView3D._fly): placed in its parent's frame as that stood then.
+      const at = flightAt(f, f.t), parent = f.node.parent;
+      const world = f.frame.clone().multiply(new T.Matrix4().compose(at.position, at.quaternion, new T.Vector3(1, 1, 1)));
+      if (parent) { parent.updateWorldMatrix(true, false); world.premultiply(parent.matrixWorld.clone().invert()); }
+      world.decompose(f.node.position, f.node.quaternion, f.node.scale);
     }
     this.flights = this.flights.filter(f => !f.done);
   }

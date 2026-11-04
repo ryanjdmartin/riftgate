@@ -1724,7 +1724,7 @@
   },
   {
    "name": "fire_howitzer",
-   "duration": 2.0,
+   "duration": 3.0,
    "ease": "smooth",
    "tracks": {
     "elev_cannon": [
@@ -1894,6 +1894,33 @@
        0.0
       ]
      ]
+    },
+    {
+     "parts": [
+      "forge_mouth"
+     ],
+     "keys": [
+      [
+       1.72,
+       0.0
+      ],
+      [
+       1.86,
+       10.0
+      ],
+      [
+       2.15,
+       4.0
+      ],
+      [
+       2.45,
+       8.0
+      ],
+      [
+       2.95,
+       0.0
+      ]
+     ]
     }
    ],
    "heft": 0.1,
@@ -1953,7 +1980,7 @@
   "shrapnel_recuperator": {
    "act": "fire_howitzer",
    "from": 0.0,
-   "to": 2.0,
+   "to": 3.0,
    "blow": 0.75
   },
   "unrestricted_expenditure": {
@@ -1974,5 +2001,137 @@
  "stock_shapes": {
   "hp_1": "barrel",
   "hp_2": "barrel"
+ },
+ "launches": {
+  "shrapnel_recuperator": [
+   {
+    "node": "launch_shrapnel_recuperator_1",
+    "reach": 260.0,
+    "seconds": 0.7,
+    "delay": 0.75,
+    "ease": "line"
+   },
+   {
+    "node": "launch_shrapnel_recuperator_2",
+    "reach": 34.57,
+    "seconds": 0.8,
+    "delay": 1.0,
+    "ease": "line",
+    "drop": 40.0,
+    "spin": 1080.0,
+    "light": 10.0,
+    "lands": "land_forge"
+   }
+  ],
+  "unrestricted_expenditure": [
+   {
+    "node": "launch_unrestricted_expenditure_1",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.48
+   },
+   {
+    "node": "launch_unrestricted_expenditure_2",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.54
+   },
+   {
+    "node": "launch_unrestricted_expenditure_3",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.6
+   },
+   {
+    "node": "launch_unrestricted_expenditure_4",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.66
+   },
+   {
+    "node": "launch_unrestricted_expenditure_5",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.72
+   },
+   {
+    "node": "launch_unrestricted_expenditure_6",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.13
+   },
+   {
+    "node": "launch_unrestricted_expenditure_7",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.19
+   },
+   {
+    "node": "launch_unrestricted_expenditure_8",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.25
+   },
+   {
+    "node": "launch_unrestricted_expenditure_9",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.31
+   },
+   {
+    "node": "launch_unrestricted_expenditure_10",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.78
+   },
+   {
+    "node": "launch_unrestricted_expenditure_11",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.84
+   },
+   {
+    "node": "launch_unrestricted_expenditure_12",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.9
+   },
+   {
+    "node": "launch_unrestricted_expenditure_13",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 1.96
+   },
+   {
+    "node": "launch_unrestricted_expenditure_14",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.02
+   },
+   {
+    "node": "launch_unrestricted_expenditure_15",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.43
+   },
+   {
+    "node": "launch_unrestricted_expenditure_16",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.49
+   },
+   {
+    "node": "launch_unrestricted_expenditure_17",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.55
+   },
+   {
+    "node": "launch_unrestricted_expenditure_18",
+    "reach": 230.0,
+    "seconds": 0.8,
+    "delay": 2.61
+   }
+  ]
  }
 }

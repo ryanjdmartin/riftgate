@@ -136,10 +136,15 @@ hangar standing flyers and hovers off its grid as a fight does), the Buzzard's c
 its own and the hangar's turn held through a slice, the Nemesis's longer punch, the Kite's larger
 plumes, the Puffin's repulsors after its plates, the Arsenal's rear vents on a sickly amber tile
 and its chest's hotter flares, and the Wainwright & Sutler pieces that fired with nothing firing
-from their acts (the Musk Ox's howitzer on its own), the Whip Scorpion's vents haloed; green at 939
-tests and 255,506 checks; not yet on main; its bible is v0.436 (the Pages line); the hangar the
-Pages line's. Next on it: Ryan's read of the glows, the weapons firing, the swaps, the hit and fire
-round and both sets of his notes of 3 November (the to-do's Ryan list).
+from their acts (the Musk Ox's howitzer on its own), the Whip Scorpion's vents haloed; then the
+micro-models on his go (4 November: "Go for some micro models and let's see what they look like"):
+a launch's flight takes a shape (its ease, a drop, a spin, a hang and a fade, a place it lands in,
+lowforge's launch() and landing(), MechView3D.flight_at and the hangar's mirror), flies in the
+world once it leaves, and the Swallowtail's flares, the Musk Ox's rockets and its shell and casing
+fly (the casing into the forge mouth); act_shot renders a firing; green at 942 tests and 255,565
+checks; not yet on main; its bible is v0.437 (the Pages line); the hangar the Pages line's. Next on
+it: Ryan's read of the glows, the weapons firing, the swaps, the hit and fire round, both sets of
+his notes of 3 November and the micro-models (the to-do's Ryan list).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times

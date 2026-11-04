@@ -599,8 +599,115 @@ func test_what_a_weapon_fires_out_is_hidden_until_it_flies() -> void:
 		var ls := MechView3D.launches_of(model, side)
 		for cid in (side["launches"] as Dictionary).keys():
 			assert_eq((ls.get(cid, []) as Array).size(), (side["launches"][cid] as Array).size(), "%s: every launch of %s is in the model" % [model_id, cid])
-			for row in ls.get(cid, []):
-				assert_false((row[0] as Node3D).visible, "%s: %s hidden at rest" % [model_id, (row[0] as Node3D).name])
+			for i in range((ls.get(cid, []) as Array).size()):
+				var row: Dictionary = ls[cid][i]
+				assert_false((row["node"] as Node3D).visible, "%s: %s hidden at rest" % [model_id, (row["node"] as Node3D).name])
+				if (side["launches"][cid][i] as Dictionary).has("lands"):
+					assert_true(row["lands"] is Node3D, "%s: %s lands in a place the model carries" % [model_id, (row["node"] as Node3D).name])
 		checked += 1
 		model.free()
-	assert_true(checked > 0, "some model fires something out of itself")
+	assert_true(checked > 2, "the Lammergeier, the Swallowtail and the Musk Ox fire things out of themselves")
+
+
+func test_a_launch_flies_its_shape() -> void:
+	# The micro-models (Ryan, 4 November: "Go for some micro models and let's see what they look like"):
+	# a launch gathers along its line by its ease, falls by its drop, turns end over end by its spin,
+	# hangs sinking, and its light dies over its fade.
+	var n := Node3D.new()
+	var at := func(r: Dictionary, t: float) -> Vector3: return MechView3D.flight_at(r, t, Vector3.DOWN, MechView3D.flight_line(r)).origin
+	var row := MechView3D.flight_row(n, {"reach": 100.0, "seconds": 1.0})
+	assert_true(MechView3D.flight_line(row).is_equal_approx(Vector3(0.0, 0.0, -100.0)), "a launch's line is its own forward, its reach long")
+	assert_true(at.call(row, 0.5).is_equal_approx(Vector3(0.0, 0.0, -25.0)), "a drone gathers speed: a quarter of the way at half its time")
+	row["ease"] = "out"
+	assert_true(at.call(row, 0.5).is_equal_approx(Vector3(0.0, 0.0, -75.0)), "a lobbed round slows: three quarters of the way at half its time")
+	row["ease"] = "line"
+	assert_true(at.call(row, 0.5).is_equal_approx(Vector3(0.0, 0.0, -50.0)), "a shell goes at one speed")
+	assert_true(at.call(row, 1.0).is_equal_approx(Vector3(0.0, 0.0, -100.0)), "and every ease ends at the whole reach")
+	var thrown := MechView3D.flight_row(n, {"reach": 10.0, "seconds": 1.0, "ease": "line", "drop": 8.0})
+	assert_true(at.call(thrown, 0.5).is_equal_approx(Vector3(0.0, -2.0, -5.0)), "a thrown thing falls as the square of its time")
+	assert_true(at.call(thrown, 1.0).is_equal_approx(Vector3(0.0, -8.0, -10.0)), "its whole drop by the end")
+	var tumble := MechView3D.flight_row(n, {"reach": 0.0, "seconds": 2.0, "spin": 180.0})
+	var b := MechView3D.flight_at(tumble, 1.0, Vector3.DOWN, Vector3.ZERO).basis
+	assert_true((b * Vector3(0.0, 0.0, -1.0)).is_equal_approx(Vector3(0.0, 1.0, 0.0)), "it turns end over end about its own x, half its spin at half its time")
+	var flare := MechView3D.flight_row(n, {"reach": 40.0, "seconds": 1.0, "ease": "out", "hang": 2.0, "sink": 6.0, "fade": 0.5, "light": 16.0})
+	assert_eq(MechView3D.flight_span(flare), 3.0, "a flare is out for its flight and its hang")
+	assert_true(at.call(flare, 2.0).is_equal_approx(Vector3(0.0, -3.0, -40.0)), "it hangs where its flight ended, halfway sunk halfway through")
+	assert_eq(MechView3D.flight_light(flare, 1.0), 16.0, "its own light while it burns")
+	assert_eq(MechView3D.flight_light(flare, 2.75), 8.0, "dying over its fade")
+	assert_eq(MechView3D.flight_light(flare, 3.0), 0.0, "and out at the end")
+	assert_eq(MechView3D.flight_row(n, {})["light"], MechView3D.LAUNCH_LIGHT, "a drone burns at the launches' light")
+	n.free()
+
+
+func test_a_launch_that_lands_finds_its_place_however_its_gun_turned() -> void:
+	# The Musk Ox's casing: thrown from the breech into the forge mouth, the line taken as it leaves, so
+	# a gun traversed onto its mark still drops it in.
+	var holder := Node3D.new()
+	holder.scale = Vector3(2.0, 2.0, 2.0)   # a view's scale
+	var gun := Node3D.new()
+	holder.add_child(gun)
+	var casing := Node3D.new()
+	casing.position = Vector3(1.0, 0.5, 0.0)
+	gun.add_child(casing)
+	var forge := Node3D.new()
+	forge.position = Vector3(6.0, -2.0, 9.0)
+	holder.add_child(forge)
+	for turn in [0.0, 14.0, -14.0]:
+		gun.rotation_degrees = Vector3(0.0, turn, 0.0)
+		var row := MechView3D.flight_row(casing, {"reach": 5.0, "seconds": 0.8, "ease": "line", "drop": 40.0})
+		row["lands"] = forge
+		var f := {"row": row, "t": 0.0}
+		MechView3D._leave(f)
+		var end: Vector3 = (f["frame"] as Transform3D) * MechView3D.flight_at(row, 0.8, f["down"], f["line"]).origin
+		var there := MechView3D._frame_of(forge).origin
+		assert_true(end.distance_to(there) < 0.001, "it lands in the forge with the gun at %d degrees (%s, %s)" % [int(turn), end, there])
+		var top: Vector3 = (f["frame"] as Transform3D) * MechView3D.flight_at(row, 0.3, f["down"], f["line"]).origin
+		assert_true(top.y > MechView3D._frame_of(casing).origin.y, "thrown up and over, not dropped (%d degrees)" % int(turn))
+	holder.free()
+
+
+func test_a_flare_hangs_where_it_was_fired() -> void:
+	# Once a launch leaves it is the world's: a flare (the Swallowtail's) hangs over the field, only
+	# sinking, whatever the rack it left and the deck do meanwhile, and goes out and home when its time
+	# is up. The first model whose sidecar hangs a launch.
+	var found := []
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json") or not found.is_empty():
+			continue
+		var side := MechRig.load_sidecar(f.trim_suffix(".rig.json"))
+		for cid in (side.get("launches", {}) as Dictionary).keys():
+			if found.is_empty() and float((side["launches"][cid][0] as Dictionary).get("hang", 0.0)) > 0.0:
+				found = [f.trim_suffix(".rig.json"), str(cid)]
+	assert_false(found.is_empty(), "some launch hangs (the Swallowtail's flares)")
+	if found.is_empty():
+		return
+	var view := MechView3D.make(found[0], ContentDB.load_default().maker_of(found[0]), "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
+	var row: Dictionary = view._launches[found[1]][0]
+	var node: Node3D = row["node"]
+	# What strike does for a fixed weapon (it waits for a view in the tree; the runner has none).
+	view.rig.fire_act(found[1], 0.0)
+	view.launch(found[1])
+	var leaves := float(row["delay"])
+	var t := _run_view(view, 0.0, leaves * 0.5)
+	assert_false(node.visible, "%s: it waits for its moment" % found[1])
+	t = _run_view(view, t, leaves + float(row["seconds"]) + 0.05)
+	assert_true(node.visible, "%s: then flies, and hangs" % found[1])
+	var hung := MechView3D._frame_of(node).origin
+	t = _run_view(view, t, leaves + MechView3D.flight_span(row) - float(row["fade"]) - 0.05)
+	var moved := MechView3D._frame_of(node).origin - hung
+	assert_true(Vector2(moved.x, moved.z).length() < 0.001 and moved.y < 0.0, "%s: it only sinks while it hangs (moved %s)" % [found[1], moved])
+	t = _run_view(view, t, leaves + MechView3D.flight_span(row) + 0.05)
+	assert_false(node.visible, "%s: out and gone when its time is up" % found[1])
+	assert_true(node.transform.is_equal_approx(row["rest"]), "%s: and home" % found[1])
+	view.free()
+
+
+## A view's rig and launches run on from `from` to `until` seconds, frame by frame, as its process
+## would run them; the time reached.
+func _run_view(view: MechView3D, from: float, until: float) -> float:
+	var now := from
+	while now < until:
+		view.rig.tick(1.0 / 60.0)
+		view._fly(1.0 / 60.0)
+		now += 1.0 / 60.0
+	return now

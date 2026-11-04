@@ -117,15 +117,15 @@ const PLUME_SHADER := preload("res://game/ui/plume.gdshader")
 ## (a trial, 3 November), to compare.
 static var PLUMES := OS.get_environment("RIFTGATE_PLUME") != "off"
 var _plumes: Array = []               # [plume material, the lit material it burns with, that material's light at rest]
-var _launches: Dictionary = {}        # a fixed weapon -> [[node, its transform at rest, delay, seconds, reach]]: what it fires out of the machine (launches_of)
-var _flights: Array = []              # [node, its rest, seconds since it left (negative while it waits), seconds, reach]: launches in the air
+var _launches: Dictionary = {}        # a fixed weapon -> its launches, each a flight's row (launches_of): what it fires out of the machine
+var _flights: Array = []              # {row, t: seconds since it left, negative while it waits}: launches in the air
 const HIT_PEAK := 0.8        # a blow on the hull lays heat's colour this thick over it at the top (hit),
 const HIT_UP := 0.04         # in this many seconds,
 const HIT_HOLD := 0.08       # held this long,
 const HIT_DOWN := 0.3        # and gone over this long
 const OUTLINE_LOST := 0.35   # a machine lost keeps this much of its outline (lose)
 const LAND := 1.1            # seconds a lost flyer or hover takes to come down onto the floor (lose)
-const LAUNCH_LIGHT := 14.0   # a launch's lit tail burns this many rests over its own the whole way out (launch)
+const LAUNCH_LIGHT := 14.0   # a launch's lit parts burn this many rests over its own the whole way out, unless its row names its own (launch)
 var _land_t := -1.0          # seconds into a lost machine coming down; negative when not
 var _sway_k := 1.0           # how much of its idle drift a machine keeps: none once a lost one has landed
 var _hit_mat: ShaderMaterial          # the flash laid over the hull as a blow lands (hit)
@@ -587,9 +587,10 @@ static func plume_k(light: float, rest: float) -> float:
 	return clampf((light / rest - 1.0) / maxf(0.01, top - 1.0), 0.0, 1.0)
 
 
-## What each fixed weapon fires out of the machine (lowforge's launch(): the Lammergeier's drones),
-## by its sidecar's `launches`: [node, its transform at rest, delay, seconds, reach] each, the node
-## hidden until it flies (launch). Hidden before a weld, so its parts stay its own.
+## What each fixed weapon fires out of the machine (lowforge's launch(): the Lammergeier's drones,
+## the Swallowtail's flares, the Musk Ox's rockets, shell and casing), by its sidecar's `launches`:
+## a flight's row each (flight_at), the node hidden until it flies (launch). Hidden before a weld,
+## so its parts stay its own.
 static func launches_of(model: Node, side: Dictionary) -> Dictionary:
 	var out := {}
 	var ls = side.get("launches", {})
@@ -604,45 +605,145 @@ static func launches_of(model: Node, side: Dictionary) -> Dictionary:
 			if n == null:
 				continue
 			n.visible = false
-			rows.append([n, n.transform, float(l.get("delay", 0.0)), maxf(0.05, float(l.get("seconds", 0.6))), float(l.get("reach", 100.0))])
+			var row := flight_row(n, l)
+			if l.has("lands"):
+				row["lands"] = model.find_child(str(l["lands"]), true, false) as Node3D
+			rows.append(row)
 		out[str(cid)] = rows
 	return out
 
 
-## Fire `cid`'s launches: each leaves its delay on (after `lead`), its tail flaring.
+## A launch's flight, from its sidecar row (lowforge's launch()): the node and its transform at
+## rest, the seconds it waits after the firing and flies, how far along its line it goes and how
+## it gathers there (`ease`: "in" gathering speed, a drone or a rocket; "out" slowing, a lobbed
+## round; "line" at one speed, a shell), how far gravity pulls it down by the flight's end
+## (`drop`), the degrees it turns end over end (`spin`), the seconds it hangs where the flight
+## ends and how far it sinks meanwhile (`hang`, `sink`: a flare under its chute), the last seconds
+## its light dies over (`fade`), and the light it burns at (`light`). A row that `lands` somewhere
+## (the node it lands in, set by launches_of) takes its line at the moment it leaves, from where it
+## is to where that node is then, so the Musk Ox's casing finds the forge mouth however the gun has
+## turned (_fly).
+static func flight_row(node: Node3D, l: Dictionary) -> Dictionary:
+	return {
+		"node": node, "rest": node.transform if node != null else Transform3D.IDENTITY,
+		"delay": float(l.get("delay", 0.0)), "seconds": maxf(0.05, float(l.get("seconds", 0.6))),
+		"reach": float(l.get("reach", 100.0)), "ease": str(l.get("ease", "in")),
+		"drop": float(l.get("drop", 0.0)), "spin": float(l.get("spin", 0.0)),
+		"hang": maxf(0.0, float(l.get("hang", 0.0))), "sink": float(l.get("sink", 0.0)),
+		"fade": maxf(0.0, float(l.get("fade", 0.0))), "light": float(l.get("light", LAUNCH_LIGHT)),
+		"lands": null,
+	}
+
+
+## How long a launch is out: its flight and its hang.
+static func flight_span(row: Dictionary) -> float:
+	return float(row["seconds"]) + float(row["hang"])
+
+
+## The way a launch goes and how far, in its parent's frame: its own line (lowforge's +y, its -z
+## here) its reach long.
+static func flight_line(row: Dictionary) -> Vector3:
+	var rest: Transform3D = row["rest"]
+	return -rest.basis.z.normalized() * float(row["reach"])
+
+
+## Where a launch is `t` seconds after it left, in its parent's frame as it was when it left: carried
+## along `line` (flight_line, or the way to where it lands) by its ease, pulled `drop` along `down`
+## (the world's down in that frame, one unit long) by the square of the flight's share, turned
+## `spin` degrees about its own x; then held where the flight ended while it hangs, sinking `sink`.
+static func flight_at(row: Dictionary, t: float, down: Vector3, line: Vector3) -> Transform3D:
+	var rest: Transform3D = row["rest"]
+	var u := clampf(t / float(row["seconds"]), 0.0, 1.0)
+	var e := u * u
+	match str(row["ease"]):
+		"out":
+			e = u * (2.0 - u)
+		"line":
+			e = u
+	var p := rest.origin + line * e + down * float(row["drop"]) * u * u
+	var hang := float(row["hang"])
+	if hang > 0.0 and t > float(row["seconds"]):
+		p += down * float(row["sink"]) * clampf((t - float(row["seconds"])) / hang, 0.0, 1.0)
+	var basis := rest.basis
+	if float(row["spin"]) != 0.0:
+		basis = basis * Basis(Vector3.RIGHT, deg_to_rad(float(row["spin"]) * u))
+	return Transform3D(basis, p)
+
+
+## The light a launch burns at `t` seconds after it left, in rests over its own: its row's the whole
+## way, dying to nothing over its last `fade` seconds.
+static func flight_light(row: Dictionary, t: float) -> float:
+	var fade := float(row["fade"])
+	var left := flight_span(row) - t
+	if fade > 0.0 and left < fade:
+		return float(row["light"]) * clampf(left / fade, 0.0, 1.0)
+	return float(row["light"])
+
+
+## Fire `cid`'s launches: each leaves its delay on (after `lead`), lit.
 func launch(cid: String, lead := 0.0) -> void:
 	for row in _launches.get(cid, []):
-		_flights.append([row[0], row[1], -float(row[2]) - lead, row[3], row[4]])
+		_flights.append({"row": row, "t": -float(row["delay"]) - lead, "frame": Transform3D.IDENTITY, "down": Vector3.DOWN, "line": flight_line(row)})
 	if not _flights.is_empty():
 		set_process(true)
 
 
-## Each launch in the air flies out along its line, gathering speed (reach × u²), and is hidden at
-## home once its time is up.
+## Each launch in the air flies its flight (flight_at), lit as it leaves, its light dying over its
+## fade, and is hidden at home once its time is up. Once it leaves it is the world's, not the
+## machine's: it flies in its parent's frame as that stood at the moment it left, so a rack
+## lowering or a hull settling never drags it (a flare hanging over the field stays where it hangs).
 func _fly(delta: float) -> void:
 	for f in _flights:
-		var node: Node3D = f[0]
+		var row: Dictionary = f["row"]
+		var node: Node3D = row["node"]
 		if not is_instance_valid(node):
-			f[2] = INF
+			f["t"] = INF
 			continue
-		var was := float(f[2])
-		f[2] = was + delta
-		var t := float(f[2])
+		var was := float(f["t"])
+		f["t"] = was + delta
+		var t := float(f["t"])
 		if t < 0.0:
 			continue
-		var rest: Transform3D = f[1]
-		if t >= float(f[3]):
+		if t >= flight_span(row):
 			node.visible = false
-			node.transform = rest
-			f[2] = INF
+			node.transform = row["rest"]
+			f["t"] = INF
 			_burn(node, 1.0)
 			continue
 		if was < 0.0:
+			_leave(f)
 			node.visible = true
-			_burn(node, LAUNCH_LIGHT)   # its tail lit the whole way out
-		var u := t / float(f[3])
-		node.transform = Transform3D(rest.basis, rest.origin - rest.basis.z.normalized() * float(f[4]) * u * u)   # its +y in lowforge is its -z here
-	_flights = _flights.filter(func(f): return float(f[2]) != INF)
+			_burn(node, float(row["light"]))
+		elif float(row["fade"]) > 0.0:
+			_burn(node, flight_light(row, t))
+		node.transform = _frame_of(node.get_parent()).affine_inverse() * (f["frame"] as Transform3D) * flight_at(row, t, f["down"], f["line"])
+	_flights = _flights.filter(func(f): return float(f["t"]) != INF)
+
+
+## The moment a launch leaves: the frame it flies in (its parent's, as it stands now), the world's
+## down in that frame, and its line, or the way to where it lands as that stands now.
+static func _leave(f: Dictionary) -> void:
+	var row: Dictionary = f["row"]
+	var node: Node3D = row["node"]
+	var frame := _frame_of(node.get_parent())
+	var down := (frame.basis.orthonormalized().inverse() * Vector3.DOWN).normalized()
+	var line := flight_line(row)
+	var lands = row.get("lands", null)
+	if lands is Node3D and is_instance_valid(lands):
+		line = (frame.affine_inverse() * _frame_of(lands).origin - (row["rest"] as Transform3D).origin) - down * float(row["drop"])
+	f["frame"] = frame
+	f["down"] = down
+	f["line"] = line
+
+
+## A node's transform in its world, from its own chain of 3D ancestors (its global transform in the
+## tree, and the same out of it), identity for none.
+static func _frame_of(node: Node) -> Transform3D:
+	var frame := Transform3D.IDENTITY
+	while node is Node3D:
+		frame = (node as Node3D).transform * frame
+		node = node.get_parent()
+	return frame
 
 
 ## Light every lit part under a launch at `k` rests over its own (1 puts it back).

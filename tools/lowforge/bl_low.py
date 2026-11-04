@@ -12,6 +12,7 @@ ink passes still know the role.
 
 import math
 import os
+import re
 import sys
 
 import bmesh
@@ -458,7 +459,9 @@ class Build:
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
         self.fx_sizes = {}     # a fixed weapon -> its muzzle flare's size: an fx_<component> Empty at its business end (fx())
         self.plumes = []       # [{node, part, reach, breadth}]: a booster's plume along its thrust (plume())
-        self.launches = {}     # a fixed weapon -> [{node, reach, seconds, delay}]: what it fires out of the machine (launch())
+        self.launches = {}     # a fixed weapon -> [{node, reach, seconds, delay, ...}]: what it fires out of the machine (launch())
+        self.landings = {}     # a name -> where a launch falls into it (landing())
+        self.launch_lit = set()   # the labels of the lit parts launches carry, which their flights light (launch())
         self.stock_shapes = {} # pin -> the silhouette class its stock part was built as (stock()), so a burn weapon's fire can sit over it
         self.fits = {}         # pin -> {class: {"shape": its variant, "scale": its scale}}: what a class wears there (pin()'s `fits`)
         self._joint_stack = []   # the joint blocks open right now, outermost first
@@ -1141,9 +1144,10 @@ class Build:
             out["counts"] = self.counts
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
-        # A halo is the glow's own bloom, so it names only parts a glow lights.
+        # A halo is the glow's own bloom, so it names only parts a glow lights, or a lit part a launch
+        # carries, which its flight lights (the Swallowtail's flare stars).
         halo = [list(h) if isinstance(h, (tuple, list)) else h for h in self.halo]
-        stray = [h for h in halo if (h[0] if isinstance(h, list) else h) not in glow_parts]
+        stray = [h for h in halo if (h[0] if isinstance(h, list) else h) not in glow_parts and (h[0] if isinstance(h, list) else h) not in self.launch_lit]
         if stray:
             raise ValueError("%s: a halo names %s, which no glow lights" % (self.name, ", ".join(repr(h) for h in stray)))
         if halo:
@@ -1290,15 +1294,49 @@ class Build:
         self.plumes.append({"node": name, "part": part, "reach": round(float(reach), 2), "breadth": round(float(breadth), 2)})
         return e
 
-    def launch(self, cid, at, forward=(0.0, 1.0, 0.0), reach=120.0, seconds=0.6, delay=0.0):
+    def launch(self, cid, at, forward=(0.0, 1.0, 0.0), reach=120.0, seconds=0.6, delay=0.0, to=None,
+               ease="in", drop=0.0, spin=0.0, hang=0.0, sink=0.0, fade=0.0, light=None, lands=None):
         """`with b.launch("syrinx_drone", at, forward, ...): ...` builds what a fixed weapon fires out
         of the machine (Ryan, 3 November, of the Lammergeier: "I guess a new drone model that fires
-        out, something simple"): every object made in the block hangs under an Empty named
-        launch_<component>_<n> at `at`, its +y along `forward`, which the engine hides at rest; as
-        the weapon fires it shows, `delay` seconds on, and flies out along that line gathering
-        speed, `reach` world units in `seconds`, then hides again at home (MechView3D.launches_of).
-        The sidecar's `launches` lists each under its component."""
-        return _Launch(self, cid, at, forward, reach, seconds, delay)
+        out, something simple"; the next day: "Go for some micro models and let's see what they look
+        like"): every object made in the block hangs under an Empty named launch_<component>_<n> at
+        `at`, its +y along `forward`, which the engine hides at rest; as the weapon fires it shows,
+        `delay` seconds on, flies `reach` world units along that line in `seconds`, then hides
+        again at home (MechView3D.launches_of). Made inside a joint's block it rides that joint.
+
+        Its flight's shape (MechView3D.flight_at): `ease` how it gathers along its line, "in"
+        gathering speed as a drone or a rocket does, "out" slowing as a lobbed round does, "line" at
+        one speed as a shell leaves a muzzle; `drop` the units gravity pulls it down by the flight's
+        end, growing as the square of the time, so a "line" with a drop is a thrown thing's arc;
+        `to`, given, the point (in the model at rest) the flight ends at, which sets its line and its
+        reach, the drop kept; `spin` the degrees it turns end over end about its own x across the
+        flight; `hang` the seconds it holds where the flight ends, sinking `sink` units meanwhile (a
+        flare under its chute); `fade` the last seconds over which its light dies before it hides;
+        `light` the rests over its own its lit parts burn at (the engine's LAUNCH_LIGHT, 14, when
+        None); `lands`, the name of a landing() made earlier, a place it falls into: its flight ends
+        there at rest (as `to` does), and the engine takes its line again as it leaves, from where
+        it is to where that place is then, so a casing thrown from a gun that has turned still finds
+        the forge. The sidecar's `launches` lists each under its component, a shape's keys only
+        where they differ from a drone's."""
+        land = None
+        if lands is not None:
+            if lands not in self.landings:
+                raise ValueError("launch of %s in %s: no landing named %r (landing() first)" % (cid, self.name, lands))
+            land, to = "land_" + lands, self.landings[lands]
+        return _Launch(self, cid, at, forward, reach, seconds, delay, to, ease, drop, spin, hang, sink, fade, light, land)
+
+    def landing(self, name, at):
+        """A place a launch falls into (launch()'s `lands`): an Empty named `land_<name>` at `at`, made
+        inside the joint block that carries what it lands in, so it rides that joint."""
+        if name in self.landings:
+            raise ValueError("%s: landing %s is made twice" % (self.name, name))
+        e = bpy.data.objects.new("land_" + name, None)
+        e.empty_display_size = 1.0
+        e.matrix_world = Matrix.Translation(Vector(at))
+        bpy.context.scene.collection.objects.link(e)
+        self.pins.append(e)
+        self.landings[name] = tuple(at)
+        return e
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
         """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock
@@ -1362,9 +1400,23 @@ def _fits(model, pin, fits):
 
 
 class _Launch:
-    def __init__(self, b, cid, at, forward, reach, seconds, delay):
+    EASES = ("in", "out", "line")
+
+    def __init__(self, b, cid, at, forward, reach, seconds, delay, to=None, ease="in", drop=0.0, spin=0.0,
+                 hang=0.0, sink=0.0, fade=0.0, light=None, lands=None):
+        if ease not in _Launch.EASES:
+            raise ValueError("launch of %s in %s: ease is one of %s, not %r" % (cid, b.name, ", ".join(_Launch.EASES), ease))
+        if to is not None:
+            # The line and the reach that end the flight at `to`: what is left once gravity's drop
+            # is taken off (every ease ends its line at the whole reach).
+            d = Vector(to) - Vector(at) - Vector((0.0, 0.0, -1.0)) * float(drop)
+            if d.length < 1e-6:
+                raise ValueError("launch of %s in %s: `to` is where it starts" % (cid, b.name))
+            forward, reach = tuple(d.normalized()), d.length
         self.b, self.cid, self.at, self.forward = b, cid, at, forward
         self.reach, self.seconds, self.delay = reach, seconds, delay
+        self.shape = {"ease": ease, "drop": float(drop), "spin": float(spin), "hang": float(hang), "sink": float(sink),
+                      "fade": float(fade), "light": None if light is None else float(light), "lands": lands}
 
     def __enter__(self):
         self.start = len(self.b.objects)
@@ -1386,7 +1438,14 @@ class _Launch:
         for ob in b.objects[self.start:]:
             ob.parent = e
             ob.matrix_parent_inverse = inv
-        rows.append({"node": name, "reach": round(float(self.reach), 2), "seconds": round(float(self.seconds), 3), "delay": round(float(self.delay), 3)})
+            if ob.type == "MESH" and any(mat is not None and mat.name.startswith("amber") for mat in ob.data.materials):
+                b.launch_lit.add(re.sub(r"\.\d+$", "", ob.name))
+        row = {"node": name, "reach": round(float(self.reach), 2), "seconds": round(float(self.seconds), 3), "delay": round(float(self.delay), 3)}
+        for key, plain in (("ease", "in"), ("drop", 0.0), ("spin", 0.0), ("hang", 0.0), ("sink", 0.0), ("fade", 0.0), ("light", None), ("lands", None)):
+            v = self.shape[key]
+            if v != plain:
+                row[key] = v if isinstance(v, str) else round(v, 3)
+        rows.append(row)
         return False
 
 
