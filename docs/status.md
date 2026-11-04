@@ -1000,11 +1000,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.453 (the
-  page's version 466, published 4 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
-  live source whole: Night Shift's fifteenth round, Hold The Line's throughout as he meant it and
-  The Far Bank's sixth in the track table, merged row by row onto the live v0.452 another session
-  published at 465, its rows city defences targeted, Numbed a buff nothing cleanses and its
+  `docs/design-bible.html` after every change. This file and the live page are v0.456 (the
+  page's version 469, published 4 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
+  live source whole: the Omnific bass in Hold The Line's track row and Night Shift's sixteenth
+  round, merged row by row onto the live v0.455 another session published at 468, its rows the die
+  the one draw of the player's turn, no rift closing on its own or stepping up a tier, and a tag
+  flavour no mechanic reads; over v0.453 at 466: Night Shift's fifteenth round, Hold The Line's
+  throughout as he meant it and The Far Bank's sixth in the track table, merged row by row onto the
+  live v0.452 another session published at 465, its rows city defences targeted, Numbed a buff nothing cleanses and its
   bracketed chip, an injury a threshold on bare hull, and whether each Fracture grants a pick; over
   v0.451 at 464, Hold The Line's roots four ways; over v0.450 at 463, published by a subagent that read the live source
   whole: the real basses on trial in Night Shift's and Hold The Line's track rows,
