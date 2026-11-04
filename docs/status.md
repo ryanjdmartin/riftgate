@@ -25,12 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 911 tests, 254,286 checks, green (3 November, main merged into
-  `claude/affectionate-ramanujan-5d24t6` as it lands: the Honey Badger's hopper and the five
-  Wainwright & Sutler models with the rig's counts, held and stepped spins and hidden mounts, both
-  runners' smokes clean; 893 and 209,059 on main before it, 2 November, with
-  `claude/brave-cori-fr18de`'s slate, elites by the tier, escorts and review's calls),
-  about four minutes
+- Tests: 948 tests, 255,577 checks, green (4 November, main merged into
+  `claude/charming-rubin-h954bp` as it lands: the weapon-fire, slump and micro-model work beside
+  `claude/chassis-runner-rows`' bot and runner work; 917 and 254,298 on main before it), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -45,6 +42,50 @@ are in `README.md`.
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
 ## Branches
+
+`claude/charming-rubin-h954bp` (28 October to 4 November) carried the model rebuilds of Ryan's
+brief of the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to
+their stock, the Armadillo's seal) and his rounds of notes on them, and main took it twice on 30
+October (his word, "Merge into main", and again as the lit parts' eased light landed). Since then
+it carried the halos (a soft shell round every hot part: the boosters and vents, then the parts he
+vetted), the burn weapons' fire on their silhouette classes, the weapon-fire package (the weapon
+that fired the only one that moves, its muzzle flares in its tags' look, the cheap aim, the fixed
+weapons' slices of their acts and the business ends their models mark), the swaps (a hardpoint's
+variant and scale per class, the round launcher, `tools/fit_sheet.gd`), a blow moving the machine
+and a lost machine's slump on its feet, the boosters by maker (Aphelion's plumes, Kestrel's
+halos), his two rounds of notes of 3 November, and the micro-models on his go of 4 November (a
+launch's flight shapes and landing, the world's once it leaves; the Swallowtail's flares, the Musk
+Ox's rockets, shell and casing; `tools/act_shot.gd`'s `fire:`). It took main as it landed (to
+`9a529ca`: `claude/chassis-runner-rows` and `ccr-7effd31a-u5z4gw`'s pairs), and main took it as a
+fast-forward on 4 November on his word ("Ok might as well clean up and merge into main now, I'll
+look at these issues after"); its bible is v0.442 (the page's version 455) and the hangar's version
+201. What it leaves is his: the to-do's judge lines (the glows, the weapons firing, the swaps, the
+hit and fire round, both rounds of notes of 3 November, the micro-models and the calls on that
+line) and section 12's render margin.
+
+`claude/chassis-runner-rows` (3 and 4 November) carried the chassis to-dos on Ryan's word
+("spawn a new session to continue the chassis to-dos"), from main's `62ef7ee`: the Cassowary's
+cycle bot, the Musk Ox's salvo priced against a reserve, a Rapid entry's action again (4
+November, his word: "If the bot doesn't value rapid property, it probably should be fixed"), the
+runner's tallies and `--pilot`, and the runner rows of the Cassowary, the Cottonmouth, the Whip
+Scorpion, the Swallowtail, the Musk Ox and the Needletail (How things stand), with the gunship's
+first round in its brief. It took main as it landed (to `d03ebed`: `ccr-7effd31a-u5z4gw`'s track
+pairs), and main took it as a fast-forward on 4 November on his word ("Ok, if there's nothing else
+open, clean up and merge into main"); its bible is v0.438 (the page's version 451).
+
+`ccr-7effd31a-u5z4gw` (28 October to 3 November) carried the pairs. Restarted from main's
+head on 28 October (its first round, the Hold The Line pair, merged on the 27th), it carried
+Ryan's go on them (every track a map half and a battle half, the bible's pair row), every new
+half sketched on its shipped recipe's groove call and published on the pair page, then his notes
+of 29 October to 3 November on Hold The Line's two halves, Night Shift's battle half and The Far
+Bank's map half as further rounds on the same page (Hold The Line's thirteenth, which settled
+it; Night Shift's tenth; The Far Bank's map half's fourth). It took main on the 29th and again
+as it landed (to `62ef7ee`: the foes' fresh start and the pacing session, the bosses' slate and
+the elites by the tier, the Petrels' engines, the skirmish's field, Godot 4.8-beta2, the model
+rebuilds and the five Wainwright & Sutler models), and main took it as a fast-forward on
+3 November on his word ("Good place to merge into main, I think, before we continue with
+finalizing the other tracks"); its bible is v0.437 (the page's version 450). The other tracks'
+rounds go on from main.
 
 `claude/affectionate-ramanujan-5d24t6` (30 October to 3 November) carried the two Petrels'
 engines on Ryan's go ("go for the ready to build ones", after his question of the 30th on which
@@ -78,73 +119,6 @@ merged in for its terms, with the foe moves' keywords in the list; and the dice'
 reads a die once the double-tap window passes, a double-tap or a hold locks it, a tap on the
 ground sends a waiting Swap home), KEYWORDS gone from the field to the menu. Its bible is v0.408
 (the page's 420).
-
-`claude/charming-rubin-h954bp` (28 to 30 October) carried the model rebuilds of Ryan's brief of
-the 28th (the pins' record and the game's plan against it, thirteen models rebuilt to their
-stock, the Armadillo's seal) and his rounds of notes on them of the 29th and 30th (the Kite's
-Pinion Driver in two shots and its ramjet look, the Dingo's roof gimbal, the Armadillo's sliding
-weapons, hunkered seal with acts of its own and its vents opening and shutting a pair at a time,
-the Arsenal's lit cockpit glass and the Nemesis's flaring visor, the desk on the phone's
-renderer), took main each evening (to `b2762d5`) and again as it landed (to `b1682c3`: the
-pacing session, the pricing pass, the tilesets' walls), and main took it on 30 October on his
-word ("Merge into main"); its bible is v0.397 (the page's 409). Main took it again that evening
-as the lit parts' eased light landed (`d84ad16`). Since then it carries the halo trial on the
-Buzzard (a soft shell round its lit parts, faded in with the flare; its first round "way too
-much", its second added rather than laid over, leaning red and a third the size), took main as
-`claude/zealous-wright-ixxo3l` landed (to `06880da`: the foes' move-order fix), and spread the
-halo to every machine's boosters and vents a little stronger, with the Buzzard's vector turn
-lighting both nacelles, then onto the parts Ryan vetted hot, then his notes on those (31
-October: flat parts' halos hug them, standing glows, the shield's blue, lightning, fire and the
-furnace, the Skua's hinges gone), then the burn weapons' fire on their silhouette classes, flaring
-as they fire, and the weapon-fire package proposed (`git show 3ef8d4bd:docs/weapon_fire_proposal.md`), then his
-notes on round five (the Puffin's repulsors pucks, the Stingray's fans lit round the blades, the
-Nemesis hot then really hot, the Ammit's glow moved to its rear vent, a halo's own distance
-toward the eye), then the weapon-fire package he answered: the weapon that fired the only one
-that moves, its muzzle flares on every class in its tags' look, the aim onto the foe where a
-turret, a waist or a hover's pivot is cheap, and sixteen machines' fixed weapons firing with a cut
-of an idle act; then his notes of 2 November: the hand-built stock guns flaring where lowforge
-finds their muzzles, the flares in the colours each shot has (off the colour tuner, the colourblind
-rules scoped to gameplay information in `CLAUDE.md`), a component's tags layered, the turn before
-the blow's sound, the tracked machines and the Dingo pivoting; then his swap notes (a refit must
-never look worse than the stock): a hardpoint declares, per class, the variant it wears and its
-scale (lowforge's `fits`), the round launcher the first variant, the Armadillo's ports, the
-Goshawk's pods and the Dingo's nose made to take every class, and `tools/fit_sheet.gd`, every
-machine wearing every class in one sheet; then the rest of the weapon-fire to-dos (3 November,
-his go: "Build the rest of the to-dos"): a blow on a machine moving it (the jolt, heat's flash
-over the hull, the shield's ripple over its hex, the kill's gutter and dimmed outline;
-`RIFTGATE_HIT_DEBUG=1`), the fixed weapons with no act kicking and flaring at business ends their
-models mark and the fixed equipment playing its slice as it is used, the Stingray's plume on
-trial in place of its ring (`RIFTGATE_PLUME=off`), and the shot crossing the field as a simple
-version, tabled ("it might be too busy") and off unless a debug build's SHOT TRAILS turns it on;
-then his note on the Bullion Fragmenter ("It's a shotgun, thematically"): a melee weapon lunges
-only as a blade with no tag that crosses the field, any other fires as a gun (the sim's blow record
-carries the tags it was fired with, the drum's among them), and a joint the firing weapon names
-kicks though it carries no mount (the Badger's wrist, which a ranged shot had skipped);
-then main pulled in on his word (3 November: "Pull in main, another session finished some
-modeling and wrapped up there"; the merge's conflicts and the four Wainwright & Sutler models
-rebuilt for their stock classes, in its commit), and his notes on what he saw: a lost machine
-slumping after its lights go, the hangar's paused stage bringing a fired weapon home, a weapon's
-slices in turn and a slice's wind-up (the Nemesis's jab and cross, the Ammit's bite and rake, the
-Skua's burst, the Buzzard's cannon, its turn held through it), acts that only fire, the plumes
-gone at rest and Aphelion's boosters plumed by rule with Kestrel's blooming larger (the Kite's
-drivers plumed), the Stingray's fans re-banked, the Puffin's bank and pucks, the Lammergeier's
-drones, and the hangar's Melee retired; then his second notes that day: the slump rebuilt on its
-feet (a walker sinking on its planted limbs by two-link reach, a biped slumping at the waist, every
-other loose joint hanging where its weight takes it, outermost first, above the floor; a flyer or
-hover landing on what hangs lowest; the game and the hangar measured to agree on every model, the
-hangar standing flyers and hovers off its grid as a fight does), the Buzzard's cannon on an act of
-its own and the hangar's turn held through a slice, the Nemesis's longer punch, the Kite's larger
-plumes, the Puffin's repulsors after its plates, the Arsenal's rear vents on a sickly amber tile
-and its chest's hotter flares, and the Wainwright & Sutler pieces that fired with nothing firing
-from their acts (the Musk Ox's howitzer on its own), the Whip Scorpion's vents haloed; then the
-micro-models on his go (4 November: "Go for some micro models and let's see what they look like"):
-a launch's flight takes a shape (its ease, a drop, a spin, a hang and a fade, a place it lands in,
-lowforge's launch() and landing(), MechView3D.flight_at and the hangar's mirror), flies in the
-world once it leaves, and the Swallowtail's flares, the Musk Ox's rockets and its shell and casing
-fly (the casing into the forge mouth); act_shot renders a firing; green at 942 tests and 255,565
-checks; not yet on main; its bible is v0.442 (the Pages line); the hangar the Pages line's. Next on
-it: Ryan's read of the glows, the weapons firing, the swaps, the hit and fire round, both sets of
-his notes of 3 November and the micro-models (the to-do's Ryan list).
 
 `claude/brave-cori-fr18de` (30 October) carried the pacing session and the foes' fresh start
 (the brief, the engine in three commits to `85e28fd`, then the records), took main three times
@@ -228,8 +202,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   alone, its way through plate a flat buff on each strike (`docs/measurements.md`); the last two, the Magpie (a working name, a support engine)
   and the Snowy Owl (a stealth unit), are Ryan's next session, his directions and Claude's first
   round in each unanswered.
-- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row); the gunship's
-  session is free to run.
+- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Musk Ox, the
+  Whip Scorpion (a rework coming) and the Swallowtail are not finalized, and with the gunship (very
+  rough, maybe back to the drawing board; Claude's first round of 3 November in its brief) each
+  needs a design session for its kit and its visual design, which Ryan starts himself (4 November;
+  the Needletail likewise, Kestrel's).
 - Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced
   Skeleton module; its brief retired), the echidna left open, the siege battery parked on Ryan's charge brief, the battlecruiser never
   with the Carrier's session (Ryan, 20 October).
@@ -240,6 +217,33 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   the Onryō's kind and trigger.
 
 ## How things stand
+
+- The chassis' runner rows (3 November, the to-do's engine lines; `docs/measurements.md`, two
+  entries). The Cassowary's bot plans its cycle (`Policy.cycle_plan`: the steps a round's rerolls
+  take weighed with the chamber the dial then opens the next round on, a spin at the die's spun
+  mean), where it had turned the dial only toward a better next chamber; read at 200 seeds, alone it
+  carries a decision under the Cottonmouth, the stronger tier-one gun alone, neither a wall nor a
+  free win, and the Spin-Up is its most spent entry (36% alone), the chase it was meant to be (Ryan,
+  4 November: "that was the chase, yes"; his to judge in play). The Musk Ox's salvo had been priced against the whole magazine, so the bot rerolled it away
+  and random play matched greedy alone: it now counts a reserve, the ammo its dearest other gun's
+  next spend needs. The rest read at 30 seeds (directions) beside a band of every tier two and three
+  alone on today's packs: the Whip Scorpion reaches none of its three exits and its pilot light is no
+  lever (heat is not its limit); the Swallowtail lifts the Clydesdale and the Dingo seventeen points
+  and its Phased is the rarest charge bought; the Musk Ox's strike number and trickle are its levers,
+  the team's Flak worth a point or two; the Needletail's gate frees about four in five of its setups
+  and an ally cashes two paints in three; those four are not finalized, and their performance is not
+  Ryan's concern until their design sessions (4 November; the design sessions' Wainwright & Sutler
+  line). Found on the way and fixed on Ryan's word (4 November: "If the bot doesn't value rapid
+  property, it probably should be fixed"): the bot valued a plain Rapid entry at what it did once,
+  never its action again; it now adds the die's own average blow (`Policy.rapid_worth`, as the rage,
+  the reset gun, the gate and the Horn were valued), for the Laminar Deflector, the Pulse Vacillator,
+  the Cryo Flinger, the Musk Ox's Quick Reload and the Immelmann Booster's own action; read at 30
+  seeds on their three carriers (`docs/measurements.md`, 4 November), the pieces are picked more
+  (the Cryo Flinger 9 to 13% of the Armadillo's spends, the Quick Reload 11 to 17%, the Booster from
+  under 2% to 14% alone) and the win rows move a point or two, random play identical. New in
+  the runner: a muster's charged spend tallied apart by piece, the gate's free spends and the paints
+  cashed, each cell's squared hull lost for its spread, and `--pilot chassis=N` (a what-if heat a
+  round, `Skirmish.pilot`, never content).
 
 - The Honey Badger's rework built (31 October, Ryan: "agreed on all proposed. Build it"; its
   brief retired). Its passive, the Ore Hopper, puts a load in for each foe a spend of its weapons
@@ -709,6 +713,32 @@ The tasks are the to-do's; this is the index of what waits.
 - Ryan's read of the five Wainwright & Sutler models running (the to-do's lines carry what each
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
+- Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The
+  Line settled on its thirteenth round (3 November: "I think that's it for this track"): its
+  battle half picked, J gone, V and Q kept, K its first eight bars at its slower tempo ("The 8
+  bars is perfect") on the drums in between with the plucked string 3 dB down beside the crunch
+  synth on the walk, its long crash choked to a second and a half, the first lift on the crunch
+  synth and the synth lead and the second on the crunch synth and the lead guitar over the
+  backing chug 6 dB down, M as it ships with the crunch synth; his map picks, X on the violins, U
+  on the clean guitar, the drone moved to R, W low with a roll; the map half minimal, the lifts as
+  they were with the riff on the tine piano and the first lift's bell calmer, K's walk on the
+  synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff
+  3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
+  R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
+  it was beside it). Night Shift on its tenth (the map's intro without its front and its muted guitar out;
+  the battle half a whole jam in turns of two bars, 30 October: the guitar and the bass walking
+  one line on his rhythms with the arpeggio or the FM hook, never both, holding three-three-two
+  6 dB down under the two together, the intro on three-three-two, D the piano's turn and the
+  factory's blended over Hold The Line's riff as the map's nod, R a sixteen-bar jam whose turns
+  hand the lead round the band, the guitar a tenth over the bass where it walks, the bass 3 dB down
+  everywhere and its voice on trial, the synth bass, a slap bass or the driven bass, the synth
+  lines voiced for each turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half
+  on its fourth round, its flip retired (31 October: the bells calm in the groove and the lift
+  alone, the strings section and the climax off the battle's orchestra, the tune on a plucked
+  string, the tine piano or the clean guitar over the harp, one note at a time since 3 November and
+  3 dB down in the strings section, the climax's bells full); those two waiting on his ear; then
+  the engine (a pair as one synchronized stream, the map choosing the track, the 3 s flip) and
+  each picked half into the forge's SHIP table, Hold The Line's first.
 
 ## Next, in order
 
@@ -810,55 +840,28 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file and the live page are v0.442 (the
-  page's version 455, published 4 November from `claude/charming-rubin-h954bp`: the micro-models
-  in the weapon-fire row and section 12's render margin, three-way merged onto the live v0.441
-  other sessions published at 450 to 454 (the marks of 4 November: the Thunder Ape's Golden Rage
-  and the World Eater's Crush, the Emperor Scorpion, the Mantis Ant and the Marsh Serpent, every
-  foe drawn), the version line the only conflict; on its own v0.436 at 449, 3 November: Ryan's
-  second notes of that day, the slump on its feet in the hit-reaction row, the Buzzard's cannon and the
-  Wainwright & Sutler pieces firing from their acts in the weapon-fire row, the Kite's larger
-  plumes in the boosters row, the Arsenal's sickly vents in the glow colours row, three-way merged
-  onto the live v0.435 another session published after 446 (the elites' pass: a boss a named JRPG
-  entity and an elite the domain's own, the Goblin Nob's Enraged in the generated tables), the
-  version line the only conflict; on its own v0.433 at 446, the same day: Ryan's notes of that
-  day, a lost machine's slump in the hit-reaction row, a weapon's slices in turn, its
-  wind-up and its coming home in the weapon-fire row, a new row on boosters by maker, the
-  machines table; on its own v0.432 at 445, the same day: a melee weapon
-  lunges only as a blade with nothing that crosses the field, a shotgun firing as a gun, in the
-  tags row and the trail row; on its own v0.431 at 444, the same day: the hit-reaction
-  row, the open row on the shot crossing the field, the fixed pieces in the weapon-fire row and the
-  plume trial in the reference-glass row, three-way merged onto the live v0.430 other sessions
-  published at 441 to 443 (the Hold The Line notes and five Wainwright & Sutler rows), with no
-  conflict; on its own v0.428 at 440, published 2 November: the mounts row on
-  Ryan's swap notes (every mount takes every class: a hardpoint's variant and scale per class, the
-  round launcher, the fit sheet; the open row on each class's size settled), three-way merged onto
-  the live v0.427 another session published at 439, the version line the only conflict; on its own
-  v0.423 at 435, the weapon-fire row on his notes of 2 November, merged onto the v0.422 that
-  `claude/affectionate-ramanujan-5d24t6` published at 434, the version line the only conflict; on its own v0.420 at 432, the weapon that
-  fired the one that moves, turning onto its foe, flaring in its tags' look and, fixed, firing with
-  a cut of its own act, in place of the open attack-acts row and section 12's weapon-fire question;
-  onto its own v0.419 at 431, the glows' sixth
-  round in the reference-glass and glow colours rows, three-way merged onto the live v0.418 another
-  session published at 430, its v0.416 to v0.418 at 428 to 430 a pass of its own (the track pairs'
-  notes and the generated tables' statuses and foe keywords among them), the version line the only
-  conflict; on its own v0.415 at 427, a burn weapon's fire on its silhouette class in the glow
-  colours row, and the weapon-fire package asked in section 12; onto its own v0.414 at 426, the standing glows and the glow colours row; v0.413 at 425, the parts Ryan vetted hot; v0.412 at 424, every
-  booster and vent; on v0.411 at 423, the halo's
-  second round, three-way merged onto the live v0.410 another session
-  published at 422, its v0.406 to v0.410 at 418 to 422 a pass of its own (the codex's whole die
-  and a die entry's fixed places, a term read in its colour with its icon, the component kinds,
-  the boss mechanics inside the skirmish, the Cassowary, the quick campaign as a test bed and the
-  generated tables' new terms among them), the version and date lines the only conflicts; on
-  this branch's v0.405 at 417, the halo's first round; each publish before it merged the same
-  way, as this file's history in git shows). So this file carries rows other sessions published
-  ahead of their code (the tracks in pairs, and the notes on Hold The Line and Night Shift; the
-  new foes in the generated tables, the Rotbloom, the Behemoth, the Matador and the Swallowed
-  debuff among them, v0.401's; v0.404's to v0.410's), each landing with its branch. The version numbers on the publishing branch's file and the live agree after every
-  publish. Before republishing, read the live page; if another session moved it, publish a
-  three-way merge onto it (`git merge-file` with the last-published file as the base, the
-  wrapper's first line and its trailing `</body></html>` stripped from the saved live source).
-  With main merged in (2 November), the tables script's run is checked against the file's
-  tables before it is kept: a row it reverts belongs to a branch not yet landed.
+  page's version 455, published 4 November from `claude/charming-rubin-h954bp` as it landed on
+  main: the micro-models in the weapon-fire row and section 12's render margin, three-way merged
+  onto the live v0.441, the version line the only conflict: another session's marks of 4 November
+  at 452 to 454 (the Thunder Ape's Golden Rage and the World Eater's Crush, the Emperor Scorpion,
+  the Mantis Ant and the Marsh Serpent, every foe drawn), over `claude/chassis-runner-rows`'s
+  v0.438 at 451 (its four row edits, the Cassowary's cycle bot and the Whip Scorpion's, the
+  Swallowtail's and the Musk Ox's reads) and `ccr-7effd31a-u5z4gw`'s v0.437 at 450 (Hold The Line
+  settled in the track table), on this branch's v0.436 at 449 (the motion notes of 3 November: a
+  walker's slump on planted feet, the Buzzard's cannon firing as its charge sped up, the Wainwright
+  & Sutler pieces firing from their acts, the Kite's plumes larger, the Arsenal's rear vents a
+  sickly orange-yellow); every publish before it merged the same way, as this file's history in
+  git shows. So this file carries rows ahead of main's code: the elites session's
+  (`docs/briefs/elites.md`: every domain three elites at least, five wanderers, the Goblin Nob's
+  Bellow and Enraged, a boss a named JRPG entity, the Fiend of Fire, the Gargantuan King, and the
+  marks of 4 November above, with its rows in the tables). The version numbers on the publishing
+  branch's file and the live agree after every publish. Before republishing, read the live page;
+  if another session moved it, publish a three-way merge onto it (`git merge-file` with the
+  last-published file as the base, the wrapper's first line and its trailing `</body></html>`
+  stripped from the saved live source); a page that size counts as read only once every line of
+  its saved copy is read, so a subagent can read it and publish the merge. With main merged in
+  (2 November), the tables script's run is checked against the file's tables before it is kept: a
+  row it reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
@@ -929,5 +932,12 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
+- The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
+  built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
+  Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
+  thirteenth, which settled it, `hold_sketches.py`; Night Shift's tenth, `night_sketches.py`; The
+  Far Bank's map half's fourth, `far_sketches.py`), at the page's version 22. A round whose files pass a
+  publish's 64 MB goes up in two publishes: the new files first under the live page, then the
+  new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).
