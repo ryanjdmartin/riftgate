@@ -253,10 +253,10 @@ into this file in the same commit as its first publish; the commands are in `REA
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` read first. At the page's version 206
-  (4 November: the content with Every Foe, Every Ally and Every Other Ally as targeting modes);
-  the audit's vocabulary edits (Undying, the Numbed defaults, the formation word gone) are not on
-  it yet: republish `content/vocabulary.json` and `content/foes.json`. Its lit parts show as the phone's renderer shows
+  the last publish's before it is replaced, and `edits` read first. At the page's version 207
+  (4 November, from the audit as it landed: `content/vocabulary.json`, `content/foes.json` and
+  `content/factions.json` as main has them, the Nob's older design line a stale publish over
+  206's; `edits` empty). Its lit parts show as the phone's renderer shows
   them, the light eased by the power 1/2.2 as the game eases it (`MechRig.light`); every file
   the page reads is fetched with a stamp on the URL. Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.
