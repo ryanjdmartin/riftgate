@@ -172,15 +172,16 @@ defeat when every machine is wrecked. There is no round limit.
   thickness, straight for Direct and lobbed low for Indirect, for a Sweep the line lobbed whole,
   since a sweep picks any rank, four short lines of fire rising from it, one for each of the
   rank's columns, each a solid run and a dash, and for Every Foe the enemy's formation, both ranks
-  of its four columns lit, the far rank smaller and narrower, in square brackets at its sides;
+  of its four columns lit close, the far rank smaller and narrower, in square brackets at its sides;
   every lob is even about its middle;
   under one spent on a machine, three hex cells sharing their edges, the middle its own machine, a
   lit one a machine it may be spent on, and for Every Ally and Every Other Ally the three cells a
   little smaller under one low arch carried out past the outer cells' edges, touching none, the
   middle lit for the whole team and dark for every other ally.
   What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks).
-  What the machine's passive adds sits in its passive box at the foot of the edge, a dashed box
-  with an arrow into it, as wide as what it holds: a blow added after the strikes, its number
+  What the machine's passive adds sits in its passive box at the foot of the edge, hanging out
+  past the chips so it stays clear of the costs along the foot, a dashed box with an arrow into
+  it, as wide as what it holds: a blow added after the strikes, its number
   by the mark of what pays it (the Storm Petrel's zap, by the shield's, in the shield's colour); a vent's blast at a random foe, by the blast's mark (the Whip
   Scorpion's); a stepping die's next entry, by its mark and the number it will show, in its
   kind's colour, equipment by its gear and what it grants or lays, a shield and a vent in one by its two
