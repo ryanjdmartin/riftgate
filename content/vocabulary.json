@@ -153,17 +153,7 @@
    "id": "buff",
    "category": "component_kind",
    "name": "Buff component",
-   "codex": "Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Overcharged for damage, Armoured against damage, Primed to burn on hit. A status that runs down on its own (Overcharged, halving) takes no rounds. The die shows the status name and the stacks.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
-   "id": "damage_range",
-   "category": "component_property",
-   "name": "Damage range",
-   "codex": "A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls.",
+   "codex": "Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Empowered for damage, Armoured against damage, Primed to burn on hit. A status that runs down on its own (Empowered, halving) takes no rounds. The die shows the status name and the stacks.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -193,7 +183,7 @@
    "id": "cleave",
    "category": "keyword",
    "name": "Spread",
-   "codex": "Keyword with a number. Spread 2 also hits the foes beside the target in its rank, each taking 2 where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing.",
+   "codex": "Keyword with a number. Spread 2 also hits the foes beside the target in its rank, each taking 2 where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file."
@@ -203,7 +193,7 @@
    "id": "penetrate",
    "category": "keyword",
    "name": "Penetrate",
-   "codex": "Keyword with a number. Penetrate 3 also hits the other rank of the target's column, which takes 3 where the target takes the roll: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number.",
+   "codex": "Keyword with a number. Penetrate 3 also hits the other rank of the target's column, which takes 3 where the target takes the number: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon."
@@ -213,7 +203,7 @@
    "id": "splash",
    "category": "keyword",
    "name": "Splash",
-   "codex": "Keyword with a number. Splash 1 also hits every foe round the target, those beside it in its rank and the other rank of its column, each taking 1 where the target takes the roll: the attacker's bonuses land on that 1 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number.",
+   "codex": "Keyword with a number. Splash 1 also hits every foe round the target, those beside it in its rank and the other rank of its column, each taking 1 where the target takes the number: the attacker's bonuses land on that 1 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number.",
    "status": "implemented",
    "design": {
     "holes": "Spread and Penetrate at one number, one chip on the die (Ryan, 28 October: Splash N back 'for the sake of display simplicity'); the validator refuses the two at one number and Splash beside either. Its number rides on the entry (splash)."
@@ -233,7 +223,7 @@
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
-   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo (Cryo 1: one stack). Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
+   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo a strike (Cryo 1: one stack), laid once the strikes are done, so a fire never cashes its own frost. Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
    "status": "implemented",
    "design": {
     "holes": "Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder."
@@ -253,7 +243,7 @@
    "id": "lure",
    "category": "keyword",
    "name": "Lure",
-   "codex": "Player keyword, on any entry aimed at a foe, a weapon or equipment. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
+   "codex": "Player keyword, on any entry aimed at a foe, a weapon or equipment. Every foe the entry reaches turns on this machine for the round, a felled one too, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
    "status": "implemented",
    "design": {
     "holes": "No status and no chip: the arrow is the record. A draw by an ally is parked (the bible's redirection row)."
@@ -263,7 +253,7 @@
    "id": "shock",
    "category": "keyword",
    "name": "Shock",
-   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next weapon strike aimed at it deals double. The entry's own blow never spends the shock it leaves.",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches is Shocked, a felled one too: the next weapon strike aimed at it deals double. The entry's own blow never spends the shock it leaves.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -273,7 +263,7 @@
    "id": "expose",
    "category": "keyword",
    "name": "Expose",
-   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Exposed through the next round: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches is Exposed through the next round, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
    "status": "implemented",
    "design": {
     "holes": "The formation word exposed stays rules text, so the status's id is exposure."
@@ -293,7 +283,7 @@
    "id": "suppress",
    "category": "keyword",
    "name": "Suppress",
-   "codex": "Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three on a boss or a massive foe). A foe may shrug it off at 10% a Numbed stack; no foe resists by nature.",
+   "codex": "Player keyword. The target skips its telegraphed action this round, and recovers with its stun resist in Numbed. On a Numbed foe the stun strips a stack and lands nothing; a Ward turns it away.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -323,7 +313,7 @@
    "id": "flak",
    "category": "keyword",
    "name": "Flak",
-   "codex": "Flak N: each foe hit gains N stacks of Flak.",
+   "codex": "Flak N: each foe hit gains N stacks of Flak a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays.",
    "status": "implemented",
    "design": {
     "holes": "The stacks land after the blow, so the blow that lays them never feeds on them and a later strike of the same spend does."
@@ -333,15 +323,15 @@
    "id": "numbed",
    "category": "status",
    "name": "Numbed",
-   "codex": "Foe buff that nothing removes: nothing reads it, deepens it, spreads it, cleanses it or purges it, and nothing that counts a foe's statuses counts it. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, the mark of what nothing removes.",
+   "codex": "Foe buff: the rounds until one stun lands. A stun on it strips a stack and lands nothing, so a foe with Numbed N takes N+1 stuns in a round. A stunned foe recovers with its stun resist in stacks (1 for most, 3 for a massive foe), after the round's decay; a stack goes at the end of each round. A Purge lowers it like any buff; nothing deepens, spreads or cleanses it.",
    "status": "implemented",
    "design": {
-    "holes": "Its numbers are placeholders, to be judged against fight lengths.",
+    "holes": "Ryan's clock (2 November): the chip reads as the rounds until it can be stunned again, so the stacks land after the decay phase; a stun lock costs its resist and one every round, so an all-in stun team can brute-force a boss at a price, and a Purge is the other key. The resist numbers are placeholders (content's resist; the bosses' by hand).",
     "table": {
      "kind": "buff",
      "on": "foe",
-     "stacks": "Yes: two a landed suppress, three on a boss or a massive foe",
-     "lasts": "A stack fades at each of its turns"
+     "stacks": "Yes: its stun resist as it recovers from a stun",
+     "lasts": "A stack goes at the end of each round"
     }
    }
   },
@@ -385,8 +375,8 @@
   {
    "id": "kill_overcharge",
    "category": "component_property",
-   "name": "Overcharged a kill",
-   "codex": "A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner so many stacks of Overcharged (two), which the Ammit keeps for the battle.",
+   "name": "Empowered a kill",
+   "codex": "A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner so many stacks of Empowered (two), which the Ammit keeps for the battle.",
    "status": "implemented",
    "design": {
     "holes": "A spread that kills two feeds twice; a chain feeds on every link."
@@ -406,10 +396,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the roll: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. Then one other foe, at random, neither the target nor already Shocked, is Shocked.",
+   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands.",
    "status": "implemented",
    "design": {
-    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain)."
+    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate."
    }
   },
   {
@@ -436,7 +426,7 @@
    "id": "steal",
    "category": "keyword",
    "name": "Steal",
-   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn, as a Disable, and the foe takes it: its next swing lands that weapon's number, a rolled one at its middle, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
+   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn, as a Disable, and the foe takes it: its next swing lands that weapon's number, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
    "status": "implemented",
    "design": {
     "holes": "Gilgamesh's (30 October). One piece held at a time, the swing spending it; the swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it."
@@ -483,6 +473,16 @@
    }
   },
   {
+   "id": "golden_rage",
+   "category": "foe",
+   "name": "Golden Rage",
+   "codex": "Foe move of its own, never a rider on a blow: the foe goes gold (Golden) for the rounds it says, so the round it roars is the window to shield up or to start the burst. It goes gold only while calm, so one rage at a time; a Suppress or a Disrupt stops the roar, as any move.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Thunder Ape's (4 November); see Golden. Its weight is content's, 2 so it comes about a round in three while calm."
+   }
+  },
+  {
    "id": "merge",
    "category": "foe",
    "name": "Merge",
@@ -496,17 +496,17 @@
    "id": "dispel",
    "category": "keyword",
    "name": "Purge",
-   "codex": "On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses every buff it carries but Numbed and Guarded, after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A machine's Ward turns it away; a foe's Ward is one of the buffs it takes.",
+   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries but Guarded (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff a die face bought, for good, and N of what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A Ward turns it away and stands, on either side.",
    "status": "implemented",
    "design": {
-    "holes": "One id, dispel, on both sides, as breach is (28 October). On a foe (Effects.purge_foe) it takes Armoured, Kindled, Getting Back Up, Primed, Barrier, Ward and Regenerating, never Numbed, never Guarded. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and taken; anything else sleeps and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question."
+    "holes": "One id, dispel, on both sides, as breach is (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). On a foe (Effects.purge_foe) it lowers Armoured, Empowered, Getting Back Up, Primed, Barrier, Regenerating and Numbed, never Guarded; a Ward turns it and stands. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and lowered for good; anything else sleeps its stacks and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question."
    }
   },
   {
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Burning, Scorched, Crushed, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -589,7 +589,7 @@
   {
    "id": "overcharged",
    "category": "status",
-   "name": "Overcharged",
+   "name": "Empowered",
    "codex": "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. At the end of each round it halves, rounded down, whatever granted it, until it is gone. On the Ammit nothing of it fades: its Quintessence Tap keeps every stack for the battle.",
    "status": "implemented",
    "design": {
@@ -715,6 +715,22 @@
    }
   },
   {
+   "id": "crushed",
+   "category": "status",
+   "name": "Crushed",
+   "codex": "Machine status, from a foe's crush (the World Eater's pin): every blow it takes deals a point more a stack, the shield taking the extra first as it takes any blow, through the next round, when every stack goes. A Ward turns the crush away; an ally's Cleanse lifts it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Monster Hunter's Defense Down by archetype, the pin's mark (Ryan, 4 November: rework the World Eater's below-half bite \"into a form of its pin, since that inflicts Defense Down in game, something we don't have\"). Claude's form: Flak's shape on the other body, a point a blow a stack, so every machine feels it and the chip is a number; the forms not taken, its armour counting for nothing through the round (nothing on a car) and its shield halved (fiddly at single digits). Numbers placeholders.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "Yes: a point more a blow a stack",
+     "lasts": "Through the next round, every stack at once"
+    }
+   }
+  },
+  {
    "id": "phased",
    "category": "status",
    "name": "Phased",
@@ -782,7 +798,7 @@
    "id": "webbed",
    "category": "status",
    "name": "Webbed",
-   "codex": "Foe status, the funnel-web's web. At the end of its action the web bursts: it and the next foe to act beside it are Suppressed, Numbed resisting each for itself. Killed first, it takes its web with it; one the team has already suppressed gains nothing from the burst on itself.",
+   "codex": "Foe status, the funnel-web's web. At the end of its action the web bursts: it and the next foe to act beside it are Suppressed, each a stun like any other (a Numbed foe strips a stack instead, a Warded one turns it). Killed first, it takes its web with it; one the team has already suppressed gains nothing from the burst on itself.",
    "status": "implemented",
    "design": {
     "holes": "The burst catches the next foe to act beside it in its rank, the one to its left when none stands to its right; on a foe already suppressed it is wasted, and each half feeds the Paradox as the Suppress keyword's does.",
@@ -881,7 +897,7 @@
    "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
    "status": "implemented",
    "design": {
-    "holes": "Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Overcharged at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
+    "holes": "Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -894,7 +910,7 @@
    "id": "destroyed_component",
    "category": "status",
    "name": "Destroyed component",
-   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the machine's die is rolled and the component it lands on is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken machine shrugs off more of them.",
+   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the entry the die shows is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a machine showing a broken entry shrugs it off, and what faces the enemy is the player's choice.",
    "status": "implemented",
    "design": {
     "holes": "The threshold is a placeholder, set by what it asks of the player, never by a loss or win rate (Ryan, 25 October). The campaign's hangar screen is not built."
@@ -1294,7 +1310,7 @@
    "id": "on_attack",
    "category": "trigger",
    "name": "On attack",
-   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage.",
+   "codex": "Passive trigger. Fires on every attack, after its number is read. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1364,7 +1380,7 @@
    "id": "on_stack",
    "category": "trigger",
    "name": "On applying stacks",
-   "codex": "Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Burning (from a burn or from Primed), an ally's or its own buff, its own Overcharged from a kill. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction.",
+   "codex": "Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Burning (from a burn or from Primed), an ally's or its own buff, its own Empowered from a kill. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction.",
    "status": "implemented",
    "design": {
     "holes": "Shocked and Suppressed are not stacks, so it never touches them."
@@ -1501,13 +1517,13 @@
    }
   },
   {
-   "id": "spray",
-   "category": "component_property",
-   "name": "Spray",
-   "codex": "A rule printed on a weapon (the Skua's Flechette Pod): its first strike lands on the foe it is spent on, and each strike after it falls on a random foe in reach at that moment, the same foe again allowed. A kill clears its slot at once, so a hole burnt in the front rank opens the foe behind it to the strikes still to come.",
+   "id": "sweep",
+   "category": "reach",
+   "name": "Sweep",
+   "codex": "Targets a rank, either one: the strikes walk the rank of the foe the entry is dropped on from the rank's first filled slot, left to right, one a slot, wrapping past the last. An empty column is skipped at any point, a kill's included, so the strikes concentrate on what stands and a lone foe takes them all; a rank emptied loses the strikes left. Each strike is aimed at its foe, so a Shock there pops and the riders land, and an area keyword's shape rides each strike. The Skua's Flechette Pod, and the Musk Ox's salvo an ammo a strike.",
    "status": "implemented",
    "design": {
-    "holes": "The die shows the first strike's number, as a Spread does (Ryan, 17 October); a later strike may spend a Shock on another foe, an understood risk (\"no different than using a cleave\")."
+    "holes": "Ryan, 2 November: \"I would make target a rank, not a unit. Starts left to right always\"; 3 November, a reach in place of a keyword: \"let's move sweep from a keyword to a targeting mode, since that's what it is. Not direct or indirect. You pick a rank and that's the rank it hits. Empty columns at any point are skipped, so it's allowed to concentrate fire on the remainder. That's what differentiates it from spread or a potential hit-all, in that the shots aren't ever wasted. Yes, this means that the Skua gets indirect targeting after a fashion, and I think that's ok for its role.\" In place of the spray's random darts (25 October) and the salvo's random targets (21 October), retired by the randomness pass. A rank emptied mid-walk loses the strikes left (Ryan, 3 November: \"if the rank dies, the attack dies, yes\"); the HUD lights the rank under the finger whole and brackets it while a sweep is dragged."
    }
   },
   {
@@ -1814,7 +1830,7 @@
    "id": "strikes",
    "category": "component_property",
    "name": "Strikes",
-   "codex": "An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often (the Skua's strikes share each roll, halved and never below one). Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too.",
+   "codex": "An attack's blows per use. A weapon with three strikes lands three separate hits: each lands its own number and carries its own effects, so a rapid-fire weapon procs often (the Skua's strikes share the number, halved and never below one). Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too.",
    "status": "implemented",
    "design": {
     "holes": "Heat is paid once per use, not per strike."
@@ -1834,7 +1850,7 @@
    "id": "order_of_operations",
    "category": "rules",
    "name": "Order of operations",
-   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the roll (or the flat number, with what fired heat or a target's missing hull adds) comes before the pipeline's adds and multiplies; a raised ceiling or floor moves a rolled range before the roll, and the die shows it. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
+   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the number (with what fired heat or a target's missing hull adds) comes before the pipeline's adds and multiplies; Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
    "status": "implemented",
    "design": {
     "holes": "Refit (the hangar) is what changes loadout-scoped effects; not built."
@@ -1889,9 +1905,41 @@
    }
   },
   {
+   "id": "enraged",
+   "category": "status",
+   "name": "Enraged",
+   "codex": "Foe status, from a bellow (the Goblin Nob's). Once the foe has bellowed, every shield, vent or equipment entry the team spends lays a stack on it, and each stack is a point on every blow it lands for the rest of the fight; a weapon feeds nothing. Never spent by a move. Its chip climbs as the stacks do, so the number an intent shows is the number that lands. A Purge lowers the stacks by its number; the bellow goes on, so they gather again.",
+   "status": "implemented",
+   "design": {
+    "holes": "The rage's value and the Nob's numbers are placeholders. Permanent for the fight, as built (Ryan, 4 November: \"Nob permanent\"; Claude's lean, since an elite's job is to make the player change plan).",
+    "table": {
+     "kind": "buff",
+     "on": "foe",
+     "stacks": "Yes: the foe's rage a non-weapon spend",
+     "lasts": "The fight; a Purge clears the stacks"
+    }
+   }
+  },
+  {
+   "id": "golden",
+   "category": "status",
+   "name": "Golden",
+   "codex": "Foe status, from a golden rage (the Thunder Ape's). Its blows hit 2 harder and it wears a point of armour for the rounds its rage says, its chip counting them down with the damage that breaks it. A quarter of its HP lost since it went gold breaks the rage and it staggers: the gold goes and it loses its next action. A Suppress breaks it too; a Purge strips it. Calm again, it may go gold again.",
+   "status": "implemented",
+   "design": {
+    "holes": "Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage \"is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing\"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.",
+    "table": {
+     "kind": "buff",
+     "on": "foe",
+     "stacks": "No: one rage at a time",
+     "lasts": "The rage's rounds; a quarter of its HP lost since, a Suppress or a Purge ends it early"
+    }
+   }
+  },
+  {
    "id": "kindled",
    "category": "status",
-   "name": "Kindled",
+   "name": "Empowered",
    "codex": "Foe status, from a rally, landing on every other foe on the field the moment the rally does. Its next move hits harder by the rally's value, and that move spends it, whatever it is: a blow lands it, a special gains nothing from it, a Suppress that takes the move takes it too, and a countdown carries it to the blow it lands. A foe acting after the rallier spends it this turn; one that has acted carries it to its next move. An intent counts the rallies on their way, a pulsing chip on a dashed edge saying why, and drops them the moment the rallier is killed, Suppressed or Disrupted.",
    "status": "implemented",
    "design": {
@@ -1988,10 +2036,10 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it but Suppressed (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), and a turned mark feeds no Paradox, until the end of the player's next turn.",
+   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (breach, burn, scorch, disable, corrupt, silence, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
    "status": "implemented",
    "design": {
-    "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS) and never Suppressed, since Numbed stays the one stun resistance.",
+    "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS), and since 2 November a stun and a Purge too, on either side, and stands (Ryan: nothing but damage lands on a Warded foe; the exception that let a stun through went with Numbed's roll).",
     "table": {
      "kind": "buff",
      "on": "both",
@@ -2008,6 +2056,16 @@
    "status": "implemented",
    "design": {
     "holes": ""
+   }
+  },
+  {
+   "id": "crush",
+   "category": "foe",
+   "name": "Crush",
+   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Crushed on the machine it hit (Crush 2: two): every blow it takes through the next round deals a point more a stack. A Ward turns it away; an ally's Cleanse lifts the mark.",
+   "status": "implemented",
+   "design": {
+    "holes": "The World Eater's pin (4 November); see Crushed."
    }
   },
   {
@@ -2069,6 +2127,38 @@
      "on": "machine",
      "stacks": "No",
      "lasts": "The round"
+    }
+   }
+  },
+  {
+   "id": "charged",
+   "category": "status",
+   "name": "Charged",
+   "codex": "Machine buff. While it lasts the machine's weapons fire with Shock, shown on the die: every foe a fire reaches is Shocked after the blows, a felled one too. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the Shock. A Purge lowers it.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. No piece grants it yet: capacitor pieces are content to propose.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: a fire spends one",
+     "lasts": "Until spent"
+    }
+   }
+  },
+  {
+   "id": "supercooled",
+   "category": "status",
+   "name": "Supercooled",
+   "codex": "Machine buff. While it lasts the machine's weapons fire with Cryo, one more stack a strike on each foe hit (Cryo 1 on a gun without it), shown on the die and laid after the hits, so a fire never cashes its own frost. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the frost. A Purge lowers it.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger; a stack a strike after the hits (3 November: \"resulting in 2 applications, not apply-cash-apply-cash, and not hit-hit-apply once\"). No piece grants it yet.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: a fire spends one",
+     "lasts": "Until spent"
     }
    }
   },

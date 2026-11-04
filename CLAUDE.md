@@ -127,7 +127,11 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   the map's, a chip's plate), pick by the worst case, and report luminance contrast and
   simulated distance against them, not how it looks. A debug build's Settings → COLOURS sets
   the colours that carry a meaning and the HUD presets (`ColourTuner`); Ryan tunes there and sends its COPY text (`KEY #rrggbb`
-  lines) for the picks to land as the defaults.
+  lines) for the picks to land as the defaults. These rules are for what carries gameplay information: an effect
+  that carries none (a weapon's muzzle flare, a shot's tracer) takes the colour that makes sense,
+  unchecked and never on the tuner (Ryan, 2 November: "Not worried about colourblind issues for
+  things that carry no gameplay information like weapon effects. Choose colours that make sense, I
+  don't need to tweak them").
 - A phone read arrives as a screenshot. Work it this way: crop and zoom it with nearest
   sampling to see the pixels, reproduce it on the desk machine at the phone's layout and density
   (`RIFTGATE_SHOT_H`, `RIFTGATE_SAFE`, `RIFTGATE_SHOT_SCALE`, and

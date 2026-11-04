@@ -72,7 +72,7 @@ names are Ryan's.
   tank stat Ryan called toxic; interceptors as extra strikes are the strafer's pattern.
 - **Interceptors that stay**: every weapon it spends also leaves an interceptor on the foe it
   hit. At the end of each player turn every interceptor strikes its foe for 5, a plain blow:
-  the Carrier's own buffs apply (Overcharged, Primed), never the weapon's keywords, so a
+  the Carrier's own buffs apply (Empowered, Primed), never the weapon's keywords, so a
   Suppress weapon cannot launch a stunlock. When its foe falls an interceptor comes home; it
   flies four at most.
 - The rule it bends at tier three: a spent weapon hits once, and these keep hitting. It ramps

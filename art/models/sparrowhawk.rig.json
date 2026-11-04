@@ -1966,7 +1966,7 @@
     "driver_ring",
     "driver_exhaust"
    ],
-   "k": 5.0
+   "k": 8.0
   },
   "rock": 0.0,
   "body_hold": [
@@ -1995,5 +1995,39 @@
  "pins": {
   "hp_1": "transonic_rifle",
   "hp_2": ""
- }
+ },
+ "halo": [
+  [
+   "booster_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ]
+ ],
+ "fires": {
+  "pinion_driver": {
+   "act": "flare_boosters",
+   "from": 0.4,
+   "to": 1.8
+  }
+ },
+ "stock_shapes": {
+  "hp_1": "barrel"
+ },
+ "plumes": [
+  {
+   "node": "plume_1",
+   "part": "driver_ring",
+   "reach": 25.0,
+   "breadth": 9.5
+  },
+  {
+   "node": "plume_2",
+   "part": "driver_ring",
+   "reach": 25.0,
+   "breadth": 9.5
+  }
+ ]
 }

@@ -16,7 +16,8 @@ extends SceneTree
 ## engine burns one; Skirmish.overheat_scale, 30 October), --burnout (a what-if: an overheat whose
 ## burn reaches the injury threshold burns out the component that took the gauge past the
 ## maximum) and --overheat-corrupt N (a what-if: every overheat Corrupts that component N stacks),
-## --shield-ahead (a persona valuing a shield left standing by the blows it turns next round),
+## --pilot chassis=N (a what-if: that chassis gains N heat as each round opens, the Whip
+## Scorpion's pilot light; Skirmish.pilot, 3 November), --shield-ahead (a persona valuing a shield left standing by the blows it turns next round),
 ## --injury N (the injury threshold at N percent of maximum hull for this run, a what-if read
 ## against the engine's own, Skirmish.INJURY_MIN_HULL_PCT; 25 October, for the one state),
 ## --targeting aim|lowest (the foes' targeting rule for the matrix: the aims as shipped, or
@@ -28,7 +29,8 @@ extends SceneTree
 ## team", "team:badger+sparrowhawk"), --packs id,id (only these packs, by the ids the JSON
 ## names, "treant x1", "meadow formation" (tier one's; "meadow formation tier 2" and "tier 3"
 ## the ladder's, beside a cell for every recolour, "goblin_guard x4", since 28 October),
-## "finale", or "big" for every big fight and
+## "finale", "<elite composition> tier 2" with --packs elites (every elite composition at each tier
+## it names, its elites scaled as a battle scales them; 4 November), or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
 ## --team id,id (repeatable: a row of exactly those machines,
 ## any number of them, so pairs and fours can be read beside the trios), --pack foe:n[+foe:n]
@@ -129,7 +131,7 @@ func _init() -> void:
 	if not only_rows.is_empty():
 		rows = rows.filter(func(r) -> bool: return only_rows.has(r["id"]))
 	if not only_packs.is_empty():
-		packs = packs.filter(func(p) -> bool: return only_packs.has(p["id"]) or (only_packs.has("big") and _is_big(p)) or (only_packs.has("rank_and_file") and not _is_big(p)))
+		packs = packs.filter(func(p) -> bool: return only_packs.has(p["id"]) or (only_packs.has("big") and _is_big(p)) or (only_packs.has("rank_and_file") and not _is_big(p)) or (only_packs.has("elites") and bool(p.get("elite", false))))
 	# --module: every row beside its twin wearing the module, in one report (21 October).
 	if not fit_module.is_empty():
 		var twinned: Array = []
@@ -243,6 +245,10 @@ func _parse_args() -> void:
 			"--cool-above":
 				cool_above = clampi(int(v), 0, 100)
 				i += 1
+			"--pilot":
+				var kv := v.split("=")
+				Skirmish.pilot[kv[0]] = int(kv[1]) if kv.size() > 1 else 1
+				i += 1
 			"--overheat":
 				Skirmish.overheat_scale = clampi(int(v), 1, 10)
 				i += 1
@@ -344,7 +350,7 @@ static func _whole(v, key: String = ""):
 			out[k] = _whole(v[k], str(k))
 		return out
 	if v is float:
-		return v if key in ["hull_lost_pct", "foes_killed_pct", "heat_peak", "forgone", "end_heat"] else int(roundf(v))
+		return v if key in ["hull_lost_pct", "hull_lost_sq", "foes_killed_pct", "heat_peak", "forgone", "end_heat"] else int(roundf(v))
 	return v
 
 
@@ -462,6 +468,26 @@ func _build_matrix() -> void:
 					var bname := str(db.foes[boss_id].get("name", boss_id))
 					packs.append({"id": "%s tier %d" % [boss_id, t], "name": "%s, tier %d (%s)" % [bname, t, ", ".join(names) if not names.is_empty() else "alone"], "foe": "", "strength": 0, "mix": mix, "tier": t - 1})
 					packs.append({"id": "%s tier %d alone" % [boss_id, t], "name": "%s, tier %d, alone" % [bname, t], "foe": "", "strength": 0, "mix": [[boss_id, 1]], "tier": t - 1})
+	# The elites' cells (4 November, Ryan: "Are the domain elites more or less balanced?"; --packs
+	# elites): every elite composition, a domain's own and the wanderers', at each tier it names,
+	# its elites at the tier's numbers as a battle fields them (ContentDB.foes_for scales every
+	# elite as it scales a boss) and its rank and file as content has them: "<composition> tier N".
+	if only_packs.has("elites"):
+		var seen: Array[String] = []
+		for fac in db.factions.keys():
+			for t in [1, 2, 3]:
+				for c in db.elite_compositions(str(fac), t) + db.wandering_compositions(t):
+					var cid := str(c["id"])
+					var pid := "%s tier %d" % [cid, t]
+					if seen.has(pid):
+						continue
+					seen.append(pid)
+					var mix: Array = []
+					var names: Array[String] = []
+					for m in c["members"]:
+						mix.append([str(m[0]), int(m[1])])
+						names.append("%s x%d" % [str(db.foes[m[0]].get("name", m[0])), int(m[1])])
+					packs.append({"id": pid, "name": "%s, tier %d (%s)" % [cid, t, ", ".join(names)], "foe": "", "strength": 0, "mix": mix, "tier": t - 1, "elite": true})
 	# The party's cells (21 October, the bible's section 9; --noparty drops them): each bench hero's final as
 	# the campaign fields it, the hero with its domain's first pack in the other columns, and
 	# the finale's line, a column a domain, each domain's first bench hero promoted.
@@ -538,8 +564,8 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 		for entry in p["mix"]:
 			for n in range(int(entry[1])):
 				var f := db.make_foe(str(entry[0]))
-				if p.has("tier") and db.is_boss(str(entry[0])):
-					db.scale_boss(f, int(p["tier"]))   # a boss at its tier (2 November), its parts below
+				if p.has("tier") and (db.is_boss(str(entry[0])) or db.is_elite(str(entry[0]))):
+					db.scale_boss(f, int(p["tier"]))   # a boss at its tier (2 November), an elite too (4 November), its parts below
 				foes.append(f)
 	else:
 		for n in range(int(p["strength"])):
@@ -550,7 +576,7 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	for f in foes:
 		fielded.append(f)
 		for part in db.parts_for(f):
-			if p.has("tier") and db.is_boss(f.content_id):
+			if p.has("tier") and (db.is_boss(f.content_id) or db.is_elite(f.content_id)):
 				db.scale_boss(part, int(p["tier"]))   # a core's parts at its tier, as a battle's
 			fielded.append(part)
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
@@ -610,9 +636,10 @@ static func _ids(list: Array) -> String:
 func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
 		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
-		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "class": {}, "taken": {},
+		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "taken": {},
 		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0,
-		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0}
+		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0, "gate_free": 0, "paints": 0, "paints_cashed": 0,
+		"hull_lost_sq": 0.0}   # the squares, so a cell's spread of hull lost reads beside its mean (a swing, 3 November)
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -640,7 +667,9 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 			hull += maxi(0, ms.unit.hull)
 			if not ms.alive():
 				lost += 1
-		agg["hull_lost_pct"] += 100.0 * (hull_max - hull) / maxi(1, hull_max)
+		var lost_pct := 100.0 * (hull_max - hull) / maxi(1, hull_max)
+		agg["hull_lost_pct"] += lost_pct
+		agg["hull_lost_sq"] += lost_pct * lost_pct
 		agg["mechs_lost"] += lost
 		var dead := 0
 		for f in foes:
@@ -660,13 +689,16 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		agg["plan_changes"] += pol.plan_changes
 		agg["actions"] += pol.actions_bought
 		agg["banked"] += pol.banked
+		agg["gate_free"] += pol.gate_free
+		agg["paints"] += pol.paints
+		agg["paints_cashed"] += pol.paints_cashed
 		var end_heat := 0.0
 		for ms in sk.mechs:
 			end_heat += 100.0 * float(ms.heat) / float(maxi(1, ms.heat_max))
 		agg["end_heat"] += end_heat / float(maxi(1, sk.mechs.size()))
 		for c in pol.spends.keys():
 			agg["spends"][c] = int(agg["spends"].get(c, 0)) + int(pol.spends[c])
-		for pair in [["reach", sk.reach_tally], ["class", sk.class_tally]]:
+		for pair in [["reach", sk.reach_tally]]:
 			var src: Dictionary = pair[1]
 			for rk in src.keys():
 				var into: Dictionary = agg[pair[0]].get(rk, {})
@@ -720,7 +752,7 @@ func _report(fights: int, secs: float) -> String:
 	L.append("")
 	L.append("Generated by `tools/balance.gd` on %s: %d fights in %.0f s%s, %d seeds a cell, policies %s%s%s. Do not edit by hand." % [
 		Time.get_date_string_from_system(), fights, secs, "" if merge.size() < 2 else " (%d parts side by side)" % merge.size(), seeds, ", ".join(_policy_names()),
-		("" if withdraw_below <= 0 else ", withdrawing under %d%% hull" % withdraw_below) + ("" if cool_above <= 0 else ", keeping heat under %d%% of the maximum" % cool_above) + ("" if Skirmish.overheat_scale <= 1 else ", an overheat burning %d hull a point" % Skirmish.overheat_scale) + ("" if not Skirmish.overheat_burnout else ", an overheat past the injury threshold burning out its component") + ("" if Skirmish.overheat_corrupt <= 0 else ", an overheat corrupting its component ×%d" % Skirmish.overheat_corrupt) + ("" if not shield_ahead else ", a standing shield valued by next round's blows"),
+		("" if withdraw_below <= 0 else ", withdrawing under %d%% hull" % withdraw_below) + ("" if cool_above <= 0 else ", keeping heat under %d%% of the maximum" % cool_above) + ("" if Skirmish.pilot.is_empty() else ", a pilot light (%s)" % str(Skirmish.pilot)) + ("" if Skirmish.overheat_scale <= 1 else ", an overheat burning %d hull a point" % Skirmish.overheat_scale) + ("" if not Skirmish.overheat_burnout else ", an overheat past the injury threshold burning out its component") + ("" if Skirmish.overheat_corrupt <= 0 else ", an overheat corrupting its component ×%d" % Skirmish.overheat_corrupt) + ("" if not shield_ahead else ", a standing shield valued by next round's blows"),
 		"" if is_equal_approx(damage_scale, 1.0) else ", the player's damage scaled by %.2f" % damage_scale]
 		+ ("" if fit_module.is_empty() else " Each row runs beside its twin with the %s fitted to every machine." % str(db.modules[fit_module].get("name", fit_module)))
 		+ ("" if bumps.is_empty() else " Every machine bumped: %s." % ", ".join(bumps.map(func(b) -> String: return "%s %+d" % [b[0], b[1]])))
@@ -801,8 +833,14 @@ func _report(fights: int, secs: float) -> String:
 		var fought := 0
 		var actions := 0
 		var banked := 0
+		var gate_free := 0
+		var paints := 0
+		var cashed := 0
 		for p in packs:
 			var a: Dictionary = cells[_key(r, p, top)]
+			gate_free += int(a.get("gate_free", 0))
+			paints += int(a.get("paints", 0))
+			cashed += int(a.get("paints_cashed", 0))
 			rounds += int(a["rounds"])
 			rerolls += int(a["rerolls"])
 			fought += int(a["fights"])
@@ -815,7 +853,9 @@ func _report(fights: int, secs: float) -> String:
 		var blanks: Array = []
 		for c in spends.keys():
 			if not c in ["empty", "destroyed", "disabled"]:
-				named.append([db.component_name(c), spends[c], c])
+				var charged := str(c).ends_with(" (charged)")   # a muster's spend (the Swallowtail's), apart
+				var cid := str(c).trim_suffix(" (charged)")
+				named.append([db.component_name(cid) + (" charged" if charged else ""), spends[c], c])
 		for c in ["empty", "destroyed", "disabled"]:
 			if spends.has(c):
 				blanks.append([c, spends[c]])
@@ -832,6 +872,12 @@ func _report(fights: int, secs: float) -> String:
 			economy += " An ally's action bought %.2f a fight." % (float(actions) / maxi(1, fought))
 		if banked > 0:
 			economy += " Rerolls banked %.2f a round." % (float(banked) / maxi(1, rounds))
+		# The gate and the paints (the Needletail's rows, 3 November): its spends a once-a-round
+		# gate made Rapid, and its paints an ally's Direct weapon spend cashed while they stood.
+		if gate_free > 0:
+			economy += " Spends the gate made free: %d%%." % _pct(gate_free, total)
+		if paints > 0:
+			economy += " Paints %.2f a fight, %d%% cashed by an ally's Direct spend." % [float(paints) / maxi(1, fought), _pct(cashed, paints)]
 		L.append("- **%s**: %s. Rerolls %.2f a round.%s" % [r["name"], ", ".join(parts), float(rerolls) / maxi(1, rounds), economy])
 	L.append("")
 	L.append_array(_reach_report(top))
@@ -993,31 +1039,6 @@ func _reach_report(top: int) -> Array[String]:
 				taken[rk] = int(taken.get(rk, 0)) + int(a["taken"][rk])
 	var all_taken := int(taken.get("front", 0)) + int(taken.get("back", 0))
 	L.append("In the packs with a back rank, %d%% of the damage the machines took (shield and hull) came from the back rank." % _pct(int(taken.get("back", 0)), all_taken))
-	L.append("")
-	L.append("## Rolled and flat, %s" % Policy.kind_name(top))
-	L.append("")
-	L.append("The same by the shape of the number: a weapon that rolls a range against one that is a single number, over every row and pack.")
-	L.append("")
-	var tot := {}
-	for r in rows:
-		for p in packs:
-			var a: Dictionary = cells[_key(r, p, top)]
-			for ck in a.get("class", {}).keys():
-				var into: Dictionary = tot.get(ck, {})
-				for f in a["class"][ck].keys():
-					into[f] = int(into.get(f, 0)) + int(a["class"][ck][f])
-				tot[ck] = into
-	var all_spends := 0
-	for ck in tot.keys():
-		all_spends += int(tot[ck].get("spends", 0))
-	L.append("| Shape | Share of damaging spends | HP a spend | Heat a spend |")
-	L.append("|---|---|---|---|")
-	for ck in ["rolled", "flat"]:
-		if not tot.has(ck):
-			continue
-		var t: Dictionary = tot[ck]
-		var n := maxi(1, int(t.get("spends", 0)))
-		L.append("| %s | %d%% | %.1f | %.1f |" % [ck, _pct(int(t.get("spends", 0)), all_spends), float(t.get("damage", 0)) / n, float(t.get("heat", 0)) / n])
 	L.append("")
 	return L
 

@@ -302,7 +302,7 @@ func test_the_uplink_overcharges_an_ally_and_rolls_its_die() -> void:
 	assert_eq(sk.machine_targets_for(pm, uplink), [am], "allies only")
 	am.face_index = 0
 	assert_true(sk.assign(0, am), "on the unspent ally")
-	assert_eq(Effects.stacks_of(a, "overcharged"), 2, "Overcharged 2")
+	assert_eq(Effects.stacks_of(a, "overcharged"), 2, "Empowered 2")
 	assert_eq(am.face_index, 1, "its die rolled again, never onto the entry showing")
 	sk.end_round()
 	sk.start_round()
@@ -310,7 +310,7 @@ func test_the_uplink_overcharges_an_ally_and_rolls_its_die() -> void:
 	assert_true(sk.assign(1, sk.front[0]), "the ally spends first")
 	var stacks := Effects.stacks_of(a, "overcharged")
 	assert_true(sk.assign(0, am), "then the Uplink on it")
-	assert_eq(Effects.stacks_of(a, "overcharged"), stacks + 2, "the Overcharged lands")
+	assert_eq(Effects.stacks_of(a, "overcharged"), stacks + 2, "the Empowered lands")
 	assert_true(am.assigned and am.face_index == 0, "a spent die rolls nothing")
 
 

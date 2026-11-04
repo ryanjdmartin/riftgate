@@ -789,7 +789,7 @@
     "booster_ring",
     "exhaust"
    ],
-   "k": 5.0
+   "k": 8.0
   },
   "rock": 0.0,
   "start": {
@@ -887,9 +887,30 @@
      "booster_ring",
      "exhaust"
     ],
-    "k": 5.0
+    "k": 8.0
    },
    "rock": 0.0
   }
+ },
+ "halo": [
+  [
+   "booster_ring",
+   1.8
+  ],
+  [
+   "exhaust",
+   1.8
+  ]
+ ],
+ "fires": {
+  "fovea_designator": {
+   "act": "designate",
+   "from": 1.4,
+   "to": 2.9
+  }
+ },
+ "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "dish"
  }
 }

@@ -46,6 +46,9 @@ var DIE_Y := 640.0
 const DIE_SIZE := 120.0
 var REROLL_Y := 786.0
 const REROLL_SIZE := Vector2(250, 54)
+const UNDO_SIZE := Vector2(150, 54)
+const UNDO_AFTER := 0.8   # the undo opens this long after a spend's blow has landed: its views have settled
+const ROLL_BAR := "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"   # a roll's bar in the trail (Ryan, 2 November): where the undo stops
 const REROLL_GAP := 30.0   # black between Reroll and the mechs' ground (Ryan, 23 September: 14 was too tight)
 var MECH_Y := 892.0
 const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip row 38; neighbours overlap 4 px at PITCH
@@ -101,6 +104,13 @@ static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
 ## RIFTGATE_SLEEP_DEBUG=1: every buff on a machine is drawn as a purge leaves it asleep (half its
 ## light on a dashed edge, still), to judge the look running (28 October; placeholders).
 static var SLEEP_DEBUG := OS.get_environment("RIFTGATE_SLEEP_DEBUG") == "1"
+## RIFTGATE_HIT_DEBUG=1: every second and a half a machine takes a blow, in turn a hull hit from the
+## left, a blow its shield takes, a blow its armour turns and a hull hit from the right, and every
+## fifth beat one is lost and comes back, to judge the hit reactions running (3 November).
+static var HIT_DEBUG := OS.get_environment("RIFTGATE_HIT_DEBUG") == "1"
+const HIT_DEBUG_KINDS := [["hull", -1.0], ["shield", 0.0], ["block", 0.6], ["hull", 1.0]]
+var _hit_debug_at := 0.0
+var _hit_debug_n := 0
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 const HOME_FLIGHT := 0.22   # seconds a waiting Swap's die takes to fly home when a tap on nothing sets it back
 var _rage_debug_at := -10.0
@@ -193,6 +203,9 @@ func _process(delta: float) -> void:
 		if names.is_empty():
 			names = ["Protect", "1000 Needles", "Self-Destruct", "Bone Storm"]
 		_announce(str(names[int(_fight_t / (PLAQUE_HOLD + 1.2)) % names.size()]))
+	if HIT_DEBUG and _fight_t - _hit_debug_at > 1.5 and not _mech_views.is_empty():
+		_hit_debug_at = _fight_t
+		_hit_debug()
 	if POOL_DEBUG and _fight_t - _pool_debug_at > 2.2 and not sk.field_foes().is_empty():
 		_pool_debug_at = _fight_t
 		var live := sk.field_foes()
@@ -270,6 +283,8 @@ var _confirm: HudPanel
 var _confirm_text: Label
 var _confirm_action: Callable = Callable()
 var _reroll_btn: HudButton
+var _undo_btn: HudButton
+var _undo_from: int = 0   # the tick (ms) the undo opens again after a spend, once its blow has played
 var _end_btn: HudButton
 var _withdraw_btn: HudButton
 var _overlay: Control
@@ -293,6 +308,7 @@ var _turns: Array[Foe] = []           # the foes a Lure in hand would turn, thei
 
 func setup(skirmish: Skirmish) -> void:
 	sk = skirmish
+	sk.keeps_undo = true   # the screen's fight keeps the undo's snapshots (the runners never)
 	locked.clear()
 	for m in sk.mechs:
 		locked.append(false)
@@ -553,6 +569,15 @@ func _build() -> void:
 	_reroll_btn.center_text = true
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
+	# Undo (Ryan, 2 November: "undo to your last roll"): the row's right end, well clear of
+	# Reroll, whose draw it can never take back; its badge says how many spends it reaches.
+	_undo_btn = HudButton.new("UNDO", _on_undo)
+	_undo_btn.sound = ""   # the undo plays its own dismiss
+	_undo_btn.ghost = true
+	_undo_btn.font_size = 20
+	_undo_btn.badge_size = 20
+	_undo_btn.tooltip_text = "Take back the last spend, back to the last roll."
+	_place(_undo_btn, Vector2(W - 16.0 - UNDO_SIZE.x, REROLL_Y), UNDO_SIZE)
 
 	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
@@ -583,6 +608,7 @@ func _build() -> void:
 				"turn": _mech_turn(i),
 			}, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
+			view.pivots = flies or ms.unit.traits.has("hover")   # aims by turning its whole body
 			v.sprite_at = MECH_WINDOW
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
@@ -1009,6 +1035,12 @@ func _refresh(save: bool = true) -> void:
 		if f != null and f.is_attack():
 			targets = sk.targets_for_face(dm, f)
 			slots = sk.slot_targets(dm, Effects.effective_face(dm.unit, f))
+			# A sweep targets a rank (Ryan, 3 November: "fix the UI for sweep so its intuitively
+			# targeting a rank"): over a foe, the rank it stands in is the target, lit whole and
+			# bracketed (below), the other rank plain until the finger moves there.
+			if sk.reach_of(dm, f) == Face.Reach.SWEEP and _drag_over is Foe:
+				var swept_rank: int = 0 if (_drag_over as Foe).is_massive() else (_drag_over as Foe).rank
+				targets = targets.filter(func(foe: Foe) -> bool: return (0 if foe.is_massive() else foe.rank) == swept_rank)
 		elif f != null and f.on_machines():
 			support = sk.machine_targets_for(dm, Effects.effective_face(dm.unit, f))
 
@@ -1088,6 +1120,29 @@ func _refresh(save: bool = true) -> void:
 			var a := lv.drawing_rect()
 			var b := rv.drawing_rect()
 			marks.append(Rect2(_home.get(lv, lv.position) + a.position, a.size).merge(Rect2(_home.get(rv, rv.position) + b.position, b.size)).grow(6.0))
+	# A sweep's rank, bracketed whole while the die is over a foe in it (3 November): the strikes
+	# walk the rank, so the rank is what the drop picks, one bracket round it as round a twin
+	# slot's pair, its foes' own marks off so the rank reads as one target.
+	if _drag_from >= 0 and _drag_over is Foe:
+		var sm: Skirmish.MechState = sk.mechs[_drag_from]
+		var sf := sk.spend_face(sm)
+		if sf != null and sf.is_attack() and sk.reach_of(sm, sf) == Face.Reach.SWEEP:
+			var swept_rank: int = 0 if (_drag_over as Foe).is_massive() else (_drag_over as Foe).rank
+			var whole := Rect2()
+			var any := false
+			for v in _view_foe.keys():
+				var foe: Foe = _view_foe[v]
+				if not foe.alive() or (0 if foe.is_massive() else foe.rank) != swept_rank:
+					continue
+				var uv: UnitView = v
+				uv.highlight = false
+				uv.queue_redraw()
+				var vr: Rect2 = uv.drawing_rect()
+				var r := Rect2(_home.get(v, uv.position) + vr.position, vr.size)
+				whole = r if not any else whole.merge(r)
+				any = true
+			if any:
+				marks.append(whole.grow(6.0))
 	if _pair_marks != null:
 		_pair_marks.set_rects(marks)
 
@@ -1166,6 +1221,7 @@ func _refresh(save: bool = true) -> void:
 	_refresh_log()
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
 	_reroll_btn.set_enabled(assigning and sk.can_reroll())
+	_refresh_undo()
 	_end_btn.set_enabled(assigning)
 	# Nothing left to spend, rerolls aside: END TURN is the next thing to press (Ryan, 25 October).
 	var left := false
@@ -1263,21 +1319,32 @@ const PROMPT := "> _"   # the strip's last line: a terminal prompt whose cursor 
 ## The whole log as bbcode, one line per event, the last `bright` lines fading up to full
 ## and everything older at the dim end; `bright` 0 leaves every line at full. `prompt`
 ## adds the cursor line at the end (the strip; never the full-screen log).
+## The log as the trail shows it: the last `bright` lines fading up to full and the rest dim, a
+## roll's bar where a draw was made (Ryan, 2 November: "undo to your last roll"; the round's
+## roll, a reroll, a spend that drew), which is where the undo stops; `prompt` adds the cursor.
 func _log_text(bright: int, prompt: bool = false) -> String:
 	var n := sk.log.size()
 	var out := ""
 	if n == 0:
 		out = "[color=#%s]> round %d // %d in reserve // awaiting orders[/color]\n" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.reinforcements.size()]
-	var start := maxi(0, n - bright)
-	var count := n - start
-	for j in range(n):
+	var lines: Array = []   # [text, whether a bar], a bar before the line it came before
+	for j in range(n + 1):
+		if sk.roll_marks.has(j):
+			lines.append([ROLL_BAR, true])
+		if j < n:
+			lines.append(["> " + sk.log[j], false])
+	var start := maxi(0, lines.size() - bright)
+	var count := lines.size() - start
+	for j in range(lines.size()):
 		var a := 1.0
 		if bright > 0:
 			if j < start:
 				a = 0.4
 			elif count > 1:
 				a = lerpf(0.4, 1.0, float(j - start) / float(count - 1))
-		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, a).to_html(true), sk.log[j]]
+		if lines[j][1]:
+			a *= 0.6   # a bar sits under the lines
+		out += "[color=#%s]%s[/color]\n" % [Color(Palette.HUD, a).to_html(true), lines[j][0]]
 	if prompt:
 		out += "[color=#%s]%s[/color]" % [Color(Palette.HUD, 0.8).to_html(true), PROMPT]
 	return out
@@ -1393,8 +1460,7 @@ func _mine_text(rank: int, col: int, shots: Array) -> String:
 	return text + "\nwhoever steps in takes them all in laid order, before it acts"
 
 
-## Statuses on a foe as [glyph, chip text, readout text, colour], and a fifth "resist" for a
-## chip that is no status at all (Numbed, 10 October: drawn in brackets, never boxed).
+## Statuses on a foe as [glyph, chip text, readout text, colour].
 func _foe_rows(foe: Foe) -> Array:
 	var rows: Array = []
 	# A fall the round will bring (the round preview; Ryan, 26 October: "It should get a destroyed
@@ -1459,10 +1525,21 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append([status_glyph("braced"), "+%d" % arm, "%s: armour +%d until its next action" % [Effects.STATUS["braced"]["name"], arm], _foe_chip_colour("braced")])
 	if Effects.has(foe, "kindled"):
 		var kindled := Effects.foe_attack_bonus(foe)
-		rows.append(["overcharge", "+%d" % kindled, "Kindled: its next move hits %d harder, then it is spent (a special gains nothing from it; a countdown carries it to its blow)" % kindled, _foe_chip_colour("kindled")])
+		rows.append(["overcharge", "+%d" % kindled, "Empowered: its next move hits %d harder, then it is spent (a special gains nothing from it; a countdown carries it to its blow)" % kindled, _foe_chip_colour("kindled")])
+	if foe.rage > 0:
+		# The Nob's rage (3 November): the chip climbs with every shield, vent or equipment entry
+		# the team spends, for the rest of the fight; a Purge clears what has gathered.
+		var raged := Effects.stacks_of(foe, "enraged")
+		rows.append(["overcharge", "+%d" % raged, "Enraged: every shield, vent or equipment entry the team spends makes its blows %d harder, for the rest of the fight (now +%d); a Purge clears it" % [foe.rage, raged], _foe_chip_colour("enraged")])
+	if Effects.has(foe, "golden"):
+		# A golden rage (4 November): the add it carries, the rounds left and the damage that
+		# breaks it, so burst-or-shield reads off the chip.
+		var gold := Effects.golden_value(foe)
+		var rounds_left := sk.golden_rounds_left(foe)
+		rows.append(["overcharge", "+%d" % gold, "Golden: its blows hit %d harder and it wears a point of armour for %d more round%s; %d more damage breaks it and it staggers; a Suppress or a Purge breaks it too" % [gold, rounds_left, "" if rounds_left == 1 else "s", Skirmish.golden_left(foe)], _foe_chip_colour("golden")])
 	# A rally on its way (Ryan, 26 October: "a pulsing version of the incoming buff as a preview
 	# chip, so the player knows it's incoming and that's the reason for the increased damage"):
-	# the Kindled the rallies will land before its blow, already in the number its intent
+	# the Empowered the rallies will land before its blow, already in the number its intent
 	# shows. The chip pulses on a dashed edge until the rally lands, so it never reads as one
 	# the foe carries by hue alone; a foe showing no blow wears none, its move gaining nothing.
 	var coming := sk.incoming_rally(foe)
@@ -1473,7 +1550,7 @@ func _foe_rows(foe: Foe) -> Array:
 		for r in sk.rallies_on(foe):
 			who.append(r.display_name)
 		var from := ", ".join(who) if not who.is_empty() else "nobody (RIFTGATE_PREVIEW_DEBUG)"
-		rows.append(["overcharge", "+%d" % maxi(1, coming), "Kindled on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], _foe_chip_colour("kindled"), "preview"])
+		rows.append(["overcharge", "+%d" % maxi(1, coming), "Empowered on its way: %s rall%s first, so its blow lands %d harder, in the number shown; gone if the rallier is killed, Suppressed or Disrupted before it acts" % [from, "ies" if who.size() == 1 else "y", coming], _foe_chip_colour("kindled"), "preview"])
 	if Effects.has(foe, "risen"):
 		rows.append(["star", "", "%s: returns from the pool once after dying" % Effects.STATUS["risen"]["name"], _foe_chip_colour("risen")])
 	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
@@ -1500,7 +1577,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["shocked", "×2", "Shocked: the next weapon strike aimed at it lands double", _foe_chip_colour("shocked")])
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
-		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a buff or a debuff (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time, 10%% a stack, a stack less each of its turns (%d to go)" % [foe.resist_total(), numbed], _foe_chip_colour("numbed"), "resist"])
+		rows.append(["numbed", "×%d" % numbed, "Numbed ×%d: a stun on it strips a stack and lands nothing; a stack goes at the end of each round, so the count is the rounds until one stun lands" % numbed, _foe_chip_colour("numbed")])
 	if Effects.has(foe, "syrinx_drone"):
 		# The Syrinx Drone (the Lammergeier's, 21 October): its own chip, the killing shot to come.
 		var drone: Dictionary = Effects.STATUS["syrinx_drone"]
@@ -1514,7 +1591,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# Every status the round will land on it (Ryan, 26 October: "All incoming chips should appear
 	# as pulsing opacity versions"): the copy's grants, each a chip pulsing on a dashed edge with
 	# the stacks it gains, beside the skull when the round kills it, since one may be the cause.
-	# A Kindled lifting this round's blow is the rally chip above; one landing after its move
+	# A Empowered lifting this round's blow is the rally chip above; one landing after its move
 	# (for the next round's) is a chip like any other.
 	if foe.alive():
 		rows.append_array(_coming_rows(fate.get("coming", {}), ["kindled"] if rally_chip else [], _foe_glyph, _foe_chip_colour))
@@ -1653,7 +1730,7 @@ func _mech_rows(i: int) -> Array:
 		rows.append(["paradox", str(meter[1]), "%s: a foe gaining any status but Paradox gains Paradox; at %d its past self knocks it out (Suppressed), and the Paradox clears" % [", ".join(loop_names), meter[1]], Terms.colour("paradox")])
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
 	# the fight's statuses live here, as chips that the hold expands into their descriptions),
-	# and every status whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so
+	# and every status whatever its scope (Ryan, 16 October: the Ammit is Empowered, "so
 	# anything that interacts with overcharged needs it displayed"): the talons' kills' stacks kept for
 	# the battle are a chip like a buff's for the round. A chassis passive, a module's rule or
 	# a battle reward that is no status stays in the codex.
@@ -1908,7 +1985,7 @@ func _show_die(i: int) -> bool:
 	var entry: Array = []
 	if f != null:
 		var sf := sk.shown_face(ms, f)
-		var shown: Array = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else []
+		var shown: int = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else -1
 		entry = EntryReadout.lines_for(sf, at + 1, shown, f, _entry_states(ms, at), Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit))
 	if entry.is_empty() and ring.is_empty():
 		return false
@@ -2544,6 +2621,7 @@ func _heat_hook(before: Array) -> String:
 ##     (the damage applied), or after the death on a kill.
 ## The die that wins the fight has none of her.
 const BLOW_AT := 0.08
+const AIM_HOLD := 0.35       # a machine that turned to fire holds its aim this long past the blow's landing
 const PRE_LINE_AT := 0.1     # her line, just after the die's own sound
 const PRE_FIRE := 0.85       # the weapon, this far through her line
 const AFTER_DEATH := 0.45   # her line, this long after a foe's death begins
@@ -2571,6 +2649,8 @@ func _use_die(i: int, target, second = null) -> bool:
 	var ok := sk.assign(i, target, second)
 	if ok:
 		locked[i] = false
+		if is_inside_tree():
+			_undo_from = Time.get_ticks_msec() + int((BLOW_AT + 2.0) * 1000.0)   # until the blow's timing is known, below
 	_refresh()
 	if ok:
 		Sound.play("die_spend")   # the console letting the die go; the component's own sound lands after
@@ -2585,6 +2665,20 @@ func _use_die(i: int, target, second = null) -> bool:
 	var heat_hook := _heat_hook(heat_before) if ok and not won else ""
 	var quiet := won or not heat_hook.is_empty()   # nothing but the heat may take her line
 	var fire_at := BLOW_AT
+	# A machine turns onto what it fires at before its weapon fires (Ryan, 2 November: "make sure
+	# that the turns or aims happen before the sound effects. It's part of the whole immersion
+	# package"): the blow, its kick and its sound wait on the turn.
+	var aim_view: UnitView = null
+	if ok and target is Foe:
+		aim_view = was[target][0] if was.has(target) else null
+	elif ok and target is Vector2i:
+		aim_view = _slot_views[(target as Vector2i).x][(target as Vector2i).y]
+	var aim := _aim_plan(i, aim_view, spent)
+	fire_at += float(aim[1])
+	# A fixed weapon whose firing slice winds up before its blow (MechRig.fire_wind: the Buzzard's
+	# cannon charging up its spine) plays it from the turn's end, the blow and its sound waiting on it.
+	var wind := _fire_wind(i, spent) if ok and (target is Foe or target is Vector2i) else 0.0
+	fire_at += wind
 	var landed := fire_at + Sound.lands(blow)   # where the blow lands, from the die let go
 	if ok and target is Foe:
 		var tv: UnitView = was[target][0] if was.has(target) else null
@@ -2599,19 +2693,27 @@ func _use_die(i: int, target, second = null) -> bool:
 			if dead.is_empty():
 				var said := Sound.claim_line("die_spent", PRE_LINE_AT)
 				if said > 0.0:
-					fire_at = PRE_LINE_AT + said * PRE_FIRE
+					fire_at = maxf(PRE_LINE_AT + said * PRE_FIRE, BLOW_AT + float(aim[1]) + wind)
 			else:
 				var hook := "foe_down_" + fallen
 				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + AFTER_DEATH)
 		landed = fire_at + Sound.lands(blow)
-		var ranged := not bool(sk.last_roll.get("melee", false))   # a melee weapon (the tag) lunges, anything else kicks back
+		# A weapon that lunges (melee with nothing that crosses the field, read from the tags it was
+		# fired with) lunges; anything else kicks back, a shotgun tagged melee among them.
+		var fired = sk.last_roll.get("tags", [])
+		var shape := str(ContentDB.load_default().components.get(spent.component, {}).get("shape", "")) if spent != null else ""
+		var ranged := not MuzzleFlare.lunges(fired if fired is Array else [], shape)
 		var hit := (target as Foe).alive()
+		var cid := spent.component if spent != null else ""
+		_aim_before(i, aim, fire_at - BLOW_AT - wind, landed, cid)
+		if wind > 0.0:
+			_wind_up(i, ranged, cid, fire_at - BLOW_AT - wind)
 		if fire_at > BLOW_AT and is_inside_tree():
 			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
 			tw.tween_interval(fire_at - BLOW_AT)
-			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow)))
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow), cid, wind > 0.0))
 		else:
-			_animate_attack(_mech_views[i], tv, ranged, hit, landed)
+			_animate_attack(_mech_views[i], tv, ranged, hit, landed, cid, wind > 0.0)
 		Sound.play_after(fire_at, blow)
 		for k in range(dead.size()):
 			var w: Array = was[dead[k]]
@@ -2631,7 +2733,16 @@ func _use_die(i: int, target, second = null) -> bool:
 		# A shot laid in an empty slot (the Lammergeier's), or the pull's gather there: the
 		# weapon fires and the machine kicks back, nothing struck.
 		var slot: Vector2i = target
-		_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed)
+		var cid := spent.component if spent != null else ""
+		_aim_before(i, aim, fire_at - BLOW_AT - wind, landed, cid)
+		if wind > 0.0:
+			_wind_up(i, true, cid, fire_at - BLOW_AT - wind)
+		if fire_at > BLOW_AT and is_inside_tree():
+			var tw := create_tween()   # the machine fires once it has turned
+			tw.tween_interval(fire_at - BLOW_AT)
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], _slot_views[slot.x][slot.y], true, false, BLOW_AT + Sound.lands(blow), cid, wind > 0.0))
+		else:
+			_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed, cid, wind > 0.0)
 		Sound.play_after(fire_at, blow)
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
@@ -2642,6 +2753,16 @@ func _use_die(i: int, target, second = null) -> bool:
 			fire_at = PRE_LINE_AT + said * PRE_FIRE if said > 0.0 else 0.0
 			Sound.play_after(fire_at, effect, -3.0 if spent.kind == Face.Kind.BUFF else 0.0)
 			landed = fire_at + Sound.lands(effect)
+			# A fixed piece of equipment moves as it is used, with its slice of an act where the
+			# model names one (Ryan's go of 3 November: the Puffin's Ionizer, the Giant Petrel's
+			# boosters and uplink), starting with its sound.
+			if i < _mech_3d.size() and _mech_3d[i] != null and is_inside_tree():
+				if fire_at <= 0.0:
+					_mech_3d[i].use(spent.component)
+				else:
+					var uw := create_tween()
+					uw.tween_interval(fire_at)
+					uw.tween_callback(_use_view.bind(_mech_3d[i], spent.component))
 	if not heat_hook.is_empty():
 		Sound.say_after(landed + (AFTER_DEATH if target is Foe and not (target as Foe).alive() else 0.0), heat_hook)
 	# A split's halves step up where it fell (the Gel's, 25 October), and a foe getting back up
@@ -2661,22 +2782,34 @@ func _use_die(i: int, target, second = null) -> bool:
 			tw.tween_callback(_show_outcome.bind(sk.outcome))
 		else:
 			_show_outcome(sk.outcome)
+	if ok and is_inside_tree():
+		# The undo opens once the blow has landed and played out: a view mid-tween takes no
+		# refresh well, and the die should be seen to land before it is taken back.
+		_undo_from = Time.get_ticks_msec() + int((landed + UNDO_AFTER) * 1000.0)
+		_refresh_undo()
+		var tw_undo := create_tween()
+		tw_undo.tween_interval(landed + UNDO_AFTER)
+		tw_undo.tween_callback(_refresh_undo)
 	return ok
 
 
 # ---------------------------------------------------------------- filler animation
 # Nothing here changes state. It makes the exchange readable: who struck, who was struck.
 
-## A melee weapon (the tag) lunges the attacker at the target; anything else kicks it back. The target
-## flashes and shakes a beat later, when the blow lands.
-func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08) -> void:
+## A weapon that lunges (MuzzleFlare.lunges: melee with nothing that crosses the field) lunges the
+## attacker at the target; anything else kicks it back, a shotgun tagged melee among them. The target
+## flashes and shakes a beat later, when the blow lands. `cid`, the component that struck, flares a
+## burn weapon's fire on its mount.
+func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08, cid: String = "", wound: bool = false) -> void:
 	if not is_inside_tree() or attacker == null:
 		return
 	_settle(attacker)
 	var origin: Vector2 = _home.get(attacker, attacker.position)
 	var mi := _mech_views.find(attacker)
-	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
-		_mech_3d[mi].strike(ranged)   # the arms swing when the model has joints
+	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null and not wound:
+		_mech_3d[mi].strike(ranged, cid)   # the weapon that fired kicks and flares, its aim already turned (_aim_before); a fixed one fires with its act, unless its wind-up began it (_wind_up)
+	if mi >= 0 and ranged and target != null and not cid.is_empty() and ShotTrail.on():
+		_shoot_trail(mi, target, cid, lands)
 	var tw := _track(attacker, create_tween())
 	if ranged or target == null:
 		var kick := Vector2(0.0, 8.0) if attacker in _mech_views else Vector2(0.0, -8.0)
@@ -2688,6 +2821,105 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 		tw.tween_property(attacker, "position", origin, 0.16).set_ease(Tween.EASE_IN_OUT)
 	if target != null and hit:
 		_animate_hit(target, lands)
+
+
+## A shot crossing the field (ShotTrail; tabled, so off unless SHOT TRAILS or RIFTGATE_SHOTS=1
+## turns it on): from the muzzle of the weapon machine `mi` fired, as its view projects it, to the
+## middle of what it fired at, landing `lands` seconds from now as the blow's sound says it lands.
+func _shoot_trail(mi: int, target: UnitView, cid: String, lands: float) -> void:
+	var db := ContentDB.load_default()
+	var c: Dictionary = db.components.get(cid, {})
+	var k := maxi(ShotTrail.kind_for(c), ShotTrail.TRACER)   # fired as a gun though its own tags lunge (the drum's shot): a tracer
+	if not is_inside_tree():
+		return
+	var v := _mech_views[mi]
+	var from := v.anchor_global()
+	if mi < _mech_3d.size() and _mech_3d[mi] != null and v.sprite_at.size.x > 0.0:
+		from = v.get_global_transform() * (v.sprite_at.position + _mech_3d[mi].muzzle_px(cid))
+	var tags = c.get("tags", [])
+	var look: String = MuzzleFlare.looks_for(tags if tags is Array else [], str(c.get("shape", "")))[0]
+	var back := get_global_transform().affine_inverse()
+	add_child(ShotTrail.make(k, back * from, back * target.anchor_global(), MuzzleFlare.colour(look), 0.0, lands))
+
+
+## How machine `i` turns to fire at `target`: [degrees to its left, the seconds the turn takes],
+## the seconds nought when it fires where it points (no joint turns for the weapon spent, or the
+## foe is dead ahead).
+func _aim_plan(i: int, target: UnitView, spent: Face) -> Array:
+	if target == null or spent == null or i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null:
+		return [0.0, 0.0]
+	var deg := _aim_turn(i, target)
+	if absf(deg) < 1.0 or _mech_3d[i].aim_joint_for(spent.component).is_empty():
+		return [deg, 0.0]
+	return [deg, MechRig.AIM_UP]
+
+
+## Start machine `i`'s turn so it ends as its weapon fires (`attack_at` seconds from now) and holds
+## until the blow has landed and a beat after.
+func _aim_before(i: int, aim: Array, attack_at: float, landed: float, cid: String) -> void:
+	if float(aim[1]) <= 0.0 or not is_inside_tree():
+		return
+	var view: MechView3D = _mech_3d[i]
+	var start := maxf(0.0, attack_at - float(aim[1]))
+	# Held until the blow has landed and its firing slice has played out, a beat after either (Ryan,
+	# 3 November: the Buzzard's cannon "turns back before the hit is complete").
+	var hold := maxf(0.0, maxf(landed, attack_at + view.fire_span(cid)) + AIM_HOLD - attack_at)
+	if start <= 0.0:
+		view.aim_at(cid, float(aim[0]), hold)
+		return
+	var tw := create_tween()
+	tw.tween_interval(start)
+	tw.tween_callback(_aim_view.bind(view, cid, float(aim[0]), hold))
+
+
+func _use_view(view: MechView3D, cid: String) -> void:
+	if is_instance_valid(view):
+		view.use(cid)
+
+
+## How long machine `i`'s spend winds up before its blow (MechView3D.fire_wind), nought with no 3D.
+func _fire_wind(i: int, spent: Face) -> float:
+	if spent == null or i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null:
+		return 0.0
+	return _mech_3d[i].fire_wind(spent.component)
+
+
+## Start machine `i`'s firing slice `at` seconds from now, its wind-up playing before the blow lands
+## (the blow's kick, flash and landing come at the blow, _animate_attack told it is wound).
+func _wind_up(i: int, ranged: bool, cid: String, at: float) -> void:
+	if i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null or not is_inside_tree():
+		return
+	if at <= 0.0:
+		_mech_3d[i].strike(ranged, cid)
+		return
+	var tw := create_tween()
+	tw.tween_interval(at)
+	tw.tween_callback(_strike_view.bind(_mech_3d[i], ranged, cid))
+
+
+func _strike_view(view: MechView3D, ranged: bool, cid: String) -> void:
+	if is_instance_valid(view):
+		view.strike(ranged, cid)
+
+
+func _aim_view(view: MechView3D, cid: String, deg: float, hold: float) -> void:
+	if is_instance_valid(view):
+		view.aim_at(cid, deg, hold)
+
+
+## How far machine `i` turns to its left to face `target` across the floor: the bearing from its
+## hex to the foe's feet (the floor's camera run backward from the screen), less the turn it
+## already stands at toward the middle.
+func _aim_turn(i: int, target: UnitView) -> float:
+	var origin: Vector2 = _home.get(target, target.position)
+	var feet := origin + Vector2(target.size.x * 0.5, target.feet_y if target.feet_y >= 0.0 else target.size.y * 0.5)
+	var below: float = feet.y - float(_cam.horizon)
+	if below <= 1.0:
+		return 0.0
+	var z: float = float(_cam.focal) * float(_cam.height) / below
+	var x: float = (feet.x - W * 0.5) * z / float(_cam.focal)
+	var bearing := rad_to_deg(atan2(x - _slot_hex_x(_mech_slot(i)), z - float(_cam.depth)))   # to the right, as the floor's x runs
+	return -bearing - _mech_turn(i)
 
 
 ## A foe dies: a ghost of its drawing, where it stood, flashes, drops and fades, in the
@@ -2725,9 +2957,25 @@ func _rest_modulate(v: Control) -> Color:
 	return Color.WHITE
 
 
-## The struck unit flashes bright, then shakes side to side and settles.
-func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
+## The struck unit flashes bright, then shakes side to side and settles. A machine drawn in 3D
+## takes the blow on its model instead (the to-do's hit reaction, on Ryan's go of 3 November):
+## `kind` "hull" or "block" shoves it back and flashes its hull in heat's colour, the
+## armour's block at half (MechView3D.hit), "shield" ripples its shield in the shield's blue and
+## moves nothing, "none" nothing at all (a shield that broke taking the whole blow, its shatter
+## being the only mark); `side`, -1 to 1, where across the screen the blow came from.
+func _animate_hit(v: UnitView, delay: float = 0.0, kind: String = "hull", side: float = 0.0) -> void:
 	if not is_inside_tree() or v == null:
+		return
+	var mi := _mech_views.find(v)
+	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
+		if kind == "none":
+			return
+		if delay <= 0.0:
+			_hit_machine(mi, kind, side)
+		else:
+			var hw := create_tween()
+			hw.tween_interval(delay)
+			hw.tween_callback(_hit_machine.bind(mi, kind, side))
 		return
 	_settle(v)
 	var origin: Vector2 = _home.get(v, v.position)
@@ -2741,6 +2989,53 @@ func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
 		var dx := (5.0 - k * 1.2) * (1.0 if k % 2 == 0 else -1.0)
 		shake.tween_property(v, "position", origin + Vector2(dx, 0.0), 0.035)
 	shake.tween_property(v, "position", origin, 0.05)
+
+
+## What took a blow on a machine, for its reaction (_animate_hit): a shield that held ("shield",
+## its ripple), a shield that broke taking it all ("none": its shatter is the only mark), the hull
+## ("hull": a jolt and heat's flash) or the armour turning it on the bare hull ("block", at half).
+static func blow_took(held: bool, broke: bool, through: int) -> String:
+	if held:
+		return "shield"
+	if broke and through <= 0:
+		return "none"
+	return "hull" if through > 0 else "block"
+
+
+func _hit_machine(mi: int, kind: String, side: float) -> void:
+	if mi < 0 or mi >= _mech_views.size():
+		return
+	if kind == "shield":
+		_mech_views[mi].ripple_shield()
+	elif mi < _mech_3d.size() and is_instance_valid(_mech_3d[mi]):
+		_mech_3d[mi].hit(kind, side)
+
+
+## Where across the screen `from` stands from `to`, -1 (far left) to 1 (far right): the side a blow
+## came from, for the struck machine's flash and the way it is shoved.
+func _side_of(from: Control, to: Control) -> float:
+	if from == null or to == null:
+		return 0.0
+	var a: Vector2 = _home.get(from, from.position) + from.size * 0.5
+	var b: Vector2 = _home.get(to, to.position) + to.size * 0.5
+	return clampf((a.x - b.x) / (W * 0.4), -1.0, 1.0)
+
+
+## The hit debug switch's beat (HIT_DEBUG): the next machine takes the next kind of blow, and every
+## fifth beat one is lost and lit again two seconds later.
+func _hit_debug() -> void:
+	var i := _hit_debug_n % _mech_views.size()
+	_hit_debug_n += 1
+	if _hit_debug_n % 5 == 0 and i < _mech_3d.size() and _mech_3d[i] != null:
+		_mech_3d[i].lose()
+		var tw := create_tween()
+		tw.tween_interval(2.0)
+		tw.tween_callback(func() -> void:
+			if is_instance_valid(_mech_3d[i]):
+				_mech_3d[i].revive())
+		return
+	var k: Array = HIT_DEBUG_KINDS[_hit_debug_n % HIT_DEBUG_KINDS.size()]
+	_animate_hit(_mech_views[i], 0.0, str(k[0]), float(k[1]))
 
 
 ## What the replay needs before the sim runs the enemy's turn: every field foe's view now (a
@@ -2895,10 +3190,10 @@ func _land_blow(h: Array) -> void:
 	var maker: String = h[10]
 	var foe_blow := Sound.family("heavy" if int(h[6]) >= HEAVY_DAMAGE else "hit", h[9])
 	var landed := maxf(0.08, Sound.lands(foe_blow))
+	var took := blow_took(held, broke, through)
 	if fv != null and fv.visible:
-		_animate_attack(fv, mv, false, true, landed)
-	else:
-		_animate_hit(mv, landed)
+		_animate_attack(fv, mv, false, false, landed)
+	_animate_hit(mv, landed, took, _side_of(fv, mv) if fv != null else 0.0)
 	Sound.play(foe_blow)
 	var struck := "shield_break" if broke else ("shield_hit" if held else (Sound.struck("hit", maker) if through > 0 else Sound.struck("block", maker)))
 	Sound.play_after(landed, struck, 0.0 if broke else -3.0)
@@ -2923,10 +3218,21 @@ func _land_blow(h: Array) -> void:
 var _dying: Dictionary = {}
 
 func _land_death(mv: UnitView, maker: String) -> void:
-	mv.dead = true
-	mv.queue_redraw()
 	Sound.play(Sound.struck("kill", maker))
 	Sound.say_after(Sound.death_voice_at(maker), "machine_lost")
+	# The kill's own beat (Ryan's go of 3 November): a machine drawn in 3D has its lit parts gutter
+	# out and its outline dim (MechView3D.lose), the wreck shown once they have.
+	var mi := _mech_views.find(mv)
+	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null and is_inside_tree():
+		_mech_3d[mi].lose()
+		var tw := create_tween()
+		tw.tween_interval(MechRig.GUTTER)
+		tw.tween_callback(func() -> void:
+			mv.dead = true
+			mv.queue_redraw())
+		return
+	mv.dead = true
+	mv.queue_redraw()
 
 
 ## The turn's overheats land together before the enemy's blows (the sim burns them as the
@@ -3023,6 +3329,31 @@ func _on_reroll() -> void:
 			d.scale = Vector2(0.15, 1.0)
 			var tw := create_tween()
 			tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## UNDO's reach: the spends and rerolls since the last roll, its badge; off while a spend's
+## blow still plays, while the enemy's turn replays, and with nothing to take back.
+func _refresh_undo() -> void:
+	if _undo_btn == null:
+		return
+	var depth := sk.undo_depth()
+	_undo_btn.badge = "×%d" % depth if depth > 0 else ""
+	_undo_btn.set_enabled(sk.can_undo() and not _replay_shade.visible and Time.get_ticks_msec() >= _undo_from)
+
+
+## UNDO (Ryan, 2 November: "undo to your last roll"): the last spend or reroll taken back, in
+## the order made, the fight as it was before it, never past a roll (the round's, a reroll's
+## draw, a spend's own: Rapid's reroll, a roll again, the Scorpion's blast). A reading or a
+## pending Swap is put away first.
+func _on_undo() -> void:
+	if _replay_shade.visible or not sk.can_undo() or Time.get_ticks_msec() < _undo_from:
+		return
+	if not _pending.is_empty():
+		_cancel_second()
+	_close_pop()
+	sk.undo()
+	Sound.play("ui_back")
+	_refresh()
 
 
 ## A die rolled again by a stack it spent (the Nemesis's rage, Ryan, 13 October): the stack's

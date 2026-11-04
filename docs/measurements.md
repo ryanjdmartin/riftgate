@@ -3232,7 +3232,7 @@ components/arc_fault_cannon/face/chain=N`: `de29n3`, `de29n4`, `de29psn3`, `de29
 `de29bn4`), a row without the Arc Fault reusing its stock read, the runner being deterministic.
 The sixteen big fights but the finale; about two hours on four cores. And 96 fights traced on the
 car with the Arc Fault in the Prairie Dog's slot (the sixteen, seeds 1 to 3, with and without the
-spread harpoon), counting each Arc Fault spend's arcs and charges.
+spread harpoon), counting each Arc Fault spend's arcs and charges. Run on `6f4de7e`, the branch's head of the 29th: before main's move-order fix (`0a9ca80`) and the foes' fresh start (`85e28fd`), whose slate is the big bench since, so the command names fights the driver no longer lists as `big`.
 
 Greedy, 200 seeds (the win rate, the rounds of the fights won, the hull lost, the delta against the
 row as stocked, the Arc Fault's share of the row's spends, the Projector's and the Afterburner
@@ -3685,7 +3685,7 @@ Wainwright & Sutler's row, each at heat 0, 2, 4, 6 and 8, against the row as sto
 big fights but the finale), four ways: as today (the greedy, the Prairie Dog's cooling 1), with
 its cooling 0 (`--set chassis/prairie_dog/cooling=0`, `heat30g0`), and both again under the
 cautious persona, each machine keeping its heat under half its maximum (`--cool-above 50`,
-`heat30c`, `heat30c0`). 124 variants, about two hours on four cores; 30 seeds, a direction.
+`heat30c`, `heat30c0`). 124 variants, about two hours on four cores; 30 seeds, a direction. Run on `28a677f`, the persona's commit: before main's move-order fix (`0a9ca80`) and the foes' fresh start (`85e28fd`), whose slate is the big bench since.
 
 Each heat's price in vanilla points (its rounds over the heatless gun's of the same number, over
 the rounds a point buys between 3 and 7), the mean of the six guns, and the heat-8 guns'
@@ -4055,7 +4055,7 @@ bot pricing each. Two benches: the car's vanilla heat grid (`tools/pricing_run.p
 Sutler's row) and Kestrel's row as stocked, the hot row (`--parts none --benches goshawk
 --bench-stocks`), each under the greedy and the cautious persona (`--cool-above 50`), whose
 line is priced at what an overheat burns. The sixteen big fights but the finale; 30 seeds, a
-direction; about two and a half hours on four cores.
+direction; about two and a half hours on four cores. Run on `e964de5`, the switch's commit: before main's move-order fix (`0a9ca80`) and the foes' fresh start (`85e28fd`), whose slate is the big bench since.
 
 On the car (each heat's price in vanilla points, the mean of the three guns, as the heat grid of
 the morning reads it; the heat-8 guns' overheats, hull lost, rounds and wins; the row as stocked):
@@ -4120,7 +4120,7 @@ ladders --benches puffin --pieces <the seventeen> --bench-stocks --seeds 30`): t
 pieces of tiers 0 to 2 in the Puffin's slot of Kestrel's row (the Laser Carbine's, the bench
 where equipment reads), each against the row as stocked, with today's bots and again with the
 personas that value support (`--shield-ahead --cool-above 50`, `sup30p`). The sixteen big fights
-but the finale; 30 seeds, a direction; 36 variants, about sixteen minutes on four cores.
+but the finale; 30 seeds, a direction; 36 variants, about sixteen minutes on four cores. Run on `a6884b3`, the persona's commit: before main's move-order fix (`0a9ca80`) and the foes' fresh start (`85e28fd`), whose slate is the big bench since, the four formations with it.
 
 The row as stocked: 100% won, 3.28 rounds and 9.8% hull today; 3.59 and 10.0% with the personas.
 Each piece's rounds and hull against the row with the gun in its slot, and its share of the
@@ -4398,3 +4398,424 @@ the Bone Dragon and Gilgamesh more often than not at the second fallback, where 
 lost them, the detachment niche he gave it or still too easy; the claw's number is the next lever
 measured. The team barely moves either way, the plate adding about ten points greedy on the
 formations.
+
+## 31 October, the weapons' flare colours
+
+**The flare read** (the decision it informs: the weapons' muzzle flares, a colour a tag, Ryan's
+31 October "If the flare colour of the weapons can follow their tags, that would be really
+cool"; MuzzleFlare). Method: the Machado simulations at severity 1.0 (normal, protan, deutan,
+tritan), CIE76 ΔE in CIELAB and luminance contrast, each pair at its worst simulation. The
+palette: ballistic #ff6a00, missile #ff4c00, flame #ff2400, beam #ff0a40, plasma #ff2a8c, arc
+#40d8ff, blade #ff7800 (the reds and oranges red and green alone, short of #ff8200; the beam and
+the plasma carry blue, being no heat).
+
+Between the flares (worst ΔE, the simulation): the heat family stands close in the deutan
+simulation, ballistic and blade 2.8, missile and flame 4.0, ballistic and missile 4.9, ballistic
+and flame 8.9; flame and beam 2.9 (tritan); every other pair 7.6 or more, the arc 62 or more from
+everything. So no two looks part by hue alone: each has its beat and its shape (MuzzleFlare.BEATS:
+a sharp four-point star for a gun, a slow round puff for a launcher, a flickering round gout for
+a fire weapon, a held streak for a beam, a swelling six-point star for plasma, a strobing star for
+lightning, eight quick sparks for a blade), and its class's place.
+
+Against the meanings (worst ΔE): every flare 27 or more from the gain green except the arc, 15.3
+(tritan); every one 34.9 or more from the enemy violet except the arc, 6.5 (deutan), the coil's own
+cyan since the 31st; the plasma 44.0 and every other 41 or more from the shield.
+
+On the grounds (contrast / worst ΔE): the Arsenal's black hull #2a2e36 3.5 to 8.1:1 / 31 to 79;
+our floor #4a4438 2.5 to 5.7:1 / 18 to 64; a steel hull #8a9098 1.0 to 1.9:1 / 14 to 68; the
+Aphelion's white #e8e8ec 1.4 to 3.2:1 / 24 to 73. A flare is laid over the hull rather than added
+(added, the plasma read pale pink on the Badger's grey), so its colour holds on every hull; on a
+mid steel its edge is its shape, not its lightness.
+
+## 3 November, the Cassowary's cycle and the Cottonmouth beside it
+
+**The bot's cycle** (`b6242a4`, the to-do's engine line): the greedy reroll had turned the
+Cassowary's dial toward a better next chamber and never planned, so it stepped off a chamber
+whose neighbour would open the next round better, never stepped through a weak chamber to a big
+one, and priced the Spin-Up at its stack alone, rerolling away from the spin. It now weighs every
+count of steps the rerolls in hand allow (`Policy.cycle_plan`). Old bot (`62ef7ee`) against new,
+30 seeds a cell (a direction), no party, greedy won, by the matrix's 76 packs in six groups: tier
+one's rank and file (13), its four big foes, its four formations, the ladder's recolours at tiers
+two and three (35), their formations (8) and the twelve bosses alone at tier one.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Rounds won |
+|---|---|---|---|---|---|---|---|---|
+| Cassowary | 36 → 46 | 0 → 0 | 0 → 0 | 22 → 32 | 0 → 0 | 0 → 1 | 16 → 23 | 6.8 → 4.8 |
+| Cottonmouth | 75 → 75 | 0 → 0 | 0 → 0 | 39 → 39 | 0 → 0 | 0 → 0 | 31 → 31 | 3.4 → 3.4 |
+| Cassowary + Prairie Dog | 89 → 92 | 25 → 35 | 0 → 0 | 56 → 66 | 0 → 0 | 32 → 53 | 47 → 57 | 9.6 → 8.1 |
+| Cassowary + Cottonmouth + Prairie Dog | 99 → 100 | 72 → 82 | 10 → 18 | 80 → 83 | 0 → 0 | 81 → 88 | 71 → 75 | 5.6 → 5.2 |
+| Badger + Cassowary + Puffin | 100 → 100 | 100 → 100 | 20 → 40 | 95 → 96 | 0 → 0 | 98 → 99 | 82 → 84 | 5.2 → 5.0 |
+
+The random rung (it never rerolls) and the Cottonmouth alone come out identical cell for cell
+(380 random cells, 152 of the Cottonmouth's), so the change reaches a stepping die's rerolls
+alone. The Wainwright & Sutler team row (the Clydesdale, the Prairie Dog, the Dingo) fields
+neither machine, hence the `--team` rows.
+
+**At 200 seeds**, the new bot (`ef28a6b`; `fcdbbfb` reads each chamber once and plays the same,
+its 43 cells of ten seeds identical), 152,000 fights, no party: won, random / greedy.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Cassowary | 29 / 44 | 0 / 0 | 0 / 0 | 15 / 30 | 0 / 0 | 0 / 0 | 12 / 21 | 84% | 4.8 |
+| Cottonmouth | 47 / 75 | 0 / 0 | 0 / 0 | 20 / 40 | 0 / 0 | 0 / 0 | 17 / 31 | 76% | 3.4 |
+| Cassowary + Prairie Dog | 52 / 90 | 0 / 35 | 0 / 0 | 37 / 66 | 0 / 0 | 1 / 51 | 26 / 56 | 56% | 8.2 |
+| Cassowary + Cottonmouth + Prairie Dog | 92 / 100 | 27 / 79 | 0 / 18 | 65 / 83 | 0 / 0 | 43 / 88 | 54 / 74 | 32% | 5.2 |
+| Badger + Cassowary + Puffin | 97 / 100 | 73 / 100 | 0 / 34 | 75 / 96 | 0 / 0 | 73 / 99 | 66 / 84 | 25% | 5.0 |
+
+Pick share, greedy, every pack: the Cassowary alone spends the Spin-Up 36%, the Halo Shield 16%,
+the Twin Autoguns 15%, the Rivet Gun 12%, the Ankle Mortar 11% and the Coolant Jacket 7% (the old
+bot at 30 seeds: the Autoguns 29%, the Shield 27%, the Mortar 13%, the Rivet Gun and the Spin-Up
+12% each); the Spin-Up is 16 to 23% of its teams' spends. The Cottonmouth alone: the Twin
+Autoguns 33%, the Ankle Mortar 31%, the Halo Shield 31%, the Coolant Jacket 4%. Rerolls a round,
+greedy, alone: the Cassowary 1.37 (0.98 on the old bot), the Cottonmouth 0.98. The runner plays
+the Cassowary's fights about 2.3 times as slowly as before (ten seeds of its packs, 32 s against
+14 s), its rounds holding more spends.
+
+Read: the old bot left the dial unplayed. Planned, the Cassowary alone carries a decision (greedy
+about twice random) and sits under the Cottonmouth, the stronger tier-one gun alone (31% against
+21% over every pack, 75% against 44% on tier one's rank and file, faster and losing less hull);
+neither takes a big foe, a formation or a boss alone. Neither reads as a wall or a free win on
+tier one's rank and file (the roster row's exit): random play takes 29 and 47% of it, greedy 44
+and 75%. In company, beside the Prairie Dog the Cassowary takes half the bosses greedy where random
+play takes one in a hundred, and the maker's tier-one trio takes 88% of them and 79% of tier one's
+big foes (random 43 and 27%); no row here swaps the Cassowary out, so its share of those wins is
+unread. The plan steers the dial onto the Spin-Up, its most spent entry: a spin is an action again and a
+stack of Spun Up whatever it lands on. Worth Ryan's eye in play: whether steering onto the spin
+every round is the chase the design wanted or a line that flattens the dial.
+
+## 3 November, the chassis' runner rows: the Whip Scorpion, the Swallowtail, the Musk Ox, the Needletail
+
+The to-do's engine lines, each read with the levers its line and its bible row name. `tools/balance.gd`,
+30 seeds a cell (a direction throughout), random and greedy, no party, the 76 packs in the six groups
+of the Cassowary's entry above; the what-ifs by `--set` (content in memory, never written) and the
+runner's `--pilot`. Run on this branch from `bd267ee` to `9ce9033`: no commit between changes a row's
+play but the salvo's pricing, which reaches the Musk Ox alone, and its rows are on `061693c`.
+
+**The band**, every other tier two and tier three alone on the same packs, so "cold" and "too easy"
+read against their peers (the matrix on file, 27 October, predates these packs). Tier two:
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Nemesis | 84 / 98 | 34 / 52 | 0 / 0 | 59 / 69 | 0 / 0 | 29 / 52 | 48 / 60 | 60% | 4.7 |
+| Wild Boar | 81 / 93 | 0 / 14 | 0 / 0 | 48 / 61 | 0 / 0 | 8 / 40 | 37 / 51 | 63% | 7.2 |
+| Goshawk | 53 / 75 | 8 / 41 | 0 / 0 | 39 / 65 | 0 / 0 | 6 / 36 | 28 / 51 | 63% | 5.0 |
+| Clydesdale | 59 / 85 | 0 / 6 | 0 / 0 | 42 / 57 | 0 / 0 | 1 / 22 | 29 / 45 | 69% | 5.8 |
+| **Whip Scorpion** | 58 / 86 | 0 / 6 | 0 / 0 | 42 / 59 | 0 / 0 | 1 / 15 | 29 / 44 | 69% | 4.4 |
+| Funnel Web | 49 / 61 | 0 / 32 | 0 / 0 | 35 / 51 | 0 / 0 | 5 / 47 | 25 / 43 | 71% | 7.5 |
+| Sparrowhawk | 54 / 61 | 2 / 22 | 0 / 0 | 39 / 57 | 0 / 0 | 0 / 3 | 27 / 39 | 66% | 2.6 |
+| **Needletail** | 32 / 46 | 0 / 0 | 0 / 0 | 20 / 35 | 0 / 0 | 0 / 0 | 15 / 24 | 80% | 3.3 |
+| Dingo | 18 / 33 | 0 / 0 | 0 / 0 | 9 / 19 | 0 / 0 | 0 / 0 | 7 / 14 | 91% | 4.8 |
+
+Tier three (the boss cells are the bosses at tier one, below this tier):
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| **Musk Ox** (the salvo fixed) | 81 / 79 | 2 / 19 | 0 / 0 | 55 / 64 | 0 / 0 | 14 / 54 | 41 / 52 | 64% | 7.1 |
+| Giant Petrel | 49 / 76 | 3 / 32 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 20 | 26 / 46 | 67% | 4.8 |
+| Ammit | 57 / 80 | 0 / 1 | 0 / 0 | 41 / 54 | 0 / 0 | 0 / 6 | 29 / 40 | 72% | 4.5 |
+| Lammergeier | 12 / 67 | 0 / 5 | 0 / 0 | 5 / 53 | 0 / 0 | 0 / 7 | 4 / 37 | 71% | 4.0 |
+| **Swallowtail** | 37 / 69 | 0 / 0 | 0 / 0 | 24 / 46 | 0 / 0 | 0 / 14 | 17 / 35 | 76% | 9.0 |
+
+**The Whip Scorpion** (its row's exits: the solo row cold, the pilot light; the boss cells too easy, half
+the blast; the lure-all too swingy, the rank form). Alone and with the Clydesdale and the Dingo:
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Stock | 58 / 86 | 0 / 6 | 0 / 0 | 42 / 59 | 0 / 0 | 1 / 15 | 29 / 44 | 69% | 4.4 |
+| A pilot light of 1 (`--pilot whip_scorpion=1`) | 61 / 86 | 0 / 2 | 0 / 0 | 43 / 58 | 0 / 0 | 1 / 15 | 30 / 44 | 69% | 4.3 |
+| A pilot light of 2 | 63 / 86 | 0 / 3 | 0 / 0 | 44 / 58 | 0 / 0 | 1 / 12 | 31 / 43 | 69% | 4.2 |
+| Half the blast | 50 / 74 | 0 / 0 | 0 / 0 | 37 / 57 | 0 / 0 | 0 / 4 | 26 / 40 | 70% | 4.0 |
+| Stock, the trio | 99 / 100 | 82 / 100 | 0 / 68 | 81 / 98 | 0 / 0 | 72 / 99 | 70 / 87 | 23% | 4.1 |
+| A pilot light of 1, the trio | 99 / 100 | 80 / 100 | 0 / 67 | 80 / 98 | 0 / 0 | 71 / 99 | 69 / 87 | 23% | 4.2 |
+| A pilot light of 2, the trio | 98 / 100 | 69 / 100 | 0 / 54 | 79 / 98 | 0 / 1 | 70 / 99 | 68 / 86 | 23% | 4.0 |
+| Half the blast, the trio | 99 / 100 | 78 / 100 | 0 / 59 | 80 / 97 | 0 / 1 | 70 / 98 | 69 / 86 | 24% | 4.2 |
+
+Its spends alone (greedy): the Coolant Jacket 35%, the Thermal Ray 32%, the Maxigun 22%, the Heliographic Siphon 11%; with a pilot light of 1, the Coolant Jacket 43%, the Thermal Ray 28%, the Maxigun 20%, the Heliographic Siphon 9%; of 2, the Coolant Jacket 51%, the Thermal Ray 23%, the Maxigun 17%, the Heliographic Siphon 8%. Its gauge alone peaks
+at 77% of its maximum on average and ends a fight at 56%; a pilot light of 1 and 2 raises the overheats from
+0.20 a fight to 0.33 and 0.40. The rank form (the Siphon as `lure` and `cleave` on its target, `reaches_all`
+off) plays the same as stock alone, every number (a lone machine is every foe's target, so a lure moves
+nothing there), and in the trio the Siphon is 3% of the spends stock and 4% in rank form, the spread of
+hull lost within a cell 4.8 points against 4.7 (the runner's `hull_lost_sq`).
+
+Read: none of the three exits is reached. The solo row sits in the middle of the tier twos' band (44%
+greedy over every pack, fifth of nine) and its bosses alone (15%) below the band's middle, so neither
+lever is called for. The pilot light is no lever at all: heat is not what limits it, and the extra heat
+turns gun spends into vent spends; a cold row would want another lever. Half the blast bites
+alone (its bosses 15% to 4%) and not in the trio. The lure-all's swing reads no wider than the rank
+form's at the rate the bot spends the Siphon, so its swing is unread rather than absent.
+
+**The Swallowtail** (its line: its team rows with and without it, the musters it spends and on which
+piece, the Phased read against its price):
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Swallowtail | 37 / 69 | 0 / 0 | 0 / 0 | 24 / 46 | 0 / 0 | 0 / 14 | 17 / 35 | 76% | 9.0 |
+| Clydesdale + Dingo | 86 / 99 | 16 / 76 | 0 / 0 | 61 / 79 | 0 / 0 | 24 / 70 | 47 / 68 | 46% | 5.3 |
+| Swallowtail + Clydesdale + Dingo | 97 / 100 | 78 / 100 | 0 / 54 | 79 / 96 | 0 / 1 | 71 / 98 | 68 / 85 | 24% | 5.1 |
+| The Screens charged at two musters, the trio | 97 / 100 | 77 / 100 | 0 / 59 | 79 / 97 | 0 / 2 | 72 / 97 | 68 / 86 | 23% | 5.2 |
+
+Charged spends a fight, greedy, in the trio: the Flare 0.32, the Hoist 0.21, the Screens 0.07, the Horn 0.02 (0.62 in all); alone, the Flare alone (0.31), the rest needing an ally. With the
+Screens at two musters: the Flare 0.34, the Hoist 0.21, the Horn 0.02, the Screens 0.00. The bot
+weighs Phased by the round's forecast with it and without it, less the ally's action it stands down.
+
+Read: alone it is the tier threes' weakest (a support machine), and beside the Clydesdale and the Dingo
+it lifts the pair seventeen points greedy, the formations from none to half, and halves their hull lost.
+The Flare's Suppress takes about half its musters and the Hoist's refit a third; the charged dock is the
+rarest charge bought (Phased about once in fifteen fights) and at two musters never, the rows unmoved: no
+free round at one muster, so its price is not the question.
+
+**The Musk Ox** (its row's exits: ammo running plentiful, the reloads or the trickle; the salvo
+multiplying the foes' Flak past its worth, the strike's number; the Quick Reload kept or cut once
+tested). First the bot (`061693c`): the greedy rung had priced the whole magazine against the salvo,
+each ammo at half what it would buy on the other guns, so a full magazine of 10 read barely positive and
+it rerolled the salvo away (2% of its spends) while random play fired it; it now counts only a reserve,
+the ammo its dearest other gun's next spend needs. Alone and with the Clydesdale and the Dingo:
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Old bot | 81 / 68 | 2 / 0 | 0 / 0 | 55 / 58 | 0 / 0 | 14 / 16 | 41 / 41 | 71% | 6.5 |
+| Salvo fixed | 81 / 79 | 2 / 19 | 0 / 0 | 55 / 64 | 0 / 0 | 14 / 54 | 41 / 52 | 64% | 7.1 |
+| Trickle 0 | 74 / 75 | 0 / 5 | 0 / 0 | 49 / 60 | 0 / 0 | 1 / 31 | 36 / 45 | 68% | 7.2 |
+| Trickle 2 | 83 / 82 | 8 / 28 | 0 / 0 | 56 / 65 | 0 / 0 | 24 / 65 | 44 / 56 | 62% | 6.9 |
+| The Quick Reload cut | 78 / 79 | 0 / 16 | 0 / 0 | 54 / 64 | 0 / 0 | 10 / 56 | 40 / 53 | 64% | 7.3 |
+| Old bot, the trio | 99 / 100 | 100 / 100 | 18 / 58 | 86 / 93 | 0 / 3 | 91 / 96 | 77 / 84 | 27% | 5.0 |
+| Salvo fixed, the trio | 99 / 100 | 100 / 100 | 18 / 73 | 86 / 97 | 0 / 5 | 91 / 100 | 77 / 87 | 23% | 4.7 |
+| Trickle 0, the trio | 99 / 100 | 88 / 100 | 2 / 65 | 82 / 95 | 0 / 3 | 79 / 98 | 72 / 85 | 25% | 4.8 |
+| Trickle 2, the trio | 100 / 100 | 100 / 100 | 21 / 81 | 89 / 98 | 0 / 10 | 93 / 100 | 79 / 88 | 22% | 4.6 |
+| The Quick Reload cut, the trio | 100 / 100 | 98 / 100 | 3 / 76 | 87 / 97 | 0 / 8 | 85 / 99 | 76 / 88 | 23% | 4.7 |
+
+Its spends alone, greedy: on the old bot the Canopy 31%, the Enfilade Beam 22%, the Coolant Jacket 14%, the Shrapnel Recuperator 12%, the Thermal Ray 10%, the Quick Reload 9%, the Unrestricted Expenditure 2%; fixed, the Canopy 26%, the Coolant Jacket 17%, the Enfilade Beam 14%, the Unrestricted Expenditure 13%, the Quick Reload 11%, the Thermal Ray 9%, the Shrapnel Recuperator 9%.
+
+The Flak read: the salvo beside allies that lay Flak, the Musk Ox with the Clydesdale (its Airburst
+Shell) and the Prairie Dog (its Flakshot Repeater), stock, with Flak struck from all three pieces (the
+Recuperator's, the Shell's and the Repeater's), and with the salvo's strike at 1 and at 3 (stock 2):
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Stock | 99 / 100 | 96 / 100 | 16 / 66 | 85 / 95 | 0 / 9 | 87 / 100 | 76 / 86 | 23% | 5.6 |
+| No Flak anywhere | 99 / 100 | 92 / 100 | 13 / 65 | 83 / 93 | 0 / 8 | 84 / 99 | 74 / 85 | 25% | 5.8 |
+| The salvo struck at 1 | 98 / 100 | 80 / 100 | 0 / 48 | 80 / 90 | 0 / 6 | 80 / 94 | 71 / 82 | 26% | 6.0 |
+| The salvo struck at 3 | 100 / 100 | 100 / 100 | 30 / 83 | 91 / 99 | 0 / 21 | 94 / 100 | 80 / 90 | 19% | 5.1 |
+
+The salvo is 5% of the trio's spends stock, under 2% struck at 1 and 7% at 3. Striking Flak from all
+three pieces costs the trio at most two points in any group; the strike's number moves it most, the
+formations at tier one 48, 66 and 83% greedy at a strike of 1, 2 and 3.
+
+Read: the old bot left the salvo unplayed, a verdict on the bot and fixed. The salvo does not multiply
+the team's Flak past its worth: the Flak is worth a point or two beside it, and the strike's number is
+the lever if the salvo ever needs one. The trickle is the strong
+lever and works through the bosses (alone, 31, 54 and 65% at a trickle of 0, 1 and 2), the salvo the boss
+killer its row means it to be; whether that is ammo "running plentiful" is a call on feel, since the
+boss cells here are tier one's and the Musk Ox is a tier three. The Quick Reload cut reads as nothing, on
+a bot that never counts the action again a plain Rapid entry brings, so that test waits on the bot. Alone
+the Recuperator's Flak never pays: one weapon a round, and Flak halves away at the round's end.
+
+**The Needletail** (its line: alone as a diagnostic and in Kestrel's team, the share of its spends the gate
+made free and of its paints an ally's Direct spend cashed). The gate tally was fixed on the way
+(`9ce9033`: it had missed a free buff on a machine, the Overcharge Coil); the rerun plays the same, all
+456 cells identical but for that count.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Needletail | 32 / 46 | 0 / 0 | 0 / 0 | 20 / 35 | 0 / 0 | 0 / 0 | 15 / 24 | 80% | 3.3 |
+| Sparrowhawk + Goshawk | 91 / 100 | 57 / 98 | 0 / 0 | 77 / 93 | 0 / 0 | 65 / 96 | 64 / 80 | 28% | 3.0 |
+| Needletail + Sparrowhawk + Goshawk | 99 / 100 | 98 / 100 | 0 / 54 | 94 / 100 | 0 / 3 | 89 / 100 | 79 / 87 | 19% | 2.6 |
+
+Greedy: alone the gate makes 82% of its setups (the Fovea Designator and the Overcharge Coil) free,
+17% of all its spends; in the trio 78% of its setups. It paints 0.41 foes a fight alone,
+none cashed (no ally), and 0.52 in the trio, 67% of them cashed by an ally's Direct weapon spend
+while the foe stood Exposed.
+
+Read: alone it is the tier twos' second weakest, a 20-hull interceptor read as a diagnostic; in Kestrel's
+trio it lifts the Sparrowhawk and the Goshawk seven points greedy, the formations from none to half, and
+cuts their hull lost by a third. Its gate fires on most of its setups, and two paints in three are cashed.
+
+## 4 November, a Rapid entry's action again
+
+The bot's fix (`d160f8a`, Ryan: "If the bot doesn't value rapid property, it probably should be
+fixed"): a plain Rapid entry now scores its blow or its spend plus the die's own average blow, its
+action again, where it had scored the blow alone. The three machines carrying such a piece, alone,
+the old bot (`aca3ee9`) against the new, 30 seeds a cell (a direction), no party, the 76 packs in the
+six groups of 3 November: won, random / greedy.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Armadillo, old bot | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 0 | 16 / 26 | 83% | 9.8 |
+| Armadillo, new | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 1 | 16 / 27 | 83% | 9.9 |
+| Giant Petrel, old bot | 49 / 76 | 3 / 32 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 20 | 26 / 46 | 67% | 4.8 |
+| Giant Petrel, new | 49 / 76 | 3 / 29 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 17 | 26 / 46 | 67% | 4.7 |
+| Musk Ox, old bot | 81 / 79 | 2 / 19 | 0 / 0 | 55 / 64 | 0 / 0 | 14 / 54 | 41 / 52 | 64% | 7.1 |
+| Musk Ox, new | 81 / 79 | 2 / 21 | 0 / 0 | 55 / 65 | 0 / 0 | 14 / 51 | 41 / 53 | 64% | 6.9 |
+
+Spends, greedy: the Armadillo's two Cryo Flingers 9% of its spends on the old bot, 13% on the new; the Giant
+Petrel's Immelmann Booster under 2% (alone it buys no ally an action) and 14%; the Musk Ox's Quick
+Reload 11% and 17%. Random play comes out identical cell for cell (76 of 76 for each machine).
+
+Read: the fix changes how often the bot picks a Rapid piece, not the rows: the action again always
+happened in play when the piece was spent, and the bot now spends it on its worth. The win rows move a
+point or two either way, inside a 30-seed cell's band. The Musk Ox's Quick Reload cut of 3 November
+was read on the old bot; its design session reads it again.
+
+## 4 November, the elites' first read
+
+The elites' cells on the runner, built today (`--packs elites`): every elite composition at each
+tier it names, its elites at the tier's numbers as a battle fields them (`ContentDB.foes_for`,
+`scale_boss` on every elite) and its rank and file as content has them, the lead with its
+composition's members, its parts and its summons as in play. Each cell is the composition
+against a fresh squad and nothing else, which a battle never gives it (an elite emerges at a
+Fracture into a worn squad and joins the fights its ring covers), so the cells read the kit alone
+and overstate the ease. Rows: the tender's team and the maker trios with three runnable chassis
+(Minerva, Kestrel, Wainwright & Sutler), stock; and the five endgame fours (`tools/endgame_fours.py`,
+fitted to tier two). Random and greedy, 30 seeds, a direction: 15,900 fights a run, 30 and 52
+minutes. The band is read on the tier's own rows, tier one on the trios and tiers two and three on
+the fours (a stock trio at tier three is the wrong row): random winning means too easy, greedy
+losing a wall, the two landing together no decision.
+
+| Composition, tier | Lead | Trios: random / greedy won, hull lost (greedy) | Fours: random / greedy won, hull lost (greedy) | Band (its tier's rows) |
+|---|---|---|---|---|
+| elder_treants_grove, 2 (meadow) | Elder Treant | 67 / 100%, 15% | 100 / 100%, 0% | no decision |
+| elder_treants_grove, 3 (meadow) | Elder Treant | 46 / 98%, 28% | 100 / 100%, 0% | no decision |
+| leshys_hunt, 2 (meadow) | Leshy | 99 / 100%, 0% | 100 / 100%, 0% | no decision |
+| leshys_hunt, 3 (meadow) | Leshy | 98 / 100%, 0% | 100 / 100%, 0% | no decision |
+| shamans_warband, 1 (meadow) | Goblin Shaman | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| shamans_warband, 2 (meadow) | Goblin Shaman | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| shamans_warband, 3 (meadow) | Goblin Shaman | 100 / 100%, 2% | 100 / 100%, 0% | no decision |
+| the_nob, 1 (meadow) | The Goblin Nob | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_nob, 2 (meadow) | The Goblin Nob | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_nob, 3 (meadow) | The Goblin Nob | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| gilgamesh_and_enkidu, 3 (waste) | Gilgamesh | 77 / 100%, 12% | 100 / 100%, 0% | no decision |
+| gilgamesh_wanders, 1 (waste) | Gilgamesh | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| gilgamesh_wanders, 2 (waste) | Gilgamesh | 100 / 100%, 2% | 100 / 100%, 0% | no decision |
+| old_mans_rising, 1 (waste) | Old Man of the Desert | 11 / 81%, 60% | 88 / 100%, 15% | decision |
+| old_mans_rising, 2 (waste) | Old Man of the Desert | 5 / 73%, 76% | 85 / 100%, 19% | too easy |
+| old_mans_rising, 3 (waste) | Old Man of the Desert | 0 / 25%, 93% | 79 / 100%, 24% | too easy |
+| pilgrims_wake, 1 (waste) | The Pilgrim | 95 / 100%, 13% | 100 / 100%, 1% | no decision |
+| pilgrims_wake, 2 (waste) | The Pilgrim | 81 / 100%, 21% | 100 / 100%, 2% | no decision |
+| pilgrims_wake, 3 (waste) | The Pilgrim | 67 / 100%, 30% | 99 / 100%, 4% | no decision |
+| rust_monsters_scavenge, 1 (waste) | The Rust Monster | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| rust_monsters_scavenge, 2 (waste) | The Rust Monster | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| rust_monsters_scavenge, 3 (waste) | The Rust Monster | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| the_astromancer, 2 (waste) | The Astromancer | 42 / 96%, 19% | 100 / 100%, 0% | no decision |
+| the_astromancer, 3 (waste) | The Astromancer | 28 / 92%, 29% | 97 / 100%, 1% | no decision |
+| bone_wyverns_flight, 2 (marsh) | Bone Wyvern | 79 / 100%, 10% | 100 / 100%, 0% | no decision |
+| bone_wyverns_flight, 3 (marsh) | Bone Wyvern | 71 / 100%, 15% | 100 / 100%, 0% | no decision |
+| collectors_hall, 2 (marsh) | The Antiquarian | 59 / 100%, 19% | 100 / 100%, 4% | no decision |
+| collectors_hall, 3 (marsh) | The Antiquarian | 43 / 100%, 27% | 98 / 100%, 5% | no decision |
+| fell_riders_hunt, 1 (marsh) | The Fell Rider | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| fell_riders_hunt, 2 (marsh) | The Fell Rider | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| fell_riders_hunt, 3 (marsh) | The Fell Rider | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| skeleton_kings_court, 2 (marsh) | The Skeleton King | 1 / 55%, 68% | 92 / 100%, 10% | no decision |
+| skeleton_kings_court, 3 (marsh) | The Skeleton King | 0 / 52%, 71% | 92 / 100%, 11% | no decision |
+| the_reaper, 1 (marsh) | The Reaper | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_reaper, 2 (marsh) | The Reaper | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_reaper, 3 (marsh) | The Reaper | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_shambler, 2 (marsh) | The Shuffler | 91 / 100%, 4% | 100 / 100%, 0% | no decision |
+| the_shambler, 3 (marsh) | The Shuffler | 84 / 100%, 8% | 100 / 100%, 0% | no decision |
+| the_wild_hunt, 1 (marsh) | Rider of the Wild Hunt | 99 / 100%, 1% | 100 / 100%, 0% | no decision |
+| the_wild_hunt, 2 (marsh) | Rider of the Wild Hunt | 93 / 100%, 3% | 100 / 100%, 0% | no decision |
+| the_wild_hunt, 3 (marsh) | Rider of the Wild Hunt | 77 / 100%, 7% | 100 / 100%, 0% | no decision |
+| cinder_tortoises_brood, 1 (peak) | Cinder Tortoise | 83 / 100%, 5% | 100 / 100%, 0% | too easy |
+| cinder_tortoises_brood, 2 (peak) | Cinder Tortoise | 45 / 100%, 18% | 100 / 100%, 1% | no decision |
+| cinder_tortoises_brood, 3 (peak) | Cinder Tortoise | 1 / 92%, 43% | 100 / 100%, 1% | no decision |
+| firelords_rising, 2 (peak) | The Firelord | 12 / 80%, 41% | 100 / 100%, 1% | no decision |
+| firelords_rising, 3 (peak) | The Firelord | 4 / 69%, 59% | 99 / 100%, 2% | no decision |
+| the_bane, 2 (peak) | The Bane | 72 / 100%, 30% | 100 / 100%, 4% | no decision |
+| the_bane, 3 (peak) | The Bane | 51 / 91%, 44% | 99 / 100%, 6% | no decision |
+| the_ravener, 2 (peak) | The World Eater | 57 / 86%, 38% | 100 / 100%, 1% | no decision |
+| the_ravener, 3 (peak) | The World Eater | 27 / 72%, 54% | 100 / 100%, 1% | no decision |
+| thunder_apes_rampage, 1 (peak) | The Thunder Ape | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| thunder_apes_rampage, 2 (peak) | The Thunder Ape | 100 / 100%, 2% | 100 / 100%, 0% | no decision |
+| thunder_apes_rampage, 3 (peak) | The Thunder Ape | 95 / 100%, 6% | 100 / 100%, 0% | no decision |
+
+Read. Against the fours every cell is a free win: random play wins 79 to 100% and greedy 100%
+at 0 to 24% hull, the Old Man of the Desert the only elite that costs a four more than a tenth
+of its hull (15 to 24%). Greedy's fights last two to six rounds; the Goblin Nob and the Thunder
+Ape die in two at tier three, before a bellow or a roar can matter. Against the stock trios the
+lone elites read the same: the Nob, the Fell Rider, the Reaper, the Rust Monster, the Thunder
+Ape, the Goblin Shaman's warband and Gilgamesh are won by random play 95 to 100% of the time at
+0 to 2% hull, at every tier, since their HP is the rank and file's (8 to 24 at tier one, 12 to 36
+at tier three) against a trio's twenty-odd damage a round. The fights that are fights for a
+trio have mass or bodies: the Old Man (massive, 44 HP: a decision at tier one, 11 and 81% won at
+60% hull, and a wall at tier three, 0 and 25%); the Skeleton King's court (its summons and its
+risers: random 0 to 1%, greedy about half, 68 to 71% hull); the Firelord (12 and 80%, 4 and 69%);
+the World Eater (57 and 86%, 27 and 72%); the Cinder Tortoise at tier three (1 and 92%); the
+Astromancer (42 and 96%, 28 and 92%: its orbs the kill order); the Bane, the Antiquarian and the
+Elder Treant at tier three (random about half). Bands: of the 53 cells read on their tier's rows,
+49 read as no decision, 3 as too easy (the Cinder Tortoise at tier one for the trios; the Old Man
+at tiers two and three for the fours) and 1 as a decision (the Old Man at tier one for the
+trios); no elite is a wall for its tier's rows. What it says: the elites as built are not the
+mini-boss event section 9 asks for (a harder fight that threatens the gate while it holds the
+team); their numbers are the placeholders of 3 November, set at the hunters' and the rank and
+file's band, and an elite that dies in two rounds never shows its mechanism. The lever on the
+table, Ryan's to mark (the bible's section 12): the lone elites' HP to the massive band (the
+scales row's 30 to 40 at tier one, where the Old Man and the World Eater stand), an escort each,
+or both; read below as a what-if, and at 200 seeds once marked.
+
+What-if, the same evening: every elite below 40 HP at 40 (`--set foes/<id>/hp=40`: the Leshy,
+the Goblin Shaman, the Goblin Nob, the Rust Monster, the Astromancer, the Bone Wyvern, the
+Antiquarian, the Fell Rider, the Skeleton King, the Reaper, the Shuffler, the Bane and the Thunder
+Ape) and the Wild Hunt's riders at 16, the same rows, random and greedy, 30 seeds, a direction (38
+and 63 minutes). The rows the what-if left alone (the Elder Treant, Gilgamesh, the Old Man, the
+Pilgrim, the Cinder Tortoise, the Firelord and the World Eater, at 40 to 44 already) read the same
+and are left out of the table.
+
+| Composition, tier | Lead (HP as built, at the what-if) | Trios as built: random / greedy won, hull lost (greedy), rounds | Trios at the what-if | Fours as built | Fours at the what-if | Band as built, at the what-if (its tier's rows) |
+|---|---|---|---|---|---|---|
+| leshys_hunt, 2 (meadow) | Leshy (8, 40) | 99 / 100%, 0%, 2.9 | 88 / 100%, 3%, 7.4 | 100 / 100%, 0%, 2.0 | 100 / 100%, 0%, 3.7 | no decision, no decision |
+| leshys_hunt, 3 (meadow) | Leshy (8, 40) | 98 / 100%, 0%, 3.2 | 79 / 100%, 4%, 8.7 | 100 / 100%, 0%, 2.2 | 100 / 100%, 0%, 4.1 | no decision, no decision |
+| shamans_warband, 1 (meadow) | Goblin Shaman (8, 40) | 100 / 100%, 1%, 3.5 | 98 / 100%, 4%, 6.3 | 100 / 100%, 0%, 2.5 | 100 / 100%, 0%, 3.9 | no decision, no decision |
+| shamans_warband, 2 (meadow) | Goblin Shaman (8, 40) | 100 / 100%, 1%, 3.6 | 98 / 100%, 5%, 7.3 | 100 / 100%, 0%, 2.7 | 100 / 100%, 0%, 4.3 | no decision, no decision |
+| shamans_warband, 3 (meadow) | Goblin Shaman (8, 40) | 100 / 100%, 2%, 3.8 | 92 / 100%, 14%, 8.7 | 100 / 100%, 0%, 2.8 | 100 / 100%, 0%, 4.7 | no decision, no decision |
+| the_nob, 1 (meadow) | The Goblin Nob (24, 40) | 100 / 100%, 0%, 2.7 | 100 / 100%, 1%, 4.0 | 100 / 100%, 0%, 1.6 | 100 / 100%, 0%, 2.2 | no decision, no decision |
+| the_nob, 2 (meadow) | The Goblin Nob (24, 40) | 100 / 100%, 0%, 3.1 | 96 / 100%, 2%, 5.0 | 100 / 100%, 0%, 1.8 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| the_nob, 3 (meadow) | The Goblin Nob (24, 40) | 100 / 100%, 1%, 3.8 | 80 / 100%, 5%, 6.0 | 100 / 100%, 0%, 2.1 | 100 / 100%, 0%, 3.0 | no decision, no decision |
+| rust_monsters_scavenge, 1 (waste) | The Rust Monster (20, 40) | 100 / 100%, 0%, 2.5 | 100 / 100%, 1%, 4.3 | 100 / 100%, 0%, 1.4 | 100 / 100%, 0%, 2.3 | no decision, no decision |
+| rust_monsters_scavenge, 2 (waste) | The Rust Monster (20, 40) | 100 / 100%, 0%, 2.9 | 100 / 100%, 4%, 5.2 | 100 / 100%, 0%, 1.6 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| rust_monsters_scavenge, 3 (waste) | The Rust Monster (20, 40) | 100 / 100%, 1%, 3.2 | 98 / 100%, 8%, 6.3 | 100 / 100%, 0%, 1.8 | 100 / 100%, 0%, 3.0 | no decision, no decision |
+| the_astromancer, 2 (waste) | The Astromancer (24, 40) | 42 / 96%, 19%, 8.2 | 22 / 90%, 31%, 12.0 | 100 / 100%, 0%, 3.7 | 97 / 100%, 1%, 4.6 | no decision, no decision |
+| the_astromancer, 3 (waste) | The Astromancer (24, 40) | 28 / 92%, 29%, 9.8 | 3 / 82%, 44%, 14.3 | 97 / 100%, 1%, 4.2 | 93 / 100%, 1%, 5.3 | no decision, no decision |
+| bone_wyverns_flight, 2 (marsh) | Bone Wyvern (32, 40) | 79 / 100%, 10%, 7.4 | 76 / 100%, 12%, 9.1 | 100 / 100%, 0%, 3.4 | 100 / 100%, 1%, 3.8 | no decision, no decision |
+| bone_wyverns_flight, 3 (marsh) | Bone Wyvern (32, 40) | 71 / 100%, 15%, 8.9 | 64 / 100%, 19%, 10.9 | 100 / 100%, 0%, 3.7 | 100 / 100%, 1%, 4.3 | no decision, no decision |
+| collectors_hall, 2 (marsh) | The Antiquarian (24, 40) | 59 / 100%, 19%, 5.1 | 33 / 99%, 32%, 7.7 | 100 / 100%, 4%, 2.7 | 99 / 100%, 6%, 3.5 | no decision, no decision |
+| collectors_hall, 3 (marsh) | The Antiquarian (24, 40) | 43 / 100%, 27%, 5.8 | 19 / 91%, 49%, 9.1 | 98 / 100%, 5%, 3.0 | 91 / 100%, 8%, 4.0 | no decision, no decision |
+| fell_riders_hunt, 1 (marsh) | The Fell Rider (16, 40) | 100 / 100%, 0%, 1.8 | 100 / 100%, 2%, 4.0 | 100 / 100%, 0%, 1.2 | 100 / 100%, 0%, 2.2 | no decision, no decision |
+| fell_riders_hunt, 2 (marsh) | The Fell Rider (16, 40) | 100 / 100%, 0%, 2.4 | 100 / 100%, 5%, 4.9 | 100 / 100%, 0%, 1.4 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| fell_riders_hunt, 3 (marsh) | The Fell Rider (16, 40) | 100 / 100%, 1%, 2.7 | 98 / 100%, 11%, 6.0 | 100 / 100%, 0%, 1.6 | 100 / 100%, 0%, 3.0 | no decision, no decision |
+| skeleton_kings_court, 2 (marsh) | The Skeleton King (28, 40) | 1 / 55%, 68%, 9.0 | 0 / 47%, 73%, 10.4 | 92 / 100%, 10%, 4.3 | 91 / 100%, 11%, 5.1 | no decision, no decision |
+| skeleton_kings_court, 3 (marsh) | The Skeleton King (28, 40) | 0 / 52%, 71%, 9.8 | 0 / 42%, 77%, 11.3 | 92 / 100%, 11%, 4.6 | 86 / 100%, 12%, 5.5 | no decision, too easy |
+| the_reaper, 1 (marsh) | The Reaper (12, 40) | 100 / 100%, 0%, 1.5 | 100 / 100%, 4%, 4.0 | 100 / 100%, 0%, 1.1 | 100 / 100%, 0%, 2.2 | no decision, no decision |
+| the_reaper, 2 (marsh) | The Reaper (12, 40) | 100 / 100%, 0%, 1.7 | 100 / 100%, 8%, 4.8 | 100 / 100%, 0%, 1.2 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| the_reaper, 3 (marsh) | The Reaper (12, 40) | 100 / 100%, 0%, 2.1 | 97 / 100%, 13%, 5.8 | 100 / 100%, 0%, 1.3 | 100 / 100%, 1%, 3.0 | no decision, no decision |
+| the_shambler, 2 (marsh) | The Shuffler (32, 40) | 91 / 100%, 4%, 5.0 | 86 / 100%, 8%, 6.1 | 100 / 100%, 0%, 2.3 | 100 / 100%, 0%, 2.7 | no decision, no decision |
+| the_shambler, 3 (marsh) | The Shuffler (32, 40) | 84 / 100%, 8%, 5.9 | 72 / 100%, 15%, 7.5 | 100 / 100%, 0%, 2.6 | 100 / 100%, 0%, 3.1 | no decision, no decision |
+| the_wild_hunt, 1 (marsh) | Rider of the Wild Hunt (10, 16) | 99 / 100%, 1%, 2.9 | 90 / 100%, 3%, 4.4 | 100 / 100%, 0%, 2.1 | 100 / 100%, 0%, 2.5 | no decision, too easy |
+| the_wild_hunt, 2 (marsh) | Rider of the Wild Hunt (10, 16) | 93 / 100%, 3%, 3.8 | 68 / 99%, 10%, 5.7 | 100 / 100%, 0%, 2.2 | 100 / 100%, 0%, 3.0 | no decision, no decision |
+| the_wild_hunt, 3 (marsh) | Rider of the Wild Hunt (10, 16) | 77 / 100%, 7%, 4.3 | 48 / 99%, 22%, 6.9 | 100 / 100%, 0%, 2.4 | 100 / 100%, 1%, 3.4 | no decision, no decision |
+| the_bane, 2 (peak) | The Bane (36, 40) | 72 / 100%, 30%, 6.5 | 67 / 99%, 34%, 7.3 | 100 / 100%, 4%, 2.9 | 100 / 100%, 5%, 3.2 | no decision, no decision |
+| the_bane, 3 (peak) | The Bane (36, 40) | 51 / 91%, 44%, 8.1 | 40 / 87%, 51%, 9.1 | 99 / 100%, 6%, 3.3 | 99 / 100%, 6%, 3.6 | no decision, no decision |
+| thunder_apes_rampage, 1 (peak) | The Thunder Ape (24, 40) | 100 / 100%, 1%, 2.8 | 98 / 100%, 4%, 4.5 | 100 / 100%, 0%, 1.6 | 100 / 100%, 0%, 2.3 | no decision, no decision |
+| thunder_apes_rampage, 2 (peak) | The Thunder Ape (24, 40) | 100 / 100%, 2%, 3.2 | 92 / 100%, 7%, 5.6 | 100 / 100%, 0%, 1.9 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| thunder_apes_rampage, 3 (peak) | The Thunder Ape (24, 40) | 95 / 100%, 6%, 4.1 | 77 / 99%, 16%, 6.8 | 100 / 100%, 0%, 2.2 | 100 / 100%, 0%, 3.1 | no decision, no decision |
+
+Read. Against the fours nothing moves: random play still wins 86 to 100% and greedy 100% at 0 to
+12% hull, and greedy's fights grow by about a round, the lone elites from one or two rounds to two
+or three (the Reaper 1.1 to 2.2, the Fell Rider 1.2 to 2.2, the Nob 1.6 to 2.2, the Thunder Ape
+1.6 to 2.3); the Skeleton King's court at tier three (random 92 to 86%) and the Wild Hunt at tier
+one for the trios (99 to 90%) cross the band rule's line into too easy by a few points of random,
+within a direction's noise, so the bands read 47 no decision, 1 decision and 5 too easy where they
+read 49, 1 and 3. Against the trios the lone elites still fall to random play 77 to 100% and to
+greedy 99 to 100% at 1 to 16% hull, their fights grown from two rounds to four (the Reaper 1.5 to
+4.0, the Nob 2.7 to 4.0, the Fell Rider 1.8 to 4.0), so a bellow or a roar gets a round to show;
+the cells that move most have bodies, or a mechanism the rounds feed: the Astromancer (random 42
+to 22% at tier two and 28 to 3% at tier three, greedy 96 to 90% and 92 to 82% at 31 and 44% hull,
+its orbs with the rounds to call and to mend), the Antiquarian (59 to 33%, 43 to 19%), the Wild
+Hunt (93 to 68%, 77 to 48%) and the Thunder Ape at tier three (95 to 77%). What it says: HP alone
+buys rounds, not threat. A lone elite at 40 HP is still a free win for its tier's squad, since its
+blow (3 to 7 a round, at one machine) is a rank-and-file's damage against a four's hull and
+shields; the HP lets its mechanism fire once before it dies. What makes a fight in this table is
+damage at the squad over several rounds: bodies (the Skeleton King's court, the Firelord's sons,
+the Astromancer's orbs) or a massive foe's blow (the Old Man, the World Eater). So the lone elite as
+the harder fight section 9 asks for wants the massive band in both numbers (the scales row: a blow
+of 7 or 8 with the 30 to 40 HP), an escort each, or its curveball read on the map (the hunter's
+catch, the World Eater's push), which no cell reads; the HP alone is not the lever. Ryan's to mark
+(the bible's section 12), then the 200-seed read.

@@ -75,6 +75,7 @@ var _units: Dictionary = {}     # unit id -> Node3D, the seat at the hex (set so
 var _pivots: Dictionary = {}    # unit id -> the pivot that turns to the facing; the model hangs off it centred by its bounds
 var _shadows: Dictionary = {}   # unit id -> the ground disc under a flyer
 var _rigs: Dictionary = {}      # unit id -> MechRig: the machine's joints, its idle acts and strikes (the same as the skirmish's)
+var _plumes: Dictionary = {}    # unit id -> its boosters' plumes (MechView3D.setup_plumes), lit with their boosters each frame
 var _scale: Dictionary = {}     # unit id -> the model's scale on the map (model units to world units)
 var _outlined: Dictionary = {}  # unit id -> [the model, its bounds in its own space] (outline_boxes)
 var _heading: Dictionary = {}   # unit id -> the yaw the move is heading, radians, while a move plays
@@ -1570,11 +1571,13 @@ func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 ## (MechView3D.plan_for), so the outline's bounds take them in. A machine's light outline is
 ## the compositor's, drawn round the machines' layer (outline_boxes); the gate and walls wear
 ## none (Ryan, 22 September).
-func _model(id: String, maker: String, paint: Dictionary = {}, plan: Array = []) -> Node3D:
+func _model(id: String, maker: String, paint: Dictionary = {}, plan: Array = [], own: bool = true) -> Node3D:
 	var scene: PackedScene = load("res://art/models/%s.glb" % id)
 	var node: Node3D = scene.instantiate()
 	MechView3D.toon(node, maker, "clean", paint, false)
-	MechView3D.wear(MechView3D.pins_of(node), plan, "clean", paint, false, true, id)
+	var pins := MechView3D.pins_of(node)
+	MechView3D.wear(pins, plan, "clean", paint, false, true, id)
+	MechView3D.wear_burns(pins, MechView3D.burn_rows(id, plan, ContentDB.load_default(), own), "clean", paint)   # a burn weapon's fire, dim at rest
 	return node
 
 
@@ -1727,6 +1730,7 @@ func sync() -> void:
 			_turn_vel.erase(uid)
 			_setoff.erase(uid)
 			_rigs.erase(uid)
+			_plumes.erase(uid)
 			_scale.erase(uid)
 			_outlined.erase(uid)
 			_rest_yaw.erase(uid)
@@ -1754,6 +1758,8 @@ func _process(delta: float) -> void:
 		var rig: MechRig = _rigs[uid]
 		rig.tick(delta)
 		_corner(uid, rig, delta)
+		for pl in _plumes.get(uid, []):
+			(pl[0] as ShaderMaterial).set_shader_parameter("strength", MechView3D.plume_k((pl[1] as StandardMaterial3D).emission_energy_multiplier, float(pl[2])))
 	for uid in _units.keys():
 		var u := field.unit_by_id(uid)
 		if u == null:
@@ -1787,7 +1793,8 @@ func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := ContentDB.load_default().maker_of(u.chassis_id)
 		var model_id := MechView3D.model_for(u.chassis_id)
-		var node := _model(model_id, maker, u.paint, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [])
+		var node := _model(model_id, maker, u.paint, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [], model_id == u.chassis_id)
+		MechView3D.launches_of(node, MechRig.load_sidecar(model_id))   # what a weapon fires out of the machine stays hidden on the map (the Lammergeier's drones)
 		MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
@@ -1816,9 +1823,15 @@ func _make_unit(u: Unit) -> Node3D:
 		# pivot, so the facing and the idle never fight; seeded by the unit, so no two act in step.
 		var rig := MechRig.new()
 		rig.place = "map"
+		var side := MechRig.load_sidecar(model_id)
+		if MechView3D.PLUMES:
+			for pl in side.get("plumes", []):
+				rig.halo_skip.append(str(pl.get("part", "")))   # a booster's plume burns where its halo's ring was
 		rig.setup(node, model_id, node, u.id)
 		rig.top_speed = MechRig.map_speed(widest, u.movespeed, fit)   # the debug drive's pace (RIFTGATE_MOVE_DEBUG)
 		_rigs[u.id] = rig
+		if MechView3D.PLUMES:
+			_plumes[u.id] = MechView3D.setup_plumes(node, side, rig, 0.9)   # trailing behind it as it runs, the map's top-down camera seeing them whole; no outline pass to ink it
 		_scale[u.id] = k
 		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not
 		seat.position = Vector3(0.0, 0.0, south)

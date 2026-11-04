@@ -141,6 +141,19 @@ nav.anchors a:hover{border-color:var(--acc);color:var(--ink)}
 .item:hover,.item:focus-visible{background:var(--paper);outline:none}
 .item .name{font-weight:600}
 .item .id{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
+/* ---- foe sprites (4 November): the cut as the game draws it, whole pixels, never smoothed */
+.item.foe{grid-template-columns:auto 1fr auto}
+.sprite{width:36px;height:48px;display:flex;align-items:flex-end;justify-content:center;background:var(--paper);border:1px solid var(--rule);flex:none}
+.sprite img{image-rendering:pixelated;max-width:36px;max-height:48px;display:block}
+.sprite.none{align-items:center;font:600 8px/1.2 var(--mono);color:var(--ink-3);text-align:center;letter-spacing:.04em}
+.sprite.ph{border-style:dashed}
+.spritegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin-top:10px}
+.spritegrid .cell{border:1px solid var(--rule);padding:6px 4px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.spritegrid .cell:hover,.spritegrid .cell:focus-visible{background:var(--paper);outline:none}
+.spritegrid .sprite{width:100px;height:148px}
+.spritegrid .sprite img{max-width:96px;max-height:144px}
+.spritegrid .name{font-weight:600;font-size:12px;line-height:1.2}
+.spritegrid .id{font-size:10px;color:var(--ink-3);font-family:var(--mono);line-height:1.3}
 .editor h2{font:700 26px/1 var(--display);margin:14px 0 2px;text-transform:uppercase}
 .editor .path{font:400 12px/1.4 var(--mono);color:var(--ink-3)}
 .fields{display:grid;gap:12px;margin-top:10px}
@@ -375,6 +388,43 @@ function ensure(name, path, apply) {
 function want(name, loader) { if (!state.loaded[name] && !loaders[name]) loader().then(() => render()); }
 const ensurePins = () => ensure("pins", "hangar/pins.json", j => { state.pins = j.pins || {}; });
 const ensureRenders = () => ensure("renders", "hangar/renders.json", j => { state.renders = j; });
+// The foes' sprites (4 November): hangar/foes.json says which foe has a combat sprite published
+// beside the page (hangar/foes/<id>.png) and whether it is a picked render or a rough
+// placeholder (tools/placeholder_art.py's), for the Foes list and its Art filter.
+const ensureFoeArt = () => ensure("foeart", "hangar/foes.json", j => { state.foeArt = j.art || {}; });
+const foeArtState = (id) => (state.foeArt ? (state.foeArt[id] || "none") : "none");
+function spriteEl(id, big = false) {
+  const st = foeArtState(id);
+  if (st === "none") return el("div", {class: "sprite none", title: state.foeArt ? "no sprite in art/foes yet: the views draw the placeholder shape" : "loading"}, state.foeArt ? "no art" : "");
+  return el("div", {class: "sprite" + (st === "placeholder" ? " ph" : ""), title: st === "placeholder" ? "a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked" : st === "hero" ? "its hero's sprite: a promoted form wears it until the boss register's is cut" : "a picked render, or a recolour of one"},
+    el("img", {src: fresh("hangar/foes/" + id + ".png"), alt: "", loading: "lazy", width: big ? null : "36"}));
+}
+// A foe's kind (4 November): its flags and where the content lists it, by structure.
+function foeKind(e) {
+  const c = ctx();
+  if (e.hero) return "hero";
+  if (e.promotes) return "promoted";
+  for (const f of c.factions.values()) if ([].concat(f.boss || []).includes(e.id)) return "boss";
+  if (e.wanders) return "wanderer";
+  if (e.elite) return "elite";
+  for (const o of c.foes.values()) if ((o.parts || []).includes(e.id)) return "part";
+  return "rank and file";
+}
+// The tiers a foe is dealt at (4 November): every composition of its faction that lists it,
+// a boss at every tier (drawn at any), a hero its final, else its own tier.
+function foeTiers(e) {
+  const c = ctx();
+  const kind = foeKind(e);
+  if (kind === "boss") return ["1", "2", "3"];
+  if (kind === "hero" || kind === "promoted") return ["final"];
+  const tiers = new Set();
+  for (const f of c.factions.values()) for (const comp of (f.compositions || [])) {
+    if (!(comp.members || []).some(m => m.foe === e.id)) continue;
+    for (const t of [].concat(comp.tiers === undefined ? [1] : comp.tiers)) tiers.add(String(t));
+  }
+  if (!tiers.size) tiers.add(String(e.tier || 1) + (kind === "part" ? "" : "*"));   // listed nowhere: its own tier, starred (a summon, a split, a part)
+  return [...tiers];
+}
 const ensureReserved = () => ensure("reserved", "content/reserved_names.json", j => {
   const list = [];
   for (const src of Object.values(j.sources || {})) for (const n of (src.names || [])) list.push({n, s: src.label || "reserved"});
@@ -503,9 +553,12 @@ const FILTER_SPECS = {
   },
   foes: {
     noun: ["foe", "foes"], placeholder: "Name or faction",
-    text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, e.hunts, e.behaviour],
+    text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, e.hunts, e.behaviour, foeKind(e)],
     groups: [
       {id: "faction", label: "Faction", of: e => [e.faction], name: factionName, order: () => [...ctx().factions.keys()]},
+      {id: "kind", label: "Kind", of: e => [foeKind(e)], order: ["rank and file", "elite", "wanderer", "boss", "hero", "promoted", "part"]},
+      {id: "tier", label: "Tier", of: e => foeTiers(e), name: v => v === "final" ? "Final" : "T" + v, order: ["1", "2", "3", "final", "1*", "2*", "3*"]},
+      {id: "art", label: "Art", of: e => [foeArtState(e.id)], name: v => v === "none" ? "No art" : v === "hero" ? "Hero's" : v[0].toUpperCase() + v.slice(1), order: ["picked", "hero", "placeholder", "none"]},
       {id: "rank", label: "Rank", of: e => [e.rank], order: ["front", "back"]},
       {id: "size", label: "Size", of: e => [String(e.size || 1)], name: v => v === "2" ? "Massive" : "Size " + v},
       {id: "aim", label: "Aim", of: e => [e.aim || "exposed"]},
@@ -847,14 +900,34 @@ function renderList(main) {
   // Rows read the entry as edited, so the filter and the sort see what the save will ship.
   const rows = shipped.map(s => { const st = entryState(f.key, s.id); return {id: s.id, st, entry: st === "edited" ? editFor(f.key, s.id).data : s}; });
   for (const e of added) rows.push({id: e.id, st: "new", entry: e.data || {id: e.id}});
+  const foes = f.filter === "foes";
+  if (foes) want("foeart", ensureFoeArt);   // the sprites' manifest, once
   const view = runFilter(f.filter, rows);
   const spec = view.spec;
   main.append(filterBar(view));
-  const list = el("div", {class: "list"});
+  const grid = foes && state.sub.foeView === "grid";
+  if (foes) {
+    // The sprites compared (4 November, Ryan: "somewhere that it's easily compared and inventoried").
+    const bar = el("div", {class: "filters", style: "border-top:0;padding-top:0"});
+    bar.append(el("div", {class: "group"}, el("button", {class: "chip" + (grid ? "" : " on"), onclick: () => { state.sub.foeView = "list"; remember(); render(); }}, "List"),
+      el("button", {class: "chip" + (grid ? " on" : ""), onclick: () => { state.sub.foeView = "grid"; remember(); render(); }}, "Sprites")));
+    main.append(bar);
+  }
+  const list = el("div", {class: grid ? "spritegrid" : "list"});
   for (const x of view.shown) {
     const {id, st, entry} = x, note = sortNote(view, x);
     const sub = [id, ...(spec.line ? spec.line(entry, x) : [])].filter(Boolean).join(" · ");
-    list.append(el("div", {class: "item", tabindex: "0", role: "button", onclick: () => openEntry(f.key, id), onkeydown: (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openEntry(f.key, id); } }},
+    const open = () => openEntry(f.key, id);
+    const keys = (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } };
+    if (grid) {
+      list.append(el("div", {class: "cell", tabindex: "0", role: "button", onclick: open, onkeydown: keys},
+        spriteEl(id, true), el("div", {class: "name"}, entry.name || id),
+        el("div", {class: "id"}, [factionName(entry.faction), foeKind(entry), foeTiers(entry).map(t => t === "final" ? "final" : "T" + t).join(" ")].filter(Boolean).join(" · ")),
+        st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : null));
+      continue;
+    }
+    list.append(el("div", {class: "item" + (foes ? " foe" : ""), tabindex: "0", role: "button", onclick: open, onkeydown: keys},
+      foes ? spriteEl(id) : null,
       el("div", {}, el("div", {class: "name"}, entry.name || id), el("div", {class: "id"}, sub)),
       el("div", {class: "end"}, note ? el("span", {class: "sortval"}, note) : null, st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : null)));
   }
@@ -1385,7 +1458,6 @@ function paintMotion(force) {
         el("div", {class: "scrub"}, r, el("output", {id: "mo-scrub-out", for: "mo-scrub"}, `${rig.t.toFixed(2)} s of ${rig.current.duration}`))));
     }
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
-      el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
       el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"),
       el("button", {class: "btn", id: "mo-hit", title: "A blow lands on the machine: a hull hit from the left, then its armour turning one from the right", onclick: () => st.hit()}, "Hit"),
       el("button", {class: "btn", id: "mo-lose", "aria-pressed": String(!!rig.dead), title: "The machine is lost: its lit parts gutter out; press again to light it", onclick: () => st.lose()}, rig.dead ? "Revive" : "Lose"))));
@@ -1520,3 +1592,4 @@ $("#tabs").addEventListener("keydown", e => {
   setSection(ids[(i + ids.length) % ids.length]);
 });
 </script>
+

@@ -824,5 +824,15 @@
   "hp_1": "twin_autoguns",
   "hp_2": "halo_shield",
   "hp_3": ""
+ },
+ "aims": {
+  "flakshot_repeater": "turret"
+ },
+ "stock_shapes": {
+  "hp_1": "twin_barrel",
+  "hp_2": "dish"
+ },
+ "fx": {
+  "flakshot_repeater": 16.8
  }
 }
