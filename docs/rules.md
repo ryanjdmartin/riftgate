@@ -165,7 +165,7 @@ defeat when every machine is wrecked. There is no round limit.
   What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks).
   What the machine's passive adds sits in its passive box at the foot of the edge, a dashed box
   with an arrow into it, as wide as what it holds: a blow added after the strikes, its number
-  alone (the Storm Petrel's zap); a vent's blast at a random foe, by the blast's mark (the Whip
+  by the mark of what pays it (the Storm Petrel's zap, by the shield's, in the shield's colour); a vent's blast at a random foe, by the blast's mark (the Whip
   Scorpion's); a stepping die's next entry, by its main mark (the Cassowary's). The readout says
   each on a line of its own, headed by the same box. A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
@@ -665,8 +665,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
   meets. A shield cost on its weapon is no part of it: the cost is paid first as the entry is
   spent and never lands as a blow, and the shield pays the heat from what the cost leaves. The
-  die shows what the shield will pay for the heat in its passive box, one number for the spend
-  and the blow (over a foe, the blow's share with that foe's armour off, as the main number's
+  die shows what the shield will pay for the heat in its passive box, beside the shield's mark
+  and in the shield's colour, one number for the spend and the blow (over a foe, the blow's share with that foe's armour off, as the main number's
   is), never as a cost along its foot, since the spend goes ahead without it; along the foot
   stand only the heat past the shield and a shield cost, as on any machine. The number is never
   joined to the blow's.

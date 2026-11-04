@@ -198,7 +198,7 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: 
 		# it is spent, and the target takes as much after the strikes; one number, both the spend
 		# and the blow (Ryan, 4 November: "it's both a spend and an add"), the die's passive box,
 		# never a cost along its foot, since the spend goes ahead without it.
-		out.append(marked(parts_line("effect", [word("Its shield pays"), num(str(f.burns), f.burns, base.burns), word("of the heat, and the target takes as much after the strikes")], "attr"), [passive_mark("", str(f.burns), Palette.HUD)]))
+		out.append(marked(parts_line("effect", [word("Its shield pays"), num(str(f.burns), f.burns, base.burns), word("of the heat, and the target takes as much after the strikes")], "attr"), [passive_mark("shield", str(f.burns), Palette.SHIELD)]))
 	# The entry's costs past heat, beside it as the die prints them (Ryan, 26 October: Volatile a
 	# cost printed beside the heat, a keyword with a chip until then, and a shield cost beside it):
 	# the hull a spend bites, the shield it takes first. Less is the gain.

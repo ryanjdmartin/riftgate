@@ -232,7 +232,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   `_2.png` and `_3.png` (the last with the sight without its outer circle and five dash
   patterns). What a machine's passive adds sits in its passive box at the foot of the edge, his
   "passive helper box" (4 November: "for all these types of effects"): the Storm Petrel's zap its
-  number alone ("it doesn't even need the +"; never joined to the blow; the shield it pays no
+  number beside the shield's mark in its colour ("next to, a shield icon"; no sign, never joined
+  to the blow; the shield it pays no
   cost along the foot, "the passive shield cost can't go there", a shield cost paid first and
   never burnt into the blow), the Whip Scorpion's blast
   by its mark, the Cassowary's next entry; the tap popup says each on its own line under the same

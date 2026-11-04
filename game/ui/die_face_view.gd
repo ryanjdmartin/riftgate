@@ -585,9 +585,11 @@ func cost_marks() -> Array:
 ## What the machine's passive adds to the entry, a box each, [mark, text, colour] (Ryan, 4
 ## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
 ## box' for all these types of effects?"): a stepping die's next chamber, its main mark (the
-## Cassowary's); the blow the passive adds after the strikes, its number alone in the blow's own
-## ink, no mark and no sign (the Storm Petrel's: "that's not a mechanic term, it doesn't need an
-## icon"; "Just the number is fine, and the tap popup will clarify"); a vent's blast at a random
+## Cassowary's); the blow the passive adds after the strikes, its number beside the shield's mark
+## in the shield's colour, since the shield pays it, no sign (the Storm Petrel's: "that's not a
+## mechanic term, it doesn't need an icon nor should it be using the shock icon", then "next to, a
+## shield icon ... or at least colour the number shield colour"; "the tap popup will clarify");
+## over a foe the blow's share with that foe's armour off, as the main number is; a vent's blast at a random
 ## foe, its mark and number in heat's colour, since a bare number beside a vent would read as
 ## more cooling (the Whip Scorpion's). The readout heads its line for each with the same box
 ## (EntryReadout.passive_mark).
@@ -599,7 +601,7 @@ func passive_marks() -> Array:
 	if not dark_now:
 		var after := after_blow if after_blow >= 0 else Skirmish.after_blow(null, face)
 		if after > 0 and face.is_weapon():
-			out.append(["", str(after), Palette.HUD])   # the number alone (Ryan, 4 November: "it doesn't even need the + since it's both a spend and an add")
+			out.append(["shield", str(after), Palette.SHIELD])   # by the shield's mark, in its colour, no sign (Ryan, 4 November: "can we fit the number inside, or next to, a shield icon in the helper box? or at least colour the number shield colour?")
 		if blast > 0 and face.kind == Face.Kind.VENT:
 			out.append(["blast", str(blast), Palette.HEAT])
 	if next_face != null:

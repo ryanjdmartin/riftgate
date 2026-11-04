@@ -183,15 +183,15 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	var hot := Face.attack(4)
 	hot.burns = 3
 	d.set_face(hot)
-	assert_eq(picked.call(d), [["", "3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes, the number alone")
+	assert_eq(picked.call(d), [["shield", "3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes, beside the shield's mark")
 	var lines := EntryReadout.effects_of(hot)
 	var boxed := lines.filter(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return m.has("passive")))
 	assert_eq(boxed.size(), 1, "the readout says it on one line")
 	assert_eq(str(boxed[0]["text"]), "Its shield pays 3 of the heat, and the target takes as much after the strikes", "the tap popup clarifies the number, both the spend and the blow")
 	assert_false(lines.any(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return str(m.get("glyph", "")) == "shield")), "and no shield cost line: the passive's payment is no cost")
-	assert_eq((boxed[0]["marks"] as Array)[0]["passive"], ["", "3"], "headed by the box the die shows")
+	assert_eq((boxed[0]["marks"] as Array)[0]["passive"], ["shield", "3"], "headed by the box the die shows")
 	d.after_blow = 2
-	assert_eq(picked.call(d), [["", "2"]], "over a foe, that foe's share")
+	assert_eq(picked.call(d), [["shield", "2"]], "over a foe, that foe's share")
 	d.after_blow = -1
 	d.set_face(Face.vent(3))
 	d.blast = 4
