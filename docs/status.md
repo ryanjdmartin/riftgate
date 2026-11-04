@@ -853,26 +853,25 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.437 (the
-  page's version 450, published 3 November from `ccr-7effd31a-u5z4gw` as main took it: Hold The
-  Line settled in the track table, three-way merged onto the live v0.436 that another session
-  published at 449 with the motion notes of that day (a walker's slump on planted feet, the
-  Buzzard's cannon firing as its charge sped up, the Wainwright & Sutler pieces firing from their
-  acts, the Kite's plumes larger, the Arsenal's rear vents a sickly orange-yellow), over the
-  v0.435 this branch had merged at 448 onto the live v0.434). Main's own v0.430 (443, from
+  `docs/design-bible.html` after every change. This file and the live page are v0.445 (the
+  page's version 458, published 4 November from `ccr-c04908be-3r43xf` as main took it: the
+  randomness pass's rows, UNDO as a way of scumming information, every rider after the hits and
+  on the foe its strike felled, death the last check of a spend and of the prediction, Sweep a
+  reach, the primers riding the weapon fired, the stun resist by kind, the weapons row's rounding
+  and section 12's question on a foe's ticks; three-way merged row by row onto the live v0.444,
+  which other sessions had moved from main's v0.437 at 450 through the day (their rows of 4
+  November: the elites' register and their first read, the Monster Hunter and Golden Sun foes,
+  the micro models, the elites' cells in the runner)). Main's own v0.430 (443, from
   `claude/affectionate-ramanujan-5d24t6`) is inside it, every publish since merged onto the live.
-  So this file carries rows ahead of main's code: the elites session's (`docs/briefs/elites.md`:
-  every domain three elites at least, five wanderers, the Goblin Nob's Bellow and Enraged, a boss
-  a named JRPG entity, the Fiend of Fire, the Gargantuan King, with its rows in the tables) and
-  `claude/charming-rubin-h954bp`'s since it landed (a blow on a machine moving it, whether a shot
-  crosses the field, a booster's plume or halo by maker, the weapon that fired kicking at its
-  model's business end, the motion notes above). The version numbers on the publishing branch's
-  file and the live agree after every publish. Before republishing, read the live page; if
-  another session moved it, publish a three-way merge onto it (`git merge-file` with the
-  last-published file as the base, the wrapper's first line and its trailing `</body></html>`
-  stripped from the saved live source). With main merged in (2 November), the tables script's
-  run is checked against the file's tables before it is kept: a row it reverts belongs to a
-  branch not yet landed.
+  The live page may carry rows ahead of main's code while their branches have not landed. The
+  version numbers on the publishing branch's file and the live agree after every publish. Before
+  republishing, read the live page; if another session moved it, publish a three-way merge onto
+  it, row by row rather than line by line (a `<div class="row">` keyed by its lead, each side's
+  rows kept, a row both sides changed merged word by word with `git merge-file`; a line-based
+  merge of the whole file conflicts on every neighbouring row: `tools/pages/bible_merge.py`, the
+  README's command), with the last-published file as the base and the wrapper's first line and
+  its trailing `</body></html>` stripped from the saved live source. With main merged in, the tables script's run is checked against the file's tables
+  before it is kept: a row it reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
