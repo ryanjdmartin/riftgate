@@ -47,7 +47,8 @@ are in `README.md`.
 `claude/aphelion-minerva-chassis-9qf6cy` (4 November) carries Ryan's chassis ideas of that day
 and Claude's first round on them, from main's `1fa1155`: `docs/aphelion_minerva_chassis_proposal.md`
 (his list verbatim; the words that moved, the counts, the shared holes; each machine's holes,
-questions and Claude's leans), the echidna's new shape in its brief, and the pointers (the briefs
+questions and Claude's leans; then Ryan's target of ten a maker and the shake-out to it), the
+echidna's new shape in its brief, and the pointers (the briefs
 README, the README's documents, this file, the to-do). Docs only: nothing decided, nothing built,
 the bible untouched until his marks.
 
@@ -258,18 +259,19 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   its brief, Claude's first round beside it), the siege battery parked on Ryan's charge brief, the battlecruiser never
   with the Carrier's session (Ryan, 20 October). Ryan's five other Minerva ideas of 4 November
   (a tier-one lure tank, the Cryo party defence, a drill mole, a shield-basher, the immune one)
-  wait on his marks in `docs/aphelion_minerva_chassis_proposal.md`.
+  wait on his marks in `docs/aphelion_minerva_chassis_proposal.md` (the shake-out to ten cuts
+  the shield-basher to a component).
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own; a defensive tier one unproposed (the to-do). Ryan's
   seven ideas of 4 November (Static, the Macross flagship, the Cryo detonator, the time-shifter
   again, a Barrier and Ward support, the status detonator, a shock unit) wait on his marks in
-  `docs/aphelion_minerva_chassis_proposal.md`, with the counts they bring (eleven to fourteen
-  if all land).
+  `docs/aphelion_minerva_chassis_proposal.md`, with Claude's shake-out to his target of ten a
+  maker (4 November: two moved to the Arsenal, three merged, a slot open for a hole).
 - The Arsenal: Misharu, the Onryō, Mastema and Minos, Claude's first round and review in their
   briefs, unanswered: Misharu's two calls first (Penance's shape, how often it may fire), then
   the Onryō's kind and trigger. Ryan's frost and thunder homages of 4 November (each beside an
-  Aphelion idea, the Cryo detonator and the shock unit) would take it to eight; in the same
-  proposal.
+  Aphelion idea, the Cryo detonator and the shock unit) and the Zoids walker move in under the
+  shake-out to ten (nine and a slot, if ten holds for the Arsenal); in the same proposal.
 
 ## How things stand
 

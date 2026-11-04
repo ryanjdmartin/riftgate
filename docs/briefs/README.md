@@ -101,7 +101,9 @@ here.
 - **Ryan's counts** (14 and 15 October): about ten chassis per city maker at the top end, split
   3-5-2 or 4-4-2 across tiers one, two and three (18 October, of Wainwright & Sutler: eleven is
   too many); tier three late-game capstones, so few; the
-  Arsenal in reverse, little access early and much late. Ryan, 15 October, in the Minerva
+  Arsenal in reverse, little access early and much late. Ryan, 4 November: "I want to target 10
+  per maker, at least for now" (Claude's shake-out for Minerva, Aphelion and the Arsenal in
+  `docs/aphelion_minerva_chassis_proposal.md`, for his marks). Ryan, 15 October, in the Minerva
   session: Minerva's two tier threes are a treaded capstone and a capital ship, "the capital
   ship that it seems like every maker is going to end up getting".
 - **The sort** (Claude's, partly agreed): tier one is itself with basics alone and stands in a

@@ -103,19 +103,8 @@ called eleven too many for Wainwright & Sutler. If every idea here is taken:
 | Aphelion | Stingray 1, Baboon 1 (2 proposed) | the line frame 1, the jellyfish 2, the Carrier 3; the time-shifter and the aura-shifter on the bench; the Zoids walker, its maker open | Static, the Macross 3, the Cryo detonator, the Barrier and Ward support, the status detonator, the shock unit | 11 to 14 |
 | the Arsenal | Nemesis 2, Ammit 3 | Misharu 2, the Onryō 2, Mastema 3, Minos 3 | the frost figure, the thunder figure | 8 |
 
-Claude's reading:
-
-- **Aphelion** comes down to eleven if three ideas fold together: the shock unit is the Static
-  machine, the aura-shifter folds into the Macross (both are the same idea; see below), and the
-  Zoids walker goes to the Arsenal.
-- **Minerva** stands at eleven with all five new ideas, so one of them waits or merges. The lure
-  tank and the shield-basher touch, but the rule that keeps them apart is a good one (see the
-  shield-basher).
-- **The Arsenal's** first wave (no tier ones, three tier twos, three tier threes) is already full
-  with the four briefed machines. Two more make eight. That is Ryan's call: its count was never
-  fixed, and his line was "the Arsenal in reverse, little access early and much late".
-
-Counting is for planning. It is never a reason against a machine.
+Ryan set a target the same day: ten a maker, for now. The section "Ten a maker", below, works
+through it. The cuts there serve his target, never the work already done on a machine.
 
 ### Three Minerva ideas react to being struck
 
@@ -180,6 +169,115 @@ that list:
 
 Skaði and Surtr are the Summoner's summons, so they belong to the invasion's side. The Arsenal
 names its machines for figures who punish, never for war gods. Every name is Ryan's.
+
+## Ten a maker
+
+Ryan, 4 November, after the first round: "I want to target 10 per maker, at least for now. How
+do you see that shaking out with these specs? Anything to merge, move to another maker, or cut
+in favour of another missing hole/niche?" Ten for each of the five makers is fifty, his "roster
+of up to 50 units" of 18 October. What follows is Claude's shake-out, for him to move.
+
+**Kestrel and Wainwright & Sutler are already at ten**, so nothing moves to them. Kestrel has
+eight decided plus the Magpie and the Snowy Owl. Wainwright & Sutler is 3-5-2 with the gunship.
+
+### Minerva: eleven to ten (3-5-2)
+
+| Tier one | Tier two | Tier three |
+|---|---|---|
+| Honey Badger, Armadillo, the lure tank | Wild Boar, the echidna, the mammoth, the immune one, the mole | the siege battery, the battlecruiser |
+
+It stays 3-5-2 if the Armadillo goes up to tier two (Ryan's suspicion, section 12) and the Wild
+Boar comes down to tier one (the briefs README's proposal).
+
+- **The cut: the shield-basher, as a chassis.** Its choice, hold the armour or spend it as
+  damage, is the Honey Badger's, from the same maker: "hold the ore and stand behind it, or fire
+  it and hit" (its row, 31 October). And a shield-basher chassis cannot feed itself without
+  an exception that lets Armoured linger. As a component it works with no rule bent. A shield
+  bash spends the Armoured an ally's brace (the Shoring Jack) gave it this turn, so the ally's
+  action is the pair, which is the action economy row's first answer. It goes into the
+  catalogue as a piece.
+- **The mole keeps its slot and needs a verb.** Claude's lean draws on two recorded holes. Every
+  weapon it fires breaches: the drill goes through plate. Breach has one carrier today, the
+  Overclocked Railgun. It pays in negative cooling: its drill heats it every round. That is the
+  new price nobody uses yet (the briefs README's holes); the analysis gave the boiler cooling
+  -10, but it landed at 0. The mole becomes the anti-armour machine in the armour maker. Against
+  tier one's unarmoured rank and file it is a mismatch, which costs time. It pays on braced foes,
+  on bosses whose kit is plate, and on the promoted forms.
+- **The mammoth and the echidna part by trigger.** In Ryan's list both lay a debuff on whatever
+  strikes them. Claude's lean: the mammoth's frost comes from a blow on any ally's shield (his
+  "some other more party-wide trigger to be unique"), and the echidna's quills from a blow on its
+  own hull. One reads the team's shield layer, the other its own wound. With frost that common,
+  the team's cooling is the thing to watch (the Armadillo's row names the all-in cooling team
+  among the things that would reopen it).
+
+If Ryan would rather keep the shield-basher as a chassis, then the mole, which has no verb, is
+the cut.
+
+### Aphelion: fourteen at most, down to ten (4-4-2)
+
+| Tier one | Tier two | Tier three |
+|---|---|---|
+| Stingray, the line frame, Static, the Barrier and Ward support | Baboon, the jellyfish, the time-shifter, one open | the Carrier, the Macross |
+
+- **Two move to the Arsenal.**
+  - **The Zoids walker.** Ryan, 12 October: "The kill-turning-rapid as a feline/canine hunter
+    mauling feels very Arsenal. Maybe that's a sign." Aphelion's row also keeps cats and wolves
+    out of its names. Its round-one verb, a kill that lets it act again, is the Kite's Reset
+    now, so it moves with its verb open.
+  - **The Cryo detonator**, as the Arsenal's frost figure. Consuming a status for a blow is the
+    Arsenal's Backdraft Charge shape, and it fits Claude's line of 22 October, "the Arsenal
+    consumes statuses where Aphelion reads them". Aphelion keeps Cryo through the Macross's
+    Battroid mode and the slottable Cryo setter the to-do gives it.
+- **Three merges.**
+  - **The shock unit** is the Static machine.
+  - **The aura-shifter** becomes the Macross's shifts.
+  - **The status detonator folds into the jellyfish.** The jellyfish is the Science Vessel
+    homage, and StarCraft's Science Vessel is unarmed; its EMP Shockwave strips shields and
+    energy. So "cannot mount weapons", and a blast after the foe's action that purges and
+    cleanses, are the jellyfish's homage made concrete, and Aphelion's two Purge machines become
+    one. Ryan's call which part carries: either the jellyfish keeps its spread passive and the
+    blast becomes its locked EMP, or the detonator's passive replaces the spread. The Vessel's
+    other two abilities also turn up in his list, Irradiate as Static and Defensive Matrix as
+    the Barrier, each on a machine of its own.
+- **The defensive tier one is the Barrier and Ward support**, a protector at tier one, as the
+  Puffin is Kestrel's. Its identity should lean on the Barrier half: every domain throws a big
+  blow, while the Ward's worth waits on the domains' riders (its row), a dependency the immune
+  one shares. With it in place, the Baboon's move to tier two is free; the hole its brief
+  recorded was Aphelion's tender deal.
+- **The open slot goes to a hole.** Two candidates:
+  - Acting on the reinforcement phase. The bible's Open row on the player's ways to act on it
+    (section 5) is empty, and only the Lammergeier's mines touch arrivals. It suits the
+    time-shifter's maker.
+  - The long guns: a machine that joins fights from three hexes away. Ryan parked it on 12
+    October while the engagement range might change; the range is still 2.
+
+  Or keep the status detonator apart, which makes exactly ten.
+
+### The Arsenal: six to ten (0-5-5)
+
+This applies if ten holds for the capital's maker too, which has no tier ones and is the
+Council's trickle. If it doesn't, the Arsenal stops at nine or fewer.
+
+| Tier one | Tier two | Tier three |
+|---|---|---|
+| none | Nemesis, Misharu, the Onryō, the Zoids walker, the frost figure | Ammit, Mastema, Minos, the thunder figure, one open |
+
+- **The frost figure** is the Cryo detonator: one machine, the Arsenal's.
+- **The thunder figure is a smiter, not retribution.** Claude's first-round lean for it was
+  Retaliate on every ally. That is the Onryō's trigger (a curse on whoever wounds the team) and
+  close to Misharu's (a foe that breaks a shield is punished), so the Arsenal would hold three
+  machines punishing the striker. The first round's frost form, cold laid on whatever strikes
+  the team, was the same trigger again, and the mammoth's too. So the thunder figure is Chain's
+  capstone at tier three. The rule it bends: its arcs carry its blow's whole number. Its locked
+  piece is an area Shock setter: the bench's bell tower toll, a big Indirect blow with Spread,
+  Penetrate and Shock, set aside on 11 October for the four briefed machines with no other
+  reason recorded. That toll is also the Spread Shock setter the to-do says Chain still lacks.
+  The thunder figure feeds Aphelion's Static and is fed by it.
+- **The open slot goes to a hole.** The bench's Haunted is one candidate: a striker spends its
+  next blow on the foe beside it, a novel verb. It was set aside because it does nothing against
+  a lone boss, which now holds only at tier one, since bosses bring escorts at tiers two and
+  three. It needs the stun row's care, because the foe loses its blow on the team. Or the slot
+  stays open.
 
 ## Aphelion
 
@@ -341,11 +439,9 @@ Minerva's Armadillo lays it.
 5. **Against the mammoth.** The mammoth wants Cryo left on foes, and this machine wants it blown.
    On one team they contend. That may be the point (hold the weaken, or cash it), or it may be a
    clash. The Armadillo's mark is already the cooling the team contends for.
-6. **One machine or two.** If both are taken, Claude's lean is that each takes its maker's lean so
-   they part by pattern. Aphelion's shatters the frost it sets: the status house reading
-   statuses. The Arsenal's punishes with it, in retribution's register: cold laid on whatever
-   strikes the team, or a frost that holds a foe the team has wounded. The same detonation never
-   appears twice.
+6. **One machine, the Arsenal's frost figure** ("Ten a maker"). The first round's split, with an
+   Arsenal version that punished with the cold (laid on whatever strikes the team), is
+   withdrawn: that is the Onryō's and Misharu's trigger, and the mammoth's.
 
 ### The time-shifter
 
@@ -396,6 +492,9 @@ Ryan, 19 October), and the tier sort puts a support at tier two.
 
 ### The status detonator (no weapons)
 
+"Ten a maker" folds this machine into the jellyfish, as its Science Vessel EMP. These
+holes hold either way.
+
 **The holes.**
 
 1. **"Cannot mount weapons"** breaks the Decided row "Hardpoints are untyped": the die is the slot
@@ -444,10 +543,9 @@ is already a Shock-family machine.
 **Claude's leans.**
 
 - Aphelion's shock unit is the Static machine: one machine, not two.
-- If the Arsenal's thunder figure comes, it takes the Arsenal's lean, retribution: a foe that
-  strikes an ally is struck by lightning. That is the Faraday Hull's idea for the whole team:
-  Retaliate on every ally while it fights. Shock deals no damage and the team must cash it, so the
-  retaliation row allows it. Alternatively, it could be the first piece to grant Charged.
+- The Arsenal's thunder figure is a smiter: Chain's capstone, with the benched bell tower toll as
+  its area Shock setter ("Ten a maker"). The first round's retribution form (Retaliate on every
+  ally) is withdrawn, because it is the Onryō's trigger and close to Misharu's.
 
 **Forms already set aside.** The kill and repeat (Ryan, 28 October: "a no-go"). The charge to a
 random foe (retired 3 November).
@@ -504,14 +602,17 @@ the shape for itself alone: a foe carrying Flak hits it 1 lighter.
    immunity (see above). Read it on the runner against tier one's compositions.
 3. **Cryo on its strikers.** This is the retaliation row's shape, a debuff on the striker, which is
    fine. It scales with the blows the mammoth takes, which a debuff may do; the thorns line governs
-   damage.
+   damage. The echidna lays its debuff on its strikers too, so Claude's lean ("Ten a maker") is
+   that the mammoth's frost comes from a blow on any ally's shield, the party-wide trigger Ryan
+   asked for, while the echidna's quills come from a blow on its own hull.
 4. **Overlaps.** Misharu's Penance is "a weaken on the breaker" (the Arsenal's, briefed), so there
    would be two weakens with different triggers. The Aphelion detonator blows the same Cryo.
 5. **Names.** Mammoth and Mastodon are both on the reserved list.
 
 ### The mole, a drill tank
 
-This is a shape with no verb yet. Claude's directions:
+This is a shape with no verb yet. Claude's lean, in "Ten a maker", is that every weapon it fires
+breaches, paid in negative cooling. The directions from the first round:
 
 - **Under the wall.** On the map it tunnels under walls, the first ground machine past one. A map
   rule alone is a weak identity (section 7), so it would want a fight half too.
@@ -527,6 +628,9 @@ This is a shape with no verb yet. Claude's directions:
   the time-shifter's shift on the same bench.
 
 ### The shield-basher
+
+"Ten a maker" makes this Minerva's cut as a chassis, keeping it as a component: a shield bash
+that spends the Armoured an ally's brace gave it this turn. These holes are why.
 
 **The holes.**
 
@@ -579,9 +683,12 @@ Recorded in its brief, `docs/briefs/minerva_hedgehog.md` (Ryan, 4 November).
 
 In the order they unblock work:
 
-1. **Which to take forward first, and the counts.** Do the merges close the counts: the Static
-   machine as Aphelion's shock unit, the aura-shifter folded into the Macross, and one Cryo
-   detonator or two? Which Minerva idea waits?
+1. **Ten a maker** (Ryan's target, 4 November). Does ten hold for the Arsenal too? Is the
+   shield-basher Minerva's cut (or the mole)? Do the two moves to the Arsenal stand (the Zoids
+   walker, the Cryo detonator as the frost figure)? Do the merges stand (Static as the shock unit,
+   the aura-shifter into the Macross, the status detonator into the jellyfish), and which half of
+   the jellyfish merge carries? What should take the open slots (Aphelion's at tier two, the
+   Arsenal's)?
 2. **The lure tank.** Its base armour, and whether the floor of 1 (section 12's Armadillo question)
    lands with it. This is the tier-one front that would let the Armadillo move to tier two.
 3. **Static.** Whether a discharge cascades, the triangle on strikes guns, whether it goes through
