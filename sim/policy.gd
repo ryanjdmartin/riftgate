@@ -614,6 +614,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# The Needletail's gate: a setup it spends is Rapid once a round, so the machine acts
 		# again, about the die's own average blow.
 		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	score += rapid_worth(ms, f, quick)   # a plain Rapid entry's action again (4 November)
 	# The Forge (the Musk Ox's): the gun's price in ammo, at what an ammo buys; the cluster
 	# cannon's refund, an ammo for every foe its blows reach, as far as the magazine has room.
 	var price := sk.ammo_price_of(ms, f)
@@ -1336,9 +1337,10 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 		# worth, wherever the die was dropped.
 		var plain := f.duplicate_face()
 		plain.reaches_all = false
+		plain.keywords.erase(Face.Keyword.RAPID)   # its action again counted once, below, not once a machine
 		for w in sk.reached_machines(ms, f):
 			score += machine_spend_score(sk, ms, w, plain)
-		return score
+		return score + rapid_worth(ms, f, Effects.quick_turn_live(ms.unit, f))
 	match f.kind:
 		Face.Kind.SHIELD:
 			score = shield_score(sk, who, sk.shield_amount(ms, f, who), f.has(Face.Keyword.OVERSHIELD), ms)
@@ -1386,7 +1388,22 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 		score += float(mini(n, ms.ammo_max - ms.ammo)) * ammo_worth(sk, ms)
 	if f.heat > 0:
 		score -= heat_cost(sk, ms, f)
+	score += rapid_worth(ms, f, Effects.quick_turn_live(ms.unit, f))   # a plain Rapid entry's action again (4 November)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
+
+
+## What a plain Rapid entry's action again is worth (4 November; Ryan: "If the bot doesn't value
+## rapid property, it probably should be fixed"): spent, the die rolls again, never onto the entry
+## just spent, and its machine acts again, about the die's own average blow, read plainly so the
+## scorer never asks itself (as the rage's, the reset gun's and the Horn's are). Nothing for a spend
+## the Needletail's gate makes Rapid (`quick`, valued as its own), nor on a stepping die, whose
+## cycle plan reads the chamber its Rapid steps to (cycle_chain). The bot had valued none, so the
+## Laminar Deflector, the Pulse Vacillator, the Cryo Flinger, the Musk Ox's Quick Reload and the
+## Immelmann Booster's own action again were each worth only what they did once.
+static func rapid_worth(ms: Skirmish.MechState, f: Face, quick: bool) -> float:
+	if f == null or quick or not f.has(Face.Keyword.RAPID) or Effects.steps_die(ms.unit):
+		return 0.0
+	return ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 
 
 ## What an ammo is worth to a forging machine (the Musk Ox's): a share of the best damage a gun

@@ -903,6 +903,57 @@ func test_greedy_turns_a_stepping_die_toward_a_better_chamber() -> void:
 	assert_eq(sk.rerolls_left, 2, "one reroll spent")
 
 
+## A plain Rapid entry (4 November): spent, its machine acts again, so the bot values it at its
+## blow plus the die's own average blow, where it had valued the blow alone.
+func test_greedy_values_a_rapid_entry_by_its_action_again() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var quick := Face.attack(5, L, [K.RAPID])
+	var plain := Face.attack(5, L)
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.of([quick, plain, Face.attack(5, L)]), 40, 100))
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var foe: Foe = sk.front[0]
+	var extra := pol.attack_score(sk, ms, quick, foe) - pol.attack_score(sk, ms, plain, foe)
+	assert_true(absf(extra - Policy.ROLL_AGAIN_WEIGHT * 5.0) < 0.001, "the action again: the die's average blow, 5")
+
+
+## The same for a Rapid shield (the Laminar Deflector's kind), spent on its own machine.
+func test_greedy_values_a_rapid_shield_by_its_action_again() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var quick := Face.shield(6)
+	quick.keywords = [K.RAPID]
+	var plain := Face.shield(6)
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.of([quick, Face.attack(4, L), Face.attack(4, L)]), 0, 100))
+	sk.add_foes([_ghoul(500, 6)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var extra := pol.machine_spend_score(sk, ms, ms, quick) - pol.machine_spend_score(sk, ms, ms, plain)
+	assert_true(absf(extra - Policy.ROLL_AGAIN_WEIGHT * 8.0 / 3.0) < 0.001, "the action again: two fours over three entries")
+
+
+## A stepping die's Rapid is the cycle plan's (cycle_chain reads the chamber it steps to), so a
+## spend's own score adds nothing for it.
+func test_a_stepping_die_rapid_entry_adds_no_action_again_to_its_spend() -> void:
+	var pol := Policy.make(Policy.GREEDY)
+	var quick := Face.attack(5, L, [K.RAPID])
+	var plain := Face.attack(5, L)
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([quick, plain, Face.attack(5, L)]), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var foe: Foe = sk.front[0]
+	assert_true(absf(pol.attack_score(sk, ms, quick, foe) - pol.attack_score(sk, ms, plain, foe)) < 0.001, "the cycle plan reads it, not the spend")
+
+
 ## A stepping die's cycle (3 November): the greedy bot weighs where the dial rests for the next
 ## round, so it holds a chamber when the one after it opens the next round better than now.
 func test_greedy_holds_a_stepping_die_to_open_the_next_round_on_its_better_chamber() -> void:
