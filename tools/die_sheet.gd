@@ -119,8 +119,8 @@ func _kinds() -> Array:
 	return [
 		["Weapon, direct", "the sight, its blow inside;\nthe line straight: Direct", _die(Face.attack(4))],
 		["Weapon, indirect", "the line lobbed:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
-		["Weapon, strikes", "a strike's blow, four\nstrikes a spend: the widest", _die(burst)],
-		["Weapon, over a foe", "the Storm Petrel's blow\nand its zap, as wide", zap],
+		["Weapon, strikes", "a strike's blow inside,\nits strikes beside", _die(burst)],
+		["Weapon, over a foe", "the Storm Petrel's blow\nand zap, stepped down", zap],
 		["Debuff, direct", "gear, what it lays inside\n(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
 		["Debuff, indirect", "the gear holding Lure,\nthe line lobbed", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
 		["Buff", "spent on a machine: its\nstatus inside, its stacks", _die(Face.buff("overcharged", 2))],

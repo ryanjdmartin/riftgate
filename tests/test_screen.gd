@@ -170,10 +170,10 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 
 
 ## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:
-## "Rolled damage was just cut in another session so you can measure max width just with the
-## multi-strikes text"): a strike's blow and its strikes ("2×4") is the widest, measured at
-## DieFaceView.NUMBER_SIZE; it fits DieFaceView.NUMBER_ROOM, the room sits inside the sight's
-## ring, and every weapon's, shield's and vent's number in content fits it.
+## "you can measure max width just with the multi-strikes text"; 4 November, a weapon's strikes
+## beside its sight as equipment's stacks are): a two-digit blow is the widest the sight holds,
+## measured at DieFaceView.NUMBER_SIZE; it fits DieFaceView.NUMBER_ROOM, the room sits inside the
+## sight's ring, and every weapon's, shield's and vent's number in content fits it.
 func test_every_number_a_main_mark_holds_fits_at_one_size() -> void:
 	var mono := Hud.mono()
 	var px := DieFaceView.NUMBER_SIZE
@@ -188,15 +188,16 @@ func test_every_number_a_main_mark_holds_fits_at_one_size() -> void:
 		if not (f.is_weapon() or f.kind == Face.Kind.SHIELD or f.kind == Face.Kind.VENT):
 			continue
 		most = maxi(most, f.strikes)
-		var text := DieFaceView.blow_text(f, str(f.power))
+		var text := str(f.power)
 		assert_true(width.call(text) <= DieFaceView.NUMBER_ROOM, "%s: %s fits at the one size (%.0f)" % [cid, text, width.call(text)])
 	assert_true(most > 1, "content strikes more than once (%d)" % most)
-	var burst := Face.attack(8)
+	assert_true(width.call("12") <= DieFaceView.NUMBER_ROOM, "the widest, a buffed two-digit blow, fits (%.0f)" % width.call("12"))
+	var burst := Face.attack(2)
 	burst.strikes = most
-	var widest := DieFaceView.blow_text(burst, "8")
-	assert_eq(widest, "8×%d" % most, "a strike's blow, then its strikes")
-	assert_true(width.call(widest) <= DieFaceView.NUMBER_ROOM, "the widest, a buffed blow struck the most times, fits (%.0f)" % width.call(widest))
-	assert_true(width.call("4+2") <= DieFaceView.NUMBER_ROOM, "and the Storm Petrel's blow and zap over a foe")
+	var d := DieFaceView.new()
+	d.set_face(burst)
+	assert_eq(DieFaceView.die_number(burst), "2", "a weapon's number is a strike's blow alone; its strikes stand beside the sight")
+	d.free()
 	var s := DieFaceView.MAIN_W * 0.5
 	var ring := s * Glyphs.SIGHT_RING - 1.2   # the ring's inner edge, half its line in
 	var corner := Vector2(DieFaceView.NUMBER_ROOM * 0.5, mono.get_ascent(px) * 0.4).length()

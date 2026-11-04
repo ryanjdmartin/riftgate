@@ -41,28 +41,31 @@ const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 const SLOT_AT := Vector2(10, 28)   # the place's numeral, its baseline tucked under the cut corner, clear of the main mark
 const SLOT_SIZE := 18
 const MAIN_Y := 45.0       # the main mark's centre, what the entry delivers inside it, clear of the place's numeral
-const MAIN_W := 68.0       # the sight's width, its ring holding NUMBER_ROOM (a ring reads smaller than a plate as wide)
+const MAIN_W := 60.0       # the sight's width, its ring holding NUMBER_ROOM, as wide as the gear (a strike's count beside it, not inside)
 const COMBO_W := 60.0      # the shield with the steam, seated COMBO_DY lower (its top clear of the place's numeral)
-const COMBO_DY := 2.0
+const COMBO_DY := 0.0
 const COMBO_SIZE := 24     # its two numbers, a size down so the pair has room (Ryan, 3 November: "The shield-vent combo is squished")
 const SHIELD_W := 54.0     # the shield alone, seated SHIELD_DY lower, its top corner clear of the numeral (VIII)
 const SHIELD_DY := 2.0
 const GEAR_W := 60.0       # the gear's, its teeth weighing more than the sight's ticks, clear of the numeral too
 ## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:
-## "Rolled damage was just cut in another session so you can measure max width just with the
-## multi-strikes text"): a multi-strike blow with its strikes, three characters ("2×4"), as wide
-## as the Storm Petrel's blow and zap over a foe ("4+2"), 45 pixels in the mono face at 28; a test
-## measures it. Past it (a two-digit blow struck three times) a number steps down until it fits.
+## "you can measure max width just with the multi-strikes text"; 4 November, the strikes beside
+## the sight as equipment's stacks are: "Would let the crosshair fit better, wouldn't it, if we
+## don't need a X in there?"): a two-digit blow, 30 pixels in the mono face at 28, the room 32; a
+## test measures it. Past it (the Storm Petrel's blow and zap over a foe, "4+2") a number steps
+## down until it fits.
 const NUMBER_SIZE := 28
-const NUMBER_ROOM := 45.0
-const AIM_Y := 88.0        # whom it reaches, under the main mark, clear of the costs below (Ryan, 3 November: "leaving space for the bottom costs row to breathe")
+const NUMBER_ROOM := 32.0
+const AIM_Y := 86.0        # whom it reaches, under the main mark, clear of the costs below (Ryan, 3 November: "leaving space for the bottom costs row to breathe")
 const AIM_W := 34.0        # every targeting mark one width, the lines of fire and the three hexes alike (Ryan, 2 November)
 const VENT_W := 60.0       # the vent's plate and its steam, its number in the plate (Glyphs.VENT_NUMBER)
 const LINING := 4.0        # the frame's lining, this far inside its border (Ryan, 3 November: "The actual chamfered outer box of the die can be adjusted too")
 const ACCENT := 9.0        # the arms of the accents outside the frame's square corners
 const ACCENT_OUT := 3.5    # how far outside the border the accents stand
 const BESIDE := Vector2(28.0, 30.0)   # what else a spend does, from the main mark's centre: its strikes, a status's stacks, a blast
-const COST_Y := 114.0      # the costs' baseline along the foot
+const BESIDE_SIZE := 18    # its text, a size up so it reads (Ryan, 4 November: equipment's "X2 ... a bit hard to see")
+const BESIDE_STEP := 19.0  # one above another
+const COST_Y := 111.0      # the costs' baseline along the foot, clear of the frame's lining (Ryan, 4 November: "Make sure the costs row doesn't touch the bottom")
 const COST_ICON := 14.0    # a cost's mark
 const COST_SIZE := 16      # and its number
 
@@ -367,31 +370,34 @@ func _draw() -> void:
 				_number(mono, held[1], at + Vector2(half * 0.46, 0.0), px, faded.call(Palette.HEAT))
 		"ammo":
 			if not num.is_empty():
-				var px: int = mono_px.call(num, NUMBER_ROOM - 26.0, NUMBER_SIZE)
+				var px: int = mono_px.call(num, NUMBER_ROOM, NUMBER_SIZE)   # its own room, beside its shells
 				var w := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 				var x0 := mc.x - (26.0 + w) * 0.5
 				Glyphs.draw(self, "ammo", Vector2(x0 + 10.0, mc.y), 22, faded.call(Palette.SELECT), 2.2)
 				_number(mono, num, Vector2(x0 + 26.0 + w * 0.5, mc.y), px, faded.call(Palette.SELECT))
 		"weapon", "shield", "vent":
 			if not num.is_empty():
-				var text := blow_text(face, num)
+				var text := num
 				var at := mc + (Vector2(0.0, SHIELD_DY - 4.0) if mark == "shield" else (Vector2(0.0, VENT_W * 0.5 * Glyphs.VENT_NUMBER) if mark == "vent" else Vector2.ZERO))
 				var col := Palette.SHIELD if mark == "shield" else (Palette.HEAT if mark == "vent" else Palette.HUD)
 				_number(mono, text, at, mono_px.call(text, NUMBER_ROOM, NUMBER_SIZE), faded.call(col))
-	# What else the spend does, small beside the main mark, each by its mark: a status's stacks, the
-	# ammo a vent also loads, a vent's blast at a random foe (the Whip Scorpion's).
+	# What else the spend does, small beside the main mark, each by its mark: a weapon's strikes (4
+	# November: as equipment's stacks are, "how would that look for weapons?"), a status's stacks,
+	# the ammo a vent also loads, a vent's blast at a random foe (the Whip Scorpion's).
+	if face.strikes > 1 and face.is_weapon() and not dark_now:
+		beside.push_front(["", "×%d" % face.strikes, ink])
 	if face.reloads_ammo > 0 and face.power > 0 and not dark_now:
 		beside.append(["ammo", str(face.reloads_ammo), faded.call(Palette.SELECT)])
 	if blast > 0 and face.kind == Face.Kind.VENT and not dark_now:
 		beside.append(["blast", str(blast), faded.call(Palette.HEAT)])
 	for i in range(beside.size()):
 		var a: Array = beside[i]
-		var at := mc + BESIDE + Vector2(0.0, -i * 17.0)
+		var at := mc + BESIDE + Vector2(0.0, -i * BESIDE_STEP)
 		var tx := at.x
 		if not str(a[0]).is_empty():
-			Glyphs.draw(self, str(a[0]), Vector2(at.x + 6.0, at.y - 5.0), 12, a[2], 1.6)
-			tx += 13.0
-		draw_string(mono, Vector2(tx, at.y), str(a[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, a[2])
+			Glyphs.draw(self, str(a[0]), Vector2(at.x + 6.0, at.y - 6.0), 14, a[2], 1.8)
+			tx += 15.0
+		draw_string(mono, Vector2(tx, at.y), str(a[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, BESIDE_SIZE, a[2])
 	# Whom it is aimed at, under the main mark, one width (Ryan, 2 and 3 November): a line of fire
 	# breaking into dashes, straight (Direct) or lobbed (Indirect); the three hexes for a piece
 	# spent on machines.
@@ -485,15 +491,6 @@ func _dress(rect: Rect2, border: Color, accents: bool) -> void:
 func _number(font: Font, t: String, c: Vector2, px: int, col: Color) -> void:
 	var w := font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
 	draw_string(font, Vector2(c.x - w * 0.5, c.y + font.get_ascent(px) * 0.36), t, HORIZONTAL_ALIGNMENT_LEFT, -1, px, col)
-
-
-## What a main mark holds as text: the number (`num`, what the die prints or the screen's live
-## blow), and a weapon's strikes after it ("2×4": a strike's blow, so many strikes a spend; the
-## widest a main mark holds, which sets NUMBER_SIZE).
-static func blow_text(f: Face, num: String) -> String:
-	if f != null and f.is_weapon() and f.strikes > 1 and not num.is_empty():
-		return "%s×%d" % [num, f.strikes]
-	return num
 
 
 ## How much a spend does, as the die prints it inside its main mark: a weapon's blow or range, a

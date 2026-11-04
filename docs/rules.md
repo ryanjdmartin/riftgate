@@ -145,9 +145,9 @@ defeat when every machine is wrecked. There is no round limit.
   along the foot, its keywords down the edge. Each main mark wears a lining, a thin line inside
   it, and the die's frame does too, with accents standing outside its four corners. A weapon is
   a sight, its ring broken where four heavy ticks cross it, in a little and out to its edge, a
-  broken circle inside it and a thin whole one round it, its blow inside, and a weapon that strikes more than once its strikes after it (2×4, a
-  strike's blow and the strikes a spend). Every number a main mark holds is one size, the size
-  the widest fits, a strike's blow and its strikes; equipment, a
+  broken circle inside it and a thin whole one round it, a strike's blow inside, and a weapon
+  that strikes more than once its strikes beside it (×4), as equipment's stacks are. Every
+  number a main mark holds is one size, the size the widest fits, a two-digit blow; equipment, a
   buff or a debuff, is gear, a cog of eight teeth, holding what it grants or lays and no
   number: a buff's status (its stacks beside the gear), a debuff's first keyword that does
   something to a foe in content's order (a reach, an area and Rapid stay on the edge), or the
@@ -159,10 +159,11 @@ defeat when every machine is wrecked. There is no round limit.
   left, its cooling on the right, each in its colour, a bar between, a size down from the rest. A reload
   cools nothing (the Musk Ox's Quick Reload, its one piece): its shells and the ammo it loads
   are its whole mark. The targeting marks are one width: under an entry aimed at a foe, a line of
-  fire, a solid run breaking into ever smaller dashes, straight for Direct and gently lobbed for
-  Indirect; under one spent on a machine, three hex cells sharing their edges, the middle its
+  fire, a solid run breaking into two ever shorter dashes with room between, every piece one
+  thickness, straight for Direct and lobbed low for Indirect; under one spent on a machine, three hex cells sharing their edges, the middle its
   own machine, a lit one a machine it may be spent on.
-  What else a spend does sits small beside the main mark (a status's stacks, a vent's blast). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks, a
+  vent's blast). A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
 

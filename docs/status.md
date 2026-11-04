@@ -25,7 +25,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 901 tests, 209,148 checks, green on `ccr-bb178c9b-l6airv` (3 November: Ryan's playtest
+- Tests: 901 tests, 209,147 checks, green on `ccr-bb178c9b-l6airv` (4 November: Ryan's playtest
   list of 2 November and the die's marks of 3 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -216,19 +216,21 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   machine's body), keywords down the edge. The main marks (3 November: "The weapon faces don't
   really read weapon to me, nor the equipment faces"; then the polish: "extra little flairs"):
   a weapon's sight (its ring broken where four heavy ticks cross it, an inner broken circle, a
-  thin outer one) holding its blow and its strikes (2×4; every number one size, set by that
-  text, the widest now rolled damage is cut: "you can measure max width just with the
-  multi-strikes text"), equipment's gear holding what it grants or lays (a buff's status, a
+  thin outer one) holding a strike's blow, its strikes beside it as equipment's stacks are (4
+  November: "how would that look for weapons? Would let the crosshair fit better"; every number
+  one size, set by a two-digit blow), equipment's gear holding what it grants or lays (a buff's status, a
   debuff's first effect keyword, the star for a rule of its own; never twice on the edge), the
   shield holding its number in the shield's colour, a vent's plate (cut on its top corners)
   holding its number in heat's with steam and thin waves rising off it, the Wake Diffuser's and
   the Sutler's Hoist's shield with the steam over its whole top, "shield | cool" a size down; a
   reload its shells and its ammo; every mark lined inside and the die's frame dressed to match
   (a lining, accents standing outside its four corners). The targeting marks are one width, the
-  costs below given room: a line of fire breaking into ever smaller dashes, straight for Direct
-  and gently lobbed for Indirect ("we had it right with straight versus curved before"), his
-  three hex cells for a machine; the benched marks are `docs/looks/die_marks_candidates.png`,
-  `docs/looks/die_polish_candidates.png` and `docs/looks/die_polish_candidates_2.png`. The self and ally chips and the buff and debuff arrows gone, the
+  costs below given room and clear of the frame: a line of fire, a solid run and two shorter
+  dashes, every piece one thickness, straight for Direct and lobbed low for Indirect ("we had it
+  right with straight versus curved before"), his three hex cells for a machine; the benched
+  marks are `docs/looks/die_marks_candidates.png` and `docs/looks/die_polish_candidates.png`,
+  `_2.png` and `_3.png` (the last with the sight without its outer circle, five dash patterns and
+  the Storm Petrel's zap three ways: his question, the bible's section 12). The self and ally chips and the buff and debuff arrows gone, the
   foes' intents keeping theirs ("The arrow can be changed but not to the equipment one"); a
   reach over every foe a keyword, Every Foe, and its mirror Every Ally ("Every foe is a targeting
   mode, just like spread, penetrate, and splash"; working names after the foes' Every Machine;

@@ -646,28 +646,36 @@ static func _inset(pts: PackedVector2Array, ctr: Vector2, k: float) -> PackedVec
 
 
 ## A line of fire as a targeting mark, `size` wide (Ryan, 3 November): a long solid run, then
-## dashes each about half the last with the gaps closing a little, the line thinning as it goes;
-## straight (Direct), or along a gentle lob a third as high as it is wide (Indirect).
+## two dashes each well short of the last, with room between (4 November: "more space between
+## segments"), every one the same thickness ("make sure that each segment is the same height");
+## straight (Direct), or along a gentle lob about a sixth as high as it is wide (Indirect: "Flatten
+## the indirect a little").
+const FIRE_RUNS := [0.46, 0.2, 0.08]
+const FIRE_GAPS := [0.13, 0.11]
+
+
 static func _fire_line(ci: CanvasItem, c: Vector2, size: float, color: Color, width: float, lobbed: bool) -> void:
 	var s := size * 0.5
+	var h := size * 0.17
 	var pts := PackedVector2Array()
-	var a0 := c + Vector2(-s, s * 0.3 if lobbed else 0.0)
-	var a1 := c + Vector2(-s * 0.15, -s * 0.9 if lobbed else 0.0)
-	var a2 := c + Vector2(s, s * 0.36 if lobbed else 0.0)
+	var a0 := c + Vector2(-s, h * 0.45 if lobbed else 0.0)
+	var a1 := c + Vector2(-s * 0.15, -h * 1.5 if lobbed else 0.0)
+	var a2 := c + Vector2(s, h * 0.55 if lobbed else 0.0)
 	for i in range(41):
 		var t := i / 40.0
 		pts.append(a0.lerp(a1, t).lerp(a1.lerp(a2, t), t))
 	var total := 0.0
 	for i in range(1, pts.size()):
 		total += pts[i].distance_to(pts[i - 1])
-	var runs := [0.42, 0.22, 0.12, 0.06]
-	var gap := 0.07
-	var room := 1.0 - gap * (runs.size() - 1)
+	var sum := 0.0
+	for v in FIRE_RUNS + FIRE_GAPS:
+		sum += float(v)
 	var at := 0.0
-	for k in range(runs.size()):
-		var b: float = at + float(runs[k]) / 0.82 * room * total
-		_run(ci, pts, at, b, color, width * lerpf(1.3, 0.85, k / float(runs.size() - 1)))
-		at = b + gap * total * (1.0 - k * 0.15)
+	for k in range(FIRE_RUNS.size()):
+		var b: float = at + float(FIRE_RUNS[k]) / sum * total
+		_run(ci, pts, at, b, color, width)
+		if k < FIRE_GAPS.size():
+			at = b + float(FIRE_GAPS[k]) / sum * total
 
 
 ## The stretch of a polyline from arc length `a` to `b`, drawn.
