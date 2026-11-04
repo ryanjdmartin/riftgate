@@ -1,16 +1,26 @@
-"""Night Shift's eleventh round as a pair (Ryan, 3 November, on the tenth): the bass clean.
+"""Night Shift's twelfth round as a pair (Ryan, 4 November, on the eleventh): the guitar's walk on
+one string.
 
-  "Can I get night shift battle with some clean bass options? Or at least only very slightly
-  distorted?"
+  "Are these bass lines playing chords? Can I hear them as singles if so?"
 
-The bass: every part the driven bass played (the walk, the hold under the two synth lines, the
-breakdown's held roots, R's turn) on a finger bass with no drive for the full pair: the driven
-bass's two strings, its finger's thump, its body and its cabinet, evened as a compressor would. In
-a set of whole battle halves beside the tenth round's pair (the synth bass): the finger bass with a
-touch of drive, a slapped bass with its clip taken out, and the slap with the same touch. On a sine
-at a note's peak the driven bass's amp makes 39% harmonic distortion and the tenth round's slap a
-little driven 41%; the clean voices make none and the touch about 5%, an amp just breaking up. Each
-meets the driven bass's level on a phone and in full alike (BASS_VOICES).
+The bass plays single notes; the palm-muted guitar walks the same line in unison and plays every
+note as a power chord, root, fifth and octave (the forge's guitar), so the line sounds in chords over
+the bass. For the full pair the guitar plays one string wherever it walks with the bass, its ghost
+notes and R's tenth with it, pushed into the same gain as hard as the three strings were, which
+meets their level on a phone and in full; the hold keeps its chords, which were Ryan's own call (30
+October: "the walk needs to calm down back to holding the rhythm and chords like your first take"),
+and so do the stop-time hits and the breakdown's ringing chords. A set of whole battle halves on the
+clean finger bass puts it beside the eleventh round's power chords and the guitar on one string
+everywhere but the breakdown (GUITAR_PARTS); the eleventh round's bass set and the map set stay.
+
+The eleventh round's, kept: every part the driven bass played (the walk, the hold under the two
+synth lines, the breakdown's held roots, R's turn) on a finger bass with no drive: the driven bass's
+two strings, its finger's thump, its body and its cabinet, evened as a compressor would, beside the
+synth bass, the finger bass with a touch of drive, a slapped bass with its clip taken out and the
+slap with the same touch. On a sine at a note's peak the driven bass's amp makes 39% harmonic
+distortion and the tenth round's slap a little driven 41%; the clean voices make none and the touch
+about 5%, an amp just breaking up. Each meets the driven bass's level on a phone and in full alike
+(BASS_VOICES).
 
 The tenth round's, kept: R twice as long, sixteen bars in turns of two, each turn giving a different
 voice the lead: the head (the walk with the guitar a tenth over the bass, the hook pushed on the
@@ -31,8 +41,8 @@ through; D the piano's turn and the factory's blended, the riff dark and low as 
 guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
 its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night11.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py m        # the named sets only (b m, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night12.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py m        # the named sets only (g b m, and full for the pair)
 """
 import json
 import os
@@ -549,13 +559,49 @@ BASS_VOICES = {
 }
 BASS = "finger"   # the full pair's ("Can I get night shift battle with some clean bass options?")
 
+# The guitar's strings (Ryan, 4 November, of the eleventh round's clean basses: "Are these bass
+# lines playing chords? Can I hear them as singles if so?"). The bass plays single notes; the guitar
+# that walks the same line in unison plays every note as a power chord (root, fifth and octave), so
+# the line sounds in chords over the bass. GUITAR_PARTS names the guitar's parts that go to one
+# string: the walk with its ghost notes and R's tenth, or those and the hold and the stop-time hits,
+# where the hold's chords were his own call (30 October: "the walk needs to calm down back to holding
+# the rhythm and chords like your first take"). The breakdown's ringing chords stay chords.
+GUITAR_PARTS = {"chords": (), "walk": ("walk", "up"), "all": ("walk", "up", "hold", "stop")}
+GUITAR = "walk"   # the full pair's
+ONE_DRIVE = 1.32  # the one string pushed into the gain as hard as the chord's three strings together (their RMS)
+ONE_LEVEL = 1.0   # pushed as hard, the one string meets the power chords on a phone and in full alike (measured over the whole battle half: within a tenth of a dB)
 
-def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS):
+
+def guitar_one(f, dur, mute=True):
+    """The guitar on one string: the forge's guitar (`guitar_real`, a power chord on three strings)
+    with its root string alone, pushed into the same gain stages as hard as the three were, through
+    the same pick, cabinet and palm."""
+    n = F.n_of(dur)
+    x = F.pluck(f * F.RNG.uniform(0.998, 1.002), dur, bright=F.RNG.uniform(0.4, 0.6), damp=0.993)[:n] * ONE_DRIVE
+    scrape = F.bp(F.noise(F.n_of(0.012)), 2000.0, 7000.0) * F.env_ad(F.n_of(0.012), 0.0002, 0.003) * 0.6
+    x = F.at(x, scrape, 0.0)[:n]
+    y = F.asat(F.hp(x, 600.0) * 3.5 + x * 1.2, 1.6)
+    y = F.lp(y, 3000.0) + F.bp(y, 700.0, 1400.0) * 0.3
+    x = F.cabinet(F.asat(y * 1.3, 1.2)) * 1.1
+    env = F.env_ad(n, 0.001, min(0.16, dur * 0.5), curve=3.0) if mute else F.env_ad(n, 0.001, dur * 0.7, curve=2.0)
+    return F.mix(x * env, F.body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3) * 0.61
+
+
+F.NOTE_INST["guitar_one"] = lambda f, d, p: guitar_one(f, d, p.get("mute", True))
+
+
+def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
-    voice (BASS_VOICES)."""
+    voice (BASS_VOICES); `guitar` which of the guitar's parts go to one string (GUITAR_PARTS)."""
     up_octave, by = SPLITS[split]
+    one = GUITAR_PARTS[guitar]
+
+    def strings(part, v):
+        # The guitar's part on one string where `guitar` says so: the voice stays in its place in
+        # the list, so every other voice keeps its seed.
+        return dict(v, inst="guitar_one", gain=v["gain"] * ONE_LEVEL) if part in one else v
     p = lambda *a, **k: P.part(call, *a, **k)   # noqa: E731
     riff = p("bass", "D", gain=0.34)
     voices = []
@@ -585,18 +631,18 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         # sixteenth on top: the guitar on its interval over the bass in the later spot, the bass on
         # the riff in D, and on its own in the bass's turn.
         voices += [
-            {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * g, "octave": -1, "pat": {s: x for s, x in parts[key].items() if s != UP}},
+            strings("walk", {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * g, "octave": -1, "pat": {s: x for s, x in parts[key].items() if s != UP}}),
             {"inst": "bass_real", "mode": "riff", "gain": 0.27 * g, "hold": 0.9, "octave": -1, "params": {"drive": 3.5},
              "pat": {s: x for s, x in parts[key].items() if s != "D" or d != "copy"}},
-            {"inst": "guitar_real", "mode": "riff", "gain": UP_GAIN * g, "octave": up_octave, "pat": {s: moved(x, by) for s, x in parts[key].items() if s == UP}},
+            strings("up", {"inst": "guitar_real", "mode": "riff", "gain": UP_GAIN * g, "octave": up_octave, "pat": {s: moved(x, by) for s, x in parts[key].items() if s == UP}}),
             {"inst": "bass_real", "mode": "riff", "gain": 0.27 * g * BASS_SOLO, "hold": 0.9, "octave": -1, "params": {"drive": 3.5}, "pat": parts["bass_" + key]},
         ]
     voices += [
         # The hold under the hook and the arpeggio together.
-        {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * HOLD, "octave": -1, "pat": parts["hold_guitar"]},
+        strings("hold", {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * HOLD, "octave": -1, "pat": parts["hold_guitar"]}),
         {"inst": "bass_real", "mode": "riff", "gain": 0.27 * HOLD, "hold": 0.9, "octave": -1, "params": {"drive": 3.5}, "pat": parts["hold_bass"]},
         # Stop-time's hits: the guitar let ring and the bass on each bar's one.
-        {"inst": "guitar_real", "mode": "riff", "gain": 0.45, "octave": -1, "hold": 1.0, "params": {"mute": False}, "pat": parts["stop_guitar"]},
+        strings("stop", {"inst": "guitar_real", "mode": "riff", "gain": 0.45, "octave": -1, "hold": 1.0, "params": {"mute": False}, "pat": parts["stop_guitar"]}),
         {"inst": "bass_real", "mode": "riff", "gain": 0.27, "hold": 1.0, "octave": -1, "params": {"drive": 3.5}, "pat": parts["stop_bass"]},
         # The riff in D (on the driven bass and the crunch synth as the fourth round had it, the
         # map's dark synth alone, or the crunch synth alone two bars in four), held roots through
@@ -713,6 +759,11 @@ def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR):
 
 
 SETS = [
+    {"id": "g", "half": "battle", "title": "The guitar over the bass, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The battle half from the top on the clean finger bass, the guitar that walks the same line on its power chords or on one string. Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("g0", "The guitar's power chords", "As the eleventh round's pair had it: every note the guitar walks with the bass a power chord, root, fifth and octave, over the bass's single note.", {"guitar": "chords"}),
+              ("g1", "One string where it walks with the bass", "The walk, its ghost notes and R's tenth on one string, so the line is single notes; the hold's chords and the stop-time hits kept (the full pair's).", {"guitar": "walk"}),
+              ("g2", "One string everywhere", "The hold and the stop-time hits on one string too; only the breakdown's ringing chords stay chords.", {"guitar": "all"})]},
     {"id": "b", "half": "battle", "title": "The bass clean, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
      "note": "The battle half from the top, the bass on each voice wherever it plays (the walk, the hold, the breakdown's held roots). Switch rows anywhere: each carries on from the same beat.",
      "rows": [("b0", "The synth bass", "As the tenth round's pair had it: the crunch synth dark and soft, 3 dB under the driven bass on a phone and 3 dB over it in headphones.", {"bass": "synth"}),
@@ -725,7 +776,7 @@ SETS = [
      "rows": [("m0", "The muted guitar as it was", "Its rhythm in eighths on the roots, as the shipped map half plays it.", {"guitar": True}),
               ("m1", "Without it", "Everywhere in the full pair: the groove, the lead's section and the groove again.", {"guitar": False})]},
 ]
-PAIR = {"id": "night_shift_r11", "title": "Night Shift, round eleven"}
+PAIR = {"id": "night_shift_r12", "title": "Night Shift, round twelve"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -785,7 +836,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night11.json")
+    path = os.path.join(P.OUT, "night12.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -797,7 +848,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night11_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night12_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))

@@ -60,7 +60,7 @@ rebuilds and the five Wainwright & Sutler models), and main took it as a fast-fo
 3 November on his word ("Good place to merge into main, I think, before we continue with
 finalizing the other tracks"); its bible was v0.437 then (the page's version 450). It goes on
 from main's head (`d03ebed`, the suite green there) with the other tracks' rounds: Night Shift's
-eleventh, the bass clean (3 November).
+eleventh, the bass clean (3 November), and its twelfth, the guitar's walk on one string (4 November).
 
 `claude/affectionate-ramanujan-5d24t6` (30 October to 3 November) carried the two Petrels'
 engines on Ryan's go ("go for the ready to build ones", after his question of the 30th on which
@@ -680,7 +680,7 @@ The tasks are the to-do's; this is the index of what waits.
   synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff
   3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
   R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
-  it was beside it). Night Shift on its eleventh (the map's intro without its front and its muted guitar out;
+  it was beside it). Night Shift on its twelfth (the map's intro without its front and its muted guitar out;
   the battle half a whole jam in turns of two bars, 30 October: the guitar and the bass walking
   one line on his rhythms with the arpeggio or the FM hook, never both, holding three-three-two
   6 dB down under the two together, the intro on three-three-two, D the piano's turn and the
@@ -688,7 +688,10 @@ The tasks are the to-do's; this is the index of what waits.
   hand the lead round the band, the guitar a tenth over the bass where it walks, the bass 3 dB down
   everywhere and its voice on trial, clean or with a touch of drive, a finger bass or a slap,
   against the tenth round's synth bass (3 November: "Can I get night shift battle with some clean
-  bass options? Or at least only very slightly distorted?"), the synth
+  bass options? Or at least only very slightly distorted?"), the guitar that walks with it on one
+  string where it had played every note as a power chord (4 November: "Are these bass lines playing
+  chords? Can I hear them as singles if so?"), its chords kept in the hold, beside one string
+  everywhere, the synth
   lines voiced for each turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half
   on its fourth round, its flip retired (31 October: the bells calm in the groove and the lift
   alone, the strings section and the climax off the battle's orchestra, the tune on a plucked
@@ -796,7 +799,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.439 (the
+  `docs/design-bible.html` after every change. This file is v0.439 (the
   page's version 452, published 3 November from `ccr-7effd31a-u5z4gw`: Night Shift's bass clean
   on trial in the track table, three-way merged onto the live v0.438 that another session
   published at 451 with its reads of that day on the Cassowary's, the Whip Scorpion's, the
@@ -811,7 +814,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   a named JRPG entity, the Fiend of Fire, the Gargantuan King, with its rows in the tables) and
   `claude/charming-rubin-h954bp`'s since it landed (a blow on a machine moving it, whether a shot
   crosses the field, a booster's plume or halo by maker, the weapon that fired kicking at its
-  model's business end, the motion notes above). The version numbers on the publishing branch's
+  model's business end, the motion notes above). The live has moved on since (another session's
+  publish of 4 November); Night Shift's twelfth round, a trial with no call yet, stays out of the
+  track row until the next publish from here merges onto it. The version numbers on the publishing branch's
   file and the live agree after every publish. Before republishing, read the live page; if
   another session moved it, publish a three-way merge onto it (`git merge-file` with the
   last-published file as the base, the wrapper's first line and its trailing `</body></html>`
@@ -870,8 +875,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  thirteenth, which settled it, `hold_sketches.py`; Night Shift's eleventh, `night_sketches.py`;
-  The Far Bank's map half's fourth, `far_sketches.py`), at the page's version 23. A round whose files pass a
+  thirteenth, which settled it, `hold_sketches.py`; Night Shift's twelfth, `night_sketches.py`;
+  The Far Bank's map half's fourth, `far_sketches.py`), at the page's version 24. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
