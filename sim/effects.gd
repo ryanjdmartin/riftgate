@@ -231,7 +231,7 @@ const STATUS := {
 	# add is the move's value (golden()); one rage at a time (renew), the next once it is calm.
 	"golden": {"id": "golden", "name": "Golden", "description": "Its blows hit {value} harder and it wears a point of armour until its rage ends; a quarter of its HP lost since it went gold, or a Suppress, breaks it, and it staggers.", "stacking": "renew", "decay": "none",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}, {"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
-	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
+	"risen": {"id": "risen", "name": "Undying", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
 	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
@@ -468,7 +468,7 @@ static func brace_stacks(value: int) -> int:
 
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
-## own buffs (Braced, Empowered, Getting Back Up).
+## own buffs (Braced, Empowered, Undying).
 const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "syrinx_drone"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
@@ -1761,7 +1761,7 @@ static func purgeable(m) -> bool:
 
 ## The buffs a Purge lowers on a foe (28 October; by its number since 2 November): every one it
 ## carries but Guarded, its parts' lock, and its Ward, which turns the Purge away. The ids are
-## the engine's (braced is Armoured, risen Getting Back Up, kindled Empowered); the Nob's Enraged and a golden rage among them (4 November).
+## the engine's (braced is Armoured, risen Undying, kindled Empowered); the Nob's Enraged and a golden rage among them (4 November).
 const FOE_PURGED := ["braced", "kindled", "enraged", "golden", "risen", "primed", "barrier", "regenerating", "numbed"]
 
 

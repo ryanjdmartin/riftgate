@@ -528,7 +528,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += (1.0 - p_kill) * web_score(sk, target)
 	if f.has(Face.Keyword.DISPEL):
 		# Purge (28 October): what every foe the entry reaches carries but Numbed and Guarded,
-		# the target's at the odds it outlives the blow, its Getting Back Up whatever.
+		# the target's at the odds it outlives the blow, its Undying whatever.
 		for foe in sk.reached_by(f, target):
 			if foe == target or foe.alive():
 				score += purge_worth(sk, ms, f, foe, (1.0 - p_kill) if foe == target else 1.0)
@@ -732,7 +732,7 @@ static func roll_gain(who: Skirmish.MechState) -> float:
 
 
 ## What the player's Purge takes off one foe (28 October; placeholders), by what it carries:
-## Getting Back Up the foe's maximum HP, whatever the blow does, since a foe it kills stays down;
+## Undying the foe's maximum HP, whatever the blow does, since a foe it kills stays down;
 ## the rest at the odds the foe outlives the blow (`lives`): a Barrier the biggest weapon blow an
 ## ally still to act shows on it (nothing when the spend's own weapon pops it first), Armoured
 ## its stacks for each allied blow still to land on it this round, Empowered its value, Primed 2 a

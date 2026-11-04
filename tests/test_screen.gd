@@ -1295,7 +1295,7 @@ func test_a_buff_a_purge_put_to_sleep_wears_its_chip_asleep() -> void:
 
 ## The four buffs a foe's specials grant (the ladder's brief, B; 28 October) wear the machines'
 ## chips on a foe, each its own mark: Primed's lit flame never the team's Burning's hollow one,
-## Regenerating's heart never Getting Back Up's star, the Barrier's wall and the Ward's struck ring.
+## Regenerating's heart never Undying's star, the Barrier's wall and the Ward's struck ring.
 func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -1317,7 +1317,7 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 		by[str(r[0])] = r
 	for g in ["primed", "barrier", "ward", "regenerating"]:
 		assert_true(by.has(g), "a %s chip" % g)
-	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Getting Back Up, each its own")
+	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Undying, each its own")
 	# The readout names each chip with its count, never what it does (Ryan, 2 November: "unit popups
 	# don't need the chips descriptions spelled out now that we can tap keywords").
 	if by.has("primed"):

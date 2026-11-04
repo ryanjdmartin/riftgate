@@ -3264,7 +3264,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])
 		"revive_once_ally":
 			# Reraise on an ally (Ryan, 16 October: the promoted Cleric's, cast on the other
-			# party members, never itself): Getting Back Up on one of its own.
+			# party members, never itself): Undying on one of its own.
 			var ally := _unready_ally(f)
 			if ally == null:
 				log.append("%s: %s, and none of its own needs readying" % [f.display_name, str(a.get("name", "readies"))])

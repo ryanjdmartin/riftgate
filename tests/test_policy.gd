@@ -808,7 +808,7 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 
 
 ## The bot's worth of the player's Purge (the ladder's brief, C; 28 October; placeholders), by
-## what the foe carries: Getting Back Up its maximum HP whatever the blow does, a Barrier the
+## what the foe carries: Undying its maximum HP whatever the blow does, a Barrier the
 ## biggest weapon blow an ally still to act shows on it (nothing when its own weapon pops it),
 ## Armoured its stacks for each allied blow to come, Empowered its value, Primed 2 a stack,
 ## Regenerating its value for each action left, a Ward nothing, a bare foe nothing; the attack
@@ -830,7 +830,7 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	var a: Skirmish.MechState = sk.mechs[0]
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a bare foe: nothing")
 	Effects.stack(g, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
-	assert_eq(pol.purge_worth(sk, a, null_field, g, 0.0), 100.0, "Getting Back Up: its maximum HP, whatever the blow")
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 0.0), 100.0, "Undying: its maximum HP, whatever the blow")
 	Effects.remove(g, "risen")
 	Effects.stack(g, Effects.foe_barrier(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 12.0, "a Barrier: the biggest weapon blow an ally still to act shows on it")

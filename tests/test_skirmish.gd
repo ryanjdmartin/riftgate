@@ -7732,7 +7732,7 @@ func test_a_swap_trades_two_foes_or_pulls_one_into_an_empty_slot() -> void:
 
 
 ## Reraise on an ally (Ryan, 16 October: the promoted Cleric's, cast on the other party
-## members, never itself): Getting Back Up on one of its own not yet readied, a party member
+## members, never itself): Undying on one of its own not yet readied, a party member
 ## before the rest, the heaviest hitter among them first; with every one readied the move
 ## has no case to cast, and a readied ally gets back up once, whole.
 func test_a_reraise_readies_one_of_its_own_a_party_member_first_and_never_itself() -> void:

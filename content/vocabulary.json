@@ -957,16 +957,6 @@
    }
   },
   {
-   "id": "exposed",
-   "category": "formation",
-   "name": "Exposed",
-   "codex": "A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in Direct reach.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
    "id": "mine",
    "category": "formation",
    "name": "Mine",
@@ -1975,7 +1965,7 @@
   {
    "id": "risen",
    "category": "status",
-   "name": "Getting Back Up",
+   "name": "Undying",
    "codex": "Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round.",
    "status": "implemented",
    "design": {

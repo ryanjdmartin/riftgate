@@ -264,7 +264,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color)
 		"regenerating":
 			# Regenerating (28 October): the heart's outline with a plus inside it, HP regrown at
-			# each action, so it never reads as Getting Back Up's star.
+			# each action, so it never reads as Undying's star.
 			draw(ci, "heart", c, size, color, width)
 			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.02), c + Vector2(s * 0.3, -s * 0.02), color, width)
 			ci.draw_line(c + Vector2(0, -s * 0.32), c + Vector2(0, s * 0.28), color, width)

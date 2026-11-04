@@ -380,7 +380,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
 - **Purge N** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter, Purge 2): every
   foe the entry reaches loses N stacks of every buff it carries but Guarded (Armoured, Empowered, Enraged,
-  Golden, Getting Back Up, Primed, Barrier, Regenerating, Numbed; an unstackable buff is one stack), after
+  Golden, Undying, Primed, Barrier, Regenerating, Numbed; an unstackable buff is one stack), after
   the blow and with the riders, a debuff's included, so a foe the blow kills stays down and a
   Barrier the blow pops is gone already; a Ward turns it away and stands; a laid shot purges the
   foe it lands on.
@@ -668,10 +668,11 @@ On a foe:
   hit the move's value harder, an add before the factor, and it wears a point of armour. A
   quarter of its HP lost since it went gold breaks it and it staggers: the gold goes and it
   loses its next action (never Numbed: a stagger is no stun piece's, and one already
-  suppressed loses nothing more). A Suppress breaks it too; a Purge strips it. Its chip counts
+  suppressed loses nothing more). A Suppress that lands breaks it too, one a Numbed stack
+  absorbs does not; a Purge strips it. Its chip counts
   the rounds left and the damage that breaks it. It goes gold only while calm (the `calm`
   condition: not gold), so one rage at a time.
-- **Getting Back Up** (buff, Reraise, on itself or from an ally's): after it falls it gets
+- **Undying** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot and at once, unless it self-destructed; its round is
   over, as a split's half's is, and it takes a mine its fall left there.
 - **Numbed** (buff): the rounds until one stun lands. A stun on a Numbed foe strips a stack and
@@ -814,7 +815,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until its
   next action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
   value), brace all (the same on every foe in the fight, through the next round), revive once,
-  revive an ally (Getting Back Up on one of its own, never itself, not readied already: a
+  revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
   rally (Empowered at its value on every other foe on the field, at once), enrage (the bellow: Enraged's feed from then on), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
@@ -944,7 +945,7 @@ when its own rounds run out. A status runs down to zero on its own clock or is t
 both. A status's
 definition may say otherwise: one that renews keeps one grant, its end the later and its
 count the larger (Suppressed, Retaliate), which on an untimed one-stack status (Shocked,
-Getting Back Up, Guarded) means a second grant changes nothing. Nothing writes to
+Undying, Guarded) means a second grant changes nothing. Nothing writes to
 a stat.
 
 ## The battlefield
@@ -1017,8 +1018,9 @@ a stat.
   order's pack and every machine ordered onto it.
 - **A fight** is at the target's hex. Every other pack whose ring covers that hex joins (no
   chaining); machines whose attack range (2) covers it may join. Afterwards each machine in
-  it has used its action, wrecks leave, a pack keeps only its survivors, by member, and Rift
-  Pressure does not tick: it ticks on the map alone.
+  it has used its action, a wreck stays on its hex and blocks it for the battle (not built: today
+  it leaves), a pack keeps only its survivors, by member, and Rift Pressure does not tick: it
+  ticks on the map alone.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
   strength, in content order, the lead first, whose sprite and behaviour the pack wears; a hold
   lists them. A composition is a patrol (a few foes, one machine's fight), a formation (the

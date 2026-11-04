@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 188 implemented, 5 planned, 0 idea.
+Status: 187 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -143,7 +143,7 @@ Status: 188 implemented, 5 planned, 0 idea.
 | **Enraged** | Foe status, from a bellow (the Goblin Nob's). Once the foe has bellowed, every shield, vent or equipment entry the team spends lays a stack on it, and each stack is a point on every blow it lands for the rest of the fight; a weapon feeds nothing. Never spent by a move. Its chip climbs as the stacks do, so the number an intent shows is the number that lands. A Purge lowers the stacks by its number; the bellow goes on, so they gather again. | implemented |
 | **Golden** | Foe status, from a golden rage (the Thunder Ape's). Its blows hit its rage's value harder and it wears a point of armour for the rounds its rage says, its chip counting them down with the damage that breaks it. A quarter of its HP lost since it went gold breaks the rage and it staggers: the gold goes and it loses its next action. A Suppress breaks it too; a Purge strips it. Calm again, it may go gold again. | implemented |
 | **Empowered** | Foe status, from a rally, landing on every other foe on the field the moment the rally does. Its next move hits harder by the rally's value, and that move spends it, whatever it is: a blow lands it, a special gains nothing from it, a Suppress that takes the move takes it too, and a countdown carries it to the blow it lands. A foe acting after the rallier spends it this turn; one that has acted carries it to its next move. An intent counts the rallies on their way, a pulsing chip on a dashed edge saying why, and drops them the moment the rallier is killed, Suppressed or Disrupted. | implemented |
-| **Getting Back Up** | Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round. | implemented |
+| **Undying** | Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round. | implemented |
 | **Silenced** | Machine status, from a foe's silence: its components' keywords are muted through its next round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, its own Cleanse is a plain shield), then wake; its buffs count and its stores fill and spend as ever. Can be cleansed by an ally's Cleanse; a Ward turns the silence away. | implemented |
 | **Swallowed** | Machine status, from a foe's swallow. It cannot act, take damage or be targeted: a blow or a move at every machine passes it by, and no ally can shield, vent or buff it. It comes back when its rounds run out, the moment its swallower falls, or once its swallower has lost a quarter of its HP since the swallow; let go in the player's turn, it acts that round. | implemented |
 | **Guarded** | Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe. | implemented |
@@ -160,7 +160,6 @@ Status: 188 implemented, 5 planned, 0 idea.
 |---|---|---|
 | **Front rank** | Four slots, one a column. Front-rank foes fill these. Always in Direct reach. | implemented |
 | **Back rank** | Four slots behind the front. Back-rank foes hold these. | implemented |
-| **Exposed** | A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in Direct reach. | implemented |
 | **Mine** | A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons and equipment aimed at foes may also be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires. | implemented |
 | **Reinforcements** | Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated. | implemented |
 | **Massive** | A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive. | implemented |

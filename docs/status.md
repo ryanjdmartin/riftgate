@@ -112,7 +112,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (`tools/placeholder_art.py`); the hangar page's foe sprites with filters by kind, tier and
   art. First read at 30 seeds: every elite cell a free win, the lone elites dying in two rounds,
   and 40 HP buying rounds, not threat. Waits on Ryan: the elites' numbers (the massive band, an
-  escort each, or the curveball on the map), the names, the Dullahan as the superboss.
+  escort each, or the curveball on the map) and the names.
 - **The chassis' runner rows** (3 and 4 November): the Cassowary's bot plans its cycle
   (`Policy.cycle_plan`) and at 200 seeds the Cassowary carries a decision under the Cottonmouth;
   the Musk Ox's salvo priced against a reserve; a plain Rapid entry's action valued again
@@ -126,7 +126,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   maker (Aphelion's plumes, Kestrel's halos); a hardpoint's variant and scale per silhouette
   class (`tools/fit_sheet.gd`); micro-models for the Swallowtail's flares and the Musk Ox's
   rockets, shell and casing; shot trails tabled behind SHOT TRAILS. All first cuts for Ryan's
-  judge lines; section 12's render margin is the open question.
+  judge lines; the render margin (a piece fired out cut at the view's edge) is his to judge running.
 - **The Honey Badger's hopper** (31 October): a load a foe its weapons damage, four at most,
   every two loads a point of Ore Plate, the first buff a store grants; "never destroyed" is the
   Reinforced Skeleton module. Read at 30 seeds, Ryan's second fallback landed.

@@ -203,9 +203,8 @@ Wyverns for the Tyrant at tier three). Open:
    wanderer at tiers two and three, on his go ("If you think another golden sun works as a boss or
    elite, feel free to throw it in"): Guarded while its Warding Orb stands, a part that grows back,
    a Mending Orb that cures, a Storm Orb's lightning and the Fuming Orbs it calls, which burst; the
-   kill-order elite and the first in parts (the elites table). Still his to mark: the **Dullahan** as the genre's superboss when that
-   pinned system comes (the bible's section 9), its Djinn Storm a drain of every reroll and
-   store, never an elite, since an armoured headless knight is the Skeleton King's silhouette.
+   kill-order elite and the first in parts (the elites table). The Dullahan stays on the rank-and-file bench (Ryan, 4 November: no boss proposal is
+   pinned to a superboss until what a superboss is, and how it is reached, is known).
    The rest of the series by domain, for later: Tret (a tree, the Meadow), the Killer Ape (the
    Meadow), Toadonpa and Deadbeard (the Marsh, a giant toad and the ghost pirate superboss),
    Avimander and the Storm and Tempest Lizards (the Peak), Poseidon and the Kraken (no sea
@@ -347,7 +346,7 @@ balance the series out a little, never purge it):
 ## Questions for Ryan
 
 - The calls still open are the to-do's Ryan list (the Cinder Tortoise at tier three, the
-  elites' numbers and names, the Dullahan as the superboss) and his content pass.
+  elites' numbers and names) and his content pass.
 - The conversions above; where Omega lives; the Mime.
 
 ## Bench
