@@ -859,7 +859,10 @@ The tasks are the to-do's; this is the index of what waits.
   R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
   it was beside it), and its driven bass reopened (4 November: "I was never 100% satisfied with
   the driven bass"): a set against a real bass (`real_bass.py`) driven as a bassist drives an amp,
-  as written or on the roots, the fifths that doubled the guitar's power chords out. Night Shift on its fourteenth (the map's intro without its front and its muted guitar out, his
+  as written or on the roots, the fifths that doubled the guitar's power chords out, and the roots
+  four ways on his list (throughout, the lifts and F included; the fifths on a second bass or on one
+  bass's two strings into one amp; the climax's fifth chug or one string of it on the fifths; the
+  intro's octave-down register throughout). Night Shift on its fourteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms
   with the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two
@@ -989,9 +992,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.450 (the
-  page's version 463, published 4 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
-  live source whole: the real basses on trial in Night Shift's and Hold The Line's track rows,
+  `docs/design-bible.html` after every change. This file and the live page are v0.451 (the
+  page's version 464, published 4 November from `ccr-7effd31a-u5z4gw`: Hold The Line's roots four
+  ways in its track row; over v0.450 at 463, published by a subagent that read the live source
+  whole: the real basses on trial in Night Shift's and Hold The Line's track rows,
   merged row by row onto the live v0.449 another session published at 462, its rows the standard
   component face, Every Ally and Every Foe, the cooldown a printed cost, the chip rows and END
   TURN asking; over v0.448 at 461, Night Shift's fourteenth round in the track table, the guitar

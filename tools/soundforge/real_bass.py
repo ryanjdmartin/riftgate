@@ -129,8 +129,17 @@ def amplified(x, amp):
     return _padded(low + share * h, cabinet)
 
 
-def real_bass(f, dur, preset="finger", amp="di"):
-    return amplified(string(f, dur, preset), amp)
+FIFTH_SHARE = 0.8   # a double-stop's fifth, on the next string up, plucked a little softer than its root
 
 
-F.NOTE_INST["real_bass"] = lambda f, d, p: real_bass(f, d, p.get("preset", "finger"), p.get("amp", "di"))
+def real_bass(f, dur, preset="finger", amp="di", fifth=False):
+    """A note, or with `fifth` a double-stop: the root and its fifth on two strings plucked together
+    into one amp, so the drive grinds them into each other (their difference tones, the power
+    chord's weight), where two basses each through its own amp stay apart."""
+    x = string(f, dur, preset)
+    if fifth:
+        x = x + string(f * 2.0 ** (7.0 / 12.0), dur, preset) * FIFTH_SHARE
+    return amplified(x, amp)
+
+
+F.NOTE_INST["real_bass"] = lambda f, d, p: real_bass(f, d, p.get("preset", "finger"), p.get("amp", "di"), p.get("fifth", False))

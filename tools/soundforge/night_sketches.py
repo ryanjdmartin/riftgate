@@ -619,26 +619,8 @@ GUITARS = {
     "none": ((), ("walk", "up", "hold", "stop", "ring", "lead")),  # every guitar out, the lead guitar's lines too
 }
 GUITAR = "breakdown"   # the full pair's
-ONE_DRIVE = 1.32  # the one string pushed into the gain as hard as the chord's three strings together (their RMS)
 ONE_LEVEL = 1.0   # pushed as hard, the one string meets the power chords on a phone and in full alike (measured over the whole battle half: within a tenth of a dB)
-
-
-def guitar_one(f, dur, mute=True):
-    """The guitar on one string: the forge's guitar (`guitar_real`, a power chord on three strings)
-    with its root string alone, pushed into the same gain stages as hard as the three were, through
-    the same pick, cabinet and palm."""
-    n = F.n_of(dur)
-    x = F.pluck(f * F.RNG.uniform(0.998, 1.002), dur, bright=F.RNG.uniform(0.4, 0.6), damp=0.993)[:n] * ONE_DRIVE
-    scrape = F.bp(F.noise(F.n_of(0.012)), 2000.0, 7000.0) * F.env_ad(F.n_of(0.012), 0.0002, 0.003) * 0.6
-    x = F.at(x, scrape, 0.0)[:n]
-    y = F.asat(F.hp(x, 600.0) * 3.5 + x * 1.2, 1.6)
-    y = F.lp(y, 3000.0) + F.bp(y, 700.0, 1400.0) * 0.3
-    x = F.cabinet(F.asat(y * 1.3, 1.2)) * 1.1
-    env = F.env_ad(n, 0.001, min(0.16, dur * 0.5), curve=3.0) if mute else F.env_ad(n, 0.001, dur * 0.7, curve=2.0)
-    return F.mix(x * env, F.body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3) * 0.61
-
-
-F.NOTE_INST["guitar_one"] = lambda f, d, p: guitar_one(f, d, p.get("mute", True))
+# The guitar on one string (guitar_one) is pair_sketches', shared with Hold The Line's sketches.
 
 
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,

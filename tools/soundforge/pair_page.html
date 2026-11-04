@@ -157,6 +157,7 @@
 <h2>Round thirteen: Hold The Line, settled</h2>
 <p>Your calls on the twelfth round, and you called the track done. K plays its first eight bars in both halves, closing on E's tense chord (E with B flat and F), which the breath's E resolves. In the map's climax the ticking guitar stays 3 dB up, the bell is 3 dB down and the tine piano on Z's riff is 6 dB down. Nothing raised the choir, so I took your note on the drone to mean what Z does: the choir joins the drone and the strings there, which lifted the pads about 1 dB on a phone. In Z the drone, the strings and the choir now sit 1 dB down, so the choir arrives without the drone growing. The set puts it beside the twelfth round's pair, in case you meant to leave the choir as it was. The full pair on the switch is <strong>Hold The Line, round thirteen</strong>.</p>
 <p><strong>The bass.</strong> Your question of the fourth: yes, the findings reach Hold The Line. Its driven bass is the same guitar string tuned down, through a hot amp, so as a note sustains its overtones climb over the fundamental, from 5 to 14 dB over it on a held low E: a guitar with gain on. And wherever the guitar plays power chords (A, N, B and X) a second driven bass doubles it a fifth above, a guitar's habit on the bass. The bass set puts a real bass on every part the driven bass plays, driven the way a bassist drives an amp: the lows clean under a split, the mids pushed into the drive, the overtones falling away as the note rings. One row keeps the fifths as written; two hold the roots under the guitar's power chords, picked or with fingers. Each sits halfway between the driven bass's level on a phone and in headphones, within about a dB either way. The settled pair stays as it is until you pick.</p>
+<p><strong>The roots, four ways.</strong> The second bass set starts from the picked, driven roots and changes one thing a row. Throughout: the roots go into the lifts too, each bar's root wherever the kick hits, locked with their chug, and into F on the sub's punch once a bar. On the fifths: they were already a second bass, each line through its own amp, so the chords you heard were two basses in parallel fifths. What does sound different is one bass playing both strings into one amp, where the drive grinds the two notes into each other, a thicker and rougher power chord, so the set has both. The climax's guitar: the fifths go to the guitar that plays them at the start of the climax, a palm-muted power chord on each an octave down, at the climax's balance against the section's own chug (which already plays the power chord on the root above the bass), or to one string of that guitar alone. And the octave down: every bass part in the intro's low register throughout, at the chug's root.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-hold"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -199,7 +200,7 @@
 
 <h2>What to listen for</h2>
 <ol class="ask">
-  <li>Hold The Line, settled: the drone held level into Z, against the twelfth round's pair; its driven bass against a real bass, driven, as written or on the roots.</li>
+  <li>Hold The Line, settled: the drone held level into Z, against the twelfth round's pair; its driven bass against a real bass, driven, as written or on the roots; the roots four ways: throughout, a second bass or one bass on both strings for the fifths, the climax's guitar on them, an octave down.</li>
   <li>Night Shift's battle half with the rhythm guitar back in the breakdown, D without the bass, R at one level, on the synth bass; the plucked string 3 dB down, as it was, or 6 dB down; the real basses beside the synth bass.</li>
   <li>The Far Bank's map half with the choir in the intro alone; its cellos on the plucked string, the harp or the soft sub; the strings section's tune 3 or 6 dB under the violins; the climax's level held, or every voice at one level.</li>
   <li>Still open from the first round: the map halves of Full Bore, The Far Bank and The Crossing, and Low Ground's battle half.</li>
@@ -541,7 +542,7 @@
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (hold) buildSets(document.getElementById('sets-hold'), hold.sets.concat(hold.seams || []), ['mz', 'hb']);
+    if (hold) buildSets(document.getElementById('sets-hold'), hold.sets.concat(hold.seams || []), ['mz', 'hb', 'hv']);
     else document.getElementById('sets-hold').innerHTML = '';
     if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['p', 'rb']);
     else document.getElementById('sets-night').innerHTML = '';
