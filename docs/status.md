@@ -210,7 +210,10 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   property, it probably should be fixed"): the bot valued a plain Rapid entry at what it did once,
   never its action again; it now adds the die's own average blow (`Policy.rapid_worth`, as the rage,
   the reset gun, the gate and the Horn were valued), for the Laminar Deflector, the Pulse Vacillator,
-  the Cryo Flinger, the Musk Ox's Quick Reload and the Immelmann Booster's own action. New in
+  the Cryo Flinger, the Musk Ox's Quick Reload and the Immelmann Booster's own action; read at 30
+  seeds on their three carriers (`docs/measurements.md`, 4 November), the pieces are picked more
+  (the Cryo Flinger 9 to 13% of the Armadillo's spends, the Quick Reload 11 to 17%, the Booster from
+  under 2% to 14% alone) and the win rows move a point or two, random play identical. New in
   the runner: a muster's charged spend tallied apart by piece, the gate's free spends and the paints
   cashed, each cell's squared hull lost for its spread, and `--pilot chassis=N` (a what-if heat a
   round, `Skirmish.pilot`, never content).

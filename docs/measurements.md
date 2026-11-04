@@ -4601,3 +4601,29 @@ while the foe stood Exposed.
 Read: alone it is the tier twos' second weakest, a 20-hull interceptor read as a diagnostic; in Kestrel's
 trio it lifts the Sparrowhawk and the Goshawk seven points greedy, the formations from none to half, and
 cuts their hull lost by a third. Its gate fires on most of its setups, and two paints in three are cashed.
+
+## 4 November, a Rapid entry's action again
+
+The bot's fix (`d160f8a`, Ryan: "If the bot doesn't value rapid property, it probably should be
+fixed"): a plain Rapid entry now scores its blow or its spend plus the die's own average blow, its
+action again, where it had scored the blow alone. The three machines carrying such a piece, alone,
+the old bot (`aca3ee9`) against the new, 30 seeds a cell (a direction), no party, the 76 packs in the
+six groups of 3 November: won, random / greedy.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
+|---|---|---|---|---|---|---|---|---|---|
+| Armadillo, old bot | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 0 | 16 / 26 | 83% | 9.8 |
+| Armadillo, new | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 1 | 16 / 27 | 83% | 9.9 |
+| Giant Petrel, old bot | 49 / 76 | 3 / 32 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 20 | 26 / 46 | 67% | 4.8 |
+| Giant Petrel, new | 49 / 76 | 3 / 29 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 17 | 26 / 46 | 67% | 4.7 |
+| Musk Ox, old bot | 81 / 79 | 2 / 19 | 0 / 0 | 55 / 64 | 0 / 0 | 14 / 54 | 41 / 52 | 64% | 7.1 |
+| Musk Ox, new | 81 / 79 | 2 / 21 | 0 / 0 | 55 / 65 | 0 / 0 | 14 / 51 | 41 / 53 | 64% | 6.9 |
+
+Spends, greedy: the Armadillo's two Cryo Flingers 9% of its spends on the old bot, 13% on the new; the Giant
+Petrel's Immelmann Booster under 2% (alone it buys no ally an action) and 14%; the Musk Ox's Quick
+Reload 11% and 17%. Random play comes out identical cell for cell (76 of 76 for each machine).
+
+Read: the fix changes how often the bot picks a Rapid piece, not the rows: the action again always
+happened in play when the piece was spent, and the bot now spends it on its worth. The win rows move a
+point or two either way, inside a 30-seed cell's band. The Musk Ox's Quick Reload cut of 3 November
+was read on the old bot; its design session reads it again.
