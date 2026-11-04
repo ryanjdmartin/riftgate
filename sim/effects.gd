@@ -467,7 +467,7 @@ static func brace_stacks(value: int) -> int:
 
 
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
-## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
+## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Getting Back Up).
 const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "syrinx_drone"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).

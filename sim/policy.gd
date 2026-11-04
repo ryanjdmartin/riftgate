@@ -633,7 +633,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# of heat, at what that shield would have kept this round and after (burn_cost), and the zap it
 	# pays the target, a plain blow of that much on every roll the strikes leave it standing, with
 	# the kill it makes (zap_worth). The heat it saves is heat_cost's, read net of the burn.
-	var burnt := Skirmish.shield_burn(ms, f, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])) if f.is_weapon() and Effects.burns_shield(ms.unit) else 0
+	var burnt := Skirmish.shield_burn(ms, f, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]), f.shield_cost) if f.is_weapon() and Effects.burns_shield(ms.unit) else 0   # a shield cost is paid first (4 November)
 	if burnt > 0:
 		score += zap_worth(sk, ms, target, burnt, outcomes) - burn_cost(sk, ms, burnt)
 	score -= heat_cost(sk, ms, f)

@@ -145,49 +145,35 @@ defeat when every machine is wrecked. There is no round limit.
   no rounds when the status runs down on its own (Empowered).
 - **A debuff** is equipment aimed at a foe (a setter, a swap), spent on a foe in reach as a
   weapon is: its keywords are its whole effect, no effect adds damage to it (Empowered, Spun
-  Up, Primed's burn), and its heat is paid as a weapon's. The die's kinds: Direct, Indirect,
-  Equipment, Shield, Vent, and the blank. Every entry reads one way: one main mark at the top
-  says what it is and holds what it delivers, whom it is aimed at stands under it, its costs run
-  along the foot, its keywords down the edge. Each main mark wears a lining, a thin line inside
-  it, and the die's frame does too, with accents standing outside its four corners. A weapon is
-  a sight, its ring broken where four heavy ticks cross it, in a little and out to its edge, a
-  broken circle inside it and a thin whole one round it, a strike's blow inside, and a weapon
-  that strikes more than once its strikes beside it (×4), as equipment's stacks are. Every
-  number a main mark holds is one size, the size the widest fits, a two-digit blow; equipment, a
-  buff or a debuff, is gear, a cog of eight teeth, holding what it grants or lays and no
-  number: a buff's status (its stacks beside the gear), a debuff's first keyword that does
-  something to a foe in content's order (a reach, an area and Rapid stay on the edge), or the
-  star when its effect is a rule of its own; the edge never shows it twice. A shield is its
-  shield with its number inside, in the shield's colour; a vent is a plate cut on its two top
-  corners, its number inside in heat's colour, three waves of steam rising off its top with two
-  thin ones among them. An entry that shields and cools (the Wake Diffuser, the Sutler's Hoist)
-  is one mark, the shield with the steam rising off its whole top: its shield's number on the
-  left, its cooling on the right, each in its colour, a bar between, a size down from the rest. A reload
-  cools nothing (the Musk Ox's Quick Reload, its one piece): its shells and the ammo it loads
-  are its whole mark. The targeting marks are one width: under an entry aimed at a foe, a line of
-  fire, a solid run breaking into two ever shorter dashes with room between, every piece one
-  thickness, straight for Direct and lobbed low for Indirect, and for a Sweep a whole line along
-  the rank with three ticks rising from it at even steps, a strike to a slot; under one spent on a
-  machine, three hex cells sharing their edges, the middle its own machine, a lit one a machine
-  it may be spent on.
-  What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks).
-  What the machine's passive adds sits in its passive box at the foot of the edge, a dashed box
-  with an arrow into it, as wide as what it holds: a blow added after the strikes, its number
-  by the mark of what pays it (the Storm Petrel's zap, by the shield's, in the shield's colour); a vent's blast at a random foe, by the blast's mark (the Whip
-  Scorpion's); a stepping die's next entry, by its mark and the number it will show, in its
-  kind's colour, equipment by its gear and what it grants or lays, a shield and a vent in one by its two
-  numbers alone (the Cassowary's). The readout says each on a line of its own, headed by the same
-  box. The sight drawn small (a readout's head, a passive box, a chip) is plain, a whole ring and
-  its four ticks. A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
-  weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
-  weapon.
+  Up, Primed's burn), and its heat is paid as a weapon's. A debuff's entry is read as it is
+  spent: the Cottonmouth's drum fires every weapon and equipment it aims at a foe as its shot of
+  4, so a debuff through the drum is a weapon.
+- **The die's face**: the kinds are Direct, Indirect, Equipment, Shield, Vent and the blank, and
+  every entry reads one way. One main mark at the top says what it is and holds what it
+  delivers: a weapon's sight holds a strike's blow, its strikes beside it (×4); equipment's gear
+  holds what it grants or lays and no number (a buff's status with its stacks beside it, a
+  debuff's first keyword that does something to a foe in content's order, or the star for a rule
+  of its own; a reach, an area and Rapid stay on the edge, which never shows a thing twice); a
+  shield its number in the shield's colour; a vent its number in heat's colour; an entry that
+  shields and cools (the Wake Diffuser, the Sutler's Hoist) both numbers in one mark; a reload
+  (the Musk Ox's Quick Reload) its shells and the ammo it loads. Whom it reaches stands under
+  the mark: a line of fire, straight for Direct and lobbed for Indirect, a whole line along the
+  rank for a Sweep; three hex cells for an entry spent on a machine, the middle its own, a lit
+  one a machine it may be spent on. Its costs run along the foot (Costs, below) and its keywords
+  down the edge. What the machine's passive adds sits in its passive box at the foot of the
+  edge, never joined to the blow: a blow added after the strikes by the mark of what pays it
+  (the Storm Petrel's zap by the shield's, in the shield's colour), a vent's blast at a random
+  foe by the blast's mark (the Whip Scorpion's), a stepping die's next entry by its mark and the
+  number it will show (the Cassowary's). The readout says each on a line of its own, headed by
+  the same box. A dark entry is blank, its clock and its turns left along the foot. How each
+  mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
 
 ### Reach
 - **Direct** reaches the front rank, a back-rank foe whose column's front slot is empty, and
   any foe carrying Exposed.
-- **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (which
-  explosives carry which is open: no shell carries Splash, and the Musk Ox's two locked guns
-  do).
+- **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (the Howitzer
+  carries Splash 1 and the Musk Ox's two locked guns Splash; which other explosives carry
+  which is open).
 - **Sweep** reaches any foe and targets its rank: the strikes walk the rank of the foe the
   entry is dropped on from the rank's first filled slot, left to right, one a slot, wrapping
   past the last; an empty column is skipped at any point, a kill's included, so the strikes
@@ -352,8 +338,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   loops moved it (the Zombie Knight's 8 HP, the promoted forms' 32 to 48, a hero's finisher, a
   multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 2 to 5).
   The content's numbers are the stock pass's fills as its loops moved them
-  (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines of 23
-  October by hand at the same scale; placeholders until play.
+  (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines' by hand at the same scale; placeholders until play.
 
 ### Player keywords
 - **Spread N** (id `cleave`): also hits the foes beside the target in its rank, each taking N
@@ -613,11 +598,11 @@ On a machine:
   round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, a
   Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count
   and its stores fill and spend as ever. Cleansable, an ally's Cleanse the way; a Ward turns
-  the silence away. A foe's purge takes every buff a die face bought, every
-  stack, for good; what a store, a form or a passive grants goes for the rest of the enemy's
-  turn and comes back at the start of the player's turn after its start resolves; the stores
+  the silence away. A foe's purge is Purge N too: N stacks off every buff an entry's spend
+  bought, for good, and N of what a store, a form or a passive grants asleep for the rest of the
+  enemy's turn, back at the start of the player's turn after its start resolves; the stores
   stay, and the Ammit's kept Empowered is its passive's own and stays; a Ward turns it away
-  too. A die face bought it when a buff component's spend or a braces rule granted it.
+  too. An entry's spend bought it when a buff component's spend or a braces rule granted it.
 - **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
   a stack for each attack that killed; no cleanse, silence or purge lifts it.
 
@@ -755,7 +740,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   machine aims at a foe in the turn that follows, so a shield, a vent, a buff or a cool weapon plays
   round it. A foe's burn leaves Burning and its scorch
   leaves Scorched, a stack a blow; the Drake's Stoke sets one machine burning, picked as its
-  target is (at random since 24 October: no foe but the Black Mage carries the heat aim), and
+  target is (at random: no foe but the Black Mage carries the heat aim), and
   the Magma Elemental's Eruption, the Black Mage's Fira and the Summoner's Pyroclasm scorch every
   machine.
 
@@ -799,8 +784,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   foes pick in the order they strike and never over-commit: a machine the blows already picked
   would wreck through its shield and armour is passed over while another stands (a blow at
   every machine counts on each; a special, a suppressed foe and a countdown still gathering
-  count nothing). The pick is a commitment, smart as it is made and never after (Slice and
-  Dice's model, Ryan, 26 October): during the player's turn it moves only by a Lure, by the
+  count nothing). The pick is a commitment, smart as it is made and never after (Slice and Dice's model): during the player's turn it moves only by a Lure, by the
   machine leaving the fight (Phased or Swallowed), or by a Disrupt whose foe finds its machine
   gone or out of the fight; a foe whose machine has fallen or is out of the fight when it acts
   strikes the next machine in line, left to right, that stands in the fight, whatever its aim,
@@ -835,8 +819,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   summon,
   rally (Empowered at its value on every other foe on the field, at once), enrage (the bellow: Enraged's feed from then on), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
-  disable, silence (Silenced), purge (every buff a die face bought gone, a store's, a form's
-  or a passive's grant until the start of the player's turn; never a last act's), cleanse
+  disable, silence (Silenced), purge (Purge N: N stacks off every buff an entry's spend bought, for good, and off what a
+  store's, a form's or a passive's grant until the start of the player's turn; the Djinn's Unmake
+  at 1; never a last act's), cleanse
   (every mark the team laid, Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox
   and the Drone, off the most-marked of its own, itself included, the first in strike order on
   a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
@@ -848,7 +833,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   its next move hits its value harder for each), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
-  content carries a silence, a purge or a ward all yet.
+  content carries a silence or a ward all yet; the Djinn's Unmake is the one purge.
 - **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
   riders, every machine included), before anything else and even when it was the last foe,
   since damage sticks for the battle.
@@ -1078,7 +1063,7 @@ a stat.
   the fights its ring covers (2; a final's back-rank hero's 3) and can be attacked
   (a hero carries no move and no hunt of its own: it only ever commands the boss unit); its fight won wins the battle: the fight ends in victory
   only when no foe stands or waits, so its escort falls with it, and a team wrecked after the
-  commander falls has lost the battle (Ryan, 27 October: the whole escort must die, else the
+  commander falls has lost the battle (the whole escort must die, else the
   smallest boss, a final's hero, gets cheaper still). A fight it is in, ordered onto
   it or joined by its ring, takes every machine, wherever it stands and whether or not it has
   fought this turn; nothing moves first (ENGAGE goes straight to the reveal) and nobody

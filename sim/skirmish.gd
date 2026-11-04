@@ -133,7 +133,7 @@ var turn_specials: Array = []
 var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
 var _falls: int = 0   # foes that have fallen this fight, counted as their slots clear: a spend's kills are the difference
 ## A merge's lift on the merger (30 October), granted once its own move has spent what it carried,
-## so the lift rides its next move: foe -> the Kindled it gains.
+## so the lift rides its next move: foe -> the Empowered it gains.
 var _lift_after: Dictionary = {}
 ## The foes the team has killed this fight (30 October), every fall but a foe that went whole (a
 ## Bomb's burst, a part falling with its core) and a foe another took in: what a grudge reads.
@@ -779,8 +779,8 @@ func rallies_now(r: Foe) -> bool:
 ## move as announced: its heal, its death before it acts, a last act, a web's burst, a rally, a
 ## self-destruct) and the round's end. A pick made again (a foe whose machine fell first) is the
 ## next machine in line, so the copy strikes the machine the round will. Nothing random is
-## drawn: a stun Numbed may shrug off and a strike at a random foe among several are held
-## back (`notes`); the
+## drawn: a strike at a random foe among several is held back (`notes`), and a stun on a Numbed
+## foe strips a stack as the fight would; the
 ## reinforcements are the next round's. Returns {"mechs": the forecast's keys for each machine by
 ## index, plus "coming" (the statuses the round lands on it: {id: {"stacks", "name",
 ## "description"}}), "foes": {foe on the field: {"hp", "alive", "struck" (the machines its blows
@@ -2183,8 +2183,8 @@ func _enemy_turn() -> void:
 		# 26 October); a countdown still gathering carries it to the blow it lands, and a foe
 		# that stepped up this round has had its round, so it keeps it for its next.
 		var moves := not f.fresh and not f.gathering()
-		if tick["skip"]:
-			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed at the round's end
+		if tick["skip"] and not _staggered(f):
+			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed at the round's end (a stagger is no stun's, and numbs nothing)
 		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			_foe_turn(f)
 			# A move that landed names its follow-up for next round (30 October); one lost to a
@@ -2195,12 +2195,12 @@ func _enemy_turn() -> void:
 			Effects.remove(f, "kindled")
 			Effects.remove(f, "primed")   # a stoker's priming rides the same move (28 October)
 		if _lift_after.has(f):
-			# A merge's lift (30 October), its own Kindled, riding its next move.
+			# A merge's lift (30 October), its own Empowered, riding its next move.
 			Effects.grant(f, Effects.make(Effects.kindled(int(_lift_after[f])), Effects.SKIRMISH, "foe:" + f.content_id))
 			_lift_after.erase(f)
 		_web_burst(f)
+	_clear_dead()   # before _acted clears: a gold rage its own tick broke staggers the foe out of its next action, not the one it has had
 	_acted.clear()
-	_clear_dead()
 	# Numbed's clock (Ryan, 2 November): a stack goes at the round's end, then a foe that lost its
 	# action to a stun this turn gains its stun resist in stacks, so its chip reads the rounds
 	# until one stun lands.
@@ -3645,7 +3645,7 @@ func mergeable(f: Foe, a: Dictionary) -> Array[Foe]:
 ## A merge (the King Gel's, 30 October): every foe of the move's kinds on the field is taken into
 ## the merger, leaving its slot with no fall (no last act, no split, no kill of the team's, a twin
 ## keeping the slot alone); the merger regrows the HP they had left and its next move hits the
-## move's value harder for each, a Kindled of its own, so thinning them first is the answer.
+## move's value harder for each, an Empowered of its own, so thinning them first is the answer.
 func _merge(f: Foe, a: Dictionary) -> void:
 	var regrown := 0
 	var taken := 0
@@ -3771,6 +3771,13 @@ func _break_golden() -> void:
 
 ## The rage broken: the gold goes and the foe loses its next action, never Numbed (a stagger is
 ## the mode's own, no stun piece's), and one already suppressed loses nothing more.
+func _staggered(f: Foe) -> bool:
+	for m in Effects.live(f):
+		if m.id == "suppressed" and m.source == "stagger":
+			return true
+	return false
+
+
 func _stagger(f: Foe, why: String) -> void:
 	Effects.remove(f, "golden")
 	f.golden_mark = -1
@@ -4469,7 +4476,7 @@ func _tell_turned(turned: Dictionary) -> void:
 ## (Ryan): the foe gains Paradox, deepened like any status its machine applies, and at the
 ## machine's count it is Suppressed and the Paradox clears. Paradox never counts, and the
 ## Suppressed it causes is never told, so it never feeds itself; a Suppress keyword's does
-## count. Numbed is a resistance, not a status.
+## count. Numbed is a buff a Purge lowers and nothing else touches (2 November).
 func _foe_gained_status(foe: Foe, status_id: String) -> void:
 	if status_id == "paradox" or status_id == "numbed" or Effects.turns_mark(foe, status_id):
 		return   # a felled foe's gains count too: a trigger never goes unfired for a death checked last (3 November)

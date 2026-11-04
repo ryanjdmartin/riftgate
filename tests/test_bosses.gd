@@ -1098,6 +1098,57 @@ func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() ->
 	assert_true(errs.any(func(e) -> bool: return e.contains("x_gold") and e.contains("golden's rounds")), "nine rounds of gold is refused")
 
 
+## A stagger is the mode's own, no stun piece's (4 November): it numbs the foe nothing, so the
+## next stun lands and breaks the gold again; and a rage the foe's own tick breaks in the enemy's
+## turn staggers it out of its next action, never the one it has had.
+func test_a_stagger_numbs_nothing_and_a_tick_broken_rage_costs_the_next_action() -> void:
+	var rage := {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 1, "when": "calm", "text": ""}
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(6, I))))
+	sk.add_mech(_mech("B", Die.single(Face.attack(6, I))))
+	var ape := Foe.make("ape", 24, 7)
+	ape.elite = true   # an elite recovers from a stun with Numbed 3, so a stagger that numbed would show
+	ape.actions = [_move("fist"), rage]
+	sk.add_foes([ape])
+	sk.begin()
+	sk.start_round()
+	ape.action = rage
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.has(ape, "golden"), "gold")
+	assert_true(sk.assign(0, ape), "A strikes")
+	assert_true(sk.assign(1, ape), "B strikes: a quarter lost")
+	assert_true(ape.is_suppressed(), "staggered")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(ape, "numbed"), 0, "a stagger numbs nothing")
+	sk.start_round()
+	ape.action = rage
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.has(ape, "golden"), "gold again")
+	assert_true(sk._suppress(ape), "a stun lands, no Numbed in its way")
+	assert_false(Effects.has(ape, "golden"), "and breaks the gold")
+	# Broken by its own tick in the enemy's turn: it acted gold, and loses the next action.
+	var sk2 := Skirmish.new(1, 3)
+	sk2.add_mech(_mech("A", Die.single(Face.attack(1, I))))
+	var ape2 := Foe.make("ape", 24, 7)
+	ape2.actions = [_move("fist"), rage]
+	sk2.add_foes([ape2])
+	sk2.begin()
+	sk2.start_round()
+	ape2.action = rage
+	sk2.end_round()
+	sk2.start_round()
+	assert_true(Effects.has(ape2, "golden"), "gold at 24, a quarter breaks it at 18")
+	Effects.stack(ape2, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 6)
+	ape2.action = ape2.actions[0]
+	sk2.end_round()
+	assert_eq(ape2.hp, 18, "its burn took it to the break")
+	assert_false(Effects.has(ape2, "golden"), "the gold goes")
+	sk2.start_round()
+	assert_true(ape2.is_suppressed(), "and it staggers out of the next round's action, not the one it had")
+
+
 ## The World Eater's pin (4 November, Ryan: "rework the below half attack into a form of its pin,
 ## since that inflicts Defense Down in game, something we don't have"): a crush rider lays
 ## Crushed on the machine, a point more on every blow it takes a stack, through the next round;

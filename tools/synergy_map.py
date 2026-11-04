@@ -91,7 +91,7 @@ KEYWORDS = {
     "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "splash": [("strikes", "sets")],
     "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
     "cleanse": [("burning_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
-    "overshield": [], "rapid": [], "breach": [],
+    "overshield": [], "rapid": [], "breach": [], "every_foe": [], "every_ally": [],
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {

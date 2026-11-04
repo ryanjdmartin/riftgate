@@ -346,8 +346,8 @@ balance the series out a little, never purge it):
 
 ## Questions for Ryan
 
-- The calls still open (above): Gilgamesh, the swallow's release, the escorts, more massive
-  foes, a boss's armour by the tier.
+- The calls still open are the to-do's Ryan list (the Cinder Tortoise at tier three, the
+  elites' numbers and names, the Dullahan as the superboss) and his content pass.
 - The conversions above; where Omega lives; the Mime.
 
 ## Bench
@@ -378,7 +378,7 @@ The ideas set aside, each with what set it aside.
   15 October), carried by Exor.
 - A colossal flail for the Exor homage, its chain up into the rift (Claude's pitch, for an outline
   unlike a weapon standing in the ground): Ryan, 15 October, a hammer or an axe is distinct enough.
-- Darkest Dungeon: not the genre (above).
+- Darkest Dungeon's bosses: not the genre (above); its Collector and Shambler landed as elites all the same under the register of 3 November (an elite is a homage from anywhere), so the bench line held for the bosses alone.
 - Bomb King: waits on the Bomb's verdict in play.
 - Fire Emblem's weapon triangle: the bible refuses a damage-type triangle (section 9).
 - Shin Megami Tensei's demons (Jack Frost, Pyro Jack): demons are the Arsenal's register

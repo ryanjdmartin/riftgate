@@ -20,7 +20,7 @@ come is a forge round for each converted hero (its sprite and its chibi) and con
 |---|---|---|---|
 | Warrior | Meadow, front | The classic party's fighter, every JRPG's first hero, a sword the size of the tank; Slash, Cover (planned), Cleave | Keep (Ryan, 16 October: Dragon Quest's hero is ambiguous). |
 | Martial Artist | Meadow, front | Final Fantasy's monk, Dragon Quest's martial artist, Chrono Trigger's Ayla (content says a cavewoman with a club; she fights barehanded); Flurry, then Counter, Chakra and Hundred Fists, which are Final Fantasy's monk's (Hundred Fists is Final Fantasy XI's) | Stays for now (Ryan, 16 October). The most Final Fantasy of the generic three, by its moves; if it is ever balanced, its homage leans to Ayla, the cavewoman brawler, its moves renamed in plain words. |
-| Thief | Waste, front | Final Fantasy's, Dragon Quest's and Octopath's thief; Mug, Steal, Flee (planned) | **Persona 5's Joker under the plain name** (Ryan, 16 October: still the Thief, for the extra tongue in cheek): masked, a knife and a gun, its calling card the countdown already built, the Steal announced before it lands. Its kit proposed in chat first. |
+| Thief | Waste, front | Final Fantasy's, Dragon Quest's and Octopath's thief; Mug, Steal (Flee struck 2 November: no foe flees but a loot-runner) | **Persona 5's Joker under the plain name** (Ryan, 16 October: still the Thief, for the extra tongue in cheek): masked, a knife and a gun, its calling card the countdown already built, the Steal announced before it lands. Its kit proposed in chat first. |
 | Lancer | Waste, front | Final Fantasy's dragoon (the Jump), Legend of Dragoon; Thrust, Jump, Dragon Dive | Keep (Ryan, 16 October: the dragoon is way too iconic to lose). |
 | White Mage, now the Cleric | Marsh, back | Final Fantasy's white mage, in the series' white robe with the red trim; Dia, Cure, Holy | Renamed the Cleric (Ryan, 16 October), the homage to every white mage and priest, the bench's Priest folded in (their kits would be much alike); the id stays `white_mage`. The red trim, the one thing about it that is only Final Fantasy's, goes at its next redraw. |
 | Necromancer | Marsh, back | Final Fantasy V's necromancer (the Advance version's job) and every bestiary's dark mage; Drain, Raise and Mass Raise, the series' spell names (its Raise revives one's own; ours calls revenants) | Dumped (Ryan, 16 October: the weakest homage); Sciel's hero stands in its place (below). Its art (the sprite, the chibi) came off `art/foes`; the picks keep the sources. Raising the dead stays the Marsh's through its wildlife. |
@@ -212,9 +212,8 @@ marked:
 | The Black Mage (the Black Wizard) | **Meteor** | Gathers a round, then lands on every machine for twice its blow: the genre's last spell. The bosses' slate gives the Behemoth's last act the same name; if both land, one is renamed (Comet is the genre's other word). |
 | The Summoner, Fáfnir's mechanics | **Venom** | Fáfnir answers the circle: its breath gathers a round, then lands on every machine for its blow and lays a stack of Burning on each, the wyrm's venom in the Peak's own language, a telegraph and heat. |
 
-A question beside them: the promoted Thief inherits its hero's planned Flee. At the finale a
-flee has nowhere to go; a move of its own with Flee's id would take its place, or the promoted
-form drops it, or it flees and the finale waits on its return. Ryan's call when Flee is built.
+The Thief's Flee was struck on 2 November (no foe flees but a loot-runner), so the promoted
+Thief inherits no flee; Showtime is its hero's third move.
 
 Set aside (each with what set it aside):
 
