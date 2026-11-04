@@ -121,8 +121,9 @@ finalizing the other tracks"); its bible was v0.437 then (the page's version 450
 from main's head (`d03ebed`, the suite green there) with the other tracks' rounds: Night Shift's
 eleventh, the bass clean (3 November), its twelfth, the guitar's walk on one string, and its
 thirteenth, the guitar out, a bass jam, with The Far Bank's map half's fifth, the choir in the
-intro alone, and its fourteenth, the rhythm guitar back in the breakdown, D without the bass, R at
-one level, the plucked string down, on the synth bass (4 November); it took main again as it landed that day (to `d28308e`: the elites
+intro alone, its fourteenth, the rhythm guitar back in the breakdown, D without the bass, R at
+one level, the plucked string down, on the synth bass, and real basses for both tracks
+(`real_bass.py`, 4 November); it took main again as it landed that day (to `d28308e`: the elites
 session, the randomness pass, the chassis runner rows and `claude/charming-rubin-h954bp`'s weapon
 fire, slumps and micro models).
 
@@ -856,7 +857,9 @@ The tasks are the to-do's; this is the index of what waits.
   synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff
   3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
   R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
-  it was beside it). Night Shift on its fourteenth (the map's intro without its front and its muted guitar out, his
+  it was beside it), and its driven bass reopened (4 November: "I was never 100% satisfied with
+  the driven bass"): a set against a real bass (`real_bass.py`) driven as a bassist drives an amp,
+  as written or on the roots, the fifths that doubled the guitar's power chords out. Night Shift on its fourteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms
   with the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two
@@ -868,7 +871,8 @@ The tasks are the to-do's; this is the index of what waits.
   guitar. Put the the rhythm guitar back in on B"), the plucked string 3 dB down wherever it plays
   on trial ("it pierces so it sounds loud"), the bass 3 dB down everywhere and on the synth bass on
   trial, since the modelled basses read as guitars ("ironically the Synth bass sounds the most like
-  a real bass to me"), the synth lines voiced for each turn's job, no drone, Hold The Line's drum
+  a real bass to me"), five real basses in a set beside it ("Yes, build me some real bass options,
+  please"), the synth lines voiced for each turn's job, no drone, Hold The Line's drum
   energy); The Far Bank's map half on its fifth round, its flip retired (31 October:
   the bells calm in the groove and the lift alone, the strings section and the climax off the
   battle's orchestra; 4 November: the choir in the intro alone, the tune on the plucked string
@@ -985,14 +989,19 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.448 (the
-  page's version 461, published 4 November from `ccr-7effd31a-u5z4gw`: Night Shift's fourteenth
-  round in the track table, the guitar that walked the bass's line retired; over v0.447 at 460,
+  `docs/design-bible.html` after every change. This file and the live page are v0.450 (the
+  page's version 463, published 4 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
+  live source whole: the real basses on trial in Night Shift's and Hold The Line's track rows,
+  merged row by row onto the live v0.449 another session published at 462, its rows the standard
+  component face, Every Ally and Every Foe, the cooldown a printed cost, the chip rows and END
+  TURN asking; over v0.448 at 461, Night Shift's fourteenth round in the track table, the guitar
+  that walked the bass's line retired; over v0.447 at 460,
   Night Shift's map half without its muted guitar, his call, and The Far Bank's map half's
   fifth round, three-way merged onto the live v0.446, main's file at
   `d28308e` (459, published from `claude/elites-session` as main took it, over v0.445 at 458 from
   `ccr-c04908be-3r43xf`: the randomness pass's rows and the elites' calls and reads of the day).
-  So the live page carries those two track rows ahead of main's code until this branch lands.
+  So the live page carries this branch's track rows ahead of main's code until it lands, and the
+  other session's v0.449 rows until theirs does.
   The live page may carry rows ahead of main's code while their branches have not landed. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto

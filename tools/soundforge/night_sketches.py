@@ -70,6 +70,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import forge as F  # noqa: E402
+import real_bass  # noqa: E402,F401  (the real basses' voice)
 import pair_sketches as P  # noqa: E402
 from hold_sketches import copied, master_together, run_steps  # noqa: E402
 
@@ -587,6 +588,15 @@ BASS_VOICES = {
     "finger_touch": {"inst": "finger_bass", "params": {"touch": True}, "level": 6.55}, # the finger bass with a touch of drive
     "slap_clean": {"inst": "slap_clean", "params": {}, "level": 11.51},                # the slap, clean
     "slap_touch": {"inst": "slap_clean", "params": {"touch": True}, "level": 8.25},    # the slap with a touch of drive
+    # The real basses (real_bass.py; Ryan, 4 November: "Yes, build me some real bass options, please"),
+    # each met halfway between the driven bass's level on a phone and in full as the synth bass is:
+    # like it, each is darker than the driven bass, from 1.7 dB under it on a phone and over it in
+    # full (near the bridge) to 4.6 (the flatwounds).
+    "real_finger": {"inst": "real_bass", "params": {"preset": "finger", "amp": "di"}, "level": 6.75},   # fingers over the neck pickup, a direct box
+    "real_bridge": {"inst": "real_bass", "params": {"preset": "bridge", "amp": "di"}, "level": 4.80},   # fingers near the bridge, its pickup
+    "real_pick": {"inst": "real_bass", "params": {"preset": "pick", "amp": "di"}, "level": 6.06},       # a pick between the pickups
+    "real_flat": {"inst": "real_bass", "params": {"preset": "flat", "amp": "di"}, "level": 8.71},       # flatwounds and a soft thumb, the tone rolled back
+    "real_grit": {"inst": "real_bass", "params": {"preset": "finger", "amp": "grit"}, "level": 5.19},   # the fingers through an amp just breaking up
 }
 BASS = "synth"   # the full pair's (Ryan, 4 November: "ironically the Synth bass sounds the most like a real bass to me")
 
@@ -822,6 +832,14 @@ SETS = [
      "rows": [("p0", "3 dB down", "The full pair's.", {"pluck_db": -3.0}),
               ("p1", "As the thirteenth round had it", "At the synth lead's level on a phone and in headphones, 1.6 dB over it by the ear's weighting.", {"pluck_db": 0.0}),
               ("p2", "6 dB down", "3 dB more.", {"pluck_db": -6.0})]},
+    {"id": "rb", "half": "battle", "title": "A real bass, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The battle half from the top as the full pair has it, the bass on each voice wherever it plays: the walk, the hold, the breakdown's held roots, R's turn. Each real bass is built as a bass, its overtones dying in a fraction of a second while the fundamental rings, and met halfway between the driven bass's level on a phone and in headphones, as the synth bass is. Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("rb0", "The synth bass", "The full pair's.", {"bass": "synth"}),
+              ("rb1", "Fingers over the neck pickup", "Round and warm, roundwound strings, straight into a direct box.", {"bass": "real_finger"}),
+              ("rb2", "Fingers near the bridge", "The bridge pickup: less fundamental, more growl in the mids.", {"bass": "real_bridge"}),
+              ("rb3", "A pick", "Played with a pick between the pickups: a sharper front, the same quick fall.", {"bass": "real_pick"}),
+              ("rb4", "Flatwounds and a thumb", "Flatwound strings, a soft thumb over the neck, the tone rolled back: dark, thumpy and short.", {"bass": "real_flat"}),
+              ("rb5", "Fingers through an amp, a touch of grit", "The neck pickup's fingers through a bass amp just breaking up in the mids, its lows clean.", {"bass": "real_grit"})]},
 ]
 PAIR = {"id": "night_shift_r14", "title": "Night Shift, round fourteen"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"

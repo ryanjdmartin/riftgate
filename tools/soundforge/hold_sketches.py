@@ -37,6 +37,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import forge as F  # noqa: E402
+import real_bass  # noqa: E402,F401  (the real basses' voice)
 import pair_sketches as P  # noqa: E402
 
 NAME = "music_hold_the_line"
@@ -516,12 +517,71 @@ def battle_picks(k_voice=K_VOICE):
     return edit
 
 
+# Hold The Line's bass on a real bass (real_bass.py; Ryan, 4 November: "Do these bass findings
+# potentially change or improve anything in Hold the Line? I was never 100% satisfied with the driven
+# bass"). The driven bass is the forge's plucked string tuned down through a hot amp, so its overtones
+# climb over the fundamental as a note sustains (on a held E1, from 5 to 14 dB over it), a guitar's
+# with gain on; and where the guitar plays power chords (A, N, B, X) a second driven bass doubles it a
+# fifth above. The real bass is driven as a bassist drives an amp, its lows clean under a split and its
+# mids pushed, met halfway between the driven bass's level on a phone and in full; on the roots, the
+# lines a fifth above go and the guitar keeps its power chords.
+REAL_DRIVEN = {"pick": 1.295, "finger": 1.419}
+
+
+def semis(c):
+    return int(c) if c.isdigit() else F.NOTE[c]
+
+
+def fifth_above(lo, hi):
+    """Whether one bass line is another a fifth higher, hit for hit: a power chord's top."""
+    if not lo or len(lo) != len(hi):
+        return False
+    hits = 0
+    for a, b in zip(lo, hi):
+        if a in ".-" or b in ".-":
+            if a != b:
+                return False
+            continue
+        if semis(b) - semis(a) != 7:
+            return False
+        hits += 1
+    return hits > 0
+
+
+def real_bass_on(preset, roots=False):
+    """The battle's driven bass on the real bass, driven, on every part or on the roots alone."""
+    def edit(call):
+        bass = [v for v in call["voices"] if v["inst"] == "bass_real"]
+        if roots:
+            tops = [(hi, s) for hi in bass for s, pat in hi["pat"].items()
+                    if any(lo is not hi and fifth_above(lo["pat"].get(s, ""), pat) for lo in bass)]
+            for hi, s in tops:
+                del hi["pat"][s]
+        for v in bass:
+            v.update(inst="real_bass", params={"preset": preset, "amp": "driven"}, gain=v["gain"] * REAL_DRIVEN[preset])
+    return edit
+
+
+def battle_with(*edits):
+    def edit(call):
+        for e in edits:
+            e(call)
+    return edit
+
+
 CLIMAX_EDIT = (map_picks, map_calm_bell)
 SETS = [
     {"id": "mz", "half": "map", "title": "The map's climax, the drone into Z", "form": CLIMAX,
      "note": "The keys' turn, the climax's three sets (S, R and Z) and the breath: the ticking guitar alone on the riff 3 dB up over the sub, the drone and the strings joining in R with the bell on the hook in its second half, the bell 3 dB down, the choir and the tine piano 6 dB down on the riff in Z.", "rows": [
         ("mz0", "As the twelfth round's pair had it", "The choir joining the drone and the strings in Z, the pads 1 dB up there on a phone.", map_edits(*CLIMAX_EDIT, map_climax(pads_db=0.0))),
         ("mz1", "The drone held level into Z", "The drone, the strings and the choir 1 dB down through Z, so the choir arrives without the drone growing (the full pair's).", map_edits(*CLIMAX_EDIT, map_climax())),
+    ]},
+    {"id": "hb", "half": "battle", "title": "The bass, through the whole battle half", "form": FORM_K,
+     "note": "The settled battle half from the top, the bass on each voice wherever it plays: the riff, the turn's walk, the climax. Each real bass is built as a bass and driven as a bassist drives an amp, its lows clean and its mids pushed, met halfway between the driven bass's level on a phone and in headphones. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hb0", "The driven bass as it ships", "The settled pair's: the forge's guitar string tuned down through a hot amp, a second driven bass a fifth above wherever the guitar plays power chords.", battle_picks()),
+        ("hb1", "A real bass, picked and driven", "The same parts, the fifths above included, on a picked bass through a driven amp.", battle_with(battle_picks(), real_bass_on("pick"))),
+        ("hb2", "Picked and driven, on the roots", "The lines a fifth above out, so the bass holds the roots under the guitar's power chords.", battle_with(battle_picks(), real_bass_on("pick", roots=True))),
+        ("hb3", "Fingers, driven, on the roots", "Fingers in place of the pick, rounder at the front, through the same amp, on the roots.", battle_with(battle_picks(), real_bass_on("finger", roots=True))),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r13", "title": "Hold The Line, round thirteen",
