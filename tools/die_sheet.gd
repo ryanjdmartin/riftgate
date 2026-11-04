@@ -199,7 +199,7 @@ func _rest() -> Array:
 		["Hull and shield costs", "paid first, from its\nown machine", _die(costly)],
 		["Short", "the shield cannot pay:\nstruck through", _die(short)],
 		["Ammo, dry", "a forging gun's price;\nthe magazine cannot pay", _die(dry)],
-		["Burn", "the Storm Petrel's: shield\npays the heat", _die(burn)],
+		["Burn", "the Storm Petrel's: its box\nthe shield paid, no cost", _die(burn)],
 		["Blast", "its passive's box: a blast\nat a random foe", blast_vent],
 		["LOCKED", "a reroll skips it", locked],
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],

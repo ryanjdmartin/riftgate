@@ -504,18 +504,21 @@ func pending_heat(ms: MechState) -> int:
 	if ammo_price_of(ms, f) > 0:
 		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun pays ammo; only a foe's debuff heats it
 	var added: int = Effects.attack(ms.unit, f, 0, f.heat)["heat"]
-	added -= shield_burn(ms, Effects.effective_face(ms.unit, f), added)   # what the shield pays never reaches the gauge (the Storm Petrel's)
+	added -= shield_burn(ms, Effects.effective_face(ms.unit, f), added, f.shield_cost)   # what the shield pays never reaches the gauge (the Storm Petrel's), after a shield cost takes its share
 	return added - ms.heat if f.vents_all else added
 
 
 ## The shield a weapon's spend burns in place of `heat` (the Storm Petrel's Riot Field Generator,
 ## Ryan's go of 21 October; built 30 October): as much of the heat as the shield holds as it
 ## stands, overshield included; the rest reaches the gauge. Nothing for equipment, a forging
-## machine's gun (its heat is paid in ammo) or a machine whose shield pays nothing.
-static func shield_burn(ms: MechState, f: Face, heat: int) -> int:
+## machine's gun (its heat is paid in ammo) or a machine whose shield pays nothing. `paid` is the
+## shield a shield cost takes first, when the spend is still to come (a preview, the forecast): a
+## strict cost is paid as the entry is spent, before the heat, and is never burnt into a blow
+## (Ryan, 4 November, asking whether the passive turns every shield cost into damage: it does not).
+static func shield_burn(ms: MechState, f: Face, heat: int, paid: int = 0) -> int:
 	if ms == null or f == null or not f.is_weapon() or heat <= 0 or ms.ammo_max > 0 or not Effects.burns_shield(ms.unit):
 		return 0
-	return mini(heat, maxi(0, ms.unit.shield))
+	return mini(heat, maxi(0, ms.unit.shield - paid))
 
 
 ## The shield the entry in hand would burn as it is spent (shield_burn), for the forecast.
@@ -523,7 +526,7 @@ func pending_burn(ms: MechState) -> int:
 	var f := spend_face(ms) if ms.face() != null else null
 	if f == null or ms.assigned or not f.is_attack():
 		return 0
-	return shield_burn(ms, Effects.effective_face(ms.unit, f), int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]))
+	return shield_burn(ms, Effects.effective_face(ms.unit, f), int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]), f.shield_cost)
 
 
 ## The blow the burn pays a foe after a weapon's strikes (the zap): what the shield paid, plain,
@@ -931,6 +934,10 @@ static func spend_bite(u, f: Face) -> int:
 func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, overshield: bool = false, aimed: Foe = null) -> Dictionary:
 	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
+	# A shield cost is taken first as the entry is spent (Ryan, 26 October), before a bite and before
+	# the heat a shield pays.
+	if with_face and not ms.assigned and ms.face() != null:
+		shield -= mini(shield, spend_face(ms).shield_cost)
 	var bite := pending_bite(ms) if with_face else 0
 	if bite > 0:
 		# A corrupted entry bites the moment it is spent, shield first, before the enemy's blows.
@@ -1188,10 +1195,11 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 		sf.dry = not can_fire(ms, sf)
 		sf.heat = Effects.debuff_heat(ms.unit, sf)
 		return sf
-	var burn := shield_burn(ms, sf, heat)
+	var burn := shield_burn(ms, sf, heat, sf.shield_cost if not ms.assigned else 0)   # a spent entry's cost is paid already
 	if burn > 0:
-		# A weapon whose heat the shield pays (the Storm Petrel's): the burn in the heat slot's place
-		# with the shield's mark, and the heat past what the shield holds beside it.
+		# A weapon whose heat the shield pays (the Storm Petrel's): the burn, the passive box's
+		# number on the die (never a cost along its foot: Ryan, 4 November), and the heat past what
+		# the shield holds once a shield cost has taken its share, along the foot.
 		if sf == f:
 			sf = f.duplicate_face()
 		sf.burns = burn

@@ -194,12 +194,11 @@ static func effects_of(f: Face, shown: Array = [], base: Face = null, cooldown: 
 		# The costs, each by the mark the die prints it with along its foot (Ryan, 2 November).
 		out.append(marked(parts_line("effect", [word("Heat"), num(str(f.heat), f.heat, base.heat, true)], "attr"), [mark("heat", Palette.HEAT, false)]))
 	if f.burns > 0:
-		# The Storm Petrel's Riot Field Generator (30 October): the shield its weapon burns in place
-		# of that heat, and the target takes as much after the strikes.
-		out.append(marked(parts_line("effect", [word("Burns"), num(str(f.burns), f.burns, base.burns, true), word("shield in its place")], "attr"), [mark("shield", Palette.SHIELD, false)]))
-		# What the shield paid lands after the strikes, the number in the die's passive box (Ryan,
-		# 4 November), headed by that box.
-		out.append(marked(parts_line("effect", [word("After the strikes the target takes"), num(str(f.burns), f.burns, base.burns), word("more, what the shield paid")], "attr"), [passive_mark("", str(f.burns), Palette.HUD)]))
+		# The Storm Petrel's Riot Field Generator (30 October): its shield pays the weapon's heat as
+		# it is spent, and the target takes as much after the strikes; one number, both the spend
+		# and the blow (Ryan, 4 November: "it's both a spend and an add"), the die's passive box,
+		# never a cost along its foot, since the spend goes ahead without it.
+		out.append(marked(parts_line("effect", [word("Its shield pays"), num(str(f.burns), f.burns, base.burns), word("of the heat, and the target takes as much after the strikes")], "attr"), [passive_mark("", str(f.burns), Palette.HUD)]))
 	# The entry's costs past heat, beside it as the die prints them (Ryan, 26 October: Volatile a
 	# cost printed beside the heat, a keyword with a chip until then, and a shield cost beside it):
 	# the hull a spend bites, the shield it takes first. Less is the gain.

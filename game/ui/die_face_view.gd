@@ -404,29 +404,7 @@ func _draw() -> void:
 	var aim := Glyphs.aim_for(face)
 	if not aim.is_empty():
 		Glyphs.draw(self, aim, Vector2(FACE * 0.5, AIM_Y + bob), AIM_W, ink, 2.4 if aim in ["aim_direct", "aim_indirect"] else 1.8)
-	# Its costs along the foot, a mark and a number each, no word and no sign (Ryan, 2 November:
-	# "For costs (heat, shield, hull), don't spell out the word. Use an icon + number. We don't
-	# need +/- symbols either"; "Cooldown should be a cost in the bottom section as well"): a
-	# forging gun's ammo, the shield a burn or a cost takes, the heat, the hull, the rounds it goes
-	# dark; struck through in the red-red when its pool cannot pay (DRY, SHORT). A dark entry
-	# shows its clock there with the turns it has left.
-	var costs: Array = []   # [glyph, number, colour, struck]
-	if dark_now:
-		costs.append(["cooldown", dark, Palette.INK, false])
-	else:
-		if face.ammo > 0:
-			costs.append(["ammo", face.ammo, Palette.LOSS if face.dry else Palette.SELECT, face.dry])
-		if face.burns > 0:
-			costs.append(["shield", face.burns, Palette.SHIELD, false])
-		if face.heat > 0:
-			costs.append(["heat", face.heat, Palette.HEAT, false])
-		if face.volatile > 0:
-			costs.append(["hull", face.volatile, Palette.HULL, false])
-		if face.shield_cost > 0:
-			costs.append(["shield", face.shield_cost, Palette.LOSS if face.short else Palette.SHIELD, face.short])
-		var cd := cooldown if cooldown >= 0 else face.cooldown_rounds()
-		if cd > 0:
-			costs.append(["cooldown", cd, Palette.INK, false])
+	var costs := cost_marks()
 	var cx := 10.0
 	for cst in costs:
 		var cc := Color(cst[2], alpha)
@@ -571,6 +549,37 @@ func rail_tags() -> Array[String]:
 ## keyword's, the star, the seal, a corruption).
 static func chip_glyph(tag: String) -> String:
 	return Terms.glyph(tag) if Terms.has(tag) and not Terms.glyph(tag).is_empty() else tag
+
+
+## Its costs along the foot, [mark, number, colour, struck] each, no word and no sign (Ryan, 2
+## November: "For costs (heat, shield, hull), don't spell out the word. Use an icon + number. We
+## don't need +/- symbols either"; "Cooldown should be a cost in the bottom section as well"): a
+## forging gun's ammo, the heat that reaches the gauge, the hull, a shield cost, the rounds it goes
+## dark; struck through in the red-red when its pool cannot pay (DRY, SHORT). A dark entry shows
+## its clock there with the turns it has left. Only what must be paid stands here: the shield a
+## passive pays a weapon's heat with is no cost, since the spend goes ahead without it, its number
+## the passive box's (Ryan, 4 November: "Storm petrel having shield as a cost isn't entirely
+## correct, since it uses up the shield it has but still let's the attack go, unlike a 'true'
+## shield cost ... the passive shield cost can't go there").
+func cost_marks() -> Array:
+	var costs: Array = []
+	if face == null or dead:
+		return costs
+	if face.disabled and dark > 0:
+		costs.append(["cooldown", dark, Palette.INK, false])
+		return costs
+	if face.ammo > 0:
+		costs.append(["ammo", face.ammo, Palette.LOSS if face.dry else Palette.SELECT, face.dry])
+	if face.heat > 0:
+		costs.append(["heat", face.heat, Palette.HEAT, false])
+	if face.volatile > 0:
+		costs.append(["hull", face.volatile, Palette.HULL, false])
+	if face.shield_cost > 0:
+		costs.append(["shield", face.shield_cost, Palette.LOSS if face.short else Palette.SHIELD, face.short])
+	var cd := cooldown if cooldown >= 0 else face.cooldown_rounds()
+	if cd > 0:
+		costs.append(["cooldown", cd, Palette.INK, false])
+	return costs
 
 
 ## What the machine's passive adds to the entry, a box each, [mark, text, colour] (Ryan, 4

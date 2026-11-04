@@ -187,7 +187,8 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	var lines := EntryReadout.effects_of(hot)
 	var boxed := lines.filter(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return m.has("passive")))
 	assert_eq(boxed.size(), 1, "the readout says it on one line")
-	assert_eq(str(boxed[0]["text"]), "After the strikes the target takes 3 more, what the shield paid", "the tap popup clarifies the number")
+	assert_eq(str(boxed[0]["text"]), "Its shield pays 3 of the heat, and the target takes as much after the strikes", "the tap popup clarifies the number, both the spend and the blow")
+	assert_false(lines.any(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return str(m.get("glyph", "")) == "shield")), "and no shield cost line: the passive's payment is no cost")
 	assert_eq((boxed[0]["marks"] as Array)[0]["passive"], ["", "3"], "headed by the box the die shows")
 	d.after_blow = 2
 	assert_eq(picked.call(d), [["", "2"]], "over a foe, that foe's share")

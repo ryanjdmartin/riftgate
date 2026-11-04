@@ -153,6 +153,34 @@ func test_the_die_shows_the_burn_and_the_zap() -> void:
 	assert_eq([sf.burns, sf.heat], [2, 1], "a shield short of the heat: what it holds, and the rest as heat")
 
 
+## A shield cost on the Storm Petrel's weapon (Ryan, 4 November: "Does it actually convert ALL
+## shield costs to damage?"): it does not. The strict cost is paid first as the entry is spent and
+## never lands as a blow; the shield pays the heat from what the cost leaves, the rest reaching the
+## gauge, and only what it paid for the heat lands after the strikes. The preview and the forecast
+## read the same order; the die prints the cost along its foot and the burn in its passive box,
+## never the burn as a cost ("the passive shield cost can't go there").
+func test_a_shield_cost_is_paid_first_and_never_burnt_into_a_blow() -> void:
+	var gun := _hot(4, 4)
+	gun.shield_cost = 2
+	var u := _mech("Petrel", Die.single(gun), 5)
+	u.grant_passive(RIOT)
+	var sk := _fight([u], [_foe(30)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var foe: Foe = sk.front[0]
+	var sf := sk.shown_face(ms, ms.face())
+	assert_eq([sf.shield_cost, sf.burns, sf.heat], [2, 3, 1], "the cost first, the heat from the 3 it leaves, the 1 past it as heat")
+	assert_eq([sk.pending_heat(ms), sk.pending_burn(ms)], [1, 3], "the gauge takes what the shield cannot")
+	assert_eq(int(sk.forecast(ms)["shield_after"]), 0, "the forecast spends the cost, then the burn")
+	var d := DieFaceView.new()
+	d.set_face(sf)
+	assert_eq(d.cost_marks().map(func(c: Array) -> String: return "%s %d" % [c[0], c[1]]), ["heat 1", "shield 2"], "along the foot what must be paid: the heat past the shield and the shield cost, never the burn")
+	assert_eq(d.passive_marks().map(func(m: Array) -> String: return str(m[1])), ["3"], "the burn the passive box's number")
+	d.free()
+	assert_true(sk.assign(0, foe), "spent")
+	assert_eq([u.shield, ms.heat], [0, 1], "the cost, then the burn, then the gauge")
+	assert_eq(foe.hp, 30 - 4 - 3, "the strike's 4 and the 3 the shield paid for the heat; the cost lands nowhere")
+
+
 func test_the_regenerator_lures_and_regains_shield_three_rounds_each_grant_its_own() -> void:
 	var regen := Face.attack(0, I, [K.LURE])
 	regen.regen_shield = 2

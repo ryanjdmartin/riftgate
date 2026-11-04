@@ -25,7 +25,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 902 tests, 209,159 checks, green on `ccr-bb178c9b-l6airv` (4 November: Ryan's playtest
+- Tests: 903 tests, 209,168 checks, green on `ccr-bb178c9b-l6airv` (4 November: Ryan's playtest
   list of 2 November and the die's marks of 3 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -232,7 +232,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   `_2.png` and `_3.png` (the last with the sight without its outer circle and five dash
   patterns). What a machine's passive adds sits in its passive box at the foot of the edge, his
   "passive helper box" (4 November: "for all these types of effects"): the Storm Petrel's zap its
-  number alone ("it doesn't even need the +"; never joined to the blow), the Whip Scorpion's blast
+  number alone ("it doesn't even need the +"; never joined to the blow; the shield it pays no
+  cost along the foot, "the passive shield cost can't go there", a shield cost paid first and
+  never burnt into the blow), the Whip Scorpion's blast
   by its mark, the Cassowary's next entry; the tap popup says each on its own line under the same
   box, the Cassowary's where a roll or reroll steps it. The self and ally chips and the buff and debuff arrows gone, the
   foes' intents keeping theirs ("The arrow can be changed but not to the equipment one"); a

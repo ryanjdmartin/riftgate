@@ -663,9 +663,13 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   target takes a blow of what the shield paid (the zap): plain, no keyword and no Shock read,
   through what the foe takes and its armour, and lost if the strikes killed it. And while its
   shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
-  meets. The die shows the shield a weapon will take in its heat slot's place, behind the
-  shield's mark ("-3"), with the heat past it beside, and the zap's number in its passive box,
-  over a foe with that foe's armour off, as the blow's is; never joined to the blow's number.
+  meets. A shield cost on its weapon is no part of it: the cost is paid first as the entry is
+  spent and never lands as a blow, and the shield pays the heat from what the cost leaves. The
+  die shows what the shield will pay for the heat in its passive box, one number for the spend
+  and the blow (over a foe, the blow's share with that foe's armour off, as the main number's
+  is), never as a cost along its foot, since the spend goes ahead without it; along the foot
+  stand only the heat past the shield and a shield cost, as on any machine. The number is never
+  joined to the blow's.
 - **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and
