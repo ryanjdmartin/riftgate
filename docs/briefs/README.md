@@ -254,12 +254,12 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 |---|---|---|---|---|
 | `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty elites, five wanderers, the Nob's rage, the Fiend of Fire, the demotions), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the Meadow's and the Waste's third boss, the Fell Rider's mount, the rage's shape, the Monster Hunter nods, the names) |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
-| `minerva_honey_badger.md` | rework, its numbers open | Minerva | 1 | nothing |
+| `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate a load; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |
 | `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |
 | `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | nothing: the cooldown property it waited on is built |
 | `kestrel_strafer.md` | landed 25 October as the Skua, its engine built (each roll halved, rounded down, and struck twice; the Pod's spray), retired (`git show f87b831:docs/briefs/kestrel_strafer.md`) | Kestrel | 1 | Ryan's play and its look (the to-do); its runner rows read 25 October (`docs/measurements.md`) |
-| `kestrel_shield_spender.md` | landed 30 October as the Storm Petrel's engine (the burn and its zap, the plate, Regenerating's machine half on its lock, the bot's reads), retired (`git show d84ad16:docs/briefs/kestrel_shield_spender.md`) | Kestrel | 1 | Ryan's call on its burn on basics (the bible's section 12), his play and its look (the to-do); its runner rows read 30 October (`docs/measurements.md`) |
+| `kestrel_shield_spender.md` | landed 30 October as the Storm Petrel's engine (the burn and its zap, the plate, Regenerating's machine half on its lock, the bot's reads), retired (`git show d84ad16:docs/briefs/kestrel_shield_spender.md`) | Kestrel | 1 | his play and its look (the to-do; its burn on basics stays as built, Ryan, 31 October); its runner rows read 30 October (`docs/measurements.md`) |
 | `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`) | Kestrel | 3 (Ryan, 15 October) | its stock, model and assets (the to-do; the stock pass's table had no row for it); its runner rows once fights have a wait list worth trapping |
 | `kestrel_gun_platform.md` | landed 30 October as the Giant Petrel's engine (the bank, the Immelmann Booster's ally action, the Salvo's kill rider, the Uplink's roll, the bot's look-or-action valuation), retired (`git show d84ad16:docs/briefs/kestrel_gun_platform.md`) | Kestrel | 3 | his play and its look, the catamaran (the to-do); its runner rows read 30 October (`docs/measurements.md`) |
 | `kestrel_kite.md` | landed 21 October, its engine and content built, retired (`git show 95d4ed3:docs/briefs/kestrel_kite.md`) | Kestrel | 2 (from 1) | its model with the Pinion Driver built in (the to-do; its stock and its team rows landed with the stock pass, 22 October) |
@@ -357,7 +357,7 @@ in its brief; the full rounds are in git (above).
 - Haunted: a striker spends its next blow on the foe beside it; a novel verb (foes turning on
   each other) that does nothing against a lone boss.
 - The guardian's stay: a blow that would wreck an ally leaves it at 10 hull; rare, binary, and
-  close to the Honey Badger's open identity.
+  close to the Honey Badger's last stand, benched in its identity session.
 - The bell tower (medieval): an assault walker with a bell caged on its back, its toll a big
   indirect blow with Spread, Penetrate and Shock; set aside for the four on 11 October, no
   other reason recorded.

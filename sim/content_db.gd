@@ -1431,6 +1431,12 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: burn_shield's value is 1: a point of shield for each point of heat" % where)
 		if effect == "bank_rerolls" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: bank_rerolls's value is the most rerolls the bank carries, at least 1" % where)
+		# The Honey Badger's Ore Hopper (31 October): the loads a foe damaged puts in and the most
+		# the hopper holds; what the loads held are worth, a value for every `per` loads.
+		if effect == "fill_hopper" and (int(eff.get("value", 0)) < 1 or int(eff.get("cap", 0)) < 1):
+			errs.append("%s: fill_hopper needs value (the loads a foe damaged puts in, positive) and cap (the most the hopper holds, positive)" % where)
+		if effect == "hopper_plate" and (int(eff.get("value", 0)) < 1 or int(eff.get("per", 1)) < 1):
+			errs.append("%s: hopper_plate needs value (the armour, positive) for each per loads held (positive, 1 by default)" % where)
 		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):
 			errs.append("%s: target_rank needs rank, front or back" % where)
 		# A reach beside the rank (the Ram Frame's and the Rangefinder's reads, 22 October) reads

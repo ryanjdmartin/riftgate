@@ -554,6 +554,15 @@ static func hopper_bonus(u, f: Face) -> int:
 	return hopper_loads(u, f) * f.power_per_load if f != null else 0
 
 
+## The loads each foe a spend of this entry damages puts in its machine's hopper: the weapon's
+## own number where it prints one (the Chainsaw Claw's two), else the machine's passive's for
+## any weapon (the Ore Hopper's one, 31 October); equipment deals no damage and loads nothing.
+static func hopper_fill_of(u, f: Face) -> int:
+	if f == null or not f.is_weapon():
+		return 0
+	return f.fills_hopper if f.fills_hopper > 0 else Effects.hopper_fill(u)
+
+
 ## What one blow of an attack entry will deal, as the die shows it (decided 10 October, bible
 ## section 5: the game does the arithmetic and the player reads it): [low, high], equal for a
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
@@ -2480,7 +2489,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
 	var from_hopper := loads * f.power_per_load
 	var own := fired + from_hopper   # what the entry prints from its firer, on every blow of the spend
-	var reached: Array = []    # every foe the blows reached, killed or not, for a weapon that fills the hopper
+	var reached: Array = []    # every foe the blows reached, killed or not, for the casings' refund
+	var damaged: Array = []    # every foe the blows took HP off, for the hopper's loads (Ryan, 31 October: "per foe damaged")
 	var vented_all := ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
@@ -2596,6 +2606,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			var foe_armoured := mini(taken, foe.armour_for(f))
 			taken -= foe_armoured
 			foe.hp -= taken
+			if was_alive and taken > 0 and not damaged.has(foe):
+				damaged.append(foe)
 			var eaten := int(reads.get(foe, [0, 0])[1]) if s == 0 else 0   # each foe struck eats its own, on its first blow
 			if eaten > 0:
 				Effects.remove(foe, f.consumes)
@@ -2692,16 +2704,19 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for foe in webbed:
 		var caught := web_catch(foe)
 		log.append("%s webs %s: it bursts after its action%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
-	# The hopper (11 October): a shot that fires it spends the loads it took; a weapon that
-	# fills it puts its loads in for every foe its blows reached, after the blow, so a claw
-	# never feeds the shot it is part of.
+	# The hopper (11 October; the Ore Hopper, 31 October): a shot that fires it spends the loads
+	# it took; then each foe the spend's blows damaged puts loads in, after the blow, so a claw
+	# never feeds the shot it is part of: a weapon's own number where it prints one (the
+	# Chainsaw Claw's two), the passive's for any other weapon, never past the hopper's cap. The
+	# Ore Plate follows the loads both ways.
 	if loads > 0:
-		Effects.spend_stacks(ms.unit, "hopper", loads)
+		Effects.spend_loads(ms.unit, loads)
 		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])
-	if f.fills_hopper > 0 and not reached.is_empty():
-		var n := f.fills_hopper * reached.size()
-		Effects.stack(ms.unit, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", n, Effects.DECAY_NONE)
-		log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
+	var per_foe := hopper_fill_of(ms.unit, f)
+	if per_foe > 0 and not damaged.is_empty():
+		var n := Effects.add_loads(ms.unit, per_foe * damaged.size())
+		if n > 0:
+			log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
 	# Shock (9 October): every foe the blows reached and left alive carries a charge for the
 	# team's next blow, after this one landed, so a shocking weapon never spends its own.
 	if f.has(Face.Keyword.SHOCK):
@@ -3810,7 +3825,7 @@ func _lay(ms: MechState, f: Face, slot: Vector2i) -> void:
 		ms.ammo -= mini(ms.ammo, ammo_price_of(ms, f))   # a forging machine's gun pays ammo, laid or fired
 		heat_total = Effects.debuff_heat(ms.unit, f)
 	if loads > 0:
-		Effects.spend_stacks(ms.unit, "hopper", loads)
+		Effects.spend_loads(ms.unit, loads)
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat_total, ms.face_index)

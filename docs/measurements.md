@@ -4345,6 +4345,60 @@ hull 92 and 88% against 87 and 70%; the Lich readying the Lord to rise again is 
 the risers' guard and last act the rest. The Lich out, landed; a lighter form (a Death Knight and
 three Wights) is Ryan's to mark.
 
+## 31 October, the Honey Badger's rework
+
+**Its build session's reads** (the Ore Hopper built 31 October on
+`claude/affectionate-ramanujan-5d24t6`, on Ryan's go and his fallbacks should it read overpowered:
+"I would probably go to 2 base armour and 1 for every 2 loads, to a total of 4. If that's still
+busted, back to 1 base"; his question beside it, "Badger probably deserves less base shield from
+this, right?"). `tools/balance.gd`, 30 seeds a cell (a direction), random and greedy, the party's
+cells in, the matrix's 71 packs (the thirteen tier-one packs; thirty-three of tiers two and three
+with the party's finals and the finale; thirteen lone big foes and bosses; twelve formations), on
+Godot 4.8-beta2. Every row but the build's is the content as built with `--set`: the old Badger
+is its Reinforced Skeleton passive, armour 2, the claw rolled 2-4 with Spread 2 filling one a foe
+reached, the fragmenter firing three at +1 (the engine now fills by damage where it filled by
+reach, which differs only on a blow armour or a Barrier stopped). Won, random / greedy, then
+greedy's hull lost and rounds to a win.
+
+**The Honey Badger alone**:
+
+| Row | Every pack | Tier-one rank and file (13) | Tiers two and three, the party (33) | Lone big foes and bosses (13) | Formations (12) | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|---|
+| The old Badger | 33 / 51 | 67 / 90 | 37 / 59 | 16 / 34 | 0 / 3 | 65% | 6.8 |
+| As proposed (base 1, a point a load, 1 to 5) | 48 / 69 | 77 / 97 | 50 / 76 | 52 / 73 | 6 / 14 | 47% | 6.9 |
+| As proposed, shield 6 | 46 / 68 | 75 / 97 | 48 / 75 | 49 / 73 | 6 / 14 | 49% | 6.8 |
+| First fallback (base 2, a point for every two loads, to 4) | 45 / 67 | 76 / 97 | 47 / 73 | 45 / 72 | 6 / 10 | 50% | 6.5 |
+| Second fallback (base 1, a point for every two loads, to 3) | 38 / 60 | 65 / 95 | 42 / 67 | 34 / 61 | 0 / 4 | 56% | 6.1 |
+| As proposed, the claw 2 a strike | 44 / 64 | 76 / 94 | 44 / 72 | 45 / 59 | 6 / 16 | 51% | 7.4 |
+| As proposed, no plate | 30 / 53 | 53 / 82 | 36 / 64 | 21 / 47 | 0 / 0 | 62% | 5.3 |
+| The Armadillo (beside the old Badger) | 16 / 27 | 37 / 56 | 15 / 30 | 11 / 15 | 0 / 0 | 83% | 10.2 |
+
+The lone foes the change moved most, random / greedy: the Treant 3 / 67 as it was, 97 / 100 as
+proposed, 83 / 100 at the first fallback, 53 / 100 at the second; the Bone Dragon 3 / 77, 97 /
+100, 83 / 100, 57 / 100; Gilgamesh 7 / 93, 100 / 100, 100 / 100, 80 / 100; the Bourgeon 0 / 0, 100
+/ 100, 100 / 100, 67 / 100. The rounds to beat the Treant fell from 27 to 10.
+
+**The Minerva team** (the Badger, the Armadillo, the Wild Boar):
+
+| Row | Every pack | Tier-one rank and file | Tiers two and three, the party | Lone big foes and bosses | Formations | Hull lost | Rounds won |
+|---|---|---|---|---|---|---|---|
+| The old Badger | 84 / 92 | 99 / 100 | 92 / 96 | 92 / 100 | 38 / 63 | 16% | 4.6 |
+| As proposed | 86 / 94 | 100 / 100 | 93 / 97 | 96 / 100 | 38 / 73 | 13% | 4.1 |
+| As proposed, shield 6 | 86 / 94 | 100 / 100 | 93 / 97 | 96 / 100 | 38 / 73 | 13% | 4.1 |
+| First fallback | 86 / 94 | 100 / 100 | 93 / 97 | 96 / 100 | 38 / 72 | 14% | 4.1 |
+
+Read: the plate carries it. With no plate it reads at the old Badger's line, a claw of 2 a strike
+takes four or five points off, its shield at 6 a point or two; a point a load lifts it eighteen
+points greedy and random play past half the lone big foes, which the old Badger and the Armadillo
+lose. Ryan's first fallback moves it two points, since base 2 keeps the early armour the second
+point a load would have given; his second brings it to 38 / 60, a few points over the old Badger,
+its lone big foes at 34 / 61. Landed: the second fallback, as his sequence said. Its base shield
+stays 8, the read at 6 within a point or two. Still worth his eye: random play takes the Treant,
+the Bone Dragon and Gilgamesh more often than not at the second fallback, where the old Badger
+lost them, the detachment niche he gave it or still too easy; the claw's number is the next lever
+measured. The team barely moves either way, the plate adding about ten points greedy on the
+formations.
+
 ## 4 November, the elites' first read
 
 The elites' cells on the runner, built today (`--packs elites`): every elite composition at each

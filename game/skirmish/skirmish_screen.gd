@@ -1118,9 +1118,11 @@ func _refresh(save: bool = true) -> void:
 				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms)))
 			v.bars.append([ms.ammo, ms.ammo_max, Palette.SELECT, after, 1])
 		v.dead = not ms.alive()
-		# A form the model holds while the machine carries its status (the Armadillo's seal).
+		# What the model holds while the machine carries a status (the Armadillo's seal, the
+		# Cassowary's spin), and its numbers on its count displays (the Cassowary's capacitor).
 		if i < _mech_3d.size() and _mech_3d[i] != null:
-			_mech_3d[i].hold_forms(ms.unit)
+			_mech_3d[i].hold_statuses(ms.unit)
+			_mech_3d[i].show_counts(ms)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
@@ -1602,7 +1604,7 @@ static func status_glyph(id: String) -> String:
 			return "regenerating"
 		"retaliate":
 			return "shocked"
-		"hopper":
+		"hopper", "ore_plate":
 			return "hopper"
 		"sealed":
 			return "lock"

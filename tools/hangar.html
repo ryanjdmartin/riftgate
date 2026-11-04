@@ -1420,7 +1420,7 @@ const actWords = (n) => String(n).replace(/_/g, " ");
 // only moves the scrubber otherwise, so dragging it never loses the handle.
 function paintMotion(force) {
   const st = MOTION.stage, rig = st.rig, panel = MOTION.panel;
-  const key = [MOTION.id, st.id, st.mode, st.loop, st.playing, st.speedK, rig ? rig.actSet().map(a => a.name).join(",") : "-", rig && rig.current ? rig.current.name : "", JSON.stringify(st.fits || {}), JSON.stringify(rig ? rig.formOn || {} : {})].join("|");
+  const key = [MOTION.id, st.id, st.mode, st.loop, st.playing, st.speedK, rig ? rig.actSet().map(a => a.name).join(",") : "-", rig && rig.current ? rig.current.name : "", JSON.stringify(st.fits || {}), JSON.stringify(rig ? rig.formOn || {} : {}), JSON.stringify(rig ? rig.heldOn || {} : {}), rig ? !!rig.dead : false].join("|");
   if (!force && key === MOTION.key) {
     const r = $("#mo-scrub"), o = $("#mo-scrub-out");
     if (r && rig && rig.current) { if (document.activeElement !== r) r.value = String(rig.t); o.textContent = `${rig.t.toFixed(2)} s of ${rig.current.duration}`; }
@@ -1458,16 +1458,28 @@ function paintMotion(force) {
         el("div", {class: "scrub"}, r, el("output", {id: "mo-scrub-out", for: "mo-scrub"}, `${rig.t.toFixed(2)} s of ${rig.current.duration}`))));
     }
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
-      el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
-      el("button", {class: "btn", id: "mo-shot", onclick: () => st.strike(true)}, "Shot"))));
+      el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"),
+      el("button", {class: "btn", id: "mo-hit", title: "A blow lands on the machine: a hull hit from the left, then its armour turning one from the right", onclick: () => st.hit()}, "Hit"),
+      el("button", {class: "btn", id: "mo-lose", "aria-pressed": String(!!rig.dead), title: "The machine is lost: its lit parts gutter out; press again to light it", onclick: () => st.lose()}, rig.dead ? "Revive" : "Lose"))));
+    // The plume trial (3 November): a booster's flame along its thrust in place of its halo's ring.
+    if (((st.side || {}).plumes || []).length) {
+      const on = window.HangarMotion.plumes();
+      panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Exhaust"), el("div", {class: "seg"},
+        el("button", {class: "btn", id: "mo-plume", "aria-pressed": String(on), title: "The trial: the exhaust as a plume along its thrust; off shows its halo's ring as before",
+          onclick: () => { window.HangarMotion.plumes(!on); const id = st.id; st.id = ""; st.show(id).then(() => render()); }}, on ? "Plume" : "Ring"))));
+    }
   }
-  // A form is a pose held while the machine carries the status of its name (the Armadillo's
-  // seal); held here as the status would hold it, in any mode.
-  const formNames = Object.keys(rig.forms || {});
-  if (formNames.length) {
+  // What a status holds while the machine carries it (MechView3D.hold_statuses): a form, a pose
+  // (the Armadillo's seal), or a spin (the Cassowary's capacitor while Spun Up); held here as the
+  // status would hold it, in any mode.
+  const statusNames = [...new Set([...Object.keys(rig.forms || {}), ...Object.keys(rig.heldSpins || {})])];
+  if (statusNames.length) {
     const fg = el("div", {class: "acts"});
-    for (const name of formNames) fg.append(el("button", {class: "fchip", id: "mo-form-" + safeId(name), "aria-pressed": String(rig.formHeld(name)), onclick: () => st.setForm(name, !rig.formHeld(name))}, actWords(name)));
-    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Forms"), fg, el("p", {class: "mhelp"}, "Held while the machine carries the status of its name, as in the game; tap to hold it or let it go. While one is held it plays the form's own acts, from its held pose.")));
+    for (const name of statusNames) {
+      const on = rig.formHeld(name) || rig.spinHeld(name);
+      fg.append(el("button", {class: "fchip", id: "mo-form-" + safeId(name), "aria-pressed": String(on), onclick: () => st.holdStatus(name, !on)}, actWords(name)));
+    }
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Statuses"), fg, el("p", {class: "mhelp"}, "Held while the machine carries the status of its name, as in the game; tap to hold it or let it go. A form holds a pose and plays its own acts from it; a spin turns its part.")));
   }
   // A machine with gait options (b.gait_option) walks by any of them here, to judge beside its own.
   const options = Object.keys(rig.gaitOptions || {});
@@ -1523,14 +1535,15 @@ function paintClasses(panel) {
   panel.append(el("div", {}, el("h2", {}, "Classes"), el("p", {class: "plate2"}, "What a fitted component wears at a gun mount, in its own maker's metal")));
   if (!state.shapes) { panel.append(el("p", {class: "mhelp"}, "Loading the classes…")); return; }
   const pickC = el("div", {class: "seg"});
-  for (const c of state.shapes.classes) pickC.append(el("button", {class: "btn", id: "mo-class-" + c, "aria-pressed": String(c === MOTION.shape),
+  // The classes, then each class's variants (a round launcher), which a mount may declare for its class.
+  for (const c of [...state.shapes.classes, ...Object.keys(state.shapes.variants || {})]) pickC.append(el("button", {class: "btn", id: "mo-class-" + c, "aria-pressed": String(c === MOTION.shape),
     onclick: () => { MOTION.shape = c; rememberMotion(); render(); }}, plain(c)));
   const pickM = el("div", {class: "makers"});
   for (const m of state.shapes.makers) pickM.append(el("button", {class: "btn", id: "mo-metal-" + m, "aria-pressed": String(m === MOTION.maker), style: `--mk:var(--${MAKER_TAB[m] || "other"})`,
     onclick: () => { MOTION.maker = m; rememberMotion(); render(); }}, makerShort(m)));
   panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Class"), pickC),
     el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Metal"), pickM),
-    el("p", {class: "mhelp"}, "Any machine's mounts take these too: pick a machine and fit a mount."));
+    el("p", {class: "mhelp"}, "Any machine's mounts take these too: pick a machine and fit a mount. A variant is a class in another form, worn where a mount declares it (a round port takes the round rack)."));
   panel.append(el("div", {class: "seg"}, el("button", {class: "btn primary", id: "mo-play", title: "The class turns while it plays", onclick: () => { st.playing = !st.playing; st.emit(); }}, st.playing ? "Pause" : "Play")));
 }
 
@@ -1579,3 +1592,4 @@ $("#tabs").addEventListener("keydown", e => {
   setSection(ids[(i + ids.length) % ids.length]);
 });
 </script>
+

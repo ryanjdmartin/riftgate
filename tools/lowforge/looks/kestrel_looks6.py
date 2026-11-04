@@ -10,15 +10,17 @@ pieces and mounts: the Immelmann Booster as boosters astern, their mouths flatte
 stealth; the Spindrift Salvo's six tubes in a box sunk flush in the roof that rises to fire,
 the back-blast venting astern; the Reheat Uplink's array on the mast, on a yaw joint; hp_1 a
 faceted gun house forward (the Overclocked Railgun), hp_2 one aft (the Twin Autoguns), hp_3
-bare (the Bleed Valve shows nowhere). Not content: built only by build_look.py, x right, y
-forward, z up, as in models_low.py. Floats: the lowest point at z = 6."""
+bare (the Bleed Valve shows nowhere). The second round, the same day (below the first): the
+navy's again with the line's flair, and a racing catamaran built Kestrel's from the start. Not
+content: built only by build_look.py, x right, y forward, z up, as in models_low.py. Floats:
+the lowest point at z = 6."""
 
 import math
 
 from mathutils import Matrix, Vector
 
 from bl_low import hexagon, rect
-from models_low import _disc, _poly, _rings, _slab, _tube
+from models_low import _blade_section, _chine_section, _disc, _fin_section, _hexr, _jet_canopy, _lerp_at, _poly, _rings, _slab, _tube
 
 KT = "kestrel"
 BOOSTERS = ["booster_ring", "exhaust"]
@@ -214,4 +216,227 @@ def ktlook_giant_shadow(b):
 ktlook_giant_shadow.maker = KT
 
 
-LOOKS = ["ktlook_giant_ses", "ktlook_giant_shadow"]
+# ---------------------------------------------------------------- the second round (31 October)
+# Ryan, 31 October, of the two above: "Catamaran - navy version is a good start, and I like it,
+# see if you can add more Kestrel flair to it. But it is good, I'd be happy with how it is. At
+# the same time, let's try that direction, and try again but way more Kestrel from the start,
+# sleek, fast-looking." So the navy's once more with the line's marks, and a fresh military
+# catamaran built from Kestrel's register outward.
+
+def _giant_booster(b, cx, cz, y_front, y_back, r, band=(1.2, 4.8)):
+    """One of the line's giant boosters: a hexagonal drum, a vertex at its top, from `y_front`
+    back to `y_back`; a cobalt band round it near its front, painted on rather than proud;
+    the lit ring at its end and the exhaust's mouth inside the ring."""
+    ph = math.pi / 6
+    b.prism("y", cx, (y_front + y_back) / 2.0, cz, r, y_front - y_back, "steel.dark", 6, "booster", phase=ph)
+    b.prism("y", cx, y_front - (band[0] + band[1]) / 2.0, cz, r + 0.1, band[1] - band[0], "livery.livery", 6, "booster_band", phase=ph)
+    b.prism("y", cx, y_back, cz, r + 0.4, 1.6, "amber.engine", 6, "booster_ring", phase=ph)
+    b.loft([(y_back - 0.8, _hexr(cx, cz, r + 0.2)), (y_back - 1.3, _hexr(cx, cz, r - 0.6))], "amber.exhaust", "exhaust")
+
+
+def _chevron(b, cx, apex_y, span, sweep, width, zf, label="chevron"):
+    """A cobalt chevron laid on a surface, pointing forward: its apex at (cx, apex_y), its arms
+    `span` out to each side and swept `sweep` back, `width` deep; `zf(x, y)` the surface."""
+    pts = [(cx, apex_y), (cx + span, apex_y - sweep), (cx + span, apex_y - sweep - width), (cx, apex_y - width),
+           (cx - span, apex_y - sweep - width), (cx - span, apex_y - sweep)]
+    return _slab(b, [(x, y, zf(x, y) + 0.15) for (x, y) in pts], (0.0, 0.0, 1.0), 0.4, "livery.livery", label)
+
+
+def ktlook_giant_ses2(b):
+    """The navy's with the line's flair: ktlook_giant_ses's shape and register kept whole (the
+    knife hulls and their raked stems, the cushion and its seals, the raised centre bow with
+    the fore gun house, the full-beam deckhouse leaning in, the integrated mast and the salvo
+    flush in the roof) and Kestrel's marks added where the navy's ship had stealth's. Each
+    hull's tail closes onto one of the line's giant boosters in place of the flattened slot: a
+    hexagonal drum with a cobalt band, the lit ring and the exhaust; a canted cobalt fin on
+    each drum, swept back. The bridge is a jet's canopy rising out of the deckhouse's raked
+    face onto the roof, a frame band across it, where the band of glass was. Cobalt speed
+    chevrons on each hull's foredeck in place of the straight stripe; the mast raked aft.
+    Swept speed stripes on the deckhouse's flanks were tried and left out: from the codex
+    angle the house's lean stood them up as two bars."""
+    HX = 22.0
+    HULL = [(78.0, 0.8, 7.6, 8.6), (72.0, 3.2, 6.8, 12.4), (62.0, 7.6, 6.2, 17.8), (48.0, 11.4, 6.0, 20.0),
+            (20.0, 13.0, 6.0, 20.0), (-40.0, 13.0, 6.0, 20.0), (-56.0, 12.4, 6.4, 20.0), (-59.0, 11.9, 6.7, 19.7)]   # (y, w, keel, deck), bow to stern
+
+    def at(y):
+        return _lerp_at(HULL, y)
+
+    def side(w, z0, z1, s, upper):
+        zc = z0 + (z1 - z0) * 0.38
+        pts = ([(HX - w * 0.46, zc), (HX + w * 0.5, zc), (HX + w * 0.34, z1), (HX - w * 0.36, z1)] if upper else
+               [(HX - w * 0.12, z0), (HX + w * 0.12, z0), (HX + w * 0.5, zc), (HX - w * 0.46, zc)])
+        return pts if s > 0 else [(-x, z) for (x, z) in reversed(pts)]
+
+    BZ, BR, BY0, BY1 = 14.6, 8.0, -62.0, -77.0   # the drums: centre height, radius, front, back
+    for s in (-1.0, 1.0):
+        b.loft([(y, side(w, z0, z1, s, False)) for (y, w, z0, z1) in HULL], "steel.dark", "hull_low")
+        b.loft([(y, side(w, z0, z1, s, True)) for (y, w, z0, z1) in HULL], "steel.plate", "hull")
+        secs = []
+        for (y, w, z0, z1) in HULL[2:-1]:
+            zc, x = z0 + (z1 - z0) * 0.38, HX + w * 0.5
+            pts = [(x + 0.4, zc), (x - 0.3, zc + 0.8), (x - 1.2, zc), (x - 0.3, zc - 0.8)]
+            secs.append((y, pts if s > 0 else [(-xx, z) for (xx, z) in reversed(pts)]))
+        b.loft(secs, "livery.livery", "chine_stripe")
+        # Speed chevrons on the foredeck in place of its stripe; the afterdeck's stripe kept.
+        for ay in (58.0, 53.0, 48.0):
+            _chevron(b, s * HX, ay, at(ay - 2.2)[0] * 0.3, 2.2, 1.6, lambda x, y: at(y)[2], "deck_chevron")
+        b.loft([(-34.0, rect(s * HX, 3.6, 19.6, 20.3)), (-54.0, rect(s * HX, 3.6, 19.6, 20.3))], "livery.livery", "deck_stripe")
+        # Astern, the hull's tail closes onto its drum: the deck, the chines and the keel drawn
+        # onto the drum's six corners.
+        y, w, z0, z1 = HULL[-1]
+        zc = z0 + (z1 - z0) * 0.38
+        end = [(w * 0.34, z1), (0.0, z1), (-w * 0.36, z1), (-w * 0.46, zc), (0.0, z0), (w * 0.5, zc)]
+        drum = [(BR * math.cos(math.pi / 6 + i * math.pi / 3), BZ + BR * math.sin(math.pi / 6 + i * math.pi / 3)) for i in range(6)]
+        b.loft([(y, [(s * (HX + u), z) for (u, z) in end]), (BY0, [(s * (HX + u), z) for (u, z) in drum])], "steel.plate", "tail_fairing")
+        _giant_booster(b, s * HX, BZ, BY0, BY1, BR)
+        # A canted fin on the drum, swept back.
+        _rings(b, [_fin_section(s * HX, BY0 + 1.0, BY1 + 1.0, BZ + BR - 0.8, 0.8), _fin_section(s * (HX + 5.0), BY1 + 3.5, BY1 - 2.0, BZ + BR + 10.0, 0.35)],
+               "livery.livery", "fin")
+    # The cross deck over the cushion, its seals and the lift under it.
+    b.loft([(45.0, rect(0.0, 2 * HX - 4.0, 13.0, 20.0)), (-57.0, rect(0.0, 2 * HX - 4.0, 13.0, 20.0))], "steel.plate", "cross_deck")
+    for k in range(13):
+        x = (k - 6) * 2.6
+        b.box(x - 1.1, x + 1.1, 42.6, 44.6, 6.8, 13.2, "steel.dark", "bow_seal")
+    for z in (8.2, 10.6):
+        b.prism("x", 0.0, -55.8, z, 1.5, 2 * HX - 9.0, "steel.dark", 8, "stern_seal")
+    for (x, y) in ((-8.0, 24.0), (8.0, 24.0), (0.0, 0.0), (-8.0, -26.0), (8.0, -26.0)):
+        _disc(b, (x, y, 12.9), (0.0, 0.0, -1.0), 2.8, 6, "amber.engine", "lift_nozzle")
+    # The centre bow between the knives: a raised wedge, the fore gun house on it.
+    CB = [(62.0, 1.2, 17.6, 19.4), (55.0, 12.0, 15.0, 20.0), (45.0, 2 * HX - 5.0, 13.0, 20.0)]
+    b.loft([(y, [(-w * 0.2, z0), (w * 0.2, z0), (w * 0.5, (z0 + z1) / 2.0), (w * 0.44, z1), (-w * 0.44, z1), (-w * 0.5, (z0 + z1) / 2.0)]) for (y, w, z0, z1) in CB],
+           "steel.plate", "centre_bow")
+    _gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 51.0, 20.0, 9.0, 12.0, 5.0)
+    # The deckhouse: every face leaning in.
+    DZ = 20.0
+    DH = [(39.0, 25.6, 11.0, 23.0), (31.0, 26.2, 15.0, 31.0), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
+    b.loft([(y, [(-a, DZ), (a, DZ), (t, zt), (-t, zt)]) for (y, a, t, zt) in DH], "steel.panel", "deckhouse")
+    # The bridge: a jet's canopy rising out of the raked face onto the roof, a frame band across it.
+    roof = lambda y: _lerp_at([(39.0, 23.0), (31.0, 31.0), (4.0, 31.6)], y)[0]
+    CAN = [(37.6, 2.2, 0.3), (35.0, 4.6, 1.4), (31.0, 6.0, 2.6), (25.0, 6.2, 3.0), (18.0, 5.2, 2.4), (13.0, 3.2, 1.2), (10.0, 1.2, 0.3)]   # (y, half width, height over the house)
+
+    def cab(y, hw, h, grow=0.0):
+        z, hw = roof(y), hw + grow
+        return [(-hw, z - 0.8), (hw, z - 0.8), (hw, z + h * 0.5 + grow), (hw * 0.55, z + h + grow), (-hw * 0.55, z + h + grow), (-hw, z + h * 0.5 + grow)]
+    b.loft([(y, cab(y, hw, h)) for (y, hw, h) in CAN], "glass.glass", "canopy")
+    hw, h = _lerp_at(CAN, 27.5)
+    b.loft([(28.1, cab(28.1, hw, h, 0.3)), (26.9, cab(26.9, hw, h, 0.3))], "steel.dark", "canopy_frame")
+    for s in (-1.0, 1.0):
+        b.loft([(30.0, rect(s * 13.4, 2.0, 31.4, 31.9)), (-25.0, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
+    # The integrated mast, a faceted pyramid on the roof raked aft, and the uplink's array on it.
+    MZ = 31.4
+    _rings(b, [[(-7.0, -12.0, MZ), (7.0, -12.0, MZ), (7.0, 6.0, MZ), (-7.0, 6.0, MZ)],
+               [(-2.8, -9.0, MZ + 11.0), (2.8, -9.0, MZ + 11.0), (2.8, -4.0, MZ + 11.0), (-2.8, -4.0, MZ + 11.0)]], "steel.panel", "mast")
+    _uplink(b, -6.5, MZ + 11.0)
+    _salvo_box(b, -16.5, -25.5, 31.6, 13.0)
+    # The quarterdeck: the aft gun house, hp_3 bare beside it.
+    _gun_house(b, "turret_aft", "hp_2", "twin_barrel", "twin_autoguns", 0.0, -43.0, DZ, 8.0, 10.0, 4.4)
+    b.pad("hp_3", (12.5, -47.0, DZ + 1.0), scale=0.8, size=(4.4, 1.4))
+    _acts(b, "turret_fore", "turret_aft")
+
+ktlook_giant_ses2.maker = KT
+
+
+def ktlook_giant_racer(b):
+    """A fresh try in the same direction, Kestrel's from the start: an offshore racing
+    catamaran crossed with a jet and a warship. Two long, low knife hulls, slimmer and lower
+    than the navy's, their stems raked back under a long fine entry, dark below the chine and
+    chrome above, a cobalt chine stripe and speed chevrons on the foredecks. Between them a
+    ram wing as the tunnel's roof (the ground-effect racer's lifting deck), its leading edge
+    swept back from the pod's nose to the hulls, a cobalt band along it, lift glowing under it.
+    On it the centre pod, a jet's chined fuselage tapering to a dark radome at the bow: the
+    fore gun house (hp_1) on its nose, a fighter's canopy with a frame band, the salvo's box
+    flush in the spine behind it (its tubes clear the canopy as it rises), the uplink's array,
+    and the aft gun house (hp_2) on a raised tail deck, its barrels over the bare spine. Two
+    giant boosters astern either side of the pod's tail, their nacelles rising out of the ram
+    wing; over them a swept cobalt aerofoil spanning the hulls on the tips of two canted fins
+    standing on the hulls' sterns, as tunnel-hull racers carry. hp_3 bare on the ram wing.
+    Floats: the keels at z = 6."""
+    HX = 24.0
+    HULL = [(86.0, 0.6, 15.0, 15.8), (80.0, 2.8, 11.6, 16.3), (70.0, 5.8, 8.2, 16.8), (56.0, 8.4, 6.4, 17.0),
+            (36.0, 9.6, 6.0, 17.0), (-34.0, 9.6, 6.0, 16.6), (-52.0, 9.0, 6.3, 16.2), (-62.0, 8.0, 6.8, 15.6)]   # (y, w, keel, deck), bow to stern
+
+    def at(y):
+        return _lerp_at(HULL, y)
+
+    def side(w, z0, z1, s, upper):
+        zc = z0 + (z1 - z0) * 0.42
+        pts = ([(HX - w * 0.46, zc), (HX + w * 0.5, zc), (HX + w * 0.3, z1), (HX - w * 0.3, z1)] if upper else
+               [(HX - w * 0.1, z0), (HX + w * 0.1, z0), (HX + w * 0.5, zc), (HX - w * 0.46, zc)])
+        return pts if s > 0 else [(-x, z) for (x, z) in reversed(pts)]
+
+    for s in (-1.0, 1.0):
+        b.loft([(y, side(w, z0, z1, s, False)) for (y, w, z0, z1) in HULL], "steel.dark", "hull_low")
+        b.loft([(y, side(w, z0, z1, s, True)) for (y, w, z0, z1) in HULL], "steel.plate", "hull")
+        secs = []
+        for (y, w, z0, z1) in HULL[1:-1]:
+            zc, x = z0 + (z1 - z0) * 0.42, HX + w * 0.5
+            pts = [(x + 0.4, zc), (x - 0.3, zc + 0.7), (x - 1.2, zc), (x - 0.3, zc - 0.7)]
+            secs.append((y, pts if s > 0 else [(-xx, z) for (xx, z) in reversed(pts)]))
+        b.loft(secs, "livery.livery", "chine_stripe")
+        for ay in (52.0, 47.0, 42.0):
+            _chevron(b, s * HX, ay, at(ay - 2.0)[0] * 0.27, 2.0, 1.4, lambda x, y: at(y)[2], "deck_chevron")
+    # The ram wing: the tunnel's roof as a lifting deck, its ends inside the hulls, its leading
+    # edge swept back from the pod's nose to the hulls.
+    WZ = 14.4
+    RAM = [(-21.5, 26.0, -30.0, 1.8), (-7.0, 50.0, -30.0, 2.4), (0.0, 58.0, -30.0, 2.4), (7.0, 50.0, -30.0, 2.4), (21.5, 26.0, -30.0, 1.8)]   # (x, leading edge, trailing edge, half thickness)
+    _rings(b, [_blade_section(x, le, te, WZ, t, lead=0.3) for (x, le, te, t) in RAM], "steel.plate", "ram_wing")
+
+    def ram_at(x):
+        le, te, t = _lerp_at([(-abs(xx), le, te, t) for (xx, le, te, t) in RAM[2:]], -abs(x))
+        return le, te, t, le - (le - te) * 0.3
+
+    def ram(x, y, upper=True):
+        """The ram wing's top (or underside) at (x, y)."""
+        le, te, t, ym = ram_at(x)
+        k = (y - te) / (ym - te) if y < ym else (le - y) / (le - ym)
+        return WZ + (t if upper else -t) * max(0.0, min(1.0, k))
+    # A cobalt band along the leading edge, the arrow's outline from above.
+    band = []
+    for (x, le, te, t) in RAM:
+        y0, y1 = le - 0.2, le - 3.6
+        band.append([(x, y0, ram(x, y0) + 0.15), (x, y1, ram(x, y1) + 0.15), (x, y1, ram(x, y1) - 0.3), (x, y0, ram(x, y0) - 0.3)])
+    _rings(b, band, "livery.livery", "ram_band")
+    for (x, y) in ((-12.0, 24.0), (12.0, 24.0), (-12.0, -6.0), (12.0, -6.0), (0.0, 36.0)):
+        _disc(b, (x, y, ram(x, y, False) - 0.15), (0.0, 0.0, -1.0), 2.6, 6, "amber.engine", "lift_nozzle")
+    # The centre pod: a jet's chined fuselage on the ram wing, a cobalt stripe on each chine, its
+    # tail a raised deck between the boosters for the aft gun house.
+    POD = [(76.0, 1.0, 15.0, 16.0), (68.0, 5.4, 13.4, 18.6), (56.0, 10.0, 12.2, 21.2), (42.0, 13.0, 12.0, 22.8), (24.0, 14.0, 12.0, 23.4),
+           (4.0, 13.6, 12.0, 23.0), (-16.0, 12.0, 12.2, 22.2), (-34.0, 9.6, 12.6, 21.6), (-42.0, 5.0, 13.6, 19.4)]   # (y, w, belly, top)
+    top = lambda y: _lerp_at([(y, z1) for (y, w, z0, z1) in POD], y)[0]
+    b.loft([(y, _chine_section(z0, z1, w, 0.0)) for (y, w, z0, z1) in POD], "steel.plate", "pod")
+    w, z0, z1 = _lerp_at(POD, 71.0)
+    b.loft([(71.0, _chine_section(z0 - 0.15, z1 + 0.15, w + 0.3, 0.0)), (79.0, _chine_section(15.3, 15.8, 0.5, 0.0, belly=0.1))], "steel.dark", "nose_tip")
+    for s in (-1.0, 1.0):
+        secs = []
+        for (y, w, z0, z1) in POD[1:-2]:
+            zc, x = z0 + (z1 - z0) * 0.42, w / 2.0
+            pts = [(x + 0.3, zc), (x - 0.3, zc + 0.6), (x - 1.0, zc), (x - 0.3, zc - 0.6)]
+            secs.append((y, pts if s > 0 else [(-xx, z) for (xx, z) in reversed(pts)]))
+        b.loft(secs, "livery.livery", "pod_stripe")
+    # Along the spine, bow to stern: the fore gun house on the nose, the canopy, the salvo's box
+    # (its tubes clearing the canopy as it rises), the uplink, and the aft gun house on the tail
+    # deck, its barrels over the bare spine.
+    _gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 54.0, top(54.0), 8.0, 10.0, 4.4)
+    _jet_canopy(b, [(y, w, z1, z0) for (y, w, z0, z1) in POD], [(46.0, 1.2, 0.6), (41.0, 3.8, 3.0), (34.0, 4.6, 4.4), (27.0, 4.4, 4.0), (21.0, 3.0, 2.0), (17.0, 1.2, 0.5)], 33.0)
+    _salvo_box(b, 14.0, 4.0, top(9.0), 10.0)
+    _uplink(b, -1.0, top(-1.0), panel=4.6)
+    _gun_house(b, "turret_aft", "hp_2", "twin_barrel", "twin_autoguns", 0.0, -30.0, top(-30.0), 8.0, 9.0, 4.0)
+    b.pad("hp_3", (12.5, 6.0, ram(12.5, 6.0) + 1.0), scale=0.8, size=(4.4, 1.4))
+    # The giant boosters either side of the pod's tail, each nacelle rising out of the ram wing.
+    DX, DZ, DR, DY0, DY1 = 11.5, 14.6, 6.4, -26.0, -58.0
+    for s in (-1.0, 1.0):
+        b.loft([(-8.0, _hexr(s * DX, DZ + 0.6, 1.4)), (DY0, _hexr(s * DX, DZ, DR))], "steel.plate", "nacelle")
+        _giant_booster(b, s * DX, DZ, DY0, DY1, DR)
+    # The stern wing: a swept cobalt aerofoil spanning the hulls on the tips of two canted fins
+    # that stand on the hulls' sterns, swept back.
+    WZ2, FX = 28.0, 6.0   # the wing's height, and the fins' cant outward at it
+    for s in (-1.0, 1.0):
+        _rings(b, [_fin_section(s * HX, -34.0, -60.0, at(-48.0)[2] - 0.5, 0.9), _fin_section(s * (HX + FX), -51.0, -61.0, WZ2, 0.5)], "livery.livery", "fin")
+    WING = [(-(HX + FX), -51.5, -60.0, 0.4), (-12.0, -46.0, -55.6, 0.7), (0.0, -42.0, -52.4, 0.85), (12.0, -46.0, -55.6, 0.7), (HX + FX, -51.5, -60.0, 0.4)]
+    _rings(b, [_blade_section(x, le, te, WZ2, t) for (x, le, te, t) in WING], "livery.livery", "stern_wing")
+    _acts(b, "turret_fore", "turret_aft")
+
+ktlook_giant_racer.maker = KT
+
+
+LOOKS = ["ktlook_giant_ses", "ktlook_giant_shadow", "ktlook_giant_ses2", "ktlook_giant_racer"]

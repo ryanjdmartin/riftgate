@@ -390,10 +390,11 @@ from it eats each foe's own as it lands. The Suppression Battery's Suppress is
 gated on Flak, and the Backdraft Charge consumes Burning, its Suppress gated at two.
 **Burns its firer** (the Stoker's): spending it sets its own machine Burning, the stacks it
 prints, after the blow; the die in hand's forecast counts the first tick with the turn's heat.
-**The hopper**: a weapon that fills it puts a load in its
-machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
-up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
-Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +1). **Braces**:
+**The hopper**: a weapon that fills it puts the loads it prints in its machine's hopper for
+each foe its blows damage, after the blow, in place of what the machine's passive puts in (the
+Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most loads a shot,
+each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
+the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
 end (the Wild Boar's Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
@@ -429,8 +430,9 @@ it to sleep until the start of the player's turn, after the turn's start resolve
 the roll and the round-start passives), and before the foes draw, since its source grants it
 again; asleep it takes part in nothing, its clocks running, and its chip shows half lit on a
 dashed edge. A form's price keeps biting while it sleeps: the Armadillo's seal sleeps its
-armour, and its cooling stays stopped. No store grants an active effect yet. The hopper has no
-cap yet, so it shows as a chip.
+armour, and its cooling stays stopped. The hopper's loads grant the Ore Plate, the one store
+grant: a purge sleeps the plate and leaves the loads, and a load filled or fired while it
+sleeps keeps it in step.
 
 On a machine:
 - **Overcharged** (buff): +1 damage a stack, so the count is the bonus. At the end of each
@@ -440,6 +442,8 @@ On a machine:
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
+- **Ore Plate** (buff, the Honey Badger's): armour +1 a stack, what the loads in its hopper
+  are worth (a point for every two loads), standing while they are held and going as they are fired.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
   target, a spray's on each strike's own foe; a blow that kills leaves nothing to burn. A foe's,
   from a stoker's priming, is spent by its next move, whatever it is, on Kindled's clock, and a
@@ -497,8 +501,12 @@ On a machine:
   of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
   never decays, and nothing cleanses it. It shows as five boxes under the heat, one lit a
   stack.
-- **Hopper** (store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
-  the skirmish, never decays, and nothing cleanses it.
+- **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
+  of its weapons damages, after the blow (a weapon that prints its own number puts that in
+  instead), up to four, and every two loads held stand as a point of Ore Plate; a weapon that fires
+  the hopper spends them. A mine laid with the loads' bonus loads nothing when it goes off
+  later. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
+  under the heat, one lit a load.
 - **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +3,
   its own cooling stopped, 3 heat more at the end of each turn before the overheat; a vent or
   a weapon opens it; a shield on an ally and equipment leave the form as it is. An ally's
@@ -664,8 +672,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   hull (a breach's whole blow included) rolls the machine's die: the entry it lands on is
   destroyed, a blank shrugs it off. A shield absorbs its share first and what reaches the hull counts; a
   Barrier's blow never does. Bites and overheats never injure.
-- **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. The Honey
-  Badger's components are never destroyed, so an injury passes it by.
+- **Destroyed**: blank; its passive keeps its stat bonuses and loses its abilities. A machine
+  wearing the Reinforced Skeleton (Minerva's module) never has a component destroyed, so an
+  injury passes it by.
 
 ### Foes
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
