@@ -176,7 +176,7 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 ## its main mark (the Cassowary's); never beside the main mark, never joined to its number.
 func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	var picked := func(d: DieFaceView) -> Array:
-		return d.passive_marks().map(func(m: Array) -> Array: return [m[0], m[1]])
+		return d.passive_marks().map(func(m: Array) -> Array: return [m[0], DieFaceView.passive_plain(m[1])])
 	var d := DieFaceView.new()
 	d.set_face(Face.attack(4))
 	assert_eq(picked.call(d), [], "a plain weapon: no box")
@@ -207,6 +207,11 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	d.next_number = ""
 	d.next_face = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE])
 	assert_eq(picked.call(d), [["lure", ""]], "equipment: what it lays, by its mark, no number")
+	var wake := Face.vent(3)
+	wake.shields = 2
+	d.next_face = wake
+	assert_eq(picked.call(d), [["", "2|3"]], "a shield and a vent in one: the two numbers alone, shield | cool (Ryan, 4 November)")
+	assert_eq((d.passive_marks()[0][1] as Array).map(func(r: Array) -> Color: return r[1]), [Palette.SHIELD, Palette.MUTED, Palette.HEAT], "each in its colour")
 	d.free()
 	var db := ContentDB.load_default()
 	var next := Face.shield(5)

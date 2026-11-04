@@ -612,13 +612,17 @@ func passive_marks() -> Array:
 
 ## A stepping die's next entry as its passive box shows it (Ryan, 4 November: "looks a little muddy
 ## for some icons and not all that useful ... Maybe icon+face number?"): its main mark drawn small
-## and plain, and the number that entry will show (`shown`, the screen's live blow for a weapon;
-## else its own), both in its kind's colour as the box's other marks wear their source's; for
-## equipment, which shows no number, what it grants or lays, by its mark; a blank its cross.
+## and the number that entry will show (`shown`, the screen's live blow for a weapon; else its
+## own), both in its kind's colour as the box's other marks wear their source's; a shield and a
+## vent in one entry its two numbers alone in their colours, no mark ("since it will get wide
+## otherwise"); for equipment, which shows no number, what it grants or lays, by its mark; a blank
+## its cross. A reload is the Musk Ox's alone and never steps ("cassowary won't have reload"), so
+## it has no form here of its own.
 static func next_mark(nf: Face, shown: String = "") -> Array:
 	if nf == null:
 		return []
-	match Glyphs.primary_for(nf):
+	var mark := Glyphs.primary_for(nf)
+	match mark:
 		"blank":
 			return ["blank", "", Palette.HUD]
 		"equipment":
@@ -629,12 +633,29 @@ static func next_mark(nf: Face, shown: String = "") -> Array:
 		"shield":
 			return ["shield", die_number(nf), Palette.SHIELD]
 		"shield_vent":
-			return ["shield_vent", str(nf.power if nf.kind == Face.Kind.SHIELD else nf.shields), Palette.SHIELD]   # its shield's number; the popup names the rest
+			var held := [str(nf.power if nf.kind == Face.Kind.SHIELD else nf.shields), str(nf.vents if nf.kind == Face.Kind.SHIELD else nf.power)]
+			return ["", [[held[0], Palette.SHIELD], ["|", Palette.MUTED], [held[1], Palette.HEAT]], Palette.HUD]
 		"vent":
 			return ["vent", die_number(nf), Palette.HEAT]
-		"ammo":
-			return ["ammo", die_number(nf), Palette.SELECT]
-	return ["weapon", shown if not shown.is_empty() else die_number(nf), Palette.HUD]
+		"weapon":
+			return ["weapon", shown if not shown.is_empty() else die_number(nf), Palette.HUD]
+	return [mark, die_number(nf), Palette.HUD]
+
+
+## A passive box's text as runs of [text, colour]: a plain string in the mark's ink, or the runs
+## it already is (a shield and a vent's two numbers).
+static func passive_runs(text: Variant, ink: Color) -> Array:
+	if text is Array:
+		return text
+	return [[str(text), ink]] if not str(text).is_empty() else []
+
+
+## A passive box's text as one string, its runs joined.
+static func passive_plain(text: Variant) -> String:
+	var out := ""
+	for r in passive_runs(text, Palette.HUD):
+		out += str(r[0])
+	return out
 
 
 ## The passive's boxes at the rail's foot, the lowest first and the rest above it, below the keyword
@@ -650,7 +671,7 @@ func _draw_passive(bob: float, above: int) -> void:
 	var y := maxf(FACE - CHIP.y - 6.0, 8.0 + (above + marks.size() - 1) * TAG_STEP)
 	for m in marks:
 		var glyph := str(m[0])
-		var text := str(m[1])
+		var text := passive_plain(m[1])
 		var ink := Color(m[2] as Color, frame.a)
 		var tw := mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE).x if not text.is_empty() else 0.0
 		var inner := (16.0 if not glyph.is_empty() else 0.0) + (3.0 if not glyph.is_empty() and not text.is_empty() else 0.0) + tw
@@ -672,8 +693,10 @@ func _draw_passive(bob: float, above: int) -> void:
 		if not glyph.is_empty():
 			Glyphs.draw(self, glyph, Vector2(x + 8.0, box.get_center().y), 15, ink, 1.8)
 			x += 19.0
-		if not text.is_empty():
-			draw_string(mono, Vector2(x, box.get_center().y + mono.get_ascent(PASSIVE_SIZE) * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE, ink)
+		for r in passive_runs(m[1], ink):
+			var run_ink := Color(r[1] as Color, frame.a)
+			draw_string(mono, Vector2(x, box.get_center().y + mono.get_ascent(PASSIVE_SIZE) * 0.36), str(r[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE, run_ink)
+			x += mono.get_string_size(str(r[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE).x
 		y -= TAG_STEP
 
 

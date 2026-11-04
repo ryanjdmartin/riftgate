@@ -25,7 +25,7 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 903 tests, 209,171 checks, green on `ccr-bb178c9b-l6airv` (4 November: Ryan's playtest
+- Tests: 903 tests, 209,173 checks, green on `ccr-bb178c9b-l6airv` (4 November: Ryan's playtest
   list of 2 November and the die's marks of 3 November on main's head, on Godot 4.8-beta2); 875 and 208,362 on main (31 October,
   with `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
@@ -238,8 +238,8 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   never burnt into the blow), the Whip Scorpion's blast
   by its mark, the Cassowary's next entry by its mark and the number it will show ("icon+face
   number"); the tap popup says each on its own line under the same box, the Cassowary's where a
-  roll or reroll steps it. A main mark drawn small is plain (the sight a whole ring and its
-  ticks, the vent its plate and one wave). The self and ally chips and the buff and debuff arrows gone, the
+  roll or reroll steps it; a shield and a vent in one by its two numbers in their colours. The
+  sight drawn small is plain (a whole ring and its ticks); the vent keeps its three waves. The self and ally chips and the buff and debuff arrows gone, the
   foes' intents keeping theirs ("The arrow can be changed but not to the equipment one"); a
   reach over every foe a keyword, Every Foe, and its mirror Every Ally ("Every foe is a targeting
   mode, just like spread, penetrate, and splash"; working names after the foes' Every Machine;

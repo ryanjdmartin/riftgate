@@ -455,14 +455,15 @@ static func mark(glyph: String, ink: Color, boxed: bool = true) -> Dictionary:
 ## The die's passive box as a mark (DieFaceView.passive_marks: [glyph, text, Color]): what the
 ## machine's passive adds to the entry, a dashed box holding its mark or its number or both, at
 ## the head of the line that says it (Ryan, 4 November: "the tap popup will clarify").
-static func passive_mark(glyph: String, text: String, ink: Color) -> Dictionary:
+static func passive_mark(glyph: String, text: Variant, ink: Color) -> Dictionary:
 	return {"passive": [glyph, text], "ink": ink}
 
 
 ## How wide a passive box mark is: a chip's width, or what it holds and a margin.
 static func passive_width(m: Dictionary) -> float:
 	var held: Array = m.get("passive", ["", ""])
-	var tw := Hud.mono().get_string_size(str(held[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX).x if not str(held[1]).is_empty() else 0.0
+	var plain := DieFaceView.passive_plain(held[1])
+	var tw := Hud.mono().get_string_size(plain, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX).x if not plain.is_empty() else 0.0
 	var inner := (13.0 if not str(held[0]).is_empty() else 0.0) + (2.0 if not str(held[0]).is_empty() and tw > 0.0 else 0.0) + tw
 	return maxf(CHIP, inner + 8.0)
 
@@ -863,15 +864,16 @@ func _draw_passive(r: Rect2, held: Array, ink: Color) -> void:
 			t += step
 	var mono := Hud.mono()
 	var glyph := str(held[0])
-	var text := str(held[1])
+	var text := DieFaceView.passive_plain(held[1])
 	var tw := mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX).x if not text.is_empty() else 0.0
 	var inner := (13.0 if not glyph.is_empty() else 0.0) + (2.0 if not glyph.is_empty() and tw > 0.0 else 0.0) + tw
 	var x := r.get_center().x - inner * 0.5
 	if not glyph.is_empty():
 		Glyphs.draw(self, glyph, Vector2(x + 6.5, r.get_center().y), 12, ink, 1.6)
 		x += 15.0
-	if not text.is_empty():
-		draw_string(mono, Vector2(x, r.get_center().y + mono.get_ascent(PASSIVE_PX) * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX, ink)
+	for run in DieFaceView.passive_runs(held[1], ink):
+		draw_string(mono, Vector2(x, r.get_center().y + mono.get_ascent(PASSIVE_PX) * 0.36), str(run[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX, run[1])
+		x += mono.get_string_size(str(run[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_PX).x
 
 
 ## A stepping die's next chamber as a line (the Cassowary's, Ryan, 4 November: "should also
@@ -880,7 +882,7 @@ func _draw_passive(r: Rect2, held: Array, ink: Color) -> void:
 static func next_chamber_line(next: Face, place: int, db: ContentDB) -> Dictionary:
 	var named := db.component_name(next.component) if next != null and not next.component.is_empty() else (next.describe() if next != null else "")
 	var shown := DieFaceView.next_mark(next)
-	return marked(text_line("effect", "A roll or reroll steps it to %s, %s" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), str(shown[1]), shown[2])])
+	return marked(text_line("effect", "A roll or reroll steps it to %s, %s" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
 
 
 ## The terms under `point`, in the readout's own space; none off them.

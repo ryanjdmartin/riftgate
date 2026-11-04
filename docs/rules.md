@@ -168,10 +168,10 @@ defeat when every machine is wrecked. There is no round limit.
   with an arrow into it, as wide as what it holds: a blow added after the strikes, its number
   by the mark of what pays it (the Storm Petrel's zap, by the shield's, in the shield's colour); a vent's blast at a random foe, by the blast's mark (the Whip
   Scorpion's); a stepping die's next entry, by its mark and the number it will show, in its
-  kind's colour, equipment by what it grants or lays (the Cassowary's). The readout says each on
-  a line of its own, headed by the same box. A main mark drawn small (a readout's head, a passive
-  box, a chip) is plain: the sight a whole ring and its four ticks, the vent its plate and one
-  wave. A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  kind's colour, equipment by what it grants or lays, a shield and a vent in one by its two
+  numbers alone (the Cassowary's). The readout says each on a line of its own, headed by the same
+  box. The sight drawn small (a readout's head, a passive box, a chip) is plain, a whole ring and
+  its four ticks. A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
 
