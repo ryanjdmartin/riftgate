@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 989 tests, 256,954 checks, green (4 November, the audit branch with main's `1974325` merged in, Godot 4.8-beta2);
+- Tests: 989 tests, 256,954 checks, green (4 November, main's head as the audit landed, Godot 4.8-beta2);
   about four minutes in a cloud session, twenty on a slow one.
 - A cloud session gets Godot and the first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`: the release asset
@@ -39,9 +39,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 4 November 2026 (`1974325`). The branches that landed on 3 and 4
-November, each a session of its own, fully merged and to delete from GitHub and the desk
-machine: `ccr-bb178c9b-l6airv` (the playtest list of 2 November and the die's marks; landed a
+Everything is on main as of 4 November 2026. The branches that landed on 3 and 4 November,
+each a session of its own, fully merged and to delete from GitHub and the desk machine (the
+command is in the audit's last chat; `git push origin --delete` the merged ones, then
+`git fetch --prune`): `claude/inspiring-mendel-hkp5na` (the audit of 4 November: the records
+trimmed, the bible's contradictions settled, Ryan's two speedrounds, three engine fixes, main
+taken as it landed, and main took it as a fast-forward that evening on his word, "Ok, clean up
+and merge into main"), `ccr-bb178c9b-l6airv` (the playtest list of 2 November and the die's marks; landed a
 second time that evening with Every Foe, Every Ally and Every Other Ally as targeting modes and
 Sweep's lobbed mark, Ryan: "ok, this is fine. Clean up and merge into main"),
 `claude/elites-session`, `claude/charming-rubin-h954bp` (the models' motion, weapon fire and
@@ -59,8 +63,7 @@ Still working (4 November, the branch audit; every other branch on GitHub is mer
 `ccr-7effd31a-u5z4gw`, the music session (Night Shift's and The Far Bank's rounds on the pair
 page), whose bible rows land on the live page ahead of its branch, so a republish merges onto
 the live page (Pages); `claude/aphelion-minerva-chassis-9qf6cy`, Ryan's chassis session of 4
-November (his ideas and Claude's first round, a proposal); and `claude/inspiring-mendel-hkp5na`,
-the audit, which carries this file.
+November (his ideas and Claude's first round, a proposal).
 
 ## The design sessions
 
