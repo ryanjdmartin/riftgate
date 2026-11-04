@@ -626,10 +626,14 @@ static func next_mark(nf: Face, shown: String = "") -> Array:
 		"blank":
 			return ["blank", "", Palette.HUD]
 		"equipment":
+			# Its gear and what it grants or lays where a number would stand (Ryan, 4 November: "Why
+			# drop the equipment gear icon?": the effect's mark alone retired, every kind wearing its
+			# own mark there).
 			var inside := inside_effect(nf)
 			if inside.is_empty():
 				return ["equipment", "", Palette.HUD]
-			return [chip_glyph(inside), "", Glyphs.colour_for(inside) if inside == "star" else Terms.colour(inside)]
+			var col: Color = Glyphs.colour_for(inside) if inside == "star" else Terms.colour(inside)
+			return ["equipment", [["", col, chip_glyph(inside)]], Palette.HUD]
 		"shield":
 			return ["shield", die_number(nf), Palette.SHIELD]
 		"shield_vent":
@@ -642,12 +646,29 @@ static func next_mark(nf: Face, shown: String = "") -> Array:
 	return [mark, die_number(nf), Palette.HUD]
 
 
-## A passive box's text as runs of [text, colour]: a plain string in the mark's ink, or the runs
-## it already is (a shield and a vent's two numbers).
+## A passive box's text as runs of [text, colour] or [text, colour, glyph]: a plain string in the
+## mark's ink, or the runs it already is (a shield and a vent's two numbers; equipment's effect, a
+## glyph standing where a number would).
 static func passive_runs(text: Variant, ink: Color) -> Array:
 	if text is Array:
 		return text
 	return [[str(text), ink]] if not str(text).is_empty() else []
+
+
+## How wide one run of a passive box's text is, at `px` in `font`: a glyph run its mark's room.
+static func run_width(run: Array, font: Font, px: int) -> float:
+	if run.size() > 2 and not str(run[2]).is_empty():
+		return float(px)
+	return font.get_string_size(str(run[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
+
+
+## A run of a passive box's text drawn at `at`, its baseline's left: a glyph run its mark, centred
+## on the text's middle, else its text.
+static func draw_run(ci: CanvasItem, run: Array, at: Vector2, font: Font, px: int, ink: Color) -> void:
+	if run.size() > 2 and not str(run[2]).is_empty():
+		Glyphs.draw(ci, str(run[2]), at + Vector2(px * 0.5, -font.get_ascent(px) * 0.36), px * 0.9, ink, 1.7)
+	else:
+		ci.draw_string(font, at, str(run[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, px, ink)
 
 
 ## A passive box's text as one string, its runs joined.
@@ -671,10 +692,12 @@ func _draw_passive(bob: float, above: int) -> void:
 	var y := maxf(FACE - CHIP.y - 6.0, 8.0 + (above + marks.size() - 1) * TAG_STEP)
 	for m in marks:
 		var glyph := str(m[0])
-		var text := passive_plain(m[1])
 		var ink := Color(m[2] as Color, frame.a)
-		var tw := mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE).x if not text.is_empty() else 0.0
-		var inner := (16.0 if not glyph.is_empty() else 0.0) + (3.0 if not glyph.is_empty() and not text.is_empty() else 0.0) + tw
+		var runs := passive_runs(m[1], ink)
+		var tw := 0.0
+		for r in runs:
+			tw += run_width(r, mono, PASSIVE_SIZE)
+		var inner := (16.0 if not glyph.is_empty() else 0.0) + (3.0 if not glyph.is_empty() and tw > 0.0 else 0.0) + tw
 		var w := maxf(CHIP.x, inner + 12.0)
 		var box := Rect2(Vector2(FACE + RAIL - 2.0 - w, y + bob * 0.5), Vector2(w, CHIP.y))
 		Hud.fill_poly(self, Hud.cut(box, 4.0), Color(Palette.BG, 0.94))
@@ -693,10 +716,9 @@ func _draw_passive(bob: float, above: int) -> void:
 		if not glyph.is_empty():
 			Glyphs.draw(self, glyph, Vector2(x + 8.0, box.get_center().y), 15, ink, 1.8)
 			x += 19.0
-		for r in passive_runs(m[1], ink):
-			var run_ink := Color(r[1] as Color, frame.a)
-			draw_string(mono, Vector2(x, box.get_center().y + mono.get_ascent(PASSIVE_SIZE) * 0.36), str(r[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE, run_ink)
-			x += mono.get_string_size(str(r[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE).x
+		for r in runs:
+			draw_run(self, r, Vector2(x, box.get_center().y + mono.get_ascent(PASSIVE_SIZE) * 0.36), mono, PASSIVE_SIZE, Color(r[1] as Color, frame.a))
+			x += run_width(r, mono, PASSIVE_SIZE)
 		y -= TAG_STEP
 
 

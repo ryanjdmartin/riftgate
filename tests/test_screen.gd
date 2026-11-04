@@ -206,7 +206,8 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	assert_eq(picked.call(d), [["weapon", "8"]], "as it would deal it now, the screen's live blow")
 	d.next_number = ""
 	d.next_face = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE])
-	assert_eq(picked.call(d), [["lure", ""]], "equipment: what it lays, by its mark, no number")
+	assert_eq(picked.call(d), [["equipment", ""]], "equipment: its gear, no number (Ryan, 4 November: \"Why drop the equipment gear icon?\")")
+	assert_eq((d.passive_marks()[0][1] as Array)[0][2], "lure", "and what it lays where a number would stand")
 	var wake := Face.vent(3)
 	wake.shields = 2
 	d.next_face = wake
