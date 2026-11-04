@@ -43,6 +43,7 @@ from hold_sketches import master_together, unmastered  # noqa: E402
 
 NAME = "music_far_bank"
 PAIR = {"id": "far_bank_r5", "title": "The Far Bank, round five"}
+FOURTH = os.path.join(P.OUT, "far_bank_r4_map.wav")   # the fourth round's pair's map half, as it was heard
 MAP_LEVEL = P.PAIRS["far_bank"]["level"]   # the first round's map level, 3 dB under the battle half on a phone
 QUIET_ECHO = (3, 0.42, 1)   # the bells' echo, once
 CALM = "ABC"   # the groove, its turn bar and the lift ("minimal bells in groove/lift work")
@@ -240,7 +241,7 @@ SETS = [
      [(("pluck", -3.0, "held"), "3 dB under the violins", "As the fourth round had it."),
       (PAIR_JOB, "6 dB under", "3 dB more (the full pair's).")]),
     ("fg", "The map's climax", "All thirty-two bars: the full bells, the harp's arpeggios, the tune on the plucked string at the violins' level, the soft sub.", (53, 85),
-     [(("four",), "As the fourth round's pair had it", "The choir under it, every voice swelling in turn from the repeat edge."),
+     [(("four",), "As the fourth round's pair had it", "The choir under it, every voice swelling in turn from the repeat edge, at the level it played."),
       (PAIR_JOB, "The choir out, its level held", "The climax where it sat against the rest of the half, halfway between a phone and headphones; its swells kept (the full pair's)."),
       (("pluck", STRINGS_DB, "flat"), "Every voice at one level", "The swells levelled too: the plucked string and the harp each at the level its swells averaged.")]),
 ]
@@ -256,6 +257,14 @@ def main():
     mastered = dict(zip(jobs, master_together([raw[job] for job in jobs])))
     gain = 10.0 ** ((MAP_LEVEL - F.mean_level(mastered[PAIR_JOB])) / 20.0)
     halves = {job: F.limit(x * gain) for job, x in mastered.items()}
+    # The fourth round's pair as he heard it, its own map half, or failing that its render levelled
+    # on its own: this round's gain, raised as the choir left, would play it about 1 dB louder than
+    # it was, and the climax set's question is whether the climax kept its level.
+    if ("four",) in halves and os.path.exists(FOURTH):
+        halves[("four",)] = P.read_wav(FOURTH)
+    elif ("four",) in halves:
+        x = mastered[("four",)]
+        halves[("four",)] = F.limit(x * 10.0 ** ((MAP_LEVEL - F.mean_level(x)) / 20.0))
     m = halves[PAIR_JOB]
     P.write(PAIR["id"] + "_map", m, aac=False)
     _r1, b = P.halves("far_bank")   # the shipped track
