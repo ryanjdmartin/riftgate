@@ -4439,3 +4439,72 @@ file's band, and an elite that dies in two rounds never shows its mechanism. The
 table, Ryan's to mark (the bible's section 12): the lone elites' HP to the massive band (the
 scales row's 30 to 40 at tier one, where the Old Man and the World Eater stand), an escort each,
 or both; read below as a what-if, and at 200 seeds once marked.
+
+What-if, the same evening: every elite below 40 HP at 40 (`--set foes/<id>/hp=40`: the Leshy,
+the Goblin Shaman, the Goblin Nob, the Rust Monster, the Astromancer, the Bone Wyvern, the
+Antiquarian, the Fell Rider, the Skeleton King, the Reaper, the Shuffler, the Bane and the Thunder
+Ape) and the Wild Hunt's riders at 16, the same rows, random and greedy, 30 seeds, a direction (38
+and 63 minutes). The rows the what-if left alone (the Elder Treant, Gilgamesh, the Old Man, the
+Pilgrim, the Cinder Tortoise, the Firelord and the World Eater, at 40 to 44 already) read the same
+and are left out of the table.
+
+| Composition, tier | Lead (HP as built, at the what-if) | Trios as built: random / greedy won, hull lost (greedy), rounds | Trios at the what-if | Fours as built | Fours at the what-if | Band as built, at the what-if (its tier's rows) |
+|---|---|---|---|---|---|---|
+| leshys_hunt, 2 (meadow) | Leshy (8, 40) | 99 / 100%, 0%, 2.9 | 88 / 100%, 3%, 7.4 | 100 / 100%, 0%, 2.0 | 100 / 100%, 0%, 3.7 | no decision, no decision |
+| leshys_hunt, 3 (meadow) | Leshy (8, 40) | 98 / 100%, 0%, 3.2 | 79 / 100%, 4%, 8.7 | 100 / 100%, 0%, 2.2 | 100 / 100%, 0%, 4.1 | no decision, no decision |
+| shamans_warband, 1 (meadow) | Goblin Shaman (8, 40) | 100 / 100%, 1%, 3.5 | 98 / 100%, 4%, 6.3 | 100 / 100%, 0%, 2.5 | 100 / 100%, 0%, 3.9 | no decision, no decision |
+| shamans_warband, 2 (meadow) | Goblin Shaman (8, 40) | 100 / 100%, 1%, 3.6 | 98 / 100%, 5%, 7.3 | 100 / 100%, 0%, 2.7 | 100 / 100%, 0%, 4.3 | no decision, no decision |
+| shamans_warband, 3 (meadow) | Goblin Shaman (8, 40) | 100 / 100%, 2%, 3.8 | 92 / 100%, 14%, 8.7 | 100 / 100%, 0%, 2.8 | 100 / 100%, 0%, 4.7 | no decision, no decision |
+| the_nob, 1 (meadow) | The Goblin Nob (24, 40) | 100 / 100%, 0%, 2.7 | 100 / 100%, 1%, 4.0 | 100 / 100%, 0%, 1.6 | 100 / 100%, 0%, 2.2 | no decision, no decision |
+| the_nob, 2 (meadow) | The Goblin Nob (24, 40) | 100 / 100%, 0%, 3.1 | 96 / 100%, 2%, 5.0 | 100 / 100%, 0%, 1.8 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| the_nob, 3 (meadow) | The Goblin Nob (24, 40) | 100 / 100%, 1%, 3.8 | 80 / 100%, 5%, 6.0 | 100 / 100%, 0%, 2.1 | 100 / 100%, 0%, 3.0 | no decision, no decision |
+| rust_monsters_scavenge, 1 (waste) | The Rust Monster (20, 40) | 100 / 100%, 0%, 2.5 | 100 / 100%, 1%, 4.3 | 100 / 100%, 0%, 1.4 | 100 / 100%, 0%, 2.3 | no decision, no decision |
+| rust_monsters_scavenge, 2 (waste) | The Rust Monster (20, 40) | 100 / 100%, 0%, 2.9 | 100 / 100%, 4%, 5.2 | 100 / 100%, 0%, 1.6 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| rust_monsters_scavenge, 3 (waste) | The Rust Monster (20, 40) | 100 / 100%, 1%, 3.2 | 98 / 100%, 8%, 6.3 | 100 / 100%, 0%, 1.8 | 100 / 100%, 0%, 3.0 | no decision, no decision |
+| the_astromancer, 2 (waste) | The Astromancer (24, 40) | 42 / 96%, 19%, 8.2 | 22 / 90%, 31%, 12.0 | 100 / 100%, 0%, 3.7 | 97 / 100%, 1%, 4.6 | no decision, no decision |
+| the_astromancer, 3 (waste) | The Astromancer (24, 40) | 28 / 92%, 29%, 9.8 | 3 / 82%, 44%, 14.3 | 97 / 100%, 1%, 4.2 | 93 / 100%, 1%, 5.3 | no decision, no decision |
+| bone_wyverns_flight, 2 (marsh) | Bone Wyvern (32, 40) | 79 / 100%, 10%, 7.4 | 76 / 100%, 12%, 9.1 | 100 / 100%, 0%, 3.4 | 100 / 100%, 1%, 3.8 | no decision, no decision |
+| bone_wyverns_flight, 3 (marsh) | Bone Wyvern (32, 40) | 71 / 100%, 15%, 8.9 | 64 / 100%, 19%, 10.9 | 100 / 100%, 0%, 3.7 | 100 / 100%, 1%, 4.3 | no decision, no decision |
+| collectors_hall, 2 (marsh) | The Antiquarian (24, 40) | 59 / 100%, 19%, 5.1 | 33 / 99%, 32%, 7.7 | 100 / 100%, 4%, 2.7 | 99 / 100%, 6%, 3.5 | no decision, no decision |
+| collectors_hall, 3 (marsh) | The Antiquarian (24, 40) | 43 / 100%, 27%, 5.8 | 19 / 91%, 49%, 9.1 | 98 / 100%, 5%, 3.0 | 91 / 100%, 8%, 4.0 | no decision, no decision |
+| fell_riders_hunt, 1 (marsh) | The Fell Rider (16, 40) | 100 / 100%, 0%, 1.8 | 100 / 100%, 2%, 4.0 | 100 / 100%, 0%, 1.2 | 100 / 100%, 0%, 2.2 | no decision, no decision |
+| fell_riders_hunt, 2 (marsh) | The Fell Rider (16, 40) | 100 / 100%, 0%, 2.4 | 100 / 100%, 5%, 4.9 | 100 / 100%, 0%, 1.4 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| fell_riders_hunt, 3 (marsh) | The Fell Rider (16, 40) | 100 / 100%, 1%, 2.7 | 98 / 100%, 11%, 6.0 | 100 / 100%, 0%, 1.6 | 100 / 100%, 0%, 3.0 | no decision, no decision |
+| skeleton_kings_court, 2 (marsh) | The Skeleton King (28, 40) | 1 / 55%, 68%, 9.0 | 0 / 47%, 73%, 10.4 | 92 / 100%, 10%, 4.3 | 91 / 100%, 11%, 5.1 | no decision, no decision |
+| skeleton_kings_court, 3 (marsh) | The Skeleton King (28, 40) | 0 / 52%, 71%, 9.8 | 0 / 42%, 77%, 11.3 | 92 / 100%, 11%, 4.6 | 86 / 100%, 12%, 5.5 | no decision, too easy |
+| the_reaper, 1 (marsh) | The Reaper (12, 40) | 100 / 100%, 0%, 1.5 | 100 / 100%, 4%, 4.0 | 100 / 100%, 0%, 1.1 | 100 / 100%, 0%, 2.2 | no decision, no decision |
+| the_reaper, 2 (marsh) | The Reaper (12, 40) | 100 / 100%, 0%, 1.7 | 100 / 100%, 8%, 4.8 | 100 / 100%, 0%, 1.2 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| the_reaper, 3 (marsh) | The Reaper (12, 40) | 100 / 100%, 0%, 2.1 | 97 / 100%, 13%, 5.8 | 100 / 100%, 0%, 1.3 | 100 / 100%, 1%, 3.0 | no decision, no decision |
+| the_shambler, 2 (marsh) | The Shuffler (32, 40) | 91 / 100%, 4%, 5.0 | 86 / 100%, 8%, 6.1 | 100 / 100%, 0%, 2.3 | 100 / 100%, 0%, 2.7 | no decision, no decision |
+| the_shambler, 3 (marsh) | The Shuffler (32, 40) | 84 / 100%, 8%, 5.9 | 72 / 100%, 15%, 7.5 | 100 / 100%, 0%, 2.6 | 100 / 100%, 0%, 3.1 | no decision, no decision |
+| the_wild_hunt, 1 (marsh) | Rider of the Wild Hunt (10, 16) | 99 / 100%, 1%, 2.9 | 90 / 100%, 3%, 4.4 | 100 / 100%, 0%, 2.1 | 100 / 100%, 0%, 2.5 | no decision, too easy |
+| the_wild_hunt, 2 (marsh) | Rider of the Wild Hunt (10, 16) | 93 / 100%, 3%, 3.8 | 68 / 99%, 10%, 5.7 | 100 / 100%, 0%, 2.2 | 100 / 100%, 0%, 3.0 | no decision, no decision |
+| the_wild_hunt, 3 (marsh) | Rider of the Wild Hunt (10, 16) | 77 / 100%, 7%, 4.3 | 48 / 99%, 22%, 6.9 | 100 / 100%, 0%, 2.4 | 100 / 100%, 1%, 3.4 | no decision, no decision |
+| the_bane, 2 (peak) | The Bane (36, 40) | 72 / 100%, 30%, 6.5 | 67 / 99%, 34%, 7.3 | 100 / 100%, 4%, 2.9 | 100 / 100%, 5%, 3.2 | no decision, no decision |
+| the_bane, 3 (peak) | The Bane (36, 40) | 51 / 91%, 44%, 8.1 | 40 / 87%, 51%, 9.1 | 99 / 100%, 6%, 3.3 | 99 / 100%, 6%, 3.6 | no decision, no decision |
+| thunder_apes_rampage, 1 (peak) | The Thunder Ape (24, 40) | 100 / 100%, 1%, 2.8 | 98 / 100%, 4%, 4.5 | 100 / 100%, 0%, 1.6 | 100 / 100%, 0%, 2.3 | no decision, no decision |
+| thunder_apes_rampage, 2 (peak) | The Thunder Ape (24, 40) | 100 / 100%, 2%, 3.2 | 92 / 100%, 7%, 5.6 | 100 / 100%, 0%, 1.9 | 100 / 100%, 0%, 2.6 | no decision, no decision |
+| thunder_apes_rampage, 3 (peak) | The Thunder Ape (24, 40) | 95 / 100%, 6%, 4.1 | 77 / 99%, 16%, 6.8 | 100 / 100%, 0%, 2.2 | 100 / 100%, 0%, 3.1 | no decision, no decision |
+
+Read. Against the fours nothing moves: random play still wins 86 to 100% and greedy 100% at 0 to
+12% hull, and greedy's fights grow by about a round, the lone elites from one or two rounds to two
+or three (the Reaper 1.1 to 2.2, the Fell Rider 1.2 to 2.2, the Nob 1.6 to 2.2, the Thunder Ape
+1.6 to 2.3); the Skeleton King's court at tier three (random 92 to 86%) and the Wild Hunt at tier
+one for the trios (99 to 90%) cross the band rule's line into too easy by a few points of random,
+within a direction's noise, so the bands read 47 no decision, 1 decision and 5 too easy where they
+read 49, 1 and 3. Against the trios the lone elites still fall to random play 77 to 100% and to
+greedy 99 to 100% at 1 to 16% hull, their fights grown from two rounds to four (the Reaper 1.5 to
+4.0, the Nob 2.7 to 4.0, the Fell Rider 1.8 to 4.0), so a bellow or a roar gets a round to show;
+the cells that move most have bodies, or a mechanism the rounds feed: the Astromancer (random 42
+to 22% at tier two and 28 to 3% at tier three, greedy 96 to 90% and 92 to 82% at 31 and 44% hull,
+its orbs with the rounds to call and to mend), the Antiquarian (59 to 33%, 43 to 19%), the Wild
+Hunt (93 to 68%, 77 to 48%) and the Thunder Ape at tier three (95 to 77%). What it says: HP alone
+buys rounds, not threat. A lone elite at 40 HP is still a free win for its tier's squad, since its
+blow (3 to 7 a round, at one machine) is a rank-and-file's damage against a four's hull and
+shields; the HP lets its mechanism fire once before it dies. What makes a fight in this table is
+damage at the squad over several rounds: bodies (the Skeleton King's court, the Firelord's sons,
+the Astromancer's orbs) or a massive foe's blow (the Old Man, the World Eater). So the lone elite as
+the harder fight section 9 asks for wants the massive band in both numbers (the scales row: a blow
+of 7 or 8 with the 30 to 40 HP), an escort each, or its curveball read on the map (the hunter's
+catch, the World Eater's push), which no cell reads; the HP alone is not the lever. Ryan's to mark
+(the bible's section 12), then the 200-seed read.

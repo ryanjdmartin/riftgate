@@ -232,9 +232,11 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   Orbs its members and summons); and the runner's elite cells (`--packs elites`, every
   composition at each tier it names) with their first read at 30 seeds, a direction
   (`docs/measurements.md`): every cell a free win for the endgame fours and the lone elites for
-  the stock trios too, dying in two rounds before their mechanisms matter; the lone elites' HP
-  to the massive band, or an escort each, the lever on the table. Open for Ryan: the elites'
-  numbers, the Dullahan as the superboss, the Scorpion's name (the to-do, section 12).
+  the stock trios too, dying in two rounds before their mechanisms matter; and the what-if at
+  40 HP, which read HP alone as rounds, not threat (a trio's fight grown from two rounds to
+  four, still a free win), so the lever on the table is the massive band in both numbers, an
+  escort each, or the curveball on the map. Open for Ryan: the elites' numbers, the Dullahan as
+  the superboss, the Scorpion's name (the to-do, section 12).
 - The bosses' slate, all twelve (30 October to 2 November, on Ryan's word, his yes, his
   agreement with Claude's leans and his calls on the review of the 2nd; `docs/bosses_proposal.md`,
   its sections on what landed and the calls still open; the bible's section 9 rows), three a
@@ -785,7 +787,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.443 (the page's version
+  `docs/design-bible.html` after every change. This file is v0.444 (the page's version
+  457, published 4 November from `claude/elites-session`, that evening, straight onto 456: the
+  elites' what-if at 40 HP in section 12's item and the tiers row; over v0.443 (the page's version
   456, published 4 November from `claude/elites-session`, that evening: the Astromancer, a sixth
   wanderer, in the tiers row, the domain table and the Built list, the balance row's elite cells
   and the elites' first read, section 12's Golden Sun item (the Star Magician landed, the
