@@ -142,7 +142,7 @@ a launch's flight takes a shape (its ease, a drop, a spin, a hang and a fade, a 
 lowforge's launch() and landing(), MechView3D.flight_at and the hangar's mirror), flies in the
 world once it leaves, and the Swallowtail's flares, the Musk Ox's rockets and its shell and casing
 fly (the casing into the forge mouth); act_shot renders a firing; green at 942 tests and 255,565
-checks; not yet on main; its bible is v0.437 (the Pages line); the hangar the Pages line's. Next on
+checks; not yet on main; its bible is v0.442 (the Pages line); the hangar the Pages line's. Next on
 it: Ryan's read of the glows, the weapons firing, the swaps, the hit and fire round, both sets of
 his notes of 3 November and the micro-models (the to-do's Ryan list).
 
@@ -809,9 +809,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.436 (the
-  page's version 449, published 3 November from `claude/charming-rubin-h954bp`: Ryan's second
-  notes of that day, the slump on its feet in the hit-reaction row, the Buzzard's cannon and the
+  `docs/design-bible.html` after every change. This file and the live page are v0.442 (the
+  page's version 455, published 4 November from `claude/charming-rubin-h954bp`: the micro-models
+  in the weapon-fire row and section 12's render margin, three-way merged onto the live v0.441
+  other sessions published at 450 to 454 (the marks of 4 November: the Thunder Ape's Golden Rage
+  and the World Eater's Crush, the Emperor Scorpion, the Mantis Ant and the Marsh Serpent, every
+  foe drawn), the version line the only conflict; on its own v0.436 at 449, 3 November: Ryan's
+  second notes of that day, the slump on its feet in the hit-reaction row, the Buzzard's cannon and the
   Wainwright & Sutler pieces firing from their acts in the weapon-fire row, the Kite's larger
   plumes in the boosters row, the Arsenal's sickly vents in the glow colours row, three-way merged
   onto the live v0.435 another session published after 446 (the elites' pass: a boss a named JRPG
@@ -858,7 +862,12 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 198 (3 November, from
+  before it is replaced and `edits` read first. At the page's version 201 (4 November, from
+  `claude/charming-rubin-h954bp`; `edits` empty): the micro-models in `hangar/motion.js` (a
+  launch's flight shapes, flying in the world once it leaves, a landing taken as it leaves) and
+  the Swallowtail's and the Musk Ox's rigs and models, onto the 200 another session published
+  (its page's foe sprites of 4 November, a branch not yet on main, kept as it stood: the page
+  sent was the live one), each checked identical to 198's before it was replaced. At 198 (3 November, from
   `claude/charming-rubin-h954bp`; `edits` empty): Ryan's second notes of that day in
   `hangar/motion.js` (the slump on its feet, flyers and hovers at the skirmish's lift, a fixed
   weapon's turn held through its slice, the route hex by class), the rigs of the Nemesis, the
