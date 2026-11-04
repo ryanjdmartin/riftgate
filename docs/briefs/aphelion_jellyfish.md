@@ -4,7 +4,8 @@ The session refines Aphelion's jellyfish into the roster's soft-control speciali
 the dispel it carries.
 
 **Status**: direction (14 October); in session since 15 October (Claude's first round, its
-review and Ryan's call on the name, below). **Maker**: Aphelion.
+review and Ryan's call on the name, below; Ryan's status detonator of 4 November may fold in,
+below, with what has moved on main since). **Maker**: Aphelion.
 **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; the bible's rows on the
 dispel and on Numbed (section 5) and on Aphelion's next chassis (section 7).
 
@@ -134,6 +135,49 @@ October at Ryan's ask, written down on 20 October. Ryan's call on the name came 
   spender (landed 20 October). The helicarrier's dock lost its lure the same day (Ryan: Phased
   allies cannot be targeted, so the intents move by themselves; `ws_multirotor.md`).
 
+**Since then, on main** (to 4 November)
+
+- Purge is our keyword too, numbered: Purge N takes N stacks off every buff but Guarded (Ryan, 28
+  October: "lower everything by N"), built with the Null Field Emitter (Aphelion's, tier two, an
+  Indirect debuff at Purge 2, in no stock). Numbed has been in its reach since 2 November.
+- The foes carry buffs worth stripping: Primed, the Barrier, the Ward and Regenerating crossed to
+  them, and the Golden and Enraged rages since the elites.
+- Every Foe is a debuff's keyword (2 November): the entry lands on every foe in the fight.
+- A debuff with an area keyword already carries its effects to the foes it reaches, dealing
+  nothing (the Proximity Klaxon's Lure with Spread). So the engine can run the spread as Spread
+  granted to its equipment; the chipless filter is the new part.
+- Disrupt is deterministic (the randomness pass): the next move in the foe's list that its
+  conditions allow. The foes' fresh start landed on 30 October.
+
+## Ryan, 4 November: the status detonator may fold in
+
+His idea of that day, in his words: "Aphelion: Cannot mount weapons. enemies hit by its equipment
+gain a debuff that explodes after their action, dealing 1 damage per stack of buff and debuff on
+them, Purging them of all buffs and Cleansing their debuffs." Claude proposed folding it into
+this machine the same day (`docs/aphelion_minerva_chassis_proposal.md`, "Ten a maker"). Ryan
+then asked what this brief holds ("its very WIP"). If it folds in, the freed Aphelion slot goes
+to the time area.
+
+Claude's read of the fit, for him to move:
+
+- **Where it fits.** The Science Vessel is unarmed, and its EMP Shockwave strips shields and
+  energy. So "cannot mount weapons", and a blast that purges and cleanses, are the homage made
+  concrete, and Aphelion keeps one Purge machine rather than two. Ryan's 12 October narrowing to
+  "all non-damage effects" was the spread's (Spread on every weapon, damage included, set aside),
+  not the EMP's, so the blast's damage breaks nothing he said.
+- **Where it strains.** This machine is the soft-control specialist: it changes what the enemy
+  does. The detonator is a cash-out: it counts every stack, then wipes the slate. One machine can
+  hold both if each sits in its own place.
+- **Claude's lean.** The spread passive stays, reading its equipment. That is the softer form of
+  "cannot mount weapons": a weapon on it is a mismatch, never banned. The locked EMP becomes the
+  detonator's blast, with Disrupt dropped from it, since fitted pieces (the Differentiation
+  Probe) still bring Disrupt for the spread to carry. The other way round, the detonator's lay
+  becomes the passive and the spread goes: the machine goes wide by bombs, and its soft control
+  is left to the pieces fitted.
+- **The blast's holes** are in the proposal's status detonator section: the count's reach (the
+  bomb itself a stack, Enraged in it, Burning a loss), Numbed and Guarded out of the full purge,
+  the team's marks cleansed with it, and its clock after a skipped action.
+
 ## Open for the session (the refinement)
 
 1. The spread's category: what leaves no chip (Lure, Disrupt, Purge), never damage or a
@@ -143,13 +187,17 @@ October at Ryan's ask, written down on 20 October. Ryan's call on the name came 
    much.
 4. Purge's reach named (Armoured from a brace, Empowered, Getting Back Up; Numbed out; Guarded
    out, or in by Ryan's choice), and its carriers; its name is Purge on both sides for now
-   (Ryan, 20 October).
+   (Ryan, 20 October). Since 28 October Purge N is built and its reach takes Numbed (2
+   November), so what is open is the EMP's own number and carriers.
 5. Its stock and its designation.
+6. The status detonator's fold (4 November): its blast as the EMP, its lay as the passive, or no
+   fold.
 
 ## Waits on
 
-The foes' fresh start, for the rank and file with one move (Disrupt is only a new target
-there); countdowns and three-move bosses already give it work.
+Nothing blocks it now. It waited on the foes' fresh start, for the rank and file with one move
+(where Disrupt is only a new target), and that landed on 30 October. Disrupt's read on the new
+rank and file is the to-do's line, and countdowns and three-move bosses already give it work.
 
 ## What the session hands back
 

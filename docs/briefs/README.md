@@ -129,7 +129,7 @@ tier three, the Arsenal none, three and three):
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
+| Minerva | Honey Badger, Wild Boar or the mole (down; Ryan, 4 November) | the Armadillo as a form changer (up: Ryan, 4 November), the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
 | Kestrel (decided 21 October, `kestrel_line.md`; the Magpie and the Snowy Owl, tiers open, in their briefs) | Skua, Storm Petrel, Puffin | Buzzard, Kite, Needletail | Lammergeier, Giant Petrel |
 | Wainwright & Sutler (decided 20 October) | Prairie Dog, Cassowary, Cottonmouth | Dingo, Clydesdale, funnel-web, the gunship (a proposal), Whip Scorpion | Swallowtail, Musk Ox |
 | Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
@@ -279,7 +279,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | nothing: Flak built and measured 21 October (`docs/measurements.md`) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October) |
 | `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
-| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October) | Aphelion | 2 | Ryan's calls; the foes' fresh start for the one-move rank and file |
+| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October); the status detonator's fold and what moved on main since (4 November) | Aphelion | 2 | Ryan's calls (the fold among them); the fresh start it waited on landed 30 October |
 | `aphelion_carrier.md` | proposal, open; first round and review in the brief (15 and 16 October) | Aphelion | 3 | Ryan's calls on its open list |
 | `aphelion_baboon.md` | rework; first round and review in the brief (15 and 16 October) | Aphelion | 2 (now 1) | Ryan's calls (the stock pass left it at tier one) |
 | `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 (1 if Aphelion's, in the reshuffle) | nothing |

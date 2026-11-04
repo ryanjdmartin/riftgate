@@ -175,7 +175,21 @@ names its machines for figures who punish, never for war gods. Every name is Rya
 Ryan, 4 November, after the first round: "I want to target 10 per maker, at least for now. How
 do you see that shaking out with these specs? Anything to merge, move to another maker, or cut
 in favour of another missing hole/niche?" Ten for each of the five makers is fifty, his "roster
-of up to 50 units" of 18 October. What follows is Claude's shake-out, for him to move.
+of up to 50 units" of 18 October. What follows is Claude's shake-out as his calls on it
+have moved it.
+
+**Ryan's calls on the shake-out** (4 November), in his words:
+
+- "Cut shield-basher as a unit, but add it as a potential minervan tier 3 weapon or module -
+  bonus damage equal to armour, then armour zero until end of round."
+- "Mole needs a better hook than 'ignores armour' but we can work on that later."
+- "Armadillo moves to T2, and either Boar or Mole will move down."
+- "The two slots you pegged for aphelion aren't relevant. What is the current brief of the
+  Jellyfish? its very WIP. If the status detonator idea folds into it, then i'd rather flesh out
+  the time-shifter support since that's an entire unexplored area."
+- "Arsenal 10th can wait until its many unrefined ideas are settled."
+
+The two moves to the Arsenal and the other merges stand as Claude proposed them, unanswered.
 
 **Kestrel and Wainwright & Sutler are already at ten**, so nothing moves to them. Kestrel has
 eight decided plus the Magpie and the Snowy Owl. Wainwright & Sutler is 3-5-2 with the gunship.
@@ -184,34 +198,25 @@ eight decided plus the Magpie and the Snowy Owl. Wainwright & Sutler is 3-5-2 wi
 
 | Tier one | Tier two | Tier three |
 |---|---|---|
-| Honey Badger, Armadillo, the lure tank | Wild Boar, the echidna, the mammoth, the immune one, the mole | the siege battery, the battlecruiser |
+| Honey Badger, the lure tank, the Wild Boar or the mole | the Armadillo, the echidna, the mammoth, the immune one, the mole or the Wild Boar | the siege battery, the battlecruiser |
 
-It stays 3-5-2 if the Armadillo goes up to tier two (Ryan's suspicion, section 12) and the Wild
-Boar comes down to tier one (the briefs README's proposal).
-
-- **The cut: the shield-basher, as a chassis.** Its choice, hold the armour or spend it as
-  damage, is the Honey Badger's, from the same maker: "hold the ore and stand behind it, or fire
-  it and hit" (its row, 31 October). And a shield-basher chassis cannot feed itself without
-  an exception that lets Armoured linger. As a component it works with no rule bent. A shield
-  bash spends the Armoured an ally's brace (the Shoring Jack) gave it this turn, so the ally's
-  action is the pair, which is the action economy row's first answer. It goes into the
-  catalogue as a piece.
-- **The mole keeps its slot and needs a verb.** Claude's lean draws on two recorded holes. Every
-  weapon it fires breaches: the drill goes through plate. Breach has one carrier today, the
-  Overclocked Railgun. It pays in negative cooling: its drill heats it every round. That is the
-  new price nobody uses yet (the briefs README's holes); the analysis gave the boiler cooling
-  -10, but it landed at 0. The mole becomes the anti-armour machine in the armour maker. Against
-  tier one's unarmoured rank and file it is a mismatch, which costs time. It pays on braced foes,
-  on bosses whose kit is plate, and on the promoted forms.
+- **The shield-basher is cut as a unit** (Ryan's call) and becomes a potential Minerva tier-three
+  weapon or module: bonus damage equal to armour, then armour zero until the end of the round.
+  Its notes are under "The shield bash" below.
+- **The Armadillo moves to tier two** (Ryan's call), which answers section 12's Armadillo
+  question. Either the Wild Boar or the mole comes down to tier one. The open point is timing.
+  Moved now, Minerva's tier-one deal would be the Honey Badger every time until the Boar or the
+  mole comes down, or the lure tank lands. The Baboon's move was held for the same reason, its
+  maker's deal left fixed. So the content, the bible's Armadillo row and section 12 move either
+  now or with whichever machine comes down: Ryan's word.
+- **The mole keeps its slot with its verb open.** Ryan: it "needs a better hook than 'ignores
+  armour'", later. Claude's breach lean is withdrawn.
 - **The mammoth and the echidna part by trigger.** In Ryan's list both lay a debuff on whatever
   strikes them. Claude's lean: the mammoth's frost comes from a blow on any ally's shield (his
   "some other more party-wide trigger to be unique"), and the echidna's quills from a blow on its
   own hull. One reads the team's shield layer, the other its own wound. With frost that common,
   the team's cooling is the thing to watch (the Armadillo's row names the all-in cooling team
   among the things that would reopen it).
-
-If Ryan would rather keep the shield-basher as a chassis, then the mole, which has no verb, is
-the cut.
 
 ### Aphelion: fourteen at most, down to ten (4-4-2)
 
@@ -231,27 +236,25 @@ the cut.
 - **Three merges.**
   - **The shock unit** is the Static machine.
   - **The aura-shifter** becomes the Macross's shifts.
-  - **The status detonator folds into the jellyfish.** The jellyfish is the Science Vessel
+  - **The status detonator folds into the jellyfish**, if the jellyfish's brief takes it. Ryan
+    asked what that brief holds (it is very WIP), so the fold and its fit are written in it
+    (`docs/briefs/aphelion_jellyfish.md`, 4 November). The jellyfish is the Science Vessel
     homage, and StarCraft's Science Vessel is unarmed; its EMP Shockwave strips shields and
     energy. So "cannot mount weapons", and a blast after the foe's action that purges and
-    cleanses, are the jellyfish's homage made concrete, and Aphelion's two Purge machines become
-    one. Ryan's call which part carries: either the jellyfish keeps its spread passive and the
-    blast becomes its locked EMP, or the detonator's passive replaces the spread. The Vessel's
-    other two abilities also turn up in his list, Irradiate as Static and Defensive Matrix as
-    the Barrier, each on a machine of its own.
+    cleanses, are its homage made concrete, and Aphelion's two Purge machines become one. The
+    Vessel's other two abilities also turn up in Ryan's list, Irradiate as Static and Defensive
+    Matrix as the Barrier, each on a machine of its own.
 - **The defensive tier one is the Barrier and Ward support**, a protector at tier one, as the
   Puffin is Kestrel's. Its identity should lean on the Barrier half: every domain throws a big
   blow, while the Ward's worth waits on the domains' riders (its row), a dependency the immune
   one shares. With it in place, the Baboon's move to tier two is free; the hole its brief
   recorded was Aphelion's tender deal.
-- **The open slot goes to a hole.** Two candidates:
-  - Acting on the reinforcement phase. The bible's Open row on the player's ways to act on it
-    (section 5) is empty, and only the Lammergeier's mines touch arrivals. It suits the
-    time-shifter's maker.
-  - The long guns: a machine that joins fights from three hexes away. Ryan parked it on 12
-    October while the engagement range might change; the range is still 2.
-
-  Or keep the status detonator apart, which makes exactly ten.
+- **The open slot goes to the time area** if the detonator folds into the jellyfish. Ryan would
+  "rather flesh out the time-shifter support since that's an entire unexplored area". The two
+  candidates Claude pegged (the reinforcement phase, the long guns) are struck. The time-shifter
+  is already one of the ten, so the slot is either the time area's second machine or stays open
+  while the time-shifter is fleshed out. Claude's first round on the area, and the split it
+  would make, are under "The time-shifter" below.
 
 ### The Arsenal: six to ten (0-5-5)
 
@@ -273,11 +276,8 @@ Council's trickle. If it doesn't, the Arsenal stops at nine or fewer.
   Penetrate and Shock, set aside on 11 October for the four briefed machines with no other
   reason recorded. That toll is also the Spread Shock setter the to-do says Chain still lacks.
   The thunder figure feeds Aphelion's Static and is fed by it.
-- **The open slot goes to a hole.** The bench's Haunted is one candidate: a striker spends its
-  next blow on the foe beside it, a novel verb. It was set aside because it does nothing against
-  a lone boss, which now holds only at tier one, since bosses bring escorts at tiers two and
-  three. It needs the stun row's care, because the foe loses its blow on the team. Or the slot
-  stays open.
+- **The tenth waits** until the Arsenal's many unrefined ideas are settled (Ryan's call): the
+  four briefed machines, the two figures and the Zoids walker.
 
 ## Aphelion
 
@@ -445,7 +445,9 @@ Minerva's Armadillo lays it.
 
 ### The time-shifter
 
-Ryan listed it again. It sits on the briefs README's Aphelion bench (Ryan, 17 October: a machine
+Ryan listed it again on 4 November, and after the shake-out the same day: "i'd rather flesh out
+the time-shifter support since that's an entire unexplored area." It sits on the briefs README's
+Aphelion bench (Ryan, 17 October: a machine
 "that wants to control the battlefield by delaying and redirecting blows... Soft control, moving
 or delaying hits as a whole identity") and is parked in the bible's Aphelion row, with its holes
 there. What has moved since 17 October:
@@ -462,6 +464,72 @@ there. What has moved since 17 October:
 
 The Baboon is already Aphelion's time loop, through the Paradox, so a second time machine keeps a
 Lean rather than breaking one.
+
+**Claude's first round** (4 November), for Ryan to move. Every number is a placeholder.
+
+**The principle: time is conserved.** The machine moves actions in time and never makes or
+deletes one. Every blow it moves still comes, so it is soft control by construction, as Ryan's
+17 October words ask. Its tempo is the kind the action economy row sanctions: a second action
+paid for in an ally's own turn.
+
+**The clocks it can touch**, the area as the engine has it:
+
+- the foes' moves: each round's move and target, and the countdowns that gather;
+- the team's actions: one spend a die a round, the rerolls, the dark entries;
+- the statuses' clocks: Burning and Vitriol fading a stack an action, Flak halving, Exposed
+  through the next round, Numbed decaying, Empowered halving.
+
+**The kit, one verb for each clock:**
+
+- **Delay** (a locked debuff, the foes' clock). The move the foe shows waits a round and lands
+  beside its next move: both land next round, the waiting one first. Its pick holds while its
+  machine stands, as a countdown's does. A foe killed first takes both with it, so on rank and
+  file the team will kill next round, a delay is a stun. It therefore sits on Numbed's clock: a
+  Numbed foe strips a stack instead, and a delayed foe gains its stun resist as its waiting move
+  lands. Its gate is the debt, the stun row's self-sacrifice: a foe that lives hits twice. A
+  delayed countdown gathers a round longer, as a Suppress already holds one. Its chip is ours, an
+  hourglass with the waiting blow's number, never the enemy's violet.
+- **Bank** (a locked buff, allies only, the team's clock). An ally that has not acted is Phased
+  this round, so every blow aimed at it re-picks by its foe's aim. That is Ryan's redirect, with
+  no ally chosen to take the blow, so it is no interpose. Next round the ally acts twice: after
+  its first spend its die rolls again, never onto the entry just spent. Both parts are built:
+  Phased (the Swallowtail's Mooring Screens) and the roll-again (the Reveille Horn's charged
+  form, the Reheat Uplink).
+- **Stasis** (the passive, the statuses' clock). Every foe its equipment hits keeps every mark the
+  team laid through the next round: Flak does not halve, Burning and Vitriol tick without fading,
+  Exposed holds. Numbed holds too, which is the price a stun team pays. This is the 22 October
+  bench idea. It reads other makers' marks (Wainwright & Sutler's Flak, the Arsenal's and
+  Aphelion's Burn, Kestrel's Exposed, the funnel-web's Vitriol), so it opens build space. It also
+  gives Aphelion's status house a third axis: the Stingray goes deep, the jellyfish wide, the
+  time-shifter long.
+
+**The holes.**
+
+1. **The forecast plays one round.** Next round's debt and the banked ally's second action must
+   show on their chips, since the gauges forecast only the round in hand.
+2. **Two moves in one foe action** is new code. The intent shows both, the waiting one first. A
+   Suppress on a delayed foe holds both a round, and a Disrupt breaks off the waiting move, as it
+   breaks off a countdown.
+3. **It cannot bank itself.** Spending is acting, and Phased goes only to a machine that has not
+   acted.
+4. **It is a tier two.** No basic is equipment, so its passive needs a tier-one debuff in its
+   stock.
+5. **The stun budget.** The delay is the one piece that removes a blow (when its foe dies first),
+   so it lives on Numbed's clock. The bank removes none: the blows re-pick onto others. Stasis
+   freezes Numbed against the team's own stuns. Ryan logged stasis on 22 October with a caution:
+   none of those slot-ins was to get a brief until Aphelion's powers were read, "or we'll end up
+   with an OP umbra inducer all over again".
+6. **It parts by pattern** from the jellyfish, which changes the move and purges; from the Baboon,
+   whose Paradox removes the action; from the Swallowtail's charged screens, which phase every
+   ally at a muster's price with the action lost; and from the Lammergeier's mines, which act on
+   arrivals.
+
+**One machine or two.** The time-shifter is already one of Aphelion's ten. If the freed slot goes
+to the time area too, Claude would split it by whose clock. The time-shifter keeps the foes'
+clocks (delay and stasis). A time support takes the team's: the bank, and its mirror, a borrow,
+where an ally that has acted rolls again and acts now, and its die stands down next round. Each is
+a second action paid in the ally's own turn. Otherwise it is one machine with the kit above, and
+the slot stays open.
 
 ### The Barrier and Ward support
 
@@ -492,8 +560,9 @@ Ryan, 19 October), and the tier sort puts a support at tier two.
 
 ### The status detonator (no weapons)
 
-"Ten a maker" folds this machine into the jellyfish, as its Science Vessel EMP. These
-holes hold either way.
+"Ten a maker" folds this machine into the jellyfish as its Science Vessel EMP, if the jellyfish's
+brief takes it. The fold and its fit are written in that brief (`docs/briefs/aphelion_jellyfish.md`,
+4 November). These holes hold either way.
 
 **The holes.**
 
@@ -562,9 +631,9 @@ It passes the tier-one test: every basic gun lures.
 
 It is the luring tank the echidna's brief split from the spikes (Ryan, 15 October: "we can either
 play up the spikes, or the luring tank, not both"). So Ryan's two Minerva ideas take the two
-halves. It is also "Minerva given another tier-one front", the option section 12's Armadillo
-question waits on (Ryan, 2 November: "I suspect tier 2 is smarter but we need more options
-first").
+halves. It is also one of the tier-one fronts beside the Armadillo's move to tier two (Ryan, 4
+November: "Armadillo moves to T2, and either Boar or Mole will move down"), the option section
+12's Armadillo question waited on.
 
 **The holes.**
 
@@ -611,8 +680,9 @@ the shape for itself alone: a foe carrying Flak hits it 1 lighter.
 
 ### The mole, a drill tank
 
-This is a shape with no verb yet. Claude's lean, in "Ten a maker", is that every weapon it fires
-breaches, paid in negative cooling. The directions from the first round:
+This is a shape with no verb yet. Ryan, 4 November: it "needs a better hook than 'ignores
+armour' but we can work on that later". So Claude's breach lean is withdrawn. The directions from
+the first round stay for that session:
 
 - **Under the wall.** On the map it tunnels under walls, the first ground machine past one. A map
   rule alone is a weak identity (section 7), so it would want a fight half too.
@@ -627,31 +697,27 @@ breaches, paid in negative cooling. The directions from the first round:
   Lure without the choice. It is sound only with Phased's rule (only before it acts), and it is
   the time-shifter's shift on the same bench.
 
-### The shield-basher
+### The shield bash (a potential Minerva tier-three weapon or module)
 
-"Ten a maker" makes this Minerva's cut as a chassis, keeping it as a component: a shield bash
-that spends the Armoured an ally's brace gave it this turn. These holes are why.
+Ryan, 4 November: "Cut shield-basher as a unit, but add it as a potential minervan tier 3 weapon
+or module - bonus damage equal to armour, then armour zero until end of round." Claude's notes on
+that form:
 
-**The holes.**
-
-1. **It cannot spend its own brace.** A machine spends one die a round, and Armoured ends with the
-   round, so a brace it spends is gone before its next bash. Only three things feed it: an ally's
-   brace this round, a piece that braces as it strikes (the Breaching Plow's braces), or base
-   armour. The armour row allows a longer Armoured if it carries a drawback of its own, and
-   spending it on the bash is that drawback. The basher's Armoured could last until a weapon
-   spends it, with a cap so it never stacks into a wall: it guards one turn and bashes the next.
-2. **Never the blows it took.** If Armoured from being struck fed the bash (the lure tank's, say),
-   that would be the Armadillo's refused "stored blows cashed as damage" ("back where we
-   started"). Today's rules keep them apart, because that Armoured ends with the round. Any
-   Armoured that lingers must come from its own braces only.
-3. **Base armour.** If base armour counts, a tank's 2 is a flat +2 on every weapon: a stat line.
-   Claude's lean: count Armoured stacks only.
-4. **The Badger's exchange.** The Honey Badger's Bullion Fragmenter fires hopper loads and spends
-   the Ore Plate they stood for (31 October): armour into damage, from the same maker. The two
-   part by what fills the armour: the Badger's own damage, against this machine's braces. Worth
-   Ryan seeing before it lands.
-5. **A chassis or a piece.** "Shield-basher" reads as much like a locked piece (a shield bash) as a
-   passive.
+- **It reads every armour the machine carries**: base, Armoured, the Ore Plate and the seal. That
+  makes it the payoff for an armour build, which no tier-three piece offers today. A sealed
+  Armadillo cashes its seal (a weapon would open the seal anyway). A full Honey Badger cashes its
+  plate while its loads stay in the hopper.
+- **The price is the enemy's turn.** Armour zero until the round's end means the machine meets
+  that turn's blows bare. It cashes no blows taken: Armoured from being struck ended with the last
+  round, so it is never the Armadillo's refused "stored blows cashed as damage".
+- **A weapon or a module.** As a weapon it is one entry, and the choice is made on the die when it
+  shows. As a module, the rule would ride every weapon the machine fires: the first spend each
+  round pays, and the rest of the round fires at armour zero. Claude's lean: the weapon. It reads
+  as one decision, where a module's one rule would reach every gun the machine carries.
+- **The scale.** Armour runs 0 to 5 (a sealed Armadillo), so the bonus runs 0 to 5 on a tier-three
+  blow, near the scale's capstone of 12 at the top.
+- **The Badger's choice** (hold the ore or fire it) stays the Badger's. This piece offers the same
+  choice to any armoured machine, at tier three.
 
 ### The immune one
 
@@ -683,14 +749,14 @@ Recorded in its brief, `docs/briefs/minerva_hedgehog.md` (Ryan, 4 November).
 
 In the order they unblock work:
 
-1. **Ten a maker** (Ryan's target, 4 November). Does ten hold for the Arsenal too? Is the
-   shield-basher Minerva's cut (or the mole)? Do the two moves to the Arsenal stand (the Zoids
-   walker, the Cryo detonator as the frost figure)? Do the merges stand (Static as the shock unit,
-   the aura-shifter into the Macross, the status detonator into the jellyfish), and which half of
-   the jellyfish merge carries? What should take the open slots (Aphelion's at tier two, the
-   Arsenal's)?
+1. **Ten a maker** (Ryan's target and calls, 4 November). The Armadillo's move to tier two: now,
+   or with the Wild Boar or the mole coming down, and which of the two comes down. The moves to
+   the Arsenal (the Zoids walker, the Cryo detonator as the frost figure) and the merges (Static
+   as the shock unit, the aura-shifter into the Macross), still unanswered. The status
+   detonator's fold, once the jellyfish's brief is read. The time area: one machine, or a second
+   in the freed slot.
 2. **The lure tank.** Its base armour, and whether the floor of 1 (section 12's Armadillo question)
-   lands with it. This is the tier-one front that would let the Armadillo move to tier two.
+   lands with it. It is one of the tier-one fronts beside the Armadillo's move to tier two.
 3. **Static.** Whether a discharge cascades, the triangle on strikes guns, whether it goes through
    armour, and its name.
 4. **The Macross.** What shifts it; the grants to every ally, with Battroid's Armoured on all
@@ -701,11 +767,12 @@ In the order they unblock work:
    the full purge reaches (Numbed, Guarded); the Cryo trade.
 6. **The immune one.** Whose statuses it is immune to; breach; what happens when its machine is
    wrecked.
-7. **The shield-basher.** Whether its Armoured lasts until spent, with a cap; the Badger's overlap.
+7. **The shield bash.** A weapon or a module, and its numbers.
 8. **The echidna** (its brief). Its drawback, the damage's size and timing, its locked piece's
    verb, and whether the Sonic Needle is kept or replaced.
-9. **The rest.** The mole's direction; the Barrier and Ward support's shape and tier; whether the
-   time-shifter gets a brief now.
+9. **The rest.** The time-shifter's first round (its principle, the delay, the bank, stasis) and
+   whether it becomes a brief; the Barrier and Ward support's shape and tier; the mole's hook
+   (later, Ryan's word).
 10. **Names** (all his). The reserved list's collisions.
 
 ## What it hands back
