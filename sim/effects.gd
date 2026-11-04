@@ -1115,8 +1115,8 @@ static func effective_reach(u, face: Face) -> int:
 	if face == null:
 		return Face.Reach.NONE
 	face = rewritten(u, face)
-	if face.reach == Face.Reach.SWEEP:
-		return face.reach   # a sweep is its own targeting mode (Ryan, 3 November: "Not direct or indirect"): no passive turns it into either
+	if face.reach == Face.Reach.SWEEP or face.reach == Face.Reach.EVERY_FOE:
+		return face.reach   # a sweep and Every Foe are targeting modes of their own (Ryan, 3 November, of Sweep: "Not direct or indirect"; Every Foe, 4 November): no passive turns either into Direct or Indirect
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "set_reach":

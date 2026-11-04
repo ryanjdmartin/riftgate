@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 988 tests, 256,944 checks, green (4 November, the audit branch over main's `1fa1155`, Godot 4.8-beta2);
+- Tests: 989 tests, 256,954 checks, green (4 November, the audit branch with main's `1974325` merged in, Godot 4.8-beta2);
   about four minutes in a cloud session, twenty on a slow one.
 - A cloud session gets Godot and the first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`: the release asset
@@ -39,9 +39,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 4 November 2026 (`1fa1155`). The branches that landed on 3 and 4
+Everything is on main as of 4 November 2026 (`1974325`). The branches that landed on 3 and 4
 November, each a session of its own, fully merged and to delete from GitHub and the desk
-machine: `ccr-bb178c9b-l6airv` (the playtest list of 2 November and the die's marks),
+machine: `ccr-bb178c9b-l6airv` (the playtest list of 2 November and the die's marks; landed a
+second time that evening with Every Foe, Every Ally and Every Other Ally as targeting modes and
+Sweep's lobbed mark, Ryan: "ok, this is fine. Clean up and merge into main"),
 `claude/elites-session`, `claude/charming-rubin-h954bp` (the models' motion, weapon fire and
 micro-models), `ccr-c04908be-3r43xf` (the randomness pass; the pricing run and heat brief
 before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
@@ -89,8 +91,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip
-  Scorpion's blast, the Cassowary's next chamber); Every Foe and Every Ally as keywords; the
-  readouts headed by the die's marks; gauges with ticks; strikes landing one at a time; the
+  Scorpion's blast, the Cassowary's next chamber); Every Foe, Every Ally and Every Other Ally as
+  targeting modes with marks of their own, never keywords, so a Silence leaves them whole (Ryan,
+  4 November: "Silence should not narrow targeting modes"); Sweep's mark lobbed with a line of
+  fire rising for each column; the readouts headed by the die's marks; gauges with ticks; strikes landing one at a time; the
   acting foe lit; UNDO to the last roll. `tools/die_sheet.gd` draws the whole iconography; the
   benched marks are `docs/looks/die_marks_candidates.png` and `die_polish_candidates*.png`.
   Waits on Ryan's phone read.
@@ -228,14 +232,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.457 (the page's
-  version 470, published 4 November from the audit branch after Ryan's two speedrounds, three-way
-  merged onto the live v0.456). The live page carries two rows ahead of main's code: the music
-  session's tracks row, and another branch's call that Every Foe and Every Ally are targeting
-  modes, not keywords ("Silence should not narrow targeting modes", 4 November: the area row, the
-  die row's Sweep mark, and the Keywords table without their rows); `docs/rules.md` still says
-  keywords until that branch lands, and `tools/pages/bible_tables.py` re-adds their two Keywords
-  table rows from main's content on every run: drop them again before publishing until then. The live page may carry rows ahead of main's code
+  `docs/design-bible.html` after every change. This file and the live page are v0.459 (the page's
+  version 472, published 4 November from `ccr-bb178c9b-l6airv` as it landed again, merged onto
+  the audit branch's rows; the tables as regenerated on the merged content match it). The live
+  page carries the music session's tracks row ahead of its branch. The live page may carry rows ahead of main's code
   while their branches have not landed (the music session's tracks row today). Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -247,8 +247,10 @@ into this file in the same commit as its first publish; the commands are in `REA
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` read first. At the page's version 204
-  (4 November, the content as main has it). Its lit parts show as the phone's renderer shows
+  the last publish's before it is replaced, and `edits` read first. At the page's version 206
+  (4 November: the content with Every Foe, Every Ally and Every Other Ally as targeting modes);
+  the audit's vocabulary edits (Undying, the Numbed defaults, the formation word gone) are not on
+  it yet: republish `content/vocabulary.json` and `content/foes.json`. Its lit parts show as the phone's renderer shows
   them, the light eased by the power 1/2.2 as the game eases it (`MechRig.light`); every file
   the page reads is fetched with a stamp on the URL. Its database (Ryan's saved edits,
   collection `edits`; name candidates, `candidates`) opens only from the personal account.

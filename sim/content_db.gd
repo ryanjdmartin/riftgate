@@ -1059,10 +1059,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if Face.kind_from_name(kind) < 0 or kind == "blank":
 		errs.append("%s: bad face kind '%s'" % [where, kind])
 	if kind == "attack":
-		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag.
+		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag. Sweep a
+		# targeting mode since 3 November, Every Foe since 4 November.
 		var reach := str(fd.get("reach", ""))
-		if not ["direct", "indirect", "sweep"].has(reach):
-			errs.append("%s: attack face needs reach direct, indirect or sweep, got '%s'" % [where, reach])
+		if not ["direct", "indirect", "sweep", "every_foe"].has(reach):
+			errs.append("%s: attack face needs reach direct, indirect, sweep or every_foe, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) < 0:
 		errs.append("%s: power cannot be negative" % where)
 	if int(fd.get("strikes", 1)) < 1:
@@ -1152,7 +1153,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: Spread and Penetrate at one number are Splash: write splash" % where)
 	# Every Foe is equipment's (the Siphon's lure-all): the foes past the target take no number,
 	# so a weapon reaches wide by Spread, Penetrate or Splash instead.
-	if kw_names.has("every_foe") and kind == "attack" and not debuff:
+	if str(fd.get("reach", "")) == "every_foe" and kind == "attack" and not debuff:
 		errs.append("%s: Every Foe is a debuff's; a weapon's area is Spread, Penetrate or Splash with its number" % where)
 	# A gated keyword (the stock pass's engine, 22 October): keyword name to the condition it
 	# lands under, a condition on the foe in hand, read through the effects' conditions. Suppress
@@ -1184,7 +1185,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("consumes"):
 		if kind != "attack" or not Effects.FOE_STATUSES.has(str(fd["consumes"])):
 			errs.append("%s: consumes names a status the team puts on a foe (%s), on an attack" % [where, ", ".join(Effects.FOE_STATUSES)])
-		if int(fd.get("strikes", 1)) > 1 or Array(fd.get("keywords", [])).has("every_foe"):
+		if int(fd.get("strikes", 1)) > 1 or str(fd.get("reach", "")) == "every_foe":
 			errs.append("%s: a consumer is one blow on each foe it strikes, each eating its own: no strikes past one or Every Foe" % where)
 	if fd.has("per_consumed") and (not fd.has("consumes") or int(fd["per_consumed"]) <= 0):
 		errs.append("%s: per_consumed is the damage a stack consumed adds: positive, and only beside consumes" % where)
@@ -1225,20 +1226,25 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if rapid and not planned and not stepped and int(fd.get("cooldown", 0)) <= 0 \
 			and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0:
 		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
-	# A reach over every foe or every ally is a keyword since 2 November (Ryan: "a targeting mode,
-	# just like spread, penetrate, and splash"): Every Foe on a debuff (the Siphon's), Every Ally on
-	# a shield or a buff (the Swallowtail's team shield), never a vent's.
+	# A reach over every foe or every ally is a targeting mode since 4 November (Ryan: "Silence
+	# should not narrow targeting modes, that's why I'm switching them to targeting modes"; a
+	# keyword from 2 November, a flag before): Every Foe a debuff's reach (the Siphon's), Every Ally
+	# a shield's or a buff's targets (the whole team, Every Ally, or every machine but its own, Every
+	# Other Ally: the Swallowtail's team shield), never a vent's.
 	if fd.has("reaches_all"):
-		errs.append("%s: reaches_all is a keyword now: every_foe on a debuff, every_ally on a shield or a buff" % where)
-	if kind == "vent" and Array(fd.get("keywords", [])).has("every_ally"):
-		errs.append("%s: Every Ally is a shield's or a buff's, never a vent's" % where)
+		errs.append("%s: reaches_all is a targeting mode now: reach every_foe on a debuff, targets every_ally or every_other_ally on a shield or a buff" % where)
+	for kw in ["every_foe", "every_ally"]:
+		if Array(fd.get("keywords", [])).has(kw):
+			errs.append("%s: %s is a targeting mode since 4 November, never a keyword: %s" % [where, kw, "reach every_foe" if kw == "every_foe" else "targets every_ally or every_other_ally"])
+	if kind == "vent" and str(fd.get("targets", "")) in ["every_ally", "every_other_ally"]:
+		errs.append("%s: Every Ally and Every Other Ally are a shield's or a buff's, never a vent's" % where)
 	# The Swallowtail's locked pieces (21 October): a shield's cooling half, a buff on every ally
 	# yet to act, an ally acting again, and the charged form a muster buys.
 	if fd.has("vents") and (kind != "shield" or not (fd["vents"] is float or fd["vents"] is int) or int(fd["vents"]) <= 0):
 		errs.append("%s: vents is a shield's cooling half: the heat it takes off the machine it shields, first, a positive number" % where)
 	if (fd.has("fills_shield") or fd.has("cools_all")) and kind != "shield":
 		errs.append("%s: fills_shield and cools_all are a shield's (the full reset)" % where)
-	if fd.has("not_acted") and (kind != "buff" or not Array(fd.get("keywords", [])).has("every_ally")):
+	if fd.has("not_acted") and (kind != "buff" or not (str(fd.get("targets", "")) in ["every_ally", "every_other_ally"])):
 		errs.append("%s: not_acted narrows a buff reaching every ally to those yet to act" % where)
 	if fd.has("act_again") and kind != "buff":
 		errs.append("%s: act_again is a buff's: an ally whose die is spent acts again" % where)
@@ -1328,7 +1334,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		if kind == "attack":
 			errs.append("%s: an attack always targets foes; 'targets' is for a shield, a vent or a buff" % where)
 		elif t < 0 or t == Face.Target.FOE:
-			errs.append("%s: targets must be self_ally, self or ally, got '%s'" % [where, fd["targets"]])
+			errs.append("%s: targets must be self_ally, self, ally, every_ally or every_other_ally, got '%s'" % [where, fd["targets"]])
 	var kws: Array = fd.get("keywords", [])
 	if kws.size() > MAX_AUTHORED_KEYWORDS:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])

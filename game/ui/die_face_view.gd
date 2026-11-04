@@ -66,6 +66,7 @@ const BESIDE := Vector2(28.0, 30.0)   # what else a spend does, from the main ma
 const BESIDE_SIZE := 18    # its text, a size up so it reads (Ryan, 4 November: equipment's "X2 ... a bit hard to see")
 const BESIDE_STEP := 19.0  # one above another
 const PASSIVE_SIZE := 17   # a number in the passive's box at the rail's foot (passive_marks)
+const PASSIVE_OUT := 18.0  # how far past the rail the passive's box hangs, clear of the costs along the foot (Ryan, 4 November: "can we move the passive box to the right?"; the gap to the next die is 52, to the screen's edge from the last 42)
 const COST_Y := 111.0      # the costs' baseline along the foot, clear of the frame's lining (Ryan, 4 November: "Make sure the costs row doesn't touch the bottom")
 const COST_ICON := 14.0    # a cost's mark
 const COST_SIZE := 16      # and its number
@@ -699,7 +700,7 @@ func _draw_passive(bob: float, above: int) -> void:
 			tw += run_width(r, mono, PASSIVE_SIZE)
 		var inner := (16.0 if not glyph.is_empty() else 0.0) + (3.0 if not glyph.is_empty() and tw > 0.0 else 0.0) + tw
 		var w := maxf(CHIP.x, inner + 12.0)
-		var box := Rect2(Vector2(FACE + RAIL - 2.0 - w, y + bob * 0.5), Vector2(w, CHIP.y))
+		var box := Rect2(Vector2(FACE + RAIL - 2.0 + PASSIVE_OUT - w, y + bob * 0.5), Vector2(w, CHIP.y))
 		Hud.fill_poly(self, Hud.cut(box, 4.0), Color(Palette.BG, 0.94))
 		var corners := [box.position, Vector2(box.end.x, box.position.y), box.end, Vector2(box.position.x, box.end.y)]
 		for k in range(4):

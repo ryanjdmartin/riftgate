@@ -214,12 +214,13 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	if cd > 0:
 		out.append(marked(parts_line("effect", [_bare(word("Cooldown")), num(str(cd), cd, base.cooldown_rounds(), true)], "attr"), [mark("cooldown", Palette.INK, false)]))
 	# Whom it is aimed at, headed by the targeting mark the die draws under its number
-	# (Glyphs.aim_for: a line of fire for Direct, lobbed for Indirect, ticks along a rank for a
-	# Sweep, the three hexes for a piece spent on machines), bare as the mark is. A reach past the
-	# target is its keyword's line (Every Foe, Every Ally, an area's), as the die chips it.
+	# (Glyphs.aim_for: a line of fire for Direct, lobbed for Indirect, lobbed with a strike for each
+	# column for a Sweep, the enemy's formation lit for Every Foe; the three hexes for a piece spent
+	# on machines, under an arch for Every Ally and Every Other Ally), bare as the mark is. An area past the
+	# target is its keyword's line (Spread, Penetrate, Splash), as the die chips it.
 	# The words bare: the reach's term stays a term (tap it), its icon the line's own mark, never
 	# a second one shrunk into the words (the formation reads as a blob at the text's size).
-	var aimed := ("Target: A rank, Sweep" if f.reach == Face.Reach.SWEEP else "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach])) if f.kind == Face.Kind.ATTACK else whom(f)
+	var aimed := (("Target: A rank, Sweep" if f.reach == Face.Reach.SWEEP else ("Target: Every Foe" if f.reach == Face.Reach.EVERY_FOE else "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach])))) if f.kind == Face.Kind.ATTACK else whom(f)
 	var target := parts_line("effect", [_bare(word(aimed))], "attr")
 	var aim := Glyphs.aim_for(f)
 	if not aim.is_empty():
@@ -232,7 +233,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		if f.printed.has(k):
 			continue   # a grant written out is its passive's line, with the rules
 		# Its name as the list writes it (Every Foe), so the word is the term's and taps open it.
-		var label := Face.keyword_label(k).capitalize() + (" yet to act" if k == Face.Keyword.EVERY_ALLY and f.not_acted else "")
+		var label := Face.keyword_label(k).capitalize()
 		var gate := Effects.gate_text(f.gates[Face.KEYWORD_NAMES[k]]) if f.gates.has(Face.KEYWORD_NAMES[k]) else ""
 		# The keyword's chip, as the die boxes it, the star beside it when a gate is the entry's own
 		# rule; the chip is the term's icon, so the word itself wears none.
@@ -433,14 +434,18 @@ const MOVE_TARGETS := {
 }
 
 
-## Whom a shield, a vent or a buff is spent on (Ryan's words, 26 October); a reach over every
-## ally past it is its keyword's (Every Ally).
+## Whom a shield, a vent or a buff is spent on (Ryan's words, 26 October), Every Ally and Every
+## Other Ally among them (targeting modes since 4 November).
 static func whom(f: Face) -> String:
 	match f.targets:
 		Face.Target.SELF:
 			return "Target: Self"
 		Face.Target.ALLY:
 			return "Target: Any other ally"
+		Face.Target.EVERY_ALLY:
+			return "Target: Every Ally" + (" yet to act" if f.not_acted else "")
+		Face.Target.EVERY_OTHER_ALLY:
+			return "Target: Every Other Ally" + (" yet to act" if f.not_acted else "")
 	return "Target: Any ally or self"
 
 
