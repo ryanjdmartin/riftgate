@@ -121,7 +121,8 @@ finalizing the other tracks"); its bible was v0.437 then (the page's version 450
 from main's head (`d03ebed`, the suite green there) with the other tracks' rounds: Night Shift's
 eleventh, the bass clean (3 November), its twelfth, the guitar's walk on one string, and its
 thirteenth, the guitar out, a bass jam, with The Far Bank's map half's fifth, the choir in the
-intro alone (4 November); it took main again as it landed that day (to `d28308e`: the elites
+intro alone, and its fourteenth, the rhythm guitar back in the breakdown, D without the bass, R at
+one level, the plucked string down, on the synth bass (4 November); it took main again as it landed that day (to `d28308e`: the elites
 session, the randomness pass, the chassis runner rows and `claude/charming-rubin-h954bp`'s weapon
 fire, slumps and micro models).
 
@@ -855,19 +856,20 @@ The tasks are the to-do's; this is the index of what waits.
   synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff
   3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
   R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
-  it was beside it). Night Shift on its thirteenth (the map's intro without its front and its muted guitar out, his
+  it was beside it). Night Shift on its fourteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
-  jam in turns of two bars, 30 October: the bass walking on his rhythms with the arpeggio or the FM
-  hook, never both, holding three-three-two 6 dB down under the two together, the intro on
-  three-three-two, D the piano's turn and the factory's blended over Hold The Line's riff as the
-  map's nod, R a sixteen-bar jam whose turns hand the lead round the band, the bass 3 dB down
-  everywhere and its voice on trial, clean or with a touch of drive, a finger bass or a slap,
-  against the tenth round's synth bass (3 November: "Can I get night shift battle with some clean
-  bass options? Or at least only very slightly distorted?"), and the rhythm guitar out of
-  everything on trial, the lead guitar's lines kept (4 November: "I feel like this wants to just be
-  a bass jam. Rip the guitar out from everything, as an experiment"), beside its walk on one
-  string and every guitar out, the synth lines voiced for each turn's job, no drone, Hold The
-  Line's drum energy); The Far Bank's map half on its fifth round, its flip retired (31 October:
+  jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms
+  with the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two
+  together, the intro on three-three-two, D the piano's turn and the factory's blended over Hold The
+  Line's riff as the map's nod with no bass under them ("The bass 3-3-2s in D don't make sense"),
+  R a sixteen-bar jam whose turns hand the lead round the band, every voice at one level ("Don't
+  flex the volume for voices in R, I'll pick out what needs to come up or down"), the rhythm guitar
+  in the breakdown's ringing chords alone and the lead guitar's lines kept ("Yes, keep the lead
+  guitar. Put the the rhythm guitar back in on B"), the plucked string 3 dB down wherever it plays
+  on trial ("it pierces so it sounds loud"), the bass 3 dB down everywhere and on the synth bass on
+  trial, since the modelled basses read as guitars ("ironically the Synth bass sounds the most like
+  a real bass to me"), the synth lines voiced for each turn's job, no drone, Hold The Line's drum
+  energy); The Far Bank's map half on its fifth round, its flip retired (31 October:
   the bells calm in the groove and the lift alone, the strings section and the climax off the
   battle's orchestra; 4 November: the choir in the intro alone, the tune on the plucked string
   one note at a time in both, 6 dB under the violins' level in the strings section and at it in
@@ -983,10 +985,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.447 (the
-  page's version 460, published 4 November from `ccr-7effd31a-u5z4gw`: Night Shift's map half
-  without its muted guitar, his call, its guitar out on trial, and The Far Bank's map half's
-  fifth round, in the track table), three-way merged onto the live v0.446, main's file at
+  `docs/design-bible.html` after every change. This file and the live page are v0.448 (the
+  page's version 461, published 4 November from `ccr-7effd31a-u5z4gw`: Night Shift's fourteenth
+  round in the track table, the guitar that walked the bass's line retired; over v0.447 at 460,
+  Night Shift's map half without its muted guitar, his call, and The Far Bank's map half's
+  fifth round, three-way merged onto the live v0.446, main's file at
   `d28308e` (459, published from `claude/elites-session` as main took it, over v0.445 at 458 from
   `ccr-c04908be-3r43xf`: the randomness pass's rows and the elites' calls and reads of the day).
   So the live page carries those two track rows ahead of main's code until this branch lands.
@@ -1086,7 +1089,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  thirteenth, which settled it, `hold_sketches.py`; Night Shift's thirteenth, `night_sketches.py`;
+  thirteenth, which settled it, `hold_sketches.py`; Night Shift's fourteenth, `night_sketches.py`;
   The Far Bank's map half's fifth, `far_sketches.py`), at the page's version 27. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
