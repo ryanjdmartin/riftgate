@@ -25,9 +25,9 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 900 tests, 209,722 checks, green (4 November, on `claude/elites-session`: the elites
-  session's twenty kits, the Nob's rage, the wanderers' random draw, the Mantis Ant, the Marsh
-  Serpent and the Emperor Scorpion, the golden rage and the crush; 893 and 209,059 on main, 2 November, main merged into
+- Tests: 900 tests, 209,791 checks, green (4 November, on `claude/elites-session`: the elites
+  session's twenty-one kits, the Nob's rage, the wanderers' random draw, the Mantis Ant, the Marsh
+  Serpent and the Emperor Scorpion, the golden rage and the crush, the Astromancer and its orbs; 893 and 209,059 on main, 2 November, main merged into
   `claude/brave-cori-fr18de` as it lands: the bosses' slate's twelve, the elites by chance and by
   the tier, the escorts and the review's calls; 875 and 208,362 on main before it, 31 October:
   `ccr-c04908be-3r43xf`'s overheat what-ifs, shield persona and support ladders merged onto
@@ -226,8 +226,15 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   body, cleansable), the Emperor Scorpion (Golden Sun's King Scorpion) the Waste's third boss
   on his word, so every domain holds three; the foes without art drawn as placeholders (the
   first elites, the Scorpion) and the hangar's promoted forms wearing their heroes' sprites,
-  so no foe lacks art. Open for Ryan: Golden Sun's elite candidates, the Scorpion's name (the
-  to-do, section 12).
+  so no foe lacks art. Later that evening, on his go ("feel free to throw it in"): the Astromancer,
+  Golden Sun's Star Magician, a sixth wanderer at tiers two and three, the kill-order elite
+  behind its orbs (the Warding Orb a part, the first on an elite; the Mending, Storm and Fuming
+  Orbs its members and summons); and the runner's elite cells (`--packs elites`, every
+  composition at each tier it names) with their first read at 30 seeds, a direction
+  (`docs/measurements.md`): every cell a free win for the endgame fours and the lone elites for
+  the stock trios too, dying in two rounds before their mechanisms matter; the lone elites' HP
+  to the massive band, or an escort each, the lever on the table. Open for Ryan: the elites'
+  numbers, the Dullahan as the superboss, the Scorpion's name (the to-do, section 12).
 - The bosses' slate, all twelve (30 October to 2 November, on Ryan's word, his yes, his
   agreement with Claude's leans and his calls on the review of the 2nd; `docs/bosses_proposal.md`,
   its sections on what landed and the calls still open; the bible's section 9 rows), three a
@@ -778,7 +785,14 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.441 (the page's version
+  `docs/design-bible.html` after every change. This file is v0.443 (the page's version
+  456, published 4 November from `claude/elites-session`, that evening: the Astromancer, a sixth
+  wanderer, in the tiers row, the domain table and the Built list, the balance row's elite cells
+  and the elites' first read, section 12's Golden Sun item (the Star Magician landed, the
+  Dullahan his), the tables rerun with the hopper rows kept by hand; three-way merged onto the
+  live 455, another session's v0.442 (the weapon-fire row, section 12's look list), both
+  having taken 0.442 so the version line raised no conflict, this file 0.443; over
+  v0.441 (the page's version
   454, published 4 November from `claude/elites-session`, later that day: the golden rage and
   the crush in the boss mechanics row and the tiers row, the Emperor Scorpion in the register
   and tiers rows, the domain table and the Built list, section 12's Golden Sun candidates, the
@@ -848,7 +862,11 @@ into this file in the same commit as its first publish; the procedures are in `R
   shown every glow redder and dimmer than the phone), the light eased by the power 1/2.2 as the
   game eases it so a flare holds its colour (30 October, `MechRig.light`). Every file the page reads is fetched with a
   stamp on the URL past any cache between (28 October, after Ryan saw an older round's Skua
-  acts on a reloaded page). At the page's version 200 (4 November, later, from `claude/elites-session`: the five foes that
+  acts on a reloaded page). At the page's version 202 (4 November, that evening, from
+  `claude/elites-session`: the Astromancer's and its four orbs' placeholder sprites under
+  `hangar/foes/`, `content/foes.json` and `content/factions.json` with them, `hangar/foes.json`
+  counting them, the page and the vocabulary unchanged, over another session's 201 that carried
+  no content change of ours), over 200 (4 November, later, from `claude/elites-session`: the five foes that
   had no art drawn as placeholders (the Goblin Shaman, the Elder Treant, the Leshy, the Old Man
   of the Desert, the Emperor Scorpion) and the eight promoted forms wearing their heroes'
   sprites under their own paths, marked in `hangar/foes.json` and an Art filter state, so every

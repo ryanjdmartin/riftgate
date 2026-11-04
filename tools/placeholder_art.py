@@ -646,6 +646,47 @@ def old_man_of_the_desert(d, w, h):
         d.polygon([(ox + px, oy + py), (ox - px, oy - py), (ix, iy)], fill=tooth)   # the ring of teeth
 
 
+def star_magician(d, w, h):
+    robe, drobe, skin, staff, star = (40, 40, 110, 255), (25, 25, 70, 255), (220, 190, 160, 255), (160, 120, 60, 255), (255, 240, 120, 255)
+    d.polygon([(26, 40), (46, 40), (54, 92), (18, 92)], fill=robe)           # the robe
+    d.polygon([(30, 60), (42, 60), (46, 92), (26, 92)], fill=drobe)
+    d.ellipse((29, 22, 43, 38), fill=skin)                                   # the face
+    d.polygon([(18, 26), (54, 26), (36, 6)], fill=drobe)                     # the wide-brimmed hat
+    d.rectangle((18, 24, 54, 27), fill=drobe)
+    d.line((52, 40, 58, 10), fill=staff, width=3)                            # the staff
+    d.polygon([(58, 2), (61, 9), (68, 9), (62, 13), (64, 20), (58, 16), (52, 20), (54, 13), (48, 9), (55, 9)], fill=star)
+    for (x, y, c) in ((10, 30, (150, 200, 255, 255)), (62, 46, (255, 230, 90, 255)), (8, 58, (90, 220, 120, 255)), (64, 70, (240, 70, 50, 255))):
+        d.ellipse((x - 5, y - 5, x + 5, y + 5), fill=c)                      # the four orbs about it
+
+
+def _orb(d, w, h, body, mark):
+    d.ellipse((16, 28, 56, 68), fill=body)
+    d.ellipse((24, 34, 34, 42), fill=(255, 255, 255, 180))                   # the highlight
+    mark(d)
+
+
+def warding_orb(d, w, h):
+    _orb(d, w, h, (150, 200, 255, 255), lambda d: (d.ellipse((22, 34, 50, 62), outline=(40, 80, 200, 255), width=2),
+                                                   d.ellipse((10, 22, 62, 74), outline=(190, 225, 255, 255), width=2)))
+
+
+def storm_orb(d, w, h):
+    _orb(d, w, h, (255, 230, 90, 255), lambda d: d.line((30, 36, 40, 48, 32, 48, 42, 62), fill=(120, 220, 255, 255), width=3))
+
+
+def mending_orb(d, w, h):
+    _orb(d, w, h, (90, 220, 120, 255), lambda d: (d.rectangle((33, 38, 39, 58), fill=(240, 255, 240, 255)),
+                                                  d.rectangle((26, 45, 46, 51), fill=(240, 255, 240, 255))))
+
+
+def fuming_orb(d, w, h):
+    def mark(d):
+        d.line((22, 40, 34, 52, 30, 60, 46, 64), fill=(30, 10, 10, 255), width=3)   # the fuse crack
+        for x, y in ((40, 18), (48, 10), (36, 6)):
+            d.ellipse((x - 4, y - 4, x + 4, y + 4), fill=(120, 120, 120, 255))      # smoke
+    _orb(d, w, h, (240, 70, 50, 255), mark)
+
+
 FOES = {
     # id: (draw, massive)
     "king_gel": (king_gel, True),
@@ -686,6 +727,11 @@ FOES = {
     "elder_treant": (elder_treant, True),
     "leshy": (leshy, False),
     "old_man_of_the_desert": (old_man_of_the_desert, True),
+    "star_magician": (star_magician, False),
+    "warding_orb": (warding_orb, False),
+    "storm_orb": (storm_orb, False),
+    "mending_orb": (mending_orb, False),
+    "fuming_orb": (fuming_orb, False),
 }
 
 

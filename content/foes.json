@@ -966,6 +966,62 @@
       ],
       "flavour": "Field manual, appendix W: if the sand moves and there is no wind, it is not the wind."
     },
+    {
+      "id": "star_magician", "name": "The Astromancer", "faction": "waste", "elite": true, "wanders": true,
+      "design": {"fantasy": "Golden Sun: The Lost Age's Star Magician by archetype, the Treasure Isle superboss behind its four kinds of Ball (Camelot's coinages, so names of ours: an astromancer is a star-mage, and its orbs are warding, storm, mending and fuming), on Ryan's go of 4 November (\"If you think another golden sun works as a boss or elite, feel free to throw it in\"); to its fans \"one of the most challenging, thought-provoking, and tricky encounters\" in the series, since the whole fight is which ball to kill first. A wanderer, since its cave is no domain's.", "niche": "The kill-order elite. The Warding Orb is a part: while it stands the Astromancer is Guarded (the Guardian Ball's aura), and it grows back three rounds after it falls (the resummon). The Mending Orb cures the most hurt of them; the Storm Orb's lightning switches off the entry shown and its Shine reaches every machine; Mystic Call brings two Fuming Orbs, which burst on a machine through the shield. So the question each round: the mender first, the ward to open the mage, the fuming orbs before they burst, the storm last; the Star Magician's own priority puzzle. The first elite in parts; one Warding Orb since the parts system guards by all of them.", "notes": "Landed 4 November as a placeholder kit on Ryan's go; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a slight robed mage in midnight blue with a tall star-tipped staff and a wide-brimmed hat, four glowing orbs orbiting its shoulders, drawn retro"},
+      "codex": "A star-mage with a ring of orbs, and the orbs are the fight. While its Warding Orb floats it cannot be hurt; its Mending Orb heals whoever is worst off; its Storm Orb spits lightning; and it calls Fuming Orbs that burst on a machine through the shield. Kill them in the right order, and the mage is nothing.",
+      "hp": 24, "attack": 6, "rank": "back", "zone": 2, "movespeed": 2, "parts": ["warding_orb"], "guard": "all", "regrow_parts": 3,
+      "actions": [
+        {"id": "ice_missile", "name": "Ice Missile", "kind": "attack", "weight": 2, "text": "Ice Missile: {damage}.", "status": "implemented"},
+        {"id": "mystic_call", "name": "Mystic Call", "kind": "buff", "effect": "summon", "foe": "fuming_orb", "count": 2, "weight": 1, "text": "Two Fuming Orbs blink in, into empty places at once, or into the pool when the line is full.", "status": "implemented"},
+        {"id": "blue_bolt", "name": "Blue Bolt", "kind": "attack", "factor": 0.4, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "Blue Bolt: {damage} to every machine.", "status": "implemented"}
+      ],
+      "flavour": "Field manual, appendix K: ignore the mage. Count the orbs."
+    },
+    {
+      "id": "warding_orb", "name": "Warding Orb", "faction": "waste",
+      "design": {"fantasy": "The Star Magician's Guardian Ball by archetype, the one whose Guard Aura cuts the damage to its master to nothing for the turn; here a part of the Astromancer, so while it stands the mage is Guarded, and it grows back three rounds after it falls, the resummon.", "niche": "A part, the first on an elite: the lock on the mage, with a brace on every foe as its own move. Kill it to open the mage, then the mage before it grows back.", "notes": "Landed 4 November; a placeholder kit, every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py).", "sprite": "a pale blue glass orb with a rune ring turning inside it and a soft shell of light round it, drawn retro"},
+      "codex": "The orb that guards the mage. While it floats the Astromancer cannot be hurt; break it, and it is three rounds before another forms. Its aura braces every foe on the field.",
+      "hp": 8, "attack": 3, "rank": "front", "zone": 1, "movespeed": 2,
+      "actions": [
+        {"id": "guard_aura", "name": "Guard Aura", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "text": "Guard Aura: every foe on the field is Armoured 1 through the next round.", "status": "implemented"},
+        {"id": "glint", "name": "Glint", "kind": "attack", "factor": 0.5, "weight": 1, "text": "A glint of light: {damage}.", "status": "implemented"}
+      ],
+      "flavour": "Field manual, appendix K: the shiny one is not the problem. The shiny one is why the problem is still alive."
+    },
+    {
+      "id": "storm_orb", "name": "Storm Orb", "faction": "waste",
+      "design": {"fantasy": "The Star Magician's Thunder Ball by archetype, the Jupiter caster among its orbs, the least durable and the one the guides leave for last.", "niche": "Lightning on the die: Spark Plasma switches off the entry shown, Shine Plasma reaches every machine for less. Last in the kill order, by design.", "notes": "Landed 4 November; a placeholder kit, every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py).", "sprite": "a yellow-white orb crackling with arcs of lightning, drawn retro"},
+      "codex": "The orb that spits lightning. Spark Plasma switches off the entry a machine shows; Shine Plasma reaches everyone for less. It dies easily, so it is usually left for last.",
+      "hp": 6, "attack": 5, "rank": "back", "zone": 1, "movespeed": 2, "tier": 2,
+      "actions": [
+        {"id": "spark_plasma", "name": "Spark Plasma", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["disable"], "text": "Spark Plasma: {damage}, and the entry it shows is switched off through its next turn.", "status": "implemented"},
+        {"id": "shine_plasma", "name": "Shine Plasma", "kind": "attack", "factor": 0.4, "weight": 1, "keywords": ["all"], "text": "Shine Plasma: {damage} to every machine.", "status": "implemented"}
+      ],
+      "flavour": "Field manual, appendix K: it hums before it fires. That is the only warning you get."
+    },
+    {
+      "id": "mending_orb", "name": "Mending Orb", "faction": "waste",
+      "design": {"fantasy": "The Star Magician's Refresh Ball by archetype, the healer that plies its master back to full; the first thing a guide tells you to kill.", "niche": "Earnest Ply cures the most hurt of its own; a soft blow otherwise. First in the kill order: reach to the healer, the Marsh's question asked by a wanderer.", "notes": "Landed 4 November; a placeholder kit, every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py).", "sprite": "a green orb with a slow pulse of light at its heart, drawn retro"},
+      "codex": "The orb that heals. Each round one of its own, whoever is worst off, gets some back. Kill it first, or nothing you do sticks.",
+      "hp": 6, "attack": 3, "rank": "back", "zone": 1, "movespeed": 2, "tier": 2,
+      "actions": [
+        {"id": "earnest_ply", "name": "Earnest Ply", "kind": "defend", "effect": "regrow_ally", "value": 6, "weight": 2, "when": "ally_hurt", "text": "Earnest Ply: the most hurt of its own regrows {value} HP.", "status": "implemented"},
+        {"id": "glimmer", "name": "Glimmer", "kind": "attack", "factor": 0.5, "weight": 1, "text": "A glimmer: {damage}.", "status": "implemented"}
+      ],
+      "flavour": "Field manual, appendix K: whatever you just did, it is undoing it. Kill it first."
+    },
+    {
+      "id": "fuming_orb", "name": "Fuming Orb", "faction": "waste",
+      "design": {"fantasy": "The Star Magician's Anger Ball by archetype, the red one that self-destructs for heavy damage, the one its guides say to kill first; here the mage's summon, two a call.", "niche": "A fuse: Fume is a blow, and Burst a self-destruct through the shield, announced like any move. Kill it before it bursts, or shield what it picked.", "notes": "Landed 4 November; a placeholder kit, every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py).", "sprite": "a red orb with a black fuse-crack across it, smoking, drawn retro"},
+      "codex": "The orb that bursts. It comes two at a time when the mage calls, and it goes off on a machine, through the shield. Kill it first, or shield what it has picked.",
+      "hp": 4, "attack": 6, "rank": "front", "zone": 1, "movespeed": 2, "tier": 2,
+      "actions": [
+        {"id": "fume", "name": "Fume", "kind": "attack", "factor": 0.5, "weight": 1, "text": "Fume: {damage}.", "status": "implemented"},
+        {"id": "burst", "name": "Burst", "kind": "attack", "factor": 1.5, "weight": 2, "keywords": ["breach", "self_destruct"], "text": "It bursts for {damage}, through the shield, and is gone.", "status": "implemented"}
+      ],
+      "flavour": "Field manual, appendix K: it is not angry at you. It is angry at everything, and you are nearest."
+    },
 
     {
       "id": "king_gel", "name": "King Gel", "faction": "meadow",

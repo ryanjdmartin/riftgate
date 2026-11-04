@@ -119,7 +119,9 @@
         { "id": "gilgamesh_wanders", "size": "elite", "tiers": [1, 2],
           "members": [ { "foe": "gilgamesh", "strength": 1 } ] },
         { "id": "gilgamesh_and_enkidu", "size": "elite", "tiers": [3],
-          "members": [ { "foe": "gilgamesh", "strength": 1 }, { "foe": "enkidu", "strength": 1 } ] }
+          "members": [ { "foe": "gilgamesh", "strength": 1 }, { "foe": "enkidu", "strength": 1 } ] },
+        { "id": "the_astromancer", "size": "elite", "tiers": [2, 3],
+          "members": [ { "foe": "star_magician", "strength": 1 }, { "foe": "storm_orb", "strength": 1 }, { "foe": "mending_orb", "strength": 1 } ] }
       ],
       "boss": ["ruby_colossus", "fallen_weapon", "king_scorpion"],
       "bench": ["thief", "lancer"],

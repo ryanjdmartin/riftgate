@@ -28,7 +28,8 @@ extends SceneTree
 ## team", "team:badger+sparrowhawk"), --packs id,id (only these packs, by the ids the JSON
 ## names, "treant x1", "meadow formation" (tier one's; "meadow formation tier 2" and "tier 3"
 ## the ladder's, beside a cell for every recolour, "goblin_guard x4", since 28 October),
-## "finale", or "big" for every big fight and
+## "finale", "<elite composition> tier 2" with --packs elites (every elite composition at each tier
+## it names, its elites scaled as a battle scales them; 4 November), or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
 ## --team id,id (repeatable: a row of exactly those machines,
 ## any number of them, so pairs and fours can be read beside the trios), --pack foe:n[+foe:n]
@@ -129,7 +130,7 @@ func _init() -> void:
 	if not only_rows.is_empty():
 		rows = rows.filter(func(r) -> bool: return only_rows.has(r["id"]))
 	if not only_packs.is_empty():
-		packs = packs.filter(func(p) -> bool: return only_packs.has(p["id"]) or (only_packs.has("big") and _is_big(p)) or (only_packs.has("rank_and_file") and not _is_big(p)))
+		packs = packs.filter(func(p) -> bool: return only_packs.has(p["id"]) or (only_packs.has("big") and _is_big(p)) or (only_packs.has("rank_and_file") and not _is_big(p)) or (only_packs.has("elites") and bool(p.get("elite", false))))
 	# --module: every row beside its twin wearing the module, in one report (21 October).
 	if not fit_module.is_empty():
 		var twinned: Array = []
@@ -462,6 +463,26 @@ func _build_matrix() -> void:
 					var bname := str(db.foes[boss_id].get("name", boss_id))
 					packs.append({"id": "%s tier %d" % [boss_id, t], "name": "%s, tier %d (%s)" % [bname, t, ", ".join(names) if not names.is_empty() else "alone"], "foe": "", "strength": 0, "mix": mix, "tier": t - 1})
 					packs.append({"id": "%s tier %d alone" % [boss_id, t], "name": "%s, tier %d, alone" % [bname, t], "foe": "", "strength": 0, "mix": [[boss_id, 1]], "tier": t - 1})
+	# The elites' cells (4 November, Ryan: "Are the domain elites more or less balanced?"; --packs
+	# elites): every elite composition, a domain's own and the wanderers', at each tier it names,
+	# its elites at the tier's numbers as a battle fields them (ContentDB.foes_for scales every
+	# elite as it scales a boss) and its rank and file as content has them: "<composition> tier N".
+	if only_packs.has("elites"):
+		var seen: Array[String] = []
+		for fac in db.factions.keys():
+			for t in [1, 2, 3]:
+				for c in db.elite_compositions(str(fac), t) + db.wandering_compositions(t):
+					var cid := str(c["id"])
+					var pid := "%s tier %d" % [cid, t]
+					if seen.has(pid):
+						continue
+					seen.append(pid)
+					var mix: Array = []
+					var names: Array[String] = []
+					for m in c["members"]:
+						mix.append([str(m[0]), int(m[1])])
+						names.append("%s x%d" % [str(db.foes[m[0]].get("name", m[0])), int(m[1])])
+					packs.append({"id": pid, "name": "%s, tier %d (%s)" % [cid, t, ", ".join(names)], "foe": "", "strength": 0, "mix": mix, "tier": t - 1, "elite": true})
 	# The party's cells (21 October, the bible's section 9; --noparty drops them): each bench hero's final as
 	# the campaign fields it, the hero with its domain's first pack in the other columns, and
 	# the finale's line, a column a domain, each domain's first bench hero promoted.
@@ -538,8 +559,8 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 		for entry in p["mix"]:
 			for n in range(int(entry[1])):
 				var f := db.make_foe(str(entry[0]))
-				if p.has("tier") and db.is_boss(str(entry[0])):
-					db.scale_boss(f, int(p["tier"]))   # a boss at its tier (2 November), its parts below
+				if p.has("tier") and (db.is_boss(str(entry[0])) or db.is_elite(str(entry[0]))):
+					db.scale_boss(f, int(p["tier"]))   # a boss at its tier (2 November), an elite too (4 November), its parts below
 				foes.append(f)
 	else:
 		for n in range(int(p["strength"])):
@@ -550,7 +571,7 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	for f in foes:
 		fielded.append(f)
 		for part in db.parts_for(f):
-			if p.has("tier") and db.is_boss(f.content_id):
+			if p.has("tier") and (db.is_boss(f.content_id) or db.is_elite(f.content_id)):
 				db.scale_boss(part, int(p["tier"]))   # a core's parts at its tier, as a battle's
 			fielded.append(part)
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null

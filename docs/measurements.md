@@ -4344,3 +4344,98 @@ the Lich and with a second Wight in its place: 20 and 30% won with the Lich, 40 
 hull 92 and 88% against 87 and 70%; the Lich readying the Lord to rise again is half the wall,
 the risers' guard and last act the rest. The Lich out, landed; a lighter form (a Death Knight and
 three Wights) is Ryan's to mark.
+
+## 4 November, the elites' first read
+
+The elites' cells on the runner, built today (`--packs elites`): every elite composition at each
+tier it names, its elites at the tier's numbers as a battle fields them (`ContentDB.foes_for`,
+`scale_boss` on every elite) and its rank and file as content has them, the lead with its
+composition's members, its parts and its summons as in play. Each cell is the composition
+against a fresh squad and nothing else, which a battle never gives it (an elite emerges at a
+Fracture into a worn squad and joins the fights its ring covers), so the cells read the kit alone
+and overstate the ease. Rows: the tender's team and the maker trios with three runnable chassis
+(Minerva, Kestrel, Wainwright & Sutler), stock; and the five endgame fours (`tools/endgame_fours.py`,
+fitted to tier two). Random and greedy, 30 seeds, a direction: 15,900 fights a run, 30 and 52
+minutes. The band is read on the tier's own rows, tier one on the trios and tiers two and three on
+the fours (a stock trio at tier three is the wrong row): random winning means too easy, greedy
+losing a wall, the two landing together no decision.
+
+| Composition, tier | Lead | Trios: random / greedy won, hull lost (greedy) | Fours: random / greedy won, hull lost (greedy) | Band (its tier's rows) |
+|---|---|---|---|---|
+| elder_treants_grove, 2 (meadow) | Elder Treant | 67 / 100%, 15% | 100 / 100%, 0% | no decision |
+| elder_treants_grove, 3 (meadow) | Elder Treant | 46 / 98%, 28% | 100 / 100%, 0% | no decision |
+| leshys_hunt, 2 (meadow) | Leshy | 99 / 100%, 0% | 100 / 100%, 0% | no decision |
+| leshys_hunt, 3 (meadow) | Leshy | 98 / 100%, 0% | 100 / 100%, 0% | no decision |
+| shamans_warband, 1 (meadow) | Goblin Shaman | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| shamans_warband, 2 (meadow) | Goblin Shaman | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| shamans_warband, 3 (meadow) | Goblin Shaman | 100 / 100%, 2% | 100 / 100%, 0% | no decision |
+| the_nob, 1 (meadow) | The Goblin Nob | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_nob, 2 (meadow) | The Goblin Nob | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_nob, 3 (meadow) | The Goblin Nob | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| gilgamesh_and_enkidu, 3 (waste) | Gilgamesh | 77 / 100%, 12% | 100 / 100%, 0% | no decision |
+| gilgamesh_wanders, 1 (waste) | Gilgamesh | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| gilgamesh_wanders, 2 (waste) | Gilgamesh | 100 / 100%, 2% | 100 / 100%, 0% | no decision |
+| old_mans_rising, 1 (waste) | Old Man of the Desert | 11 / 81%, 60% | 88 / 100%, 15% | decision |
+| old_mans_rising, 2 (waste) | Old Man of the Desert | 5 / 73%, 76% | 85 / 100%, 19% | too easy |
+| old_mans_rising, 3 (waste) | Old Man of the Desert | 0 / 25%, 93% | 79 / 100%, 24% | too easy |
+| pilgrims_wake, 1 (waste) | The Pilgrim | 95 / 100%, 13% | 100 / 100%, 1% | no decision |
+| pilgrims_wake, 2 (waste) | The Pilgrim | 81 / 100%, 21% | 100 / 100%, 2% | no decision |
+| pilgrims_wake, 3 (waste) | The Pilgrim | 67 / 100%, 30% | 99 / 100%, 4% | no decision |
+| rust_monsters_scavenge, 1 (waste) | The Rust Monster | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| rust_monsters_scavenge, 2 (waste) | The Rust Monster | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| rust_monsters_scavenge, 3 (waste) | The Rust Monster | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| the_astromancer, 2 (waste) | The Astromancer | 42 / 96%, 19% | 100 / 100%, 0% | no decision |
+| the_astromancer, 3 (waste) | The Astromancer | 28 / 92%, 29% | 97 / 100%, 1% | no decision |
+| bone_wyverns_flight, 2 (marsh) | Bone Wyvern | 79 / 100%, 10% | 100 / 100%, 0% | no decision |
+| bone_wyverns_flight, 3 (marsh) | Bone Wyvern | 71 / 100%, 15% | 100 / 100%, 0% | no decision |
+| collectors_hall, 2 (marsh) | The Antiquarian | 59 / 100%, 19% | 100 / 100%, 4% | no decision |
+| collectors_hall, 3 (marsh) | The Antiquarian | 43 / 100%, 27% | 98 / 100%, 5% | no decision |
+| fell_riders_hunt, 1 (marsh) | The Fell Rider | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| fell_riders_hunt, 2 (marsh) | The Fell Rider | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| fell_riders_hunt, 3 (marsh) | The Fell Rider | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| skeleton_kings_court, 2 (marsh) | The Skeleton King | 1 / 55%, 68% | 92 / 100%, 10% | no decision |
+| skeleton_kings_court, 3 (marsh) | The Skeleton King | 0 / 52%, 71% | 92 / 100%, 11% | no decision |
+| the_reaper, 1 (marsh) | The Reaper | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_reaper, 2 (marsh) | The Reaper | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_reaper, 3 (marsh) | The Reaper | 100 / 100%, 0% | 100 / 100%, 0% | no decision |
+| the_shambler, 2 (marsh) | The Shuffler | 91 / 100%, 4% | 100 / 100%, 0% | no decision |
+| the_shambler, 3 (marsh) | The Shuffler | 84 / 100%, 8% | 100 / 100%, 0% | no decision |
+| the_wild_hunt, 1 (marsh) | Rider of the Wild Hunt | 99 / 100%, 1% | 100 / 100%, 0% | no decision |
+| the_wild_hunt, 2 (marsh) | Rider of the Wild Hunt | 93 / 100%, 3% | 100 / 100%, 0% | no decision |
+| the_wild_hunt, 3 (marsh) | Rider of the Wild Hunt | 77 / 100%, 7% | 100 / 100%, 0% | no decision |
+| cinder_tortoises_brood, 1 (peak) | Cinder Tortoise | 83 / 100%, 5% | 100 / 100%, 0% | too easy |
+| cinder_tortoises_brood, 2 (peak) | Cinder Tortoise | 45 / 100%, 18% | 100 / 100%, 1% | no decision |
+| cinder_tortoises_brood, 3 (peak) | Cinder Tortoise | 1 / 92%, 43% | 100 / 100%, 1% | no decision |
+| firelords_rising, 2 (peak) | The Firelord | 12 / 80%, 41% | 100 / 100%, 1% | no decision |
+| firelords_rising, 3 (peak) | The Firelord | 4 / 69%, 59% | 99 / 100%, 2% | no decision |
+| the_bane, 2 (peak) | The Bane | 72 / 100%, 30% | 100 / 100%, 4% | no decision |
+| the_bane, 3 (peak) | The Bane | 51 / 91%, 44% | 99 / 100%, 6% | no decision |
+| the_ravener, 2 (peak) | The World Eater | 57 / 86%, 38% | 100 / 100%, 1% | no decision |
+| the_ravener, 3 (peak) | The World Eater | 27 / 72%, 54% | 100 / 100%, 1% | no decision |
+| thunder_apes_rampage, 1 (peak) | The Thunder Ape | 100 / 100%, 1% | 100 / 100%, 0% | no decision |
+| thunder_apes_rampage, 2 (peak) | The Thunder Ape | 100 / 100%, 2% | 100 / 100%, 0% | no decision |
+| thunder_apes_rampage, 3 (peak) | The Thunder Ape | 95 / 100%, 6% | 100 / 100%, 0% | no decision |
+
+Read. Against the fours every cell is a free win: random play wins 79 to 100% and greedy 100%
+at 0 to 24% hull, the Old Man of the Desert the only elite that costs a four more than a tenth
+of its hull (15 to 24%). Greedy's fights last two to six rounds; the Goblin Nob and the Thunder
+Ape die in two at tier three, before a bellow or a roar can matter. Against the stock trios the
+lone elites read the same: the Nob, the Fell Rider, the Reaper, the Rust Monster, the Thunder
+Ape, the Goblin Shaman's warband and Gilgamesh are won by random play 95 to 100% of the time at
+0 to 2% hull, at every tier, since their HP is the rank and file's (8 to 24 at tier one, 12 to 36
+at tier three) against a trio's twenty-odd damage a round. The fights that are fights for a
+trio have mass or bodies: the Old Man (massive, 44 HP: a decision at tier one, 11 and 81% won at
+60% hull, and a wall at tier three, 0 and 25%); the Skeleton King's court (its summons and its
+risers: random 0 to 1%, greedy about half, 68 to 71% hull); the Firelord (12 and 80%, 4 and 69%);
+the World Eater (57 and 86%, 27 and 72%); the Cinder Tortoise at tier three (1 and 92%); the
+Astromancer (42 and 96%, 28 and 92%: its orbs the kill order); the Bane, the Antiquarian and the
+Elder Treant at tier three (random about half). Bands: of the 53 cells read on their tier's rows,
+49 read as no decision, 3 as too easy (the Cinder Tortoise at tier one for the trios; the Old Man
+at tiers two and three for the fours) and 1 as a decision (the Old Man at tier one for the
+trios); no elite is a wall for its tier's rows. What it says: the elites as built are not the
+mini-boss event section 9 asks for (a harder fight that threatens the gate while it holds the
+team); their numbers are the placeholders of 3 November, set at the hunters' and the rank and
+file's band, and an elite that dies in two rounds never shows its mechanism. The lever on the
+table, Ryan's to mark (the bible's section 12): the lone elites' HP to the massive band (the
+scales row's 30 to 40 at tier one, where the Old Man and the World Eater stand), an escort each,
+or both; read below as a what-if, and at 200 seeds once marked.

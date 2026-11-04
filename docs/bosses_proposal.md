@@ -52,9 +52,13 @@ the cut may be rank and file. The roster since 3 November, every kit a placehold
 | Any | The Wild Hunt | Three riders, winged, hunting the slowest; lances that swarm, Frost that switches off | 1 to 3 | Folklore's, the Witcher's take (Ryan, 3 November: "a good place to make an elite pack of multiple clones") |
 | Any | The World Eater | Pushes for the gate at a run: Chomp, Dragon Breath at everyone corrupting, Pin below half (Crushed: every blow the machine takes lands two harder through the next round) | 2 to 3 | Monster Hunter's Deviljho by archetype, the invader (Ryan, 3 November: "Jho (wanderer)"); named by one of its in-world epithets from his list of 4 November; the pin's Defense Down his read of the 4th |
 | Any | The Shuffler | Spawn, two buds a move; Dark Caress corrupts; Fracture at everyone | 2 to 3 | Darkest Dungeon's Shambler by archetype (Ryan, 3 November: "Shambler should be on the table"); the Shuffler his name of 4 November |
+| Any | The Astromancer | The kill-order elite: Guarded while its Warding Orb stands (a part, back in three rounds); a Mending Orb that cures the most hurt, a Storm Orb whose lightning switches off the entry shown and reaches everyone for less, Fuming Orbs called two at a time that burst through the shield; Blue Bolt at everyone below half | 2 to 3 | Golden Sun: The Lost Age's Star Magician by archetype, its four Balls the orbs (Ryan, 4 November: "feel free to throw it in"); the first elite in parts |
 
 The wanderers are drawn at random among those not yet sent, on the Fracture's own roll (3
-November). On the bench, for the rank and file if anywhere (Ryan, 3 November): Cerberus, the
+November). Their first read (4 November, the runner's elite cells, `docs/measurements.md`): every
+elite a free win for the endgame fours and the lone elites for the stock trios too, dying in two
+rounds; the lever on the table is the lone elites' HP to the massive band, or an escort each
+(the bible's section 12). On the bench, for the rank and file if anywhere (Ryan, 3 November): Cerberus, the
 Whisker Cat (the Coeurl), the Sphinx, the Banshee, the Iron Giant, the Dullahan, the Roc, the
 Drowned King, Anzû; the Mother Bomb out, a suicide boss; the Coven and the gate gargoyles on his
 "not yet" of 15 October.
@@ -194,12 +198,12 @@ Wyverns for the Tyrant at tier three). Open:
    that's the waste boss or something else": the **Emperor Scorpion**, the Yampi Desert's King
    Scorpion in Golden Sun: The Lost Age by archetype, landed as the Waste's third with its brood,
    the first Golden Sun homage on the foes' side; its name Claude's pick for his name pass, the
-   King Scorpion straight the other). Still his to mark, Claude's leans: the **Star Magician**
-   (The Lost Age's Treasure Isle superboss, "one of the most challenging, thought-provoking, and
-   tricky encounters" to its fans) as an elite, a caster behind summoned orbs each with one job,
-   a guard that makes it Guarded, a mender that regrows it, a bomb that self-destructs, the orbs
-   resummoned, so the parts system under a summoner: kill order through the orbs, placed in the
-   Waste beside the Djinn or a wanderer; and the **Dullahan** as the genre's superboss when that
+   King Scorpion straight the other). The **Star Magician** (The Lost Age's Treasure Isle superboss, "one of the most challenging,
+   thought-provoking, and tricky encounters" to its fans) landed that evening as the Astromancer, a
+   wanderer at tiers two and three, on his go ("If you think another golden sun works as a boss or
+   elite, feel free to throw it in"): Guarded while its Warding Orb stands, a part that grows back,
+   a Mending Orb that cures, a Storm Orb's lightning and the Fuming Orbs it calls, which burst; the
+   kill-order elite and the first in parts (the elites table). Still his to mark: the **Dullahan** as the genre's superboss when that
    pinned system comes (the bible's section 9), its Djinn Storm a drain of every reroll and
    store, never an elite, since an armoured headless knight is the Skeleton King's silhouette.
    The rest of the series by domain, for later: Tret (a tree, the Meadow), the Killer Ape (the
