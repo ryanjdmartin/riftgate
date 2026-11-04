@@ -1,17 +1,23 @@
-"""Night Shift's twelfth round as a pair (Ryan, 4 November, on the eleventh): the guitar's walk on
-one string.
+"""Night Shift's thirteenth round as a pair (Ryan, 4 November, on the twelfth): a bass jam, the guitar
+out.
 
-  "Are these bass lines playing chords? Can I hear them as singles if so?"
+  "Night shift: Map groove sounds better without the muted guitar. I think I know my issue now, I
+  feel like this wants to just be a bass jam. Rip the guitar out from everything, as an experiment."
 
-The bass plays single notes; the palm-muted guitar walks the same line in unison and plays every
-note as a power chord, root, fifth and octave (the forge's guitar), so the line sounds in chords over
-the bass. For the full pair the guitar plays one string wherever it walks with the bass, its ghost
-notes and R's tenth with it, pushed into the same gain as hard as the three strings were, which
-meets their level on a phone and in full; the hold keeps its chords, which were Ryan's own call (30
-October: "the walk needs to calm down back to holding the rhythm and chords like your first take"),
-and so do the stop-time hits and the breakdown's ringing chords. A set of whole battle halves on the
-clean finger bass puts it beside the eleventh round's power chords and the guitar on one string
-everywhere but the breakdown (GUITAR_PARTS); the eleventh round's bass set and the map set stay.
+The map half keeps its muted guitar out, now his call. In the battle half the palm-muted guitar goes
+from everything for the full pair: the walk and its ghost notes, R's tenth, the hold, the stop-time
+hits and the breakdown's ringing chords, so the bass walks alone with the drums, the keys and the
+synths. The lead guitar's lines stay (C's long notes, R's answer and its lick): "the guitar" has
+meant the rhythm guitar through these rounds, and a set puts every guitar out beside it, and the
+twelfth round's guitar on one string where it walks (GUITARS). A bass jam puts the bass's voice
+first, so the eleventh round's bass set comes again with the guitar out: the synth bass, the finger
+bass clean or with a touch of drive, the slap clean or with the same touch, the full pair on the
+clean finger bass.
+
+The twelfth round's, kept as a way of the guitar: the bass plays single notes, and the guitar that
+walked the same line in unison played every note as a power chord (root, fifth and octave), so the
+line sounded in chords over it; on one string (guitar_one) it went into the gain as hard as the
+three strings did and met their level on a phone and in full.
 
 The eleventh round's, kept: every part the driven bass played (the walk, the hold under the two
 synth lines, the breakdown's held roots, R's turn) on a finger bass with no drive: the driven bass's
@@ -31,8 +37,9 @@ the plucked string's arpeggio over the walk; stop-time, the band hitting each ba
 synth answering in the gap of the first and the drums filling the second; the head again, climbing
 into the outro. The chime keeps the hook under the two heads alone, the sub's pulse and the piano's
 off-beats rest where a turn leaves the room. The map half without its muted guitar, the rhythm it
-played in eighths through the groove, the lead's section and the groove again, its set still beside
-it (m); its R twice as long, the groove again repeating, so the halves keep one timeline.
+played in eighths through the groove, the lead's section and the groove again (his call since the
+twelfth, so its set went); its R twice as long, the groove again repeating, so the halves keep one
+timeline.
 
 Kept from the earlier rounds: the battle half as a jam in turns of two bars, the walk with the
 arpeggio or the hook and never both, the hold under the two together on three-three-two 6 dB down,
@@ -41,8 +48,8 @@ through; D the piano's turn and the factory's blended, the riff dark and low as 
 guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
 its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night12.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py m        # the named sets only (g b m, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night13.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py g        # the named sets only (g b, and full for the pair)
 """
 import json
 import os
@@ -65,7 +72,7 @@ FORM10 = F.MUSIC[NAME]["form"].replace("R" * 8, "R" * R_BARS)
 
 # ---------------------------------------------------------------- the map half
 
-MAP_GUITAR = False   # the map's muted guitar (Ryan, 3 November: "without the backing guitar on the quarters throughout")
+MAP_GUITAR = False   # the map's muted guitar out (Ryan, 4 November: "Map groove sounds better without the muted guitar")
 
 
 def map_intro(call, guitar=MAP_GUITAR):
@@ -562,12 +569,21 @@ BASS = "finger"   # the full pair's ("Can I get night shift battle with some cle
 # The guitar's strings (Ryan, 4 November, of the eleventh round's clean basses: "Are these bass
 # lines playing chords? Can I hear them as singles if so?"). The bass plays single notes; the guitar
 # that walks the same line in unison plays every note as a power chord (root, fifth and octave), so
-# the line sounds in chords over the bass. GUITAR_PARTS names the guitar's parts that go to one
-# string: the walk with its ghost notes and R's tenth, or those and the hold and the stop-time hits,
-# where the hold's chords were his own call (30 October: "the walk needs to calm down back to holding
-# the rhythm and chords like your first take"). The breakdown's ringing chords stay chords.
-GUITAR_PARTS = {"chords": (), "walk": ("walk", "up"), "all": ("walk", "up", "hold", "stop")}
-GUITAR = "walk"   # the full pair's
+# the line sounds in chords over the bass. Then (4 November, of the twelfth round): "I think I know my
+# issue now, I feel like this wants to just be a bass jam. Rip the guitar out from everything, as an
+# experiment." GUITARS names, for each way, the guitar's parts that go to one string and the parts
+# that go: the walk with its ghost notes and R's tenth ("walk", "up"), the hold under the two synth
+# lines ("hold", whose chords were his own call of 30 October: "the walk needs to calm down back to
+# holding the rhythm and chords like your first take"), the stop-time hits ("stop"), the breakdown's
+# ringing chords ("ring"), and the lead guitar's lines ("lead": C's long notes, R's answer and lick).
+GUITARS = {
+    "chords": ((), ()),                                          # the eleventh round's power chords
+    "walk": (("walk", "up"), ()),                                # the twelfth round's pair
+    "all": (("walk", "up", "hold", "stop"), ()),
+    "out": ((), ("walk", "up", "hold", "stop", "ring")),          # the rhythm guitar out of everything
+    "none": ((), ("walk", "up", "hold", "stop", "ring", "lead")),  # every guitar out, the lead guitar's lines too
+}
+GUITAR = "out"   # the full pair's
 ONE_DRIVE = 1.32  # the one string pushed into the gain as hard as the chord's three strings together (their RMS)
 ONE_LEVEL = 1.0   # pushed as hard, the one string meets the power chords on a phone and in full alike (measured over the whole battle half: within a tenth of a dB)
 
@@ -594,13 +610,15 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
-    voice (BASS_VOICES); `guitar` which of the guitar's parts go to one string (GUITAR_PARTS)."""
+    voice (BASS_VOICES); `guitar` which of the guitar's parts go to one string and which go (GUITARS)."""
     up_octave, by = SPLITS[split]
-    one = GUITAR_PARTS[guitar]
+    one, out = GUITARS[guitar]
 
     def strings(part, v):
         # The guitar's part on one string where `guitar` says so: the voice stays in its place in
         # the list, so every other voice keeps its seed.
+        if part in out:
+            return dict(v, pat={})
         return dict(v, inst="guitar_one", gain=v["gain"] * ONE_LEVEL) if part in one else v
     p = lambda *a, **k: P.part(call, *a, **k)   # noqa: E731
     riff = p("bass", "D", gain=0.34)
@@ -617,6 +635,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
             v["gain"] = 0.24   # the pulse under the line
         elif inst == "lead":
             v.update(inst="lead_real", gain=0.3)
+            v = strings("lead", v)
         if "R" in v["pat"]:
             # R's jam: the chime's hook under the two heads alone, the sub's pulse and the piano's
             # off-beats resting where a turn leaves the room.
@@ -653,7 +672,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         {"inst": "bass", "mode": "riff", "gain": CALL, "octave": 1, "hold": 1.0, "params": {"drive": 3.5, "cutoff": 1200.0}, "pat": {"D": riff + "." * 32}},
         {"inst": "bass_real", "mode": "riff", "gain": 0.32, "legato": True, "params": {"drive": 3.5}, "pat": {"B": p("sub_bass", "B")}},
         # Ringing chords through the breakdown.
-        {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 16, "pat": {"B": "x..............."}},
+        strings("ring", {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 16, "pat": {"B": "x..............."}}),
         # The synth lines by turns, each voice in the bars its voicing gives it: the arpeggio, up
         # and down two octaves of each chord in sixteenths, and the chime's hook an octave under it.
     ] + [dict(ARP_VOICES[v], mode="chord", octave=2, dur=1.4, pat=parts["arp:" + v]) for v in ARP_VOICES] + [
@@ -661,7 +680,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
     # D's piano: the house piano's chord, each tone a voice an octave up, stabbing three-three-two.
     voices += [{"inst": "epiano", "mode": "chord", "octave": 1, "gain": PIANO_BLEND if d == "blend" else PIANO_D, "dur": 1.5,
                 "pat": {"D": THREE_THREE_TWO.replace("r", str(k))} if d in ("piano", "blend") else {}} for k in range(3)]
-    voices += r_voices(call)
+    voices += [strings("lead", v) if v["inst"] == "lead_real" else v for v in r_voices(call)]
     bv = BASS_VOICES[bass]
     voices = [dict(v, inst=bv["inst"], params=bv["params"], gain=v["gain"] * 10.0 ** (bass_db / 20.0) * bv["level"]) if v["inst"] == "bass_real" else v for v in voices]
     drums = {
@@ -759,24 +778,20 @@ def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR):
 
 
 SETS = [
-    {"id": "g", "half": "battle", "title": "The guitar over the bass, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The battle half from the top on the clean finger bass, the guitar that walks the same line on its power chords or on one string. Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("g0", "The guitar's power chords", "As the eleventh round's pair had it: every note the guitar walks with the bass a power chord, root, fifth and octave, over the bass's single note.", {"guitar": "chords"}),
-              ("g1", "One string where it walks with the bass", "The walk, its ghost notes and R's tenth on one string, so the line is single notes; the hold's chords and the stop-time hits kept (the full pair's).", {"guitar": "walk"}),
-              ("g2", "One string everywhere", "The hold and the stop-time hits on one string too; only the breakdown's ringing chords stay chords.", {"guitar": "all"})]},
+    {"id": "g", "half": "battle", "title": "The guitar, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The battle half from the top on the clean finger bass. Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("g0", "The guitar on one string where it walks", "As the twelfth round's pair had it: the walk on one string over the bass, the hold's chords and the stop-time hits kept.", {"guitar": "walk"}),
+              ("g1", "The guitar out", "The palm-muted guitar out of everything, the walk, the hold, the stop-time hits, R's tenth and the breakdown's ringing chords: the bass alone with the drums, the keys and the synths. The lead guitar's lines stay (the full pair's).", {"guitar": "out"}),
+              ("g2", "Every guitar out", "The lead guitar's lines out too: C's long notes, R's answer and its lick, with nothing in their place.", {"guitar": "none"})]},
     {"id": "b", "half": "battle", "title": "The bass clean, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The battle half from the top, the bass on each voice wherever it plays (the walk, the hold, the breakdown's held roots). Switch rows anywhere: each carries on from the same beat.",
+     "note": "The battle half from the top with the guitar out, the bass on each voice wherever it plays (the walk, the hold, the breakdown's held roots, R's turn). Switch rows anywhere: each carries on from the same beat.",
      "rows": [("b0", "The synth bass", "As the tenth round's pair had it: the crunch synth dark and soft, 3 dB under the driven bass on a phone and 3 dB over it in headphones.", {"bass": "synth"}),
               ("b1", "A finger bass, clean", "The driven bass's strings, body and cabinet with no drive at all, evened as a compressor would, at the driven bass's level (the full pair's).", {"bass": "finger"}),
               ("b2", "The finger bass, a touch of drive", "The same notes through an amp just breaking up: about an eighth of the driven bass's distortion.", {"bass": "finger_touch"}),
               ("b3", "A slap bass, clean", "The slap with its clip taken out, the thumb's thump and the string's snap, evened as a compressor would.", {"bass": "slap_clean"}),
               ("b4", "The slap bass, a touch of drive", "The same notes through the same touch of drive.", {"bass": "slap_touch"})]},
-    {"id": "m", "half": "map", "title": "The map's groove without its muted guitar", "form": "A" * 16, "seed": NAME,
-     "note": "The groove's sixteen bars: the piano off the beat, the chime's hook, the sub's pulse, the knocks and ticks.",
-     "rows": [("m0", "The muted guitar as it was", "Its rhythm in eighths on the roots, as the shipped map half plays it.", {"guitar": True}),
-              ("m1", "Without it", "Everywhere in the full pair: the groove, the lead's section and the groove again.", {"guitar": False})]},
 ]
-PAIR = {"id": "night_shift_r12", "title": "Night Shift, round twelve"}
+PAIR = {"id": "night_shift_r13", "title": "Night Shift, round thirteen"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -836,7 +851,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night12.json")
+    path = os.path.join(P.OUT, "night13.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -848,7 +863,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night12_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night13_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
