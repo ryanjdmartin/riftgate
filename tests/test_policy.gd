@@ -840,7 +840,7 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 2.0, "Armoured: its stacks for the one allied blow to come")
 	assert_eq(pol.purge_worth(sk, a, null1, g, 1.0), 1.0, "a Purge 1 takes one of the two (2 November)")
 	Effects.remove(g, "braced")
-	Effects.grant(g, Effects.make(Effects.kindled(3), Effects.SKIRMISH, "foe:caster"))
+	Effects.stack(g, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:caster", 3, Effects.DECAY_HALF)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Empowered: its value")
 	Effects.remove(g, "kindled")
 	Effects.grant(g, Effects.primed_foe(2, "foe:caster"))

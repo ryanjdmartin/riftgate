@@ -1950,10 +1950,10 @@
    "id": "kindled",
    "category": "status",
    "name": "Empowered",
-   "codex": "Foe status, from a rally, landing on every other foe on the field the moment the rally does. Its next move hits harder by the rally's value, and that move spends it, whatever it is: a blow lands it, a special gains nothing from it, a Suppress that takes the move takes it too, and a countdown carries it to the blow it lands. A foe acting after the rallier spends it this turn; one that has acted carries it to its next move. An intent counts the rallies on their way, a pulsing chip on a dashed edge saying why, and drops them the moment the rallier is killed, Suppressed or Disrupted.",
+   "codex": "Foe status, from a rally: it lands on every other foe on the field the moment the rally does, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add before the move's factor. It halves at the end of each round, rounded down, as a machine's Empowered does: no move spends it, a Suppress takes none of it, and a foe that has acted when the rally lands carries half to the next round. Two rallies add. An intent counts the rallies on their way to it this round.",
    "status": "implemented",
    "design": {
-    "holes": "",
+    "holes": "One clock on both sides since 4 November (Ryan: \"we try and make it work. If it's unbalanceable, we go back to separate keywords with different clocks\"); the next-move clock of 26 October retired.",
     "table": {
      "kind": "buff",
      "on": "foe",

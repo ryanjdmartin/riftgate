@@ -145,7 +145,7 @@ status's.
 - [ ] Level the other five tracks against Hold The Line through the phone model
 - [ ] Boss themes for the Meadow, the Waste, the Peak and the finale, melodies proposed in chat first
 - [ ] The codex's open and close and the pause menu in the console's grammar
-- [ ] Jenny's foe-down pools re-keyed to foes (Ryan, 4 November: tag them to certain enemies): the undead, demonic and eldritch pools mapped to the foes that fit, the mapping proposed in chat first, then a `voice` key on the foe and the game reading it
+- [ ] Foe tags (Ryan, 4 November: flavour the codex shows, hooks for audio and perhaps attack and death animations, never a mechanic; the bible's foe tags row, section 9): the working set proposed in chat first (his examples: Undead, skeletal; Animal, demonic; flying), then `tags` on every foe in content with the validator holding the set, the codex showing them beside the name, and Jenny's foe-down pools (undead, demonic, eldritch) keyed by them
 - [ ] A foe death per domain, later
 - Stretch, not now: a burn or shock modification adds its own sound layer
 

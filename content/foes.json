@@ -29,7 +29,7 @@
       "hp": 4, "attack": 4, "rank": "back", "zone": 3, "movespeed": 2, "behaviour": "hunt", "hunts": "nearest",
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "swarm": 1, "weight": 2, "text": "A knife from the crowd for {damage}: more for every other captain standing.", "status": "implemented" },
-        { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
+        { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "They have ranks. We do not know how they decide them. We suspect volume."
     },
@@ -40,7 +40,7 @@
       "hp": 4, "attack": 3, "rank": "front", "zone": 2, "movespeed": 4, "behaviour": "hunt", "hunts": "slowest",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "You hear them before the sensors do."
     },
@@ -51,7 +51,7 @@
       "hp": 4, "attack": 4, "rank": "front", "zone": 2, "movespeed": 4, "behaviour": "hunt", "hunts": "weakest",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "The wolves learned which of us limps."
     },
@@ -62,7 +62,7 @@
       "hp": 5, "attack": 5, "rank": "front", "zone": 2, "movespeed": 4, "behaviour": "hunt", "hunts": "weakest",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "When the big one howls, kill it or shield everyone. There is no third option."
     },
@@ -581,7 +581,7 @@
       "actions": [
         {"id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented"},
         {"id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 4, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented"},
-        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented"}
+        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "Recruitment poster: IT COOLED DOWN. IT DID NOT CALM DOWN."
     },
@@ -593,7 +593,7 @@
       "actions": [
         {"id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented"},
         {"id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 5, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented"},
-        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 3, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented"}
+        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 3, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "The smell arrives a round before it does. Use the round."
     },
@@ -605,7 +605,7 @@
       "hp": 8, "attack": 3, "rank": "back", "zone": 3, "movespeed": 3, "behaviour": "hunt", "hunts": "nearest",
       "actions": [
         { "id": "chain_lightning", "name": "Chain Lightning", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all"], "text": "Chain Lightning leaps across the line: {damage} to every machine.", "status": "implemented" },
-        { "id": "bloodlust", "name": "Bloodlust", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Bloodlust: every other foe on the field hits {value} harder at its next move.", "status": "implemented" },
+        { "id": "bloodlust", "name": "Bloodlust", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Bloodlust: every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" },
         { "id": "lightning_shield", "name": "Lightning Shield", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lightning Shield: armour +{value} on every foe in the fight through the next round.", "status": "implemented" }
       ],
       "flavour": "The little ones listen to it. That is the whole problem."
@@ -807,7 +807,7 @@
       "actions": [
         {"id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A claw, for {damage}.", "status": "implemented"},
         {"id": "mend", "name": "Mend", "kind": "defend", "effect": "regrow_ally", "value": 4, "weight": 1, "when": "ally_hurt", "text": "It licks the wound: the most hurt of its own regrows {value} HP.", "status": "implemented"},
-        {"id": "roar", "name": "Roar", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "A roar: every other foe on the field hits {value} harder at its next move.", "status": "implemented"}
+        {"id": "roar", "name": "Roar", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "A roar: every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix L, amended: he brought a friend."
     },
@@ -856,7 +856,7 @@
       "parts": ["piercing_eye", "prising_eye"], "guard": "all", "regrow_parts": 3,
       "actions": [
         {"id": "haft", "name": "Haft", "kind": "attack", "weight": 2, "text": "The haft comes down for {damage}.", "status": "implemented"},
-        {"id": "drive", "name": "Drive", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Its eyes blaze: every other foe on the field hits {value} harder at its next move.", "status": "implemented"},
+        {"id": "drive", "name": "Drive", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Its eyes blaze: every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"},
         {"id": "the_fall", "name": "The Fall", "kind": "attack", "factor": 0.75, "countdown": 2, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "It rises, and falls two rounds on: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: the axe in the dune is not a landmark. Report it as hostile."
@@ -1136,7 +1136,7 @@
       "hp": 12, "attack": 5, "rank": "back", "zone": 3, "movespeed": 1,
       "actions": [
         {"id": "lash", "name": "Lash", "kind": "attack", "weight": 2, "text": "A whip of light, for {damage}.", "status": "implemented"},
-        {"id": "goad", "name": "Goad", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder at its next move.", "status": "implemented"}
+        {"id": "goad", "name": "Goad", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: shoot the rider. The rest follows, eventually."
     },

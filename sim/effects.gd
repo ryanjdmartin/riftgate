@@ -215,8 +215,8 @@ const STATUS := {
 	# the number it showed. An add before the factor, one damage formula for the whole game
 	# (Ryan, 26 October), as Empowered is on the machines' side. Each grant is its own, its
 	# rally's value; the 2 here is only the default a bare grant would carry.
-	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its next move hits {value} harder, then it is spent.", "decay": "none", "spent_by": "move",
-		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}]},
+	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its blows hit +1 harder a stack. Halves at the end of each round, rounded down.", "decay": "half",
+		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	# Enraged (3 November, the Goblin Nob's Bellow): a stack for every shield, vent or equipment
 	# entry the team spends while the foe rages (Foe.rage, set by the enrage effect), a point of
 	# attack a stack for the rest of the fight, never spent by a move, so the chip climbs as the
@@ -363,12 +363,6 @@ static func is_status(id: String) -> bool:
 
 ## Empowered at a rally's own value: the status above with the move's value in place of the
 ## default, so the Howl's 5 is 5 and the chip says so.
-static func kindled(value: int) -> Dictionary:
-	var d: Dictionary = STATUS["kindled"].duplicate(true)
-	d["effects"][0]["value"] = value
-	d["description"] = filled(str(STATUS["kindled"]["description"]), d["effects"])
-	return d
-
 
 ## Golden at a move's own value (4 November): the status above with the move's add in place of
 ## the default; the plate stays a point whatever the move says.

@@ -2192,11 +2192,10 @@ func _enemy_turn() -> void:
 			if f.alive() and not f.gathering() and f.action.has("then"):
 				f.next_move = str(f.action["then"])
 		if moves:
-			Effects.remove(f, "kindled")
-			Effects.remove(f, "primed")   # a stoker's priming rides the same move (28 October)
+			Effects.remove(f, "primed")   # a stoker's priming rides the move it makes (28 October); its Empowered halves at the round's end instead (4 November)
 		if _lift_after.has(f):
 			# A merge's lift (30 October), its own Empowered, riding its next move.
-			Effects.grant(f, Effects.make(Effects.kindled(int(_lift_after[f])), Effects.SKIRMISH, "foe:" + f.content_id))
+			Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, int(_lift_after[f]), Effects.DECAY_HALF)
 			_lift_after.erase(f)
 		_web_burst(f)
 	_clear_dead()   # before _acted clears: a gold rage its own tick broke staggers the foe out of its next action, not the one it has had
@@ -3296,17 +3295,17 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			_merge(f, a)
 		"rally":
 			# Empowered lands at once on every other foe on the field, at the move's own value
-			# (Ryan, 26 October: "howl is more clear if it gives kindled for the next action,
-			# which could be the turn its granted"): one acting after the rallier this turn hits
-			# harder now, one that has acted carries it to its next move, and every intent
-			# showed it from the round's start (incoming_rally). Each grant is its own, so two
-			# rallies add.
+			# in stacks (Ryan, 26 October: "howl is more clear if it gives kindled for the next
+			# action, which could be the turn its granted"): one acting after the rallier this turn
+			# hits harder now, and every intent showed it from the round's start (incoming_rally).
+			# The stacks halve at the round's end like a machine's (Ryan, 4 November: one clock on
+			# both sides), so one that has acted carries half to the next round; two rallies add.
 			var rallied := 0
 			for other in field_foes():
 				if other != f and other.alive():
-					Effects.grant(other, Effects.make(Effects.kindled(maxi(0, value)), Effects.SKIRMISH, "foe:" + f.content_id))
+					Effects.stack(other, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, maxi(0, value), Effects.DECAY_HALF)
 					rallied += 1
-			log.append("%s: %s, %d hit %d harder at their next move" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
+			log.append("%s: %s, %d hit %d harder, halving each round" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])

@@ -510,7 +510,7 @@ On a machine:
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
   target, a sweep's on each strike's own foe, a blow that kills on the foe it felled; a strike
   on a corpse leaves nothing. A foe's,
-  from a stoker's priming, is spent by its next move, whatever it is, on Empowered's clock, and a
+  from a stoker's priming, is spent by its next move, whatever it is, and a
   machine's Ward turns its Burning away as it does a burn.
 - **Phased** (buff): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
@@ -647,12 +647,12 @@ On a foe:
   multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a
   debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
 - **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
-  and its next move hits harder by the rally's value, an add before the move's factor as
-  every add is. That move spends it, whatever it is: a blow lands it, a special gains nothing
-  from it, a Suppress that takes the move takes it too, and a countdown still gathering
-  carries it to the blow it lands. A foe acting after the rallier spends it this turn; one
-  that has acted carries it to its next move; each rally's grant adds. An intent counts the
-  rallies on their way: a blow this round those of the ralliers acting before it, a
+  the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
+  before the move's factor as every add is. It halves at the end of each round, rounded down,
+  the machine's clock: no move spends it, a special or a Suppress takes none of it, and a
+  countdown still gathering carries what stands to the blow it lands. A foe acting after the
+  rallier hits harder this turn; one that has acted carries half to the next round; each rally's
+  grant adds. An intent counts the rallies on their way: a blow this round those of the ralliers acting before it, a
   countdown's blow every rally this round, each from a rallier alive, not Suppressed and not
   about to burn to death, so it drops the moment the rallier is killed, Suppressed or
   Disrupted. The foe wears the coming Empowered as a preview chip on a dashed edge, its opacity
@@ -831,7 +831,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
   fight, let go early once the swallower has lost a quarter of its HP), merge (every other foe on the field of the kinds it names taken into it, gone with no
   fall, no last act, no split and no kill of the team's: it regrows the HP they had left, and
-  its next move hits its value harder for each), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
+  its blows hit its value harder for each, Empowered that halves), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
   content carries a silence or a ward all yet; the Djinn's Unmake is the one purge.

@@ -99,7 +99,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the die shows, Numbed as a count of rounds with a stun resist by kind, Purge N on both sides,
   the Ward, the primers Charged and Supercooled (no piece grants them yet), Sweep as the third
   reach, riders landing after the hits, death the last thing checked in a spend, Overcharged and
-  Kindled renamed Empowered. Left for Ryan: the Scorpion's rework (its blast is the one draw
+  Kindled renamed Empowered and given one clock (a foe's halves at the round's end too, 4
+  November). Left for Ryan: the Scorpion's rework (its blast is the one draw
   besides the die), rules for the two planned modules, the Emitter's Purge 2, whether a foe's
   ticks come before or after its action (section 12).
 - **The elites session** (3 and 4 November; the bible's register and tiers rows, section 9;
