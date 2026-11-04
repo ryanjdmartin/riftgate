@@ -166,8 +166,9 @@ defeat when every machine is wrecked. There is no round limit.
   cools nothing (the Musk Ox's Quick Reload, its one piece): its shells and the ammo it loads
   are its whole mark. The targeting marks are one width: under an entry aimed at a foe, a line of
   fire, a solid run breaking into two ever shorter dashes with room between, every piece one
-  thickness, straight for Direct and lobbed low for Indirect, and for a Sweep a whole line along
-  the rank with three ticks rising from it at even steps, a strike to a slot; under one spent on a
+  thickness, straight for Direct and lobbed low for Indirect, and for a Sweep the line lobbed
+  whole, since a sweep picks any rank, three short lines of fire falling from it at even steps, a
+  strike to a slot; under one spent on a
   machine, three hex cells sharing their edges, the middle its own machine, a lit one a machine
   it may be spent on.
   What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks).

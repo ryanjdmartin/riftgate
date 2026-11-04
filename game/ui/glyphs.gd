@@ -18,15 +18,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# goes; straight for Direct, a gentle lob for Indirect, as wide as the three hexes.
 			_fire_line(ci, c, size, color, width, id == "aim_indirect")
 		"aim_sweep":
-			# Sweep (3 November), the third reach, in the lines' own language: the line along the rank,
-			# whole where Direct's breaks into dashes, and three ticks rising from it at even steps, a
-			# strike to a slot, left to right; no arrowhead (Ryan, 3 November, of the arrows: "looks
-			# cheap"). Drawn as main's Sweep landed, for his eye.
-			var ry := s * 0.3
-			ci.draw_line(c + Vector2(-s, ry), c + Vector2(s, ry), color, width)
-			for i in range(3):
-				var x := (i - 1) * s * 0.7
-				ci.draw_line(c + Vector2(x, ry), c + Vector2(x, -s * 0.3), color, width)
+			# Sweep (3 November), the third reach: lobbed, since a sweep picks any rank (Ryan, 4
+			# November: "curved to indicate it has indirect reach"), its arc whole along the rank, and
+			# three lines of fire falling from it at even steps, a strike to a slot, each breaking into
+			# dashes as Direct's and Indirect's do ("have the lines poking out have the same kind of
+			# segmented look as the others"); they fall, clear of the sight above. Drawn small, the
+			# strikes plain.
+			var arc := _fire_pts(c + Vector2(0.0, -s * 0.27), size, true, 0.85)
+			_run(ci, arc, 0.0, _path_length(arc), color, width)
+			for u in [0.16, 0.5, 0.84]:
+				var from := _along(arc, u) + Vector2(0.0, size * 0.04)
+				var drop := PackedVector2Array([from, from + Vector2(0.0, s * 0.8)])
+				if size >= INNER_FROM:
+					_segmented(ci, drop, STRIKE_RUNS, STRIKE_GAPS, color, width)
+				else:
+					ci.draw_polyline(drop, color, width)
 		# ---- the die's main marks (Ryan, 3 November): each holds what the entry delivers
 		"weapon":
 			# A weapon (Ryan, 3 November: the faces did not "read weapon"): a sight, its ring broken
@@ -671,11 +677,18 @@ static func _inset(pts: PackedVector2Array, ctr: Vector2, k: float) -> PackedVec
 ## the indirect a little").
 const FIRE_RUNS := [0.46, 0.2, 0.08]
 const FIRE_GAPS := [0.13, 0.11]
+const STRIKE_RUNS := [0.46, 0.22, 0.12]   # a Sweep's falling strike: a short line of fire, its tail pieces a little longer so they hold at its size
+const STRIKE_GAPS := [0.12, 0.1]
 
 
 static func _fire_line(ci: CanvasItem, c: Vector2, size: float, color: Color, width: float, lobbed: bool) -> void:
+	_segmented(ci, _fire_pts(c, size, lobbed), FIRE_RUNS, FIRE_GAPS, color, width)
+
+
+## A line of fire's path, `size` wide about `c`: straight, or lobbed low (`lift` its height's share).
+static func _fire_pts(c: Vector2, size: float, lobbed: bool, lift: float = 1.0) -> PackedVector2Array:
 	var s := size * 0.5
-	var h := size * 0.17
+	var h := size * 0.17 * lift
 	var pts := PackedVector2Array()
 	var a0 := c + Vector2(-s, h * 0.45 if lobbed else 0.0)
 	var a1 := c + Vector2(-s * 0.15, -h * 1.5 if lobbed else 0.0)
@@ -683,18 +696,40 @@ static func _fire_line(ci: CanvasItem, c: Vector2, size: float, color: Color, wi
 	for i in range(41):
 		var t := i / 40.0
 		pts.append(a0.lerp(a1, t).lerp(a1.lerp(a2, t), t))
+	return pts
+
+
+static func _path_length(pts: PackedVector2Array) -> float:
 	var total := 0.0
 	for i in range(1, pts.size()):
 		total += pts[i].distance_to(pts[i - 1])
+	return total
+
+
+## A path drawn as a line of fire: its runs, with the gaps between them, as shares of its length.
+static func _segmented(ci: CanvasItem, pts: PackedVector2Array, runs: Array, gaps: Array, color: Color, width: float) -> void:
+	var total := _path_length(pts)
 	var sum := 0.0
-	for v in FIRE_RUNS + FIRE_GAPS:
+	for v in runs + gaps:
 		sum += float(v)
 	var at := 0.0
-	for k in range(FIRE_RUNS.size()):
-		var b: float = at + float(FIRE_RUNS[k]) / sum * total
+	for k in range(runs.size()):
+		var b: float = at + float(runs[k]) / sum * total
 		_run(ci, pts, at, b, color, width)
-		if k < FIRE_GAPS.size():
-			at = b + float(FIRE_GAPS[k]) / sum * total
+		if k < gaps.size():
+			at = b + float(gaps[k]) / sum * total
+
+
+## The point a share `u` of the way along a path.
+static func _along(pts: PackedVector2Array, u: float) -> Vector2:
+	var want := u * _path_length(pts)
+	var run := 0.0
+	for i in range(1, pts.size()):
+		var d := pts[i].distance_to(pts[i - 1])
+		if run + d >= want:
+			return pts[i - 1].lerp(pts[i], (want - run) / maxf(d, 0.001))
+		run += d
+	return pts[pts.size() - 1]
 
 
 ## The stretch of a polyline from arc length `a` to `b`, drawn.

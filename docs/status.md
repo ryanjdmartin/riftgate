@@ -51,7 +51,9 @@ scrolling) was built in a worktree on a branch of its own and merged in (`aa39bc
 deleted. It took main as it landed (to `d28308e`: the randomness pass, Sweep and UNDO, the
 elites session, the weapon-fire work, the chassis runner rows and the pairs), and main took it as
 a fast-forward on 4 November on his word ("Great if there's nothing else open, clean up and merge
-into main"); its bible is v0.449 (the page's version 462; the Pages paragraph).
+into main"); its bible is v0.449 (the page's version 462; the Pages paragraph). Since the
+landing it carries Sweep's mark lobbed with its strikes falling (his notes of the same day) and
+section 12's question on Every Foe and Every Ally as targeting modes, ahead of main.
 
 `claude/elites-session` (3 and 4 November) carried the elites session from main's `e75be15` on
 Ryan's marks of the 3rd and his calls and reads of the 4th (How things stand; the bible's
@@ -326,8 +328,9 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   iconography. The reload entry is the Musk Ox's alone (the Quick Reload, fixed). Landing on main
   it took the randomness pass, Sweep, UNDO and the elites under the same rules: their foe chips
   read by name and count in the readouts as the rest do (Swallow, the committed Follow-up,
-  Enraged, Golden, Numbed); Sweep's targeting mark is a whole line along the rank with three
-  ticks rising from it at even steps (drawn for his eye); a spend's strikes wait on the machine's turn to aim and a
+  Enraged, Golden, Numbed); Sweep's targeting mark is lobbed, since a sweep picks any rank, three
+  short lines of fire falling from it, a strike to a slot (his notes of 4 November: curved, its
+  strikes segmented as the others; falling rather than rising on Claude's call); a spend's strikes wait on the machine's turn to aim and a
   wind-up, and UNDO opens once the last strike has landed. What waits on Ryan: his phone read of
   the list (the to-do).
 - The elites session (3 November, `claude/elites-session`, on Ryan's marks; the bible's register
@@ -1057,7 +1060,9 @@ into this file in the same commit as its first publish; the procedures are in `R
   and Every Ally, section 12's Armadillo question, and the tables rerun on the merged content (the
   Rapid and cooldown rows); three-way merged row by row onto the live v0.448 at 461, which a music
   session had moved from main's v0.446 at 459 with Hold The Line's row of the tracks table, so
-  main's file carries that row ahead of its branch). The live page may carry rows ahead of main's code while
+  main's file carries that row ahead of its branch). This file is v0.450 since (on `ccr-bb178c9b-l6airv`,
+  ahead of main: Sweep's mark lobbed, section 12's question on Every Foe and Every Ally as
+  targeting modes), unpublished: it goes up with Ryan's calls on that question. The live page may carry rows ahead of main's code while
   their branches have not landed. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
