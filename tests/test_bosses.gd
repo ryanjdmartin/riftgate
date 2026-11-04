@@ -491,7 +491,7 @@ func test_a_merge_takes_its_kinds_in_and_regrows_what_they_had() -> void:
 	for g in gels:
 		assert_false(sk.field_foes().has(g), "each Gel is gone from the field")
 	assert_eq(sk.team_kills, 0, "and none is a kill of the team's")
-	assert_eq(k.damage_of(k.actions[0]), 6 + 3, "its next move hits a point harder for each")
+	assert_eq(k.damage_of(k.actions[0]), 6 + 1, "a point of Empowered for each, three, halved to one at the round's end (one clock, 4 November)")
 	assert_true("\n".join(sk.log).contains("3 taken in"), "the log says how many")
 
 

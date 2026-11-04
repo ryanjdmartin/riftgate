@@ -831,7 +831,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
   fight, let go early once the swallower has lost a quarter of its HP), merge (every other foe on the field of the kinds it names taken into it, gone with no
   fall, no last act, no split and no kill of the team's: it regrows the HP they had left, and
-  its blows hit its value harder for each, Empowered that halves), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
+  its blows hit its value harder for each, Empowered that halves at the round's end, so half
+  reaches the next round), each on its target, no blow; a silence and a purge are specials, never riders. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
   content carries a silence or a ward all yet; the Djinn's Unmake is the one purge.
