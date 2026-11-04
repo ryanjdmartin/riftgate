@@ -227,10 +227,13 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.452 (the page's
-  version 465, published 4 November from the audit branch: the contradictions and stale rows the
-  audit found, the die's and the tiers' rows condensed to their decisions, three-way merged onto
-  the live v0.451, which the music session had moved with its tracks row). The live page may carry rows ahead of main's code
+  `docs/design-bible.html` after every change. This file and the live page are v0.455 (the page's
+  version 468, published 4 November from the audit branch after Ryan's speedround, three-way
+  merged onto the live v0.454). The live page carries two rows ahead of main's code: the music
+  session's tracks row, and another branch's call that Every Foe and Every Ally are targeting
+  modes, not keywords ("Silence should not narrow targeting modes", 4 November: the area row, the
+  die row's Sweep mark, and the Keywords table without their rows); `docs/rules.md` still says
+  keywords until that branch lands. The live page may carry rows ahead of main's code
   while their branches have not landed (the music session's tracks row today). Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
