@@ -195,12 +195,14 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   lands 5, 5 and 5 and leaves Flak 3). Every rider lands so, Burn, Suppress, Web, a passive's
   lays, Purge and a Primed machine's Burning with them, in the order the strikes earned them;
   Shock, Expose, Lure and Disrupt land after the blow.
-- **Death is the last thing checked**: everything a spend or a turn does lands, on a foe or a
-  machine it fells too (every strike's riders, a Shock, an Expose, a Lure's turn, a foe's
-  blow and its riders on a wreck), so the preview shows the chips beside the skull and no
-  trigger goes unfired; the dead are cleared once the spend or the turn is done. Where the
-  next strike goes still reads the field: a sweep walks past an emptied slot, and a foe
-  whose machine fell before its action strikes the next in line.
+- **Death is the last thing checked in a spend**: everything a spend does lands, on a foe it
+  fells too (every strike's riders, a Shock, an Expose, a Lure's turn), so the preview shows
+  the chips beside the skull and no trigger goes unfired; the dead are cleared once the spend
+  is done. Where the next strike goes still reads the field: a sweep walks past an emptied
+  slot. The prediction runs in phases the same way: a foe its Burning will kill before it
+  acts keeps its intent shown, information whether its blow lands or not, and its blow is
+  left out. The enemy's turn is sequenced as it happens: a foe its tick kills never strikes,
+  and a wreck takes no more strikes.
 - Every blow of a strike is read before any of them lands, so a kill in it (the talons'
   Empowered) feeds the next strike and never the same strike's other blows. A foe's own
   reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
@@ -269,8 +271,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **The gauges forecast the round**: everything the rest of the round will do as it stands,
   played on a copy of the fight with every rule as it runs: the end of the player's turn (its
   burns and overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
-  rally, a web's burst, a death at its tick with its blow landing all the same, the last act it
-  sets off, a self-destruct) and
+  rally, a web's burst, a death before it acts with its intent kept, the last act it sets off,
+  a self-destruct) and
   the round's end. The die in hand counts only over somewhere it may be spent, as it would be
   spent there. A foe whose machine falls before it acts strikes the next machine in line: its
   arrow stays on its pick, and a second, dashed, goes to the machine its blow lands on.
@@ -750,8 +752,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   that falls may grow back after so many rounds while the core stands; a core that falls takes
   its parts with it.
 - **The enemy's turn**: front rank left to right, then the back. At its action each foe's
-  statuses tick (Burning first, which may fell it, and it acts all the same, its death the
-  turn's last check; then decaying stacks drop; Vitriol after
+  statuses tick (Burning first, which may kill it, and a dead foe never strikes; then decaying
+  stacks drop; Vitriol after
   Burning, on what it leaves); a suppressed foe does nothing, and at the round's end, after every
   Numbed loses a stack, it gains its stun resist in Numbed; a web
   on it bursts at the end of its action, skipped or not. A foe with no machine to strike (every one fallen or out of the fight) loses its blow
