@@ -1,19 +1,18 @@
-"""Night Shift's fifteenth round as a pair (Ryan, 4 November, on the fourteenth): the bass on the
-fingers through an amp, and how far it can be driven.
+"""Night Shift's sixteenth round as a pair (Ryan, 4 November, on the fifteenth): the bass into the
+modern drive, and the lead guitar's lines on it.
 
-  "Night Shift: Plucked string -3Db is good. Fingers through an amp is a clear winner. What happens
-  if we distort it a little? Will it take it? Can we achieve the "omnific" sound?"
+  "For Night Shift, go with the fingers-into-a-modern-drive-prog bass you built. And wherever there's
+  a lead guitar, I want that bass instead playing the high lines."
 
-The full pair is on the fingers through an amp with a touch of grit, his pick of the real basses
-(real_bass.py), the plucked string 3 dB down, his call. The drive set steps the same fingers and amp
-up, a little more and then driven with the mids pushed, and then into a modern prog bass's drive,
-the kind The Omnific (a Melbourne trio of two basses and drums, working with Darkglass) are heard
-in: the lows clean under a lower split, the attack raised into a harder drive, the low mids scooped
-and the upper mids lifted after it, a brighter top, a little clean top blended back for the clank;
-and an active bass played near the bridge on new strings into it, the Music Man and Dingwall kind
-they play. On a held E1 every step keeps the real bass's shape, the grind at the attack and the
-overtones falling away as the note rings (driven, its 800 to 2000 Hz from 4 dB under the
-fundamental to 45 under in a second and a half), where the forge's driven bass climbs to 14 over.
+The full pair's bass is the fingers into the modern prog drive (real_bass.py's MODERN), wherever the
+bass plays. The lead guitar's lines (C's long notes, R's answer and its lick) go to that same bass,
+an octave under the guitar: the guitar's lick runs to B5, an octave past the top of a six-string
+bass, so an octave down they sit at the top of its high string, over the walk, as a second bassist
+plays them (LEAD). A set has them at the guitar's own octave, a piccolo bass's register, and on the
+lead guitar as before, each met halfway with the lead guitar's level.
+
+The fifteenth round's, kept: the drive on the fingers through an amp, a step at a time; on a held
+E1 every step's overtones fall away as the note rings, the grind at the attack.
 
 The fourteenth round's, kept: the rhythm guitar back in the breakdown (B) alone, the lead guitar's
 lines kept; D's hold without the bass; R at one level; the plucked string 3 dB down wherever the
@@ -63,8 +62,8 @@ through; D the piano's turn and the factory's blended, the riff dark and low as 
 guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
 its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night15.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py bd       # the named sets only (bd, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night16.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py lb       # the named sets only (lb, and full for the pair)
 """
 import json
 import os
@@ -611,7 +610,14 @@ BASS_VOICES = {
     "real_modern": {"inst": "real_bass", "params": {"preset": "finger", "amp": "modern"}, "level": 2.07},    # the fingers into a modern prog drive
     "real_omnific": {"inst": "real_bass", "params": {"preset": "active", "amp": "modern"}, "level": 1.54},   # an active bass near the bridge into it
 }
-BASS = "real_grit"   # the full pair's (Ryan, 4 November, of the real basses: "Fingers through an amp is a clear winner")
+BASS = "real_modern"   # the full pair's (Ryan, 4 November: "go with the fingers-into-a-modern-drive-prog bass you built")
+# The lead guitar's lines on the bass (Ryan, 4 November: "wherever there's a lead guitar, I want that
+# bass instead playing the high lines"): the same bass an octave under the guitar, the top of a
+# six-string bass (the lick runs to B5 at the guitar's octave, an octave past it), or at the guitar's
+# own octave, a piccolo bass's; each met halfway with the lead guitar's level (0.5 dB each way an
+# octave down, 0.1 at its octave).
+LEAD = "bass"
+LEAD_LEVEL = {"bass": 1.600, "piccolo": 1.297}
 
 # The guitar's strings (Ryan, 4 November, of the eleventh round's clean basses: "Are these bass
 # lines playing chords? Can I hear them as singles if so?"). The bass plays single notes; the guitar
@@ -637,13 +643,14 @@ ONE_LEVEL = 1.0   # pushed as hard, the one string meets the power chords on a p
 
 
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
-                d_bass=D_BASS, r_flat=R_FLAT, pluck_db=PLUCK_DB):
+                d_bass=D_BASS, r_flat=R_FLAT, pluck_db=PLUCK_DB, lead=LEAD):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
     voice (BASS_VOICES); `guitar` which of the guitar's parts go to one string and which go (GUITARS);
     `d_bass` the bass in D's hold or not; `r_flat` R at one level (R_FLAT); `pluck_db` the plucked
-    string's level, wherever it plays."""
+    string's level, wherever it plays; `lead` the lead guitar's lines on the guitar or on the bass
+    (LEAD_LEVEL's ways)."""
     up_octave, by = SPLITS[split]
     one, out = GUITARS[guitar]
 
@@ -652,6 +659,10 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         # the list, so every other voice keeps its seed.
         if part in out:
             return dict(v, pat={})
+        if part == "lead" and lead != "guitar":
+            b = BASS_VOICES[bass]
+            return dict(v, inst=b["inst"], params=dict(b["params"]), gain=v["gain"] * LEAD_LEVEL[lead],
+                        octave=v.get("octave", 0) - (1 if lead == "bass" else 0))
         return dict(v, inst="guitar_one", gain=v["gain"] * ONE_LEVEL) if part in one else v
     p = lambda *a, **k: P.part(call, *a, **k)   # noqa: E731
     riff = p("bass", "D", gain=0.34)
@@ -822,15 +833,13 @@ def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR):
 
 
 SETS = [
-    {"id": "bd", "half": "battle", "title": "The bass's drive, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The battle half from the top as the full pair has it, the bass on the fingers through an amp driven a step at a time, then into a modern prog bass's drive: the lows clean under every one, each met halfway between the driven bass's level on a phone and in headphones. Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("bd0", "A touch of grit", "Your pick, the full pair's: the amp just breaking up in the mids.", {"bass": "real_grit"}),
-              ("bd1", "A little more", "The same fingers and amp driven harder, a hint of the mids pushed.", {"bass": "real_dirt"}),
-              ("bd2", "Driven", "Driven hard with the mids pushed, as Hold The Line's real bass is.", {"bass": "real_driven"}),
-              ("bd3", "The fingers into a modern drive", "The same bass into a modern prog drive: the attack raised into it, the low mids scooped and the upper mids lifted after it, a brighter top, a little of the clean top for the clank.", {"bass": "real_modern"}),
-              ("bd4", "An active bass into it", "The Omnific's kind of bass in place of ours: an active bass played near the bridge on new strings, into the same drive.", {"bass": "real_omnific"})]},
+    {"id": "lb", "half": "battle", "title": "The high lines, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The battle half from the top as the full pair has it, on the fingers into the modern drive, the lead guitar's lines (C's long notes, R's answer and its lick) on that bass or on the guitar. Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("lb0", "The bass, an octave under the guitar", "The top of a six-string bass, over the walk (the full pair's).", {"lead": "bass"}),
+              ("lb1", "The bass at the guitar's octave", "As high as the guitar played them, a piccolo bass's register.", {"lead": "piccolo"}),
+              ("lb2", "The lead guitar", "As the fifteenth round had it.", {"lead": "guitar"})]},
 ]
-PAIR = {"id": "night_shift_r15", "title": "Night Shift, round fifteen"}
+PAIR = {"id": "night_shift_r16", "title": "Night Shift, round sixteen"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -890,7 +899,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night15.json")
+    path = os.path.join(P.OUT, "night16.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -902,7 +911,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night15_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night16_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))

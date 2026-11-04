@@ -124,7 +124,9 @@ thirteenth, the guitar out, a bass jam, with The Far Bank's map half's fifth, th
 intro alone, its fourteenth, the rhythm guitar back in the breakdown, D without the bass, R at
 one level, the plucked string down, on the synth bass, and real basses for both tracks
 (`real_bass.py`), then its fifteenth, on his pick of them, with its drive to try, and The Far
-Bank's map half's sixth, its cellos and contrabass on true bass instruments (4 November); it took main again as it landed that day (to `d28308e`: the elites
+Bank's map half's sixth, its cellos and contrabass on true bass instruments, then Night Shift's
+sixteenth, on the modern prog bass with the bass on the lead's lines, and the Omnific bass in Hold
+The Line (4 November); it took main again as it landed that day (to `d28308e`: the elites
 session, the randomness pass, the chassis runner rows and `claude/charming-rubin-h954bp`'s weapon
 fire, slumps and micro models).
 
@@ -864,7 +866,9 @@ The tasks are the to-do's; this is the index of what waits.
   four ways on his list (throughout, every voice that carries the bass on the real bass, "replacing
   the existing bass voices, but without any chords where they exist"; the fifths on a second bass or on one
   bass's two strings into one amp; the climax's fifth chug or one string of it on the fifths; the
-  intro's octave-down register throughout). Night Shift on its fifteenth (the map's intro without its front and its muted guitar out, his
+  intro's octave-down register throughout), then the Omnific bass on trial, an active bass into the
+  modern prog drive in every voice that carries the bass but K's crunch synth walk, "the signature
+  there" (as written, an octave down, a second bass on the fifths, two basses an octave apart). Night Shift on its sixteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms
   with the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two
@@ -874,10 +878,10 @@ The tasks are the to-do's; this is the index of what waits.
   flex the volume for voices in R, I'll pick out what needs to come up or down"), the rhythm guitar
   in the breakdown's ringing chords alone and the lead guitar's lines kept ("Yes, keep the lead
   guitar. Put the the rhythm guitar back in on B"), the plucked string 3 dB down wherever it plays
-  ("Plucked string -3Db is good"), the bass 3 dB down everywhere on the fingers through an amp
-  with a touch of grit, his pick of the real basses (`real_bass.py`: "Fingers through an amp is a
-  clear winner"), since the modelled basses read as guitars, its drive on trial a step at a time
-  and into a modern prog bass's grind after The Omnific ("Can we achieve the 'omnific' sound?"),
+  ("Plucked string -3Db is good"), the bass 3 dB down everywhere on the fingers into a modern prog
+  drive (`real_bass.py`: "go with the fingers-into-a-modern-drive-prog bass you built"), since the
+  modelled basses read as guitars, and the lead guitar's lines on that bass an octave under the
+  guitar on trial ("wherever there's a lead guitar, I want that bass instead playing the high lines"),
   the synth lines voiced for each turn's job, no drone, Hold The Line's drum
   energy); The Far Bank's map half on its sixth round, its flip retired (31 October:
   the bells calm in the groove and the lift alone, the strings section and the climax off the

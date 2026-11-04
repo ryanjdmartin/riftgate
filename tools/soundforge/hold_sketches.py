@@ -525,7 +525,12 @@ def battle_picks(k_voice=K_VOICE):
 # fifth above. The real bass is driven as a bassist drives an amp, its lows clean under a split and its
 # mids pushed, met halfway between the driven bass's level on a phone and in full; on the roots, the
 # lines a fifth above go and the guitar keeps its power chords.
-REAL_DRIVEN = {"pick": 1.295, "finger": 1.419}
+REAL_DRIVEN = {"pick": 1.295, "finger": 1.419, "omnific": 1.318}
+# Each voice's own bass and amp: the picked and the finger bass driven, and the Omnific kind, an
+# active bass near the bridge into the modern prog drive (Ryan, 4 November: "Put the omnific-style
+# active bass into Hold the Line"), met halfway with the driven bass as the others are (0.4 dB each way).
+PARAMS = {"pick": {"preset": "pick", "amp": "driven"}, "finger": {"preset": "finger", "amp": "driven"},
+          "omnific": {"preset": "active", "amp": "modern"}}
 
 
 def semis(c):
@@ -554,7 +559,9 @@ FIFTH_CHUG = 0.4 / 0.6   # the climax's fifth chug against its own root chug (S,
 # synth's (the lifts' riff, M, K's walk, V) and the sub's in F, each met halfway with the voice it
 # replaces between a phone and full (the crunch synth then 1.1 dB over on a phone and under in
 # full, the sub, all fundamental, 4.3).
-REPLACE = {"bass": 0.863, "sub_bass": 1.062}
+REPLACE = {"pick": {"bass": 0.863, "sub_bass": 1.062},
+           "omnific": {"bass": 0.788, "sub_bass": 0.942}}   # the Omnific's: the crunch synth 1.7 dB each way, the sub 4.9
+BOTH = 0.708   # two basses an octave apart, each 3 dB down so the pair holds one bass's level
 CHORD_LEVEL = 1.149      # one bass playing both strings came out 1.4 dB under the two basses it replaces on a phone and 1.0 in full: this meets them halfway
 
 
@@ -565,15 +572,17 @@ def section_chug(call, s):
     return max(gains) if gains else 0.6
 
 
-def real_bass_on(preset, roots=False, fifths=None, throughout=False, down=False):
+def real_bass_on(preset, roots=False, fifths=None, throughout=False, down=False, spare=(), both=False):
     """The battle's driven bass on the real bass, driven: on every part, or on the roots alone
     (`roots`), the lines a fifth above then out or moved (`fifths`): "chord", one bass playing
     each root and its fifth on two strings into one amp; "chug", the climax's fifth chug, a
     palm-muted power chord on each fifth an octave down, at the climax's balance against the
     section's own chug; "string", one guitar string on the fifth line where the bass played it.
     `throughout` replaces every other voice that carries the bass with the real bass on its own
-    line (REPLACE); `down` puts every bass part an octave down, in the intro's register (Ryan,
-    4 November, of the roots row's four ways)."""
+    line (REPLACE), but a voice heard only in `spare`'s sections; `down` puts every bass part an
+    octave down, in the intro's register (Ryan, 4 November, of the roots row's four ways); `both`
+    plays every bass part on two basses, one an octave down and one at the written root, each 3 dB
+    down (BOTH)."""
     def edit(call):
         bass = [v for v in call["voices"] if v["inst"] == "bass_real"]
         added, chords = [], []
@@ -590,16 +599,23 @@ def real_bass_on(preset, roots=False, fifths=None, throughout=False, down=False)
                 elif fifths == "string":
                     added.append({"inst": "guitar_one", "mode": "riff", "gain": section_chug(call, s) * FIFTH_CHUG,
                                   "octave": hi.get("octave", 0), "pat": {s: line}})
+        replaced = []
         if throughout:
             for v in call["voices"]:
-                if v["inst"] in REPLACE and any(any(c not in ".-" for c in pat) for pat in v["pat"].values()):
-                    v.update(inst="real_bass", params={"preset": preset, "amp": "driven"}, gain=v["gain"] * REPLACE[v["inst"]])
+                heard = {sec for sec, pat in v["pat"].items() if any(c not in ".-" for c in pat)}
+                if v["inst"] in REPLACE[preset] and heard and not heard <= set(spare):
+                    v.update(inst="real_bass", params=dict(PARAMS[preset]), gain=v["gain"] * REPLACE[preset][v["inst"]])
+                    replaced.append(v)
         call["voices"] += chords + added
         for v in bass + chords:
-            v.update(inst="real_bass", params={"preset": preset, "amp": "driven", "fifth": any(v is c for c in chords)},
+            v.update(inst="real_bass", params=dict(PARAMS[preset], fifth=any(v is c for c in chords)),
                      gain=v["gain"] * REAL_DRIVEN[preset] * (CHORD_LEVEL if any(v is c for c in chords) else 1.0))
+        for v in bass + chords + replaced:
             if down:
                 v["octave"] = -1
+            elif both:
+                call["voices"].append(dict(v, pat=dict(v["pat"]), octave=-1, gain=v["gain"] * BOTH))
+                v.update(octave=0, gain=v["gain"] * BOTH)
     return edit
 
 
@@ -633,6 +649,13 @@ SETS = [
         ("hv4", "The climax's guitar on the fifths", "The fifths taken over by the guitar that plays them at the climax: a palm-muted power chord on each, an octave down, at the climax's balance against the section's own chug.", battle_with(battle_picks(), real_bass_on("pick", fifths="chug"))),
         ("hv5", "One guitar string on the fifths", "The fifth line alone on one string of that guitar, where the second bass played it.", battle_with(battle_picks(), real_bass_on("pick", fifths="string"))),
         ("hv6", "On the roots an octave down", "Every bass part in the intro's low register throughout, at the chug's root.", battle_with(battle_picks(), real_bass_on("pick", roots=True, down=True))),
+    ]},
+    {"id": "ho", "half": "battle", "title": "The Omnific bass, through the whole battle half", "form": FORM_K,
+     "note": "The settled battle half from the top, every voice that carries the bass on an active bass played near the bridge into a modern prog drive, the soft sub and the crunch synth with it, but K's crunch synth walk, its signature (Ryan, 4 November). Each meets the voice it replaces halfway between a phone and headphones. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("ho0", "On the roots, as written", "Single notes on the roots at their written octaves.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("K",)))),
+        ("ho1", "On the roots, the low octave", "The same an octave down throughout, the intro's register.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("K",), down=True))),
+        ("ho2", "A second bass on the fifths", "The roots, and a second bass on the fifths where the guitar plays power chords, each through its own amp.", battle_with(battle_picks(), real_bass_on("omnific", throughout=True, spare=("K",)))),
+        ("ho3", "Two basses, the low octave and the root", "Every root on two basses an octave apart, each 3 dB down so the pair holds one bass's level.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("K",), both=True))),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r13", "title": "Hold The Line, round thirteen",
