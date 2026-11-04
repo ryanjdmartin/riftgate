@@ -25,14 +25,12 @@ are in `README.md`.
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last
   check, 30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`,
   Session handoff); date this line again after each.
-- Tests: 924 tests, 255030 checks, green (4 November, on main's head as `claude/elites-session`
+- Tests: 928 tests, 254,843 checks, green (4 November, on main's head as `claude/elites-session`
   landed: the elites session's twenty-one kits, the Nob's rage, the wanderers' random draw, the
   Mantis Ant, the Marsh Serpent and the Emperor Scorpion, the golden rage and the crush, the
-  Astromancer and its orbs, over main's 917 and 254,298 of the same day, `claude/chassis-runner-rows`
-  merged into main as it landed: the Cassowary's cycle bot, the salvo's reserve and a Rapid
-  entry's action again, each with its tests; 911 and 254,286 on main before it, 3 November,
-  after `ccr-7effd31a-u5z4gw`'s pairs landed, which changed no file the suite reads), about four
-  minutes
+  Astromancer and its orbs, over main's 921 and 254,079 of the same day, `ccr-c04908be-3r43xf`'s
+  randomness pass over the chassis runner rows' 917 and 254,298 (911 and 254,286 on 3 November
+  after the pairs), on Godot 4.8-beta2), about four minutes
   in a cloud session, twenty on a slow one. A cloud session gets Godot 4.8-beta2's Linux build and
   the project's first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`, 27 October; the
@@ -49,16 +47,32 @@ are in `README.md`.
 ## Branches
 
 `claude/elites-session` (3 and 4 November) carried the elites session from main's `e75be15` on
-Ryan's marks of the 3rd and his calls and reads of the 4th (How things stand, first bullet; the
-bible's register row and tiers row): the demotions, the Fiend of Fire, twenty-one elite kits with
+Ryan's marks of the 3rd and his calls and reads of the 4th (How things stand; the bible's
+register row and tiers row): the demotions, the Fiend of Fire, twenty-one elite kits with
 six wanderers, the Nob's rage, the golden rage and the crush, the Mantis Ant, the Marsh Serpent
 and the Emperor Scorpion, the Astromancer, the wanderers' random draw, the placeholders' art, the
 hangar's foe sprites and filters, the runner's elite cells with their first read and the what-if
-at 40 HP, the records, the pages republished. It took main as it landed (to `9a529ca`: the Honey
-Badger's hopper, the five Wainwright & Sutler models, the pairs, the weapon-fire package, and
-`claude/chassis-runner-rows`'s cycle bot, Rapid fix and runner rows), and main took it as a
+at 40 HP, the records, the pages republished. It took main as it landed (to `6c97852`: the Honey
+Badger's hopper, the five Wainwright & Sutler models, the pairs, the weapon-fire package,
+`claude/chassis-runner-rows`'s cycle bot, Rapid fix and runner rows, and `ccr-c04908be-3r43xf`'s
+randomness pass, under which the Nob's rage and the golden rage are buffs a Purge N lowers), and
+main took it as a
 fast-forward on 4 November on his word ("If there's nothing else open, clean up and merge into
 main"); its bible is v0.445, the live page's (the Pages paragraph).
+
+`ccr-c04908be-3r43xf` (2 to 4 November) carried the randomness pass on Ryan's calls in chat (the
+review's fixes of the 2nd; rolled damage gone, the injury on the entry showing and the withdrawal's
+screen code deleted; Overcharged and Kindled named Empowered; Numbed on his clock, Purge N on both
+sides and the Ward; Charged and Supercooled with Chain the arcs alone; Sweep, a reach by the day's
+end; UNDO to the last roll with its HUD; every rider after the hits as one path and on the foe a
+strike fells, death the last check in a spend and in the prediction; the stun resist by kind; the
+open items logged), from main's `3929042`; it took main as it landed (the Badger's rework, the
+bosses' slate, the elites, the pairs and the motion, to `d03ebed`, 4 November: the old Numbed's
+helper and the views' range check cut, a boss unit's commander resisting as a boss, the Badger's
+purge test turned to Purge N and its range assert to one number; then the chassis runner rows, to
+`9a529ca`, the same evening: the bot's Sweep share beside its salvo reserve), and main took it as a
+fast-forward on 4 November on his word ("clean up and merge into main"); its bible is v0.445 (the
+Pages paragraph).
 
 `claude/chassis-runner-rows` (3 and 4 November) carried the chassis to-dos on Ryan's word
 ("spawn a new session to continue the chassis to-dos"), from main's `62ef7ee`: the Cassowary's
@@ -241,7 +255,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   Ravener (Deviljho) and the Shambler beside Gilgamesh (Enkidu at tier three), drawn at random
   among those not yet sent on the Fracture's roll. Engine: Enraged, the Nob's rage (a stack on
   every shield, vent or equipment spend, a point of attack each for the fight; fed before the
-  entry acts so a Purge resets it; the chip, the bot's cost, the save) and the opener (`opens`).
+  entry acts so a Purge lowers it by its number; the chip, the bot's cost, the save) and the opener (`opens`).
   Every elite drawn as a rough placeholder; the Matador stays a boss on Claude's call. Open for
   Ryan: the Meadow's and the Waste's third boss, the Fell Rider's mount, the rage's shape, the
   Monster Hunter nods, the names (the to-do).
@@ -274,6 +288,50 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   four, still a free win), so the lever on the table is the massive band in both numbers, an
   escort each, or the curveball on the map. Open for Ryan: the elites' numbers, the Dullahan as
   the superboss, the Scorpion's name (the to-do, section 12).
+- The randomness pass, under way (2 and 3 November; Ryan's calls in chat, the bible's section 2
+  randomness row and section 5's weapons row): rolled damage is gone, every weapon one number (each
+  range landed at its mean, the halves rounded up on his word of the 3rd, to be read again at 200 seeds; the Muzzle Velocity
+  Booster and the Tactical Databank planned until they have rules; a blow's sound by its tags, since
+  rolled-or-flat was its label); an injury breaks the entry the die shows, so what faces the enemy
+  is the player's choice and the threshold can come down once played; the withdrawal's screen code
+  deleted (a defunct passive); the round preview exact on all three. Built 3 November: Numbed on Ryan's
+  clock (the stacks are the rounds until one stun lands; a stun on a Numbed foe strips a stack and
+  lands nothing; a stunned foe recovers with its stun resist, content's `resist`, by its kind when
+  content says none: 1, a massive foe 2, an elite or a boss 3 (Ryan's defaults of 3 November), after
+  the round's decay; Numbed a buff a Purge lowers), Purge N on both sides
+  (N stacks off every buff, the Null Field Emitter at Purge 2, the bot pricing each at the stacks it
+  reaches), a Ward turning a stun and a Purge and standing on either side; the preview exact on a
+  stun. Built the same day: Charged and
+  Supercooled, the primers (a stack a weapon fired, the Shock or the Cryo 1 on the foe the first
+  strike was aimed at after the blows; no piece grants them yet), with Chain the arcs alone, its
+  random charge retired. Sweep built the same day and made a reach, the third targeting mode, on
+  his word of the 3rd ("You pick a rank and that's the rank it hits"): the entry is dropped on any
+  foe and its strikes walk that foe's rank from its first filled slot, left to right, one a slot,
+  wrapping, empties skipped; the Flechette Pod and the Musk Ox's salvo carry it; the spray and the
+  random targets gone; the die shows the reach's own mark (`sweep`, `debuff_sweep`).
+  UNDO built the same day, the pass's last piece (the fight keeps a snapshot before each spend and reroll of
+  the player's turn, the save's own dictionaries written back in place; a draw is the floor: the
+  round's roll, a reroll, Rapid's reroll, a roll again, the Scorpion's blast; a stepping die's step
+  is taken back; the button at the reroll row's right end, its badge the spends it reaches, a bar in
+  the trail at every roll). Riders land after the hits since the 3rd (Ryan: "a multi-hit weapon
+  with Shock would apply it after both hits ... Cryo should work the same way, resulting in 2
+  applications"; the bible's row beside the blow's order): every rider gathers on its strike's foe
+  and lands once the strikes are done, one path ("It should be standard, not branching code"), on
+  the foe its strike killed too, and death is the last thing checked in a spend and in the
+  prediction since his word of the 3rd (the bible's death-last row: every effect of a spend lands
+  on the fallen, a Shock, an Expose and a Lure's turn included, and the dead are cleared after the
+  spend), so the preview shows every chip beside the skull and no trigger goes unfired; the
+  enemy's turn stays sequenced as it happens on his correction of the 4th (a foe its tick kills
+  never strikes, its intent still shown; whether ticks come before or after a foe's action is
+  section 12's question); a spend never
+  cashes or feeds on what it lays (Flak's self-feed on a later strike went with it: "5,5,5 makes
+  way more sense to me"); Charged and Supercooled ride the weapon fired as its keywords, Shock and
+  Cryo one more a strike, shown on the die. A sweep dragged over a foe lights and brackets that
+  foe's rank whole, and a rank emptied loses the strikes left on his word. Overcharged and Kindled are
+  Empowered on both sides since 3 November, the ids kept. What is left of the pass is Ryan's: the
+  Scorpion's rework (tabled; its blast is the one draw besides the die), rules for the two planned
+  modules and the Emitter's Purge 2 (the to-do), then the 200-seed reread of the flattened numbers
+  on the desk machine, with the injury threshold's what-if (the to-do's engine line).
 - The chassis' runner rows (3 November, the to-do's engine lines; `docs/measurements.md`, two
   entries). The Cassowary's bot plans its cycle (`Policy.cycle_plan`: the steps a round's rerolls
   take weighed with the chamber the dial then opens the next round on, a spin at the die's spun
@@ -370,7 +428,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   while its shield stands; its lock's Regenerating regains 2 shield a round for three rounds, a
   grant of its own each time. The Giant Petrel banks up to three unspent rerolls while it fights;
   its Immelmann Booster rallies itself or, for three rerolls, gives a spent ally its die again and
-  its action; its Spindrift Salvo's kill brings two; its Reheat Uplink overcharges an ally and rolls
+  its action; its Spindrift Salvo's kill brings two; its Reheat Uplink empowers an ally and rolls
   its die. The die shows the burn behind the shield's mark ("-2") and, over a foe, the blow joined
   to its zap ("3+2"); the hold says what it burns. The bot reads the burn as shield lost, the zap
   as damage and the regen as hull kept, and weighs looks against actions, a reroll a spend pays or
@@ -857,12 +915,19 @@ and the streets) main's.
    the cooling's cut, and cooling 0 bites modestly on a cold die. The overheat's price read as
    what-ifs the same day (a harsher burn, burnout, self-Corrupted: Ryan's calls in the brief):
    each makes the bot ride the maximum and hold, caution never pays, so the form is his call by
-   feel. The shield persona built (`--shield-ahead`) and the support ladders read on the Puffin
-   bench: flat by tier, no shield, vent or buff beating the gun it replaces in fights Kestrel's row
-   wins in three rounds. Next: the equipment ramp on harder fights with tier-matched kits and the
-   planner, and the shields' and vents' numbers by tier as a fills proposal; the ladders per tier on the fresh start's formations once
-   the ladder lands; the synergy holes as pieces proposed in chat (the to-do's design-sessions
-   line); the catalogue's tag pairs. The synergy map is `docs/synergy_map.md`, generated.
+   feel. The shield persona built (`--shield-ahead`; since 2 November it reads next round's
+   blow as each foe's roll by weight, not this round's pick) and the support ladders read on the
+   Puffin bench: flat by tier, no shield, vent or buff beating the gun it replaces in fights
+   Kestrel's row wins in three rounds, a bench the fresh start has since replaced (the four
+   formations are the compositions', the big bench the slate's eleven bosses; the four entries
+   name the heads they ran on). The pricing driver read the factions' retired `spawn` lists
+   until 2 November, listing no formation on main since the fresh start; it reads the
+   compositions as the runner does now. Next: the equipment ramp on the fresh start's tier-two
+   and tier-three formations once Ryan's land, with tier-matched kits and the planner beside the
+   greedy, and the shields' and vents' numbers by tier as a fills proposal; the ladders per tier
+   on those formations once the ladder lands; the synergy holes as pieces proposed in chat (the
+   to-do's design-sessions line); the catalogue's tag pairs. The synergy map is
+   `docs/synergy_map.md`, generated.
 3. **The foes' fresh start and the pacing session: Ryan's marks and the reads.** Built 30
    October (the How things stand bullet). What waits on him: section 12's fresh start item (the
    five kits' names and numbers, the Peak's elite and a Waste hunter, the compositions'
@@ -894,35 +959,41 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.445, another
-  session's publish of 4 November (13:23 UTC, onto this branch's v0.444 at 457): rolled damage
-  gone, a weapon one number; Sweep the third reach; the primers Charged and Supercooled;
-  Overcharged renamed Empowered; a spend's riders after its strikes; death the last thing
-  checked and the enemy's turn sequenced as it happens; UNDO back to the last roll; Purge N;
-  Numbed as the stun resist; and the rows, tables and section 12 lists those moved. Taken whole
-  into this file as main took the branch, since it carries this branch's v0.444 entire (the
-  Astromancer, a sixth wanderer, in the tiers row, the domain table and the Built list; the
-  balance row's elite cells; the elites' first read and the what-if at 40 HP in section 12's
-  item; published at 456 and 457 that evening onto the live 455, another session's v0.442, over
-  v0.441 at 454 and v0.440 at 453 of the 4th and v0.434 at 447 of the 3rd, each merged onto the
-  live), so the landing published nothing. Main's own v0.438 (451, from `claude/chassis-runner-rows`)
-  is inside it, every publish since merged onto the live. So this file carries rows ahead of
-  main's code: that session's of the 4th, above, and `claude/charming-rubin-h954bp`'s since it
-  landed (a blow on a machine moving it, whether a shot crosses the field, a booster's plume or
-  halo by maker, the weapon that fired kicking at its model's business end and its micro models
-  of the 4th, the motion notes of the 3rd); its tables are that session's run on its content,
-  so a rerun here reverts them. The version numbers on the publishing branch's file and the
-  live agree after every publish. Before republishing, read the live page; if another session
-  moved it, publish a three-way merge onto it (`git merge-file` with the last-published file as
-  the base, the wrapper's first line and its trailing `</body></html>` stripped from the saved
-  live source); a page that size counts as read only once every line of its saved copy is
-  read, so a subagent can read it and publish the merge. With main merged in, the tables
-  script's run is checked against the file's tables before it is kept: a row it reverts
-  belongs to a branch not yet landed.
+  `docs/design-bible.html` after every change. This file and the live page are v0.445 (the
+  page's version 458, published 4 November from `ccr-c04908be-3r43xf` as main took it: the
+  randomness pass's rows, UNDO as a way of scumming information, every rider after the hits and
+  on the foe its strike felled, death the last check of a spend and of the prediction, Sweep a
+  reach, the primers riding the weapon fired, the stun resist by kind, the weapons row's rounding
+  and section 12's question on a foe's ticks; three-way merged row by row onto the live v0.444,
+  which other sessions had moved from main's v0.437 at 450 through the day
+  (`claude/chassis-runner-rows`'s v0.438 at 451, the Cassowary's cycle bot and the Whip
+  Scorpion's, the Swallowtail's and the Musk Ox's reads, then the rows of 4 November: the elites'
+  register and their first read, the Monster Hunter and Golden Sun foes, the micro models, the
+  elites' cells in the runner)). Main's file is that publish, so the live page carries nothing ahead of main's code until the
+  next branch publishes; `claude/elites-session` landed under it the same day and published
+  nothing, its rows (the Astromancer, the elites' cells, their first read and the what-if at 40
+  HP) inside it since 456 and 457. The live page may carry rows ahead of main's code while
+  their branches have not landed. The
+  version numbers on the publishing branch's file and the live agree after every publish. Before
+  republishing, read the live page; if another session moved it, publish a three-way merge onto
+  it, row by row rather than line by line (a `<div class="row">` keyed by its lead, each side's
+  rows kept, a row both sides changed merged word by word with `git merge-file`; a line-based
+  merge of the whole file conflicts on every neighbouring row: `tools/pages/bible_merge.py`, the
+  README's command), with the last-published file as the base and the wrapper's first line and
+  its trailing `</body></html>` stripped from the saved live source; a page that size counts as
+  read only once every line of its saved copy is read, so a subagent can read it and publish the
+  merge. With main merged in, the tables script's run is checked against the file's tables before
+  it is kept: a row it reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each checked identical to the last publish's
-  before it is replaced and `edits` read first. At the page's version 202 (4 November, from
+  before it is replaced and `edits` read first. At the page's version 203 (4 November, from
+  `claude/elites-session` as main took it: `content/chassis.json`, `content/components.json`,
+  `content/modules.json`, `content/vocabulary.json` and `content/foes.json` as the merged main
+  has them, the randomness pass's numbers and names (rolled damage gone, Empowered, the primers,
+  Sweep, Purge N) with this branch's elites, each live copy read back and checked identical to
+  the last publish's first (the vocabulary and the foes this branch's of 202, the rest main's
+  of 195); the page unchanged, `edits` empty), over 202 (4 November, from
   `claude/elites-session`, that evening: the Astromancer's and its four orbs' placeholder sprites
   under `hangar/foes/`, `content/foes.json` and `content/factions.json` with them, `hangar/foes.json`
   counting them; as main took the branch, every content file on the page and `hangar/pins.json`

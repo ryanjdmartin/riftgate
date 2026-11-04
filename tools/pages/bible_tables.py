@@ -52,7 +52,7 @@ ENGINE_ALIASES = {"burning_mech": "burning"}   # the same word on the other body
 # Printed rules, read off a component's face.
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
-           ("kill_overcharge", "Overcharged a kill", lambda f: int(f.get("devours", 0) or 0) > 0),
+           ("kill_overcharge", "Empowered a kill", lambda f: int(f.get("devours", 0) or 0) > 0),   # Overcharged is Empowered since 3 November
            ("power_per_missing", "Grows with missing HP", lambda f: int(f.get("power_per_missing", 0)) > 0),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),
            ("consumes", "Consumes", lambda f: bool(f.get("consumes"))),
@@ -63,7 +63,6 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("reset", "Reset", lambda f: bool(f.get("resets_on_kill"))),
            ("pull", "Pull", lambda f: bool(f.get("pulls_mines"))),
            ("drone", "Drone", lambda f: bool(f.get("drones"))),
-           ("spray", "Spray", lambda f: bool(f.get("spray"))),
            # The Petrels' locked pieces (built 30 October).
            ("regenerates", "Regenerates", lambda f: bool(f.get("regenerates"))),
            ("ally_action", "An ally's action", lambda f: bool(f.get("ally_action"))),

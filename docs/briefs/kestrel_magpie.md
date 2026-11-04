@@ -8,7 +8,7 @@ Ryan's.
 Kestrel. **Tier**: open (Kestrel's counts: 3-5-2 puts it at two, 4-4-2 at one). **Read first**:
 `docs/briefs/README.md` (the taste lines, the action-economy section); `kestrel_line.md` (the
 line, the overlap map, the last two slots); the bible's Kestrel row, the action-economy row and
-the Overcharged row; `docs/rules.md` on foes' moves and blows.
+the Empowered row; `docs/rules.md` on foes' moves and blows.
 
 ## What Ryan said
 
@@ -20,7 +20,7 @@ the Overcharged row; `docs/rules.md` on foes' moves and blows.
 ## What frames it
 
 - Kestrel's supports already: the Puffin (shields grown by an ally's heat), the Giant Petrel
-  (tempo: rerolls, an ally's action, Overcharged), the Storm Petrel (the lure, its own regen)
+  (tempo: rerolls, an ally's action, Empowered), the Storm Petrel (the lure, its own regen)
   and the Needletail (a free setup a round, Exposed). A third parts from all four by its shape
   (the overlap map's rule).
 - A support engine: support that runs every round off something the fight produces, not a
@@ -36,28 +36,28 @@ the Overcharged row; `docs/rules.md` on foes' moves and blows.
 - The lock (a working name, the Pickpocket): a debuff, Indirect, heat 5: the foe's blows this
   round deal 5 less, and the Magpie pockets the 5 as loot, banked up to a cap (10, say).
 - The passive (a working name, the Hoard): a buff or a shield it spends on an ally also hands
-  that ally its loot, a point of Overcharged for each point stolen, so damage taken from them
+  that ally its loot, a point of Empowered for each point stolen, so damage taken from them
   becomes damage given to us.
 - It reads the foes' telegraphed blows (their numbers), produces a weaker foe blow now and a
   bigger ally blow later, and pays two spends for one effect, the loot idle until delivered.
   The decisions: rob the biggest blow, or the one aimed at the soft machine; give to the hitter
-  about to fire, the Skua (Overcharged counts on each strike) or whoever carries the Cyclic
+  about to fire, the Skua (Empowered counts on each strike) or whoever carries the Cyclic
   Cannon.
 - With basics alone it works (the lock robs, a self-or-ally basic shield delivers), and every
   maker's shield and buff becomes a delivery: fed by other makers' pieces, two routes in and
   two payoffs.
 - Holes:
-  1. Overcharged is the Coil's and the Reheat Uplink's too, so Kestrel would carry three of its
+  1. Empowered is the Coil's and the Reheat Uplink's too, so Kestrel would carry three of its
      sources. The lever: the loot as team rerolls (Kestrel's lean), though rerolls bought by
      theft feed the Immelmann Booster's price.
   2. A foe whose move deals nothing (a cure, a brace, a rally) has nothing to steal, unless the
      theft takes the special's payload in kind (a cure as shield, a brace as Armoured, a rally
-     as Overcharged): richer, and more to learn.
+     as Empowered): richer, and more to learn.
   3. Misharu's Penance (planned) halves a foe's blows; a flat theft is a second weaken, parted
      by the hoard.
   4. A blow at every machine loses 5 on each machine it reaches; the theft's worth there is
      the lever to read.
-  5. A weaken on a foe is new engine work (Kindled's hook with a negative number).
+  5. A weaken on a foe is new engine work (Empowered's hook with a negative number).
 
 **B. The mimic (intelligence): it does again what the team just did.**
 

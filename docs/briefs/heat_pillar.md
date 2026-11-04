@@ -177,6 +177,20 @@ for less hull. So the form is a question of feel and readability, his play, more
 balance; none makes the warm classes bite on a cold die, which stays the maxima's and the
 cooling's.
 
+What that read is and is not (2 November): the bot prices whichever form it is given, so "every
+form deters alike" is a tempo read, what the price does to a bot's play, and "burnout adds
+nothing over two a point" says the bot never crosses its own threshold, which a player who does
+not forecast will. The forecast and the warning chips carry the form's weight for the player;
+the read cannot. The pricing row's heat table (heat 6 a point, heat 8 two) is a one-for-one
+table: at two a point heat 8 reads 1.9, so a harsher form that lands sends the fills priced on
+it (the Railgun at 8 first) back to the ladder. Two edges of the what-ifs' engine, for the rule
+if a form lands: only a spend accuses an entry, so a status's heat (Burning, Scorched, the seal,
+Siphoning) taking the gauge over marks nothing, and a gun run to the maximum exactly with a tick
+over it goes unpunished where the same gun a point hotter does not; and the accused entry is
+cleared when a vent brings the gauge back under (built 2 November), so a status's overheat after
+it marks nothing either. The bot's price for a burnout is the die's share of a death, a
+placeholder under a hot gun that is usually the best entry.
+
 ## The questions for Ryan
 
 1. Is passive cooling cut by default, and which chassis keep theirs?
@@ -185,7 +199,9 @@ cooling's.
 3. Do the warm classes (1, 2, 4) need to bite on a cold die at all, or is the bite the hot
    kits' and the long fights' alone?
 4. Which vent payoffs, by maker, and how many plain vents stay in the pool?
-5. The overheat's cost: the excess one for one as today, or more?
+5. The overheat's form, by feel (the read of 30 October above): the excess one for one as
+   today, two or three a point, burnout at the injury threshold, or self-Corrupted; whichever
+   lands brings Jenny's lines, the warning chips and the status-heat rule with it.
 6. Heat between fights: now, or after the skirmish's bite is right?
 
 ## The reads to run (each a what-if, content untouched)

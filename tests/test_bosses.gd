@@ -186,8 +186,7 @@ func test_a_steal_takes_the_showing_entry_and_the_borrowed_swing_lands_its_numbe
 	assert_eq(sk.mechs[0].face().describe(), "30", "the entry is back the turn after")
 
 
-func test_a_rolled_weapon_swings_at_its_middle_and_anything_else_is_a_fake() -> void:
-	assert_eq(Skirmish.stolen_number(Face.attack(2, L, [], 0, 6)), 4, "a rolled two to six swings for four")
+func test_a_stolen_weapon_swings_at_its_number_and_anything_else_is_a_fake() -> void:
 	assert_eq(Skirmish.stolen_number(Face.attack(5, L)), 5, "a flat five for five")
 	assert_eq(Skirmish.stolen_number(Face.shield(8)), 1, "a shield is a fake, for one")
 	assert_eq(Skirmish.stolen_number(Face.vent(6)), 1, "a vent too")
@@ -632,7 +631,10 @@ func test_a_move_marked_once_is_used_once_a_fight() -> void:
 	assert_false(ids.has("undying"), "and never again this fight")
 
 
-func test_a_boss_takes_three_numbed_whatever_its_size() -> void:
+## The stun resist by kind (Ryan, 3 November: "1 small, 2 massive, 3 for elites and bosses"): a
+## boss of any size and whoever commands a boss unit (a final's hero, the finale's line) recover
+## with three, a massive foe with two, the rest with one; content's `resist` overrides.
+func test_a_boss_recovers_with_three_numbed_whatever_its_size() -> void:
 	var boss := Foe.make("boss", 50, 5)
 	boss.boss = true
 	var hero := Foe.make("hero", 20, 8)
@@ -640,10 +642,10 @@ func test_a_boss_takes_three_numbed_whatever_its_size() -> void:
 	var big := Foe.make("big", 30, 7)
 	big.size = 2
 	var grunt := Foe.make("grunt", 5, 2)
-	assert_eq(Skirmish.numbed_per_suppress(boss), 3, "a human-sized boss takes three")
-	assert_eq(Skirmish.numbed_per_suppress(hero), 3, "so does a final's hero, the boss of its battle")
-	assert_eq(Skirmish.numbed_per_suppress(big), 3, "a massive foe keeps its three")
-	assert_eq(Skirmish.numbed_per_suppress(grunt), 2, "the rest take two")
+	assert_eq(boss.stun_resist(), 3, "a human-sized boss recovers with three")
+	assert_eq(hero.stun_resist(), 3, "so does a final's hero, the boss of its battle")
+	assert_eq(big.stun_resist(), 2, "a massive foe with two")
+	assert_eq(grunt.stun_resist(), 1, "the rest with one")
 
 
 func test_a_save_keeps_a_grudge_a_move_used_once_and_the_teams_kills() -> void:
@@ -922,7 +924,7 @@ func test_an_opener_is_the_foes_first_move_of_the_fight() -> void:
 ## The rage (3 November): every shield, vent or equipment entry the team spends stacks Enraged
 ## on a foe that has bellowed, a point of attack a stack for the rest of the fight; a weapon
 ## feeds nothing; the player's Purge clears the stacks and the rage goes on.
-func test_a_rage_grows_with_the_teams_safe_spends_and_a_purge_clears_it() -> void:
+func test_a_rage_grows_with_the_teams_safe_spends_and_a_purge_lowers_it() -> void:
 	var sk := Skirmish.new(1, 3)
 	var d := Die.of([Face.shield(10), Face.attack(5, I), Face.vent(4)])
 	sk.add_mech(_mech("A", d, 0, 500))
@@ -950,8 +952,11 @@ func test_a_rage_grows_with_the_teams_safe_spends_and_a_purge_clears_it() -> voi
 	assert_true(sk.assign(0), "a vent spent")
 	assert_eq(Effects.stacks_of(nob, "enraged"), 2, "feeds it again")
 	assert_eq(nob.damage_of(nob.actions[0]), 8, "two points now")
-	var gone := Effects.purge_foe(nob)
-	assert_true(gone.has(Effects.STATUS["enraged"]["name"]), "a Purge clears the stacks")
+	var lowered := Effects.purge_foe(nob)
+	assert_true(lowered.has(Effects.STATUS["enraged"]["name"] + " 1"), "a Purge 1 lowers the stacks by one (Purge N, 2 November)")
+	assert_eq(nob.damage_of(nob.actions[0]), 7, "a point harder still")
+	var gone := Effects.purge_foe(nob, 2)
+	assert_true(gone.has(Effects.STATUS["enraged"]["name"] + " gone"), "a Purge 2 takes what is left")
 	assert_eq(nob.damage_of(nob.actions[0]), 6, "back to its own number")
 	assert_eq(nob.rage, 1, "and the rage goes on")
 	sk.end_round()
@@ -1046,7 +1051,7 @@ func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() ->
 	var cp: Foe = copy.field_foes()[0]
 	assert_eq(cp.golden_mark, 24, "a save keeps the mark")
 	assert_true(Effects.has(cp, "golden"), "and the gold")
-	assert_true(Effects.purge_foe(cp).has(Effects.STATUS["golden"]["name"]), "a Purge strips the gold")
+	assert_true(Effects.purge_foe(cp).has(Effects.STATUS["golden"]["name"] + " gone"), "a Purge strips the gold, one stack")
 	assert_true(sk.assign(0, ape), "A strikes for 6, 5 through the plate")
 	assert_eq(ape.hp, 19, "a point of plate off the six")
 	assert_true(Effects.has(ape, "golden"), "short of a quarter, it holds")

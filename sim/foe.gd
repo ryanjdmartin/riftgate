@@ -14,7 +14,7 @@ extends RefCounted
 ## A move may carry a `when`, the condition that lets the foe pick it this round, and a
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
-## Damage is base attack, plus its Kindled and its swarm, times the action's factor (damage_of);
+## Damage is base attack, plus its Empowered and its swarm, times the action's factor (damage_of);
 ## strikes are separate blows; keywords are tags on the blow (breach: ignores the shield and the
 ## armour, the whole blow to hull).
 
@@ -29,6 +29,8 @@ var aim: String = AIM_ANYTHING   # the sense its target pick follows (content; a
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
+var elite: bool = false          # leads an elite composition (content `elite`): a mini-boss, resisting a stun as one
+var resist: int = -1             # its stun resist (Ryan, 2 November): the Numbed it recovers from a stun with; content's, or by its size (stun_resist)
 var actions: Array = []          # implemented attack actions; at least the basic one
 
 # Live state.
@@ -37,6 +39,7 @@ var column: int = -1
 var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
+var recovering: bool = false     # lost its action to a stun this turn: its stun resist lands as Numbed at the round's end
 var die = null                   # foes have no die; the pipeline asks, so the field exists
 var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would get back up does not (Execute retired 10 October)
 var last_special: String = ""    # the special it announced last round, so none fires twice running
@@ -93,10 +96,17 @@ func is_suppressed() -> bool:
 	return Effects.tick_preview(self)["skip"]
 
 
-## The chance a suppress fails against this foe right now: its Numbed, and nothing else (no foe
-## resists by nature since 10 October, Ryan: the chip shows who resists, how much and how long).
-func resist_total() -> int:
-	return clampi(int(Effects.tick_preview(self)["resist"]), 0, 100)
+## Its stun resist (Ryan, 2 November): the stacks of Numbed it gains as it recovers from a stun,
+## each a round until one stun lands again; content's `resist`, else by its size.
+const RESIST_DEFAULT := 1   # the stun resist by kind (Ryan, 3 November: "1 small, 2 massive, 3 for elites and bosses")
+const RESIST_MASSIVE := 2
+const RESIST_BOSS := 3      # an elite's, a hero's, a boss's and a commander's (a final's hero, the finale's line)
+func stun_resist() -> int:
+	if resist >= 0:
+		return resist
+	if boss or hero or elite or commands:
+		return RESIST_BOSS
+	return RESIST_MASSIVE if is_massive() else RESIST_DEFAULT
 
 
 static func make(name: String, hp_value: int, attack_value: int, back: bool = false) -> Foe:
@@ -181,7 +191,7 @@ static func whens_of(a: Dictionary) -> Array:
 	return Array(w) if w is Array else []
 
 
-## What one blow of an action does: base attack, plus what its statuses add (a rally's Kindled),
+## What one blow of an action does: base attack, plus what its statuses add (a rally's Empowered),
 ## `extra` (the rallies the skirmish sees on their way to it, Skirmish.foe_blow), its swarm and
 ## its grudge (`per_kill`, a point a foe the team has killed this fight: the Pilgrim's Karma, 30
 ## October), times its factor, rounded to the nearest whole number: the adds, then the multiplies, one

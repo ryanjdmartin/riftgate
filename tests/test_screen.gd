@@ -309,7 +309,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_eq(int(gauges["Shield"]["parts"][1]["trend"]), 0, "one nothing moved: plain")
 	assert_true(s._details_entry.text().contains("Armour %d · Cooling %d" % [m.armour, m.cooling]), "its armour and cooling as stats, nothing moved: %s" % s._details_entry.text())
 	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
-	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Overcharged")), "every chip listed with what it does: %s" % str(chips))
+	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Empowered")), "every chip listed with what it does: %s" % str(chips))
 	# A foe: its HP, its attack a rally raised (the foe's gain: up and green), its intent.
 	Effects.grant_for_rounds(foe, Effects.kindled(2), "test", sk.round + 1)
 	s._refresh()
@@ -343,11 +343,10 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	var s := _screen()
 	var db := ContentDB.load_default()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
-	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3, 5)
+	var gun := Face.attack(3, Face.Reach.SWEEP, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3)
 	gun.burn = 2
 	gun.cleave = 2
 	gun.strikes = 2
-	gun.spray = true
 	gun.component = str(db.components.keys()[0])
 	gun.tags.append_array(["beam", "flame"])
 	ms.die = Die.single(gun)
@@ -365,14 +364,14 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d–%d ×2" % [n[0], n[1]], "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Burn 2 on hit", "Sprays the rest in reach", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: A rank, Sweep", "Spread 2", "Apply Burn 2 on hit", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
 	assert_eq(int(attack[2]["trend"]), 0, "its strikes its own: plain")
 	assert_eq(int(lines[2]["parts"][1]["trend"]), 0, "the heat its own: plain")
 	assert_eq(EntryReadout.trend_ink(attack[1]), Palette.GAIN, "a gain in the gain's green")
-	assert_true(s._details_entry.text().contains("%d–%d▲ ×2" % [n[0], n[1]]), "the arrow on the number that moved and no other: %s" % s._details_entry.text())
+	assert_true(s._details_entry.text().contains("%d▲ ×2" % n), "the arrow on the number that moved and no other: %s" % s._details_entry.text())
 	assert_true(s._details_entry.custom_minimum_size.y > 100.0, "sized to its lines: %s" % str(s._details_entry.custom_minimum_size))
 	assert_true(s._details.size.y >= s._details_entry.custom_minimum_size.y, "and the panel to it")
 	s._on_die_tapped(1)
@@ -419,7 +418,7 @@ func test_the_readout_names_the_entrys_type_with_a_passives_hybrid() -> void:
 func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
-	var breech := Face.attack(4, Face.Reach.DIRECT, [], 1, 6)
+	var breech := Face.attack(4, Face.Reach.DIRECT, [], 1)
 	breech.component = str(ContentDB.load_default().components.keys()[0])
 	ms.die = Die.single(breech)
 	ms.face_index = 0
@@ -427,10 +426,10 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 	s._refresh()
 	s._on_die_tapped(1)
 	var parts: Array = s._details_entry.lines[1]["parts"]
-	assert_eq(str(s._details_entry.lines[1]["text"]), "Attack 2–3 ×2", "a strike's share of the roll, struck twice: %s" % str(s._details_entry.lines[1]["text"]))
+	assert_eq(str(s._details_entry.lines[1]["text"]), "Attack 2 ×2", "a strike's share of the number, struck twice: %s" % str(s._details_entry.lines[1]["text"]))
 	assert_eq([int(parts[1]["trend"]), bool(parts[1]["gain"])], [-1, false], "the blow down, a loss")
 	assert_eq([int(parts[2]["trend"]), bool(parts[2]["gain"])], [1, true], "the strikes up, a gain")
-	assert_true(s._details_entry.text().contains("2–3▼ ×2▲"), "each arrow on its own number: %s" % s._details_entry.text())
+	assert_true(s._details_entry.text().contains("2▼ ×2▲"), "each arrow on its own number: %s" % s._details_entry.text())
 	s._on_die_tapped(1)
 	s.free()
 
@@ -441,18 +440,17 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 ## out. The plate lays the die out a row a component, one column.
 func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var db := ContentDB.load_default()
-	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3, 5)
+	var gun := Face.attack(3, Face.Reach.SWEEP, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3)
 	gun.burn = 2
 	gun.cleave = 2
 	gun.strikes = 2
-	gun.spray = true
 	gun.component = str(db.components.keys()[0])
 	gun.tags.append_array(["beam", "flame"])
 	var lines := EntryReadout.codex_lines(gun, db, ["Test: a passive's line."])
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3–5 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Sprays the rest in reach · Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: A rank, Sweep", "Spread 2 · Apply Burn 2 on hit · Rapid", "Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}
@@ -497,14 +495,14 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 	var wreck := Face.blank()
 	wreck.component = str(db.components.keys()[0])
 	assert_eq(str(EntryReadout.effects_of(wreck)[0]["text"]), "Destroyed: comes up blank for the rest of the battle", "and a destroyed one what is left of it")
-	assert_eq(str(EntryReadout.lines_for(wreck, 2, [], wreck, [], [], db)[0]["text"]), db.component_name(wreck.component).to_upper(), "its name still the title")
+	assert_eq(str(EntryReadout.lines_for(wreck, 2, -1, wreck, [], [], db)[0]["text"]), db.component_name(wreck.component).to_upper(), "its name still the title")
 	var coil := Face.buff("overcharged", 2)
 	assert_eq(str(EntryReadout.effects_of(coil)[0]["text"]), "Grants %s ×2" % str(Effects.STATUS["overcharged"]["name"]), "a buff grants its status")
 	var u := Unit.new()
 	u.grant_passive({"id": "t_spill", "name": "Spill", "description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "spillover", "printed": true}]})
 	var gun := Face.attack(4)
 	assert_eq(Effects.printed_grants(u, gun), ["Damage past a kill spills behind."], "a written-out grant is its passive's line")
-	assert_eq(str(EntryReadout.lines_for(gun, 1, [], gun, [], Effects.printed_grants(u, gun), db).back()["text"]), "Damage past a kill spills behind.", "among the rules, last")
+	assert_eq(str(EntryReadout.lines_for(gun, 1, -1, gun, [], Effects.printed_grants(u, gun), db).back()["text"]), "Damage past a kill spills behind.", "among the rules, last")
 
 
 ## The keywords list (Ryan, 26 October): the pause menu's page, every term the dice and the chips
@@ -586,7 +584,7 @@ func test_a_long_codex_description_takes_two_lines_never_more() -> void:
 
 
 func test_face_descriptions_drop_the_line_word() -> void:
-	assert_eq(Face.attack(10, Face.Reach.DIRECT, [], 0, 30).describe(), "10–30", "line of fire goes unsaid")
+	assert_eq(Face.attack(10, Face.Reach.DIRECT).describe(), "10", "line of fire goes unsaid")
 	assert_true(Face.attack(20, Face.Reach.INDIRECT).describe().begins_with("indirect 20"), "indirect is called out")
 
 
@@ -906,9 +904,9 @@ func _chips_for(s: SkirmishScreen, i: int, id: String) -> Array[String]:
 	return texts
 
 
-## Every status is a chip whatever its scope (Ryan, 16 October: the Ammit is Overcharged, "so
+## Every status is a chip whatever its scope (Ryan, 16 October: the Ammit is Empowered, "so
 ## anything that interacts with overcharged needs it displayed"). The talons' kills'
-## Overcharged, kept for the battle when its owner keeps the status, is a chip with its count;
+## Empowered, kept for the battle when its owner keeps the status, is a chip with its count;
 ## a buff's joins it in the one chip (kept too, since 18 October: the Tap keeps every grant),
 ## and the hold and the codex each list it once.
 func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
@@ -923,7 +921,7 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	Effects.remove(m, "overcharged")
-	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Overcharged")
+	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Empowered")
 	sk._overcharge_on_kill(sk.mechs[0], sk.front[0], 1)
 	sk._overcharge_on_kill(sk.mechs[0], sk.front[0], 1)
 	var scopes: Array = []
@@ -932,25 +930,25 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 			scopes.append(int(d[3]))
 	assert_eq(scopes, [Effects.BATTLE], "two kills kept for the battle: one grant, below the skirmish's scope")
 	s._refresh()
-	assert_eq(_chips_for(s, 0, "overcharged"), ["×2"] as Array[String], "an Overcharged chip with its count")
+	assert_eq(_chips_for(s, 0, "overcharged"), ["×2"] as Array[String], "an Empowered chip with its count")
 	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round)
 	s._refresh()
 	assert_eq(_chips_for(s, 0, "overcharged"), ["×3"] as Array[String], "a buff's for the round joins it in one chip")
 	var held := 0
 	for l in s._mech_hold_lines(0):
-		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Overcharged"):
+		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Empowered"):
 			held += 1
 	assert_eq(held, 1, "the hold lists it once")
 	var named := 0
 	for note in Effects.explain(m, m.die.faces[0]):
-		if note.contains("Overcharged"):
+		if note.contains("Empowered"):
 			named += 1
 	assert_eq(named, 1, "the die's row names it once")
 	var listed := 0
 	for e in db.codex_for_unit(m)["effects"]:
-		if str(e["name"]).begins_with("OVERCHARGED"):
+		if str(e["name"]).begins_with("EMPOWERED"):
 			listed += 1
-			assert_eq([str(e["name"]), str(e["note"])], ["OVERCHARGED ×3", "KEPT FOR THE BATTLE"], "a kept status among the active effects, never a reward, with its count, the buff's stack kept with the kills' (Ryan, 18 October)")
+			assert_eq([str(e["name"]), str(e["note"])], ["EMPOWERED ×3", "KEPT FOR THE BATTLE"], "a kept status among the active effects, never a reward, with its count, the buff's stack kept with the kills' (Ryan, 18 October)")
 	assert_eq(listed, 1, "and the codex once: the kept stacks, which the battle carries past this fight")
 	# What is no status stays in the codex: the passive that keeps it, and a battle reward.
 	Effects.grant(m, Effects.make({"id": "spoils", "name": "Spoils", "description": "Hull +10.",
@@ -1199,7 +1197,7 @@ func test_a_foes_gauge_previews_what_its_ticks_will_take() -> void:
 	Effects.stack(b, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 4)
 	s._refresh()
 	assert_eq(int(s._foe_view_for(a).bars[0][3]), 10 - 2 * per, "its Burning's tick pending on its gauge")
-	assert_eq(int(s._foe_view_for(b).bars[0][3]), 0, "Burning that kills it before it acts: the whole bar")
+	assert_eq(int(s._foe_view_for(b).bars[0][3]), 0, "Burning that fells it at its action: the whole bar")
 	assert_eq(sk.hp_after_ticks(b), 0, "the same number the forecast reads")
 	sk.end_round()
 	assert_false(b.alive(), "and it burnt to death at its action")
@@ -1830,4 +1828,71 @@ func test_a_foe_getting_back_up_in_the_enemy_turn_is_shown() -> void:
 	assert_true(s.sk.field_foes().has(foe), "it stood again")
 	assert_eq(foe.hp, foe.hp_max, "whole")
 	assert_false(Effects.has(foe, "risen"), "its charge spent")
+	s.free()
+
+
+## UNDO (Ryan, 2 November: "undo to your last roll"): a spend taken back on the screen, the
+## button's badge saying how far it reaches, the button off once nothing is left, and the
+## trail showing the round's bar under its opening lines.
+func test_undo_takes_back_the_last_spend_and_its_badge_says_how_far_it_reaches() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.die = Die.single(Face.attack(1, Face.Reach.DIRECT))   # a scratch: the foe stands to be read after
+	ms.die = ms.unit.die
+	ms.face_index = 0
+	s._refresh()
+	assert_true(s._undo_btn.disabled, "nothing to take back as the round opens")
+	assert_eq(s._undo_btn.badge, "", "and no reach to say")
+	var foe: Foe = s.sk.front[0]
+	var hp := foe.hp
+	var opened := s.sk.log.size()
+	assert_true(s._log_text(0).find(SkirmishScreen.ROLL_BAR) >= 0, "the round's bar in the trail")
+	assert_true(s._use_die(0, foe), "the die spent")
+	assert_eq(s.sk.front[0].hp, hp - 1, "the blow landed")
+	assert_false(s._undo_btn.disabled, "the undo opens")
+	assert_eq(s._undo_btn.badge, "×1", "one spend back")
+	var text := s._log_text(0)
+	assert_true(text.find(SkirmishScreen.ROLL_BAR) < text.rfind("> "), "the bar sits under the opening lines, the spend's after it")
+	s._on_undo()
+	assert_eq([s.sk.front[0].hp, s.sk.mechs[0].assigned, s.sk.log.size()], [hp, false, opened], "the spend taken back")
+	assert_true(s._undo_btn.disabled, "and nothing is left")
+	s.free()
+
+
+## A sweep targets a rank (Ryan, 3 November: "fix the UI for sweep so its intuitively targeting a
+## rank"): the die dragged over a back foe lights the back rank alone and brackets it whole; over
+## nobody, every foe is a legal drop.
+func test_a_sweep_die_over_a_foe_lights_and_brackets_its_rank() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.die = Die.single(Face.attack(1, Face.Reach.SWEEP))
+	ms.die = ms.unit.die
+	ms.face_index = 0
+	s._drag_from = 0
+	s._drag_over = null
+	s._refresh()
+	var lit := 0
+	for f in s.sk.field_foes():
+		if s._foe_view_for(f).highlight:
+			lit += 1
+	assert_eq(lit, s.sk.field_foes().size(), "over nobody, every foe is a legal drop")
+	assert_eq(s._pair_marks.rects.size(), 0, "and no rank is bracketed")
+	var back_foe: Foe = s.sk.back[0]
+	s._drag_over = back_foe
+	s._refresh()
+	for f in s.sk.field_foes():
+		assert_false(s._foe_view_for(f).highlight, "%s: no foe's own mark; the rank under the finger wears one bracket, the other rank is plain" % f.display_name)
+	assert_eq(s._pair_marks.rects.size(), 1, "one bracket round the rank")
+	var rank_rect: Rect2 = s._pair_marks.rects[0]
+	for f in s.sk.field_foes():
+		var v := s._foe_view_for(f)
+		var inside := rank_rect.encloses(Rect2(s._home.get(v, v.position) + v.drawing_rect().position, v.drawing_rect().size))
+		assert_eq(inside, f.rank == 1, "%s %s the bracket" % [f.display_name, "inside" if f.rank == 1 else "outside"])
+	s._drag_over = s.sk.front[0]
+	s._refresh()
+	assert_eq(s._pair_marks.rects.size(), 1, "the bracket moves with the finger")
+	var front_rect: Rect2 = s._pair_marks.rects[0]
+	assert_true(front_rect.encloses(Rect2(s._home.get(s._foe_view_for(s.sk.front[0]), Vector2.ZERO) + s._foe_view_for(s.sk.front[0]).drawing_rect().position, s._foe_view_for(s.sk.front[0]).drawing_rect().size)), "round the front rank now")
+	s._drag_from = -1
+	s._drag_over = null
 	s.free()

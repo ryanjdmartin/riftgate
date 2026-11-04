@@ -108,25 +108,36 @@ func test_a_shot_fires_its_loads_and_their_plate_goes_with_them() -> void:
 	var sk := _fight([u], [_foe(60)])
 	Effects.add_loads(u, 4)
 	assert_eq(u.armour, 5, "four loads held")
-	assert_eq(sk.shown_number(sk.mechs[0], u.die.faces[0]), [8, 8] as Array[int], "the shot fires two of the four at +2")
+	assert_eq(sk.shown_number(sk.mechs[0], u.die.faces[0]), 8, "the shot fires two of the four at +2 (one number since rolled damage went, 2 November)")
 	assert_true(sk.assign(0, sk.front[0]), "the shot")
 	assert_eq(sk.front[0].hp, 60 - 8, "four and two loads")
 	assert_eq(Effects.stacks_of(u, "hopper"), 3, "two fired, then its own blow loads one back")
 	assert_eq(u.armour, 4, "the plate follows: three loads, three points")
 
 
-func test_a_purge_sleeps_the_plate_and_leaves_the_loads() -> void:
+## A purge lowers the plate by its N and leaves the loads (Ryan's row on stores, 21 October; Purge
+## N, 2 November: "lower everything by N"): a store's grant is never bought, so the stacks it loses
+## sleep and wake at the player's turn, and a load added meanwhile adds its point awake.
+func test_a_purge_sleeps_the_plates_stacks_by_its_number_and_leaves_the_loads() -> void:
 	var u := _mech("Badger", Die.single(Face.attack(3, L)))
 	u.grant_passive(HOPPER)
 	Effects.add_loads(u, 3)
 	assert_eq(u.armour, 4, "three loads held")
 	var r: Dictionary = Effects.purge(u)
-	assert_true((r["slept"] as Array).has("Ore Plate"), "a store's grant sleeps, never bought, so never gone")
-	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [3, 1], "the loads stay; their armour sleeps")
+	assert_true((r["lowered"] as Array).has("Ore Plate"), "a store's grant is lowered, never bought, so never gone")
+	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [3, 3], "the loads stay; one point of their armour sleeps (a Purge 1)")
 	Effects.add_loads(u, 1)
-	assert_eq([Effects.banked(u, "ore_plate"), u.armour], [4, 1], "a load while it sleeps keeps it in step, still asleep")
+	assert_eq([Effects.banked(u, "ore_plate"), u.armour], [4, 4], "a load while part sleeps adds its point, the slept one still asleep")
 	Effects.wake(u)
 	assert_eq(u.armour, 5, "it wakes at the loads' worth")
+	var p := _mech("Badger", Die.single(Face.attack(3, L)))
+	p.grant_passive(HOPPER)
+	Effects.add_loads(p, 2)
+	var r3: Dictionary = Effects.purge(p, 3)
+	assert_true((r3["slept"] as Array).has("Ore Plate"), "a Purge past its stacks sleeps the plate whole")
+	assert_eq([Effects.stacks_of(p, "hopper"), p.armour, Effects.banked(p, "ore_plate")], [2, 1, 2], "the loads stay, the plate asleep, still held")
+	Effects.wake(p)
+	assert_eq(p.armour, 3, "and it wakes whole")
 
 
 func test_the_fallback_plates_a_point_for_every_two_loads() -> void:

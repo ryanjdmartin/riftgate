@@ -179,6 +179,14 @@ func test_the_shield_persona_values_a_standing_shield_by_next_rounds_blows() -> 
 	var q := ahead.shield_score(sk, ms, 8)
 	assert_true(absf(p - 8.0 * Policy.BANK_WEIGHT) < 0.001, "the rungs bank the eight: %f" % p)
 	assert_true(absf(q - (5.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE + 3.0 * Policy.BANK_WEIGHT)) < 0.001, "the persona: five of it turns next round's blow, the rest banks: %f" % q)
+	# Next round's blow is the roll's mean, not this round's pick (2 November): a brace at the
+	# same weight halves it, and a blow on every machine lands whole at its weight.
+	g.actions.append({"id": "cower", "kind": "defend", "effect": "brace", "value": 2, "weight": 1})
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 2.5) < 0.001, "ten over two machines at one weight, nothing at the other: %f" % ahead.next_round_hull(sk, ms))
+	g.actions.append({"id": "sweep", "factor": 1.0, "strikes": 1, "weight": 2, "keywords": ["all"]})
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 6.25) < 0.001, "the sweep's ten whole at two weights of four: %f" % ahead.next_round_hull(sk, ms))
+	g.actions.append({"id": "wind_up", "factor": 3.0, "strikes": 1, "weight": 1, "keywords": [], "then": "sweep"})
+	assert_true(absf(ahead.next_round_hull(sk, ms) - 20.0 / 3.0) < 0.001, "the wind-up's thirty over two beside the ten over two and the brace, three weights, its follow-up (the sweep) never rolled: %f" % ahead.next_round_hull(sk, ms))
 
 
 func test_greedy_rerolls_a_face_under_the_average() -> void:
@@ -413,15 +421,15 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 	assert_eq(pol.expected_damage(ms, burst, g), 80.0, "only the first of three blows is doubled")
 
 
-## The spray (the Skua's Flechette Pod): the first strike on the target, each after it on a random
-## foe in reach, so the bot reads each foe its share; on a foe one strike kills, a spray among
-## others wastes less past the kill than the same strikes all on it.
-func test_greedy_reads_a_spray_as_its_share_on_every_foe_in_reach() -> void:
+## A sweep (the Skua's Flechette Pod; a reach since 3 November): the strikes walk the rank picked,
+## so the bot reads each foe its share; on a foe one strike kills, a sweep among others wastes
+## less past the kill than the same strikes all on it.
+func test_greedy_reads_a_sweep_as_its_share_on_every_foe_in_the_rank() -> void:
 	var sk := Skirmish.new(1, 3)
 	var plain := Face.attack(5, L)
 	plain.strikes = 3
 	var pod := plain.duplicate_face()
-	pod.spray = true
+	pod.reach = Face.Reach.SWEEP
 	sk.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
 	var weak := _ghoul(3, 10)
 	sk.add_foes([_ghoul(50, 10), weak, _ghoul(50, 10)])
@@ -429,17 +437,17 @@ func test_greedy_reads_a_spray_as_its_share_on_every_foe_in_reach() -> void:
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(pol.attack_score(sk, ms, pod, weak) > pol.attack_score(sk, ms, plain, weak), "the spray's later strikes go on to the others")
+	assert_true(pol.attack_score(sk, ms, pod, weak) > pol.attack_score(sk, ms, plain, weak), "the sweep's strikes walk on to the others")
 	var lone := Skirmish.new(1, 1)
 	lone.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
 	var big := _ghoul(100, 10)
 	lone.add_foes([big])
 	lone.begin()
 	lone.start_round()
-	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the spray is the plain gun")
+	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the sweep is the plain gun")
 
 
-## A flat buff lands on every strike, so the bot counts Overcharged once a strike of the ally's
+## A flat buff lands on every strike, so the bot counts Empowered once a strike of the ally's
 ## gun showing: twice on a split gun (the Skua's), once on a plain one.
 func test_greedy_counts_a_flat_buff_once_a_strike_of_the_allys_gun() -> void:
 	var split := {"id": "split", "name": "Split", "description": "", "effects": [
@@ -642,26 +650,6 @@ func test_a_shock_is_worth_the_hitter_in_hand_and_survives_the_rerolls() -> void
 	assert_true(lone.mechs[0].face_index != 0, "and the projector is rerolled for the gun")
 
 
-func test_greedy_rolls_before_it_spends_a_sure_number() -> void:
-	# Ryan, 9 October: a sure number is worth most after the rolls have landed, when it can
-	# finish what they left; the bot spends rolled damage first and the flat finisher after.
-	var sk := Skirmish.new(3)
-	sk.add_mech(_mech("Sure", Die.single(Face.attack(15, L))))
-	sk.add_mech(_mech("Rolls", Die.single(Face.attack(10, L, [], 0, 20))))
-	var small := _ghoul(15, 10)
-	sk.add_foes([small, _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	Policy.make(Policy.GREEDY).play_round(sk)
-	var first := ""
-	for line in sk.log:
-		if str(line).contains(" hits "):
-			first = str(line)
-			break
-	assert_true(first.begins_with("Rolls hits"), "the rolled die goes first: %s" % first)
-	assert_false(small.alive(), "and the sure one finishes whatever the roll left")
-
-
 ## The funnel-web's valuations (18 October): an ambush bite on a foe looking away is worth
 ## Vitriol's ticks on what the blow leaves, as the engine ticks it; a web the blows its burst
 ## will stop.
@@ -822,14 +810,17 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 ## The bot's worth of the player's Purge (the ladder's brief, C; 28 October; placeholders), by
 ## what the foe carries: Getting Back Up its maximum HP whatever the blow does, a Barrier the
 ## biggest weapon blow an ally still to act shows on it (nothing when its own weapon pops it),
-## Armoured its stacks for each allied blow to come, Kindled its value, Primed 2 a stack,
+## Armoured its stacks for each allied blow to come, Empowered its value, Primed 2 a stack,
 ## Regenerating its value for each action left, a Ward nothing, a bare foe nothing; the attack
 ## score carries it.
 func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 3)
 	var null_field := Face.attack(0, I, [K.DISPEL])
+	null_field.dispel = 9
 	var gun := Face.attack(10, L, [K.DISPEL])
+	gun.dispel = 9
+	var null1 := Face.attack(0, I, [K.DISPEL])   # Purge 1
 	sk.add_mech(_mech("A", Die.single(null_field), 40, 200))
 	sk.add_mech(_mech("B", Die.single(Face.attack(12, L)), 40, 200))
 	var g := _ghoul(100, 10)
@@ -847,9 +838,10 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	Effects.remove(g, "barrier")
 	Effects.stack(g, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:revenant", 2, Effects.DECAY_ROUND)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 2.0, "Armoured: its stacks for the one allied blow to come")
+	assert_eq(pol.purge_worth(sk, a, null1, g, 1.0), 1.0, "a Purge 1 takes one of the two (2 November)")
 	Effects.remove(g, "braced")
 	Effects.grant(g, Effects.make(Effects.kindled(3), Effects.SKIRMISH, "foe:caster"))
-	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Kindled: its value")
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Empowered: its value")
 	Effects.remove(g, "kindled")
 	Effects.grant(g, Effects.primed_foe(2, "foe:caster"))
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 4.0, "Primed: 2 a stack")
@@ -859,7 +851,10 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 12.0, "Regenerating: its value for each of three actions left")
 	Effects.remove(g, "regenerating")
 	Effects.stack(g, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
-	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a Ward: nothing")
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a Ward: nothing, since it turns the Purge away")
+	Effects.remove(g, "ward")
+	Effects.stack(g, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	assert_true(pol.purge_worth(sk, a, null1, g, 1.0) > 0.0, "Numbed: a stack stripped is a step toward a stun")
 	var bare := pol.attack_score(sk, a, null_field, g)
 	Effects.grant(g, Effects.primed_foe(5, "foe:caster"))
 	assert_eq(pol.attack_score(sk, a, null_field, g), bare + 10.0, "the attack score carries it")
@@ -1243,9 +1238,8 @@ func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
 	var forge := {"id": "forge", "name": "Forge", "description": "", "effects": [{"trigger": "static", "effect": "forge", "value": 10, "start": 3, "per_round": 1, "per_heat": 10, "vent": 3, "shield": 2}]}
 	var ray := Face.attack(30, L)
 	ray.heat = 30
-	var salvo := Face.attack(5, I, [K.CLEAVE, K.PENETRATE])
+	var salvo := Face.attack(5, Face.Reach.SWEEP, [K.CLEAVE, K.PENETRATE])
 	salvo.spends_magazine = true
-	salvo.random_targets = true
 	var sk := Skirmish.new(3, 2)
 	var m := _mech("Ox", Die.of([ray, salvo]), 40, 200)
 	m.grant_passive(forge)
@@ -1365,9 +1359,9 @@ func test_the_bot_counts_both_halves_of_a_pair() -> void:
 
 ## The bot reads Chain as the resolver deals it (the conductor, 28 October; its charge, and a Shock
 ## read by an aimed strike alone, 29 October): each Shocked foe on the field past the target takes
-## Chain's number plain, its charge standing; with no conductor the Chain gun is still worth its
-## charge, one other foe Shocked for the team's next blow.
-func test_the_bot_reads_a_chains_arcs_and_its_charge() -> void:
+## Chain's number plain, the conductors' charges standing; with no conductor the Chain gun is a
+## plain gun (the charge retired 3 November: Chain is the arcs alone).
+func test_the_bot_reads_a_chains_arcs() -> void:
 	var sk := Skirmish.new(1, 3)
 	var gun := Face.attack(4, L, [K.CHAIN], 3)
 	gun.chain = 2
@@ -1383,15 +1377,13 @@ func test_the_bot_reads_a_chains_arcs_and_its_charge() -> void:
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var pol := Policy.new()
 	var lead := pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
-	assert_true(absf(lead - pol.charge_worth(sk, ms, aim)) < 0.001, "with no conductor the Chain gun is a plain gun and its charge: %f" % lead)
-	assert_true(absf(lead - 4.0) < 0.001, "the charge: one other foe Shocked for the team's next blow, its average 4: %f" % lead)
+	assert_true(absf(lead) < 0.001, "with no conductor the Chain gun is a plain gun: %f" % lead)
 	for foe in [a, b]:
 		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	assert_eq(pol.damage_outcomes(ms, gun, a, -1.0, true, Skirmish.AREA_CHAIN), [[2.0, 1.0]], "a conductor: Chain 2 plain, no strike aimed at it")
 	assert_eq(pol.damage_outcomes(ms, gun, a), [[8.0, 1.0]], "the same foe aimed at: the blow doubled")
-	assert_eq(pol.charge_worth(sk, ms, aim), 0.0, "every other foe Shocked: no foe left to charge")
 	lead = pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
-	assert_true(absf(lead - 4.0) < 0.001, "two conductors, Chain 2 each, and no charge: %f" % lead)
+	assert_true(absf(lead - 4.0) < 0.001, "two conductors, Chain 2 each: %f" % lead)
 
 
 ## The bot reads a foe past the target as the resolver deals it (area by shape, numbered: Ryan,
