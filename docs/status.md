@@ -1060,19 +1060,18 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.454 (the
-  page's version 467, published 4 November from `ccr-bb178c9b-l6airv` after the landing, the live
-  source read whole by a subagent: Sweep's rising strikes, every lob even, Every Foe, Every Ally
-  and Every Other Ally as targeting modes a Silence leaves whole, and their marks; three-way
-  merged row by row onto the live v0.453, which another session had moved from this branch's
-  v0.449 at 462 through v0.450 to v0.453 (a tidy of long rows, the die-entry row's among them, and
-  rows on Numbed, injuries, the city's defences and the Fracture's reward), its condensed
-  die-entry row kept with this branch's changes written in its form, the tables script not rerun
-  since its rows from that session's content are not on this branch; over v0.449 at 462,
-  published as main took this branch, onto the live v0.448 and its Hold The Line row). Main's
-  file is v0.449, so the live page carries this branch's rows and that session's ahead of main's
-  code until they land. This file is v0.456 since (four pieces back in the lines of fire, Every Foe's square
-  brackets, the passive box past the chips), going up as this round lands. The live page may carry rows ahead of main's code while
+  `docs/design-bible.html` after every change. This file and the live page are v0.459 (the
+  page's version 472, published 4 November from `ccr-bb178c9b-l6airv`, the live source read whole
+  by a subagent: the die-entry row's four pieces in the lines of fire, Every Foe's square brackets
+  and close ranks, and the passive box past the chips; three-way merged row by row onto the live
+  v0.458, which another session had moved from this branch's v0.454 at 467 (rows on chances and
+  the die as the one draw, rifts, the reinforcement phase, rallies and Empowered, tags, section 12
+  tidied), no row changed on both sides; over v0.454 at 467 (Sweep, every lob even, Every Foe,
+  Every Ally and Every Other Ally as targeting modes, merged onto another session's v0.453 and its
+  condensed die-entry row, the tables script not rerun since its rows from that session's content
+  are not on this branch) and v0.449 at 462, published as main took this branch). Main's file is
+  v0.449, so the live page carries this branch's rows and those sessions' ahead of main's code
+  until they land. The live page may carry rows ahead of main's code while
   their branches have not landed. The
   version numbers on the publishing branch's file and the live agree after every publish. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
