@@ -530,7 +530,8 @@ REAL_DRIVEN = {"pick": 1.295, "finger": 1.419, "omnific": 1.318}
 # active bass near the bridge into the modern prog drive (Ryan, 4 November: "Put the omnific-style
 # active bass into Hold the Line"), met halfway with the driven bass as the others are (0.4 dB each way).
 PARAMS = {"pick": {"preset": "pick", "amp": "driven"}, "finger": {"preset": "finger", "amp": "driven"},
-          "omnific": {"preset": "active", "amp": "modern"}}
+          "omnific": {"preset": "active", "amp": "modern"},
+          "modern": {"preset": "finger", "amp": "modern"}}   # the fingers into the same drive, Night Shift's bass
 
 
 def semis(c):
@@ -627,6 +628,64 @@ def real_bass_on(preset, roots=False, fifths=None, throughout=False, down=False,
     return edit
 
 
+def heard(v):
+    return {s for s, p in v["pat"].items() if any(c not in ".-" for c in p)}
+
+
+# The palm-muted chug 3 dB down in A and N (Ryan, 4 November: "I think we need to bring the chug guitar
+# volume down in A and N. Is it also in the unisons in X and the climax?"): one voice through A, B, M
+# and N at 0.75; X's unison with the bass has its own at 0.72, the climax's with the lead guitar and
+# the bass its own at 0.6 with a second at 0.4 on the fifths, both carrying on into the breath (Y).
+CHUG_DOWN = -3.0
+
+
+def is_chug(v):
+    return v["inst"] == "guitar_real" and v.get("octave", 0) == -1 and not v.get("params")
+
+
+def chug_down(sections, db=CHUG_DOWN):
+    """The palm-muted chug `db` dB down in `sections` (the lifts' backing guitars aside): a voice
+    heard there alone turned down where it stands, one heard elsewhere too split (`moved_off`), so
+    a set's rows split the same voices and each keeps its humanising whatever the level (a row at
+    0 dB splits them too)."""
+    def edit(call):
+        for v in [v for v in call["voices"] if is_chug(v) and heard(v) & set(sections)]:
+            if heard(v) <= set(sections):
+                v["gain"] = round(v["gain"] * 10.0 ** (db / 20.0), 4)
+            else:
+                moved_off(call, lambda w: w is v, "the chug", sections, db)
+    return edit
+
+
+# Both lifts on two basses (Ryan, 4 November: "C lift - synth lead can go, that's what I'm hearing.
+# Replace it our new bass, and then send the second bass voice down the octave ... Same changes on L,
+# all variations too"): each lift's lead out (the synth lead in C, the lead guitar in L), the bass
+# that holds the crunch synth's place on the riff at its octave and a second bass on it an octave
+# down in the lead's place, each met halfway with the voice it replaces, as every swap is. An octave
+# down, either bass still came out 4 to 6 dB over the lead at the lead's gain on a phone and in full
+# alike, its drive's mids carrying: the Omnific's then 0.3 dB each way in C and 1.0 in L, the
+# fingers' 0.9 and 1.6; the top against the crunch synth as REPLACE has it, the fingers 0.7 each way.
+LIFT_LEAD = {"C": "lead", "L": "guitar_real"}
+LIFT_TOP = {"omnific": 0.788, "modern": 0.979}
+LIFT_LOW = {"omnific": {"C": 0.568, "L": 0.565}, "modern": {"C": 0.773, "L": 0.768}}
+
+
+def lift_basses(preset="omnific", backing=None):
+    """Both lifts' riff on two basses on `preset` (LIFT_TOP, LIFT_LOW), the lead out; `backing` the
+    lifts' backing guitar's gain (None keeps BACKING). Runs before `real_bass_on`, which then
+    leaves the lifts' basses as they are."""
+    def edit(call):
+        for s, lead in LIFT_LEAD.items():
+            top = the_one(call, lambda v: v["inst"] == "bass" and heard(v) == {s}, "the crunch synth in " + s)
+            low = the_one(call, lambda v: v["inst"] == lead and heard(v) == {s} and v.get("octave", 0) == 0, "the lead in " + s)
+            top.update(inst="real_bass", params=dict(PARAMS[preset]), gain=top["gain"] * LIFT_TOP[preset])
+            low.update(inst="real_bass", params=dict(PARAMS[preset]), octave=-1, hold=top.get("hold", 1.0),
+                       gain=low["gain"] * LIFT_LOW[preset][s])
+            if backing is not None:
+                the_one(call, lambda v: is_chug(v) and heard(v) == {s}, "the backing guitar in " + s)["gain"] = backing
+    return edit
+
+
 def battle_with(*edits):
     def edit(call):
         for e in edits:
@@ -635,28 +694,13 @@ def battle_with(*edits):
 
 
 CLIMAX_EDIT = (map_picks, map_calm_bell)
+OMNIFIC_ROOTS = real_bass_on("omnific", roots=True, throughout=True, spare=("F",))   # the Omnific set's first row
+BACKING_UP = BACKING * 2.0   # the lifts' backing guitar 6 dB up, as the fourth round had it (Ryan, 4 November: "with the backing guitar back up, since I can't hear it")
 SETS = [
     {"id": "mz", "half": "map", "title": "The map's climax, the drone into Z", "form": CLIMAX,
      "note": "The keys' turn, the climax's three sets (S, R and Z) and the breath: the ticking guitar alone on the riff 3 dB up over the sub, the drone and the strings joining in R with the bell on the hook in its second half, the bell 3 dB down, the choir and the tine piano 6 dB down on the riff in Z.", "rows": [
         ("mz0", "As the twelfth round's pair had it", "The choir joining the drone and the strings in Z, the pads 1 dB up there on a phone.", map_edits(*CLIMAX_EDIT, map_climax(pads_db=0.0))),
         ("mz1", "The drone held level into Z", "The drone, the strings and the choir 1 dB down through Z, so the choir arrives without the drone growing (the full pair's).", map_edits(*CLIMAX_EDIT, map_climax())),
-    ]},
-    {"id": "hb", "half": "battle", "title": "The bass, through the whole battle half", "form": FORM_K,
-     "note": "The settled battle half from the top, the bass on each voice wherever it plays: the riff, the turn's walk, the climax. Each real bass is built as a bass and driven as a bassist drives an amp, its lows clean and its mids pushed, met halfway between the driven bass's level on a phone and in headphones. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hb0", "The driven bass as it ships", "The settled pair's: the forge's guitar string tuned down through a hot amp, a second driven bass a fifth above wherever the guitar plays power chords.", battle_picks()),
-        ("hb1", "A real bass, picked and driven", "The same parts, the fifths above included, on a picked bass through a driven amp.", battle_with(battle_picks(), real_bass_on("pick"))),
-        ("hb2", "Picked and driven, on the roots", "The lines a fifth above out, so the bass holds the roots under the guitar's power chords.", battle_with(battle_picks(), real_bass_on("pick", roots=True))),
-        ("hb3", "Fingers, driven, on the roots", "Fingers in place of the pick, rounder at the front, through the same amp, on the roots.", battle_with(battle_picks(), real_bass_on("finger", roots=True))),
-    ]},
-    {"id": "hv", "half": "battle", "title": "The bass on the roots, four ways", "form": FORM_K,
-     "note": "The settled battle half from the top on the picked, driven real bass, each row one change from the roots alone (Ryan, 4 November). Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hv0", "Picked and driven, on the roots", "As the bass set's third row has it: the lines a fifth above out.", battle_with(battle_picks(), real_bass_on("pick", roots=True))),
-        ("hv1", "On the roots throughout", "Every voice that carries the bass on the real bass: the driven bass's parts on their roots, and the crunch synth's (the lifts' riff, M, K's walk, V) and the sub's in F on their own lines, each met halfway with the voice it replaces.", battle_with(battle_picks(), real_bass_on("pick", roots=True, throughout=True))),
-        ("hv2", "A second bass on the fifths", "The fifths on a second bass beside the first, each through its own amp: the bass set's second row, and how the driven bass always played them.", battle_with(battle_picks(), real_bass_on("pick"))),
-        ("hv3", "One bass playing both strings", "Each root and its fifth plucked together on one bass into one amp, so the drive grinds them into each other, met halfway with the two basses' level.", battle_with(battle_picks(), real_bass_on("pick", fifths="chord"))),
-        ("hv4", "The climax's guitar on the fifths", "The fifths taken over by the guitar that plays them at the climax: a palm-muted power chord on each, an octave down, at the climax's balance against the section's own chug.", battle_with(battle_picks(), real_bass_on("pick", fifths="chug"))),
-        ("hv5", "One guitar string on the fifths", "The fifth line alone on one string of that guitar, where the second bass played it.", battle_with(battle_picks(), real_bass_on("pick", fifths="string"))),
-        ("hv6", "On the roots an octave down", "Every bass part in the intro's low register throughout, at the chug's root.", battle_with(battle_picks(), real_bass_on("pick", roots=True, down=True))),
     ]},
     {"id": "ho", "half": "battle", "title": "The Omnific bass, through the whole battle half", "form": FORM_K,
      "note": "The settled battle half from the top, every voice that carries the bass on an active bass played near the bridge into a modern prog drive, the crunch synth with it (K's walk included), but F's punchy sub, its signature (Ryan, 4 November: \"I meant F keeps it's old sub bass\"). Each meets the voice it replaces halfway between a phone and headphones. Switch rows anywhere: each carries on from the same beat.", "rows": [
@@ -664,6 +708,15 @@ SETS = [
         ("ho1", "On the roots, the low octave", "The same an octave down throughout, the intro's register.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("F",), down=True))),
         ("ho2", "A second bass on the fifths", "The roots, and a second bass on the fifths where the guitar plays power chords, each through its own amp.", battle_with(battle_picks(), real_bass_on("omnific", throughout=True, spare=("F",)))),
         ("ho3", "Two basses, the low octave and the root", "Every root on two basses an octave apart, each 3 dB down so the pair holds one bass's level.", battle_with(battle_picks(), real_bass_on("omnific", roots=True, throughout=True, spare=("F",), both=True))),
+    ]},
+    {"id": "hl", "half": "battle", "title": "The lifts on two basses", "form": FORM_K,
+     "note": "The settled battle half from the top on the Omnific bass as its set's first row has it (on the roots as written, F's punchy sub kept), the chug 3 dB down in A and N (Ryan, 4 November). In both lifts the lead goes, the synth lead in C and the lead guitar in L, and the riff is on two basses: the one in the crunch synth's place at its octave and a second an octave down in the lead's, each met halfway with the voice it replaces. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hl0", "As the Omnific set's first row has it", "The chug as it was; the first lift's riff on the bass and the synth lead, the second's on the bass and the lead guitar.", battle_with(battle_picks(), chug_down("AN", 0.0), OMNIFIC_ROOTS)),
+        ("hl1", "The lifts on two basses", "The chug 3 dB down in A and N; in each lift the lead out and a second bass an octave under the first.", battle_with(battle_picks(), chug_down("AN"), lift_basses("omnific"), OMNIFIC_ROOTS)),
+        ("hl2", "The backing guitar back up", "The two basses with the lifts' backing guitar 6 dB up, as the fourth round had it.", battle_with(battle_picks(), chug_down("AN"), lift_basses("omnific", backing=BACKING_UP), OMNIFIC_ROOTS)),
+        ("hl3", "Both lift basses on the fingers", "The two basses on the fingers into the same drive, Night Shift's bass, in place of the Omnific; the rest of the half stays on the Omnific.", battle_with(battle_picks(), chug_down("AN"), lift_basses("modern"), OMNIFIC_ROOTS)),
+        ("hl4", "On the fingers, the backing guitar up", "Both changes together: the fingers on both lift basses and the backing guitar 6 dB up.", battle_with(battle_picks(), chug_down("AN"), lift_basses("modern", backing=BACKING_UP), OMNIFIC_ROOTS)),
+        ("hl5", "The chug down in X and the climax too", "The two basses, and the chug 3 dB down in X's unison and through the climax and the breath after it, as well as in A and N.", battle_with(battle_picks(), chug_down("AN"), chug_down("XSRYZ"), lift_basses("omnific"), OMNIFIC_ROOTS)),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r13", "title": "Hold The Line, round thirteen",

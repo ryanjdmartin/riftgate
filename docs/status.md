@@ -861,14 +861,18 @@ The tasks are the to-do's; this is the index of what waits.
   3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
   R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
   it was beside it), and its driven bass reopened (4 November: "I was never 100% satisfied with
-  the driven bass"): a set against a real bass (`real_bass.py`) driven as a bassist drives an amp,
-  as written or on the roots, the fifths that doubled the guitar's power chords out, and the roots
-  four ways on his list (throughout, every voice that carries the bass on the real bass, "replacing
-  the existing bass voices, but without any chords where they exist"; the fifths on a second bass or on one
-  bass's two strings into one amp; the climax's fifth chug or one string of it on the fifths; the
-  intro's octave-down register throughout), then the Omnific bass on trial, an active bass into the
-  modern prog drive in every voice that carries the bass, K's crunch synth walk included, but F's
-  punchy sub, "the signature there" ("I didn't mean K, I meant F keeps it's old sub bass") (as written, an octave down, a second bass on the fifths, two basses an octave apart). Night Shift on its sixteenth (the map's intro without its front and its muted guitar out, his
+  the driven bass"): the real basses (`real_bass.py`), picked and with fingers, then the Omnific
+  bass, an active bass into the modern prog drive in every voice that carries the bass, K's crunch
+  synth walk included, but F's punchy sub, "the signature there" ("I didn't mean K, I meant F keeps
+  it's old sub bass"; as written, an octave down, a second bass on the fifths, two basses an octave
+  apart; the picked basses' sets off the page since), and on it the chug 3 dB down in A and N ("I
+  think we need to bring the chug guitar volume down in A and N") and both lifts on two basses an
+  octave apart, the synth lead and the lead guitar out ("C lift - synth lead can go ... send the
+  second bass voice down the octave ... Same changes on L, all variations too"), with the lifts'
+  backing guitar back up, both lift basses on the fingers into the same drive, both, or the chug
+  down in X and the climax too; the map's lifts keep the soft sub ("Map lifts should keep soft sub.
+  it works better").
+  Night Shift on its sixteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms
   with the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two
