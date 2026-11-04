@@ -1083,7 +1083,10 @@ into this file in the same commit as its first publish; the procedures are in `R
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced (a branch's models, rigs and renders stand as it
   published them, so a file is sent only when the live copy is the one it replaces), and `edits`
-  read first. At the page's version 204 (4 November, from `ccr-bb178c9b-l6airv` as main took it;
+  read first. At the page's version 205 (4 November, from `ccr-bb178c9b-l6airv` after the landing;
+  `edits` empty, each live copy 204's as published): the page naming Sweep and Every Foe among the
+  reaches, and `content/components.json` and `content/vocabulary.json` with Every Foe and Every
+  Ally as targeting modes, each read back identical. Over 204 (4 November, from `ccr-bb178c9b-l6airv` as main took it;
   `edits` empty, the page unchanged): `content/components.json` and `content/vocabulary.json` as
   the merged main has them (every cooldown the piece's own, Every Foe and Every Ally as keywords,
   the costs along the foot, the Targets codex's hexes under the main mark), each read back
