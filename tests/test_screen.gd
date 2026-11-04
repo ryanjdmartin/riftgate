@@ -199,14 +199,21 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	d.blast = 0
 	d.set_face(Face.attack(3))
 	d.next_face = Face.shield(5)
-	assert_eq(picked.call(d), [["shield", ""]], "a stepping die's next entry by its main mark")
+	assert_eq(picked.call(d), [["shield", "5"]], "a stepping die's next entry by its mark and its number (Ryan, 4 November: \"Maybe icon+face number?\")")
+	d.next_face = Face.attack(6)
+	assert_eq(picked.call(d), [["weapon", "6"]], "a weapon's blow")
+	d.next_number = "8"
+	assert_eq(picked.call(d), [["weapon", "8"]], "as it would deal it now, the screen's live blow")
+	d.next_number = ""
+	d.next_face = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE])
+	assert_eq(picked.call(d), [["lure", ""]], "equipment: what it lays, by its mark, no number")
 	d.free()
 	var db := ContentDB.load_default()
 	var next := Face.shield(5)
 	next.component = str(db.components.keys()[0])
 	var said := EntryReadout.next_chamber_line(next, 2, db)
 	assert_eq(str(said["text"]), "A roll or reroll steps it to II, %s" % db.component_name(next.component), "the tap popup names where the die steps (Ryan, 4 November)")
-	assert_eq((said["marks"] as Array)[0]["passive"], ["shield", ""], "headed by the box the die shows")
+	assert_eq((said["marks"] as Array)[0]["passive"], ["shield", "5"], "headed by the box the die shows")
 
 
 ## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:

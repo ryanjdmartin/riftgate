@@ -76,6 +76,7 @@ var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in 
 var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the rounds it has left, this one included, its clock along the foot
 var cooldown: int = -1       # the rounds a spend darkens it, its machine's passives in (Skirmish.cooldown_of); -1 reads the entry's own
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
+var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
 var after_blow: int = -1     # the blow its machine's passive adds after the strikes (the Storm Petrel's), its number in the passive box; -1 reads the entry's own (Skirmish.after_blow off a foe)
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
@@ -605,8 +606,35 @@ func passive_marks() -> Array:
 		if blast > 0 and face.kind == Face.Kind.VENT:
 			out.append(["blast", str(blast), Palette.HEAT])
 	if next_face != null:
-		out.append([Glyphs.primary_for(next_face), "", Palette.HUD])
+		out.append(next_mark(next_face, next_number))
 	return out
+
+
+## A stepping die's next entry as its passive box shows it (Ryan, 4 November: "looks a little muddy
+## for some icons and not all that useful ... Maybe icon+face number?"): its main mark drawn small
+## and plain, and the number that entry will show (`shown`, the screen's live blow for a weapon;
+## else its own), both in its kind's colour as the box's other marks wear their source's; for
+## equipment, which shows no number, what it grants or lays, by its mark; a blank its cross.
+static func next_mark(nf: Face, shown: String = "") -> Array:
+	if nf == null:
+		return []
+	match Glyphs.primary_for(nf):
+		"blank":
+			return ["blank", "", Palette.HUD]
+		"equipment":
+			var inside := inside_effect(nf)
+			if inside.is_empty():
+				return ["equipment", "", Palette.HUD]
+			return [chip_glyph(inside), "", Glyphs.colour_for(inside) if inside == "star" else Terms.colour(inside)]
+		"shield":
+			return ["shield", die_number(nf), Palette.SHIELD]
+		"shield_vent":
+			return ["shield_vent", str(nf.power if nf.kind == Face.Kind.SHIELD else nf.shields), Palette.SHIELD]   # its shield's number; the popup names the rest
+		"vent":
+			return ["vent", die_number(nf), Palette.HEAT]
+		"ammo":
+			return ["ammo", die_number(nf), Palette.SELECT]
+	return ["weapon", shown if not shown.is_empty() else die_number(nf), Palette.HUD]
 
 
 ## The passive's boxes at the rail's foot, the lowest first and the rest above it, below the keyword
@@ -625,7 +653,7 @@ func _draw_passive(bob: float, above: int) -> void:
 		var text := str(m[1])
 		var ink := Color(m[2] as Color, frame.a)
 		var tw := mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE).x if not text.is_empty() else 0.0
-		var inner := (14.0 if not glyph.is_empty() else 0.0) + (3.0 if not glyph.is_empty() and not text.is_empty() else 0.0) + tw
+		var inner := (16.0 if not glyph.is_empty() else 0.0) + (3.0 if not glyph.is_empty() and not text.is_empty() else 0.0) + tw
 		var w := maxf(CHIP.x, inner + 12.0)
 		var box := Rect2(Vector2(FACE + RAIL - 2.0 - w, y + bob * 0.5), Vector2(w, CHIP.y))
 		Hud.fill_poly(self, Hud.cut(box, 4.0), Color(Palette.BG, 0.94))
@@ -642,8 +670,8 @@ func _draw_passive(bob: float, above: int) -> void:
 		draw_colored_polygon(PackedVector2Array([tip + Vector2(-7.0, -5.0), tip, tip + Vector2(-7.0, 5.0)]), frame)
 		var x := box.get_center().x - inner * 0.5
 		if not glyph.is_empty():
-			Glyphs.draw(self, glyph, Vector2(x + 7.0, box.get_center().y), 13, ink, 1.8)
-			x += 17.0
+			Glyphs.draw(self, glyph, Vector2(x + 8.0, box.get_center().y), 15, ink, 1.8)
+			x += 19.0
 		if not text.is_empty():
 			draw_string(mono, Vector2(x, box.get_center().y + mono.get_ascent(PASSIVE_SIZE) * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, PASSIVE_SIZE, ink)
 		y -= TAG_STEP

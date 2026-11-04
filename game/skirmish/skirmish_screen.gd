@@ -1208,6 +1208,7 @@ func _refresh(save: bool = true) -> void:
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
 		d.cooldown = sk.cooldown_of(ms, sf)   # the rounds a spend darkens it, its passives in: a cost along its foot
 		d.next_face = sk.next_face(ms) if ms.alive() else null   # a stepping die's next chamber
+		d.next_number = sk.shown_number_text(ms, d.next_face) if d.next_face != null and d.next_face.is_weapon() else ""   # its blow as it would deal it now
 		d.slot = ms.face_index + 1   # its place on the die: a reroll onto a copy shows by it
 		d.spent = ms.assigned
 		d.dead = not ms.alive()

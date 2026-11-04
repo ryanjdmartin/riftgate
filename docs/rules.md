@@ -112,7 +112,8 @@ defeat when every machine is wrecked. There is no round limit.
   to lock it, and again to unlock it; spending unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
-  lock holds it. The die shows its next entry in its passive box, and its readout and codex show its entries as a
+  lock holds it. The die shows its next entry in its passive box, its mark and the number it
+  will show, and its readout and codex show its entries as a
   cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up spins the whole die, the entry
   showing included, the one piece that breaks the reroll rule, so it may land on itself and
   be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
@@ -166,8 +167,11 @@ defeat when every machine is wrecked. There is no round limit.
   What the machine's passive adds sits in its passive box at the foot of the edge, a dashed box
   with an arrow into it, as wide as what it holds: a blow added after the strikes, its number
   by the mark of what pays it (the Storm Petrel's zap, by the shield's, in the shield's colour); a vent's blast at a random foe, by the blast's mark (the Whip
-  Scorpion's); a stepping die's next entry, by its main mark (the Cassowary's). The readout says
-  each on a line of its own, headed by the same box. A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
+  Scorpion's); a stepping die's next entry, by its mark and the number it will show, in its
+  kind's colour, equipment by what it grants or lays (the Cassowary's). The readout says each on
+  a line of its own, headed by the same box. A main mark drawn small (a readout's head, a passive
+  box, a chip) is plain: the sight a whole ring and its four ticks, the vent its plate and one
+  wave. A dark entry is blank, its clock and its turns left along the foot. A debuff's entry is read as it is spent: the Cottonmouth's drum fires every
   weapon and equipment it aims at a foe as its shot of 4, so a debuff through the drum is a
   weapon.
 

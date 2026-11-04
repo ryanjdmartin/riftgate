@@ -26,6 +26,15 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# inside. The side ticks reach in less, clear of the widest number. At the die's size an
 			# inner broken circle, four short arcs on the diagonals clear of the number, and a thin
 			# whole circle round the ring.
+			if size < INNER_FROM:
+				# Drawn small (a readout's head, a passive box, a chip: under 30 wide), plain: a whole
+				# ring and the four ticks crossing it, the breaks and linings a blur at that size
+				# (Ryan, 4 November: the next chamber "looks a little muddy for some icons").
+				var small := s * 0.6
+				ci.draw_arc(c, small, 0.0, TAU, 20, color, width)
+				for d in [Vector2.RIGHT, Vector2.LEFT, Vector2.DOWN, Vector2.UP]:
+					ci.draw_line(c + d * small * 0.45, c + d * s, color, width)
+				return
 			var ring := s * SIGHT_RING
 			var seg := maxi(8, int(size * 0.3))
 			for k in range(4):
@@ -56,6 +65,9 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# rising off its whole top; its numbers shield | cool, each in its colour, a size down.
 			var pts := PackedVector2Array([c + Vector2(-s, -s * 0.5), c + Vector2(s, -s * 0.5), c + Vector2(s, s * 0.3), c + Vector2(0, s), c + Vector2(-s, s * 0.3)])
 			Hud.stroke_poly(ci, pts, color, width)
+			if size < INNER_FROM:
+				_steam(ci, c + Vector2(0.0, -s * 0.8), 0.0, s * 0.3, 1, color, width)   # drawn small, one wave
+				return
 			_vapour(ci, c + Vector2(0.0, -s * 0.82), s * 0.5, s * 0.25, color, width * 0.9, size >= INNER_FROM)
 			if size >= INNER_FROM:
 				Hud.stroke_poly(ci, _inset(pts, c + Vector2(0.0, s * 0.18), 0.85), Color(color, color.a * INNER_ALPHA), 1.0)
@@ -142,6 +154,12 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# little smaller than now)": its plate cut on both top corners, square below, and at
 			# the die's size two thin waves among the three.
 			var plate := Rect2(c + Vector2(-s * 0.9, -s * 0.28), Vector2(s * 1.8, s * 1.12))
+			if size < INNER_FROM:
+				# Drawn small, plain: its plate lower and one wave off its top, three a blur there.
+				var low := Rect2(c + Vector2(-s * 0.85, -s * 0.05), Vector2(s * 1.7, s * 0.95))
+				Hud.stroke_poly(ci, _top_cut(low, s * 0.25), color, width)
+				_steam(ci, c + Vector2(0.0, -s * 0.5), 0.0, s * 0.42, 1, color, width)
+				return
 			Hud.stroke_poly(ci, _top_cut(plate, s * 0.17), color, width)
 			_vapour(ci, c + Vector2(0.0, -s * 0.62), s * 0.47, s * 0.28, color, width * 0.9, size >= INNER_FROM)
 			if size >= INNER_FROM:
