@@ -55,9 +55,12 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working: the music session (the pair page's rounds on Night Shift and The Far Bank; the
-Audio lines of the to-do). It carries on from main; its bible rows land on the live page ahead
-of its branch, so a republish merges onto the live page (Pages).
+Still working (4 November, the branch audit; every other branch on GitHub is merged):
+`ccr-7effd31a-u5z4gw`, the music session (Night Shift's and The Far Bank's rounds on the pair
+page), whose bible rows land on the live page ahead of its branch, so a republish merges onto
+the live page (Pages); `claude/aphelion-minerva-chassis-9qf6cy`, Ryan's chassis session of 4
+November (his ideas and Claude's first round, a proposal); and `claude/inspiring-mendel-hkp5na`,
+the audit, which carries this file.
 
 ## The design sessions
 
