@@ -1488,7 +1488,7 @@
    "face": {
     "kind": "shield",
     "power": 2,
-    "targets": "every_ally",
+    "targets": "every_other_ally",
     "charged": {
      "muster": 1,
      "status": "phased",

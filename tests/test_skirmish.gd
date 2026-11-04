@@ -6899,11 +6899,12 @@ func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
 
 ## A Silence leaves a targeting mode whole (Ryan, 4 November: "Silence should not narrow targeting
 ## modes, that's why I'm switching them to targeting modes"): a Silenced machine's team shield still
-## shields every ally, and an Every Foe entry still reaches every foe, where its keywords go quiet.
+## shields every other ally, and an Every Foe entry still reaches every foe, where its keywords go
+## quiet; Every Ally, the whole team, shields its own machine too.
 func test_a_silence_leaves_every_foe_and_every_ally_whole() -> void:
 	var sk := Skirmish.new(1, 2)
 	var screens := Face.shield(5)
-	screens.targets = Face.Target.EVERY_ALLY
+	screens.targets = Face.Target.EVERY_OTHER_ALLY
 	var c := _mech("Carrier", Die.single(screens), 40, 100)
 	sk.add_mech(c)
 	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
@@ -6917,7 +6918,10 @@ func test_a_silence_leaves_every_foe_and_every_ally_whole() -> void:
 	sk.start_round()
 	Effects.grant_for_rounds(c, Effects.STATUS["silenced"], "foe:test", sk.round + 1)
 	assert_true(sk.assign(0, sk.mechs[1]), "the team shield spent, Silenced")
-	assert_eq([a.shield, b.shield], [5, 5], "every ally shielded all the same: a Silence mutes keywords, never a targeting mode")
+	assert_eq([a.shield, b.shield, c.shield], [5, 5, 40], "every other ally shielded all the same, never its own machine: a Silence mutes keywords, never a targeting mode")
+	var team := Face.shield(5)
+	team.targets = Face.Target.EVERY_ALLY
+	assert_eq(sk.reached_machines(sk.mechs[0], team).size(), 3, "Every Ally: the whole team, its own machine among them")
 	var acting := Effects.effective_face(c, Face.attack(0, Face.Reach.EVERY_FOE, [K.LURE]))
 	assert_eq([acting.reach, acting.keywords.size()], [Face.Reach.EVERY_FOE, 0], "Every Foe stands under a Silence too, its Lure, a keyword, quiet")
 

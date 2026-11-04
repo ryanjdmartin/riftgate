@@ -216,7 +216,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	# Whom it is aimed at, headed by the targeting mark the die draws under its number
 	# (Glyphs.aim_for: a line of fire for Direct, lobbed for Indirect, lobbed with a strike for each
 	# column for a Sweep, the enemy's formation lit for Every Foe; the three hexes for a piece spent
-	# on machines, solid under an arch for Every Ally), bare as the mark is. An area past the
+	# on machines, under an arch for Every Ally and Every Other Ally), bare as the mark is. An area past the
 	# target is its keyword's line (Spread, Penetrate, Splash), as the die chips it.
 	# The words bare: the reach's term stays a term (tap it), its icon the line's own mark, never
 	# a second one shrunk into the words (the formation reads as a blob at the text's size).
@@ -434,8 +434,8 @@ const MOVE_TARGETS := {
 }
 
 
-## Whom a shield, a vent or a buff is spent on (Ryan's words, 26 October), Every Ally among them
-## (a targeting mode since 4 November).
+## Whom a shield, a vent or a buff is spent on (Ryan's words, 26 October), Every Ally and Every
+## Other Ally among them (targeting modes since 4 November).
 static func whom(f: Face) -> String:
 	match f.targets:
 		Face.Target.SELF:
@@ -444,6 +444,8 @@ static func whom(f: Face) -> String:
 			return "Target: Any other ally"
 		Face.Target.EVERY_ALLY:
 			return "Target: Every Ally" + (" yet to act" if f.not_acted else "")
+		Face.Target.EVERY_OTHER_ALLY:
+			return "Target: Every Other Ally" + (" yet to act" if f.not_acted else "")
 	return "Target: Any ally or self"
 
 

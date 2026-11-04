@@ -53,8 +53,8 @@ elites session, the weapon-fire work, the chassis runner rows and the pairs), an
 a fast-forward on 4 November on his word ("Great if there's nothing else open, clean up and merge
 into main"); its bible is v0.449 (the page's version 462; the Pages paragraph). Since the
 landing it carries his notes of the same day, ahead of main: Sweep's mark lobbed with a strike
-rising for each column, and Every Foe and Every Ally as targeting modes a Silence leaves whole,
-their marks his to pick (section 12).
+rising for each column, every lob even, and Every Foe, Every Ally and Every Other Ally as
+targeting modes a Silence leaves whole, their marks built to his picks.
 
 `claude/elites-session` (3 and 4 November) carried the elites session from main's `e75be15` on
 Ryan's marks of the 3rd and his calls and reads of the 4th (How things stand; the bible's
@@ -321,13 +321,14 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   two numbers in their colours. The
   sight drawn small is plain (a whole ring and its ticks); the vent keeps its three waves. The self and ally chips and the buff and debuff arrows gone, the
   foes' intents keeping theirs ("The arrow can be changed but not to the equipment one"); a
-  reach over every foe, Every Foe, and its mirror Every Ally, targeting modes with marks of their
-  own in the die's targeting slot, so a Silence, which mutes keywords, leaves them whole (4
+  reach over every foe, Every Foe, and its mirrors Every Ally and Every Other Ally (the whole team
+  or every machine but its own, the middle hex lit or dark under the arch), targeting modes with
+  marks of their own in the die's targeting slot, so a Silence, which mutes keywords, leaves them whole (4
   November: "Silence should not narrow targeting modes, that's why I'm switching them to
   targeting modes"; keywords from 2 November, retired for it; working names after the foes'
-  Every Machine; content writes `reach: every_foe` and `targets: every_ally`, an old save's
-  keyword or flag read into them, the old forms refused; Every Ally lands on every machine but
-  its own); the unit readouts at 85% (from 70%, "Increase the
+  Every Machine; content writes `reach: every_foe` and `targets: every_ally` or
+  `every_other_ally`, an old save's keyword or flag read into them, the old forms refused; the
+  Mooring Screens every other ally); the unit readouts at 85% (from 70%, "Increase the
   opacity of the popups in skirmish a bit"). `tools/die_sheet.gd` draws the die's whole
   iconography. The reload entry is the Musk Ox's alone (the Quick Reload, fixed). Landing on main
   it took the randomness pass, Sweep, UNDO and the elites under the same rules: their foe chips

@@ -223,10 +223,20 @@
    "id": "every_ally",
    "category": "reach",
    "name": "Every Ally",
+   "codex": "Targeting mode, a shield's or a buff's. Spent on any machine, the entry lands on the whole team, its own machine among them, each taking all of it. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
+   "status": "implemented",
+   "design": {
+    "holes": "Every Foe's mirror on the team's side (2 November; a targeting mode since 4 November); a working name. Its mark is the three hexes under a low arch, its own cell lit (Ryan, 4 November: 'the difference is whether the center one is lit or not, its two modes, even if the every ally doesn't actually exist in game, yet'): no piece carries it yet. Never a vent's (the validator)."
+   }
+  },
+  {
+   "id": "every_other_ally",
+   "category": "reach",
+   "name": "Every Other Ally",
    "codex": "Targeting mode, a shield's or a buff's. Spent on an ally, the entry lands on every machine but its own, each taking all of it. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
    "status": "implemented",
    "design": {
-    "holes": "Every Foe's mirror on the team's side (2 November; a targeting mode since 4 November), the Mooring Screens' team shield; a working name. Never a vent's (the validator). An ally is another machine, so its own is not among them; a piece for the whole team would be a mode of its own."
+    "holes": "Every Ally's other mode (4 November), the Mooring Screens' team shield; a working name. Its mark is Every Ally's with its own cell dark. Never a vent's (the validator)."
    }
   },
   {
@@ -406,7 +416,7 @@
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
-   "codex": "Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, any other ally, or every other ally at once (Every Ally). On the die three connected hexes stand under its main mark, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only.",
+   "codex": "Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, any other ally, or every machine at once: the whole team (Every Ally) or every machine but its own (Every Other Ally). On the die three connected hexes stand under its main mark, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only.",
    "status": "implemented",
    "design": {
     "holes": ""

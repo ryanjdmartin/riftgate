@@ -32,9 +32,10 @@ skirmish.
   default, or self only, or allies only, as the mark under its main mark shows: three connected
   hexes, the middle its own machine, the two beside it its allies, a filled one a machine it may
   be spent on (all three for either), as a weapon's reach is the line of fire under its sight.
-  **Every Ally** (a shield's or a buff's, never a vent's) is a targeting mode of its own: spent
-  on an ally, the entry lands on every machine but its own, each taking all of it. It and Every
-  Foe (Reach, below) are targeting modes, never keywords, so a Silence leaves them whole. A passive may make a piece count as
+  **Every Ally** and **Every Other Ally** (a shield's or a buff's, never a vent's) are targeting
+  modes of their own: the entry lands on the whole team, its own machine among them, or on every
+  machine but its own, each taking all of it. They and Every Foe (Reach, below) are targeting
+  modes, never keywords, so a Silence leaves them whole. A passive may make a piece count as
   a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
   too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
   codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
@@ -171,9 +172,11 @@ defeat when every machine is wrecked. There is no round limit.
   thickness, straight for Direct and lobbed low for Indirect, for a Sweep the line lobbed whole,
   since a sweep picks any rank, four short lines of fire rising from it, one for each of the
   rank's columns, each a solid run and a dash, and for Every Foe the enemy's formation, both ranks
-  of its four columns lit; under one spent on a machine, three hex cells sharing their edges, the
-  middle its own machine, a lit one a machine it may be spent on, and for Every Ally the three
-  cells solid under an arch that comes down over their sides and touches none of them.
+  of its four columns lit, the far rank smaller and narrower; every lob is even about its middle;
+  under one spent on a machine, three hex cells sharing their edges, the middle its own machine, a
+  lit one a machine it may be spent on, and for Every Ally and Every Other Ally the three cells a
+  little smaller under one low arch carried out past the outer cells' edges, touching none, the
+  middle lit for the whole team and dark for every other ally.
   What else a spend does sits beside the main mark (a weapon's strikes, a status's stacks).
   What the machine's passive adds sits in its passive box at the foot of the edge, a dashed box
   with an arrow into it, as wide as what it holds: a blow added after the strikes, its number
@@ -551,7 +554,7 @@ On a machine:
   piece goes out charged, unasked, and its die shows the charged form under a double frame;
   when the charged form has nowhere to land (Phased once any ally has acted, the act again
   with no ally spent), the plain form goes out and the charge waits. The
-  Mooring Screens shield every ally (Every Ally; never the carrier), or Phase every ally, only
+  Mooring Screens shield every ally but the carrier (Every Other Ally), or Phase every ally, only
   while none has acted this round, so it is never a selective protection;
   the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
@@ -615,7 +618,8 @@ On a machine:
 - **Silenced** (debuff, a foe's silence): its components' keywords are muted through its next
   round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, a
   Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count,
-  its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally). Cleansable, an ally's Cleanse the way; a Ward turns
+  its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally, Every
+  Other Ally). Cleansable, an ally's Cleanse the way; a Ward turns
   the silence away. A foe's purge takes every buff a die face bought, every
   stack, for good; what a store, a form or a passive grants goes for the rest of the enemy's
   turn and comes back at the start of the player's turn after its start resolves; the stores

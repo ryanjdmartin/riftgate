@@ -119,7 +119,9 @@ func _kinds() -> Array:
 	hoist.vents = 2
 	hoist.targets = Face.Target.ALLY
 	var screens := Face.shield(2)
-	screens.targets = Face.Target.EVERY_ALLY
+	screens.targets = Face.Target.EVERY_OTHER_ALLY
+	var team := Face.shield(2)
+	team.targets = Face.Target.EVERY_ALLY
 	var down := _die(Face.attack(4))
 	down.dead = true
 	return [
@@ -133,7 +135,8 @@ func _kinds() -> Array:
 		["Debuff, every foe", "the enemy's formation lit:\nevery foe (the Siphon)", _die(Face.attack(0, Face.Reach.EVERY_FOE, [Face.Keyword.LURE]))],
 		["Buff", "spent on a machine: its\nstatus inside, its stacks", _die(Face.buff("overcharged", 2))],
 		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
-		["Shield, every ally", "the arch over the team:\nevery other machine", _die(screens)],
+		["Shield, every ally", "the arch, its own cell\nlit: the whole team", _die(team)],
+		["Shield, every other", "its own dark: every other\nmachine (the Screens)", _die(screens)],
 		["Vent", "its plate holding the heat\noff, steam rising off it", _die(Face.vent(3))],
 		["Shield and vent", "both at once (the Wake\nDiffuser): shield | cool", _die(wake)],
 		["Shield and vent, ally", "the Sutler's Hoist: the\nsteam over the cooling", _die(hoist)],

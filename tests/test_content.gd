@@ -2190,7 +2190,7 @@ func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
 	boiler["passive"]["effects"] = [{"trigger": "static", "effect": "vent_blast", "value": 0}]
 	db.chassis["test_boiler"] = boiler
 	var errs := db.validate()
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("Every Ally is a shield's or a buff's")), "a vent never reaches every ally")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("Every Ally and Every Other Ally are a shield's or a buff's")), "a vent never reaches every ally")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_old_reach") and e.contains("reaches_all is a targeting mode now")), "the old reach key is refused for the targeting mode")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow")), "a heat a blow is positive")
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("vent_blast")), "and a blast's share")

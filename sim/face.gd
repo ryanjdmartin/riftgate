@@ -32,14 +32,16 @@ enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 Novem
 ## Every Foe and Every Ally are targeting modes (Ryan, 4 November: "Silence should not narrow
 ## targeting modes, that's why I'm switching them to targeting modes"; keywords from 2 November):
 ## Every Foe a reach (a debuff's, the Siphon's lure-all: dropped on any foe, it lands on every
-## foe in the fight), Every Ally a `targets` (a shield's or a buff's, the Mooring Screens': spent
-## on an ally, it lands on every other machine). `reaches_all` reads either.
+## foe in the fight); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
+## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
+## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
+## any of them.
 enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
-## narrow one to self only or allies only, so the design space stays open; Every Ally (4
-## November), a targeting mode, lands on every machine but its own.
-enum Target { SELF_ALLY, SELF, ALLY, FOE, EVERY_ALLY }
+## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
+## Other Ally (4 November), targeting modes, land on the whole team or every machine but its own.
+enum Target { SELF_ALLY, SELF, ALLY, FOE, EVERY_ALLY, EVERY_OTHER_ALLY }
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
@@ -78,7 +80,7 @@ const NUMBER_FIELDS := {
 ## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
 const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
 const TARGET_NAMES := {
-	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe", Target.EVERY_ALLY: "every_ally",
+	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe", Target.EVERY_ALLY: "every_ally", Target.EVERY_OTHER_ALLY: "every_other_ally",
 }
 ## Keywords that ride on a shield or vent component (spent on a machine, not a foe); every
 ## other keyword is an attack's, except the few that ride on anything. The validator holds
@@ -148,13 +150,14 @@ var rolls_again_on: String = ""   # any entry: spending it spends a stack of thi
 var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October), printed on it; -1 or 0, none (Rapid carries none of its own, 2 November)
 var spins: bool = false       # a Rapid entry whose free reroll is a true spin over every entry, itself included (the Cassowary's Spin-Up: Ryan's exception to the reroll rule, 19 October)
 ## Reaches every foe in the fight (an attack: the Whip Scorpion's Heliographic Siphon, a
-## lure-all, 20 October) or every machine but its own (a shield or a buff: the Swallowtail's
-## Mooring Screens): its targeting mode, Every Foe or Every Ally (4 November), so a Silence, which
-## mutes keywords, leaves it whole. Setting it on gives the entry the mode its kind takes; off,
-## one foe it may be dropped on anywhere (Indirect) or one ally.
+## lure-all, 20 October), or the whole team or every machine but its own (a shield or a buff: the
+## Swallowtail's Mooring Screens the latter): its targeting mode, Every Foe, Every Ally or Every
+## Other Ally (4 November), so a Silence, which mutes keywords, leaves it whole. Setting it on
+## gives the entry the mode that reaches all it may be spent on (any foe; itself and its allies the
+## whole team, its allies every other ally); off, the one target it may be dropped on.
 var reaches_all: bool:
 	get:
-		return reach == Reach.EVERY_FOE or targets == Target.EVERY_ALLY
+		return reach == Reach.EVERY_FOE or targets == Target.EVERY_ALLY or targets == Target.EVERY_OTHER_ALLY
 	set(on):
 		if kind == Kind.ATTACK:
 			if on:
@@ -162,9 +165,13 @@ var reaches_all: bool:
 			elif reach == Reach.EVERY_FOE:
 				reach = Reach.INDIRECT
 		elif kind != Kind.BLANK:
-			if on:
+			if on and targets == Target.SELF_ALLY:
 				targets = Target.EVERY_ALLY
-			elif targets == Target.EVERY_ALLY:
+			elif on and targets == Target.ALLY:
+				targets = Target.EVERY_OTHER_ALLY
+			elif not on and targets == Target.EVERY_ALLY:
+				targets = Target.SELF_ALLY
+			elif not on and targets == Target.EVERY_OTHER_ALLY:
 				targets = Target.ALLY
 var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
@@ -606,11 +613,11 @@ func on_machines() -> bool:
 
 
 func can_target_self() -> bool:
-	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.SELF)
+	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.SELF or targets == Target.EVERY_ALLY)
 
 
 func can_target_ally() -> bool:
-	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY or targets == Target.EVERY_ALLY)
+	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY or targets == Target.EVERY_ALLY or targets == Target.EVERY_OTHER_ALLY)
 
 
 ## What this blow adds against `target` for the hull it is missing (power_per_missing), read
@@ -889,8 +896,8 @@ func describe() -> String:
 				s += " cools %d" % vents
 			if cools_all:
 				s += " cools to nothing"
-			if targets == Target.EVERY_ALLY:
-				s += " every ally" + (" yet to act" if not_acted else "")   # its targeting mode, where its keyword stood
+			if targets == Target.EVERY_ALLY or targets == Target.EVERY_OTHER_ALLY:
+				s += (" every ally" if targets == Target.EVERY_ALLY else " every other ally") + (" yet to act" if not_acted else "")   # its targeting mode, where its keyword stood
 			for k in keywords:
 				if not printed.has(k):
 					s += " " + keyword_label(k)

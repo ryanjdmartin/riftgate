@@ -91,8 +91,11 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	shield.targets = Face.Target.ALLY
 	assert_eq(Glyphs.aim_for(shield), "aim_ally", "its allies only: the two beside it")
 	shield.reaches_all = true
-	assert_eq([Glyphs.aim_for(shield), shield.targets], ["aim_every_ally", Face.Target.EVERY_ALLY], "every other machine at once: its targeting mode, Every Ally, and its own mark (4 November)")
+	assert_eq([Glyphs.aim_for(shield), shield.targets], ["aim_every_other_ally", Face.Target.EVERY_OTHER_ALLY], "its allies all at once: its targeting mode, Every Other Ally, its own cell dark under the arch (4 November)")
 	assert_true(shield.keywords.is_empty(), "never a keyword, so a Silence leaves it whole")
+	var team := Face.shield(4)
+	team.reaches_all = true
+	assert_eq([Glyphs.aim_for(team), team.targets], ["aim_every_ally", Face.Target.EVERY_ALLY], "itself and its allies all at once: Every Ally, its own cell lit")
 	var vent := Face.vent(3)
 	vent.targets = Face.Target.SELF
 	assert_eq([Glyphs.primary_for(vent), Glyphs.aim_for(vent)], ["vent", "aim_self"], "a vent's steam over the middle hex")
@@ -128,7 +131,7 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 		var f := db.build_face(comp["face"])
 		var aim := Glyphs.aim_for(f)
 		assert_true(aim.begins_with("aim_"), "%s: its main icon holds whom it is aimed at (%s)" % [cid, aim])
-		assert_eq(aim in ["aim_self", "aim_ally", "aim_any", "aim_every_ally"], f.on_machines(), "%s: the hexes on a piece spent on machines, a line of fire or the formation on one aimed at a foe" % cid)
+		assert_eq(aim in ["aim_self", "aim_ally", "aim_any", "aim_every_ally", "aim_every_other_ally"], f.on_machines(), "%s: the hexes on a piece spent on machines, a line of fire or the formation on one aimed at a foe" % cid)
 		if f.on_machines() and f.targets != Face.Target.SELF_ALLY:
 			narrowed += 1
 	assert_true(narrowed > 0, "content narrows some (%d)" % narrowed)

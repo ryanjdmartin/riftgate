@@ -34,31 +34,42 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				else:
 					ci.draw_polyline(rise, color, width)
 		"aim_every_foe":
-			# Every Foe (a targeting mode since 4 November): the enemy's formation whole, both ranks
-			# of its four columns lit (Ryan's pick of the grid; its variations in
-			# docs/looks/targeting_modes_candidates_2.png).
-			var cell := s * 0.353
-			for row in range(2):
-				for k in range(4):
-					var at := c + Vector2((k - 1.5) * s * 0.541, (row - 0.5) * s * 0.506)
-					ci.draw_rect(Rect2(at - Vector2(cell, cell) * 0.5, Vector2(cell, cell)), color, true)
-		"aim_every_ally":
-			# Every Ally (a targeting mode since 4 November): the team's three cells solid, no edge,
-			# under one arch that comes down over their sides and touches none of them, as the chip
-			# had it (Ryan, 4 November: "the arch over it, down over the sides, not touching any of
-			# it, similar to the current chip ... just 3 solid hexes without the outline").
-			var r := s * 0.229
-			var gap := r * 2.05
-			var hy := c.y + s * 0.247
+			# Every Foe (a targeting mode since 4 November): the enemy's formation whole, both ranks of
+			# its four columns lit, the far rank smaller and narrower, as the field is seen from behind
+			# the machines (Ryan, 4 November: "I actually like the 8 squares with the 4 rear ones
+			# smaller"), the near rank the marks' one width.
+			var fc := s * 0.376
+			var fp := (size - fc) / 3.0
+			var bc := fc * 0.72
+			var bp := (size * 0.74 - bc) / 3.0
+			for k in range(4):
+				var back := c + Vector2((k - 1.5) * bp, -s * 0.27)
+				ci.draw_rect(Rect2(back - Vector2(bc, bc) * 0.5, Vector2(bc, bc)), color, true)
+				var front := c + Vector2((k - 1.5) * fp, s * 0.26)
+				ci.draw_rect(Rect2(front - Vector2(fc, fc) * 0.5, Vector2(fc, fc)), color, true)
+		"aim_every_ally", "aim_every_other_ally":
+			# Every Ally and Every Other Ally (targeting modes since 4 November): the three hexes, the
+			# middle its own machine, lit for the whole team and dark for every other ally (Ryan: "the
+			# difference is whether the center one is lit or not, its two modes"), under one low arch
+			# carried out past the outer cells' edges and touching none of them ("ii works for that,
+			# I'd like to see it with the arch widened to carry to the edges of the hexes, but not
+			# actually touching them"); the cells a little smaller than a single target's, so the arch
+			# keeps the marks' one width.
+			var k34 := size / 34.0
+			var r := 5.4 * k34
+			var pitch := sqrt(3.0) * r
+			var hc := c + Vector2(0.0, s * 0.34)
 			for k in range(3):
-				ci.draw_colored_polygon(_hex_pts(Vector2(c.x + (k - 1) * gap, hy), r), color)
-			var rx := gap + r + s * 0.188
-			var top := hy - r - s * 0.141
-			var arch := PackedVector2Array([Vector2(c.x - rx, hy + r * 0.6)])
-			for i in range(19):
-				var a := PI + PI * i / 18.0
-				arch.append(Vector2(c.x + cos(a) * rx, top + sin(a) * s * 0.424))
-			arch.append(Vector2(c.x + rx, hy + r * 0.6))
+				var h := hc + Vector2((k - 1) * pitch, 0.0)
+				if k != 1 or id == "aim_every_ally":
+					ci.draw_colored_polygon(_hex_pts(h, r * 0.72), color)
+				Hud.stroke_poly(ci, _hex_pts(h, r), color, maxf(1.0, width * 0.7))
+			var rx := pitch + sqrt(3.0) * 0.5 * r + 2.6 * k34
+			var base := hc + Vector2(0.0, -r * 0.5 - 2.2 * k34)
+			var arch := PackedVector2Array()
+			for i in range(25):
+				var a := PI + PI * i / 24.0
+				arch.append(base + Vector2(cos(a) * rx, sin(a) * (r * 0.5 + 4.6 * k34)))
 			ci.draw_polyline(arch, color, width)
 		# ---- the die's main marks (Ryan, 3 November): each holds what the entry delivers
 		"weapon":
@@ -697,14 +708,16 @@ static func _fire_line(ci: CanvasItem, c: Vector2, size: float, color: Color, wi
 	_segmented(ci, _fire_pts(c, size, lobbed), FIRE_RUNS, FIRE_GAPS, color, width)
 
 
-## A line of fire's path, `size` wide about `c`: straight, or lobbed low (`lift` its height's share).
+## A line of fire's path, `size` wide about `c`: straight, or lobbed low (`lift` its height's share),
+## the lob even about its middle (Ryan, 4 November: "is your arch actually even? looks like the
+## right side is flatter": its peak had stood left of centre, its right end lower).
 static func _fire_pts(c: Vector2, size: float, lobbed: bool, lift: float = 1.0) -> PackedVector2Array:
 	var s := size * 0.5
 	var h := size * 0.17 * lift
 	var pts := PackedVector2Array()
-	var a0 := c + Vector2(-s, h * 0.45 if lobbed else 0.0)
-	var a1 := c + Vector2(-s * 0.15, -h * 1.5 if lobbed else 0.0)
-	var a2 := c + Vector2(s, h * 0.55 if lobbed else 0.0)
+	var a0 := c + Vector2(-s, h * 0.5 if lobbed else 0.0)
+	var a1 := c + Vector2(0.0, -h * 1.5 if lobbed else 0.0)
+	var a2 := c + Vector2(s, h * 0.5 if lobbed else 0.0)
 	for i in range(41):
 		var t := i / 40.0
 		pts.append(a0.lerp(a1, t).lerp(a1.lerp(a2, t), t))
@@ -828,5 +841,7 @@ static func aim_for(face: Face) -> String:
 		Face.Target.ALLY:
 			return "aim_ally"
 		Face.Target.EVERY_ALLY:
-			return "aim_every_ally"   # every other machine at once (4 November)
+			return "aim_every_ally"   # the whole team at once (4 November)
+		Face.Target.EVERY_OTHER_ALLY:
+			return "aim_every_other_ally"   # every machine but its own at once
 	return "aim_any"
