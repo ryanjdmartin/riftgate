@@ -368,7 +368,7 @@ predates the stock pass's single digits.
 - The Thief "goes for the slowest machine you have": a hero only ever commands the boss unit,
   which never hunts and patrols a hex a turn whatever its move (sim/battlefield.gd:74, :373),
   so its `hunt`, `hunts` and `movespeed` are dead data, and in the fight it aims at the armed.
-  (Its "when it is hurt it leaves" waits on Flee, still planned.)
+  (Its "when it is hurt it leaves" is struck: no foe flees but a loot-runner, Ryan, 2 November.)
 - The Dire Wolf is "faster than anything you own but the cars": it moves 3, and ten machines
   that are no car move 4 or 5 (the Kite, the Buzzard, the Stingray, the Puffin, the
   Cassowary, the Cottonmouth, the Lammergeier, the Skua, the Needletail, the Storm Petrel);

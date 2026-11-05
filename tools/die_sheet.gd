@@ -106,7 +106,7 @@ func _kinds() -> Array:
 	var burst := Face.attack(2)
 	burst.strikes = 4
 	var sweep := Face.attack(2, Face.Reach.SWEEP)
-	sweep.strikes = 3
+	sweep.strikes = 4
 	var petrel := Face.attack(4)
 	petrel.burns = 2
 	var zap := _die(petrel)
@@ -118,18 +118,25 @@ func _kinds() -> Array:
 	var hoist := Face.shield(3)
 	hoist.vents = 2
 	hoist.targets = Face.Target.ALLY
+	var screens := Face.shield(2)
+	screens.targets = Face.Target.EVERY_OTHER_ALLY
+	var team := Face.shield(2)
+	team.targets = Face.Target.EVERY_ALLY
 	var down := _die(Face.attack(4))
 	down.dead = true
 	return [
 		["Weapon, direct", "the sight, its blow inside;\nthe line straight: Direct", _die(Face.attack(4))],
 		["Weapon, indirect", "the line lobbed:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
-		["Weapon, sweep", "the line along the rank,\nticks where it strikes", _die(sweep)],
+		["Weapon, sweep", "lobbed, any rank: a\nstrike for each column", _die(sweep)],
 		["Weapon, strikes", "a strike's blow inside,\nits strikes beside", _die(burst)],
 		["Weapon, over a foe", "its passive's box: the Storm\nPetrel's blow after it", zap],
 		["Debuff, direct", "gear, what it lays inside\n(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
 		["Debuff, indirect", "the gear holding Lure,\nthe line lobbed", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
+		["Debuff, every foe", "the enemy's formation lit:\nevery foe (the Siphon)", _die(Face.attack(0, Face.Reach.EVERY_FOE, [Face.Keyword.LURE]))],
 		["Buff", "spent on a machine: its\nstatus inside, its stacks", _die(Face.buff("overcharged", 2))],
 		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
+		["Shield, every ally", "the arch, its own cell\nlit: the whole team", _die(team)],
+		["Shield, every other", "its own dark: every other\nmachine (the Screens)", _die(screens)],
 		["Vent", "its plate holding the heat\noff, steam rising off it", _die(Face.vent(3))],
 		["Shield and vent", "both at once (the Wake\nDiffuser): shield | cool", _die(wake)],
 		["Shield and vent, ally", "the Sutler's Hoist: the\nsteam over the cooling", _die(hoist)],
@@ -191,10 +198,6 @@ func _rest() -> Array:
 	stepping.next_face = Face.attack(6)
 	var seal := _die(Face.shield(3))
 	seal.form_mark = "seal"
-	var lure_all := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE, Face.Keyword.EVERY_FOE])
-	var team := Face.shield(2)
-	team.targets = Face.Target.ALLY
-	team.add_keyword(Face.Keyword.EVERY_ALLY)
 	var unseal := _die(Face.vent(3))
 	unseal.form_mark = "unseal"
 	return [
@@ -208,8 +211,6 @@ func _rest() -> Array:
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
 		["Dark", "a cooldown or a switch-\noff: the clock, its turns", dark],
 		["Chips", "keywords, the star for a\nrule, a corruption", chipped],
-		["Every Foe", "a keyword: lands on\nevery foe (the Siphon)", _die(lure_all)],
-		["Every Ally", "a keyword: lands on every\nally (the Mooring Screens)", _die(team)],
 		["Next chamber", "its passive's box: the\nnext entry (the Cassowary)", stepping],
 		["Seals", "spent on itself, the\nArmadillo shuts", seal],
 		["Opens", "spent, the Armadillo's\nshell opens", unseal],

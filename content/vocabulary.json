@@ -211,22 +211,32 @@
   },
   {
    "id": "every_foe",
-   "category": "keyword",
+   "category": "reach",
    "name": "Every Foe",
-   "codex": "Keyword, a debuff's. Aimed at a foe in its reach, the entry lands on every foe in the fight, front rank and back, as it lands on its target.",
+   "codex": "Targeting mode, a debuff's. Dropped on any foe, the entry lands on every foe in the fight, front rank and back, as it lands on its target. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
    "status": "implemented",
    "design": {
-    "holes": "A targeting mode as Spread, Penetrate and Splash are (Ryan, 2 November: 'it should be listed as such and given a keyword'), so a Silence mutes it as it mutes them; a working name, the foes' Every Machine mirrored. A weapon's area is Spread, Penetrate or Splash with its number, so the validator holds Every Foe to a debuff (the Heliographic Siphon's lure-all) until a damaging one is designed."
+    "holes": "A keyword from 2 November (Ryan: 'Every foe is a targeting mode, just like spread, penetrate, and splash, it should be listed as such and given a keyword'), a targeting mode in its own right since 4 November ('Silence should not narrow targeting modes, that's why I'm switching them to targeting modes'), drawn in the die's targeting slot. A working name, the foes' Every Machine mirrored. A weapon's area is Spread, Penetrate or Splash with its number, so the validator holds Every Foe to a debuff (the Heliographic Siphon's lure-all) until a damaging one is designed."
    }
   },
   {
    "id": "every_ally",
-   "category": "keyword",
+   "category": "reach",
    "name": "Every Ally",
-   "codex": "Keyword, a shield's or a buff's. Spent on a machine it may be spent on, the entry lands on every machine it may be spent on, each taking all of it: every other ally for one that goes to allies only.",
+   "codex": "Targeting mode, a shield's or a buff's. Spent on any machine, the entry lands on the whole team, its own machine among them, each taking all of it. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
    "status": "implemented",
    "design": {
-    "holes": "Every Foe's mirror on the team's side (2 November), the Mooring Screens' team shield; a working name. Never a vent's (the validator)."
+    "holes": "Every Foe's mirror on the team's side (2 November; a targeting mode since 4 November); a working name. Its mark is the three hexes under a low arch, its own cell lit (Ryan, 4 November: 'the difference is whether the center one is lit or not, its two modes, even if the every ally doesn't actually exist in game, yet'): no piece carries it yet. Never a vent's (the validator)."
+   }
+  },
+  {
+   "id": "every_other_ally",
+   "category": "reach",
+   "name": "Every Other Ally",
+   "codex": "Targeting mode, a shield's or a buff's. Spent on an ally, the entry lands on every machine but its own, each taking all of it. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
+   "status": "implemented",
+   "design": {
+    "holes": "Every Ally's other mode (4 November), the Mooring Screens' team shield; a working name. Its mark is Every Ally's with its own cell dark. Never a vent's (the validator)."
    }
   },
   {
@@ -343,7 +353,7 @@
    "id": "numbed",
    "category": "status",
    "name": "Numbed",
-   "codex": "Foe buff: the rounds until one stun lands. A stun on it strips a stack and lands nothing, so a foe with Numbed N takes N+1 stuns in a round. A stunned foe recovers with its stun resist in stacks (1 for most, 3 for a massive foe), after the round's decay; a stack goes at the end of each round. A Purge lowers it like any buff; nothing deepens, spreads or cleanses it.",
+   "codex": "Foe buff: the rounds until one stun lands. A stun on it strips a stack and lands nothing, so a foe with Numbed N takes N+1 stuns in a round. A stunned foe recovers with its stun resist in stacks (1 for most, 2 for a massive foe, 3 for an elite, a hero or a boss), after the round's decay; a stack goes at the end of each round. A Purge lowers it like any buff; nothing deepens, spreads or cleanses it.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's clock (2 November): the chip reads as the rounds until it can be stunned again, so the stacks land after the decay phase; a stun lock costs its resist and one every round, so an all-in stun team can brute-force a boss at a price, and a Purge is the other key. The resist numbers are placeholders (content's resist; the bosses' by hand).",
@@ -396,7 +406,7 @@
    "id": "kill_overcharge",
    "category": "component_property",
    "name": "Empowered a kill",
-   "codex": "A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner so many stacks of Empowered (two), which the Ammit keeps for the battle.",
+   "codex": "A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner a stack of Empowered, which the Ammit keeps for the battle.",
    "status": "implemented",
    "design": {
     "holes": "A spread that kills two feeds twice; a chain feeds on every link."
@@ -406,7 +416,7 @@
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
-   "codex": "Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, or any other ally. On the die three connected hexes stand under its main mark, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only.",
+   "codex": "Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, any other ally, or every machine at once: the whole team (Every Ally) or every machine but its own (Every Other Ally). On the die three connected hexes stand under its main mark, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -516,7 +526,7 @@
    "id": "dispel",
    "category": "keyword",
    "name": "Purge",
-   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries but Guarded (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff a die face bought, for good, and N of what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A Ward turns it away and stands, on either side.",
+   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries but Guarded (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff an entry's spend bought, for good, and N of what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A Ward turns it away and stands, on either side.",
    "status": "implemented",
    "design": {
     "holes": "One id, dispel, on both sides, as breach is (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). On a foe (Effects.purge_foe) it lowers Armoured, Empowered, Getting Back Up, Primed, Barrier, Regenerating and Numbed, never Guarded; a Ward turns it and stands. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and lowered for good; anything else sleeps its stacks and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question."
@@ -562,7 +572,7 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. When a weapon's strike aimed at this foe lands, it deals double damage and the status clears. A blow that only reaches it (an area, a Chain's arc, a spill) neither doubles nor clears it, and equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, by a Chain weapon's charge, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
+   "codex": "Foe status. When a weapon's strike aimed at this foe lands, it deals double damage and the status clears. A blow that only reaches it (an area, a Chain's arc, a spill) neither doubles nor clears it, and equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, by a Charged machine's weapon, and on a foe that strikes the bare hull of a machine carrying Retaliate.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -951,16 +961,6 @@
    "category": "formation",
    "name": "Back rank",
    "codex": "Four slots behind the front. Back-rank foes hold these.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
-   "id": "exposed",
-   "category": "formation",
-   "name": "Exposed",
-   "codex": "A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in Direct reach.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1944,7 +1944,7 @@
    "id": "golden",
    "category": "status",
    "name": "Golden",
-   "codex": "Foe status, from a golden rage (the Thunder Ape's). Its blows hit 2 harder and it wears a point of armour for the rounds its rage says, its chip counting them down with the damage that breaks it. A quarter of its HP lost since it went gold breaks the rage and it staggers: the gold goes and it loses its next action. A Suppress breaks it too; a Purge strips it. Calm again, it may go gold again.",
+   "codex": "Foe status, from a golden rage (the Thunder Ape's). Its blows hit its rage's value harder and it wears a point of armour for the rounds its rage says, its chip counting them down with the damage that breaks it. A quarter of its HP lost since it went gold breaks the rage and it staggers: the gold goes and it loses its next action. A Suppress breaks it too; a Purge strips it. Calm again, it may go gold again.",
    "status": "implemented",
    "design": {
     "holes": "Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage \"is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing\"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.",
@@ -1960,10 +1960,10 @@
    "id": "kindled",
    "category": "status",
    "name": "Empowered",
-   "codex": "Foe status, from a rally, landing on every other foe on the field the moment the rally does. Its next move hits harder by the rally's value, and that move spends it, whatever it is: a blow lands it, a special gains nothing from it, a Suppress that takes the move takes it too, and a countdown carries it to the blow it lands. A foe acting after the rallier spends it this turn; one that has acted carries it to its next move. An intent counts the rallies on their way, a pulsing chip on a dashed edge saying why, and drops them the moment the rallier is killed, Suppressed or Disrupted.",
+   "codex": "Foe status, from a rally: it lands on every other foe on the field the moment the rally does, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add before the move's factor. It halves at the end of each round, rounded down, as a machine's Empowered does: no move spends it, a Suppress takes none of it, and a foe that has acted when the rally lands carries half to the next round. Two rallies add. An intent counts the rallies on their way to it this round.",
    "status": "implemented",
    "design": {
-    "holes": "",
+    "holes": "One clock on both sides since 4 November (Ryan: \"we try and make it work. If it's unbalanceable, we go back to separate keywords with different clocks\"); the next-move clock of 26 October retired.",
     "table": {
      "kind": "buff",
      "on": "foe",
@@ -1975,7 +1975,7 @@
   {
    "id": "risen",
    "category": "status",
-   "name": "Getting Back Up",
+   "name": "Undying",
    "codex": "Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round.",
    "status": "implemented",
    "design": {
@@ -2102,7 +2102,7 @@
    "id": "elite",
    "category": "foe",
    "name": "Elite",
-   "codex": "A unique foe leading its own composition, worth double its menace, emerging at the rift at a Fracture. Each tier names which Fractures bring one; the lead domain's elites come in turn and never twice in a battle.",
+   "codex": "A unique foe leading its own composition, worth double its menace, emerging at the rift at a Fracture. Each tier names which Fractures bring one; the lead domain's elites come in turn and never twice in a battle, or a wanderer, drawn on the Fracture's roll one time in three and always once the domain's own are spent. An elite stands at the battle's tier as a boss does.",
    "status": "implemented",
    "design": {
     "holes": "Five placeholder kits (the goblin shaman, the Elder Treant, the Leshy, the Old Man of the Desert, the Reaper) for Ryan's marks; the Peak's elite and a Waste hunter wait on them; the Bone Wyvern waits on the slate."

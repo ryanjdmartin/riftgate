@@ -4427,6 +4427,11 @@ Aphelion's white #e8e8ec 1.4 to 3.2:1 / 24 to 73. A flare is laid over the hull 
 (added, the plasma read pale pink on the Badger's grey), so its colour holds on every hull; on a
 mid steel its edge is its shape, not its lightness.
 
+## 2 November, the bosses' escorts at tiers two and three
+
+Written as a paragraph inside "30 October, the slate's last five" (above), where its method,
+its seeds and its table are; this heading indexes it.
+
 ## 2 November, the Armadillo at tier one
 
 **Is the Armadillo too much of a wall for tier one?** (Ryan's play test of 2 November: "armadillo

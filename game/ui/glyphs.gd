@@ -18,15 +18,68 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# goes; straight for Direct, a gentle lob for Indirect, as wide as the three hexes.
 			_fire_line(ci, c, size, color, width, id == "aim_indirect")
 		"aim_sweep":
-			# Sweep (3 November), the third reach, in the lines' own language: the line along the rank,
-			# whole where Direct's breaks into dashes, and three ticks rising from it at even steps, a
-			# strike to a slot, left to right; no arrowhead (Ryan, 3 November, of the arrows: "looks
-			# cheap"). Drawn as main's Sweep landed, for his eye.
-			var ry := s * 0.3
-			ci.draw_line(c + Vector2(-s, ry), c + Vector2(s, ry), color, width)
-			for i in range(3):
-				var x := (i - 1) * s * 0.7
-				ci.draw_line(c + Vector2(x, ry), c + Vector2(x, -s * 0.3), color, width)
+			# Sweep (3 November), the third reach: lobbed, since a sweep picks any rank (Ryan, 4
+			# November: "curved to indicate it has indirect reach"), its arc whole along the rank, and a
+			# line of fire rising off it for each of the rank's four columns, a solid run and a dash
+			# ("have the lines poking out have the same kind of segmented look as the others"; then,
+			# of the rising form: "Can we give it 4 lines instead of 3, symbolizing the 4 columns?",
+			# and two pieces, so it sits clear of a full costs row). Drawn small, the strikes plain.
+			var arc := _fire_pts(c + Vector2(0.0, s * 0.22), size, true, 0.85)
+			_run(ci, arc, 0.0, _path_length(arc), color, width)
+			for u in [0.125, 0.375, 0.625, 0.875]:
+				var from := _along(arc, u) + Vector2(0.0, -size * 0.04)
+				var rise := PackedVector2Array([from, from + Vector2(0.0, -s * 0.48)])
+				if size >= INNER_FROM:
+					_segmented(ci, rise, STRIKE_RUNS, STRIKE_GAPS, color, width)
+				else:
+					ci.draw_polyline(rise, color, width)
+		"aim_every_foe":
+			# Every Foe (a targeting mode since 4 November): the enemy's formation whole, both ranks
+			# of its four columns lit, the far rank smaller and narrower, as the field is seen from
+			# behind the machines (Ryan, 4 November: "I actually like the 8 squares with the 4 rear
+			# ones smaller"), the ranks close ("we can gain a bit by narrowing the gap between the two
+			# rows"), held in square brackets at its sides ("Can we get side-brackets on All Foes?
+			# Round or square, not sure"; then "Square brackets are good"), the whole the marks' one
+			# width.
+			var fw := size * 0.68
+			var fc := fw * 0.19
+			var fp := (fw - fc) / 3.0
+			var bc := fc * 0.72
+			var bp := (fw * 0.74 - bc) / 3.0
+			for k in range(4):
+				var back := c + Vector2((k - 1.5) * bp, -s * 0.17)
+				ci.draw_rect(Rect2(back - Vector2(bc, bc) * 0.5, Vector2(bc, bc)), color, true)
+				var front := c + Vector2((k - 1.5) * fp, s * 0.17)
+				ci.draw_rect(Rect2(front - Vector2(fc, fc) * 0.5, Vector2(fc, fc)), color, true)
+			var reach := s * 0.38
+			for side in [-1.0, 1.0]:
+				var x: float = side * (s - width * 0.5)
+				var serif: float = -side * s * 0.2
+				ci.draw_polyline(PackedVector2Array([c + Vector2(x + serif, -reach), c + Vector2(x, -reach), c + Vector2(x, reach), c + Vector2(x + serif, reach)]), color, width)
+		"aim_every_ally", "aim_every_other_ally":
+			# Every Ally and Every Other Ally (targeting modes since 4 November): the three hexes, the
+			# middle its own machine, lit for the whole team and dark for every other ally (Ryan: "the
+			# difference is whether the center one is lit or not, its two modes"), under one low arch
+			# carried out past the outer cells' edges and touching none of them ("ii works for that,
+			# I'd like to see it with the arch widened to carry to the edges of the hexes, but not
+			# actually touching them"); the cells a little smaller than a single target's, so the arch
+			# keeps the marks' one width.
+			var k34 := size / 34.0
+			var r := 4.8 * k34
+			var pitch := sqrt(3.0) * r
+			var hc := c + Vector2(0.0, 2.3 * k34)   # the whole centred on the slot, inside its band
+			for k in range(3):
+				var h := hc + Vector2((k - 1) * pitch, 0.0)
+				if k != 1 or id == "aim_every_ally":
+					ci.draw_colored_polygon(_hex_pts(h, r * 0.72), color)
+				Hud.stroke_poly(ci, _hex_pts(h, r), color, maxf(1.0, width * 0.7))
+			var rx := pitch + sqrt(3.0) * 0.5 * r + 2.6 * k34
+			var base := hc + Vector2(0.0, -r * 0.5 - 1.6 * k34)
+			var arch := PackedVector2Array()
+			for i in range(25):
+				var a := PI + PI * i / 24.0
+				arch.append(base + Vector2(cos(a) * rx, sin(a) * (r * 0.5 + 2.6 * k34)))
+			ci.draw_polyline(arch, color, width)
 		# ---- the die's main marks (Ryan, 3 November): each holds what the entry delivers
 		"weapon":
 			# A weapon (Ryan, 3 November: the faces did not "read weapon"): a sight, its ring broken
@@ -189,21 +242,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var x := -s * 0.6 + k * s * 0.6
 				ci.draw_line(c + Vector2(x, -s * 0.45), c + Vector2(x, s * 0.55), color, width)
 				ci.draw_colored_polygon(PackedVector2Array([c + Vector2(x - s * 0.22, s * 0.45), c + Vector2(x + s * 0.22, s * 0.45), c + Vector2(x, s * 0.9)]), color)
-		"every_foe":
-			# Every Foe (2 November): the enemy's formation whole, both ranks of three lit, a
-			# diagram as Spread's row and Penetrate's column are, apart from Spread's three bars.
-			for row in range(2):
-				for k in range(3):
-					var at := c + Vector2(-s * 0.65 + k * s * 0.65, -s * 0.36 + row * s * 0.72)
-					ci.draw_rect(Rect2(at - Vector2(s * 0.22, s * 0.22), Vector2(s * 0.44, s * 0.44)), color, true)
-		"every_ally":
-			# Every Ally (2 November): one arch over three of the team, a piece that lands on all of
-			# them at once.
-			ci.draw_arc(c + Vector2(0, s * 0.3), s * 0.9, PI, TAU, 18, color, width)
-			ci.draw_line(c + Vector2(-s * 0.9, s * 0.3), c + Vector2(-s * 0.9, s * 0.5), color, width)
-			ci.draw_line(c + Vector2(s * 0.9, s * 0.3), c + Vector2(s * 0.9, s * 0.5), color, width)
-			for k in range(3):
-				ci.draw_circle(c + Vector2(-s * 0.5 + k * s * 0.5, s * 0.6), s * 0.19, color)
 		"parts":
 			# A foe in parts (30 October): the core's ring and the two parts standing by it.
 			ci.draw_arc(c + Vector2(0, s * 0.15), s * 0.5, 0.0, TAU, 20, color, width)
@@ -264,7 +302,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color)
 		"regenerating":
 			# Regenerating (28 October): the heart's outline with a plus inside it, HP regrown at
-			# each action, so it never reads as Getting Back Up's star.
+			# each action, so it never reads as Undying's star.
 			draw(ci, "heart", c, size, color, width)
 			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.02), c + Vector2(s * 0.3, -s * 0.02), color, width)
 			ci.draw_line(c + Vector2(0, -s * 0.32), c + Vector2(0, s * 0.28), color, width)
@@ -669,32 +707,72 @@ static func _inset(pts: PackedVector2Array, ctr: Vector2, k: float) -> PackedVec
 ## segments"), every one the same thickness ("make sure that each segment is the same height");
 ## straight (Direct), or along a gentle lob about a sixth as high as it is wide (Indirect: "Flatten
 ## the indirect a little").
-const FIRE_RUNS := [0.46, 0.2, 0.08]
-const FIRE_GAPS := [0.13, 0.11]
+const FIRE_RUNS := [0.42, 0.22, 0.12, 0.06]   # a line of fire: a solid run and three ever shorter dashes, one height (Ryan, 4 November: "You lost your 4-segment direct and indirect that I approved")
+const FIRE_GAPS := [0.07, 0.06, 0.05]
+const STRIKE_RUNS := [0.6, 0.26]   # a Sweep's rising strike: a short line of fire, a solid run and one dash (Ryan, 4 November)
+const STRIKE_GAPS := [0.18]
 
 
 static func _fire_line(ci: CanvasItem, c: Vector2, size: float, color: Color, width: float, lobbed: bool) -> void:
+	_segmented(ci, _fire_pts(c, size, lobbed), FIRE_RUNS, FIRE_GAPS, color, width)
+
+
+## A line of fire's path, `size` wide about `c`: straight, or lobbed low (`lift` its height's share),
+## the lob even about its middle (Ryan, 4 November: "is your arch actually even? looks like the
+## right side is flatter": its peak had stood left of centre, its right end lower).
+static func _fire_pts(c: Vector2, size: float, lobbed: bool, lift: float = 1.0) -> PackedVector2Array:
 	var s := size * 0.5
-	var h := size * 0.17
+	var h := size * 0.17 * lift
 	var pts := PackedVector2Array()
-	var a0 := c + Vector2(-s, h * 0.45 if lobbed else 0.0)
-	var a1 := c + Vector2(-s * 0.15, -h * 1.5 if lobbed else 0.0)
-	var a2 := c + Vector2(s, h * 0.55 if lobbed else 0.0)
+	var a0 := c + Vector2(-s, h * 0.5 if lobbed else 0.0)
+	var a1 := c + Vector2(0.0, -h * 1.5 if lobbed else 0.0)
+	var a2 := c + Vector2(s, h * 0.5 if lobbed else 0.0)
 	for i in range(41):
 		var t := i / 40.0
 		pts.append(a0.lerp(a1, t).lerp(a1.lerp(a2, t), t))
+	return pts
+
+
+static func _path_length(pts: PackedVector2Array) -> float:
 	var total := 0.0
 	for i in range(1, pts.size()):
 		total += pts[i].distance_to(pts[i - 1])
+	return total
+
+
+## A path drawn as a line of fire: its runs, with the gaps between them, as shares of its length.
+static func _segmented(ci: CanvasItem, pts: PackedVector2Array, runs: Array, gaps: Array, color: Color, width: float) -> void:
+	var total := _path_length(pts)
 	var sum := 0.0
-	for v in FIRE_RUNS + FIRE_GAPS:
+	for v in runs + gaps:
 		sum += float(v)
 	var at := 0.0
-	for k in range(FIRE_RUNS.size()):
-		var b: float = at + float(FIRE_RUNS[k]) / sum * total
+	for k in range(runs.size()):
+		var b: float = at + float(runs[k]) / sum * total
 		_run(ci, pts, at, b, color, width)
-		if k < FIRE_GAPS.size():
-			at = b + float(FIRE_GAPS[k]) / sum * total
+		if k < gaps.size():
+			at = b + float(gaps[k]) / sum * total
+
+
+## A hex's six corners about `c`, pointy side up as the map's.
+static func _hex_pts(c: Vector2, r: float) -> PackedVector2Array:
+	var hex := PackedVector2Array()
+	for i in range(6):
+		var a := PI / 6.0 + i * PI / 3.0
+		hex.append(c + Vector2(cos(a), sin(a)) * r)
+	return hex
+
+
+## The point a share `u` of the way along a path.
+static func _along(pts: PackedVector2Array, u: float) -> Vector2:
+	var want := u * _path_length(pts)
+	var run := 0.0
+	for i in range(1, pts.size()):
+		var d := pts[i].distance_to(pts[i - 1])
+		if run + d >= want:
+			return pts[i - 1].lerp(pts[i], (want - run) / maxf(d, 0.001))
+		run += d
+	return pts[pts.size() - 1]
 
 
 ## The stretch of a polyline from arc length `a` to `b`, drawn.
@@ -763,10 +841,16 @@ static func aim_for(face: Face) -> String:
 	if face.kind == Face.Kind.ATTACK:
 		if face.reach == Face.Reach.SWEEP:
 			return "aim_sweep"   # a rank swept (3 November)
+		if face.reach == Face.Reach.EVERY_FOE:
+			return "aim_every_foe"   # every foe at once (4 November)
 		return "aim_indirect" if face.reach == Face.Reach.INDIRECT else "aim_direct"
 	match face.targets:
 		Face.Target.SELF:
 			return "aim_self"
 		Face.Target.ALLY:
 			return "aim_ally"
+		Face.Target.EVERY_ALLY:
+			return "aim_every_ally"   # the whole team at once (4 November)
+		Face.Target.EVERY_OTHER_ALLY:
+			return "aim_every_other_ally"   # every machine but its own at once
 	return "aim_any"

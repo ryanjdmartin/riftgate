@@ -157,10 +157,9 @@ His calls, in his words:
 - "Cut shield-basher as a unit, but add it as a potential minervan tier 3 weapon or module -
   bonus damage equal to armour, then armour zero until end of round." (`minerva_shield_bash.md`)
 - "Mole needs a better hook than 'ignores armour' but we can work on that later."
-- "Armadillo moves to T2, and either Boar or Mole will move down." Moved now, Minerva's tier-one
-  deal would be the Honey Badger every time until the Boar or the mole comes down or the lure tank
-  lands (the Baboon's move was held for the same reason), so the content, the bible's Armadillo
-  row and section 12's question move now or with whichever comes down: his word (the to-do).
+- "Armadillo moves to T2, and either Boar or Mole will move down." The move lands with Minerva's
+  replacement tier-one tank, which Ryan is designing himself (the bible's section 12, 4 November),
+  so Minerva keeps a tier-one front: the lure tank, or the Boar or the mole come down (the to-do).
 - "The two slots you pegged for aphelion aren't relevant." Then: "Let's say we're folding the
   unrefined detonator concept into the Science vessel, yes, and keeping the unrefined time
   shifter." (`aphelion_jellyfish.md`, `aphelion_time_shifter.md`)
@@ -364,9 +363,9 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
-| `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty elites, five wanderers, the Nob's rage, the Fiend of Fire, the demotions), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the Meadow's and the Waste's third boss, the Fell Rider's mount, the rage's shape, the Monster Hunter nods, the names) |
+| `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty-one elites, six wanderers, the Nob's rage, the Fiend of Fire, the demotions; every domain's third boss landed 4 November), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the elites' numbers, the names) |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
-| `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate a load; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |
+| `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate for every two loads; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |
 | `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna); his new shape of 4 November (strikers debuffed to hurt themselves after they act) and Claude's first round on it in the brief | Minerva | 2 | Ryan's calls on the new shape (the brief's open item 2) |
 | `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | nothing: the cooldown property it waited on is built |
@@ -389,14 +388,14 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | nothing: Flak built and measured 21 October (`docs/measurements.md`) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October) |
 | `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
-| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October); the status detonator folded in, unrefined (Ryan, 4 November), and what moved on main since | Aphelion | 2 | Ryan's calls (the fold's shape among them); the fresh start it waited on landed 30 October |
+| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October); the status detonator folded in, unrefined (Ryan, 4 November), and what moved on main since | Aphelion | 2 | Ryan's calls (the fold's shape among them); its Disrupt read again on the fresh start's compositions |
 | `aphelion_carrier.md` | proposal, open; first round and review in the brief (15 and 16 October) | Aphelion | 3 | Ryan's calls on its open list |
 | `aphelion_baboon.md` | rework; first round and review in the brief (15 and 16 October) | Aphelion | 2 (now 1) | Ryan's calls (the stock pass left it at tier one) |
 | `zoids_walker.md` | proposal, maker open; the Arsenal's on the ten-a-maker plan (4 November, unmarked), its verb open | the Arsenal (Aphelion or the Arsenal before) | 2 | Ryan's calls on the move and its verb |
 | `arsenal_misharu.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
 | `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
-| `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (riders on machines), unless its kit lights the fire |
-| `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (back ranks) |
+| `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | Ryan's calls; the foes' riders on machines are in (the fresh start, 30 October), so its fire has fuel |
+| `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | Ryan's calls; the compositions' back ranks are in (the fresh start, 30 October) |
 | `aphelion_static.md` | Ryan's idea of 4 November, Claude's first round (Static, and the shock unit's Aphelion half) | Aphelion | 1 | Ryan's calls on its open list |
 | `aphelion_macross.md` | Ryan's idea of 4 November, Claude's first round (the flagship mode changer; the aura-shifter folded in) | Aphelion | 3 | Ryan's calls on its open list |
 | `aphelion_barrier_ward.md` | Ryan's idea of 4 November, Claude's first round (the defensive tier one) | Aphelion | 1 | Ryan's calls on its open list |

@@ -91,8 +91,11 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	shield.targets = Face.Target.ALLY
 	assert_eq(Glyphs.aim_for(shield), "aim_ally", "its allies only: the two beside it")
 	shield.reaches_all = true
-	assert_eq(Glyphs.aim_for(shield), "aim_ally", "every ally at once is aimed at an ally")
-	assert_true(shield.has(Face.Keyword.EVERY_ALLY) and not shield.has(Face.Keyword.EVERY_FOE), "and carries Every Ally, a keyword")
+	assert_eq([Glyphs.aim_for(shield), shield.targets], ["aim_every_other_ally", Face.Target.EVERY_OTHER_ALLY], "its allies all at once: its targeting mode, Every Other Ally, its own cell dark under the arch (4 November)")
+	assert_true(shield.keywords.is_empty(), "never a keyword, so a Silence leaves it whole")
+	var team := Face.shield(4)
+	team.reaches_all = true
+	assert_eq([Glyphs.aim_for(team), team.targets], ["aim_every_ally", Face.Target.EVERY_ALLY], "itself and its allies all at once: Every Ally, its own cell lit")
 	var vent := Face.vent(3)
 	vent.targets = Face.Target.SELF
 	assert_eq([Glyphs.primary_for(vent), Glyphs.aim_for(vent)], ["vent", "aim_self"], "a vent's steam over the middle hex")
@@ -100,14 +103,14 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	buff.targets = Face.Target.ALLY
 	assert_eq([Glyphs.primary_for(buff), Glyphs.aim_for(buff)], ["equipment", "aim_ally"], "a buff: equipment's gear over the hexes")
 	var gun := Face.attack(0)
+	assert_eq([Glyphs.primary_for(gun), Glyphs.aim_for(gun)], ["equipment", "aim_direct"], "a debuff: the same gear over the straight line")
+	assert_eq([Glyphs.primary_for(Face.attack(0, Face.Reach.INDIRECT)), Glyphs.aim_for(Face.attack(0, Face.Reach.INDIRECT))], ["equipment", "aim_indirect"], "or the lobbed one")
+	assert_eq([Glyphs.primary_for(Face.attack(4)), Glyphs.aim_for(Face.attack(4))], ["weapon", "aim_direct"], "a weapon: its sight over the line")
 	gun.reaches_all = true
-	assert_eq([Glyphs.primary_for(gun), Glyphs.aim_for(gun)], ["equipment", "aim_direct"], "a debuff: the same gear over the straight arrow")
-	assert_eq([Glyphs.primary_for(Face.attack(0, Face.Reach.INDIRECT)), Glyphs.aim_for(Face.attack(0, Face.Reach.INDIRECT))], ["equipment", "aim_indirect"], "or the curved arrow")
-	assert_eq([Glyphs.primary_for(Face.attack(4)), Glyphs.aim_for(Face.attack(4))], ["weapon", "aim_direct"], "a weapon: its sight over the arrow")
-	assert_true(gun.has(Face.Keyword.EVERY_FOE), "its reach over every foe a keyword, Every Foe")
+	assert_eq([Glyphs.aim_for(gun), gun.reach], ["aim_every_foe", Face.Reach.EVERY_FOE], "over every foe: its targeting mode, Every Foe, and its own mark (4 November)")
 	var lure := DieFaceView.new()
 	lure.set_face(gun)
-	assert_eq(lure.rail_tags(), ["every_foe"] as Array[String], "its chip on the rail, never the star")
+	assert_eq(lure.rail_tags(), [] as Array[String], "nothing on the rail: a targeting mode is its mark, never a chip")
 	lure.free()
 	assert_eq(Glyphs.aim_for(Face.empty_slot()), "", "a blank holds nothing")
 	var d := DieFaceView.new()
@@ -128,7 +131,7 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 		var f := db.build_face(comp["face"])
 		var aim := Glyphs.aim_for(f)
 		assert_true(aim.begins_with("aim_"), "%s: its main icon holds whom it is aimed at (%s)" % [cid, aim])
-		assert_eq(aim in ["aim_self", "aim_ally", "aim_any"], f.on_machines(), "%s: the hexes on a piece spent on machines, an arrow on one aimed at a foe" % cid)
+		assert_eq(aim in ["aim_self", "aim_ally", "aim_any", "aim_every_ally", "aim_every_other_ally"], f.on_machines(), "%s: the hexes on a piece spent on machines, a line of fire or the formation on one aimed at a foe" % cid)
 		if f.on_machines() and f.targets != Face.Target.SELF_ALLY:
 			narrowed += 1
 	assert_true(narrowed > 0, "content narrows some (%d)" % narrowed)
@@ -146,10 +149,10 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 	var d := DieFaceView.new()
 	d.set_face(buff)
 	assert_false(d.rail_tags().has("overcharged"), "and never on the rail too")
-	var lure := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.EVERY_FOE, Face.Keyword.LURE, Face.Keyword.CRYO])
-	assert_eq(DieFaceView.inside_effect(lure), "lure", "a debuff: its first keyword that does something to a foe, its reach passed over")
+	var lure := Face.attack(0, Face.Reach.EVERY_FOE, [Face.Keyword.LURE, Face.Keyword.CRYO])
+	assert_eq(DieFaceView.inside_effect(lure), "lure", "a debuff: its first keyword that does something to a foe")
 	d.set_face(lure)
-	assert_eq(d.rail_tags(), ["every_foe", "cryo"] as Array[String], "the reach and the second effect on the rail, the first inside")
+	assert_eq(d.rail_tags(), ["cryo"] as Array[String], "the second effect on the rail, the first inside, Every Foe its targeting mark")
 	var mines := Face.attack(0)
 	mines.pulls_mines = true
 	assert_eq(DieFaceView.inside_effect(mines), "star", "a debuff whose effect is a rule of its own holds the star")
@@ -497,7 +500,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
 	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Empowered")), "every chip listed with what it does: %s" % str(chips))
 	# A foe: its HP, its attack a rally raised (the foe's gain: up and green), its intent.
-	Effects.grant_for_rounds(foe, Effects.kindled(2), "test", sk.round + 1)
+	Effects.stack(foe, Effects.STATUS["kindled"], Effects.SKIRMISH, "test", 2, Effects.DECAY_HALF)
 	s._refresh()
 	s._on_foe_held(s._foe_view_for(foe))
 	var said := s._details_entry.text()
@@ -1295,7 +1298,7 @@ func test_a_buff_a_purge_put_to_sleep_wears_its_chip_asleep() -> void:
 
 ## The four buffs a foe's specials grant (the ladder's brief, B; 28 October) wear the machines'
 ## chips on a foe, each its own mark: Primed's lit flame never the team's Burning's hollow one,
-## Regenerating's heart never Getting Back Up's star, the Barrier's wall and the Ward's struck ring.
+## Regenerating's heart never Undying's star, the Barrier's wall and the Ward's struck ring.
 func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -1317,7 +1320,7 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 		by[str(r[0])] = r
 	for g in ["primed", "barrier", "ward", "regenerating"]:
 		assert_true(by.has(g), "a %s chip" % g)
-	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Getting Back Up, each its own")
+	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Undying, each its own")
 	# The readout names each chip with its count, never what it does (Ryan, 2 November: "unit popups
 	# don't need the chips descriptions spelled out now that we can tap keywords").
 	if by.has("primed"):

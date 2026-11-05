@@ -528,7 +528,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += (1.0 - p_kill) * web_score(sk, target)
 	if f.has(Face.Keyword.DISPEL):
 		# Purge (28 October): what every foe the entry reaches carries but Numbed and Guarded,
-		# the target's at the odds it outlives the blow, its Getting Back Up whatever.
+		# the target's at the odds it outlives the blow, its Undying whatever.
 		for foe in sk.reached_by(f, target):
 			if foe == target or foe.alive():
 				score += purge_worth(sk, ms, f, foe, (1.0 - p_kill) if foe == target else 1.0)
@@ -633,7 +633,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# of heat, at what that shield would have kept this round and after (burn_cost), and the zap it
 	# pays the target, a plain blow of that much on every roll the strikes leave it standing, with
 	# the kill it makes (zap_worth). The heat it saves is heat_cost's, read net of the burn.
-	var burnt := Skirmish.shield_burn(ms, f, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])) if f.is_weapon() and Effects.burns_shield(ms.unit) else 0
+	var burnt := Skirmish.shield_burn(ms, f, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]), f.shield_cost) if f.is_weapon() and Effects.burns_shield(ms.unit) else 0   # a shield cost is paid first (4 November)
 	if burnt > 0:
 		score += zap_worth(sk, ms, target, burnt, outcomes) - burn_cost(sk, ms, burnt)
 	score -= heat_cost(sk, ms, f)
@@ -732,7 +732,7 @@ static func roll_gain(who: Skirmish.MechState) -> float:
 
 
 ## What the player's Purge takes off one foe (28 October; placeholders), by what it carries:
-## Getting Back Up the foe's maximum HP, whatever the blow does, since a foe it kills stays down;
+## Undying the foe's maximum HP, whatever the blow does, since a foe it kills stays down;
 ## the rest at the odds the foe outlives the blow (`lives`): a Barrier the biggest weapon blow an
 ## ally still to act shows on it (nothing when the spend's own weapon pops it first), Armoured
 ## its stacks for each allied blow still to land on it this round, Empowered its value, Primed 2 a

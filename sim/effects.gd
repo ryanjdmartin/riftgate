@@ -215,8 +215,8 @@ const STATUS := {
 	# the number it showed. An add before the factor, one damage formula for the whole game
 	# (Ryan, 26 October), as Empowered is on the machines' side. Each grant is its own, its
 	# rally's value; the 2 here is only the default a bare grant would carry.
-	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its next move hits {value} harder, then it is spent.", "decay": "none", "spent_by": "move",
-		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}]},
+	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its blows hit +1 harder a stack. Halves at the end of each round, rounded down.", "decay": "half",
+		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	# Enraged (3 November, the Goblin Nob's Bellow): a stack for every shield, vent or equipment
 	# entry the team spends while the foe rages (Foe.rage, set by the enrage effect), a point of
 	# attack a stack for the rest of the fight, never spent by a move, so the chip climbs as the
@@ -231,7 +231,7 @@ const STATUS := {
 	# add is the move's value (golden()); one rage at a time (renew), the next once it is calm.
 	"golden": {"id": "golden", "name": "Golden", "description": "Its blows hit {value} harder and it wears a point of armour until its rage ends; a quarter of its HP lost since it went gold, or a Suppress, breaks it, and it staggers.", "stacking": "renew", "decay": "none",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}, {"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
-	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.", "stacking": "renew",
+	"risen": {"id": "risen", "name": "Undying", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["revive"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
 	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
@@ -363,12 +363,6 @@ static func is_status(id: String) -> bool:
 
 ## Empowered at a rally's own value: the status above with the move's value in place of the
 ## default, so the Howl's 5 is 5 and the chip says so.
-static func kindled(value: int) -> Dictionary:
-	var d: Dictionary = STATUS["kindled"].duplicate(true)
-	d["effects"][0]["value"] = value
-	d["description"] = filled(str(STATUS["kindled"]["description"]), d["effects"])
-	return d
-
 
 ## Golden at a move's own value (4 November): the status above with the move's add in place of
 ## the default; the plate stays a point whatever the move says.
@@ -467,8 +461,8 @@ static func brace_stacks(value: int) -> int:
 
 
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
-## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
-## own buffs (Braced, Empowered, Getting Back Up).
+## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
+## own buffs (Braced, Empowered, Undying).
 const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "syrinx_drone"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
@@ -1121,8 +1115,8 @@ static func effective_reach(u, face: Face) -> int:
 	if face == null:
 		return Face.Reach.NONE
 	face = rewritten(u, face)
-	if face.reach == Face.Reach.SWEEP:
-		return face.reach   # a sweep is its own targeting mode (Ryan, 3 November: "Not direct or indirect"): no passive turns it into either
+	if face.reach == Face.Reach.SWEEP or face.reach == Face.Reach.EVERY_FOE:
+		return face.reach   # a sweep and Every Foe are targeting modes of their own (Ryan, 3 November, of Sweep: "Not direct or indirect"; Every Foe, 4 November): no passive turns either into Direct or Indirect
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "set_reach":
@@ -1761,7 +1755,7 @@ static func purgeable(m) -> bool:
 
 ## The buffs a Purge lowers on a foe (28 October; by its number since 2 November): every one it
 ## carries but Guarded, its parts' lock, and its Ward, which turns the Purge away. The ids are
-## the engine's (braced is Armoured, risen Getting Back Up, kindled Empowered); the Nob's Enraged and a golden rage among them (4 November).
+## the engine's (braced is Armoured, risen Undying, kindled Empowered); the Nob's Enraged and a golden rage among them (4 November).
 const FOE_PURGED := ["braced", "kindled", "enraged", "golden", "risen", "primed", "barrier", "regenerating", "numbed"]
 
 
