@@ -1006,9 +1006,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.462 (the
-  page's version 475, published 5 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
-  live source whole: Night Shift's R rewritten as a duel between two basses; over v0.461 at 474:
+  `docs/design-bible.html` after every change. This file and the live page are v0.463 (the
+  page's version 476, published 5 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
+  live source whole: Hold The Line's fifteenth round in its track row; over v0.462 at 475: Night
+  Shift's R rewritten as a duel between two basses; over v0.461 at 474:
   Hold The Line's track row rewritten to its fourteenth round; over v0.460 at
   473: Hold The Line's chug down in A and N and its lifts on two basses, merged row
   by row onto the live v0.459 another session published at 472, its row a die entry's passive box,
