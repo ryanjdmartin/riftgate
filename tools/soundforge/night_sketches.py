@@ -1,21 +1,25 @@
-"""Night Shift's seventeenth round as a pair (Ryan, 5 November, on the sixteenth): R rewritten as a
-duel between two basses.
+"""Night Shift's eighteenth round as a pair (Ryan, 5 November, on the seventeenth): the duel's lower
+bass playing on under the upper's phrases, the backing 3 dB under the basses.
 
-  "I don't like any of the options for R, and I think it's more of a problem with R. I think we
-  need to rewrite it again, into more of a dueling basses type jam. The stop time was cool, we can
-  do more of that unexpected kind of thing. The backing instruments trading tunes around was cool
-  too, just keep their volumes consistent so they don't overshadow the basses when they're doing
-  their thing."
+  "for the dueling basses, don't cut out the lower one when the upper comes in, since it sounds
+  fragmented and empty without the lower end. So that means: -copy the upper line in lowered unison,
+  and/or -play a backing rhythm, and/or, -play a complimentary line. We could also try what the upper
+  bass line sounds like doing chords instead. I think the two basses being different voices sounds
+  better, so like in the first option. Keep the backing voices at the 3db under, that works."
 
-R's sixteen bars are a duel (DUEL): the track's bass and a second bassist an octave over it trade
-phrases on his rhythms, two bars each, a bar each, then half a bar each, through two bars of
-stop-time (the band's hit on each bar's one, then one bass alone) and a hole (the whole band out on
-a bar's last beat), then the two together on three-three-two under the band's hits, climbing into
-the outro in octaves. The second plays the active bass near the bridge into the same drive, The
-Omnific's kind, so the duel reads in mono by register and voice. The backing trades the tune over
-them as the sixteenth round's R did, every voice brought to one level a margin under the basses
-(DUEL_BACKING, DUEL_LEVELS). A set has the duel, the second bass on the track's own fingers, and the
-backing 3 dB closer or 3 dB further.
+Under each of the upper bass's phrases the lower plays on, 3 dB under its own phrases so the answer
+stays on top: the upper's line an octave down for the full pair (DUEL_SUPPORT), beside three-three-two
+on the roots and a walking line of its own in quarters; under a stop's fill it holds the root through
+the gap, but in unison, where it doubles the fill. A set has those and the upper bass in chords (each
+note with its fifth, two strings into one amp) over the unison or the rhythm. The second bass stays
+the active bass, the backing 3 dB under the basses (DUEL_BACKING).
+
+The seventeenth round's, kept: R's sixteen bars a duel (DUEL), the track's bass and a second bassist
+an octave over it trading phrases on his rhythms, two bars each, a bar each, then half a bar each,
+through two bars of stop-time (the band's hit on each bar's one, then one bass alone) and a hole (the
+whole band out on a bar's last beat), then the two together on three-three-two under the band's hits,
+climbing into the outro in octaves; the backing trading the tune over them at one level under the
+basses (DUEL_LEVELS); the sub out of R.
 
 The sixteenth round's, kept: the bass the fingers into the modern prog drive (real_bass.py's
 MODERN) wherever it plays; C's long notes, the lead guitar's line, on that bass an octave under the
@@ -62,8 +66,8 @@ through; D the piano's turn and the factory's blended, the riff dark and low as 
 guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
 its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night17.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py nr       # the named sets only (nr, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night18.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py nu       # the named sets only (nu, and full for the pair)
 """
 import json
 import os
@@ -177,6 +181,7 @@ RHYTHMS = {
     "offbeats": "xx.x.x.x.x.xx.x.",  # his second
     "bursts": "xxx..x.x.x..xxx.",    # his third
     "threes": "xxx..xxx..x.xxx.",    # his fourth
+    "quarters": "x...x...x...x...",  # a walk in quarters: the lower bass's own line under the upper's phrases in R's duel
 }
 
 # Each rhythm's figures: the line's notes on its hits as steps along E minor from the bar's chord
@@ -189,6 +194,7 @@ FIGURES = {
     "offbeats": {"run": [0, 0, 2, 3, 4, 6, 7, 4, "A"], "zigzag": [0, 7, 0, 6, 0, 4, 0, 2, "A"], "blues": [0, 0, 2, 3, "b", 4, 6, 7, "A"]},
     "bursts": {"turn": [0, 1, 0, 4, 6, 7, 6, 4, "A"], "chug": [0, 0, 0, 7, 0, 7, 0, 0, "A"], "rise": [0, 2, 4, 7, 4, 2, 0, 2, "A"]},
     "threes": {"octs": [0, 0, 7, 0, 0, 7, 4, 0, 0, "A"], "steps": [0, 2, 3, 4, 3, 2, 7, 6, 4, "A"], "climb": [0, 0, 0, 2, 2, 2, 4, 6, 7, "A"]},
+    "quarters": {"walk": [0, 2, 4, "A"]},
 }
 
 # The battle half in turns of two bars (Ryan, 30 October: "Jam session, everybody gets a turn, we
@@ -457,7 +463,18 @@ DUEL_OCTAVE = {1: -1, 2: 0}   # the second bass an octave over the first
 # the synth lead stood 2.2 dB over the bass on a phone, the FM synth 4.1 and the plucked string 2.8,
 # where the house piano, the chime and the off-beats sat 5 to 8 dB under it.
 DUEL_B2 = {"real_omnific": 0.634, "real_modern": 0.749}
-DUEL_BACKING = 6.0   # the backing's margin under the basses, in dB
+DUEL_BACKING = 3.0   # the backing's margin under the basses, in dB (Ryan, 5 November: "Keep the backing voices at the 3db under, that works")
+# The lower bass under the upper's phrases (Ryan, 5 November: "don't cut out the lower one when the upper
+# comes in, since it sounds fragmented and empty without the lower end. So that means: -copy the upper
+# line in lowered unison, and/or -play a backing rhythm, and/or, -play a complimentary line"): the upper's
+# line an octave down ("unison"), three-three-two on the roots ("rhythm"), or a walking line of its own
+# in quarters ("line"), each 3 dB under its own phrases so the answer stays on top; under a stop's
+# fill its root held from the band's hit, the stop's gap kept, but in unison, where it doubles the fill.
+# And the upper bass in chords ("We could also try what the upper bass line sounds like doing chords
+# instead"): each note with its fifth, two strings into one amp, met halfway with its single notes.
+DUEL_SUPPORT = "unison"
+SUPPORT_DB = -3.0
+DUEL_CHORDS = 0.786   # the upper bass in chords against its single notes: at one gain 2.2 dB over on a phone, 2.0 in full
 DUEL_LEVELS = {"lead": 0.915, "fm": 0.722, "piano": 2.241, "pluck": 0.877, "chime": 2.165, "offbeats": 1.932}   # each within 1.6 dB each way
 PIANO_TURN = ("x...x.x.....x...", "x..x..x.x..x..x.")   # the house piano on the hook's rhythm, then on three-three-two
 STOP_HIT = "x" + "." * 15
@@ -487,11 +504,22 @@ def degrees_up(pat, k):
     return "".join(str(int(c) + k) if c.isdigit() else c for c in pat)
 
 
-def duel_lines(call):
+def duel_lines(call, support=DUEL_SUPPORT):
     """Each bass's line through R, split as the walk is into its accented hits and the rest:
-    {(bass, "walk" or "ghost"): pattern}. A stop bar opens on both basses' root, held three steps."""
+    {(bass, "walk" or "ghost"): pattern}, with the first bass's part under the second's phrases as
+    bass "support" (DUEL_SUPPORT). A stop bar opens on both basses' root, held three steps, or under
+    the second's fill held through the gap where the support is "rhythm" or "line"."""
     roots = [c[0] for c in call["chords"]["R"]]
-    out = {(b, k): [] for b in (1, 2) for k in ("walk", "ghost")}
+    out = {(b, k): [] for b in (1, 2, "support") for k in ("walk", "ghost")}
+
+    def place(cells, key, choice, root, next_root, lo, hi):
+        for h, note, room, accented in jam_bar(choice, root % 12, next_root % 12):
+            if lo <= h < hi:
+                row = cells[key, "walk" if accented else "ghost"]
+                row[h] = P.spell(note)
+                for q in range(1, min(room, 2, hi - h)):
+                    row[h + q] = "-"
+
     for bar, phrases in enumerate(DUEL):
         root, next_root = roots[bar % len(roots)], roots[(bar + 1) % len(roots)] if bar + 1 < R_BARS else call["chords"]["O"][0][0]
         cells = {key: ["."] * 16 for key in out}
@@ -499,32 +527,41 @@ def duel_lines(call):
             for b in (1, 2):
                 cells[b, "walk"][0:3] = [P.spell(root % 12), "-", "-"]
         for bass, choice, lo, hi in phrases:
-            for h, note, room, accented in jam_bar(choice, root % 12, next_root % 12):
-                if lo <= h < hi:
-                    row = cells[bass, "walk" if accented else "ghost"]
-                    row[h] = P.spell(note)
-                    for q in range(1, min(room, 2, hi - h)):
-                        row[h + q] = "-"
+            place(cells, bass, choice, root, next_root, lo, hi)
+        for bass, choice, lo, hi in phrases if support else ():
+            if bass != 2 or any(b == 1 and lo1 < hi and lo < hi1 for b, _c, lo1, hi1 in phrases):
+                continue   # the first bass plays there itself
+            if support == "unison":
+                for key in ("walk", "ghost"):
+                    cells["support", key][lo:hi] = cells[2, key][lo:hi]
+            elif bar in DUEL_STOPS:
+                cells[1, "walk"][3:16] = ["-"] * 13   # the root held through the gap under the fill
+            else:
+                place(cells, "support", "332.home" if support == "rhythm" else "quarters.walk", root, next_root, lo, hi)
         for key in out:
             out[key].append("".join(cells[key]))
     return {key: "".join(v) for key, v in out.items()}
 
 
-def duel_voices(call, b2="real_omnific", backing_db=DUEL_BACKING, bass_db=BASS_DB, levels=None, b2_level=None):
+def duel_voices(call, b2="real_omnific", backing_db=DUEL_BACKING, bass_db=BASS_DB, levels=None, b2_level=None,
+                support=DUEL_SUPPORT, chords=False, chords_level=None):
     """R's voices: the two basses (the first as the track's bass, the second on `b2` an octave up at
-    its level against the first, DUEL_B2) and the backing trading the tune over them, each at the
-    basses' level `backing_db` under (DUEL_LEVELS)."""
+    its level against the first, DUEL_B2, in chords where `chords`, DUEL_CHORDS), the first's part under
+    the second's phrases (`support`, DUEL_SUPPORT, SUPPORT_DB) and the backing trading the tune over
+    them, each at the basses' level `backing_db` under (DUEL_LEVELS)."""
     lv = dict(DUEL_LEVELS, **(levels or {}))
     under = 10.0 ** (-backing_db / 20.0)
     bv1, bv2 = BASS_VOICES[BASS], BASS_VOICES[b2]
     g1 = 0.27 * 10.0 ** (bass_db / 20.0) * bv1["level"]
-    g2 = g1 * (DUEL_B2[b2] if b2_level is None else b2_level)
-    lines = duel_lines(call)
+    g2 = g1 * (DUEL_B2[b2] if b2_level is None else b2_level) * ((DUEL_CHORDS if chords_level is None else chords_level) if chords else 1.0)
+    lines = duel_lines(call, support)
     voices = []
-    for bass, (bv, g) in ((1, (bv1, g1)), (2, (bv2, g2))):
+    for bass, (bv, g, params) in ((1, (bv1, g1, dict(bv1["params"]))), (2, (bv2, g2, dict(bv2["params"], fifth=chords))),
+                                  ("support", (bv1, g1 * 10.0 ** (SUPPORT_DB / 20.0), dict(bv1["params"])))):
         for key, k in (("walk", 1.0), ("ghost", GHOST)):
-            voices.append({"inst": bv["inst"], "params": dict(bv["params"]), "mode": "riff", "gain": g * k, "hold": 0.9,
-                           "octave": DUEL_OCTAVE[bass], "pat": {"R": lines[bass, key]}, "duel": "bass%d" % bass})
+            voices.append({"inst": bv["inst"], "params": params, "mode": "riff", "gain": g * k, "hold": 0.9,
+                           "octave": DUEL_OCTAVE[1 if bass == "support" else bass], "pat": {"R": lines[bass, key]},
+                           "duel": "support" if bass == "support" else "bass%d" % bass})
     hook = P.part(call, "chime_metal", "R", mode="chord")
     up = degrees_up(hook, 1)
     offbeats = P.part(call, "epiano", "R", mode="stab")
@@ -710,13 +747,15 @@ ONE_LEVEL = 1.0   # pushed as hard, the one string meets the power chords on a p
 
 
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
-                d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2="real_omnific", duel_backing=DUEL_BACKING):
+                d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2="real_omnific", duel_backing=DUEL_BACKING,
+                duel_support=DUEL_SUPPORT, duel_chords=False):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
     voice (BASS_VOICES); `guitar` which of the guitar's parts go to one string and which go (GUITARS);
-    `d_bass` the bass in D's hold or not; `duel_b2` R's second bass (BASS_VOICES) and `duel_backing`
-    the backing's margin under the basses there (DUEL_BACKING); `pluck_db` the plucked
+    `d_bass` the bass in D's hold or not; `duel_b2` R's second bass (BASS_VOICES), `duel_backing`
+    the backing's margin under the basses there (DUEL_BACKING), `duel_support` the first bass's part
+    under the second's phrases (DUEL_SUPPORT) and `duel_chords` the second in chords; `pluck_db` the plucked
     string's level, wherever it plays; `lead` the lead guitar's lines on the guitar or on the bass
     (LEAD_LEVEL's ways)."""
     up_octave, by = SPLITS[split]
@@ -794,7 +833,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
     # D's piano: the house piano's chord, each tone a voice an octave up, stabbing three-three-two.
     voices += [{"inst": "epiano", "mode": "chord", "octave": 1, "gain": PIANO_BLEND if d == "blend" else PIANO_D, "dur": 1.5,
                 "pat": {"D": THREE_THREE_TWO.replace("r", str(k))} if d in ("piano", "blend") else {}} for k in range(3)]
-    voices += [{k: w for k, w in v.items() if k != "duel"} for v in duel_voices(call, duel_b2, duel_backing, bass_db)]
+    voices += [{k: w for k, w in v.items() if k != "duel"} for v in duel_voices(call, duel_b2, duel_backing, bass_db, support=duel_support, chords=duel_chords)]
     bv = BASS_VOICES[bass]
     voices = [dict(v, inst=bv["inst"], params=bv["params"], gain=v["gain"] * 10.0 ** (bass_db / 20.0) * bv["level"]) if v["inst"] == "bass_real" else v for v in voices]
     drums = {
@@ -893,14 +932,15 @@ def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR):
 
 DUEL_FORM = "D" * 8 + " " + "R" * R_BARS + " " + "O" * 8   # D into the duel and out into the outro
 SETS = [
-    {"id": "nr", "half": "battle", "title": "R, the duel", "form": DUEL_FORM, "seed": NAME + "_battle",
-     "note": "D into R and out into the outro, R rewritten as a duel between two basses (Ryan, 5 November): the track's bass and a second an octave over it trading phrases two bars each, then a bar each, then half a bar each, through two bars of stop-time and a hole, then together on three-three-two under the band's hits; the backing trading the tune under them, every voice at one level. Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("nr0", "The duel", "The second bass on the active bass near the bridge into the same drive, the backing 6 dB under the basses (the full pair's).", {}),
-              ("nr1", "Both basses on the fingers", "The second bass on the track's own fingers into the modern drive, an octave up: the duel by register alone.", {"duel_b2": "real_modern"}),
-              ("nr2", "The backing 3 dB under", "Every backing voice 3 dB under the basses.", {"duel_backing": 3.0}),
-              ("nr3", "The backing 9 dB under", "Every backing voice 9 dB under the basses.", {"duel_backing": 9.0})]},
+    {"id": "nu", "half": "battle", "title": "R, the duel, the lower bass under the upper", "form": DUEL_FORM, "seed": NAME + "_battle",
+     "note": "D into R and out into the outro, the duel with the lower bass playing on under the upper's phrases (Ryan, 5 November: \"don't cut out the lower one when the upper comes in\"), 3 dB under its own: the upper's line an octave down, three-three-two on the roots, or a walking line of its own; and the upper bass in chords. The two basses different voices, the backing 3 dB under them. Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("nu0", "The lower bass in unison", "The lower bass doubling the upper's line an octave down (the full pair's).", {"duel_support": "unison"}),
+              ("nu1", "The lower bass on a rhythm", "The lower bass on three-three-two on the roots under the upper's phrases.", {"duel_support": "rhythm"}),
+              ("nu2", "The lower bass on a line of its own", "The lower bass walking in quarters, root, third, fifth and a step into the next chord, under the upper's phrases.", {"duel_support": "line"}),
+              ("nu3", "The upper in chords, the lower in unison", "The upper bass's notes each with its fifth, two strings into one amp, the lower doubling its line an octave down.", {"duel_support": "unison", "duel_chords": True}),
+              ("nu4", "The upper in chords, the lower on a rhythm", "The upper bass in chords over the lower's three-three-two.", {"duel_support": "rhythm", "duel_chords": True})]},
 ]
-PAIR = {"id": "night_shift_r17", "title": "Night Shift, round seventeen"}
+PAIR = {"id": "night_shift_r18", "title": "Night Shift, round eighteen"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -912,7 +952,7 @@ TURNS_SAID = {   # each section's turns in the battle half, on the page beside t
     "B": "the breakdown: held roots and ringing chords under the choir",
     "C": "the lead guitar's long notes over the walk, the arpeggio joining behind them on the synth lead at the ninth bar",
     "D": "the piano and the factory blended: the house piano stabbing the chords in three-three-two alone, the knocks in its gaps, the riff dark and low as the map's nod",
-    "R": "a duel between two basses: the track's bass and a second an octave over it trading phrases, two bars each, then a bar each, then half a bar each, through two bars of stop-time and a hole, then together on three-three-two under the band's hits, climbing into the outro; the backing trading the tune under them, every voice 6 dB under the basses",
+    "R": "a duel between two basses: the track's bass and a second an octave over it trading phrases, two bars each, then a bar each, then half a bar each, the lower doubling the upper's line an octave down under its answers, through two bars of stop-time and a hole, then together on three-three-two under the band's hits, climbing into the outro; the backing trading the tune under them, every voice 3 dB under the basses",
     "O": "the arpeggio on the plucked string and the hook on the FM synth over the hold, into the top",
 }
 
@@ -960,7 +1000,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night17.json")
+    path = os.path.join(P.OUT, "night18.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -972,7 +1012,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night17_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night18_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))

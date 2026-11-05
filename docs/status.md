@@ -871,7 +871,7 @@ The tasks are the to-do's; this is the index of what waits.
   guitar 3 dB up or out, and L's riff on the lead guitar or the keys lead in single notes. A mixing
   desk on pre-rendered stems was proposed for picking voices without a round and tabled (5 November:
   "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its seventeenth (the map's intro without its front and its muted guitar out, his
+  Night Shift on its eighteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms with
   the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two together,
@@ -880,25 +880,30 @@ The tasks are the to-do's; this is the index of what waits.
   between two basses (5 November: "into more of a dueling basses type jam"), the track's and a
   second an octave over it on the active bass trading two bars, a bar, half a bar, through two bars
   of stop-time and a hole ("The stop time was cool, we can do more of that unexpected kind of
-  thing"), then together on three-three-two, the backing trading the tune under them at one level 6
-  dB under the basses ("keep their volumes consistent so they don't overshadow the basses"), the
-  rhythm guitar in the breakdown's ringing chords alone and the lead guitar's lines kept ("Yes, keep
-  the lead guitar. Put the the rhythm guitar back in on B"), the plucked string 3 dB down wherever
-  it plays ("Plucked string -3Db is good"), the bass 3 dB down everywhere on the fingers into a
-  modern prog drive (`real_bass.py`: "go with the fingers-into-a-modern-drive-prog bass you built"),
-  since the modelled basses read as guitars, C's long notes, the lead guitar's line, on that bass an
-  octave under the guitar ("wherever there's a lead guitar, I want that bass instead playing the
-  high lines"), the synth lines voiced for each turn's job, no drone, Hold The Line's drum energy);
-  The Far Bank's map half on its sixth round, its flip retired (31 October: the bells calm in the
-  groove and the lift alone, the strings section and the climax off the battle's orchestra; 4
-  November: the tune on the plucked string one note at a time in both, 6 dB under the violins' level
-  in the strings section ("6db under good") and at it in the climax, the choir back ("that was a
-  mistake"), the climax's swells half as far over their floor, the cellos' and the contrabass's
-  lines on the soft sub in place of the battle's saw strings, beside an upright plucked, a fretless,
-  flatwounds under a thumb and the synth bass ("not just sound like the battle half with the
-  percussion taken out"), the climax's bells full); those waiting on his ear; then the engine (a
-  pair as one synchronized stream, the map choosing the track, the 3 s flip) and each picked half
-  into the forge's SHIP table, Hold The Line's first.
+  thing"), then together on three-three-two, the lower playing on under the upper's answers 3 dB
+  under its own, in unison an octave down on trial beside a rhythm, a line of its own and the upper
+  in chords ("don't cut out the lower one when the upper comes in, since it sounds fragmented and
+  empty without the lower end"), the backing trading the tune under them at one level 3 dB under the
+  basses ("keep their volumes consistent so they don't overshadow the basses"; "Keep the backing
+  voices at the 3db under, that works"), the rhythm guitar in the breakdown's ringing chords alone
+  and the lead guitar's lines kept ("Yes, keep the lead guitar. Put the the rhythm guitar back in on
+  B"), the plucked string 3 dB down wherever it plays ("Plucked string -3Db is good"), the bass 3 dB
+  down everywhere on the fingers into a modern prog drive (`real_bass.py`: "go with the
+  fingers-into-a-modern-drive-prog bass you built"), since the modelled basses read as guitars, C's
+  long notes, the lead guitar's line, on that bass an octave under the guitar ("wherever there's a
+  lead guitar, I want that bass instead playing the high lines"), the synth lines voiced for each
+  turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half on its seventh round,
+  its flip retired (31 October: the bells calm in the groove and the lift alone, the strings section
+  and the climax off the battle's orchestra; 4 November: the tune on the plucked string one note at
+  a time in both, 6 dB under the violins' level in the strings section ("6db under good") and at it
+  in the climax, the choir back ("that was a mistake"), the climax's swells half as far over their
+  floor, the cellos' and the contrabass's lines on the fretless in place of the battle's saw strings
+  ("not just sound like the battle half with the percussion taken out"; 5 November: "fretless bass
+  wins, as does the 'half as far' option for the climax"), the choir's rise into the lift 3 dB where
+  the track doubles it ("In C, let's not swell the volume so far, especially for the choir"), the
+  climax's bells full); those waiting on his ear; then the engine (a pair as one synchronized
+  stream, the map choosing the track, the 3 s flip) and each picked half into the forge's SHIP
+  table, Hold The Line's first.
 
 ## Next, in order
 
