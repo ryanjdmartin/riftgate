@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 989 tests, 256,954 checks, green (4 November, main's head as the audit landed, Godot 4.8-beta2);
+- Tests: 989 tests, 256,954 checks, green (5 November, main's head as the chassis session landed, Godot 4.8-beta2);
   about four minutes in a cloud session, twenty on a slow one.
 - A cloud session gets Godot and the first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`: the release asset
@@ -39,11 +39,18 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 4 November 2026. The branches that landed on 3 and 4 November,
-each a session of its own, fully merged and to delete from GitHub and the desk machine (the
-command is in the audit's last chat; `git push origin --delete` the merged ones, then
-`git fetch --prune`): `claude/inspiring-mendel-hkp5na` (the audit of 4 November: the records
-trimmed, the bible's contradictions settled, Ryan's two speedrounds, three engine fixes, main
+Everything is on main as of 5 November 2026 but the two branches still working below. The
+branches that landed on 3 to 5 November, each a session of its own, fully merged and to delete
+from GitHub and the desk machine (the command is in the audit's last chat;
+`git push origin --delete` the merged ones, then `git fetch --prune`):
+`claude/aphelion-minerva-chassis-9qf6cy` (Ryan's chassis session of 4 and 5 November: his ideas
+and Claude's first round, a brief each in `docs/briefs/` with a header the hangar reads, the
+briefs README's "Ten a maker" and "Orbits", the proposal retired,
+`git show a228545:docs/aphelion_minerva_chassis_proposal.md`; the work account scrapped
+everywhere, Ryan: the personal account is the only one; the hangar's Designs tab, whose marks a
+design session folds in first, the briefs README's How a session runs; main took it as a
+fast-forward on his word, "Clean up and merge into main"), `claude/inspiring-mendel-hkp5na` (the
+audit of 4 November: the records trimmed, the bible's contradictions settled, Ryan's two speedrounds, three engine fixes, main
 taken as it landed, and main took it as a fast-forward that evening on his word, "Ok, clean up
 and merge into main"), `ccr-bb178c9b-l6airv` (the playtest list of 2 November and the die's marks; landed a
 second time that evening with Every Foe, Every Ally and Every Other Ally as targeting modes and
@@ -59,18 +66,12 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (4 November, the branch audit; every other branch on GitHub is merged):
-`ccr-7effd31a-u5z4gw`, the music session (Night Shift's and The Far Bank's rounds on the pair
-page), whose bible rows land on the live page ahead of its branch, so a republish merges onto
-the live page (Pages); `claude/aphelion-minerva-chassis-9qf6cy`, Ryan's chassis session of 4 and
-5 November, main merged in on the 5th: his ideas and Claude's first round, a brief each in
-`docs/briefs/` with a header the hangar reads (the briefs README's "Ten a maker" and "Orbits";
-the proposal retired, `git show a228545:docs/aphelion_minerva_chassis_proposal.md`), the work
-account scrapped everywhere (Ryan, 5 November: the personal account is the only one), and the
-hangar's Designs tab (5 November, Ryan: "I'd like to be able to edit briefs and WIP designs in
-the hangar if possible, so when I start a design session I'm not correcting a bunch of bad
-assumptions in context"), whose marks a design session folds in first (the briefs README's How
-a session runs). Docs and tools only: nothing decided, the bible untouched until his marks.
+Still working (5 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
+music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
+on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
+`ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a long wall,
+the packs as designed formations, the shield the fight's resource: his direction and Claude's
+first round as `docs/long_wall_proposal.md` on that branch, nothing built, his marks next).
 
 ## The design sessions
 
@@ -270,7 +271,7 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 208
-  (5 November, from `claude/aphelion-minerva-chassis-9qf6cy` with main merged in: the Designs tab,
+  (5 November, from `claude/aphelion-minerva-chassis-9qf6cy` with main merged in, main since: the Designs tab,
   only the page and `hangar/designs.json` sent, the briefs as of `8187c42`, read back identical;
   the live page was main's, so nothing another session published was lost; `edits` and
   `designs` empty). Version 207 before it (4 November, from the audit as it landed:
