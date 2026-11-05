@@ -222,6 +222,9 @@ while the Arsenal's frost figure keeps the blow; the roster then stands at 47 na
   own hull. One reads the team's shield layer, the other its own wound. With frost that common,
   the team's cooling is the thing to watch (the Armadillo's row names the all-in cooling team
   among the things that would reopen it).
+  That shield trigger sits beside Misharu's, though: a foe whose blow breaks a shield is
+  weakened by Penance. That would be two weakens on the shield layer, so the mammoth's trigger
+  wants another home (see "Orbits", below).
 
 ### Aphelion: fourteen at most, down to ten (4-4-2)
 
@@ -279,6 +282,58 @@ Council's trickle. If it doesn't, the Arsenal stops at nine or fewer.
   The thunder figure feeds Aphelion's Static and is fed by it.
 - **The tenth waits** until the Arsenal's many unrefined ideas are settled (Ryan's call): the
   four briefed machines, the two figures and the Zoids walker.
+
+## Orbits (5 November)
+
+Ryan, 5 November, after the Snowy Owl took the Cryo direction and four machines were found
+orbiting Cryo: "What other orbits do we have now?" Claude's count across the 47 named machines.
+A machine counts where its identity sits on the thing (its passive or a locked piece, as built
+or as planned), never because a piece it could fit touches it. `docs/synergy_map.md` is the
+built content's piece-level view.
+
+**Worth watching.**
+
+- **Being struck (6):** Misharu (a shield broken), the Onryō (a hull wound), the Nemesis (its own
+  hull damage), the echidna (strikers bite themselves later), the lure tank (armour for each hit)
+  and the Cryo party defence (frost on strikers). This is the largest. The roster analysis of 14
+  October already called a blow on hull the roster's most crowded state. The new collision is
+  Claude's own lean: the party defence's shield trigger beside Misharu's, both weakening the
+  striker.
+- **Lure (4, 5 with the jellyfish spreading it):** the Armadillo, the Storm Petrel, the Whip
+  Scorpion and the lure tank. They part by shape: a locked piece, every weapon, every foe. The
+  greedy bot values a lure for allies at nothing, so the runner can read none of them yet (the
+  to-do's engine line on the bot's valuations).
+- **Cryo (4, 5 with the Macross's Battroid):** the Armadillo lays it, the party defence keeps it,
+  the Snowy Owl cashes it to stay hidden, the frost figure blows it up. The frost figure is the
+  one to check for room.
+- **Stuns (5):** the Baboon's Paradox, the funnel-web's web, the Swallowtail's charged flare, the
+  frost figure's gated Suppress and the time-shifter's delay. Numbed is the shared brake, and the
+  time-shifter's stasis freezes Numbed, so it works against the other four.
+- **Kills (5):** the Kite's Reset, the Ammit's talons, the Giant Petrel's Salvo, the Wild Boar's
+  spill and Mastema's Bellows. That is the reason the Zoids walker should not get its old verb
+  back.
+
+**Maker leans, crowded on purpose.**
+
+- **Aphelion's status house (5):** the Stingray goes deep, the jellyfish wide, the time-shifter
+  long, the Baboon counts, and Static lays a new mark. The tension: the jellyfish's EMP, the
+  detonator, wipes the marks the other four build. That is a decision, and it wants the
+  counter-play visible.
+- **Minerva's armour (5):** the Badger's plate, the Armadillo's seal, the Wild Boar's brace, the
+  lure tank's ramp and the shield bash that cashes them. They part by where the armour comes from.
+- **Heat (8 and more):** the pillar, as the heat row means it. The Snowy Owl is the first machine
+  to want heat at zero.
+- **Exposed (3):** Kestrel's lean. The Needletail, the Lammergeier and the Swallowtail all set it
+  with locked pieces, and the to-do already asks for a slottable setter.
+
+**Light.**
+
+- **Shock and Chain:** Static and the thunder figure at the core; the Dingo's harpoon, the
+  Macross's GERWALK mode and the echidna's needle, if kept, beside them.
+- **An ally acting again (3, 4 with the Magpie's cache):** the Giant Petrel, the Swallowtail and
+  the time-shifter's bank.
+- **Empowered (3, 4 with the Magpie's thief):** the Ammit, the Giant Petrel's Uplink and the
+  Macross's Fighter mode.
 
 ## Aphelion
 
