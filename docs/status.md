@@ -1071,10 +1071,9 @@ and the streets) main's.
 
 ## Pages
 
-Every page lives in Ryan's personal account; the bible, the hangar, the Melody Desk and the
-listening page are shared to his work account as Editor, so either account republishes them by
-URL (read first). Databases are reachable only from the personal account. A page's link goes
-into this file in the same commit as its first publish; the procedures are in `README.md`.
+Every page lives in Ryan's account and is republished by its URL (read first), its database
+with it. A page's link goes into this file in the same commit as its first publish; the
+procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file and the live page are v0.449 (the
@@ -1116,13 +1115,13 @@ into this file in the same commit as its first publish; the procedures are in `R
   1/2.2 as the game eases it so a flare holds its colour (30 October, `MechRig.light`). Every
   file the page reads is fetched with a stamp on the URL past any cache between (28 October,
   after Ryan saw an older round's Skua acts on a reloaded page). Its database (Ryan's saved
-  edits, collection `edits`; name candidates, `candidates`) opens only from the personal account.
+  edits, collection `edits`; name candidates, `candidates`).
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
   republished after the page changes and retired with it once the last brief that cites it
   lands.
-- The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
-  as Editor); picks and notes in collection `picks`, readable from a personal-account session.
+- The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei; picks and notes in
+  collection `picks`.
   It holds the boss art round's seventh sets (19 October), all picked on 26 October and cut:
   Surtr's blade on the grip's line, Floraison's eyes painted out, and the Augur's new base with
   the smoke gone and the top blade flipped inward. Of the rounds' folders under
@@ -1139,5 +1138,5 @@ into this file in the same commit as its first publish; the procedures are in `R
   Far Bank's map half's fourth, `far_sketches.py`), at the page's version 22. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
-- The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
+- The engagement sandbox: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).

@@ -481,7 +481,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 
 # better enemy sprites from an image model on the Mac (see tools/foeforge/README.md). The picker page
 # (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei): Ryan's picks and notes land in its `picks` collection ({pick, note, set, at}
-# a set key), read with ArtifactData `list` from his personal account; from the work account he taps Copy all picks and pastes it.
+# a set key), read with ArtifactData `list`.
 # Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --glow a coloured glow, --height 42 on
 # every chibi so the party stands at one scale; pockets of pure white key by default, --holes 0 keeps them, and --keep-glow X0 Y0 X1 Y1
 # keeps white-hot light the background's white inside that box of the render, Surtr's blade and blaze), record it in picks.json. A flaw his
