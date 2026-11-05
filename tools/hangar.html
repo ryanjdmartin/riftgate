@@ -2,9 +2,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* One page for the hangar (decided 1 October): the codex, the content editor, the names
-   list and the models, each a tab, all reading the files published beside this page so one
-   republish refreshes every tab. Edits and name candidates live in the artifact's database
-   (collections "edits" and "candidates"). The Models tab (3 October: the renders and the
+   list, the designs and the models, each a tab, all reading the files published beside this
+   page so one republish refreshes every tab. Edits, name candidates and corrections to the
+   briefs live in the artifact's database (collections "edits", "candidates" and "designs").
+   The Designs tab (5 November) reads every brief in docs/briefs/ from hangar/designs.json
+   (tools/hangar_designs.py). The Models tab (3 October: the renders and the
    animation viewer merged) runs hangar/motion.js (tools/hangar_motion.js), a port of the
    game's rig, over the game's own renders. */
 :root{
@@ -225,6 +227,64 @@ select{padding:8px;border:1px solid var(--rule-strong);border-radius:4px;backgro
 .rules b{color:var(--ink)}
 .counts{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;color:var(--ink-3);font-size:13px}
 
+/* ---- designs: each maker's roster of ten and its briefs, Ryan's corrections laid over them in
+   the edited colour, a struck paragraph struck through, a note on a dashed edge (5 November) */
+.tab-modules{--acc:var(--parts)} .tab-shared{--acc:var(--other)} .tab-changes{--acc:var(--edited)}
+.dsect{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:18px}
+.dsect h3{margin:0;font:700 17px/1.1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.roster{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.roster h4{margin:8px 0 0;font:600 11px/1.2 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.rcount{font:500 12px/1.4 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.slotrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:baseline;padding:8px 12px;background:var(--paper);border:1px solid var(--rule);border-left:4px solid var(--acc);border-radius:3px;cursor:pointer;text-align:left;color:var(--ink);font:inherit;width:100%}
+.slotrow:hover,.slotrow:focus-visible{border-color:var(--acc)}
+.slotrow.built{border-left-color:var(--rule-strong)}
+.slotrow.vacant{border:1px dashed var(--rule-strong);border-left:4px dashed var(--rule-strong);background:transparent;color:var(--ink-3);cursor:default}
+.slotrow .name{font:600 19px/1.1 var(--display);letter-spacing:.02em}
+.slotrow .sub2{grid-column:1 / -1;font-size:12.5px;color:var(--ink-3)}
+.slotrow .end{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.brief h2{font:700 25px/1.05 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:10px 0 2px;text-wrap:balance}
+.brief .path{font:400 12px/1.4 var(--mono);color:var(--ink-3)}
+.dir{margin-top:12px;padding:10px 12px;border:1px solid var(--acc);border-left-width:4px;border-radius:3px;background:var(--paper);display:flex;flex-direction:column;gap:6px;max-width:72ch}
+.dir label{font:600 12px/1.2 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.dir .saved{font-size:14px;color:var(--ink);white-space:pre-wrap}
+.dir textarea,.blk textarea,.dnote textarea,.add textarea{width:100%;padding:8px 10px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--ground);color:var(--ink);font:inherit;font-size:14.5px;line-height:1.45;resize:vertical}
+.secnav{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px}
+.secnav button{border:1px solid var(--rule);background:transparent;color:var(--ink-2);border-radius:999px;padding:4px 10px;font:600 12px/1.3 var(--display);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.secnav button:hover{border-color:var(--acc);color:var(--ink)}
+.doc{margin-top:6px;display:flex;flex-direction:column;gap:2px;max-width:72ch}
+.dh{display:flex;gap:10px;align-items:baseline;justify-content:space-between;flex-wrap:wrap;margin-top:14px;padding-top:8px;border-top:1px solid var(--rule);scroll-margin-top:150px}
+.dh h3{margin:0;font:700 19px/1.15 var(--display);text-transform:uppercase;letter-spacing:.03em;text-wrap:balance;min-width:0}
+.dh.h3 h3,.dh.h4 h3{font-size:16px;color:var(--ink-2)}
+.dh .linkbtn{font-size:13px;color:var(--ink-3)}
+.blk{display:block;padding:4px 8px 4px calc(8px + var(--lvl,0) * 1.3em);border:1px solid transparent;border-radius:3px;cursor:pointer;color:var(--ink-2);font-size:14.5px;line-height:1.5}
+.blk:hover,.blk:focus-visible{border-color:var(--rule-strong);background:var(--paper);outline:none}
+.blk .line{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 6px}
+.blk .mk{color:var(--ink-3);font-variant-numeric:tabular-nums;min-width:1em}
+.blk .txt{display:block;min-width:0;overflow-wrap:anywhere}
+.blk.quote .txt{border-left:3px solid var(--rule-strong);padding-left:10px;font-style:italic}
+.blk.edited{background:var(--paper);border-color:var(--edited)}
+.blk.struck .txt{text-decoration:line-through;color:var(--ink-3)}
+.blk.open{border-color:var(--acc);background:var(--paper);cursor:default}
+.who{display:inline-block;font:600 10px/1.6 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--edited);margin-right:6px}
+.was{margin-top:4px;font-size:13px;color:var(--ink-3)}
+.was summary{font-size:12px}
+.was .old{margin:4px 0 0;white-space:pre-wrap}
+.blkedit{display:flex;flex-direction:column;gap:6px;margin-top:6px;cursor:default}
+.tbl{overflow-x:auto;max-width:100%}
+.tbl table{border-collapse:collapse;font-size:13px}
+.tbl th,.tbl td{border:1px solid var(--rule);padding:4px 6px;text-align:left;vertical-align:top}
+.tbl th{background:var(--sunk);font-weight:600;color:var(--ink)}
+.blk pre{margin:0;overflow-x:auto;font:400 12.5px/1.45 var(--mono);background:var(--sunk);padding:6px 8px;border-radius:3px}
+.blk code,.slotrow code,.dnote code,.card code{font:400 .9em var(--mono);background:var(--sunk);padding:0 3px;border-radius:2px}
+.dnote{margin:4px 0 4px calc(8px + var(--lvl,0) * 1.3em);padding:8px 10px;border:1px dashed var(--edited);border-radius:3px;background:var(--paper);font-size:14px;color:var(--ink);display:flex;flex-direction:column;gap:6px}
+.dnote .body{white-space:pre-wrap;overflow-wrap:anywhere}
+.dnote .meta{font-size:12px;color:var(--ink-3)}
+.dnote .old{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink-3);text-decoration:line-through;font-size:13px}
+.ideas .row .concept{white-space:pre-wrap}
+.stale{margin-top:16px}
+.add textarea{min-height:60px}
+@media (max-width:520px){.slotrow .end{justify-content:flex-start}.slotrow{grid-template-columns:1fr}}
+
 /* ---- models */
 section.model{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:12px 14px;margin-top:12px;scroll-margin-top:150px}
 section.model h2{font:700 22px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;margin:0}
@@ -291,7 +351,8 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 // ------------------------------------------------------------------ shared
 // The shipped content is published beside this page at content/<file>.json. Edits are
 // documents in the artifact's database (collection "edits", id "<file>.<list>__<entry id>",
-// the whole edited entry); name candidates are collection "candidates". A session pulls
+// the whole edited entry); name candidates are collection "candidates"; corrections to the
+// briefs are collection "designs" (the Designs tab says how they fold in). A session pulls
 // "edits" with ArtifactData and applies them to content/*.json; once the shipped file
 // matches, the entry shows as applied and the document can be cleared.
 const FILES = [
@@ -307,6 +368,7 @@ const SECTIONS = [
   {id: "codex", label: "Codex"},
   {id: "content", label: "Content"},
   {id: "names", label: "Names"},
+  {id: "designs", label: "Designs"},
   {id: "models", label: "Models"},
 ];
 const MAKER_TAB = {minerva: "minerva", kestrel: "kestrel", wainwright_sutler: "ws", aphelion: "aphelion", arsenal: "arsenal"};
@@ -315,10 +377,11 @@ const REACH = {direct: "direct", indirect: "indirect"};
 
 const state = {
   shipped: {}, about: {}, edits: {},
-  section: "codex", sub: {content: "chassis.entries", names: "minerva"},
+  section: "codex", sub: {content: "chassis.entries", names: "minerva", designs: "minerva"},
   open: null, returnTo: null, draft: null, invalid: new Set(),
   db: null, user: null, dbState: "loading", canWrite: true,
   candidates: [], candState: "connecting", openCand: null,
+  designs: null, dnotes: [], designState: "connecting", dOpen: null, dFromHash: false, dEdit: null, dNote: null, dDir: null, dIdea: null, dAdd: null,
   reserved: null, pins: null, renders: null,
   filters: {},
 };
@@ -332,6 +395,8 @@ try {
   const f = JSON.parse(localStorage.getItem("hangar.filters") || "{}");
   if (f && typeof f === "object" && !Array.isArray(f)) state.filters = f;
 } catch (e) {}
+// A link to one brief (#br-<its file's name, hyphens for underscores>) opens it on the Designs tab.
+if (location.hash.startsWith("#br-")) { state.section = "designs"; state.dOpen = location.hash.slice(4); state.dFromHash = true; }
 function remember() { try { localStorage.setItem("hangar.tabs", JSON.stringify({section: state.section, sub: state.sub})); } catch (e) {} }
 function rememberFilters() { try { localStorage.setItem("hangar.filters", JSON.stringify(state.filters)); } catch (e) {} }
 
@@ -712,30 +777,33 @@ function render() {
   VOCAB = null; CTX = null;
   // A filter control keeps focus (and the caret) across the redraw it causes.
   const act = document.activeElement;
-  const keep = act && act.id && act.id.startsWith("flt-") ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
+  const keep = act && act.id && (act.id.startsWith("flt-") || act.id.startsWith("dz-")) ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
   const app = $("#app");
   const sub = state.sub[state.section];
-  app.className = "wrap" + (state.section === "names" && sub ? " tab-" + sub : "");
+  app.className = "wrap" + ((state.section === "names" || state.section === "designs") && sub ? " tab-" + sub : "");
   renderTabs();
   const main = $("#main");
   main.replaceChildren();
   if (state.section === "codex") renderCodex(main);
   else if (state.section === "content") renderContent(main);
   else if (state.section === "names") renderNames(main);
+  else if (state.section === "designs") renderDesigns(main);
   else if (state.section === "models") renderModels(main);
   if (keep) {
     const n = document.getElementById(keep.id);
     if (n) { n.focus({preventScroll: true}); if (typeof keep.a === "number" && n.setSelectionRange) try { n.setSelectionRange(keep.a, keep.b); } catch (e) {} }
   }
 }
-function setSection(id) { state.section = id; state.open = null; state.returnTo = null; remember(); render(); window.scrollTo(0, 0); }
-function setSub(id) { state.sub[state.section] = id; state.open = null; remember(); render(); }
+function leaveBrief() { state.dOpen = null; state.dEdit = null; state.dNote = null; state.dDir = null; state.dIdea = null; if (location.hash.startsWith("#br-")) setHash(""); }
+function setSection(id) { state.section = id; state.open = null; state.returnTo = null; leaveBrief(); remember(); render(); window.scrollTo(0, 0); }
+function setSub(id) { state.sub[state.section] = id; state.open = null; leaveBrief(); remember(); render(); }
 function renderTabs() {
   const tabs = $("#tabs"); tabs.replaceChildren();
   const pending = pendingCount();
   for (const s of SECTIONS) {
     const b = el("button", {role: "tab", "aria-selected": String(state.section === s.id), onclick: () => setSection(s.id)}, s.label);
     if (s.id === "content" && pending) b.append(el("span", {class: "count"}, String(pending)));
+    if (s.id === "designs" && state.designState === "on") { const n = tabPending("changes"); if (n) b.append(el("span", {class: "count"}, String(n))); }
     tabs.append(b);
   }
   const subs = $("#subtabs"); subs.replaceChildren();
@@ -753,6 +821,13 @@ function renderTabs() {
     for (const t of NAME_TABS) {
       const n = t.id === "rules" ? 0 : state.candidates.filter(d => d.tab === t.id && statusOf(d) !== "rejected").length;
       subs.append(el("button", {role: "tab", "aria-selected": String(state.sub.names === t.id), onclick: () => setSub(t.id)}, t.label + (n ? " · " + n : "")));
+    }
+  } else if (state.section === "designs") {
+    for (const t of DESIGN_TABS) {
+      const n = state.designState === "on" ? tabPending(t.id) : 0;
+      const b = el("button", {role: "tab", "aria-selected": String(state.sub.designs === t.id), onclick: () => setSub(t.id)}, t.label);
+      if (n) b.append(el("span", {class: "count"}, String(n)));
+      subs.append(b);
     }
   }
   subs.hidden = !subs.childElementCount;
@@ -1301,6 +1376,454 @@ async function saveCandidate(id, patch) { if (!state.db) return; try { if (patch
 async function removeCandidate(id) { if (!state.db) return; try { await state.db.collection("candidates").doc(id).delete(); state.openCand = null; } catch (e) { writeFailed(e); } }
 function writeFailed(e) { toast("Write refused: " + (e && e.code ? e.code : "unknown")); if (e && e.code === "invalid_argument") { state.canWrite = false; render(); } }
 
+// ------------------------------------------------------------------ designs
+// Every brief in docs/briefs/, the design in progress for a chassis, a component, a module or a
+// rule (5 November, Ryan: "I'd like to be able to edit briefs and WIP designs in the hangar if
+// possible, so when I start a design session I'm not correcting a bunch of bad assumptions in
+// context"). hangar/designs.json is the briefs as committed (tools/hangar_designs.py), each split
+// into blocks (a paragraph, a list item, a quote, a table, a code fence) that keep their exact
+// source. Ryan's corrections are documents in the collection "designs", an inbox laid over the
+// briefs here: a correction or a strike of a block (id "edit__<brief>__<block>", the block's
+// source kept as "original"), a note under a heading, the session's direction (id
+// "direction__<brief>") and an idea with no brief yet. A design session's first step folds them
+// into the files (tools/hangar_designs.py --fold), commits, republishes and clears them; the
+// files in git stay the truth.
+const DESIGN_TABS = [
+  {id: "minerva", label: "Minerva", maker: "minerva"},
+  {id: "kestrel", label: "Kestrel", maker: "kestrel"},
+  {id: "ws", label: "W&S", maker: "wainwright_sutler"},
+  {id: "aphelion", label: "Aphelion", maker: "aphelion"},
+  {id: "arsenal", label: "Arsenal", maker: "arsenal"},
+  {id: "parts", label: "Components", kind: "component"},
+  {id: "modules", label: "Modules", kind: "module"},
+  {id: "shared", label: "Shared"},
+  {id: "changes", label: "Changes"},
+];
+const ROSTER_TARGET = 10;   // Ryan, 4 November: "I want to target 10 per maker, at least for now"
+const TIER_WORD = {1: "Tier one", 2: "Tier two", 3: "Tier three"};
+const IDEA_STATUSES = ["idea", "liked", "briefed", "dropped"];
+const IDEA_CYCLE = ["idea", "liked", "briefed"];
+const BLOCK_NOUN = {p: "paragraph", li: "item", quote: "quote", table: "table", code: "code block"};
+const NOTE_WORD = {pending: "waiting for its session", folded: "folded into the brief: clear it", moved: "the brief has moved under it: its session checks it by hand"};
+const ensureDesigns = () => ensure("designs", "hangar/designs.json", j => { state.designs = j; });
+const designDocs = () => (state.designs && state.designs.docs) || [];
+const designStamp = () => (state.designs && state.designs.stamp) || "";
+const briefSlug = (id) => String(id).replace(/[^A-Za-z0-9]+/g, "-");
+const briefTitle = (d) => String(d.title || d.id).replace(/^Brief:\s*/i, "");
+function briefBy(key) { return designDocs().find(d => d.id === key || briefSlug(d.id) === key) || null; }
+function designTabOf(d) {
+  const h = d.header || {};
+  if (h.kind === "component") return "parts";
+  if (h.kind === "module") return "modules";
+  return MAKER_TAB[h.maker] || "shared";
+}
+// The tabs that list a brief: its own, and its maker's for a piece a maker owns.
+function briefTabs(d) {
+  const t = new Set([designTabOf(d)]);
+  const m = MAKER_TAB[(d.header || {}).maker];
+  if (m) t.add(m);
+  return t;
+}
+const canDesign = () => state.designState === "on" && state.canWrite;
+const squash = (s) => String(s || "").replace(/\s+/g, " ").trim();
+function editOf(doc, block) { return state.dnotes.find(n => n.type === "edit" && n.doc === doc && n.block === block) || null; }
+function directionOf(doc) { return state.dnotes.find(n => n.type === "direction" && n.doc === doc) || null; }
+// The section a note sits under: its own heading where it still stands, else the first of that
+// name; null once no heading carries it.
+function secOfNote(d, n) {
+  return d.sections.find(s => s.id === n.sec && s.heading === n.section) || d.sections.find(s => s.heading && s.heading === n.section) || null;
+}
+// Pending while the brief still reads as it did when the note was made; folded once the brief
+// as published carries it (an edit's words, a struck block gone, a note's or a direction's
+// words); moved when the brief changed under it without carrying it.
+function noteState(n) {
+  const d = briefBy(n.doc);
+  if (!d) return "moved";
+  const carried = () => squash(d.blocks.map(b => b.text).join(" ")).includes(squash(n.text));
+  if (n.type === "edit") {
+    if (d.blocks.some(b => b.id === n.block)) return "pending";
+    if (n.strike) return d.blocks.some(b => b.src === n.original) ? "moved" : "folded";
+    return carried() ? "folded" : "moved";
+  }
+  if (n.text && carried()) return "folded";
+  if (n.type === "note") return secOfNote(d, n) ? "pending" : "moved";
+  return "pending";
+}
+// Before the briefs load, every note counts as open.
+const designOpen = (n) => n.type === "idea" ? !["briefed", "dropped"].includes(n.status) : (!state.designs || noteState(n) !== "folded");
+const openNotes = () => state.dnotes.filter(designOpen);
+const briefPending = (docKey) => openNotes().filter(n => n.type !== "idea" && n.doc === docKey).length;
+function tabPending(tabId) {
+  if (tabId === "changes") return openNotes().length;
+  return openNotes().filter(n => {
+    if (n.type === "idea") return n.tab === tabId;
+    const d = briefBy(n.doc);
+    return d ? briefTabs(d).has(tabId) : false;
+  }).length;
+}
+// Every write carries the day in the viewer's own calendar (a session dates Ryan's words by it)
+// and the commit the briefs were read at.
+const designDay = () => new Date().toLocaleDateString("en-GB", {day: "numeric", month: "long"});
+const designMeta = () => ({by: "ryan", day: designDay(), updated: new Date().toISOString(), against: designStamp()});
+async function putDesign(id, data) { if (!state.db) return false; try { await state.db.collection("designs").doc(id).set({...data, ...designMeta()}); return true; } catch (e) { writeFailed(e); return false; } }
+async function addDesign(data) { if (!state.db) return false; try { await state.db.collection("designs").add({...data, ...designMeta()}); return true; } catch (e) { writeFailed(e); return false; } }
+async function patchDesign(id, patch) { if (!state.db) return false; try { await state.db.collection("designs").doc(id).update({...patch, updated: new Date().toISOString()}); return true; } catch (e) { writeFailed(e); return false; } }
+async function dropDesign(id) { if (!state.db) return false; try { await state.db.collection("designs").doc(id).delete(); return true; } catch (e) { writeFailed(e); return false; } }
+function setHash(h) { try { const base = location.href.split("#")[0]; history.replaceState(null, "", h ? base + "#" + h : base); } catch (e) {} }
+function focusLater(id) { requestAnimationFrame(() => { const n = document.getElementById(id); if (n) { n.focus(); if (n.tagName === "TEXTAREA") autosize(n); } }); }
+function openBrief(id) {
+  state.dOpen = id; state.dEdit = null; state.dNote = null; state.dDir = null;
+  setHash("br-" + briefSlug(id));
+  render(); window.scrollTo(0, 0);
+}
+function closeBrief() {
+  state.dOpen = null; state.dEdit = null; state.dNote = null; state.dDir = null;
+  setHash("");
+  render(); window.scrollTo(0, 0);
+}
+function openCodexAt(id) {
+  setSection("codex");
+  requestAnimationFrame(() => { const t = document.getElementById("cx-" + id); if (t) t.scrollIntoView(); });
+}
+// Markdown as the briefs write it, built as nodes (never as HTML): `code`, **bold**, *italic*,
+// a link's words.
+function mdInline(text) {
+  const out = [];
+  for (const p of String(text ?? "").split(/(`[^`]+`)/)) {
+    if (!p) continue;
+    if (p.length > 2 && p[0] === "`" && p[p.length - 1] === "`") { out.push(el("code", {}, p.slice(1, -1))); continue; }
+    for (const q of p.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, "$1").split(/(\*\*[^*]+\*\*|\*[^*\s][^*]*\*)/)) {
+      if (!q) continue;
+      if (q.length > 4 && q.startsWith("**") && q.endsWith("**")) out.push(el("b", {}, q.slice(2, -2)));
+      else if (q.length > 2 && q[0] === "*" && q[q.length - 1] === "*") out.push(el("i", {}, q.slice(1, -1)));
+      else out.push(document.createTextNode(q));
+    }
+  }
+  return out;
+}
+function mdTable(src) {
+  const rows = String(src).split("\n").filter(l => l.trim().startsWith("|"));
+  const cells = (l) => l.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(c => c.trim());
+  const t = el("table");
+  rows.forEach((l, i) => {
+    if (i === 1 && /^[\s|:-]+$/.test(l)) return;   // the header's rule
+    t.append(el("tr", {}, ...cells(l).map(c => el(i === 0 ? "th" : "td", {}, ...mdInline(c)))));
+  });
+  return el("div", {class: "tbl"}, t);
+}
+function dsect(title, count) { return el("div", {class: "dsect"}, el("h3", {}, title), count === undefined ? null : el("span", {class: "rcount"}, count)); }
+
+function renderDesigns(main) {
+  want("designs", ensureDesigns);
+  if (!state.designs) { main.append(el("p", {class: "empty"}, state.loaded.designs ? "The briefs did not load (hangar/designs.json)." : "Loading the briefs…")); return; }
+  if (state.dOpen) {
+    const d = briefBy(state.dOpen);
+    if (d) {
+      // Opened from a link: the brief's own tab lights.
+      if (state.dFromHash) { state.dFromHash = false; state.sub.designs = designTabOf(d); $("#app").className = "wrap tab-" + state.sub.designs; renderTabs(); }
+      renderBrief(main, d); return;
+    }
+    state.dOpen = null; setHash("");
+  }
+  const tab = DESIGN_TABS.find(x => x.id === state.sub.designs) || DESIGN_TABS[0];
+  if (tab.id === "changes") { renderDesignChanges(main); return; }
+  main.append(el("p", {class: "lede"}, "Every brief in docs/briefs/ as the files read at ", el("code", {}, designStamp() || "?"), ". Open one to correct a paragraph, strike one, note a heading or set the session's direction: yours wait here, laid over the brief, until its design session folds them in as its first step and clears them. The files in git stay the truth."));
+  designAccess(main);
+  if (tab.maker) main.append(renderRoster(tab));
+  const others = designDocs().filter(d => briefTabs(d).has(tab.id) && !(tab.maker && (d.header.slot || d.header.built)));
+  if (others.length) {
+    main.append(dsect(tab.maker ? "Other briefs" : "Briefs", others.length));
+    const box = el("div", {class: "roster"});
+    for (const d of others) box.append(rosterRow({brief: d}));
+    main.append(box);
+  } else if (!tab.maker) main.append(el("p", {class: "empty"}, `No ${tab.label.toLowerCase()} brief yet: an idea below becomes one in its session.`));
+  renderIdeas(main, tab);
+}
+function designAccess(main) {
+  if (state.designState === "connecting") main.append(el("p", {class: "help"}, "Connecting to the hangar's notes…"));
+  else if (state.designState === "off") main.append(el("p", {class: "help"}, "Read only: the database did not load in this view, so the briefs show as committed and nothing can be corrected here."));
+  else if (!state.canWrite) main.append(el("p", {class: "help"}, "You can read the briefs and the notes on them but not add to them."));
+}
+function renderRoster(t) {
+  const built = liveEntries("chassis.entries").map(x => x.entry).filter(e => e.maker === t.maker);
+  const briefs = designDocs().filter(d => (d.header || {}).maker === t.maker);
+  const slots = briefs.filter(d => d.header.slot);
+  const rework = new Map(briefs.filter(d => d.header.built).map(d => [d.header.built, d]));
+  const open = Math.max(0, ROSTER_TARGET - built.length - slots.length);
+  const box = el("div", {class: "roster"});
+  const mk = ctx().makers.get(t.maker) || {};
+  box.append(dsect((mk.name || t.label) + ": the roster", `${built.length} built · ${slots.length} in briefs · ${open} open · of ${ROSTER_TARGET}`));
+  const rows = [...built.map(e => ({tier: Number(e.tier) || null, built: e, brief: rework.get(e.id) || null})), ...slots.map(d => ({tier: Number(d.header.tier) || null, brief: d}))];
+  for (const tier of [1, 2, 3, null]) {
+    const here = rows.filter(r => r.tier === tier);
+    if (!here.length) continue;
+    box.append(el("h4", {}, tier ? TIER_WORD[tier] : "Tier open"));
+    for (const r of here) box.append(rosterRow(r));
+  }
+  if (open) {
+    box.append(el("h4", {}, "Open"));
+    for (let i = 0; i < open; i++) box.append(el("div", {class: "slotrow vacant"}, el("span", {class: "name"}, "An open slot"), el("span", {class: "sub2"}, "No brief yet: an idea below, or a session's.")));
+  }
+  return box;
+}
+function rosterRow(r) {
+  const d = r.brief, e = r.built;
+  const end = el("span", {class: "end"});
+  if (e) end.append(el("span", {class: "tag applied", title: "In content now"}, "built"));
+  if (d) end.append(el("span", {class: "tag planned", title: "The brief's status"}, d.header.status || "brief"));
+  const pend = d ? briefPending(d.id) : 0;
+  if (pend) end.append(el("span", {class: "tag edited", title: "Your corrections and notes waiting on this brief"}, pend + " waiting"));
+  const title = d ? briefTitle(d) : "", nm = d ? String(d.header.name || "") : "";
+  const sub2 = d ? (nm && title.toLowerCase().startsWith(nm.toLowerCase() + ", ") ? title.slice(nm.length + 2) : title) : ((e.designation || "") + " · no brief: tap for the codex");
+  return el("button", {class: "slotrow" + (e ? " built" : ""), title: d ? "Open the brief" : "Open it in the codex", onclick: () => d ? openBrief(d.id) : openCodexAt(e.id)},
+    el("span", {class: "name"}, e ? (e.name || e.id) : (d.header.name || d.id)), end, el("span", {class: "sub2"}, sub2));
+}
+
+// ---- one brief, with Ryan's corrections laid over it
+function renderBrief(main, d) {
+  const h = d.header || {};
+  const t = DESIGN_TABS.find(x => x.id === state.sub.designs) || DESIGN_TABS[0];
+  const bar = el("div", {class: "toolbar"}, el("button", {class: "btn", onclick: closeBrief}, "‹ " + (t.id === "changes" ? "Changes" : t.label)));
+  const mk = h.maker ? (ctx().makers.get(h.maker) || {}).name || h.maker : "";
+  for (const s of [h.kind, mk, h.tier ? "T" + h.tier : (h.kind === "chassis" ? "tier open" : ""), h.status, h.slot ? "a roster slot" : ""]) if (s) bar.append(el("span", {class: "tag planned"}, s));
+  const pend = briefPending(d.id);
+  if (pend) bar.append(el("span", {class: "tag edited", title: "Your corrections and notes waiting on this brief"}, pend + " waiting"));
+  main.append(bar);
+  const wrap = el("div", {class: "brief"});
+  wrap.append(el("h2", {}, briefTitle(d)), el("div", {class: "path"}, d.file + " · read at " + designStamp()));
+  designAccess(wrap);
+  wrap.append(directionBox(d));
+  if (canDesign()) wrap.append(el("p", {class: "help"}, "Tap a paragraph, an item or a table to correct or strike it; add a note under any heading. Its session folds yours into the file, dated, as its first step."));
+  const secs = d.sections.filter(s => s.level === 2);
+  if (secs.length > 1) {
+    const nav = el("div", {class: "secnav"});
+    for (const s of secs) nav.append(el("button", {onclick: () => { const n = document.getElementById("dsec-" + s.id); if (n) n.scrollIntoView({block: "start"}); }}, s.heading));
+    wrap.append(nav);
+  }
+  const doc = el("div", {class: "doc"});
+  for (const b of d.blocks) doc.append(b.type[0] === "h" ? headingEl(d, b) : renderBlock(d, b));
+  wrap.append(doc);
+  // What the brief has moved past: a correction whose block is gone, a note whose heading is.
+  const moved = state.dnotes.filter(n => n.doc === d.id && ((n.type === "edit" && !d.blocks.some(b => b.id === n.block)) || (n.type === "note" && !secOfNote(d, n))));
+  if (moved.length) {
+    const box = el("div", {class: "stale"}, dsect("Since the brief moved", moved.length), el("p", {class: "help"}, "The brief changed under these after they were made. Folded ones can go; the rest its session checks by hand."));
+    for (const n of moved) box.append(changeRow(n));
+    wrap.append(box);
+  }
+  main.append(wrap);
+}
+function directionBox(d) {
+  const cur = directionOf(d.id);
+  const box = el("div", {class: "dir"}, el("label", {for: "dz-dir"}, "Direction for the session"));
+  if (!canDesign()) { box.append(el("div", {class: "saved"}, cur ? cur.text : "None set.")); return box; }
+  const was = cur ? cur.text : "";
+  const draft = state.dDir && state.dDir.doc === d.id ? state.dDir.text : was;
+  const ta = el("textarea", {id: "dz-dir", rows: "2", placeholder: "What its session should take as given before it reads a word: a call, a frame the brief has wrong, what to skip."});
+  ta.value = draft;
+  const save = el("button", {class: "btn primary", disabled: squash(draft) === squash(was)}, draft.trim() || !cur ? "Save" : "Clear");
+  ta.addEventListener("input", () => { state.dDir = {doc: d.id, text: ta.value}; save.disabled = squash(ta.value) === squash(was); save.textContent = ta.value.trim() || !cur ? "Save" : "Clear"; autosize(ta); });
+  save.addEventListener("click", async () => {
+    const text = ta.value.trim();
+    const ok = text ? await putDesign("direction__" + d.id, {type: "direction", doc: d.id, file: d.file, text}) : (cur ? await dropDesign(cur.id) : true);
+    if (ok) { state.dDir = null; toast(text ? "Direction saved" : "Direction cleared"); render(); }
+  });
+  requestAnimationFrame(() => autosize(ta));
+  box.append(ta, el("div", {class: "actions"}, save, cur ? el("span", {class: "help"}, "Saved " + (cur.day || "") + (noteState(cur) === "folded" ? " · folded into the brief" : "")) : null));
+  return box;
+}
+function headingEl(d, b) {
+  const s = d.sections.find(x => x.id === b.sec) || {id: b.sec, heading: b.text, level: 2};
+  const box = el("div", {});
+  const head = el("div", {class: "dh " + b.type, id: "dsec-" + b.sec}, el("h3", {}, ...mdInline(b.text)));
+  if (canDesign() && !(state.dNote && state.dNote.doc === d.id && state.dNote.sec === b.sec && !state.dNote.id))
+    head.append(el("button", {class: "linkbtn", onclick: () => { state.dNote = {doc: d.id, sec: b.sec, text: ""}; render(); focusLater("dz-note"); }}, "Add a note"));
+  box.append(head);
+  for (const n of state.dnotes.filter(n => n.type === "note" && n.doc === d.id && secOfNote(d, n) === s)) {
+    box.append(state.dNote && state.dNote.id === n.id ? noteForm(d, s) : noteEl(n));
+  }
+  if (state.dNote && state.dNote.doc === d.id && state.dNote.sec === b.sec && !state.dNote.id) box.append(noteForm(d, s));
+  return box;
+}
+function noteEl(n) {
+  const box = el("div", {class: "dnote"}, el("div", {class: "body"}, el("span", {class: "who"}, "your note"), n.text));
+  const st = noteState(n);
+  const meta = el("div", {class: "meta"}, (n.day || "") + (st === "folded" ? " · " + NOTE_WORD.folded : ""));
+  if (canDesign()) meta.append(" · ", el("button", {class: "linkbtn", onclick: () => { state.dNote = {doc: n.doc, sec: n.sec, id: n.id, text: n.text}; render(); focusLater("dz-note"); }}, "Edit"),
+    " · ", el("button", {class: "linkbtn", onclick: async () => { if (await dropDesign(n.id)) toast("Note dropped"); }}, "Drop"));
+  box.append(meta);
+  return box;
+}
+function noteForm(d, s) {
+  const st = state.dNote;
+  const ta = el("textarea", {id: "dz-note", rows: "3", "aria-label": "A note on " + s.heading, placeholder: "What its session should know about this section: an assumption that is wrong, a call, a question."});
+  ta.value = st.text || "";
+  ta.addEventListener("input", () => { st.text = ta.value; autosize(ta); });
+  const save = async () => {
+    const text = ta.value.trim();
+    if (!text) return;
+    const data = {type: "note", doc: d.id, file: d.file, sec: s.id, section: s.heading, text};
+    if (await (st.id ? putDesign(st.id, data) : addDesign(data))) { state.dNote = null; render(); toast("Note saved"); }
+  };
+  ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save(); } });
+  return el("div", {class: "dnote"}, ta, el("div", {class: "actions"}, el("button", {class: "btn primary", onclick: save}, "Save note"), el("button", {class: "btn", onclick: () => { state.dNote = null; render(); }}, "Cancel")));
+}
+function blockBody(b, text, ed) {
+  const who = ed ? el("span", {class: "who"}, ed.strike ? "struck" : "your edit") : null;
+  if (b.type === "table") return el("div", {}, who, mdTable(text));
+  if (b.type === "code") return el("div", {}, who, el("pre", {}, String(text).replace(/^```[^\n]*\n?/, "").replace(/\n?```\s*$/, "")));
+  const txt = el("span", {class: "txt"}, who, ...mdInline(text));
+  if (b.type === "li") return el("div", {class: "line"}, el("span", {class: "mk"}, /^\d/.test(b.marker) ? b.marker : "•"), txt);
+  return txt;
+}
+function renderBlock(d, b) {
+  const ed = editOf(d.id, b.id);
+  const open = !!(state.dEdit && state.dEdit.doc === d.id && state.dEdit.block === b.id);
+  const lvl = Math.min(4, Math.ceil((b.level || 0) / 3));
+  const node = el("div", {class: "blk " + b.type + (ed ? (ed.strike ? " struck" : " edited") : "") + (open ? " open" : ""), style: lvl ? `--lvl:${lvl}` : null});
+  const show = ed && !ed.strike ? ed.text : b.text;
+  node.append(blockBody(b, show, ed));
+  if (ed && !ed.strike) node.append(el("details", {class: "was"}, el("summary", {}, "As the brief has it"), el("p", {class: "old"}, b.text)));
+  if (!canDesign()) return node;
+  if (!open) {
+    const start = () => { state.dEdit = {doc: d.id, block: b.id, text: ed && !ed.strike ? ed.text : b.text}; state.dNote = null; render(); focusLater("dz-edit"); };
+    node.setAttribute("tabindex", "0"); node.setAttribute("role", "button");
+    node.addEventListener("click", (ev) => { if (ev.target.closest("details, a, button") || String(window.getSelection() || "").trim()) return; start(); });
+    node.addEventListener("keydown", (ev) => { if ((ev.key === "Enter" || ev.key === " ") && ev.target === node) { ev.preventDefault(); start(); } });
+    return node;
+  }
+  const raw = b.type === "table" || b.type === "code";
+  const ta = el("textarea", {id: "dz-edit", rows: raw ? "8" : "4", "aria-label": "Your correction", spellcheck: raw ? "false" : null, style: raw ? "font-family:var(--mono);font-size:13px" : null});
+  ta.value = state.dEdit.text;
+  ta.addEventListener("input", () => { state.dEdit.text = ta.value; autosize(ta); });
+  const save = () => saveEdit(d, b);
+  ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save(); } if (e.key === "Escape") { state.dEdit = null; render(); } });
+  const acts = el("div", {class: "actions"},
+    el("button", {class: "btn primary", onclick: save}, "Save correction"),
+    ed && ed.strike ? el("button", {class: "btn", onclick: () => dropEdit(ed)}, "Unstrike") : el("button", {class: "btn danger", onclick: () => strikeBlock(d, b)}, "Strike it"),
+    el("button", {class: "btn", onclick: () => { state.dEdit = null; render(); }}, "Cancel"),
+    ed && !ed.strike ? el("button", {class: "btn", onclick: () => dropEdit(ed)}, "Drop my edit") : null);
+  node.append(el("div", {class: "blkedit"}, ta, acts, el("p", {class: "help"}, raw ? "The raw Markdown, pipes and all." : "Plain words; `code`, **bold** and *italic* as the file writes them. Its session wraps it to the file.")));
+  return node;
+}
+function editData(d, b, extra) {
+  const s = d.sections.find(x => x.id === b.sec);
+  return {type: "edit", doc: d.id, file: d.file, block: b.id, kind: b.type, marker: b.marker || "", level: b.level || 0, line: b.line, sec: b.sec, section: s ? s.heading : "", original: b.src, ...extra};
+}
+async function saveEdit(d, b) {
+  const text = state.dEdit.text.trim();
+  const ed = editOf(d.id, b.id);
+  let ok;
+  if (!text) { strikeBlock(d, b); return; }
+  if (squash(text) === squash(b.text)) ok = ed ? await dropDesign(ed.id) : true;
+  else ok = await putDesign("edit__" + d.id + "__" + b.id, editData(d, b, {text}));
+  if (ok) { state.dEdit = null; render(); toast("Correction saved"); }
+}
+async function strikeBlock(d, b) {
+  if (await putDesign("edit__" + d.id + "__" + b.id, editData(d, b, {text: "", strike: true}))) { state.dEdit = null; render(); toast("Struck"); }
+}
+async function dropEdit(ed) { if (await dropDesign(ed.id)) { state.dEdit = null; render(); toast("Back as the brief has it"); } }
+
+// ---- ideas with no brief yet, each maker's and each kind's
+function renderIdeas(main, t) {
+  const list = state.dnotes.filter(n => n.type === "idea" && n.tab === t.id)
+    .sort((a, b) => IDEA_STATUSES.indexOf(a.status || "idea") - IDEA_STATUSES.indexOf(b.status || "idea") || ((a.created || "") < (b.created || "") ? -1 : 1));
+  main.append(dsect("Ideas, no brief yet", list.length || undefined));
+  const rows = el("div", {class: "rows ideas"});
+  if (state.designState === "on" && !list.length) rows.append(el("div", {class: "help"}, "None yet. A session turns an idea into a brief."));
+  const live = list.filter(n => n.status !== "dropped"), binned = list.filter(n => n.status === "dropped");
+  for (const n of live) rows.append(renderIdea(n));
+  if (binned.length) { rows.append(el("div", {class: "divider"}, "dropped · " + binned.length)); for (const n of binned) rows.append(renderIdea(n)); }
+  main.append(rows);
+  if (canDesign()) main.append(ideaForm(t));
+}
+function renderIdea(n) {
+  const st = IDEA_STATUSES.includes(n.status) ? n.status : "idea";
+  const open = !!(state.dIdea && state.dIdea.id === n.id);
+  const row = el("div", {class: "row" + (open ? " open" : "") + (st === "dropped" ? " rejected" : ""), onclick: (e) => {
+    if (e.target.closest(".edit, .pill") || !canDesign()) return;
+    state.dIdea = open ? null : {id: n.id, name: n.name || "", concept: n.concept || ""}; render();
+  }});
+  row.append(el("div", {class: "name"}, n.name || "Unnamed", el("small", {}, [n.kind || "chassis", n.by === "claude" ? "Claude's" : "", n.day].filter(Boolean).join(" · "))));
+  const side = el("div", {class: "side"});
+  if (!canDesign()) side.append(el("span", {class: "pill " + (st === "briefed" ? "landed" : st === "dropped" ? "rejected" : st)}, st));
+  else if (st === "dropped") side.append(el("button", {class: "pill rejected", title: "Dropped. Tap to restore it as an idea", onclick: async (e) => { e.stopPropagation(); await patchDesign(n.id, {status: "idea"}); }}, "dropped"));
+  else side.append(
+    el("button", {class: "pill " + (st === "briefed" ? "landed" : st), title: "Tap to cycle: idea, liked, briefed", onclick: async (e) => { e.stopPropagation(); await patchDesign(n.id, {status: IDEA_CYCLE[(IDEA_CYCLE.indexOf(st) + 1) % IDEA_CYCLE.length]}); }}, st),
+    el("button", {class: "pill ghost", title: "Drop: keeps it on record at the bottom", onclick: async (e) => { e.stopPropagation(); await patchDesign(n.id, {status: "dropped"}); }}, "drop"));
+  row.append(side);
+  if (n.concept) row.append(el("div", {class: "concept"}, n.concept));
+  if (open) {
+    const dr = state.dIdea;
+    const nm = el("input", {type: "text", id: "dz-idea-name", "aria-label": "Working name"}); nm.value = dr.name;
+    const ta = el("textarea", {rows: "3", id: "dz-idea-concept", "aria-label": "The idea"}); ta.value = dr.concept;
+    nm.addEventListener("input", () => { dr.name = nm.value; });
+    ta.addEventListener("input", () => { dr.concept = ta.value; autosize(ta); });
+    requestAnimationFrame(() => autosize(ta));
+    let confirming = false;
+    const del = el("button", {class: "btn danger", title: "Delete removes it; Drop keeps it at the bottom", onclick: async () => { if (!confirming) { confirming = true; del.textContent = "Really delete"; return; } if (await dropDesign(n.id)) { state.dIdea = null; render(); } }}, "Delete");
+    row.append(el("div", {class: "edit"}, nm, ta, el("div", {class: "actions"},
+      el("button", {class: "btn primary", onclick: async () => { if (await patchDesign(n.id, {name: nm.value.trim() || n.name || "", concept: ta.value.trim()})) { state.dIdea = null; render(); } }}, "Save"),
+      el("button", {class: "btn", onclick: () => { state.dIdea = null; render(); }}, "Cancel"), del)));
+  }
+  return row;
+}
+function ideaForm(t) {
+  if (!state.dAdd || state.dAdd.tab !== t.id) state.dAdd = {tab: t.id, name: "", concept: "", kind: t.kind || (t.id === "shared" ? "rule" : "chassis")};
+  const dr = state.dAdd;
+  const nm = el("input", {type: "text", id: "dz-add-name", placeholder: "A working name (the real one comes later)", autocomplete: "off", "aria-label": "A working name"}); nm.value = dr.name;
+  const kd = el("select", {id: "dz-add-kind", "aria-label": "Kind"});
+  for (const k of ["chassis", "component", "module", "rule"]) { const o = el("option", {value: k}, k); if (k === dr.kind) o.selected = true; kd.append(o); }
+  const cp = el("textarea", {id: "dz-add-concept", rows: "3", placeholder: "The idea: what it does, the fantasy, the hook, the holes you already see", "aria-label": "The idea"}); cp.value = dr.concept;
+  nm.addEventListener("input", () => { dr.name = nm.value; });
+  kd.addEventListener("change", () => { dr.kind = kd.value; });
+  cp.addEventListener("input", () => { dr.concept = cp.value; autosize(cp); });
+  const go = async () => {
+    const name = nm.value.trim(), concept = cp.value.trim();
+    if (!name && !concept) return;
+    if (await addDesign({type: "idea", tab: t.id, kind: kd.value, name: name || concept.split(/[.:;\n]/)[0].slice(0, 48), concept, status: "idea", created: new Date().toISOString()})) {
+      state.dAdd = null; render(); toast("Idea added");
+    }
+  };
+  nm.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); cp.focus(); } });
+  return el("div", {class: "add"}, el("h3", {}, "An idea for " + t.label), el("div", {class: "line"}, nm, kd), cp, el("div", {class: "actions"}, el("button", {class: "btn primary", onclick: go}, "Add the idea")));
+}
+
+// ---- everything waiting for a session, brief by brief
+function changeRow(n) {
+  const st = n.type === "idea" ? (IDEA_STATUSES.includes(n.status) ? n.status : "idea") : noteState(n);
+  const what = n.type === "edit" ? (n.strike ? "strike" : "correction") : n.type;
+  const box = el("div", {class: "dnote"});
+  box.append(el("div", {class: "meta"}, el("span", {class: "who"}, what), [n.section, n.day, NOTE_WORD[st] || st].filter(Boolean).join(" · ")));
+  if (n.type === "edit") {
+    box.append(el("div", {class: "old"}, n.original || ""));
+    if (!n.strike) box.append(el("div", {class: "body"}, n.text));
+  } else if (n.type === "idea") box.append(el("div", {class: "body"}, el("b", {}, n.name || "Unnamed"), (n.kind ? " (" + n.kind + ")" : "") + (n.concept ? ": " + n.concept : "")));
+  else box.append(el("div", {class: "body"}, n.text));
+  if (canDesign()) box.append(el("div", {class: "actions"}, el("button", {class: "btn", onclick: async () => { if (await dropDesign(n.id)) toast("Dropped"); }}, st === "folded" ? "Clear" : "Drop")));
+  return box;
+}
+function renderDesignChanges(main) {
+  main.append(el("p", {class: "lede"}, "Everything waiting in the hangar for a design session, brief by brief. A session's first step folds these into the files (tools/hangar_designs.py --fold), commits, republishes this page and clears them. Folded means the brief as published already carries it."));
+  designAccess(main);
+  if (state.designState !== "on") return;
+  if (!state.dnotes.length) { main.append(el("p", {class: "empty"}, "Nothing waiting: every brief reads as committed.")); return; }
+  const folded = state.dnotes.filter(n => n.type !== "idea" && noteState(n) === "folded");
+  if (folded.length && canDesign()) main.append(el("div", {class: "toolbar"}, el("button", {class: "btn", onclick: async () => { let k = 0; for (const n of folded) if (await dropDesign(n.id)) k++; toast(`Cleared ${k}`); }}, `Clear the ${folded.length} folded`)));
+  const order = {direction: 0, note: 1, edit: 2};
+  const byDoc = new Map();
+  for (const n of state.dnotes.filter(n => n.type !== "idea")) { if (!byDoc.has(n.doc)) byDoc.set(n.doc, []); byDoc.get(n.doc).push(n); }
+  for (const [key, list] of byDoc) {
+    const d = briefBy(key);
+    main.append(el("div", {class: "dh h2"}, el("h3", {}, d ? briefTitle(d) : key), d ? el("button", {class: "linkbtn", onclick: () => openBrief(d.id)}, "Open the brief") : null));
+    for (const n of list.sort((a, b) => (order[a.type] ?? 3) - (order[b.type] ?? 3) || (a.line || 0) - (b.line || 0))) main.append(changeRow(n));
+  }
+  const ideas = state.dnotes.filter(n => n.type === "idea");
+  if (ideas.length) {
+    main.append(el("div", {class: "dh h2"}, el("h3", {}, "Ideas")));
+    for (const n of ideas) main.append(changeRow(n));
+  }
+}
+
 // ------------------------------------------------------------------ models
 // Every machine live in 3D, played from the sidecars the game reads (hangar/models/<id>.rig.json
 // beside the model as glTF JSON, hangar/models/<id>.model.json), with the game's own renders
@@ -1553,11 +2076,12 @@ function statusLine() {
   const parts = [];
   if (state.dbState === "ready") parts.push(n ? `${n} pending edit${n === 1 ? "" : "s"}` : "no pending edits");
   if (state.candState === "on") parts.push(`${state.candidates.length} names`);
+  if (state.designState === "on") { const k = tabPending("changes"); parts.push(k ? `${k} on the briefs` : "nothing on the briefs"); }
   setStatus(parts.length ? parts.join(" · ") + " · synced live" : "Shipped files loaded");
 }
 async function connectDb() {
   const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
-  if (!db) { state.dbState = "none"; state.candState = "off"; setStatus("Read only: the database did not load in this view.", true); render(); return; }
+  if (!db) { state.dbState = "none"; state.candState = "off"; state.designState = "off"; setStatus("Read only: the database did not load in this view.", true); render(); return; }
   state.db = db;
   try { const user = await window.claude.use("user"); if (user) { const w = await user.can("data.write"); if (w === false) state.canWrite = false; } } catch (e) {}
   db.collection("edits").onSnapshot((snap) => {
@@ -1573,6 +2097,12 @@ async function connectDb() {
     statusLine();
     if (state.section === "names") render(); else renderTabs();
   }, (err) => { state.candState = "off"; render(); });
+  db.collection("designs").onSnapshot((snap) => {
+    state.dnotes = snap.docs.map(s => ({id: s.id, ...s.data()})).filter(n => n && n.type);
+    state.designState = "on";
+    statusLine();
+    if (state.section === "designs") render(); else renderTabs();
+  }, (err) => { state.designState = "off"; render(); });
 }
 
 (async () => {
@@ -1586,6 +2116,11 @@ async function connectDb() {
   }
   connectDb();
 })();
+window.addEventListener("hashchange", () => {
+  if (!location.hash.startsWith("#br-")) return;
+  state.section = "designs"; state.dOpen = location.hash.slice(4); state.dFromHash = true; state.dEdit = null; state.dNote = null; state.dDir = null;
+  render(); window.scrollTo(0, 0);
+});
 $("#tabs").addEventListener("keydown", e => {
   if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
   const ids = SECTIONS.map(s => s.id); const i = ids.indexOf(state.section) + (e.key === "ArrowRight" ? 1 : -1);

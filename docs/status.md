@@ -53,8 +53,14 @@ brief with a header the hangar reads, the shared parts into the briefs README ("
 the echidna's new shape in its brief, the status detonator's notes in the jellyfish's, the
 to-do's roster block for ten a maker, the work account scrapped everywhere (Ryan, 5 November: the
 personal account is the only one), and the pointers (the briefs
-README, the README's documents, this file, the to-do). Docs only: nothing decided, nothing built,
-the bible untouched until his marks.
+README, the README's documents, this file, the to-do). Then the hangar's Designs tab (5 November,
+Ryan: "I'd like to be able to edit briefs and WIP designs in the hangar if possible, so when I
+start a design session I'm not correcting a bunch of bad assumptions in context"): every brief by
+maker and kind, each maker's roster of ten, for him to correct a paragraph, strike one, note a
+heading, set a session's direction or leave an idea; his marks wait in the page's `designs`
+collection until a design session folds them in first (`tools/hangar_designs.py --fold`, the
+briefs README's How a session runs). Docs and tools only: nothing decided, no game code, the
+bible untouched until his marks.
 
 `ccr-bb178c9b-l6airv` (2 to 4 November) carried Ryan's playtest list of 2 November and the
 die's marks of 3 and 4 November (How things stand), from main's `3929042`; its battle map's share
@@ -1102,7 +1108,7 @@ procedures are in `README.md`.
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced (a branch's models, rigs and renders stand as it
   published them, so a file is sent only when the live copy is the one it replaces), and `edits`
-  read first. At the page's version 204 (4 November, from `ccr-bb178c9b-l6airv` as main took it;
+  and `designs` read first. At the page's version 204 (4 November, from `ccr-bb178c9b-l6airv` as main took it;
   `edits` empty, the page unchanged): `content/components.json` and `content/vocabulary.json` as
   the merged main has them (every cooldown the piece's own, Every Foe and Every Ally as keywords,
   the costs along the foot, the Targets codex's hexes under the main mark), each read back

@@ -17,6 +17,20 @@ chat first.
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row (`docs/design-bible.html`), the
   "Start here" of `docs/status.md`, this file, then the brief and the files it names. If a chat
   and a file disagree, the chat is newer.
+- Fold in Ryan's corrections first (5 November). The hangar's Designs tab lays every brief out
+  for him to correct a paragraph, strike one, note a heading, set the session's direction or
+  leave an idea with no brief yet, and keeps them in its database's `designs` collection until a
+  session folds them in. Before reading the brief, save that collection with ArtifactData's
+  `list` (`collection` `designs`, `out_dir` `build/hangar/inbox`) and run
+  `python3 tools/hangar_designs.py --fold build/hangar/inbox` (`--dry` to look first): a
+  correction replaces its block, closed with "(Ryan's correction, <day>.)"; a strike removes its
+  block; a note goes under its heading and a direction under the header, each opening on his
+  name and the day. Read the diff, fold by hand what it could not place (it says why) and close
+  the numbers of a list it struck an item from; commit, run `python3 tools/hangar_data.py` and
+  republish the hangar with the files that moved; then clear the folded documents with the
+  ArtifactData batch it printed. An idea becomes a brief or a bench line and is then marked
+  briefed or dropped. A correction is Ryan's call at the strength he wrote it: a hole in one is
+  raised in chat, as with any suggestion of his.
 - One brief a design (5 November): every chassis, component or module in progress has a file of
   its own here, named `<maker>_<label>.md`, whose title line is followed by a hangar header, an
   HTML comment holding a JSON object: `kind` (chassis, component, module, rule, hub or shared),

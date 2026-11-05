@@ -180,7 +180,8 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
   in order", kept at every handoff; a question only Ryan can answer is the bible's section 12;
   a task is `docs/todo.md`; a run a decision cites is `docs/measurements.md`; a proposal is
   `docs/<topic>_proposal.md` until its evaluation, then a design in progress is its brief in
-  `docs/briefs/` until its session lands; each retires (git keeps it) once its decisions are
+  `docs/briefs/` until its session lands (Ryan corrects briefs in the hangar's Designs tab, and
+  a design session folds those in first: the briefs README); each retires (git keeps it) once its decisions are
   rows and content. Never the same item in two files, and no row carries a conversation: a long
   Open row is a paragraph and a pointer to its proposal or brief.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.

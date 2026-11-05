@@ -17,8 +17,18 @@ a bunch of bad assumptions in context").
 
     python3 tools/hangar_designs.py            # write build/hangar/designs.json, print a summary
     python3 tools/hangar_designs.py --check    # check the headers only, write nothing
+    python3 tools/hangar_designs.py --fold build/hangar/inbox [--dry]   # fold the page's notes into the briefs
+
+The page's notes are the documents of its database's "designs" collection, saved one JSON file a
+document by ArtifactData's list with out_dir (build/hangar/inbox/designs/<id>.json). --fold lays
+each into its brief as Ryan's, dated by the day the page recorded: a correction replaces its block
+in place, wrapped to the file and closed with "(Ryan's correction, <day>.)"; a strike removes its
+block; a note goes under its heading as "**Ryan's note (<day>)**: ..."; a direction goes under the
+brief's header as "**Ryan's direction (<day>)**: ...", replacing an earlier one. An idea is listed
+for the session to brief. It prints what it folded, what it could not (the brief moved under it:
+fold that one by hand), and the ArtifactData batch that clears the folded documents.
 """
-import hashlib, json, os, re, subprocess, sys
+import glob, hashlib, json, os, re, subprocess, sys, textwrap
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BRIEFS = os.path.join(ROOT, "docs", "briefs")
@@ -201,7 +211,170 @@ def build(check_only=False):
     return docs, problems
 
 
+WIDTH = 100   # the briefs wrap at a hundred columns
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+          "October", "November", "December"]
+
+
+def load_inbox(path):
+    """The page's notes from ArtifactData's files (one a document, or a list in one file): each
+    note's fields with its "id" and, when the file carries it, its "version"."""
+    paths = sorted(glob.glob(os.path.join(path, "**", "*.json"), recursive=True)) if os.path.isdir(path) else [path]
+    out = []
+    for p in paths:
+        j = json.load(open(p, encoding="utf-8"))
+        if isinstance(j, dict) and isinstance(j.get("documents", j.get("docs")), list):
+            j = j.get("documents", j.get("docs"))
+        items = j if isinstance(j, list) else [j]
+        for it in items:
+            if not isinstance(it, dict):
+                continue
+            data = it["data"] if isinstance(it.get("data"), dict) and "type" not in it else it
+            nid = it.get("id") or it.get("doc_id") or (os.path.splitext(os.path.basename(p))[0] if len(items) == 1 else None)
+            out.append(dict(data, id=nid, version=it.get("version", data.get("version"))))
+    return [n for n in out if n.get("type")]
+
+
+def day_of(n):
+    """The day a note was made, as the briefs date Ryan's words ("5 November")."""
+    if n.get("day"):
+        return n["day"]
+    m = re.match(r"(\d{4})-(\d\d)-(\d\d)", n.get("updated") or n.get("created") or "")
+    return "%d %s" % (int(m.group(3)), MONTHS[int(m.group(2)) - 1]) if m else "undated"
+
+
+def paragraphs(text):
+    """A textarea's words as paragraphs: a blank line parts them, a single newline is a space."""
+    return [" ".join(p.split()) for p in re.split(r"\n\s*\n", text.strip()) if p.strip()]
+
+
+def wrap(text, first, rest):
+    return textwrap.fill(text, WIDTH, initial_indent=first, subsequent_indent=rest,
+                         break_long_words=False, break_on_hyphens=False)
+
+
+def block_source(n, text):
+    """A block's new source from its kind, marker and indent: a paragraph, a list item (a second
+    paragraph indented under it), a quote; a table or a code fence as written."""
+    kind, pad = n.get("kind", "p"), " " * int(n.get("level") or 0)
+    if kind in ("table", "code"):
+        return text.strip("\n")
+    paras = paragraphs(text)
+    if kind == "li":
+        mk = (n.get("marker") or "-") + " "
+        under = pad + " " * len(mk)
+        return "\n\n".join([wrap(paras[0], pad + mk, under)] + [wrap(p, under, under) for p in paras[1:]])
+    if kind == "quote":
+        return "\n>\n".join(wrap(p, "> ", "> ") for p in paras)
+    if kind.startswith("h"):
+        return "#" * int(kind[1]) + " " + " ".join(paras)
+    return "\n\n".join(wrap(p, pad, pad) for p in paras)
+
+
+def labelled(label, text):
+    """A note or a direction as its paragraphs, the first opening on Ryan's label."""
+    paras = paragraphs(text)
+    paras[0] = label + ": " + paras[0]
+    return [wrap(p, "", "") for p in paras]
+
+
+def fold(path, dry=False):
+    """Fold the page's notes into the briefs. Returns (folded, unfolded, ideas): notes, each
+    unfolded one with its reason."""
+    notes = load_inbox(path)
+    folded, unfolded, ideas = [], [], []
+    by_file = {}
+    for n in notes:
+        if n["type"] == "idea":
+            ideas.append(n)
+        elif n["type"] in ("edit", "note", "direction"):
+            by_file.setdefault(n.get("file") or "docs/briefs/%s.md" % n.get("doc"), []).append(n)
+        else:
+            unfolded.append((n, "an unknown type %r" % n["type"]))
+    for rel, items in sorted(by_file.items()):
+        fp = os.path.join(ROOT, rel)
+        if not os.path.exists(fp) or not rel.startswith("docs/briefs/"):
+            unfolded += [(n, "no brief %s" % rel) for n in items]
+            continue
+        text = open(fp, encoding="utf-8").read()
+        # Corrections and strikes first, by their exact source; then notes and the direction,
+        # which find their heading and the header by line.
+        for n in sorted((x for x in items if x["type"] == "edit"), key=lambda x: x.get("line") or 0):
+            orig = n.get("original") or ""
+            if not orig or text.count(orig) != 1:
+                unfolded.append((n, "its block is no longer in the brief as it was" if orig and not text.count(orig) else "its block is in the brief more than once"))
+                continue
+            i = text.index(orig)
+            if n.get("strike"):
+                if re.match(r"\d+\.$", n.get("marker") or ""):
+                    n["hint"] = "a numbered item: close its list's numbers, and any pointer to them"
+                j = i + len(orig) + (1 if text[i + len(orig):i + len(orig) + 1] == "\n" else 0)
+                text = text[:i] + text[j:]
+                if text[i - 2:i] == "\n\n" and text[i:i + 1] == "\n":
+                    text = text[:i] + text[i + 1:]
+            else:
+                new = (n.get("text") or "").strip()
+                if n.get("kind") not in ("table", "code"):
+                    new += " (Ryan's correction, %s.)" % day_of(n)
+                text = text[:i] + block_source(n, new) + text[i + len(orig):]
+            folded.append(n)
+        lines = text.split("\n")
+        for n in sorted((x for x in items if x["type"] == "note"), key=lambda x: x.get("updated") or "", reverse=True):
+            at = next((k for k, ln in enumerate(lines) if HEADING.match(ln) and HEADING.match(ln).group(2).strip() == n.get("section")), None)
+            if at is None or not (n.get("text") or "").strip():
+                unfolded.append((n, "its heading %r is no longer in the brief" % n.get("section")))
+                continue
+            lines[at + 1:at + 1] = [""] + "\n\n".join(labelled("**Ryan's note (%s)**" % day_of(n), n["text"])).split("\n")
+            folded.append(n)
+        for n in (x for x in items if x["type"] == "direction"):
+            at = next((k for k, ln in enumerate(lines[:6]) if HEADER.match(ln.strip())), None)
+            if at is None or not (n.get("text") or "").strip():
+                unfolded.append((n, "the brief has no hangar header"))
+                continue
+            k = at + 1
+            while k < len(lines) and not lines[k].strip():
+                k += 1
+            if k < len(lines) and lines[k].startswith("**Ryan's direction ("):   # the earlier one goes
+                e = k
+                while e < len(lines) and lines[e].strip():
+                    e += 1
+                del lines[k:e + 1]
+            lines[at + 1:at + 1] = [""] + "\n\n".join(labelled("**Ryan's direction (%s)**" % day_of(n), n["text"])).split("\n")
+            folded.append(n)
+        new_text = "\n".join(lines).rstrip("\n") + "\n"
+        if not dry and new_text != open(fp, encoding="utf-8").read():
+            open(fp, "w", encoding="utf-8").write(new_text)
+    return folded, unfolded, ideas
+
+
+def fold_main(path, dry):
+    folded, unfolded, ideas = fold(path, dry)
+    what = lambda n: "%s %s (%s%s)" % (n["type"] if not n.get("strike") else "strike", n.get("id"), n.get("doc") or n.get("tab"), ", " + n["section"] if n.get("section") else "")
+    print("%s %d:" % ("would fold" if dry else "folded", len(folded)))
+    for n in folded:
+        print("  " + what(n) + (": " + n["hint"] if n.get("hint") else ""))
+    if unfolded:
+        print("not folded %d (fold by hand, then clear):" % len(unfolded))
+        for n, why in unfolded:
+            print("  %s: %s" % (what(n), why))
+    if ideas:
+        print("ideas %d (a brief each, or a bench line; then mark it briefed or drop it):" % len(ideas))
+        for n in ideas:
+            print("  %s [%s, %s, %s] %s: %s" % (n.get("id"), n.get("tab"), n.get("kind"), n.get("status"), n.get("name"), " ".join((n.get("concept") or "").split())))
+    if folded and not dry:
+        writes = [dict({"op": "delete", "collection": "designs", "doc_id": n["id"]}, **({"if_version": n["version"]} if n.get("version") else {})) for n in folded]
+        print("clear the folded with ArtifactData batch, writes:")
+        print(json.dumps(writes))
+        print("then: git diff docs/briefs, python3 tools/hangar_data.py, commit, republish the hangar")
+
+
 def main():
+    if "--fold" in sys.argv:
+        k = sys.argv.index("--fold")
+        if k + 1 >= len(sys.argv):
+            sys.exit("--fold wants the folder ArtifactData's list wrote the designs collection to")
+        fold_main(sys.argv[k + 1], "--dry" in sys.argv)
+        return
     check_only = "--check" in sys.argv
     docs, problems = build(check_only)
     if problems:
