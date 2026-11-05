@@ -899,11 +899,11 @@ The tasks are the to-do's; this is the index of what waits.
   in the climax, the choir back ("that was a mistake"), the climax's swells half as far over their
   floor, the cellos' and the contrabass's lines on the fretless in place of the battle's saw strings
   ("not just sound like the battle half with the percussion taken out"; 5 November: "fretless bass
-  wins, as does the 'half as far' option for the climax"), the choir's rise into the lift 3 dB where
-  the track doubles it ("In C, let's not swell the volume so far, especially for the choir"), the
-  climax's bells full); those waiting on his ear; then the engine (a pair as one synchronized
-  stream, the map choosing the track, the 3 s flip) and each picked half into the forge's SHIP
-  table, Hold The Line's first.
+  wins, as does the 'half as far' option for the climax"), the lift coming in half as far, the
+  fretless and the bells 3 dB down there and the choir held level ("In C, let's not swell the volume
+  so far, especially for the choir"), the climax's bells full); those waiting on his ear; then the
+  engine (a pair as one synchronized stream, the map choosing the track, the 3 s flip) and each
+  picked half into the forge's SHIP table, Hold The Line's first.
 
 ## Next, in order
 

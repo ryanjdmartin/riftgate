@@ -7,8 +7,9 @@ sixth, and the lift's choir rising less.
 The cellos' and the contrabass's lines on the fretless electric (BASS7), met halfway with the bowed
 pair's level between a phone and full; the climax's swells half as far over their floor (SWELL). No
 voice swells in the lift (C): the choir's pad, the one choir from the intro to the lift, doubles there
-in the recipe, 6 dB over its level, so it now rises half as far, 3 dB (CHOIR_LIFT), with a set beside
-it as it was and held level.
+in the recipe, but the lift rises mostly because its contrabass line on the fretless comes in 11 dB over
+the groove's bass on a phone: the pair's lift comes in half as far, the fretless and the bells 3 dB
+down there and the choir held level (CHOIR_LIFT, LIFT_DB), with a set beside it.
 
 The sixth round's, kept: the cellos and the contrabass on a true bass instrument, not the battle's
 saw strings dropped ("make the map half not just sound like the battle half with the percussion taken
@@ -237,11 +238,16 @@ BASSES = {
 # far' option for the climax").
 BASS7 = "fretless"
 SWELL = 0.5     # the climax's swells rising half as far over their floor ("reduce the max on it, so it doesn't swell as far")
-# The lift's choir (5 November: "In C, let's not swell the volume so far, especially for the choir"): no
-# voice swells in C; the choir's pad, the one choir from the intro to the lift, doubles there, 6 dB over
-# its level (the recipe's "one choir, louder in the lift"). Half as far in dB, as he picked for the
-# climax, is 3 dB over (the full pair's); a set puts it beside the 6 dB and the choir held level.
-CHOIR_LIFT = 1.414
+# The lift (5 November: "In C, let's not swell the volume so far, especially for the choir"). No voice
+# swells in C by a shape; the lift rises because its parts come in louder: on its own, from the groove
+# into the lift the contrabass's line on the fretless rises 11 dB on a phone (8 in full), the choir's
+# pad, which the recipe doubles there ("one choir, louder in the lift"), 7, and the bells 4, so the lift
+# stood 5.9 dB over the groove on a phone and the choir alone held level took only 1.2 dB off it. The
+# full pair's lift comes in half as far, the choir most: the fretless and the bells 3 dB down there and
+# the choir held level, about 2 dB over the groove; a set has it as it was, the choir held level alone,
+# and half as far with the choir rising 3 dB.
+CHOIR_LIFT = 1.0   # the choir's pad in the lift against its level (the recipe's 2.0)
+LIFT_DB = -3.0     # the fretless and the bells in the lift
 FLOOR = 0.7     # the swells' floor (forge's swells())
 
 
@@ -269,17 +275,26 @@ def map_six(call, bass=BASS7, swell=SWELL):
     return dict(kw, voices=voices)
 
 
-def map_seven(call, bass=BASS7, swell=SWELL, choir_lift=CHOIR_LIFT):
-    """The sixth round's map half on `bass` with the climax's swells `swell` as far, the choir's
-    pad `choir_lift` times its level in the lift (C) rather than the recipe's twice."""
+def map_seven(call, bass=BASS7, swell=SWELL, choir_lift=CHOIR_LIFT, lift_db=LIFT_DB):
+    """The sixth round's map half on `bass` with the climax's swells `swell` as far; in the lift (C)
+    the choir's pad `choir_lift` times its level rather than the recipe's twice, and the bass and the
+    bells `lift_db` dB from where they were. A lift part moves onto a voice of its own in every row,
+    whatever its level, so every row's voices keep their places and their humanising."""
     kw = map_six(call, bass, swell)
+    voices, moved = [], []
+    for v in kw["voices"]:
+        v = dict(v)
+        if v["inst"] in ("real_bass", "bell") and "C" in v["pat"] and any(c not in ".-" for c in v["pat"]["C"]):
+            v["pat"] = dict(v["pat"])
+            moved.append(dict(v, gain=round(v["gain"] * 10.0 ** (lift_db / 20.0), 4), pat={"C": v["pat"].pop("C")}))
+        voices.append(v)
     pads = []
     for p in kw.get("pad") or []:
         p = dict(p)
         if p["inst"] == "choir" and "C" in p.get("sections", ""):
             p["gains"] = dict(p.get("gains", {}), C=choir_lift)
         pads.append(p)
-    return dict(kw, pad=pads)
+    return dict(kw, voices=voices + moved, pad=pads)
 
 
 def render_seven(job):
@@ -302,12 +317,13 @@ def render_five(job):
 
 # Each set: (id, title, note, the bars cut by index from 0, or None for the whole half, and its rows:
 # (the render, title, note)).
-PAIR_JOB = (BASS7, SWELL, CHOIR_LIFT)
+PAIR_JOB = (BASS7, SWELL, CHOIR_LIFT, LIFT_DB)
 SETS = [
-    ("fc", "The lift, its choir", "From the groove's start through the lift into the strings section, on the fretless with the climax's swells half as far: the choir's pad, the one choir from the intro to the lift, rising into the lift by less (Ryan, 5 November: \"In C, let's not swell the volume so far, especially for the choir\").", (8, 25),
-     [((BASS7, SWELL, 2.0), "As the sixth round had it", "The choir twice its level in the lift, 6 dB up."),
-      ((BASS7, SWELL, CHOIR_LIFT), "Half as far", "The choir 3 dB up in the lift (the full pair's)."),
-      ((BASS7, SWELL, 1.0), "Held level", "The choir at its own level through the lift.")]),
+    ("fc", "The lift", "From the groove's start through the lift into the strings section, on the fretless with the climax's swells half as far, the lift coming in less far (Ryan, 5 November: \"In C, let's not swell the volume so far, especially for the choir\"). On a phone the lift stood 5.9 dB over the groove, its contrabass line on the fretless 11 dB up from the groove's bass, the choir 7 and the bells 4.", (8, 25),
+     [((BASS7, SWELL, 2.0, 0.0), "As the sixth round had it", "The lift 5.9 dB over the groove on a phone, the choir doubled there."),
+      ((BASS7, SWELL, 1.0, 0.0), "The choir held level", "The choir at its own level through the lift, nothing else changed: 4.7 dB over the groove."),
+      ((BASS7, SWELL, 1.414, -3.0), "Half as far", "The fretless and the bells 3 dB down in the lift, the choir 3 dB up rather than 6."),
+      ((BASS7, SWELL, 1.0, -3.0), "Half as far, the choir held level", "The fretless and the bells 3 dB down in the lift, the choir at its own level (the full pair's).")]),
 ]
 
 
