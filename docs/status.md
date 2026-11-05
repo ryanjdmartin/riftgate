@@ -269,10 +269,12 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 207
-  (4 November, from the audit as it landed: `content/vocabulary.json`, `content/foes.json` and
-  `content/factions.json` as main has them, the Nob's older design line a stale publish over
-  206's; `edits` empty). Its lit parts show as the phone's renderer shows
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 208
+  (5 November, from `claude/aphelion-minerva-chassis-9qf6cy` with main merged in: the Designs tab,
+  only the page and `hangar/designs.json` sent, the briefs as of `8187c42`, read back identical;
+  the live page was main's, so nothing another session published was lost; `edits` and
+  `designs` empty). Version 207 before it (4 November, from the audit as it landed:
+  `content/vocabulary.json`, `content/foes.json` and `content/factions.json` as main has them). Its lit parts show as the phone's renderer shows
   them, the light eased by the power 1/2.2 as the game eases it (`MechRig.light`); every file
   the page reads is fetched with a stamp on the URL. Its database: Ryan's saved edits
   (collection `edits`), name candidates (`candidates`) and his marks on the briefs (`designs`, the
