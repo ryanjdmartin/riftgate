@@ -80,7 +80,8 @@ fits this slot. A, cold is quiet, meets Cryo. A weapon hit on a foe carrying Cry
 hitter, so an owl that frosts its prey and strikes it stays cold and unseen. The Cryo detonator's
 Suppress at enough stacks reads as the prey frozen in place. The Arsenal's frost figure could keep
 the version that blows the frost up for damage; the two part by payoff, silence against the blow.
-Unanswered.
+Ryan, 5 November: "assuming we take the cryo direction with the owl - which makes a lot of
+sense". His lean, the kit still to design.
 
 ## Open for Ryan
 

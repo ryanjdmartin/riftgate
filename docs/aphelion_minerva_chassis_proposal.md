@@ -194,7 +194,10 @@ The two moves to the Arsenal and the other merges stand as Claude proposed them,
 **Kestrel and Wainwright & Sutler are already at ten**, so nothing moves to them. Kestrel has
 eight decided plus the Magpie and the Snowy Owl, both "completely unspecced other than general
 directions and names" (Ryan, 5 November). Of the ideas folded or moved here, only the Cryo
-detonator fits one of those slots: Cryo as the Snowy Owl's cold (its brief). Wainwright & Sutler is 3-5-2 with the gunship.
+detonator fits one of those slots: Cryo as the Snowy Owl's cold (its brief). Ryan, 5 November:
+"assuming we take the cryo direction with the owl - which makes a lot of sense - that leaves one
+open kestrel slot (Magpie, or other), one aphelion slot, and one Arsenal slot". That count holds
+while the Arsenal's frost figure keeps the blow; the roster then stands at 47 named and 3 open. Wainwright & Sutler is 3-5-2 with the gunship.
 
 ### Minerva: eleven to ten (3-5-2)
 
