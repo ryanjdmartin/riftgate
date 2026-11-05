@@ -849,7 +849,7 @@ The tasks are the to-do's; this is the index of what waits.
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line
-  on its fifteenth round (5 November), its map half settled on the thirteenth (3 November: "I think
+  on its sixteenth round (5 November), its map half settled on the thirteenth (3 November: "I think
   that's it for this track"): his map picks, X on the violins, U on the clean guitar, the drone
   moved to R, W low with a roll; the map half minimal, the lifts as they were with the riff on the
   soft sub and the tine piano and the first lift's bell calmer (5 November: "Map lifts should keep
@@ -865,12 +865,13 @@ The tasks are the to-do's; this is the index of what waits.
   low Omnific, bring drone volume up. Scrap lower octave fifths"); J gone, V and Q kept, K its first
   eight bars at its slower tempo on the drums in between with the plucked string beside the bass on
   its walk, its long crash choked to a second and a half, M as it ships with the crunch synth's line
-  on the bass; on trial, the power chords over the low Omnific in A's back half and N on a second
-  Omnific, the lead guitar an octave up, the keys lead in single notes or chords, the crunch synth
-  or the brass (his question: "do we have another voice option to work with here?"), C's backing
-  guitar 3 dB up or out, and L's riff on the lead guitar or the keys lead in single notes. A mixing
-  desk on pre-rendered stems was proposed for picking voices without a round and tabled (5 November:
-  "Tough if it's not completely flexible. That's ok, let's table it for now").
+  on the bass; his picks of the fifteenth ("HTL: omnific power chords option, no backing guitar in
+  C, backing guitar up 3db in L, keys lead on L riff"), the Omnific's power chords over the low
+  roots in A's back half, B, M and N ("Make sure B and M keep the new voices too"), B's chug hit 3
+  dB down with A's and N's; on trial, the backing guitar's power chords or the keys lead in place of
+  the Omnific's, and the lifts doubled an octave down on the fingers. A mixing desk on pre-rendered
+  stems was proposed for picking voices without a round and tabled (5 November: "Tough if it's not
+  completely flexible. That's ok, let's table it for now").
   Night Shift on its eighteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms with
