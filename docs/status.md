@@ -1000,9 +1000,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.460 (the
-  page's version 473, published 4 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
-  live source whole: Hold The Line's chug down in A and N and its lifts on two basses, merged row
+  `docs/design-bible.html` after every change. This file and the live page are v0.461 (the
+  page's version 474, published 5 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
+  live source whole: Hold The Line's track row rewritten to its fourteenth round; over v0.460 at
+  473: Hold The Line's chug down in A and N and its lifts on two basses, merged row
   by row onto the live v0.459 another session published at 472, its row a die entry's passive box,
   Direct's dashes and All Foes' brackets; over v0.458 at 471: Hold The Line's Omnific bass sparing
   F's punchy sub, his correction, merged row by row onto the live v0.457 another session published at 470, its rows the built
