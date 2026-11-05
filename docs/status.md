@@ -63,7 +63,10 @@ Still working (4 November, the branch audit; every other branch on GitHub is mer
 `ccr-7effd31a-u5z4gw`, the music session (Night Shift's and The Far Bank's rounds on the pair
 page), whose bible rows land on the live page ahead of its branch, so a republish merges onto
 the live page (Pages); `claude/aphelion-minerva-chassis-9qf6cy`, Ryan's chassis session of 4
-November (his ideas and Claude's first round, a proposal).
+November (his ideas and Claude's first round, a proposal); `ccr-56b5169d-lsa2rg`, Ryan's
+redesign of 5 November (the battle as the defence of a long wall, the packs as designed
+formations, the shield the fight's resource: his direction and Claude's first round as
+`docs/long_wall_proposal.md`, nothing built, his marks next).
 
 ## The design sessions
 
@@ -202,9 +205,11 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). First: the 200-seed matrix with the ladder's, the compositions' and the
-elites' cells on the desk machine (the to-do's engine line), since the matrix on file predates
-everything since 27 October.
+to-do's Ryan list). Ahead of all of it until Ryan marks it: his redesign of 5 November
+(`docs/long_wall_proposal.md`), which moves every foe's blow and the battle's shape, so the
+200-seed matrix (below) waits on the shape it decides. First after that: the 200-seed matrix
+with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
+engine line), since the matrix on file predates everything since 27 October.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
