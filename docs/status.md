@@ -1011,9 +1011,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.463 (the
-  page's version 476, published 5 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
-  live source whole: Hold The Line's fifteenth round in its track row; over v0.462 at 475: Night
+  `docs/design-bible.html` after every change. This file and the live page are v0.465 (the
+  page's version 478, published 5 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
+  live source whole: The Far Bank's lift half as far; over v0.464 at 477: Night Shift's duel's
+  lower bass and The Far Bank's picks, the date brought to the day; over v0.463 at 476: Hold The
+  Line's fifteenth round in its track row; over v0.462 at 475: Night
   Shift's R rewritten as a duel between two basses; over v0.461 at 474:
   Hold The Line's track row rewritten to its fourteenth round; over v0.460 at
   473: Hold The Line's chug down in A and N and its lifts on two basses, merged row
@@ -1136,8 +1138,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  fifteenth, its battle half's bass, lifts and power chords, `hold_sketches.py`; Night Shift's seventeenth, its R a duel, `night_sketches.py`;
-  The Far Bank's map half's sixth, `far_sketches.py`; the real basses, `real_bass.py`), at the page's version 40. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  fifteenth, its battle half's bass, lifts and power chords, `hold_sketches.py`; Night Shift's eighteenth, its R a duel with its low end, `night_sketches.py`;
+  The Far Bank's map half's seventh, `far_sketches.py`; the real basses, `real_bass.py`), at the page's version 41. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
