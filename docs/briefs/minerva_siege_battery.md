@@ -1,5 +1,7 @@
 # Brief: the siege battery, Ryan's H-tank (new chassis)
 
+<!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": 3, "status": "parked", "slot": true, "name": "the siege battery"} -->
+
 The session designs Minerva's treaded tier-three capstone from Ryan's old pitch of a gargantuan
 H-tank with two massive turrets, and finds the charge that makes the player decide when to fire
 them. The working label "the siege battery" stays; the name is Ryan's. Minerva's other tier

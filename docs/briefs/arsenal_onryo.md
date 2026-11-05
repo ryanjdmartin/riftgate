@@ -1,5 +1,7 @@
 # Brief: the Onryō and its curse (proposal reworked into a direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "direction", "slot": true, "name": "the Onryō"} -->
+
 The session settles what the Onryō's curse does, now that the flat on-hit is Flak's (19
 October) and a damage over time at the foe's action Burning's, and what lays it.
 

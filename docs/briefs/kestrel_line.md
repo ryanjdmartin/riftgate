@@ -1,5 +1,7 @@
 # Brief: the Kestrel line (review, 20 October)
 
+<!-- hangar: {"kind": "hub", "maker": "kestrel", "tier": null, "status": "hub", "slot": false, "name": "the Kestrel line"} -->
+
 The review of every Kestrel chassis, built and proposed, under the action economy's direction
 (the bible's row beside the stun row, 20 October): where each stands, what would improve it,
 and the holes in Kestrel's stock that the stock pass should fill. Ryan asked for it on 20

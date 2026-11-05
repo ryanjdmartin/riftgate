@@ -45,12 +45,14 @@ are in `README.md`.
 ## Branches
 
 `claude/aphelion-minerva-chassis-9qf6cy` (4 November) carries Ryan's chassis ideas of that day
-and Claude's first round on them, from main's `1fa1155`: `docs/aphelion_minerva_chassis_proposal.md`
-(his list verbatim; the words that moved, the counts, the shared holes; each machine's holes,
-questions and Claude's leans; then Ryan's target of ten a maker, the shake-out to it, his calls
-on that, the time-shifter's first round, the detonator folded into the jellyfish and the
-time-shifter kept unrefined), the echidna's new shape in its brief, the status detonator's notes
-in the jellyfish's, the to-do's roster block for ten a maker, and the pointers (the briefs
+and Claude's first round on them, from main's `1fa1155`: first as a proposal (his list verbatim,
+each machine's holes, questions and leans; his target of ten a maker, the shake-out to it and
+his calls on it; the orbits), then on 5 November a brief for each design in `docs/briefs/`, every
+brief with a header the hangar reads, the shared parts into the briefs README ("Ten a maker",
+"Orbits") and the proposal retired (`git show a228545:docs/aphelion_minerva_chassis_proposal.md`);
+the echidna's new shape in its brief, the status detonator's notes in the jellyfish's, the
+to-do's roster block for ten a maker, the work account scrapped everywhere (Ryan, 5 November: the
+personal account is the only one), and the pointers (the briefs
 README, the README's documents, this file, the to-do). Docs only: nothing decided, nothing built,
 the bible untouched until his marks.
 
@@ -261,17 +263,17 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   its brief, Claude's first round beside it), the siege battery parked on Ryan's charge brief, the battlecruiser never
   with the Carrier's session (Ryan, 20 October). Ryan's five other Minerva ideas of 4 November
   (a tier-one lure tank, the Cryo party defence, a drill mole, a shield-basher, the immune one)
-  wait on his marks in `docs/aphelion_minerva_chassis_proposal.md`; on his calls of the same day
+  wait on his marks, each in its brief (the briefs README's "Ten a maker"); on his calls of the same day
   the shield-basher is cut as a unit (a potential tier-three weapon or module, the shield bash),
   the mole's hook waits, and the Armadillo moves to tier two with the Boar or the mole down.
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own; a defensive tier one unproposed (the to-do). Ryan's
   seven ideas of 4 November (Static, the Macross flagship, the Cryo detonator, the time-shifter
-  again, a Barrier and Ward support, the status detonator, a shock unit) wait on his marks in
-  `docs/aphelion_minerva_chassis_proposal.md`, with Claude's shake-out to his target of ten a
-  maker (4 November: two moved to the Arsenal, three merged; the status detonator folded into the
-  jellyfish, unrefined, its notes in that brief; the time-shifter kept unrefined, its first round
-  in the proposal; one slot open). The roster's tasks, maker by maker, are the to-do's "The roster:
+  again, a Barrier and Ward support, the status detonator, a shock unit) wait on his marks, each
+  in its brief, with Claude's shake-out to his target of ten a maker (the briefs README's "Ten a
+  maker": two moved to the Arsenal, three merged; the status detonator folded into the jellyfish,
+  unrefined, its notes in that brief; the time-shifter kept unrefined, its first round in its
+  brief; one slot open). The roster's tasks, maker by maker, are the to-do's "The roster:
   ten a maker".
 - The Arsenal: Misharu, the Onryō, Mastema and Minos, Claude's first round and review in their
   briefs, unanswered: Misharu's two calls first (Penance's shape, how often it may fire), then
@@ -310,7 +312,7 @@ Each resumes from its briefs; `docs/briefs/README.md`'s table says what each wai
   question, parked on his word ("Just note down the armadillo for now, I suspect tier 2 is smarter
   but we need more options first"); on 4 November he moved it ("Armadillo moves to T2, and either
   Boar or Mole will move down"), the content, its bible row and section 12 to follow now or with
-  the machine that comes down, his word (`docs/aphelion_minerva_chassis_proposal.md`). His follow-ups the same day and the next: the die's faces in
+  the machine that comes down, his word (the briefs README's "Ten a maker"). His follow-ups the same day and the next: the die's faces in
   one standard format ("the faces are crowded and they don't need to be"): a main mark holding
   what the entry delivers, whom it is aimed at under it (3 November: "moving the number inside
   of the icon and putting targeting underneath"), the costs along the foot as a mark and a

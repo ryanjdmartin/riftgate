@@ -1,5 +1,7 @@
 # Brief: the echidna (the hedgehog), a tank that fights (new chassis)
 
+<!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": 2, "status": "direction", "slot": true, "name": "the echidna"} -->
+
 The session designs a lighter Minerva tier two that wants to be struck, first as the Faraday
 Hull's new home, since 15 October around Ryan's Sonic Needle (below, "The Minerva session").
 "The echidna" and "the hedgehog" are working labels from Ryan's own list; the name is his.
@@ -110,8 +112,8 @@ In his words: "Minerva Echidna: new shape idea, debuff foes that strike it so th
 themselves after they act. So it's not immediate thorns damage, it's delayed. Locked component
 can spread or synergize the debuff to make it interesting."
 
-The same day he listed a tier-one Minerva tank whose every hit lures. It is recorded with the
-rest of that day's list in `docs/aphelion_minerva_chassis_proposal.md`. So the two halves he
+The same day he listed a tier-one Minerva tank whose every hit lures. It has its own brief
+(`minerva_lure_tank.md`; the briefs README's "Ten a maker"). So the two halves he
 split on 15 October ("we can either play up the spikes, or the luring tank, not both") go to two
 machines. Claude reads open item 1 as answered (the spikes here, the lure there), unless he says
 otherwise.
@@ -153,11 +155,12 @@ otherwise.
   pair Ryan turned down on 15 October.
 - **The Sonic Needle** (15 October: foes it damages are marked, and a marked foe that strikes it is
   Shocked). Is it replaced by the new shape, or kept as the locked piece's setup?
-- **Overlaps.** The Aphelion status detonator of the same list also bites "after their action".
+- **Overlaps.** The Aphelion status detonator of the same list, now the jellyfish's EMP
+  (`aphelion_jellyfish.md`), also bites "after their action".
   They part by what they count (here, the strikes it took; there, every stack on the foe) and by
   who sets them (here, the striker's own blow; there, a debuff spent on the foe). If the locked
   piece's spread carries the debuff to a marked foe's neighbours as it pays, that is the Static
-  machine's Splash on another clock (the same proposal).
+  machine's Splash on another clock (`aphelion_static.md`).
 
 ## Open for the session
 

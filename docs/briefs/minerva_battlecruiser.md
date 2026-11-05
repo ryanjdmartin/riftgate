@@ -1,5 +1,7 @@
 # Brief: the battlecruiser, Minerva's capital ship (new chassis)
 
+<!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": 3, "status": "direction", "slot": true, "name": "the battlecruiser"} -->
+
 The session designs Minerva's flying brick, its second tier three beside the H-tank
 (`minerva_siege_battery.md`), on its own: Aphelion's Carrier is not related to it (Ryan, 20
 October, below). "The battlecruiser" is a working label; the name and the look are Ryan's.

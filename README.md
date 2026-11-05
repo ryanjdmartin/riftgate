@@ -170,8 +170,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design's one home, with a README; the makers' proposal files
   were folded into them and retired on 15 October), the economy pass's brief
   (`economy_pass.md`), the bosses' slate
-  (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), Ryan's chassis
-  ideas of 4 November with Claude's first round (`aphelion_minerva_chassis_proposal.md`), the
+  (`bosses_proposal.md`), the heroes' pass beyond Final Fantasy (`heroes_proposal.md`), the
   mechanics audit of 25 October (`mechanics_audit.md`) and the pricing run with the roster's
   synergy holes (`pricing_proposal.md`, 27 and 28 October, its decisions the bible's pricing row), each retired once its decisions are rows and content;
   `synergy_map.md`, who sets and who reads every status and resource, generated from content; `sprites-enemies.html`,

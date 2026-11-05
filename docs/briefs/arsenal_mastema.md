@@ -1,5 +1,7 @@
 # Brief: Mastema, fire through the team (proposal reworked into a direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 3, "status": "direction", "slot": true, "name": "Mastema"} -->
+
 The session reworks Mastema's tools so its fire never sits blank and never doubles a boss for
 free, around Ryan's idea of setting its own allies alight.
 

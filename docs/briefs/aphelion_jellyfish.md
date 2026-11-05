@@ -1,5 +1,7 @@
 # Brief: the jellyfish, the Science Vessel homage (proposal reworked into a direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "aphelion", "tier": 2, "status": "direction", "slot": true, "name": "the jellyfish"} -->
+
 The session refines Aphelion's jellyfish into the roster's soft-control specialist and settles
 the dispel it carries.
 
@@ -154,7 +156,7 @@ October at Ryan's ask, written down on 20 October. Ryan's call on the name came 
 His idea of that day, in his words: "Aphelion: Cannot mount weapons. enemies hit by its equipment
 gain a debuff that explodes after their action, dealing 1 damage per stack of buff and debuff on
 them, Purging them of all buffs and Cleansing their debuffs." Claude proposed folding it into
-this machine the same day (`docs/aphelion_minerva_chassis_proposal.md`, "Ten a maker"). Ryan
+this machine the same day (the briefs README's "Ten a maker"). Ryan
 then asked what this brief holds ("its very WIP"), and after its summary: "Lots to sort out here,
 but this isn't the time. Let's say we're folding the unrefined detonator concept into the Science
 vessel, yes, and keeping the unrefined time shifter."

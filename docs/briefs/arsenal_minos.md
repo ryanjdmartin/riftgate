@@ -1,5 +1,7 @@
 # Brief: Minos, the ranks turned (proposal)
 
+<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 3, "status": "proposal", "slot": true, "name": "Minos"} -->
+
 The session finishes Minos, whose every foe reached changes rank, as written or adjusted, and
 settles when it is worth its slot.
 

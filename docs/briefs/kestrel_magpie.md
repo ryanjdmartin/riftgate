@@ -1,5 +1,7 @@
 # Brief: the Magpie, Kestrel's support engine (new chassis, direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "kestrel", "tier": null, "status": "direction", "slot": true, "name": "the Magpie"} -->
+
 The session designs the ninth of Kestrel's ten, marked by Ryan on 21 October as a support
 engine. "Magpie" is a working name (Ryan, 21 October); the name, the look and the numbers are
 Ryan's.
@@ -91,7 +93,7 @@ fights it is in), the economy engine the Honey Badger was once offered.
 Ryan, 5 November: the Magpie and the Snowy Owl are "completely unspecced other than general
 directions and names". C's cache, an ally's rolled entry held into the next round, is close to
 the time-shifter's bank in Claude's first round of 4 November
-(`docs/aphelion_minerva_chassis_proposal.md`): an ally Phased now acts twice next round. Whichever
+(`aphelion_time_shifter.md`): an ally Phased now acts twice next round. Whichever
 is designed first sets the other's shape.
 
 ## Open for Ryan

@@ -1,5 +1,7 @@
 # Brief: the line frame, the Gundam homage (proposal reworked into a direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "aphelion", "tier": 1, "status": "direction", "slot": true, "name": "the line frame"} -->
+
 The session designs Aphelion's Gundam homage as the most tempo-oriented damage dealer in the
 game: a duelist whose combo builds a rhythm until something breaks it. "The line frame" is a
 working label; the name and the look are Ryan's.

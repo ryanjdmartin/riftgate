@@ -1,5 +1,7 @@
 # Brief: the Zoids walker (proposal, maker open)
 
+<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "proposal", "slot": true, "name": "the Zoids walker"} -->
+
 The session decides whose machine the fast four-legged walker is, then its name, passive and
 tier with that answer.
 
@@ -48,10 +50,20 @@ unless marked Ryan's, and the numbers are the proposal's placeholders.
 A kill-reader would join Devour and Chain; a walker at its proposed move would be the roster's
 first fast walker, the Rubble Field's machine.
 
+## The ten-a-maker plan (4 November)
+
+Ryan set a target of ten machines a maker on 4 November, and Claude's shake-out to it moved this
+machine to the Arsenal, where Aphelion was over and the Arsenal had room, on Ryan's own sign of 12
+October ("The kill-turning-rapid as a feline/canine hunter mauling feels very Arsenal. Maybe that's
+a sign."). Aphelion's row also keeps cats and wolves out of its names. He has not marked the move.
+Its round-one passive, a kill that makes the spend Rapid, is now the Kite's Reset (the Pinion
+Driver: a kill brings every dark entry back and the machine acts again), and kills are already one
+of the roster's crowded orbits (the briefs README), so the verb opens again.
+
 ## Open for the session
 
-1. The maker.
-2. Its passive and name with the answer.
+1. The maker (the Arsenal on the ten-a-maker plan, unmarked).
+2. Its passive, now that its first verb is the Kite's, and its name.
 3. Its tier.
 4. Its designation in its maker's shape.
 

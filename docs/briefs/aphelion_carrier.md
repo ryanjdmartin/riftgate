@@ -1,5 +1,7 @@
 # Brief: the Carrier, the Protoss Carrier homage (proposal, open)
 
+<!-- hangar: {"kind": "chassis", "maker": "aphelion", "tier": 3, "status": "proposal", "slot": true, "name": "the Carrier"} -->
+
 The session finds the Carrier's verb, on its own: Minerva's battlecruiser is not related to it
 (Ryan, 20 October, below).
 
