@@ -868,31 +868,34 @@ The tasks are the to-do's; this is the index of what waits.
   guitar 3 dB up or out, and L's riff on the lead guitar or the keys lead in single notes. A mixing
   desk on pre-rendered stems was proposed for picking voices without a round and tabled (5 November:
   "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its sixteenth (the map's intro without its front and its muted guitar out, his
+  Night Shift on its seventeenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
-  jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms
-  with the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two
-  together, the intro on three-three-two, D the piano's turn and the factory's blended over Hold The
-  Line's riff as the map's nod with no bass under them ("The bass 3-3-2s in D don't make sense"),
-  R a sixteen-bar jam whose turns hand the lead round the band, every voice at one level ("Don't
-  flex the volume for voices in R, I'll pick out what needs to come up or down"), the rhythm guitar
-  in the breakdown's ringing chords alone and the lead guitar's lines kept ("Yes, keep the lead
-  guitar. Put the the rhythm guitar back in on B"), the plucked string 3 dB down wherever it plays
-  ("Plucked string -3Db is good"), the bass 3 dB down everywhere on the fingers into a modern prog
-  drive (`real_bass.py`: "go with the fingers-into-a-modern-drive-prog bass you built"), since the
-  modelled basses read as guitars, and the lead guitar's lines on that bass an octave under the
-  guitar on trial ("wherever there's a lead guitar, I want that bass instead playing the high lines"),
-  the synth lines voiced for each turn's job, no drone, Hold The Line's drum
-  energy); The Far Bank's map half on its sixth round, its flip retired (31 October:
-  the bells calm in the groove and the lift alone, the strings section and the climax off the
-  battle's orchestra; 4 November: the tune on the plucked string one note at a time in both, 6 dB
-  under the violins' level in the strings section ("6db under good") and at it in the climax, the
-  choir back ("that was a mistake"), the climax's swells half as far over their floor, the cellos'
-  and the contrabass's lines on the soft sub in place of the battle's saw strings, beside an
-  upright plucked, a fretless, flatwounds under a thumb and the synth bass ("not just sound like the
-  battle half with the percussion taken out"), the climax's bells full); those waiting on his ear; then
-  the engine (a pair as one synchronized stream, the map choosing the track, the 3 s flip) and
-  each picked half into the forge's SHIP table, Hold The Line's first.
+  jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms with
+  the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two together,
+  the intro on three-three-two, D the piano's turn and the factory's blended over Hold The Line's
+  riff as the map's nod with no bass under them ("The bass 3-3-2s in D don't make sense"), R a duel
+  between two basses (5 November: "into more of a dueling basses type jam"), the track's and a
+  second an octave over it on the active bass trading two bars, a bar, half a bar, through two bars
+  of stop-time and a hole ("The stop time was cool, we can do more of that unexpected kind of
+  thing"), then together on three-three-two, the backing trading the tune under them at one level 6
+  dB under the basses ("keep their volumes consistent so they don't overshadow the basses"), the
+  rhythm guitar in the breakdown's ringing chords alone and the lead guitar's lines kept ("Yes, keep
+  the lead guitar. Put the the rhythm guitar back in on B"), the plucked string 3 dB down wherever
+  it plays ("Plucked string -3Db is good"), the bass 3 dB down everywhere on the fingers into a
+  modern prog drive (`real_bass.py`: "go with the fingers-into-a-modern-drive-prog bass you built"),
+  since the modelled basses read as guitars, C's long notes, the lead guitar's line, on that bass an
+  octave under the guitar ("wherever there's a lead guitar, I want that bass instead playing the
+  high lines"), the synth lines voiced for each turn's job, no drone, Hold The Line's drum energy);
+  The Far Bank's map half on its sixth round, its flip retired (31 October: the bells calm in the
+  groove and the lift alone, the strings section and the climax off the battle's orchestra; 4
+  November: the tune on the plucked string one note at a time in both, 6 dB under the violins' level
+  in the strings section ("6db under good") and at it in the climax, the choir back ("that was a
+  mistake"), the climax's swells half as far over their floor, the cellos' and the contrabass's
+  lines on the soft sub in place of the battle's saw strings, beside an upright plucked, a fretless,
+  flatwounds under a thumb and the synth bass ("not just sound like the battle half with the
+  percussion taken out"), the climax's bells full); those waiting on his ear; then the engine (a
+  pair as one synchronized stream, the map choosing the track, the 3 s flip) and each picked half
+  into the forge's SHIP table, Hold The Line's first.
 
 ## Next, in order
 
@@ -1123,8 +1126,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  fourteenth, its battle half's bass and lifts, `hold_sketches.py`; Night Shift's sixteenth, `night_sketches.py`;
-  The Far Bank's map half's sixth, `far_sketches.py`; the real basses, `real_bass.py`), at the page's version 38. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  fourteenth, its battle half's bass and lifts, `hold_sketches.py`; Night Shift's seventeenth, its R a duel, `night_sketches.py`;
+  The Far Bank's map half's sixth, `far_sketches.py`; the real basses, `real_bass.py`), at the page's version 39. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
