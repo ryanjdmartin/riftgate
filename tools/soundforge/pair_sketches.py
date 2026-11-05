@@ -130,22 +130,29 @@ TICKING = {"inst": "guitar_real", "mode": "riff", "octave": 0, "params": {"clean
 ONE_DRIVE = 1.32  # the one string pushed into the gain as hard as the chord's three strings together (their RMS)
 
 
-def guitar_one(f, dur, mute=True):
+def guitar_one(f, dur, mute=True, clean=False):
     """The guitar on one string: the forge's guitar (`guitar_real`, a power chord on three strings)
     with its root string alone, pushed into the same gain stages as hard as the three were, through
-    the same pick, cabinet and palm."""
+    the same pick, cabinet and palm; `clean` its lead voice's chain (Hold The Line's lead guitar,
+    the clean guitar of its climax, on single notes: Ryan, 5 November)."""
     n = F.n_of(dur)
     x = F.pluck(f * F.RNG.uniform(0.998, 1.002), dur, bright=F.RNG.uniform(0.4, 0.6), damp=0.993)[:n] * ONE_DRIVE
     scrape = F.bp(F.noise(F.n_of(0.012)), 2000.0, 7000.0) * F.env_ad(F.n_of(0.012), 0.0002, 0.003) * 0.6
     x = F.at(x, scrape, 0.0)[:n]
-    y = F.asat(F.hp(x, 600.0) * 3.5 + x * 1.2, 1.6)
-    y = F.lp(y, 3000.0) + F.bp(y, 700.0, 1400.0) * 0.3
-    x = F.cabinet(F.asat(y * 1.3, 1.2)) * 1.1
+    if clean:
+        x = np.clip(F.sat(F.hp(x, 400.0) * 2.5 + x * 1.2, 2.0) * 1.2, -1.0, 1.0)
+        x = F.cabinet(x, peaks=((110.0, 1.0), (420.0, 0.9), (1150.0, 0.6)))
+        match = 1.0   # as guitar_real's clean voice keeps its own level
+    else:
+        y = F.asat(F.hp(x, 600.0) * 3.5 + x * 1.2, 1.6)
+        y = F.lp(y, 3000.0) + F.bp(y, 700.0, 1400.0) * 0.3
+        x = F.cabinet(F.asat(y * 1.3, 1.2)) * 1.1
+        match = 0.61
     env = F.env_ad(n, 0.001, min(0.16, dur * 0.5), curve=3.0) if mute else F.env_ad(n, 0.001, dur * 0.7, curve=2.0)
-    return F.mix(x * env, F.body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3) * 0.61
+    return F.mix(x * env, F.body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3) * match
 
 
-F.NOTE_INST["guitar_one"] = lambda f, d, p: guitar_one(f, d, p.get("mute", True))
+F.NOTE_INST["guitar_one"] = lambda f, d, p: guitar_one(f, d, p.get("mute", True), p.get("clean", False))
 
 QUIETER_BELLS = 0.7   # the bells 3 dB under the first cut (Ryan, 28 October: a little loud)
 

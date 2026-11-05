@@ -154,10 +154,9 @@
   <p class="err" id="err" hidden></p>
 </div>
 
-<h2>Round thirteen: Hold The Line, settled</h2>
-<p>Your calls on the twelfth round, and you called the track done. K plays its first eight bars in both halves, closing on E's tense chord (E with B flat and F), which the breath's E resolves. In the map's climax the ticking guitar stays 3 dB up, the bell is 3 dB down and the tine piano on Z's riff is 6 dB down. Nothing raised the choir, so I took your note on the drone to mean what Z does: the choir joins the drone and the strings there, which lifted the pads about 1 dB on a phone. In Z the drone, the strings and the choir now sit 1 dB down, so the choir arrives without the drone growing. The set puts it beside the twelfth round's pair, in case you meant to leave the choir as it was. The full pair on the switch is <strong>Hold The Line, round thirteen</strong>.</p>
-<p><strong>The Omnific bass.</strong> The first bass set puts the active bass into the modern prog drive in every voice that carries the bass, the crunch synth with it, K's walk included, everywhere but F, whose punchy sub stays as its signature (your correction: F, not K). The battle half has no soft sub left since the first lift's riff went to the crunch synth and the synth lead, so F's is the only sub there. Each meets the voice it replaces halfway between a phone and headphones; K's walk holds its notes long enough to need a level of its own. The four rows: single notes on the roots as written; the same an octave down throughout; a second bass on the fifths where the guitar plays power chords; and every root on two basses an octave apart, each 3 dB down so the pair holds one bass's level.</p>
-<p><strong>The lifts on two basses.</strong> The second set starts from the Omnific set's first row and takes the chug 3 dB down in A and N. In both lifts the lead goes, the synth lead in C and the lead guitar in L, and a second bass plays the riff an octave under the first, each at the level of the voice it replaces. Even an octave down, the bass came out 4 to 6 dB over the lead at the lead's gain, on a phone and in headphones alike: the drive's mids carry it, so a phone hears the low bass as well. Further rows put the lifts' backing guitar back up 6 dB, where the fourth round had it; both lift basses on the fingers into the same drive, Night Shift's bass, with the rest of the half staying on the Omnific; and both together. Your question on the chug: yes, X and the climax each have one of their own. X's plays the seven's riff in unison with the bass at nearly A's level. The climax's plays its riff with the lead guitar and the bass about 2 dB under A's, with a second chug on the fifths above it, both carrying on into the breath. The last row takes those 3 dB down as well. The picked basses' two sets are off the page to make room; git keeps them.</p>
+<h2>Round fourteen: Hold The Line's battle half</h2>
+<p>Your calls on the bass sets, with round thirteen's sets cleared. The battle half's bass is now the Omnific an octave down on the roots everywhere but the lifts and F, whose punchy sub stays. Each lift's riff is on the fingers into the same drive, alone at its written octave, the synth lead and the lead guitar out. The chug only plays the rhythm now: A's, B's and N's power chords and the lifts' backing on the kick, 3 dB down in A and N. It is gone from M's line, X's riff, U's octaves, W's held note, the climax's riff and the fifth above it, and the breath; V never had one, its guitar being the chord K's solo rings on. The map half is round thirteen's, its lifts on the soft sub. The full pair on the switch is <strong>Hold The Line, round fourteen</strong>.</p>
+<p><strong>The set.</strong> The half's top, A through the bar down into the seven, each row one change from the first: the fifth line back in A's back half and N at the low octave, where the shipped track moves up to power chords; the lead guitar's power chords there instead, at the level of that low fifth; C's backing guitar 3 dB up, or out; L's riff on the lead guitar in single notes, its clean voice on one string, or on the keys lead, the synth lead at the octave it plays F's tune on, each at the level of the lead guitar L had. One number to know: an octave down, the Omnific sits 1.7 dB under the driven bass it replaced (2.6 dB on a phone), the level you picked it at.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-hold"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -198,7 +197,7 @@
 
 <h2>What to listen for</h2>
 <ol class="ask">
-  <li>Hold The Line, settled: the drone held level into Z, against the twelfth round's pair; the Omnific bass in every bass voice but F's punchy sub, as written, an octave down, with a second bass on the fifths, or on two basses an octave apart; the chug 3 dB down in A and N and both lifts on two basses with the leads out, the backing guitar back up, both lift basses on the fingers, or both, and the chug down in X and the climax too.</li>
+  <li>Hold The Line's battle half, round fourteen: the Omnific low with the fingers alone on the lifts and the chug only as the rhythm; the low fifth or the lead guitar's power chords in A and N; C's backing guitar 3 dB up or out; L's riff on the lead guitar or the keys lead in single notes.</li>
   <li>Night Shift on the modern prog bass, the bass on the lead guitar's lines an octave under the guitar, at its octave, or the lead guitar as before.</li>
   <li>The Far Bank's map half with the choir back; its cellos' and contrabass's lines on the soft sub, an upright plucked, a fretless, flatwounds under a thumb or the synth bass; the climax's swells as they were, three quarters or half as far.</li>
   <li>Still open from the first round: the map halves of Full Bore, The Far Bank and The Crossing, and Low Ground's battle half.</li>
@@ -515,7 +514,7 @@
   function none() { return null; }
 
   var RUN_LABELS = {engage: 'ENGAGE', victory: 'victory', field: 'back to the field', contact: 'a hunter catches'};
-  Promise.all([getJSON('manifest.json'), getJSON('hold13.json').catch(none), getJSON('night16.json').catch(none), getJSON('far6.json').catch(none)]).then(function (all) {
+  Promise.all([getJSON('manifest.json'), getJSON('hold14.json').catch(none), getJSON('night16.json').catch(none), getJSON('far6.json').catch(none)]).then(function (all) {
     var m = all[0], hold = all[1], night = all[2], far = all[3];
     man = m;
     // Each later round's pairs after its first-round track.
@@ -540,7 +539,7 @@
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (hold) buildSets(document.getElementById('sets-hold'), hold.sets.concat(hold.seams || []), ['mz', 'ho', 'hl']);
+    if (hold) buildSets(document.getElementById('sets-hold'), hold.sets.concat(hold.seams || []), ['hn']);
     else document.getElementById('sets-hold').innerHTML = '';
     if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['lb']);
     else document.getElementById('sets-night').innerHTML = '';

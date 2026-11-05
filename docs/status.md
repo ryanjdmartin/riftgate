@@ -848,30 +848,26 @@ The tasks are the to-do's; this is the index of what waits.
 - Ryan's read of the five Wainwright & Sutler models running (the to-do's lines carry what each
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
-- Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The
-  Line settled on its thirteenth round (3 November: "I think that's it for this track"): its
-  battle half picked, J gone, V and Q kept, K its first eight bars at its slower tempo ("The 8
-  bars is perfect") on the drums in between with the plucked string 3 dB down beside the crunch
-  synth on the walk, its long crash choked to a second and a half, the first lift on the crunch
-  synth and the synth lead and the second on the crunch synth and the lead guitar over the
-  backing chug 6 dB down, M as it ships with the crunch synth; his map picks, X on the violins, U
-  on the clean guitar, the drone moved to R, W low with a roll; the map half minimal, the lifts as
-  they were with the riff on the tine piano and the first lift's bell calmer, K's walk on the
-  synth bass over its backing, the climax without the harp, the ticking guitar alone on its riff
-  3 dB up, the bell 3 dB down, the tine piano on Z's riff 6 dB down and the drone held level from
-  R into Z (the pads 1 dB down there as the choir joins them, the page's set putting the choir as
-  it was beside it), and its driven bass reopened (4 November: "I was never 100% satisfied with
-  the driven bass"): the real basses (`real_bass.py`), picked and with fingers, then the Omnific
-  bass, an active bass into the modern prog drive in every voice that carries the bass, K's crunch
-  synth walk included, but F's punchy sub, "the signature there" ("I didn't mean K, I meant F keeps
-  it's old sub bass"; as written, an octave down, a second bass on the fifths, two basses an octave
-  apart; the picked basses' sets off the page since), and on it the chug 3 dB down in A and N ("I
-  think we need to bring the chug guitar volume down in A and N") and both lifts on two basses an
-  octave apart, the synth lead and the lead guitar out ("C lift - synth lead can go ... send the
-  second bass voice down the octave ... Same changes on L, all variations too"), with the lifts'
-  backing guitar back up, both lift basses on the fingers into the same drive, both, or the chug
-  down in X and the climax too; the map's lifts keep the soft sub ("Map lifts should keep soft sub.
-  it works better").
+- Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line
+  on its fourteenth round (5 November), its map half settled on the thirteenth (3 November: "I think
+  that's it for this track"): his map picks, X on the violins, U on the clean guitar, the drone
+  moved to R, W low with a roll; the map half minimal, the lifts as they were with the riff on the
+  soft sub and the tine piano and the first lift's bell calmer (5 November: "Map lifts should keep
+  soft sub. it works better"), K's walk on the synth bass over its backing, the climax without the
+  harp, the ticking guitar alone on its riff 3 dB up, the bell 3 dB down, the tine piano on Z's riff
+  6 dB down and the drone held level from R into Z; its battle half's bass reopened (4 November: "I
+  was never 100% satisfied with the driven bass") and now the Omnific, an active bass into the
+  modern prog drive (`real_bass.py`), an octave down on the roots everywhere but the lifts and F's
+  punchy sub ("Omnific low for everything except C, L, F"), the lifts' riff on the fingers into the
+  same drive alone with the leads out ("Fingers for C and L, on the upper octave, just the single
+  instrument"), the chug only the rhythm, out of every unison line ("I don't want to use the chug in
+  unison lines at all") and 3 dB down in A and N; J gone, V and Q kept, K its first eight bars at
+  its slower tempo on the drums in between with the plucked string beside the bass on its walk, its
+  long crash choked to a second and a half, M as it ships with the crunch synth's line on the bass;
+  on trial, the low fifth or the lead guitar's power chords in A's back half and N, C's backing
+  guitar 3 dB up or out, and L's riff on the lead guitar or the keys lead in single notes. A mixing
+  desk on pre-rendered stems was proposed for picking voices without a round and tabled (5 November:
+  "Tough if it's not completely flexible. That's ok, let's table it for now").
   Night Shift on its sixteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms
