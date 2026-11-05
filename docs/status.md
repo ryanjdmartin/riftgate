@@ -849,7 +849,7 @@ The tasks are the to-do's; this is the index of what waits.
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line
-  on its fourteenth round (5 November), its map half settled on the thirteenth (3 November: "I think
+  on its fifteenth round (5 November), its map half settled on the thirteenth (3 November: "I think
   that's it for this track"): his map picks, X on the violins, U on the clean guitar, the drone
   moved to R, W low with a roll; the map half minimal, the lifts as they were with the riff on the
   soft sub and the tine piano and the first lift's bell calmer (5 November: "Map lifts should keep
@@ -861,10 +861,13 @@ The tasks are the to-do's; this is the index of what waits.
   punchy sub ("Omnific low for everything except C, L, F"), the lifts' riff on the fingers into the
   same drive alone with the leads out ("Fingers for C and L, on the upper octave, just the single
   instrument"), the chug only the rhythm, out of every unison line ("I don't want to use the chug in
-  unison lines at all") and 3 dB down in A and N; J gone, V and Q kept, K its first eight bars at
-  its slower tempo on the drums in between with the plucked string beside the bass on its walk, its
-  long crash choked to a second and a half, M as it ships with the crunch synth's line on the bass;
-  on trial, the low fifth or the lead guitar's power chords in A's back half and N, C's backing
+  unison lines at all") and 3 dB down in A and N, the drone 3 dB up under A and N ("A and N: keep
+  low Omnific, bring drone volume up. Scrap lower octave fifths"); J gone, V and Q kept, K its first
+  eight bars at its slower tempo on the drums in between with the plucked string beside the bass on
+  its walk, its long crash choked to a second and a half, M as it ships with the crunch synth's line
+  on the bass; on trial, the power chords over the low Omnific in A's back half and N on a second
+  Omnific, the lead guitar an octave up, the keys lead in single notes or chords, the crunch synth
+  or the brass (his question: "do we have another voice option to work with here?"), C's backing
   guitar 3 dB up or out, and L's riff on the lead guitar or the keys lead in single notes. A mixing
   desk on pre-rendered stems was proposed for picking voices without a round and tabled (5 November:
   "Tough if it's not completely flexible. That's ok, let's table it for now").
