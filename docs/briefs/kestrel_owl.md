@@ -71,6 +71,17 @@ re-pick when it hides mid-round) and the same hole as A's first.
 A two-clause passive (the map half and the fight half, the Prairie Dog's and the Swallowtail's
 shape) can join B to A or C.
 
+## Since then (5 November)
+
+Ryan, 5 November: the Magpie and the Snowy Owl are "completely unspecced other than general
+directions and names". Claude's note the same day, from his chassis ideas of 4 November
+(`docs/aphelion_minerva_chassis_proposal.md`): of the ideas folded or moved to fit ten a maker, one
+fits this slot. A, cold is quiet, meets Cryo. A weapon hit on a foe carrying Cryo cools the
+hitter, so an owl that frosts its prey and strikes it stays cold and unseen. The Cryo detonator's
+Suppress at enough stacks reads as the prey frozen in place. The Arsenal's frost figure could keep
+the version that blows the frost up for damage; the two part by payoff, silence against the blow.
+Unanswered.
+
 ## Open for Ryan
 
 1. Where the stealth lives: the skirmish (A or C), the map (B), or both.

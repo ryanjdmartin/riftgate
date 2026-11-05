@@ -192,7 +192,9 @@ have moved it.
 The two moves to the Arsenal and the other merges stand as Claude proposed them, unanswered.
 
 **Kestrel and Wainwright & Sutler are already at ten**, so nothing moves to them. Kestrel has
-eight decided plus the Magpie and the Snowy Owl. Wainwright & Sutler is 3-5-2 with the gunship.
+eight decided plus the Magpie and the Snowy Owl, both "completely unspecced other than general
+directions and names" (Ryan, 5 November). Of the ideas folded or moved here, only the Cryo
+detonator fits one of those slots: Cryo as the Snowy Owl's cold (its brief). Wainwright & Sutler is 3-5-2 with the gunship.
 
 ### Minerva: eleven to ten (3-5-2)
 

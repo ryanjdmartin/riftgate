@@ -86,6 +86,14 @@ Each could take a map clause too (the Prairie Dog's and the Swallowtail's two-cl
 the thief's would be loot on the map (a wreck claimed from a hex away, or more salvage from the
 fights it is in), the economy engine the Honey Badger was once offered.
 
+## Since then (5 November)
+
+Ryan, 5 November: the Magpie and the Snowy Owl are "completely unspecced other than general
+directions and names". C's cache, an ally's rolled entry held into the next round, is close to
+the time-shifter's bank in Claude's first round of 4 November
+(`docs/aphelion_minerva_chassis_proposal.md`): an ally Phased now acts twice next round. Whichever
+is designed first sets the other's shape.
+
 ## Open for Ryan
 
 1. The direction: A, B or C, or a mix (A's theft as the lock with B's mirror as the passive is
