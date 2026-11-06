@@ -28,6 +28,8 @@ var _guest: OptionButton
 var _seed_edit: LineEdit
 var _kind: OptionButton
 var _summary: Label
+var _comp: OptionButton        # the compositions listed for the domain, tier and rating (HarnessSetup.compositions_listed)
+var _comp_domain: OptionButton
 var _battle_btn: Button
 var _fight_btn: Button
 var _resume_btn: Button
@@ -420,6 +422,58 @@ func _build_enemy(page: VBoxContainer) -> void:
 	page.add_child(_guest)
 	page.add_child(_hint("Battle only: its spawn list joins the rift's cycle, alternating with the packs above."))
 
+	# A composition by its domain, tier, threat rating and ramp (Ryan, 6 November: the harness
+	# "should load a formation from a selected tier and threat level (the machine count, 1-4 that
+	# includes elites). And ramp level"): picked, FIGHT fights it alone and BATTLE opens on it.
+	page.add_child(_section("A composition"))
+	page.add_child(_hint("FIGHT fights it alone, its members at the ramp's density and its layout dealt; BATTLE opens a battle at its tier and ramp with it the opening's and every wave's. None: the packs above."))
+	_comp_domain = _picker()
+	for fid in db.factions.keys():
+		_comp_domain.add_item(str(db.factions[fid].get("name", fid)))
+		_comp_domain.set_item_metadata(_comp_domain.item_count - 1, str(fid))
+	_comp_domain.select(maxi(0, _index_of(_comp_domain, setup.comp_faction if not setup.comp_faction.is_empty() else db.default_faction())))
+	_comp_domain.item_selected.connect(func(i: int) -> void:
+		setup.comp_faction = str(_comp_domain.get_item_metadata(i))
+		_fill_compositions())
+	page.add_child(_comp_domain)
+	var knobs := HBoxContainer.new()
+	knobs.add_theme_constant_override("separation", 12)
+	knobs.add_child(_stepper(setup.tier, 1, 3, func(v: int) -> void:
+		setup.tier = v
+		_fill_compositions(), "T"))
+	knobs.add_child(_stepper(setup.rating, 0, 4, func(v: int) -> void:
+		setup.rating = v
+		_fill_compositions(), "FOR "))
+	knobs.add_child(_stepper(setup.ramp, 0, Ramp.TOP, func(v: int) -> void:
+		setup.ramp = v
+		_refresh_summary(), "C"))
+	page.add_child(knobs)
+	page.add_child(_hint("T the tier, FOR the machines it is intended for (0: every rating), C the Convergence, the ramp."))
+	_comp = _picker()
+	_comp.item_selected.connect(func(i: int) -> void:
+		setup.composition = str(_comp.get_item_metadata(i))
+		_refresh_summary())
+	page.add_child(_comp)
+	_fill_compositions()
+
+
+## The compositions listed for the domain, tier and rating, each by its id, its size and its rating,
+## "none" first; the pick kept when it is still listed.
+func _fill_compositions() -> void:
+	if _comp == null:
+		return
+	_comp.clear()
+	_comp.add_item("none (the packs above)")
+	_comp.set_item_metadata(0, "")
+	for c in setup.compositions_listed():
+		var lead: Dictionary = db.foes.get(str((c["members"] as Array)[0][0]), {})
+		_comp.add_item("%s  (%s, for %d, %s)" % [str(c["id"]), str(c["size"]), ContentDB.squad_of(c), str(lead.get("name", ""))])
+		_comp.set_item_metadata(_comp.item_count - 1, str(c["id"]))
+	if setup.picked_composition().is_empty():
+		setup.composition = ""
+	_comp.select(maxi(0, _index_of(_comp, setup.composition)))
+	_refresh_summary()
+
 
 ## One row per pack: its foe, its strength, and a remove.
 func _fill_packs() -> void:
@@ -552,6 +606,8 @@ func _show_seed() -> void:
 
 ## What the buttons will launch, in one place under every tab, and why one is greyed.
 func _refresh_summary() -> void:
+	if _summary == null or _battle_btn == null:
+		return   # the pages are built before the summary and the launch buttons
 	var team: Array = []
 	for id in setup.team:
 		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() else ""))
@@ -560,6 +616,9 @@ func _refresh_summary() -> void:
 		foes.append("%s ×%d" % [db.foes[p[0]]["name"], int(p[1])])
 	if not setup.boss.is_empty():
 		foes.append(str(db.foes[setup.boss]["name"]))
+	var picked := setup.picked_composition()
+	if not picked.is_empty():
+		foes = ["%s (T%d, for %d, C%d)" % [str(picked["id"]), setup.tier, ContentDB.squad_of(picked), setup.ramp]]
 	var lines: Array = []
 	lines.append(("TEAM  " + ", ".join(team)) if not team.is_empty() else "TEAM  none ticked")
 	lines.append(("ENEMY  " + ", ".join(foes)) if not foes.is_empty() else "ENEMY  none")
@@ -571,8 +630,8 @@ func _refresh_summary() -> void:
 		extra += " · guest " + str(db.factions[setup.guest].get("name", setup.guest))
 	lines.append(extra)
 	_summary.text = "\n".join(lines)
-	_battle_btn.disabled = setup.team.is_empty() or setup.packs.is_empty()
-	_fight_btn.disabled = setup.team.is_empty() or (setup.packs.is_empty() and setup.boss.is_empty())
+	_battle_btn.disabled = setup.team.is_empty() or (setup.packs.is_empty() and picked.is_empty())
+	_fight_btn.disabled = setup.team.is_empty() or (setup.packs.is_empty() and setup.boss.is_empty() and picked.is_empty())
 
 
 # ---------------------------------------------------------------- controls

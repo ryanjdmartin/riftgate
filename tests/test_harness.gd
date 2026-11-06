@@ -278,3 +278,67 @@ func test_modules_reach_the_machine_and_survive_a_save() -> void:
 	assert_eq(back.fitted_modules(id), [mid], "and it survives a save")
 	s.set_module(id, 1, "")
 	assert_false(s.modules.has(id), "a machine with every slot empty forgets the edit")
+
+
+## A composition by its domain, tier, threat rating and ramp (Ryan, 6 November: the harness
+## "should load a formation from a selected tier and threat level (the machine count, 1-4 that
+## includes elites). And ramp level"): the list follows the three knobs; picked, FIGHT fights it
+## alone at the ramp's density, BATTLE opens on it at its tier and ramp, every wave it; the pick is
+## kept and checked as the rest of the setup is; the ENEMY tab drives it.
+func test_a_composition_is_picked_by_tier_rating_and_ramp() -> void:
+	var db := _db()
+	var s := HarnessSetup.defaults(db)
+	var fac := str(db.factions.keys()[0])
+	s.comp_faction = fac
+	s.tier = 1
+	s.rating = 0
+	var all := s.compositions_listed()
+	assert_true(not all.is_empty(), "the domain's tier-one compositions are listed")
+	for r in [1, 3, 4]:
+		s.rating = r
+		for c in s.compositions_listed():
+			assert_eq(ContentDB.squad_of(c), r, "rated %d: %s" % [r, str(c["id"])])
+	s.rating = 3
+	var forms := s.compositions_listed()
+	assert_true(not forms.is_empty(), "a formation is listed at its rating")
+	var c: Dictionary = forms[0]
+	s.composition = str(c["id"])
+	s.ramp = Ramp.TOP
+	var sk := s.make_skirmish()
+	assert_true(sk != null, "FIGHT fights it")
+	var want := 0
+	var ids: Array = []
+	for m in c["members"]:
+		want += Ramp.scaled(int(m[1]), Ramp.TOP)
+		ids.append(str(m[0]))
+	var got := 0
+	for f in sk.reinforcements:
+		got += 1 if ids.has((f as Foe).content_id) else 0
+	assert_eq(got, want, "its members at the ramp's density (any parts beside them)")
+	var b := s.make_battle()
+	assert_true(b != null, "BATTLE opens on it")
+	assert_eq(b.faction, str(c["faction"]), "in its domain")
+	assert_eq(b.ramp, Ramp.TOP, "at the ramp chosen")
+	assert_eq(b.tier, 0, "at its tier")
+	for w in b.field.cycle:
+		assert_eq(str(w["id"]), str(c["id"]), "every wave it")
+	s.save(TMP)
+	var back := HarnessSetup.load_or_default(db, TMP)
+	assert_eq(back.composition, s.composition, "the pick is kept")
+	assert_eq([back.tier, back.rating, back.ramp, back.comp_faction], [1, 3, Ramp.TOP, fac], "with its knobs")
+	back.rating = 1
+	assert_true(back.picked_composition().is_empty(), "a pick no longer listed is no pick")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TMP))
+	var h: Control = HARNESS.new()
+	var hs := HarnessSetup.defaults(db)
+	hs.comp_faction = fac
+	hs.rating = 3
+	h.build(hs)
+	var k: int = h._index_of(h._comp, str(c["id"]))
+	assert_true(k > 0, "the tab lists it")
+	h._comp.select(k)
+	h._comp.item_selected.emit(k)
+	assert_eq(hs.composition, str(c["id"]), "a pick on the tab is the setup's")
+	assert_true(h._summary.text.contains(str(c["id"])), "and the summary names it")
+	assert_false(h._battle_btn.disabled or h._fight_btn.disabled, "both launch")
+	h.free()

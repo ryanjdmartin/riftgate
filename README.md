@@ -60,9 +60,11 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `harness.tscn` is the main scene, three tabs over launch buttons that stay put: TEAM
     (who deploys, in the order ticked, and each machine's hardpoints, any component on any
     hardpoint), ENEMY (the packs, the boss and a guest faction, loaded from a faction and
-    edited from there) and SETUP (seed, map shape or the one the seed draws, HUD colour). Battle plays the whole loop
-    with the packs as its formation and its rift's cycle; Fight chains them all with the
-    boss into one skirmish; Resume battle below, while a save exists;
+    edited from there; or a composition picked by its domain, tier, threat rating and ramp) and
+    SETUP (seed, map shape or the one the seed draws, HUD colour). Battle plays the whole loop
+    with the packs as its formation and its rift's cycle, or a picked composition's battle at its
+    tier and ramp, every wave that composition; Fight chains the packs with the boss into one
+    skirmish, or fights a picked composition alone with its layout; Resume battle below, while a save exists;
     Quick campaign starts one on SETUP's seed, and Resume quick campaign picks a saved one up.
     What was last launched is kept in `user://harness.json` (`sim/harness_setup.gd`)
   - `battle/battle_screen.gd` the battle screen: the map with the turn around it, the panel
