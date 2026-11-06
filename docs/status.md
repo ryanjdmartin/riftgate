@@ -849,7 +849,7 @@ The tasks are the to-do's; this is the index of what waits.
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line
-  on its eighteenth round (6 November), its map half settled on the thirteenth (3 November: "I think
+  on its nineteenth round (6 November), its map half settled on the thirteenth (3 November: "I think
   that's it for this track"): his map picks, X on the violins, U on the clean guitar, the drone
   moved to R, W low with a roll; the map half minimal, the lifts as they were with the riff on the
   soft sub and the tine piano and the first lift's bell calmer (5 November: "Map lifts should keep
@@ -870,12 +870,15 @@ The tasks are the to-do's; this is the index of what waits.
   roots in A's back half, B, M and N ("Make sure B and M keep the new voices too"), B's chug hit 3
   dB down with A's and N's; the Omnific on its dirtier drive wherever it plays (6 November: "That
   Omnific voice change is perfect, that's what that voice needs to sound like everywhere it's
-  used"), the first lift's riff doubled an octave down on the fingers again ("I just realized how
-  bare C sounds on headphones"); on trial, the power chords on two basses each into its own amp
-  beside the one bass into one amp they are ("is that two instruments on different amps or one on
-  the same amp?"), the lifts' lower octave in L too or in neither, and N twice through, the Omnific
-  then the keys lead's power chords an octave under or the keys lead both times ("What would N
-  sound like if we played the omnific power through the first half, and keys lead on the repeat?").
+  used"), the lifts on their one bass ("scrap the doubling in the lifts, it was better how I had
+  it"), the power chords one bass into one amp ("Keep the one bass, one-amp") and over the low roots
+  through X, U, W, the climax and Y too ("we need it to fill out M, X, U, W, the climax, and Y"), N
+  twice through on the keys lead's power chords an octave under, the map's N with it, X's held line
+  in quarter-tones ("Lowering the first high C by a quarter ... descend by quarters instead of
+  semis"; forge.py's riff reads a voice's own notes, a quarter-tone half a semitone); on trial, K's
+  walk on the fingers or F's sub ("not omnific bass"); the map's L and M on a clean finger bass
+  ("Change L and M from cellos (i think?) to finger bass"), its U's sub on the riff on trial ("Can we
+  get the bass from the start of the climax to show up in U?").
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
   Night Shift on its twenty-first (the map's intro without its front and its muted guitar out, his
@@ -1038,7 +1041,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file is v0.470 (the track table's rows on Night Shift's
-  nineteenth and twentieth rounds, Hold The Line's seventeenth and The Far Bank's pick of the lift),
+  nineteenth to twenty-first rounds, Hold The Line's seventeenth to nineteenth and The Far Bank's pick of the lift),
   not yet published: a permission check blocked the publish on 6 November as unrequested, so it
   waits on Ryan's go; the live page had not moved. The live page is v0.469 (the
   page's version 482, published 6 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
@@ -1170,7 +1173,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  eighteenth, its power chords' amps, its lifts' lower octave and N's two passes, `hold_sketches.py`; Night Shift's twenty-first, its battle half named in parts, `night_sketches.py`;
+  nineteenth, X in quarter-tones and the upper through the middle, `hold_sketches.py`; Night Shift's twenty-first, its battle half named in parts, `night_sketches.py`;
   The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 49. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.

@@ -1456,13 +1456,16 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                 g = own[0] + (own[1] - own[0]) * pos
             return note * (g / max(float(g[0]), 1e-6))
         if mode == "riff":
+            # A voice may name notes of its own beside the shared ones, a fractional semitone among
+            # them: a quarter-tone is half of one (Hold The Line's X, Ryan, 6 November).
+            table = dict(NOTE, **v["notes"]) if v.get("notes") else NOTE
             i = 0
             while i < len(s):
                 c = s[i]
                 if c in ".-":
                     i += 1
                     continue
-                semis = int(c) if c.isdigit() else NOTE[c]
+                semis = int(c) if c.isdigit() else table[c]
                 length = 1
                 while i + length < len(s) and s[i + length] == "-":
                     length += 1

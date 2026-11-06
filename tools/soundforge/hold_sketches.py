@@ -1,18 +1,26 @@
-"""Hold The Line's eighteenth round as a pair (Ryan, 6 November, on the seventeenth): the first lift's
-riff doubled an octave down again, and three questions as sets.
+"""Hold The Line's nineteenth round as a pair (Ryan, 6 November, on the eighteenth): quarter-tones in X,
+the upper Omnific through the half's middle, N twice on the keys lead, K's walk off the Omnific, and the
+map's L, M and U.
 
-  "the current power chords version, is that two instruments on different amps or one on the same
-  amp? Can I hear the difference? -Can I get the lower octave unison back in C and/or L again? I just
-  realized how bare C sounds on headphones. -What would N sound like if we played the omnific power
-  through the first half, and keys lead on the repeat?"
+  "regarding quarter-tones, I wanted them in HtL X: -Lowering the first high C by a quarter, and then
+  at the second C, keep it at C and descend by quarters instead of semis. Notes: -Keep the one bass,
+  one-amp -Yeah scrap the doubling in the lifts, it was better how I had it. -N: go with 'Twice, on the
+  keys lead' -Now that the upper bass is settled, we need it to fill out M, X, U, W, the climax, and Y.
+  What's playing in the M, W, and Y transitions right now? -Bass in K should either be finger bass or
+  sub from F, not sure. But not omnific bass. Map half: -Change L and M from cellos (i think?) to finger
+  bass. -Can we get the bass from the start of the climax to show up in U?"
 
-The power chords are one bass, the Omnific, playing the root and its fifth on two strings into one
-amp, over a second Omnific on the low roots with its own; a set has them on two basses, the root on
-one and the fifth on the other, each into its own amp (TWO_AMPS), met halfway with the one-amp
-chords. The first lift's riff on the fingers doubled an octave under itself at its level, as the
-sixteenth round's set had both lifts (LIFT_DOUBLE); a set has C and L, L alone, or neither. And N
-twice through, the Omnific's power chords the first time and the keys lead's an octave under on the
-repeat, beside N once on the Omnific and twice on the keys lead.
+X's held line in quarter-tones on the battle's lead guitar and the map's violins (X_LINE): the first
+time its C a quarter-tone flat, the second from D down to C in quarter-tones, landing on C. The upper
+Omnific's power chords, one bass into one amp as he kept them, over the low roots in X, U, W, the climax
+and Y as well as A, B, M and N's place (UPPER_SECTIONS). N twice through in both halves (N_BARS) on the
+keys lead's power chords an octave under. K's walk on the fingers into the modern drive (K_BASS), F's
+punchy sub beside it in a set. The lifts on their one bass again. The map half's L and M on a clean
+finger bass in place of the cellos (LM_FINGERS); U's sub walking its riff as the climax's sub walks its
+roots (U_BASS), the ticking guitar 3 dB up there beside it in a set. Sets: X as it was, the upper as
+the eighteenth round had it, K on F's sub, the map's U as it was or with the ticking guitar up.
+
+The eighteenth round's, kept: the power chords one bass into one amp ("Keep the one bass, one-amp").
 
 The seventeenth round's, kept: every Omnific part on real_bass.py's DIRTY drive at the modern
 drive's level (DIRTY_LEVEL; "that's what that voice needs to sound like everywhere it's used"), the
@@ -50,8 +58,8 @@ minimalist"), its lifts' riff on the soft sub and the tine piano.
 The full pair on the switch takes every pick. The set's rows are the same bars from the same seed
 through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold18.json beside the pairs (about five minutes on four cores)
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hp       # the named sets only (hp, hl, hn, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold19.json beside the pairs (about five minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hx       # the named sets only (hx, hu, hk, hm, and full for the pair)
 """
 import json
 import os
@@ -77,7 +85,10 @@ def k_form(bars=K_BARS):
     return FORM_K16.replace("K" * 16, "K" * bars)
 
 
-FORM_K = k_form()
+# N played twice through in both halves (Ryan, 6 November, of the eighteenth round's set: "N: go with 'Twice, on
+# the keys lead'"), the map's N with it: the halves keep one timeline.
+N_BARS = 8
+FORM_K = k_form().replace("N" * 4, "N" * N_BARS)
 BATTLE_LEVEL = F.LEVELS[NAME]
 MAP_LEVEL = P.MAP_LEVEL
 
@@ -844,6 +855,9 @@ def an_chords(call, name, sections=CHORD_SECTIONS):
         lows = [lo for lo in bass for hi in bass if lo is not hi and fifth_above(lo["pat"].get(s, ""), hi["pat"].get(s, ""))]
         if not lows:
             lows = [v for v in bass if s in heard(v)]
+        if len(lows) > 1:
+            # two lines with no fifth between them (W's held B and the G over it): the lower is the root's
+            lows = [min(lows, key=lambda v: min(semis(c) for c in v["pat"][s] if c not in ".-"))]
         if len(lows) != 1:
             raise ValueError("%d root lines in %s" % (len(lows), s))
         pat[s] = lows[0]["pat"][s]
@@ -949,6 +963,113 @@ def round18(upper="omnific", n=None, double=LIFT_DOUBLE, repeat=None):
     return edit
 
 
+# Round nineteen (Ryan, 6 November). The upper Omnific's power chords over the low roots through the half's
+# middle as well ("Now that the upper bass is settled, we need it to fill out M, X, U, W, the climax, and Y"):
+# M had them; X's riff, U's, the climax's (S, R, Z) and the held notes of W and Y take them, on the line
+# the low Omnific plays there, the climax's line a fifth over it out as everywhere. N on the keys lead's
+# power chords an octave under, twice through. The lifts' riff on the one bass again ("scrap the doubling
+# in the lifts, it was better how I had it").
+UPPER_SECTIONS = "ABMXUWSRZY"
+# K's walk off the Omnific ("Bass in K should either be finger bass or sub from F, not sure. But not omnific
+# bass"): the fingers into the modern drive, the lifts' bass, an octave down where the walk was, or F's
+# punchy sub at F's octave, each met halfway with the Omnific's walk.
+K_BASS = "fingers"
+K_FINGERS = 2.228   # 0.9 dB each way
+K_SUB = 1.854       # 4.1 dB each way: a phone plays little of a sub, so it sits under the walk there and over it in full
+K_BASSES = {"fingers": ({"inst": "real_bass", "params": {"preset": "finger", "amp": "modern"}}, "K_FINGERS"),
+            "sub": ({"inst": "sub_bass", "params": {"res": 0.35, "punch": 2.4, "fade": 0.4}, "octave": 0, "legato": True}, "K_SUB")}
+# X's held line in quarter-tones (Ryan, 6 November: "regarding quarter-tones, I wanted them in HtL X: -Lowering
+# the first high C by a quarter, and then at the second C, keep it at C and descend by quarters instead of
+# semis"): the line over X's second half, E D C# C twice; the first time its C a quarter-tone flat, the second
+# from D down to C in quarter-tones, two to a bar (D, D a quarter flat, C#, C# a quarter flat), landing on C.
+# The battle's lead guitar plays it and the map's violins; the low C (the bass's, the sub's, the chords')
+# stays where it is. forge.py's riff reads a voice's own `notes`, so a quarter-tone is half a semitone.
+X_NOTES = {"w": -4.5, "y": -2.5, "z": -3.5}   # C, D and C# a quarter-tone flat
+X_SEMIS = "." * 56 + ("0" + "-" * 13 + "g" + "-" * 13 + "m" + "-" * 13 + "n" + "-" * 13) * 2
+X_LINE = ("." * 56 + "0" + "-" * 13 + "g" + "-" * 13 + "m" + "-" * 13 + "w" + "-" * 13
+          + "0" + "-" * 13 + "g" + "-" * 6 + "y" + "-" * 6 + "m" + "-" * 6 + "z" + "-" * 6 + "n" + "-" * 13)
+
+
+def x_line(call, inst):
+    """X's held line on `inst` in quarter-tones (X_LINE)."""
+    v = the_one(call, lambda v: v["inst"] == inst and heard(v) == {"X"} and v.get("octave", 0) >= 1, "X's held line on " + inst)
+    if v["pat"]["X"] != X_SEMIS:
+        raise ValueError("X's held line is not the one the quarter-tones were written on")
+    v["pat"]["X"] = X_LINE
+    v["notes"] = dict(X_NOTES)
+
+
+def k_walk(call, which=K_BASS):
+    """K's walk on `which` (K_BASSES) in place of the Omnific."""
+    v = the_one(call, lambda v: v["inst"] == "real_bass" and heard(v) == {"K"}, "K's walk")
+    voice, factor = K_BASSES[which]
+    v.update({k: dict(w) if isinstance(w, dict) else w for k, w in voice.items()}, gain=round(v["gain"] * globals()[factor], 4))
+
+
+def round19(upper=UPPER_SECTIONS, k_bass=K_BASS, quarters=True):
+    """Round nineteen's battle half: round eighteen's without the lifts' doubling, the upper Omnific's
+    power chords in `upper`'s sections, N on the keys lead's power chords an octave under twice through
+    (the form's), K's walk on `k_bass`, X's held line in quarter-tones where `quarters`."""
+    def edit(call):
+        battle_picks()(call)
+        chug_down("ABN")(call)
+        unison_chug_out()(call)
+        drone_up(call)
+        chords = an_chords(call, "omnific", upper) + an_chords(call, "keys_chords", "N")
+        lift_single("modern", "keys")(call)
+        real_bass_on("omnific", roots=True, throughout=True, spare=("F",), down=True)(call)
+        call["voices"] += chords
+        c_backing(None)(call)
+        l_backing(L_BACKING_UP)(call)
+        dirtier(call)
+        k_walk(call, k_bass)
+        if quarters:
+            x_line(call, "guitar_real")
+    return edit
+
+
+# The map half's round nineteen (Ryan, 6 November): X's held line in quarter-tones on the violins with the
+# battle's; L's riff and M's line on a clean finger bass in place of the cellos ("Change L and M from cellos
+# (i think?) to finger bass"), met halfway with them, the map's no-gain rule kept (a direct box, no amp); and
+# U's bass ("Can we get the bass from the start of the climax to show up in U?"): the climax opens on the sub
+# walking its chords' roots under the ticking guitar's riff, where U's sub holds one E under its riff for
+# eight bars; read as that sub, U's walks the riff with the ticking guitar in the sub's own register, as the
+# climax's does its roots (U_BASS "sub"), or, read as the ticking guitar, which the climax has 3 dB up, U's
+# comes up as far ("ticking").
+LM_FINGERS = {"inst": "real_bass", "params": {"preset": "finger", "amp": "di"}, "mode": "riff", "octave": 0, "hold": 1.1}
+LM_FACTOR = 1.055   # 0.3 dB each way
+U_BASS = "sub"
+
+
+def map_x_quarters(kw, call):
+    x_line(kw, "violin_real")
+    return kw
+
+
+def map_lm_fingers(kw, call):
+    cello = the_one(kw, lambda v: v["inst"] == "cello_real" and {"L", "M"} <= heard(v), "the cellos in L and M")
+    kw["voices"].append(dict(LM_FINGERS, params=dict(LM_FINGERS["params"]), gain=round(cello["gain"] * LM_FACTOR, 4),
+                             pat={sec: cello["pat"].pop(sec) for sec in "LM"}))
+    return kw
+
+
+def map_u_bass(how=U_BASS):
+    def edit(kw, call):
+        ticking = the_one(kw, lambda v: v["inst"] == "guitar_real" and "U" in heard(v) and v.get("octave", 0) == 0, "the ticking guitar in U")
+        if how == "sub":
+            sub = the_one(kw, lambda v: v["inst"] == "sub_bass" and "U" in heard(v), "the sub in U")
+            kw["voices"].append({"inst": "sub_bass", "mode": "riff", "gain": sub["gain"], "octave": 0, "hold": 0.9, "pat": {"U": ticking["pat"]["U"]}})
+            del sub["pat"]["U"]
+        elif how == "ticking":
+            moved_off(kw, lambda v: v is ticking, "the ticking guitar in U", ("U",), TICKING_UP)
+        return kw
+    return edit
+
+
+map_settled19 = map_edits(map_picks, map_calm_bell, map_lead("C", "tine"), map_lead("L", "tine"), map_climax(), map_k_walk("synth"),
+                          map_x_quarters, map_lm_fingers, map_u_bass())
+
+
 def battle_with(*edits):
     def edit(call):
         for e in edits:
@@ -957,45 +1078,51 @@ def battle_with(*edits):
 
 
 FORM_TOP = FORM_K[:FORM_K.index("M") + 1]   # the half's top: the riff, both lifts and the bar down into the seven
-FORM_N = "CCCCCCCC NNNN LLLL"                  # the first lift into N and the second lift's first half
-FORM_N2 = "CCCCCCCC NNNNNNNN LLLL"             # N played twice through
-FORM_AB = FORM_K[:FORM_K.index("B") + 1]       # the riff, its back half on the power chords, and the turn bar
-FORM_LIFTS = "CCCCCCCC NNNN LLLLLLLL"          # both lifts and N between them
+FORM_X = "M XXXXXXXXXXXX"                                    # the bar down into the seven and the seven
+FORM_UPPER = "XXXXXXXXXXXX UUUUUUUU WW SSSSSSSS Y"           # the seven, the unison, the turn into the climax, its first set, the breath
+FORM_KEYS = "Y KKKKKKKK V"                                   # the breath, the keys section, the second breath
+FORM_MAP_U = "UUUUUUUU WW SSSS"                              # the map's U into the climax's start
 SETS = [
-    {"id": "hp", "half": "battle", "title": "The power chords, one amp or two", "form": FORM_AB,
-     "note": "The riff from the top and the turn bar (Ryan, 6 November: \"is that two instruments on different amps or one on the same amp? Can I hear the difference?\"). The pair's power chords are one bass playing the root and its fifth on two strings into one amp, so the two notes grind against each other in its drive. The second row puts them on two basses, each into its own amp, so each note distorts alone, met halfway with the first. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hp0", "One bass, one amp", "The Omnific's power chords as the pair has them: both strings into one drive.", round18()),
-        ("hp1", "Two basses, two amps", "The root on one Omnific and the fifth on another, each into its own drive.", round18("two_amps")),
+    {"id": "hx", "half": "battle", "title": "X in quarter-tones", "form": FORM_X,
+     "note": "The bar down into the seven and the seven (Ryan, 6 November: \"Lowering the first high C by a quarter, and then at the second C, keep it at C and descend by quarters instead of semis\"). The lead guitar's held line over X's second half, E D C# C twice. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hx0", "In quarter-tones", "The first C a quarter-tone flat; the second time from D down to C in quarter-tones, two to a bar (the full pair's).", round19()),
+        ("hx1", "In semitones", "The line as it was.", round19(quarters=False)),
     ]},
-    {"id": "hl", "half": "battle", "title": "The lifts' lower octave", "form": FORM_LIFTS,
-     "note": "Both lifts and N between them (Ryan, 6 November: \"Can I get the lower octave unison back in C and/or L again? I just realized how bare C sounds on headphones\"): each lift's riff on the fingers doubled an octave under itself at its level, or not. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hl0", "C doubled", "The first lift doubled, the second as it was (the full pair's).", round18()),
-        ("hl1", "C and L doubled", "Both lifts doubled, as round sixteen's set had them.", round18(double=("C", "L"))),
-        ("hl2", "L doubled", "The second lift doubled alone.", round18(double=("L",))),
-        ("hl3", "Neither", "Both lifts on the one bass, as round seventeen had them.", round18(double=())),
+    {"id": "hu", "half": "battle", "title": "The upper through the middle", "form": FORM_UPPER,
+     "note": "The seven, the unison, the turn into the climax, the climax's first set and the breath, the climax's other sets as its first (Ryan, 6 November: \"we need it to fill out M, X, U, W, the climax, and Y\"). The upper Omnific's power chords over the low roots there, one bass into one amp, or not. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hu0", "The upper throughout", "The power chords on the low Omnific's line in X, U, W, the climax and Y (the full pair's).", round19()),
+        ("hu1", "As round eighteen had it", "The power chords in A, B and M alone.", round19(upper="ABM")),
     ]},
-    {"id": "hn", "half": "battle", "title": "N, once or twice through", "form": FORM_N,
-     "note": "The first lift into N and the second lift's first half (Ryan, 6 November: \"What would N sound like if we played the omnific power through the first half, and keys lead on the repeat?\"). The second and third rows run four bars longer, so they carry on from the same beat only through N's first pass.", "rows": [
-        ("hn0", "Once, on the Omnific", "N as the full pair has it.", round18()),
-        ("hn1", "Twice: the Omnific, then the keys lead", "The Omnific's power chords the first time through, the keys lead's an octave under on the repeat.", round18(repeat="keys_chords"), FORM_N2),
-        ("hn2", "Twice, on the keys lead", "The keys lead's power chords an octave under through both, as round seventeen's set had them.", round18(n="keys_chords"), FORM_N2),
+    {"id": "hk", "half": "battle", "title": "K's walk", "form": FORM_KEYS,
+     "note": "The breath, the keys section at its slower tempo and the second breath (Ryan, 6 November: \"Bass in K should either be finger bass or sub from F, not sure. But not omnific bass\"). Each met halfway with the Omnific's walk; F's sub, nearly all fundamental, sits 4 dB under it on a phone and 4 over it on headphones. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hk0", "The fingers", "K's walk on the fingers into the modern drive, the lifts' bass, an octave down (the full pair's).", round19()),
+        ("hk1", "F's sub", "K's walk on F's punchy sub, at F's octave.", round19(k_bass="sub")),
+    ]},
+    {"id": "hm", "half": "map", "title": "The map's U", "form": FORM_MAP_U,
+     "note": "The map half's U into the climax's start (Ryan, 6 November: \"Can we get the bass from the start of the climax to show up in U?\"). The climax opens on the sub walking its roots under the ticking guitar's riff; U's sub held one E under its riff. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hm0", "The sub on the riff", "U's sub walking the riff with the ticking guitar in its own register (the full pair's).", map_settled19),
+        ("hm1", "The ticking guitar up", "U's sub as it was, the ticking guitar 3 dB up as the climax has it.", map_edits(map_picks, map_calm_bell, map_lead("C", "tine"), map_lead("L", "tine"), map_climax(), map_k_walk("synth"), map_x_quarters, map_lm_fingers, map_u_bass("ticking"))),
+        ("hm2", "As it was", "U's sub holding its E.", map_edits(map_picks, map_calm_bell, map_lead("C", "tine"), map_lead("L", "tine"), map_climax(), map_k_walk("synth"), map_x_quarters, map_lm_fingers)),
     ]},
 ]
-PAIR = {"id": "hold_the_line_r18", "title": "Hold The Line, round eighteen"}
-# The battle half's sections as round eighteen plays them, where they differ from the shipped track's:
+PAIR = {"id": "hold_the_line_r19", "title": "Hold The Line, round nineteen"}
+# The battle half's sections as round nineteen plays them, where they differ from the shipped track's:
 # the Omnific, wherever it plays, on the dirtier drive.
-NAMES_R18 = {
+NAMES_R19 = {
     "A": "riff, sixteen bars: four bare, four with a low bass, eight with the bass low on the roots and the Omnific's power chords over it, the last four over the drone, 3 dB up; the chug 3 dB down; the Omnific dirtier, as everywhere it plays",
     "B": "turn bar: one short hit with the power chord on the bass and the Omnific's, the drums filling",
-    "C": "lift: the fingers bass on the riff doubled an octave under itself, piano stabs, metal chime, brass, syncopated snare, choir, a tom fill closing it",
-    "N": "the riff again, the chug's and the Omnific's power chords over the drone, 3 dB up, and the bass low on the roots, the chug 3 dB down",
+    "C": "lift: the fingers bass alone on the riff, piano stabs, metal chime, brass, syncopated snare, choir, a tom fill closing it",
+    "N": "the riff again, twice through: the chug's power chords and the keys lead's an octave under over the drone, 3 dB up, the bass low on the roots, the chug 3 dB down",
     "L": "second lift: the keys lead on the riff over the fingers bass, the backing guitar on the kick 3 dB up, piano stabs",
     "M": "a bar down into the seven on the bass, the Omnific's power chords over it",
-    "X": "the seven: a riff for 7/8 on the bass, the piano on the long beat, a chime, a guitar held through its second half",
-    "U": "unison riff: bass and lead in octaves, a drum solo behind them in threes and twos, the drums up",
-    "S": "the climax: a new unison riff on the lead guitar voice and the bass, the drone under it, intense drums",
-    "Y": "a breath, one bar: the climax's blend held on one E minor chord (the lead guitar voice on the third, the bass on the root, the backing guitar's chord, the piano on the fifth), a swell into the drop",
-    "K": "the keyboard solo's first eight bars at its slower tempo, its walk on the bass an octave down with the plucked string beside it, K's drums with a pushing kick, eighths on the hat and a china, its crash choked to a second and a half",
+    "W": "the keys' turn, two bars: the lead guitar holding the tune's note, the bass low on it with the Omnific's power chord over it, the drums in from beat three, then an exposed epic fill",
+    "R": "the climax's second set: the backing guitar joins, ringing the chord a whole bar from each one, the keys join the riff, the Omnific's power chords over the bass, the drums more intense",
+    "Z": "the climax's third set: double kicks on the sixteenths, the keys on simple chords on the beat, the Omnific's power chords over the bass, nothing backed off",
+    "X": "the seven: a riff for 7/8 on the bass with the Omnific's power chords over it, the piano on the long beat, a chime, the lead guitar held through its second half in quarter-tones",
+    "U": "unison riff: bass and lead in octaves, the Omnific's power chords between them, a drum solo behind them in threes and twos, the drums up",
+    "S": "the climax: a new unison riff on the lead guitar voice and the bass, the Omnific's power chords over the bass, the drone under it, intense drums",
+    "Y": "a breath, one bar: the climax's blend held on one E minor chord (the lead guitar voice on the third, the bass on the root with the Omnific's power chord over it, the backing guitar's chord, the piano on the fifth), a swell into the drop",
+    "K": "the keyboard solo's first eight bars at its slower tempo, its walk on the fingers bass an octave down with the plucked string beside it, K's drums with a pushing kick, eighths on the hat and a china, its crash choked to a second and a half",
     "V": "the second breath, one bar at the solo's tempo: the keyboard solo's instruments ring on E minor (the bass on the root, piano on the fifth, the guitar and piano chords), a swell into the fill",
 }
 
@@ -1007,7 +1134,7 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold18_" + SETS[si]["id"])
+    F.seed("hold19_" + SETS[si]["id"])
     row = SETS[si]["rows"][ri]
     edit, form = row[3], row[4] if len(row) > 4 else SETS[si]["form"]   # a row may cut its own bars (K's lengths)
     with P.Patched(_steps=run_steps):
@@ -1019,7 +1146,7 @@ def render_row(job):
 
 
 def full_path(half):
-    return os.path.join(P.OUT, "hold18_full_%s.wav" % half)
+    return os.path.join(P.OUT, "hold19_full_%s.wav" % half)
 
 
 def render_full(half):
@@ -1027,11 +1154,11 @@ def render_full(half):
     if half == "battle":
         F.seed(NAME)
         call = copied(call_on(FORM_K, METER))
-        round18()(call)
+        round19()(call)
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
-        x = level(map_half(FORM_K, map_settled), MAP_LEVEL)
+        x = level(map_half(FORM_K, map_settled19), MAP_LEVEL)
     P.write(os.path.basename(full_path(half))[:-4], x, aac=False)
     return half
 
@@ -1064,7 +1191,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold18.json")
+    manifest_path = os.path.join(P.OUT, "hold19.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1076,7 +1203,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, *_edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold18_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold19_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -1088,7 +1215,7 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R18)
+        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R19)
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
                                "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels}]
