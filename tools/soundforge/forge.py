@@ -913,19 +913,29 @@ def brass(f, dur):
 
 def pluck(f, dur, bright=0.6, damp=0.996):
     """A plucked string (Karplus-Strong): a burst of noise round a delay line the length of
-    the pitch, averaged each pass so it darkens as it rings."""
+    the pitch, averaged each pass so it darkens as it rings. The loop is tuned to the pitch:
+    whole samples, the average's half sample, and a first-order allpass for the fraction left
+    (Ryan, 6 November: "sometimes it sounds out of tune ... it comes across as sounding like the
+    note is flat"; the line rounded to whole samples plus the average's half had played the
+    high notes flat by up to a third of a semitone, B5 by 32 cents, E5 by 16)."""
     n = n_of(dur)
-    length = max(2, int(round(SR / f)))
+    period = SR / f - 0.5                  # the loop less the average's half sample
+    length = max(2, int(period - 0.1))     # whole samples, leaving the allpass 0.1 to 1.1 of one
+    frac = period - length
+    c = (1.0 - frac) / (1.0 + frac)        # the allpass's delay at low frequencies is `frac`
     ring = lp(noise(length), 600.0 + 9000.0 * bright)
     ring /= np.max(np.abs(ring)) + 1e-9
     out = np.empty(n)
-    prev = 0.0
+    prev = ap_x = ap_y = 0.0
     for i in range(n):
         j = i % length
         y = ring[j]
-        ring[j] = damp * 0.5 * (y + prev)
-        prev = y
         out[i] = y
+        avg = damp * 0.5 * (y + prev)
+        prev = y
+        ap_y = c * avg + ap_x - c * ap_y
+        ap_x = avg
+        ring[j] = ap_y
     return out * env_pts(n, [(0.0, 1.0), (max(dur - 0.02, 0.0), 1.0), (dur, 0.0)])
 
 
