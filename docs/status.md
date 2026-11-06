@@ -1013,9 +1013,11 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.466 (the
-  page's version 479, published 5 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
-  live source whole: Hold The Line's sixteenth round, his picks; over v0.465 at 478: The Far Bank's
+  `docs/design-bible.html` after every change. This file and the live page are v0.469 (the
+  page's version 482, published 6 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
+  live source whole: Hold The Line's set's new rows, the keys lead's power chords and the Omnific a
+  bit dirtier, merged row by row onto the live v0.468 another session published, its long wall
+  round; over v0.466 at 479: Hold The Line's sixteenth round, his picks; over v0.465 at 478: The Far Bank's
   lift half as far; over v0.464 at 477: Night Shift's duel's
   lower bass and The Far Bank's picks, the date brought to the day; over v0.463 at 476: Hold The
   Line's fifteenth round in its track row; over v0.462 at 475: Night
