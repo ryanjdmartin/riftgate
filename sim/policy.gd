@@ -38,6 +38,7 @@ const PLAN_CANDIDATES := 4   # the spends the planner rolls out at a decision: t
 const PLAN_SAMPLES := 2      # futures each candidate is rolled out over, the same seeds for every candidate (common random numbers)
 
 const MAX_ROUNDS := 60           # a fight nobody can finish (armour holds, dice all blank) is stalled
+const STALEMATE_ROUNDS := 10     # rounds running with nothing changed that mark a stalemate (the long wall brief, section 5)
 const HULL_WEIGHT := 1.5         # a point of mech hull, in foe hit points: hull is the resource that persists
 const KILL_BONUS := 3.0         # a slot cleared: the back rank opens, the horde shrinks
 const DEATH_WEIGHT := 20.0       # a machine kept alive through the round
@@ -87,6 +88,9 @@ var forced_holds: int = 0        # damaging dice held because spending them woul
 var forgone: float = 0.0         # the damage those dice would have dealt, at their mean
 var spends: Dictionary = {}      # component id, or "empty", "destroyed", "disabled" -> times spent
 var stalled: bool = false
+var stalemate: bool = false      # ten rounds running with no foe's HP, no machine's hull or shield changed (the long wall brief, section 5); counted apart from a stall, the cap staying MAX_ROUNDS
+var _still := 0
+var _last_sig := Vector3i(-1, -1, -1)
 var plans: int = 0               # the planner's decisions that weighed more than one candidate
 var plan_changes: int = 0        # of those, the ones where it spent otherwise than the greedy would
 var actions_bought: int = 0      # an ally's action bought with the team's rerolls (the Immelmann Booster, 30 October)
@@ -127,7 +131,27 @@ func play(sk: Skirmish) -> int:
 		for o in sk.overheats:
 			overheat_hull += int(o.get("burn", o["over"]))
 			overheats += 1
+		_read_stalemate(sk)
 	return sk.outcome
+
+
+## A stalemate (the long wall brief, section 5): no foe's HP, no machine's hull or shield moved
+## for STALEMATE_ROUNDS rounds running, read as each round ends; the fight plays on to its end
+## or the cap.
+func _read_stalemate(sk: Skirmish) -> void:
+	var hp := 0
+	for f in sk.field_foes() + sk.reinforcements:
+		hp += maxi(0, f.hp)
+	var hull := 0
+	var shield := 0
+	for ms in sk.mechs:
+		hull += maxi(0, ms.unit.hull)
+		shield += ms.unit.shield
+	var sig := Vector3i(hp, hull, shield)
+	_still = _still + 1 if sig == _last_sig else 0
+	_last_sig = sig
+	if _still >= STALEMATE_ROUNDS:
+		stalemate = true
 
 
 ## The heat as the player's turn ends, for the runner's heat report: the hottest machine as a

@@ -594,6 +594,78 @@ func _park(b: Battle, sq: Unit, m: Unit, hunting: bool) -> void:
 	sq.behaviour = "hunt" if hunting else "push"
 
 
+## The defence rule (the long wall brief, section 5): a machine is sent at the pack it can stand
+## beside this turn that reaches the wall soonest (one on the apron first, then the turns its
+## planned walk needs), ties by the larger threat rating, then the nearer, never the sealed boss;
+## with none in reach, at the soonest of all.
+func test_the_defence_rule_sends_a_machine_at_the_pack_nearest_the_wall() -> void:
+	var b := Battle.new(3)
+	var m := Unit.mech(1, "M", Vector2i.ZERO, 5)
+	b.setup([m], "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	quiet_start(b)
+	var row := b.field.apron_row()
+	var col := Hex.axial_to_offset(m.pos).x
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			b.field.units.erase(sq)
+	var mk := func(c: int, r: int, squad: int, name: String) -> Unit:
+		var p := b.field.add_unit(Unit.pack(0, name, Hex.offset_to_axial(c, r), "marsh", 2, 3, "revenant"))
+		p.behaviour = "push"
+		p.squad = squad
+		return p
+	var at_wall: Unit = mk.call(col - 2, row, 1, "at the wall")
+	var next_turn: Unit = mk.call(col + 2, row - 2, 3, "a move out")
+	var walks := b.field.plan_walks()
+	assert_eq(BattleBot.turns_to_wall(b, at_wall, walks[at_wall.id]), 0, "on the apron: none")
+	assert_eq(BattleBot.turns_to_wall(b, next_turn, walks[next_turn.id]), 1, "its walk ends there: one")
+	assert_eq(BattleBot.soonest(b, walks, m, true), at_wall, "the pack at the wall first, whatever its rating")
+	b.field.units.erase(at_wall)
+	var far: Unit = mk.call(col - 3, row - 2, 1, "a patrol a move out")
+	walks = b.field.plan_walks()
+	assert_eq(BattleBot.soonest(b, walks, m, true), next_turn, "a tie on the turns goes to the larger rating")
+	far.squad = 3
+	next_turn.pos = Hex.offset_to_axial(col + 4, row - 2)
+	walks = b.field.plan_walks()
+	assert_eq(BattleBot.soonest(b, walks, m, true), far if Battlefield.unit_distance(m, far) < Battlefield.unit_distance(m, next_turn) else next_turn, "and a tie on both to the nearer")
+	assert_false(BattleBot.soonest(b, walks, m, true) == b.boss, "never the sealed boss")
+	var deep: Unit = mk.call(col, 3, 4, "deep")
+	b.field.units.erase(far)
+	b.field.units.erase(next_turn)
+	walks = b.field.plan_walks()
+	assert_eq(BattleBot.soonest(b, walks, m, true), null, "nothing in reach this turn")
+	assert_eq(BattleBot.soonest(b, walks, m, false), deep, "so it walks toward the soonest of all")
+	assert_eq(BattleBot.turns_to_wall(b, deep, walks[deep.id]), 1 + int(ceil(float(row - Hex.axial_to_offset(walks[deep.id].end).y) / 2.0)), "the rows past its walk at its own pace")
+
+
+## The pressure ratio (the long wall brief, section 5): the threat ratings of the packs at the wall
+## or reaching it this coming enemy turn, over the machines standing; a formation and a patrol
+## against four machines read 1.0, two formations 1.5, a pack far out nothing.
+func test_the_pressure_ratio_reads_what_reaches_the_wall_this_turn() -> void:
+	var b := Battle.new(3)
+	var team: Array = []
+	for n in range(4):
+		team.append(Unit.mech(n + 1, "M%d" % n, Vector2i.ZERO, 3))
+	b.setup(team, "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	quiet_start(b)
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			b.field.units.erase(sq)
+	var row := b.field.apron_row()
+	var formation := b.field.add_unit(Unit.pack(0, "formation", Hex.offset_to_axial(0, row), "marsh", 2, 6, "revenant"))
+	formation.squad = 3
+	var patrol := b.field.add_unit(Unit.pack(0, "patrol", Hex.offset_to_axial(8, row - 2), "marsh", 2, 3, "revenant"))
+	patrol.squad = 1
+	var far := b.field.add_unit(Unit.pack(0, "far", Hex.offset_to_axial(4, 4), "marsh", 2, 3, "revenant"))
+	far.squad = 3
+	for p in [formation, patrol, far]:
+		p.behaviour = "push"
+	assert_eq(BattleBot.pressure(b), 1.0, "a formation at the wall and a patrol arriving, against four: the three and one")
+	patrol.squad = 3
+	assert_eq(BattleBot.pressure(b), 1.5, "two formations: a split short")
+	b.field.units.erase(b.mechs()[3])
+	assert_eq(BattleBot.pressure(b), 2.0, "over three machines")
+
+
 ## The campaign bot fights every fight out (the long wall brief 3.5: there is no withdrawal, so
 ## the withdrawing persona went with it): a fight it is losing ends in the machine's wreck or the
 ## pack's fall, never withdrawn from.

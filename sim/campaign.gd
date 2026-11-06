@@ -91,6 +91,9 @@ class Machine:
 
 
 var seed_value: int = 1
+## A map shape every battle of the run is fought on (BattleMap.KINDS), for the campaign runner's
+## --shape; "" draws each battle's shape by its seed, as the game does. Never saved.
+var map_kind := ""
 var rng := RandomNumberGenerator.new()
 var db: ContentDB
 var state: int = PICK
@@ -341,6 +344,7 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		var boss_id := draw_boss(lead)
 		if not boss_id.is_empty():
 			b.lineup = [boss_id]
+	b.map_kind = map_kind
 	b.setup(team, lead)
 	b.field.gate_hp_max = c.gate_max
 	b.field.gate_hp = c.gate

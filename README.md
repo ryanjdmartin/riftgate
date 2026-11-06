@@ -267,7 +267,12 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # --pack goblin:3 or --pack goblin:4+mandragora:2 (repeatable) adds a composed pack, one foe type
 # times a strength or several together in one fight (its id "pack:" and the spec, for --packs
 # and --trace), so patrols and a front with a back read beside the spawn lists' packs (26 October).
+# --packs promise runs the promise read instead of the matrix (the long wall brief, section 5):
+# every patrol, formation and elite composition at each tier it names, fought by the default four
+# machines cut to its threat rating, one short and one over, each cell its win rate, rounds and
+# hull lost; printed, and written to --out when one is given (about forty minutes at 30 seeds).
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
+perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
 # the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
 # report, and --merge writes the report from the parts (same options on every part and the merge;
 # the merged report reads as a whole run, the time the longest part's)
@@ -284,18 +289,20 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 
 # the campaign runner: whole runs played headless by a plain player (it defends the front
-# nearest to falling, hunts the nearest enemy on the map, fights at the greedy rung), measuring
+# nearest to falling, plays the defence rule on the map, fights at the greedy rung), measuring
 # the campaign's placeholders: runs won, cities fallen, wipes, components destroyed per battle;
-# written to docs/campaign_run.md. --runs N, --seed S, --policy random; --trace SEED prints one
-# run battle by battle instead. The squad moves as one (the pack nearest the squad, every
-# machine in range fighting it, allies walking into range of a hunter's catch before it opens);
-# --solo walks each machine toward its own nearest enemy, the rule before 26 October, for
-# comparison. Every fight is fought out: there is no withdrawal. --turtle holds the squad on the two rows before
-# the gate at its columns, fighting only what comes within reach (the stall's read, 30 October);
-# --detach sends one machine at the nearest patrol within five hexes while the body fights the
-# nearest formation (a detachment's price). The report reads the Rupture meter and the mouths
-# (Fractures, the Rupture and the stall guard, peaks, what the rift and the tears sent, elites,
-# menace killed, gate damage) and the fights by what they held (patrols, formations, elites, the boss)
+# written to docs/campaign_run.md. --runs N, --seed S, --policy random, --shape KIND (every
+# battle on that map shape; the long wall brief's reads use steppe); --trace SEED prints one run
+# battle by battle instead. The defence rule (BattleBot, the long wall brief section 5): a
+# hunter's catch first, allies walking into reach of it; then each machine onto the pack it can
+# stand beside that reaches the wall soonest, ties by the larger threat rating and the nearer, the
+# rest walking toward the soonest, never the sealed boss; every fight fought out (there is no
+# withdrawal). The report reads the field's size, the Rupture meter and the mouths (Fractures,
+# the Rupture and the stall guard, peaks, what the rift and the tears sent, elites, menace
+# killed, gate damage), the pressure ratio (the threat ratings at the wall or reaching it this
+# turn over the machines standing: a run's mean, its turns above one, its battles' highest) and
+# the fights by the pack's threat rating and the machines in them, with the stalemates (ten
+# rounds of nothing changed) apart from the fights stalled at the cap
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
 
 # the quick campaign's runner (25 October): whole quick campaigns played headless (three draft chassis

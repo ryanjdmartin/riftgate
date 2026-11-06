@@ -235,6 +235,21 @@ func test_a_fight_nobody_can_finish_stalls() -> void:
 	assert_true(pol.stalled, "stalled, not looping forever")
 	assert_eq(pol.rounds, Policy.MAX_ROUNDS, "after the round cap")
 	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the skirmish itself is undecided")
+	assert_true(pol.stalemate, "and a stalemate: nothing changed for ten rounds running (the long wall brief, section 5)")
+
+
+## A fight that moves every round is no stalemate, however long (the long wall brief, section 5:
+## ten rounds running with no foe's HP, no machine's hull or shield changed).
+func test_a_fight_that_moves_is_no_stalemate() -> void:
+	var u := _mech("A", Die.single(Face.attack(1, L)), 0, 900)
+	var sk := Skirmish.new(1)
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(40, 1)])
+	sk.begin()
+	var pol := Policy.make(Policy.GREEDY)
+	pol.play(sk)
+	assert_true(pol.rounds > Policy.STALEMATE_ROUNDS, "a long fight")
+	assert_false(pol.stalemate, "that moved every round")
 
 
 ## The fight bot plays a losing fight to its end (the long wall brief 3.5: there is no
