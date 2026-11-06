@@ -243,7 +243,7 @@ static func _field_from(d: Dictionary, map: BattleMap) -> Battlefield:
 		f.patrol_cycle = f.cycle.duplicate(true)
 	f._cycle_index = int(d.get("cycle_index", d.get("spawn_index", 0)))
 	f._patrol_index = int(d.get("patrol_index", 0))
-	f.seam_row = int(d.get("seam_row", Battlefield.SEAM_START))
+	f.seam_row = int(d.get("seam_row", Battlefield.seam_start()))
 	for t in d.get("tears", []):
 		f.tears.append({"pos": Vector2i(int(t[0]), int(t[1])), "opened": int(t[2]) if t.size() > 2 else 0})
 	f.peaks = int(d.get("peaks", 0))

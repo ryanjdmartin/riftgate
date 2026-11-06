@@ -20,6 +20,7 @@ func _team() -> Array:
 func _battle(seed_value: int = 5) -> Battle:
 	var b := Battle.new(seed_value)
 	b.setup(_team(), "")
+	quiet_start(b)   # a save's rules, not the opening's (TestCase.quiet_start)
 	return b
 
 

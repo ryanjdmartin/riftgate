@@ -14,7 +14,8 @@ func _team() -> Array:
 
 func _battle(seed_value: int = 3) -> Battle:
 	var b := Battle.new(seed_value)
-	b.setup(_team(), "marsh")
+	b.setup(_team(), "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	quiet_start(b)   # these tests read their own rules, not the opening's (TestCase.quiet_start)
 	return b
 
 
@@ -54,7 +55,8 @@ func _win(sk: Skirmish) -> void:
 
 
 func test_setup_places_team_formation_and_boss() -> void:
-	var b := _battle()
+	var b := Battle.new(3)
+	b.setup(_team(), "marsh")
 	assert_eq(b.mechs().size(), 3, "three mechs")
 	assert_eq(b.field.packs().size(), 1 + Ramp.formations_at(0) + Ramp.patrols_at(0), "the ramp's formations and patrols at the start, plus the boss")
 	assert_true(b.boss != null and b.field.units.has(b.boss), "boss on the field")
@@ -65,11 +67,64 @@ func test_setup_places_team_formation_and_boss() -> void:
 	for m in b.mechs():
 		assert_true(Hex.axial_to_offset(m.pos).y >= gate_row - 3, "%s starts by the gate" % m.display_name)
 		assert_eq(b.actions_left(m), 1, "%s has its action" % m.display_name)
+	# The opening (the long wall brief 3.2): a formation a move of its own from the apron, a
+	# patrol two moves, never in the rift's mouth; the boss by the rift; the rift a turn short.
 	for sq in b.field.packs():
-		assert_true(Hex.axial_to_offset(sq.pos).y < gate_row / 2, "%s starts in the north" % sq.display_name)
+		var row := Hex.axial_to_offset(sq.pos).y
+		if sq.is_boss:
+			assert_true(row <= 2, "the boss starts by the rift")
+		elif sq.composition_size == "formation":
+			assert_eq(row, maxi(BattleMap.MOUTH_ROWS, b.field.apron_row() - sq.movespeed), "%s stands a move from the wall" % sq.display_name)
+		else:
+			assert_eq(row, maxi(BattleMap.MOUTH_ROWS, b.field.apron_row() - 2 * sq.movespeed), "%s stands two moves from the wall" % sq.display_name)
+	assert_eq(b.field.rift_pressure, b.field.rift_pressure_max - 1, "the rift a turn short of its peak")
 	assert_eq(b.state, Battle.State.PLAN, "the player's turn")
-	assert_true(b.forced.is_empty(), "nothing caught at the start")
+	assert_eq(b.forced.size(), b.field.forced_fights().size(), "the first turn opens on what the opening's hunters caught, as every turn does")
 	assert_eq(b.field.plan_walks().size(), b.field.packs().size(), "every pack's walk shows")
+
+
+## The field's size is the ramp's (the long wall brief 3.1): a battle that names none takes
+## Ramp.wall_length_at and Ramp.depth_at; at any size the gate stands centred on the wall, the
+## wall spans the width, the rift is three hexes at the top centre, and four machines stand on
+## the row before the gate's apron.
+func test_the_field_takes_the_ramps_size_and_keeps_its_shape_at_any_size() -> void:
+	var b := Battle.new(3)
+	b.with_boss = false
+	b.map_kind = "steppe"
+	b.setup(_four_synthetic(), "marsh")
+	assert_eq([b.map.width, b.map.height], [Ramp.wall_length_at(0), Ramp.depth_at(0)], "a battle that names no size takes the ramp's")
+	for size in [[20, 12], [30, 10]]:
+		var w: int = size[0]
+		var h: int = size[1]
+		var c := Battle.new(5)
+		c.with_boss = false
+		c.map_kind = "steppe"
+		c.setup(_four_synthetic(), "marsh", w, h)
+		var at := "at %dx%d" % [w, h]
+		assert_eq([c.map.width, c.map.height], [w, h], "the size passed " + at)
+		assert_eq(Hex.axial_to_offset(c.map.gate), Vector2i(w / 2, h - 1), "the gate centred on the wall " + at)
+		var walled := true
+		for row in range(h - BattleMap.GATE_ROWS, h):
+			for col in range(w):
+				walled = walled and c.map.is_structure(Hex.offset_to_axial(col, row))
+		assert_true(walled, "the gate and the wall span the width in the bottom two rows " + at)
+		var rift_cols: Array = []
+		for rh in c.map.rift_hexes:
+			var o := Hex.axial_to_offset(rh)
+			assert_eq(o.y, 0, "the rift on the top row " + at)
+			rift_cols.append(o.x)
+		rift_cols.sort()
+		assert_eq(rift_cols, [w / 2 - 1, w / 2, w / 2 + 1], "the rift three hexes at the top centre " + at)
+		assert_eq(c.mechs().size(), 4, "four machines " + at)
+		for m in c.mechs():
+			assert_eq(Hex.axial_to_offset(m.pos).y, c.field.apron_row(), "%s on the row before the gate's apron %s" % [m.display_name, at])
+
+
+func _four_synthetic() -> Array:
+	var out: Array = []
+	for n in range(4):
+		out.append(Unit.mech(n + 1, "M%d" % (n + 1), Vector2i.ZERO, 3))
+	return out
 
 
 func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:

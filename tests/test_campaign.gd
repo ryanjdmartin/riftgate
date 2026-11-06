@@ -240,6 +240,7 @@ func test_a_wipe_lets_the_horde_strike_and_the_city_holds_wounded() -> void:
 	var c := _run()
 	var front := str(c.fronts()[0])
 	var b := _battle(c)
+	quiet_start(b)   # the packs far off, so the wipe's strikes wound the gate and leave it standing
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 4
@@ -664,6 +665,7 @@ func test_the_council_pays_favour_for_a_win_docked_for_gate_damage() -> void:
 func test_a_battle_not_won_pays_no_favour() -> void:
 	var c := _run()
 	var b := _battle(c)
+	quiet_start(b)   # the packs far off, so the wipe's strikes leave the city standing
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 3

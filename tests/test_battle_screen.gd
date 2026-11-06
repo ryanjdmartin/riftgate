@@ -11,7 +11,10 @@ func _screen(seed_value: int = 3) -> BattleScreen:
 	for id in ["badger", "clydesdale", "sparrowhawk"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(seed_value)
-	b.setup(team, "marsh")
+	# The old field's size until the view is reworked for the long wall (its brief's Phase 2), and
+	# the start quiet: these tests read the screen's rules, not the opening's (TestCase.quiet_start).
+	b.setup(team, "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	quiet_start(b)
 	var s := BattleScreen.new()
 	s.setup(b)
 	return s

@@ -25,7 +25,9 @@ extends RefCounted
 enum State { PLAN, SKIRMISH, DONE }
 enum Outcome { NONE, VICTORY, GATE_FALLEN, WRECKED }
 
-const DEFAULT_WIDTH := 9   # nine wide, the thumb's limit, so four machines can split two and two (bible section 4, the round row)
+## The old field's size, kept for the tests that pass a size of their own; a battle's own size is
+## the ramp's (Ramp.wall_length_at, Ramp.depth_at; the long wall brief 3.1).
+const DEFAULT_WIDTH := 9
 const DEFAULT_HEIGHT := 20
 
 var seed_value: int = 1
@@ -148,13 +150,23 @@ func _init(seed_arg: int = 1) -> void:
 ## Generate the map, stand the team in front of the gate, place the faction's formation in the
 ## north third of the field and its boss just south of the rift, then preview the first enemy
 ## moves.
-func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int = DEFAULT_HEIGHT) -> void:
+func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> void:
+	# The field's size is the ramp's (the long wall brief 3.1): a width or height of -1 reads
+	# Ramp.wall_length_at and Ramp.depth_at at the battle's ramp; a test passes a size of its own
+	# (DEFAULT_WIDTH and DEFAULT_HEIGHT stay for those), and nothing in the game passes one.
+	if w < 0:
+		w = Ramp.wall_length_at(ramp)
+	if h < 0:
+		h = Ramp.depth_at(ramp)
 	faction = faction_id if not faction_id.is_empty() else db.default_faction()
 	map = BattleMap.generate(w, h, seed_value, map_kind)
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
 	field.ramp = ramp
 	field.rift_pressure_max = Ramp.timer_at(ramp)
+	# The siege under way (the long wall brief 3.2): the pressure opens a turn short of its peak,
+	# so the rift's first wave spawns at the end of turn one, behind the formations already close.
+	field.rift_pressure = maxi(0, field.rift_pressure_max - 1)   # placeholder (the long wall brief)
 	field.foe_profiles = db.pack_profiles()
 	# What the rift sends and what stands on the field at the start (the foes' fresh start, 30
 	# October): the tier's compositions, the lead's and the guest's in turn, formations and
@@ -162,7 +174,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	# start the ramp's count of formations (the second the guest's where there is one) and
 	# patrols, at the ramp's density. The harness's composed side (`formation`) is each entry a
 	# pack of one type under its own foe's faction, all placed and all cycled, as before.
-	var placed: Array = []   # [composition, hex]
+	var placed: Array = []   # [composition, hex, opening]: opening 0 places it on the hex, 1 a move from the apron, 2 two moves
 	var w_cols := w
 	if not formation.is_empty():
 		var comps: Array = []
@@ -172,7 +184,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		field.cycle = comps
 		field.patrol_cycle = comps.duplicate(true)
 		for j in range(comps.size()):
-			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3))])
+			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3)), 0])
 	else:
 		var has_guest := not guest.is_empty() and guest != faction and db.factions.has(guest)
 		var forms := _alternate(db.compositions(faction, tier + 1, "formation"), db.compositions(guest, tier + 1, "formation") if has_guest else [])
@@ -181,12 +193,16 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		field.patrol_cycle = patrols
 		var nf := Ramp.formations_at(ramp)
 		var np := Ramp.patrols_at(ramp)
+		# The opening (the long wall brief 3.2): the ramp's formations across the width as before,
+		# each a move of its own from the apron, so its first walk reaches the wall; the ramp's
+		# patrols on the flanks, two moves out. The rows are set once each pack is dressed and
+		# its pace known (_open_rows, below).
 		if not forms.is_empty():
 			for k in range(nf):
-				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), 3 + (k % 3))])
+				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), BattleMap.MOUTH_ROWS), 1])
 		if not patrols.is_empty():
 			for k in range(np):
-				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, 5 + k / 2)])
+				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, BattleMap.MOUTH_ROWS), 2])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -198,7 +214,9 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		field.add_unit(u)
 		i += 1
 	for p in placed:
-		field.emerge(p[0], p[1])
+		var sq := field.emerge(p[0], p[1])
+		if sq != null and int(p[2]) > 0:
+			_open_row(sq, Hex.axial_to_offset(p[1]).x, int(p[2]))
 	var fac: Dictionary = db.factions.get(faction, {})
 	var firsts := db.bosses_of(faction)
 	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
@@ -247,6 +265,15 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		boss.sealed = true
 	state = State.PLAN
 	_new_turn()
+
+
+## The opening's row for a pack placed at the start (the long wall brief 3.2): `moves` of its own
+## pace short of the apron row (a formation one, a patrol two), never into the rift's mouth, at
+## its column; it lands there as any spawn lands (Battlefield.landing: the nearest hex it can
+## stand on with no machine beside it).
+func _open_row(sq: Unit, col: int, moves: int) -> void:
+	var row := maxi(BattleMap.MOUTH_ROWS, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
+	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row))
 
 
 ## Whether the boss's seal holds: it cannot be ordered onto and joins no fight until the Rupture.

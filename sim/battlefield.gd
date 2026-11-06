@@ -52,11 +52,16 @@ var patrol_cycle: Array = []
 var _cycle_index: int = 0
 var _patrol_index: int = 0
 ## The flattening's edge (the pacing session, 30 October): the row the rift's bleed reaches,
-## total on the rift's row and gone here, SEAM_START at the start; it creeps south a peak
+## total on the rift's row and gone here, seam_start() at the start; it creeps south a peak
 ## (Ramp.seam_creep_at) as the clock's picture, as far as the apron. No rule reads the
 ## flattened hexes; the tears open on the seam's row.
-const SEAM_START := 5
-var seam_row: int = SEAM_START
+var seam_row: int = BattleMap.MOUTH_ROWS + 1   # seam_start()
+
+
+## Where the seam stands at a battle's start (the long wall brief 3.2): one row below the rift's
+## mouth at any depth, 5 (the old field's number at 20 rows, the first row past the mouth at 12).
+static func seam_start() -> int:
+	return BattleMap.MOUTH_ROWS + 1
 ## The tears (Ryan's name, 30 October): the mouths beside the rift's, each {"pos": Vector2i,
 ## "opened": the phase it opened at}. A tear opens at a peak on the seam's row, far from the
 ## other mouths, and sends a patrol at every peak after, so where the next flood comes from is
@@ -65,7 +70,7 @@ var tears: Array = []
 var peaks: int = 0        # Rift Pressure's peaks so far this battle
 var rift_spawns: int = 0  # packs the rift has sent (the runner reads both)
 var tear_spawns: int = 0
-const TIMER_FLOOR := 2    # the interval never shortens below this
+const TIMER_FLOOR := 1    # the interval never shortens below this (the long wall brief 3.2)
 const NO_HEX := Vector2i(-9999, -9999)
 var phase: int = 0
 var log: Array[String] = []

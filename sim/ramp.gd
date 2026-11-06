@@ -8,7 +8,8 @@ extends RefCounted
 ## easier by waiting). The tier, locked and shown, sets the kind: who comes, the Fractures, the
 ## elites and which, the boss's numbers and escort. The ramp sets the count and the speed: the
 ## compositions on the field at the start and their density, Rift Pressure's fill, the tears a
-## peak, the seam's creep. The interval step inside a battle is on the table at zero until the
+## peak, the seam's creep, and since the long wall brief (docs/briefs/long_wall_build.md) the
+## field's size and the spread of the pushers' wall segments. The interval step inside a battle is on the table at zero until the
 ## turtle read asks for it (the bible's stall row; the brief: git show 85e28fd:docs/briefs/fresh_start.md).
 ## Every number here is a placeholder,
 ## measured by the campaign runner and moved on Ryan's word.
@@ -45,9 +46,10 @@ static func scaled(strength: int, c: int) -> int:
 	return maxi(1, roundi(float(strength) * density_at(c)))
 
 
-## Rift Pressure's fill, the timer: 12 turns at the start, 8 at the top.
+## Rift Pressure's fill, the beat (the long wall brief 3.2: the tide's waves come on it): 3
+## turns at the start, 2 from Convergence 8.
 static func timer_at(c: int) -> int:
-	return 12 - clampc(c) / 3
+	return 3 if clampc(c) < 8 else 2   # placeholder (the long wall brief)
 
 
 ## Tears that open at a peak: one, two from Convergence 8.
@@ -71,3 +73,16 @@ static func fractures_at(tier: int) -> int:
 
 static func elite_fractures_at(tier: int) -> Array:
 	return Array(ELITE_FRACTURES[clampi(tier, 0, ELITE_FRACTURES.size() - 1)])
+
+
+## The wall's length: the count of hexes along the wall, the map's width (the long wall, Ryan,
+## 5 November: "Wide map, with lots of wall to defend, but not as deep"; the build brief,
+## docs/briefs/long_wall_build.md 3.1). A lever of the ramp's, never fixed.
+static func wall_length_at(_c: int) -> int:
+	return 20   # placeholder (the long wall brief)
+
+
+## The field's depth: the rows from the rift's row to the last wall row inclusive, the map's
+## height (the long wall brief 3.1).
+static func depth_at(_c: int) -> int:
+	return 12   # placeholder (the long wall brief)
