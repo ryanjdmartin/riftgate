@@ -1021,7 +1021,9 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.469 (the
+  `docs/design-bible.html` after every change. This file is v0.470 (Night Shift's track row on its
+  nineteenth round), not yet published: a permission check blocked the publish on 6 November as
+  unrequested, so it waits on Ryan's go; the live page had not moved. The live page is v0.469 (the
   page's version 482, published 6 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
   live source whole: Hold The Line's set's new rows, the keys lead's power chords and the Omnific a
   bit dirtier, merged row by row onto the live v0.468 another session published, its long wall
