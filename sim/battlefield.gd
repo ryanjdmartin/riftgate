@@ -849,6 +849,7 @@ func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
 	sq.set_members(members)
 	sq.composition = str(c.get("id", ""))
 	sq.composition_size = str(c.get("size", ""))
+	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
 	sq.display_name = pack_name(sq.foe_id)
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)

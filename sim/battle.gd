@@ -182,7 +182,9 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		var comps: Array = []
 		for e in formation:
 			var fac := db.faction_of_foe(str(e[0]))
-			comps.append(Battlefield.composition([[str(e[0]), int(e[1])]], fac if not fac.is_empty() else faction))
+			var comp := Battlefield.composition([[str(e[0]), int(e[1])]], fac if not fac.is_empty() else faction)
+			comp["squad"] = ContentDB.SQUAD_DEFAULT   # a pack of no composition: for three (the long wall brief 3.7)
+			comps.append(comp)
 		field.cycle = comps
 		field.patrol_cycle = comps.duplicate(true)
 		for j in range(comps.size()):
@@ -226,6 +228,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		# The finale's line goes by the party's name; a final's hero and a boss by its own.
 		var named := "the party" if lineup.size() > 1 else str(db.foes[boss_id]["name"]).to_lower()
 		boss = Unit.boss(0, named, Vector2i.ZERO, faction, Unit.BOSS_MOVE)
+		boss.squad = 4   # the boss's unit, a true four (Ryan, 6 November; the long wall brief 3.7)
 		boss.lineup = lineup.duplicate()
 		if escort.size() >= 2:
 			# A named escort foe is a hand-tailored escort; unnamed, the tier's own units.
@@ -777,6 +780,12 @@ func roster(target: Unit = null) -> Dictionary:
 		if m != pinned and not m.is_static() and (all_in or actions_left(m) > 0):
 			eligible.append(m)
 	r["eligible"] = eligible
+	# The fight's threat rating, the machines it is intended for: its pack's, the largest of a
+	# catch's hunters' (the long wall brief 3.7).
+	var squad := 0
+	for t in targets:
+		squad = maxi(squad, (t as Unit).squad)
+	r["squad"] = squad
 	r["pinned"] = pinned
 	r["forced"] = pinned != null
 	r["all_in"] = all_in

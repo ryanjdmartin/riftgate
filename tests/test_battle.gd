@@ -127,6 +127,35 @@ func _four_synthetic() -> Array:
 	return out
 
 
+## Every pack carries its threat rating, the machines it is intended for (the long wall brief
+## 3.7; Ryan, 6 November: a formation a three, a patrol a one, an elite and a boss a true four):
+## by its composition's size, or its own where the composition writes one; a pack of no
+## composition three; the boss's unit four; the fight's roster carries it and a save keeps it.
+func test_every_pack_carries_its_threat_rating() -> void:
+	var b := _battle()
+	var cases := [["patrol", 0, 1], ["formation", 0, 3], ["elite", 0, 4], ["escort", 0, 4], ["patrol", 2, 2], ["formation", 4, 4]]
+	var dealt: Array = []
+	for cs in cases:
+		var c := Battlefield.composition([["revenant", 2]], "marsh", str(cs[0]), "probe")
+		if int(cs[1]) > 0:
+			c["squad"] = int(cs[1])
+		var sq := b.field.emerge(c, Hex.offset_to_axial(2, 3))
+		assert_eq(sq.squad, int(cs[2]), "a %s%s is a fight for %d" % [str(cs[0]), (" that writes %d" % int(cs[1])) if int(cs[1]) > 0 else "", int(cs[2])])
+		dealt.append(sq)
+	assert_eq(b.boss.squad, 4, "the boss's unit is a true four")
+	assert_eq(int(b.roster(dealt[1])["squad"]), 3, "the fight's roster carries its pack's")
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	for sq in dealt:
+		assert_eq(back.field.unit_by_id(sq.id).squad, sq.squad, "a save keeps it")
+	var h := Battle.new(3)
+	h.formation = [["revenant", 3], ["ghost", 2]]
+	h.with_boss = false
+	h.setup(_team(), "marsh")
+	for p in h.field.packs():
+		assert_eq(p.squad, ContentDB.SQUAD_DEFAULT, "a pack of no composition is a fight for three")
+	assert_true(h.field.cycle.all(func(c) -> bool: return int(c.get("squad", 0)) == ContentDB.SQUAD_DEFAULT), "and so are the ones the rift sends after")
+
+
 func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
 	var db := ContentDB.load_default()
 	var facs: Array = db.factions.keys()

@@ -814,6 +814,20 @@ func make_boss(uid: int, faction_id: String, boss_id: String = "") -> Unit:
 const COMPOSITION_SIZES := ["patrol", "formation", "elite", "escort"]
 
 
+## A composition's threat rating, the machines it is intended for (the long wall brief 3.7; Ryan,
+## 6 November: "The one thing we should do is show the threat rating of a formation on the map.
+## For how many units it's intended for"; "a 'true' 4 should be reserved for elites and bosses,
+## with formations a 3"): its own `squad` where content writes one, else by its size.
+const SQUAD_BY_SIZE := {"patrol": 1, "formation": 3, "elite": 4, "escort": 4}
+const SQUAD_DEFAULT := 3   # a pack of no composition (the harness's composed side)
+
+
+static func squad_of(c: Dictionary) -> int:
+	if c.has("squad"):
+		return clampi(int(c["squad"]), 1, 4)
+	return int(SQUAD_BY_SIZE.get(str(c.get("size", "")), SQUAD_DEFAULT))
+
+
 ## A faction's compositions of a size at a tier (1 to 3, the shown number), in content order,
 ## each as {"id", "size", "faction", "members": [[foe_id, strength], ...]}; every size in turn
 ## when `size` is empty. A tier with none of a size takes the highest tier's under it, as the
@@ -842,7 +856,11 @@ func _compositions_at(faction_id: String, tier: int, size: String) -> Array:
 				members.append([str(m["foe"]), maxi(1, int(m.get("strength", 1)))])
 		if members.is_empty():
 			continue
-		out.append({"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "boss": str(c.get("boss", ""))})
+		var entry := {"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "boss": str(c.get("boss", ""))}
+		for key in ["squad", "layout", "lead"]:   # the long wall brief's composition fields, as content writes them (section 6)
+			if c.has(key):
+				entry[key] = c[key]
+		out.append(entry)
 	return out
 
 

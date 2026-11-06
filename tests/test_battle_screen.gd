@@ -20,6 +20,20 @@ func _screen(seed_value: int = 3) -> BattleScreen:
 	return s
 
 
+## A pack's hold says its threat rating first, after its name (the long wall brief 3.7): "A fight
+## for one" to "four", the boss's included, and nothing else is added.
+func test_a_packs_hold_names_its_threat_rating_after_its_name() -> void:
+	var s := _screen()
+	var words := ["one", "two", "three", "four"]
+	var seen := 0
+	for sq in s.battle.field.packs():
+		var lines: Array = s.pack_lines(sq)
+		assert_eq(str((lines[1] as Dictionary).get("text", "")), "A fight for %s" % words[sq.squad - 1], "%s's hold" % sq.display_name)
+		seen += 1
+	assert_true(seen >= 2, "every pack read, the boss among them")
+	s.free()
+
+
 ## Park a pack beside a machine, rooted and pushing.
 func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 	for n in Hex.neighbors(m.pos):
