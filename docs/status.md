@@ -24,8 +24,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 989 tests, 256,952 checks, green (6 November, `ccr-56b5169d-lsa2rg` with the rerolls at
-  two, Godot 4.8-beta2); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1005 tests, 257,149 checks, green (6 November, `ccr-56b5169d-lsa2rg` with the long
+  wall's Phase 1, Godot 4.8-beta2); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -70,9 +70,11 @@ redesign of 5 November (the battle as the defence of a long wall, the packs as d
 formations, the shield the fight's resource: his direction and Claude's first round as
 `docs/long_wall_proposal.md`; the build brief `docs/briefs/long_wall_build.md`, written 6
 November on his word for the session that builds it: Phase 1 the sim and the runners with a
-hand-back, Phase 2 the view on his word); the one thing built on it so far is the rerolls at
-two a round (Ryan, 6 November: "we might as well try it"; the bible's rerolls row, the rules,
-the vocabulary, the Petrel and stepping-die tests against the constant).
+hand-back, Phase 2 the view on his word). Built on it: the rerolls at two a round (Ryan, 6
+November: "we might as well try it"), and Phase 1 whole (6 November; How things stand, below),
+handed back that day with its reads in `docs/measurements.md` (6 November, the long wall's Phase 1
+reads); Phase 2 waits on Ryan's word after he reads the hand-back. Its saves are the battle's 10
+and the run's 9, so a battle saved before is refused.
 
 ## The design sessions
 
@@ -103,6 +105,20 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The long wall, Phase 1** (6 November, `ccr-56b5169d-lsa2rg`, from
+  `docs/briefs/long_wall_build.md`): the field's size the ramp's (20 by 12 for now); the battle
+  opening with the siege under way (formations a move from the wall, patrols on the flanks, the
+  pressure a turn short of its first peak); the tide on a beat of 3 turns, 2 from Convergence 8,
+  halved once at the Rupture; a pusher's own segment of the wall; one pack one fight from beside
+  it, nothing joining, a hunter's catch first; no withdrawal; the shield full at every fight's
+  start, the field recharge gone, the shield regen slot at zero; every pack's threat rating on
+  the hold (a patrol 1, a formation 3, an elite and the boss 4); a composition's layout, lead and
+  variants in the schema, no content written in it; the defence bot and the pressure ratio in the
+  campaign runner, `--shape`, and the promise read (`tools/balance.gd --packs promise`). The
+  view is Phase 2: the screen draws the field cut at its sides until it lands. The reads (40 runs
+  on the steppe, a direction): no run won, 86% of battles fell, 169 of 481 fights one machine
+  against a formation; the defence rule is the floor, not the player. Waits on Ryan's marks: the
+  placeholders, the open items (the bible's section 12, the long wall), then Phase 2.
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip
@@ -166,7 +182,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the field and the rift's cycle by the tier and the ramp (`sim/ramp.gd`), the tears and the
   seam, the whole wall struck, the Rupture meter by menace with its Fractures, the elites at
   them, the boss sealed until the Rupture. Waits on Ryan's marks (section 12's fresh start item)
-  and the ramp's numbers (the timer first: Claude's lean 8 to 6).
+  and the ramp's numbers (the long wall's placeholders first, the timer now its beat).
 - **The map** (27 to 30 October): movement in hexes given in one go, water the one priced ground;
   six map shapes drawn by the seed, never by the domain; the horde wading and passing through
   itself; hunters at a ring of two taking the machine nearest a sealed-off prey; each domain's
@@ -203,6 +219,8 @@ The tasks are the to-do's; this is the index of what waits.
   carrier once Ryan marks them (section 12); the jellyfish's EMP, Purge on a capstone's blow
   (its chassis session).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
+- The long wall's view (`docs/briefs/long_wall_build.md`, section 7: the two orientations, the
+  threat rating's pips, the field scrolled along the wall), on Ryan's word after the hand-back.
 - The pairs in the game (the bible's pair row): Hold The Line settled on its thirteenth round (3
   November); Night Shift's battle half and The Far Bank's map half on the pair page waiting on
   Ryan's ear; then the engine (a pair as one synchronized stream, the map choosing the track, the
@@ -211,11 +229,11 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it: the build of his redesign of 5 and 6 November from
-`docs/briefs/long_wall_build.md` (its design `docs/long_wall_proposal.md`), a session of its
-own: Phase 1 the sim, the bots and the records, ending in a hand-back of the reads and the
-placeholders; Phase 2 the view on his word. It moves every foe's blow and the battle's shape,
-so the 200-seed matrix (below) waits on it. First after that: the 200-seed matrix
+to-do's Ryan list). Ahead of all of it: Ryan's marks on the long wall's Phase 1 hand-back (6
+November: the reads in `docs/measurements.md`, the placeholders there, the open items in the
+bible's section 12), then Phase 2, the view, on his word (`docs/briefs/long_wall_build.md`,
+section 7). The redesign moves every foe's blow and the battle's shape, so the refit and the
+200-seed matrix (below) wait on his marks. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
 engine line), since the matrix on file predates everything since 27 October.
 

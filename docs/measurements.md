@@ -4870,3 +4870,206 @@ the harder fight section 9 asks for wants the massive band in both numbers (the 
 of 7 or 8 with the 30 to 40 HP), an escort each, or its curveball read on the map (the hunter's
 catch, the World Eater's push), which no cell reads; the HP alone is not the lever. Ryan's to mark
 (the bible's section 12), then the 200-seed read.
+
+
+## 6 November, the long wall's Phase 1 reads
+
+The reads the long wall's build brief asks for (`docs/briefs/long_wall_build.md`, section 10), on
+`ccr-56b5169d-lsa2rg` with Phase 1 built: the field 20 by 12 at every Convergence; the tide (the
+beat 3 turns, 2 from Convergence 8, the siege a turn short of its first peak at the start, the
+beat halved at the Rupture); a pusher's segment of the wall; one pack one fight from beside it;
+no withdrawal; the shield full at every fight's start, with the shield regen at zero everywhere;
+the threat rating (a patrol 1, a formation 3, an elite and the boss 4); the rerolls at two. Every
+new number is a placeholder (the table at the end). Each read is a direction and called one: 40
+runs of the campaign runner on the steppe, 30 seeds of the balance runner, 200 maps of the survey.
+
+### The campaign runner: 40 runs on the steppe
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe` (139 s): the greedy rung, each run the draft's
+three machines of its tender at random, the defence rule on the map (the brief's section 5: a
+hunter's catch first, then each machine onto the pack it can stand beside that reaches the wall
+soonest, ties by the larger rating and then the nearer, the rest walking toward the soonest,
+never the sealed boss, every fight fought out).
+
+| Measure | Mean | Range |
+|---|---|---|
+| Runs won | 0 of 40 | |
+| Turns a run | 5.72 | 5 to 8 |
+| The turn the first city fell | 0.50 | 0 to 2 |
+| Battles: won, held after a wipe, fell | 1%, 12%, 86% of 185 | |
+| Battles ended in a team wipe | 97% | |
+| Machines wrecked a battle | 1.76 | 0 to 3 |
+| Phases a battle | 5.64 | 1 to 12 |
+| Gate damage a battle | 134 | 0 to 200 |
+| Peaks of Rift Pressure a battle | 0.94 | 0 to 7 |
+| Compositions the rift sent a battle | 0.94 | 0 to 7 |
+| Patrols the tears sent a battle | 1.25 | 0 to 21 |
+| Tears open at a battle's end | 0.94 | 0 to 7 |
+| Elites spawned a battle | 0.34 | 0 to 1 |
+| Fractures reached a battle (of 3.01 held) | 0.75 | 0 to 3 |
+| Battles reaching the Rupture | 14% | |
+| Of those, by the stall guard | 0% | |
+| The turn the seal broke, where it did | 3.37 | 2 to 6 |
+| Stalemate fights (ten rounds with no foe's HP, hull or shield changed) | 0 | |
+| Fights stalled past the fight bot's cap of 60 rounds | 0 | |
+
+The pressure ratio, as each player's turn opens: the ratings of the packs on the apron and of
+those whose walk ends there this coming enemy turn, over the machines standing.
+
+| Measure | Mean | Range |
+|---|---|---|
+| A run's mean over its turns | 0.87 | 0.27 to 3.29 |
+| Turns above 1.0, percent of a run's | 21 | 7 to 50 |
+| A battle's highest, a run's mean | 1.56 | 0.60 to 5.00 |
+
+The fights, 481 (2.6 a battle), by the pack's rating and the machines the defence rule sent at it:
+
+| A fight for | Machines in it | Fights | Won |
+|---|---|---|---|
+| 1 | 1 | 94 | 61% |
+| 1 | 2 | 30 | 83% |
+| 1 | 3 | 7 | 85% |
+| 3 | 1 | 169 | 5% |
+| 3 | 2 | 52 | 48% |
+| 3 | 3 | 54 | 96% |
+| 4 | 1 | 45 | 8% |
+| 4 | 2 | 21 | 95% |
+| 4 | 3 | 9 | 88% |
+
+Read, in bands, a direction. The campaign is a wall for the plain player on the defence rule: no
+run won, the first city falling on the first or second turn, 86% of battles fell and 97% ended
+in a wipe, so the battles are short (five or six phases) and the tide's later beats (under one
+peak a battle), the Fractures (0.75 of 3) and the Rupture (14%) are barely reached. The fights
+table shows where it breaks: the rule sends each machine at the pack nearest the wall it can
+reach, so on a wall twenty long the three split, and 169 of the 481 fights are one machine
+against a formation, won 5%; a formation fought by the three it is rated for is won 96%, by two
+48%. A patrol fought alone is won 61% (worn machines among them); an elite fought by two is won
+95%, so at tier zero an elite reads as a fight for two, its four unearned (the elites' numbers,
+the to-do). The pressure ratio sits under one on average and above it a fifth of the turns. The
+defence rule is the floor the brief built for these reads, not the player Ryan's change to the
+runner will make (the to-do's engine line).
+
+### The map survey at 20 by 12
+
+`tools/map_survey.gd -- --seeds 200 --type steppe --width 20 --height 12`. The steppe: plain 95%,
+road 4%, water 1%; the horde's route 11 hexes on every map; the narrowest crossing 5 hexes on all
+200; every way of moving reaches the rift in 3 phases at move 3, the packs at move 2 in 4; after
+two phases tracked machines reach 35% of the field, walkers 59%, wheels, hovers and flyers 81 to
+82%, every one making the crossing by phase 2. The shapes compared, each on seeds 1 to 200:
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 80% | 0% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 33/55/77/81/82% | 0% | 0.0 |
+| FJORD | 95% | 0% | 0% | 5% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/82/82% | 0% | 0.0 |
+| BADLANDS | 61% | 26% | 0% | 3% | 10% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 30/51/71/71/82% | 17% | 0.4 |
+| OPEN STEPPE | 99% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 0% | 0.0 |
+| RUINED CITY | 12% | 0% | 75% | 0% | 13% | 200 of 200 at 3+ | 0.0 | 11.4 | 3.0/3.0/3.0/3.0/3.0 | 27/46/65/65/82% | 0% | 0.0 |
+| GORGE | 96% | 0% | 0% | 0% | 4% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/77/77/82% | 0% | 0.0 |
+
+Read: at twelve deep the depth no longer parts the shapes (three phases to the rift at move 3
+and a route of about 11 hexes on all six); what parts them is the lanes, read in the reach after two phases
+(the ruined city's 27/46/65/65/82% and the badlands' 30/51/71/71/82% against the steppe's
+35/59/81/81/82%). The shapes are laid by the old generator for the old field; their relaying is the
+brief's open item 5.
+
+### The shapes at 20 by 12
+
+Each shape at seed 7 (`R` the rift, `G` the gate, `W` the wall, `~` water, `#` rock, `=` road, `,`
+rough, `:` ruins, `.` plain; odd rows indented), as the proposal's section 3 printed them at 24 by 12:
+
+```
+river 20x12: water 35, rock 1, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   ~   ~   .   ~   .   #   .   .   .   .   .   =   ~   ~   .   .   .   .
+  ~   ~   ~   ~   .   ~   ~   ~   ~   .   .   .   =   .   ~   ~   ~   ~   ~   ~
+~   ~   ~   .   .   .   ~   ~   ~   ~   ~   ~   .   .   .   .   ~   ~   ~   ~
+  .   .   .   .   .   .   .   .   .   ~   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   =   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+fjord 20x12: water 9, rock 0, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   ~   ~   ~   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+badlands 20x12: water 9, rock 20, opened 0, narrowest crossing 5
+.   .   ,   ,   ,   ,   .   .   .   R   R   R   .   .   ,   ,   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  ,   ,   .   .   .   ,   ,   ,   ,   .   .   .   .   ,   ,   ,   .   ,   ,   ,
+,   #   ,   .   .   ,   #   #   #   ,   .   .   .   ,   #   #   ,   ,   #   ,
+  ,   #   ,   .   .   ,   ,   ,   ,   .   .   .   .   ,   #   ,   #   #   ,   ~
+#   #   ,   ~   ~   ,   #   #   #   ,   .   .   .   .   ,   #   ,   #   ,   ~
+  #   ,   .   .   ~   ,   ,   ,   ,   .   ~   ~   ~   ,   #   ,   ,   ,   .   ~
+,   ,   .   .   .   .   .   .   .   .   .   .   .   .   ,   ,   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+steppe 20x12: water 0, rock 1, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   #   .   .
+.   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+city 20x12: water 0, rock 34, opened 0, narrowest crossing 3
+:   :   :   :   :   :   :   :   .   R   R   R   .   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   .   .   .   .   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+  #   #   #   #   #   #   :   =   :   #   #   #   #   #   #   #   #   #   #   #
+#   #   #   #   #   #   :   =   =   #   #   #   #   #   #   #   #   #   #   #
+  :   :   :   :   :   :   :   :   =   =   :   :   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   =   :   :   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   .   .   =   .   .   :   :   :   :   :   :   :
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+gorge 20x12: water 0, rock 8, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   #   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+```
+
+### The placeholders
+
+Every number the build set only so the mechanism runs, each marked `# placeholder (the long wall
+brief)` where it stands, and moved only on Ryan's word:
+
+| Number | Value | Where |
+|---|---|---|
+| The wall's length | 20 at every Convergence | `sim/ramp.gd:89` (`wall_length_at`) |
+| The depth | 12 at every Convergence | `sim/ramp.gd:95` (`depth_at`) |
+| The beat (Rift Pressure's fill) | 3 turns, 2 from Convergence 8 | `sim/ramp.gd:52` (`timer_at`) |
+| The spread of a pusher's segment | 2 + ((length / 2 − 2) × Convergence) / 12 either side of the rift's column: 2 at the foot, 10 at the top on a wall of 20 | `sim/ramp.gd:82` (`spread_at`) |
+| The opening pressure | a turn short of the first peak (the beat − 1) | `sim/battle.gd:172` |
+| The opening rows | a formation one of its moves short of the apron, a patrol two (the 1 and 2 at `sim/battle.gd:207` and `:210`), never into the rift's mouth | `sim/battle.gd:289` (`_open_row`) |
+| The beat after the Rupture | halved once, never below 1 | `sim/battle.gd:310` (`rupture`) |
+| The attack range | 1 (adjacency) | `sim/unit.gd:108` |

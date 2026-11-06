@@ -285,7 +285,8 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # the relief (the steps, the lone hexes, a ring's jogs), then every map shape compared on as
 # many seeds; written to docs/map_survey.md (about fifteen minutes). --type KIND
 # (steppe, the baseline, or river, fjord, badlands, city, gorge: BattleMap.KINDS) for the detailed report, --seeds N,
-# --move M, --w/--h for another size; --show SEED prints one map as text.
+# --move M, --w/--h (--width/--height) for another size, 20 by 12 the long wall's field (the default is
+# the old field's, for the old reads); --show SEED prints one map as text.
 perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 
 # the campaign runner: whole runs played headless by a plain player (it defends the front
