@@ -1,20 +1,23 @@
-"""Night Shift's twentieth round as a pair (Ryan, 6 November, on the nineteenth): the map's drums
-down in C and R, and the duel's lower bass in one octave or two.
+"""Night Shift's twenty-first round as a pair (Ryan, 6 November, on the twentieth): his picks, the
+battle half named in parts, and the lower's octaves with the upper's chords together.
 
-  "'With or without the lower octave' wasn't for chords, it was whether the lower line kept its lower
-  octave unison as well, as in the one variation, the upper was single, the lower was playing mid and
-  low. It was the FM synth. It sounds good when it's being highlighted, if it's just plucking notes in
-  the background it just sounds like weird boops. Regarding the map half, it's version of R is a little
-  too busy for the map and I think it's the drums. Let's try lowering drum volume on the map half for C
-  and R"
+  "Ok, is there a way to subdivide this so I can give you notes on each particular section? Calls
+  now: 'upper on the dirtier Omnific' yes. So that's all good. I'd like to hear what happens when both
+  'lower in two octaves' and 'The upper in chords where the lower doubles it' happen. Obviously in a
+  way that makes sense. Map drums option: -3db solves it"
 
-The map half's drums 3 dB down in C and R, the whole kit with the industry's knocks, ticks and clanks
-(MAP_DRUMS_DB); a set has them as they were and 6 dB down. The battle half is the nineteenth round's.
-A set has the duel's lower in two octaves wherever it doubles the upper, at the upper's own pitch as
-well as an octave under it, beside the upper in chords there (the other way the ear can take "the
-upper was single, the lower was playing mid and low": the fifths on top as a line of their own, the
-roots and the lower an octave under them as the lower in two octaves), and the upper bass on Hold The
-Line's dirtier Omnific (DIRTY_B2).
+R's upper bass on the dirtier Omnific (DUEL_UPPER, its level against the first bass DIRTY_B2, its
+chords DIRTY_CHORDS), and the map's drums 3 dB down in C and R (MAP_DRUMS_DB), his picks. The pair's
+sections reach the page in parts (parts_on): a section where its turns change by its turns, I1 and
+I2, A1 to A5, C1 to C8; R by its duel's phrases, R1 to R9 (R_PARTS); B, D and O whole; each with what
+the battle half plays there. A set has the lower in two octaves, the upper in chords, and both
+together: where the lower doubles the upper, the upper's notes each with its fifth and the lower on
+the chords' root and an octave under it.
+
+The twentieth round's, kept: the lower in two octaves as an option ("it was whether the lower line
+kept its lower octave unison as well"); the FM synth out of R and the outro ("It sounds good when
+it's being highlighted, if it's just plucking notes in the background it just sounds like weird
+boops").
 
 The nineteenth round's, kept (6 November: "the stop time right before the outro, where everything
 cuts out, that sounds like a glitch or mistake instead of a stop time ... the second time the high bass
@@ -88,8 +91,8 @@ through; D the piano's turn and the factory's blended, the riff dark and low as 
 guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
 its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night20.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py nw       # the named sets only (nw, nx, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the set and the full pair, then night21.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py ny       # the named sets only (ny, and full for the pair)
 """
 import json
 import os
@@ -117,8 +120,8 @@ MAP_GUITAR = False   # the map's muted guitar out (Ryan, 4 November: "Map groove
 
 
 # The map's drums down in C and R (Ryan, 6 November: "it's version of R is a little too busy for the map and
-# I think it's the drums. Let's try lowering drum volume on the map half for C and R"): the whole kit, the
-# industry's knocks, ticks and clanks with it, in dB.
+# I think it's the drums. Let's try lowering drum volume on the map half for C and R"; then, of 3 and 6 dB,
+# "-3db solves it"): the whole kit, the industry's knocks, ticks and clanks with it, in dB.
 MAP_DRUMS_DB = -3.0
 MAP_DRUM_SECTIONS = "CR"
 
@@ -517,6 +520,8 @@ NO_BREAK = {20: (((1, "gallop.drive", 0, 16), (2, "gallop.drive", 0, 16)), None)
 DUEL_HITS = 22   # the band's hits on three-three-two with both basses, then the climb
 DUEL_OCTAVE = {1: -1, 2: 0}   # the second bass an octave over the first
 DIRTY_B2 = 0.463   # the upper bass on the dirtier drive against the first bass, met halfway as the modern's 0.618 is (1.5 dB each way)
+DIRTY_CHORDS = 0.827   # its chords against its single notes: at one gain 1.7 dB over them on a phone, 1.6 in full
+DUEL_UPPER = "real_omnific_dirty"   # R's upper bass (Ryan, 6 November: "'upper on the dirtier Omnific' yes")
 # Each voice alone over the bars it plays, against the first bass on a phone and in full, met halfway:
 # the second bass an octave up, and each backing voice brought to the first bass's level before its
 # margin under it (measured on the nineteenth round's duel, each within 1.7 dB of the first bass either
@@ -530,7 +535,8 @@ SUPPORT_DB = -3.0
 # doing chords instead"): each note with its fifth, two strings into one amp, met halfway with its
 # single notes; a set's row plays them wherever the lower doubles the upper, the bars he heard them in
 # ("both lower in unison (with or without the lower octave as well, both work)").
-DUEL_CHORDS = 0.786   # at one gain 2.2 dB over the single notes on a phone, 2.0 in full
+DUEL_CHORDS = {"real_omnific": 0.786,   # at one gain 2.2 dB over the single notes on a phone, 2.0 in full
+               "real_omnific_dirty": DIRTY_CHORDS}
 # The lower's unison in two octaves (Ryan, 6 November: "'With or without the lower octave' wasn't for chords,
 # it was whether the lower line kept its lower octave unison as well, as in the one variation, the upper
 # was single, the lower was playing mid and low"): a set's row has the lower bass playing the upper's line
@@ -617,7 +623,7 @@ def duel_lines(call, brk=True):
     return {key: "".join(v) for key, v in out.items()}, doubled
 
 
-def duel_voices(call, b2="real_omnific", backing_db=DUEL_BACKING, bass_db=BASS_DB, levels=None, b2_level=None,
+def duel_voices(call, b2=None, backing_db=DUEL_BACKING, bass_db=BASS_DB, levels=None, b2_level=None,
                 brk=True, chords=False, chords_level=None, octaves=False):
     """R's voices: the two basses (the first as the track's bass, the second on `b2` an octave up at
     its level against the first, DUEL_B2, in chords where `chords` wherever the lower doubles it,
@@ -625,6 +631,7 @@ def duel_voices(call, b2="real_omnific", backing_db=DUEL_BACKING, bass_db=BASS_D
     trading the tune over them, each at the basses' level `backing_db` under (DUEL_LEVELS); `brk`
     the break before the band's hits or the band playing on through it; `octaves` the lower's unison
     in two octaves, at the upper's own pitch as well as an octave under it (by DUEL_CHORDS)."""
+    b2 = b2 or DUEL_UPPER
     lv = dict(DUEL_LEVELS, **(levels or {}))
     under = 10.0 ** (-backing_db / 20.0)
     bv1, bv2 = BASS_VOICES[BASS], BASS_VOICES[b2]
@@ -642,7 +649,7 @@ def duel_voices(call, b2="real_omnific", backing_db=DUEL_BACKING, bass_db=BASS_D
             ("bass1", bv1, g1, dict(bv1["params"]), DUEL_OCTAVE[1], 1, lambda b: True),
             ("bass2", bv2, g2, dict(bv2["params"]), DUEL_OCTAVE[2], 2, lambda b: b not in in_chords),
             ("support", bv1, g1 * 10.0 ** (SUPPORT_DB / 20.0), dict(bv1["params"]), DUEL_OCTAVE[1], "support", lambda b: True),
-            ("bass2_chords", bv2, g2 * (DUEL_CHORDS if chords_level is None else chords_level), dict(bv2["params"], fifth=True),
+            ("bass2_chords", bv2, g2 * (DUEL_CHORDS[b2] if chords_level is None else chords_level), dict(bv2["params"], fifth=True),
              DUEL_OCTAVE[2], 2, lambda b: b in in_chords),
             ("support_mid", bv1, g1 * 10.0 ** (SUPPORT_DB / 20.0), dict(bv1["params"]), DUEL_OCTAVE[2], "support", lambda b: b in unison)):
         for key, k in (("walk", 1.0), ("ghost", GHOST)):
@@ -802,7 +809,8 @@ BASS_VOICES = {
     "real_modern": {"inst": "real_bass", "params": {"preset": "finger", "amp": "modern"}, "level": 2.07},    # the fingers into a modern prog drive
     "real_omnific": {"inst": "real_bass", "params": {"preset": "active", "amp": "modern"}, "level": 1.54},   # an active bass near the bridge into it
     # The Omnific on the dirtier drive, Hold The Line's since its seventeenth round (Ryan, 6 November:
-    # "that's what that voice needs to sound like everywhere it's used"): here R's upper bass alone.
+    # "that's what that voice needs to sound like everywhere it's used"): R's upper bass, his pick of the
+    # twentieth round's set ("'upper on the dirtier Omnific' yes").
     "real_omnific_dirty": {"inst": "real_bass", "params": {"preset": "active", "amp": "dirty"}, "level": 1.54 * 0.695},
 }
 BASS = "real_modern"   # the full pair's (Ryan, 4 November: "go with the fingers-into-a-modern-drive-prog bass you built")
@@ -838,7 +846,7 @@ ONE_LEVEL = 1.0   # pushed as hard, the one string meets the power chords on a p
 
 
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
-                d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2="real_omnific", duel_backing=DUEL_BACKING,
+                d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
                 duel_break=True, duel_chords=False, duel_octaves=False):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
@@ -1023,22 +1031,40 @@ def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_D
     return settled(map_intro(on_form(form), guitar, drums_db), mastered)
 
 
-DUEL_FORM = "D" * 8 + " " + "R" * R_BARS + " " + "O" * 8   # D into the duel and out into the outro
-MAP_FORM = "CCCCCCCC DDDDDDDD RRRRRRRR"   # the map half's C, D and R, eight bars each
-SETS = [
-    {"id": "nw", "half": "battle", "title": "R, the lower in one octave or two", "form": DUEL_FORM, "seed": NAME + "_battle",
-     "note": "D into R and out into the outro, the duel as round nineteen has it (Ryan, 6 November: \"it was whether the lower line kept its lower octave unison as well, as in the one variation, the upper was single, the lower was playing mid and low\"). Wherever the lower doubles the upper: an octave under it, in two octaves, or under the upper's chords. Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("nw0", "The duel", "The full pair's: the lower an octave under the upper wherever it doubles it, the upper in single notes.", {}),
-              ("nw1", "The lower in two octaves", "Wherever the lower doubles the upper, it plays the line at the upper's own pitch as well as an octave under it, the upper in single notes.", {"duel_octaves": True}),
-              ("nw2", "The upper in chords where the lower doubles it", "Round nineteen's second row: the upper bass's notes each with its fifth, two strings into one amp. The fifths can read as a single line on top, and the roots with the lower an octave under them as the lower in two octaves.", {"duel_chords": True}),
-              ("nw3", "The upper on the dirtier Omnific", "R's upper bass on Hold The Line's new Omnific voice, its modern drive pushed harder, at its level against the lower.", {"duel_b2": "real_omnific_dirty"})]},
-    {"id": "nx", "half": "map", "title": "The map's drums in C and R", "form": MAP_FORM, "seed": NAME,
-     "note": "The map half's C, D and R, eight bars each (Ryan, 6 November: \"it's version of R is a little too busy for the map and I think it's the drums. Let's try lowering drum volume on the map half for C and R\"): the whole kit in C and R, the industry's knocks, ticks and clanks with it; D as it was. Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("nx0", "The drums 3 dB down", "The full pair's.", {}),
-              ("nx1", "As they were", "Round nineteen's map half.", {"drums_db": 0.0}),
-              ("nx2", "The drums 6 dB down", "Twice as far.", {"drums_db": -6.0})]},
+R_PARTS = [   # (bars, what the battle plays) through R, in order
+    (4, "the first bass calls on pairs of sixteenths, the second answers climbing from its own root, the lower in unison under it"),
+    (4, "the call galloping, the second answering in octaves, the lower on three-three-two then in unison under it"),
+    (4, "the call a third time, climbing into the second's line falling from its octave, the lower on three-three-two then in unison under it"),
+    (2, "stop-time: the band's hit on each one, the first bass filling alone, then the second over the first's held root"),
+    (2, "a bar each, the lower on three-three-two under the second"),
+    (2, "half a bar each, the upper alone"),
+    (2, "a beat each, the second echoing the first an octave up, the upper alone"),
+    (2, "the break: the band's hit and both basses on the stop-time fills in octaves, a snare building"),
+    (2, "together: the band's hits on three-three-two, then climbing into the outro in octaves"),
 ]
-PAIR = {"id": "night_shift_r20", "title": "Night Shift, round twenty"}
+
+
+def r_marks(form):
+    """Where each of R's parts starts in a form, for a set's note: "R1 0:20 \u00b7 R2 0:30 ..."."""
+    bars, bar_s = form.replace(" ", ""), 16 * 15.0 / F.MUSIC[NAME]["bpm"]
+    out, b = [], bars.index("R")
+    for k, (n, _said) in enumerate(R_PARTS):
+        t = b * bar_s
+        out.append("R%d %d:%02d" % (k + 1, t // 60, t % 60))
+        b += n
+    return " \u00b7 ".join(out)
+
+
+DUEL_FORM = "D" * 8 + " " + "R" * R_BARS + " " + "O" * 8   # D into the duel and out into the outro
+SETS = [
+    {"id": "ny", "half": "battle", "title": "R, the lower's octaves and the upper's chords", "form": DUEL_FORM, "seed": NAME + "_battle",
+     "note": "D into R and out into the outro, the upper bass on the dirtier Omnific, your pick (Ryan, 6 November: \"I'd like to hear what happens when both 'lower in two octaves' and 'The upper in chords where the lower doubles it' happen\"). Wherever the lower doubles the upper: an octave under it; in two octaves; under the upper's chords; or both, the lower in two octaves under the upper's chords, its higher octave on the chords' root. R's parts start at " + r_marks(DUEL_FORM) + ". Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("ny0", "The duel", "The full pair's: the lower an octave under the upper wherever it doubles it, the upper in single notes.", {}),
+              ("ny1", "The lower in two octaves", "The lower at the upper's own pitch as well as an octave under it, the upper in single notes.", {"duel_octaves": True}),
+              ("ny2", "The upper in chords", "The upper's notes each with its fifth, two strings into one amp, the lower an octave under its root.", {"duel_chords": True}),
+              ("ny3", "Both", "The upper in chords and the lower in two octaves under them: on the chords' root and an octave under it.", {"duel_octaves": True, "duel_chords": True})]},
+]
+PAIR = {"id": "night_shift_r21", "title": "Night Shift, round twenty-one"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -1053,6 +1079,67 @@ TURNS_SAID = {   # each section's turns in the battle half, on the page beside t
     "R": "a duel between two basses, three times through the chords: the track's bass and a second an octave over it trading phrases, two bars each (the second's first answer climbing from its root, its falling line the second time through), two bars of stop-time, a bar each, half a bar each, then a beat each; the lower under the upper by the bar, in unison, on three-three-two, holding the root under the stop's fill, or out where the trades are quickest; then the break, the band's hit and both basses on the stop-time fills in octaves, the band's hits on three-three-two and the climb into the outro; the backing trading the tune over them, every voice 3 dB under the basses",
     "O": "the arpeggio on the plucked string over the hold, into the top",
 }
+
+
+# The battle half in parts, each named on the page so a note can name it (Ryan, 6 November: "is there a way
+# to subdivide this so I can give you notes on each particular section?"): a section where its turns change,
+# by its turns (I1, I2; A1 to A5; C1 to C8), R by its duel's phrases (R1 to R9), B, D and O whole.
+RHYTHM_SAID = {"332": "three-three-two", "gallop": "the gallop", "pairs": "pairs of sixteenths", "offbeats": "the off-beats",
+               "bursts": "bursts", "threes": "threes", "groups": "threes on each beat"}
+FIGURE_SAID = {"home": "on the root", "lift": "lifting to the octave", "climb": "climbing", "drive": "driving on the root",
+               "octs": "in octaves", "walk": "walking up", "pops": "popping octaves", "stairs": "stepping up", "fall": "falling",
+               "run": "running up", "zigzag": "zigzagging", "blues": "up to the blues note", "turn": "turning", "chug": "chugging",
+               "rise": "rising", "steps": "stepping", "arch": "arching"}
+VOICE_SAID = {"lead": "the synth lead", "fm": "the FM synth", "pluck": "the plucked string"}
+
+
+def turn_said(choice, synth):
+    """A turn in words: what the bass plays, and the synth line over it."""
+    if choice == "hold":
+        said = ["the bass holding three-three-two on the roots"]
+    elif choice == "rest":
+        said = []
+    else:
+        rhythm, _, fig = choice.partition(".")
+        said = ["the bass on %s, %s" % (RHYTHM_SAID[rhythm], FIGURE_SAID[fig])]
+    kind, _, voicing = synth.partition(":")
+    arp, hook = VOICINGS[voicing or "back"]
+    if kind == "arp":
+        said.append("the arpeggio on " + VOICE_SAID[arp])
+    elif kind == "hook":
+        said.append("the hook on " + VOICE_SAID[hook])
+    elif kind == "both":
+        said.append("the hook on %s over the arpeggio on %s" % (VOICE_SAID[hook], VOICE_SAID[arp]))
+    return ", ".join(said)
+
+
+def parts_on(form):
+    """The battle half's parts through a form: (name, its section, first and last bar, start, what the
+    battle plays), with the bars' times and the form's length."""
+    runs, bar_at, total = sections_on(form)
+    turns = dict(TURNS, D=D_TURNS[D_PLAN])
+    out = []
+    for sec, b0, b1, at in runs:
+        n = b1 - b0 + 1
+        if sec == "R":
+            groups = list(R_PARTS)
+        elif sec in turns and sec not in "BD":
+            groups = []
+            for i in range(0, n, 2):
+                said = turn_said(*turns[sec][i // 2])
+                if groups and groups[-1][1] == said:
+                    groups[-1] = (groups[-1][0] + 2, said)
+                else:
+                    groups.append((2, said))
+        else:
+            groups = [(n, TURNS_SAID[sec])]
+        if sum(bars for bars, _said in groups) != n:
+            raise ValueError("%s's parts run %d bars of its %d" % (sec, sum(bars for bars, _said in groups), n))
+        b = b0
+        for k, (bars, said) in enumerate(groups):
+            out.append((sec if len(groups) == 1 else "%s%d" % (sec, k + 1), sec, b, b + bars - 1, bar_at[b - 1], said))
+            b += bars
+    return out, bar_at, total
 
 
 def sections_on(form):
@@ -1098,7 +1185,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night20.json")
+    path = os.path.join(P.OUT, "night21.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1110,7 +1197,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night20_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night21_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -1121,12 +1208,12 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        runs, bar_at, total = sections_on(FORM10)
+        parts, bar_at, total = parts_on(FORM10)
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": F.MUSIC[NAME]["bpm"], "length": round(total, 3),
                                "loop_from_bar": 1, "bar_at": [round(float(t), 4) for t in bar_at],
-                               "sections": [{"section": s, "bars": [b0, b1], "at": round(at, 2),
-                                             "what": "%s; the battle: %s" % (MAP_SAID[s], TURNS_SAID[s])} for s, b0, b1, at in runs],
+                               "sections": [{"section": name, "bars": [b0, b1], "at": round(at, 2),
+                                             "what": "%s; the battle: %s" % (MAP_SAID[sec], said)} for name, sec, b0, b1, at, said in parts],
                                "levels": levels}]
         print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
     with open(path, "w") as f:
