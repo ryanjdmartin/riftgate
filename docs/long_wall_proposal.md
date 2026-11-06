@@ -5,8 +5,10 @@ phase flipped from a push to the rift into the defence of a long wall, and the s
 made designed formations that pose a question. This file holds his words where they set the
 strength, what the records already say about each point, the holes raised in the first round,
 and Claude's leans for his marks. Section 10 is the second round (6 November, "we are
-aligned"): the system in isolation and his eight points; where it and the first round differ,
-section 10 is newer (no withdrawal, no recharge, no re-seal). Nothing here is decided and nothing is built. On his go, each
+aligned"): the system in isolation and his eight points, corrected by the third round the same
+day (no plan layer, no beat line, no second-line beat, no reroll tax, escalation time's and
+never the kills'); where it and the first round differ, section 10 is newer (no withdrawal, no
+recharge, no re-seal). Nothing here is decided and nothing is built. On his go, each
 decision becomes a bible row, `docs/rules.md` changes in place, and this file retires (git keeps
 it). Every number is a placeholder.
 
@@ -502,21 +504,36 @@ where the next tear opens, both in view.
 - **The pressure ratio**: the machine-fights a turn it would take to stop everything arriving,
   over four. About a half early, above one late. The ramp's real number; the beat, the tears,
   the depth and the length are its dials; the campaign runner reads it on a defence bot.
-- **Fractures crack the shell**: a wider, nearer mouth, the elite through it, the next wave
-  larger; the Rupture exposes the boss for good (no window: his point 6, below) and the beat
-  halves after it, the rift's convulsion, so delay is priced by the tide and the sally is the
-  release. The boss's fight takes everyone and ends the battle.
+- **Fractures crack the shell**: the elite through the crack and the picture of the rift
+  straining, nothing more; the escalation is time's (the beat shortens with the turns, the tears
+  accumulate, the seam creeps) and never the kills', so being good never makes it worse (the
+  third round, below). The Rupture exposes the boss for good (no window: his point 6, below)
+  and the beat halves after it, the rift's convulsion, so delay is priced by the tide and the
+  sally is the release. The boss's fight takes everyone and ends the battle.
 - **Elites** break the rhythm with one map effect each: a hunter for the weakest, a blitz that
   reaches the wall in two turns, a swarm that drops patrols round itself, a hammer that strikes
   the wall for triple.
-- **A formation is a script**: a layout by slot, a plan in beats (round three the lightning
-  lands on everyone unless the shaman falls or is silenced), the question written down, tells
-  on screen, a rear line on a beat, a slot or two with variants by the seed.
-- **Rerolls cost heat**: three a round, each heating every die it rerolls by one; a locked die
-  costs nothing. Greed is priced in the heat pillar; cold builds fish and hot builds commit; an
-  overheat burns hull, so greed inside the fight is the wear outside it.
+- **A formation is authored, not scripted** (the third round): a layout by slot, the foes'
+  own kits, members past the eight waiting as reinforcements do today, a slot or two with
+  variants by the seed, and its size for the squad. No plan layer, no beats, no banner: the
+  plan is what the foes' moves already are (an opener, a countdown, a rally, a follow-up, a
+  brace, a breach), shown as their intents are shown, and learned by playing it. Every
+  formation for four is an anchor and a swarm: one or two durable pieces whose moves carry
+  the enemy's verbs against the build (silence, purge, steal, swallow, a drain of rerolls, a
+  countdown's hit) and take a team two or three rounds of focus, and trash that dies to a die
+  but threatens the shield while it stands. The output curve rises: modest early, the anchor's
+  plan and the reinforcements later. The early rounds are the setup window and the anchor is
+  what setups pay on, since a status lives on the foe it was laid on and a buff on a machine
+  fades by design (Ryan, 6 November: nothing but a mine stays on the board). The designer's
+  question stays under `design`, a discipline, never shown.
+- **Rerolls stay three and free** (the third round): the agony Ryan misses comes from
+  lethality, a shield face worth keeping because the blows this round will pass the shield,
+  and from faces uneven against the round's need; a tax on the reroll was a patch on a feel
+  whose root is the numbers. Read again once the fights are tight; two rerolls is the next
+  lever, the heat tax the bench's.
 - Cut: rings, bands, attack ranges, the field recharge, formations placed as fuel, the long
-  timer; and, by his points below, withdrawal and any recharge rule.
+  timer; and, by his points below, withdrawal, any recharge rule, the re-seal, the beat line
+  and the second line's beat.
 
 ### Ryan's points, with Claude's answers
 
@@ -543,20 +560,14 @@ pack for four by four). No other hint on the map.
    Bait, never the battle's reward: one or two caches on the plain, seen from the start, the
    seam swallowing them as it creeps; a loot-runner pack that flees the wall as the variant.
    Later, after the loop is read; the boss's fall stays the reward.
-3. **The rear line on a beat.** A formation sized for four has eight slots and twelve to
-   sixteen members; the ones past eight are its second line, which is not on the field and not
-   waiting in the way today's reinforcements wait. It arrives on a beat the script names: a
-   round, or a trigger (the lead falls, the front empties), shown on the beat line ("Second line
-   in 2"). Before the beat a kill's hole stays open; from the beat the second line steps into
-   the holes at the end of each enemy turn, at full HP, and it holds the formation's heavier
-   pieces. A fight that empties the field before the beat ends there: the second line never
-   comes (the formation broke before it arrived), a bonus for burst and a rare one. The designed
-   case is the setup team, which fights the whole formation and has the field prepared when the
-   second line steps in: a mine in the slot, Burn and Flak on the ranks, Shock arcing, area on
-   the holes they fill. The second line is the setup build's payoff, and the reinforcement
-   step is the mine's niche for that reason. A team that neither kills nor sets up meets a
-   fresh line with its shields spent and its heat high: that is the stall's punishment, from
-   the enemy's side and never from a cap. The second line is finite, so every fight ends.
+3. **The rear line.** Retracted in the third round (Ryan: a setup team beating the clock
+   "doesn't track", since only a mine stays on the board and everything else is applied to a
+   foe or fades). Members past the eight simply wait and step into holes at the end of each
+   enemy turn, as reinforcements do today, so a formation for four is twelve to sixteen foes
+   long and the fight's length is its count, sized by the author. What the reinforcements are
+   for is pressure across the fight, never a payoff: the swarm keeps threatening the shield
+   while the anchor's plan ramps, so a stalled team is worn down by the enemy rather than by
+   a cap. The setup room is the anchor (the formation bullet above), not the rear.
 4. **Recharge.** None, anywhere. The shield and the heat are the fight's: full and zero as every
    fight opens, the way the dice are rolled fresh. The theme is the generators recovering in the
    minutes a map turn takes, where a fight is too short for it; hull is metal and mends in the
@@ -574,15 +585,16 @@ pack for four by four). No other hint on the map.
 6. **No re-seal.** Agreed: a window is a cliff with a penalty and adds no decision. The Rupture
    breaks the seal for good; the tide quickens after it, so every turn of delay costs more gate
    and the sally is the only release.
-7. **The beat line.** The formation's header on the skirmish screen, one line above the ranks:
-   its name and size when nothing is pending ("Goblin Warband · for four"), and otherwise the
-   next beat with its count and its number ("2 · Lightning Storm · 4 to every machine"). The
-   threat, never the answer (Ryan, 6 November: the player is not told how to beat a formation;
-   learning it is the mastery): what stops a beat stays in the script's design field as the
-   author's discipline and is never shown. A foe's own chip still shows its move. The line
-   shows the next beat alone, as an intent does; the whole script enters the codex once the
-   formation has been met, so it is learned in play and never a wiki.
-8. **Both views.** A purely visual choice (Ryan, 6 November): one field, the wall on one side
+7. **The beat line.** Retracted in the third round (Ryan: "hamfisted", "mobile game design
+   trap level", still telling the player whom to hit). The intents already show every foe's
+   move and a countdown's chip counts on the foe; the reinforcement plaques already show how
+   many wait. Nothing else is shown. The plan is learned by meeting it, and the formation's
+   codex entry, once met, shows its layout and its members, nothing of how to beat it.
+9. **The opening turns** (the third round): a first wave three or four turns out makes the
+   first map turns repositioning with nothing to fight, which is dead time on a phone. The
+   battle opens with the siege under way: the first wave one turn out and the second spawning
+   behind it, so turn one is a posture and turn two a fight.
+10. **Both views.** A purely visual choice (Ryan, 6 November): one field, the wall on one side
    and the rift on the other, drawn either with the wall at the left and the rift at the right
    or with the wall at the bottom and the rift at the top, because some players like playing up.
    The sim never knows. The costs are the view's: the hex pixel math's flat-top variant, every
