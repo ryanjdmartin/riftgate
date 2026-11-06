@@ -1142,7 +1142,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
   sixteenth, its battle half's bass, lifts and power chords, `hold_sketches.py`; Night Shift's eighteenth, its R a duel with its low end, `night_sketches.py`;
-  The Far Bank's map half's seventh, `far_sketches.py`; the real basses, `real_bass.py`), at the page's version 42. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  The Far Bank's map half's seventh, `far_sketches.py`; the real basses, `real_bass.py`), at the page's version 43. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
