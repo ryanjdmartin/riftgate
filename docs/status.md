@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 1009 tests, 259,275 checks, green in either map view (6 November, `ccr-56b5169d-lsa2rg` with the long
+- Tests: 1010 tests, 259,298 checks, green in either map view (6 November, `ccr-56b5169d-lsa2rg` with the long
   wall's Phases 1 and 2, Godot 4.8-beta2); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -297,12 +297,13 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.468, dated 6
-  November (the page's version 481, published that day from `ccr-56b5169d-lsa2rg` with the long
-  wall's rows, onto the live page unmoved since its version 480, this branch's rerolls row merged
-  then onto the music session's v0.466). The file on this branch therefore carries the music
-  session's track rows (Hold The Line's settled pair, Night Shift's duelling basses, The Far
-  Bank's fretless bass) ahead of its branch, as the live page does. The live
+  `docs/design-bible.html` after every change. This file and the live page are v0.471, dated 6
+  November (the page's version 483, published that evening from `ccr-56b5169d-lsa2rg` with Ryan's
+  answers and the long wall's view, merged row by row onto the music session's v0.469, whose only
+  change was Hold The Line's trial notes of 6 November; the merged file taken back into this
+  branch). The file on this branch therefore carries the music session's track rows (Hold The
+  Line's settled pair and its trial notes, Night Shift's duelling basses, The Far Bank's fretless
+  bass) ahead of its branch, as the live page does. The live
   page may carry rows ahead of main's code while their branches have not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
