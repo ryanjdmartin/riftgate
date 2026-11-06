@@ -78,6 +78,10 @@ AMPS = {
 # its attack (2 to 5 kHz) raised into the drive, the low mids scooped and the upper mids lifted
 # after it, a brighter cabinet, and a little of the clean top blended back for the clank.
 MODERN = dict(split=160.0, drive=8.0, share=0.85, attack=0.6, scoop=0.35, lift=0.4, top=5500.0, clank=0.3)
+# The modern drive a little dirtier (Ryan, 6 November, of Hold The Line's Omnific bass: "is there a way to try
+# a slightly more distorted version of the Omnific voice? More distortion or gain or drive or whatever, just
+# a bit dirtier"): the band over the split driven harder, all of it in the blend, half the clean clank.
+DIRTY = dict(MODERN, drive=14.0, share=1.0, clank=0.15)
 GLIDE_TAU = 0.08   # how fast the pluck's sharp pitch settles (s)
 MUTE = 0.03        # the player's mute over the note's last 30 ms
 PAD = 0.06         # the silence each note's filters run into, so nothing wraps round to its front
@@ -152,9 +156,8 @@ def cabinet(x):
     return F.lp(F.hp(y, 45.0), 4200.0, order=3)
 
 
-def modern(x):
-    """The modern drive (MODERN), straight to the desk as such tones are, its cabinet in the drive's top."""
-    m = MODERN
+def modern(x, m=MODERN):
+    """The modern drive (MODERN, or `m`), straight to the desk as such tones are, its cabinet in the drive's top."""
     low = _padded(x, lambda y: F.lp(y, m["split"]))
     high = x - low
     pre = high + _padded(high, lambda y: F.bp(y, 2000.0, 5000.0)) * m["attack"]
@@ -170,6 +173,8 @@ def amplified(x, amp):
         return _padded(x, lambda y: F.hp(y, 30.0))
     if amp == "modern":
         return modern(x)
+    if amp == "dirty":
+        return modern(x, DIRTY)
     split, drive, share, push = AMPS[amp]
     low = _padded(x, lambda y: F.lp(y, split))
     high = x - low

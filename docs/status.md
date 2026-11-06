@@ -868,10 +868,11 @@ The tasks are the to-do's; this is the index of what waits.
   on the bass; his picks of the fifteenth ("HTL: omnific power chords option, no backing guitar in
   C, backing guitar up 3db in L, keys lead on L riff"), the Omnific's power chords over the low
   roots in A's back half, B, M and N ("Make sure B and M keep the new voices too"), B's chug hit 3
-  dB down with A's and N's; on trial, the backing guitar's power chords or the keys lead in place of
-  the Omnific's, and the lifts doubled an octave down on the fingers. A mixing desk on pre-rendered
-  stems was proposed for picking voices without a round and tabled (5 November: "Tough if it's not
-  completely flexible. That's ok, let's table it for now").
+  dB down with A's and N's; on trial, the backing guitar's power chords, the keys lead or its power
+  chords in place of the Omnific's (6 November: "keys lead variation but with power chords"), the
+  lifts doubled an octave down on the fingers, and the Omnific a bit dirtier ("just a bit dirtier").
+  A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
+  November: "Tough if it's not completely flexible. That's ok, let's table it for now").
   Night Shift on its eighteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms with

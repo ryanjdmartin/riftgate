@@ -760,7 +760,16 @@ AN_VOICES = {   # name: (voice, its intervals over the root line in semitones, e
     "crunch": ({"inst": "bass", "params": {"drive": 3.5, "cutoff": 800.0}, "octave": 0, "hold": 1.0}, (0, 7, 12), 0.518),
     "brass": ({"inst": "brass", "octave": 1, "hold": 0.9}, (0, 7, 12), 0.661),
     "backing": ({"inst": "guitar_real", "octave": 0}, (0,), 1.199),   # the backing guitar, palm-muted as it chugs, at the Omnific chords' octave: 0.3 dB each way
+    # the keys lead's power chords at its single notes' octave (Ryan, 6 November: "keys lead variation but with power chords"): 0.1 dB each way
+    "keys_chords_hi": ({"inst": "lead", "octave": 2, "hold": 0.9}, (0, 7, 12), 0.415),
 }
+# The Omnific a little dirtier wherever it plays (Ryan, 6 November: "is there a way to try a slightly more
+# distorted version of the Omnific voice? More distortion or gain or drive or whatever, just a bit
+# dirtier"): real_bass.py's DIRTY, the modern drive pushed harder with less of its clean clank, about
+# half again to twice its harmonic distortion (on a sine at a note's level, 17% where the modern makes 8,
+# 26 where it makes 16), met halfway with the modern drive's level (at one gain 3.5 dB over on a phone,
+# 2.9 in full).
+DIRTY_LEVEL = 0.695
 # B and M take A's and N's voices (Ryan, 5 November: "Make sure B and M keep the new voices too, they're
 # treated as part of A and N in that way"): the power chords on the bass's line there too, and B's chug
 # hit at A's and N's level.
@@ -804,14 +813,23 @@ def an_chords(call, name, sections=CHORD_SECTIONS):
 L_BACKING_UP = 3.0
 
 
-def round16(an="omnific", double=False):
+def dirtier(call):
+    """Every Omnific part on the dirtier drive at the modern's level (DIRTY_LEVEL)."""
+    for v in call["voices"]:
+        p = v.get("params") or {}
+        if v["inst"] == "real_bass" and p.get("preset") == "active" and p.get("amp") == "modern":
+            v.update(params=dict(p, amp="dirty"), gain=v["gain"] * DIRTY_LEVEL)
+
+
+def round16(an="omnific", double=False, dirty=False):
     """Round sixteen's battle half (Ryan, 5 November): the Omnific an octave down on the roots in
     every voice that carries the bass but the lifts' and F's punchy sub (at the Omnific set's low
     row's levels as he picked it), the lifts' riff on the fingers at its octave, the chug only as
     the rhythm and 3 dB down in A, B and N, the drone 3 dB up in A and N; his picks of round
     fifteen: the Omnific's power chords over the low roots in A's back half, B, M and N, C without
     its backing guitar, L's backing guitar 3 dB up and L's riff on the keys lead. `an` the power
-    chords' voice (AN_VOICES), `double` the lifts' riff doubled an octave down on the fingers."""
+    chords' voice (AN_VOICES), `double` the lifts' riff doubled an octave down on the fingers,
+    `dirty` the Omnific on the dirtier drive."""
     def edit(call):
         battle_picks()(call)
         chug_down("ABN")(call)
@@ -825,6 +843,8 @@ def round16(an="omnific", double=False):
         l_backing(L_BACKING_UP)(call)
         if double:
             lift_double(call)
+        if dirty:
+            dirtier(call)
     return edit
 
 
@@ -843,6 +863,9 @@ SETS = [
         ("hs1", "The backing guitar's power chords", "The backing guitar, palm-muted as it chugs, on the power chords in A, B, M and N in place of the Omnific's, at the Omnific's octave, met halfway with the shipped power chords.", round16(an="backing")),
         ("hs2", "The keys lead in A, B, M and N", "The keys lead in single notes on the bass's line in place of the Omnific's power chords, at the octave it plays F's tune.", round16(an="keys")),
         ("hs3", "The lifts doubled an octave down", "Both lifts' riff on the fingers doubled an octave under itself, at its level.", round16(double=True)),
+        ("hs4", "The keys lead's power chords", "The keys lead in power chords on the bass's line in place of the Omnific's, at the octave of its single notes (Ryan, 6 November).", round16(an="keys_chords_hi")),
+        ("hs5", "The keys lead's power chords, an octave under", "The same an octave lower, as round fifteen had them.", round16(an="keys_chords")),
+        ("hs6", "The Omnific a bit dirtier", "Every Omnific part, the low roots and the power chords, on the modern drive pushed harder, at the same level (Ryan, 6 November).", round16(dirty=True)),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r16", "title": "Hold The Line, round sixteen"}
