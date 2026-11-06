@@ -99,6 +99,7 @@ var composition_size: String = ""  # its size: patrol, formation, elite or escor
 var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
+var layout: Array = []           # a dealt composition's layout, eight cells (the front rank's four, then the back's), each a foe id or "" (the long wall brief, section 6; ContentDB.resolve_layout); [] for none
 var squad: int = 3               # the threat rating, the machines the pack is intended for, 1 to 4 (the long wall brief 3.7; ContentDB.squad_of)
 var goal_col: int = -1           # a pusher's wall segment, the column of the apron hex it walks to (the long wall brief 3.3, Battlefield.assign_goal); -1 for none, which walks to the nearest apron hex
 var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')

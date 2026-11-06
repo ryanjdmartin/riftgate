@@ -156,6 +156,49 @@ func test_every_pack_carries_its_threat_rating() -> void:
 	assert_true(h.field.cycle.all(func(c) -> bool: return int(c.get("squad", 0)) == ContentDB.SQUAD_DEFAULT), "and so are the ones the rift sends after")
 
 
+## A composition's layout and lead (the long wall brief, section 6): the layout dealt as the pack
+## emerges, a cell that lists two drawn from the battle's seed, the composition's place and the
+## cell (the same draw again, both alternatives coming up over the places, the draw riding in the
+## save); the pack wears its lead; its fight places by the layout, an empty cell empty and the
+## members it does not place waiting.
+func test_a_layout_is_dealt_with_its_draw_and_places_its_fight() -> void:
+	var b := _battle()
+	var c := Battlefield.composition([["revenant", 3], ["ghost", 2]], "marsh", "formation", "probe")
+	c["lead"] = "ghost"
+	c["layout"] = {"front": [null, "revenant", "revenant", null], "back": [["ghost", "revenant"], null, null, "ghost"]}
+	var sq := b.field.emerge(c, Hex.offset_to_axial(2, 3), 5)
+	assert_eq(sq.foe_id, "ghost", "the pack wears its lead")
+	assert_eq(str(sq.member_list()[0][0]), "ghost", "first among its members")
+	var want := ContentDB.resolve_layout(c["layout"], b.field.seed_value, 5)
+	assert_eq(b.field.seed_value, b.seed_value, "the field reads the battle's seed")
+	assert_eq(sq.layout, want, "the layout dealt as it emerged")
+	assert_eq(want.size(), 8, "eight cells")
+	assert_true(want[4] == "ghost" or want[4] == "revenant", "the listing cell drew one of its two")
+	assert_eq(ContentDB.resolve_layout(c["layout"], b.field.seed_value, 5), want, "the same draw again")
+	var seen := {}
+	for kk in range(32):
+		seen[ContentDB.resolve_layout(c["layout"], b.field.seed_value, kk)[4]] = true
+	assert_eq(seen.size(), 2, "over the compositions' places both come up")
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq(back.field.unit_by_id(sq.id).layout, want, "a save keeps the draw")
+	assert_eq(back.field.seed_value, b.seed_value, "and the seed it was drawn from")
+	var m: Unit = b.mechs()[0]
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	assert_eq(sk.layout, want, "the fight on the one pack takes its layout")
+	sk.begin()
+	var placed := 0
+	for cell in range(8):
+		var f := sk.foe_at(0 if cell < 4 else 1, cell % 4)
+		if str(want[cell]).is_empty():
+			assert_true(f == null, "cell %d stands empty" % cell)
+		else:
+			assert_true(f != null and f.content_id == str(want[cell]), "cell %d holds its %s" % [cell, want[cell]])
+			placed += 1
+	assert_eq(placed, 4, "four cells named")
+	assert_eq(sk.reinforcements.size(), 1, "the member it does not place waits")
+
+
 func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
 	var db := ContentDB.load_default()
 	var facs: Array = db.factions.keys()

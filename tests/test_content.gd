@@ -1042,6 +1042,51 @@ func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void
 	assert_false(str(db.codex_for_unit(db.make_mech("sparrowhawk"))["stats"]).contains("PHASE"), "the stats line names no field recharge")
 
 
+## A composition's fields of the long wall brief (section 6), on synthetic compositions: squad 1
+## to 4; lead a member, an elite composition's its elite; layout four cells a rank, each null, a
+## member's id or a list of them, a massive member in a front cell with the cell behind it null,
+## and no member named in more cells than its strength.
+func test_the_validator_holds_a_compositions_squad_layout_and_lead() -> void:
+	var db := _fresh()
+	var base := {"id": "probe", "size": "formation", "tiers": [1], "members": [{"foe": "goblin", "strength": 3}, {"foe": "mandragora", "strength": 1}, {"foe": "treant", "strength": 1}]}
+	var good := base.duplicate(true)
+	good["squad"] = 2
+	good["lead"] = "mandragora"
+	good["layout"] = {"front": ["treant", "goblin", "goblin", null], "back": [null, ["mandragora", "goblin"], null, null]}
+	var cases := {
+		"good": [good, ""],
+		"squad5": [_with(base, "squad", 5), "squad is 1, 2, 3 or 4"],
+		"squad0": [_with(base, "squad", 0), "squad is 1, 2, 3 or 4"],
+		"leadwolf": [_with(base, "lead", "wolf"), "lead 'wolf' is none of its members"],
+		"short": [_with(base, "layout", {"front": ["goblin", null, null], "back": [null, null, null, null]}), "layout is {front"],
+		"odd": [_with(base, "layout", {"front": [42, null, null, null], "back": [null, null, null, null]}), "is null, a foe id or a list of foe ids"],
+		"stranger": [_with(base, "layout", {"front": ["wolf", null, null, null], "back": [null, null, null, null]}), "names wolf, none of its members"],
+		"deep": [_with(base, "layout", {"front": [null, null, null, null], "back": ["treant", null, null, null]}), "names the massive treant"],
+		"crowded": [_with(base, "layout", {"front": ["treant", null, null, null], "back": ["goblin", null, null, null]}), "the back cell behind it is null"],
+		"many": [_with(base, "layout", {"front": ["goblin", "goblin", "goblin", null], "back": ["goblin", null, null, null]}), "names goblin in 4 cells, past its strength of 3"],
+	}
+	for tag in cases.keys():
+		var c: Dictionary = (cases[tag][0] as Dictionary).duplicate(true)
+		c["id"] = "probe_" + tag
+		db.factions["meadow"]["compositions"].append(c)
+	var errors := db.validate()
+	for tag in cases.keys():
+		var mine: Array = errors.filter(func(e: String) -> bool: return e.contains("composition probe_%s:" % tag))
+		if str(cases[tag][1]).is_empty():
+			assert_true(mine.is_empty(), "%s validates clean: %s" % [tag, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(str(cases[tag][1]))), "%s refused: %s" % [tag, str(mine)])
+	var elite := {"id": "probe_elite", "size": "elite", "tiers": [1], "members": [{"foe": "goblin_nob", "strength": 1}, {"foe": "goblin", "strength": 2}], "lead": "goblin"}
+	db.factions["meadow"]["compositions"].append(elite)
+	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("composition probe_elite:") and e.contains("led by its elite")), "an elite composition is led by its elite")
+
+
+static func _with(c: Dictionary, key: String, value) -> Dictionary:
+	var out := c.duplicate(true)
+	out[key] = value
+	return out
+
+
 func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

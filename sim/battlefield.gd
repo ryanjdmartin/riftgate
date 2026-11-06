@@ -43,6 +43,9 @@ var rift_pressure_max: int = 12   # the timer: the ramp's (Ramp.timer_at), set b
 var spawn_faction: String = ""    # the faction a composition that names none belongs to
 ## The ramp the battle reads its counts and speed from (Ramp): the campaign's live Convergence.
 var ramp: int = 0
+## The battle's seed (Battle.setup sets it; the save restores it from the battle's): a dealt
+## layout's draw reads it (ContentDB.resolve_layout, the long wall brief, section 6).
+var seed_value: int = 0
 ## The compositions the rift sends, cycled (the foes' fresh start, 30 October): each
 ## {"id", "size", "faction", "members": [[foe_id, strength], ...]}, formations and patrols in
 ## turn, the lead's and the guest's in turn. The game fills this from content.
@@ -795,8 +798,9 @@ func peak() -> void:
 	peaks += 1
 	if not cycle.is_empty():
 		var c: Dictionary = cycle[_cycle_index % cycle.size()]
+		var k := _cycle_index
 		_cycle_index += 1
-		var sq := emerge(c, map.rift)
+		var sq := emerge(c, map.rift, k)
 		if sq != null:
 			rift_spawns += 1
 			log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
@@ -804,8 +808,9 @@ func peak() -> void:
 		if patrol_cycle.is_empty():
 			break
 		var c: Dictionary = patrol_cycle[_patrol_index % patrol_cycle.size()]
+		var k := _patrol_index
 		_patrol_index += 1
-		var sq := emerge(c, t["pos"])
+		var sq := emerge(c, t["pos"], k)
 		if sq != null:
 			tear_spawns += 1
 			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
@@ -838,18 +843,26 @@ func pack_name(foe_id: String) -> String:
 ## its members at the ramp's density, dressed by its lead, on the nearest free hex to the mouth
 ## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
 ## appears on top of a detachment). Null for a composition with no members.
-func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
+func emerge(c: Dictionary, mouth: Vector2i, k: int = 0) -> Unit:
 	var members: Array = []
 	for m in c.get("members", []):
 		members.append([str(m[0]), Ramp.scaled(int(m[1]), ramp)])
 	if members.is_empty():
 		return null
+	# A composition's lead (the long wall brief, section 6): the member whose sprite and walk the
+	# pack wears, first among them; the first member when it names none.
+	var lead := str(c.get("lead", ""))
+	for i in range(members.size()):
+		if str(members[i][0]) == lead and i > 0:
+			members.push_front(members.pop_at(i))
+			break
 	var fac := str(c.get("faction", spawn_faction))
 	var sq := Unit.pack(0, "", Vector2i.ZERO, fac if not fac.is_empty() else spawn_faction, Unit.PACK_MOVE, 0, str(members[0][0]))
 	sq.set_members(members)
 	sq.composition = str(c.get("id", ""))
 	sq.composition_size = str(c.get("size", ""))
 	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
+	sq.layout = ContentDB.resolve_layout(c.get("layout", null), seed_value, k)   # dealt now, so the pack on the map holds its draw (section 6)
 	sq.display_name = pack_name(sq.foe_id)
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)

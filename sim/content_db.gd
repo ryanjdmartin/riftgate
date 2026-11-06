@@ -828,6 +828,68 @@ static func squad_of(c: Dictionary) -> int:
 	return int(SQUAD_BY_SIZE.get(str(c.get("size", "")), SQUAD_DEFAULT))
 
 
+## A composition's layout dealt (the long wall brief, section 6): eight cells, the front rank's
+## four then the back's, left to right, each a foe id or "" for an empty cell; a cell that lists
+## several foe ids takes one, drawn from no stream of its own but the battle's seed, the
+## composition's place `k` (its index in the cycle, or its placement order) and the cell, so a
+## resumed battle deals as the unbroken one did. Empty when the composition has no layout.
+static func resolve_layout(layout, seed_value: int, k: int) -> Array:
+	if not (layout is Dictionary):
+		return []
+	var out: Array = []
+	for r in range(2):
+		var row = layout.get("front" if r == 0 else "back", [])
+		for col in range(4):
+			var cell = row[col] if row is Array and col < (row as Array).size() else null
+			if cell is Array:
+				var n := (cell as Array).size()
+				out.append("" if n == 0 else str(cell[absi(hash(Vector3i(seed_value, k, r * 4 + col))) % n]))
+			elif cell == null:
+				out.append("")
+			else:
+				out.append(str(cell))
+	return out
+
+
+## A layout's shape (the long wall brief, section 6): {front: four cells, back: four cells}, each
+## cell null, a foe id or a list of foe ids, every one a member; a massive foe only in a front
+## cell, the back cell behind it null; and no foe named by more cells than its strength.
+func _validate_layout(cw: String, layout, strength_of: Dictionary, errs: Array) -> void:
+	if not (layout is Dictionary) or not (layout.get("front", null) is Array) or not (layout.get("back", null) is Array) \
+			or (layout["front"] as Array).size() != 4 or (layout["back"] as Array).size() != 4:
+		errs.append("%s: layout is {front: [four cells], back: [four cells]}" % cw)
+		return
+	var named := {}
+	for r in ["front", "back"]:
+		for col in range(4):
+			var cell = layout[r][col]
+			if cell == null:
+				continue
+			var ids: Array = []
+			if cell is String:
+				ids = [cell]
+			elif cell is Array and not (cell as Array).is_empty() and (cell as Array).all(func(x) -> bool: return x is String):
+				for x in cell:
+					if not ids.has(x):
+						ids.append(x)
+			else:
+				errs.append("%s: layout %s cell %d is null, a foe id or a list of foe ids" % [cw, r, col])
+				continue
+			for fid in ids:
+				if not strength_of.has(str(fid)):
+					errs.append("%s: layout %s cell %d names %s, none of its members" % [cw, r, col, fid])
+					continue
+				named[str(fid)] = int(named.get(str(fid), 0)) + 1
+				if int(foes[str(fid)].get("size", 1)) >= 2:
+					if r == "back":
+						errs.append("%s: layout back cell %d names the massive %s, which stands in a front cell" % [cw, col, fid])
+					elif layout["back"][col] != null:
+						errs.append("%s: layout front cell %d may hold the massive %s, so the back cell behind it is null" % [cw, col, fid])
+	for fid in named.keys():
+		if int(named[fid]) > int(strength_of[fid]):
+			errs.append("%s: layout names %s in %d cells, past its strength of %d" % [cw, fid, int(named[fid]), int(strength_of[fid])])
+
+
 ## A faction's compositions of a size at a tier (1 to 3, the shown number), in content order,
 ## each as {"id", "size", "faction", "members": [[foe_id, strength], ...]}; every size in turn
 ## when `size` is empty. A tier with none of a size takes the highest tier's under it, as the
@@ -2221,6 +2283,24 @@ func _validate_factions(errs: Array[String]) -> void:
 				if size != "elite" and bool(foes[fid].get("elite", false)):
 					errs.append("%s: %s is an elite and stands only in an elite composition" % [cw, fid])
 				first = false
+			# The long wall brief's fields (section 6): the squad it is intended for, its layout
+			# and its lead.
+			if c.has("squad"):
+				var sv = c["squad"]
+				if not ((sv is int or sv is float) and int(sv) == sv and int(sv) >= 1 and int(sv) <= 4):
+					errs.append("%s: squad is 1, 2, 3 or 4, the machines it is intended for" % cw)
+			var strength_of := {}
+			for m in members:
+				if m is Dictionary and foes.has(str(m.get("foe", ""))):
+					strength_of[str(m["foe"])] = int(strength_of.get(str(m["foe"]), 0)) + int(m.get("strength", 0))
+			if c.has("lead"):
+				var lead := str(c["lead"])
+				if not strength_of.has(lead):
+					errs.append("%s: lead '%s' is none of its members" % [cw, lead])
+				elif size == "elite" and not bool(foes[lead].get("elite", false)):
+					errs.append("%s: an elite composition is led by its elite; lead %s is none" % [cw, lead])
+			if c.has("layout"):
+				_validate_layout(cw, c["layout"], strength_of, errs)
 			if c.has("boss"):
 				# An escort written for one boss (30 October); no other composition names one.
 				var named_boss := str(c["boss"])

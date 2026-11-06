@@ -160,6 +160,10 @@ var _reinforcing := false       # the reinforcement step: every arrival placed f
 ## and every quick campaign fight. Since the brief (3.5) no fight is left, so it marks those
 ## fights for the screen and the save and refuses nothing more.
 var committed := false
+## A dealt composition's layout (the long wall brief, section 6; Battle._build_skirmish passes it
+## when the fight holds that one pack): eight cells, the front rank's four then the back's, each
+## a foe id or "" for empty. The first deployment places by it; empty, the heaviest hitters first.
+var layout: Array = []
 ## The twin slot (Ryan, 26 October: the Gel's halves "should exist as a pair taking the place of
 ## one unit"): Vector2i(rank, column) -> the right-hand half, the left standing in front or back
 ## as any foe. The slot is one slot to the formation, full while either stands, so no mine is
@@ -261,7 +265,10 @@ func begin() -> void:
 	reinforcements.clear()
 	for r in ranked:
 		reinforcements.append(r[2])
-	_reinforce(false)
+	if layout.is_empty():
+		_reinforce(false)
+	else:
+		_deploy_layout()
 	_refresh_guards()
 	_refresh_allies()
 	state = State.ROUND_START
@@ -5215,6 +5222,32 @@ func _reinforce(random: bool = true) -> void:
 				if f != null and f.alive() and (r == 0 or f != front[col]):
 					_land(f)
 	_reinforcing = false
+	_refresh_kin()
+
+
+## The first deployment by a layout (the long wall brief, section 6): each cell, front then back,
+## left to right, takes the first foe waiting of the kind it names, a massive one filling its
+## column; a cell that names none, or whose kind has none left waiting, stands empty until the
+## reinforcement step fills it as any empty slot. The foes it does not place wait as
+## reinforcements do.
+func _deploy_layout() -> void:
+	for cell in range(mini(layout.size(), 8)):
+		var fid := str(layout[cell])
+		var rank := 0 if cell < 4 else 1
+		var col := cell % 4
+		if fid.is_empty() or col >= columns or foe_at(rank, col) != null:
+			continue
+		for i in range(reinforcements.size()):
+			var f: Foe = reinforcements[i]
+			if f.content_id != fid:
+				continue
+			if f.is_massive() and (rank != 0 or back[col] != null):
+				break
+			reinforcements.remove_at(i)
+			_place(f, rank, col)
+			if f.is_massive():
+				back[col] = f
+			break
 	_refresh_kin()
 
 

@@ -165,6 +165,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
 	field.ramp = ramp
+	field.seed_value = seed_value
 	field.rift_pressure_max = Ramp.timer_at(ramp)
 	# The siege under way (the long wall brief 3.2): the pressure opens a turn short of its peak,
 	# so the rift's first wave spawns at the end of turn one, behind the formations already close.
@@ -217,8 +218,9 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
-	for p in placed:
-		var sq := field.emerge(p[0], p[1])
+	for j in range(placed.size()):
+		var p: Array = placed[j]
+		var sq := field.emerge(p[0], p[1], j)   # its placement order, for a layout's draw (section 6)
 		if sq != null and int(p[2]) > 0:
 			_open_row(sq, Hex.axial_to_offset(p[1]).x, int(p[2]))
 	var fac: Dictionary = db.factions.get(faction, {})
@@ -332,7 +334,7 @@ func _spawn_elite() -> void:
 	var c := db.next_elite(faction, tier + 1, elites_spawned, _elite_roll())
 	if c.is_empty():
 		return
-	var sq := field.emerge(c, map.rift)
+	var sq := field.emerge(c, map.rift, elites_spawned.size())   # the elites sent before it, for a layout's draw (section 6)
 	if sq == null:
 		return
 	sq.boss_tier = tier   # a wandering elite stands at the battle's tier (31 October)
@@ -1083,6 +1085,11 @@ func _build_skirmish(group: Array) -> Skirmish:
 	sk.terrain = ground_terrain(group)
 	sk.ground = map.ground_id(ground_hex(group))
 	sk.foe_factory = foe_factory()   # a summoning action calls up content
+	# A dealt layout places its pack (the long wall brief, section 6) when the fight holds that one
+	# pack; with several (a catch by two hunters), the first deployment as before.
+	var enemies := group.filter(func(x: Unit) -> bool: return x.is_enemy() and field.units.has(x))
+	if enemies.size() == 1 and not (enemies[0] as Unit).layout.is_empty():
+		sk.layout = (enemies[0] as Unit).layout.duplicate()
 	for u in group:
 		if not field.units.has(u):
 			continue

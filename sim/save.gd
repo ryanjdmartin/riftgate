@@ -149,6 +149,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.map_kind = str(md.get("kind", ""))
 	b.map = BattleMap.generate(w, h, map_seed, b.map_kind) if map_seed != 0 else BattleMap.flat(w, h)
 	b.field = _field_from(d.get("field", {}), b.map)
+	b.field.seed_value = b.seed_value   # a dealt layout's draw reads the battle's seed (section 6)
 	# What the map knows of each foe type, from the content as the setup gives it: a pack Rift
 	# Pressure spawns after a resume is dressed by it, its ring, move and hunt (the mechanics
 	# audit, 25 October: a resumed battle's spawns came out as plain pushers).
@@ -283,7 +284,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "zone": u.zone, "attack_range": u.attack_range,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "layout": u.layout, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "zone": u.zone, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules,
 	}
@@ -333,6 +334,9 @@ static func _unit_into(u: Unit, d: Dictionary) -> void:
 	u.prey = int(d.get("prey", 0))
 	u.goal_col = int(d.get("goal_col", -1))
 	u.squad = int(d.get("squad", ContentDB.SQUAD_DEFAULT))
+	u.layout = []
+	for cell in d.get("layout", []):
+		u.layout.append(str(cell))
 	u.zone = int(d.get("zone", 1))
 	u.attack_range = int(d.get("attack_range", 1))
 	u.is_boss = bool(d.get("is_boss", d.get("elite", false)))   # a save from before 15 October says elite
@@ -455,7 +459,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain, "ground": sk.ground,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "banked": sk.banked, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
-		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "twins": paired,
+		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "layout": sk.layout, "twins": paired,
 		"joined_fallen": _int_keys(sk.joined_fallen),
 		"joined_fallen_types": _typed_tallies(sk.joined_fallen_types),
 		"came_with": _typed_tallies(sk.came_with),
@@ -566,6 +570,9 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 	sk.rerolls_left = int(d.get("rerolls_left", 0))
 	sk.banked = int(d.get("banked", 0))   # the rerolls Maverick's Playbook carries to the next round (30 October)
 	sk.committed = bool(d.get("committed", false))
+	sk.layout = []
+	for cell in d.get("layout", []):
+		sk.layout.append(str(cell))
 	sk.state = int(d.get("state", Skirmish.State.SETUP))
 	sk.outcome = int(d.get("outcome", Skirmish.Outcome.NONE))
 	sk.log.clear()
