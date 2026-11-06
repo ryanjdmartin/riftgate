@@ -1099,8 +1099,44 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 	sk.start_round()
 	assert_eq(m.shield, 0, "no trickle between rounds")
 	m.shield = 38
-	assert_eq(m.recharge_shield(100), 2, "the field rate is capped at max")
+	assert_eq(m.recharge_shield(100), 2, "a shield gain is capped at max")
 	assert_eq(m.shield, 40, "at max")
+
+
+## The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling
+## returning, as a build-strategy buffer"): a machine regains its shield_regen at each round's
+## start after the cooling, up to its maximum, one log line for all. A sealed machine's regen
+## runs: the Armadillo's seal stops its own cooling, and nothing says it stops the regen.
+func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(1, L)), 10, 100)
+	m.shield_regen = 2
+	m.shield = 5
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 1, "heat": 0}]})
+	var plain := _mech("B", Die.single(Face.attack(1, L)), 10, 100)
+	plain.shield = 5
+	sk.add_mech(m)
+	sk.add_mech(plain)
+	sk.add_foes([_ghoul(500, 0)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(m.shield, 7, "two back at the round's start")
+	assert_eq(plain.shield, 5, "none where the stat is nothing")
+	assert_true("\n".join(sk.log).contains("shield regen: A +2"), "one log line says so")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 9, "two more")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 10, "capped at the maximum")
+	Effects.stack(m, Effects.sealed_status(1, 0), Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(Effects.is_sealed(m), "sealed")
+	m.shield = 4
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.is_sealed(m), "still sealed as the round opens")
+	assert_eq(m.shield, 6, "the regen runs while sealed")
 
 
 func test_a_shield_absorbs_its_number_and_the_excess_passes_to_the_hull() -> void:

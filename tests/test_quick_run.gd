@@ -2,7 +2,7 @@ extends TestCase
 
 ## The quick campaign (Ryan, 25 October; the bible's quick campaign row): the draft, a battle's
 ## fights by tier with the elites folded into the Fractures and the guest from tier two, a fight's
-## damage carried with a field recharge and no withdrawal, the boss's fall (the after-battle rule,
+## damage carried, the next opening on a full shield, no withdrawal, the boss's fall (the after-battle rule,
 ## the loot, the token, the offer), the hangar's verbs and the save. Fights are forced to their
 ## ends here; the bot plays a battle for real once. Content ids come from the content.
 
@@ -214,7 +214,7 @@ func test_a_boss_brings_the_tiers_escort() -> void:
 			assert_true(r.encounter_foes(e).all(func(f) -> bool: return not f.escorts), "no escort in an elite's slot")
 
 
-func test_a_fight_carries_its_damage_recharges_a_field_turn_and_never_withdraws() -> void:
+func test_a_fight_carries_its_damage_opens_the_next_on_a_full_shield_and_never_withdraws() -> void:
 	var r := _run()
 	assert_true(r.start_battle(), "into the battle")
 	assert_eq(r.state, QuickRun.BATTLE, "a battle under way")
@@ -233,7 +233,7 @@ func test_a_fight_carries_its_damage_recharges_a_field_turn_and_never_withdraws(
 	assert_eq(r.fight, 1, "on to the next encounter")
 	assert_eq(r.units[0], u, "the same machine fights on")
 	assert_eq(u.hull, u.hull_max - 5, "its hull not mended")
-	assert_eq(u.shield, mini(u.shield_max, u.recharge_field), "one field recharge since")
+	assert_eq(u.shield, u.shield_max, "the shield full for the next fight (the long wall brief 3.6)")
 	# A wreck sits the rest of the battle out.
 	u.hull = 0
 	var next := r.open_fight()

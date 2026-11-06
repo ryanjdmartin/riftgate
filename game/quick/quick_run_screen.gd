@@ -456,7 +456,7 @@ func _between_fights() -> void:
 	_content.add_child(_section("THE BATTLE"))
 	_content.add_child(_track(run.fight))
 	_content.add_child(_section("THE SQUAD"))
-	_content.add_child(_hint("Damage carries from fight to fight; each won fight gives back a field recharge of shield. Nothing else mends until the boss falls."))
+	_content.add_child(_hint("Damage carries from fight to fight; every fight opens with the shields full. Nothing else mends until the boss falls."))
 	for u in run.units:
 		_content.add_child(_squad_row(u))
 	var kind := str(enc["kind"])

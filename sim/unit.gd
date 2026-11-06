@@ -22,7 +22,7 @@ var shield: int = 40
 ## Base numbers from the chassis. Every maximum and rate is read through Effects.stat, which
 ## adds every live modifier (fitted components, rewards, buffs) on top; writing hull_max or
 ## armour sets the base. Nothing stores a total (decided 18 September).
-var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "recharge": 0, "cooling": 0}
+var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "cooling": 0, "shield_regen": 0}
 var modifiers: Array = []   # Effects.Modifier list: loadout, battle, skirmish and timed effects
 var allies: int = 0         # live allies in the fight this unit is in, kept by the skirmish, for passives that read it
 var hull_max: int:
@@ -50,11 +50,6 @@ var movespeed: int:
 		return Effects.stat(self, "move")
 	set(v):
 		base["move"] = v
-var recharge_field: int:
-	get:
-		return Effects.stat(self, "recharge")
-	set(v):
-		base["recharge"] = v
 ## Heat shed at the start of every skirmish round, passively, before the roll: venting is a
 ## tactic, but a round spent on shields or cool weapons is a way of cooling too.
 var cooling: int:
@@ -62,6 +57,15 @@ var cooling: int:
 		return Effects.stat(self, "cooling")
 	set(v):
 		base["cooling"] = v
+## Shield regained at the start of every skirmish round, after the cooling, up to the maximum (the
+## long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling returning, as a
+## build-strategy buffer"): a chassis stat beside cooling, which modules and passives may move.
+## No chassis sets it yet.
+var shield_regen: int:
+	get:
+		return Effects.stat(self, "shield_regen")
+	set(v):
+		base["shield_regen"] = v
 
 ## Chassis traits: a way of moving ("flyer", "hover", "walker", "tracked", "wheeled";
 ## BattleMap.WAYS), or "defense" for a static unit. A pack carries none and moves by the
@@ -250,9 +254,9 @@ func touches(other: Unit) -> bool:
 	return false
 
 
-## Shield comes back each battlefield phase spent out of combat, at the chassis's field
-## rate, and inside a fight only from shield components. Never a full refill for free, so
-## withdrawing and re-engaging is not a way to reset (Ryan, 18 September).
+## Shield gained in a fight (a component, a module, a passive, the shield regen), up to the
+## maximum or past it with Overshield. Nothing returns on the map: the shield is full as every
+## fight opens (the long wall brief 3.6). Returns what stood up.
 func recharge_shield(amount: int, overshield: bool = false) -> int:
 	var before := shield
 	if overshield:

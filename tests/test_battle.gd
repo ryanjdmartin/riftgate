@@ -661,21 +661,41 @@ func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> v
 	assert_eq(b.current, null, "no skirmish open")
 
 
-func test_shield_recharges_at_the_field_rate_only_in_a_turn_without_a_fight() -> void:
+## The shield and the heat are the fight's (the long wall brief 3.6; Claude's answer to Ryan's
+## "if there is in-battle recharge it's going to feel very disconnected"): a machine that left a
+## fight hot and half shielded opens the next at zero heat and full shield, and a turn without a
+## fight changes no shield; hull is the battle's.
+func test_a_fight_opens_with_the_shield_full_and_the_heat_at_zero() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	var idle: Unit = b.mechs()[1]
-	m.shield = 0
 	idle.shield = 0
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	var sk := b.attack(sq, [m])
-	_win(sk)
+	assert_eq(m.shield, m.shield_max, "the fight opens on a full shield")
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].heat = sk.mechs[0].heat_max
+	m.shield = m.shield_max / 2
+	m.hull -= 3
+	var hull := m.hull
+	win_fight(sk)
 	b.finish_skirmish()
 	b.end_turn()
-	assert_eq(m.shield, 0, "a machine that fought this turn gets nothing")
-	assert_eq(idle.shield, mini(idle.shield_max, idle.recharge_field), "one that did not, the field rate")
-	assert_true(idle.shield <= idle.shield_max, "never above max")
+	assert_eq(idle.shield, 0, "a turn without a fight changes no shield")
+	assert_eq(m.shield, m.shield_max / 2, "nor one after a fight: it waits for the next")
+	var other: Unit = null
+	for p in b.field.packs():
+		if not p.is_boss:
+			other = p
+			break
+	_engage(b, other, m)
+	var sk2 := b.attack(other, [m])
+	assert_eq(m.shield, m.shield_max, "the next fight opens on a full shield")
+	sk2.begin()
+	assert_eq(sk2.mechs[0].heat, 0, "and at zero heat")
+	assert_eq(m.hull, hull, "the hull carried, as the battle's")
 
 
 ## A fight the team loses leaves the pack its survivors (there is no withdrawal, the long wall
@@ -941,16 +961,17 @@ func test_a_draft_never_outruns_the_move() -> void:
 	assert_false(b.move_along(c, []), "an empty draft walks nowhere")
 
 
-func test_an_out_of_combat_passive_fires_after_a_quiet_turn() -> void:
+## Nothing returns on the map (the long wall brief 3.6): a quiet turn gives back no shield, a
+## passive on the out-of-combat trigger included, which nothing may ride now.
+func test_a_quiet_turn_returns_no_shield() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	m.shield = 0
 	m.grant_passive({"id": "hum", "name": "Hum", "description": "", "effects": [
 		{"trigger": "out_of_combat", "effect": "add_shield", "value": 5}]}, "hum")
-	var rate := m.recharge_field
 	b.forced = []
 	b.end_turn()
-	assert_eq(m.shield, mini(m.shield_max, rate + 5), "the field rate, then the passive's five")
+	assert_eq(m.shield, 0, "no shield back after a turn out of a fight")
 
 
 func test_a_kill_is_a_kill_whatever_the_fight_ends_in() -> void:

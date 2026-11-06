@@ -361,8 +361,8 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_prob
 python3 tools/special_probe_read.py build
 # formations back to back (25 October, docs/quick_campaign_proposal.md): every starter trio (or four: --squads fours,
 # or a JSON file of squads, as endgame_fours.py --json prints the endgame fours) against one domain's formation up
-# to nine times in a row, hull, shield, injuries and wrecks carried, with no shield back between fights and with one
-# field recharge; --density F scales the formation; four parts in parallel, then the reader
+# to nine times in a row, hull, injuries and wrecks carried, the shield full as each fight opens (the long wall
+# brief: no field recharge); --density F scales the formation; four parts in parallel, then the reader
 perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
 python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squads build/endgame_fours.json
 python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain_1.json build/chain_2.json build/chain_3.json
@@ -650,13 +650,13 @@ it can reach light up; tap a lit hex, or drag a route from it, and it moves ther
 staying in hand while it can act; UNDO MOVE takes the move back until it fights. With a
 machine in hand, tap a pack (or drag the machine onto it) and it moves into range and is
 ordered onto that fight; tap the pack again to take the order back. The map shows the next
-fight: its target, the packs whose ring covers it, the machines ordered in. The bottom-left
+fight: its target and the machines ordered in (one pack is one fight: nothing joins it). The bottom-left
 button reads ENGAGE while a fight is ready and dives the map onto it, handing over to the
 skirmish screen. A fight spends a machine's action until the next turn (the Dingo has two). A hunter that ends its
 walk beside its prey has caught it: the next turn opens with a CAUGHT band, and that fight is
-the next one ENGAGE opens. END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, machines
-that did not fight recharge, and Rift Pressure ticks. The skirmish's Back button applies the
-result: wrecks leave the map, packs shrink to their survivors; Rift Pressure ticks on the map's enemy turns only, never
+the next one ENGAGE opens. END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, and Rift
+Pressure ticks; nothing returns on the map, since the shield is full as every fight opens. The skirmish's Back button
+applies the result: wrecks leave the map, packs shrink to their survivors; Rift Pressure ticks on the map's enemy turns only, never
 inside a fight. The battle ends when the gate falls, every mech is wrecked, or the boss
 dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate for its
 integrity. MENU on either

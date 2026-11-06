@@ -1007,6 +1007,41 @@ func test_chassis_cooling_is_read_and_never_negative() -> void:
 	assert_true(hit, "negative cooling is refused")
 
 
+## The field recharge is gone and the shield regen is a slot (the long wall brief 3.6): the
+## validator refuses recharge_field, takes shield_regen from 0 to 9 and nothing else, and a
+## chassis that names none reads 0; the codex shows the stat only where it is not zero.
+func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_true(db.validate().is_empty(), "content validates")
+	for id in db.chassis.keys():
+		assert_false(db.chassis[id].has("recharge_field"), "%s names no field recharge" % id)
+		assert_eq(db.make_mech(id).shield_regen, 0, "%s regains nothing a round (no chassis sets it yet)" % id)
+	var base: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var cases := {"old": ["recharge_field", 4, true], "regen": ["shield_regen", 2, false], "top": ["shield_regen", 9, false],
+		"over": ["shield_regen", 10, true], "under": ["shield_regen", -1, true], "half": ["shield_regen", 1.5, true]}
+	for tag in cases.keys():
+		var c := base.duplicate(true)
+		c[cases[tag][0]] = cases[tag][1]
+		db.chassis["probe_" + tag] = c
+	var refused := {}
+	for e in db.validate():
+		for tag in cases.keys():
+			if e.begins_with("chassis probe_%s:" % tag):
+				refused[tag] = true
+	for tag in cases.keys():
+		assert_eq(refused.has(tag), bool(cases[tag][2]), "%s %s: %s" % [cases[tag][0], str(cases[tag][1]), "refused" if cases[tag][2] else "taken"])
+	var u := db.make_mech("probe_regen")
+	assert_eq(u.shield_regen, 2, "the regen read from content")
+	var shown := false
+	for item in db.codex_for_unit(u)["stat_items"]:
+		shown = shown or str(item[0]) == "shield regen"
+	assert_true(shown, "the codex shows a regen that is not zero")
+	var plain_items: Array = db.codex_for_unit(db.make_mech("sparrowhawk"))["stat_items"]
+	assert_false(plain_items.any(func(item) -> bool: return str(item[0]) == "shield regen"), "and none where it is zero")
+	assert_false(str(db.codex_for_unit(db.make_mech("sparrowhawk"))["stats"]).contains("PHASE"), "the stats line names no field recharge")
+
+
 func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

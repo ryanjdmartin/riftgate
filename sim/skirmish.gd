@@ -1289,6 +1289,18 @@ func start_round() -> void:
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
 	_refresh_allies()
+	# The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and
+	# cooling returning, as a build-strategy buffer"): every machine regains its shield_regen up
+	# to its maximum, after the cooling and before the round-start passives, a shield gain like
+	# any other (on_shield_gain fires), one log line for all. A sealed machine's regen runs:
+	# nothing stops it, where the seal stops its own cooling.
+	var regened: Array[String] = []
+	for ms in live_mechs():
+		var gained := _gain_shield(ms, ms.unit.shield_regen)
+		if gained > 0:
+			regened.append("%s +%d" % [ms.unit.display_name, gained])
+	if not regened.is_empty():
+		log.append("shield regen: " + ", ".join(regened))
 	# Passives that fire at the round's start, after the roll: shield from heat, a flat
 	# shield, a vent (the Goshawk's Thermal Recoupler reads the heat as it stands now).
 	for ms in live_mechs():

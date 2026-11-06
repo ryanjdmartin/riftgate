@@ -3,10 +3,10 @@ extends SceneTree
 ## Formations back to back (25 October, for the quick campaign's proposal: how many complete
 ## formations a squad gets through in a row, docs/quick_campaign_proposal.md). A squad fights
 ## one domain's formation (its whole spawn list in one fight, as tools/balance.gd builds it) up
-## to CHAIN times, carrying hull, shield, injuries and wrecks from fight to fight, heat starting
-## each fight at zero, as a battle's fights do; greedy play, never withdrawing. Each chain is
-## run twice: with no shield back between fights (every machine fought, so no field
-## recharge), and with one field recharge between them (a map turn's walk to the next pack).
+## to CHAIN times, carrying hull, injuries and wrecks from fight to fight, the shield full and the
+## heat at zero as each fight opens, as a battle's fights open (the long wall brief 3.6: the
+## shield is the fight's; the probe's two variants of 25 October, no shield back and one field
+## recharge between fights, went with the field recharge); greedy play, every fight fought out.
 ## Squads: every trio the tender can deal or every four (one tier-one machine from each city
 ## maker, stock), or a JSON file of squads, each a list of [chassis, loadout, modules] (null
 ## loadout for the stock; `python3 tools/endgame_fours.py --json` prints the endgame fours so).
@@ -14,7 +14,7 @@ extends SceneTree
 ##   perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
 ## Options: --squads trios|fours|<path>, --seeds N (2), --part i/n, --out path, --density F
 ## (each spawn entry's strength scaled and rounded, at least 1: a formation's density, read
-## before any content moves), --recharge 0|1 (one of the two variants only).
+## before any content moves).
 
 const CHAIN := 9
 
@@ -25,7 +25,6 @@ var part := 0
 var parts := 1
 var out_path := ""
 var density := 1.0
-var only_recharge := -1
 
 
 func _init() -> void:
@@ -45,8 +44,6 @@ func _init() -> void:
 				out_path = v
 			"--density":
 				density = float(v)
-			"--recharge":
-				only_recharge = int(v)
 	if out_path.is_empty():
 		push_error("--out is required")
 		quit(1)
@@ -56,14 +53,11 @@ func _init() -> void:
 	var cell := 0
 	for sq in _squads():
 		for fac in db.factions.keys():
-			for recharge in [false, true]:
-				if only_recharge >= 0 and int(recharge) != only_recharge:
+			for s in range(seeds):
+				cell += 1
+				if (cell - 1) % parts != part:
 					continue
-				for s in range(seeds):
-					cell += 1
-					if (cell - 1) % parts != part:
-						continue
-					rows.append(_chain(sq, str(fac), recharge, s + 1))
+				rows.append(_chain(sq, str(fac), s + 1))
 	var f := FileAccess.open(out_path, FileAccess.WRITE)
 	f.store_string(JSON.stringify(rows))
 	f.close()
@@ -108,7 +102,7 @@ func _squads() -> Array:
 	return out
 
 
-func _chain(sq: Array, fac: String, recharge: bool, seed_value: int) -> Dictionary:
+func _chain(sq: Array, fac: String, seed_value: int) -> Dictionary:
 	var units: Array = []
 	var hull_max := 0
 	var names: Array = []
@@ -125,9 +119,10 @@ func _chain(sq: Array, fac: String, recharge: bool, seed_value: int) -> Dictiona
 		var live := units.filter(func(u) -> bool: return u.hull > 0)
 		if live.is_empty():
 			break
-		var sk := Skirmish.new(seed_value * 1009 + k * 7 + (1 if recharge else 0))
+		var sk := Skirmish.new(seed_value * 1009 + k * 7)
 		sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 		for u in live:
+			u.shield = u.shield_max   # the shield full as the fight opens, as Battle._build_skirmish opens one
 			sk.add_mech(u)
 		var foes: Array = []
 		for e in db.spawn_table(fac, 1):
@@ -149,13 +144,5 @@ func _chain(sq: Array, fac: String, recharge: bool, seed_value: int) -> Dictiona
 		if outcome != Skirmish.Outcome.VICTORY or pol.stalled:
 			break
 		won += 1
-		if recharge:
-			# The walk to the next pack: a map turn out of a fight (Battle.end_turn's recharge).
-			for u in units:
-				if u.hull > 0:
-					u.recharge_shield(u.recharge_field)
-					var fired := Effects.fire(u, "out_of_combat")
-					if int(fired["shield"]) > 0:
-						u.recharge_shield(int(fired["shield"]))
-	return {"squad": "+".join(names), "size": sq.size(), "fac": fac, "recharge": recharge, "seed": seed_value,
+	return {"squad": "+".join(names), "size": sq.size(), "fac": fac, "seed": seed_value,
 		"density": density, "won": won, "hull": hull_after, "alive": alive_after, "rounds": rounds}

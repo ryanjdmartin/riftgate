@@ -21,8 +21,8 @@ extends RefCounted
 ##             back to the map and the machines in it are spent; back to PLAN
 ##   DONE      outcome is set
 ##
-## Hull never repairs during a battle; shield comes back at the field rate in a turn a
-## machine does not fight; damaged faces persist on the unit.
+## Hull never repairs during a battle; the shield is full as every fight opens and nothing
+## returns on the map (the long wall brief 3.6); damaged faces persist on the unit.
 
 enum State { PLAN, SKIRMISH, DONE }
 enum Outcome { NONE, VICTORY, GATE_FALLEN, WRECKED }
@@ -64,7 +64,7 @@ var history: Array = []
 var planned: Array = []
 var _batch := 0              # inside order_onto: its move and its order are one entry
 var _batch_dirty := false    # and something changed under it
-var fought: Dictionary = {}      # mech id -> true: it fought this turn, so no field recharge
+var fought: Dictionary = {}      # mech id -> true: it fought this turn (out_of_combat fires for the rest)
 ## The fights hunters forced this turn, first in line (bible section 5): [{"prey": Unit,
 ## "hunters": Array[Unit]}]. While any is left, it is the only fight that may open and the
 ## turn cannot end; its prey cannot move.
@@ -985,22 +985,18 @@ func _prune_orders() -> void:
 
 
 ## End the player's turn (bible section 4): the enemy's turn plays (packs walk round the
-## machines, a pack on the apron strikes the gate), a machine that did not fight this turn
-## recharges at the field rate, the rift ticks once, and the next turn opens with the fights
-## hunters have forced. The walks played (pack id -> Battlefield.Walk); empty when refused
+## machines, a pack on the apron strikes the gate), out_of_combat fires for a machine that did not
+## fight this turn (nothing returns on the map since the long wall brief 3.6: the shield is full
+## as every fight opens), the rift ticks once, and the next turn opens with the fights hunters
+## have forced. The walks played (pack id -> Battlefield.Walk); empty when refused
 ## (not the player's turn, or a forced fight still to come).
 func end_turn() -> Dictionary:
 	if state != State.PLAN or not forced.is_empty():
 		return {}
 	var walks := field.enemy_turn()
 	for u in field.mechs():
-		if fought.has(u.id):
-			continue
-		u.recharge_shield(u.recharge_field)
-		# Passives that fire at the end of a turn spent out of a fight (out_of_combat).
-		var fired := Effects.fire(u, "out_of_combat")
-		if int(fired["shield"]) > 0:
-			u.recharge_shield(int(fired["shield"]))
+		if not fought.has(u.id):
+			Effects.fire(u, "out_of_combat")   # a trigger nothing may ride since the long wall brief 3.6
 	field.phase += 1
 	last_spawned = field.tick_pressure(1)
 	_new_turn()
@@ -1070,6 +1066,9 @@ func _build_skirmish(group: Array) -> Skirmish:
 		if not field.units.has(u):
 			continue
 		if u.is_player() and not u.is_static():
+			# The shield is the fight's (the long wall brief 3.6): full as every fight opens, as
+			# the heat opens at zero; hull is the battle's.
+			u.shield = u.shield_max
 			sk.add_mech(u)
 		elif u.is_enemy():
 			sk.add_foes(db.foes_for(u), u)

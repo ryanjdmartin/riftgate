@@ -193,8 +193,8 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, l
 		u.traits.append(str(t))
 	u.hardpoints = int(c.get("hardpoints", 6))
 	u.armour = int(c.get("armour", 0))
-	u.recharge_field = int(c.get("recharge_field", 0))
 	u.cooling = int(c.get("cooling", 0))
+	u.shield_regen = int(c.get("shield_regen", 0))   # the long wall brief 3.6: no chassis sets it yet
 	u.die = build_die(c.get("fixed", []), fitted, u.hardpoints)
 	u.chassis_id = chassis_id
 	var p = c.get("passive", null)
@@ -259,7 +259,7 @@ func module_description(module_id: String) -> String:
 
 
 ## The words a stat line is shown with.
-const STAT_WORDS := {"hull": "hull", "shield": "shield", "heat": "heat max", "armour": "armour", "move": "move", "recharge": "field recharge", "cooling": "cooling"}
+const STAT_WORDS := {"hull": "hull", "shield": "shield", "heat": "heat max", "armour": "armour", "move": "move", "cooling": "cooling", "shield_regen": "shield regen"}
 
 
 func module_name(module_id: String) -> String:
@@ -455,8 +455,16 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var now := {}
 	for k in Effects.STATS:
 		now[k] = Effects.stat(u, k, Effects.BATTLE)
-	var stats := "SHIELD %d (+%d A PHASE OUT OF COMBAT) // HULL %d // ARMOUR %d // HEAT %d (-%d A TURN) // MOVE %d // %d HARDPOINTS // D%d" % [
-		now["shield"], now["recharge"], now["hull"], now["armour"], now["heat"], now["cooling"], now["move"], u.hardpoints, u.die.size() if u.die != null else 0]
+	# The shield regen shows only where it is not zero (the long wall brief 3.6).
+	var regen := (" (+%d A ROUND)" % int(now["shield_regen"])) if int(now["shield_regen"]) != 0 else ""
+	var stats := "SHIELD %d%s // HULL %d // ARMOUR %d // HEAT %d (-%d A TURN) // MOVE %d // %d HARDPOINTS // D%d" % [
+		now["shield"], regen, now["hull"], now["armour"], now["heat"], now["cooling"], now["move"], u.hardpoints, u.die.size() if u.die != null else 0]
+	var items: Array = [["shield max", stat_parts(int(u.base["shield"]), now["shield"])]]
+	if int(now["shield_regen"]) != 0 or int(u.base.get("shield_regen", 0)) != 0:
+		items.append(["shield regen", stat_parts(int(u.base.get("shield_regen", 0)), now["shield_regen"], "+")])
+	items.append_array([["hull max", stat_parts(int(u.base["hull"]), now["hull"])], ["armour", stat_parts(int(u.base["armour"]), now["armour"])],
+		["heat max", stat_parts(int(u.base["heat"]), now["heat"])], ["cooling", stat_parts(int(u.base["cooling"]), now["cooling"])],
+		["move", stat_parts(int(u.base["move"]), now["move"])]])
 	# The die as built: the codex shows each component at its own numbers (26 October).
 	var faces: Array = []
 	var face_rules: Array = []   # each entry's component passive, its lines on the component's row
@@ -501,10 +509,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		# Hardpoints are not a number here: the component list shows them as sockets.
 		# The machine's numbers, never its state (Ryan, 22 September: the codex is the spec
 		# plate; the gauges say how it is doing): maxima with their rates beside them.
-		"stat_items": [["shield max", stat_parts(int(u.base["shield"]), now["shield"])], ["recharge", stat_parts(int(u.base["recharge"]), now["recharge"], "+")],
-			["hull max", stat_parts(int(u.base["hull"]), now["hull"])], ["armour", stat_parts(int(u.base["armour"]), now["armour"])],
-			["heat max", stat_parts(int(u.base["heat"]), now["heat"])], ["cooling", stat_parts(int(u.base["cooling"]), now["cooling"])],
-			["move", stat_parts(int(u.base["move"]), now["move"])]],
+		"stat_items": items,
 		"actions": "",
 		"passive": "\n".join(passive_lines),
 		"passive_rows": rows,   # [text, "chassis"]: the chassis's own
@@ -1756,7 +1761,7 @@ func _validate_chassis(errs: Array[String]) -> void:
 		var where := "chassis %s" % id
 		# designation: the maker's long name on the spec plate (Ryan, 26 September: every
 		# chassis carries one; the bible's section 7 row says the shape per maker).
-		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field", "size", "module_slots"]:
+		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "size", "module_slots"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
 		# Module slots are a number of the chassis, never bought (Ryan: two as a rule, three on
@@ -1768,8 +1773,12 @@ func _validate_chassis(errs: Array[String]) -> void:
 		_validate_name_clash(where, str(id), c, errs)
 		if c.has("recharge_combat"):
 			errs.append("%s: recharge_combat is gone; in a fight shield comes only from components (a passive may say otherwise)" % where)
-		if int(c.get("recharge_field", 0)) < 0 or int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
-			errs.append("%s: armour, the field recharge rate and cooling cannot be negative" % where)
+		if c.has("recharge_field"):
+			errs.append("%s: recharge_field is gone (the long wall brief, docs/briefs/long_wall_build.md 3.6): the shield is full as every fight opens and nothing returns on the map" % where)
+		if int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
+			errs.append("%s: armour and cooling cannot be negative" % where)
+		if c.has("shield_regen") and (not (c["shield_regen"] is float or c["shield_regen"] is int) or int(c["shield_regen"]) != c["shield_regen"] or int(c["shield_regen"]) < 0 or int(c["shield_regen"]) > 9):
+			errs.append("%s: shield_regen is a whole number from 0 to 9 (the long wall brief 3.6)" % where)
 		_validate_design(where, c, errs)
 		var hp := int(c.get("hardpoints", 0))
 		if c.has("filler"):

@@ -20,7 +20,7 @@ extends RefCounted
 ##                 an elite's slot holds the lead's formation alone until the elites land (the
 ##                 bench hero that stood in went on 27 October)
 ##   a fight       the squad's machines still standing, their damage carried from the last and
-##                 their heat from zero; won, one field recharge before the next;
+##                 their heat from zero and their shields full (the long wall brief 3.6);
 ##                 every machine wrecked, the run is over
 ##   the boss dead the campaign's after-battle rule without the shop (hull mends; a destroyed
 ##                 hardpoint piece is gone, a destroyed fixed one rebuilt); then a loot pick for
@@ -507,7 +507,7 @@ func open_fight() -> Skirmish:
 	return sk
 
 
-## Apply the fight just finished: won, the next encounter waits after a field recharge, or the
+## Apply the fight just finished: won, the next encounter waits with the shields full, or the
 ## boss's fall ends the battle; lost, the run is over. Returns the fight's report, empty while
 ## the fight is still on.
 func finish_fight() -> Dictionary:
@@ -540,14 +540,12 @@ func finish_fight() -> Dictionary:
 	return report
 
 
-## The walk to the next fight (Ryan, 25 October: one field recharge after each fight): every
-## machine standing regains its field rate, and what fires out of a fight fires.
+## The walk to the next fight: every machine standing opens it with its shield full (the long
+## wall brief 3.6: the shield is the fight's, as a battle's fights open on it), in place of the
+## field recharge of 25 October.
 func _recharge() -> void:
 	for u in live_units():
-		u.recharge_shield(u.recharge_field)
-		var fired := Effects.fire(u, "out_of_combat")
-		if int(fired["shield"]) > 0:
-			u.recharge_shield(int(fired["shield"]))
+		u.shield = u.shield_max
 
 
 ## The squad's hull standing, as a share of its whole (a wreck counts nothing).
