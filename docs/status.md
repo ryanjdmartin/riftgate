@@ -133,7 +133,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   campaign runner, `--shape`, and the promise read (`tools/balance.gd --packs promise`). The
   view is Phase 2: the screen draws the field cut at its sides until it lands. The reads (40 runs
   on the steppe, a direction): no run won, 86% of battles fell, 169 of 481 fights one machine
-  against a formation; the defence rule is the floor, not the player. Waits on Ryan's marks: the
+  against a formation; the defence rule is the floor, not the player. The promise read (30
+  seeds): a formation at its rating of three a decision in 24 of 38 cells and a wall one short in
+  16; a patrol alone costing its machine over half its hull from tier two; the elites too easy
+  at their four in 47 of 53 cells, and beaten by three as well. Waits on Ryan's marks: the
   placeholders, the open items (the bible's section 12, the long wall), then Phase 2.
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
