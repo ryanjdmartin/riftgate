@@ -37,6 +37,15 @@ func assert_ne(actual, unexpected, msg: String) -> void:
 ## formations across the width on rows 3 to 5, the patrols on the flanks from row 5), the rift's
 ## clock held so nothing spawns over a test's turns, and a catch the opening forced taken back.
 ## The opening's own tests read a raw setup.
+## Whether a screen carries a HudButton reading `text` (the withdraw button is gone: the long
+## wall brief 7.5).
+func has_button(screen: Node, text: String) -> bool:
+	for b in screen.find_children("*", "HudButton", true, false):
+		if (b as HudButton).text == text:
+			return true
+	return false
+
+
 func quiet_start(b: Battle) -> void:
 	var forms: Array = []
 	var patrols: Array = []

@@ -24,8 +24,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 1005 tests, 257,149 checks, green (6 November, `ccr-56b5169d-lsa2rg` with the long
-  wall's Phase 1, Godot 4.8-beta2); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1009 tests, 259,275 checks, green in either map view (6 November, `ccr-56b5169d-lsa2rg` with the long
+  wall's Phases 1 and 2, Godot 4.8-beta2); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -78,8 +78,8 @@ written 6 November on his word for the session that builds it: Phase 1 the sim a
 with a hand-back, Phase 2 the view on his word). Built on it: the rerolls at two a round (Ryan,
 6 November: "we might as well try it"), and Phase 1 whole (6 November; How things stand, below),
 handed back that day with its reads in `docs/measurements.md` (6 November, the long wall's Phase
-1 reads); Phase 2 waits on Ryan's word after he reads the hand-back. It took main as the chassis
-session landed (6 November). Its saves are the battle's 10 and the run's 9, so a battle saved
+1 reads); Phase 2, the view, built that evening on his word, the branch landing on main after his
+play ("Wait"). It took main as the chassis session landed (6 November). Its saves are the battle's 10 and the run's 9, so a battle saved
 before is refused.
 
 ## The design sessions
@@ -130,8 +130,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   start, the field recharge gone, the shield regen slot at zero; every pack's threat rating on
   the hold (a patrol 1, a formation 3, an elite and the boss 4); a composition's layout, lead and
   variants in the schema, no content written in it; the defence bot and the pressure ratio in the
-  campaign runner, `--shape`, and the promise read (`tools/balance.gd --packs promise`). The
-  view is Phase 2: the screen draws the field cut at its sides until it lands. The reads (40 runs
+  campaign runner, `--shape`, and the promise read (`tools/balance.gd --packs promise`). Phase
+  2, the view, built the same evening on his word: MAP VIEW (the wall at the left, the default,
+  flat-top; or at the bottom), the field scrolled along the wall with tags at every edge, no ring
+  drawn, the threat pips under each pack's count, the fight queue numbered with ENGAGE 1 OF N
+  and an action pip a machine, no withdraw button, no shield gauge on the map (`MapOrient`;
+  the `queue` screenshot pose); his phone read next (the to-do). The reads (40 runs
   on the steppe, a direction): no run won, 86% of battles fell, 169 of 481 fights one machine
   against a formation; the defence rule is the floor, not the player (Ryan, 6 November: "I
   wouldn't count anything until we've got everything in place"). The promise read (30
@@ -253,9 +257,9 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it: Phase 2 of the long wall, the view
-(`docs/briefs/long_wall_build.md`, section 7), on Ryan's word of 6 November, with the harness's
-composition picker; then his play of it; then the long wall's open items (the bible's section 12:
+to-do's Ryan list). Ahead of all of it: Ryan's play of the long wall with its view (built 6
+November; his phone read, the to-do), the harness's composition picker for it; then the long
+wall's open items (the bible's section 12:
 reinforcement's cut, the map bait, the shell, the ratings by who solos, the formations and the
 refit, in that order of his answers). The branch lands on main after Phase 2. The redesign moves
 every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on the refit. First after that: the 200-seed matrix

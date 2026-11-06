@@ -216,6 +216,7 @@ func _build() -> void:
 
 	_map = BattleMapView.new()
 	_place(_map, Vector2(0, MAP_Y), Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y))
+	MapOrient.apply_setting()   # the wall at the left or the bottom, before anything is laid out
 	_map.set_field(battle.field)
 	_map.hex_tapped.connect(_on_hex_tapped)
 	_map.hex_double_tapped.connect(_on_hex_double_tapped)
@@ -457,15 +458,21 @@ func _refresh() -> void:
 	# a move command is entered, and only end turn if no order is entered"), and while the moves
 	# it took play; END TURN otherwise.
 	var fight := battle.next_fight() if planning else {}
+	var waiting: Array = battle.fights_waiting() if planning else []
+	_map.queue = waiting
 	if not fight.is_empty():
-		_resolve_btn.text = "ENGAGE"
+		# One button for the queue (the long wall brief 7.4): it says how many fights wait, the
+		# next first; no dialog on a split, nothing about staying grouped.
+		_resolve_btn.text = "ENGAGE" if waiting.size() <= 1 else "ENGAGE 1 OF %d" % waiting.size()
 	elif _executing or (planning and not battle.planned.is_empty()):
 		_resolve_btn.text = "EXECUTE"
 	else:
 		_resolve_btn.text = "END TURN"
 	_resolve_btn.queue_redraw()
 	_resolve_btn.set_enabled(planning and not playing)
-	_resolve_btn.set_pulse(planning and not playing and battle.nothing_left())   # every machine done: the button is next
+	if waiting.is_empty() or not planning:
+		_queue_pulse = false
+	_resolve_btn.set_pulse(planning and not playing and (battle.nothing_left() or _queue_pulse))   # every machine done, or back from a fight with more waiting: the button is next
 	_clear_btn.set_enabled(planning and not playing and battle.can_undo())
 
 
@@ -541,6 +548,7 @@ func _toggle_log_full() -> void:
 
 
 func _select(u: Unit) -> void:
+	_queue_pulse = false   # the player is doing something else: the queue waits quietly
 	_map.selected = u
 	_map.destinations = battle.destinations_for(u) if u != null else {}
 	_map.threat = battle.threat_for(u) if u != null else {}
@@ -683,12 +691,12 @@ func _on_unit_held(u: Unit) -> void:
 
 
 ## A machine's readout on the map (Ryan, 26 October: the map's readouts looked like blocks of
-## text; they read as the fight's holds do): its name, its shield and hull as gauges with their
-## numbers, a maximum anything moved coloured with its arrow, its move as the codex has it (the
-## base, the change beside it), its actions left, and a chip for its destroyed components.
+## text; they read as the fight's holds do): its name, its hull as a gauge with its numbers (no
+## shield: the shield is the fight's, full as every fight opens, the long wall brief 7.5), a
+## maximum anything moved coloured with its arrow, its move as the codex has it (the base, the
+## change beside it), its actions left, and a chip for its destroyed components.
 func mech_lines(u: Unit) -> Array:
 	var out: Array = [_title(u.display_name)]
-	out.append(EntryReadout.bar_line("Shield", u.shield, u.shield_max, int(u.base["shield"]), Palette.SHIELD))
 	out.append(EntryReadout.bar_line("Hull", u.hull, u.hull_max, int(u.base["hull"]), Palette.HULL))
 	var n := Battlefield.actions_for(u)
 	out.append(EntryReadout.parts_line("effect", [EntryReadout.word("Move")] + ContentDB.stat_parts(int(u.base["move"]), u.movespeed)
@@ -713,7 +721,9 @@ func pack_lines(u: Unit) -> Array:
 			if not parts.is_empty():
 				parts.append("·")
 			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
-		parts.append_array(["·", "Move", str(u.movespeed), "·", "Ring", str(u.zone)])
+		parts.append_array(["·", "Move", str(u.movespeed)])
+		if u.behaviour == "hunt":
+			parts.append_array(["·", "Ring", str(u.zone)])   # a hunter's catch; no other pack's ring means anything since nothing joins (the long wall brief 7.2)
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
 		var lines: Array = [_title(u.display_name), _squad_line(u), _words(parts), _behaviour_line(u)]
@@ -729,9 +739,9 @@ func pack_lines(u: Unit) -> Array:
 	var out: Array = [_title(u.display_name, "Boss"), _squad_line(u)]
 	var stats: Array[String] = []
 	if int(db.foes.get(BattleMapView.foe_sprite_id(u), {}).get("size", 1)) >= 2:
-		stats.append_array(["Massive", "·"])
-	stats.append_array(["Ring", str(u.zone)])
-	out.append(_words(stats))
+		stats.append("Massive")
+	if not stats.is_empty():
+		out.append(_words(stats))
 	var brings: Array[String] = []
 	if u.lineup.size() > 1:
 		brings.append("%d of the party" % u.lineup.size())
@@ -838,8 +848,9 @@ func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
-			if key == "weld" or key == "aa_mode" or key == "traces":
-				_map.set_field(battle.field)   # the machines with the weld on or off, the anti-aliasing, or the traces
+			if key == "weld" or key == "aa_mode" or key == "traces" or key == "map_view":
+				MapOrient.apply_setting()
+				_map.set_field(battle.field)   # the machines with the weld on or off, the anti-aliasing, the traces, or the map turned
 				_refresh()
 			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
@@ -864,7 +875,7 @@ func _apply_display() -> void:
 ## What the map is built with that a settings switch changes: the AA mode, and a debug build's
 ## weld and traces.
 func _map_switches() -> String:
-	return str([MechWeld.enabled(), Hud.aa_mode(), Settings.display.get("traces", true)])
+	return str([MechWeld.enabled(), Hud.aa_mode(), Settings.display.get("traces", true), Settings.display.get("map_view", "wall_left")])
 
 
 ## A colour change rebuilds the screen from the battle (the skirmish, if one is open,
@@ -1205,6 +1216,7 @@ func _on_main_button() -> void:
 
 
 var _executing := false   # the moves EXECUTE took are playing: the button keeps its word until they have
+var _queue_pulse := false  # back from a fight with orders still waiting: the button pulses until the player does something else (the long wall brief 7.4)
 
 
 ## EXECUTE: the planned moves play on the map and the turn goes on, with no enemy turn (Ryan, 2
@@ -1371,7 +1383,7 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	_map.fight_group = group      # the map stays frozen on this fight until the cut
 	# The spread grows out of the ground the fight is on, the same hex the skirmish
 	# takes its terrain from (Ryan, 22 September: it came out of the wrong tile).
-	_map.flatten_at = _map._origin + Hex.to_pixel(Battle.ground_hex(group), BattleMapView.HEX_SIZE)
+	_map.flatten_at = _map._origin + MapOrient.to_pixel(Battle.ground_hex(group), BattleMapView.HEX_SIZE)
 	_map.flatten_r = 0.0
 	var z0 := _map.zoom
 	var scroll0 := Vector2(_map.scroll_x, _map.scroll_y)
@@ -1422,10 +1434,12 @@ func _on_skirmish_back() -> void:
 		_skirmish = null
 	battle.finish_skirmish()
 	Sound.music("map")
+	_queue_pulse = not battle.fights_waiting().is_empty()   # the remaining orders stand, and the button says the next is waiting
 	if _built_hud != Settings.hud:
 		_build()   # the colour changed in the skirmish's menu: this screen catches up
 	elif _built_map != _map_switches():
-		_map.set_field(battle.field)   # a switch changed in the skirmish's menu (the AA mode, the weld, the traces): the map remade
+		MapOrient.apply_setting()
+		_map.set_field(battle.field)   # a switch changed in the skirmish's menu (the AA mode, the weld, the traces, the map's view): the map remade
 		_apply_display()
 	_refresh()
 	if battle.state == Battle.State.DONE:

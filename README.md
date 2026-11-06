@@ -429,6 +429,10 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # vents blast would fire at with its die's vent wears the turning dashed ring and the number.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_MAP_VIEW=left|bottom (any run) turns the battle map for the run without touching the saved
+# MAP VIEW setting (MapOrient): the wall at the left with the rift at the right (flat-top, the default),
+# or at the bottom with the rift at the top; the battle screen's `queue` pose (two orders onto two
+# packs) shows the fight queue's numbers, ENGAGE 1 OF 2 and the action pips.
 # RIFTGATE_BLEED_DEBUG=1 (any run) gives the whole field to the painted world, to judge a domain's
 # tileset in place (RIFTGATE_FACTION=meadow|waste|marsh|peak picks the domain on the standalone
 # screen); `xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd

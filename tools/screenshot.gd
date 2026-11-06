@@ -316,7 +316,8 @@ func _apply_pose() -> void:
 
 ## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),
 ## plan_play (those two played on END TURN), execute (played on EXECUTE, the turn going on),
-## endask (END TURN's question while machines can still act), inspect (a pack tapped, its ring lit), draft (a
+## endask (END TURN's question while machines can still act), inspect (a pack tapped: its walk and its hold), queue
+## (two machines ordered onto two packs: the numbered fights and ENGAGE 1 OF 2), draft (a
 ## route drawn by hand, about halfway through the move), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
 ## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
@@ -438,9 +439,27 @@ func _apply_battle_pose() -> void:
 		"settings":
 			s._open_menu()
 			s._menu._show_page("settings")
+		"queue":
+			# The fight queue (the long wall brief 7.4): two packs parked beside two machines and
+			# each machine ordered onto one, so the map numbers the two fights and the button reads
+			# ENGAGE 1 OF 2; the third machine's action pip still lit.
+			var ms := b.mechs()
+			var packs: Array = b.field.packs().filter(func(u: Unit) -> bool: return not u.is_boss)
+			for k in range(mini(2, mini(ms.size(), packs.size()))):
+				var m: Unit = ms[k]
+				var sq: Unit = packs[k]
+				for n in Hex.neighbors(m.pos):
+					if b.field.can_stand(sq, n):
+						sq.pos = n
+						break
+				sq.movespeed = 0
+				sq.behaviour = "push"
+				b.order(m, sq)
+			s._refresh()
+			s._map.scroll_to_unit(ms[0])
 		"attack", "predict":
 			# A pack parked beside the first machine and tapped with it in hand: the fight's
-			# panel, the target lit, the attack range and the joining rings on the map.
+			# panel, the target lit and the machines in it bracketed.
 			var m: Unit = b.mechs()[0]
 			var sq: Unit = b.field.packs()[0]
 			for n in Hex.neighbors(m.pos):

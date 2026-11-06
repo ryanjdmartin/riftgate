@@ -993,6 +993,28 @@ func next_fight() -> Dictionary:
 	return {"target": first, "machines": team}
 
 
+## Every fight waiting, in the order ENGAGE opens them (the long wall brief 7.4: the queue the
+## button counts and the map numbers): each hunter's catch first, then each pack in the order its
+## first order was given, the machines ordered onto a catch's hunters counted in the catch. Each
+## {"target": the pack, null for a catch, "prey": the caught machine for a catch}.
+func fights_waiting() -> Array:
+	_prune_orders()
+	var out: Array = []
+	var in_catch := {}
+	for f in forced:
+		out.append({"target": null, "prey": f["prey"]})
+		for h in f["hunters"]:
+			in_catch[h] = true
+	var seen := {}
+	for uid in orders.keys():
+		var p: Unit = orders[uid]
+		if p == null or in_catch.has(p) or seen.has(p):
+			continue
+		seen[p] = true
+		out.append({"target": p, "prey": null})
+	return out
+
+
 ## ENGAGE: the next fight opens with the machines ordered onto it. Null when there is none.
 func engage() -> Skirmish:
 	var f := next_fight()

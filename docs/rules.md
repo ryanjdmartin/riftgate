@@ -960,11 +960,13 @@ a stat.
 
 ## The battlefield
 
-- **Field**: pointy-top hexes, the wall's length across and the depth from the rift to the wall
-  down, both the ramp's (20 and 12 at every Convergence). The rift is three hexes mid top row;
-  the gate is two rows at the bottom centre (3 and 4 hexes), wall across the rest. One unit to
-  a hex, the boss too. The battle screen does not scroll sideways yet, so a field wider than the
-  screen is cut at its sides until the view is reworked for the long wall (not built).
+- **Field**: hexes in rows from the rift to the wall, the wall's length and the depth both the
+  ramp's (20 and 12 at every Convergence). The rift is three hexes mid its first row; the gate
+  is the last two rows' centre (3 and 4 hexes), wall across the rest. One unit to a hex, the boss
+  too. The map is a view the player turns (MAP VIEW in the settings): the wall at the left with
+  the rift at the right, flat-top hexes, scrolled down the wall (the default); or the wall at the
+  bottom with the rift at the top, pointy-top, scrolled along the wall. The field and every rule
+  are the same in both. A pack, a machine or a tear past the screen's edge has a tag at that edge.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief: River Crossing (a
@@ -1003,13 +1005,16 @@ a stat.
   a pack that hunts opens a row further back at a time, never into the mouth, until no machine
   stands inside its catch, so its first walk comes on the enemy's first turn.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
-  and every pack's ring. Each machine has one action (the Dingo two): one move, in one go, then
-  it may fight; a fight ends the action however it ends. A selected machine lights the hexes
-  its move reaches, and in the enemy's violet the hexes past them within its attack range:
-  where it could attack from. A move is planned: its route shows from where the machine stands,
-  and the next move or order reads from the route's end. The one button reads ENGAGE while a
-  fight is ready (a catch, or a machine ordered onto a pack), else EXECUTE while planned moves
-  wait, else END TURN. EXECUTE plays every planned move and the turn goes on, so moves play in
+  and every pack's threat rating under its count, four pips with one filled a machine it is
+  intended for; no pack's ring is drawn. Each machine has one action (the Dingo two): one move,
+  in one go, then it may fight; a fight ends the action however it ends, and a pip under the
+  machine stays lit until it does. A selected machine lights the hexes its move reaches and
+  brackets the packs it could be ordered onto. A move is planned: its route shows from where the
+  machine stands, and the next move or order reads from the route's end. The one button reads
+  ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
+  N fights wait, each numbered on the map in the order ENGAGE opens them (a catch first, then
+  the packs in the order their orders were given), else EXECUTE while planned moves wait, else
+  END TURN; back from a fight with more waiting, the orders stand and the button pulses. EXECUTE plays every planned move and the turn goes on, so moves play in
   whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
   below), then the fight opens. UNDO takes back the last move or order, whoever made it, in the
   order they were made, a move that has played included (the machine goes back where it
@@ -1020,10 +1025,10 @@ a stat.
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
   stands, the button pulses, whichever it reads.
 - **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
-  it in the strip under the map, as the fight's holds read: a machine's shield and hull as
-  gauges, its move and actions left, a chip for its damaged components; a pack's threat rating
-  first ("A fight for three"), then its members (each foe type and its count), move, ring and
-  what it is doing, and SEALED on the boss while its seal
+  it in the strip under the map, as the fight's holds read: a machine's hull as a gauge (its
+  shield is the fight's), its move and actions left, a chip for its damaged components; a pack's
+  threat rating first ("A fight for three"), then its members (each foe type and its count),
+  move, a hunter's ring, and what it is doing, and SEALED on the boss while its seal
   holds; the gate's integrity as its gauge; the ground by
   its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
   packs enter it. A refused order

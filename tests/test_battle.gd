@@ -73,17 +73,22 @@ func test_setup_places_team_formation_and_boss() -> void:
 		var row := Hex.axial_to_offset(sq.pos).y
 		if sq.is_boss:
 			assert_true(row <= 2, "the boss starts by the rift")
-		elif sq.composition_size == "formation":
-			assert_eq(row, maxi(BattleMap.MOUTH_ROWS, b.field.apron_row() - sq.movespeed), "%s stands a move from the wall" % sq.display_name)
 		else:
-			assert_eq(row, maxi(BattleMap.MOUTH_ROWS, b.field.apron_row() - 2 * sq.movespeed), "%s stands two moves from the wall" % sq.display_name)
+			var moves := 1 if sq.composition_size == "formation" else 2
+			var want := maxi(BattleMap.MOUTH_ROWS, b.field.apron_row() - moves * sq.movespeed)
+			if sq.behaviour == "hunt":
+				# A hunter opens a row back at a time until it has caught nobody (no battle opens
+				# on a forced fight, Ryan, 6 November).
+				assert_true(row <= want and row >= BattleMap.MOUTH_ROWS, "%s, a hunter, stands at or behind %d moves from the wall" % [sq.display_name, moves])
+				assert_true(b.field.catch_of(sq) == null, "%s has caught nobody" % sq.display_name)
+			else:
+				assert_eq(row, want, "%s stands %d move%s from the wall" % [sq.display_name, moves, "" if moves == 1 else "s"])
 	assert_eq(b.field.rift_pressure, b.field.rift_pressure_max - 1, "the rift a turn short of its peak")
 	assert_eq(b.state, Battle.State.PLAN, "the player's turn")
-	assert_eq(b.forced.size(), b.field.forced_fights().size(), "the first turn opens on what the opening's hunters caught, as every turn does")
+	assert_true(b.forced.is_empty(), "the first turn opens on no forced fight")
 	assert_eq(b.field.plan_walks().size(), b.field.packs().size(), "every pack's walk shows")
 
 
-## The field's size is the ramp's (the long wall brief 3.1): a battle that names none takes
 ## No battle opens on a forced fight (Ryan, 6 November: "I probably would shy away from hitting
 ## the first battle with a fight in the first turn ... That's just mean"): in every domain, at
 ## the foot of the ramp and at its top, at every tier, a pack that hunts opens out of its catch,
@@ -110,6 +115,7 @@ func test_no_battle_opens_on_a_forced_fight() -> void:
 	assert_true(hunters > 0, "the content opens hunters somewhere, so the rule is read")
 
 
+## The field's size is the ramp's (the long wall brief 3.1): a battle that names none takes
 ## Ramp.wall_length_at and Ramp.depth_at; at any size the gate stands centred on the wall, the
 ## wall spans the width, the rift is three hexes at the top centre, and four machines stand on
 ## the row before the gate's apron.

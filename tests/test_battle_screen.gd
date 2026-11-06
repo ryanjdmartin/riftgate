@@ -11,9 +11,9 @@ func _screen(seed_value: int = 3) -> BattleScreen:
 	for id in ["badger", "clydesdale", "sparrowhawk"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(seed_value)
-	# The old field's size until the view is reworked for the long wall (its brief's Phase 2), and
-	# the start quiet: these tests read the screen's rules, not the opening's (TestCase.quiet_start).
-	b.setup(team, "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	# The ramp's field, the long wall's (its brief's Phase 2 lays the view for it), and the start
+	# quiet: these tests read the screen's rules, not the opening's (TestCase.quiet_start).
+	b.setup(team, "marsh")
 	quiet_start(b)
 	var s := BattleScreen.new()
 	s.setup(b)
@@ -516,7 +516,7 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	assert_true(s._skirmish != null, "it opens")
 	assert_eq(s._sub_label.text, "BOSS // FIGHT", "the readout says so")
 	assert_eq(s._skirmish.sk.mechs.size(), b.mechs().size(), "with every machine in it")
-	assert_true(s._skirmish._withdraw_btn.disabled and not s._skirmish._withdraw_btn.visible, "no withdrawing: the button is hidden (the long wall brief 3.5)")
+	assert_false(has_button(s._skirmish, "WITHDRAW"), "no withdrawing: no button for it (the long wall brief 7.5)")
 	var want := Sound.boss_set(b.faction)
 	assert_eq(s._skirmish.music_set, want if not want.is_empty() else "skirmish", "the fight plays the family's theme, or the skirmish's pick without one")
 	s._on_skirmish_back()
@@ -524,21 +524,30 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	s.free()
 
 
+## Every pack, machine and tear past the view's edge gets a tag at the edge it lies past, in
+## either view (the long wall brief 7.1: a wall longer than a screen), inside the view and never
+## overlapping another.
 func test_offscreen_packs_get_edge_tags() -> void:
 	var s := _screen()
 	var tags: Array = s._map.offscreen_tags()
 	var hidden := 0
-	for sq in s.battle.field.packs():
-		if s._map.to_screen(s._map.center(sq.pos)).y < -BattleMapView.HEX_SIZE * 0.3:   # center is map space; tags are judged on screen
+	var m := BattleMapView.HEX_SIZE * 0.3
+	var view: Rect2 = Rect2(Vector2.ZERO, s._map.size).grow(m)
+	var things: Array = s.battle.field.packs() + s.battle.field.mechs()
+	things.append_array(s.battle.field.tears)
+	for thing in things:
+		var c: Vector2 = s._map.to_screen(s._map.center(thing.pos if thing is Unit else thing["pos"]))   # center is map space; tags are judged on screen
+		if not view.has_point(c):
 			hidden += 1
-	assert_true(hidden >= 2, "most packs start off-screen at the gate end")
-	assert_eq(tags.size(), hidden, "one tag per off-screen pack")
+	assert_true(hidden >= 1, "a long wall leaves packs off screen at the gate's end")
+	assert_eq(tags.size(), hidden, "one tag for each thing off screen")
 	for t in tags:
 		var rect: Rect2 = t[0]
-		assert_true(t[2], "tags sit at the top edge")
-		assert_true(rect.position.x >= 0.0 and rect.end.x <= s._map.size.x, "tag inside the view")
-	for i in range(1, tags.size()):
-		assert_true(tags[i][0].position.x >= tags[i - 1][0].end.x, "tags do not overlap")
+		assert_true(["top", "bottom", "left", "right"].has(str(t[2])), "a tag names its edge")
+		assert_true(Rect2(Vector2.ZERO, s._map.size).encloses(rect), "tag inside the view")
+	for i in range(tags.size()):
+		for j in range(i + 1, tags.size()):
+			assert_false((tags[i][0] as Rect2).intersects(tags[j][0] as Rect2), "tags do not overlap")
 	var sq: Unit = s.battle.field.packs()[0]
 	s._map.scroll_to_unit(sq)
 	var still: Array = s._map.offscreen_tags()
@@ -558,8 +567,9 @@ func test_hold_shows_a_readout() -> void:
 	var lines: Array = s._details_entry.lines
 	assert_eq(str(lines[0]["style"]), "title", "the name heads it")
 	assert_eq(str(lines[0]["text"]), m.display_name.to_upper(), "the machine's name")
-	assert_eq(str(lines[1]["style"]), "bar", "its shield a gauge")
-	assert_eq(str(lines[2]["text"]), "Hull %d/%d" % [m.hull, m.hull_max], "its hull a gauge with its numbers")
+	assert_eq(str(lines[1]["style"]), "bar", "its hull a gauge")
+	assert_eq(str(lines[1]["text"]), "Hull %d/%d" % [m.hull, m.hull_max], "with its numbers")
+	assert_false(s._details_entry.text().contains("Shield"), "no shield on the map: the shield is the fight's (the long wall brief 7.5)")
 	assert_true(s._details_entry.text().contains("action"), "and its actions")
 	assert_true(s._details_entry.text().contains("Move %d" % int(m.base["move"])), "and its move")
 	s._on_hold_released()
@@ -567,7 +577,7 @@ func test_hold_shows_a_readout() -> void:
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
 	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
-	assert_true(s._details_entry.text().contains("Ring %d" % sq.zone), "and its ring")
+	assert_eq(s._details_entry.text().contains("Ring %d" % sq.zone), sq.behaviour == "hunt", "its ring only when it hunts (the long wall brief 7.2)")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	s._on_unit_held(s.battle.boss)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Boss", "the boss says so beside its name")
@@ -777,4 +787,71 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	s._after_step()
 	assert_eq(b.state, Battle.State.DONE, "over")
 	assert_false(SaveGame.exists(TMP), "and the save is gone")
+	s.free()
+
+
+## The long wall's two views (the long wall brief 7.1): with the wall at the left or at the
+## bottom, the map opens on the gate's end with the gate in sight, the rift lies across the screen
+## from it the way the view says, and a finger on any hex of the field reads that hex.
+func test_either_view_opens_on_the_gate_and_reads_a_finger() -> void:
+	var s := _screen()
+	var map := s.battle.field.map
+	for left in [true, false]:
+		var view_name := "wall left" if left else "wall bottom"
+		MapOrient.wall_left = left
+		s._map.set_field(s.battle.field)
+		var m: BattleMapView = s._map
+		var view := Rect2(Vector2.ZERO, m.size)
+		var gate := m.to_screen(m.center(map.gate))
+		assert_true(view.has_point(gate), "%s: the gate opens in sight" % view_name)
+		var rift := m.to_screen(m.center(map.rift))
+		if left:
+			assert_true(rift.x > gate.x and absf(rift.y - gate.y) < m.size.y, "%s: the rift lies right of the gate" % view_name)
+		else:
+			assert_true(rift.y < gate.y, "%s: the rift lies above the gate" % view_name)
+		var read := 0
+		for h in map.all_hexes():
+			var c := m.center(h)
+			m.scroll_x = m.size.x * 0.5 - c.x * m.zoom
+			m.scroll_y = m.size.y * 0.5 - c.y * m.zoom
+			m._clamp_scroll()
+			var p := m.to_screen(c)
+			if view.has_point(p):
+				read += 1
+				assert_eq(m.hex_at(p), h, "%s: a finger on %s reads it" % [view_name, str(h)])
+		assert_eq(read, map.all_hexes().size(), "%s: every hex of the field can be scrolled to" % view_name)
+	MapOrient.apply_setting()
+	s.free()
+
+
+## The fight queue (the long wall brief 7.4): two machines ordered onto two packs are two fights;
+## the button reads ENGAGE 1 OF 2 and the map numbers both; once the first is fought the other
+## order stands, the button reads ENGAGE and pulses until the player does something else.
+func test_engage_counts_the_fights_waiting() -> void:
+	var s := _screen()
+	var b := s.battle
+	var ms := b.mechs()
+	var packs: Array = []
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			packs.append(sq)
+	_engage(b, packs[0], ms[0])
+	_engage(b, packs[1], ms[1])
+	assert_true(b.order(ms[0], packs[0]), "the first machine ordered onto the first pack")
+	assert_true(b.order(ms[1], packs[1]), "the second onto the second")
+	s._refresh()
+	assert_eq(b.fights_waiting().size(), 2, "two fights wait")
+	assert_eq(b.fights_waiting()[0]["target"], packs[0], "the first order's first")
+	assert_eq(s._resolve_btn.text, "ENGAGE 1 OF 2", "the button counts them")
+	assert_eq(s._map.queue.size(), 2, "the map numbers both")
+	var sk := b.engage()
+	assert_true(sk != null and sk.packs.has(packs[0]), "ENGAGE opens the first")
+	win_fight(sk)
+	s._on_skirmish_back()
+	assert_eq(b.fights_waiting().size(), 1, "the other order stands")
+	assert_eq(b.order_of(ms[1]), packs[1], "intact")
+	assert_eq(s._resolve_btn.text, "ENGAGE", "one left: the button names no count")
+	assert_true(s._queue_pulse, "and it pulses: the next fight is waiting")
+	s._select(ms[2])
+	assert_false(s._queue_pulse, "until the player does something else")
 	s.free()

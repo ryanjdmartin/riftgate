@@ -855,19 +855,18 @@ func test_end_turn_runs_the_enemy_and_returns_to_the_player() -> void:
 		after += m.unit.hull + m.unit.shield
 	assert_true(after < before, "the enemy acted in between")
 	assert_false(s.sk.can_withdraw(), "no withdrawal at the start of round two either (the long wall brief 3.5)")
-	assert_true(s._withdraw_btn.disabled and not s._withdraw_btn.visible, "its button hidden")
+	assert_false(has_button(s, "WITHDRAW"), "and no button for one")
 	s.free()
 
 
-## There is no withdrawal (the long wall brief 3.5): the button is hidden and disabled at every
-## point of the fight, and its handler asks nothing and changes nothing.
+## There is no withdrawal (the long wall brief 3.5 and 7.5): the screen has no button for one at
+## any point of the fight, and the fight goes on.
 func test_there_is_no_withdrawal_on_the_screen() -> void:
 	var s := _screen(5)
-	assert_true(s._withdraw_btn.disabled and not s._withdraw_btn.visible, "hidden at the start of round one")
+	assert_false(has_button(s, "WITHDRAW"), "no withdraw button at the start of round one")
 	s._end_turn_now()
-	assert_true(s._withdraw_btn.disabled and not s._withdraw_btn.visible, "and at round two's")
-	s._on_withdraw()
-	assert_false(s._confirm.visible, "nothing asks")
+	assert_false(has_button(s, "WITHDRAW"), "nor at round two's")
+	assert_false(s.sk.can_withdraw(), "nor any withdrawal to take")
 	assert_eq(s.sk.outcome, Skirmish.Outcome.NONE, "and the fight goes on")
 	s.free()
 

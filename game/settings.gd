@@ -34,6 +34,7 @@ const DISPLAY_DEFAULTS := {
 	"aa_mode": "msaa4",   # AA_MODES: the 3D's anti-aliasing (Hud.aa_mode)
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 	"shot_trails": false,   # a debug build's trial: a shot crossing the field from the muzzle to its target (ShotTrail), tabled as maybe too busy (Ryan, 3 November)
+	"map_view": "wall_left",   # MAP_VIEWS: the battle map's orientation (MapOrient), a view only
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -49,6 +50,13 @@ const SKIRMISH_CONTROLS := ["middle", "bottom"]
 ## or MSAA at 2x or 4x (Hud.aa_mode). The machines' textures read their mipmaps in every mode.
 const AA_MODES := ["off", "fxaa", "msaa2", "msaa4"]
 const AA_LABELS := {"off": "OFF", "fxaa": "FXAA", "msaa2": "MSAA 2X", "msaa4": "MSAA 4X"}
+## The battle map's orientation (the long wall brief 7.1; Ryan, 6 November: "a purely visual
+## option between wall left + gate right and wall bottom + gate top"): the wall at the left with
+## the rift at the right, or at the bottom with the rift at the top; the default the left (a
+## placeholder: his call, judged on the phone). MapOrient reads it; RIFTGATE_MAP_VIEW=left|bottom
+## forces one for a run.
+const MAP_VIEWS := ["wall_left", "wall_bottom"]
+const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"}
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

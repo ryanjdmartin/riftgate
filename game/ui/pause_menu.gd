@@ -140,6 +140,7 @@ func _show_page(page: String) -> void:
 			_toggle("SCAN BAR", "scan")
 			_choice_row("SKIRMISH CONTROLS", "skirmish_controls", Settings.SKIRMISH_CONTROLS)
 			_choice_row("AA MODE", "aa_mode", Settings.AA_MODES, Settings.AA_LABELS)   # the 3D's anti-aliasing (Hud.aa_mode)
+			_choice_row("MAP VIEW", "map_view", Settings.MAP_VIEWS, Settings.MAP_VIEW_LABELS)   # the battle map's orientation (MapOrient)
 			_slider("MUSIC", "music")
 			_slider("EFFECTS", "effects")
 			_slider("VOICE", "voice")

@@ -319,7 +319,6 @@ var _reroll_btn: HudButton
 var _undo_btn: HudButton
 var _undo_from: int = 0   # the tick (ms) the undo opens again after a spend, once its blow has played
 var _end_btn: HudButton
-var _withdraw_btn: HudButton
 var _overlay: Control
 var _overlay_title: Label
 var _overlay_text: Label
@@ -678,19 +677,12 @@ func _build() -> void:
 		v.double_tapped.connect(_on_mech_double_tapped.bind(i))
 		_mech_views.append(v)
 
-	# Bottom row: End turn bottom-left, Withdraw bottom-right.
+	# Bottom row: End turn bottom-left. There is no withdrawal (the long wall brief 3.5 and 7.5): a
+	# fight ends in the pack's fall or the machines' wreck, so no button pulls out of one.
 	_end_btn = HudButton.new("END TURN", _on_end_turn)
 	_end_btn.sound = ""   # the lever is the sound
 	_end_btn.filled = true
 	_place(_end_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
-	_withdraw_btn = HudButton.new("WITHDRAW", _on_withdraw)
-	_withdraw_btn.ghost = true
-	_withdraw_btn.tooltip_text = "Pull out: the enemy strikes once more, then the team flees."
-	_place(_withdraw_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
-	# There is no withdrawal (the long wall brief 3.5): hidden and disabled until the screen's
-	# rework (the brief's Phase 2) takes the button away.
-	_withdraw_btn.visible = false
-	_withdraw_btn.set_enabled(false)
 
 	# While the enemy's turn replays, nothing on the screen takes a tap.
 	_replay_shade = Control.new()
@@ -1292,7 +1284,6 @@ func _refresh(save: bool = true) -> void:
 	for i in range(sk.mechs.size()):
 		left = left or sk.can_spend(i)
 	_end_btn.set_pulse(assigning and not left)
-	_withdraw_btn.set_enabled(sk.can_withdraw())   # never: there is no withdrawal (the long wall brief 3.5)
 	_show_pop()
 	_refresh_arrows()
 	_refresh_prey()
@@ -4079,27 +4070,6 @@ func _animate_pool_join(f: Foe, delay: float) -> void:
 		_reserve.arrive(kind)
 		ghost.queue_free())
 	Sound.play_after(delay + 0.85, "arrival", -6.0)
-
-
-## Withdraw always asks first.
-func _on_withdraw() -> void:
-	if not sk.can_withdraw():
-		return
-	if not _pending.is_empty():
-		_cancel_second()
-	_ask("Withdraw? The enemy strikes once more as you pull out, and the pack keeps marching on the gate.", _withdraw_now)
-
-
-## The enemy's parting blows play out before the team is seen to flee (Ryan, 23 September:
-## the outcome came up over an unplayed turn).
-func _withdraw_now() -> void:
-	if not sk.can_withdraw():
-		return
-	_flush_blows()
-	var before := _before_enemy_turn()
-	if sk.withdraw():
-		_refresh_log()
-		_play_enemy_turn(before, func() -> void: _show_outcome(sk.outcome))
 
 
 func _show_outcome(outcome: int) -> void:
