@@ -873,21 +873,29 @@ The tasks are the to-do's; this is the index of what waits.
   lifts doubled an octave down on the fingers, and the Omnific a bit dirtier ("just a bit dirtier").
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its eighteenth (the map's intro without its front and its muted guitar out, his
+  Night Shift on its nineteenth (the map's intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms with
   the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two together,
   the intro on three-three-two, D the piano's turn and the factory's blended over Hold The Line's
   riff as the map's nod with no bass under them ("The bass 3-3-2s in D don't make sense"), R a duel
-  between two basses (5 November: "into more of a dueling basses type jam"), the track's and a
-  second an octave over it on the active bass trading two bars, a bar, half a bar, through two bars
-  of stop-time and a hole ("The stop time was cool, we can do more of that unexpected kind of
-  thing"), then together on three-three-two, the lower playing on under the upper's answers 3 dB
-  under its own, in unison an octave down on trial beside a rhythm, a line of its own and the upper
-  in chords ("don't cut out the lower one when the upper comes in, since it sounds fragmented and
-  empty without the lower end"), the backing trading the tune under them at one level 3 dB under the
-  basses ("keep their volumes consistent so they don't overshadow the basses"; "Keep the backing
-  voices at the 3db under, that works"), the rhythm guitar in the breakdown's ringing chords alone
+  between two basses (5 November: "into more of a dueling basses type jam") three times through its
+  chords (6 November: "I'm not worried about making this section longer since it's like the climax
+  of this track"), the track's and a second an octave over it on the active bass trading two bars,
+  a bar, half a bar, a beat, the second's first answer climbing from its root and its falling line
+  the second time through ("that line coming from such a high note as the first time it appears is
+  jarring"), through two bars of stop-time ("The stop time was cool, we can do more of that
+  unexpected kind of thing") and a break where both basses fill in octaves, the hole retired
+  ("sounds like a glitch or mistake instead of a stop time"), then together on three-three-two; the
+  lower playing on under the upper's answers 3 dB under its own ("don't cut out the lower one when
+  the upper comes in"), by the bar in unison or on three-three-two, holding the root under a stop's
+  fill and out of the quickest trades ("both have a place"; "keeping the upper exposed on its own
+  sometimes is good too"), the upper in chords where the lower doubles it and the end without the
+  break on trial; the backing trading the tune under them at one level 3 dB under the basses ("keep
+  their volumes consistent so they don't overshadow the basses"; "Keep the backing voices at the
+  3db under, that works"), the FM synth out of R and the outro ("sounds like a glitch or alarm going
+  off"), the plucked string in tune (forge.py's pluck had played every note flat, B5 by 32 cents:
+  "it comes across as sounding like the note is flat"), the rhythm guitar in the breakdown's ringing chords alone
   and the lead guitar's lines kept ("Yes, keep the lead guitar. Put the the rhythm guitar back in on
   B"), the plucked string 3 dB down wherever it plays ("Plucked string -3Db is good"), the bass 3 dB
   down everywhere on the fingers into a modern prog drive (`real_bass.py`: "go with the
@@ -1143,8 +1151,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  sixteenth, its battle half's bass, lifts and power chords, `hold_sketches.py`; Night Shift's eighteenth, its R a duel with its low end, `night_sketches.py`;
-  The Far Bank's map half's seventh, `far_sketches.py`; the real basses, `real_bass.py`), at the page's version 43. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  sixteenth, its battle half's bass, lifts and power chords, `hold_sketches.py`; Night Shift's nineteenth, its R a duel through twenty-four bars, `night_sketches.py`;
+  The Far Bank's map half's seventh, `far_sketches.py`; the real basses, `real_bass.py`), at the page's version 44. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
