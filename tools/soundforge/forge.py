@@ -923,7 +923,10 @@ def pluck(f, dur, bright=0.6, damp=0.996):
     length = max(2, int(period - 0.1))     # whole samples, leaving the allpass 0.1 to 1.1 of one
     frac = period - length
     c = (1.0 - frac) / (1.0 + frac)        # the allpass's delay at low frequencies is `frac`
-    ring = lp(noise(length), 600.0 + 9000.0 * bright)
+    # The burst drawn at the untuned loop's length and cut to the tuned one, so the random stream
+    # after it is where every render before the tuning left it: a shipped track built again moves
+    # only its plucked notes' pitch, not every later random choice.
+    ring = lp(noise(max(2, int(round(SR / f)))), 600.0 + 9000.0 * bright)[:length]
     ring /= np.max(np.abs(ring)) + 1e-9
     out = np.empty(n)
     prev = ap_x = ap_y = 0.0
