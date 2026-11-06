@@ -269,13 +269,12 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.467 (the page's
-  version 480, published 6 November from `ccr-56b5169d-lsa2rg` with the rerolls row, merged row
-  by row onto the live v0.466, which the music session had published on 5 November; the header's
-  date line still reads 5 November, since the merge keeps the later of two dates and this
-  branch never moved it: the next bible change dates it). The file on this branch therefore
-  carries the music session's track rows (Hold The Line's settled pair, Night Shift's duelling
-  basses, The Far Bank's fretless bass) ahead of its branch, as the live page does. The live
+  `docs/design-bible.html` after every change. This file and the live page are v0.468, dated 6
+  November (the page's version 481, published that day from `ccr-56b5169d-lsa2rg` with the long
+  wall's rows, onto the live page unmoved since its version 480, this branch's rerolls row merged
+  then onto the music session's v0.466). The file on this branch therefore carries the music
+  session's track rows (Hold The Line's settled pair, Night Shift's duelling basses, The Far
+  Bank's fretless bass) ahead of its branch, as the live page does. The live
   page may carry rows ahead of main's code while their branches have not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

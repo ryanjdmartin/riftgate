@@ -9,9 +9,10 @@ aligned"): the system in isolation and his eight points, corrected by the third 
 day (no plan layer, no beat line, no second-line beat, no reroll tax, escalation time's and
 never the kills'); where it and the first round differ, section 10 is newer (no withdrawal, no
 recharge, no re-seal). The build order is `docs/briefs/long_wall_build.md` (6 November, on
-Ryan's word): where it and this file differ, the brief is newer. Nothing here is decided and nothing is built. On his go, each
-decision becomes a bible row, `docs/rules.md` changes in place, and this file retires (git keeps
-it). Every number is a placeholder.
+Ryan's word): where it and this file differ, the brief is newer. The brief's Phase 1 is built
+(6 November): its decisions are bible rows and `docs/rules.md` states them; the view (Phase 2)
+and the open items (the bible's section 12, the long wall) are not. This file retires (git keeps
+it) once the view lands and each open item is a row or a task. Every number is a placeholder.
 
 ## 1. Ryan's direction (5 November)
 

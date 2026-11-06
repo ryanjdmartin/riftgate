@@ -5,7 +5,8 @@ analysis (`docs/roster_analysis.md`) and Ryan's go on it, 14 and 15 October. One
 another kind: `long_wall_build.md`, the build order for Ryan's redesign of 5 and 6 November
 (the battle as the defence of a long wall; its design in `docs/long_wall_proposal.md`), written
 for the session that builds it, with every decision sourced and every open point marked
-"not built". Each is the
+"not built"; its Phase 1 is built and handed back (6 November), its Phase 2, the view, waits on
+Ryan's word. Each is the
 starting point for a design session of its own: where the design stands, what Ryan said and
 when, what Claude proposed, what is open, the holes already raised, and what the session hands
 back. A brief retires to git once its decisions are rows and content, as a proposal does.
