@@ -68,7 +68,9 @@ the live page (Pages); `claude/aphelion-minerva-chassis-9qf6cy`, Ryan's chassis 
 November (his ideas and Claude's first round, a proposal); `ccr-56b5169d-lsa2rg`, Ryan's
 redesign of 5 November (the battle as the defence of a long wall, the packs as designed
 formations, the shield the fight's resource: his direction and Claude's first round as
-`docs/long_wall_proposal.md`, his marks next); the one thing built on it so far is the rerolls at
+`docs/long_wall_proposal.md`; the build brief `docs/briefs/long_wall_build.md`, written 6
+November on his word for the session that builds it: Phase 1 the sim and the runners with a
+hand-back, Phase 2 the view on his word); the one thing built on it so far is the rerolls at
 two a round (Ryan, 6 November: "we might as well try it"; the bible's rerolls row, the rules,
 the vocabulary, the Petrel and stepping-die tests against the constant).
 
@@ -209,9 +211,11 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it until Ryan marks it: his redesign of 5 November
-(`docs/long_wall_proposal.md`), which moves every foe's blow and the battle's shape, so the
-200-seed matrix (below) waits on the shape it decides. First after that: the 200-seed matrix
+to-do's Ryan list). Ahead of all of it: the build of his redesign of 5 and 6 November from
+`docs/briefs/long_wall_build.md` (its design `docs/long_wall_proposal.md`), a session of its
+own: Phase 1 the sim, the bots and the records, ending in a hand-back of the reads and the
+placeholders; Phase 2 the view on his word. It moves every foe's blow and the battle's shape,
+so the 200-seed matrix (below) waits on it. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
 engine line), since the matrix on file predates everything since 27 October.
 

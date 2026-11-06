@@ -8,7 +8,8 @@ and Claude's leans for his marks. Section 10 is the second round (6 November, "w
 aligned"): the system in isolation and his eight points, corrected by the third round the same
 day (no plan layer, no beat line, no second-line beat, no reroll tax, escalation time's and
 never the kills'); where it and the first round differ, section 10 is newer (no withdrawal, no
-recharge, no re-seal). Nothing here is decided and nothing is built. On his go, each
+recharge, no re-seal). The build order is `docs/briefs/long_wall_build.md` (6 November, on
+Ryan's word): where it and this file differ, the brief is newer. Nothing here is decided and nothing is built. On his go, each
 decision becomes a bible row, `docs/rules.md` changes in place, and this file retires (git keeps
 it). Every number is a placeholder.
 
