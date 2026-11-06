@@ -4,7 +4,9 @@ Ryan's direction of 5 November, from his play of the game beside other roguelike
 phase flipped from a push to the rift into the defence of a long wall, and the skirmish's packs
 made designed formations that pose a question. This file holds his words where they set the
 strength, what the records already say about each point, the holes raised in the first round,
-and Claude's leans for his marks. Nothing here is decided and nothing is built. On his go, each
+and Claude's leans for his marks. Section 10 is the second round (6 November, "we are
+aligned"): the system in isolation and his eight points; where it and the first round differ,
+section 10 is newer (no withdrawal, no recharge, no re-seal). Nothing here is decided and nothing is built. On his go, each
 decision becomes a bible row, `docs/rules.md` changes in place, and this file retires (git keeps
 it). Every number is a placeholder.
 
@@ -470,3 +472,103 @@ shape. The 200-seed matrix the status puts first waits on the shape, since every
 5. The sectors: the library proposed in chat, then laid; the map survey reads it.
 6. The rows, the rules, the briefs' fantasy lines, the status, the bible republished; this file
    retires.
+
+## 10. Second round (6 November): the system in isolation, and Ryan's points on it
+
+Ryan asked for the skirmish and battle system built around his proposal with every existing
+mechanism set aside, then raised eight points on it. The design, then his points with Claude's
+answers, each his to move.
+
+### The spine
+
+The horde arrives on a schedule the player sees, carrying plans the player can read. Four
+machines, one fight each a turn, so nothing is ever all answered. Every fight is a race between
+the formation's plan and the build's plan. What goes unanswered leaks: an unfought pack into the
+gate, a greedy fight into the hull carried to the next battle. The randomness is the dice and
+where the next tear opens, both in view.
+
+| Currency | Fresh | Threatened by |
+|---|---|---|
+| Shield | every fight | every blow in the fight |
+| Heat | every fight | greed, and burns |
+| Rerolls | every round | nothing; each costs heat |
+| Hull | never in a battle | what breaks past the shield and the overheat |
+| Components | never in a battle | one big blow on the entry showing |
+
+- **The tide**: waves on a beat that shortens; a wave one formation sized for the squad or two
+  sized for pairs, the tears adding patrols sized for one; nothing on the field at the start
+  but the first wave, three or four turns out. Each pack picks a wall segment, the variance the
+  ramp's; a pack at the wall strikes every turn until fought, a leak with a number on it.
+- **The pressure ratio**: the machine-fights a turn it would take to stop everything arriving,
+  over four. About a half early, above one late. The ramp's real number; the beat, the tears,
+  the depth and the length are its dials; the campaign runner reads it on a defence bot.
+- **Fractures crack the shell**: a wider, nearer mouth, the elite through it, the next wave
+  larger; the Rupture exposes the boss for good (no window: his point 6, below) and the beat
+  halves after it, the rift's convulsion, so delay is priced by the tide and the sally is the
+  release. The boss's fight takes everyone and ends the battle.
+- **Elites** break the rhythm with one map effect each: a hunter for the weakest, a blitz that
+  reaches the wall in two turns, a swarm that drops patrols round itself, a hammer that strikes
+  the wall for triple.
+- **A formation is a script**: a layout by slot, a plan in beats (round three the lightning
+  lands on everyone unless the shaman falls or is silenced), the question written down, tells
+  on screen, a rear line on a beat, a slot or two with variants by the seed.
+- **Rerolls cost heat**: three a round, each heating every die it rerolls by one; a locked die
+  costs nothing. Greed is priced in the heat pillar; cold builds fish and hot builds commit; an
+  overheat burns hull, so greed inside the fight is the wear outside it.
+- Cut: rings, bands, attack ranges, the field recharge, formations placed as fuel, the long
+  timer; and, by his points below, withdrawal and any recharge rule.
+
+### Ryan's points, with Claude's answers
+
+1. **Several fights a turn, without clunk and without teaching "stay grouped".** Each machine
+   has one action: move, then fight the pack it is ordered onto. Orders onto different packs
+   queue; ENGAGE plays the queue in the order given, one fight on screen at a time, the map back
+   between them for one tap (re-plan the uncommitted if the first fight changed the picture, or
+   tap on). The order never changes an outcome: different packs, and the enemy moves after all
+   of them. Shown as: an action pip on each machine, lit until it fights; the order lines
+   numbered; the button reading ENGAGE 1 OF 2; the pack's hold naming its size, "for two", so a
+   pair's fight is the norm; never a dialog on a split. The content teaches the posture: a tide
+   of two formations for two at two segments says split, a single host says gather. The pacing
+   risk is real: the battle's length is fights times rounds, so a patrol fight is two or three
+   rounds and the tide is tuned to eight to ten fought packs a battle, some leaks accepted.
+2. **Map loot.** It fits the defence better than the push: it is the one thing that pulls a
+   machine forward before the Rupture, a job for the fast and the flyers in the first half.
+   Bait, never the battle's reward: one or two caches on the plain, seen from the start, the
+   seam swallowing them as it creeps; a loot-runner pack that flees the wall as the variant.
+   Later, after the loop is read; the boss's fall stays the reward.
+3. **The rear line on a beat.** A formation sized for four has eight slots and twelve to
+   sixteen members. Its reserve arrives on a beat the script names: a round, or a trigger (the
+   lead falls, the front empties). Before the beat a kill's hole stays open, the burst team's
+   window onto the back rank; from the beat the reserve fills holes at the end of each enemy
+   turn, and the reserve holds the formation's heavier pieces. So a team that breaks the plan
+   early fights eight and a slow team fights fourteen, the nasty ones arriving fresh while it is
+   hot and worn. The reserve is finite, so every fight ends; the arrival shows on the beat line.
+4. **Recharge.** None, anywhere. The shield and the heat are the fight's: full and zero as every
+   fight opens, the way the dice are rolled fresh. The theme is the generators recovering in the
+   minutes a map turn takes, where a fight is too short for it; hull is metal and mends in the
+   hangar. The field recharge stat dies and nothing replaces it; the shield's size is the stat.
+5. **No withdrawal.** Yes, Claude's lean too. Every fight ends in the pack's fall or the
+   machines' wreck, as the boss's fight and the quick campaign already do. Gained: no carry
+   rules, no survivor rules, no parting turn, one button fewer, and every commitment on the map
+   honest. Lost: the escape hatch and the chip tactic, which the sized packs replace. It needs
+   two guards: the map tells the truth before ENGAGE (the size on the hold, the plan's headline,
+   a lone machine ordered at a pack for four wears the badge red), and every script carries a
+   rising threat, a rally, a breach or the reserve's heavy, so no fight is infinite from the
+   enemy's side (a lone machine whose blows all bounce against a foe whose blows all bounce is
+   the softlock to design out; the runner marks fights past sixty rounds). A hunter's catch is
+   then a fight to the death, which is what a hunter should be.
+6. **No re-seal.** Agreed: a window is a cliff with a penalty and adds no decision. The Rupture
+   breaks the seal for good; the tide quickens after it, so every turn of delay costs more gate
+   and the sally is the only release.
+7. **The beat line.** The formation's header on the skirmish screen, one line above the ranks:
+   its name and size when nothing is pending ("Goblin Warband · for four"), and otherwise the
+   next beat with its count and what stops it ("2 · Lightning Storm · 4 to every machine ·
+   unless the Shaman falls or is Silenced"). A foe's own chip still shows its move; the line is
+   the plan's telegraph and the answer's hint, the design test made visible. A tap opens the
+   whole script as a timeline, so it is learnable in play and never a wiki.
+8. **Both views.** The sim is orientation-free, and the 2D is a transform. The costs: the hex
+   pixel math's flat-top variant, every overlay through the same transform, the scroll and the
+   off-screen tags for a wall longer than a screen, and the one real design call, the 3D
+   reconstruction's perspective, which recedes toward the rift today and would recede along the
+   wall instead. Every map mark is then judged on the phone twice. Claude's lean: the wall on the
+   left first, proven on the phone, the other as a setting after.
