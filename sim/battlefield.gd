@@ -11,9 +11,9 @@ extends RefCounted
 ##                          never a stop, through the other packs and under the flyers
 ##   2. the player's turn   (Battle) first every fight a hunter forced (forced_fights: its prey
 ##                          in its ring, or the machine it took when its prey is sealed off), then
-##                          fights the player picks (attack_roster): a fight is at the pack
-##                          attacked, every pack whose ring covers it joins, and the machines
-##                          committed are those whose attack range covers it
+##                          fights the player picks (attack_roster): one pack is one fight (the
+##                          long wall brief 3.4), nothing joins it, and the machines committed are
+##                          those whose attack range covers it
 ##   3. enemy_turn()        the packs walk what plan_walks says; a pack on the gate's apron
 ##                          strikes it
 ##
@@ -732,18 +732,14 @@ func forced_fights() -> Array:
 	return out
 
 
-## The fight at `targets` (bible section 5): every other pack whose ring covers a target joins,
-## and the machines whose attack range covers a target may be committed.
-## {"targets": Array[Unit], "joins": Array[Unit], "in_range": Array[Unit]}.
+## The fight at `targets`: one pack is one fight (the long wall brief 3.4; Ryan, 5 November, of
+## the rings and the joining: "it just adds so much complexity for not a lot of gain"), so no
+## other pack joins it, and the machines whose attack range covers a target may be committed. The
+## targets are one pack, or the hunters that caught one machine (a forced fight). A ring is read
+## only by a hunter's catch (catch_of, reaches, the walk's catch).
+## {"targets": Array[Unit], "joins": Array[Unit] (always empty), "in_range": Array[Unit]}.
 func attack_roster(targets: Array) -> Dictionary:
 	var joins: Array[Unit] = []
-	for p in packs():
-		if targets.has(p) or p.sealed:
-			continue   # a sealed boss's ring is inert (30 October)
-		for t in targets:
-			if in_ring(p, t):
-				joins.append(p)
-				break
 	var in_range: Array[Unit] = []
 	for m in mechs():
 		for t in targets:
@@ -767,7 +763,8 @@ func _direction_index(from: Vector2i, to: Vector2i) -> int:
 	return 0
 
 
-## Whether `u` stands inside the pack's ring.
+## Whether `u` stands inside the pack's ring: a hunter's catch (the one reader since the long
+## wall brief 3.4).
 static func in_ring(sq: Unit, u: Unit) -> bool:
 	return unit_distance(sq, u) <= sq.zone
 

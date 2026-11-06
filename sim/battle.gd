@@ -12,7 +12,9 @@ extends RefCounted
 ##             a pack in its attack range (order_onto() moves it into range first); undo()
 ##             takes back the last move or order, in the order they were made; engage() opens
 ##             the next fight with the machines ordered onto it, a fight hunters forced always
-##             first (`forced`); end_turn() when done. A move lands in the battle at once and is
+##             first (`forced`), one pack a fight and nothing joining (the long wall brief
+##             3.4), so orders onto several packs queue and play one at a time; end_turn() when
+##             done. A move lands in the battle at once and is
 ##             planned on the map (`planned`): the screen plays the plan on EXECUTE, ENGAGE or
 ##             END TURN (take_plan())
 ##   SKIRMISH  the fight attack() opened; the screen plays it, finish_skirmish() applies it
@@ -744,10 +746,11 @@ func next_fight_is_boss() -> bool:
 
 
 ## The fight the player would open at `target`, or the next fight a hunter forced, which comes
-## first whatever is tapped (bible section 5): {"targets": the packs attacked, "joins": the
-## packs whose ring covers a target, "in_range": the machines whose attack range covers one,
-## "eligible": those of them with an action left (a caught machine always), "pinned": the
-## caught machine or null, "forced": whether this is a forced fight}. Empty when there is none.
+## first whatever is tapped (bible section 5): {"targets": the pack attacked, or the hunters that
+## caught one machine, "joins": always empty (one pack is one fight, the long wall brief 3.4),
+## "in_range": the machines whose attack range covers a target, "eligible": those of them with an
+## action left (a caught machine always), "pinned": the caught machine or null, "forced":
+## whether this is a forced fight}. Empty when there is none.
 func roster(target: Unit = null) -> Dictionary:
 	if state != State.PLAN:
 		return {}
@@ -766,9 +769,10 @@ func roster(target: Unit = null) -> Dictionary:
 		eligible.append(pinned)
 	# The boss's fight takes every machine (Ryan, 25 October: "automatically make all units
 	# attacking when one unit targets it, regardless of their range", "doesn't matter if a
-	# unit has fought this turn already"), whether the boss is the target or its ring pulls it
-	# in, since its fight cannot be left.
-	var all_in := boss != null and (targets.has(boss) or (r["joins"] as Array).has(boss))
+	# unit has fought this turn already"), since its fight cannot be left; nothing joins it and
+	# it joins nothing (the long wall brief 3.4), so it is the boss's fight when the boss is the
+	# target.
+	var all_in := boss != null and targets.has(boss)
 	for m in (mechs() if all_in else r["in_range"]):
 		if m != pinned and not m.is_static() and (all_in or actions_left(m) > 0):
 			eligible.append(m)
@@ -780,8 +784,9 @@ func roster(target: Unit = null) -> Dictionary:
 
 
 ## Open a fight: the machines committed (those of `machines` the roster allows; a caught
-## machine always) against the targets and every pack that joins. The skirmish, or null when
-## refused (not the player's turn, no fight there, nobody to commit).
+## machine always) against the targets, one pack or a catch's hunters, nothing joining (the
+## long wall brief 3.4). The skirmish, or null when refused (not the player's turn, no fight
+## there, nobody to commit).
 func attack(target: Unit, machines: Array) -> Skirmish:
 	var r := roster(target)
 	if r.is_empty():

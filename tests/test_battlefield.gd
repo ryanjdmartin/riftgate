@@ -4,7 +4,8 @@ extends TestCase
 ## packs walk round grounded machines, through each other and under flyers, and never stop on
 ## another unit's hex; a pusher strikes the gate from its apron,
 ## a hunter catches its prey inside its ring and that fight is forced, and a fight at a pack
-## is joined by every pack whose ring covers it and by the machines whose range does.
+## is that pack alone, joined by no other pack, with the machines whose range covers it (the
+## long wall brief 3.4).
 
 
 func _field(w: int = 7, h: int = 13) -> Battlefield:
@@ -396,43 +397,48 @@ func test_two_hunters_on_one_prey_are_one_forced_fight() -> void:
 	assert_eq(forced[0]["hunters"].size(), 2, "with both hunters in it")
 
 
-func test_a_fight_is_joined_by_every_pack_whose_ring_covers_the_target() -> void:
-	# A formation in file (bible section 5): the back pack's ring of three covers the front
-	# two hexes ahead of it, so attacking the front brings the back in; the front's ring of
-	# one does not reach the back, so attacking the back from behind takes it alone.
+## One pack is one fight (the long wall brief 3.4; Ryan, 5 November, of the rings: "it just
+## adds so much complexity for not a lot of gain"): a pack whose ring covers the target, or that
+## stands beside it, stays out of its fight either way round.
+func test_no_pack_joins_a_fight_whatever_its_ring() -> void:
 	var f := _field(7, 14)
 	var front := f.add_unit(Unit.pack(1, "ghouls", _o(3, 6), "marsh", 2))
 	front.zone = 1
 	var back := f.add_unit(Unit.pack(2, "casters", _o(3, 4), "marsh", 2))
 	back.zone = 3
-	assert_eq(Battlefield.unit_distance(front, back), 2, "two apart")
-	assert_eq(f.attack_roster([front])["joins"], [back], "the back joins a fight at the front")
-	assert_true((f.attack_roster([back])["joins"] as Array).is_empty(), "the front stays out of a fight at the back")
+	var beside := f.add_unit(Unit.pack(3, "brutes", _o(4, 6), "marsh", 2))
+	beside.zone = 4
+	assert_eq(Battlefield.unit_distance(front, back), 2, "two apart, inside the back's ring")
+	assert_true((f.attack_roster([front])["joins"] as Array).is_empty(), "nothing joins a fight at the front")
+	assert_true((f.attack_roster([back])["joins"] as Array).is_empty(), "nor one at the back")
+	assert_eq(f.attack_roster([front])["targets"], [front], "the fight is the one pack")
 
 
 func test_the_machines_in_range_of_the_target_may_join() -> void:
 	var f := _field(7, 14)
 	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(3, 5), "marsh", 2))
-	var near := f.add_unit(Unit.mech(2, "A", _o(3, 7), 0))
-	var far := f.add_unit(Unit.mech(3, "B", _o(3, 10), 0))
+	var near := f.add_unit(Unit.mech(2, "A", _o(3, 6), 0))
+	var two := f.add_unit(Unit.mech(3, "B", _o(3, 7), 0))
+	var far := f.add_unit(Unit.mech(4, "C", _o(3, 10), 0))
 	var r := f.attack_roster([sq])
-	assert_true((r["in_range"] as Array).has(near), "two away: in range")
+	assert_true((r["in_range"] as Array).has(near), "beside it: in range (adjacency, the long wall brief 3.4)")
+	assert_false((r["in_range"] as Array).has(two), "two away: out of range")
 	assert_false((r["in_range"] as Array).has(far), "five away: out of range")
 	far.attack_range = 5
 	assert_true((f.attack_roster([sq])["in_range"] as Array).has(far), "a longer attack range reaches it")
 
 
-func test_range_and_rings_count_from_any_footprint_hex() -> void:
+func test_range_counts_from_any_footprint_hex() -> void:
 	var f := _field()
 	var boss := f.add_unit(Unit.boss(1, "colossus", _o(3, 5), "marsh"))
 	boss.footprint = Unit.TRIANGLE.duplicate()
 	var far_hex: Vector2i = boss.hexes()[2]
 	var spot := Vector2i.ZERO
 	for h in f.map.all_hexes():
-		if Hex.distance(h, far_hex) == 2 and Battlefield.unit_distance(Unit.mech(9, "probe", h, 0), boss) == 2 and Hex.distance(h, boss.pos) > 2:
+		if Hex.distance(h, far_hex) == 1 and Battlefield.unit_distance(Unit.mech(9, "probe", h, 0), boss) == 1 and Hex.distance(h, boss.pos) > 1:
 			spot = h
 			break
-	assert_true(spot != Vector2i.ZERO, "a hex two from the far footprint hex and three from the anchor")
+	assert_true(spot != Vector2i.ZERO, "a hex beside the far footprint hex and two from the anchor")
 	var m := f.add_unit(Unit.mech(2, "A", spot, 0))
 	assert_true((f.attack_roster([boss])["in_range"] as Array).has(m), "in range through a secondary footprint hex")
 

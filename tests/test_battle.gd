@@ -533,6 +533,7 @@ func test_nothing_is_left_once_every_machine_has_done_what_it_can() -> void:
 func test_the_attack_hexes_ring_the_move() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
+	assert_eq(m.attack_range, 1, "a machine fights a pack it stands beside (the long wall brief 3.4)")
 	var dests := b.destinations_for(m)
 	var threat := b.threat_for(m)
 	assert_false(threat.is_empty(), "there are some")
@@ -561,7 +562,9 @@ func test_a_machine_cannot_end_on_another() -> void:
 	assert_true(b.move_to(c, shared).is_empty(), "and refused")
 
 
-func test_attack_opens_a_fight_with_the_target_the_packs_that_join_and_the_machines_committed() -> void:
+## One pack is one fight (the long wall brief 3.4): a pack beside the target whose ring covers
+## it stays out, and the machine beside the target is committed.
+func test_attack_opens_a_fight_on_the_one_pack_with_the_machines_committed() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
@@ -575,12 +578,12 @@ func test_attack_opens_a_fight_with_the_target_the_packs_that_join_and_the_machi
 			break
 	var r := b.roster(sq)
 	assert_eq(r["targets"], [sq], "the pack tapped")
-	assert_true((r["joins"] as Array).has(other), "a pack whose ring covers it joins")
-	assert_true((r["eligible"] as Array).has(m), "the machine beside it may join")
+	assert_true((r["joins"] as Array).is_empty(), "nothing joins, a ring of three beside it included")
+	assert_true((r["eligible"] as Array).has(m), "the machine beside it may be committed")
 	var sk := b.attack(sq, [m])
 	assert_true(sk != null, "the fight opens")
 	assert_eq(b.state, Battle.State.SKIRMISH, "and is under way")
-	assert_true(sk.packs.has(sq) and sk.packs.has(other), "both packs are in it")
+	assert_eq(sk.packs, [sq], "the one pack is in it")
 	assert_eq(sk.mechs.size(), 1, "the one machine committed")
 	assert_eq(Battle.ground_hex(sk.packs), sq.pos, "fought on the target's ground")
 	assert_eq(b.attack(sq, [m]), null, "no second fight while one is open")
@@ -691,6 +694,7 @@ func test_survivors_shrink_the_pack() -> void:
 func test_a_withdrawal_never_grows_a_pack_by_its_halves() -> void:
 	var b := Battle.new(3)
 	b.setup(_team(), "meadow")
+	quiet_start(b)   # no catch from the opening comes first
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = null
 	for p in b.field.packs():
@@ -973,7 +977,7 @@ func test_the_attack_hex_is_the_farthest_in_range_the_move_reaches() -> void:
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	sq.behaviour = "push"
-	# Park the pack three hexes ahead of the machine, out of its range of two.
+	# Park the pack three hexes ahead of the machine, out of its range (adjacency, 3.4).
 	var spot := Vector2i(-99, -99)
 	for h in b.field.map.all_hexes():
 		if Hex.distance(h, m.pos) == 3 and b.field.can_stand(sq, h):
@@ -1081,7 +1085,9 @@ func test_the_boss_fight_takes_every_machine_and_cannot_be_left() -> void:
 
 
 ## A fight the boss joins by its ring is the boss's fight too: every machine, no withdrawal.
-func test_a_fight_the_boss_joins_takes_every_machine() -> void:
+## A fight on the boss takes every machine, and nothing joins it or is joined by it (the long
+## wall brief 3.4): a pack beside the boss is a fight of its own, the boss staying out of it.
+func test_a_fight_on_the_boss_takes_every_machine_and_no_pack_joins_it() -> void:
 	var b := _battle()
 	b.rupture()
 	var m: Unit = b.mechs()[0]
@@ -1097,11 +1103,54 @@ func test_a_fight_the_boss_joins_takes_every_machine() -> void:
 			m.pos = n
 			break
 	var r := b.roster(sq)
-	assert_true((r["joins"] as Array).has(b.boss), "the boss joins by its ring")
-	assert_true(bool(r["all_in"]), "so it is the boss's fight")
-	var sk := b.attack(sq, [m])
+	assert_true((r["joins"] as Array).is_empty(), "the boss beside it does not join")
+	assert_false(bool(r["all_in"]), "so it is the pack's own fight")
+	var on_boss := b.roster(b.boss)
+	assert_true(bool(on_boss["all_in"]), "the boss's own fight takes everyone")
+	assert_true((on_boss["joins"] as Array).is_empty(), "and the pack beside it stays out")
+	var sk := b.attack(b.boss, [m])
 	assert_eq(sk.mechs.size(), b.mechs().size(), "every machine goes in")
+	assert_eq(sk.packs, [b.boss], "against the boss's unit alone")
 	assert_true(sk.committed, "and none withdraws")
+
+
+## Orders onto two packs queue and play one at a time, and the order they open in changes
+## nothing a fight opens on (the long wall brief 3.4): each fight holds its own pack and the
+## machine ordered onto it, in the state it stood in at the turn's start. Each fight's dice are
+## drawn from the battle's stream as it opens, as before, so the same fight rolls differently
+## in the other order; nothing else does.
+func test_two_fights_open_alike_whichever_engages_first() -> void:
+	var seen: Array = []
+	for first_q in [false, true]:
+		var b := _battle(7)
+		var a: Unit = b.mechs()[0]
+		var c: Unit = b.mechs()[2]
+		var p: Unit = null
+		var q: Unit = null
+		for sq in b.field.packs():
+			if sq.is_boss:
+				continue
+			if p == null:
+				p = sq
+			elif q == null:
+				q = sq
+		_engage(b, p, a)
+		_engage(b, q, c)
+		assert_false(Hex.are_adjacent(p.pos, c.pos) or Hex.are_adjacent(q.pos, a.pos), "each pack beside its own machine alone")
+		var order := [[c, q], [a, p]] if first_q else [[a, p], [c, q]]
+		for o in order:
+			assert_true(b.order(o[0], o[1]), "%s ordered onto %s" % [o[0].display_name, o[1].display_name])
+		var fights := {}
+		for k in range(2):
+			var sk := b.engage()
+			assert_true(sk != null, "fight %d opens" % (k + 1))
+			var packs: Array = sk.packs.map(func(u: Unit) -> int: return u.id)
+			var ms: Array = sk.mechs.map(func(ms: Skirmish.MechState) -> Array: return [ms.unit.id, ms.unit.hull, ms.unit.shield])
+			fights[packs[0]] = [packs, ms]
+			_win(sk)
+			b.finish_skirmish()
+		seen.append(fights)
+	assert_eq(seen[0], seen[1], "each fight opened on the same pack, machine and state whichever came first")
 
 
 ## A final (the bible's section 9): the dealt hero commands the rift, in its rank, with its
@@ -1120,6 +1169,7 @@ func test_a_heros_unit_stands_while_its_hero_does_with_its_escort() -> void:
 	b.lineup = [hero]
 	b.escort = [escort, 3]
 	b.setup(_team(), fid)
+	quiet_start(b)   # no catch from the opening comes first
 	assert_eq(b.boss.lineup, [hero], "the hero commands the rift")
 	assert_eq([b.boss.foe_id, b.boss.strength], [escort, 3], "its wildlife with it")
 	b.rupture()

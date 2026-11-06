@@ -134,6 +134,7 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 	b.lineup = ["warrior"]
 	b.escort = ["goblin", 3]
 	b.setup(_team(), "meadow")
+	quiet_start(b)   # no catch from the opening comes first
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	assert_eq(back.lineup, b.lineup, "the rift's commanders")
 	assert_eq(back.escort, b.escort, "and its escort")

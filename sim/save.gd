@@ -329,7 +329,7 @@ static func _unit_into(u: Unit, d: Dictionary) -> void:
 	u.prey = int(d.get("prey", 0))
 	u.goal_col = int(d.get("goal_col", -1))
 	u.zone = int(d.get("zone", 1))
-	u.attack_range = int(d.get("attack_range", 2))
+	u.attack_range = int(d.get("attack_range", 1))
 	u.is_boss = bool(d.get("is_boss", d.get("elite", false)))   # a save from before 15 October says elite
 	u.sealed = bool(d.get("sealed", false))
 	u.lineup = _strings(d.get("lineup", []))
