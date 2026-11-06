@@ -1,13 +1,26 @@
-"""Hold The Line's sixteenth round as a pair (Ryan, 5 November, on the fifteenth): his picks.
+"""Hold The Line's seventeenth round as a pair (Ryan, 6 November, on the sixteenth's set): the
+Omnific on the dirtier drive everywhere it plays, and one upper note tried in the power chords' place.
 
-  "HTL: omnific power chords option, no backing guitar in C, backing guitar up 3db in L, keys lead on
-  L riff. Make sure B and M keep the new voices too, they're treated as part of A and N in that way."
+  "That Omnific voice change is perfect, that's what that voice needs to sound like everywhere it's
+  used. I want to hear: -low roots + power chords (as we have) -low roots + upper octave only -low
+  roots + upper fifth -low roots + upper fourth -low roots + upper third. C is perfect how it is now.
+  I suspect I want to keep the keys lead power chords, octave under option in N only, and maybe even
+  repeat it so it's twice as long."
 
-The Omnific's power chords over the low roots in A's back half and N, and in B and M with them, B's
-chug hit at their level; the first lift without its backing guitar, the second's 3 dB up, its riff
-under the keys lead. A set has the backing guitar's power chords or the keys lead in place of the
-Omnific's, and the lifts doubled an octave down on the fingers. The map half is as the thirteenth
-round settled it ("Map lifts should keep soft sub").
+Every Omnific part on real_bass.py's DIRTY drive at the modern drive's level (DIRTY_LEVEL): the low
+roots, the power chords, X, U, the climax, the breaths, K's walk and M's line; the lifts' fingers
+as they were (C his "perfect"). A set over the half's top has the power chords' place over the low
+roots taken by one upper note of the Omnific at the power chords' octave: the root, its fifth, its
+fourth or its third along the key (E Phrygian, the riff's F), each met halfway with the power
+chords; the fourths are kept perfect, the riff's shape moved whole, so its F takes a B flat. A
+second set has N on the keys lead's power chords an octave under in place of the Omnific's, A, B
+and M keeping theirs, and the same with N played twice through. The plucked string beside K's walk
+is in tune (forge.py's pluck).
+
+The sixteenth round's, kept: the Omnific's power chords over the low roots in A's back half and N,
+and in B and M with them ("Make sure B and M keep the new voices too"), B's chug hit at their level;
+the first lift without its backing guitar, the second's 3 dB up, its riff under the keys lead. The
+map half is as the thirteenth round settled it ("Map lifts should keep soft sub").
 
 The fifteenth round's, kept: the drone 3 dB up in A and N, the low fifths gone.
 
@@ -34,8 +47,8 @@ minimalist"), its lifts' riff on the soft sub and the tine piano.
 The full pair on the switch takes every pick. The set's rows are the same bars from the same seed
 through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the set and the pair, then hold16.json beside the pairs (about five minutes on four cores)
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hs       # the named sets only (hs, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold17.json beside the pairs (about five minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hu       # the named sets only (hu, hn, and full for the pair)
 """
 import json
 import os
@@ -762,7 +775,27 @@ AN_VOICES = {   # name: (voice, its intervals over the root line in semitones, e
     "backing": ({"inst": "guitar_real", "octave": 0}, (0,), 1.199),   # the backing guitar, palm-muted as it chugs, at the Omnific chords' octave: 0.3 dB each way
     # the keys lead's power chords at its single notes' octave (Ryan, 6 November: "keys lead variation but with power chords"): 0.1 dB each way
     "keys_chords_hi": ({"inst": "lead", "octave": 2, "hold": 0.9}, (0, 7, 12), 0.415),
+    # One upper note of the Omnific over the low roots in the power chords' place (Ryan, 6 November: "-low
+    # roots + upper octave only -low roots + upper fifth -low roots + upper fourth -low roots + upper
+    # third"), on one string at the power chords' octave: the root, its fifth, its perfect fourth, or its
+    # third along the key (THIRD), each met halfway with the power chords on the dirtier drive (at their
+    # gain 1.1 or 1.2 dB under them in full and 0.5 to 1.1 on a phone; now 0.3 dB each way at most).
+    "octave": ({"inst": "real_bass", "params": {"preset": "active", "amp": "modern"}, "octave": 0, "hold": 1.1}, (0,), 0.698),
+    "fifth": ({"inst": "real_bass", "params": {"preset": "active", "amp": "modern"}, "octave": 0, "hold": 1.1}, (7,), 0.668),
+    "fourth": ({"inst": "real_bass", "params": {"preset": "active", "amp": "modern"}, "octave": 0, "hold": 1.1}, (5,), 0.675),
+    "third": ({"inst": "real_bass", "params": {"preset": "active", "amp": "modern"}, "octave": 0, "hold": 1.1}, ("third",), 0.677),
 }
+THIRD = "third"
+PHRYGIAN = (0, 1, 3, 5, 7, 8, 10)   # E Phrygian, the riff's key: its F natural over E minor's chords
+
+
+def third_up(n):
+    """The third over a note along E Phrygian (a note off the key a minor third)."""
+    o, pc = divmod(n, 12)
+    if pc not in PHRYGIAN:
+        return n + 3
+    k = PHRYGIAN.index(pc) + 2
+    return 12 * o + PHRYGIAN[k % 7] + 12 * (k // 7)
 # The Omnific a little dirtier wherever it plays (Ryan, 6 November: "is there a way to try a slightly more
 # distorted version of the Omnific voice? More distortion or gain or drive or whatever, just a bit
 # dirtier"): real_bass.py's DIRTY, the modern drive pushed harder with less of its clean clank, about
@@ -777,8 +810,8 @@ CHORD_SECTIONS = "ABMN"
 
 
 def shifted(pat, k):
-    """A riff pattern's notes `k` semitones up."""
-    return "".join(c if c in ".-" else P.spell(semis(c) + k) for c in pat)
+    """A riff pattern's notes `k` semitones up, or each a third up along the key (THIRD)."""
+    return "".join(c if c in ".-" else P.spell(third_up(semis(c)) if k == THIRD else semis(c) + k) for c in pat)
 
 
 def drone_up(call, db=DRONE_UP):
@@ -848,6 +881,26 @@ def round16(an="omnific", double=False, dirty=False):
     return edit
 
 
+def round17(upper="omnific", n=None):
+    """Round seventeen's battle half (Ryan, 6 November): round sixteen's with every Omnific part on
+    the dirtier drive ("that's what that voice needs to sound like everywhere it's used"), the power
+    chords' place over the low roots on `upper` (AN_VOICES: the power chords, or one upper note), and
+    N's on `n` where it is given (the keys lead's power chords an octave under, "in N only")."""
+    def edit(call):
+        battle_picks()(call)
+        chug_down("ABN")(call)
+        unison_chug_out()(call)
+        drone_up(call)
+        chords = an_chords(call, upper, "ABM") + an_chords(call, n, "N") if n else an_chords(call, upper)
+        lift_single("modern", "keys")(call)
+        real_bass_on("omnific", roots=True, throughout=True, spare=("F",), down=True)(call)
+        call["voices"] += chords
+        c_backing(None)(call)
+        l_backing(L_BACKING_UP)(call)
+        dirtier(call)
+    return edit
+
+
 def battle_with(*edits):
     def edit(call):
         for e in edits:
@@ -856,22 +909,29 @@ def battle_with(*edits):
 
 
 FORM_TOP = FORM_K[:FORM_K.index("M") + 1]   # the half's top: the riff, both lifts and the bar down into the seven
+FORM_N = "CCCCCCCC NNNN LLLL"                  # the first lift into N and the second lift's first half
+FORM_N2 = "CCCCCCCC NNNNNNNN LLLL"             # N played twice through
 SETS = [
-    {"id": "hs", "half": "battle", "title": "Round sixteen's battle half, its top", "form": FORM_TOP,
-     "note": "The battle half from the top through the bar down into the seven, as round sixteen has it (Ryan, 5 November): the Omnific's power chords over the low roots in A's back half, B, M and N, the first lift without its backing guitar, the second's backing guitar 3 dB up and its riff under the keys lead. Each row is one change from the first. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hs0", "Round sixteen's battle half", "His picks of round fifteen, B and M with A's and N's voices.", round16()),
-        ("hs1", "The backing guitar's power chords", "The backing guitar, palm-muted as it chugs, on the power chords in A, B, M and N in place of the Omnific's, at the Omnific's octave, met halfway with the shipped power chords.", round16(an="backing")),
-        ("hs2", "The keys lead in A, B, M and N", "The keys lead in single notes on the bass's line in place of the Omnific's power chords, at the octave it plays F's tune.", round16(an="keys")),
-        ("hs3", "The lifts doubled an octave down", "Both lifts' riff on the fingers doubled an octave under itself, at its level.", round16(double=True)),
-        ("hs4", "The keys lead's power chords", "The keys lead in power chords on the bass's line in place of the Omnific's, at the octave of its single notes (Ryan, 6 November).", round16(an="keys_chords_hi")),
-        ("hs5", "The keys lead's power chords, an octave under", "The same an octave lower, as round fifteen had them.", round16(an="keys_chords")),
-        ("hs6", "The Omnific a bit dirtier", "Every Omnific part, the low roots and the power chords, on the modern drive pushed harder, at the same level (Ryan, 6 November).", round16(dirty=True)),
+    {"id": "hu", "half": "battle", "title": "Over the low roots, the half's top", "form": FORM_TOP,
+     "note": "The battle half from the top through the bar down into the seven, every Omnific part on the dirtier drive (Ryan, 6 November: \"that's what that voice needs to sound like everywhere it's used\"). Over the low roots in A's back half, B, M and N: the Omnific's power chords, or one upper note of it at their octave, each met halfway with the power chords. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hu0", "Power chords", "The low roots and the Omnific's power chords over them, as round sixteen has it (the full pair's).", round17()),
+        ("hu1", "The upper octave alone", "The power chords' root alone, an octave over the low roots.", round17("octave")),
+        ("hu2", "The upper fifth", "The power chords' fifth alone, a fifth over the upper octave.", round17("fifth")),
+        ("hu3", "The upper fourth", "A perfect fourth over the upper octave, the riff's shape moved whole: its F takes a B flat.", round17("fourth")),
+        ("hu4", "The upper third", "A third over the upper octave along the key: G over E, A over F, B over G, F over D, E over C.", round17("third")),
+    ]},
+    {"id": "hn", "half": "battle", "title": "N on the keys lead", "form": FORM_N,
+     "note": "The first lift into N and the second lift's first half (Ryan, 6 November: \"I suspect I want to keep the keys lead power chords, octave under option in N only, and maybe even repeat it so it's twice as long\"). A, B and M keep the Omnific's power chords. The third row runs four bars longer, so it carries on from the same beat only through N's first pass.", "rows": [
+        ("hn0", "The Omnific's power chords", "N as the full pair has it.", round17()),
+        ("hn1", "The keys lead's power chords, an octave under", "The keys lead's power chords an octave under its single notes, in N alone, in place of the Omnific's.", round17(n="keys_chords")),
+        ("hn2", "The same, N twice through", "N's four bars played twice, the keys lead's power chords through both.", round17(n="keys_chords"), FORM_N2),
     ]},
 ]
-PAIR = {"id": "hold_the_line_r16", "title": "Hold The Line, round sixteen"}
-# The battle half's sections as round sixteen plays them, where they differ from the shipped track's.
-NAMES_R16 = {
-    "A": "riff, sixteen bars: four bare, four with a low bass, eight with the bass low on the roots and the Omnific's power chords over it, the last four over the drone, 3 dB up; the chug 3 dB down",
+PAIR = {"id": "hold_the_line_r17", "title": "Hold The Line, round seventeen"}
+# The battle half's sections as round seventeen plays them, where they differ from the shipped track's:
+# the Omnific, wherever it plays, on the dirtier drive.
+NAMES_R17 = {
+    "A": "riff, sixteen bars: four bare, four with a low bass, eight with the bass low on the roots and the Omnific's power chords over it, the last four over the drone, 3 dB up; the chug 3 dB down; the Omnific dirtier, as everywhere it plays",
     "B": "turn bar: one short hit with the power chord on the bass and the Omnific's, the drums filling",
     "C": "lift: the fingers bass alone on the riff, piano stabs, metal chime, brass, syncopated snare, choir, a tom fill closing it",
     "N": "the riff again, the chug's and the Omnific's power chords over the drone, 3 dB up, and the bass low on the roots, the chug 3 dB down",
@@ -893,7 +953,7 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold16_" + SETS[si]["id"])
+    F.seed("hold17_" + SETS[si]["id"])
     row = SETS[si]["rows"][ri]
     edit, form = row[3], row[4] if len(row) > 4 else SETS[si]["form"]   # a row may cut its own bars (K's lengths)
     with P.Patched(_steps=run_steps):
@@ -905,7 +965,7 @@ def render_row(job):
 
 
 def full_path(half):
-    return os.path.join(P.OUT, "hold16_full_%s.wav" % half)
+    return os.path.join(P.OUT, "hold17_full_%s.wav" % half)
 
 
 def render_full(half):
@@ -913,7 +973,7 @@ def render_full(half):
     if half == "battle":
         F.seed(NAME)
         call = copied(call_on(FORM_K, METER))
-        round16()(call)
+        round17()(call)
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
@@ -950,7 +1010,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold16.json")
+    manifest_path = os.path.join(P.OUT, "hold17.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -962,7 +1022,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, *_edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold16_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold17_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -974,7 +1034,7 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R16)
+        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R17)
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
                                "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels}]

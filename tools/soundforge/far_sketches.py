@@ -1,15 +1,21 @@
-"""The Far Bank's map half, its seventh round (Ryan, 5 November, on the sixth): his picks of the
-sixth, and the lift's choir rising less.
+"""The Far Bank's map half, its eighth round (Ryan, 6 November, on the seventh): his pick of the lift,
+and the plucked string in tune.
 
-  "Far bank map - fretless bass wins, as does the 'half as far' option for the climax. In C, let's
-  not swell the volume so far, especially for the choir."
+  "Far bank lift: the half as far, choir level from the full pair is good."; "fix other uses of the
+  plucked string too so I can make sure."
 
-The cellos' and the contrabass's lines on the fretless electric (BASS7), met halfway with the bowed
-pair's level between a phone and full; the climax's swells half as far over their floor (SWELL). No
+The seventh round's pair, rendered again with forge.py's pluck tuned (the tune on the plucked string in
+the strings section and the climax had played every note flat, its high notes by up to a third of a
+semitone). The battle half is the shipped track as it stands in art/audio.
+
+The seventh round's, kept: the cellos' and the contrabass's lines on the fretless electric (BASS7), met
+halfway with the bowed pair's level between a phone and full; the climax's swells half as far over their
+floor (SWELL; 5 November: "fretless bass wins, as does the 'half as far' option for the climax"). No
 voice swells in the lift (C): the choir's pad, the one choir from the intro to the lift, doubles there
 in the recipe, but the lift rises mostly because its contrabass line on the fretless comes in 11 dB over
-the groove's bass on a phone: the pair's lift comes in half as far, the fretless and the bells 3 dB
-down there and the choir held level (CHOIR_LIFT, LIFT_DB), with a set beside it.
+the groove's bass on a phone ("In C, let's not swell the volume so far, especially for the choir"): the
+lift comes in half as far, the fretless and the bells 3 dB down there and the choir held level
+(CHOIR_LIFT, LIFT_DB), his pick.
 
 The sixth round's, kept: the cellos and the contrabass on a true bass instrument, not the battle's
 saw strings dropped ("make the map half not just sound like the battle half with the percussion taken
@@ -26,7 +32,7 @@ at half speed and one echo in the groove and the lift alone, the climax's full; 
 and the climax without the battle's orchestra, the horns' break-ins in the strings section on the
 bells, no horns' melody in the climax, a soft sub on the roots for the cellos and the contrabass.
 
-    tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py      # the pair and the set, then far7.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py      # the pair (and a set, when there is one), then far8.json beside the pairs
 """
 import json
 import os
@@ -41,7 +47,7 @@ import pair_sketches as P  # noqa: E402
 from hold_sketches import master_together, unmastered  # noqa: E402
 
 NAME = "music_far_bank"
-PAIR = {"id": "far_bank_r7", "title": "The Far Bank, round seven"}
+PAIR = {"id": "far_bank_r8", "title": "The Far Bank, round eight"}
 FOURTH = os.path.join(P.OUT, "far_bank_r4_map.wav")   # the fourth round's pair's map half, as it was heard
 MAP_LEVEL = P.PAIRS["far_bank"]["level"]   # the first round's map level, 3 dB under the battle half on a phone
 QUIET_ECHO = (3, 0.42, 1)   # the bells' echo, once
@@ -318,13 +324,7 @@ def render_five(job):
 # Each set: (id, title, note, the bars cut by index from 0, or None for the whole half, and its rows:
 # (the render, title, note)).
 PAIR_JOB = (BASS7, SWELL, CHOIR_LIFT, LIFT_DB)
-SETS = [
-    ("fc", "The lift", "From the groove's start through the lift into the strings section, on the fretless with the climax's swells half as far, the lift coming in less far (Ryan, 5 November: \"In C, let's not swell the volume so far, especially for the choir\"). On a phone the lift stood 5.9 dB over the groove, its contrabass line on the fretless 11 dB up from the groove's bass, the choir 7 and the bells 4.", (8, 25),
-     [((BASS7, SWELL, 2.0, 0.0), "As the sixth round had it", "The lift 5.9 dB over the groove on a phone, the choir doubled there."),
-      ((BASS7, SWELL, 1.0, 0.0), "The choir held level", "The choir at its own level through the lift, nothing else changed: 4.7 dB over the groove."),
-      ((BASS7, SWELL, 1.414, -3.0), "Half as far", "The fretless and the bells 3 dB down in the lift, the choir 3 dB up rather than 6."),
-      ((BASS7, SWELL, 1.0, -3.0), "Half as far, the choir held level", "The fretless and the bells 3 dB down in the lift, the choir at its own level (the full pair's).")]),
-]
+SETS = []   # the lift settled on the seventh round's pair (Ryan, 6 November: "the half as far, choir level from the full pair is good")
 
 
 def main():
@@ -361,7 +361,7 @@ def main():
             x = halves[job]
             if cut:
                 x = x[int(round(edges[cut[0]] * F.SR)):int(round(edges[cut[1]] * F.SR))]
-            rows.append({"id": rid, "title": rtitle, "note": rnote, "file": os.path.basename(P.write("far7_" + rid, x)),
+            rows.append({"id": rid, "title": rtitle, "note": rnote, "file": os.path.basename(P.write("far8_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         sets.append({"id": sid, "half": "map", "title": title, "note": note, "rows": rows})
         print("%-2s %s" % (sid, "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -372,7 +372,7 @@ def main():
         "loop_from_bar": 1 + int(P.LOOP_FROM.get(NAME, 0)), "bar_at": [round(float(t), 4) for t in at],
         "sections": [{"section": s, "bars": [b0, b1], "at": round(t0, 2), "what": what} for s, b0, b1, t0, what in runs],
         "levels": levels}]}
-    path = os.path.join(P.OUT, "far7.json")
+    path = os.path.join(P.OUT, "far8.json")
     with open(path, "w") as f:
         json.dump(manifest, f, indent=1)
     print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))

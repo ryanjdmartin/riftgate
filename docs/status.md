@@ -849,7 +849,7 @@ The tasks are the to-do's; this is the index of what waits.
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line
-  on its sixteenth round (5 November), its map half settled on the thirteenth (3 November: "I think
+  on its seventeenth round (6 November), its map half settled on the thirteenth (3 November: "I think
   that's it for this track"): his map picks, X on the violins, U on the clean guitar, the drone
   moved to R, W low with a roll; the map half minimal, the lifts as they were with the riff on the
   soft sub and the tine piano and the first lift's bell calmer (5 November: "Map lifts should keep
@@ -868,13 +868,19 @@ The tasks are the to-do's; this is the index of what waits.
   on the bass; his picks of the fifteenth ("HTL: omnific power chords option, no backing guitar in
   C, backing guitar up 3db in L, keys lead on L riff"), the Omnific's power chords over the low
   roots in A's back half, B, M and N ("Make sure B and M keep the new voices too"), B's chug hit 3
-  dB down with A's and N's; on trial, the backing guitar's power chords, the keys lead or its power
-  chords in place of the Omnific's (6 November: "keys lead variation but with power chords"), the
-  lifts doubled an octave down on the fingers, and the Omnific a bit dirtier ("just a bit dirtier").
+  dB down with A's and N's; the Omnific on its dirtier drive wherever it plays (6 November: "That
+  Omnific voice change is perfect, that's what that voice needs to sound like everywhere it's
+  used"), the first lift settled ("C is perfect how it is now"); on trial, one upper note of the
+  Omnific in the power chords' place over the low roots (the octave, the fifth, a perfect fourth,
+  the third along the key), and N alone on the keys lead's power chords an octave under, once or
+  twice through ("I suspect I want to keep the keys lead power chords, octave under option in N
+  only, and maybe even repeat it so it's twice as long").
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its nineteenth (the map's intro without its front and its muted guitar out, his
-  call of 4 November: "Map groove sounds better without the muted guitar"; the battle half a whole
+  Night Shift on its twentieth (the map's intro without its front and its muted guitar out, his
+  call of 4 November: "Map groove sounds better without the muted guitar", its drums 3 dB down in C
+  and R on trial, 6 November: "it's version of R is a little too busy for the map and I think it's
+  the drums"; the battle half a whole
   jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms with
   the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two together,
   the intro on three-three-two, D the piano's turn and the factory's blended over Hold The Line's
@@ -894,7 +900,10 @@ The tasks are the to-do's; this is the index of what waits.
   break on trial; the backing trading the tune under them at one level 3 dB under the basses ("keep
   their volumes consistent so they don't overshadow the basses"; "Keep the backing voices at the
   3db under, that works"), the FM synth out of R and the outro ("sounds like a glitch or alarm going
-  off"), the plucked string in tune (forge.py's pluck had played every note flat, B5 by 32 cents:
+  off"; "It sounds good when it's being highlighted, if it's just plucking notes in the background
+  it just sounds like weird boops"), the lower's unison in one octave or in two both working ("it was
+  whether the lower line kept its lower octave unison as well"), the two octaves on trial beside the
+  upper's chords and the upper on the dirtier Omnific, the plucked string in tune (forge.py's pluck had played every note flat, B5 by 32 cents:
   "it comes across as sounding like the note is flat"), the rhythm guitar in the breakdown's ringing chords alone
   and the lead guitar's lines kept ("Yes, keep the lead guitar. Put the the rhythm guitar back in on
   B"), the plucked string 3 dB down wherever it plays ("Plucked string -3Db is good"), the bass 3 dB
@@ -902,7 +911,7 @@ The tasks are the to-do's; this is the index of what waits.
   fingers-into-a-modern-drive-prog bass you built"), since the modelled basses read as guitars, C's
   long notes, the lead guitar's line, on that bass an octave under the guitar ("wherever there's a
   lead guitar, I want that bass instead playing the high lines"), the synth lines voiced for each
-  turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half on its seventh round,
+  turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half on its eighth round,
   its flip retired (31 October: the bells calm in the groove and the lift alone, the strings section
   and the climax off the battle's orchestra; 4 November: the tune on the plucked string one note at
   a time in both, 6 dB under the violins' level in the strings section ("6db under good") and at it
@@ -911,7 +920,12 @@ The tasks are the to-do's; this is the index of what waits.
   ("not just sound like the battle half with the percussion taken out"; 5 November: "fretless bass
   wins, as does the 'half as far' option for the climax"), the lift coming in half as far, the
   fretless and the bells 3 dB down there and the choir held level ("In C, let's not swell the volume
-  so far, especially for the choir"), the climax's bells full); those waiting on his ear; then the
+  so far, especially for the choir"; 6 November: "the half as far, choir level from the full pair is
+  good"), the climax's bells full, the plucked string in tune); every plucked voice on the pair page
+  rendered again in tune where its pair is a later round's (6 November: "fix other uses of the
+  plucked string too so I can make sure"), the shipped tracks in art/audio not, since a sketch never
+  overwrites a shipped file: the string under their guitars, harps, pizzicato and basses plays flat
+  there until they are rendered again (his call); those waiting on his ear; then the
   engine (a pair as one synchronized stream, the map choosing the track, the 3 s flip) and each
   picked half into the forge's SHIP table, Hold The Line's first.
 
@@ -1021,9 +1035,10 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file is v0.470 (Night Shift's track row on its
-  nineteenth round), not yet published: a permission check blocked the publish on 6 November as
-  unrequested, so it waits on Ryan's go; the live page had not moved. The live page is v0.469 (the
+  `docs/design-bible.html` after every change. This file is v0.470 (the track table's rows on Night Shift's
+  nineteenth and twentieth rounds, Hold The Line's seventeenth and The Far Bank's pick of the lift),
+  not yet published: a permission check blocked the publish on 6 November as unrequested, so it
+  waits on Ryan's go; the live page had not moved. The live page is v0.469 (the
   page's version 482, published 6 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
   live source whole: Hold The Line's set's new rows, the keys lead's power chords and the Omnific a
   bit dirtier, merged row by row onto the live v0.468 another session published, its long wall
