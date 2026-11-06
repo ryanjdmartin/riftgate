@@ -256,6 +256,13 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			continue
 		for m in sq.member_list():
 			field_menace += db.menace(str(m[0])) * int(m[1])
+	# The tide's first waves (the long wall brief 3.8): the field is thin at the start, so the
+	# thresholds read the first compositions the rift will send as well, as many as the tier's
+	# Fractures, in the cycle's order, each member at the ramp's density. Placeholder.
+	if not field.cycle.is_empty():
+		for k in range(Ramp.fractures_at(tier)):
+			for m in field.cycle[k % field.cycle.size()].get("members", []):
+				field_menace += db.menace(str(m[0])) * Ramp.scaled(int(m[1]), ramp)
 	thresholds = []
 	var n := Ramp.fractures_at(tier)
 	if field_menace > 0 and n > 0:
@@ -295,6 +302,11 @@ func rupture(by_guard: bool = false) -> void:
 	rupture_turn = field.phase
 	stall_guard = by_guard
 	field.log.append("THE RUPTURE: the seal breaks" + (" with the field clear" if by_guard else ""))
+	# The tide quickens (the long wall brief 3.8; Ryan, 6 November, of a re-seal: "Isn't that just
+	# a feel-bad, or a non-choice?"): nothing re-seals, and the beat halves once, so each turn of
+	# delay costs more at the wall and the sally is the release; a peak's own step still applies.
+	field.rift_pressure_max = maxi(1, field.rift_pressure_max / 2)   # placeholder (the long wall brief)
+	field.log.append("the rift convulses: the beat is now %d" % field.rift_pressure_max)
 
 
 ## The Fractures earned by the tally so far, each paying out in turn: the log names it, the

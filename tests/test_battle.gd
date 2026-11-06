@@ -338,6 +338,39 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 	assert_true(bool(b.roster(b.boss).get("all_in", false)), "and its fight takes every machine")
 
 
+## The thresholds read the tide (the long wall brief 3.8): the menace placed at the start and
+## the first compositions the rift will send, as many as the tier's Fractures, at the ramp's
+## density; and the Rupture quickens the tide, the beat halving once, never sealing again.
+func test_the_thresholds_read_the_first_waves_and_the_rupture_halves_the_beat() -> void:
+	var b := Battle.new(3)
+	b.ramp = 5
+	b.setup(_team(), "marsh")
+	var db := b.db
+	var placed := 0
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			for m in sq.member_list():
+				placed += db.menace(str(m[0])) * int(m[1])
+	var waves := 0
+	for k in range(Ramp.fractures_at(b.tier)):
+		for m in b.field.cycle[k % b.field.cycle.size()]["members"]:
+			waves += db.menace(str(m[0])) * Ramp.scaled(int(m[1]), b.ramp)
+	assert_true(waves > 0, "the first waves weigh something")
+	assert_eq(b.field_menace, placed + waves, "the field's menace and the first waves'")
+	b.field.rift_pressure_max = 3
+	b.rupture()
+	assert_false(b.is_sealed(), "the Rupture")
+	assert_eq(b.field.rift_pressure_max, 1, "the beat halves, three to one")
+	assert_true("\n".join(b.field.log).contains("the rift convulses: the beat is now 1"), "the log says so")
+	b.rupture()
+	assert_eq(b.field.rift_pressure_max, 1, "once: nothing re-seals and nothing halves it again")
+	var c := Battle.new(3)
+	c.setup(_team(), "marsh")
+	c.field.rift_pressure_max = 1
+	c.rupture()
+	assert_eq(c.field.rift_pressure_max, 1, "never below one")
+
+
 func test_the_stall_guard_breaks_the_seal_once_the_field_is_clear() -> void:
 	var b := _battle()
 	b.thresholds = [100000, 200000, 300000]   # out of reach by the tally
