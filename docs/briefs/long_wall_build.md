@@ -87,7 +87,7 @@ for his marks; "placeholder" is a number set only so the mechanism runs.
 | D11 | No re-seal of the boss; the tide quickens after the Rupture instead. | Ryan, 6 November: "do we need to re-seal the boss? Isn't that just a feel-bad, or a non-choice?"; the quickening Claude's lean, unmoved | Built: nothing re-seals; the timer after the Rupture is a placeholder (3.8) |
 | D12 | The escalation is time's, never the kills'; a Fracture brings the elite and nothing more. | Claude's third round, unmoved (after Ryan: "Let's not trip up at the finish line") | Built: the Fractures and the seal unchanged; no shell |
 | D13 | The player is not told how to beat a formation; no beat line; no plan layer. | Ryan, 6 November: "I don't think we should be telling the player explicitly how to beat a formation. You even said that learning the formations is the mastery."; "Why do we need the beat line, at all ... It's so hamfisted" | Nothing built; nothing shown |
-| D14 | The threat rating of a pack is shown on the map: how many machines it is intended for. | Ryan, 6 November: "The one thing we should do is show the threat rating of a formation on the map. For how many units it's intended for." | Built: `squad` in the sim and on the hold (3.7); the pips are Phase 2 |
+| D14 | The threat rating of a pack is shown on the map: how many machines it is intended for. A formation is a three, a patrol a one, an elite and a boss a true four. | Ryan, 6 November: "The one thing we should do is show the threat rating of a formation on the map. For how many units it's intended for."; and: "a 'true' 4 should be reserved for elites and bosses, with formations a 3. Then the decision becomes a 1-3 split, a 2-2 split where one is safe and one short (or taking two 3 fights short, or two patrol fights safe), or all 4 on the formations and ignoring the flanks." | Built: `squad` in the sim and on the hold (3.7); the pips are Phase 2 |
 | D15 | The two views are a purely visual option: the wall at the left with the rift at the right, or the wall at the bottom with the rift at the top. | Ryan, 6 November: "I meant have a purely visual option between wall left + gate right and wall bottom + gate top. Just because some people like playing up instead of sideways." (his "gate right" reads as the rift's side, the wall and the gate being one side) | Phase 2 (section 7) |
 | D16 | Rerolls are two a round. | Ryan, 6 November | Already built on `ccr-56b5169d-lsa2rg` |
 | D17 | The battle opens with the siege under way, not with empty turns. | Claude's third round, unmoved | Built with placeholders (3.2) |
@@ -262,13 +262,23 @@ what it is and cites this brief.
 
 ### 3.7 The threat rating in the sim
 
-- Every pack on the map carries `squad: int` (1, 2 or 4): from its composition's `squad` when
-  content gives one, else from its size, patrol 1 and every other size 4 (the placeholder
-  default; section 6). A one-type pack with no composition (the harness's composed side) reads
-  4. The boss unit reads 4. Saved and loaded.
+- Every pack on the map carries `squad: int` (1 to 4): from its composition's `squad` when
+  content gives one, else from its size (Ryan, 6 November): a patrol 1, a formation 3, an
+  elite 4, an escort 4. A one-type pack with no composition (the harness's composed side) reads
+  3. The boss unit reads 4. Saved and loaded. The default by size is his; a composition's own
+  value, when the formation pass writes one, overrides it, and 2 is a legal value for a heavy
+  patrol that pass may author.
 - The hold (`Battle.roster` and whatever the map's readout strings come from) says "A fight
-  for one", "for two", "for four" as the first line after the pack's name. Nothing else is
-  added to the hold.
+  for one", "for two", "for three", "for four" as the first line after the pack's name.
+  Nothing else is added to the hold.
+- The shape this sets, so the bot and the reads are built to it: fighting as four is the safe
+  play, the lightest in hull and the heaviest at the wall, so a four on a formation is
+  overkill the wall pays for; the default posture is three on the formation and one on the
+  flank; a pair on a formation is short, a pair on a patrol is safe; an elite or a boss asks
+  for all four and breaks the posture. The refit the reads inform (not run here, section 9)
+  is held to: a pack for N fought by N costs the team about its shields and a tenth of its hull
+  at competent play; by N − 1 about a quarter, with a real chance of a wreck on the greedy
+  rung; by N + 1 almost nothing.
 - The runner reads it (section 5).
 
 ### 3.8 The thresholds, and the timer after the Rupture
@@ -307,8 +317,10 @@ Dingo's two actions, every passive, every piece of content not named in section 
 - **The pressure ratio**, a measure in `BattleBot` reported by the campaign runner: at the
   start of each player turn, `demand` is the sum of `squad` over the packs on the apron and the
   packs whose planned walk ends on the apron this coming enemy turn; the ratio is `demand /
-  max(1, machines alive)`. Report per run: the mean over turns, the share of turns above 1.0,
-  and the mean of each battle's maximum.
+  max(1, machines alive)`. With a formation a three and a patrol a one, a wave of one formation
+  and one patrol reads exactly 1.0, the 3-1 posture; two formations read 1.5, a split short.
+  Report per run: the mean over turns, the share of turns above 1.0, and the mean of each
+  battle's maximum.
 - **The campaign runner** (`docs/campaign_run.md`) also reports: fights a battle by the pack's
   `squad` and by the machines in them (the fight-size table reworked to those two axes); gate
   damage a battle (exists); peaks a battle and packs sent (exist); the wall's length and the
@@ -318,18 +330,21 @@ Dingo's two actions, every passive, every piece of content not named in section 
   `--shape steppe`.
 - **The promise read** in `tools/balance.gd`: `--packs promise` runs, for every composition of
   every domain at each tier it names, the runner's default four-machine team cut to the
-  composition's `squad` (its first one, two or four machines, in the team's order) against it,
-  at the seeds given, and reports the win rate and rounds per cell. A direction, read beside
-  the other cells, never a gate.
+  composition's `squad` (its first N machines, in the team's order) against it, and beside it
+  the same team cut to N − 1 (short) and to N + 1 (over, where N is under 4), at the seeds
+  given, reporting the win rate, the rounds and the hull lost per cell. A direction, read
+  beside the other cells, never a gate; the band between short, intended and over is what the
+  refit (section 9) will be held to.
 
 ## 6. Content: the composition schema, and nothing else
 
 `content/factions.json`, the `compositions` list, with `_about` rewritten to say exactly this
 and `sim/content_db.gd`'s validator holding it (the checks at lines 2146 to 2215 extended):
 
-- `squad` (optional): 1, 2 or 4, the machines the composition is intended for; when absent the
-  engine reads patrol as 1 and every other size as 4 (placeholder). No composition in content
-  gets a value in this build; the formation pass does, in chat.
+- `squad` (optional): 1, 2, 3 or 4, the machines the composition is intended for; when absent
+  the engine reads a patrol as 1, a formation as 3, an elite as 4 and an escort as 4 (Ryan, 6
+  November). No composition in content gets a value in this build; the formation pass does,
+  in chat.
 - `layout` (optional): `{"front": [c, c, c, c], "back": [c, c, c, c]}`, left to right as the
   formation stands; each cell `null` (empty), a foe id, or a list of foe ids from which the
   seed draws one. A size-2 foe's id stands in a front cell and its back cell is `null` (the
@@ -451,9 +466,11 @@ Listed so the hand-back repeats them and nobody fills them.
 6. The hex size floor against the depth, on the phone.
 7. The views' default and the 3D tilt in the left view, on the phone.
 8. The numbers: the wall's length and the depth, the beat, the opening rows and the opening
-   pressure, the spread, the attack range, the timer after the Rupture, the thresholds' base,
-   the default squad by size; each a placeholder here, each moved only on his word after the
-   reads.
+   pressure, the spread, the attack range, the timer after the Rupture, the thresholds' base;
+   each a placeholder here, each moved only on his word after the reads. The default squad by
+   size is his (a patrol 1, a formation 3, an elite and an escort 4) and is not a placeholder;
+   an elite must then earn its four, which is the elites' numbers item already his (the
+   to-do).
 9. Every foe's blow, every chassis's shield and the shield regen values: the refit against the
    new shape is his call after the reads (the proposal's section 4.2 tests), and the stock pass's
    loops are not run in this build.

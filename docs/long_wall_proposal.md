@@ -543,7 +543,12 @@ formation on the map, for how many units it's intended for"): every pack wears i
 one to four machine pips under its count badge, the size its script was authored for; the hold
 repeats it in words. Authored, never computed, so it is the designer's promise, and the runner
 checks the promise (a pack for one is beaten by one stock machine of its tier in most seeds, a
-pack for four by four). No other hint on the map.
+pack for four by four). No other hint on the map. The sizes (Ryan, 6 November): a patrol is a
+one, a formation a three, an elite and a boss a true four, since "the 'safe' play for the
+player is fighting as 4, as that should be the lightest hull cost but the heaviest wall damage
+cost"; so "the decision becomes a 1-3 split, a 2-2 split where one is safe and one short (or
+taking two 3 fights short, or two patrol fights safe), or all 4 on the formations and ignoring
+the flanks". A two stays a legal size for a heavy patrol the formation pass may author.
 
 1. **Several fights a turn, without clunk and without teaching "stay grouped".** Each machine
    has one action: move, then fight the pack it is ordered onto. Orders onto different packs
