@@ -385,7 +385,7 @@
     box.innerHTML = '';
     var seen = {};
     t.sections.forEach(function (s) {
-      if (s.bars[1] - s.bars[0] < 3 || seen[s.section]) return;   // the turns and the repeats need no chip of their own
+      if (!/\d/.test(s.section) && (s.bars[1] - s.bars[0] < 3 || seen[s.section])) return;   // the turns and the repeats need no chip of their own, but a named part (R6) always has one
       seen[s.section] = true;
       var b = document.createElement('button');
       b.className = 'chip';
