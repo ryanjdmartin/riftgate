@@ -897,7 +897,7 @@ func test_greedy_turns_a_stepping_die_toward_a_better_chamber() -> void:
 	assert_eq(pol.reroll_worth(sk, ms), pol.face_value(sk, ms, ms.die.faces[1]), "the next chamber's worth, not the die's mean")
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 1, "the ten turns to the forty, and the forty holds against a five")
-	assert_eq(sk.rerolls_left, 2, "one reroll spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 1, "one reroll spent")
 
 
 ## A plain Rapid entry (4 November): spent, its machine acts again, so the bot values it at its
@@ -960,7 +960,7 @@ func test_greedy_holds_a_stepping_die_to_open_the_next_round_on_its_better_chamb
 	ms.face_index = 0
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 0, "the twenty holds: a step would spend the twenty-one now and open on a two")
-	assert_eq(sk.rerolls_left, 3, "no reroll spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "no reroll spent")
 
 
 ## The cycle reaches past the next chamber: two steps through a weak one to the big gun.
@@ -972,7 +972,7 @@ func test_greedy_steps_a_stepping_die_through_a_weak_chamber_to_a_big_one() -> v
 	assert_eq(int(pol.cycle_plan(sk, ms, 3)["steps"]), 2, "two steps to the forty")
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 2, "the ten steps past the five to the forty")
-	assert_eq(sk.rerolls_left, 1, "two rerolls spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 2, "two rerolls spent")
 
 
 ## A spinning chamber (the Spin-Up's) is worth its own spend and the spin after it, so the bot

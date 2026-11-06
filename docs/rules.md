@@ -88,7 +88,7 @@ skirmish.
   move's damage times strikes, a breach 1 more; ties in arrival order). Foes left over wait as reinforcements.
 
 ### The round
-1. Rerolls reset to three (less any a foe drained). Every machine sheds heat by its cooling.
+1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling.
    Every die rolls; entries are equally likely. Round-start passives fire.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
    intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
@@ -113,7 +113,7 @@ The fight ends the moment it is decided, mid-turn too: victory when no foe stand
 defeat when every machine is wrecked. There is no round limit.
 
 ### Dice
-- **Rerolls**: three a round for the team, never banked (Maverick's Playbook, the Giant
+- **Rerolls**: two a round for the team, never banked (Maverick's Playbook, the Giant
   Petrel's passive, below, the one exception). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Double-tap or hold a die
@@ -132,7 +132,7 @@ defeat when every machine is wrecked. There is no round limit.
   the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
 - **Maverick's Playbook** (the Giant Petrel's passive): the team's rerolls unspent as the
   player's turn ends are banked, up to three, and come back at the next round's start beside
-  its three, spent like any reroll; a roar's cost comes off the whole. It banks while the
+  its two, spent like any reroll; a roar's cost comes off the whole. It banks while the
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
 - **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
   vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid excepted). A blank does

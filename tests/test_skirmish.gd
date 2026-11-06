@@ -725,9 +725,9 @@ func test_rerolls_are_limited_and_work_after_attacking() -> void:
 	sk.start_round()
 	assert_true(sk.assign(0, sk.front[0]), "A attacks first")
 	assert_true(sk.reroll([1]), "then B rerolls: attack-then-reroll is allowed")
-	assert_true(sk.reroll([1]), "second reroll")
-	assert_true(sk.reroll([1]), "third reroll")
-	assert_false(sk.reroll([1]), "fourth refused")
+	for n in range(Skirmish.REROLLS_PER_ROUND - 1):
+		assert_true(sk.reroll([1]), "reroll %d of the round's" % (n + 2))
+	assert_false(sk.reroll([1]), "one past the round's refused")
 
 
 func test_same_seed_same_rolls() -> void:
@@ -2150,7 +2150,7 @@ func test_rapid_rolls_again_for_free_and_switches_itself_off_for_the_round() -> 
 	assert_true(sk.assign(0, sk.front[0]), "fire the rapid gun")
 	assert_eq(sk.front[0].hp, 190, "ten landed")
 	assert_false(sk.mechs[0].assigned, "the mech may act again")
-	assert_eq(sk.rerolls_left, 3, "the reroll was free")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "the reroll was free")
 	assert_eq(sk.mechs[0].face_index, 1, "the die rolled to the other entry, never the same one")
 	assert_true(sk.mechs[0].die.faces[0].has(K.RAPID), "the component itself is untouched")
 	sk.mechs[0].face_index = 0

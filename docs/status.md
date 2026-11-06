@@ -24,8 +24,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 989 tests, 256,954 checks, green (4 November, main's head as the audit landed, Godot 4.8-beta2);
-  about four minutes in a cloud session, twenty on a slow one.
+- Tests: 989 tests, 256,952 checks, green (6 November, `ccr-56b5169d-lsa2rg` with the rerolls at
+  two, Godot 4.8-beta2); about four minutes in a cloud session, twenty on a slow one. A cloud
+  container whose import predates a branch's new `class_name` fails the screen and rig suites
+  with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`: the release asset
   `Godot_v4.8-beta2_linux.x86_64.zip` from `godotengine/godot-builds` into `~/bin`; without the
@@ -66,7 +68,9 @@ the live page (Pages); `claude/aphelion-minerva-chassis-9qf6cy`, Ryan's chassis 
 November (his ideas and Claude's first round, a proposal); `ccr-56b5169d-lsa2rg`, Ryan's
 redesign of 5 November (the battle as the defence of a long wall, the packs as designed
 formations, the shield the fight's resource: his direction and Claude's first round as
-`docs/long_wall_proposal.md`, nothing built, his marks next).
+`docs/long_wall_proposal.md`, his marks next); the one thing built on it so far is the rerolls at
+two a round (Ryan, 6 November: "we might as well try it"; the bible's rerolls row, the rules,
+the vocabulary, the Petrel and stepping-die tests against the constant).
 
 ## The design sessions
 

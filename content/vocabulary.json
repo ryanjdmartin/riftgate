@@ -63,7 +63,7 @@
    "id": "reroll",
    "category": "resource",
    "name": "Reroll",
-   "codex": "Three rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds, unless a Giant Petrel fights: its Maverick's Playbook banks up to three left unspent as your turn ends, for the next round.",
+   "codex": "Two rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds, unless a Giant Petrel fights: its Maverick's Playbook banks up to three left unspent as your turn ends, for the next round.",
    "status": "implemented",
    "design": {
     "holes": ""

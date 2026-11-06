@@ -26,7 +26,7 @@ enum State { SETUP, ROUND_START, ASSIGN, DONE }
 enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
-const REROLLS_PER_ROUND := 3
+const REROLLS_PER_ROUND := 2   # two since 6 November (Ryan: a reroll gained is worth more, and two is the standard; a trial)
 ## The shapes a foe past a strike's target stands in (area by shape, numbered: Ryan, 28 October),
 ## each its own number in place of the roll (area_shapes, area_number).
 const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's

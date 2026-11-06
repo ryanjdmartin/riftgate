@@ -232,27 +232,29 @@ func test_the_bank_carries_unspent_rerolls_up_to_its_cap_while_it_fights() -> vo
 	p.grant_passive(BANK)
 	var a := _mech("A", Die.of([Face.attack(1, L), Face.attack(2, L)]))
 	var sk := _fight([p, a], [_foe(300), _foe(300)])
-	assert_eq(sk.rerolls_left, 3, "three a round")
+	var r := Skirmish.REROLLS_PER_ROUND
+	assert_eq(sk.rerolls_left, r, "the round's")
 	sk.end_round()
 	sk.start_round()
-	assert_eq(sk.rerolls_left, 6, "three fresh and three banked")
-	for n in range(4):
+	assert_eq(sk.rerolls_left, r * 2, "the round's fresh, and the last round's banked")
+	for n in range(r):
 		assert_true(sk.reroll([1]), "a reroll spent")
 	sk.end_round()
 	sk.start_round()
-	assert_eq(sk.rerolls_left, 5, "two left were banked")
+	assert_eq(sk.rerolls_left, r * 2, "what was left was banked")
+	sk.rerolls_left = 9
 	sk.end_round()
 	sk.start_round()
-	assert_eq(sk.rerolls_left, 6, "the bank holds three at most")
+	assert_eq(sk.rerolls_left, r + 3, "the bank holds three at most")
 	sk.reroll_debt = 2
 	sk.end_round()
 	sk.reroll_debt = 2
 	sk.start_round()
-	assert_eq(sk.rerolls_left, 4, "a roar's cost comes off the whole")
+	assert_eq(sk.rerolls_left, r + 3 - 2, "a roar's cost comes off the whole")
 	p.hull = 0
 	sk.end_round()
 	sk.start_round()
-	assert_eq(sk.rerolls_left, 3, "the banker wrecked, nothing banks")
+	assert_eq(sk.rerolls_left, r, "the banker wrecked, nothing banks")
 
 
 func test_a_team_without_a_banker_keeps_nothing() -> void:
@@ -260,7 +262,7 @@ func test_a_team_without_a_banker_keeps_nothing() -> void:
 	var sk := _fight([a], [_foe(300)])
 	sk.end_round()
 	sk.start_round()
-	assert_eq(sk.rerolls_left, 3, "never banked")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "never banked")
 
 
 func _booster() -> Face:
@@ -279,13 +281,14 @@ func test_the_booster_rallies_itself_or_buys_a_spent_allys_action() -> void:
 	pm.face_index = 0
 	assert_eq(sk.machine_targets_for(pm, pm.face()), [pm], "the ally has not spent: itself alone")
 	assert_true(sk.assign(0, pm), "on itself")
-	assert_eq(sk.rerolls_left, 4, "the team gains a reroll")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND + 1, "the team gains a reroll")
 	assert_false(pm.assigned, "Rapid: it acts again")
 	sk.end_round()
 	sk.start_round()
 	am.face_index = 0
 	assert_true(sk.assign(1, sk.front[0]), "the ally acts")
 	pm.face_index = 0
+	sk.rerolls_left = 3   # the price in hand (at two a round, a bank's worth: the engine reads banked or fresh alike)
 	assert_true(sk.machine_targets_for(pm, pm.face()).has(am), "a spent ally, three rerolls in hand: a target")
 	assert_true(sk.assign(0, am), "the Booster on the spent ally")
 	assert_eq(sk.rerolls_left, 0, "three rerolls paid")
@@ -308,7 +311,7 @@ func test_the_salvo_brings_rerolls_on_a_kill_and_the_bank_keeps_them() -> void:
 	p.grant_passive(BANK)
 	var sk := _fight([p], [_foe(50), _foe(5)])
 	assert_true(sk.assign(0, sk.front[0]), "a shot that kills nothing")
-	assert_eq(sk.rerolls_left, 3, "no kill, no rerolls")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "no kill, no rerolls")
 	sk.end_round()
 	sk.start_round()
 	var before := sk.rerolls_left
@@ -317,7 +320,7 @@ func test_the_salvo_brings_rerolls_on_a_kill_and_the_bank_keeps_them() -> void:
 	assert_eq(sk.rerolls_left, before + 2, "the kill brings two")
 	sk.end_round()
 	sk.start_round()
-	assert_eq(sk.rerolls_left, 6, "banked as the turn ended, up to the cap")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND + 3, "banked as the turn ended, up to the cap")
 
 
 func test_the_uplink_overcharges_an_ally_and_rolls_its_die() -> void:
@@ -349,11 +352,11 @@ func test_the_bank_rides_in_a_copy_and_a_save() -> void:
 	p.grant_passive(BANK)
 	var sk := _fight([p], [_foe(300)])
 	sk.end_round()
-	assert_eq(sk.banked, 3, "three banked as the turn ended")
+	assert_eq(sk.banked, Skirmish.REROLLS_PER_ROUND, "the round's rerolls banked as the turn ended")
 	var copy := SaveGame.clone_skirmish(sk)
-	assert_eq(copy.banked, 3, "the planner's copy carries the bank")
+	assert_eq(copy.banked, Skirmish.REROLLS_PER_ROUND, "the planner's copy carries the bank")
 	copy.start_round()
-	assert_eq(copy.rerolls_left, 6, "and spends it")
+	assert_eq(copy.rerolls_left, Skirmish.REROLLS_PER_ROUND * 2, "and spends it")
 
 
 # ---------------------------------------------------------------- the bot
@@ -382,6 +385,7 @@ func test_the_bot_holds_rerolls_for_an_action_worth_its_price_and_buys_it() -> v
 	var sk := _fight([p, a], [_foe(900), _foe(900)])
 	sk.mechs[0].face_index = 0
 	sk.mechs[1].face_index = 1
+	sk.rerolls_left = 3   # the price in hand, as a bank would leave it
 	var bot := Policy.make(Policy.GREEDY, 1)
 	assert_eq(bot._action_reserve(sk), 3, "the Booster showing, an ally's action worth its price: three kept from the looks")
 	bot.play_round(sk)
@@ -395,6 +399,7 @@ func test_the_bot_prices_rerolls_paid_mid_round_by_what_the_bank_carries() -> vo
 	var sk := _fight([p, a], [_foe(900)])
 	var rv := Policy.reroll_value(sk)
 	assert_true(rv > 0.0, "a reroll is worth a share of the team's blow")
+	sk.rerolls_left = 3
 	assert_eq(Policy.bank_delta(sk, -3), 3.0 * rv, "three left and a bank of three: paying three gives up three banked")
 	sk.rerolls_left = 6
 	assert_eq(Policy.bank_delta(sk, -3), 0.0, "six left: the bank keeps three whatever is paid")
@@ -410,6 +415,7 @@ func test_the_bot_buys_no_action_worth_less_than_its_price() -> void:
 	var a := _mech("A", Die.of([Face.attack(1, L), Face.attack(2, L)]))
 	var sk := _fight([p, a], [_foe(900), _foe(900)])
 	sk.mechs[0].face_index = 0
+	sk.rerolls_left = 3   # the price in hand, so what is read is the worth and not the purse
 	var bot := Policy.make(Policy.GREEDY, 1)
 	assert_eq(bot._action_reserve(sk), 0, "a small die's action is worth less than three looks: nothing kept")
 	bot.play_round(sk)
