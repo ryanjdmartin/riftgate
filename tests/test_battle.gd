@@ -84,6 +84,32 @@ func test_setup_places_team_formation_and_boss() -> void:
 
 
 ## The field's size is the ramp's (the long wall brief 3.1): a battle that names none takes
+## No battle opens on a forced fight (Ryan, 6 November: "I probably would shy away from hitting
+## the first battle with a fight in the first turn ... That's just mean"): in every domain, at
+## the foot of the ramp and at its top, at every tier, a pack that hunts opens out of its catch,
+## while the formations still open close to the wall.
+func test_no_battle_opens_on_a_forced_fight() -> void:
+	var db := ContentDB.load_default()
+	var hunters := 0
+	for fid in db.factions.keys():
+		for ramp in [0, 12]:
+			for tier in [0, 1, 2]:
+				for s in range(1, 9):
+					var b := Battle.new(s)
+					b.ramp = ramp
+					b.tier = tier
+					b.setup(_team(), str(fid))
+					assert_true(b.forced.is_empty(), "%s, ramp %d, tier %d, seed %d: no fight forced as the battle opens" % [fid, ramp, tier, s])
+					for sq in b.field.packs():
+						if sq.is_boss:
+							continue
+						assert_true(Hex.axial_to_offset(sq.pos).y >= BattleMap.MOUTH_ROWS, "%s opens out of the rift's mouth" % sq.display_name)
+						if sq.behaviour == "hunt":
+							hunters += 1
+							assert_true(b.field.catch_of(sq) == null, "%s, a hunter, has caught nobody as the battle opens" % sq.display_name)
+	assert_true(hunters > 0, "the content opens hunters somewhere, so the rule is read")
+
+
 ## Ramp.wall_length_at and Ramp.depth_at; at any size the gate stands centred on the wall, the
 ## wall spans the width, the rift is three hexes at the top centre, and four machines stand on
 ## the row before the gate's apron.

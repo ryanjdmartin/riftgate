@@ -999,8 +999,9 @@ a stat.
   patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth, each the
   tier's compositions in turn, the lead's and the guest's in turn with the lead's first, every
   member's strength at the ramp's density (×1 at Convergence 0 to ×1.5 at 12, rounded, never
-  below one). Rift Pressure opens a turn short of its peak. A formation whose lead hunts may
-  catch a machine as the first turn opens.
+  below one). Rift Pressure opens a turn short of its peak. No battle opens on a forced fight:
+  a pack that hunts opens a row further back at a time, never into the mouth, until no machine
+  stands inside its catch, so its first walk comes on the enemy's first turn.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
   and every pack's ring. Each machine has one action (the Dingo two): one move, in one go, then
   it may fight; a fight ends the action however it ends. A selected machine lights the hexes

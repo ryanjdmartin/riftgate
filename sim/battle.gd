@@ -284,10 +284,18 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 ## The opening's row for a pack placed at the start (the long wall brief 3.2): `moves` of its own
 ## pace short of the apron row (a formation one, a patrol two), never into the rift's mouth, at
 ## its column; it lands there as any spawn lands (Battlefield.landing: the nearest hex it can
-## stand on with no machine beside it).
+## stand on with no machine beside it). A pack that hunts opens a row further back at a time
+## until it has caught nobody, so no battle opens on a forced fight (Ryan, 6 November: "I
+## probably would shy away from hitting the first battle with a fight in the first turn, that's
+## for sure. That's just mean"); its first walk is the enemy's first turn, after the player's.
+## No hunter's ring passes 3 and the machines open four rows or more below the mouth, so the
+## mouth's edge always clears.
 func _open_row(sq: Unit, col: int, moves: int) -> void:
 	var row := maxi(BattleMap.MOUTH_ROWS, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
 	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row))
+	while sq.behaviour == "hunt" and row > BattleMap.MOUTH_ROWS and field.catch_of(sq) != null:
+		row -= 1
+		sq.pos = field.landing(sq, Hex.offset_to_axial(col, row))
 
 
 ## Whether the boss's seal holds: it cannot be ordered onto and joins no fight until the Rupture.
