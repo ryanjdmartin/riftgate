@@ -520,6 +520,13 @@ where the next tear opens, both in view.
 
 ### Ryan's points, with Claude's answers
 
+The threat rating (Ryan, 6 November: "the one thing we should do is show the threat rating of a
+formation on the map, for how many units it's intended for"): every pack wears it on the map,
+one to four machine pips under its count badge, the size its script was authored for; the hold
+repeats it in words. Authored, never computed, so it is the designer's promise, and the runner
+checks the promise (a pack for one is beaten by one stock machine of its tier in most seeds, a
+pack for four by four). No other hint on the map.
+
 1. **Several fights a turn, without clunk and without teaching "stay grouped".** Each machine
    has one action: move, then fight the pack it is ordered onto. Orders onto different packs
    queue; ENGAGE plays the queue in the order given, one fight on screen at a time, the map back
@@ -537,12 +544,19 @@ where the next tear opens, both in view.
    seam swallowing them as it creeps; a loot-runner pack that flees the wall as the variant.
    Later, after the loop is read; the boss's fall stays the reward.
 3. **The rear line on a beat.** A formation sized for four has eight slots and twelve to
-   sixteen members. Its reserve arrives on a beat the script names: a round, or a trigger (the
-   lead falls, the front empties). Before the beat a kill's hole stays open, the burst team's
-   window onto the back rank; from the beat the reserve fills holes at the end of each enemy
-   turn, and the reserve holds the formation's heavier pieces. So a team that breaks the plan
-   early fights eight and a slow team fights fourteen, the nasty ones arriving fresh while it is
-   hot and worn. The reserve is finite, so every fight ends; the arrival shows on the beat line.
+   sixteen members; the ones past eight are its second line, which is not on the field and not
+   waiting in the way today's reinforcements wait. It arrives on a beat the script names: a
+   round, or a trigger (the lead falls, the front empties), shown on the beat line ("Second line
+   in 2"). Before the beat a kill's hole stays open; from the beat the second line steps into
+   the holes at the end of each enemy turn, at full HP, and it holds the formation's heavier
+   pieces. A fight that empties the field before the beat ends there: the second line never
+   comes (the formation broke before it arrived), a bonus for burst and a rare one. The designed
+   case is the setup team, which fights the whole formation and has the field prepared when the
+   second line steps in: a mine in the slot, Burn and Flak on the ranks, Shock arcing, area on
+   the holes they fill. The second line is the setup build's payoff, and the reinforcement
+   step is the mine's niche for that reason. A team that neither kills nor sets up meets a
+   fresh line with its shields spent and its heat high: that is the stall's punishment, from
+   the enemy's side and never from a cap. The second line is finite, so every fight ends.
 4. **Recharge.** None, anywhere. The shield and the heat are the fight's: full and zero as every
    fight opens, the way the dice are rolled fresh. The theme is the generators recovering in the
    minutes a map turn takes, where a fight is too short for it; hull is metal and mends in the
@@ -551,8 +565,8 @@ where the next tear opens, both in view.
    machines' wreck, as the boss's fight and the quick campaign already do. Gained: no carry
    rules, no survivor rules, no parting turn, one button fewer, and every commitment on the map
    honest. Lost: the escape hatch and the chip tactic, which the sized packs replace. It needs
-   two guards: the map tells the truth before ENGAGE (the size on the hold, the plan's headline,
-   a lone machine ordered at a pack for four wears the badge red), and every script carries a
+   two guards: the map tells the truth before ENGAGE (the threat rating on the pack itself, below,
+   and nothing more), and every script carries a
    rising threat, a rally, a breach or the reserve's heavy, so no fight is infinite from the
    enemy's side (a lone machine whose blows all bounce against a foe whose blows all bounce is
    the softlock to design out; the runner marks fights past sixty rounds). A hunter's catch is
@@ -562,13 +576,18 @@ where the next tear opens, both in view.
    and the sally is the only release.
 7. **The beat line.** The formation's header on the skirmish screen, one line above the ranks:
    its name and size when nothing is pending ("Goblin Warband · for four"), and otherwise the
-   next beat with its count and what stops it ("2 · Lightning Storm · 4 to every machine ·
-   unless the Shaman falls or is Silenced"). A foe's own chip still shows its move; the line is
-   the plan's telegraph and the answer's hint, the design test made visible. A tap opens the
-   whole script as a timeline, so it is learnable in play and never a wiki.
-8. **Both views.** The sim is orientation-free, and the 2D is a transform. The costs: the hex
-   pixel math's flat-top variant, every overlay through the same transform, the scroll and the
-   off-screen tags for a wall longer than a screen, and the one real design call, the 3D
-   reconstruction's perspective, which recedes toward the rift today and would recede along the
-   wall instead. Every map mark is then judged on the phone twice. Claude's lean: the wall on the
-   left first, proven on the phone, the other as a setting after.
+   next beat with its count and its number ("2 · Lightning Storm · 4 to every machine"). The
+   threat, never the answer (Ryan, 6 November: the player is not told how to beat a formation;
+   learning it is the mastery): what stops a beat stays in the script's design field as the
+   author's discipline and is never shown. A foe's own chip still shows its move. The line
+   shows the next beat alone, as an intent does; the whole script enters the codex once the
+   formation has been met, so it is learned in play and never a wiki.
+8. **Both views.** A purely visual choice (Ryan, 6 November): one field, the wall on one side
+   and the rift on the other, drawn either with the wall at the left and the rift at the right
+   or with the wall at the bottom and the rift at the top, because some players like playing up.
+   The sim never knows. The costs are the view's: the hex pixel math's flat-top variant, every
+   overlay through the same transform, the scroll (down the wall in one, sideways along it in
+   the other, where a long wall is two screens or more at today's hex and wants tags for what
+   is off screen), and the 3D reconstruction's tilt, which recedes toward the rift in one and
+   along the wall in the other, a look to judge. Every map mark is judged on the phone twice.
+   Claude's lean: build one, prove it, add the other as a setting.
