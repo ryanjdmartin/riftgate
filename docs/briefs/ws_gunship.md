@@ -1,5 +1,7 @@
 # Brief: the gunship (proposal)
 
+<!-- hangar: {"kind": "chassis", "maker": "wainwright_sutler", "tier": 2, "status": "proposal", "slot": true, "name": "the gunship"} -->
+
 The session finishes the medium gunship whose fitted weapons raise its numbers by their tags,
 and settles its overlap with the Clydesdale.
 

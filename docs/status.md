@@ -41,11 +41,18 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 4 November 2026. The branches that landed on 3 and 4 November,
-each a session of its own, fully merged and to delete from GitHub and the desk machine (the
-command is in the audit's last chat; `git push origin --delete` the merged ones, then
-`git fetch --prune`): `claude/inspiring-mendel-hkp5na` (the audit of 4 November: the records
-trimmed, the bible's contradictions settled, Ryan's two speedrounds, three engine fixes, main
+Everything is on main as of 5 November 2026 but the two branches still working below. The
+branches that landed on 3 to 5 November, each a session of its own, fully merged and to delete
+from GitHub and the desk machine (the command is in the audit's last chat;
+`git push origin --delete` the merged ones, then `git fetch --prune`):
+`claude/aphelion-minerva-chassis-9qf6cy` (Ryan's chassis session of 4 and 5 November: his ideas
+and Claude's first round, a brief each in `docs/briefs/` with a header the hangar reads, the
+briefs README's "Ten a maker" and "Orbits", the proposal retired,
+`git show a228545:docs/aphelion_minerva_chassis_proposal.md`; the work account scrapped
+everywhere, Ryan: the personal account is the only one; the hangar's Designs tab, whose marks a
+design session folds in first, the briefs README's How a session runs; main took it as a
+fast-forward on his word, "Clean up and merge into main"), `claude/inspiring-mendel-hkp5na` (the
+audit of 4 November: the records trimmed, the bible's contradictions settled, Ryan's two speedrounds, three engine fixes, main
 taken as it landed, and main took it as a fast-forward that evening on his word, "Ok, clean up
 and merge into main"), `ccr-bb178c9b-l6airv` (the playtest list of 2 November and the die's marks; landed a
 second time that evening with Every Foe, Every Ally and Every Other Ally as targeting modes and
@@ -61,20 +68,19 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (4 November, the branch audit; every other branch on GitHub is merged):
-`ccr-7effd31a-u5z4gw`, the music session (Night Shift's and The Far Bank's rounds on the pair
-page), whose bible rows land on the live page ahead of its branch, so a republish merges onto
-the live page (Pages); `claude/aphelion-minerva-chassis-9qf6cy`, Ryan's chassis session of 4
-November (his ideas and Claude's first round, a proposal); `ccr-56b5169d-lsa2rg`, Ryan's
-redesign of 5 November (the battle as the defence of a long wall, the packs as designed
-formations, the shield the fight's resource: his direction and Claude's first round as
-`docs/long_wall_proposal.md`; the build brief `docs/briefs/long_wall_build.md`, written 6
-November on his word for the session that builds it: Phase 1 the sim and the runners with a
-hand-back, Phase 2 the view on his word). Built on it: the rerolls at two a round (Ryan, 6
-November: "we might as well try it"), and Phase 1 whole (6 November; How things stand, below),
-handed back that day with its reads in `docs/measurements.md` (6 November, the long wall's Phase 1
-reads); Phase 2 waits on Ryan's word after he reads the hand-back. Its saves are the battle's 10
-and the run's 9, so a battle saved before is refused.
+Still working (6 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
+music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
+on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
+`ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a long wall,
+the packs as designed formations, the shield the fight's resource: his direction and Claude's
+first round as `docs/long_wall_proposal.md`; the build brief `docs/briefs/long_wall_build.md`,
+written 6 November on his word for the session that builds it: Phase 1 the sim and the runners
+with a hand-back, Phase 2 the view on his word). Built on it: the rerolls at two a round (Ryan,
+6 November: "we might as well try it"), and Phase 1 whole (6 November; How things stand, below),
+handed back that day with its reads in `docs/measurements.md` (6 November, the long wall's Phase
+1 reads); Phase 2 waits on Ryan's word after he reads the hand-back. It took main as the chassis
+session landed (6 November). Its saves are the battle's 10 and the run's 9, so a battle saved
+before is refused.
 
 ## The design sessions
 
@@ -82,20 +88,30 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
 
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`). The Magpie (a working name, a support engine) and the Snowy Owl
-  (a stealth unit) are Ryan's next session, their briefs' first rounds unanswered. The
+  (a stealth unit, leaning to Cryo: Ryan, 5 November) are Ryan's next session, their briefs'
+  first rounds unanswered. The
   Needletail's two modes and the Giant Petrel's catamaran hull are his to pick (the to-do).
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Musk Ox, the
   Whip Scorpion (a rework coming), the Swallowtail and the gunship (very rough; Claude's first
   round in `docs/briefs/ws_gunship.md`) each need a design session for kit and visual design,
   which Ryan starts himself (4 November; the Needletail likewise).
 - Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced Skeleton
-  module); the echidna left open, the siege battery parked on Ryan's charge brief, the
-  battlecruiser never with the Carrier's session.
+  module); the echidna left open (Ryan's new shape of 4 November in its brief), the siege battery
+  parked on Ryan's charge brief, the battlecruiser never with the Carrier's session. Ryan's ideas
+  of 4 November wait on his marks, each in its brief: the lure tank (his tier-one tank, which the
+  Armadillo's move to tier two lands with), the Cryo party defence, the immune one, the mole
+  (its hook later), and the shield bash (the shield-basher cut as a unit, a tier-three piece).
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
-  then the jellyfish; the Carrier on its own; a defensive tier one unproposed (the to-do).
+  then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
+  in its brief: Static, the Barrier and Ward support (the defensive tier one), the Macross
+  flagship, the time-shifter kept unrefined; the status detonator folded into the jellyfish,
+  unrefined; one slot open.
 - The Arsenal: Misharu, the Onryō, Mastema and Minos, Claude's first round and review in their
   briefs, unanswered: Misharu's two calls first (Penance's shape, how often it may fire), then
-  the Onryō's kind and trigger.
+  the Onryō's kind and trigger. On the ten-a-maker plan the frost and thunder figures (Ryan's
+  homages of 4 November) and the Zoids walker move in, each in its brief; its tenth waits until
+  its unrefined ideas settle (Ryan).
+- The roster's tasks, maker by maker, are the to-do's "The roster: ten a maker".
 
 ## How things stand
 
@@ -263,10 +279,9 @@ engine line), since the matrix on file predates everything since 27 October.
 
 ## Pages
 
-Every page lives in Ryan's personal account; the bible, the hangar, the Melody Desk and the
-listening page are shared to his work account as Editor, so either account republishes them by
-URL (read first). Databases are reachable only from the personal account. A page's link goes
-into this file in the same commit as its first publish; the commands are in `README.md`.
+Every page lives in Ryan's account and is republished by its URL (read first), its database
+with it. A page's link goes into this file in the same commit as its first publish; the
+commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file and the live page are v0.468, dated 6
@@ -286,18 +301,21 @@ into this file in the same commit as its first publish; the commands are in `REA
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` read first. At the page's version 207
-  (4 November, from the audit as it landed: `content/vocabulary.json`, `content/foes.json` and
-  `content/factions.json` as main has them, the Nob's older design line a stale publish over
-  206's; `edits` empty). Its lit parts show as the phone's renderer shows
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 208
+  (5 November, from `claude/aphelion-minerva-chassis-9qf6cy` with main merged in, main since: the Designs tab,
+  only the page and `hangar/designs.json` sent, the briefs as of `8187c42`, read back identical;
+  the live page was main's, so nothing another session published was lost; `edits` and
+  `designs` empty). Version 207 before it (4 November, from the audit as it landed:
+  `content/vocabulary.json`, `content/foes.json` and `content/factions.json` as main has them). Its lit parts show as the phone's renderer shows
   them, the light eased by the power 1/2.2 as the game eases it (`MechRig.light`); every file
-  the page reads is fetched with a stamp on the URL. Its database (Ryan's saved edits,
-  collection `edits`; name candidates, `candidates`) opens only from the personal account.
+  the page reads is fetched with a stamp on the URL. Its database: Ryan's saved edits
+  (collection `edits`), name candidates (`candidates`) and his marks on the briefs (`designs`, the
+  Designs tab's).
 - The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, rendered from
   `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background since the go,
   retired once the last brief that cites it lands.
-- The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
-  as Editor); picks and notes in collection `picks`. It holds the boss art round's seventh sets
+- The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei; picks and notes in
+  collection `picks`. It holds the boss art round's seventh sets
   (19 October), all picked on 26 October and cut; the README has the command that builds the
   Augur's sets as a page, and the fix order that worked is the bible's art row.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV
@@ -311,5 +329,5 @@ into this file in the same commit as its first publish; the commands are in `REA
   half's fourth, `far_sketches.py`), at the page's version 22. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
-- The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
+- The engagement sandbox: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
   (`docs/canvas/engagement-sandbox.html`).

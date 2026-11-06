@@ -1,5 +1,7 @@
 # Brief: Misharu, with Penance (proposal)
 
+<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "proposal", "slot": true, "name": "Misharu"} -->
+
 The session settles Misharu's Penance, the weaken that replaced its sentence, against Ryan's
 two holes, which fight each other.
 

@@ -1,5 +1,7 @@
 # Brief: the Baboon to tier two (rework)
 
+<!-- hangar: {"kind": "chassis", "maker": "aphelion", "tier": 2, "status": "rework", "slot": false, "built": "baboon", "name": "the Baboon"} -->
+
 The session settles the Baboon's move to tier two and what it stocks there.
 
 **Status**: rework; Ryan's read (14 October: "the baboon to me reads as tier two, not tier 1,

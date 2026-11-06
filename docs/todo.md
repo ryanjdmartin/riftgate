@@ -12,6 +12,7 @@ line names its debug switch or pose; `README.md`'s Running section says how each
 Calls and marks:
 
 - [ ] Rules for the Muzzle Velocity Booster and the Tactical Databank (planned since 2 November: rolled damage is gone, so a ceiling and a floor move nothing)
+- [ ] Mark the first rounds on your chassis ideas of 4 November (each now a brief in `docs/briefs/`, the roster the briefs README's "Ten a maker"; correct them in the hangar's Designs tab, a session folds those in first): the ten a maker's open calls first (whether the Wild Boar or the mole comes down to tier one beside the lure tank, the two moves to the Arsenal and the merges you have not marked; the roster under Design sessions), then the lure tank's armour with section 12's floor of 1, Static's cascade and triangle, the Macross's shift and its grants; then each brief's open list as its session comes
 - [ ] Mark the session's placeholders in your content pass (31 October): the bosses' escorts at tiers two and three (`docs/bosses_proposal.md`; the read of 2 November: three of them walls), the Ruby Colossus's kit and name, the Djinn's slant in the ranks, Gilgamesh at 40 HP and his one-in-three chance, the massive lines' six recolours and the Marsh's three giants
 - [ ] The Cinder Tortoise at tier three (flagged 2 November, left for now; Withdraw is 2 meanwhile): armour 3 and 5 withdrawn against blows of 2 to 6; read it with a tier-matched kit on `--boss-tiers` before anything moves
 - [ ] The elites session's calls still yours (3 and 4 November): the elites' numbers (the first read: every cell a free win, the lone elites dead in two rounds; the massive band, an escort each, or the curveball on the map: section 12); the Emperor Scorpion's name (the King Scorpion straight is the other); the Thunder Ape's spin and cannonball dive, benched by the three-move budget; the Gargantuan King's name from your "<adjective> King" pattern; every new kit's name and numbers
@@ -51,28 +52,62 @@ Each runs from its brief in `docs/briefs/`, one session each, proposed in chat f
 briefs' README gives the shared context and what each waits on; the order of work is the
 status's.
 
-- [ ] Minerva's replacement tier-one tank or tanks, Ryan's own design (4 November); the Armadillo moves to tier two as it lands (the bible's Armadillo row)
-- [ ] The component pass (Ryan, 4 November: the roster's unsupported archetypes and holes, a fifth basic gun, Indirect, among them; the pool's size by its holes, not a count, about 50 to 75 blueprints his lean), not before more is settled; every piece proposed in chat first
+### The roster: ten a maker
+
+Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster is the briefs README's "Ten a maker" as his calls left it, each design in its brief; the moves and merges he has not marked stand as its plan. Three slots are open (the Magpie's or another Kestrel design, Aphelion's tenth, the Arsenal's tenth), 47 named.
+
+**Kestrel**, ten: eight decided.
+
+- [ ] The Magpie (a working name), Kestrel's support engine (`kestrel_magpie.md`; the first round: the thief, the mimic, the cache; its cache beside the time-shifter's bank), its tier open, the slot open to another design
+- [ ] The Snowy Owl, Kestrel's stealth unit (`kestrel_owl.md`; the first round: cold is quiet, the hunter on the map, Hidden as a status), leaning to Cryo (Ryan, 5 November: "assuming we take the cryo direction with the owl - which makes a lot of sense"); stealth a new rule (Phased cannot act, so it is not stealth)
+
+**Wainwright & Sutler**, ten, all named.
+
 - [ ] The kits and visual designs of five machines, a design session each, Ryan's to start (4 November: "All 5 need a design session to complete their kits and their visual designs. I'll start that up myself"): the Musk Ox, the Whip Scorpion (its rework, tabled 3 November; its blast's random pick is the one draw of the player's turn besides the die; his shapes on the table: a vent, or an ally's vent, giving a temporary buff, the Siphon's heat-on-hit moved to its passive, one strike to the blast per vent in the turn), the Swallowtail, the Needletail, and the gunship (`ws_gunship.md`, "very rough right now and might need to go back to the drawing board"; Claude's first round of 3 November in its brief); their runner reads of 3 November are not his concern until then
-- [ ] The Magpie (a working name), Kestrel's support engine (`kestrel_magpie.md`; the first round: the thief, the mimic, the cache), its tier open
-- [ ] The Snowy Owl, Kestrel's stealth unit (`kestrel_owl.md`; the first round: cold is quiet, the hunter on the map, Hidden as a status), stealth a new rule (Phased cannot act, so it is not stealth)
-- [ ] The echidna (the hedgehog) and its Sonic Needle, with the Retribution Thurible's change (`minerva_hedgehog.md`), left open (Ryan, 20 October)
+
+**Minerva**, ten: the Honey Badger, the Armadillo and the Wild Boar built.
+
+- [ ] Minerva's replacement tier-one tank or tanks, Ryan's own design (4 November): the lure tank (`minerva_lure_tank.md`: "Every hit lures", each hit taken an Armoured until the round's end; its base armour and section 12's floor of 1, what counts as a hit, the bot's lure valuation), or the Wild Boar or the mole come down ("either Boar or Mole will move down"); the Armadillo moves to tier two as it lands (the bible's Armadillo row and section 12's question)
+- [ ] The echidna (the hedgehog) and its Sonic Needle, with the Retribution Thurible's change (`minerva_hedgehog.md`), left open (Ryan, 20 October); his new shape of 4 November (strikers debuffed to hurt themselves after they act) and Claude's first round in the brief
+- [ ] The Cryo party defence (`minerva_cryo_defence.md`; Ryan, 4 November: "units with Cryo deal 1 less damage or something", laid by a party-wide trigger): the trigger first (Claude's lean, a blow on any ally's shield, which parts it from the echidna)
+- [ ] The immune one (`minerva_immune.md`; Ryan, 4 November: immune to every buff and debuff, passed to an ally by a component and taken back, the receiver's statuses cleared): whose statuses, breach, who keeps it when its machine is wrecked
+- [ ] The drill-tank mole (`minerva_mole.md`; Ryan, 4 November: it "needs a better hook than 'ignores armour' but we can work on that later"): its verb, then whether it or the Wild Boar comes down
 - [ ] The siege battery, Ryan's H-tank (`minerva_siege_battery.md`), parked on his charge brief of 20 October until he picks it up
 - [ ] The battlecruiser, Minerva's capital ship (`minerva_battlecruiser.md`), never with the Carrier's session (Ryan, 20 October)
-- [ ] An Aphelion defensive tier one (Ryan, 19 October: to balance the tier-one bodies beside Minerva's and Kestrel's off-tank), in Aphelion's session, with its Shock and Chain setters (a Spread Shock debuff the arc's natural partner, Ryan's lean of 28 October) and its Cryo setter
-- [ ] The roster's synergy holes from the map (`docs/synergy_map.md`), each a piece proposed in chat first: fire's second payoff beyond the Backdraft's stun (a reader that does not consume); a slottable Cryo setter (tier one, Indirect, no damage, Cryo 2 on the foe a hot ally will hit next; Aphelion's by Ryan's lean), which also closes the ally-heat hole; Purge as the first counter every setup status shares; a slottable Expose piece, Kestrel's lean ("Kestrel holds Exposed")
-- [ ] The heat session (`docs/briefs/heat_pillar.md`; Ryan, 28 October: heat is a core pillar and undervalued; the bible's triangle row and section 12's heat question): every component carries a price in heat, hull or shield, so the twelve free slottable pieces get theirs; passive cooling as the lever (0 by default, a chassis's cooling its identity where it keeps one); vent payoffs; the overheat's price first since the read of 30 October (caution costs more than the overheat: a harsher burn, burnout through the injury rule, self-Corrupted, his call by feel; `--overheat N`, `--burnout`, `--overheat-corrupt N`); then the vanilla ladder's heat grid again on the chosen levers before any price lands
-- [ ] The formation content (the long wall brief's open item 10): each domain's formations as layouts, leads, ratings and variants, proposed in chat first, then your notes, then content; the schema is built and empty
-- [ ] The map's shapes relaid for the shallow field, and the authored sectors (the long wall brief's open item 5; at 20 by 12 the depth no longer parts the six shapes, `docs/measurements.md`, 6 November): a content proposal in chat first
+- [ ] The shield bash, a potential Minerva tier-three weapon or module (`minerva_shield_bash.md`; Ryan, 4 November: "bonus damage equal to armour, then armour zero until end of round"; Claude's lean the weapon): its form and numbers, then content as planned
+
+**Aphelion**, nine named and one open: the Stingray and the Baboon built.
+
+- [ ] The Baboon to tier two (`aphelion_baboon.md`; the stock pass left it at tier one), waiting on Ryan; its move waits on another Aphelion tier one landing (the line frame, Static or the Barrier and Ward support)
 - [ ] The line frame, the Gundam homage (`aphelion_line_frame.md`), waiting on Ryan
-- [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), waiting on Ryan; its Disrupt read again after the foes' fresh start
+- [ ] Static, a tier one and Aphelion's shock unit (`aphelion_static.md`; Ryan, 4 November: every weapon or equipment hit lays Static 1, a damaged Static foe hurting itself and the foes round it a point a stack, Static conducting Chain): the cascade, the triangle on strikes, guns and armour
+- [ ] Aphelion's defensive tier one, the Barrier and Ward support (`aphelion_barrier_ward.md`; Ryan, 19 October: to balance the tier-one bodies beside Minerva's and Kestrel's off-tank; 4 November: "Barrier+Ward support. Have to make it interesting but not broken"): its three shapes, Claude's lean the Barrier half; in Aphelion's session its Shock and Chain setters (a Spread Shock debuff the arc's natural partner, Ryan's lean of 28 October) and its Cryo setter
+- [ ] The jellyfish, the soft-control specialist (`aphelion_jellyfish.md`), waiting on Ryan; its Disrupt read again after the foes' fresh start; the status detonator folded in, unrefined (Ryan, 4 November), its shape and holes in the brief
+- [ ] The time-shifter, kept unrefined (`aphelion_time_shifter.md`; Ryan, 17 October: "delaying and redirecting blows"; 4 November: "an entire unexplored area"): the delay, the bank, stasis; Aphelion's open tenth is the time area's if it wants it
 - [ ] The Carrier (`aphelion_carrier.md`), on its own, waiting on Ryan
-- [ ] The Baboon to tier two (`aphelion_baboon.md`; the stock pass left it at tier one), waiting on Ryan
-- [ ] The Zoids walker's maker, then its design (`zoids_walker.md`)
+- [ ] The Macross, Aphelion's flagship at tier three (`aphelion_macross.md`; Ryan, 4 November: three modes, each colouring its attacks and granting allies a buff as it shifts), the aura-shifter folded in: what shifts it, Battroid's Armoured on every ally (the form the Swallowtail's row refused), the bible's transforming chassis pin reopened
+
+**The Arsenal**, nine, its tenth waiting until its many unrefined ideas are settled (Ryan, 4 November): the Nemesis and the Ammit built.
+
 - [ ] Misharu with Penance (`arsenal_misharu.md`), waiting on Ryan
 - [ ] The Onryō's curse, its kind open again since Flak (`arsenal_onryo.md`; Grudge was a working term), waiting on Ryan
 - [ ] Mastema, fire through the team, with the Scapegoat Brand's fate (`arsenal_mastema.md`), waiting on Ryan
 - [ ] Minos (`arsenal_minos.md`), waiting on Ryan
+- [ ] The Zoids walker, the Arsenal's on the ten-a-maker plan (`zoids_walker.md`; Ryan, 12 October: "The kill-turning-rapid as a feline/canine hunter mauling feels very Arsenal"), its verb open again (its first was the Kite's Reset)
+- [ ] The frost figure, the Cryo detonator moved from Aphelion (`arsenal_frost.md`; Ryan, 4 November: "Plants cryo and somehow blows the cryo for damage, adding Suppress if enough stacks consumed"): the one to check for room with the Snowy Owl on Cryo too; if the Owl takes the detonator whole, the Arsenal has two slots open
+- [ ] The thunder figure, the shock unit's Arsenal half (`arsenal_thunder.md`; Ryan, 4 November: "Arsenal is some kind of thunder demon/god homage"): Claude's lean, Chain's capstone at tier three, never another punisher of the striker beside the Onryō and Misharu
+
+**Every maker**
+
+- [ ] The bible's records of the plan, at the Armadillo's move or the next records pass, republished by the Pages procedure: Minerva's, Aphelion's and the Arsenal's next-chassis rows (section 7) for the ten a maker, the jellyfish's fold in Aphelion's row, Aphelion's row's pointer for the time-shifter (its own brief since 5 November), and the transforming chassis pin if the Macross is taken
+
+### The other design sessions
+
+- [ ] The component pass (Ryan, 4 November: the roster's unsupported archetypes and holes, a fifth basic gun, Indirect, among them; the pool's size by its holes, not a count, about 50 to 75 blueprints his lean), not before more is settled; every piece proposed in chat first
+- [ ] The roster's synergy holes from the map (`docs/synergy_map.md`), each a piece proposed in chat first: fire's second payoff beyond the Backdraft's stun (a reader that does not consume); a slottable Cryo setter (tier one, Indirect, no damage, Cryo 2 on the foe a hot ally will hit next; Aphelion's by Ryan's lean), which also closes the ally-heat hole; Purge as the first counter every setup status shares; a slottable Expose piece, Kestrel's lean ("Kestrel holds Exposed")
+- [ ] The heat session (`docs/briefs/heat_pillar.md`; Ryan, 28 October: heat is a core pillar and undervalued; the bible's triangle row and section 12's heat question): every component carries a price in heat, hull or shield, so the twelve free slottable pieces get theirs; passive cooling as the lever (0 by default, a chassis's cooling its identity where it keeps one); vent payoffs; the overheat's price first since the read of 30 October (caution costs more than the overheat: a harsher burn, burnout through the injury rule, self-Corrupted, his call by feel; `--overheat N`, `--burnout`, `--overheat-corrupt N`); then the vanilla ladder's heat grid again on the chosen levers before any price lands
+- [ ] The formation content (the long wall brief's open item 10): each domain's formations as layouts, leads, ratings and variants, proposed in chat first, then your notes, then content; the schema is built and empty
+- [ ] The map's shapes relaid for the shallow field, and the authored sectors (the long wall brief's open item 5; at 20 by 12 the depth no longer parts the six shapes, `docs/measurements.md`, 6 November): a content proposal in chat first
 - [ ] The heroes beyond Final Fantasy (Ryan, 15 and 16 October: balance the series out a little, never purge it): proposed in `docs/heroes_proposal.md` and the conversions section of `docs/bosses_proposal.md`; Ryan's marks, then content, art and rows
 - [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the gate's price, twelve to sixteen battles; the items the roster analysis's go left for it (the host maker's offer, the boss's token, the shelf, what Salvage and Favour buy); a won final's extra pay (Ryan, 26 October) read against the beaten domain's reprieve
 

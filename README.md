@@ -138,15 +138,18 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   simulations chose); `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
   over the LAN, `android.sh` the real debug APK over USB; `hangar.html` is the
-  hangar page, one artifact with four tabs (the codex, the content editor, the names list, and
-  the models: each machine live in 3D, its motion and mounts, over the game's renders, whose
-  script is `hangar_motion.js`, a port of the game's rig), published with the `files` map
+  hangar page, one artifact with five tabs (the codex, the content editor, the names list, the
+  designs: every brief in `docs/briefs/` laid out for Ryan to correct, read from
+  `hangar/designs.json`, which `hangar_designs.py` writes from the briefs and folds his
+  corrections back with; and the models: each machine live in 3D, its motion and mounts, over
+  the game's renders, whose script is `hangar_motion.js`, a port of the game's rig), published
+  with the `files` map
   `hangar_data.py` prints (it also writes each built model and silhouette class as glTF JSON
   into `build/hangar/models`, since an artifact serves no .glb): each `content/<file>.json`
   at that same path as the shipped content every tab reads and the editor diffs against,
   `hangar/pins.json` (the models' mounts) and `hangar/renders.json` with the renders under
   `docs/hangar/`; Ryan's saved edits live in its database (collection `edits`), the name
-  candidates in `candidates`; `spriter/.venv` is the Python
+  candidates in `candidates`, his corrections to the briefs in `designs`; `spriter/.venv` is the Python
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
@@ -215,8 +218,11 @@ perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd
 # run the harness: a battle, a skirmish, a saved battle and the quick campaign
 godot --path .
 
-# the hangar page: the codex, the content editor, the names and the renders in one artifact
-python3 tools/hangar_data.py        # writes docs/hangar/pins.json, checks the renders manifest, prints the files map
+# the hangar page: the codex, the content editor, the names, the designs and the renders in one artifact
+python3 tools/hangar_data.py        # writes docs/hangar/pins.json and build/hangar/designs.json, checks the renders manifest, prints the files map
+python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
+# a design session's first step: save the `designs` collection with ArtifactData's list (out_dir build/hangar/inbox), then
+python3 tools/hangar_designs.py --fold build/hangar/inbox --dry   # what it would fold; without --dry it writes the briefs and prints the batch that clears them
 # then publish tools/hangar.html to https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH with that map (a render round: pictures into
 # docs/hangar/renders/<chassis>/, the entry in docs/hangar/renders.json, republish); after Ryan edits on its Content tab, pull
 # the `edits` collection with ArtifactData, apply by hand, test, commit, republish, clear the documents
@@ -484,7 +490,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 
 # better enemy sprites from an image model on the Mac (see tools/foeforge/README.md). The picker page
 # (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei): Ryan's picks and notes land in its `picks` collection ({pick, note, set, at}
-# a set key), read with ArtifactData `list` from his personal account; from the work account he taps Copy all picks and pastes it.
+# a set key), read with ArtifactData `list`.
 # Cut each pick with `forge.py cut` and the options it needs (--tol 90 a grey ground shadow, --glow a coloured glow, --height 42 on
 # every chibi so the party stands at one scale; pockets of pure white key by default, --holes 0 keeps them, and --keep-glow X0 Y0 X1 Y1
 # keeps white-hot light the background's white inside that box of the render, Surtr's blade and blaze), record it in picks.json. A flaw his

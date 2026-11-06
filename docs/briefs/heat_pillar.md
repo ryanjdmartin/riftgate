@@ -1,5 +1,7 @@
 # Brief: heat as a pillar (a design session, waiting on Ryan)
 
+<!-- hangar: {"kind": "rule", "maker": null, "tier": null, "status": "session", "slot": false, "name": "the heat pillar"} -->
+
 The jumping-off point for a session on heat: what it is today, what is measured, what Ryan
 said on 28 October, Claude's bench, and the questions only he can settle. Nothing here is
 decided beyond what the bible's rows say; the bench is Claude's, for him to move.

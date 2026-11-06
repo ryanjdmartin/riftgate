@@ -1,5 +1,7 @@
 # The long wall: the build brief
 
+<!-- hangar: {"kind": "rule", "maker": null, "tier": null, "status": "session", "slot": false, "name": "the long wall"} -->
+
 Instructions for the session that builds Ryan's redesign of 5 and 6 November: the battle as the
 defence of a long wall, the packs as authored formations, the shield and the heat the fight's,
 no withdrawal. The design and its rounds are `docs/long_wall_proposal.md` (read it first, its
