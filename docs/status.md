@@ -133,11 +133,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   campaign runner, `--shape`, and the promise read (`tools/balance.gd --packs promise`). The
   view is Phase 2: the screen draws the field cut at its sides until it lands. The reads (40 runs
   on the steppe, a direction): no run won, 86% of battles fell, 169 of 481 fights one machine
-  against a formation; the defence rule is the floor, not the player. The promise read (30
+  against a formation; the defence rule is the floor, not the player (Ryan, 6 November: "I
+  wouldn't count anything until we've got everything in place"). The promise read (30
   seeds): a formation at its rating of three a decision in 24 of 38 cells and a wall one short in
   16; a patrol alone costing its machine over half its hull from tier two; the elites too easy
-  at their four in 47 of 53 cells, and beaten by three as well. Waits on Ryan's marks: the
-  placeholders, the open items (the bible's section 12, the long wall), then Phase 2.
+  at their four in 47 of 53 cells, and beaten by three as well. Ryan's answers of 6 November:
+  Phase 2 now and the branch landing after it; the placeholders kept until he plays it; the
+  elites kept at four until his try; reinforcement inside a fight cut (its edge cases in chat)
+  and the Lammergeier back to the shop; the map bait to build (its form in chat); the Fracture
+  a shell; no battle opening on a forced fight (built); the Mandrake's Scream down to one
+  (built); the formations, the refit and the ratings by who solos a pack after the rest.
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip
@@ -248,11 +253,12 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it: Ryan's marks on the long wall's Phase 1 hand-back (6
-November: the reads in `docs/measurements.md`, the placeholders there, the open items in the
-bible's section 12), then Phase 2, the view, on his word (`docs/briefs/long_wall_build.md`,
-section 7). The redesign moves every foe's blow and the battle's shape, so the refit and the
-200-seed matrix (below) wait on his marks. First after that: the 200-seed matrix
+to-do's Ryan list). Ahead of all of it: Phase 2 of the long wall, the view
+(`docs/briefs/long_wall_build.md`, section 7), on Ryan's word of 6 November, with the harness's
+composition picker; then his play of it; then the long wall's open items (the bible's section 12:
+reinforcement's cut, the map bait, the shell, the ratings by who solos, the formations and the
+refit, in that order of his answers). The branch lands on main after Phase 2. The redesign moves
+every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on the refit. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
 engine line), since the matrix on file predates everything since 27 October.
 
