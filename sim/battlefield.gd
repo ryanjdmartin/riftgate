@@ -595,7 +595,25 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 			if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
 				best_key = key
 				goal = hx
+	elif not on_apron(sq, sq.pos) and sq.goal_col >= 0:
+		# A pusher walks to its wall segment (the long wall brief 3.3): the apron hex in its goal
+		# column when it is land and reachable, else the reachable land apron hex nearest that
+		# column, ties toward the gate's column, then the nearer walk.
+		var gate_col := Hex.axial_to_offset(map.gate).x
+		var best := Vector3i(1 << 30, 0, 0)
+		for h in dist.keys():
+			var hx: Vector2i = h
+			if not on_apron(sq, hx) or not _landable(sq, hx, blocked) or not _land(hx):
+				continue
+			var col := Hex.axial_to_offset(hx).x
+			var key := Vector3i(absi(col - sq.goal_col), absi(col - gate_col), int(dist[hx]))
+			if key.x < best.x or (key.x == best.x and (key.y < best.y or (key.y == best.y and key.z < best.z))):
+				best = key
+				goal = hx
+		if best.x == 1 << 30:
+			w.waits = true
 	elif not on_apron(sq, sq.pos):
+		# No segment (a pack made by hand, a hunter left without prey): the nearest apron hex.
 		var best := 1 << 30
 		for h in dist.keys():
 			var hx: Vector2i = h
@@ -625,6 +643,12 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	if prey != null and _distance_from(sq, w.end, prey) <= sq.zone:
 		w.catches = prey.id
 	return w
+
+
+## Whether a hex is land: neither water nor a wall (a pusher's segment is a land apron hex).
+func _land(h: Vector2i) -> bool:
+	var t := int(map.terrain.get(h, BattleMap.Terrain.PLAIN))
+	return t != BattleMap.Terrain.WATER and t != BattleMap.Terrain.MOUNTAIN
 
 
 ## Dijkstra over the horde's ground from a pack's hex: [cost, prev]. Unbounded, or inside
@@ -832,7 +856,24 @@ func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
+	assign_goal(sq)
 	return sq
+
+
+## A pusher's wall segment (the long wall brief 3.3; Ryan, 5 November: rift packs "can target a
+## segment left or right of it, reducing clogging and creating extra tension. The variance of
+## where they target can even be a ramp factor"): the rift's column and a draw in [-spread,
+## +spread], the spread the ramp's (Ramp.spread_at) unless one is given, clamped to the wall. The
+## draw takes no stream, only the turn and the pack's id, so a resumed battle draws as the
+## unbroken one did. A hunter and the boss draw none. Called as a pack is dealt (emerge: the
+## start's placements and every spawn).
+func assign_goal(sq: Unit, spread: int = -1) -> void:
+	if sq.is_boss or sq.behaviour != "push":
+		return
+	if spread < 0:
+		spread = Ramp.spread_at(ramp, map.width)
+	var draw := (phase * 31 + sq.id * 17) % (2 * spread + 1) - spread
+	sq.goal_col = clampi(Hex.axial_to_offset(map.rift).x + draw, 0, map.width - 1)
 
 
 ## Whether a machine stands beside a hex.

@@ -63,6 +63,17 @@ func _play_alike(a: Skirmish, b: Skirmish) -> void:
 		assert_eq(a.mechs[i].heat, b.mechs[i].heat, "%s's heat" % a.mechs[i].unit.display_name)
 
 
+## A pusher's wall segment rides in the save (the long wall brief 3.3).
+func test_a_pushers_wall_segment_rides_in_the_save() -> void:
+	var b := _battle()
+	var sq: Unit = b.field.packs()[0]
+	sq.goal_col = 3
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq(back.field.unit_by_id(sq.id).goal_col, 3, "the segment comes back")
+	for p in b.field.packs():
+		assert_eq(back.field.unit_by_id(p.id).goal_col, p.goal_col, "%s keeps its segment" % p.display_name)
+
+
 func test_a_battle_in_plan_round_trips() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]

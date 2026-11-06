@@ -75,6 +75,13 @@ static func elite_fractures_at(tier: int) -> Array:
 	return Array(ELITE_FRACTURES[clampi(tier, 0, ELITE_FRACTURES.size() - 1)])
 
 
+## How far either side of the rift's column a pusher's wall segment may fall (the long wall brief
+## 3.3; Ryan, 5 November: "The variance of where they target can even be a ramp factor"): 2 at the
+## foot, half the wall's length at the top. `width` is the wall's length.
+static func spread_at(c: int, width: int) -> int:
+	return 2 + ((width / 2 - 2) * clampc(c)) / 12   # placeholder (the long wall brief)
+
+
 ## The wall's length: the count of hexes along the wall, the map's width (the long wall, Ryan,
 ## 5 November: "Wide map, with lots of wall to defend, but not as deep"; the build brief,
 ## docs/briefs/long_wall_build.md 3.1). A lever of the ramp's, never fixed.

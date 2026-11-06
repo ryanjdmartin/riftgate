@@ -95,6 +95,7 @@ var composition_size: String = ""  # its size: patrol, formation, elite or escor
 var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
+var goal_col: int = -1           # a pusher's wall segment, the column of the apron hex it walks to (the long wall brief 3.3, Battlefield.assign_goal); -1 for none, which walks to the nearest apron hex
 var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')
 var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight, its ring inert; the Rupture breaks it
 var zone: int = 1            # the pack's ring: a pack whose ring covers a fight's target joins that fight, and a hunter catches a prey inside it (bible section 5)

@@ -109,6 +109,60 @@ func test_a_pack_on_the_apron_strikes_the_gate() -> void:
 	assert_eq(sq.pos, front, "it holds at the gate")
 
 
+## A pusher's wall segment (the long wall brief 3.3): drawn as the pack is dealt about the rift's
+## column, at a spread of nothing the rift's own column, which it walks to from wherever it
+## stands; the ramp's spread 2 at the foot and half the wall at the top; a hunter draws none.
+func test_a_pushers_segment_is_drawn_about_the_rifts_column_and_walked_to() -> void:
+	var f := _field(20, 12)
+	var rift_col := Hex.axial_to_offset(f.map.rift).x
+	var sq := f.add_unit(Unit.pack(0, "ghouls", _o(3, 3), "marsh", 2))
+	f.assign_goal(sq, 0)
+	assert_eq(sq.goal_col, rift_col, "at a spread of nothing, the rift's column")
+	for i in range(8):
+		f.enemy_turn()
+	assert_eq(Hex.axial_to_offset(sq.pos), Vector2i(rift_col, f.apron_row()), "walked to the apron hex in that column, across the field")
+	assert_eq(Ramp.spread_at(0, 20), 2, "the ramp's spread at the foot")
+	assert_eq(Ramp.spread_at(Ramp.TOP, 20), 10, "and half the wall at the top")
+	var hunter := f.add_unit(Unit.pack(0, "wolves", _o(15, 3), "marsh", 2))
+	hunter.behaviour = "hunt"
+	f.assign_goal(hunter, 4)
+	assert_eq(hunter.goal_col, -1, "a hunter draws no segment")
+
+
+## At a spread of four the draw lands eight pushers on eight of the nine columns about the rift's,
+## never off the wall.
+func test_eight_pushers_at_a_spread_of_four_take_eight_of_the_nine_columns() -> void:
+	var f := _field(20, 12)
+	var rift_col := Hex.axial_to_offset(f.map.rift).x
+	var cols := {}
+	for n in range(8):
+		var p := f.add_unit(Unit.pack(0, "p%d" % n, _o(n * 2, 1), "marsh", 2))
+		f.assign_goal(p, 4)
+		assert_true(absi(p.goal_col - rift_col) <= 4, "pusher %d inside the nine columns" % n)
+		cols[p.goal_col] = true
+	assert_eq(cols.size(), 8, "eight columns of the nine")
+	var edge := f.add_unit(Unit.pack(0, "edge", _o(0, 1), "marsh", 2))
+	f.assign_goal(edge, 40)
+	assert_true(edge.goal_col >= 0 and edge.goal_col < f.map.width, "a spread past the wall is clamped to it")
+
+
+## A segment whose apron hex is water or a wall resolves to the nearest land apron hex, a tie
+## toward the gate's column.
+func test_a_segment_on_water_or_a_wall_resolves_to_the_nearest_land_apron_hex() -> void:
+	var f := _field(20, 12)
+	var row := f.apron_row()
+	f.map.terrain[_o(4, row)] = BattleMap.Terrain.WATER
+	var wet := f.add_unit(Unit.pack(0, "wet", _o(4, 3), "marsh", 2))
+	wet.goal_col = 4
+	f.map.terrain[_o(15, row)] = BattleMap.Terrain.MOUNTAIN
+	var walled := f.add_unit(Unit.pack(0, "walled", _o(15, 3), "marsh", 2))
+	walled.goal_col = 15
+	for i in range(8):
+		f.enemy_turn()
+	assert_eq(Hex.axial_to_offset(wet.pos), Vector2i(5, row), "water at its column: the next land apron hex toward the gate's column")
+	assert_eq(Hex.axial_to_offset(walled.pos), Vector2i(14, row), "a wall at its column: likewise")
+
+
 ## The whole wall is a target (Ryan, 30 October): a pack beside any hex of the bottom rows
 ## strikes the gate's bar, so the apron cannot be plugged, and the strike's floor of ten is
 ## gone, so a stray pair chips less than a trio.
