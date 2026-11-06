@@ -22,7 +22,7 @@ extends SceneTree
 ## highest tier, a component before a module; fields the roster's first four; fills an empty
 ## hardpoint with the stores' best piece, and swaps a fitted piece for a stored one of a higher
 ## tier and the same side (a weapon for a weapon, equipment for equipment); fills and upgrades
-## its module slots the same way. It never withdraws (the mode has no withdrawal).
+## its module slots the same way.
 
 const OUT := "res://docs/quick_run.md"
 
@@ -284,7 +284,7 @@ func report(results: Array, secs: float) -> String:
 		("every run starting with " + ", ".join(team)) if not team.is_empty() else "each run starting with three different draft chassis at random",
 		", ".join(density.map(func(x) -> String: return "%.2f" % float(x)))])
 	L.append("")
-	L.append("The quick campaign (`sim/quick_run.gd`; the bible's quick campaign row): twelve battles at a tier every four, then the finale; a battle's fights before its boss are the Rupture's Fractures (three, four, five), one, two and three of them elites, the boss standing with its formation, a field recharge between fights, nothing mended until the boss falls, no withdrawal, a wipe ending the run. Every number is a placeholder, and the enemy does not change with the tier yet (the same spawn lists every tier; the elites stood in by each domain's other bench hero; the bosses the four massive stand-ins), so the later battles read the squad's kit against the first battles' foes. The player is plain (the runner's header): a verdict on its picks and fits is a verdict on the bot. Read the bands.")
+	L.append("The quick campaign (`sim/quick_run.gd`; the bible's quick campaign row): twelve battles at a tier every four, then the finale; a battle's fights before its boss are the Rupture's Fractures (three, four, five), one, two and three of them elites, the boss standing with its formation, a field recharge between fights, nothing mended until the boss falls, a wipe ending the run. Every number is a placeholder, and the enemy does not change with the tier yet (the same spawn lists every tier; the elites stood in by each domain's other bench hero; the bosses the four massive stand-ins), so the later battles read the squad's kit against the first battles' foes. The player is plain (the runner's header): a verdict on its picks and fits is a verdict on the bot. Read the bands.")
 	L.append("")
 	var won := 0
 	var stalled := 0

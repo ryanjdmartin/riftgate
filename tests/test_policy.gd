@@ -237,18 +237,17 @@ func test_a_fight_nobody_can_finish_stalls() -> void:
 	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the skirmish itself is undecided")
 
 
-func test_persona_withdraws_under_the_hull_line() -> void:
+## The fight bot plays a losing fight to its end (the long wall brief 3.5: there is no
+## withdrawal, and the withdrawing persona went with it).
+func test_the_fight_bot_plays_a_losing_fight_to_its_end() -> void:
 	var sk := Skirmish.new(2)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 0, 100))
 	sk.add_foes([_ghoul(300, 30)])
 	sk.begin()
 	var pol := Policy.make(Policy.GREEDY)
-	pol.withdraw_below = 50
 	var outcome := pol.play(sk)
-	assert_eq(outcome, Skirmish.Outcome.WITHDRAWN, "pulled out rather than dying")
-	assert_true(pol.withdrew, "and says so")
-	assert_true(sk.mechs[0].unit.hull > 0, "alive")
-	assert_true(sk.mechs[0].unit.hull < 50, "having crossed the line first")
+	assert_eq(outcome, Skirmish.Outcome.DEFEAT, "fought to the wreck")
+	assert_true(sk.mechs[0].unit.hull <= 0, "nothing left of it")
 
 
 func test_hull_percent_counts_the_dead_at_zero() -> void:

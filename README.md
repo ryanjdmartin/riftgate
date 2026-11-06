@@ -23,7 +23,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
-    keywords, heat, shields, injuries, withdraw, outcome
+    keywords, heat, shields, injuries, outcome
   - `loadouts.gd` sample dice and packs for prototypes and tests
   - `harness_setup.gd` what the harness launches (team, loadouts, enemy side, seed, map
     type), built into a battle or a skirmish, kept between launches
@@ -241,7 +241,7 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # its domain's first pack, and the finale's line promoted; --noparty drops them), played by random
 # and by greedy over 200 seeds a cell, written to docs/balance.md (several hours on one core,
 # about two in four parts, below); the team cells run under both targeting
-# rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
+# rules and a section compares them. --seeds N, --policies greedy,
 # --cool-above 50 (the cautious persona: each machine keeps its heat under half its maximum,
 # venting early and holding a hot spend above the line; the pricing driver passes it on too),
 # --overheat 2 (a what-if: an overheat burns two hull a point past the maximum; the driver's too),
@@ -290,16 +290,13 @@ perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.g
 # run battle by battle instead. The squad moves as one (the pack nearest the squad, every
 # machine in range fighting it, allies walking into range of a hunter's catch before it opens);
 # --solo walks each machine toward its own nearest enemy, the rule before 26 October, for
-# comparison. --withdraw N puts the fight bot's withdrawing persona on every fight the player
-# picks (withdraw under N percent of the fighters' hull; a hunter's catch is fought out), and the
-# report then counts the fights withdrawn from. --turtle holds the squad on the two rows before
+# comparison. Every fight is fought out: there is no withdrawal. --turtle holds the squad on the two rows before
 # the gate at its columns, fighting only what comes within reach (the stall's read, 30 October);
 # --detach sends one machine at the nearest patrol within five hexes while the body fights the
 # nearest formation (a detachment's price). The report reads the Rupture meter and the mouths
 # (Fractures, the Rupture and the stall guard, peaks, what the rift and the tears sent, elites,
 # menace killed, gate damage) and the fights by what they held (patrols, formations, elites, the boss)
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
-perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40 --withdraw 50 --out /tmp/campaign_w50.md
 
 # the quick campaign's runner (25 October): whole quick campaigns played headless (three draft chassis
 # at random, the fights by Policy, a plain player picking and fitting the loot by tier), written to
@@ -378,7 +375,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # and the first foe's: gauges, chips, a foe's intent), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
 # enemyturn (RIFTGATE_SHOT_FRAME=8 catches the acting foe lit), chips (every unit crowded with chips, the rows wrapping:
-# seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), reserve (the reinforcements waiting by rank on the plaques at the formation's edge, a massive one among them; RIFTGATE_SHOT_FRAME=120 once they have flown in), reservelist (their list pulled out by a tap), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
+# seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), reserve (the reinforcements waiting by rank on the plaques at the formation's edge, a massive one among them; RIFTGATE_SHOT_FRAME=120 once they have flown in), reservelist (their list pulled out by a tap), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), and swallowed (the first machine swallowed: a ghost under a dashed edge).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
@@ -458,7 +455,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 # the quick campaign's screens: draft, picked, hangar (RIFTGATE_SHOT_H=3000 shows the stores at its foot),
-# chooser, fight (no withdrawal), track, rewards, over
+# chooser, fight, track, rewards, over
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/quick/quick_run_screen.tscn shot.png hangar
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
 # the die's iconography on one sheet (every main mark and what it holds, whom a piece reaches, the

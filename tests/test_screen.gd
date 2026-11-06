@@ -854,22 +854,21 @@ func test_end_turn_runs_the_enemy_and_returns_to_the_player() -> void:
 	for m in s.sk.mechs:
 		after += m.unit.hull + m.unit.shield
 	assert_true(after < before, "the enemy acted in between")
-	assert_true(s.sk.can_withdraw(), "withdraw offered at the start of round two")
-	assert_false(s._withdraw_btn.disabled, "withdraw button enabled")
+	assert_false(s.sk.can_withdraw(), "no withdrawal at the start of round two either (the long wall brief 3.5)")
+	assert_true(s._withdraw_btn.disabled and not s._withdraw_btn.visible, "its button hidden")
 	s.free()
 
 
-func test_withdraw_asks_then_shows_overlay() -> void:
+## There is no withdrawal (the long wall brief 3.5): the button is hidden and disabled at every
+## point of the fight, and its handler asks nothing and changes nothing.
+func test_there_is_no_withdrawal_on_the_screen() -> void:
 	var s := _screen(5)
-	assert_false(s._withdraw_btn.disabled, "withdraw open at the start of round one")
+	assert_true(s._withdraw_btn.disabled and not s._withdraw_btn.visible, "hidden at the start of round one")
 	s._end_turn_now()
+	assert_true(s._withdraw_btn.disabled and not s._withdraw_btn.visible, "and at round two's")
 	s._on_withdraw()
-	assert_true(s._confirm.visible, "withdraw always asks first")
-	assert_eq(s.sk.outcome, Skirmish.Outcome.NONE, "not yet withdrawn")
-	s._confirm_yes()
-	assert_eq(s.sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
-	assert_true(s._overlay.visible, "overlay shown")
-	assert_eq(s._overlay_title.text, "WITHDREW", "title")
+	assert_false(s._confirm.visible, "nothing asks")
+	assert_eq(s.sk.outcome, Skirmish.Outcome.NONE, "and the fight goes on")
 	s.free()
 
 
@@ -1440,23 +1439,22 @@ func test_the_formation_is_four_wide_by_default() -> void:
 	s.free()
 
 
-func test_withdraw_plays_the_enemy_turn_before_fleeing() -> void:
+## A fight the enemy's turn decides shows its outcome once that turn has replayed (Ryan, 23
+## September): the team on its last hull, END TURN, the blows replayed with the gauges after
+## each, then the overlay (there is no withdrawal to end a fight otherwise, the long wall brief).
+func test_the_enemy_turn_replays_before_the_outcome() -> void:
 	var s := _screen(5)
-	var before := 0
 	for m in s.sk.mechs:
-		before += m.unit.hull + m.unit.shield
-	s._on_withdraw()
+		m.unit.hull = 1
+		m.unit.shield = 0
+	s._on_end_turn()
 	s._confirm_yes()
-	assert_eq(s.sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
-	assert_true(s.sk.turn_events.size() > 0, "the enemy struck on the way out")
+	assert_true(s.sk.turn_events.size() > 0, "the enemy struck")
 	var ev: Dictionary = s.sk.turn_events[0]
 	assert_true(ev.has("shield") and ev.has("hull"), "each blow carries the mech's gauges after it, for the replay")
-	var after := 0
-	for m in s.sk.mechs:
-		after += m.unit.hull + m.unit.shield
-	assert_true(after < before, "and it cost the team")
+	assert_eq(s.sk.outcome, Skirmish.Outcome.DEFEAT, "and it wrecked the team")
 	assert_true(s._overlay.visible, "the outcome shows once the replay is done (headless: at once)")
-	assert_eq(s._overlay_title.text, "WITHDREW", "title")
+	assert_eq(s._overlay_title.text, "WRECKED", "title")
 	assert_false(s._replay_shade.visible, "taps are taken again")
 	s.free()
 

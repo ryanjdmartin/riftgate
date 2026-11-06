@@ -15,7 +15,8 @@ extends RefCounted
 ##                       stack, Scorched goes, then heat over the cap burns hull; then
 ##                       burn ticks, foes act, the dead are cleared, mech statuses tick, the
 ##                       reinforcements refill, outcome is checked
-##   can_withdraw()      at any point of the player's turn
+##   can_withdraw()      false: there is no withdrawal (the long wall brief 3.5); a fight ends
+##                       in the foes' fall or the team's
 ##   undo()              takes back the last spend or reroll, in the order made, back to the
 ##                       last roll (the round's, a reroll's draw, a spend's own); the screen's
 ##                       fight keeps the snapshots (keeps_undo); can_undo(), undo_depth()
@@ -23,7 +24,7 @@ extends RefCounted
 ## The player's damage is in fives, everything else in tens. Nothing rolls but the dice.
 
 enum State { SETUP, ROUND_START, ASSIGN, DONE }
-enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
+enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }   # WITHDRAWN is never produced since the long wall brief 3.5 (there is no withdrawal); kept for the saves and the runners' tallies
 
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 2   # two since 6 November (Ryan: a reroll gained is worth more, and two is the standard; a trial)
@@ -154,9 +155,10 @@ var came_with: Dictionary = {}
 var mines: Dictionary = {}
 var mine_seq: int = 0          # the order shots were laid, so a pull gathers them in laid order
 var _reinforcing := false       # the reinforcement step: every arrival placed first, then the mines land left to right
-## A fight nobody withdraws from, so it ends in the foes' fall or the team's: a battle's boss
-## fight (Ryan, 25 October: "the player is committed to closing the rift or getting scrapped
-## trying") and every quick campaign fight (no withdrawal there, the same day).
+## The fights the rule before the long wall brief kept from a withdrawal: a battle's boss fight
+## (Ryan, 25 October: "the player is committed to closing the rift or getting scrapped trying")
+## and every quick campaign fight. Since the brief (3.5) no fight is left, so it marks those
+## fights for the screen and the save and refuses nothing more.
 var committed := false
 ## The twin slot (Ryan, 26 October: the Gel's halves "should exist as a pair taking the place of
 ## one unit"): Vector2i(rank, column) -> the right-hand half, the left standing in front or back
@@ -503,11 +505,11 @@ func any_assigned() -> bool:
 	return false
 
 
-## Withdraw is open at any point of the player's turn, the first round included. Its price is
-## always the same: the enemy takes its turn, then the team flees at the end of the round, so
-## there is no leapfrogging out of contact unscathed (Ryan, 19 September).
+## There is no withdrawal (the long wall brief 3.5; Ryan, 6 November: "what if there's just NO
+## withdrawal? Tactical options get removed, obviously, but it does simplify things a huge
+## amount"): a fight ends in the foes' fall or the team's, at every state.
 func can_withdraw() -> bool:
-	return not committed and (state == State.ROUND_START or state == State.ASSIGN)
+	return false
 
 
 ## Heat the mech's current face will add if it is spent as an attack: negative for one that
@@ -2128,7 +2130,8 @@ func end_round() -> int:
 ## before the enemy acts, so an overheat is the machine's own doing on its own turn, like a
 ## volatile bite. A machine it wrecks is gone before the enemy strikes, and a fight it
 ## decides ends here. A foe's Burning adds its heat just before it (13 October), so a vent
-## made room for it or a cleanse took it off. Shared by END TURN and a withdrawal.
+## made room for it or a cleanse took it off. END TURN's (a withdrawal shared it until the long
+## wall brief, 3.5).
 func _end_player_turn() -> void:
 	overheats.clear()
 	history.clear()   # the enemy's turn draws: nothing before it comes back
@@ -2145,7 +2148,7 @@ func _end_player_turn() -> void:
 
 
 ## The enemy's turn: every foe on the field acts in order, statuses tick, timed effects run
-## out. Shared by the end of a round and by a withdrawal.
+## out. The end of a round's.
 func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
@@ -2560,23 +2563,9 @@ func _fire_on(t: MechState, id: String, n: int, f: Foe) -> void:
 	Effects.stack(t.unit, Effects.STATUS[id], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS[id]))
 
 
+## Refused at every state: there is no withdrawal (can_withdraw, the long wall brief 3.5).
 func withdraw() -> bool:
-	if not can_withdraw():
-		return false
-	if state == State.ROUND_START:
-		start_round()
-	log.append("Withdrawing: the enemy strikes as the team pulls out")
-	# Leaving ends the player's turn, so the heat burns first (Ryan, 11 October): running hot
-	# and then withdrawing is no way round an overheat.
-	_end_player_turn()
-	if outcome != Outcome.NONE:
-		return true   # burnt out on the way: the fight is lost, and the enemy never strikes
-	_enemy_turn()
-	outcome = Outcome.DEFEAT if live_mechs().is_empty() else Outcome.WITHDRAWN
-	_finish()
-	if outcome == Outcome.WITHDRAWN:
-		log.append("Withdrew at the end of round %d" % round)
-	return true
+	return false
 
 
 # ---------------------------------------------------------------- resolution
@@ -5265,9 +5254,9 @@ func _check_outcome() -> void:
 ## and timed effects end.
 func _finish() -> void:
 	state = State.DONE
-	# Shield past the maximum is the round's buffer, so it fades as the fight ends, mid-turn or by
-	# a withdrawal, never carried onto the map and into the next fight (the mechanics audit, 25
-	# October: only the round's end trimmed it).
+	# Shield past the maximum is the round's buffer, so it fades as the fight ends, mid-turn
+	# included, never carried onto the map (the mechanics audit, 25 October: only the round's end
+	# trimmed it).
 	_trim_overshield()
 	for ms in mechs:
 		Effects.end_skirmish(ms.unit)

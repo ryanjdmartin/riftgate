@@ -20,7 +20,7 @@ extends RefCounted
 ##                 an elite's slot holds the lead's formation alone until the elites land (the
 ##                 bench hero that stood in went on 27 October)
 ##   a fight       the squad's machines still standing, their damage carried from the last and
-##                 their heat from zero; no withdrawal; won, one field recharge before the next;
+##                 their heat from zero; won, one field recharge before the next;
 ##                 every machine wrecked, the run is over
 ##   the boss dead the campaign's after-battle rule without the shop (hull mends; a destroyed
 ##                 hardpoint piece is gone, a destroyed fixed one rebuilt); then a loot pick for
@@ -491,7 +491,7 @@ func finale_line() -> Array:
 
 
 ## The fight under way, opened on the next encounter if none is: the squad's machines still
-## standing against its foes, no withdrawal. Null outside a battle.
+## standing against its foes. Null outside a battle.
 func open_fight() -> Skirmish:
 	if state != BATTLE:
 		return null

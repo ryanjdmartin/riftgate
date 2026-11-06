@@ -11,16 +11,13 @@ extends RefCounted
 ## it split the squad into lone fights three times in four). Every fight is played by
 ## `Policy` at the rung given. It is a floor, not a player: nothing here guards the gate,
 ## splits a formation or picks a fight, so read what it loses as the cost of not thinking on
-## the map. Its one habit is the fight bot's persona (`withdraw_below`, 26 October, the
-## foes' fresh start): a fight it is losing is left under the line, except a fight a hunter
-## forced, which a withdrawal would only leave caught.
+## the map. Every fight is fought out: there is no withdrawal (the long wall brief 3.5).
 
 const MAX_PHASES := 120   # a battle the bot cannot finish in this many turns is stalled
 
 
 var kind: int = Policy.GREEDY
 var as_one: bool = true       # the squad walks as one, on the pack nearest it; false, each machine on its own nearest enemy
-var withdraw_below: int = 0   # persona (Policy.withdraw_below): withdraw a fight once the fighters' hull is under this percent; 0 never
 ## The turtle (the pacing session, 30 October: the stall read): the squad holds the rows before
 ## the gate and fights only what reaches it, never walking more than TURTLE_REACH hexes north
 ## of where it started; what it banks, loses and the turn it breaks is the stall's price.
@@ -37,10 +34,9 @@ var rng := RandomNumberGenerator.new()
 var phases: int = 0
 var fights: int = 0
 var fights_won: int = 0
-var withdrawals: int = 0      # fights the persona withdrew from
 var stalled: bool = false
 var spends: Dictionary = {}   # component id -> times spent, over every fight
-## One entry a fight: [machines in it, machines on the field, packs in it, won, withdrew].
+## One entry a fight: [machines in it, machines on the field, packs in it, won, the packs held by size].
 ## Rings and attack range decide who fights, so a fight need not hold the whole squad.
 var fight_sizes: Array = []
 
@@ -91,7 +87,7 @@ func take_turn(b: Battle) -> void:
 			if Battlefield.unit_distance(m, near) > m.attack_range:
 				_close_on(b, m, near)
 		var r := b.roster()
-		_fight(b, b.attack(null, r.get("eligible", [])), true)
+		_fight(b, b.attack(null, r.get("eligible", [])))
 	guard = 0
 	while b.state == Battle.State.PLAN and guard < 8:
 		guard += 1
@@ -218,10 +214,8 @@ func _detach(b: Battle) -> Unit:
 	return best
 
 
-## One fight, played out by the fight bot. A fight a hunter forced (`forced`) is never
-## withdrawn from: the prey stays caught and the hunter's volley lands all the same, so the
-## persona would buy nothing but the same fight next turn.
-func _fight(b: Battle, sk: Skirmish, forced: bool = false) -> void:
+## One fight, played out by the fight bot to the foes' fall or the team's.
+func _fight(b: Battle, sk: Skirmish) -> void:
 	if sk == null:
 		return
 	sk.begin()
@@ -229,15 +223,11 @@ func _fight(b: Battle, sk: Skirmish, forced: bool = false) -> void:
 	for p in sk.packs:
 		var key := "boss" if p.is_boss else (p.composition_size if held.has(p.composition_size) else "patrol")
 		held[key] = int(held[key]) + 1
-	var size := [sk.mechs.size(), b.mechs().size(), sk.packs.size(), false, false, held]
+	var size := [sk.mechs.size(), b.mechs().size(), sk.packs.size(), false, held]
 	var pol := Policy.make(kind, rng.randi())
-	pol.withdraw_below = 0 if forced else withdraw_below
 	if pol.play(sk) == Skirmish.Outcome.VICTORY:
 		fights_won += 1
 		size[3] = true
-	if pol.withdrew:
-		withdrawals += 1
-		size[4] = true
 	fight_sizes.append(size)
 	fights += 1
 	for cid in pol.spends.keys():

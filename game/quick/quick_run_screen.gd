@@ -5,7 +5,7 @@ extends Control
 ## row): the draft, the hangar between battles (the game's first, trimmed: the squad, each
 ## machine's hardpoints and module slots fitted from the stores, no economy), the battle's track
 ## between its fights, the rewards when the boss falls, and the run's end. The fights are the
-## skirmish screen's, without its withdrawal. Built in code, 720 wide like the other screens; the
+## skirmish screen's. Built in code, 720 wide like the other screens; the
 ## run saves after every change and resumes where it stood, a fight under way included.
 
 signal back_requested   # LEAVE, or BACK at the run's end: the host goes back; the run stays saved

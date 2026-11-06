@@ -608,14 +608,18 @@ func test_a_machine_that_fought_is_spent_until_the_next_turn() -> void:
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	var sk := b.attack(sq, [m])
-	sk.begin()
-	sk.start_round()
-	sk.withdraw()
+	win_fight(sk)
 	b.finish_skirmish()
 	assert_eq(b.state, Battle.State.PLAN, "back to the turn")
-	assert_eq(b.actions_left(m), 0, "spent, though it withdrew")
+	assert_eq(b.actions_left(m), 0, "spent, the fight over")
 	assert_true(b.destinations_for(m).is_empty(), "it cannot move")
-	assert_false((b.roster(sq)["eligible"] as Array).has(m), "nor fight again")
+	var other: Unit = null
+	for p in b.field.packs():
+		if not p.is_boss:
+			other = p
+			break
+	_engage(b, other, m)
+	assert_false((b.roster(other)["eligible"] as Array).has(m), "nor fight again, a pack beside it or not")
 	b.end_turn()
 	assert_eq(b.actions_left(m), 1, "a new turn gives it back")
 
@@ -674,24 +678,31 @@ func test_shield_recharges_at_the_field_rate_only_in_a_turn_without_a_fight() ->
 	assert_true(idle.shield <= idle.shield_max, "never above max")
 
 
+## A fight the team loses leaves the pack its survivors (there is no withdrawal, the long wall
+## brief 3.5: a pack survives a fight only by wrecking the machines in it).
 func test_survivors_shrink_the_pack() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
+	var before := sq.strength
 	_engage(b, sq, m)
 	var sk := b.attack(sq, [m])
 	sk.begin()
 	sk.start_round()
-	sk.withdraw()
+	sk.field_foes()[0].hp = 0
+	lose_fight(sk)
+	assert_eq(sk.outcome, Skirmish.Outcome.DEFEAT, "the machine wrecked")
 	b.finish_skirmish()
 	assert_true(b.field.units.has(sq), "pack still on the map")
 	assert_eq(sq.strength, sk.survivors_for(sq), "strength is what survived")
+	assert_eq(sq.strength, before - 1, "a foe short")
 
 
-## The mechanics audit (25 October): a Gel killed leaves two halves under its pack, and a
-## withdrawal used to walk the pack on as every foe of it standing, halves made whole Gels; the
-## pack keeps its own Gels alone, and the kill counts.
-func test_a_withdrawal_never_grows_a_pack_by_its_halves() -> void:
+## The mechanics audit (25 October): a Gel killed leaves two halves under its pack, and a fight
+## left with the pack standing (a withdrawal then, the team's wreck since the long wall brief)
+## walked the pack on as every foe of it standing, halves made whole Gels; the pack keeps its own
+## Gels alone, and the kill counts.
+func test_a_wipe_never_grows_a_pack_by_its_halves() -> void:
 	var b := Battle.new(3)
 	b.setup(_team(), "meadow")
 	quiet_start(b)   # no catch from the opening comes first
@@ -710,12 +721,14 @@ func test_a_withdrawal_never_grows_a_pack_by_its_halves() -> void:
 		if f.content_id == "gel":
 			f.hp = 0
 			break
-	assert_true(sk.withdraw(), "the team pulls out")
+	sk.end_round()   # the dead cleared: the Gel splits
 	var halves := 0
 	for f in sk.field_foes() + sk.reinforcements:
 		if f.content_id == "gel_half":
 			halves += 1
 	assert_eq(halves, 2, "the fallen Gel split into two halves")
+	lose_fight(sk)
+	assert_eq(sk.outcome, Skirmish.Outcome.DEFEAT, "the team wrecked, the pack standing")
 	b.finish_skirmish()
 	assert_eq(sq.strength, before - 1, "the pack walks on one Gel short, never grown by its halves")
 	assert_eq(b.foes_killed, 1, "and the Gel is a kill")
@@ -772,24 +785,34 @@ func test_a_hunter_that_caught_its_prey_forces_the_first_fight() -> void:
 	assert_false(b.end_turn().is_empty(), "the turn may end now")
 
 
-func test_withdrawing_from_a_hunter_leaves_the_machine_caught() -> void:
-	var b := _battle()
-	var m: Unit = b.mechs()[0]
-	var hunter: Unit = b.field.packs()[0]
-	_engage(b, hunter, m)
-	hunter.behaviour = "hunt"
-	hunter.prey = m.id
-	hunter.zone = 1
-	b._new_turn()
-	var sk := b.attack(null, [])
-	sk.begin()
-	sk.start_round()
-	sk.withdraw()
-	b.finish_skirmish()
-	assert_true(b.forced.is_empty(), "this turn's forced fight is over")
-	b.end_turn()
-	assert_eq(b.forced.size(), 1, "next turn the hunter, still on it, has caught it again")
-	assert_eq(b.forced[0]["prey"], m, "the same machine")
+## A hunter's catch is a fight to its end (the long wall brief 3.5: there is no withdrawal): it
+## ends in the hunter's fall, the prey free and the turn going on, or in the prey's wreck, the
+## hunter walking on.
+func test_a_hunters_catch_ends_in_the_packs_fall_or_the_machines_wreck() -> void:
+	for won in [true, false]:
+		var b := _battle()
+		var m: Unit = b.mechs()[0]
+		var hunter: Unit = b.field.packs()[0]
+		_engage(b, hunter, m)
+		hunter.behaviour = "hunt"
+		hunter.prey = m.id
+		hunter.zone = 1
+		b._new_turn()
+		var sk := b.attack(null, [])
+		assert_false(sk.can_withdraw(), "no withdrawing from a catch")
+		if won:
+			win_fight(sk)
+		else:
+			lose_fight(sk)
+		assert_eq(sk.outcome, Skirmish.Outcome.VICTORY if won else Skirmish.Outcome.DEFEAT, "the catch fought to its end")
+		b.finish_skirmish()
+		assert_true(b.forced.is_empty(), "this turn's forced fight is over")
+		if won:
+			assert_false(b.field.units.has(hunter), "the hunter fell")
+			assert_true(b.field.units.has(m), "its prey stands")
+		else:
+			assert_true(b.field.units.has(hunter), "the hunter stands")
+			assert_false(b.field.units.has(m), "its prey is wrecked")
 
 
 ## Clear the team away from the gate and park a pusher right in front of it.
@@ -931,8 +954,9 @@ func test_an_out_of_combat_passive_fires_after_a_quiet_turn() -> void:
 
 
 func test_a_kill_is_a_kill_whatever_the_fight_ends_in() -> void:
-	# Ryan, 7 October: withdrawing never takes a kill away, so the salvage the campaign
-	# tallies at the battle's end counts every foe killed, won fight or not.
+	# Ryan, 7 October: a kill is never taken away (a withdrawal then, a lost fight since the long
+	# wall brief), so the salvage the campaign tallies at the battle's end counts every foe
+	# killed, won fight or not.
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
@@ -942,10 +966,10 @@ func test_a_kill_is_a_kill_whatever_the_fight_ends_in() -> void:
 	sk.start_round()
 	var victim: Foe = sk.field_foes()[0]
 	victim.hp = 0
-	assert_true(sk.withdraw(), "the team pulls out")
-	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
+	lose_fight(sk)
+	assert_eq(sk.outcome, Skirmish.Outcome.DEFEAT, "the fight lost")
 	b.finish_skirmish()
-	assert_eq(b.foes_killed, 1, "the kill made before withdrawing counts")
+	assert_eq(b.foes_killed, 1, "the kill made before the wreck counts")
 
 
 func test_an_order_needs_the_pack_in_range_and_engage_opens_the_fight() -> void:
@@ -1075,7 +1099,7 @@ func test_the_boss_fight_takes_every_machine_and_cannot_be_left() -> void:
 	sk.start_round()
 	assert_true(sk.committed, "the fight is committed")
 	assert_false(sk.can_withdraw(), "no withdrawing from it")
-	assert_false(sk.withdraw(), "refused")
+	assert_false(sk.withdraw(), "refused, as every fight's is")
 	var trip := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	assert_true(trip.current.committed, "a save keeps it committed")
 	_win(sk)
@@ -1084,7 +1108,6 @@ func test_the_boss_fight_takes_every_machine_and_cannot_be_left() -> void:
 	assert_eq(b.outcome, Battle.Outcome.VICTORY, "and the rift is sealed")
 
 
-## A fight the boss joins by its ring is the boss's fight too: every machine, no withdrawal.
 ## A fight on the boss takes every machine, and nothing joins it or is joined by it (the long
 ## wall brief 3.4): a pack beside the boss is a fight of its own, the boss staying out of it.
 func test_a_fight_on_the_boss_takes_every_machine_and_no_pack_joins_it() -> void:
@@ -1186,8 +1209,7 @@ func test_a_heros_unit_stands_while_its_hero_does_with_its_escort() -> void:
 	sk.begin()
 	sk.start_round()
 	_fell(sk, func(f: Foe) -> bool: return f.escorts, 1)
-	sk.withdraw()
-	b.finish_skirmish()
+	b.finish_skirmish()   # the fight carried back to the map as it stands: the unit's bookkeeping
 	assert_true(b.field.units.has(b.boss), "the hero stands, so its unit does")
 	assert_eq([b.boss.lineup, b.boss.strength], [[hero], 2], "its escort a foe short")
 	b.spent.clear()   # a fresh turn's actions, without the enemy's turn between
@@ -1195,7 +1217,6 @@ func test_a_heros_unit_stands_while_its_hero_does_with_its_escort() -> void:
 	sk2.begin()
 	sk2.start_round()
 	_fell(sk2, func(f: Foe) -> bool: return f.commands, 1)
-	sk2.withdraw()
 	b.finish_skirmish()
 	assert_false(b.field.units.has(b.boss), "the hero fell, and its unit with it")
 	assert_eq(b.outcome, Battle.Outcome.VICTORY, "the final is won with the escort still standing")

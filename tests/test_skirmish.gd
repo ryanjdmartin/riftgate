@@ -698,23 +698,31 @@ func test_horde_keeps_coming() -> void:
 	assert_true(sk.front[1] != null, "a reinforcement stepped into the gap")
 
 
-func test_withdraw_window() -> void:
+## There is no withdrawal (the long wall brief 3.5; Ryan, 6 November: "what if there's just NO
+## withdrawal?"): refused at every state of a fight, and a refusal changes nothing.
+func test_no_fight_has_a_withdrawal() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(90, 10)])
+	assert_false(sk.can_withdraw(), "none before the fight begins")
 	sk.begin()
-	assert_true(sk.can_withdraw(), "open even before the first roll: the price is the same either way")
+	assert_false(sk.can_withdraw(), "none before the first roll")
 	sk.start_round()
-	assert_true(sk.can_withdraw(), "open at the start of round one")
+	assert_false(sk.can_withdraw(), "none at the start of round one")
 	sk.assign(0, sk.front[0])
-	assert_true(sk.can_withdraw(), "still open after spending: the price is the enemy turn, not the timing")
+	assert_false(sk.can_withdraw(), "none after spending")
 	sk.end_round()
-	assert_true(sk.can_withdraw(), "between rounds")
+	assert_false(sk.can_withdraw(), "none between rounds")
 	sk.start_round()
-	assert_true(sk.withdraw(), "withdrew in round two")
-	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "outcome withdrawn")
-	assert_eq(m.hull, 80, "and the enemy struck on the way out, both rounds: no leapfrogging out unscathed")
+	var hull := m.hull
+	assert_false(sk.withdraw(), "refused in round two")
+	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
+	assert_eq(sk.state, Skirmish.State.ASSIGN, "still the player's turn")
+	assert_eq(m.hull, hull, "and nothing struck")
+	win_fight(sk)
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "it ends by the foes' fall")
+	assert_false(sk.can_withdraw(), "and none once it is over")
 
 func test_rerolls_are_limited_and_work_after_attacking() -> void:
 	var sk := Skirmish.new(1)
@@ -825,8 +833,7 @@ func test_injury_destroys_and_persists_until_repaired() -> void:
 	assert_eq(sk.apply_injury(sk.mechs[0]), "", "a second finds nothing left to break")
 	assert_eq(m.damaged_component_count(), 1, "still one component")
 	sk.end_round()
-	sk.start_round()
-	sk.withdraw()
+	win_fight(sk)
 	assert_eq(d.faces[0].kind, Face.Kind.BLANK, "the skirmish ending does not repair it")
 	# A second skirmish with the same unit starts with the damage in place.
 	var again := Skirmish.new(4)
@@ -1991,7 +1998,7 @@ func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
 	assert_eq(Effects.stacks_of(n, "burning_mech"), 3, "stacks add up")
 	assert_eq(int(Effects.tick_preview(n, true)["heat"]), 3 * bt, "its heat a stack, at the turn's end")
 	assert_eq(int(Effects.tick_preview(n)["heat"]), 0, "and never at the round's")
-	s2.withdraw()
+	win_fight(s2)
 	assert_eq(Effects.stacks_of(n, "burning_mech"), 0, "skirmish-scoped statuses end with the skirmish")
 
 
@@ -2450,9 +2457,10 @@ func test_an_overheat_that_wrecks_the_last_machine_ends_the_fight_before_the_ene
 	assert_eq(sk.state, Skirmish.State.DONE, "the fight is over")
 
 
-func test_withdrawing_burns_the_overheat_first() -> void:
-	# Ryan, 11 October: leaving ends the turn, so running hot and then withdrawing is no way
-	# round an overheat.
+## The overheat burns as the player's turn ends, before the enemy strikes (Ryan, 11 October;
+## a withdrawal shared the turn's end until the long wall brief took it away): running hot is
+## paid in hull on the machine's own turn, and the enemy's blow lands after on the shield.
+func test_the_overheat_burns_before_the_enemy_strikes() -> void:
 	var sk := Skirmish.new(1)
 	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 100)
 	hot.heat_max = 30
@@ -2461,10 +2469,10 @@ func test_withdrawing_burns_the_overheat_first() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, sk.front[0])
-	assert_true(sk.withdraw(), "withdrawn")
-	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "the team got out")
-	assert_eq(hot.hull, 80, "but the twenty over the cap burnt on the way")
-	assert_eq(hot.shield, 30, "and the parting blow still landed on the shield")
+	sk.end_round()
+	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
+	assert_eq(hot.hull, 80, "the twenty over the cap burnt as the turn ended")
+	assert_eq(hot.shield, 30, "and the enemy's blow landed on the shield after")
 
 
 ## A stun lock costs its stuns (Ryan, 2 November): a foe with Numbed N takes N stuns to strip and
@@ -4642,25 +4650,22 @@ func test_an_overshield_passes_the_maximum_and_fades_at_the_rounds_end() -> void
 	assert_eq(taker.shield, 20, "untouched by the blows this round, the 40 past the maximum faded at the round's end")
 	assert_true("\n".join(sk.log).contains("40 shield past its maximum fades"), "and the log says so")
 	# The excess fades as the fight ends too (the mechanics audit, 25 October), so a fight won
-	# mid-turn or left by a withdrawal never carries it onto the map and into the next fight.
-	for how in ["win", "withdraw"]:
-		var sk3 := Skirmish.new(1)
-		var giver3 := _mech("Giver", Die.single(ov), 40, 100)
-		var taker3 := _mech("Taker", Die.single(Face.attack(200, L)), 20, 100)
-		sk3.add_mech(giver3)
-		sk3.add_mech(taker3)
-		var last := _ghoul(10, 1)
-		sk3.add_foes([last])
-		sk3.begin()
-		sk3.start_round()
-		assert_true(sk3.assign(0, sk3.mechs[1]), "%s: shield the ally past its maximum" % how)
-		assert_eq(taker3.shield, 60, "%s: past its maximum" % how)
-		if how == "win":
-			assert_true(sk3.assign(1, last), "the last foe falls")
-			assert_eq(sk3.outcome, Skirmish.Outcome.VICTORY, "won mid-turn")
-		else:
-			assert_true(sk3.withdraw(), "the team pulls out")
-		assert_true(taker3.shield <= taker3.shield_max, "%s: the excess goes with the fight" % how)
+	# mid-turn never carries it onto the map and into the next fight (a fight lost leaves no
+	# machine to carry it, and there is no withdrawal since the long wall brief).
+	var sk3 := Skirmish.new(1)
+	var giver3 := _mech("Giver", Die.single(ov), 40, 100)
+	var taker3 := _mech("Taker", Die.single(Face.attack(200, L)), 20, 100)
+	sk3.add_mech(giver3)
+	sk3.add_mech(taker3)
+	var last := _ghoul(10, 1)
+	sk3.add_foes([last])
+	sk3.begin()
+	sk3.start_round()
+	assert_true(sk3.assign(0, sk3.mechs[1]), "shield the ally past its maximum")
+	assert_eq(taker3.shield, 60, "past its maximum")
+	assert_true(sk3.assign(1, last), "the last foe falls")
+	assert_eq(sk3.outcome, Skirmish.Outcome.VICTORY, "won mid-turn")
+	assert_true(taker3.shield <= taker3.shield_max, "the excess goes with the fight")
 	# Without the keyword the same shield is capped, as it always was.
 	var plain := _mech("Plain", Die.single(Face.shield(30)), 40, 100)
 	var sk2 := Skirmish.new(1)

@@ -21,7 +21,7 @@ extends Control
 ##
 ## The enemy's turn is replayed blow by blow at the ENEMY PACE setting, the struck mech's
 ## gauges stepping down as each lands, before the next round's dice show or the outcome
-## (a withdrawal included: Ryan, 23 September). Taps are held off while it plays.
+## (Ryan, 23 September). Taps are held off while it plays.
 
 signal finished(outcome: int)
 signal back_requested
@@ -687,6 +687,10 @@ func _build() -> void:
 	_withdraw_btn.ghost = true
 	_withdraw_btn.tooltip_text = "Pull out: the enemy strikes once more, then the team flees."
 	_place(_withdraw_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
+	# There is no withdrawal (the long wall brief 3.5): hidden and disabled until the screen's
+	# rework (the brief's Phase 2) takes the button away.
+	_withdraw_btn.visible = false
+	_withdraw_btn.set_enabled(false)
 
 	# While the enemy's turn replays, nothing on the screen takes a tap.
 	_replay_shade = Control.new()
@@ -1288,10 +1292,7 @@ func _refresh(save: bool = true) -> void:
 	for i in range(sk.mechs.size()):
 		left = left or sk.can_spend(i)
 	_end_btn.set_pulse(assigning and not left)
-	_withdraw_btn.set_enabled(sk.can_withdraw())
-	if sk.committed and _withdraw_btn.text != "NO RETREAT":
-		_withdraw_btn.text = "NO RETREAT"   # the boss's fight and the quick campaign's: a fall ends it
-		_withdraw_btn.queue_redraw()
+	_withdraw_btn.set_enabled(sk.can_withdraw())   # never: there is no withdrawal (the long wall brief 3.5)
 	_show_pop()
 	_refresh_arrows()
 	_refresh_prey()

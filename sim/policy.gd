@@ -20,8 +20,8 @@ extends RefCounted
 ##           rung, the future dice and picks drawn from a seed of its own, never the real
 ##           fight's) and keeps the one whose fight is worth most. A team that sets up and
 ##           cashes across rounds: the top the gap is read against.
-## A persona is a habit on top: `withdraw_below` pulls out when the team's hull is under a
-## percentage; `cool_above` keeps each machine's gauge under a share of its maximum, pricing the
+## A persona is a habit on top (the withdrawing one went with the withdrawal, the long wall brief
+## 3.5): `cool_above` keeps each machine's gauge under a share of its maximum, pricing the
 ## heat a spend leaves above that line as an overheat's hull, so it vents early and holds a hot
 ## gun there (the heat report's cautious persona, 30 October; the rungs as they are play the
 ## reckless one, cooling only against an overheat); `shield_ahead` values a shield left standing
@@ -72,7 +72,6 @@ const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a s
 const CYCLE_AHEAD := 0.6         # a stepping die's next round, as a share of this one: where the dial rests now is the chamber it opens on (the Cassowary's cycle, 3 November)
 
 var kind: int = GREEDY
-var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
 var cool_above: int = 0          # persona: keep the gauge under this percent of the maximum (0: cool only against an overheat)
 var shield_ahead: bool = false   # persona: a standing shield valued by the blows it turns next round (the support ladders' bot, 30 October)
 var rng := RandomNumberGenerator.new()
@@ -88,7 +87,6 @@ var forced_holds: int = 0        # damaging dice held because spending them woul
 var forgone: float = 0.0         # the damage those dice would have dealt, at their mean
 var spends: Dictionary = {}      # component id, or "empty", "destroyed", "disabled" -> times spent
 var stalled: bool = false
-var withdrew: bool = false
 var plans: int = 0               # the planner's decisions that weighed more than one candidate
 var plan_changes: int = 0        # of those, the ones where it spent otherwise than the greedy would
 var actions_bought: int = 0      # an ally's action bought with the team's rerolls (the Immelmann Booster, 30 October)
@@ -117,11 +115,6 @@ func play(sk: Skirmish) -> int:
 	while sk.outcome == Skirmish.Outcome.NONE:
 		if rounds >= MAX_ROUNDS:
 			stalled = true
-			break
-		if withdraw_below > 0 and hull_percent(sk) < withdraw_below and sk.can_withdraw():
-			sk.withdraw()
-			withdrew = sk.outcome == Skirmish.Outcome.WITHDRAWN
-			rounds += 1
 			break
 		sk.start_round()
 		rounds += 1

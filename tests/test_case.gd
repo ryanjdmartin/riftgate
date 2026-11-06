@@ -57,6 +57,37 @@ func quiet_start(b: Battle) -> void:
 	b.forced = b.field.forced_fights()
 
 
+# ---------------------------------------------------------------- a fight's end
+
+## A fight ended by the foes' fall, the way a fight is won (no fight is left since the long
+## wall brief 3.5): every foe waiting cleared, every foe on the field felled, the round ended,
+## again while a split or a rising foe leaves something standing.
+func win_fight(sk: Skirmish) -> void:
+	if sk.state == Skirmish.State.SETUP:
+		sk.begin()
+	for i in range(8):
+		if sk.outcome != Skirmish.Outcome.NONE:
+			return
+		if sk.state == Skirmish.State.ROUND_START:
+			sk.start_round()
+		sk.reinforcements.clear()
+		for f in sk.field_foes():
+			f.hp = 0
+		sk.end_round()
+
+
+## A fight ended by the team's fall: every machine wrecked as the player's turn ends, so the
+## packs in it keep their survivors.
+func lose_fight(sk: Skirmish) -> void:
+	if sk.state == Skirmish.State.SETUP:
+		sk.begin()
+	if sk.state == Skirmish.State.ROUND_START:
+		sk.start_round()
+	for ms in sk.mechs:
+		ms.unit.hull = 0
+	sk.end_round()
+
+
 # ---------------------------------------------------------------- live input (live_test_*)
 
 ## The layout a frame would give, here and now: every control's minimum size read again (a

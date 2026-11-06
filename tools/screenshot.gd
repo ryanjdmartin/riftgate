@@ -166,11 +166,6 @@ func _apply_pose() -> void:
 			if not swatches.is_empty():
 				var pb: ColorPickerButton = swatches[3]   # ENEMY
 				pb.get_popup().popup_centered()
-		"withdraw":
-			# Withdraw confirmed: the enemy's parting blows replay (RIFTGATE_SHOT_FRAME) before
-			# the outcome.
-			s._on_withdraw()
-			s._confirm_yes()
 		"strike":
 			# Spend the first mech's face on the first front foe: the attack animation plays, a
 			# strike at a time (RIFTGATE_SHOT_FRAME catches a burst between its blows), the entry
@@ -566,8 +561,8 @@ func _apply_battle_pose() -> void:
 
 ## The quick campaign's screens (25 October): draft (the default, nothing picked), picked (three
 ## picked), hangar (the first battle ahead, a stored piece and module: RIFTGATE_SHOT_H=3000 shows
-## the stores at its foot), chooser (a hardpoint's pieces), fight (the first fight open, no
-## withdrawal), track (between fights, one won), rewards (the boss down, a card chosen), over.
+## the stores at its foot), chooser (a hardpoint's pieces), fight (the first fight open), track
+## (between fights, one won), rewards (the boss down, a card chosen), over.
 func _apply_quick_pose() -> void:
 	var s: QuickRunScreen = _node
 	var r := s.run
