@@ -1024,6 +1024,18 @@ X_RIFF_Q = "0-..3-..5-3-0." "0-..3-..w-7-5." "0-..3-..5-3-0." "0-..3-..8-w-7."
 X_RIFF_QA = "0-..3-..5-3-0." "0-..3-..w-7-5." "0-..3-..5-3-0." "0-..3-..8w7-5."
 X_RIFFS = (X_RIFF, X_RIFF_Q, X_RIFF_QA)
 
+# X's quarter-tones heard four ways (Ryan, 7 November, on the written-out riff: "Your read of what I wanted to
+# hear was correct, as per your transcription. It's just hard to reconcile quarter tones in my head with
+# actually hearing them precisely. Can I hear it with the lower and upper bass bending the roots, but the power
+# fifth NOT bending? Or, with neither of the bass lines bending, but adding a guitar voice that plays the bent
+# line?"): as the pair has it; the roots bending and the power chords' fifth on the unbent note's fifth, still
+# one string grinding against the other in one amp (real_bass' `fifth_unbent`); or neither bass bending, the
+# basses on the line with C where it bends (X_RIFF_UNBENT, the second pass C, C, B) or on the riff as
+# written, under the lead guitar on the bent line an octave over the power chords (XQ_GUITAR), met halfway
+# with the power chords' level.
+X_RIFF_UNBENT = "0-..3-..5-3-0." "0-..3-..8-7-5." "0-..3-..5-3-0." "0-..3-..8-8-7."
+XQ_GUITAR = {"inst": "lead_real", "mode": "riff", "octave": 1, "gain": 0.834}   # 0.5 dB each way: at 0.2 it sat 12 dB under the power chords on a phone, 13 in full
+XQ_WAYS = ("pair", "fifth", "guitar", "guitar_written")
 
 def x_riff(call, riff=X_RIFF_Q):
     """X's riff in quarter-tones (`riff`, X_RIFF_Q or X_RIFF_QA) on every voice that plays it."""
@@ -1087,6 +1099,27 @@ def w_held(v):
         return first + "-" * (W_HELD - 1) + "." * (W_STEPS - W_HELD)
     return first + "." * (W_STEPS - 1)
 
+
+
+def x_way(way):
+    """X's quarter-tones one of XQ_WAYS (round twenty-one's battle half otherwise)."""
+    if way == "pair":
+        return round21()
+    if way == "fifth":
+        base = round21()
+
+        def edit(call):
+            base(call)
+            for v in call["voices"]:
+                if v.get("pat", {}).get("X") == X_RIFF_Q and v.get("params", {}).get("fifth"):
+                    v["params"] = dict(v["params"], fifth_unbent=True)
+        return edit
+    base = round21(riff=X_RIFF_UNBENT if way == "guitar" else None)
+
+    def edit(call):
+        base(call)
+        call["voices"].append(dict(XQ_GUITAR, notes=dict(RIFF_NOTES), pat={"X": X_RIFF_Q}))
+    return edit
 
 # W's fill again (Ryan, 7 November, of round twenty's: "the 'basses alone' option actually sounds fine now with
 # the 6 beats. Hilariously, your drum solo is TOO intense now, it goes at speeds that sounds unrealistic. The
@@ -1286,11 +1319,12 @@ FORM_X = "M XXXXXXXXXXXX"          # the bar down into the seven and the seven
 FORM_KEYS = "Y KKKKKKKK V"         # the breath, the keys section, the second breath
 FORM_W = "FFFF W SSSSSSSS"         # the keys' tune's first bars, the turn, the climax's first set
 SETS = [
-    {"id": "hx", "half": "battle", "title": "X's riff alone", "form": FORM_X,
-     "note": "The bar down into the seven and the seven with only the riff's two voices over the kit, the low Omnific and its power chords an octave over it, so the riff is heard as it is played (Ryan, 7 November: \"Write out the X riff for me, it doesn't sound like what I intended\"). The piano, the chime and the held guitar are out of these rows; in the pair they play as before, in semitones. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hx0", "In quarter-tones, as the pair has it", "The first pass's C a quarter-tone flat, then B and A; the second pass C, the quarter-flat C, then B where the A was.", round21(alone=True)),
-        ("hx1", "The second pass keeping its A", "The other reading: the second pass's C and the quarter-flat C as sixteenths in the C's eighth, then B and A as written.", round21(riff=X_RIFF_QA, alone=True)),
-        ("hx2", "As written", "The riff in semitones.", round21(riff=None, alone=True)),
+    {"id": "hq", "half": "battle", "title": "X's quarter-tones, four ways", "form": FORM_X,
+     "note": "The bar down into the seven and the seven, the riff as you meant it (Ryan, 7 November: \"Can I hear it with the lower and upper bass bending the roots, but the power fifth NOT bending? Or, with neither of the bass lines bending, but adding a guitar voice that plays the bent line?\"). The piano, the chime and the held line play as before, in semitones. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hq0", "Both basses bend, the fifth with them", "As the pair has it: the low Omnific and the power chords' roots bend, each fifth with its root.", x_way("pair")),
+        ("hq1", "The roots bend, the fifth stays", "Both basses bend their roots; each power chord's fifth stays on the unbent note's fifth, so a bent C carries a G in tune, the two strings grinding in the one amp.", x_way("fifth")),
+        ("hq2", "A guitar bends over the basses' line", "Neither bass bends: they play the line with C where it bends (the second pass C, C, B). The lead guitar plays the bent line an octave over the power chords, at their level.", x_way("guitar")),
+        ("hq3", "A guitar bends over the riff as written", "Neither bass bends: they play the riff as written (the second pass C, B, A). The lead guitar plays the bent line over it.", x_way("guitar_written")),
     ]},
     {"id": "hk", "half": "battle", "title": "K on the crunch synth", "form": FORM_KEYS,
      "note": "The breath, the keys section at its slower tempo and the second breath, the walk on the crunch synth as it shipped (Ryan, 7 November: \"can I hear crunch synth with the synth-lead-octave-up option? And crunch synth with plucked string, but the plucked string down like 3db?\"). Switch rows anywhere: each carries on from the same beat.", "rows": [
@@ -1411,6 +1445,7 @@ def main(argv):
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
+    manifest["sets"] = [e for e in manifest["sets"] if e["id"] in [s["id"] for s in SETS]]   # a set retired from SETS leaves the page
     manifest["sets"].sort(key=lambda e: [s["id"] for s in SETS].index(e["id"]))
     manifest["seams"] = []
     if "full" in wanted:

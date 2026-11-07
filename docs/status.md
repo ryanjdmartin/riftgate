@@ -877,7 +877,9 @@ The tasks are the to-do's; this is the index of what waits.
   quarter-tones on every voice that plays it, from C down to B the second time (7 November: "I meant
   the riff for quarter tones, and walking down FROM C in quarters, landing on B. Not the backing
   chords"; forge.py's riff reads a voice's own notes, a quarter-tone half a semitone), written out
-  on the page for his marks ("it doesn't sound like what I intended"), W six beats, two held on the
+  on the page and confirmed ("Your read of what I wanted to hear was correct"), how its bends are
+  carried on trial (the fifth in tune over bent roots, or a lead guitar bending over basses that do
+  not), W six beats, two held on the
   basses alone ("the 'basses alone' option actually sounds fine now") and four of a fill building to
   Bonham's triplets and ending on them ("the speeds that you start the fill at, those should be what
   it ends at"), his triplets and the descending sixteenth doubles a lean for any fill (pair_sketches'
@@ -1187,7 +1189,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
   twenty-first, X's riff written out and W's fill built to the triplets, `hold_sketches.py`; Night Shift's twenty-second, its battle half's dark pass, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 53. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 54. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg

@@ -188,14 +188,25 @@ def amplified(x, amp):
 FIFTH_SHARE = 0.8   # a double-stop's fifth, on the next string up, plucked a little softer than its root
 
 
-def real_bass(f, dur, preset="finger", amp="di", fifth=False):
+def unbent(f):
+    """The equal-tempered note a pitch bent down from: itself if it is one, the semitone over it if it is
+    a quarter-tone flat (Hold The Line's X, whose riff bends down from C)."""
+    semis = 12.0 * math.log2(f / F.E2)
+    return F.E2 * 2.0 ** (math.ceil(semis - 0.25) / 12.0)
+
+
+def real_bass(f, dur, preset="finger", amp="di", fifth=False, fifth_unbent=False):
     """A note, or with `fifth` a double-stop: the root and its fifth on two strings plucked together
     into one amp, so the drive grinds them into each other (their difference tones, the power
-    chord's weight), where two basses each through its own amp stay apart."""
+    chord's weight), where two basses each through its own amp stay apart. With `fifth_unbent` the
+    fifth is the unbent note's (unbent), so a bent root grinds against a fifth that stays in tune
+    (Ryan, 7 November: "the lower and upper bass bending the roots, but the power fifth NOT bending");
+    on a tempered root it is the same fifth."""
     x = string(f, dur, preset)
     if fifth:
-        x = x + string(f * 2.0 ** (7.0 / 12.0), dur, preset) * FIFTH_SHARE
+        x = x + string((unbent(f) if fifth_unbent else f) * 2.0 ** (7.0 / 12.0), dur, preset) * FIFTH_SHARE
     return amplified(x, amp)
 
 
-F.NOTE_INST["real_bass"] = lambda f, d, p: real_bass(f, d, p.get("preset", "finger"), p.get("amp", "di"), p.get("fifth", False))
+F.NOTE_INST["real_bass"] = lambda f, d, p: real_bass(f, d, p.get("preset", "finger"), p.get("amp", "di"), p.get("fifth", False),
+                                                     p.get("fifth_unbent", False))
