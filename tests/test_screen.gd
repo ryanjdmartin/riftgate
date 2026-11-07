@@ -1267,6 +1267,43 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	s.free()
 
 
+## A kill a foe comes back from takes the skull's place in the preview (Ryan, 7 November: "a revive
+## or a split SHOULD be a preview chip that shows up, taking the place of a death chip"): the
+## rising arrow on a foe that gets back up, the fork on one that splits, and no skull on either.
+func test_a_foe_that_comes_back_wears_its_return_in_place_of_the_skull() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(50, Face.Reach.DIRECT))
+	sk.add_mech(m)
+	var riser := Foe.make("revenant", 10, 2)
+	var gel := Foe.make("revenant", 10, 2)
+	gel.on_death = {"summon": "revenant", "count": 2}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 1)
+	sk.add_foes([riser, gel])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(riser, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	var glyphs := func(f: Foe) -> Array:
+		return s._foe_rows(f).filter(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview").map(func(r) -> String: return str(r[0]))
+	s._drag_from = 0
+	s._drag_over = riser
+	s._refresh()
+	assert_true(glyphs.call(riser).has("rises"), "the die over the riser: it gets back up")
+	assert_false(glyphs.call(riser).has("skull"), "and wears no skull")
+	s._drag_over = gel
+	s._refresh()
+	assert_true(glyphs.call(gel).has("splits"), "over the gel: it splits")
+	assert_false(glyphs.call(gel).has("skull"), "and wears no skull")
+	s._drag_over = riser
+	Effects.remove(riser, "risen")
+	s._refresh()
+	assert_true(glyphs.call(riser).has("skull"), "a foe with nothing to come back with keeps the skull")
+	s._drag_from = -1
+	s._drag_over = null
+	s.free()
+
+
 ## A buff a purge put to sleep (28 October) wears its chip asleep on the machine, its hold line
 ## saying so, until the player's turn wakes it; the machine's view carries each row's style, so
 ## a chip on its way pulses there as on a foe.

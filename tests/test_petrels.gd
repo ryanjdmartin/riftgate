@@ -81,7 +81,9 @@ func test_a_weapon_hotter_than_the_shield_burns_what_it_holds_and_heats_the_rest
 	assert_eq(foe.hp, 30 - 4 - 2 - 4, "and no zap")
 
 
-func test_the_zap_meets_armour_and_is_lost_on_a_kill() -> void:
+## The zap is a blow of the spend's, so it lands before the death check (Ryan, 7 November: the
+## hit's every effect, then the death): on a target the strikes felled too, its corpse taking it.
+func test_the_zap_meets_armour_and_lands_on_a_target_the_strikes_felled() -> void:
 	var u := _mech("Petrel", Die.single(_hot(4, 3)), 16)
 	u.grant_passive(RIOT)
 	var sk := _fight([u], [_foe(30, 0, 1), _foe(4)])
@@ -96,7 +98,8 @@ func test_the_zap_meets_armour_and_is_lost_on_a_kill() -> void:
 	assert_true(sk.assign(0, frail), "on a foe the strike kills")
 	assert_eq(u.shield, shield - 3, "the heat is paid all the same")
 	assert_false(frail.alive(), "the strike killed")
-	assert_true(sk.log.filter(func(l: String) -> bool: return l.contains("zaps")).size() == 1, "and the zap was lost: only the first spend zapped")
+	assert_true(sk.log.filter(func(l: String) -> bool: return l.contains("zaps")).size() == 2, "and the zap landed all the same, on the felled foe")
+	assert_eq(frail.hp, 4 - 4 - 3, "its corpse took the zap of what the shield paid")
 
 
 func test_the_zap_is_plain_and_a_guarded_foe_takes_none_of_it() -> void:

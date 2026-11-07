@@ -97,7 +97,10 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   (ā, ō, ū), so a name that carries one is checked wherever the mono face shows it.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
-  after hearing the holes, build it as he said. It runs both ways: every rule and guideline,
+  after hearing the holes, build it as he said. A consequence that follows from a rule as he
+  stated it is no hole and no question: build it and name it in the report (Ryan, 7 November:
+  "all logically fall out with the way I stated the mechanics without ever being a question");
+  a hole is where his words give two answers or none. It runs both ways: every rule and guideline,
   these included, is open to debate for a good reason (bible section 2), so argue for changing
   one in the open rather than designing around it.
 - A one-off exception proposed for balance is a symptom (Ryan, 18 October): before proposing

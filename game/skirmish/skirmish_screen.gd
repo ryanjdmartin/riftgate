@@ -1586,8 +1586,17 @@ func _foe_rows(foe: Foe) -> Array:
 	# A fall the round will bring (the round preview; Ryan, 26 October: "It should get a destroyed
 	# chip same as the player to indicate incoming death"): the machines' skull, its intent kept,
 	# since its line still matters to what reads it.
+	# A kill it comes back from takes the skull's place (Ryan, 7 November: "a revive or a split
+	# SHOULD be a preview chip that shows up, taking the place of a death chip"): the rising arrow
+	# for a foe that gets back up and stands at the round's end, the fork for one whose halves
+	# step up; a foe that rises and falls again keeps the skull.
 	var fate: Dictionary = _round.get("foes", {}).get(foe, {})
-	if foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
+	var returns := str(fate.get("returns", ""))
+	if foe.alive() and returns == "rises" and bool(fate.get("alive", true)):
+		rows.append(["rises", "", "Gets back up this round", _foe_chip_colour("risen"), "preview"])
+	elif foe.alive() and returns == "splits":
+		rows.append(["splits", "", "Splits this round", _foe_chip_colour("risen"), "preview"])
+	elif foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
 		rows.append(["skull", "", "Destroyed this round", Palette.LOSS, "preview"])
 	if foe.burn_stacks() > 0:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning ×%d" % foe.burn_stacks(), _foe_chip_colour("burning")])

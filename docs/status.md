@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 989 tests, 256,954 checks, green (5 November, main's head as the chassis session landed, Godot 4.8-beta2);
+- Tests: 992 tests, 256,989 checks, green (7 November, `ccr-1eaf0060-jrpw04`, the spend's order, Godot 4.8-beta2);
   about four minutes in a cloud session, twenty on a slow one.
 - A cloud session gets Godot and the first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`: the release asset
@@ -32,7 +32,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   hook, fetch it in one command and unpack and run it in another, since Auto mode refuses one
   line that fetches and runs). Screenshots there need `xvfb-run -a` and
   `--rendering-method gl_compatibility` (Mesa's llvmpipe: draw calls are true counts, frame
-  times mean nothing). Models build with `BPY_PYTHON` set to a python3.11 venv holding
+  times mean nothing). The hook imports only a checkout with no `.godot`, so a container that
+  cached one keeps its old import: tests failing on a class name not declared (`MuzzleFlare`)
+  mean run `--import` first (about fifteen seconds; 7 November). Models build with `BPY_PYTHON` set to a python3.11 venv holding
   `bpy==5.0.1` (about twenty minutes to install). The first `--import` may rewrite four Prairie
   Dog textures and a model build the maker's review tiles: restore both
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
@@ -66,12 +68,15 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (5 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
+Still working (7 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
-on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
-`ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a long wall,
-the packs as designed formations, the shield the fight's resource: his direction and Claude's
-first round as `docs/long_wall_proposal.md` on that branch, nothing built, his marks next).
+on the live page ahead of its branch, so a republish merges onto the live page (Pages);
+`ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a long wall:
+`docs/long_wall_proposal.md` and `docs/briefs/long_wall_build.md` on that branch, its Phases 1
+and 2, the field's loot and the reinforcement cut built by 7 November, its own status the
+detail); and `ccr-1eaf0060-jrpw04`, the spend's order and Sweep's columns of 7 November (How
+things stand), off main's head of 5 November and clear of the long wall's hunks in
+`sim/skirmish.gd` but `_clear_dead_slots`, where both changed it.
 
 ## The design sessions
 
@@ -112,6 +117,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The spend's order and Sweep's columns** (7 November; the bible's section 5 Sweep, riders and
+  spend's order rows): a single-target weapon's hits, their riders, the death check, the spend's
+  end, then what its kills bring back (a foe getting back up, a split's halves), so nothing a
+  spend does meets them and a Purge on the killing hit keeps Undying down; Sweep a shot at each
+  column, left to right, repeating, an empty column's shot wasted and a corpse taking its
+  column's later shots, each shot's riders before the next; every sweep one path, the salvo an
+  ammo a shot; the zap lands on a felled target; the round preview's return chips (the rising
+  arrow, the fork) in the skull's place; the Skua's text Ryan's, its halving after every buff
+  and passive, the foe's reads after it. Waits on Ryan's phone read of the chips and a Skua read
+  (the to-do).
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip
@@ -126,7 +141,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   gone (every range at its mean, to be read again at 200 seeds), an injury breaking the entry
   the die shows, Numbed as a count of rounds with a stun resist by kind, Purge N on both sides,
   the Ward, the primers Charged and Supercooled (no piece grants them yet), Sweep as the third
-  reach, riders landing after the hits, death the last thing checked in a spend, Overcharged and
+  reach, riders landing after the hits, death after every effect (the spend's order since 7
+  November), Overcharged and
   Kindled renamed Empowered and given one clock (a foe's halves at the round's end too, 4
   November). Left for Ryan: the Scorpion's rework (its blast is the one draw
   besides the die), rules for the two planned modules, the Emitter's Purge 2, whether a foe's

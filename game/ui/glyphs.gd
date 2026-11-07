@@ -569,6 +569,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(3):
 				var x := -s * 0.25 + i * s * 0.25
 				ci.draw_line(c + Vector2(x, s * 0.55), c + Vector2(x, s * 0.9), color, width * 0.8)
+		"rises":
+			# A kill a foe gets back up from (Ryan, 7 November: the preview's chip in the death
+			# chip's place): an arrow rising off the ground it fell to, its head open.
+			ci.draw_line(c + Vector2(-s * 0.8, s * 0.8), c + Vector2(s * 0.8, s * 0.8), color, width)
+			ci.draw_line(c + Vector2(0, s * 0.8), c + Vector2(0, -s * 0.85), color, width)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.55, -s * 0.3), c + Vector2(0, -s * 0.9), c + Vector2(s * 0.55, -s * 0.3)]), color, width)
+		"splits":
+			# A kill that splits a foe in two (the Gel's, Ryan, 7 November: the preview's chip in the
+			# death chip's place): one body above, forking into two below.
+			ci.draw_arc(c + Vector2(0, -s * 0.55), s * 0.32, 0.0, TAU, 16, color, width)
+			ci.draw_line(c + Vector2(0, -s * 0.23), c + Vector2(0, s * 0.05), color, width)
+			ci.draw_line(c + Vector2(0, s * 0.05), c + Vector2(-s * 0.5, s * 0.4), color, width)
+			ci.draw_line(c + Vector2(0, s * 0.05), c + Vector2(s * 0.5, s * 0.4), color, width)
+			ci.draw_arc(c + Vector2(-s * 0.6, s * 0.65), s * 0.26, 0.0, TAU, 14, color, width)
+			ci.draw_arc(c + Vector2(s * 0.6, s * 0.65), s * 0.26, 0.0, TAU, 14, color, width)
 		"mine":
 			# A sea mine (the Lammergeier's, 21 October): a ring and four horned spikes, a shot
 			# waiting in a slot. Unlike Volatile's burst it has a body.
