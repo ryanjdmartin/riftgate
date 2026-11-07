@@ -82,8 +82,10 @@ skirmish.
 
 ### Formation
 - Foes stand in two ranks of four columns, front and back. A massive foe (size 2) fills a
-  whole column and counts as front rank for every rule: always in reach, never exposing its
-  column, nothing behind it.
+  whole column, both its slots, and counts as front rank for reach: always in reach, never
+  exposing its column, nothing behind it. A back-rank Sweep's shot or a back-rank area at its
+  column meets it as one in the front does, and a blow meets it once however many of its slots
+  it reaches, so its own column adds nothing to a Splash or a Penetrate aimed at it.
 - At the start, foes take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes, a breach 1 more; ties in arrival order). Foes left over wait as reinforcements.
 
@@ -242,11 +244,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   bring back. A multi-target weapon (Sweep alone) fires each shot in turn (its column's foe,
   its hit, its riders), then the death check once every shot is done; then the spend ends,
   then the returns. Everything a hit does lands before the death check, on a foe it fells
-  too (its riders, a Shock, an Expose, a Lure's turn, the zap after the strikes), so the
+  too (its riders, a Shock, an Expose, a Lure's turn, a Swap, a drone, a pull, the zap after
+  the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
   whether it killed (a kill trigger, the reset gun) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
-  is done, so nothing the spend does meets them, and the preview shows a foe that will get back
+  is done, in the slot their unit died in, wherever a Swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
   up or split with its return's chip in the skull's place. What a foe's tick or a mine fells
   comes back at once. The prediction runs in phases: a foe its Burning will kill before it
   acts keeps its intent shown, information whether its blow lands or not, and its blow is left
@@ -430,6 +433,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   beside it (Webbed, below).
 - **Swap** (the Dingo's Combat Translocator): the spend takes two targets, a foe and then
   another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
+  A Swap lands in the rider phase, before the death check, like every rider: one whose spend
+  fells its first target moves the corpse, which dies in the slot it was moved to and gets back
+  up or splits there; a corpse moved onto a mine sets off nothing, the shots waiting for the
+  next arrival.
   A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
   front stands exposed to Direct fire). On the screen: drag the die to the first target and
   drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
@@ -642,8 +649,9 @@ On a foe:
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added.
 - **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it): the next weapon to kill it, any
-  machine's, leaves its shot in the slot it empties, a mine; one mine a drone; it lasts the
-  skirmish, and a death by a tick leaves nothing.
+  machine's, leaves its killing shot as a mine in the slot it dies in, as the death check clears
+  it, a slot a Swap moved it to included; one mine a drone; it lasts the skirmish, and a death by
+  a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
   (a stun like any other: a Numbed foe strips a stack instead, a Warded one turns it, and a foe

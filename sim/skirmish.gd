@@ -116,6 +116,16 @@ var _blast_strike := false   # a vent's blast: one weapon hit inside the vent's 
 var _holding_returns := false
 var _risers: Array = []
 var _splitters: Array = []
+## The shot that felled each foe this spend, the first kept (_killed_by), for a drone the foe
+## carries at the death check to leave as its mine where it dies (Ryan, 7 November: what a death
+## brings is "attached to the unit, not the spot").
+var _killing_shot: Dictionary = {}
+## A single-target spend's own rider-phase effects past its blow (_entry_effects): the Swap's
+## second target, whether the target carried Exposed before the spend (the drone's Rapid), and
+## whether the drone made the spend Rapid.
+var _spend_second = null
+var _spend_exposed_before := false
+var _spend_free := false
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -2032,11 +2042,14 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				_salvo(mech_index, ms, f, raw, target)
 			else:
 				if target != null:
+					# The pull, the drone and the Swap land in the rider phase, before the death
+					# check, on a target the hit felled too (_entry_effects).
+					_spend_second = second
+					_spend_exposed_before = exposed_before
+					_spend_free = false
 					_resolve_attack(mech_index, ms, f, target)
-					if f.pulls_mines and target.alive():
-						_pull(ms, Vector2i(0 if target.is_massive() else target.rank, target.column))
-					if f.drones and target.alive():
-						free = _drone(ms, target, exposed_before)
+					free = _spend_free
+					_spend_second = null
 			# The primers (Ryan, 2 November): a weapon fired or laid spends a stack of Charged and
 			# of Supercooled, which rode it as its keywords (Effects.effective_face); a salvo is one
 			# fire, the pull's gather none, and equipment spends nothing.
@@ -2056,8 +2069,6 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			if f.regen_shield > 0 and f.regen_rounds > 0 and target is Foe and ms.alive():
 				Effects.grant_for_rounds(ms.unit, Effects.regenerating_shield(f.regen_shield), "buff:" + f.component, round + f.regen_rounds)
 				log.append("%s regenerates: %d shield at the start of each of the next %d rounds" % [ms.unit.display_name, f.regen_shield, f.regen_rounds])
-			if f.has(Face.Keyword.SWAP) and target is Foe and target.alive():
-				_swap(target, second)
 			if Effects.counts_shots(ms.unit) > 0:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
@@ -2471,8 +2482,8 @@ func _set_contents(at: Vector2i, c: Array) -> void:
 ## Whoever has just come into a slot outside the reinforcement step sets off what waits there.
 func _arrive_at(at: Vector2i) -> void:
 	var lead := foe_at(at.x, at.y)
-	if lead != null and not _reinforcing and not mines.is_empty():
-		_land(lead)
+	if lead != null and lead.alive() and not _reinforcing and not mines.is_empty():
+		_land(lead)   # a corpse swapped in sets off nothing: the shots wait, as the pull's do
 
 
 ## A swap read without making it (the bot's bunching, 22 October): the two foes, or the foe and
@@ -2811,8 +2822,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 					riders.append(func() -> void: _land_rider(foe, sid, n_laid, gained, turned, laid))
 			if was_alive and not foe.alive() and f.devours > 0:
 				_overcharge_on_kill(ms, foe, f.devours)
-			if was_alive and not foe.alive() and Effects.has(foe, "syrinx_drone"):
-				_drone_mine(foe, _shot(ms, f, blow, real, doubled, 0, false, _area_shot(ms, f, own, split)))   # the killing shot as fired
+			if was_alive and not foe.alive():
+				_killed_by(foe, _shot(ms, f, blow, real, doubled, 0, false, _area_shot(ms, f, own, split)))   # the killing shot as fired, a drone's mine if it carries one as it dies
 			# The killing strike: what it had past the kill carries on.
 			if spills and was_alive and not foe.alive():
 				_spill(ms, f, foe, taken - hp_before, hit)
@@ -2897,6 +2908,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 			log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
 	if not sweep:
 		_after_blow(ms, f, touched, gained, turned)
+		if not _blast_strike:
+			_entry_effects(ms, f, target)
 	last_roll = {"mech": mech_index, "target": target, "base": base_total, "final": total, "tags": f.tags.duplicate()}
 	var how := f.describe()
 	if sweep:
@@ -2949,6 +2962,29 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 		var cooled := mini(ms.heat, thawed * cryo_cool())
 		ms.heat -= cooled
 		log.append("%s cashes Cryo ×%d: -%d heat" % [ms.unit.display_name, thawed, cooled])
+
+
+## What an entry does past its blow, landed in the rider phase before the death check, on a
+## target the hit felled too (Ryan, 7 November: "deal damage, then swap (in the rider phase),
+## check death, end spend, and revive in the NEW spot, since the split/revive is attached to the
+## unit, not the spot"): the pull gathers every mine into the target's slot, the drone rides the
+## target (Rapid when it carried Exposed before the spend), the Swap moves it and its second.
+func _entry_effects(ms: MechState, f: Face, target: Foe) -> void:
+	if target == null or target.rank < 0:
+		return
+	if f.pulls_mines:
+		_pull(ms, Vector2i(0 if target.is_massive() else target.rank, target.column))
+	if f.drones:
+		_spend_free = _drone(ms, target, _spend_exposed_before)
+	if f.has(Face.Keyword.SWAP) and _spend_second != null:
+		_swap(target, _spend_second)
+
+
+## The shot that felled `foe` this spend, the first kept: a drone it carries as the death check
+## clears it leaves the shot as its mine in the slot it dies in (_clear_dead_slots).
+func _killed_by(foe: Foe, shot: Dictionary) -> void:
+	if not _killing_shot.has(foe):
+		_killing_shot[foe] = shot
 
 
 ## A hit's riders landing (Ryan, 3 November: "a multi-hit weapon with Shock would apply it after
@@ -4168,11 +4204,11 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if not t.alive() and kws.has(Face.Keyword.DISPEL):
 			_purge_foe("a mine of %s's" % str(shot.get("by", "")), t, maxi(1, int(shot.get("dispel", 1))), turned)   # a foe its shot killed stays down
 		if not t.alive():
-			if Effects.has(t, "syrinx_drone"):
+			if not _killing_shot.has(t):
 				var again := shot.duplicate(true)
 				mine_seq += 1
 				again["seq"] = mine_seq
-				_drone_mine(t, again)
+				_killed_by(t, again)   # the mine's shot, a drone's mine if it carries one as it dies
 			if kws.has(Face.Keyword.SPILLOVER) and t.rank == 0 and not t.is_massive():
 				_mine_spill(t, taken - hp_before, hit, shot, source)
 			continue
@@ -4230,11 +4266,11 @@ func _mine_spill(foe: Foe, amount: int, hit: Array[Foe], shot: Dictionary, sourc
 	behind.hp -= taken
 	_note_blow(behind, 0, taken, "spill")
 	log.append("a mine of %s's spills over: %d into %s" % [str(shot.get("by", "")), taken, behind.display_name])
-	if not behind.alive() and Effects.has(behind, "syrinx_drone"):
+	if not behind.alive() and not _killing_shot.has(behind):
 		var plain := {"damage": amount, "keywords": [], "by": shot.get("by", ""), "mech": shot.get("mech", -1), "face": {}, "burn": 0, "cryo": 0, "flak": 0}
 		mine_seq += 1
 		plain["seq"] = mine_seq
-		_drone_mine(behind, plain)
+		_killed_by(behind, plain)
 
 
 ## The Lorentz Contractor's pull (the Lammergeier's, 21 October): every mine on the field
@@ -4402,8 +4438,8 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whol
 	behind.hp -= behind_taken
 	_note_blow(behind, _strike_no, behind_taken, "spill")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
-	if not behind.alive() and Effects.has(behind, "syrinx_drone"):
-		_drone_mine(behind, _shot(ms, f, amount, null, 1, 0, true))   # the spill is plain damage, so its mine carries no keyword
+	if not behind.alive() and not _killing_shot.has(behind):
+		_killed_by(behind, _shot(ms, f, amount, null, 1, 0, true))   # the spill is plain damage, so a drone's mine from it carries no keyword
 	if not behind.alive() and f.devours > 0:
 		_overcharge_on_kill(ms, behind, f.devours)
 
@@ -5189,6 +5225,8 @@ func _clear_dead_slots() -> void:
 					_falls += 1   # a foe down, gone or getting back up: what a spend counts as a kill
 					if not f.stays_down:
 						team_kills += 1   # the Pilgrim's grudge reads it
+					if Effects.has(f, "syrinx_drone") and _killing_shot.has(f):
+						_drone_mine(f, _killing_shot[f])   # the drone falls with it, in the slot it dies in
 					_release_swallowed(f)   # a swallower down lets its machine go, whatever comes next
 					# A foe that readied itself to get back up does so once, whole, in its own slot,
 					# unless it went whole (a Bomb's burst): once its slot is clear, or, a kill of a
@@ -5206,6 +5244,7 @@ func _clear_dead_slots() -> void:
 						_last_act(f)
 						if not f.on_death.is_empty() and f.on_death.has("summon"):
 							_splitters.append([f, 0 if is_same(rank, front) else 1, col])
+				_killing_shot.erase(f)
 				f.rank = -1
 			if cleared:
 				# A twin slot's survivor keeps it alone; with none it is a plain empty slot.

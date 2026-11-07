@@ -8264,6 +8264,94 @@ func test_what_a_kill_brings_back_waits_for_the_spend_to_end() -> void:
 	assert_true(s4.returned.any(func(r: Dictionary) -> bool: return r["foe"] == gel and r["how"] == "splits"), "the spend's returns name the split")
 
 
+## An entry's own effects past its blow land in the rider phase, before the death check, on a
+## target the hit felled too (Ryan, 7 November: "if a swap did damage, it should play out the
+## same: deal damage, then swap (in the rider phase), check death, end spend, and revive in the
+## NEW spot, since the split/revive is attached to the unit, not the spot"): a damaging Swap
+## moves the foe it kills, which gets back up where it was moved to and takes the mine waiting
+## there, a corpse setting off nothing; a damaging drone rides the foe it kills, whose mine falls
+## in the slot it dies in.
+func test_a_swap_lands_in_the_rider_phase_and_a_revive_stands_in_the_new_spot() -> void:
+	var swapper := Face.attack(10, L, [K.SWAP])
+	var sk := Skirmish.new(3, 3)
+	sk.add_mech(_mech("A", Die.single(swapper), 40, 100))
+	var up := _ghoul(4, 10)
+	var other := _ghoul(100, 10)
+	sk.add_foes([up, other])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(up, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(sk.front[0] == up and sk.front[1] == other and sk.front[2] == null, "two in front, the third column empty")
+	# A mine waits in the empty slot the swap will move the dying foe into.
+	sk.mines[Vector2i(0, 2)] = [{"damage": 3, "weapon": true, "keywords": [], "seq": 1, "by": "test", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0, "dispel": 0, "row": 0, "column": 0, "chain": 0}]
+	assert_true(sk.assign(0, up, Vector2i(0, 2)), "the damaging swap: its blow kills, then it moves the foe")
+	assert_eq(sk.front[2], up, "it got back up in the slot it was moved to, not the one it was struck in")
+	assert_true(sk.front[0] == null, "the slot it was struck in stands empty")
+	assert_eq(up.hp, 4 - 3, "whole, then the mine waiting there: its corpse set off nothing as it came")
+	# A damaging drone rides the foe it kills, its mine left in the slot it dies in.
+	var drone := Face.attack(10, L)
+	drone.drones = true
+	var s2 := Skirmish.new(3, 2)
+	s2.add_mech(_mech("B", Die.single(drone), 40, 100))
+	var prey := _ghoul(4, 10)
+	s2.add_foes([prey, _ghoul(100, 10)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, prey), "the damaging drone")
+	assert_false(prey.alive(), "its blow kills")
+	assert_eq((s2.mines.get(Vector2i(0, 0), []) as Array).size(), 1, "the drone fell with it and left the killing shot in its slot")
+
+
+## A massive foe fills both slots of its column. Area aimed at it reaches the foes beside it, and
+## its own column adds nothing, so it never takes its own Splash or Penetrate twice (Ryan, 7
+## November: "Whatever it does now is fine, it will just be something to test"); a back-rank
+## Spread's row meets it like any foe in that rank.
+func test_area_meets_a_massive_foe_once_from_either_rank() -> void:
+	var splash := Face.attack(10, I, [K.SPLASH])
+	splash.splash = 3
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(splash), 40, 100))
+	var left := _ghoul(100, 10)
+	var giant := _colossus(100)
+	var right := _ghoul(100, 10)
+	sk.add_foes([giant, left, right])
+	sk.begin()
+	sk.start_round()
+	var gc := giant.column
+	assert_true(sk.front[gc] == giant and sk.back[gc] == giant, "the giant fills its column")
+	assert_true(sk.assign(0, giant), "Splash at the giant")
+	assert_eq(giant.hp, 90, "it takes the blow once: its column holds only itself")
+	var beside := 0
+	for f in [left, right]:
+		if absi(f.column - gc) == 1:
+			beside += 1
+			assert_eq(f.hp, 97, "a foe beside it takes the Splash")
+	assert_true(beside >= 1, "something stood beside it")
+	var lance := Face.attack(10, L, [K.PENETRATE])
+	lance.penetrate = 4
+	var s2 := Skirmish.new(1, 2)
+	s2.add_mech(_mech("B", Die.single(lance), 40, 100))
+	var g2 := _colossus(100)
+	s2.add_foes([g2, _ghoul(100, 10)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, g2), "Penetrate at the giant")
+	assert_eq(g2.hp, 90, "once: nothing else in its column")
+	# A back-rank Spread beside a massive foe's column meets it.
+	var spread := Face.attack(10, I, [K.CLEAVE])
+	spread.cleave = 4
+	var s3 := Skirmish.new(1, 2)
+	s3.add_mech(_mech("C", Die.single(spread), 40, 100))
+	var g3 := _colossus(100)
+	var rear := _archer(100, 10)
+	s3.add_foes([g3, rear])
+	s3.begin()
+	s3.start_round()
+	assert_true(s3.back[g3.column] == g3 and s3.back[1 - g3.column] == rear, "the giant's column and an archer behind the other")
+	assert_true(s3.assign(0, rear), "Spread at the back-rank archer")
+	assert_eq([rear.hp, g3.hp], [90, 96], "the archer takes the blow, the giant beside it in the back rank the Spread")
+
+
 ## Expose and Exposed (the Kestrel session, 20 and 21 October): every foe the entry reaches and
 ## leaves standing is Exposed through the next round, in Direct reach of every machine as if
 ## its column's front were empty and its armour counting for nothing, its own and any Armoured;
