@@ -275,12 +275,12 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.477 (the page's version 489,
-  published 7 November from `ccr-1eaf0060-jrpw04` at `5dc88da`: its rows of the spend's order,
-  Sweep's columns and the Skua's base halving merged row by row onto the live v0.476, which
-  carries the long wall's and the music session's rows ahead of their branches; no conflict).
-  This branch's file carries its own rows on main's v0.459, so its next merge takes BASE at
-  `5dc88da`. The live page's round
+  `docs/design-bible.html` after every change. The live page is v0.478 (the page's version 490,
+  published 7 November from `ccr-1eaf0060-jrpw04` at `2fcf8ff`: its rows of the spend's order,
+  the Swap in the rider phase, Sweep's columns and the Skua's base halving merged row by row onto
+  the live page, which carries the long wall's and the music session's rows ahead of their
+  branches; no conflict). This branch's file carries its own rows on main's v0.459, so its next
+  merge takes BASE at `2fcf8ff`. The live page's round
   preview and Lammergeier rows still name reinforcements, true on main and cut by the long wall:
   that branch's to settle as it lands. The live page may carry rows ahead of main's code while
   their branches have not landed. Before
