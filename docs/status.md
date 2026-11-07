@@ -41,11 +41,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 5 November 2026 but the two branches still working below. The
-branches that landed on 3 to 5 November, each a session of its own, fully merged and to delete
+Everything is on main as of 7 November 2026 but the two branches still working below. The
+branches that landed on 3 to 7 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
-`claude/aphelion-minerva-chassis-9qf6cy` (Ryan's chassis session of 4 and 5 November: his ideas
+`ccr-1eaf0060-jrpw04` (the spend's order and Sweep's columns of 7 November, the Skua's base
+halving, every shot seen to land, the Swap in the rider phase; main took it as a fast-forward
+on Ryan's word, "Push this to main"), `claude/aphelion-minerva-chassis-9qf6cy` (Ryan's chassis session of 4 and 5 November: his ideas
 and Claude's first round, a brief each in `docs/briefs/` with a header the hangar reads, the
 briefs README's "Ten a maker" and "Orbits", the proposal retired,
 `git show a228545:docs/aphelion_minerva_chassis_proposal.md`; the work account scrapped
@@ -70,13 +72,14 @@ one). Each merge commit says how its conflicts were settled.
 
 Still working (7 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
-on the live page ahead of its branch, so a republish merges onto the live page (Pages);
+on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
 `ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a long wall:
 `docs/long_wall_proposal.md` and `docs/briefs/long_wall_build.md` on that branch, its Phases 1
 and 2, the field's loot and the reinforcement cut built by 7 November, its own status the
-detail); and `ccr-1eaf0060-jrpw04`, the spend's order and Sweep's columns of 7 November (How
-things stand), off main's head of 5 November and clear of the long wall's hunks in
-`sim/skirmish.gd` but `_clear_dead_slots`, where both changed it.
+detail). Taking main, it meets the spend's order of 7 November in `sim/skirmish.gd`'s
+`_clear_dead_slots`, where both changed the split's line (main queues it for the spend's end,
+the long wall keeps a regrowing part's corpse), and in the rules, the bible, the status and the
+to-do.
 
 ## The design sessions
 
@@ -279,8 +282,8 @@ commands are in `README.md`.
   published 7 November from `ccr-1eaf0060-jrpw04` at `2fcf8ff`: its rows of the spend's order,
   the Swap in the rider phase, Sweep's columns and the Skua's base halving merged row by row onto
   the live page, which carries the long wall's and the music session's rows ahead of their
-  branches; no conflict). This branch's file carries its own rows on main's v0.459, so its next
-  merge takes BASE at `2fcf8ff`. The live page's round
+  branches; no conflict). Main's file, since it took that branch, carries its own rows on
+  v0.459, so main's next merge takes BASE at `2fcf8ff`. The live page's round
   preview and Lammergeier rows still name reinforcements, true on main and cut by the long wall:
   that branch's to settle as it lands. The live page may carry rows ahead of main's code while
   their branches have not landed. Before
