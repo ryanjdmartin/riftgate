@@ -124,6 +124,48 @@ def figure(fig, notes):
     return "".join(fig.replace("r", n) for n in notes)
 
 
+# The fills' vocabulary (Ryan, 7 November, of Hold The Line's W: "The implementation of the new triplets are
+# superb ... keep those triplets in mind for existing or future drum parts, theyre awesome. The other common
+# drum pattern we're missing in general is the sixteenth note descending doubles pattern, as in the famous
+# Phil Collins In the Air Tonight fill"). Each returns (drum, step, velocity) events for a bar's grid
+# (`per_beat` steps a beat: 4 on a bar of sixteenths, 12 on Hold The Line's six-beat W), velocities rising
+# from `soft` to `hard` across the figure; drawn into patterns by the sketch that uses them. A sixteenth
+# needs a grid of four steps a beat or a multiple of it, a Bonham triplet six or a multiple of it.
+VELOCITIES = "123456789xabcdefgh"   # a drum hit's velocity characters, tenths to full, then over full
+
+
+def _ramp(n, soft, hard):
+    a, b = VELOCITIES.index(soft), VELOCITIES.index(hard)
+    return [VELOCITIES[round(a + (b - a) * k / max(1, n - 1))] for k in range(n)]
+
+
+def bonham_triplets(start, beats, hands, per_beat=12, foot="kick", soft="7", hard="9"):
+    """Bonham's triplets: two hands and the foot in sextuplets, a group of three to each half beat, the
+    hands on `hands` (a drum, or one a beat in turn) and the foot on `foot`, from step `start` for `beats`."""
+    if per_beat % 6:
+        raise ValueError("Bonham's triplets want a grid in sixes, not %d a beat" % per_beat)
+    step = per_beat // 6
+    drums = [hands] * beats if isinstance(hands, str) else list(hands)
+    hits = []
+    for b in range(beats):
+        for k in range(6):
+            hits.append((foot if k % 3 == 2 else drums[b], start + b * per_beat + k * step))
+    return [(d, s, v) for (d, s), v in zip(hits, _ramp(len(hits), soft, hard))]
+
+
+def descending_doubles(start, drums, per_beat=12, soft="6", hard="8", foot=None):
+    """The sixteenth-note descending doubles (In the Air Tonight's fill): two sixteenths on each of
+    `drums` in turn, high to low, from step `start`; the foot on each beat where `foot` names it."""
+    if per_beat % 4:
+        raise ValueError("sixteenths want a grid in fours, not %d a beat" % per_beat)
+    step = per_beat // 4
+    hits = [(d, start + (2 * i + k) * step) for i, d in enumerate(drums) for k in range(2)]
+    out = [(d, s, v) for (d, s), v in zip(hits, _ramp(len(hits), soft, hard))]
+    if foot:
+        out += [(foot, s, v) for d, s, v in out if (s - start) % per_beat == 0]
+    return out
+
+
 TICKING = {"inst": "guitar_real", "mode": "riff", "octave": 0, "params": {"clean": True}}   # the map's pulse, as Hold The Line's
 
 # The guitar on one string (Night Shift's twelfth round; Hold The Line's bass variations of 4 November).

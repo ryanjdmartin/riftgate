@@ -1,23 +1,31 @@
-"""Hold The Line's twentieth round as a pair (Ryan, 7 November, on the nineteenth): X's quarter-tones moved to
-its riff, K's walk with new company, W in six beats with a new fill, and the map's M.
+"""Hold The Line's twenty-first round as a pair (Ryan, 7 November, on the twentieth): X's riff written out,
+K on the crunch synth, W's fill built to the triplets.
 
-  "I meant the riff for quarter tones, and walking down FROM C in quarters, landing on B. Not the backing
-  chords ... K - And I'd like to hear it paired with the synth lead from L instead of the plucked string,
-  and a version where it's up an octave. And if we could bring back the crunch synth as an option that
-  would be great too. W - the instruments need to hold a bit longer, assuming that's possible with the
-  bass voices. If not, then we'll need to add the synth from F to help, like in Y. Also, this bit is like
-  2 beats too long, it only needs 6, not 8 - 2 beats of fading held notes, and 4 of drum fills. Might need
-  to rewrite the fill, it could be more epic anyway, Bonham triplets/quadruplets, real showy, like the last
-  drum fill in YYZ before the guitar solo. Map U is what I meant, yeah, you got it right in the full pair.
-  Map M, can the upper voice from L join in too?"
+  "Write out the X riff for me, it doesn't sound like what I intended. Only the instruments playing the riff
+  should be using the quarter tones. K - can I hear crunch synth with the synth-lead-octave-up option? And
+  crunch synth with plucked string, but the plucked string down like 3db? W - the 'basses alone' option
+  actually sounds fine now with the 6 beats. Hilariously, your drum solo is TOO intense now, it goes at
+  speeds that sounds unrealistic. The implementation of the new triplets are superb, but the speeds that you
+  start the fill at, those should be what it ends at. Mostly just because a double-kick quadruplet sounds
+  just like noise on the phone speaker, not because it's necessarily written badly. Build to the triplets.
+  Also, keep those triplets in mind for existing or future drum parts, theyre awesome. The other common drum
+  pattern we're missing in general is the sixteenth note descending doubles pattern, as in the famous Phil
+  Collins In the Air Tonight fill."
 
-X's riff in quarter-tones on every voice that plays it (X_RIFF_Q), the held line over it back in
-semitones. W one bar of six beats at twelve steps a beat (METER): two beats of the held notes, F's synth
-holding with them since the basses cannot (W_SYNTH), then a new four-beat fill (W_FILL); the map's W on
-the same bar, its low strings held through and its timpani's roll over the last four beats. K's walk on
-the fingers beside the plucked string, with the synth lead from L at the string's octave or an octave up
-(K_LEADS), the crunch synth as it shipped and F's sub in a set. The map's M with L's tine piano on its
-line (map_m_tine).
+X's riff is written out on the pair page for his marks, and heard alone over the kit (x_alone) in
+quarter-tones as the pair has it, with the second pass keeping its A (X_RIFF_QA) and as written; only the
+riff's voices bend, as before. K's walk on the crunch synth as it shipped, beside the plucked string 3 dB
+down (K21_PAIR, the pair's) or the synth lead an octave up. W's held notes on the basses alone (his pick),
+its fill building to Bonham's triplets and ending on them (W_FILL_BUILD, the pair's) or through the
+descending doubles down four toms (W_FILL_DOUBLES, with two toms from their own seed, W_TOMS); the figures
+are pair_sketches' bonham_triplets and descending_doubles, for any track's fills.
+
+The twentieth round's, kept: X's riff in quarter-tones on every voice that plays it (X_RIFF_Q), the held
+line over it in semitones; W one bar of six beats at twelve steps a beat (METER), its notes held two
+beats; the map's W on the same bar, its low strings held through and its timpani's roll over the last
+four beats; the map's M with L's tine piano on its line (map_m_tine). Its options stay in the code: F's
+synth holding W's notes (W_SYNTH), its fill (W_FILL), K's other walks (K_BASSES) and the synth lead at
+the plucked string's octave (K_LEADS).
 
 The nineteenth round's, kept: the upper Omnific's power chords through X, U, W, the climax and Y
 (UPPER_SECTIONS); N twice through on the keys lead's power chords an octave under, in both halves
@@ -62,12 +70,13 @@ minimalist"), its lifts' riff on the soft sub and the tine piano.
 The full pair on the switch takes every pick. The set's rows are the same bars from the same seed
 through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold20.json beside the pairs (about five minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold21.json beside the pairs (about five minutes on four cores)
     tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hx       # the named sets only (hx, hk, hw, and full for the pair)
 """
 import json
 import os
 import sys
+import zlib
 from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
@@ -994,6 +1003,11 @@ K_BASSES = {"fingers": ({"inst": "real_bass", "params": {"preset": "finger", "am
 K_PAIR = "pluck"
 K_LEAD, K_LEAD_UP = 0.392, 0.286   # 0.6 and 0.2 dB each way
 K_LEADS = {"lead": (1, K_LEAD), "lead_up": (2, K_LEAD_UP)}
+# Round twenty-one (7 November: "can I hear crunch synth with the synth-lead-octave-up option? And crunch synth with
+# plucked string, but the plucked string down like 3db?"): the walk on the crunch synth as it shipped, beside the
+# synth lead an octave up or the plucked string 3 dB under where it was ("pluck_down").
+K_PLUCK_DOWN = -3.0
+K21_BASS, K21_PAIR = "crunch", "pluck_down"
 # X's riff in quarter-tones (6 November: "Lowering the first high C by a quarter, and then at the second C, keep
 # it at C and descend by quarters instead of semis"; 7 November: "I meant the riff for quarter tones, and
 # walking down FROM C in quarters, landing on B. Not the backing chords"): the seven's two-bar riff played as
@@ -1004,16 +1018,29 @@ K_LEADS = {"lead": (1, K_LEAD), "lead_up": (2, K_LEAD_UP)}
 RIFF_NOTES = {"w": 7.5}   # C a quarter-tone flat
 X_RIFF = "0-..3-..5-3-0." "0-..3-..8-7-5."
 X_RIFF_Q = "0-..3-..5-3-0." "0-..3-..w-7-5." "0-..3-..5-3-0." "0-..3-..8-w-7."
+# Round twenty-one (7 November: "Write out the X riff for me, it doesn't sound like what I intended. Only the
+# instruments playing the riff should be using the quarter tones"): the other reading of the second pass, its
+# walk squeezed in and its A kept, C and the quarter-flat C as sixteenths, then B and A as written.
+X_RIFF_QA = "0-..3-..5-3-0." "0-..3-..w-7-5." "0-..3-..5-3-0." "0-..3-..8w7-5."
+X_RIFFS = (X_RIFF, X_RIFF_Q, X_RIFF_QA)
 
 
-def x_riff(call):
-    """X's riff in quarter-tones (X_RIFF_Q) on every voice that plays it."""
+def x_riff(call, riff=X_RIFF_Q):
+    """X's riff in quarter-tones (`riff`, X_RIFF_Q or X_RIFF_QA) on every voice that plays it."""
     riffs = [v for v in call["voices"] if v.get("pat", {}).get("X") == X_RIFF]
     if not riffs:
         raise ValueError("no voice plays X's riff as it was written")
     for v in riffs:
-        v["pat"]["X"] = X_RIFF_Q
+        v["pat"]["X"] = riff
         v["notes"] = dict(v.get("notes") or {}, **RIFF_NOTES)
+    return call
+
+
+def x_alone(call):
+    """X with its riff's voices alone over the kit: every other voice out of X, so the riff is heard as it is played."""
+    for v in call["voices"]:
+        if "X" in v.get("pat", {}) and v["pat"]["X"] not in X_RIFFS:
+            del v["pat"]["X"]
     return call
 
 
@@ -1061,15 +1088,56 @@ def w_held(v):
     return first + "." * (W_STEPS - 1)
 
 
-def w_six(call, synth=True):
+# W's fill again (Ryan, 7 November, of round twenty's: "the 'basses alone' option actually sounds fine now with
+# the 6 beats. Hilariously, your drum solo is TOO intense now, it goes at speeds that sounds unrealistic. The
+# implementation of the new triplets are superb, but the speeds that you start the fill at, those should be what
+# it ends at. Mostly just because a double-kick quadruplet sounds just like noise on the phone speaker ... Build to
+# the triplets"): the held notes on the basses alone, and a fill that builds to Bonham's triplets and ends on
+# them, nothing faster than six to the beat, the kick never more than two to the beat: eighth-note triplets on
+# the snare, sixteenths down the toms, then the triplets on the tom and the snare into the climax's crash
+# (W_FILL_BUILD); or the sixteenth-note descending doubles he named the same day ("as in the famous Phil
+# Collins In the Air Tonight fill") down four toms into the same triplets (W_FILL_DOUBLES). The doubles want
+# a tom over the kit's two and one under them (W_TOMS), built from a seed of their own so nothing else moves.
+W_TOMS = {"tom_hi": 175.0, "tom_lo": 73.0}
+W_FILL_BUILD = w_bar(
+    [("crash", 0, "x"), ("kick", 0, "x")]
+    + [("snare", 24, "5"), ("snare", 28, "5"), ("snare", 32, "6")]                    # eighth-note triplets
+    + [("tom", 36, "6"), ("tom", 39, "6"), ("tom2", 42, "7"), ("tom2", 45, "7")]       # sixteenths down the toms
+    + P.bonham_triplets(48, 2, ("tom", "snare"), soft="7", hard="x"),                  # Bonham's triplets into the climax
+    ("kick", "snare", "tom", "tom2", "crash"))
+W_FILL_DOUBLES = w_bar(
+    [("crash", 0, "x"), ("kick", 0, "x")]
+    + P.descending_doubles(24, ("tom_hi", "tom", "tom2", "tom_lo"), soft="6", hard="8")
+    + P.bonham_triplets(48, 2, ("tom", "snare"), soft="8", hard="x"),
+    ("kick", "snare", "tom", "tom2", "tom_hi", "tom_lo", "crash"))
+W_FILLS = {"build": W_FILL_BUILD, "doubles": W_FILL_DOUBLES, "round20": W_FILL}
+W21_FILL = "build"
+
+
+def w_toms(call):
+    """The doubles' two more toms in the kit, at the kit's toms' gain, from their own seed."""
+    gain = call["kit"]["tom"][1]
+    saved = F.RNG
+    F.RNG = np.random.default_rng(zlib.crc32(b"hold_the_line_w_toms"))
+    try:
+        for name, f in W_TOMS.items():
+            call["kit"][name] = (F.variants(lambda p, f=f: F.tom_real(f, p)), gain)
+    finally:
+        F.RNG = saved
+
+
+def w_six(call, synth=True, fill=None):
     """The battle's W on its six-beat bar: every voice's note held two beats, F's synth holding with them
-    where `synth`, the new fill (W_FILL) for the drums."""
+    where `synth`, `fill` (W_FILL, round twenty's, unless given) for the drums."""
+    fill = fill or W_FILL
     for v in call["voices"]:
         if "W" in v.get("pat", {}):
             v["pat"]["W"] = w_held(v)
     for name, d in call["drums"].items():
         d.pop("W", None)
-    for name, pat in W_FILL.items():
+    if any(name in W_TOMS for name in fill):
+        w_toms(call)
+    for name, pat in fill.items():
         call["drums"].setdefault(name, {})["W"] = pat
     if synth:
         call["voices"].append(dict(W_SYNTH, params=dict(W_SYNTH["params"]), pat=dict(W_SYNTH["pat"])))
@@ -1088,15 +1156,18 @@ def k_walk(call, which, shipped=None):
 
 
 def k_pair(call, which=K_PAIR):
-    """What walks beside K's bass: the plucked string as it is, or the synth lead from L (K_LEADS)."""
+    """What walks beside K's bass: the plucked string as it is or 3 dB down, or the synth lead from L (K_LEADS)."""
     if which == "pluck":
         return
     v = the_one(call, lambda v: v["inst"] == "pluck" and heard(v) == {"K"}, "K's plucked string")
+    if which == "pluck_down":
+        v["gain"] = round(v["gain"] * 10.0 ** (K_PLUCK_DOWN / 20.0), 4)
+        return
     octave, factor = K_LEADS[which]
     v.update(inst="lead", octave=octave, hold=0.9, gain=round(v["gain"] * factor, 4))
 
 
-def round20(upper=UPPER_SECTIONS, k_bass=K_BASS, pair=K_PAIR, quarters=True, w_synth=True):
+def round20(upper=UPPER_SECTIONS, k_bass=K_BASS, pair=K_PAIR, quarters=True, w_synth=True, riff=X_RIFF_Q, fill=None):
     """Round twenty's battle half: round nineteen's (the upper Omnific's power chords in `upper`'s
     sections, N twice on the keys lead, the lifts on one bass) with X's riff in quarter-tones where
     `quarters`, W on its six-beat bar (F's synth holding where `w_synth`), K's walk on `k_bass` with
@@ -1118,10 +1189,23 @@ def round20(upper=UPPER_SECTIONS, k_bass=K_BASS, pair=K_PAIR, quarters=True, w_s
         k_walk(call, k_bass, shipped)
         k_pair(call, pair)
         if quarters:
-            x_riff(call)
-        w_six(call, w_synth)
+            x_riff(call, riff)
+        w_six(call, w_synth, fill)
     return edit
 
+
+
+def round21(k_bass=K21_BASS, pair=K21_PAIR, fill=W21_FILL, riff=X_RIFF_Q, alone=False):
+    """Round twenty-one's battle half: round twenty's with K's walk on `k_bass` beside `pair` (the crunch
+    synth and the plucked string 3 dB down, the full pair's), W's held notes on the basses alone and its
+    fill `fill` (W_FILLS), X's riff `riff` (as written where None), alone over the kit where `alone`."""
+    base = round20(k_bass=k_bass, pair=pair, quarters=riff is not None, w_synth=False, riff=riff or X_RIFF_Q, fill=W_FILLS[fill])
+
+    def edit(call):
+        base(call)
+        if alone:
+            x_alone(call)
+    return edit
 
 # The map half's rounds nineteen and twenty (Ryan, 6 and 7 November): L's riff and M's line on a clean finger
 # bass in place of the cellos ("Change L and M from cellos (i think?) to finger bass"), met halfway with them,
@@ -1202,26 +1286,26 @@ FORM_X = "M XXXXXXXXXXXX"          # the bar down into the seven and the seven
 FORM_KEYS = "Y KKKKKKKK V"         # the breath, the keys section, the second breath
 FORM_W = "FFFF W SSSSSSSS"         # the keys' tune's first bars, the turn, the climax's first set
 SETS = [
-    {"id": "hx", "half": "battle", "title": "X's riff in quarter-tones", "form": FORM_X,
-     "note": "The bar down into the seven and the seven (Ryan, 7 November: \"I meant the riff for quarter tones, and walking down FROM C in quarters, landing on B\"). Every voice on the riff, the low Omnific and the power chords over it. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hx0", "In quarter-tones", "The first time through, the high C a quarter-tone flat; the second, from C down in quarter-tones to B (the full pair's).", round20()),
-        ("hx1", "As written", "The riff in semitones.", round20(quarters=False)),
+    {"id": "hx", "half": "battle", "title": "X's riff alone", "form": FORM_X,
+     "note": "The bar down into the seven and the seven with only the riff's two voices over the kit, the low Omnific and its power chords an octave over it, so the riff is heard as it is played (Ryan, 7 November: \"Write out the X riff for me, it doesn't sound like what I intended\"). The piano, the chime and the held guitar are out of these rows; in the pair they play as before, in semitones. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hx0", "In quarter-tones, as the pair has it", "The first pass's C a quarter-tone flat, then B and A; the second pass C, the quarter-flat C, then B where the A was.", round21(alone=True)),
+        ("hx1", "The second pass keeping its A", "The other reading: the second pass's C and the quarter-flat C as sixteenths in the C's eighth, then B and A as written.", round21(riff=X_RIFF_QA, alone=True)),
+        ("hx2", "As written", "The riff in semitones.", round21(riff=None, alone=True)),
     ]},
-    {"id": "hk", "half": "battle", "title": "K's walk and what walks beside it", "form": FORM_KEYS,
-     "note": "The breath, the keys section at its slower tempo and the second breath (Ryan, 7 November: \"I'd like to hear it paired with the synth lead from L instead of the plucked string, and a version where it's up an octave. And if we could bring back the crunch synth as an option\"). Each beside voice met halfway with the plucked string. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hk0", "Fingers and the plucked string", "As round nineteen had it (the full pair's).", round20()),
-        ("hk1", "Fingers and the synth lead", "The synth lead that plays L's riff, at the plucked string's octave.", round20(pair="lead")),
-        ("hk2", "Fingers and the synth lead an octave up", "The same an octave higher.", round20(pair="lead_up")),
-        ("hk3", "The crunch synth and the plucked string", "K's walk back on the crunch synth it shipped on, at its octave and level.", round20(k_bass="crunch")),
-        ("hk4", "F's sub and the plucked string", "Round nineteen's other: F's punchy sub.", round20(k_bass="sub")),
+    {"id": "hk", "half": "battle", "title": "K on the crunch synth", "form": FORM_KEYS,
+     "note": "The breath, the keys section at its slower tempo and the second breath, the walk on the crunch synth as it shipped (Ryan, 7 November: \"can I hear crunch synth with the synth-lead-octave-up option? And crunch synth with plucked string, but the plucked string down like 3db?\"). Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hk0", "The plucked string 3 dB down", "Beside the crunch synth (the full pair's).", round21()),
+        ("hk1", "The synth lead an octave up", "The synth lead that plays L's riff, an octave over the plucked string's octave.", round21(pair="lead_up")),
+        ("hk2", "The plucked string as it was", "Round twenty's level.", round21(pair="pluck")),
     ]},
-    {"id": "hw", "half": "battle", "title": "W in six beats", "form": FORM_W,
-     "note": "The keys' tune's first bars, W and the climax's first set (Ryan, 7 November: \"2 beats of fading held notes, and 4 of drum fills ... Bonham triplets/quadruplets, real showy\"). The held notes two beats, then the new fill. The basses cannot hold by themselves: each falls 6 to 7 dB a beat. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hw0", "F's synth holding with them", "The synth lead that plays F's quiet line, holding the B with the basses and the guitar at their level on a phone, fading 6 dB over the two beats (the full pair's).", round20()),
-        ("hw1", "The basses alone", "The held notes as the instruments ring them.", round20(w_synth=False)),
+    {"id": "hw", "half": "battle", "title": "W's fill, built to the triplets", "form": FORM_W,
+     "note": "The keys' tune's first bars, W and the climax's first set, the held notes on the basses alone, your pick (Ryan, 7 November: \"the speeds that you start the fill at, those should be what it ends at ... Build to the triplets\"). Nothing faster than six to the beat, the kick at most two to the beat. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hw0", "Building to the triplets", "Eighth-note triplets on the snare, sixteenths down the toms, then Bonham's triplets on the tom and the snare into the climax (the full pair's).", round21()),
+        ("hw1", "The descending doubles into the triplets", "Two beats of sixteenth-note doubles down four toms, In the Air Tonight's fill, then the same triplets.", round21(fill="doubles")),
+        ("hw2", "Round twenty's fill", "The triplets first and twelve to the beat at the end, for the comparison.", round21(fill="round20")),
     ]},
 ]
-PAIR = {"id": "hold_the_line_r20", "title": "Hold The Line, round twenty"}
+PAIR = {"id": "hold_the_line_r21", "title": "Hold The Line, round twenty-one"}
 # The battle half's sections as round twenty plays them, where they differ from the shipped track's:
 # the Omnific, wherever it plays, on the dirtier drive.
 NAMES_R20 = {
@@ -1242,6 +1326,10 @@ NAMES_R20 = {
     "V": "the second breath, one bar at the solo's tempo: the keyboard solo's instruments ring on E minor (the bass on the root, piano on the fifth, the guitar and piano chords), a swell into the fill",
 }
 
+# The battle half's sections as round twenty-one plays them, where they differ from round twenty's.
+NAMES_R21 = dict(NAMES_R20,
+                 W="the keys' turn, six beats: two of the tune's note held on the lead guitar and the basses, fading; four of a fill building to Bonham's triplets: eighth-note triplets on the snare, sixteenths down the toms, then the triplets on the tom and the snare into the climax",
+                 K="the keyboard solo's first eight bars at its slower tempo, its walk on the crunch synth with the plucked string beside it 3 dB down, K's drums with a pushing kick, eighths on the hat and a china, its crash choked to a second and a half")
 
 def level(x, db):
     return F.limit(F.write_level(x, NAME, db))
@@ -1250,7 +1338,7 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold20_" + SETS[si]["id"])
+    F.seed("hold21_" + SETS[si]["id"])
     row = SETS[si]["rows"][ri]
     edit, form = row[3], row[4] if len(row) > 4 else SETS[si]["form"]   # a row may cut its own bars (K's lengths)
     with P.Patched(_steps=run_steps):
@@ -1262,7 +1350,7 @@ def render_row(job):
 
 
 def full_path(half):
-    return os.path.join(P.OUT, "hold20_full_%s.wav" % half)
+    return os.path.join(P.OUT, "hold21_full_%s.wav" % half)
 
 
 def render_full(half):
@@ -1270,7 +1358,7 @@ def render_full(half):
     if half == "battle":
         F.seed(NAME)
         call = copied(call_on(FORM_K, METER))
-        round20()(call)
+        round21()(call)
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
@@ -1307,7 +1395,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold20.json")
+    manifest_path = os.path.join(P.OUT, "hold21.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1319,7 +1407,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, *_edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold20_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold21_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -1331,7 +1419,7 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R20)
+        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R21)
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
                                "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels}]
