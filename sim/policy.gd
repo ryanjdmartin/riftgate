@@ -1236,7 +1236,7 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
 ## One point, the entry's number. Overcharge, a target's missing hull and the pipeline's modifiers apply as the
 ## resolver applies them; the strikes multiply the blow, a split entry's (the Skua's) each
-## halved whole after the pipeline, rounded down, never below one. `strikes_on` is how many of
+## taking its base halved before the pipeline, rounded down, never below one. `strikes_on` is how many of
 ## them land on this foe when not all do (a sweep's shots at its column), and `aimed` whether
 ## the first is one.
 ## `area` is the shape (Skirmish.AREA_ROW, AREA_COLUMN, AREA_ALL) of a foe past the strike's
@@ -1263,9 +1263,9 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 	# A foe's Barrier (28 October) takes the first blow of a weapon whole, an area's included.
 	var barred := damaging and target != null and Effects.has(target, "barrier")
 	for v in rolls:
-		# The firer's modifiers judged on this foe, a split's halving of the whole (rounded down, never
-		# below one), then the foe's own reads.
-		var dmg: int = Skirmish.split_share(int(Effects.attack(ms.unit, f, v + fired, 0, target)["damage"]), f.split) + own
+		# A split's halving of the base (rounded down, never below one), then the firer's modifiers
+		# judged on this foe, then its own reads.
+		var dmg: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target)["damage"]) + own
 		# The foe's own statuses read last: a Shocked foe takes the first blow aimed at it double
 		# (a foe past the target, an area's or an arc's, never: 29 October), and its Flak adds to
 		# every blow of a weapon, a strike of 0 included. Then its armour comes off every blow, so
@@ -2032,10 +2032,10 @@ static func _widest(sk: Skirmish, areas: Array) -> float:
 
 ## What an area entry's spend deals a foe of one shape past its target, every strike, before
 ## that foe: the shape's number with what the entry prints from its firer (heat fired, the
-## hopper), through its machine's modifiers with no foe in hand, then a split's halving.
+## hopper), a split's halving of that base, through its machine's modifiers with no foe in hand.
 static func _area_mean(m: Skirmish.MechState, f: Face, shape: int) -> float:
-	var n := Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.hopper_bonus(m.unit, f)
-	return float(Skirmish.split_share(int(Effects.attack(m.unit, f, n, 0)["damage"]), f.split)) * float(maxi(1, f.strikes))
+	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.hopper_bonus(m.unit, f), f.split)
+	return float(Effects.attack(m.unit, f, n, 0)["damage"]) * float(maxi(1, f.strikes))
 
 
 ## A foe's worth standing in the front rank, where Direct fire reaches it.

@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 992 tests, 256,989 checks, green (7 November, `ccr-1eaf0060-jrpw04`, the spend's order, Godot 4.8-beta2);
+- Tests: 993 tests, 257,003 checks, green (7 November, `ccr-1eaf0060-jrpw04`, the spend's order, Godot 4.8-beta2);
   about four minutes in a cloud session, twenty on a slow one.
 - A cloud session gets Godot and the first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`: the release asset
@@ -124,9 +124,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   column, left to right, repeating, an empty column's shot wasted and a corpse taking its
   column's later shots, each shot's riders before the next; every sweep one path, the salvo an
   ammo a shot; the zap lands on a felled target; the round preview's return chips (the rising
-  arrow, the fork) in the skull's place; the Skua's text Ryan's, its halving after every buff
-  and passive, the foe's reads after it. Waits on Ryan's phone read of the chips and a Skua read
-  (the to-do).
+  arrow, the fork) in the skull's place; the Skua's text Ryan's ("Base weapon damage is
+  halved"), its base halved before every buff ("the spirit of buffs and riders is they happen
+  after"); a massive foe takes either rank's shot at its column; on screen every hit and shot
+  lands, one on a corpse and a wasted shot on its empty slot (`RIFTGATE_MISS_DEBUG=1`), a death
+  at the spend's death check after its last blow. Waits on Ryan's phone read of the chips and the
+  wasted shot, and a Skua read (the to-do).
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip

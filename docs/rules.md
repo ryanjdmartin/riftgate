@@ -136,10 +136,12 @@ defeat when every machine is wrecked. There is no round limit.
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
 - **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
   vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid excepted). A blank does
-  nothing; an unspent die is lost. On screen a spend's strikes land one at a time, a beat apart:
-  each foe a strike reaches flashes, its gauge steps down to what the blow left and the blow's
-  number rises off it; a foe the spend kills stands until its killing blow lands, and a last act
-  lands its damage on the machines as it is named. A new spend or the turn's end lands whatever
+  nothing; an unspent die is lost. On screen a spend's hits and shots land one at a time, a beat
+  apart, every one of them: each foe a hit reaches flashes, its gauge steps down to what the blow
+  left and the blow's number rises off it, a hit on a foe an earlier one felled landing on it all
+  the same, and a Sweep's shot at an empty column landing on that empty slot, a jolt and a ring of
+  dust with no number; a foe the spend kills stands until the death check, after the spend's last
+  blow, and a last act lands its damage on the machines as it is named. A new spend or the turn's end lands whatever
   is still waiting at once.
 - **On a machine**: a shield adds its number up to the target's maximum; a vent removes its
   number in heat; a combined entry spends two halves on one machine (the Wake Diffuser: a vent
@@ -184,8 +186,8 @@ defeat when every machine is wrecked. There is no round limit.
   it fires a shot at each column, left to right, repeating until it runs out of shots. A shot
   at an empty column is wasted, its area with it, so a lone foe takes only its own column's
   shots; a foe an earlier shot felled takes its column's later shots on its corpse, since
-  nothing is cleared until the shots are done; a back-rank slot a massive foe fills holds no
-  back-rank foe. Each shot is aimed at its column's foe and is a hit of its own (A spend's
+  nothing is cleared until the shots are done; a massive foe fills both slots of its column, so
+  either rank's shot there hits it. Each shot is aimed at its column's foe and is a hit of its own (A spend's
   order, below), and an area keyword's shape rides each. The die shows a shot's number, and
   dragged over a foe it lights that foe's rank whole and brackets it. The Skua's Flechette
   Pod, and the Musk Ox's salvo an ammo a shot.
@@ -259,8 +261,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   with no foe in hand, then each foe's own as it lands.
 - Strikes are separate blows; each lands the number and carries the keywords. Heat is paid once a spend.
   A split weapon (the Skua's) hits twice as often, or fires twice the shots for a Sweep, each
-  blow its firer's whole number after every modifier halved, rounded down and never below one
-  (a blow of nothing stays nothing); the foe's own reads come after it.
+  hit's base (its number and what it prints from its firer) halved before the attacker's
+  modifiers, rounded down and never below one (a number of nothing stays nothing); every
+  modifier and the foe's own reads then count on each hit.
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
   and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
@@ -914,10 +917,10 @@ and every one of them that fell is a kill).
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
   it) after those, undoubled (the Kite's), and may grant a cooldown to every weapon and equipment its machine
   aims at a foe. It may split every weapon and equipment aimed at a foe instead (the Skua's):
-  each hits twice as often, a Sweep firing twice the shots, and each weapon blow is its whole
-  number after every buff and passive, halved, rounded down and never below one, the foe's
-  own reads (its Flak, its missing HP) and its armour after it, on each hit; the die shows a
-  hit's blow with the hits beside it ("1 ×2"). A debuff deals nothing to halve and hits twice
+  each hits twice as often, a Sweep firing twice the shots, and each hit's base weapon damage
+  (its number and what the entry prints) is halved, rounded down and never below one, every
+  buff and passive and the foe's conditions counting on each hit after it, its armour too; the
+  die shows a hit's blow with the hits beside it ("1 ×2"). A debuff deals nothing to halve and hits twice
   all the same, its riders landing on each hit (a Web, a Lure, a Disrupt, a Shock, an Expose
   and a Swap still land once a spend).
 - Conditions: the reach is direct or

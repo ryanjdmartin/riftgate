@@ -8006,13 +8006,14 @@ func test_a_team_reroll_back_onto_a_reset_gun_chains_it_with_every_kill() -> voi
 
 
 ## The split (the Skua's Split-cycle Breech, built 25 October; Ryan, 7 November: "Doubles the
-## number of hits (or number of shots, for Sweep) for Weapons and Equipment. All weapon damage is
-## halved (rounded down, minimum 1)"): a weapon hits twice as often, each blow its firer's whole
-## pipeline halved, buffs included, rounded down and never below one; the foe's own reads (its
-## Flak) and its armour after, on each hit; the die shows a hit's blow beside the hits. A debuff
-## deals nothing to halve and hits twice all the same, its riders on each hit (Ryan, 25 October:
-## "That's kind of the whole point"); a Sweep fires twice the shots.
-func test_a_split_passive_hits_twice_its_whole_blow_halved_rounded_down() -> void:
+## number of hits (or number of shots, for Sweep) for Weapons and Equipment. Base weapon damage is
+## halved (rounded down, minimum 1)"; "the spirit of buffs and riders is they happen after"): a
+## weapon hits twice as often, each hit's base halved, rounded down and never below one, then every
+## buff counting on each hit whole, then the foe's own reads (its Flak) and its armour; the die
+## shows a hit's blow beside the hits. A debuff deals nothing to halve and hits twice all the same,
+## its riders on each hit (Ryan, 25 October: "That's kind of the whole point"); a Sweep fires twice
+## the shots.
+func test_a_split_passive_hits_twice_its_base_halved_rounded_down() -> void:
 	var split := {"id": "split", "name": "Split", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
 	var gun := Face.attack(3, L)
@@ -8040,10 +8041,10 @@ func test_a_split_passive_hits_twice_its_whole_blow_halved_rounded_down() -> voi
 	sk.start_round()
 	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2)
 	shown = sk.shown_face(ms, gun)
-	assert_eq(sk.shown_number(ms, shown, plate), 1, "Empowered halved with the rest: (3 + 2) halved is 2, the armour off each")
+	assert_eq(sk.shown_number(ms, shown, plate), 2, "Empowered on each hit, after the halving: 1 + 2, the armour off each")
 	ms.face_index = 0
 	assert_true(sk.assign(0, plate), "fired on plate")
-	assert_eq(plate.hp, 98, "2 less the armour's 1, twice")
+	assert_eq(plate.hp, 96, "(1 + 2 - 1) twice")
 	var probe := Face.attack(0, L, [K.FLAK])
 	probe.flak = 1
 	assert_eq(Effects.effective_face(m, probe).strikes, 2, "a debuff hits twice")
@@ -8055,8 +8056,8 @@ func test_a_split_passive_hits_twice_its_whole_blow_halved_rounded_down() -> voi
 	assert_true(sk.assign(0, bare), "the debuff spent")
 	assert_eq(Effects.stacks_of(bare, "flakked") - before, 2, "its Flak on each hit")
 	assert_eq(bare.hp, 98, "and no damage")
-	# The foe's own reads come after the halving, whole (the blow's order: the Kite's double never
-	# touches them either): the Flak the debuff laid adds its points to each halved hit.
+	# The foe's own reads come after the halving, whole (the blow's order): the Flak the debuff
+	# laid adds its points to each halved hit.
 	sk.end_round()
 	sk.start_round()
 	ms.die = Die.single(gun)
@@ -8124,6 +8125,7 @@ func test_a_sweep_fires_a_shot_at_each_column_left_to_right_repeating() -> void:
 	assert_true(sk3.assign(0, lone), "swept at it")
 	assert_eq(lone.hp, 95, "one shot of the four: the other three hit empty columns")
 	assert_true("\n".join(sk3.log).contains("nothing"), "the log tells the wasted shots")
+	assert_eq(sk3.spend_blows.filter(func(x: Dictionary) -> bool: return str(x["kind"]) == "miss").size(), 3, "and the screen is told of each, its slot with it")
 	# The back rank picked: one foe there takes its column's shots alone.
 	var sk5 := Skirmish.new(1, 1)
 	sk5.add_mech(_mech("S", Die.single(pod), 40, 100))
@@ -8134,6 +8136,20 @@ func test_a_sweep_fires_a_shot_at_each_column_left_to_right_repeating() -> void:
 	sk5.start_round()
 	assert_true(sk5.assign(0, back_foe), "the back rank picked")
 	assert_eq([front_foe.hp, back_foe.hp], [4, 85], "three shots on its one column, the front untouched")
+	# A massive foe fills both slots of its column, so a back-rank sweep's shot there hits it.
+	var s6 := Skirmish.new(1, 2)
+	var lob2 := Face.attack(5, S)
+	lob2.strikes = 2
+	s6.add_mech(_mech("S", Die.single(lob2), 40, 100))
+	var giant := _colossus(100)
+	var rear := _archer(100, 10)
+	s6.add_foes([giant, rear])
+	s6.begin()
+	s6.start_round()
+	var gc := giant.column
+	assert_true(s6.front[gc] == giant and s6.back[gc] == giant and s6.back[1 - gc] == rear, "the giant fills its column, an archer behind the other")
+	assert_true(s6.assign(0, rear), "dropped on the back rank")
+	assert_eq([giant.hp, rear.hp], [95, 95], "the back rank's shot at the giant's column hits the giant")
 	# Dropped on a back foe with the front standing: the back rank is swept, the front untouched.
 	var sk4 := Skirmish.new(1, 2)
 	var lob := Face.attack(5, S)

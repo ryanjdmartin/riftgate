@@ -1088,7 +1088,7 @@
    "tier": 1,
    "design": {
     "fantasy": "The strafer (Ryan, 14 October: \"Love the [strafer], lock that in\"), a swing-wing since 21 October, the strafing jet by trade, its wings sweeping as it fires twice; the Skua, the seabird that harries others in repeated dives until they drop what they carry.",
-    "niche": "Kestrel's second tier one, the many-blows machine: every weapon it fires strikes twice at half, the Kite's bargain in count instead of magnitude. Each strike pays the foe's armour, so it slaughters trash and bounces off plate, a detachment the map can read. Its payoffs are riders laid a hit and multi-hit pieces, every maker's (its flat buffs halved with the rest since 7 November, Ryan's passive text); its Flechette Pod fires a shot at each column of a rank.",
+    "niche": "Kestrel's second tier one, the many-blows machine: every weapon it fires strikes twice at half, the Kite's bargain in count instead of magnitude. Each strike pays the foe's armour, so it slaughters trash and bounces off plate, a detachment the map can read. Its payoffs are riders laid a hit, flat buffs counted on each hit and multi-hit pieces, every maker's; its Flechette Pod fires a shot at each column of a rank.",
     "notes": "Ryan's go, 21 October (the bible's Kestrel row). Its engine landed 25 October: the Split-cycle Breech (each roll halved, rounded down, Ryan's call of 24 October, and struck twice) and the Flechette Pod's spray; its rounds are in git (git show f87b831:docs/briefs/kestrel_strafer.md). Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull. The stock by kind from the basics (a warm flat gun, a cold rolled gun, a self shield): the Laser Carbine, the Twin Autoguns and the Canopy. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, skua), in a second round of looks on Ryan's notes (the to-do)."
    },
    "codex": "",
@@ -1116,7 +1116,7 @@
    "passive": {
     "id": "split_cycle_breech",
     "name": "Split-cycle Breech",
-    "description": "Doubles the number of hits (or number of shots, for Sweep) for Weapons and Equipment. All weapon damage is halved (rounded down, minimum 1).",
+    "description": "Doubles the number of hits (or number of shots, for Sweep) for Weapons and Equipment. Base weapon damage is halved (rounded down, minimum 1).",
     "effects": [
      {
       "trigger": "on_attack",
