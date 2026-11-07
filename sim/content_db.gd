@@ -1035,9 +1035,9 @@ func elite_composition(faction_id: String, tier: int, id: String) -> Dictionary:
 	return {}
 
 
-## A boss's hand-tailored escort at a tier (an `escort` composition), or empty: the tier's units
-## stand in round robin (escort_units). An escort may name its `boss` (30 October: the King Gel's
-## Gels, which its merge takes in); the boss's own comes first, then one that names none.
+## A boss's curated escort at a tier (an `escort` composition), or empty: the boss stands alone,
+## nothing grown by the tier (7 November). An escort may name its `boss` (30 October: the King
+## Gel's Gels, which its merge takes in); the boss's own comes first, then one that names none.
 func escort_composition(faction_id: String, tier: int, boss_id: String = "") -> Dictionary:
 	var found := compositions(faction_id, tier, "escort")
 	for c in found:

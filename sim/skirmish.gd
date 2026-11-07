@@ -275,10 +275,10 @@ func begin() -> void:
 	else:
 		_deploy_layout()
 	if not reinforcements.is_empty():
-		# A pack is what its eight slots hold (no reinforcement inside a fight). A battle's fight is
-		# one pack, validated to fit, so none reaches here; the quick campaign's boss fights (its
-		# formation beside the boss) do. What does not stand was never in the fight: it came with
-		# nothing, so it is no kill.
+		# A pack is what its eight slots hold (no reinforcement inside a fight). Every fight the
+		# game deals is one pack, validated to fit, and the harness fits its own, so nothing
+		# reaches here; a fight given more stays honest all the same: what does not stand was
+		# never in it, came with nothing, and is no kill.
 		log.append("%d more could not stand: the formation is full" % reinforcements.size())
 		for f in reinforcements:
 			var tally: Dictionary = came_with.get(f.pack_id, {})

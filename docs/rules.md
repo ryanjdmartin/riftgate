@@ -86,9 +86,8 @@ fights each in turn). The depth lives in the skirmish.
   whole column and counts as front rank for every rule: always in reach, never exposing its
   column, nothing behind it.
 - A pack is what its fight's slots hold: nothing waits behind the formation and nothing steps in
-  once the fight begins. Every composition fits its slots (Content conventions), and a battle's
-  fight holds one pack; a fight given more than its slots hold (the quick campaign's boss beside
-  its formation) leaves out what cannot stand, which was never in it and is no kill.
+  once the fight begins. Every composition fits its slots (Content conventions) and every fight
+  holds one pack, a boss's with its escort, so no fight is given more than its slots hold.
 - At the start, foes take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes, a breach 1 more; ties in arrival order).
 - A pack dealt with a layout (Content conventions) is what its layout places: its members are
@@ -1257,7 +1256,10 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 ## The quick campaign
 
 A run of battles with no map and no cities, Slice and Dice's flow (`sim/quick_run.gd`; the
-harness's Quick campaign). The campaign's rules hold where this part says nothing.
+harness's Quick campaign). The campaign's rules hold where this part says nothing, and it
+follows the main content and code: every fight is one pack dealt as a battle deals it (its
+members as content writes them, its lead, its layout drawn), a boss's the battle's boss unit,
+and nothing scales a pack.
 
 - **Start**: three different tier-one chassis, picked freely from every one the engine can
   field, in their stock. Four squad slots, the fourth filled by an offer's chassis. The party is
@@ -1266,10 +1268,10 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
   elites: a formation first, then elites and formations in turn, the elites left over at the
-  end. Then the boss with its formation and its own escort (else none), at the tier's numbers, as the
-  campaign's boss unit stands: one of the lead's bosses its battles have not ended on this run,
-  or from tier two its final, its dealt hero leading the lead's formation, drawn as one more
-  boss while that hero stands; once all are beaten, any of its bosses again. The finale's last
+  end. Then the boss's fight, the campaign's boss unit at the tier's numbers with its own escort
+  (alone with none; no formation beside it, one pack being one fight): one of the lead's bosses
+  its battles have not ended on this run, or from tier two its final, its dealt hero with three of
+  its domain's units at the tier, drawn as one more boss while that hero stands; once all are beaten, any of its bosses again. The finale's last
   fight is the party's line, every domain's dealt hero promoted, a domain
   whose final was won leaving its column to a standing domain's boss, as in the campaign.
 - **A formation** is one of the domain's formation compositions at the battle's tier, in

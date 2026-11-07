@@ -232,21 +232,15 @@ func make_skirmish() -> Skirmish:
 		sk.add_mech(u)
 	var c := picked_composition()
 	if not c.is_empty():
-		# The composition alone, as a battle deals it: its members as content writes them, its
-		# elites at the tier, its layout drawn from the seed and the pack what the draw places; a
-		# split, a summon and a regrown part call content up as in play.
-		var members: Array = []
-		for m in c["members"]:
-			members.append([str(m[0]), int(m[1])])
-		var lead := str(c.get("lead", ""))
-		for i in range(members.size()):
-			if str(members[i][0]) == lead and i > 0:
-				members.push_front(members.pop_at(i))
-				break
-		var sq := Unit.pack(90, str(c["id"]).replace("_", " "), Vector2i.ZERO, str(c["faction"]), Unit.PACK_MOVE, 1, "")
-		sq.set_members(members)
-		sq.layout = ContentDB.resolve_layout(c.get("layout", null), seed_value, 0)
-		Battlefield.recount_by_layout(sq)
+		# The composition alone, dealt as a battle deals it (Battlefield.pack_of): its members as
+		# content writes them, its lead, its layout drawn from the seed and the pack what the draw
+		# places; its elites at the tier; a split, a summon and a regrown part call content up as in
+		# play.
+		var sq := Battlefield.pack_of(c, seed_value, 0)
+		if sq == null:
+			return null
+		sq.id = 90
+		sq.display_name = str(c["id"]).replace("_", " ")
 		sq.boss_tier = clampi(fight_tier - 1, 0, 2)
 		sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 		sk.add_foes(db.foes_for(sq), sq)
@@ -263,16 +257,12 @@ func make_skirmish() -> Skirmish:
 			members.append([str(p[0]), int(p[1])])
 	var unit: Unit = null
 	if not boss.is_empty():
-		unit = Unit.boss(90, str(db.foes[boss]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(boss))
-		unit.lineup = [boss]   # the boss picked, whichever of its domain's (30 October: the slate lists several)
-		var t := clampi(fight_tier - 1, 0, 2)
-		unit.boss_tier = t
+		# The boss picked, whichever of its domain's (30 October: the slate lists several), as the
+		# battle fields it (Battle.make_boss_unit); the packs listed, if any, its escort instead.
+		unit = Battle.make_boss_unit(db, db.faction_of_foe(boss), clampi(fight_tier - 1, 0, 2), boss, [boss])
+		unit.id = 90
 		if not members.is_empty():
 			unit.set_members(members)
-		else:
-			var own := db.escort_composition(db.faction_of_foe(boss), t + 1, boss)
-			if str(own.get("boss", "")) == boss:
-				unit.set_members(own["members"])
 	elif not members.is_empty():
 		var lead := str(members[0][0])
 		unit = Unit.pack(90, "%s pack" % str(db.foes[lead]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(lead), Unit.PACK_MOVE, 1, lead)

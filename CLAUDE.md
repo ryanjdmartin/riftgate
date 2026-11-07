@@ -186,4 +186,8 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
   Open row is a paragraph and a pointer to its proposal or brief.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.
 - The quick campaign is an experiment, not a feature (Ryan, 28 October): no decision reads its
-  runs and no balance call cites them, until he says that changes.
+  runs and no balance call cites them, until he says that changes. It always follows the main
+  content and code, one code tree for both modes (Ryan, 7 November: "The experiment portion is
+  in regards to maintaining a seperate balance matrix. I don't want to keep two seperate code
+  trees for both modes, not until we have to"): its fights are built by the battle's own
+  builders, never a copy of them.

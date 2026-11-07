@@ -854,31 +854,42 @@ func pack_name(foe_id: String) -> String:
 ## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
 ## appears on top of a detachment). Null for a composition with no members.
 func emerge(c: Dictionary, mouth: Vector2i, k: int = 0) -> Unit:
-	var members: Array = []
-	for m in c.get("members", []):
-		members.append([str(m[0]), int(m[1])])   # as content writes it: the ramp no longer scales a pack (7 November)
-	if members.is_empty():
+	var sq := pack_of(c, seed_value, k, spawn_faction)
+	if sq == null:
 		return null
-	# A composition's lead (the long wall brief, section 6): the member whose sprite and walk the
-	# pack wears, first among them; the first member when it names none.
-	var lead := str(c.get("lead", ""))
-	for i in range(members.size()):
-		if str(members[i][0]) == lead and i > 0:
-			members.push_front(members.pop_at(i))
-			break
-	var fac := str(c.get("faction", spawn_faction))
-	var sq := Unit.pack(0, "", Vector2i.ZERO, fac if not fac.is_empty() else spawn_faction, Unit.PACK_MOVE, 0, str(members[0][0]))
-	sq.set_members(members)
-	sq.composition = str(c.get("id", ""))
-	sq.composition_size = str(c.get("size", ""))
-	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
-	sq.layout = ContentDB.resolve_layout(c.get("layout", null), seed_value, k)   # dealt now, so the pack on the map holds its draw (section 6)
-	recount_by_layout(sq)
 	sq.display_name = pack_name(sq.foe_id)
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
 	assign_goal(sq)
+	return sq
+
+
+## A composition dealt as a pack, wherever it is fought (the field's emerge, the quick campaign's
+## encounters, the harness's fight; Ryan, 7 November: one code tree for both modes): its members as
+## content writes them (the ramp scales no pack), its lead first (the long wall brief, section 6:
+## the member whose sprite and walk the pack wears; the first member when it names none), its
+## threat rating, its layout dealt from `seed_arg` and `k` and the pack recounted to what the draw
+## places. Unplaced, unnamed and undressed: the caller does those. Null for no members.
+static func pack_of(c: Dictionary, seed_arg: int, k: int, fallback_faction: String = "") -> Unit:
+	var members: Array = []
+	for m in c.get("members", []):
+		members.append([str(m[0]), int(m[1])])
+	if members.is_empty():
+		return null
+	var lead := str(c.get("lead", ""))
+	for i in range(members.size()):
+		if str(members[i][0]) == lead and i > 0:
+			members.push_front(members.pop_at(i))
+			break
+	var fac := str(c.get("faction", ""))
+	var sq := Unit.pack(0, "", Vector2i.ZERO, fac if not fac.is_empty() else fallback_faction, Unit.PACK_MOVE, 0, str(members[0][0]))
+	sq.set_members(members)
+	sq.composition = str(c.get("id", ""))
+	sq.composition_size = str(c.get("size", ""))
+	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
+	sq.layout = ContentDB.resolve_layout(c.get("layout", null), seed_arg, k)   # dealt now, so the pack holds its draw (section 6)
+	recount_by_layout(sq)
 	return sq
 
 

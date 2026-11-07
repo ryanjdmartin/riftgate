@@ -55,8 +55,8 @@ func test_formation_fills_front_then_back() -> void:
 
 
 ## What a full formation cannot stand was never in the fight (no reinforcement inside a fight, 6
-## November): a battle's fight is one pack, validated to fit, so only the quick campaign's boss
-## fights reach this; the foe left out came with nothing, so it is no kill.
+## November): every fight the game deals is one pack that fits, so only a fight built by hand
+## reaches this; the foe left out came with nothing, so it is no kill.
 func test_a_foe_the_slots_cannot_hold_is_never_in_the_fight() -> void:
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10))))

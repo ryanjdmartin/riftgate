@@ -235,25 +235,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	var firsts := db.bosses_of(faction)
 	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
 	if with_boss and db.foes.has(boss_id):
-		# The finale's line goes by the party's name; a final's hero and a boss by its own.
-		var named := "the party" if lineup.size() > 1 else str(db.foes[boss_id]["name"]).to_lower()
-		boss = Unit.boss(0, named, Vector2i.ZERO, faction, Unit.BOSS_MOVE)
-		boss.squad = 4   # the boss's unit, a true four (Ryan, 6 November; the long wall brief 3.7)
-		boss.lineup = lineup.duplicate()
-		if escort.size() >= 2:
-			# A named escort foe is a hand-tailored escort; unnamed, the tier's own units.
-			if db.foes.has(str(escort[0])):
-				boss.foe_id = str(escort[0])
-			boss.strength = maxi(0, int(escort[1]))
-		boss.boss_tier = tier
-		var tailored := db.escort_composition(faction, tier + 1, boss_id)
-		if escort.size() < 2 and not tailored.is_empty():
-			# Its escort is curated (an `escort` composition at the tier), its members as written,
-			# and never grown by the tier (Ryan, 7 November); with none written it stands alone.
-			var members: Array = []
-			for m in tailored["members"]:
-				members.append([str(m[0]), int(m[1])])
-			boss.set_members(members)
+		boss = make_boss_unit(db, faction, tier, boss_id, lineup, escort)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
 	# The caches, on the field from the first turn (Ryan, 7 November), round the units placed.
@@ -287,6 +269,34 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		boss.sealed = true
 	state = State.PLAN
 	_new_turn()
+
+
+## A boss unit as a battle fields it, wherever it is fought (the battle's setup, the quick
+## campaign's boss, final and finale, the harness's fight; Ryan, 7 November: one code tree for both
+## modes): its commanders (`lineup_ids`: the boss, a final's hero, the finale's line; empty for the
+## domain's first, `boss_id`), going by the party's name for a line, a true four (Ryan, 6 November;
+## the long wall brief 3.7), at the tier (ContentDB.BOSS_TIERS: its numbers); its escort a named one
+## (`escort_spec`: [a foe id, or "" for the tier's own units, as a final's wildlife; a count]), else
+## its curated composition at the tier (an `escort`), else none: never grown by the tier (Ryan, 7
+## November). Unplaced and undressed: the caller does those.
+static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_id: String, lineup_ids: Array = [], escort_spec: Array = []) -> Unit:
+	var named := "the party" if lineup_ids.size() > 1 else str(content.foes.get(boss_id, {}).get("name", boss_id)).to_lower()
+	var u := Unit.boss(0, named, Vector2i.ZERO, faction_id, Unit.BOSS_MOVE)
+	u.squad = 4
+	u.lineup = lineup_ids.duplicate()
+	u.boss_tier = t
+	if escort_spec.size() >= 2:
+		if content.foes.has(str(escort_spec[0])):
+			u.foe_id = str(escort_spec[0])
+		u.strength = maxi(0, int(escort_spec[1]))
+	else:
+		var tailored := content.escort_composition(faction_id, t + 1, boss_id)
+		if not tailored.is_empty():
+			var members: Array = []
+			for m in tailored["members"]:
+				members.append([str(m[0]), int(m[1])])
+			u.set_members(members)
+	return u
 
 
 ## The opening's row for a pack placed at the start (the long wall brief 3.2): `moves` of its own

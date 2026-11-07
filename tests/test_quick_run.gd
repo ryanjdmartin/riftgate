@@ -162,7 +162,10 @@ func test_a_final_may_close_a_battle_from_tier_two_and_leaves_the_finales_line()
 	assert_eq(str(enc["foe"]), str(r.party[r.lead]), "the lead's dealt hero")
 	var foes: Array = r.encounter_foes(enc)
 	assert_true(foes[0].hero and foes[0].size == 1, "the hero leads, human-sized")
-	assert_eq(foes.size(), 1 + r.formation_foes(r.lead).size(), "its formation beside it, no escort grown by the tier (7 November)")
+	var wild: Array = foes.filter(func(f) -> bool: return f.escorts)
+	assert_eq(wild.size(), Skirmish.DEFAULT_COLUMNS - 1, "the campaign's final: the hero with its domain's wildlife in the other columns, no formation beside it (one pack is one fight, 7 November)")
+	for f in wild:
+		assert_eq(r.db.faction_of_foe(f.content_id), r.lead, "its domain's units")
 	# Won, the hero leaves the finale's line for boss-tier wildlife of a standing domain.
 	r.encounters[r.encounters.size() - 1] = enc
 	r.start_battle()
@@ -192,7 +195,8 @@ func test_a_boss_brings_its_curated_escort() -> void:
 		_at_battle(r, 1 + t * QuickRun.TIER_EVERY)
 		var boss := {"kind": "boss", "domain": r.lead, "foe": r.draw_boss(r.lead)}
 		var foes: Array = r.encounter_foes(boss)
-		var n: int = foes.size() - 1 - r.formation_foes(r.lead).size()
+		var n: int = foes.filter(func(f) -> bool: return f.escorts).size()
+		assert_true(foes.all(func(f) -> bool: return f.commands or f.escorts or f.joined), "the boss, its parts and its escort alone: no formation beside it (one pack is one fight, 7 November)")
 		# Its own escort composition when one is written (2 November), else none: nothing grows one
 		# by the tier (7 November).
 		var tailored: Dictionary = r.db.escort_composition(r.lead, t + 1, str(boss["foe"]))

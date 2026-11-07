@@ -318,7 +318,7 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 # the quick campaign's runner (25 October): whole quick campaigns played headless (three draft chassis
 # at random, the fights by Policy, a plain player picking and fitting the loot by tier), written to
 # docs/quick_run.md: runs won, where they end, each battle's hull before its boss and kit, each kind of
-# fight by tier. --runs N, --seed S, --policy random|planner, --team a,b,c, --density a,b,c (by tier);
+# fight by tier. --runs N, --seed S, --policy random|planner, --team a,b,c;
 # --trace SEED prints one run fight by fight. Minutes on four parts, then the merge:
 for i in 0 1 2 3; do perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/quick_run.gd -- --runs 40 --part $i/4 --json build/quick_$i.json & done; wait
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/quick_run.gd -- --merge build/quick_0.json,build/quick_1.json,build/quick_2.json,build/quick_3.json

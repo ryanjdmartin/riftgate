@@ -1006,7 +1006,7 @@ static func quick_to_dict(r: QuickRun) -> Dictionary:
 		"state": r.state, "won": r.won, "battle": r.battle,
 		"roster": roster, "next_uid": r._next_uid, "squad": r.squad,
 		"components": r.components, "modules": r.modules,
-		"party": r.party, "bosses_ended": r.bosses_ended, "finals_won": r.finals_won, "density": r.density,
+		"party": r.party, "bosses_ended": r.bosses_ended, "finals_won": r.finals_won,
 		"lead": r.lead, "guest": r.guest, "encounters": r.encounters, "fight": r.fight,
 		"units": _units(r.units),
 		"skirmish": _skirmish_dict(r.current, null) if r.current != null else null,
@@ -1042,9 +1042,6 @@ static func quick_from_dict(d: Dictionary) -> QuickRun:
 	for fid in ended.keys():
 		r.bosses_ended[str(fid)] = _strings(ended[fid])
 	r.finals_won = _strings(d.get("finals_won", []))
-	var dens: Array = d.get("density", [])
-	if not dens.is_empty():
-		r.density = dens.map(func(x) -> float: return float(x))
 	r.lead = str(d.get("lead", ""))
 	r.guest = str(d.get("guest", ""))
 	r.encounters = []
