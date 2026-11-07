@@ -2,6 +2,8 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "idea", "slot": true, "name": "the frost figure"} -->
 
+**Ryan's direction (5 November)**: Cut. Moved onto Minerva.
+
 The session designs Ryan's Cryo detonator of 4 November as the Arsenal's frost figure: it plants
 Cryo and blows it up for damage, a Suppress when enough stacks go at once. The ten-a-maker plan
 moved it from Aphelion, and its figure is Ryan's to name.

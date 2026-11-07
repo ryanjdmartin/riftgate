@@ -2,6 +2,10 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 3, "status": "proposal", "slot": true, "name": "Minos"} -->
 
+**Ryan's direction (6 November)**: The movement is a cool idea, but I don't know what a build on it
+would look like, and that's the issue. It needs something else, or the lammergeier takes over its
+movement role since ita mining niche needs altering.
+
 The session finishes Minos, whose every foe reached changes rank, as written or adjusted, and
 settles when it is worth its slot.
 

@@ -2,6 +2,10 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "direction", "slot": true, "name": "the Onryō"} -->
 
+**Ryan's direction (6 November)**: Maybe this could be the one chassis that breaks the hull rules,
+using its own hull as a resource, and draining foes to heal itself? It could also be a ramping carry
+of some kind, the one unit that actually wants a fight to go long even at its allies expense.
+
 The session settles what the Onryō's curse does, now that the flat on-hit is Flak's (19
 October) and a damage over time at the foe's action Burning's, and what lays it.
 

@@ -2,6 +2,12 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": 2, "status": "idea", "slot": true, "name": "the Cryo party defence"} -->
 
+**Ryan's direction (5 November)**: I think this design is overthinking it. The cryo is the payoff.
+The build challenge should be getting there efficiently. So no free cryo on the passive. Stacks of
+cryo lower damage by 1 per stack. A locked piece detonates the cryo everywhere, dealing a small
+amount of damage per stack and suppressing foes with enough stacks. Merge the other ideas into this
+one, it's Minervan defense but also a form of setup -payoff that Minerva is desperately missing.
+
 The session designs Ryan's Cryo synergy party defence of 4 November: a Minerva machine under whose
 watch a foe carrying Cryo hits every machine lighter. "The Cryo party defence" is a working label;
 the name is Ryan's (Mammoth and Mastodon are both on the reserved list: Heavy Gear's strider and
