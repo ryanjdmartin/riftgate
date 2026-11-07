@@ -37,8 +37,8 @@ as the budget every price is cut from.
 
 Three caveats before trusting them:
 
-- **Salvage will rise.** The loot on the map is not built (Derelicts, Carcasses, Relics).
-  The bot never detours for it.
+- **Salvage will rise.** The loot on the map is built (7 November: Derelicts, Carcasses,
+  Relics, `content/loot.json`), but the bot never detours for it, so the runs read none.
 - **Favour runs high.** The bot bunches and rarely lets a pack reach the gate, so the docking
   hardly bites. A player who splits lanes, or takes a detour for loot, will pay more of it.
 - **Kills don't scale with danger yet.** Salvage is a flat 10 a foe, unweighted. Section 4's

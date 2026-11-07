@@ -609,9 +609,13 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		_on_unit_held(u)
 		Sound.play("map_select")
 	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
-		# Nothing to move: the tap asks what the ground is (Ryan, 21 September).
+		# Nothing to move: the tap asks what the ground is (Ryan, 21 September), and what lies on
+		# it (a cache: its kind and its likely contents, never the contents; the bible's loot row).
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
-		_show_details(ground_lines(battle.field.map.terrain[h], battle.field.map.ground_id(h)))
+		var cache := battle.field.cache_at(h)
+		var lines: Array = cache_lines(battle.field, cache) if not cache.is_empty() else []
+		lines.append_array(ground_lines(battle.field.map.terrain[h], battle.field.map.ground_id(h)))
+		_show_details(lines)
 		Sound.play("map_select")
 	else:
 		_select(null)
@@ -826,6 +830,33 @@ static func ground_lines(t: int, word: String = "") -> Array:
 	elif not BattleMap.passable(t, []):
 		packs = "Packs never enter it; a winged pack crosses it" if BattleMap.passable(t, ["winged"]) else "Packs never enter it"
 	out.append(EntryReadout.text_line("effect", packs))
+	return out
+
+
+## A cache's readout (the bible's loot row: "A tap shows its kind and likely contents, never the
+## contents"): the kind it stands as, what such a kind holds by its numbers, whether the seam has
+## flattened it (a kind up) or will, and how it is claimed.
+static func cache_lines(f: Battlefield, c: Dictionary) -> Array:
+	var db := ContentDB.load_default()
+	var t := f.cache_tier(c)
+	var kind := db.loot_kind_of_tier(t)
+	var e: Dictionary = db.loot.get(kind, {})
+	var out: Array = [_title(str(e.get("name", kind)), "Cache")]
+	var sv: Array = e.get("salvage", [0, 0])
+	out.append(_said("Salvage:", "%d to %d" % [int(sv[0]), int(sv[1])]))
+	var n := int(e.get("components", 0))
+	if n > 0:
+		out.append(_said("Components:", "%d of the battle's tier" % n))
+	var bp := float(e.get("blueprint", 0.0))
+	if bp > 0.0:
+		out.append(_said("Blueprint:", "a %d%% chance at one the run lacks" % roundi(bp * 100.0)))
+	if bool(c.get("flattened", false)):
+		out.append(EntryReadout.text_line("effect", "Flattened by the seam: it stands a kind up"))
+	elif t < f.cache_top:
+		out.append(EntryReadout.text_line("effect", "Once the seam flattens it, it stands a kind up"))
+	if not str(e.get("codex", "")).is_empty():
+		out.append(EntryReadout.text_line("effect", str(e["codex"])))
+	out.append(EntryReadout.text_line("effect", "A machine standing on it as the turn ends claims it"))
 	return out
 
 

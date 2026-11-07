@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 1008 tests, 259,308 checks, green (7 November, `ccr-56b5169d-lsa2rg` with the long
+- Tests: 1016 tests, 259,652 checks, green (7 November, `ccr-56b5169d-lsa2rg` with the long
   wall's Phases 1 and 2 and the cut, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -152,7 +152,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the formation pass, no summon or split past the slots, a regrowing part's corpse holding its
   slot, a catch's overflow held back, the ramp scaling no pack, the reserve's plaques retired);
   the ramp scales the field alone, and the formation pass writes compositions as variants placed
-  on the tier and the ramp by the runs.
+  on the tier and the ramp by the runs; the harness's BATTLE (a battle as a run deals it) and
+  FIGHT apart; the field's caches (`content/loot.json`: Derelicts, Carcasses and Relics on the
+  field from the first turn short of the wall, a kind up once the seam passes, claimed by a
+  machine standing on one as the turn ends, banked as the kills; his phone read next, the to-do).
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip
@@ -265,9 +268,8 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). Ahead of all of it: Ryan's play of the long wall with its view (built 6
 November; his phone read, the to-do), the harness's BATTLE and FIGHT tabs for it; then the long
-wall's open items (the bible's section 12: the map bait, the shell, the ratings by who solos,
-the formations and the refit, in that order of his answers), with the harness's BATTLE and
-FIGHT apart (his word of 7 November) and the field loot first. The branch lands on main after Phase 2. The redesign moves
+wall's open items (the bible's section 12: the shell, the ratings by who solos, the formations
+and the refit, in that order of his answers). The branch lands on main after Phase 2. The redesign moves
 every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on the refit. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
 engine line), since the matrix on file predates everything since 27 October.

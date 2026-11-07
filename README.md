@@ -53,7 +53,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
     `policy.gd`; the turtle and the detaching personas), for the campaign runner
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
-  `foes.json`, `chassis.json`, `components.json`, `modules.json`. Placeholder numbers. `reserved_names.json` is
+  `foes.json`, `chassis.json`, `components.json`, `modules.json`, `loot.json` (the field's caches). Placeholder numbers. `reserved_names.json` is
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
   on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/` — scenes and presentation.

@@ -139,6 +139,13 @@ var action_hexes: Dictionary = {}   # mech id -> hexes moved in its current acti
 ## The machines wrecked this battle, as they fell: the map lets go of them, the campaign
 ## still reads their dice (a wreck loses its destroyed components).
 var wrecks: Array[Unit] = []
+## The caches claimed this battle, in the order claimed (the bible's loot rows; built 7
+## November): each {"kind", "tier", "salvage", "components": [ids], "blueprint": an id or "",
+## "by": the machine's id}. The campaign banks them as the battle ends, as it banks the kills.
+var loot: Array = []
+## The run's blueprints as the battle opens (the campaign sets them before setup), so a cache's
+## blueprint is one the run holds none of.
+var blueprints_known: Array = []
 
 
 func _init(seed_arg: int = 1) -> void:
@@ -250,6 +257,8 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			boss.strength += ContentDB.escort_at(tier)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
+	# The caches, on the field from the first turn (Ryan, 7 November), round the units placed.
+	field.seed_caches(db, seed_value)
 	# The Rupture meter: the thresholds from the field's menace at the start, and the seal on the
 	# boss while there is a field to earn it against.
 	field_menace = 0
@@ -260,7 +269,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			field_menace += db.menace(str(m[0])) * int(m[1])
 	# The tide's first waves (the long wall brief 3.8): the field is thin at the start, so the
 	# thresholds read the first compositions the rift will send as well, as many as the tier's
-	# Fractures, in the cycle's order, each member at the ramp's density. Placeholder.
+	# Fractures, in the cycle's order, each as content writes it. Placeholder.
 	if not field.cycle.is_empty():
 		for k in range(Ramp.fractures_at(tier)):
 			for m in field.cycle[k % field.cycle.size()].get("members", []):
@@ -1046,6 +1055,7 @@ func _prune_orders() -> void:
 func end_turn() -> Dictionary:
 	if state != State.PLAN or not forced.is_empty():
 		return {}
+	claim_caches()
 	var walks := field.enemy_turn()
 	for u in field.mechs():
 		if not fought.has(u.id):
@@ -1054,6 +1064,62 @@ func end_turn() -> Dictionary:
 	last_spawned = field.tick_pressure(1)
 	_new_turn()
 	return walks
+
+
+## The caches the machines stand on as the player's turn ends are theirs (the bible's loot row:
+## claimed by ending a move on one): taken off the field and opened, what each held in the log.
+## Claimed as the turn ends rather than as the move does, so an undo never shows what a cache
+## holds. The ones claimed now, in the order claimed.
+func claim_caches() -> Array:
+	var got: Array = []
+	for m in field.mechs():
+		for o in m.footprint:
+			var c := field.cache_at(m.pos + o)
+			if c.is_empty():
+				continue
+			var opened := open_cache(c)
+			opened["by"] = m.id
+			if not str(opened["blueprint"]).is_empty():
+				blueprints_known.append(str(opened["blueprint"]))   # a second Relic finds another
+			loot.append(opened)
+			got.append(opened)
+			field.caches.erase(c)
+			field.log.append("%s claims a %s: %s" % [m.display_name, str(db.loot.get(str(opened["kind"]), {}).get("name", opened["kind"])), loot_text(opened)])
+	return got
+
+
+## What a cache holds, drawn as it is opened from a stream of its own (the battle's seed, the
+## cache and the kind it stands as), so the same cache claimed as the same kind holds the same
+## whenever it is claimed: its kind's salvage, so many components of the battle's tier, and on
+## its kind's chance a blueprint of that tier the run holds none of (none when it holds all).
+func open_cache(c: Dictionary) -> Dictionary:
+	var t := field.cache_tier(c)
+	var kind := db.loot_kind_of_tier(t)
+	var e: Dictionary = db.loot.get(kind, {})
+	var rng := RandomNumberGenerator.new()
+	rng.seed = absi(hash([seed_value, "cache", int(c.get("id", 0)), t]))
+	var sv: Array = e.get("salvage", [0, 0])
+	var out := {"kind": kind, "tier": t, "salvage": rng.randi_range(int(sv[0]), int(sv[1])), "components": [], "blueprint": ""}
+	var pool := db.loot_pool(tier + 1)
+	for i in range(int(e.get("components", 0))):
+		if pool.is_empty():
+			break
+		(out["components"] as Array).append(str(pool[rng.randi_range(0, pool.size() - 1)]))
+	if rng.randf() < float(e.get("blueprint", 0.0)):
+		var open: Array = pool.filter(func(cid) -> bool: return not blueprints_known.has(cid))
+		if not open.is_empty():
+			out["blueprint"] = str(open[rng.randi_range(0, open.size() - 1)])
+	return out
+
+
+## A claimed cache's contents in words, for the log.
+func loot_text(opened: Dictionary) -> String:
+	var parts: Array = ["%d salvage" % int(opened.get("salvage", 0))]
+	for cid in opened.get("components", []):
+		parts.append(db.component_name(str(cid)))
+	if not str(opened.get("blueprint", "")).is_empty():
+		parts.append("a blueprint for the %s" % db.component_name(str(opened["blueprint"])))
+	return ", ".join(parts)
 
 
 ## A fresh turn: every machine's actions and move whole, and the fights hunters forced.

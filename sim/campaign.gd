@@ -345,6 +345,7 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		if not boss_id.is_empty():
 			b.lineup = [boss_id]
 	b.map_kind = map_kind
+	b.blueprints_known = blueprints.duplicate()   # a cache's blueprint is one the run lacks
 	b.setup(team, lead)
 	b.field.gate_hp_max = c.gate_max
 	b.field.gate_hp = c.gate
@@ -405,7 +406,7 @@ func finish_battle() -> Dictionary:
 		var final := bool(c.rift.get("final", false))
 		c.rift = {}
 		c.quiet = QUIET_TURNS
-		var banked := b.menace_killed * SALVAGE_PER_MENACE
+		var banked := b.menace_killed * SALVAGE_PER_MENACE + _bank_loot(b, report)
 		salvage += banked
 		report["salvage"] = banked
 		# The Council pays for results: its Favour for the win, docked for the gate damage the
@@ -432,7 +433,7 @@ func finish_battle() -> Dictionary:
 		_fall(c)
 	else:
 		report["result"] = "held"
-		var banked := b.menace_killed * SALVAGE_PER_MENACE
+		var banked := b.menace_killed * SALVAGE_PER_MENACE + _bank_loot(b, report)
 		salvage += banked
 		report["salvage"] = banked
 	report["gate_left"] = c.gate
@@ -454,6 +455,25 @@ func finish_battle() -> Dictionary:
 	for m in wrecked:
 		m.shop = SHOP_BATTLES
 	return report
+
+
+## The caches the battle's machines claimed (the bible's loot rows; built 7 November), banked as
+## the kills are, on a battle won or held and never on a fall: each component one copy into the
+## stores, each blueprint into the run's (a blueprint found twice is one), and their salvage,
+## returned for the battle's total. The report keeps them under "loot".
+func _bank_loot(b: Battle, report: Dictionary) -> int:
+	var got := 0
+	report["loot"] = b.loot.duplicate(true)
+	for l in b.loot:
+		got += int(l.get("salvage", 0))
+		for cid in l.get("components", []):
+			if db.components.has(str(cid)):
+				components[str(cid)] = int(components.get(str(cid), 0)) + 1
+		var bp := str(l.get("blueprint", ""))
+		if db.components.has(bp) and not blueprints.has(bp):
+			blueprints.append(bp)
+	report["loot_salvage"] = got
+	return got
 
 
 ## The boss a domain's next battle brings (the bible's section 9, decided 15 October; built 22

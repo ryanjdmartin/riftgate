@@ -35,6 +35,10 @@ var foes: Dictionary = {}
 var chassis: Dictionary = {}
 var components: Dictionary = {}
 var modules: Dictionary = {}
+## The caches a battle's field holds (content/loot.json, built 7 November): kind id -> entry,
+## and the file's rules (per_battle, rift_gap, wall_gap).
+var loot: Dictionary = {}
+var loot_rules: Dictionary = {}
 var makers: Dictionary = {}
 var categories: Array = []
 ## Machine names from the properties our designs sit nearest (content/reserved_names.json:
@@ -72,6 +76,9 @@ func load_dir(dir: String) -> void:
 		makers[m["id"]] = m
 	components = _index(_read(dir + "components.json"))
 	modules = _index(_read(dir + "modules.json"))
+	var lf := _read(dir + "loot.json")
+	loot = _index(lf)
+	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2))}
 	reserved_names = {}
 	var reserved := _read(dir + "reserved_names.json")
 	var sources: Dictionary = reserved.get("sources", {})
@@ -1107,7 +1114,81 @@ func validate() -> Array[String]:
 	_validate_modules(errs)
 	_validate_foes(errs)
 	_validate_factions(errs)
+	_validate_loot(errs)
 	return errs
+
+
+## The caches' kinds (content/loot.json): one a tier, from 1 up with none missing, each a shown
+## name, a weight to be seeded by, salvage [lo, hi], a count of components and a blueprint
+## chance from 0 to 1, its internal text under design.
+func _validate_loot(errs: Array[String]) -> void:
+	var tiers := {}
+	for id in loot.keys():
+		var e: Dictionary = loot[id]
+		var w := "loot %s" % id
+		_validate_design(w, e, errs, false)
+		if str(e.get("name", "")).is_empty():
+			errs.append("%s: missing name" % w)
+		var t = e.get("tier", null)
+		if not (t is float or t is int) or int(t) < 1:
+			errs.append("%s: tier is a whole number from 1" % w)
+		elif tiers.has(int(t)):
+			errs.append("%s: tier %d is %s's too; one kind a tier" % [w, int(t), tiers[int(t)]])
+		else:
+			tiers[int(t)] = id
+		var wt = e.get("weight", null)
+		if not (wt is float or wt is int) or float(wt) < 0.0:
+			errs.append("%s: weight is a number, 0 or more" % w)
+		var sv = e.get("salvage", null)
+		if not (sv is Array) or (sv as Array).size() != 2 or not (sv as Array).all(func(x) -> bool: return x is float or x is int) or int(sv[0]) < 0 or int(sv[0]) > int(sv[1]):
+			errs.append("%s: salvage is [lo, hi], 0 <= lo <= hi" % w)
+		var n = e.get("components", null)
+		if not (n is float or n is int) or int(n) < 0:
+			errs.append("%s: components is a count, 0 or more" % w)
+		var bp = e.get("blueprint", null)
+		if not (bp is float or bp is int) or float(bp) < 0.0 or float(bp) > 1.0:
+			errs.append("%s: blueprint is a chance from 0 to 1" % w)
+		if not (e.get("codex", "") is String):
+			errs.append("%s: codex is text" % w)
+	for k in range(1, tiers.size() + 1):
+		if not tiers.has(k):
+			errs.append("loot: the kinds' tiers run from 1 with none missing (no tier %d)" % k)
+	for key in ["per_battle", "rift_gap", "wall_gap"]:
+		if int(loot_rules.get(key, 0)) < 0:
+			errs.append("loot: %s is 0 or more" % key)
+
+
+## The caches' kinds by tier, lowest first.
+func loot_kinds() -> Array:
+	var out: Array = loot.keys()
+	out.sort_custom(func(a, b) -> bool: return int(loot[a].get("tier", 0)) < int(loot[b].get("tier", 0)))
+	return out
+
+
+## The kind of a tier, "" for none.
+func loot_kind_of_tier(t: int) -> String:
+	for id in loot.keys():
+		if int(loot[id].get("tier", 0)) == t:
+			return str(id)
+	return ""
+
+
+## The highest kind's tier, 0 with none.
+func loot_top_tier() -> int:
+	var top := 0
+	for id in loot.keys():
+		top = maxi(top, int(loot[id].get("tier", 0)))
+	return top
+
+
+## The components a cache of a battle at `item_tier` (1 to 3) may hold, in content order: the
+## tier's unlocked components the engine runs (a locked one is never loot, as never a blueprint).
+func loot_pool(item_tier: int) -> Array:
+	var out: Array = []
+	for cid in components.keys():
+		if component_tier(str(cid)) == item_tier and str(components[cid].get("status", "")) != "planned":
+			out.append(str(cid))
+	return out
 
 
 func _validate_vocabulary(errs: Array[String]) -> void:

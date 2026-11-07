@@ -688,6 +688,7 @@ func _draw() -> void:
 		for m in field.mechs():
 			_action_pip(_unit_center(m) + Vector2(-HEX_SIZE * 0.55, HEX_SIZE * 0.45), not spent.has(m.id))   # at its hex's lower left, clear of a machine standing below it with the wall at the left
 
+	_draw_caches()
 	for u in field.units:
 		_draw_unit(u)
 	for prey in hunted.keys():
@@ -916,6 +917,38 @@ func _draw_rupture_bar() -> void:
 	for t in thresholds:
 		var x := rect.position.x + rect.size.x * clampf(float(int(t)) / float(last), 0.0, 1.0)
 		draw_line(Vector2(x, rect.position.y - 2.0), Vector2(x, rect.end.y + 2.0), Color(Palette.ENEMY, 0.9), 2.0)
+
+
+## The caches lying on the field (the bible's loot rows; built 7 November): each a white diamond
+## on a black plate, as many pips in it as its kind's tier (a Derelict one, a Carcass two, a Relic
+## three) and its kind's name over it, so a kind reads by its structure and its name, never a hue
+## (white is good's; the plaque's look is settled). A cache the seam has flattened shows the kind
+## it stands as now, its plate edged twice. Under the units: a machine standing on one draws over
+## its dimmed mark, and claims it as the turn ends. A first cut, judged on the phone.
+func _draw_caches() -> void:
+	if field == null or field.caches.is_empty():
+		return
+	var db := ContentDB.load_default()
+	_map_space()
+	for c in field.caches:
+		var h: Vector2i = c["pos"]
+		var at := center(h)
+		var t := field.cache_tier(c)
+		var a := 0.45 if field.unit_at(h) != null else 1.0
+		var r := HEX_SIZE * 0.46
+		var pts := PackedVector2Array([at + Vector2(0, -r), at + Vector2(r * 0.85, 0), at + Vector2(0, r), at + Vector2(-r * 0.85, 0)])
+		draw_colored_polygon(pts, Color(0, 0, 0, 0.85 * a))
+		Hud.stroke_poly(self, pts, Color(Palette.INK, a), _px(3.0))
+		if bool(c.get("flattened", false)):
+			var inner := PackedVector2Array()
+			for p in pts:
+				inner.append(at + (p - at) * 0.72)
+			Hud.stroke_poly(self, inner, Color(Palette.INK, 0.8 * a), _px(2.0))
+		for k in range(t):
+			var dot := at + Vector2((float(k) - float(t - 1) * 0.5) * r * 0.42, 0.0)
+			draw_circle(dot, maxf(_px(3.0), r * 0.12), Color(Palette.INK, a))
+		var kind := db.loot_kind_of_tier(t)
+		_plaque(at + Vector2(0.0, -r - 10.0), str(db.loot.get(kind, {}).get("name", kind)).to_upper(), Color(Palette.INK, a), 1.5)
 
 
 ## The tears (30 October): each a small vortex ring in the rift's own light on the seam's

@@ -1138,8 +1138,22 @@ a stat.
   walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
   escalate in place.
 - **The seam** is the flattening's edge: the row the rift's bleed reaches, the first row past
-  the rift's mouth at the start (5), total on the rift's row and gone past the seam. It is the clock's picture: no rule reads the
-  flattened hexes.
+  the rift's mouth at the start (5), total on the rift's row and gone past the seam. It is the
+  clock's picture; the one rule that reads it is a cache's kind (below).
+- **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
+  turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
+  from the third past the rift's to the second short of the apron (never that close to the
+  wall), on open ground with no unit on it and none beside another; each a kind (a Derelict, a
+  Carcass, a Relic: working names) by its weight. A cache the seam has passed (a row nearer the
+  rift than the seam's) stands a kind up from then on, once, the top kind staying the top: lesser
+  loot while it is safe, better later at greater risk. A machine standing on a cache as the
+  player's turn ends claims it (a move ending on one; claimed at the turn's end, so an undo never
+  shows what it holds): it holds its kind's salvage (a range), so many components of the
+  battle's tier, and on its kind's chance (the Relic's) a blueprint of that tier the run holds
+  none of, drawn from the battle's seed and the cache. A tap on a cache shows its kind and its
+  likely contents, never the contents. The campaign banks what was claimed as it banks the
+  kills: on a battle won or held, never on a fall; each component one copy in the stores, each
+  blueprint the run's.
 - **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an
   elite's doubled. The Rupture meter, Anathema and salvage count kills by it, so the rift's
   reinforcements pay a trickle and the formations and the elites pay the most.
@@ -1301,3 +1315,5 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
 ## Known gaps between these rules and the code
 
 - Jenny's foe-down lines are keyed by the retired families, so only the generic pool plays.
+- A cache holds no module (the bible's loot row: modules too) until the campaign holds modules;
+  the campaign runner's bot never detours for a cache.
