@@ -25,8 +25,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
     keywords, heat, shields, injuries, outcome
   - `loadouts.gd` sample dice and packs for prototypes and tests
-  - `harness_setup.gd` what the harness launches (team, loadouts, enemy side, seed, map
-    type), built into a battle or a skirmish, kept between launches
+  - `harness_setup.gd` what the harness launches (team, loadouts, a battle as a run deals it,
+    a fight, seed, map shape), built into a battle or a skirmish, kept between launches
   - `policy.gd` a player for the headless skirmish, a ladder of skill (random, blind, greedy,
     and a planner that rolls each decision out two rounds) with personas on top, so balance can
     be measured over thousands of fights
@@ -57,14 +57,14 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
   on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/` — scenes and presentation.
-  - `harness.tscn` is the main scene, three tabs over launch buttons that stay put: TEAM
+  - `harness.tscn` is the main scene, four tabs over launch buttons that stay put: TEAM
     (who deploys, in the order ticked, and each machine's hardpoints, any component on any
-    hardpoint), ENEMY (the packs, the boss and a guest faction, loaded from a faction and
-    edited from there; or a composition picked by its domain, tier, threat rating and ramp) and
-    SETUP (seed, map shape or the one the seed draws, HUD colour). Battle plays the whole loop
-    with the packs as its formation and its rift's cycle, or a picked composition's battle at its
-    tier and ramp, every wave that composition; Fight chains the packs with the boss into one
-    skirmish, or fights a picked composition alone with its layout; Resume battle below, while a save exists;
+    hardpoint), BATTLE (a battle as a run deals it: the domain, which of its bosses, a guest
+    domain, the tier and the ramp), FIGHT (a composition picked by its domain, tier and threat
+    rating, fought alone with its layout; or packs and a boss by hand, loaded from a faction and
+    edited from there, chained into one fight, the boss at the tier with its escort) and SETUP
+    (seed, map shape or the one the seed draws, HUD colour). Battle plays the BATTLE tab's
+    battle, Fight the FIGHT tab's fight; Resume battle below, while a save exists;
     Quick campaign starts one on SETUP's seed, and Resume quick campaign picks a saved one up.
     What was last launched is kept in `user://harness.json` (`sim/harness_setup.gd`)
   - `battle/battle_screen.gd` the battle screen: the map with the turn around it, the panel
@@ -639,8 +639,7 @@ and then the next round's dice show. Tap a foe or a mech for its
 numbers, its statuses with icons and text, and the intent arrows that concern it, and tap it
 again to close it (one readout at a time, a die's included; a tap on nothing closes it too);
 the eye shows every arrow; double-tap any unit for its codex entry; MENU's KEYWORDS lists every
-keyword. Withdraw is offered at any point
-of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
+keyword. A fight ends in the pack's fall or the team's: there is no withdrawal. Blank faces
 are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness. A
 battle started from the harness is saved after every change (`user://battle.json`, written
 by `sim/save.gd`: the map by its seed, every unit, the player's turn (who has moved and
@@ -648,7 +647,7 @@ fought, the fights hunters forced) and the fight under way with its dice and ran
 loses nothing: Resume battle opens it where it stood, straight into the fight if one was
 on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
-The harness can add any faction's boss; a massive foe fills both ranks of a column. For the
+The harness's FIGHT tab can add any faction's boss; a massive foe fills both ranks of a column. For the
 standalone screen, `RIFTGATE_FOES=warrior,goblin:3,white_mage` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
 `RIFTGATE_BOSS=1` adds the faction's boss, `RIFTGATE_TERRAIN=<ground>` dresses the field, and
 `RIFTGATE_SKIRMISH_CONTROLS=bottom|middle` places the controls over the saved setting.

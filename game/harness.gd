@@ -1,16 +1,16 @@
 extends Control
 
-## Debug harness and main scene. Three tabs over launch buttons that stay put however long a
+## Debug harness and main scene. Four tabs over launch buttons that stay put however long a
 ## tab runs (8 October: one long column had run off the glass): TEAM, who deploys and each
-## machine's hardpoints; ENEMY, the packs, the boss and a guest faction, loaded from a
-## faction's spawn list and edited from there; SETUP, the seed, the map's type and the HUD
-## colour. Battle plays the whole loop with that side as its formation and its rift's cycle,
-## Fight chains it all into one skirmish. The choices are a HarnessSetup, kept between
-## launches in user://harness.json.
+## machine's hardpoints; BATTLE, a battle as a run deals it (its domain, its boss, a guest, the
+## tier and the ramp); FIGHT, one fight (a composition by domain, tier and threat rating, or packs
+## and a boss by hand); SETUP, the seed, the map's shape and the HUD colour. The battle and the
+## fight are two things on two tabs (Ryan, 7 November), each launched by its own button. The
+## choices are a HarnessSetup, kept between launches in user://harness.json.
 
 const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
 const BATTLE_SCENE := preload("res://game/battle/battle_screen.tscn")
-const TABS := ["TEAM", "ENEMY", "SETUP"]
+const TABS := ["TEAM", "BATTLE", "FIGHT", "SETUP"]
 const ROW_H := 48.0
 
 var db: ContentDB
@@ -23,12 +23,14 @@ var _tab := 0
 var _rows: Dictionary = {}     # chassis id -> {"check", "toggle", "status", "editor"}
 var _open: String = ""         # the chassis whose hardpoints are open, "" for none
 var _packs_box: VBoxContainer
-var _boss: OptionButton
+var _boss: OptionButton          # the fight's boss, any domain's
+var _battle_domain: OptionButton
+var _battle_boss: OptionButton   # the battle domain's bosses
 var _guest: OptionButton
 var _seed_edit: LineEdit
 var _kind: OptionButton
 var _summary: Label
-var _comp: OptionButton        # the compositions listed for the domain, tier and rating (HarnessSetup.compositions_listed)
+var _comp: OptionButton        # the fight's compositions listed for the domain, tier and rating (HarnessSetup.compositions_listed)
 var _comp_domain: OptionButton
 var _battle_btn: Button
 var _fight_btn: Button
@@ -100,7 +102,7 @@ func _build_menu() -> void:
 		bar.add_child(b)
 		_tabs.append(b)
 
-	for builder in [_build_team, _build_enemy, _build_setup]:
+	for builder in [_build_team, _build_battle, _build_fight, _build_setup]:
 		var scroll := ScrollContainer.new()
 		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 		scroll.scroll_deadzone = 16   # a finger's tap on a picker is not a scroll
@@ -368,10 +370,104 @@ func _on_pick(index: int, ob: OptionButton, id: String, slot: int) -> void:
 	_refresh_summary()
 
 
-# ---------------------------------------------------------------- enemy
+# ---------------------------------------------------------------- battle
 
-func _build_enemy(page: VBoxContainer) -> void:
-	page.add_child(_section("From a faction"))
+## A battle as a run deals it (Ryan, 7 November: "The Battle from the harness should be a battle,
+## as it will be in the final game"): the domain fought, which of its bosses, a guest domain, the
+## tier and the ramp; the map's shape and the seed are SETUP's.
+func _build_battle(page: VBoxContainer) -> void:
+	page.add_child(_section("Domain"))
+	_battle_domain = _picker()
+	for fid in db.factions.keys():
+		_battle_domain.add_item(str(db.factions[fid].get("name", fid)))
+		_battle_domain.set_item_metadata(_battle_domain.item_count - 1, str(fid))
+	_battle_domain.select(maxi(0, _index_of(_battle_domain, setup.battle_domain())))
+	_battle_domain.item_selected.connect(func(i: int) -> void:
+		setup.battle_faction = str(_battle_domain.get_item_metadata(i))
+		setup.battle_boss = ""
+		_fill_battle_bosses()
+		_refresh_summary())
+	page.add_child(_battle_domain)
+	page.add_child(_hint("Its compositions at the tier, the formations and patrols the ramp puts on the field, the rift's tide, the Fractures and the elites, as a run deals them."))
+	page.add_child(_section("Boss"))
+	_battle_boss = _picker()
+	_battle_boss.item_selected.connect(func(i: int) -> void:
+		setup.battle_boss = str(_battle_boss.get_item_metadata(i))
+		_refresh_summary())
+	page.add_child(_battle_boss)
+	_fill_battle_bosses()
+	page.add_child(_hint("At the tier, with its escort, sealed until the Rupture."))
+	page.add_child(_section("Guest domain"))
+	_guest = _picker()
+	_guest.add_item("none")
+	_guest.set_item_metadata(0, "")
+	for fid in db.factions.keys():
+		_guest.add_item(str(db.factions[fid].get("name", fid)))
+		_guest.set_item_metadata(_guest.item_count - 1, str(fid))
+	_guest.select(_index_of(_guest, setup.guest))
+	_guest.item_selected.connect(func(i: int) -> void:
+		setup.guest = str(_guest.get_item_metadata(i))
+		_refresh_summary())
+	page.add_child(_guest)
+	page.add_child(_hint("Its compositions take turns with the domain's; the domain itself is no guest."))
+	page.add_child(_section("Tier and ramp"))
+	var knobs := HBoxContainer.new()
+	knobs.add_theme_constant_override("separation", 12)
+	knobs.add_child(_stepper(setup.battle_tier, 1, 3, func(v: int) -> void:
+		setup.battle_tier = v
+		_refresh_summary(), "T"))
+	knobs.add_child(_stepper(setup.ramp, 0, Ramp.TOP, func(v: int) -> void:
+		setup.ramp = v
+		_refresh_summary(), "C"))
+	page.add_child(knobs)
+	page.add_child(_hint("T the tier, who comes and the boss's numbers; C the Convergence, the ramp: the field's size, the opening's count and the beat."))
+
+
+## The battle domain's bosses, its first first; the pick kept while it is still the domain's.
+func _fill_battle_bosses() -> void:
+	if _battle_boss == null:
+		return
+	_battle_boss.clear()
+	for bid in setup.battle_bosses():
+		_battle_boss.add_item(str(db.foes[bid]["name"]))
+		_battle_boss.set_item_metadata(_battle_boss.item_count - 1, str(bid))
+	_battle_boss.select(maxi(0, _index_of(_battle_boss, setup.battle_boss_id())))
+
+
+# ---------------------------------------------------------------- fight
+
+## One fight: a composition by its domain, tier and threat rating (Ryan, 6 November), fought
+## alone; or, with none picked, packs and a boss by hand, chained into it.
+func _build_fight(page: VBoxContainer) -> void:
+	page.add_child(_section("A composition"))
+	page.add_child(_hint("Fought alone, as a battle at the tier deals it: its members as content writes them, its elites at the tier, its layout dealt. None: the packs and the boss below."))
+	_comp_domain = _picker()
+	for fid in db.factions.keys():
+		_comp_domain.add_item(str(db.factions[fid].get("name", fid)))
+		_comp_domain.set_item_metadata(_comp_domain.item_count - 1, str(fid))
+	_comp_domain.select(maxi(0, _index_of(_comp_domain, setup.comp_faction if not setup.comp_faction.is_empty() else db.default_faction())))
+	_comp_domain.item_selected.connect(func(i: int) -> void:
+		setup.comp_faction = str(_comp_domain.get_item_metadata(i))
+		_fill_compositions())
+	page.add_child(_comp_domain)
+	var knobs := HBoxContainer.new()
+	knobs.add_theme_constant_override("separation", 12)
+	knobs.add_child(_stepper(setup.fight_tier, 1, 3, func(v: int) -> void:
+		setup.fight_tier = v
+		_fill_compositions(), "T"))
+	knobs.add_child(_stepper(setup.rating, 0, 4, func(v: int) -> void:
+		setup.rating = v
+		_fill_compositions(), "FOR "))
+	page.add_child(knobs)
+	page.add_child(_hint("T the tier, the boss's below too; FOR the machines it is intended for (0: every rating)."))
+	_comp = _picker()
+	_comp.item_selected.connect(func(i: int) -> void:
+		setup.composition = str(_comp.get_item_metadata(i))
+		_refresh_summary())
+	page.add_child(_comp)
+	_fill_compositions()
+
+	page.add_child(_section("Or by hand: from a faction"))
 	page.add_child(_hint("Loads its spawn list and its boss; edit from there."))
 	var facs := HBoxContainer.new()
 	facs.add_theme_constant_override("separation", 10)
@@ -386,7 +482,7 @@ func _build_enemy(page: VBoxContainer) -> void:
 		facs.add_child(b)
 
 	page.add_child(_section("Packs"))
-	page.add_child(_hint("A battle places them at the start and the rift sends them in turn; a fight chains them all with the boss."))
+	page.add_child(_hint("Chained into one fight with the boss, as its eight slots hold them."))
 	_packs_box = VBoxContainer.new()
 	_packs_box.add_theme_constant_override("separation", 8)
 	page.add_child(_packs_box)
@@ -406,55 +502,7 @@ func _build_enemy(page: VBoxContainer) -> void:
 		setup.boss = str(_boss.get_item_metadata(i))
 		_refresh_summary())
 	page.add_child(_boss)
-	page.add_child(_hint("The boss picks the faction a battle is fought against. None: the battle has no victory; leave it from the menu."))
-
-	page.add_child(_section("Guest faction"))
-	_guest = _picker()
-	_guest.add_item("none")
-	_guest.set_item_metadata(0, "")
-	for fid in db.factions.keys():
-		_guest.add_item(str(db.factions[fid].get("name", fid)))
-		_guest.set_item_metadata(_guest.item_count - 1, str(fid))
-	_guest.select(_index_of(_guest, setup.guest))
-	_guest.item_selected.connect(func(i: int) -> void:
-		setup.guest = str(_guest.get_item_metadata(i))
-		_refresh_summary())
-	page.add_child(_guest)
-	page.add_child(_hint("Battle only: its spawn list joins the rift's cycle, alternating with the packs above."))
-
-	# A composition by its domain, tier, threat rating and ramp (Ryan, 6 November: the harness
-	# "should load a formation from a selected tier and threat level (the machine count, 1-4 that
-	# includes elites). And ramp level"): picked, FIGHT fights it alone and BATTLE opens on it.
-	page.add_child(_section("A composition"))
-	page.add_child(_hint("FIGHT fights it alone, its members at the ramp's density and its layout dealt; BATTLE opens a battle at its tier and ramp with it the opening's and every wave's. None: the packs above."))
-	_comp_domain = _picker()
-	for fid in db.factions.keys():
-		_comp_domain.add_item(str(db.factions[fid].get("name", fid)))
-		_comp_domain.set_item_metadata(_comp_domain.item_count - 1, str(fid))
-	_comp_domain.select(maxi(0, _index_of(_comp_domain, setup.comp_faction if not setup.comp_faction.is_empty() else db.default_faction())))
-	_comp_domain.item_selected.connect(func(i: int) -> void:
-		setup.comp_faction = str(_comp_domain.get_item_metadata(i))
-		_fill_compositions())
-	page.add_child(_comp_domain)
-	var knobs := HBoxContainer.new()
-	knobs.add_theme_constant_override("separation", 12)
-	knobs.add_child(_stepper(setup.tier, 1, 3, func(v: int) -> void:
-		setup.tier = v
-		_fill_compositions(), "T"))
-	knobs.add_child(_stepper(setup.rating, 0, 4, func(v: int) -> void:
-		setup.rating = v
-		_fill_compositions(), "FOR "))
-	knobs.add_child(_stepper(setup.ramp, 0, Ramp.TOP, func(v: int) -> void:
-		setup.ramp = v
-		_refresh_summary(), "C"))
-	page.add_child(knobs)
-	page.add_child(_hint("T the tier, FOR the machines it is intended for (0: every rating), C the Convergence, the ramp."))
-	_comp = _picker()
-	_comp.item_selected.connect(func(i: int) -> void:
-		setup.composition = str(_comp.get_item_metadata(i))
-		_refresh_summary())
-	page.add_child(_comp)
-	_fill_compositions()
+	page.add_child(_hint("At the tier above, with its escort as a battle at that tier brings it."))
 
 
 ## The compositions listed for the domain, tier and rating, each by its id, its size and its rating,
@@ -507,7 +555,7 @@ func _fill_packs() -> void:
 		line.add_child(rm)
 		_packs_box.add_child(line)
 	if setup.packs.is_empty():
-		_packs_box.add_child(_hint("No packs: a fight takes the boss alone; a battle needs one."))
+		_packs_box.add_child(_hint("No packs: the fight takes the boss alone."))
 	Hud.pass_touches(_packs_box)   # as the page's own: a drag scrolls from its pickers too
 
 
@@ -611,6 +659,13 @@ func _refresh_summary() -> void:
 	var team: Array = []
 	for id in setup.team:
 		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() else ""))
+	var dom := setup.battle_domain()
+	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.ramp]
+	var bid := setup.battle_boss_id()
+	if not bid.is_empty():
+		battle += " · " + str(db.foes[bid]["name"])
+	if not setup.guest.is_empty() and setup.guest != dom:
+		battle += " · guest " + str(db.factions[setup.guest].get("name", setup.guest))
 	var foes: Array = []
 	for p in setup.packs:
 		foes.append("%s ×%d" % [db.foes[p[0]]["name"], int(p[1])])
@@ -618,19 +673,18 @@ func _refresh_summary() -> void:
 		foes.append(str(db.foes[setup.boss]["name"]))
 	var picked := setup.picked_composition()
 	if not picked.is_empty():
-		foes = ["%s (T%d, for %d, C%d)" % [str(picked["id"]), setup.tier, ContentDB.squad_of(picked), setup.ramp]]
+		foes = ["%s (T%d, for %d)" % [str(picked["id"]), setup.fight_tier, ContentDB.squad_of(picked)]]
 	var lines: Array = []
 	lines.append(("TEAM  " + ", ".join(team)) if not team.is_empty() else "TEAM  none ticked")
-	lines.append(("ENEMY  " + ", ".join(foes)) if not foes.is_empty() else "ENEMY  none")
+	lines.append("BATTLE  " + battle)
+	lines.append(("FIGHT  " + ", ".join(foes)) if not foes.is_empty() else "FIGHT  none")
 	var shape := setup.map_kind if BattleMap.KINDS.has(setup.map_kind) else BattleMap.kind_for_seed(setup.seed_value)
 	var extra := "SEED %d · %s" % [setup.seed_value, str(BattleMap.KINDS[shape]["name"]).capitalize()]
 	if not BattleMap.KINDS.has(setup.map_kind):
 		extra += " (by the seed)"
-	if not setup.guest.is_empty():
-		extra += " · guest " + str(db.factions[setup.guest].get("name", setup.guest))
 	lines.append(extra)
 	_summary.text = "\n".join(lines)
-	_battle_btn.disabled = setup.team.is_empty() or (setup.packs.is_empty() and picked.is_empty())
+	_battle_btn.disabled = setup.team.is_empty()
 	_fight_btn.disabled = setup.team.is_empty() or (setup.packs.is_empty() and setup.boss.is_empty() and picked.is_empty())
 
 
@@ -726,8 +780,8 @@ func _on_fight() -> void:
 	_show(screen)
 
 
-## A whole battle: the ticked team in its loadouts against the packs as the formation and
-## the rift's cycle, on a map generated from the seed.
+## A whole battle: the ticked team in its loadouts against the BATTLE tab's domain as a run deals
+## it, on a map generated from the seed.
 func _on_battle() -> void:
 	var b := setup.make_battle()
 	if b == null:

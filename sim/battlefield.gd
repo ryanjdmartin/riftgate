@@ -863,7 +863,7 @@ func emerge(c: Dictionary, mouth: Vector2i, k: int = 0) -> Unit:
 	sq.composition_size = str(c.get("size", ""))
 	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
 	sq.layout = ContentDB.resolve_layout(c.get("layout", null), seed_value, k)   # dealt now, so the pack on the map holds its draw (section 6)
-	_recount_by_layout(sq)
+	recount_by_layout(sq)
 	sq.display_name = pack_name(sq.foe_id)
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)
@@ -878,7 +878,7 @@ func emerge(c: Dictionary, mouth: Vector2i, k: int = 0) -> Unit:
 ## not draw are never dealt, so the count the map shows is the count that stands. No layout keeps
 ## the members as content writes them, and so does one that names nothing, which is dropped so
 ## the fight deploys them heaviest first.
-func _recount_by_layout(sq: Unit) -> void:
+static func recount_by_layout(sq: Unit) -> void:
 	if sq.layout.is_empty():
 		return
 	var cap := {}

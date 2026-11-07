@@ -426,10 +426,12 @@ func test_the_harness_fields_the_boss_it_picks_whichever_of_its_domains() -> voi
 	assert_ne(fid, "", "a domain lists two bosses or more")
 	var second := str(db.bosses_of(fid)[1])
 	var s := HarnessSetup.defaults(db)
-	s.use_faction(fid)
-	s.boss = second
+	s.battle_faction = fid
+	s.battle_boss = second
 	var b := s.make_battle()
 	assert_eq(str(b.boss.lineup[0]), second, "the battle's boss unit is the one picked")
+	s.use_faction(fid)
+	s.boss = second
 	var sk := s.make_skirmish()
 	var named := false
 	for f in sk.reinforcements:

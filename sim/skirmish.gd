@@ -5293,7 +5293,7 @@ func _reinforce(random: bool = true) -> void:
 ## The first deployment by a layout (the long wall brief, section 6): each cell, front then back,
 ## left to right, takes the first foe waiting of the kind it names, a massive one filling its
 ## column; a cell that names none, or whose kind has none left waiting, stands empty. The pack
-## holds what its layout places (Battlefield._recount_by_layout), so none is left over; one
+## holds what its layout places (Battlefield.recount_by_layout), so none is left over; one
 ## that is (a foe the layout cannot stand) is never dealt (begin).
 func _deploy_layout() -> void:
 	for cell in range(mini(layout.size(), 8)):

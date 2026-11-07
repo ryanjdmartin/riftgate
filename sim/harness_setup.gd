@@ -1,12 +1,15 @@
 class_name HarnessSetup
 extends RefCounted
 
-## What the harness launches (game/harness.gd is its view): the team in the order it
-## deploys, each machine's hardpoints and modules, the enemy side (packs, a boss, a guest
-## faction), the seed and the map's type. Pure, so the tests build the same fights the
-## harness does.
-## Kept in user://harness.json between launches; ids the content no longer has are dropped
-## on load, never trusted.
+## What the harness launches (game/harness.gd is its view), a battle and a fight apart (Ryan, 7
+## November: "battle and fight are two seperate things that need two separate tabs in the
+## harness"): the team in the order it deploys, each machine's hardpoints and modules; a BATTLE as
+## a run deals it, its domain, a guest, the tier, the ramp and which of the domain's bosses ("The
+## Battle from the harness should be a battle, as it will be in the final game"); a FIGHT, a
+## composition picked by its domain, tier and threat rating, or packs and a boss by hand; the seed
+## and the map's shape both share. Pure, so the tests build the same battles and fights the
+## harness does. Kept in user://harness.json between launches; ids the content no longer has are
+## dropped on load, never trusted.
 
 const PATH := "user://harness.json"
 const MAX_STRENGTH := 18
@@ -20,27 +23,32 @@ var loadouts: Dictionary = {}
 ## Chassis id -> one pick per module slot, a module id or "" for a slot left empty. A machine
 ## with no entry wears none (modules are never stock).
 var modules: Dictionary = {}
-var packs: Array = []           # [[foe_id, strength], ...]: on the field at the start and the rift's cycle in a battle, all chained in a fight
-var boss: String = ""           # a faction's boss by foe id, "" for none
-var guest: String = ""          # a battle's guest faction, joining the rift's cycle; "" for none
-var seed_value: int = 7
+var seed_value: int = 7         # the battle's map and every fight's dice
 var map_kind: String = ""        # a map shape (BattleMap.KINDS), or "" for the one the seed draws
-## A composition picked on the ENEMY tab (Ryan, 6 November: the harness "should load a formation
-## from a selected tier and threat level (the machine count, 1-4 that includes elites). And ramp
-## level"): FIGHT fights it alone, BATTLE opens a battle on it. "" for the packs above.
+# ---- the BATTLE tab: a battle as a run deals it
+var battle_faction: String = ""  # the domain it is fought against, "" for the content's first
+var battle_boss: String = ""     # which of its bosses, "" for its first
+var guest: String = ""           # a guest domain, its compositions taking turns in the cycle; "" for none
+var battle_tier: int = 1         # the tier, 1 to 3: who comes, the Fractures, the elites, the boss's numbers
+var ramp: int = 0                # the Convergence, 0 to Ramp.TOP: the field's size, the opening's count, the beat
+# ---- the FIGHT tab: one fight
+## A composition picked by its domain, tier and threat rating (Ryan, 6 November: the harness
+## "should load a formation from a selected tier and threat level (the machine count, 1-4 that
+## includes elites)"): fought alone, its elites at the tier, its layout dealt. "" for the packs.
 var composition: String = ""
 var comp_faction: String = ""    # its domain, "" for the content's first
-var tier: int = 1                # the tier it is dealt at, 1 to 3
+var fight_tier: int = 1          # the tier it is listed and dealt at, 1 to 3, and a boss's
 var rating: int = 0              # the threat rating listed, 1 to 4; 0 lists every one
-var ramp: int = 0                # the Convergence, 0 to Ramp.TOP: its members' density, and a battle's ramp
+var packs: Array = []            # [[foe_id, strength], ...]: chained into one fight with the boss
+var boss: String = ""            # a boss by foe id with its escort at the fight's tier, "" for none
 
 
 func _init(content: ContentDB = null) -> void:
 	db = content if content != null else ContentDB.load_default()
 
 
-## The content's defaults: its starting team in stock loadouts against the first faction's
-## spawn list and boss.
+## The content's defaults: its starting team in stock loadouts; a battle against the first
+## domain; a fight against its spawn list and boss.
 static func defaults(content: ContentDB = null) -> HarnessSetup:
 	var s := HarnessSetup.new(content)
 	s.team = s.db.default_team()
@@ -48,7 +56,7 @@ static func defaults(content: ContentDB = null) -> HarnessSetup:
 	return s
 
 
-## Fill the enemy side from a faction: its spawn list as the packs, its boss.
+## Fill the fight's packs from a faction: its spawn list as the packs, its boss.
 func use_faction(faction_id: String) -> void:
 	packs = []
 	for e in db.spawn_table(faction_id, 1):   # the harness fights tier one
@@ -82,14 +90,32 @@ func pack_foes() -> Array:
 	return out
 
 
-## The compositions the ENEMY tab lists: the domain's patrols, formations and elites as a battle at
-## `tier` deals them (a lower tier's standing in where it has none, as in play), those rated
+## The domain a battle is fought against: the one picked, else the content's first.
+func battle_domain() -> String:
+	return battle_faction if db.factions.has(battle_faction) else db.default_faction()
+
+
+## The battle domain's bosses, in content order: the BATTLE tab's boss picker.
+func battle_bosses() -> Array:
+	return db.bosses_of(battle_domain())
+
+
+## The boss the battle brings: the one picked while it is the domain's, else the domain's first.
+func battle_boss_id() -> String:
+	var all := battle_bosses()
+	if all.has(battle_boss):
+		return battle_boss
+	return str(all[0]) if not all.is_empty() else ""
+
+
+## The compositions the FIGHT tab lists: the domain's patrols, formations and elites as a battle at
+## `fight_tier` deals them (a lower tier's standing in where it has none, as in play), those rated
 ## `rating` (every one at 0), in content order; each ContentDB's dealt dictionary.
 func compositions_listed() -> Array:
 	var out: Array = []
 	var fac := comp_faction if db.factions.has(comp_faction) else db.default_faction()
 	for size in ["patrol", "formation", "elite"]:
-		for c in db.compositions(fac, tier, size):
+		for c in db.compositions(fac, fight_tier, size):
 			if rating == 0 or ContentDB.squad_of(c) == rating:
 				out.append(c)
 	return out
@@ -103,18 +129,6 @@ func picked_composition() -> Dictionary:
 		if str(c["id"]) == composition:
 			return c
 	return {}
-
-
-## The faction the battle is fought against: the boss's, else the first pack's, else the
-## content's first. It picks the boss, the music and the reveal.
-func lead_faction() -> String:
-	if not boss.is_empty():
-		return db.faction_of_foe(boss)
-	for p in packs:
-		var fac := db.faction_of_foe(str(p[0]))
-		if not fac.is_empty():
-			return fac
-	return db.default_faction()
 
 
 # ---------------------------------------------------------------- loadouts
@@ -207,8 +221,8 @@ func make_team() -> Array:
 	return out
 
 
-## One skirmish: the team against every pack and the boss chained into one fight. Null when
-## either side is empty.
+## One fight: the team against the composition picked, or against every pack and the boss
+## chained into it. Null when either side is empty.
 func make_skirmish() -> Skirmish:
 	var mechs := make_team()
 	if mechs.is_empty():
@@ -218,19 +232,25 @@ func make_skirmish() -> Skirmish:
 		sk.add_mech(u)
 	var c := picked_composition()
 	if not c.is_empty():
-		# The composition alone, as a battle deals it: its members at the ramp's density, its
-		# elites at the tier, its layout drawn from the seed; a split, a summon and a regrown part
-		# call content up as in play.
-		var sq := Unit.pack(90, str(c["id"]).replace("_", " "), Vector2i.ZERO, str(c["faction"]), Unit.PACK_MOVE, 1, "")
-		var scaled: Array = []
+		# The composition alone, as a battle deals it: its members as content writes them, its
+		# elites at the tier, its layout drawn from the seed and the pack what the draw places; a
+		# split, a summon and a regrown part call content up as in play.
+		var members: Array = []
 		for m in c["members"]:
-			scaled.append([str(m[0]), int(m[1])])
-		sq.set_members(scaled)
-		sq.boss_tier = clampi(tier - 1, 0, 2)
+			members.append([str(m[0]), int(m[1])])
+		var lead := str(c.get("lead", ""))
+		for i in range(members.size()):
+			if str(members[i][0]) == lead and i > 0:
+				members.push_front(members.pop_at(i))
+				break
+		var sq := Unit.pack(90, str(c["id"]).replace("_", " "), Vector2i.ZERO, str(c["faction"]), Unit.PACK_MOVE, 1, "")
+		sq.set_members(members)
+		sq.layout = ContentDB.resolve_layout(c.get("layout", null), seed_value, 0)
+		Battlefield.recount_by_layout(sq)
+		sq.boss_tier = clampi(fight_tier - 1, 0, 2)
 		sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 		sk.add_foes(db.foes_for(sq), sq)
-		if c.has("layout"):
-			sk.layout = ContentDB.resolve_layout(c["layout"], seed_value, 0)
+		sk.layout = sq.layout.duplicate()
 		return sk if not sk.reinforcements.is_empty() else null
 	var sid := 90
 	for p in packs:
@@ -243,51 +263,49 @@ func make_skirmish() -> Skirmish:
 	if not boss.is_empty():
 		var b := Unit.boss(sid, str(db.foes[boss]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(boss))
 		b.lineup = [boss]   # the boss picked, whichever of its domain's (30 October: the slate lists several)
-		# Its own escort, where content writes one that names it (the King Gel's Gels, which its
-		# merge takes in), at the harness's tier one; a domain's other escorts are the packs' to pick.
-		var own := db.escort_composition(db.faction_of_foe(boss), 1, boss)
+		# At the fight's tier as a battle deals it: its numbers, and its own escort where content
+		# writes one that names it (the King Gel's Gels, which its merge takes in), else the tier's
+		# count of its domain's units.
+		var t := clampi(fight_tier - 1, 0, 2)
+		b.boss_tier = t
+		var own := db.escort_composition(db.faction_of_foe(boss), t + 1, boss)
 		if str(own.get("boss", "")) == boss:
 			b.set_members(own["members"])
+		else:
+			b.strength = ContentDB.escort_at(t)
+		sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 		sk.add_foes(db.foes_for(b), b)
 	if sk.reinforcements.is_empty():
 		return null
 	return sk
 
 
-## A whole battle on a map from the seed: the packs are its formation and its rift's cycle,
-## the boss (or none) the lead faction's. Null without a team or a pack, since the rift
-## needs something to send.
+## A whole battle on a map from the seed, as a run deals it (Campaign.start_battle): the domain's
+## compositions at the tier, the guest's taking turns, the ramp's opening and beat, the boss picked
+## at the tier with its escort. Null without a team.
 func make_battle() -> Battle:
 	var mechs := make_team()
-	var c := picked_composition()
-	if not mechs.is_empty() and not c.is_empty():
-		# A battle on the composition picked: a battle as a run deals it, at its tier and the ramp
-		# chosen, with that composition the opening's and every wave's, and its domain's boss.
-		var cb := Battle.new(seed_value)
-		cb.map_kind = map_kind
-		cb.tier = clampi(tier - 1, 0, 2)
-		cb.ramp = ramp
-		cb.only = c
-		cb.setup(mechs, str(c["faction"]))
-		return cb
-	if mechs.is_empty() or packs.is_empty():
+	if mechs.is_empty():
 		return null
+	var fac := battle_domain()
 	var b := Battle.new(seed_value)
 	b.map_kind = map_kind
-	b.formation = packs.duplicate(true)
-	b.with_boss = not boss.is_empty()
-	if not boss.is_empty():
-		b.lineup = [boss]   # the boss picked, whichever of its domain's (30 October: the slate lists several)
-	b.guest = guest
-	b.setup(mechs, lead_faction())
+	b.tier = clampi(battle_tier - 1, 0, 2)
+	b.ramp = ramp
+	b.guest = guest if guest != fac else ""
+	var bid := battle_boss_id()
+	if not bid.is_empty():
+		b.lineup = [bid]
+	b.setup(mechs, fac)
 	return b
 
 
 # ---------------------------------------------------------------- keeping
 
 func to_dict() -> Dictionary:
-	return {"team": team, "loadouts": loadouts, "modules": modules, "packs": packs, "boss": boss, "guest": guest, "seed": seed_value, "map_kind": map_kind,
-		"composition": composition, "comp_faction": comp_faction, "tier": tier, "rating": rating, "ramp": ramp}
+	return {"team": team, "loadouts": loadouts, "modules": modules, "seed": seed_value, "map_kind": map_kind,
+		"battle_faction": battle_faction, "battle_boss": battle_boss, "guest": guest, "battle_tier": battle_tier, "ramp": ramp,
+		"composition": composition, "comp_faction": comp_faction, "fight_tier": fight_tier, "rating": rating, "packs": packs, "boss": boss}
 
 
 ## A setup from a saved dictionary, checked against the content: unknown ids drop out, a
@@ -330,11 +348,16 @@ static func from_dict(d: Dictionary, content: ContentDB = null) -> HarnessSetup:
 	s.seed_value = clampi(int(d.get("seed", 7)), 1, MAX_SEED)
 	var k := str(d.get("map_kind", ""))
 	s.map_kind = k if BattleMap.KINDS.has(k) else ""
+	var bf := str(d.get("battle_faction", ""))
+	s.battle_faction = bf if s.db.factions.has(bf) else ""
+	var bb := str(d.get("battle_boss", ""))
+	s.battle_boss = bb if s.battle_bosses().has(bb) else ""
+	s.battle_tier = clampi(int(d.get("battle_tier", 1)), 1, 3)
+	s.ramp = clampi(int(d.get("ramp", 0)), 0, Ramp.TOP)
 	var cf := str(d.get("comp_faction", ""))
 	s.comp_faction = cf if s.db.factions.has(cf) else ""
-	s.tier = clampi(int(d.get("tier", 1)), 1, 3)
+	s.fight_tier = clampi(int(d.get("fight_tier", d.get("tier", 1))), 1, 3)   # "tier" before the tabs parted (7 November)
 	s.rating = clampi(int(d.get("rating", 0)), 0, 4)
-	s.ramp = clampi(int(d.get("ramp", 0)), 0, Ramp.TOP)
 	s.composition = str(d.get("composition", ""))
 	if s.picked_composition().is_empty():
 		s.composition = ""

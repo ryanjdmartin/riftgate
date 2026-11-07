@@ -104,9 +104,6 @@ var tier: int = 0
 ## the compositions on the field at the start, the timer, the tears a peak (Ramp, the one table
 ## of placeholders); it scales no pack.
 var ramp: int = 0
-## The harness's one composition (HarnessSetup.composition): when set, the opening's packs and
-## every wave the rift and the tears send are it. Empty in play.
-var only: Dictionary = {}
 ## Every foe killed this battle, in any fight however it ended (Ryan, 7 October: a kill is a
 ## kill, and withdrawing never takes it away), for the salvage the campaign tallies at the
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
@@ -197,9 +194,6 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		var has_guest := not guest.is_empty() and guest != faction and db.factions.has(guest)
 		var forms := _alternate(db.compositions(faction, tier + 1, "formation"), db.compositions(guest, tier + 1, "formation") if has_guest else [])
 		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol"), db.compositions(guest, tier + 1, "patrol") if has_guest else [])
-		if not only.is_empty():
-			forms = [only]
-			patrols = [only]
 		field.cycle = _alternate(forms, patrols)
 		field.patrol_cycle = patrols
 		var nf := Ramp.formations_at(ramp)
