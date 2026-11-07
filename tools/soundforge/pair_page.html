@@ -173,7 +173,7 @@ bar chord   1  2  3  4  5  6  7
  9 to 12    as 5 to 8</pre>
 <p><strong>X in the Melody Desk.</strong> It is in the Desk's &ldquo;Add a part from a track&rdquo; as <strong>Hold The Line, round twenty-two</strong>, five parts of the seven: the riff on the low Omnific, its power chords on the upper with each fifth as a note, the held line, the chime and the piano, each a layer to add. The Desk takes quarter-tones now: a bend is on the note, so select one and press &frac14; flat or &frac14; sharp; it keeps its row with an arrow on it, plays bent and sends bent, and &ldquo;as the forge will read it&rdquo; spells it as the sketches do. Its bars run in 4/4, 7/8 (2+2+3, as X counts it) or 12/8, a part from a seven sets the roll to 7/8, and twelve bars is a choice: <a href="https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV">the Melody Desk</a>.</p>
 <p><strong>In the Air Tonight's fill</strong> is in the toolbox as the record plays it, not used here: the hands in pairs a drum lower each time with the kick on the sixteenth after each pair, so the tom and snare rhythm falls in threes across the beat, two eighths on the floor toms to end.</p>
-<p><strong>The sets.</strong> X with another voice on the riff, bending as it does, met halfway with the Omnific's power chords: nothing added (the pair's), the lead guitar on power chords an octave over the Omnific's, the keys lead on single notes at L's octave, or both. W's drums from the second beat (the pair's), from the first beat's off-beat, or from the third as round twenty-one had them, the keys lead holding with the basses in all three.</p>
+<p><strong>The sets.</strong> X with another voice on the riff, bending as it does, met halfway with the Omnific's power chords: nothing added (the pair's), the lead guitar on power chords an octave over the Omnific's, the keys lead on single notes at L's octave, or both. X's quarter-tone as a bend, as you would play it: B pushed up a quarter-tone, 40 ms on the B and 80 ms up, then held, on the Omnifics alone, with the keys lead, or with the lead guitar's power chords, each bending with them; or held from the note's start as the pair has it. Any voice on a string or an oscillator can bend this way (the basses, the guitars, the keys lead, the synths, the strings); the piano, the tine piano, the chime, the bells and the harp do not bend in life and keep a fixed quarter-tone. W's drums from the second beat (the pair's), from the first beat's off-beat, or from the third as round twenty-one had them, the keys lead holding with the basses in all three.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-hold"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -213,7 +213,7 @@ bar chord   1  2  3  4  5  6  7
 
 <h2>What to listen for</h2>
 <ol class="ask">
-  <li>Hold The Line, round twenty-two: X with another voice, the lead guitar's power chords, the keys lead's single notes, both or neither, and the riff in the Melody Desk to rewrite; W's drums from the second beat, the first beat's off-beat or the third, under the keys lead holding into the climax.</li>
+  <li>Hold The Line, round twenty-two: X with another voice, the lead guitar's power chords, the keys lead's single notes, both or neither; its quarter-tone held or bent up from B; and the riff in the Melody Desk to rewrite; W's drums from the second beat, the first beat's off-beat or the third, under the keys lead holding into the climax.</li>
   <li>Night Shift, round twenty-two: whether the grit and the anxiety are back, on the head and the duel's end: the whole pass, its notes alone (the chords, the lines, the end falling), its colours alone (the arpeggio down, the pad, the stack), or round twenty-one. Its parts keep their names for notes.</li>
   <li>Every pair in tune: the first-round pairs and the run are built again on the shipped tracks with the plucked string tuned.</li>
   <li>Still open from the first round: the map halves of Full Bore, The Far Bank and The Crossing, and Low Ground's battle half.</li>
@@ -555,7 +555,7 @@ bar chord   1  2  3  4  5  6  7
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (hold) buildSets(document.getElementById('sets-hold'), hold.sets.concat(hold.seams || []), ['hx', 'hw']);
+    if (hold) buildSets(document.getElementById('sets-hold'), hold.sets.concat(hold.seams || []), ['hx', 'hb', 'hw']);
     else document.getElementById('sets-hold').innerHTML = '';
     if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nh', 'nr']);
     else document.getElementById('sets-night').innerHTML = '';

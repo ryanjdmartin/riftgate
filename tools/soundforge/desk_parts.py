@@ -85,6 +85,8 @@ def voice_notes(g, v):
                 i += 1
                 continue
             semis = int(c) if c.isdigit() else table[c]
+            if isinstance(semis, (list, tuple)):   # a bent note ([from, to, wait, glide]) as the pitch it bends to
+                semis = semis[1]
             length = 1
             while i + length < len(s) and s[i + length] == "-":
                 length += 1

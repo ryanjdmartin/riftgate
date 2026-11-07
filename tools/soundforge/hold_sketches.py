@@ -1283,6 +1283,31 @@ X_MORE = {"none": (), "power": (XQ_LEAD_POWER,), "keys": (XQ_KEYS,), "both": (XQ
 W_KEYS_FADE = 6.0
 W22_FILL = "early"
 
+# X's bent note played as a bend (Ryan, 7 November: "Yeah in general a bend, like in this case a quick b-b up- would
+# be how I would play it in real life. If it's not too hard we could try it. What instruments could bend?"): the
+# first pass's quarter-flat C as B pushed up a quarter-tone, held on B for 40 ms and eased up over 80 ms, then held
+# (forge.py's bent notes), on every voice on the riff: the Omnifics, or with the keys lead or the lead guitar's
+# power chords, each of which bends in life (a string pushed, a pitch wheel). The power chords bend whole, their
+# fifth with their root, as a whammy bar would.
+X_BEND = {"w": [7, 7.5, 0.04, 0.08]}
+
+
+def x_bend(call):
+    """X's quarter-flat C bent up from B (X_BEND) on every voice that plays the riff."""
+    for v in call["voices"]:
+        if v.get("pat", {}).get("X") == X_RIFF_Q1:
+            v["notes"] = dict(v.get("notes") or {}, **X_BEND)
+    return call
+
+
+def round22_bend(more="none"):
+    """Round twenty-two's battle half with X's bent note played as a bend, `more` on the riff (X_MORE)."""
+    base = round22(more=more)
+
+    def edit(call):
+        base(call)
+        x_bend(call)
+    return edit
 
 def w_keys(call):
     """W's held note on the keys lead too, the voice that plays F's tune, at its level, fading."""
@@ -1382,6 +1407,13 @@ SETS = [
         ("hx1", "The lead guitar's power chords", "Root, fifth and octave through the lead guitar's gain, an octave over the Omnific's.", round22(more="power")),
         ("hx2", "The keys lead's single notes", "The voice that plays L's riff, at its octave.", round22(more="keys")),
         ("hx3", "Both", "The lead guitar's power chords and the keys lead together.", round22(more="both")),
+    ]},
+    {"id": "hb", "half": "battle", "title": "X's quarter-tone as a bend", "form": FORM_X,
+     "note": "The bar down into the seven and the seven, the first pass's quarter-flat C played as B pushed up a quarter-tone, quickly, and held there (Ryan, 7 November: \"a quick b-b up- would be how I would play it in real life\"), on every voice on the riff. Each added voice is met halfway with the Omnific's power chords, as in the set above. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hb0", "Held, as the pair has it", "The quarter-tone from the note's start, no bend.", round22()),
+        ("hb1", "The Omnifics bend it", "Both basses on B, bent up over 80 ms after 40 ms on the B, the power chords' fifth with them.", round22_bend()),
+        ("hb2", "With the keys lead, all bending", "The keys lead's single notes on the riff too, bending with the basses.", round22_bend("keys")),
+        ("hb3", "With the lead guitar's power chords, all bending", "The lead guitar's power chords on the riff too, bending with the basses.", round22_bend("power")),
     ]},
     {"id": "hw", "half": "battle", "title": "W's drums, earlier", "form": FORM_W,
      "note": "The keys' tune's first bars, W and the climax's first set, the keys lead now holding W's note with the basses, fading (Ryan, 7 November: \"I think the keys need to continue from their solo into the held note after all\"), and the build to the triplets as it was with eighths on the floor tom in front of it (\"start the drums a beat or two earlier\"). Switch rows anywhere: each carries on from the same beat.", "rows": [

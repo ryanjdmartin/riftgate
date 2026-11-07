@@ -1137,6 +1137,28 @@ def lead(f, dur, fade=0.0):
     return x * env_pts(n, [(0.0, 0.0), (0.01, 1.0), (max(dur - 0.03, 0.02), 0.9 * 10.0 ** (-fade / 20.0)), (dur, 0.0)])
 
 
+def bent(x, ratio, wait, glide):
+    """A note bent: played as it is for `wait` seconds, then its pitch eased to `ratio` of itself over
+    `glide` seconds and held there, as a string pushed up or a pitch wheel turned. The note is read faster
+    (or slower) as its pitch moves, so it keeps its own sound and its randomness; it comes out a hair
+    shorter going up, a few milliseconds faded off its end and padded back to its length."""
+    n = len(x)
+    if n < 4 or ratio == 1.0:
+        return x
+    t = np.arange(n) / SR
+    u = np.clip((t - wait) / max(glide, 1e-4), 0.0, 1.0)
+    rate = 1.0 + (ratio - 1.0) * (0.5 - 0.5 * np.cos(np.pi * u))
+    pos = np.concatenate([[0.0], np.cumsum(rate[:-1])])
+    m = int(np.searchsorted(pos, n - 1.0))
+    i0 = np.floor(pos[:m]).astype(int)
+    fr = pos[:m] - i0
+    y = x[i0] * (1.0 - fr) + x[np.minimum(i0 + 1, n - 1)] * fr
+    k = min(len(y), n_of(0.005))
+    if k > 1:
+        y[-k:] *= np.linspace(1.0, 0.0, k)
+    return np.concatenate([y, np.zeros(n - len(y))]) if len(y) < n else y[:n]
+
+
 def crush(x, bits=6, hold=6):
     """Bit depth down and every `hold` samples held: the glitch."""
     q = 2.0 ** (bits - 1)
@@ -1467,11 +1489,18 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                     i += 1
                     continue
                 semis = int(c) if c.isdigit() else table[c]
+                bend = None
+                if isinstance(semis, (list, tuple)):
+                    # A bent note (Hold The Line's X, Ryan, 7 November: "a quick b-b up- would be how I would
+                    # play it in real life"): [from, to, wait, glide], played from `from` and pushed to `to`.
+                    semis, to, wait, glide = semis
+                    bend = (2.0 ** ((to - semis) / 12.0), wait, glide)
                 length = 1
                 while i + length < len(s) and s[i + length] == "-":
                     length += 1
                 f = E2 * 2.0 ** ((semis + 12 * octave) / 12.0)
-                note = along(NOTE_INST[name](f, span(i, length) * hold, params), i, length)
+                note = NOTE_INST[name](f, span(i, length) * hold, params)
+                note = along(bent(note, *bend) if bend else note, i, length)
                 buf = at(buf, note, when(i + late), gain * vel() * vs(i), wrap=True)
                 i += length
         elif mode == "chord":

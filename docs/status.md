@@ -888,7 +888,9 @@ The tasks are the to-do's; this is the index of what waits.
   descending_doubles: "the spirit of it is in the tom/snare rhythm"), K's walk on the crunch synth
   beside the plucked string 3 dB down ("go with 'The plucked string 3 dB down'"); on trial, another
   voice on X's riff (the lead guitar's power chords, the keys lead's single notes: "I don't like the
-  lead single"), W's drums from the first beat's off-beat; the map's L and M on a clean finger bass ("Change L and
+  lead single"), X's quarter-tone as a quick bend up from B ("a quick b-b up- would be how I would
+  play it in real life"; forge.py's riff takes a bent note, [from, to, wait, glide]), W's drums from
+  the first beat's off-beat; the map's L and M on a clean finger bass ("Change L and
   M from cellos (i think?) to finger bass"), L's tine piano on M's line ("Map M, can the upper voice
   from L join in too?"), its U's sub on the riff ("Map U is what I meant ... you got it right in the
   full pair"), its W six beats.
@@ -1195,7 +1197,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
   twenty-second, X with another voice and W's keys and earlier drums, `hold_sketches.py`; Night Shift's twenty-second, its battle half's dark pass, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 55. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 56. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
