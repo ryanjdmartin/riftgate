@@ -310,9 +310,10 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.472, dated 7
-  November (the page's version 484, published from `ccr-56b5169d-lsa2rg` with the cut, the loot
-  and Ryan's answers of 7 November; the live page had not moved since version 483, so no merge).
+  `docs/design-bible.html` after every change. This file and the live page are v0.473, dated 7
+  November (the page's version 485, published from `ccr-56b5169d-lsa2rg` with the catch a fight a
+  hunter and the curated escorts, onto its own 484 of that day: the cut, the loot and Ryan's
+  answers of 7 November, the live page unchanged since 483, so no merge).
   Version 483 (6 November, v0.471) was this branch's rows merged row by row onto the music
   session's v0.469, whose only change was Hold The Line's trial notes of 6 November, the merged
   file taken back into this branch. The file on this branch therefore carries the music session's track rows (Hold The
