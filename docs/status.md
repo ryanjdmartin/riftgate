@@ -314,10 +314,15 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.473, dated 7
-  November (the page's version 485, published from `ccr-56b5169d-lsa2rg` with the catch a fight a
-  hunter and the curated escorts, onto its own 484 of that day: the cut, the loot and Ryan's
-  answers of 7 November, the live page unchanged since 483, so no merge).
+  `docs/design-bible.html` after every change. This file and the live page are v0.475, dated 7
+  November (the page's version 487, published from `ccr-56b5169d-lsa2rg`: the quick campaign on
+  one code tree and the bosses' fixed entries, merged row by row onto another session's v0.474 of
+  that morning, Ryan's calls on Sweep and a spend's order: the Sweep, riders and death-check rows,
+  the round preview row, the Skua's paragraph, the Gel row and the keywords table's Strikes row;
+  the merged file taken back into this branch). Before it this branch published 483 to 485 that
+  day (the cut, the loot, the catch a fight a hunter, the curated escorts). So the file here
+  carries that session's rows ahead of this branch's code and vocabulary: run on this branch, the
+  tables script would put the Strikes row's old wording back, a row of a branch not yet landed.
   Version 483 (6 November, v0.471) was this branch's rows merged row by row onto the music
   session's v0.469, whose only change was Hold The Line's trial notes of 6 November, the merged
   file taken back into this branch. The file on this branch therefore carries the music session's track rows (Hold The
