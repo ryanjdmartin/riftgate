@@ -292,13 +292,14 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 210
-  (7 November, from `ccr-1eaf0060-jrpw04`: only `content/chassis.json` and `content/vocabulary.json`,
-  the long wall branch's copies of version 209 with this branch's five text edits on them, the
-  Skua's passive text and niche, the Sweep entry's codex and holes and the Strikes codex; the
-  page sent back as 209 had it, since a publish must carry the page; read back identical;
-  `edits` empty, `designs` two ideas marked briefed). Version 209 before it (7 November, from the
-  long wall branch: its page and content files). Its lit parts show as the phone's renderer shows
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 211
+  (7 November, from `ccr-1eaf0060-jrpw04` at `5dc88da`: only `content/chassis.json` and
+  `content/vocabulary.json`, the long wall branch's copies of version 209 with this branch's text
+  on them, the Skua's passive ("Base weapon damage is halved") and niche, the Sweep entry's codex
+  and holes and the Strikes codex; the page sent back as 209 had it, since a publish must carry
+  the page; read back identical; `edits` empty, `designs` two ideas marked briefed). Version 210
+  the same day carried this branch's first cut of that text, 209 the long wall branch's page and
+  content files. Its lit parts show as the phone's renderer shows
   them, the light eased by the power 1/2.2 as the game eases it (`MechRig.light`); every file
   the page reads is fetched with a stamp on the URL. Its database: Ryan's saved edits
   (collection `edits`), name candidates (`candidates`) and his marks on the briefs (`designs`, the
