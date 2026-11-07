@@ -1116,8 +1116,26 @@ func foe_factory() -> Callable:
 	return func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 
 
+## A fight's seed from what the fight is, never from how many fights opened before it (Ryan, 7
+## November: "If the dice order affects reproduction, then we should fix that"): the battle's
+## seed, the turn, its packs and its machines, so the same fight rolls the same dice whichever
+## order the turn's fights are opened in, and a saved battle replays it. No two fights of a turn
+## share packs and machines (a machine that fought is spent), so none share a seed.
+func fight_seed(group: Array) -> int:
+	var packs_in: Array = []
+	var mechs_in: Array = []
+	for u in group:
+		if (u as Unit).is_enemy():
+			packs_in.append(u.id)
+		elif (u as Unit).is_player():
+			mechs_in.append(u.id)
+	packs_in.sort()
+	mechs_in.sort()
+	return absi(hash([seed_value, field.phase, packs_in, mechs_in]))
+
+
 func _build_skirmish(group: Array) -> Skirmish:
-	var sk := Skirmish.new(rng.randi(), columns)
+	var sk := Skirmish.new(fight_seed(group), columns)
 	sk.terrain = ground_terrain(group)
 	sk.ground = map.ground_id(ground_hex(group))
 	sk.foe_factory = foe_factory()   # a summoning action calls up content

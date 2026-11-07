@@ -1040,8 +1040,8 @@ a stat.
 - **A fight** is one pack: nothing joins it, whatever its ring, and it joins nothing; a hunter's
   catch holds every hunter that caught the one machine. The machines whose attack range covers
   it (1: beside it) may join. Orders onto several packs queue, ENGAGE opening them one at a
-  time, a catch first; the order changes nothing a fight opens on, each fight's dice drawn
-  from the battle's stream as it opens. Afterwards each machine in it has used its action, a wreck stays on its hex and blocks it for the battle (not built: today
+  time, a catch first; the order changes nothing a fight opens on, its dice included: a fight's
+  seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wreck stays on its hex and blocks it for the battle (not built: today
   it leaves), a pack keeps only its survivors, by member, and Rift Pressure does not tick: it
   ticks on the map alone.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a

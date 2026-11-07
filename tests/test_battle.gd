@@ -1327,11 +1327,12 @@ func test_two_fights_open_alike_whichever_engages_first() -> void:
 			assert_true(sk != null, "fight %d opens" % (k + 1))
 			var packs: Array = sk.packs.map(func(u: Unit) -> int: return u.id)
 			var ms: Array = sk.mechs.map(func(ms: Skirmish.MechState) -> Array: return [ms.unit.id, ms.unit.hull, ms.unit.shield])
-			fights[packs[0]] = [packs, ms]
+			var dice: Array = sk.mechs.map(func(ms: Skirmish.MechState) -> int: return ms.face_index)
+			fights[packs[0]] = [packs, ms, sk.rng.seed, dice]
 			_win(sk)
 			b.finish_skirmish()
 		seen.append(fights)
-	assert_eq(seen[0], seen[1], "each fight opened on the same pack, machine and state whichever came first")
+	assert_eq(seen[0], seen[1], "each fight opened on the same pack, machine, state and dice whichever came first (Ryan, 7 November: the order must not change a fight's dice)")
 
 
 ## A final (the bible's section 9): the dealt hero commands the rift, in its rank, with its
