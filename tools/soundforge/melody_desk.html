@@ -100,6 +100,8 @@
   .note.v4 { background: var(--panel); border-width: 2px; }
   .note.v5 { background: repeating-linear-gradient(45deg, var(--note) 0 2px, transparent 2px 6px), repeating-linear-gradient(-45deg, var(--note) 0 2px, var(--panel) 2px 6px); }
   .note.muted { opacity: 0.35; }
+  /* A quarter-tone bend: a badge with its arrow on the note, readable on every layer's fill. */
+  .note .q { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font: 600 12px/1 var(--font-mono); color: var(--ink); background: var(--panel); border: 1px solid var(--note-edge); border-radius: 3px; padding: 1px 2px; pointer-events: none; }
   .note.on { outline: 2px solid var(--note-head); outline-offset: -3px; }
   .note.sel { outline: 3px dashed var(--play); outline-offset: 1px; z-index: 2; }
   .note.dragging { cursor: grabbing; z-index: 4; box-shadow: 0 2px 8px rgba(0,0,0,0.35); }
@@ -134,7 +136,7 @@
 <div class="wrap">
   <header>
     <h1>Riftgate Melody Desk</h1>
-    <p class="sub">Tap a square to set a note. Drag a note to move it, drag its right edge to stretch it, tap it to select. Tap the ruler to choose where Play starts. Stack parts from the tracks as layers. Plain piano throughout. Rows are semitones above E2, the forge's root, with E minor shaded.</p>
+    <p class="sub">Tap a square to set a note. Drag a note to move it, drag its right edge to stretch it, tap it to select. Tap the ruler to choose where Play starts. Stack parts from the tracks as layers. Plain piano throughout. Rows are semitones above E2, the forge's root, with E minor shaded. A quarter-tone is a bend on a note: select it and press &frac14; flat or &frac14; sharp, and it plays and sends bent. Bars run in 4/4, 7/8 or 12/8.</p>
   </header>
 
   <section class="toolbar" aria-label="Transport and grid">
@@ -162,8 +164,16 @@
           <button type="button" data-bars="2" aria-pressed="true">2</button>
           <button type="button" data-bars="4" aria-pressed="false">4</button>
           <button type="button" data-bars="8" aria-pressed="false">8</button>
+          <button type="button" data-bars="12" aria-pressed="false">12</button>
           <button type="button" data-bars="16" aria-pressed="false">16</button>
         </span>
+      </label>
+      <label class="f">Metre
+        <select id="metre">
+          <option value="16" selected>4/4</option>
+          <option value="14">7/8 &middot; 2+2+3</option>
+          <option value="12">12/8</option>
+        </select>
       </label>
       <label class="f">Range
         <select id="range">
@@ -179,6 +189,13 @@
           <option value="scale" selected>E minor</option>
           <option value="chromatic">Every semitone</option>
         </select>
+      </label>
+      <label class="f">Bend
+        <span class="seg" id="bend" role="group" aria-label="Bend the selected notes a quarter-tone">
+          <button type="button" data-q="-0.5" aria-pressed="false" disabled>&frac14; flat</button>
+          <button type="button" data-q="0" aria-pressed="false" disabled>none</button>
+          <button type="button" data-q="0.5" aria-pressed="false" disabled>&frac14; sharp</button>
+        </span>
       </label>
       <button id="undo" type="button">Undo</button>
       <button id="delete" type="button" class="danger" disabled>Delete</button>
@@ -244,20 +261,46 @@
   const NAMES = ["E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#"];
   const SCALE = new Set([0, 2, 3, 5, 7, 8, 10]);
   const LETTERS = { 10: "a", 11: "b", 12: "c", 14: "d", 15: "e", 17: "f", 19: "i", 22: "j", 24: "k", "-2": "g", "-5": "h", "-1": "l", "-3": "m", "-4": "n", "-7": "o" };
-  const STEPS_PER_BAR = 16;
-  const BAR_CHOICES = [1, 2, 4, 8, 16];
+  // A bar's steps and where its groups start (the click, the ruler's numbers, the heavier lines): 4/4 in four,
+  // 7/8 as Hold The Line's seven counts it (2+2+3 eighths), 12/8 in four groups of three.
+  const METERS = { 16: [0, 4, 8, 12], 14: [0, 4, 8], 12: [0, 3, 6, 9] };
+  const BAR_CHOICES = [1, 2, 4, 8, 12, 16];   // twelve for a section of twelve bars, Hold The Line's seven
+  // The letters the forge's riff grammar leaves free, for a lane's bent pitches (a voice's own `notes`).
+  const FREE_LETTERS = ["w", "y", "z", "r", "A", "T", "U", "V", "W", "X", "Y", "Z"];
   const CELL = 28;
   const RANGES = ["-12", "0", "12", "24", "wide"];
 
-  // A note is {s: step, p: semitones above E2, l: steps, v: layer index}. Layers are the piano's own
-  // (index 0) and one per part added from a track; a layer knows where it came from.
-  const state = { bars: 2, len: 2, base: 12, span: 24, rows: "scale", notes: [], layers: [{ name: "Piano", source: null, muted: false }], active: 0, start: 0, loop: true, click: false, bpm: 104, track: "music_hold_the_line" };
+  // A note is {s: step, p: semitones above E2, l: steps, v: layer index, q: its bend}. A bend is a
+  // quarter-tone either way (q -0.5 or 0.5): the note keeps its row and sounds q from it. Layers are the
+  // piano's own (index 0) and one per part added from a track; a layer knows where it came from.
+  const state = { bars: 2, spb: 16, len: 2, base: 12, span: 24, rows: "scale", notes: [], layers: [{ name: "Piano", source: null, muted: false }], active: 0, start: 0, loop: true, click: false, bpm: 104, track: "music_hold_the_line" };
   const history = [];
   let selected = new Set();
 
   // ---------- helpers ----------
   const pitchName = (p) => NAMES[((p % 12) + 12) % 12] + (2 + Math.floor((p + 4) / 12));
-  const totalSteps = () => state.bars * STEPS_PER_BAR;
+  const totalSteps = () => state.bars * state.spb;
+  const isGroupStart = (s) => METERS[state.spb].includes(((s % state.spb) + state.spb) % state.spb);
+  function groupStart(s) {
+    const bar = Math.floor(s / state.spb), off = s - bar * state.spb;
+    return bar * state.spb + METERS[state.spb].filter((g) => g <= off).pop();
+  }
+  const sounding = (n) => n.p + (n.q || 0);
+  const bendMark = (q) => (q < 0 ? "\u2193" : q > 0 ? "\u2191" : "");
+  const bendWords = (q) => (q < 0 ? " a quarter-tone flat" : q > 0 ? " a quarter-tone sharp" : "");
+  // A pitch from a part or a store, possibly fractional, as a row and a bend: a quarter-tone flat sits on
+  // the semitone over it (X's C bent down from C), a quarter-tone sharp on the one under.
+  function bentNote(p, q) {
+    if (q) return { p: Math.round(p), q: q < 0 ? -0.5 : 0.5 };
+    const row = Math.ceil(p - 0.25), d = p - row;
+    return Math.abs(d) < 1e-6 ? { p: row, q: 0 } : { p: row, q: d < 0 ? -0.5 : 0.5 };
+  }
+  function setMeter(spb) {
+    if (!METERS[spb]) return;
+    state.spb = spb;
+    $("metre").value = String(spb);
+    if (state.start >= totalSteps()) state.start = 0;
+  }
   function rowPitches() {
     const out = [];
     for (let p = state.base + state.span; p >= state.base; p--) {
@@ -279,7 +322,7 @@
   }
   function fitBars(notes) {
     const end = Math.max(0, ...notes.map((n) => n.s + n.l));
-    const need = BAR_CHOICES.find((b) => b * STEPS_PER_BAR >= end) || 16;
+    const need = BAR_CHOICES.find((b) => b * state.spb >= end) || 16;
     if (need > state.bars) setBars(need);
   }
   function setBars(b) {
@@ -288,7 +331,7 @@
     $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === b));
   }
   function setStart(s) {
-    state.start = Math.max(0, Math.min(Math.floor(s / 4) * 4, totalSteps() - 4));
+    state.start = Math.max(0, Math.min(groupStart(s), groupStart(totalSteps() - 1)));
     $("startmark").style.left = (state.start * CELL) + "px";
     $("ruler").querySelectorAll(".cell").forEach((c, i) => c.classList.toggle("start", i === state.start));
     saveDraft();
@@ -299,16 +342,17 @@
     if (history.length > 60) history.shift();
   }
   function saveDraft() {
-    try { localStorage.setItem("melody-desk-draft", JSON.stringify({ notes: state.notes, layers: state.layers, active: state.active, bars: state.bars, start: state.start, range: $("range").value, rows: state.rows, bpm: state.bpm, track: state.track, len: state.len, title: $("title").value, memo: $("memo").value })); } catch (e) {}
+    try { localStorage.setItem("melody-desk-draft", JSON.stringify({ notes: state.notes, layers: state.layers, active: state.active, bars: state.bars, spb: state.spb, start: state.start, range: $("range").value, rows: state.rows, bpm: state.bpm, track: state.track, len: state.len, title: $("title").value, memo: $("memo").value })); } catch (e) {}
   }
   function loadDraft() {
     try {
       const d = JSON.parse(localStorage.getItem("melody-desk-draft") || "null");
       if (!d) return;
-      state.notes = Array.isArray(d.notes) ? d.notes.map((n) => ({ s: n.s, p: n.p, l: n.l, v: n.v || 0 })) : [];
+      state.notes = Array.isArray(d.notes) ? d.notes.map((n) => ({ s: n.s, l: n.l, v: n.v || 0, ...bentNote(n.p, n.q) })) : [];
       if (Array.isArray(d.layers) && d.layers.length) state.layers = d.layers;
       state.active = Math.min(d.active || 0, state.layers.length - 1);
       if (BAR_CHOICES.includes(d.bars)) state.bars = d.bars;
+      if (METERS[d.spb]) state.spb = d.spb;
       if (Number.isInteger(d.start)) state.start = d.start;
       if (RANGES.includes(d.range)) setRange(d.range);
       if (d.rows === "chromatic" || d.rows === "scale") state.rows = d.rows;
@@ -329,7 +373,7 @@
   // The forge's riff grammar is one voice, so a layer is split into lanes: each note goes to
   // the first lane it does not overlap, highest pitch first, so lane 0 carries the top line.
   function toLanes(notes, bars) {
-    const total = bars * STEPS_PER_BAR;
+    const total = bars * state.spb;
     const sorted = notes.slice().sort((a, b) => a.s - b.s || b.p - a.p);
     const lanes = [];
     for (const n of sorted) {
@@ -340,20 +384,26 @@
     return lanes.map((lane) => {
       let best = null;
       for (let oct = -1; oct <= 4; oct++) {
-        const missing = lane.filter((n) => spell(n.p, oct) === null).length;
+        const missing = lane.filter((n) => !n.q && spell(n.p, oct) === null).length;
         if (best === null || missing < best.missing) best = { oct, missing };
         if (missing === 0) break;
       }
       const chars = new Array(total).fill(".");
       const unspelled = [];
+      const bent = {};   // a bent pitch's letter -> its semitones from the lane's octave, the voice's own notes
       for (const n of lane) {
         if (n.s >= total) continue;
-        const c = spell(n.p, best.oct);
+        let c;
+        if (n.q) {
+          const semis = sounding(n) - 12 * best.oct;
+          c = Object.keys(bent).find((k) => bent[k] === semis) || FREE_LETTERS[Object.keys(bent).length] || null;
+          if (c) bent[c] = semis;
+        } else c = spell(n.p, best.oct);
         if (c === null) unspelled.push(pitchName(n.p));
         chars[n.s] = c === null ? "?" : c;
         for (let k = 1; k < n.l && n.s + k < total; k++) chars[n.s + k] = "-";
       }
-      return { pat: chars.join(""), octave: best.oct, unspelled: [...new Set(unspelled)] };
+      return { pat: chars.join(""), octave: best.oct, notes: bent, unspelled: [...new Set(unspelled)] };
     });
   }
   function layerNotes(v) { return state.notes.filter((n) => n.v === v); }
@@ -366,7 +416,8 @@
       const lanes = toLanes(notes, state.bars);
       out.push("layer " + (v + 1) + ": " + L.name + (L.muted ? " (muted)" : "") + (L.source ? "   from " + L.source.trackName + " voice " + L.source.voice + " " + L.source.key + " bar " + L.source.bar : ""));
       lanes.forEach((r, i) => {
-        out.push("  " + (lanes.length > 1 ? "lane " + (i + 1) + " " : "") + '"pat": "' + r.pat + '"  "octave": ' + r.octave);
+        out.push("  " + (lanes.length > 1 ? "lane " + (i + 1) + " " : "") + '"pat": "' + r.pat + '"  "octave": ' + r.octave
+          + (Object.keys(r.notes).length ? '  "notes": ' + JSON.stringify(r.notes) : ""));
         if (r.unspelled.length) out.push("    no letter in the forge for: " + r.unspelled.join(", ") + " (sent as pitches anyway)");
       });
     });
@@ -424,8 +475,8 @@
     const ruler = $("ruler"); ruler.innerHTML = "";
     for (let s = 0; s < total; s++) {
       const c = document.createElement("div");
-      c.className = "cell" + ((s + 1) % 4 === 0 ? " beat" : "") + ((s + 1) % STEPS_PER_BAR === 0 ? " bar" : "");
-      if (s % 4 === 0) c.textContent = (Math.floor(s / STEPS_PER_BAR) + 1) + "." + (Math.floor((s % STEPS_PER_BAR) / 4) + 1);
+      c.className = "cell" + (isGroupStart(s + 1) ? " beat" : "") + ((s + 1) % state.spb === 0 ? " bar" : "");
+      if (isGroupStart(s)) c.textContent = (Math.floor(s / state.spb) + 1) + "." + (METERS[state.spb].indexOf(s % state.spb) + 1);
       c.dataset.s = s;
       ruler.appendChild(c);
     }
@@ -436,7 +487,7 @@
       const pc = ((p % 12) + 12) % 12;
       for (let s = 0; s < total; s++) {
         const c = document.createElement("div");
-        c.className = "cell" + ((s + 1) % 4 === 0 ? " beat" : "") + ((s + 1) % STEPS_PER_BAR === 0 ? " bar" : "") + (pc === 0 ? " root" : SCALE.has(pc) ? " scale" : "");
+        c.className = "cell" + (isGroupStart(s + 1) ? " beat" : "") + ((s + 1) % state.spb === 0 ? " bar" : "") + (pc === 0 ? " root" : SCALE.has(pc) ? " scale" : "");
         c.dataset.s = s; c.dataset.r = r;
         frag.appendChild(c);
       }
@@ -460,7 +511,8 @@
       const d = document.createElement("div");
       d.className = "note v" + (n.v % 6) + (state.layers[n.v] && state.layers[n.v].muted ? " muted" : "") + (selected.has(n) ? " sel" : "");
       placeEl(d, n, pitches);
-      d.title = pitchName(n.p) + " · " + (state.layers[n.v] ? state.layers[n.v].name : "");
+      d.title = pitchName(n.p) + bendWords(n.q) + " · " + (state.layers[n.v] ? state.layers[n.v].name : "");
+      if (n.q) { const b = document.createElement("span"); b.className = "q"; b.textContent = bendMark(n.q); d.appendChild(b); }
       d._note = n;
       layer.appendChild(d);
     }
@@ -470,6 +522,8 @@
         + (hidden ? ", " + hidden + " outside this range or length (still kept, still sent)" : "")
         + (selected.size ? ". " + selected.size + " selected: drag to move them, Delete to remove" : "") + ".";
     $("delete").disabled = !selected.size;
+    const qs = new Set([...selected].map((n) => n.q || 0));
+    $("bend").querySelectorAll("button").forEach((b) => { b.disabled = !selected.size; b.setAttribute("aria-pressed", qs.size === 1 && qs.has(+b.dataset.q)); });
     renderRiff();
     saveDraft();
   }
@@ -493,7 +547,7 @@
     // Sound everything that starts here and is not muted, so a stacked voicing is heard as it builds.
     ensureAudio();
     const t = ctx.currentTime + 0.01;
-    for (const n of state.notes) if (n.s === s && !(state.layers[n.v] && state.layers[n.v].muted)) pianoNote(t, freqOf(n.p), stepSeconds() * n.l, n.p === p && n.v === v ? 0.9 : 0.5);
+    for (const n of state.notes) if (n.s === s && !(state.layers[n.v] && state.layers[n.v].muted)) pianoNote(t, freqOf(sounding(n)), stepSeconds() * n.l, n.p === p && n.v === v ? 0.9 : 0.5);
   }
   function deleteSelected() {
     if (!selected.size) return;
@@ -503,6 +557,16 @@
     renderNotes();
   }
   $("delete").addEventListener("click", deleteSelected);
+  $("bend").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b || !selected.size) return;
+    snapshot();
+    const q = +b.dataset.q;
+    for (const n of selected) { if (q) n.q = q; else delete n.q; }
+    renderNotes();
+    const first = [...selected].sort((a, c) => a.s - c.s)[0];
+    soundNote(sounding(first), first.l, 0.7);
+  });
   document.addEventListener("keydown", (e) => {
     if ((e.key === "Delete" || e.key === "Backspace") && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); deleteSelected(); }
     if (e.key === "Escape") { selected = new Set(); renderNotes(); }
@@ -561,7 +625,7 @@
       g.m.l = Math.min(g.l0, total - g.m.s);
       const x = els.get(g.m); if (x) { placeEl(x, g.m, drag.pitches); x.title = pitchName(g.m.p); }
     }
-    if (ddy !== drag.lastDy) { drag.lastDy = ddy; soundNote(drag.n.p, 1, 0.5); }
+    if (ddy !== drag.lastDy) { drag.lastDy = ddy; soundNote(sounding(drag.n), 1, 0.5); }
   });
   function endDrag(e) {
     if (!drag) return;
@@ -571,11 +635,11 @@
       if (d.resize) state.len = d.n.l;
       state.notes.sort((a, b) => a.s - b.s || b.p - a.p);
       renderNotes();
-      if (!d.resize) soundNote(d.n.p, d.n.l, 0.7);
+      if (!d.resize) soundNote(sounding(d.n), d.n.l, 0.7);
     } else {
       if (selected.has(d.n)) selected.delete(d.n); else selected.add(d.n);
       renderNotes();
-      soundNote(d.n.p, d.n.l, 0.6);
+      soundNote(sounding(d.n), d.n.l, 0.6);
     }
   }
   $("notes").addEventListener("pointerup", endDrag);
@@ -652,9 +716,9 @@
     const from = state.start;
     for (const n of passNotes) {
       if (n.s < from || n.s >= total) continue;
-      pianoNote(t0 + (n.s - from) * sec, freqOf(n.p), Math.min(n.l, total - n.s) * sec * 0.95, 0.85, bus);
+      pianoNote(t0 + (n.s - from) * sec, freqOf(sounding(n)), Math.min(n.l, total - n.s) * sec * 0.95, 0.85, bus);
     }
-    if (state.click) for (let s = from; s < total; s += 4) clickAt(t0 + (s - from) * sec, s % STEPS_PER_BAR === 0, bus);
+    if (state.click) for (let s = from; s < total; s++) if (isGroupStart(s)) clickAt(t0 + (s - from) * sec, s % state.spb === 0, bus);
   }
   function startPlay() {
     ensureAudio();
@@ -720,6 +784,7 @@
     buildGrid();
   });
   $("range").addEventListener("change", (e) => { setRange(e.target.value); buildGrid(); });
+  $("metre").addEventListener("change", (e) => { setMeter(+e.target.value); if (playing) stopPlay(); buildGrid(); });
   $("rows").addEventListener("change", (e) => { state.rows = e.target.value; buildGrid(); });
   $("bpm").addEventListener("change", (e) => {
     const v = Math.max(40, Math.min(220, +e.target.value || 104));
@@ -794,7 +859,8 @@
     if (empty && state.layers.length === 1 && !state.layers[0].source) { v = 0; state.layers[0] = { name: part.label + " · " + sec.key + " " + sec.bar, source, muted: false }; }
     else { state.layers.push({ name: part.label + " · " + sec.key + " " + sec.bar, source, muted: false }); v = state.layers.length - 1; }
     state.active = v;
-    const added = sec.notes.map((n) => ({ s: n.s, p: n.p, l: Math.max(1, n.l), v }));
+    if (empty && METERS[spb]) setMeter(spb);
+    const added = sec.notes.map((n) => ({ s: n.s, l: Math.max(1, n.l), v, ...bentNote(n.p, n.q) }));
     fitBars(added);
     const total = totalSteps();
     for (const n of added) if (n.s < total) { n.l = Math.min(n.l, total - n.s); state.notes.push(n); }
@@ -805,7 +871,7 @@
     if (!$("title").value.trim()) $("title").value = doc.trackName + " · " + part.label + " · " + sec.key + " bars " + sec.bar + " to " + (sec.bar + sec.bars - 1);
     if (playing) stopPlay();
     buildGrid();
-    if (spb !== 16) $("hint").textContent += " That part runs " + spb + " steps a bar in its track, so the bar lines here are off for it.";
+    if (spb !== state.spb) $("hint").textContent += " That part runs " + spb + " steps a bar in its track and the roll " + state.spb + ", so the bar lines here are off for it.";
     $("scroll").scrollLeft = 0;
     document.querySelector(".roll-frame").scrollIntoView({ behavior: "smooth", block: "start" });
   });
@@ -822,7 +888,7 @@
     $("play").textContent = "Stop";
     const sec = 60 / pick.doc.bpm / 4, t0 = ctx.currentTime + 0.05;
     let end = 0;
-    for (const n of pick.sec.notes) { pianoNote(t0 + n.s * sec, freqOf(n.p), n.l * sec * 0.95, 0.8, bus); end = Math.max(end, (n.s + n.l) * sec); }
+    for (const n of pick.sec.notes) { pianoNote(t0 + n.s * sec, freqOf(n.p + (n.q || 0)), n.l * sec * 0.95, 0.8, bus); end = Math.max(end, (n.s + n.l) * sec); }
     passTimer = setTimeout(stopPlay, end * 1000 + 400);
   });
 
@@ -853,8 +919,9 @@
       load.addEventListener("click", () => {
         snapshot();
         state.layers = (d.layers && d.layers.length ? d.layers : [{ name: "Piano", source: d.source || null }]).map((L) => ({ name: L.name || "Piano", source: L.source || null, muted: !!L.muted }));
-        state.notes = (d.notes || []).map((n) => ({ s: n.s, p: n.p, l: n.l, v: Math.min(n.v || 0, state.layers.length - 1) }));
+        state.notes = (d.notes || []).map((n) => ({ s: n.s, l: n.l, v: Math.min(n.v || 0, state.layers.length - 1), ...bentNote(n.p, n.q) }));
         state.active = 0; selected = new Set();
+        if (METERS[d.stepsPerBar]) setMeter(d.stepsPerBar);
         if (BAR_CHOICES.includes(d.bars)) setBars(d.bars);
         if (d.bpm) { state.bpm = d.bpm; $("bpm").value = d.bpm; }
         if (d.track) { state.track = d.track; $("track").value = d.track; }
@@ -894,10 +961,11 @@
       trackName: opt ? opt.textContent.split(" · ")[0] : state.track,
       bpm: state.bpm,
       bars: state.bars,
-      notes: state.notes.map((n) => ({ s: n.s, p: n.p, l: n.l, v: n.v, name: pitchName(n.p) })),
+      notes: state.notes.map((n) => ({ s: n.s, p: n.p, l: n.l, v: n.v, ...(n.q ? { q: n.q } : {}), name: pitchName(n.p) + bendMark(n.q) })),
       layers,
       root: "E2",
-      stepsPerBar: STEPS_PER_BAR,
+      stepsPerBar: state.spb,
+      quarterTones: state.notes.some((n) => n.q),
       status: "new",
       created: new Date().toISOString(),
     };
@@ -942,6 +1010,7 @@
   $("bpm").value = state.bpm;
   $("track").value = state.track;
   $("rows").value = state.rows;
+  setMeter(state.spb);
   setBars(state.bars);
   fillParts();
   buildGrid();

@@ -153,17 +153,44 @@ def bonham_triplets(start, beats, hands, per_beat=12, foot="kick", soft="7", har
     return [(d, s, v) for (d, s), v in zip(hits, _ramp(len(hits), soft, hard))]
 
 
-def descending_doubles(start, drums, per_beat=12, soft="6", hard="8", foot=None):
-    """The sixteenth-note descending doubles (In the Air Tonight's fill): two sixteenths on each of
-    `drums` in turn, high to low, from step `start`; the foot on each beat where `foot` names it."""
+def descending_doubles(start, drums, per_beat=12, soft="6", hard="8", foot="kick", tail=2):
+    """The sixteenth-note descending doubles, as In the Air Tonight's fill plays them (Ryan, 7 November, with
+    its transcription: "while the rhythm of your fill is correct, the spirit of it is in the tom/snare rhythm
+    ... it's a tool to keep in our toolbox"): two sixteenths in the hands on each of `drums` in turn, high to
+    low, the foot on the sixteenth after each pair, so the hands fall in threes across the beat (hand, hand,
+    foot: 1 e (+) a | 2 (e) + a | (3) e + (a)), then `tail` eighths on the last of them. A drum may be a pair
+    struck together, as the record's two toms at once. From step `start` on a grid of `per_beat` a beat."""
     if per_beat % 4:
         raise ValueError("sixteenths want a grid in fours, not %d a beat" % per_beat)
-    step = per_beat // 4
-    hits = [(d, start + (2 * i + k) * step) for i, d in enumerate(drums) for k in range(2)]
-    out = [(d, s, v) for (d, s), v in zip(hits, _ramp(len(hits), soft, hard))]
-    if foot:
-        out += [(foot, s, v) for d, s, v in out if (s - start) % per_beat == 0]
+    s16 = per_beat // 4
+    hits, pos = [], start
+    for d in drums:
+        for k in range(2):
+            hits.append((d, pos + k * s16))
+        if foot:
+            hits.append((foot, pos + 2 * s16))
+        pos += 3 * s16
+    hits += [(drums[-1], pos + k * 2 * s16) for k in range(tail)]
+    out = []
+    for (d, step), v in zip(hits, _ramp(len(hits), soft, hard)):
+        out += [(x, step, v) for x in ((d,) if isinstance(d, str) else d)]
     return out
+
+
+def lead_power(f, dur):
+    """The lead guitar on power chords (Hold The Line's X, Ryan, 7 November: "Can we try adding lead power
+    chords"): the root, its fifth and its octave on three strings into the lead guitar's gain and cabinet
+    together (forge's lead_real), so the strings grind in the one amp, without the single string's late
+    vibrato, which a chord does not take."""
+    n = F.n_of(dur)
+    x = F.pluck(f, dur, bright=0.7, damp=0.9992)[:n]
+    x = x + F.pluck(f * 2.0 ** (7.0 / 12.0), dur, bright=0.7, damp=0.9992)[:n] * 0.8
+    x = x + F.pluck(f * 2.0, dur, bright=0.7, damp=0.9992)[:n] * 0.5
+    x = np.clip(F.sat(F.hp(x / 1.6, 400.0) * 14.0, 4.0) * 1.2, -1.0, 1.0)
+    return F.cabinet(x) * F.env_pts(n, [(0.0, 0.0), (0.005, 1.0), (max(dur - 0.04, 0.02), 0.85), (dur, 0.0)]) * 0.9
+
+
+F.NOTE_INST["lead_power"] = lambda f, d, p: lead_power(f, d)
 
 
 TICKING = {"inst": "guitar_real", "mode": "riff", "octave": 0, "params": {"clean": True}}   # the map's pulse, as Hold The Line's
