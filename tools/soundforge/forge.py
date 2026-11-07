@@ -1128,12 +1128,13 @@ def bass_guitar(f, dur, drive=2.2):
     return hp(lp(x, 2400.0), 45.0) * 0.9
 
 
-def lead(f, dur):
-    # The unison lead: two saws a hair apart with a slow vibrato, driven, sustained.
+def lead(f, dur, fade=0.0):
+    # The unison lead: two saws a hair apart with a slow vibrato, driven, sustained; or fading `fade` dB
+    # over the note (Hold The Line's W, 7 November: "2 beats of fading held notes").
     n = n_of(dur)
     x = saws_vib(f, n, (0.997, 1.003), vib_hz=5.5, vib_depth=0.004)
     x = hp(lp(sat(x, 1.8), 2400.0), 260.0)   # softer on top, and out of the bass's band
-    return x * env_pts(n, [(0.0, 0.0), (0.01, 1.0), (max(dur - 0.03, 0.02), 0.9), (dur, 0.0)])
+    return x * env_pts(n, [(0.0, 0.0), (0.01, 1.0), (max(dur - 0.03, 0.02), 0.9 * 10.0 ** (-fade / 20.0)), (dur, 0.0)])
 
 
 def crush(x, bits=6, hold=6):
@@ -1168,7 +1169,7 @@ def swell_rev(semis, dur):
 
 
 NOTE_INST["bass_guitar"] = lambda f, d, p: bass_guitar(f, d, p.get("drive", 2.2))
-NOTE_INST["lead"] = lambda f, d, p: lead(f, d)
+NOTE_INST["lead"] = lambda f, d, p: lead(f, d, p.get("fade", 0.0))
 NOTE_INST["bell_stutter"] = lambda f, d, p: bell_stutter(f, d)
 STAB_INST["swell_rev"] = swell_rev
 
