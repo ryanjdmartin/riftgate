@@ -228,7 +228,20 @@ func test_a_layout_is_dealt_with_its_draw_and_places_its_fight() -> void:
 			assert_true(f != null and f.content_id == str(want[cell]), "cell %d holds its %s" % [cell, want[cell]])
 			placed += 1
 	assert_eq(placed, 4, "four cells named")
-	assert_eq(sk.reinforcements.size(), 1, "the member it does not place waits")
+	assert_true(sk.reinforcements.is_empty(), "nothing waits: no reinforcement inside a fight")
+	var dealt := {}
+	for cell in want:
+		if not str(cell).is_empty():
+			dealt[str(cell)] = int(dealt.get(str(cell), 0)) + 1
+	assert_eq(sq.strength, 4, "the pack on the map is what its layout places")
+	for mm in sq.member_list():
+		assert_eq(int(mm[1]), int(dealt.get(str(mm[0]), 0)), "its %s counted from the draw" % mm[0])
+	# A layout that names nothing is dropped: the members stand as content writes them.
+	var blank := Battlefield.composition([["revenant", 2], ["ghost", 1]], "marsh", "formation", "blank")
+	blank["layout"] = {"front": [null, null, null, null], "back": [null, null, null, null]}
+	var sq2 := b.field.emerge(blank, Hex.offset_to_axial(4, 3), 0)
+	assert_eq(sq2.strength, 3, "every member kept")
+	assert_true(sq2.layout.is_empty(), "and the fight deploys them heaviest first")
 
 
 func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
@@ -345,7 +358,7 @@ func test_the_field_at_the_start_follows_the_tier_and_the_ramp() -> void:
 					comp = c
 			assert_false(comp.is_empty(), "ramp %d: %s is a tier-two composition of its domain" % [r, sq.composition])
 			for k in range(comp["members"].size()):
-				assert_eq(sq.members[k], [str(comp["members"][k][0]), Ramp.scaled(int(comp["members"][k][1]), r)], "ramp %d: %s's member %d at the ramp's density" % [r, sq.composition, k])
+				assert_eq(sq.members[k], [str(comp["members"][k][0]), int(comp["members"][k][1])], "ramp %d: %s's member %d as content writes it, at any ramp (7 November)" % [r, sq.composition, k])
 		assert_eq(forms, Ramp.formations_at(r), "ramp %d: the formations at the start" % r)
 		assert_eq(patrols, Ramp.patrols_at(r), "ramp %d: the patrols at the start" % r)
 		# The lead's and the guest's in turn, the lead's first: the second formation and the
@@ -429,7 +442,7 @@ func test_the_thresholds_read_the_first_waves_and_the_rupture_halves_the_beat() 
 	var waves := 0
 	for k in range(Ramp.fractures_at(b.tier)):
 		for m in b.field.cycle[k % b.field.cycle.size()]["members"]:
-			waves += db.menace(str(m[0])) * Ramp.scaled(int(m[1]), b.ramp)
+			waves += db.menace(str(m[0])) * int(m[1])
 	assert_true(waves > 0, "the first waves weigh something")
 	assert_eq(b.field_menace, placed + waves, "the field's menace and the first waves'")
 	b.field.rift_pressure_max = 3

@@ -1702,27 +1702,6 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	s.free()
 
 
-## The reinforcements waiting, by rank (Ryan, 15 October; built 22 October): the formation's
-## gutter counts the foes waiting for the front, for the back, and the massive ones that take a
-## whole column; with the reserve empty it shows nothing.
-func test_the_formation_counts_the_reinforcements_waiting_for_each_rank() -> void:
-	var s := _screen()
-	var sk := s.sk
-	sk.reinforcements.clear()
-	var archer := Foe.make("skeleton_archer", 30, 10)
-	archer.prefers_back = true
-	var big := Foe.make("revenant", 300, 10)
-	big.size = 2
-	sk.reinforcements.append_array([Foe.make("revenant", 30, 10), Foe.make("revenant", 30, 10), archer, big])
-	s._refresh()
-	assert_true(big.is_massive(), "a foe of size two is massive")
-	assert_eq(s._reserve.counts, {"front": 2, "back": 1, "massive": 1}, "two for the front, one for the back, one massive")
-	sk.reinforcements.clear()
-	s._refresh()
-	assert_eq(s._reserve.counts, {"front": 0, "back": 0, "massive": 0}, "the reserve empty: nothing to show")
-	s.free()
-
-
 ## The Barrier and the Ward wear chips of their own, one colour parted by what sits inside the
 ## shield (21 October), and a dark entry shows its rounds left on the die and in the hold.
 func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds() -> void:
@@ -1946,21 +1925,6 @@ func test_end_turn_pulses_once_nothing_is_left_to_spend() -> void:
 	s._refresh(false)
 	assert_true(s.sk.rerolls_left > 0, "rerolls are left")
 	assert_true(s._end_btn.pulse, "and it pulses all the same: every die is spent")
-	s.free()
-
-
-## A foe joining the pool is shown going in (Ryan, 25 October): the screen notices who was not
-## waiting at its last look; the fight's opening pool is no join.
-func test_a_foe_joining_the_pool_is_noticed() -> void:
-	var s := _screen(5)
-	assert_true(s._pool_primed, "the opening pool remembered")
-	var waiting := s.sk.reinforcements.size()
-	assert_eq(s._pool_last.size(), waiting, "everyone waiting at the start")
-	var joined := Foe.make("revenant", 3, 2)
-	s.sk.reinforcements.append(joined)
-	s._refresh(false)
-	assert_true(s._pool_last.has(joined), "the newcomer seen joining")
-	assert_eq(s._reserve.pending.get("front", 0), 0, "headless, nothing flies and the count stands as it is")
 	s.free()
 
 
@@ -2269,46 +2233,6 @@ func test_the_acting_foe_is_lit_one_at_a_time() -> void:
 	assert_false(views[1].acting, "and none at the turn's end")
 	assert_true(SkirmishScreen.ACT_LEAD > 0.0 and SkirmishScreen.ACT_LEAD < 1.0, "the lead a part of the beat")
 	s.free()
-
-
-## The reinforcements' plaques are big enough to tap, and a tap pulls out the waiting foes' list
-## (Ryan, 2 November: "reinforcement icons need to be bigger and more obvious. Ideally we can tap
-## them to pull them out and see the queue"): each kind by what it steps into, with its count; a tap
-## on them again, or on a unit, puts it away, one readout at a time.
-func test_a_tap_on_the_reinforcements_pulls_out_their_list() -> void:
-	var db := ContentDB.load_default()
-	var s := _screen()
-	s.sk.reinforcements.clear()
-	var a := db.make_foe("revenant")
-	var b := db.make_foe("revenant")
-	var c := db.make_foe("ghost")
-	c.prefers_back = true
-	s.sk.reinforcements.append_array([a, b, c])
-	s._refresh()
-	assert_true(s._reserve.size.x >= 48.0, "plaques wide enough to read and tap")
-	assert_eq(s._reserve.mouse_filter, Control.MOUSE_FILTER_STOP, "they take a tap")
-	s._reserve.tapped.emit()
-	assert_eq(s._pop, {"reserve": true}, "the list is the open readout")
-	assert_true(s._drawer.visible and s._reserve.open, "pulled out, the plaques lit")
-	assert_eq(s._drawer.mouse_filter, Control.MOUSE_FILTER_STOP, "a tap on it reaches nothing under it")
-	var said: Array[String] = []
-	for row in s._drawer_rows.get_children():
-		if row is Label:
-			said.append((row as Label).text)
-		else:
-			for part in row.get_children():
-				if part is Label:
-					said.append((part as Label).text)
-	assert_true(said.has("REINFORCEMENTS // 3 WAITING"), "its count: %s" % str(said))
-	assert_true(said.has(a.display_name) and said.has("×2"), "a kind with its count")
-	assert_true(said.has("FRONT RANK") and said.has("BACK RANK"), "by the rank each steps into")
-	s._on_mech_tapped(0)
-	assert_false(s._drawer.visible or s._reserve.open, "a unit's readout puts it away")
-	s._reserve.tapped.emit()
-	s._reserve.tapped.emit()
-	assert_true(s._pop.is_empty() and not s._drawer.visible, "a tap on the plaques again puts it away")
-	s.free()
-
 
 
 ## A spend's blows land a strike at a time (Ryan, 2 November: "flechette pod and other multistrikes

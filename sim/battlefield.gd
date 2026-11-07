@@ -840,13 +840,13 @@ func pack_name(foe_id: String) -> String:
 
 
 ## A composition emerges at a mouth (the rift, a tear, or where the setup places it): a pack of
-## its members at the ramp's density, dressed by its lead, on the nearest free hex to the mouth
+## its members as content writes them, dressed by its lead, on the nearest free hex to the mouth
 ## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
 ## appears on top of a detachment). Null for a composition with no members.
 func emerge(c: Dictionary, mouth: Vector2i, k: int = 0) -> Unit:
 	var members: Array = []
 	for m in c.get("members", []):
-		members.append([str(m[0]), Ramp.scaled(int(m[1]), ramp)])
+		members.append([str(m[0]), int(m[1])])   # as content writes it: the ramp no longer scales a pack (7 November)
 	if members.is_empty():
 		return null
 	# A composition's lead (the long wall brief, section 6): the member whose sprite and walk the
@@ -863,12 +863,47 @@ func emerge(c: Dictionary, mouth: Vector2i, k: int = 0) -> Unit:
 	sq.composition_size = str(c.get("size", ""))
 	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
 	sq.layout = ContentDB.resolve_layout(c.get("layout", null), seed_value, k)   # dealt now, so the pack on the map holds its draw (section 6)
+	_recount_by_layout(sq)
 	sq.display_name = pack_name(sq.foe_id)
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
 	assign_goal(sq)
 	return sq
+
+
+## A pack with a dealt layout is what the layout places (no reinforcement inside a fight, Ryan, 6
+## November): its members recounted from the named cells, a kind's count capped at the strength
+## content gives it, the lead first while one stands in the draw. The members a listing cell did
+## not draw are never dealt, so the count the map shows is the count that stands. No layout keeps
+## the members as content writes them, and so does one that names nothing, which is dropped so
+## the fight deploys them heaviest first.
+func _recount_by_layout(sq: Unit) -> void:
+	if sq.layout.is_empty():
+		return
+	var cap := {}
+	for m in sq.member_list():
+		cap[str(m[0])] = int(cap.get(str(m[0]), 0)) + int(m[1])
+	var counts := {}
+	var order: Array = []
+	for cell in sq.layout:
+		var fid := str(cell)
+		if fid.is_empty() or int(counts.get(fid, 0)) >= int(cap.get(fid, 0)):
+			continue
+		if not counts.has(fid):
+			order.append(fid)
+		counts[fid] = int(counts.get(fid, 0)) + 1
+	if order.is_empty():
+		sq.layout = []
+		return
+	var lead := sq.foe_id
+	if order.has(lead):
+		order.erase(lead)
+		order.push_front(lead)
+	var members: Array = []
+	for fid in order:
+		members.append([fid, int(counts[fid])])
+	sq.set_members(members)
 
 
 ## A pusher's wall segment (the long wall brief 3.3; Ryan, 5 November: rift packs "can target a

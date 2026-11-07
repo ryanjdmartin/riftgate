@@ -309,7 +309,7 @@ func test_a_composition_is_picked_by_tier_rating_and_ramp() -> void:
 	var want := 0
 	var ids: Array = []
 	for m in c["members"]:
-		want += Ramp.scaled(int(m[1]), Ramp.TOP)
+		want += int(m[1])
 		ids.append(str(m[0]))
 	var got := 0
 	for f in sk.reinforcements:

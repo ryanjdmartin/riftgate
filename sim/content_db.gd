@@ -568,7 +568,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 				f.pack_id = sq.id
 				f.escorts = true
 				out.append(f)
-			return out
+			return fit_grid(out)
 	# A pack's members, each its foe type times its strength (one type when it has no list; a
 	# boss unit's members are its escort): the foes' fresh start, 30 October.
 	for e in sq.member_list():
@@ -587,7 +587,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			f.escorts = sq.is_boss
 			out.append(f)
 			out.append_array(parts_for(f))
-	return out
+	return fit_grid(out)   # a boss's tier-grown escort past the eight slots is never dealt
 
 
 ## A boss unit at its battle's tier, 0 to 2 (Ryan, 25 and 26 October: bosses scale to the tier,
@@ -604,6 +604,41 @@ const BOSS_TIERS := [
 
 static func boss_tier(t: int) -> Dictionary:
 	return BOSS_TIERS[clampi(t, 0, BOSS_TIERS.size() - 1)]
+
+
+## A fight's slots: four columns of two ranks, the ranks holding (a front foe never stands in the
+## back), a massive foe a whole column. A pack is what they hold (no reinforcement inside a
+## fight, 6 November).
+const GRID_COLUMNS := 4
+
+
+## What `count` of a foe need of the slots, by rank, its core's parts with it.
+func _add_need(need: Dictionary, foe_id: String, count: int) -> void:
+	var f: Dictionary = foes.get(foe_id, {})
+	var k := "massive" if int(f.get("size", 1)) >= 2 else ("back" if str(f.get("rank", "front")) == "back" else "front")
+	need[k] = int(need[k]) + count
+	for p in f.get("parts", []):
+		_add_need(need, str(p), count)
+
+
+## A pack's foes as its fight's slots hold them, in the order dealt (its commanders and their
+## parts first, its members after): a foe its rank has no room for is never dealt.
+static func fit_grid(list: Array[Foe]) -> Array[Foe]:
+	var out: Array[Foe] = []
+	var massive := 0
+	var front := 0
+	var back := 0
+	for f in list:
+		var m := massive + (1 if f.is_massive() else 0)
+		var fr := front + (1 if not f.is_massive() and not f.prefers_back else 0)
+		var bk := back + (1 if not f.is_massive() and f.prefers_back else 0)
+		if m + fr > GRID_COLUMNS or m + bk > GRID_COLUMNS:
+			continue
+		massive = m
+		front = fr
+		back = bk
+		out.append(f)
+	return out
 
 
 ## The escort a boss unit brings at a tier beyond its own.
@@ -2301,6 +2336,17 @@ func _validate_factions(errs: Array[String]) -> void:
 					errs.append("%s: an elite composition is led by its elite; lead %s is none" % [cw, lead])
 			if c.has("layout"):
 				_validate_layout(cw, c["layout"], strength_of, errs)
+			# A composition fits its fight's slots (no reinforcement inside a fight, cut 6 November;
+			# Ryan, 7 November: "We just tune the enemies so there's no need to have more than 8 on
+			# a field"): four a rank, the ranks holding, a massive foe a column of both, each part of
+			# a core in its own rank, an escort's boss with its parts beside its members.
+			var need := {"front": 0, "back": 0, "massive": 0}
+			for fid in strength_of.keys():
+				_add_need(need, str(fid), int(strength_of[fid]))
+			if c.has("boss") and foes.has(str(c["boss"])):
+				_add_need(need, str(c["boss"]), 1)
+			if int(need["massive"]) + int(need["front"]) > GRID_COLUMNS or int(need["massive"]) + int(need["back"]) > GRID_COLUMNS:
+				errs.append("%s: %d front, %d back and %d massive, more than a fight's four columns of two ranks hold" % [cw, int(need["front"]), int(need["back"]), int(need["massive"])])
 			if c.has("boss"):
 				# An escort written for one boss (30 October); no other composition names one.
 				var named_boss := str(c["boss"])

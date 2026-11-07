@@ -224,7 +224,7 @@ func make_skirmish() -> Skirmish:
 		var sq := Unit.pack(90, str(c["id"]).replace("_", " "), Vector2i.ZERO, str(c["faction"]), Unit.PACK_MOVE, 1, "")
 		var scaled: Array = []
 		for m in c["members"]:
-			scaled.append([str(m[0]), Ramp.scaled(int(m[1]), ramp)])
+			scaled.append([str(m[0]), int(m[1])])
 		sq.set_members(scaled)
 		sq.boss_tier = clampi(tier - 1, 0, 2)
 		sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null

@@ -2,7 +2,8 @@ class_name Skirmish
 extends RefCounted
 
 ## The dice skirmish. Mechs have no positions. Enemies stand in a two-rank, four-column
-## formation fed from the reinforcements, so a horde keeps coming. The rules are docs/rules.md's.
+## formation, a pack what its eight slots hold: nothing steps into a kill's slot (no
+## reinforcement inside a fight, Ryan, 6 November). The rules are docs/rules.md's.
 ##
 ## Round loop:
 ##   start_round()       passive cooling, roll every live mech's die, telegraph foe intents
@@ -13,8 +14,8 @@ extends RefCounted
 ##                       a kill clears its slot at once; a decided fight ends at once
 ##   end_round()         the player's turn ends: a machine's Burning adds its heat and loses a
 ##                       stack, Scorched goes, then heat over the cap burns hull; then
-##                       burn ticks, foes act, the dead are cleared, mech statuses tick, the
-##                       reinforcements refill, outcome is checked
+##                       burn ticks, foes act, the dead are cleared, mech statuses tick, a
+##                       part due grows back in its corpse's slot, outcome is checked
 ##   can_withdraw()      false: there is no withdrawal (the long wall brief 3.5); a fight ends
 ##                       in the foes' fall or the team's
 ##   undo()              takes back the last spend or reroll, in the order made, back to the
@@ -83,7 +84,15 @@ var terrain: int = BattleMap.Terrain.PLAIN   # the ground the fight is on (the c
 var ground: String = "plain"                 # its word for the header, a wall by its look (BattleMap.ground_id)
 var front: Array = []
 var back: Array = []
-var reinforcements: Array[Foe] = []   # foes waiting behind the formation; they step in at the reinforcement phase
+var reinforcements: Array[Foe] = []   # the foes dealt to the fight before it begins; `begin` stands them in the formation and none waits after (no reinforcement inside a fight: Ryan, 6 November)
+## The foes the slots could not hold as the fight began (a catch by several hunters past the
+## eight slots; content is validated so that one pack fits): never in the fight, killed by
+## nothing in it, and back on the map with their pack as it ends.
+var held_back: Array[Foe] = []
+## A fallen part whose core will regrow it holds its slot until it does (Ryan, 7 November: "anything
+## that regrows should leave it's corpse in place, to make it clear"; "How on earth would that
+## spot ever get filled?"): Vector2i(rank, column) -> the fallen part. Nothing steps into it.
+var corpses: Dictionary = {}
 var round: int = 0
 var rerolls_left: int = 0
 var state: int = State.SETUP
@@ -269,6 +278,13 @@ func begin() -> void:
 		_reinforce(false)
 	else:
 		_deploy_layout()
+	if not reinforcements.is_empty():
+		# A pack is what its eight slots hold (no reinforcement inside a fight): content is
+		# validated so that one pack fits, so only a catch by several hunters reaches here; what
+		# does not stand stays out of the fight and goes back to the map with its pack.
+		log.append("%d more could not stand: the formation is full, and they stay with their packs" % reinforcements.size())
+		held_back.append_array(reinforcements)
+		reinforcements.clear()
 	_refresh_guards()
 	_refresh_allies()
 	state = State.ROUND_START
@@ -381,7 +397,7 @@ func survivors_for(sq: Unit) -> int:
 	for f in field_foes():
 		if f.pack_id == sq.id and f.alive() and is_own(sq, f):
 			n += 1
-	for f in reinforcements:
+	for f in reinforcements + held_back:
 		if f.pack_id == sq.id and is_own(sq, f):
 			n += 1
 	return n
@@ -408,7 +424,7 @@ func members_left(sq: Unit) -> Array:
 	for f in field_foes():
 		if f.pack_id == sq.id and f.alive() and is_own(sq, f) and not f.commands:
 			counts[f.content_id] = int(counts.get(f.content_id, 0)) + 1
-	for f in reinforcements:
+	for f in reinforcements + held_back:
 		if f.pack_id == sq.id and is_own(sq, f) and not f.commands:
 			counts[f.content_id] = int(counts.get(f.content_id, 0)) + 1
 	var out: Array = []
@@ -452,7 +468,7 @@ func kills_by_type(sq: Unit) -> Dictionary:
 	for f in field_foes():
 		if f.pack_id == sq.id and f.alive() and is_own(sq, f):
 			left[f.content_id] = int(left.get(f.content_id, 0)) + 1
-	for f in reinforcements:
+	for f in reinforcements + held_back:
 		if f.pack_id == sq.id and is_own(sq, f):
 			left[f.content_id] = int(left.get(f.content_id, 0)) + 1
 	var out := {}
@@ -468,14 +484,15 @@ func kills_by_type(sq: Unit) -> Dictionary:
 
 
 ## A boss unit's commanders still standing in this fight (Foe.commands: its boss, a final's
-## hero, the finale's line), alive on the field or waiting in the pool, a readied one that got
-## back up among them: their content ids, field first. The unit stands while one does.
+## hero, the finale's line), alive on the field or held back from it (a catch past the slots), a
+## readied one that got back up among them: their content ids, field first. The unit stands
+## while one does.
 func commanders_left(sq: Unit) -> Array:
 	var out: Array = []
 	for f in field_foes():
 		if f.pack_id == sq.id and f.commands and f.alive():
 			out.append(f.content_id)
-	for f in reinforcements:
+	for f in reinforcements + held_back:
 		if f.pack_id == sq.id and f.commands:
 			out.append(f.content_id)
 	return out
@@ -487,7 +504,7 @@ func escort_left(sq: Unit) -> int:
 	for f in field_foes():
 		if f.pack_id == sq.id and f.escorts and f.alive():
 			n += 1
-	for f in reinforcements:
+	for f in reinforcements + held_back:
 		if f.pack_id == sq.id and f.escorts:
 			n += 1
 	return n
@@ -1162,11 +1179,11 @@ func swap_targets(first: Foe) -> Array:
 		if foe != first and foe != pair and foe.alive() and not foe.is_massive():
 			out.append(foe)
 	for col in range(columns):
-		if front[col] == null:
+		if front[col] == null and not corpses.has(Vector2i(0, col)):
 			out.append(Vector2i(0, col))
-		if back[col] == null:
+		if back[col] == null and not corpses.has(Vector2i(1, col)):
 			out.append(Vector2i(1, col))
-	return out
+	return out   # a slot a corpse holds is no empty slot: its part regrows there
 
 
 ## Does this entry, spent now, take a second target (a Swap)?
@@ -1384,6 +1401,8 @@ func legal_actions(f: Foe) -> Array:
 			continue   # never the last machine able to act
 		if str(a.get("effect", "")) == "merge" and mergeable(f, a).is_empty():
 			continue   # nothing of its kinds stands to take in
+		if str(a.get("effect", "")) == "summon" and not _summon_has_room(f, a):
+			continue   # a summoner never summons with no room (Ryan, 7 November: "a summoner should not summon if there's no space")
 		if bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", ""))):
 			continue   # used once this fight already
 		if _when_holds(f, a):
@@ -1402,6 +1421,19 @@ func legal_actions(f: Foe) -> Array:
 			if Foe.is_attack_action(a):
 				legal.append(a)
 	return legal
+
+
+## Whether a summon has a slot for what it calls: an empty slot of the called foe's rank no
+## corpse holds. Without the battle's content (a test with no factory) it calls nothing up and
+## stays legal.
+func _summon_has_room(f: Foe, a: Dictionary) -> bool:
+	var who := str(a.get("foe", ""))
+	if not foe_factory.is_valid() or who.is_empty():
+		return true
+	var probe = foe_factory.call(who)
+	if not (probe is Foe):
+		return true
+	return _split_slot(probe, 0, maxi(0, f.column)).y >= 0
 
 
 func _choose_foe_action(f: Foe) -> void:
@@ -1537,9 +1569,10 @@ func _armed_mechs() -> Array[MechState]:
 ## October: "spawn the half-gel immediately in place, not wait for the reinforcement phase"; the
 ## Gel is a wall, not an attacker), made by the battle's content; without a factory nothing
 ## steps in. The first takes the slot it fell from, the rest the nearest empty slots of their
-## rank, the left on a tie, and one with no room waits in the pool. An arrival sets off a mine
-## waiting in its slot, as any way in but the reinforcement step's does; its round is over, so
-## it shows no intent and acts from the next round (Foe.fresh).
+## rank, the left on a tie, and one with no room never forms (no reinforcement inside a fight,
+## Ryan, 6 November, as a summon with no room is never cast). An arrival sets off a mine waiting
+## in its slot; its round is over, so it shows no intent and acts from the next round
+## (Foe.fresh).
 func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 	if f.on_death.is_empty() or not foe_factory.is_valid():
 		return
@@ -1569,16 +1602,14 @@ func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 	for n in made:
 		if _step_up(n, at_col):
 			stood += 1
-		else:
-			reinforcements.append(n)
-	var waiting := made.size() - stood
+	var unformed := made.size() - stood
 	var name_of := made[0].display_name
-	if stood > 0 and waiting > 0:
-		log.append("%s splits: %d %s step up in its place, %d into the pool" % [f.display_name, stood, name_of, waiting])
+	if stood > 0 and unformed > 0:
+		log.append("%s splits: %d %s step up in its place, %d with no room" % [f.display_name, stood, name_of, unformed])
 	elif stood > 0:
 		log.append("%s splits: %d %s step up in its place" % [f.display_name, stood, name_of])
 	else:
-		log.append("%s splits: %d %s step into the pool" % [f.display_name, waiting, name_of])
+		log.append("%s splits, with no room for its %s" % [f.display_name, name_of])
 
 
 ## A foe that arrives mid-round (a split's half, a summon) steps up into the slot `_split_slot`
@@ -1609,9 +1640,9 @@ func _split_slot(n: Foe, _at_rank: int, at_col: int) -> Vector2i:
 			if c < 0 or c >= columns or (d == 0 and c != at_col):
 				continue
 			if n.is_massive():
-				if front[c] == null and back[c] == null:
+				if front[c] == null and back[c] == null and not corpses.has(Vector2i(0, c)) and not corpses.has(Vector2i(1, c)):
 					return Vector2i(0, c)
-			elif (front if want == 0 else back)[c] == null:
+			elif (front if want == 0 else back)[c] == null and not corpses.has(Vector2i(want, c)):
 				return Vector2i(want, c)
 	return Vector2i(-1, -1)
 
@@ -2136,7 +2167,8 @@ func end_round() -> int:
 		Effects.halve(f)   # a foe's halving statuses (Flak) halve at the round's end, Empowered's clock
 	_trim_overshield()
 	_regrow_parts()
-	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
+	# No reinforcement phase (Ryan, 6 November: "Cut"): a pack is what its grid holds, so a kill's
+	# slot stays empty unless a split, a summon or a part regrowing in its corpse's place fills it.
 	_refresh_guards()
 	_refresh_allies()
 	_check_outcome()
@@ -3283,8 +3315,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			var who := str(a.get("foe", ""))
 			if foe_factory.is_valid() and not who.is_empty():
 				# A summon takes an empty slot of its rank at once, the nearest the summoner's
-				# column, else it waits in the pool (Ryan, 26 October); either way its round is
-				# over, so it strikes from the next.
+				# column (Ryan, 26 October), its round over, so it strikes from the next; one with
+				# no room is never called (no pool: Ryan, 6 and 7 November).
 				var stood := 0
 				for i in range(count):
 					var n = foe_factory.call(who)
@@ -3293,8 +3325,6 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 						n.joined = true
 						if _step_up(n, f.column):
 							stood += 1
-						else:
-							reinforcements.append(n)
 				log.append("%s: %s, %d %s answer%s the call%s" % [f.display_name, str(a.get("name", "calls")), count, who, "s" if count == 1 else "",
 					"" if stood == 0 else (", stepping up" if stood == count else ", %d stepping up" % stood)])
 			else:
@@ -3888,11 +3918,13 @@ func slot_targets(ms: MechState, f: Face) -> Array:
 		return out
 	var indirect := reach_of(ms, f) != Face.Reach.DIRECT   # an indirect entry or a sweep may be laid in any empty slot
 	for col in range(columns):
-		if front[col] == null:
+		var front_open := front[col] == null and not corpses.has(Vector2i(0, col))
+		var back_open := back[col] == null and not corpses.has(Vector2i(1, col))
+		if front_open:
 			out.append(Vector2i(0, col))
-			if back[col] == null:
+			if back_open:
 				out.append(Vector2i(1, col))
-		elif back[col] == null and indirect:
+		elif back_open and indirect:
 			out.append(Vector2i(1, col))
 	return out
 
@@ -5032,8 +5064,9 @@ func _schedule_regrowth(core: Foe) -> void:
 			core.regrow_due.append([pid, round + core.regrow_parts])
 
 
-## At the round's end, the parts due back step into the pool, to fill a slot as any waiting
-## foe does.
+## At the round's end, the parts due back regrow where they fell: each in the slot its corpse
+## holds (Ryan, 7 November: "a boss regrowing is the same thing as the gel"), else the nearest
+## free slot of its rank by its core; with no room it waits for the next round's end.
 func _regrow_parts() -> void:
 	if not foe_factory.is_valid():
 		return
@@ -5046,12 +5079,38 @@ func _regrow_parts() -> void:
 				keep.append(d)
 				continue
 			var n = foe_factory.call(str(d[0]))
-			if n is Foe:
-				n.pack_id = core.pack_id
-				n.joined = true
-				reinforcements.append(n)
+			if not (n is Foe):
+				continue
+			n.pack_id = core.pack_id
+			n.joined = true
+			var at := _corpse_slot(core, str(d[0]))
+			if at.x >= 0:
+				corpses.erase(at)
+				n.fresh = true
+				_place(n, at.x, at.y)
+				log.append("%s grows back its %s where it fell" % [core.display_name, n.display_name])
+			elif _step_up(n, core.column):
 				log.append("%s grows back its %s" % [core.display_name, n.display_name])
+			else:
+				keep.append(d)   # no room yet: it waits for a slot to open
 		core.regrow_due = keep
+
+
+## The slot a core's fallen part of `part_id` holds, (-1, -1) for none.
+func _corpse_slot(core: Foe, part_id: String) -> Vector2i:
+	for at in corpses.keys():
+		var c: Foe = corpses[at]
+		if c.content_id == part_id and c.pack_id == core.pack_id:
+			return at
+	return Vector2i(-1, -1)
+
+
+## Whether a fallen foe is a part its standing core will regrow: it holds its slot as a corpse.
+func _regrows(f: Foe) -> bool:
+	for core in field_foes():
+		if core != f and core.alive() and core.regrow_parts > 0 and core.pack_id == f.pack_id and core.part_ids.has(f.content_id):
+			return true
+	return false
 
 
 ## A foe's last act (15 October, the Behemoth's Meteor): its death blow lands the moment it
@@ -5099,6 +5158,10 @@ func _fall_with_cores() -> void:
 		for f in waiting:
 			reinforcements.erase(f)
 		core.regrow_due = []
+		for at in corpses.keys():
+			var c: Foe = corpses[at]
+			if c.pack_id == core.pack_id and core.part_ids.has(c.content_id):
+				corpses.erase(at)   # its parts never regrow now: their slots are only empty
 		if not parts.is_empty() or not waiting.is_empty():
 			log.append("%s falls, and its parts with it" % core.display_name)
 
@@ -5154,6 +5217,8 @@ func _clear_dead_slots() -> void:
 						_last_act(f)
 						if not f.on_death.is_empty() and f.on_death.has("summon"):
 							splits.append([f, 0 if is_same(rank, front) else 1, col])
+						elif _regrows(f):
+							corpses[Vector2i(0 if is_same(rank, front) else 1, col)] = f   # it holds its slot until its core regrows it there
 				f.rank = -1
 			if cleared:
 				# A twin slot's survivor keeps it alone; with none it is a plain empty slot.
@@ -5227,9 +5292,9 @@ func _reinforce(random: bool = true) -> void:
 
 ## The first deployment by a layout (the long wall brief, section 6): each cell, front then back,
 ## left to right, takes the first foe waiting of the kind it names, a massive one filling its
-## column; a cell that names none, or whose kind has none left waiting, stands empty until the
-## reinforcement step fills it as any empty slot. The foes it does not place wait as
-## reinforcements do.
+## column; a cell that names none, or whose kind has none left waiting, stands empty. The pack
+## holds what its layout places (Battlefield._recount_by_layout), so none is left over; one
+## that is (a foe the layout cannot stand) is never dealt (begin).
 func _deploy_layout() -> void:
 	for cell in range(mini(layout.size(), 8)):
 		var fid := str(layout[cell])
@@ -5249,21 +5314,6 @@ func _deploy_layout() -> void:
 				back[col] = f
 			break
 	_refresh_kin()
-
-
-## The reinforcements waiting, by the rank each will step into (the formation's reserve view, 22
-## October): the front rank's, the back rank's (a foe that prefers the back), and the massive
-## ones that take a whole empty column.
-func reserve_counts() -> Dictionary:
-	var out := {"front": 0, "back": 0, "massive": 0}
-	for f in reinforcements:
-		if f.is_massive():
-			out["massive"] += 1
-		elif f.prefers_back:
-			out["back"] += 1
-		else:
-			out["front"] += 1
-	return out
 
 
 func _reinforcement_index_massive() -> int:

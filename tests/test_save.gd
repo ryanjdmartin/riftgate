@@ -232,7 +232,10 @@ func test_a_skirmish_under_way_resumes_and_plays_on_alike() -> void:
 	assert_eq(back.state, b.state, "the battle's state after")
 	assert_eq(back.field.units.size(), b.field.units.size(), "the same units left")
 	assert_eq(back.field.rift_pressure, b.field.rift_pressure, "the same pressure")
-	assert_eq(back.actions_left(back.field.unit_by_id(m.id)), b.actions_left(m), "and the machine spent alike")
+	var m2 := back.field.unit_by_id(m.id)
+	assert_eq(m2 == null, not b.field.units.has(m), "the machine wrecked alike, or standing alike")
+	if m2 != null:
+		assert_eq(back.actions_left(m2), b.actions_left(m), "and the machine spent alike")
 
 
 func test_a_foe_keeps_its_role_and_its_death_through_the_trip() -> void:

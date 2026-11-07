@@ -1005,8 +1005,14 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	named.tier = 2
 	named.escort = [spawn_foes[0], 1]
 	named.setup([], faction)
-	var kept := db.foes_for(named.boss).filter(func(f) -> bool: return f.escorts)
-	assert_eq(kept.size(), 1 + ContentDB.escort_at(2), "its own count and the tier's")
+	var dealt := db.foes_for(named.boss)
+	var kept := dealt.filter(func(f) -> bool: return f.escorts)
+	# Its own count and the tier's, as far as its fight's slots hold them (no reinforcement inside
+	# a fight, 6 November): the escort's rank holds four, less the boss's slot when it shares it.
+	var boss_foe: Foe = dealt.filter(func(f) -> bool: return f.commands)[0]
+	var esc_back := bool(db.make_foe(str(spawn_foes[0])).prefers_back)
+	var room := 4 - (1 if boss_foe.is_massive() or boss_foe.prefers_back == esc_back else 0)
+	assert_eq(kept.size(), mini(1 + ContentDB.escort_at(2), room), "its own count and the tier's, as the slots hold them")
 	for f in kept:
 		assert_eq(f.content_id, spawn_foes[0], "all of the foe it names")
 	var c := Campaign.new(5)

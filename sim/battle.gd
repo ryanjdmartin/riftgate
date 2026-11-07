@@ -101,8 +101,8 @@ var escort: Array = []
 ## its compositions, its Fractures and its elites are the tier's (Ramp).
 var tier: int = 0
 ## The battle's ramp (the campaign's live Convergence, set before setup; 0 in the harness):
-## the compositions on the field at the start and their density, the timer, the tears a peak
-## (Ramp, the one table of placeholders).
+## the compositions on the field at the start, the timer, the tears a peak (Ramp, the one table
+## of placeholders); it scales no pack.
 var ramp: int = 0
 ## The harness's one composition (HarnessSetup.composition): when set, the opening's packs and
 ## every wave the rift and the tears send are it. Empty in play.
@@ -247,10 +247,10 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		var tailored := db.escort_composition(faction, tier + 1, boss_id)
 		if escort.size() < 2 and not tailored.is_empty():
 			# A hand-tailored escort written in content (an `escort` composition at the tier):
-			# its members at the ramp's density, in place of the tier's units round robin.
+			# its members as written, in place of the tier's units round robin.
 			var members: Array = []
 			for m in tailored["members"]:
-				members.append([str(m[0]), Ramp.scaled(int(m[1]), ramp)])
+				members.append([str(m[0]), int(m[1])])
 			boss.set_members(members)
 		else:
 			boss.strength += ContentDB.escort_at(tier)
@@ -270,7 +270,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	if not field.cycle.is_empty():
 		for k in range(Ramp.fractures_at(tier)):
 			for m in field.cycle[k % field.cycle.size()].get("members", []):
-				field_menace += db.menace(str(m[0])) * Ramp.scaled(int(m[1]), ramp)
+				field_menace += db.menace(str(m[0])) * int(m[1])
 	thresholds = []
 	var n := Ramp.fractures_at(tier)
 	if field_menace > 0 and n > 0:

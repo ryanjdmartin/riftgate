@@ -85,12 +85,17 @@ machine). The depth lives in the skirmish.
 - Foes stand in two ranks of four columns, front and back. A massive foe (size 2) fills a
   whole column and counts as front rank for every rule: always in reach, never exposing its
   column, nothing behind it.
+- A pack is what its fight's slots hold: nothing waits behind the formation and nothing steps in
+  once the fight begins. Every composition fits its slots (Content conventions); in a catch by
+  several hunters, the foes the slots cannot hold stay out of the fight, killed by nothing in it,
+  and go back to the map with their packs.
 - At the start, foes take their ranks heaviest hitters first from the left (its heaviest
-  move's damage times strikes, a breach 1 more; ties in arrival order). Foes left over wait as reinforcements.
-- A pack dealt with a layout (Content conventions) places its foes by it when its fight holds it
-  alone: each cell, front then back, left to right, the first foe waiting of its kind, a
-  massive one filling its column; a cell that names none, or whose kind has none left, stands
-  empty until the reinforcement step fills it as any empty slot; the rest wait.
+  move's damage times strikes, a breach 1 more; ties in arrival order).
+- A pack dealt with a layout (Content conventions) is what its layout places: its members are
+  counted from the cells the deal drew, a kind never past its strength, so a member a listing
+  cell did not draw is never dealt and the count the map shows is the count that stands. Its fight,
+  holding it alone, places its foes by the layout: each cell, front then back, left to right, a
+  foe of its kind, a massive one filling its column; a cell that names none stands empty.
 
 ### The round
 1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling,
@@ -113,10 +118,10 @@ machine). The depth lives in the skirmish.
    acts.
 5. The enemy's turn (below). Round-timed effects end.
 6. Machines' statuses tick, and foes' Flak halves. Shield past the maximum (overshield) fades.
-7. Reinforcements step into empty slots. Next round.
+7. A part due to grow back does, in its corpse's slot (below). Next round.
 
-The fight ends the moment it is decided, mid-turn too: victory when no foe stands or waits,
-defeat when every machine is wrecked. There is no round limit.
+The fight ends the moment it is decided, mid-turn too: victory when no foe stands, defeat when
+every machine is wrecked. There is no round limit.
 
 ### Dice
 - **Rerolls**: two a round for the team, never banked (Maverick's Playbook, the Giant
@@ -201,16 +206,17 @@ defeat when every machine is wrecked. There is no round limit.
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
   whatever the gun's reach.
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
-  (a Gel's halves step up into it at once, below).
+  (a Gel's halves stand in it at once, below), and the hole stays open: nothing steps into it
+  after but a split's half, a summon, a part that grows back or a Swap's foe.
 - **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): every weapon and equipment it
   aims at a foe may also be spent on an empty slot in the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
   front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
   to move or carry it. The shot waits there, its number as modified when laid
   (each strike a shot), with its keywords, behind what already waits; its heat lands now.
-  Whoever steps in takes every shot waiting, in laid order, before it acts, and a massive
-  arrival takes both slots'; shots still waiting when it falls wait on for the next. The
-  reinforcement step places every arrival first, then the mines land left to right; any other
-  way in (a Swap) sets them off at once. Every keyword acts as the shot lands, as on a blow:
+  Whoever steps in (a Swap's foe, a split's half, a summon, a part that grows back beside its
+  core) takes every shot waiting, in laid order, before it acts, and a massive arrival takes both
+  slots'; shots still waiting when it falls wait on for the next. Any way in sets them off at
+  once. Every keyword acts as the shot lands, as on a blow:
   a stun takes the arrival's first action, and a Chain mine arcs its number as laid to every
   other Shocked foe on the field as it lands; Lure and
   Disrupt do nothing, their round being over, and Rapid and Volatile acted at the spend.
@@ -876,16 +882,15 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   split's, so no half joins another's slot. A mine waiting in the slot goes off on the pair
   as they step up. Their round is over: no intent, no Lure or Disrupt turns them, a stun takes
   their next action, and they act from the next round. A split that is no pair (none in
-  content) steps up one into the slot and the rest into the nearest empty slots of their rank.
+  content) steps up one into the slot and the rest into the nearest empty slots of their rank;
+  one with no room never forms.
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
-  left on a tie, its round over like a split's half's; with no room it waits in the
-  reinforcements. A foe joining the reinforcements is shown going in: it flies into its rank's
-  count at the formation's edge, which goes up as it lands.
-- **Reinforcements**: at the round's end every empty column takes a waiting massive foe
-  first, then each empty slot, left to right, a random waiting foe of its rank. The formation
-  shows how many wait for each rank, and the massive ones apart, on plaques at its right edge;
-  a tap on them pulls out the list of the foes waiting, each kind by what it steps into with
-  its picture and its count, one readout at a time with the units' and the dice's.
+  left on a tie, its round over like a split's half's; a summoner with no room for it never
+  picks the summon.
+- **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
+  with the rounds until it regrows, and grows back there; no Swap, mine or arrival takes the
+  slot meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
+  or waits for one. The corpses go with their core.
 
 ### Withdrawal
 There is no withdrawal: a fight ends in the pack's fall or the machines' wreck. Kills stay
@@ -999,9 +1004,9 @@ a stat.
   put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
   across the width, each a move of its own from the row before the wall, and its count of
   patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth, each the
-  tier's compositions in turn, the lead's and the guest's in turn with the lead's first, every
-  member's strength at the ramp's density (×1 at Convergence 0 to ×1.5 at 12, rounded, never
-  below one). Rift Pressure opens a turn short of its peak. No battle opens on a forced fight:
+  tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
+  as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
+  turn short of its peak. No battle opens on a forced fight:
   a pack that hunts opens a row further back at a time, never into the mouth, until no machine
   stands inside its catch, so its first walk comes on the enemy's first turn.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
@@ -1109,9 +1114,10 @@ a stat.
   armour a tier above one (the Cinder Tortoise 1, 2 and 3), and two more escort at tier two and
   four at tier three. An escort it does not name (a final's wildlife, the tier's more) is its
   domain's `escort` composition at the battle's tier when one is written, one that names the
-  boss first and then one that names none, its members at the ramp's density, else the foes of
+  boss first and then one that names none, as content writes it, else the foes of
   its domain's units at the tier, round robin in content order and never massive; a named
-  escort is kept. Every domain boss has its own at tiers two and three, at the tier's counts,
+  escort is kept. A boss and its escort stand as its fight's slots hold them: an escort past
+  them is never dealt. Every domain boss has its own at tiers two and three, at the tier's counts,
   and stands alone at tier one but the King Gel, whose court of Gels comes at every tier for its
   merge. The rank and file never scale in place: a tier's units are their own,
   each with its numbers and its name (a recolour: a base type in a new hue under a new name, with
@@ -1141,7 +1147,7 @@ a stat.
   tallied as each fight ends, toward the tier's Fractures (three at tier one, four at tier two,
   five at tier three). The thresholds are set from the field's menace at the start (the packs
   placed, the boss aside) and the first compositions the rift will send, as many as the tier's
-  Fractures, in the cycle's order and at the ramp's density: the last at two thirds of it, the steps 1, 1.5, 2, 2.5 and 3, so
+  Fractures, in the cycle's order: the last at two thirds of it, the steps 1, 1.5, 2, 2.5 and 3, so
   later Fractures cost more and a battle that kills the field as it stood earns the Rupture
   with a third of the field left to leave. A Fracture pays out as a fight ends. At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
@@ -1252,7 +1258,7 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   fight is the party's line with the tier's escort, every domain's dealt hero promoted, a domain
   whose final was won leaving its column to a standing domain's boss, as in the campaign.
 - **A formation** is one of the domain's formation compositions at the battle's tier, in
-  turn, every member at the ramp's density (the battle's number as the Convergence); the
+  turn, as content writes it (the battle's number as the Convergence for the field); the
   lead's and the guest's take turns. **An elite**'s slot holds the lead's elite compositions in
   turn, or a wanderer on the run's roll (every domain has three of its own at least; a domain
   with none would take the lead's formation).
@@ -1279,13 +1285,16 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   passive's `name` and `description`, a module's `text.description`, a foe action's `text`;
   everything under `design` is internal; shown text never says "face"; a draft the engine cannot
   run carries `"status": "planned"` and is kept, never shown or run.
+- A composition (`content/factions.json`) fits its fight's slots: its front-rank members and its
+  massive ones four at most, its back-rank members and its massive ones four at most, a core's
+  parts counted in their own ranks; the validator refuses one that does not.
 - A composition (`content/factions.json`) may carry three fields more, each optional: `squad`,
   the machines it is intended for, 1 to 4, its threat rating on the map (absent: a patrol 1, a
   formation 3, an elite and an escort 4); `layout`, `{front: [four cells], back: [four
   cells]}` left to right as it stands, each cell null for empty, a member's foe id, or a list of
   them the battle's seed draws one from as the pack is dealt, a massive member in a front cell
   with the cell behind it null, no member named in more cells than its strength, the members it
-  does not place waiting as reinforcements do; `lead`, a member's foe id whose sprite and
+  does not place never dealt; `lead`, a member's foe id whose sprite and
   behaviour the pack wears, an elite composition's its elite (absent: the first member). No
   composition in content writes them yet.
 

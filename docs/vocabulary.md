@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 187 implemented, 5 planned, 0 idea.
+Status: 186 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -162,7 +162,6 @@ Status: 187 implemented, 5 planned, 0 idea.
 | **Front rank** | Four slots, one a column. Front-rank foes fill these. Always in Direct reach. | implemented |
 | **Back rank** | Four slots behind the front. Back-rank foes hold these. | implemented |
 | **Mine** | A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons and equipment aimed at foes may also be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires. | implemented |
-| **Reinforcements** | Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated. | implemented |
 | **Massive** | A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive. | implemented |
 | **Strike order** | Foes strike in the order they stand: front rank left to right, then the back rank. Each blow is resolved on its own against the shield standing at that moment, so which foe strikes first decides what a small shield blocks. At first contact the heaviest hitters deploy left. | implemented |
 
@@ -338,7 +337,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Siphoning** (implemented): The number is the entry's own (heat_per_blow), the lever.
 - **Flak** (implemented): Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: "Flak and overcharge exist in part to get past armour"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.
 - **Destroyed component** (implemented): The threshold is a placeholder, set by what it asks of the player, never by a loss or win rate (Ryan, 25 October). The campaign's hangar screen is not built.
-- **Mine** (implemented): The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once.
+- **Mine** (implemented): Any arrival sets it off at once: a Swap's foe, a split's half, a summon, a part grown back beside its core. Nothing steps in at the round's end since reinforcement inside a fight was cut (6 November), so a mine waits for one of those.
 - **Massive** (implemented): Spread treats it as a front-rank neighbour; Penetrate finds nothing behind it.
 - **Movespeed** (implemented): Every chassis's move is a placeholder set by size and role; what crossing water and walls is worth is the pricing run's to read (28 October).
 - **Walk** (implemented): A pack with no way to the gate waits, and the map says so.

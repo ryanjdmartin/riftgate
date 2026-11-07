@@ -102,8 +102,8 @@ func test_a_battle_holds_its_fractures_with_the_elites_folded_in() -> void:
 					var comp: Dictionary = r.db.elite_composition(r.lead, t + 1, id)
 					var want := 0
 					for m in comp.get("members", []):
-						want += Ramp.scaled(int(m[1]), r.ramp())
-					assert_eq(r.encounter_foes(e).size(), want, "its members at the ramp's density")
+						want += int(m[1])
+					assert_eq(r.encounter_foes(e).size(), want, "its members as content writes them (the ramp scales no pack since 7 November)")
 					dealt.append(id)
 				else:
 					assert_eq(id, "", "with no elite left, nothing stands in (Ryan, 27 October)")
@@ -199,7 +199,7 @@ func test_a_boss_brings_the_tiers_escort() -> void:
 		if not tailored.is_empty():
 			expected = 0
 			for m in tailored["members"]:
-				expected += Ramp.scaled(int(m[1]), r.ramp())
+				expected += int(m[1])
 		assert_eq(n, expected, "tier %d's escort beside the formation" % (t + 1))
 		counts.append(n)
 		var content: Dictionary = r.db.foes[str(boss["foe"])]

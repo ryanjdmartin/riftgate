@@ -24,8 +24,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 1010 tests, 259,298 checks, green in either map view (6 November, `ccr-56b5169d-lsa2rg` with the long
-  wall's Phases 1 and 2, Godot 4.8-beta2); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1008 tests, 259,290 checks, green (7 November, `ccr-56b5169d-lsa2rg` with the long
+  wall's Phases 1 and 2 and the cut, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -143,10 +143,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   16; a patrol alone costing its machine over half its hull from tier two; the elites too easy
   at their four in 47 of 53 cells, and beaten by three as well. Ryan's answers of 6 November:
   Phase 2 now and the branch landing after it; the placeholders kept until he plays it; the
-  elites kept at four until his try; reinforcement inside a fight cut (its edge cases in chat)
-  and the Lammergeier back to the shop; the map bait to build (its form in chat); the Fracture
-  a shell; no battle opening on a forced fight (built); the Mandrake's Scream down to one
-  (built); the formations, the refit and the ratings by who solos a pack after the rest.
+  elites kept at four until his try; reinforcement inside a fight cut and the Lammergeier back
+  to the shop; the map bait to build; the Fracture a shell; no battle opening on a forced fight
+  (built); the Mandrake's Scream down to one (built); the formations, the refit and the ratings
+  by who solos a pack after the rest. His answers of 7 November, built: a fight's dice whatever
+  order its turn's fights open in (`Battle.fight_seed`); his Designs-tab notes folded into the
+  briefs; the cut (a pack what its eight slots hold, every composition fitted to its ranks until
+  the formation pass, no summon or split past the slots, a regrowing part's corpse holding its
+  slot, a catch's overflow held back, the ramp scaling no pack, the reserve's plaques retired);
+  the ramp scales the field alone, and the formation pass writes compositions as variants placed
+  on the tier and the ramp by the runs.
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip
@@ -259,9 +265,9 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). Ahead of all of it: Ryan's play of the long wall with its view (built 6
 November; his phone read, the to-do), the harness's composition picker for it; then the long
-wall's open items (the bible's section 12:
-reinforcement's cut, the map bait, the shell, the ratings by who solos, the formations and the
-refit, in that order of his answers). The branch lands on main after Phase 2. The redesign moves
+wall's open items (the bible's section 12: the map bait, the shell, the ratings by who solos,
+the formations and the refit, in that order of his answers), with the harness's BATTLE and
+FIGHT apart (his word of 7 November) and the field loot first. The branch lands on main after Phase 2. The redesign moves
 every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on the refit. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
 engine line), since the matrix on file predates everything since 27 October.

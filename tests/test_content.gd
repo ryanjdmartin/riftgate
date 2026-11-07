@@ -119,12 +119,15 @@ func test_sparrowhawk_loadout_matches_design() -> void:
 
 func test_packs_unpack_by_foe_type() -> void:
 	var db := _db()
-	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "marsh", 2, 6, "revenant")
+	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "marsh", 2, 3, "revenant")
 	var foes := db.foes_for(ghouls)
-	assert_eq(foes.size(), 6, "six ghouls from strength six")
+	assert_eq(foes.size(), 3, "three ghouls from strength three")
 	for f in foes:
 		assert_eq(f.display_name, "Revenant", "all the same type")
 		assert_eq(f.pack_id, 7, "foe remembers its pack")
+	# A pack is what its fight's slots hold (no reinforcement inside a fight, 6 November): a front
+	# rank holds four, so a fifth and sixth front-rank foe are never dealt.
+	assert_eq(db.foes_for(Unit.pack(10, "horde", Vector2i.ZERO, "marsh", 2, 6, "revenant")).size(), 4, "six front-rank foes stand four")
 	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "marsh", 2, 2, "ghost")
 	var backs := db.foes_for(necros)
 	assert_eq(backs.size(), 2, "two necromancers")

@@ -200,21 +200,6 @@ func _apply_pose() -> void:
 					var at := over.get_global_rect().get_center()
 					s._on_drag_moved(at)
 					return
-		"reserve", "reservelist":
-			# The reinforcements waiting by rank at the formation's edge: two for the front, one
-			# for the back, one massive (its tall plaque between the ranks); reservelist taps them,
-			# their list pulled out (RIFTGATE_SHOT_FRAME=4 catches it sliding).
-			var db := ContentDB.load_default()
-			var archer := db.make_foe("ghost") if db.foes.has("ghost") else Foe.make("skeleton_archer", 30, 10)
-			archer.prefers_back = true
-			var big := db.make_foe("treant") if db.foes.has("treant") else Foe.make("revenant", 300, 10)
-			big.size = 2
-			s.sk.reinforcements.clear()
-			for f in [db.make_foe("goblin") if db.foes.has("goblin") else Foe.make("revenant", 30, 10), db.make_foe("goblin") if db.foes.has("goblin") else Foe.make("revenant", 30, 10), archer, big]:
-				s.sk.reinforcements.append(f)
-			s._refresh()
-			if _pose == "reservelist":
-				s._on_reserve_tapped()
 		"rage":
 			# The rage's roll again: the chip's burst and the die folded before its flip
 			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).

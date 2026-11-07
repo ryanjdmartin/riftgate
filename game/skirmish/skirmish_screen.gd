@@ -91,10 +91,6 @@ const PLAQUE_HOLD := 1.0   # seconds the replay holds on a named move's plaque (
 const PLAQUE_Y := -10.0    # the plaque's top, from the back rank's row: over the foes, where the other world is
 ## RIFTGATE_PLAQUE_DEBUG=1: the plaque fires one of the field's move names after another.
 static var PLAQUE_DEBUG := OS.get_environment("RIFTGATE_PLAQUE_DEBUG") == "1"
-## RIFTGATE_POOL_DEBUG=1: every couple of seconds a foe on the field flies into the pool, to judge
-## the join running (the counts land back where they were).
-static var POOL_DEBUG := OS.get_environment("RIFTGATE_POOL_DEBUG") == "1"
-var _pool_debug_at := 0.0
 ## RIFTGATE_ACT_DEBUG=1: one foe after another lit as if acting, a beat each, to judge the
 ## highlight running (Ryan, 2 November: "enemies need to highlight during their attacks").
 static var ACT_DEBUG := OS.get_environment("RIFTGATE_ACT_DEBUG") == "1"
@@ -188,11 +184,6 @@ var _bg: HudBackdrop = null
 var _plaque: Plaque = null           # the other world's window: a foe's named move, announced
 var _plaque_debug_at := 0.0
 var _prey: PreyLayer = null          # the predator sense: the foes' ground dimmed, eyes on the foes looking away
-var _reserve: ReserveView = null     # the reinforcements waiting, by rank, at the formation's right edge
-const RESERVE_W := 50.0              # its plaques' width
-var _drawer: HudPanel = null         # the waiting foes' list, pulled out by a tap on the plaques
-var _drawer_rows: VBoxContainer = null
-const DRAWER_W := 330.0
 
 
 var _fight_t := 0.0                  # seconds since the feed opened: the header's clock
@@ -239,13 +230,6 @@ func _process(delta: float) -> void:
 	if HIT_DEBUG and _fight_t - _hit_debug_at > 1.5 and not _mech_views.is_empty():
 		_hit_debug_at = _fight_t
 		_hit_debug()
-	if POOL_DEBUG and _fight_t - _pool_debug_at > 2.2 and not sk.field_foes().is_empty():
-		_pool_debug_at = _fight_t
-		var live := sk.field_foes()
-		var f: Foe = live[int(_fight_t) % live.size()]
-		var kind := "massive" if f.is_massive() else ("back" if f.prefers_back else "front")
-		_reserve.counts[kind] = int(_reserve.counts.get(kind, 0)) + 1   # shown as one more waiting, for the look
-		_animate_pool_join(f, 0.0)
 	var sec := int(_fight_t)
 	if sec != _clock_sec:
 		_clock_sec = sec
@@ -541,15 +525,6 @@ func _build() -> void:
 		_massive_views[col] = mv
 	_pair_marks = PairMarks.new()
 	_place(_pair_marks, Vector2.ZERO, Vector2(W, H))
-	# The reinforcements waiting, by rank (Ryan, 15 October), in the gutter right of the formation:
-	# a plaque at each rank's height, a tall one between them for a massive foe.
-	# Big enough to read and to tap (Ryan, 2 November: "reinforcement icons need to be bigger and
-	# more obvious"): they stand over the last column's empty margin, and a tap pulls out the list.
-	_reserve = ReserveView.new()
-	_place(_reserve, Vector2(W - 1.0 - RESERVE_W, BACK_Y), Vector2(RESERVE_W, FRONT_Y + SLOT_SIZE.y - BACK_Y))
-	_reserve.tapped.connect(_on_reserve_tapped)
-	_reserve.back_y = Vector2(0.0, SLOT_SIZE.y)
-	_reserve.front_y = Vector2(FRONT_Y - BACK_Y, FRONT_Y - BACK_Y + SLOT_SIZE.y)
 	# The corrupted side's tear, over the foes and their ground alike (Ryan, 23 September:
 	# under the sprites it was lost): a screen-reading layer the size of the foes' ground.
 	var tear := TearLayer.new()
@@ -745,7 +720,6 @@ func _build() -> void:
 	_details_entry.visible = false
 	dv.add_child(_details_entry)
 
-	_build_drawer()
 	_build_codex()
 	_build_confirm()
 	_build_outcome()
@@ -1049,11 +1023,8 @@ func _refresh(save: bool = true) -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
 	_update_preview()
 	_update_round()
-	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), ContentDB.load_default().term_name(sk.ground).to_upper()]
+	_header.text = "RND %02d // %s" % [sk.round, ContentDB.load_default().term_name(sk.ground).to_upper()]
 	_header.queue_redraw()
-	if _reserve != null:
-		_reserve.set_counts(sk.reserve_counts())
-		_pool_joins()
 	_set_phase("ASSIGN" if assigning else "ENEMY PHASE")
 	_view_foe.clear()
 
@@ -1120,6 +1091,20 @@ func _refresh(save: bool = true) -> void:
 				tv.visible = false
 				_lay(v, at, SLOT_SIZE)
 			if massive:
+				continue
+			if foe == null and sk.corpses.has(Vector2i(rank, col)):
+				# A fallen part its core will regrow holds its slot (Ryan, 7 November: "anything
+				# that regrows should leave it's corpse in place, to make it clear"): drawn as it
+				# fell, dimmed and greyed, saying when it regrows; no target.
+				var corpse: Foe = sk.corpses[Vector2i(rank, col)]
+				_fill_foe_view(v, corpse, [], rank * sk.columns + col)
+				v.dead = true
+				v.intent = _regrow_text(corpse)
+				v.intent_kind = ""
+				v.highlight = false
+				v.mined = false
+				v.modulate = Color(1, 1, 1, 0.7)
+				v.queue_redraw()
 				continue
 			if foe == null:
 				# An empty slot; with mines waiting (the Lammergeier's) its dashed outline, the
@@ -1378,7 +1363,7 @@ func _log_text(bright: int, prompt: bool = false) -> String:
 	var n := sk.log.size()
 	var out := ""
 	if n == 0:
-		out = "[color=#%s]> round %d // %d in reserve // awaiting orders[/color]\n" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.reinforcements.size()]
+		out = "[color=#%s]> round %d // awaiting orders[/color]\n" % [Color(Palette.HUD, 0.45).to_html(true), sk.round]
 	var lines: Array = []   # [text, whether a bar], a bar before the line it came before
 	for j in range(n + 1):
 		if sk.roll_marks.has(j):
@@ -1897,6 +1882,18 @@ func _mech_rows(i: int) -> Array:
 	return rows
 
 
+## A corpse's word: how many rounds its core needs to regrow it, by the core's schedule.
+func _regrow_text(corpse: Foe) -> String:
+	for core in sk.field_foes():
+		if core.pack_id != corpse.pack_id or not core.part_ids.has(corpse.content_id):
+			continue
+		for d in core.regrow_due:
+			if str(d[0]) == corpse.content_id:
+				var n := maxi(1, int(d[1]) - sk.round + 1)
+				return "REGROWS IN %d" % n
+	return "REGROWS"
+
+
 func _foe_view_for(foe: Foe) -> UnitView:
 	for v in _view_foe.keys():
 		if _view_foe[v] == foe:
@@ -2180,7 +2177,6 @@ func _close_pop() -> void:
 	var die := _pop.has("die")
 	_pop = {}
 	_details.visible = false
-	_hide_drawer()
 	if die:
 		_refresh(false)   # its marks and its lure's preview go with it
 	else:
@@ -2199,10 +2195,6 @@ func _read_die() -> int:
 func _show_pop() -> void:
 	if _pop.is_empty():
 		return
-	if _pop.has("reserve"):
-		_show_reserve()
-		return
-	_hide_drawer()
 	_details.fill_alpha = 1.0 if _pop.has("die") else POP_ALPHA   # a die's over the log's lines: a readout of text reads over nothing
 	_details.queue_redraw()
 	if _pop.has("die"):
@@ -2227,118 +2219,6 @@ func _show_pop() -> void:
 			_close_pop()
 			return
 		_show_details(_mine_text(at.x, at.y, shots), _slot_views[at.x][at.y])
-
-
-## A tap on the reinforcements' plaques pulls their list out, a tap on them again puts it away, one
-## readout at a time with the units' and the dice's.
-func _on_reserve_tapped() -> void:
-	if _replay_shade.visible:
-		return
-	if _pop.has("reserve"):
-		_close_pop()
-	else:
-		_open_pop({"reserve": true})
-
-
-func _build_drawer() -> void:
-	_drawer = HudPanel.new(14.0)
-	_drawer.fill_alpha = 0.97
-	_drawer.mouse_filter = Control.MOUSE_FILTER_STOP   # a tap on it reaches nothing under it, as a readout's
-	_drawer.visible = false
-	add_child(_drawer)
-	_drawer_rows = VBoxContainer.new()
-	_drawer_rows.add_theme_constant_override("separation", 6)
-	_drawer_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_drawer.add_child(_drawer_rows)
-
-
-## The waiting foes' list (Ryan, 2 November: "Ideally we can tap them to pull them out and see the
-## queue"): out from the right edge beside the plaques, the foes waiting by what they step into
-## (a massive one's column first, then each rank), each kind its picture, its name and its count,
-## and how they come in. It follows the fight while out.
-func _show_reserve() -> void:
-	_details.visible = false
-	var was_out := _drawer.visible
-	for c in _drawer_rows.get_children():
-		_drawer_rows.remove_child(c)
-		c.queue_free()
-	var waiting := sk.reinforcements.size()
-	_drawer_rows.add_child(Hud.label("REINFORCEMENTS // %d WAITING" % waiting, 17, Palette.INK, Hud.display_bold()))
-	for kind in ["massive", "front", "back"]:
-		var order: Array[String] = []
-		var count := {}
-		var any := {}
-		for f in sk.reinforcements:
-			var k := "massive" if f.is_massive() else ("back" if f.prefers_back else "front")
-			if k != kind:
-				continue
-			if not count.has(f.content_id):
-				order.append(f.content_id)
-				any[f.content_id] = f
-			count[f.content_id] = int(count.get(f.content_id, 0)) + 1
-		if order.is_empty():
-			continue
-		var head: String = {"massive": "MASSIVE // TAKES A WHOLE COLUMN", "front": "FRONT RANK", "back": "BACK RANK"}[kind]
-		_drawer_rows.add_child(Hud.label(head, 12, Color(Palette.HUD, 0.8), Hud.mono()))
-		for id in order:
-			_drawer_rows.add_child(_reserve_row(any[id], int(count[id])))
-	var note := Hud.label("At the round's end each empty slot takes one of its rank at random, an empty column a massive one first.", 13, Palette.MUTED)
-	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	note.custom_minimum_size = Vector2(DRAWER_W - 28.0, 0.0)
-	_drawer_rows.add_child(note)
-	_drawer.size = Vector2(DRAWER_W, 0.0)
-	_drawer.reset_size()
-	_drawer.size = Vector2(DRAWER_W, _drawer.get_combined_minimum_size().y)
-	var at := Vector2(W - RESERVE_W - 6.0 - DRAWER_W, BACK_Y + 4.0)
-	at.y = clampf(at.y, 8.0, maxf(8.0, H - 8.0 - _drawer.size.y))
-	_drawer.visible = true
-	_drawer.move_to_front()
-	_reserve.open = true
-	_reserve.queue_redraw()
-	if was_out or not is_inside_tree():
-		_drawer.position = at
-		return
-	# Pulled out from the right edge (Ryan's "pull them out").
-	_drawer.position = Vector2(W, at.y)
-	var tw := create_tween()
-	tw.tween_property(_drawer, "position", at, 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-
-
-## One kind of foe waiting: its picture, its name and its count.
-func _reserve_row(f: Foe, n: int) -> Control:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var pic := TextureRect.new()
-	pic.custom_minimum_size = Vector2(52.0, 52.0)
-	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	pic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var tex := Sprites.combat_foe(f.content_id)
-	if tex != null:
-		var cut := AtlasTexture.new()
-		cut.atlas = tex
-		cut.region = Sprites.used_rect(tex)
-		pic.texture = cut
-		pic.flip_h = bool(ContentDB.load_default().foes.get(f.content_id, {}).get("flip", false))
-	row.add_child(pic)
-	var name := Hud.label(f.display_name, 18, Palette.INK)
-	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(name)
-	var count := Hud.label("×%d" % n, 22, Palette.ENEMY, Hud.mono())
-	count.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(count)
-	return row
-
-
-func _hide_drawer() -> void:
-	if _drawer != null:
-		_drawer.visible = false
-	if _reserve != null and _reserve.open:
-		_reserve.open = false
-		_reserve.queue_redraw()
 
 
 ## A tap on nothing (the ground, the black) closes an open readout; with none open, it sets a
@@ -4006,72 +3886,6 @@ func _end_turn_now() -> void:
 				arrived += 1)
 
 
-## A foe that joins the pool, whatever brought it there (a split with no room, a summon with no
-## empty slot), is shown going in (Ryan, 25 October: "we need to make it clear when
-## something joins the pool"): its picture lifts off where its pack stands (or appears at the
-## formation's edge), shrinks into its rank's plaque in the gutter, and the count goes up there
-## with a burst as it lands. The screen remembers who was waiting at its last look.
-var _pool_last: Dictionary = {}   # Foe -> true: the pool as the screen last saw it
-var _pool_primed := false         # the first look only remembers: the fight's opening pool is no join
-
-func _pool_joins() -> void:
-	var now := {}
-	var joined: Array[Foe] = []
-	for f in sk.reinforcements:
-		now[f] = true
-		if _pool_primed and not _pool_last.has(f):
-			joined.append(f)
-	_pool_last = now
-	_pool_primed = true
-	for k in range(joined.size()):
-		_animate_pool_join(joined[k], 0.25 + 0.18 * k)
-
-
-func _animate_pool_join(f: Foe, delay: float) -> void:
-	var kind := "massive" if f.is_massive() else ("back" if f.prefers_back else "front")
-	var tex := Sprites.combat_foe(f.content_id)
-	if not is_inside_tree() or _reserve == null or tex == null:
-		return
-	_reserve.pending[kind] = int(_reserve.pending.get(kind, 0)) + 1
-	_reserve.queue_redraw()
-	var to := _reserve.position + _reserve.plaque_center(kind)
-	var from := to + Vector2(-90.0, 0.0)
-	for v in _view_foe.keys():
-		var other: Foe = _view_foe[v]
-		if other != null and other.pack_id == f.pack_id and other.alive():
-			from = (v as Control).position + (v as Control).size * 0.5   # off its pack mate: the half beside it, the summoner
-			break
-	var used := Sprites.used_rect(tex)
-	var sz := used.size * minf(1.0, 84.0 / maxf(used.size.x, used.size.y))
-	var ghost := TextureRect.new()
-	var at := AtlasTexture.new()
-	at.atlas = tex
-	at.region = used
-	ghost.texture = at
-	ghost.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	ghost.stretch_mode = TextureRect.STRETCH_SCALE
-	ghost.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ghost.size = sz
-	ghost.pivot_offset = sz * 0.5
-	ghost.position = from - sz * 0.5
-	ghost.modulate = Color(1.4, 0.9, 1.8, 0.0)   # the flash in the enemy's violet, as the count it flies to
-	add_child(ghost)
-	var tw := create_tween()
-	tw.tween_interval(delay)
-	tw.tween_property(ghost, "modulate", Color(1.4, 0.9, 1.8, 1.0), 0.12)
-	tw.tween_interval(0.18)
-	tw.set_parallel(true)
-	tw.tween_property(ghost, "position", to - sz * 0.5, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	tw.tween_property(ghost, "scale", Vector2(0.25, 0.25), 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY, 0.5), 0.55)
-	tw.set_parallel(false)
-	tw.tween_callback(func() -> void:
-		_reserve.arrive(kind)
-		ghost.queue_free())
-	Sound.play_after(delay + 0.85, "arrival", -6.0)
-
-
 func _show_outcome(outcome: int) -> void:
 	_refresh()
 	match outcome:
@@ -4087,6 +3901,6 @@ func _show_outcome(outcome: int) -> void:
 		_:
 			Sound.play("withdraw")
 			_overlay_title.text = "WITHDREW"
-			_overlay_text.text = "%d foes remain on the field and %d wait in reserve. They keep marching." % [sk.field_foes().size(), sk.reinforcements.size()]
+			_overlay_text.text = "%d foes remain on the field. They keep marching." % sk.field_foes().size()
 	_overlay.visible = true
 	finished.emit(outcome)

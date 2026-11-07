@@ -973,17 +973,7 @@
    "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons and equipment aimed at foes may also be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
    "status": "implemented",
    "design": {
-    "holes": "The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once."
-   }
-  },
-  {
-   "id": "pool",
-   "category": "formation",
-   "name": "Reinforcements",
-   "codex": "Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
+    "holes": "Any arrival sets it off at once: a Swap's foe, a split's half, a summon, a part grown back beside its core. Nothing steps in at the round's end since reinforcement inside a fight was cut (6 November), so a mine waits for one of those."
    }
   },
   {

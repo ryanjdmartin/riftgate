@@ -74,8 +74,9 @@ var modules: Dictionary = {}      # the stores: module id -> copies unfitted
 var party: Dictionary = {}        # domain -> its dealt hero (the finale's line)
 var bosses_ended: Dictionary = {} # domain -> the bosses beaten this run, so the next draws another (the campaign's rule)
 var finals_won: Array = []        # domains whose final was won: their hero leaves the finale's line, as in the campaign
-## The formations' density by tier, the runner's lever on top of the ramp's own (Ramp.scaled by
-## the battle's number as the Convergence; 1.0 everywhere unless the runner asks: docs/measurements.md, 25 October).
+## The formations' density by tier, the runner's lever (1.0 everywhere unless the runner asks:
+## docs/measurements.md, 25 October); the ramp no longer scales a pack (7 November), and what a
+## fight's eight slots cannot hold never stands (no reinforcement inside a fight).
 var density: Array = [1.0, 1.0, 1.0]
 # ---- the battle ahead or under way
 var lead: String = ""
@@ -394,14 +395,14 @@ func encounter_foes(enc: Dictionary) -> Array:
 
 ## A boss's escort at the battle's tier, beyond its formation, as the campaign's boss unit
 ## brings it: its own `escort` composition at the tier when one is written (2 November), its
-## members at the ramp's density, else the domain's own units of the tier, ContentDB.escort_at(tier)
+## members as content writes them, else the domain's own units of the tier, ContentDB.escort_at(tier)
 ## of them.
 func escort_foes(domain: String, boss_id: String = "") -> Array:
 	var out: Array = []
 	var tailored := db.escort_composition(domain, tier() + 1, boss_id)
 	if not tailored.is_empty():
 		for m in tailored["members"]:
-			for i in range(Ramp.scaled(int(m[1]), ramp())):
+			for i in range(int(m[1])):
 				if db.foes.has(str(m[0])):
 					out.append(db.make_foe(str(m[0])))
 		return out
@@ -409,7 +410,7 @@ func escort_foes(domain: String, boss_id: String = "") -> Array:
 
 
 ## A domain's formation: the tier's formation compositions in turn (`index`, wrapping), at the
-## ramp's density times the runner's lever; the whole derived list when the domain has none.
+## runner's lever; the whole derived list when the domain has none.
 func formation_foes(domain: String, index: int = 0) -> Array:
 	var forms := db.compositions(domain, tier() + 1, "formation")
 	if not forms.is_empty():
@@ -424,15 +425,14 @@ func formation_foes(domain: String, index: int = 0) -> Array:
 	return out
 
 
-## A composition's foes: every member at the ramp's density (the battle's number as the
-## Convergence) times the runner's lever for the tier.
+## A composition's foes: every member at its strength times the runner's lever for the tier.
 func _composition_foes(c: Dictionary) -> Array:
 	var out: Array = []
 	var d: float = float(density[tier()]) if tier() < density.size() else 1.0
 	for m in c.get("members", []):
 		if not db.foes.has(str(m[0])):
 			continue
-		for i in range(maxi(1, roundi(float(Ramp.scaled(int(m[1]), ramp())) * d))):
+		for i in range(maxi(1, roundi(float(int(m[1])) * d))):
 			var f := db.make_foe(str(m[0]))
 			if db.is_elite(str(m[0])):
 				db.scale_boss(f, tier())   # every elite stands at the battle's tier as a boss does (Ryan, 2 November)
