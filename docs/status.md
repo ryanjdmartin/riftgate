@@ -886,7 +886,13 @@ The tasks are the to-do's; this is the index of what waits.
   full pair"), its W six beats.
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its twenty-first (the map's intro without its front and its muted guitar out, his
+  Night Shift on its twenty-second (the battle half's dark pass on trial, 7 November: "It's a battle
+  track, and it sounds too bright! ... all the melancholy got lost ... get some of that grit and anxiety
+  back in": A minor and G's bare power chord where the battle had filled the map's thirdless chords
+  with open ninths, every bass line on F where it stepped on F#, the duel's beat-each trade sinking
+  and its basses falling into the outro onto F, the arpeggio an octave down, the map's pad under the
+  groove, the head and the duel 12 dB under the mix on a phone, the stack on the off-beats; the map's
+  intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar", its drums 3 dB down in C
   and R, 6 November: "-3db solves it"; the battle half's parts named on the page for his notes, "is
   there a way to subdivide this so I can give you notes on each particular section?"; the battle half a whole
@@ -1046,7 +1052,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file is v0.470 (the track table's rows on Night Shift's
-  nineteenth to twenty-first rounds, Hold The Line's seventeenth to twentieth and The Far Bank's pick of the lift),
+  nineteenth to twenty-second rounds, Hold The Line's seventeenth to twentieth and The Far Bank's pick of the lift),
   not yet published: a permission check blocked the publish on 6 November as unrequested, so it
   waits on Ryan's go; the live page had not moved. The live page is v0.469 (the
   page's version 482, published 6 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
@@ -1178,8 +1184,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twentieth, X's riff in quarter-tones and W in six beats, `hold_sketches.py`; Night Shift's twenty-first, its battle half named in parts, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 51. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twentieth, X's riff in quarter-tones and W in six beats, `hold_sketches.py`; Night Shift's twenty-second, its battle half's dark pass, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 52. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
