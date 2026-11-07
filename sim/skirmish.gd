@@ -2822,8 +2822,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 					riders.append(func() -> void: _land_rider(foe, sid, n_laid, gained, turned, laid))
 			if was_alive and not foe.alive() and f.devours > 0:
 				_overcharge_on_kill(ms, foe, f.devours)
-			if was_alive and not foe.alive():
-				_killed_by(foe, _shot(ms, f, blow, real, doubled, 0, false, _area_shot(ms, f, own, split)))   # the killing shot as fired, a drone's mine if it carries one as it dies
+			if was_alive and not foe.alive() and (Effects.has(foe, "syrinx_drone") or f.drones):
+				# The killing shot as fired, kept only where a drone may leave it as a mine: a foe
+				# carrying one, or the target of an entry that lays one in the rider phase. Built
+				# lazily, since building a shot deepens its stacks and says so in the log.
+				_killed_by(foe, _shot(ms, f, blow, real, doubled, 0, false, _area_shot(ms, f, own, split)))
 			# The killing strike: what it had past the kill carries on.
 			if spills and was_alive and not foe.alive():
 				_spill(ms, f, foe, taken - hp_before, hit)
@@ -4204,7 +4207,7 @@ func _mine_hit(foe: Foe, shot: Dictionary) -> void:
 		if not t.alive() and kws.has(Face.Keyword.DISPEL):
 			_purge_foe("a mine of %s's" % str(shot.get("by", "")), t, maxi(1, int(shot.get("dispel", 1))), turned)   # a foe its shot killed stays down
 		if not t.alive():
-			if not _killing_shot.has(t):
+			if Effects.has(t, "syrinx_drone") and not _killing_shot.has(t):
 				var again := shot.duplicate(true)
 				mine_seq += 1
 				again["seq"] = mine_seq
@@ -4266,7 +4269,7 @@ func _mine_spill(foe: Foe, amount: int, hit: Array[Foe], shot: Dictionary, sourc
 	behind.hp -= taken
 	_note_blow(behind, 0, taken, "spill")
 	log.append("a mine of %s's spills over: %d into %s" % [str(shot.get("by", "")), taken, behind.display_name])
-	if not behind.alive() and not _killing_shot.has(behind):
+	if not behind.alive() and Effects.has(behind, "syrinx_drone") and not _killing_shot.has(behind):
 		var plain := {"damage": amount, "keywords": [], "by": shot.get("by", ""), "mech": shot.get("mech", -1), "face": {}, "burn": 0, "cryo": 0, "flak": 0}
 		mine_seq += 1
 		plain["seq"] = mine_seq
@@ -4438,7 +4441,7 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], whol
 	behind.hp -= behind_taken
 	_note_blow(behind, _strike_no, behind_taken, "spill")
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
-	if not behind.alive() and not _killing_shot.has(behind):
+	if not behind.alive() and Effects.has(behind, "syrinx_drone") and not _killing_shot.has(behind):
 		_killed_by(behind, _shot(ms, f, amount, null, 1, 0, true))   # the spill is plain damage, so a drone's mine from it carries no keyword
 	if not behind.alive() and f.devours > 0:
 		_overcharge_on_kill(ms, behind, f.devours)

@@ -11,6 +11,8 @@ line names its debug switch or pose; `README.md`'s Running section says how each
 
 Calls and marks:
 
+- [ ] The skirmish code audit's eleven questions (`docs/skirmish_audit.md`, 7 November: a Sweep's per-shot boundary, Guarded and ticks, the salvo under Scorched, what a kill is, the Horn's roll, the Nob's opener, the cool-and-shield encodings, a countdown's rally, a mine inside a spend, a Sweep's drop, the drone's mine), each with Claude's lean
+
 - [ ] Rules for the Muzzle Velocity Booster and the Tactical Databank (planned since 2 November: rolled damage is gone, so a ceiling and a floor move nothing)
 - [ ] Mark the first rounds on your chassis ideas of 4 November (each now a brief in `docs/briefs/`, the roster the briefs README's "Ten a maker"; correct them in the hangar's Designs tab, a session folds those in first): the ten a maker's open calls first (whether the Wild Boar or the mole comes down to tier one beside the lure tank, the two moves to the Arsenal and the merges you have not marked; the roster under Design sessions), then the lure tank's armour with section 12's floor of 1, Static's cascade and triangle, the Macross's shift and its grants; then each brief's open list as its session comes
 - [ ] Mark the session's placeholders in your content pass (31 October): the bosses' escorts at tiers two and three (`docs/bosses_proposal.md`; the read of 2 November: three of them walls), the Ruby Colossus's kit and name, the Djinn's slant in the ranks, Gilgamesh at 40 HP and his one-in-three chance, the massive lines' six recolours and the Marsh's three giants
@@ -110,6 +112,8 @@ Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster 
 - [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the gate's price, twelve to sixteen battles; the items the roster analysis's go left for it (the host maker's offer, the boss's token, the shelf, what Salvage and Favour buy); a won final's extra pay (Ryan, 26 October) read against the beaten domain's reprieve
 
 ## Engine
+
+- [ ] The skirmish code audit's fixes in its order (`docs/skirmish_audit.md`): the bugs that take the rules as written, each with a test that fails first; one hit routine with its arguments in place of the hidden flags; one round model; the bot's and the screen's mirrors onto the engine's helpers, then a 30-seed direction; statuses as data, the Face, the dead code and the comments
 
 - [ ] The test runner reads a test that crashes after its first check as passed (`tests/run_tests.gd` fails only a test with no checks; found 30 October): a way to count a crash as a failure (a sentinel each test sets last, or the log scanned by a wrapper)
 - [x] A Purge on a Sweep weapon: settled by the spend's order (Ryan, 7 November), every hit's riders before the death check and what a kill brings back after the spend, so a Purge on the killing hit keeps an Undying foe down; built 7 November

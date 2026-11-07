@@ -171,8 +171,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design's one home until its decisions are rows and content, then retired to git: the
   design-session briefs (`briefs/`, with a README that says what each waits on), the economy
   pass (`economy_pass.md`), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
-  pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`)
-  and the roster analysis (`roster_analysis.md`, published as a page by
+  pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
+  the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
+  questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by
   `tools/pages/roster_analysis_page.py`, background since the go). `sprites-enemies.html` is the
   sheet the map tokens are exported from; the hangar page's renders and pins are under
   `hangar/`, look tests under `looks/`, design canvases under `canvas/`.

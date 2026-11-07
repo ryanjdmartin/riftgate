@@ -243,9 +243,11 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). First: the 200-seed matrix with the ladder's, the compositions' and the
-elites' cells on the desk machine (the to-do's engine line), since the matrix on file predates
-everything since 27 October.
+to-do's Ryan list). First: the skirmish code audit (`docs/skirmish_audit.md`, 7 November),
+Ryan's calls on its questions and then its fixes in its order, since its bugs bend every read
+after it; then the 200-seed matrix with the ladder's, the compositions' and the elites' cells on
+the desk machine (the to-do's engine line), since the matrix on file predates everything since
+27 October.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content.
