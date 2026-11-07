@@ -1126,8 +1126,12 @@ func _show_caught() -> void:
 	text.position = band.position
 	text.size = band.size
 	warn.add_child(text)
-	var n := battle.forced.size()
-	var sub := Hud.label("%d MACHINE%s HUNTED DOWN // FIGHT FIRST" % [n, "" if n == 1 else "S"], 16, Palette.INK, Hud.mono())
+	var caught := {}
+	for f in battle.forced:
+		caught[(f["prey"] as Unit).id] = true   # a fight a hunter, a machine caught twice counted once
+	var n := caught.size()
+	var fights := battle.forced.size()
+	var sub := Hud.label("%d MACHINE%s HUNTED DOWN // %d FIGHT%s FIRST" % [n, "" if n == 1 else "S", fights, "" if fights == 1 else "S"], 16, Palette.INK, Hud.mono())
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.position = Vector2(0, band.position.y + band.size.y - 34.0)
 	sub.size = Vector2(W, 20)

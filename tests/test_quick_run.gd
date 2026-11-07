@@ -137,7 +137,7 @@ func test_twelve_battles_then_the_finale_on_the_partys_line() -> void:
 	var line: Array = last["line"]
 	assert_eq(line.size(), r.party.size(), "a column a domain, drawn as the finale is rolled")
 	var foes: Array = r.encounter_foes(last)
-	assert_eq(foes.size(), line.size() + ContentDB.escort_at(r.tier()), "the line, then the tier's escort")
+	assert_eq(foes.size(), line.size(), "the line alone: no escort grown by the tier (7 November)")
 	for i in range(line.size()):
 		assert_eq(foes[i].size, 2, "every one promoted, massive")
 
@@ -162,7 +162,7 @@ func test_a_final_may_close_a_battle_from_tier_two_and_leaves_the_finales_line()
 	assert_eq(str(enc["foe"]), str(r.party[r.lead]), "the lead's dealt hero")
 	var foes: Array = r.encounter_foes(enc)
 	assert_true(foes[0].hero and foes[0].size == 1, "the hero leads, human-sized")
-	assert_eq(foes.size(), 1 + r.formation_foes(r.lead).size() + ContentDB.escort_at(r.tier()), "its formation and the tier's escort beside it")
+	assert_eq(foes.size(), 1 + r.formation_foes(r.lead).size(), "its formation beside it, no escort grown by the tier (7 November)")
 	# Won, the hero leaves the finale's line for boss-tier wildlife of a standing domain.
 	r.encounters[r.encounters.size() - 1] = enc
 	r.start_battle()
@@ -185,7 +185,7 @@ func test_a_final_may_close_a_battle_from_tier_two_and_leaves_the_finales_line()
 	assert_eq(r2._boss_encounter(r2.tier())["kind"], "boss", "a won final never comes back: a boss again")
 
 
-func test_a_boss_brings_the_tiers_escort() -> void:
+func test_a_boss_brings_its_curated_escort() -> void:
 	var r := _run(6)
 	var counts: Array = []
 	for t in range(QuickRun.TOP_TIER + 1):
@@ -193,13 +193,12 @@ func test_a_boss_brings_the_tiers_escort() -> void:
 		var boss := {"kind": "boss", "domain": r.lead, "foe": r.draw_boss(r.lead)}
 		var foes: Array = r.encounter_foes(boss)
 		var n: int = foes.size() - 1 - r.formation_foes(r.lead).size()
-		# Its own escort composition when one is written (2 November), else the tier's count.
+		# Its own escort composition when one is written (2 November), else none: nothing grows one
+		# by the tier (7 November).
 		var tailored: Dictionary = r.db.escort_composition(r.lead, t + 1, str(boss["foe"]))
-		var expected := ContentDB.escort_at(t)
-		if not tailored.is_empty():
-			expected = 0
-			for m in tailored["members"]:
-				expected += int(m[1])
+		var expected := 0
+		for m in tailored.get("members", []):
+			expected += int(m[1])
 		assert_eq(n, expected, "tier %d's escort beside the formation" % (t + 1))
 		counts.append(n)
 		var content: Dictionary = r.db.foes[str(boss["foe"])]

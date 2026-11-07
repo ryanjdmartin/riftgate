@@ -362,8 +362,8 @@ func _boss_encounter(t: int) -> Dictionary:
 ## Whom an encounter fields, in arrival order (the skirmish deploys the heaviest hitters first):
 ## an elite composition's members, the boss or a final's hero before the domain's formation; the
 ## finale's line, as the campaign fields it. A boss, a final's hero and the finale's line stand
-## at the battle's tier and bring its escort after them, as the campaign's boss unit does
-## (ContentDB.BOSS_TIERS); an elite does not.
+## at the battle's tier (ContentDB.BOSS_TIERS) and bring their curated escort after them, as the
+## campaign's boss unit does; an elite does not.
 func encounter_foes(enc: Dictionary) -> Array:
 	var out: Array = []
 	var kind := str(enc.get("kind", ""))
@@ -395,8 +395,8 @@ func encounter_foes(enc: Dictionary) -> Array:
 
 ## A boss's escort at the battle's tier, beyond its formation, as the campaign's boss unit
 ## brings it: its own `escort` composition at the tier when one is written (2 November), its
-## members as content writes them, else the domain's own units of the tier, ContentDB.escort_at(tier)
-## of them.
+## members as content writes them, else none (an escort is curated, never grown by the tier: Ryan,
+## 7 November).
 func escort_foes(domain: String, boss_id: String = "") -> Array:
 	var out: Array = []
 	var tailored := db.escort_composition(domain, tier() + 1, boss_id)
@@ -406,7 +406,7 @@ func escort_foes(domain: String, boss_id: String = "") -> Array:
 				if db.foes.has(str(m[0])):
 					out.append(db.make_foe(str(m[0])))
 		return out
-	return Array(db.escort_units(domain, tier(), ContentDB.escort_at(tier())))
+	return out
 
 
 ## A domain's formation: the tier's formation compositions in turn (`index`, wrapping), at the

@@ -383,7 +383,10 @@ func test_a_hunter_walks_until_its_prey_is_in_its_ring_and_catches_it() -> void:
 	assert_eq(stay.catches, prey.id, "and catches it again")
 
 
-func test_two_hunters_on_one_prey_are_one_forced_fight() -> void:
+## One pack is one fight, a catch included (Ryan, 7 November, of two hunters on one machine:
+## "Wouldn't it be two fights, since we're no longer merging fights?"): a fight per hunter, the
+## prey in each.
+func test_two_hunters_on_one_prey_are_two_forced_fights() -> void:
 	var f := _field(7, 14)
 	var m := f.add_unit(Unit.mech(1, "A", _o(3, 7), 0))
 	var ring := Hex.neighbors(m.pos)
@@ -393,8 +396,11 @@ func test_two_hunters_on_one_prey_are_one_forced_fight() -> void:
 		sq.behaviour = "hunt"
 	f.add_unit(Unit.pack(4, "pushers", ring[1], "marsh", 2))   # a pusher beside it forces nothing
 	var forced := f.forced_fights()
-	assert_eq(forced.size(), 1, "one fight for one prey")
-	assert_eq(forced[0]["hunters"].size(), 2, "with both hunters in it")
+	assert_eq(forced.size(), 2, "two fights for one prey: a fight a hunter")
+	for k in range(2):
+		assert_eq(forced[k]["prey"], m, "each on the prey")
+		assert_eq((forced[k]["hunters"] as Array).size(), 1, "each the one hunter's")
+	assert_eq([forced[0]["hunters"][0], forced[1]["hunters"][0]], [a, b], "in field order")
 
 
 ## One pack is one fight (the long wall brief 3.4; Ryan, 5 November, of the rings: "it just

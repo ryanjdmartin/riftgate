@@ -820,7 +820,7 @@ func test_a_final_is_fought_against_the_dealt_hero_with_its_wildlife() -> void:
 	var b := _battle(c, front)
 	assert_eq(b.boss.lineup, [str(c.party[fid])], "the dealt hero commands the rift")
 	assert_eq(b.boss.foe_id, "", "its wildlife unnamed: the tier's own units (26 October)")
-	assert_eq(b.boss.strength, b.columns - 1 + ContentDB.escort_at(b.tier), "in the other columns, and the tier's escort")
+	assert_eq(b.boss.strength, b.columns - 1, "in the other columns, none grown by the tier (7 November)")
 	var wild := c.db.foes_for(b.boss).filter(func(f) -> bool: return f.escorts)
 	assert_eq(wild.size(), b.boss.strength, "unpacked beside the hero")
 	for f in wild:
@@ -958,63 +958,69 @@ func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_b
 
 
 ## Bosses scale to the battle's tier (Ryan, 25 and 26 October: "scaling stats and upgrading the
-## escort", "composed of units from the tier"; ContentDB.BOSS_TIERS): a boss unit's commanders
-## take the tier's HP and attack, and it brings more escort, its domain's units of the tier
-## round robin, unless the escort is named (a hand-tailored one).
+## escort"; ContentDB.BOSS_TIERS): a boss unit's commanders take the tier's HP and attack, and its
+## escort is the tier's curated composition, never grown by count (Ryan, 7 November: "packs don't
+## auto scale, so why would a bosses? Should be treated the same way"): with none written for the
+## tier it stands alone, and a named escort is kept as named.
 func test_a_boss_unit_stands_at_its_battles_tier() -> void:
-	# A copy of the content with the domain's hand-tailored escorts taken out, so the round robin
-	# reads (31 October: every boss has its own escort now); the shared content is never written to.
-	var db := ContentDB.new()
-	db.load_dir(ContentDB.DIR)
-	var faction := str(db.factions.keys()[0])
-	db.factions[faction]["compositions"] = Array(db.factions[faction].get("compositions", [])).filter(func(c) -> bool: return str(c.get("size", "")) != "escort")
-	var boss_id := str(db.bosses_of(faction)[0])
-	var units_at := func(t: int) -> Array:
-		var out: Array = []
-		for e in db.spawn_table(faction, t + 1):
-			if not out.has(str(e[0])) and int(db.foes[str(e[0])].get("size", 1)) == 1:
-				out.append(str(e[0]))
-		return out
-	var spawn_foes: Array = units_at.call(2)
+	var shared := ContentDB.load_default()
+	var faction := ""
+	var boss_id := ""
+	for fid in shared.factions.keys():
+		for bid in shared.bosses_of(str(fid)):
+			if not shared.escort_composition(str(fid), 3, str(bid)).is_empty() and boss_id.is_empty():
+				faction = str(fid)
+				boss_id = str(bid)
+	assert_false(boss_id.is_empty(), "a boss with a curated escort at tier three")
 	var hp: Array = []
 	for t in range(ContentDB.BOSS_TIERS.size()):
-		var units: Array = units_at.call(t)
 		var b := Battle.new(3)
-		b.db = db
 		b.tier = t
+		b.lineup = [boss_id]
 		b.setup([], faction)
 		assert_true(b.boss != null, "the boss takes the field")
 		assert_eq(b.boss.boss_tier, t, "the unit stands at the battle's tier")
-		assert_eq(b.boss.strength, ContentDB.escort_at(t), "tier %d's escort" % (t + 1))
-		var foes := db.foes_for(b.boss)
+		var foes := shared.foes_for(b.boss)
 		var cmd: Foe = foes.filter(func(f) -> bool: return f.commands)[0]
 		var s := ContentDB.boss_tier(t)
-		assert_eq(cmd.hp_max, roundi(int(db.foes[boss_id]["hp"]) * float(s["hp"])), "its HP at the tier")
+		assert_eq(cmd.hp_max, roundi(int(shared.foes[boss_id]["hp"]) * float(s["hp"])), "its HP at the tier")
 		assert_eq(cmd.hp, cmd.hp_max, "whole")
-		assert_eq(cmd.attack, int(db.foes[boss_id]["attack"]) + int(s["attack"]), "its attack at the tier")
+		assert_eq(cmd.attack, int(shared.foes[boss_id]["attack"]) + int(s["attack"]), "its attack at the tier")
 		hp.append(cmd.hp_max)
 		var escorts := foes.filter(func(f) -> bool: return f.escorts)
-		assert_eq(escorts.size(), ContentDB.escort_at(t), "unpacked beside the boss")
-		for i in range(escorts.size()):
-			assert_eq(escorts[i].content_id, units[i % units.size()], "its domain's units of the tier, round robin")
-			assert_eq(escorts[i].hp_max, int(db.foes[units[i % units.size()]]["hp"]), "the rank and file never inflated")
+		var curated := shared.escort_composition(faction, t + 1, boss_id)
+		var want := 0
+		for m in curated.get("members", []):
+			want += int(m[1])
+		assert_eq(escorts.size(), want, "tier %d's escort: its curated composition's members, no more" % (t + 1))
+		for f in escorts:
+			assert_eq(f.hp_max, int(shared.foes[f.content_id]["hp"]), "the rank and file never inflated")
 	assert_true(hp[0] < hp[1] and hp[1] < hp[2], "a harder boss each tier")
-	# A named escort is a hand-tailored one, kept whole.
+	# With no curated escort for its tier, a boss stands alone: nothing grows one (a copy of the
+	# content with the escorts taken out; the shared content is never written to).
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	db.factions[faction]["compositions"] = Array(db.factions[faction].get("compositions", [])).filter(func(c) -> bool: return str(c.get("size", "")) != "escort")
+	var bare := Battle.new(3)
+	bare.db = db
+	bare.tier = 2
+	bare.lineup = [boss_id]
+	bare.setup([], faction)
+	assert_eq(bare.boss.strength, 0, "no escort at tier three when none is written")
+	assert_true(db.foes_for(bare.boss).all(func(f) -> bool: return not f.escorts), "the boss alone")
+	# A named escort is a hand-tailored one, kept as named.
+	var spawn_foe := ""
+	for e in db.spawn_table(faction, 3):
+		if int(db.foes[str(e[0])].get("size", 1)) == 1 and spawn_foe.is_empty():
+			spawn_foe = str(e[0])
 	var named := Battle.new(3)
 	named.db = db
 	named.tier = 2
-	named.escort = [spawn_foes[0], 1]
+	named.escort = [spawn_foe, 1]
 	named.setup([], faction)
-	var dealt := db.foes_for(named.boss)
-	var kept := dealt.filter(func(f) -> bool: return f.escorts)
-	# Its own count and the tier's, as far as its fight's slots hold them (no reinforcement inside
-	# a fight, 6 November): the escort's rank holds four, less the boss's slot when it shares it.
-	var boss_foe: Foe = dealt.filter(func(f) -> bool: return f.commands)[0]
-	var esc_back := bool(db.make_foe(str(spawn_foes[0])).prefers_back)
-	var room := 4 - (1 if boss_foe.is_massive() or boss_foe.prefers_back == esc_back else 0)
-	assert_eq(kept.size(), mini(1 + ContentDB.escort_at(2), room), "its own count and the tier's, as the slots hold them")
-	for f in kept:
-		assert_eq(f.content_id, spawn_foes[0], "all of the foe it names")
+	var kept := db.foes_for(named.boss).filter(func(f) -> bool: return f.escorts)
+	assert_eq(kept.size(), 1, "its own count, never grown by the tier")
+	assert_eq(kept[0].content_id, spawn_foe, "of the foe it names")
 	var c := Campaign.new(5)
 	c.convergence = Campaign.TIER_EVERY * 2
 	assert_eq(c.tier(), 2, "the Convergence at tier three")

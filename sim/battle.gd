@@ -65,9 +65,10 @@ var planned: Array = []
 var _batch := 0              # inside order_onto: its move and its order are one entry
 var _batch_dirty := false    # and something changed under it
 var fought: Dictionary = {}      # mech id -> true: it fought this turn (out_of_combat fires for the rest)
-## The fights hunters forced this turn, first in line (bible section 5): [{"prey": Unit,
-## "hunters": Array[Unit]}]. While any is left, it is the only fight that may open and the
-## turn cannot end; its prey cannot move.
+## The fights hunters forced this turn, first in line (bible section 5), one a hunter, a machine
+## caught twice in two of them (Battlefield.forced_fights): [{"prey": Unit, "hunters": [the
+## hunter]}]. While any is left, the first is the only fight that may open and the turn cannot
+## end; its prey cannot move, and fights in each of its catches whether it has fought or not.
 var forced: Array = []
 ## Attack orders (bible section 5): mech id -> the pack it fights when ENGAGE is pressed, in
 ## the order given. A drag or a tap onto a pack gives one; nothing opens until ENGAGE, so a
@@ -247,14 +248,12 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		boss.boss_tier = tier
 		var tailored := db.escort_composition(faction, tier + 1, boss_id)
 		if escort.size() < 2 and not tailored.is_empty():
-			# A hand-tailored escort written in content (an `escort` composition at the tier):
-			# its members as written, in place of the tier's units round robin.
+			# Its escort is curated (an `escort` composition at the tier), its members as written,
+			# and never grown by the tier (Ryan, 7 November); with none written it stands alone.
 			var members: Array = []
 			for m in tailored["members"]:
 				members.append([str(m[0]), int(m[1])])
 			boss.set_members(members)
-		else:
-			boss.strength += ContentDB.escort_at(tier)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
 	# The caches, on the field from the first turn (Ryan, 7 November), round the units placed.
@@ -402,13 +401,14 @@ func is_pinned(u: Unit) -> bool:
 	return false
 
 
-## The hunters that caught this machine, in field order: its fight to come, which the map draws
-## as the machine's order onto them and the board names; empty while none has.
+## The hunters that caught this machine, in field order: its fights to come, one a hunter, which
+## the map draws as the machine's orders onto them and the board names; empty while none has.
 func catchers_of(u: Unit) -> Array:
+	var out: Array = []
 	for f in forced:
 		if f["prey"] == u:
-			return (f["hunters"] as Array).duplicate()
-	return []
+			out.append_array(f["hunters"])
+	return out
 
 
 ## Whether a machine may move now: the player's turn, an action left, not moved this action
@@ -780,8 +780,8 @@ func next_fight_is_boss() -> bool:
 
 
 ## The fight the player would open at `target`, or the next fight a hunter forced, which comes
-## first whatever is tapped (bible section 5): {"targets": the pack attacked, or the hunters that
-## caught one machine, "joins": always empty (one pack is one fight, the long wall brief 3.4),
+## first whatever is tapped (bible section 5): {"targets": the pack attacked, or the hunter that
+## caught a machine, "joins": always empty (one pack is one fight, the long wall brief 3.4),
 ## "in_range": the machines whose attack range covers a target, "eligible": those of them with an
 ## action left (a caught machine always), "pinned": the caught machine or null, "forced":
 ## whether this is a forced fight}. Empty when there is none.
@@ -811,8 +811,8 @@ func roster(target: Unit = null) -> Dictionary:
 		if m != pinned and not m.is_static() and (all_in or actions_left(m) > 0):
 			eligible.append(m)
 	r["eligible"] = eligible
-	# The fight's threat rating, the machines it is intended for: its pack's, the largest of a
-	# catch's hunters' (the long wall brief 3.7).
+	# The fight's threat rating, the machines it is intended for: its pack's (the long wall brief
+	# 3.7).
 	var squad := 0
 	for t in targets:
 		squad = maxi(squad, (t as Unit).squad)
@@ -824,8 +824,8 @@ func roster(target: Unit = null) -> Dictionary:
 
 
 ## Open a fight: the machines committed (those of `machines` the roster allows; a caught
-## machine always) against the targets, one pack or a catch's hunters, nothing joining (the
-## long wall brief 3.4). The skirmish, or null when refused (not the player's turn, no fight
+## machine always) against the target, one pack (the one ordered onto, or a catch's hunter),
+## nothing joining (the long wall brief 3.4). The skirmish, or null when refused (not the player's turn, no fight
 ## there, nobody to commit).
 func attack(target: Unit, machines: Array) -> Skirmish:
 	var r := roster(target)
@@ -1199,8 +1199,8 @@ func _build_skirmish(group: Array) -> Skirmish:
 	sk.terrain = ground_terrain(group)
 	sk.ground = map.ground_id(ground_hex(group))
 	sk.foe_factory = foe_factory()   # a summoning action calls up content
-	# A dealt layout places its pack (the long wall brief, section 6) when the fight holds that one
-	# pack; with several (a catch by two hunters), the first deployment as before.
+	# A dealt layout places its pack (the long wall brief, section 6): a fight holds one pack, a
+	# catch's included.
 	var enemies := group.filter(func(x: Unit) -> bool: return x.is_enemy() and field.units.has(x))
 	if enemies.size() == 1 and not (enemies[0] as Unit).layout.is_empty():
 		sk.layout = (enemies[0] as Unit).layout.duplicate()

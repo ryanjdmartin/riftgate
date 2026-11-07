@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 1016 tests, 259,652 checks, green (7 November, `ccr-56b5169d-lsa2rg` with the long
+- Tests: 1017 tests, 259,659 checks, green (7 November, `ccr-56b5169d-lsa2rg` with the long
   wall's Phases 1 and 2 and the cut, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -156,6 +156,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   FIGHT apart; the field's caches (`content/loot.json`: Derelicts, Carcasses and Relics on the
   field from the first turn short of the wall, a kind up once the seam passes, claimed by a
   machine standing on one as the turn ends, banked as the kills; his phone read next, the to-do).
+  His corrections the same evening, built: a hunter's catch is a fight a hunter (a machine two
+  hunters caught fights each in turn; the first build had kept them one fight and held back what
+  its slots could not stand), and a boss's escort is its curated composition, never grown by the
+  tier, so no fight is ever trimmed; his calls in the bible's section 12: a final's three
+  wildlife, still made by the engine, and whether the bosses' own numbers keep scaling.
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip

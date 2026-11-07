@@ -61,8 +61,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     (who deploys, in the order ticked, and each machine's hardpoints, any component on any
     hardpoint), BATTLE (a battle as a run deals it: the domain, which of its bosses, a guest
     domain, the tier and the ramp), FIGHT (a composition picked by its domain, tier and threat
-    rating, fought alone with its layout; or packs and a boss by hand, loaded from a faction and
-    edited from there, chained into one fight, the boss at the tier with its escort) and SETUP
+    rating, fought alone with its layout; or one unit by hand, loaded from a faction and edited
+    from there: the packs' foes as one pack, or a boss at the tier with them as its escort, its own
+    curated escort with none) and SETUP
     (seed, map shape or the one the seed draws, HUD colour). Battle plays the BATTLE tab's
     battle, Fight the FIGHT tab's fight; Resume battle below, while a save exists;
     Quick campaign starts one on SETUP's seed, and Resume quick campaign picks a saved one up.

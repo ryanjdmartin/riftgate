@@ -39,7 +39,7 @@ var composition: String = ""
 var comp_faction: String = ""    # its domain, "" for the content's first
 var fight_tier: int = 1          # the tier it is listed and dealt at, 1 to 3, and a boss's
 var rating: int = 0              # the threat rating listed, 1 to 4; 0 lists every one
-var packs: Array = []            # [[foe_id, strength], ...]: chained into one fight with the boss
+var packs: Array = []            # [[foe_id, strength], ...]: one pack's members, or the boss's escort when one is picked
 var boss: String = ""            # a boss by foe id with its escort at the fight's tier, "" for none
 
 
@@ -221,8 +221,8 @@ func make_team() -> Array:
 	return out
 
 
-## One fight: the team against the composition picked, or against every pack and the boss
-## chained into it. Null when either side is empty.
+## One fight: the team against the composition picked, or against the packs and the boss built by
+## hand as one unit. Null when either side is empty.
 func make_skirmish() -> Skirmish:
 	var mechs := make_team()
 	if mechs.is_empty():
@@ -252,29 +252,35 @@ func make_skirmish() -> Skirmish:
 		sk.add_foes(db.foes_for(sq), sq)
 		sk.layout = sq.layout.duplicate()
 		return sk if not sk.reinforcements.is_empty() else null
-	var sid := 90
+	# By hand, one unit as the game deals one (one pack is one fight): the packs' foes as one
+	# pack's members, or with a boss picked, the boss at the fight's tier with them as its escort
+	# (its own curated escort at the tier when none are listed: the King Gel's Gels, which its merge
+	# takes in; none grown by the tier). What its slots cannot hold is left out here, so the fight
+	# is one the game could deal.
+	var members: Array = []
 	for p in packs:
-		var fid := str(p[0])
-		if not db.foes.has(fid):
-			continue
-		var sq := Unit.pack(sid, "%s pack" % str(db.foes[fid]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(fid), Unit.PACK_MOVE, int(p[1]), fid)
-		sk.add_foes(db.foes_for(sq), sq)
-		sid += 1
+		if db.foes.has(str(p[0])):
+			members.append([str(p[0]), int(p[1])])
+	var unit: Unit = null
 	if not boss.is_empty():
-		var b := Unit.boss(sid, str(db.foes[boss]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(boss))
-		b.lineup = [boss]   # the boss picked, whichever of its domain's (30 October: the slate lists several)
-		# At the fight's tier as a battle deals it: its numbers, and its own escort where content
-		# writes one that names it (the King Gel's Gels, which its merge takes in), else the tier's
-		# count of its domain's units.
+		unit = Unit.boss(90, str(db.foes[boss]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(boss))
+		unit.lineup = [boss]   # the boss picked, whichever of its domain's (30 October: the slate lists several)
 		var t := clampi(fight_tier - 1, 0, 2)
-		b.boss_tier = t
-		var own := db.escort_composition(db.faction_of_foe(boss), t + 1, boss)
-		if str(own.get("boss", "")) == boss:
-			b.set_members(own["members"])
+		unit.boss_tier = t
+		if not members.is_empty():
+			unit.set_members(members)
 		else:
-			b.strength = ContentDB.escort_at(t)
-		sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
-		sk.add_foes(db.foes_for(b), b)
+			var own := db.escort_composition(db.faction_of_foe(boss), t + 1, boss)
+			if str(own.get("boss", "")) == boss:
+				unit.set_members(own["members"])
+	elif not members.is_empty():
+		var lead := str(members[0][0])
+		unit = Unit.pack(90, "%s pack" % str(db.foes[lead]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(lead), Unit.PACK_MOVE, 1, lead)
+		unit.set_members(members)
+	if unit == null:
+		return null
+	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
+	sk.add_foes(ContentDB.fit_grid(db.foes_for(unit)), unit)
 	if sk.reinforcements.is_empty():
 		return null
 	return sk

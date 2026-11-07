@@ -12,8 +12,8 @@ words in `docs/vocabulary.md`.
 A campaign is one roguelike run of battles at five cities. A battle is the defence of a city's
 wall: a hex field wide along the wall and shallow from the rift to it, the horde coming at the
 wall, won by killing the boss that powers the rift. Machines fight packs in skirmishes: dice
-fights against one pack at a time (a hunter's catch holds every hunter that caught the one
-machine). The depth lives in the skirmish.
+fights against one pack at a time (a hunter's catch included: a machine two hunters caught
+fights each in turn). The depth lives in the skirmish.
 
 ## Machines
 
@@ -86,9 +86,9 @@ machine). The depth lives in the skirmish.
   whole column and counts as front rank for every rule: always in reach, never exposing its
   column, nothing behind it.
 - A pack is what its fight's slots hold: nothing waits behind the formation and nothing steps in
-  once the fight begins. Every composition fits its slots (Content conventions); in a catch by
-  several hunters, the foes the slots cannot hold stay out of the fight, killed by nothing in it,
-  and go back to the map with their packs.
+  once the fight begins. Every composition fits its slots (Content conventions), and a battle's
+  fight holds one pack; a fight given more than its slots hold (the quick campaign's boss beside
+  its formation) leaves out what cannot stand, which was never in it and is no kill.
 - At the start, foes take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes, a breach 1 more; ties in arrival order).
 - A pack dealt with a layout (Content conventions) is what its layout places: its members are
@@ -1023,8 +1023,8 @@ a stat.
   whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
   below), then the fight opens. UNDO takes back the last move or order, whoever made it, in the
   order they were made, a move that has played included (the machine goes back where it
-  stood), back to the turn's start or the last fight. A caught machine's fight comes first, and
-  the map draws it as the machine's order onto the hunters that caught it. END TURN asks first
+  stood), back to the turn's start or the last fight. A caught machine's fights come first, one a
+  hunter, and the map draws each as the machine's order onto the hunter that caught it. END TURN asks first
   while a machine can still move or fight; then the turn ends: packs walk and strike; Rift
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
@@ -1043,7 +1043,8 @@ a stat.
   second tap on the pack takes the order back. ENGAGE opens one fight at a time: the first
   order's pack and every machine ordered onto it.
 - **A fight** is one pack: nothing joins it, whatever its ring, and it joins nothing; a hunter's
-  catch holds every hunter that caught the one machine. The machines whose attack range covers
+  catch is a fight a hunter, so a machine two hunters caught fights each in turn, whether it has
+  fought or not. The machines whose attack range covers
   it (1: beside it) may join. Orders onto several packs queue, ENGAGE opening them one at a
   time, a catch first; the order changes nothing a fight opens on, its dice included: a fight's
   seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wreck stays on its hex and blocks it for the battle (not built: today
@@ -1081,7 +1082,8 @@ a stat.
   hunter comes for wears a tag by it, a plate a hunter with the hunter's picture and a target,
   and the board says HUNTED BY. A hunter with what it comes for in its ring at the start of the
   player's turn has caught it: that fight comes first and is fought to its end, the caught
-  machine cannot move first, others in range may join. A prey that any route reaches is the only machine its hunter
+  machine cannot move first, others in range may join; a second hunter's catch is a fight of its
+  own after it. A prey that any route reaches is the only machine its hunter
   catches, however near the others stand. A prey sealed off (no hex the hunter can walk to,
   round walls and grounded machines, through packs and under flyers, and stand on puts it
   inside its ring) is not safe: the hunter takes the machine that a walk this turn can put
@@ -1111,13 +1113,12 @@ a stat.
   to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
   finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
   ×1.5 at tier three, their attack +1 and +2, a boss whose kit is armour its `armour_step` more
-  armour a tier above one (the Cinder Tortoise 1, 2 and 3), and two more escort at tier two and
-  four at tier three. An escort it does not name (a final's wildlife, the tier's more) is its
-  domain's `escort` composition at the battle's tier when one is written, one that names the
-  boss first and then one that names none, as content writes it, else the foes of
-  its domain's units at the tier, round robin in content order and never massive; a named
-  escort is kept. A boss and its escort stand as its fight's slots hold them: an escort past
-  them is never dealt. Every domain boss has its own at tiers two and three, at the tier's counts,
+  armour a tier above one (the Cinder Tortoise 1, 2 and 3). Its escort is curated, never grown by
+  the tier: its domain's `escort` composition at the battle's tier, one that names the boss first
+  and then one that names none, as content writes it, validated to fit the slots beside its
+  commanders; with none written it stands alone. A final's wildlife, which no composition names
+  yet, is three of its domain's units at the tier, round robin in content order and never
+  massive; a named escort is kept as named. Every domain boss has its own at tiers two and three
   and stands alone at tier one but the King Gel, whose court of Gels comes at every tier for its
   merge. The rank and file never scale in place: a tier's units are their own,
   each with its numbers and its name (a recolour: a base type in a new hue under a new name, with
@@ -1265,11 +1266,11 @@ harness's Quick campaign). The campaign's rules hold where this part says nothin
   drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
   elites: a formation first, then elites and formations in turn, the elites left over at the
-  end. Then the boss with its formation and its own escort (else the tier's), at the tier's numbers, as the
+  end. Then the boss with its formation and its own escort (else none), at the tier's numbers, as the
   campaign's boss unit stands: one of the lead's bosses its battles have not ended on this run,
   or from tier two its final, its dealt hero leading the lead's formation, drawn as one more
   boss while that hero stands; once all are beaten, any of its bosses again. The finale's last
-  fight is the party's line with the tier's escort, every domain's dealt hero promoted, a domain
+  fight is the party's line, every domain's dealt hero promoted, a domain
   whose final was won leaving its column to a standing domain's boss, as in the campaign.
 - **A formation** is one of the domain's formation compositions at the battle's tier, in
   turn, as content writes it (the battle's number as the Convergence for the field); the

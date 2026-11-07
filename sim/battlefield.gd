@@ -721,8 +721,10 @@ func enemy_turn() -> Dictionary:
 
 ## The fights a hunter forces (bible section 5): every hunter that has caught a machine
 ## (`catch_of`: its prey inside its ring, or the machine it took when its prey is sealed off),
-## and that fight comes first on the player's turn. One fight per caught machine, with every
-## hunter that caught it, in field order: [{"prey": Unit, "hunters": Array[Unit]}].
+## and those fights come first on the player's turn. One pack is one fight (the long wall brief
+## 3.4), a catch included (Ryan, 7 November, of two hunters on one machine: "Wouldn't it be two
+## fights, since we're no longer merging fights?"): a fight per hunter, the prey in each, a prey's
+## catches together, in field order: [{"prey": Unit, "hunters": [the hunter]}].
 func forced_fights() -> Array:
 	var order: Array = []
 	var by_prey: Dictionary = {}
@@ -733,20 +735,20 @@ func forced_fights() -> Array:
 		if prey == null:
 			continue
 		if not by_prey.has(prey.id):
-			by_prey[prey.id] = {"prey": prey, "hunters": []}
+			by_prey[prey.id] = []
 			order.append(prey.id)
-		by_prey[prey.id]["hunters"].append(sq)
+		(by_prey[prey.id] as Array).append({"prey": prey, "hunters": [sq]})
 	var out: Array = []
 	for pid in order:
-		out.append(by_prey[pid])
+		out.append_array(by_prey[pid])
 	return out
 
 
 ## The fight at `targets`: one pack is one fight (the long wall brief 3.4; Ryan, 5 November, of
 ## the rings and the joining: "it just adds so much complexity for not a lot of gain"), so no
 ## other pack joins it, and the machines whose attack range covers a target may be committed. The
-## targets are one pack, or the hunters that caught one machine (a forced fight). A ring is read
-## only by a hunter's catch (catch_of, reaches, the walk's catch).
+## target is one pack: the one ordered onto, or the hunter that caught a machine (a forced fight).
+## A ring is read only by a hunter's catch (catch_of, reaches, the walk's catch).
 ## {"targets": Array[Unit], "joins": Array[Unit] (always empty), "in_range": Array[Unit]}.
 func attack_roster(targets: Array) -> Dictionary:
 	var joins: Array[Unit] = []

@@ -534,7 +534,7 @@ func _track(done: int) -> Control:
 func _fielded(enc: Dictionary) -> String:
 	var domain := _domain_name(str(enc["domain"]))
 	var n := run.formation_foes(str(enc["domain"])).size()
-	var escort := ContentDB.escort_at(run.tier())
+	var escort := run.escort_foes(str(enc["domain"]), str(enc.get("foe", ""))).size()
 	match str(enc["kind"]):
 		"elite":
 			return "%s LEADS %s'S FORMATION  ·  %d FOES" % [_foe_name(str(enc.get("foe", ""))), domain, n + 1]

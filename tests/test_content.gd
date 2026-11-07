@@ -125,9 +125,9 @@ func test_packs_unpack_by_foe_type() -> void:
 	for f in foes:
 		assert_eq(f.display_name, "Revenant", "all the same type")
 		assert_eq(f.pack_id, 7, "foe remembers its pack")
-	# A pack is what its fight's slots hold (no reinforcement inside a fight, 6 November): a front
-	# rank holds four, so a fifth and sixth front-rank foe are never dealt.
-	assert_eq(db.foes_for(Unit.pack(10, "horde", Vector2i.ZERO, "marsh", 2, 6, "revenant")).size(), 4, "six front-rank foes stand four")
+	# A pack unpacks whole: content is validated to fit its fight's slots (no reinforcement inside a
+	# fight, 6 November), so the engine never trims one.
+	assert_eq(db.foes_for(Unit.pack(10, "horde", Vector2i.ZERO, "marsh", 2, 6, "revenant")).size(), 6, "six from strength six")
 	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "marsh", 2, 2, "ghost")
 	var backs := db.foes_for(necros)
 	assert_eq(backs.size(), 2, "two necromancers")

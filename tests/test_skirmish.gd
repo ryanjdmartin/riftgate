@@ -54,36 +54,26 @@ func test_formation_fills_front_then_back() -> void:
 	assert_true(sk.reinforcements.is_empty(), "and the spare ghoul is never dealt: nothing waits (no reinforcement inside a fight, 6 November)")
 
 
-func test_a_catch_past_the_slots_holds_its_overflow_back() -> void:
-	# Two hunters catch one machine: each pack fits the slots, the two together do not, so what
-	# cannot stand stays out of the fight and goes back to the map with its pack, never a kill.
+## What a full formation cannot stand was never in the fight (no reinforcement inside a fight, 6
+## November): a battle's fight is one pack, validated to fit, so only the quick campaign's boss
+## fights reach this; the foe left out came with nothing, so it is no kill.
+func test_a_foe_the_slots_cannot_hold_is_never_in_the_fight() -> void:
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10))))
-	var a := Unit.pack(1, "a", Vector2i.ZERO, "marsh", 2, 3, "revenant")
-	var b := Unit.pack(2, "b", Vector2i.ZERO, "marsh", 2, 3, "revenant")
-	for sq in [a, b]:
-		var list: Array = []
-		for i in range(3):
-			var f := _ghoul()
-			f.content_id = "revenant"
-			list.append(f)
-		sk.add_foes(list, sq)
+	var sq := Unit.pack(1, "horde", Vector2i.ZERO, "marsh", 2, 6, "revenant")
+	var list: Array = []
+	for i in range(6):
+		var f := _ghoul()
+		f.content_id = "revenant"
+		list.append(f)
+	sk.add_foes(list, sq)
 	sk.begin()
 	assert_eq(sk.field_foes().size(), 4, "the front rank holds four")
-	assert_eq(sk.held_back.size(), 2, "the two it cannot hold are held back")
-	assert_true(sk.reinforcements.is_empty(), "and none waits to step in")
-	for f in sk.held_back:
-		assert_eq(f.pack_id, b.id, "the later pack's")
+	assert_true(sk.reinforcements.is_empty(), "the other two never stand, and nothing waits")
+	assert_true(sk.log.any(func(l) -> bool: return str(l).contains("2 more could not stand")), "the log says so")
 	for f in sk.field_foes():
 		f.hp = 0
-	assert_eq(sk.survivors_for(b), 2, "its held-back foes survive the fight")
-	assert_eq(sk.members_left(b), [["revenant", 2]], "and go back to the map with it")
-	assert_eq(sk.kills_by_type(b), {"revenant": 1}, "only the one that stood and fell is a kill")
-	assert_eq(sk.kills_by_type(a), {"revenant": 3}, "the first pack's three stood and fell")
-	var copy := SaveGame.clone_skirmish(sk)
-	assert_eq(copy.held_back.size(), 2, "the save's round trip keeps them held back")
-	assert_eq(copy.survivors_for(copy.packs[1]), 2, "and surviving with their pack")
-
+	assert_eq(sk.kills_by_type(sq), {"revenant": 4}, "four stood and fell: the two left out are no kills")
 
 func test_line_reach_needs_exposed_column() -> void:
 	var sk := Skirmish.new(1)

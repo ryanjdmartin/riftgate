@@ -73,24 +73,44 @@ func test_a_refit_reaches_the_machines_die() -> void:
 	assert_false(s.is_refit(id), "edited back to stock, the edit is forgotten")
 
 
-func test_a_fight_chains_every_pack_and_the_boss() -> void:
+## A fight by hand is one unit, as the game deals one (one pack is one fight): the packs' foes as
+## one pack's members, or with a boss picked, its escort; with no packs, the boss's own curated
+## escort at the fight's tier, or the boss alone; what the slots cannot hold is left out.
+func test_a_fight_by_hand_is_one_unit() -> void:
 	var db := _db()
 	var s := HarnessSetup.defaults(db)
 	var foes := s.pack_foes()
-	s.packs = [[str(foes[0]), 3], [str(foes[foes.size() - 1]), 2]]
-	s.boss = str(s.bosses()[0])
+	s.packs = [[str(foes[0]), 1], [str(foes[foes.size() - 1]), 1]]
+	s.boss = ""
 	var sk := s.make_skirmish()
 	assert_eq(sk.mechs.size(), s.team.size(), "the team")
-	assert_eq(sk.packs.size(), 3, "two packs and the boss")
-	assert_eq(sk.reinforcements.size(), 6, "five foes and the boss in the pool")
+	assert_eq(sk.packs.size(), 1, "one pack")
+	assert_eq(sk.packs[0].member_list(), [[str(foes[0]), 1], [str(foes[foes.size() - 1]), 1]], "of the packs' foes")
+	s.boss = str(s.bosses()[0])
+	sk = s.make_skirmish()
+	assert_eq(sk.packs.size(), 1, "with a boss, still one unit")
+	assert_true(sk.packs[0].is_boss, "the boss's")
+	assert_eq(sk.reinforcements.filter(func(f) -> bool: return f.escorts).size(), 2, "the packs' foes its escort")
+	s.packs = [[str(foes[0]), HarnessSetup.MAX_STRENGTH]]
+	s.boss = ""
+	sk = s.make_skirmish()
+	sk.begin()
+	assert_true(sk.reinforcements.is_empty(), "what the slots cannot hold was left out before the fight")
+	assert_true(sk.field_foes().size() <= 8, "the fight is one the game could deal")
 	s.packs = []
-	assert_eq(s.make_skirmish().reinforcements.size(), 1, "the boss alone")
+	s.boss = str(s.bosses()[0])
+	sk = s.make_skirmish()
+	var own := db.escort_composition(db.faction_of_foe(s.boss), s.fight_tier, s.boss)
+	var want := 0
+	if str(own.get("boss", "")) == s.boss:
+		for m in own["members"]:
+			want += int(m[1])
+	assert_eq(sk.reinforcements.filter(func(f) -> bool: return f.escorts).size(), want, "no packs: its own curated escort at the tier, or none")
 	s.boss = ""
 	assert_true(s.make_skirmish() == null, "nothing to fight")
 	s.boss = str(s.bosses()[0])
 	s.team = []
 	assert_true(s.make_skirmish() == null, "nobody to fight it")
-
 
 ## A battle as a run deals it (Ryan, 7 November: "The Battle from the harness should be a battle,
 ## as it will be in the final game"): the domain picked at the tier and the ramp, its boss, the

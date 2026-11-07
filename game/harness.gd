@@ -437,7 +437,8 @@ func _fill_battle_bosses() -> void:
 # ---------------------------------------------------------------- fight
 
 ## One fight: a composition by its domain, tier and threat rating (Ryan, 6 November), fought
-## alone; or, with none picked, packs and a boss by hand, chained into it.
+## alone; or, with none picked, one unit by hand: the packs' foes as one pack, or a boss with
+## them as its escort.
 func _build_fight(page: VBoxContainer) -> void:
 	page.add_child(_section("A composition"))
 	page.add_child(_hint("Fought alone, as a battle at the tier deals it: its members as content writes them, its elites at the tier, its layout dealt. None: the packs and the boss below."))
@@ -482,7 +483,7 @@ func _build_fight(page: VBoxContainer) -> void:
 		facs.add_child(b)
 
 	page.add_child(_section("Packs"))
-	page.add_child(_hint("Chained into one fight with the boss, as its eight slots hold them."))
+	page.add_child(_hint("One pack of all their foes, or the boss's escort when a boss is picked; what the eight slots cannot hold is left out."))
 	_packs_box = VBoxContainer.new()
 	_packs_box.add_theme_constant_override("separation", 8)
 	page.add_child(_packs_box)
@@ -502,7 +503,7 @@ func _build_fight(page: VBoxContainer) -> void:
 		setup.boss = str(_boss.get_item_metadata(i))
 		_refresh_summary())
 	page.add_child(_boss)
-	page.add_child(_hint("At the tier above, with its escort as a battle at that tier brings it."))
+	page.add_child(_hint("At the tier above; with no packs, its own curated escort at that tier, or alone."))
 
 
 ## The compositions listed for the domain, tier and rating, each by its id, its size and its rating,

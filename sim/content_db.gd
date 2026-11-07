@@ -575,7 +575,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 				f.pack_id = sq.id
 				f.escorts = true
 				out.append(f)
-			return fit_grid(out)
+			return out
 	# A pack's members, each its foe type times its strength (one type when it has no list; a
 	# boss unit's members are its escort): the foes' fresh start, 30 October.
 	for e in sq.member_list():
@@ -594,18 +594,19 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			f.escorts = sq.is_boss
 			out.append(f)
 			out.append_array(parts_for(f))
-	return fit_grid(out)   # a boss's tier-grown escort past the eight slots is never dealt
+	return out
 
 
 ## A boss unit at its battle's tier, 0 to 2 (Ryan, 25 and 26 October: bosses scale to the tier,
 ## "scaling stats and upgrading the escort", while the rank and file are never inflated, "a fine
 ## compromise for the sake of run diversity"): its commanders' HP multiplied and their attack
-## raised, a domain's boss, a final's hero and the finale's line alike, and its escort grown by
-## the tier's own units. Placeholders.
+## raised, a domain's boss, a final's hero and the finale's line alike. Its escort is the tier's
+## curated composition (an `escort` naming it), never grown by count (Ryan, 7 November: "packs
+## don't auto scale, so why would a bosses? Should be treated the same way"). Placeholders.
 const BOSS_TIERS := [
-	{"hp": 1.0, "attack": 0, "escort": 0},
-	{"hp": 1.25, "attack": 1, "escort": 2},
-	{"hp": 1.5, "attack": 2, "escort": 4},
+	{"hp": 1.0, "attack": 0},
+	{"hp": 1.25, "attack": 1},
+	{"hp": 1.5, "attack": 2},
 ]
 
 
@@ -615,7 +616,7 @@ static func boss_tier(t: int) -> Dictionary:
 
 ## A fight's slots: four columns of two ranks, the ranks holding (a front foe never stands in the
 ## back), a massive foe a whole column. A pack is what they hold (no reinforcement inside a
-## fight, 6 November).
+## fight, 6 November): content is validated to fit, so the engine never trims a pack.
 const GRID_COLUMNS := 4
 
 
@@ -628,8 +629,9 @@ func _add_need(need: Dictionary, foe_id: String, count: int) -> void:
 		_add_need(need, str(p), count)
 
 
-## A pack's foes as its fight's slots hold them, in the order dealt (its commanders and their
-## parts first, its members after): a foe its rank has no room for is never dealt.
+## Foes as a fight's slots hold them, in the order given (commanders and their parts first): a
+## foe its rank has no room for is left out. The harness's alone, for the fight it builds by hand,
+## so that fight is one the game could deal; content is validated to fit instead.
 static func fit_grid(list: Array[Foe]) -> Array[Foe]:
 	var out: Array[Foe] = []
 	var massive := 0
@@ -646,11 +648,6 @@ static func fit_grid(list: Array[Foe]) -> Array[Foe]:
 		back = bk
 		out.append(f)
 	return out
-
-
-## The escort a boss unit brings at a tier beyond its own.
-static func escort_at(t: int) -> int:
-	return int(boss_tier(t)["escort"])
 
 
 ## A commander at its battle's tier: its HP and attack as the tier gives them, set as it is made,

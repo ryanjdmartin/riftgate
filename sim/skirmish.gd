@@ -85,10 +85,6 @@ var ground: String = "plain"                 # its word for the header, a wall b
 var front: Array = []
 var back: Array = []
 var reinforcements: Array[Foe] = []   # the foes dealt to the fight before it begins; `begin` stands them in the formation and none waits after (no reinforcement inside a fight: Ryan, 6 November)
-## The foes the slots could not hold as the fight began (a catch by several hunters past the
-## eight slots; content is validated so that one pack fits): never in the fight, killed by
-## nothing in it, and back on the map with their pack as it ends.
-var held_back: Array[Foe] = []
 ## A fallen part whose core will regrow it holds its slot until it does (Ryan, 7 November: "anything
 ## that regrows should leave it's corpse in place, to make it clear"; "How on earth would that
 ## spot ever get filled?"): Vector2i(rank, column) -> the fallen part. Nothing steps into it.
@@ -279,11 +275,15 @@ func begin() -> void:
 	else:
 		_deploy_layout()
 	if not reinforcements.is_empty():
-		# A pack is what its eight slots hold (no reinforcement inside a fight): content is
-		# validated so that one pack fits, so only a catch by several hunters reaches here; what
-		# does not stand stays out of the fight and goes back to the map with its pack.
-		log.append("%d more could not stand: the formation is full, and they stay with their packs" % reinforcements.size())
-		held_back.append_array(reinforcements)
+		# A pack is what its eight slots hold (no reinforcement inside a fight). A battle's fight is
+		# one pack, validated to fit, so none reaches here; the quick campaign's boss fights (its
+		# formation beside the boss) do. What does not stand was never in the fight: it came with
+		# nothing, so it is no kill.
+		log.append("%d more could not stand: the formation is full" % reinforcements.size())
+		for f in reinforcements:
+			var tally: Dictionary = came_with.get(f.pack_id, {})
+			if int(tally.get(f.content_id, 0)) > 0:
+				tally[f.content_id] = int(tally[f.content_id]) - 1
 		reinforcements.clear()
 	_refresh_guards()
 	_refresh_allies()
@@ -397,7 +397,7 @@ func survivors_for(sq: Unit) -> int:
 	for f in field_foes():
 		if f.pack_id == sq.id and f.alive() and is_own(sq, f):
 			n += 1
-	for f in reinforcements + held_back:
+	for f in reinforcements:
 		if f.pack_id == sq.id and is_own(sq, f):
 			n += 1
 	return n
@@ -424,7 +424,7 @@ func members_left(sq: Unit) -> Array:
 	for f in field_foes():
 		if f.pack_id == sq.id and f.alive() and is_own(sq, f) and not f.commands:
 			counts[f.content_id] = int(counts.get(f.content_id, 0)) + 1
-	for f in reinforcements + held_back:
+	for f in reinforcements:
 		if f.pack_id == sq.id and is_own(sq, f) and not f.commands:
 			counts[f.content_id] = int(counts.get(f.content_id, 0)) + 1
 	var out: Array = []
@@ -468,7 +468,7 @@ func kills_by_type(sq: Unit) -> Dictionary:
 	for f in field_foes():
 		if f.pack_id == sq.id and f.alive() and is_own(sq, f):
 			left[f.content_id] = int(left.get(f.content_id, 0)) + 1
-	for f in reinforcements + held_back:
+	for f in reinforcements:
 		if f.pack_id == sq.id and is_own(sq, f):
 			left[f.content_id] = int(left.get(f.content_id, 0)) + 1
 	var out := {}
@@ -484,15 +484,14 @@ func kills_by_type(sq: Unit) -> Dictionary:
 
 
 ## A boss unit's commanders still standing in this fight (Foe.commands: its boss, a final's
-## hero, the finale's line), alive on the field or held back from it (a catch past the slots), a
-## readied one that got back up among them: their content ids, field first. The unit stands
-## while one does.
+## hero, the finale's line), alive on the field, a readied one that got back up among them: their
+## content ids, field first. The unit stands while one does.
 func commanders_left(sq: Unit) -> Array:
 	var out: Array = []
 	for f in field_foes():
 		if f.pack_id == sq.id and f.commands and f.alive():
 			out.append(f.content_id)
-	for f in reinforcements + held_back:
+	for f in reinforcements:
 		if f.pack_id == sq.id and f.commands:
 			out.append(f.content_id)
 	return out
@@ -504,7 +503,7 @@ func escort_left(sq: Unit) -> int:
 	for f in field_foes():
 		if f.pack_id == sq.id and f.escorts and f.alive():
 			n += 1
-	for f in reinforcements + held_back:
+	for f in reinforcements:
 		if f.pack_id == sq.id and f.escorts:
 			n += 1
 	return n
