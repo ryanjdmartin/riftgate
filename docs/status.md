@@ -271,11 +271,14 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.459 (the page's
-  version 472, published 4 November from `ccr-bb178c9b-l6airv` as it landed again, merged onto
-  the audit branch's rows; the tables as regenerated on the merged content match it). The live
-  page carries the music session's tracks row ahead of its branch. The live page may carry rows ahead of main's code
-  while their branches have not landed (the music session's tracks row today). Before
+  `docs/design-bible.html` after every change. The live page is v0.474 (the page's version 486,
+  published 7 November from `ccr-1eaf0060-jrpw04`: its seven rows of the spend's order merged
+  row by row onto the live v0.473, which carries the long wall's and the music session's rows
+  ahead of their branches; no conflict, the Gel row word-merged). This branch's file carries
+  its own rows on main's v0.459, so its next merge takes BASE at `6e6f932`. The live page's round
+  preview and Lammergeier rows still name reinforcements, true on main and cut by the long wall:
+  that branch's to settle as it lands. The live page may carry rows ahead of main's code while
+  their branches have not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
