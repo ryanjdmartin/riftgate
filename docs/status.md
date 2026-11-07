@@ -323,18 +323,15 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 208
-  (5 November, from `claude/aphelion-minerva-chassis-9qf6cy` with main merged in, main since: the Designs tab,
-  only the page and `hangar/designs.json` sent, the briefs as of `8187c42`, read back identical;
-  the live page was main's, so nothing another session published was lost; `edits` and
-  `designs` empty). Version 207 before it (4 November, from the audit as it landed:
-  `content/vocabulary.json`, `content/foes.json` and `content/factions.json` as main has them).
-  Not republished from `ccr-56b5169d-lsa2rg` (6 November): its moved files (the page's shield
-  regen and no recharge sort, the four content files without the field recharge, `designs.json`
-  with the long wall brief) wait on the fold of Ryan's ten marks in `designs` (Giant Petrel,
-  Needletail, the jellyfish, Frost, Minos, Misharu, the Onryō, Thunder, the Cryo defence, the
-  Zoids walker; four written that afternoon), which a design session folds in first; the live
-  content files read back identical to a43a33b's, `edits` empty. `build/hangar/designs.json` is one
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 209
+  (7 November, from `ccr-56b5169d-lsa2rg`, the live page main's of version 208 and differing from
+  this branch's only by the long wall's own edit, its shield regen for the field recharge): the
+  page, the six content files as this branch has them (the long wall, the cut's trimmed
+  formations, the vocabulary without Reinforcements; `content/loot.json` is no tab's), the pins
+  and `designs.json` from the briefs with Ryan's eight directions folded in (2e871be). Those eight
+  documents are deleted from `designs` and his two ideas, the Giant Petrel and the Needletail,
+  marked briefed (benched in the Kestrel hub's brief); `edits` empty. Main's next merge takes the
+  page back from this branch. `build/hangar/designs.json` is one
   878 KB line, so a session that must read it whole before publishing writes it indented first.
   Its lit parts show as the phone's renderer shows
   them, the light eased by the power 1/2.2 as the game eases it (`MechRig.light`); every file
