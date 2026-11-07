@@ -200,7 +200,7 @@ func report() -> String:
 		("every battle on the %s map" % shape) if not shape.is_empty() else "each battle's map shape drawn by its seed",
 		Campaign.START_MACHINES, ", ".join(fields.keys())])
 	L.append("")
-	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out. Read the bands.")
+	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, a machine with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie) and the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out. Read the bands.")
 	L.append("")
 	# The runs.
 	var won := 0
@@ -296,6 +296,8 @@ func report() -> String:
 	var lost_all: Array[float] = []
 	var wrecked_all: Array[float] = []
 	var salvage_won: Array[float] = []
+	var loot_salvage: Array[float] = []
+	var caches_all: Array[float] = []
 	var favour_won: Array[float] = []
 	var phases_all: Array[float] = []
 	for b in battles:
@@ -305,6 +307,8 @@ func report() -> String:
 		lost_all.append(float(b["lost"].size()))
 		wrecked_all.append(float(b["wrecked"].size()))
 		phases_all.append(float(b["phases"]))
+		caches_all.append(float((b.get("loot", []) as Array).size()))   # claimed; banked on a won or held battle
+		loot_salvage.append(float(b.get("loot_salvage", 0)))
 		if b["result"] == "won":
 			lost_won.append(float(b["lost"].size()))
 			salvage_won.append(float(b["salvage"]))
@@ -320,7 +324,9 @@ func report() -> String:
 	L.append("| Components destroyed per won battle (gone for good; the inflow has to beat this) | %s |" % _band(lost_won))
 	L.append("| Components destroyed per battle, any outcome | %s |" % _band(lost_all))
 	L.append("| Machines wrecked per battle | %s |" % _band(wrecked_all))
-	L.append("| Salvage banked per won battle | %s |" % _band(salvage_won))
+	L.append("| Salvage banked per won battle (the kills' and the loot's) | %s |" % _band(salvage_won))
+	L.append("| Caches banked per battle (a fall loses what was claimed) | %s |" % _band(caches_all))
+	L.append("| Salvage the loot banked per battle | %s |" % _band(loot_salvage))
 	L.append("| Favour paid per won battle, after the gate's docking, of %d | %s |" % [Campaign.FAVOUR_PER_WIN, _band(favour_won)])
 	L.append("| Phases a battle | %s |" % _band(phases_all))
 	L.append("")

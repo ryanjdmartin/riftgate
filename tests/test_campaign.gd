@@ -637,6 +637,45 @@ func test_the_defence_rule_sends_a_machine_at_the_pack_nearest_the_wall() -> voi
 	assert_eq(BattleBot.turns_to_wall(b, deep, walks[deep.id]), 1 + int(ceil(float(row - Hex.axial_to_offset(walks[deep.id].end).y) / 2.0)), "the rows past its walk at its own pace")
 
 
+## The plain player takes the field's loot when it has nothing to fight (7 November): a machine with
+## no pack in reach this turn ends its move on a cache its move reaches, the nearest, the higher kind
+## on a tie, and claims it as the turn ends.
+func test_the_defence_rule_takes_a_cache_when_no_pack_is_in_reach() -> void:
+	var b := Battle.new(3)
+	var m := Unit.mech(1, "M", Vector2i.ZERO, 5)
+	b.setup([m], "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	quiet_start(b)
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			b.field.units.erase(sq)
+	b.forced = []
+	b.field.caches.clear()
+	var by_d := {}
+	for h in b.destinations_for(m).keys():
+		var d := Hex.distance(m.pos, h)
+		if d >= 1:
+			if not by_d.has(d):
+				by_d[d] = []
+			(by_d[d] as Array).append(h)
+	var ds: Array = by_d.keys()
+	ds.sort()
+	assert_true(ds.size() >= 2 and (by_d[ds[0]] as Array).size() >= 2, "hexes at two distances in its reach")
+	var near_a: Vector2i = by_d[ds[0]][0]
+	var near_b: Vector2i = by_d[ds[0]][1]
+	var far: Vector2i = by_d[ds[ds.size() - 1]][0]
+	b.field.caches = [{"id": 1, "tier": 3, "pos": far, "flattened": false}, {"id": 2, "tier": 1, "pos": near_a, "flattened": false}]
+	assert_eq(BattleBot.cache_in_reach(b, m), near_a, "the nearest cache its move reaches, whatever the farther one's kind")
+	b.field.caches.append({"id": 3, "tier": 2, "pos": near_b, "flattened": false})
+	assert_eq(BattleBot.cache_in_reach(b, m), near_b, "between two as near, the higher kind")
+	var bot := BattleBot.make(Policy.GREEDY, 2)
+	bot.take_turn(b)
+	assert_eq(m.pos, near_b, "it ends its move there")
+	b.forced = []
+	b.end_turn()
+	assert_eq(b.loot.size(), 1, "and claims it as the turn ends")
+	assert_eq(int(b.loot[0]["tier"]), 2, "that one")
+
+
 ## The pressure ratio (the long wall brief, section 5): the threat ratings of the packs at the wall
 ## or reaching it this coming enemy turn, over the machines standing; a formation and a patrol
 ## against four machines read 1.0, two formations 1.5, a pack far out nothing.

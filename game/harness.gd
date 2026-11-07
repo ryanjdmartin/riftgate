@@ -420,7 +420,7 @@ func _build_battle(page: VBoxContainer) -> void:
 		setup.ramp = v
 		_refresh_summary(), "C"))
 	page.add_child(knobs)
-	page.add_child(_hint("T the tier, who comes and the boss's numbers; C the Convergence, the ramp: the field's size, the opening's count and the beat."))
+	page.add_child(_hint("T the tier, who comes and the boss's numbers; C the Convergence, the ramp: the field's size, the opening's count, the beat and the compositions its gates hold. A tier is never fought under its first Convergence (4 for T2, 8 for T3), so C rises to it."))
 
 
 ## The battle domain's bosses, its first first; the pick kept while it is still the domain's.
@@ -516,7 +516,9 @@ func _fill_compositions() -> void:
 	_comp.set_item_metadata(0, "")
 	for c in setup.compositions_listed():
 		var lead: Dictionary = db.foes.get(str((c["members"] as Array)[0][0]), {})
-		_comp.add_item("%s  (%s, for %d, %s)" % [str(c["id"]), str(c["size"]), ContentDB.squad_of(c), str(lead.get("name", ""))])
+		var gate = c.get("ramp", null)
+		var at := (", C%d to %d" % [int(gate[0]), int(gate[1])]) if gate is Array and (gate as Array).size() == 2 else ""
+		_comp.add_item("%s  (%s, for %d, %s%s)" % [str(c["id"]), str(c["size"]), ContentDB.squad_of(c), str(lead.get("name", "")), at])
 		_comp.set_item_metadata(_comp.item_count - 1, str(c["id"]))
 	if setup.picked_composition().is_empty():
 		setup.composition = ""
@@ -661,7 +663,7 @@ func _refresh_summary() -> void:
 	for id in setup.team:
 		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() else ""))
 	var dom := setup.battle_domain()
-	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.ramp]
+	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.battle_ramp()]
 	var bid := setup.battle_boss_id()
 	if not bid.is_empty():
 		battle += " · " + str(db.foes[bid]["name"])

@@ -1305,18 +1305,21 @@ and nothing scales a pack.
 - A composition (`content/factions.json`) fits its fight's slots: its front-rank members and its
   massive ones four at most, its back-rank members and its massive ones four at most, a core's
   parts counted in their own ranks; the validator refuses one that does not.
-- A composition (`content/factions.json`) may carry three fields more, each optional: `squad`,
+- A composition (`content/factions.json`) may carry four fields more, each optional: `squad`,
   the machines it is intended for, 1 to 4, its threat rating on the map (absent: a patrol 1, a
   formation 3, an elite and an escort 4); `layout`, `{front: [four cells], back: [four
   cells]}` left to right as it stands, each cell null for empty, a member's foe id, or a list of
   them the battle's seed draws one from as the pack is dealt, a massive member in a front cell
   with the cell behind it null, no member named in more cells than its strength, the members it
   does not place never dealt; `lead`, a member's foe id whose sprite and
-  behaviour the pack wears, an elite composition's its elite (absent: the first member). No
-  composition in content writes them yet.
+  behaviour the pack wears, an elite composition's its elite (absent: the first member); `ramp`,
+  `[lo, hi]`, the Convergences it is dealt at, both held (absent: every one): a battle, the quick
+  campaign and the Fractures' elites deal only the compositions whose gate holds their ramp, and
+  where a domain's compositions of a size at a tier (an escort's, of its boss) carry any, together
+  they hold every Convergence that tier is fought at, from its first (0, 4 and 8 for tiers one to
+  three) to 12. No composition in content writes them yet.
 
 ## Known gaps between these rules and the code
 
 - Jenny's foe-down lines are keyed by the retired families, so only the generic pool plays.
-- A cache holds no module (the bible's loot row: modules too) until the campaign holds modules;
-  the campaign runner's bot never detours for a cache.
+- A cache holds no module (the bible's loot row: modules too) until the campaign holds modules.

@@ -200,8 +200,10 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3)), 0])
 	else:
 		var has_guest := not guest.is_empty() and guest != faction and db.factions.has(guest)
-		var forms := _alternate(db.compositions(faction, tier + 1, "formation"), db.compositions(guest, tier + 1, "formation") if has_guest else [])
-		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol"), db.compositions(guest, tier + 1, "patrol") if has_guest else [])
+		# The tier's compositions the ramp's gate holds (7 November: variants placed on the tier and
+		# the ramp; one with no gate at every ramp).
+		var forms := _alternate(db.compositions(faction, tier + 1, "formation", ramp), db.compositions(guest, tier + 1, "formation", ramp) if has_guest else [])
+		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol", ramp), db.compositions(guest, tier + 1, "patrol", ramp) if has_guest else [])
 		field.cycle = _alternate(forms, patrols)
 		field.patrol_cycle = patrols
 		var nf := Ramp.formations_at(ramp)
@@ -235,7 +237,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	var firsts := db.bosses_of(faction)
 	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
 	if with_boss and db.foes.has(boss_id):
-		boss = make_boss_unit(db, faction, tier, boss_id, lineup, escort)
+		boss = make_boss_unit(db, faction, tier, boss_id, lineup, escort, ramp)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
 	# The caches, on the field from the first turn (Ryan, 7 November), round the units placed.
@@ -277,9 +279,9 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 ## domain's first, `boss_id`), going by the party's name for a line, a true four (Ryan, 6 November;
 ## the long wall brief 3.7), at the tier (ContentDB.BOSS_TIERS: its numbers); its escort a named one
 ## (`escort_spec`: [a foe id, or "" for the tier's own units, as a final's wildlife; a count]), else
-## its curated composition at the tier (an `escort`), else none: never grown by the tier (Ryan, 7
-## November). Unplaced and undressed: the caller does those.
-static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_id: String, lineup_ids: Array = [], escort_spec: Array = []) -> Unit:
+## its curated composition at the tier whose ramp gate holds `ramp_at` (an `escort`), else none: never
+## grown by the tier (Ryan, 7 November). Unplaced and undressed: the caller does those.
+static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_id: String, lineup_ids: Array = [], escort_spec: Array = [], ramp_at: int = -1) -> Unit:
 	var named := "the party" if lineup_ids.size() > 1 else str(content.foes.get(boss_id, {}).get("name", boss_id)).to_lower()
 	var u := Unit.boss(0, named, Vector2i.ZERO, faction_id, Unit.BOSS_MOVE)
 	u.squad = 4
@@ -290,7 +292,7 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 			u.foe_id = str(escort_spec[0])
 		u.strength = maxi(0, int(escort_spec[1]))
 	else:
-		var tailored := content.escort_composition(faction_id, t + 1, boss_id)
+		var tailored := content.escort_composition(faction_id, t + 1, boss_id, ramp_at)
 		if not tailored.is_empty():
 			var members: Array = []
 			for m in tailored["members"]:
@@ -357,7 +359,7 @@ func _fractures() -> void:
 func _spawn_elite() -> void:
 	# The domain's next own elite, or a wanderer on the Fracture's roll (ContentDB.next_elite,
 	# 2 November); each once a battle.
-	var c := db.next_elite(faction, tier + 1, elites_spawned, _elite_roll())
+	var c := db.next_elite(faction, tier + 1, elites_spawned, _elite_roll(), ramp)
 	if c.is_empty():
 		return
 	var sq := field.emerge(c, map.rift, elites_spawned.size())   # the elites sent before it, for a layout's draw (section 6)

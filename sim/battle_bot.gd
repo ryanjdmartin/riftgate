@@ -8,8 +8,9 @@ extends RefCounted
 ## with an action, in roster order, is ordered onto the pack it can stand beside this turn that
 ## reaches the wall soonest (one on the apron first, then by the turns its planned walk needs to
 ## reach the apron), ties by the larger threat rating, then the nearer; machines ordered onto one
-## pack fight it together; a machine with no pack in reach moves toward the pack that reaches the
-## wall soonest. It never fights the sealed boss; the unsealed boss is a pack like any other to
+## pack fight it together; a machine with no pack in reach takes a cache its move reaches (the
+## nearest, the higher kind on a tie: the field's loot, claimed as the turn ends, 7 November), else
+## moves toward the pack that reaches the wall soonest. It never fights the sealed boss; the unsealed boss is a pack like any other to
 ## the rule. No reading of a fight's odds and no holding back: every fight is played by `Policy`
 ## at the rung given and fought out (there is no withdrawal). It is a floor, not a player. As
 ## each turn opens it reads the pressure ratio (pressure()). The squad-as-one rule and the turtle
@@ -89,9 +90,13 @@ func take_turn(b: Battle) -> void:
 			if near != null:
 				b.order_onto(m, near)
 			elif b.can_move(m):
-				var far := soonest(b, walks, m, false)
-				if far != null:
-					_close_on(b, m, far)
+				var cache := cache_in_reach(b, m)
+				if cache != Battlefield.NO_HEX:
+					b.move_to(m, cache)
+				else:
+					var far := soonest(b, walks, m, false)
+					if far != null:
+						_close_on(b, m, far)
 		if b.next_fight().is_empty():
 			return
 		while b.state == Battle.State.PLAN and not b.next_fight().is_empty():
@@ -117,6 +122,23 @@ static func soonest(b: Battle, walks: Dictionary, m: Unit, in_reach: bool) -> Un
 		if best == null or key.x < best_key.x or (key.x == best_key.x and (key.y < best_key.y or (key.y == best_key.y and key.z < best_key.z))):
 			best = p
 			best_key = key
+	return best
+
+
+## The cache a machine's move reaches this turn (the field's loot, 7 November): the nearest, the
+## higher kind on a tie; NO_HEX for none.
+static func cache_in_reach(b: Battle, m: Unit) -> Vector2i:
+	var dests := b.destinations_for(m)
+	var best := Battlefield.NO_HEX
+	var key := Vector2i(1 << 30, 0)
+	for c in b.field.caches:
+		var h: Vector2i = c["pos"]
+		if not dests.has(h):
+			continue
+		var k := Vector2i(Hex.distance(m.pos, h), -b.field.cache_tier(c))
+		if best == Battlefield.NO_HEX or k.x < key.x or (k.x == key.x and k.y < key.y):
+			best = h
+			key = k
 	return best
 
 

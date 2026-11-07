@@ -280,8 +280,14 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # every patrol, formation and elite composition at each tier it names, fought by the default four
 # machines cut to its threat rating, one short and one over, each cell its win rate, rounds and
 # hull lost; printed, and written to --out when one is given (about forty minutes at 30 seeds).
+# --packs curve runs the curve read for the formation pass (7 November): every such composition
+# against the four cut to every size from one to four, random and greedy, each cell's band (free,
+# a decision, a wall) and greedy's hull lost, its menace, ramp gate and rating, the sizes it is a
+# decision for and the peers whose bands it matches at every size, candidates for pruning;
+# printed, and written to --out (about two minutes a seed, so an hour at 30).
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
+perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs curve --seeds 30 --out /tmp/curve.md
 # the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
 # report, and --merge writes the report from the parts (same options on every part and the merge;
 # the merged report reads as a whole run, the time the longest part's)
@@ -305,8 +311,9 @@ perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.g
 # battle on that map shape; the long wall brief's reads use steppe); --trace SEED prints one run
 # battle by battle instead. The defence rule (BattleBot, the long wall brief section 5): a
 # hunter's catch first, allies walking into reach of it; then each machine onto the pack it can
-# stand beside that reaches the wall soonest, ties by the larger threat rating and the nearer, the
-# rest walking toward the soonest, never the sealed boss; every fight fought out (there is no
+# stand beside that reaches the wall soonest, ties by the larger threat rating and the nearer; one
+# with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie),
+# the rest walking toward the soonest, never the sealed boss; every fight fought out (there is no
 # withdrawal). The report reads the field's size, the Rupture meter and the mouths (Fractures,
 # the Rupture and the stall guard, peaks, what the rift and the tears sent, elites, menace
 # killed, gate damage), the pressure ratio (the threat ratings at the wall or reaching it this

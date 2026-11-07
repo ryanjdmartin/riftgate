@@ -90,6 +90,12 @@ func pack_foes() -> Array:
 	return out
 
 
+## The battle's Convergence: the one picked, raised to its tier's first (a rift keeps its tier and the
+## ramp only rises, so a tier is never fought under its first Convergence; ContentDB.first_ramp_of).
+func battle_ramp() -> int:
+	return clampi(ramp, ContentDB.first_ramp_of(battle_tier), Ramp.TOP)
+
+
 ## The domain a battle is fought against: the one picked, else the content's first.
 func battle_domain() -> String:
 	return battle_faction if db.factions.has(battle_faction) else db.default_faction()
@@ -287,7 +293,7 @@ func make_battle() -> Battle:
 	var b := Battle.new(seed_value)
 	b.map_kind = map_kind
 	b.tier = clampi(battle_tier - 1, 0, 2)
-	b.ramp = ramp
+	b.ramp = battle_ramp()
 	b.guest = guest if guest != fac else ""
 	var bid := battle_boss_id()
 	if not bid.is_empty():

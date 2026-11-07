@@ -326,7 +326,7 @@ func _encounters(t: int) -> Array:
 			# An elite's slot takes the lead's next own elite, or a wanderer on the run's roll
 			# (ContentDB.next_elite, 2 November), each once a battle; with none left, the lead's
 			# formation holds the slot as before.
-			var c := db.next_elite(lead, t + 1, elites_dealt, rng.randf())
+			var c := db.next_elite(lead, t + 1, elites_dealt, rng.randf(), ramp())
 			enc["foe"] = str(c["id"]) if not c.is_empty() else ""
 			enc["index"] = 0
 			if not c.is_empty():
@@ -370,10 +370,10 @@ func encounter_unit(enc: Dictionary) -> Unit:
 	match str(enc.get("kind", "")):
 		"finale":
 			var line: Array = enc["line"] if enc.has("line") else finale_line()
-			return Battle.make_boss_unit(db, domain, tier(), str(line[0]), line) if not line.is_empty() else null
+			return Battle.make_boss_unit(db, domain, tier(), str(line[0]), line, [], ramp()) if not line.is_empty() else null
 		"boss":
 			var bid := str(enc.get("foe", ""))
-			return Battle.make_boss_unit(db, domain, tier(), bid, [bid]) if db.foes.has(bid) else null
+			return Battle.make_boss_unit(db, domain, tier(), bid, [bid], [], ramp()) if db.foes.has(bid) else null
 		"final":
 			var hero := str(enc.get("foe", ""))
 			# The campaign's final: the hero with its domain's wildlife in the other columns.
@@ -398,7 +398,7 @@ func encounter_foes(enc: Dictionary) -> Array:
 ## A domain's formation as its pack: the tier's formation compositions in turn (`index`, wrapping,
 ## the layout's draw by it), as a battle deals one. Null when the domain has none.
 func formation_unit(domain: String, index: int = 0) -> Unit:
-	var forms := db.compositions(domain, tier() + 1, "formation")
+	var forms := db.compositions(domain, tier() + 1, "formation", ramp())
 	if forms.is_empty():
 		return null
 	return Battlefield.pack_of(forms[index % forms.size()], _deal_seed(), index, domain)
@@ -425,7 +425,7 @@ func ramp() -> int:
 ## "" when it has none, so the slot holds the lead's formation alone and the Fracture count
 ## stands (the bench hero that stood in went on 27 October, Ryan: "just a can of worms").
 func elite_of(domain: String) -> String:
-	var elites := db.elite_compositions(domain, tier() + 1)
+	var elites := db.elite_compositions(domain, tier() + 1, ramp())
 	return str(elites[0]["id"]) if not elites.is_empty() else ""
 
 

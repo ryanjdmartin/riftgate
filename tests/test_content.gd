@@ -1049,6 +1049,58 @@ func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void
 ## to 4; lead a member, an elite composition's its elite; layout four cells a rank, each null, a
 ## member's id or a list of them, a massive member in a front cell with the cell behind it null,
 ## and no member named in more cells than its strength.
+## A composition's ramp gate (Ryan, 7 November: variants placed "in the tier-ramp curve"): [lo, hi],
+## the Convergences it is dealt at, both held; the lookups deal only those whose gate holds the ramp
+## asked (none asked, all); where a domain's compositions of a size at a tier carry gates, together
+## they hold every Convergence the tier is fought at, its first to the top; a battle deals by its own.
+func test_a_compositions_ramp_gate_deals_it_and_its_tier_is_covered() -> void:
+	assert_eq([ContentDB.first_ramp_of(1), ContentDB.first_ramp_of(2), ContentDB.first_ramp_of(3)], [0, Campaign.TIER_EVERY, 2 * Campaign.TIER_EVERY], "a tier is first fought at its Convergence")
+	var db := _fresh()
+	var formations: Array = db.factions["meadow"]["compositions"]
+	# Meadow's tier-one formations made two variants: the low one to C5, the high one from C6.
+	var kept: Array = formations.filter(func(c) -> bool: return not (str(c.get("size", "")) == "formation" and ContentDB.composition_tiers(c).has(1)))
+	var low := {"id": "gate_low", "size": "formation", "tiers": [1], "ramp": [0, 5], "members": [{"foe": "goblin", "strength": 2}]}
+	var high := {"id": "gate_high", "size": "formation", "tiers": [1], "ramp": [6, Ramp.TOP], "members": [{"foe": "goblin", "strength": 3}]}
+	kept.append(low)
+	kept.append(high)
+	db.factions["meadow"]["compositions"] = kept
+	assert_true(db.validate().filter(func(e) -> bool: return str(e).contains("ramp")).is_empty(), "two gates holding 0 to %d between them: sound" % Ramp.TOP)
+	assert_eq(db.compositions("meadow", 1, "formation", 3).map(func(c) -> String: return str(c["id"])), ["gate_low"], "at C3, the low variant alone")
+	assert_eq(db.compositions("meadow", 1, "formation", 9).map(func(c) -> String: return str(c["id"])), ["gate_high"], "at C9, the high one alone")
+	assert_eq(db.compositions("meadow", 1, "formation").size(), 2, "no ramp asked: both")
+	assert_eq(db.compositions("meadow", 1, "formation", 9)[0]["ramp"], [6, Ramp.TOP], "the dealt entry carries its gate")
+	var b := Battle.new(3)
+	b.db = db
+	b.ramp = 9
+	b.setup([], "meadow")
+	for sq in b.field.packs():
+		if sq.composition_size == "formation":
+			assert_eq(sq.composition, "gate_high", "a battle at C9 deals the variant its gate holds")
+	for w in b.field.cycle:
+		if str(w["size"]) == "formation":
+			assert_eq(str(w["id"]), "gate_high", "and the rift sends no other")
+	# A gap in the tier's Convergences is refused, and so is a gate of the wrong shape.
+	high["ramp"] = [7, Ramp.TOP]
+	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("no formation at tier 1 is dealt at Convergence 6")), "C6 held by none: refused")
+	high["ramp"] = [9, 6]
+	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("gate_high: ramp is [lo, hi]")), "a gate the wrong way round")
+	high["ramp"] = [6, Ramp.TOP + 1]
+	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("gate_high: ramp is [lo, hi]")), "a gate past the top")
+	high["ramp"] = [6, Ramp.TOP]
+	# A tier fought from C4 needs its gates from C4 only; an escort's group is its boss's.
+	var court := {"id": "gate_court", "size": "escort", "boss": "bourgeon", "tiers": [2], "ramp": [Campaign.TIER_EVERY, Ramp.TOP], "members": [{"foe": "warg", "strength": 1}]}
+	kept = (db.factions["meadow"]["compositions"] as Array).filter(func(c) -> bool: return not (str(c.get("boss", "")) == "bourgeon" and ContentDB.composition_tiers(c).has(2)))
+	kept.append(court)
+	db.factions["meadow"]["compositions"] = kept
+	assert_true(db.validate().filter(func(e) -> bool: return str(e).contains("ramp")).is_empty(), "tier two's escort gated from its first Convergence: sound")
+	assert_eq(str(db.escort_composition("meadow", 2, "bourgeon", Campaign.TIER_EVERY).get("id", "")), "gate_court", "dealt at it")
+	assert_true(db.escort_composition("meadow", 2, "bourgeon", Campaign.TIER_EVERY - 1).get("boss", "") != "bourgeon", "and never under it")
+	var s := HarnessSetup.defaults(_fresh())
+	s.battle_tier = 3
+	s.ramp = 0
+	assert_eq(s.battle_ramp(), ContentDB.first_ramp_of(3), "the harness raises a battle's Convergence to its tier's first")
+
+
 func test_the_validator_holds_a_compositions_squad_layout_and_lead() -> void:
 	var db := _fresh()
 	var base := {"id": "probe", "size": "formation", "tiers": [1], "members": [{"foe": "goblin", "strength": 3}, {"foe": "mandragora", "strength": 1}, {"foe": "treant", "strength": 1}]}

@@ -934,22 +934,24 @@ func _validate_layout(cw: String, layout, strength_of: Dictionary, errs: Array) 
 ## when `size` is empty. A tier with none of a size takes the highest tier's under it, as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
 ## tier. Nothing when the faction has none.
-func compositions(faction_id: String, tier: int, size: String = "") -> Array:
+func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1) -> Array:
 	var out: Array = []
 	var sizes: Array = [size] if not size.is_empty() else COMPOSITION_SIZES
 	for sz in sizes:
 		for t in range(clampi(tier, 1, 3), 0, -1):
-			var found := _compositions_at(faction_id, t, str(sz))
+			var found := _compositions_at(faction_id, t, str(sz), ramp)
 			if not found.is_empty():
 				out.append_array(found)
 				break
 	return out
 
 
-func _compositions_at(faction_id: String, tier: int, size: String) -> Array:
+func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -1) -> Array:
 	var out: Array = []
 	for c in factions.get(faction_id, {}).get("compositions", []):
 		if not (c is Dictionary) or str(c.get("size", "")) != size or not composition_tiers(c).has(tier):
+			continue
+		if ramp >= 0 and not ramp_holds(c, ramp):
 			continue
 		var members: Array = []
 		for m in c.get("members", []):
@@ -958,11 +960,53 @@ func _compositions_at(faction_id: String, tier: int, size: String) -> Array:
 		if members.is_empty():
 			continue
 		var entry := {"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "boss": str(c.get("boss", ""))}
-		for key in ["squad", "layout", "lead"]:   # the long wall brief's composition fields, as content writes them (section 6)
+		for key in ["squad", "layout", "lead", "ramp"]:   # the long wall brief's composition fields (section 6) and the ramp gate (7 November), as content writes them
 			if c.has(key):
 				entry[key] = c[key]
 		out.append(entry)
 	return out
+
+
+## The ramp gates cover their tiers (7 November): where any of a domain's compositions of a size at
+## a tier (an escort's, of its boss) carries one, every Convergence that tier is fought at, its first
+## to the top, is held by one of them, so a battle never runs out of what to deal; an ungated one
+## holds them all.
+func _validate_ramp_gates(errs: Array[String]) -> void:
+	for fid in factions.keys():
+		var groups := {}   # "size|tier|boss" -> its compositions
+		for c in factions[fid].get("compositions", []):
+			if not (c is Dictionary):
+				continue
+			for t in composition_tiers(c):
+				var key := "%s|%d|%s" % [str(c.get("size", "")), int(t), str(c.get("boss", ""))]
+				if not groups.has(key):
+					groups[key] = []
+				(groups[key] as Array).append(c)
+		for key in groups.keys():
+			var list: Array = groups[key]
+			if not list.any(func(c) -> bool: return c.get("ramp", null) is Array):
+				continue
+			var parts := str(key).split("|")
+			for r in range(first_ramp_of(int(parts[1])), Ramp.TOP + 1):
+				if not list.any(func(c) -> bool: return ramp_holds(c, r)):
+					errs.append("faction %s: no %s at tier %s%s is dealt at Convergence %d; the ramp gates must hold every Convergence from the tier's first (%d) to %d" % [fid, parts[0], parts[1], (" for " + parts[2]) if not parts[2].is_empty() else "", r, first_ramp_of(int(parts[1])), Ramp.TOP])
+					break
+
+
+## Whether a composition is dealt at a ramp: its optional gate, `ramp` [lo, hi], the Convergences
+## it is dealt at, both ends held (Ryan, 7 November: variants placed "in the tier-ramp curve"); one
+## with no gate at every ramp. A ramp under 0 asks nothing (the harness's lists, the tools).
+static func ramp_holds(c: Dictionary, ramp: int) -> bool:
+	var g = c.get("ramp", null)
+	if ramp < 0 or not (g is Array) or (g as Array).size() != 2:
+		return true
+	return ramp >= int(g[0]) and ramp <= int(g[1])
+
+
+## The Convergence a tier is first fought at (tier 1 to 3): a rift keeps the tier it opened at and
+## the ramp only rises, so a tier is fought from here to the top (Campaign.TIER_EVERY a tier).
+static func first_ramp_of(tier: int) -> int:
+	return Campaign.TIER_EVERY * (clampi(tier, 1, 3) - 1)
 
 
 ## The tiers a composition may be dealt at, as ints (content writes them as a list; one by
@@ -976,8 +1020,8 @@ static func composition_tiers(c: Dictionary) -> Array:
 
 
 ## A faction's elite compositions at a tier, in content order: the elites its Fractures spawn.
-func elite_compositions(faction_id: String, tier: int) -> Array:
-	return compositions(faction_id, tier, "elite").filter(func(c) -> bool: return not is_wandering(c))
+func elite_compositions(faction_id: String, tier: int, ramp: int = -1) -> Array:
+	return compositions(faction_id, tier, "elite", ramp).filter(func(c) -> bool: return not is_wandering(c))
 
 
 ## The chance a Fracture sends a wanderer in place of the domain's next own elite (Ryan,
@@ -988,11 +1032,11 @@ const WANDER_CHANCE := 1.0 / 3.0
 ## The wanderers at a tier: every domain's elite compositions led by a foe that wanders
 ## (`wanders`), each once, in content order, so one composition in one domain's list walks
 ## out of every rift (Gilgamesh, 31 October and 2 November).
-func wandering_compositions(tier: int) -> Array:
+func wandering_compositions(tier: int, ramp: int = -1) -> Array:
 	var out: Array = []
 	var seen: Array = []
 	for fid in factions.keys():
-		for c in compositions(str(fid), tier, "elite"):
+		for c in compositions(str(fid), tier, "elite", ramp):
 			if is_wandering(c) and not seen.has(str(c["id"])):
 				seen.append(str(c["id"]))
 				out.append(c)
@@ -1011,9 +1055,9 @@ func is_wandering(c: Dictionary) -> bool:
 ## is the roll's too (3 November, the pool past one): the roll's place in its band picks among
 ## those not yet sent, so a resumed battle draws the same and the player never learns an order.
 ## An elite may come again in a later battle, never twice in one; a boss never twice in a run.
-func next_elite(faction_id: String, tier: int, sent: Array, roll: float) -> Dictionary:
-	var own: Array = elite_compositions(faction_id, tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
-	var wanderers: Array = wandering_compositions(tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
+func next_elite(faction_id: String, tier: int, sent: Array, roll: float, ramp: int = -1) -> Dictionary:
+	var own: Array = elite_compositions(faction_id, tier, ramp).filter(func(c) -> bool: return not sent.has(str(c["id"])))
+	var wanderers: Array = wandering_compositions(tier, ramp).filter(func(c) -> bool: return not sent.has(str(c["id"])))
 	if own.is_empty():
 		return _wanderer_at(wanderers, roll) if not wanderers.is_empty() else {}
 	if not wanderers.is_empty() and roll < WANDER_CHANCE:
@@ -1038,8 +1082,8 @@ func elite_composition(faction_id: String, tier: int, id: String) -> Dictionary:
 ## A boss's curated escort at a tier (an `escort` composition), or empty: the boss stands alone,
 ## nothing grown by the tier (7 November). An escort may name its `boss` (30 October: the King
 ## Gel's Gels, which its merge takes in); the boss's own comes first, then one that names none.
-func escort_composition(faction_id: String, tier: int, boss_id: String = "") -> Dictionary:
-	var found := compositions(faction_id, tier, "escort")
+func escort_composition(faction_id: String, tier: int, boss_id: String = "", ramp: int = -1) -> Dictionary:
+	var found := compositions(faction_id, tier, "escort", ramp)
 	for c in found:
 		if not boss_id.is_empty() and str(c.get("boss", "")) == boss_id:
 			return c
@@ -2329,6 +2373,7 @@ func _validate_foes(errs: Array[String]) -> void:
 
 
 func _validate_factions(errs: Array[String]) -> void:
+	_validate_ramp_gates(errs)
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
 		var where := "faction %s" % id
@@ -2414,6 +2459,11 @@ func _validate_factions(errs: Array[String]) -> void:
 					errs.append("%s: an elite composition is led by its elite; lead %s is none" % [cw, lead])
 			if c.has("layout"):
 				_validate_layout(cw, c["layout"], strength_of, errs)
+			if c.has("ramp"):
+				var g = c["ramp"]
+				if not (g is Array) or (g as Array).size() != 2 or not (g as Array).all(func(x) -> bool: return x is float or x is int) \
+						or int(g[0]) < 0 or int(g[0]) > int(g[1]) or int(g[1]) > Ramp.TOP:
+					errs.append("%s: ramp is [lo, hi], the Convergences it is dealt at, 0 <= lo <= hi <= %d" % [cw, Ramp.TOP])
 			# A composition fits its fight's slots (no reinforcement inside a fight, cut 6 November;
 			# Ryan, 7 November: "We just tune the enemies so there's no need to have more than 8 on
 			# a field"): four a rank, the ranks holding, a massive foe a column of both, each part of

@@ -30,7 +30,10 @@ extends SceneTree
 ## the ladder's, beside a cell for every recolour, "goblin_guard x4", since 28 October),
 ## "finale", --packs promise (the promise read, the long wall brief section 5: every patrol, formation and
 ## elite composition at each tier it names, fought by the default four machines cut to its threat rating, one
-## short and one over, into its own report, printed or written to --out; no matrix),
+## short and one over, into its own report, printed or written to --out; no matrix), --packs curve (the
+## curve read for the formation pass, 7 November: every such composition against the four cut to every
+## size from one to four, each cell's band and hull, its menace, ramp gate and the bands it shares with
+## its peers, printed or written to --out; no matrix),
 ## "<elite composition> tier 2" with --packs elites (every elite composition at each tier
 ## it names, its elites scaled as a battle scales them; 4 November), or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
@@ -120,6 +123,9 @@ func _init() -> void:
 			db.chassis[id]["passive"] = null
 	if only_packs.has("promise"):
 		quit(_promise())
+		return
+	if only_packs.has("curve"):
+		quit(_curve())
 		return
 	_build_matrix()
 	if not fit_module.is_empty() and not db.modules.has(fit_module):
@@ -643,6 +649,97 @@ func _promise() -> int:
 		Time.get_date_string_from_system(), fights, secs, seeds, ", ".join(_policy_names()), ", ".join(_names(team))])
 	L.append("")
 	L.append_array(table)
+	L.append("")
+	var text := "\n".join(L)
+	print(text)
+	if out_path != OUT:
+		var f := FileAccess.open(out_path, FileAccess.WRITE)
+		if f == null:
+			push_error("cannot write %s" % out_path)
+			return 1
+		f.store_string(text)
+		f.close()
+	return 0
+
+
+## The curve read (--packs curve; the formation pass, Ryan, 7 November: "we should be able to figure
+## out somewhat empirically where in the tier-ramp curve that should sit, and then we have discrete
+## combinations to apply data to for testing and such, we can make tables, and prune formations that
+## have no place or are redundant"): every patrol, formation and elite composition of every domain
+## at each tier it names, fought by the default four machines cut to every size from one to four,
+## random and greedy at the seeds given. Each cell's band is the bible's reading: free (random play
+## wins half its fights or more), a decision (greedy wins half or more and random less) or a wall
+## (greedy wins less than half), with greedy's mean hull lost beside it. Each composition carries its
+## menace (its members' added), its ramp gate, its threat rating, the sizes it is a decision for, and
+## the compositions of its domain, size and tier whose bands match it at every size: a candidate for
+## pruning. A direction read for placing variants, never a gate. Printed, and written to --out.
+func _curve() -> int:
+	var team: Array = db.default_team(4)
+	var t0 := Time.get_ticks_msec()
+	var fights := 0
+	var found: Array = []
+	for fac in db.factions.keys():
+		for c in db.factions[fac].get("compositions", []):
+			if not (c is Dictionary) or not ["patrol", "formation", "elite"].has(str(c.get("size", ""))):
+				continue
+			for t in ContentDB.composition_tiers(c):
+				var mix: Array = []
+				var menace := 0
+				var said: Array[String] = []
+				for m in c.get("members", []):
+					if m is Dictionary and db.foes.has(str(m.get("foe", ""))):
+						var n := maxi(1, int(m.get("strength", 1)))
+						mix.append([str(m["foe"]), n])
+						menace += db.menace(str(m["foe"])) * n
+						said.append("%s ×%d" % [str(db.foes[str(m["foe"])].get("name", m["foe"])), n])
+				if mix.is_empty():
+					continue
+				var pack := {"id": "%s tier %d" % [str(c["id"]), t], "name": str(c["id"]), "foe": "", "strength": 0, "mix": mix, "tier": int(t) - 1}
+				if c.has("layout"):
+					pack["layout"] = c["layout"]
+				var bands: Array[String] = []
+				var hulls: Array[String] = []
+				for cut in range(1, 5):
+					if cut > team.size():
+						bands.append("")
+						hulls.append("")
+						continue
+					var row := {"id": "first %d" % cut, "name": "the first %d" % cut, "chassis": team.slice(0, cut)}
+					var r: Dictionary = _run_cell(row, pack, Policy.RANDOM)
+					var g: Dictionary = _run_cell(row, pack, Policy.GREEDY)
+					fights += 2 * seeds
+					var rw := float(r["victory"]) / maxf(1.0, float(r["fights"]))
+					var gw := float(g["victory"]) / maxf(1.0, float(g["fights"]))
+					bands.append("free" if rw >= 0.5 else ("decision" if gw >= 0.5 else "wall"))
+					hulls.append("%d%%" % int(roundf(float(g["hull_lost_pct"]) / maxf(1.0, float(g["fights"])))))
+				var gate = c.get("ramp", null)
+				found.append({"domain": str(db.factions[fac].get("name", fac)), "size": str(c["size"]), "tier": int(t), "id": str(c["id"]),
+					"members": ", ".join(said), "menace": menace,
+					"ramp": ("C%d to %d" % [int(gate[0]), int(gate[1])]) if gate is Array and (gate as Array).size() == 2 else "any",
+					"rating": ContentDB.squad_of(c), "bands": bands, "hulls": hulls})
+	var secs := (Time.get_ticks_msec() - t0) / 1000.0
+	var L: Array[String] = []
+	L.append("# The curve read")
+	L.append("")
+	L.append("Generated by `tools/balance.gd --packs curve` on %s: %d fights in %.0f s, %d seeds a cell, random and greedy, the team %s cut to every size from one to four (its first N machines). Each cell: the band (free: random wins half or more; a decision: greedy wins half or more and random less; a wall: greedy wins less than half) and greedy's mean hull lost (percent of the cut's hull). Read for: the sizes it is a decision for. Same as: the compositions of its domain, size and tier whose bands match it at every size, candidates for pruning. A direction for placing the formation pass's variants, never a gate." % [
+		Time.get_date_string_from_system(), fights, secs, seeds, ", ".join(_names(team))])
+	L.append("")
+	L.append("| Domain | Size | Tier | Composition | Members | Menace | Ramp | Rated for | Read for | 1 | 2 | 3 | 4 | Same as |")
+	L.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
+	for e in found:
+		var read_for: Array[String] = []
+		for k in range(4):
+			if str(e["bands"][k]) == "decision":
+				read_for.append(str(k + 1))
+		var same: Array[String] = []
+		for o in found:
+			if o != e and o["domain"] == e["domain"] and o["size"] == e["size"] and o["tier"] == e["tier"] and o["bands"] == e["bands"]:
+				same.append(str(o["id"]))
+		var cells: Array[String] = []
+		for k in range(4):
+			cells.append("" if str(e["bands"][k]).is_empty() else "%s · %s" % [e["bands"][k], e["hulls"][k]])
+		L.append("| %s | %s | %d | %s | %s | %d | %s | %d | %s | %s | %s | %s | %s | %s |" % [e["domain"], e["size"], e["tier"], e["id"], e["members"], e["menace"], e["ramp"], e["rating"],
+			", ".join(read_for) if not read_for.is_empty() else "none", cells[0], cells[1], cells[2], cells[3], ", ".join(same)])
 	L.append("")
 	var text := "\n".join(L)
 	print(text)
