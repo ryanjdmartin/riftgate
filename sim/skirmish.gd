@@ -2853,18 +2853,13 @@ func _hit(ms: MechState, f: Face, target: Foe, real: Face) -> Hits:
 				# strike aimed at it double, spending the shock, while a blow that only reaches it, an
 				# area's or a Chain's arc, neither doubles nor spends it: Ryan, 29 October), then its armour comes off, flat,
 				# so small blows bounce off a braced foe the way they do off a heavy machine; a
-				# breaching blow meets none (one breach, 22 October).
-				taken = Effects.damage_taken(foe, blow, ms.unit, not f.is_debuff(), foe == aimed)
-				var barred := _barrier_eats(foe, not f.is_debuff())
-				if barred:
-					taken = 0   # a foe's Barrier takes the weapon's blow whole; its riders land (28 October)
-				var foe_armoured := mini(taken, foe.armour_for(f))
-				taken -= foe_armoured
-				foe.hp -= taken
-				# Every blow is recorded, one on a foe an earlier hit of the spend felled included, so the
-				# screen shows every hit and shot land (Ryan, 7 November: "Anything truncated confuses the
-				# player").
-				_note_blow(foe, s, taken, "strike" if foe == aimed else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
+				# breaching blow meets none (one breach, 22 October). Every blow is recorded, one on a
+				# foe an earlier hit of the spend felled included, so the screen shows every hit and
+				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), foe == aimed, foe.armour_for(f), s, "strike" if foe == aimed else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
+				taken = int(landing["taken"])
+				var foe_armoured := int(landing["armoured"])
+				var barred := bool(landing["barred"])
 				if was_alive and taken > 0 and not damaged.has(foe):
 					damaged.append(foe)
 				var eaten := int(reads.get(foe, [0, 0])[1]) if first else 0   # each foe struck eats its own, on its first blow
@@ -2983,6 +2978,24 @@ func _hit(ms: MechState, f: Face, target: Foe, real: Face) -> Hits:
 	if not sweep:
 		_after_blow(ms, f, touched, gained, turned)
 	return h
+
+
+## One blow of a hit landing on a foe, a strike's, an area's, an arc's or a spill's: what the foe
+## takes of `blow` (Effects.damage_taken: its own statuses read last, a `weapon`'s blow taking its
+## Flak even at 0, a Shocked foe's double on a weapon's strike `aimed` at it), a Barrier taking a
+## weapon's blow whole (28 October), then its `armour`, flat; off its HP and recorded for the
+## screen as `kind` in `strike`. Returns {taken: what came off its HP, armoured: what the armour
+## took, barred: whether a Barrier took it}.
+func _land_blow(foe: Foe, blow: int, by: Unit, weapon: bool, aimed: bool, armour: int, strike: int, kind: String) -> Dictionary:
+	var taken := Effects.damage_taken(foe, blow, by, weapon, aimed)
+	var barred := _barrier_eats(foe, weapon)
+	if barred:
+		taken = 0   # its riders land all the same
+	var armoured := mini(taken, armour)
+	taken -= armoured
+	foe.hp -= taken
+	_note_blow(foe, strike, taken, kind)
+	return {"taken": taken, "armoured": armoured, "barred": barred}
 
 
 ## The end of a spend's hits, in the spend's order (Ryan, 7 November: the hits and their riders,
@@ -4548,8 +4561,9 @@ func _land_web(foe: Foe, gained: Dictionary, turned: Dictionary, webbed: Array[F
 
 
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
-## behind it in the column as plain damage, through that foe's own damage taken and its armour;
-## it feeds the talons' kill rule and carries no keyword of the blow, and, aimed at nobody, it
+## behind it in the column as plain damage, a blow of the hit's landing as every blow does
+## (_land_blow: the weapon's damage, so a Barrier takes it, then its armour, never a breach); it
+## feeds the talons' kill rule and carries no keyword of the blow, and, aimed at nobody, it
 ## neither doubles on a Shock nor spends one (29 October). A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
@@ -4560,11 +4574,7 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], stri
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind):
 		return
-	var behind_taken := maxi(0, Effects.damage_taken(behind, amount, ms.unit, whole, false) - behind.armour_total())
-	if _barrier_eats(behind, true):
-		behind_taken = 0   # the spill is the weapon's damage, so a Barrier takes it
-	behind.hp -= behind_taken
-	_note_blow(behind, strike, behind_taken, "spill")
+	var behind_taken := int(_land_blow(behind, amount, ms.unit, true, false, behind.armour_total(), strike, "spill")["taken"])
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
 	if not behind.alive() and Effects.has(behind, "syrinx_drone") and not _killing_shot.has(behind):
 		_killed_by(behind, _shot(ms, f, amount, null, 1, 0, true))   # the spill is plain damage, so a drone's mine from it carries no keyword
