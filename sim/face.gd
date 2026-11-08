@@ -508,6 +508,8 @@ func add_keyword(kw: int) -> void:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
 		flak = 1
+	if kw == Keyword.DISPEL and dispel <= 0:
+		dispel = 1   # Purge says its number; one when nothing says
 	if (AREA_KEYWORDS.has(kw) or kw == Keyword.CHAIN) and int(get(NUMBER_FIELDS[kw])) <= 0:
 		set(NUMBER_FIELDS[kw], 1)   # an area keyword or Chain says its number; one when nothing says (a synthetic entry, an old save)
 
@@ -943,6 +945,8 @@ func describe() -> String:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
 					s += " %d" % flak
+				if k == Keyword.DISPEL:
+					s += " %d" % maxi(1, dispel)   # Purge N: the stacks it takes off each buff (the audit's thirteenth bug, 8 November)
 				if (AREA_KEYWORDS.has(k) or k == Keyword.CHAIN) and not is_debuff():
 					s += " %d" % number_of(k)   # area by shape and Chain, numbered: what each foe past the target or each conductor takes (a debuff's deals nothing)
 				if gates.has(KEYWORD_NAMES[k]):

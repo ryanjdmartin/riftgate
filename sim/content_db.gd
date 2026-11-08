@@ -472,6 +472,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	# Each row says where it comes from, and the codex colours it by that.
 	var rows: Array = []
 	var effects: Array = []
+	var kept := {}   # a kept status's row by its id, its stacks summed
 	for d in Effects.describe(u):
 		if d[3] != Effects.LOADOUT and d[3] != Effects.BATTLE:
 			continue
@@ -486,8 +487,15 @@ func codex_for_unit(u: Unit) -> Dictionary:
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
 		elif Effects.is_status(str(d[5])):
 			# A status the battle keeps (the Ammit's Empowered, 16 October): its count, kept for
-			# the battle.
-			effects.append({"name": head + (" ×%d" % int(d[4]) if int(d[4]) > 1 else ""), "text": str(d[1]), "kind": "reward", "note": "KEPT FOR THE BATTLE"})
+			# the battle, one row a status whatever granted each stack.
+			if kept.has(str(d[5])):
+				var row: Dictionary = kept[str(d[5])]
+				row["stacks"] = int(row["stacks"]) + int(d[4])
+				row["name"] = head + (" ×%d" % int(row["stacks"]) if int(row["stacks"]) > 1 else "")
+				continue
+			var kept_row := {"name": head + (" ×%d" % int(d[4]) if int(d[4]) > 1 else ""), "text": str(d[1]), "kind": "reward", "note": "KEPT FOR THE BATTLE", "stacks": int(d[4])}
+			kept[str(d[5])] = kept_row
+			effects.append(kept_row)
 		else:
 			effects.append({"name": head, "text": str(d[1]), "kind": "reward", "note": "REWARD"})
 	var passive_lines: Array[String] = []

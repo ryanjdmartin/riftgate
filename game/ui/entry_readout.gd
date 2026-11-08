@@ -427,8 +427,9 @@ static func codex_move_lines(f: Foe, a: Dictionary, db: ContentDB) -> Array:
 ## Whom a foe's move that is no blow acts on, by its effect (Foe.ACTION_EFFECTS); a debuff aimed at
 ## a machine is "Any machine", as a blow is.
 const MOVE_TARGETS := {
-	"brace": "Self", "regrow": "Self", "revive_once": "Self",
+	"brace": "Self", "regrow": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
 	"regrow_ally": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
+	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
 	"summon": "The waiting pool", "rally": "Every other foe", "merge": "Its kinds on the field",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
 }

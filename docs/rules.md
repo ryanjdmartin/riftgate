@@ -257,7 +257,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   comes back at once. The prediction runs in phases: a foe its Burning will kill before it
   acts keeps its intent shown, information whether its blow lands or not, and its blow is left
   out. The enemy's turn is sequenced as it happens: a foe its tick kills never strikes, and a
-  wreck takes no more strikes.
+  wreck takes no more strikes. Its death check runs as each foe's action is done, and at once
+  on a foe its tick fells, so its last act lands, its parts fall, its machine is let go and its
+  return stands before the next foe moves; and it ends the moment the fight is decided, the
+  foes after the blow that wrecks the last machine doing nothing.
 - **A kill**: a foe the death check clears that stays down. A foe getting back up and a split
   are none (a split's halves are kills of their own), nor a part its core takes with it, a
   Bomb's burst or a foe a merge takes in. Every kill trigger, the grudge, salvage and menace
@@ -644,7 +647,10 @@ On a machine:
   bought, for good, and N of what a store, a form or a passive grants asleep for the rest of the
   enemy's turn, back at the start of the player's turn after its start resolves; the stores
   stay, and the Ammit's kept Empowered is its passive's own and stays; a Ward turns it away
-  too. An entry's spend bought it when a buff component's spend or a braces rule granted it.
+  too. An entry's spend bought it when a buff component's spend or a braces rule granted it;
+  what was bought and what was granted stay apart on a machine carrying both, so the Purge
+  reads each by its own, and the stacks it puts to sleep keep their clock while they sleep (a
+  halving buff's halve with the rest, one number to its clock whatever granted each stack).
 - **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
   a stack for each attack that killed; no cleanse, silence or purge lifts it.
 

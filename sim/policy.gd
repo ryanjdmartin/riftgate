@@ -898,7 +898,6 @@ func pull_score(sk: Skirmish, target: Foe) -> float:
 		return 0.0
 	var hp := float(target.hp)
 	var shocked := Effects.has(target, "shocked")
-	var add := float(Effects.damage_taken_add(target))
 	var arm := float(target.armour_total())
 	var dealt := 0.0
 	for shot in shots:
@@ -907,7 +906,7 @@ func pull_score(sk: Skirmish, target: Foe) -> float:
 		var d := float(int(shot["damage"]))
 		var weapon := bool(shot.get("weapon", d > 0.0))   # a weapon's shot takes the adds, a blow of 0 included
 		if weapon:
-			d += add
+			d = float(Effects.damage_taken(target, int(d), null, true, false))   # its Flak, a Guarded core's nothing
 		if shocked and weapon:
 			d *= 2.0   # and spends the shock
 			shocked = false
@@ -1271,7 +1270,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 		# every blow of a weapon, a strike of 0 included. Then its armour comes off every blow, so
 		# a braced foe is worth less to a volume weapon.
 		var arm := target.armour_for(f) if target != null else 0
-		var later := maxi(0, dmg + (Effects.damage_taken_add(target, ms.unit) if target != null and damaging else 0) - arm)
+		var later := maxi(0, (Effects.damage_taken(target, dmg, ms.unit, true, false) if target != null and damaging else dmg) - arm)   # every add and multiply but a Shocked doubling: its Flak, a Guarded core's nothing
 		if not aimed or area >= 0:
 			out.append([float(later) * (maxf(0.0, n - 1.0) if barred else n), w])   # no strike aimed at it: no Shock read
 			continue
@@ -2330,7 +2329,7 @@ static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
 				return _foe_buff_worth(f, sk)
 	if f.target == null or f.is_suppressed() or not f.attacks():
 		return 0.0
-	var machines: int = sk.live_mechs().size() if sk != null and f.hits_all() else 1
+	var machines: int = sk.targetable_mechs().size() if sk != null and f.hits_all() else 1
 	var blow := sk.foe_blow(f) if sk != null else f.damage()
 	# A primed foe's move leaves Burning on what it hits (28 October), 2 a stack (a placeholder).
 	return float(blow * f.strikes() * machines) + PRIMED_WORTH * float(Effects.stacks_of(f, "primed"))

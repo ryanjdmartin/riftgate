@@ -344,6 +344,37 @@ func test_reroll_skips_locked_and_spent_dice() -> void:
 	s.free()
 
 
+## REROLL lights only with a die it can roll (the audit's tenth bug, 8 November): every die
+## spent or locked, it goes dark.
+func test_reroll_goes_dark_with_every_die_spent_or_locked() -> void:
+	var s := _screen(5)
+	s._refresh()
+	assert_false(s._reroll_btn.disabled, "unspent dice: lit")
+	for i in range(s.sk.mechs.size()):
+		s.locked[i] = true
+	s._refresh()
+	assert_true(s._reroll_btn.disabled, "every die locked: dark")
+	var before := s.sk.rerolls_left
+	s._on_reroll()
+	assert_eq(s.sk.rerolls_left, before, "and a press spends nothing")
+	s.free()
+
+
+## END TURN asks about a die only where it could be spent (the audit's twelfth bug, 8 November): a
+## shield whose cost the machine cannot pay has nowhere to go, so it is no waste.
+func test_end_turn_counts_only_dice_with_somewhere_to_go() -> void:
+	var s := _screen(5)
+	for i in range(s.sk.mechs.size()):
+		var costly := Face.shield(10)
+		costly.shield_cost = 99
+		s.sk.mechs[i].unit.die = Die.single(costly)
+		s.sk.mechs[i].die = s.sk.mechs[i].unit.die
+		s.sk.mechs[i].face_index = 0
+	assert_false(s.sk.can_spend(0), "a shield cost it cannot pay: nowhere to spend it")
+	assert_eq(s._unspent_count(), 0, "so END TURN has nothing to ask about")
+	s.free()
+
+
 func test_attack_then_reroll_flow() -> void:
 	var s := _screen(5)
 	var attacker := -1
@@ -1269,6 +1300,40 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 ## A kill a foe comes back from takes the skull's place in the preview (Ryan, 7 November: "a revive
 ## or a split SHOULD be a preview chip that shows up, taking the place of a death chip"): the
 ## rising arrow on a foe that gets back up, the fork on one that splits, and no skull on either.
+## The screen plays a fall and a rise only where the engine says one happened (the audit's
+## eleventh bug, 8 November): a Purge that takes a foe's Getting Back Up without felling it plays
+## no death; a blow that fells a foe that gets back up plays its fall and its rise.
+func test_a_purge_that_takes_undying_from_a_standing_foe_plays_no_death() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	var purge := Face.attack(1, Face.Reach.DIRECT, [Face.Keyword.DISPEL])
+	purge.dispel = 1
+	m.die = Die.single(purge)
+	sk.add_mech(m)
+	var riser := Foe.make("revenant", 30, 2)
+	sk.add_foes([riser])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(riser, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(s._use_die(0, riser), "the purge, a scratch")
+	assert_false(Effects.has(riser, "risen"), "its Getting Back Up taken")
+	assert_eq(s.spend_played, {"dead": [], "rose": []}, "and no fall nor rise played")
+	s.free()
+	var s2_sk := Skirmish.new(1)
+	var m2 := db.make_mech("badger")
+	m2.die = Die.single(Face.attack(50, Face.Reach.DIRECT))
+	s2_sk.add_mech(m2)
+	var back := Foe.make("revenant", 10, 2)
+	s2_sk.add_foes([back, Foe.make("revenant", 300, 2)])
+	var s2 := SkirmishScreen.new()
+	s2.setup(s2_sk)
+	Effects.stack(back, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(s2._use_die(0, back), "the felling blow")
+	assert_eq(s2.spend_played, {"dead": [back], "rose": [back]}, "its fall and its rise played")
+	s2.free()
+
+
 func test_a_foe_that_comes_back_wears_its_return_in_place_of_the_skull() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)

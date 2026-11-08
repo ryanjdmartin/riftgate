@@ -505,10 +505,29 @@ class Modifier:
 	var stacks: int = 1
 	var decay: int = DECAY_NONE
 	var slept: bool = false        # put to sleep by a purge (28 October): it takes part in nothing, its clocks running, until the player's turn wakes it
-	var slept_stacks: int = 0      # the stacks a Purge N put to sleep (2 November): back when it wakes
 
 	func matches(key: String) -> bool:
 		return id == key or tags.has(key)
+
+	## `n` of its stacks as a grant of their own, the same in every other way (its clocks, its
+	## source, its place in the grant order): what a Purge N puts to sleep (the audit's fifth
+	## bug, 8 November: the part asleep keeps its clock, since every clock reads every modifier).
+	func split_off(n: int) -> Modifier:
+		var c := Modifier.new()
+		c.id = id
+		c.name = name
+		c.description = description
+		c.source = source
+		c.component = component
+		c.scope = scope
+		c.expires_round = expires_round
+		c.tags = tags.duplicate()
+		c.effects = effects
+		c.seq = seq
+		c.decay = decay
+		c.stacks = n
+		stacks -= n
+		return c
 
 
 ## A description's {value} filled from the number its first effect carries (the stock pass,
@@ -567,7 +586,7 @@ static func _record(u, m: Modifier, n: int) -> void:
 static func grant_for_rounds(u, passive: Dictionary, source: String, round: int) -> Modifier:
 	if turns_mark(u, str(passive.get("id", ""))):
 		return null   # a foe's Ward turns the team's mark away (28 October)
-	var held := _held(u, passive, ROUNDS, 1, round)
+	var held := _held(u, passive, ROUNDS, 1, round, source)
 	if held != null:
 		return held
 	var m := make(passive, ROUNDS, source)
@@ -584,12 +603,12 @@ static func status_stacking(def: Dictionary) -> String:
 ## The grant a second one of `passive` renews, or null when the status adds (and the caller
 ## grants as usual). A renewal takes the later end of two timed grants and the larger count,
 ## never a second stack.
-static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int) -> Modifier:
+static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int, source: String) -> Modifier:
 	if status_stacking(passive) != "renew":
 		return null
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
-		if m.id != id:
+		if m.id != id or source_class(m.source) != source_class(source):
 			continue
 		if m.scope == ROUNDS and scope == ROUNDS:
 			m.expires_round = maxi(m.expires_round, expires_round)
@@ -607,7 +626,9 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 ## that renews (its "stacking") is one grant however often it is granted. A machine that
 ## keeps the status (keep_status, the Ammit's Quintessence Tap) keeps every grant of it for
 ## the battle, whatever granted it (Ryan, 18 October: "that's the rules text, it doesn't care
-## where it came from"): the grant's own scope and decay give way.
+## where it came from"): the grant's own scope and decay give way. Grants of one status stack
+## up only within one source class (source_class), so a Purge reads each by its own (the audit's
+## sixth bug, 8 November).
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
 	if turns_mark(u, str(passive.get("id", ""))):
 		return null   # a foe's Ward turns the team's mark away (28 October)
@@ -615,12 +636,12 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 		scope = BATTLE
 		decay = DECAY_NONE
 		expires_round = -1
-	var held := _held(u, passive, scope, n, expires_round)
+	var held := _held(u, passive, scope, n, expires_round, source)
 	if held != null:
 		return held
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
-		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round):
+		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round) and source_class(m.source) == source_class(source):
 			m.stacks += n
 			_record(u, m, n)
 			return m
@@ -813,6 +834,8 @@ static func turn_tick(u) -> Dictionary:
 ## Empowered's clock, 21 October).
 static func tick(u, halving: bool = true) -> Dictionary:
 	var out := tick_preview(u)
+	if halving:
+		_halve_as_one(u)
 	var keep: Array = []
 	for m in u.modifiers:
 		if m.decay == DECAY_ROUND:
@@ -821,26 +844,54 @@ static func tick(u, halving: bool = true) -> Dictionary:
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
-		elif m.decay == DECAY_HALF and halving:
-			# Rounded down, so it reaches zero on its own (one stack halves to none).
-			m.stacks = int(m.stacks / 2.0)
-			if m.stacks <= 0:
-				continue
+		elif m.decay == DECAY_HALF and m.stacks <= 0:
+			continue
 		keep.append(m)
 	u.modifiers = keep
 	return out
+
+
+## Every halving status halves as one number, whatever granted it (Ryan, 17 and 18 October:
+## Empowered "halves at the end of each round, rounded down, whatever granted it"), rounded down
+## so it reaches zero on its own: its grants, kept apart by source for a Purge (source_class),
+## asleep or awake, each halve, and the odd stacks the whole would keep go back to the oldest of
+## them. A grant left at nothing is dropped by the caller.
+static func _halve_as_one(u) -> void:
+	var groups := {}
+	for m in u.modifiers:
+		if m.decay == DECAY_HALF:
+			if not groups.has(m.id):
+				groups[m.id] = []
+			(groups[m.id] as Array).append(m)
+	for id in groups.keys():
+		var mods: Array = groups[id]
+		var total := 0
+		for m in mods:
+			total += m.stacks
+		var left := int(total / 2.0)
+		mods.sort_custom(func(a, b) -> bool: return a.seq < b.seq)
+		var odd: Array = []
+		for m in mods:
+			if m.stacks % 2 == 1:
+				odd.append(m)
+			m.stacks = int(m.stacks / 2.0)
+			left -= m.stacks
+		for m in odd:
+			if left <= 0:
+				break
+			m.stacks += 1
+			left -= 1
 
 
 ## The round's end for a foe (Flak, 21 October: it halves at the end of each round, rounded
 ## down, Empowered's clock): every halving status halves and the empty ones go. Its other
 ## statuses tick at its action (tick).
 static func halve(u) -> void:
+	_halve_as_one(u)
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_HALF:
-			m.stacks = int(m.stacks / 2.0)
-			if m.stacks <= 0:
-				continue
+		if m.decay == DECAY_HALF and m.stacks <= 0:
+			continue
 		keep.append(m)
 	u.modifiers = keep
 
@@ -1114,17 +1165,6 @@ static func damage_taken(u, amount: int, source = null, weapon: bool = false, ai
 			"multiply_damage_taken":
 				mult *= pow(float(eff.get("value", 1)), n)
 	return maxi(0, int(roundf((amount + add) * mult)))
-
-
-## What a blow on this unit gains from its flat damage-taken adds alone (a foe's Flak), never
-## its multiplies: the die over a foe folds it in as it does armour, and leaves a Shocked
-## foe's doubling to its chip (Skirmish.shown_number).
-static func damage_taken_add(u, source = null) -> int:
-	var add := 0
-	for pair in _taking_part(u, "static", null, source):
-		if str(pair[0].get("effect", "")) == "add_damage_taken":
-			add += int(pair[0].get("value", 0)) * int(pair[1].stacks)
-	return add
 
 
 ## A component's reach as it is right now: its own, unless a live set_reach holds. Static
@@ -1545,7 +1585,7 @@ static func banked(u, id: String) -> int:
 	var n := 0
 	for m in u.modifiers:
 		if m.id == id:
-			n += m.stacks + m.slept_stacks   # a store's grant a Purge N put part to sleep is still held (2 November)
+			n += m.stacks   # a store's grant a Purge put to sleep, whole or in part, is still held (2 November)
 	return n
 
 
@@ -1833,7 +1873,20 @@ static func clear_marks(u) -> Array[String]:
 ## good; what the machine is (a form, a passive's or a module's grant, a store's effect) it puts
 ## to sleep instead.
 static func bought(m) -> bool:
-	return m.source == "buff" or m.source.begins_with("buff:") or m.source.begins_with("brace:")
+	return bought_source(m.source)
+
+
+static func bought_source(source: String) -> bool:
+	return source == "buff" or source.begins_with("buff:") or source.begins_with("brace:")
+
+
+## What a grant's source makes it, the classes a status's grants keep apart (the audit's sixth
+## bug, 8 November): "bought" by a die entry (a Purge takes it for good), "cooldown" an entry's
+## own price (a reset lifts it, a cleanse never), or "own", what the machine or the foe is.
+static func source_class(source: String) -> String:
+	if source == "cooldown":
+		return "cooldown"
+	return "bought" if bought_source(source) else "own"
 
 
 ## The stacks of buffs a purge can reach on a machine: what a foe that aims at the buffed reads,
@@ -1858,6 +1911,7 @@ static func purge(u, n: int = 1) -> Dictionary:
 	var slept: Array[String] = []
 	var lowered: Array[String] = []
 	var keep: Array = []
+	var asleep: Array = []   # the parts a Purge N put to sleep, grants of their own
 	var left := {}   # the stacks a Purge N still takes, by status (2 November)
 	for m in u.modifiers:
 		if not purgeable(m) or m.slept or keeps(u, m.id):
@@ -1881,11 +1935,13 @@ static func purge(u, n: int = 1) -> Dictionary:
 			if not slept.has(m.name):
 				slept.append(m.name)
 		else:
-			m.stacks -= take   # a part of it sleeps: back when it wakes
-			m.slept_stacks += take
+			var part: Modifier = m.split_off(take)   # a part of it sleeps, a grant of its own whose clock runs, back when it wakes
+			part.slept = true
+			asleep.append(part)
 			if not lowered.has(m.name):
 				lowered.append(m.name)
 		keep.append(m)
+	keep.append_array(asleep)
 	u.modifiers = keep
 	return {"gone": gone, "slept": slept, "lowered": lowered}
 
@@ -1894,13 +1950,16 @@ static func purge(u, n: int = 1) -> Dictionary:
 ## resolved). Returns the names that woke, once each.
 static func wake(u) -> Array[String]:
 	var woke: Array[String] = []
+	var keep: Array = []
 	for m in u.modifiers:
-		if m.slept or m.slept_stacks > 0:
-			m.stacks += m.slept_stacks
-			m.slept_stacks = 0
+		if m.slept:
 			m.slept = false
 			if not woke.has(m.name):
 				woke.append(m.name)
+			if m.stacks <= 0:
+				continue   # its clock ran it out while it slept
+		keep.append(m)
+	u.modifiers = keep
 	return woke
 
 

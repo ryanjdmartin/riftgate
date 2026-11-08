@@ -324,6 +324,9 @@ var _confirm: HudPanel
 var _confirm_text: Label
 var _confirm_action: Callable = Callable()
 var _reroll_btn: HudButton
+## What the screen played for the last spend: {"dead": the foes it showed falling, "rose": those
+## among them it showed getting back up}.
+var spend_played: Dictionary = {"dead": [], "rose": []}
 var _undo_btn: HudButton
 var _undo_from: int = 0   # the tick (ms) the undo opens again after a spend, once its blow has played
 var _end_btn: HudButton
@@ -1288,7 +1291,7 @@ func _refresh(save: bool = true) -> void:
 
 	_refresh_log()
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
-	_reroll_btn.set_enabled(assigning and sk.can_reroll())
+	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
 	_refresh_undo()
 	_end_btn.set_enabled(assigning)
 	# Nothing left to spend, rerolls aside: END TURN is the next thing to press (Ryan, 25 October).
@@ -2929,20 +2932,28 @@ const VOICE_AFTER_BLOW := 0.4
 ## foe it struck flashing, its gauge stepping down to what the blow left and the blow's number
 ## rising off it; a foe the spend killed is stood in for, gauge and all, until its killing blow
 ## lands, then dies; a last act lands its damage on the machines as it is named.
+## The foes that got back up since the engine's returns stood at `n` (Skirmish.returned): what the
+## screen plays as a fall and a rise.
+func _risen_since(n: int) -> Array:
+	var out: Array = []
+	for r in sk.returned.slice(n):
+		if str(r.get("how", "")) == "rises":
+			out.append(r["foe"])
+	return out
+
+
 func _use_die(i: int, target, second = null) -> bool:
 	_flush_blows()
 	# Every foe's view and look before the die lands: a kill clears its slot at once, so the
 	# death is played from what stood there (a stand-in dressed as its view).
 	var was: Dictionary = {}
 	var hp_before: Dictionary = {}
-	var readied: Array = []   # the foes ready to get back up: one that does falls and stands again in its slot
 	for foe in sk.field_foes():
 		hp_before[foe] = foe.hp
 		var fv := _foe_view_for(foe)
 		if fv != null:
 			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
-		if Effects.has(foe, "risen"):
-			readied.append(foe)
+	var returns_before := sk.returned.size()
 	var spent: Face = sk.mechs[i].face()
 	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
 	var heat_before := _heat_marks()
@@ -2955,10 +2966,14 @@ func _use_die(i: int, target, second = null) -> bool:
 			_undo_from = Time.get_ticks_msec() + int((BLOW_AT + 2.0) * 1000.0)   # until the blow's timing is known, below
 	var blows: Array = sk.spend_blows.duplicate() if ok else []
 	var dead: Array = []
+	# The foes the spend felled that got back up, as the engine says (its returns; the audit's
+	# eleventh bug, 8 November: never inferred from a lost Undying, which a Purge takes too).
+	var rose: Array = _risen_since(returns_before) if ok else []
 	if ok:
 		for foe in was.keys():
-			if not foe.alive() or (readied.has(foe) and not Effects.has(foe, "risen")):
+			if not foe.alive() or rose.has(foe):
 				dead.append(foe)   # a foe that got back up dies on screen first, then stands again
+	spend_played = {"dead": dead, "rose": rose}
 	# The gauges the blows struck hold what they showed until each blow lands, and a machine a last
 	# act struck its gauges until the act lands.
 	if ok and is_inside_tree():
@@ -3087,7 +3102,7 @@ func _use_die(i: int, target, second = null) -> bool:
 	if ok:
 		var stepped := 0
 		for foe in sk.field_foes():
-			if not was.has(foe) or (readied.has(foe) and not Effects.has(foe, "risen")):
+			if not was.has(foe) or rose.has(foe):
 				_animate_arrival(_foe_view_for(foe), ends + 0.3)
 				Sound.play_after(ends + 0.55 + 0.09 * stepped, "arrival", -3.0 * stepped)
 				stepped += 1
@@ -3941,15 +3956,24 @@ func _confirm_yes() -> void:
 		action.call()
 
 
-func _on_reroll() -> void:
-	if not _pending.is_empty():
-		_cancel_second()   # a reroll takes the waiting die back to the tray first
+## The dice a REROLL rolls: every unspent, unlocked die of a machine still standing; with none,
+## the button is dark (the audit's tenth bug, 8 November).
+func _reroll_indices() -> Array:
 	var idx: Array = []
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.alive() and not ms.assigned and not locked[i]:
 			idx.append(i)
-	sk.reroll(idx)
+	return idx
+
+
+func _on_reroll() -> void:
+	if not _pending.is_empty():
+		_cancel_second()   # a reroll takes the waiting die back to the tray first
+	var idx := _reroll_indices()
+	if not sk.reroll(idx):
+		_refresh()
+		return
 	_refresh()
 	if not idx.is_empty():
 		Sound.play("die_roll")
@@ -4025,9 +4049,9 @@ func _rage_debug() -> void:
 ## Live dice that still hold a usable face.
 func _unspent_count() -> int:
 	var n := 0
-	for ms in sk.mechs:
-		if ms.alive() and not ms.assigned and ms.face() != null and ms.face().kind != Face.Kind.BLANK:
-			n += 1
+	for i in range(sk.mechs.size()):
+		if sk.can_spend(i):
+			n += 1   # a die with somewhere to be spent, as END TURN's pulse reads it (the audit's twelfth bug, 8 November): a dry gun or an unpayable cost is no waste
 	return n
 
 
@@ -4066,7 +4090,9 @@ func _end_turn_now() -> void:
 		var rv := _foe_view_for(foe)
 		if Effects.has(foe, "risen") and rv != null:
 			readied[foe] = [rv, rv.sprite, rv.sprite_frame(), rv.flip_h, _home.get(rv, rv.position)]
+	var returns_before := sk.returned.size()
 	var outcome := sk.end_round()
+	var rose_in_turn := _risen_since(returns_before)   # read before the next round's start clears the returns
 	if outcome == Skirmish.Outcome.NONE:
 		sk.start_round()
 		for i in range(locked.size()):
@@ -4081,7 +4107,7 @@ func _end_turn_now() -> void:
 		# A foe that got back up in the enemy's turn falls on screen, then stands again.
 		var rose := 0
 		for foe in readied.keys():
-			if Effects.has(foe, "risen") or not sk.field_foes().has(foe):
+			if not rose_in_turn.has(foe) or not sk.field_foes().has(foe):
 				continue
 			var w: Array = readied[foe]
 			_animate_death(w[0], w[1], w[2], w[3], 0.05 + 0.2 * rose, w[4])
