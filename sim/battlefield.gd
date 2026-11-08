@@ -111,6 +111,10 @@ func add_unit(u: Unit) -> Unit:
 ## foe_id does not (the boss, which unpacks by its faction).
 func dress_pack(sq: Unit, foe: String = "") -> Unit:
 	var p: Dictionary = foe_profiles.get(foe if not foe.is_empty() else sq.foe_id, {})
+	# Its ring is its lead's alone: the one reader is a hunter's catch, and the hunt is the lead's,
+	# so the reach is the hunter's own pounce (the long wall proposal: "its pounce of two kept as
+	# its own reach"). A member's ring once widened it, from the days rings joined fights, and a
+	# goblin leading Mandragoras caught from three (Ryan, 8 November: "caught from 3 spaces away").
 	sq.zone = int(p.get("zone", sq.zone))
 	if p.has("movespeed"):
 		sq.movespeed = int(p["movespeed"])   # the boss's too: its patrol step is content
@@ -121,11 +125,10 @@ func dress_pack(sq: Unit, foe: String = "") -> Unit:
 		# 28 October, the movement proposal's lever 2); the boss is never winged.
 		var winged := bool(p.get("winged", false))
 		# A composition (the foes' fresh start, 30 October): it walks by its lead, at its slowest
-		# member's pace, with the largest of its members' rings, and is winged only when every
-		# member is, since a walker among them cannot cross water.
+		# member's pace, and is winged only when every member is, since a walker among them
+		# cannot cross water.
 		for m in sq.members:
 			var mp: Dictionary = foe_profiles.get(str(m[0]), {})
-			sq.zone = maxi(sq.zone, int(mp.get("zone", 1)))
 			if mp.has("movespeed"):
 				sq.movespeed = mini(sq.movespeed, int(mp["movespeed"]))
 			winged = winged and bool(mp.get("winged", false))

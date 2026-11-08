@@ -147,12 +147,10 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 		var spawned: Unit = back.field.packs()[before]
 		var p: Dictionary = profiles.get(spawned.foe_id, {})
 		assert_false(p.is_empty(), "a content foe: %s" % spawned.foe_id)
-		var ring := 1
 		var pace := 99
 		for m in spawned.member_list():
-			ring = maxi(ring, int(profiles.get(str(m[0]), {}).get("zone", 1)))
 			pace = mini(pace, int(profiles.get(str(m[0]), {}).get("movespeed", Unit.PACK_MOVE)))
-		assert_eq(spawned.zone, ring, "%s: its ring, the largest of its members'" % spawned.foe_id)
+		assert_eq(spawned.zone, int(p.get("zone", 1)), "%s: its ring, its lead's" % spawned.foe_id)
 		assert_eq(spawned.movespeed, pace, "%s: its move, the slowest" % spawned.foe_id)
 		assert_eq(spawned.behaviour, str(p.get("behaviour", "push")), "%s: its walk, its lead's" % spawned.foe_id)
 	var m: Unit = b.mechs()[0]

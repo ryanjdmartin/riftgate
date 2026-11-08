@@ -269,9 +269,9 @@ func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_hom
 
 
 ## A pack as a composition (the foes' fresh start, 30 October): one hex, one sprite (its lead's),
-## every member unpacked into the fight, the survivors kept by member, its ring the largest of
-## its members', its pace the slowest, winged only when every member is, and each kill worth its
-## type's menace.
+## every member unpacked into the fight, the survivors kept by member, its ring its lead's (the
+## hunter's own pounce, 8 November), its pace the slowest, winged only when every member is, and
+## each kill worth its type's menace.
 func test_a_composition_unpacks_its_members_and_keeps_its_survivors_by_member() -> void:
 	var b := _battle()
 	var db := b.db
@@ -280,8 +280,7 @@ func test_a_composition_unpacks_its_members_and_keeps_its_survivors_by_member() 
 	assert_eq(host.foe_id, "revenant", "its foe type is the lead's")
 	assert_eq(host.strength, 5, "its strength is the count of every member")
 	b.field.add_unit(b.field.dress_pack(host))
-	var ring := maxi(int(db.foes["revenant"].get("zone", 1)), int(db.foes["ghost"].get("zone", 1)))
-	assert_eq(host.zone, ring, "its ring is the largest of its members'")
+	assert_eq(host.zone, int(db.foes["revenant"].get("zone", 1)), "its ring is its lead's, never a member's")
 	assert_eq(host.movespeed, mini(int(db.foes["revenant"].get("movespeed", 2)), int(db.foes["ghost"].get("movespeed", 2))), "its pace the slowest")
 	assert_eq(host.behaviour, str(db.foes["revenant"].get("behaviour", "push")), "it walks by its lead")
 	assert_false(host.traits.has("winged"), "winged only when every member is: the revenants walk")

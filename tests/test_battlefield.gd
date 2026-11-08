@@ -509,6 +509,29 @@ func test_a_pack_is_dressed_from_its_foe_type() -> void:
 	assert_eq(BattleMap.way_of(wings.traits), "winged", "and crosses by it")
 
 
+## A pack's ring is its lead's, the hunter's own pounce, never a member's (Ryan, 8 November, of
+## a goblin warband with Mandragoras behind it: "caught from 3 spaces away"): the ring's one
+## reader is a hunter's catch, and a back-rank member's ring, from the days rings joined fights,
+## had widened it to three.
+func test_a_hunters_catch_is_its_own_ring_never_a_members() -> void:
+	var f := _field(7, 14)
+	f.foe_profiles = {"stalker": {"zone": 2, "behaviour": "hunt", "hunts": "nearest", "movespeed": 2},
+		"howler": {"zone": 3, "behaviour": "push", "hunts": "nearest", "movespeed": 2}}
+	var sq := Unit.pack(1, "stalkers", _o(3, 3), "meadow", 2)
+	sq.set_members([["stalker", 4], ["howler", 2]])
+	f.add_unit(f.dress_pack(sq))
+	assert_eq([sq.behaviour, sq.zone], ["hunt", 2], "it hunts as its lead, at its lead's ring, never the howlers' three")
+	var prey := f.add_unit(Unit.mech(2, "A", _o(3, 7), 0))
+	assert_eq(Battlefield.unit_distance(sq, prey), 4, "four away to start")
+	var w: Battlefield.Walk = f.plan_walks()[1]
+	assert_eq(Hex.distance(w.end, prey.pos), 2, "it walks until its prey stands two away, its own pounce, not three")
+	assert_eq(w.catches, prey.id, "and catches it there")
+	sq.pos = _o(3, 4)
+	assert_eq(Battlefield.unit_distance(sq, prey), 3, "three away")
+	assert_true(f.forced_fights().is_empty(), "is no catch, whatever stands behind the stalkers")
+	assert_eq(f.plan_walks()[1].catches, prey.id, "its walk closes the last hex and catches")
+
+
 ## A band of water across the field at `rows`, every column.
 func _river(f: Battlefield, rows: Array) -> void:
 	for r in rows:

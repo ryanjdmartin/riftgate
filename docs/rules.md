@@ -1068,7 +1068,10 @@ a stat.
   stands inside its catch, so its first walk comes on the enemy's first turn.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
   and every pack's threat rating under its count, four pips with one filled a machine it is
-  intended for; no pack's ring is drawn. Each machine has one action (the Dingo two): one move,
+  intended for; and every hunter coming for a machine wears its ring round where its coming walk
+  ends, where its catch is judged (round where it stands while a catch it made waits), a dashed
+  violet edge, tinted under a solid one while the hunter is tapped or its catch waits; no other
+  pack's ring is drawn. Each machine has one action (the Dingo two): one move,
   in one go, then it may fight; a fight ends the action however it ends, and a pip under the
   machine stays lit until it does. A selected machine lights the hexes its move reaches and
   brackets the packs it could be ordered onto. A move is planned: its route shows from where the
@@ -1114,12 +1117,13 @@ a stat.
   stands first; its grid is where each stands (Content conventions). Each pack carries its threat rating, the machines it is intended
   for: its composition's own, else a patrol 1, a formation 3, an elite and an escort 4, a pack
   of no composition 3, the boss's unit 4. A pack walks at its slowest member's pace
-  with the largest of its members' rings, winged only when every member is. They cross every land hex and wade water as a
+  with its lead's ring, never a member's, winged only when every member is. They cross every land hex and wade water as a
   ground machine does, a water hex costing two of their move (entered with whatever is left),
   and never enter walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb,
   the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
-  moves 2 (fast 3, the Dire Wolf's line 4, massive 1); rings 1 (front rank), 3 (back rank), 2
-  (massive), a hunter's 2 at least, read only by a hunter's catch. A ring counts hexes as the
+  moves 2 (fast 3, the Dire Wolf's line 4, massive 1); a ring is read only by a hunter's catch,
+  so a pusher's says nothing: a hunter's is 2 at least, its pounce (a back-rank hunter's 3 in
+  content today). A ring counts hexes as the
   crow flies, over anything between. They walk round grounded machines, through each other and under a flyer, never
   ending a walk on another unit's hex, so a flyer holds no ground and a pack holds none
   against the packs; the walk shown is the walk played. The

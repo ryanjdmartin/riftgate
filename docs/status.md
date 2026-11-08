@@ -25,8 +25,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1058 tests, 259,976 checks, green (8 November, main with the long wall and the skirmish
-  code audit landed, a part no kill, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1060 tests, 259,994 checks, green (8 November, `ccr-d26a1321-xg9xge`: main with the long
+  wall and the skirmish code audit landed, a part no kill, and a hunter's reach, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -73,7 +73,8 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (8 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
+Still working (8 November; every other branch on GitHub is merged): `ccr-d26a1321-xg9xge`, the
+hunter's reach (below, How things stand), off main at `1863ec5`, for main on Ryan's word; and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
 8 November: `ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a
@@ -135,6 +136,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
+  enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
+  range, nor why a normal goblin pack is now suddenly a hunter"): a pack's ring is its lead's,
+  never a member's (`Battlefield.dress_pack` took its widest member's, a relic of the joining
+  rings, so the Mandragoras' back-rank three became the goblins' catch; twelve hunting formations
+  came down from three to their leads' two), and a hunter's ring is drawn again, round where its
+  walk ends and round the hunter while its catch waits, in the rings' old look (the bible's map
+  marks row; `BattleMapView.hunter_rings`). Saves at 16, runs at 15. Who hunts (the goblin line,
+  every goblin-led composition with it, the lead setting picture and walk alike), the first walk's
+  catch and the back rank's hunters' ring of three are section 12's question; his phone read of
+  the ring is the to-do's.
 - **The long wall, Phase 1** (6 November, `ccr-56b5169d-lsa2rg`, from
   `git show 68381ff:docs/briefs/long_wall_build.md`): the field's size the ramp's (20 by 12 for now); the battle
   opening with the siege under way (formations a move from the wall, patrols on the flanks, the

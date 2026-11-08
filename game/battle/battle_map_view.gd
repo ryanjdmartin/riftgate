@@ -2,9 +2,9 @@ class_name BattleMapView
 extends Control
 
 ## The battlefield as a scrolling, touchable map in the overlay style. Draws terrain, the gate
-## and the rift, every pack's walk on the enemy's turn and every hunter's lock, the fights a
-## hunter forced, the fight being set up, the hexes the selected machine can reach, and the
-## units themselves (bible section 4, the round row).
+## and the rift, every pack's walk on the enemy's turn, every hunter's lock and its ring, the
+## fights a hunter forced, the fight being set up, the hexes the selected machine can reach, and
+## the units themselves (bible section 4, the round row).
 ##
 ## Gestures: drag to scroll; tap a hex (the screen decides what that means); hold a unit for
 ## its readout; drag from one of the player's machines to draw its route by hand (Ryan, 25
@@ -529,9 +529,23 @@ func _draw() -> void:
 					var bc := center(sq.pos)
 					Hud.brackets(self, Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), ENEMY_HOT, _px(3.0))
 
-	# No pack's ring is drawn (the long wall brief 7.2): one pack is one fight and nothing joins,
-	# so a ring said nothing a fight needs, and a hunter's catch reads off its walk ("CATCHES")
-	# and the tag on what it comes for. A pack tapped shows its walk and its hold.
+	# A hunter's ring, the one ring drawn (the map marks row; Ryan, 8 November, of a catch from
+	# three hexes: "No indication of catch range"): a machine inside it as the player's turn opens
+	# is caught, so it is the one ring that means something a fight needs; no other pack's is drawn
+	# (one pack is one fight and nothing joins: the long wall brief 7.2). Round where the hunter's
+	# walk ends, where the next catch is judged, so it moves with the walk as the plans move; while
+	# a catch waits, round the hunter that made it (hunter_rings). In the look Ryan set for the
+	# rings (25 October: "always visible, and become more visible when the enemy is tapped"): at
+	# rest a dashed violet edge on a deep-violet track; the hunter tapped, or its catch waiting,
+	# tinted under a solid edge, heavier, the bright dashes crawling along it.
+	for r in hunter_rings():
+		var ring: Dictionary = r["hexes"]
+		if bool(r["lit"]):
+			for h in ring.keys():
+				_fill(h, Color(Palette.ENEMY, 0.5))
+			_ring_outline(ring, Palette.ENEMY, 4.5, false, true)
+		else:
+			_ring_outline(ring, Color(Palette.ENEMY, 0.85), 2.5, true)
 
 	# The moves planned and not yet played (Ryan, 25 October: "highlight and display the planned
 	# move like we used to"): each machine's route in the display's light from where it stands,
@@ -1504,6 +1518,76 @@ func _pack_segments(p: Unit) -> void:
 		draw_rect(Rect2(x, c.y - 12.0, seg, 6.0), Palette.ENEMY)
 		x += seg + gap
 	_map_space()
+
+
+## The hunters' rings the map draws (the map marks row; Ryan, 8 November: "No indication of
+## catch range"): while the walks show, each hunter coming for a machine, round where its walk
+## ends (the catch is judged there as the player's turn opens), lit while it is tapped; while a
+## catch waits, each hunter that made one, round where it stands, lit. A hunter with nothing to
+## hunt pushes, and draws none. None while a move plays or a fight is entered. Each {"pack": Unit,
+## "at": Vector2i, "hexes": {hex: true}, "lit": bool}.
+func hunter_rings() -> Array:
+	var out: Array = []
+	if field == null or not _anim.is_empty() or not fight_group.is_empty():
+		return out
+	if not forced.is_empty():
+		for f in forced:
+			for h in f["hunters"]:
+				var sq: Unit = h
+				out.append({"pack": sq, "at": sq.pos, "hexes": ring_hexes(sq, sq.pos), "lit": true})
+		return out
+	var tapped := field.unit_at(inspected) if field.map.has(inspected) else null
+	for sq in field.packs():
+		var w: Battlefield.Walk = walks.get(sq.id, null)
+		if w == null or w.prey == 0 or sq.is_boss or sq.behaviour != "hunt":
+			continue
+		out.append({"pack": sq, "at": w.end, "hexes": ring_hexes(sq, w.end), "lit": sq == tapped})
+	return out
+
+
+## The hexes inside a pack's ring with its anchor at `anchor`, as its catch counts them
+## (Battlefield._distance_from): within its ring of any of its footprint's hexes as the crow
+## flies, over anything between; on the map, no structure (nobody stands there to be caught).
+func ring_hexes(sq: Unit, anchor: Vector2i) -> Dictionary:
+	var region := {}
+	for o in sq.footprint:
+		var seed: Vector2i = anchor + o
+		var dist := {seed: 0}
+		var queue: Array[Vector2i] = [seed]
+		while not queue.is_empty():
+			var h: Vector2i = queue.pop_front()
+			if field.map.has(h) and not field.map.is_structure(h):
+				region[h] = true
+			if int(dist[h]) >= sq.zone:
+				continue
+			for n in Hex.neighbors(h):
+				if not dist.has(n):
+					dist[n] = int(dist[h]) + 1
+					queue.append(n)
+	return region
+
+
+## The edge of a region of hexes over the map, heavy enough for the phone: each edge whose far side
+## is outside the region, on a deep-violet track, solid or dashed, and with `crawl` the bright
+## dashes crawling along it; no edge against the map's end. Corner i to i+1 faces
+## DIRECTIONS[(6 - i) % 6] in either view (the flat-top corners are the pointy ones turned).
+func _ring_outline(region: Dictionary, col: Color, width: float, dashed: bool, crawl: bool = false) -> void:
+	for h in region.keys():
+		var nb := Hex.neighbors(h)
+		var pts := MapOrient.corners(center(h), HEX_SIZE - _px(2.5))
+		for i in range(6):
+			var across: Vector2i = nb[(6 - i) % 6]
+			if region.has(across) or not field.map.has(across):
+				continue
+			var a := pts[i]
+			var b := pts[(i + 1) % 6]
+			draw_line(a, b, Color(ENEMY_EDGE, minf(1.0, col.a + 0.1)), _px(width + 3.0))
+			if dashed:
+				_dashed_line(a, b, col, HEX_SIZE * 0.17, 0.0, 0.0, width)
+			else:
+				draw_line(a, b, col, _px(width))
+			if crawl:
+				_dashed_line(a, b, ENEMY_HOT, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0), 0.0, width * 0.5)
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:
