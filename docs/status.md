@@ -383,11 +383,11 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.486, dated 8
-  November (the page's Version 498, published from `ccr-1eaf0060-jrpw04` as the skirmish
-  code audit landed on main: Ryan's answer on the Ammit's lean, "between skirmishes", onto the
-  long wall's v0.485 of that day, which had taken this branch's rows from the live page; the
-  merged file and the live page differed in that row alone). The live
+  `docs/design-bible.html` after every change. This file and the live page are v0.487, dated 8
+  November (the page's Version 499, published from `ccr-1eaf0060-jrpw04` after the skirmish
+  code audit landed on main: a part never a kill, only its core, Ryan's "I thought I said only
+  the core counts", onto v0.486 of the landing, which had put his answer on the Ammit's lean,
+  "between skirmishes", onto the long wall's v0.485 of that day). The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
