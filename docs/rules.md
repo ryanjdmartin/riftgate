@@ -116,7 +116,9 @@ defeat when every machine is wrecked. There is no round limit.
 
 ### Dice
 - **Rerolls**: three a round for the team, never banked (Maverick's Playbook, the Giant
-  Petrel's passive, below, the one exception). A reroll rerolls every unlocked,
+  Petrel's passive, below, the one exception). A reroll of one die alone spends that machine's
+  own free reroll first, where it has one left (the Clydesdale's Battery Director, the Trim Tabs
+  module: one a round each, on top of the team's). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
   follows the same rule (Rapid's free reroll, the Kite's reset, the Booster, the Uplink, the
@@ -129,7 +131,7 @@ defeat when every machine is wrecked. There is no round limit.
   lock holds it. The die shows its next entry in its passive box, its mark and the number it
   will show, and its readout and codex show its entries as a
   cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up spins the whole die, the entry
-  showing included, the one piece that breaks the reroll rule, so it may land on itself and
+  showing included, one of the two rolls kept on purpose (Rerolls, above), so it may land on itself and
   be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
   its damage and the stacks it lays; the count shows as six pips under the heat bar, the sixth
   lit when it is next, and a shield, a vent, a buff and a spin are no shots.
@@ -770,7 +772,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   Scorched machine's extra heats the gauge, never the shield, as the forge's does, and
   equipment heats the gauge as ever. After the weapon's strikes, its
   target takes a blow of what the shield paid (the zap): plain, no keyword and no Shock read,
-  through what the foe takes and its armour, and lost if the strikes killed it. And while its
+  through what the foe takes and its armour, before the death check, so a target the strikes
+  felled takes it too. And while its
   shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
   meets. A shield cost on its weapon is no part of it: the cost is paid first as the entry is
   spent and never lands as a blow, and the shield pays the heat from what the cost leaves. The
@@ -942,7 +945,7 @@ burns first; then the enemy takes its full turn, and the skirmish ends; the roun
 not run, but shield past the maximum fades as the fight ends. Kills stay counted, machines
 keep their damage and shields do not refill; a pack keeps its own survivors, who return whole
 (a foe that joined it in the fight, a Gel's half, a raised Revenant or a part, is no survivor,
-and every one of them that fell is a kill).
+and each of them counts as a kill as any foe does: A kill, above).
 
 ### Passives: triggers and conditions
 - Triggers: static, on attack, on injury, on round start (after the roll), on skirmish start,
@@ -974,8 +977,8 @@ and every one of them that fell is a kill).
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
   hits it 1 lighter, whoever laid the Flak).
 - A passive may lay a status on each foe its blows hit, a stack per strike, the foe judged by
-  the passive's condition alone; every strike that reaches it alive lays it, a blow of nothing
-  included, unless the passive's text asks for a weapon's hit (the funnel-web's Vitriol).
+  the passive's condition alone; every strike that reaches it lays it, on a foe the spend fells
+  too (A spend's order), a blow of nothing included, unless the passive's text asks for a weapon's hit (the funnel-web's Vitriol).
 - A passive may change an entry's reach, grant it a keyword or move its range; the entry as
   changed is what is spent, shown and weighed, while the die keeps the real one. A numbered
   keyword's grant says its number, and on an entry already carrying the keyword the grant's

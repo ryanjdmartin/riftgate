@@ -1185,11 +1185,12 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
-## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend, before
-## any strike's riders land, and lays them on every strike that reaches the foe alive, a blow of
-## nothing included, unless the effect asks for a weapon's hit (`damaging`, which its passive's
-## text says: the Ambush's Vitriol, Ryan, 25 October); the bot asks the same. Nothing for a foe
-## the condition rules out.
+## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend (a
+## Sweep at each shot), before any strike's riders land, and lays them on every strike that
+## reaches the foe, one the spend fells too (the spend's order), a blow of nothing included,
+## unless the effect asks for a weapon's hit (`damaging`, which its passive's text says: the
+## Ambush's Vitriol, Ryan, 25 October); the bot asks the same. Nothing for a foe the condition
+## rules out.
 static func laid_statuses(u, face: Face, target) -> Array:
 	var out: Array = []
 	if face == null or not face.is_attack() or target == null:

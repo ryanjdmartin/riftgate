@@ -32,9 +32,13 @@ left open the same evening: the Knuckle of Fury and the Spin-Up keep their rolls
 the Musk Ox reloads once, the greater; a countdown shows what it would deal now; a Sweep's spots
 are queued at the spend's start, a pair's halves a spot each. Bugs 5 and 6 went further than
 their fix: "A stack is a stack, doesn't matter where it came from" retired the purge by source
-and its sleep whole, and a unit's own mechanic became an Ability that no purge touches. 15's
+and its sleep whole, and a unit's own mechanic became an Ability that no purge touches; the
+Ammit's Quintessence Tap, which keeps its Empowered from a Purge, is a question in the bible's
+section 12. 15's
 rally worth is fixed; the bot's other readings wait for the bot's step below, and Bug 16 goes
-with Structure 3.
+with Structure 3. All of it landed on main on 8 November (Ryan: "If there's nothing else open,
+clean up and merge into main"); what is left is Structure, the Unused list and the comments,
+in the order at the end.
 
 **The mine path waits for the Lammergeier's rework** (Ryan, 8 November: "Flag the mine path as
 an issue but don't bother fixing mine problems until the rework, in case it stops existing"):
@@ -105,7 +109,7 @@ balance runner's valuation only).
    foe as killed when it is no longer on the field; `_lift_out` (3767) takes merged foes off it,
    so the King Gel's merge credits the team its court as kills (salvage, menace, the Rupture
    meter). The rules: a merged foe is no kill of the team's. With Question 4. *Checked.*
-5. **A partly purged buff's sleeping stacks skip their clock.** *Gone with the sleep (Ryan, 8 November: "A stack is a stack").* *Fixed 8 November.* `Effects.purge` puts N of an
+5. **A partly purged buff's sleeping stacks skip their clock.** *Gone with the sleep (Ryan, 8 November: "A stack is a stack").* `Effects.purge` puts N of an
    innate grant's stacks in `slept_stacks`; the round's halving touches only `stacks`; `wake`
    adds the slept part back whole. A Grievance Reliquary's Empowered 3 purged by the Djinn's
    Unmake (Purge 1) wakes at 2 where unpurged it would be 1. Fix: sleep a split-off modifier
@@ -229,7 +233,8 @@ balance runner's valuation only).
 ## Structure (no behaviour change)
 
 1. **One "who a blow at every machine reaches"** for `_foe_turn`, `specials_reach`
-   (`targetable_mechs` under a third name), `_draw_blows` and `_last_act`.
+   (`targetable_mechs` under a third name), `_draw_blows` and `_last_act`. *Done 8 November
+   with Bug 9: `targetable_mechs` for all four, `specials_reach` gone.*
 2. **One hit routine** for the resolver, the mine and the spill (Root 1), split from the spend's
    costs (ammo, heat, the shield's burn and the zap, the tally, the cooling, the casings), each
    caller paying its own; the second target, `exposed_before` and the strike number passed as
@@ -257,12 +262,13 @@ balance runner's valuation only).
 9. **Statuses as data.** Every STATUS entry names its decay (call sites pass literals today, so a
    passive laying Shocked would lose it at the foe's next action); one Ward rule for both sides
    (its chip text says Suppressed lands, the code turns a stun and a Purge away); membership by
-   tags, not id lists (`FOE_STATUSES`, `TEAM_MARKS`, `FOE_PURGED`, `KEYWORD_STATUS`); the
+   tags, not id lists (`FOE_STATUSES`, `TEAM_MARKS`, `KEYWORD_STATUS`; `FOE_PURGED` went with
+   the purge by source); the
    effect-less statuses given real effect kinds; about thirty single-effect readers folded into
    one aggregation table (two ignore stacks, three take a max).
 10. **Grants to the spender.** `braces`, `self_burn`, `regen_*` and `heat_per_blow` each have
-    their own block and source prefix, which a foe's Purge then reads to decide "bought"; one
-    list on the entry, landed in one place (with Bug 6's `bought` field).
+    their own block and source prefix (no Purge reads the source since "a stack is a stack");
+    one list on the entry, landed in one place.
 11. **One Face.** A Face is the printed entry, the effective one or the shown one, and nothing
     tells them apart: shown-only fields live on the sim object (`short`, `ammo`, `dry`, `burns`),
     `shown_face` writes the piped heat into `heat`, an effective entry is fed back into
@@ -273,13 +279,14 @@ balance runner's valuation only).
     and static; `damage_outcomes`, `_area_mean`, `_widest`, `mine_score`, the salvo, Spillover,
     `last_act_cost`, `blast_score`, the Paradox feed and the Cryo cash call them; the rolled
     outcome lists become one number.
-13. **The screen asks the engine.** Deaths and returns from `returned` (Bug 11), a Sweep's rank
-    from `sweep_rank_of` (worked out by hand three times), the intent's value once (three times
-    now), `form_mark` from `_shift_form`'s rule, the mine text from `_shot_text`.
+13. **The screen asks the engine.** Deaths and returns from `returned` (Bug 11) and `form_mark`
+    from the engine's `form_change` (Question 7), both done 8 November; left: a Sweep's rank from
+    `sweep_rank_of` (worked out by hand three times), the intent's value once (three times now),
+    the mine text from `_shot_text`.
 
 ## Unused (checked by grep across `sim/`, `game/`, `tools/` and `tests/`)
 
-- The engine: `any_assigned`; `last_blast`; `joined_fallen` (saved, never read); `mine_tally` and
+- The engine: `any_assigned`; `last_blast`; `mine_tally` and
   `_land`'s `pulled`; most of `last_roll` (the screen reads only its tags) and the `base_total`
   and `mech_index` that fill it; the attack's `vent` (`vent_heat` is refused by the validator and
   always 0); the dry-magazine branch of `_resolve_attack` (`targets_for_face` refuses a dry gun);
@@ -306,11 +313,9 @@ Kept on purpose, said so: an effect kind content may yet use is kept only in one
 
 ## Text and records
 
-- `docs/rules.md` 745 says the zap is "lost if the strikes killed it", beside 247 and the code,
-  which land it on the felled foe (today's leftover); 946-948 and `laid_statuses`' doc say a
-  passive's lay lands only on a foe "it reaches alive", while the code lays on a corpse.
-- A free reroll when a die is rerolled alone (the Clydesdale's Battery Director and a module) is
-  missing from the rules, which call Maverick's Playbook "the one exception".
+- Done 8 November: the rules' zap "lost if the strikes killed it" and a passive's lay "on a foe
+  it reaches alive" (both land on a foe the spend fells, as the code does), and the lone die's
+  free reroll (the Battery Director, the Trim Tabs), now in the rules' Rerolls.
 - Stale comments: `skirmish.gd`'s header ("a kill clears its slot at once", "damage in fives");
   `shown_number`'s "[low, high]" and "a raised ceiling", sitting on `split_share`; the
   `_resolve_attack` note on `real` (a Chain repeated out of a mine); "a sweep's strikes", "a
@@ -319,7 +324,7 @@ Kept on purpose, said so: an effect kind content may yet use is kept only in one
   spend"; the section banners ("mines" covers fifty unrelated functions, "formation" holds only
   `_clear_dead`); `effects.gd`'s header stating the blow's order wrongly (missing hull first) and
   without `multiply_printed` or the foe's stage; Empowered's "the move spends it"; Ore Plate's "a
-  point a load"; Hot Streak's "5 hotter"; Enraged's "a Purge clears"; the Crucible; "Numbers are
+  point a load"; Hot Streak's "5 hotter"; the Crucible; "Numbers are
   in tens", "each rolls", "a sprayer"; the screen's header ("tap to lock", "Kinetic faces roll",
   "Withdraw") and "POOL 02"; misplaced docs in the bot and the screen; the Flechette Pod's and
   the Musk Ox's design text still describing the spray and random targets.
@@ -338,8 +343,9 @@ then rise as well (no content pairs them).
 
 ## Order of work, proposed
 
-1. Ryan's calls on the eleven questions.
-2. The bugs that take the rules as written (1-13), each with a test that fails first.
+1. Ryan's calls on the eleven questions. *Done 8 November.*
+2. The bugs that take the rules as written (1-13), each with a test that fails first. *Done 8
+   November, the mine's waiting for the rework.*
 3. Roots 1 and 3 together (one hit routine, its arguments), since Bugs 7 and 8 and Question 10
    live there; then Root 2's engine half (one round model, `_finish_round`).
 4. The bot's mirrors onto the engine's helpers, then a 30-seed run read as a direction against

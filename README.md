@@ -439,6 +439,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # every fifth beat loses one and lights it again, to judge the hit reactions running.
 # RIFTGATE_MISS_DEBUG=1 (any skirmish) lands a Sweep's wasted shot on the formation's empty slots in
 # turn every second and a half: the jolt and the ring of dust thrown off it, to judge running.
+# RIFTGATE_ABILITY_DEBUG=1 (any skirmish) gives every foe and machine that has no ability an
+# ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
