@@ -1522,11 +1522,12 @@ static func pair_halves() -> Dictionary:
 ## its shell is open (the Armadillo's Lockdown seals it so), "unseal" for a vent or a weapon while
 ## it is sealed (either opens it), "" for anything else or a machine with no form.
 static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
-	if f == null or ms == null or Effects.seal_form(ms.unit).is_empty():
-		return ""
-	if Effects.is_sealed(ms.unit):
-		return "unseal" if f.kind == Face.Kind.VENT or (f.is_attack() and f.power > 0) else ""
-	return "seal" if f.kind == Face.Kind.SHIELD and f.targets != Face.Target.ALLY else ""
+	match Skirmish.form_change(ms, f, f != null and f.targets != Face.Target.ALLY):
+		"seal":
+			return "seal"
+		"open":
+			return "unseal"
+	return ""
 
 
 ## The riders of a foe's blow, inside its intent chip after its number (Ryan, 2 November: "Enemy

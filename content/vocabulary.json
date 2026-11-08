@@ -1928,10 +1928,10 @@
    "id": "enraged",
    "category": "status",
    "name": "Enraged",
-   "codex": "Foe status, from a bellow (the Goblin Nob's). Once the foe has bellowed, every shield, vent or equipment entry the team spends lays a stack on it, and each stack is a point on every blow it lands for the rest of the fight; a weapon feeds nothing. Never spent by a move. Its chip climbs as the stacks do, so the number an intent shows is the number that lands. A Purge lowers the stacks by its number; the bellow goes on, so they gather again.",
+   "codex": "Foe status, from a rage (the Goblin Nob's, its own from the fight's start). While the foe stands, every shield, vent or equipment entry the team spends lays a stack on it, and each stack is a point on every blow it lands for the rest of the fight; a weapon feeds nothing. Never spent by a move. Its chip climbs as the stacks do, so the number an intent shows is the number that lands. A Purge lowers the stacks by its number; the rage goes on, so they gather again.",
    "status": "implemented",
    "design": {
-    "holes": "The rage's value and the Nob's numbers are placeholders. Permanent for the fight, as built (Ryan, 4 November: \"Nob permanent\"; Claude's lean, since an elite's job is to make the player change plan).",
+    "holes": "The rage's value and the Nob's numbers are placeholders. Permanent for the fight, as built (Ryan, 4 November: \"Nob permanent\"; Claude's lean, since an elite's job is to make the player change plan). The rage is the foe's own from the start since 8 November: it was a Bellow, the Nob's opening move, so its first round fed nothing (Ryan: \"It's not innate? ... That is so unbelievably incorrect\").",
     "table": {
      "kind": "buff",
      "on": "foe",

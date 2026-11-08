@@ -217,11 +217,12 @@ const STATUS := {
 	# rally's value; the 2 here is only the default a bare grant would carry.
 	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its blows hit +1 harder a stack. Halves at the end of each round, rounded down.", "decay": "half",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
-	# Enraged (3 November, the Goblin Nob's Bellow): a stack for every shield, vent or equipment
-	# entry the team spends while the foe rages (Foe.rage, set by the enrage effect), a point of
-	# attack a stack for the rest of the fight, never spent by a move, so the chip climbs as the
-	# player plays safe; the player's Purge clears the stacks (FOE_PURGED) and the rage goes on.
-	"enraged": {"id": "enraged", "name": "Enraged", "description": "Its blows hit {value} harder for the rest of the fight: a stack for every shield, vent or equipment entry the team has spent since it bellowed.", "decay": "none",
+	# Enraged (3 November, the Goblin Nob's): a stack for every shield, vent or equipment entry
+	# the team spends while the foe stands and rages (Foe.rage, its own from the fight's start
+	# since 8 November), a point of attack a stack for the rest of the fight, never spent by a
+	# move, so the chip climbs as the player plays safe; the player's Purge clears the stacks
+	# (FOE_PURGED) and the rage goes on.
+	"enraged": {"id": "enraged", "name": "Enraged", "description": "Its blows hit {value} harder for the rest of the fight: a stack for every shield, vent or equipment entry the team has spent while it stands.", "decay": "none",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	# Golden (4 November, Ryan's read of Rajang: the golden rage "is a mode, not an attack ... a
 	# cycle that forces the player into a cycle of attack and defense, broken by a bold player
@@ -698,7 +699,10 @@ static func shocks_striker(u, blocked: bool) -> bool:
 ## Vitriol, 18 October), read after the flat ticks (after Burning), the whole share rounded
 ## down and never the last hit point, so it opens on a boss and finishes no foe.
 ## `at_turn_end` asks the statuses that tick at the end of the owner's turn (turn decay, a
-## machine's Burning and Scorched), and only those; otherwise every other.
+## machine's Burning and Scorched), and only those; otherwise every other. What the ticks take
+## goes through what the unit takes, its multiplies alone (Guarded's nothing: Ryan, 8 November, a
+## guarded core takes no tick "by definition"), never a weapon's adds (Flak) nor an aimed strike's
+## (Shocked).
 static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
 	var out := {"hp": 0, "heat": 0, "skip": false, "share": 0}
 	var pct := 0
@@ -717,13 +721,26 @@ static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
 				out["heat"] += v
 			"skip_action":
 				out["skip"] = true
+	var taken := ticks_taken(u)
+	out["hp"] = int(roundf(int(out["hp"]) * taken))
 	if pct > 0:
 		var hp_now = u.get("hp")   # a foe's hull; a machine carries no share tick, and has no hp
 		var left := (int(hp_now) if hp_now != null else 0) - int(out["hp"])
 		if left > 1:
-			out["share"] = mini(left - 1, int(floorf(float(left) * float(pct) / 100.0)))
+			out["share"] = mini(left - 1, int(roundf(floorf(float(left) * float(pct) / 100.0) * taken)))
 			out["hp"] += int(out["share"])
 	return out
+
+
+## What a unit takes of its ticks, a factor: the multiplies on what it takes that any blow reads
+## (Guarded's nothing), never an aimed strike's alone (Shocked's double).
+static func ticks_taken(u) -> float:
+	var mult := 1.0
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "multiply_damage_taken" and not bool(eff.get("aimed_only", false)):
+			mult *= pow(float(eff.get("value", 1)), int(pair[1].stacks))
+	return mult
 
 
 ## The value one stack of a status carries by an effect's name ("tick_hp_share" for the share

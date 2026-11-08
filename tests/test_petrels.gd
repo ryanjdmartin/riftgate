@@ -81,6 +81,28 @@ func test_a_weapon_hotter_than_the_shield_burns_what_it_holds_and_heats_the_rest
 	assert_eq(foe.hp, 30 - 4 - 2 - 4, "and no zap")
 
 
+## Scorched heats the gauge, never the shield (Ryan, 8 November: "scorch affects the actual heat
+## bar, not the ammo cost. It still can generate heat through other sources, just not weapons
+## fire. Same as the storm petrel when its shield is up"): the shield pays the gun's own heat, and
+## a Scorched machine's extra lands on the gauge; the die says so.
+func test_the_shield_pays_the_guns_own_heat_and_scorched_heats_the_gauge() -> void:
+	var u := _mech("Petrel", Die.single(_hot(4, 3)), 10)
+	u.grant_passive(RIOT)
+	var sk := _fight([u], [_foe(30)])
+	Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 2, Effects.DECAY_NONE)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var extra := 0
+	for eff in Effects.STATUS["scorched"]["effects"]:
+		if str(eff.get("effect", "")) == "add_heat":
+			extra = 2 * int(eff["value"])   # the status's own number, read rather than copied
+	assert_eq(sk.pending_burn(ms), 3, "the die: the shield pays the gun's own 3")
+	var foe: Foe = sk.front[0]
+	assert_true(sk.assign(0, foe), "the hot gun, scorched")
+	assert_eq(u.shield, 7, "the shield paid the gun's own 3")
+	assert_eq(ms.heat, extra, "and Scorched's extra reached the gauge")
+	assert_eq(foe.hp, 30 - 4 - 3, "the zap is what the shield paid")
+
+
 ## The zap is a blow of the spend's, so it lands before the death check (Ryan, 7 November: the
 ## hit's every effect, then the death): on a target the strikes felled too, its corpse taking it.
 func test_the_zap_meets_armour_and_lands_on_a_target_the_strikes_felled() -> void:

@@ -44,13 +44,18 @@ func _a_pack_in_reach(b: Battle, m: Unit) -> Unit:
 	return null
 
 
+## Every foe felled, round on round, until none stands or waits: each through the death check,
+## so each is a kill (Skirmish.is_kill) or comes back to be felled again.
 func _win(sk: Skirmish) -> void:
 	sk.begin()
 	sk.start_round()
-	sk.reinforcements.clear()
-	for f in sk.field_foes():
-		f.hp = 0
-	sk.end_round()
+	for i in range(20):
+		for f in sk.field_foes():
+			f.hp = 0
+		sk.end_round()
+		if sk.outcome != Skirmish.Outcome.NONE:
+			return
+		sk.start_round()
 
 
 func test_setup_places_team_formation_and_boss() -> void:
@@ -632,7 +637,7 @@ func test_survivors_shrink_the_pack() -> void:
 
 ## The mechanics audit (25 October): a Gel killed leaves two halves under its pack, and a
 ## withdrawal used to walk the pack on as every foe of it standing, halves made whole Gels; the
-## pack keeps its own Gels alone, and the kill counts.
+## pack keeps its own Gels alone, and the split is no kill (Ryan, 8 November).
 func test_a_withdrawal_never_grows_a_pack_by_its_halves() -> void:
 	var b := Battle.new(3)
 	b.setup(_team(), "meadow")
@@ -659,7 +664,7 @@ func test_a_withdrawal_never_grows_a_pack_by_its_halves() -> void:
 	assert_eq(halves, 2, "the fallen Gel split into two halves")
 	b.finish_skirmish()
 	assert_eq(sq.strength, before - 1, "the pack walks on one Gel short, never grown by its halves")
-	assert_eq(b.foes_killed, 1, "and the Gel is a kill")
+	assert_eq(b.foes_killed, 0, "and the split is no kill: the Gel went on as its halves")
 
 
 func test_boss_death_seals_the_rift() -> void:

@@ -450,9 +450,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "banked": sk.banked, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
 		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "twins": paired,
-		"joined_fallen": _int_keys(sk.joined_fallen),
-		"joined_fallen_types": _typed_tallies(sk.joined_fallen_types),
-		"came_with": _typed_tallies(sk.came_with),
+		"kills": _typed_tallies(sk.kills),
 		"roll_marks": sk.roll_marks, "history": sk.history,   # the trail's bars and the undo's snapshots (2 November)
 		"team_kills": sk.team_kills,
 	}
@@ -508,7 +506,7 @@ static func clone_skirmish(sk: Skirmish) -> Skirmish:
 ## are left out, since the runner never undoes.
 static func snapshot_skirmish(sk: Skirmish) -> Dictionary:
 	var d := _fight_dict(sk)
-	d["tallies"] = {"destroyed": sk.destroyed, "falls": sk._falls, "seq": sk._seq, "reroll_debt": sk.reroll_debt,
+	d["tallies"] = {"destroyed": sk.destroyed, "seq": sk._seq, "reroll_debt": sk.reroll_debt,
 		"sponsorship": sk.sponsorship}
 	return d.duplicate(true)
 
@@ -528,7 +526,6 @@ static func restore_skirmish(sk: Skirmish, d: Dictionary) -> void:
 	_skirmish_into(sk, d, func(at: int) -> Unit: return units[at] if at >= 0 and at < units.size() else null)
 	var t: Dictionary = d.get("tallies", {})
 	sk.destroyed = int(t.get("destroyed", sk.destroyed))
-	sk._falls = int(t.get("falls", sk._falls))
 	sk._seq = int(t.get("seq", sk._seq))
 	sk.reroll_debt = int(t.get("reroll_debt", sk.reroll_debt))
 	var sp = t.get("sponsorship", null)
@@ -588,7 +585,6 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 	sk.twins.clear()
 	sk.reinforcements.clear()
 	sk.mines.clear()
-	sk.joined_fallen.clear()
 	var foes: Array[Foe] = []
 	for fd in d.get("foes", []):
 		foes.append(_foe_from(fd, sk))
@@ -628,11 +624,7 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 		if not shots.is_empty():
 			sk.mines[Vector2i(int(md.get("rank", 0)), int(md.get("column", 0)))] = shots
 	sk.mine_seq = int(d.get("mine_seq", 0))
-	var joined: Dictionary = d.get("joined_fallen", {})
-	for pid in joined.keys():
-		sk.joined_fallen[int(str(pid))] = int(joined[pid])
-	sk.joined_fallen_types = _typed_tallies_from(d.get("joined_fallen_types", {}))
-	sk.came_with = _typed_tallies_from(d.get("came_with", {}))
+	sk.kills = _typed_tallies_from(d["kills"]) if d.has("kills") else _kills_before_the_tally(sk, d)
 	sk.roll_marks.clear()
 	for m in d.get("roll_marks", []):
 		sk.roll_marks.append(int(m))
@@ -642,6 +634,44 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 			if h is Dictionary:
 				sk.history.append(h)
 	sk.team_kills = int(d.get("team_kills", 0))   # the foes the team has killed this fight (30 October)
+
+
+## A fight saved before the one kill tally (8 November): its kills worked out as they were then,
+## what each pack came with less its own left on the field or waiting, and every foe that joined
+## it and fell; a save from before the record of what came reads the pack itself (its members,
+## a boss unit's lineup or its commanders).
+static func _kills_before_the_tally(sk: Skirmish, d: Dictionary) -> Dictionary:
+	var came_with := _typed_tallies_from(d.get("came_with", {}))
+	var joined := _typed_tallies_from(d.get("joined_fallen_types", {}))
+	var out := {}
+	for sq in sk.packs:
+		var came: Dictionary = came_with.get(sq.id, {})
+		if came.is_empty():
+			if sq.is_boss:
+				for cid in sq.lineup:
+					came[str(cid)] = int(came.get(str(cid), 0)) + 1
+				if sq.lineup.is_empty():
+					for f in sk.field_foes():
+						if f.pack_id == sq.id and f.commands:
+							came[f.content_id] = int(came.get(f.content_id, 0)) + 1
+			for m in sq.member_list():
+				if not str(m[0]).is_empty():
+					came[str(m[0])] = int(came.get(str(m[0]), 0)) + int(m[1])
+		var left := {}
+		for f in sk.field_foes() + sk.reinforcements:
+			if f.pack_id == sq.id and f.alive() and Skirmish.is_own(sq, f):
+				left[f.content_id] = int(left.get(f.content_id, 0)) + 1
+		var tally := {}
+		for cid in came.keys():
+			var n := int(came[cid]) - int(left.get(cid, 0))
+			if n > 0:
+				tally[str(cid)] = n
+		var j: Dictionary = joined.get(sq.id, {})
+		for cid in j.keys():
+			tally[str(cid)] = int(tally.get(str(cid), 0)) + int(j[cid])
+		if not tally.is_empty():
+			out[sq.id] = tally
+	return out
 
 
 ## A tally by pack and type (pack id -> {content id: count}), with string keys for JSON.
@@ -717,11 +747,20 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.joined = bool(d.get("joined", false))
 	f.fresh = bool(d.get("fresh", false))
 	f.actions = []
+	var moved := []   # each saved move's place in the list as loaded, -1 for one dropped
+	var bellowed := 0
 	for a in d.get("actions", []):
 		var act: Dictionary = a.duplicate()
 		for key in ["strikes", "weight", "swarm", "value", "count", "countdown"]:
 			if act.has(key):
 				act[key] = int(act[key])
+		if str(act.get("effect", "")) == "enrage":
+			# A Bellow saved before the Nob's rage was its own (8 November): the rage it gave, now
+			# the foe's from the start, and the move gone.
+			bellowed = maxi(1, int(act.get("value", 1)))
+			moved.append(-1)
+			continue
+		moved.append(f.actions.size())
 		f.actions.append(act)
 	if f.actions.is_empty():
 		f.actions = [Foe.basic_action()]
@@ -730,6 +769,7 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	var ti := int(d.get("target", -1))
 	f.target = sk.mechs[ti] if ti >= 0 and ti < sk.mechs.size() else null
 	var ai := int(d.get("action", -1))
+	ai = int(moved[ai]) if ai >= 0 and ai < moved.size() else ai
 	f.action = f.actions[ai] if ai >= 0 and ai < f.actions.size() else f.actions[0]
 	f.part_ids = Array(d.get("part_ids", [])).map(func(x): return str(x))   # a boss in parts (15 October)
 	f.guard = str(d.get("guard", ""))
@@ -740,12 +780,13 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.grudge = int(d.get("grudge", 0))   # the team's kills its grudge reads (30 October)
 	f.spent_once = Array(d.get("spent_once", [])).map(func(x): return str(x))   # its moves used once a fight (30 October)
 	f.swallow_mark = int(d.get("swallow_mark", -1))   # its HP as it swallowed, -1 holding none (31 October)
-	f.rage = int(d.get("rage", 0))   # what the team's safe spends add to its blows once it has bellowed (3 November)
+	f.rage = maxi(int(d.get("rage", 0)), bellowed)   # what the team's safe spends add to its blows while it stands (3 November; its own from the start since 8 November)
 	f.golden_mark = int(d.get("golden_mark", -1))   # its HP as it went gold, -1 while calm (4 November)
 	var hd = d.get("held", {})   # what a steal took (30 October)
 	if hd is Dictionary and not hd.is_empty():
 		f.held = {"name": str(hd.get("name", "")), "power": int(hd.get("power", 0)), "fake": bool(hd.get("fake", false))}
 	var pi := int(d.get("pending", -1))   # a countdown move it was gathering (15 October)
+	pi = int(moved[pi]) if pi >= 0 and pi < moved.size() else pi
 	if pi >= 0 and pi < f.actions.size():
 		f.pending = f.actions[pi]
 		f.charge = int(d.get("charge", 0))

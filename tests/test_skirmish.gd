@@ -3007,7 +3007,7 @@ func test_the_talons_kill_rule_feeds_overcharged_per_kill_and_it_halves_each_rou
 			kills += 1
 	assert_eq(kills, 2, "two ghouls fell to the spread")
 	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack of Empowered per kill")
-	assert_true("\n".join(sk.log).contains("kills revenant: Empowered"), "the log says what the kill gave")
+	assert_true("\n".join(sk.log).contains("feeds on 2 kills: Empowered"), "the log says what the kills gave")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "it halves at the round's end")
 	sk.start_round()
@@ -3549,7 +3549,7 @@ func test_spillover_strikes_are_lost_once_the_foe_behind_falls() -> void:
 	var fed: Foe = s2.back[c2]
 	assert_true(s2.assign(0, s2.front[c2]), "the talons at the ghoul")
 	assert_false(fed.alive(), "the archer falls to the spill")
-	assert_true("\n".join(s2.log).contains("A kills archer: Empowered"), "and feeds the talons' rule")
+	assert_true("\n".join(s2.log).contains("A feeds on 2 kills: Empowered"), "and feeds the talons' rule")
 	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack for each foe killed, the ghoul and the archer")
 	assert_eq("\n".join(s2.log).count("A spills over: "), 2, "and nothing spills past the fallen archer")
 
@@ -5389,6 +5389,26 @@ func test_a_core_takes_nothing_while_all_its_parts_stand_and_opens_as_one_falls(
 	assert_eq(core.hp, 170, "lands")
 
 
+## Guarded takes no damage, its ticks included (Ryan, 8 November: "I wouldn't think so by
+## definition"): a guarded core's Burning and Vitriol take nothing off it and still fade a stack,
+## and its gauge shows no loss to come.
+func test_a_guarded_core_takes_nothing_from_its_ticks() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 40, 400))
+	var core := _core("all")
+	sk.add_foes([core, _eye(), _eye()])
+	sk.begin()
+	sk.start_round()
+	assert_true(Effects.has(core, "guarded"), "guarded while its parts stand")
+	Effects.stack(core, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3, Effects.status_decay(Effects.STATUS["burning"]))
+	Effects.stack(core, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS["vitriol"]))
+	assert_eq(sk.hp_after_ticks(core), core.hp, "its gauge shows nothing coming off")
+	sk.end_round()
+	assert_eq(core.hp, 200, "its ticks took nothing")
+	assert_eq([Effects.stacks_of(core, "burning"), Effects.stacks_of(core, "vitriol")], [2, 1], "and each still faded a stack")
+	assert_false("\n".join(sk.log).contains("hilt burns"), "nothing burns in the log")
+
+
 func test_an_any_guard_holds_until_the_last_part_falls() -> void:
 	var sk := Skirmish.new(1, 3)
 	_two_guns(sk)
@@ -5554,7 +5574,7 @@ func test_a_splitting_foe_steps_its_halves_up_in_its_place_at_once() -> void:
 ## A pack's survivors are its own foe type (the mechanics audit, 25 October): a Gel's halves join
 ## the fight under its pack, a pair in its slot, but never come back on the map as Gels, so the
 ## pack never grows, and every one of them that falls is a kill all the same ("a kill is a kill").
-func test_a_packs_survivors_are_its_own_and_every_foe_that_falls_is_a_kill() -> void:
+func test_a_packs_survivors_are_its_own_and_a_split_is_no_kill_but_a_half_is() -> void:
 	var sk := Skirmish.new(2, 2)
 	sk.add_mech(_mech("A", Die.single(Face.attack(200, L)), 40, 100))
 	var sq := Unit.pack(7, "gel pack", Vector2i.ZERO, "", Unit.PACK_MOVE, 2, "gel")
@@ -5576,14 +5596,14 @@ func test_a_packs_survivors_are_its_own_and_every_foe_that_falls_is_a_kill() -> 
 	assert_true(half != null and half.content_id == "gel_half" and sk.twin_of(half) != null, "its two halves stand in its slot")
 	assert_eq(half.pack_id, sq.id, "under its pack")
 	assert_eq(sk.survivors_for(sq), 1, "but the pack's own left is the one Gel: halves never come back as Gels")
-	assert_eq(sk.kills_for(sq), 1, "the Gel is a kill")
+	assert_eq(sk.kills_for(sq), 0, "the Gel's split is no kill: it goes on as its halves (Ryan, 8 November)")
 	sk.end_round()
 	sk.start_round()
 	assert_true(sk.assign(0, half), "a half falls")
 	assert_eq(sk.survivors_for(sq), 1, "the pack's own unchanged")
-	assert_eq(sk.kills_for(sq), 2, "the half is a kill too")
+	assert_eq(sk.kills_for(sq), 1, "the half is a kill")
 	var copy := SaveGame.clone_skirmish(sk)
-	assert_eq(copy.kills_for(copy.packs[0]), 2, "and the tally survives the save's round trip")
+	assert_eq(copy.kills_for(copy.packs[0]), 1, "and the tally survives the save's round trip")
 
 
 ## The Gel's pair (Ryan, 26 October: the halves "should exist as a pair taking the place of one
@@ -6225,6 +6245,41 @@ func test_a_shield_on_itself_seals_the_machine_and_a_vent_or_a_weapon_opens_it()
 	ms.face_index = 2
 	assert_true(sk.assign(0, sk.front[0]), "a weapon")
 	assert_false(Effects.is_sealed(m), "opens it too")
+
+
+## The combined entry is a shield and a vent at once (Ryan, 8 November: "The venting shield is both
+## types at once, but the trigger should be atomic based on the current game state. So it would
+## trigger sealing if unsealed, and unsealing if sealed, but not do both in sequence"): spent on
+## itself it seals an open machine and opens a sealed one, whichever way the entry is written (a
+## vent that shields, the Wake Diffuser; a shield that cools, the Sutler's Hoist); on an ally,
+## its vent opens the spender, as any vent does.
+func test_a_cool_and_shield_entry_seals_an_open_machine_and_opens_a_sealed_one() -> void:
+	var diffuser := Face.from_dict({"kind": "vent", "power": 3, "shields": 3})
+	var hoist := Face.from_dict({"kind": "shield", "power": 3, "vents": 2})
+	for entry in [diffuser, hoist]:
+		var sk := Skirmish.new(1)
+		var m := _mech("A", Die.of([entry]), 0, 200)
+		m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+			{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+		sk.add_mech(m)
+		sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 0, 100))
+		sk.add_foes([_ghoul(500, 0)])
+		sk.begin()
+		sk.start_round()
+		var kind := "a vent that shields" if entry == diffuser else "a shield that cools"
+		assert_true(sk.assign(0, null), "%s, on itself" % kind)
+		assert_true(Effects.is_sealed(m), "%s seals an open machine" % kind)
+		sk.end_round()
+		sk.start_round()
+		sk.mechs[0].face_index = 0
+		assert_true(sk.assign(0, null), "again, on itself")
+		assert_false(Effects.is_sealed(m), "%s opens a sealed one, never seals it again" % kind)
+		sk.end_round()
+		sk.start_round()
+		Effects.stack(m, Effects.sealed_status(10, 15), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+		sk.mechs[0].face_index = 0
+		assert_true(sk.assign(0, sk.mechs[1]), "%s, on the ally" % kind)
+		assert_false(Effects.is_sealed(m), "%s on an ally: its vent opens the spender, as any vent does" % kind)
 
 
 ## Cryo (Ryan, 18 and 20 October): the Cryo Flinger's mark pays in cooling. Any machine's
@@ -7638,7 +7693,7 @@ func test_a_players_purge_lowers_every_buff_a_foe_carries_by_its_number_but_guar
 	act.call(g, "ward_all", "buff", 0)
 	act.call(g, "prime", "buff", 2)
 	act.call(g, "rally", "buff", 3)
-	act.call(caster, "enrage", "buff", 1)   # the Nob's rage (3 November): the stacks the team's safe spends feed, laid here by hand
+	caster.rage = 1   # the Nob's rage (3 November; its own since 8 November): the stacks the team's safe spends feed, laid here by hand
 	act.call(caster, "golden", "buff", 2)   # a golden rage (4 November): the mode a Purge strips
 	Effects.stack(caster, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:caster", 2, Effects.DECAY_NONE)
 	Effects.stack(caster, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
@@ -8194,6 +8249,43 @@ func test_a_sweeps_later_shot_reads_an_earlier_shots_riders() -> void:
 	assert_true(s2.assign(0, c), "the multi-hit")
 	assert_eq(c.hp, 85, "5, 5 and 5: its riders after its last hit")
 	assert_eq(Effects.stacks_of(c, "flakked"), 3, "a stack a hit")
+
+
+## A Sweep's shots are each a hit of their own (Ryan, 8 November, the audit's first question: "Per
+## shot"): a shot judges its gates, its machine's lays and its foe's reads as it fires, the shots
+## before it landed, so a later shot at a column opens the gate an earlier one's Flak shut, lays
+## what an earlier one's mark sets off, and eats what an earlier one laid.
+func test_a_sweeps_every_shot_judges_its_own_gates_lays_and_reads() -> void:
+	var pod := Face.attack(5, S, [K.FLAK, K.SUPPRESS])
+	pod.flak = 1
+	pod.strikes = 4
+	pod.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("S", Die.single(pod), 40, 100))
+	var a := _ghoul(100, 10)
+	var b := _ghoul(100, 10)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, a), "swept")
+	assert_true(a.is_suppressed() and b.is_suppressed(), "each column's second shot met the Flak its first laid: the gate opened, and it Suppressed")
+	var hot := Face.attack(5, S, [K.BURN])
+	hot.burn = 1
+	hot.strikes = 4
+	hot.consumes = "burning"
+	var marker := _mech("M", Die.single(hot), 40, 100)
+	marker.grant_passive({"id": "ambush", "name": "Ambush", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "when": "target_status", "status": "burning"}]})
+	var s2 := Skirmish.new(1, 2)
+	s2.add_mech(marker)
+	var c := _ghoul(100, 10)
+	var d := _ghoul(100, 10)
+	s2.add_foes([c, d])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, c), "the burning sweep")
+	assert_eq([c.hp, d.hp], [100 - 5 - 6, 100 - 5 - 6], "each column's second shot ate the Burning its first laid, a point a stack")
+	assert_eq([Effects.stacks_of(c, "vitriol"), Effects.stacks_of(d, "vitriol")], [1, 1], "and the passive laid on the foe the first shot set burning")
 
 
 ## The spend's order (Ryan, 7 November: "Spend-hit(s)-riders per hit-check death-end
@@ -8876,6 +8968,30 @@ func test_the_hoist_resets_an_ally_and_the_horn_rallies_or_gives_an_ally_its_tur
 	assert_true(sk.assign(1, sk.front[0]), "the second action")
 
 
+## The Horn's charged form rolls by the reroll rule (Ryan, 8 November: "It's a roll, it should
+## follow roll rules, like everything that rolls"): the ally's die lands on any other entry, never
+## the one it spent, as Rapid's, the Booster's and the Uplink's do.
+func test_the_horns_charged_roll_never_lands_on_the_entry_the_ally_spent() -> void:
+	var horn := Face.buff("rallied", 1)
+	horn.targets = Face.Target.SELF
+	horn.charged = {"muster": 1, "act_again": "ally"}
+	for seed in range(12):
+		var sk := Skirmish.new(1, 2)
+		var c := _mech("Carrier", Die.of([horn]), 40, 100)
+		c.grant_passive(MUSTER)
+		sk.add_mech(c)
+		sk.add_mech(_mech("A", Die.of([Face.attack(10, L), Face.attack(20, L)]), 0, 100))
+		sk.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
+		sk.begin()
+		sk.rng.seed = seed
+		sk.start_round()
+		Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
+		var spent := sk.mechs[1].face_index
+		assert_true(sk.assign(1, sk.front[0]), "the ally acts")
+		assert_true(sk.assign(0, sk.mechs[1]), "the Horn charged, on the spent ally")
+		assert_ne(sk.mechs[1].face_index, spent, "seed %d: its die rolled onto the other entry, never the one it spent" % seed)
+
+
 ## The Musk Ox's Forge (Ryan's go, 21 October; built that day), on a synthetic passive: the
 ## magazine opens at its start and gains a round's trickle from the second round; a weapon
 ## pays 1 ammo for every 10 heat its own spend would make, rounded up, at least 1, and heats the
@@ -8973,7 +9089,7 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	var n := ms.ammo
 	ms.face_index = 1
 	assert_true(sk.assign(0, sk.front[0]), "the salvo")
-	assert_eq([ms.ammo, ms.heat], [0, 0], "the whole magazine spent, and no heat")
+	assert_eq([ms.ammo, ms.heat], [0, 0], "the whole magazine spent, and no heat of its own")
 	var hp_after := 0
 	for f in sk.field_foes():
 		hp_after += f.hp
@@ -8983,6 +9099,25 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	sk.end_round()
 	sk.start_round()
 	before_heat_check(sk, ms)
+
+
+## The salvo under Scorched (Ryan, 8 November: "scorch affects the actual heat bar, not the ammo
+## cost"): the magazine pays the shots and the gun makes no heat of its own, and a Scorched
+## machine's extra lands on its heat bar, as on every forged gun.
+func test_a_scorched_salvo_heats_its_machine_by_scorcheds_extra() -> void:
+	var salvo := Face.attack(5, S)
+	salvo.spends_magazine = true
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("Ox", Die.single(salvo), 40, 200)
+	m.grant_passive(FORGE)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(200, 0), _ghoul(200, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	Effects.stack(m, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 2, Effects.DECAY_NONE)
+	assert_true(sk.assign(0, sk.front[0]), "the salvo, scorched")
+	assert_eq([ms.ammo, ms.heat], [0, 2 * _rule("scorched", "add_heat")], "the magazine spent, and Scorched's extra on the heat bar")
 
 
 func before_heat_check(sk: Skirmish, ms: Skirmish.MechState) -> void:

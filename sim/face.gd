@@ -585,6 +585,19 @@ func is_attack() -> bool:
 	return kind == Kind.ATTACK
 
 
+## Does the entry shield the machine it lands on: a shield, or a vent that shields too (the
+## combined entry, the Wake Diffuser)? A shield that cools is a shield and a vent at once (Ryan, 8
+## November: "The venting shield is both types at once"), whichever way it is written.
+func shields_machine() -> bool:
+	return kind == Kind.SHIELD or (kind == Kind.VENT and shields > 0)
+
+
+## Does the entry cool the machine it lands on: a vent (the quick reload's, which cools nothing,
+## is a vent all the same), or a shield that cools too (the Sutler's Hoist)?
+func cools_machine() -> bool:
+	return kind == Kind.VENT or (kind == Kind.SHIELD and (vents > 0 or cools_all))
+
+
 ## A weapon (Ryan, 26 October): an attack that deals damage, spent on a foe within its reach.
 ## Its hits are what "hitting a foe with a weapon" reads, a blow of 0 included.
 func is_weapon() -> bool:

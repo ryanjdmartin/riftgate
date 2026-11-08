@@ -1110,8 +1110,7 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	s.setup(sk)
 	Effects.remove(m, "overcharged")
 	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Empowered")
-	sk._overcharge_on_kill(sk.mechs[0], sk.front[0], 1)
-	sk._overcharge_on_kill(sk.mechs[0], sk.front[0], 1)
+	sk._overcharge_on_kill(sk.mechs[0], 2, 1)   # two kills, a stack each
 	var scopes: Array = []
 	for d in Effects.describe(m):
 		if str(d[5]) == "overcharged":

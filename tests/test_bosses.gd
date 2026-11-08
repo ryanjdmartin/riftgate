@@ -902,28 +902,36 @@ func test_the_validator_holds_wanders_to_the_elites() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.contains("x_wander") and e.contains("only an elite wanders")), "the rank and file never wander")
 
 
-## The elites session (3 November): an opener is the foe's first move of the fight (the Goblin
-## Nob's Bellow), taken before any other and never again.
-func test_an_opener_is_the_foes_first_move_of_the_fight() -> void:
+## The Nob's rage is its own from the fight's start (Ryan, 8 November, on the Bellow it had to cast
+## first: "It's not innate? ... That is so unbelievably incorrect"): the content's Nob rages before
+## it has acted, the team's first shield feeds it, and it has no move to bellow with; a fight
+## saved with a Bellow still on its list loads with the rage and the move gone.
+func test_the_nobs_rage_is_its_own_from_the_fights_start() -> void:
+	var db := ContentDB.load_default()
+	var nob := db.make_foe("goblin_nob")
+	assert_true(nob.rage >= 1, "it rages as it is made")
+	assert_false(nob.actions.any(func(a: Dictionary) -> bool: return str(a.get("effect", "")) == "enrage"), "and no move of its casts it")
 	var sk := Skirmish.new(1, 3)
-	sk.add_mech(_mech("A", Die.single(Face.blank())))
-	var nob := Foe.make("nob", 40, 6)
-	nob.actions = [_move("rush"), {"id": "bellow", "name": "Bellow", "kind": "buff", "effect": "enrage", "value": 1, "once": true, "opens": true, "weight": 1, "text": ""}]
+	sk.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 500))
 	sk.add_foes([nob])
 	sk.begin()
-	var ids: Array = sk.legal_actions(nob).map(func(x): return str(x.get("id", "")))
-	assert_eq(ids, ["bellow"], "the opener is its only legal move before it has acted")
 	sk.start_round()
-	assert_eq(str(nob.action.get("id", "")), "bellow", "so it is the move it announces")
-	sk.end_round()
-	assert_eq(nob.rage, 1, "it rages at the move's value")
-	ids = sk.legal_actions(nob).map(func(x): return str(x.get("id", "")))
-	assert_eq(ids, ["rush"], "and from then on its blows")
+	assert_true(sk.assign(0), "the team's first shield, before the Nob has acted")
+	assert_eq(Effects.stacks_of(nob, "enraged"), nob.rage, "feeds its rage at once")
+	var fd := SaveGame._foe_dict(nob, sk)
+	var bellow := {"id": "bellow", "name": "Bellow", "kind": "buff", "effect": "enrage", "value": 2, "once": true, "opens": true, "weight": 1, "text": ""}
+	fd["actions"] = [bellow] + fd["actions"]
+	fd["action"] = 2   # the third saved move, the second once the Bellow goes
+	fd["rage"] = 0
+	var old := SaveGame._foe_from(JSON.parse_string(JSON.stringify(fd)), sk)
+	assert_eq(old.rage, 2, "an old save's Bellow becomes its rage")
+	assert_false(old.actions.any(func(a: Dictionary) -> bool: return str(a.get("effect", "")) == "enrage"), "and the move goes")
+	assert_eq(str(old.action.get("id", "")), str(nob.actions[1].get("id", "")), "its announced move still the one it was")
 
 
 ## The rage (3 November): every shield, vent or equipment entry the team spends stacks Enraged
-## on a foe that has bellowed, a point of attack a stack for the rest of the fight; a weapon
-## feeds nothing; the player's Purge clears the stacks and the rage goes on.
+## on a foe that rages, a point of attack a stack for the rest of the fight; a weapon feeds
+## nothing; the player's Purge clears the stacks and the rage goes on.
 func test_a_rage_grows_with_the_teams_safe_spends_and_a_purge_lowers_it() -> void:
 	var sk := Skirmish.new(1, 3)
 	var d := Die.of([Face.shield(10), Face.attack(5, I), Face.vent(4)])
@@ -931,7 +939,7 @@ func test_a_rage_grows_with_the_teams_safe_spends_and_a_purge_lowers_it() -> voi
 	var nob := Foe.make("nob", 900, 6)
 	nob.actions = [_move("rush")]
 	nob.action = nob.actions[0]
-	nob.rage = 1   # bellowed
+	nob.rage = 1   # its own from the start (8 November)
 	sk.add_foes([nob])
 	sk.begin()
 	sk.start_round()

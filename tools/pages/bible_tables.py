@@ -42,7 +42,7 @@ FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", 
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "silence": "silenced", "swallow": "swallowed"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
-                       "rally": "kindled", "enrage": "enraged", "revive_once": "risen", "revive_once_ally": "risen",
+                       "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "silence": "silence", "golden": "golden_rage"}
@@ -223,6 +223,8 @@ def tally(words):
                 t.count("follow_up", "foe", planned, name)
             if int(a.get("per_kill", 0)) > 0:
                 t.count("grudge", "foe", planned, name)
+        if int(foe.get("rage", 0) or 0) > 0:
+            t.grant("enraged", "foe", "%s's rage" % whom, "foe", False, foe["id"], whom)   # its own from the start (8 November)
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)

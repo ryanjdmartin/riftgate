@@ -237,8 +237,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Flak 1 lands 5, 5 and 5 and leaves Flak 3). Every rider lands so, Burn, Suppress, Web, a
   passive's lays, Purge and a Primed machine's Burning with them, in the order the hits earned
   them; Shock, Expose, Lure and Disrupt land after the blow. A Sweep's shots are hits of their
-  own: each shot's riders land before the next shot fires, so a later shot at the same column
-  reads them (a ×4 Flak 1 sweep of two columns lands 5, 5, 6 and 6).
+  own: each shot judges its gates, its machine's lays and its foe's reads as it fires, and its
+  riders land before the next shot fires, so a later shot at the same column reads them (a ×4
+  Flak 1 sweep of two columns lands 5, 5, 6 and 6), opens a gate an earlier shot's mark shut,
+  cashes an earlier shot's Cryo, spends its Shock and arcs through it; each shot's marks feed the
+  Paradox, and each shot's Disrupt turns the foe it meets.
 - **A spend's order**: a single-target weapon (area included) lands its hits on its target,
   then every hit's riders, then the death check; then the spend ends, then what its kills
   bring back. A multi-target weapon (Sweep alone) fires each shot in turn (its column's foe,
@@ -247,7 +250,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   too (its riders, a Shock, an Expose, a Lure's turn, a Swap, a drone, a pull, the zap after
   the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
-  whether it killed (a kill trigger, the reset gun) reads its own death check. The death check
+  whether it killed (a kill trigger, the talons, the reset gun) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
   is done, in the slot their unit died in, wherever a Swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
   up or split with its return's chip in the skull's place. What a foe's tick or a mine fells
@@ -255,10 +258,13 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   acts keeps its intent shown, information whether its blow lands or not, and its blow is left
   out. The enemy's turn is sequenced as it happens: a foe its tick kills never strikes, and a
   wreck takes no more strikes.
-- Every blow of a strike is read before any of them lands, so a kill in it (the talons'
-  Empowered) feeds the next strike and never the same strike's other blows. A foe's own
-  reads (the hull it is missing, the stacks it carries) are taken as the die is spent, before
-  any strike lands.
+- **A kill**: a foe the death check clears that stays down. A foe getting back up and a split
+  are none (a split's halves are kills of their own), nor a part its core takes with it, a
+  Bomb's burst or a foe a merge takes in. Every kill trigger, the grudge, salvage and menace
+  read it.
+- Every blow of a strike is read before any of them lands. A foe's own reads (the hull it is
+  missing, the stacks it carries) are taken as its hit judges them: a single-target weapon's
+  as the die is spent, before any strike lands; a Sweep's at each shot.
 - A mine carries its numbers as laid: its own on the foe it lands on and its area's on every
   other foe its keywords reach there, each through its spender's modifiers when it was laid
   with no foe in hand, then each foe's own as it lands.
@@ -379,12 +385,15 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Burn** (with a number): each foe hit gains that many stacks of Burning (Burn 3: three
   stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo a
-  strike, laid once the strikes are done, so a fire never cashes its own frost. Any
+  strike, laid once its hit's strikes are done, so a hit never cashes its own frost (a Sweep's
+  later shot, a hit of its own, cashes an earlier shot's). Any
   machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2
   a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
   nothing; a Ward turns it away; one already suppressed for that action gains nothing more.
-- **Shock**: every foe the spend reaches is Shocked after the blow, the ones it fells included.
+- **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
+  a hit never spends its own Shock; a Sweep's later shot, a hit of its own, spends an earlier
+  shot's and a Chain arcs through it.
 - **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
   each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
   and an arc adds no heat. Its footprint, like an area's, is read from the strike's own foe: an arc
@@ -396,7 +405,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare): every foe reached
   is Exposed through the next round, a felled one too; a second Expose refreshes it, never
   adds.
-- **Disrupt**: every foe reached takes the next move in its list that its
+- **Disrupt**: every foe reached (by each shot of a Sweep that meets it, so two shots turn a
+  two-move foe back) takes the next move in its list that its
   conditions allow, keeping its pick while the machine stands and is in the fight; a new one
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
@@ -464,12 +474,14 @@ Component properties, printed on the entry rather than learned as keywords (the 
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
 then its own heat lands. **Empowered a kill** (the Soulcutter Talons'
-rule, no word of its own): each foe it kills gives its owner a stack of Empowered. **Missing HP** adds its bonus for every
+rule, no word of its own): each foe its spend kills gives its owner a stack of Empowered, at
+the spend's death check. **Missing HP** adds its bonus for every
 step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
 modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
 Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
-Flak, or on a foe carrying two Burning or more) lands only on a foe that meets it, judged as the
-die is spent and before the spend's own riders, so a spend never opens its own gate; the die
+Flak, or on a foe carrying two Burning or more) lands only on a foe that meets it, judged as its
+hit is (as the die is spent, a Sweep's at each shot) and before the hit's own riders, so a hit
+never opens its own gate; the die
 held over a foe strikes the chip where it will not land; a mine laid from it is judged as it
 lands. Suppress alone carries a gate. **Consumes**: the first blow on each foe it strikes eats every stack of the status
 the entry names on that foe and deals it a point more a stack eaten, after the attacker's
@@ -563,7 +575,8 @@ On a machine:
   while none has acted this round, so it is never a selective protection;
   the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
-  Horn gives the team a reroll, or rolls a spent ally's die again so it acts again.
+  Horn gives the team a reroll, or rolls a spent ally's die again, never onto the entry it
+  spent, so it acts again.
 - **Rallied** (buff): the team has one reroll more this round.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
@@ -606,8 +619,10 @@ On a machine:
   under the heat, one lit a load.
 - **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +3,
   its own cooling stopped, 3 heat more at the end of each turn before the overheat; a vent or
-  a weapon opens it; a shield on an ally and equipment leave the form as it is. An ally's
-  vent still cools it. One seal, however many shields.
+  a weapon opens it; a shield on an ally and equipment leave the form as it is. An entry that
+  is a shield and a vent at once (a vent that shields, a shield that cools) does the one the
+  form calls for, never both: spent on itself it seals an open machine and opens a sealed one;
+  on an ally its vent opens it. An ally's vent still cools it. One seal, however many shields.
 - **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
   other body): +1 heat a stack at the end of the player's turn, before the overheat, then a
   stack fades, so a vent makes room for it or a cleanse takes it off. Cleansable.
@@ -653,7 +668,8 @@ On a foe:
   it, a slot a Swap moved it to included; one mine a drone; it lasts the skirmish, and a death by
   a tick leaves nothing.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
-  debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
+  debuff, once a hit per debuff however many strikes or stacks (a single-target weapon's hits
+  are one, a Sweep's shots each their own); at three it is Suppressed
   (a stun like any other: a Numbed foe strips a stack instead, a Warded one turns it, and a foe
   already suppressed gains nothing) and the Paradox clears either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
   keyword's does.
@@ -685,13 +701,12 @@ On a foe:
   about to burn to death, so it drops the moment the rallier is killed, Suppressed or
   Disrupted. The foe wears the coming Empowered as a preview chip on a dashed edge, its opacity
   pulsing on the gauges' clock, until it lands; a foe whose move shows no blow wears none.
-- **Enraged** (buff, a bellow: the Goblin Nob's): once the foe has bellowed, every shield, vent
-  or equipment entry the team spends lays a stack on it, before the entry acts, and each stack
-  is a point on every blow it lands for the rest of the fight, an add before the factor; a
-  weapon or a blank feeds nothing, and no move spends it. Its chip climbs with the stacks, so
-  the number an intent shows is the number that lands. A Purge lowers the stacks by its number and the
-  bellow goes on. A bellow is an opener: a move marked `opens` (with `once`) is the foe's
-  first move of the fight, taken before any other.
+- **Enraged** (buff, a rage: the Goblin Nob's, its own from the fight's start): while the foe
+  stands, every shield, vent or equipment entry the team spends lays its rage in stacks on it,
+  before the entry acts, and each stack is a point on every blow it lands for the rest of the
+  fight, an add before the factor; a weapon or a blank feeds nothing, and no move spends it.
+  Its chip climbs with the stacks, so the number an intent shows is the number that lands. A
+  Purge lowers the stacks by its number and the rage goes on.
 - **Golden** (buff, a golden rage: the Thunder Ape's): for the rounds its move says its blows
   hit the move's value harder, an add before the factor, and it wears a point of armour. A
   quarter of its HP lost since it went gold breaks it and it staggers: the gold goes and it
@@ -738,9 +753,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
 - **The Riot Field Generator** (the Storm Petrel's passive): its weapons' heat comes off its
-  shield as they are spent, every point a spend adds (a Scorched machine's extra included)
-  taken from the shield as it stands, overshield included, and only what the shield cannot
-  pay reaching the gauge; equipment heats the gauge as ever. After the weapon's strikes, its
+  shield as they are spent, every point of a gun's own heat taken from the shield as it
+  stands, overshield included, and only what the shield cannot pay reaching the gauge; a
+  Scorched machine's extra heats the gauge, never the shield, as the forge's does, and
+  equipment heats the gauge as ever. After the weapon's strikes, its
   target takes a blow of what the shield paid (the zap): plain, no keyword and no Shock read,
   through what the foe takes and its armour, and lost if the strikes killed it. And while its
   shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
@@ -760,7 +776,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   the first; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
   spent (the die strikes its price through). Its Shrapnel Recuperator returns 1 for every foe its blows reach;
   its Unrestricted Expenditure fires every ammo in the magazine as a shot of one Sweep along
-  the rank it is dropped on, with Splash, the magazine its price and no heat; its quick reload,
+  the rank it is dropped on, with Splash, the magazine its price and no heat of its own (a
+  Scorched machine's extra lands on its heat bar, as on any forged gun); its quick reload,
   Rapid, adds 2 for 3 heat, and the Forge counts it as no vent.
 - A shield, a vent or a buff that prints heat (the quick reload) adds it to its spender as it
   is spent.
@@ -847,7 +864,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally (Empowered at its value on every other foe on the field, at once), enrage (the bellow: Enraged's feed from then on), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
+  rally (Empowered at its value on every other foe on the field, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   disable, silence (Silenced), purge (Purge N: N stacks off every buff an entry's spend bought, for good, and off what a
   store's, a form's or a passive's grant until the start of the player's turn; the Djinn's Unmake
@@ -869,7 +886,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   riders, every machine included), before anything else and even when it was the last foe,
   since damage sticks for the battle.
 - **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
-  core from taking any damage while all its parts stand, or while any does (Guarded); a part
+  core from taking any damage while all its parts stand, or while any does (Guarded), its
+  Burning and Vitriol included, whose stacks fade all the same; a part
   that falls may grow back after so many rounds while the core stands; a core that falls takes
   its parts with it.
 - **The enemy's turn**: front rank left to right, then the back; on screen each foe is lit from

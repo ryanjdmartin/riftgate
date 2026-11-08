@@ -283,6 +283,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.resist = int(d.get("resist", -1))   # its stun resist (2 November): content's, else by its size
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
+	f.rage = maxi(0, int(d.get("rage", 0)))   # its own from the fight's start (the Goblin Nob's, Ryan, 8 November: "It's not innate? ... unbelievably incorrect")
 	f.wanders = bool(d.get("wanders", false))
 	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
@@ -1868,10 +1869,6 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 		# A special used once a fight (30 October: the Vampire Lord readies its rise once).
 		if a.has("once") and (not (a["once"] is bool) or str(a.get("kind", "attack")) == "attack"):
 			errs.append("%s: once is a special's, true or left out" % aw)
-		# An opener (3 November, the Nob's Bellow): the foe's first move of the fight, so a
-		# special used once; a blow or a repeatable move opens nothing.
-		if a.has("opens") and (not (a["opens"] is bool) or not bool(a.get("once", false))):
-			errs.append("%s: opens is a special's used once (once true), true or left out" % aw)
 		# A grudge (30 October): an attack a point heavier for every foe the team has killed this fight.
 		if a.has("per_kill") and (str(a.get("kind", "attack")) != "attack" or int(a["per_kill"]) < 1):
 			errs.append("%s: per_kill is an attack's, its number a foe the team has killed this fight: 1 or more" % aw)
@@ -1914,7 +1911,7 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
 				# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
-				if (effect == "prime" or effect == "regenerate" or effect == "enrage" or effect == "golden") and int(a.get("value", 0)) < 1:
+				if (effect == "prime" or effect == "regenerate" or effect == "golden") and int(a.get("value", 0)) < 1:
 					errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
 				# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
 				if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
@@ -2014,6 +2011,10 @@ func _validate_foes(errs: Array[String]) -> void:
 				errs.append("%s: armour_step must be a whole number of at least 1" % where)
 			elif not (is_boss(str(id)) or bool(f.get("hero", false)) or f.has("promotes") or bool(f.get("elite", false))):
 				errs.append("%s: armour_step only on a foe that scales with the tier (a boss, a hero, an elite)" % where)
+		# A rage (the Goblin Nob's): its own from the fight's start, every shield, vent or
+		# equipment entry the team spends stacking that much Enraged on it while it stands.
+		if f.has("rage") and (not (f["rage"] is float or f["rage"] is int) or int(f["rage"]) < 1 or float(f["rage"]) != floorf(float(f["rage"]))):
+			errs.append("%s: rage is the Enraged a team's shield, vent or equipment spend stacks on it: a whole number, 1 or more" % where)
 		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
 		_validate_actions(where, f, errs)

@@ -259,12 +259,10 @@ func test_a_compositions_members_survive_the_trip() -> void:
 	var sk := Skirmish.new(3)
 	sk.add_mech(b.mechs()[0])
 	sk.add_foes(b.db.foes_for(host), host)
-	sk.joined_fallen_types[host.id] = {"gel_half": 2}
+	sk.kills[host.id] = {"revenant": 1, "gel_half": 2}
 	var sd: Dictionary = JSON.parse_string(JSON.stringify(SaveGame._skirmish_dict(sk, b.field)))
 	var sk2 := SaveGame._skirmish_from(sd, b.field)
-	assert_eq(sk2.came_with.get(host.id, {}), {"revenant": 2, "ghost": 1}, "what the pack came with")
-	assert_eq(sk2.joined_fallen_types.get(host.id, {}), {"gel_half": 2}, "and the joined fallen by type")
-	assert_eq(sk2.kills_by_type(host), sk.kills_by_type(host), "the kills by type read alike")
+	assert_eq(sk2.kills_by_type(host), {"revenant": 1, "gel_half": 2}, "the kills by type survive the trip")
 
 
 func test_damage_and_statuses_survive_the_trip() -> void:
