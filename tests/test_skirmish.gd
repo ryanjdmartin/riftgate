@@ -4686,7 +4686,7 @@ func test_the_round_preview_lists_every_status_the_round_lands() -> void:
 	assert_eq(str(pv["foes"][x]["coming"]["shocked"]["name"]), "Shocked", "named")
 	pv = sk.preview_round(0, x)
 	assert_eq(int(pv["foes"][x]["coming"]["burning"]["stacks"]), 3, "over it, the Burn the die lays")
-	assert_false(Effects.recording, "the recorder is off again")
+	assert_true(m.recorder == null and x.recorder == null, "the fight's own carry no recorder: only the copy's play is noted")
 	assert_false(Effects.has(x, "burning") or Effects.has(x, "shocked") or Effects.has(m, "burning_mech"), "the fight untouched")
 
 

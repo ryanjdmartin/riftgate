@@ -141,7 +141,10 @@ var taken_by_rank: Dictionary = {}
 ## revive/split"; "nothing normal should hit a unit and it's revive/split/spawn in the same
 ## spend"): while a die entry is spent its kills are checked and their slots cleared as ever,
 ## but a foe getting back up and a split's arrivals wait in these, [foe, rank, column] each,
-## until the spend is done (_release_returns). Outside a spend they return at once.
+## until the spend is done (_release_returns). Outside a spend they return at once. The hold is
+## the spend's scope, opened and closed by _assign alone and read by every death check inside
+## it, a mine's the spend sets off included (the audit's Question 9, left for the Lammergeier's
+## rework: the rules say a mine's return comes at once).
 var _holding_returns := false
 var _risers: Array = []
 var _splitters: Array = []
@@ -838,10 +841,15 @@ func rallies_now(r: Foe) -> bool:
 func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 	var copy: Skirmish = SaveGame.clone_skirmish(self)
 	copy.previewing = true
-	Effects.recorded = []
-	Effects.recording = true   # every status the copy's play lands (Ryan, 26 October: "All incoming chips should appear as pulsing opacity versions")
+	# Every status the copy's play lands (Ryan, 26 October: "All incoming chips should appear as
+	# pulsing opacity versions"), noted by the copy's own machines and foes (Effects._record).
+	var recorded: Array = []
+	for cm in copy.mechs:
+		cm.unit.recorder = recorded
 	var ours := field_foes()
 	var theirs := copy.field_foes()
+	for cf in theirs:
+		cf.recorder = recorded
 	var back := {}   # the copy's foe -> ours
 	for i in range(mini(ours.size(), theirs.size())):
 		back[theirs[i]] = ours[i]
@@ -886,16 +894,14 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			Effects.halve(f)
 		copy._trim_overshield()
 		copy._regrow_parts()
-	Effects.recording = false
 	var coming := {}   # the copy's unit or foe -> {status id: {"stacks", "name", "description"}}
-	for r in Effects.recorded:
+	for r in recorded:
 		var per: Dictionary = coming.get(r[0], {})
 		var m: Effects.Modifier = r[1]
 		var c: Dictionary = per.get(m.id, {"stacks": 0, "name": m.name, "description": m.description})
 		c["stacks"] = int(c["stacks"]) + int(r[2])
 		per[m.id] = c
 		coming[r[0]] = per
-	Effects.recorded = []
 	var out_mechs: Array = []
 	for i in range(mechs.size()):
 		var cm: MechState = copy.mechs[i]
@@ -2134,6 +2140,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
 				log.append("%s: the spin is spent" % ms.unit.display_name)
+	_holding_returns = false
 	_release_returns()   # the spend is done with the field: what its kills bring back stands now
 	if f.on_machines():
 		_machine_spend_after(ms, f, target)
@@ -5431,7 +5438,6 @@ func _clear_dead_slots() -> void:
 ## It makes clearing that column harder"), its round over, and takes a mine its fall left there;
 ## then a split steps up (the Gel's halves, in its place).
 func _release_returns() -> void:
-	_holding_returns = false
 	if _risers.is_empty() and _splitters.is_empty():
 		return
 	var risen := _risers
