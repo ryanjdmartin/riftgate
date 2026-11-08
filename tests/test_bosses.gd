@@ -348,7 +348,7 @@ func test_the_slates_bosses_are_whole_in_content() -> void:
 			continue
 		var ranked := false
 		for c in db.factions.get(str(f.get("faction", "")), {}).get("compositions", []):
-			if ["formation", "patrol"].has(str(c.get("size", ""))) and Array(c.get("members", [])).any(func(m): return str(m.get("foe", "")) == str(id)):
+			if ["formation", "patrol"].has(str(c.get("size", ""))) and (Array(c.get("front", [])) + Array(c.get("back", []))).has(str(id)):
 				ranked = true
 		assert_true(ranked, "%s, massive rank and file, stands in its domain's ranks" % id)
 	for id in db.foes.keys():

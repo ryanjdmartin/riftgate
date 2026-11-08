@@ -89,11 +89,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   holds one pack, a boss's with its escort, so no fight is given more than its slots hold.
 - At the start, foes take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes, a breach 1 more; ties in arrival order).
-- A pack dealt with a layout (Content conventions) is what its layout places: its members are
-  counted from the cells the deal drew, a kind never past its strength, so a member a listing
-  cell did not draw is never dealt and the count the map shows is the count that stands. Its fight,
-  holding it alone, places its foes by the layout: each cell, front then back, left to right, a
-  foe of its kind, a massive one filling its column; a cell that names none stands empty.
+- A pack is its composition's grid (Content conventions): the count the map shows is the count the
+  grid holds. Its fight, holding it alone, stands its foes as the grid has them: each cell, front
+  then back, left to right, a foe of its kind, a massive one filling its column; a cell that
+  names none stands empty.
 
 ### The round
 1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling,
@@ -1054,8 +1053,7 @@ a stat.
   lists them. A composition is a patrol (a few foes, one machine's fight), a formation (the
   body's), an elite (an elite leading its own) or a boss's escort. Every member unpacks into
   the fight, and the survivors come back by member. A composition may name its lead, which then
-  stands first; it may lay its foes out (Content conventions), the layout dealt as the pack is,
-  its listing cells drawn then. Each pack carries its threat rating, the machines it is intended
+  stands first; its grid is where each stands (Content conventions). Each pack carries its threat rating, the machines it is intended
   for: its composition's own, else a patrol 1, a formation 3, an elite and an escort 4, a pack
   of no composition 3, the boss's unit 4. A pack walks at its slowest member's pace
   with the largest of its members' rings, winged only when every member is. They cross every land hex and wade water as a
@@ -1263,7 +1261,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 A run of battles with no map and no cities, Slice and Dice's flow (`sim/quick_run.gd`; the
 harness's Quick campaign). The campaign's rules hold where this part says nothing, and it
 follows the main content and code: every fight is one pack dealt as a battle deals it (its
-members as content writes them, its lead, its layout drawn), a boss's the battle's boss unit,
+grid and its lead), a boss's the battle's boss unit,
 and nothing scales a pack.
 
 - **Start**: three different tier-one chassis, picked freely from every one the engine can
@@ -1307,24 +1305,22 @@ and nothing scales a pack.
   passive's `name` and `description`, a module's `text.description`, a foe action's `text`;
   everything under `design` is internal; shown text never says "face"; a draft the engine cannot
   run carries `"status": "planned"` and is kept, never shown or run.
-- A composition (`content/factions.json`) fits its fight's slots: its front-rank members and its
-  massive ones four at most, its back-rank members and its massive ones four at most, a core's
-  parts counted in their own ranks; the validator refuses one that does not.
-- A composition (`content/factions.json`) may carry four fields more, each optional: `squad`,
-  the machines it is intended for, 1 to 4, its threat rating on the map (absent: a patrol 1, a
-  formation 3, an elite and an escort 4); `layout`, `{front: [four cells], back: [four
-  cells]}` left to right as it stands, each cell null for empty, a member's foe id, or a list of
-  them the battle's seed draws one from as the pack is dealt, a massive member in a front cell
-  with the cell behind it null, no member named in more cells than its strength and every member
-  placeable (as many cells may hold it as its strength), the members a listing cell does not draw
-  never dealt; `lead`, a member's foe id whose sprite and
-  behaviour the pack wears, an elite composition's its elite (absent: the first member); `ramp`,
-  `[lo, hi]`, the Convergences it is dealt at, both held (absent: every one): a battle, the quick
-  campaign and the Fractures' elites deal only the compositions whose gate holds their ramp, and
-  where a domain's compositions of a size at a tier (an escort's, of its boss) carry any, together
-  they hold every Convergence that tier is fought at, from its first (0, 4 and 8 for tiers one to
-  three) to 12, which the Convergence never passes (a turn cannot be passed once the finale is
-  due). No composition in content writes them yet.
+- A composition (`content/factions.json`) is one grid declaration: `front` and `back`, four
+  cells each, left to right as it stands in a fight, each cell null for empty or a foe id; a
+  front-rank foe in a front cell, a back-rank foe in a back cell, a massive foe in a front cell
+  with the back cell behind it null (it fills its column), a core's parts each in a cell of its
+  own beside it, once a core. The grid is the whole count: the pack on the map is what it holds,
+  a variant with one more goblin is its own composition, and no cell lists alternatives. Three
+  fields more, each optional: `squad`, the machines it is intended for, 1 to 4, its threat rating
+  on the map (absent: a patrol 1, a formation 3, an elite and an escort 4); `lead`, a foe id in
+  the grid whose sprite and behaviour the pack wears, an elite composition's its elite (absent:
+  the first in reading order, front left to right, then back); `ramp`, `[lo, hi]`, the
+  Convergences it is dealt at, both held (absent: every one): a battle, the quick campaign and the
+  Fractures' elites deal only the compositions whose gate holds their ramp, and where a domain's
+  compositions of a size at a tier (an escort's, of its boss) carry any, together they hold
+  every Convergence that tier is fought at, from its first (0, 4 and 8 for tiers one to three)
+  to 12, which the Convergence never passes (a turn cannot be passed once the finale is due). No
+  composition in content writes `ramp` yet.
 
 ## Known gaps between these rules and the code
 

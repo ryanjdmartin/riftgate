@@ -188,58 +188,49 @@ func test_every_pack_carries_its_threat_rating() -> void:
 	assert_true(h.field.cycle.all(func(c) -> bool: return int(c.get("squad", 0)) == ContentDB.SQUAD_DEFAULT), "and so are the ones the rift sends after")
 
 
-## A composition's layout and lead (the long wall brief, section 6): the layout dealt as the pack
-## emerges, a cell that lists two drawn from the battle's seed, the composition's place and the
-## cell (the same draw again, both alternatives coming up over the places, the draw riding in the
-## save); the pack wears its lead; its fight places by the layout, an empty cell empty and the
-## members it does not place waiting.
-func test_a_layout_is_dealt_with_its_draw_and_places_its_fight() -> void:
+## A composition is its grid (8 November): the pack on the map is what the grid holds, the lead
+## first among its members; its fight, holding it alone, stands the foes as the grid has them, an
+## empty cell empty and nothing waiting; a grid that names nothing is dropped and the members
+## stand heaviest first (the harness's hand-made packs).
+func test_a_grid_is_dealt_as_the_pack_and_places_its_fight() -> void:
 	var b := _battle()
-	var c := Battlefield.composition([["revenant", 3], ["ghost", 2]], "marsh", "formation", "probe")
+	var c := Battlefield.composition([["revenant", 2], ["ghost", 2]], "marsh", "formation", "probe")
 	c["lead"] = "ghost"
-	c["layout"] = {"front": [null, "revenant", "revenant", null], "back": [["ghost", "revenant"], null, null, "ghost"]}
-	var sq := b.field.emerge(c, Hex.offset_to_axial(2, 3), 5)
+	c["layout"] = ["", "revenant", "revenant", "", "ghost", "", "", "ghost"]
+	var sq := b.field.emerge(c, Hex.offset_to_axial(2, 3))
 	assert_eq(sq.foe_id, "ghost", "the pack wears its lead")
-	assert_eq(str(sq.member_list()[0][0]), "ghost", "first among its members")
-	var want := ContentDB.resolve_layout(c["layout"], b.field.seed_value, 5)
-	assert_eq(b.field.seed_value, b.seed_value, "the field reads the battle's seed")
-	assert_eq(sq.layout, want, "the layout dealt as it emerged")
-	assert_eq(want.size(), 8, "eight cells")
-	assert_true(want[4] == "ghost" or want[4] == "revenant", "the listing cell drew one of its two")
-	assert_eq(ContentDB.resolve_layout(c["layout"], b.field.seed_value, 5), want, "the same draw again")
-	var seen := {}
-	for kk in range(32):
-		seen[ContentDB.resolve_layout(c["layout"], b.field.seed_value, kk)[4]] = true
-	assert_eq(seen.size(), 2, "over the compositions' places both come up")
+	assert_eq(sq.member_list(), [["ghost", 2], ["revenant", 2]], "first among its members, the counts the grid's")
+	assert_eq(sq.layout, c["layout"], "the grid dealt as it emerged")
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
-	assert_eq(back.field.unit_by_id(sq.id).layout, want, "a save keeps the draw")
-	assert_eq(back.field.seed_value, b.seed_value, "and the seed it was drawn from")
+	assert_eq(back.field.unit_by_id(sq.id).layout, c["layout"], "a save keeps it")
 	var m: Unit = b.mechs()[0]
 	_engage(b, sq, m)
 	var sk := b.attack(sq, [m])
-	assert_eq(sk.layout, want, "the fight on the one pack takes its layout")
+	assert_eq(sk.layout, c["layout"], "the fight on the one pack takes its grid")
 	sk.begin()
-	var placed := 0
 	for cell in range(8):
 		var f := sk.foe_at(0 if cell < 4 else 1, cell % 4)
-		if str(want[cell]).is_empty():
+		if str(c["layout"][cell]).is_empty():
 			assert_true(f == null, "cell %d stands empty" % cell)
 		else:
-			assert_true(f != null and f.content_id == str(want[cell]), "cell %d holds its %s" % [cell, want[cell]])
-			placed += 1
-	assert_eq(placed, 4, "four cells named")
+			assert_true(f != null and f.content_id == str(c["layout"][cell]), "cell %d holds its %s" % [cell, c["layout"][cell]])
 	assert_true(sk.reinforcements.is_empty(), "nothing waits: no reinforcement inside a fight")
-	var dealt := {}
-	for cell in want:
-		if not str(cell).is_empty():
-			dealt[str(cell)] = int(dealt.get(str(cell), 0)) + 1
-	assert_eq(sq.strength, 4, "the pack on the map is what its layout places")
-	for mm in sq.member_list():
-		assert_eq(int(mm[1]), int(dealt.get(str(mm[0]), 0)), "its %s counted from the draw" % mm[0])
-	# A layout that names nothing is dropped: the members stand as content writes them.
+	# Content's compositions come dealt with their grid: a formation of the content stands as written.
+	var db := ContentDB.load_default()
+	var form: Dictionary = db.compositions("meadow", 1, "formation")[0]
+	assert_eq(form["layout"].size(), 8, "eight cells")
+	var counted := {}
+	for cell in form["layout"]:
+		if not str(cell).is_empty() and not db.is_part(str(cell)):
+			counted[str(cell)] = int(counted.get(str(cell), 0)) + 1
+	for mm in form["members"]:
+		assert_eq(int(mm[1]), int(counted[str(mm[0])]), "%s: the members read off the grid" % mm[0])
+	var dealt := b.field.emerge(form, Hex.offset_to_axial(5, 3))
+	assert_eq(dealt.member_list(), form["members"], "and the pack is the grid")
+	# A grid that names nothing is dropped: the members stand as given, heaviest first.
 	var blank := Battlefield.composition([["revenant", 2], ["ghost", 1]], "marsh", "formation", "blank")
-	blank["layout"] = {"front": [null, null, null, null], "back": [null, null, null, null]}
-	var sq2 := b.field.emerge(blank, Hex.offset_to_axial(4, 3), 0)
+	blank["layout"] = ["", "", "", "", "", "", "", ""]
+	var sq2 := b.field.emerge(blank, Hex.offset_to_axial(4, 3))
 	assert_eq(sq2.strength, 3, "every member kept")
 	assert_true(sq2.layout.is_empty(), "and the fight deploys them heaviest first")
 

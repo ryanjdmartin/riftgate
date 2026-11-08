@@ -43,11 +43,11 @@ var rift_pressure_max: int = 12   # the timer: the ramp's (Ramp.timer_at), set b
 var spawn_faction: String = ""    # the faction a composition that names none belongs to
 ## The ramp the battle reads its counts and speed from (Ramp): the campaign's live Convergence.
 var ramp: int = 0
-## The battle's seed (Battle.setup sets it; the save restores it from the battle's): a dealt
-## layout's draw reads it (ContentDB.resolve_layout, the long wall brief, section 6).
+## The battle's seed (Battle.setup sets it; the save restores it from the battle's): the caches'
+## seeding reads it.
 var seed_value: int = 0
 ## The compositions the rift sends, cycled (the foes' fresh start, 30 October): each
-## {"id", "size", "faction", "members": [[foe_id, strength], ...]}, formations and patrols in
+## {"id", "size", "faction", "members": [[foe_id, strength], ...], "layout": its eight cells}, formations and patrols in
 ## turn, the lead's and the guest's in turn. The game fills this from content.
 var cycle: Array = []
 ## The compositions the tears send, cycled: the patrols, the lead's and the guest's in turn.
@@ -70,6 +70,10 @@ static func seam_start() -> int:
 ## other mouths, and sends a patrol at every peak after, so where the next flood comes from is
 ## known an interval ahead. Tears stay open.
 var tears: Array = []
+## The hunters that turned on a machine since the screen last asked ([hunter id, prey id], in
+## order; pick_prey): the battle hands them over (Battle.take_locks) for the declaration on
+## screen (Ryan, 8 November: "Declare when a hunter selects a target").
+var locks: Array = []
 ## The caches lying on the field (the bible's loot rows; Ryan, 7 November: "have all the loot on
 ## the field round 1"; 8 November: "farther away it is means more likely to spawn a higher tier
 ## cache, and don't build any seam interaction yet"): each {"id", "tier": its kind's, "pos":
@@ -353,6 +357,7 @@ func pick_prey(sq: Unit) -> Unit:
 	sq.prey = best.id if best != null else 0
 	if best != null and sq.prey != was:
 		log.append("%s turns on %s" % [sq.display_name, best.display_name])
+		locks.append([sq.id, best.id])
 	return best
 
 
@@ -820,9 +825,8 @@ func peak() -> void:
 	peaks += 1
 	if not cycle.is_empty():
 		var c: Dictionary = cycle[_cycle_index % cycle.size()]
-		var k := _cycle_index
 		_cycle_index += 1
-		var sq := emerge(c, map.rift, k)
+		var sq := emerge(c, map.rift)
 		if sq != null:
 			rift_spawns += 1
 			log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
@@ -830,9 +834,8 @@ func peak() -> void:
 		if patrol_cycle.is_empty():
 			break
 		var c: Dictionary = patrol_cycle[_patrol_index % patrol_cycle.size()]
-		var k := _patrol_index
 		_patrol_index += 1
-		var sq := emerge(c, t["pos"], k)
+		var sq := emerge(c, t["pos"])
 		if sq != null:
 			tear_spawns += 1
 			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
@@ -865,8 +868,8 @@ func pack_name(foe_id: String) -> String:
 ## its members as content writes them, dressed by its lead, on the nearest free hex to the mouth
 ## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
 ## appears on top of a detachment). Null for a composition with no members.
-func emerge(c: Dictionary, mouth: Vector2i, k: int = 0) -> Unit:
-	var sq := pack_of(c, seed_value, k, spawn_faction)
+func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
+	var sq := pack_of(c, spawn_faction)
 	if sq == null:
 		return null
 	sq.display_name = pack_name(sq.foe_id)
@@ -881,9 +884,9 @@ func emerge(c: Dictionary, mouth: Vector2i, k: int = 0) -> Unit:
 ## encounters, the harness's fight; Ryan, 7 November: one code tree for both modes): its members as
 ## content writes them (the ramp scales no pack), its lead first (the long wall brief, section 6:
 ## the member whose sprite and walk the pack wears; the first member when it names none), its
-## threat rating, its layout dealt from `seed_arg` and `k` and the pack recounted to what the draw
-## places. Unplaced, unnamed and undressed: the caller does those. Null for no members.
-static func pack_of(c: Dictionary, seed_arg: int, k: int, fallback_faction: String = "") -> Unit:
+## threat rating, its grid (eight cells, the fight's layout) and the pack counted to what the grid
+## holds. Unplaced, unnamed and undressed: the caller does those. Null for no members.
+static func pack_of(c: Dictionary, fallback_faction: String = "") -> Unit:
 	var members: Array = []
 	for m in c.get("members", []):
 		members.append([str(m[0]), int(m[1])])
@@ -900,17 +903,17 @@ static func pack_of(c: Dictionary, seed_arg: int, k: int, fallback_faction: Stri
 	sq.composition = str(c.get("id", ""))
 	sq.composition_size = str(c.get("size", ""))
 	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
-	sq.layout = ContentDB.resolve_layout(c.get("layout", null), seed_arg, k)   # dealt now, so the pack holds its draw (section 6)
+	sq.layout = Array(c.get("layout", [])).duplicate()
 	recount_by_layout(sq)
 	return sq
 
 
-## A pack with a dealt layout is what the layout places (no reinforcement inside a fight, Ryan, 6
+## A pack with a layout is what the layout places (no reinforcement inside a fight, Ryan, 6
 ## November): its members recounted from the named cells, a kind's count capped at the strength
-## content gives it, the lead first while one stands in the draw. The members a listing cell did
-## not draw are never dealt, so the count the map shows is the count that stands. No layout keeps
-## the members as content writes them, and so does one that names nothing, which is dropped so
-## the fight deploys them heaviest first.
+## the composition gives it, the lead first while one stands. Content's grid and its members
+## agree by construction (ContentDB.grid_members); the harness's and the tests' hand-made
+## compositions may not, and are counted here. No layout keeps the members as given, and so
+## does one that names nothing, which is dropped so the fight deploys them heaviest first.
 static func recount_by_layout(sq: Unit) -> void:
 	if sq.layout.is_empty():
 		return

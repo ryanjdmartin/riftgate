@@ -179,8 +179,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   brought up to date. His calls on it, built the same day: one hunter a machine (an overflow
   hunter pushes and turns on a machine once one is free), a summoner standing as many as fit,
   no turn passed once the finale is due (the runner forfeits with nobody to field: the capital
-  falls, Claude's fill), the gate's coverage rule kept strict. Open: his word on compositions as
-  one grid declaration (members and layout one thing) and on how a hunter's appearance is warned.
+  falls, his call), the gate's coverage rule kept strict; a hunter's turning on a machine declared
+  on screen (the map scrolls to it, the HUNTED band; the roar the audio to-do's); and a
+  composition is its grid ("Fix the comps so they make simple sense"): `front` and `back`, four
+  cells each, the whole declaration, no members list and no listing cells, a variant its own
+  composition, the 104 of content laid out mechanically from their member lists until the
+  formation pass writes them.
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip

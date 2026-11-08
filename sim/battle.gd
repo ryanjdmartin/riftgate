@@ -230,7 +230,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		i += 1
 	for j in range(placed.size()):
 		var p: Array = placed[j]
-		var sq := field.emerge(p[0], p[1], j)   # its placement order, for a layout's draw (section 6)
+		var sq := field.emerge(p[0], p[1])
 		if sq != null and int(p[2]) > 0:
 			_open_row(sq, Hex.axial_to_offset(p[1]).x, int(p[2]))
 	var fac: Dictionary = db.factions.get(faction, {})
@@ -361,7 +361,7 @@ func _spawn_elite() -> void:
 	var c := db.next_elite(faction, tier + 1, elites_spawned, _elite_roll(), ramp)
 	if c.is_empty():
 		return
-	var sq := field.emerge(c, map.rift, elites_spawned.size())   # the elites sent before it, for a layout's draw (section 6)
+	var sq := field.emerge(c, map.rift)
 	if sq == null:
 		return
 	sq.boss_tier = tier   # a wandering elite stands at the battle's tier (31 October)
@@ -1131,6 +1131,19 @@ func loot_text(opened: Dictionary) -> String:
 	if not str(opened.get("blueprint", "")).is_empty():
 		parts.append("a blueprint for the %s" % db.component_name(str(opened["blueprint"])))
 	return ", ".join(parts)
+
+
+## The hunters that turned on a machine since the last call ([hunter, prey] units, those still on
+## the field), cleared: the screen declares each after the walk plays (Ryan, 8 November).
+func take_locks() -> Array:
+	var out: Array = []
+	for pair in field.locks:
+		var h := field.unit_by_id(int(pair[0]))
+		var p := field.unit_by_id(int(pair[1]))
+		if h != null and p != null:
+			out.append([h, p])
+	field.locks.clear()
+	return out
 
 
 ## A fresh turn: every machine's actions and move whole, and the fights hunters forced.

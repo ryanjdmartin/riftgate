@@ -1085,9 +1085,21 @@ func _after_step() -> void:
 			_show_outcome()
 		_:
 			_refresh()
+			var locks := battle.take_locks()
+			if not locks.is_empty():
+				_show_lock(locks[0][0], locks[0][1])
 			if battle.state == Battle.State.PLAN and not battle.forced.is_empty():
 				_show_caught()
 	_autosave()
+
+
+## A hunter turns on a machine (Ryan, 8 November: "Declare when a hunter selects a target. Maybe
+## zoom on it and declare the target on screen"): the map scrolls to the hunter and the band says
+## who turns on whom, the catch's band in its shape; one declaration a turn, the first lock's,
+## the rest in the log. A roar from the enemy belongs here (noted, not made: the audio to-do).
+func _show_lock(hunter: Unit, prey: Unit) -> void:
+	_map.scroll_to_unit(hunter)
+	_warn_band("HUNTED", "%s TURNS ON %s" % [hunter.display_name.to_upper(), prey.display_name.to_upper()], false)
 
 
 ## A hunter has caught a machine (bible section 5): the warning, big and in the enemy's violet over
@@ -1096,6 +1108,18 @@ func _after_step() -> void:
 ## reads (Ryan, 22 September, of the red then).
 func _show_caught() -> void:
 	_refresh()
+	var caught := {}
+	for f in battle.forced:
+		caught[(f["prey"] as Unit).id] = true   # a fight a hunter, a machine caught twice counted once
+	var n := caught.size()
+	var fights := battle.forced.size()
+	_warn_band("CAUGHT", "%d MACHINE%s HUNTED DOWN // %d FIGHT%s FIRST" % [n, "" if n == 1 else "S", fights, "" if fights == 1 else "S"], true)
+
+
+## The warning band over the map: a black band with violet rules across it, the map dimmed under
+## it, the title big in the enemy's violet and a line under it; two beats, drawn out (Ryan, 22
+## September: one flash looked accidental), the catch's second contact beat and its line with it.
+func _warn_band(title: String, sub_text: String, catch: bool) -> void:
 	var warn := Control.new()
 	warn.position = Vector2(0, MAP_Y)
 	warn.size = Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y)
@@ -1115,18 +1139,13 @@ func _show_caught() -> void:
 		rule.position = Vector2(0, y)
 		rule.size = Vector2(W, 4.0)
 		warn.add_child(rule)
-	var text := Hud.label("CAUGHT", 84, Palette.ENEMY, Hud.display_bold())
+	var text := Hud.label(title, 84, Palette.ENEMY, Hud.display_bold())
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	text.position = band.position
 	text.size = band.size
 	warn.add_child(text)
-	var caught := {}
-	for f in battle.forced:
-		caught[(f["prey"] as Unit).id] = true   # a fight a hunter, a machine caught twice counted once
-	var n := caught.size()
-	var fights := battle.forced.size()
-	var sub := Hud.label("%d MACHINE%s HUNTED DOWN // %d FIGHT%s FIRST" % [n, "" if n == 1 else "S", fights, "" if fights == 1 else "S"], 16, Palette.INK, Hud.mono())
+	var sub := Hud.label(sub_text, 16, Palette.INK, Hud.mono())
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.position = Vector2(0, band.position.y + band.size.y - 34.0)
 	sub.size = Vector2(W, 20)
@@ -1134,10 +1153,10 @@ func _show_caught() -> void:
 	warn.modulate = Color(1, 1, 1, 0)
 	add_child(warn)
 	Sound.play("contact")
-	Sound.play_after(1.02, "contact", -2.0)   # the second beat, with the blink
-	Sound.say("contact")
+	if catch:
+		Sound.play_after(1.02, "contact", -2.0)   # the second beat, with the blink
+		Sound.say("contact")
 	var tw := create_tween()
-	# Two beats, drawn out (Ryan, 22 September: one flash looked accidental).
 	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.3)
 	tw.tween_interval(0.6)
 	tw.tween_property(warn, "modulate", Color(1, 1, 1, 0.1), 0.15)

@@ -620,15 +620,6 @@ static func boss_tier(t: int) -> Dictionary:
 const GRID_COLUMNS := 4
 
 
-## What `count` of a foe need of the slots, by rank, its core's parts with it.
-func _add_need(need: Dictionary, foe_id: String, count: int) -> void:
-	var f: Dictionary = foes.get(foe_id, {})
-	var k := "massive" if int(f.get("size", 1)) >= 2 else ("back" if str(f.get("rank", "front")) == "back" else "front")
-	need[k] = int(need[k]) + count
-	for p in f.get("parts", []):
-		_add_need(need, str(p), count)
-
-
 ## Foes as a fight's slots hold them, in the order given (commanders and their parts first): a
 ## foe its rank has no room for is left out. The harness's alone, for the fight it builds by hand,
 ## so that fight is one the game could deal; content is validated to fit instead.
@@ -867,77 +858,76 @@ static func squad_of(c: Dictionary) -> int:
 	return int(SQUAD_BY_SIZE.get(str(c.get("size", "")), SQUAD_DEFAULT))
 
 
-## A composition's layout dealt (the long wall brief, section 6): eight cells, the front rank's
-## four then the back's, left to right, each a foe id or "" for an empty cell; a cell that lists
-## several foe ids takes one, drawn from no stream of its own but the battle's seed, the
-## composition's place `k` (its index in the cycle, or its placement order) and the cell, so a
-## resumed battle deals as the unbroken one did. Empty when the composition has no layout.
-static func resolve_layout(layout, seed_value: int, k: int) -> Array:
-	if not (layout is Dictionary):
-		return []
-	var out: Array = []
-	for r in range(2):
-		var row = layout.get("front" if r == 0 else "back", [])
-		for col in range(4):
-			var cell = row[col] if row is Array and col < (row as Array).size() else null
-			if cell is Array:
-				var n := (cell as Array).size()
-				out.append("" if n == 0 else str(cell[absi(hash(Vector3i(seed_value, k, r * 4 + col))) % n]))
-			elif cell == null:
-				out.append("")
-			else:
-				out.append(str(cell))
-	return out
-
-
-## A layout's shape (the long wall brief, section 6): {front: four cells, back: four cells}, each
-## cell null, a foe id or a list of foe ids, every one a member; a massive foe only in a front
-## cell, the back cell behind it null; and no foe named by more cells than its strength.
-func _validate_layout(cw: String, layout, strength_of: Dictionary, errs: Array) -> void:
-	if not (layout is Dictionary) or not (layout.get("front", null) is Array) or not (layout.get("back", null) is Array) \
-			or (layout["front"] as Array).size() != 4 or (layout["back"] as Array).size() != 4:
-		errs.append("%s: layout is {front: [four cells], back: [four cells]}" % cw)
-		return
+## A composition's grid (one declaration since 8 November, the long wall brief's layout and
+## members made one): front and back, four cells each, null or a foe id the content has; a
+## front-rank foe in a front cell and a back-rank foe in a back cell (the ranks hold), a massive
+## foe in a front cell with the back cell behind it null; no hero; an elite only in an elite
+## composition, whose lead is one; a core's parts each in a cell of its own, once a core, and a
+## part never without its core; a lead that stands in the grid. Nothing beside the grid counts a
+## foe, so the pack is what it holds.
+func _validate_grid(cw: String, c: Dictionary, size: String, errs: Array) -> void:
+	for r in ["front", "back"]:
+		if not (c.get(r, null) is Array) or (c[r] as Array).size() != 4:
+			errs.append("%s: %s is four cells, left to right, each null or a foe id" % [cw, r])
+			return
 	var named := {}
-	var could := {}   # foe id -> the cells that may hold it, a listing cell counting for each it lists
+	var cores := {}
 	for r in ["front", "back"]:
 		for col in range(4):
-			var cell = layout[r][col]
+			var cell = c[r][col]
 			if cell == null:
 				continue
-			var ids: Array = []
-			if cell is String:
-				ids = [cell]
-			elif cell is Array and not (cell as Array).is_empty() and (cell as Array).all(func(x) -> bool: return x is String):
-				for x in cell:
-					if not ids.has(x):
-						ids.append(x)
-			else:
-				errs.append("%s: layout %s cell %d is null, a foe id or a list of foe ids" % [cw, r, col])
+			if not (cell is String):
+				errs.append("%s: %s cell %d is null or a foe id" % [cw, r, col])
 				continue
-			for fid in ids:
-				if not strength_of.has(str(fid)):
-					errs.append("%s: layout %s cell %d names %s, none of its members" % [cw, r, col, fid])
-					continue
-				could[str(fid)] = int(could.get(str(fid), 0)) + 1
-				named[str(fid)] = int(named.get(str(fid), 0)) + 1
-				if int(foes[str(fid)].get("size", 1)) >= 2:
-					if r == "back":
-						errs.append("%s: layout back cell %d names the massive %s, which stands in a front cell" % [cw, col, fid])
-					elif layout["back"][col] != null:
-						errs.append("%s: layout front cell %d may hold the massive %s, so the back cell behind it is null" % [cw, col, fid])
+			var fid := str(cell)
+			if not foes.has(fid):
+				errs.append("%s: %s cell %d names unknown foe %s" % [cw, r, col, fid])
+				continue
+			named[fid] = int(named.get(fid, 0)) + 1
+			var f: Dictionary = foes[fid]
+			if bool(f.get("hero", false)):
+				errs.append("%s: hero %s is never in a composition; it is dealt from the bench" % [cw, fid])
+			if size != "elite" and bool(f.get("elite", false)):
+				errs.append("%s: %s is an elite and stands only in an elite composition" % [cw, fid])
+			if int(f.get("size", 1)) >= 2:
+				if r == "back":
+					errs.append("%s: back cell %d names the massive %s, which stands in a front cell" % [cw, col, fid])
+				elif c["back"][col] != null:
+					errs.append("%s: front cell %d holds the massive %s, so the back cell behind it is null" % [cw, col, fid])
+			elif str(f.get("rank", "front")) == "back" and r == "front":
+				errs.append("%s: front cell %d names %s, which stands in the back rank" % [cw, col, fid])
+			elif str(f.get("rank", "front")) != "back" and r == "back":
+				errs.append("%s: back cell %d names %s, which stands in the front rank" % [cw, col, fid])
+			for pid in f.get("parts", []):
+				cores[str(pid)] = int(cores.get(str(pid), 0)) + 1
+	for pid in cores.keys():
+		if int(named.get(pid, 0)) != int(cores[pid]):
+			errs.append("%s: %s has %d core%s in the grid and %d cell%s; a core's parts each take a cell of their own, once a core" % [cw, pid, int(cores[pid]), "" if int(cores[pid]) == 1 else "s", int(named.get(pid, 0)), "" if int(named.get(pid, 0)) == 1 else "s"])
 	for fid in named.keys():
-		if int(named[fid]) > int(strength_of[fid]):
-			errs.append("%s: layout names %s in %d cells, past its strength of %d" % [cw, fid, int(named[fid]), int(strength_of[fid])])
-	# Every member can stand (the pack is what the layout places, 7 November): as many cells may
-	# hold a member as its strength, a listing cell counting for each foe it lists.
-	for fid in strength_of.keys():
-		if int(could.get(str(fid), 0)) < int(strength_of[fid]):
-			errs.append("%s: layout can place %d of its %d %s; a member the layout cannot place is never dealt" % [cw, int(could.get(str(fid), 0)), int(strength_of[fid]), fid])
+		if not cores.has(fid) and is_part(fid):
+			errs.append("%s: %s is a part and stands only beside its core" % [cw, fid])
+	if named.is_empty():
+		errs.append("%s: front and back name nobody" % cw)
+	var lead := str(c.get("lead", ""))
+	if c.has("lead") and not named.has(lead):
+		errs.append("%s: lead '%s' stands nowhere in its grid" % [cw, lead])
+	if size == "elite":
+		var members := grid_members(c)
+		if not members.is_empty() and not bool(foes.get(str(members[0][0]), {}).get("elite", false)):
+			errs.append("%s: an elite composition is led by its elite; %s is none" % [cw, str(members[0][0])])
+
+
+## Whether a foe is some core's part (content `parts`).
+func is_part(foe_id: String) -> bool:
+	for id in foes.keys():
+		if foes[id].get("parts", []).has(foe_id):
+			return true
+	return false
 
 
 ## A faction's compositions of a size at a tier (1 to 3, the shown number), in content order,
-## each as {"id", "size", "faction", "members": [[foe_id, strength], ...]}; every size in turn
+## each as {"id", "size", "faction", "members": [[foe_id, strength], ...] read off its grid, "layout": its eight cells, "lead"}; every size in turn
 ## when `size` is empty. A tier with none of a size has none: nothing stands in (Ryan, 8 November:
 ## "we've either defined the escort or we haven't"; the content tests want every size at every tier), as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
@@ -957,17 +947,54 @@ func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -
 			continue
 		if ramp >= 0 and not ramp_holds(c, ramp):
 			continue
-		var members: Array = []
-		for m in c.get("members", []):
-			if m is Dictionary and foes.has(str(m.get("foe", ""))):
-				members.append([str(m["foe"]), maxi(1, int(m.get("strength", 1)))])
+		var cells := layout_cells(c)
+		var members := grid_members(c)
 		if members.is_empty():
 			continue
-		var entry := {"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "boss": str(c.get("boss", ""))}
-		for key in ["squad", "layout", "lead", "ramp"]:   # the long wall brief's composition fields (section 6) and the ramp gate (7 November), as content writes them
+		var entry := {"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "layout": cells, "boss": str(c.get("boss", "")), "lead": str(members[0][0])}
+		for key in ["squad", "ramp"]:   # the threat rating (the long wall brief 3.7) and the ramp gate (7 November), as content writes them
 			if c.has(key):
 				entry[key] = c[key]
 		out.append(entry)
+	return out
+
+
+## A composition's grid as eight cells, the front rank's four then the back's, each a foe id or
+## "" for empty (the composition's own declaration since 8 November: its front and back).
+static func layout_cells(c: Dictionary) -> Array:
+	var out: Array = []
+	for r in ["front", "back"]:
+		var row = c.get(r, [])
+		for col in range(4):
+			var cell = row[col] if row is Array and col < (row as Array).size() else null
+			out.append(str(cell) if cell is String else "")
+	return out
+
+
+## A composition's members read off its grid, [[foe id, count], ...]: each foe once with its
+## cells' count, the lead first (`lead`, else the first in reading order), a core's parts left out
+## (they come with their core: parts_for), so the pack on the map counts what the grid holds.
+func grid_members(c: Dictionary) -> Array:
+	var cells := layout_cells(c)
+	var parts := {}
+	for cell in cells:
+		for pid in foes.get(cell, {}).get("parts", []):
+			parts[str(pid)] = true
+	var order: Array = []
+	var counts := {}
+	for cell in cells:
+		if cell.is_empty() or parts.has(cell) or not foes.has(cell):
+			continue
+		if not counts.has(cell):
+			order.append(cell)
+		counts[cell] = int(counts.get(cell, 0)) + 1
+	var lead := str(c.get("lead", ""))
+	if order.has(lead):
+		order.erase(lead)
+		order.push_front(lead)
+	var out: Array = []
+	for fid in order:
+		out.append([fid, int(counts[fid])])
 	return out
 
 
@@ -2398,7 +2425,7 @@ func _validate_factions(errs: Array[String]) -> void:
 		# deal it and its members; a tier-one formation and patrol at least, so every tier fights.
 		var comps = f.get("compositions", [])
 		if not (comps is Array) or (comps as Array).is_empty():
-			errs.append("%s: compositions is a list of {id, size, tiers, members}" % where)
+			errs.append("%s: compositions is a list of {id, size, tiers, front, back}" % where)
 			comps = []
 		var comp_ids := {}
 		var tier_one := {"formation": false, "patrol": false}
@@ -2407,7 +2434,7 @@ func _validate_factions(errs: Array[String]) -> void:
 				errs.append("%s: each composition is an object" % where)
 				continue
 			var cw := "%s composition %s" % [where, str(c.get("id", "?"))]
-			for key in ["id", "size", "members"]:
+			for key in ["id", "size", "front", "back"]:
 				if not c.has(key):
 					errs.append("%s: missing %s" % [cw, key])
 			if comp_ids.has(str(c.get("id", ""))):
@@ -2423,62 +2450,19 @@ func _validate_factions(errs: Array[String]) -> void:
 				for t in tiers:
 					if int(t) < 1 or int(t) > 3:
 						errs.append("%s: tiers are 1 to 3, got %s" % [cw, str(t)])
-			var members = c.get("members", [])
-			if not (members is Array) or (members as Array).is_empty():
-				errs.append("%s: members is a list of {foe, strength}, one at least" % cw)
-				members = []
-			var first := true
-			for m in members:
-				if not (m is Dictionary) or not foes.has(str(m.get("foe", ""))):
-					errs.append("%s: member names unknown foe %s" % [cw, str(m)])
-					first = false
-					continue
-				var fid := str(m["foe"])
-				if int(m.get("strength", 0)) < 1:
-					errs.append("%s: member %s needs a strength of at least 1" % [cw, fid])
-				if bool(foes[fid].get("hero", false)):
-					errs.append("%s: hero %s is never in a composition; it is dealt from the bench" % [cw, fid])
-				# An elite composition is led by its elite; an elite stands in no other (the bible's
-				# tiers row: outside the usual spawn list).
-				if size == "elite" and first and not bool(foes[fid].get("elite", false)):
-					errs.append("%s: an elite composition's first member is its elite, flagged elite; %s is none" % [cw, fid])
-				if size != "elite" and bool(foes[fid].get("elite", false)):
-					errs.append("%s: %s is an elite and stands only in an elite composition" % [cw, fid])
-				first = false
-			# The long wall brief's fields (section 6): the squad it is intended for, its layout
-			# and its lead.
+			if c.has("members") or c.has("layout"):
+				errs.append("%s: members and layout are gone (8 November); the grid, front and back, is the whole declaration" % cw)
+			_validate_grid(cw, c, size, errs)
+			# The long wall brief's fields (section 6): the squad it is intended for and the ramp gate.
 			if c.has("squad"):
 				var sv = c["squad"]
 				if not ((sv is int or sv is float) and int(sv) == sv and int(sv) >= 1 and int(sv) <= 4):
 					errs.append("%s: squad is 1, 2, 3 or 4, the machines it is intended for" % cw)
-			var strength_of := {}
-			for m in members:
-				if m is Dictionary and foes.has(str(m.get("foe", ""))):
-					strength_of[str(m["foe"])] = int(strength_of.get(str(m["foe"]), 0)) + int(m.get("strength", 0))
-			if c.has("lead"):
-				var lead := str(c["lead"])
-				if not strength_of.has(lead):
-					errs.append("%s: lead '%s' is none of its members" % [cw, lead])
-				elif size == "elite" and not bool(foes[lead].get("elite", false)):
-					errs.append("%s: an elite composition is led by its elite; lead %s is none" % [cw, lead])
-			if c.has("layout"):
-				_validate_layout(cw, c["layout"], strength_of, errs)
 			if c.has("ramp"):
 				var g = c["ramp"]
 				if not (g is Array) or (g as Array).size() != 2 or not (g as Array).all(func(x) -> bool: return x is float or x is int) \
 						or int(g[0]) < 0 or int(g[0]) > int(g[1]) or int(g[1]) > Ramp.TOP:
 					errs.append("%s: ramp is [lo, hi], the Convergences it is dealt at, 0 <= lo <= hi <= %d" % [cw, Ramp.TOP])
-			# A composition fits its fight's slots (no reinforcement inside a fight, cut 6 November;
-			# Ryan, 7 November: "We just tune the enemies so there's no need to have more than 8 on
-			# a field"): four a rank, the ranks holding, a massive foe a column of both, each part of
-			# a core in its own rank, an escort's boss with its parts beside its members.
-			var need := {"front": 0, "back": 0, "massive": 0}
-			for fid in strength_of.keys():
-				_add_need(need, str(fid), int(strength_of[fid]))
-			if c.has("boss") and foes.has(str(c["boss"])):
-				_add_need(need, str(c["boss"]), 1)
-			if int(need["massive"]) + int(need["front"]) > GRID_COLUMNS or int(need["massive"]) + int(need["back"]) > GRID_COLUMNS:
-				errs.append("%s: %d front, %d back and %d massive, more than a fight's four columns of two ranks hold" % [cw, int(need["front"]), int(need["back"]), int(need["massive"])])
 			if c.has("boss"):
 				# An escort written for one boss (30 October); no other composition names one.
 				var named_boss := str(c["boss"])

@@ -484,7 +484,7 @@ function foeTiers(e) {
   if (kind === "hero" || kind === "promoted") return ["final"];
   const tiers = new Set();
   for (const f of c.factions.values()) for (const comp of (f.compositions || [])) {
-    if (!(comp.members || []).some(m => m.foe === e.id)) continue;
+    if (![...(comp.front || []), ...(comp.back || [])].includes(e.id)) continue;   // the grid is the declaration (8 November)
     for (const t of [].concat(comp.tiers === undefined ? [1] : comp.tiers)) tiers.add(String(t));
   }
   if (!tiers.size) tiers.add(String(e.tier || 1) + (kind === "part" ? "" : "*"));   // listed nowhere: its own tier, starred (a summon, a split, a part)

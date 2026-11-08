@@ -328,7 +328,7 @@ func _encounters(t: int) -> Array:
 			# formation holds the slot as before.
 			var c := db.next_elite(lead, t + 1, elites_dealt, rng.randf(), ramp())
 			enc["foe"] = str(c["id"]) if not c.is_empty() else ""
-			enc["index"] = elites_dealt.size()   # its place among the battle's elites: a layout's draw
+			enc["index"] = elites_dealt.size()   # its place among the battle's elites
 			if not c.is_empty():
 				elites_dealt.append(str(c["id"]))
 		out.append(enc)
@@ -360,8 +360,8 @@ func _boss_encounter(t: int) -> Dictionary:
 
 ## The unit an encounter fields, dealt as a battle deals it (Ryan, 7 November: "Quick campaign
 ## should always follow the main content ... I don't want to keep two seperate code trees for both
-## modes"): a formation or an elite composition as its pack (Battlefield.pack_of: its members as
-## content writes them, its lead, its layout dealt), an elite's at the battle's tier; a boss, a
+## modes"): a formation or an elite composition as its pack (Battlefield.pack_of: its grid and
+## its lead), an elite's at the battle's tier; a boss, a
 ## final's hero or the finale's line as the battle's boss unit (Battle.make_boss_unit: at the tier,
 ## its curated escort or none, a final's hero with three of its domain's units). One pack is one
 ## fight, so a boss fights with its escort alone, as on the map. Null when there is nothing to field.
@@ -381,7 +381,7 @@ func encounter_unit(enc: Dictionary) -> Unit:
 		"elite":
 			var c := db.elite_composition(lead, tier() + 1, str(enc.get("foe", "")))
 			if not c.is_empty():
-				var sq := Battlefield.pack_of(c, _deal_seed(), int(enc.get("index", 0)), lead)
+				var sq := Battlefield.pack_of(c, lead)
 				if sq != null:
 					sq.boss_tier = tier()   # an elite stands at its battle's tier (31 October), as the field's do
 					return sq
@@ -395,25 +395,19 @@ func encounter_foes(enc: Dictionary) -> Array:
 	return Array(db.foes_for(u)) if u != null else []
 
 
-## A domain's formation as its pack: the tier's formation compositions in turn (`index`, wrapping,
-## the layout's draw by it), as a battle deals one. Null when the domain has none.
+## A domain's formation as its pack: the tier's formation compositions in turn (`index`,
+## wrapping), as a battle deals one. Null when the domain has none.
 func formation_unit(domain: String, index: int = 0) -> Unit:
 	var forms := db.compositions(domain, tier() + 1, "formation", ramp())
 	if forms.is_empty():
 		return null
-	return Battlefield.pack_of(forms[index % forms.size()], _deal_seed(), index, domain)
+	return Battlefield.pack_of(forms[index % forms.size()], domain)
 
 
 ## A domain's formation, unpacked.
 func formation_foes(domain: String, index: int = 0) -> Array:
 	var u := formation_unit(domain, index)
 	return Array(db.foes_for(u)) if u != null else []
-
-
-## The seed a battle's layouts are dealt from: the run's and the battle's, so the encounter shown
-## and the fight opened deal the same draw.
-func _deal_seed() -> int:
-	return absi(hash([seed_value, battle]))
 
 
 ## The battle's ramp: its number as the Convergence (the campaign's a battle a step).

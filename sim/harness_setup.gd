@@ -238,11 +238,10 @@ func make_skirmish() -> Skirmish:
 		sk.add_mech(u)
 	var c := picked_composition()
 	if not c.is_empty():
-		# The composition alone, dealt as a battle deals it (Battlefield.pack_of): its members as
-		# content writes them, its lead, its layout drawn from the seed and the pack what the draw
-		# places; its elites at the tier; a split, a summon and a regrown part call content up as in
+		# The composition alone, dealt as a battle deals it (Battlefield.pack_of): its grid, its
+		# lead, its elites at the tier; a split, a summon and a regrown part call content up as in
 		# play.
-		var sq := Battlefield.pack_of(c, seed_value, 0)
+		var sq := Battlefield.pack_of(c)
 		if sq == null:
 			return null
 		sq.id = 90
