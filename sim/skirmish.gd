@@ -889,11 +889,7 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 	for i in range(mechs.size()):
 		shield_hit.append(copy.mechs[i].unit.shield)
 	if played and copy.outcome == Outcome.NONE:   # a fight decided in the enemy's turn has no round's end
-		copy._tick_mechs()
-		for f in copy.field_foes():
-			Effects.halve(f)
-		copy._trim_overshield()
-		copy._regrow_parts()
+		copy._finish_round()
 	var coming := {}   # the copy's unit or foe -> {status id: {"stacks", "name", "description"}}
 	for r in recorded:
 		var per: Dictionary = coming.get(r[0], {})
@@ -1111,20 +1107,35 @@ func cryo_cash(ms: MechState, over: Foe) -> int:
 ## carries the shield and the Barrier from blow to blow, and from foe to foe for a caller
 ## walking every attacker: {"shield": int, "barrier": bool, "armour": int}, updated; its armour
 ## is a grant not yet made (the die in hand's brace), on top of the machine's own.
-## Returns each blow's arithmetic (_blow's).
+## Returns each blow's arithmetic (_blow_on's).
 func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 	var out: Array = []
-	var breach := f.breaches() and not Effects.has(ms.unit, "ward")
-	var armour := ms.unit.armour + Effects.armour_against(ms.unit, f.rank) + int(walk.get("armour", 0))
 	for s in range(f.strikes()):
-		var amount := Effects.damage_taken(ms.unit, foe_blow(f), f, false, true, maxi(0, int(walk["shield"])))   # a plate that stands with the shield reads the shield this blow meets
-		if amount > 0 and bool(walk.get("barrier", false)):
+		var r := _blow_on(ms, foe_blow(f), f, int(walk["shield"]), bool(walk.get("barrier", false)), int(walk.get("armour", 0)))
+		if bool(r["barred"]):
 			walk["barrier"] = false
-			amount = 0
-		var r := _blow(int(walk["shield"]), ms.unit.hull_max, armour, amount, breach)
 		walk["shield"] = r["shield"]
 		out.append(r)
 	return out
+
+
+## One foe's blow on a machine, the arithmetic the blow that lands (_damage_mech) and the
+## forecast's walk (blows_on) share, changing nothing: what the machine takes of `amount`
+## (damage_taken, the striker read for its statuses, a plate that stands with the shield reading
+## `shield`, the shield this blow meets), a Barrier standing (`barrier`) taking it whole if it deals
+## anything, a breach unless a Ward turns it away, then the shield, the armour (the machine's, what
+## it holds against the striker's rank, and `armour` more: a grant not yet made) and the hull
+## (_blow). Returns _blow's dictionary with `amount` (the blow as it arrives, before a Barrier),
+## `barred` and `warded` (a Ward turned its breach away).
+func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: bool, armour: int = 0) -> Dictionary:
+	var arrived := Effects.damage_taken(ms.unit, amount, source, false, true, maxi(0, shield))
+	var barred := arrived > 0 and barrier
+	var warded := source.breaches() and Effects.has(ms.unit, "ward")
+	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, source.rank) + armour, 0 if barred else arrived, source.breaches() and not warded)
+	r["amount"] = arrived
+	r["barred"] = barred
+	r["warded"] = warded
+	return r
 
 
 ## Machines a shield, a vent or a buff may be spent on: itself, its allies, or both, as the
@@ -2220,11 +2231,7 @@ func end_round() -> int:
 	_enemy_turn()
 	if outcome != Outcome.NONE:
 		return outcome   # decided in the enemy's turn: the fight ends there, no round's end after it
-	_tick_mechs()
-	for f in field_foes():
-		Effects.halve(f)   # a foe's halving statuses (Flak) halve at the round's end, Empowered's clock
-	_trim_overshield()
-	_regrow_parts()
+	_finish_round()
 	# No reinforcement phase (Ryan, 6 November: "Cut"): a pack is what its grid holds, so a kill's
 	# slot stays empty unless a split, a summon or a part regrowing in its corpse's place fills it.
 	_refresh_guards()
@@ -2233,6 +2240,19 @@ func end_round() -> int:
 	if outcome == Outcome.NONE:
 		state = State.ROUND_START
 	return outcome
+
+
+## The round's end, once the enemy's turn is done and the fight undecided: the machines' statuses
+## tick, a foe's halving statuses halve (Flak, Empowered's clock), shield past the maximum fades
+## and the parts due grow back. The fight's own (end_round, which then refreshes its cores' guards
+## and its machines' allies and reads the outcome) and the round preview's copy (preview_round)
+## both run it, so the preview's round ends as the round will.
+func _finish_round() -> void:
+	_tick_mechs()
+	for f in field_foes():
+		Effects.halve(f)
+	_trim_overshield()
+	_regrow_parts()
 
 
 ## The end of the player's turn (Ryan, 11 October): heat over the maximum burns hull now,
@@ -4945,18 +4965,17 @@ func _overheat_marks(ms: MechState, burn: int, idx: int) -> void:
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	if is_out(ms):
 		return   # a machine out of the fight takes no damage (ticks and overheats are its own, and land elsewhere)
-	amount = Effects.damage_taken(ms.unit, amount, source)   # buffs and debuffs on damage taken, before shield and armour; the striker read for its statuses
-	var brought := amount   # the blow as it arrives, for the round preview's incoming
-	# A Barrier takes the next blow that deals anything, whole, and is spent; a blow of nothing
-	# leaves it standing (Shocked's mirror). A Ward turns a breach away, so the shield absorbs
-	# it like any blow (Ryan, 14 October).
-	var barred := amount > 0 and Effects.has(ms.unit, "barrier")
+	# Buffs and debuffs on damage taken, before shield and armour, the striker read for its
+	# statuses; a Barrier takes the next blow that deals anything, whole, and is spent, a blow of
+	# nothing leaving it standing (Shocked's mirror); a Ward turns a breach away, so the shield
+	# absorbs it like any blow (Ryan, 14 October): _blow_on, the forecast's arithmetic too.
+	var r := _blow_on(ms, amount, source, ms.unit.shield, Effects.has(ms.unit, "barrier"))
+	var brought := int(r["amount"])   # the blow as it arrives, for the round preview's incoming
+	var barred := bool(r["barred"])
 	if barred:
 		Effects.remove(ms.unit, "barrier")
-		amount = 0
-	var warded := source.breaches() and Effects.has(ms.unit, "ward")
-	var breach := source.breaches() and not warded
-	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, source.rank), amount, breach)
+	var warded := bool(r["warded"])
+	var breach := bool(r["breach"])
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]
