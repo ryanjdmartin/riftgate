@@ -1265,6 +1265,43 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	s.free()
 
 
+## A kill a foe comes back from takes the skull's place in the preview (Ryan, 7 November: "a revive
+## or a split SHOULD be a preview chip that shows up, taking the place of a death chip"): the
+## rising arrow on a foe that gets back up, the fork on one that splits, and no skull on either.
+func test_a_foe_that_comes_back_wears_its_return_in_place_of_the_skull() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(50, Face.Reach.DIRECT))
+	sk.add_mech(m)
+	var riser := Foe.make("revenant", 10, 2)
+	var gel := Foe.make("revenant", 10, 2)
+	gel.on_death = {"summon": "revenant", "count": 2}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 1)
+	sk.add_foes([riser, gel])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(riser, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	var glyphs := func(f: Foe) -> Array:
+		return s._foe_rows(f).filter(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview").map(func(r) -> String: return str(r[0]))
+	s._drag_from = 0
+	s._drag_over = riser
+	s._refresh()
+	assert_true(glyphs.call(riser).has("rises"), "the die over the riser: it gets back up")
+	assert_false(glyphs.call(riser).has("skull"), "and wears no skull")
+	s._drag_over = gel
+	s._refresh()
+	assert_true(glyphs.call(gel).has("splits"), "over the gel: it splits")
+	assert_false(glyphs.call(gel).has("skull"), "and wears no skull")
+	s._drag_over = riser
+	Effects.remove(riser, "risen")
+	s._refresh()
+	assert_true(glyphs.call(riser).has("skull"), "a foe with nothing to come back with keeps the skull")
+	s._drag_from = -1
+	s._drag_over = null
+	s.free()
+
+
 ## A buff a purge put to sleep (28 October) wears its chip asleep on the machine, its hold line
 ## saying so, until the player's turn wakes it; the machine's view carries each row's style, so
 ## a chip on its way pulses there as on a foe.
@@ -2239,7 +2276,7 @@ func test_the_acting_foe_is_lit_one_at_a_time() -> void:
 ## need to clearly show the strikes in order, with individual ticks of damage ... damage needs to be
 ## timed to the animation across the board"): the sim records every blow in the order it landed, its
 ## strike, what it took and the HP it left; the screen lands each at its strike's beat, and a foe the
-## spend killed dies at its killing blow.
+## spend killed dies at the spend's death check, after its last blow (Ryan, 7 November).
 func test_a_bursts_blows_land_a_strike_at_a_time() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -2262,9 +2299,61 @@ func test_a_bursts_blows_land_a_strike_at_a_time() -> void:
 		assert_eq(int(blows[0]["taken"]), 2, "and what it took")
 	assert_eq(SkirmishScreen._strikes_of(blows), 3, "three strikes")
 	var deaths := s._land_blows(blows, 0.5, {}, [foe], {foe: 5})
-	assert_true(is_equal_approx(float(deaths[foe]), 0.5 + 2.0 * SkirmishScreen.STRIKE_GAP), "it dies at its killing blow, the third: %s" % str(deaths))
+	assert_true(is_equal_approx(float(deaths[foe]), 0.5 + 2.0 * SkirmishScreen.STRIKE_GAP), "it dies after the third, its killing blow and the last: %s" % str(deaths))
 	assert_true(s._shown_hp.is_empty() and s._stand_ins.is_empty(), "off the tree nothing is held back: the gauges read the fight")
 	s.free()
+
+
+## Nothing a spend fires is cut short on the screen (Ryan, 7 November: "Animate wasted shots.
+## Anything truncated confuses the player"): a multi-hit that kills with its first hit still lands
+## its later hits, on the corpse, and the foe dies after the last; a Sweep's shot at an empty column
+## is recorded with its slot, counted as a beat, aimed at that slot and landed there.
+func test_every_hit_and_shot_lands_on_the_screen_a_wasted_one_included() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1, 3)
+	var m := db.make_mech("badger")
+	var burst := Face.attack(10)
+	burst.strikes = 3
+	m.die = Die.single(burst)
+	sk.add_mech(m)
+	var frail := Foe.make("revenant", 4, 1)
+	var other := Foe.make("revenant", 30, 1)
+	sk.add_foes([frail, other])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_true(s._use_die(0, frail), "the burst spent")
+	var blows: Array = sk.spend_blows
+	assert_eq(blows.size(), 3, "three hits recorded, two on the corpse: %s" % str(blows))
+	assert_eq(SkirmishScreen._strikes_of(blows), 3, "three beats")
+	var deaths := s._land_blows(blows, 0.5, {}, [frail], {frail: 4})
+	assert_true(is_equal_approx(float(deaths[frail]), 0.5 + 2.0 * SkirmishScreen.STRIKE_GAP), "it dies after the third hit, at the death check: %s" % str(deaths))
+	s.free()
+	# A sweep of four shots over three columns, the middle one empty.
+	var s2k := Skirmish.new(1, 3)
+	var m2 := db.make_mech("badger")
+	var pod := Face.attack(2, Face.Reach.SWEEP)
+	pod.strikes = 4
+	m2.die = Die.single(pod)
+	s2k.add_mech(m2)
+	var a := Foe.make("revenant", 30, 1)
+	var gone := Foe.make("revenant", 1, 1)
+	var c := Foe.make("revenant", 30, 1)
+	s2k.add_foes([a, gone, c])
+	var s2 := SkirmishScreen.new()
+	s2.setup(s2k)
+	gone.hp = 0
+	s2k._clear_dead()
+	s2._refresh()
+	assert_true(s2k.front[1] == null, "the middle column empty")
+	assert_true(s2._use_die(0, a), "swept")
+	var swept: Array = s2k.spend_blows
+	var misses: Array = swept.filter(func(x: Dictionary) -> bool: return str(x["kind"]) == "miss")
+	assert_eq(misses.size(), 1, "the shot at the empty column recorded: %s" % str(swept))
+	if misses.size() == 1:
+		assert_eq([int(misses[0]["strike"]), misses[0]["slot"]], [1, Vector2i(0, 1)], "the second shot, in the front rank's middle slot")
+		assert_eq(s2._view_struck(swept, 1, {}, null), s2._slot_views[0][1], "the shot is aimed at that empty slot")
+	assert_eq(SkirmishScreen._strikes_of(swept), 4, "four beats, the wasted one among them")
+	s2.free()
 
 
 ## A last act lands its damage with the act: the sim records each struck machine's gauges as the

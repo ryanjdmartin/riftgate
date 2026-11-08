@@ -453,6 +453,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_HIT_DEBUG=1 (any skirmish) lands a blow on a machine every second and a half, in turn a hull
 # hit from the left, one its shield holds, one its armour turns and a hull hit from the right, and
 # every fifth beat loses one and lights it again, to judge the hit reactions running.
+# RIFTGATE_MISS_DEBUG=1 (any skirmish) lands a Sweep's wasted shot on the formation's empty slots in
+# turn every second and a half: the jolt and the ring of dust thrown off it, to judge running.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on

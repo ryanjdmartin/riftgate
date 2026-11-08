@@ -4597,7 +4597,7 @@ func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make()
 	mage.target = sh.mechs[0]
 	pv = sh.preview_round()
 	assert_eq(pv["foes"][mage]["struck"], [1], "B, the next in line, not the hottest")
-	# A Sweep with one foe standing lands every strike on it, and the preview says so.
+	# A Sweep's shot at a lone foe's column fells it, and the preview says so.
 	var s1 := Skirmish.new(4, 2)
 	var gun := Face.attack(5, S)
 	s1.add_mech(_mech("A", Die.single(gun), 0, 100))
@@ -4606,7 +4606,7 @@ func test_the_round_preview_shows_the_pick_a_foe_whose_machine_falls_will_make()
 	s1.begin()
 	s1.start_round()
 	pv = s1.preview_round(0, lone)
-	assert_false(bool(pv["foes"][lone]["alive"]), "the lone foe takes the sweep's every strike")
+	assert_false(bool(pv["foes"][lone]["alive"]), "the lone foe takes its column's shot")
 
 
 ## Every status the round lands is in the preview (Ryan, 26 October: "All incoming chips should
@@ -8091,12 +8091,15 @@ func test_a_team_reroll_back_onto_a_reset_gun_chains_it_with_every_kill() -> voi
 	assert_eq("\n".join(sk.log).count("the kill resets it"), 3, "three kills, three resets")
 
 
-## The split (the Skua's Split-cycle Breech, built 25 October): a weapon strikes twice
-## as often, each roll halved, rounded down, and shared by the two strikes it makes; every buff
-## and the foe's conditions count on each strike, its armour too, and the die shows a strike's
-## share beside the strikes. A debuff has no number to halve and fires twice all the same, its
-## riders on each strike (Ryan, 25 October: "That's kind of the whole point").
-func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
+## The split (the Skua's Split-cycle Breech, built 25 October; Ryan, 7 November: "Doubles the
+## number of hits (or number of shots, for Sweep) for Weapons and Equipment. Base weapon damage is
+## halved (rounded down, minimum 1)"; "the spirit of buffs and riders is they happen after"): a
+## weapon hits twice as often, each hit's base halved, rounded down and never below one, then every
+## buff counting on each hit whole, then the foe's own reads (its Flak) and its armour; the die
+## shows a hit's blow beside the hits. A debuff deals nothing to halve and hits twice all the same,
+## its riders on each hit (Ryan, 25 October: "That's kind of the whole point"); a Sweep fires twice
+## the shots.
+func test_a_split_passive_hits_twice_its_base_halved_rounded_down() -> void:
 	var split := {"id": "split", "name": "Split", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
 	var gun := Face.attack(3, L)
@@ -8112,11 +8115,11 @@ func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var shown := sk.shown_face(ms, gun)
-	assert_eq(shown.strikes, 2, "two strikes")
+	assert_eq(shown.strikes, 2, "two hits")
 	assert_eq(shown.number_text(), "1", "each a 3 halved, rounded down")
-	assert_true(shown.describe().contains("×2"), "the strikes beside it")
+	assert_true(shown.describe().contains("×2"), "the hits beside it")
 	assert_eq(sk.shown_number(ms, shown, bare), 1, "the die over a bare foe")
-	assert_eq(sk.shown_number(ms, shown, plate), 0, "over armour 1 each strike bounces")
+	assert_eq(sk.shown_number(ms, shown, plate), 0, "over armour 1 each hit bounces")
 	assert_eq(Effects.effective_face(m, shown).strikes, 2, "never split twice")
 	assert_true(sk.assign(0, bare), "fired")
 	assert_eq(bare.hp, 98, "1 twice")
@@ -8124,29 +8127,42 @@ func test_a_split_passive_strikes_twice_at_half_its_roll_rounded_down() -> void:
 	sk.start_round()
 	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2)
 	shown = sk.shown_face(ms, gun)
-	assert_eq(sk.shown_number(ms, shown, plate), 2, "Empowered on each strike, the armour off each")
+	assert_eq(sk.shown_number(ms, shown, plate), 2, "Empowered on each hit, after the halving: 1 + 2, the armour off each")
 	ms.face_index = 0
 	assert_true(sk.assign(0, plate), "fired on plate")
 	assert_eq(plate.hp, 96, "(1 + 2 - 1) twice")
 	var probe := Face.attack(0, L, [K.FLAK])
 	probe.flak = 1
-	assert_eq(Effects.effective_face(m, probe).strikes, 2, "a debuff fires twice")
+	assert_eq(Effects.effective_face(m, probe).strikes, 2, "a debuff hits twice")
 	sk.end_round()
 	sk.start_round()
 	ms.die = Die.single(probe)
 	ms.face_index = 0
 	var before := Effects.stacks_of(bare, "flakked")
 	assert_true(sk.assign(0, bare), "the debuff spent")
-	assert_eq(Effects.stacks_of(bare, "flakked") - before, 2, "its Flak on each strike")
+	assert_eq(Effects.stacks_of(bare, "flakked") - before, 2, "its Flak on each hit")
 	assert_eq(bare.hp, 98, "and no damage")
+	# The foe's own reads come after the halving, whole (the blow's order): the Flak the debuff
+	# laid adds its points to each halved hit.
+	sk.end_round()
+	sk.start_round()
+	ms.die = Die.single(gun)
+	ms.face_index = 0
+	var flak := Effects.stacks_of(bare, "flakked")
+	assert_true(flak > 0, "the Flak still stands")
+	assert_eq(sk.shown_number(ms, sk.shown_face(ms, gun), bare), 1 + flak, "a halved 1, then the foe's Flak whole")
+	var sweep := Face.attack(4, S)
+	sweep.strikes = 2
+	assert_eq(Effects.effective_face(m, sweep).strikes, 4, "a Sweep fires twice the shots")
 
 
-## Sweep (Ryan, 2 November, in place of the spray; a reach since the 3rd: "You pick a rank and
-## that's the rank it hits. Empty columns at any point are skipped, so it's allowed to concentrate
-## fire on the remainder"): the strikes walk the rank of the foe the entry is dropped on from its
-## first filled slot, left to right, one a slot, wrapping; a kill clears its slot at once, so the
-## walk skips it; a rank emptied loses the strikes left; either rank may be picked.
-func test_a_sweep_walks_the_rank_picked_from_the_left_one_a_slot_wrapping() -> void:
+## Sweep (Ryan, 7 November, in place of the walk of 2 November: "Fires a shot at each column,
+## left to right, repeating until it runs out of shots"): a multi-target mode, the rank of the
+## foe the entry is dropped on, front or back; each shot aimed at the foe in its column, an empty
+## column's shot wasted, so a lone foe takes its own column's shots alone ("it will NOT stack hits
+## on a solo boss"); a kill clears nothing until the shots are done, so a later shot at a felled
+## foe's column lands on its corpse ("sweep hits a unit it already killed and doesn't skip it").
+func test_a_sweep_fires_a_shot_at_each_column_left_to_right_repeating() -> void:
 	var pod := Face.attack(5, S)
 	pod.strikes = 3
 	assert_true(pod.describe().contains("sweep"), "the entry prints its reach")
@@ -8157,14 +8173,15 @@ func test_a_sweep_walks_the_rank_picked_from_the_left_one_a_slot_wrapping() -> v
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, row[2]), "dropped on the right of a full front")
-	assert_eq([row[0].hp, row[1].hp, row[2].hp], [95, 95, 95], "the walk starts at the left whatever the drop: one strike a slot")
+	assert_eq([row[0].hp, row[1].hp, row[2].hp], [95, 95, 95], "a shot at each column from the left whatever the drop")
 	assert_true("\n".join(sk.log).contains("sweeps the front"), "the log tells the sweep")
-	# Four strikes on two foes wrap, a kill mid-walk is skipped, and either rank may be picked.
+	# Four shots on two columns repeat; a foe felled by the first shot takes the third as a corpse,
+	# so the second foe takes its own two, not three; the back rank is not the one picked.
 	var sk2 := Skirmish.new(1, 2)
 	var pod4 := Face.attack(5, S)
 	pod4.strikes = 4
 	sk2.add_mech(_mech("S", Die.single(pod4), 40, 100))
-	var a := _ghoul(7, 10)
+	var a := _ghoul(4, 10)
 	var b := _ghoul(100, 10)
 	var behind := _archer(100, 10)
 	sk2.add_foes([a, b, behind])
@@ -8173,22 +8190,52 @@ func test_a_sweep_walks_the_rank_picked_from_the_left_one_a_slot_wrapping() -> v
 	assert_true(sk2.front[0] == a and sk2.front[1] == b and sk2.back[0] == behind, "two in front, one behind the first")
 	assert_true(sk2.targets_for_face(sk2.mechs[0], pod4).has(behind), "a sweep offers either rank: the Skua reaches the back after a fashion")
 	assert_true(sk2.assign(0, b), "dropped on b: the front picked")
-	assert_false(a.alive(), "a took the first and the third strike and fell")
-	assert_eq([b.hp, behind.hp], [90, 100], "b took the second and the fourth; the back rank was not the one picked")
-	# A rank emptied mid-walk loses the strikes left: the rank is the one picked.
-	var sk3 := Skirmish.new(1, 1)
-	sk3.add_mech(_mech("S", Die.single(pod), 40, 100))
-	var lone := _ghoul(4, 10)
-	var back_foe := _archer(100, 10)
-	sk3.add_foes([lone, back_foe])
+	assert_false(a.alive(), "a fell to the first shot")
+	assert_eq(a.hp, 4 - 10, "and took the third on its corpse")
+	assert_eq([b.hp, behind.hp], [90, 100], "b took the second and the fourth, never a's; the back rank untouched")
+	# Empty columns waste their shots: a lone foe at the third column of four takes the one shot
+	# aimed at its column, never the sweep's every shot.
+	var sk3 := Skirmish.new(1, 4)
+	sk3.add_mech(_mech("S", Die.single(pod4), 40, 100))
+	var left := _ghoul(1, 10)
+	var mid := _ghoul(1, 10)
+	var lone := _ghoul(100, 10)
+	sk3.add_foes([left, mid, lone])
 	sk3.begin()
+	left.hp = 0
+	mid.hp = 0
+	sk3._clear_dead()
 	sk3.start_round()
-	assert_true(sk3.assign(0, lone), "swept at a lone front foe with one behind it")
-	assert_true(not lone.alive() and back_foe.hp == 100, "the first strike kills it and the two left are lost: the rank is the one picked")
-	sk3.end_round()
-	sk3.start_round()
-	assert_true(sk3.assign(0, back_foe), "the back rank picked")
-	assert_eq(back_foe.hp, 85, "three strikes on the one foe there")
+	assert_true(sk3.front[0] == null and sk3.front[1] == null and sk3.front[2] == lone and sk3.front[3] == null, "the lone foe stands third of four")
+	assert_eq(sk3.sweep_shots(lone, 4), {lone: 1}, "the bot reads the one shot it takes")
+	assert_true(sk3.assign(0, lone), "swept at it")
+	assert_eq(lone.hp, 95, "one shot of the four: the other three hit empty columns")
+	assert_true("\n".join(sk3.log).contains("nothing"), "the log tells the wasted shots")
+	assert_eq(sk3.spend_blows.filter(func(x: Dictionary) -> bool: return str(x["kind"]) == "miss").size(), 3, "and the screen is told of each, its slot with it")
+	# The back rank picked: one foe there takes its column's shots alone.
+	var sk5 := Skirmish.new(1, 1)
+	sk5.add_mech(_mech("S", Die.single(pod), 40, 100))
+	var front_foe := _ghoul(4, 10)
+	var back_foe := _archer(100, 10)
+	sk5.add_foes([front_foe, back_foe])
+	sk5.begin()
+	sk5.start_round()
+	assert_true(sk5.assign(0, back_foe), "the back rank picked")
+	assert_eq([front_foe.hp, back_foe.hp], [4, 85], "three shots on its one column, the front untouched")
+	# A massive foe fills both slots of its column, so a back-rank sweep's shot there hits it.
+	var s6 := Skirmish.new(1, 2)
+	var lob2 := Face.attack(5, S)
+	lob2.strikes = 2
+	s6.add_mech(_mech("S", Die.single(lob2), 40, 100))
+	var giant := _colossus(100)
+	var rear := _archer(100, 10)
+	s6.add_foes([giant, rear])
+	s6.begin()
+	s6.start_round()
+	var gc := giant.column
+	assert_true(s6.front[gc] == giant and s6.back[gc] == giant and s6.back[1 - gc] == rear, "the giant fills its column, an archer behind the other")
+	assert_true(s6.assign(0, rear), "dropped on the back rank")
+	assert_eq([giant.hp, rear.hp], [95, 95], "the back rank's shot at the giant's column hits the giant")
 	# Dropped on a back foe with the front standing: the back rank is swept, the front untouched.
 	var sk4 := Skirmish.new(1, 2)
 	var lob := Face.attack(5, S)
@@ -8201,6 +8248,194 @@ func test_a_sweep_walks_the_rank_picked_from_the_left_one_a_slot_wrapping() -> v
 	sk4.start_round()
 	assert_true(sk4.assign(0, arch[1]), "dropped on a back foe")
 	assert_eq([g.hp, arch[0].hp, arch[1].hp], [100, 95, 95], "the back rank swept from the left, the front untouched")
+
+
+## A shot is a hit of its own (Ryan, 7 November: "[select target - hit(s) - riders per hit] for
+## each shot fired"): its riders land before the next shot fires, so a later shot at the same
+## column reads them, a Flak sweep's second pass taking the first pass's points; a multi-hit
+## weapon's riders still wait for its last hit, 5, 5 and 5 (Ryan, 3 November).
+func test_a_sweeps_later_shot_reads_an_earlier_shots_riders() -> void:
+	var pod := Face.attack(5, S, [K.FLAK])
+	pod.flak = 1
+	pod.strikes = 4
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("S", Die.single(pod), 40, 100))
+	var a := _ghoul(100, 10)
+	var b := _ghoul(100, 10)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, a), "swept")
+	assert_eq([a.hp, b.hp], [100 - 5 - 6, 100 - 5 - 6], "5 on each, then 6 on each, the first pass's Flak read by the second")
+	assert_eq([Effects.stacks_of(a, "flakked"), Effects.stacks_of(b, "flakked")], [2, 2], "a stack a shot")
+	var triple := Face.attack(5, L, [K.FLAK])
+	triple.flak = 1
+	triple.strikes = 3
+	var s2 := Skirmish.new(1, 1)
+	s2.add_mech(_mech("T", Die.single(triple), 40, 100))
+	var c := _ghoul(100, 10)
+	s2.add_foes([c])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, c), "the multi-hit")
+	assert_eq(c.hp, 85, "5, 5 and 5: its riders after its last hit")
+	assert_eq(Effects.stacks_of(c, "flakked"), 3, "a stack a hit")
+
+
+## The spend's order (Ryan, 7 November: "Spend-hit(s)-riders per hit-check death-end
+## spend-revive/split"; "nothing normal should hit a unit and it's revive/split/spawn in the same
+## spend"): a foe getting back up and a split's arrivals stand only once the spend is done, so a
+## multi-hit's later hits and a sweep's later shots land on the corpse, and a Purge on the
+## killing hit strips its Getting Back Up before the death check, so it stays down.
+func test_what_a_kill_brings_back_waits_for_the_spend_to_end() -> void:
+	# A multi-hit's second hit lands on the corpse; it gets back up whole once the spend is done.
+	var twice := Face.attack(10, L)
+	twice.strikes = 2
+	var sk := Skirmish.new(3, 1)
+	sk.add_mech(_mech("A", Die.single(twice), 40, 100))
+	var g := _ghoul(8, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(g, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(sk.assign(0, g), "the multi-hit")
+	assert_eq(sk.front[0], g, "it got back up in its own slot once the spend was done")
+	assert_eq(g.hp, 8, "whole: the second hit had landed on its corpse, before it rose")
+	assert_true(sk.returned.any(func(r: Dictionary) -> bool: return r["foe"] == g and r["how"] == "rises"), "the spend's returns name it")
+	# A sweep's later shot at its column lands on its corpse, never the risen foe.
+	var pod := Face.attack(5, S)
+	pod.strikes = 4
+	var s2 := Skirmish.new(3, 2)
+	s2.add_mech(_mech("B", Die.single(pod), 40, 100))
+	var up := _ghoul(4, 10)
+	var other := _ghoul(100, 10)
+	s2.add_foes([up, other])
+	s2.begin()
+	s2.start_round()
+	Effects.stack(up, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(s2.assign(0, other), "swept")
+	assert_eq([s2.front[0], up.hp, other.hp], [up, 4, 90], "it rose whole after the four shots, its column's second shot spent on its corpse")
+	# A Purge on the killing shot lands before the death check: it stays down.
+	var purge := Face.attack(5, S, [K.DISPEL])
+	purge.dispel = 1
+	purge.strikes = 2
+	var s3 := Skirmish.new(3, 2)
+	s3.add_mech(_mech("C", Die.single(purge), 40, 100))
+	var gone := _ghoul(4, 10)
+	var stays := _ghoul(100, 10)
+	s3.add_foes([gone, stays])
+	s3.begin()
+	s3.start_round()
+	Effects.stack(gone, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(s3.assign(0, stays), "the purging sweep")
+	assert_false(gone.alive(), "felled")
+	assert_true(s3.front[0] == null, "and the Purge took its Getting Back Up before the death check: it stays down")
+	# A split's halves step up once the spend is done: a sweep's later shot at the Gel's column
+	# lands on its corpse, the halves untouched.
+	var s4 := Skirmish.new(2, 2)
+	s4.add_mech(_mech("D", Die.single(pod), 40, 100))
+	var heavy := _ghoul(500, 20)
+	var gel := _ghoul(4, 10)
+	gel.display_name = "gel"
+	gel.on_death = {"summon": "gel_small", "count": 2}
+	s4.foe_factory = func(id: String) -> Foe: return Foe.make(id, 10, 5)
+	s4.add_foes([heavy, gel])
+	s4.begin()
+	s4.start_round()
+	assert_eq(s4.front[1], gel, "the gel stands second")
+	assert_true(s4.assign(0, heavy), "swept: shots at the heavy, the gel, the heavy, the gel")
+	assert_eq(heavy.hp, 490, "the heavy took its two")
+	assert_eq(s4.front[1].display_name, "gel_small", "the gel split once the shots were done")
+	assert_eq(s4.front[1].hp, 10, "its half whole: the gel's second shot landed on the corpse")
+	assert_true(s4.returned.any(func(r: Dictionary) -> bool: return r["foe"] == gel and r["how"] == "splits"), "the spend's returns name the split")
+
+
+## An entry's own effects past its blow land in the rider phase, before the death check, on a
+## target the hit felled too (Ryan, 7 November: "if a swap did damage, it should play out the
+## same: deal damage, then swap (in the rider phase), check death, end spend, and revive in the
+## NEW spot, since the split/revive is attached to the unit, not the spot"): a damaging Swap
+## moves the foe it kills, which gets back up where it was moved to and takes the mine waiting
+## there, a corpse setting off nothing; a damaging drone rides the foe it kills, whose mine falls
+## in the slot it dies in.
+func test_a_swap_lands_in_the_rider_phase_and_a_revive_stands_in_the_new_spot() -> void:
+	var swapper := Face.attack(10, L, [K.SWAP])
+	var sk := Skirmish.new(3, 3)
+	sk.add_mech(_mech("A", Die.single(swapper), 40, 100))
+	var up := _ghoul(4, 10)
+	var other := _ghoul(100, 10)
+	sk.add_foes([up, other])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(up, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(sk.front[0] == up and sk.front[1] == other and sk.front[2] == null, "two in front, the third column empty")
+	# A mine waits in the empty slot the swap will move the dying foe into.
+	sk.mines[Vector2i(0, 2)] = [{"damage": 3, "weapon": true, "keywords": [], "seq": 1, "by": "test", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0, "dispel": 0, "row": 0, "column": 0, "chain": 0}]
+	assert_true(sk.assign(0, up, Vector2i(0, 2)), "the damaging swap: its blow kills, then it moves the foe")
+	assert_eq(sk.front[2], up, "it got back up in the slot it was moved to, not the one it was struck in")
+	assert_true(sk.front[0] == null, "the slot it was struck in stands empty")
+	assert_eq(up.hp, 4 - 3, "whole, then the mine waiting there: its corpse set off nothing as it came")
+	# A damaging drone rides the foe it kills, its mine left in the slot it dies in.
+	var drone := Face.attack(10, L)
+	drone.drones = true
+	var s2 := Skirmish.new(3, 2)
+	s2.add_mech(_mech("B", Die.single(drone), 40, 100))
+	var prey := _ghoul(4, 10)
+	s2.add_foes([prey, _ghoul(100, 10)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, prey), "the damaging drone")
+	assert_false(prey.alive(), "its blow kills")
+	assert_eq((s2.mines.get(Vector2i(0, 0), []) as Array).size(), 1, "the drone fell with it and left the killing shot in its slot")
+
+
+## A massive foe fills both slots of its column. Area aimed at it reaches the foes beside it, and
+## its own column adds nothing, so it never takes its own Splash or Penetrate twice (Ryan, 7
+## November: "Whatever it does now is fine, it will just be something to test"); a back-rank
+## Spread's row meets it like any foe in that rank.
+func test_area_meets_a_massive_foe_once_from_either_rank() -> void:
+	var splash := Face.attack(10, I, [K.SPLASH])
+	splash.splash = 3
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(splash), 40, 100))
+	var left := _ghoul(100, 10)
+	var giant := _colossus(100)
+	var right := _ghoul(100, 10)
+	sk.add_foes([giant, left, right])
+	sk.begin()
+	sk.start_round()
+	var gc := giant.column
+	assert_true(sk.front[gc] == giant and sk.back[gc] == giant, "the giant fills its column")
+	assert_true(sk.assign(0, giant), "Splash at the giant")
+	assert_eq(giant.hp, 90, "it takes the blow once: its column holds only itself")
+	var beside := 0
+	for f in [left, right]:
+		if absi(f.column - gc) == 1:
+			beside += 1
+			assert_eq(f.hp, 97, "a foe beside it takes the Splash")
+	assert_true(beside >= 1, "something stood beside it")
+	var lance := Face.attack(10, L, [K.PENETRATE])
+	lance.penetrate = 4
+	var s2 := Skirmish.new(1, 2)
+	s2.add_mech(_mech("B", Die.single(lance), 40, 100))
+	var g2 := _colossus(100)
+	s2.add_foes([g2, _ghoul(100, 10)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, g2), "Penetrate at the giant")
+	assert_eq(g2.hp, 90, "once: nothing else in its column")
+	# A back-rank Spread beside a massive foe's column meets it.
+	var spread := Face.attack(10, I, [K.CLEAVE])
+	spread.cleave = 4
+	var s3 := Skirmish.new(1, 2)
+	s3.add_mech(_mech("C", Die.single(spread), 40, 100))
+	var g3 := _colossus(100)
+	var rear := _archer(100, 10)
+	s3.add_foes([g3, rear])
+	s3.begin()
+	s3.start_round()
+	assert_true(s3.back[g3.column] == g3 and s3.back[1 - g3.column] == rear, "the giant's column and an archer behind the other")
+	assert_true(s3.assign(0, rear), "Spread at the back-rank archer")
+	assert_eq([rear.hp, g3.hp], [90, 96], "the archer takes the blow, the giant beside it in the back rank the Spread")
 
 
 ## Expose and Exposed (the Kestrel session, 20 and 21 October): every foe the entry reaches and
@@ -8796,9 +9031,9 @@ func test_the_forge_fires_its_guns_from_ammo_and_a_foes_scorch_still_heats_them(
 
 
 ## The Musk Ox's pieces (21 October), synthetic: the cluster cannon gives an ammo back for every
-## foe its blows reach; the salvo fires every ammo in the magazine as a strike at random live
-## foes, Spread and Penetrate on each, the magazine its price and no heat; the quick reload,
-## Rapid, adds its 2 for its heat, and the Forge counts it as no vent.
+## foe its blows reach; the salvo fires every ammo in the magazine as a shot of one Sweep, a shot
+## at each column of the rank in turn (Ryan, 7 November), Splash on each, the magazine its price
+## and no heat; the quick reload, Rapid, adds its 2 for its heat, and the Forge counts it as no vent.
 func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heats() -> void:
 	var cannon := Face.attack(5, I, [K.SPLASH])
 	cannon.splash = 3
@@ -8837,8 +9072,9 @@ func test_the_cluster_cannon_refunds_the_salvo_empties_and_the_quick_reload_heat
 	var hp_after := 0
 	for f in sk.field_foes():
 		hp_after += f.hp
-	assert_true(hp_before - hp_after >= n * (5 + 2 * 3), "every ammo a strike, each reaching more than its target: two foes of its plus at the least, Splash 3 each")
-	assert_true("\n".join(sk.log).contains("empties the magazine: %d strikes" % n), "the log counts them")
+	assert_true(hp_before - hp_after >= n * (5 + 2 * 3), "every ammo a shot, each reaching more than its column's foe: two foes of its plus at the least, Splash 3 each")
+	assert_true("\n".join(sk.log).contains("empties the magazine: %d shots" % n), "the log counts them")
+	assert_true("\n".join(sk.log).contains("sweeps the front"), "one Sweep, the path every sweep takes")
 	sk.end_round()
 	sk.start_round()
 	before_heat_check(sk, ms)
@@ -8874,11 +9110,11 @@ func test_a_multi_strike_gun_pays_its_heat_once_a_spend() -> void:
 	assert_eq(ms.heat, 5 + sc, "and the spend adds them, once")
 
 
-## A Primed machine's Burning lands a stack a strike on each strike's own foe (the mechanics
-## audit's 8, 27 October): a sweep whose first strike kills leaves its stack on the foe it felled
-## (Ryan, 3 November: the riders hit, and it dies) and burns the foe the strikes after it walked
-## on to.
-func test_a_primed_sweeps_burn_lands_on_each_strikes_own_foe() -> void:
+## A Primed machine's Burning lands a stack a hit on each hit's own foe (the mechanics audit's 8,
+## 27 October): a sweep's shots each burn the foe in their column, and a shot at a column whose
+## foe an earlier shot felled lands on its corpse (Ryan, 7 November: "sweep hits a unit it already
+## killed and doesn't skip it"), its stack with it.
+func test_a_primed_sweeps_burn_lands_a_stack_a_shot_on_each_shots_own_foe() -> void:
 	var pod := Face.attack(5, S)
 	pod.strikes = 3
 	var sk := Skirmish.new(1, 2)
@@ -8891,10 +9127,10 @@ func test_a_primed_sweeps_burn_lands_on_each_strikes_own_foe() -> void:
 	sk.start_round()
 	Effects.grant_buff(s, "primed", 1, "test", sk.round)
 	assert_true(sk.assign(0, first), "swept")
-	assert_false(first.alive(), "the first strike kills the first")
-	assert_eq(Effects.stacks_of(first, "burning"), 1, "the killing strike's stack lands on the foe it felled")
-	assert_eq(second.hp, 90, "the two strikes after it fall on the second, the walk skipping the kill")
-	assert_eq(Effects.stacks_of(second, "burning"), 2, "and burn it, a stack a strike")
+	assert_false(first.alive(), "the first shot kills the first")
+	assert_eq(Effects.stacks_of(first, "burning"), 2, "the first shot's stack and the third's, on the foe they felled")
+	assert_eq(second.hp, 95, "the second foe takes its own column's one shot")
+	assert_eq(Effects.stacks_of(second, "burning"), 1, "and its one stack")
 
 
 ## The enemy's turn goes on past a foe with no machine to strike (the audit's 13, 27 October):

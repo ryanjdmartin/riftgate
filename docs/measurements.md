@@ -4874,7 +4874,7 @@ catch, the World Eater's push), which no cell reads; the HP alone is not the lev
 
 ## 6 November, the long wall's Phase 1 reads
 
-The reads the long wall's build brief asks for (`docs/briefs/long_wall_build.md`, section 10), on
+The reads the long wall's build brief asks for (`git show 68381ff:docs/briefs/long_wall_build.md`, section 10), on
 `ccr-56b5169d-lsa2rg` with Phase 1 built: the field 20 by 12 at every Convergence; the tide (the
 beat 3 turns, 2 from Convergence 8, the siege a turn short of its first peak at the start, the
 beat halved at the Rupture); a pusher's segment of the wall; one pack one fight from beside it;

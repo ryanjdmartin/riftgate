@@ -120,6 +120,11 @@ static var SLEEP_DEBUG := OS.get_environment("RIFTGATE_SLEEP_DEBUG") == "1"
 static var HIT_DEBUG := OS.get_environment("RIFTGATE_HIT_DEBUG") == "1"
 const HIT_DEBUG_KINDS := [["hull", -1.0], ["shield", 0.0], ["block", 0.6], ["hull", 1.0]]
 var _hit_debug_at := 0.0
+## RIFTGATE_MISS_DEBUG=1: every second and a half a Sweep's wasted shot lands on an empty slot of the
+## enemy's formation, each in turn, to judge the impact running (7 November; a first cut).
+static var MISS_DEBUG := OS.get_environment("RIFTGATE_MISS_DEBUG") == "1"
+var _miss_debug_at := 0.0
+var _miss_debug_n := 0
 var _hit_debug_n := 0
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 const HOME_FLIGHT := 0.22   # seconds a waiting Swap's die takes to fly home when a tap on nothing sets it back
@@ -230,6 +235,9 @@ func _process(delta: float) -> void:
 	if HIT_DEBUG and _fight_t - _hit_debug_at > 1.5 and not _mech_views.is_empty():
 		_hit_debug_at = _fight_t
 		_hit_debug()
+	if MISS_DEBUG and _fight_t - _miss_debug_at > 1.5:
+		_miss_debug_at = _fight_t
+		_miss_debug()
 	var sec := int(_fight_t)
 	if sec != _clock_sec:
 		_clock_sec = sec
@@ -1563,8 +1571,17 @@ func _foe_rows(foe: Foe) -> Array:
 	# A fall the round will bring (the round preview; Ryan, 26 October: "It should get a destroyed
 	# chip same as the player to indicate incoming death"): the machines' skull, its intent kept,
 	# since its line still matters to what reads it.
+	# A kill it comes back from takes the skull's place (Ryan, 7 November: "a revive or a split
+	# SHOULD be a preview chip that shows up, taking the place of a death chip"): the rising arrow
+	# for a foe that gets back up and stands at the round's end, the fork for one whose halves
+	# step up; a foe that rises and falls again keeps the skull.
 	var fate: Dictionary = _round.get("foes", {}).get(foe, {})
-	if foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
+	var returns := str(fate.get("returns", ""))
+	if foe.alive() and returns == "rises" and bool(fate.get("alive", true)):
+		rows.append(["rises", "", "Gets back up this round", _foe_chip_colour("risen"), "preview"])
+	elif foe.alive() and returns == "splits":
+		rows.append(["splits", "", "Splits this round", _foe_chip_colour("risen"), "preview"])
+	elif foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
 		rows.append(["skull", "", "Destroyed this round", Palette.LOSS, "preview"])
 	if foe.burn_stacks() > 0:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning ×%d" % foe.burn_stacks(), _foe_chip_colour("burning")])
@@ -2996,15 +3013,30 @@ static func _blow_time(b: Dictionary, landed: float) -> float:
 
 
 ## The view a strike is aimed at, for the attacker's lunge: its first blow's foe as the spend found
-## it, else `fallback`.
+## it, a wasted shot's empty slot, else `fallback`.
 func _view_struck(blows: Array, k: int, was: Dictionary, fallback) -> UnitView:
 	for b in blows:
-		if int(b["strike"]) == k and str(b["kind"]) in ["strike", "mine"]:
+		if int(b["strike"]) != k:
+			continue
+		if str(b["kind"]) == "miss":
+			var v := _miss_view(b)
+			if v != null:
+				return v
+		elif str(b["kind"]) in ["strike", "mine"]:
 			var foe: Foe = b["foe"]
 			if was.has(foe):
 				return was[foe][0]
 			return _foe_view_for(foe)
 	return fallback
+
+
+## The empty slot a wasted shot landed in, or null.
+func _miss_view(b: Dictionary) -> UnitView:
+	var at: Vector2i = b.get("slot", Vector2i(-1, -1))
+	if at.x < 0 or at.x >= _slot_views.size() or at.y < 0 or at.y >= (_slot_views[at.x] as Array).size():
+		return null
+	var v: UnitView = _slot_views[at.x][at.y]
+	return v if v != null and is_instance_valid(v) else null
 
 
 ## The attacker's move for a strike, `t` seconds from now: `lands`, `cid` and `wound` as
@@ -3026,17 +3058,15 @@ func _attack_at(t: float, attacker: UnitView, aimed, ranged: bool, lands: float 
 func _land_blows(blows: Array, landed: float, was: Dictionary, dead: Array, hp_before: Dictionary) -> Dictionary:
 	var deaths := {}
 	var last := landed
+	# The death check (Ryan, 7 November: "check death(s)" once the hits, or a Sweep's every shot,
+	# are done): every foe the spend killed dies after its last blow, so a later hit or shot on it
+	# lands on its stand-in first and nothing it took is cut short ("Anything truncated confuses
+	# the player").
+	var check := landed + (_strikes_of(blows) - 1) * STRIKE_GAP
+	for b in blows:
+		check = maxf(check, _blow_time(b, landed))
 	for foe in dead:
-		deaths[foe] = landed
-		var hit := false
-		for b in blows:
-			if b["foe"] == foe:
-				hit = true
-				deaths[foe] = _blow_time(b, landed)
-				if int(b["hp"]) <= 0:
-					break
-		if not hit:
-			deaths[foe] = landed + (_strikes_of(blows) - 1) * STRIKE_GAP
+		deaths[foe] = check
 	if not is_inside_tree():
 		return deaths
 	for foe in dead:
@@ -3056,8 +3086,9 @@ func _land_blows(blows: Array, landed: float, was: Dictionary, dead: Array, hp_b
 	var count := {}
 	for b in blows:
 		var foe: Foe = b["foe"]
-		var n := int(count.get(foe, 0))
-		count[foe] = n + 1
+		var key = foe if foe != null else b.get("slot", Vector2i(-1, -1))   # a wasted shot counts by its slot
+		var n := int(count.get(key, 0))
+		count[key] = n + 1
 		events.append([_blow_time(b, landed), _land_spend_blow.bind(b, n)])
 		last = maxf(last, _blow_time(b, landed))
 	for foe in dead:
@@ -3082,6 +3113,9 @@ func _land_blows(blows: Array, landed: float, was: Dictionary, dead: Array, hp_b
 ## One blow landing: its foe's gauge steps down to what it left, the foe flashes and the blow's
 ## number rises off it, the `n`-th on that foe this spend set apart from the ones before.
 func _land_spend_blow(b: Dictionary, n: int) -> void:
+	if str(b.get("kind", "")) == "miss":
+		_land_miss(b)
+		return
 	var foe: Foe = b["foe"]
 	var v: UnitView = _stand_ins.get(foe, null)
 	if v == null:
@@ -3122,8 +3156,56 @@ func _pop_damage(v: UnitView, taken: int, n: int) -> void:
 	tw.tween_callback(l.queue_free)
 
 
-## A killed foe's stand-in dies at its killing blow: its marks go, its drawing flashes, drops and
-## fades in the red-red, and it is gone.
+## A Sweep's shot at an empty column landing (Ryan, 7 November: "Animate wasted shots. Anything
+## truncated confuses the player"): the empty slot jolts where the shot struck and a ring of dust
+## is thrown off it, wide and thick on purpose for the phone, with no number, since nothing was
+## there to take one. A first cut, judged running (RIFTGATE_MISS_DEBUG=1).
+func _land_miss(b: Dictionary) -> void:
+	var v := _miss_view(b)
+	if v == null or not is_inside_tree():
+		return
+	_animate_hit(v)
+	var r := v.drawing_rect()
+	var reach := maxf(r.size.x, 60.0)
+	var puff := Control.new()
+	puff.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	puff.position = _home.get(v, v.position) + r.get_center()
+	add_child(puff)
+	var state := {"t": 0.0}
+	var ink := Palette.INK
+	puff.draw.connect(func() -> void:
+		var t: float = state["t"]
+		var a := 1.0 - t
+		var rad := lerpf(reach * 0.12, reach * 0.6, t)
+		puff.draw_arc(Vector2.ZERO, rad, 0.0, TAU, 40, Color(ink, a), lerpf(7.0, 2.0, t))
+		for i in range(10):
+			var ang := TAU * float(i) / 10.0 + 0.3
+			var d := Vector2(cos(ang), sin(ang))
+			puff.draw_line(d * rad * 0.55, d * rad * 1.15, Color(ink, a * 0.85), lerpf(4.0, 1.5, t)))
+	var tw := create_tween()
+	tw.tween_method(func(t: float) -> void:
+		state["t"] = t
+		if is_instance_valid(puff):
+			puff.queue_redraw(), 0.0, 1.0, 0.5).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(puff.queue_free)
+
+
+## The miss debug switch's beat (MISS_DEBUG): the next empty slot of the formation takes a wasted
+## shot's landing; none with the formation full.
+func _miss_debug() -> void:
+	var empty: Array[Vector2i] = []
+	for rank in range(2):
+		for col in range(sk.columns):
+			if sk.foe_at(rank, col) == null:
+				empty.append(Vector2i(rank, col))
+	if empty.is_empty():
+		return
+	_land_miss({"slot": empty[_miss_debug_n % empty.size()], "kind": "miss"})
+	_miss_debug_n += 1
+
+
+## A killed foe's stand-in dies at the spend's death check, after its last blow: its marks go,
+## its drawing flashes, drops and fades in the red-red, and it is gone.
 func _stand_in_dies(foe: Foe) -> void:
 	var si: UnitView = _stand_ins.get(foe, null)
 	if si == null or not is_instance_valid(si):

@@ -1002,13 +1002,16 @@ static func stat(u, name: String, upto: int = ROUNDS) -> int:
 	return maxi(0, int(roundf((base + add) * mult)))
 
 
-## How many strikes each roll of an entry spent at a foe is split into (split_strikes, on_attack; the Skua's
-## Split-cycle Breech, built 25 October): the weapon strikes that many times as often, each roll
-## of its number divided among the strikes it serves, rounded down and never below one (Ryan,
-## 27 October; Skirmish.split_share), and every buff, passive and
-## foe's condition counts on each strike. A debuff has no number to divide and fires as often
-## all the same, its riders landing on each strike (Ryan, 25 October: "Debuff should fire twice
-## regardless of damage. That's kind of the whole point"). 1 for anything spent on a machine.
+## How many times over an entry spent at a foe hits (split_strikes, on_attack; the Skua's
+## Split-cycle Breech, built 25 October; Ryan, 7 November: "Doubles the number of hits (or number
+## of shots, for Sweep) for Weapons and Equipment. Base weapon damage is halved (rounded down,
+## minimum 1)"): a single-target entry hits that many times as often, a Sweep fires that many
+## times the shots, and each hit's base, the number and what the entry prints from its firer, is
+## divided by it, rounded down and never below one (Skirmish.split_share); every buff, passive and
+## foe's condition counts on each hit after it ("the spirit of buffs and riders is they happen
+## after"). A debuff deals nothing to divide and hits as often all the same, its riders landing on
+## each hit (Ryan, 25 October: "Debuff should fire twice regardless of damage. That's kind of the
+## whole point"). 1 for anything spent on a machine, which hits nothing.
 static func split_of(u, face: Face) -> int:
 	if face == null or not face.is_attack():
 		return 1
@@ -2172,7 +2175,7 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("effect", "")):
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
-		"split_strikes": body = "strikes twice at half, rounded down, never below one" if vs == "2" else "strikes ×%s at its share of the roll, rounded down, never below one" % vs
+		"split_strikes": body = "hits twice (fires twice the shots, for a Sweep), its base weapon damage halved, rounded down, never below one" if vs == "2" else "hits ×%s (×%s the shots, for a Sweep), its base weapon damage divided by %s, rounded down, never below one" % [vs, vs, vs]
 		"weapon_cooldown": body = "every weapon and equipment it aims at a foe goes dark for %s rounds" % vs
 		"lay_mines": body = "every weapon and equipment it aims at a foe may also be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
 		"carry": body = "the machines beside it on the map travel with it when it moves"

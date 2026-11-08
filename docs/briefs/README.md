@@ -4,11 +4,11 @@
 
 One brief for each chassis proposal, chassis direction and rework that came out of the roster
 analysis (`docs/roster_analysis.md`) and Ryan's go on it, 14 and 15 October. One brief of
-another kind: `long_wall_build.md`, the build order for Ryan's redesign of 5 and 6 November
-(the battle as the defence of a long wall; its design in `docs/long_wall_proposal.md`), written
-for the session that builds it, with every decision sourced and every open point marked
-"not built"; its Phase 1 is built and handed back (6 November), its Phase 2, the view, waits on
-Ryan's word. Each is the
+another kind was `long_wall_build.md`, the build order for Ryan's redesign of 5 and 6 November
+(the battle as the defence of a long wall), retired to git as its branch landed on 8 November
+(`git show 68381ff:docs/briefs/long_wall_build.md`; its design `git show
+68381ff:docs/long_wall_proposal.md`), its decisions the bible's rows and its open items section
+12's. Each is the
 starting point for a design session of its own: where the design stands, what Ryan said and
 when, what Claude proposed, what is open, the holes already raised, and what the session hands
 back. A brief retires to git once its decisions are rows and content, as a proposal does.
@@ -417,7 +417,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `foes_ladder.md` | landed 28 October (the three enemy verbs, four buffs crossing to the foes, the player's Purge and the Null Field Emitter, twenty-six recolours by tier with the spawn lists, their sprites, the matrix's cells by tier read at 30 seeds), retired the same day (`git show 26c54c7:docs/briefs/foes_ladder.md`) | the foes (every domain) | the rank and file's tiers two and three | nothing here: the 200-seed matrix is the to-do's, the six recolours' move counts section 12's |
 | `chain_conductor.md` | keyword rework, decided 28 October (the bible's Chain row), built 29 October and retired (`git show 0cea0ee:docs/briefs/chain_conductor.md`) | Aphelion's lean, the Arc Fault Cannon the first carrier | keyword | its read (the to-do) |
 | `heat_pillar.md` | design session on heat as a pillar (Ryan, 28 October: a core pillar, undervalued; the bible's triangle row and section 12's heat question): what is built, what is measured, his frame, Claude's bench, the questions and the reads | every maker | rule | Ryan's answers to its six questions, then the prices, the cooling and the vent payoffs land on his go, read on the vanilla ladder's heat grid first |
-| `long_wall_build.md` | the build order for Ryan's redesign of 5 and 6 November (the battle as the defence of a long wall; its design `docs/long_wall_proposal.md`): Phase 1 (the sim, the bots, the records) built and handed back 6 November, its reads in `docs/measurements.md` | the battle | rule | Ryan's marks on the hand-back (the placeholders, the bible's section 12), then his word for Phase 2, the view |
+| `long_wall_build.md` | retired 8 November, its branch landed (`git show 68381ff:docs/briefs/long_wall_build.md`; the design `git show 68381ff:docs/long_wall_proposal.md`): the build order for Ryan's redesign of 5 and 6 November, the battle as the defence of a long wall, Phases 1 and 2 built, the reinforcement cut, the field's loot, the compositions as grids; what is open is the bible's section 12 (the shell, the formation pass, the refit) | the battle | rule | landed |
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
 each maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no
