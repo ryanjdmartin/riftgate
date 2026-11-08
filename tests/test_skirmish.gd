@@ -4186,7 +4186,8 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	s3._foe_acts(n3, s3.mechs[0])
 	assert_true(s3.reinforcements.is_empty(), "made to anyway, nothing waits")
 	assert_eq(s3.field_foes().size(), 2, "and nothing came")
-	# Room for one, a call for two: the chip promises both, so it never summons short (8 November).
+	# Room for one, a call for two: it summons what fits (Ryan, 8 November: "Summoner should be
+	# able to summon whatever they're able to"), never shut by a slot left just short.
 	var s4 := Skirmish.new(7, 2)
 	s4.add_mech(_mech("D", Die.single(Face.attack(10, L)), 40, 100))
 	var n4 := _archer(30, 10)
@@ -4197,10 +4198,11 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	s4.begin()
 	s4.start_round()
 	assert_eq(s4._free_slots_for(Foe.make("revenant", 30, 10)), 1, "one front slot open")
-	assert_false(s4.legal_actions(n4).has(n4.actions[0]), "room for one of two: no summon")
-	n4.actions = [_special("buff", "summon", {"foe": "revenant", "count": 1})]
-	n4.action = n4.actions[0]
-	assert_true(s4.legal_actions(n4).has(n4.actions[0]), "a call for one may be announced")
+	assert_true(s4.legal_actions(n4).has(n4.actions[0]), "room for one of two: the call may be announced")
+	s4.assign(0, s4.front[0]) if false else null
+	s4._foe_acts(n4, s4.mechs[0])
+	assert_eq(s4.field_foes().size(), 3, "and one stands, as many as fit")
+	assert_true("\n".join(s4.log).contains("1 stepping up"), "the log says how many")
 	var s2 := Skirmish.new(6, 1)
 	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
 	var n2 := _archer(30, 10)

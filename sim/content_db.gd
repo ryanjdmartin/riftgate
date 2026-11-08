@@ -1004,8 +1004,7 @@ static func ramp_holds(c: Dictionary, ramp: int) -> bool:
 	var g = c.get("ramp", null)
 	if ramp < 0 or not (g is Array) or (g as Array).size() != 2:
 		return true
-	var r := Ramp.clampc(ramp)   # the Convergence runs on past the finale's 12; the gates end there
-	return r >= int(g[0]) and r <= int(g[1])
+	return ramp >= int(g[0]) and ramp <= int(g[1])   # the Convergence never passes the finale's: a turn cannot be passed once it is due (Campaign.pass_turn)
 
 
 ## The Convergence a tier is first fought at (tier 1 to 3): a rift keeps the tier it opened at and

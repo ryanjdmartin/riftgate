@@ -955,42 +955,41 @@ func test_a_hunter_that_caught_its_prey_forces_the_first_fight() -> void:
 	assert_false(b.end_turn().is_empty(), "the turn may end now")
 
 
-## Two hunters that caught one machine are two fights (Ryan, 7 November: "Wouldn't it be two
-## fights, since we're no longer merging fights?"): each its one pack, fought one at a time, the
-## prey in both whether it has fought or not, others in range free to join either; the turn ends
-## once both are fought.
-func test_a_machine_caught_by_two_hunters_fights_each_in_turn() -> void:
+## One hunter a machine (Ryan, 8 November): two hunters set on one machine never both catch it;
+## the second takes the next machine, its own catch a fight of its own.
+func test_two_hunters_take_two_machines_and_each_catch_is_its_own_fight() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
+	var m2: Unit = b.mechs()[1]
 	var first: Unit = b.field.packs()[0]
 	var second: Unit = b.field.packs()[1]
 	_engage(b, first, m)
-	_engage(b, second, m)
+	_engage(b, second, m2)
 	for h in [first, second]:
 		h.behaviour = "hunt"
 		h.hunts = "nearest"
-		h.prey = m.id
 		h.zone = 1
+		h.prey = 0
+	second.pos = b.field.landing(second, m.pos)   # beside the first's machine too, so "nearest" would pick it
 	b._new_turn()
-	assert_eq(b.forced.size(), 2, "two catches, two fights")
-	assert_eq(b.catchers_of(m).size(), 2, "both hunters its fights to come")
-	assert_eq(b.fights_waiting().size(), 2, "the queue counts both")
+	assert_eq(b.catchers_of(m), [first], "the first, picking first, takes the machine")
+	assert_eq(second.prey, m2.id, "the second turns on the other, however near the first's stands")
+	_engage(b, second, m2)
+	second.behaviour = "hunt"   # _engage parks a pack as a pusher
+	b._new_turn()
+	assert_eq(b.forced.size(), 2, "two catches, two fights, a machine each")
 	var sk := b.attack(null, [])
-	assert_eq(sk.packs.size(), 1, "the first fight holds one pack")
-	assert_true(sk.packs.has(b.forced[0]["hunters"][0]), "its hunter's")
+	assert_eq(sk.packs, [first], "the first fight the first hunter's")
 	_win(sk)
 	b.finish_skirmish()
 	assert_eq(b.forced.size(), 1, "the second catch waits")
-	assert_eq(b.actions_left(m), 0, "the prey has fought")
 	assert_true(b.end_turn().is_empty(), "the turn cannot end before it")
 	var sk2 := b.attack(null, [])
-	assert_true(sk2 != null, "it opens all the same: the prey is caught")
-	assert_eq(sk2.packs, [second], "against the other hunter alone")
-	assert_true(sk2.mechs.any(func(ms) -> bool: return ms.unit == m), "with its prey in it")
+	assert_eq(sk2.packs, [second], "against the second hunter")
+	assert_true(sk2.mechs.any(func(ms) -> bool: return ms.unit == m2), "with its own prey in it")
 	_win(sk2)
 	b.finish_skirmish()
-	assert_true(b.forced.is_empty(), "both fought")
-	assert_false(b.end_turn().is_empty(), "the turn may end now")
+	assert_false(b.end_turn().is_empty(), "both fought, the turn may end")
 
 
 ## A hunter's catch is a fight to its end (the long wall brief 3.5: there is no withdrawal): it

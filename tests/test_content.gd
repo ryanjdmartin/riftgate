@@ -1099,7 +1099,6 @@ func test_a_compositions_ramp_gate_deals_it_and_its_tier_is_covered() -> void:
 	s.battle_tier = 3
 	s.ramp = 0
 	assert_eq(s.battle_ramp(), ContentDB.first_ramp_of(3), "the harness raises a battle's Convergence to its tier's first")
-	assert_true(ContentDB.ramp_holds({"ramp": [8, Ramp.TOP]}, Ramp.TOP + 3), "a Convergence past the finale's reads as the top: a gate to the top holds it")
 	# A tier with none of a size has none: nothing stands in from the tier below (8 November).
 	var bare := _fresh()
 	bare.factions["meadow"]["compositions"] = (bare.factions["meadow"]["compositions"] as Array).filter(func(c) -> bool: return not (str(c.get("size", "")) == "formation" and ContentDB.composition_tiers(c).has(3)))

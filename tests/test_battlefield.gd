@@ -386,7 +386,9 @@ func test_a_hunter_walks_until_its_prey_is_in_its_ring_and_catches_it() -> void:
 ## One pack is one fight, a catch included (Ryan, 7 November, of two hunters on one machine:
 ## "Wouldn't it be two fights, since we're no longer merging fights?"): a fight per hunter, the
 ## prey in each.
-func test_two_hunters_on_one_prey_are_two_forced_fights() -> void:
+func test_one_hunter_a_machine_and_the_rest_push() -> void:
+	# One hunter a machine (Ryan, 8 November): a second hunter on the field takes another machine,
+	# and with none free it pushes for the wall until one is, turning on it then, which the log says.
 	var f := _field(7, 14)
 	var m := f.add_unit(Unit.mech(1, "A", _o(3, 7), 0))
 	var ring := Hex.neighbors(m.pos)
@@ -396,11 +398,18 @@ func test_two_hunters_on_one_prey_are_two_forced_fights() -> void:
 		sq.behaviour = "hunt"
 	f.add_unit(Unit.pack(4, "pushers", ring[1], "marsh", 2))   # a pusher beside it forces nothing
 	var forced := f.forced_fights()
-	assert_eq(forced.size(), 2, "two fights for one prey: a fight a hunter")
-	for k in range(2):
-		assert_eq(forced[k]["prey"], m, "each on the prey")
-		assert_eq((forced[k]["hunters"] as Array).size(), 1, "each the one hunter's")
-	assert_eq([forced[0]["hunters"][0], forced[1]["hunters"][0]], [a, b], "in field order")
+	assert_eq(forced.size(), 1, "one machine, one catch: the first hunter's")
+	assert_eq(forced[0]["hunters"], [a], "the first in field order")
+	assert_eq(b.prey, 0, "the second has no prey")
+	assert_true(f.hunted_by_other(m, b), "the machine is another's")
+	var w: Battlefield.Walk = f.plan_walks()[b.id]
+	assert_eq(w.prey, 0, "so it walks as a pusher")
+	assert_true(f.log.any(func(l) -> bool: return str(l) == "brutes turns on A"), "the lock is logged")
+	var m2 := f.add_unit(Unit.mech(5, "B", _o(5, 9), 0))
+	assert_eq(f.pick_prey(b), m2, "a second machine: the second hunter turns on it")
+	assert_true(f.log.any(func(l) -> bool: return str(l) == "ghouls turns on B"), "and the log says so")
+	f.units.erase(a)
+	assert_eq(f.pick_prey(b), m2, "and keeps it while it stands, whoever else is free")
 
 
 ## One pack is one fight (the long wall brief 3.4; Ryan, 5 November, of the rings: "it just

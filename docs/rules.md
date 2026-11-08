@@ -12,8 +12,7 @@ words in `docs/vocabulary.md`.
 A campaign is one roguelike run of battles at five cities. A battle is the defence of a city's
 wall: a hex field wide along the wall and shallow from the rift to it, the horde coming at the
 wall, won by killing the boss that powers the rift. Machines fight packs in skirmishes: dice
-fights against one pack at a time (a hunter's catch included: a machine two hunters caught
-fights each in turn). The depth lives in the skirmish.
+fights against one pack at a time (a hunter's catch included). The depth lives in the skirmish.
 
 ## Machines
 
@@ -886,8 +885,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   content) steps up one into the slot and the rest into the nearest empty slots of their rank;
   one with no room never forms.
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
-  left on a tie, its round over like a split's half's; a summoner with no room for its whole
-  count never picks the summon.
+  left on a tie, its round over like a split's half's; a call for several stands as many as fit,
+  and a summoner with room for none never picks the summon.
 - **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
   with the rounds until it regrows, and grows back there; no Swap, mine or arrival takes the
   slot meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
@@ -1044,8 +1043,7 @@ a stat.
   second tap on the pack takes the order back. ENGAGE opens one fight at a time: the first
   order's pack and every machine ordered onto it.
 - **A fight** is one pack: nothing joins it, whatever its ring, and it joins nothing; a hunter's
-  catch is a fight a hunter, so a machine two hunters caught fights each in turn, whether it has
-  fought or not. The machines whose attack range covers
+  catch is a fight a hunter, one hunter a machine. The machines whose attack range covers
   it (1: beside it) may join. Orders onto several packs queue, ENGAGE opening them one at a
   time, a catch first; the order changes nothing a fight opens on, its dice included: a fight's
   seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wreck stays on its hex and blocks it for the battle (not built: today
@@ -1079,12 +1077,15 @@ a stat.
   ten is gone, so a stray pair chips less than a trio), every enemy turn. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
 - **Hunters** lock one machine when they appear (nearest, weakest, strongest, slowest or fastest; never
-  the Prairie Dog), keep it while it stands, and walk to put it inside their ring; the machine a
+  the Prairie Dog, never a machine another hunter already hunts), keep it while it stands, and
+  walk to put it inside their ring; a hunter that finds every machine hunted pushes for the wall
+  as a pusher does until one is free, and turns on it then (the log says so). One hunter a
+  machine, so a machine is never caught twice at once. The machine a
   hunter comes for wears a tag by it, a plate a hunter with the hunter's picture and a target,
   and the board says HUNTED BY. A hunter with what it comes for in its ring at the start of the
   player's turn has caught it: that fight comes first and is fought to its end, the caught
-  machine cannot move first, others in range may join; a second hunter's catch is a fight of its
-  own after it. A prey that any route reaches is the only machine its hunter
+  machine cannot move first, others in range may join; another hunter's catch (of another
+  machine) is a fight of its own after it. A prey that any route reaches is the only machine its hunter
   catches, however near the others stand. A prey sealed off (no hex the hunter can walk to,
   round walls and grounded machines, through packs and under flyers, and stand on puts it
   inside its ring) is not safe: the hunter takes the machine that a walk this turn can put
@@ -1195,7 +1196,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
   whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
   every basic, the eight of tier zero.
-- **A turn** is one battle at a front, with one to four ready machines, or a pass. The whole
+- **A turn** is one battle at a front, with one to four ready machines, or a pass; once the
+  finale is due no turn is passed (the Council demands the capital fought now), so the
+  Convergence never runs past the finale's. The whole
   roster goes to the one front; the open fronts left alone bleed (below). A battle is played
   to its end and a team wipe is the graded loss; a withdrawal from a battle is not built (open:
   the bible's section 4).
@@ -1320,7 +1323,8 @@ and nothing scales a pack.
   campaign and the Fractures' elites deal only the compositions whose gate holds their ramp, and
   where a domain's compositions of a size at a tier (an escort's, of its boss) carry any, together
   they hold every Convergence that tier is fought at, from its first (0, 4 and 8 for tiers one to
-  three) to 12. No composition in content writes them yet.
+  three) to 12, which the Convergence never passes (a turn cannot be passed once the finale is
+  due). No composition in content writes them yet.
 
 ## Known gaps between these rules and the code
 

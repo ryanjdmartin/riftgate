@@ -608,11 +608,29 @@ func _fall(c: City) -> void:
 	# The rift stays open: the city's horde is loose and marches on the capital.
 
 
-## Spend the turn without a battle (6 October: waiting a cycle for the shop is a choice).
-func pass_turn() -> void:
-	if state != PICK:
-		return
+## Spend the turn without a battle (6 October: waiting a cycle for the shop is a choice), never
+## once the finale is due (Ryan, 8 November: "you can't pass a turn when the finale is due. That
+## gate at the capital needs to be fought right now, the Council demands it"), so the Convergence
+## never runs past the finale's. False when refused.
+func pass_turn() -> bool:
+	if state != PICK or finale_due():
+		return false
 	_end_turn("")
+	return true
+
+
+## The finale forfeited (the Council's demand unmet: nobody to field and no Favour to rush a
+## wreck): the capital falls unfought and the run is over. The runner's way out of a turn it
+## cannot pass; a placeholder for what the game shows there.
+func forfeit_finale() -> bool:
+	if state != PICK or not finale_due():
+		return false
+	var cap := capital()
+	if cap != null:
+		_fall(cap)
+	state = OVER
+	won = false
+	return true
 
 
 func _end_turn(fought: String) -> void:

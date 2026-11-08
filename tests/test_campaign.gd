@@ -317,6 +317,22 @@ func test_a_wreck_loses_what_was_destroyed_and_sits_out_a_battle() -> void:
 	assert_eq(m.shop, 0, "back after a battle's time")
 
 
+## The finale is fought the turn it is due (Ryan, 8 November: "you can't pass a turn when the
+## finale is due ... the Council demands it"): a pass is refused, so the Convergence never runs
+## past the finale's; with nobody to field and no rush, the runner forfeits it and the capital falls.
+func test_the_finale_cannot_be_passed() -> void:
+	var c := _run()
+	assert_true(c.pass_turn(), "a turn may be passed before it")
+	c.convergence = Campaign.FINALE_AT
+	c._open_rifts()
+	assert_true(c.finale_due(), "due")
+	assert_false(c.pass_turn(), "and no turn passes now")
+	assert_eq(c.convergence, Campaign.FINALE_AT, "the Convergence stands at the finale's")
+	assert_eq(c.fronts(), [c.capital().id], "the capital the only front")
+	assert_true(c.forfeit_finale(), "forfeited with nobody to field it")
+	assert_true(c.capital().fallen and c.state == Campaign.OVER and not c.won, "the capital falls, the run over")
+
+
 func test_a_wreck_can_be_rushed_for_salvage() -> void:
 	var c := _run()
 	var m: Campaign.Machine = c.roster[0]

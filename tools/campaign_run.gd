@@ -89,10 +89,15 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 					out["rushes"] += 1
 					break
 			if not rushed:
-				c.pass_turn()
-				out["passes"] += 1
-				if verbose:
-					print("turn %d: nobody ready, passed" % c.turn)
+				if c.pass_turn():
+					out["passes"] += 1
+					if verbose:
+						print("turn %d: nobody ready, passed" % c.turn)
+				else:
+					c.forfeit_finale()   # the finale cannot be passed (8 November): nobody to field it, the capital falls
+					out["forfeits"] = int(out.get("forfeits", 0)) + 1
+					if verbose:
+						print("turn %d: nobody ready at the finale, the capital falls" % c.turn)
 				continue
 			ready = c.ready_machines()
 		var fronts := c.fronts()

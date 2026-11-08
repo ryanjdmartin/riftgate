@@ -341,14 +341,27 @@ func pick_prey(sq: Unit) -> Unit:
 	var best: Unit = null
 	var best_key := 0
 	for m in mechs():
-		if Effects.never_hunted(m):
+		if Effects.never_hunted(m) or hunted_by_other(m, sq):
 			continue
 		var key := _prey_key(sq, m)
 		if best == null or key < best_key:
 			best = m
 			best_key = key
+	# One hunter a machine (Ryan, 8 November): with every machine hunted already it pushes for the
+	# wall instead, and turns on a machine once one is free, which the log says.
+	var was := sq.prey
 	sq.prey = best.id if best != null else 0
+	if best != null and sq.prey != was:
+		log.append("%s turns on %s" % [sq.display_name, best.display_name])
 	return best
+
+
+## Whether another hunter on the field already hunts this machine.
+func hunted_by_other(m: Unit, sq: Unit) -> bool:
+	for other in packs():
+		if other != sq and other.behaviour == "hunt" and other.prey == m.id:
+			return true
+	return false
 
 
 ## How a hunter's caveat ranks a machine as prey: the lowest key is picked.

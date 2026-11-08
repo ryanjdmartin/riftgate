@@ -25,7 +25,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1020 tests, 259,714 checks, green (8 November, `ccr-56b5169d-lsa2rg` with the long
+- Tests: 1021 tests, 259,720 checks, green (8 November, `ccr-56b5169d-lsa2rg` with the long
   wall's Phases 1 and 2 and the cut, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -176,8 +176,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   member; a summoner needs room for its whole count; the tier fallback for compositions gone
   ("we've either defined the escort or we haven't"); the harness's C knob follows the tier; the
   quick campaign's elites draw their own layouts; `factions.json`'s `_about` and the mine's rule
-  brought up to date. Open on his word: one hunter a machine (two fights for a machine two
-  hunters catch, the second usually alone), and the ramp gate's coverage rule as it stands.
+  brought up to date. His calls on it, built the same day: one hunter a machine (an overflow
+  hunter pushes and turns on a machine once one is free), a summoner standing as many as fit,
+  no turn passed once the finale is due (the runner forfeits with nobody to field: the capital
+  falls, Claude's fill), the gate's coverage rule kept strict. Open: his word on compositions as
+  one grid declaration (members and layout one thing) and on how a hunter's appearance is warned.
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
   the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip

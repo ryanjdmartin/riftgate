@@ -1432,9 +1432,9 @@ func _summon_has_room(f: Foe, a: Dictionary) -> bool:
 	var probe = foe_factory.call(who)
 	if not (probe is Foe):
 		return true
-	# Room for the whole count (Ryan, 8 November): the chip promises every one, so none is cast
-	# that would stand short.
-	return _free_slots_for(probe) >= maxi(1, int(a.get("count", 1)))
+	# Room for one at least (Ryan, 8 November: "Summoner should be able to summon whatever they're
+	# able to", so a slot left just short never shuts it); the call stands as many as fit.
+	return _free_slots_for(probe) >= 1
 
 
 ## The slots a foe of `n`'s rank could step into now: its rank's empty slots holding no corpse, a
