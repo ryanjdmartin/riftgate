@@ -401,10 +401,12 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.488, dated 8
-  November (the page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a
-  hunter's reach, merged clean onto v0.487 of the skirmish code audit's landing on main, which the
-  live page matched byte for byte). The live
+  `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
+  page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
+  clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
+  for byte). This file is v0.489 (`384d3482`: the hunt the composition's, the rings purged); its
+  republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
+  `dc265dc9`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
