@@ -395,25 +395,29 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.487, dated 8
-  November (the page's Version 499, published from `ccr-1eaf0060-jrpw04` after the skirmish
-  code audit landed on main: a part never a kill, only its core, Ryan's "I thought I said only
-  the core counts", onto v0.486 of the landing, which had put his answer on the Ammit's lean,
-  "between skirmishes", onto the long wall's v0.485 of that day). The live
+  `docs/design-bible.html` after every change. This file and the live page are v0.488, dated 8
+  November (the page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a
+  hunter's reach, merged clean onto v0.487 of the skirmish code audit's landing on main, which the
+  live page matched byte for byte). The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
-  `</body></html>` stripped). A page that size counts as read only once every line of its saved
+  newline and `</body></html>` stripped, so it matches the file byte for byte). A page that size
+  counts as read only once every line of its saved
   copy is read, so a subagent reads it and publishes the merge. After main merges in, check the
   tables script's run against the file's tables before keeping it: a row it reverts belongs to a
   branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 214
+  the last publish's before it is replaced, and `edits` and `designs` read first. Behind
+  `ccr-d26a1321-xg9xge` by `content/vocabulary.json` alone (the Ring's, the Pack's and the
+  Behaviour's codex, 8 November): its live copy checked byte for byte against main's, `edits`
+  empty and `designs` the two folded ideas, but the publish refused by the permission check as
+  unrequested, so it waits on Ryan's word. At the page's version 214
   (8 November, from `ccr-1eaf0060-jrpw04` at `34ae947`: only `content/vocabulary.json` and
   `content/components.json`, the Ability term, the seal, the Ore Plate, Golden, Guarded and Hot
   Streak as abilities, the Purge's codex and the Null Field Emitter's, onto the long wall's
