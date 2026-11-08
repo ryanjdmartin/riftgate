@@ -2110,7 +2110,7 @@
     ],
     "dispel": 2
    },
-   "codex": "A debuff. Every buff the foe carries is unmade: a brace, a rally, a readied return, a primed claw, a barrier, a ward, a regrowth. Numbed shrugs it off, and a guarded core keeps its guard.",
+   "codex": "A debuff. Every buff the foe carries loses two stacks: a brace, a rally's Empowered, a readied return, a primed claw, a barrier, a regrowth, a stun's Numbed. Its abilities stay, a core's guard and a golden rage among them, and a Ward turns it away.",
    "flavour": "Decoherence is not destruction. The field simply declines to remember what the subject was doing.",
    "design": {
     "fantasy": "The Science Vessel's EMP, slottable: Aphelion's physics nonsense unwriting the enemy's state. The jellyfish's EMP, when it lands, carries the same keyword on a blow with Disrupt (the bible's Aphelion row).",

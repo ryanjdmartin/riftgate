@@ -1418,21 +1418,23 @@ func ammo_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	return best * AMMO_SHARE
 
 
-## One salvo shot's worth (the Unrestricted Expenditure): a pass of the front rank, a shot a
-## column, averaged over the columns, an empty one's shot worth nothing.
+## One salvo shot's worth (the Unrestricted Expenditure): a pass of the front rank, a shot a spot
+## (Skirmish.sweep_spots), averaged over the spots, an empty column's shot worth nothing.
 func salvo_per_strike(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
-	return salvo_damage(sk, ms, f, null, sk.columns) / float(maxi(1, sk.columns))
+	var spots := sk.sweep_spots(0).size()
+	return salvo_damage(sk, ms, f, null, spots) / float(maxi(1, spots))
 
 
 ## What `n` ammo of the salvo land as one Sweep along the rank of `target` (Ryan, 7 November: a
-## shot at each column, left to right, repeating, a split doubling the shots): each shot's blow
-## on its column's foe and its area's number on every foe its Splash reaches there, an empty
-## column's shot nothing, each foe's total capped at what it has left.
+## shot at each spot, left to right, repeating, a split doubling the shots; a pair's halves a
+## spot each, 8 November): each shot's blow on its spot's foe and its area's number on every foe
+## its Splash reaches there, an empty column's shot nothing, each foe's total capped at what it
+## has left.
 func salvo_damage(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe, n: int) -> float:
 	var took := {}
-	var rank := sk.sweep_rank_of(target)
+	var spots := sk.sweep_spots(sk.sweep_rank_of(target))
 	for s in range(n * maxi(1, f.split)):
-		var t := sk.sweep_at(rank, s % sk.columns)
+		var t = spots[s % spots.size()][0]
 		if t == null:
 			continue
 		var shapes := sk.area_shapes(f, t)

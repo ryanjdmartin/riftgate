@@ -2407,3 +2407,15 @@ func test_the_map_and_the_vocabulary_agree_on_the_ground() -> void:
 	var fid := str(db.factions.keys()[0])
 	db.factions[fid]["map_kind"] = str(BattleMap.KINDS.keys()[0])
 	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("names no map shape")), "a domain naming a map shape, even a real one, is reported (Ryan, 30 October)")
+
+
+## A Sweep carries no Swap, drone or pull (Ryan, 8 November, agreeing the audit's lean): each acts on
+## one foe or one slot, and a Sweep's drop picks only its rank.
+func test_a_sweep_carries_no_swap_drone_or_pull() -> void:
+	var db := ContentDB.load_default()
+	for extra in [{"keywords": ["swap"]}, {"drones": true}, {"pulls_mines": true}]:
+		var errs: Array[String] = []
+		var fd := {"kind": "attack", "reach": "sweep", "power": 2, "strikes": 4, "keywords": []}
+		fd.merge(extra, true)
+		db._validate_face("test", fd, errs)
+		assert_true(errs.any(func(e) -> bool: return e.contains("a Sweep carries no Swap, drone or pull")), "refused: %s" % str(extra))

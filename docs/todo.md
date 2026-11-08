@@ -12,7 +12,7 @@ line names its debug switch or pose; `README.md`'s Running section says how each
 Calls and marks:
 
 - [x] The skirmish code audit's eleven questions (`docs/skirmish_audit.md`, 7 November): answered 8 November and built, the mine's three left for the Lammergeier's rework
-- [ ] The audit's four questions still open (`docs/skirmish_audit.md`, explained in chat 8 November): whether the Knuckle of Fury's plain roll and the Spin-Up's true roll follow the reroll rule too (5); the Musk Ox's reload for an entry that is a vent and a shield at once, 5 or 3 (7); a countdown's rally, shown at what lands (8); a Sweep's dropped-on foe, its zap and conditions, and a twin slot's shot (10)
+- [x] The audit's four questions still open (`docs/skirmish_audit.md`): answered 8 November and built
 
 - [ ] Rules for the Muzzle Velocity Booster and the Tactical Databank (planned since 2 November: rolled damage is gone, so a ceiling and a floor move nothing)
 - [ ] Mark the first rounds on your chassis ideas of 4 November (each now a brief in `docs/briefs/`, the roster the briefs README's "Ten a maker"; correct them in the hangar's Designs tab, a session folds those in first): the ten a maker's open calls first (whether the Wild Boar or the mole comes down to tier one beside the lure tank, the two moves to the Arsenal and the merges you have not marked; the roster under Design sessions), then the lure tank's armour with section 12's floor of 1, Static's cascade and triangle, the Macross's shift and its grants; then each brief's open list as its session comes
@@ -67,7 +67,7 @@ Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster 
 
 **Wainwright & Sutler**, ten, all named.
 
-- [ ] The kits and visual designs of five machines, a design session each, Ryan's to start (4 November: "All 5 need a design session to complete their kits and their visual designs. I'll start that up myself"): the Musk Ox, the Whip Scorpion (its rework, tabled 3 November; its blast's random pick is the one draw of the player's turn besides the die; his shapes on the table: a vent, or an ally's vent, giving a temporary buff, the Siphon's heat-on-hit moved to its passive, one strike to the blast per vent in the turn), the Swallowtail, the Needletail, and the gunship (`ws_gunship.md`, "very rough right now and might need to go back to the drawing board"; Claude's first round of 3 November in its brief); their runner reads of 3 November are not his concern until then
+- [ ] The kits and visual designs of five machines, a design session each, Ryan's to start (4 November: "All 5 need a design session to complete their kits and their visual designs. I'll start that up myself"): the Musk Ox (and whether a shield reloads it at all, Ryan, 8 November: "that's a question for its design session"), the Whip Scorpion (its rework, tabled 3 November; its blast's random pick is the one draw of the player's turn besides the die; his shapes on the table: a vent, or an ally's vent, giving a temporary buff, the Siphon's heat-on-hit moved to its passive, one strike to the blast per vent in the turn), the Swallowtail, the Needletail, and the gunship (`ws_gunship.md`, "very rough right now and might need to go back to the drawing board"; Claude's first round of 3 November in its brief); their runner reads of 3 November are not his concern until then
 
 **Minerva**, ten: the Honey Badger, the Armadillo and the Wild Boar built.
 

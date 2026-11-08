@@ -118,8 +118,12 @@ defeat when every machine is wrecked. There is no round limit.
 - **Rerolls**: three a round for the team, never banked (Maverick's Playbook, the Giant
   Petrel's passive, below, the one exception). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
-  showing; a copy of it may come up, at the odds its copies give it. Double-tap or hold a die
-  to lock it, and again to unlock it; spending unlocks it; locks clear each round.
+  showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
+  follows the same rule (Rapid's free reroll, the Kite's reset, the Booster, the Uplink, the
+  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: the
+  Nemesis's Knuckle of Fury rolls again as the round's opening roll does, and the Cassowary's
+  Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
+  unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
   lock holds it. The die shows its next entry in its passive box, its mark and the number it
@@ -189,7 +193,10 @@ defeat when every machine is wrecked. There is no round limit.
   at an empty column is wasted, its area with it, so a lone foe takes only its own column's
   shots; a foe an earlier shot felled takes its column's later shots on its corpse, since
   nothing is cleared until the shots are done; a massive foe fills both slots of its column, so
-  either rank's shot there hits it. Each shot is aimed at its column's foe and is a hit of its own (A spend's
+  either rank's shot there hits it; a Gel's pair takes a shot for each half, a spot each, as if
+  it were another column. The spots are queued as the spend begins, each column at least once,
+  so a half that fell before the spend leaves none. A Sweep carries no Swap, drone or pull, each
+  of them acting on one foe or slot. Each shot is aimed at its column's foe and is a hit of its own (A spend's
   order, below), and an area keyword's shape rides each. The die shows a shot's number, and
   dragged over a foe it lights that foe's rank whole and brackets it. The Skua's Flechette
   Pod, and the Musk Ox's salvo an ammo a shot.
@@ -698,10 +705,11 @@ On a foe:
   the machine's clock: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
   rallier hits harder this turn; one that has acted carries half to the next round; each rally's
-  grant adds. An intent counts the rallies on their way: a blow this round those of the ralliers acting before it, a
-  countdown's blow every rally this round, each from a rallier alive, not Suppressed and not
-  about to burn to death, so it drops the moment the rallier is killed, Suppressed or
-  Disrupted. The foe wears the coming Empowered as a preview chip on a dashed edge, its opacity
+  grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
+  before it, each from a rallier alive, not Suppressed and not about to burn to death, so it
+  drops the moment the rallier is killed, Suppressed or Disrupted; a countdown still gathering
+  shows what it would deal now, at the fight as it stands, never a rally of a round before it
+  lands, nor a halving to come. The foe wears the coming Empowered as a preview chip on a dashed edge, its opacity
   pulsing on the gauges' clock, until it lands; a foe whose move shows no blow wears none.
 - **Enraged** (buff, a rage: the Goblin Nob's, its own from the fight's start): while the foe
   stands, every shield, vent or equipment entry the team spends lays its rage in stacks on it,
@@ -776,7 +784,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   the foes' heat land on its heat bar as on any machine's, Scorched's extra included. The
   magazine is a bar under the heat bar, a notch an ammo, never a status, so no Silence or Purge
   reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round after
-  the first; a vent it spends on itself adds 3, a shield 2; a gun it cannot pay for cannot be
+  the first; a vent it spends on itself adds 3, a shield 2, an entry both at once 3, once, the
+  greater; a gun it cannot pay for cannot be
   spent (the die strikes its price through). Its Shrapnel Recuperator returns 1 for every foe its blows reach;
   its Unrestricted Expenditure fires every ammo in the magazine as a shot of one Sweep along
   the rank it is dropped on, with Splash, the magazine its price and no heat of its own (a

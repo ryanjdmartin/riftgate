@@ -24,7 +24,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   30 October; 4.8 stable is not out. The next check is due 13 November (`CLAUDE.md`, Session
   handoff); date this line again after each.
-- Tests: 1021 tests, 257,186 checks, green (8 November, `ccr-1eaf0060-jrpw04`, the audit's answers and bugs, Godot 4.8-beta2);
+- Tests: 1024 tests, 257,198 checks, green (8 November, `ccr-1eaf0060-jrpw04`, the audit's answers, abilities and a stack is a stack, Godot 4.8-beta2);
   about four minutes in a cloud session, twenty on a slow one.
 - A cloud session gets Godot and the first import from the repository's session-start hook
   (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`: the release asset
@@ -72,9 +72,12 @@ one). Each merge commit says how its conflicts were settled.
 
 Still working (8 November; every other branch on GitHub is merged): `ccr-1eaf0060-jrpw04`, the
 skirmish code audit (`docs/skirmish_audit.md`) and Ryan's answers to it built, ahead of main
-(one kill at the death check; a Sweep's shots judged each; the Nob's rage its own from the
-start; Scorched on the bar, never the ammo or the Petrel's shield; the enemy's turn's death
-check; Guarded, purges, spills, rerolls and shown text), waiting on his word for main;
+(one kill at the death check; a Sweep's shots judged each and queued as the spend begins, a
+pair's halves a spot each; the Nob's rage its own from the start; Scorched on the bar, never
+the ammo or the Petrel's shield; the enemy's turn's death check; a countdown shown at the fight
+as it stands; a stack is a stack under a Purge, and Abilities, a unit's own mechanic, on a chip
+of their own that no purge touches; Guarded, spills, rerolls and shown text), waiting on his
+word for main;
 `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
@@ -250,8 +253,8 @@ The tasks are the to-do's; this is the index of what waits.
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). First: the rest of the skirmish code audit (`docs/skirmish_audit.md`; its
-questions answered and its bugs built 8 November): Ryan's calls on the four still open, then
-its structural steps in order (one hit routine with its arguments in place of the hidden
+questions answered and its bugs built 8 November; the Ammit's kept stacks and the word "rally"
+are section 12's): its structural steps in order (one hit routine with its arguments in place of the hidden
 flags, the mine's half waiting for the Lammergeier's rework; one round model; the bot's and
 the screen's mirrors onto the engine, then a 30-seed direction; statuses as data, the Face, the
 dead code), since its tangles bend every read after it; then the 200-seed matrix with the ladder's, the compositions' and the elites' cells on

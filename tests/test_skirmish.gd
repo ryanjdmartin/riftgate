@@ -3908,7 +3908,7 @@ func test_an_entry_rolls_again_on_a_stack_and_nothing_switches_off() -> void:
 	var fist := Face.attack(10)
 	fist.rolls_again_on = "rage"
 	assert_true(fist.has_unique_rule(), "a rule printed on the entry: the star chip")
-	assert_true(fist.describe().contains("spends a Rage to roll again"), "and it says so: %s" % fist.describe())
+	assert_true(fist.describe().contains("spends a Rage to roll again, itself included"), "and it says so, the same fist free to show again (Ryan, 8 November: \"we just need to make it clear\"): %s" % fist.describe())
 	var sk := Skirmish.new(3)
 	var m := _mech("A", Die.single(fist), 0, 200)
 	sk.add_mech(m)
@@ -4310,8 +4310,9 @@ func test_a_rally_reaches_every_foe_after_it_at_its_value_and_two_rallies_add() 
 
 func test_a_suppress_takes_a_kindled_move_and_a_countdown_carries_its_rally_to_the_blow() -> void:
 	# A Suppress spends none of a foe's Empowered, which halves on its own clock (4 November); a
-	# countdown gathering carries a rally to the blow it lands, any rally this round reaching it,
-	# whoever acts first.
+	# countdown gathering carries what stands to the blow it lands, and its intent shows what it
+	# would deal now, never a rally of a round before it lands (Ryan, 8 November: "It shouldn't
+	# forecast rounds in the future. Show what it would deal at the current game state").
 	var sk := Skirmish.new(5, 3)
 	var m := _mech("A", Die.single(Face.blank()), 0, 500)
 	sk.add_mech(m)
@@ -4325,7 +4326,7 @@ func test_a_suppress_takes_a_kindled_move_and_a_countdown_carries_its_rally_to_t
 	assert_eq(sk.front, [lancer, g, lord], "the rallier acts last")
 	sk.start_round()
 	assert_true(lancer.gathering(), "the lancer gathers")
-	assert_eq(sk.foe_blow(lancer), 34, "its Jump shows the rally it will carry, though the rallier acts after it")
+	assert_eq(sk.foe_blow(lancer), 30, "its Jump shows what it would deal now: no rally of this round, which halves before it lands")
 	assert_eq(sk.foe_blow(g), 10, "the ghoul acts before the rally: its blow this round is plain")
 	sk.end_round()
 	assert_eq(m.hull, 490, "the ghoul's plain 10")
@@ -6800,7 +6801,7 @@ func test_a_stepping_die_spins_once_then_steps_on_every_roll() -> void:
 func test_a_spinning_rapid_entry_rolls_true_and_may_land_on_itself() -> void:
 	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["rapid"], "spins": true})
 	assert_true(spin.spins and spin.has_unique_rule(), "a printed rule: the star")
-	assert_eq(spin.describe(), "Spun Up ×1 rapid spins the die (self only)", "the entry says what it does")
+	assert_eq(spin.describe(), "Spun Up ×1 rapid spins the die, itself included (self only)", "the entry says what it does, itself included (Ryan, 8 November: \"we just need to make it clear\")")
 	var landed := {}
 	for seed_value in range(60):
 		var sk := Skirmish.new(seed_value)
@@ -8334,6 +8335,45 @@ func test_a_sweeps_later_shot_reads_an_earlier_shots_riders() -> void:
 	assert_eq(Effects.stacks_of(c, "flakked"), 3, "a stack a hit")
 
 
+## A Sweep queues its spots as the spend begins (Ryan, 8 November, of a Gel's pair: "I would use up
+## a shot for each gel half. It functionally adds another column ... it queues up the spots to
+## target at the start of the spend, targeting each full column at least once"): a pair's halves a
+## spot each, an empty column a wasted shot, and a half that fell before the spend no spot.
+func test_a_sweeps_shots_take_a_pairs_halves_as_a_spot_each() -> void:
+	var pod := Face.attack(5, S)
+	pod.strikes = 4
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("S", Die.single(pod), 40, 100))
+	var a := _ghoul(100, 10)
+	var gel := _ghoul(10, 10)
+	gel.on_death = {"summon": "gel_half", "count": 2, "pair": true}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 100, 1)
+	sk.add_foes([a, gel])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].unit.die = Die.single(Face.attack(50, L))
+	sk.mechs[0].die = sk.mechs[0].unit.die
+	assert_true(sk.assign(0, gel), "the Gel falls and splits")
+	var halves: Array = sk.slot_foes(gel.rank if gel.rank >= 0 else 0, 1)
+	var col := -1
+	for c in range(3):
+		if sk.slot_foes(0, c).size() == 2:
+			col = c
+			halves = sk.slot_foes(0, c)
+	assert_true(col >= 0, "its halves stand as a pair in one slot")
+	var spots := sk.sweep_spots(0)
+	assert_eq(spots.size(), 4, "three columns, the pair's two halves a spot each: four spots")
+	sk.end_round()
+	sk.start_round()
+	sk.mechs[0].unit.die = Die.single(pod)
+	sk.mechs[0].die = sk.mechs[0].unit.die
+	var before := [a.hp, halves[0].hp, halves[1].hp]
+	assert_true(sk.assign(0, a), "the four-shot sweep")
+	assert_eq([before[0] - a.hp, before[1] - halves[0].hp, before[2] - halves[1].hp], [5, 5, 5], "a shot each on the ghoul and on both halves; the empty column took the fourth")
+	var empties := sk.spend_blows.filter(func(b) -> bool: return str(b.get("kind", "")) == "miss")
+	assert_eq(empties.size(), 1, "one shot wasted on the empty column")
+
+
 ## A Sweep's shots are each a hit of their own (Ryan, 8 November, the audit's first question: "Per
 ## shot"): a shot judges its gates, its machine's lays and its foe's reads as it fires, the shots
 ## before it landed, so a later shot at a column opens the gate an earlier one's Flak shut, lays
@@ -9132,6 +9172,20 @@ func test_the_forge_fires_its_guns_from_ammo_and_a_foes_scorch_still_heats_them(
 	ms.face_index = 4
 	assert_true(sk.assign(0, ms), "a shield on itself")
 	assert_eq(ms.ammo, before + 2, "reloads two")
+	# An entry both a vent and a shield reloads once, the greater (Ryan, 8 November: "Once, take
+	# the greater number"), whichever way it is written.
+	for both in [Face.from_dict({"kind": "vent", "power": 3, "shields": 3}), Face.from_dict({"kind": "shield", "power": 3, "vents": 2})]:
+		var s2 := Skirmish.new(1, 2)
+		var ox := _mech("Ox", Die.single(both), 40, 200)
+		ox.grant_passive(FORGE)
+		s2.add_mech(ox)
+		s2.add_foes([_ghoul(500, 0), _ghoul(500, 0)])
+		s2.begin()
+		s2.start_round()
+		var oms: Skirmish.MechState = s2.mechs[0]
+		var had := oms.ammo
+		assert_true(s2.assign(0, oms), "a cool-and-shield entry on itself")
+		assert_eq(oms.ammo, had + 3, "reloads three, once: the vent's number, the greater")
 
 
 ## The Musk Ox's pieces (21 October), synthetic: the cluster cannon gives an ammo back for every

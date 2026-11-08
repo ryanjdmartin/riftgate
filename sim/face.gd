@@ -788,7 +788,7 @@ func spin_text() -> String:
 func _spin_phrases() -> Array[String]:
 	var out: Array[String] = []
 	if spins:
-		out.append("spins the die")
+		out.append("spins the die, itself included")   # Ryan, 8 November: the Cassowary keeps its true spin, "we just need to make it clear"
 	if heat_per_blow > 0:
 		out.append("+%d heat a blow taken this round" % heat_per_blow)
 	return out
@@ -823,7 +823,7 @@ func rule_phrases() -> Array[String]:
 	if braces > 0:
 		out.append("braces" + ("" if braces == 1 else " ×%d" % braces))
 	if not rolls_again_on.is_empty():
-		out.append("spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on)))
+		out.append("spends a %s to roll again, itself included" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on)))
 	if kind == Kind.ATTACK:
 		if resets_on_kill:
 			out.append("a kill brings back every entry its cooldowns darkened and it acts again")
@@ -923,7 +923,7 @@ func describe() -> String:
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
-				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
+				s += " spends a %s to roll again, itself included" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
 			s += cooldown_text() + spin_text() + cost_text()
 			if targets == Target.SELF:
 				s += " (self only)"
@@ -968,7 +968,7 @@ func describe() -> String:
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
-				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
+				s += " spends a %s to roll again, itself included" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
 			if resets_on_kill:
 				s += " a kill brings back every entry its cooldowns darkened and it acts again"
 			if pulls_mines:

@@ -27,12 +27,14 @@ It retires once its findings are fixed, struck or turned into rows and tasks.
 ## Where it stands, 8 November
 
 Ryan's calls on the questions (8 November) and the bugs he read as "correctly assessed" are
-built, each with a test that failed first (`ad0b607`, `ccd04bc`): Questions 1 to 4 and 7, 5's
-Horn and 6's Nob; Bugs 1 to 6 and 8 to 13; 15's rally worth (the bot's other readings wait for
-the bot's step below). Still open: Question 5's other rolls (the Knuckle of Fury and the
-Spin-Up, each a roll that breaks the reroll rule by his own earlier design), 7's Musk Ox reload
-for an entry that is both, and 8 and 10, which he asked to have explained; Bug 16 goes with
-Structure 3.
+built, each with a test that failed first (`ad0b607`, `ccd04bc`), and his answers to the four
+left open the same evening: the Knuckle of Fury and the Spin-Up keep their rolls, said on the die;
+the Musk Ox reloads once, the greater; a countdown shows what it would deal now; a Sweep's spots
+are queued at the spend's start, a pair's halves a spot each. Bugs 5 and 6 went further than
+their fix: "A stack is a stack, doesn't matter where it came from" retired the purge by source
+and its sleep whole, and a unit's own mechanic became an Ability that no purge touches. 15's
+rally worth is fixed; the bot's other readings wait for the bot's step below, and Bug 16 goes
+with Structure 3.
 
 **The mine path waits for the Lammergeier's rework** (Ryan, 8 November: "Flag the mine path as
 an issue but don't bother fixing mine problems until the rework, in case it stops existing"):
@@ -103,12 +105,12 @@ balance runner's valuation only).
    foe as killed when it is no longer on the field; `_lift_out` (3767) takes merged foes off it,
    so the King Gel's merge credits the team its court as kills (salvage, menace, the Rupture
    meter). The rules: a merged foe is no kill of the team's. With Question 4. *Checked.*
-5. **A partly purged buff's sleeping stacks skip their clock.** *Fixed 8 November.* `Effects.purge` puts N of an
+5. **A partly purged buff's sleeping stacks skip their clock.** *Gone with the sleep (Ryan, 8 November: "A stack is a stack").* *Fixed 8 November.* `Effects.purge` puts N of an
    innate grant's stacks in `slept_stacks`; the round's halving touches only `stacks`; `wake`
    adds the slept part back whole. A Grievance Reliquary's Empowered 3 purged by the Djinn's
    Unmake (Purge 1) wakes at 2 where unpurged it would be 1. Fix: sleep a split-off modifier
    that every clock reads. Change: to the rules ("their clocks still running"). *Checked.*
-6. **Grants of one status from different sources merge, and a Purge reads the first source.** *Fixed 8 November: the grants stay apart by what bought them and a halving status still halves as one number, Ryan's 18 October rule ("whatever granted it").*
+6. **Grants of one status from different sources merge, and a Purge reads the first source.** *Gone with the purge by source (Ryan, 8 November: "Your purge by source makes no sense. A stack is a stack"): a Purge takes stacks whatever granted them, so merged grants are right.*
    `Effects.stack` merges on id and scope (620-625); `bought` reads the merged modifier's
    source prefix. The Reliquary's Empowered and an Overcharge Coil's merge: a Purge then sleeps
    the bought stacks, or ends the passive's for good, depending on which came first. Fix: a
@@ -193,18 +195,18 @@ balance runner's valuation only).
    with both tentacles standing gets three kills' muster. A mine's kill counts to whichever spend
    set it off. Lean: one tally at the death check by pack and type; a kill is a foe a blow, a
    tick or a mine felled; a part taken by its core and a merge are not.
-5. **The Reveille Horn's roll.** *Ryan: "It's a roll, it should follow roll rules." The Horn built; the Knuckle of Fury and the Spin-Up asked.* Three pieces make an ally act again by three paths; the Horn's
+5. **The Reveille Horn's roll.** *Ryan: "It's a roll, it should follow roll rules." The Horn built; "Nemesis and cassowary keep their special rolls, we just need to make it clear": each says "itself included" on the die.* Three pieces make an ally act again by three paths; the Horn's
    is a plain roll that may land on the entry just spent, the Immelmann Booster's never does.
    Lean: one path, Rapid's (never the entry just spent).
 6. **The Goblin Nob's opener and Disrupt.** *Moot: the rage is the Nob's own from the start (Ryan, 8 November), the opener retired.* The opener is taken "before any other", so a Disrupt
    has nothing to turn it to, yet the die shows Disrupt live over the Nob (`shut_gates` strikes it
    only for a committed follow-up). Lean: the die strikes it; the opener stands.
-7. **The cool-and-shield entry's two encodings.** *Ryan: "both types at once ... atomic based on the current game state." The form built; the Musk Ox's reload asked.* The Sutler's Hoist is a shield that cools and
+7. **The cool-and-shield entry's two encodings.** *Ryan: "both types at once ... atomic based on the current game state." The form built; the Musk Ox's reload once, the greater ("Once, take the greater number").* The Sutler's Hoist is a shield that cools and
    the Wake Diffuser a vent that shields; the paths differ (the vent logs its printed number, not
    the heat it took off, and never overshields), and the encoding decides the Armadillo's form (a
    shield seals, a vent opens) and the Musk Ox's reload (3 for a vent, 2 for a shield). Lean: one
    "cools then shields" helper; the form and the forge read what the entry does.
-8. **A countdown's rally.** *Explained to Ryan, 8 November; open.* A gathering countdown shows its blow with the rallies it carries now,
+8. **A countdown's rally.** *Ryan: "It shouldn't forecast rounds in the future. Show what it would deal at the current game state." Built.* A gathering countdown shows its blow with the rallies it carries now,
    though Empowered halves at every round's end before it lands (checked in the engine, 8
    November: a countdown of 2 announced beside a rally of 2 shows its blow +2, then +1 the round
    after, and lands at +0).
@@ -212,7 +214,7 @@ balance runner's valuation only).
 9. **A mine set off inside a spend** *Waits for the rework.* (a pull or a Swap) holds its kill's return until the spend
    ends, where the rules say "at once to a mine". Lean: the spend's rule, since a mine set off by
    a spend is part of it; the rules line says so.
-10. **A Sweep's dropped-on foe and its entry effects.** *Explained to Ryan, 8 November; open.* The drop picks the rank and nothing else,
+10. **A Sweep's dropped-on foe and its entry effects.** *Ryan: "I think you're correct, except that I would use up a shot for each gel half." Built: the spots queued at the spend's start, the zap on the dropped-on foe, the validator refusing a Swap, drone or pull on a Sweep.* The drop picks the rank and nothing else,
     yet it still sets the zap's foe and the conditions read for heat and the sixth shot; a Sweep
     granted a Swap, a drone or a pull does nothing; a twin slot's shots always meet its left
     half. No content reaches these. Lean: the validator refuses a Swap, drone or pull on a Sweep;

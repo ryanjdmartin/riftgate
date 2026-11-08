@@ -742,21 +742,21 @@ func incoming_rally(x: Foe) -> int:
 	return n
 
 
-## The foes whose rally reaches this one before its move lands: every other foe on the field
-## rallying this round (rallies_now), those acting ahead of it for a move this round and every
-## one for a countdown still gathering, whose blow lands after the round. Nothing reaches a
-## foe that has acted, or one that stepped up this round (its next move is next round's). A
-## rallier killed, Suppressed or Disrupted drops out at once, so the intents do too; once a
-## rally lands it is the foe's own Empowered.
+## The foes whose rally reaches this one before its move lands this round: every other foe on
+## the field rallying this round (rallies_now) and acting ahead of it. Nothing reaches a foe that
+## has acted, one that stepped up this round (its next move is next round's), or a countdown still
+## gathering, whose blow lands in a later round: its intent shows what it would deal now (Ryan, 8
+## November: "It shouldn't forecast rounds in the future. Show what it would deal at the current
+## game state"). A rallier killed, Suppressed or Disrupted drops out at once, so the intents do
+## too; once a rally lands it is the foe's own Empowered.
 func rallies_on(x: Foe) -> Array[Foe]:
 	var out: Array[Foe] = []
-	if x == null or not x.alive() or x.fresh or _acted.has(x):
+	if x == null or not x.alive() or x.fresh or _acted.has(x) or x.gathering():
 		return out
-	var ahead := true
 	for r in field_foes():
 		if r == x:
-			ahead = false
-		elif (ahead or x.gathering()) and rallies_now(r):
+			break
+		if rallies_now(r):
 			out.append(r)
 	return out
 
@@ -2689,6 +2689,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	# next shot fires, then the death check once the shots are done. The Musk Ox's salvo is a
 	# Sweep, an ammo a shot (_salvo).
 	var sweep_rank := sweep_rank_of(target) if sweep else -1
+	var spots: Array = sweep_spots(sweep_rank) if sweep else []   # queued as the spend begins (Ryan, 8 November)
 	var aimed := target              # the hit's own foe: the target, or the foe in a shot's column
 	var swept: Array[String] = []    # a sweep's shots, the foe and what it took, for the log
 	var struck_once := {}            # every foe a blow of the spend has met, for what a foe reads on its first
@@ -2697,15 +2698,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, real:
 	for s in range(maxi(1, f.strikes)):
 		_strike_no = s
 		if sweep:
-			# A shot at its column: the foe in that slot, standing or felled by an earlier shot,
-			# since a kill clears nothing until the death check (Ryan, 7 November: "sweep hits a
-			# unit it already killed and doesn't skip it"); an empty slot takes the shot and nothing
-			# else, its area with it, so a lone foe takes its own column's shots alone ("it will
-			# NOT stack hits on a solo boss").
-			aimed = sweep_at(sweep_rank, s % columns)
+			# A shot at its spot: the foe there, standing or felled by an earlier shot, since a kill
+			# clears nothing until the death check (Ryan, 7 November: "sweep hits a unit it already
+			# killed and doesn't skip it"); an empty column takes the shot and nothing else, its area
+			# with it, so a lone foe takes its own column's shots alone ("it will NOT stack hits on a
+			# solo boss"); a pair's halves a spot each (8 November).
+			var spot: Array = spots[s % spots.size()]
+			aimed = spot[0]
 			if aimed == null:
 				swept.append("nothing")
-				_note_miss(Vector2i(sweep_rank, s % columns), s)   # fired all the same, so the screen shows it land
+				_note_miss(Vector2i(sweep_rank, int(spot[1])), s)   # fired all the same, so the screen shows it land
 				continue
 			hit = reached_by(f, aimed)
 			shapes = area_shapes(f, aimed)
@@ -3635,10 +3637,13 @@ func _machine_spend_after(ms: MechState, f: Face, target) -> void:
 		return
 	var on_self: bool = not f.reaches_all and (not (target is MechState) or target == ms)
 	var rule := Effects.forge_rule(ms.unit)
-	if on_self and f.kind == Face.Kind.VENT:
-		_reload(ms, int(rule.get("vent", 0)), "the vent")
-	elif on_self and f.kind == Face.Kind.SHIELD:
-		_reload(ms, int(rule.get("shield", 0)), "the shield")
+	if on_self:
+		# A vent reloads its number, a shield its own; an entry both at once reloads once, the
+		# greater (Ryan, 8 November: "Once, take the greater number").
+		var by_vent := int(rule.get("vent", 0)) if f.cools_machine() else 0
+		var by_shield := int(rule.get("shield", 0)) if f.shields_machine() else 0
+		if by_vent > 0 or by_shield > 0:
+			_reload(ms, maxi(by_vent, by_shield), "the vent" if by_vent >= by_shield else "the shield")
 
 
 ## The Nob's rage (3 November; its own from the fight's start since 8 November): every shield,
@@ -3672,25 +3677,32 @@ func sweep_rank_of(target: Foe) -> int:
 	return 0 if target == null or target.is_massive() or target.rank < 0 else target.rank
 
 
-## What a Sweep's shot at a column of its rank meets (Ryan, 7 November: "Fires a shot at each
-## column, left to right, repeating until it runs out of shots"): the foe in that slot, standing
-## or felled earlier in the spend, since its corpse holds the slot until the spend's death check;
-## a massive foe fills both slots of its column, so either rank's shot there meets it; null for an
-## empty slot.
-func sweep_at(rank: int, col: int) -> Foe:
-	if col < 0 or col >= columns:
-		return null
-	return foe_at(rank, col)
+## The spots a Sweep's shots walk on a rank (Ryan, 7 November: "Fires a shot at each column, left
+## to right, repeating until it runs out of shots"; 8 November, of a Gel's pair: "I would use up
+## a shot for each gel half. It functionally adds another column ... it queues up the spots to
+## target at the start of the spend, targeting each full column at least once"): each column in
+## turn as [its foe or null, the column], an empty column a spot of its own whose shot is wasted,
+## a pair's two halves a spot each, and a massive foe, filling both slots of its column, the spot
+## of either rank's column. Read once as the spend begins: a foe a shot fells keeps its spot, its
+## corpse taking the shots, and a half that fell before the spend leaves none.
+func sweep_spots(rank: int) -> Array:
+	var out: Array = []
+	for col in range(columns):
+		var standing := slot_foes(rank, col)
+		if standing.is_empty():
+			out.append([null, col])
+		for foe in standing:
+			out.append([foe, col])
+	return out
 
 
-## The shots each foe takes of a Sweep's `shots` dropped on `target`'s rank, in the order the
-## shots first meet them (the bot's read of the rank as it stands): a shot at each column, left
-## to right, repeating, an empty column's wasted.
+## The shots each foe takes of a Sweep's `shots` dropped on `target`'s rank (the bot's read of the
+## rank as it stands): the spots in turn, repeating (sweep_spots), an empty column's wasted.
 func sweep_shots(target: Foe, shots: int) -> Dictionary:
 	var out := {}
-	var rank := sweep_rank_of(target)
+	var spots := sweep_spots(sweep_rank_of(target))
 	for s in range(maxi(1, shots)):
-		var foe := sweep_at(rank, s % columns)
+		var foe = spots[s % spots.size()][0]
 		if foe != null:
 			out[foe] = int(out.get(foe, 0)) + 1
 	return out
