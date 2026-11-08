@@ -164,7 +164,7 @@ balance runner's valuation only).
     conductors already Shocked, where `_shock` lands nothing (495-501); `rally_worth` counts a
     foe its Burning kills before it acts and Phased machines under a blow at every machine
     (skirmish 927-937); Suppress is valued on a Warded foe (513-519); a kill that comes back
-    (Undying, a split) is paid in full; the reach tally books a forged gun's heat that ammo paid
+    (Undying, a split) or a part's, which is no kill, is paid in full; the reach tally books a forged gun's heat that ammo paid
     (skirmish 2949 before 2953); `effective_face` runs twice on one entry, so Supercooled's Cryo
     counts twice. Agents' readings; Bug 3 above is the checked one.
 16. **The forecast with the die in hand reads the raw entry's heat.** `pending_heat` and
@@ -192,7 +192,7 @@ balance runner's valuation only).
    2953) while the forecast prices Scorched's extra on it; the rules say both ("Scorched's extra
    included" on ammo, "no heat" on the salvo). Lean: Scorched's extra lands, as on every forged
    gun, and the flag goes.
-4. **What is a kill.** *Ryan: merges, returns, splits and parts with their core are none. Built.* Three counts: `_falls` (the kill triggers, the reset gun, the Spindrift
+4. **What is a kill.** *Ryan: merges, returns, splits and parts are none, only a core counting ("I thought I said only the core counts"). Built.* Three counts: `_falls` (the kill triggers, the reset gun, the Spindrift
    Salvo, the Muster) counts a part taken by its falling core and a Bomb's burst; `team_kills`
    (the Pilgrim's grudge) leaves out anything that stays down; `kills_by_type` (salvage, menace)
    counts every own foe gone, merges included (Bug 4). The Swallowtail killing the Ruby Colossus

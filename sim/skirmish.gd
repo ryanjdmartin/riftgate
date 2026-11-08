@@ -458,12 +458,22 @@ func kills_by_type(sq: Unit) -> Dictionary:
 
 ## What a kill is (Ryan, 8 November): a foe the death check clears that stays down. A foe getting
 ## back up or splitting goes on ("If a foe is killed during the death check and revives, that
-## shouldn't count for kill triggers. Same with gel splits"); one gone whole was never the team's
-## kill, a part its core took ("technically one giant unit, thematically, the parts are
-## extensions") or a Bomb's burst; and a merge's foes never reach the death check. The kill
-## triggers, the grudge, salvage and menace all read it.
-static func is_kill(f: Foe) -> bool:
-	return not f.stays_down and not Effects.has(f, "risen") and not f.on_death.has("summon")
+## shouldn't count for kill triggers. Same with gel splits"); a part is never one, felled alone or
+## taken with its core, since a core and its parts are one unit whose kill is the core's
+## ("technically one giant unit, thematically, the parts are extensions"; "I thought I said only
+## the core counts"); a Bomb's burst was never the team's; and a merge's foes never reach the
+## death check. The kill triggers, the grudge, salvage and menace all read it.
+func is_kill(f: Foe) -> bool:
+	return not f.stays_down and not Effects.has(f, "risen") and not f.on_death.has("summon") and not is_part(f)
+
+
+## A core's part (parts_of): a foe whose type a core of its pack on the field names, the core
+## standing or felled.
+func is_part(f: Foe) -> bool:
+	for c in field_foes():
+		if c != f and c.pack_id == f.pack_id and c.part_ids.has(f.content_id):
+			return true
+	return false
 
 
 ## A kill counted, as the death check clears it: the team's whole and its pack's by type.
@@ -5317,6 +5327,11 @@ func _pack_of(f: Foe) -> Unit:
 
 
 func _clear_dead_slots() -> void:
+	# The kills first, every felled foe judged against the field as the death check finds it, so a
+	# core cleared before its part below still names it (is_part).
+	for f in field_foes():
+		if not f.alive() and f.rank >= 0 and is_kill(f):
+			_count_kill(f)
 	for col in range(columns):
 		for rank in [front, back]:
 			var key := Vector2i(0 if is_same(rank, front) else 1, col)
@@ -5327,8 +5342,6 @@ func _clear_dead_slots() -> void:
 					continue
 				cleared = true
 				if f.rank >= 0:
-					if is_kill(f):
-						_count_kill(f)
 					if Effects.has(f, "syrinx_drone") and _killing_shot.has(f):
 						_drone_mine(f, _killing_shot[f])   # the drone falls with it, in the slot it dies in
 					_release_swallowed(f)   # a swallower down lets its machine go, whatever comes next

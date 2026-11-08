@@ -283,7 +283,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   return stands before the next foe moves; and it ends the moment the fight is decided, the
   foes after the blow that wrecks the last machine doing nothing.
 - **A kill**: a foe the death check clears that stays down. A foe getting back up and a split
-  are none (a split's halves are kills of their own), nor a part its core takes with it, a
+  are none (a split's halves are kills of their own), nor a part, felled alone or taken with
+  its core, since a core and its parts are one unit and only the core's fall counts, nor a
   Bomb's burst or a foe a merge takes in. Every kill trigger, the grudge, salvage and menace
   read it.
 - Every blow of a strike is read before any of them lands. A foe's own reads (the hull it is

@@ -25,8 +25,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1056 tests, 259,965 checks, green (8 November, main with the long wall and the skirmish
-  code audit landed, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1058 tests, 259,976 checks, green (8 November, main with the long wall and the skirmish
+  code audit landed, a part no kill, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -201,7 +201,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 - **The skirmish code audit and Ryan's answers** (7 and 8 November, `ccr-1eaf0060-jrpw04`;
   `docs/skirmish_audit.md`; the bible's Ability, Purge, spend's order and Sweep rows): a kill is
   a foe the death check clears that stays down, one tally for every kill trigger, the grudge,
-  salvage and menace (a merge, a return, a split, a part its core takes and a burst none); a
+  salvage and menace (a merge, a return, a split, a part and a burst none, only a core's fall
+  counting for its unit); a
   Sweep's shots queued as the spend begins, a pair's halves a spot each, each shot judged on its
   own; the enemy's turn checks death after every foe and stops the moment the fight is decided;
   the Goblin Nob's rage its own from the start; Guarded on the die, the bot and the ticks;

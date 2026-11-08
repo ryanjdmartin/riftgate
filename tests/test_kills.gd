@@ -3,9 +3,10 @@ extends TestCase
 ## What a kill is (Ryan, 8 November, the audit's fourth question): a foe the death check clears
 ## that stays down. A merge is none, nor a foe queued to get back up or to split ("If a foe is
 ## killed during the death check and revives, that shouldn't count for kill triggers. Same with
-## gel splits"), nor a part its core takes ("technically one giant unit, thematically, the parts
-## are extensions"), nor a foe gone whole by its own burst. One count, read by the kill triggers,
-## the grudge, salvage and menace.
+## gel splits"), nor a part, whatever fells it, only its core ("technically one giant unit,
+## thematically, the parts are extensions"; "I thought I said only the core counts"), nor a foe
+## gone whole by its own burst. One count, read by the kill triggers, the grudge, salvage and
+## menace.
 
 const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
@@ -114,6 +115,49 @@ func test_a_part_its_core_takes_is_no_kill() -> void:
 	assert_true(sk.field_foes().is_empty(), "the field is clear")
 	assert_eq(sk.team_kills, 1, "one kill: the parts were the core's own")
 	assert_eq(sk.kills_by_type(sq), {"hilt": 1}, "the core alone counts")
+
+
+func test_a_part_is_never_a_kill_only_its_core() -> void:
+	var talon := Face.attack(60, L)
+	talon.devours = 1
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("A", Die.single(talon), 40, 400)
+	sk.add_mech(m)
+	var sq := _pack(6)
+	var core := _foe("hilt", 50, 1)
+	core.part_ids = ["eye"]
+	var eye := _foe("eye", 20)
+	sk.add_foes([core, eye, _foe("revenant", 500)], sq)
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, eye), "a part felled while its core stands")
+	assert_eq(sk.team_kills, 0, "no kill: a core and its parts are one unit")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "so the talons feed on nothing")
+	assert_eq(sk.kills_by_type(sq), {}, "and salvage and menace count nothing")
+	sk.end_round()
+	sk.start_round()
+	assert_true(sk.assign(0, core), "the core falls")
+	assert_eq(sk.team_kills, 1, "its fall the one kill")
+	assert_true(Effects.stacks_of(m, "overcharged") > 0, "the talons feed on it")
+	assert_eq(sk.kills_by_type(sq), {"hilt": 1}, "counted by the core's type")
+
+
+func test_a_part_felled_beside_its_core_getting_back_up_is_no_kill() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 40, 400))
+	var core := _foe("hilt", 50, 1)
+	core.part_ids = ["eye"]
+	var eye := _foe("eye", 20)
+	sk.add_foes([_foe("revenant", 500), core, eye], _pack(8))
+	sk.begin()
+	sk.start_round()
+	assert_true(core.column < eye.column, "the core's slot clears before its part's")
+	_rise(core)
+	core.hp = 0
+	eye.hp = 0
+	sk._clear_dead()   # one death check: the core gets back up, its part stays down
+	assert_eq(sk.team_kills, 0, "neither is a kill: the core rises, and a part is never one")
+	assert_true(core.alive(), "the core is back up")
 
 
 func test_a_merge_and_a_burst_are_no_kills() -> void:
