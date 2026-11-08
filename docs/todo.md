@@ -11,7 +11,8 @@ line names its debug switch or pose; `README.md`'s Running section says how each
 
 Calls and marks:
 
-- [ ] The skirmish code audit's eleven questions (`docs/skirmish_audit.md`, 7 November: a Sweep's per-shot boundary, Guarded and ticks, the salvo under Scorched, what a kill is, the Horn's roll, the Nob's opener, the cool-and-shield encodings, a countdown's rally, a mine inside a spend, a Sweep's drop, the drone's mine), each with Claude's lean
+- [x] The skirmish code audit's eleven questions (`docs/skirmish_audit.md`, 7 November): answered 8 November and built, the mine's three left for the Lammergeier's rework
+- [ ] The audit's four questions still open (`docs/skirmish_audit.md`, explained in chat 8 November): whether the Knuckle of Fury's plain roll and the Spin-Up's true roll follow the reroll rule too (5); the Musk Ox's reload for an entry that is a vent and a shield at once, 5 or 3 (7); a countdown's rally, shown at what lands (8); a Sweep's dropped-on foe, its zap and conditions, and a twin slot's shot (10)
 
 - [ ] Rules for the Muzzle Velocity Booster and the Tactical Databank (planned since 2 November: rolled damage is gone, so a ceiling and a floor move nothing)
 - [ ] Mark the first rounds on your chassis ideas of 4 November (each now a brief in `docs/briefs/`, the roster the briefs README's "Ten a maker"; correct them in the hangar's Designs tab, a session folds those in first): the ten a maker's open calls first (whether the Wild Boar or the mole comes down to tier one beside the lure tank, the two moves to the Arsenal and the merges you have not marked; the roster under Design sessions), then the lure tank's armour with section 12's floor of 1, Static's cascade and triangle, the Macross's shift and its grants; then each brief's open list as its session comes
@@ -61,6 +62,7 @@ Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster 
 **Kestrel**, ten: eight decided.
 
 - [ ] The Magpie (a working name), Kestrel's support engine (`kestrel_magpie.md`; the first round: the thief, the mimic, the cache; its cache beside the time-shifter's bank), its tier open, the slot open to another design
+- [ ] The Lammergeier's rework, Ryan's (8 November: "Flag the mine path as an issue but don't bother fixing mine problems until the rework, in case it stops existing"): the mine path's known faults wait for it (`docs/skirmish_audit.md`: Bug 7, Questions 9 and 11, the mine's half of Root 1 and of Structures 4 and 7)
 - [ ] The Snowy Owl, Kestrel's stealth unit (`kestrel_owl.md`; the first round: cold is quiet, the hunter on the map, Hidden as a status), leaning to Cryo (Ryan, 5 November: "assuming we take the cryo direction with the owl - which makes a lot of sense"); stealth a new rule (Phased cannot act, so it is not stealth)
 
 **Wainwright & Sutler**, ten, all named.
@@ -113,7 +115,7 @@ Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster 
 
 ## Engine
 
-- [ ] The skirmish code audit's fixes in its order (`docs/skirmish_audit.md`): the bugs that take the rules as written, each with a test that fails first; one hit routine with its arguments in place of the hidden flags; one round model; the bot's and the screen's mirrors onto the engine's helpers, then a 30-seed direction; statuses as data, the Face, the dead code and the comments
+- [ ] The skirmish code audit's fixes in its order (`docs/skirmish_audit.md`; its bugs built 8 November but the bot's readings and the die-in-hand forecast, which go with their steps): one hit routine with its arguments in place of the hidden flags, the mine's half left for the rework; one round model; the bot's and the screen's mirrors onto the engine's helpers, then a 30-seed direction; statuses as data, the Face, the dead code and the comments
 
 - [ ] The test runner reads a test that crashes after its first check as passed (`tests/run_tests.gd` fails only a test with no checks; found 30 October): a way to count a crash as a failure (a sentinel each test sets last, or the log scanned by a wrapper)
 - [x] A Purge on a Sweep weapon: settled by the spend's order (Ryan, 7 November), every hit's riders before the death check and what a kill brings back after the spend, so a Purge on the killing hit keeps an Undying foe down; built 7 November

@@ -24,6 +24,22 @@ records out of step with the code).
 
 It retires once its findings are fixed, struck or turned into rows and tasks.
 
+## Where it stands, 8 November
+
+Ryan's calls on the questions (8 November) and the bugs he read as "correctly assessed" are
+built, each with a test that failed first (`ad0b607`, `ccd04bc`): Questions 1 to 4 and 7, 5's
+Horn and 6's Nob; Bugs 1 to 6 and 8 to 13; 15's rally worth (the bot's other readings wait for
+the bot's step below). Still open: Question 5's other rolls (the Knuckle of Fury and the
+Spin-Up, each a roll that breaks the reroll rule by his own earlier design), 7's Musk Ox reload
+for an entry that is both, and 8 and 10, which he asked to have explained; Bug 16 goes with
+Structure 3.
+
+**The mine path waits for the Lammergeier's rework** (Ryan, 8 November: "Flag the mine path as
+an issue but don't bother fixing mine problems until the rework, in case it stops existing"):
+Bug 7, Questions 9 and 11, Root 1's mine half (`_mine_hit`, `_mine_spill`), the strands in
+Structure 7 and the mine half of Structure 4 are known faults left as they are. The rework
+fixes them or removes them; nothing else builds on them meanwhile.
+
 ## The roots
 
 Most of what follows comes from five habits. Fixing a root clears its findings for good; fixing
@@ -60,7 +76,7 @@ Checked against the code unless marked. "Change" says what fixing it does: *to t
 code takes what the rules already say), *text* (shown text or the log only), or *bot* (the
 balance runner's valuation only).
 
-1. **The enemy's turn checks death only at its end.** `_enemy_turn` 2212-2215 skips a foe its
+1. **The enemy's turn checks death only at its end.** *Fixed 8 November.* `_enemy_turn` 2212-2215 skips a foe its
    own tick kills, and the one `_clear_dead()` runs at 2241 after every foe has acted. So a
    Behemoth burnt to death lands its Meteor after every other blow (the rules: "the moment it
    falls, before anything else"), a burnt core's parts still strike that turn, a burnt
@@ -68,14 +84,14 @@ balance runner's valuation only).
    foe or Gel comes back at the turn's end, not "at once to a tick". Fix: a death check after a
    tick kill and after each foe's turn (the foe already in `_acted`, so a gold rage its tick
    broke still staggers next round). Change: to the rules. *Checked.*
-2. **A fight lost in the enemy's turn plays on.** After the last machine falls the remaining
+2. **A fight lost in the enemy's turn plays on.** *Fixed 8 November.* After the last machine falls the remaining
    foes still tick and act (a Burning death counts as a kill, a heal, a rally, a summon), and
    `end_round` still runs the turn's end, regrowth and the reinforcement step, before
    `_check_outcome` (2152-2161). `Battle.finish_skirmish` reads `kills_by_type` on a defeat, so
    those deaths raise the battle's kills and menace. The rules: the fight "ends the moment it is
    decided". Fix: stop the foe loop when no machine stands; check the outcome after
    `_enemy_turn`. Change: to the rules. *Checked.*
-3. **Guarded is missing from the die's number and the bot's.** `shown_number` (skirmish 642),
+3. **Guarded is missing from the die's number and the bot's.** *Fixed 8 November.* `shown_number` (skirmish 642),
    `damage_outcomes` (policy 1274) and `pull_score` (policy 901) add the foe's flat
    damage-taken adds only (`Effects.damage_taken_add`), to keep Shocked's double off the die,
    and so drop Guarded's ×0 too. Over a `guard: all` core (the Fallen Weapon, the Astromancer,
@@ -83,50 +99,50 @@ balance runner's valuation only).
    Fix: `Effects.damage_taken(foe, blow, striker, weapon, false)`, which reads every add and
    multiply but the aimed-only Shock; delete `damage_taken_add`. Change: the die shows 0 over a
    guarded core. *Checked.*
-4. **A merge's taken foes count as the team's kills.** `kills_by_type` (465-482) counts an own
+4. **A merge's taken foes count as the team's kills.** *Fixed 8 November, with Question 4.* `kills_by_type` (465-482) counts an own
    foe as killed when it is no longer on the field; `_lift_out` (3767) takes merged foes off it,
    so the King Gel's merge credits the team its court as kills (salvage, menace, the Rupture
    meter). The rules: a merged foe is no kill of the team's. With Question 4. *Checked.*
-5. **A partly purged buff's sleeping stacks skip their clock.** `Effects.purge` puts N of an
+5. **A partly purged buff's sleeping stacks skip their clock.** *Fixed 8 November.* `Effects.purge` puts N of an
    innate grant's stacks in `slept_stacks`; the round's halving touches only `stacks`; `wake`
    adds the slept part back whole. A Grievance Reliquary's Empowered 3 purged by the Djinn's
    Unmake (Purge 1) wakes at 2 where unpurged it would be 1. Fix: sleep a split-off modifier
    that every clock reads. Change: to the rules ("their clocks still running"). *Checked.*
-6. **Grants of one status from different sources merge, and a Purge reads the first source.**
+6. **Grants of one status from different sources merge, and a Purge reads the first source.** *Fixed 8 November: the grants stay apart by what bought them and a halving status still halves as one number, Ryan's 18 October rule ("whatever granted it").*
    `Effects.stack` merges on id and scope (620-625); `bought` reads the merged modifier's
    source prefix. The Reliquary's Empowered and an Overcharge Coil's merge: a Purge then sleeps
    the bought stacks, or ends the passive's for good, depending on which came first. Fix: a
    `bought` field in the merge key, set at the grant (and the same for "cooldown", read by
    source string at 1965 and 2079). Change: to the rules. *Checked.*
-7. **A mine that kills lands none of its riders.** `_mine_hit` meets a foe its shot felled with
+7. **A mine that kills lands none of its riders.** *Waits for the Lammergeier's rework.* `_mine_hit` meets a foe its shot felled with
    `continue` (its line 91 from the function's head): no Burn, Suppress, Web, Cryo, Flak,
    Shock or Expose, and no Cryo cash for the spender (a Purge alone is patched in). Its area
    drops corpses that `reached_by` keeps (so a pair's living half is missed once its left half
    fell), it never reads missing hull, and a mine's kill feeds no talons. Root 1. Change: to the
    rules ("every keyword acts as the shot lands, as on a blow"). *Checked.*
-8. **Spillover's later strike drops its riders.** The resolver's branch for a front foe an
+8. **Spillover's later strike drops its riders.** *Fixed 8 November.* The resolver's branch for a front foe an
    earlier strike felled (2766-2778) spills and `continue`s past the lays, Burn, Suppress, Web,
    Cryo, Flak and Purge, which the same strike without Spillover lands on the corpse; the
    Primed Burning still lands. A Wild Boar's ×2 Flak 1 that kills with its first strike leaves
    Flak 1, not 2. Fix: spill, then fall through to the riders. Change: to the rules. *Checked.*
-9. **A last act at every machine strikes machines out of the fight.** `_last_act` walks
+9. **A last act at every machine strikes machines out of the fight.** *Fixed 8 November.* `_last_act` walks
    `live_mechs()`, Phased and Swallowed machines included; `_damage_mech` records nothing for a
    machine out of the fight, and `_strike` then reads the last recorded event anyway (another
    machine's, or index -1 when the list is empty), landing riders on the machine that is out.
    The Behemoth's Meteor, with a machine Phased. Fix: one "who a blow at every machine reaches"
    (Duplicate 1), and `_damage_mech` returns its blow. *Checked.*
-10. **A reroll of nothing spends a team reroll.** `_reroll` with no live die named still takes a
+10. **A reroll of nothing spends a team reroll.** *Fixed 8 November.* `_reroll` with no live die named still takes a
     reroll (1673-1689), and REROLL stays lit with every die spent or locked. Fix: nothing named,
     nothing spent; the button needs an unspent die. *Checked.*
-11. **The screen plays a death and a rise that never happened.** `_use_die` infers a death from
+11. **The screen plays a death and a rise that never happened.** *Fixed 8 November.* `_use_die` infers a death from
     "carried Undying before the spend, lacks it after" (skirmish_screen 2937-2960, 3086-3092): a
     Purge that strips Undying from a foe it doesn't kill plays a stand-in death and an arrival.
     Fix: read the engine's `returned` entries. Change: text. *Checked.*
-12. **END TURN asks about dice that cannot be spent.** `_unspent_count` (skirmish_screen 4025)
+12. **END TURN asks about dice that cannot be spent.** *Fixed 8 November.* `_unspent_count` (skirmish_screen 4025)
     counts every unspent die that isn't blank, while the button's pulse uses `can_spend`: a dry
     gun or an unpayable shield cost makes END TURN pulse and then ask "1 die is still unspent".
     Fix: count `can_spend`. Change: text. *Checked.*
-13. **Shown text.** Purge N never shows its number (`Face.describe` lists Burn, Cryo, Flak, area
+13. **Shown text.** *Fixed 8 November.* Purge N never shows its number (`Face.describe` lists Burn, Cryo, Flak, area
     and Chain numbers, never Purge's; `add_keyword` gives it no default either): the Null Field
     Emitter reads "purge" for Purge 2. The readout's `MOVE_TARGETS` (entry_readout 429) lacks
     barrier, regenerate, cleanse, prime, enrage, golden and ward_all, so Burrow, Grave Mend, Knit
@@ -136,7 +152,7 @@ balance runner's valuation only).
     shot a drone leaves was built for every kill, and building it deepens its stacks, which logs
     "runs hot" for a hot Stingray's Photosphere Lance. Now built only for a foe carrying a drone
     or an entry that lays one. *Checked, fixed.*
-15. **The bot misvalues several pieces.** *Bot.* The salvo is valued as if each shot were a first
+15. **The bot misvalues several pieces.** *The rally worth fixed 8 November; the rest with the bot's step.* *Bot.* The salvo is valued as if each shot were a first
     blow (a Shock doubles every shot, a Barrier zeroes every shot, a consumer eats on every
     shot) and skips the kill terms (policy 1432-1446); a Shock is credited on area neighbours and
     conductors already Shocked, where `_shock` lands nothing (495-501); `rally_worth` counts a
@@ -153,7 +169,7 @@ balance runner's valuation only).
 
 ## Questions (Ryan's call)
 
-1. **A Sweep's per-shot boundary.** Riders, Shock, Expose, Disrupt, Lure and what a status gain
+1. **A Sweep's per-shot boundary.** *Ryan, 8 November: "Per shot." Built.* Riders, Shock, Expose, Disrupt, Lure and what a status gain
    sets off land per shot (built today: "riders per hit, for each shot fired"); the gates, a
    passive's lays and the foe's own reads are taken once at the spend. What follows, each against
    a line in the records: the Paradox gains a stack per shot (rules: "once a spend per debuff");
@@ -163,44 +179,46 @@ balance runner's valuation only).
    Musk Ox's eight-shot salvo with the Baboon on the team gives each foe two Paradox stacks
    today. Lean: per shot for all of them, since "each shot is independent", the gates and reads
    taken per shot too; the records rewritten to say so.
-2. **Does a Guarded core take its ticks?** Ticks come off `hp` straight (2212), so a guarded core
+2. **Does a Guarded core take its ticks?** *Ryan: "I wouldn't think so by definition." Built.* Ticks come off `hp` straight (2212), so a guarded core
    burns and Vitriol eats it, while Guarded "takes no damage while its parts stand". Lean: no;
    ticks go through `damage_taken` with Guarded applying and Flak not.
-3. **The salvo's heat under Scorched.** The resolver zeroes the salvo's heat (`_salvo_strike`,
+3. **The salvo's heat under Scorched.** *Ryan: "scorch affects the actual heat bar, not the ammo cost ... Same as the storm petrel when its shield is up." Built, the Petrel's shield paying the gun's own heat alone.* The resolver zeroes the salvo's heat (`_salvo_strike`,
    2953) while the forecast prices Scorched's extra on it; the rules say both ("Scorched's extra
    included" on ammo, "no heat" on the salvo). Lean: Scorched's extra lands, as on every forged
    gun, and the flag goes.
-4. **What is a kill.** Three counts: `_falls` (the kill triggers, the reset gun, the Spindrift
+4. **What is a kill.** *Ryan: merges, returns, splits and parts with their core are none. Built.* Three counts: `_falls` (the kill triggers, the reset gun, the Spindrift
    Salvo, the Muster) counts a part taken by its falling core and a Bomb's burst; `team_kills`
    (the Pilgrim's grudge) leaves out anything that stays down; `kills_by_type` (salvage, menace)
    counts every own foe gone, merges included (Bug 4). The Swallowtail killing the Ruby Colossus
    with both tentacles standing gets three kills' muster. A mine's kill counts to whichever spend
    set it off. Lean: one tally at the death check by pack and type; a kill is a foe a blow, a
    tick or a mine felled; a part taken by its core and a merge are not.
-5. **The Reveille Horn's roll.** Three pieces make an ally act again by three paths; the Horn's
+5. **The Reveille Horn's roll.** *Ryan: "It's a roll, it should follow roll rules." The Horn built; the Knuckle of Fury and the Spin-Up asked.* Three pieces make an ally act again by three paths; the Horn's
    is a plain roll that may land on the entry just spent, the Immelmann Booster's never does.
    Lean: one path, Rapid's (never the entry just spent).
-6. **The Goblin Nob's opener and Disrupt.** The opener is taken "before any other", so a Disrupt
+6. **The Goblin Nob's opener and Disrupt.** *Moot: the rage is the Nob's own from the start (Ryan, 8 November), the opener retired.* The opener is taken "before any other", so a Disrupt
    has nothing to turn it to, yet the die shows Disrupt live over the Nob (`shut_gates` strikes it
    only for a committed follow-up). Lean: the die strikes it; the opener stands.
-7. **The cool-and-shield entry's two encodings.** The Sutler's Hoist is a shield that cools and
+7. **The cool-and-shield entry's two encodings.** *Ryan: "both types at once ... atomic based on the current game state." The form built; the Musk Ox's reload asked.* The Sutler's Hoist is a shield that cools and
    the Wake Diffuser a vent that shields; the paths differ (the vent logs its printed number, not
    the heat it took off, and never overshields), and the encoding decides the Armadillo's form (a
    shield seals, a vent opens) and the Musk Ox's reload (3 for a vent, 2 for a shield). Lean: one
    "cools then shields" helper; the form and the forge read what the entry does.
-8. **A countdown's rally.** A gathering countdown shows its blow with the rallies it carries now,
-   though Empowered halves at every round's end before it lands (shows base+2, lands base+1).
+8. **A countdown's rally.** *Explained to Ryan, 8 November; open.* A gathering countdown shows its blow with the rallies it carries now,
+   though Empowered halves at every round's end before it lands (checked in the engine, 8
+   November: a countdown of 2 announced beside a rally of 2 shows its blow +2, then +1 the round
+   after, and lands at +0).
    Lean: show what lands.
-9. **A mine set off inside a spend** (a pull or a Swap) holds its kill's return until the spend
+9. **A mine set off inside a spend** *Waits for the rework.* (a pull or a Swap) holds its kill's return until the spend
    ends, where the rules say "at once to a mine". Lean: the spend's rule, since a mine set off by
    a spend is part of it; the rules line says so.
-10. **A Sweep's dropped-on foe and its entry effects.** The drop picks the rank and nothing else,
+10. **A Sweep's dropped-on foe and its entry effects.** *Explained to Ryan, 8 November; open.* The drop picks the rank and nothing else,
     yet it still sets the zap's foe and the conditions read for heat and the sixth shot; a Sweep
     granted a Swap, a drone or a pull does nothing; a twin slot's shots always meet its left
     half. No content reaches these. Lean: the validator refuses a Swap, drone or pull on a Sweep;
     a Sweep's zap and conditions read each shot's foe; a twin slot's shot meets both halves, as an
     area does.
-11. **The drone's mine.** It carries the killing blow including the dead foe's own reads (a
+11. **The drone's mine.** *Waits for the rework.* It carries the killing blow including the dead foe's own reads (a
     Backdraft Charge's eaten stacks, counted again when the mine eats the next arrival's; a
     Coriolis's missing hull baked in) and no Primed Burning, and a Storm Petrel zap that kills a
     droned foe leaves none. Lean: the firer's number without the foe's reads, Primed Burning
