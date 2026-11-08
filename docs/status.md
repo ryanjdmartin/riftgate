@@ -253,8 +253,8 @@ The tasks are the to-do's; this is the index of what waits.
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). First: the rest of the skirmish code audit (`docs/skirmish_audit.md`; its
-questions answered and its bugs built 8 November; the Ammit's kept stacks and the word "rally"
-are section 12's): its structural steps in order (one hit routine with its arguments in place of the hidden
+questions answered and its bugs built 8 November; the Ammit's Tap is section 12's, its test the
+to-do's): its structural steps in order (one hit routine with its arguments in place of the hidden
 flags, the mine's half waiting for the Lammergeier's rework; one round model; the bot's and
 the screen's mirrors onto the engine, then a 30-seed direction; statuses as data, the Face, the
 dead code), since its tangles bend every read after it; then the 200-seed matrix with the ladder's, the compositions' and the elites' cells on

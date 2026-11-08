@@ -652,8 +652,9 @@ On a machine:
   its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally, Every
   Other Ally). Cleansable, an ally's Cleanse the way; a Ward turns
   the silence away. A foe's purge is Purge N too: N stacks off every buff the machine carries,
-  for good, whatever granted it (a stack is a stack); its Abilities and its stores stay, and so
-  does the Ammit's kept Empowered, its passive's own; a Ward turns it away too.
+  for good, whatever granted it (a stack is a stack); its Abilities and its stores stay, and the
+  Ammit's Quintessence Tap keeps its Empowered from a Purge as from every clock, whatever granted
+  it; a Ward turns it away too.
 - **Hot Streak** (Ability, the Kite's, its passive's price): its shots run 1 hotter a stack this
   fight, a stack for each attack that killed; no cleanse, silence or purge lifts it.
 
