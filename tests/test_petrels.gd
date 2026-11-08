@@ -246,8 +246,8 @@ func test_a_regeneration_is_bought_so_a_purge_takes_it_and_the_shield_caps_it() 
 	sk.end_round()
 	sk.start_round()
 	assert_eq(u.shield, 12, "capped at the maximum")
-	var gone: Dictionary = Effects.purge(u)
-	assert_true((gone["gone"] as Array).has("Regenerating"), "a die entry bought it, so a purge takes it for good")
+	var gone := Effects.purge(u, 9)
+	assert_true(gone.has("Regenerating gone"), "a buff, so a purge takes it")
 
 
 # ---------------------------------------------------------------- the Giant Petrel

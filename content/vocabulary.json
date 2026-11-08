@@ -526,10 +526,10 @@
    "id": "dispel",
    "category": "keyword",
    "name": "Purge",
-   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries but Guarded (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff an entry's spend bought, for good, and N of what a store, a form or a passive grants until the start of the player's turn, after its start resolves; its stores stay, and a stack its passive keeps stays. A Ward turns it away and stands, on either side.",
+   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff it carries, for good. A stack is a stack, whatever granted it; an Ability is no buff and stays, and so do the stores and a stack its passive keeps. A Ward turns it away and stands, on either side.",
    "status": "implemented",
    "design": {
-    "holes": "One id, dispel, on both sides, as breach is (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). On a foe (Effects.purge_foe) it lowers Armoured, Empowered, Getting Back Up, Primed, Barrier, Regenerating and Numbed, never Guarded; a Ward turns it and stands. On a machine, by source since 28 October (Effects.purge): a buff component's spend or a braces rule's is bought and lowered for good; anything else sleeps its stacks and wakes at the player's turn (Skirmish.start_round); a kept status is its passive's own. Which foes carry it is section 12's question."
+    "holes": "One id, dispel, on both sides, as breach is (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: \"A stack is a stack, doesn't matter where it came from\"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day)."
    }
   },
   {
@@ -636,12 +636,12 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "Machine status, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is. An ally's vent still cools it.",
+   "codex": "Ability, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is; an entry that cools and shields at once does the one its form calls for. An ally's vent still cools it. No Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
     "table": {
-     "kind": "buff",
+     "kind": "ability",
      "on": "machine",
      "stacks": "Renews: one seal however many shields",
      "lasts": "Until a vent or a weapon opens it, or the skirmish ends"
@@ -684,15 +684,15 @@
    "id": "ore_plate",
    "category": "status",
    "name": "Ore Plate",
-   "codex": "Status, a machine's buff (the Honey Badger's): armour +1 a stack, what the loads in its hopper are worth (a point for every two), standing while it holds them and going as they are fired. Granted by a store, so a Purge puts it to sleep until the player's turn while the loads stay.",
+   "codex": "Ability, the Honey Badger's: armour +1 a stack, what the loads in its hopper are worth (a point for every two), standing while it holds them and going as they are fired. The hopper's own, so no Purge touches it, as none touches the loads.",
    "status": "implemented",
    "design": {
     "holes": "A working name (31 October), as is the Ore Hopper's.",
     "table": {
-     "kind": "buff",
+     "kind": "ability",
      "on": "machine",
      "stacks": "Yes: an armour point for every two loads held",
-     "lasts": "While the loads are held; a purge sleeps it a turn"
+     "lasts": "While the loads are held"
     }
    }
   },
@@ -860,12 +860,12 @@
    "id": "hot_streak",
    "category": "status",
    "name": "Hot Streak",
-   "codex": "Machine status, the Kite's: its shots run 1 hotter a stack this fight, a stack for each attack that killed. Its passive's price: no cleanse, silence or purge lifts it.",
+   "codex": "Ability, the Kite's: its shots run 1 hotter a stack this fight, a stack for each attack that killed. Its passive's price: no cleanse, silence or purge lifts it.",
    "status": "implemented",
    "design": {
     "holes": "A working name, the Kite's heat tax.",
     "table": {
-     "kind": "debuff",
+     "kind": "ability",
      "on": "machine",
      "stacks": "Yes: one for each attack that killed",
      "lasts": "The fight"
@@ -1936,7 +1936,7 @@
      "kind": "buff",
      "on": "foe",
      "stacks": "Yes: the foe's rage a non-weapon spend",
-     "lasts": "The fight; a Purge clears the stacks"
+     "lasts": "The fight; a Purge lowers the stacks, and the rage, the Nob's Ability, goes on"
     }
    }
   },
@@ -1944,15 +1944,15 @@
    "id": "golden",
    "category": "status",
    "name": "Golden",
-   "codex": "Foe status, from a golden rage (the Thunder Ape's). Its blows hit its rage's value harder and it wears a point of armour for the rounds its rage says, its chip counting them down with the damage that breaks it. A quarter of its HP lost since it went gold breaks the rage and it staggers: the gold goes and it loses its next action. A Suppress breaks it too; a Purge strips it. Calm again, it may go gold again.",
+   "codex": "Foe ability, from a golden rage (the Thunder Ape's). Its blows hit its rage's value harder and it wears a point of armour for the rounds its rage says, its chip counting them down with the damage that breaks it. A quarter of its HP lost since it went gold breaks the rage and it staggers: the gold goes and it loses its next action. A Suppress breaks it too; no Purge strips it, an Ability. Calm again, it may go gold again.",
    "status": "implemented",
    "design": {
     "holes": "Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage \"is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing\"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.",
     "table": {
-     "kind": "buff",
+     "kind": "ability",
      "on": "foe",
      "stacks": "No: one rage at a time",
-     "lasts": "The rage's rounds; a quarter of its HP lost since, a Suppress or a Purge ends it early"
+     "lasts": "The rage's rounds; a quarter of its HP lost since or a Suppress ends it early"
     }
    }
   },
@@ -2024,16 +2024,26 @@
    "id": "guarded",
    "category": "status",
    "name": "Guarded",
-   "codex": "Foe status, a core's. It takes no damage while its parts stand: all of them, or any, by the foe.",
+   "codex": "Foe ability, a core's. It takes no damage while its parts stand, all of them or any, by the foe, its Burning and Vitriol included. No Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "",
     "table": {
-     "kind": "buff",
+     "kind": "ability",
      "on": "foe",
      "stacks": "No",
      "lasts": "While its parts stand"
     }
+   }
+  },
+  {
+   "id": "ability",
+   "category": "status",
+   "name": "Ability",
+   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Armadillo's seal, the Honey Badger's Ore Plate, the Kite's Hot Streak.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 8 November, of the Nob's rage: \"Nob, and any other enemies with a passive ability, should have an unpurgable passive chip that points out what's going on. Plus, that's how slay the Spire works, where he comes from. It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged. Can use this for player units as well, like the armadillo's form. Golden rage should be an ability chip too.\" The tile is a placeholder look, to judge on the phone (RIFTGATE_ABILITY_DEBUG=1)."
    }
   },
   {

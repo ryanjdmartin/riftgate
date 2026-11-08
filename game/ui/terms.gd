@@ -53,6 +53,7 @@ const TABLE := {
 	"exposure": ["exposed", "harm"], "destroyed_component": ["crack", "harm"],
 	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "disabled": ["blank", "enemy"], "silenced": ["silence", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
+	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
 	"rallied": ["reroll", "plain"], "quick_turned": ["rapid", "plain"],
 	# A foe's moves: the keywords they carry, the list's last heading. A foe-side word without a row
 	# here (its aim, its menace, the seal) is the engine's and stays out of the list.

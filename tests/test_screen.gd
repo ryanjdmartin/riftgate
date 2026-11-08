@@ -1368,32 +1368,48 @@ func test_a_foe_that_comes_back_wears_its_return_in_place_of_the_skull() -> void
 	s.free()
 
 
-## A buff a purge put to sleep (28 October) wears its chip asleep on the machine, its hold line
-## saying so, until the player's turn wakes it; the machine's view carries each row's style, so
-## a chip on its way pulses there as on a foe.
-func test_a_buff_a_purge_put_to_sleep_wears_its_chip_asleep() -> void:
+## Abilities (Ryan, 8 November: "Nob, and any other enemies with a passive ability, should have an
+## unpurgable passive chip that points out what's going on ... It's not a Buff, it's not a Debuff,
+## it's labelled as an Ability, so it doesn't get purged"; "Can use this for player units as well,
+## like the armadillo's form"): each its glyph on a solid tile, ahead of the statuses, its hold
+## line naming it an Ability; a Purge takes the buffs and leaves them.
+func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	var db := ContentDB.load_default()
-	var sk := Skirmish.new(1)
+	var sk := Skirmish.new(1, 4)
 	var m := db.make_mech("badger")
 	m.die = Die.single(Face.blank())
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("revenant", 300, 1)])
+	var nob := db.make_foe("goblin_nob")
+	var gel := Foe.make("gel", 30, 1)
+	gel.on_death = {"summon": "gel_half", "count": 2, "pair": true}
+	var beast := Foe.make("behemoth", 30, 5)
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
+	sk.add_foes([nob, gel, beast])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
-	var seal := Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
-	var r := Effects.purge(m)
-	assert_eq(r["slept"], ["Sealed"], "the seal sleeps")
+	Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	Effects.grant_buff(m, "overcharged", 2, "buff:overcharge_coil", sk.round)
+	Effects.stack(nob, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:goblin_nob", 2, Effects.DECAY_NONE)
 	s._refresh()
-	var rows: Array = s._mech_rows(0).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "asleep")
-	assert_eq(rows.size(), 1, "one chip asleep")
-	if rows.size() == 1:
-		assert_true(str(rows[0][2]).contains("asleep until your turn"), "its hold line says so")
-	var kinds: Array = s._mech_views[0].statuses.map(func(st) -> String: return str(st[3]) if st.size() >= 4 else "")
-	assert_true(kinds.has("asleep"), "and the machine's view draws it asleep")
-	Effects.wake(m)
+	var ability := func(rows: Array) -> Array:
+		return rows.filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "ability")
+	var mine: Array = ability.call(s._mech_rows(0))
+	assert_eq(mine.size(), 1, "the seal, the machine's form, is an ability")
+	if mine.size() == 1:
+		assert_true(str(mine[0][2]).begins_with("Ability, Sealed"), "its hold line names it an Ability")
+	assert_true(s._mech_views[0].statuses.any(func(st) -> bool: return st.size() >= 4 and str(st[3]) == "ability"), "and the machine's view draws it on its tile")
+	assert_eq(ability.call(s._foe_rows(nob)).size(), 1, "the Nob's rage is its ability")
+	assert_true(str(ability.call(s._foe_rows(nob))[0][2]).contains("Enraged +1"), "which says what goes on")
+	assert_true(s._foe_rows(nob).any(func(row) -> bool: return str(row[2]) == "Enraged +2" and (row.size() < 5 or str(row[4]) != "ability")), "and what it has gathered is a buff's chip beside it")
+	assert_true(str(ability.call(s._foe_rows(gel))[0][2]).contains("splits"), "a Gel's split is its ability")
+	assert_true(str(ability.call(s._foe_rows(beast))[0][2]).contains("Last Act: Meteor"), "a last act is the Behemoth's")
+	Effects.purge(m, 9)
+	Effects.purge(nob, 9)
+	assert_true(Effects.is_sealed(m), "a Purge leaves the seal")
+	assert_false(Effects.has(m, "overcharged"), "and takes the buff")
+	assert_eq([nob.rage, Effects.stacks_of(nob, "enraged")], [1, 0], "the rage stays, what it gathered goes")
 	s._refresh()
-	assert_true(s._mech_rows(0).all(func(row) -> bool: return row.size() < 5 or str(row[4]) != "asleep"), "awake, it is a plain chip again")
-	assert_true(seal != null, "the seal was granted")
+	assert_eq(ability.call(s._foe_rows(nob)).size(), 1, "its chip still there")
 	s.free()
 
 

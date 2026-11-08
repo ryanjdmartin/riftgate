@@ -56,7 +56,7 @@ var intent_riders: Array = []
 var chip_wrap := 0.0              # the widest a row of chips runs before the next row starts; 0, the view's width
 var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "preview" a buff on its way (a rally's Empowered), pulsing, "asleep" a buff a purge put to sleep, still at half light
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "preview" a buff on its way (a rally's Empowered), pulsing, "ability" the unit's own mechanic, its glyph on a solid tile
 var highlight: bool = false       # valid drop target while dragging a die
 ## The foe acting in the enemy's turn, lit from just before its move until the next acts (Ryan, 2
 ## November: "enemies need to highlight during their attacks, starting right before"): a glow in
@@ -729,12 +729,13 @@ static func chip_width(mono: Font, ch: Array) -> float:
 
 
 ## One chip in `rect` on `ci` (the field's views, a readout's mark): its frame by its kind (a
-## coming status's dashed pulse, a buff asleep's dashed half light, a status's box), its glyph,
-## its text (`txt`, or its own), then each rider after a divider, its mark and its number in its
-## own colour.
+## coming status's dashed pulse, an ability's solid tile, a status's box), its glyph, its text
+## (`txt`, or its own), then each rider after a divider, its mark and its number in its own
+## colour.
 static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> void:
 	var col: Color = ch[2]
 	var kind := str(ch[3]) if ch.size() > 3 else "status"
+	var glyph_col := col
 	if kind == "preview":
 		# A buff on its way (a rally's Empowered, Ryan, 26 October: "a pulsing version of the
 		# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
@@ -745,17 +746,23 @@ static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = 
 		Hud.fill_poly(ci, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
 		col = Color(col, 0.3 + 0.7 * beat)
 		dashed_rect(ci, rect, col, 2.0)
-	elif kind == "asleep":
-		# A buff a purge put to sleep (28 October): half its light on a dashed edge, still, so
-		# "asleep" reads by structure and by standing still beside the preview's pulse, never
-		# by hue (placeholders, judged running: RIFTGATE_SLEEP_DEBUG=1).
-		Hud.fill_poly(ci, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-		col = Color(col, 0.5)
-		dashed_rect(ci, rect, col, 2.0)
+	elif kind == "ability":
+		# An ability (Ryan, 8 November: "It's not a Buff, it's not a Debuff, it's labelled as an
+		# Ability, so it doesn't get purged"): the unit's own mechanic, its glyph cut out of a
+		# solid tile in its colour inside the chip's heavier box, so it reads by structure, never
+		# by hue, as the rule the unit plays by (placeholders to judge on the phone).
+		Hud.box(ci, rect, 4.0, Color(Palette.BG, 0.94), col, 2.0)
+		var p := rect.position
+		var tile_end := minf(rect.end.x, p.x + CHIP_H)
+		var tile := PackedVector2Array([Vector2(p.x + 4.0, p.y), Vector2(tile_end, p.y), Vector2(tile_end, rect.end.y), Vector2(p.x, rect.end.y), Vector2(p.x, p.y + 4.0)])
+		if tile_end >= rect.end.x:
+			tile = Hud.cut(rect, 4.0)
+		Hud.fill_poly(ci, tile, col)
+		glyph_col = Palette.BG
 	else:
 		Hud.box(ci, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
 	var cy := rect.get_center().y
-	Glyphs.draw(ci, str(ch[0]), Vector2(rect.position.x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
+	Glyphs.draw(ci, str(ch[0]), Vector2(rect.position.x + CHIP_H * 0.5, cy), CHIP_GLYPH, glyph_col if kind != "preview" else col, 2.0)
 	var text := str(ch[1]) if txt == null else str(txt)
 	var x := rect.position.x + CHIP_H - 2.0
 	if not text.is_empty():

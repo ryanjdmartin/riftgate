@@ -157,7 +157,7 @@ const STATUS := {
 	# A core whose parts stand takes nothing (the boss in parts, 15 October): the skirmish grants
 	# and lifts it as its parts fall and grow back, so every number reads it, the die's too.
 	"guarded": {"id": "guarded", "name": "Guarded", "description": "Takes no damage while its parts stand.", "stacking": "renew",
-		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
+		"tags": ["ability", "guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
 	# Shocked (Ryan, 29 October): only a weapon's strike aimed at the foe reads it (aimed_only), so a
 	# blow that merely reaches it, an area's, a Chain's arc or a spill, neither doubles nor spends it.
 	"shocked": {"id": "shocked", "name": "Shocked", "description": "When a weapon's strike aimed at it lands, the blow deals double and the shock is spent; a blow that only reaches it neither doubles nor spends it.", "stacking": "renew",
@@ -216,24 +216,25 @@ const STATUS := {
 	# (Ryan, 26 October), as Empowered is on the machines' side. Each grant is its own, its
 	# rally's value; the 2 here is only the default a bare grant would carry.
 	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its blows hit +1 harder a stack. Halves at the end of each round, rounded down.", "decay": "half",
-		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
+		"tags": ["buff", "rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	# Enraged (3 November, the Goblin Nob's): a stack for every shield, vent or equipment entry
 	# the team spends while the foe stands and rages (Foe.rage, its own from the fight's start
 	# since 8 November), a point of attack a stack for the rest of the fight, never spent by a
-	# move, so the chip climbs as the player plays safe; the player's Purge clears the stacks
-	# (FOE_PURGED) and the rage goes on.
+	# move, so the chip climbs as the player plays safe; a Purge lowers the stacks, a buff's, and
+	# the rage goes on, the Nob's ability (its chip on a solid tile, never purged: 8 November).
 	"enraged": {"id": "enraged", "name": "Enraged", "description": "Its blows hit {value} harder for the rest of the fight: a stack for every shield, vent or equipment entry the team has spent while it stands.", "decay": "none",
-		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
+		"tags": ["buff", "rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	# Golden (4 November, Ryan's read of Rajang: the golden rage "is a mode, not an attack ... a
 	# cycle that forces the player into a cycle of attack and defense, broken by a bold player
 	# with great timing"): a timed grant, its blows harder and a point of plate for the rounds its
 	# move says; a quarter of its HP lost since it went gold, or a Suppress, breaks it and it
-	# staggers (Skirmish._break_golden, _stagger); the player's Purge strips it (FOE_PURGED). Its
-	# add is the move's value (golden()); one rage at a time (renew), the next once it is calm.
+	# staggers (Skirmish._break_golden, _stagger). An ability, never a buff (Ryan, 8 November:
+	# "Golden rage should be an ability chip too"), so no Purge strips it. Its add is the move's
+	# value (golden()); one rage at a time (renew), the next once it is calm.
 	"golden": {"id": "golden", "name": "Golden", "description": "Its blows hit {value} harder and it wears a point of armour until its rage ends; a quarter of its HP lost since it went gold, or a Suppress, breaks it, and it staggers.", "stacking": "renew", "decay": "none",
-		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}, {"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
+		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}, {"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	"risen": {"id": "risen", "name": "Undying", "description": "Returns from the pool once after dying.", "stacking": "renew",
-		"tags": ["revive"], "effects": []},
+		"tags": ["buff", "revive"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
 	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
 	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads
@@ -242,10 +243,10 @@ const STATUS := {
 	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
 		"tags": ["store"], "effects": []},
 	# What the hopper's loads are worth (Ryan, 21 October: "Each one grants armour, displayed as a
-	# buff"; 31 October, a point a load): the first buff a store grants, its stacks kept at the
-	# loads' worth (sync_plate), so a purge puts it to sleep a turn while the loads stay.
+	# buff"; 31 October, a point a load): its stacks kept at the loads' worth (sync_plate); the
+	# hopper's own, an ability since 8 November, so no purge touches it, as none touches the loads.
 	"ore_plate": {"id": "ore_plate", "name": "Ore Plate", "description": "Armour +1 a stack: what the loads in its hopper are worth, while it holds them.", "decay": "none",
-		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
+		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Armadillo's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
 	# framework): a shield it spends on itself seals it, a vent or a weapon opens it.
 	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
@@ -253,7 +254,7 @@ const STATUS := {
 	# to the mode). Its own cooling stops and it runs hotter at the end of each turn
 	# (Skirmish); an ally's vent still cools it (Ryan, 20 October: allowed).
 	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A vent or a weapon opens it.", "decay": "none", "stacking": "renew",
-		"tags": ["buff", "form"], "effects": []},
+		"tags": ["ability", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Armadillo's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
 	# machine's hit on it with a weapon spends every stack and cools the hitter so much a stack,
@@ -331,7 +332,7 @@ const STATUS := {
 	# never a wall; a stack an action left, three from the grant, each grant its own clock
 	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield, built
 	# 30 October) is regenerating_shield's: shield at each round's start, a timed grant of its own.
-	# A buff the player's Purge takes, and the enemy's a bought one.
+	# A buff a Purge lowers, on either side.
 	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Burning and Vitriol; a stack an action left.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
@@ -341,7 +342,7 @@ const STATUS := {
 	# The passive's own price, so neither a buff nor a store (no silence or purge lifts it) and no
 	# cleanse takes it; it lasts the fight.
 	"hot_streak": {"id": "hot_streak", "name": "Hot Streak", "description": "Its shots run {value} hotter a stack this fight: a stack for each attack that killed.", "decay": "none",
-		"tags": ["tax"], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
+		"tags": ["ability", "tax"], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
@@ -504,30 +505,9 @@ class Modifier:
 	var seq: int = 0               # grant order, for override ties
 	var stacks: int = 1
 	var decay: int = DECAY_NONE
-	var slept: bool = false        # put to sleep by a purge (28 October): it takes part in nothing, its clocks running, until the player's turn wakes it
 
 	func matches(key: String) -> bool:
 		return id == key or tags.has(key)
-
-	## `n` of its stacks as a grant of their own, the same in every other way (its clocks, its
-	## source, its place in the grant order): what a Purge N puts to sleep (the audit's fifth
-	## bug, 8 November: the part asleep keeps its clock, since every clock reads every modifier).
-	func split_off(n: int) -> Modifier:
-		var c := Modifier.new()
-		c.id = id
-		c.name = name
-		c.description = description
-		c.source = source
-		c.component = component
-		c.scope = scope
-		c.expires_round = expires_round
-		c.tags = tags.duplicate()
-		c.effects = effects
-		c.seq = seq
-		c.decay = decay
-		c.stacks = n
-		stacks -= n
-		return c
 
 
 ## A description's {value} filled from the number its first effect carries (the stock pass,
@@ -586,7 +566,7 @@ static func _record(u, m: Modifier, n: int) -> void:
 static func grant_for_rounds(u, passive: Dictionary, source: String, round: int) -> Modifier:
 	if turns_mark(u, str(passive.get("id", ""))):
 		return null   # a foe's Ward turns the team's mark away (28 October)
-	var held := _held(u, passive, ROUNDS, 1, round, source)
+	var held := _held(u, passive, ROUNDS, 1, round)
 	if held != null:
 		return held
 	var m := make(passive, ROUNDS, source)
@@ -603,12 +583,12 @@ static func status_stacking(def: Dictionary) -> String:
 ## The grant a second one of `passive` renews, or null when the status adds (and the caller
 ## grants as usual). A renewal takes the later end of two timed grants and the larger count,
 ## never a second stack.
-static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int, source: String) -> Modifier:
+static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int) -> Modifier:
 	if status_stacking(passive) != "renew":
 		return null
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
-		if m.id != id or source_class(m.source) != source_class(source):
+		if m.id != id:
 			continue
 		if m.scope == ROUNDS and scope == ROUNDS:
 			m.expires_round = maxi(m.expires_round, expires_round)
@@ -626,9 +606,8 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 ## that renews (its "stacking") is one grant however often it is granted. A machine that
 ## keeps the status (keep_status, the Ammit's Quintessence Tap) keeps every grant of it for
 ## the battle, whatever granted it (Ryan, 18 October: "that's the rules text, it doesn't care
-## where it came from"): the grant's own scope and decay give way. Grants of one status stack
-## up only within one source class (source_class), so a Purge reads each by its own (the audit's
-## sixth bug, 8 November).
+## where it came from"): the grant's own scope and decay give way. Whatever granted a stack, it
+## is a stack (Ryan, 8 November: "A stack is a stack, doesn't matter where it came from").
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
 	if turns_mark(u, str(passive.get("id", ""))):
 		return null   # a foe's Ward turns the team's mark away (28 October)
@@ -636,12 +615,12 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 		scope = BATTLE
 		decay = DECAY_NONE
 		expires_round = -1
-	var held := _held(u, passive, scope, n, expires_round, source)
+	var held := _held(u, passive, scope, n, expires_round)
 	if held != null:
 		return held
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
-		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round) and source_class(m.source) == source_class(source):
+		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round):
 			m.stacks += n
 			_record(u, m, n)
 			return m
@@ -834,8 +813,6 @@ static func turn_tick(u) -> Dictionary:
 ## Empowered's clock, 21 October).
 static func tick(u, halving: bool = true) -> Dictionary:
 	var out := tick_preview(u)
-	if halving:
-		_halve_as_one(u)
 	var keep: Array = []
 	for m in u.modifiers:
 		if m.decay == DECAY_ROUND:
@@ -844,54 +821,27 @@ static func tick(u, halving: bool = true) -> Dictionary:
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
-		elif m.decay == DECAY_HALF and m.stacks <= 0:
-			continue
+		elif m.decay == DECAY_HALF and halving:
+			# Rounded down, so it reaches zero on its own (one stack halves to none). Its grants
+			# are one modifier, whatever granted each stack (stack), so it halves as one number.
+			m.stacks = int(m.stacks / 2.0)
+			if m.stacks <= 0:
+				continue
 		keep.append(m)
 	u.modifiers = keep
 	return out
-
-
-## Every halving status halves as one number, whatever granted it (Ryan, 17 and 18 October:
-## Empowered "halves at the end of each round, rounded down, whatever granted it"), rounded down
-## so it reaches zero on its own: its grants, kept apart by source for a Purge (source_class),
-## asleep or awake, each halve, and the odd stacks the whole would keep go back to the oldest of
-## them. A grant left at nothing is dropped by the caller.
-static func _halve_as_one(u) -> void:
-	var groups := {}
-	for m in u.modifiers:
-		if m.decay == DECAY_HALF:
-			if not groups.has(m.id):
-				groups[m.id] = []
-			(groups[m.id] as Array).append(m)
-	for id in groups.keys():
-		var mods: Array = groups[id]
-		var total := 0
-		for m in mods:
-			total += m.stacks
-		var left := int(total / 2.0)
-		mods.sort_custom(func(a, b) -> bool: return a.seq < b.seq)
-		var odd: Array = []
-		for m in mods:
-			if m.stacks % 2 == 1:
-				odd.append(m)
-			m.stacks = int(m.stacks / 2.0)
-			left -= m.stacks
-		for m in odd:
-			if left <= 0:
-				break
-			m.stacks += 1
-			left -= 1
 
 
 ## The round's end for a foe (Flak, 21 October: it halves at the end of each round, rounded
 ## down, Empowered's clock): every halving status halves and the empty ones go. Its other
 ## statuses tick at its action (tick).
 static func halve(u) -> void:
-	_halve_as_one(u)
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_HALF and m.stacks <= 0:
-			continue
+		if m.decay == DECAY_HALF:
+			m.stacks = int(m.stacks / 2.0)
+			if m.stacks <= 0:
+				continue
 		keep.append(m)
 	u.modifiers = keep
 
@@ -935,10 +885,7 @@ static func end_battle(u) -> void:
 ## Live modifiers after suppression, shortest scope first, latest granted first within a
 ## scope: the order overrides are resolved in.
 static func live(u) -> Array:
-	var all: Array = []
-	for m in u.modifiers:
-		if not m.slept:
-			all.append(m)   # a buff a purge put to sleep takes part in nothing until it wakes
+	var all: Array = u.modifiers.duplicate()
 	all.sort_custom(func(a, b) -> bool: return a.scope > b.scope or (a.scope == b.scope and a.seq > b.seq))
 	var off := {}
 	for m in all:
@@ -1507,8 +1454,6 @@ static func sealed_status(armour: int, heat: int) -> Dictionary:
 
 
 static func is_sealed(u) -> bool:
-	# The form stands while a purge sleeps its armour (28 October): its price, the cooling it
-	# stops, keeps biting, so a slept seal still reads sealed.
 	for m in u.modifiers:
 		if m.id == "sealed" and m.stacks > 0:
 			return true
@@ -1580,12 +1525,12 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 	return out
 
 
-## Every stack of a status the machine carries, live or asleep: what a cap counts.
+## Every stack of a status the machine carries: what a cap counts.
 static func banked(u, id: String) -> int:
 	var n := 0
 	for m in u.modifiers:
 		if m.id == id:
-			n += m.stacks   # a store's grant a Purge put to sleep, whole or in part, is still held (2 November)
+			n += m.stacks
 	return n
 
 
@@ -1646,9 +1591,9 @@ static func spend_loads(u, n: int) -> int:
 	return spent
 
 
-## The Ore Plate stands at what the loads held are worth: a store's grant, never bought, so a
-## purge puts it to sleep while the loads stay (Ryan's row on stores, 21 October), N stacks of
-## it a Purge N (2 November), and asleep or part asleep it keeps its stacks in step with them.
+## The Ore Plate stands at what the loads held are worth: the hopper's own, an ability, so no
+## purge touches it, as none touches the loads (Ryan's row on stores, 21 October; abilities, 8
+## November).
 static func sync_plate(u) -> void:
 	var want := hopper_plate(u)
 	var have := banked(u, "ore_plate")
@@ -1813,34 +1758,46 @@ static func purgeable(m) -> bool:
 	return m.scope != LOADOUT and m.tags.has("buff")
 
 
-## The buffs a Purge lowers on a foe (28 October; by its number since 2 November): every one it
-## carries but Guarded, its parts' lock, and its Ward, which turns the Purge away. The ids are
-## the engine's (braced is Armoured, risen Undying, kindled Empowered); the Nob's Enraged and a golden rage among them (4 November).
-const FOE_PURGED := ["braced", "kindled", "enraged", "golden", "risen", "primed", "barrier", "regenerating", "numbed"]
+## Is this status an ability (Ryan, 8 November): a unit's own mechanic, shown as its chip on a
+## solid tile, never a buff or a debuff, so nothing that strips buffs or marks reaches it (the
+## Armadillo's seal, the Ore Plate, a core's guard, a golden rage, Hot Streak).
+static func is_ability(status_id: String) -> bool:
+	return (STATUS.get(status_id, {}).get("tags", []) as Array).has("ability")
 
 
-## A Purge N on a foe (28 October; Ryan, 2 November: "lower everything by N"): every buff of
-## FOE_PURGED loses N stacks across its grants, gone at none, an unstackable one a stack of one.
-## Returns what it touched, once each, with what it left ("Armoured 1", "Barrier gone").
-static func purge_foe(u, n: int = 1) -> Array[String]:
+## A Purge N, on either side (28 October; Ryan, 2 November: "lower everything by N"; 8 November:
+## "A stack is a stack, doesn't matter where it came from"): every buff the unit carries loses N
+## stacks across its grants, in the order they were granted, gone at none, an unstackable one a
+## stack of one. An ability is no buff (the unit's own mechanic, its chip on a solid tile: Ryan, 8
+## November, "It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get
+## purged"), a store is no buff, and the stacks a keeping passive keeps stay (the Ammit's
+## Quintessence Tap). Returns what it touched, once each, with what it left ("Armoured 1",
+## "Barrier gone").
+static func purge(u, n: int = 1) -> Array[String]:
 	var touched: Array[String] = []
 	var left := {}
 	var keep: Array = []
 	for m in u.modifiers:
-		if not FOE_PURGED.has(m.id):
+		if not purgeable(m) or keeps(u, m.id):
 			keep.append(m)
 			continue
 		var take: int = mini(m.stacks, int(left.get(m.id, maxi(1, n))))
 		left[m.id] = int(left.get(m.id, maxi(1, n))) - take
+		if take <= 0:
+			keep.append(m)
+			continue
 		m.stacks -= take
+		if not touched.has(m.id):
+			touched.append(m.id)
 		if m.stacks > 0:
 			keep.append(m)
 	u.modifiers = keep
-	for id in left.keys():
+	var out: Array[String] = []
+	for id in touched:
 		var name := str(STATUS.get(id, {}).get("name", id))
 		var stacks := stacks_of(u, id)
-		touched.append(name + (" gone" if stacks <= 0 else " %d" % stacks))
-	return touched
+		out.append(name + (" gone" if stacks <= 0 else " %d" % stacks))
+	return out
 
 
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
@@ -1868,108 +1825,15 @@ static func clear_marks(u) -> Array[String]:
 	return gone
 
 
-## Was this buff bought by a die face (28 October): a buff component's spend ("buff:", or
-## "buff" for an entry with no component) or a braces rule's ("brace:")? A purge takes these for
-## good; what the machine is (a form, a passive's or a module's grant, a store's effect) it puts
-## to sleep instead.
-static func bought(m) -> bool:
-	return bought_source(m.source)
-
-
-static func bought_source(source: String) -> bool:
-	return source == "buff" or source.begins_with("buff:") or source.begins_with("brace:")
-
-
-## What a grant's source makes it, the classes a status's grants keep apart (the audit's sixth
-## bug, 8 November): "bought" by a die entry (a Purge takes it for good), "cooldown" an entry's
-## own price (a reset lifts it, a cleanse never), or "own", what the machine or the foe is.
-static func source_class(source: String) -> String:
-	if source == "cooldown":
-		return "cooldown"
-	return "bought" if bought_source(source) else "own"
-
-
-## The stacks of buffs a purge can reach on a machine: what a foe that aims at the buffed reads,
-## and what a purger's condition asks (28 October). Neither a kept one (the Ammit's Empowered,
-## its passive's own) nor one already asleep counts.
+## The stacks of buffs a purge can reach on a unit: what a foe that aims at the buffed reads,
+## and what a purger's condition asks (28 October). A kept one (the Ammit's Empowered, its
+## passive's own) counts for nothing.
 static func buff_stacks(u) -> int:
 	var n := 0
 	for m in u.modifiers:
-		if purgeable(m) and not m.slept and not keeps(u, m.id):
+		if purgeable(m) and not keeps(u, m.id):
 			n += maxi(1, m.stacks)
 	return n
-
-
-## A purge (the enemy's Purge; Ryan, 17 and 21 October; by source since 27 and 28 October):
-## every buff a die face bought goes, every stack, for good; what a store, a form or a passive
-## grants sleeps for the rest of the enemy's turn and wakes at the start of the player's turn
-## after its start resolves (wake, Skirmish.start_round); a kept one is the passive's own and
-## stays (Ryan: "overcharge never decays and cannot be purged"); the stores stay. Returns
-## {"gone": names, "slept": names}, once each.
-static func purge(u, n: int = 1) -> Dictionary:
-	var gone: Array[String] = []
-	var slept: Array[String] = []
-	var lowered: Array[String] = []
-	var keep: Array = []
-	var asleep: Array = []   # the parts a Purge N put to sleep, grants of their own
-	var left := {}   # the stacks a Purge N still takes, by status (2 November)
-	for m in u.modifiers:
-		if not purgeable(m) or m.slept or keeps(u, m.id):
-			keep.append(m)
-			continue
-		var take: int = mini(m.stacks, int(left.get(m.id, maxi(1, n))))
-		left[m.id] = int(left.get(m.id, maxi(1, n))) - take
-		if take <= 0:
-			keep.append(m)
-			continue
-		if bought(m):
-			m.stacks -= take
-			if m.stacks <= 0:
-				if not gone.has(m.name):
-					gone.append(m.name)
-				continue   # gone for good
-			if not lowered.has(m.name):
-				lowered.append(m.name)
-		elif take >= m.stacks:
-			m.slept = true   # what the machine is sleeps whole, as it stands, and wakes at the player's turn
-			if not slept.has(m.name):
-				slept.append(m.name)
-		else:
-			var part: Modifier = m.split_off(take)   # a part of it sleeps, a grant of its own whose clock runs, back when it wakes
-			part.slept = true
-			asleep.append(part)
-			if not lowered.has(m.name):
-				lowered.append(m.name)
-		keep.append(m)
-	keep.append_array(asleep)
-	u.modifiers = keep
-	return {"gone": gone, "slept": slept, "lowered": lowered}
-
-
-## Every buff a purge put to sleep wakes (the start of the player's turn, after its start has
-## resolved). Returns the names that woke, once each.
-static func wake(u) -> Array[String]:
-	var woke: Array[String] = []
-	var keep: Array = []
-	for m in u.modifiers:
-		if m.slept:
-			m.slept = false
-			if not woke.has(m.name):
-				woke.append(m.name)
-			if m.stacks <= 0:
-				continue   # its clock ran it out while it slept
-		keep.append(m)
-	u.modifiers = keep
-	return woke
-
-
-## The buffs asleep on a machine, for the chips: [name, description, stacks, id] each.
-static func asleep(u) -> Array:
-	var out: Array = []
-	for m in u.modifiers:
-		if m.slept:
-			out.append([m.name, m.description, m.stacks, m.id])
-	return out
 
 
 ## The Siphoning status with an entry's own heat a blow (the Whip Scorpion's Heliographic

@@ -3049,7 +3049,7 @@ func test_a_buffs_overcharged_and_a_kills_add_up_and_halve_as_one() -> void:
 	Effects.grant_buff(m, "overcharged", 2, "buff", sk.round)
 	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "kill", 3, Effects.DECAY_HALF)
 	assert_eq(Effects.stacks_of(m, "overcharged"), 5, "the buff's two and the kill's three together")
-	assert_eq(m.modifiers.size(), 2, "two grants, a die's and a kill's, kept apart for a Purge (the audit's sixth bug, 8 November); one status, halving as one (Ryan, 18 October: \"whatever granted it\")")
+	assert_eq(m.modifiers.size(), 1, "one grant: a halving status has no rounds to part them, and a stack is a stack whatever granted it (Ryan, 18 October and 8 November)")
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.front[0].hp, 500 - 25, "20 plus 1 a stack, five stacks")
 	sk.end_round()
@@ -7423,13 +7423,13 @@ func _purger() -> Foe:
 	return f
 
 
-## Purge (Ryan, 17 and 21 October; by source since his words of 27 and 28 October): what a die
-## face bought goes for good, every stack; what the machine is (a form, a passive's grant)
-## sleeps for the rest of the enemy's turn and wakes at the start of the player's turn after its
-## start resolves, a form's price biting meanwhile; a kept stack is its passive's own and stays,
-## drawing no purger; the stores and the passives stay; a Ward turns it away; a save in between
-## keeps the sleep.
-func test_a_purge_takes_what_a_die_face_bought_and_sleeps_what_the_machine_is() -> void:
+## Purge (Ryan, 17 and 21 October; by its number since 2 November; 8 November: "A stack is a
+## stack, doesn't matter where it came from"): a foe's Purge N takes N stacks of every buff the
+## machine carries, for good, whatever granted it, a die entry or a passive; an ability is no
+## buff (the Armadillo's seal, its form, stays and so does its armour); the stores and the
+## passives stay; a kept stack is its passive's own and stays, drawing no purger; a Ward turns it
+## away.
+func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	var sk := Skirmish.new(1, 1)
 	var u := _mech("A", Die.single(Face.attack(10, L)), 40, 200)
 	u.grant_passive({"id": "test_pass", "name": "Pass", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]})
@@ -7437,20 +7437,20 @@ func test_a_purge_takes_what_a_die_face_bought_and_sleeps_what_the_machine_is() 
 	sk.add_foes([_purger()])
 	sk.begin()
 	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff:overcharge_coil", 4, Effects.DECAY_HALF)
+	Effects.stack(u, Effects.STATUS["braced"], Effects.SKIRMISH, "passive:phase_conjugator", 2, Effects.DECAY_NONE)
 	Effects.stack(u, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
 	Effects.stack(u, Effects.STATUS["rage"], Effects.BATTLE, "mech", 2, Effects.DECAY_NONE)
 	sk.start_round()
 	sk.end_round()
 	assert_false(Effects.has(u, "overcharged"), "the Coil's Empowered is gone")
-	assert_true(Effects.asleep(u).is_empty(), "for good: nothing of it sleeps")
+	assert_false(Effects.has(u, "braced"), "and so is a passive's Armoured: a stack is a stack")
 	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "rage")], [3, 2], "the stores stay, the battle's rage too")
 	assert_eq(u.armour, 5, "the passive stays")
 	assert_eq(u.hull, 200, "no blow")
-	assert_true("\n".join(sk.log).contains("purges A ×9: Empowered gone"), "the log says what went")
+	assert_true("\n".join(sk.log).contains("purges A ×9: Empowered gone, Armoured gone"), "the log says what went")
 	sk.start_round()
-	assert_false(Effects.has(u, "overcharged"), "and nothing comes back")
-	# The seal sleeps: its armour gone for the enemy's turn, its price (the cooling it stops)
-	# biting, and back after the next round's start.
+	assert_false(Effects.has(u, "overcharged") or Effects.has(u, "braced"), "and nothing comes back")
+	# The seal is the Armadillo's form, an ability: the purge leaves it, its armour standing.
 	var s2 := Skirmish.new(1, 2)
 	var shield := Face.shield(20)
 	var m := _mech("D", Die.of([shield, Face.attack(10, L)]), 40, 200)
@@ -7468,22 +7468,9 @@ func test_a_purge_takes_what_a_die_face_bought_and_sleeps_what_the_machine_is() 
 	assert_true(Effects.is_sealed(m) and m.armour == 10, "seals it, armour 10")
 	m.shield = 0
 	s2.end_round()
-	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter at the end of its turn")
-	assert_eq(m.armour, 0, "the purge put the seal's armour to sleep")
-	assert_eq(m.hull, 200 - 12, "so the blow after it reached the hull whole")
-	assert_true(Effects.is_sealed(m), "the form stands")
-	assert_eq(Effects.asleep(m).size(), 1, "one buff asleep")
-	assert_true("\n".join(s2.log).contains("Sealed asleep until its turn"), "the log says it sleeps")
-	var saved: Skirmish = SaveGame.clone_skirmish(s2)
-	var mc: Unit = saved.mechs[0].unit
-	assert_true(Effects.is_sealed(mc) and mc.armour == 0 and Effects.asleep(mc).size() == 1, "a save in between keeps it asleep")
-	s2.start_round()
-	assert_eq(ms.heat, 15, "its cooling still stopped at the round's start: the price bites while it sleeps")
-	assert_eq(m.armour, 10, "and the armour is back once the turn's start resolves")
-	assert_true(Effects.asleep(m).is_empty(), "nothing asleep")
-	assert_true("\n".join(s2.log).contains("D's Sealed returns"), "the log says it returns")
-	saved.start_round()
-	assert_eq(mc.armour, 10, "the saved fight wakes it the same way")
+	assert_true(Effects.is_sealed(m) and m.armour == 10, "the purge left the seal and its armour")
+	assert_eq(m.hull, 200 - 2, "so the blow after it met the plate")
+	assert_true("\n".join(s2.log).contains("purges D ×9, and finds nothing to take"), "the log says the purge found no buff")
 	# A kept stack is the passive's own: it stays, and draws no purger.
 	var s3 := Skirmish.new(3, 1)
 	var keeper := _mech("K", Die.single(Face.attack(10, L)), 40, 200)
@@ -7499,7 +7486,7 @@ func test_a_purge_takes_what_a_die_face_bought_and_sleeps_what_the_machine_is() 
 	assert_eq(Effects.buff_stacks(keeper), 0, "the kept stacks count for no purger")
 	s3.start_round()
 	assert_eq(priest.target, s3.mechs[1], "it aims at the one a purge can reach")
-	assert_true(Effects.purge(keeper)["gone"].is_empty() and Effects.stacks_of(keeper, "overcharged") == 5, "and a purge on the keeper takes nothing")
+	assert_true(Effects.purge(keeper).is_empty() and Effects.stacks_of(keeper, "overcharged") == 5, "and a purge on the keeper takes nothing")
 	# A Ward turns it away.
 	var s4 := Skirmish.new(1, 1)
 	var w := _mech("W", Die.single(Face.attack(10, L)), 40, 200)
@@ -7596,9 +7583,9 @@ func test_a_foes_barrier_takes_the_next_weapon_blow_and_lasts_to_the_players_tur
 ## itself included; no mark the team lays lands (Burning, Flak, Shock, the Paradox), Suppressed
 ## excepted, since Numbed stays the one stun resistance; the damage lands; the spend tells it
 ## once; a passive's lay is turned too; it goes at the end of the player's next turn.
-## A foe's Purge N on a machine (2 November): what a die face bought loses N stacks for good,
-## what the machine is sleeps N stacks until the player's turn, and wakes whole.
-func test_a_foes_purge_n_lowers_a_bought_buff_and_sleeps_part_of_a_granted_one() -> void:
+## A foe's Purge N on a machine (2 November; 8 November: "A stack is a stack, doesn't matter where
+## it came from"): every buff loses N stacks for good, whatever granted it.
+func test_a_foes_purge_n_lowers_every_buff_by_n_whatever_granted_it() -> void:
 	var sk := Skirmish.new(1, 1)
 	var u := _mech("A", Die.single(Face.attack(10, L)), 40, 200)
 	sk.add_mech(u)
@@ -7611,11 +7598,10 @@ func test_a_foes_purge_n_lowers_a_bought_buff_and_sleeps_part_of_a_granted_one()
 	Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
 	sk.start_round()
 	sk.end_round()
-	assert_eq(Effects.stacks_of(u, "overcharged"), 2, "the bought Empowered loses two for good")
-	assert_eq(Effects.stacks_of(u, "primed"), 1, "the granted Primed sleeps two")
-	assert_true("\n".join(sk.log).contains("purges A ×2: Empowered, Primed lowered"), "the log says what it lowered: %s" % sk.log.back())
+	assert_eq([Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "primed")], [2, 1], "each loses two")
+	assert_true("\n".join(sk.log).contains("purges A ×2: Empowered 2, Primed 1"), "the log says what it left: %s" % sk.log.back())
 	sk.start_round()
-	assert_eq([Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "primed")], [2, 3], "at the player's turn the slept stacks wake and the bought ones stay gone")
+	assert_eq([Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "primed")], [2, 1], "and nothing comes back at the player's turn")
 
 
 func test_a_foes_ward_turns_the_teams_marks_away_and_the_stun_with_them() -> void:
@@ -7790,26 +7776,27 @@ func test_a_players_purge_lowers_every_buff_a_foe_carries_by_its_number_but_guar
 	act.call(g, "prime", "buff", 2)
 	act.call(g, "rally", "buff", 3)
 	caster.rage = 1   # the Nob's rage (3 November; its own since 8 November): the stacks the team's safe spends feed, laid here by hand
-	act.call(caster, "golden", "buff", 2)   # a golden rage (4 November): the mode a Purge strips
+	act.call(caster, "golden", "buff", 2)   # a golden rage (4 November): an ability since 8 November, no Purge's
 	Effects.stack(caster, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:caster", 2, Effects.DECAY_NONE)
 	Effects.stack(caster, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	Effects.stack(caster, Effects.STATUS["guarded"], Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_NONE)
-	for id in Effects.FOE_PURGED:
+	var buffs := ["braced", "kindled", "enraged", "risen", "primed", "barrier", "regenerating", "numbed"]
+	for id in buffs:
 		assert_true(Effects.has(caster, id), "the caster carries %s" % id)
 	assert_true(Effects.has(caster, "ward"), "and the Ward the hallow laid on every foe")
 	assert_true(sk.assign(0, caster), "a Purge of equipment at a Warded foe")
-	for id in Effects.FOE_PURGED:
+	for id in buffs:
 		assert_true(Effects.has(caster, id), "%s stands: the Ward turns the Purge away" % id)
 	assert_true(Effects.has(caster, "ward"), "and the Ward stands")
 	assert_true("\n".join(sk.log).contains("Ward turns away Purge"), "the spend says so: %s" % sk.log.back())
 	Effects.remove(caster, "ward")
 	sk.mechs[0].assigned = false
 	assert_true(sk.assign(0, caster), "a Purge 9 of equipment, the Ward gone")
-	for id in Effects.FOE_PURGED:
+	for id in buffs:
 		assert_false(Effects.has(caster, id), "%s gone" % id)
-	assert_eq(caster.rage, 1, "the rage itself goes on; only what it gathered is purged")
+	assert_eq(caster.rage, 1, "the rage itself goes on, the Nob's ability; only what it gathered is purged")
 	assert_false(Effects.has(caster, "numbed"), "Numbed goes with them: a buff since 2 November")
-	assert_true(Effects.has(caster, "guarded"), "and Guarded stays: its parts' lock")
+	assert_true(Effects.has(caster, "guarded") and Effects.has(caster, "golden"), "and the abilities stay, Guarded and the golden rage (8 November)")
 	assert_true("\n".join(sk.log).contains("A purges"), "the log says what went")
 	# A weapon's Purge: the blow first, so the Barrier takes it, then the rest goes.
 	Effects.remove(g, "ward")

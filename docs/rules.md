@@ -414,8 +414,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
   machine), since the pick it carried was never shown. Disrupt resolves before Lure.
 - **Purge N** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter, Purge 2): every
-  foe the entry reaches loses N stacks of every buff it carries but Guarded (Armoured, Empowered, Enraged,
-  Golden, Undying, Primed, Barrier, Regenerating, Numbed; an unstackable buff is one stack), after
+  foe the entry reaches loses N stacks of every buff it carries (Armoured, Empowered, Enraged,
+  Undying, Primed, Barrier, Regenerating, Numbed; an unstackable buff is one stack; its
+  Abilities, a core's guard and a golden rage among them, are no buffs and stay), after
   the blow and with the riders, a debuff's included, so a foe the blow kills stays down and a
   Barrier the blow pops is gone already; a Ward turns it away and stands; a laid shot purges the
   foe it lands on.
@@ -528,15 +529,15 @@ weapons wears the star, the die's readout reading the passive's line, and no key
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
 and never a buff: each shows as a bar under the heat, boxes or a smooth fill in segments by how
-it fills, and no Silence or Purge touches it, its filling or its use. An active effect a store,
-a form or a passive grants is a buff and shows as one: no Silence touches it, and a Purge puts
-it to sleep until the start of the player's turn, after the turn's start resolves (the cooling,
-the roll and the round-start passives), and before the foes draw, since its source grants it
-again; asleep it takes part in nothing, its clocks running, and its chip shows half lit on a
-dashed edge. A form's price keeps biting while it sleeps: the Armadillo's seal sleeps its
-armour, and its cooling stays stopped. The hopper's loads grant the Ore Plate, the one store
-grant: a purge sleeps the plate and leaves the loads, and a load filled or fired while it
-sleeps keeps it in step.
+it fills, and no Silence or Purge touches it, its filling or its use. An **Ability** is a
+unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge, Silence
+or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
+other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
+Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
+lasts. A machine's: the Armadillo's seal (its form), the Ore Plate (what the hopper's loads
+are worth) and the Kite's Hot Streak. What an ability or a passive grants beyond itself is a
+buff like any (the Nob's gathered Enraged, a module's Empowered or Armoured): a stack is a
+stack, whatever granted it.
 
 On a machine:
 - **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
@@ -546,7 +547,7 @@ On a machine:
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
-- **Ore Plate** (buff, the Honey Badger's): armour +1 a stack, what the loads in its hopper
+- **Ore Plate** (Ability, the Honey Badger's): armour +1 a stack, what the loads in its hopper
   are worth (a point for every two loads), standing while they are held and going as they are fired.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
   target, a sweep's on each shot's own foe, a blow that kills on the foe it felled, a shot at a
@@ -595,7 +596,7 @@ On a machine:
   foe's included), so a foe its tick kills regrows nothing; each grant keeps its own clock. A
   machine's (the Storm Petrel's St. Elmo's Regenerator): 2 shield at the start of each of the
   next three rounds, up to its maximum; it stacks, each grant keeping its own end, and a die
-  entry bought it, so an enemy's purge takes it.
+  entry granted it, a buff, so an enemy's purge takes it.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
   the round's end. Never granted to every ally at once. The Blast Door grants it, self or ally.
@@ -620,7 +621,7 @@ On a machine:
   the hopper spends them. A mine laid with the loads' bonus loads nothing when it goes off
   later. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
   under the heat, one lit a load.
-- **Sealed** (buff, the Armadillo's form): a shield it spends on itself seals it: armour +3,
+- **Sealed** (Ability, the Armadillo's form): a shield it spends on itself seals it: armour +3,
   its own cooling stopped, 3 heat more at the end of each turn before the overheat; a vent or
   a weapon opens it; a shield on an ally and equipment leave the form as it is. An entry that
   is a shield and a vent at once (a vent that shields, a shield that cools) does the one the
@@ -643,16 +644,11 @@ On a machine:
   Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count,
   its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally, Every
   Other Ally). Cleansable, an ally's Cleanse the way; a Ward turns
-  the silence away. A foe's purge is Purge N too: N stacks off every buff an entry's spend
-  bought, for good, and N of what a store, a form or a passive grants asleep for the rest of the
-  enemy's turn, back at the start of the player's turn after its start resolves; the stores
-  stay, and the Ammit's kept Empowered is its passive's own and stays; a Ward turns it away
-  too. An entry's spend bought it when a buff component's spend or a braces rule granted it;
-  what was bought and what was granted stay apart on a machine carrying both, so the Purge
-  reads each by its own, and the stacks it puts to sleep keep their clock while they sleep (a
-  halving buff's halve with the rest, one number to its clock whatever granted each stack).
-- **Hot Streak** (the Kite's, its passive's price): its shots run 1 hotter a stack this fight,
-  a stack for each attack that killed; no cleanse, silence or purge lifts it.
+  the silence away. A foe's purge is Purge N too: N stacks off every buff the machine carries,
+  for good, whatever granted it (a stack is a stack); its Abilities and its stores stay, and so
+  does the Ammit's kept Empowered, its passive's own; a Ward turns it away too.
+- **Hot Streak** (Ability, the Kite's, its passive's price): its shots run 1 hotter a stack this
+  fight, a stack for each attack that killed; no cleanse, silence or purge lifts it.
 
 On a foe:
 - **Burning** (debuff): 1 damage a stack at the start of its action, past armour, then a
@@ -712,13 +708,14 @@ On a foe:
   before the entry acts, and each stack is a point on every blow it lands for the rest of the
   fight, an add before the factor; a weapon or a blank feeds nothing, and no move spends it.
   Its chip climbs with the stacks, so the number an intent shows is the number that lands. A
-  Purge lowers the stacks by its number and the rage goes on.
-- **Golden** (buff, a golden rage: the Thunder Ape's): for the rounds its move says its blows
+  Purge lowers the stacks by its number and the rage goes on: the rage is the Nob's Ability,
+  its chip the rule (Enrage), and what it has gathered a buff.
+- **Golden** (Ability, a golden rage: the Thunder Ape's): for the rounds its move says its blows
   hit the move's value harder, an add before the factor, and it wears a point of armour. A
   quarter of its HP lost since it went gold breaks it and it staggers: the gold goes and it
   loses its next action (never Numbed: a stagger is no stun piece's, and one already
   suppressed loses nothing more). A Suppress that lands breaks it too, one a Numbed stack
-  absorbs does not; a Purge strips it. Its chip counts
+  absorbs does not; no Purge strips it, an Ability. Its chip counts
   the rounds left and the damage that breaks it. It goes gold only while calm (the `calm`
   condition: not gold), so one rage at a time.
 - **Undying** (buff, Reraise, on itself or from an ally's): after it falls it gets
@@ -872,9 +869,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   summon,
   rally (Empowered at its value on every other foe on the field, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, burn (stacks of Burning on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
-  disable, silence (Silenced), purge (Purge N: N stacks off every buff an entry's spend bought, for good, and off what a
-  store's, a form's or a passive's grant until the start of the player's turn; the Djinn's Unmake
-  at 1; never a last act's), cleanse
+  disable, silence (Silenced), purge (Purge N: N stacks off every buff, for good, whatever
+  granted it; the Djinn's Unmake at 1; never a last act's), cleanse
   (every mark the team laid, Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox
   and the Drone, off the most-marked of its own, itself included, the first in strike order on
   a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
@@ -892,7 +888,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   riders, every machine included), before anything else and even when it was the last foe,
   since damage sticks for the battle.
 - **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
-  core from taking any damage while all its parts stand, or while any does (Guarded), its
+  core from taking any damage while all its parts stand, or while any does (Guarded, an Ability), its
   Burning and Vitriol included, whose stacks fade all the same; a part
   that falls may grow back after so many rounds while the core stands; a core that falls takes
   its parts with it.

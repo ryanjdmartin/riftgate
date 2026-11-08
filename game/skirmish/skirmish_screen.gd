@@ -115,9 +115,9 @@ static var BLAST_DEBUG := OS.get_environment("RIFTGATE_BLAST_DEBUG") == "1"
 ## RIFTGATE_PREVIEW_DEBUG=1: every foe showing a blow wears the pulsing preview chip of a rally on
 ## its way (+1 where none is coming, its number unchanged), to judge the pulse running.
 static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
-## RIFTGATE_SLEEP_DEBUG=1: every buff on a machine is drawn as a purge leaves it asleep (half its
-## light on a dashed edge, still), to judge the look running (28 October; placeholders).
-static var SLEEP_DEBUG := OS.get_environment("RIFTGATE_SLEEP_DEBUG") == "1"
+## RIFTGATE_ABILITY_DEBUG=1: every foe and machine wears an ability's chip (its glyph on a solid
+## tile, 8 November), to judge the look on the phone beside the buffs and debuffs.
+static var ABILITY_DEBUG := OS.get_environment("RIFTGATE_ABILITY_DEBUG") == "1"
 ## RIFTGATE_HIT_DEBUG=1: every second and a half a machine takes a blow, in turn a hull hit from the
 ## left, a blow its shield takes, a blow its armour turns and a hull hit from the right, and every
 ## fifth beat one is lost and comes back, to judge the hit reactions running (3 November).
@@ -1588,6 +1588,37 @@ func _mine_text(rank: int, col: int, shots: Array) -> String:
 	return text + "\nwhoever steps in takes them all in laid order, before it acts"
 
 
+## A foe's abilities (Ryan, 8 November: "Nob, and any other enemies with a passive ability, should
+## have an unpurgable passive chip that points out what's going on ... It's not a Buff, it's not
+## a Debuff, it's labelled as an Ability"), each its glyph on a solid tile, its readout naming it
+## an Ability and saying what goes on, since the chip is the rule it plays by: the Nob's rage, a
+## core's guard while its parts stand, a split, a last act and a golden rage while it lasts. No
+## Purge reaches any of them.
+func _foe_abilities(foe: Foe) -> Array:
+	var rows: Array = []
+	if foe.rage > 0:
+		rows.append(["overcharge", "", "Ability, Enrage: every shield, vent or equipment you spend makes it Enraged +%d" % foe.rage, _foe_chip_colour("enraged"), "ability"])
+	if Effects.has(foe, "guarded"):
+		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
+		# shows has a reason on the foe itself.
+		rows.append(["lock", "", "Ability, Guarded: no damage while its parts stand", _foe_chip_colour("guarded"), "ability"])
+	if foe.on_death.has("summon"):
+		rows.append(["splits", "", "Ability: it splits in two when it falls", Palette.ENEMY, "ability"])
+	if not foe.last_act().is_empty():
+		# A last act (15 October): the skull and what it lands the moment the foe falls.
+		var la := foe.last_act()
+		rows.append(["skull", str(foe.damage_of(la)), "Ability, Last Act: %s, %d%s" % [str(la.get("name", "")), foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""], Palette.ENEMY, "ability"])
+	if Effects.has(foe, "golden"):
+		# A golden rage (4 November): the add it carries, the rounds left and the damage that
+		# breaks it, so burst-or-shield reads off the chip.
+		var gold := Effects.golden_value(foe)
+		var rounds_left := sk.golden_rounds_left(foe)
+		rows.append(["overcharge", "+%d" % gold, "Ability, Golden +%d, %d round%s, %d more damage breaks it" % [gold, rounds_left, "" if rounds_left == 1 else "s", Skirmish.golden_left(foe)], _foe_chip_colour("golden"), "ability"])
+	if ABILITY_DEBUG and rows.is_empty():
+		rows.append(["overcharge", "", "Ability, Enrage (RIFTGATE_ABILITY_DEBUG)", _foe_chip_colour("enraged"), "ability"])
+	return rows
+
+
 ## Statuses on a foe as [glyph, chip text, readout text, colour], and a fifth "preview" for one
 ## on its way. The readout text is the chip's name and count, never what it does (Ryan, 2 November:
 ## "unit popups don't need the chips descriptions spelled out now that we can tap keywords"): its
@@ -1610,6 +1641,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["splits", "", "Splits this round", _foe_chip_colour("risen"), "preview"])
 	elif foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
 		rows.append(["skull", "", "Destroyed this round", Palette.LOSS, "preview"])
+	rows.append_array(_foe_abilities(foe))
 	if foe.burn_stacks() > 0:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning ×%d" % foe.burn_stacks(), _foe_chip_colour("burning")])
 	var vitriol := Effects.stacks_of(foe, "vitriol")
@@ -1634,14 +1666,6 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["web", mark, "Webbed" + ("" if caught == null else ": bursts on %s too" % caught.display_name), _foe_chip_colour("webbed")])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed", _foe_chip_colour("suppressed")])
-	if not foe.last_act().is_empty():
-		# A last act (15 October): the skull and what it lands the moment the foe falls.
-		var la := foe.last_act()
-		rows.append(["skull", str(foe.damage_of(la)), "Last Act: %s, %d%s" % [str(la.get("name", "")), foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""], Palette.ENEMY])
-	if Effects.has(foe, "guarded"):
-		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
-		# shows has a reason on the foe itself.
-		rows.append(["lock", "", "Guarded", _foe_chip_colour("guarded")])
 	var holding := sk.swallowed_by(foe) if foe.swallow_mark >= 0 else null
 	if holding != null:
 		# A swallow (30 October) and its release (31 October): the damage still to deal before it
@@ -1663,17 +1687,11 @@ func _foe_rows(foe: Foe) -> Array:
 	if Effects.has(foe, "kindled"):
 		var kindled := Effects.foe_attack_bonus(foe)
 		rows.append(["overcharge", "+%d" % kindled, "Empowered +%d" % kindled, _foe_chip_colour("kindled")])
-	if foe.rage > 0:
-		# The Nob's rage (3 November): the chip climbs with every shield, vent or equipment entry
-		# the team spends, for the rest of the fight; a Purge clears what has gathered.
-		var raged := Effects.stacks_of(foe, "enraged")
-		rows.append(["overcharge", "+%d" % raged, "Enraged +%d, +%d a spend" % [raged, foe.rage], _foe_chip_colour("enraged")])
-	if Effects.has(foe, "golden"):
-		# A golden rage (4 November): the add it carries, the rounds left and the damage that
-		# breaks it, so burst-or-shield reads off the chip.
-		var gold := Effects.golden_value(foe)
-		var rounds_left := sk.golden_rounds_left(foe)
-		rows.append(["overcharge", "+%d" % gold, "Golden +%d, %d round%s, %d more damage breaks it" % [gold, rounds_left, "" if rounds_left == 1 else "s", Skirmish.golden_left(foe)], _foe_chip_colour("golden")])
+	var raged := Effects.stacks_of(foe, "enraged")
+	if raged > 0:
+		# What the Nob's rage has gathered (3 November), a buff a Purge lowers; the rage itself is
+		# its ability (_foe_abilities).
+		rows.append(["overcharge", "+%d" % raged, "Enraged +%d" % raged, _foe_chip_colour("enraged")])
 	# A rally on its way (Ryan, 26 October: "a pulsing version of the incoming buff as a preview
 	# chip, so the player knows it's incoming and that's the reason for the increased damage"):
 	# the Empowered the rallies will land before its blow, already in the number its intent
@@ -1888,20 +1906,25 @@ func _mech_rows(i: int) -> Array:
 			first[id] = d
 			total[id] = 0
 		total[id] = int(total[id]) + int(d[4])
+	# An ability (Ryan, 8 November: "It's not a Buff, it's not a Debuff, it's labelled as an
+	# Ability, so it doesn't get purged"): the machine's own mechanic, the Armadillo's seal, the
+	# Ore Plate, Hot Streak, on a solid tile and named so in its readout, ahead of the buffs.
+	var abilities: Array = []
+	var at := rows.size()
 	for id in order:
 		var d: Array = first[id]
 		var glyph := status_glyph(id)
 		var colour := _chip_colour(id)
 		var stacks := int(total[id])
-		if SLEEP_DEBUG and (Effects.STATUS.get(id, {}).get("tags", []) as Array).has("buff"):
-			rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: asleep until your turn" % str(d[0]), colour, "asleep"])
-			continue
-		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", str(d[0]) + ((" ×%d" % stacks) if stacks > 1 else ""), colour])
-	# A buff a purge put to sleep (28 October): its chip half lit on a dashed edge, still, until
-	# the player's turn wakes it.
-	for a in Effects.asleep(ms.unit):
-		var sid := str(a[3])
-		rows.append([status_glyph(sid), ("×%d" % int(a[2])) if int(a[2]) > 1 else "", "%s: asleep until your turn" % str(a[0]), _chip_colour(sid), "asleep"])
+		var named := str(d[0]) + ((" ×%d" % stacks) if stacks > 1 else "")
+		if Effects.is_ability(id):
+			abilities.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "Ability, " + named, colour, "ability"])
+		else:
+			rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", named, colour])
+	if ABILITY_DEBUG and abilities.is_empty():
+		abilities.append([status_glyph("sealed"), "", "Ability, Sealed (RIFTGATE_ABILITY_DEBUG)", _chip_colour("sealed"), "ability"])
+	for k in range(abilities.size()):
+		rows.insert(at + k, abilities[k])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := _forecast_for(i)
 		# Every warning is a prediction, so each pulses as the incoming chips do (Ryan, 26 October:

@@ -115,29 +115,17 @@ func test_a_shot_fires_its_loads_and_their_plate_goes_with_them() -> void:
 	assert_eq(u.armour, 4, "the plate follows: three loads, three points")
 
 
-## A purge lowers the plate by its N and leaves the loads (Ryan's row on stores, 21 October; Purge
-## N, 2 November: "lower everything by N"): a store's grant is never bought, so the stacks it loses
-## sleep and wake at the player's turn, and a load added meanwhile adds its point awake.
-func test_a_purge_sleeps_the_plates_stacks_by_its_number_and_leaves_the_loads() -> void:
+## A purge leaves the plate and the loads (Ryan's row on stores, 21 October): the Ore Plate is
+## the hopper's own, an ability since 8 November ("It's not a Buff, it's not a Debuff, it's
+## labelled as an Ability, so it doesn't get purged"), as the loads are a store's.
+func test_a_purge_leaves_the_plate_and_the_loads() -> void:
 	var u := _mech("Badger", Die.single(Face.attack(3, L)))
 	u.grant_passive(HOPPER)
 	Effects.add_loads(u, 3)
 	assert_eq(u.armour, 4, "three loads held")
-	var r: Dictionary = Effects.purge(u)
-	assert_true((r["lowered"] as Array).has("Ore Plate"), "a store's grant is lowered, never bought, so never gone")
-	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [3, 3], "the loads stay; one point of their armour sleeps (a Purge 1)")
-	Effects.add_loads(u, 1)
-	assert_eq([Effects.banked(u, "ore_plate"), u.armour], [4, 4], "a load while part sleeps adds its point, the slept one still asleep")
-	Effects.wake(u)
-	assert_eq(u.armour, 5, "it wakes at the loads' worth")
-	var p := _mech("Badger", Die.single(Face.attack(3, L)))
-	p.grant_passive(HOPPER)
-	Effects.add_loads(p, 2)
-	var r3: Dictionary = Effects.purge(p, 3)
-	assert_true((r3["slept"] as Array).has("Ore Plate"), "a Purge past its stacks sleeps the plate whole")
-	assert_eq([Effects.stacks_of(p, "hopper"), p.armour, Effects.banked(p, "ore_plate")], [2, 1, 2], "the loads stay, the plate asleep, still held")
-	Effects.wake(p)
-	assert_eq(p.armour, 3, "and it wakes whole")
+	assert_true(Effects.is_ability("ore_plate"), "the plate is an ability")
+	assert_true(Effects.purge(u, 3).is_empty(), "so a Purge finds nothing to take")
+	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [3, 4], "the loads and their armour stay")
 
 
 func test_the_fallback_plates_a_point_for_every_two_loads() -> void:

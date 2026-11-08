@@ -382,7 +382,6 @@ static func _modifier_dict(m: Effects.Modifier) -> Dictionary:
 		"id": m.id, "name": m.name, "description": m.description, "source": m.source,
 		"component": m.component, "scope": m.scope, "expires_round": m.expires_round,
 		"tags": m.tags, "effects": m.effects, "seq": m.seq, "stacks": m.stacks, "decay": m.decay,
-		"slept": m.slept,
 	}
 
 
@@ -401,26 +400,20 @@ static func _modifier_from(d: Dictionary) -> Effects.Modifier:
 	m.seq = int(d.get("seq", 0))
 	m.stacks = int(d.get("stacks", 1))
 	m.decay = int(d.get("decay", Effects.DECAY_NONE))
-	m.slept = bool(d.get("slept", false))
 	# Grant order decides override ties; the counter carries on past the loaded ones.
 	Effects._seq = maxi(Effects._seq, m.seq)
 	return m
 
 
-## A unit's or a foe's modifiers as saved: a grant a Purge N put part to sleep in a save from
-## before 8 November (its sleeping stacks a count on the awake grant) loads as the two grants it
-## is now, the part asleep its own.
+## A unit's or a foe's modifiers as saved. A save from before 8 November may hold a buff a purge
+## put to sleep, whole or in part: it loads awake and whole, since a purge no longer sleeps
+## anything (Ryan: "A stack is a stack").
 static func _modifiers_from(list: Array) -> Array:
 	var out: Array = []
 	for md in list:
 		var m := _modifier_from(md)
+		m.stacks += int((md as Dictionary).get("slept_stacks", 0))
 		out.append(m)
-		var sleeping := int((md as Dictionary).get("slept_stacks", 0))
-		if sleeping > 0:
-			m.stacks += sleeping
-			var part := m.split_off(sleeping)
-			part.slept = true
-			out.append(part)
 	return out
 
 

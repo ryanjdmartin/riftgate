@@ -1,10 +1,9 @@
 extends TestCase
 
-## A foe's Purge on a machine's buffs (28 October; Purge N, 2 November): a buff a die entry bought
-## goes for good; what the machine is (a passive's, a module's, a store's grant) sleeps, its
-## clocks running, and wakes at the player's turn. The audit's fifth and sixth bugs (8 November):
-## sleeping stacks kept their clock, and grants of one status from different sources stayed
-## apart, so a Purge reads each by its own source.
+## A Purge N on either side (28 October; its number since 2 November; Ryan, 8 November: "A stack
+## is a stack, doesn't matter where it came from"): every buff a unit carries loses N stacks for
+## good, whatever granted them, a die entry, a module, a kill; an ability is no buff and stays
+## ("It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged").
 
 
 func _unit() -> Unit:
@@ -14,37 +13,45 @@ func _unit() -> Unit:
 	return u
 
 
-func test_a_partly_purged_buffs_sleeping_stacks_keep_its_clock() -> void:
+func test_a_stack_is_a_stack_whatever_granted_it() -> void:
 	var u := _unit()
-	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "module:reliquary", 3, Effects.DECAY_HALF)
-	var r := Effects.purge(u, 1)
-	assert_true((r["lowered"] as Array).size() == 1, "a Purge 1 puts one stack to sleep")
-	assert_eq(Effects.stacks_of(u, "overcharged"), 2, "two stand awake")
-	Effects.tick(u)   # the round's end: it halves, asleep or awake
-	Effects.wake(u)
-	assert_eq(Effects.stacks_of(u, "overcharged"), 1, "it wakes where it would stand unpurged: 3 halved to 1")
+	Effects.grant_buff(u, "overcharged", 2, "buff:overcharge_coil", 1)
+	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "passive:grievance_reliquary", 2, Effects.DECAY_HALF)
+	assert_eq(Effects.stacks_of(u, "overcharged"), 4, "four stacks, one status")
+	assert_eq(Effects.purge(u, 3), ["Empowered 1"] as Array[String], "a Purge 3 takes three, whichever granted them")
+	assert_eq(Effects.purge(u, 3), ["Empowered gone"] as Array[String], "and the last goes with the next")
+	assert_false(Effects.has(u, "overcharged"), "nothing comes back")
 
 
-func test_grants_of_one_status_from_different_sources_stay_apart_for_a_purge() -> void:
-	for bought_first in [true, false]:
-		var u := _unit()
-		if bought_first:
-			Effects.grant_buff(u, "overcharged", 2, "buff:overcharge_coil", 1)
-		Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "module:reliquary", 2, Effects.DECAY_HALF)
-		if not bought_first:
-			Effects.grant_buff(u, "overcharged", 2, "buff:overcharge_coil", 1)
-		assert_eq(Effects.stacks_of(u, "overcharged"), 4, "four stacks, one status")
-		Effects.purge(u, 4)
-		assert_eq(Effects.stacks_of(u, "overcharged"), 0, "a Purge 4 takes them all off")
-		Effects.wake(u)
-		assert_eq(Effects.stacks_of(u, "overcharged"), 2, "the module's two wake and the bought two are gone, whichever came first (bought first: %s)" % bought_first)
-
-
-func test_a_reset_lights_a_cooldown_and_leaves_a_foes_switch_off_on_the_same_entry() -> void:
+func test_abilities_stores_and_kept_stacks_stay() -> void:
 	var u := _unit()
-	Effects.disable_entry(u, 0, "cooldown", 3)
-	Effects.disable_entry(u, 0, "foe:hush", 3)
-	assert_eq(Effects.clear_cooldowns(u), 1, "the reset brings back the cooldown")
-	assert_eq(Effects.dark_rounds(u, 0, 1), 3, "and the foe's switch-off stands")
-	var left: Array = u.modifiers.filter(func(m) -> bool: return m.id == "disabled_0")
-	assert_true(left.size() == 1 and left[0].tags.has(Effects.CLEANSABLE), "the foe's own, a cleanse's to lift")
+	Effects.stack(u, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	Effects.stack(u, Effects.STATUS["hot_streak"], Effects.SKIRMISH, "passive:regulators", 2, Effects.DECAY_NONE)
+	Effects.stack(u, Effects.STATUS["muster"], Effects.SKIRMISH, "muster", 30, Effects.DECAY_NONE)
+	assert_true(Effects.is_ability("sealed") and Effects.is_ability("hot_streak"), "the seal and Hot Streak are abilities")
+	assert_true(Effects.purge(u, 9).is_empty(), "so a Purge finds nothing")
+	assert_true(Effects.is_sealed(u) and Effects.has(u, "hot_streak") and Effects.has(u, "muster"), "the abilities and the store stand")
+	var keeper := _unit()
+	keeper.grant_passive({"id": "tap", "name": "Tap", "description": "", "effects": [{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]})
+	Effects.stack(keeper, Effects.STATUS["overcharged"], Effects.SKIRMISH, "kill", 5, Effects.DECAY_HALF)
+	assert_true(Effects.purge(keeper, 9).is_empty() and Effects.stacks_of(keeper, "overcharged") == 5, "a kept stack stays: the Ammit's Quintessence Tap")
+
+
+func test_a_foes_abilities_stay_and_its_buffs_go() -> void:
+	var f := Foe.make("ape", 40, 6)
+	Effects.stack(f, Effects.STATUS["golden"], Effects.SKIRMISH, "foe:ape", 1, Effects.DECAY_NONE)
+	Effects.stack(f, Effects.STATUS["guarded"], Effects.SKIRMISH, "foe:ape", 1, Effects.DECAY_NONE)
+	Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:shaman", 2, Effects.DECAY_HALF)
+	Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:ape", 1, Effects.DECAY_NONE)
+	assert_eq(Effects.purge(f, 9), ["Empowered gone", "Undying gone"] as Array[String], "its buffs go")
+	assert_true(Effects.has(f, "golden") and Effects.has(f, "guarded"), "its abilities stay")
+
+
+func test_a_save_from_before_the_rule_loads_a_sleeping_buff_awake() -> void:
+	var u := _unit()
+	var md := SaveGame._modifier_dict(Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "passive:reliquary", 2, Effects.DECAY_HALF))
+	md["slept_stacks"] = 1
+	md["slept"] = true
+	var back: Array = SaveGame._modifiers_from([md])
+	assert_eq(back.size(), 1, "one grant")
+	assert_eq(int(back[0].stacks), 3, "its sleeping stack back on it, awake")

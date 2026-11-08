@@ -75,7 +75,7 @@ FOE_ONLY_TEXT = {"burn": "Keyword with a number on a foe's attack: each blow tha
                  "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away.",
                  "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn; its stores stay; a Ward turns it away."}
 SHARED = ["burn", "breach", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October)
-KIND_ORDER = {"buff": 0, "debuff": 1, "store": 2}   # a store is a capped resource, its own kind (Ryan, 21 October)
+KIND_ORDER = {"buff": 0, "debuff": 1, "ability": 2, "store": 3}   # a store is a capped resource, its own kind (Ryan, 21 October); an ability a unit's own mechanic, no buff or debuff (8 November)
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 
 

@@ -1471,20 +1471,11 @@ func salvo_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe = nu
 ## add to its weapons this turn (about one; it goes at the turn's end), the bites its
 ## Corrupted entries would take over the rounds to come, and the entries a foe switched off,
 ## at the die's own mean for each.
-## What a purge on this machine would cost it (28 October): the stacks a die face bought, for
-## the rounds they would have run, and the machine's own, asleep for a turn; a kept stack or one
-## already asleep, nothing.
+## What a purge on this machine would cost it (28 October): every stack of its buffs, for the
+## rounds they would have run (a stack is a stack, 8 November); a kept stack, an ability or a
+## store, nothing.
 func _purge_stakes(who: Skirmish.MechState) -> float:
-	var bought := 0
-	var own := 0
-	for m in who.unit.modifiers:
-		if not Effects.purgeable(m) or m.slept or Effects.keeps(who.unit, m.id):
-			continue
-		if Effects.bought(m):
-			bought += maxi(1, m.stacks)
-		else:
-			own += maxi(1, m.stacks)
-	return float(bought) * BANK_WEIGHT * CLEANSE_ROUNDS + float(own) * BANK_WEIGHT
+	return float(Effects.buff_stacks(who.unit)) * BANK_WEIGHT * CLEANSE_ROUNDS
 
 
 func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:

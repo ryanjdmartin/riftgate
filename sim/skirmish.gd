@@ -1303,13 +1303,6 @@ func start_round() -> void:
 	# shield, a vent (the Goshawk's Thermal Recoupler reads the heat as it stands now).
 	for ms in live_mechs():
 		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
-	# What a purge put to sleep wakes now, the turn's start resolved (28 October: the cooling,
-	# the roll and the round-start passives first, "a mild punishment"), and before the foes
-	# draw, so they pick against the machine as it stands.
-	for ms in live_mechs():
-		var woke := Effects.wake(ms.unit)
-		if not woke.is_empty():
-			log.append("%s's %s return%s" % [ms.unit.display_name, ", ".join(woke), "s" if woke.size() == 1 else ""])
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact. The move first, from
 	# the ones its conditions allow (never the same special twice running), then the pick by
@@ -1472,8 +1465,9 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 
 
 ## The player's Purge N on one foe (28 October; by its number since 2 November): every buff it
-## carries but Guarded loses N stacks, told when anything moved; a Ward turns it away and stands
-## (Ryan, 2 November: nothing but damage lands on a Warded foe).
+## carries loses N stacks (Effects.purge: its abilities stay, a core's guard and a golden rage
+## among them), told when anything moved; a Ward turns it away and stands (Ryan, 2 November:
+## nothing but damage lands on a Warded foe).
 func _purge_foe(by: String, foe: Foe, n: int, turned = null) -> void:
 	if Effects.has(foe, "ward"):
 		if turned is Dictionary:
@@ -1481,7 +1475,7 @@ func _purge_foe(by: String, foe: Foe, n: int, turned = null) -> void:
 		else:
 			log.append("%s's Ward turns the Purge away" % foe.display_name)
 		return
-	var touched := Effects.purge_foe(foe, n)
+	var touched := Effects.purge(foe, n)
 	if not touched.is_empty():
 		log.append("%s purges %s ×%d: %s" % [by, foe.display_name, n, ", ".join(touched)])
 
@@ -2519,22 +2513,12 @@ func _silence(t: MechState, f: Foe) -> void:
 	log.append("%s silences %s: its keywords are muted through its next round" % [f.display_name, t.unit.display_name])
 
 
-## A foe's Purge N (by source, 28 October; by its number since 2 November): what a die face bought
-## loses N stacks for good, what the machine is sleeps N stacks until the player's turn, the kept
-## and the stores stay.
+## A foe's Purge N (28 October; by its number since 2 November): every buff the machine carries
+## loses N stacks for good, whatever granted it (Ryan, 8 November: "A stack is a stack, doesn't
+## matter where it came from"); its abilities, its stores and a stack its passive keeps stay.
 func _purge(t: MechState, f: Foe, n: int = 1) -> void:
-	var r := Effects.purge(t.unit, n)
-	var gone: Array = r["gone"]
-	var slept: Array = r["slept"]
-	var lowered: Array = r["lowered"]
-	var said: Array[String] = []
-	if not gone.is_empty():
-		said.append(", ".join(gone) + " gone")
-	if not slept.is_empty():
-		said.append(", ".join(slept) + " asleep until its turn")
-	if not lowered.is_empty():
-		said.append(", ".join(lowered) + " lowered")
-	log.append("%s purges %s ×%d%s" % [f.display_name, t.unit.display_name, n, ": " + "; ".join(said) if not said.is_empty() else ", and finds nothing to take"])
+	var touched := Effects.purge(t.unit, n)
+	log.append("%s purges %s ×%d%s" % [f.display_name, t.unit.display_name, n, ": " + ", ".join(touched) if not touched.is_empty() else ", and finds nothing to take"])
 
 
 ## The round ends with the machines' statuses ticking, after the enemy has struck. Burning and
