@@ -207,7 +207,9 @@ every machine is wrecked. There is no round limit.
 - A kill clears its slot at once, so a hole in the front opens that column's back to Direct
   (a Gel's halves stand in it at once, below), and the hole stays open: nothing steps into it
   after but a split's half, a summon, a part that grows back or a Swap's foe.
-- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive): every weapon and equipment it
+- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive; held as it stands for the
+  Lammergeier's rework, since the step that fed it is gone and a mine now waits for a Swap, a
+  split, a summon or a regrowth to step in): every weapon and equipment it
   aims at a foe may also be spent on an empty slot in the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
   front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
   to move or carry it. The shot waits there, its number as modified when laid
@@ -884,8 +886,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   content) steps up one into the slot and the rest into the nearest empty slots of their rank;
   one with no room never forms.
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
-  left on a tie, its round over like a split's half's; a summoner with no room for it never
-  picks the summon.
+  left on a tie, its round over like a split's half's; a summoner with no room for its whole
+  count never picks the summon.
 - **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
   with the rounds until it regrows, and grows back there; no Swap, mine or arrival takes the
   slot meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
@@ -1139,15 +1141,15 @@ a stat.
   escalate in place.
 - **The seam** is the flattening's edge: the row the rift's bleed reaches, the first row past
   the rift's mouth at the start (5), total on the rift's row and gone past the seam. It is the
-  clock's picture; the one rule that reads it is a cache's kind (below).
+  clock's picture: no rule reads the flattened hexes.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
   from the third past the rift's to the second short of the apron (never that close to the
   wall), on open ground with no unit on it and none beside another; each a kind (a Derelict, a
-  Carcass, a Relic: working names) by its weight. A cache the seam has passed (a row nearer the
-  rift than the seam's) stands a kind up from then on, once, the top kind staying the top: lesser
-  loot while it is safe, better later at greater risk. A machine standing on a cache as the
-  player's turn ends claims it (a move ending on one; claimed at the turn's end, so an undo never
+  Carcass, a Relic: working names) by its weight at its depth, the better kinds likelier the
+  farther from the wall it lies: lesser loot near and safe, better far and under the tide. The
+  seam does nothing to a cache. A machine standing on a cache as the player's turn ends, or as
+  the battle is won, claims it (a move ending on one; claimed at the turn's end, so an undo never
   shows what it holds): it holds its kind's salvage (a range), so many components of the
   battle's tier, and on its kind's chance (the Relic's) a blueprint of that tier the run holds
   none of, drawn from the battle's seed and the cache. A tap on a cache shows its kind and its
@@ -1310,8 +1312,9 @@ and nothing scales a pack.
   formation 3, an elite and an escort 4); `layout`, `{front: [four cells], back: [four
   cells]}` left to right as it stands, each cell null for empty, a member's foe id, or a list of
   them the battle's seed draws one from as the pack is dealt, a massive member in a front cell
-  with the cell behind it null, no member named in more cells than its strength, the members it
-  does not place never dealt; `lead`, a member's foe id whose sprite and
+  with the cell behind it null, no member named in more cells than its strength and every member
+  placeable (as many cells may hold it as its strength), the members a listing cell does not draw
+  never dealt; `lead`, a member's foe id whose sprite and
   behaviour the pack wears, an elite composition's its elite (absent: the first member); `ramp`,
   `[lo, hi]`, the Convergences it is dealt at, both held (absent: every one): a battle, the quick
   campaign and the Fractures' elites deal only the compositions whose gate holds their ramp, and

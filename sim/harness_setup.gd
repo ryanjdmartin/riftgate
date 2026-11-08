@@ -115,7 +115,7 @@ func battle_boss_id() -> String:
 
 
 ## The compositions the FIGHT tab lists: the domain's patrols, formations and elites as a battle at
-## `fight_tier` deals them (a lower tier's standing in where it has none, as in play), those rated
+## `fight_tier` deals them, those rated
 ## `rating` (every one at 0), in content order; each ContentDB's dealt dictionary.
 func compositions_listed() -> Array:
 	var out: Array = []

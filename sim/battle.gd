@@ -244,15 +244,14 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	field.seed_caches(db, seed_value)
 	# The Rupture meter: the thresholds from the field's menace at the start, and the seal on the
 	# boss while there is a field to earn it against.
+	# The compositions placed and the tide's first waves (the long wall brief 3.8: the field is
+	# thin at the start, so the thresholds read the first compositions the rift will send as well,
+	# as many as the tier's Fractures, in the cycle's order), each as content writes it, so a
+	# layout's draw moves no threshold. Placeholder.
 	field_menace = 0
-	for sq in field.packs():
-		if sq.is_boss:
-			continue
-		for m in sq.member_list():
+	for p in placed:
+		for m in (p[0] as Dictionary).get("members", []):
 			field_menace += db.menace(str(m[0])) * int(m[1])
-	# The tide's first waves (the long wall brief 3.8): the field is thin at the start, so the
-	# thresholds read the first compositions the rift will send as well, as many as the tier's
-	# Fractures, in the cycle's order, each as content writes it. Placeholder.
 	if not field.cycle.is_empty():
 		for k in range(Ramp.fractures_at(tier)):
 			for m in field.cycle[k % field.cycle.size()].get("members", []):
@@ -1078,10 +1077,10 @@ func end_turn() -> Dictionary:
 	return walks
 
 
-## The caches the machines stand on as the player's turn ends are theirs (the bible's loot row:
-## claimed by ending a move on one): taken off the field and opened, what each held in the log.
-## Claimed as the turn ends rather than as the move does, so an undo never shows what a cache
-## holds. The ones claimed now, in the order claimed.
+## The caches the machines stand on as the player's turn ends, or as the battle is won mid-turn
+## (the boss's fall), are theirs (the bible's loot row: claimed by ending a move on one): taken off
+## the field and opened, what each held in the log. Claimed as the turn ends rather than as the
+## move does, so an undo never shows what a cache holds. The ones claimed now, in the order claimed.
 func claim_caches() -> Array:
 	var got: Array = []
 	for m in field.mechs():
@@ -1105,7 +1104,7 @@ func claim_caches() -> Array:
 ## whenever it is claimed: its kind's salvage, so many components of the battle's tier, and on
 ## its kind's chance a blueprint of that tier the run holds none of (none when it holds all).
 func open_cache(c: Dictionary) -> Dictionary:
-	var t := field.cache_tier(c)
+	var t := int(c.get("tier", 1))
 	var kind := db.loot_kind_of_tier(t)
 	var e: Dictionary = db.loot.get(kind, {})
 	var rng := RandomNumberGenerator.new()
@@ -1270,6 +1269,7 @@ func _check_outcome() -> bool:
 	elif field.mechs().is_empty():
 		outcome = Outcome.WRECKED
 	elif boss != null and not field.units.has(boss):
+		claim_caches()   # the last turn's fetch is banked with the win
 		outcome = Outcome.VICTORY
 	if outcome != Outcome.NONE:
 		for u in field.mechs():

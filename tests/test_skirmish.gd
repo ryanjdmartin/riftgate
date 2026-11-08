@@ -4186,6 +4186,21 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	s3._foe_acts(n3, s3.mechs[0])
 	assert_true(s3.reinforcements.is_empty(), "made to anyway, nothing waits")
 	assert_eq(s3.field_foes().size(), 2, "and nothing came")
+	# Room for one, a call for two: the chip promises both, so it never summons short (8 November).
+	var s4 := Skirmish.new(7, 2)
+	s4.add_mech(_mech("D", Die.single(Face.attack(10, L)), 40, 100))
+	var n4 := _archer(30, 10)
+	n4.actions = [_special("buff", "summon", {"foe": "revenant", "count": 2})]
+	n4.action = n4.actions[0]
+	s4.add_foes([_ghoul(300, 1), n4])
+	s4.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
+	s4.begin()
+	s4.start_round()
+	assert_eq(s4._free_slots_for(Foe.make("revenant", 30, 10)), 1, "one front slot open")
+	assert_false(s4.legal_actions(n4).has(n4.actions[0]), "room for one of two: no summon")
+	n4.actions = [_special("buff", "summon", {"foe": "revenant", "count": 1})]
+	n4.action = n4.actions[0]
+	assert_true(s4.legal_actions(n4).has(n4.actions[0]), "a call for one may be announced")
 	var s2 := Skirmish.new(6, 1)
 	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
 	var n2 := _archer(30, 10)
@@ -8263,7 +8278,7 @@ func test_a_weapon_laid_on_an_empty_slot_waits_for_the_arrival_and_lands_in_laid
 	assert_eq([int(waiting[0]["damage"]), int(waiting[1]["damage"])], [10, 10], "each its number as laid")
 	assert_eq(arrival.hp, 100, "nothing lands with no foe there")
 	sk.end_round()
-	sk._reinforce(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(sk.foe_at(0, 0), arrival, "the arrival steps in")
 	assert_eq(arrival.hp, 70, "and takes the shock mine's 10, then the next one doubled")
 	assert_false(Effects.has(arrival, "shocked"), "the second shot spent the shock")
@@ -8292,7 +8307,7 @@ func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and
 	assert_true(sk.assign(1, sk.front[1]), "the middle slot emptied")
 	assert_true(sk.assign(0, Vector2i(0, 1)), "a Spread stun mine laid there")
 	sk.end_round()
-	sk._reinforce(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(sk.foe_at(0, 1), arrival, "the arrival in the middle")
 	assert_eq([left.hp, arrival.hp, right.hp], [195, 90, 195], "the mine hits it and both its neighbours for its Spread 5 (area by shape, numbered)")
 	sk.start_round()
@@ -8322,7 +8337,7 @@ func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and
 	assert_true(s2.slot_targets(s2.mechs[0], s2.mechs[0].face()).has(Vector2i(1, 0)), "Direct reaches the back slot whose front is empty")
 	assert_true(s2.assign(0, Vector2i(0, 0)) and s2.assign(1, Vector2i(1, 0)), "a mine in each slot")
 	s2.end_round()
-	s2._reinforce(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
+	s2._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(s2.foe_at(0, 0), big, "the massive arrival fills the column")
 	assert_eq(big.hp, 470, "and takes both slots' shots")
 	assert_true(s2.mines.is_empty(), "both spent")
@@ -8446,7 +8461,7 @@ func test_the_drone_leaves_the_killing_shot_and_is_rapid_on_a_foe_already_expose
 	assert_eq(int(left[0]["damage"]), 30, "the shot as fired")
 	assert_true(Array(left[0]["keywords"]).has(K.BURN), "its keywords with it")
 	sk.end_round()
-	sk._reinforce(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(arrival.hp, 70, "the arrival takes it")
 	assert_true(Effects.has(arrival, "burning"), "napalm")
 	sk.start_round()
@@ -8491,7 +8506,7 @@ func test_a_chain_mine_arcs_its_number_as_laid_to_the_shocked_foes_as_it_lands()
 	var heat_laid := sk.mechs[0].heat
 	_shock_on(other)
 	sk.end_round()
-	sk._reinforce(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(arrival.hp, 26, "the arrival takes the shot")
 	assert_eq(other.hp, 298, "and the Shocked foe takes Chain 2 as laid, plain, as the mine lands")
 	assert_true(Effects.has(other, "shocked"), "its charge stands")
@@ -8596,7 +8611,7 @@ func test_the_muster_fills_on_every_roll_and_a_kill_and_buys_a_charged_form() ->
 	assert_true(sk.assign(1, weak), "the ally's kill")
 	assert_eq(Effects.stacks_of(m, "muster"), 0, "another machine's kill fills nothing")
 	sk.end_round()
-	sk._reinforce(true)   # the late foe stepped in by hand: nothing steps in on its own since the cut (6 November)
+	sk._first_deployment(true)   # the late foe stepped in by hand: nothing steps in on its own since the cut (6 November)
 	sk.start_round()
 	assert_eq(Effects.stacks_of(m, "muster"), 2, "the next round's two rolls")
 	sk.mechs[0].face_index = 1
@@ -9107,7 +9122,7 @@ func test_a_mine_carries_its_area_numbers_as_laid() -> void:
 	var shot: Dictionary = sk.mines[Vector2i(0, 1)][0]
 	assert_eq([int(shot["damage"]), int(shot["row"]), int(shot["column"])], [5, 3, 0], "its number and its row's, the firer's point on each; no column")
 	sk.end_round()
-	sk._reinforce(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq([left.hp, arrival.hp, right.hp], [197, 95, 197], "the arrival takes the shot, its neighbours the row's 3")
 	# A shot laid before the numbers (an old save) lands half of itself on the foes past the arrival.
 	var s2 := Skirmish.new(1, 3)

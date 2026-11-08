@@ -1110,11 +1110,11 @@ func test_an_escort_is_drawn_from_its_tiers_list() -> void:
 		assert_eq(drawn, units, "tier %d draws its own list, in spawn order" % (t + 1))
 	var tier_two: Array = db.spawn_table(faction, 2)
 	var comps: Array = db.factions[faction]["compositions"]
-	for c in comps:   # tier three's compositions dropped: the tier takes tier two's
+	for c in comps:   # tier three's compositions dropped: the tier has no list and nothing stands in (8 November)
 		c["tiers"] = (c.get("tiers", [1]) as Array).filter(func(t) -> bool: return int(t) != 3)
 	db.factions[faction]["compositions"] = comps.filter(func(c) -> bool: return not (c["tiers"] as Array).is_empty())
-	assert_eq(db.spawn_table(faction, 3), tier_two, "a tier with no list takes the highest under it")
-	assert_eq(db.escort_units(faction, 2, 1)[0].content_id, str(tier_two[0][0]), "and its escort with it")
+	assert_true(db.spawn_table(faction, 3).is_empty(), "a tier with no list has none: nothing stands in from the tier below")
+	assert_true(db.escort_units(faction, 2, 1).is_empty(), "and no escort is drawn from another tier's")
 	var first: Dictionary = db.foes[str(tier_two[0][0])]
 	first["tier"] = 3
 	assert_eq(db.escort_units(faction, 1, 1)[0].content_id, str(tier_two[0][0]), "a unit's own tier decides nothing")

@@ -159,7 +159,7 @@ var came_with: Dictionary = {}
 ## its number as rolled and modified when laid, and its keywords, acting as it lands.
 var mines: Dictionary = {}
 var mine_seq: int = 0          # the order shots were laid, so a pull gathers them in laid order
-var _reinforcing := false       # the reinforcement step: every arrival placed first, then the mines land left to right
+var _deploying := false       # the reinforcement step: every arrival placed first, then the mines land left to right
 ## The fights the rule before the long wall brief kept from a withdrawal: a battle's boss fight
 ## (Ryan, 25 October: "the player is committed to closing the rift or getting scrapped trying")
 ## and every quick campaign fight. Since the brief (3.5) no fight is left, so it marks those
@@ -271,7 +271,7 @@ func begin() -> void:
 	for r in ranked:
 		reinforcements.append(r[2])
 	if layout.is_empty():
-		_reinforce(false)
+		_first_deployment(false)
 	else:
 		_deploy_layout()
 	if not reinforcements.is_empty():
@@ -1432,7 +1432,25 @@ func _summon_has_room(f: Foe, a: Dictionary) -> bool:
 	var probe = foe_factory.call(who)
 	if not (probe is Foe):
 		return true
-	return _split_slot(probe, 0, maxi(0, f.column)).y >= 0
+	# Room for the whole count (Ryan, 8 November): the chip promises every one, so none is cast
+	# that would stand short.
+	return _free_slots_for(probe) >= maxi(1, int(a.get("count", 1)))
+
+
+## The slots a foe of `n`'s rank could step into now: its rank's empty slots holding no corpse, a
+## massive foe's the columns empty in both ranks.
+func _free_slots_for(n: Foe) -> int:
+	var out := 0
+	for c in range(columns):
+		if n.is_massive():
+			if front[c] == null and back[c] == null and not corpses.has(Vector2i(0, c)) and not corpses.has(Vector2i(1, c)):
+				out += 1
+		elif n.prefers_back:
+			if back[c] == null and not corpses.has(Vector2i(1, c)):
+				out += 1
+		elif front[c] == null and not corpses.has(Vector2i(0, c)):
+			out += 1
+	return out
 
 
 func _choose_foe_action(f: Foe) -> void:
@@ -1622,7 +1640,7 @@ func _step_up(n: Foe, at_col: int) -> bool:
 	if n.is_massive():
 		back[slot.y] = n   # both slots of its column, before a mine there can land on it
 	_place(n, slot.x, slot.y)
-	if _reinforcing and not mines.is_empty():
+	if _deploying and not mines.is_empty():
 		_land(n)   # the step's mines have their arrivals already: this one takes its slot's now
 	return true
 
@@ -2495,7 +2513,7 @@ func _set_contents(at: Vector2i, c: Array) -> void:
 ## Whoever has just come into a slot outside the reinforcement step sets off what waits there.
 func _arrive_at(at: Vector2i) -> void:
 	var lead := foe_at(at.x, at.y)
-	if lead != null and not _reinforcing and not mines.is_empty():
+	if lead != null and not _deploying and not mines.is_empty():
 		_land(lead)
 
 
@@ -3817,7 +3835,7 @@ func _staggered(f: Foe) -> bool:
 func _stagger(f: Foe, why: String) -> void:
 	Effects.remove(f, "golden")
 	f.golden_mark = -1
-	var next := _acted.has(f) or _reinforcing or f.fresh
+	var next := _acted.has(f) or _deploying or f.fresh
 	if not _suppressed_through(f, round + 1 if next else round):
 		Effects.grant_for_rounds(f, Effects.STATUS["suppressed"], "stagger", round + 1 if next else round)
 	log.append("%s %s: its golden rage breaks, and it staggers out of its next action" % [f.display_name, why])
@@ -4424,7 +4442,7 @@ func _suppress(foe: Foe, turned = null) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken,
 	# and so does one a mine stuns as it steps in or one that stepped up mid-round (a split's
 	# half), the round's turn being over.
-	var next := _acted.has(foe) or _reinforcing or foe.fresh
+	var next := _acted.has(foe) or _deploying or foe.fresh
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
@@ -5246,8 +5264,8 @@ func _clear_dead_slots() -> void:
 ## never comes up. Massive foes need a whole empty column and take both slots. Empty slots
 ## fill left to right, front rank first, each taking a random foe of the right rank from
 ## those waiting; the rest keep waiting.
-func _reinforce(random: bool = true) -> void:
-	_reinforcing = true
+func _first_deployment(random: bool = true) -> void:
+	_deploying = true
 	var placed := 0
 	for col in range(columns):
 		if front[col] == null and back[col] == null:
@@ -5285,7 +5303,7 @@ func _reinforce(random: bool = true) -> void:
 				var f := foe_at(r, col)
 				if f != null and f.alive() and (r == 0 or f != front[col]):
 					_land(f)
-	_reinforcing = false
+	_deploying = false
 	_refresh_kin()
 
 
@@ -5331,7 +5349,7 @@ func _place(f: Foe, rank: int, col: int) -> void:
 		back[col] = f
 	# Any way into a mined slot but the reinforcement step's (a Swap, Minos's turn of the ranks)
 	# sets it off at once.
-	if not _reinforcing and not mines.is_empty():
+	if not _deploying and not mines.is_empty():
 		_land(f)
 
 

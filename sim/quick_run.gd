@@ -328,7 +328,7 @@ func _encounters(t: int) -> Array:
 			# formation holds the slot as before.
 			var c := db.next_elite(lead, t + 1, elites_dealt, rng.randf(), ramp())
 			enc["foe"] = str(c["id"]) if not c.is_empty() else ""
-			enc["index"] = 0
+			enc["index"] = elites_dealt.size()   # its place among the battle's elites: a layout's draw
 			if not c.is_empty():
 				elites_dealt.append(str(c["id"]))
 		out.append(enc)
@@ -381,7 +381,7 @@ func encounter_unit(enc: Dictionary) -> Unit:
 		"elite":
 			var c := db.elite_composition(lead, tier() + 1, str(enc.get("foe", "")))
 			if not c.is_empty():
-				var sq := Battlefield.pack_of(c, _deal_seed(), 0, lead)
+				var sq := Battlefield.pack_of(c, _deal_seed(), int(enc.get("index", 0)), lead)
 				if sq != null:
 					sq.boss_tier = tier()   # an elite stands at its battle's tier (31 October), as the field's do
 					return sq

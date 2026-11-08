@@ -135,7 +135,7 @@ static func cache_in_reach(b: Battle, m: Unit) -> Vector2i:
 		var h: Vector2i = c["pos"]
 		if not dests.has(h):
 			continue
-		var k := Vector2i(Hex.distance(m.pos, h), -b.field.cache_tier(c))
+		var k := Vector2i(Hex.distance(m.pos, h), -int(c.get("tier", 1)))
 		if best == Battlefield.NO_HEX or k.x < key.x or (k.x == key.x and k.y < key.y):
 			best = h
 			key = k

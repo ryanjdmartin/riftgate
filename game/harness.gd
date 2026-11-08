@@ -413,12 +413,15 @@ func _build_battle(page: VBoxContainer) -> void:
 	page.add_child(_section("Tier and ramp"))
 	var knobs := HBoxContainer.new()
 	knobs.add_theme_constant_override("separation", 12)
+	var ramp_knob := _stepper(setup.battle_ramp(), 0, Ramp.TOP, func(v: int) -> void:
+		setup.ramp = v
+		_refresh_summary(), "C", func() -> int: return ContentDB.first_ramp_of(setup.battle_tier))
 	knobs.add_child(_stepper(setup.battle_tier, 1, 3, func(v: int) -> void:
 		setup.battle_tier = v
+		setup.ramp = setup.battle_ramp()   # a tier is never fought under its first Convergence
+		_set_stepper(ramp_knob, setup.ramp, "C")
 		_refresh_summary(), "T"))
-	knobs.add_child(_stepper(setup.ramp, 0, Ramp.TOP, func(v: int) -> void:
-		setup.ramp = v
-		_refresh_summary(), "C"))
+	knobs.add_child(ramp_knob)
 	page.add_child(knobs)
 	page.add_child(_hint("T the tier, who comes and the boss's numbers; C the Convergence, the ramp: the field's size, the opening's count, the beat and the compositions its gates hold. A tier is never fought under its first Convergence (4 for T2, 8 for T3), so C rises to it."))
 
@@ -714,17 +717,20 @@ func _index_of(ob: OptionButton, value: String) -> int:
 	return 0
 
 
-## A number with buttons a thumb can hit: − value +.
-func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String = "") -> HBoxContainer:
+## A number with buttons a thumb can hit: − value +. `floor`, when given, is read at every press:
+## a lower bound that moves (the battle's Convergence under its tier's first).
+func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String = "", floor: Callable = Callable()) -> HBoxContainer:
 	var box := HBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
 	var shown := _label("%s%d" % [prefix, value], 20, Palette.INK)
 	shown.custom_minimum_size = Vector2(52, 0)
 	shown.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var v := [value]
+	box.set_meta("shown", shown)
+	box.set_meta("value", v)
 	for step in [-1, 1]:
 		var b := _button("−" if step < 0 else "+", func() -> void:
-			var nv := clampi(int(v[0]) + step, lo, hi)
+			var nv := clampi(int(v[0]) + step, maxi(lo, int(floor.call()) if floor.is_valid() else lo), hi)
 			if nv == int(v[0]):
 				return
 			v[0] = nv
@@ -735,6 +741,12 @@ func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String 
 		if step < 0:
 			box.add_child(shown)
 	return box
+
+
+## A stepper's number set from outside (the Convergence knob following the tier).
+func _set_stepper(box: HBoxContainer, value: int, prefix: String) -> void:
+	(box.get_meta("value") as Array)[0] = value
+	(box.get_meta("shown") as Label).text = "%s%d" % [prefix, value]
 
 
 func _label(text: String, size_px: int, color: Color) -> Label:

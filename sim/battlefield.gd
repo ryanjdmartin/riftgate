@@ -71,12 +71,12 @@ static func seam_start() -> int:
 ## known an interval ahead. Tears stay open.
 var tears: Array = []
 ## The caches lying on the field (the bible's loot rows; Ryan, 7 November: "have all the loot on
-## the field round 1, and anything that is flattened, or gets flattened, gets 'upgraded'"): each
-## {"id", "tier": the kind's tier it was seeded as, "pos": Vector2i, "flattened": bool}, seeded
-## with the map (seed_caches) short of the wall, standing a kind up once the seam has passed it
-## (cache_tier), claimed by a machine standing on it as the player's turn ends (Battle).
+## the field round 1"; 8 November: "farther away it is means more likely to spawn a higher tier
+## cache, and don't build any seam interaction yet"): each {"id", "tier": its kind's, "pos":
+## Vector2i}, seeded with the map (seed_caches) short of the wall, its kind likelier the better the
+## farther from the wall it lies, claimed by a machine standing on it as the player's turn ends or
+## as the battle is won (Battle). The seam does nothing to a cache.
 var caches: Array = []
-var cache_top: int = 0    # the top kind's tier, which a flattened cache never passes
 var peaks: int = 0        # Rift Pressure's peaks so far this battle
 var rift_spawns: int = 0  # packs the rift has sent (the runner reads both)
 var tear_spawns: int = 0
@@ -824,7 +824,6 @@ func peak() -> void:
 			tear_spawns += 1
 			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
 	seam_row = mini(seam_row + Ramp.seam_creep_at(ramp), apron_row())
-	flatten_caches()
 	for i in range(Ramp.tears_at(ramp)):
 		var at := tear_hex()
 		if at == NO_HEX:
@@ -930,24 +929,19 @@ static func recount_by_layout(sq: Unit) -> void:
 ## The caches, seeded with the map (content/loot.json): `per_battle` of them, one in each of as
 ## many bands along the wall, in the rows from `rift_gap` to `wall_gap` short of the apron (Ryan,
 ## 7 November: "we just don't seed loot that close to the wall"), on open ground a machine can end
-## a move on, on no unit, the rift and the gate aside; each kind by its weight, from a stream of
-## its own off the battle's seed, so the map's other draws stand as they were. A band with no
-## room seeds none. Those the seam has already passed stand a kind up from the start.
+## a move on, on no unit, the rift and the gate aside; each kind by its weight at the cache's depth
+## (a kind's weight read between its wall's-end and rift's-end values by the row, so the farther
+## from the wall the likelier a better kind: Ryan, 8 November), from a stream of its own off the
+## battle's seed, so the map's other draws stand as they were. A band with no room seeds none.
 func seed_caches(content: ContentDB, seed_arg: int) -> void:
 	caches = []
 	var kinds := content.loot_kinds()
 	var n := int(content.loot_rules.get("per_battle", 0))
-	cache_top = content.loot_top_tier()
 	if kinds.is_empty() or n <= 0:
 		return
 	var first := int(content.loot_rules.get("rift_gap", 3))
 	var last := apron_row() - int(content.loot_rules.get("wall_gap", 2))
 	if last < first:
-		return
-	var weight := 0.0
-	for k in kinds:
-		weight += float(content.loot[k].get("weight", 0))
-	if weight <= 0.0:
 		return
 	var rng := RandomNumberGenerator.new()
 	rng.seed = absi(hash([seed_arg, "caches"]))
@@ -962,15 +956,23 @@ func seed_caches(content: ContentDB, seed_arg: int) -> void:
 				break
 		if at == NO_HEX:
 			continue
-		var roll := rng.randf() * weight
-		var kind := str(kinds[0])
+		var depth := float(last - Hex.axial_to_offset(at).y) / float(maxi(1, last - first))   # 0 at the wall's end, 1 at the rift's
+		var weights: Array = []
+		var total := 0.0
 		for k in kinds:
-			roll -= float(content.loot[k].get("weight", 0))
+			var w: Array = content.loot[k].get("weight", [0, 0])
+			weights.append(lerpf(float(w[0]), float(w[1]), depth))
+			total += weights[weights.size() - 1]
+		if total <= 0.0:
+			continue
+		var roll := rng.randf() * total
+		var kind := str(kinds[0])
+		for j in range(kinds.size()):
+			roll -= float(weights[j])
 			if roll < 0.0:
-				kind = str(k)
+				kind = str(kinds[j])
 				break
-		caches.append({"id": i + 1, "tier": int(content.loot[kind].get("tier", 1)), "pos": at, "flattened": false})
-	flatten_caches(true)
+		caches.append({"id": i + 1, "tier": int(content.loot[kind].get("tier", 1)), "pos": at})
 
 
 ## Whether a cache may lie on a hex: open ground on the field (a step to cross, no water and no
@@ -992,26 +994,6 @@ func cache_at(h: Vector2i) -> Dictionary:
 		if c["pos"] == h:
 			return c
 	return {}
-
-
-## A cache's tier as it stands: its own, one up once the seam has flattened it (the top kind's
-## stays the top).
-func cache_tier(c: Dictionary) -> int:
-	var t := int(c.get("tier", 1))
-	if bool(c.get("flattened", false)):
-		t += 1
-	return mini(t, maxi(cache_top, int(c.get("tier", 1))))
-
-
-## The seam passes a cache (a row nearer the rift than the seam's: the flattening's side), which
-## stands a kind up from then on, once. `quiet` at the start, when nothing has happened yet.
-func flatten_caches(quiet: bool = false) -> void:
-	for c in caches:
-		if bool(c["flattened"]) or Hex.axial_to_offset(c["pos"]).y >= seam_row:
-			continue
-		c["flattened"] = true
-		if not quiet:
-			log.append("The seam flattens a cache at %s: it stands a kind up" % str(c["pos"]))
 
 
 ## A pusher's wall segment (the long wall brief 3.3; Ryan, 5 November: rift packs "can target a

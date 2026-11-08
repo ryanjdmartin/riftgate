@@ -922,9 +922,8 @@ func _draw_rupture_bar() -> void:
 ## The caches lying on the field (the bible's loot rows; built 7 November): each a white diamond
 ## on a black plate, as many pips in it as its kind's tier (a Derelict one, a Carcass two, a Relic
 ## three) and its kind's name over it, so a kind reads by its structure and its name, never a hue
-## (white is good's; the plaque's look is settled). A cache the seam has flattened shows the kind
-## it stands as now, its plate edged twice. Under the units: a machine standing on one draws over
-## its dimmed mark, and claims it as the turn ends. A first cut, judged on the phone.
+## (white is good's; the plaque's look is settled). Under the units: a machine standing on one draws
+## over its dimmed mark, and claims it as the turn ends. A first cut, judged on the phone.
 func _draw_caches() -> void:
 	if field == null or field.caches.is_empty():
 		return
@@ -933,17 +932,12 @@ func _draw_caches() -> void:
 	for c in field.caches:
 		var h: Vector2i = c["pos"]
 		var at := center(h)
-		var t := field.cache_tier(c)
+		var t := int(c.get("tier", 1))
 		var a := 0.45 if field.unit_at(h) != null else 1.0
 		var r := HEX_SIZE * 0.46
 		var pts := PackedVector2Array([at + Vector2(0, -r), at + Vector2(r * 0.85, 0), at + Vector2(0, r), at + Vector2(-r * 0.85, 0)])
 		draw_colored_polygon(pts, Color(0, 0, 0, 0.85 * a))
 		Hud.stroke_poly(self, pts, Color(Palette.INK, a), _px(3.0))
-		if bool(c.get("flattened", false)):
-			var inner := PackedVector2Array()
-			for p in pts:
-				inner.append(at + (p - at) * 0.72)
-			Hud.stroke_poly(self, inner, Color(Palette.INK, 0.8 * a), _px(2.0))
 		for k in range(t):
 			var dot := at + Vector2((float(k) - float(t - 1) * 0.5) * r * 0.42, 0.0)
 			draw_circle(dot, maxf(_px(3.0), r * 0.12), Color(Palette.INK, a))

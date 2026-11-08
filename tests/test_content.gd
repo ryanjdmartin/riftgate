@@ -199,7 +199,7 @@ func test_the_compositions_go_by_tier() -> void:
 		var tiers: Array = c.get("tiers", [1])
 		c["tiers"] = tiers.filter(func(t) -> bool: return int(t) != 2)
 	db.factions[fid]["compositions"] = comps.filter(func(c) -> bool: return not (c["tiers"] as Array).is_empty())
-	assert_eq(db.spawn_table(fid, 2), db.spawn_table(fid, 1), "a tier with none takes the highest under it")
+	assert_true(db.spawn_table(fid, 2).is_empty(), "a tier with none has none: nothing stands in from the tier below (8 November), which is why every domain writes every size at every tier")
 	# The validator.
 	var hero := ""
 	for id in db.foes.keys():
@@ -1099,6 +1099,12 @@ func test_a_compositions_ramp_gate_deals_it_and_its_tier_is_covered() -> void:
 	s.battle_tier = 3
 	s.ramp = 0
 	assert_eq(s.battle_ramp(), ContentDB.first_ramp_of(3), "the harness raises a battle's Convergence to its tier's first")
+	assert_true(ContentDB.ramp_holds({"ramp": [8, Ramp.TOP]}, Ramp.TOP + 3), "a Convergence past the finale's reads as the top: a gate to the top holds it")
+	# A tier with none of a size has none: nothing stands in from the tier below (8 November).
+	var bare := _fresh()
+	bare.factions["meadow"]["compositions"] = (bare.factions["meadow"]["compositions"] as Array).filter(func(c) -> bool: return not (str(c.get("size", "")) == "formation" and ContentDB.composition_tiers(c).has(3)))
+	assert_true(bare.compositions("meadow", 3, "formation").is_empty(), "no tier-three formation: none dealt, not tier two's")
+	assert_false(bare.compositions("meadow", 2, "formation").is_empty(), "tier two's stay its own")
 
 
 func test_the_validator_holds_a_compositions_squad_layout_and_lead() -> void:
@@ -1119,6 +1125,7 @@ func test_the_validator_holds_a_compositions_squad_layout_and_lead() -> void:
 		"deep": [_with(base, "layout", {"front": [null, null, null, null], "back": ["treant", null, null, null]}), "names the massive treant"],
 		"crowded": [_with(base, "layout", {"front": ["treant", null, null, null], "back": ["goblin", null, null, null]}), "the back cell behind it is null"],
 		"many": [_with(base, "layout", {"front": ["goblin", "goblin", "goblin", null], "back": ["goblin", null, null, null]}), "names goblin in 4 cells, past its strength of 3"],
+		"thin": [_with(base, "layout", {"front": ["treant", "goblin", null, null], "back": [null, ["mandragora", "goblin"], null, null]}), "can place 2 of its 3 goblin"],
 	}
 	for tag in cases.keys():
 		var c: Dictionary = (cases[tag][0] as Dictionary).duplicate(true)

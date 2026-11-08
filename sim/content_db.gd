@@ -899,6 +899,7 @@ func _validate_layout(cw: String, layout, strength_of: Dictionary, errs: Array) 
 		errs.append("%s: layout is {front: [four cells], back: [four cells]}" % cw)
 		return
 	var named := {}
+	var could := {}   # foe id -> the cells that may hold it, a listing cell counting for each it lists
 	for r in ["front", "back"]:
 		for col in range(4):
 			var cell = layout[r][col]
@@ -918,6 +919,7 @@ func _validate_layout(cw: String, layout, strength_of: Dictionary, errs: Array) 
 				if not strength_of.has(str(fid)):
 					errs.append("%s: layout %s cell %d names %s, none of its members" % [cw, r, col, fid])
 					continue
+				could[str(fid)] = int(could.get(str(fid), 0)) + 1
 				named[str(fid)] = int(named.get(str(fid), 0)) + 1
 				if int(foes[str(fid)].get("size", 1)) >= 2:
 					if r == "back":
@@ -927,22 +929,24 @@ func _validate_layout(cw: String, layout, strength_of: Dictionary, errs: Array) 
 	for fid in named.keys():
 		if int(named[fid]) > int(strength_of[fid]):
 			errs.append("%s: layout names %s in %d cells, past its strength of %d" % [cw, fid, int(named[fid]), int(strength_of[fid])])
+	# Every member can stand (the pack is what the layout places, 7 November): as many cells may
+	# hold a member as its strength, a listing cell counting for each foe it lists.
+	for fid in strength_of.keys():
+		if int(could.get(str(fid), 0)) < int(strength_of[fid]):
+			errs.append("%s: layout can place %d of its %d %s; a member the layout cannot place is never dealt" % [cw, int(could.get(str(fid), 0)), int(strength_of[fid]), fid])
 
 
 ## A faction's compositions of a size at a tier (1 to 3, the shown number), in content order,
 ## each as {"id", "size", "faction", "members": [[foe_id, strength], ...]}; every size in turn
-## when `size` is empty. A tier with none of a size takes the highest tier's under it, as the
+## when `size` is empty. A tier with none of a size has none: nothing stands in (Ryan, 8 November:
+## "we've either defined the escort or we haven't"; the content tests want every size at every tier), as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
 ## tier. Nothing when the faction has none.
 func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1) -> Array:
 	var out: Array = []
 	var sizes: Array = [size] if not size.is_empty() else COMPOSITION_SIZES
 	for sz in sizes:
-		for t in range(clampi(tier, 1, 3), 0, -1):
-			var found := _compositions_at(faction_id, t, str(sz), ramp)
-			if not found.is_empty():
-				out.append_array(found)
-				break
+		out.append_array(_compositions_at(faction_id, clampi(tier, 1, 3), str(sz), ramp))
 	return out
 
 
@@ -1000,7 +1004,8 @@ static func ramp_holds(c: Dictionary, ramp: int) -> bool:
 	var g = c.get("ramp", null)
 	if ramp < 0 or not (g is Array) or (g as Array).size() != 2:
 		return true
-	return ramp >= int(g[0]) and ramp <= int(g[1])
+	var r := Ramp.clampc(ramp)   # the Convergence runs on past the finale's 12; the gates end there
+	return r >= int(g[0]) and r <= int(g[1])
 
 
 ## The Convergence a tier is first fought at (tier 1 to 3): a rift keeps the tier it opened at and
@@ -1160,7 +1165,7 @@ func validate() -> Array[String]:
 
 
 ## The caches' kinds (content/loot.json): one a tier, from 1 up with none missing, each a shown
-## name, a weight to be seeded by, salvage [lo, hi], a count of components and a blueprint
+## name, a weight to be seeded by at [the wall's end, the rift's end] of the cache rows, salvage [lo, hi], a count of components and a blueprint
 ## chance from 0 to 1, its internal text under design.
 func _validate_loot(errs: Array[String]) -> void:
 	var tiers := {}
@@ -1178,8 +1183,8 @@ func _validate_loot(errs: Array[String]) -> void:
 		else:
 			tiers[int(t)] = id
 		var wt = e.get("weight", null)
-		if not (wt is float or wt is int) or float(wt) < 0.0:
-			errs.append("%s: weight is a number, 0 or more" % w)
+		if not (wt is Array) or (wt as Array).size() != 2 or not (wt as Array).all(func(x) -> bool: return (x is float or x is int) and float(x) >= 0.0):
+			errs.append("%s: weight is [at the wall, at the rift], each 0 or more" % w)
 		var sv = e.get("salvage", null)
 		if not (sv is Array) or (sv as Array).size() != 2 or not (sv as Array).all(func(x) -> bool: return x is float or x is int) or int(sv[0]) < 0 or int(sv[0]) > int(sv[1]):
 			errs.append("%s: salvage is [lo, hi], 0 <= lo <= hi" % w)

@@ -1,13 +1,12 @@
 extends TestCase
 
 ## The caches lying on the field (the bible's loot rows; Ryan, 7 November: "have all the loot on
-## the field round 1, and anything that is flattened, or gets flattened, gets 'upgraded.' So fetch
-## lesser loot while it's safe, or fetch better loot later at greater risk"): seeded with the map
-## short of the wall, a kind up once the seam passes, claimed by a machine standing on one as the
-## turn ends, its contents its kind's and the battle tier's, banked by the campaign as the kills
-## are, kept by a save, and read on a tap. Content-agnostic: the kinds and their numbers are the
-## content's, every id read from it.
-
+## the field round 1"; 8 November: "place the loot, farther away it is means more likely to spawn a
+## higher tier cache, and don't build any seam interaction yet"): seeded with the map short of the
+## wall, the better kinds likelier the farther from the wall, claimed by a machine standing on one
+## as the turn ends or as the battle is won, its contents its kind's and the battle tier's, banked
+## by the campaign as the kills are, kept by a save, and read on a tap. Content-agnostic: the kinds
+## and their numbers are the content's, every id read from it.
 
 func _team() -> Array:
 	var db := ContentDB.load_default()
@@ -54,7 +53,7 @@ func test_the_caches_lie_on_the_field_from_the_start_short_of_the_wall() -> void
 			assert_eq(BattleMap.step_cost(int(f.map.terrain[h]), []), BattleMap.STEP, "on open ground a machine can end a move on")
 			assert_true(f.unit_at(h) == null, "on no unit")
 			assert_false(db.loot_kind_of_tier(int(c["tier"])).is_empty(), "of one of the content's kinds")
-			assert_eq(bool(c["flattened"]), row < f.seam_row, "flattened from the start where the seam has already passed")
+			assert_false(c.has("flattened"), "the seam does nothing to a cache (8 November)")
 			seen_kinds[int(c["tier"])] = true
 			for o in f.caches:
 				if o != c:
@@ -70,23 +69,50 @@ func test_the_caches_lie_on_the_field_from_the_start_short_of_the_wall() -> void
 	assert_true(seen_kinds.size() >= 2, "more than one kind comes up")
 
 
-func test_a_cache_the_seam_flattens_stands_a_kind_up_once() -> void:
-	var b := _battle()
-	var f := b.field
+## A cache's kind follows its depth (Ryan, 8 November): each kind's weight is read between its
+## wall's-end and rift's-end values by the row, so a kind weighted nothing at the wall never lies in
+## the nearest row, and over many battles the better kinds lie deeper.
+func test_a_caches_kind_is_likelier_the_better_the_farther_from_the_wall() -> void:
 	var db := ContentDB.load_default()
-	var top := db.loot_top_tier()
-	var col := 2
-	var at := Hex.offset_to_axial(col, f.seam_row)   # on the seam's row: not yet passed
-	f.caches = [{"id": 90, "tier": 1, "pos": at, "flattened": false}, {"id": 91, "tier": top, "pos": Hex.offset_to_axial(col + 4, f.seam_row), "flattened": false}]
-	assert_eq(f.cache_tier(f.caches[0]), 1, "the lowest kind while the seam has not passed it")
-	f.peak()
-	assert_true(f.seam_row > Hex.axial_to_offset(at).y, "the seam creeps past it")
-	assert_true(bool(f.caches[0]["flattened"]), "flattened")
-	assert_eq(f.cache_tier(f.caches[0]), 2, "it stands a kind up: lesser loot while it is safe, better later")
-	assert_eq(f.cache_tier(f.caches[1]), top, "the top kind stays the top")
-	assert_true(f.log.any(func(l) -> bool: return str(l).contains("flattens a cache")), "the log says so")
-	f.peak()
-	assert_eq(f.cache_tier(f.caches[0]), 2, "once: the seam passing further adds nothing")
+	var kinds := db.loot_kinds()
+	var top := str(kinds[kinds.size() - 1])
+	var low := str(kinds[0])
+	assert_eq(float(db.loot[top]["weight"][0]), 0.0, "the content's top kind is weighted nothing at the wall's end")
+	assert_true(float(db.loot[low]["weight"][0]) > float(db.loot[low]["weight"][1]), "and its lowest kind leans to the wall")
+	var rows := {}   # tier -> [rows]
+	var last := 0
+	for sd in range(1, 25):
+		var b := Battle.new(sd)
+		b.setup(_team(), "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+		last = b.field.apron_row() - int(db.loot_rules["wall_gap"])
+		for c in b.field.caches:
+			var row := Hex.axial_to_offset(c["pos"]).y
+			if int(c["tier"]) == int(db.loot[top]["tier"]):
+				assert_true(row < last, "seed %d: the top kind never lies in the row nearest the wall" % sd)
+			if not rows.has(int(c["tier"])):
+				rows[int(c["tier"])] = []
+			(rows[int(c["tier"])] as Array).append(row)
+	assert_true(rows.has(int(db.loot[top]["tier"])) and rows.has(int(db.loot[low]["tier"])), "both kinds come up over 24 battles")
+	var mean := func(xs: Array) -> float:
+		var t := 0.0
+		for x in xs:
+			t += float(x)
+		return t / maxf(1.0, float(xs.size()))
+	assert_true(mean.call(rows[int(db.loot[top]["tier"])]) < mean.call(rows[int(db.loot[low]["tier"])]), "the top kind lies deeper (a lower row) than the lowest, on the whole")
+
+
+## A battle won mid-turn (the boss's fall) banks the last turn's fetch (8 November): a machine
+## standing on a cache as the boss dies claims it as it would at the turn's end.
+func test_a_cache_under_a_machine_is_claimed_as_the_battle_is_won() -> void:
+	var b := _battle()
+	b.field.caches.clear()
+	var m: Unit = b.mechs()[0]
+	b.field.caches.append({"id": 7, "tier": 1, "pos": m.pos})
+	b.field.units.erase(b.boss)   # the boss's fight won, as finish_skirmish leaves it
+	assert_true(b._check_outcome(), "the battle is decided")
+	assert_eq(b.outcome, Battle.Outcome.VICTORY, "won")
+	assert_eq(b.loot.size(), 1, "the cache under the machine claimed with the win")
+	assert_true(b.field.caches.is_empty(), "and off the field")
 
 
 func test_a_machine_standing_on_a_cache_claims_it_as_the_turn_ends() -> void:
@@ -97,7 +123,7 @@ func test_a_machine_standing_on_a_cache_claims_it_as_the_turn_ends() -> void:
 	var h := _reachable(b, m)
 	assert_ne(h, Battlefield.NO_HEX, "a hex its move reaches")
 	var kind := db.loot_kind_of_tier(1)
-	b.field.caches.append({"id": 7, "tier": 1, "pos": h, "flattened": false})
+	b.field.caches.append({"id": 7, "tier": 1, "pos": h})
 	assert_false(b.move_to(m, h).is_empty(), "the machine moves onto it")
 	assert_false(b.field.cache_at(h).is_empty(), "the cache waits for the turn's end: an undo never shows what it holds")
 	assert_true(b.loot.is_empty(), "nothing claimed yet")
@@ -122,7 +148,7 @@ func test_a_machine_standing_on_a_cache_claims_it_as_the_turn_ends() -> void:
 	assert_eq(got["salvage"], want["salvage"], "what it holds is drawn from the battle's seed and the cache, the same whenever it is opened")
 	assert_eq(got["components"], want["components"], "the same components")
 	assert_true(b.field.log.any(func(l) -> bool: return str(l).contains("claims a %s" % str(e["name"]))), "the log says who claimed what")
-	b.field.caches.append({"id": 8, "tier": 1, "pos": Hex.offset_to_axial(0, 1), "flattened": false})
+	b.field.caches.append({"id": 8, "tier": 1, "pos": Hex.offset_to_axial(0, 1)})
 	b.forced = []
 	b.end_turn()
 	assert_eq(b.loot.size(), 1, "a cache nobody stands on stays where it lies")
@@ -142,15 +168,15 @@ func test_a_caches_blueprint_is_one_the_run_lacks() -> void:
 	b.blueprints_known = pool.slice(1)
 	var found := 0
 	for id in range(1, 41):
-		var got := b.open_cache({"id": id, "tier": bp_tier, "pos": Vector2i.ZERO, "flattened": false})
+		var got := b.open_cache({"id": id, "tier": bp_tier, "pos": Vector2i.ZERO})
 		if not str(got["blueprint"]).is_empty():
 			found += 1
 			assert_eq(str(got["blueprint"]), lacked, "the one blueprint the run lacks")
 	assert_true(found > 0, "the chance comes up across caches")
 	b.blueprints_known = pool.duplicate()
 	for id in range(1, 41):
-		assert_eq(str(b.open_cache({"id": id, "tier": bp_tier, "pos": Vector2i.ZERO, "flattened": false})["blueprint"]), "", "none when the run holds them all")
-	var low := b.open_cache({"id": 1, "tier": 1, "pos": Vector2i.ZERO, "flattened": false})
+		assert_eq(str(b.open_cache({"id": id, "tier": bp_tier, "pos": Vector2i.ZERO})["blueprint"]), "", "none when the run holds them all")
+	var low := b.open_cache({"id": 1, "tier": 1, "pos": Vector2i.ZERO})
 	if float(db.loot[db.loot_kind_of_tier(1)].get("blueprint", 0.0)) <= 0.0:
 		assert_eq(str(low["blueprint"]), "", "a kind with no chance holds none")
 
@@ -196,12 +222,10 @@ func test_the_campaign_banks_the_loot_as_it_banks_the_kills() -> void:
 func test_a_save_keeps_the_caches_and_what_was_claimed() -> void:
 	var b := _battle()
 	assert_false(b.field.caches.is_empty(), "caches on the field")
-	b.field.caches[0]["flattened"] = true
 	b.loot = [{"kind": "x", "tier": 2, "salvage": 12, "components": ["a", "b"], "blueprint": "c", "by": 3}]
 	b.blueprints_known = ["a", "c"]
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
-	assert_eq(back.field.caches, b.field.caches, "the caches where they lie, flattened or not")
-	assert_eq(back.field.cache_top, b.field.cache_top, "and the top kind")
+	assert_eq(back.field.caches, b.field.caches, "the caches where they lie")
 	assert_eq(back.loot, b.loot, "what was claimed")
 	assert_eq(back.blueprints_known, b.blueprints_known, "and the run's blueprints it opened against")
 
@@ -225,18 +249,15 @@ func test_the_content_refuses_a_bad_kind() -> void:
 func test_a_tap_on_a_cache_says_its_kind_and_likely_contents() -> void:
 	var b := _battle()
 	var db := ContentDB.load_default()
-	var top := db.loot_top_tier()
-	var c := {"id": 5, "tier": 1, "pos": Vector2i.ZERO, "flattened": false}
-	b.field.cache_top = top
+	var c := {"id": 5, "tier": 1, "pos": Vector2i.ZERO}
 	var lines := BattleScreen.cache_lines(b.field, c)
 	var said := "\n".join(lines.map(func(l) -> String: return str(l.get("text", ""))))
 	var e: Dictionary = db.loot[db.loot_kind_of_tier(1)]
 	assert_true(said.contains(str(e["name"]).to_upper()), "its kind")
 	assert_true(said.contains("%d to %d" % [int(e["salvage"][0]), int(e["salvage"][1])]), "its kind's salvage, a range, never the number")
-	assert_true(said.contains("Once the seam flattens it"), "that the seam would stand it a kind up")
+	assert_false(said.contains("seam"), "nothing of the seam: it does nothing to a cache")
 	assert_true(said.contains("claims it"), "how it is claimed")
-	c["flattened"] = true
-	var up := BattleScreen.cache_lines(b.field, c)
+	var top := db.loot_top_tier()
+	var up := BattleScreen.cache_lines(b.field, {"id": 6, "tier": top, "pos": Vector2i.ZERO})
 	var said_up := "\n".join(up.map(func(l) -> String: return str(l.get("text", ""))))
-	assert_true(said_up.contains(str(db.loot[db.loot_kind_of_tier(2)]["name"]).to_upper()), "flattened, the kind a tier up")
-	assert_true(said_up.contains("Flattened by the seam"), "and why")
+	assert_true(said_up.contains(str(db.loot[db.loot_kind_of_tier(top)]["name"]).to_upper()), "the top kind by its name")
