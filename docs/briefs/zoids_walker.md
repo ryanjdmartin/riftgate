@@ -2,6 +2,13 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "proposal", "slot": true, "name": "the Zoids walker"} -->
 
+**Ryan's direction (6 November)**: The rapid on kill is now kind of the Kites thing. We should look
+at something more Sentai or Zoids or something related. This could still be Aphelion's 10th, so
+let's keep that in mind.
+
+One idea I had was like a "shadow panther" where every hit pierces armour, and on kill it gains
+Phased, but it's very squishy.
+
 The session decides whose machine the fast four-legged walker is, then its name, passive and
 tier with that answer.
 

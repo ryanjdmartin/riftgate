@@ -329,17 +329,17 @@ Kept on purpose, said so: an effect kind content may yet use is kept only in one
   "Withdraw") and "POOL 02"; misplaced docs in the bot and the screen; the Flechette Pod's and
   the Musk Ox's design text still describing the spray and random targets.
 
-## On the long wall branch, not fixed here
+## The long wall's cut, landed
 
-That branch cuts reinforcement inside a fight (the pool, the reserve, `_reinforce`'s random
-path, `reserve_counts`), withdrawal and the reserve plaques, and leaves dead behind it there:
-every `_reinforcing` read, the pool's half of `parts_down`, `_schedule_regrowth`,
-`_fall_with_cores`, `_refresh_kin` and the "fight won" tests, the bot's reinforcement estimates
-(`arrival_odds`, `waiting_for` and their kin), and the screen's reserve view. Delete them there.
-Its `_clear_dead_slots` and `_regrow_parts` hunks are written against the code before today's
-spend's order, so taking main it settles those by hand; Latent: a part held to get back up is
-invisible to `_schedule_regrowth` today, so an Undying part would be scheduled to regrow and
-then rise as well (no content pairs them).
+The long wall landed on main on 8 November, just before the audit's own landing, with
+reinforcement inside a fight cut: the pool, the reserve, `_reinforce`'s random path, `reserve_counts`, every `_reinforcing`
+read, withdrawal and the reserve plaques are gone. What the audit expected it to leave behind is
+for the Unused pass to check again on main as it stands: the bot's reinforcement estimates
+(`arrival_odds`, `waiting_for` and their kin, reading a queue `begin` now empties), the engine's
+loops over `reinforcements`, the pool's half of `parts_down`, and `_schedule_regrowth`,
+`_fall_with_cores` and `_refresh_kin` beside the corpse a regrowing part now keeps. Latent: a
+part held to get back up is invisible to `_schedule_regrowth`, so an Undying part would be
+scheduled to regrow and then rise as well (no content pairs them).
 
 ## Order of work, proposed
 

@@ -451,9 +451,16 @@ Open, with Claude's new picks (21 October):
 
 ## Open for Ryan
 
-Nothing in this brief (21 October). The last two slots are their briefs' (`kestrel_magpie.md`,
-`kestrel_owl.md`), taken up in another session (Ryan, 21 October: "I'll take up the last 2
-chassis in another session").
+Two of the built four are not finished (Ryan's notes on the hangar's Designs tab, 5 November,
+folded 7 November), for the design session the to-do names for them:
+
+- **The Giant Petrel**: "marked built, but it is far from completed. Placeholder model,
+  unrefined kit."
+- **The Needletail**: "marked built, but it is far from completed. Placeholder model,
+  unrefined, dull, kit, not worthy of tier 2."
+
+The last two slots are their briefs' (`kestrel_magpie.md`, `kestrel_owl.md`), taken up in
+another session (Ryan, 21 October: "I'll take up the last 2 chassis in another session").
 
 Done 21 October: the Buzzard's stock (above); the names, the designations and the stock
 pieces (the picks above), the Spindrift Salvo kept; Expose left out of the lean (Ryan); the

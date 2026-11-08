@@ -11,9 +11,9 @@ extends RefCounted
 ##                          never a stop, through the other packs and under the flyers
 ##   2. the player's turn   (Battle) first every fight a hunter forced (forced_fights: its prey
 ##                          in its ring, or the machine it took when its prey is sealed off), then
-##                          fights the player picks (attack_roster): a fight is at the pack
-##                          attacked, every pack whose ring covers it joins, and the machines
-##                          committed are those whose attack range covers it
+##                          fights the player picks (attack_roster): one pack is one fight (the
+##                          long wall brief 3.4), nothing joins it, and the machines committed are
+##                          those whose attack range covers it
 ##   3. enemy_turn()        the packs walk what plan_walks says; a pack on the gate's apron
 ##                          strikes it
 ##
@@ -43,8 +43,11 @@ var rift_pressure_max: int = 12   # the timer: the ramp's (Ramp.timer_at), set b
 var spawn_faction: String = ""    # the faction a composition that names none belongs to
 ## The ramp the battle reads its counts and speed from (Ramp): the campaign's live Convergence.
 var ramp: int = 0
+## The battle's seed (Battle.setup sets it; the save restores it from the battle's): the caches'
+## seeding reads it.
+var seed_value: int = 0
 ## The compositions the rift sends, cycled (the foes' fresh start, 30 October): each
-## {"id", "size", "faction", "members": [[foe_id, strength], ...]}, formations and patrols in
+## {"id", "size", "faction", "members": [[foe_id, strength], ...], "layout": its eight cells}, formations and patrols in
 ## turn, the lead's and the guest's in turn. The game fills this from content.
 var cycle: Array = []
 ## The compositions the tears send, cycled: the patrols, the lead's and the guest's in turn.
@@ -52,20 +55,36 @@ var patrol_cycle: Array = []
 var _cycle_index: int = 0
 var _patrol_index: int = 0
 ## The flattening's edge (the pacing session, 30 October): the row the rift's bleed reaches,
-## total on the rift's row and gone here, SEAM_START at the start; it creeps south a peak
+## total on the rift's row and gone here, seam_start() at the start; it creeps south a peak
 ## (Ramp.seam_creep_at) as the clock's picture, as far as the apron. No rule reads the
 ## flattened hexes; the tears open on the seam's row.
-const SEAM_START := 5
-var seam_row: int = SEAM_START
+var seam_row: int = BattleMap.MOUTH_ROWS + 1   # seam_start()
+
+
+## Where the seam stands at a battle's start (the long wall brief 3.2): one row below the rift's
+## mouth at any depth, 5 (the old field's number at 20 rows, the first row past the mouth at 12).
+static func seam_start() -> int:
+	return BattleMap.MOUTH_ROWS + 1
 ## The tears (Ryan's name, 30 October): the mouths beside the rift's, each {"pos": Vector2i,
 ## "opened": the phase it opened at}. A tear opens at a peak on the seam's row, far from the
 ## other mouths, and sends a patrol at every peak after, so where the next flood comes from is
 ## known an interval ahead. Tears stay open.
 var tears: Array = []
+## The hunters that turned on a machine since the screen last asked ([hunter id, prey id], in
+## order; pick_prey): the battle hands them over (Battle.take_locks) for the declaration on
+## screen (Ryan, 8 November: "Declare when a hunter selects a target").
+var locks: Array = []
+## The caches lying on the field (the bible's loot rows; Ryan, 7 November: "have all the loot on
+## the field round 1"; 8 November: "farther away it is means more likely to spawn a higher tier
+## cache, and don't build any seam interaction yet"): each {"id", "tier": its kind's, "pos":
+## Vector2i}, seeded with the map (seed_caches) short of the wall, its kind likelier the better the
+## farther from the wall it lies, claimed by a machine standing on it as the player's turn ends or
+## as the battle is won (Battle). The seam does nothing to a cache.
+var caches: Array = []
 var peaks: int = 0        # Rift Pressure's peaks so far this battle
 var rift_spawns: int = 0  # packs the rift has sent (the runner reads both)
 var tear_spawns: int = 0
-const TIMER_FLOOR := 2    # the interval never shortens below this
+const TIMER_FLOOR := 1    # the interval never shortens below this (the long wall brief 3.2)
 const NO_HEX := Vector2i(-9999, -9999)
 var phase: int = 0
 var log: Array[String] = []
@@ -326,14 +345,28 @@ func pick_prey(sq: Unit) -> Unit:
 	var best: Unit = null
 	var best_key := 0
 	for m in mechs():
-		if Effects.never_hunted(m):
+		if Effects.never_hunted(m) or hunted_by_other(m, sq):
 			continue
 		var key := _prey_key(sq, m)
 		if best == null or key < best_key:
 			best = m
 			best_key = key
+	# One hunter a machine (Ryan, 8 November): with every machine hunted already it pushes for the
+	# wall instead, and turns on a machine once one is free, which the log says.
+	var was := sq.prey
 	sq.prey = best.id if best != null else 0
+	if best != null and sq.prey != was:
+		log.append("%s turns on %s" % [sq.display_name, best.display_name])
+		locks.append([sq.id, best.id])
 	return best
+
+
+## Whether another hunter on the field already hunts this machine.
+func hunted_by_other(m: Unit, sq: Unit) -> bool:
+	for other in packs():
+		if other != sq and other.behaviour == "hunt" and other.prey == m.id:
+			return true
+	return false
 
 
 ## How a hunter's caveat ranks a machine as prey: the lowest key is picked.
@@ -590,7 +623,25 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 			if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
 				best_key = key
 				goal = hx
+	elif not on_apron(sq, sq.pos) and sq.goal_col >= 0:
+		# A pusher walks to its wall segment (the long wall brief 3.3): the apron hex in its goal
+		# column when it is land and reachable, else the reachable land apron hex nearest that
+		# column, ties toward the gate's column, then the nearer walk.
+		var gate_col := Hex.axial_to_offset(map.gate).x
+		var best := Vector3i(1 << 30, 0, 0)
+		for h in dist.keys():
+			var hx: Vector2i = h
+			if not on_apron(sq, hx) or not _landable(sq, hx, blocked) or not _land(hx):
+				continue
+			var col := Hex.axial_to_offset(hx).x
+			var key := Vector3i(absi(col - sq.goal_col), absi(col - gate_col), int(dist[hx]))
+			if key.x < best.x or (key.x == best.x and (key.y < best.y or (key.y == best.y and key.z < best.z))):
+				best = key
+				goal = hx
+		if best.x == 1 << 30:
+			w.waits = true
 	elif not on_apron(sq, sq.pos):
+		# No segment (a pack made by hand, a hunter left without prey): the nearest apron hex.
 		var best := 1 << 30
 		for h in dist.keys():
 			var hx: Vector2i = h
@@ -620,6 +671,12 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	if prey != null and _distance_from(sq, w.end, prey) <= sq.zone:
 		w.catches = prey.id
 	return w
+
+
+## Whether a hex is land: neither water nor a wall (a pusher's segment is a land apron hex).
+func _land(h: Vector2i) -> bool:
+	var t := int(map.terrain.get(h, BattleMap.Terrain.PLAIN))
+	return t != BattleMap.Terrain.WATER and t != BattleMap.Terrain.MOUNTAIN
 
 
 ## Dijkstra over the horde's ground from a pack's hex: [cost, prev]. Unbounded, or inside
@@ -682,8 +739,10 @@ func enemy_turn() -> Dictionary:
 
 ## The fights a hunter forces (bible section 5): every hunter that has caught a machine
 ## (`catch_of`: its prey inside its ring, or the machine it took when its prey is sealed off),
-## and that fight comes first on the player's turn. One fight per caught machine, with every
-## hunter that caught it, in field order: [{"prey": Unit, "hunters": Array[Unit]}].
+## and those fights come first on the player's turn. One pack is one fight (the long wall brief
+## 3.4), a catch included (Ryan, 7 November, of two hunters on one machine: "Wouldn't it be two
+## fights, since we're no longer merging fights?"): a fight per hunter, the prey in each, a prey's
+## catches together, in field order: [{"prey": Unit, "hunters": [the hunter]}].
 func forced_fights() -> Array:
 	var order: Array = []
 	var by_prey: Dictionary = {}
@@ -694,27 +753,23 @@ func forced_fights() -> Array:
 		if prey == null:
 			continue
 		if not by_prey.has(prey.id):
-			by_prey[prey.id] = {"prey": prey, "hunters": []}
+			by_prey[prey.id] = []
 			order.append(prey.id)
-		by_prey[prey.id]["hunters"].append(sq)
+		(by_prey[prey.id] as Array).append({"prey": prey, "hunters": [sq]})
 	var out: Array = []
 	for pid in order:
-		out.append(by_prey[pid])
+		out.append_array(by_prey[pid])
 	return out
 
 
-## The fight at `targets` (bible section 5): every other pack whose ring covers a target joins,
-## and the machines whose attack range covers a target may be committed.
-## {"targets": Array[Unit], "joins": Array[Unit], "in_range": Array[Unit]}.
+## The fight at `targets`: one pack is one fight (the long wall brief 3.4; Ryan, 5 November, of
+## the rings and the joining: "it just adds so much complexity for not a lot of gain"), so no
+## other pack joins it, and the machines whose attack range covers a target may be committed. The
+## target is one pack: the one ordered onto, or the hunter that caught a machine (a forced fight).
+## A ring is read only by a hunter's catch (catch_of, reaches, the walk's catch).
+## {"targets": Array[Unit], "joins": Array[Unit] (always empty), "in_range": Array[Unit]}.
 func attack_roster(targets: Array) -> Dictionary:
 	var joins: Array[Unit] = []
-	for p in packs():
-		if targets.has(p) or p.sealed:
-			continue   # a sealed boss's ring is inert (30 October)
-		for t in targets:
-			if in_ring(p, t):
-				joins.append(p)
-				break
 	var in_range: Array[Unit] = []
 	for m in mechs():
 		for t in targets:
@@ -738,7 +793,8 @@ func _direction_index(from: Vector2i, to: Vector2i) -> int:
 	return 0
 
 
-## Whether `u` stands inside the pack's ring.
+## Whether `u` stands inside the pack's ring: a hunter's catch (the one reader since the long
+## wall brief 3.4).
 static func in_ring(sq: Unit, u: Unit) -> bool:
 	return unit_distance(sq, u) <= sq.zone
 
@@ -809,25 +865,167 @@ func pack_name(foe_id: String) -> String:
 
 
 ## A composition emerges at a mouth (the rift, a tear, or where the setup places it): a pack of
-## its members at the ramp's density, dressed by its lead, on the nearest free hex to the mouth
+## its members as content writes them, dressed by its lead, on the nearest free hex to the mouth
 ## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
 ## appears on top of a detachment). Null for a composition with no members.
 func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
-	var members: Array = []
-	for m in c.get("members", []):
-		members.append([str(m[0]), Ramp.scaled(int(m[1]), ramp)])
-	if members.is_empty():
+	var sq := pack_of(c, spawn_faction)
+	if sq == null:
 		return null
-	var fac := str(c.get("faction", spawn_faction))
-	var sq := Unit.pack(0, "", Vector2i.ZERO, fac if not fac.is_empty() else spawn_faction, Unit.PACK_MOVE, 0, str(members[0][0]))
-	sq.set_members(members)
-	sq.composition = str(c.get("id", ""))
-	sq.composition_size = str(c.get("size", ""))
 	sq.display_name = pack_name(sq.foe_id)
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
+	assign_goal(sq)
 	return sq
+
+
+## A composition dealt as a pack, wherever it is fought (the field's emerge, the quick campaign's
+## encounters, the harness's fight; Ryan, 7 November: one code tree for both modes): its members as
+## content writes them (the ramp scales no pack), its lead first (the long wall brief, section 6:
+## the member whose sprite and walk the pack wears; the first member when it names none), its
+## threat rating, its grid (eight cells, the fight's layout) and the pack counted to what the grid
+## holds. Unplaced, unnamed and undressed: the caller does those. Null for no members.
+static func pack_of(c: Dictionary, fallback_faction: String = "") -> Unit:
+	var members: Array = []
+	for m in c.get("members", []):
+		members.append([str(m[0]), int(m[1])])
+	if members.is_empty():
+		return null
+	var lead := str(c.get("lead", ""))
+	for i in range(members.size()):
+		if str(members[i][0]) == lead and i > 0:
+			members.push_front(members.pop_at(i))
+			break
+	var fac := str(c.get("faction", ""))
+	var sq := Unit.pack(0, "", Vector2i.ZERO, fac if not fac.is_empty() else fallback_faction, Unit.PACK_MOVE, 0, str(members[0][0]))
+	sq.set_members(members)
+	sq.composition = str(c.get("id", ""))
+	sq.composition_size = str(c.get("size", ""))
+	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
+	sq.layout = Array(c.get("layout", [])).duplicate()
+	recount_by_layout(sq)
+	return sq
+
+
+## A pack with a layout is what the layout places (no reinforcement inside a fight, Ryan, 6
+## November): its members recounted from the named cells, a kind's count capped at the strength
+## the composition gives it, the lead first while one stands. Content's grid and its members
+## agree by construction (ContentDB.grid_members); the harness's and the tests' hand-made
+## compositions may not, and are counted here. No layout keeps the members as given, and so
+## does one that names nothing, which is dropped so the fight deploys them heaviest first.
+static func recount_by_layout(sq: Unit) -> void:
+	if sq.layout.is_empty():
+		return
+	var cap := {}
+	for m in sq.member_list():
+		cap[str(m[0])] = int(cap.get(str(m[0]), 0)) + int(m[1])
+	var counts := {}
+	var order: Array = []
+	for cell in sq.layout:
+		var fid := str(cell)
+		if fid.is_empty() or int(counts.get(fid, 0)) >= int(cap.get(fid, 0)):
+			continue
+		if not counts.has(fid):
+			order.append(fid)
+		counts[fid] = int(counts.get(fid, 0)) + 1
+	if order.is_empty():
+		sq.layout = []
+		return
+	var lead := sq.foe_id
+	if order.has(lead):
+		order.erase(lead)
+		order.push_front(lead)
+	var members: Array = []
+	for fid in order:
+		members.append([fid, int(counts[fid])])
+	sq.set_members(members)
+
+
+## The caches, seeded with the map (content/loot.json): `per_battle` of them, one in each of as
+## many bands along the wall, in the rows from `rift_gap` to `wall_gap` short of the apron (Ryan,
+## 7 November: "we just don't seed loot that close to the wall"), on open ground a machine can end
+## a move on, on no unit, the rift and the gate aside; each kind by its weight at the cache's depth
+## (a kind's weight read between its wall's-end and rift's-end values by the row, so the farther
+## from the wall the likelier a better kind: Ryan, 8 November), from a stream of its own off the
+## battle's seed, so the map's other draws stand as they were. A band with no room seeds none.
+func seed_caches(content: ContentDB, seed_arg: int) -> void:
+	caches = []
+	var kinds := content.loot_kinds()
+	var n := int(content.loot_rules.get("per_battle", 0))
+	if kinds.is_empty() or n <= 0:
+		return
+	var first := int(content.loot_rules.get("rift_gap", 3))
+	var last := apron_row() - int(content.loot_rules.get("wall_gap", 2))
+	if last < first:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = absi(hash([seed_arg, "caches"]))
+	for i in range(n):
+		var lo := (map.width * i) / n
+		var hi := maxi(lo, (map.width * (i + 1)) / n - 1)
+		var at := NO_HEX
+		for attempt in range(32):
+			var h := Hex.offset_to_axial(rng.randi_range(lo, hi), rng.randi_range(first, last))
+			if _cache_fits(h):
+				at = h
+				break
+		if at == NO_HEX:
+			continue
+		var depth := float(last - Hex.axial_to_offset(at).y) / float(maxi(1, last - first))   # 0 at the wall's end, 1 at the rift's
+		var weights: Array = []
+		var total := 0.0
+		for k in kinds:
+			var w: Array = content.loot[k].get("weight", [0, 0])
+			weights.append(lerpf(float(w[0]), float(w[1]), depth))
+			total += weights[weights.size() - 1]
+		if total <= 0.0:
+			continue
+		var roll := rng.randf() * total
+		var kind := str(kinds[0])
+		for j in range(kinds.size()):
+			roll -= float(weights[j])
+			if roll < 0.0:
+				kind = str(kinds[j])
+				break
+		caches.append({"id": i + 1, "tier": int(content.loot[kind].get("tier", 1)), "pos": at})
+
+
+## Whether a cache may lie on a hex: open ground on the field (a step to cross, no water and no
+## wall), no unit on it, not the rift's or the gate's, and no cache beside it.
+func _cache_fits(h: Vector2i) -> bool:
+	if not map.has(h) or map.is_structure(h) or unit_at(h) != null:
+		return false
+	if BattleMap.step_cost(int(map.terrain.get(h, BattleMap.Terrain.PLAIN)), []) != BattleMap.STEP:
+		return false
+	for c in caches:
+		if Hex.distance(c["pos"], h) <= 1:
+			return false
+	return true
+
+
+## The cache on a hex, {} for none.
+func cache_at(h: Vector2i) -> Dictionary:
+	for c in caches:
+		if c["pos"] == h:
+			return c
+	return {}
+
+
+## A pusher's wall segment (the long wall brief 3.3; Ryan, 5 November: rift packs "can target a
+## segment left or right of it, reducing clogging and creating extra tension. The variance of
+## where they target can even be a ramp factor"): the rift's column and a draw in [-spread,
+## +spread], the spread the ramp's (Ramp.spread_at) unless one is given, clamped to the wall. The
+## draw takes no stream, only the turn and the pack's id, so a resumed battle draws as the
+## unbroken one did. A hunter and the boss draw none. Called as a pack is dealt (emerge: the
+## start's placements and every spawn).
+func assign_goal(sq: Unit, spread: int = -1) -> void:
+	if sq.is_boss or sq.behaviour != "push":
+		return
+	if spread < 0:
+		spread = Ramp.spread_at(ramp, map.width)
+	var draw := (phase * 31 + sq.id * 17) % (2 * spread + 1) - spread
+	sq.goal_col = clampi(Hex.axial_to_offset(map.rift).x + draw, 0, map.width - 1)
 
 
 ## Whether a machine stands beside a hex.

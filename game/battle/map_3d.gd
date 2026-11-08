@@ -253,7 +253,7 @@ func _world(px: Vector2, height: float = 0.0) -> Vector3:
 
 
 func _hex_world(h: Vector2i, height: float = 0.0) -> Vector3:
-	return _world(Hex.to_pixel(h, hex_px), height)
+	return _world(MapOrient.to_pixel(h, hex_px), height)
 
 
 ## How far above its grid cell a hex's top sits on screen right now, in map pixels
@@ -932,7 +932,7 @@ func motion_of(uid: int) -> Dictionary:
 ## The pivot's yaw for one of the six facings: the model faces -Z (north) at rest and
 ## screen-down is +Z, so the facing turns the other way from the pixel direction.
 static func facing_yaw(facing: int) -> float:
-	var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[facing], 1.0).normalized()
+	var d: Vector2 = MapOrient.to_pixel(Hex.DIRECTIONS[facing], 1.0).normalized()
 	return atan2(-d.x, -d.y)
 
 
@@ -1058,7 +1058,7 @@ func _line_mark(mesh: Mesh, col: Node3D) -> MeshInstance3D:
 
 
 func _mark_mesh(y: float) -> ArrayMesh:
-	var corners := Hex.corners(Vector2.ZERO, hex_px - 3.0)
+	var corners := MapOrient.corners(Vector2.ZERO, hex_px - 3.0)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var c := _world(Vector2.ZERO, y)
@@ -1073,8 +1073,8 @@ func _mark_mesh(y: float) -> ArrayMesh:
 ## map pixels deep: UV.x carries each corner's distance in, which mark_line.gdshader turns
 ## into a line of one width on screen.
 func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
-	var outer := Hex.corners(Vector2.ZERO, hex_px - 1.0)
-	var inner := Hex.corners(Vector2.ZERO, hex_px - 1.0 - GRID_RIBBON * 2.0 / sqrt(3.0))
+	var outer := MapOrient.corners(Vector2.ZERO, hex_px - 1.0)
+	var inner := MapOrient.corners(Vector2.ZERO, hex_px - 1.0 - GRID_RIBBON * 2.0 / sqrt(3.0))
 	var edge := Vector2.ZERO
 	var deep := Vector2(GRID_RIBBON, 0.0)
 	var st := SurfaceTool.new()
@@ -1108,8 +1108,8 @@ const GRID_INSET := 0.4   # design pixels between the column's edge and the line
 const GRID_RIBBON := 3.0
 
 func _grid_geo(y: float) -> Dictionary:
-	var outer := Hex.corners(Vector2.ZERO, hex_px - 0.75)
-	var inner := Hex.corners(Vector2.ZERO, hex_px - 0.75 - GRID_RIBBON * 2.0 / sqrt(3.0))   # a corner's inset is measured along the edge's normal, not the radius, and exactly: UV.x says how deep it is
+	var outer := MapOrient.corners(Vector2.ZERO, hex_px - 0.75)
+	var inner := MapOrient.corners(Vector2.ZERO, hex_px - 0.75 - GRID_RIBBON * 2.0 / sqrt(3.0))   # a corner's inset is measured along the edge's normal, not the radius, and exactly: UV.x says how deep it is
 	var v := PackedVector3Array()
 	var uv := PackedVector2Array()
 	var edge := Vector2.ZERO
@@ -1154,7 +1154,7 @@ const GRID_GAIN_PHONE := 1.5
 
 ## One hex of flat ground as a polygon: the dark rim under the columns, for the grid gaps.
 func _hex_mesh(inset: float) -> ArrayMesh:
-	var corners := Hex.corners(Vector2.ZERO, hex_px - inset)
+	var corners := MapOrient.corners(Vector2.ZERO, hex_px - inset)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for i in range(1, corners.size() - 1):
@@ -1171,7 +1171,7 @@ func _hex_mesh(inset: float) -> ArrayMesh:
 ## hex's far bank that faces the camera. `colour` rides on the top's vertices for a shader
 ## that wants per-hex data (the road's links).
 func _column_geo(h: float, sides: Array, colour: Color = Color.WHITE) -> Array:
-	var corners := Hex.corners(Vector2.ZERO, hex_px - 0.75)
+	var corners := MapOrient.corners(Vector2.ZERO, hex_px - 0.75)
 	var top: Array[Vector3] = []
 	for c in corners:
 		top.append(_world(c, h))
@@ -1210,7 +1210,7 @@ func _build_ground() -> void:
 	var rock := _terrain_material("rock")
 	var map := field.map
 	var rng := RandomNumberGenerator.new()
-	var corners := Hex.corners(Vector2.ZERO, hex_px)
+	var corners := MapOrient.corners(Vector2.ZERO, hex_px)
 	var hexes: Array = map.all_hexes().duplicate()
 	hexes.append_array(map.margin.keys())
 	for h in hexes:
@@ -1220,13 +1220,13 @@ func _build_ground() -> void:
 		var hgt := _height_of(h)
 		# Which edges need a wall: those facing a neighbour at another height, or none.
 		var sides: Array = []
-		var here := Hex.to_pixel(h, hex_px)
+		var here := MapOrient.to_pixel(h, hex_px)
 		for i in range(corners.size()):
 			var mid: Vector2 = (corners[i] + corners[(i + 1) % corners.size()]) * 0.5
 			var across := here + mid * 2.0
 			var other: float = -999.0
 			for nb in Hex.neighbors(h):
-				if (map.has(nb) or map.margin.has(nb)) and Hex.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
+				if (map.has(nb) or map.margin.has(nb)) and MapOrient.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
 					other = _height_of(nb)
 			sides.append(absf(other - hgt) > 0.01)
 		var band := _band(h)
@@ -1463,7 +1463,7 @@ func _wall_model(col: Node3D, look: String, hgt: float, rng: RandomNumberGenerat
 ## A hex prism's trace, `inset` of the hex's radius in from its rim: its top's rim and its
 ## corners' edges down to `from`.
 func _prism_lines(inset: float, from: float, to: float) -> Dictionary:
-	var corners := Hex.corners(Vector2.ZERO, hex_px - inset)
+	var corners := MapOrient.corners(Vector2.ZERO, hex_px - inset)
 	var v := PackedVector3Array()
 	for i in range(corners.size()):
 		var a := _world(corners[i], to)
@@ -1476,7 +1476,7 @@ func _prism_lines(inset: float, from: float, to: float) -> Dictionary:
 
 ## A hex prism `inset` in from the hex's rim, from `from` up to `to`: its top and every side.
 func _prism_geo(inset: float, from: float, to: float) -> Array:
-	var corners := Hex.corners(Vector2.ZERO, hex_px - inset)
+	var corners := MapOrient.corners(Vector2.ZERO, hex_px - inset)
 	var tv := PackedVector3Array()
 	for i in range(1, corners.size() - 1):
 		for j in [0, i + 1, i]:
@@ -1621,12 +1621,22 @@ func outline_boxes() -> PackedVector4Array:
 	return out
 
 
+## A structure's scale along the wall (the long wall brief 7.1). The ground is stretched in
+## depth so the pitched camera lays it on the 2D grid; a model is not. With the wall at the
+## bottom it runs across the screen and needs nothing; at the left it runs into the screen's
+## depth, foreshortened by the pitch, so it stretches by as much along its own length (its
+## local x, turned into the depth) to meet the next segment.
+func _along_wall() -> Vector3:
+	return Vector3(1.0 / _sin, 1.0, 1.0) if MapOrient.wall_left else Vector3.ONE
+
+
 func _build_structures() -> void:
 	var map := field.map
 	if MechView3D.has_model("gate"):
 		var g := _model("gate", "arsenal")
 		g.position = _hex_world(map.gate)
-		g.rotation.y = PI   # turned about, so its portcullis face is the one the player sees
+		g.rotation.y = MapOrient.yaw(PI)   # turned about, so its portcullis face is the one the player sees; with the wall at the left, toward the city
+		g.scale = _along_wall()
 		_bake_model(g, _band(map.gate))   # with ink on its creases, so the towers and reveals read as geometry
 		_baked_models.append(g)
 	if MechView3D.has_model("wall"):
@@ -1640,7 +1650,8 @@ func _build_structures() -> void:
 			if Hex.axial_to_offset(mh).y == map.height - 1 and not map.city.has(mh):
 				bottom.append(mh)
 		var m := _model("wall", "arsenal")   # one segment, baked at every place on the line
-		m.rotation.y = PI
+		m.rotation.y = MapOrient.yaw(PI)
+		m.scale = _along_wall()
 		for w in bottom:
 			m.position = _hex_world(w)
 			_bake_model(m, _band(w))
@@ -1672,7 +1683,7 @@ func sync() -> void:
 	for u in field.units:
 		seen[u.id] = true
 		if u.is_player() and not u.traits.has("flyer"):
-			occupied[Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else _hex_of(u)] = true
+			occupied[MapOrient.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else _hex_of(u)] = true
 		var node: Node3D = _units.get(u.id, null)
 		if node == null:
 			node = _make_unit(u)
@@ -1681,7 +1692,7 @@ func sync() -> void:
 			add_child(node)
 			_units[u.id] = node
 			_phase[u.id] = float(u.id) * 1.7
-		var under: Vector2i = Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else _hex_of(u)
+		var under: Vector2i = MapOrient.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else _hex_of(u)
 		var y: float = float(_lift.get(under, 0.0)) / (_cos * _ppu)
 		var ground_y := y
 		if u.traits.has("flyer"):
@@ -1689,7 +1700,7 @@ func sync() -> void:
 			# through a mesa), just clear of the tallest thing there. Over ground the other
 			# world has taken, the painting is flat, so it flies level with it, and the
 			# height it flies at eases between hexes rather than stepping (Ryan, the same day).
-			var under_px: Vector2 = _origin + (_anim_px[u.id] if _anim_px.has(u.id) else Hex.to_pixel(_hex_of(u), hex_px))
+			var under_px: Vector2 = _origin + (_anim_px[u.id] if _anim_px.has(u.id) else MapOrient.to_pixel(_hex_of(u), hex_px))
 			# Whether the ground here is still the reconstruction's: the same threshold the
 			# compositor paints at, so the flyer clears the geometry wherever it can be seen
 			# and flies level only where the painting has taken it.

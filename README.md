@@ -18,15 +18,15 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     fight by ring and who can be committed by attack range, the wall struck from anywhere
     along it, Rift Pressure's peaks (the rift's cycle, the tears and the seam)
   - `ramp.gd` the ramp, one table of placeholders by the Convergence: the compositions on the
-    field at the start and their density, the timer, the tears a peak and the seam's creep,
+    field at the start (it scales no pack), the timer, the tears a peak and the seam's creep,
     and by the tier the Fractures and which of them bring an elite
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
-    keywords, heat, shields, injuries, withdraw, outcome
+    keywords, heat, shields, injuries, outcome
   - `loadouts.gd` sample dice and packs for prototypes and tests
-  - `harness_setup.gd` what the harness launches (team, loadouts, enemy side, seed, map
-    type), built into a battle or a skirmish, kept between launches
+  - `harness_setup.gd` what the harness launches (team, loadouts, a battle as a run deals it,
+    a fight, seed, map shape), built into a battle or a skirmish, kept between launches
   - `policy.gd` a player for the headless skirmish, a ladder of skill (random, blind, greedy,
     and a planner that rolls each decision out two rounds) with personas on top, so balance can
     be measured over thousands of fights
@@ -53,16 +53,19 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
     `policy.gd`; the turtle and the detaching personas), for the campaign runner
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
-  `foes.json`, `chassis.json`, `components.json`, `modules.json`. Placeholder numbers. `reserved_names.json` is
+  `foes.json`, `chassis.json`, `components.json`, `modules.json`, `loot.json` (the field's caches). Placeholder numbers. `reserved_names.json` is
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
   on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/` — scenes and presentation.
-  - `harness.tscn` is the main scene, three tabs over launch buttons that stay put: TEAM
+  - `harness.tscn` is the main scene, four tabs over launch buttons that stay put: TEAM
     (who deploys, in the order ticked, and each machine's hardpoints, any component on any
-    hardpoint), ENEMY (the packs, the boss and a guest faction, loaded from a faction and
-    edited from there) and SETUP (seed, map shape or the one the seed draws, HUD colour). Battle plays the whole loop
-    with the packs as its formation and its rift's cycle; Fight chains them all with the
-    boss into one skirmish; Resume battle below, while a save exists;
+    hardpoint), BATTLE (a battle as a run deals it: the domain, which of its bosses, a guest
+    domain, the tier and the ramp), FIGHT (a composition picked by its domain, tier and threat
+    rating, fought alone with its layout; or one unit by hand, loaded from a faction and edited
+    from there: the packs' foes as one pack, or a boss at the tier with them as its escort, its own
+    curated escort with none) and SETUP
+    (seed, map shape or the one the seed draws, HUD colour). Battle plays the BATTLE tab's
+    battle, Fight the FIGHT tab's fight; Resume battle below, while a save exists;
     Quick campaign starts one on SETUP's seed, and Resume quick campaign picks a saved one up.
     What was last launched is kept in `user://harness.json` (`sim/harness_setup.gd`)
   - `battle/battle_screen.gd` the battle screen: the map with the turn around it, the panel
@@ -248,7 +251,7 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # its domain's first pack, and the finale's line promoted; --noparty drops them), played by random
 # and by greedy over 200 seeds a cell, written to docs/balance.md (several hours on one core,
 # about two in four parts, below); the team cells run under both targeting
-# rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
+# rules and a section compares them. --seeds N, --policies greedy,
 # --cool-above 50 (the cautious persona: each machine keeps its heat under half its maximum,
 # venting early and holding a hot spend above the line; the pricing driver passes it on too),
 # --overheat 2 (a what-if: an overheat burns two hull a point past the maximum; the driver's too),
@@ -274,7 +277,18 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # --pack goblin:3 or --pack goblin:4+mandragora:2 (repeatable) adds a composed pack, one foe type
 # times a strength or several together in one fight (its id "pack:" and the spec, for --packs
 # and --trace), so patrols and a front with a back read beside the spawn lists' packs (26 October).
+# --packs promise runs the promise read instead of the matrix (the long wall brief, section 5):
+# every patrol, formation and elite composition at each tier it names, fought by the default four
+# machines cut to its threat rating, one short and one over, each cell its win rate, rounds and
+# hull lost; printed, and written to --out when one is given (about forty minutes at 30 seeds).
+# --packs curve runs the curve read for the formation pass (7 November): every such composition
+# against the four cut to every size from one to four, random and greedy, each cell's band (free,
+# a decision, a wall) and greedy's hull lost, its menace, ramp gate and rating, the sizes it is a
+# decision for and the peers whose bands it matches at every size, candidates for pruning;
+# printed, and written to --out (about two minutes a seed, so an hour at 30).
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
+perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
+perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs curve --seeds 30 --out /tmp/curve.md
 # the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
 # report, and --merge writes the report from the parts (same options on every part and the merge;
 # the merged report reads as a whole run, the time the longest part's)
@@ -287,31 +301,32 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # the relief (the steps, the lone hexes, a ring's jogs), then every map shape compared on as
 # many seeds; written to docs/map_survey.md (about fifteen minutes). --type KIND
 # (steppe, the baseline, or river, fjord, badlands, city, gorge: BattleMap.KINDS) for the detailed report, --seeds N,
-# --move M, --w/--h for another size; --show SEED prints one map as text.
+# --move M, --w/--h (--width/--height) for another size, 20 by 12 the long wall's field (the default is
+# the old field's, for the old reads); --show SEED prints one map as text.
 perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 
 # the campaign runner: whole runs played headless by a plain player (it defends the front
-# nearest to falling, hunts the nearest enemy on the map, fights at the greedy rung), measuring
+# nearest to falling, plays the defence rule on the map, fights at the greedy rung), measuring
 # the campaign's placeholders: runs won, cities fallen, wipes, components destroyed per battle;
-# written to docs/campaign_run.md. --runs N, --seed S, --policy random; --trace SEED prints one
-# run battle by battle instead. The squad moves as one (the pack nearest the squad, every
-# machine in range fighting it, allies walking into range of a hunter's catch before it opens);
-# --solo walks each machine toward its own nearest enemy, the rule before 26 October, for
-# comparison. --withdraw N puts the fight bot's withdrawing persona on every fight the player
-# picks (withdraw under N percent of the fighters' hull; a hunter's catch is fought out), and the
-# report then counts the fights withdrawn from. --turtle holds the squad on the two rows before
-# the gate at its columns, fighting only what comes within reach (the stall's read, 30 October);
-# --detach sends one machine at the nearest patrol within five hexes while the body fights the
-# nearest formation (a detachment's price). The report reads the Rupture meter and the mouths
-# (Fractures, the Rupture and the stall guard, peaks, what the rift and the tears sent, elites,
-# menace killed, gate damage) and the fights by what they held (patrols, formations, elites, the boss)
+# written to docs/campaign_run.md. --runs N, --seed S, --policy random, --shape KIND (every
+# battle on that map shape; the long wall brief's reads use steppe); --trace SEED prints one run
+# battle by battle instead. The defence rule (BattleBot, the long wall brief section 5): a
+# hunter's catch first, allies walking into reach of it; then each machine onto the pack it can
+# stand beside that reaches the wall soonest, ties by the larger threat rating and the nearer; one
+# with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie),
+# the rest walking toward the soonest, never the sealed boss; every fight fought out (there is no
+# withdrawal). The report reads the field's size, the Rupture meter and the mouths (Fractures,
+# the Rupture and the stall guard, peaks, what the rift and the tears sent, elites, menace
+# killed, gate damage), the pressure ratio (the threat ratings at the wall or reaching it this
+# turn over the machines standing: a run's mean, its turns above one, its battles' highest) and
+# the fights by the pack's threat rating and the machines in them, with the stalemates (ten
+# rounds of nothing changed) apart from the fights stalled at the cap
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
-perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40 --withdraw 50 --out /tmp/campaign_w50.md
 
 # the quick campaign's runner (25 October): whole quick campaigns played headless (three draft chassis
 # at random, the fights by Policy, a plain player picking and fitting the loot by tier), written to
 # docs/quick_run.md: runs won, where they end, each battle's hull before its boss and kit, each kind of
-# fight by tier. --runs N, --seed S, --policy random|planner, --team a,b,c, --density a,b,c (by tier);
+# fight by tier. --runs N, --seed S, --policy random|planner, --team a,b,c;
 # --trace SEED prints one run fight by fight. Minutes on four parts, then the merge:
 for i in 0 1 2 3; do perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/quick_run.gd -- --runs 40 --part $i/4 --json build/quick_$i.json & done; wait
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/quick_run.gd -- --merge build/quick_0.json,build/quick_1.json,build/quick_2.json,build/quick_3.json
@@ -371,8 +386,8 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_prob
 python3 tools/special_probe_read.py build
 # formations back to back (25 October, docs/quick_campaign_proposal.md): every starter trio (or four: --squads fours,
 # or a JSON file of squads, as endgame_fours.py --json prints the endgame fours) against one domain's formation up
-# to nine times in a row, hull, shield, injuries and wrecks carried, with no shield back between fights and with one
-# field recharge; --density F scales the formation; four parts in parallel, then the reader
+# to nine times in a row, hull, injuries and wrecks carried, the shield full as each fight opens (the long wall
+# brief: no field recharge); --density F scales the formation; four parts in parallel, then the reader
 perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
 python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squads build/endgame_fours.json
 python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain_1.json build/chain_2.json build/chain_3.json
@@ -385,7 +400,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # and the first foe's: gauges, chips, a foe's intent), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
 # enemyturn (RIFTGATE_SHOT_FRAME=8 catches the acting foe lit), chips (every unit crowded with chips, the rows wrapping:
-# seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), reserve (the reinforcements waiting by rank on the plaques at the formation's edge, a massive one among them; RIFTGATE_SHOT_FRAME=120 once they have flown in), reservelist (their list pulled out by a tap), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
+# seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), and swallowed (the first machine swallowed: a ghost under a dashed edge).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
@@ -425,12 +440,14 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # vents blast would fire at with its die's vent wears the turning dashed ring and the number.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_MAP_VIEW=left|bottom (any run) turns the battle map for the run without touching the saved
+# MAP VIEW setting (MapOrient): the wall at the left with the rift at the right (flat-top, the default),
+# or at the bottom with the rift at the top; the battle screen's `queue` pose (two orders onto two
+# packs) shows the fight queue's numbers, ENGAGE 1 OF 2 and the action pips.
 # RIFTGATE_BLEED_DEBUG=1 (any run) gives the whole field to the painted world, to judge a domain's
 # tileset in place (RIFTGATE_FACTION=meadow|waste|marsh|peak picks the domain on the standalone
 # screen); `xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd
 # -- tilesets.png [frame]` draws all four side by side.
-# RIFTGATE_POOL_DEBUG=1 (any skirmish) flies a foe on the field into the pool's count every couple
-# of seconds, to judge the join running.
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on
 # every foe showing a blow (+1 where none is coming, its number unchanged), to judge the pulse
 # running; RIFTGATE_FOES=wolf:4 fields the real thing, howls lifting the bites after them.
@@ -469,7 +486,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 # the quick campaign's screens: draft, picked, hangar (RIFTGATE_SHOT_H=3000 shows the stores at its foot),
-# chooser, fight (no withdrawal), track, rewards, over
+# chooser, fight, track, rewards, over
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/quick/quick_run_screen.tscn shot.png hangar
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
 # the die's iconography on one sheet (every main mark and what it holds, whom a piece reaches, the
@@ -635,8 +652,7 @@ and then the next round's dice show. Tap a foe or a mech for its
 numbers, its statuses with icons and text, and the intent arrows that concern it, and tap it
 again to close it (one readout at a time, a die's included; a tap on nothing closes it too);
 the eye shows every arrow; double-tap any unit for its codex entry; MENU's KEYWORDS lists every
-keyword. Withdraw is offered at any point
-of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
+keyword. A fight ends in the pack's fall or the team's: there is no withdrawal. Blank faces
 are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness. A
 battle started from the harness is saved after every change (`user://battle.json`, written
 by `sim/save.gd`: the map by its seed, every unit, the player's turn (who has moved and
@@ -644,7 +660,7 @@ fought, the fights hunters forced) and the fight under way with its dice and ran
 loses nothing: Resume battle opens it where it stood, straight into the fight if one was
 on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
-The harness can add any faction's boss; a massive foe fills both ranks of a column. For the
+The harness's FIGHT tab can add any faction's boss; a massive foe fills both ranks of a column. For the
 standalone screen, `RIFTGATE_FOES=warrior,goblin:3,white_mage` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
 `RIFTGATE_BOSS=1` adds the faction's boss, `RIFTGATE_TERRAIN=<ground>` dresses the field, and
 `RIFTGATE_SKIRMISH_CONTROLS=bottom|middle` places the controls over the saved setting.
@@ -664,13 +680,13 @@ it can reach light up; tap a lit hex, or drag a route from it, and it moves ther
 staying in hand while it can act; UNDO MOVE takes the move back until it fights. With a
 machine in hand, tap a pack (or drag the machine onto it) and it moves into range and is
 ordered onto that fight; tap the pack again to take the order back. The map shows the next
-fight: its target, the packs whose ring covers it, the machines ordered in. The bottom-left
+fight: its target and the machines ordered in (one pack is one fight: nothing joins it). The bottom-left
 button reads ENGAGE while a fight is ready and dives the map onto it, handing over to the
 skirmish screen. A fight spends a machine's action until the next turn (the Dingo has two). A hunter that ends its
 walk beside its prey has caught it: the next turn opens with a CAUGHT band, and that fight is
-the next one ENGAGE opens. END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, machines
-that did not fight recharge, and Rift Pressure ticks. The skirmish's Back button applies the
-result: wrecks leave the map, packs shrink to their survivors; Rift Pressure ticks on the map's enemy turns only, never
+the next one ENGAGE opens. END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, and Rift
+Pressure ticks; nothing returns on the map, since the shield is full as every fight opens. The skirmish's Back button
+applies the result: wrecks leave the map, packs shrink to their survivors; Rift Pressure ticks on the map's enemy turns only, never
 inside a fight. The battle ends when the gate falls, every mech is wrecked, or the boss
 dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate for its
 integrity. MENU on either

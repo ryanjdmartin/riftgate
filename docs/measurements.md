@@ -4870,3 +4870,363 @@ the harder fight section 9 asks for wants the massive band in both numbers (the 
 of 7 or 8 with the 30 to 40 HP), an escort each, or its curveball read on the map (the hunter's
 catch, the World Eater's push), which no cell reads; the HP alone is not the lever. Ryan's to mark
 (the bible's section 12), then the 200-seed read.
+
+
+## 6 November, the long wall's Phase 1 reads
+
+The reads the long wall's build brief asks for (`git show 68381ff:docs/briefs/long_wall_build.md`, section 10), on
+`ccr-56b5169d-lsa2rg` with Phase 1 built: the field 20 by 12 at every Convergence; the tide (the
+beat 3 turns, 2 from Convergence 8, the siege a turn short of its first peak at the start, the
+beat halved at the Rupture); a pusher's segment of the wall; one pack one fight from beside it;
+no withdrawal; the shield full at every fight's start, with the shield regen at zero everywhere;
+the threat rating (a patrol 1, a formation 3, an elite and the boss 4); the rerolls at two. Every
+new number is a placeholder (the table at the end). Each read is a direction and called one: 40
+runs of the campaign runner on the steppe, 30 seeds of the balance runner, 200 maps of the survey.
+
+### The campaign runner: 40 runs on the steppe
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe` (139 s): the greedy rung, each run the draft's
+three machines of its tender at random, the defence rule on the map (the brief's section 5: a
+hunter's catch first, then each machine onto the pack it can stand beside that reaches the wall
+soonest, ties by the larger rating and then the nearer, the rest walking toward the soonest,
+never the sealed boss, every fight fought out).
+
+| Measure | Mean | Range |
+|---|---|---|
+| Runs won | 0 of 40 | |
+| Turns a run | 5.72 | 5 to 8 |
+| The turn the first city fell | 0.50 | 0 to 2 |
+| Battles: won, held after a wipe, fell | 1%, 12%, 86% of 185 | |
+| Battles ended in a team wipe | 97% | |
+| Machines wrecked a battle | 1.76 | 0 to 3 |
+| Phases a battle | 5.64 | 1 to 12 |
+| Gate damage a battle | 134 | 0 to 200 |
+| Peaks of Rift Pressure a battle | 0.94 | 0 to 7 |
+| Compositions the rift sent a battle | 0.94 | 0 to 7 |
+| Patrols the tears sent a battle | 1.25 | 0 to 21 |
+| Tears open at a battle's end | 0.94 | 0 to 7 |
+| Elites spawned a battle | 0.34 | 0 to 1 |
+| Fractures reached a battle (of 3.01 held) | 0.75 | 0 to 3 |
+| Battles reaching the Rupture | 14% | |
+| Of those, by the stall guard | 0% | |
+| The turn the seal broke, where it did | 3.37 | 2 to 6 |
+| Stalemate fights (ten rounds with no foe's HP, hull or shield changed) | 0 | |
+| Fights stalled past the fight bot's cap of 60 rounds | 0 | |
+
+The pressure ratio, as each player's turn opens: the ratings of the packs on the apron and of
+those whose walk ends there this coming enemy turn, over the machines standing.
+
+| Measure | Mean | Range |
+|---|---|---|
+| A run's mean over its turns | 0.87 | 0.27 to 3.29 |
+| Turns above 1.0, percent of a run's | 21 | 7 to 50 |
+| A battle's highest, a run's mean | 1.56 | 0.60 to 5.00 |
+
+The fights, 481 (2.6 a battle), by the pack's rating and the machines the defence rule sent at it:
+
+| A fight for | Machines in it | Fights | Won |
+|---|---|---|---|
+| 1 | 1 | 94 | 61% |
+| 1 | 2 | 30 | 83% |
+| 1 | 3 | 7 | 85% |
+| 3 | 1 | 169 | 5% |
+| 3 | 2 | 52 | 48% |
+| 3 | 3 | 54 | 96% |
+| 4 | 1 | 45 | 8% |
+| 4 | 2 | 21 | 95% |
+| 4 | 3 | 9 | 88% |
+
+Read, in bands, a direction. The campaign is a wall for the plain player on the defence rule: no
+run won, the first city falling on the first or second turn, 86% of battles fell and 97% ended
+in a wipe, so the battles are short (five or six phases) and the tide's later beats (under one
+peak a battle), the Fractures (0.75 of 3) and the Rupture (14%) are barely reached. The fights
+table shows where it breaks: the rule sends each machine at the pack nearest the wall it can
+reach, so on a wall twenty long the three split, and 169 of the 481 fights are one machine
+against a formation, won 5%; a formation fought by the three it is rated for is won 96%, by two
+48%. A patrol fought alone is won 61% (worn machines among them); an elite fought by two is won
+95%, so at tier zero an elite reads as a fight for two, its four unearned (the elites' numbers,
+the to-do). The pressure ratio sits under one on average and above it a fifth of the turns. The
+defence rule is the floor the brief built for these reads, not the player Ryan's change to the
+runner will make (the to-do's engine line).
+
+### The promise read: every composition at its rating, one short and one over
+
+`tools/balance.gd -- --packs promise --seeds 30` (15,600 fights in 2,685 s): every patrol,
+formation and elite composition of every domain at each tier it names, against the runner's
+default team (the Honey Badger, the Clydesdale, the Kite and the Baboon, stock) cut to the
+composition's threat rating (its first N machines), one short (N − 1) and one over (N + 1, four
+at most); random and greedy, 30 seeds a cell, a direction. The escorts are left out (they fight
+with their boss). The team is tier one's at every tier, so tiers two and three read a stock
+tier-one team against the higher tiers' packs.
+
+Means by size and tier, random / greedy won, then greedy's hull lost (percent of the cut's) and
+rounds:
+
+| Size, tier | Cells | Short | At its rating | Over |
+|---|---|---|---|---|
+| Patrol (for 1), tier 1 | 8 | — | 78 / 88%, 24% hull, 4.7 r | 95 / 100%, 5% hull, 2.9 r |
+| Patrol, tier 2 | 8 | — | 39 / 65%, 57% hull, 6.0 r | 89 / 100%, 14% hull, 4.1 r |
+| Patrol, tier 3 | 4 | — | 32 / 66%, 62% hull, 5.2 r | 98 / 100%, 8% hull, 3.5 r |
+| Formation (for 3), tier 1 | 8 | 52 / 97%, 36% hull, 7.2 r | 87 / 100%, 13% hull, 4.2 r | 100 / 100%, 6% hull, 3.4 r |
+| Formation, tier 2 | 13 | 24 / 62%, 66% hull, 9.3 r | 56 / 98%, 23% hull, 5.9 r | 86 / 100%, 10% hull, 4.4 r |
+| Formation, tier 3 | 17 | 5 / 21%, 89% hull, 6.7 r | 20 / 69%, 57% hull, 7.6 r | 45 / 87%, 30% hull, 5.8 r |
+| Elite (for 4), tier 1 | 11 | 92 / 100%, 5% hull, 2.9 r | 99 / 100%, 2% hull, 2.4 r | — |
+| Elite, tier 2 | 21 | 85 / 99%, 9% hull, 4.1 r | 96 / 100%, 4% hull, 3.2 r | — |
+| Elite, tier 3 | 21 | 78 / 95%, 17% hull, 5.4 r | 90 / 100%, 6% hull, 3.9 r | — |
+
+The bands, by the earlier reads' convention (random winning 90% or more too easy; greedy under
+25% a wall; greedy twenty points or more above random a decision; otherwise none):
+
+| | Short | At its rating | Over |
+|---|---|---|---|
+| Patrols, 20 cells | — | 7 too easy, 9 decision, 4 walls | 16 too easy, 4 decision |
+| Formations, 38 cells | 4 too easy, 18 decision, 16 walls | 10 too easy, 24 decision, 1 none, 3 walls | 21 too easy, 14 decision, 1 none, 2 walls |
+| Elites, 53 cells | 38 too easy, 13 decision, 2 none | 47 too easy, 6 decision | — |
+
+Read, in bands, a direction:
+- **Formations** hold the promise best. At their rating of three they carry a decision in 24 of 38 cells. Tier one's are mostly too easy (random 87%) and tier three's hard (greedy 69% at 57% hull). One short, with two machines, they wall in 16 of 38, most at tiers two and three. One over, with four, they are too easy in 21.
+- **Patrols** at their rating of one cost the lone machine a quarter of its hull at tier one and over half at tiers two and three (greedy 65 to 66%). Four of the twenty are walls: the Waste's pit pair and great scouts, the Marsh's knight's retinue, the Peak's fire lizards. With a second machine every patrol falls (greedy 100%).
+- **Elites** do not earn their four. At their rating they are too easy in 47 of 53 cells (random 90 to 99%), and three machines, one short, beat them too (random 78 to 92%, greedy 95 to 100%). The campaign read's elites fought by two say the same.
+- **The Marsh's tier-three formations** (the Lich's court, the dread host, the wraith choir) wall four machines as well as three.
+- **By domain** at the rating, the Meadow is the easiest (its formations random 82%, greedy 99%) and the Marsh the hardest (random 29%, greedy 61%, 49% hull).
+
+Each cell, random / greedy, as the read wrote it:
+
+| Domain | Composition | Tier | For | Short | At its rating | Over |
+|---|---|---|---|---|---|---|
+| The Meadow | goblin_warband | 1 | 3 | 100% · 7.8 r · 41% hull / 100% · 5.0 r · 8% hull | 100% · 4.8 r · 6% hull / 100% · 3.2 r · 1% hull | 100% · 4.2 r · 3% hull / 100% · 2.6 r · 0% hull |
+| The Meadow | wolf_pack | 1 | 1 |  | 100% · 6.5 r · 12% hull / 100% · 3.5 r · 2% hull | 100% · 3.2 r · 0% hull / 100% · 2.0 r · 0% hull |
+| The Meadow | gel_cluster | 1 | 1 |  | 90% · 22.3 r · 61% hull / 100% · 13.0 r · 14% hull | 100% · 10.5 r · 18% hull / 100% · 6.1 r · 4% hull |
+| The Meadow | guard_warband | 2 | 3 | 97% · 10.1 r · 59% hull / 100% · 6.6 r · 23% hull | 100% · 6.2 r · 18% hull / 100% · 4.3 r · 4% hull | 100% · 4.9 r · 7% hull / 100% · 3.4 r · 1% hull |
+| The Meadow | warg_hunt | 2 | 3 | 93% · 17.8 r · 63% hull / 100% · 9.9 r · 18% hull | 100% · 12.7 r · 29% hull / 100% · 6.6 r · 5% hull | 100% · 8.9 r · 11% hull / 100% · 5.1 r · 3% hull |
+| The Meadow | warg_pack | 2 | 1 |  | 77% · 7.9 r · 54% hull / 100% · 4.7 r · 14% hull | 100% · 4.4 r · 4% hull / 100% · 2.6 r · 0% hull |
+| The Meadow | gel_drift | 2 | 1 |  | 30% · 16.8 r · 93% hull / 100% · 16.2 r · 45% hull | 100% · 13.3 r · 45% hull / 100% · 7.8 r · 16% hull |
+| The Meadow | captains_warband | 3 | 3 | 17% · 8.4 r · 97% hull / 100% · 7.6 r · 46% hull | 80% · 9.1 r · 61% hull / 100% · 4.7 r · 9% hull | 100% · 6.9 r · 24% hull / 100% · 3.9 r · 2% hull |
+| The Meadow | alpha_hunt | 3 | 3 | 3% · 4.6 r · 100% hull / 47% · 7.1 r · 87% hull | 50% · 8.1 r · 81% hull / 100% · 5.9 r · 24% hull | 93% · 6.9 r · 39% hull / 100% · 4.6 r · 6% hull |
+| The Meadow | metal_drift | 3 | 3 | 0% · 4.5 r · 100% hull / 0% · 6.2 r · 100% hull | 0% · 6.2 r · 100% hull / 90% · 9.2 r · 66% hull | 30% · 9.8 r · 92% hull / 100% · 6.2 r · 23% hull |
+| The Meadow | alpha_pack | 3 | 1 |  | 17% · 5.1 r · 94% hull / 70% · 5.3 r · 68% hull | 100% · 6.1 r · 37% hull / 100% · 3.7 r · 6% hull |
+| The Meadow | shamans_warband | 1 | 4 | 100% · 4.7 r · 5% hull / 100% · 2.7 r · 1% hull | 100% · 4.2 r · 2% hull / 100% · 2.3 r · 0% hull |  |
+| The Meadow | shamans_warband | 2 | 4 | 100% · 4.9 r · 5% hull / 100% · 2.7 r · 1% hull | 100% · 4.5 r · 3% hull / 100% · 2.4 r · 0% hull |  |
+| The Meadow | shamans_warband | 3 | 4 | 100% · 5.3 r · 9% hull / 100% · 2.8 r · 0% hull | 100% · 4.6 r · 4% hull / 100% · 2.6 r · 0% hull |  |
+| The Meadow | elder_treants_grove | 2 | 4 | 100% · 9.8 r · 27% hull / 100% · 5.2 r · 7% hull | 100% · 7.1 r · 9% hull / 100% · 4.2 r · 1% hull |  |
+| The Meadow | elder_treants_grove | 3 | 4 | 97% · 15.2 r · 56% hull / 100% · 6.2 r · 12% hull | 100% · 8.8 r · 19% hull / 100% · 4.9 r · 2% hull |  |
+| The Meadow | leshys_hunt | 2 | 4 | 100% · 3.5 r · 0% hull / 100% · 1.9 r · 0% hull | 100% · 2.9 r · 0% hull / 100% · 1.8 r · 0% hull |  |
+| The Meadow | leshys_hunt | 3 | 4 | 100% · 3.7 r · 0% hull / 100% · 2.0 r · 0% hull | 100% · 3.1 r · 0% hull / 100% · 2.0 r · 0% hull |  |
+| The Meadow | the_nob | 1 | 4 | 100% · 2.6 r · 1% hull / 100% · 2.0 r · 0% hull | 100% · 2.4 r · 0% hull / 100% · 1.8 r · 0% hull |  |
+| The Meadow | the_nob | 2 | 4 | 100% · 3.2 r · 1% hull / 100% · 2.1 r · 0% hull | 100% · 3.1 r · 1% hull / 100% · 2.0 r · 0% hull |  |
+| The Meadow | the_nob | 3 | 4 | 100% · 3.8 r · 2% hull / 100% · 2.6 r · 1% hull | 100% · 3.6 r · 2% hull / 100% · 2.2 r · 0% hull |  |
+| The Meadow | treant_grove | 1 | 3 | 70% · 15.6 r · 80% hull / 100% · 9.2 r · 31% hull | 100% · 10.4 r · 33% hull / 100% · 4.8 r · 6% hull | 100% · 7.7 r · 13% hull / 100% · 4.2 r · 2% hull |
+| The Meadow | treant_march | 2 | 3 | 27% · 16.5 r · 95% hull / 100% · 10.6 r · 38% hull | 100% · 11.8 r · 38% hull / 100% · 5.6 r · 8% hull | 100% · 8.0 r · 15% hull / 100% · 4.6 r · 3% hull |
+| The Meadow | treant_wilds | 3 | 3 | 0% · 11.8 r · 100% hull / 100% · 12.7 r · 54% hull | 80% · 15.6 r · 67% hull / 100% · 6.6 r · 13% hull | 100% · 9.3 r · 25% hull / 100% · 5.0 r · 3% hull |
+| The Meadow | rotblooms_bed | 2 | 3 | 63% · 13.7 r · 80% hull / 100% · 8.0 r · 23% hull | 97% · 8.3 r · 34% hull / 100% · 4.3 r · 5% hull | 100% · 6.8 r · 17% hull / 100% · 3.7 r · 1% hull |
+| The Meadow | rotblooms_bed | 3 | 3 | 63% · 13.7 r · 80% hull / 100% · 8.0 r · 23% hull | 97% · 8.3 r · 34% hull / 100% · 4.3 r · 5% hull | 100% · 6.8 r · 17% hull / 100% · 3.7 r · 1% hull |
+| The Waste | needler_swarm | 1 | 3 | 100% · 6.0 r · 36% hull / 100% · 4.0 r · 19% hull | 100% · 4.2 r · 16% hull / 100% · 2.5 r · 7% hull | 100% · 3.2 r · 7% hull / 100% · 2.0 r · 2% hull |
+| The Waste | antlion_pair | 1 | 1 |  | 93% · 5.2 r · 42% hull / 100% · 2.5 r · 9% hull | 100% · 2.8 r · 2% hull / 100% · 2.0 r · 0% hull |
+| The Waste | needler_scouts | 1 | 1 |  | 90% · 4.5 r · 51% hull / 100% · 3.0 r · 26% hull | 100% · 2.4 r · 8% hull / 100% · 2.0 r · 4% hull |
+| The Waste | needler_scouts | 2 | 1 |  | 90% · 4.5 r · 51% hull / 100% · 3.0 r · 26% hull | 100% · 2.4 r · 8% hull / 100% · 2.0 r · 4% hull |
+| The Waste | barbed_swarm | 2 | 3 | 13% · 6.5 r · 98% hull / 93% · 6.0 r · 57% hull | 80% · 7.9 r · 65% hull / 100% · 3.8 r · 20% hull | 100% · 5.5 r · 29% hull / 100% · 3.0 r · 7% hull |
+| The Waste | pit_ambush | 2 | 3 | 3% · 4.5 r · 100% hull / 67% · 6.3 r · 89% hull | 43% · 6.7 r · 83% hull / 100% · 3.8 r · 26% hull | 90% · 5.7 r · 47% hull / 100% · 3.1 r · 13% hull |
+| The Waste | pit_pair | 2 | 1 |  | 0% · 2.0 r · 100% hull / 0% · 2.8 r · 100% hull | 73% · 5.4 r · 78% hull / 100% · 3.2 r · 35% hull |
+| The Waste | great_swarm | 3 | 3 | 0% · 4.8 r · 100% hull / 7% · 5.7 r · 99% hull | 23% · 7.0 r · 95% hull / 100% · 5.0 r · 39% hull | 77% · 8.1 r · 67% hull / 100% · 4.0 r · 17% hull |
+| The Waste | queens_court | 3 | 3 | 0% · 3.2 r · 100% hull / 0% · 3.8 r · 100% hull | 0% · 4.4 r · 100% hull / 67% · 5.7 r · 71% hull | 13% · 6.8 r · 99% hull / 100% · 4.7 r · 32% hull |
+| The Waste | gorgon_glare | 3 | 3 | 0% · 4.7 r · 100% hull / 0% · 6.3 r · 100% hull | 10% · 7.6 r · 97% hull / 100% · 6.2 r · 49% hull | 70% · 8.7 r · 66% hull / 100% · 4.4 r · 17% hull |
+| The Waste | great_scouts | 3 | 1 |  | 3% · 3.5 r · 99% hull / 3% · 3.8 r · 100% hull | 93% · 4.7 r · 42% hull / 100% · 3.1 r · 21% hull |
+| The Waste | old_mans_rising | 1 | 4 | 10% · 12.3 r · 97% hull / 97% · 7.1 r · 44% hull | 93% · 11.1 r · 56% hull / 100% · 5.0 r · 20% hull |  |
+| The Waste | old_mans_rising | 2 | 4 | 7% · 10.8 r · 98% hull / 90% · 9.5 r · 62% hull | 70% · 14.4 r · 75% hull / 100% · 5.9 r · 25% hull |  |
+| The Waste | old_mans_rising | 3 | 4 | 0% · 9.0 r · 100% hull / 33% · 11.2 r · 90% hull | 30% · 15.8 r · 90% hull / 100% · 7.8 r · 39% hull |  |
+| The Waste | sandworm_ambush | 1 | 3 | 3% · 9.1 r · 100% hull / 90% · 9.1 r · 76% hull | 77% · 10.7 r · 80% hull / 100% · 5.9 r · 37% hull | 100% · 8.7 r · 45% hull / 100% · 4.3 r · 17% hull |
+| The Waste | sandworm_pit | 2 | 3 | 0% · 5.5 r · 100% hull / 3% · 9.6 r · 100% hull | 10% · 10.5 r · 98% hull / 93% · 9.1 r · 60% hull | 83% · 13.9 r · 73% hull / 100% · 5.4 r · 23% hull |
+| The Waste | sandworm_flats | 3 | 3 | 0% · 5.4 r · 100% hull / 0% · 8.0 r · 100% hull | 0% · 8.9 r · 100% hull / 67% · 11.1 r · 75% hull | 50% · 13.3 r · 85% hull / 100% · 6.4 r · 30% hull |
+| The Waste | pilgrims_wake | 1 | 4 | 100% · 6.6 r · 23% hull / 100% · 3.4 r · 4% hull | 100% · 5.1 r · 15% hull / 100% · 3.1 r · 0% hull |  |
+| The Waste | pilgrims_wake | 2 | 4 | 100% · 7.9 r · 35% hull / 100% · 4.2 r · 10% hull | 100% · 6.2 r · 20% hull / 100% · 3.5 r · 2% hull |  |
+| The Waste | pilgrims_wake | 3 | 4 | 100% · 9.3 r · 46% hull / 100% · 5.1 r · 17% hull | 100% · 7.3 r · 23% hull / 100% · 4.0 r · 6% hull |  |
+| The Waste | rust_monsters_scavenge | 1 | 4 | 100% · 2.2 r · 0% hull / 100% · 1.7 r · 0% hull | 100% · 1.9 r · 0% hull / 100% · 1.4 r · 0% hull |  |
+| The Waste | rust_monsters_scavenge | 2 | 4 | 100% · 2.9 r · 1% hull / 100% · 2.0 r · 0% hull | 100% · 2.6 r · 0% hull / 100% · 2.0 r · 0% hull |  |
+| The Waste | rust_monsters_scavenge | 3 | 4 | 100% · 3.4 r · 2% hull / 100% · 2.1 r · 0% hull | 100% · 3.2 r · 0% hull / 100% · 2.0 r · 0% hull |  |
+| The Waste | gilgamesh_wanders | 1 | 4 | 100% · 5.9 r · 2% hull / 100% · 3.6 r · 1% hull | 100% · 5.0 r · 1% hull / 100% · 3.1 r · 0% hull |  |
+| The Waste | gilgamesh_wanders | 2 | 4 | 100% · 7.1 r · 4% hull / 100% · 4.4 r · 1% hull | 100% · 6.0 r · 2% hull / 100% · 3.6 r · 0% hull |  |
+| The Waste | gilgamesh_and_enkidu | 3 | 4 | 100% · 10.7 r · 24% hull / 100% · 5.8 r · 9% hull | 100% · 8.9 r · 13% hull / 100% · 4.8 r · 2% hull |  |
+| The Waste | the_astromancer | 2 | 4 | 77% · 11.3 r · 51% hull / 100% · 4.2 r · 3% hull | 100% · 7.3 r · 17% hull / 100% · 3.2 r · 1% hull |  |
+| The Waste | the_astromancer | 3 | 4 | 60% · 13.4 r · 74% hull / 100% · 5.0 r · 7% hull | 100% · 7.9 r · 22% hull / 100% · 4.2 r · 2% hull |  |
+| The Marsh | grave_host | 1 | 3 | 53% · 10.8 r · 84% hull / 100% · 7.7 r · 27% hull | 87% · 7.8 r · 33% hull / 100% · 3.8 r · 3% hull | 100% · 5.5 r · 9% hull / 100% · 3.2 r · 1% hull |
+| The Marsh | barrow_mound | 1 | 3 | 37% · 19.2 r · 93% hull / 100% · 8.7 r · 27% hull | 97% · 13.1 r · 39% hull / 100% · 4.7 r · 5% hull | 100% · 8.4 r · 13% hull / 100% · 4.0 r · 1% hull |
+| The Marsh | knights_retinue | 1 | 1 |  | 0% · 3.6 r · 100% hull / 0% · 3.7 r · 100% hull | 57% · 8.0 r · 73% hull / 100% · 3.8 r · 32% hull |
+| The Marsh | revenant_shamblers | 1 | 1 |  | 97% · 6.3 r · 21% hull / 100% · 3.4 r · 2% hull | 100% · 2.9 r · 1% hull / 100% · 2.0 r · 0% hull |
+| The Marsh | wight_host | 2 | 3 | 7% · 8.6 r · 98% hull / 93% · 9.3 r · 61% hull | 67% · 12.3 r · 71% hull / 100% · 4.9 r · 8% hull | 100% · 8.5 r · 25% hull / 100% · 4.1 r · 2% hull |
+| The Marsh | grave_field | 2 | 3 | 0% · 9.7 r · 100% hull / 43% · 23.9 r · 85% hull | 7% · 25.0 r · 96% hull / 97% · 10.3 r · 20% hull | 47% · 34.0 r · 65% hull / 100% · 5.7 r · 5% hull |
+| The Marsh | death_knights_retinue | 2 | 3 | 0% · 6.9 r · 100% hull / 0% · 7.7 r · 100% hull | 7% · 10.5 r · 100% hull / 90% · 7.6 r · 51% hull | 37% · 13.1 r · 85% hull / 100% · 6.7 r · 30% hull |
+| The Marsh | wight_shamblers | 2 | 1 |  | 40% · 5.3 r · 82% hull / 93% · 5.1 r · 46% hull | 100% · 5.3 r · 20% hull / 100% · 3.1 r · 4% hull |
+| The Marsh | wight_shamblers | 3 | 1 |  | 40% · 5.3 r · 82% hull / 93% · 5.1 r · 46% hull | 100% · 5.3 r · 20% hull / 100% · 3.1 r · 4% hull |
+| The Marsh | knight_and_wights | 2 | 1 |  | 3% · 4.9 r · 100% hull / 27% · 6.3 r · 96% hull | 73% · 11.6 r · 72% hull / 100% · 5.7 r · 29% hull |
+| The Marsh | lichs_court | 3 | 3 | 0% · 3.9 r · 100% hull / 0% · 4.0 r · 100% hull | 0% · 5.3 r · 100% hull / 0% · 5.3 r · 100% hull | 0% · 7.0 r · 100% hull / 13% · 9.0 r · 96% hull |
+| The Marsh | charnel_pit | 3 | 3 | 0% · 6.3 r · 100% hull / 0% · 12.3 r · 100% hull | 0% · 12.1 r · 100% hull / 63% · 21.7 r · 56% hull | 23% · 25.9 r · 85% hull / 100% · 7.0 r · 11% hull |
+| The Marsh | dread_host | 3 | 3 | 0% · 3.6 r · 100% hull / 0% · 3.7 r · 100% hull | 0% · 4.5 r · 100% hull / 0% · 4.7 r · 100% hull | 0% · 6.0 r · 100% hull / 0% · 7.0 r · 100% hull |
+| The Marsh | wraith_choir | 3 | 3 | 0% · 4.7 r · 100% hull / 0% · 4.7 r · 100% hull | 0% · 6.0 r · 100% hull / 3% · 6.9 r · 100% hull | 0% · 8.2 r · 100% hull / 63% · 9.5 r · 77% hull |
+| The Marsh | fell_riders_hunt | 1 | 4 | 100% · 1.7 r · 0% hull / 100% · 1.1 r · 0% hull | 100% · 1.6 r · 0% hull / 100% · 1.0 r · 0% hull |  |
+| The Marsh | fell_riders_hunt | 2 | 4 | 100% · 2.3 r · 0% hull / 100% · 1.7 r · 0% hull | 100% · 1.9 r · 0% hull / 100% · 1.4 r · 0% hull |  |
+| The Marsh | fell_riders_hunt | 3 | 4 | 100% · 2.6 r · 0% hull / 100% · 2.1 r · 0% hull | 100% · 2.4 r · 0% hull / 100% · 1.9 r · 0% hull |  |
+| The Marsh | skeleton_kings_court | 2 | 4 | 20% · 11.2 r · 91% hull / 87% · 7.9 r · 50% hull | 50% · 13.6 r · 72% hull / 97% · 5.5 r · 20% hull |  |
+| The Marsh | skeleton_kings_court | 3 | 4 | 20% · 11.8 r · 93% hull / 80% · 9.3 r · 57% hull | 40% · 14.7 r · 77% hull / 97% · 6.4 r · 24% hull |  |
+| The Marsh | collectors_hall | 2 | 4 | 80% · 9.7 r · 50% hull / 100% · 3.2 r · 10% hull | 100% · 5.6 r · 17% hull / 100% · 2.4 r · 6% hull |  |
+| The Marsh | collectors_hall | 3 | 4 | 67% · 9.9 r · 59% hull / 100% · 3.5 r · 14% hull | 100% · 6.3 r · 22% hull / 100% · 2.9 r · 9% hull |  |
+| The Marsh | bone_wyverns_flight | 2 | 4 | 100% · 7.7 r · 21% hull / 100% · 4.6 r · 5% hull | 100% · 6.1 r · 9% hull / 100% · 3.7 r · 1% hull |  |
+| The Marsh | bone_wyverns_flight | 3 | 4 | 100% · 9.1 r · 29% hull / 100% · 5.4 r · 10% hull | 100% · 6.9 r · 12% hull / 100% · 4.2 r · 2% hull |  |
+| The Marsh | the_reaper | 1 | 4 | 100% · 1.4 r · 0% hull / 100% · 1.0 r · 0% hull | 100% · 1.3 r · 0% hull / 100% · 1.0 r · 0% hull |  |
+| The Marsh | the_reaper | 2 | 4 | 100% · 1.6 r · 0% hull / 100% · 1.1 r · 0% hull | 100% · 1.5 r · 0% hull / 100% · 1.0 r · 0% hull |  |
+| The Marsh | the_reaper | 3 | 4 | 100% · 2.0 r · 0% hull / 100% · 1.4 r · 0% hull | 100% · 1.8 r · 0% hull / 100% · 1.1 r · 0% hull |  |
+| The Marsh | the_wild_hunt | 1 | 4 | 100% · 3.7 r · 2% hull / 100% · 2.2 r · 0% hull | 100% · 3.4 r · 1% hull / 100% · 2.1 r · 0% hull |  |
+| The Marsh | the_wild_hunt | 2 | 4 | 100% · 4.8 r · 9% hull / 100% · 2.8 r · 0% hull | 100% · 4.1 r · 4% hull / 100% · 2.6 r · 0% hull |  |
+| The Marsh | the_wild_hunt | 3 | 4 | 100% · 5.7 r · 19% hull / 100% · 3.3 r · 2% hull | 100% · 4.6 r · 10% hull / 100% · 2.8 r · 1% hull |  |
+| The Marsh | the_shambler | 2 | 4 | 100% · 6.1 r · 6% hull / 100% · 3.3 r · 0% hull | 100% · 4.7 r · 1% hull / 100% · 2.6 r · 0% hull |  |
+| The Marsh | the_shambler | 3 | 4 | 100% · 7.2 r · 12% hull / 100% · 3.9 r · 1% hull | 100% · 6.1 r · 4% hull / 100% · 3.1 r · 0% hull |  |
+| The Peak | ember_pit | 1 | 3 | 57% · 7.2 r · 85% hull / 100% · 4.8 r · 22% hull | 100% · 5.2 r · 22% hull / 100% · 2.8 r · 2% hull | 100% · 4.0 r · 6% hull / 100% · 2.4 r · 0% hull |
+| The Peak | bomb_flight | 1 | 1 |  | 93% · 7.7 r · 44% hull / 100% · 4.8 r · 12% hull | 100% · 3.7 r · 5% hull / 100% · 2.5 r · 0% hull |
+| The Peak | salamander_trio | 1 | 1 |  | 63% · 5.7 r · 66% hull / 100% · 4.0 r · 23% hull | 100% · 3.9 r · 7% hull / 100% · 2.6 r · 2% hull |
+| The Peak | wyvern_roost | 2 | 3 | 3% · 5.1 r · 100% hull / 33% · 6.7 r · 91% hull | 47% · 6.7 r · 79% hull / 100% · 3.9 r · 12% hull | 93% · 6.4 r · 48% hull / 100% · 3.4 r · 7% hull |
+| The Peak | grenade_volley | 2 | 3 | 3% · 5.6 r · 99% hull / 70% · 7.3 r · 72% hull | 63% · 7.8 r · 75% hull / 100% · 3.9 r · 13% hull | 97% · 6.2 r · 41% hull / 100% · 3.4 r · 5% hull |
+| The Peak | grenade_flight | 2 | 1 |  | 70% · 9.9 r · 74% hull / 100% · 6.3 r · 32% hull | 100% · 5.3 r · 12% hull / 100% · 3.4 r · 1% hull |
+| The Peak | fire_lizards | 2 | 1 |  | 0% · 3.1 r · 100% hull / 0% · 3.9 r · 100% hull | 67% · 6.3 r · 75% hull / 100% · 4.9 r · 27% hull |
+| The Peak | dragons_roost | 3 | 3 | 0% · 3.2 r · 100% hull / 0% · 3.8 r · 100% hull | 0% · 4.3 r · 100% hull / 60% · 6.9 r · 82% hull | 3% · 5.9 r · 100% hull / 97% · 5.6 r · 33% hull |
+| The Peak | magma_pit | 3 | 3 | 0% · 4.7 r · 100% hull / 0% · 5.7 r · 100% hull | 0% · 6.5 r · 100% hull / 93% · 6.8 r · 40% hull | 30% · 9.3 r · 92% hull / 100% · 5.6 r · 16% hull |
+| The Peak | balloon_storm | 3 | 3 | 0% · 4.3 r · 100% hull / 0% · 5.7 r · 100% hull | 3% · 6.1 r · 100% hull / 93% · 6.9 r · 41% hull | 43% · 8.2 r · 86% hull / 100% · 4.8 r · 12% hull |
+| The Peak | balloon_flight | 3 | 1 |  | 67% · 10.1 r · 74% hull / 97% · 6.4 r · 36% hull | 100% · 6.1 r · 17% hull / 100% · 4.0 r · 3% hull |
+| The Peak | magma_vent | 1 | 3 | 0% · 7.8 r · 100% hull / 83% · 9.3 r · 81% hull | 33% · 10.8 r · 92% hull / 100% · 6.2 r · 42% hull | 100% · 9.1 r · 51% hull / 100% · 4.6 r · 21% hull |
+| The Peak | magma_forge | 2 | 3 | 0% · 5.4 r · 100% hull / 0% · 9.1 r · 100% hull | 10% · 10.6 r · 99% hull / 97% · 9.0 r · 64% hull | 70% · 11.8 r · 73% hull / 100% · 5.9 r · 24% hull |
+| The Peak | magma_caldera | 3 | 3 | 0% · 5.5 r · 100% hull / 0% · 8.0 r · 100% hull | 0% · 9.2 r · 100% hull / 33% · 10.8 r · 92% hull | 27% · 13.2 r · 91% hull / 100% · 7.1 r · 34% hull |
+| The Peak | cinder_tortoises_brood | 1 | 4 | 100% · 8.5 r · 19% hull / 100% · 5.0 r · 2% hull | 100% · 6.8 r · 9% hull / 100% · 4.1 r · 1% hull |  |
+| The Peak | cinder_tortoises_brood | 2 | 4 | 77% · 18.4 r · 67% hull / 100% · 8.0 r · 11% hull | 100% · 12.5 r · 32% hull / 100% · 5.9 r · 3% hull |  |
+| The Peak | cinder_tortoises_brood | 3 | 4 | 0% · 23.1 r · 100% hull / 93% · 20.2 r · 55% hull | 53% · 24.1 r · 79% hull / 100% · 8.7 r · 8% hull |  |
+| The Peak | thunder_apes_rampage | 1 | 4 | 100% · 2.8 r · 1% hull / 100% · 2.1 r · 1% hull | 100% · 2.6 r · 1% hull / 100% · 1.8 r · 0% hull |  |
+| The Peak | thunder_apes_rampage | 2 | 4 | 100% · 3.5 r · 3% hull / 100% · 2.1 r · 1% hull | 100% · 3.3 r · 2% hull / 100% · 2.0 r · 1% hull |  |
+| The Peak | thunder_apes_rampage | 3 | 4 | 100% · 4.3 r · 7% hull / 100% · 2.8 r · 3% hull | 100% · 3.8 r · 5% hull / 100% · 2.2 r · 1% hull |  |
+| The Peak | the_bane | 2 | 4 | 93% · 8.3 r · 38% hull / 100% · 4.1 r · 15% hull | 100% · 5.7 r · 19% hull / 100% · 3.3 r · 8% hull |  |
+| The Peak | the_bane | 3 | 4 | 83% · 10.2 r · 55% hull / 100% · 4.9 r · 24% hull | 100% · 6.9 r · 25% hull / 100% · 4.0 r · 10% hull |  |
+| The Peak | firelords_rising | 2 | 4 | 37% · 14.1 r · 79% hull / 100% · 6.8 r · 11% hull | 97% · 9.4 r · 23% hull / 100% · 4.2 r · 3% hull |  |
+| The Peak | firelords_rising | 3 | 4 | 20% · 14.6 r · 92% hull / 97% · 9.2 r · 24% hull | 77% · 12.8 r · 46% hull / 100% · 5.1 r · 5% hull |  |
+| The Peak | the_ravener | 2 | 4 | 100% · 8.2 r · 43% hull / 100% · 4.4 r · 12% hull | 100% · 6.2 r · 20% hull / 100% · 3.7 r · 3% hull |  |
+| The Peak | the_ravener | 3 | 4 | 87% · 10.5 r · 71% hull / 100% · 5.6 r · 25% hull | 100% · 7.7 r · 34% hull / 100% · 4.3 r · 6% hull |  |
+
+### The map survey at 20 by 12
+
+`tools/map_survey.gd -- --seeds 200 --type steppe --width 20 --height 12`. The steppe: plain 95%,
+road 4%, water 1%; the horde's route 11 hexes on every map; the narrowest crossing 5 hexes on all
+200; every way of moving reaches the rift in 3 phases at move 3, the packs at move 2 in 4; after
+two phases tracked machines reach 35% of the field, walkers 59%, wheels, hovers and flyers 81 to
+82%, every one making the crossing by phase 2. The shapes compared, each on seeds 1 to 200:
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 80% | 0% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 33/55/77/81/82% | 0% | 0.0 |
+| FJORD | 95% | 0% | 0% | 5% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/82/82% | 0% | 0.0 |
+| BADLANDS | 61% | 26% | 0% | 3% | 10% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 30/51/71/71/82% | 17% | 0.4 |
+| OPEN STEPPE | 99% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 0% | 0.0 |
+| RUINED CITY | 12% | 0% | 75% | 0% | 13% | 200 of 200 at 3+ | 0.0 | 11.4 | 3.0/3.0/3.0/3.0/3.0 | 27/46/65/65/82% | 0% | 0.0 |
+| GORGE | 96% | 0% | 0% | 0% | 4% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/77/77/82% | 0% | 0.0 |
+
+Read: at twelve deep the depth no longer parts the shapes (three phases to the rift at move 3
+and a route of about 11 hexes on all six); what parts them is the lanes, read in the reach after two phases
+(the ruined city's 27/46/65/65/82% and the badlands' 30/51/71/71/82% against the steppe's
+35/59/81/81/82%). The shapes are laid by the old generator for the old field; their relaying is the
+brief's open item 5.
+
+### The shapes at 20 by 12
+
+Each shape at seed 7 (`R` the rift, `G` the gate, `W` the wall, `~` water, `#` rock, `=` road, `,`
+rough, `:` ruins, `.` plain; odd rows indented), as the proposal's section 3 printed them at 24 by 12:
+
+```
+river 20x12: water 35, rock 1, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   ~   ~   .   ~   .   #   .   .   .   .   .   =   ~   ~   .   .   .   .
+  ~   ~   ~   ~   .   ~   ~   ~   ~   .   .   .   =   .   ~   ~   ~   ~   ~   ~
+~   ~   ~   .   .   .   ~   ~   ~   ~   ~   ~   .   .   .   .   ~   ~   ~   ~
+  .   .   .   .   .   .   .   .   .   ~   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   =   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+fjord 20x12: water 9, rock 0, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   ~   ~   ~   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+badlands 20x12: water 9, rock 20, opened 0, narrowest crossing 5
+.   .   ,   ,   ,   ,   .   .   .   R   R   R   .   .   ,   ,   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  ,   ,   .   .   .   ,   ,   ,   ,   .   .   .   .   ,   ,   ,   .   ,   ,   ,
+,   #   ,   .   .   ,   #   #   #   ,   .   .   .   ,   #   #   ,   ,   #   ,
+  ,   #   ,   .   .   ,   ,   ,   ,   .   .   .   .   ,   #   ,   #   #   ,   ~
+#   #   ,   ~   ~   ,   #   #   #   ,   .   .   .   .   ,   #   ,   #   ,   ~
+  #   ,   .   .   ~   ,   ,   ,   ,   .   ~   ~   ~   ,   #   ,   ,   ,   .   ~
+,   ,   .   .   .   .   .   .   .   .   .   .   .   .   ,   ,   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+steppe 20x12: water 0, rock 1, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   #   .   .
+.   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+city 20x12: water 0, rock 34, opened 0, narrowest crossing 3
+:   :   :   :   :   :   :   :   .   R   R   R   .   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   .   .   .   .   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+  #   #   #   #   #   #   :   =   :   #   #   #   #   #   #   #   #   #   #   #
+#   #   #   #   #   #   :   =   =   #   #   #   #   #   #   #   #   #   #   #
+  :   :   :   :   :   :   :   :   =   =   :   :   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   =   :   :   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   .   .   =   .   .   :   :   :   :   :   :   :
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+gorge 20x12: water 0, rock 8, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   #   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+```
+
+### The placeholders
+
+Every number the build set only so the mechanism runs, each marked `# placeholder (the long wall
+brief)` where it stands, and moved only on Ryan's word:
+
+| Number | Value | Where |
+|---|---|---|
+| The wall's length | 20 at every Convergence | `sim/ramp.gd:89` (`wall_length_at`) |
+| The depth | 12 at every Convergence | `sim/ramp.gd:95` (`depth_at`) |
+| The beat (Rift Pressure's fill) | 3 turns, 2 from Convergence 8 | `sim/ramp.gd:52` (`timer_at`) |
+| The spread of a pusher's segment | 2 + ((length / 2 − 2) × Convergence) / 12 either side of the rift's column: 2 at the foot, 10 at the top on a wall of 20 | `sim/ramp.gd:82` (`spread_at`) |
+| The opening pressure | a turn short of the first peak (the beat − 1) | `sim/battle.gd:172` |
+| The opening rows | a formation one of its moves short of the apron, a patrol two (the 1 and 2 at `sim/battle.gd:207` and `:210`), never into the rift's mouth | `sim/battle.gd:289` (`_open_row`) |
+| The beat after the Rupture | halved once, never below 1 | `sim/battle.gd:310` (`rupture`) |
+| The attack range | 1 (adjacency) | `sim/unit.gd:108` |

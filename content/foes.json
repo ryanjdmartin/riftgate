@@ -122,11 +122,11 @@
     {
       "id": "mandrake", "name": "Mandrake", "faction": "meadow", "tier": 2,
       "design": { "fantasy": "The mandrake, the louder root. Tier two of the mandragora line." },
-      "codex": "A mandragora with lungs. Its scream costs the team two rerolls.",
+      "codex": "A mandragora with lungs. Its scream costs the team a reroll.",
       "hp": 4, "attack": 4, "rank": "back", "zone": 3, "movespeed": 2,
       "actions": [
         { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
-        { "id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 2, "weight": 1, "text": "Costs the team two rerolls next round.", "status": "implemented" }
+        { "id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": "Costs the team a reroll next round.", "status": "implemented" }
       ],
       "flavour": "The screaming is not the attack. The screaming is what it does to your plan."
     },

@@ -235,20 +235,34 @@ func test_a_fight_nobody_can_finish_stalls() -> void:
 	assert_true(pol.stalled, "stalled, not looping forever")
 	assert_eq(pol.rounds, Policy.MAX_ROUNDS, "after the round cap")
 	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the skirmish itself is undecided")
+	assert_true(pol.stalemate, "and a stalemate: nothing changed for ten rounds running (the long wall brief, section 5)")
 
 
-func test_persona_withdraws_under_the_hull_line() -> void:
+## A fight that moves every round is no stalemate, however long (the long wall brief, section 5:
+## ten rounds running with no foe's HP, no machine's hull or shield changed).
+func test_a_fight_that_moves_is_no_stalemate() -> void:
+	var u := _mech("A", Die.single(Face.attack(1, L)), 0, 900)
+	var sk := Skirmish.new(1)
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(40, 1)])
+	sk.begin()
+	var pol := Policy.make(Policy.GREEDY)
+	pol.play(sk)
+	assert_true(pol.rounds > Policy.STALEMATE_ROUNDS, "a long fight")
+	assert_false(pol.stalemate, "that moved every round")
+
+
+## The fight bot plays a losing fight to its end (the long wall brief 3.5: there is no
+## withdrawal, and the withdrawing persona went with it).
+func test_the_fight_bot_plays_a_losing_fight_to_its_end() -> void:
 	var sk := Skirmish.new(2)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 0, 100))
 	sk.add_foes([_ghoul(300, 30)])
 	sk.begin()
 	var pol := Policy.make(Policy.GREEDY)
-	pol.withdraw_below = 50
 	var outcome := pol.play(sk)
-	assert_eq(outcome, Skirmish.Outcome.WITHDRAWN, "pulled out rather than dying")
-	assert_true(pol.withdrew, "and says so")
-	assert_true(sk.mechs[0].unit.hull > 0, "alive")
-	assert_true(sk.mechs[0].unit.hull < 50, "having crossed the line first")
+	assert_eq(outcome, Skirmish.Outcome.DEFEAT, "fought to the wreck")
+	assert_true(sk.mechs[0].unit.hull <= 0, "nothing left of it")
 
 
 func test_hull_percent_counts_the_dead_at_zero() -> void:
@@ -897,7 +911,7 @@ func test_greedy_turns_a_stepping_die_toward_a_better_chamber() -> void:
 	assert_eq(pol.reroll_worth(sk, ms), pol.face_value(sk, ms, ms.die.faces[1]), "the next chamber's worth, not the die's mean")
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 1, "the ten turns to the forty, and the forty holds against a five")
-	assert_eq(sk.rerolls_left, 2, "one reroll spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 1, "one reroll spent")
 
 
 ## A plain Rapid entry (4 November): spent, its machine acts again, so the bot values it at its
@@ -960,7 +974,7 @@ func test_greedy_holds_a_stepping_die_to_open_the_next_round_on_its_better_chamb
 	ms.face_index = 0
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 0, "the twenty holds: a step would spend the twenty-one now and open on a two")
-	assert_eq(sk.rerolls_left, 3, "no reroll spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "no reroll spent")
 
 
 ## The cycle reaches past the next chamber: two steps through a weak one to the big gun.
@@ -972,7 +986,7 @@ func test_greedy_steps_a_stepping_die_through_a_weak_chamber_to_a_big_one() -> v
 	assert_eq(int(pol.cycle_plan(sk, ms, 3)["steps"]), 2, "two steps to the forty")
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 2, "the ten steps past the five to the forty")
-	assert_eq(sk.rerolls_left, 1, "two rerolls spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 2, "two rerolls spent")
 
 
 ## A spinning chamber (the Spin-Up's) is worth its own spend and the spin after it, so the bot

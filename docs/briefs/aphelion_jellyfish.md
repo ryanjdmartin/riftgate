@@ -2,6 +2,15 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "aphelion", "tier": 2, "status": "direction", "slot": true, "name": "the jellyfish"} -->
 
+**Ryan's direction (5 November)**: Turf the wide status spread. It's not needed with the other new
+mechanics, and currently the macross brief does it better. This one should be our Status Payoff
+Carry. It's not allowed to carry weapons. It's identity is in its locked pieces, a resonator that
+damages all enemies that share a status with the target, the EMP that is the strongest purge/control
+tool in the game but comes at a cost to its allies (maybe a group shield cost), and /or a mark it
+applies that blows all buffs and debuffs on the target for damage. If it needs more, a resource bar
+to homage the StarCraft energy bar, that either fuels the EMP, or grants it rerolls, possibly filled
+on seeing a buff or debuff applied.
+
 The session refines Aphelion's jellyfish into the roster's soft-control specialist and settles
 the dispel it carries.
 

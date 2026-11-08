@@ -1080,7 +1080,7 @@ static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_val
 	rng.seed = seed_value
 	var s := scale_of(hex_px)
 	var r := hex_px - 1.5
-	var pts := Hex.corners(c, r)
+	var pts := MapOrient.corners(c, r)
 	ci.draw_colored_polygon(pts, fill(key, t))
 	match t:
 		BattleMap.Terrain.WATER:
@@ -1178,7 +1178,7 @@ static func _specks(ci: CanvasItem, ts: Dictionary, c: Vector2, r: float, s: int
 
 ## The midpoint of a hex's edge toward Hex.DIRECTIONS[i], on the hex's fill.
 static func _edge_mid(i: int, hex_px: float) -> Vector2:
-	return Hex.to_pixel(Hex.DIRECTIONS[i], hex_px) * 0.5 * (hex_px - 1.5) / hex_px
+	return MapOrient.to_pixel(Hex.DIRECTIONS[i], hex_px) * 0.5 * (hex_px - 1.5) / hex_px
 
 
 ## The road's ends: the midpoints of the edges it runs to.
@@ -1314,7 +1314,7 @@ static func _attach(ci: CanvasItem, key: String, name: String, rect: Rect2, mirr
 
 ## The water: the domain's liquid, a rim inside its edge and ripples drifting a step a frame.
 static func _water(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int) -> void:
-	Hud.stroke_poly(ci, Hex.corners(c, r - 2.0 - s), Color(str(ts["rim"])), float(s) + 1.0)
+	Hud.stroke_poly(ci, MapOrient.corners(c, r - 2.0 - s), Color(str(ts["rim"])), float(s) + 1.0)
 	var ripples: Array = ts["ripples"]
 	for i in range(7):
 		var tex := _tex(key, str(ripples[i % ripples.size()]), false, s)

@@ -20,6 +20,7 @@ func _team() -> Array:
 func _battle(seed_value: int = 5) -> Battle:
 	var b := Battle.new(seed_value)
 	b.setup(_team(), "")
+	quiet_start(b)   # a save's rules, not the opening's (TestCase.quiet_start)
 	return b
 
 
@@ -60,6 +61,17 @@ func _play_alike(a: Skirmish, b: Skirmish) -> void:
 	for i in range(a.mechs.size()):
 		assert_eq(a.mechs[i].unit.hull, b.mechs[i].unit.hull, "%s's hull" % a.mechs[i].unit.display_name)
 		assert_eq(a.mechs[i].heat, b.mechs[i].heat, "%s's heat" % a.mechs[i].unit.display_name)
+
+
+## A pusher's wall segment rides in the save (the long wall brief 3.3).
+func test_a_pushers_wall_segment_rides_in_the_save() -> void:
+	var b := _battle()
+	var sq: Unit = b.field.packs()[0]
+	sq.goal_col = 3
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq(back.field.unit_by_id(sq.id).goal_col, 3, "the segment comes back")
+	for p in b.field.packs():
+		assert_eq(back.field.unit_by_id(p.id).goal_col, p.goal_col, "%s keeps its segment" % p.display_name)
 
 
 func test_a_battle_in_plan_round_trips() -> void:
@@ -122,6 +134,7 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 	b.lineup = ["warrior"]
 	b.escort = ["goblin", 3]
 	b.setup(_team(), "meadow")
+	quiet_start(b)   # no catch from the opening comes first
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	assert_eq(back.lineup, b.lineup, "the rift's commanders")
 	assert_eq(back.escort, b.escort, "and its escort")
@@ -219,7 +232,10 @@ func test_a_skirmish_under_way_resumes_and_plays_on_alike() -> void:
 	assert_eq(back.state, b.state, "the battle's state after")
 	assert_eq(back.field.units.size(), b.field.units.size(), "the same units left")
 	assert_eq(back.field.rift_pressure, b.field.rift_pressure, "the same pressure")
-	assert_eq(back.actions_left(back.field.unit_by_id(m.id)), b.actions_left(m), "and the machine spent alike")
+	var m2 := back.field.unit_by_id(m.id)
+	assert_eq(m2 == null, not b.field.units.has(m), "the machine wrecked alike, or standing alike")
+	if m2 != null:
+		assert_eq(back.actions_left(m2), b.actions_left(m), "and the machine spent alike")
 
 
 func test_a_foe_keeps_its_role_and_its_death_through_the_trip() -> void:

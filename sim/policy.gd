@@ -20,8 +20,8 @@ extends RefCounted
 ##           rung, the future dice and picks drawn from a seed of its own, never the real
 ##           fight's) and keeps the one whose fight is worth most. A team that sets up and
 ##           cashes across rounds: the top the gap is read against.
-## A persona is a habit on top: `withdraw_below` pulls out when the team's hull is under a
-## percentage; `cool_above` keeps each machine's gauge under a share of its maximum, pricing the
+## A persona is a habit on top (the withdrawing one went with the withdrawal, the long wall brief
+## 3.5): `cool_above` keeps each machine's gauge under a share of its maximum, pricing the
 ## heat a spend leaves above that line as an overheat's hull, so it vents early and holds a hot
 ## gun there (the heat report's cautious persona, 30 October; the rungs as they are play the
 ## reckless one, cooling only against an overheat); `shield_ahead` values a shield left standing
@@ -38,6 +38,7 @@ const PLAN_CANDIDATES := 4   # the spends the planner rolls out at a decision: t
 const PLAN_SAMPLES := 2      # futures each candidate is rolled out over, the same seeds for every candidate (common random numbers)
 
 const MAX_ROUNDS := 60           # a fight nobody can finish (armour holds, dice all blank) is stalled
+const STALEMATE_ROUNDS := 10     # rounds running with nothing changed that mark a stalemate (the long wall brief, section 5)
 const HULL_WEIGHT := 1.5         # a point of mech hull, in foe hit points: hull is the resource that persists
 const KILL_BONUS := 3.0         # a slot cleared: the back rank opens, the horde shrinks
 const DEATH_WEIGHT := 20.0       # a machine kept alive through the round
@@ -72,7 +73,6 @@ const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a s
 const CYCLE_AHEAD := 0.6         # a stepping die's next round, as a share of this one: where the dial rests now is the chamber it opens on (the Cassowary's cycle, 3 November)
 
 var kind: int = GREEDY
-var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
 var cool_above: int = 0          # persona: keep the gauge under this percent of the maximum (0: cool only against an overheat)
 var shield_ahead: bool = false   # persona: a standing shield valued by the blows it turns next round (the support ladders' bot, 30 October)
 var rng := RandomNumberGenerator.new()
@@ -88,7 +88,9 @@ var forced_holds: int = 0        # damaging dice held because spending them woul
 var forgone: float = 0.0         # the damage those dice would have dealt, at their mean
 var spends: Dictionary = {}      # component id, or "empty", "destroyed", "disabled" -> times spent
 var stalled: bool = false
-var withdrew: bool = false
+var stalemate: bool = false      # ten rounds running with no foe's HP, no machine's hull or shield changed (the long wall brief, section 5); counted apart from a stall, the cap staying MAX_ROUNDS
+var _still := 0
+var _last_sig := Vector3i(-1, -1, -1)
 var plans: int = 0               # the planner's decisions that weighed more than one candidate
 var plan_changes: int = 0        # of those, the ones where it spent otherwise than the greedy would
 var actions_bought: int = 0      # an ally's action bought with the team's rerolls (the Immelmann Booster, 30 October)
@@ -118,11 +120,6 @@ func play(sk: Skirmish) -> int:
 		if rounds >= MAX_ROUNDS:
 			stalled = true
 			break
-		if withdraw_below > 0 and hull_percent(sk) < withdraw_below and sk.can_withdraw():
-			sk.withdraw()
-			withdrew = sk.outcome == Skirmish.Outcome.WITHDRAWN
-			rounds += 1
-			break
 		sk.start_round()
 		rounds += 1
 		play_round(sk)
@@ -134,7 +131,27 @@ func play(sk: Skirmish) -> int:
 		for o in sk.overheats:
 			overheat_hull += int(o.get("burn", o["over"]))
 			overheats += 1
+		_read_stalemate(sk)
 	return sk.outcome
+
+
+## A stalemate (the long wall brief, section 5): no foe's HP, no machine's hull or shield moved
+## for STALEMATE_ROUNDS rounds running, read as each round ends; the fight plays on to its end
+## or the cap.
+func _read_stalemate(sk: Skirmish) -> void:
+	var hp := 0
+	for f in sk.field_foes() + sk.reinforcements:
+		hp += maxi(0, f.hp)
+	var hull := 0
+	var shield := 0
+	for ms in sk.mechs:
+		hull += maxi(0, ms.unit.hull)
+		shield += ms.unit.shield
+	var sig := Vector3i(hp, hull, shield)
+	_still = _still + 1 if sig == _last_sig else 0
+	_last_sig = sig
+	if _still >= STALEMATE_ROUNDS:
+		stalemate = true
 
 
 ## The heat as the player's turn ends, for the runner's heat report: the hottest machine as a

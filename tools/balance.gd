@@ -9,8 +9,7 @@ extends SceneTree
 ## are the rungs the coordination gap is read between, the planner at about four greedy
 ## fights' time each, so it is run on the team rows: --rows team,... --policies blind,planner),
 ## --out path (docs/balance.md),
-## --json path (none), --withdraw N (a persona that withdraws under N percent hull; 0 never),
-## --cool-above N (a persona that keeps each machine's heat under N percent of its maximum,
+## --json path (none), --cool-above N (a persona that keeps each machine's heat under N percent of its maximum,
 ## venting early and holding a hot spend above it; 0, the default, cools only against an overheat),
 ## --overheat N (a what-if: an overheat burns N hull a point of heat past the maximum, where the
 ## engine burns one; Skirmish.overheat_scale, 30 October), --burnout (a what-if: an overheat whose
@@ -29,7 +28,13 @@ extends SceneTree
 ## team", "team:badger+sparrowhawk"), --packs id,id (only these packs, by the ids the JSON
 ## names, "treant x1", "meadow formation" (tier one's; "meadow formation tier 2" and "tier 3"
 ## the ladder's, beside a cell for every recolour, "goblin_guard x4", since 28 October),
-## "finale", "<elite composition> tier 2" with --packs elites (every elite composition at each tier
+## "finale", --packs promise (the promise read, the long wall brief section 5: every patrol, formation and
+## elite composition at each tier it names, fought by the default four machines cut to its threat rating, one
+## short and one over, into its own report, printed or written to --out; no matrix), --packs curve (the
+## curve read for the formation pass, 7 November: every such composition against the four cut to every
+## size from one to four, each cell's band and hull, its menace, ramp gate and the bands it shares with
+## its peers, printed or written to --out; no matrix),
+## "<elite composition> tier 2" with --packs elites (every elite composition at each tier
 ## it names, its elites scaled as a battle scales them; 4 November), or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
 ## --team id,id (repeatable: a row of exactly those machines,
@@ -72,7 +77,6 @@ var seeds := 200
 var policies: Array[int] = [Policy.RANDOM, Policy.GREEDY]
 var out_path := OUT
 var json_path := ""
-var withdraw_below := 0
 var cool_above := 0
 var shield_ahead := false
 var trace := ""
@@ -117,6 +121,12 @@ func _init() -> void:
 	if no_passive:
 		for id in db.chassis.keys():
 			db.chassis[id]["passive"] = null
+	if only_packs.has("promise"):
+		quit(_promise())
+		return
+	if only_packs.has("curve"):
+		quit(_curve())
+		return
 	_build_matrix()
 	if not fit_module.is_empty() and not db.modules.has(fit_module):
 		push_error("no module '%s' (modules: %s)" % [fit_module, ", ".join(db.modules.keys())])
@@ -239,8 +249,6 @@ func _parse_args() -> void:
 			"--damage":
 				damage_scale = maxf(0.05, float(v))
 				i += 1
-			"--withdraw":
-				withdraw_below = int(v)
 				i += 1
 			"--cool-above":
 				cool_above = clampi(int(v), 0, 100)
@@ -581,13 +589,152 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 			fielded.append(part)
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 	sk.add_foes(fielded)
+	if p.has("layout"):
+		sk.layout = Array(p["layout"]).duplicate()   # a composition's grid, as a battle deals it (the long wall brief, section 6)
 	sk.begin()
 	var pol := Policy.make(k, seed_value)
-	pol.withdraw_below = withdraw_below
 	pol.cool_above = cool_above
 	pol.shield_ahead = shield_ahead
 	var outcome := pol.play(sk)
 	return {"sk": sk, "pol": pol, "hull_max": hull_max, "foes": foes, "outcome": outcome}
+
+
+## The promise read (the long wall brief, section 5; --packs promise): every patrol, formation and
+## elite composition of every domain at each tier it names, its members as content has them and
+## its elites at the tier's numbers, fought by the default four machines (ContentDB.default_team)
+## cut to its threat rating N, the first N in the team's order, and beside it cut to N - 1 (short)
+## and to N + 1 (over, where N is under four), at the seeds given, each cell its win rate, its mean
+## rounds and its mean hull lost. A boss's escort is no pack on the map and has no cell. A
+## direction read beside the matrix, never a gate. Printed, and written to --out when one is given.
+func _promise() -> int:
+	var team: Array = db.default_team(4)
+	var t0 := Time.get_ticks_msec()
+	var fights := 0
+	var L: Array[String] = []
+	L.append("# The promise read")
+	L.append("")
+	var header := "| Domain | Composition | Tier | For | Short | At its rating | Over |"
+	var table: Array[String] = [header, "|---|---|---|---|---|---|---|"]
+	for fac in db.factions.keys():
+		for t in [1, 2, 3]:
+			for size in ["patrol", "formation", "elite"]:
+				for c in db.compositions(str(fac), t, size):
+					var mix: Array = c["members"].duplicate(true)
+					var pack := {"id": "%s tier %d" % [str(c["id"]), t], "name": str(c["id"]), "foe": "", "strength": 0, "mix": mix, "tier": int(t) - 1, "layout": c["layout"]}
+					var n := ContentDB.squad_of(c)
+					var cells: Array[String] = []
+					for cut in [n - 1, n, n + 1]:
+						if cut < 1 or cut > 4 or cut > team.size():
+							cells.append("")
+							continue
+						var row := {"id": "first %d" % cut, "name": "the first %d" % cut, "chassis": team.slice(0, cut)}
+						var parts: Array[String] = []
+						for k in policies:
+							var a: Dictionary = _run_cell(row, pack, k)
+							fights += seeds
+							var f := maxi(1, int(a["fights"]))
+							parts.append("%d%% · %.1f r · %d%% hull" % [_pct(a["victory"], a["fights"]), float(a["rounds"]) / f, int(roundf(float(a["hull_lost_pct"]) / f))])
+						cells.append(" / ".join(parts))
+					table.append("| %s | %s | %d | %d | %s | %s | %s |" % [str(db.factions[fac].get("name", fac)), str(c["id"]), int(t), n, cells[0], cells[1], cells[2]])
+	var secs := (Time.get_ticks_msec() - t0) / 1000.0
+	L.append("Generated by `tools/balance.gd --packs promise` on %s: %d fights in %.0f s, %d seeds a cell, policies %s, the team %s cut to each composition's threat rating (the first N in its order), one short and one over. Each cell: the win rate, the mean rounds and the mean hull lost (percent of the cut's hull), one figure set a policy. A direction, never a gate (the long wall brief, section 5)." % [
+		Time.get_date_string_from_system(), fights, secs, seeds, ", ".join(_policy_names()), ", ".join(_names(team))])
+	L.append("")
+	L.append_array(table)
+	L.append("")
+	var text := "\n".join(L)
+	print(text)
+	if out_path != OUT:
+		var f := FileAccess.open(out_path, FileAccess.WRITE)
+		if f == null:
+			push_error("cannot write %s" % out_path)
+			return 1
+		f.store_string(text)
+		f.close()
+	return 0
+
+
+## The curve read (--packs curve; the formation pass, Ryan, 7 November: "we should be able to figure
+## out somewhat empirically where in the tier-ramp curve that should sit, and then we have discrete
+## combinations to apply data to for testing and such, we can make tables, and prune formations that
+## have no place or are redundant"): every patrol, formation and elite composition of every domain
+## at each tier it names, fought by the default four machines cut to every size from one to four,
+## random and greedy at the seeds given. Each cell's band is the bible's reading: free (random play
+## wins half its fights or more), a decision (greedy wins half or more and random less) or a wall
+## (greedy wins less than half), with greedy's mean hull lost beside it. Each composition carries its
+## menace (its members' added), its ramp gate, its threat rating, the sizes it is a decision for, and
+## the compositions of its domain, size and tier whose bands match it at every size: a candidate for
+## pruning. A direction read for placing variants, never a gate. Printed, and written to --out.
+func _curve() -> int:
+	var team: Array = db.default_team(4)
+	var t0 := Time.get_ticks_msec()
+	var fights := 0
+	var found: Array = []
+	for fac in db.factions.keys():
+		for t in [1, 2, 3]:
+			for size in ["patrol", "formation", "elite"]:
+				for c in db.compositions(str(fac), t, size):
+					var mix: Array = c["members"].duplicate(true)
+					var menace := 0
+					var said: Array[String] = []
+					for m in mix:
+						menace += db.menace(str(m[0])) * int(m[1])
+						said.append("%s ×%d" % [str(db.foes[str(m[0])].get("name", m[0])), int(m[1])])
+					var pack := {"id": "%s tier %d" % [str(c["id"]), t], "name": str(c["id"]), "foe": "", "strength": 0, "mix": mix, "tier": int(t) - 1, "layout": c["layout"]}
+					var bands: Array[String] = []
+					var hulls: Array[String] = []
+					for cut in range(1, 5):
+						if cut > team.size():
+							bands.append("")
+							hulls.append("")
+							continue
+						var row := {"id": "first %d" % cut, "name": "the first %d" % cut, "chassis": team.slice(0, cut)}
+						var r: Dictionary = _run_cell(row, pack, Policy.RANDOM)
+						var g: Dictionary = _run_cell(row, pack, Policy.GREEDY)
+						fights += 2 * seeds
+						var rw := float(r["victory"]) / maxf(1.0, float(r["fights"]))
+						var gw := float(g["victory"]) / maxf(1.0, float(g["fights"]))
+						bands.append("free" if rw >= 0.5 else ("decision" if gw >= 0.5 else "wall"))
+						hulls.append("%d%%" % int(roundf(float(g["hull_lost_pct"]) / maxf(1.0, float(g["fights"])))))
+					var gate = c.get("ramp", null)
+					found.append({"domain": str(db.factions[fac].get("name", fac)), "size": str(c["size"]), "tier": int(t), "id": str(c["id"]),
+						"members": ", ".join(said), "menace": menace,
+						"ramp": ("C%d to %d" % [int(gate[0]), int(gate[1])]) if gate is Array and (gate as Array).size() == 2 else "any",
+						"rating": ContentDB.squad_of(c), "bands": bands, "hulls": hulls})
+	var secs := (Time.get_ticks_msec() - t0) / 1000.0
+	var L: Array[String] = []
+	L.append("# The curve read")
+	L.append("")
+	L.append("Generated by `tools/balance.gd --packs curve` on %s: %d fights in %.0f s, %d seeds a cell, random and greedy, the team %s cut to every size from one to four (its first N machines). Each cell: the band (free: random wins half or more; a decision: greedy wins half or more and random less; a wall: greedy wins less than half) and greedy's mean hull lost (percent of the cut's hull). Read for: the sizes it is a decision for. Same as: the compositions of its domain, size and tier whose bands match it at every size, candidates for pruning. A direction for placing the formation pass's variants, never a gate." % [
+		Time.get_date_string_from_system(), fights, secs, seeds, ", ".join(_names(team))])
+	L.append("")
+	L.append("| Domain | Size | Tier | Composition | Members | Menace | Ramp | Rated for | Read for | 1 | 2 | 3 | 4 | Same as |")
+	L.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
+	for e in found:
+		var read_for: Array[String] = []
+		for k in range(4):
+			if str(e["bands"][k]) == "decision":
+				read_for.append(str(k + 1))
+		var same: Array[String] = []
+		for o in found:
+			if o != e and o["domain"] == e["domain"] and o["size"] == e["size"] and o["tier"] == e["tier"] and o["bands"] == e["bands"]:
+				same.append(str(o["id"]))
+		var cells: Array[String] = []
+		for k in range(4):
+			cells.append("" if str(e["bands"][k]).is_empty() else "%s · %s" % [e["bands"][k], e["hulls"][k]])
+		L.append("| %s | %s | %d | %s | %s | %d | %s | %d | %s | %s | %s | %s | %s | %s |" % [e["domain"], e["size"], e["tier"], e["id"], e["members"], e["menace"], e["ramp"], e["rating"],
+			", ".join(read_for) if not read_for.is_empty() else "none", cells[0], cells[1], cells[2], cells[3], ", ".join(same)])
+	L.append("")
+	var text := "\n".join(L)
+	print(text)
+	if out_path != OUT:
+		var f := FileAccess.open(out_path, FileAccess.WRITE)
+		if f == null:
+			push_error("cannot write %s" % out_path)
+			return 1
+		f.store_string(text)
+		f.close()
+	return 0
 
 
 ## --trace: one fight's log, with the dice as they were spent.
@@ -634,7 +781,7 @@ static func _ids(list: Array) -> String:
 
 ## One cell: `seeds` fights of a row against a pack under one policy, summed.
 func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
-	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
+	var agg := {"fights": 0, "victory": 0, "defeat": 0, "stalled": 0,
 		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
 		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "taken": {},
 		"overheats": 0, "heat_peak": 0.0, "hot_rounds": 0, "forced": 0, "forgone": 0.0, "end_heat": 0.0,
@@ -653,8 +800,6 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		elif outcome == Skirmish.Outcome.VICTORY:
 			agg["victory"] += 1
 			agg["rounds_won"] += pol.rounds
-		elif outcome == Skirmish.Outcome.WITHDRAWN:
-			agg["withdrawn"] += 1
 		else:
 			agg["defeat"] += 1
 		agg["rounds"] += pol.rounds
@@ -752,7 +897,7 @@ func _report(fights: int, secs: float) -> String:
 	L.append("")
 	L.append("Generated by `tools/balance.gd` on %s: %d fights in %.0f s%s, %d seeds a cell, policies %s%s%s. Do not edit by hand." % [
 		Time.get_date_string_from_system(), fights, secs, "" if merge.size() < 2 else " (%d parts side by side)" % merge.size(), seeds, ", ".join(_policy_names()),
-		("" if withdraw_below <= 0 else ", withdrawing under %d%% hull" % withdraw_below) + ("" if cool_above <= 0 else ", keeping heat under %d%% of the maximum" % cool_above) + ("" if Skirmish.pilot.is_empty() else ", a pilot light (%s)" % str(Skirmish.pilot)) + ("" if Skirmish.overheat_scale <= 1 else ", an overheat burning %d hull a point" % Skirmish.overheat_scale) + ("" if not Skirmish.overheat_burnout else ", an overheat past the injury threshold burning out its component") + ("" if Skirmish.overheat_corrupt <= 0 else ", an overheat corrupting its component ×%d" % Skirmish.overheat_corrupt) + ("" if not shield_ahead else ", a standing shield valued by next round's blows"),
+		("" if cool_above <= 0 else ", keeping heat under %d%% of the maximum" % cool_above) + ("" if Skirmish.pilot.is_empty() else ", a pilot light (%s)" % str(Skirmish.pilot)) + ("" if Skirmish.overheat_scale <= 1 else ", an overheat burning %d hull a point" % Skirmish.overheat_scale) + ("" if not Skirmish.overheat_burnout else ", an overheat past the injury threshold burning out its component") + ("" if Skirmish.overheat_corrupt <= 0 else ", an overheat corrupting its component ×%d" % Skirmish.overheat_corrupt) + ("" if not shield_ahead else ", a standing shield valued by next round's blows"),
 		"" if is_equal_approx(damage_scale, 1.0) else ", the player's damage scaled by %.2f" % damage_scale]
 		+ ("" if fit_module.is_empty() else " Each row runs beside its twin with the %s fitted to every machine." % str(db.modules[fit_module].get("name", fit_module)))
 		+ ("" if bumps.is_empty() else " Every machine bumped: %s." % ", ".join(bumps.map(func(b) -> String: return "%s %+d" % [b[0], b[1]])))
@@ -782,7 +927,7 @@ func _report(fights: int, secs: float) -> String:
 	var top := policies[policies.size() - 1]
 	L.append("## Cost of a win, %s" % Policy.kind_name(top))
 	L.append("")
-	L.append("Mean rounds and mean hull lost (percent of the row's total hull), over every fight in the cell, won or not, then the components destroyed per won fight (gone for good in the hangar, bible section 10; the inflow has to beat this). A w marks a cell with withdrawals, an s a cell with a stalled fight (past %d rounds)." % Policy.MAX_ROUNDS)
+	L.append("Mean rounds and mean hull lost (percent of the row's total hull), over every fight in the cell, won or not, then the components destroyed per won fight (gone for good in the hangar, bible section 10; the inflow has to beat this). An s marks a cell with a stalled fight (past %d rounds)." % Policy.MAX_ROUNDS)
 	L.append("")
 	L.append(_header())
 	for r in rows:
@@ -791,8 +936,6 @@ func _report(fights: int, secs: float) -> String:
 			var a: Dictionary = cells[_key(r, p, top)]
 			var n: int = maxi(1, a["fights"])
 			var flags := ""
-			if a["withdrawn"] > 0:
-				flags += " w"
 			if a["stalled"] > 0:
 				flags += " s"
 			cell.append("%.1f r, %d%% hull, %.2f lost%s" % [float(a["rounds"]) / n, int(roundf(a["hull_lost_pct"] / n)), float(a["destroyed_won"]) / maxi(1, int(a["victory"])), flags])

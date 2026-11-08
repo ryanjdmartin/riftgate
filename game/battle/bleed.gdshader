@@ -20,7 +20,8 @@ uniform vec2 map_size = vec2(1.0, 1.0);      // the painted map, in map pixels
 uniform vec2 view_size = vec2(1.0, 1.0);     // this texture, in screen pixels
 uniform vec2 scroll = vec2(0.0, 0.0);        // the map view's scroll
 uniform float zoom = 1.0;
-uniform vec2 grad = vec2(0.0, 1.0);          // y where the rift's bleed is total, y where it is gone
+uniform vec2 grad = vec2(0.0, 1.0);          // where the rift's bleed is total and where it is gone, along grad_axis
+uniform vec2 grad_axis = vec2(0.0, 1.0);     // from the rift toward the wall (Bleed.axis): down the screen, or leftward with the wall at the left
 uniform vec3 sources[32];                    // x, y, radius in map pixels
 uniform int source_count = 0;
 uniform sampler2D units : filter_nearest;    // the machines alone: a mask where the scene wins
@@ -51,7 +52,7 @@ uniform vec4 boxes[32];                      // left, top, right, bottom, in the
 uniform int box_count = 0;
 
 float bleed_at(vec2 px) {
-	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
+	float m = 1.0 - clamp((dot(px, grad_axis) - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
 	for (int i = 0; i < source_count; i++) {
 		vec3 s = sources[i];
 		float d = distance(px, s.xy);

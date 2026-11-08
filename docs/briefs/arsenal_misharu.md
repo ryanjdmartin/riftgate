@@ -2,6 +2,10 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "proposal", "slot": true, "name": "Misharu"} -->
 
+**Ryan's direction (6 November)**: New idea - delayed judgement. It reads enemy "sins," marking
+them, and then cashes those in for effects. Depending on the effect the player wants to lean on, the
+build can change from control to support to carry. Might be a little ambitious.
+
 The session settles Misharu's Penance, the weaken that replaced its sentence, against Ryan's
 two holes, which fight each other.
 

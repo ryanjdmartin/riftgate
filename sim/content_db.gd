@@ -35,6 +35,10 @@ var foes: Dictionary = {}
 var chassis: Dictionary = {}
 var components: Dictionary = {}
 var modules: Dictionary = {}
+## The caches a battle's field holds (content/loot.json, built 7 November): kind id -> entry,
+## and the file's rules (per_battle, rift_gap, wall_gap).
+var loot: Dictionary = {}
+var loot_rules: Dictionary = {}
 var makers: Dictionary = {}
 var categories: Array = []
 ## Machine names from the properties our designs sit nearest (content/reserved_names.json:
@@ -72,6 +76,9 @@ func load_dir(dir: String) -> void:
 		makers[m["id"]] = m
 	components = _index(_read(dir + "components.json"))
 	modules = _index(_read(dir + "modules.json"))
+	var lf := _read(dir + "loot.json")
+	loot = _index(lf)
+	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2))}
 	reserved_names = {}
 	var reserved := _read(dir + "reserved_names.json")
 	var sources: Dictionary = reserved.get("sources", {})
@@ -193,8 +200,8 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, l
 		u.traits.append(str(t))
 	u.hardpoints = int(c.get("hardpoints", 6))
 	u.armour = int(c.get("armour", 0))
-	u.recharge_field = int(c.get("recharge_field", 0))
 	u.cooling = int(c.get("cooling", 0))
+	u.shield_regen = int(c.get("shield_regen", 0))   # the long wall brief 3.6: no chassis sets it yet
 	u.die = build_die(c.get("fixed", []), fitted, u.hardpoints)
 	u.chassis_id = chassis_id
 	var p = c.get("passive", null)
@@ -259,7 +266,7 @@ func module_description(module_id: String) -> String:
 
 
 ## The words a stat line is shown with.
-const STAT_WORDS := {"hull": "hull", "shield": "shield", "heat": "heat max", "armour": "armour", "move": "move", "recharge": "field recharge", "cooling": "cooling"}
+const STAT_WORDS := {"hull": "hull", "shield": "shield", "heat": "heat max", "armour": "armour", "move": "move", "cooling": "cooling", "shield_regen": "shield regen"}
 
 
 func module_name(module_id: String) -> String:
@@ -456,8 +463,16 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var now := {}
 	for k in Effects.STATS:
 		now[k] = Effects.stat(u, k, Effects.BATTLE)
-	var stats := "SHIELD %d (+%d A PHASE OUT OF COMBAT) // HULL %d // ARMOUR %d // HEAT %d (-%d A TURN) // MOVE %d // %d HARDPOINTS // D%d" % [
-		now["shield"], now["recharge"], now["hull"], now["armour"], now["heat"], now["cooling"], now["move"], u.hardpoints, u.die.size() if u.die != null else 0]
+	# The shield regen shows only where it is not zero (the long wall brief 3.6).
+	var regen := (" (+%d A ROUND)" % int(now["shield_regen"])) if int(now["shield_regen"]) != 0 else ""
+	var stats := "SHIELD %d%s // HULL %d // ARMOUR %d // HEAT %d (-%d A TURN) // MOVE %d // %d HARDPOINTS // D%d" % [
+		now["shield"], regen, now["hull"], now["armour"], now["heat"], now["cooling"], now["move"], u.hardpoints, u.die.size() if u.die != null else 0]
+	var items: Array = [["shield max", stat_parts(int(u.base["shield"]), now["shield"])]]
+	if int(now["shield_regen"]) != 0 or int(u.base.get("shield_regen", 0)) != 0:
+		items.append(["shield regen", stat_parts(int(u.base.get("shield_regen", 0)), now["shield_regen"], "+")])
+	items.append_array([["hull max", stat_parts(int(u.base["hull"]), now["hull"])], ["armour", stat_parts(int(u.base["armour"]), now["armour"])],
+		["heat max", stat_parts(int(u.base["heat"]), now["heat"])], ["cooling", stat_parts(int(u.base["cooling"]), now["cooling"])],
+		["move", stat_parts(int(u.base["move"]), now["move"])]])
 	# The die as built: the codex shows each component at its own numbers (26 October).
 	var faces: Array = []
 	var face_rules: Array = []   # each entry's component passive, its lines on the component's row
@@ -510,10 +525,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		# Hardpoints are not a number here: the component list shows them as sockets.
 		# The machine's numbers, never its state (Ryan, 22 September: the codex is the spec
 		# plate; the gauges say how it is doing): maxima with their rates beside them.
-		"stat_items": [["shield max", stat_parts(int(u.base["shield"]), now["shield"])], ["recharge", stat_parts(int(u.base["recharge"]), now["recharge"], "+")],
-			["hull max", stat_parts(int(u.base["hull"]), now["hull"])], ["armour", stat_parts(int(u.base["armour"]), now["armour"])],
-			["heat max", stat_parts(int(u.base["heat"]), now["heat"])], ["cooling", stat_parts(int(u.base["cooling"]), now["cooling"])],
-			["move", stat_parts(int(u.base["move"]), now["move"])]],
+		"stat_items": items,
 		"actions": "",
 		"passive": "\n".join(passive_lines),
 		"passive_rows": rows,   # [text, "chassis"]: the chassis's own
@@ -597,12 +609,13 @@ func foes_for(sq: Unit) -> Array[Foe]:
 ## A boss unit at its battle's tier, 0 to 2 (Ryan, 25 and 26 October: bosses scale to the tier,
 ## "scaling stats and upgrading the escort", while the rank and file are never inflated, "a fine
 ## compromise for the sake of run diversity"): its commanders' HP multiplied and their attack
-## raised, a domain's boss, a final's hero and the finale's line alike, and its escort grown by
-## the tier's own units. Placeholders.
+## raised, a domain's boss, a final's hero and the finale's line alike. Its escort is the tier's
+## curated composition (an `escort` naming it), never grown by count (Ryan, 7 November: "packs
+## don't auto scale, so why would a bosses? Should be treated the same way"). Placeholders.
 const BOSS_TIERS := [
-	{"hp": 1.0, "attack": 0, "escort": 0},
-	{"hp": 1.25, "attack": 1, "escort": 2},
-	{"hp": 1.5, "attack": 2, "escort": 4},
+	{"hp": 1.0, "attack": 0},
+	{"hp": 1.25, "attack": 1},
+	{"hp": 1.5, "attack": 2},
 ]
 
 
@@ -610,9 +623,31 @@ static func boss_tier(t: int) -> Dictionary:
 	return BOSS_TIERS[clampi(t, 0, BOSS_TIERS.size() - 1)]
 
 
-## The escort a boss unit brings at a tier beyond its own.
-static func escort_at(t: int) -> int:
-	return int(boss_tier(t)["escort"])
+## A fight's slots: four columns of two ranks, the ranks holding (a front foe never stands in the
+## back), a massive foe a whole column. A pack is what they hold (no reinforcement inside a
+## fight, 6 November): content is validated to fit, so the engine never trims a pack.
+const GRID_COLUMNS := 4
+
+
+## Foes as a fight's slots hold them, in the order given (commanders and their parts first): a
+## foe its rank has no room for is left out. The harness's alone, for the fight it builds by hand,
+## so that fight is one the game could deal; content is validated to fit instead.
+static func fit_grid(list: Array[Foe]) -> Array[Foe]:
+	var out: Array[Foe] = []
+	var massive := 0
+	var front := 0
+	var back := 0
+	for f in list:
+		var m := massive + (1 if f.is_massive() else 0)
+		var fr := front + (1 if not f.is_massive() and not f.prefers_back else 0)
+		var bk := back + (1 if not f.is_massive() and f.prefers_back else 0)
+		if m + fr > GRID_COLUMNS or m + bk > GRID_COLUMNS:
+			continue
+		massive = m
+		front = fr
+		back = bk
+		out.append(f)
+	return out
 
 
 ## A commander at its battle's tier: its HP and attack as the tier gives them, set as it is made,
@@ -818,36 +853,200 @@ func make_boss(uid: int, faction_id: String, boss_id: String = "") -> Unit:
 const COMPOSITION_SIZES := ["patrol", "formation", "elite", "escort"]
 
 
+## A composition's threat rating, the machines it is intended for (the long wall brief 3.7; Ryan,
+## 6 November: "The one thing we should do is show the threat rating of a formation on the map.
+## For how many units it's intended for"; "a 'true' 4 should be reserved for elites and bosses,
+## with formations a 3"): its own `squad` where content writes one, else by its size.
+const SQUAD_BY_SIZE := {"patrol": 1, "formation": 3, "elite": 4, "escort": 4}
+const SQUAD_DEFAULT := 3   # a pack of no composition (the harness's composed side)
+
+
+static func squad_of(c: Dictionary) -> int:
+	if c.has("squad"):
+		return clampi(int(c["squad"]), 1, 4)
+	return int(SQUAD_BY_SIZE.get(str(c.get("size", "")), SQUAD_DEFAULT))
+
+
+## A composition's grid (one declaration since 8 November, the long wall brief's layout and
+## members made one): front and back, four cells each, null or a foe id the content has; a
+## front-rank foe in a front cell and a back-rank foe in a back cell (the ranks hold), a massive
+## foe in a front cell with the back cell behind it null; no hero; an elite only in an elite
+## composition, whose lead is one; a core's parts each in a cell of its own, once a core, and a
+## part never without its core; a lead that stands in the grid. Nothing beside the grid counts a
+## foe, so the pack is what it holds.
+func _validate_grid(cw: String, c: Dictionary, size: String, errs: Array) -> void:
+	for r in ["front", "back"]:
+		if not (c.get(r, null) is Array) or (c[r] as Array).size() != 4:
+			errs.append("%s: %s is four cells, left to right, each null or a foe id" % [cw, r])
+			return
+	var named := {}
+	var cores := {}
+	for r in ["front", "back"]:
+		for col in range(4):
+			var cell = c[r][col]
+			if cell == null:
+				continue
+			if not (cell is String):
+				errs.append("%s: %s cell %d is null or a foe id" % [cw, r, col])
+				continue
+			var fid := str(cell)
+			if not foes.has(fid):
+				errs.append("%s: %s cell %d names unknown foe %s" % [cw, r, col, fid])
+				continue
+			named[fid] = int(named.get(fid, 0)) + 1
+			var f: Dictionary = foes[fid]
+			if bool(f.get("hero", false)):
+				errs.append("%s: hero %s is never in a composition; it is dealt from the bench" % [cw, fid])
+			if size != "elite" and bool(f.get("elite", false)):
+				errs.append("%s: %s is an elite and stands only in an elite composition" % [cw, fid])
+			if int(f.get("size", 1)) >= 2:
+				if r == "back":
+					errs.append("%s: back cell %d names the massive %s, which stands in a front cell" % [cw, col, fid])
+				elif c["back"][col] != null:
+					errs.append("%s: front cell %d holds the massive %s, so the back cell behind it is null" % [cw, col, fid])
+			elif str(f.get("rank", "front")) == "back" and r == "front":
+				errs.append("%s: front cell %d names %s, which stands in the back rank" % [cw, col, fid])
+			elif str(f.get("rank", "front")) != "back" and r == "back":
+				errs.append("%s: back cell %d names %s, which stands in the front rank" % [cw, col, fid])
+			for pid in f.get("parts", []):
+				cores[str(pid)] = int(cores.get(str(pid), 0)) + 1
+	for pid in cores.keys():
+		if int(named.get(pid, 0)) != int(cores[pid]):
+			errs.append("%s: %s has %d core%s in the grid and %d cell%s; a core's parts each take a cell of their own, once a core" % [cw, pid, int(cores[pid]), "" if int(cores[pid]) == 1 else "s", int(named.get(pid, 0)), "" if int(named.get(pid, 0)) == 1 else "s"])
+	for fid in named.keys():
+		if not cores.has(fid) and is_part(fid):
+			errs.append("%s: %s is a part and stands only beside its core" % [cw, fid])
+	if named.is_empty():
+		errs.append("%s: front and back name nobody" % cw)
+	var lead := str(c.get("lead", ""))
+	if c.has("lead") and not named.has(lead):
+		errs.append("%s: lead '%s' stands nowhere in its grid" % [cw, lead])
+	if size == "elite":
+		var members := grid_members(c)
+		if not members.is_empty() and not bool(foes.get(str(members[0][0]), {}).get("elite", false)):
+			errs.append("%s: an elite composition is led by its elite; %s is none" % [cw, str(members[0][0])])
+
+
+## Whether a foe is some core's part (content `parts`).
+func is_part(foe_id: String) -> bool:
+	for id in foes.keys():
+		if foes[id].get("parts", []).has(foe_id):
+			return true
+	return false
+
+
 ## A faction's compositions of a size at a tier (1 to 3, the shown number), in content order,
-## each as {"id", "size", "faction", "members": [[foe_id, strength], ...]}; every size in turn
-## when `size` is empty. A tier with none of a size takes the highest tier's under it, as the
+## each as {"id", "size", "faction", "members": [[foe_id, strength], ...] read off its grid, "layout": its eight cells, "lead"}; every size in turn
+## when `size` is empty. A tier with none of a size has none: nothing stands in (Ryan, 8 November:
+## "we've either defined the escort or we haven't"; the content tests want every size at every tier), as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
 ## tier. Nothing when the faction has none.
-func compositions(faction_id: String, tier: int, size: String = "") -> Array:
+func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1) -> Array:
 	var out: Array = []
 	var sizes: Array = [size] if not size.is_empty() else COMPOSITION_SIZES
 	for sz in sizes:
-		for t in range(clampi(tier, 1, 3), 0, -1):
-			var found := _compositions_at(faction_id, t, str(sz))
-			if not found.is_empty():
-				out.append_array(found)
-				break
+		out.append_array(_compositions_at(faction_id, clampi(tier, 1, 3), str(sz), ramp))
 	return out
 
 
-func _compositions_at(faction_id: String, tier: int, size: String) -> Array:
+func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -1) -> Array:
 	var out: Array = []
 	for c in factions.get(faction_id, {}).get("compositions", []):
 		if not (c is Dictionary) or str(c.get("size", "")) != size or not composition_tiers(c).has(tier):
 			continue
-		var members: Array = []
-		for m in c.get("members", []):
-			if m is Dictionary and foes.has(str(m.get("foe", ""))):
-				members.append([str(m["foe"]), maxi(1, int(m.get("strength", 1)))])
+		if ramp >= 0 and not ramp_holds(c, ramp):
+			continue
+		var cells := layout_cells(c)
+		var members := grid_members(c)
 		if members.is_empty():
 			continue
-		out.append({"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "boss": str(c.get("boss", ""))})
+		var entry := {"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "layout": cells, "boss": str(c.get("boss", "")), "lead": str(members[0][0])}
+		for key in ["squad", "ramp"]:   # the threat rating (the long wall brief 3.7) and the ramp gate (7 November), as content writes them
+			if c.has(key):
+				entry[key] = c[key]
+		out.append(entry)
 	return out
+
+
+## A composition's grid as eight cells, the front rank's four then the back's, each a foe id or
+## "" for empty (the composition's own declaration since 8 November: its front and back).
+static func layout_cells(c: Dictionary) -> Array:
+	var out: Array = []
+	for r in ["front", "back"]:
+		var row = c.get(r, [])
+		for col in range(4):
+			var cell = row[col] if row is Array and col < (row as Array).size() else null
+			out.append(str(cell) if cell is String else "")
+	return out
+
+
+## A composition's members read off its grid, [[foe id, count], ...]: each foe once with its
+## cells' count, the lead first (`lead`, else the first in reading order), a core's parts left out
+## (they come with their core: parts_for), so the pack on the map counts what the grid holds.
+func grid_members(c: Dictionary) -> Array:
+	var cells := layout_cells(c)
+	var parts := {}
+	for cell in cells:
+		for pid in foes.get(cell, {}).get("parts", []):
+			parts[str(pid)] = true
+	var order: Array = []
+	var counts := {}
+	for cell in cells:
+		if cell.is_empty() or parts.has(cell) or not foes.has(cell):
+			continue
+		if not counts.has(cell):
+			order.append(cell)
+		counts[cell] = int(counts.get(cell, 0)) + 1
+	var lead := str(c.get("lead", ""))
+	if order.has(lead):
+		order.erase(lead)
+		order.push_front(lead)
+	var out: Array = []
+	for fid in order:
+		out.append([fid, int(counts[fid])])
+	return out
+
+
+## The ramp gates cover their tiers (7 November): where any of a domain's compositions of a size at
+## a tier (an escort's, of its boss) carries one, every Convergence that tier is fought at, its first
+## to the top, is held by one of them, so a battle never runs out of what to deal; an ungated one
+## holds them all.
+func _validate_ramp_gates(errs: Array[String]) -> void:
+	for fid in factions.keys():
+		var groups := {}   # "size|tier|boss" -> its compositions
+		for c in factions[fid].get("compositions", []):
+			if not (c is Dictionary):
+				continue
+			for t in composition_tiers(c):
+				var key := "%s|%d|%s" % [str(c.get("size", "")), int(t), str(c.get("boss", ""))]
+				if not groups.has(key):
+					groups[key] = []
+				(groups[key] as Array).append(c)
+		for key in groups.keys():
+			var list: Array = groups[key]
+			if not list.any(func(c) -> bool: return c.get("ramp", null) is Array):
+				continue
+			var parts := str(key).split("|")
+			for r in range(first_ramp_of(int(parts[1])), Ramp.TOP + 1):
+				if not list.any(func(c) -> bool: return ramp_holds(c, r)):
+					errs.append("faction %s: no %s at tier %s%s is dealt at Convergence %d; the ramp gates must hold every Convergence from the tier's first (%d) to %d" % [fid, parts[0], parts[1], (" for " + parts[2]) if not parts[2].is_empty() else "", r, first_ramp_of(int(parts[1])), Ramp.TOP])
+					break
+
+
+## Whether a composition is dealt at a ramp: its optional gate, `ramp` [lo, hi], the Convergences
+## it is dealt at, both ends held (Ryan, 7 November: variants placed "in the tier-ramp curve"); one
+## with no gate at every ramp. A ramp under 0 asks nothing (the harness's lists, the tools).
+static func ramp_holds(c: Dictionary, ramp: int) -> bool:
+	var g = c.get("ramp", null)
+	if ramp < 0 or not (g is Array) or (g as Array).size() != 2:
+		return true
+	return ramp >= int(g[0]) and ramp <= int(g[1])   # the Convergence never passes the finale's: a turn cannot be passed once it is due (Campaign.pass_turn)
+
+
+## The Convergence a tier is first fought at (tier 1 to 3): a rift keeps the tier it opened at and
+## the ramp only rises, so a tier is fought from here to the top (Campaign.TIER_EVERY a tier).
+static func first_ramp_of(tier: int) -> int:
+	return Campaign.TIER_EVERY * (clampi(tier, 1, 3) - 1)
 
 
 ## The tiers a composition may be dealt at, as ints (content writes them as a list; one by
@@ -861,8 +1060,8 @@ static func composition_tiers(c: Dictionary) -> Array:
 
 
 ## A faction's elite compositions at a tier, in content order: the elites its Fractures spawn.
-func elite_compositions(faction_id: String, tier: int) -> Array:
-	return compositions(faction_id, tier, "elite").filter(func(c) -> bool: return not is_wandering(c))
+func elite_compositions(faction_id: String, tier: int, ramp: int = -1) -> Array:
+	return compositions(faction_id, tier, "elite", ramp).filter(func(c) -> bool: return not is_wandering(c))
 
 
 ## The chance a Fracture sends a wanderer in place of the domain's next own elite (Ryan,
@@ -873,11 +1072,11 @@ const WANDER_CHANCE := 1.0 / 3.0
 ## The wanderers at a tier: every domain's elite compositions led by a foe that wanders
 ## (`wanders`), each once, in content order, so one composition in one domain's list walks
 ## out of every rift (Gilgamesh, 31 October and 2 November).
-func wandering_compositions(tier: int) -> Array:
+func wandering_compositions(tier: int, ramp: int = -1) -> Array:
 	var out: Array = []
 	var seen: Array = []
 	for fid in factions.keys():
-		for c in compositions(str(fid), tier, "elite"):
+		for c in compositions(str(fid), tier, "elite", ramp):
 			if is_wandering(c) and not seen.has(str(c["id"])):
 				seen.append(str(c["id"]))
 				out.append(c)
@@ -896,9 +1095,9 @@ func is_wandering(c: Dictionary) -> bool:
 ## is the roll's too (3 November, the pool past one): the roll's place in its band picks among
 ## those not yet sent, so a resumed battle draws the same and the player never learns an order.
 ## An elite may come again in a later battle, never twice in one; a boss never twice in a run.
-func next_elite(faction_id: String, tier: int, sent: Array, roll: float) -> Dictionary:
-	var own: Array = elite_compositions(faction_id, tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
-	var wanderers: Array = wandering_compositions(tier).filter(func(c) -> bool: return not sent.has(str(c["id"])))
+func next_elite(faction_id: String, tier: int, sent: Array, roll: float, ramp: int = -1) -> Dictionary:
+	var own: Array = elite_compositions(faction_id, tier, ramp).filter(func(c) -> bool: return not sent.has(str(c["id"])))
+	var wanderers: Array = wandering_compositions(tier, ramp).filter(func(c) -> bool: return not sent.has(str(c["id"])))
 	if own.is_empty():
 		return _wanderer_at(wanderers, roll) if not wanderers.is_empty() else {}
 	if not wanderers.is_empty() and roll < WANDER_CHANCE:
@@ -920,11 +1119,11 @@ func elite_composition(faction_id: String, tier: int, id: String) -> Dictionary:
 	return {}
 
 
-## A boss's hand-tailored escort at a tier (an `escort` composition), or empty: the tier's units
-## stand in round robin (escort_units). An escort may name its `boss` (30 October: the King Gel's
-## Gels, which its merge takes in); the boss's own comes first, then one that names none.
-func escort_composition(faction_id: String, tier: int, boss_id: String = "") -> Dictionary:
-	var found := compositions(faction_id, tier, "escort")
+## A boss's curated escort at a tier (an `escort` composition), or empty: the boss stands alone,
+## nothing grown by the tier (7 November). An escort may name its `boss` (30 October: the King
+## Gel's Gels, which its merge takes in); the boss's own comes first, then one that names none.
+func escort_composition(faction_id: String, tier: int, boss_id: String = "", ramp: int = -1) -> Dictionary:
+	var found := compositions(faction_id, tier, "escort", ramp)
 	for c in found:
 		if not boss_id.is_empty() and str(c.get("boss", "")) == boss_id:
 			return c
@@ -996,7 +1195,81 @@ func validate() -> Array[String]:
 	_validate_modules(errs)
 	_validate_foes(errs)
 	_validate_factions(errs)
+	_validate_loot(errs)
 	return errs
+
+
+## The caches' kinds (content/loot.json): one a tier, from 1 up with none missing, each a shown
+## name, a weight to be seeded by at [the wall's end, the rift's end] of the cache rows, salvage [lo, hi], a count of components and a blueprint
+## chance from 0 to 1, its internal text under design.
+func _validate_loot(errs: Array[String]) -> void:
+	var tiers := {}
+	for id in loot.keys():
+		var e: Dictionary = loot[id]
+		var w := "loot %s" % id
+		_validate_design(w, e, errs, false)
+		if str(e.get("name", "")).is_empty():
+			errs.append("%s: missing name" % w)
+		var t = e.get("tier", null)
+		if not (t is float or t is int) or int(t) < 1:
+			errs.append("%s: tier is a whole number from 1" % w)
+		elif tiers.has(int(t)):
+			errs.append("%s: tier %d is %s's too; one kind a tier" % [w, int(t), tiers[int(t)]])
+		else:
+			tiers[int(t)] = id
+		var wt = e.get("weight", null)
+		if not (wt is Array) or (wt as Array).size() != 2 or not (wt as Array).all(func(x) -> bool: return (x is float or x is int) and float(x) >= 0.0):
+			errs.append("%s: weight is [at the wall, at the rift], each 0 or more" % w)
+		var sv = e.get("salvage", null)
+		if not (sv is Array) or (sv as Array).size() != 2 or not (sv as Array).all(func(x) -> bool: return x is float or x is int) or int(sv[0]) < 0 or int(sv[0]) > int(sv[1]):
+			errs.append("%s: salvage is [lo, hi], 0 <= lo <= hi" % w)
+		var n = e.get("components", null)
+		if not (n is float or n is int) or int(n) < 0:
+			errs.append("%s: components is a count, 0 or more" % w)
+		var bp = e.get("blueprint", null)
+		if not (bp is float or bp is int) or float(bp) < 0.0 or float(bp) > 1.0:
+			errs.append("%s: blueprint is a chance from 0 to 1" % w)
+		if not (e.get("codex", "") is String):
+			errs.append("%s: codex is text" % w)
+	for k in range(1, tiers.size() + 1):
+		if not tiers.has(k):
+			errs.append("loot: the kinds' tiers run from 1 with none missing (no tier %d)" % k)
+	for key in ["per_battle", "rift_gap", "wall_gap"]:
+		if int(loot_rules.get(key, 0)) < 0:
+			errs.append("loot: %s is 0 or more" % key)
+
+
+## The caches' kinds by tier, lowest first.
+func loot_kinds() -> Array:
+	var out: Array = loot.keys()
+	out.sort_custom(func(a, b) -> bool: return int(loot[a].get("tier", 0)) < int(loot[b].get("tier", 0)))
+	return out
+
+
+## The kind of a tier, "" for none.
+func loot_kind_of_tier(t: int) -> String:
+	for id in loot.keys():
+		if int(loot[id].get("tier", 0)) == t:
+			return str(id)
+	return ""
+
+
+## The highest kind's tier, 0 with none.
+func loot_top_tier() -> int:
+	var top := 0
+	for id in loot.keys():
+		top = maxi(top, int(loot[id].get("tier", 0)))
+	return top
+
+
+## The components a cache of a battle at `item_tier` (1 to 3) may hold, in content order: the
+## tier's unlocked components the engine runs (a locked one is never loot, as never a blueprint).
+func loot_pool(item_tier: int) -> Array:
+	var out: Array = []
+	for cid in components.keys():
+		if component_tier(str(cid)) == item_tier and str(components[cid].get("status", "")) != "planned":
+			out.append(str(cid))
+	return out
 
 
 func _validate_vocabulary(errs: Array[String]) -> void:
@@ -1770,7 +2043,7 @@ func _validate_chassis(errs: Array[String]) -> void:
 		var where := "chassis %s" % id
 		# designation: the maker's long name on the spec plate (Ryan, 26 September: every
 		# chassis carries one; the bible's section 7 row says the shape per maker).
-		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field", "size", "module_slots"]:
+		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "size", "module_slots"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
 		# Module slots are a number of the chassis, never bought (Ryan: two as a rule, three on
@@ -1782,8 +2055,12 @@ func _validate_chassis(errs: Array[String]) -> void:
 		_validate_name_clash(where, str(id), c, errs)
 		if c.has("recharge_combat"):
 			errs.append("%s: recharge_combat is gone; in a fight shield comes only from components (a passive may say otherwise)" % where)
-		if int(c.get("recharge_field", 0)) < 0 or int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
-			errs.append("%s: armour, the field recharge rate and cooling cannot be negative" % where)
+		if c.has("recharge_field"):
+			errs.append("%s: recharge_field is gone (the long wall brief, docs/briefs/long_wall_build.md 3.6): the shield is full as every fight opens and nothing returns on the map" % where)
+		if int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
+			errs.append("%s: armour and cooling cannot be negative" % where)
+		if c.has("shield_regen") and (not (c["shield_regen"] is float or c["shield_regen"] is int) or int(c["shield_regen"]) != c["shield_regen"] or int(c["shield_regen"]) < 0 or int(c["shield_regen"]) > 9):
+			errs.append("%s: shield_regen is a whole number from 0 to 9 (the long wall brief 3.6)" % where)
 		_validate_design(where, c, errs)
 		var hp := int(c.get("hardpoints", 0))
 		if c.has("filler"):
@@ -2141,6 +2418,7 @@ func _validate_foes(errs: Array[String]) -> void:
 
 
 func _validate_factions(errs: Array[String]) -> void:
+	_validate_ramp_gates(errs)
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
 		var where := "faction %s" % id
@@ -2161,7 +2439,7 @@ func _validate_factions(errs: Array[String]) -> void:
 		# deal it and its members; a tier-one formation and patrol at least, so every tier fights.
 		var comps = f.get("compositions", [])
 		if not (comps is Array) or (comps as Array).is_empty():
-			errs.append("%s: compositions is a list of {id, size, tiers, members}" % where)
+			errs.append("%s: compositions is a list of {id, size, tiers, front, back}" % where)
 			comps = []
 		var comp_ids := {}
 		var tier_one := {"formation": false, "patrol": false}
@@ -2170,7 +2448,7 @@ func _validate_factions(errs: Array[String]) -> void:
 				errs.append("%s: each composition is an object" % where)
 				continue
 			var cw := "%s composition %s" % [where, str(c.get("id", "?"))]
-			for key in ["id", "size", "members"]:
+			for key in ["id", "size", "front", "back"]:
 				if not c.has(key):
 					errs.append("%s: missing %s" % [cw, key])
 			if comp_ids.has(str(c.get("id", ""))):
@@ -2186,28 +2464,19 @@ func _validate_factions(errs: Array[String]) -> void:
 				for t in tiers:
 					if int(t) < 1 or int(t) > 3:
 						errs.append("%s: tiers are 1 to 3, got %s" % [cw, str(t)])
-			var members = c.get("members", [])
-			if not (members is Array) or (members as Array).is_empty():
-				errs.append("%s: members is a list of {foe, strength}, one at least" % cw)
-				members = []
-			var first := true
-			for m in members:
-				if not (m is Dictionary) or not foes.has(str(m.get("foe", ""))):
-					errs.append("%s: member names unknown foe %s" % [cw, str(m)])
-					first = false
-					continue
-				var fid := str(m["foe"])
-				if int(m.get("strength", 0)) < 1:
-					errs.append("%s: member %s needs a strength of at least 1" % [cw, fid])
-				if bool(foes[fid].get("hero", false)):
-					errs.append("%s: hero %s is never in a composition; it is dealt from the bench" % [cw, fid])
-				# An elite composition is led by its elite; an elite stands in no other (the bible's
-				# tiers row: outside the usual spawn list).
-				if size == "elite" and first and not bool(foes[fid].get("elite", false)):
-					errs.append("%s: an elite composition's first member is its elite, flagged elite; %s is none" % [cw, fid])
-				if size != "elite" and bool(foes[fid].get("elite", false)):
-					errs.append("%s: %s is an elite and stands only in an elite composition" % [cw, fid])
-				first = false
+			if c.has("members") or c.has("layout"):
+				errs.append("%s: members and layout are gone (8 November); the grid, front and back, is the whole declaration" % cw)
+			_validate_grid(cw, c, size, errs)
+			# The long wall brief's fields (section 6): the squad it is intended for and the ramp gate.
+			if c.has("squad"):
+				var sv = c["squad"]
+				if not ((sv is int or sv is float) and int(sv) == sv and int(sv) >= 1 and int(sv) <= 4):
+					errs.append("%s: squad is 1, 2, 3 or 4, the machines it is intended for" % cw)
+			if c.has("ramp"):
+				var g = c["ramp"]
+				if not (g is Array) or (g as Array).size() != 2 or not (g as Array).all(func(x) -> bool: return x is float or x is int) \
+						or int(g[0]) < 0 or int(g[0]) > int(g[1]) or int(g[1]) > Ramp.TOP:
+					errs.append("%s: ramp is [lo, hi], the Convergences it is dealt at, 0 <= lo <= hi <= %d" % [cw, Ramp.TOP])
 			if c.has("boss"):
 				# An escort written for one boss (30 October); no other composition names one.
 				var named_boss := str(c["boss"])

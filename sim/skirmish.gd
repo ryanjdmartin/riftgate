@@ -2,7 +2,8 @@ class_name Skirmish
 extends RefCounted
 
 ## The dice skirmish. Mechs have no positions. Enemies stand in a two-rank, four-column
-## formation fed from the reinforcements, so a horde keeps coming. The rules are docs/rules.md's.
+## formation, a pack what its eight slots hold: nothing steps into a kill's slot (no
+## reinforcement inside a fight, Ryan, 6 November). The rules are docs/rules.md's.
 ##
 ## Round loop:
 ##   start_round()       passive cooling, roll every live mech's die, telegraph foe intents
@@ -13,9 +14,10 @@ extends RefCounted
 ##                       a kill clears its slot at once; a decided fight ends at once
 ##   end_round()         the player's turn ends: a machine's Burning adds its heat and loses a
 ##                       stack, Scorched goes, then heat over the cap burns hull; then
-##                       burn ticks, foes act, the dead are cleared, mech statuses tick, the
-##                       reinforcements refill, outcome is checked
-##   can_withdraw()      at any point of the player's turn
+##                       burn ticks, foes act, the dead are cleared, mech statuses tick, a
+##                       part due grows back in its corpse's slot, outcome is checked
+##   can_withdraw()      false: there is no withdrawal (the long wall brief 3.5); a fight ends
+##                       in the foes' fall or the team's
 ##   undo()              takes back the last spend or reroll, in the order made, back to the
 ##                       last roll (the round's, a reroll's draw, a spend's own); the screen's
 ##                       fight keeps the snapshots (keeps_undo); can_undo(), undo_depth()
@@ -23,10 +25,10 @@ extends RefCounted
 ## The player's damage is in fives, everything else in tens. Nothing rolls but the dice.
 
 enum State { SETUP, ROUND_START, ASSIGN, DONE }
-enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
+enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }   # WITHDRAWN is never produced since the long wall brief 3.5 (there is no withdrawal); kept for the saves and the runners' tallies
 
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
-const REROLLS_PER_ROUND := 3
+const REROLLS_PER_ROUND := 2   # two since 6 November (Ryan: a reroll gained is worth more, and two is the standard; a trial)
 ## The shapes a foe past a strike's target stands in (area by shape, numbered: Ryan, 28 October),
 ## each its own number in place of the roll (area_shapes, area_number).
 const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's
@@ -82,7 +84,11 @@ var terrain: int = BattleMap.Terrain.PLAIN   # the ground the fight is on (the c
 var ground: String = "plain"                 # its word for the header, a wall by its look (BattleMap.ground_id)
 var front: Array = []
 var back: Array = []
-var reinforcements: Array[Foe] = []   # foes waiting behind the formation; they step in at the reinforcement phase
+var reinforcements: Array[Foe] = []   # the foes dealt to the fight before it begins; `begin` stands them in the formation and none waits after (no reinforcement inside a fight: Ryan, 6 November)
+## A fallen part whose core will regrow it holds its slot until it does (Ryan, 7 November: "anything
+## that regrows should leave it's corpse in place, to make it clear"; "How on earth would that
+## spot ever get filled?"): Vector2i(rank, column) -> the fallen part. Nothing steps into it.
+var corpses: Dictionary = {}
 var round: int = 0
 var rerolls_left: int = 0
 var state: int = State.SETUP
@@ -169,11 +175,16 @@ var kills: Dictionary = {}
 ## its number as rolled and modified when laid, and its keywords, acting as it lands.
 var mines: Dictionary = {}
 var mine_seq: int = 0          # the order shots were laid, so a pull gathers them in laid order
-var _reinforcing := false       # the reinforcement step: every arrival placed first, then the mines land left to right
-## A fight nobody withdraws from, so it ends in the foes' fall or the team's: a battle's boss
-## fight (Ryan, 25 October: "the player is committed to closing the rift or getting scrapped
-## trying") and every quick campaign fight (no withdrawal there, the same day).
+var _deploying := false       # the reinforcement step: every arrival placed first, then the mines land left to right
+## The fights the rule before the long wall brief kept from a withdrawal: a battle's boss fight
+## (Ryan, 25 October: "the player is committed to closing the rift or getting scrapped trying")
+## and every quick campaign fight. Since the brief (3.5) no fight is left, so it marks those
+## fights for the screen and the save and refuses nothing more.
 var committed := false
+## A dealt composition's layout (the long wall brief, section 6; Battle._build_skirmish passes it
+## when the fight holds that one pack): eight cells, the front rank's four then the back's, each
+## a foe id or "" for empty. The first deployment places by it; empty, the heaviest hitters first.
+var layout: Array = []
 ## The twin slot (Ryan, 26 October: the Gel's halves "should exist as a pair taking the place of
 ## one unit"): Vector2i(rank, column) -> the right-hand half, the left standing in front or back
 ## as any foe. The slot is one slot to the formation, full while either stands, so no mine is
@@ -271,7 +282,17 @@ func begin() -> void:
 	reinforcements.clear()
 	for r in ranked:
 		reinforcements.append(r[2])
-	_reinforce(false)
+	if layout.is_empty():
+		_first_deployment(false)
+	else:
+		_deploy_layout()
+	if not reinforcements.is_empty():
+		# A pack is what its eight slots hold (no reinforcement inside a fight). Every fight the
+		# game deals is one pack, validated to fit, and the harness fits its own, so nothing
+		# reaches here; a fight given more stays honest all the same: what does not stand was
+		# never in it and is no kill (the tally counts only what a death check clears).
+		log.append("%d more could not stand: the formation is full" % reinforcements.size())
+		reinforcements.clear()
 	_refresh_guards()
 	_refresh_allies()
 	state = State.ROUND_START
@@ -454,8 +475,8 @@ func _count_kill(f: Foe) -> void:
 
 
 ## A boss unit's commanders still standing in this fight (Foe.commands: its boss, a final's
-## hero, the finale's line), alive on the field or waiting in the pool, a readied one that got
-## back up among them: their content ids, field first. The unit stands while one does.
+## hero, the finale's line), alive on the field, a readied one that got back up among them: their
+## content ids, field first. The unit stands while one does.
 func commanders_left(sq: Unit) -> Array:
 	var out: Array = []
 	for f in field_foes():
@@ -498,11 +519,11 @@ func any_assigned() -> bool:
 	return false
 
 
-## Withdraw is open at any point of the player's turn, the first round included. Its price is
-## always the same: the enemy takes its turn, then the team flees at the end of the round, so
-## there is no leapfrogging out of contact unscathed (Ryan, 19 September).
+## There is no withdrawal (the long wall brief 3.5; Ryan, 6 November: "what if there's just NO
+## withdrawal? Tactical options get removed, obviously, but it does simplify things a huge
+## amount"): a fight ends in the foes' fall or the team's, at every state.
 func can_withdraw() -> bool:
-	return not committed and (state == State.ROUND_START or state == State.ASSIGN)
+	return false
 
 
 ## Heat the mech's current face will add if it is spent as an attack: negative for one that
@@ -1164,11 +1185,11 @@ func swap_targets(first: Foe) -> Array:
 		if foe != first and foe != pair and foe.alive() and not foe.is_massive():
 			out.append(foe)
 	for col in range(columns):
-		if front[col] == null:
+		if front[col] == null and not corpses.has(Vector2i(0, col)):
 			out.append(Vector2i(0, col))
-		if back[col] == null:
+		if back[col] == null and not corpses.has(Vector2i(1, col)):
 			out.append(Vector2i(1, col))
-	return out
+	return out   # a slot a corpse holds is no empty slot: its part regrows there
 
 
 ## Does this entry, spent now, take a second target (a Swap)?
@@ -1299,6 +1320,18 @@ func start_round() -> void:
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
 	_refresh_allies()
+	# The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and
+	# cooling returning, as a build-strategy buffer"): every machine regains its shield_regen up
+	# to its maximum, after the cooling and before the round-start passives, a shield gain like
+	# any other (on_shield_gain fires), one log line for all. A sealed machine's regen runs:
+	# nothing stops it, where the seal stops its own cooling.
+	var regened: Array[String] = []
+	for ms in live_mechs():
+		var gained := _gain_shield(ms, ms.unit.shield_regen)
+		if gained > 0:
+			regened.append("%s +%d" % [ms.unit.display_name, gained])
+	if not regened.is_empty():
+		log.append("shield regen: " + ", ".join(regened))
 	# Passives that fire at the round's start, after the roll: shield from heat, a flat
 	# shield, a vent (the Goshawk's Thermal Recoupler reads the heat as it stands now).
 	for ms in live_mechs():
@@ -1368,6 +1401,8 @@ func legal_actions(f: Foe) -> Array:
 			continue   # never the last machine able to act
 		if str(a.get("effect", "")) == "merge" and mergeable(f, a).is_empty():
 			continue   # nothing of its kinds stands to take in
+		if str(a.get("effect", "")) == "summon" and not _summon_has_room(f, a):
+			continue   # a summoner never summons with no room (Ryan, 7 November: "a summoner should not summon if there's no space")
 		if bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", ""))):
 			continue   # used once this fight already
 		if _when_holds(f, a):
@@ -1384,6 +1419,37 @@ func legal_actions(f: Foe) -> Array:
 			if Foe.is_attack_action(a):
 				legal.append(a)
 	return legal
+
+
+## Whether a summon has a slot for what it calls: an empty slot of the called foe's rank no
+## corpse holds. Without the battle's content (a test with no factory) it calls nothing up and
+## stays legal.
+func _summon_has_room(f: Foe, a: Dictionary) -> bool:
+	var who := str(a.get("foe", ""))
+	if not foe_factory.is_valid() or who.is_empty():
+		return true
+	var probe = foe_factory.call(who)
+	if not (probe is Foe):
+		return true
+	# Room for one at least (Ryan, 8 November: "Summoner should be able to summon whatever they're
+	# able to", so a slot left just short never shuts it); the call stands as many as fit.
+	return _free_slots_for(probe) >= 1
+
+
+## The slots a foe of `n`'s rank could step into now: its rank's empty slots holding no corpse, a
+## massive foe's the columns empty in both ranks.
+func _free_slots_for(n: Foe) -> int:
+	var out := 0
+	for c in range(columns):
+		if n.is_massive():
+			if front[c] == null and back[c] == null and not corpses.has(Vector2i(0, c)) and not corpses.has(Vector2i(1, c)):
+				out += 1
+		elif n.prefers_back:
+			if back[c] == null and not corpses.has(Vector2i(1, c)):
+				out += 1
+		elif front[c] == null and not corpses.has(Vector2i(0, c)):
+			out += 1
+	return out
 
 
 func _choose_foe_action(f: Foe) -> void:
@@ -1520,9 +1586,10 @@ func _armed_mechs() -> Array[MechState]:
 ## October: "spawn the half-gel immediately in place, not wait for the reinforcement phase"; the
 ## Gel is a wall, not an attacker), made by the battle's content; without a factory nothing
 ## steps in. The first takes the slot it fell from, the rest the nearest empty slots of their
-## rank, the left on a tie, and one with no room waits in the pool. An arrival sets off a mine
-## waiting in its slot, as any way in but the reinforcement step's does; its round is over, so
-## it shows no intent and acts from the next round (Foe.fresh).
+## rank, the left on a tie, and one with no room never forms (no reinforcement inside a fight,
+## Ryan, 6 November, as a summon with no room is never cast). An arrival sets off a mine waiting
+## in its slot; its round is over, so it shows no intent and acts from the next round
+## (Foe.fresh).
 func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 	if f.on_death.is_empty() or not foe_factory.is_valid():
 		return
@@ -1552,16 +1619,14 @@ func _split(f: Foe, at_rank: int = -1, at_col: int = -1) -> void:
 	for n in made:
 		if _step_up(n, at_col):
 			stood += 1
-		else:
-			reinforcements.append(n)
-	var waiting := made.size() - stood
+	var unformed := made.size() - stood
 	var name_of := made[0].display_name
-	if stood > 0 and waiting > 0:
-		log.append("%s splits: %d %s step up in its place, %d into the pool" % [f.display_name, stood, name_of, waiting])
+	if stood > 0 and unformed > 0:
+		log.append("%s splits: %d %s step up in its place, %d with no room" % [f.display_name, stood, name_of, unformed])
 	elif stood > 0:
 		log.append("%s splits: %d %s step up in its place" % [f.display_name, stood, name_of])
 	else:
-		log.append("%s splits: %d %s step into the pool" % [f.display_name, waiting, name_of])
+		log.append("%s splits, with no room for its %s" % [f.display_name, name_of])
 
 
 ## A foe that arrives mid-round (a split's half, a summon) steps up into the slot `_split_slot`
@@ -1575,7 +1640,7 @@ func _step_up(n: Foe, at_col: int) -> bool:
 	if n.is_massive():
 		back[slot.y] = n   # both slots of its column, before a mine there can land on it
 	_place(n, slot.x, slot.y)
-	if _reinforcing and not mines.is_empty():
+	if _deploying and not mines.is_empty():
 		_land(n)   # the step's mines have their arrivals already: this one takes its slot's now
 	return true
 
@@ -1592,9 +1657,9 @@ func _split_slot(n: Foe, _at_rank: int, at_col: int) -> Vector2i:
 			if c < 0 or c >= columns or (d == 0 and c != at_col):
 				continue
 			if n.is_massive():
-				if front[c] == null and back[c] == null:
+				if front[c] == null and back[c] == null and not corpses.has(Vector2i(0, c)) and not corpses.has(Vector2i(1, c)):
 					return Vector2i(0, c)
-			elif (front if want == 0 else back)[c] == null:
+			elif (front if want == 0 else back)[c] == null and not corpses.has(Vector2i(want, c)):
 				return Vector2i(want, c)
 	return Vector2i(-1, -1)
 
@@ -2133,7 +2198,8 @@ func end_round() -> int:
 		Effects.halve(f)   # a foe's halving statuses (Flak) halve at the round's end, Empowered's clock
 	_trim_overshield()
 	_regrow_parts()
-	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
+	# No reinforcement phase (Ryan, 6 November: "Cut"): a pack is what its grid holds, so a kill's
+	# slot stays empty unless a split, a summon or a part regrowing in its corpse's place fills it.
 	_refresh_guards()
 	_refresh_allies()
 	_check_outcome()
@@ -2146,7 +2212,8 @@ func end_round() -> int:
 ## before the enemy acts, so an overheat is the machine's own doing on its own turn, like a
 ## volatile bite. A machine it wrecks is gone before the enemy strikes, and a fight it
 ## decides ends here. A foe's Burning adds its heat just before it (13 October), so a vent
-## made room for it or a cleanse took it off. Shared by END TURN and a withdrawal.
+## made room for it or a cleanse took it off. END TURN's (a withdrawal shared it until the long
+## wall brief, 3.5).
 func _end_player_turn() -> void:
 	overheats.clear()
 	history.clear()   # the enemy's turn draws: nothing before it comes back
@@ -2163,7 +2230,7 @@ func _end_player_turn() -> void:
 
 
 ## The enemy's turn: every foe on the field acts in order, statuses tick, timed effects run
-## out. Shared by the end of a round and by a withdrawal.
+## out. The end of a round's.
 func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
@@ -2477,7 +2544,7 @@ func _set_contents(at: Vector2i, c: Array) -> void:
 ## Whoever has just come into a slot outside the reinforcement step sets off what waits there.
 func _arrive_at(at: Vector2i) -> void:
 	var lead := foe_at(at.x, at.y)
-	if lead != null and lead.alive() and not _reinforcing and not mines.is_empty():
+	if lead != null and lead.alive() and not _deploying and not mines.is_empty():
 		_land(lead)   # a corpse swapped in sets off nothing: the shots wait, as the pull's do
 
 
@@ -2599,25 +2666,9 @@ func _fire_on(t: MechState, id: String, n: int, f: Foe) -> void:
 	Effects.stack(t.unit, Effects.STATUS[id], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS[id]))
 
 
+## Refused at every state: there is no withdrawal (can_withdraw, the long wall brief 3.5).
 func withdraw() -> bool:
-	if not can_withdraw():
-		return false
-	if state == State.ROUND_START:
-		start_round()
-	log.append("Withdrawing: the enemy strikes as the team pulls out")
-	# Leaving ends the player's turn, so the heat burns first (Ryan, 11 October): running hot
-	# and then withdrawing is no way round an overheat.
-	_end_player_turn()
-	if outcome != Outcome.NONE:
-		return true   # burnt out on the way: the fight is lost, and the enemy never strikes
-	_enemy_turn()
-	if outcome != Outcome.NONE:
-		return true   # decided in the enemy's turn: the last machine fell, or the last foe
-	outcome = Outcome.WITHDRAWN
-	_finish()
-	if outcome == Outcome.WITHDRAWN:
-		log.append("Withdrew at the end of round %d" % round)
-	return true
+	return false
 
 
 # ---------------------------------------------------------------- resolution
@@ -3403,8 +3454,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			var who := str(a.get("foe", ""))
 			if foe_factory.is_valid() and not who.is_empty():
 				# A summon takes an empty slot of its rank at once, the nearest the summoner's
-				# column, else it waits in the pool (Ryan, 26 October); either way its round is
-				# over, so it strikes from the next.
+				# column (Ryan, 26 October), its round over, so it strikes from the next; one with
+				# no room is never called (no pool: Ryan, 6 and 7 November).
 				var stood := 0
 				var named := who   # the foe's own name in the log, never its content id (the audit's thirteenth bug)
 				for i in range(count):
@@ -3415,8 +3466,6 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 						n.joined = true
 						if _step_up(n, f.column):
 							stood += 1
-						else:
-							reinforcements.append(n)
 				log.append("%s: %s, %d %s answer%s the call%s" % [f.display_name, str(a.get("name", "calls")), count, named, "s" if count == 1 else "",
 					"" if stood == 0 else (", stepping up" if stood == count else ", %d stepping up" % stood)])
 			else:
@@ -3903,7 +3952,7 @@ func _staggered(f: Foe) -> bool:
 func _stagger(f: Foe, why: String) -> void:
 	Effects.remove(f, "golden")
 	f.golden_mark = -1
-	var next := _acted.has(f) or _reinforcing or f.fresh
+	var next := _acted.has(f) or _deploying or f.fresh
 	if not _suppressed_through(f, round + 1 if next else round):
 		Effects.grant_for_rounds(f, Effects.STATUS["suppressed"], "stagger", round + 1 if next else round)
 	log.append("%s %s: its golden rage breaks, and it staggers out of its next action" % [f.display_name, why])
@@ -4003,11 +4052,13 @@ func slot_targets(ms: MechState, f: Face) -> Array:
 		return out
 	var indirect := reach_of(ms, f) != Face.Reach.DIRECT   # an indirect entry or a sweep may be laid in any empty slot
 	for col in range(columns):
-		if front[col] == null:
+		var front_open := front[col] == null and not corpses.has(Vector2i(0, col))
+		var back_open := back[col] == null and not corpses.has(Vector2i(1, col))
+		if front_open:
 			out.append(Vector2i(0, col))
-			if back[col] == null:
+			if back_open:
 				out.append(Vector2i(1, col))
-		elif back[col] == null and indirect:
+		elif back_open and indirect:
 			out.append(Vector2i(1, col))
 	return out
 
@@ -4505,7 +4556,7 @@ func _suppress(foe: Foe, turned = null) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken,
 	# and so does one a mine stuns as it steps in or one that stepped up mid-round (a split's
 	# half), the round's turn being over.
-	var next := _acted.has(foe) or _reinforcing or foe.fresh
+	var next := _acted.has(foe) or _deploying or foe.fresh
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
@@ -5144,8 +5195,9 @@ func _schedule_regrowth(core: Foe) -> void:
 			core.regrow_due.append([pid, round + core.regrow_parts])
 
 
-## At the round's end, the parts due back step into the pool, to fill a slot as any waiting
-## foe does.
+## At the round's end, the parts due back regrow where they fell: each in the slot its corpse
+## holds (Ryan, 7 November: "a boss regrowing is the same thing as the gel"), else the nearest
+## free slot of its rank by its core; with no room it waits for the next round's end.
 func _regrow_parts() -> void:
 	if not foe_factory.is_valid():
 		return
@@ -5158,12 +5210,38 @@ func _regrow_parts() -> void:
 				keep.append(d)
 				continue
 			var n = foe_factory.call(str(d[0]))
-			if n is Foe:
-				n.pack_id = core.pack_id
-				n.joined = true
-				reinforcements.append(n)
+			if not (n is Foe):
+				continue
+			n.pack_id = core.pack_id
+			n.joined = true
+			var at := _corpse_slot(core, str(d[0]))
+			if at.x >= 0:
+				corpses.erase(at)
+				n.fresh = true
+				_place(n, at.x, at.y)
+				log.append("%s grows back its %s where it fell" % [core.display_name, n.display_name])
+			elif _step_up(n, core.column):
 				log.append("%s grows back its %s" % [core.display_name, n.display_name])
+			else:
+				keep.append(d)   # no room yet: it waits for a slot to open
 		core.regrow_due = keep
+
+
+## The slot a core's fallen part of `part_id` holds, (-1, -1) for none.
+func _corpse_slot(core: Foe, part_id: String) -> Vector2i:
+	for at in corpses.keys():
+		var c: Foe = corpses[at]
+		if c.content_id == part_id and c.pack_id == core.pack_id:
+			return at
+	return Vector2i(-1, -1)
+
+
+## Whether a fallen foe is a part its standing core will regrow: it holds its slot as a corpse.
+func _regrows(f: Foe) -> bool:
+	for core in field_foes():
+		if core != f and core.alive() and core.regrow_parts > 0 and core.pack_id == f.pack_id and core.part_ids.has(f.content_id):
+			return true
+	return false
 
 
 ## A foe's last act (15 October, the Behemoth's Meteor): its death blow lands the moment it
@@ -5211,6 +5289,10 @@ func _fall_with_cores() -> void:
 		for f in waiting:
 			reinforcements.erase(f)
 		core.regrow_due = []
+		for at in corpses.keys():
+			var c: Foe = corpses[at]
+			if c.pack_id == core.pack_id and core.part_ids.has(c.content_id):
+				corpses.erase(at)   # its parts never regrow now: their slots are only empty
 		if not parts.is_empty() or not waiting.is_empty():
 			log.append("%s falls, and its parts with it" % core.display_name)
 
@@ -5260,6 +5342,8 @@ func _clear_dead_slots() -> void:
 						_last_act(f)
 						if not f.on_death.is_empty() and f.on_death.has("summon"):
 							_splitters.append([f, 0 if is_same(rank, front) else 1, col])
+						elif _regrows(f):
+							corpses[Vector2i(0 if is_same(rank, front) else 1, col)] = f   # it holds its slot until its core regrows it there
 				_killing_shot.erase(f)
 				f.rank = -1
 			if cleared:
@@ -5317,8 +5401,8 @@ func _release_returns() -> void:
 ## never comes up. Massive foes need a whole empty column and take both slots. Empty slots
 ## fill left to right, front rank first, each taking a random foe of the right rank from
 ## those waiting; the rest keep waiting.
-func _reinforce(random: bool = true) -> void:
-	_reinforcing = true
+func _first_deployment(random: bool = true) -> void:
+	_deploying = true
 	var placed := 0
 	for col in range(columns):
 		if front[col] == null and back[col] == null:
@@ -5356,23 +5440,34 @@ func _reinforce(random: bool = true) -> void:
 				var f := foe_at(r, col)
 				if f != null and f.alive() and (r == 0 or f != front[col]):
 					_land(f)
-	_reinforcing = false
+	_deploying = false
 	_refresh_kin()
 
 
-## The reinforcements waiting, by the rank each will step into (the formation's reserve view, 22
-## October): the front rank's, the back rank's (a foe that prefers the back), and the massive
-## ones that take a whole empty column.
-func reserve_counts() -> Dictionary:
-	var out := {"front": 0, "back": 0, "massive": 0}
-	for f in reinforcements:
-		if f.is_massive():
-			out["massive"] += 1
-		elif f.prefers_back:
-			out["back"] += 1
-		else:
-			out["front"] += 1
-	return out
+## The first deployment by a layout (the long wall brief, section 6): each cell, front then back,
+## left to right, takes the first foe waiting of the kind it names, a massive one filling its
+## column; a cell that names none, or whose kind has none left waiting, stands empty. The pack
+## holds what its layout places (Battlefield.recount_by_layout), so none is left over; one
+## that is (a foe the layout cannot stand) is never dealt (begin).
+func _deploy_layout() -> void:
+	for cell in range(mini(layout.size(), 8)):
+		var fid := str(layout[cell])
+		var rank := 0 if cell < 4 else 1
+		var col := cell % 4
+		if fid.is_empty() or col >= columns or foe_at(rank, col) != null:
+			continue
+		for i in range(reinforcements.size()):
+			var f: Foe = reinforcements[i]
+			if f.content_id != fid:
+				continue
+			if f.is_massive() and (rank != 0 or back[col] != null):
+				break
+			reinforcements.remove_at(i)
+			_place(f, rank, col)
+			if f.is_massive():
+				back[col] = f
+			break
+	_refresh_kin()
 
 
 func _reinforcement_index_massive() -> int:
@@ -5391,7 +5486,7 @@ func _place(f: Foe, rank: int, col: int) -> void:
 		back[col] = f
 	# Any way into a mined slot but the reinforcement step's (a Swap, Minos's turn of the ranks)
 	# sets it off at once.
-	if not _reinforcing and not mines.is_empty():
+	if not _deploying and not mines.is_empty():
 		_land(f)
 
 
@@ -5408,9 +5503,9 @@ func _check_outcome() -> void:
 ## and timed effects end.
 func _finish() -> void:
 	state = State.DONE
-	# Shield past the maximum is the round's buffer, so it fades as the fight ends, mid-turn or by
-	# a withdrawal, never carried onto the map and into the next fight (the mechanics audit, 25
-	# October: only the round's end trimmed it).
+	# Shield past the maximum is the round's buffer, so it fades as the fight ends, mid-turn
+	# included, never carried onto the map (the mechanics audit, 25 October: only the round's end
+	# trimmed it).
 	_trim_overshield()
 	for ms in mechs:
 		Effects.end_skirmish(ms.unit)

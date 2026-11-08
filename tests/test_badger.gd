@@ -3,7 +3,7 @@ extends TestCase
 ## The Honey Badger's rework (Ryan's go, 31 October: "agreed on all proposed. Build it"), on
 ## synthetic passives and entries: a load for each foe a weapon's spend damages, never past the
 ## hopper's cap; a weapon's own number in place of the passive's; the Ore Plate standing at what
-## the loads are worth, asleep under a purge while the loads stay; a shot firing loads takes their
+## the loads are worth, an Ability no Purge touches, as the loads are a store; a shot firing loads takes their
 ## plate with it; never destroyed as a module's rule; the bot pricing the plate a shot spends.
 
 const L := Face.Reach.DIRECT

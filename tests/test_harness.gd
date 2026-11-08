@@ -1,7 +1,7 @@
 extends TestCase
 
-## The harness: its setup (the team's loadouts and the enemy side it launches, kept between
-## launches) and a headless drive of its tabs. Content-agnostic: every id comes from the
+## The harness: its setup (the team's loadouts, the battle and the fight it launches, kept
+## between launches) and a headless drive of its tabs. Content-agnostic: every id comes from the
 ## content in file order.
 
 const HARNESS := preload("res://game/harness.gd")
@@ -33,9 +33,10 @@ func test_the_defaults_are_the_contents() -> void:
 	var table: Array = []
 	for e in db.spawn_table(fac, 1):
 		table.append([str(e[0]), int(e[1])])
-	assert_eq(s.packs, table, "against the first faction's spawn list")
+	assert_eq(s.packs, table, "a fight against the first faction's spawn list")
 	assert_eq(s.boss, str(db.bosses_of(fac)[0]), "and its first boss")
-	assert_eq(s.lead_faction(), fac, "which leads")
+	assert_eq(s.battle_domain(), fac, "a battle against the first domain")
+	assert_eq(s.battle_boss_id(), str(db.bosses_of(fac)[0]), "and its first boss")
 	for b in s.bosses():
 		assert_false(s.pack_foes().has(b), "a boss is never a pack's foe")
 
@@ -72,53 +73,85 @@ func test_a_refit_reaches_the_machines_die() -> void:
 	assert_false(s.is_refit(id), "edited back to stock, the edit is forgotten")
 
 
-func test_a_fight_chains_every_pack_and_the_boss() -> void:
+## A fight by hand is one unit, as the game deals one (one pack is one fight): the packs' foes as
+## one pack's members, or with a boss picked, its escort; with no packs, the boss's own curated
+## escort at the fight's tier, or the boss alone; what the slots cannot hold is left out.
+func test_a_fight_by_hand_is_one_unit() -> void:
 	var db := _db()
 	var s := HarnessSetup.defaults(db)
 	var foes := s.pack_foes()
-	s.packs = [[str(foes[0]), 3], [str(foes[foes.size() - 1]), 2]]
-	s.boss = str(s.bosses()[0])
+	s.packs = [[str(foes[0]), 1], [str(foes[foes.size() - 1]), 1]]
+	s.boss = ""
 	var sk := s.make_skirmish()
 	assert_eq(sk.mechs.size(), s.team.size(), "the team")
-	assert_eq(sk.packs.size(), 3, "two packs and the boss")
-	assert_eq(sk.reinforcements.size(), 6, "five foes and the boss in the pool")
+	assert_eq(sk.packs.size(), 1, "one pack")
+	assert_eq(sk.packs[0].member_list(), [[str(foes[0]), 1], [str(foes[foes.size() - 1]), 1]], "of the packs' foes")
+	s.boss = str(s.bosses()[0])
+	sk = s.make_skirmish()
+	assert_eq(sk.packs.size(), 1, "with a boss, still one unit")
+	assert_true(sk.packs[0].is_boss, "the boss's")
+	assert_eq(sk.reinforcements.filter(func(f) -> bool: return f.escorts).size(), 2, "the packs' foes its escort")
+	s.packs = [[str(foes[0]), HarnessSetup.MAX_STRENGTH]]
+	s.boss = ""
+	sk = s.make_skirmish()
+	sk.begin()
+	assert_true(sk.reinforcements.is_empty(), "what the slots cannot hold was left out before the fight")
+	assert_true(sk.field_foes().size() <= 8, "the fight is one the game could deal")
 	s.packs = []
-	assert_eq(s.make_skirmish().reinforcements.size(), 1, "the boss alone")
+	s.boss = str(s.bosses()[0])
+	sk = s.make_skirmish()
+	var own := db.escort_composition(db.faction_of_foe(s.boss), s.fight_tier, s.boss)
+	var want := 0
+	if str(own.get("boss", "")) == s.boss:
+		for m in own["members"]:
+			want += int(m[1])
+	assert_eq(sk.reinforcements.filter(func(f) -> bool: return f.escorts).size(), want, "no packs: its own curated escort at the tier, or none")
 	s.boss = ""
 	assert_true(s.make_skirmish() == null, "nothing to fight")
 	s.boss = str(s.bosses()[0])
 	s.team = []
 	assert_true(s.make_skirmish() == null, "nobody to fight it")
 
-
-func test_a_battle_takes_the_packs_the_boss_and_the_guest() -> void:
+## A battle as a run deals it (Ryan, 7 November: "The Battle from the harness should be a battle,
+## as it will be in the final game"): the domain picked at the tier and the ramp, its boss, the
+## guest's compositions taking turns, on the seed's map; the fight's packs touch it nowhere.
+func test_a_battle_is_dealt_as_a_run_deals_it() -> void:
 	var db := _db()
 	var facs: Array = db.factions.keys()
 	var s := HarnessSetup.defaults(db)
-	var a := str(db.spawn_foes(str(facs[0]), 1)[0])
-	s.packs = [[a, 2]]
-	s.boss = str(db.bosses_of(str(facs[1]))[0])
+	var fac := str(facs[1])
+	var bosses := db.bosses_of(fac)
+	s.battle_faction = fac
+	s.battle_boss = str(bosses[bosses.size() - 1])
 	s.guest = str(facs[2]) if facs.size() > 2 else ""
+	s.battle_tier = 2
+	s.ramp = 4
 	s.map_kind = str(BattleMap.KINDS.keys()[1])
 	s.seed_value = 11
+	s.packs = [[str(s.pack_foes()[0]), 2]]   # the fight's: no part of a battle
 	var b := s.make_battle()
-	assert_eq(b.faction, str(facs[1]), "the boss's faction leads")
-	assert_true(b.boss != null, "its boss takes the field")
+	assert_eq(b.faction, fac, "the domain picked")
+	assert_eq(str(b.boss.lineup[0]), s.battle_boss, "its boss picked")
+	assert_eq([b.tier, b.ramp], [1, 4], "at the tier and the ramp")
 	assert_eq(b.map.kind, s.map_kind, "on the chosen ground")
 	assert_eq(b.seed_value, 11, "from the seed")
 	assert_eq(b.guest, s.guest, "with the guest")
-	var packs := 0
+	var dealt := {}
+	for who in [fac, s.guest]:
+		for size in ["formation", "patrol"]:
+			for c in db.compositions(str(who), 2, size):
+				dealt[str(c["id"])] = true
 	for sq in b.field.packs():
 		if not sq.is_boss:
-			packs += 1
-			assert_eq([sq.foe_id, sq.strength, sq.faction], [a, 2, str(facs[0])], "the composed pack, its own faction's")
-	assert_eq(packs, 1, "and only it")
-	s.boss = ""
-	b = s.make_battle()
-	assert_true(b.boss == null, "none: no boss")
-	assert_eq(b.faction, str(facs[0]), "and the first pack's faction leads")
-	s.packs = []
-	assert_true(s.make_battle() == null, "a battle needs a pack for the rift to send")
+			assert_true(dealt.has(sq.composition), "%s: one of the tier's compositions, as a run deals them" % sq.composition)
+	for w in b.field.cycle:
+		assert_true(dealt.has(str(w["id"])), "and so is every wave")
+	s.guest = fac
+	assert_eq(s.make_battle().guest, "", "the domain itself is no guest")
+	s.battle_boss = "no_such_boss"
+	assert_eq(str(s.make_battle().boss.lineup[0]), str(bosses[0]), "a boss not the domain's: its first")
+	s.team = []
+	assert_true(s.make_battle() == null, "nobody to fight it")
 
 
 func test_the_setup_is_kept_and_checked_against_the_content() -> void:
@@ -144,6 +177,12 @@ func test_the_setup_is_kept_and_checked_against_the_content() -> void:
 	d["guest"] = "no_such_faction"
 	d["map_kind"] = "no_such_kind"
 	d["seed"] = -4
+	d["battle_faction"] = "no_such_faction"
+	d["battle_boss"] = "no_such_boss"
+	d["battle_tier"] = 9
+	d["ramp"] = -3
+	d.erase("fight_tier")
+	d["tier"] = 3   # the fight's tier as a harness saved it before the tabs parted
 	var checked := HarnessSetup.from_dict(d, db)
 	assert_eq(checked.team, [id], "unknown and repeated machines drop out")
 	var p := checked.picks(id)
@@ -151,6 +190,8 @@ func test_the_setup_is_kept_and_checked_against_the_content() -> void:
 	assert_eq([p[0], p[1]], [pair[1], ""], "an unknown component is an empty hardpoint")
 	assert_eq(checked.packs, [[str(s.pack_foes()[0]), HarnessSetup.MAX_STRENGTH]], "unknown foes and bosses drop out of the packs, strength is clamped")
 	assert_eq([checked.boss, checked.guest, checked.map_kind, checked.seed_value], ["", "", "", 1], "and the rest falls back, the map to the shape its seed draws")
+	assert_eq([checked.battle_faction, checked.battle_boss, checked.battle_tier, checked.ramp], ["", "", 3, 0], "the battle's too, its numbers clamped")
+	assert_eq(checked.fight_tier, 3, "and a fight's tier saved under its old key read")
 	assert_eq(HarnessSetup.load_or_default(db, TMP).to_dict(), HarnessSetup.defaults(db).to_dict(), "nothing kept: the defaults")
 
 
@@ -162,7 +203,7 @@ func test_the_harness_drives_the_setup() -> void:
 	var s := HarnessSetup.defaults(db)
 	s.team = []
 	h.build(s)
-	assert_eq(h._pages.size(), 3, "three tabs")
+	assert_eq(h._pages.size(), 4, "four tabs: the team, the battle, the fight and the setup")
 	assert_true(h._pages[0].visible and not h._pages[1].visible, "the team's showing")
 	assert_true(h._battle_btn.disabled and h._fight_btn.disabled, "nobody ticked: nothing to launch")
 	h._rows[id]["check"].button_pressed = true
@@ -203,7 +244,17 @@ func test_the_harness_drives_the_setup() -> void:
 	assert_false(s.is_refit(id), "Stock puts the stock loadout back")
 	assert_true(h._rows[id]["status"].text.begins_with("stock"), "and the row says so")
 	h._select_tab(1)
-	assert_true(h._pages[1].visible and not h._pages[0].visible, "the enemy's showing")
+	assert_true(h._pages[1].visible and not h._pages[0].visible, "the battle's showing")
+	var other := str(db.factions.keys()[db.factions.size() - 1])
+	var di: int = h._index_of(h._battle_domain, other)
+	h._battle_domain.select(di)
+	h._battle_domain.item_selected.emit(di)
+	assert_eq(s.battle_domain(), other, "a domain picked is the battle's")
+	assert_eq(h._battle_boss.item_count, db.bosses_of(other).size(), "its bosses listed")
+	assert_eq(str(h._battle_boss.get_item_metadata(h._battle_boss.selected)), str(db.bosses_of(other)[0]), "its first picked")
+	assert_true(h._summary.text.contains("BATTLE  " + str(db.factions[other].get("name", other))), "the summary names it")
+	h._select_tab(2)
+	assert_true(h._pages[2].visible and not h._pages[1].visible, "the fight's showing")
 	var before := s.packs.size()
 	h._on_add_pack()
 	assert_eq(s.packs.size(), before + 1, "a pack added")
@@ -211,7 +262,7 @@ func test_the_harness_drives_the_setup() -> void:
 	s.packs.clear()
 	h._fill_packs()
 	h._refresh_summary()
-	assert_true(h._battle_btn.disabled, "no packs: no battle")
+	assert_false(h._battle_btn.disabled, "a battle needs no packs: a run deals it")
 	assert_false(h._fight_btn.disabled, "the boss alone is still a fight")
 	h.free()
 
@@ -278,3 +329,67 @@ func test_modules_reach_the_machine_and_survive_a_save() -> void:
 	assert_eq(back.fitted_modules(id), [mid], "and it survives a save")
 	s.set_module(id, 1, "")
 	assert_false(s.modules.has(id), "a machine with every slot empty forgets the edit")
+
+
+## A composition by its domain, tier and threat rating (Ryan, 6 November: the harness "should
+## load a formation from a selected tier and threat level (the machine count, 1-4 that includes
+## elites)"): the list follows the knobs; picked, FIGHT fights it alone, its members as content
+## writes them (the ramp scales no pack, 7 November); a battle never takes it; the pick is kept and
+## checked as the rest of the setup is; the FIGHT tab drives it.
+func test_a_composition_is_picked_by_tier_and_rating() -> void:
+	var db := _db()
+	var s := HarnessSetup.defaults(db)
+	var fac := str(db.factions.keys()[0])
+	s.comp_faction = fac
+	s.fight_tier = 1
+	s.rating = 0
+	var all := s.compositions_listed()
+	assert_true(not all.is_empty(), "the domain's tier-one compositions are listed")
+	for r in [1, 3, 4]:
+		s.rating = r
+		for c in s.compositions_listed():
+			assert_eq(ContentDB.squad_of(c), r, "rated %d: %s" % [r, str(c["id"])])
+	s.rating = 3
+	var forms := s.compositions_listed()
+	assert_true(not forms.is_empty(), "a formation is listed at its rating")
+	var c: Dictionary = forms[0]
+	s.composition = str(c["id"])
+	var sk := s.make_skirmish()
+	assert_true(sk != null, "FIGHT fights it")
+	var want := 0
+	var ids: Array = []
+	for m in c["members"]:
+		want += int(m[1])
+		ids.append(str(m[0]))
+	var got := 0
+	for f in sk.reinforcements:
+		got += 1 if ids.has((f as Foe).content_id) else 0
+	assert_eq(got, want, "its members as content writes them (any parts beside them)")
+	assert_eq(sk.packs.size(), 1, "and it alone")
+	s.battle_tier = 2
+	var b := s.make_battle()
+	assert_eq(b.tier, 1, "a battle takes its own tier, never the fight's")
+	var only_it := true
+	for w in b.field.cycle:
+		only_it = only_it and str(w["id"]) == str(c["id"])
+	assert_false(only_it, "nor the composition picked: a run's waves")
+	s.save(TMP)
+	var back := HarnessSetup.load_or_default(db, TMP)
+	assert_eq(back.composition, s.composition, "the pick is kept")
+	assert_eq([back.fight_tier, back.rating, back.comp_faction], [1, 3, fac], "with its knobs")
+	back.rating = 1
+	assert_true(back.picked_composition().is_empty(), "a pick no longer listed is no pick")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TMP))
+	var h: Control = HARNESS.new()
+	var hs := HarnessSetup.defaults(db)
+	hs.comp_faction = fac
+	hs.rating = 3
+	h.build(hs)
+	var k: int = h._index_of(h._comp, str(c["id"]))
+	assert_true(k > 0, "the tab lists it")
+	h._comp.select(k)
+	h._comp.item_selected.emit(k)
+	assert_eq(hs.composition, str(c["id"]), "a pick on the tab is the setup's")
+	assert_true(h._summary.text.contains("FIGHT  " + str(c["id"])), "and the summary names it")
+	assert_false(h._battle_btn.disabled or h._fight_btn.disabled, "both launch")
+	h.free()

@@ -2,6 +2,17 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 3, "status": "idea", "slot": true, "name": "the thunder figure"} -->
 
+**Ryan's direction (6 November)**: Soft Protoss Archon homage. Unit with lots of shield and low
+hull. Weapon hits grant it a stack of Empowered, but maybe cost it shield - either a flat cost or a
+%current, not sure. Shocking a foe also gives it Empowered, maybe. It ramps up throughout the fight,
+as long as it keeps attacking to keep its stacks up through the decay. Locked component stops decay
+for a round, but not sure what to staple that onto - a shield is too self-sufficient, a weapon just
+turns it into the best roll, so maybe a self buff or debuff? Maybe two - one self buff, one that
+shocks all foes and grants a stack of Empowered for each shock it applied, from the passive.
+
+Other look - it gains empowered on weapon hit or shock, but empowered stacks burn its shield either
+at end of turn, or as they decay, something like that. That's more thematic.
+
 The session designs the Arsenal's half of Ryan's shock-synergy unit of 4 November, its thunder
 demon or god. Aphelion's half is Static (`aphelion_static.md`). Its figure is Ryan's to name.
 

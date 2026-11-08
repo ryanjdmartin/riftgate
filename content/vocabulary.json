@@ -43,7 +43,7 @@
    "id": "shield",
    "category": "resource",
    "name": "Shield",
-   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands, and the armour, so the whole blow reaches the hull. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back only from components, modules and passives. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.",
+   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands, and the armour, so the whole blow reaches the hull. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back from components, modules, passives and a chassis's shield regen. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map.",
    "status": "implemented",
    "design": {
     "holes": "Rates and shield sizes are placeholders. No in-combat trickle; a passive may bring one back for one chassis."
@@ -63,7 +63,7 @@
    "id": "reroll",
    "category": "resource",
    "name": "Reroll",
-   "codex": "Three rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds, unless a Giant Petrel fights: its Maverick's Playbook banks up to three left unspent as your turn ends, for the next round.",
+   "codex": "Two rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds, unless a Giant Petrel fights: its Maverick's Playbook banks up to three left unspent as your turn ends, for the next round.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -73,7 +73,7 @@
    "id": "rift_pressure",
    "category": "resource",
    "name": "Rift Pressure",
-   "codex": "Ticks once per battlefield phase, never inside a fight. It fills at the ramp's timer (12 at the start of a run, 8 at the finale's Convergence). When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, the seam creeps toward the gate, and new tears open on it. It never stops: the boss's seal breaking does not quiet it.",
+   "codex": "Ticks once per battlefield phase, never inside a fight. It fills at the ramp's beat (3 turns, 2 from Convergence 8), a turn short of its peak as a battle opens, and the beat halves once at the Rupture. When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, the seam creeps toward the gate, and new tears open on it. It never stops: the boss's seal breaking does not quiet it.",
    "status": "implemented",
    "design": {
     "holes": "The interval step inside a battle (the escalation a stall would meet) is on the ramp's table at zero until the turtle read asks for it."
@@ -83,7 +83,7 @@
    "id": "rupture_meter",
    "category": "resource",
    "name": "Rupture meter",
-   "codex": "Fills by the menace of the foes you kill, in any fight however it ends, toward the tier's Fractures (three, four or five). The Fractures are set from the field's menace at the start, the last at two thirds of it and each later one costing more. The last Fracture is the Rupture: the boss's seal breaks. It also breaks once nothing but the boss's pack stands as a fight ends.",
+   "codex": "Fills by the menace of the foes you kill, in any fight however it ends, toward the tier's Fractures (three, four or five). The Fractures are set from the field's menace at the start and the first compositions the rift will send, the last at two thirds of it and each later one costing more. The last Fracture is the Rupture: the boss's seal breaks. It also breaks once nothing but the boss's pack stands as a fight ends.",
    "status": "implemented",
    "design": {
     "holes": "Shown as a bar under the gate's with a notch a Fracture, a first cut; the share and the steps are placeholders."
@@ -103,7 +103,7 @@
    "id": "gate",
    "category": "resource",
    "name": "Gate Integrity",
-   "codex": "A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar for a third of its strength, at least one. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta.",
+   "codex": "Each pusher makes for a segment of the wall of its own, drawn as it is dealt. A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar for a third of its strength, at least one. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta.",
    "status": "implemented",
    "design": {
     "holes": "The gate damage formula is a placeholder; city defences along the wall are not built."
@@ -973,17 +973,7 @@
    "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons and equipment aimed at foes may also be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
    "status": "implemented",
    "design": {
-    "holes": "The landing waits until the reinforcement step has placed every arrival, then goes left to right, so a Spread mine catches the arrivals beside it. A Swap that moves a foe into a mined slot sets it off at once."
-   }
-  },
-  {
-   "id": "pool",
-   "category": "formation",
-   "name": "Reinforcements",
-   "codex": "Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
+    "holes": "Any arrival sets it off at once: a Swap's foe, a split's half, a summon, a part grown back beside its core. Nothing steps in at the round's end since reinforcement inside a fight was cut (6 November), so a mine waits for one of those."
    }
   },
   {
@@ -994,16 +984,6 @@
    "status": "implemented",
    "design": {
     "holes": "Spread treats it as a front-rank neighbour; Penetrate finds nothing behind it."
-   }
-  },
-  {
-   "id": "withdraw",
-   "category": "formation",
-   "name": "Withdraw",
-   "codex": "Available at any point of the player's turn, the first round included. The price is always the same: your turn ends (heat over the maximum burns), the enemy takes its full turn, then the skirmish ends, so nobody leapfrogs out of contact unscathed. Machines keep their damage; a pack keeps its survivors, who return whole. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
    }
   },
   {
@@ -1030,7 +1010,7 @@
    "id": "contact",
    "category": "battlefield",
    "name": "Fight",
-   "codex": "Tap a pack to attack it. The fight is at that pack's hex: every pack whose ring covers it joins, and you commit the machines whose attack range covers it. One fight at a time, each resolved before the next; a machine that fought, won, lost or withdrew, is spent until your next turn.",
+   "codex": "Tap a pack to attack it. One pack is one fight: nothing joins it, and you commit the machines beside it. Orders onto several packs play one fight at a time, each resolved before the next and fought to its end; a machine that fought, won or lost, is spent until your next turn.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1060,7 +1040,7 @@
    "id": "caught",
    "category": "battlefield",
    "name": "Caught",
-   "codex": "A machine a hunter has caught fights it first on your turn, before any other fight, and cannot move until then. Others in range may join that fight. Withdrawing ends it, and the hunter catches the machine again while it lives.",
+   "codex": "A machine a hunter has caught fights it first on your turn, before any other fight, and cannot move until then. Others in range may join that fight. It is fought to its end: the hunter falls or the machine is wrecked.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1070,7 +1050,7 @@
    "id": "engagement_zone",
    "category": "battlefield",
    "name": "Ring",
-   "codex": "Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring, two hexes at least, is also how close it must be to catch: it pounces over whatever stands between. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close.",
+   "codex": "A hunter's ring, two hexes at least, is how close it must be to catch: it pounces over whatever stands between. No pack joins a fight by its ring; one pack is one fight. A machine's attack range is one hex: it can join a fight on a pack beside it.",
    "status": "implemented",
    "design": {
     "holes": "Rings are content on the foe type, placeholders; a hunter's is two at least (Ryan, 29 October: \"wolfs pounce\"; the validator holds it), and one number serves its catch, the fights it joins and the ring drawn. A machine's attack range is two for every chassis, an exception only where a role earns it."
@@ -1090,7 +1070,7 @@
    "id": "pack",
    "category": "battlefield",
    "name": "Pack",
-   "codex": "An enemy hex is a pack: a composition on one hex, its members listed on a hold, wearing its lead's picture and behaviour, walking at its slowest member's pace with its widest member's ring. A fight is the pack you attack and every pack whose ring covers it, so the compositions on the field and the order you attack them in decide what you fight. A boss is one unit on one hex.",
+   "codex": "An enemy hex is a pack: a composition on one hex, its members listed on a hold, wearing its lead's picture and behaviour, walking at its slowest member's pace with its widest member's ring. Its hold says first how many machines it is a fight for, its threat rating; a pusher walks to a segment of the wall of its own. A fight is the one pack you attack. A boss is one unit on one hex.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1140,7 +1120,7 @@
    "id": "patrol",
    "category": "battlefield",
    "name": "Patrol",
-   "codex": "The small composition: a few foes, the fight one machine detaches for. Two stand on the flanks at the start (one from Convergence 8), and the tears send nothing else.",
+   "codex": "The small composition: a few foes, a fight for one machine, the threat rating its hold shows. Two stand on the flanks at the start (one from Convergence 8), and the tears send nothing else.",
    "status": "implemented",
    "design": {
     "holes": "The tier-one patrols read as a lone starter's fight on the greedy rung, not a tenth of its hull (docs/measurements.md, 30 October); their sizes are Ryan's to mark."
@@ -1150,7 +1130,7 @@
    "id": "formation",
    "category": "battlefield",
    "name": "Formation",
-   "codex": "The body's composition: the fight the squad takes together. One stands on the field at the start (two from Convergence 3, three from 8), and the rift alone sends more, at its peaks. A domain's tier writes its formations; the lead's and the guest's come in turn.",
+   "codex": "The body's composition: a fight for three machines, the threat rating its hold shows. One stands on the field at the start (two from Convergence 3, three from 8), and the rift alone sends more, at its peaks. A domain's tier writes its formations; the lead's and the guest's come in turn.",
    "status": "implemented",
    "design": {
     "holes": "The word also names the skirmish's two ranks; the context tells them apart."
@@ -1160,7 +1140,7 @@
    "id": "tear",
    "category": "battlefield",
    "name": "Tear",
-   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
+   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, one row past the rift's mouth and creeping toward the wall, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
    "status": "implemented",
    "design": {
     "holes": "Drawn as a first cut for the phone; its mark and its opening are to judge running (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn)."
@@ -1170,7 +1150,7 @@
    "id": "seam",
    "category": "battlefield",
    "name": "Seam",
-   "codex": "The flattening's edge: the row the rift's bleed reaches, five rows down at the start, creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it.",
+   "codex": "The flattening's edge: the row the rift's bleed reaches, the first row past the rift's mouth at the start, creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it.",
    "status": "implemented",
    "design": {
     "holes": "The creep a peak is a placeholder (the ramp's table, flat at two)."
@@ -1430,7 +1410,7 @@
    "id": "out_of_combat",
    "category": "trigger",
    "name": "Out of combat",
-   "codex": "Passive trigger. Fires at the end of a battlefield phase in which this machine had no skirmish, after the field recharge: more shield.",
+   "codex": "Passive trigger. Fires at the end of a battlefield phase in which this machine had no skirmish. Nothing may ride it: the shield is full as every fight opens, so nothing returns on the map.",
    "status": "implemented",
    "design": {
     "holes": "Heat does not persist between fights, so a vent here would be nothing. No content uses it yet."

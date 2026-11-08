@@ -1,0 +1,47 @@
+{
+ "_about": "The caches that lie on a battle's field (the bible's loot rows: wrecks and alien remains, the rarest a chance at a blueprint, claimed by ending a move on one, a tap showing its kind and likely contents, never the contents). Ryan, 7 November: all the loot on the field from round 1, none that close to the wall; the seam's upgrade of a cache, his idea of that day, set aside with the placeholders' seam (8 November). Three kinds, one a tier from 1, their names working names (the bible's open row on the loot's names and density). per_battle caches are seeded with the map, one in each of as many bands along the wall, in the rows from rift_gap to wall_gap short of the gate's apron, each kind by its weight at the cache's depth: weight is [at the wall's end of those rows, at the rift's end], read between by the row, so the farther from the wall a cache lies the likelier a better kind (Ryan, 8 November: \"place the loot, farther away it is means more likely to spawn a higher tier cache, and don't build any seam interaction yet\"). The seam does nothing to a cache. Each holds salvage [lo, hi], so many components of the battle's tier, and a blueprint chance at a component of that tier the run holds no blueprint for. Shown: name, and codex (empty until Ryan writes one; a tap's readout says the likely contents from the numbers). Every number a placeholder.",
+ "per_battle": 4,
+ "rift_gap": 3,
+ "wall_gap": 2,
+ "entries": [
+  {
+   "id": "derelict",
+   "name": "Derelict",
+   "tier": 1,
+   "weight": [3, 1],
+   "salvage": [10, 20],
+   "components": 1,
+   "blueprint": 0.0,
+   "codex": "",
+   "design": {
+    "holes": "A wreck (the bible's loot row: wrecks and alien remains, common). The name a working name, the density placeholders (the bible's open row)."
+   }
+  },
+  {
+   "id": "carcass",
+   "name": "Carcass",
+   "tier": 2,
+   "weight": [2, 2],
+   "salvage": [20, 30],
+   "components": 2,
+   "blueprint": 0.0,
+   "codex": "",
+   "design": {
+    "holes": "Alien remains (the bible's loot row). The name a working name, the density placeholders (the bible's open row)."
+   }
+  },
+  {
+   "id": "relic",
+   "name": "Relic",
+   "tier": 3,
+   "weight": [0, 3],
+   "salvage": [30, 40],
+   "components": 2,
+   "blueprint": 0.5,
+   "codex": "",
+   "design": {
+    "holes": "The rarest kind, the one with a chance at a blueprint (the bible's loot row; modules too once the campaign holds them). The name a working name, the density placeholders (the bible's open row)."
+   }
+  }
+ ]
+}

@@ -29,6 +29,74 @@ func assert_ne(actual, unexpected, msg: String) -> void:
 		failures.append("%s (got %s)" % [msg, str(actual)])
 
 
+# ---------------------------------------------------------------- a battle's quiet start
+
+## The field a battle test reads its own rule on, apart from the opening (the long wall brief
+## 3.2: the formations a move from the wall, the patrols two, the rift a turn short of its peak):
+## every pack but the boss parked in the north where the start placed it before the brief (the
+## formations across the width on rows 3 to 5, the patrols on the flanks from row 5), the rift's
+## clock held so nothing spawns over a test's turns, and a catch the opening forced taken back.
+## The opening's own tests read a raw setup.
+## Whether a screen carries a HudButton reading `text` (the withdraw button is gone: the long
+## wall brief 7.5).
+func has_button(screen: Node, text: String) -> bool:
+	for b in screen.find_children("*", "HudButton", true, false):
+		if (b as HudButton).text == text:
+			return true
+	return false
+
+
+func quiet_start(b: Battle) -> void:
+	var forms: Array = []
+	var patrols: Array = []
+	for sq in b.field.packs():
+		if sq.is_boss:
+			continue
+		if sq.composition_size == "patrol":
+			patrols.append(sq)
+		else:
+			forms.append(sq)
+	var w := b.map.width
+	for k in range(forms.size()):
+		forms[k].pos = b.field.landing(forms[k], Hex.offset_to_axial((w * (k + 1)) / (forms.size() + 1), 3 + (k % 3)))
+	for k in range(patrols.size()):
+		patrols[k].pos = b.field.landing(patrols[k], Hex.offset_to_axial(0 if k % 2 == 0 else w - 1, 5 + k / 2))
+	b.field.rift_pressure = 0
+	b.field.rift_pressure_max = 99
+	b.forced = b.field.forced_fights()
+
+
+# ---------------------------------------------------------------- a fight's end
+
+## A fight ended by the foes' fall, the way a fight is won (no fight is left since the long
+## wall brief 3.5): every foe waiting cleared, every foe on the field felled, the round ended,
+## again while a split or a rising foe leaves something standing.
+func win_fight(sk: Skirmish) -> void:
+	if sk.state == Skirmish.State.SETUP:
+		sk.begin()
+	for i in range(8):
+		if sk.outcome != Skirmish.Outcome.NONE:
+			return
+		if sk.state == Skirmish.State.ROUND_START:
+			sk.start_round()
+		sk.reinforcements.clear()
+		for f in sk.field_foes():
+			f.hp = 0
+		sk.end_round()
+
+
+## A fight ended by the team's fall: every machine wrecked as the player's turn ends, so the
+## packs in it keep their survivors.
+func lose_fight(sk: Skirmish) -> void:
+	if sk.state == Skirmish.State.SETUP:
+		sk.begin()
+	if sk.state == Skirmish.State.ROUND_START:
+		sk.start_round()
+	for ms in sk.mechs:
+		ms.unit.hull = 0
+	sk.end_round()
+
+
 # ---------------------------------------------------------------- live input (live_test_*)
 
 ## The layout a frame would give, here and now: every control's minimum size read again (a

@@ -4,7 +4,8 @@ extends BaseButton
 ## A button in the overlay style: a slanted outline in the HUD colour with display-face text,
 ## or filled (primary action) with dark text. `glyph` draws a Glyphs id instead of, or before,
 ## the text; `badge` is a small mono readout in the corner (the reroll count). `ghost` is the
-## quiet variant for actions the player rarely wants (withdraw). Disabled draws at a third.
+## quiet variant for actions the player rarely wants (UNDO, CLEAR, the quick campaign's LEAVE
+## and CANCEL). Disabled draws at a third.
 
 var text: String = ""
 var glyph: String = ""

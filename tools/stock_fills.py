@@ -26,21 +26,23 @@ def edit(p, reps):
         s = s.replace(o, n)
     open(p, 'w', encoding='utf-8').write(s)
 
-# ---- chassis: hull, shield, recharge, heat max, cooling, armour (the brief's section 2)
+# ---- chassis: hull, shield, heat max, cooling, armour (the brief's section 2; the field recharge it set
+# went with the long wall brief, docs/briefs/long_wall_build.md 3.6)
 C = {
- 'badger': (36, 8, 4, 12, 1, 2), 'clydesdale': (40, 10, 5, 12, 1, 1), 'sparrowhawk': (12, 16, 8, 10, 2, 0),
- 'baboon': (28, 10, 5, 14, 1, 0), 'armadillo': (40, 8, 4, 12, 1, 2), 'wild_boar': (36, 8, 5, 12, 1, 2),
- 'prairie_dog': (20, 10, 8, 12, 1, 0), 'dingo': (20, 10, 6, 12, 1, 0), 'goshawk': (28, 12, 6, 14, 1, 0),
- 'nemesis': (36, 6, 4, 14, 1, 2), 'ammit': (32, 10, 5, 14, 1, 1), 'stingray': (24, 12, 6, 14, 0, 0),
- 'puffin': (20, 8, 8, 12, 1, 0), 'funnel_web': (30, 10, 5, 12, 1, 1), 'cassowary': (24, 8, 5, 12, 1, 0),
- 'cottonmouth': (20, 8, 8, 12, 2, 0), 'whip_scorpion': (40, 8, 4, 14, 0, 1), 'swallowtail': (48, 14, 5, 14, 2, 1),
- 'musk_ox': (44, 10, 5, 8, 1, 1),
- 'lammergeier': (28, 16, 6, 14, 1, 0),   # not in the brief: today's numbers over four
+ 'badger': (36, 8, 12, 1, 2), 'clydesdale': (40, 10, 12, 1, 1), 'sparrowhawk': (12, 16, 10, 2, 0),
+ 'baboon': (28, 10, 14, 1, 0), 'armadillo': (40, 8, 12, 1, 2), 'wild_boar': (36, 8, 12, 1, 2),
+ 'prairie_dog': (20, 10, 12, 1, 0), 'dingo': (20, 10, 12, 1, 0), 'goshawk': (28, 12, 14, 1, 0),
+ 'nemesis': (36, 6, 14, 1, 2), 'ammit': (32, 10, 14, 1, 1), 'stingray': (24, 12, 14, 0, 0),
+ 'puffin': (20, 8, 12, 1, 0), 'funnel_web': (30, 10, 12, 1, 1), 'cassowary': (24, 8, 12, 1, 0),
+ 'cottonmouth': (20, 8, 12, 2, 0), 'whip_scorpion': (40, 8, 14, 0, 1), 'swallowtail': (48, 14, 14, 2, 1),
+ 'musk_ox': (44, 10, 8, 1, 1),
+ 'lammergeier': (28, 16, 14, 1, 0),   # not in the brief: today's numbers over four
 }
 raw, d = jload(R + 'content/chassis.json')
 for c in d['entries']:
-    h, s, r, hm, co, ar = C[c['id']]
-    c['hull'], c['shield'], c['recharge_field'], c['heat_max'], c['cooling'], c['armour'] = h, s, r, hm, co, ar
+    h, s, hm, co, ar = C[c['id']]
+    c['hull'], c['shield'], c['heat_max'], c['cooling'], c['armour'] = h, s, hm, co, ar
+    c.pop('recharge_field', None)
     for eff in (c.get('passive') or {}).get('effects', []):
         e = eff.get('effect')
         if c['id'] == 'sparrowhawk' and e == 'add_heat': eff['value'] = 2

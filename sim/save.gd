@@ -14,7 +14,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 9   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October)
+const VERSION := 15   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November)
 
 
 # ---------------------------------------------------------------- the file
@@ -71,6 +71,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"thresholds": b.thresholds, "fractures": b.fractures, "rupture_turn": b.rupture_turn, "stall_guard": b.stall_guard,
 		"elites_spawned": b.elites_spawned, "field_menace": b.field_menace,
 		"sponsorship": b.sponsorship,
+		"loot": b.loot, "blueprints_known": b.blueprints_known,   # the caches claimed and the run's blueprints (7 November)
 		"action_hexes": _int_keys(b.action_hexes),
 		"wrecks": _units(b.wrecks),
 		"state": b.state,
@@ -132,6 +133,11 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.stall_guard = bool(d.get("stall_guard", false))
 	b.elites_spawned = _strings(d.get("elites_spawned", []))
 	b.field_menace = int(d.get("field_menace", 0))
+	for ld in d.get("loot", []):
+		if ld is Dictionary:
+			b.loot.append({"kind": str(ld.get("kind", "")), "tier": int(ld.get("tier", 1)), "salvage": int(ld.get("salvage", 0)),
+				"components": _strings(ld.get("components", [])), "blueprint": str(ld.get("blueprint", "")), "by": int(ld.get("by", 0))})
+	b.blueprints_known = _strings(d.get("blueprints_known", []))
 	var tally: Dictionary = d.get("sponsorship", {})
 	for k in tally.keys():
 		b.sponsorship[str(k)] = int(tally[k])
@@ -149,6 +155,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.map_kind = str(md.get("kind", ""))
 	b.map = BattleMap.generate(w, h, map_seed, b.map_kind) if map_seed != 0 else BattleMap.flat(w, h)
 	b.field = _field_from(d.get("field", {}), b.map)
+	b.field.seed_value = b.seed_value   # a dealt layout's draw reads the battle's seed (section 6)
 	# What the map knows of each foe type, from the content as the setup gives it: a pack Rift
 	# Pressure spawns after a resume is dressed by it, its ring, move and hunt (the mechanics
 	# audit, 25 October: a resumed battle's spawns came out as plain pushers).
@@ -200,12 +207,15 @@ static func _field_dict(f: Battlefield) -> Dictionary:
 	var tears: Array = []
 	for t in f.tears:
 		tears.append([(t["pos"] as Vector2i).x, (t["pos"] as Vector2i).y, int(t.get("opened", 0))])
+	var caches: Array = []   # the caches lying on the field (7 November)
+	for c in f.caches:
+		caches.append([int(c["id"]), int(c["tier"]), (c["pos"] as Vector2i).x, (c["pos"] as Vector2i).y])
 	return {
 		"gate_hp": f.gate_hp, "gate_hp_max": f.gate_hp_max,
 		"rift_pressure": f.rift_pressure, "rift_pressure_max": f.rift_pressure_max,
 		"spawn_faction": f.spawn_faction, "ramp": f.ramp,
 		"cycle": f.cycle, "patrol_cycle": f.patrol_cycle, "cycle_index": f._cycle_index, "patrol_index": f._patrol_index,
-		"seam_row": f.seam_row, "tears": tears, "peaks": f.peaks, "rift_spawns": f.rift_spawns, "tear_spawns": f.tear_spawns,
+		"seam_row": f.seam_row, "tears": tears, "caches": caches, "peaks": f.peaks, "rift_spawns": f.rift_spawns, "tear_spawns": f.tear_spawns,
 		"phase": f.phase, "log": f.log, "next_id": f._next_id,
 		"units": units,
 	}
@@ -221,7 +231,11 @@ static func _compositions_from(list: Array) -> Array:
 		for m in c.get("members", []):
 			if m is Array and (m as Array).size() >= 2:
 				members.append([str(m[0]), int(m[1])])
-		out.append({"id": str(c.get("id", "")), "size": str(c.get("size", "patrol")), "faction": str(c.get("faction", "")), "members": members})
+		var entry := {"id": str(c.get("id", "")), "size": str(c.get("size", "patrol")), "faction": str(c.get("faction", "")), "members": members}
+		for key in ["squad", "layout", "lead"]:   # the long wall brief's composition fields (3.7, section 6)
+			if c.has(key):
+				entry[key] = c[key]
+		out.append(entry)
 	return out
 
 
@@ -243,9 +257,12 @@ static func _field_from(d: Dictionary, map: BattleMap) -> Battlefield:
 		f.patrol_cycle = f.cycle.duplicate(true)
 	f._cycle_index = int(d.get("cycle_index", d.get("spawn_index", 0)))
 	f._patrol_index = int(d.get("patrol_index", 0))
-	f.seam_row = int(d.get("seam_row", Battlefield.SEAM_START))
+	f.seam_row = int(d.get("seam_row", Battlefield.seam_start()))
 	for t in d.get("tears", []):
 		f.tears.append({"pos": Vector2i(int(t[0]), int(t[1])), "opened": int(t[2]) if t.size() > 2 else 0})
+	for c in d.get("caches", []):
+		if c is Array and (c as Array).size() >= 4:
+			f.caches.append({"id": int(c[0]), "tier": int(c[1]), "pos": Vector2i(int(c[2]), int(c[3]))})
 	f.peaks = int(d.get("peaks", 0))
 	f.rift_spawns = int(d.get("rift_spawns", 0))
 	f.tear_spawns = int(d.get("tear_spawns", 0))
@@ -279,7 +296,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "zone": u.zone, "attack_range": u.attack_range,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "layout": u.layout, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "zone": u.zone, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules,
 	}
@@ -326,8 +343,13 @@ static func _unit_into(u: Unit, d: Dictionary) -> void:
 	u.behaviour = str(d.get("behaviour", "push"))
 	u.hunts = str(d.get("hunts", "nearest"))
 	u.prey = int(d.get("prey", 0))
+	u.goal_col = int(d.get("goal_col", -1))
+	u.squad = int(d.get("squad", ContentDB.SQUAD_DEFAULT))
+	u.layout = []
+	for cell in d.get("layout", []):
+		u.layout.append(str(cell))
 	u.zone = int(d.get("zone", 1))
-	u.attack_range = int(d.get("attack_range", 2))
+	u.attack_range = int(d.get("attack_range", 1))
 	u.is_boss = bool(d.get("is_boss", d.get("elite", false)))   # a save from before 15 October says elite
 	u.sealed = bool(d.get("sealed", false))
 	u.lineup = _strings(d.get("lineup", []))
@@ -453,11 +475,14 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	var mined: Array = []
 	for slot in sk.mines.keys():
 		mined.append({"rank": slot.x, "column": slot.y, "shots": sk.mines[slot]})
+	var held: Array = []   # the corpses holding their slots till their parts regrow (7 November)
+	for slot in sk.corpses.keys():
+		held.append({"rank": slot.x, "column": slot.y, "foe": _foe_dict(sk.corpses[slot], sk)})
 	return {
 		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain, "ground": sk.ground,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "banked": sk.banked, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
-		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "twins": paired,
+		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "layout": sk.layout, "twins": paired, "corpses": held,
 		"kills": _typed_tallies(sk.kills),
 		"roll_marks": sk.roll_marks, "history": sk.history,   # the trail's bars and the undo's snapshots (2 November)
 		"team_kills": sk.team_kills,
@@ -565,6 +590,9 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 	sk.rerolls_left = int(d.get("rerolls_left", 0))
 	sk.banked = int(d.get("banked", 0))   # the rerolls Maverick's Playbook carries to the next round (30 October)
 	sk.committed = bool(d.get("committed", false))
+	sk.layout = []
+	for cell in d.get("layout", []):
+		sk.layout.append(str(cell))
 	sk.state = int(d.get("state", Skirmish.State.SETUP))
 	sk.outcome = int(d.get("outcome", Skirmish.Outcome.NONE))
 	sk.log.clear()
@@ -593,6 +621,10 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 	sk.twins.clear()
 	sk.reinforcements.clear()
 	sk.mines.clear()
+	sk.corpses.clear()
+	for cd in d.get("corpses", []):
+		if cd is Dictionary and (cd as Dictionary).has("foe"):
+			sk.corpses[Vector2i(int(cd.get("rank", 0)), int(cd.get("column", 0)))] = _foe_from(cd["foe"], sk)
 	var foes: Array[Foe] = []
 	for fd in d.get("foes", []):
 		foes.append(_foe_from(fd, sk))
@@ -829,7 +861,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 8   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October)
+const RUN_VERSION := 14   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October); 9: the battle inside it on the long wall (6 November); 10: the battle inside it with no reinforcement inside a fight (7 November); 11: the battle inside it with the field's caches (7 November); 12: the battle inside it with a catch a fight a hunter (7 November); 13: its caches by depth (8 November); 14: its compositions grids (8 November)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:
@@ -953,9 +985,16 @@ static func campaign_from_dict(d: Dictionary) -> Campaign:
 static func _report_from(rd: Dictionary) -> Dictionary:
 	var r := rd.duplicate(true)
 	for k in ["turn", "gate_left", "phases", "salvage", "favour", "tier", "squad",
-			"menace", "kills", "fractures", "fractures_of", "rupture_turn", "elites", "peaks", "rift_spawns", "tear_spawns", "tears"]:
+			"menace", "kills", "fractures", "fractures_of", "rupture_turn", "elites", "peaks", "rift_spawns", "tear_spawns", "tears", "loot_salvage"]:
 		if r.has(k):
 			r[k] = int(r[k])
+	if r.has("loot"):   # the caches the battle claimed (7 November)
+		var loot: Array = []
+		for l in r["loot"]:
+			if l is Dictionary:
+				loot.append({"kind": str(l.get("kind", "")), "tier": int(l.get("tier", 1)), "salvage": int(l.get("salvage", 0)),
+					"components": _strings(l.get("components", [])), "blueprint": str(l.get("blueprint", "")), "by": int(l.get("by", 0))})
+		r["loot"] = loot
 	var wrecked: Array = []
 	for uid in r.get("wrecked", []):
 		wrecked.append(int(uid))
@@ -1014,7 +1053,7 @@ static func quick_to_dict(r: QuickRun) -> Dictionary:
 		"state": r.state, "won": r.won, "battle": r.battle,
 		"roster": roster, "next_uid": r._next_uid, "squad": r.squad,
 		"components": r.components, "modules": r.modules,
-		"party": r.party, "bosses_ended": r.bosses_ended, "finals_won": r.finals_won, "density": r.density,
+		"party": r.party, "bosses_ended": r.bosses_ended, "finals_won": r.finals_won,
 		"lead": r.lead, "guest": r.guest, "encounters": r.encounters, "fight": r.fight,
 		"units": _units(r.units),
 		"skirmish": _skirmish_dict(r.current, null) if r.current != null else null,
@@ -1050,9 +1089,6 @@ static func quick_from_dict(d: Dictionary) -> QuickRun:
 	for fid in ended.keys():
 		r.bosses_ended[str(fid)] = _strings(ended[fid])
 	r.finals_won = _strings(d.get("finals_won", []))
-	var dens: Array = d.get("density", [])
-	if not dens.is_empty():
-		r.density = dens.map(func(x) -> float: return float(x))
 	r.lead = str(d.get("lead", ""))
 	r.guest = str(d.get("guest", ""))
 	r.encounters = []

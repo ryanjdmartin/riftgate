@@ -7,20 +7,23 @@ extends RefCounted
 ## mended, the battle's loot is handed out with the token's component and a maker's offer, and
 ## the hangar refits it for the next. A test bed for the curve and the enemy's tiers that reads
 ## a squad fighting every fight together, and perhaps a short campaign one day. Headless and
-## seeded, like everything in sim/: the screens and the runner (tools/quick_run.gd) drive it.
+## seeded, like everything in sim/: the screens and the runner (tools/quick_run.gd) drive it. It
+## always follows the main content and code (Ryan, 7 November: one code tree for both modes): its
+## fights are built by the battle's own builders (Battlefield.pack_of, Battle.make_boss_unit).
 ##
 ## Rules, in one place (every number a placeholder):
 ##   the start     three different tier-one chassis, picked freely, in their stock; the party
 ##                 dealt as the campaign deals it; the basics free and without limit
 ##   a battle      a domain drawn at random, and from GUEST_TIER a guest; as many fights before
 ##                 the boss as the Rupture's Fractures at its tier, ELITES of them elites, then
-##                 the boss with its formation; BATTLES of them, a tier every TIER_EVERY, then
-##                 the finale, whose last fight is the party's line alone
-##   a formation   a domain's whole spawn list in one fight, the lead's and the guest's in turn;
-##                 an elite's slot holds the lead's formation alone until the elites land (the
-##                 bench hero that stood in went on 27 October)
+##                 the boss's fight (the boss and its curated escort, as on the map); BATTLES
+##                 of them, a tier every TIER_EVERY, then the finale, whose last fight is the
+##                 party's line alone
+##   a formation   one of a domain's formation compositions at the tier, in turn, dealt as a
+##                 battle deals it, the lead's and the guest's in turn; an elite's slot holds the
+##                 lead's next elite composition or a wanderer, else the lead's formation
 ##   a fight       the squad's machines still standing, their damage carried from the last and
-##                 their heat from zero; no withdrawal; won, one field recharge before the next;
+##                 their heat from zero and their shields full (the long wall brief 3.6);
 ##                 every machine wrecked, the run is over
 ##   the boss dead the campaign's after-battle rule without the shop (hull mends; a destroyed
 ##                 hardpoint piece is gone, a destroyed fixed one rebuilt); then a loot pick for
@@ -74,9 +77,6 @@ var modules: Dictionary = {}      # the stores: module id -> copies unfitted
 var party: Dictionary = {}        # domain -> its dealt hero (the finale's line)
 var bosses_ended: Dictionary = {} # domain -> the bosses beaten this run, so the next draws another (the campaign's rule)
 var finals_won: Array = []        # domains whose final was won: their hero leaves the finale's line, as in the campaign
-## The formations' density by tier, the runner's lever on top of the ramp's own (Ramp.scaled by
-## the battle's number as the Convergence; 1.0 everywhere unless the runner asks: docs/measurements.md, 25 October).
-var density: Array = [1.0, 1.0, 1.0]
 # ---- the battle ahead or under way
 var lead: String = ""
 var guest: String = ""
@@ -326,9 +326,9 @@ func _encounters(t: int) -> Array:
 			# An elite's slot takes the lead's next own elite, or a wanderer on the run's roll
 			# (ContentDB.next_elite, 2 November), each once a battle; with none left, the lead's
 			# formation holds the slot as before.
-			var c := db.next_elite(lead, t + 1, elites_dealt, rng.randf())
+			var c := db.next_elite(lead, t + 1, elites_dealt, rng.randf(), ramp())
 			enc["foe"] = str(c["id"]) if not c.is_empty() else ""
-			enc["index"] = 0
+			enc["index"] = elites_dealt.size()   # its place among the battle's elites
 			if not c.is_empty():
 				elites_dealt.append(str(c["id"]))
 		out.append(enc)
@@ -341,7 +341,7 @@ func _encounters(t: int) -> Array:
 
 
 ## The fight a battle ends on: one of the lead's bosses its battles have not ended on this run,
-## or from FINAL_TIER its final, the dealt hero leading the lead's formation, drawn as one more
+## or from FINAL_TIER its final, the dealt hero with three of its domain's units, drawn as one more
 ## boss while that hero stands (Ryan, 25 October: "finale bosses can just appear as a random
 ## boss in tier 2 or 3"); once all are beaten, any of its bosses again.
 func _boss_encounter(t: int) -> Dictionary:
@@ -358,86 +358,56 @@ func _boss_encounter(t: int) -> Dictionary:
 	return {"kind": "boss", "domain": lead, "foe": str(open[pick])}
 
 
-## Whom an encounter fields, in arrival order (the skirmish deploys the heaviest hitters first):
-## an elite composition's members, the boss or a final's hero before the domain's formation; the
-## finale's line, as the campaign fields it. A boss, a final's hero and the finale's line stand
-## at the battle's tier and bring its escort after them, as the campaign's boss unit does
-## (ContentDB.BOSS_TIERS); an elite does not.
+## The unit an encounter fields, dealt as a battle deals it (Ryan, 7 November: "Quick campaign
+## should always follow the main content ... I don't want to keep two seperate code trees for both
+## modes"): a formation or an elite composition as its pack (Battlefield.pack_of: its grid and
+## its lead), an elite's at the battle's tier; a boss, a
+## final's hero or the finale's line as the battle's boss unit (Battle.make_boss_unit: at the tier,
+## its curated escort or none, a final's hero with three of its domain's units). One pack is one
+## fight, so a boss fights with its escort alone, as on the map. Null when there is nothing to field.
+func encounter_unit(enc: Dictionary) -> Unit:
+	var domain := str(enc.get("domain", lead))
+	match str(enc.get("kind", "")):
+		"finale":
+			var line: Array = enc["line"] if enc.has("line") else finale_line()
+			return Battle.make_boss_unit(db, domain, tier(), str(line[0]), line, [], ramp()) if not line.is_empty() else null
+		"boss":
+			var bid := str(enc.get("foe", ""))
+			return Battle.make_boss_unit(db, domain, tier(), bid, [bid], [], ramp()) if db.foes.has(bid) else null
+		"final":
+			var hero := str(enc.get("foe", ""))
+			# The campaign's final: the hero with its domain's wildlife in the other columns.
+			return Battle.make_boss_unit(db, domain, tier(), hero, [hero], ["", Skirmish.DEFAULT_COLUMNS - 1]) if db.foes.has(hero) else null
+		"elite":
+			var c := db.elite_composition(lead, tier() + 1, str(enc.get("foe", "")))
+			if not c.is_empty():
+				var sq := Battlefield.pack_of(c, lead)
+				if sq != null:
+					sq.boss_tier = tier()   # an elite stands at its battle's tier (31 October), as the field's do
+					return sq
+	return formation_unit(domain, int(enc.get("index", 0)))
+
+
+## Whom an encounter fields (the encounter's unit unpacked, ContentDB.foes_for), in the order
+## dealt; the skirmish deploys the heaviest hitters first, or by the pack's layout.
 func encounter_foes(enc: Dictionary) -> Array:
-	var out: Array = []
-	var kind := str(enc.get("kind", ""))
-	var boss := kind == "boss" or kind == "final" or kind == "finale"
-	if kind == "finale":
-		for fid in (enc["line"] if enc.has("line") else finale_line()):
-			if db.foes.has(str(fid)):
-				var f := db.make_foe(str(fid))
-				db.scale_boss(f, tier())
-				out.append(f)
-	elif kind == "elite" and not str(enc.get("foe", "")).is_empty():
-		var c := db.elite_composition(lead, tier() + 1, str(enc["foe"]))
-		if not c.is_empty():
-			out.append_array(_composition_foes(c))
-		if out.is_empty():
-			out.append_array(formation_foes(str(enc.get("domain", lead)), int(enc.get("index", 0))))
-	else:
-		var lead_foe := str(enc.get("foe", ""))
-		if db.foes.has(lead_foe):
-			var f := db.make_foe(lead_foe)
-			if boss:
-				db.scale_boss(f, tier())
-			out.append(f)
-		out.append_array(formation_foes(str(enc.get("domain", lead)), int(enc.get("index", 0))))
-	if boss:
-		out.append_array(escort_foes(str(enc.get("domain", lead)), str(enc.get("foe", ""))))
-	return out
+	var u := encounter_unit(enc)
+	return Array(db.foes_for(u)) if u != null else []
 
 
-## A boss's escort at the battle's tier, beyond its formation, as the campaign's boss unit
-## brings it: its own `escort` composition at the tier when one is written (2 November), its
-## members at the ramp's density, else the domain's own units of the tier, ContentDB.escort_at(tier)
-## of them.
-func escort_foes(domain: String, boss_id: String = "") -> Array:
-	var out: Array = []
-	var tailored := db.escort_composition(domain, tier() + 1, boss_id)
-	if not tailored.is_empty():
-		for m in tailored["members"]:
-			for i in range(Ramp.scaled(int(m[1]), ramp())):
-				if db.foes.has(str(m[0])):
-					out.append(db.make_foe(str(m[0])))
-		return out
-	return Array(db.escort_units(domain, tier(), ContentDB.escort_at(tier())))
+## A domain's formation as its pack: the tier's formation compositions in turn (`index`,
+## wrapping), as a battle deals one. Null when the domain has none.
+func formation_unit(domain: String, index: int = 0) -> Unit:
+	var forms := db.compositions(domain, tier() + 1, "formation", ramp())
+	if forms.is_empty():
+		return null
+	return Battlefield.pack_of(forms[index % forms.size()], domain)
 
 
-## A domain's formation: the tier's formation compositions in turn (`index`, wrapping), at the
-## ramp's density times the runner's lever; the whole derived list when the domain has none.
+## A domain's formation, unpacked.
 func formation_foes(domain: String, index: int = 0) -> Array:
-	var forms := db.compositions(domain, tier() + 1, "formation")
-	if not forms.is_empty():
-		return _composition_foes(forms[index % forms.size()])
-	var out: Array = []
-	var d: float = float(density[tier()]) if tier() < density.size() else 1.0
-	for e in db.spawn_table(domain, tier() + 1):
-		if not db.foes.has(str(e[0])):
-			continue
-		for i in range(maxi(1, roundi(int(e[1]) * d))):
-			out.append(db.make_foe(str(e[0])))
-	return out
-
-
-## A composition's foes: every member at the ramp's density (the battle's number as the
-## Convergence) times the runner's lever for the tier.
-func _composition_foes(c: Dictionary) -> Array:
-	var out: Array = []
-	var d: float = float(density[tier()]) if tier() < density.size() else 1.0
-	for m in c.get("members", []):
-		if not db.foes.has(str(m[0])):
-			continue
-		for i in range(maxi(1, roundi(float(Ramp.scaled(int(m[1]), ramp())) * d))):
-			var f := db.make_foe(str(m[0]))
-			if db.is_elite(str(m[0])):
-				db.scale_boss(f, tier())   # every elite stands at the battle's tier as a boss does (Ryan, 2 November)
-			out.append(f)
-	return out
+	var u := formation_unit(domain, index)
+	return Array(db.foes_for(u)) if u != null else []
 
 
 ## The battle's ramp: its number as the Convergence (the campaign's a battle a step).
@@ -449,7 +419,7 @@ func ramp() -> int:
 ## "" when it has none, so the slot holds the lead's formation alone and the Fracture count
 ## stands (the bench hero that stood in went on 27 October, Ryan: "just a can of worms").
 func elite_of(domain: String) -> String:
-	var elites := db.elite_compositions(domain, tier() + 1)
+	var elites := db.elite_compositions(domain, tier() + 1, ramp())
 	return str(elites[0]["id"]) if not elites.is_empty() else ""
 
 
@@ -491,7 +461,7 @@ func finale_line() -> Array:
 
 
 ## The fight under way, opened on the next encounter if none is: the squad's machines still
-## standing against its foes, no withdrawal. Null outside a battle.
+## standing against its foes. Null outside a battle.
 func open_fight() -> Skirmish:
 	if state != BATTLE:
 		return null
@@ -502,12 +472,15 @@ func open_fight() -> Skirmish:
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 	for u in live_units():
 		sk.add_mech(u)
-	sk.add_foes(encounter_foes(encounters[fight]))
+	var unit := encounter_unit(encounters[fight])
+	if unit != null:
+		sk.add_foes(db.foes_for(unit))
+		sk.layout = unit.layout.duplicate()   # a layout places its pack as on the map (section 6)
 	current = sk
 	return sk
 
 
-## Apply the fight just finished: won, the next encounter waits after a field recharge, or the
+## Apply the fight just finished: won, the next encounter waits with the shields full, or the
 ## boss's fall ends the battle; lost, the run is over. Returns the fight's report, empty while
 ## the fight is still on.
 func finish_fight() -> Dictionary:
@@ -540,14 +513,12 @@ func finish_fight() -> Dictionary:
 	return report
 
 
-## The walk to the next fight (Ryan, 25 October: one field recharge after each fight): every
-## machine standing regains its field rate, and what fires out of a fight fires.
+## The walk to the next fight: every machine standing opens it with its shield full (the long
+## wall brief 3.6: the shield is the fight's, as a battle's fights open on it), in place of the
+## field recharge of 25 October.
 func _recharge() -> void:
 	for u in live_units():
-		u.recharge_shield(u.recharge_field)
-		var fired := Effects.fire(u, "out_of_combat")
-		if int(fired["shield"]) > 0:
-			u.recharge_shield(int(fired["shield"]))
+		u.shield = u.shield_max
 
 
 ## The squad's hull standing, as a share of its whole (a wreck counts nothing).

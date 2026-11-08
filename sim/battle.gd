@@ -12,20 +12,24 @@ extends RefCounted
 ##             a pack in its attack range (order_onto() moves it into range first); undo()
 ##             takes back the last move or order, in the order they were made; engage() opens
 ##             the next fight with the machines ordered onto it, a fight hunters forced always
-##             first (`forced`); end_turn() when done. A move lands in the battle at once and is
+##             first (`forced`), one pack a fight and nothing joining (the long wall brief
+##             3.4), so orders onto several packs queue and play one at a time; end_turn() when
+##             done. A move lands in the battle at once and is
 ##             planned on the map (`planned`): the screen plays the plan on EXECUTE, ENGAGE or
 ##             END TURN (take_plan())
 ##   SKIRMISH  the fight attack() opened; the screen plays it, finish_skirmish() applies it
 ##             back to the map and the machines in it are spent; back to PLAN
 ##   DONE      outcome is set
 ##
-## Hull never repairs during a battle; shield comes back at the field rate in a turn a
-## machine does not fight; damaged faces persist on the unit.
+## Hull never repairs during a battle; the shield is full as every fight opens and nothing
+## returns on the map (the long wall brief 3.6); damaged faces persist on the unit.
 
 enum State { PLAN, SKIRMISH, DONE }
 enum Outcome { NONE, VICTORY, GATE_FALLEN, WRECKED }
 
-const DEFAULT_WIDTH := 9   # nine wide, the thumb's limit, so four machines can split two and two (bible section 4, the round row)
+## The old field's size, kept for the tests that pass a size of their own; a battle's own size is
+## the ramp's (Ramp.wall_length_at, Ramp.depth_at; the long wall brief 3.1).
+const DEFAULT_WIDTH := 9
 const DEFAULT_HEIGHT := 20
 
 var seed_value: int = 1
@@ -60,10 +64,11 @@ var history: Array = []
 var planned: Array = []
 var _batch := 0              # inside order_onto: its move and its order are one entry
 var _batch_dirty := false    # and something changed under it
-var fought: Dictionary = {}      # mech id -> true: it fought this turn, so no field recharge
-## The fights hunters forced this turn, first in line (bible section 5): [{"prey": Unit,
-## "hunters": Array[Unit]}]. While any is left, it is the only fight that may open and the
-## turn cannot end; its prey cannot move.
+var fought: Dictionary = {}      # mech id -> true: it fought this turn (out_of_combat fires for the rest)
+## The fights hunters forced this turn, first in line (bible section 5), one a hunter, a machine
+## caught twice in two of them (Battlefield.forced_fights): [{"prey": Unit, "hunters": [the
+## hunter]}]. While any is left, the first is the only fight that may open and the turn cannot
+## end; its prey cannot move, and fights in each of its catches whether it has fought or not.
 var forced: Array = []
 ## Attack orders (bible section 5): mech id -> the pack it fights when ENGAGE is pressed, in
 ## the order given. A drag or a tap onto a pack gives one; nothing opens until ENGAGE, so a
@@ -97,8 +102,8 @@ var escort: Array = []
 ## its compositions, its Fractures and its elites are the tier's (Ramp).
 var tier: int = 0
 ## The battle's ramp (the campaign's live Convergence, set before setup; 0 in the harness):
-## the compositions on the field at the start and their density, the timer, the tears a peak
-## (Ramp, the one table of placeholders).
+## the compositions on the field at the start, the timer, the tears a peak (Ramp, the one table
+## of placeholders); it scales no pack.
 var ramp: int = 0
 ## Every foe killed this battle, in any fight however it ended (Ryan, 7 October: a kill is a
 ## kill, and withdrawing never takes it away), for the salvage the campaign tallies at the
@@ -135,6 +140,13 @@ var action_hexes: Dictionary = {}   # mech id -> hexes moved in its current acti
 ## The machines wrecked this battle, as they fell: the map lets go of them, the campaign
 ## still reads their dice (a wreck loses its destroyed components).
 var wrecks: Array[Unit] = []
+## The caches claimed this battle, in the order claimed (the bible's loot rows; built 7
+## November): each {"kind", "tier", "salvage", "components": [ids], "blueprint": an id or "",
+## "by": the machine's id}. The campaign banks them as the battle ends, as it banks the kills.
+var loot: Array = []
+## The run's blueprints as the battle opens (the campaign sets them before setup), so a cache's
+## blueprint is one the run holds none of.
+var blueprints_known: Array = []
 
 
 func _init(seed_arg: int = 1) -> void:
@@ -148,13 +160,24 @@ func _init(seed_arg: int = 1) -> void:
 ## Generate the map, stand the team in front of the gate, place the faction's formation in the
 ## north third of the field and its boss just south of the rift, then preview the first enemy
 ## moves.
-func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int = DEFAULT_HEIGHT) -> void:
+func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> void:
+	# The field's size is the ramp's (the long wall brief 3.1): a width or height of -1 reads
+	# Ramp.wall_length_at and Ramp.depth_at at the battle's ramp; a test passes a size of its own
+	# (DEFAULT_WIDTH and DEFAULT_HEIGHT stay for those), and nothing in the game passes one.
+	if w < 0:
+		w = Ramp.wall_length_at(ramp)
+	if h < 0:
+		h = Ramp.depth_at(ramp)
 	faction = faction_id if not faction_id.is_empty() else db.default_faction()
 	map = BattleMap.generate(w, h, seed_value, map_kind)
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
 	field.ramp = ramp
+	field.seed_value = seed_value
 	field.rift_pressure_max = Ramp.timer_at(ramp)
+	# The siege under way (the long wall brief 3.2): the pressure opens a turn short of its peak,
+	# so the rift's first wave spawns at the end of turn one, behind the formations already close.
+	field.rift_pressure = maxi(0, field.rift_pressure_max - 1)   # placeholder (the long wall brief)
 	field.foe_profiles = db.pack_profiles()
 	# What the rift sends and what stands on the field at the start (the foes' fresh start, 30
 	# October): the tier's compositions, the lead's and the guest's in turn, formations and
@@ -162,31 +185,39 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	# start the ramp's count of formations (the second the guest's where there is one) and
 	# patrols, at the ramp's density. The harness's composed side (`formation`) is each entry a
 	# pack of one type under its own foe's faction, all placed and all cycled, as before.
-	var placed: Array = []   # [composition, hex]
+	var placed: Array = []   # [composition, hex, opening]: opening 0 places it on the hex, 1 a move from the apron, 2 two moves
 	var w_cols := w
 	if not formation.is_empty():
 		var comps: Array = []
 		for e in formation:
 			var fac := db.faction_of_foe(str(e[0]))
-			comps.append(Battlefield.composition([[str(e[0]), int(e[1])]], fac if not fac.is_empty() else faction))
+			var comp := Battlefield.composition([[str(e[0]), int(e[1])]], fac if not fac.is_empty() else faction)
+			comp["squad"] = ContentDB.SQUAD_DEFAULT   # a pack of no composition: for three (the long wall brief 3.7)
+			comps.append(comp)
 		field.cycle = comps
 		field.patrol_cycle = comps.duplicate(true)
 		for j in range(comps.size()):
-			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3))])
+			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3)), 0])
 	else:
 		var has_guest := not guest.is_empty() and guest != faction and db.factions.has(guest)
-		var forms := _alternate(db.compositions(faction, tier + 1, "formation"), db.compositions(guest, tier + 1, "formation") if has_guest else [])
-		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol"), db.compositions(guest, tier + 1, "patrol") if has_guest else [])
+		# The tier's compositions the ramp's gate holds (7 November: variants placed on the tier and
+		# the ramp; one with no gate at every ramp).
+		var forms := _alternate(db.compositions(faction, tier + 1, "formation", ramp), db.compositions(guest, tier + 1, "formation", ramp) if has_guest else [])
+		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol", ramp), db.compositions(guest, tier + 1, "patrol", ramp) if has_guest else [])
 		field.cycle = _alternate(forms, patrols)
 		field.patrol_cycle = patrols
 		var nf := Ramp.formations_at(ramp)
 		var np := Ramp.patrols_at(ramp)
+		# The opening (the long wall brief 3.2): the ramp's formations across the width as before,
+		# each a move of its own from the apron, so its first walk reaches the wall; the ramp's
+		# patrols on the flanks, two moves out. The rows are set once each pack is dressed and
+		# its pace known (_open_rows, below).
 		if not forms.is_empty():
 			for k in range(nf):
-				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), 3 + (k % 3))])
+				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), BattleMap.MOUTH_ROWS), 1])
 		if not patrols.is_empty():
 			for k in range(np):
-				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, 5 + k / 2)])
+				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, BattleMap.MOUTH_ROWS), 2])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -197,42 +228,34 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
-	for p in placed:
-		field.emerge(p[0], p[1])
+	for j in range(placed.size()):
+		var p: Array = placed[j]
+		var sq := field.emerge(p[0], p[1])
+		if sq != null and int(p[2]) > 0:
+			_open_row(sq, Hex.axial_to_offset(p[1]).x, int(p[2]))
 	var fac: Dictionary = db.factions.get(faction, {})
 	var firsts := db.bosses_of(faction)
 	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
 	if with_boss and db.foes.has(boss_id):
-		# The finale's line goes by the party's name; a final's hero and a boss by its own.
-		var named := "the party" if lineup.size() > 1 else str(db.foes[boss_id]["name"]).to_lower()
-		boss = Unit.boss(0, named, Vector2i.ZERO, faction, Unit.BOSS_MOVE)
-		boss.lineup = lineup.duplicate()
-		if escort.size() >= 2:
-			# A named escort foe is a hand-tailored escort; unnamed, the tier's own units.
-			if db.foes.has(str(escort[0])):
-				boss.foe_id = str(escort[0])
-			boss.strength = maxi(0, int(escort[1]))
-		boss.boss_tier = tier
-		var tailored := db.escort_composition(faction, tier + 1, boss_id)
-		if escort.size() < 2 and not tailored.is_empty():
-			# A hand-tailored escort written in content (an `escort` composition at the tier):
-			# its members at the ramp's density, in place of the tier's units round robin.
-			var members: Array = []
-			for m in tailored["members"]:
-				members.append([str(m[0]), Ramp.scaled(int(m[1]), ramp)])
-			boss.set_members(members)
-		else:
-			boss.strength += ContentDB.escort_at(tier)
+		boss = make_boss_unit(db, faction, tier, boss_id, lineup, escort, ramp)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
+	# The caches, on the field from the first turn (Ryan, 7 November), round the units placed.
+	field.seed_caches(db, seed_value)
 	# The Rupture meter: the thresholds from the field's menace at the start, and the seal on the
 	# boss while there is a field to earn it against.
+	# The compositions placed and the tide's first waves (the long wall brief 3.8: the field is
+	# thin at the start, so the thresholds read the first compositions the rift will send as well,
+	# as many as the tier's Fractures, in the cycle's order), each as content writes it, so a
+	# layout's draw moves no threshold. Placeholder.
 	field_menace = 0
-	for sq in field.packs():
-		if sq.is_boss:
-			continue
-		for m in sq.member_list():
+	for p in placed:
+		for m in (p[0] as Dictionary).get("members", []):
 			field_menace += db.menace(str(m[0])) * int(m[1])
+	if not field.cycle.is_empty():
+		for k in range(Ramp.fractures_at(tier)):
+			for m in field.cycle[k % field.cycle.size()].get("members", []):
+				field_menace += db.menace(str(m[0])) * int(m[1])
 	thresholds = []
 	var n := Ramp.fractures_at(tier)
 	if field_menace > 0 and n > 0:
@@ -249,6 +272,51 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	_new_turn()
 
 
+## A boss unit as a battle fields it, wherever it is fought (the battle's setup, the quick
+## campaign's boss, final and finale, the harness's fight; Ryan, 7 November: one code tree for both
+## modes): its commanders (`lineup_ids`: the boss, a final's hero, the finale's line; empty for the
+## domain's first, `boss_id`), going by the party's name for a line, a true four (Ryan, 6 November;
+## the long wall brief 3.7), at the tier (ContentDB.BOSS_TIERS: its numbers); its escort a named one
+## (`escort_spec`: [a foe id, or "" for the tier's own units, as a final's wildlife; a count]), else
+## its curated composition at the tier whose ramp gate holds `ramp_at` (an `escort`), else none: never
+## grown by the tier (Ryan, 7 November). Unplaced and undressed: the caller does those.
+static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_id: String, lineup_ids: Array = [], escort_spec: Array = [], ramp_at: int = -1) -> Unit:
+	var named := "the party" if lineup_ids.size() > 1 else str(content.foes.get(boss_id, {}).get("name", boss_id)).to_lower()
+	var u := Unit.boss(0, named, Vector2i.ZERO, faction_id, Unit.BOSS_MOVE)
+	u.squad = 4
+	u.lineup = lineup_ids.duplicate()
+	u.boss_tier = t
+	if escort_spec.size() >= 2:
+		if content.foes.has(str(escort_spec[0])):
+			u.foe_id = str(escort_spec[0])
+		u.strength = maxi(0, int(escort_spec[1]))
+	else:
+		var tailored := content.escort_composition(faction_id, t + 1, boss_id, ramp_at)
+		if not tailored.is_empty():
+			var members: Array = []
+			for m in tailored["members"]:
+				members.append([str(m[0]), int(m[1])])
+			u.set_members(members)
+	return u
+
+
+## The opening's row for a pack placed at the start (the long wall brief 3.2): `moves` of its own
+## pace short of the apron row (a formation one, a patrol two), never into the rift's mouth, at
+## its column; it lands there as any spawn lands (Battlefield.landing: the nearest hex it can
+## stand on with no machine beside it). A pack that hunts opens a row further back at a time
+## until it has caught nobody, so no battle opens on a forced fight (Ryan, 6 November: "I
+## probably would shy away from hitting the first battle with a fight in the first turn, that's
+## for sure. That's just mean"); its first walk is the enemy's first turn, after the player's.
+## No hunter's ring passes 3 and the machines open four rows or more below the mouth, so the
+## mouth's edge always clears.
+func _open_row(sq: Unit, col: int, moves: int) -> void:
+	var row := maxi(BattleMap.MOUTH_ROWS, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
+	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row))
+	while sq.behaviour == "hunt" and row > BattleMap.MOUTH_ROWS and field.catch_of(sq) != null:
+		row -= 1
+		sq.pos = field.landing(sq, Hex.offset_to_axial(col, row))
+
+
 ## Whether the boss's seal holds: it cannot be ordered onto and joins no fight until the Rupture.
 func is_sealed() -> bool:
 	return boss != null and boss.sealed
@@ -263,6 +331,11 @@ func rupture(by_guard: bool = false) -> void:
 	rupture_turn = field.phase
 	stall_guard = by_guard
 	field.log.append("THE RUPTURE: the seal breaks" + (" with the field clear" if by_guard else ""))
+	# The tide quickens (the long wall brief 3.8; Ryan, 6 November, of a re-seal: "Isn't that just
+	# a feel-bad, or a non-choice?"): nothing re-seals, and the beat halves once, so each turn of
+	# delay costs more at the wall and the sally is the release; a peak's own step still applies.
+	field.rift_pressure_max = maxi(1, field.rift_pressure_max / 2)   # placeholder (the long wall brief)
+	field.log.append("the rift convulses: the beat is now %d" % field.rift_pressure_max)
 
 
 ## The Fractures earned by the tally so far, each paying out in turn: the log names it, the
@@ -285,7 +358,7 @@ func _fractures() -> void:
 func _spawn_elite() -> void:
 	# The domain's next own elite, or a wanderer on the Fracture's roll (ContentDB.next_elite,
 	# 2 November); each once a battle.
-	var c := db.next_elite(faction, tier + 1, elites_spawned, _elite_roll())
+	var c := db.next_elite(faction, tier + 1, elites_spawned, _elite_roll(), ramp)
 	if c.is_empty():
 		return
 	var sq := field.emerge(c, map.rift)
@@ -339,13 +412,14 @@ func is_pinned(u: Unit) -> bool:
 	return false
 
 
-## The hunters that caught this machine, in field order: its fight to come, which the map draws
-## as the machine's order onto them and the board names; empty while none has.
+## The hunters that caught this machine, in field order: its fights to come, one a hunter, which
+## the map draws as the machine's orders onto them and the board names; empty while none has.
 func catchers_of(u: Unit) -> Array:
+	var out: Array = []
 	for f in forced:
 		if f["prey"] == u:
-			return (f["hunters"] as Array).duplicate()
-	return []
+			out.append_array(f["hunters"])
+	return out
 
 
 ## Whether a machine may move now: the player's turn, an action left, not moved this action
@@ -717,10 +791,11 @@ func next_fight_is_boss() -> bool:
 
 
 ## The fight the player would open at `target`, or the next fight a hunter forced, which comes
-## first whatever is tapped (bible section 5): {"targets": the packs attacked, "joins": the
-## packs whose ring covers a target, "in_range": the machines whose attack range covers one,
-## "eligible": those of them with an action left (a caught machine always), "pinned": the
-## caught machine or null, "forced": whether this is a forced fight}. Empty when there is none.
+## first whatever is tapped (bible section 5): {"targets": the pack attacked, or the hunter that
+## caught a machine, "joins": always empty (one pack is one fight, the long wall brief 3.4),
+## "in_range": the machines whose attack range covers a target, "eligible": those of them with an
+## action left (a caught machine always), "pinned": the caught machine or null, "forced":
+## whether this is a forced fight}. Empty when there is none.
 func roster(target: Unit = null) -> Dictionary:
 	if state != State.PLAN:
 		return {}
@@ -739,13 +814,20 @@ func roster(target: Unit = null) -> Dictionary:
 		eligible.append(pinned)
 	# The boss's fight takes every machine (Ryan, 25 October: "automatically make all units
 	# attacking when one unit targets it, regardless of their range", "doesn't matter if a
-	# unit has fought this turn already"), whether the boss is the target or its ring pulls it
-	# in, since its fight cannot be left.
-	var all_in := boss != null and (targets.has(boss) or (r["joins"] as Array).has(boss))
+	# unit has fought this turn already"), since its fight cannot be left; nothing joins it and
+	# it joins nothing (the long wall brief 3.4), so it is the boss's fight when the boss is the
+	# target.
+	var all_in := boss != null and targets.has(boss)
 	for m in (mechs() if all_in else r["in_range"]):
 		if m != pinned and not m.is_static() and (all_in or actions_left(m) > 0):
 			eligible.append(m)
 	r["eligible"] = eligible
+	# The fight's threat rating, the machines it is intended for: its pack's (the long wall brief
+	# 3.7).
+	var squad := 0
+	for t in targets:
+		squad = maxi(squad, (t as Unit).squad)
+	r["squad"] = squad
 	r["pinned"] = pinned
 	r["forced"] = pinned != null
 	r["all_in"] = all_in
@@ -753,8 +835,9 @@ func roster(target: Unit = null) -> Dictionary:
 
 
 ## Open a fight: the machines committed (those of `machines` the roster allows; a caught
-## machine always) against the targets and every pack that joins. The skirmish, or null when
-## refused (not the player's turn, no fight there, nobody to commit).
+## machine always) against the target, one pack (the one ordered onto, or a catch's hunter),
+## nothing joining (the long wall brief 3.4). The skirmish, or null when refused (not the player's turn, no fight
+## there, nobody to commit).
 func attack(target: Unit, machines: Array) -> Skirmish:
 	var r := roster(target)
 	if r.is_empty():
@@ -930,6 +1013,28 @@ func next_fight() -> Dictionary:
 	return {"target": first, "machines": team}
 
 
+## Every fight waiting, in the order ENGAGE opens them (the long wall brief 7.4: the queue the
+## button counts and the map numbers): each hunter's catch first, then each pack in the order its
+## first order was given, the machines ordered onto a catch's hunters counted in the catch. Each
+## {"target": the pack, null for a catch, "prey": the caught machine for a catch}.
+func fights_waiting() -> Array:
+	_prune_orders()
+	var out: Array = []
+	var in_catch := {}
+	for f in forced:
+		out.append({"target": null, "prey": f["prey"]})
+		for h in f["hunters"]:
+			in_catch[h] = true
+	var seen := {}
+	for uid in orders.keys():
+		var p: Unit = orders[uid]
+		if p == null or in_catch.has(p) or seen.has(p):
+			continue
+		seen[p] = true
+		out.append({"target": p, "prey": null})
+	return out
+
+
 ## ENGAGE: the next fight opens with the machines ordered onto it. Null when there is none.
 func engage() -> Skirmish:
 	var f := next_fight()
@@ -953,26 +1058,92 @@ func _prune_orders() -> void:
 
 
 ## End the player's turn (bible section 4): the enemy's turn plays (packs walk round the
-## machines, a pack on the apron strikes the gate), a machine that did not fight this turn
-## recharges at the field rate, the rift ticks once, and the next turn opens with the fights
-## hunters have forced. The walks played (pack id -> Battlefield.Walk); empty when refused
+## machines, a pack on the apron strikes the gate), out_of_combat fires for a machine that did not
+## fight this turn (nothing returns on the map since the long wall brief 3.6: the shield is full
+## as every fight opens), the rift ticks once, and the next turn opens with the fights hunters
+## have forced. The walks played (pack id -> Battlefield.Walk); empty when refused
 ## (not the player's turn, or a forced fight still to come).
 func end_turn() -> Dictionary:
 	if state != State.PLAN or not forced.is_empty():
 		return {}
+	claim_caches()
 	var walks := field.enemy_turn()
 	for u in field.mechs():
-		if fought.has(u.id):
-			continue
-		u.recharge_shield(u.recharge_field)
-		# Passives that fire at the end of a turn spent out of a fight (out_of_combat).
-		var fired := Effects.fire(u, "out_of_combat")
-		if int(fired["shield"]) > 0:
-			u.recharge_shield(int(fired["shield"]))
+		if not fought.has(u.id):
+			Effects.fire(u, "out_of_combat")   # a trigger nothing may ride since the long wall brief 3.6
 	field.phase += 1
 	last_spawned = field.tick_pressure(1)
 	_new_turn()
 	return walks
+
+
+## The caches the machines stand on as the player's turn ends, or as the battle is won mid-turn
+## (the boss's fall), are theirs (the bible's loot row: claimed by ending a move on one): taken off
+## the field and opened, what each held in the log. Claimed as the turn ends rather than as the
+## move does, so an undo never shows what a cache holds. The ones claimed now, in the order claimed.
+func claim_caches() -> Array:
+	var got: Array = []
+	for m in field.mechs():
+		for o in m.footprint:
+			var c := field.cache_at(m.pos + o)
+			if c.is_empty():
+				continue
+			var opened := open_cache(c)
+			opened["by"] = m.id
+			if not str(opened["blueprint"]).is_empty():
+				blueprints_known.append(str(opened["blueprint"]))   # a second Relic finds another
+			loot.append(opened)
+			got.append(opened)
+			field.caches.erase(c)
+			field.log.append("%s claims a %s: %s" % [m.display_name, str(db.loot.get(str(opened["kind"]), {}).get("name", opened["kind"])), loot_text(opened)])
+	return got
+
+
+## What a cache holds, drawn as it is opened from a stream of its own (the battle's seed, the
+## cache and the kind it stands as), so the same cache claimed as the same kind holds the same
+## whenever it is claimed: its kind's salvage, so many components of the battle's tier, and on
+## its kind's chance a blueprint of that tier the run holds none of (none when it holds all).
+func open_cache(c: Dictionary) -> Dictionary:
+	var t := int(c.get("tier", 1))
+	var kind := db.loot_kind_of_tier(t)
+	var e: Dictionary = db.loot.get(kind, {})
+	var rng := RandomNumberGenerator.new()
+	rng.seed = absi(hash([seed_value, "cache", int(c.get("id", 0)), t]))
+	var sv: Array = e.get("salvage", [0, 0])
+	var out := {"kind": kind, "tier": t, "salvage": rng.randi_range(int(sv[0]), int(sv[1])), "components": [], "blueprint": ""}
+	var pool := db.loot_pool(tier + 1)
+	for i in range(int(e.get("components", 0))):
+		if pool.is_empty():
+			break
+		(out["components"] as Array).append(str(pool[rng.randi_range(0, pool.size() - 1)]))
+	if rng.randf() < float(e.get("blueprint", 0.0)):
+		var open: Array = pool.filter(func(cid) -> bool: return not blueprints_known.has(cid))
+		if not open.is_empty():
+			out["blueprint"] = str(open[rng.randi_range(0, open.size() - 1)])
+	return out
+
+
+## A claimed cache's contents in words, for the log.
+func loot_text(opened: Dictionary) -> String:
+	var parts: Array = ["%d salvage" % int(opened.get("salvage", 0))]
+	for cid in opened.get("components", []):
+		parts.append(db.component_name(str(cid)))
+	if not str(opened.get("blueprint", "")).is_empty():
+		parts.append("a blueprint for the %s" % db.component_name(str(opened["blueprint"])))
+	return ", ".join(parts)
+
+
+## The hunters that turned on a machine since the last call ([hunter, prey] units, those still on
+## the field), cleared: the screen declares each after the walk plays (Ryan, 8 November).
+func take_locks() -> Array:
+	var out: Array = []
+	for pair in field.locks:
+		var h := field.unit_by_id(int(pair[0]))
+		var p := field.unit_by_id(int(pair[1]))
+		if h != null and p != null:
+			out.append([h, p])
+	field.locks.clear()
+	return out
 
 
 ## A fresh turn: every machine's actions and move whole, and the fights hunters forced.
@@ -1029,15 +1200,41 @@ func foe_factory() -> Callable:
 	return func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 
 
+## A fight's seed from what the fight is, never from how many fights opened before it (Ryan, 7
+## November: "If the dice order affects reproduction, then we should fix that"): the battle's
+## seed, the turn, its packs and its machines, so the same fight rolls the same dice whichever
+## order the turn's fights are opened in, and a saved battle replays it. No two fights of a turn
+## share packs and machines (a machine that fought is spent), so none share a seed.
+func fight_seed(group: Array) -> int:
+	var packs_in: Array = []
+	var mechs_in: Array = []
+	for u in group:
+		if (u as Unit).is_enemy():
+			packs_in.append(u.id)
+		elif (u as Unit).is_player():
+			mechs_in.append(u.id)
+	packs_in.sort()
+	mechs_in.sort()
+	return absi(hash([seed_value, field.phase, packs_in, mechs_in]))
+
+
 func _build_skirmish(group: Array) -> Skirmish:
-	var sk := Skirmish.new(rng.randi(), columns)
+	var sk := Skirmish.new(fight_seed(group), columns)
 	sk.terrain = ground_terrain(group)
 	sk.ground = map.ground_id(ground_hex(group))
 	sk.foe_factory = foe_factory()   # a summoning action calls up content
+	# A dealt layout places its pack (the long wall brief, section 6): a fight holds one pack, a
+	# catch's included.
+	var enemies := group.filter(func(x: Unit) -> bool: return x.is_enemy() and field.units.has(x))
+	if enemies.size() == 1 and not (enemies[0] as Unit).layout.is_empty():
+		sk.layout = (enemies[0] as Unit).layout.duplicate()
 	for u in group:
 		if not field.units.has(u):
 			continue
 		if u.is_player() and not u.is_static():
+			# The shield is the fight's (the long wall brief 3.6): full as every fight opens, as
+			# the heat opens at zero; hull is the battle's.
+			u.shield = u.shield_max
 			sk.add_mech(u)
 		elif u.is_enemy():
 			sk.add_foes(db.foes_for(u), u)
@@ -1085,6 +1282,7 @@ func _check_outcome() -> bool:
 	elif field.mechs().is_empty():
 		outcome = Outcome.WRECKED
 	elif boss != null and not field.units.has(boss):
+		claim_caches()   # the last turn's fetch is banked with the win
 		outcome = Outcome.VICTORY
 	if outcome != Outcome.NONE:
 		for u in field.mechs():

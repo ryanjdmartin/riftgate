@@ -5,7 +5,7 @@ extends Control
 ## row): the draft, the hangar between battles (the game's first, trimmed: the squad, each
 ## machine's hardpoints and module slots fitted from the stores, no economy), the battle's track
 ## between its fights, the rewards when the boss falls, and the run's end. The fights are the
-## skirmish screen's, without its withdrawal. Built in code, 720 wide like the other screens; the
+## skirmish screen's. Built in code, 720 wide like the other screens; the
 ## run saves after every change and resumes where it stood, a fight under way included.
 
 signal back_requested   # LEAVE, or BACK at the run's end: the host goes back; the run stays saved
@@ -456,7 +456,7 @@ func _between_fights() -> void:
 	_content.add_child(_section("THE BATTLE"))
 	_content.add_child(_track(run.fight))
 	_content.add_child(_section("THE SQUAD"))
-	_content.add_child(_hint("Damage carries from fight to fight; each won fight gives back a field recharge of shield. Nothing else mends until the boss falls."))
+	_content.add_child(_hint("Damage carries from fight to fight; every fight opens with the shields full. Nothing else mends until the boss falls."))
 	for u in run.units:
 		_content.add_child(_squad_row(u))
 	var kind := str(enc["kind"])
@@ -530,21 +530,23 @@ func _track(done: int) -> Control:
 	return box
 
 
-## Whom an encounter fields, in words.
+## Whom an encounter fields, in words: its unit as the fight deals it (QuickRun.encounter_unit:
+## one pack, as on the map) and the foes that stand.
 func _fielded(enc: Dictionary) -> String:
 	var domain := _domain_name(str(enc["domain"]))
-	var n := run.formation_foes(str(enc["domain"])).size()
-	var escort := ContentDB.escort_at(run.tier())
+	var n := run.encounter_foes(enc).size()
+	var foes := "%d FOE%s" % [n, "" if n == 1 else "S"]
 	match str(enc["kind"]):
 		"elite":
-			return "%s LEADS %s'S FORMATION  ·  %d FOES" % [_foe_name(str(enc.get("foe", ""))), domain, n + 1]
+			var u := run.encounter_unit(enc)
+			return "%s LEADS ITS PACK  ·  %s" % [_foe_name(u.foe_id) if u != null else domain, foes]
 		"boss":
-			return "%s WITH %s'S FORMATION  ·  %d FOES" % [_foe_name(str(enc.get("foe", ""))), domain, n + 1 + escort]
+			return "%s %s  ·  %s" % [_foe_name(str(enc.get("foe", ""))), "AND ITS ESCORT" if n > 1 else "ALONE", foes]
 		"final":
-			return "%s'S FINAL: %s WITH ITS FORMATION  ·  %d FOES" % [domain, _foe_name(str(enc.get("foe", ""))), n + 1 + escort]
+			return "%s'S FINAL: %s AND ITS WILDLIFE  ·  %s" % [domain, _foe_name(str(enc.get("foe", ""))), foes]
 		"finale":
-			return "THE PARTY'S LINE  ·  %d FOES" % (Array(enc.get("line", [])).size() + escort)
-	return "%s'S FORMATION  ·  %d FOES" % [domain, n]
+			return "THE PARTY'S LINE  ·  %s" % foes
+	return "%s'S FORMATION  ·  %s" % [domain, foes]
 
 
 # ---------------------------------------------------------------- the rewards

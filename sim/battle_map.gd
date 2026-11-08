@@ -22,7 +22,7 @@ const WALL_LOOKS := ["crags", "mesas", "towers", "cliffs"]
 const ROAD_GAP_CHANCE := 0.18   # a laid road is missing this share of its slabs: nobody paves between attacks
 
 var width: int = 7
-var height: int = 20              # the game's field (Battle.DEFAULT_HEIGHT): the rift, seventeen rows of ground, two of gate and wall
+var height: int = 20              # the rows from the rift's to the last wall row: a battle's is the ramp's (Ramp.depth_at, the long wall brief 3.1)
 var terrain: Dictionary = {}  # Vector2i (axial) -> Terrain
 var gate: Vector2i            # centre of the gate structure
 var rift: Vector2i            # centre of the rift structure

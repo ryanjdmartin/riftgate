@@ -119,12 +119,15 @@ func test_sparrowhawk_loadout_matches_design() -> void:
 
 func test_packs_unpack_by_foe_type() -> void:
 	var db := _db()
-	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "marsh", 2, 6, "revenant")
+	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "marsh", 2, 3, "revenant")
 	var foes := db.foes_for(ghouls)
-	assert_eq(foes.size(), 6, "six ghouls from strength six")
+	assert_eq(foes.size(), 3, "three ghouls from strength three")
 	for f in foes:
 		assert_eq(f.display_name, "Revenant", "all the same type")
 		assert_eq(f.pack_id, 7, "foe remembers its pack")
+	# A pack unpacks whole: content is validated to fit its fight's slots (no reinforcement inside a
+	# fight, 6 November), so the engine never trims one.
+	assert_eq(db.foes_for(Unit.pack(10, "horde", Vector2i.ZERO, "marsh", 2, 6, "revenant")).size(), 6, "six from strength six")
 	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "marsh", 2, 2, "ghost")
 	var backs := db.foes_for(necros)
 	assert_eq(backs.size(), 2, "two necromancers")
@@ -196,7 +199,7 @@ func test_the_compositions_go_by_tier() -> void:
 		var tiers: Array = c.get("tiers", [1])
 		c["tiers"] = tiers.filter(func(t) -> bool: return int(t) != 2)
 	db.factions[fid]["compositions"] = comps.filter(func(c) -> bool: return not (c["tiers"] as Array).is_empty())
-	assert_eq(db.spawn_table(fid, 2), db.spawn_table(fid, 1), "a tier with none takes the highest under it")
+	assert_true(db.spawn_table(fid, 2).is_empty(), "a tier with none has none: nothing stands in from the tier below (8 November), which is why every domain writes every size at every tier")
 	# The validator.
 	var hero := ""
 	for id in db.foes.keys():
@@ -209,12 +212,14 @@ func test_the_compositions_go_by_tier() -> void:
 			elite = str(id)
 			break
 	var bad: Array = db.factions[fid]["compositions"]
-	bad.append({"id": "twice", "size": "patrol", "tiers": [1], "members": [{"foe": "goblin", "strength": 2}]})
-	bad.append({"id": "twice", "size": "horde", "tiers": [9], "members": [{"foe": "nobody", "strength": 0}]})
-	bad.append({"id": "with_a_hero", "size": "formation", "tiers": [1], "members": [{"foe": hero, "strength": 1}]})
-	bad.append({"id": "an_elite_astray", "size": "formation", "tiers": [1], "members": [{"foe": elite, "strength": 1}]})
-	bad.append({"id": "no_elite", "size": "elite", "tiers": [1], "members": [{"foe": "goblin", "strength": 3}]})
-	bad.append({"id": "nobody", "size": "patrol", "tiers": [1], "members": []})
+	var empty := [null, null, null, null]
+	bad.append({"id": "twice", "size": "patrol", "tiers": [1], "front": ["goblin", "goblin", null, null], "back": empty})
+	bad.append({"id": "twice", "size": "horde", "tiers": [9], "front": ["nobody", null, null, null], "back": empty})
+	bad.append({"id": "with_a_hero", "size": "formation", "tiers": [1], "front": [hero, null, null, null], "back": empty})
+	bad.append({"id": "an_elite_astray", "size": "formation", "tiers": [1], "front": [elite, null, null, null], "back": empty})
+	bad.append({"id": "no_elite", "size": "elite", "tiers": [1], "front": ["goblin", "goblin", "goblin", null], "back": empty})
+	bad.append({"id": "nobody", "size": "patrol", "tiers": [1], "front": empty, "back": empty})
+	bad.append({"id": "old_shape", "size": "patrol", "tiers": [1], "front": ["goblin", null, null, null], "back": empty, "members": [{"foe": "goblin", "strength": 1}]})
 	var errs := db.validate()
 	var mine: Array = errs.filter(func(e) -> bool: return e.begins_with("faction %s" % fid))
 	assert_true(mine.any(func(e) -> bool: return e.contains("id comes twice")), "a repeated id is reported")
@@ -223,12 +228,13 @@ func test_the_compositions_go_by_tier() -> void:
 	assert_true(mine.any(func(e) -> bool: return e.contains("unknown foe")), "an unknown foe")
 	assert_true(mine.any(func(e) -> bool: return e.contains("hero %s is never in a composition" % hero)), "a hero")
 	assert_true(mine.any(func(e) -> bool: return e.contains("%s is an elite and stands only in an elite composition" % elite)), "an elite astray")
-	assert_true(mine.any(func(e) -> bool: return e.contains("first member is its elite")), "an elite composition with no elite")
-	assert_true(mine.any(func(e) -> bool: return e.contains("one at least")), "no members")
+	assert_true(mine.any(func(e) -> bool: return e.contains("led by its elite")), "an elite composition with no elite")
+	assert_true(mine.any(func(e) -> bool: return e.contains("name nobody")), "an empty grid")
+	assert_true(mine.any(func(e) -> bool: return e.contains("members and layout are gone")), "the old shape refused")
 	db.factions[fid]["spawn"] = {"1": [{"foe": "goblin", "strength": 1}]}
 	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("spawn is gone")), "the old spawn lists are refused")
 	db.factions[fid].erase("spawn")
-	db.factions[fid]["compositions"] = [{"id": "only_patrols", "size": "patrol", "tiers": [2], "members": [{"foe": "goblin", "strength": 2}]}]
+	db.factions[fid]["compositions"] = [{"id": "only_patrols", "size": "patrol", "tiers": [2], "front": ["goblin", "goblin", null, null], "back": [null, null, null, null]}]
 	errs = db.validate()
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("needs a tier-one formation")), "a domain without a tier-one formation is reported")
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("needs a tier-one patrol")), "and without a tier-one patrol")
@@ -306,7 +312,7 @@ func test_a_massive_foe_may_stand_in_a_composition() -> void:
 	big["id"] = "massive_rank_and_file"
 	big["name"] = "Massive Rank and File"
 	db.foes["massive_rank_and_file"] = big
-	db.factions[fid]["compositions"].append({"id": "giants", "size": "patrol", "tiers": [1], "members": [{"foe": "massive_rank_and_file", "strength": 2}]})
+	db.factions[fid]["compositions"].append({"id": "giants", "size": "patrol", "tiers": [1], "front": ["massive_rank_and_file", "massive_rank_and_file", null, null], "back": [null, null, null, null]})
 	assert_true(db.validate().is_empty(), "a massive foe in a composition validates: %s" % str(db.validate()))
 	assert_true(db.spawn_table(fid, 1).any(func(e) -> bool: return str(e[0]) == "massive_rank_and_file"), "and the derived list carries it")
 	var foes := db.foes_for(Unit.pack(5, "giants", Vector2i.ZERO, fid, 1, 2, "massive_rank_and_file"))
@@ -1005,6 +1011,160 @@ func test_chassis_cooling_is_read_and_never_negative() -> void:
 		if e.begins_with("chassis frozen") and e.contains("cooling"):
 			hit = true
 	assert_true(hit, "negative cooling is refused")
+
+
+## The field recharge is gone and the shield regen is a slot (the long wall brief 3.6): the
+## validator refuses recharge_field, takes shield_regen from 0 to 9 and nothing else, and a
+## chassis that names none reads 0; the codex shows the stat only where it is not zero.
+func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_true(db.validate().is_empty(), "content validates")
+	for id in db.chassis.keys():
+		assert_false(db.chassis[id].has("recharge_field"), "%s names no field recharge" % id)
+		assert_eq(db.make_mech(id).shield_regen, 0, "%s regains nothing a round (no chassis sets it yet)" % id)
+	var base: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var cases := {"old": ["recharge_field", 4, true], "regen": ["shield_regen", 2, false], "top": ["shield_regen", 9, false],
+		"over": ["shield_regen", 10, true], "under": ["shield_regen", -1, true], "half": ["shield_regen", 1.5, true]}
+	for tag in cases.keys():
+		var c := base.duplicate(true)
+		c[cases[tag][0]] = cases[tag][1]
+		db.chassis["probe_" + tag] = c
+	var refused := {}
+	for e in db.validate():
+		for tag in cases.keys():
+			if e.begins_with("chassis probe_%s:" % tag):
+				refused[tag] = true
+	for tag in cases.keys():
+		assert_eq(refused.has(tag), bool(cases[tag][2]), "%s %s: %s" % [cases[tag][0], str(cases[tag][1]), "refused" if cases[tag][2] else "taken"])
+	var u := db.make_mech("probe_regen")
+	assert_eq(u.shield_regen, 2, "the regen read from content")
+	var shown := false
+	for item in db.codex_for_unit(u)["stat_items"]:
+		shown = shown or str(item[0]) == "shield regen"
+	assert_true(shown, "the codex shows a regen that is not zero")
+	var plain_items: Array = db.codex_for_unit(db.make_mech("sparrowhawk"))["stat_items"]
+	assert_false(plain_items.any(func(item) -> bool: return str(item[0]) == "shield regen"), "and none where it is zero")
+	assert_false(str(db.codex_for_unit(db.make_mech("sparrowhawk"))["stats"]).contains("PHASE"), "the stats line names no field recharge")
+
+
+## A composition's fields of the long wall brief (section 6), on synthetic compositions: squad 1
+## to 4; lead a member, an elite composition's its elite; layout four cells a rank, each null, a
+## member's id or a list of them, a massive member in a front cell with the cell behind it null,
+## and no member named in more cells than its strength.
+## A composition's ramp gate (Ryan, 7 November: variants placed "in the tier-ramp curve"): [lo, hi],
+## the Convergences it is dealt at, both held; the lookups deal only those whose gate holds the ramp
+## asked (none asked, all); where a domain's compositions of a size at a tier carry gates, together
+## they hold every Convergence the tier is fought at, its first to the top; a battle deals by its own.
+func test_a_compositions_ramp_gate_deals_it_and_its_tier_is_covered() -> void:
+	assert_eq([ContentDB.first_ramp_of(1), ContentDB.first_ramp_of(2), ContentDB.first_ramp_of(3)], [0, Campaign.TIER_EVERY, 2 * Campaign.TIER_EVERY], "a tier is first fought at its Convergence")
+	var db := _fresh()
+	var formations: Array = db.factions["meadow"]["compositions"]
+	# Meadow's tier-one formations made two variants: the low one to C5, the high one from C6.
+	var kept: Array = formations.filter(func(c) -> bool: return not (str(c.get("size", "")) == "formation" and ContentDB.composition_tiers(c).has(1)))
+	var low := {"id": "gate_low", "size": "formation", "tiers": [1], "ramp": [0, 5], "front": ["goblin", "goblin", null, null], "back": [null, null, null, null]}
+	var high := {"id": "gate_high", "size": "formation", "tiers": [1], "ramp": [6, Ramp.TOP], "front": ["goblin", "goblin", "goblin", null], "back": [null, null, null, null]}
+	kept.append(low)
+	kept.append(high)
+	db.factions["meadow"]["compositions"] = kept
+	assert_true(db.validate().filter(func(e) -> bool: return str(e).contains("ramp")).is_empty(), "two gates holding 0 to %d between them: sound" % Ramp.TOP)
+	assert_eq(db.compositions("meadow", 1, "formation", 3).map(func(c) -> String: return str(c["id"])), ["gate_low"], "at C3, the low variant alone")
+	assert_eq(db.compositions("meadow", 1, "formation", 9).map(func(c) -> String: return str(c["id"])), ["gate_high"], "at C9, the high one alone")
+	assert_eq(db.compositions("meadow", 1, "formation").size(), 2, "no ramp asked: both")
+	assert_eq(db.compositions("meadow", 1, "formation", 9)[0]["ramp"], [6, Ramp.TOP], "the dealt entry carries its gate")
+	var b := Battle.new(3)
+	b.db = db
+	b.ramp = 9
+	b.setup([], "meadow")
+	for sq in b.field.packs():
+		if sq.composition_size == "formation":
+			assert_eq(sq.composition, "gate_high", "a battle at C9 deals the variant its gate holds")
+	for w in b.field.cycle:
+		if str(w["size"]) == "formation":
+			assert_eq(str(w["id"]), "gate_high", "and the rift sends no other")
+	# A gap in the tier's Convergences is refused, and so is a gate of the wrong shape.
+	high["ramp"] = [7, Ramp.TOP]
+	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("no formation at tier 1 is dealt at Convergence 6")), "C6 held by none: refused")
+	high["ramp"] = [9, 6]
+	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("gate_high: ramp is [lo, hi]")), "a gate the wrong way round")
+	high["ramp"] = [6, Ramp.TOP + 1]
+	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("gate_high: ramp is [lo, hi]")), "a gate past the top")
+	high["ramp"] = [6, Ramp.TOP]
+	# A tier fought from C4 needs its gates from C4 only; an escort's group is its boss's.
+	var court := {"id": "gate_court", "size": "escort", "boss": "bourgeon", "tiers": [2], "ramp": [Campaign.TIER_EVERY, Ramp.TOP], "front": ["warg", null, null, null], "back": [null, null, null, null]}
+	kept = (db.factions["meadow"]["compositions"] as Array).filter(func(c) -> bool: return not (str(c.get("boss", "")) == "bourgeon" and ContentDB.composition_tiers(c).has(2)))
+	kept.append(court)
+	db.factions["meadow"]["compositions"] = kept
+	assert_true(db.validate().filter(func(e) -> bool: return str(e).contains("ramp")).is_empty(), "tier two's escort gated from its first Convergence: sound")
+	assert_eq(str(db.escort_composition("meadow", 2, "bourgeon", Campaign.TIER_EVERY).get("id", "")), "gate_court", "dealt at it")
+	assert_true(db.escort_composition("meadow", 2, "bourgeon", Campaign.TIER_EVERY - 1).get("boss", "") != "bourgeon", "and never under it")
+	var s := HarnessSetup.defaults(_fresh())
+	s.battle_tier = 3
+	s.ramp = 0
+	assert_eq(s.battle_ramp(), ContentDB.first_ramp_of(3), "the harness raises a battle's Convergence to its tier's first")
+	# A tier with none of a size has none: nothing stands in from the tier below (8 November).
+	var bare := _fresh()
+	bare.factions["meadow"]["compositions"] = (bare.factions["meadow"]["compositions"] as Array).filter(func(c) -> bool: return not (str(c.get("size", "")) == "formation" and ContentDB.composition_tiers(c).has(3)))
+	assert_true(bare.compositions("meadow", 3, "formation").is_empty(), "no tier-three formation: none dealt, not tier two's")
+	assert_false(bare.compositions("meadow", 2, "formation").is_empty(), "tier two's stay its own")
+
+
+func test_the_validator_holds_a_compositions_grid_squad_and_lead() -> void:
+	var db := _fresh()
+	var none := [null, null, null, null]
+	var base := {"id": "probe", "size": "formation", "tiers": [1], "front": ["treant", "goblin", "goblin", "goblin"], "back": [null, "mandragora", null, null]}
+	var good := base.duplicate(true)
+	good["squad"] = 2
+	good["lead"] = "mandragora"
+	var cases := {
+		"good": [good, ""],
+		"squad5": [_with(base, "squad", 5), "squad is 1, 2, 3 or 4"],
+		"squad0": [_with(base, "squad", 0), "squad is 1, 2, 3 or 4"],
+		"leadwolf": [_with(base, "lead", "wolf"), "lead 'wolf' stands nowhere in its grid"],
+		"short": [_with(base, "front", ["goblin", null, null]), "front is four cells"],
+		"odd": [_with(base, "front", [42, null, null, null]), "front cell 0 is null or a foe id"],
+		"stranger": [_with(base, "front", ["nobody", null, null, null]), "names unknown foe nobody"],
+		"deep": [_with(_with(base, "front", none), "back", ["treant", null, null, null]), "names the massive treant"],
+		"crowded": [_with(_with(base, "front", ["treant", null, null, null]), "back", ["mandragora", null, null, null]), "the back cell behind it is null"],
+		"backfront": [_with(base, "front", ["mandragora", null, null, null]), "stands in the back rank"],
+		"frontback": [_with(base, "back", ["goblin", null, null, null]), "stands in the front rank"],
+		"orphan": [_with(base, "front", ["warding_orb", "goblin", "goblin", "goblin"]), "is a part and stands only beside its core"],
+	}
+	for tag in cases.keys():
+		var c: Dictionary = (cases[tag][0] as Dictionary).duplicate(true)
+		c["id"] = "probe_" + tag
+		db.factions["meadow"]["compositions"].append(c)
+	var errors := db.validate()
+	for tag in cases.keys():
+		var mine: Array = errors.filter(func(e: String) -> bool: return e.contains("composition probe_%s:" % tag))
+		if str(cases[tag][1]).is_empty():
+			assert_true(mine.is_empty(), "%s validates clean: %s" % [tag, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(str(cases[tag][1]))), "%s refused: %s" % [tag, str(mine)])
+	var elite := {"id": "probe_elite", "size": "elite", "tiers": [1], "front": ["goblin_nob", "goblin", "goblin", null], "back": none, "lead": "goblin"}
+	db.factions["meadow"]["compositions"].append(elite)
+	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("composition probe_elite:") and e.contains("led by its elite")), "an elite composition is led by its elite")
+	# A core's parts take their cells: the Astromancer as content writes it, and short of an orb.
+	var fid_of := db.faction_of_foe("star_magician")
+	var astro: Dictionary = {}
+	for c in db.factions[fid_of]["compositions"]:
+		if str(c.get("id", "")) == "the_astromancer":
+			astro = c
+	assert_false(astro.is_empty(), "the Astromancer is in content")
+	var members := db.grid_members(astro)
+	assert_eq(str(members[0][0]), "star_magician", "its members read off the grid lead with the core, the orbs left to parts_for")
+	assert_true(members.all(func(m) -> bool: return not db.is_part(str(m[0]))), "no orb among them")
+	var short := astro.duplicate(true)
+	short["id"] = "probe_short_astro"
+	short["front"] = [null, null, null, null]   # its Warding Orb, the core's one part, gone
+	db.factions[fid_of]["compositions"].append(short)
+	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("probe_short_astro:") and e.contains("a core's parts each take a cell")), "an orb missing is refused")
+
+
+static func _with(c: Dictionary, key: String, value) -> Dictionary:
+	var out := c.duplicate(true)
+	out[key] = value
+	return out
 
 
 func test_support_keywords_ride_on_shields_and_vents_only() -> void:

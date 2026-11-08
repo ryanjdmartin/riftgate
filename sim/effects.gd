@@ -58,7 +58,7 @@ const SUPPORTED_EFFECTS := {
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
 	"on_heat_gain": ["add_shield", "stack_status"],
-	"out_of_combat": ["add_shield"],
+	"out_of_combat": [],   # fires at the end of a turn out of a fight, with no effect since the long wall brief 3.6 (the shield is full as every fight opens)
 	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
@@ -484,7 +484,7 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
 const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up"]
 ## Stats a static effect may change: the mech's base numbers by these names.
-const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
+const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
 const BONUS_EFFECTS := ["add_stat", "multiply_stat"]
 
@@ -1489,7 +1489,8 @@ static func hull_damaged(u) -> Dictionary:
 
 ## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
 ## roll, on_shield_gain and on_heat_gain as the gauges move, on_hull_damage on a hit,
-## out_of_combat at the end of a phase spent out of a fight): every passive on that trigger
+## out_of_combat at the end of a phase spent out of a fight, which nothing may ride since the
+## long wall brief 3.6): every passive on that trigger
 ## fires. `amount` is what the event carried (the heat carried for shield_per_heat, the
 ## shield or heat gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
 ## for the caller to apply where the gauges live, and the names of the statuses granted

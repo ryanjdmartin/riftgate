@@ -40,7 +40,7 @@ func test_formation_fills_front_then_back() -> void:
 	sk.add_mech(_mech("A", Die.single(Face.attack(10))))
 	sk.add_foes([_ghoul(), _ghoul(), _archer(), _ghoul(), _ghoul()])
 	sk.begin()
-	assert_eq(sk.field_foes().size(), 4, "four on the field: ranks hold, so the fourth ghoul waits")
+	assert_eq(sk.field_foes().size(), 4, "four on the field: ranks hold, so the fourth ghoul has no slot")
 	assert_eq(sk.front[0].display_name, "revenant", "front 0 is a ghoul")
 	assert_eq(sk.front[2].display_name, "revenant", "front 2 is a ghoul")
 	var archer_col := -1
@@ -51,8 +51,30 @@ func test_formation_fills_front_then_back() -> void:
 	for col in range(3):
 		if col != archer_col:
 			assert_eq(sk.back[col], null, "no ghoul in the back row")
-	assert_eq(sk.reinforcements.size(), 1, "the spare ghoul waits in reinforcements")
+	assert_true(sk.reinforcements.is_empty(), "and the spare ghoul is never dealt: nothing waits (no reinforcement inside a fight, 6 November)")
 
+
+## What a full formation cannot stand was never in the fight (no reinforcement inside a fight, 6
+## November): every fight the game deals is one pack that fits, so only a fight built by hand
+## reaches this; the foe left out came with nothing, so it is no kill.
+func test_a_foe_the_slots_cannot_hold_is_never_in_the_fight() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10))))
+	var sq := Unit.pack(1, "horde", Vector2i.ZERO, "marsh", 2, 6, "revenant")
+	var list: Array = []
+	for i in range(6):
+		var f := _ghoul()
+		f.content_id = "revenant"
+		list.append(f)
+	sk.add_foes(list, sq)
+	sk.begin()
+	assert_eq(sk.field_foes().size(), 4, "the front rank holds four")
+	assert_true(sk.reinforcements.is_empty(), "the other two never stand, and nothing waits")
+	assert_true(sk.log.any(func(l) -> bool: return str(l).contains("2 more could not stand")), "the log says so")
+	for f in sk.field_foes():
+		f.hp = 0
+	sk._clear_dead()   # the death check: a kill is what it clears (Skirmish.is_kill, 8 November)
+	assert_eq(sk.kills_by_type(sq), {"revenant": 4}, "four stood and fell: the two left out are no kills")
 
 func test_line_reach_needs_exposed_column() -> void:
 	var sk := Skirmish.new(1)
@@ -395,8 +417,9 @@ func test_a_swarm_blow_grows_with_its_kin_on_the_field_and_falls_as_they_die() -
 	assert_eq(sk.front[0].kin, 2, "the kin count drops at once")
 	assert_eq(sk.front[0].damage(), 15, "and so does every claw, before the blows land")
 	sk.end_round()
-	assert_eq(sk.front[1].kin, 3, "a reinforcement stepped in: four again")
-	assert_eq(sk.front[1].damage(), 20, "and the swarm is back to 20")
+	assert_eq(sk.front[1], null, "nothing steps into its slot (no reinforcement inside a fight)")
+	assert_eq(sk.front[0].kin, 2, "so the swarm stays three")
+	assert_eq(sk.front[0].damage(), 15, "and its claw 15")
 
 
 func test_heat_overflow_damages_hull() -> void:
@@ -679,7 +702,10 @@ func test_defeat_when_all_hulls_zero() -> void:
 	assert_eq(out, Skirmish.Outcome.DEFEAT, "defeat")
 
 
-func test_horde_keeps_coming() -> void:
+## No reinforcement inside a fight (Ryan, 6 November: "Cut"): a pack is what its slots hold, so
+## the foes past them are never dealt (the log says so), and a kill's slot stays empty at the
+## round's end: nothing steps into it.
+func test_nothing_steps_into_a_kills_slot() -> void:
 	var sk := Skirmish.new(1, 3)   # three wide: the rank rules, not the default width
 	sk.add_mech(_mech("A", Die.single(Face.attack(90, L))))
 	var foes: Array = []
@@ -687,34 +713,41 @@ func test_horde_keeps_coming() -> void:
 		foes.append(_ghoul(30))
 	sk.add_foes(foes)
 	sk.begin()
-	# Ranks hold: front foes fill the three front slots and the rest wait as reinforcements.
 	assert_eq(sk.field_foes().size(), 3, "three on the field")
-	assert_eq(sk.reinforcements.size(), 5, "five in reserve")
+	assert_true(sk.reinforcements.is_empty(), "the five past the slots never dealt")
+	assert_true(sk.log.any(func(l: String) -> bool: return l.contains("could not stand")), "the log says so")
 	sk.start_round()
 	sk.assign(0, sk.front[1])
 	sk.end_round()
-	assert_eq(sk.field_foes().size(), 3, "the gap is refilled at the reinforcement phase")
-	assert_eq(sk.reinforcements.size(), 4, "four left in reserve")
-	assert_true(sk.front[1] != null, "a reinforcement stepped into the gap")
+	assert_eq(sk.field_foes().size(), 2, "the gap stays a gap")
+	assert_eq(sk.front[1], null, "nothing stepped into it")
 
 
-func test_withdraw_window() -> void:
+## There is no withdrawal (the long wall brief 3.5; Ryan, 6 November: "what if there's just NO
+## withdrawal?"): refused at every state of a fight, and a refusal changes nothing.
+func test_no_fight_has_a_withdrawal() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(90, 10)])
+	assert_false(sk.can_withdraw(), "none before the fight begins")
 	sk.begin()
-	assert_true(sk.can_withdraw(), "open even before the first roll: the price is the same either way")
+	assert_false(sk.can_withdraw(), "none before the first roll")
 	sk.start_round()
-	assert_true(sk.can_withdraw(), "open at the start of round one")
+	assert_false(sk.can_withdraw(), "none at the start of round one")
 	sk.assign(0, sk.front[0])
-	assert_true(sk.can_withdraw(), "still open after spending: the price is the enemy turn, not the timing")
+	assert_false(sk.can_withdraw(), "none after spending")
 	sk.end_round()
-	assert_true(sk.can_withdraw(), "between rounds")
+	assert_false(sk.can_withdraw(), "none between rounds")
 	sk.start_round()
-	assert_true(sk.withdraw(), "withdrew in round two")
-	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "outcome withdrawn")
-	assert_eq(m.hull, 80, "and the enemy struck on the way out, both rounds: no leapfrogging out unscathed")
+	var hull := m.hull
+	assert_false(sk.withdraw(), "refused in round two")
+	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
+	assert_eq(sk.state, Skirmish.State.ASSIGN, "still the player's turn")
+	assert_eq(m.hull, hull, "and nothing struck")
+	win_fight(sk)
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "it ends by the foes' fall")
+	assert_false(sk.can_withdraw(), "and none once it is over")
 
 func test_rerolls_are_limited_and_work_after_attacking() -> void:
 	var sk := Skirmish.new(1)
@@ -725,9 +758,9 @@ func test_rerolls_are_limited_and_work_after_attacking() -> void:
 	sk.start_round()
 	assert_true(sk.assign(0, sk.front[0]), "A attacks first")
 	assert_true(sk.reroll([1]), "then B rerolls: attack-then-reroll is allowed")
-	assert_true(sk.reroll([1]), "second reroll")
-	assert_true(sk.reroll([1]), "third reroll")
-	assert_false(sk.reroll([1]), "fourth refused")
+	for n in range(Skirmish.REROLLS_PER_ROUND - 1):
+		assert_true(sk.reroll([1]), "reroll %d of the round's" % (n + 2))
+	assert_false(sk.reroll([1]), "one past the round's refused")
 
 
 ## A reroll of nothing spends nothing (the audit's tenth bug, 8 November): with no unspent die
@@ -841,8 +874,7 @@ func test_injury_destroys_and_persists_until_repaired() -> void:
 	assert_eq(sk.apply_injury(sk.mechs[0]), "", "a second finds nothing left to break")
 	assert_eq(m.damaged_component_count(), 1, "still one component")
 	sk.end_round()
-	sk.start_round()
-	sk.withdraw()
+	win_fight(sk)
 	assert_eq(d.faces[0].kind, Face.Kind.BLANK, "the skirmish ending does not repair it")
 	# A second skirmish with the same unit starts with the damage in place.
 	var again := Skirmish.new(4)
@@ -1043,7 +1075,7 @@ func test_four_columns_fill_and_reach() -> void:
 	var sweep := Face.attack(20, L, K.CLEAVE)
 	sweep.cleave = 10
 	sk.add_mech(_mech("A", Die.single(sweep)))
-	# Ranks hold: six front ghouls fill four front slots and two wait; four archers take the back.
+	# Ranks hold: six front ghouls fill four front slots and two are never dealt; four archers take the back.
 	var foes: Array = []
 	for i in range(6):
 		foes.append(_ghoul(50))
@@ -1054,7 +1086,7 @@ func test_four_columns_fill_and_reach() -> void:
 	assert_eq(sk.columns, 4, "four wide")
 	assert_eq(sk.front.size(), 4, "four front slots")
 	assert_eq(sk.field_foes().size(), 8, "eight on the field")
-	assert_eq(sk.reinforcements.size(), 2, "two wait in reserve")
+	assert_true(sk.reinforcements.is_empty(), "the two past the slots never dealt")
 	sk.start_round()
 	assert_eq(sk.targets_for(0).size(), 4, "every front foe is a line target")
 	assert_true(sk.assign(0, sk.front[3]), "cleave the right edge")
@@ -1108,8 +1140,44 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 	sk.start_round()
 	assert_eq(m.shield, 0, "no trickle between rounds")
 	m.shield = 38
-	assert_eq(m.recharge_shield(100), 2, "the field rate is capped at max")
+	assert_eq(m.recharge_shield(100), 2, "a shield gain is capped at max")
 	assert_eq(m.shield, 40, "at max")
+
+
+## The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling
+## returning, as a build-strategy buffer"): a machine regains its shield_regen at each round's
+## start after the cooling, up to its maximum, one log line for all. A sealed machine's regen
+## runs: the Armadillo's seal stops its own cooling, and nothing says it stops the regen.
+func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(1, L)), 10, 100)
+	m.shield_regen = 2
+	m.shield = 5
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 1, "heat": 0}]})
+	var plain := _mech("B", Die.single(Face.attack(1, L)), 10, 100)
+	plain.shield = 5
+	sk.add_mech(m)
+	sk.add_mech(plain)
+	sk.add_foes([_ghoul(500, 0)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(m.shield, 7, "two back at the round's start")
+	assert_eq(plain.shield, 5, "none where the stat is nothing")
+	assert_true("\n".join(sk.log).contains("shield regen: A +2"), "one log line says so")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 9, "two more")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 10, "capped at the maximum")
+	Effects.stack(m, Effects.sealed_status(1, 0), Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(Effects.is_sealed(m), "sealed")
+	m.shield = 4
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.is_sealed(m), "still sealed as the round opens")
+	assert_eq(m.shield, 6, "the regen runs while sealed")
 
 
 func test_a_shield_absorbs_its_number_and_the_excess_passes_to_the_hull() -> void:
@@ -2007,7 +2075,7 @@ func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
 	assert_eq(Effects.stacks_of(n, "burning_mech"), 3, "stacks add up")
 	assert_eq(int(Effects.tick_preview(n, true)["heat"]), 3 * bt, "its heat a stack, at the turn's end")
 	assert_eq(int(Effects.tick_preview(n)["heat"]), 0, "and never at the round's")
-	s2.withdraw()
+	win_fight(s2)
 	assert_eq(Effects.stacks_of(n, "burning_mech"), 0, "skirmish-scoped statuses end with the skirmish")
 
 
@@ -2166,7 +2234,7 @@ func test_rapid_rolls_again_for_free_and_switches_itself_off_for_the_round() -> 
 	assert_true(sk.assign(0, sk.front[0]), "fire the rapid gun")
 	assert_eq(sk.front[0].hp, 190, "ten landed")
 	assert_false(sk.mechs[0].assigned, "the mech may act again")
-	assert_eq(sk.rerolls_left, 3, "the reroll was free")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "the reroll was free")
 	assert_eq(sk.mechs[0].face_index, 1, "the die rolled to the other entry, never the same one")
 	assert_true(sk.mechs[0].die.faces[0].has(K.RAPID), "the component itself is untouched")
 	sk.mechs[0].face_index = 0
@@ -2466,9 +2534,10 @@ func test_an_overheat_that_wrecks_the_last_machine_ends_the_fight_before_the_ene
 	assert_eq(sk.state, Skirmish.State.DONE, "the fight is over")
 
 
-func test_withdrawing_burns_the_overheat_first() -> void:
-	# Ryan, 11 October: leaving ends the turn, so running hot and then withdrawing is no way
-	# round an overheat.
+## The overheat burns as the player's turn ends, before the enemy strikes (Ryan, 11 October;
+## a withdrawal shared the turn's end until the long wall brief took it away): running hot is
+## paid in hull on the machine's own turn, and the enemy's blow lands after on the shield.
+func test_the_overheat_burns_before_the_enemy_strikes() -> void:
 	var sk := Skirmish.new(1)
 	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 100)
 	hot.heat_max = 30
@@ -2477,10 +2546,10 @@ func test_withdrawing_burns_the_overheat_first() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, sk.front[0])
-	assert_true(sk.withdraw(), "withdrawn")
-	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "the team got out")
-	assert_eq(hot.hull, 80, "but the twenty over the cap burnt on the way")
-	assert_eq(hot.shield, 30, "and the parting blow still landed on the shield")
+	sk.end_round()
+	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
+	assert_eq(hot.hull, 80, "the twenty over the cap burnt as the turn ended")
+	assert_eq(hot.shield, 30, "and the enemy's blow landed on the shield after")
 
 
 ## A stun lock costs its stuns (Ryan, 2 November): a foe with Numbed N takes N stuns to strip and
@@ -4154,7 +4223,8 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	assert_eq(a.unit.hull + a.unit.shield, hull, "and struck nobody the round they came")
 	for f in sk.field_foes():
 		assert_eq(f.pack_id, 7, "in the summoner's pack")
-	# No empty slot of its rank: the summon waits in the pool.
+	# No empty slot of its rank: it never summons (Ryan, 7 November: "a summoner should not summon
+	# if there's no space"), and made to anyway, nothing comes: there is no pool.
 	var s3 := Skirmish.new(5, 1)
 	s3.add_mech(_mech("C", Die.single(Face.attack(10, L)), 40, 100))
 	var n3 := _archer(30, 10)
@@ -4164,9 +4234,28 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	s3.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
 	s3.begin()
 	s3.start_round()
+	assert_false(s3.legal_actions(n3).has(n3.actions[0]), "the front full: the summon is no move it may announce")
 	n3.action = n3.actions[0]
 	s3._foe_acts(n3, s3.mechs[0])
-	assert_eq(s3.reinforcements.size(), 1, "the front full: it waits in the pool")
+	assert_true(s3.reinforcements.is_empty(), "made to anyway, nothing waits")
+	assert_eq(s3.field_foes().size(), 2, "and nothing came")
+	# Room for one, a call for two: it summons what fits (Ryan, 8 November: "Summoner should be
+	# able to summon whatever they're able to"), never shut by a slot left just short.
+	var s4 := Skirmish.new(7, 2)
+	s4.add_mech(_mech("D", Die.single(Face.attack(10, L)), 40, 100))
+	var n4 := _archer(30, 10)
+	n4.actions = [_special("buff", "summon", {"foe": "revenant", "count": 2})]
+	n4.action = n4.actions[0]
+	s4.add_foes([_ghoul(300, 1), n4])
+	s4.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
+	s4.begin()
+	s4.start_round()
+	assert_eq(s4._free_slots_for(Foe.make("revenant", 30, 10)), 1, "one front slot open")
+	assert_true(s4.legal_actions(n4).has(n4.actions[0]), "room for one of two: the call may be announced")
+	s4.assign(0, s4.front[0]) if false else null
+	s4._foe_acts(n4, s4.mechs[0])
+	assert_eq(s4.field_foes().size(), 3, "and one stands, as many as fit")
+	assert_true("\n".join(s4.log).contains("1 stepping up"), "the log says how many")
 	var s2 := Skirmish.new(6, 1)
 	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
 	var n2 := _archer(30, 10)
@@ -4695,25 +4784,22 @@ func test_an_overshield_passes_the_maximum_and_fades_at_the_rounds_end() -> void
 	assert_eq(taker.shield, 20, "untouched by the blows this round, the 40 past the maximum faded at the round's end")
 	assert_true("\n".join(sk.log).contains("40 shield past its maximum fades"), "and the log says so")
 	# The excess fades as the fight ends too (the mechanics audit, 25 October), so a fight won
-	# mid-turn or left by a withdrawal never carries it onto the map and into the next fight.
-	for how in ["win", "withdraw"]:
-		var sk3 := Skirmish.new(1)
-		var giver3 := _mech("Giver", Die.single(ov), 40, 100)
-		var taker3 := _mech("Taker", Die.single(Face.attack(200, L)), 20, 100)
-		sk3.add_mech(giver3)
-		sk3.add_mech(taker3)
-		var last := _ghoul(10, 1)
-		sk3.add_foes([last])
-		sk3.begin()
-		sk3.start_round()
-		assert_true(sk3.assign(0, sk3.mechs[1]), "%s: shield the ally past its maximum" % how)
-		assert_eq(taker3.shield, 60, "%s: past its maximum" % how)
-		if how == "win":
-			assert_true(sk3.assign(1, last), "the last foe falls")
-			assert_eq(sk3.outcome, Skirmish.Outcome.VICTORY, "won mid-turn")
-		else:
-			assert_true(sk3.withdraw(), "the team pulls out")
-		assert_true(taker3.shield <= taker3.shield_max, "%s: the excess goes with the fight" % how)
+	# mid-turn never carries it onto the map and into the next fight (a fight lost leaves no
+	# machine to carry it, and there is no withdrawal since the long wall brief).
+	var sk3 := Skirmish.new(1)
+	var giver3 := _mech("Giver", Die.single(ov), 40, 100)
+	var taker3 := _mech("Taker", Die.single(Face.attack(200, L)), 20, 100)
+	sk3.add_mech(giver3)
+	sk3.add_mech(taker3)
+	var last := _ghoul(10, 1)
+	sk3.add_foes([last])
+	sk3.begin()
+	sk3.start_round()
+	assert_true(sk3.assign(0, sk3.mechs[1]), "shield the ally past its maximum")
+	assert_eq(taker3.shield, 60, "past its maximum")
+	assert_true(sk3.assign(1, last), "the last foe falls")
+	assert_eq(sk3.outcome, Skirmish.Outcome.VICTORY, "won mid-turn")
+	assert_true(taker3.shield <= taker3.shield_max, "the excess goes with the fight")
 	# Without the keyword the same shield is capped, as it always was.
 	var plain := _mech("Plain", Die.single(Face.shield(30)), 40, 100)
 	var sk2 := Skirmish.new(1)
@@ -5641,7 +5727,8 @@ func test_a_splitting_foe_steps_its_halves_up_in_its_place_at_once() -> void:
 	assert_true(sk.front[1].intent_on(m), "and shows its intent")
 	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(sk.front[2], sk))), sk)
 	assert_false(trip.fresh, "a save keeps whether it has had its round")
-	# A one-column fight: the second half has no room and waits in the pool.
+	# A one-column fight: the second half has no room and never forms (no reinforcement inside a
+	# fight, 6 November).
 	var sk1 := Skirmish.new(2, 1)
 	sk1.add_mech(_mech("C", Die.single(Face.attack(200, L)), 40, 100))
 	var one := _ghoul(30, 10)
@@ -5652,8 +5739,8 @@ func test_a_splitting_foe_steps_its_halves_up_in_its_place_at_once() -> void:
 	sk1.start_round()
 	sk1.assign(0, one)
 	assert_eq(sk1.front[0].display_name, "gel_small", "one half in its place")
-	assert_eq(sk1.reinforcements.size(), 1, "the other waits in the pool")
-	assert_true("\n".join(sk1.log).contains("1 gel_small step up in its place, 1 into the pool"), "the log says where each went")
+	assert_true(sk1.reinforcements.is_empty(), "the other never forms: nothing waits")
+	assert_true("\n".join(sk1.log).contains("1 gel_small step up in its place, 1 with no room"), "the log says so")
 	var fresh_save := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(sk1.front[0], sk1))), sk1)
 	assert_true(fresh_save.fresh, "a save keeps a half that has had its round")
 	var sk2 := Skirmish.new(2, 1)
@@ -8625,8 +8712,9 @@ func test_a_weapon_laid_on_an_empty_slot_waits_for_the_arrival_and_lands_in_laid
 	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
 	var first := _ghoul(10, 10)
 	var arrival := _ghoul(100, 10)
-	sk.add_foes([first, arrival])
+	sk.add_foes([first])
 	sk.begin()
+	sk.reinforcements.append(arrival)
 	sk.start_round()
 	assert_eq(sk.slot_targets(sk.mechs[1], sk.mechs[1].face()), [], "a Direct gun reaches no slot behind a standing front")
 	assert_eq(sk.slot_targets(sk.mechs[0], sk.mechs[0].face()), [Vector2i(1, 0)], "an Indirect one the empty back slot")
@@ -8643,7 +8731,8 @@ func test_a_weapon_laid_on_an_empty_slot_waits_for_the_arrival_and_lands_in_laid
 	assert_eq([int(waiting[0]["damage"]), int(waiting[1]["damage"])], [10, 10], "each its number as laid")
 	assert_eq(arrival.hp, 100, "nothing lands with no foe there")
 	sk.end_round()
-	assert_eq(sk.foe_at(0, 0), arrival, "the reinforcement steps in")
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
+	assert_eq(sk.foe_at(0, 0), arrival, "the arrival steps in")
 	assert_eq(arrival.hp, 70, "and takes the shock mine's 10, then the next one doubled")
 	assert_false(Effects.has(arrival, "shocked"), "the second shot spent the shock")
 	assert_true(sk.mines.is_empty(), "nothing waits any more")
@@ -8671,6 +8760,7 @@ func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and
 	assert_true(sk.assign(1, sk.front[1]), "the middle slot emptied")
 	assert_true(sk.assign(0, Vector2i(0, 1)), "a Spread stun mine laid there")
 	sk.end_round()
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(sk.foe_at(0, 1), arrival, "the arrival in the middle")
 	assert_eq([left.hp, arrival.hp, right.hp], [195, 90, 195], "the mine hits it and both its neighbours for its Spread 5 (area by shape, numbered)")
 	sk.start_round()
@@ -8700,6 +8790,7 @@ func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and
 	assert_true(s2.slot_targets(s2.mechs[0], s2.mechs[0].face()).has(Vector2i(1, 0)), "Direct reaches the back slot whose front is empty")
 	assert_true(s2.assign(0, Vector2i(0, 0)) and s2.assign(1, Vector2i(1, 0)), "a mine in each slot")
 	s2.end_round()
+	s2._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(s2.foe_at(0, 0), big, "the massive arrival fills the column")
 	assert_eq(big.hp, 470, "and takes both slots' shots")
 	assert_true(s2.mines.is_empty(), "both spent")
@@ -8808,8 +8899,9 @@ func test_the_drone_leaves_the_killing_shot_and_is_rapid_on_a_foe_already_expose
 	var marked := _ghoul(30, 0)
 	var boss := _ghoul(300, 0)
 	var arrival := _ghoul(100, 0)
-	sk.add_foes([marked, boss, arrival])
+	sk.add_foes([marked, boss])
 	sk.begin()
+	sk.reinforcements.append(arrival)
 	sk.start_round()
 	sk.mechs[0].face_index = 0
 	assert_eq(sk.slot_targets(sk.mechs[0], drone), [], "the drone takes a foe, never a slot")
@@ -8822,6 +8914,7 @@ func test_the_drone_leaves_the_killing_shot_and_is_rapid_on_a_foe_already_expose
 	assert_eq(int(left[0]["damage"]), 30, "the shot as fired")
 	assert_true(Array(left[0]["keywords"]).has(K.BURN), "its keywords with it")
 	sk.end_round()
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(arrival.hp, 70, "the arrival takes it")
 	assert_true(Effects.has(arrival, "burning"), "napalm")
 	sk.start_round()
@@ -8857,14 +8950,16 @@ func test_a_chain_mine_arcs_its_number_as_laid_to_the_shocked_foes_as_it_lands()
 	var weak := _ghoul(10, 0)
 	var other := _ghoul(300, 0)
 	var arrival := _ghoul(30, 0)
-	sk.add_foes([weak, other, arrival])
+	sk.add_foes([weak, other])
 	sk.begin()
+	sk.reinforcements.append(arrival)
 	sk.start_round()
 	assert_true(sk.assign(1, weak), "a slot emptied")
 	assert_true(sk.assign(0, Vector2i(0, 0)), "a Chain mine laid")
 	var heat_laid := sk.mechs[0].heat
 	_shock_on(other)
 	sk.end_round()
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq(arrival.hp, 26, "the arrival takes the shot")
 	assert_eq(other.hp, 298, "and the Shocked foe takes Chain 2 as laid, plain, as the mine lands")
 	assert_true(Effects.has(other, "shocked"), "its charge stands")
@@ -8969,6 +9064,7 @@ func test_the_muster_fills_on_every_roll_and_a_kill_and_buys_a_charged_form() ->
 	assert_true(sk.assign(1, weak), "the ally's kill")
 	assert_eq(Effects.stacks_of(m, "muster"), 0, "another machine's kill fills nothing")
 	sk.end_round()
+	sk._first_deployment(true)   # the late foe stepped in by hand: nothing steps in on its own since the cut (6 November)
 	sk.start_round()
 	assert_eq(Effects.stacks_of(m, "muster"), 2, "the next round's two rolls")
 	sk.mechs[0].face_index = 1
@@ -9537,6 +9633,7 @@ func test_a_mine_carries_its_area_numbers_as_laid() -> void:
 	var shot: Dictionary = sk.mines[Vector2i(0, 1)][0]
 	assert_eq([int(shot["damage"]), int(shot["row"]), int(shot["column"])], [5, 3, 0], "its number and its row's, the firer's point on each; no column")
 	sk.end_round()
+	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
 	assert_eq([left.hp, arrival.hp, right.hp], [197, 95, 197], "the arrival takes the shot, its neighbours the row's 3")
 	# A shot laid before the numbers (an old save) lands half of itself on the foes past the arrival.
 	var s2 := Skirmish.new(1, 3)
@@ -9785,24 +9882,27 @@ func test_a_foe_its_tick_kills_falls_at_once_in_the_enemys_turn() -> void:
 
 
 ## A fight lost in the enemy's turn ends there (the audit's second bug): the foes after the blow
-## that wrecks the last machine neither tick nor act, no kill is counted and nobody steps in.
+## that wrecks the last machine neither tick nor act, and no kill is counted.
 func test_a_fight_lost_in_the_enemys_turn_ends_there() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 10))
 	var killer := _ghoul(100, 50)
 	var burner := _ghoul(2, 1)
-	var waiting := _ghoul(100, 1)
-	sk.add_foes([killer, burner, waiting])
+	var behind := _archer(100, 1)
+	sk.add_foes([killer, burner, behind])
 	sk.begin()
 	sk.start_round()
 	assert_eq([sk.front[0], sk.front[1]], [killer, burner], "the killer acts first")
+	assert_true(sk.back.has(behind), "the third stands behind them")
 	killer.target = sk.mechs[0]
 	burner.target = sk.mechs[0]
+	behind.target = sk.mechs[0]
 	Effects.stack(burner, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.stack(behind, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
 	assert_eq(sk.end_round(), Skirmish.Outcome.DEFEAT, "the team falls")
 	assert_true(burner.alive(), "the foe after it never ticked")
+	assert_eq(behind.hp, 100, "nor the one behind")
 	assert_eq(sk.team_kills, 0, "so no burn death counts as a kill")
-	assert_true(sk.reinforcements.has(waiting), "and nobody stepped in")
 
 
 func test_a_foe_its_burn_kills_at_its_action_never_strikes_and_keeps_its_intent() -> void:
