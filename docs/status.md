@@ -292,11 +292,14 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.480 (the page's version 492,
-  published 8 November from `ccr-1eaf0060-jrpw04` at `15a5f2b`: its nine rows of Ryan's answers
-  to the audit, merged row by row onto v0.479, which carries the long wall's and the music
-  session's rows ahead of their branches; no conflict). Main's file carries its own rows on
-  v0.459, so main's next merge takes BASE at `2fcf8ff`, and this branch's at `15a5f2b`. The live page's round
+  `docs/design-bible.html` after every change. The live page is v0.483 (the page's version 495,
+  published 8 November from `ccr-1eaf0060-jrpw04` at `34ae947`: the Ability row, the purge row
+  retired by source, the countdown, the Sweep's spots, the reload, the kept rolls and two section
+  12 questions, merged row by row onto v0.482, which carries the long wall's and the music
+  session's rows ahead of their branches; one row moved by hand: the long wall's "Two rerolls a
+  round" took this branch's sentence on the kept rolls, where its "Three rerolls" row had none).
+  Main's file carries its own rows on v0.459, so main's next merge takes BASE at `2fcf8ff`, and
+  this branch's at `34ae947`. The live page's round
   preview and Lammergeier rows still name reinforcements, true on main and cut by the long wall:
   that branch's to settle as it lands. The live page may carry rows ahead of main's code while
   their branches have not landed. Before
@@ -310,13 +313,14 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 212
-  (8 November, from `ccr-1eaf0060-jrpw04` at `15a5f2b`: only `content/foes.json` and
-  `content/vocabulary.json`, the live copies of version 211 with this branch's text on them, the
-  Goblin Nob's own rage in place of its Bellow and Enraged's codex and holes; the page sent back
-  as 209 had it, since a publish must carry the page; `edits` empty, `designs` the two ideas
-  marked briefed). Version 211 (7 November) carried the Skua's passive and the Sweep and Strikes
-  codex text the same way, 210 this branch's first cut of it, 209 the long wall branch's page and
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 214
+  (8 November, from `ccr-1eaf0060-jrpw04` at `34ae947`: only `content/vocabulary.json` and
+  `content/components.json`, the live copies of version 213 with this branch's text on them, the
+  Ability term, the seal, the Ore Plate, Golden, Guarded and Hot Streak as abilities, the Purge's
+  codex and the Null Field Emitter's; the page sent back as 213 had it, the long wall session's
+  of that day, since a publish must carry the page and a saved copy would undo theirs; `edits`
+  empty, `designs` the two ideas marked briefed). Version 212 carried the Nob's own rage, 211 the
+  Skua's passive and the Sweep and Strikes codex text, 209 the long wall branch's page and
   content files. Its lit parts show as the phone's renderer shows
   them, the light eased by the power 1/2.2 as the game eases it (`MechRig.light`); every file
   the page reads is fetched with a stamp on the URL. Its database: Ryan's saved edits
