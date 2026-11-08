@@ -292,14 +292,15 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.483 (the page's version 495,
-  published 8 November from `ccr-1eaf0060-jrpw04` at `34ae947`: the Ability row, the purge row
-  retired by source, the countdown, the Sweep's spots, the reload, the kept rolls and two section
-  12 questions, merged row by row onto v0.482, which carries the long wall's and the music
-  session's rows ahead of their branches; one row moved by hand: the long wall's "Two rerolls a
-  round" took this branch's sentence on the kept rolls, where its "Three rerolls" row had none).
+  `docs/design-bible.html` after every change. The live page is v0.484 (the page's version 496,
+  published 8 November from `ccr-1eaf0060-jrpw04` at `7e61be0`: the Horn to be replaced and the
+  Ammit's Tap an open question in Ryan's words, onto v0.483 from `34ae947`: the Ability row, the
+  purge row retired by source, the countdown, the Sweep's spots, the reload and the kept rolls,
+  merged row by row onto v0.482, which carries the long wall's and the music session's rows ahead
+  of their branches; one row moved by hand: the long wall's "Two rerolls a round" took this
+  branch's sentence on the kept rolls, where its "Three rerolls" row had none).
   Main's file carries its own rows on v0.459, so main's next merge takes BASE at `2fcf8ff`, and
-  this branch's at `34ae947`. The live page's round
+  this branch's at `7e61be0`. The live page's round
   preview and Lammergeier rows still name reinforcements, true on main and cut by the long wall:
   that branch's to settle as it lands. The live page may carry rows ahead of main's code while
   their branches have not landed. Before
