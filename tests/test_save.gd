@@ -127,7 +127,7 @@ func test_a_battle_in_plan_round_trips() -> void:
 
 
 ## The mechanics audit (25 October): a battle read back from its save dresses every pack Rift
-## Pressure spawns from the content (its ring, move and hunt), a resumed fight calls content up
+## Pressure spawns from the content (its move, and its hunt as its composition says), a resumed fight calls content up
 ## as a fresh one does (a fallen Gel splits), and a final's commanders come back with it.
 func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -> void:
 	var b := Battle.new(4)
@@ -141,6 +141,8 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 	var profiles: Dictionary = b.db.pack_profiles()
 	assert_eq(back.field.cycle.size(), b.field.cycle.size(), "the cycle rides in the save")
 	assert_eq(back.field.patrol_cycle.size(), b.field.patrol_cycle.size(), "and the tears' cycle")
+	assert_eq(back.field.cycle.map(func(c) -> String: return str(c.get("hunts", ""))), b.field.cycle.map(func(c) -> String: return str(c.get("hunts", ""))), "each composition's hunt with it")
+	assert_true(back.field.cycle.any(func(c) -> bool: return c.has("hunts")), "a hunting composition among them, to read")
 	for i in range(back.field.cycle.size()):
 		var before := back.field.packs().size()
 		assert_true(back.field.tick_pressure(back.field.rift_pressure_max), "the rift spawns")
@@ -150,9 +152,14 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 		var pace := 99
 		for m in spawned.member_list():
 			pace = mini(pace, int(profiles.get(str(m[0]), {}).get("movespeed", Unit.PACK_MOVE)))
-		assert_eq(spawned.zone, int(p.get("zone", 1)), "%s: its ring, its lead's" % spawned.foe_id)
 		assert_eq(spawned.movespeed, pace, "%s: its move, the slowest" % spawned.foe_id)
-		assert_eq(spawned.behaviour, str(p.get("behaviour", "push")), "%s: its walk, its lead's" % spawned.foe_id)
+		var comp: Dictionary = {}
+		for c in back.field.cycle:
+			if str(c["id"]) == spawned.composition:
+				comp = c
+		assert_eq(spawned.behaviour, "hunt" if comp.has("hunts") else "push", "%s: its walk, its composition's" % spawned.composition)
+		if comp.has("hunts"):
+			assert_eq(spawned.hunts, str(comp["hunts"]), "%s: by its caveat" % spawned.composition)
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = null
 	for p in b.field.packs():

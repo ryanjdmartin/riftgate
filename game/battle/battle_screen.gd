@@ -727,7 +727,7 @@ func pack_lines(u: Unit) -> Array:
 			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
 		parts.append_array(["·", "Move", str(u.movespeed)])
 		if u.behaviour == "hunt":
-			parts.append_array(["·", "Ring", str(u.zone)])   # a hunter's catch; no other pack's ring means anything since nothing joins (the long wall brief 7.2)
+			parts.append_array(["·", "Ring", str(ContentDB.HUNTER_RING)])   # a hunter's catch, the pounce every hunter shares; a pusher has none (8 November)
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
 		var lines: Array = [_title(u.display_name), _squad_line(u), _words(parts), _behaviour_line(u)]

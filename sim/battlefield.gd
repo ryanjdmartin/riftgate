@@ -29,9 +29,10 @@ class Walk:
 	var catches: int = 0             # a hunter whose walk ends with what it comes for inside its ring: that machine's id
 	var prey: int = 0                # what a hunter comes for this turn, by id: its prey, or the machine it takes when its prey is sealed off (catch_of)
 
-## What the map knows of each foe type (ContentDB.pack_profiles): the pack's engagement
-## zone, whether it hunts, its move. Battle fills it from content, and a pack is dressed
-## from it when it is made or spawns, so the defaults are the content's and never an id's.
+## What the map knows of each foe type (ContentDB.pack_profiles): its move, its wings, its
+## shown name. Battle fills it from content, and a pack is dressed from it when it is made or
+## spawns, so the defaults are the content's and never an id's. Whether a pack hunts is its
+## composition's (pack_of), and a hunter's ring is the pounce alone (ContentDB.HUNTER_RING).
 var foe_profiles: Dictionary = {}
 
 var map: BattleMap
@@ -107,20 +108,16 @@ func add_unit(u: Unit) -> Unit:
 	return u
 
 
-## Give a pack its foe type's map profile. `foe` names the entry when the unit's own
-## foe_id does not (the boss, which unpacks by its faction).
+## Give a pack its foe types' map profile: its move and its wings. `foe` names the entry when
+## the unit's own foe_id does not (the boss, which unpacks by its faction). No foe says whether
+## its pack hunts (its composition does, pack_of) or how far it reaches: a hunter catches at the
+## pounce, one number (ContentDB.HUNTER_RING; Ryan, 8 November, the rings purged after a goblin
+## warband caught from three hexes through the Mandragoras' old back-rank ring).
 func dress_pack(sq: Unit, foe: String = "") -> Unit:
 	var p: Dictionary = foe_profiles.get(foe if not foe.is_empty() else sq.foe_id, {})
-	# Its ring is its lead's alone: the one reader is a hunter's catch, and the hunt is the lead's,
-	# so the reach is the hunter's own pounce (the long wall proposal: "its pounce of two kept as
-	# its own reach"). A member's ring once widened it, from the days rings joined fights, and a
-	# goblin leading Mandragoras caught from three (Ryan, 8 November: "caught from 3 spaces away").
-	sq.zone = int(p.get("zone", sq.zone))
 	if p.has("movespeed"):
 		sq.movespeed = int(p["movespeed"])   # the boss's too: its patrol step is content
 	if not sq.is_boss:
-		sq.behaviour = str(p.get("behaviour", sq.behaviour))
-		sq.hunts = str(p.get("hunts", sq.hunts))
 		# A winged foe's pack crosses water and crags as a flyer does and stands there (Ryan,
 		# 28 October, the movement proposal's lever 2); the boss is never winged.
 		var winged := bool(p.get("winged", false))
@@ -415,7 +412,7 @@ func reaches(sq: Unit, prey: Unit) -> bool:
 	var queue: Array[Vector2i] = [sq.pos]
 	while not queue.is_empty():
 		var h: Vector2i = queue.pop_front()
-		if _distance_from(sq, h, prey) <= sq.zone and _landable(sq, h, {}):
+		if _distance_from(sq, h, prey) <= ContentDB.HUNTER_RING and _landable(sq, h, {}):
 			return true
 		for n in Hex.neighbors(h):
 			if not seen.has(n) and _walkable(sq, n, {}):
@@ -432,7 +429,7 @@ func _stand_in(sq: Unit, at: Vector2i, prey: Unit) -> Unit:
 	var best: Unit = null
 	var best_key := Vector2i.ZERO
 	for m in mechs():
-		if m == prey or Effects.never_hunted(m) or _distance_from(sq, at, m) > sq.zone:
+		if m == prey or Effects.never_hunted(m) or _distance_from(sq, at, m) > ContentDB.HUNTER_RING:
 			continue
 		var key := Vector2i(unit_distance(m, prey), _taste(sq, m, at))
 		if best == null or key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
@@ -617,12 +614,12 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var goal := sq.pos
 	if prey != null:
 		w.prey = prey.id
-		var best_key := Vector2i(maxi(_distance_from(sq, sq.pos, prey) - sq.zone, 0), 0)
+		var best_key := Vector2i(maxi(_distance_from(sq, sq.pos, prey) - ContentDB.HUNTER_RING, 0), 0)
 		for h in dist.keys():
 			var hx: Vector2i = h
 			if not _landable(sq, hx, blocked):
 				continue
-			var key := Vector2i(maxi(_distance_from(sq, hx, prey) - sq.zone, 0), int(dist[hx]))
+			var key := Vector2i(maxi(_distance_from(sq, hx, prey) - ContentDB.HUNTER_RING, 0), int(dist[hx]))
 			if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
 				best_key = key
 				goal = hx
@@ -671,7 +668,7 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	w.path = walked
 	w.end = walked[walked.size() - 1] if not walked.is_empty() else sq.pos
 	w.strikes = prey == null and on_apron(sq, w.end)
-	if prey != null and _distance_from(sq, w.end, prey) <= sq.zone:
+	if prey != null and _distance_from(sq, w.end, prey) <= ContentDB.HUNTER_RING:
 		w.catches = prey.id
 	return w
 
@@ -796,10 +793,10 @@ func _direction_index(from: Vector2i, to: Vector2i) -> int:
 	return 0
 
 
-## Whether `u` stands inside the pack's ring: a hunter's catch (the one reader since the long
-## wall brief 3.4).
+## Whether `u` stands inside a hunter's ring: within its pounce of it (ContentDB.HUNTER_RING, one
+## number for every hunter since the rings were purged, 8 November), a hunter's catch the one reader.
 static func in_ring(sq: Unit, u: Unit) -> bool:
-	return unit_distance(sq, u) <= sq.zone
+	return unit_distance(sq, u) <= ContentDB.HUNTER_RING
 
 
 ## The shortest hex distance between any hex of `a` and any hex of `b`.
@@ -886,9 +883,10 @@ func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
 ## A composition dealt as a pack, wherever it is fought (the field's emerge, the quick campaign's
 ## encounters, the harness's fight; Ryan, 7 November: one code tree for both modes): its members as
 ## content writes them (the ramp scales no pack), its lead first (the long wall brief, section 6:
-## the member whose sprite and walk the pack wears; the first member when it names none), its
-## threat rating, its grid (eight cells, the fight's layout) and the pack counted to what the grid
-## holds. Unplaced, unnamed and undressed: the caller does those. Null for no members.
+## the member whose sprite the pack wears; the first member when it names none), whether it hunts
+## and whom (its `hunts`, the composition's to say and never its foes': Ryan, 8 November; else it
+## pushes), its threat rating, its grid (eight cells, the fight's layout) and the pack counted to
+## what the grid holds. Unplaced, unnamed and undressed: the caller does those. Null for no members.
 static func pack_of(c: Dictionary, fallback_faction: String = "") -> Unit:
 	var members: Array = []
 	for m in c.get("members", []):
@@ -905,6 +903,9 @@ static func pack_of(c: Dictionary, fallback_faction: String = "") -> Unit:
 	sq.set_members(members)
 	sq.composition = str(c.get("id", ""))
 	sq.composition_size = str(c.get("size", ""))
+	if not str(c.get("hunts", "")).is_empty():
+		sq.behaviour = "hunt"
+		sq.hunts = str(c["hunts"])
 	sq.squad = ContentDB.squad_of(c)   # the threat rating the map shows (the long wall brief 3.7)
 	sq.layout = Array(c.get("layout", [])).duplicate()
 	recount_by_layout(sq)

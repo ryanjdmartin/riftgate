@@ -1007,9 +1007,9 @@ func test_the_wanderers_are_drawn_by_the_roll_among_those_not_yet_sent() -> void
 		assert_true(pool.has(str(db.next_elite(fid, t, sent, 0.0)["id"])), "another wanderer instead")
 
 
-## The elites' shapes in content (3 November): a hunter walks or flies at a ring of two at
-## least, a pack of clones is led by its elite at a strength above one, and every elite
-## composition's members exist. Read by structure, never by id.
+## The elites' shapes in content (3 November): hunters among them (the composition says so since
+## 8 November, every hunter pouncing at two), a pack of clones led by its elite at a strength above
+## one, and every elite composition's members exist. Read by structure, never by id.
 func test_the_elites_compositions_hold_their_shapes() -> void:
 	var db := ContentDB.load_default()
 	var clones := 0
@@ -1020,10 +1020,9 @@ func test_the_elites_compositions_hold_their_shapes() -> void:
 			assert_true(db.is_elite(lead), "%s is led by its elite" % str(c["id"]))
 			if int(c["members"][0][1]) > 1:
 				clones += 1
-			var entry: Dictionary = db.foes[lead]
-			if str(entry.get("behaviour", "push")) == "hunt":
+			if c.has("hunts"):
 				hunters += 1
-				assert_true(int(entry.get("zone", 1)) >= 2, "%s, a hunter, pounces at a ring of two at least" % lead)
+				assert_true(ContentDB.HUNT_CAVEATS.has(str(c["hunts"])), "%s hunts by a caveat the engine has" % str(c["id"]))
 	assert_true(clones >= 1, "an elite pack of clones is in content (the Wild Hunt's shape)")
 	assert_true(hunters >= 3, "hunters among the elites")
 	for fid in db.factions.keys():

@@ -362,12 +362,12 @@ func test_a_hunter_walks_until_its_prey_is_in_its_ring_and_catches_it() -> void:
 	var f := _field(7, 14)
 	var sq := f.add_unit(Unit.pack(1, "brutes", _o(3, 3), "peak", 2))
 	sq.behaviour = "hunt"
-	sq.zone = 1
-	var prey := f.add_unit(Unit.mech(2, "A", _o(3, 7), 0))
+	var prey := f.add_unit(Unit.mech(2, "A", _o(3, 8), 0))
 	f.add_unit(Unit.mech(3, "B", _o(3, 11), 0))
+	assert_eq(Battlefield.unit_distance(sq, prey), 5, "five away")
 	var w: Battlefield.Walk = f.plan_walks()[1]
 	assert_eq(w.prey, prey.id, "locked on the nearer machine")
-	assert_eq(w.catches, 0, "four away at move two: not this turn")
+	assert_eq(w.catches, 0, "five away at move two and a pounce of two: not this turn")
 	assert_true(f.forced_fights().is_empty(), "nothing forced yet")
 	f.enemy_turn()
 	w = f.plan_walks()[1]
@@ -413,17 +413,14 @@ func test_one_hunter_a_machine_and_the_rest_push() -> void:
 
 
 ## One pack is one fight (the long wall brief 3.4; Ryan, 5 November, of the rings: "it just
-## adds so much complexity for not a lot of gain"): a pack whose ring covers the target, or that
-## stands beside it, stays out of its fight either way round.
-func test_no_pack_joins_a_fight_whatever_its_ring() -> void:
+## adds so much complexity for not a lot of gain"; the rings purged, 8 November): a pack two
+## behind the target, or beside it, stays out of its fight either way round.
+func test_no_pack_joins_a_fight_however_near() -> void:
 	var f := _field(7, 14)
 	var front := f.add_unit(Unit.pack(1, "ghouls", _o(3, 6), "marsh", 2))
-	front.zone = 1
 	var back := f.add_unit(Unit.pack(2, "casters", _o(3, 4), "marsh", 2))
-	back.zone = 3
-	var beside := f.add_unit(Unit.pack(3, "brutes", _o(4, 6), "marsh", 2))
-	beside.zone = 4
-	assert_eq(Battlefield.unit_distance(front, back), 2, "two apart, inside the back's ring")
+	f.add_unit(Unit.pack(3, "brutes", _o(4, 6), "marsh", 2))
+	assert_eq(Battlefield.unit_distance(front, back), 2, "two apart")
 	assert_true((f.attack_roster([front])["joins"] as Array).is_empty(), "nothing joins a fight at the front")
 	assert_true((f.attack_roster([back])["joins"] as Array).is_empty(), "nor one at the back")
 	assert_eq(f.attack_roster([front])["targets"], [front], "the fight is the one pack")
@@ -490,46 +487,51 @@ func test_nobody_stands_on_structures() -> void:
 
 
 func test_a_pack_is_dressed_from_its_foe_type() -> void:
-	# Zone, hunting and move come from the content, never from a hardcoded id.
+	# Move and wings come from the content, never from a hardcoded id; whether a pack hunts is its
+	# composition's and no foe carries a ring (8 November), so a foe's profile says neither.
 	var f := _field(7, 14)
-	f.foe_profiles = {"caster": {"zone": 3, "behaviour": "hunt", "hunts": "slowest", "movespeed": 4},
-		"wyvern": {"zone": 2, "behaviour": "push", "hunts": "nearest", "movespeed": 1, "winged": true}}
+	f.foe_profiles = {"caster": {"movespeed": 4},
+		"wyvern": {"movespeed": 1, "winged": true}}
 	var sq := f.add_unit(f.dress_pack(Unit.pack(1, "casters", _o(3, 3), "marsh", 2, 4, "caster")))
-	assert_eq(sq.zone, 3, "zone from the profile")
-	assert_eq(sq.behaviour, "hunt", "behaviour from the profile")
-	assert_eq(sq.hunts, "slowest", "and its caveat")
+	assert_eq(sq.behaviour, "push", "a pack of no composition pushes")
 	assert_eq(sq.movespeed, 4, "move from the profile")
 	assert_false(sq.traits.has("winged"), "no wings in the profile, none on the pack")
 	var plain := f.add_unit(f.dress_pack(Unit.pack(2, "ghouls", _o(1, 3), "marsh", 2, 4, "revenant")))
-	assert_eq(plain.zone, 1, "no profile: the engine's default zone")
-	assert_eq(plain.behaviour, "push", "and it pushes")
+	assert_eq(plain.behaviour, "push", "no profile: it pushes")
 	assert_eq(plain.movespeed, 2, "and its own move")
 	var wings := f.add_unit(f.dress_pack(Unit.pack(3, "wyverns", _o(5, 3), "marsh", 2, 1, "wyvern")))
 	assert_true(wings.traits.has("winged"), "a winged foe's pack wears the word (the movement proposal's lever 2)")
 	assert_eq(BattleMap.way_of(wings.traits), "winged", "and crosses by it")
+	var said: Array = []
+	for p in ContentDB.load_default().pack_profiles().values():
+		for key in ["zone", "behaviour", "hunts"]:
+			if (p as Dictionary).has(key):
+				said.append(key)
+	assert_eq(said, [], "no foe's profile carries a ring or a hunt")
 
 
-## A pack's ring is its lead's, the hunter's own pounce, never a member's (Ryan, 8 November, of
-## a goblin warband with Mandragoras behind it: "caught from 3 spaces away"): the ring's one
-## reader is a hunter's catch, and a back-rank member's ring, from the days rings joined fights,
-## had widened it to three.
-func test_a_hunters_catch_is_its_own_ring_never_a_members() -> void:
+## A composition says whether its pack hunts, never its foes (Ryan, 8 November: "The composition
+## should say if it hunts, not the units"), and a hunter catches at the pounce, one number for every
+## hunter (the rings purged that day, after a goblin warband caught from three hexes through the
+## Mandragoras' old back-rank ring: "caught from 3 spaces away").
+func test_a_composition_says_whether_its_pack_hunts_and_it_catches_at_the_pounce() -> void:
 	var f := _field(7, 14)
-	f.foe_profiles = {"stalker": {"zone": 2, "behaviour": "hunt", "hunts": "nearest", "movespeed": 2},
-		"howler": {"zone": 3, "behaviour": "push", "hunts": "nearest", "movespeed": 2}}
-	var sq := Unit.pack(1, "stalkers", _o(3, 3), "meadow", 2)
-	sq.set_members([["stalker", 4], ["howler", 2]])
-	f.add_unit(f.dress_pack(sq))
-	assert_eq([sq.behaviour, sq.zone], ["hunt", 2], "it hunts as its lead, at its lead's ring, never the howlers' three")
+	f.foe_profiles = {"stalker": {"movespeed": 2}, "howler": {"movespeed": 2}}
+	var c := Battlefield.composition([["stalker", 4], ["howler", 2]], "meadow", "formation", "stalkers")
+	assert_eq(f.dress_pack(Battlefield.pack_of(c)).behaviour, "push", "a composition that names no hunt pushes")
+	c["hunts"] = "slowest"
+	var sq := f.dress_pack(Battlefield.pack_of(c))
+	assert_eq([sq.behaviour, sq.hunts], ["hunt", "slowest"], "one that names its caveat hunts by it")
+	sq.pos = _o(3, 3)
+	f.add_unit(sq)
 	var prey := f.add_unit(Unit.mech(2, "A", _o(3, 7), 0))
 	assert_eq(Battlefield.unit_distance(sq, prey), 4, "four away to start")
-	var w: Battlefield.Walk = f.plan_walks()[1]
-	assert_eq(Hex.distance(w.end, prey.pos), 2, "it walks until its prey stands two away, its own pounce, not three")
+	var w: Battlefield.Walk = f.plan_walks()[sq.id]
+	assert_eq(Hex.distance(w.end, prey.pos), ContentDB.HUNTER_RING, "it walks until its prey stands at the pounce, two away")
 	assert_eq(w.catches, prey.id, "and catches it there")
 	sq.pos = _o(3, 4)
 	assert_eq(Battlefield.unit_distance(sq, prey), 3, "three away")
-	assert_true(f.forced_fights().is_empty(), "is no catch, whatever stands behind the stalkers")
-	assert_eq(f.plan_walks()[1].catches, prey.id, "its walk closes the last hex and catches")
+	assert_true(f.forced_fights().is_empty(), "is no catch, whatever stands in the pack")
 
 
 ## A band of water across the field at `rows`, every column.
@@ -608,13 +610,12 @@ func test_a_winged_pack_crosses_water_and_crags_and_may_stop_there() -> void:
 	assert_false(f.can_stand(plain, _o(1, 5)), "and never on a crag")
 
 
-## A hunter at ring two, by its caveat (Ryan, 29 October: "a minimum range of 2 instead of 1
-## (wolfs pounce, etc.)").
+## A hunter by its caveat, pouncing at two as every hunter does (Ryan, 29 October: "a minimum
+## range of 2 instead of 1 (wolfs pounce, etc.)"; ContentDB.HUNTER_RING).
 func _hunter(f: Battlefield, at: Vector2i, move: int, hunts: String) -> Unit:
 	var sq := f.add_unit(Unit.pack(1, "wolves", at, "meadow", move))
 	sq.behaviour = "hunt"
 	sq.hunts = hunts
-	sq.zone = 2
 	return sq
 
 
@@ -741,13 +742,13 @@ func test_a_hunter_whose_prey_stands_in_water_closes_on_the_shore() -> void:
 	f.map.terrain[water] = BattleMap.Terrain.WATER
 	var sq := f.add_unit(Unit.pack(1, "brutes", _o(3, 3), "peak", 3))
 	sq.behaviour = "hunt"
-	sq.zone = 1
 	var prey := f.add_unit(Unit.mech(2, "A", water, 0))
 	prey.traits.append("walker")
 	f.enemy_turn()
 	f.enemy_turn()
 	assert_true(sq.pos != water, "never in the water")
-	assert_eq(Hex.distance(sq.pos, water), 1, "on the shore, its prey inside its ring")
+	assert_true(f.map.terrain[sq.pos] != BattleMap.Terrain.WATER, "on land")
+	assert_true(Hex.distance(sq.pos, water) <= ContentDB.HUNTER_RING, "its prey inside its pounce")
 	assert_eq(f.forced_fights().size(), 1, "and it has caught it")
 
 
@@ -802,7 +803,7 @@ func test_a_rift_pressure_spawn_takes_its_foes_shown_name() -> void:
 	# The mechanics audit's 30: a spawn was named by its content id ("zombie_knight pack"), where
 	# the setup names its packs by the foe's shown name.
 	var f := _field()
-	f.foe_profiles = {"bone_hound": {"zone": 1, "behaviour": "push", "hunts": "nearest", "movespeed": 2, "name": "Bone Hound"}}
+	f.foe_profiles = {"bone_hound": {"movespeed": 2, "name": "Bone Hound"}}
 	f.cycle = [Battlefield.composition([["bone_hound", 3]], "marsh")]
 	f.spawn_faction = "marsh"
 	assert_true(f.tick_pressure(f.rift_pressure_max), "the rift spawns")
@@ -813,7 +814,7 @@ func test_a_rift_pressure_spawn_takes_its_foes_shown_name() -> void:
 
 func test_the_boss_takes_its_move_from_content() -> void:
 	var f := _field()
-	f.foe_profiles = {"colossus": {"zone": 2, "behaviour": "push", "hunts": "nearest", "movespeed": 1}}
+	f.foe_profiles = {"colossus": {"movespeed": 1}}
 	var b := f.add_unit(f.dress_pack(Unit.boss(1, "colossus", _o(3, 2), "marsh"), "colossus"))
 	assert_eq(b.movespeed, 1, "a boss's move is dressed from its foe type too")
 	assert_true(b.is_boss, "and it stays the boss")

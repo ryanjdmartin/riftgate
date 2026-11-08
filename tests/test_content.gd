@@ -383,51 +383,79 @@ func test_a_silence_or_a_purge_rides_no_blow() -> void:
 
 
 ## A hero only commands the boss unit, which patrols a hex a turn and never hunts (Ryan, 28
-## October, of the Thief's move: "it's a boss so it doesn't need it"): the validator refuses a
-## map move or a hunt on a hero, and a hunter of the rank and file keeps both.
+## October, of the Thief's move: "it's a boss so it doesn't need it"): the validator refuses a map
+## move on a hero, and the rank and file keep theirs. A hunt it refuses on every foe (the next test).
 func test_a_hero_carries_no_map_move_or_hunt() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var hero_id := ""
-	var hunter_id := ""
+	var walker_id := ""
 	for id in db.foes.keys():
 		var e: Dictionary = db.foes[id]
 		if hero_id.is_empty() and bool(e.get("hero", false)):
 			hero_id = str(id)
-		if hunter_id.is_empty() and not bool(e.get("hero", false)) and str(e.get("behaviour", "")) == "hunt":
-			hunter_id = str(id)
+		if walker_id.is_empty() and not bool(e.get("hero", false)) and e.has("movespeed"):
+			walker_id = str(id)
 	assert_false(hero_id.is_empty(), "the content has a hero")
-	assert_false(hunter_id.is_empty(), "and a hunter")
+	assert_false(walker_id.is_empty(), "and a foe with a move of its own")
 	assert_false(db.foes[hero_id].has("movespeed"), "no hero carries a move")
 	var f: Dictionary = db.foes[hero_id].duplicate(true)
 	f["movespeed"] = 3
-	f["behaviour"] = "hunt"
-	f["hunts"] = "slowest"
 	db.foes["roamer"] = f
 	var errs := db.validate()
-	for key in ["movespeed", "behaviour", "hunts"]:
-		assert_true(errs.any(func(e) -> bool: return e.begins_with("foe roamer") and e.contains("drop " + key)), "a hero's %s is reported" % key)
-	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("a hero only")), "a hunter's are its own")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe roamer") and e.contains("drop movespeed")), "a hero's move is reported")
+	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % walker_id) and e.contains("a hero only")), "the rank and file's moves are their own")
 
 
-## A hunter pounces (Ryan, 29 October: "a minimum range of 2 instead of 1 (wolfs pounce,
-## etc.)"): the validator refuses a hunter whose ring is under two, and passes every hunter in
-## content.
-func test_a_hunters_ring_is_two_at_least() -> void:
+## The hunt is a composition's and no foe carries a ring (Ryan, 8 November: "The composition should
+## say if it hunts, not the units"; the rings purged, a hunter catching at the pounce alone): no
+## foe in content says either, the validator refuses a ring, a behaviour or a caveat on a foe, a
+## composition hunts by a caveat the engine has, an escort never hunts, and content has hunters.
+func test_the_hunt_is_a_compositions_and_no_foe_carries_a_ring() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var hunter_id := ""
+	var carried: Array = []
 	for id in db.foes.keys():
-		if str(db.foes[id].get("behaviour", "")) == "hunt":
-			hunter_id = str(id)
-			assert_true(int(db.foes[id].get("zone", 1)) >= ContentDB.HUNTER_RING, "%s rings two at least" % id)
-	assert_false(hunter_id.is_empty(), "the content has a hunter")
-	var f: Dictionary = db.foes[hunter_id].duplicate(true)
-	f["zone"] = 1
+		for key in ["zone", "behaviour", "hunts"]:
+			if db.foes[id].has(key):
+				carried.append("%s.%s" % [id, key])
+	assert_eq(carried, [], "no foe carries a ring or a hunt")
+	var hunting := 0
+	for fid in db.factions.keys():
+		for c in db.factions[fid].get("compositions", []):
+			if (c as Dictionary).has("hunts"):
+				hunting += 1
+	assert_true(hunting > 0, "content has hunting compositions")
+	var f: Dictionary = db.foes[str(db.foes.keys()[0])].duplicate(true)
+	f["zone"] = 2
+	f["behaviour"] = "hunt"
+	f["hunts"] = "nearest"
 	db.foes["creeper"] = f
+	var comps: Array = []
+	var patrol: Dictionary = {}
+	var escort: Dictionary = {}
+	for fid in db.factions.keys():
+		for c in db.factions[fid].get("compositions", []):
+			if patrol.is_empty() and str(c["size"]) == "patrol":
+				patrol = c
+				comps = db.factions[fid]["compositions"]
+			if escort.is_empty() and str(c["size"]) == "escort" and db.factions[fid]["compositions"] == comps:
+				escort = c
+	assert_false(patrol.is_empty() or escort.is_empty(), "a domain with a patrol and an escort to probe")
+	var loud := patrol.duplicate(true)
+	loud["id"] = "probe_loud"
+	loud["hunts"] = "loudest"
+	comps.append(loud)
+	var hunting_escort := escort.duplicate(true)
+	hunting_escort["id"] = "probe_hunting_escort"
+	hunting_escort["hunts"] = "nearest"
+	comps.append(hunting_escort)
 	var errs := db.validate()
-	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe creeper") and e.contains("it pounces")), "a hunter at ring one is reported")
-	assert_false(errs.any(func(e) -> bool: return e.begins_with("foe %s" % hunter_id) and e.contains("it pounces")), "the content's own pass")
+	for key in ["zone", "behaviour", "hunts"]:
+		assert_true(errs.any(func(e) -> bool: return e.begins_with("foe creeper") and e.contains(key + " is gone")), "a foe's %s is refused" % key)
+	assert_true(errs.any(func(e) -> bool: return e.contains("probe_loud") and e.contains("hunts is the caveat")), "a caveat the engine has not is refused")
+	assert_true(errs.any(func(e) -> bool: return e.contains("probe_hunting_escort") and e.contains("never hunts")), "an escort that hunts is refused")
+	assert_false(errs.any(func(e) -> bool: return e.contains("hunts is the caveat") and not e.contains("probe_loud")), "the content's own hunts pass")
 
 
 ## A foe's four buff specials (the ladder's brief, B; 28 October): a priming and a regrowth say

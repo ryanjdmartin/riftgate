@@ -88,7 +88,7 @@ var strength: int = 6        # how many foes the pack holds (a boss: its escort,
 var lineup: Array = []       # a boss unit's commanders, foe ids in order (a final's hero, the finale's line); empty for the faction's boss
 var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders' numbers and its escort follow it (ContentDB.BOSS_TIERS); an elite's too, for a wandering elite's numbers (31 October)
 ## The pack's members (the foes' fresh start, 30 October): [[foe_id, strength], ...] in content
-## order, the first the lead, whose sprite and behaviour the pack wears; `foe_id` is the lead's
+## order, the first the lead, whose sprite the pack wears; `foe_id` is the lead's
 ## and `strength` the count of every member, kept in step by set_members. Empty is the one-type
 ## pack, `foe_id` times `strength` (a test's, the harness's, a save's from before). A boss unit's
 ## members are its hand-tailored escort when one is written; empty, its escort is its `foe_id`
@@ -96,15 +96,14 @@ var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders
 var members: Array = []
 var composition: String = ""       # the composition it emerged as (content's id), "" for a one-type pack
 var composition_size: String = ""  # its size: patrol, formation, elite or escort (ContentDB.COMPOSITION_SIZES); "" for a one-type pack
-var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
+var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5), when its composition says so (`hunts`; Battlefield.pack_of)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
 var layout: Array = []           # a dealt composition's grid, eight cells (the front rank's four, then the back's), each a foe id or "" (the long wall brief, section 6; ContentDB.resolve_layout); [] for none
 var squad: int = 3               # the threat rating, the machines the pack is intended for, 1 to 4 (the long wall brief 3.7; ContentDB.squad_of)
 var goal_col: int = -1           # a pusher's wall segment, the column of the apron hex it walks to (the long wall brief 3.3, Battlefield.assign_goal); -1 for none, which walks to the nearest apron hex
 var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')
-var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight, its ring inert; the Rupture breaks it
-var zone: int = 1            # the pack's ring, its lead's (Battlefield.dress_pack): a hunter catches a prey inside it (bible section 5); no pack joins a fight by it (the long wall brief 3.4)
+var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight; the Rupture breaks it
 var attack_range: int = 1    # placeholder (the long wall brief): adjacency; a machine may be committed to a fight on a pack within this many hexes
 
 const TRIANGLE: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1)]

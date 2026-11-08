@@ -618,7 +618,7 @@ const FILTER_SPECS = {
   },
   foes: {
     noun: ["foe", "foes"], placeholder: "Name or faction",
-    text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, e.hunts, e.behaviour, foeKind(e)],
+    text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, foeKind(e)],
     groups: [
       {id: "faction", label: "Faction", of: e => [e.faction], name: factionName, order: () => [...ctx().factions.keys()]},
       {id: "kind", label: "Kind", of: e => [foeKind(e)], order: ["rank and file", "elite", "wanderer", "boss", "hero", "promoted", "part"]},
@@ -630,8 +630,8 @@ const FILTER_SPECS = {
       EDITS,
     ],
     sorts: [BY_ORDER, BY_NAME, stat("hp", "HP", e => e.hp), stat("attack", "Attack", e => e.attack), stat("armour", "Armour", e => e.armour ?? 0),
-      stat("movespeed", "Move", e => e.movespeed), stat("zone", "Zone", e => e.zone), stat("size", "Size", e => e.size ?? 1), stat("stun_resist", "Stun resist", e => e.stun_resist ?? 0)],
-    line: e => [factionName(e.faction), e.rank, `${e.hp} hp`, `attack ${e.attack}`, e.armour ? `armour ${e.armour}${e.armour_step ? ` (+${e.armour_step} a tier)` : ""}` : "", e.movespeed !== undefined ? `move ${e.movespeed}` : "", `zone ${e.zone}`],
+      stat("movespeed", "Move", e => e.movespeed), stat("size", "Size", e => e.size ?? 1), stat("stun_resist", "Stun resist", e => e.stun_resist ?? 0)],
+    line: e => [factionName(e.faction), e.rank, `${e.hp} hp`, `attack ${e.attack}`, e.armour ? `armour ${e.armour}${e.armour_step ? ` (+${e.armour_step} a tier)` : ""}` : "", e.movespeed !== undefined ? `move ${e.movespeed}` : ""],
   },
   factions: {
     noun: ["faction", "factions"], placeholder: "Name",

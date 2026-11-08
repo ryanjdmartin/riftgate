@@ -10,7 +10,12 @@ const DIR := "res://content/"
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
-const HUNTER_RING := 2              # a hunter's ring at least: it pounces (Ryan, 29 October)
+## A hunter's ring, its pounce: the one catch range, the same for every hunter (Ryan, 29 October: "a
+## minimum range of 2 instead of 1 (wolfs pounce, etc.)"). No foe or composition carries a ring of its
+## own (8 November, the rings purged with the engagement system): a catch reads this number alone.
+const HUNTER_RING := 2
+## The caveats a hunting composition may name (`hunts`): whom its pack locks.
+const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest", "fastest"]
 const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
@@ -541,15 +546,15 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	}
 
 
-## What the map needs of a foe type (bible section 5): its pack's ring (the `zone` key), its
-## behaviour and caveat, its move and its shown name. Keyed by foe id, for
-## Battlefield.foe_profiles; a boss's entry serves the boss unit. Defaults are the engine's when
-## the content says nothing.
+## What the map needs of a foe type (bible section 5): its move, its wings and its shown name.
+## Keyed by foe id, for Battlefield.foe_profiles; a boss's entry serves the boss unit. Defaults
+## are the engine's when the content says nothing. Whether a pack hunts is its composition's
+## (`hunts`, Battlefield.pack_of), never a foe's, and no foe carries a ring (HUNTER_RING).
 func pack_profiles() -> Dictionary:
 	var out: Dictionary = {}
 	for id in foes.keys():
 		var f: Dictionary = foes[id]
-		var p: Dictionary = {"zone": int(f.get("zone", 1)), "behaviour": str(f.get("behaviour", "push")), "hunts": str(f.get("hunts", "nearest"))}
+		var p: Dictionary = {}
 		p["movespeed"] = int(f.get("movespeed", Unit.PACK_MOVE))
 		p["name"] = str(f.get("name", id))
 		if bool(f.get("winged", false)):
@@ -936,7 +941,7 @@ func is_part(foe_id: String) -> bool:
 
 
 ## A faction's compositions of a size at a tier (1 to 3, the shown number), in content order,
-## each as {"id", "size", "faction", "members": [[foe_id, strength], ...] read off its grid, "layout": its eight cells, "lead"}; every size in turn
+## each as {"id", "size", "faction", "members": [[foe_id, strength], ...] read off its grid, "layout": its eight cells, "lead", and "squad", "ramp" and "hunts" where content writes them}; every size in turn
 ## when `size` is empty. A tier with none of a size has none: nothing stands in (Ryan, 8 November:
 ## "we've either defined the escort or we haven't"; the content tests want every size at every tier), as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
@@ -961,7 +966,7 @@ func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -
 		if members.is_empty():
 			continue
 		var entry := {"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "layout": cells, "boss": str(c.get("boss", "")), "lead": str(members[0][0])}
-		for key in ["squad", "ramp"]:   # the threat rating (the long wall brief 3.7) and the ramp gate (7 November), as content writes them
+		for key in ["squad", "ramp", "hunts"]:   # the threat rating (the long wall brief 3.7), the ramp gate (7 November) and the hunt (8 November), as content writes them
 			if c.has(key):
 				entry[key] = c[key]
 		out.append(entry)
@@ -2321,24 +2326,19 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: 'injures' is gone; component injuries are a global rule" % where)
 		if f.has("stun_resist"):
 			errs.append("%s: no foe resists a suppress by nature (10 October); drop stun_resist" % where)
-		if f.has("zone") and (int(f["zone"]) < 1 or int(f["zone"]) > 4):
-			errs.append("%s: zone is the pack's ring in hexes, 1 to 4" % where)
-		if f.has("behaviour") and not ["push", "hunt"].has(str(f["behaviour"])):
-			errs.append("%s: behaviour is push or hunt" % where)
-		if f.has("hunts") and not ["nearest", "weakest", "strongest", "slowest", "fastest"].has(str(f["hunts"])):
-			errs.append("%s: hunts is nearest, weakest, strongest, slowest or fastest" % where)
-		if f.has("hunts") and str(f.get("behaviour", "push")) != "hunt":
-			errs.append("%s: hunts is a hunter's caveat; set behaviour to hunt" % where)
-		# A hunter pounces (Ryan, 29 October: "a minimum range of 2 instead of 1 (wolfs pounce,
-		# etc.)"; "If it's overbearing then we send the engage range back down").
-		if str(f.get("behaviour", "push")) == "hunt" and int(f.get("zone", 1)) < HUNTER_RING:
-			errs.append("%s: a hunter's ring is %d at least; it pounces" % [where, HUNTER_RING])
+		# The rings are gone and the hunt is a composition's (Ryan, 8 November: "The composition
+		# should say if it hunts, not the units"): a foe carries neither, so the old fields are refused.
+		if f.has("zone"):
+			errs.append("%s: zone is gone (8 November): no foe carries a ring; a hunter catches at the pounce, %d" % [where, HUNTER_RING])
+		for key in ["behaviour", "hunts"]:
+			if f.has(key):
+				errs.append("%s: %s is gone from the foe (8 November): a composition says whether its pack hunts (hunts)" % [where, key])
 		if f.has("movespeed") and (int(f["movespeed"]) < 1 or int(f["movespeed"]) > MAX_MOVE):
 			errs.append("%s: movespeed is in hexes, 1 to %d" % [where, MAX_MOVE])
 		# A hero only ever commands the boss unit, which patrols a hex a turn and never hunts
 		# (Ryan, 28 October, of the Thief's move: "it's a boss so it doesn't need it").
 		if bool(f.get("hero", false)):
-			for key in ["movespeed", "behaviour", "hunts"]:
+			for key in ["movespeed"]:
 				if f.has(key):
 					errs.append("%s: a hero only commands the boss unit, which patrols a hex a turn; drop %s" % [where, key])
 		if f.has("elite") and not (f["elite"] is bool):
@@ -2477,6 +2477,13 @@ func _validate_factions(errs: Array[String]) -> void:
 				if not (g is Array) or (g as Array).size() != 2 or not (g as Array).all(func(x) -> bool: return x is float or x is int) \
 						or int(g[0]) < 0 or int(g[0]) > int(g[1]) or int(g[1]) > Ramp.TOP:
 					errs.append("%s: ramp is [lo, hi], the Convergences it is dealt at, 0 <= lo <= hi <= %d" % [cw, Ramp.TOP])
+			if c.has("hunts"):
+				# Whether its pack hunts, and whom (Ryan, 8 November: "The composition should say if
+				# it hunts, not the units"); an escort walks with its boss, which never hunts.
+				if not HUNT_CAVEATS.has(str(c["hunts"])) or not (c["hunts"] is String):
+					errs.append("%s: hunts is the caveat its pack hunts by: %s" % [cw, ", ".join(HUNT_CAVEATS)])
+				if size == "escort":
+					errs.append("%s: an escort walks with its boss, which never hunts; drop hunts" % cw)
 			if c.has("boss"):
 				# An escort written for one boss (30 October); no other composition names one.
 				var named_boss := str(c["boss"])

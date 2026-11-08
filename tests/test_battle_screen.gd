@@ -440,7 +440,6 @@ func test_a_hunters_ring_is_drawn_round_where_its_walk_ends() -> void:
 	var m: Unit = b.mechs()[0]
 	hunter.behaviour = "hunt"
 	hunter.prey = m.id
-	hunter.zone = 2
 	s._refresh()
 	var rings: Array = s._map.hunter_rings()
 	assert_eq(rings.size(), 1, "one hunter, one ring; the pushers draw none")
@@ -450,7 +449,7 @@ func test_a_hunters_ring_is_drawn_round_where_its_walk_ends() -> void:
 	var ring: Dictionary = rings[0]["hexes"]
 	var wrong: Array = []
 	for h in b.field.map.all_hexes():
-		var inside := Hex.distance(h, w.end) <= 2 and not b.field.map.is_structure(h)
+		var inside := Hex.distance(h, w.end) <= ContentDB.HUNTER_RING and not b.field.map.is_structure(h)
 		if ring.has(h) != inside:
 			wrong.append(h)
 	assert_eq(wrong, [], "every hex its ring holds from the walk's end, and no other")
@@ -480,7 +479,6 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	_engage(b, hunter, m)
 	hunter.behaviour = "hunt"
 	hunter.prey = m.id
-	hunter.zone = 1
 	b._new_turn()
 	s._after_step()
 	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE with nobody ordered")
@@ -623,7 +621,7 @@ func test_hold_shows_a_readout() -> void:
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
 	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
-	assert_eq(s._details_entry.text().contains("Ring %d" % sq.zone), sq.behaviour == "hunt", "its ring only when it hunts (the long wall brief 7.2)")
+	assert_eq(s._details_entry.text().contains("Ring %d" % ContentDB.HUNTER_RING), sq.behaviour == "hunt", "its ring, the pounce, only when it hunts (the long wall brief 7.2)")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	s._on_unit_held(s.battle.boss)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Boss", "the boss says so beside its name")
@@ -793,7 +791,6 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	_engage(b, hunter, m)
 	hunter.behaviour = "hunt"
 	hunter.prey = m.id
-	hunter.zone = 1
 	b._new_turn()
 	s._autosave()
 	var loaded := SaveGame.load(TMP)

@@ -748,14 +748,12 @@ func test_the_bot_fights_every_fight_out() -> void:
 func test_the_bot_fights_out_a_hunters_catch() -> void:
 	var db := ContentDB.load_default()
 	var fac := db.default_faction()
-	var hunter := ""
-	for id in db.foes.keys():
-		var f: Dictionary = db.foes[id]
-		if str(f.get("behaviour", "push")) == "hunt" and not bool(f.get("hero", false)) and not f.has("promotes"):
-			hunter = str(id)
-			break
-	if hunter.is_empty():
-		return   # no hunter in content: nothing to force
+	var hunter := ""   # the lead of a composition that hunts (the composition says so, 8 November)
+	for fid in db.factions.keys():
+		for c in db.compositions(str(fid), 1, "patrol"):
+			if hunter.is_empty() and c.has("hunts"):
+				hunter = str(c["members"][0][0])
+	assert_false(hunter.is_empty(), "a hunting patrol in content")
 	var b := Battle.new(4)
 	b.with_boss = false
 	b.formation = [[hunter, 3]]

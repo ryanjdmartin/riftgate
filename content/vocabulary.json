@@ -1050,17 +1050,17 @@
    "id": "engagement_zone",
    "category": "battlefield",
    "name": "Ring",
-   "codex": "A hunter's ring, two hexes at least, is how close it must be to catch: it pounces over whatever stands between. The map draws it round where the hunter's walk ends, where the catch is judged, and round the hunter while a catch it made waits. A pack's ring is its lead's. No pack joins a fight by its ring; one pack is one fight. A machine's attack range is one hex: it can join a fight on a pack beside it.",
+   "codex": "A hunter's ring, two hexes, is how close it must be to catch: it pounces over whatever stands between. Every hunter's is the same, and no other pack has one. The map draws it round where the hunter's walk ends, where the catch is judged, and round the hunter while a catch it made waits. No pack joins a fight; one pack is one fight. A machine's attack range is one hex: it can join a fight on a pack beside it.",
    "status": "implemented",
    "design": {
-    "holes": "Rings are content on the foe type, placeholders; a hunter's is two at least (Ryan, 29 October: \"wolfs pounce\"; the validator holds it), a pack's is its lead's, and one number serves its catch and the ring drawn; a pusher's is never read. A machine's attack range is one for every chassis (the long wall's placeholder), an exception only where a role earns it."
+    "holes": "One number in the engine, the pounce (ContentDB.HUNTER_RING, a placeholder: Ryan, 29 October, \"wolfs pounce\"), serving the catch and the ring drawn; no foe or composition carries a ring since 8 November (Ryan: \"I had also assumed that all range rings were purged from code\"). A machine's attack range is one for every chassis (the long wall's placeholder), an exception only where a role earns it."
    }
   },
   {
    "id": "pack_behaviour",
    "category": "battlefield",
    "name": "Behaviour",
-   "codex": "A pack pushes or hunts as its lead does. A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), puts its tag on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. A prey that keeps its distance is safe; one sealed off behind walls and machines is not: the hunter catches whichever machine it can reach that turn standing nearest it, and its tag moves there.",
+   "codex": "A pack pushes unless its composition hunts. A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), puts its tag on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. A prey that keeps its distance is safe; one sealed off behind walls and machines is not: the hunter catches whichever machine it can reach that turn standing nearest it, and its tag moves there.",
    "status": "implemented",
    "design": {
     "holes": "Push and hunt are the only behaviours; the hunters' caveats are placeholders."
@@ -1070,7 +1070,7 @@
    "id": "pack",
    "category": "battlefield",
    "name": "Pack",
-   "codex": "An enemy hex is a pack: a composition on one hex, its members listed on a hold, wearing its lead's picture, behaviour and ring, walking at its slowest member's pace. Its hold says first how many machines it is a fight for, its threat rating; a pusher walks to a segment of the wall of its own. A fight is the one pack you attack. A boss is one unit on one hex.",
+   "codex": "An enemy hex is a pack: a composition on one hex, its members listed on a hold, wearing its lead's picture, hunting when its composition says so, walking at its slowest member's pace. Its hold says first how many machines it is a fight for, its threat rating; a pusher walks to a segment of the wall of its own. A fight is the one pack you attack. A boss is one unit on one hex.",
    "status": "implemented",
    "design": {
     "holes": ""

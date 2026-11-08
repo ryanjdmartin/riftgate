@@ -1545,9 +1545,10 @@ func hunter_rings() -> Array:
 	return out
 
 
-## The hexes inside a pack's ring with its anchor at `anchor`, as its catch counts them
-## (Battlefield._distance_from): within its ring of any of its footprint's hexes as the crow
-## flies, over anything between; on the map, no structure (nobody stands there to be caught).
+## The hexes inside a hunter's ring with its anchor at `anchor`, as its catch counts them
+## (Battlefield._distance_from): within the pounce (ContentDB.HUNTER_RING, one number for every
+## hunter) of any of its footprint's hexes as the crow flies, over anything between; on the map, no
+## structure (nobody stands there to be caught).
 func ring_hexes(sq: Unit, anchor: Vector2i) -> Dictionary:
 	var region := {}
 	for o in sq.footprint:
@@ -1558,7 +1559,7 @@ func ring_hexes(sq: Unit, anchor: Vector2i) -> Dictionary:
 			var h: Vector2i = queue.pop_front()
 			if field.map.has(h) and not field.map.is_structure(h):
 				region[h] = true
-			if int(dist[h]) >= sq.zone:
+			if int(dist[h]) >= ContentDB.HUNTER_RING:
 				continue
 			for n in Hex.neighbors(h):
 				if not dist.has(n):

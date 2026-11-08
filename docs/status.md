@@ -25,7 +25,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1060 tests, 259,994 checks, green (8 November, `ccr-d26a1321-xg9xge`: main with the long
+- Tests: 1060 tests, 259,914 checks, green (8 November, `ccr-d26a1321-xg9xge`: main with the long
   wall and the skirmish code audit landed, a part no kill, and a hunter's reach, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -138,15 +138,21 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
-  range, nor why a normal goblin pack is now suddenly a hunter"): a pack's ring is its lead's,
-  never a member's (`Battlefield.dress_pack` took its widest member's, a relic of the joining
-  rings, so the Mandragoras' back-rank three became the goblins' catch; twelve hunting formations
-  came down from three to their leads' two), and a hunter's ring is drawn again, round where its
-  walk ends and round the hunter while its catch waits, in the rings' old look (the bible's map
-  marks row; `BattleMapView.hunter_rings`). Saves at 16, runs at 15. Who hunts (the goblin line,
-  every goblin-led composition with it, the lead setting picture and walk alike), the first walk's
-  catch and the back rank's hunters' ring of three are section 12's question; his phone read of
-  the ring is the to-do's.
+  range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
+  taking its widest member's ring, the Mandragoras' back-rank three from the joining days. His
+  calls the same day, built: a composition says whether it hunts, never its foes ("The
+  composition should say if it hunts, not the units": `hunts`, its caveat, absent for a pusher,
+  never on an escort; the twenty-nine hunts carried over from the foes but the goblins', "normal
+  fodder, as per their codex lines"); the rings purged ("I had also assumed that all range rings
+  were purged from code"): no foe and no pack carries one, a hunter catching at the pounce, 2
+  (`ContentDB.HUNTER_RING`), the validator refusing `zone`, `behaviour` and `hunts` on a foe; and a
+  hunter's ring drawn on the map, round where its walk ends and round the hunter while its catch
+  waits, in the rings' old look (the bible's map marks row; `BattleMapView.hunter_rings`). The goblin
+  has hunted since it entered content on 9 October, the ghoul's heir (git); what changed was its
+  formation opening a move from the wall (6 November) and the HUNTED band (8 November). Saves at
+  16, runs at 15. Section 12 asks whether the rank and file that still hunt (the revenants, the
+  needlers, the bombs) are fodder too, and whether the opening deals no hunter in code; his phone
+  read of the ring is the to-do's.
 - **The long wall, Phase 1** (6 November, `ccr-56b5169d-lsa2rg`, from
   `git show 68381ff:docs/briefs/long_wall_build.md`): the field's size the ramp's (20 by 12 for now); the battle
   opening with the siege under way (formations a move from the wall, patrols on the flanks, the
@@ -414,10 +420,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits` and `designs` read first. Behind
-  `ccr-d26a1321-xg9xge` by `content/vocabulary.json` alone (the Ring's, the Pack's and the
-  Behaviour's codex, 8 November): its live copy checked byte for byte against main's, `edits`
-  empty and `designs` the two folded ideas, but the publish refused by the permission check as
-  unrequested, so it waits on Ryan's word. At the page's version 214
+  `ccr-d26a1321-xg9xge` (8 November) by `content/vocabulary.json` (the Ring's, the Pack's and the
+  Behaviour's codex), `content/foes.json` (no ring or hunt on a foe), `content/factions.json` (a
+  composition's `hunts`) and `tools/hangar.html` (the foe list's Zone gone): the live vocabulary
+  checked byte for byte against main's, `edits` empty and `designs` the two folded ideas, but the
+  publish refused by the permission check as unrequested, so it waits on Ryan's word. At the page's version 214
   (8 November, from `ccr-1eaf0060-jrpw04` at `34ae947`: only `content/vocabulary.json` and
   `content/components.json`, the Ability term, the seal, the Ore Plate, Golden, Guarded and Hot
   Streak as abilities, the Purge's codex and the Null Field Emitter's, onto the long wall's

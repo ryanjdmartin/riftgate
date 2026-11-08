@@ -307,8 +307,8 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 ## until it has caught nobody, so no battle opens on a forced fight (Ryan, 6 November: "I
 ## probably would shy away from hitting the first battle with a fight in the first turn, that's
 ## for sure. That's just mean"); its first walk is the enemy's first turn, after the player's.
-## No hunter's ring passes 3 and the machines open four rows or more below the mouth, so the
-## mouth's edge always clears.
+## A hunter's ring is the pounce, 2 (ContentDB.HUNTER_RING), and the machines open four rows or
+## more below the mouth, so the mouth's edge always clears.
 func _open_row(sq: Unit, col: int, moves: int) -> void:
 	var row := maxi(BattleMap.MOUTH_ROWS, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
 	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row))
