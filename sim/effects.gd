@@ -1616,9 +1616,9 @@ static func free_rerolls(u) -> int:
 
 
 ## Does this machine's shield pay its weapons' heat (burn_shield, static; the Storm Petrel's Riot
-## Field Generator, Ryan's go of 21 October, built 30 October)? While its shield stands, every
-## point of heat a weapon's spend would add comes off the shield instead, as far as it holds, and
-## the target takes a blow of what the shield paid (Skirmish._resolve_attack).
+## Field Generator, Ryan's go of 21 October, built 30 October)? While its shield stands, the gun's
+## own heat a weapon's spend would add comes off the shield instead, as far as it holds, and the
+## target takes a blow of what the shield paid (Skirmish._zap).
 static func burns_shield(u) -> bool:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "burn_shield":
