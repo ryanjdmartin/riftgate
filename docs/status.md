@@ -334,8 +334,9 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.481, dated 8
-  November (the page's version 493: the hunters row, the finale's turn and the summons merged
+  `docs/design-bible.html` after every change. This file and the live page are v0.482, dated 8
+  November (the page's version 494: the grid, the hunter's declaration and the finale's forfeit
+  onto this branch's own 493, which was the hunters row, the finale's turn and the summons merged
   row by row onto the Sweep session's v0.480 of that night, its rows on a Sweep's shot
   boundaries, the enemy turn's death check and the kill's definition, the Nob's innate rage,
   the Reveille Horn, the Musk Ox's and Storm Petrel's Scorched, the Armadillo's seals; the
@@ -360,10 +361,12 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 209
-  (7 November, from `ccr-56b5169d-lsa2rg`, the live page main's of version 208 and differing from
-  this branch's only by the long wall's own edit, its shield regen for the field recharge): the
-  page, the six content files as this branch has them (the long wall, the cut's trimmed
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 213
+  (8 November, from `ccr-56b5169d-lsa2rg`: the page's foe-tier check reading the grid and
+  `content/factions.json` as grids, onto the Sweep session's version of that night, whose
+  `content/foes.json` and `content/vocabulary.json` stand as it published them, not this
+  branch's). Version 209 before it (7 November, from this branch, the live page main's of 208):
+  the page, the six content files as this branch had them (the long wall, the cut's trimmed
   formations, the vocabulary without Reinforcements; `content/loot.json` is no tab's), the pins
   and `designs.json` from the briefs with Ryan's eight directions folded in (2e871be). Those eight
   documents are deleted from `designs` and his two ideas, the Giant Petrel and the Needletail,
