@@ -1,23 +1,21 @@
-"""Hold The Line's twenty-second round as a pair (Ryan, 7 November, on the twenty-first): K settled, X's second
-bend cut and another voice on its riff, W's keys and earlier drums.
+"""Hold The Line's twenty-third round as a pair (Ryan, 8 November, on the twenty-second): W's drums from the first
+beat's off-beat, X's bent note as a triplet bend, the guitar and the keys traded in X, W's first beats.
 
-  "K - go with 'The plucked string 3 dB down'. W - I think we need to start the drums a beat or two earlier,
-  but I really like your first option of 'Building to the triplets' so I don't want to mess with it too much.
-  Also I think the keys need to continue from their solo into the held note after all. Regarding the Phil
-  Collins best, while the rhythm of your fill is correct, the spirit of it is in the tom/snare rhythm. I'm
-  not saying to copy it verbatim, or to even use it here, just that it's a tool to keep in our toolbox. X - I
-  think the second quarter tone riff with the c, cq, b doesn't work. Let's cut that one, leave the first one
-  in for now - can I get this imported into the melody desk and have the melody desk support quarter tones?
-  I think my writing is bad. This section needs another voice in it, but I don't like the lead single. Can
-  we try adding lead power chords, and keys lead singles, to it?"
+  "Can I hear X: With the bend as quick b-bup-b as a triplet, so that the line goes from c-b-bflat on eighth notes to
+  b-bup-b-bflat as triplet-8th? With the backing guitar (from the descending chords) doing power chords in unison, and
+  the keys doing the backing descending chords instead? The drums 'Two beats earlier' in W is good, let's try 1.
+  Those new intro beats being louder 2. Being on the snare 3. Being on the china 4. Being on the hat"
 
-K's walk on the crunch synth beside the plucked string 3 dB down, his pick (K21_PAIR). X's riff bends the
-first time through alone (X_RIFF_Q1), in both halves, with the lead guitar's power chords (pair_sketches'
-lead_power), the keys lead's single notes, both or neither on it in a set (X_MORE). W's held note on the
-keys lead as well as the basses and the lead guitar (w_keys), its drums from the second beat (W_FILL_EARLY)
-or the first beat's off-beat in a set. The Collins fill's spirit is pair_sketches' descending_doubles,
-rewritten to the record's hand-hand-kick threes; and X's seven is in the Melody Desk (desk_parts.py
---sketch hold_the_line_r22), the Desk bending notes a quarter-tone.
+W's drums from the first beat's off-beat in the pair (W_FILLS["earlier"]); its three eighths louder or on the
+snare, the china or the hat in a set (W_FILLS_INTRO). X's first-pass quarter-flat C and the B after it as one note,
+B pushed up a quarter-tone and let back in eighth-note triplets (forge.py's bent notes on a path, X_TRIPLET), into
+A as the riff goes (X_RIFF_T) or into B-flat as he wrote it (X_RIFF_TB); the backing guitar on the riff from bar 5
+and the keys lead on the descending chords there (x_swap); both together, in a set.
+
+The twenty-second round's, kept: K's walk on the crunch synth beside the plucked string 3 dB down; X's riff bent
+the first time through alone (X_RIFF_Q1), in both halves; W's held note on the keys lead with the basses and the
+lead guitar (w_keys). Its options stay in the code: another voice on X's riff (X_MORE), the quick bend up from B
+(X_BEND).
 
 The twenty-first round's, kept: W's held notes without F's synth, its fill building to Bonham's triplets
 (W_FILL_BUILD); the triplets a shared figure (pair_sketches' bonham_triplets). Its options stay in the code:
@@ -74,7 +72,7 @@ minimalist"), its lifts' riff on the soft sub and the tine piano.
 The full pair on the switch takes every pick. The set's rows are the same bars from the same seed
 through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold22.json beside the pairs (about four minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold23.json beside the pairs (about four minutes on four cores)
     tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hx       # the named sets only (hx, hk, hw, and full for the pair)
 """
 import json
@@ -1148,12 +1146,27 @@ W_FILL_BUILD = w_bar(W_BUILD, ("kick", "snare", "tom", "tom2", "crash"))
 # triplets, sixteenths, sextuplets.
 W_FILL_EARLY = w_bar(W_BUILD + [("tom2", 12, "4"), ("tom2", 18, "4")], ("kick", "snare", "tom", "tom2", "crash"))
 W_FILL_EARLIER = w_bar(W_BUILD + [("tom2", 6, "3"), ("tom2", 12, "4"), ("tom2", 18, "4")], ("kick", "snare", "tom", "tom2", "crash"))
+# Round twenty-three (Ryan, 8 November: "The drums 'Two beats earlier' in W is good, let's try 1. Those new intro
+# beats being louder 2. Being on the snare 3. Being on the china 4. Being on the hat"): the earlier start the
+# pair's, its three eighths in front of the build louder (6, 7, 7 where they were 3, 4, 4, about 5 dB), or at
+# their own velocities on the snare, the china or the hat.
+W_INTRO = ((6, "3"), (12, "4"), (18, "4"))
+W_INTRO_LOUD = ((6, "6"), (12, "7"), (18, "7"))
+
+
+def w_intro(drum="tom2", hits=W_INTRO):
+    return w_bar(W_BUILD + [(drum, step, vel) for step, vel in hits], ("kick", "snare", "tom", "tom2", "crash", "china", "hat"))
+
+
+W_FILLS_INTRO = {"earlier": w_intro(), "loud": w_intro(hits=W_INTRO_LOUD), "snare": w_intro("snare"),
+                 "china": w_intro("china"), "hat": w_intro("hat")}
 W_FILL_DOUBLES = w_bar(
     [("crash", 0, "x"), ("kick", 0, "x")]
     + P.descending_doubles(24, ("tom_hi", "tom", "tom2", "tom_lo"), soft="6", hard="8")
     + P.bonham_triplets(48, 2, ("tom", "snare"), soft="8", hard="x"),
     ("kick", "snare", "tom", "tom2", "tom_hi", "tom_lo", "crash"))
-W_FILLS = {"build": W_FILL_BUILD, "doubles": W_FILL_DOUBLES, "round20": W_FILL, "early": W_FILL_EARLY, "earlier": W_FILL_EARLIER}
+W_FILLS = dict({"build": W_FILL_BUILD, "doubles": W_FILL_DOUBLES, "round20": W_FILL, "early": W_FILL_EARLY},
+               **{"earlier" if k == "earlier" else "intro_" + k: v for k, v in W_FILLS_INTRO.items()})
 W21_FILL = "build"
 
 
@@ -1300,6 +1313,62 @@ def x_bend(call):
     return call
 
 
+
+# Round twenty-three's X (Ryan, 8 November). "With the bend as quick b-bup-b as a triplet, so that the line goes from
+# c-b-bflat on eighth notes to b-bup-b-bflat as triplet-8th": the first pass's quarter-flat C and the B after it
+# become one note across their quarter, B pushed up a quarter-tone and let back to B in eighth-note triplets
+# (forge.py's bent notes on a path, 45 ms each way), then the riff's next note on the last eighth. The riff's next
+# note there is A, not B-flat, so a row plays each (X_RIFF_T, X_RIFF_TB). "With the backing guitar (from the
+# descending chords) doing power chords in unison, and the keys doing the backing descending chords instead": the
+# guitar that held the descending chords from bar 5 plays the riff there in power chords with the Omnifics,
+# bending as they do, and the keys lead holds the bars' chords where it held them (x_swap), each met halfway with
+# the part it doubles or replaces.
+X_TRIPLET_T = 60.0 / 104.0   # the bent note's quarter, at the seven's tempo
+X_TRIPLET = {"w": [7, [[X_TRIPLET_T / 3.0, 7.5], [2.0 * X_TRIPLET_T / 3.0, 7]], 0.045]}
+X_RIFF_T = "0-..3-..5-3-0." "0-..3-..w---5." "0-..3-..5-3-0." "0-..3-..8-7-5."
+X_RIFF_TB = "0-..3-..5-3-0." "0-..3-..w---6." "0-..3-..5-3-0." "0-..3-..8-7-5."
+X_SWAP_GUITAR = 0.763   # its held chords' gain on the riff, met halfway with the Omnific's power chords (0.6 dB each way)
+X_SWAP_KEYS = 0.286     # each of the keys lead's three chord tones, met halfway with the guitar's held chords (0.8 dB each way)
+X_HELD_FROM = 4 * 14  # the held chords' bars, from bar 5
+
+
+def x_triplet(call, riff=X_RIFF_T):
+    """X's first bent note as B pushed up and let back in triplets, then `riff`'s next note, on every voice on the riff."""
+    for v in call["voices"]:
+        if v.get("pat", {}).get("X") in (X_RIFF_Q1, X_RIFF_T, X_RIFF_TB):
+            v["pat"]["X"] = riff
+            v["notes"] = dict(v.get("notes") or {}, **X_TRIPLET)
+    return call
+
+
+def x_swap(call):
+    """The backing guitar on the riff in power chords from bar 5, the keys lead on the descending chords there."""
+    riff = next(v["pat"]["X"] for v in call["voices"] if v["inst"] == "real_bass" and v.get("pat", {}).get("X", "").startswith("0-"))
+    notes = next(v.get("notes") for v in call["voices"] if v["inst"] == "real_bass" and v.get("pat", {}).get("X") == riff)
+    guitar = the_one(call, lambda v: v["inst"] == "guitar_real" and "X" in heard(v), "the guitar holding X's chords")
+    guitar["pat"]["X"] = "." * X_HELD_FROM + riff * 2
+    guitar["notes"] = dict(notes or {})
+    guitar["gain"] = round(guitar["gain"] * X_SWAP_GUITAR, 4)
+    for k in range(3):
+        call["voices"].append({"inst": "lead", "mode": "chord", "octave": 1, "gain": X_SWAP_KEYS, "dur": 14,
+                               "pat": {"X": "." * X_HELD_FROM + (str(k) + "." * 13) * 8}})
+    return call
+
+
+def round23(riff=None, swap=False, fill="earlier"):
+    """Round twenty-three's battle half: round twenty-two's with W's drums from the first beat's off-beat
+    (`fill`, W_FILLS), X's first bent note as a triplet bend into `riff`'s next note where `riff` (X_RIFF_T,
+    X_RIFF_TB), the guitar and the keys trading X's parts where `swap`."""
+    base = round22(fill=fill)
+
+    def edit(call):
+        base(call)
+        if riff:
+            x_triplet(call, riff)
+        if swap:
+            x_swap(call)
+    return edit
+
 def round22_bend(more="none"):
     """Round twenty-two's battle half with X's bent note played as a bend, `more` on the riff (X_MORE)."""
     base = round22(more=more)
@@ -1401,28 +1470,24 @@ FORM_X = "M XXXXXXXXXXXX"          # the bar down into the seven and the seven
 FORM_KEYS = "Y KKKKKKKK V"         # the breath, the keys section, the second breath
 FORM_W = "FFFF W SSSSSSSS"         # the keys' tune's first bars, the turn, the climax's first set
 SETS = [
-    {"id": "hx", "half": "battle", "title": "X with another voice", "form": FORM_X,
-     "note": "The bar down into the seven and the seven, the riff's high C a quarter-tone flat the first time through and as written the second (Ryan, 7 November: \"This section needs another voice in it, but I don't like the lead single. Can we try adding lead power chords, and keys lead singles, to it?\"). Each added voice plays the riff, bending as it does, met halfway with the Omnific's power chords, so a row that adds one is louder by what it adds. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hx0", "As the pair has it", "The riff on the two Omnifics, nothing added.", round22()),
-        ("hx1", "The lead guitar's power chords", "Root, fifth and octave through the lead guitar's gain, an octave over the Omnific's.", round22(more="power")),
-        ("hx2", "The keys lead's single notes", "The voice that plays L's riff, at its octave.", round22(more="keys")),
-        ("hx3", "Both", "The lead guitar's power chords and the keys lead together.", round22(more="both")),
+    {"id": "hx", "half": "battle", "title": "X: the triplet bend, the guitar and the keys", "form": FORM_X,
+     "note": "The bar down into the seven and the seven (Ryan, 8 November: \"With the bend as quick b-bup-b as a triplet ... With the backing guitar (from the descending chords) doing power chords in unison, and the keys doing the backing descending chords instead?\"). The triplet bend is one note across the quarter where the quarter-flat C and B were: B, pushed up a quarter-tone, let back to B, in eighth-note triplets, then the next note. The riff's next note there is A; you wrote B-flat, so a row plays each. The swap is from bar 5, where the guitar held its chords. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hx0", "As the pair has it", "The quarter-flat C held, then B and A; the guitar holding the descending chords from bar 5.", round23()),
+        ("hx1", "The triplet bend, into A", "B, a quarter up, B in triplets, then A, as the riff goes on.", round23(riff=X_RIFF_T)),
+        ("hx2", "The triplet bend, into B-flat", "The same into B-flat, as you wrote it.", round23(riff=X_RIFF_TB)),
+        ("hx3", "The guitar in unison, the keys on the chords", "From bar 5 the backing guitar plays the riff in power chords with the Omnifics, bending with them, and the keys lead holds the descending chords.", round23(swap=True)),
+        ("hx4", "Both", "The triplet bend into A, and the guitar and the keys traded.", round23(riff=X_RIFF_T, swap=True)),
     ]},
-    {"id": "hb", "half": "battle", "title": "X's quarter-tone as a bend", "form": FORM_X,
-     "note": "The bar down into the seven and the seven, the first pass's quarter-flat C played as B pushed up a quarter-tone, quickly, and held there (Ryan, 7 November: \"a quick b-b up- would be how I would play it in real life\"), on every voice on the riff. Each added voice is met halfway with the Omnific's power chords, as in the set above. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hb0", "Held, as the pair has it", "The quarter-tone from the note's start, no bend.", round22()),
-        ("hb1", "The Omnifics bend it", "Both basses on B, bent up over 80 ms after 40 ms on the B, the power chords' fifth with them.", round22_bend()),
-        ("hb2", "With the keys lead, all bending", "The keys lead's single notes on the riff too, bending with the basses.", round22_bend("keys")),
-        ("hb3", "With the lead guitar's power chords, all bending", "The lead guitar's power chords on the riff too, bending with the basses.", round22_bend("power")),
-    ]},
-    {"id": "hw", "half": "battle", "title": "W's drums, earlier", "form": FORM_W,
-     "note": "The keys' tune's first bars, W and the climax's first set, the keys lead now holding W's note with the basses, fading (Ryan, 7 November: \"I think the keys need to continue from their solo into the held note after all\"), and the build to the triplets as it was with eighths on the floor tom in front of it (\"start the drums a beat or two earlier\"). Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hw0", "A beat earlier", "Eighths on the floor tom from W's second beat, then the build (the full pair's).", round22()),
-        ("hw1", "Two beats earlier", "Eighths from the first beat's off-beat, under the held note's start.", round22(fill="earlier")),
-        ("hw2", "As round twenty-one had it", "The build from the third beat.", round22(fill="build")),
+    {"id": "hw", "half": "battle", "title": "W's first beats", "form": FORM_W,
+     "note": "The keys' tune's first bars, W and the climax's first set, the drums from the first beat's off-beat, your pick (Ryan, 8 November: \"let's try 1. Those new intro beats being louder 2. Being on the snare 3. Being on the china 4. Being on the hat\"). The three eighths in front of the build change; the build is as it was. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hw0", "On the floor tom", "As they were (the full pair's).", round23()),
+        ("hw1", "Louder", "On the floor tom, about 5 dB up.", round23(fill="intro_loud")),
+        ("hw2", "On the snare", "At their own velocities.", round23(fill="intro_snare")),
+        ("hw3", "On the china", "At their own velocities.", round23(fill="intro_china")),
+        ("hw4", "On the hat", "At their own velocities.", round23(fill="intro_hat")),
     ]},
 ]
-PAIR = {"id": "hold_the_line_r22", "title": "Hold The Line, round twenty-two"}
+PAIR = {"id": "hold_the_line_r23", "title": "Hold The Line, round twenty-three"}
 # The battle half's sections as round twenty plays them, where they differ from the shipped track's:
 # the Omnific, wherever it plays, on the dirtier drive.
 NAMES_R20 = {
@@ -1451,6 +1516,9 @@ NAMES_R21 = dict(NAMES_R20,
 NAMES_R22 = dict(NAMES_R21,
                  X="the seven: a riff for 7/8 on the bass with the Omnific's power chords over it, its high C a quarter-tone flat the first time through and as written the second, the piano on the long beat, a chime, the lead guitar held through its second half",
                  W="the keys' turn, six beats: two of the tune's note held on the keys lead, the lead guitar and the basses, fading; eighths on the floor tom from the second beat, then the build to Bonham's triplets: eighth-note triplets on the snare, sixteenths down the toms, the triplets on the tom and the snare into the climax")
+# The battle half's sections as round twenty-three plays them, where they differ from round twenty-two's.
+NAMES_R23 = dict(NAMES_R22,
+                 W="the keys' turn, six beats: two of the tune's note held on the keys lead, the lead guitar and the basses, fading; eighths on the floor tom from the first beat's off-beat, then the build to Bonham's triplets: eighth-note triplets on the snare, sixteenths down the toms, the triplets on the tom and the snare into the climax")
 
 def level(x, db):
     return F.limit(F.write_level(x, NAME, db))
@@ -1459,7 +1527,7 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold22_" + SETS[si]["id"])
+    F.seed("hold23_" + SETS[si]["id"])
     row = SETS[si]["rows"][ri]
     edit, form = row[3], row[4] if len(row) > 4 else SETS[si]["form"]   # a row may cut its own bars (K's lengths)
     with P.Patched(_steps=run_steps):
@@ -1471,7 +1539,7 @@ def render_row(job):
 
 
 def full_path(half):
-    return os.path.join(P.OUT, "hold22_full_%s.wav" % half)
+    return os.path.join(P.OUT, "hold23_full_%s.wav" % half)
 
 
 def render_full(half):
@@ -1479,7 +1547,7 @@ def render_full(half):
     if half == "battle":
         F.seed(NAME)
         call = copied(call_on(FORM_K, METER))
-        round22()(call)
+        round23()(call)
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
@@ -1516,7 +1584,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold22.json")
+    manifest_path = os.path.join(P.OUT, "hold23.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1528,7 +1596,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, *_edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold22_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold23_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -1541,7 +1609,7 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R22)
+        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R23)
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
                                "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels}]

@@ -1139,15 +1139,25 @@ def lead(f, dur, fade=0.0):
 
 def bent(x, ratio, wait, glide):
     """A note bent: played as it is for `wait` seconds, then its pitch eased to `ratio` of itself over
-    `glide` seconds and held there, as a string pushed up or a pitch wheel turned. The note is read faster
-    (or slower) as its pitch moves, so it keeps its own sound and its randomness; it comes out a hair
-    shorter going up, a few milliseconds faded off its end and padded back to its length."""
+    `glide` seconds and held there, as a string pushed up or a pitch wheel turned."""
+    return bent_path(x, [(wait, ratio)], glide)
+
+
+def bent_path(x, points, glide):
+    """A note bent along a path: from each (time, ratio) in turn its pitch eases over `glide` seconds to
+    that ratio of where it began and holds, so a string can be pushed up and let back down. The note is
+    read faster (or slower) as its pitch moves, so it keeps its own sound and its randomness; it comes
+    out a hair shorter where it went up, a few milliseconds faded off its end and padded back to its
+    length."""
     n = len(x)
-    if n < 4 or ratio == 1.0:
+    if n < 4 or all(r == 1.0 for _t, r in points):
         return x
     t = np.arange(n) / SR
-    u = np.clip((t - wait) / max(glide, 1e-4), 0.0, 1.0)
-    rate = 1.0 + (ratio - 1.0) * (0.5 - 0.5 * np.cos(np.pi * u))
+    rate, cur = np.ones(n), 1.0
+    for when, r in points:
+        u = np.clip((t - when) / max(glide, 1e-4), 0.0, 1.0)
+        rate = np.where(t >= when, cur + (r - cur) * (0.5 - 0.5 * np.cos(np.pi * u)), rate)
+        cur = r
     pos = np.concatenate([[0.0], np.cumsum(rate[:-1])])
     m = int(np.searchsorted(pos, n - 1.0))
     i0 = np.floor(pos[:m]).astype(int)
@@ -1492,15 +1502,22 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                 bend = None
                 if isinstance(semis, (list, tuple)):
                     # A bent note (Hold The Line's X, Ryan, 7 November: "a quick b-b up- would be how I would
-                    # play it in real life"): [from, to, wait, glide], played from `from` and pushed to `to`.
-                    semis, to, wait, glide = semis
-                    bend = (2.0 ** ((to - semis) / 12.0), wait, glide)
+                    # play it in real life"): [from, to, wait, glide], played from `from` and pushed to `to`; or
+                    # [from, [[time, to], ...], glide], pushed and let back along a path (8 November: "the bend as
+                    # quick b-bup-b as a triplet").
+                    if isinstance(semis[1], (list, tuple)):
+                        start, path, glide = semis
+                        bend = ([(t, 2.0 ** ((to - start) / 12.0)) for t, to in path], glide)
+                        semis = start
+                    else:
+                        semis, to, wait, glide = semis
+                        bend = ([(wait, 2.0 ** ((to - semis) / 12.0))], glide)
                 length = 1
                 while i + length < len(s) and s[i + length] == "-":
                     length += 1
                 f = E2 * 2.0 ** ((semis + 12 * octave) / 12.0)
                 note = NOTE_INST[name](f, span(i, length) * hold, params)
-                note = along(bent(note, *bend) if bend else note, i, length)
+                note = along(bent_path(note, *bend) if bend else note, i, length)
                 buf = at(buf, note, when(i + late), gain * vel() * vs(i), wrap=True)
                 i += length
         elif mode == "chord":

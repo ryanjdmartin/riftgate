@@ -849,7 +849,7 @@ The tasks are the to-do's; this is the index of what waits.
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line
-  on its twenty-second round (7 November), its map half settled on the thirteenth (3 November: "I think
+  on its twenty-third round (8 November), its map half settled on the thirteenth (3 November: "I think
   that's it for this track"): his map picks, X on the violins, U on the clean guitar, the drone
   moved to R, W low with a roll; the map half minimal, the lifts as they were with the riff on the
   soft sub and the tine piano and the first lift's bell calmer (5 November: "Map lifts should keep
@@ -881,16 +881,18 @@ The tasks are the to-do's; this is the index of what waits.
   bending notes a quarter-tone and drawing 7/8 bars ("have the melody desk support quarter tones? I
   think my writing is bad"; `desk_parts.py --sketch hold_the_line_r22` seeds it), W six beats, the
   keys lead carrying on from its solo into the held note with the basses ("the keys need to continue
-  from their solo into the held note after all"), its drums from the second beat ("start the drums a
-  beat or two earlier") and a fill building to Bonham's triplets and ending on them ("the speeds that
+  from their solo into the held note after all"), its drums from the first beat's off-beat ("The drums
+  'Two beats earlier' in W is good") and a fill building to Bonham's triplets and ending on them ("the speeds that
   you start the fill at, those should be what it ends at"), his triplets and the descending sixteenth
   doubles as the record plays them a lean for any fill (pair_sketches' bonham_triplets,
   descending_doubles: "the spirit of it is in the tom/snare rhythm"), K's walk on the crunch synth
   beside the plucked string 3 dB down ("go with 'The plucked string 3 dB down'"); on trial, another
   voice on X's riff (the lead guitar's power chords, the keys lead's single notes: "I don't like the
-  lead single"), X's quarter-tone as a quick bend up from B ("a quick b-b up- would be how I would
-  play it in real life"; forge.py's riff takes a bent note, [from, to, wait, glide]), W's drums from
-  the first beat's off-beat; the map's L and M on a clean finger bass ("Change L and
+  lead single"), X's quarter-tone as a bend up from B ("a quick b-b up- would be how I would play it
+  in real life"; forge.py's riff takes a bent note, [from, to, wait, glide] or a path) or pushed and
+  let back in triplets into A or B-flat ("b-bup-b-bflat as triplet-8th"), the backing guitar on X's
+  riff with the keys lead on its chords ("the keys doing the backing descending chords instead"), W's
+  first eighths louder or on the snare, the china or the hat; the map's L and M on a clean finger bass ("Change L and
   M from cellos (i think?) to finger bass"), L's tine piano on M's line ("Map M, can the upper voice
   from L join in too?"), its U's sub on the riff ("Map U is what I meant ... you got it right in the
   full pair"), its W six beats.
@@ -1062,7 +1064,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file is v0.470 (the track table's rows on Night Shift's
-  nineteenth to twenty-second rounds, Hold The Line's seventeenth to twenty-second, the fills' lean and The Far Bank's pick of the lift),
+  nineteenth to twenty-second rounds, Hold The Line's seventeenth to twenty-third, the fills' lean and The Far Bank's pick of the lift),
   not yet published: a permission check blocked the publish on 6 November as unrequested, so it
   waits on Ryan's go; the live page had not moved. The live page is v0.469 (the
   page's version 482, published 6 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
@@ -1196,8 +1198,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twenty-second, X with another voice and W's keys and earlier drums, `hold_sketches.py`; Night Shift's twenty-second, its battle half's dark pass, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 56. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twenty-third, X's triplet bend and the guitar and keys traded, W's first beats, `hold_sketches.py`; Night Shift's twenty-second, its battle half's dark pass, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 57. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
