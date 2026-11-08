@@ -2748,8 +2748,9 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 ## salvo, a vent's blast) and paying for none of it: every strike is its own blow (its own number,
 ## its keywords and passives), landing on every foe the component reaches; then the riders, the
 ## hopper's loads and what lands after the blow (_after_blow). The death check and what the spend
-## pays are its caller's (_finish_hits). `real`: the entry as the die holds it (the charged form a
-## muster paid for, the salvo's own entry), for a drone's mine.
+## pays are its caller's (_finish_hits). `real`: the entry a drone's mine is laid from, its gate and
+## consumer read as the mine lands: the die's entry for a plain spend, the salvo's entry as spent
+## (its charged form when a muster paid), the blast's own shot.
 func _hit(ms: MechState, f: Face, target: Foe, real: Face) -> Hits:
 	var h := Hits.new()
 	h.reach = reach_of(ms, f)
@@ -3060,7 +3061,7 @@ func _tell_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits, p
 ## The Riot Field Generator (the Storm Petrel's, Ryan's go of 21 October; built 30 October): while
 ## its shield stands its weapons burn shield in place of heat, the gun's own heat coming off the
 ## shield as it stands, overshield included, and the rest reaching the gauge, a Scorched machine's
-## extra among it (shield_burn); then, the strikes landed, the target takes a blow of what the
+## extra among it (shield_burn); then, the hits landed, the target takes a blow of what the
 ## shield paid (the zap), plain, no keyword and no Shock read, through what it takes and its
 ## armour, before the death check, so a target the strikes felled takes it too (Ryan, 7 November).
 ## The burn comes off the hits' heat and the zap's hull joins what they dealt.
