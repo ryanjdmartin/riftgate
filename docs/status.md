@@ -330,10 +330,12 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.479, dated 8
-  November (the page's version 491: the audit's loot rows merged row by row onto the Sweep
-  session's v0.478 of 7 November, its rows on the spend's order, the Sweep, the Skua's halving
-  and the enemy turn's replay; the merged file taken back into this branch). This branch published
+  `docs/design-bible.html` after every change. This file and the live page are v0.481, dated 8
+  November (the page's version 493: the hunters row, the finale's turn and the summons merged
+  row by row onto the Sweep session's v0.480 of that night, its rows on a Sweep's shot
+  boundaries, the enemy turn's death check and the kill's definition, the Nob's innate rage,
+  the Reveille Horn, the Musk Ox's and Storm Petrel's Scorched, the Armadillo's seals; the
+  merged file taken back into this branch, as 491 and 487 were). This branch published
   483 to 488 on 7 November (the cut, the loot, the catch a fight a hunter, the curated escorts, the
   quick campaign on one tree, the ramp gate), merging twice onto that session's pages. So the file
   here carries that session's rows ahead of this branch's code and vocabulary: run on this branch,
