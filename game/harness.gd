@@ -48,10 +48,10 @@ func _ready() -> void:
 
 ## The refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): laid over the
 ## content once, as the game starts and before anything is built from it, when RIFTGATE_REFIT
-## names a spec ("all", or its parts: die, regen=half|N, cooling=N, heat1, barrier=off|cooldown|heatN|ward)
-## or a debug build's SETTINGS has REFIT TRIAL on one of its four rules (the phone's way, read at
-## the next launch: the model with its Barrier basic free, resting a round after it is spent, or
-## none, or a Ward in its place; Settings.REFIT_TRIALS). A battle or a run saved before the switch keeps the dice it was saved
+## names a spec ("all", or its parts: die, regen=half|N, cooling=N, heat1,
+## barrier=off|cooldown|heatN|ward, vents=guns) or a debug build's SETTINGS has REFIT TRIAL on one
+## of its four deals (the phone's way, read at the next launch: the model with its Barrier basic
+## where a Halo stood, on every die, on every die and resting, or on none; Settings.REFIT_TRIALS). A battle or a run saved before the switch keeps the dice it was saved
 ## with, so judge it on a new one.
 static var _refit_trial_done := false
 static func refit_trial() -> void:

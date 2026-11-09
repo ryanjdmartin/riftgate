@@ -301,7 +301,9 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # machines back in design unfielded), "regen=half" or "regen=N", "cooling=N", "heat1" (the basics
 # at heat one), or "all" for the first three as leaned; with the die, "barrier=off" (no Barrier
 # among the basics: Armoured or a gun in its place), "barrier=cooldown" (it goes dark the round
-# after it is spent), "barrier=heatN" (it costs N heat) or "barrier=ward" (a Ward in its place);
+# after it is spent), "barrier=heatN" (it costs N heat) or "barrier=ward" (a Ward in its place),
+# and "vents=guns" (a vent's slot takes a gun, so a die holds a defensive basic only where a
+# shield stood: the audit's own deal; without it a vent's slot takes the basic the die lacks);
 # tools/campaign_run.gd takes it too.
 # --guard 0.05 is the aggressor's habit (a block, a Barrier, Armoured or a Ward, at a twentieth of
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
@@ -497,12 +499,14 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): no shield or vent on a
 # stock die (a Barrier or an Armoured piece in its place), a shield regen of half the gauge a round,
 # the basics at heat one, and the four machines back in design left out of every picker;
-# RIFTGATE_REFIT=all,barrier=cooldown rests the Barrier basic a round after it is spent,
-# all,barrier=off leaves none among the basics (an Armoured piece or a gun in its place), and
-# all,barrier=ward puts a Ward in its place (a breach lands on the shield the regen refills). On
-# the phone a debug build's SETTINGS has REFIT TRIAL (OFF, FREE, RESTS, NONE, WARD: the model
-# with its defensive basic under each of those four rules): pick one, close the app, open it,
-# and start a new battle or run, since a saved one keeps the dice it was saved with.
+# RIFTGATE_REFIT=all,vents=guns is the audit's own deal (a Barrier only where a Halo stood, a
+# gun in every vent's slot), all,barrier=cooldown rests the Barrier basic a round after it is
+# spent, all,barrier=off leaves none among the basics (an Armoured piece or a gun in its place),
+# and all,barrier=ward puts a Ward in its place (a breach lands on the shield the regen refills).
+# On the phone a debug build's SETTINGS has REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the
+# model with its Barrier basic where a Halo stood, on every die, on every die and resting, or on
+# none): pick one, close the app, open it, and start a new battle or run, since a saved one keeps
+# the dice it was saved with.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on

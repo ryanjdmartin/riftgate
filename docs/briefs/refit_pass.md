@@ -6,8 +6,10 @@ The battle's resource model remade from Ryan's play of Phase 2 and the formation
 November: shields and vents leave the die, a component is a weapon or equipment, the shield is
 innate and regenerates, cooling is passive, the hold is the heat decision, component destruction
 is off, and the formation pass folds in, its grids re-cut under the new model. The direction is
-his and set; the numbers, the reads and the content are this pass's work, and nothing is built
-before the reads say where the numbers sit and he has played them. Read `docs/briefs/README.md`'s
+his and set; the numbers, the reads and the content are this pass's work, and no content moves
+before the reads say where the numbers sit and he has played them: the injury rule is off in the
+game, the model is a what-if for the runners and a trial in a debug build, and its first reads
+are in (section 5). Read `docs/briefs/README.md`'s
 How a session runs first; the formation pass's proposal (`docs/formation_proposal.md`) and its
 reads (`docs/measurements.md`, 9 November) are the records this stands on.
 
@@ -89,11 +91,10 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
    that needs it, or pass and cool. The prices and the cooling numbers are where heat is felt,
    so the heat session's question (the prices on every face, the basics included) folds into
    this pass; passive cooling is the recovery, not the lever to cut. Every chassis cools, so the
-   two at zero today change kind: the Stingray (its Exothermic Suite wants heat and a vent face
-   was its brake; with no vent faces it cools one a round like the rest, its Lance untouched) and
-   the Whip Scorpion (nothing cools it but its vents, which are guns: its vents are the model's
-   conversion pieces, the heat spent as a blast, so its zero stays and its rework, already
-   tabled, builds on them).
+   two at zero today change: the Stingray (its Exothermic Suite wants heat and a vent face was its
+   brake; with no vent faces it cools one a round like the rest, its Lance untouched) and the
+   Whip Scorpion, which is back in design whole (nothing cools it but its vents, which are its
+   guns: section 6).
 4. **The defensive tools on the die are targeted statuses.** Armoured against many small blows,
    Barrier against one big one, Ward against the riders; the lure stays the tank's control. The
    three pieces exist already at tier one, in no stock, which is why no starting die has met them

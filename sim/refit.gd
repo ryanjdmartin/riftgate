@@ -23,6 +23,9 @@ extends RefCounted
 ##   barrier=cooldown   with die: the Barrier basic goes dark for the next round once spent
 ##   barrier=heatN      with die: the Barrier basic makes N heat
 ##   barrier=ward       with die: a Ward in the Barrier basic's place (a breach lands on the shield)
+##   vents=guns         with die: a vent's slot takes a tier-zero gun, so a die holds a defensive
+##                      basic only where a shield stood (the audit's own deal, the stock re-deal's
+##                      placeholder); without it a vent's slot takes the defensive basic the die lacks
 ##   all        die, regen=half and heat1 together: the model as leaned
 
 const BARRIER := "barrier"   # the statuses a defensive basic grants (the engine's words)
@@ -37,7 +40,7 @@ const DEAD_TRIGGERS := ["on_shield_granted"]
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"die": false, "regen": "", "cooling": 0, "heat1": false, "barrier": ""}
+	var spec := {"die": false, "regen": "", "cooling": 0, "heat1": false, "barrier": "", "vents": ""}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p == "all":
@@ -54,8 +57,10 @@ static func parse(text: String) -> Dictionary:
 			spec["cooling"] = int(p.trim_prefix("cooling="))
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
+		elif p.begins_with("vents="):
+			spec["vents"] = p.trim_prefix("vents=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (die, regen=half|N, cooling=N, heat1, barrier=off|cooldown|heatN|ward, all)" % p)
+			push_error("--refit: no part '%s' (die, regen=half|N, cooling=N, heat1, barrier=off|cooldown|heatN|ward, vents=guns, all)" % p)
 	return spec
 
 
@@ -64,7 +69,7 @@ static func parse(text: String) -> Dictionary:
 static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 	var notes: Array[String] = []
 	if bool(spec.get("die", false)):
-		notes.append_array(_die(db, str(spec.get("barrier", ""))))
+		notes.append_array(_die(db, str(spec.get("barrier", "")), str(spec.get("vents", ""))))
 	var regen := str(spec.get("regen", ""))
 	if not regen.is_empty():
 		var said: Array[String] = []
@@ -147,7 +152,7 @@ static func basic_gun(db: ContentDB) -> String:
 ## Entries keep their places (a stepping die's order is its plan). The chassis the model cannot
 ## field are marked planned, so the tender and the runners leave them out; one whose one way down
 ## was a vent (cooling 0) cools 1.
-static func _die(db: ContentDB, barrier_rule: String = "") -> Array[String]:
+static func _die(db: ContentDB, barrier_rule: String = "", vents_rule: String = "") -> Array[String]:
 	var notes: Array[String] = []
 	var barrier := basic_granting(db, BARRIER)
 	var armoured := basic_granting(db, ARMOURED)
@@ -207,6 +212,8 @@ static func _die(db: ContentDB, barrier_rule: String = "") -> Array[String]:
 				var want := armoured if (pass_kind == "shield" and str(kinds[i][1]) == "self") else barrier
 				var other := barrier if want == armoured else armoured
 				var pick := want if not bool(holds[want]) else (other if not bool(holds[other]) else gun)
+				if pass_kind == "vent" and vents_rule == "guns":
+					pick = gun   # the audit's own deal: a vent retires, and its slot is the re-deal's
 				if holds.has(pick) and pick != gun:
 					holds[pick] = true
 				said.append("%s for %s" % [str(db.components[pick].get("name", pick)), str(db.components[loadout[i]].get("name", loadout[i]))])
@@ -217,6 +224,8 @@ static func _die(db: ContentDB, barrier_rule: String = "") -> Array[String]:
 		if had_vent and int(c.get("cooling", 0)) <= 0:
 			c["cooling"] = 1
 			notes.append("%s cools 1 a round: its vent was its one way down" % str(c.get("name", id)))
+	if vents_rule == "guns":
+		notes.append("a vent's slot takes a gun: a defensive basic only where a shield stood")
 	if not swapped.is_empty():
 		notes.append("the model's die, %d chassis: %s" % [swapped.size(), ", ".join(swapped)])
 	return notes

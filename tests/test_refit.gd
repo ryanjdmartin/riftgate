@@ -22,8 +22,9 @@ func test_a_spec_parses_its_parts_and_all_is_the_model_as_leaned() -> void:
 	var some := Refit.parse("regen=3, cooling=-1")
 	assert_false(bool(some["die"]), "a part not named is off")
 	assert_eq([str(some["regen"]), int(some["cooling"])], ["3", -1], "a flat regen and an offset as written")
-	assert_eq(Refit.parse(""), {"die": false, "regen": "", "cooling": 0, "heat1": false, "barrier": ""}, "nothing asked, nothing set")
+	assert_eq(Refit.parse(""), {"die": false, "regen": "", "cooling": 0, "heat1": false, "barrier": "", "vents": ""}, "nothing asked, nothing set")
 	assert_eq(str(Refit.parse("die,barrier=off")["barrier"]), "off", "the Barrier basic's rule as written")
+	assert_eq(str(Refit.parse("all,vents=guns")["vents"]), "guns", "and what a vent's slot takes")
 
 
 ## The model's die: no chassis it fields stocks a shield or a vent, each that stocked one holds a
@@ -157,6 +158,28 @@ func test_the_barrier_basics_rule_is_a_part_of_the_die() -> void:
 	Refit.apply(hot, Refit.parse("die,barrier=heat3"))
 	assert_eq(int(hot.components[barrier]["face"].get("heat", 0)), 3, "three heat a spend")
 	assert_eq(int(before.components[barrier]["face"].get("heat", 0)), 0, "and content's own makes none")
+	# The audit's own deal (vents=guns): a vent's slot takes a gun, so the die holds a defensive
+	# basic only where a shield stood.
+	var lean := _own()
+	Refit.apply(lean, Refit.parse("die,vents=guns"))
+	var armoured := Refit.basic_granting(before, Refit.ARMOURED)
+	var guns := 0
+	for id in lean.chassis.keys():
+		if back.has(str(id)):
+			continue
+		var was: Array = before.chassis[id].get("loadout", [])
+		var now: Array = lean.chassis[id].get("loadout", [])
+		assert_eq(now.size(), was.size(), "%s: every slot keeps its place" % id)
+		for i in range(was.size()):
+			var kind := _kind(before, was[i])
+			if kind == "vent":
+				assert_true(_kind(lean, now[i]) == "attack" and int(lean.components[now[i]]["face"].get("power", 0)) > 0, "%s: a gun where its vent stood" % id)
+				guns += 1
+			elif kind != "shield":
+				assert_eq(now[i], was[i], "%s: a piece that is no shield and no vent stays" % id)
+			else:
+				assert_true(now[i] == barrier or now[i] == armoured or _kind(lean, now[i]) == "attack", "%s: a defensive basic (or a gun, the die holding both) where its shield stood" % id)
+	assert_true(guns > 0, "some stock die held a vent")
 	# A Ward in its place: the die's Barrier slots hold the Ward piece, and no Barrier is added.
 	var ward := Refit.basic_granting(before, Refit.WARD)
 	if ward.is_empty():

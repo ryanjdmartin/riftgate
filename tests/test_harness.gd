@@ -397,8 +397,8 @@ func test_a_composition_is_picked_by_tier_and_rating() -> void:
 
 ## The refit pass's model is a trial the harness lays over the content as it starts
 ## (docs/briefs/refit_pass.md): off unless RIFTGATE_REFIT names a spec or a debug build's setting
-## names one of its trials, the model with its defensive basic under one of four rules, each a
-## spec the what-if takes.
+## names one of its trials, the model with its Barrier basic dealt one of four ways, each a spec
+## the what-if takes.
 func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> void:
 	if not OS.get_environment("RIFTGATE_REFIT").is_empty():
 		assert_eq(HARNESS.refit_spec(), OS.get_environment("RIFTGATE_REFIT"), "the environment's spec is the trial's")
@@ -419,11 +419,12 @@ func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> 
 	assert_eq(HARNESS.refit_spec(), "", "a value that is no trial asks for nothing")
 	Settings.display["refit_trial"] = was
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("refit_trial", "")), "off", "and the setting ships off")
-	var rules := {}
+	var deals := {}
 	for trial in Settings.REFIT_TRIALS:
 		if trial != "off":
-			rules[str(Refit.parse(trial)["barrier"])] = true
-	assert_eq(rules.size(), 4, "four rules for the defensive basic, each its own: %s" % str(rules.keys()))
+			var parsed := Refit.parse(trial)
+			deals["%s|%s" % [str(parsed["barrier"]), str(parsed["vents"])]] = true
+	assert_eq(deals.size(), 4, "four deals of the Barrier basic, each its own: %s" % str(deals.keys()))
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("settings")

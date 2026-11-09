@@ -59,14 +59,15 @@ const AA_LABELS := {"off": "OFF", "fxaa": "FXAA", "msaa2": "MSAA 2X", "msaa4": "
 const MAP_VIEWS := ["wall_left", "wall_bottom"]
 const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"}
 ## The refit pass's model as a trial (docs/briefs/refit_pass.md; Harness.refit_trial), a debug
-## build's: off, or the model as leaned (the model's die, the shield regen, the basics at heat
-## one) with its defensive basic under one of four rules, the question its first reads left to
-## his play (9 November): a Barrier free, a Barrier dark the round after it is spent, none among
-## the basics (an Armoured piece or a gun in its place), or a Ward in the Barrier's place (every
-## hull-costing fight of the reads was a breach, which a Ward lands on the shield the regen
-## refills). Each is a spec Refit.parse takes.
-const REFIT_TRIALS := ["off", "all", "all,barrier=cooldown", "all,barrier=off", "all,barrier=ward"]
-const REFIT_LABELS := {"off": "OFF", "all": "FREE", "all,barrier=cooldown": "RESTS", "all,barrier=off": "NONE", "all,barrier=ward": "WARD"}
+## build's: off, or the model (no shield or vent on a stock die, the shield regen, the basics at
+## heat one) with its Barrier basic dealt one of four ways, the question its first reads left to
+## his play (9 November): where a Halo stood and nowhere else, the audit's own deal, a gun in
+## every vent's slot (MODEL); on every die that lacks one (EVERY); on every die and dark the round
+## after it is spent (RESTS); or on none, the Armoured piece the one defensive basic (NONE). Each
+## is a spec Refit.parse takes; the desk's RIFTGATE_REFIT takes any other (a Ward in the
+## Barrier's place among them).
+const REFIT_TRIALS := ["off", "all,vents=guns", "all", "all,barrier=cooldown", "all,barrier=off"]
+const REFIT_LABELS := {"off": "OFF", "all,vents=guns": "MODEL", "all": "EVERY", "all,barrier=cooldown": "RESTS", "all,barrier=off": "NONE"}
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.
