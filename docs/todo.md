@@ -124,6 +124,7 @@ Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster 
 
 ## Engine
 
+- [ ] Shield regen inside a fight comes back (Ryan, 9 November, from his play of Phase 2: "There's no buffer for bad rolls or unfortunate target RNG, and it pushes the tank into a singular, inflexible, mandatory pattern"): the slot is built (`shield_regen` on a chassis, regained at the start of every skirmish round, zero everywhere), so it is content numbers, read first with the curve read (`--set chassis/<id>/shield_regen=N` on the default four) and the holes in chat (a regen that returns every round weighs the shield spend less and lengthens the fights the light teams already stall in); with the refit, or before his play of the new formations, his call
 - [ ] The skirmish code audit's fixes in its order (`docs/skirmish_audit.md`; its bugs built 8 November but the bot's readings and the die-in-hand forecast, which go with their steps): one hit routine with its arguments in place of the hidden flags, the mine's half left for the rework; one round model; the bot's and the screen's mirrors onto the engine's helpers, then a 30-seed direction; statuses as data, the Face, the dead code and the comments
 
 - [ ] The test runner reads a test that crashes after its first check as passed (`tests/run_tests.gd` fails only a test with no checks; found 30 October): a way to count a crash as a failure (a sentinel each test sets last, or the log scanned by a wrapper)

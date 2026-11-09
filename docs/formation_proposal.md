@@ -118,13 +118,16 @@ Claude's method, each line a proposal:
    so the plan shifts, which is what the wrench is for. One hunting patrol a domain and tier
    (none where the domain's rank and file do not hunt), placed last among its tier's patrols so
    the first patrols dealt push.
-6. **Who hunts, by the codex.** Wolves, wargs and alphas ("picks the slowest machine on the field",
-   "runs it down"); antlions, pit antlions and the queen ("waits under the sand for whatever is
-   slowest"); the bombs, grenades and balloons ("a ball of fire with a face, and it comes straight
-   for you"). The needlers push ("nobody has ever seen one move"), and so do the revenants and
-   wights, whose codex is the goblin's nearly word for word, the goblins being "normal fodder" by
-   Ryan's word. The Marsh's hunters are the Fell Rider and the wanderers, none in its rank and
-   file. Section 4 lays the two questions out with this lean.
+6. **Who hunts, by the codex and by the counterplay.** Wolves, wargs and alphas ("picks the slowest
+   machine on the field", "runs it down"); antlions, pit antlions and the queen ("waits under the
+   sand for whatever is slowest"). The needlers push ("nobody has ever seen one move"), and so do
+   the revenants and wights, whose codex is the goblin's nearly word for word, the goblins being
+   "normal fodder" by Ryan's word; and so do the bombs, grenades and balloons, whose codex says
+   they come for you, because Ryan read the lean and refused it (9 November): a hunter's threat
+   must be one a lone support can fight off by sequencing, as a wolf pack can be, never a burst
+   that decides the fight by itself, "welp I guess it's exploding my entire hull if I ever go out
+   of position". The Marsh's and the Peak's hunters are their elites and the wanderers, none in
+   their rank and file. Section 4 lays the two questions out.
 7. **The rating is read by who solos.** A one is a decision for a lone light tier-one machine
    (the Skua, hull 20 and shield 12) and free for the Badger; a two is the Badger's decision, or
    a pair's free fight; a three is a decision for three; a four is a decision for four. So the
@@ -151,17 +154,21 @@ by domain and tier by tier; section 5 reads them.
 **Who hunts among the rank and file.** Lean: the lines whose codex says they come for a machine
 hunt, as heavy patrols rated two; the rest push. So of today's twenty-nine hunting compositions
 (eleven formations, twelve patrols, six elites) the elites keep their hunts (the Pilgrim, the Fell
-Rider, the Thunder Ape, the Bane, the Reaper, the Wild Hunt: each a hard wrench by design), nine
-patrols hunt (the wolf, warg and alpha packs; the antlion pair, the pit pair and the queen's hunt;
-the bomb, grenade and balloon flights), and no formation does. The needler line pushes (five
-compositions today hunt by it: "a cactus … in the pose of someone running, and nobody has ever
-seen one move" is a pusher's codex), and the Marsh's revenants and wights push (four today: the
-goblin's line, "straight at the nearest thing with a heartbeat", which Ryan called fodder). The one
-line this lean is least sure of is the bombs': "it comes straight for you" reads as a hunt, and a
-flight of bombs that catches a lone machine and bursts through its shield is the kind of wrench a
-hunter should be; but a bomb is also the Peak's fodder, and if Ryan reads the line as a pusher's
-the Peak has no rank-and-file hunter at all, which the Marsh already shows is fine (its hunters are
-the Fell Rider and the wanderers). His call: the bombs.
+Rider, the Thunder Ape, the Bane, the Reaper, the Wild Hunt: each a hard wrench by design), six
+patrols hunt (the wolf, warg and alpha packs; the antlion trio, the pit pair and the queen's hunt),
+and no formation does. The needler line pushes (five compositions today hunt by it: "a cactus … in
+the pose of someone running, and nobody has ever seen one move" is a pusher's codex), and the
+Marsh's revenants and wights push (four today: the goblin's line, "straight at the nearest thing
+with a heartbeat", which Ryan called fodder). The bombs were the lean's one hunter line by their
+codex ("it comes straight for you"), and Ryan refused it (9 November): "I don't like bombs hunting
+… Because the counterplay to them is so binary. Its not that every unit should be able to fight
+off a hunter, but when the threat is 'welp I guess it's exploding my entire hull if I ever go out
+of position,' it can make for very unsatisfying risk-assesment. A support might be able to fight
+off a wolf pack alone if you sequence well, but if the bomb blows and your machine doesn't carry
+burst, then that's kind of the whole fight decided for you." So the bomb, grenade and balloon
+flights push, the Peak's hunters are its elites and the wanderers as the Marsh's are, and the rule
+his answer gives is the one to write: a hunter's threat is a sequence a lone machine can play
+against, never a burst that decides the fight by itself.
 
 Hole raised against the lean: the wolves' codex says "picks the slowest machine on the field",
 which is a hunt, and the goblins' "straight at the nearest thing with a heartbeat", which he
@@ -232,9 +239,10 @@ three foes is free for the Badger alone and free or a decision for the Skua alon
 has true ones under the Badger's twos; the Peak needed one written (the ember pair). The hunters
 rated two: the antlions, the pit pair, the queen's hunt and the grenade and balloon flights read
 as twos (a decision for the Badger or the Boar alone, or a wall for the Skua and free for a pair);
-the wolf pack, the warg pack and the bomb flight read as ones (free for the Skua at a fifth of its
-hull or a decision for it, free for the Badger), so a two on them is Ryan's word against the read,
-and the lever that would make them twos is their numbers (question 4).
+the wolf pack and the warg pack read as ones (free for the Skua at a fifth of its hull or a
+decision for it, free for the Badger), so a two on them is Ryan's word against the read, and the
+lever that would make them twos is their numbers (question 11); the bomb flight read a one too and
+pushes now (Ryan, 9 November).
 
 ### The Meadow
 
@@ -301,14 +309,14 @@ and the lever that would make them twos is their numbers (question 4).
 | `ember_pair` | patrol, 1 | free 0% · free 25% · — | none | keep: the Peak's true one, written after the first read |
 | `salamander_trio` | patrol, 1 | free 23% · wall 100% · — | none | keep, rated two (free for the Badger, a wall for the Skua); `salamander_pair` pruned (the same bands, the same question) |
 | `drakes_perch` | patrol, 1 | free 8% · wall 94% · — | none | keep, rated two (the stoke's question) |
-| `bomb_flight` | patrol, 2, hunts the nearest | free 12% · decision 48% at one · — | none | keep at two on his word; reads a one (a blow of four kills a bomb whole) |
+| `bomb_flight` | patrol, 1 | free 12% · decision 48% · — | none | keep, pushing, rated one by the read (a blow of four kills a bomb whole); the bombs never hunt (Ryan, 9 November) |
 | `wyvern_roost` | formation, 3 (tier two) | free 5% · decision 57% · free 10% | 4 to 7 | keep |
 | `grenade_volley` | formation, 3 | free 5% · decision 36% · free 8% | 4 to 7 | keep (everyone bursts: a question the roost does not ask) |
 | `magma_forge` | formation, 3 | decision 60% · wall 100% · decision 52% | none (a true three) | keep |
 | `fire_lizards` | patrol, 1 | free 27% · wall 100% · free 19% | none | keep at one: free for every heavy |
 | `lizard_trio` | patrol, 2 | decision 87% at one · wall · wall 85% at one, free 6% at two | none | keep: a true two |
 | `wyverns_perch` | patrol, 1 | decision 43% · wall 100%, decision 71% at two · wall 87% at one, free 6% at two | none | keep, rated two: a two by every read |
-| `grenade_flight` | patrol, 2, hunts the nearest | free 12% · wall 90% at one · free 12% | none | keep: a two (walls the Skua, free for a pair) |
+| `grenade_flight` | patrol, 2 | free 12% · wall 90% at one · free 12% | none | keep, pushing: a two (walls the Skua, free for a pair) |
 
 ### Tier three, read by the tier-three four
 
@@ -350,18 +358,20 @@ of 23 October want little fodder and dense fights; the rest carry none.
 | `magma_caldera` | formation, 3 | decision 82% · wall 100% · decision 75% · decision 89% | none (a true three, the heaviest) | keep |
 | `magma_lizards` | patrol, 1 | free 34% · wall 100% · free 40% · decision 75% | none | keep: a one for a heavy (a decision for the Swallowtail at three quarters of its hull) |
 | `dragons_perch` | patrol, 2 | free 14% · wall 100% · free 36% · decision 69% at one | none | keep: a two (a decision for the Swallowtail alone, free for every pair) |
-| `balloon_flight` | patrol, 2, hunts the nearest | free 18% · wall 95% · free 33% · decision 65% at one | none | keep: a two |
+| `balloon_flight` | patrol, 2 | free 18% · wall 95% · free 33% · decision 65% at one | none | keep, pushing: a two |
 
 **The count.** Today's sixty patrols and formations become ninety-two candidates and, with the
 twelve prunings above (the goblin warband, the guard warband, the bubble pair and the wolfrider
 warband; the needler swarm, the needler pair, the antlion pair and the djinn's mirage; the grave
 host and the dread host; the ember pit and the salamander pair), eighty: the Meadow twenty-two,
 the Waste twenty, the Marsh eighteen, the Peak twenty (the elites' twenty and the escorts'
-twenty-four unchanged). The hunters: nine patrols (the antlion pair pruned to the trio) and the
-six elites, from twenty-nine. Rated two among the patrols: the nine hunters and the knight's
-retinue, the knight and wights, the dread vigil, the lizard trio, the wyverns' perch, the
-salamander trio, the drakes' perch, the barbed scouts, the gorgon pair, the wraiths' wake, the metal
-pair and the dragons' perch, twenty-one in all; rated one, seventeen; the formations forty-two.
+twenty-four unchanged). The hunters: six patrols (the wolf, warg and alpha packs, the antlion trio,
+the pit pair and the queen's hunt; the bomb line pushes since Ryan's answer of 9 November) and the
+six elites, from twenty-nine. Rated two among the patrols: the six hunters and the grenade and
+balloon flights, the knight's retinue, the knight and wights, the dread vigil, the lizard trio, the
+wyverns' perch, the salamander trio, the drakes' perch, the barbed scouts, the gorgon pair, the
+wraiths' wake, the metal pair and the dragons' perch, twenty in all; rated one, eighteen; the
+formations forty-two.
 
 
 ## 6. The bosses as fixed entries by tier and ramp
@@ -472,7 +482,8 @@ the grids land.
 
 ## 9. Questions for Ryan
 
-1. The bombs: a hunter line (the lean) or fodder?
+1. ~~The bombs: a hunter line (the lean) or fodder?~~ Settled 9 November: fodder, since a bomb's
+   counterplay is binary; the bomb, grenade and balloon flights push.
 2. The opening: no hunter dealt at turn one by the one line of code (the lean), by content order,
    or neither (today's opening backs a hunter off a row at a time instead)?
 3. The rating of one read by a lone light machine, and two by the Badger alone: is that the
@@ -489,10 +500,9 @@ the grids land.
 10. The metal pair (hole 6): on the map as a two, or in formations only? The read: it walls the
     light four at one and two (their blows bounce off three plate) and is a decision for the Badger
     alone; the lean is formations only.
-11. The three hunters that read as ones (the wolf pack and the warg pack free for the Skua at a
-    fifth of its hull and free for the Badger; the bomb flight a decision for the Skua, a blow of
-    four killing a bomb whole): a two on his word, a one by the read, or their numbers moved with
-    the refit so the two is earned?
+11. The two hunters that read as ones (the wolf pack and the warg pack free for the Skua at a
+    fifth of its hull and free for the Badger): a two on his word, a one by the read, or their
+    numbers moved with the refit so the two is earned?
 12. The giants' line has no escalation and a kit that cannot out-damage the knit stalls against it
     (hole 8): an escalation on the Barrow Giant's line with the refit, or left to the kits?
 13. The ratings are read on the default four; the light four finds every massive-anchored formation
@@ -804,7 +814,7 @@ Tier 3: the reads (F free, D a decision, W a wall; greedy's hull lost beside eac
 | `salamander_pair` | patrol | 1 | — | Salamander, Salamander, ·, · | ·, ·, ·, · | Two burning bites: heat you carry into the next round. | new, a true one |
 | `salamander_trio` | patrol | 2 | — | Salamander, Salamander, Salamander, · | ·, ·, ·, · | Three burning bites. | today's, rated two by the reads (free for the Badger, a wall for the Skua) |
 | `drakes_perch` | patrol | 2 | — | Salamander, ·, ·, · | ·, Drake, Drake, · | Two drakes behind one lizard, open: the stoke sets you burning; kill them first. | new, rated two by the reads (free for the Badger, a wall for the Skua) |
-| `bomb_flight` | patrol | 2 | nearest | Bomb, Bomb, Bomb, Bomb | ·, ·, ·, · | Four bombs come straight for the nearest machine and burst through its shield when hurt: fight it in company, kill each whole, or let the shield eat the burst. | today's, rated two: the Peak's hunter (its codex: it comes straight for you) |
+| `bomb_flight` | patrol | 1 | — | Bomb, Bomb, Bomb, Bomb | ·, ·, ·, · | Four bombs that burst through the shield when hurt: kill each whole, or let a shield eat the burst. | today's, pushing now (Ryan, 9 November: a bomb's counterplay is binary, so the bombs never hunt); rated one by the reads |
 
 Tier 1: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
 
@@ -817,7 +827,7 @@ Tier 1: the reads (F free, D a decision, W a wall; greedy's hull lost beside eac
 | `salamander_pair` | 1 | 14 | F 6% | F 0% | F 0% | F 0% | W 91% | F 1% | F 0% | F 0% | bomb_flight, drakes_perch, salamander_trio |
 | `salamander_trio` | 2 | 21 | F 23% | F 2% | F 0% | F 0% | W 100% | F 17% | F 0% | F 0% | bomb_flight, drakes_perch, salamander_pair |
 | `drakes_perch` | 2 | 19 | F 8% | F 0% | F 0% | F 0% | W 94% | F 9% | F 0% | F 0% | bomb_flight, salamander_pair, salamander_trio |
-| `bomb_flight` | 2 | 40 | F 12% | F 0% | F 0% | F 0% | D 48% | F 6% | F 0% | F 0% | drakes_perch, salamander_pair, salamander_trio |
+| `bomb_flight` | 1 | 40 | F 12% | F 0% | F 0% | F 0% | D 48% | F 6% | F 0% | F 0% | drakes_perch, salamander_pair, salamander_trio |
 
 **Tier 2**: the grids
 
@@ -829,7 +839,7 @@ Tier 1: the reads (F free, D a decision, W a wall; greedy's hull lost beside eac
 | `fire_lizards` | patrol | 1 | — | Fire Lizard, Fire Lizard, ·, · | ·, ·, ·, · | Two lizards that scorch three a bite. | today's four made two (a wall for one) |
 | `lizard_trio` | patrol | 2 | — | Fire Lizard, Fire Lizard, Fire Lizard, · | ·, ·, ·, · | Three lizards: a fight for two. | new, a heavy patrol |
 | `wyverns_perch` | patrol | 2 | — | Fire Lizard, ·, ·, · | ·, Wyvern, Wyvern, · | Two wyverns behind one lizard, open: the dive through the shield, or the stoke. | new, rated two by every read |
-| `grenade_flight` | patrol | 2 | nearest | Grenade, Grenade, Bomb, Bomb | ·, ·, ·, · | Grenades and bombs come for the nearest machine: bursts on everyone and bursts through the shield. | today's, rated two: the Peak's hunter |
+| `grenade_flight` | patrol | 2 | — | Grenade, Grenade, Bomb, Bomb | ·, ·, ·, · | Grenades and bombs: bursts on everyone and bursts through the shield once hurt; kill each whole. | today's, pushing now (the bombs never hunt), rated two by the reads |
 
 Tier 2: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
 
@@ -853,7 +863,7 @@ Tier 2: the reads (F free, D a decision, W a wall; greedy's hull lost beside eac
 | `magma_caldera` | formation | 3 | — | Sulphur Elemental, Magma Lizard, Magma Lizard, Balloon | ·, Wyvern, ·, · | The sulphur elemental, hottest of its line, stokes the others by three and vents by five; a wyvern dives behind the primers. | today's with a wyvern |
 | `magma_lizards` | patrol | 1 | — | Magma Lizard, Magma Lizard, ·, · | ·, ·, ·, · | Two primers: each lights the other's next blow. | new |
 | `dragons_perch` | patrol | 2 | — | Magma Lizard, ·, ·, · | ·, Red Dragon, ·, · | One dragon behind one lizard, open: the crush a round ahead, the breath on everyone. | new, a heavy patrol |
-| `balloon_flight` | patrol | 2 | nearest | Balloon, Balloon, Grenade, Grenade | ·, ·, ·, · | Balloons and grenades come for the nearest machine: everyone bursts on. | today's, rated two: the Peak's hunter |
+| `balloon_flight` | patrol | 2 | — | Balloon, Balloon, Grenade, Grenade | ·, ·, ·, · | Balloons that swell a round and grenades that burst on everyone: a round to kill each whole or shield everyone. | today's, pushing now (the bombs never hunt), rated two by the reads |
 
 Tier 3: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
 

@@ -307,8 +307,8 @@ def write(args):
           "Two drakes behind one lizard, open: the stoke sets you burning; kill them first.",
           "new, rated two by the reads (free for the Badger, a wall for the Skua)", squad=2),
         C("bomb_flight", "patrol", [1], ["bomb"]*4, [N]*4,
-          "Four bombs come straight for the nearest machine and burst through its shield when hurt: fight it in company, kill each whole, or let the shield eat the burst.",
-          "today's, rated two: the Peak's hunter (its codex: it comes straight for you)", squad=2, hunts="nearest"),
+          "Four bombs that burst through the shield when hurt: kill each whole, or let a shield eat the burst.",
+          "today's, pushing now (Ryan, 9 November: a bomb's counterplay is binary, so the bombs never hunt); rated one by the reads"),
         # tier two: grenade, fire_lizard, wyvern (back), basalt_elemental
         C("wyvern_roost", "formation", [2], ["fire_lizard", "fire_lizard", "bomb", "grenade"], ["wyvern", "wyvern", N, N],
           "The wyverns dive through the shield for half again their bite, the spike a Barrier or a shield is sized for; the lizards scorch three a bite.",
@@ -329,8 +329,8 @@ def write(args):
           "Two wyverns behind one lizard, open: the dive through the shield, or the stoke.",
           "new, rated two by every read", squad=2),
         C("grenade_flight", "patrol", [2], ["grenade", "grenade", "bomb", "bomb"], [N]*4,
-          "Grenades and bombs come for the nearest machine: bursts on everyone and bursts through the shield.",
-          "today's, rated two: the Peak's hunter", squad=2, hunts="nearest"),
+          "Grenades and bombs: bursts on everyone and bursts through the shield once hurt; kill each whole.",
+          "today's, pushing now (the bombs never hunt), rated two by the reads", squad=2),
         # tier three: balloon, magma_lizard, red_dragon (back), sulphur_elemental
         C("dragons_roost", "formation", [3], ["magma_lizard", "fire_lizard", "balloon", "grenade"], ["red_dragon", "red_dragon", "wyvern", "wyvern"],
           "Two dragons go for the hottest machine, crush a round ahead and scorch everyone; the lizard primes the pack to burn. Cool, shield the crush, kill the balloon whole.",
@@ -351,8 +351,8 @@ def write(args):
           "One dragon behind one lizard, open: the crush a round ahead, the breath on everyone.",
           "new, a heavy patrol", squad=2),
         C("balloon_flight", "patrol", [3], ["balloon", "balloon", "grenade", "grenade"], [N]*4,
-          "Balloons and grenades come for the nearest machine: everyone bursts on.",
-          "today's, rated two: the Peak's hunter", squad=2, hunts="nearest"),
+          "Balloons that swell a round and grenades that burst on everyone: a round to kill each whole or shield everyone.",
+          "today's, pushing now (the bombs never hunt), rated two by the reads", squad=2),
     ]
 
     # The pruning the reads name (docs/formation_proposal.md, section 5): each the same bands as

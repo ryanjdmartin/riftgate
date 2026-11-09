@@ -78,7 +78,7 @@ one). Each merge commit says how its conflicts were settled.
 Still working (9 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`, the
 formation pass (its proposal `docs/formation_proposal.md`, waiting on Ryan's marks; the curve
 read's `--team`, `--tiers`, `--sizes` and `--domains`; the reads in `docs/measurements.md`, 9
-November; the bible's file at v0.490 with section 12 pointing at the proposal, its republish
+November; the bible's file at v0.491 with section 12 pointing at the proposal and holding his play's directions, its republish
 waiting on Ryan's word as v0.489's does, Pages below), beside `ccr-8df9952c-4cccdf`, the skirmish
 code audit's structural steps (one round's end and one blow on a machine, the behaviour trace;
 `sim/skirmish.gd`, which this branch never touches); and `ccr-7effd31a-u5z4gw`, the
@@ -143,6 +143,24 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
+  to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
+  damage high, so the tank tanked every turn while the rest could not take foes down reliably
+  before a whiffed lure; Floraison impossible ("its HP was insurmountable", eating the tank and
+  whittling the dealers); the Stingray caught by hunters and fine, since the Photosphere Lance at
+  4 with Burn "takes down most foes", used as burst not as the hybrid meant; the Armadillo "a
+  beast of a tank and way too strong for tier 1", the one reason a boss was reached (his notes in
+  another session); never in control, every fight "how do I get out of this with all my machines
+  intact", which "should be reserved for Hunter, Elite and Boss packs, not pushers and flankers".
+  The locked pieces warp the die: he chased the Flak Repeater as his only area piece, the Lance
+  and the Skua's sweep every round, heat no deterrent. His rough conclusions, each a direction
+  for discussion first (the formation pass's chat): enemy HP down slightly and the synergy pieces
+  up rather than raw numbers, judged after he plays the new formations, so the refit waits on
+  them; the locked pieces on a new footing, a tier and upgrades his lean over utility-only; shield
+  regen inside a fight back (the slot is built, `shield_regen`, zero everywhere), since nothing
+  buffers a bad roll or an unlucky pick and the tank's pattern is "singular, inflexible,
+  mandatory". The bombs never hunt (his answer to the proposal's first question): a hunter's
+  threat is a sequence a lone support can play against, never a burst that decides the fight.
 - **The formation pass, proposed** (9 November, `ccr-722ca9f0-yj8na3`, Ryan: "I'll sort out the
   questions in the formation pass"): `docs/formation_proposal.md`, every domain's patrols and
   formations written anew as grids with a question each under `design` (an anchor and a swarm,
@@ -164,11 +182,13 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   numbers; two-anchor formations written after the first read are true threes at tier two (the
   grove and bloom, the pit wall); every domain has true ones for the Skua alone (the Peak's the
   new ember pair); the antlions, the pit pair, the queen's hunt and the grenade and balloon
-  flights read as twos, the wolf pack, the warg pack and the bomb flight as ones (a two on them
-  his word); the light four walls on every massive and stalls against the grave field (the giants'
-  line has no escalation). Next: Ryan's marks on its thirteen questions, then the content lands
-  with the opening's line, the vocabulary and the rules, and the bosses' blocks in a session of
-  their own.
+  flights read as twos, the wolf pack and the warg pack as ones (a two on them his word); the
+  light four walls on every massive and stalls against the grave field (the giants' line has no
+  escalation). His first answer, the same day: the bombs never hunt, so the Peak's hunters are its
+  elites and the wanderers; its first question is settled and twelve stand. Next: his marks on
+  them, or his word to land the grids on the leans so he can play them (he wants the new
+  formations judged before the refit), then the content lands with the opening's line, the
+  vocabulary and the rules, and the bosses' blocks in a session of their own.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
