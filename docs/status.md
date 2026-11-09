@@ -496,8 +496,9 @@ commands are in `README.md`.
   `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
   page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
   clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
-  for byte). Main's file is v0.492 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
-  then the map session's shapes and field rows and the playtest list of 9 November); its
+  for byte). Main's file is v0.495 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
+  then the map session's shapes and field rows, the playtest list of 9 November and the Polar
+  Bear's kit and name of the same day); its
   republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
   `dc265dc9`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
@@ -514,21 +515,15 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. Behind
-  `ccr-d26a1321-xg9xge` (8 November) by `content/vocabulary.json` (the Ring's, the Pack's and the
-  Behaviour's codex), `content/foes.json` (no ring or hunt on a foe), `content/factions.json` (a
-  composition's `hunts`) and `tools/hangar.html` (the foe list's Zone gone): the live vocabulary
-  checked byte for byte against main's, `edits` empty and `designs` the two folded ideas, but the
-  publish refused by the permission check as unrequested, so it waits on Ryan's word. At the page's version 214
-  (8 November, from `ccr-1eaf0060-jrpw04` at `34ae947`: only `content/vocabulary.json` and
-  `content/components.json`, the Ability term, the seal, the Ore Plate, Golden, Guarded and Hot
-  Streak as abilities, the Purge's codex and the Null Field Emitter's, onto the long wall's
-  version 213 of that day: the page's foe-tier check reading the grid and `content/factions.json`
-  as grids). As the audit landed on main its seven content files were checked against main's one
-  by one and match, so main and the page agree. Versions 210 and 211 (7 November) were the Sweep
-  session's; version 209 before them the long wall branch's page, content files, pins and
-  `designs.json` with Ryan's eight directions folded in (2e871be), his two ideas, the Giant
-  Petrel and the Needletail, marked briefed (benched in the Kestrel hub's brief); `edits` empty.
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's
+  version 215 (9 November, main at `a95e0a1`, Ryan's word on the Polar Bear's id: "its exposed
+  to me as the designer reading the Hangar"): every file changed since the page last moved
+  (version 213's `eca105a`, version 214 adding only vocabulary and components), so the hunts
+  work of 8 November landed with it (the foe list's Zone gone, a composition's `hunts`), and the
+  armadillo paths removed; the 245 files not sent checked against the live listing by size and
+  all match, so main and the page agree. `edits` empty, `designs` the two folded ideas (the Giant
+  Petrel and the Needletail, briefed), and one name candidate of Ryan's, the Tesla Gauntlets of
+  28 September, still saying "the Armadillo's status" (his words of then, kept).
   `build/hangar/designs.json` is one
   878 KB line, so a session that must read it whole before publishing writes it indented first.
   Its lit parts show as the phone's renderer shows
