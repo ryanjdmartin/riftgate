@@ -31,17 +31,17 @@ COMBAT = {
     # descends from it (content/foes.json). The brute, the spawn and the whisperer have no heir.
     "GHOUL": ("revenant", "UND"),
     "NECRO": ("ghost", "UND"),
-    "COLOSSUS": ("bone_dragon", "UND"),
+    "COLOSSUS": ("bone_wyvern", "UND"),
     "HELLCASTER": ("drake", "DEM"),
-    "PITLORD": ("magma_golem", "DEM"),
+    "PITLORD": ("magma_elemental", "DEM"),
     "MAW": ("sandworm", "ELD"),
 }
 MAP = {
     "T_GHOUL": ("revenant", "UND"),
     "T_NECRO": ("ghost", "UND"),
-    "TB_COLOSSUS": ("bone_dragon", "UND"),
+    "TB_COLOSSUS": ("bone_wyvern", "UND"),
     "T_HELLCASTER": ("drake", "DEM"),
-    "T_PITLORD": ("magma_golem", "DEM"),
+    "T_PITLORD": ("magma_elemental", "DEM"),
     "T_MAW": ("sandworm", "ELD"),
 }
 

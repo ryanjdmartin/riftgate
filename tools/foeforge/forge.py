@@ -94,7 +94,7 @@ PALETTE_FOR = {"meadow": "UND", "waste": "DEM", "marsh": "UND", "peak": "DEM"}
 # phone; 48x64 lost the art's detail and 96x128 went uneven and thin-outlined at 1.5.
 COMBAT_SIZE = {1: (72, 96), 2: (96, 144)}
 MAP_SIZE = {1: (16, 16), 2: (16, 16)}
-BIG_MAP = {"bone_dragon": (40, 40)}   # the old three-hex colossus's token; the other bosses take MAP_SIZE until the multi-hex boss returns
+BIG_MAP = {"bone_wyvern": (40, 40)}   # the old three-hex colossus's token; the other bosses take MAP_SIZE until the multi-hex boss returns
 
 
 DRAFTS = ROOT / "tools" / "foeforge" / "drafts.json"

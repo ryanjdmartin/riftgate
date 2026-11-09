@@ -19,10 +19,10 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # chassis id: (the pieces in its hardpoints, its modules)
 KITS = {
-    'nemesis': (['meteor_artillery', 'blazethrower', 'backdraft_charge', 'oblation_ward'], ['ward_plate', 'grievance_reliquary']),
+    'nemesis': (['meteor_artillery', 'blazethrower', 'backdraft_charge', 'oblation_mantle'], ['ward_plate', 'grievance_reliquary']),
     'wild_boar': (['tesla_gauntlets', 'slugthrower', 'shotfire_rack', 'canopy', 'coolant_jacket'], ['ram_frame', 'spall_liner']),
     'badger': (['transonic_rifle', 'canopy', 'coolant_jacket'], ['ram_frame', 'spall_liner']),
-    'goshawk': (['overclocked_railgun', 'transonic_rifle', 'cyclic_cannon', 'canopy', 'bleed_valve'], ['boundary_layer_bleed', 'ward_plate']),
+    'buzzard': (['overclocked_railgun', 'transonic_rifle', 'cyclic_cannon', 'canopy', 'bleed_valve'], ['boundary_layer_bleed', 'ward_plate']),
     'prairie_dog': (['flak_cannon', 'corona_shield', 'coolant_jacket'], ['susceptibility_tensor', 'flak_skirt']),
     'clydesdale': (['maxigun', 'cyclic_cannon', 'enfilade_beam', 'howitzer', 'howitzer', 'airburst_shell', 'canopy',
                     'suppression_battery', 'coolant_jacket'], ['spall_liner', 'susceptibility_tensor', 'flak_skirt']),
@@ -30,7 +30,7 @@ KITS = {
                 'differentiation_probe'], ['phase_conjugator', 'susceptibility_tensor']),
     'dingo': (['airburst_shell', 'cyclic_cannon', 'coolant_jacket'], ['susceptibility_tensor', 'flak_skirt']),
     'lammergeier': (['meteor_artillery', 'polarity_projector', 'cyclic_cannon', 'wake_diffuser'], ['boundary_layer_bleed', 'ward_plate']),
-    'sparrowhawk': (['transonic_rifle', 'bleed_valve'], ['boundary_layer_bleed', 'ward_plate']),
+    'kite': (['transonic_rifle', 'bleed_valve'], ['boundary_layer_bleed', 'ward_plate']),
     'puffin': (['corona_shield', 'laminar_deflector', 'radiator_sail', 'cyclic_cannon'], ['phase_conjugator', 'flak_skirt']),
     'cottonmouth': (['flak_cannon', 'tesla_gauntlets', 'meteor_artillery', 'corona_shield'], ['susceptibility_tensor', 'flak_skirt']),
     'polar_bear': (['proximity_klaxon', 'slugthrower', 'canopy', 'bleed_valve'], ['ward_plate', 'ablative_plating']),
@@ -41,9 +41,9 @@ KITS = {
     'whip_scorpion': (['thermal_ray', 'entropy_condenser', 'coolant_jacket', 'maxigun'], ['ward_plate', 'ablative_plating']),
 }
 FOURS = [
-    ('the heavy line', ['nemesis', 'wild_boar', 'badger', 'goshawk']),
+    ('the heavy line', ['nemesis', 'wild_boar', 'badger', 'buzzard']),
     ('the setups', ['prairie_dog', 'clydesdale', 'baboon', 'dingo']),
-    ("Kestrel's four", ['lammergeier', 'sparrowhawk', 'puffin', 'goshawk']),
+    ("Kestrel's four", ['lammergeier', 'kite', 'puffin', 'buzzard']),
     ('armour and the drum', ['badger', 'cottonmouth', 'polar_bear', 'musk_ox']),
     ('the statuses', ['stingray', 'funnel_web', 'whip_scorpion', 'baboon']),
 ]

@@ -7,7 +7,7 @@ extends TestCase
 func _screen(seed_value: int = 3, massive: Foe = null) -> SkirmishScreen:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(seed_value)
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		sk.add_mech(db.make_mech(id))
 	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "marsh", 2, 4, "revenant")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
@@ -840,7 +840,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_true(s._codex._title.text.contains(title), "titled with the chassis name from content")
 	var headless := DisplayServer.get_name() == "headless"   # no renderer: the model view cannot draw
 	assert_true(headless or (s._codex._sprite.visible and s._codex._sprite.texture != null), "head-on model shown")
-	assert_true(s._codex._passives.visible, "sparrowhawk's passive is shown")
+	assert_true(s._codex._passives.visible, "kite's passive is shown")
 	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", "")).to_lower()
 	var shown := s._codex._passives.text().to_lower()
 	assert_true(not passive_name.is_empty() and shown.contains(passive_name), "by its name from content")
@@ -1392,7 +1392,7 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	var nob := db.make_foe("goblin_nob")
 	var gel := Foe.make("gel", 30, 1)
 	gel.on_death = {"summon": "gel_half", "count": 2, "pair": true}
-	var beast := Foe.make("behemoth", 30, 5)
+	var beast := Foe.make("gargantuan_king", 30, 5)
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	sk.add_foes([nob, gel, beast])
 	var s := SkirmishScreen.new()
@@ -1412,7 +1412,7 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	assert_true(str(ability.call(s._foe_rows(nob))[0][2]).contains("Enraged +1"), "which says what goes on")
 	assert_true(s._foe_rows(nob).any(func(row) -> bool: return str(row[2]) == "Buff, Enraged +2" and (row.size() < 5 or str(row[4]) != "ability")), "and what it has gathered is a buff's chip beside it")
 	assert_true(str(ability.call(s._foe_rows(gel))[0][2]).contains("splits"), "a Gel's split is its ability")
-	assert_true(str(ability.call(s._foe_rows(beast))[0][2]).contains("Last Act: Meteor"), "a last act is the Behemoth's")
+	assert_true(str(ability.call(s._foe_rows(beast))[0][2]).contains("Last Act: Meteor"), "a last act is the Gargantuan King's")
 	Effects.purge(m, 9)
 	Effects.purge(nob, 9)
 	assert_true(Effects.is_sealed(m), "a Purge leaves the seal")

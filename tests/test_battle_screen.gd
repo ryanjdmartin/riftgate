@@ -8,7 +8,7 @@ extends TestCase
 func _screen(seed_value: int = 3) -> BattleScreen:
 	var db := ContentDB.load_default()
 	var team: Array = []
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(seed_value)
 	# The ramp's field, the long wall's (its brief's Phase 2 lays the view for it), and the start

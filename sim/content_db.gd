@@ -307,7 +307,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.regrow_parts = maxi(0, int(d.get("regrow_parts", 0)))
 	var od = d.get("on_death", {})
 	if od is Dictionary:
-		# A split (the Gel) and a last act (15 October, the Behemoth's Meteor), either or both.
+		# A split (the Gel) and a last act (15 October, the Gargantuan King's Meteor), either or both.
 		var made := {}
 		if od.has("summon"):
 			made["summon"] = str(od["summon"])

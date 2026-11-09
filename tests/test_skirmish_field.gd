@@ -7,7 +7,7 @@ extends TestCase
 ## on their rank's line, what flies over its shadow, and the breathe planted at the feet.
 
 
-func _screen(controls: String, team: Array = ["badger", "clydesdale", "sparrowhawk"]) -> SkirmishScreen:
+func _screen(controls: String, team: Array = ["badger", "clydesdale", "kite"]) -> SkirmishScreen:
 	Settings.display["skirmish_controls"] = controls
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(3)
@@ -137,7 +137,7 @@ func test_the_squad_stands_in_fixed_hexes() -> void:
 	var was: Variant = Settings.display.get("skirmish_controls", "middle")
 	var spots := {}
 	var four: Array = []
-	for team in [["badger"], ["badger", "clydesdale"], ["badger", "clydesdale", "sparrowhawk"], ["badger", "clydesdale", "sparrowhawk", "baboon"]]:
+	for team in [["badger"], ["badger", "clydesdale"], ["badger", "clydesdale", "kite"], ["badger", "clydesdale", "kite", "baboon"]]:
 		var s := _screen("middle", team)
 		var xs: Array = []
 		for i in range(team.size()):
@@ -169,7 +169,7 @@ func test_the_machines_turn_toward_the_middle() -> void:
 	# on the right can face slightly left". MechView3D's turn is positive to the machine's left: a
 	# yaw that swings the nose (away from the camera, -Z) toward -X, the screen's left.
 	var was: Variant = Settings.display.get("skirmish_controls", "middle")
-	var s := _screen("middle", ["badger", "clydesdale", "sparrowhawk", "baboon"])
+	var s := _screen("middle", ["badger", "clydesdale", "kite", "baboon"])
 	assert_eq([s._mech_turn(0), s._mech_turn(1)], [-SkirmishScreen.FIELD_TURN, -SkirmishScreen.FIELD_TURN], "the left two turn to their right")
 	assert_eq([s._mech_turn(2), s._mech_turn(3)], [SkirmishScreen.FIELD_TURN, SkirmishScreen.FIELD_TURN], "the right two to their left")
 	s.free()

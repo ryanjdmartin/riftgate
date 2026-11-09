@@ -50,13 +50,13 @@ func test_build_die_leaves_empty_hardpoints_empty() -> void:
 func test_chassis_validator_guards_hardpoints() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var c: Dictionary = db.chassis["kite"].duplicate(true)
 	c["loadout"] = ["laminar_deflector", "laminar_deflector", "laminar_deflector", "laminar_deflector", "laminar_deflector"]
 	db.chassis["over"] = c
 	var f: Dictionary = db.chassis["badger"].duplicate(true)
 	f["loadout"] = ["chainsaw_claw"]
 	db.chassis["twice"] = f
-	var g: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var g: Dictionary = db.chassis["kite"].duplicate(true)
 	g["filler"] = {"kind": "shield", "power": 10}
 	db.chassis["stuffed"] = g
 	var over := false
@@ -108,12 +108,12 @@ func test_chassis_validator_wants_one_way_of_moving_and_moves_in_hexes() -> void
 	assert_true(odd_move, "a move past six hexes is refused")
 
 
-func test_sparrowhawk_loadout_matches_design() -> void:
+func test_kite_loadout_matches_design() -> void:
 	var db := _db()
-	var u := db.make_mech("sparrowhawk")
-	assert_eq(u.movespeed, int(db.chassis["sparrowhawk"]["movespeed"]), "the move is the content's, in hexes")
+	var u := db.make_mech("kite")
+	assert_eq(u.movespeed, int(db.chassis["kite"]["movespeed"]), "the move is the content's, in hexes")
 	assert_true(u.movespeed >= 1 and u.movespeed <= ContentDB.MAX_MOVE, "moves are hexes, 1 to 6")
-	assert_true(u.traits.has("flyer"), "sparrowhawk flies")
+	assert_true(u.traits.has("flyer"), "kite flies")
 	assert_false(u.can_block(), "and therefore does not block")
 
 
@@ -488,7 +488,7 @@ func test_a_foes_buff_specials_say_their_number_or_none() -> void:
 func test_passive_effect_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var c: Dictionary = db.chassis["kite"].duplicate(true)
 	c["design"].erase("one_off")   # the cap as it stands for every passive without one
 	var eff := {"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}   # synthetic: content's passives change
 	c["passive"] = {"id": "bloated", "name": "Bloated", "description": "Four effects.", "effects": [eff, eff, eff, eff]}
@@ -547,7 +547,7 @@ func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 func test_internal_text_cannot_sit_at_the_top_level() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var c: Dictionary = db.chassis["kite"].duplicate(true)
 	c["fantasy"] = "would be shown"
 	db.chassis["leaky"] = c
 	var f: Dictionary = db.foes["revenant"].duplicate(true)
@@ -641,7 +641,7 @@ func test_min_damage_passive_raises_the_floor() -> void:
 func test_planned_passive_is_kept_but_not_run() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var c: Dictionary = db.chassis["kite"].duplicate(true)
 	c["passive"] = {"id": "draft", "name": "Draft", "description": "Not built yet.", "status": "planned",
 		"effects": [{"trigger": "on_sunrise", "effect": "immune_destroy", "value": 1}]}
 	db.chassis["drafted"] = c
@@ -931,7 +931,7 @@ func test_content_dice_are_sane_and_one_number_each() -> void:
 func test_unsupported_passive_effect_is_rejected() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var c: Dictionary = db.chassis["kite"].duplicate(true)
 	c["passive"]["effects"] = [{"trigger": "on_attack", "effect": "summon_dragon", "value": 1}]
 	db.chassis["dreamer"] = c
 	var hit := false
@@ -1031,7 +1031,7 @@ func test_chassis_cooling_is_read_and_never_negative() -> void:
 	for id in db.chassis.keys():
 		var u := db.make_mech(id)
 		assert_eq(u.cooling, int(db.chassis[id].get("cooling", 0)), "%s cooling read from content (0 when absent)" % id)
-	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var c: Dictionary = db.chassis["kite"].duplicate(true)
 	c["cooling"] = -5
 	db.chassis["frozen"] = c
 	var hit := false
@@ -1051,7 +1051,7 @@ func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void
 	for id in db.chassis.keys():
 		assert_false(db.chassis[id].has("recharge_field"), "%s names no field recharge" % id)
 		assert_eq(db.make_mech(id).shield_regen, 0, "%s regains nothing a round (no chassis sets it yet)" % id)
-	var base: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var base: Dictionary = db.chassis["kite"].duplicate(true)
 	var cases := {"old": ["recharge_field", 4, true], "regen": ["shield_regen", 2, false], "top": ["shield_regen", 9, false],
 		"over": ["shield_regen", 10, true], "under": ["shield_regen", -1, true], "half": ["shield_regen", 1.5, true]}
 	for tag in cases.keys():
@@ -1071,9 +1071,9 @@ func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void
 	for item in db.codex_for_unit(u)["stat_items"]:
 		shown = shown or str(item[0]) == "shield regen"
 	assert_true(shown, "the codex shows a regen that is not zero")
-	var plain_items: Array = db.codex_for_unit(db.make_mech("sparrowhawk"))["stat_items"]
+	var plain_items: Array = db.codex_for_unit(db.make_mech("kite"))["stat_items"]
 	assert_false(plain_items.any(func(item) -> bool: return str(item[0]) == "shield regen"), "and none where it is zero")
-	assert_false(str(db.codex_for_unit(db.make_mech("sparrowhawk"))["stats"]).contains("PHASE"), "the stats line names no field recharge")
+	assert_false(str(db.codex_for_unit(db.make_mech("kite"))["stats"]).contains("PHASE"), "the stats line names no field recharge")
 
 
 ## A composition's fields of the long wall brief (section 6), on synthetic compositions: squad 1
@@ -1119,13 +1119,13 @@ func test_a_compositions_ramp_gate_deals_it_and_its_tier_is_covered() -> void:
 	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("gate_high: ramp is [lo, hi]")), "a gate past the top")
 	high["ramp"] = [6, Ramp.TOP]
 	# A tier fought from C4 needs its gates from C4 only; an escort's group is its boss's.
-	var court := {"id": "gate_court", "size": "escort", "boss": "bourgeon", "tiers": [2], "ramp": [Campaign.TIER_EVERY, Ramp.TOP], "front": ["warg", null, null, null], "back": [null, null, null, null]}
-	kept = (db.factions["meadow"]["compositions"] as Array).filter(func(c) -> bool: return not (str(c.get("boss", "")) == "bourgeon" and ContentDB.composition_tiers(c).has(2)))
+	var court := {"id": "gate_court", "size": "escort", "boss": "floraison", "tiers": [2], "ramp": [Campaign.TIER_EVERY, Ramp.TOP], "front": ["warg", null, null, null], "back": [null, null, null, null]}
+	kept = (db.factions["meadow"]["compositions"] as Array).filter(func(c) -> bool: return not (str(c.get("boss", "")) == "floraison" and ContentDB.composition_tiers(c).has(2)))
 	kept.append(court)
 	db.factions["meadow"]["compositions"] = kept
 	assert_true(db.validate().filter(func(e) -> bool: return str(e).contains("ramp")).is_empty(), "tier two's escort gated from its first Convergence: sound")
-	assert_eq(str(db.escort_composition("meadow", 2, "bourgeon", Campaign.TIER_EVERY).get("id", "")), "gate_court", "dealt at it")
-	assert_true(db.escort_composition("meadow", 2, "bourgeon", Campaign.TIER_EVERY - 1).get("boss", "") != "bourgeon", "and never under it")
+	assert_eq(str(db.escort_composition("meadow", 2, "floraison", Campaign.TIER_EVERY).get("id", "")), "gate_court", "dealt at it")
+	assert_true(db.escort_composition("meadow", 2, "floraison", Campaign.TIER_EVERY - 1).get("boss", "") != "floraison", "and never under it")
 	var s := HarnessSetup.defaults(_fresh())
 	s.battle_tier = 3
 	s.ramp = 0
@@ -1173,14 +1173,14 @@ func test_the_validator_holds_a_compositions_grid_squad_and_lead() -> void:
 	db.factions["meadow"]["compositions"].append(elite)
 	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("composition probe_elite:") and e.contains("led by its elite")), "an elite composition is led by its elite")
 	# A core's parts take their cells: the Astromancer as content writes it, and short of an orb.
-	var fid_of := db.faction_of_foe("star_magician")
+	var fid_of := db.faction_of_foe("astromancer")
 	var astro: Dictionary = {}
 	for c in db.factions[fid_of]["compositions"]:
 		if str(c.get("id", "")) == "the_astromancer":
 			astro = c
 	assert_false(astro.is_empty(), "the Astromancer is in content")
 	var members := db.grid_members(astro)
-	assert_eq(str(members[0][0]), "star_magician", "its members read off the grid lead with the core, the orbs left to parts_for")
+	assert_eq(str(members[0][0]), "astromancer", "its members read off the grid lead with the core, the orbs left to parts_for")
 	assert_true(members.all(func(m) -> bool: return not db.is_part(str(m[0]))), "no orb among them")
 	var short := astro.duplicate(true)
 	short["id"] = "probe_short_astro"
@@ -1639,11 +1639,11 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 		if e.begins_with("foe odd_ghoul") and (e.contains("effect must be") or e.contains("unknown foe") or e.contains("belongs to an attack")):
 			hits += 1
 	assert_eq(hits, 3, "a bad effect, an unknown summon and an attack field on a debuff are each named")
-	var entry := db.codex_for_foe(db.make_foe("bone_dragon"))
+	var entry := db.codex_for_foe(db.make_foe("bone_wyvern"))
 	var said := _moves_text(db, entry)
 	assert_true(said.contains("REGEN\nDefend · Target: Self"), "the codex lists the defend, aimed at itself: %s" % said)
 	var regrow := 0
-	for a in db.foes["bone_dragon"]["actions"]:
+	for a in db.foes["bone_wyvern"]["actions"]:
 		if str(a["id"]) == "regen":
 			regrow = int(a["value"])
 	assert_true(said.contains("Regrows %d HP" % regrow), "with its number filled in")

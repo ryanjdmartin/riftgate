@@ -86,7 +86,7 @@ func test_a_flyer_is_walked_under_but_never_stopped_on() -> void:
 	var f := _field()
 	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(3, 2), "marsh", 2))
 	var plain: Battlefield.Walk = f.plan_walks()[1]
-	var fly := Unit.mech(2, "Sparrowhawk", plain.path[0], 0)
+	var fly := Unit.mech(2, "Kite", plain.path[0], 0)
 	fly.traits = ["flyer"]
 	f.add_unit(fly)
 	var w: Battlefield.Walk = f.plan_walks()[1]
@@ -383,7 +383,7 @@ func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
 	var slow := f.add_unit(Unit.mech(2, "Polar Bear", _o(1, 9), 1))
 	slow.hull = 90
 	slow.shield = 30
-	var weak := f.add_unit(Unit.mech(3, "Sparrowhawk", _o(3, 9), 5))
+	var weak := f.add_unit(Unit.mech(3, "Kite", _o(3, 9), 5))
 	weak.hull = 20
 	weak.shield = 10
 	var mid := f.add_unit(Unit.mech(4, "Badger", _o(5, 9), 3))
@@ -410,7 +410,7 @@ func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
 	sq.prey = 0
 	f.pick_prey(sq)
 	weak.hull = 200
-	assert_eq(f.pick_prey(sq), weak, "still the Sparrowhawk, now the strongest")
+	assert_eq(f.pick_prey(sq), weak, "still the Kite, now the strongest")
 	f.units.erase(weak)
 	assert_eq(f.pick_prey(sq), mid, "the prey gone, it picks again: the weakest left")
 	# A machine whose passive says never_hunted (the Prairie Dog's) is never picked.

@@ -26,7 +26,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
 - Tests: 1081 tests, 304,222 checks, green (9 November, main with the shapes relaid and recast,
-  the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name and
+  the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
   the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -90,10 +90,10 @@ Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
 9 November: `ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), on Ryan's word
-("Merge this into main. Your reads are correct"), main taken as it landed (the Polar Bear: the
-save versions stacked, battles 19 and runs 18; the bible, the measurements, this file, the to-do
-and the synergy map the conflicts, both sides kept, the generated tables and map run again) and
-main taking it as a fast-forward; it is merged and to delete with the rest. Landed
+("Merge this into main. Your reads are correct"), main taken as it landed twice (the Polar Bear,
+then every renamed id: the save versions stacked, battles 20, runs 19 and quick runs 4; the
+bible, the measurements, this file, the to-do and the synergy map the conflicts, both sides kept,
+the generated tables, map and vocabulary run again) and main taking it as a fast-forward; it is merged and to delete with the rest. Landed
 9 November: `ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 (How things stand: one hit
 routine, the hidden flags gone, one round model, the behaviour trace), on Ryan's word ("Ok, merge
 into main"), main taken as it landed (the hunt and the rings, no conflict) and main taking it as
@@ -172,7 +172,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   own Mine first); the Lorentz Contractor gathers every Mine onto one foe and Exposes it. A Mine
   is a foe status: its chip shows the damage and its readout the keywords; a Ward turns it away,
   a cleanse takes it, a merge hands it to the merger. The slot mines' code and the audit's faults
-  parked on it went with it. Saves at 19, runs at 18 (main's Polar Bear id took 18 and 17). `RIFTGATE_MINE_DEBUG=1` mines every foe at
+  parked on it went with it. Saves at 20, runs at 19, quick runs at 4 (the renames of the day took
+  the numbers before). `RIFTGATE_MINE_DEBUG=1` mines every foe at
   a fight's open, to judge the blast running. His levers if it reads weak or dangerous: a Mine a
   hit; a cooldown on the drone. On main since 9 November ("Merge this into main. Your reads are
   correct": the Numbed call and the conditions read as the die is spent among them). The
@@ -188,7 +189,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   carrying Cryo (the strike that meets the stacks, its hit spending them). The probe that read the
   old kit is in `docs/measurements.md`. Renamed the Polar Bear the same day (the bible's names row; the claws in
   his words a metaphor for the damage boost), its id `polar_bear` with it on his word, its model, rig,
-  textures, blend and hangar renders moved and the save versions bumped (battles 18, runs 17, quick runs 2). 1075 tests green on this branch.
+  textures, blend and hangar renders moved and the save versions bumped (battles 18, runs 17, quick runs 2). The same day every
+  id still wearing an old name followed its name (Ryan: "Yes, rename them all"): `kite`, `buzzard`, `oblation_mantle`, eleven
+  foes' (`antiquarian`, `world_eater`, `shuffler` and `shuffler_spawn`, `floraison`, `gargantuan_king`, `emperor_scorpion`,
+  `astromancer`, `cleric` and `cleric_promoted`, `bone_wyvern`, `magma_elemental`) and the compositions named for them, their
+  models, rigs, sprites, renders and picks moved; the Kite's codex says the Kite at last (it still said the Sparrowhawk), and
+  the saves moved on again (battles 19, runs 18, quick runs 3). 1075 tests green.
 - **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
   Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
   all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always
@@ -524,10 +530,10 @@ commands are in `README.md`.
   `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
   page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
   clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
-  for byte). Main's file is v0.496 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
+  for byte). Main's file is v0.497 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
   then the map session's shapes and field rows, the playtest list of 9 November, the Polar
-  Bear's kit and name of the same day, and the Lammergeier's rework: its row, the Gel's and the
-  reinforcement row's slot-mine lines, the tables); its
+  Bear's kit and name of the same day, the ids following their names, and the Lammergeier's
+  rework: its row, the Gel's and the reinforcement row's slot-mine lines, the tables); its
   republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
   `dc265dc9`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's

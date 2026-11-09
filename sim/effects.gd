@@ -1662,7 +1662,7 @@ static func regenerating_shield(value: int) -> Dictionary:
 
 
 ## What the start of a round does for this machine (on_round_start, after the roll), with
-## the heat it carries: the Goshawk's Thermal Recoupler.
+## the heat it carries: the Buzzard's Thermal Recoupler.
 static func round_start(u, heat: int) -> Dictionary:
 	return fire(u, "on_round_start", heat)
 

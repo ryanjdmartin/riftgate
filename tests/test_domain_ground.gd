@@ -13,7 +13,7 @@ const DECORATIVE := [BattleMap.Terrain.PLAIN, BattleMap.Terrain.ROAD, BattleMap.
 func _battle(faction: String) -> Battle:
 	var db := ContentDB.load_default()
 	var team: Array = []
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(3)
 	b.setup(team, faction)

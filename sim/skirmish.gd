@@ -1315,7 +1315,7 @@ func start_round() -> void:
 	if not regened.is_empty():
 		log.append("shield regen: " + ", ".join(regened))
 	# Passives that fire at the round's start, after the roll: shield from heat, a flat
-	# shield, a vent (the Goshawk's Thermal Recoupler reads the heat as it stands now).
+	# shield, a vent (the Buzzard's Thermal Recoupler reads the heat as it stands now).
 	for ms in live_mechs():
 		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
@@ -5141,7 +5141,7 @@ func _regrows(f: Foe) -> bool:
 	return false
 
 
-## A foe's last act (15 October, the Behemoth's Meteor): its death blow lands the moment it
+## A foe's last act (15 October, the Gargantuan King's Meteor): its death blow lands the moment it
 ## falls, before anything else, so the player shields first and kills after, and even the last
 ## foe's lands, since damage sticks for the battle.
 func _last_act(f: Foe) -> void:
