@@ -1,5 +1,6 @@
-"""Hold The Line's twenty-fourth round (Ryan, 9 November, on the twenty-third): two sets on the twenty-third's
-pair, which has not changed, X on a rock beat and W's first beats on a half-open hat.
+"""Hold The Line's twenty-fifth round (Ryan, 9 November): two sets on the twenty-third's pair, which has not
+changed, X's kick on the riff (x_punch, its drums pushed, X_PUSH and X_PUSH_HARD; set hp) and W's first beats on the
+open hat, louder (set ho). Before them, the twenty-fourth's: X on a rock beat and W's first beats on a half-open hat.
 
   "X - can I hear 'The triplet bend into A, and the guitar and the keys traded' over a more standard rock beat
   (not necessarily simple, just based on a standard hats on eighths, snare on 2, 4, 6, and the 'and' of 7? W - do
@@ -81,7 +82,7 @@ minimalist"), its lifts' riff on the soft sub and the tine piano.
 The full pair on the switch takes every pick. The set's rows are the same bars from the same seed
 through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold23.json beside the pairs (about four minutes on four cores; `hj hh` the sets alone)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold23.json beside the pairs (about four minutes on four cores; `hp ho` the sets alone)
     tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hx       # the named sets only (hx, hk, hw, and full for the pair)
 """
 import json
@@ -1164,7 +1165,8 @@ W_INTRO_LOUD = ((6, "6"), (12, "7"), (18, "7"))
 
 
 def w_intro(drum="tom2", hits=W_INTRO):
-    return w_bar(W_BUILD + [(drum, step, vel) for step, vel in hits], ("kick", "snare", "tom", "tom2", "crash", "china", "hat"))
+    names = ("kick", "snare", "tom", "tom2", "crash", "china", "hat")
+    return w_bar(W_BUILD + [(drum, step, vel) for step, vel in hits], names if drum in names else names + (drum,))
 
 
 W_FILLS_INTRO = {"earlier": w_intro(), "loud": w_intro(hits=W_INTRO_LOUD), "snare": w_intro("snare"),
@@ -1180,6 +1182,10 @@ def w_intro_half(hits=W_INTRO):
     return w_bar(W_BUILD + [("hat_half", step, vel) for step, vel in hits], ("kick", "snare", "tom", "tom2", "crash", "china", "hat", "hat_half"))
 
 
+# Round twenty-five (Ryan, 9 November: "W - try open hat, louder, from the second eighth"): the three eighths on the
+# open hat from the first beat's off-beat, at the louder row's velocities or louder again.
+W_INTRO_LOUDER = ((6, "8"), (12, "9"), (18, "x"))
+W_FILLS_INTRO.update({"open_loud": w_intro("open", W_INTRO_LOUD), "open_louder": w_intro("open", W_INTRO_LOUDER)})
 W_FILLS_INTRO.update({"half": w_intro_half(), "half_crash": w_intro_half(W_INTRO_FROM_CRASH),
                       "china_crash": w_bar(W_BUILD + [("china", step, vel) for step, vel in W_INTRO_FROM_CRASH],
                                            ("kick", "snare", "tom", "tom2", "crash", "china", "hat", "hat_half"))})
@@ -1485,6 +1491,49 @@ def x_jazz(call, cymbal="hat"):
     if cymbal == "hat_half":
         w_hat_half(call)
     return call
+# X's kick on the riff (Ryan, 9 November: "X - still sounds too empty. Make the kick punch the riff. I'm not sure how
+# else to push the percussion drive in this section, give it more urgency and not so laid-back sounding. Maybe take
+# back the dressing, the only extra snare being on both of the final eighths, on the second repetitions (i.e. bars 2
+# and 4, the ones without the bends)"): the confirmed beat with its kick on every note of the riff instead of each
+# group's first eighth, so it lands with the snare on the backbeats the riff plays through; the dressing out; one
+# snare added, on the riff's B, the second-to-last eighth of each repetition without a bend (bars 4, 8 and 12, each
+# a call and answer's answer), so those repetitions end on two snares. X's drums ran at the plain level where the
+# unison's run 30% hotter, W's 25% and the climax's 15%, so a row pushes them to W's (X_PUSH); and one plays the
+# half-open hat in the closed hat's place for the wash.
+X_PUNCH_SNARES = tuple(14 * b + 10 for b in (3, 7, 11))   # the B of each answer without a bend
+X_PUSH = 1.25
+# Measured on the pushed row: the 25% adds a part 19.5 dB under the mix in full and 25.7 on a phone, so X's drums sat
+# about 14 dB under the mix on a phone; pushed to W's level they rise 2 dB and the mix hardly moves. A row pushes them
+# hard, 6 dB, to about 8 under.
+X_PUSH_HARD = 2.0
+
+
+def x_punch_drums(riff, cymbal="hat"):
+    """X's twelve bars with the kick on `riff`'s notes, the confirmed beat's snares and the answers' added ones, the
+    cymbal on every eighth on `cymbal`."""
+    tiled = (riff * (168 // len(riff) + 1))[:168]
+    kick = "".join("x" if c not in ".-" else "." for c in tiled)
+    snare = list((X_ROCK44["snare"] * 6)[:168])
+    for step in X_PUNCH_SNARES:
+        snare[step] = "x"
+    eighths = (X_ROCK44["hat"] * 6)[:168]
+    out = {"kick": kick, "snare": "".join(snare), "open": "." * 168, "crash": "." * 168}
+    for name in ("hat", "hat_half"):
+        out[name] = eighths if name == cymbal else "." * 168
+    return out
+
+
+def x_punch(call, riff, cymbal="hat", push=None):
+    """X's kit with the kick on the riff (x_punch_drums), the half-open hat in the kit where it plays, its drums
+    `push` times as loud where given."""
+    for name, pat in x_punch_drums(riff, cymbal).items():
+        if pat.strip(".") or name in call["drums"]:
+            call["drums"].setdefault(name, {})["X"] = pat
+    if cymbal == "hat_half":
+        w_hat_half(call)
+    if push:
+        call["drum_gain"] = dict(call.get("drum_gain") or {}, X=push)
+    return call
 
 def x_rock(call, beat=None):
     """X's kit on a rock beat (`beat`, X_ROCK44 unless given; X_ROCK the first reading)."""
@@ -1493,7 +1542,7 @@ def x_rock(call, beat=None):
     return call
 
 
-def round24(riff=None, swap=False, rock=False, fill="earlier", beat=None, jazz=None):
+def round24(riff=None, swap=False, rock=False, fill="earlier", beat=None, jazz=None, punch=None, push=None):
     """Round twenty-four's sets on round twenty-three's battle half: X's `riff`, the trade where `swap`, X on the
     rock beat where `rock`, W's first beats `fill` (W_FILLS)."""
     base = round23(riff=riff, swap=swap, fill=fill)
@@ -1504,6 +1553,8 @@ def round24(riff=None, swap=False, rock=False, fill="earlier", beat=None, jazz=N
             x_rock(call, beat)
         if jazz:
             x_jazz(call, jazz)
+        if punch:
+            x_punch(call, riff or X_RIFF_Q1, punch, push)
     return edit
 
 def round22_bend(more="none"):
@@ -1607,19 +1658,19 @@ FORM_X = "M XXXXXXXXXXXX"          # the bar down into the seven and the seven
 FORM_KEYS = "Y KKKKKKKK V"         # the breath, the keys section, the second breath
 FORM_W = "FFFF W SSSSSSSS"         # the keys' tune's first bars, the turn, the climax's first set
 SETS = [
-    {"id": "hj", "half": "battle", "title": "X's rock beat, dressed", "form": FORM_X,
-     "note": "The bar down into the seven and the seven, the triplet bend into A with the guitar and the keys traded, over the rock beat you confirmed (Ryan, 9 November: \"Now jazz it up a bit, extra kicks following the riff, ghost snares, and hat rolls/hits on the sixteenths ... more of a build to the next unison - might even need to swap the hat for something else too\"). It builds in three tiers of four bars: kicks on the riff's notes and a ghost snare a bar; then more ghosts, kicks on the sixteenth before a bar and sixteenth pickups on the cymbal; then the cymbal on every sixteenth. The last bar ends on In the Air Tonight's figure from the toolbox, snare, tom and floor tom in pairs with the kick after each, into the unison's crash. A dressed row is louder by what it adds. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hj0", "The beat as you confirmed it", "The kick on each group's first eighth, the snare on its third, the hat on every eighth.", round24(riff=X_RIFF_T, swap=True, rock=True)),
-        ("hj1", "Dressed, on the closed hat", "The three tiers and the fill, the closed hat.", round24(riff=X_RIFF_T, swap=True, jazz="hat")),
-        ("hj2", "Dressed, on the half-open hat", "The same on the half-open hat, its sizzle filling the gaps.", round24(riff=X_RIFF_T, swap=True, jazz="hat_half")),
-        ("hj3", "Dressed, on the ride", "The same on the ride, its bell on each group's first eighth.", round24(riff=X_RIFF_T, swap=True, jazz="ride")),
+    {"id": "hp", "half": "battle", "title": "X's kick on the riff", "form": FORM_X,
+     "note": "The bar down into the seven and the seven, the triplet bend into A with the guitar and the keys traded, the dressing out (Ryan, 9 November: \"Make the kick punch the riff ... give it more urgency and not so laid-back sounding. Maybe take back the dressing, the only extra snare being on both of the final eighths, on the second repetitions\"). The kick on every note of the riff; the snare as the confirmed beat has it, and on the riff's B as well at the end of each repetition without a bend, so those end on two snares. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hp0", "The beat as you confirmed it", "The kick on each group's first eighth, the snare on its third, the hat on every eighth.", round24(riff=X_RIFF_T, swap=True, rock=True)),
+        ("hp1", "The kick on the riff", "The kick on every note of the riff, the two snares ending each repetition without a bend.", round24(riff=X_RIFF_T, swap=True, punch="hat")),
+        ("hp2", "The kick on the riff, the drums pushed", "The same with X's drums at W's level, about 2 dB up: they had run at the plain level where the unison's run 30% hotter.", round24(riff=X_RIFF_T, swap=True, punch="hat", push=X_PUSH)),
+        ("hp3", "Pushed, on the half-open hat", "The same with the half-open hat on the eighths, for its wash.", round24(riff=X_RIFF_T, swap=True, punch="hat_half", push=X_PUSH)),
+        ("hp4", "The kick on the riff, the drums pushed hard", "The drums 6 dB up: they had sat about 14 dB under the mix on a phone, so 2 dB hardly moved it.", round24(riff=X_RIFF_T, swap=True, punch="hat", push=X_PUSH_HARD)),
     ]},
-    {"id": "hh", "half": "battle", "title": "W's first beats, again", "form": FORM_W,
-     "note": "The keys' tune's first bars, W and the climax's first set (Ryan, 9 November: \"do we have a half-open hat sound? Either that or the china but starting one hit before, so there's no pause between the crash and when the drums continue\"). The forge had a closed hat and an open one; the half-open hat is new, between them. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hh0", "On the floor tom", "As the pair has them, from the first beat's off-beat.", round24()),
-        ("hh1", "On the half-open hat", "From the first beat's off-beat, where they are now.", round24(fill="intro_half")),
-        ("hh2", "On the half-open hat, from the crash", "One eighth earlier, on the one with the crash.", round24(fill="intro_half_crash")),
-        ("hh3", "On the china, from the crash", "One eighth earlier, on the one with the crash.", round24(fill="intro_china_crash")),
+    {"id": "ho", "half": "battle", "title": "W's first beats on the open hat", "form": FORM_W,
+     "note": "The keys' tune's first bars, W and the climax's first set (Ryan, 9 November: \"W - try open hat, louder, from the second eighth\"). The three eighths from the first beat's off-beat, the build after them as it was. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("ho0", "On the floor tom", "As the pair has them.", round24()),
+        ("ho1", "On the open hat, louder", "At the louder row's velocities, about 5 dB over the floor tom's.", round24(fill="intro_open_loud")),
+        ("ho2", "On the open hat, louder again", "About 3 dB over that.", round24(fill="intro_open_louder")),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r23", "title": "Hold The Line, round twenty-three"}
