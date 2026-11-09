@@ -363,7 +363,7 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
-## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team;
+## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,kite,baboon overrides the team;
 ## RIFTGATE_BOSS=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
@@ -372,7 +372,7 @@ static func _default_skirmish() -> Skirmish:
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
 		team = env.split(",")
-	# RIFTGATE_PAINT=badger:ff8800/223344,sparrowhawk:ffffff repaints for a look (primary/secondary).
+	# RIFTGATE_PAINT=badger:ff8800/223344,kite:ffffff repaints for a look (primary/secondary).
 	var paints := {}
 	for spec in OS.get_environment("RIFTGATE_PAINT").split(",", false):
 		var kv := spec.split(":")
@@ -394,7 +394,7 @@ static func _default_skirmish() -> Skirmish:
 		if BattleMap.TERRAIN_NAMES[t] == ground:
 			s.terrain = int(t)
 	# The first faction's first and last spawn entries: its rank and file, then its support.
-	# RIFTGATE_FOES=warrior,goblin:3,white_mage puts those foes on instead, by content id and
+	# RIFTGATE_FOES=warrior,goblin:3,cleric puts those foes on instead, by content id and
 	# count (heroes included), each its own pack: to see any sprite in the fight.
 	var fac := db.default_faction()
 	var table: Array = db.spawn_table(fac, 1)   # the standalone fight is tier one

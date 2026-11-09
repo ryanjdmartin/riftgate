@@ -1267,7 +1267,7 @@ class Rig {
     else cycles(g, this.gaitCurves, 1 - startW, this.mainOffset || 0);
     if (st && startW > 0) cycles(st.gait, st.curves, startW, this.startOffset || 0);
     for (const [name, r] of Object.entries(g.wheels || {})) if (this.joints[name]) addRot(name, v3(-fposmod(this.dist / Math.max(0.1, r) / D2R, 360), 0, 0));
-    // MechRig: steering about each joint's own axis (a knuckle yaws, the Goshawk's nacelles pitch: the eighteenth notes)
+    // MechRig: steering about each joint's own axis (a knuckle yaws, the Buzzard's nacelles pitch: the eighteenth notes)
     for (const name of Object.keys(g.steer || {})) if (this.joints[name]) { const a = (this.steerVal[name] || 0) * b, ax = Math.max(0, AXES.indexOf((this.meta[name] || {}).axis || "yaw")); addRot(name, v3(ax === 0 ? a : 0, ax === 1 ? a : 0, ax === 2 ? a : 0)); }
     for (const [name, k] of Object.entries(g.aim || {})) if (this.joints[name]) addRot(name, v3(0, aim / D2R * k * b, 0));
     for (const [name, h] of Object.entries(g.hold || {})) if (this.joints[name]) addRot(name, mul3(v3(h[0], h[1], h[2]), b));

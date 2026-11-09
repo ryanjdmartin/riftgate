@@ -54,7 +54,7 @@ TABLE = {
     # violet that 240 and 210 landed on) and 47 for the Magma Elemental's (tinted, its rock grey).
     "treant": [("dusk_treant", 15, 0.70, 0.45), ("frost_treant", 180, 1.25, 0.45)],
     "sandworm": [("night_sandworm", 180, 0.80, None), ("salt_sandworm", 150, 1.25, None)],
-    "magma_golem": [("basalt_elemental", 210, 1.25, 0.45), ("sulphur_elemental", 60, 1.25, 0.45)],
+    "magma_elemental": [("basalt_elemental", 210, 1.25, 0.45), ("sulphur_elemental", 60, 1.25, 0.45)],
 }
 
 

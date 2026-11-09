@@ -1155,9 +1155,9 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	# The last act.
 	var s3 := Skirmish.new(1, 3)
 	s3.add_mech(_mech("A", Die.single(Face.attack(40, I)), 0, 100))
-	var beast := Foe.make("behemoth", 30, 20)
+	var beast := Foe.make("gargantuan_king", 30, 20)
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
-	var calm := Foe.make("behemoth", 30, 20)
+	var calm := Foe.make("gargantuan_king", 30, 20)
 	s3.add_foes([beast, calm])
 	s3.begin()
 	s3.start_round()

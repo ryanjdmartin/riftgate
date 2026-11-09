@@ -262,16 +262,16 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # --shield-ahead (the shield persona: a shield left standing valued by the blows it turns next round,
 # where the rungs bank it at a fifth of a point; the driver's too, for the support ladders),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
-# --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
+# --rows badger,team runs only those rows; --team badger,kite (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
 # twin with that module fitted to every machine, the differences in a section of their own; for prices, --bump armour:5
 # (repeatable: hull, shield, armour, heat, cooling, or damage on every blow) gives every machine
 # that much more, --nopassive strips every chassis's passive, and --set
 # components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only (under
-# components/, chassis/, modules/ or foes/: foes/behemoth/hp=48 reads a boss at another HP;
+# components/, chassis/, modules/ or foes/: foes/gargantuan_king/hp=48 reads a boss at another HP;
 # repeatable, never validated: knock-outs and what-ifs), and --fit badger=ram_frame,tactical_databank
 # (repeatable) fits those modules to every machine of that chassis; compare each against the same seeds without;
-# --trace "sparrowhawk|goblin x6|greedy|3" plays that one fight and prints its log instead.
+# --trace "kite|goblin x6|greedy|3" plays that one fight and prints its log instead.
 # --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
 # the big fights and on the rank and file); the planner costs about four greedy fights a fight,
 # so it runs on the team rows: --rows "team,minerva team,kestrel team" --policies blind,planner;
@@ -346,7 +346,7 @@ python3 tools/stock_fills.py .
 # (the endgame fours of 23 October: a loadout by --set, modules by --fit). About half an hour on four cores; a
 # direction, never a band (docs/measurements.md). GODOT names the binary if needed.
 python3 tools/stock_loop.py run blows --lever blows_by:rf=1.5,massive=1.33,hero=2 --policies random,greedy
-python3 tools/stock_loop.py run fours --packs big --rows team:badger+clydesdale+sparrowhawk+dingo --team badger,clydesdale,sparrowhawk,dingo
+python3 tools/stock_loop.py run fours --packs big --rows team:badger+clydesdale+kite+dingo --team badger,clydesdale,kite,dingo
 python3 tools/stock_loop.py run built --packs big --set 'chassis/badger/loadout/0="polarity_projector"'
 python3 tools/stock_loop.py compare base blows
 # the endgame fours (23 October, the endgame half of the read by stage): five squads of four, chassis of any tier,
@@ -368,7 +368,7 @@ python3 tools/pricing_run.py run prices
 python3 tools/pricing_run.py summarise prices
 # the vanilla ladder (28 October): a flat heatless gun of each shape at 2 to 10 and at 3, 5 and 7 across heat 0 to 8 on the
 # cold bench and the hot one, the pieces named read in vanilla points beside it; about 45 minutes on four cores
-python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,goshawk --pieces flak_cannon,stoker
+python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,buzzard --pieces flak_cannon,stoker
 # the synergy map: who sets and who reads every status and resource, from content (--write rewrites docs/synergy_map.md)
 python3 tools/synergy_map.py --write
 # the turn loop's pressure (24 October): the campaign's turn loop modelled from sim/campaign.gd's constants, every
@@ -508,7 +508,7 @@ RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . 
 godot --path . --rendering-method gl_compatibility -s tools/die_sheet.gd -- build/die_sheet.png
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon polar_bear wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite clydesdale baboon polar_bear wild_boar prairie_dog dingo buzzard nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # front, rear, or a yaw in degrees
 godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom, with the 3D views' own (the map's world, its machines' layer)
@@ -577,7 +577,7 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 # the fit sheet: every machine's stock, then each class on all its mounts at once, a row a machine, into one PNG (about a minute
 # for all of them); run it after a model's mounts change, before the model goes to Ryan; name chassis to sheet only those
-godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -- fit_sheet.png [polar_bear goshawk] [--cell 220]
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -- fit_sheet.png [polar_bear buzzard] [--cell 220]
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
 # nose up), then the art/models/wslook_* and ktlook_* files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles
@@ -674,7 +674,7 @@ loses nothing: Resume battle opens it where it stood, straight into the fight if
 on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
 The harness's FIGHT tab can add any faction's boss; a massive foe fills both ranks of a column. For the
-standalone screen, `RIFTGATE_FOES=warrior,goblin:3,white_mage` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
+standalone screen, `RIFTGATE_FOES=warrior,goblin:3,cleric` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,kite,baboon` picks the team and
 `RIFTGATE_BOSS=1` adds the faction's boss, `RIFTGATE_TERRAIN=<ground>` dresses the field, and
 `RIFTGATE_SKIRMISH_CONTROLS=bottom|middle` places the controls over the saved setting.
 

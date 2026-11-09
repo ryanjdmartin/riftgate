@@ -239,8 +239,8 @@ KESTREL_HALO = 1.8
 KESTREL_BURN = 8.0    # a light multiple at full speed (the gait's glow k): 5 before
 KESTREL_HEAVY = 7.0   # the heavy flyers' (the Lammergeier, the Giant Petrel): 4 before
 
-def sparrowhawk(b):
-    """Kestrel "Sparrowhawk": a small hit-and-run interceptor. Sleek, speed over defence;
+def kite(b):
+    """Kestrel "Kite": a small hit-and-run interceptor. Sleek, speed over defence;
     reverse-swept wings whose rear faces run back into the boosters, a faired canopy far
     back, twin nose guns, two big boosters, a tail rooted into the fuselage and riding over
     the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
@@ -386,7 +386,7 @@ def sparrowhawk(b):
     b.fires = {"pinion_driver": ("flare_boosters", 0.4, 1.8)}   # its fixed weapon fires with a slice of its act: the drivers flaring (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08, oversteer=0.35)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts; the nose a little into its corners (the fifth notes: the jets oversteer too, a bit)
 
-sparrowhawk.maker = "kestrel"
+kite.maker = "kestrel"
 
 
 def clydesdale(b):
@@ -3215,8 +3215,8 @@ def whip_scorpion(b):
 whip_scorpion.maker = "wainwright_sutler"
 
 
-def goshawk(b):
-    """Kestrel "Goshawk" (K-9 Mk II Attack Airframe): a medium-large airframe, endurance over
+def buzzard(b):
+    """Kestrel "Buzzard" (K-9 Mk II Attack Airframe): a medium-large airframe, endurance over
     burst. Second pass (Ryan, 29 September): a wider span on a shorter body, a smaller
     canopy, weapons clear of the wings, no traditional tail: the boosters ride the aft
     fuselage's shoulders as nacelles, each carrying a fin canted outward, and the cannon is
@@ -3227,7 +3227,7 @@ def goshawk(b):
     outer an empty pod (the stock's Canopy shows nowhere; its Deflector's dish went with the
     old stock, Ryan's go of 28 October); hp_5 bare under the belly aft of the cannon (the Ram-air Scoop is the dorsal intake,
     detail, no mount). Ryan, 30 September: the cannon recessed behind the nose, a wide low
-    oval bore, its fairing blended into the fuselage. Centred on z = 0 like the Sparrowhawk."""
+    oval bore, its fairing blended into the fuselage. Centred on z = 0 like the Kite."""
     # Fuselage: short and deep, a blunt nose.
     b.loft([(44.0, _fuse(6.0, 2.2, 2.4)), (34.0, _fuse(12.0, 4.4, 4.2)), (18.0, _fuse(17.0, 5.8, 5.2)),
             (0.0, _fuse(20.0, 6.8, 5.8)), (-18.0, _fuse(20.0, 6.6, 5.6)), (-34.0, _fuse(14.0, 4.6, 4.0)), (-42.0, _fuse(8.0, 2.6, 2.4))], "steel.plate", "fuselage")
@@ -3422,9 +3422,9 @@ def goshawk(b):
                                                                         (blow, 26.0), (blow + 0.12, 7.0), (blow + 0.35, 0.0)])],
         body=[(blow, 0.0, 0.0, 0.0), (blow + 0.06, 0.0, -1.5, 0.0), (2.4, 0.0, 0.0, 0.0)], idle=False)
     b.fires = {"afterburner_cannon": ("fire_cannon", 0.0, 2.4, blow)}
-    b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Sparrowhawk: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
+    b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Kite: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
 
-goshawk.maker = "kestrel"
+buzzard.maker = "kestrel"
 
 
 # ---------------------------------------------------------------- the Swallowtail (31 October)
@@ -3914,7 +3914,7 @@ def nemesis(b):
     for s, n in ((-1.0, 3), (1.0, 4)):
         b.prism("y", s * 12.0, 12.5, 73.0, 3.6, 2.0, "steel.dark", 8, "port_ring", phase=math.pi / 8)
         b.prism("y", s * 12.0, 12.6, 73.0, 2.6, 1.6, "bore.dark", 8, "port_throat", phase=math.pi / 8)
-        b.stock("hp_%d" % n, (s * 12.0, 13.5, 73.0), "dish", scale=0.5, carries="retribution_thurible" if n == 3 else "oblation_ward")
+        b.stock("hp_%d" % n, (s * 12.0, 13.5, 73.0), "dish", scale=0.5, carries="retribution_thurible" if n == 3 else "oblation_mantle")
     # The helm: hooded, low between the shoulders, a visor slit (lit, as every Arsenal
     # cockpit's glass is: Ryan, 29 October; it flares in the roar and its other fierce acts,
     # the same day) and two horns.
@@ -4702,7 +4702,7 @@ def ammit(b):
         _beam(b, (px, 24.0, 47.0), (px, 30.0, 45.0), _poly(3.0, 8), _poly(3.0, 8), "steel.dark", "throat_port")
         _beam(b, (px, 29.0, 45.3), (px, 31.0, 44.7), _poly(2.2, 8), _poly(2.2, 8), "bore.dark", "port_throat")
         if n == 3:
-            b.stock("hp_3", (px, 30.0, 45.0), "dish", forward=(0.0, 0.949, -0.316), scale=0.45, carries="oblation_ward")
+            b.stock("hp_3", (px, 30.0, 45.0), "dish", forward=(0.0, 0.949, -0.316), scale=0.45, carries="oblation_mantle")
         else:
             b.pin("hp_4", (px, 30.0, 45.0), forward=(0.0, 0.949, -0.316), carries="")
     # The back panel (the Ward Plate, detail): a rectangular plate lying flat on the back's
@@ -5329,7 +5329,7 @@ def stingray(b):
     b.spin("fan_l", -480.0, -840.0)
     b.spin("fan_r", 480.0, 840.0)
     # The eighteenth notes (Ryan, 7 October: it moves as a helicopter, so it should turn as the
-    # jets do, banking into the corner and not sliding so much): the Goshawk's cornering, a
+    # jets do, banking into the corner and not sliding so much): the Buzzard's cornering, a
     # little oversteer and a hard bank (36 degrees, from 14), where it drifted as the Dingo
     # and the Puffin do (oversteer 1.2 since the seventh notes); its nose-down tilt kept.
     # The nineteenth notes (Ryan, 7 October: it would not keep its nose down so far in the
@@ -6744,7 +6744,7 @@ def _plate(b, outer, holes, material, label):
 def _rings(b, rings, material, label, frame=None, cap=True):
     """A loft through any number of sections given as 3D point rings, capped at both ends
     unless `cap` is False (an annulus or an open tube: a cap would be a disc over the
-    hole, which is what hid the Goshawk's muzzle until 1 October). `frame` maps the tiles
+    hole, which is what hid the Buzzard's muzzle until 1 October). `frame` maps the tiles
     in the part's own axes (see Build._finish)."""
     bm = bmesh.new()
     vs = [[bm.verts.new(p) for p in ring] for ring in rings]
@@ -7993,7 +7993,7 @@ def _swing(amp, phase=0.0, n=40):
 # armour and vents show nowhere). The die says what the component is; the model only has
 # to look like it could be. Each class is built at the origin along +y (the socket at the
 # origin, the business end forward, +z up) at the scale of a 60-unit machine; a pin's own
-# scale sizes it to its machine (a Sparrowhawk's pins are half size). Five classes: barrel,
+# scale sizes it to its machine (a Kite's pins are half size). Five classes: barrel,
 # twin barrel, rack, blade (katar-style), dish (a projector: equipment that can look like a
 # gun). `forge.py shapes` builds every class in every maker's metal into
 # art/models/shapes/<shape>_<maker>.glb, and MechView3D.mount() hangs one on a pin.

@@ -380,7 +380,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Aim** (implemented): Content: aim on a foe type and on a move; when on a move is the condition that lets a foe pick it, and a special never fires twice running.
 - **Self-Destruct** (implemented): A property of a foe's attack action, like breach. A self-destructing foe counts as a kill like any other.
 - **Every Machine** (implemented): A property of a foe's attack action. Its number is per machine, so a move with it is priced well under a single blow from the same foe. The name is a working one.
-- **Last Act** (implemented): Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Behemoth's Meteor (30 October).
+- **Last Act** (implemented): Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October).
 - **Parts** (implemented): Content: parts (foe ids), guard (all or any), regrow_parts (rounds). Parts are found by pack and type, one deep, and deploy by the ordinary rules, so beside the core is likely but not placed. The Fallen Weapon's two eyes and the Obsidian Tyrant's rider (30 October); a move may open once a part has fallen (part_fallen).
 - **Countdown** (implemented): The foe stays on the field while it gathers; its pick holds while the machine stands, and a Lure moves it.
 - **Follow-up** (implemented): Content: then, on the first move, naming the second (30 October). One deep: a follow-up names none of its own and comes only after the move that names it, never by the roll. A borrowed swing with nothing taken is no follow-up, and the roll decides.

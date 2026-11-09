@@ -1523,7 +1523,7 @@ func choose() -> Dictionary:
 		for a in set_now:
 			if str(a["name"]) == debug:
 				return a
-	# An act may be for the map or the skirmish alone (Ryan, 5 October: the Sparrowhawk's loop
+	# An act may be for the map or the skirmish alone (Ryan, 5 October: the Kite's loop
 	# and circle mean nothing in the skirmish's frame); this machine plays what fits its place.
 	# An act that is a weapon's firing alone (its `idle` false: the Nemesis's punches) never plays at rest.
 	var here: Array = set_now.filter(func(a): return bool(a.get("idle", true)) and (place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place)))
@@ -1981,7 +1981,7 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 		if joints.has(name):
 			var r := maxf(0.1, float(wheels[name]))
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(-fposmod(rad_to_deg(_dist / r), 360.0), 0.0, 0.0)
-	# Steering knuckles turn with the turn, each about its own axis (a knuckle yaws; the Goshawk's
+	# Steering knuckles turn with the turn, each about its own axis (a knuckle yaws; the Buzzard's
 	# nacelles pitch, vectoring through a turn: Ryan, 7 October, the eighteenth notes), as far
 	# as their servo has followed it (drive); casters point along the travel.
 	var steer: Dictionary = gait.get("steer", {})

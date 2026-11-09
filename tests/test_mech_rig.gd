@@ -5,7 +5,7 @@ extends TestCase
 ## renderer, so the joints' nesting and the sidecars are checked against the real files;
 ## only the drawing needs a window.
 
-const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
+const MACHINES := ["badger", "kite", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "buzzard", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
 	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
 	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion"]
 
@@ -351,7 +351,7 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 		"wild_boar": [["elev", "turret"], ["plow", ""], ["elev_pod", ""]],
 		"prairie_dog": [["wheel_fl", "steer_fl"], ["wheel_rl", ""], ["sensor", "chassis"], ["turret", "chassis"]],
 		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["turret_rack", "chassis"], ["elev_rack", "turret_rack"]],
-		"goshawk": [["nacelle_l", ""], ["nacelle_r", ""]],
+		"buzzard": [["nacelle_l", ""], ["nacelle_r", ""]],
 		"nemesis": [["waist", ""], ["shoulder_r", "waist"], ["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_shoulder", "waist"]],
 		"ammit": [["waist", ""], ["shoulder_l", "waist"], ["hand_l", "elbow_l"], ["talon_l_out", "hand_l"], ["talon_r_mid", "hand_r"], ["talon_r_in", "hand_r"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"],
 			["shoulder_low_r", ""], ["elbow_low_r", "shoulder_low_r"], ["hand_low_r", "elbow_low_r"], ["elev_l", "waist"]],
@@ -683,7 +683,7 @@ func test_a_whole_turn_in_an_act_comes_home_without_unwinding() -> void:
 
 
 func test_an_act_may_be_for_one_place_and_may_carry_its_own_heft() -> void:
-	# Ryan, 5 October: the Sparrowhawk's loop and circle are for the map; a blow wants to be
+	# Ryan, 5 October: the Kite's loop and circle are for the map; a blow wants to be
 	# sharper than a heavy machine's weight allows.
 	var pair := _rig_for("clydesdale", 4)
 	var rig: MechRig = pair[0]
@@ -977,7 +977,7 @@ func test_held_offsets_rock_and_bank() -> void:
 	_drive(rig, 0.0, 1.5)
 	assert_true(is_zero_approx(sh.rotation.x) and absf(model.rotation.x) < 0.001, "settled")
 	pair[1].free()
-	pair = _rig_for("goshawk", 2)
+	pair = _rig_for("buzzard", 2)
 	rig = pair[0]
 	model = pair[1]
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0, 1.0)   # a left turn
@@ -1150,7 +1150,7 @@ func test_turning_in_place_steps_the_legs_round_and_nothing_banks_standing() -> 
 		rig.drive(0.0, 0.0, 0.05, 1.0 / 60.0)
 	assert_true(not rig.moving, "a slow settle is not a step")
 	pair[1].free()
-	pair = _rig_for("goshawk", 2)
+	pair = _rig_for("buzzard", 2)
 	rig = pair[0]
 	for i in range(60):
 		rig.drive(0.0, 0.0, 1.5, 1.0 / 60.0)
@@ -1190,7 +1190,7 @@ func test_the_stingray_noses_into_its_travel() -> void:
 	assert_true(model.rotation.x > deg_to_rad(8.0), "backward: the nose comes up (%f)" % rad_to_deg(model.rotation.x))
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, deg_to_rad(90.0))   # slipping left
 	# The node's z points backward, so a positive turn about it drops the left side (the same
-	# sign the Goshawk's bank into a left turn reads).
+	# sign the Buzzard's bank into a left turn reads).
 	assert_true(model.rotation.z > deg_to_rad(4.0), "left: the left side drops (%f)" % rad_to_deg(model.rotation.z))
 	_drive(rig, 0.0, 3.0)
 	assert_true((model.rotation - rig._body_rest_rot).length() < deg_to_rad(0.3), "level again on station")
@@ -1741,7 +1741,7 @@ func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
 	assert_true(rig._lowest_under(rig.model) > minf(0.0, low) - 0.3, "and its claw rests on the floor, never through it")
 	pair[1].free()
 	# A flyer comes down onto what hangs lowest once it has slumped (MechView3D lands it there).
-	pair = _rig_for("goshawk")
+	pair = _rig_for("buzzard")
 	rig = pair[0]
 	rig.airborne = true
 	rig.kill()

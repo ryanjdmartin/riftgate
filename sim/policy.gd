@@ -1659,7 +1659,7 @@ static func core_opening(sk: Skirmish, part: Foe) -> float:
 	return 0.0
 
 
-## What a foe's last act costs the team when it falls (15 October, the Behemoth's Meteor; valued
+## What a foe's last act costs the team when it falls (15 October, the Gargantuan King's Meteor; valued
 ## 22 October): its blow the moment it falls, on the machine it aims at or every machine for a
 ## blow at every machine, through each one's shield and armour as they stand: hull at
 ## HULL_WEIGHT, shield at SHIELD_LOSS_WEIGHT, a wreck at DEATH_WEIGHT.

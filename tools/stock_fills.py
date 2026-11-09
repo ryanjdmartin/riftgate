@@ -29,9 +29,9 @@ def edit(p, reps):
 # ---- chassis: hull, shield, heat max, cooling, armour (the brief's section 2; the field recharge it set
 # went with the long wall brief, docs/briefs/long_wall_build.md 3.6)
 C = {
- 'badger': (36, 8, 12, 1, 2), 'clydesdale': (40, 10, 12, 1, 1), 'sparrowhawk': (12, 16, 10, 2, 0),
+ 'badger': (36, 8, 12, 1, 2), 'clydesdale': (40, 10, 12, 1, 1), 'kite': (12, 16, 10, 2, 0),
  'baboon': (28, 10, 14, 1, 0), 'polar_bear': (40, 8, 12, 1, 2), 'wild_boar': (36, 8, 12, 1, 2),
- 'prairie_dog': (20, 10, 12, 1, 0), 'dingo': (20, 10, 12, 1, 0), 'goshawk': (28, 12, 14, 1, 0),
+ 'prairie_dog': (20, 10, 12, 1, 0), 'dingo': (20, 10, 12, 1, 0), 'buzzard': (28, 12, 14, 1, 0),
  'nemesis': (36, 6, 14, 1, 2), 'ammit': (32, 10, 14, 1, 1), 'stingray': (24, 12, 14, 0, 0),
  'puffin': (20, 8, 12, 1, 0), 'funnel_web': (30, 10, 12, 1, 1), 'cassowary': (24, 8, 12, 1, 0),
  'cottonmouth': (20, 8, 12, 2, 0), 'whip_scorpion': (40, 8, 14, 0, 1), 'swallowtail': (48, 14, 14, 2, 1),
@@ -45,10 +45,10 @@ for c in d['entries']:
     c.pop('recharge_field', None)
     for eff in (c.get('passive') or {}).get('effects', []):
         e = eff.get('effect')
-        if c['id'] == 'sparrowhawk' and e == 'add_heat': eff['value'] = 2
+        if c['id'] == 'kite' and e == 'add_heat': eff['value'] = 2
         if c['id'] == 'polar_bear' and e == 'seal_form': eff['value'], eff['heat'] = 3, 3
         if c['id'] == 'prairie_dog' and e == 'add_damage_taken': eff['value'] = -1   # not in the brief: 5 less over four
-        if c['id'] == 'goshawk' and e == 'shield_per_heat': eff['value'], eff['per_heat'] = 1, 4
+        if c['id'] == 'buzzard' and e == 'shield_per_heat': eff['value'], eff['per_heat'] = 1, 4
         if c['id'] == 'stingray' and e == 'add_stacks': eff['per_heat'] = 5
         if c['id'] == 'puffin' and e == 'shield_per_ally_heat': eff['value'], eff['per_heat'] = 1, 2
         if c['id'] == 'cottonmouth' and e == 'rewrite_weapon': eff['value'], eff['heat'] = 4, 3
@@ -66,7 +66,7 @@ P = {
  'overclocked_railgun': A(10, heat=8, keywords=['breach']), 'plasma_arquebus': A(4, 2), 'blazethrower': A(3, heat=3, burn=2),
  'polarity_projector': A(0, heat=2), 'proximity_klaxon': A(0, heat=1), 'phased_sublimator': E(4), 'radiator_sail': E(5),
  'wake_diffuser': E(3, shields=3), 'overcharge_coil': dict(stacks=2), 'shoring_jack': dict(stacks=2), 'thermal_ray': A(6, heat=6),
- 'retribution_thurible': {}, 'oblation_ward': E(10),
+ 'retribution_thurible': {}, 'oblation_mantle': E(10),
  'pulse_vacillator': A(2, heat=2), 'umbra_inducer': A(3, heat=0, keywords=['suppress', 'volatile']), 'differentiation_probe': A(0, heat=2), 'tesla_gauntlets': A(4, heat=3),
  'meteor_artillery': A(5, heat=6, burn=3), 'suppression_battery': A(2, 2), 'coriolis_accelerator': A(3, heat=1, power_per_missing=1),
  'laminar_deflector': E(6), 'corona_shield': E(6), 'aurora_lattice': {}, 'entropy_condenser': E(10), 'gravity_knuckles': A(5, heat=4, burn=3),
@@ -99,15 +99,15 @@ jsave(R + 'content/components.json', d, True)
 F = {
  'goblin': (3, 2, 0), 'wolf': (4, 3, 0), 'gel': (5, 3, 0), 'gel_half': (2, 2, 0), 'mandragora': (4, 3, 0), 'treant': (32, 7, 1),
  'needler': (2, 3, 0), 'antlion': (6, 6, 0), 'cockatrice': (4, 3, 0), 'sandworm': (36, 8, 1),
- 'revenant': (3, 2, 0), 'ghost': (4, 3, 0), 'zombie_knight': (8, 6, 1), 'bone_dragon': (32, 7, 1),
- 'bomb': (4, 8, 0), 'salamander': (6, 5, 0), 'drake': (4, 5, 0), 'magma_golem': (40, 8, 1),
+ 'revenant': (3, 2, 0), 'ghost': (4, 3, 0), 'zombie_knight': (8, 6, 1), 'bone_wyvern': (32, 7, 1),
+ 'bomb': (4, 8, 0), 'salamander': (6, 5, 0), 'drake': (4, 5, 0), 'magma_elemental': (40, 8, 1),
  'warrior': (24, 10, 0), 'martial_artist': (20, 8, 0), 'thief': (18, 8, 0), 'lancer': (22, 10, 0),
- 'white_mage': (18, 4, 0), 'augur': (18, 6, 0), 'black_mage': (18, 8, 0), 'summoner': (16, 4, 0),
+ 'cleric': (18, 4, 0), 'augur': (18, 6, 0), 'black_mage': (18, 8, 0), 'summoner': (16, 4, 0),
 }
 PROMO = {'warrior_promoted': 48, 'martial_artist_promoted': 40, 'thief_promoted': 36, 'lancer_promoted': 44,
-         'white_mage_promoted': 36, 'augur_promoted': 36, 'black_mage_promoted': 36, 'summoner_promoted': 32}
-VALUES = {('wolf', 'howl'): 1, ('antlion', 'burrow'): 2, ('sandworm', 'burrow'): 3, ('treant', 'regen'): 3, ('bone_dragon', 'regen'): 3,
-          ('magma_golem', 'stoke_the_forge'): 2, ('martial_artist', 'chakra'): 4, ('white_mage', 'cure'): 4}
+         'cleric_promoted': 36, 'augur_promoted': 36, 'black_mage_promoted': 36, 'summoner_promoted': 32}
+VALUES = {('wolf', 'howl'): 1, ('antlion', 'burrow'): 2, ('sandworm', 'burrow'): 3, ('treant', 'regen'): 3, ('bone_wyvern', 'regen'): 3,
+          ('magma_elemental', 'stoke_the_forge'): 2, ('martial_artist', 'chakra'): 4, ('cleric', 'cure'): 4}
 BREACH = {('gel', 'engulf'), ('zombie_knight', 'cleaver'), ('warrior', 'cleave')}
 # The foes' file is laid out by hand (an entry's fields on a few lines, a move a line), so it is
 # edited in place, line by line, and checked against what the edits mean.

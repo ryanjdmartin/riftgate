@@ -160,7 +160,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   carrying Cryo (the strike that meets the stacks, its hit spending them). The probe that read the
   old kit is in `docs/measurements.md`. Renamed the Polar Bear the same day (the bible's names row; the claws in
   his words a metaphor for the damage boost), its id `polar_bear` with it on his word, its model, rig,
-  textures, blend and hangar renders moved and the save versions bumped (battles 18, runs 17, quick runs 2). 1075 tests green on this branch.
+  textures, blend and hangar renders moved and the save versions bumped (battles 18, runs 17, quick runs 2). The same day every
+  id still wearing an old name followed its name (Ryan: "Yes, rename them all"): `kite`, `buzzard`, `oblation_mantle`, eleven
+  foes' (`antiquarian`, `world_eater`, `shuffler` and `shuffler_spawn`, `floraison`, `gargantuan_king`, `emperor_scorpion`,
+  `astromancer`, `cleric` and `cleric_promoted`, `bone_wyvern`, `magma_elemental`) and the compositions named for them, their
+  models, rigs, sprites, renders and picks moved; the Kite's codex says the Kite at last (it still said the Sparrowhawk), and
+  the saves moved on again (battles 19, runs 18, quick runs 3). 1075 tests green.
 - **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
   Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
   all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always

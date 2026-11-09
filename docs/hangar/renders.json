@@ -29,7 +29,7 @@
    },
    {
     "when": "Worn on a machine.",
-    "note": "Four refits rendered with <code>RIFTGATE_FIT</code>: the Honey Badger with a W&S Lance on the wrist, a Heat Sink (which shows nowhere), an Arsenal Blazethrower on the left pauldron and a Kestrel Deflector's dish on the right; the Clydesdale with an Arc Projector in place of the Lance and, on its bare mounts, a Missile Rack, Soulcutter Talons and an Overcharge Coil; the Sparrowhawk with Soulcutter Talons as a wing blade and Meteor Artillery on the other tip; the Wild Boar with a Plasma Carbine and a Blazethrower on its rear quarters.",
+    "note": "Four refits rendered with <code>RIFTGATE_FIT</code>: the Honey Badger with a W&S Lance on the wrist, a Heat Sink (which shows nowhere), an Arsenal Blazethrower on the left pauldron and a Kestrel Deflector's dish on the right; the Clydesdale with an Arc Projector in place of the Lance and, on its bare mounts, a Missile Rack, Soulcutter Talons and an Overcharge Coil; the Kite with Soulcutter Talons as a wing blade and Meteor Artillery on the other tip; the Wild Boar with a Plasma Carbine and a Blazethrower on its rear quarters.",
     "small": false,
     "images": [
      {
@@ -41,8 +41,8 @@
       "alt": "Clydesdale refitted"
      },
      {
-      "file": "shapes/sparrowhawk_refitted.png",
-      "alt": "Sparrowhawk refitted"
+      "file": "shapes/kite_refitted.png",
+      "alt": "Kite refitted"
      },
      {
       "file": "shapes/wild_boar_refitted.png",
@@ -52,7 +52,7 @@
    },
    {
     "when": "Variants, 2 November.",
-    "note": "Ryan, 2 November: “Can't we just model different shapes as options, as needed?” A variant is a class in another form, modelled for the mounts its standard shape does not fit and named for its form, so any hardpoint may take it; a hardpoint declares, for each class, the variant it wears and its scale there, and every other hardpoint wears the class itself at its own scale. The first is the round launcher, for a round port or a pod's nose (the Polar Bear's ports, the Goshawk's pods), its face the square rack's missile tile one tube at a time. Shown in Minerva's and Wainwright & Sutler's metal; Classes on the Models tab shows it alone.",
+    "note": "Ryan, 2 November: “Can't we just model different shapes as options, as needed?” A variant is a class in another form, modelled for the mounts its standard shape does not fit and named for its form, so any hardpoint may take it; a hardpoint declares, for each class, the variant it wears and its scale there, and every other hardpoint wears the class itself at its own scale. The first is the round launcher, for a round port or a pod's nose (the Polar Bear's ports, the Buzzard's pods), its face the square rack's missile tile one tube at a time. Shown in Minerva's and Wainwright & Sutler's metal; Classes on the Models tab shows it alone.",
     "small": true,
     "images": [
      {
@@ -130,29 +130,29 @@
     ]
    }
   },
-  "sparrowhawk": {
+  "kite": {
    "when": "Ryan's second notes, 29 October.",
    "note": "Ryan, 29 October, the second notes: each tooth round a driver's inlet runs its back face aft as a strake, tapering down the drum until it meets it. The rest as the first notes left it: each Pinion Driver a ramjet-gun, a chrome drum with a lit ring tapering to a lit exhaust, the barrel out of the inlet's centre; two shots at half, one from each tip.",
    "images": [
     {
-     "file": "sparrowhawk/sparrowhawk_front.png",
-     "alt": "sparrowhawk, front"
+     "file": "kite/kite_front.png",
+     "alt": "kite, front"
     },
     {
-     "file": "sparrowhawk/sparrowhawk_rear.png",
-     "alt": "sparrowhawk, rear"
+     "file": "kite/kite_rear.png",
+     "alt": "kite, rear"
     }
    ],
    "before": {
     "summary": "Before: the first notes of 29 October (the teeth a ring round the lip)",
     "images": [
      {
-      "file": "sparrowhawk/before_sparrowhawk_front.png",
-      "alt": "Earlier: sparrowhawk, front"
+      "file": "kite/before_kite_front.png",
+      "alt": "Earlier: kite, front"
      },
      {
-      "file": "sparrowhawk/before_sparrowhawk_rear.png",
-      "alt": "Earlier: sparrowhawk, rear"
+      "file": "kite/before_kite_rear.png",
+      "alt": "Earlier: kite, rear"
      }
     ]
    }
@@ -352,37 +352,37 @@
     ]
    }
   },
-  "goshawk": {
+  "buzzard": {
    "when": "Ryan's swap notes, 2 November.",
    "note": "Ryan's go of 2 November: a swap had taken a pod with its gun and hung the class under the wing, where the game's camera lost the inner pair. The pods are airframe now and stay; each mount is its pod's nose, so a fitted class rides ahead of the wing, a rack as the round launcher (a rocket pod), the wide classes a little smaller so they sit on a pod. The stock looks as before. The shots: the stock from the front and behind, a round launcher on every pod, then the Twin Autoguns, a launcher, a dish and a barrel.",
    "images": [
     {
-     "file": "goshawk/goshawk_front.png",
-     "alt": "goshawk, front"
+     "file": "buzzard/buzzard_front.png",
+     "alt": "buzzard, front"
     },
     {
-     "file": "goshawk/goshawk_rear.png",
-     "alt": "goshawk, rear"
+     "file": "buzzard/buzzard_rear.png",
+     "alt": "buzzard, rear"
     },
     {
-     "file": "goshawk/goshawk_swapped.png",
-     "alt": "goshawk, swapped"
+     "file": "buzzard/buzzard_swapped.png",
+     "alt": "buzzard, swapped"
     },
     {
-     "file": "goshawk/goshawk_swapped_mixed.png",
-     "alt": "goshawk, swapped mixed"
+     "file": "buzzard/buzzard_swapped_mixed.png",
+     "alt": "buzzard, swapped mixed"
     }
    ],
    "before": {
     "summary": "Before: the stock rebuild, 28 October (each pod part of its gun)",
     "images": [
      {
-      "file": "goshawk/before_goshawk_front.png",
-      "alt": "Earlier: goshawk, front"
+      "file": "buzzard/before_buzzard_front.png",
+      "alt": "Earlier: buzzard, front"
      },
      {
-      "file": "goshawk/before_goshawk_rear.png",
-      "alt": "Earlier: goshawk, rear"
+      "file": "buzzard/before_buzzard_rear.png",
+      "alt": "Earlier: buzzard, rear"
      }
     ]
    }

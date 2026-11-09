@@ -1693,7 +1693,7 @@
    "codex": "A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after.",
    "status": "implemented",
    "design": {
-    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Behemoth's Meteor (30 October)."
+    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October)."
    }
   },
   {

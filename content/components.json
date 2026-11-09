@@ -709,7 +709,7 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The Goshawk's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
+    "fantasy": "The Buzzard's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
     "niche": "The Buzzard's burst: spend the heat the passive was living on."
    },
    "face": {
@@ -1277,7 +1277,7 @@
    ]
   },
   {
-   "id": "oblation_ward",
+   "id": "oblation_mantle",
    "name": "Oblation Mantle",
    "maker": "arsenal",
    "tier": 1,

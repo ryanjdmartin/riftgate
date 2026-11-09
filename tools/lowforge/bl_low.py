@@ -321,7 +321,7 @@ class Tiles:
         elif kind == "ember":
             # The fire banked down: the glow's tile at under a third of its light, for a part
             # that rests dark and is lit hot by an act (Ryan, 6 October, the eighth notes: the
-            # Goshawk's cannon dim at rest and bright when it charges, for the contrast).
+            # Buzzard's cannon dim at rest and bright when it charges, for the contrast).
             yy, xx = np.mgrid[0:TILE, 0:TILE]
             r = np.sqrt((yy - TILE / 2) ** 2 + (xx - TILE / 2) ** 2) / (TILE / 2)
             t = np.clip(1.0 - r, 0.0, 1.0)[..., None]
@@ -759,7 +759,7 @@ class Build:
         (eased between keys) or "linear" (a wheel spinning). `heft`, if given, is the act's
         own servo time constant in place of the machine's (b.move): a blow sharper than its
         weight (Ryan, 5 October). `places` limits the act to "map" or "skirmish" (the
-        Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both. `form`,
+        Kite's loop leaves the skirmish's frame); unnamed, it plays in both. `form`,
         given, makes it one of that form's acts, played while the form is held in place of the
         machine's own and added to the form's held pose (Ryan, 29 October: sealed, the
         Polar Bear's acts are its own, from its hunkered pose). `locks` names spinners with a

@@ -1613,7 +1613,7 @@ func focus_on(p: Vector2, z: float) -> void:
 	queue_redraw()
 
 
-## "Badger + Sparrowhawk vs ghouls ×6 + necromancers ×3": one contact group, in words.
+## "Badger + Kite vs ghouls ×6 + necromancers ×3": one contact group, in words.
 static func contact_text(group: Array) -> String:
 	var mechs: Array[String] = []
 	var packs: Array[String] = []

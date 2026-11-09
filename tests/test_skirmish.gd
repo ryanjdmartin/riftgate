@@ -505,7 +505,7 @@ func test_burn_ticks_down() -> void:
 	assert_eq(g.burn_stacks(), 2, "one stack consumed")
 
 
-## A blow that grows with its target's missing hull (10 October, the Sparrowhawk's rifle): flat,
+## A blow that grows with its target's missing hull (10 October, the Kite's rifle): flat,
 ## +5 for every 20 the target has lost, read as the die is spent, and the bot reads the same.
 func test_a_blow_grows_with_its_targets_missing_hull() -> void:
 	var gun := Face.attack(10, L)
@@ -1057,7 +1057,7 @@ func test_skirmish_reroll_moves_every_unlocked_die() -> void:
 	var db := ContentDB.load_default()
 	for seed_value in range(1, 25):
 		var sk := Skirmish.new(seed_value)
-		for id in ["badger", "clydesdale", "sparrowhawk"]:
+		for id in ["badger", "clydesdale", "kite"]:
 			sk.add_mech(db.make_mech(id))
 		sk.add_foes([Foe.make("revenant", 30, 10)])
 		sk.begin()
@@ -5435,7 +5435,7 @@ func test_a_disrupt_breaks_off_a_gathering_move() -> void:
 
 
 func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
-	# The White Mage's Cure (15 October): foes helping foes.
+	# The Cleric's Cure (15 October): foes helping foes.
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
 	var healer := Foe.make("mage", 60, 10, true)
@@ -5462,7 +5462,7 @@ func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
 
 
 func test_protect_braces_every_foe_through_the_next_round() -> void:
-	# The White Mage's Protect (15 October): a brace on every foe, gone when the enemy acts
+	# The Cleric's Protect (15 October): a brace on every foe, gone when the enemy acts
 	# again; Braced since 16 October, the move's value in stacks of armour +5.
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(30, L)), 400, 400))
@@ -5630,7 +5630,7 @@ func test_a_core_that_falls_takes_its_parts_with_it() -> void:
 
 
 func _meteor_beast(hp: int = 30) -> Foe:
-	var f := Foe.make("behemoth", hp, 20)
+	var f := Foe.make("gargantuan_king", hp, 20)
 	f.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	return f
 
@@ -5644,7 +5644,7 @@ func test_a_last_act_at_every_machine_passes_a_machine_out_of_the_fight_by() -> 
 	var b := _mech("B", Die.single(Face.blank()), 0, 100)
 	sk.add_mech(a)
 	sk.add_mech(b)
-	var beast := Foe.make("behemoth", 30, 20)
+	var beast := Foe.make("gargantuan_king", 30, 20)
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all", "scorch"], "scorch": 1})}
 	sk.add_foes([beast, _ghoul(500, 0)])
 	sk.begin()
@@ -5658,7 +5658,7 @@ func test_a_last_act_at_every_machine_passes_a_machine_out_of_the_fight_by() -> 
 
 
 func test_a_last_act_lands_the_moment_its_foe_falls() -> void:
-	# The Behemoth's Meteor (15 October): shield up, then kill it.
+	# The Gargantuan King's Meteor (15 October): shield up, then kill it.
 	var sk := Skirmish.new(1, 3)
 	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
 	var b := _mech("B", Die.single(Face.attack(10, I)), 10, 100)

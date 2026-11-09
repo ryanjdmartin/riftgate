@@ -149,7 +149,7 @@ func _start_music() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
-## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team; RIFTGATE_FACTION picks
+## RIFTGATE_TEAM=badger,clydesdale,kite,baboon overrides the team; RIFTGATE_FACTION picks
 ## the enemy; RIFTGATE_MAP_KIND=gorge picks the map's shape (BattleMap.KINDS; none draws one by
 ## the seed) and RIFTGATE_SEED=<n> the battle's seed (7).
 static func _default_battle() -> Battle:

@@ -10,10 +10,34 @@ Each foe's prompt is its fantasy and codex text on the fixed brief (the heroes o
 A hunched green goblin with a rusty knife, ragged loincloth and leather straps, snarling. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Goblin, a monster of the grasslands. The genre's first fight, with a knife. Every JRPG opens on one.  Light: the bright, saturated light of a sunny overworld field.
 ```
 
+## Goblin Guard (`goblin_guard`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Goblin Guard, a monster of the grasslands. The genre's second goblin, the one with the shield. Tier two of the goblin line. A goblin that found a shield. It braces when it is not stabbing, so the swarm takes a blow more to clear.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Goblin Captain (`goblin_captain`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Goblin Captain, a monster of the grasslands. The goblin chieftain, the commander in the crowd. Tier three of the goblin line. The goblin that shouts. It stands at the back and rallies the rest, so the swarm hits harder while it lives.  Light: the bright, saturated light of a sunny overworld field.
+```
+
 ## Dire Wolf (`wolf`, meadow, foe, art: yes)
 
 ```
 A lean grey wolf, hackles up and teeth bared, mid-lunge, on four legs. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Dire Wolf, a monster of the grasslands. The pack that runs down the straggler, in every forest the genre has.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Warg (`warg`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Warg, a monster of the grasslands. The dire wolf's bigger cousin, the hunter of the hurt. Tier two of the wolf line. A bigger wolf that picks the weakest machine on the field and runs it down.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Alpha Warg (`alpha_warg`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Alpha Warg, a monster of the grasslands. The alpha, the pack's commander. Tier three of the wolf line. The pack's leader. Its howl lifts every foe on the field, and it hunts the weakest machine.  Light: the bright, saturated light of a sunny overworld field.
 ```
 
 ## Gel (`gel`, meadow, foe, art: yes)
@@ -28,10 +52,34 @@ A heap of translucent bright green slime with a sinister face in it, no arms, no
 A small heap of translucent bright green slime with a sinister face, no arms, no legs, a blob half the size of a man. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Half-Gel, a monster of the grasslands. What a Gel leaves.  Light: the bright, saturated light of a sunny overworld field.
 ```
 
+## Bubble Gel (`bubble_gel`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Bubble Gel, a monster of the grasslands. The genre's second slime, the bubbly one. Tier two of the gel line: a wall that walls small blows. A gel with a skin. Small blows slide off it, and it splits into halves like any gel.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Metal Gel (`metal_gel`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Metal Gel, a monster of the grasslands. The metal slime, the genre's armoured joke made a wall. Tier three of the gel line; no split, since the plate is the whole of it. A gel of living metal: little inside it, but three points of plate on every blow. Flak and Empowered are the answer, or one big blow.  Light: the bright, saturated light of a sunny overworld field.
+```
+
 ## Mandragora (`mandragora`, meadow, foe, art: yes)
 
 ```
 A gnarled root creature with a screaming human face, root legs, leaves sprouting from its head. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Mandragora, a monster of the grasslands. The screaming root, pulled up and furious.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Mandrake (`mandrake`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Mandrake, a monster of the grasslands. The mandrake, the louder root. Tier two of the mandragora line. A mandragora with lungs. Its scream costs the team a reroll.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Alraune (`alraune`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Alraune, a monster of the grasslands. The alraune, the genre's flower woman, here a root that steals an entry. Tier three of the mandragora line. The flowering root. Its shriek switches off the component a machine's die is showing.  Light: the bright, saturated light of a sunny overworld field.
 ```
 
 ## Treant (`treant`, meadow, boss, art: yes)
@@ -40,10 +88,34 @@ A gnarled root creature with a screaming human face, root legs, leaves sprouting
 A huge ancient walking tree with a furious face in its bark, branch arms like girders, roots for feet. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Treant, a monster of the grasslands. The tree that walks, every forest's boss. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
 ```
 
+## Dusk Treant (`dusk_treant`, meadow, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Dusk Treant, a monster of the grasslands. Tier two of the Treant's line, a massive rank and file (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): its cut Root Storm back as the twist. A treant gone dark in the rift's shade. It walks like the first and grows back what you cut, and when it is hurt its roots come up under every machine. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Frost Treant (`frost_treant`, meadow, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Frost Treant, a monster of the grasslands. Tier three of the Treant's line, a massive rank and file (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): Root Storm its twist. A treant rimed white, older than the others and slower to die. It regrows more than they do, and below half its roots come up under every machine. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
+```
+
 ## Needler (`needler`, waste, foe, art: yes)
 
 ```
 A man-sized cactus with arms and legs frozen in a sprinting pose, needles all over, a menacing face. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Needler, a monster of the desert. The Cactuar, made sinister: a figure in a running pose that has never been seen to move.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Barbed Needler (`barbed_needler`, waste, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Barbed Needler, a monster of the desert. The cactuar's barbed cousin: the Waste's theft of entries on the rank and file. Tier two of the needler line. A needler whose needles stay in. Its blow goes through the shield and corrupts the component the machine is showing.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Great Needler (`great_needler`, waste, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Great Needler, a monster of the desert. The giant cactuar and its thousand needles, a countdown. Tier three of the needler line. The big one. It gathers for two rounds and then puts every needle through the shield at once. Kill it, suppress it, or shield what it has picked.  Light: sun-bleached and dusty, hard desert light.
 ```
 
 ## Antlion (`antlion`, waste, foe, art: yes)
@@ -52,10 +124,34 @@ A man-sized cactus with arms and legs frozen in a sprinting pose, needles all ov
 A giant sand-coloured insect with huge curved mandibles and six spindly legs, crouched low and half buried in a mound of loose sand. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Antlion, a monster of the desert. The trap at the bottom of the funnel.  Light: sun-bleached and dusty, hard desert light.
 ```
 
+## Pit Antlion (`pit_antlion`, waste, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Pit Antlion, a monster of the desert. The pit's antlion: breach on one more Waste type, and the burrow that is a Barrier. Tier two of the antlion line. An antlion whose jaws go through the shield, and whose burrow swallows the next blow whole. Pop the barrier with a cheap blow, then hit it.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Antlion Queen (`antlion_queen`, waste, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Antlion Queen, a monster of the desert. The antlion grown to a queen: the Waste's big fixed blow on a countdown. Tier three of the antlion line. The queen of the pit. Its Devour is announced a round ahead and goes through the shield; hurt, it digs in behind three points of plate.  Light: sun-bleached and dusty, hard desert light.
+```
+
 ## Cockatrice (`cockatrice`, waste, foe, art: yes)
 
 ```
 A horse-sized monster with a rooster's head and crimson comb, a cruel hooked beak and glowing eyes, a scaled lizard body, leathery bat wings and a long serpent tail. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Cockatrice, a monster of the desert. The bird that turns you to stone.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Basilisk (`basilisk`, waste, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Basilisk, a monster of the desert. The basilisk, the gaze that picks the armed. Tier two of the cockatrice line. A cockatrice with an eye for weapons: it aims at a machine showing an intact gun, and its stone switches the gun off.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Gorgon (`gorgon`, waste, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Gorgon, a monster of the desert. The gorgon, theft of entries by corruption on the back rank. Tier three of the cockatrice line. The gaze that corrupts. Its peck leaves the component a machine is showing biting its owner, and its stone switches one off.  Light: sun-bleached and dusty, hard desert light.
 ```
 
 ## Sandworm (`sandworm`, waste, boss, art: yes)
@@ -64,10 +160,34 @@ A horse-sized monster with a rooster's head and crimson comb, a cruel hooked bea
 A colossal eyeless segmented worm bursting out of the desert sand, its head nothing but a round gaping maw ringed with rows of inward-pointing teeth. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Sandworm, a monster of the desert. The worm under the desert, the genre's and every desert's. The old Maw's ring of teeth is its mouth. A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.
 ```
 
+## Night Sandworm (`night_sandworm`, waste, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Night Sandworm, a monster of the desert. Tier two of the Sandworm's line, a massive rank and file (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): its cut Quake back as the twist. A sandworm the colour of the desert at night. Its ring of teeth goes through the shield, it digs in when hurt, and below half the ground heaves under every machine. A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.
+```
+
+## Salt Sandworm (`salt_sandworm`, waste, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Salt Sandworm, a monster of the desert. Tier three of the Sandworm's line, a massive rank and file (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): Quake its twist. A sandworm bleached by the salt flats, the oldest of its line. Its bite goes through the shield, it digs in deeper, and below half the ground heaves under every machine. A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.
+```
+
 ## Revenant (`revenant`, marsh, foe, art: yes)
 
 ```
 A skeleton knight in rusted ornate plate armour, an empty helm, torn surcoat, a notched sword. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Revenant, a monster of the swamp and graveyard. The dead in rusted ornate plate: a knight's silhouette gone wrong, the helm empty, the plate hanging off the ribs. The genre's zombies and skeletons in one.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Wight (`wight`, marsh, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Wight, a monster of the swamp and graveyard. The wight, the Marsh's hard-to-keep-down on the rank and file: Regenerating as a foe's buff. Tier two of the revenant line. A revenant that knits itself back together. Hurt, it regrows a little at each action for three rounds: burst it, or purge the mending.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Lich (`lich`, marsh, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Lich, a monster of the swamp and graveyard. The lich, the Marsh's commander. Tier three of the revenant line. Its Dark Rite, a delayed heal on a countdown, is planned until the engine has a special with a countdown (Ryan, 28 October, mentioned a delayed heal; not built here). The dead that commands the dead. It readies an ally to get back up once, and strikes from the back. Reach it, or purge what it readies.  Light: dim and damp, rust and old bone, lantern light in fog.
 ```
 
 ## Ghost (`ghost`, marsh, foe, art: yes)
@@ -76,13 +196,55 @@ A skeleton knight in rusted ornate plate armour, an empty helm, torn surcoat, a 
 A hooded floating ghost in a tattered robe holding up a lantern with a pale green flame, no feet. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Ghost, a monster of the swamp and graveyard. A hooded ghost carrying a lantern, the flame the brightest pixel in the domain. The reason the revenants keep coming.  Light: dim and damp, rust and old bone, lantern light in fog.
 ```
 
+## Spectre (`spectre`, marsh, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Spectre, a monster of the swamp and graveyard. The spectre, the Marsh's cleanser: the domain's lever (Ryan, 28 October, 'debuffs are hard here'). Tier two of the ghost line. A ghost that keeps its dead clean. Its hallow strips the burns, flak and shocks the team has laid on one of its own: kill it first, or cash the marks before it acts.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Wraith (`wraith`, marsh, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Wraith, a monster of the swamp and graveyard. The wraith, the Ghost's curse (the proposal's rider on one advanced foe a domain) and the cleanse together. Tier three of the ghost line. The spectre's elder. Its bolt corrupts the component a machine is showing, it raises the dead, and it keeps them clean of the team's marks.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
 ## Zombie Knight (`zombie_knight`, marsh, foe, art: yes)
 
 ```
 A rotting knight in heavy black plate and a torn cape, a greatsword as long as it is tall. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Zombie Knight, a monster of the swamp and graveyard. The genre's death knight: a cape, rusted plate, a sword as long as it is tall.  Light: dim and damp, rust and old bone, lantern light in fog.
 ```
 
-## Bone Wyvern (`bone_dragon`, marsh, boss, art: yes)
+## Barrow Giant (`barrow_giant`, marsh, boss, art: yes)
+
+```
+An undead giant in rusted ornate plate, a grey-green dead face with glowing eyes under a dented helm, a door-sized rusted cleaver hanging from one hand. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Barrow Giant, a monster of the swamp and graveyard. The Marsh's own massive line (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): the genre's undead giant, risen from a barrow in rusted plate. The Marsh had no massive rank and file since the Bone Wyvern became an elite. A towering elite, twice the height of a common foe. Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Grave Giant (`grave_giant`, marsh, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Grave Giant, a monster of the swamp and graveyard. Tier two of the Barrow Giant's line (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): Rise Again its twist, the Marsh's getting back up. A barrow giant in ash-white plate. It knits its wounds, and once hurt it readies itself to get back up, whole, the first time it falls. A towering elite, twice the height of a common foe. Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Charnel Giant (`charnel_giant`, marsh, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Charnel Giant, a monster of the swamp and graveyard. Tier three of the Barrow Giant's line (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): Rise Again its twist. A barrow giant in black iron, the charnel house's own. It knits its wounds faster, and once hurt it readies itself to get back up, whole, the first time it falls. A towering elite, twice the height of a common foe. Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Death Knight (`death_knight`, marsh, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Death Knight, a monster of the swamp and graveyard. The death knight, the Marsh's guard ('this guy protects his allies'). Tier two of the zombie knight line. A zombie knight that guards the rest: its grave guard armours every foe on the field through the next round, and it gets back up once.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Dread Knight (`dread_knight`, marsh, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Dread Knight, a monster of the swamp and graveyard. The dread knight, the Marsh's last act carrier (the engine's Last Act, no carrier until now). Tier three of the zombie knight line. A knight that strikes as it falls: its death throes land a blow the moment it dies, before anything else. Shield up before the kill. It gets back up once, too.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Bone Wyvern (`bone_wyvern`, marsh, boss, art: yes)
 
 ```
 A towering dragon made of bones, a ribcage like a cathedral, skull head, tattered wings. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Bone Wyvern, a monster of the swamp and graveyard. A cathedral of ribs that walks: A towering elite, twice the height of a common foe. Light: dim and damp, rust and old bone, lantern light in fog.
@@ -94,10 +256,34 @@ A towering dragon made of bones, a ribcage like a cathedral, skull head, tattere
 A floating ball of fire with an angry face, no body, no arms, no legs, flames licking off it. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Bomb, a monster of the volcano. A floating fireball with a face:  Light: lit from inside by heat, black rock and embers.
 ```
 
+## Grenade (`grenade`, peak, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Grenade, a monster of the volcano. The genre's own ladder, Bomb to Grenade to Balloon: the burst at every machine. Tier two of the bomb line. A bomb that bursts on everyone: hurt, its self-destruct lands on every machine in the fight, through the shield. Kill it whole, or suppress it.  Light: lit from inside by heat, black rock and embers.
+```
+
+## Balloon (`balloon`, peak, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Balloon, a monster of the volcano. The balloon, the last of the bomb line: the countdown on the burst. Tier three of the bomb line. The bomb that swells. Its burst is announced a round ahead, then lands on every machine, through the shield and scorching. One round to kill it, suppress it, or shield everyone.  Light: lit from inside by heat, black rock and embers.
+```
+
 ## Salamander (`salamander`, peak, foe, art: yes)
 
 ```
 A long low red lizard crawling on all four legs close to the ground, glowing lava cracks across its scales, flames running along its spine. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Salamander, a monster of the volcano. The lizard that lives in the fire. Its hide burns what touches it.  Light: lit from inside by heat, black rock and embers.
+```
+
+## Fire Lizard (`fire_lizard`, peak, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Fire Lizard, a monster of the volcano. The fire lizard, the Peak's heat on more of its rank and file. Tier two of the salamander line. A salamander that scorches deeper: three stacks a bite, so every gun the machine fires next turn runs three hotter.  Light: lit from inside by heat, black rock and embers.
+```
+
+## Magma Lizard (`magma_lizard`, peak, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Magma Lizard, a monster of the volcano. The magma lizard, the Peak's primer: Primed as a foe's buff. Tier three of the salamander line. A salamander that lights the rest: its stoke primes every other foe, so their next blows leave the machine Burning. Kill it first, or Ward what they are aimed at.  Light: lit from inside by heat, black rock and embers.
 ```
 
 ## Drake (`drake`, peak, foe, art: yes)
@@ -106,10 +292,310 @@ A long low red lizard crawling on all four legs close to the ground, glowing lav
 A small winged red dragon breathing fire, on its hind legs, wings half spread. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Drake, a monster of the volcano. A small dragon that breathes over the front rank. Artillery with wings.  Light: lit from inside by heat, black rock and embers.
 ```
 
-## Magma Elemental (`magma_golem`, peak, boss, art: yes)
+## Wyvern (`wyvern`, peak, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Wyvern, a monster of the volcano. The wyvern, the Peak's telegraphed spike on the rank and file. Tier two of the drake line. A drake that dives: beside its breath and its stoke, a blow through the shield at half again its bite. The spike the Barrier is for.  Light: lit from inside by heat, black rock and embers.
+```
+
+## Red Dragon (`red_dragon`, peak, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Red Dragon, a monster of the volcano. The red dragon, the Peak's capstone of the rank and file: the aim at heat, the scorch on everyone, the countdown. Tier three of the drake line. The dragon. It goes for the hottest machine, scorches everyone at once, and its crush is announced a round ahead. Cool the machine it wants, shield it, or kill the dragon.  Light: lit from inside by heat, black rock and embers.
+```
+
+## Magma Elemental (`magma_elemental`, peak, boss, art: yes)
 
 ```
 A hulking golem of black volcanic rock with molten lava glowing through every crack. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Magma Elemental, a monster of the volcano. The furnace with a body: rock on the outside, lava in the seams. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## Basalt Elemental (`basalt_elemental`, peak, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Basalt Elemental, a monster of the volcano. Tier two of the Magma Elemental's line, a massive rank and file (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): its cut Stoke the Forge back as the twist. A magma elemental cooled to blue-black basalt and no kinder for it. Its fist goes through the shield, it stokes every other foe on the field, and below half its cracks vent on every machine. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## Sulphur Elemental (`sulphur_elemental`, peak, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Sulphur Elemental, a monster of the volcano. Tier three of the Magma Elemental's line, a massive rank and file (Ryan, 30 October: "We also probably need more massive foes, yes?"; 31 October, agreeing Claude's lean): Stoke the Forge its twist. A magma elemental crusted yellow with sulphur, the hottest of its line. Its fist goes through the shield, it stokes the others harder, and below half its cracks vent on every machine. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## Goblin Shaman (`goblin_shaman`, meadow, foe, art: yes)
+
+```
+A small green goblin shaman astride a big grey dire wolf, a feathered totem staff in one hand and lightning crackling in the other, bone necklaces and a wolf-skull headdress. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Goblin Shaman, a monster of the grasslands. The warband's commander, the goblin line grown: Warcraft's orc shaman by archetype, Thrall on his wolf in Warcraft III and Drek'Thar of the Frostwolves (Ryan, 15 October: a decent elite, the marked goblin_takesD_1; 3 November: push it into the Thrall/Drek'Thar homage, the wolf-rider silhouette, which he knows from Warcraft III). The tier-one elite: a harder fight that hits harder while it stands, so reach the back first.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Elder Treant (`elder_treant`, meadow, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Elder Treant, a monster of the grasslands. The beefed-up alpha of the walking tree (Ryan, 24 October: the harder-fight elite; the ent is Tolkien's coinage and the treant D&D's rename, so the name is ours). It comes with two mandragoras, whose screams cost the rerolls the storm wants. Older than the Treant, and it has learned to hate the saw. Fills a whole column and grows back five of what you cut each time it stops to think; badly hurt, the roots come up under every machine. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Leshy (`leshy`, meadow, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Leshy, a monster of the grasslands. Slavic folklore's forest lord (Ryan, 24 October: liked, and may be a foe of its own beside the Elder Treant for diversity). The swarm elite and a commander: the forest keeps coming while it stands. The forest's lord, walking with its pack. While it stands the wolves keep coming, two at a call, and its roots snare whatever your machines are about to use. The wolves are the symptom; it is the cause.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Old Man of the Desert (`old_man_of_the_desert`, waste, boss, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Old Man of the Desert, a monster of the desert. The king sandworm, named for Dune's own plain words for its worm, which the homage rule lets stay (Ryan, 24 October: the harder-fight elite). It rises with four needlers round it: fixed damage round a breach. The Sandworm's elder, and the sand is its. Fills a whole column, bites through any shield, digs in when it is hurt, and heaves the ground under every machine once it is badly hurt. The needlers round it are its teeth. A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.
+```
+
+## The Reaper (`reaper`, marsh, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Reaper, a monster of the swamp and graveyard. Every JRPG has a reaper; Persona's chained one is the homage (Ryan, 15 October: in, a trope by the tiers' own test; 24 October: the deadly hunter elite). The hunter elite: this one is going to kill a machine. A wanderer since 3 November (Ryan: "Reaper might as well go full Persona and be a wanderer"): Persona's Reaper comes to any floor once you linger, so it walks out of any rift. It walks out of any rift, picks a machine and comes for it, faster than anything else on the field. Its scythe is bad; the knell is worse: a blow named two rounds ahead that comes through the shield. Whatever it catches alone, it kills alone.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The Goblin Nob (`goblin_nob`, meadow, foe, art: yes)
+
+```
+A goblin twice a goblin's size with a jutting jaw and small furious eyes, a crude iron plate strapped on one shoulder, a spiked club over the other, a string of trophies at its belt, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Goblin Nob, a monster of the grasslands. Slay the Spire's Gremlin Nob by archetype, the goblin line grown (Ryan, 3 November: "I like Nob a lot"; Nob was Warhammer's Ork rank before the Spire's gremlin borrowed it, and plain slang besides, so the word is free). Owned by what it punishes: the Spire's Nob punishes skills because skills are that game's defence; ours punishes the die and the heat.  Light: the bright, saturated light of a sunny overworld field.
+```
+
+## The Bane (`bane`, peak, boss, art: yes)
+
+```
+A colossal demon of shadow and fire, a mane of flame over a body of black smoke and cinder, a whip of fire in one hand and a sword of flame in the other, horned, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Bane, a monster of the volcano. Tolkien's Balrog by archetype, the shadow and flame on the mountain's bridge (Balrog is his coinage, so a name of ours: the Bane, for Durin's; Ryan, 3 November: "Balrog yes"). The Peak's hunter: it goes for the strongest, as it went for the wizard. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## The Firelord (`firelord`, peak, boss, art: yes)
+
+```
+A colossal elemental of lava and black rock rising waist-deep from a pool of fire, a great hammer of slag raised in both hands, a crown of flame, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Firelord, a monster of the volcano. Warcraft's Ragnaros by archetype, the Firelord of the Molten Core, the Magma Elemental line grown (Ryan, 3 November: placed). The register's own shape: the domain's wildlife grown with a pop-culture nod. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## The Thunder Ape (`thunder_ape`, peak, foe, art: yes)
+
+```
+A hulking ape with a mane of black fur and two curling horns, lightning crackling between its fists and jaws, braced on its knuckles mid-charge, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Thunder Ape, a monster of the volcano. Monster Hunter's Rajang by archetype, the golden ape of the volcano whose fury is lightning (Capcom's coinage, so a name of ours; Ryan, 3 November: a ubiquitous entry and unique, since the roster has few lightning foes; placed). Careful: his favourite series.  Light: lit from inside by heat, black rock and embers.
+```
+
+## The Rust Monster (`rust_monster`, waste, foe, art: yes)
+
+```
+A low insectile beast with a plated carapace the colour of rust, two long feathery antennae waving ahead of it, a paddle tail, skittering on four legs, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Rust Monster, a monster of the desert. Dungeons and Dragons' rust monster by archetype, the beast that eats metal, and our machines are metal (Ryan, 3 November: D&D a property to pull from; placed). The Waste's theft, grown teeth.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## The Skeleton King (`skeleton_king`, marsh, foe, art: yes)
+
+```
+A tall skeleton king in rusted ornate plate and a tarnished crown, a great mace in both hands, a tattered royal cloak, standing over a kneeling revenant, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Skeleton King, a monster of the swamp and graveyard. placed). The zombie-knight line grown, the Marsh's rising as a commander.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The Fell Rider (`fell_rider`, marsh, foe, art: yes)
+
+```
+A black-cloaked rider with no face in its hood astride a vast leathery winged beast with a long neck and a toothed maw, a long pale blade in its hand, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Fell Rider, a monster of the swamp and graveyard. Tolkien's Nazgûl on the fell beast by archetype (his coinages, so a name of ours; Ryan, 3 November: "Nazgul is good", the mount his to settle: the fell beast is Claude's lean, winged, so the Marsh has a hunter that crosses the walls the team holds; the horse at tier one would be a second entry with the same kit, and neither mount the Witch-king at the gate, a blitz rather than a hunt). The Marsh's hunter now the Reaper wanders.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The Antiquarian (`antiquarian`, marsh, foe, art: yes)
+
+```
+A tall gaunt figure in a long dark cloak whose head is an iron lantern cage with a pale light inside, a staff in one hand and three severed heads hung from its belt, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Antiquarian, a monster of the swamp and graveyard. Darkest Dungeon's Collector by archetype, the cloaked thing with a cage for a head that turns up in any hall and collects the heads of the fallen (Ryan, 3 November: placed or wandering, either; placed in the Marsh, the dungeon, Claude's lean, so the Shuffler wanders alone). The Antiquarian since 4 November, Ryan's name: Darkest Dungeon's Antiquarian is its hero who collects trinkets, so the name is a double reference the plain word carries straight, an antiquarian being a collector of old things (Claude's read: not too much, since a player who knows neither reads a collector of antiquities with a cage for a head; the id antiquarian since 9 November). A modern roguelike's homage, made retro.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The World Eater (`world_eater`, peak, boss, art: yes)
+
+```
+A huge hunched saurian with a massive jaw of crooked teeth, spines down its back, a thick tail, scars all over its dark green hide, stamping forward with its head low, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The World Eater, a monster of the volcano. Monster Hunter's Deviljho by archetype, the invader that barges into any hunt and fights whoever is there (Capcom's coinage, so a name of ours; Ryan, 3 November: "Jho (wanderer)", the original invader to a true fan; 4 November, its in-world epithets as the name: "World Eater, The Endless Hunger, The Great Devourer, and the Pickle", the World Eater Claude's pick, the Pickle the fans' joke, which the register plays straight; the id world_eater since 9 November). The roster's second saurian after the Obsidian Tyrant, kept apart by its kit. Careful: his favourite series. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## Rider of the Wild Hunt (`wild_hunt_rider`, marsh, foe, art: yes)
+
+```
+A gaunt rider in black spiked plate with a horned helm astride a skeletal horse wreathed in frost, a long lance couched, riding on the air, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Rider of the Wild Hunt, a monster of the swamp and graveyard. The Wild Hunt, the riders of European folklore that cross the winter sky and take whoever they catch, the Witcher's take the homage (riders in spiked plate on gaunt horses, frost in their wake; the name is folklore's, so it stays). Ryan, 3 November: "Wild Hunt is better, and this is a good place to make an elite pack of multiple clones instead of a unique unit", a wanderer: the Hunt rides between worlds, so it rides out of any rift.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The Shuffler (`shuffler`, marsh, boss, art: yes)
+
+```
+A shapeless mass of dark flesh and eyes dragging itself forward on a dozen tentacles, pale growths budding from its sides, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Shuffler, a monster of the swamp and graveyard. Darkest Dungeon's Shambler by archetype, the thing that comes when the light is out, in any hall (Ryan, 3 November: "Shambler should be on the table"). The Shuffler since 4 November, Ryan's name, which winks at its game's shuffle of the party too; the id shuffler since 9 November. A wanderer: a Fracture is its dark, so it walks out of any rift. A towering elite, twice the height of a common foe. Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Shuffler Spawn (`shuffler_spawn`, marsh, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Shuffler Spawn, a monster of the swamp and graveyard. The Shuffler's buds, Darkest Dungeon's Shambler's Spawn by archetype: small, many, and worse together (named with their parent, 4 November). A bud off the Shuffler, with teeth. Each one lashes harder for every other one standing.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## Enkidu (`enkidu`, waste, foe, art: yes)
+
+```
+16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Enkidu, a monster of the desert. a composition's members may differ by tier). Joins Gilgamesh at tier three. Gilgamesh's beast, and it minds him. It mends him when he is hurt and roars him on; kill it first, or the fight with him never ends.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Rotbloom (`rotbloom`, meadow, boss, art: yes)
+
+```
+A colossal bloated plant creature squatting on a mass of thick roots, a huge round maw ringed with dripping fangs gaping in its swollen body, a mass of writhing tendrils bursting from its sides, sickly green and yellow-brown blotched hide, a foul cloud seeping from its mouth. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Rotbloom, a monster of the grasslands. a bloated maw-plant whose breath carries every ailment at once. It stays beside Floraison (Ryan, 24 October: mechanically very different, and a different silhouette). To the rank and file 3 November (Ryan: the Malboro is a species, no named entity, and "could be a rank and file"; tier two and up): the Meadow's massive at tiers two and three, its bed a formation, Bad Breath the twist. A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Floraison (`floraison`, meadow, boss, art: yes)
+
+```
+A colossal humanoid plant creature standing upright on two thick root-legs, its body knotted vines and green bark, two long vine arms ending in thorned claws, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Floraison, a monster of the grasslands. Clair Obscur's Bourgeon by archetype, under Ryan's name (15 October: the flowering): a humanoid plant whose head is a flower's maw. The game places one in its Meadows. Art picked 26 October (the paint-out of the maw's eyes). A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
+```
+
+## Gilgamesh (`gilgamesh`, waste, foe, art: yes)
+
+```
+A towering wandering swordsman in battered plate patched together from a dozen different armours, a fan of stolen blades of every make strapped across his back like a peacock's tail, a broad bearded face under a dented open helm, a long sword gripped in each fist, mid-stride. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Gilgamesh, a monster of the desert. On the slate by Claude's lean, then an elite that can turn up in any domain (Ryan, 24 October: tempted to move him to the elites, "since he can pop up anywhere"; 31 October, agreed).  Light: sun-bleached and dusty, hard desert light.
+```
+
+## The Fallen Weapon (`fallen_weapon`, waste, boss, art: yes)
+
+```
+A colossal double-bitted battle axe alone with no one holding it, an animate weapon with no body, tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a glaring eye set into each of its two crescent blades, dust swirling around it. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Fallen Weapon, a monster of the desert. The Exor homage (Super Mario RPG's sword fallen into the keep; a series coinage, so a name of ours, the Fallen Weapon a working name). Ryan, 15 October: in, distinct from its game's look; 18 October, his pick: the double-bitted axe standing haft-down, an eye in each blade. The boss in parts: the eyes shield the core that drives them. A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.
+```
+
+## Piercing Eye (`piercing_eye`, waste, foe, art: yes)
+
+```
+A huge disembodied glaring amber eye set in a crescent of cracked bronze axe blade, floating above the ground, veins of light running out from it across the metal. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Piercing Eye, a monster of the desert. One of the Fallen Weapon's two eyes, a part of the boss in parts (the slate's Exor homage; Claude's lean on the eyes' blows, the Waste's two halves).  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Prising Eye (`prising_eye`, waste, foe, art: yes)
+
+```
+A huge disembodied glaring green eye set in a crescent of cracked bronze axe blade, floating above the ground, its iris narrowed to a slit, cracks of light round it in the metal. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Prising Eye, a monster of the desert. One of the Fallen Weapon's two eyes, a part of the boss in parts (the slate's Exor homage; Claude's lean on the eyes' blows, the Waste's two halves).  Light: sun-bleached and dusty, hard desert light.
+```
+
+## The Matador (`matador`, marsh, foe, art: yes)
+
+```
+A skeletal bullfighter in a tattered suit of lights of black and tarnished gold, a red cape in one bony hand and a slim sword in the other. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Matador, a monster of the swamp and graveyard. in, the legacy pick; the Reaper went to the elites). Art picked 19 October. Weighed for the wanderers 3 November (Ryan: the Fiends ambush you in places that have nothing to do with them; "wherever his mechanics fit more"), and kept a boss on Claude's call: his escort gives the cape-and-flurry its danger, and the wanderers' pool was full of harder fights.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The Gargantuan King (`gargantuan_king`, peak, boss, art: yes)
+
+```
+A colossal four-legged horned beast of the mountain, shoulders like a bull's under a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Gargantuan King, a monster of the volcano. an FF homage is incomplete without it). Renamed 3 November (Ryan: Behemoth is too on the nose for players even where the name is allowed, as Ifrit and Shiva were; he wants a name in the vein of the word that became the adjective for the thing, with King on it: "Dreadnought King, Gargantuan King, Monstrosity King, Colossal King, and so on"): the Gargantuan King is Claude's pick of his pattern, Rabelais's giant, a working name for his name pass; the id gargantuan_king since 9 November. Art picked. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## Cinder Tortoise (`cinder_tortoise`, peak, boss, art: yes)
+
+```
+A colossal ancient tortoise whose shell is a smoking volcanic cone of black rock with glowing lava seams, its armoured beaked head held low. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Cinder Tortoise, a monster of the volcano. The bible's who's who: the Adamantoise probably (Ryan). To the elites 3 November (Ryan: "it doesn't represent a named entity"; a boss is a named JRPG entity, an elite may be the genre's creature grown): the Peak's harder-fight elite at every tier, with two Salamanders for its brood. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## The Fiend of Fire (`fiend_of_fire`, peak, boss, art: yes)
+
+```
+A colossal serpent-bodied woman rearing up on her coils, six arms each gripping a curved blade, her skin the red of embers and her hair a mane of flame, armoured in blackened scales. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Fiend of Fire, a monster of the volcano. "Marilith is an obvious insert for the peak", in the Cinder Tortoise's place). A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## The Mantis Ant (`mantis_ant`, meadow, boss, art: yes)
+
+```
+A colossal brown ant rearing out of broken earth, two scythe-like mantis forelimbs raised, antennae up, its mandibles open, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Mantis Ant, a monster of the grasslands. Secret of Mana's Mantis Ant by archetype, the genre's first boss, the giant ant with a mantis's blades that bursts out of the ground in the first meadow (the Mana series' coinage for its boss, but plain words, so the name stays; Ryan, 4 November: "Mantis ant is a fine addition", the Meadow's third boss in Rotbloom's place). A boss is a named JRPG entity (the register row). A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
+```
+
+## The Marsh Serpent (`marsh_serpent`, marsh, boss, art: yes)
+
+```
+A colossal dark green serpent rearing out of black water, its hood flared, fangs bared, its coils filling the marsh behind it, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Marsh Serpent, a monster of the swamp and graveyard. "so is Marsh Serpent", the Marsh's fourth boss, since more than three is fine). Its famous toss would be the third swallow after Floraison's and Whirlsand, so it coils instead. A towering elite, twice the height of a common foe. Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The Emperor Scorpion (`emperor_scorpion`, waste, boss, art: yes)
+
+```
+A huge armoured desert scorpion, dun and black, pincers raised wide, the segmented tail curled high over its back with a glistening sting, half risen out of a dune. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Emperor Scorpion, a monster of the desert. The Lost Age's King Scorpion by archetype, the Yampi Desert's boss (Camelot's, so a name of ours: Whether that's the waste boss or something else"), in the desert it came from. Its moves by the original's: Twin Shear, Paralytail (the paralysis a disable, the Waste's interrupt on the die) and Desert Gasp (its breath over the party), its Poison Tail folded into the gasp's corrupt; its burrow and the Scoop that drops the party into its lair left out, since the Mantis Ant and the Sandworm line burrow already. A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.
+```
+
+## The Astromancer (`astromancer`, waste, foe, art: yes)
+
+```
+A slight robed mage in midnight blue with a tall star-tipped staff and a wide-brimmed hat, four glowing orbs orbiting its shoulders, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Astromancer, a monster of the desert. The Lost Age's Star Magician by archetype, the Treasure Isle superboss behind its four kinds of Ball (Camelot's coinages, so names of ours: an astromancer is a star-mage, and its orbs are warding, storm, mending and fuming), on Ryan's go of 4 November ("If you think another golden sun works as a boss or elite, feel free to throw it in"); to its fans "one of the most challenging, thought-provoking, and tricky encounters" in the series, since the whole fight is which ball to kill first. A wanderer, since its cave is no domain's.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Warding Orb (`warding_orb`, waste, foe, art: yes)
+
+```
+A pale blue glass orb with a rune ring turning inside it and a soft shell of light round it, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Warding Orb, a monster of the desert. The Star Magician's Guardian Ball by archetype, the one whose Guard Aura cuts the damage to its master to nothing for the turn; here a part of the Astromancer, so while it stands the mage is Guarded, and it grows back three rounds after it falls, the resummon.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Storm Orb (`storm_orb`, waste, foe, art: yes)
+
+```
+A yellow-white orb crackling with arcs of lightning, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Storm Orb, a monster of the desert. The Star Magician's Thunder Ball by archetype, the Jupiter caster among its orbs, the least durable and the one the guides leave for last.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Mending Orb (`mending_orb`, waste, foe, art: yes)
+
+```
+A green orb with a slow pulse of light at its heart, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Mending Orb, a monster of the desert. The Star Magician's Refresh Ball by archetype, the healer that plies its master back to full; the first thing a guide tells you to kill.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Fuming Orb (`fuming_orb`, waste, foe, art: yes)
+
+```
+A red orb with a black fuse-crack across it, smoking, drawn retro. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Fuming Orb, a monster of the desert. The Star Magician's Anger Ball by archetype, the red one that self-destructs for heavy damage, the one its guides say to kill first; here the mage's summon, two a call.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## King Gel (`king_gel`, meadow, boss, art: yes)
+
+```
+An enormous round blue gel slime wearing a small golden jewelled crown, a wide toothless grin, two smaller gels clinging to its sides like courtiers. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: King Gel, a monster of the grasslands. a mark, and yes to the slate's last five, 30 October). A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
+```
+
+## The Pilgrim (`pilgrim`, waste, foe, art: yes)
+
+```
+A small hunched green creature in a brown hooded monk's robe shuffling forward, a lit lantern held out in one hand and a long kitchen knife in the other, its yellow eyes glinting under the hood. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Pilgrim, a monster of the desert. the Pilgrim, for its slow walk with the lantern; Ryan, 15 October: the Tonberry everyone hates). Keep the dread, drop the unfairness: the countdown shown is the fairness. To the elites 3 November (Ryan: "Tonberry is an obvious elite"): the Waste's hunter he marked on 24 October, walking a hex a turn after the nearest machine, the Tonberry's own joke, slow and sure.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## The Djinn (`djinn`, waste, foe, art: yes)
+
+```
+A towering blue genie with a muscular bare torso and gold armbands, a turban set with a red gem, its lower body a tapering swirl of desert smoke, a curved scimitar raised in one hand. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Djinn, a monster of the desert. The desert's own spirit, the genie by archetype (the jinn are the Thousand and One Nights' and older, a myth's word, so it stays). The Waste's third boss for a day (31 October), then the rank and file (Ryan, 2 November: "Djinn can be a rank-and-file since its a trope archetype. Could be backline, frontline, or massive, depending on the slant"); Claude's slant the back-rank caster, the Waste's first purge in the ranks (section 12's carrier question), since the slate's kit was built to carry it.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## The Ruby Colossus (`ruby_colossus`, waste, boss, art: yes)
+
+```
+A colossal crimson beast half-buried in desert sand, a hunched armoured torso with a horned head and a long tail, two thick red tentacles rising out of the sand on either side. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Ruby Colossus, a monster of the desert. the red colossus buried in the desert round the Gold Saucer, its tentacles in the sand, whose Whirlsand blew a party member out of the fight. The Waste's third boss since 2 November (Ryan: "Ruby weapon is cool"), in the Djinn's place. A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.
+```
+
+## Burrowing Tentacle (`burrowing_tentacle`, waste, foe, art: yes)
+
+```
+A thick crimson tentacle rising out of desert sand, its tip a dark barb. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Burrowing Tentacle, a monster of the desert. One of the Ruby Colossus's two tentacles, a part of a boss in parts with no guard (the slate's Ruby Weapon homage): the one that comes up under a machine.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## Thrashing Tentacle (`thrashing_tentacle`, waste, foe, art: yes)
+
+```
+A thick crimson tentacle whipping above desert sand, bent twice on itself. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Thrashing Tentacle, a monster of the desert. One of the Ruby Colossus's two tentacles, a part of a boss in parts with no guard (the slate's Ruby Weapon homage): the one that thrashes.  Light: sun-bleached and dusty, hard desert light.
+```
+
+## The Phantom Train (`phantom_train`, marsh, boss, art: yes)
+
+```
+A black steam locomotive bursting out of fog, a grinning skull-like face on its smokebox, ghostly green fire in its firebox, pale spirits trailing from its funnel. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Phantom Train, a monster of the swamp and graveyard. Yes to the slate's last five, 30 October. A towering elite, twice the height of a common foe. Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The Vampire Lord (`vampire_lord`, marsh, foe, art: yes)
+
+```
+A tall gaunt pale lord in a high-collared black cape lined with red, long clawed fingers spread, fangs bared, his eyes glowing red in a sunken face. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Vampire Lord, a monster of the swamp and graveyard. Yes to the slate's last five, 30 October.  Light: dim and damp, rust and old bone, lantern light in fog.
+```
+
+## The Obsidian Tyrant (`obsidian_tyrant`, peak, boss, art: yes)
+
+```
+A towering black tyrannosaur with skin like volcanic glass, lava glowing in the cracks of its hide, jaws open, a robed reptilian queen with a jewelled headdress riding high on its back. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Obsidian Tyrant, a monster of the volcano. Yes to the slate's last five, 30 October. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
+```
+
+## The Saurian Queen (`saurian_queen`, peak, foe, art: yes)
+
+```
+A slender robed reptilian queen with a tall jewelled headdress and a whip of light in one clawed hand, standing in a saddle. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Saurian Queen, a monster of the volcano.   Light: lit from inside by heat, black rock and embers.
 ```
 
 ## The Warrior (`warrior`, meadow, hero, art: yes)
@@ -136,13 +622,13 @@ A wiry young woman with light brown skin and a messy black bob under a dark hood
 A tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced horned helm, gripping a long ornate spear in both hands, its straight shaft angled forward and its butt behind her back foot. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Lancer, a hero of the party who comes out of the desert. The one who jumps: A spear from a great height. Light: sun-bleached and dusty, hard desert light.
 ```
 
-## The Cleric (`white_mage`, marsh, hero, art: yes)
+## The Cleric (`cleric`, marsh, hero, art: yes)
 
 ```
-A plump young man with light brown skin and curly black hair, in layered white robes with red and gold trim and a high collar, holding a tall staff topped with a glowing crystal upright in both hands. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Cleric, a hero of the party who comes out of the swamp and graveyard. The healer who heals the dead: the homage to every white mage and priest, the Cleric since 16 October (Ryan: the genre's generic word; the White Mage until then, the bench's Priest folded in, their kits much alike). The lesson every JRPG teaches: kill the healer first. The id stays white_mage. Light: dim and damp, rust and old bone, lantern light in fog.
+A plump young man with light brown skin and curly black hair, in layered white robes with red and gold trim and a high collar, holding a tall staff topped with a glowing crystal upright in both hands. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Cleric, a hero of the party who comes out of the swamp and graveyard. The healer who heals the dead: the homage to every white mage and priest, the Cleric since 16 October (Ryan: the genre's generic word; the White Mage until then, the bench's Priest folded in, their kits much alike). The lesson every JRPG teaches: kill the healer first. The id cleric since 9 November. Light: dim and damp, rust and old bone, lantern light in fog.
 ```
 
-## The Augur (`augur`, marsh, hero, art: no)
+## The Augur (`augur`, marsh, hero, art: yes)
 
 ```
 A lean young woman with olive skin and a long black braid, bare-headed, in a sleeveless fitted leather vest of dark green laced up the front over a grey long-sleeved shirt, a wide belt hung with a cord of carved bone charms, close-fitting dark trousers tucked into knee-high boots, her legs plain to see from belt to boot, carrying a double-ended scythe staff: a long wooden pole with a great curved reaper's blade at the top end and an identical great curved reaper's blade at the bottom end, both blades long thin crescents, holding the staff upright beside her with one hand at its middle, one blade high above her head and the other down by her boots. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Augur, a hero of the party who comes out of the swamp and graveyard. Clair Obscur's Sciel by archetype (Ryan, 16 October): the reader of fate who marks a foe and collects later, her twin-bladed scythe her defining feature (a staff with a reaping blade at each end, spun and thrown). Ryan's name, 16 October: the Augur read omens for Rome. Her look is ours: a laced leather vest, shirt, trousers and boots, bare-headed, the bone charms, the long crescent blades (Ryan's notes of 18 October over three rounds, each asking for less cloth and bigger blades; the hero style prompt's robes and flowing cloth, and this text's own words for what she must not wear, were what kept drawing them, so her renders take a prompt of their own that names only what she wears). Light: dim and damp, rust and old bone, lantern light in fog.
@@ -160,43 +646,7 @@ A wiry elderly man with olive skin and a long grey beard under a tall crooked ha
 A young man with dark brown skin and short locs under a horned headdress, his ears hidden by the headdress, in flowing indigo robes stitched with runes glowing deep violet, one hand raised high and the other low with a glowing deep violet rune circle turning in each raised palm. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Summoner, a hero of the party who comes out of the volcano. The one who calls something bigger: Its summons answer the deep violet circle, appear for one move, and go. Its own power shows as deep violet rune circles in its palms, never fire (the Black Mage's) and never the rock (the Elemental's): Ryan, 13 October; the fire and the ice are the summons'. Light: lit from inside by heat, black rock and embers.
 ```
 
-## Behemoth (`behemoth`, peak, boss, art: yes)
-
-```
-A colossal four-legged horned beast of the mountain, shoulders like a bull's under a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Behemoth, a monster of the volcano.  A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
-```
-
-## Cinder Tortoise (`cinder_tortoise`, peak, boss, art: yes)
-
-```
-A colossal ancient tortoise whose shell is a smoking volcanic cone of black rock with glowing lava seams, its armoured beaked head held low. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Cinder Tortoise, a monster of the volcano.  A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.
-```
-
-## Floraison (`bourgeon`, meadow, boss, art: no)
-
-```
-A colossal humanoid plant creature standing upright on two thick root-legs, its body knotted vines and green bark, two long vine arms ending in thorned claws, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Floraison, a monster of the grasslands.  A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.
-```
-
-## The Matador (`matador`, marsh, foe, art: yes)
-
-```
-A skeletal bullfighter in a tattered suit of lights of black and tarnished gold, a red cape in one bony hand and a slim sword in the other. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Matador, a monster of the swamp and graveyard.   Light: dim and damp, rust and old bone, lantern light in fog.
-```
-
-## The Fallen Weapon (`fallen_weapon`, waste, boss, art: yes)
-
-```
-A colossal war hammer standing haft-down in the badlands like a monument, its iron head aloft with a blunt face on one end and a curved pick on the other, a glaring eye set into each end. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Fallen Weapon, a monster of the desert.  A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.
-```
-
-## The Reaper (`reaper`, marsh, foe, art: yes)
-
-```
-A gaunt reaper in a tattered black shroud wrapped in rattling chains, a bone-white mask for a face, a great scythe. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Reaper, a monster of the swamp and graveyard.   Light: dim and damp, rust and old bone, lantern light in fog.
-```
-
-## Surtr (`surtr`, , boss, art: no)
+## Surtr (`surtr`, , boss, art: yes)
 
 ```
 A towering giant whose whole body is living flame: a torso and limbs of roaring orange-white fire over a dim core of black slag, a face of white-hot fire with two black pits for eyes, a crown of flame, a great sword that is itself a blade of fire. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Surtr, a monster of the Summoner's rune circle.  A towering elite, twice the height of a common foe. Light: lit from inside, fire against darkness.
