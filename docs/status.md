@@ -155,9 +155,20 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the bench and the order. The proposal was written to a scratch worktree as content, validated,
   and read by the curve read with the default four, a light four (the Skua first, for the rating
   of one) and a tier-two four (`--team`, new), its bands the tables' last columns and the gates
-  and the pruning read off them; `docs/measurements.md`, 9 November. Nothing in `content/` moved.
-  Next: Ryan's marks on its ten questions, then the content lands with the opening's line, the
-  vocabulary and the rules, and the bosses' blocks in a session of their own.
+  and the pruning read off them; `docs/measurements.md`, 9 November. Nothing in `content/` moved;
+  the grids are code in `tools/formation_proposal.py` (it writes them to a worktree for the reads
+  and merges the reads into the tables; it retires with the proposal). What the reads said: at
+  tier one only the massive-anchored formations are a decision for three (the sandworm ambush,
+  the magma vent), every fodder formation reads free for three at eight foes and the eight-slot
+  variants move no band against the six (fourteen prunings), so the fodder's lever is the refit's
+  numbers; two-anchor formations written after the first read are true threes at tier two (the
+  grove and bloom, the pit wall); every domain has true ones for the Skua alone (the Peak's the
+  new ember pair); the antlions, the pit pair, the queen's hunt and the grenade and balloon
+  flights read as twos, the wolf pack, the warg pack and the bomb flight as ones (a two on them
+  his word); the light four walls on every massive and stalls against the grave field (the giants'
+  line has no escalation). Next: Ryan's marks on its thirteen questions, then the content lands
+  with the opening's line, the vocabulary and the rules, and the bosses' blocks in a session of
+  their own.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack

@@ -143,7 +143,8 @@ Claude's method, each line a proposal:
    the reads say a true one does not exist among a domain's units, section 9 names it as his
    question (his words of 6 November: reposition or create).
 
-<!-- TABLES -->
+The grids themselves, every cell of their reads beside them, are section 12, at the end, domain
+by domain and tier by tier; section 5 reads them.
 
 ## 4. The two hunter questions (the bible's section 12)
 
@@ -213,7 +214,108 @@ tier three; the light four reads the rating of one at every tier. Within a domai
 size and whose questions are one question are one composition, and the lean names which goes;
 where the questions differ they both stay, the read's "same as" notwithstanding.
 
-<!-- GATES -->
+**What the bands say first.** At tier one, read by the default four, the only formations that are a
+decision for three are the ones with a massive anchor (the sandworm ambush, 37% hull at three;
+the magma vent, 41%); every warband, host and swarm of fodder reads free for three at eight foes,
+the fullest the slots allow, and the eight-slot variant moves no band at three against the six
+(the goblin horde against the warband, the needler thicket against the swarm, the grave throng
+against the host, the ember pyre against the pit): the ramp's variants are redundant where the
+anchor is missing, and the thinner one of each pair is pruned below. So the counts are at their
+ceiling and the lever left for the fodder formations is the units' numbers, the refit's, held
+until Ryan plays Phase 2 (hole 3). At tier two, read by a tier-two team, the same shape: the
+single-anchor formations are decisions for two and free for three (the treant march, the pit
+ambush, the wyvern roost), the worm and the forge true threes, and the two-anchor candidates
+written after the first read (the grove and bloom, the pit wall) are true threes (walls for two,
+decisions for three at 41 to 43% hull). The rating of one holds: every fodder patrol of two or
+three foes is free for the Badger alone and free or a decision for the Skua alone, so each domain
+has true ones under the Badger's twos; the Peak needed one written (the ember pair). The hunters
+rated two: the antlions, the pit pair, the queen's hunt and the grenade and balloon flights read
+as twos (a decision for the Badger or the Boar alone, or a wall for the Skua and free for a pair);
+the wolf pack, the warg pack and the bomb flight read as ones (free for the Skua at a fifth of its
+hull or a decision for it, free for the Badger), so a two on them is Ryan's word against the read,
+and the lever that would make them twos is their numbers (question 4).
+
+### The Meadow
+
+| Composition | Size, rated | The read at its rating (default · light · tier team) | Gate | Keep or prune |
+|---|---|---|---|---|
+| `goblin_horde` | formation, 3 | free 1% · free 2% · — | 0 to 7 | keep; `goblin_warband` pruned (the same bands at two, three and four; the eight is the one) |
+| `treant_grove` | formation, 3 | free 7% · decision 16% · — | none (the tier's heaviest) | keep |
+| `gel_wall` | formation, 3 | free 4% · free 7% · — | 0 to 7 | keep (its question is the halves) |
+| `goblin_raiders` | patrol, 1 | free 2% · free 32% · — | none | keep |
+| `screamer_picket` | patrol, 1 | free 0% · free 12% · — | none | keep (the reach question) |
+| `gel_pair` | patrol, 1 | free 1% · free 21% · — | none | keep |
+| `wolf_pack` | patrol, 2, hunts the slowest | free 4% · free 21% at one · — | none | keep at two on his word; reads a one |
+| `guard_horde` | formation, 3 (tier two) | free 2% · free 4% · free 1% | 4 to 7 | keep; `guard_warband` pruned (the same at two and three) |
+| `treant_march` | formation, 3 | free 12% · decision 37% · free 10% | 4 to 7 | keep |
+| `rotblooms_bed` | formation, 3 (tiers 2, 3) | free 3% · decision 55% · free 3% | 4 to 7 at tier two | keep |
+| `gel_drift` | formation, 3 | free 4% · decision 9% · free 3% | 4 to 7 | keep (the plate and the halves) |
+| `grove_and_bloom` | formation, 3 | — · — · decision 41% | none (the tier's three) | keep: the Meadow's true tier-two three |
+| `guard_raiders` | patrol, 1 | free 4% · free 23% · free 0% | none | keep |
+| `mandrake_picket` | patrol, 1 | free 3% · free 17% · free 0% | none | keep (the reach question) |
+| `bubble_pair` | patrol, 1 | free 11% · wall 100% · free 11% | — | prune: a point of plate walls the Skua and nothing else reads; the gel drift carries the bubble gels |
+| `warg_pack` | patrol, 2, hunts the weakest | free 14% · decision 40% at one · free 7% | none | keep at two on his word; reads a one |
+
+### The Waste
+
+| Composition | Size, rated | The read at its rating (default · light · tier team) | Gate | Keep or prune |
+|---|---|---|---|---|
+| `needler_thicket` | formation, 3 | free 8% · free 2% · — | 0 to 7 | keep; `needler_swarm` pruned (the same at two and three) |
+| `antlion_pit` | formation, 3 | free 3% · free 3% · — | 0 to 7 | keep (the burrow question) |
+| `sandworm_ambush` | formation, 3 | decision 37% · wall 100% · — | none (a true three) | keep; the light four walls at every size (the massive against light kits, hole 1) |
+| `needler_scouts` | patrol, 1 (tiers 1, 2) | free 26% · free 19% · free 16% | none | keep; `needler_pair` pruned (the same bands, the same question) |
+| `cockatrice_roost` | patrol, 1 | free 10% · free 1% · — | none | keep (the stone question) |
+| `antlion_trio` | patrol, 2, hunts the slowest | decision 36% at one · wall 100% at one, decision 32% at two · — | none | keep: the Waste's hunter, a true two; `antlion_pair` pruned (the lighter two; one hunter a tier) |
+| `barbed_swarm` | formation, 3 (tier two) | free 8% · free 1% · free 5% | 4 to 7 | keep; `djinns_mirage` pruned (the same bands; its second djinn is his if he wants the purge formation) |
+| `pit_ambush` | formation, 3 | free 11% · decision 40% · free 16% | 4 to 7 | keep |
+| `sandworm_pit` | formation, 3 | decision 60% · wall 100% · decision 44% | none (a true three) | keep |
+| `pit_wall` | formation, 3 | — · — · decision 43% | none (a true three) | keep (four barriers, a question the worm does not ask) |
+| `barbed_scouts` | patrol, 1 | decision 49% · wall 85% · free 34% | none | keep, rated two: three barbs through the shield are a decision for the Badger alone and a wall for the Skua |
+| `basilisk_nest` | patrol, 1 | free 20% · wall 88% · free 6% | none | keep at one: free for every heavy, the Skua's wall being its stoned gun (a tier-two light's read is the next read) |
+| `pit_pair` | patrol, 2, hunts the slowest | decision 76% at one · wall · decision 76% at one | none | keep: a true two |
+
+### The Marsh
+
+| Composition | Size, rated | The read at its rating (default · light · tier team) | Gate | Keep or prune |
+|---|---|---|---|---|
+| `grave_throng` | formation, 3 | free 1% · free 3% · — | 0 to 7 | keep; `grave_host` pruned (the same at two and three) |
+| `barrow_mound` | formation, 3 | free 6% · decision 23% · — | 0 to 7 | keep |
+| `knights_vigil` | formation, 3 | free 15% · wall 100% · — | none (the tier's heaviest) | keep; the knights wall the light four to three (hole 1) |
+| `revenant_shamblers` | patrol, 1 | free 2% · free 32% · — | none | keep |
+| `ghost_light` | patrol, 1 | free 1% · decision 51% · — | none | keep: a true one, the Skua's decision |
+| `knights_retinue` | patrol, 2 | wall 100% at one, free 32% at two · wall to three · — | none | keep: a true two, hard |
+| `wight_host` | formation, 3 (tier two) | free 5% · decision 19% · free 5% | 4 to 7 | keep |
+| `grave_field` | formation, 3 | decision 15% · wall (a stall) · decision 21% | none (a three) | keep; the light four stalls against it at every size (hole 8) |
+| `death_knights_retinue` | formation, 3 | decision 31% · wall 100% · decision 36% | none (a three, the heaviest) | keep (the grave guard's question) |
+| `wight_shamblers` | patrol, 1 (tiers 2, 3) | free 14% · wall 100% · free 18% | none | keep at one: free for every heavy; the wights' knit out-heals a stock light alone |
+| `spectres_wake` | patrol, 1 | free 14% · wall 97% · free 16% | none | keep (the raise and the cleanse) |
+| `knight_and_wights` | patrol, 2 | decision 88% at one · wall · wall 100% at one, free 24% at two | none | keep: a true two |
+
+### The Peak
+
+| Composition | Size, rated | The read at its rating (default · light · tier team) | Gate | Keep or prune |
+|---|---|---|---|---|
+| `ember_pyre` | formation, 3 | free 6% · decision 27% · — | 0 to 7 | keep; `ember_pit` pruned (the same at three) |
+| `magma_vent` | formation, 3 | decision 41% · wall 100% · — | none (a true three) | keep |
+| `ember_pair` | patrol, 1 | free 0% · free 25% · — | none | keep: the Peak's true one, written after the first read |
+| `salamander_trio` | patrol, 1 | free 23% · wall 100% · — | none | keep, rated two (free for the Badger, a wall for the Skua); `salamander_pair` pruned (the same bands, the same question) |
+| `drakes_perch` | patrol, 1 | free 8% · wall 94% · — | none | keep, rated two (the stoke's question) |
+| `bomb_flight` | patrol, 2, hunts the nearest | free 12% · decision 48% at one · — | none | keep at two on his word; reads a one (a blow of four kills a bomb whole) |
+| `wyvern_roost` | formation, 3 (tier two) | free 5% · decision 57% · free 10% | 4 to 7 | keep |
+| `grenade_volley` | formation, 3 | free 5% · decision 36% · free 8% | 4 to 7 | keep (everyone bursts: a question the roost does not ask) |
+| `magma_forge` | formation, 3 | decision 60% · wall 100% · decision 52% | none (a true three) | keep |
+| `fire_lizards` | patrol, 1 | free 27% · wall 100% · free 19% | none | keep at one: free for every heavy |
+| `lizard_trio` | patrol, 2 | decision 87% at one · wall · wall 85% at one, free 6% at two | none | keep: a true two |
+| `wyverns_perch` | patrol, 1 | decision 43% · wall 100%, decision 71% at two · wall 87% at one, free 6% at two | none | keep, rated two: a two by every read |
+| `grenade_flight` | patrol, 2, hunts the nearest | free 12% · wall 90% at one · free 12% | none | keep: a two (walls the Skua, free for a pair) |
+
+<!-- GATES3 -->
+
+**The count.** Today's sixty patrols and formations become ninety candidates and, with the
+fourteen prunings above, seventy-six: the Meadow twenty-two, the Waste nineteen, the Marsh
+eighteen, the Peak seventeen (the elites' twenty and the escorts' twenty-four unchanged). The
+hunters: nine patrols (the pair pruned to the trio) and the six elites, from twenty-nine.
+
 
 ## 6. The bosses as fixed entries by tier and ramp
 
@@ -337,7 +439,19 @@ the grids land.
    domain (proposed in chat), or the lightest existing pair as the one?
 9. The bosses' form (section 6): stat blocks on the entry, one a tier to start, the escort a gated
    composition?
-10. The metal pair (hole 6): on the map as a two, or in formations only?
+10. The metal pair (hole 6): on the map as a two, or in formations only? The read: it walls the
+    light four at one and two (their blows bounce off three plate) and is a decision for the Badger
+    alone; the lean is formations only.
+11. The three hunters that read as ones (the wolf pack and the warg pack free for the Skua at a
+    fifth of its hull and free for the Badger; the bomb flight a decision for the Skua, a blow of
+    four killing a bomb whole): a two on his word, a one by the read, or their numbers moved with
+    the refit so the two is earned?
+12. The giants' line has no escalation and a kit that cannot out-damage the knit stalls against it
+    (hole 8): an escalation on the Barrow Giant's line with the refit, or left to the kits?
+13. The ratings are read on the default four; the light four finds every massive-anchored formation
+    a wall at every size and the tier-two and tier-three ones by a heavy alone (the Boar, the
+    Swallowtail): is a tier-two light's read wanted before the ones at tiers two and three are
+    trusted, or is a light flanker meant to leave the formations to the heavies?
 
 ## 10. Bench: ideas the rules kill, one line each, for Ryan to overrule
 
@@ -359,8 +473,10 @@ the grids land.
 ## 11. If Ryan says go: the order
 
 1. His marks on the grids, the hunters, the ratings and the gates; then `content/factions.json`
-   as marked, `design.question` on every patrol and formation, the validator allowing `design` on
-   a composition and requiring the question on a formation; the content tests on the new shape
+   as marked (`tools/formation_proposal.py write` holds the grids as code and writes them in place
+   of today's patrols and formations, the elites and escorts kept; it retires with the proposal),
+   `design.question` on every patrol and formation, the validator allowing `design` on a
+   composition and requiring the question on a formation; the content tests on the new shape
    (every domain every size at every tier, the gates holding).
 2. The opening's one line and its test (no hunter placed at the start at any ramp, with and
    without a guest), or the content-order check, as he picks.
@@ -372,3 +488,14 @@ the grids land.
    word.
 5. The bosses' stat blocks in a session of their own on his marks (section 6), the final's
    wildlife as named escorts with them.
+
+## 12. The compositions and their reads, domain by domain
+
+Every patrol and formation proposed, its grid left to right as it stands in a fight (a dot an
+empty cell), its question and what changed from today; then its reads: the band at one, two,
+three and four machines for each team (F free, D a decision, W a wall; greedy's hull lost beside
+it), and the compositions of its domain, size and tier whose bands match it at every size on some
+read (the pruning rule's candidates). The elites and the escorts are not here: they stand as
+content has them.
+
+<!-- TABLES -->
