@@ -25,9 +25,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1072 tests, 304,160 checks, green (9 November, main with the shapes relaid and recast, the
-  skirmish audit's step 3 and the playtest list of 9 November; Godot 4.8-beta2; either map view on
-  6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1077 tests, 304,170 checks, green (9 November, `ccr-a0b35006-od22d2`: main with the shapes
+  relaid and recast, the skirmish audit's step 3 and the playtest list of 9 November, and the
+  Lammergeier's rework; main alone 1072; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -85,7 +85,9 @@ one). Each merge commit says how its conflicts were settled.
 
 Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
-on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
+on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
+`ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), main taken as it landed,
+waiting on Ryan's word to land. Landed
 9 November: `ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 (How things stand: one hit
 routine, the hidden flags gone, one round model, the behaviour trace), on Ryan's word ("Ok, merge
 into main"), main taken as it landed (the hunt and the rings, no conflict) and main taking it as
@@ -149,6 +151,25 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The Lammergeier's rework** (9 November, `ccr-a0b35006-od22d2`; the bible's Lammergeier row):
+  Ryan sent it back for more than a fix ("A chassis based around opening an empty spot isn't a
+  good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
+  lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death", the
+  Cottonmouth's niche executed differently. The Reverberant Payload: every spend it aims at a
+  foe leaves a Mine on it as a rider, one a spend at a flat 2 with the spend's keywords, the
+  numbered ones added and the rest once, area, Sweep, strikes and the firer's ties left behind;
+  when the foe falls (getting back up, splitting, a tick or a part included) the Mine blows in
+  Splash's shape round its slot, plain through each foe's own Flak and armour, in strike order,
+  a blast's fall blowing its own. The Syrinx Drone detonates (a weapon of 1, no cooldown, its
+  own Mine first); the Lorentz Contractor gathers every Mine onto one foe and Exposes it. A Mine
+  is a foe status: its chip shows the damage and its readout the keywords; a Ward turns it away,
+  a cleanse takes it, a merge hands it to the merger. The slot mines' code and the audit's faults
+  parked on it went with it. Saves at 18, runs at 17. `RIFTGATE_MINE_DEBUG=1` mines every foe at
+  a fight's open, to judge the blast running. His levers if it reads weak or dangerous: a Mine a
+  hit; a cooldown on the drone. The runner's read (30 seeds, a direction, alone): every pack 7 / 43
+  before, 42 / 50 after, from the tier-three band's floor to its top beside the Giant Petrel's
+  38 / 50, the drone picked 21% and the gather 5% (`docs/measurements.md`); not weak, so the
+  per-hit lever waits.
 - **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
   Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
   all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always
@@ -301,7 +322,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   unit's own mechanic is an Ability on a chip of its own that no Purge touches
   (`RIFTGATE_ABILITY_DEBUG=1`); the Musk Ox reloads once, the greater; every roll inside the
   round follows the reroll rule but the Knuckle of Fury's and the Spin-Up's, each said on the
-  die. The mine path waits for the Lammergeier's rework. Its step 3 the same day
+  die. The mine path went with the Lammergeier's rework (9 November). Its step 3 the same day
   (`ccr-8df9952c-4cccdf`, no behaviour changed): one hit routine (`_hit`) for the plain spend,
   the salvo and the blast, each paying its own (`_finish_hits`, `Pays`), one `_land_blow` for
   every blow of a hit, the hidden flags arguments and returns, the preview's recorder on its
@@ -321,8 +342,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   halved"), its base halved before every buff ("the spirit of buffs and riders is they happen
   after"); a massive foe takes either rank's shot at its column; on screen every hit and shot
   lands, one on a corpse and a wasted shot on its empty slot (`RIFTGATE_MISS_DEBUG=1`), a death
-  at the spend's death check after its last blow; a Swap, a drone and a pull land in the rider
-  phase on a felled target too, a return and a drone's mine coming where the unit died. Waits on Ryan's phone read of the chips and the
+  at the spend's death check after its last blow; a Swap lands in the rider phase on a felled
+  target too, a return coming where the unit died. Waits on Ryan's phone read of the chips and the
   wasted shot, and a Skua read (the to-do).
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
@@ -441,7 +462,7 @@ wall's open items (the bible's section 12: the shell, the ratings by who solos, 
 and the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
 is section 12's, its test the to-do's): its structural steps in order (step 3 built on
-`ccr-8df9952c-4cccdf` but the mine's half, waiting for the Lammergeier's rework; then the bot's
+`ccr-8df9952c-4cccdf`, the mine's half gone with the slot mines on 9 November; then the bot's
 and the screen's mirrors onto the engine,
 then a 30-seed direction; statuses as data, the Face, the dead code, each refactor checked by
 `tools/behaviour_trace.gd`), since its tangles bend every read after it. The
@@ -487,7 +508,8 @@ commands are in `README.md`.
   for byte). Main's file is v0.492 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
   then the map session's shapes and field rows and the playtest list of 9 November); its
   republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
-  `dc265dc9`'s file. The live
+  `dc265dc9`'s file. `ccr-a0b35006-od22d2`'s file is v0.493 (the Lammergeier's rework: its row,
+  the Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, with main's. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
@@ -503,6 +525,8 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits` and `designs` read first. Behind
+  `ccr-a0b35006-od22d2` (9 November) by `content/chassis.json`, `content/components.json` and
+  `content/vocabulary.json` too (the Lammergeier's Mines), unpublished like the rest below. Behind
   `ccr-d26a1321-xg9xge` (8 November) by `content/vocabulary.json` (the Ring's, the Pack's and the
   Behaviour's codex), `content/foes.json` (no ring or hunt on a foe), `content/factions.json` (a
   composition's `hunts`) and `tools/hangar.html` (the foe list's Zone gone): the live vocabulary

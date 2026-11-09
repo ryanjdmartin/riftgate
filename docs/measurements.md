@@ -5436,3 +5436,40 @@ place").
 The direction: the tide spread along the wall asks more of the squad's split, as the rule meant
 it to; the defence bot, which sends each machine at the pack that reaches the wall soonest, leaks
 more, a third more turns above a ratio of one. The full report is `docs/campaign_run.md` (after).
+
+## 9 November, the Lammergeier's Mines on foes
+
+Ryan's rework of the day (the bible's Lammergeier row): every spend it aims at a foe leaves a Mine
+there, a flat 2 and the spend's keywords, blowing in Splash's shape round its slot when the foe
+falls; the Syrinx Drone detonates and the Lorentz Contractor gathers. `tools/balance.gd`, 30 seeds
+a cell (a direction), random and greedy, no party, alone, the matrix's 78 packs in six groups
+(tier one's rank and file 13, its four big foes, its four formations, the ladder's recolours at
+tiers two and three 36, their formations 8, the thirteen bosses alone), before on main at
+`f4906ee` (the slot mines) and after on `ccr-a0b35006-od22d2` at `37e0b5a`, beside the other tier
+threes. The four other rows came out identical cell for cell before and after, so the engine's
+change moved no machine but the Lammergeier.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack |
+|---|---|---|---|---|---|---|---|
+| Lammergeier, slot mines | 10 / 83 | 0 / 2 | 0 / 0 | 12 / 64 | 0 / 0 | 0 / 1 | 7 / 43 |
+| **Lammergeier, Mines on foes** | 78 / 93 | 8 / 10 | 0 / 0 | 62 / 69 | 0 / 0 | 2 / 13 | 42 / 50 |
+| Musk Ox | 85 / 89 | 0 / 0 | 0 / 0 | 64 / 67 | 0 / 0 | 1 / 5 | 44 / 47 |
+| Giant Petrel | 65 / 90 | 3 / 34 | 0 / 0 | 57 / 69 | 0 / 0 | 0 / 10 | 38 / 50 |
+| Ammit | 75 / 84 | 0 / 0 | 0 / 0 | 59 / 66 | 0 / 0 | 0 / 1 | 40 / 45 |
+| Swallowtail | 43 / 74 | 0 / 0 | 0 / 0 | 41 / 62 | 0 / 0 | 0 / 7 | 26 / 42 |
+
+Pick share, greedy: before, the Arc Fault Cannon 29%, the Enfilade Beam 27%, the Incendiary Shells
+25%, the Syrinx Drone 6%, the Polarity Projector 5%, the Lorentz Contractor 4%; after, the Arc Fault
+Cannon 25%, the Enfilade Beam 23%, the Syrinx Drone 21%, the Incendiary Shells 19%, the Lorentz
+Contractor 5%, the Polarity Projector 5%. Its heat as a turn ends, greedy: a peak of 34% of its
+maximum before, 27% after.
+
+The direction: from the band's floor to its top, every pack 42 / 50 against the Musk Ox's 44 / 47
+and the Giant Petrel's 38 / 50, the best of the band on the bosses greedy (13%), and the random rung
+up from 7 to 42, so most of the old gap between the rungs was the slot mines' spends a player had
+to find. Neither a wall nor a free win in any group the band shares; formations stay at 0 for the
+whole band alone. The detonation carries the gain (picked 21%, from 6%); the gather is still
+rarely picked (5%), which reads either as the bot's valuation of a Mine to come or as the piece,
+for Ryan's play to say. Not weak, so the per-hit lever (his: "then look at per hit later if it's
+weak") stays on the shelf for now; whether the AoE Expose or a Suppress Mine is dangerous is a
+team question this solo read cannot answer.

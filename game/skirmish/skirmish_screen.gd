@@ -112,6 +112,10 @@ static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
 ## RIFTGATE_ABILITY_DEBUG=1: every foe and machine wears an ability's chip (its glyph on a solid
 ## tile, 8 November), to judge the look on the phone beside the buffs and debuffs.
 static var ABILITY_DEBUG := OS.get_environment("RIFTGATE_ABILITY_DEBUG") == "1"
+## RIFTGATE_MINE_DEBUG=1: every foe opens the fight carrying a Mine of 3 with Burn 1 and Shock (the
+## Lammergeier's, 9 November), so any kill shows its blast land round the slot and the chips, to
+## judge them running.
+static var MINE_DEBUG := OS.get_environment("RIFTGATE_MINE_DEBUG") == "1"
 ## RIFTGATE_HIT_DEBUG=1: every second and a half a machine takes a blow, in turn a hull hit from the
 ## left, a blow its shield takes, a blow its armour turns and a hull hit from the right, and every
 ## fifth beat one is lost and comes back, to judge the hit reactions running (3 November).
@@ -344,6 +348,10 @@ func setup(skirmish: Skirmish) -> void:
 		sk.begin()
 	if sk.state == Skirmish.State.ROUND_START:
 		sk.start_round()
+	if MINE_DEBUG:
+		for foe in sk.field_foes():
+			if Skirmish.mine_of(foe).is_empty():
+				sk._add_mine(foe, 3, {"burn": 1, "keywords": ["shock"]})
 	_build()
 	_refresh()
 

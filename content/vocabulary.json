@@ -961,7 +961,7 @@
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Its damage: every spend adds to it",
+     "stacks": "Yes: its damage, every spend adding to it, one Mine a foe",
      "lasts": "The fight, until the foe falls or the Syrinx Drone detonates it"
     }
    }
