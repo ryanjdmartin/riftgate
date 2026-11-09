@@ -22,7 +22,8 @@ func test_a_spec_parses_its_parts_and_all_is_the_model_as_leaned() -> void:
 	var some := Refit.parse("regen=3, cooling=-1")
 	assert_false(bool(some["die"]), "a part not named is off")
 	assert_eq([str(some["regen"]), int(some["cooling"])], ["3", -1], "a flat regen and an offset as written")
-	assert_eq(Refit.parse(""), {"die": false, "regen": "", "cooling": 0, "heat1": false}, "nothing asked, nothing set")
+	assert_eq(Refit.parse(""), {"die": false, "regen": "", "cooling": 0, "heat1": false, "barrier": ""}, "nothing asked, nothing set")
+	assert_eq(str(Refit.parse("die,barrier=off")["barrier"]), "off", "the Barrier basic's rule as written")
 
 
 ## The model's die: no chassis it fields stocks a shield or a vent, each that stocked one holds a
@@ -129,3 +130,31 @@ func test_a_fight_plays_on_the_models_dice() -> void:
 		var c: Dictionary = db.components.get(str(kind), {})
 		assert_false(str(c.get("face", {}).get("kind", "")) in ["shield", "vent"], "%s: no shield and no vent is spent" % kind)
 	assert_true(sk.destroyed == 0, "and nothing is destroyed, the injury rule off")
+
+
+## The Barrier basic's price is a question the reads ask (a free one on every stock die is spent
+## every round it is rolled): with none among the basics no chassis the model fields stocks a
+## Barrier it did not stock before, and its slot holds the Armoured piece or a gun; with a
+## cooldown or a heat the piece itself carries the price.
+func test_the_barrier_basics_rule_is_a_part_of_the_die() -> void:
+	var before := _own()
+	var barrier := Refit.basic_granting(before, Refit.BARRIER)
+	var off := _own()
+	Refit.apply(off, Refit.parse("die,barrier=off"))
+	var back := Refit.sent_back(before)
+	for id in off.chassis.keys():
+		if back.has(str(id)):
+			continue   # back in design: its stock is left as it was
+		var was: Array = before.chassis[id].get("loadout", [])
+		var now: Array = off.chassis[id].get("loadout", [])
+		assert_eq(now.count(barrier), was.count(barrier), "%s: no Barrier it did not stock already" % id)
+		for cid in now:
+			assert_false(_kind(off, cid) in ["shield", "vent"], "%s stocks no shield and no vent" % id)
+	var dark := _own()
+	Refit.apply(dark, Refit.parse("die,barrier=cooldown"))
+	assert_eq(int(dark.components[barrier]["face"].get("cooldown", 0)), 2, "the next round dark once spent (a cooldown counts the round of the spend)")
+	var hot := _own()
+	Refit.apply(hot, Refit.parse("die,barrier=heat3"))
+	assert_eq(int(hot.components[barrier]["face"].get("heat", 0)), 3, "three heat a spend")
+	assert_eq(int(before.components[barrier]["face"].get("heat", 0)), 0, "and content's own makes none")
+

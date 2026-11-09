@@ -19,6 +19,9 @@ extends RefCounted
 ##   regen=N    or a flat N on every chassis, 0 to 9
 ##   cooling=N  every chassis cools N more a round (a read of the offset; may be negative)
 ##   heat1      every tier-zero weapon makes 1 heat at least (the basics at heat one)
+##   barrier=off        with die: no Barrier basic, the Armoured one alone and guns in the other slots
+##   barrier=cooldown   with die: the Barrier basic goes dark for the next round once spent
+##   barrier=heatN      with die: the Barrier basic makes N heat
 ##   all        die, regen=half and heat1 together: the model as leaned
 
 const BARRIER := "barrier"   # the statuses a defensive basic grants (the engine's words)
@@ -32,7 +35,7 @@ const DEAD_TRIGGERS := ["on_shield_granted"]
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"die": false, "regen": "", "cooling": 0, "heat1": false}
+	var spec := {"die": false, "regen": "", "cooling": 0, "heat1": false, "barrier": ""}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p == "all":
@@ -47,8 +50,10 @@ static func parse(text: String) -> Dictionary:
 			spec["regen"] = p.trim_prefix("regen=")
 		elif p.begins_with("cooling="):
 			spec["cooling"] = int(p.trim_prefix("cooling="))
+		elif p.begins_with("barrier="):
+			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (die, regen=half|N, cooling=N, heat1, all)" % p)
+			push_error("--refit: no part '%s' (die, regen=half|N, cooling=N, heat1, barrier=off|cooldown|heatN, all)" % p)
 	return spec
 
 
@@ -57,7 +62,7 @@ static func parse(text: String) -> Dictionary:
 static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 	var notes: Array[String] = []
 	if bool(spec.get("die", false)):
-		notes.append_array(_die(db))
+		notes.append_array(_die(db, str(spec.get("barrier", ""))))
 	var regen := str(spec.get("regen", ""))
 	if not regen.is_empty():
 		var said: Array[String] = []
@@ -140,7 +145,7 @@ static func basic_gun(db: ContentDB) -> String:
 ## Entries keep their places (a stepping die's order is its plan). The chassis the model cannot
 ## field are marked planned, so the tender and the runners leave them out; one whose one way down
 ## was a vent (cooling 0) cools 1.
-static func _die(db: ContentDB) -> Array[String]:
+static func _die(db: ContentDB, barrier_rule: String = "") -> Array[String]:
 	var notes: Array[String] = []
 	var barrier := basic_granting(db, BARRIER)
 	var armoured := basic_granting(db, ARMOURED)
@@ -148,6 +153,18 @@ static func _die(db: ContentDB) -> Array[String]:
 	if barrier.is_empty() or armoured.is_empty() or gun.is_empty():
 		push_error("the refit what-if: content has no slottable Barrier, Armoured piece or basic gun")
 		return notes
+	# The Barrier basic's price, a question the first reads raised (a free Barrier on every stock
+	# die is spent every round it is rolled): none, a round dark once spent, so much heat, or no
+	# Barrier among the basics at all.
+	if barrier_rule == "off":
+		barrier = gun
+		notes.append("no Barrier among the basics: the Armoured piece alone, guns in the other slots")
+	elif barrier_rule == "cooldown":
+		db.components[barrier]["face"]["cooldown"] = 2   # a cooldown counts the round of the spend (Face.cooldown), so two is the next round dark
+		notes.append("the Barrier basic goes dark for the next round once spent")
+	elif barrier_rule.begins_with("heat"):
+		db.components[barrier]["face"]["heat"] = int(barrier_rule.trim_prefix("heat"))
+		notes.append("the Barrier basic makes %d heat" % int(barrier_rule.trim_prefix("heat")))
 	var back := sent_back(db)
 	var names: Array[String] = []
 	for id in back:
@@ -169,7 +186,7 @@ static func _die(db: ContentDB) -> Array[String]:
 			var face: Dictionary = db.components.get(cid, {}).get("face", {})
 			kinds.append([str(face.get("kind", "")), str(face.get("targets", ""))])
 			had_vent = had_vent or str(face.get("kind", "")) == "vent"
-		var holds := {barrier: loadout.has(barrier), armoured: loadout.has(armoured)}
+		var holds := {barrier: barrier != gun and loadout.has(barrier), armoured: loadout.has(armoured)}
 		var said: Array[String] = []
 		# The shields first, then the vents, each in its own slot.
 		for pass_kind in ["shield", "vent"]:
@@ -179,7 +196,7 @@ static func _die(db: ContentDB) -> Array[String]:
 				var want := armoured if (pass_kind == "shield" and str(kinds[i][1]) == "self") else barrier
 				var other := barrier if want == armoured else armoured
 				var pick := want if not bool(holds[want]) else (other if not bool(holds[other]) else gun)
-				if holds.has(pick):
+				if holds.has(pick) and pick != gun:
 					holds[pick] = true
 				said.append("%s for %s" % [str(db.components[pick].get("name", pick)), str(db.components[loadout[i]].get("name", loadout[i]))])
 				loadout[i] = pick
