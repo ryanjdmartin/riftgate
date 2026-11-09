@@ -482,7 +482,10 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
 ## shield_up (the Storm Petrel's plate, built 30 October): the machine's own shield stands, read
 ## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up"]
+## sealed (the Armadillo's Lockdown, 9 November): the machine wears its seal (is_sealed), so a
+## grant holds only in the sealed form; with an `entry` beside it (any effect may carry one: a
+## component id) it holds on that piece's entries alone.
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up", "sealed"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -926,9 +929,18 @@ static func _fires(trigger: String) -> bool:
 ## `ctx` carries what a what-if reads in place of the unit's own: the shield a forecast's blow
 ## meets ("shield"), for shield_up.
 static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionary = {}) -> bool:
+	# An effect scoped to one of its machine's pieces (`entry`, a component id: the Armadillo's
+	# Lockdown granting its Cryo Flinger Spread while sealed, Ryan, 9 November) holds on that
+	# piece's entries alone, never on a stat or another entry.
+	var entry := str(eff.get("entry", ""))
+	if not entry.is_empty() and (face == null or face.component != entry):
+		return false
 	match str(eff.get("when", "")):
 		"":
 			return true
+		"sealed":
+			# The machine's form (the Armadillo's seal): its Sealed chip stands.
+			return is_sealed(u)
 		"shield_up":
 			# The machine's own shield stands (the Storm Petrel's plate, 30 October): the shield
 			# the blow meets, before it lands.
@@ -2226,12 +2238,16 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("when", "")):
 		"reach_direct": lead += "direct attacks: "
 		"reach_indirect": lead += "indirect attacks: "
-		"target_status": lead += "foes carrying a status: "
+		"target_status":
+			# The status named, where one is (the Armadillo's Lockdown: foes carrying Cryo), else any.
+			var want := str(eff.get("status", ""))
+			lead += ("foes carrying %s: " % str(STATUS[want]["name"])) if STATUS.has(want) else "foes carrying a status: "
 		"target_no_intent": lead += "foes showing no intent on this machine: "
 		"attacker_status":
 			var st := str(eff.get("status", ""))
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
 		"ally_present": lead += "with an ally in the fight: "
+		"sealed": lead += "while sealed: "
 		"nth_shot": lead += "every %s shot: " % ordinal(int(eff.get("every", 6)))
 		"target_rank":
 			var by := str(eff.get("reach", ""))

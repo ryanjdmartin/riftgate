@@ -269,14 +269,13 @@
    "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
-   "armour": 2,
+   "armour": 1,
    "cooling": 1,
    "traits": [
     "walker"
    ],
    "size": "assault",
    "fixed": [
-    "cryo_flinger",
     "cryo_flinger"
    ],
    "loadout": [
@@ -288,13 +287,27 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "A shield it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn. A vent or a weapon opens it.",
+    "description": "A shield it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A vent or a weapon opens it. Its weapons deal 1 more to a foe carrying Cryo.",
     "effects": [
      {
       "trigger": "static",
       "effect": "seal_form",
       "value": 3,
       "heat": 3
+     },
+     {
+      "trigger": "static",
+      "effect": "grant_keyword",
+      "value": "cleave",
+      "when": "sealed",
+      "entry": "cryo_flinger"
+     },
+     {
+      "trigger": "on_attack",
+      "effect": "add_damage",
+      "value": 1,
+      "when": "target_status",
+      "status": "cryoed"
      }
     ]
    },

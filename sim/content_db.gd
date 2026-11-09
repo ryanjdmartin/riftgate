@@ -1776,10 +1776,20 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
 				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Burn, Cryo, Flak, Spread, Penetrate, Splash, Chain, Purge)" % where)
-			if ["cleave", "penetrate", "splash"].has(kw) and not eff.has("number"):
+			# An area granted to one debuff (`entry`: the Cryo Flinger's Spread while sealed) carries
+			# no number, as a debuff's printed one does: its effects reach those foes, and it deals
+			# nothing. Any other area grant says what each foe past the target takes.
+			var area := ["cleave", "penetrate", "splash"].has(kw)
+			var on_debuff := _entry_is_debuff(eff)
+			if area and not eff.has("number") and not on_debuff:
 				errs.append("%s: a grant of %s says what each foe past the target takes: number" % [where, "Spread" if kw == "cleave" else kw.capitalize()])
+			if area and eff.has("number") and on_debuff:
+				errs.append("%s: a grant of %s to a debuff carries no number: its effects reach those foes, and it deals nothing" % [where, "Spread" if kw == "cleave" else kw.capitalize()])
 			if kw == "chain" and not eff.has("number"):
 				errs.append("%s: a grant of Chain says what every other Shocked foe takes: number" % where)
+		# An effect scoped to one piece (`entry`) names a component the content holds.
+		if eff.has("entry") and not components.has(str(eff["entry"])):
+			errs.append("%s: entry names no component ('%s')" % [where, str(eff["entry"])])
 		var when := str(eff.get("when", ""))
 		if not Effects.supports_when(when):
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
@@ -1795,6 +1805,17 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: attacker_status names no status the engine or the vocabulary knows ('%s')" % [where, st])
 		if trig == "static" and when.begins_with("reach_"):
 			errs.append("%s: a static reach change cannot be conditioned on reach (it would chase its own tail)" % where)
+
+
+## Whether an effect is scoped to one piece (`entry`) that is a debuff: equipment aimed at a foe,
+## printing no number (Face.is_debuff's reading of the content's face).
+func _entry_is_debuff(eff: Dictionary) -> bool:
+	var cid := str(eff.get("entry", ""))
+	if cid.is_empty() or not components.has(cid):
+		return false
+	var fd = components[cid].get("face", {})
+	return fd is Dictionary and str(fd.get("kind", "")) == "attack" and int(fd.get("power", 0)) <= 0 \
+		and not bool(fd.get("vents_all", false)) and int(fd.get("fires_hopper", 0)) <= 0 and int(fd.get("power_per_missing", 0)) <= 0
 
 
 ## Every entry keeps its internal text under `design` (fantasy at least) and nothing

@@ -6467,6 +6467,113 @@ func test_a_cool_and_shield_entry_seals_an_open_machine_and_opens_a_sealed_one()
 		assert_false(Effects.is_sealed(m), "%s on an ally: its vent opens the spender, as any vent does" % kind)
 
 
+## A passive's grant scoped to one of its machine's pieces and held while it is sealed (the
+## Armadillo's Lockdown, Ryan, 9 November: "Cryo flinger: No rapid. While sealed, gains Spread"):
+## open, its lure turns the one foe it is aimed at; sealed, the foes beside it in its rank too, each
+## taking the entry's Cryo; the grant reaches that piece alone, never the machine's gun, and goes as
+## the seal opens. Synthetic pieces and passive, so content may move.
+func test_a_grant_scoped_to_one_piece_holds_on_it_alone_while_sealed() -> void:
+	var sk := Skirmish.new(1)
+	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 1, "cryo": 1})
+	lure.component = "test_flinger"
+	var shield := Face.shield(20)
+	var gun := Face.attack(10, I)
+	gun.component = "test_gun"
+	var m := _mech("A", Die.of([lure, shield, gun]), 0, 200)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 3, "heat": 3},
+		{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "sealed", "entry": "test_flinger"}]})
+	sk.add_mech(m)
+	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
+	sk.add_foes([_ghoul(500, 5), _ghoul(500, 5), _ghoul(500, 5), _ghoul(500, 5)])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	var aim: Foe = sk.front[1]
+	assert_false(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "open, the lure carries no Spread")
+	assert_eq(sk.reached_by(Effects.effective_face(m, lure, aim), aim).size(), 1, "and reaches its one foe")
+	ms.face_index = 0
+	assert_true(sk.assign(0, aim), "the lure, open")
+	assert_eq(aim.target, ms, "its foe turns on it")
+	for k in [0, 2, 3]:
+		assert_eq(Effects.stacks_of(sk.front[k], "cryoed"), 0, "a foe beside it takes nothing (column %d)" % k)
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, null), "a shield on itself")
+	assert_true(Effects.is_sealed(m), "seals it")
+	assert_true(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "sealed, the lure gains Spread")
+	assert_false(Effects.effective_face(m, gun, aim).has(K.CLEAVE), "and the gun does not: the grant names its piece")
+	assert_eq(Effects.effective_face(m, lure, aim).power, 0, "the lure still deals nothing")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, aim), "the lure, sealed")
+	for k in [0, 1, 2]:
+		assert_eq(sk.front[k].target, ms, "the foe in column %d turns on it" % k)
+	assert_eq(Effects.stacks_of(sk.front[0], "cryoed"), 1, "the neighbours take its Cryo")
+	assert_eq(Effects.stacks_of(sk.front[2], "cryoed"), 1, "on both sides")
+	assert_eq(Effects.stacks_of(aim, "cryoed"), 2, "the foe it was aimed at gains a second stack")
+	assert_eq(Effects.stacks_of(sk.front[3], "cryoed"), 0, "the foe past the neighbours, nothing")
+	assert_true(Effects.is_sealed(m), "a lure leaves the seal as it is")
+	var notes := Effects.explain(m, lure)
+	assert_true(notes.has("while sealed: gains spread (Lockdown)"), "the entry's row says the grant with its condition: %s" % str(notes))
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	assert_true(sk.assign(0, sk.front[3]), "the gun")
+	assert_false(Effects.is_sealed(m), "opens it")
+	assert_false(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "and the Spread goes with the seal")
+
+
+## Its weapons deal 1 more to a foe carrying Cryo (the Armadillo's Lockdown, Ryan, 9 November): an
+## add on the blow, the attacker's condition read on the foe as each strike lands, so the strike
+## that meets the Cryo takes it and its hit spends the stacks; a later strike of the same spend
+## meets none and lands plain; a foe with none takes the plain blow, and a debuff deals nothing still.
+func test_its_weapons_hit_a_foe_carrying_cryo_one_harder_on_the_strike_that_cashes_it() -> void:
+	var sk := Skirmish.new(1)
+	var gun := Face.attack(2, L)
+	var twin := Face.from_dict({"kind": "attack", "reach": "direct", "power": 2, "strikes": 2, "keywords": [], "heat": 0})
+	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 1, "cryo": 1})
+	var m := _mech("A", Die.of([gun, twin, lure]), 0, 200)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_status", "status": "cryoed"}]})
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(20, 0), _ghoul(20, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	var cold: Foe = sk.front[0]
+	var clean: Foe = sk.front[1]
+	Effects.stack(cold, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.heat = 8
+	assert_eq(sk.shown_number(ms, gun, cold), 3, "over a foe carrying Cryo the die shows the blow 1 harder")
+	assert_eq(sk.shown_number(ms, gun, clean), 2, "and over a clean foe the plain blow")
+	ms.face_index = 0
+	assert_true(sk.assign(0, cold), "the gun on the cold foe")
+	assert_eq(cold.hp, 17, "it lands 3")
+	assert_eq(Effects.stacks_of(cold, "cryoed"), 0, "and its hit spent the Cryo")
+	assert_eq(ms.heat, 8 - Effects.status_value("cryoed", "cool_hitter"), "cooling the hitter as ever")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(cold, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.face_index = 1
+	assert_true(sk.assign(0, cold), "two strikes on a foe carrying Cryo")
+	assert_eq(cold.hp, 12, "the first strike 1 harder, its hit spending the Cryo, the second plain")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, cold), "again, the Cryo spent")
+	assert_eq(cold.hp, 10, "the plain 2")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(clean, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.face_index = 2
+	assert_true(sk.assign(0, clean), "the lure on a foe carrying Cryo")
+	assert_eq(clean.hp, 20, "a debuff deals nothing, Cryo or none")
+	assert_eq(Effects.effect_text(m.modifiers[0].effects[0]), "foes carrying Cryo: damage +1", "the rule reads with the status it names")
+
+
 ## Cryo (Ryan, 18 and 20 October): the Cryo Flinger's mark pays in cooling. Any machine's
 ## weapon's hit on a foe carrying Cryo spends every stack and cools the hitter its number a stack, after
 ## the spend's own heat lands; a blow of nothing spends none, and the keyword's number is the

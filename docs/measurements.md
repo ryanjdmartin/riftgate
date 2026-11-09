@@ -5436,3 +5436,76 @@ place").
 The direction: the tide spread along the wall asks more of the squad's split, as the rule meant
 it to; the defence bot, which sends each machine at the pack that reaches the wall soonest, leaks
 more, a third more turns above a ratio of one. The full report is `docs/campaign_run.md` (after).
+
+## 9 November, the Armadillo's seal and lure, before the kit of the same day
+
+**Why**: Ryan's play ("The Armadillo is OP. I never really felt strongly about Sealing it"), read
+before his try of the same day landed (the bible's Armadillo row). A scratch probe, not
+committed, and this section is its whole description: the balance runner's fight
+(`tools/balance.gd`'s `_fight`, a composition's members and grid as `--packs promise` fields
+them) on a skirmish whose every blow on a machine is recorded as it lands (what arrived, what its
+shield took, what its armour took and the seal's own share of that, what reached its hull,
+breach or not), with the fight's lures and seals counted from its log. Main's `ee0b27d` (the
+kit of 20 October: armour 2, Lockdown +3, two Rapid Cryo Flingers at 1 heat), tier one's 27
+compositions (patrols, formations, elites; elites scaled as a battle scales them) and tier two's
+42, 30 seeds a cell: a direction throughout. The team is the one Ryan reported from on 8 November
+(the Armadillo, the Honey Badger, the Clydesdale) unless a row says another. The players: the bot
+as built (greedy, and the planner where said); two personas over the greedy rung, a lure-happy
+one (each foe a lure turns worth the whole blow it takes off an ally, on top of the bot's own
+reading) and a seal-holder (the same, sealing whenever a shield shows with room for two sealed
+turns and holding it while the coming turn's end stays under the maximum, a vent or the clock
+opening it). What-ifs as kits in memory: the Flinger without its lure, without Rapid; a stand-in
+for the lure spreading while sealed (no Rapid, the lure turning the target's neighbours too, its
+Cryo not spreading and no bot valuing it); and the seal's armour taken off a blow before its
+shield rather than after.
+
+**The seal**, per fight, over tier one's 27 compositions:
+
+| Player and kit | Seals | Blows on the sealed shell | Taken whole by its shield | Breach | Hull the seal's +3 saved | Team hull lost | Rounds |
+|---|---|---|---|---|---|---|---|
+| The bot | 0.22 | 0.18 | 0.16 | 0.01 | 0.01 | 6.8% | 4.04 |
+| The bot, the planner | 0.25 | 0.20 | 0.17 | 0.01 | 0.02 | 6.6% | 3.99 |
+| The bot, armour before shield while sealed | 0.21 | 0.16 | 0 | 0.01 | 0.31 | 6.7% | 4.03 |
+| Lure-happy, never holding | 0.28 | 0.36 | 0.28 | 0.01 | 0.07 | 7.3% | 4.05 |
+| Seal-holder | 1.11 | 1.19 | 0.69 | 0.30 | 0.26 | 7.7% | 4.28 |
+| Seal-holder, armour before shield | 1.12 | 1.17 | 0 | 0.30 | 1.53 | 7.3% | 4.28 |
+| Seal-holder, no Rapid, the lure spreading sealed | 1.00 | 1.23 | 0.64 | 0.28 | 0.52 | 8.3% | 4.47 |
+| The same, armour before shield | 0.99 | 1.22 | 0 | 0.28 | 1.62 | 8.0% | 4.44 |
+
+Tier two, the 42 compositions, the same team: the bot 15.0% team hull lost (the seal's +3 saving
+0.20 hull a fight), the seal-holder 16.4% (0.86), the seal-holder with armour before shield 15.4%
+(3.57).
+
+**The lure**, the lure-happy player, formations, a fight:
+
+| Team and kit | Team hull lost | The Armadillo's hull | The allies' | Its share of the blows | Lures | Components destroyed |
+|---|---|---|---|---|---|---|
+| As built | 12.9% | 11.3 | 3.6 | 68% | 2.2 | |
+| The Flinger's lure removed | 12.7% | 4.6 | 10.1 | 32% | 0 | |
+| Its Rapid removed | 13.9% | 11.6 | 4.5 | 64% | 1.9 | |
+| The Storm Petrel in its seat | 11.6% | 4.7 | 6.9 | 45% | | |
+| With the Skua and the Cassowary, as built | 35.3% | 15.8 | 13.8 | 58% | | 1.30 |
+| With the Skua and the Cassowary, the lure removed | 35.4% | 11.9 | 17.8 | 37% | | 1.65 |
+
+The elites and the patrols read the same way (the team's total within two points, the allies'
+hull falling by three fifths beside the Badger and the Clydesdale, by a fifth to a third beside
+the light pair). Of the hull the lured-on Armadillo lost, 77% was
+breach on the formations and the elites and 95% on the patrols. Over every tier-one composition
+the planner lost 6.6% team hull with the Armadillo and 5.8% with the Storm Petrel in its seat
+(3.99 rounds against 3.59); caught alone by tier one's patrols, the bot's Armadillo won 57 to 61%
+for 64% of its hull in 11 rounds, the Storm Petrel 59% for 55% in 6.
+
+Read, a direction:
+- The seal's armour met almost no blow. Three rules meet: a shield takes a blow whole before
+  armour and takes no armour off; the shield is full as every fight opens; the seal is entered by
+  a shield spent on itself, so the spend that seals it tops up the shield in front of the armour,
+  and the bot's next gun opens it. Held, it saved a quarter of a hull a fight and cost more in the
+  guns not fired; with its armour before the shield it saved one and a half and held even with the
+  player who never holds, at tier two within half a point of the bot.
+- The lure moved the team's blows onto the Armadillo without lessening them: three full shields
+  soak a fight's blows spread by random picks, and one shield piled on spills into one hull, most
+  of what reached it breach. Beside light allies it broke a fifth fewer of their components on
+  the formations (1.30 against 1.65 a fight), 6 to 14% fewer on the elites and the patrols.
+- Rapid barely moved a row: the lure's alternative is a 2-damage basic.
+- The runner does not read the Armadillo as OP against its peer: Ryan's play is the evidence, and
+  his try of 9 November is judged there.

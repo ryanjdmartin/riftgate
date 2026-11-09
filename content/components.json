@@ -570,7 +570,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Armadillo, and whoever hits the canister gets the cold out of it.",
-    "niche": "The Armadillo's locked pair: an Indirect debuff with Lure, Rapid and Cryo, heat its limiter. The foe it lures carries Cryo; any machine's hit with a weapon spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal."
+    "niche": "The Armadillo's locked lure, one on its die (Ryan, 9 November: one Flinger and no Rapid, so the lure costs its action): an Indirect debuff with Lure and Cryo, gaining Spread while its machine is sealed (Lockdown's grant), so it turns one foe open and a rank's three sealed. The foe it lures carries Cryo; any machine's hit with a weapon spends every stack and cools the hitter, and the Armadillo's own weapons hit a foe carrying Cryo 1 harder, so who cashes it is the round's call."
    },
    "face": {
     "kind": "attack",
@@ -578,7 +578,6 @@
     "power": 0,
     "keywords": [
      "lure",
-     "rapid",
      "cryo"
     ],
     "heat": 1,

@@ -45,7 +45,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the music session's branch below.
+Everything is on main as of 9 November 2026 but the music session's branch below and
+`claude/modest-ramanujan-uovd42`, the Armadillo's kit of 9 November (How things stand below), on
+main's `f4906ee` and waiting on Ryan's play before it merges.
 `claude/playtesting-ui-feedback-hfdiok`, Ryan's playtest list of 9 November (How things stand
 below), took main's map session and skirmish audit step 3 in a merge (the bible, the measurements
 and this file the conflicts, both sides' words kept) and main took it as a fast-forward on Ryan's
@@ -149,6 +151,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The Armadillo's kit of 9 November** (`claude/modest-ramanujan-uovd42`, Ryan: "The Armadillo is
+  OP. I never really felt strongly about Sealing it"; built as he gave it after the holes, his play
+  the judge): armour 1 open and 4 sealed, one Cryo Flinger on a die of five, the Flinger without
+  Rapid and gaining Spread while sealed (Lockdown's grant, scoped to the piece: a `when` of
+  `sealed` and an `entry` naming a component, both new), and its weapons 1 harder on a foe
+  carrying Cryo (the strike that meets the stacks, its hit spending them). The probe that read the
+  old kit is in `docs/measurements.md`. His rename (Polar Bear, Walrus or the Musk Ox) is section
+  12's, open. 1075 tests green on this branch.
 - **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
   Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
   all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always
