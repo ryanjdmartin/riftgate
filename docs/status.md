@@ -907,14 +907,10 @@ The tasks are the to-do's; this is the index of what waits.
   full pair"), its W six beats.
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its twenty-third (9 November: its bass lines written as riffs, an E-pedal riff, a gallop
-  through the roots and a chug, in place of the stepped walks, and both halves at 96, on trial: "it's
-  the bass lines that need to set the tone, with notes, riffs, and structure"; the battle half's dark pass, 7 November: "It's a battle
-  track, and it sounds too bright! ... all the melancholy got lost ... get some of that grit and anxiety
-  back in": A minor and G's bare power chord where the battle had filled the map's thirdless chords
-  with open ninths, every bass line on F where it stepped on F#, the duel's beat-each trade sinking
-  and its basses falling into the outro onto F, the arpeggio an octave down, the map's pad under the
-  groove, the head and the duel 12 dB under the mix on a phone, the stack on the off-beats; the map's
+  Night Shift back at its twenty-first (9 November: the dark pass and the written bass lines at 96
+  both retired, "take a step back to the previous version, before both 'darkening' passes, and look
+  at the root cause ... more intense, more driving, less chipper"; a set takes the off-beat piano,
+  the open hat, the arpeggio and the bouncing bass out of the head one at a time; the map's
   intro without its front and its muted guitar out, his
   call of 4 November: "Map groove sounds better without the muted guitar", its drums 3 dB down in C
   and R, 6 November: "-3db solves it"; the battle half's parts named on the page for his notes, "is
@@ -1209,8 +1205,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twenty-sixth, X's kick on the riff in the pair and the hats rebuilt as sizzle, `hold_sketches.py`; Night Shift's twenty-third, its bass lines written and at 96, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 63. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twenty-sixth, X's kick on the riff in the pair and the hats rebuilt as sizzle, `hold_sketches.py`; Night Shift back at its twenty-first with a set looking for the cause, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 64. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
