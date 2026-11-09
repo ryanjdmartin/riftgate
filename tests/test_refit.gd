@@ -157,4 +157,23 @@ func test_the_barrier_basics_rule_is_a_part_of_the_die() -> void:
 	Refit.apply(hot, Refit.parse("die,barrier=heat3"))
 	assert_eq(int(hot.components[barrier]["face"].get("heat", 0)), 3, "three heat a spend")
 	assert_eq(int(before.components[barrier]["face"].get("heat", 0)), 0, "and content's own makes none")
+	# A Ward in its place: the die's Barrier slots hold the Ward piece, and no Barrier is added.
+	var ward := Refit.basic_granting(before, Refit.WARD)
+	if ward.is_empty():
+		return
+	var warded := _own()
+	Refit.apply(warded, Refit.parse("die,barrier=ward"))
+	var model := _own()
+	Refit.apply(model, Refit.parse("die"))
+	var held := 0
+	for id in warded.chassis.keys():
+		if back.has(str(id)):
+			continue
+		var plain: Array = model.chassis[id].get("loadout", [])
+		var now: Array = warded.chassis[id].get("loadout", [])
+		var was: Array = before.chassis[id].get("loadout", [])
+		assert_eq(now.count(barrier), was.count(barrier), "%s: no Barrier it did not stock already" % id)
+		assert_eq(now.count(ward) - was.count(ward), plain.count(barrier) - was.count(barrier), "%s: a Ward wherever the model's die put a Barrier" % id)
+		held += now.count(ward)
+	assert_true(held > 0, "some stock die holds the Ward")
 

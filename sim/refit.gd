@@ -22,10 +22,12 @@ extends RefCounted
 ##   barrier=off        with die: no Barrier basic, the Armoured one alone and guns in the other slots
 ##   barrier=cooldown   with die: the Barrier basic goes dark for the next round once spent
 ##   barrier=heatN      with die: the Barrier basic makes N heat
+##   barrier=ward       with die: a Ward in the Barrier basic's place (a breach lands on the shield)
 ##   all        die, regen=half and heat1 together: the model as leaned
 
 const BARRIER := "barrier"   # the statuses a defensive basic grants (the engine's words)
 const ARMOURED := "braced"
+const WARD := "ward"
 
 ## What a chassis's passive may do that the model has no entry left to feed: sealing on a shield
 ## it spends, blasting with its vents, growing a shield it grants. A chassis carrying one is back
@@ -53,7 +55,7 @@ static func parse(text: String) -> Dictionary:
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (die, regen=half|N, cooling=N, heat1, barrier=off|cooldown|heatN, all)" % p)
+			push_error("--refit: no part '%s' (die, regen=half|N, cooling=N, heat1, barrier=off|cooldown|heatN|ward, all)" % p)
 	return spec
 
 
@@ -165,6 +167,15 @@ static func _die(db: ContentDB, barrier_rule: String = "") -> Array[String]:
 	elif barrier_rule.begins_with("heat"):
 		db.components[barrier]["face"]["heat"] = int(barrier_rule.trim_prefix("heat"))
 		notes.append("the Barrier basic makes %d heat" % int(barrier_rule.trim_prefix("heat")))
+	elif barrier_rule == "ward":
+		# The first reads' other question: every hull-costing cell is a breach, which the regen
+		# cannot touch; a Ward turns the round's breaches onto the shield the regen refills.
+		var ward := basic_granting(db, WARD)
+		if ward.is_empty():
+			push_error("the refit what-if: content has no slottable Ward piece")
+		else:
+			barrier = ward
+			notes.append("a Ward in the Barrier basic's place: %s" % str(db.components[ward].get("name", ward)))
 	var back := sent_back(db)
 	var names: Array[String] = []
 	for id in back:

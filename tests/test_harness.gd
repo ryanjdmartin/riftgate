@@ -397,7 +397,7 @@ func test_a_composition_is_picked_by_tier_and_rating() -> void:
 
 ## The refit pass's model is a trial the harness lays over the content as it starts
 ## (docs/briefs/refit_pass.md): off unless RIFTGATE_REFIT names a spec or a debug build's setting
-## names one of its trials, the model with its Barrier basic under one of three rules, each a
+## names one of its trials, the model with its defensive basic under one of four rules, each a
 ## spec the what-if takes.
 func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> void:
 	if not OS.get_environment("RIFTGATE_REFIT").is_empty():
@@ -423,7 +423,7 @@ func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> 
 	for trial in Settings.REFIT_TRIALS:
 		if trial != "off":
 			rules[str(Refit.parse(trial)["barrier"])] = true
-	assert_eq(rules.size(), 3, "three rules for the Barrier basic, each its own: %s" % str(rules.keys()))
+	assert_eq(rules.size(), 4, "four rules for the defensive basic, each its own: %s" % str(rules.keys()))
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("settings")

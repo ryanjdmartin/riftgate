@@ -60,11 +60,13 @@ const MAP_VIEWS := ["wall_left", "wall_bottom"]
 const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"}
 ## The refit pass's model as a trial (docs/briefs/refit_pass.md; Harness.refit_trial), a debug
 ## build's: off, or the model as leaned (the model's die, the shield regen, the basics at heat
-## one) with its Barrier basic under one of three rules, the question its first reads left to
-## his play (9 November): free, dark the round after it is spent, or none among the basics (an
-## Armoured piece or a gun in its place). Each is a spec Refit.parse takes.
-const REFIT_TRIALS := ["off", "all", "all,barrier=cooldown", "all,barrier=off"]
-const REFIT_LABELS := {"off": "OFF", "all": "FREE", "all,barrier=cooldown": "RESTS", "all,barrier=off": "NONE"}
+## one) with its defensive basic under one of four rules, the question its first reads left to
+## his play (9 November): a Barrier free, a Barrier dark the round after it is spent, none among
+## the basics (an Armoured piece or a gun in its place), or a Ward in the Barrier's place (every
+## hull-costing fight of the reads was a breach, which a Ward lands on the shield the regen
+## refills). Each is a spec Refit.parse takes.
+const REFIT_TRIALS := ["off", "all", "all,barrier=cooldown", "all,barrier=off", "all,barrier=ward"]
+const REFIT_LABELS := {"off": "OFF", "all": "FREE", "all,barrier=cooldown": "RESTS", "all,barrier=off": "NONE", "all,barrier=ward": "WARD"}
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.
