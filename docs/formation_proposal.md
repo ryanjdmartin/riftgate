@@ -293,6 +293,16 @@ the grids land.
 7. **The tier-two and tier-three reads.** The default team is tier one's, so the tiers above are
    read with teams of their tier (stock), which no run fields exactly: a direction for placing
    within a tier, never across tiers.
+8. **A stall the enemy cannot end.** The light four against the grave field stalls at the bot's
+   sixty rounds (traced: the Grave Giant knits three a round while four light kits chip one or
+   two through its plate, and its one blow of eight never passes the shields they raise every
+   round; nobody loses hull). The long wall proposal's guard against the infinite fight was that
+   every script carries a rising threat, a rally, a breach or a countdown; the Marsh's giants
+   carry none (a cleaver, a knit, a rise), so a kit that cannot out-damage the knit cannot lose or
+   win. Not this pass's to fix, but its reads found it: the lean is an escalation on the giants'
+   line (the cleaver breaching below half, or the knit's rounds finite), his to mark with the refit;
+   the runner's stall count names the cells meanwhile (section 12's tables, a wall with little hull
+   lost).
 
 ## 8. The rows this touches, with the reason each had
 
