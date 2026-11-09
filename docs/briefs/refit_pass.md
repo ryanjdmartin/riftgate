@@ -66,10 +66,13 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
 
 1. **The shield is innate and regenerates.** Every chassis keeps its shield gauge, full as a fight
    opens, and regains `shield_regen` at the start of every round (the slot is built, zero
-   everywhere: `content/chassis.json`, `sim/content_db.gd`). The regen is a content number by
-   chassis, by role and by maker (Kestrel's shields, Minerva's armour), a placeholder read by the
-   runner before it is set; the dial runs from a point a round to a full reset, where the shield
-   is simply full as every round opens.
+   everywhere: `content/chassis.json`, `sim/content_db.gd`). The regen is a flat number a chassis,
+   always (Ryan, 9 November: "Whatever the initial shield regen number, I would always implement
+   it as a flat number per-chassis. Allows for tuning, and for shield-regen buffs to still make
+   sense. For that reason I would not go for full-shield regen every round"), by role and by maker
+   (Kestrel's shields, Minerva's armour); the first numbers are placeholders read by the runner
+   before they are set, half the gauge rounded up the lean (the Kite eight, the Badger four),
+   beside a flat two and a flat four.
 2. **No pure recovery face on the die.** A component is a weapon or equipment. Shield faces and
    vent faces leave the die: recovery is passive, the regen for the shield and cooling for the
    heat, and every face acts on the fight. A vent that converts heat into something is
@@ -78,7 +81,12 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
    wall, and the active decision is the hold: fire the cold face, keep the hot one for the round
    that needs it, or pass and cool. The prices and the cooling numbers are where heat is felt,
    so the heat session's question (the prices on every face, the basics included) folds into
-   this pass; passive cooling is the recovery, not the lever to cut.
+   this pass; passive cooling is the recovery, not the lever to cut. Every chassis cools, so the
+   two at zero today change kind: the Stingray (its Exothermic Suite wants heat and a vent face
+   was its brake; with no vent faces it cools one a round like the rest, its Lance untouched) and
+   the Whip Scorpion (nothing cools it but its vents, which are guns: its vents are the model's
+   conversion pieces, the heat spent as a blast, so its zero stays and its rework, already
+   tabled, builds on them).
 4. **The defensive tools on the die are targeted statuses.** Armoured against many small blows,
    Barrier against one big one, Ward against the riders; the lure stays the tank's control. The
    basic kit gains a Barrier basic and an Armoured basic at tier zero in the Canopy's and the
@@ -107,8 +115,12 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
 ## 4. What the formation pass hands in
 
 The proposal stands as the grids' first cut (`docs/formation_proposal.md`; its grids as code in
-`tools/formation_proposal.py`, which writes them to a scratch worktree for the reads). Under the
-model it is re-read and re-cut: the pushers smaller where a kill should buy safety (five or six
+`tools/formation_proposal.py`, which writes them to a scratch worktree for the reads). Its units
+mix across pushers and flankers (a goblin stands in the horde and in the raiders, a patrol being a
+small pusher), and the hunting lines, the wolves and the antlions, stand in hunters and in pushers
+alike; what never mixes is the lead: a pack wears its lead's sprite, so a hunting line's unit
+never leads a pusher and a hunter is always led by one (Ryan's question of 9 November; the four
+Waste pushers the antlions led are re-led). Under the model it is re-read and re-cut: the pushers smaller where a kill should buy safety (five or six
 foes at tier one rather than eight), measured by hull lost at three under the regen; the hunters,
 elites and bosses keep survival; the twelve prunings stand until the re-read says otherwise; the
 hunters that read as ones (the wolf and warg packs) are his question 11; the bosses' stat blocks
@@ -121,8 +133,9 @@ Three what-if switches in the balance runner (`tools/balance.gd`), none of them 
 - `--regen N`: every chassis regains N shield a round, shield faces skipped when the machines are
   made (a shield entry becomes a blank), so the second shape is read at N of 1, 2, 3 and the full
   reset.
-- `--novents` with `--cooling N`: vent faces skipped, every chassis cooling N a round, so heat as
-  a pace is read at coolings of 0, 1 and 2 with the prices as they stand.
+- `--novents` with `--cooling N`: vent faces skipped (a conversion vent, the Whip Scorpion's,
+  kept), every chassis's cooling raised by N, so heat as a pace is read at offsets of 0, 1 and 2
+  with the prices as they stand and the basics at heat one.
 - `--noinjury`: the injury rule off whole, no break and no destruction (the game's own switch for
   the test, so the harness and the phone build play without it too).
 
@@ -145,10 +158,12 @@ decides feel.
   the Phased Sublimator and the Wake Diffuser (tier one), the Entropy Condenser (tier two), and the
   Musk Ox's Quick Reload (fixed). A payoff vent becomes equipment that converts heat; a plain vent
   retires; the Whip Scorpion's vents that blast (Vent, Weapon) are weapons.
-- The chassis whose identity is the shield or the vent, re-stated: the Puffin (Kestrel's shield
-  escort reading the ally's heat), the Storm Petrel (its shield pays its weapons' heat and zaps;
-  its own regen a timed grant), the Swallowtail (screens and hoist), the Musk Ox (its reload), the
-  Cassowary's Spin-Up and the Kite's cooling as identities that stay.
+- The chassis whose identity is the shield or the vent, re-stated: the Puffin, sent back to the
+  drawing board (`docs/briefs/kestrel_puffin.md`; Ryan's instinct the one unit able to cool its
+  allies), the Storm Petrel (its shield pays its weapons' heat and zaps; its own regen a timed
+  grant), the Swallowtail (screens and hoist as the team's Ward and an ally's Armoured, its design
+  never finalized, its session's), the Musk Ox (its reload), the Whip Scorpion (its conversion
+  vents), the Cassowary's Spin-Up and the Kite's cooling as identities that stay.
 - Every chassis's `shield_regen` and `cooling`, by role and maker; every component's heat price
   (the heat session's list); the bosses' and massives' HP by band, the fodder's blows; the
   pushers re-cut; the injury rule off whole; the basics' Barrier and Armoured pieces.
@@ -158,13 +173,14 @@ decides feel.
 
 ## 7. Open, for Ryan
 
-1. The regen's size and shape: a point or two a round, or the full reset; by role, by maker, or
-   one number.
+1. ~~The regen's size and shape.~~ Settled 9 November: a flat number a chassis, never the full
+   reset; the first numbers placeholders read before they are set.
 2. Heat's prices and the cooling: whether the heat session's list lands here, and the cooling by
    chassis.
 3. Which shield pieces survive as equipment and as what; whether any one-round overshield stays
    as a Kestrel piece.
-4. The Puffin's and the Swallowtail's identities under the model.
+4. ~~The Puffin's and the Swallowtail's identities under the model.~~ Settled 9 November: the
+   Puffin to the drawing board (its brief), the Swallowtail's to its own session.
 5. The pushers' hull target at their rating: a twentieth a fight, so ten fights spend half a
    squad, or another number.
 6. ~~The injury's in-fight break: kept, as read here, or off with the destruction.~~ Settled 9

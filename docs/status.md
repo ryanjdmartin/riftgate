@@ -158,9 +158,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   decision: "Less component types - weapons and equipment. It's simple, elegant, streamlined …
   if you greed on heat, well you can always pass, which literally how a Mech game works - run
   hot, and you're forced to wait and think about your decisions while you cool off"; shield and
-  vent faces "perfect commander actions" for the commander layer if it comes. The cover (an
-  unrolled interpose for the tank) withdrawn: the redirection row's reason stands. Nothing built;
-  the reads first (the brief). The bible at 0.492 carries it in six rows and section 12.
+  vent faces "perfect commander actions" for the commander layer if it comes; the regen a flat
+  number a chassis, never a full reset; the Puffin back to the drawing board (its brief,
+  `docs/briefs/kestrel_puffin.md`: his instinct the one unit able to cool its allies); a hunting
+  line never leads a pusher, members mixing. The cover (an unrolled interpose for the tank)
+  withdrawn: the redirection row's reason stands. Nothing built; the reads first (the brief). The
+  bible at 0.492 carries it in seven rows and section 12.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably

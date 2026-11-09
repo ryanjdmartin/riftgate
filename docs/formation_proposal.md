@@ -110,7 +110,11 @@ Claude's method, each line a proposal:
    step 6, 7, 8 foes, never past the slots (the cut); the gentlest at the ramp's foot, the
    fullest at its top. Where a formation at eight fodder is still free for three, the answer is
    the units' numbers (the refit, held for Ryan's play), never a ninth foe.
-5. **Hunters are heavy patrols rated two, one a domain and tier, and the formations push.**
+5. **A hunting line never leads a pusher.** The pack wears its lead's sprite, so the sprite says
+   the behaviour: a wolf or an antlion leads only a hunter, and a pusher that carries antlions in
+   its ranks is led by a needler or a basilisk. Members mix across pushers, flankers and hunters
+   (a goblin stands in the horde and in the raiders); leads do not (Ryan's question, 9 November).
+6. **Hunters are heavy patrols rated two, one a domain and tier, and the formations push.**
    Ryan's frame of 8 November: a soft wrench, a big deal, few. A hunting formation rated three
    that catches a lone machine is a fight it wins one time in twenty (the campaign read), a hard
    wrench with no answer but a wreck, so no formation hunts. A hunter rated two says what the
@@ -118,7 +122,7 @@ Claude's method, each line a proposal:
    so the plan shifts, which is what the wrench is for. One hunting patrol a domain and tier
    (none where the domain's rank and file do not hunt), placed last among its tier's patrols so
    the first patrols dealt push.
-6. **Who hunts, by the codex and by the counterplay.** Wolves, wargs and alphas ("picks the slowest
+7. **Who hunts, by the codex and by the counterplay.** Wolves, wargs and alphas ("picks the slowest
    machine on the field", "runs it down"); antlions, pit antlions and the queen ("waits under the
    sand for whatever is slowest"). The needlers push ("nobody has ever seen one move"), and so do
    the revenants and wights, whose codex is the goblin's nearly word for word, the goblins being
@@ -128,21 +132,21 @@ Claude's method, each line a proposal:
    that decides the fight by itself, "welp I guess it's exploding my entire hull if I ever go out
    of position". The Marsh's and the Peak's hunters are their elites and the wanderers, none in
    their rank and file. Section 4 lays the two questions out.
-7. **The rating is read by who solos.** A one is a decision for a lone light tier-one machine
+8. **The rating is read by who solos.** A one is a decision for a lone light tier-one machine
    (the Skua, hull 20 and shield 12) and free for the Badger; a two is the Badger's decision, or
    a pair's free fight; a three is a decision for three; a four is a decision for four. So the
    curve read runs twice at least: the default four (the Badger first) and a light four (the Skua
    first), and a tier's compositions with a team of its tier, since the default team is tier one's
    stock and reads every tier-three formation as a wall.
-8. **Place, then prune.** A variant's gate is a ramp band read off its bands: the gentlest
+9. **Place, then prune.** A variant's gate is a ramp band read off its bands: the gentlest
    decision at its rating takes the foot, the hardest the top. Two compositions of a domain, size
    and tier with the same bands at every size and the same question are one composition: the
    read's "same as" column names them and the proposal says which goes.
-9. **The ramp's bands are the ramp's own steps.** Convergence 0 to 2 (one formation on the field,
+10. **The ramp's bands are the ramp's own steps.** Convergence 0 to 2 (one formation on the field,
    two patrols), 3 to 7 (two formations), 8 to 12 (three formations, one patrol, the beat at two,
    two tears a peak). A tier-one composition is fought from 0, a tier two's from 4, a tier three's
    from 8, each to 12. Three bands at most, two in practice.
-10. **The pass moves grids and counts, never a foe's number**, and writes no new foe type: where
+11. **The pass moves grids and counts, never a foe's number**, and writes no new foe type: where
    the reads say a true one does not exist among a domain's units, section 9 names it as his
    question (his words of 6 November: reposition or create).
 

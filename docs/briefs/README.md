@@ -368,6 +368,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
+| `kestrel_puffin.md` | the Puffin's rework (9 November): sent back to the drawing board by the refit pass, since shield faces leave the die; Ryan's instinct the one unit able to cool its allies, a cold-water bird; the holes for the chat | Kestrel | 1 | Ryan's session, after the heat prices land |
 | `refit_pass.md` | the refit pass's brief (9 November): Ryan's direction from his play of Phase 2, the resource model (an innate shield that regenerates, passive cooling, no shield or vent faces, a component a weapon or equipment, the hold as the heat decision), component destruction off to test, the cover withdrawn, the formation pass folded in, the what-if reads before any content moves, the rework list and the open questions | the battle and the kit | rule | Ryan's answers to its open list, then the reads |
 | `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty-one elites, six wanderers, the Nob's rage, the Fiend of Fire, the demotions; every domain's third boss landed 4 November), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the elites' numbers, the names) |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |

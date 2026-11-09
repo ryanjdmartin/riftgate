@@ -66,6 +66,7 @@ Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster 
 
 **Kestrel**, ten: eight decided.
 
+- [ ] The Puffin's rework (`kestrel_puffin.md`; Ryan, 9 November: back to the drawing board as the refit pass takes the shield faces off the die, "the only unit able to cool its allies" his first instinct), his session after the heat prices land
 - [ ] The Magpie (a working name), Kestrel's support engine (`kestrel_magpie.md`; the first round: the thief, the mimic, the cache; its cache beside the time-shifter's bank), its tier open, the slot open to another design
 - [ ] The Lammergeier's rework, Ryan's (8 November: "Flag the mine path as an issue but don't bother fixing mine problems until the rework, in case it stops existing"): the mine path's known faults wait for it (`docs/skirmish_audit.md`: Bug 7, Questions 9 and 11, the mine's half of Root 1 and of Structures 4 and 7)
 - [ ] The Snowy Owl, Kestrel's stealth unit (`kestrel_owl.md`; the first round: cold is quiet, the hunter on the map, Hidden as a status), leaning to Cryo (Ryan, 5 November: "assuming we take the cryo direction with the owl - which makes a lot of sense"); stealth a new rule (Phased cannot act, so it is not stealth)
