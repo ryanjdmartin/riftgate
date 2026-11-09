@@ -893,8 +893,9 @@ The tasks are the to-do's; this is the index of what waits.
   let back in triplets into A or B-flat ("b-bup-b-bflat as triplet-8th"), the backing guitar on X's
   riff with the keys lead on its chords ("the keys doing the backing descending chords instead"), both
   over a rock beat (the riff's two bars of 7/8 grouped 4, 4, 4 and 2 eighths, the kick on each group's
-  first eighth and the snare on its third: "If each riff repetition is taken as bars of 4-4-4-2"; a
-  first reading had twice the snares), W's first eighths on a
+  first eighth and the snare on its third: "If each riff repetition is taken as bars of 4-4-4-2"; "Yeah,
+  that's exactly right"), dressed in three tiers into a fill to the unison on the closed hat, the
+  half-open hat or the ride ("jazz it up a bit ... more of a build to the next unison"), W's first eighths on a
   half-open hat (pair_sketches' hat_half, new) or the china from the crash ("so there's no pause
   between the crash and when the drums continue"); the map's L and M on a clean finger bass ("Change L and
   M from cellos (i think?) to finger bass"), L's tine piano on M's line ("Map M, can the upper voice
@@ -1202,8 +1203,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twenty-fourth, X on a rock beat and W's first beats on a half-open hat, `hold_sketches.py`; Night Shift's twenty-second, its battle half's dark pass, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 59. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twenty-fourth, X's rock beat dressed and W's first beats on a half-open hat, `hold_sketches.py`; Night Shift's twenty-second, its battle half's dark pass, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 60. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg

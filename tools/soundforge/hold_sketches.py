@@ -9,7 +9,10 @@ pair, which has not changed, X on a rock beat and W's first beats on a half-open
 X's kit on a rock beat under the triplet bend and the trade (set hs): the riff's call and answer, two bars of 7/8,
 grouped 4, 4, 4 and 2 eighths, the kick on each group's first eighth and the snare on its third, the last group's
 snare on its second eighth (X_ROCK44; "If each riff repetition is taken as bars of 4-4-4-2"). The first reading,
-the snare on every other eighth (X_ROCK), had twice the snares he meant. W's three
+the snare on every other eighth (X_ROCK), had twice the snares he meant. Then dressed ("Yeah, that's exactly right.
+Now jazz it up a bit ... more of a build to the next unison"): three tiers of four bars, kicks on the riff, ghost
+snares and the cymbal on sixteenths, into a fill to the unison, on the closed hat, the half-open hat or the ride
+(x_jazz, set hj). W's three
 eighths on a half-open hat (pair_sketches' hat_half, in the kit from its own seed) from the off-beat or from the
 crash on the one, or on the china from the crash (set hh). The sets go into hold23.json beside the pair.
 
@@ -78,7 +81,7 @@ minimalist"), its lifts' riff on the soft sub and the tine piano.
 The full pair on the switch takes every pick. The set's rows are the same bars from the same seed
 through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold23.json beside the pairs (about four minutes on four cores; `hs hh` the sets alone)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold23.json beside the pairs (about four minutes on four cores; `hj hh` the sets alone)
     tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hx       # the named sets only (hx, hk, hw, and full for the pair)
 """
 import json
@@ -1418,6 +1421,70 @@ X_ROCK = {"kick": "x...x...x...x.", "snare": "..x...x...x..x", "hat": "x.x.x.x.x
 # with the snare on its second eighth; the hat on every eighth. Two snares a bar where the first reading had four.
 X_ROCK44 = {"kick": "x.......x....." "..x.......x...", "snare": "....x.......x." "......x.....x.",
             "hat": "x.x.x.x.x.x.x." * 2, "open": "." * 28, "crash": "." * 28}
+# The rock beat dressed (Ryan, 9 November: "Yeah, that's exactly right. Now jazz it up a bit, extra kicks following
+# the riff, ghost snares, and hat rolls/hits on the sixteenths, that kind of thing. I'm trying to make this section
+# sound more driving, less exposed, more full, more of a build to the next unison - might even need to swap the hat
+# for something else too"): X_ROCK44 under it all, building over the seven's twelve bars in three tiers of four.
+# The first tier adds kicks on the riff's notes where the backbeat leaves room and one ghost snare a bar; the second
+# more ghosts round the backbeats, kicks on the sixteenth before a bar, and sixteenth pickups on the cymbal into
+# each group; the third the cymbal on every sixteenth, more kicks and ghosts. The last bar ends on In the Air
+# Tonight's figure from the toolbox (pair_sketches' descending_doubles: snare, tom and floor tom in pairs, the kick
+# after each) into the unison's crash. The cymbal is the closed hat, the half-open hat or the ride with its bell on
+# each group's first eighth; the open hat and the crash on 7 out, the crash every second bar and the knocks kept.
+X_JAZZ = {   # (tier, the bar of the call or the answer): {drum: [(step, velocity)]}
+    (0, 0): {"kick": [(0, "x"), (8, "x"), (10, "7")], "snare": [(4, "x"), (11, "3"), (12, "x")]},
+    (0, 1): {"kick": [(0, "8"), (2, "x"), (4, "7"), (8, "7"), (10, "x")], "snare": [(6, "x"), (9, "3"), (12, "x")]},
+    (1, 0): {"kick": [(0, "x"), (8, "x"), (10, "7"), (13, "6")], "snare": [(3, "3"), (4, "x"), (7, "3"), (11, "4"), (12, "x")]},
+    (1, 1): {"kick": [(0, "8"), (2, "x"), (4, "7"), (8, "7"), (10, "x"), (11, "6")], "snare": [(5, "3"), (6, "x"), (9, "3"), (12, "x"), (13, "4")]},
+    (2, 0): {"kick": [(0, "x"), (3, "6"), (8, "x"), (10, "7"), (11, "6"), (13, "7")],
+             "snare": [(1, "3"), (3, "3"), (4, "x"), (7, "4"), (9, "3"), (11, "4"), (12, "x")]},
+    (2, 1): {"kick": [(0, "8"), (2, "x"), (4, "7"), (7, "6"), (8, "7"), (10, "x"), (11, "6")],
+             "snare": [(1, "3"), (3, "3"), (5, "4"), (6, "x"), (9, "3"), (12, "x"), (13, "4")]},
+}
+X_GROUP_STARTS = ((0, 8), (2, 10))   # each bar's group starts (the kick's), the call's and the answer's
+X_CYMBAL_PICKUPS = ((7, 13), (1, 9, 13))   # the second tier's sixteenths into each group
+X_FILL_FROM = 6   # the last bar's fill, from its fourth eighth
+CYMBALS = ("hat", "hat_half", "ride")
+
+
+def x_jazz_drums(cymbal="hat"):
+    """X's twelve bars of the dressed rock beat (X_JAZZ) with its cymbal on `cymbal` (CYMBALS)."""
+    names = ("kick", "snare", "hat", "hat_half", "ride", "bell", "open", "crash", "tom", "tom2")
+    rows = {k: ["."] * 168 for k in names}
+    for b in range(12):
+        tier, half, at = b // 4, b % 2, 14 * b
+        last = b == 11
+        for drum, hits in X_JAZZ[tier, half].items():
+            for step, vel in hits:
+                if not (last and step >= X_FILL_FROM):
+                    rows[drum][at + step] = vel
+        accents, pickups = X_GROUP_STARTS[half], X_CYMBAL_PICKUPS[half]
+        for step in range(14):
+            if last and step >= X_FILL_FROM:
+                break
+            if step % 2 == 0:
+                vel = ("8", "9", "x")[tier] if step in accents else ("6", "7", "7")[tier]
+            elif tier == 2 or (tier == 1 and step in pickups):
+                vel = "5" if tier == 2 else "6"
+            else:
+                continue
+            drum = ("bell" if step in accents else "ride") if cymbal == "ride" else cymbal
+            rows[drum][at + step] = vel
+    for drum, step, vel in P.descending_doubles(X_FILL_FROM, ("snare", "tom", "tom2"), per_beat=4, soft="7", hard="x", tail=0):
+        if step < 14:
+            rows[drum][14 * 11 + step] = vel
+    return {k: "".join(v) for k, v in rows.items()}
+
+
+def x_jazz(call, cymbal="hat"):
+    """X's kit on the dressed rock beat (x_jazz_drums), the half-open hat in the kit where it plays; a drum
+    that rests through it is written only where it is in the kit already, to silence it."""
+    for name, pat in x_jazz_drums(cymbal).items():
+        if pat.strip(".") or name in call["drums"]:
+            call["drums"].setdefault(name, {})["X"] = pat
+    if cymbal == "hat_half":
+        w_hat_half(call)
+    return call
 
 def x_rock(call, beat=None):
     """X's kit on a rock beat (`beat`, X_ROCK44 unless given; X_ROCK the first reading)."""
@@ -1426,7 +1493,7 @@ def x_rock(call, beat=None):
     return call
 
 
-def round24(riff=None, swap=False, rock=False, fill="earlier", beat=None):
+def round24(riff=None, swap=False, rock=False, fill="earlier", beat=None, jazz=None):
     """Round twenty-four's sets on round twenty-three's battle half: X's `riff`, the trade where `swap`, X on the
     rock beat where `rock`, W's first beats `fill` (W_FILLS)."""
     base = round23(riff=riff, swap=swap, fill=fill)
@@ -1435,6 +1502,8 @@ def round24(riff=None, swap=False, rock=False, fill="earlier", beat=None):
         base(call)
         if rock:
             x_rock(call, beat)
+        if jazz:
+            x_jazz(call, jazz)
     return edit
 
 def round22_bend(more="none"):
@@ -1538,11 +1607,12 @@ FORM_X = "M XXXXXXXXXXXX"          # the bar down into the seven and the seven
 FORM_KEYS = "Y KKKKKKKK V"         # the breath, the keys section, the second breath
 FORM_W = "FFFF W SSSSSSSS"         # the keys' tune's first bars, the turn, the climax's first set
 SETS = [
-    {"id": "hs", "half": "battle", "title": "X on a rock beat, as you meant it", "form": FORM_X,
-     "note": "The bar down into the seven and the seven, the triplet bend into A with the guitar and the keys traded (Ryan, 9 November: \"If each riff repetition is taken as bars of 4-4-4-2, then it would be 3 bars of standard 4/4 rock beat ... and one bar of 2/4 with the snare on 2\"). The riff's call and answer, two bars of 7/8, fourteen eighths, grouped 4, 4, 4 and 2: the kick on each group's first eighth, the snare on its third, the snare on the last group's second eighth, the hat on every eighth. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hs0", "On X's own drums", "The triplet bend into A and the trade, as round twenty-three's last row had them.", round24(riff=X_RIFF_T, swap=True)),
-        ("hs1", "On the rock beat", "The same over the beat as you meant it; the open hat and the crash on 7 out, the crash every second bar and the knocks kept.", round24(riff=X_RIFF_T, swap=True, rock=True)),
-        ("hs2", "The pair's X on the rock beat", "The beat under X as the pair has it, for the beat alone.", round24(rock=True)),
+    {"id": "hj", "half": "battle", "title": "X's rock beat, dressed", "form": FORM_X,
+     "note": "The bar down into the seven and the seven, the triplet bend into A with the guitar and the keys traded, over the rock beat you confirmed (Ryan, 9 November: \"Now jazz it up a bit, extra kicks following the riff, ghost snares, and hat rolls/hits on the sixteenths ... more of a build to the next unison - might even need to swap the hat for something else too\"). It builds in three tiers of four bars: kicks on the riff's notes and a ghost snare a bar; then more ghosts, kicks on the sixteenth before a bar and sixteenth pickups on the cymbal; then the cymbal on every sixteenth. The last bar ends on In the Air Tonight's figure from the toolbox, snare, tom and floor tom in pairs with the kick after each, into the unison's crash. A dressed row is louder by what it adds. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hj0", "The beat as you confirmed it", "The kick on each group's first eighth, the snare on its third, the hat on every eighth.", round24(riff=X_RIFF_T, swap=True, rock=True)),
+        ("hj1", "Dressed, on the closed hat", "The three tiers and the fill, the closed hat.", round24(riff=X_RIFF_T, swap=True, jazz="hat")),
+        ("hj2", "Dressed, on the half-open hat", "The same on the half-open hat, its sizzle filling the gaps.", round24(riff=X_RIFF_T, swap=True, jazz="hat_half")),
+        ("hj3", "Dressed, on the ride", "The same on the ride, its bell on each group's first eighth.", round24(riff=X_RIFF_T, swap=True, jazz="ride")),
     ]},
     {"id": "hh", "half": "battle", "title": "W's first beats, again", "form": FORM_W,
      "note": "The keys' tune's first bars, W and the climax's first set (Ryan, 9 November: \"do we have a half-open hat sound? Either that or the china but starting one hit before, so there's no pause between the crash and when the drums continue\"). The forge had a closed hat and an open one; the half-open hat is new, between them. Switch rows anywhere: each carries on from the same beat.", "rows": [
