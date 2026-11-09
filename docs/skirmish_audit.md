@@ -53,8 +53,9 @@ forecasts and whole state, identical to main's byte for byte) and twenty whole q
 the same. Left: the mine's half, the rework's; and two pieces of Structure 3 for Ryan's word, the
 first changing what the screen shows and the second the suite: the screen's Swap-pending fallback
 onto `preview_round` (Bug 16's visible half), and the die-in-hand half of `forecast`, which no
-production code calls but twenty-three tests pin rules through (Scorched under the Sparrowhawk's
-double, the Storm Petrel's burn, a bite, a brace), each to move onto `preview_round` or a spend.
+production code calls but twenty-three tests pin rules through (Scorched's extra under a heat
+multiplier, the Thrust Overboost's, by a synthetic passive; the Storm Petrel's burn; a bite; a
+brace), each to move onto `preview_round` or a spend.
 
 ## The roots
 

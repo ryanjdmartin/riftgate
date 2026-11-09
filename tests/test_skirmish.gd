@@ -2003,8 +2003,8 @@ func test_shorter_lived_sources_override_longer_ones() -> void:
 
 func test_a_doubled_heat_doubles_scorched_too() -> void:
 	# Heat reads adds before multiplies, the one order damage reads too, so a machine whose
-	# weapons run twice as hot (the Sparrowhawk's double; a synthetic passive here) doubles
-	# Scorched's extra as well, and its die says so (Ryan asked, 13 October).
+	# weapons run twice as hot (the Thrust Overboost module's double; a synthetic passive here)
+	# doubles Scorched's extra as well, and its die says so (Ryan asked, 13 October).
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L, [], 10)), 0, 200)
 	m.heat_max = 100
