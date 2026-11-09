@@ -167,7 +167,7 @@ var _spin_debug_t := 0.0
 var count_displays: Array = []     # [{"source", "parts": [[[material, its light at rest], ...] a part], "on", "off", "flare", "n", "k": [each part's light now]}]: the sidecar's counts (b.count)
 var count_debug: bool = false      # RIFTGATE_COUNT_DEBUG: every display counts up a part a second until it falls
 var _count_debug_t := 0.0
-var forms: Dictionary = {}         # name -> {"duration", "curves": {joint: curve, BODY: the body's}, "glow": [[material, its light at rest, k]], "acts": [act]}: poses held while the machine carries the status of the same name, each with the acts it plays while held (the sidecar's forms: the Armadillo's seal)
+var forms: Dictionary = {}         # name -> {"duration", "curves": {joint: curve, BODY: the body's}, "glow": [[material, its light at rest, k]], "acts": [act]}: poses held while the machine carries the status of the same name, each with the acts it plays while held (the sidecar's forms: the Polar Bear's seal)
 var _form_on: Dictionary = {}      # name -> whether it is held (set_form)
 var _form_t: Dictionary = {}       # name -> seconds into its turn: 0 let go, its duration held
 var _form_rot: Dictionary = {}     # joint -> degrees the forms add
@@ -175,7 +175,7 @@ var _form_slide: Dictionary = {}   # joint -> world-unit slide the forms add
 var _form_body_rot := Vector3.ZERO   # degrees (pitch, yaw, roll) the forms add to the body (the seal's hunker)
 var _form_body_slide := Vector3.ZERO
 var form_debug: bool = false       # RIFTGATE_SEAL_DEBUG: every form held and let go in turn, to judge running
-## The pose a machine stands in while a form is not held (the Armadillo's vents ajar while its shell
+## The pose a machine stands in while a form is not held (the Polar Bear's vents ajar while its shell
 ## is open; Ryan, 2 November: "When unsealed, the vents should be open, and then more open during
 ## the vent animation"): joint -> [degrees, slide] over its built rest, fading out as the form named
 ## by `ajar_unless` turns in. An act that moves the joint opens it the rest of the way: the ajar
@@ -733,7 +733,7 @@ func _setup_forms(fs: Dictionary) -> void:
 
 
 ## Hold a form or let it go: it turns in over its duration and back out the same way, from
-## wherever it is (the Armadillo seals: its guns sink, its ports shut and it hunkers down; it
+## wherever it is (the Polar Bear seals: its guns sink, its ports shut and it hunkers down; it
 ## opens in the reverse). While a form turns no act starts, and one playing stops: held, the
 ## machine plays the form's own acts, from its held pose (Ryan, 29 October: sealed, "the
 ## animations set shouldn't be the same"), or else its own, less any that moves a joint the
@@ -985,7 +985,7 @@ func tick(delta: float) -> void:
 		left -= dt
 		if _step(dt):
 			moved = true
-	# The held forms (the Armadillo's seal) turn on their own clock; the debug switch holds
+	# The held forms (the Polar Bear's seal) turn on their own clock; the debug switch holds
 	# every one and lets it go in turn.
 	if form_debug and not forms.is_empty():
 		_form_debug_t += delta
@@ -1255,7 +1255,7 @@ func _planted_limbs(touch: float) -> Array:
 
 ## How far a walker sinks and the turns that keep it standing: [sink, {joint: degrees added}], the
 ## most of COLLAPSE_SINK that every limb in `limbs` reaches within its limits with its belly still
-## clear of the floor (the Armadillo's shell rides low over its stubby legs), halved down to it
+## clear of the floor (the Polar Bear's shell rides low over its stubby legs), halved down to it
 ## (nought, and no turns, when none can).
 func _sink_turns(limbs: Array, deg: Dictionary) -> Array:
 	if limbs.is_empty():
@@ -1536,9 +1536,9 @@ func choose() -> Dictionary:
 
 
 ## The acts the machine may play now: none while a form turns; a form held all the way in
-## plays its own when it has any (the sealed Armadillo's, from its hunkered pose; Ryan, 29
+## plays its own when it has any (the sealed Polar Bear's, from its hunkered pose; Ryan, 29
 ## October); else the machine's own, less any that moves a joint a held form keeps (the
-## sealed Armadillo presents no guns it has sunk).
+## sealed Polar Bear presents no guns it has sunk).
 func act_set() -> Array:
 	var held := {}
 	for name in forms.keys():
@@ -1561,7 +1561,7 @@ func act_set() -> Array:
 ## that you can leverage"): the slice of an idle act the sidecar names for it (`fires`) plays now,
 ## from `lead` seconds before its start, the act playing cut short, its servos snappier than an
 ## idle act's so the wind-up lands on the blow. False when it has none, or a held form keeps the
-## joints its act moves (the sealed Armadillo's rack): the spend strikes as before.
+## joints its act moves (the sealed Polar Bear's rack): the spend strikes as before.
 func fire_act(cid: String, lead := 0.0) -> bool:
 	var f := fire_slice(cid)
 	if f.is_empty():
@@ -2335,7 +2335,7 @@ func strike(ranged: bool, only: Array = [], recoil := Vector3.ZERO, lead := 0.0)
 				continue
 			var line: Array = m.get("slide", [])
 			if line.size() == 3:
-				# A gun that only runs in and out of its port (the Armadillo's, Ryan, 29 October:
+				# A gun that only runs in and out of its port (the Polar Bear's, Ryan, 29 October:
 				# "they should only move along their axis of firing") kicks back along its line.
 				_strikes.append({"joint": name, "vec": Vector3.ZERO, "slide": -Vector3(float(line[0]), float(line[1]), float(line[2])) * RECOIL_SLIDE, "up": 0.05, "down": 0.2, "t": -lead})
 				continue

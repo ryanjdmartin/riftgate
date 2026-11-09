@@ -231,7 +231,7 @@ balance runner's valuation only).
    only for a committed follow-up). Lean: the die strikes it; the opener stands.
 7. **The cool-and-shield entry's two encodings.** *Ryan: "both types at once ... atomic based on the current game state." The form built; the Musk Ox's reload once, the greater ("Once, take the greater number").* The Sutler's Hoist is a shield that cools and
    the Wake Diffuser a vent that shields; the paths differ (the vent logs its printed number, not
-   the heat it took off, and never overshields), and the encoding decides the Armadillo's form (a
+   the heat it took off, and never overshields), and the encoding decides the Polar Bear's form (a
    shield seals, a vent opens) and the Musk Ox's reload (3 for a vent, 2 for a shield). Lean: one
    "cools then shields" helper; the form and the forge read what the entry does.
 8. **A countdown's rally.** *Ryan: "It shouldn't forecast rounds in the future. Show what it would deal at the current game state." Built.* A gathering countdown shows its blow with the rallies it carries now,

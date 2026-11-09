@@ -1203,7 +1203,7 @@ async function saveDoc(key, id, fields) {
 const NAME_TABS = [
   {id: "minerva", label: "Minerva", name: "Minerva Heavy Works", voice: "Maintenance manual. Terse, exact, proud of tolerances.",
    builds: "Tracked vehicles (the monopoly on treads), heavy wheeled vehicles, quad walkers, perhaps heavy plantigrade bipeds, perhaps one heavy flyer in the battlecruiser register. Heavy machinery is the root, not mining alone.",
-   names: "Rugged terrestrial mammals: Honey Badger, Armadillo, Wild Boar. Extinct is fine when the picture is common knowledge (Aurochs, Smilodon).",
+   names: "Rugged terrestrial mammals: Honey Badger, Polar Bear, Wild Boar. Extinct is fine when the picture is common knowledge (Aurochs, Smilodon).",
    avoid: "Digitigrade legs read too flimsy. The Musk Ox is Wainwright & Sutler's (21 October)."},
   {id: "kestrel", label: "Kestrel", name: "Kestrel Dynamics", voice: "Flight-test log. Clipped, numbers first.",
    builds: "Small and mid-sized flyers and hovercraft. Nothing that touches the ground, nothing big. The monopoly on fast jets.",
@@ -1966,7 +1966,7 @@ function paintMotion(force) {
     speed));
   if (!rig) { panel.append(el("p", {class: "mhelp"}, "Loading…")); return; }
   if (st.mode === "acts") {
-    // The acts it may play now: a held form's own while it holds (the sealed Armadillo's), none while one turns.
+    // The acts it may play now: a held form's own while it holds (the sealed Polar Bear's), none while one turns.
     const set = rig.actSet(), own = Object.keys(rig.forms || {}).find(n => rig.formHeld(n) && rig.forms[n].acts.length);
     const turning = Object.keys(rig.forms || {}).some(n => rig.formHeld(n) ? rig.formT[n] < rig.forms[n].duration : rig.formT[n] > 0);
     const acts = el("div", {class: "acts"});
@@ -1994,7 +1994,7 @@ function paintMotion(force) {
     }
   }
   // What a status holds while the machine carries it (MechView3D.hold_statuses): a form, a pose
-  // (the Armadillo's seal), or a spin (the Cassowary's capacitor while Spun Up); held here as the
+  // (the Polar Bear's seal), or a spin (the Cassowary's capacitor while Spun Up); held here as the
   // status would hold it, in any mode.
   const statusNames = [...new Set([...Object.keys(rig.forms || {}), ...Object.keys(rig.heldSpins || {})])];
   if (statusNames.length) {

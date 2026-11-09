@@ -1147,7 +1147,7 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 ## The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling
 ## returning, as a build-strategy buffer"): a machine regains its shield_regen at each round's
 ## start after the cooling, up to its maximum, one log line for all. A sealed machine's regen
-## runs: the Armadillo's seal stops its own cooling, and nothing says it stops the regen.
+## runs: the Polar Bear's seal stops its own cooling, and nothing says it stops the regen.
 func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(1, L)), 10, 100)
@@ -6364,7 +6364,7 @@ func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
 	assert_eq(Effects.damage_taken(other, 20, lit), 20, "a status the engine lacks never holds")
 
 
-## The form-changing tank (the Armadillo's Lockdown; Ryan's framework of 15 October, his go 20
+## The form-changing tank (the Polar Bear's Lockdown; Ryan's framework of 15 October, his go 20
 ## October): a shield spent on itself seals the machine, one chip carrying the passive's armour;
 ## sealed, its own cooling stops and it runs hotter at the end of each turn, before the overheat;
 ## a vent or a weapon opens it; a shield on an ally and a debuff (its lures) leave the form
@@ -6468,7 +6468,7 @@ func test_a_cool_and_shield_entry_seals_an_open_machine_and_opens_a_sealed_one()
 
 
 ## A passive's grant scoped to one of its machine's pieces and held while it is sealed (the
-## Armadillo's Lockdown, Ryan, 9 November: "Cryo flinger: No rapid. While sealed, gains Spread"):
+## Polar Bear's Lockdown, Ryan, 9 November: "Cryo flinger: No rapid. While sealed, gains Spread"):
 ## open, its lure turns the one foe it is aimed at; sealed, the foes beside it in its rank too, each
 ## taking the entry's Cryo; the grant reaches that piece alone, never the machine's gun, and goes as
 ## the seal opens. Synthetic pieces and passive, so content may move.
@@ -6526,7 +6526,7 @@ func test_a_grant_scoped_to_one_piece_holds_on_it_alone_while_sealed() -> void:
 	assert_false(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "and the Spread goes with the seal")
 
 
-## Its weapons deal 1 more to a foe carrying Cryo (the Armadillo's Lockdown, Ryan, 9 November): an
+## Its weapons deal 1 more to a foe carrying Cryo (the Polar Bear's Lockdown, Ryan, 9 November): an
 ## add on the blow, the attacker's condition read on the foe as each strike lands, so the strike
 ## that meets the Cryo takes it and its hit spends the stacks; a later strike of the same spend
 ## meets none and lands plain; a foe with none takes the plain blow, and a debuff deals nothing still.
@@ -7625,7 +7625,7 @@ func _purger() -> Foe:
 ## Purge (Ryan, 17 and 21 October; by its number since 2 November; 8 November: "A stack is a
 ## stack, doesn't matter where it came from"): a foe's Purge N takes N stacks of every buff the
 ## machine carries, for good, whatever granted it, a die entry or a passive; an ability is no
-## buff (the Armadillo's seal, its form, stays and so does its armour); the stores and the
+## buff (the Polar Bear's seal, its form, stays and so does its armour); the stores and the
 ## passives stay; a kept stack is its passive's own and stays, drawing no purger; a Ward turns it
 ## away.
 func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
@@ -7649,7 +7649,7 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	assert_true("\n".join(sk.log).contains("purges A ×9: Empowered gone, Armoured gone"), "the log says what went")
 	sk.start_round()
 	assert_false(Effects.has(u, "overcharged") or Effects.has(u, "braced"), "and nothing comes back")
-	# The seal is the Armadillo's form, an ability: the purge leaves it, its armour standing.
+	# The seal is the Polar Bear's form, an ability: the purge leaves it, its armour standing.
 	var s2 := Skirmish.new(1, 2)
 	var shield := Face.shield(20)
 	var m := _mech("D", Die.of([shield, Face.attack(10, L)]), 40, 200)

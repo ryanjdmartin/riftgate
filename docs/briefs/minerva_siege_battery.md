@@ -60,7 +60,7 @@ one each round to three, a wound on the tank knocking one off, a turret's shot s
 +10 a charge; the foes' shown intents say when a wound is coming, so "fire now or lose a
 charge" is read off the screen; the alternative "ripe target", +10 a debuff on the target.
 Claude's review (16 October): steady aim is a cooldown in disguise, since the charge grows on
-its own and, with the Armadillo pulling blows, the wounds that knock it off are rare, so it
+its own and, with the Polar Bear pulling blows, the wounds that knock it off are rare, so it
 becomes "fire every third round". Ryan, 16 October: "correct. Need help here. Looking for a soft
 way to push the player to timing their shots instead of just firing them on cooldown. It's
 possible that doesn't exist and the design is a non starter but that's why we're here."
@@ -70,7 +70,7 @@ Claude's candidates (16 October), each against Ryan's test (when, never how ofte
 - **Firing drops its guard** (Claude's lean): a turret may fire every round, but the tank that
   fires is open until its next turn (armour 0, or Braced lost, or its shield down: the form is
   the stock pass's). The "when" is the foes' shown intents: fire when nothing heavy is aimed at
-  it this round, hold or vent when something is, or have the Armadillo lure the blow off it
+  it this round, hold or vent when something is, or have the Polar Bear lure the blow off it
   first, so Minerva's tanks feed its capstone. Not a cooldown; nothing to count; the foes have
   already picked their targets when the player decides, so no aim reads the dropped guard. The
   hole: against a pack that never aims at it (it is the hardest hull to reach) it fires every
@@ -172,7 +172,7 @@ perhaps a longer cooldown the more spent; the design is parked here until he pic
 for then, Claude's: a charge a spend accrues at the die's pace, three or four a round with Rapid
 in the kit, so the cap and the steps set how often the top shot comes, and the "when" is which
 step to fire at (a cheap shot now or the Penetrate later); the cooldown rising with the spend is
-the price per die the cooldown row wants; the Armadillo's seal and the Nemesis's rage are the
+the price per die the cooldown row wants; the Polar Bear's seal and the Nemesis's rage are the
 stores this resembles, so its chip is a count like theirs; the engine has a count on a machine
 (a store), a cooldown property not yet built, and nothing that reads a store to change a
 weapon's keywords and number by steps, which is the new piece.

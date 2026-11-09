@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://cspvd56xlk8h6"
-path="res://.godot/imported/armadillo.glb-7297d8c70c939f2785b51d68f714c002.scn"
+path="res://.godot/imported/polar_bear.glb-df80759518bc527d2a204218c87a8884.scn"
 
 [deps]
 
-source_file="res://art/models/armadillo.glb"
-dest_files=["res://.godot/imported/armadillo.glb-7297d8c70c939f2785b51d68f714c002.scn"]
+source_file="res://art/models/polar_bear.glb"
+dest_files=["res://.godot/imported/polar_bear.glb-df80759518bc527d2a204218c87a8884.scn"]
 
 [params]
 

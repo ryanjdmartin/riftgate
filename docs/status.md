@@ -45,9 +45,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the music session's branch below and
-`claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November (How things stand below), on
-main's `f4906ee` and waiting on Ryan's play before it merges.
+Everything is on main as of 9 November 2026 but the music session's branch below.
+`claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November and its id's rename (How things
+stand below), landed on main as fast-forwards on Ryan's word ("merge it into main so I can try it");
+it is merged and to delete with the rest.
 `claude/playtesting-ui-feedback-hfdiok`, Ryan's playtest list of 9 November (How things stand
 below), took main's map session and skirmish audit step 3 in a merge (the bible, the measurements
 and this file the conflicts, both sides' words kept) and main took it as a fast-forward on Ryan's
@@ -157,8 +158,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Rapid and gaining Spread while sealed (Lockdown's grant, scoped to the piece: a `when` of
   `sealed` and an `entry` naming a component, both new), and its weapons 1 harder on a foe
   carrying Cryo (the strike that meets the stacks, its hit spending them). The probe that read the
-  old kit is in `docs/measurements.md`. Renamed the Polar Bear the same day ("since we're thinking of giving it
-  claws"; the bible's names row), its id `armadillo` kept as the Kite's was. 1075 tests green on this branch.
+  old kit is in `docs/measurements.md`. Renamed the Polar Bear the same day (the bible's names row; the claws in
+  his words a metaphor for the damage boost), its id `polar_bear` with it on his word, its model, rig,
+  textures, blend and hangar renders moved and the save versions bumped (battles 18, runs 17, quick runs 2). 1075 tests green on this branch.
 - **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
   Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
   all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always

@@ -439,7 +439,7 @@ func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -
 	# that turns on the spot (its sidecar's `pivots`: tracks, casters) turns its body for a gun on
 	# its hull; a quad with neither fires where it points (Ryan, 31 October: "don't bother").
 	var named := 0
-	for id in ["badger", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "nemesis", "ammit", "funnel_web"]:
+	for id in ["badger", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "nemesis", "ammit", "funnel_web"]:
 		var view := MechView3D.make(id, "", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
 		var side := MechRig.load_sidecar(id)
 		for cid in (side.get("aims", {}) as Dictionary).keys():
@@ -453,8 +453,8 @@ func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -
 			var joint := view.aim_joint_for(cid)
 			if bool(side.get("pivots", false)):
 				assert_false(joint.is_empty(), "%s: %s aims, a turret or the body turning" % [id, cid])
-			if id == "armadillo":
-				assert_eq(joint, "", "the Armadillo's %s fires where it points" % cid)
+			if id == "polar_bear":
+				assert_eq(joint, "", "the Polar Bear's %s fires where it points" % cid)
 		view.free()
 	assert_true(named >= 2, "the fixed weapons riding a head or a turret name it (%d)" % named)
 
@@ -476,7 +476,7 @@ func test_a_blow_flashes_the_hull_on_a_beat_and_the_shield_takes_its_own() -> vo
 
 func test_a_struck_machine_wears_heats_flash_and_a_lost_one_dims() -> void:
 	var db := ContentDB.load_default()
-	var view := MechView3D.make("armadillo", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
+	var view := MechView3D.make("polar_bear", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
 	var meshes: Array = view._model.find_children("*", "MeshInstance3D", true, false)
 	view.hit("shield", 0.0)
 	assert_eq(view._hit_t, -1.0, "a blow its shield took moves nothing on the model")

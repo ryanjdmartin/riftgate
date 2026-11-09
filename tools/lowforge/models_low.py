@@ -581,7 +581,7 @@ def clydesdale(b):
     # side): each hoof planted flat while the body passes over it, then lifted high and
     # stamped down.
     # A lumbering giant's gallop (Ryan, 7 October, the sixteenth notes: the amble moved to the
-    # Armadillo; he still liked the gallop of the eighth notes, so how far toward a lumbering
+    # Polar Bear; he still liked the gallop of the eighth notes, so how far toward a lumbering
     # giant?): the transverse gallop, hind left, hind right, fore left, fore right, then a
     # moment gathered with every hoof off the ground. Its stride cannot lengthen: at a sweep of
     # 30 a hind hoof swinging forward passes within two units of the fore planted on its side,
@@ -609,7 +609,7 @@ def clydesdale(b):
     tracks, body, stride = _gallop(gallop, sweep=30.0, duty=0.34, lift=7.0, crouch=3.0, hop=0.5, rock=6.0, dip=5.0, smooth=0.015, thud=True, airborne=0.99)
     tracks["head"] = ([(i / 40.0, round(-4.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.16)), 3)) for i in range(41)], 0.0)   # the head heaves after the rock
     # A heavy trot (Ryan, 6 October, the ninth notes: the gallop has potential but is a bit
-    # much, and its hooves met through each other; somewhere between it and the Armadillo's
+    # much, and its hooves met through each other; somewhere between it and the Polar Bear's
     # stomp), the gait it sets off and pulls up in (below). The gait between the two in a horse:
     # diagonal pairs, high-stepping, each fore landing a beat before its hind partner so every
     # pair comes down as a heavy double thud, the hull dropping and nodding onto each pair.
@@ -863,8 +863,8 @@ baboon.maker = "aphelion"
 # ---------------------------------------------------------------- the 28 September machines
 # Second passes on Ryan's notes (29 September). Every number is a proportion.
 
-def armadillo(b):
-    """Minerva "Armadillo" (HW-22T Heavy Weapons Carrier): the biggest land machine in the
+def polar_bear(b):
+    """Minerva "Polar Bear" (HW-22T Heavy Weapons Carrier): the biggest land machine in the
     game. A domed shell of overlapping armour bands, longer than it is wide (Ryan, 30
     September: armadillo, not turtle), on four long heavy legs whose hips stand out of the
     shell's flanks. The front band runs on as a cowl over a small cockpit bay tucked under
@@ -897,7 +897,7 @@ def armadillo(b):
     sight under the floor), the radiators shut, the cowl lamps go dark and the whole machine
     hunkers down on its planted feet, the defensive base pose its own acts play from (Ryan,
     29 October: sealed, "the animations set shouldn't be the same"), none of them a vent; the
-    flingers' rack stays live, since a sealed Armadillo still lures; opening runs it back."""
+    flingers' rack stays live, since a sealed Polar Bear still lures; opening runs it back."""
     Z0 = 26.0   # the shell's floor: the legs lift it this high
     PLUG_DEEP, PLUG_DEEP_F = 12.0, 9.0   # how far down its line each port's iris plug rests, rear and fore: under the floor, out of sight in the shell
     # How each class sits in a port (Ryan, 2 November: "some hardpoints want circular missile
@@ -1276,7 +1276,7 @@ def armadillo(b):
     # Sealed, it plays acts of its own from the hunker (Ryan, 29 October: "the animations set
     # shouldn't be the same, its base pose should be hunkered down in a defensive position"):
     # it braces lower and back as for a blow, rocks its weight back onto its hinds and forward
-    # again, and runs the flingers' rack out to beep, since a sealed Armadillo still lures; it
+    # again, and runs the flingers' rack out to beep, since a sealed Polar Bear still lures; it
     # never vents sealed (Ryan, the same day: "I don't think a vent animation should run
     # during the sealed form"). Each an offset over the hunker, the legs solved from the
     # hunkered pose so the feet stay planted (_planted_over).
@@ -1287,7 +1287,7 @@ def armadillo(b):
     b.act("lure", 5.2, {"run_rack": [along(0.6, 0.0), along(1.4, 4.0), along(3.8, 4.0), along(4.6, 0.0)]}, form="sealed",
           glow=[(["beacon"], blink(1.4, 3.8))])
 
-armadillo.maker = "minerva"
+polar_bear.maker = "minerva"
 
 
 def wild_boar(b):
@@ -2514,7 +2514,7 @@ def cottonmouth(b):
     # seconds; a key is (t, value) on the joint's own axis; a body key is (t, dx, dy, dz) or
     # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
     rudders = ("rudder_l1", "rudder_l2", "rudder_r1", "rudder_r2")
-    HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 here under the phone's eased light (the Armadillo's vents)
+    HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 here under the phone's eased light (the Polar Bear's vents)
     STRIP = ["chamber_window", "chamber_lamp"]   # burning whenever the drum turns on past its idle, every chamber
     FLASH = ["top_mouth_glow", "top_lamp_glow"]  # the top chamber, front and back, lit for a shot alone
     CHAMBERS = 1                                 # chambers the drum turns on between its test shots (Ryan, 3 November: "Ranging can just move one barrel at a time during its animation. Shots moving two makes sense": a weapon's real shot, the hookup's, turns two)
@@ -3071,7 +3071,7 @@ def whip_scorpion(b):
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
     limbs = [limb(leg) for leg in LEGS]
     by_name = {leg: limb(leg) for leg in LEGS}
-    HEAT = 196.0   # the heat tile's light at its height: #ff7800 under the phone's eased light, as the Armadillo's vents
+    HEAT = 196.0   # the heat tile's light at its height: #ff7800 under the phone's eased light, as the Polar Bear's vents
     # The flash (the Heliographic Siphon's lure): it rises tall on its legs, the boiler's end
     # tipping up, the shoulder guns swinging wide, the lamps and floodlights up; the mirror tips its
     # glass to the sky and its head swings round to the left, flashing short, short, long, then
@@ -6465,7 +6465,7 @@ def _slab(b, pts, normal, thick, material, label):
 
 
 def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe"):
-    """A port's iris plug (the Armadillo's Lockdown Shutters): `n` leaves of a disc of radius
+    """A port's iris plug (the Polar Bear's Lockdown Shutters): `n` leaves of a disc of radius
     `r` about `centre`, square to `axis`, each a hair off the centre so the iris's seams read
     dark, all on one joint (`shutter_<tag>`, sliding along `axis`) that rests `depth` down the
     port's line, under its floor and out of sight in the shell. A form slides it home: it
@@ -6491,7 +6491,7 @@ def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe
 
 
 def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0, flank=None, heat="vent_box_floor"):
-    """An armoured louvred vent (the Armadillo's radiators): a dark steel box `width` by
+    """An armoured louvred vent (the Polar Bear's radiators): a dark steel box `width` by
     `height` with heat banked in its floor (the part a glow names, labelled `heat`), a
     stripe rim round its mouth, and `slats` heavy louvres across the mouth, each on a pitch
     joint `<prefix><k>`, the lowest first. Sunk into a face of the shell, a hole cut through
@@ -6504,7 +6504,7 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
     top). A louvre stands `rest` degrees out of the face (positive lifts its upper edge out),
     so its joint's 0 is that rest; it shuts flat at `-rest` and opens to `opens` degrees out
     of the face at `opens - rest`. `flank`, given (-1 the left, 1 the right), lays the vent
-    on that flank's 45-degree chamfer instead (the Armadillo's radiators since Ryan's notes
+    on that flank's 45-degree chamfer instead (the Polar Bear's radiators since Ryan's notes
     of 30 October), `width` along the machine and `height` up the slope, `alpha` unused: its
     louvres run along the machine on roll joints, the upper edge the one toward the spine.
     Returns [(joint, its shut swing, its open swing)], the lowest first, in the joint's own
@@ -6555,7 +6555,7 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
 
 
 def _popvent(b, cutting, centre, side, name, length=14.0, width=8.0, out=6.0, slats=5, heat="vent_box_floor"):
-    """A vent on a flank's 45-degree chamfer (the Armadillo's side vents: Ryan, 29 October,
+    """A vent on a flank's 45-degree chamfer (the Polar Bear's side vents: Ryan, 29 October,
     "small rectangular protrusions when sealed" that "slide out ... to show the vent face when
     venting", then "a larger footprint to sell"): a well cut into `cutting` and lined in dark steel under a stripe rim,
     and on a slide joint `name` along the slope's outward normal a dark cap `length` along the
@@ -6887,7 +6887,7 @@ def _planted(limbs, body):
 
 
 def _planted_over(limbs, base, body):
-    """_planted for an act played over a held pose (a form's own acts: the sealed Armadillo's,
+    """_planted for an act played over a held pose (a form's own acts: the sealed Polar Bear's,
     29 October): `base` the pose's (dy, dz, pitch), `body` the act's keys as offsets from it.
     The legs' keys are what each offset adds to the held pose's own angles (one axis each,
     so they add exactly in the engine), so the feet stay planted from the held pose."""
@@ -6941,7 +6941,7 @@ def _leg_ik(leg, target, body, q0):
     leg's ankle on `target` (the model's axes) with its foot flat to the ground, under a
     body slid and pitched by `body` (dy, dz, pitch); Newton's method from `q0`, so a pose
     keyed after the last keeps its knee on the same side (Ryan, 5 October: a foot stepped
-    out wide, the Armadillo's sumo stance, needs the hip to roll and the ankle with it). A
+    out wide, the Polar Bear's sumo stance, needs the hip to roll and the ankle with it). A
     straight leg is no place to start from, so the knee is tried bent each way too, and the
     answer bends it the way `q0` does."""
     bend = q0[2]
@@ -6990,7 +6990,7 @@ def _leg_newton(leg, target, body, q0):
 
 def _stance(legs, frames):
     """Keys for an act that steps a walker's feet about under its body (Ryan, 5 October: the
-    Armadillo widening its stance a foot at a time): `legs` maps a leg's name to its (hip,
+    Polar Bear widening its stance a foot at a time): `legs` maps a leg's name to its (hip,
     knee, ankle) points, `frames` is a list of (t, (dy, dz, pitch), {leg: ankle point}) with
     every leg's ankle wherever it stands at that moment (its rest point if it is not named,
     else the last place named), flat to the ground. Returns joint -> keys, to merge into the
@@ -7386,7 +7386,7 @@ def _leg_ik6(leg, target, heading, body, q0, fold):
 def _footwork(limbs, body, steps, until, hz=30.0):
     """Leg tracks and body keys for an act that moves a walker's body about over planted feet
     and steps some of them (Ryan, 20 October: the funnel-web's planted pivot for the rest of
-    the walkers; the Armadillo comes about, the Nemesis paces and braces, the Ammit circles
+    the walkers; the Polar Bear comes about, the Nemesis paces and braces, the Ammit circles
     its prey), the body free in every axis. `body` is its keys as (t, (dx, dy, dz, yaw,
     pitch, roll)), straight between them; `steps` the steps as (name, t_lift, t_land, where,
     lift), `where` ("under", t) for the foot's rest point under the body as it stands at t,

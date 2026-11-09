@@ -4,13 +4,13 @@
 
 The session designs Ryan's tier-one Minerva tank of 4 November: every hit lures, and the blows it
 draws harden it. It takes the luring half of the echidna's split, and it is one of the tier-one
-fronts beside the Armadillo's move to tier two. "The lure tank" is a working label; the name is
+fronts beside the Polar Bear's move to tier two. "The lure tank" is a working label; the name is
 Ryan's.
 
 **Status**: Ryan's idea of 4 November, Claude's first round below, unanswered. **Maker**: Minerva.
 **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the orbits);
 `minerva_hedgehog.md` (the split); the bible's Armoured row, retaliation and thorns row and
-redirection row (section 5), and section 12's Armadillo question.
+redirection row (section 5), and section 12's Polar Bear question.
 
 ## What Ryan said
 
@@ -29,9 +29,9 @@ end. The round ends at the end of the enemy's turn, so "until end of turn" reads
 It passes the tier-one test: every basic gun lures.
 
 It is the luring tank the echidna's brief split from the spikes, so Ryan's two Minerva ideas take
-the two halves. It is also one of the tier-one fronts section 12's Armadillo question waited on.
+the two halves. It is also one of the tier-one fronts section 12's Polar Bear question waited on.
 
-**Armour at or over the tier's blows is immunity.** Section 12's Armadillo question found that flat
+**Armour at or over the tier's blows is immunity.** Section 12's Polar Bear question found that flat
 armour at or over a tier's blows is immunity at any number, and tier one's rank and file hit for 2
 or 3. A tank's base armour of 2, plus a point for each hit it takes, is immune after the first hit
 at tier one. So "still bleeds on the first couple" holds only against bigger blows. Claude's lean
@@ -44,7 +44,7 @@ wants to be 0 or 1, and its passive becomes its armour (the toughness row: a tan
 
 1. **Immunity at tier one** (above). Base armour of 0 or 1, or the floor of 1, makes "bleeds on the
    first couple" true. Against a massive foe's single big blow it gains nothing, so it is a swarm
-   tank rather than a wall, which sets it apart from the Armadillo.
+   tank rather than a wall, which sets it apart from the Polar Bear.
 2. **What counts as a hit.** Does a blow that lands on its shield count, or only one that reaches
    its hull? Hull only means it bleeds to harden, and it reuses the engine's hull-damage trigger
    (the Nemesis's). That trigger also reads an overheat and a bite, so it would need to read a
@@ -53,7 +53,7 @@ wants to be 0 or 1, and its passive becomes its armour (the toughness row: a tan
 3. **The lure's reach.** One spend a round lures the one foe it hits, or more with an area or a
    sweep. So the choice is which foe to pull: the small hitters, which its ramp eats, rather than
    the big one, which it cannot.
-4. **The bot.** The greedy bot values a lure for allies at nothing (the Armadillo's row), so this
+4. **The bot.** The greedy bot values a lure for allies at nothing (the Polar Bear's row), so this
    machine's runner rows wait on that valuation (the to-do's engine line), as do the three other
    lure machines' (the orbits).
 5. **Being struck** is the roster's most crowded orbit (the briefs README): this machine reads a
@@ -68,5 +68,5 @@ wants to be 0 or 1, and its passive becomes its armour (the toughness row: a tan
 
 ## What the session hands back
 
-A proposal in chat; on Ryan's go, the bible's Minerva row and the Armadillo's tier move with it,
+A proposal in chat; on Ryan's go, the bible's Minerva row and the Polar Bear's tier move with it,
 content planned, and this brief kept until its content lands.

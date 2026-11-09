@@ -25,7 +25,7 @@ Who started the runs (the draft's pick here is random, so this is coverage, not 
 |---|---|---|
 | Honey Badger | 11 | 0% |
 | Baboon | 15 | 0% |
-| Armadillo | 17 | 0% |
+| Polar Bear | 17 | 0% |
 | Prairie Dog | 10 | 0% |
 | Stingray | 10 | 0% |
 | Puffin | 12 | 0% |

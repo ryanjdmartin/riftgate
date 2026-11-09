@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqfassbemgo4y"
-path="res://.godot/imported/armadillo_hazard.png-3a01ddfe27e70dee5a2dcba84b7cfedc.ctex"
+uid="uid://754nik85bjys"
+path="res://.godot/imported/polar_bear_light.png-e11c35a17c3faa3feb0be473fc53546d.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "6a459474716c1158d1f5e2605bf5fd4e"
+"md5": "840be622367761d7b0a1fe82dda8b309"
 }
 
 [deps]
 
-source_file="res://art/models/armadillo_hazard.png"
-dest_files=["res://.godot/imported/armadillo_hazard.png-3a01ddfe27e70dee5a2dcba84b7cfedc.ctex"]
+source_file="res://art/models/polar_bear_light.png"
+dest_files=["res://.godot/imported/polar_bear_light.png-e11c35a17c3faa3feb0be473fc53546d.ctex"]
 
 [params]
 

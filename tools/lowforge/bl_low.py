@@ -327,7 +327,7 @@ class Tiles:
             t = np.clip(1.0 - r, 0.0, 1.0)[..., None]
             img = 0.28 * (np.array([0.80, 0.12, 0.04], np.float32) * (1.0 - t) + np.array([1.0, 0.55, 0.18], np.float32) * t)
         elif kind == "heat":
-            # A vent's heat banked down (Ryan, 29 October, of the Armadillo's vents: the glow
+            # A vent's heat banked down (Ryan, 29 October, of the Polar Bear's vents: the glow
             # "needs to lean way more yellow/orange", then, golden, "way too yellow"): one even
             # colour, no red rim to fill a small face, red and green alone as every red and
             # orange is (the bible's colour rows: past about #ff8200 an orange reads to Ryan as
@@ -640,7 +640,7 @@ class Build:
     def apply_cuts(self):
         """Subtract every cutter from its targets and drop the cutters, before export. The
         faces a boolean makes carry no texture coordinates and sampled the tile's dark seam
-        (Ryan, 1 October: the Armadillo's channels read black), so every cut object is
+        (Ryan, 1 October: the Polar Bear's channels read black), so every cut object is
         re-tiled afterwards by the same world-axis projection _finish gives an unframed part."""
         touched = []
         for targets, cutter in self.cuts:
@@ -733,7 +733,7 @@ class Build:
         pair on the joint's own axis, or {"pitch": (lo, hi), "yaw": (lo, hi)} for more
         than one. `swing` says whether a melee blow swings this joint (the arms); unnamed,
         a joint named shoulder_* swings. `slide`, given, is the one line the joint moves along,
-        never turning (a gun that only runs in and out of its port: the Armadillo's, Ryan, 29
+        never turning (a gun that only runs in and out of its port: the Polar Bear's, Ryan, 29
         October): every turn is held to nothing and a shot kicks it back along the line. All of
         it goes to the rig sidecar (see rig()); the engine (MechRig) reads it."""
         return _Joint(self, name, at, axis, limits, swing, slide)
@@ -762,7 +762,7 @@ class Build:
         Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both. `form`,
         given, makes it one of that form's acts, played while the form is held in place of the
         machine's own and added to the form's held pose (Ryan, 29 October: sealed, the
-        Armadillo's acts are its own, from its hunkered pose). `locks` names spinners with a
+        Polar Bear's acts are its own, from its hunkered pose). `locks` names spinners with a
         step (spin()'s `step`) the act holds still: each parks quickly on its next step ahead as
         the act starts, never turning back, and holds there while it plays, the act's own track
         on it adding whole steps over that; when the act ends its turn there runs on from where
@@ -828,14 +828,14 @@ class Build:
 
     def form(self, name, duration, tracks, glow=None, body=None):
         """A pose the machine holds while it carries the status of the same name (the
-        Armadillo's seal, 28 October: its guns sink and its ports shut while Sealed). `tracks`
+        Polar Bear's seal, 28 October: its guns sink and its ports shut while Sealed). `tracks`
         map a joint to keys as an act's do, from rest at 0 to the held pose at `duration` (a
         last key earlier is held on to it); MechRig turns the form in over `duration` and back
         out the same way, holds it in between, and plays no act that moves one of its joints
         while it is in. `glow` is a list of (parts, k): lit parts named by label and their
         light's offset at the held pose (-1 dark, as an act's glow keys), eased in with the
         turn. `body` moves the whole machine as an act's body keys do, to the held pose (the
-        sealed Armadillo hunkers down: Ryan, 29 October). Its own acts are act()'s with
+        sealed Polar Bear hunkers down: Ryan, 29 October). Its own acts are act()'s with
         `form` naming it."""
         out = {"duration": float(duration), "tracks": {}, "glow": []}
         if body:
@@ -864,7 +864,7 @@ class Build:
         return out
 
     def ajar(self, unless, joints):
-        """A pose the machine stands in while the form `unless` is not held (the Armadillo's vents
+        """A pose the machine stands in while the form `unless` is not held (the Polar Bear's vents
         ajar while its shell is open; Ryan, 2 November: "When unsealed, the vents should be open,
         and then more open during the vent animation"): `joints` map a joint to degrees along its
         own axis, in its own sense, or to a (dx, dy, dz) slide. MechRig stands it in at rest, fades
@@ -1126,7 +1126,7 @@ class Build:
                 near = sorted({n for n in names if n.startswith(part)})
                 raise ValueError("%s: a glow names %r, which labels no part%s" % (self.name, part, " (a label matches whole, not by its prefix: %s)" % ", ".join(near[:4]) if near else ""))
             # And a part that can light: only the amber role glows in the game (MechView3D),
-            # so a glow on a plate changes nothing (the Armadillo's vent lit its unlit collar,
+            # so a glow on a plate changes nothing (the Polar Bear's vent lit its unlit collar,
             # not the ember floor inside it, which _tube labels "<label>_floor").
             worn = {m.name.partition(".")[0] for ob in self.objects if _labelled(ob.name, part) for m in ob.data.materials if m is not None}
             if part in lit_parts and "amber" not in worn:

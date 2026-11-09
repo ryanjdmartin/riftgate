@@ -155,7 +155,7 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 ## planned; ContentDB.chassis_runnable) is never dealt, so a maker whose only tier one is a
 ## draft offers nothing until it lands. The same seed always offers the same machines, drawn on
 ## a stream of its own, as the party's (the mechanics audit, 25 October: on the run's own
-## stream the runner's pick of three reread Minerva's offer, so the Armadillo started every run
+## stream the runner's pick of three reread Minerva's offer, so the Polar Bear started every run
 ## it was offered, and the offer told where the first rifts would open).
 static func tender(content: ContentDB, seed_arg: int) -> Array:
 	var r := RandomNumberGenerator.new()

@@ -88,7 +88,7 @@ var slot: int = 0            # the entry's place on its die, from one; 0 draws n
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
 var blast: int = 0             # a vent's blast on its own machine (the Whip Scorpion's): the blow it fires at a random foe, its mark and number in the passive box
-var form_mark: String = ""     # "seal" or "unseal": spending the entry shuts its machine's shell or opens it (the Armadillo's Lockdown), a chip on the rail
+var form_mark: String = ""     # "seal" or "unseal": spending the entry shuts its machine's shell or opens it (the Polar Bear's Lockdown), a chip on the rail
 var shut: Array[int] = []      # keywords whose gate is shut over the foe in hand (the gated stuns, 22 October): their chips struck through and dimmed
 var spent: bool = false
 var dead: bool = false
@@ -549,7 +549,7 @@ func rail_tags() -> Array[String]:
 	if face.has_unique_rule() and inside != "star":
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
 	if not form_mark.is_empty():
-		tags.append(form_mark)   # it seals its machine, or opens it (the Armadillo's, 2 November)
+		tags.append(form_mark)   # it seals its machine, or opens it (the Polar Bear's, 2 November)
 	if corrupted > 0 and face.kind != Face.Kind.BLANK:
 		tags.append("corrupt")   # what a foe did to the entry, last on the rail, in its colour
 	return tags

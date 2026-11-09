@@ -60,7 +60,7 @@ function turnToward(facing, vel, want, rate, dt) {
   return [facing, vel];
 }
 const GLOW_PAGE = 1.8;   // a lit part's light at rest, the game's (MechView3D.toon), shown as the phone shows it (PHONE_GLOW)
-// A lit part's colour as the phone shows it (Ryan, 29 October: the Armadillo's new vent glow looked
+// A lit part's colour as the phone shows it (Ryan, 29 October: the Polar Bear's new vent glow looked
 // "the same" here). The game's renderer (gl_compatibility, the phone's and the desk's) lights in sRGB
 // space: a lit tile shows as the tile as stored times its light, each channel clipped at one (measured
 // from its renders), the light first eased by the power 1/2.2 so a flare holds its colour (MechRig.light;
@@ -508,7 +508,7 @@ class Rig {
     return Math.max(s.x, s.y, s.z);
   }
   // The forms a sidecar names (MechRig._setup_forms): poses held while the machine carries the
-  // status of the same name (the Armadillo's seal), their tracks and body as curves over their
+  // status of the same name (the Polar Bear's seal), their tracks and body as curves over their
   // turn, their lit parts with the light each has at rest, and the acts each plays while held.
   setupForms(fs) {
     this.forms = {}; this.formOn = {}; this.formT = {}; this.formRot = {}; this.formSlide = {};
@@ -590,7 +590,7 @@ class Rig {
   lightCounts() { for (const d of this.countDisplays || []) d.parts.forEach((mats, i) => { for (const [m, base] of mats) m.emissiveIntensity = base * Math.max(0, 1 + d.k[i]); }); }
   static keysAny(a, held) { return Object.keys(a.tracks || {}).some(jn => held[jn]); }
   // The acts it may play now (MechRig.act_set): none while a form turns; a form held all the way
-  // in plays its own when it has any (the sealed Armadillo's, from its hunkered pose); else its
+  // in plays its own when it has any (the sealed Polar Bear's, from its hunkered pose); else its
   // own, less any that moves a joint a held form keeps.
   actSet() {
     const held = {};

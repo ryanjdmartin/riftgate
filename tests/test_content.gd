@@ -2193,7 +2193,7 @@ func test_lay_status_names_an_engine_status_and_lays_at_least_a_stack() -> void:
 
 
 ## A passive effect may hold on one of its machine's pieces (`entry`) and while it is sealed (the
-## Armadillo's Lockdown, Ryan, 9 November: its Cryo Flinger gains Spread while sealed): the entry
+## Polar Bear's Lockdown, Ryan, 9 November: its Cryo Flinger gains Spread while sealed): the entry
 ## names a component the content holds; an area granted to a debuff carries no number, as a
 ## debuff's printed one does, and one granted anywhere else says its number. Synthetic passives.
 func test_a_passive_may_hold_on_one_piece_and_on_the_sealed_form() -> void:
@@ -2249,10 +2249,10 @@ func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() ->
 	assert_true(hit, "a status nobody knows is refused")
 
 
-## Cryo is a numbered keyword like Burn (20 October), and the Armadillo's content runs: its
+## Cryo is a numbered keyword like Burn (20 October), and the Polar Bear's content runs: its
 ## Lockdown passive carries the seal, its die its fixed Cryo Flinger before its hardpoints (one
 ## since 9 November, Ryan: a five-entry die).
-func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_leads_with_its_flinger() -> void:
+func test_a_cryo_weapon_says_its_stacks_and_the_polar_bear_leads_with_its_flinger() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var mute: Dictionary = db.components["cryo_flinger"].duplicate(true)
@@ -2271,13 +2271,13 @@ func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_leads_with_its_flinger
 	assert_true(refused.has("mute"), "a Cryo weapon with no number is refused")
 	assert_true(refused.has("stray"), "a number with no Cryo keyword is refused")
 	var fresh := ContentDB.load_default()
-	var m := fresh.make_mech("armadillo")
-	var fixed: Array = fresh.chassis["armadillo"]["fixed"]
-	assert_eq(m.die.faces.size(), fixed.size() + int(fresh.chassis["armadillo"]["hardpoints"]), "its fixed pieces and its hardpoints")
+	var m := fresh.make_mech("polar_bear")
+	var fixed: Array = fresh.chassis["polar_bear"]["fixed"]
+	assert_eq(m.die.faces.size(), fixed.size() + int(fresh.chassis["polar_bear"]["hardpoints"]), "its fixed pieces and its hardpoints")
 	for k in range(fixed.size()):
 		assert_eq(m.die.faces[k].component, str(fixed[k]), "its fixed pieces lead the die")
 	assert_true(m.die.faces[0].has(Face.Keyword.CRYO) and m.die.faces[0].has(Face.Keyword.LURE), "the Flinger lures and lays Cryo")
-	assert_eq(m.armour, int(fresh.chassis["armadillo"]["armour"]), "its base armour, as the content says")
+	assert_eq(m.armour, int(fresh.chassis["polar_bear"]["armour"]), "its base armour, as the content says")
 
 
 ## Flak lands (21 October): the Flakshot Repeater builds with its Flak and sprays, and the

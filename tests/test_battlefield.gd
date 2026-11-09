@@ -380,7 +380,7 @@ func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
 	var f := _field(7, 14)
 	var sq := f.add_unit(Unit.pack(1, "brutes", _o(3, 2), "peak", 3))
 	sq.behaviour = "hunt"
-	var slow := f.add_unit(Unit.mech(2, "Armadillo", _o(1, 9), 1))
+	var slow := f.add_unit(Unit.mech(2, "Polar Bear", _o(1, 9), 1))
 	slow.hull = 90
 	slow.shield = 30
 	var weak := f.add_unit(Unit.mech(3, "Sparrowhawk", _o(3, 9), 5))

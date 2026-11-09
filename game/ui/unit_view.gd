@@ -63,7 +63,7 @@ var highlight: bool = false       # valid drop target while dragging a die
 ## the enemy's violet behind its drawing and heavy corners breathing round it, so it reads by
 ## structure and motion as well as hue.
 var acting: bool = false
-## A machine in its sealed form (the Armadillo's Lockdown; Ryan, 2 November: "a better indication
+## A machine in its sealed form (the Polar Bear's Lockdown; Ryan, 2 November: "a better indication
 ## of what form it's in"): a heavy hexagon shell round its drawing in the shield's blue, steady,
 ## and a burst as it seals or opens (form_shift), rings closing in or thrown off with the word.
 var shell: bool = false
@@ -390,7 +390,7 @@ func spend_chip(glyph: String) -> void:
 	queue_redraw()
 
 
-## The machine's form shifts as a spend lands (the Armadillo seals or opens): a burst of rings, closing
+## The machine's form shifts as a spend lands (the Polar Bear seals or opens): a burst of rings, closing
 ## in on it as it seals or thrown off as it opens, and the word, SEALED or OPEN, rising off it.
 func form_shift(sealing: bool) -> void:
 	_shift = 0.0

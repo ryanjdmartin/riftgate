@@ -20,7 +20,7 @@ bible's Barrier and Ward row (section 5); `docs/rules.md` on the statuses on a m
 
 **The holes.**
 
-1. **Whose statuses.** "All" reaches a machine's own statuses. The Armadillo could not seal, the
+1. **Whose statuses.** "All" reaches a machine's own statuses. The Polar Bear could not seal, the
    Badger's plate would go, and the Kite's Hot Streak, its passive's price, would never land, so
    its drawback would be erased. Claude's lean: immune to what another unit lays or grants (a
    foe's riders and specials, an ally's buffs), while its own kit and passive work as usual, on it
