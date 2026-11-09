@@ -516,7 +516,7 @@ showing the number with the stacks in; one blow on each foe (no strikes past one
 from it eats each foe's own as it lands. The Suppression Battery's Suppress is
 gated on Flak, and the Backdraft Charge consumes Burning, its Suppress gated at two.
 **Burns its firer** (the Stoker's): spending it sets its own machine Burning, the stacks it
-prints, after the blow; the die in hand's forecast counts the first tick with the turn's heat.
+prints, after the blow; the round preview with the die in hand counts the first tick with the turn's heat.
 **The hopper**: a weapon that fills it puts the loads it prints in its machine's hopper for
 each foe its blows damage, after the blow, in place of what the machine's passive puts in (the
 Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most loads a shot,

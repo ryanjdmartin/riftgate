@@ -60,10 +60,7 @@ class TraceSkirmish extends Skirmish:
 			var m: Skirmish.MechState = mechs[i]
 			if not m.alive():
 				continue
-			bits.append(tr.ser(forecast(m, false)))
-			bits.append(tr.ser(forecast(m, true)))
-			if target is Foe:
-				bits.append(tr.ser(forecast(m, true, 0, false, target)))
+			bits.append(tr.ser(forecast(m)))
 		var ms: Skirmish.MechState = mechs[mech_index]
 		if ms.alive() and ms.face() != null and not ms.assigned:
 			var raw := spend_face(ms)
@@ -72,14 +69,6 @@ class TraceSkirmish extends Skirmish:
 			bits.append(tr.ser(sf.to_dict() if sf != null else {}))
 			bits.append(str(shown_number(ms, sf, foe)))
 			bits.append(shown_number_text(ms, sf, foe))
-			# Read by name, so the trace runs on a tree that has dropped them.
-			for fn in ["pending_heat", "pending_burn"]:
-				if has_method(fn):
-					bits.append("%s=%s" % [fn, str(call(fn, ms))])
-			if has_method("cryo_cash"):
-				bits.append("cryo_cash=%s" % str(call("cryo_cash", ms, foe)))
-			if has_method("lure_preview") and foe != null:
-				bits.append(tr.ser(call("lure_preview", ms, foe)))
 			bits.append(tr.ser(lure_turns(ms, foe)))
 			bits.append(tr.ser(shut_gates(ms, sf, foe)))
 			bits.append(str(after_blow(ms, sf, foe)))
@@ -108,7 +97,7 @@ class TraceSkirmish extends Skirmish:
 	func end_round() -> int:
 		var bits: Array = [tr.ser(preview_round())]
 		for m in live_mechs():
-			bits.append(tr.ser(forecast(m, false)))
+			bits.append(tr.ser(forecast(m)))
 			bits.append(tr.ser(incoming_for(m)))
 		for f in field_foes():
 			bits.append(str(rally_worth(f)))

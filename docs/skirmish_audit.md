@@ -50,12 +50,13 @@ fixes them or removes them; nothing else builds on them meanwhile.
 after each step"): Root 1's spend half, Root 3 and Structure 3's engine half, each part checked by
 the suite and by `tools/behaviour_trace.gd` (2,988 seeded fights, every spend's previews,
 forecasts and whole state, identical to main's byte for byte) and twenty whole quick-campaign runs
-the same. Left: the mine's half, the rework's; and two pieces of Structure 3 for Ryan's word, the
-first changing what the screen shows and the second the suite: the screen's Swap-pending fallback
-onto `preview_round` (Bug 16's visible half), and the die-in-hand half of `forecast`, which no
-production code calls but twenty-three tests pin rules through (Scorched's extra under a heat
-multiplier, the Thrust Overboost's, by a synthetic passive; the Storm Petrel's burn; a bite; a
-brace), each to move onto `preview_round` or a spend.
+the same. Structure 3's last two pieces on Ryan's word, 9 November ("Go ahead with both"): the
+screen's Swap-pending fallback onto `preview_round` (Bug 16, the one visible change: the gauges
+no longer drop to the bot's estimate while a Swap waits), and the die-in-hand half of `forecast`
+gone, which no production code called but twenty-three tests pinned rules through (Scorched's
+extra under a heat multiplier, the Thrust Overboost's, by a synthetic passive; the Storm Petrel's
+burn; a bite; a brace), each now read through `preview_round` with the die in hand or the die as
+shown. The engine's play stayed identical to main's. Left: the mine's half, the rework's.
 
 ## The roots
 
@@ -187,7 +188,10 @@ balance runner's valuation only).
     (Undying, a split) or a part's, which is no kill, is paid in full; the reach tally books a forged gun's heat that ammo paid
     (skirmish 2949 before 2953); `effective_face` runs twice on one entry, so Supercooled's Cryo
     counts twice. Agents' readings; Bug 3 above is the checked one.
-16. **The forecast with the die in hand reads the raw entry's heat.** `pending_heat` and
+16. **The forecast with the die in hand reads the raw entry's heat.** *Fixed 9 November, with
+    Structure 3: the die-in-hand forecast is gone (the round preview is the one model with a die
+    in hand), and the screen's gauges read the round preview while a Swap waits too.*
+    `pending_heat` and
     `pending_burn` pass the printed heat, not the Cottonmouth drum's rewrite, so an overheat
     warning can be missed (the Ankle Mortar forecasts 1 and pays 3); and while a Swap waits for
     its second target the screen's gauges switch to that older model (no coming chips, no
@@ -266,10 +270,11 @@ balance runner's valuation only).
    stays the bot's estimate and shares one blow helper with `_damage_mech` (`blows_on` copies its
    first half); the die-in-hand half of `forecast` goes (`with_face`, `aimed`, `pending_heat`,
    `pending_burn`, `cryo_cash`, `lure_preview`: no production caller). `preview_round` and
-   `end_round` share one `_finish_round`. *In part, 8 November: `_finish_round` (the round's end,
-   the preview's copy running it too) and `_blow_on` (the blow `_damage_mech` lands and
-   `blows_on` walks). The fallback and the die-in-hand half wait for Ryan's word ("Where it
-   stands"): the first changes what the screen shows, the second rewrites twenty-three tests.*
+   `end_round` share one `_finish_round`. *Done: `_finish_round` and `_blow_on` (the blow
+   `_damage_mech` lands and `blows_on` walks) on 8 November; on Ryan's word, 9 November, the
+   screen's Swap fallback onto `preview_round` (Bug 16) and the die-in-hand half gone,
+   `forecast(ms, extra_shield, overshield)` the bot's estimate alone, the twenty-three tests
+   reading their rules through `preview_round` with the die in hand or the die as shown.*
 4. **One geometry.** `area_shapes` is the shape of a hit; `reached_by` is its target and its keys
    (they build the same set today); the mine uses it.
 5. **One act-again path** with the "fight decided" check written once (now three times) and the
@@ -318,7 +323,7 @@ balance runner's valuation only).
   always 0, `Hits.vent` now); the dry-magazine branch of `_spend_at` (`targets_for_face` refuses
   a dry gun);
   `_salvo`'s null-target and no-shot fallbacks and its `reach` write, added today; `kills_for`
-  and `lure_preview` (tests only); `preview_round`'s `bite`, `volatile`, `heat_end`,
+  (tests only; `lure_preview` went with the die-in-hand forecast, 9 November); `preview_round`'s `bite`, `volatile`, `heat_end`,
   `breaks_shield` and `notes` (the last two read by one test each); `MechState.locked` (saved
   only); `Unit.allies` and `_refresh_allies` (read only by the `ally_present` condition, which
   no content uses); `_split_slot`'s rank, `_repick`'s foe and `_pick_exposed`'s rng parameters;
@@ -374,9 +379,9 @@ scheduled to regrow and then rise as well (no content pairs them).
 2. The bugs that take the rules as written (1-13), each with a test that fails first. *Done 8
    November, the mine's waiting for the rework.*
 3. Roots 1 and 3 together (one hit routine, its arguments), since Bugs 7 and 8 and Question 10
-   live there; then Root 2's engine half (one round model, `_finish_round`). *Done 8 November
-   but the mine's half, the rework's, and Structure 3's fallback and die-in-hand half, Ryan's
-   word ("Where it stands"); no behaviour changed.*
+   live there; then Root 2's engine half (one round model, `_finish_round`). *Done 8 and 9
+   November but the mine's half, the rework's; nothing the engine plays changed, the Swap's
+   gauges alone (Bug 16).*
 4. The bot's mirrors onto the engine's helpers, then a 30-seed run read as a direction against
    the last, since the bot's valuations move.
 5. Statuses as data, the Face, the dead code and the comments, in one pass each.

@@ -218,7 +218,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the salvo and the blast, each paying its own (`_finish_hits`, `Pays`), one `_land_blow` for
   every blow of a hit, the hidden flags arguments and returns, the preview's recorder on its
   copy, one `_finish_round` and one `_blow_on`; checked by the suite and `tools/behaviour_trace.gd`
-  (2,988 fights identical to main's). Waits on Ryan's phone read of the Ability chips (the to-do).
+  (2,988 fights identical to main's). On his word, 9 November: the die-in-hand forecast gone
+  (`forecast` the bot's estimate of the round as it stands; the round preview the one model with
+  a die in hand, the twenty-three tests moved onto it) and the Swap's gauges on the preview while
+  it waits (Bug 16, the one visible change). Waits on Ryan's phone read of the Ability chips (the to-do).
 - **The spend's order and Sweep's columns** (7 November; the bible's section 5 Sweep, riders and
   spend's order rows): a single-target weapon's hits, their riders, the death check, the spend's
   end, then what its kills bring back (a foe getting back up, a split's halves), so nothing a
@@ -350,9 +353,8 @@ wall's open items (the bible's section 12: the shell, the ratings by who solos, 
 and the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
 is section 12's, its test the to-do's): its structural steps in order (step 3 built on
-`ccr-8df9952c-4cccdf` but the mine's half, waiting for the Lammergeier's rework, and the round
-model's last two pieces, on Ryan's word: the screen's Swap fallback, Bug 16, and the die-in-hand
-forecast with its twenty-three tests; then the bot's and the screen's mirrors onto the engine,
+`ccr-8df9952c-4cccdf` but the mine's half, waiting for the Lammergeier's rework; then the bot's
+and the screen's mirrors onto the engine,
 then a 30-seed direction; statuses as data, the Face, the dead code, each refactor checked by
 `tools/behaviour_trace.gd`), since its tangles bend every read after it. The
 redesign moves every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on

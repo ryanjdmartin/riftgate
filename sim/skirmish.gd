@@ -555,21 +555,6 @@ func can_withdraw() -> bool:
 	return false
 
 
-## Heat the mech's current face will add if it is spent as an attack: negative for one that
-## fires the gauge empty first. A charged form's own when it goes out charged.
-func pending_heat(ms: MechState) -> int:
-	var f := spend_face(ms) if ms.face() != null else null
-	if f == null or ms.assigned:
-		return 0
-	if not f.is_attack():
-		return f.heat if f.on_machines() else 0   # a printed heat on a piece spent on machines (the Musk Ox's quick reload)
-	if ammo_price_of(ms, f) > 0:
-		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun pays ammo; only a foe's debuff heats it
-	var added: int = Effects.attack(ms.unit, f, 0, f.heat)["heat"]
-	added -= shield_burn(ms, Effects.effective_face(ms.unit, f), added, f.shield_cost)   # what the shield pays never reaches the gauge (the Storm Petrel's), after a shield cost takes its share
-	return added - ms.heat if f.vents_all else added
-
-
 ## The shield a weapon's spend burns in place of `heat` (the Storm Petrel's Riot Field Generator,
 ## Ryan's go of 21 October; built 30 October): as much of the gun's own heat as the shield holds
 ## as it stands, overshield included; the rest reaches the gauge, and so does a Scorched machine's
@@ -577,22 +562,14 @@ func pending_heat(ms: MechState) -> int:
 ## heat bar, not the ammo cost ... Same as the storm petrel when its shield is up"; the forge
 ## splits it the same way, Effects.ammo_price). Nothing for equipment, a forging machine's gun
 ## (its heat is paid in ammo) or a machine whose shield pays nothing. `paid` is the shield a
-## shield cost takes first, when the spend is still to come (a preview, the forecast): a strict
-## cost is paid as the entry is spent, before the heat, and is never burnt into a blow (Ryan, 4
-## November, asking whether the passive turns every shield cost into damage: it does not).
+## shield cost takes first, when the spend is still to come (the die as shown, shown_face): a
+## strict cost is paid as the entry is spent, before the heat, and is never burnt into a blow
+## (Ryan, 4 November, asking whether the passive turns every shield cost into damage: it does not).
 static func shield_burn(ms: MechState, f: Face, heat: int, paid: int = 0) -> int:
 	if ms == null or f == null or not f.is_weapon() or heat <= 0 or ms.ammo_max > 0 or not Effects.burns_shield(ms.unit):
 		return 0
 	var own := maxi(0, heat - Effects.debuff_heat(ms.unit, f))
 	return mini(own, maxi(0, ms.unit.shield - paid))
-
-
-## The shield the entry in hand would burn as it is spent (shield_burn), for the forecast.
-func pending_burn(ms: MechState) -> int:
-	var f := spend_face(ms) if ms.face() != null else null
-	if f == null or ms.assigned or not f.is_attack():
-		return 0
-	return shield_burn(ms, Effects.effective_face(ms.unit, f), int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]), f.shield_cost)
 
 
 ## The blow the burn pays a foe after a weapon's strikes (the zap): what the shield paid, plain,
@@ -1009,71 +986,37 @@ static func spend_bite(u, f: Face) -> int:
 	return volatile_cost(f) + tithe
 
 
-## What the end of the round does to this mech if nothing else changes: the screen's warning
-## signs and bar overlays. Recomputed after every action, so shielding or killing an attacker
-## moves the numbers at once. `with_face` counts the heat of the die's showing component as
-## if spent; the screen asks for that only while the die is being dragged. `extra_shield`
-## asks the same question with that much more shield standing (a shield component about
-## to be spent here), for whoever weighs one; `overshield` lets it pass the maximum, as a
-## component with that keyword would. `aimed`, the foe a dragged die is held over, folds in
-## what that spend cashes there: a weapon's hit on a Cryo foe cools the hitter after its own
-## heat lands (Ryan, 16 October: the net on the heat bar, never the die).
-func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, overshield: bool = false, aimed: Foe = null) -> Dictionary:
+## What the end of the round does to this mech as the fight stands, no die counted: the bot's
+## estimate, added up here without a copy of the fight (the screen reads preview_round, a copy
+## playing the round out, the die in hand spent on it). Recomputed after every action, so
+## shielding or killing an attacker moves the numbers at once. `extra_shield` asks the same
+## question with that much more shield standing (a shield component about to be spent here), for
+## whoever weighs one; `overshield` lets it pass the maximum, as a component with that keyword
+## would. Each foe's blows walk the shield they meet (blows_on, the blow that lands' own
+## arithmetic); heat is what the gauge holds, Burning's tick at the end of the player's turn and
+## a seal's, before the enemy acts (11 and 13 October), the foes adding none outright (their fire
+## leaves Burning and Scorched, which land on later turns), then a Siphon's heat with their blows.
+func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) -> Dictionary:
 	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
-	# A shield cost is taken first as the entry is spent (Ryan, 26 October), before a bite and before
-	# the heat a shield pays.
-	if with_face and not ms.assigned and ms.face() != null:
-		shield -= mini(shield, spend_face(ms).shield_cost)
-	var bite := pending_bite(ms) if with_face else 0
-	if bite > 0:
-		# A corrupted entry bites the moment it is spent, shield first, before the enemy's blows.
-		var b := _bite(shield, hull, bite)
-		shield = b["shield"]
-		hull = b["hull"]
-	# A volatile entry costs hull outright as it is spent, shield or no shield.
-	var volatile := pending_volatile(ms) if with_face else 0
-	hull -= volatile
-	# A weapon that burns shield in place of heat (the Storm Petrel's) takes it as it is spent, after
-	# a bite: the shield the enemy's blows meet is what it leaves.
-	if with_face:
-		shield -= mini(shield, pending_burn(ms))
 	var incoming := 0
 	var component_risk := false
-	# The die in hand's own grant on its machine, for this round's blows: a brace's armour (the
-	# Breaching Plow, the Siphon) and a Siphon's heat a blow, a second Siphon renewing the first.
-	var spent := spend_face(ms) if with_face and not ms.assigned and ms.face() != null else null
-	var braced := spent.braces * Effects.braced_armour() if spent != null else 0
-	var per_blow := Effects.heat_per_blow(ms.unit)
-	if spent != null and spent.heat_per_blow > 0 and not Effects.has(ms.unit, "siphoning"):
-		per_blow += spent.heat_per_blow
-	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier"), "armour": braced}
+	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier")}
+	var blows := 0
 	for f in attackers_of(ms):
 		incoming += foe_blow(f) * f.strikes()
+		blows += f.strikes()
 		for r in blows_on(ms, f, walk):
 			hull -= int(r["through"])
 			if r["injures"]:
 				component_risk = true
 	shield = int(walk["shield"])
-	# Heat: what the gauge holds (past the cap, if the turn ran hot), the face's own if asked
-	# and Burning's tick burn at the end of the player's turn, before the enemy acts (11 and
-	# 13 October). Foes add no heat outright: their fire leaves Burning and Scorched, which
-	# land on later turns.
-	var heat_mid := ms.heat + (pending_heat(ms) if with_face else 0)
-	heat_mid -= mini(heat_mid, cryo_cash(ms, aimed) if with_face else 0)
-	var heat_end := heat_mid + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
-	if spent != null and spent.self_burn > 0:
-		heat_end += spent.self_burn * Effects.status_value("burning_mech", "tick_heat")   # the Stoker's own fire ticks with the rest
+	var heat_end := ms.heat + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
 	hull -= over * overheat_scale
-	var blows := 0
-	for f in attackers_of(ms):
-		blows += f.strikes()
-	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + per_blow * blows   # a Siphon's heat lands with the blows
+	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + Effects.heat_per_blow(ms.unit) * blows
 	return {
 		"incoming": incoming,
-		"bite": bite,
-		"volatile": volatile,
 		"shield_after": shield,
 		"hull_after": hull,
 		"heat_end": heat_end,       # the gauge as the turn ends, uncapped: what the burn reads
@@ -1084,34 +1027,16 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 	}
 
 
-## The heat a weapon spend of the entry showing would cash off Cryo foes, aimed at `over`:
-## every stack on every foe it reaches, at the Cryo rate. Nothing for equipment or
-## without a foe in hand.
-func cryo_cash(ms: MechState, over: Foe) -> int:
-	var f := ms.face()
-	if over == null or f == null or ms.assigned or not f.is_attack():
-		return 0
-	var ef := Effects.effective_face(ms.unit, f, over)
-	if ef.is_debuff():
-		return 0
-	var stacks := 0
-	for foe in reached_by(ef, over):
-		if foe.alive():
-			stacks += Effects.stacks_of(foe, "cryoed")
-	return stacks * cryo_cool()
-
-
 ## One foe's blows on a machine as they would land now, in order: each through what the
 ## machine takes (damage_taken), a Barrier that stands taking the first that deals anything,
 ## a breach unless a Ward turns it away, each against the shield the one before left. `walk`
 ## carries the shield and the Barrier from blow to blow, and from foe to foe for a caller
-## walking every attacker: {"shield": int, "barrier": bool, "armour": int}, updated; its armour
-## is a grant not yet made (the die in hand's brace), on top of the machine's own.
+## walking every attacker: {"shield": int, "barrier": bool}, updated.
 ## Returns each blow's arithmetic (_blow_on's).
 func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 	var out: Array = []
 	for s in range(f.strikes()):
-		var r := _blow_on(ms, foe_blow(f), f, int(walk["shield"]), bool(walk.get("barrier", false)), int(walk.get("armour", 0)))
+		var r := _blow_on(ms, foe_blow(f), f, int(walk["shield"]), bool(walk.get("barrier", false)))
 		if bool(r["barred"]):
 			walk["barrier"] = false
 		walk["shield"] = r["shield"]
@@ -1123,15 +1048,15 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 ## forecast's walk (blows_on) share, changing nothing: what the machine takes of `amount`
 ## (damage_taken, the striker read for its statuses, a plate that stands with the shield reading
 ## `shield`, the shield this blow meets), a Barrier standing (`barrier`) taking it whole if it deals
-## anything, a breach unless a Ward turns it away, then the shield, the armour (the machine's, what
-## it holds against the striker's rank, and `armour` more: a grant not yet made) and the hull
-## (_blow). Returns _blow's dictionary with `amount` (the blow as it arrives, before a Barrier),
-## `barred` and `warded` (a Ward turned its breach away).
-func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: bool, armour: int = 0) -> Dictionary:
+## anything, a breach unless a Ward turns it away, then the shield, the armour (the machine's and
+## what it holds against the striker's rank) and the hull (_blow). Returns _blow's dictionary
+## with `amount` (the blow as it arrives, before a Barrier), `barred` and `warded` (a Ward turned
+## its breach away).
+func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: bool) -> Dictionary:
 	var arrived := Effects.damage_taken(ms.unit, amount, source, false, true, maxi(0, shield))
 	var barred := arrived > 0 and barrier
 	var warded := source.breaches() and Effects.has(ms.unit, "ward")
-	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, source.rank) + armour, 0 if barred else arrived, source.breaches() and not warded)
+	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, source.rank), 0 if barred else arrived, source.breaches() and not warded)
 	r["amount"] = arrived
 	r["barred"] = barred
 	r["warded"] = warded
@@ -3287,26 +3212,6 @@ func lure_turns(ms: MechState, aimed: Foe = null) -> Array[Foe]:
 	for foe in _lured(ms, aimed):
 		if foe.alive() and not foe.is_suppressed() and foe.target != ms and not foe.reaches_every_machine() and not foe.acts_on_nobody():
 			out.append(foe)
-	return out
-
-
-## The round as it would stand once this machine's Lure entry, spent on `aimed`, turns what it
-## reaches (the Whip Scorpion's Siphon over every foe): every live machine's forecast with those
-## foes on the spender, the spender's with its die in hand (its brace, its Siphon's heat a
-## blow), then the foes put back as they were. Empty when there is nothing to turn.
-func lure_preview(ms: MechState, aimed: Foe = null) -> Dictionary:
-	var out := {}
-	var saved := {}
-	for foe in _lured(ms, aimed):
-		if foe.alive() and foe.target != ms:
-			saved[foe] = foe.target
-			foe.target = ms
-	if saved.is_empty():
-		return out
-	for m in live_mechs():
-		out[m] = forecast(m, m == ms, 0, false, aimed if m == ms else null)
-	for foe in saved.keys():
-		foe.target = saved[foe]
 	return out
 
 

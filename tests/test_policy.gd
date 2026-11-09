@@ -54,7 +54,7 @@ func test_greedy_shields_the_machine_about_to_die() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.front[0].target = sk.mechs[1]   # its pick, set: the test is the shield's, not the aim's
-	assert_true(sk.forecast(sk.mechs[1], false)["destroyed"], "the ghoul would wreck the weak machine")
+	assert_true(sk.forecast(sk.mechs[1])["destroyed"], "the ghoul would wreck the weak machine")
 	Policy.make(Policy.GREEDY).play_round(sk)
 	assert_eq(weak.shield, 20, "the tank's shield went on the weak machine, not itself")
 	assert_eq(tank.shield, 40, "and the tank kept its own")
@@ -70,7 +70,7 @@ func test_greedy_vents_before_it_burns() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.mechs[0].heat = 80   # twenty over a cap of sixty
-	assert_eq(int(sk.forecast(sk.mechs[0], false)["overheat"]), 20, "twenty would burn at the round's end")
+	assert_eq(int(sk.forecast(sk.mechs[0])["overheat"]), 20, "twenty would burn at the round's end")
 	Policy.make(Policy.GREEDY).play_round(sk)
 	assert_eq(sk.mechs[0].heat, 50, "vented")
 	sk.end_round()
@@ -88,7 +88,7 @@ func test_the_cautious_persona_prices_heat_above_its_line() -> void:
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.heat = 45   # under the cap of sixty: no overheat looms
-	assert_eq(int(sk.forecast(ms, false)["overheat"]), 0, "nothing would burn")
+	assert_eq(int(sk.forecast(ms)["overheat"]), 0, "nothing would burn")
 	var plain := Policy.make(Policy.GREEDY)
 	var careful := Policy.make(Policy.GREEDY)
 	careful.cool_above = 50
@@ -551,7 +551,7 @@ func test_the_bot_weighs_a_blow_at_every_machine_on_each_and_no_lure_turns_it() 
 	assert_eq(Policy.disrupt_score(sk, storm), 20.0 * Policy.HULL_WEIGHT, "turning it to its roar saves the blow on both machines")
 	var pol := Policy.make(Policy.GREEDY)
 	assert_eq(pol.lure_score(sk, sk.mechs[0], [storm]), 0.0, "a lure saves nothing: the blow lands on both whoever it names")
-	assert_true(sk.forecast(sk.mechs[1], false)["destroyed"], "the glass is wrecked by it either way, the forecast says")
+	assert_true(sk.forecast(sk.mechs[1])["destroyed"], "the glass is wrecked by it either way, the forecast says")
 	assert_eq(sk.incoming_for(sk.mechs[0]), 10, "and the tank takes it too")
 
 
