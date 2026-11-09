@@ -43,6 +43,14 @@ const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
 const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
 const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
 static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
+## The injury rule's switch: off, for now (Ryan, 9 November, from his play of Phase 2 and the
+## refit pass, docs/briefs/refit_pass.md: "I'm fine disabling component destruction entirely to
+## test these points. It was placed to offer a balancing lever between tanks and dps, an issue
+## that clearly no longer exists"; "Lets turn destruction off completely, for now, and see where
+## that gets us"). Off, no blow injures: no entry breaks in a fight and no component is destroyed,
+## in the game and the runners alike. The rule stands whole behind the switch until the pass's
+## reads and his play say; a test of the rule, and tools/balance.gd's --injury, turn it on.
+static var injuries: bool = false
 static var overheat_scale: int = 1   # hull an overheat burns a point of heat past the maximum; tools/balance.gd's --overheat sets it for one run's what-if (30 October)
 static var pilot: Dictionary = {}   # chassis id -> heat it gains as each round opens, a what-if for tools/balance.gd's --pilot (the Whip Scorpion's pilot light, 3 November); never content
 # Two more what-ifs on the overheat (Ryan, 30 October), set by tools/balance.gd for one run: a
@@ -4841,7 +4849,7 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 	through -= armoured
 	# Injury counts what reaches the hull in one blow, wherever it came from: past the shield,
 	# past a breach, on bare hull (the injury row: a share of the hull in one blow injures).
-	var injures := through > 0 and through * 100 >= hull_max * injury_pct
+	var injures := injuries and through > 0 and through * 100 >= hull_max * injury_pct
 	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "breach": breach}
 
 

@@ -800,7 +800,31 @@ func _destroyed_count(d: Die) -> int:
 	return n
 
 
+## The injury rule is off, for now (Ryan, 9 November: "Lets turn destruction off completely, for
+## now, and see where that gets us"): the engine's own switch, so a blow that would injure breaks
+## nothing, destroys nothing and the forecast names no risk; on, the same blow injures.
+func test_the_injury_rule_is_off_until_its_switch_says() -> void:
+	assert_false(Skirmish.injuries, "the game plays with the injury rule off")
+	for on in [false, true]:
+		Skirmish.injuries = on
+		var sk := Skirmish.new(3)
+		var d := Die.of([Face.attack(10, L, K.CLEAVE), Face.attack(10, L, K.PENETRATE)])
+		var m := _mech("A", d, 0, 100)
+		sk.add_mech(m)
+		sk.add_foes([Foe.make("brute", 90, 50)])
+		sk.begin()
+		sk.start_round()
+		var fc: Dictionary = sk.forecast(sk.mechs[0])
+		assert_eq(bool(fc.get("component_risk", false)), on, "the forecast names a component at risk only with the rule on (%s)" % str(on))
+		sk.end_round()
+		assert_eq(m.hull, 50, "the blow lands whole either way (%s)" % str(on))
+		assert_eq(sk.destroyed, 1 if on else 0, "a half-hull hit destroys an entry only with the rule on (%s)" % str(on))
+		assert_eq(_destroyed_count(d), 1 if on else 0, "and blanks it only then (%s)" % str(on))
+	Skirmish.injuries = false
+
+
 func test_big_hull_hits_always_injure_a_face() -> void:
+	Skirmish.injuries = true   # the rule read here is off in the game since 9 November (the refit pass); the runner resets it
 	for seed_value in range(1, 31):
 		var sk := Skirmish.new(seed_value)
 		var d := Die.of([Face.attack(10, L, K.CLEAVE), Face.attack(10, L, K.PENETRATE)])
@@ -953,6 +977,7 @@ func test_shield_component_helps_an_ally() -> void:
 
 
 func test_forecast_predicts_shield_break_and_hull_loss() -> void:
+	Skirmish.injuries = true   # the rule read here is off in the game since 9 November (the refit pass); the runner resets it
 	var sk := Skirmish.new(1)
 	var m := Unit.mech(1, "A", Vector2i.ZERO)
 	m.hull = 100
@@ -1181,6 +1206,7 @@ func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() 
 
 
 func test_a_shield_absorbs_its_number_and_the_excess_passes_to_the_hull() -> void:
+	Skirmish.injuries = true   # the rule read here is off in the game since 9 November (the refit pass); the runner resets it
 	# The honest shield (Ryan, 14 October): a shield is its number, never a whole block.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
@@ -1221,6 +1247,7 @@ func test_armour_takes_a_flat_amount_off_bare_hull_blows() -> void:
 
 
 func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
+	Skirmish.injuries = true   # the rule read here is off in the game since 9 November (the refit pass); the runner resets it
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
 	sk.add_mech(m)
@@ -1239,6 +1266,7 @@ func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
 
 
 func test_breach_ignores_the_shield_and_can_injure() -> void:
+	Skirmish.injuries = true   # the rule read here is off in the game since 9 November (the refit pass); the runner resets it
 	# A breach ignores the shield outright, and the shield stands (Ryan, 14 October).
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
@@ -6695,6 +6723,7 @@ func test_flak_laid_carries_the_clock_its_status_names() -> void:
 ## so it never injures, its riders land, and it is spent; a blow of nothing leaves it
 ## standing, a second grant renews it, and the round's end takes it.
 func test_a_barrier_takes_the_next_blow_whole_and_its_riders_land() -> void:
+	Skirmish.injuries = true   # the rule read here is off in the game since 9 November (the refit pass); the runner resets it
 	var sk := Skirmish.new(1, 1)
 	var m := _mech("A", Die.single(Face.buff("barrier")), 0, 100)
 	sk.add_mech(m)

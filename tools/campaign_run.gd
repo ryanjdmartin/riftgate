@@ -7,7 +7,10 @@ extends SceneTree
 ## Options: --runs N (40), --seed S (1, the first run's seed), --policy greedy|random,
 ## --shape KIND (every battle on that map shape, a key of BattleMap.KINDS; by default each
 ## battle's seed draws one), --out path (docs/campaign_run.md), --trace SEED (print one run
-## battle by battle). The squad-as-one rule (--solo before it) and the turtle and detaching
+## battle by battle), --refit SPEC (the refit pass's what-if laid over the content, sim/refit.gd,
+## as tools/balance.gd takes it: "all", or "die", "regen=half|N", "cooling=N", "heat1"), --injury
+## on|N (the injury rule on for the runs, off in the game since 9 November). The squad-as-one rule
+## (--solo before it) and the turtle and detaching
 ## personas went with the long wall brief: the map is the defence rule (BattleBot).
 ##
 ## The player it stands in for is plain: it defends the front nearest to falling (the
@@ -28,6 +31,8 @@ var policy := Policy.GREEDY
 var shape := ""
 var out_path := OUT
 var trace := 0
+var refit_spec := ""                  # --refit: the refit pass's what-if (sim/refit.gd), as tools/balance.gd takes it
+var refit_notes: Array[String] = []
 
 
 func _init() -> void:
@@ -49,7 +54,17 @@ func _init() -> void:
 				out_path = v
 			"--trace":
 				trace = int(v)
+			"--refit":
+				refit_spec = v
+			"--injury":
+				Skirmish.injuries = v != "off"
+				if v.is_valid_int():
+					Skirmish.injury_pct = clampi(int(v), 1, 100)
 		i += 2
+	if not refit_spec.is_empty():
+		# The refit pass's what-if (sim/refit.gd) over the content every run of this process deals
+		# from: the campaign reads the one loaded copy (ContentDB.load_default).
+		refit_notes = Refit.apply(ContentDB.load_default(), Refit.parse(refit_spec))
 	if not shape.is_empty() and not BattleMap.KINDS.has(shape):
 		push_error("no such map shape: %s (%s)" % [shape, ", ".join(BattleMap.KINDS.keys())])
 		quit(1)
@@ -204,6 +219,9 @@ func report() -> String:
 		Time.get_date_string_from_system(), runs, first_seed, secs, Policy.kind_name(policy),
 		("every battle on the %s map" % shape) if not shape.is_empty() else "each battle's map shape drawn by its seed",
 		Campaign.START_MACHINES, ", ".join(fields.keys())])
+	L.append("")
+	L.append("The injury rule: %s.%s" % ["on, at %d%% of maximum hull" % Skirmish.injury_pct if Skirmish.injuries else "off, as the game plays it",
+		"" if refit_notes.is_empty() else " The refit what-if (`--refit %s`): %s." % [refit_spec, "; ".join(refit_notes)]])
 	L.append("")
 	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, a machine with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie) and the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out. Read the bands.")
 	L.append("")

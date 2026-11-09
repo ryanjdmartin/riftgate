@@ -76,7 +76,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Carbine, Direct and warm), two shields (the Halo Shield, self or ally; the Canopy, self only, the
   bigger) and two vents (the Coolant Jacket, self or ally; the Bleed Valve, self only, the
   bigger).
-- **Damage states**: a component is intact or destroyed, for the whole battle.
+- **Damage states**: a component is intact or destroyed, for the whole battle (none is destroyed
+  while the injury rule is off: Injury, below).
 
 ## The skirmish
 
@@ -844,6 +845,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   machine.
 
 ### Injury
+- The injury rule is switched off: no blow injures, so no entry breaks in a fight and no
+  component is destroyed, in the game and the runners alike (`Skirmish.injuries`; the rule
+  stands behind its switch, and what follows is the rule as it runs when on). Shown text still
+  names it.
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into its
   hull (a breach's whole blow included) destroys the entry the machine's die shows (the one it
   spent, held or locked), a blank shrugs it off, and a second such blow in the turn finds it

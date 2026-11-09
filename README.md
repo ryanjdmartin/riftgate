@@ -294,7 +294,13 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # printed, and written to --out (about two minutes a seed, so an hour at 30). With it --team
 # id,id,id,id reads another team in that cut order (a light machine first for the rating of one, a
 # tier's chassis for its compositions: the formation pass, 9 November), and --tiers 1,2, --sizes
-# patrol,formation, --domains meadow,waste and --ids goblin_horde,gel_wall narrow the read.
+# patrol,formation, --domains meadow,waste and --ids goblin_horde,gel_wall narrow the read. Each
+# cell carries greedy's hull lost, its rounds and its stalled fights beside the band.
+# --refit SPEC lays the refit pass's what-if over the run's content (sim/refit.gd; the brief
+# docs/briefs/refit_pass.md): "die" (every stock shield and vent swapped for a defensive basic, the
+# machines back in design unfielded), "regen=half" or "regen=N", "cooling=N", "heat1" (the basics
+# at heat one), or "all" for the first three as leaned; tools/campaign_run.gd takes it too.
+# --injury on|N reads a run with the injury rule on (off in the game since 9 November).
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs curve --seeds 30 --out /tmp/curve.md
