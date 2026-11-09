@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1081 tests, 304,222 checks, green on main (9 November, with the shapes relaid and recast,
   the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
-  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November), and 1089 tests, 305,003 checks, green on
+  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November), and 1090 tests, 305,013 checks, green on
   `ccr-722ca9f0-yj8na3` (9 November, main with the refit pass's first build); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.

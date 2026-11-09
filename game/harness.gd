@@ -54,12 +54,19 @@ func _ready() -> void:
 ## where a Halo stood, on every die, on every die and resting, or on none; Settings.REFIT_TRIALS). A battle or a run saved before the switch keeps the dice it was saved
 ## with, so judge it on a new one.
 static var _refit_trial_done := false
+## The machines the trial leaves out, by chassis id: back in design under the model (Refit.sent_back),
+## so no row on the team page and none deployed, the team as ticked kept for when the trial ends.
+static var refit_benched: Array = []
 static func refit_trial() -> void:
 	var spec := refit_spec()
 	if _refit_trial_done or spec.is_empty():
 		return
 	_refit_trial_done = true
-	for line in Refit.apply(ContentDB.load_default(), Refit.parse(spec)):
+	var content := ContentDB.load_default()
+	var parsed := Refit.parse(spec)
+	if bool(parsed.get("die", false)):
+		refit_benched = Refit.sent_back(content)
+	for line in Refit.apply(content, parsed):
 		print("refit trial: " + line)
 
 
@@ -78,6 +85,7 @@ static func refit_spec() -> String:
 func build(s: HarnessSetup) -> void:
 	setup = s
 	db = s.db
+	setup.benched = refit_benched.duplicate()   # the refit trial's machines back in design (refit_trial)
 	for c in get_children():
 		c.queue_free()
 	_rows = {}
@@ -190,9 +198,16 @@ func _build_team(page: VBoxContainer) -> void:
 	page.add_child(_hint("Tick who deploys; they go out in the order ticked. HARDPOINTS opens a machine's loadout and its module slots, and the battle and the fight both carry them."))
 	var ids: Array = db.chassis.keys()
 	ids.sort_custom(func(a, b) -> bool: return str(db.chassis[a]["name"]) < str(db.chassis[b]["name"]))
+	var out: Array[String] = []
 	for id in ids:
+		if setup.benched.has(str(id)):
+			out.append(str(db.chassis[id]["name"]))
+			continue
 		page.add_child(HSeparator.new())
 		page.add_child(_chassis_row(str(id)))
+	if not out.is_empty():
+		page.add_child(HSeparator.new())
+		page.add_child(_hint("REFIT TRIAL: back in design under the model, so left out while it stands: %s." % ", ".join(out)))
 
 
 func _chassis_row(id: String) -> VBoxContainer:
@@ -692,7 +707,7 @@ func _refresh_summary() -> void:
 	if _summary == null or _battle_btn == null:
 		return   # the pages are built before the summary and the launch buttons
 	var team: Array = []
-	for id in setup.team:
+	for id in setup.fielded():
 		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() else ""))
 	var dom := setup.battle_domain()
 	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.battle_ramp()]
@@ -719,8 +734,8 @@ func _refresh_summary() -> void:
 		extra += " (by the seed)"
 	lines.append(extra)
 	_summary.text = "\n".join(lines)
-	_battle_btn.disabled = setup.team.is_empty()
-	_fight_btn.disabled = setup.team.is_empty() or (setup.packs.is_empty() and setup.boss.is_empty() and picked.is_empty())
+	_battle_btn.disabled = setup.fielded().is_empty()
+	_fight_btn.disabled = setup.fielded().is_empty() or (setup.packs.is_empty() and setup.boss.is_empty() and picked.is_empty())
 
 
 # ---------------------------------------------------------------- controls

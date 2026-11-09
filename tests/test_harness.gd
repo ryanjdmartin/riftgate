@@ -395,6 +395,42 @@ func test_a_composition_is_picked_by_tier_and_rating() -> void:
 	h.free()
 
 
+## While the refit trial stands, the machines it sends back to design are left out of the
+## harness: no row to tick, none deployed, the launch greyed when nobody else is ticked, and the
+## team as it was ticked kept for when the trial ends (never saved over).
+func test_the_refit_trial_benches_its_machines_and_keeps_the_team_as_ticked() -> void:
+	var db := _db()
+	var ids: Array = db.chassis.keys()
+	var out: String = str(ids[0])
+	var kept: String = str(ids[1])
+	var was: Array = HARNESS.refit_benched
+	HARNESS.refit_benched = [out]
+	var h: Control = HARNESS.new()
+	var s := HarnessSetup.defaults(db)
+	s.team = [out, kept]
+	h.build(s)
+	assert_false(h._rows.has(out), "the benched machine has no row to tick")
+	assert_true(h._rows.has(kept), "the others keep theirs")
+	assert_eq(s.fielded(), [kept], "the team that deploys leaves it out")
+	var mechs := s.make_team()
+	assert_eq(mechs.size(), 1, "one machine is made")
+	assert_eq(str(mechs[0].chassis_id), kept, "the one still fielded")
+	assert_eq(s.team, [out, kept], "and the team as ticked is kept")
+	assert_false(h._summary.text.contains(str(db.chassis[out]["name"])), "the summary names only who deploys: %s" % h._summary.text)
+	assert_eq(Array(s.to_dict()["team"]), [out, kept], "a save keeps the ticks")
+	s.team = [out]
+	h._refresh_summary()
+	assert_true(h._battle_btn.disabled and h._fight_btn.disabled, "only a benched machine ticked: nothing to launch")
+	h.free()
+	HARNESS.refit_benched = was
+	var plain: Control = HARNESS.new()
+	var s2 := HarnessSetup.defaults(db)
+	s2.team = [out, kept]
+	plain.build(s2)
+	assert_true(plain._rows.has(out) and s2.fielded() == [out, kept], "with no trial every machine has its row and deploys")
+	plain.free()
+
+
 ## The refit pass's model is a trial the harness lays over the content as it starts
 ## (docs/briefs/refit_pass.md): off unless RIFTGATE_REFIT names a spec or a debug build's setting
 ## names one of its trials, the model with its Barrier basic dealt one of four ways, each a spec

@@ -17,6 +17,9 @@ const MAX_SEED := 9999
 
 var db: ContentDB
 var team: Array = []            # chassis ids, in the order they deploy
+## Chassis ids left out of every launch while a trial stands (the refit trial's machines back in
+## design, Harness.refit_benched): never saved, so the team as ticked is kept for when it ends.
+var benched: Array = []
 ## Chassis id -> one pick per hardpoint, a component id or "" for a hardpoint left empty.
 ## A machine with no entry wears its chassis's stock loadout.
 var loadouts: Dictionary = {}
@@ -217,10 +220,15 @@ func fitted(chassis_id: String) -> Array:
 
 # ---------------------------------------------------------------- launching
 
+## The team that deploys: the ticked machines but the benched.
+func fielded() -> Array:
+	return team.filter(func(id) -> bool: return not benched.has(str(id)))
+
+
 func make_team() -> Array:
 	var out: Array = []
 	var uid := 1
-	for id in team:
+	for id in fielded():
 		if db.chassis.has(id):
 			out.append(db.make_mech(str(id), uid, Vector2i.ZERO, fitted(str(id)), fitted_modules(str(id))))
 			uid += 1
