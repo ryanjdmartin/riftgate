@@ -351,7 +351,7 @@ func setup(skirmish: Skirmish) -> void:
 	if MINE_DEBUG:
 		for foe in sk.field_foes():
 			if Skirmish.mine_of(foe).is_empty():
-				sk._add_mine(foe, 3, {"burn": 1, "keywords": ["shock"]})
+				sk._add_mine(foe, 3, {"stacks": {"burning": 1}, "keywords": ["shock"]})
 	_build()
 	_refresh()
 

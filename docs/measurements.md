@@ -5473,3 +5473,8 @@ rarely picked (5%), which reads either as the bot's valuation of a Mine to come 
 for Ryan's play to say. Not weak, so the per-hit lever (his: "then look at per hit later if it's
 weak") stays on the shelf for now; whether the AoE Expose or a Suppress Mine is dangerous is a
 team question this solo read cannot answer.
+
+The same day the Mine's riders became the spend's whole result on its target (every hit's
+stacks as its machine laid them, Ryan's word, `ccr-a0b35006-od22d2` after `31a87f2`). The read
+stands: no piece the Lammergeier fields here strikes more than once, and nothing on it deepens or
+doubles a stack, so every Mine it lays carries what it carried when the read ran.

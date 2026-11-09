@@ -280,12 +280,15 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **A Mine** (the Lammergeier's Reverberant Payload, its passive): every weapon and equipment it
   aims at a foe leaves a Mine on that foe as a rider, before the death check, one a spend
   whatever its strikes (a Sweep's and a salvo's on the foe the die is dropped on): the passive's
-  flat damage, 2, plain, and the spend's keywords, joining any Mine the foe carries, one Mine a
-  foe. Its numbered keywords add up (Burn, Cryo, Flak, Purge, Chain) and the rest ride once
-  (Shock, Suppress, Web, Expose, Breach, Disrupt); a gated keyword rides only where its gate held
-  on the hit. Spread, Penetrate, Splash and Spillover, the Swap, Rapid and Lure stay with the
-  spend, as does whatever ties a hit to its firer (its modifiers, a deepening, the sixth shot)
-  and whatever it reads off its foe (missing hull, a consumer's stacks). When the foe falls, one
+  flat damage, 2, plain, and the spend's whole result on that foe, joining any Mine the foe
+  carries, one Mine a foe: every status's stacks the hits aimed at it fired (each hit's, as its
+  machine deepened and doubled them, a Primed machine's Burning and a passive's lays among them,
+  a condition read as the die was spent), its Purge and Chain at every hit's number, the rest
+  once each (Shock, Suppress, Web, Expose, Breach, Disrupt), a gated keyword where its gate held.
+  The numbered ones add up across the spends that feed it. Spread, Penetrate, Splash and
+  Spillover, the Swap, Rapid and Lure stay with the spend, and what a hit reads off its foe for
+  damage (missing hull, a consumer's stacks) means nothing to a flat Mine; each foe its blast
+  meets takes it with its own defences (a Ward, its Numbed). When the foe falls, one
   that gets back up or splits included, a tick's fall and a part's too, the Mine blows once the
   death check has cleared the slots and before what the falls bring back stands: one blow of
   its damage on every foe round its slot (the slot's other half, the foes beside it in its rank

@@ -891,7 +891,7 @@ func blast_worth(sk: Skirmish, mine: Dictionary, at: Foe, centre: bool) -> float
 	if not centre:
 		met.erase(at)
 	var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
-	var burn := int(r.get("burn", 0))
+	var burn := int((r.get("stacks", {}) as Dictionary).get("burning", 0))
 	var worth := 0.0
 	for foe in met:
 		var taken := maxi(0, Effects.damage_taken(foe, dmg, null, true, false) - (0 if kws.has("breach") else foe.armour_total()))

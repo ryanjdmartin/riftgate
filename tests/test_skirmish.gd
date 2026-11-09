@@ -1725,7 +1725,7 @@ func test_charged_and_supercooled_ride_the_weapon_fired_as_its_keywords() -> voi
 	assert_true(s2.assign(0, prey), "fired, a Mine left")
 	assert_eq([Effects.stacks_of(bomber, "charged"), Effects.stacks_of(bomber, "supercooled")], [0, 0], "both spent at the fire")
 	var mine := Skirmish.mine_of(prey)
-	assert_true(mine["riders"]["keywords"].has("shock") and int(mine["riders"]["cryo"]) == 1, "the Mine carries the Shock and the Cryo 1: %s" % str(mine))
+	assert_true(mine["riders"]["keywords"].has("shock") and int(mine["riders"]["stacks"].get("cryoed", 0)) == 1, "the Mine carries the Shock and the Cryo 1: %s" % str(mine))
 
 
 ## Riders land after the hits (Ryan, 3 November: "resulting in 2 applications, not
@@ -8660,7 +8660,8 @@ const MINER := {"id": "bay", "name": "Bay", "description": "", "effects": [{"tri
 ## One Mine a spend (Ryan, 9 November: "One mine per spend ... we're only adding N flat damage
 ## (plain, not modified by lammergeier modifiers), and the keywords attached to it. Area modifiers,
 ## targeting rules (sweep), and hit counts are ignored. Anything that ties it back to the firer is
-## ignored, like lure"): the target alone, whatever the strikes; a second spend adds to the Mine.
+## ignored, like lure"; "the mine should take the entire result of the spend"): the target alone,
+## its damage flat whatever the strikes, its stacks every hit's; a second spend adds to the Mine.
 func test_every_spend_at_a_foe_leaves_one_mine_of_its_flat_damage_and_keywords() -> void:
 	var sk := Skirmish.new(1, 3)
 	var gun := Face.attack(2, I, [K.BURN, K.SHOCK, K.CLEAVE, K.LURE])
@@ -8681,14 +8682,14 @@ func test_every_spend_at_a_foe_leaves_one_mine_of_its_flat_damage_and_keywords()
 	assert_true(sk.assign(0, b), "the bomber's spend at the middle foe")
 	var mine := Skirmish.mine_of(b)
 	assert_eq(int(mine["damage"]), 2, "one Mine of the flat 2, whatever the gun's strikes or its firer's +5")
-	assert_eq(int(mine["riders"]["burn"]), 1, "its Burn at the printed number")
+	assert_eq(int(mine["riders"]["stacks"]["burning"]), 3, "the Burning its three hits fired")
 	assert_eq(mine["riders"]["keywords"], ["shock"], "its Shock rides; Spread and Lure stay with the spend")
 	assert_true(Skirmish.mine_of(a).is_empty() and Skirmish.mine_of(c).is_empty(), "the target alone: the Spread's neighbours carry none")
-	assert_true("\n".join(sk.log).contains("leaves a Mine on revenant: Mine 2: Burn 1, Shock"), "the log says so")
+	assert_true("\n".join(sk.log).contains("leaves a Mine on revenant: Mine 2: Burn 3, Shock"), "the log says so")
 	sk.mechs[0].assigned = false
 	assert_true(sk.assign(0, b), "a second spend at it")
 	mine = Skirmish.mine_of(b)
-	assert_eq([int(mine["damage"]), int(mine["riders"]["burn"])], [4, 2], "one Mine, the second spend's 2 and Burn 1 added")
+	assert_eq([int(mine["damage"]), int(mine["riders"]["stacks"]["burning"])], [4, 6], "one Mine, the second spend's 2 and its three Burning added")
 	assert_eq(mine["riders"]["keywords"], ["shock"], "a flag rides once")
 	assert_true(sk.assign(1, a), "a machine without the passive")
 	assert_true(Skirmish.mine_of(a).is_empty(), "leaves none")
@@ -8733,6 +8734,58 @@ func test_a_mine_blows_on_every_foe_round_its_slot_when_its_foe_falls() -> void:
 	assert_true(sk.spend_blows.any(func(x: Dictionary) -> bool: return str(x["kind"]) == "mine" and x["foe"] == behind), "the screen lands the blast as its own blows")
 	assert_true("\n".join(sk.log).contains("the Mine on revenant blows: Mine 2: Burn 1"), "the log says so")
 	assert_eq(b_hp, 100 - 1, "the bomber's own hit landed whole first")
+
+
+## The Mine takes the spend's whole result on its target (Ryan, 9 November: "the mine should take
+## the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target
+## is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn depending on
+## when the target reached under 50% HP during the spend"): every hit's stacks, as its machine
+## deepened and doubled them, a passive's lays and a burn whose condition held as the die was spent
+## (a single-target weapon's conditions are read then, the rules' blow order); the damage stays flat.
+func test_a_mine_takes_the_whole_result_of_the_spend_every_hits_stacks_as_fired() -> void:
+	var sk := Skirmish.new(1, 3)
+	var flak := Face.attack(1, I, [K.FLAK])
+	flak.flak = 1
+	flak.strikes = 3
+	var bomber := _mech("Bomber", Die.single(flak), 40, 100)
+	bomber.grant_passive(MINER)
+	bomber.grant_passive({"id": "test_scorch_flak", "name": "Scorch", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1, "when": "target_status", "status": "flakked"}]})
+	sk.add_mech(bomber)
+	var b := _ghoul(100, 0)
+	sk.add_foes([_ghoul(100, 0), b])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, b), "three hits of Flak 1 on a foe with no Flak")
+	var mine := Skirmish.mine_of(b)
+	assert_eq(int(mine["damage"]), 2, "a 2 damage Mine")
+	assert_eq(int(mine["riders"]["stacks"].get("flakked", 0)), 3, "with 3 Flak")
+	assert_eq(int(mine["riders"]["stacks"].get("burning", 0)), 0, "and no Burning: the condition did not hold as the die was spent")
+	sk.mechs[0].assigned = false
+	assert_true(sk.assign(0, b), "again, the foe now Flakked")
+	mine = Skirmish.mine_of(b)
+	assert_eq([int(mine["riders"]["stacks"]["flakked"]), int(mine["riders"]["stacks"].get("burning", 0))], [6, 3], "its 3 Flak more and 3 Burning, a hit each")
+	# Deepened and doubled as its machine lays them, and a passive's lays among them.
+	var s2 := Skirmish.new(1, 3)
+	var burner := Face.attack(1, I, [K.BURN])
+	burner.burn = 1
+	burner.strikes = 2
+	var deep := _mech("Deep", Die.single(burner), 40, 100)
+	deep.grant_passive(MINER)
+	deep.grant_passive({"id": "test_deepen", "name": "Deepen", "description": "", "effects": [{"trigger": "on_stack", "effect": "add_stacks", "value": 1}]})
+	deep.grant_passive({"id": "test_double", "name": "Double", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_stacks", "value": 2}]})
+	deep.grant_passive({"id": "test_vitriol", "name": "Ambush", "description": "", "effects": [{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1}]})
+	s2.add_mech(deep)
+	var t := _ghoul(100, 0)
+	s2.add_foes([t])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, t), "two hits of Burn 1, deepened a stack and doubled")
+	var landed_burn := Effects.stacks_of(t, "burning")
+	var m2 := Skirmish.mine_of(t)
+	assert_eq(int(m2["riders"]["stacks"]["burning"]), landed_burn, "the Mine's Burning is what the spend landed: %d" % landed_burn)
+	assert_eq(landed_burn, 2 * (1 + 1) * 2, "each hit's 1 deepened to 2 and doubled to 4")
+	assert_eq(int(m2["riders"]["stacks"]["vitriol"]), Effects.stacks_of(t, "vitriol"), "and the Vitriol its passive laid")
+	assert_true(Skirmish.mine_text(m2).contains("Burn 8") and Skirmish.mine_text(m2).contains("Vitriol"), "the readout names them: %s" % Skirmish.mine_text(m2))
 
 
 ## The Mine is laid as a rider, before the death check (Ryan, 9 November: "applied before the death
@@ -8837,8 +8890,8 @@ func test_mines_blow_in_strike_order_and_a_blast_that_fells_a_mined_foe_blows_it
 ## add up, the rest ride once; one Breach carries the whole blast through armour; a gated keyword
 ## rides only where its gate held on the hit; nothing a hit reads off its foe rides.
 func test_a_mines_keywords_add_up_and_one_breach_carries_the_whole_blast_through_armour() -> void:
-	var merged := Skirmish.mine_riders_merged({"burn": 2, "keywords": ["shock"]}, {"burn": 3, "chain": 1, "keywords": ["shock", "breach"]})
-	assert_eq([int(merged["burn"]), int(merged["chain"])], [5, 1], "Burn 2 and Burn 3 are Burn 5")
+	var merged := Skirmish.mine_riders_merged({"stacks": {"burning": 2}, "keywords": ["shock"]}, {"stacks": {"burning": 3}, "chain": 1, "keywords": ["shock", "breach"]})
+	assert_eq([int(merged["stacks"]["burning"]), int(merged["chain"])], [5, 1], "Burning 2 and Burning 3 are Burning 5")
 	assert_eq(merged["keywords"], ["shock", "breach"], "the flags once each, in a fixed order")
 	var sk := Skirmish.new(1, 3)
 	var gated := Face.attack(1, I, [K.SUPPRESS])
@@ -8893,7 +8946,7 @@ func test_the_drone_adds_its_mine_then_detonates_it_on_the_target_and_round_it()
 	sk.add_foes([a, b, c])
 	sk.begin()
 	sk.start_round()
-	sk._add_mine(b, 4, {"burn": 1})
+	sk._add_mine(b, 4, {"stacks": {"burning": 1}})
 	_shock_on(b)
 	assert_true(sk.assign(0, b), "the drone at b")
 	assert_eq(b.hp, 100 - 2 - 6, "the chip doubled on the Shock, then the Mine of 4 and its own 2")
@@ -8941,13 +8994,13 @@ func test_the_contractor_gathers_every_mine_onto_its_target_and_exposes_it() -> 
 	sk.add_foes([a, b, c, behind])
 	sk.begin()
 	sk.start_round()
-	sk._add_mine(a, 3, {"burn": 1})
+	sk._add_mine(a, 3, {"stacks": {"burning": 1}})
 	sk._add_mine(c, 4, {"keywords": ["shock"]})
 	assert_true(sk.back[0] == behind, "the archer behind a")
 	assert_true(sk.assign(0, behind), "the gather at the back foe")
 	var mine := Skirmish.mine_of(behind)
 	assert_eq(int(mine["damage"]), 3 + 4 + 2, "both Mines and its own 2 on it")
-	assert_eq(int(mine["riders"]["burn"]), 1, "their Burn")
+	assert_eq(int(mine["riders"]["stacks"]["burning"]), 1, "their Burning")
 	assert_true(mine["riders"]["keywords"].has("shock") and mine["riders"]["keywords"].has("expose"), "the Shock, and its own Expose")
 	assert_true(Skirmish.mine_of(a).is_empty() and Skirmish.mine_of(c).is_empty(), "none left where they lay")
 	assert_true(Effects.has(behind, "exposure"), "the target Exposed")
@@ -9003,12 +9056,12 @@ func test_a_merge_takes_in_the_mines_of_the_foes_it_takes_in() -> void:
 	sk.add_foes([king, small])
 	sk.begin()
 	sk.start_round()
-	sk._add_mine(small, 3, {"burn": 2})
+	sk._add_mine(small, 3, {"stacks": {"burning": 2}})
 	sk._add_mine(king, 1, {})
 	sk._merge(king, {"effect": "merge", "foe": ["slime"], "value": 1, "name": "Merge"})
 	assert_false(small.on_field(), "the slime taken in")
 	var mine := Skirmish.mine_of(king)
-	assert_eq([int(mine["damage"]), int(mine["riders"]["burn"])], [4, 2], "its Mine joined the king's")
+	assert_eq([int(mine["damage"]), int(mine["riders"]["stacks"]["burning"])], [4, 2], "its Mine joined the king's")
 
 
 ## Massive foes carry Mines like any foe: a massive foe's blast meets the front-rank foes in the
@@ -9096,7 +9149,7 @@ func test_a_mine_survives_the_save_and_the_preview_leaves_it_alone() -> void:
 	sk.add_foes([a, b])
 	sk.begin()
 	sk.start_round()
-	sk._add_mine(a, 3, {"burn": 2})
+	sk._add_mine(a, 3, {"stacks": {"burning": 2}})
 	var c := SaveGame.clone_skirmish(sk)
 	var ca: Foe = c.front[0]
 	assert_eq(JSON.stringify(Skirmish.mine_of(ca)), JSON.stringify(Skirmish.mine_of(a)), "the copy's Mine as the fight's")

@@ -25,7 +25,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1077 tests, 304,170 checks, green (9 November, `ccr-a0b35006-od22d2`: main with the shapes
+- Tests: 1078 tests, 304,181 checks, green (9 November, `ccr-a0b35006-od22d2`: main with the shapes
   relaid and recast, the skirmish audit's step 3 and the playtest list of 9 November, and the
   Lammergeier's rework; main alone 1072; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
@@ -156,8 +156,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
   lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death", the
   Cottonmouth's niche executed differently. The Reverberant Payload: every spend it aims at a
-  foe leaves a Mine on it as a rider, one a spend at a flat 2 with the spend's keywords, the
-  numbered ones added and the rest once, area, Sweep, strikes and the firer's ties left behind;
+  foe leaves a Mine on it as a rider, one a spend at a flat 2 with the spend's whole result on
+  that foe ("the mine should take the entire result of the spend, then apply it": every hit's
+  stacks as its machine deepened and doubled them, a gated keyword where its gate held), the
+  numbered ones added and the rest once, area, Sweep's targeting and Lure left behind;
   when the foe falls (getting back up, splitting, a tick or a part included) the Mine blows in
   Splash's shape round its slot, plain through each foe's own Flak and armour, in strike order,
   a blast's fall blowing its own. The Syrinx Drone detonates (a weapon of 1, no cooldown, its

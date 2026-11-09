@@ -99,6 +99,23 @@ class Hits:
 	var thawed := 0                 # Cryo stacks the hits spent, cooling the hitter once its heat lands (_pay_hits)
 	var swept: Array[String] = []   # a Sweep's shots, the foe and what it took, for the log
 	var sweep_rank := -1            # the rank a Sweep fired along
+	## What the hits aimed at the spend's target fired at it, for the Mine its machine leaves there
+	## (Ryan, 9 November: "the mine should take the entire result of the spend, then apply it"):
+	## each status's stacks every hit laid, as its machine deepened and doubled them, its Purge
+	## and Chain at every hit's number, the flags once (Skirmish.mine_riders' shape).
+	var mine := {"stacks": {}, "dispel": 0, "chain": 0, "keywords": []}
+
+	func mine_stack(sid: String, n: int) -> void:
+		if n <= 0:
+			return
+		var st: Dictionary = mine["stacks"]
+		st[sid] = int(st.get(sid, 0)) + n
+
+	func mine_flag(k: int) -> void:
+		var kws: Array = mine["keywords"]
+		var name := str(Face.KEYWORD_NAMES.get(k, ""))
+		if not name.is_empty() and not kws.has(name):
+			kws.append(name)
 
 
 var rng := RandomNumberGenerator.new()
@@ -2616,8 +2633,8 @@ func withdraw() -> bool:
 ## own: _salvo, _blast). A forging machine's gun pays ammo first for the heat its own spend would
 ## make (the Musk Ox's Desublimation Forge), a dry magazine firing nothing; then its hits (_hit);
 ## then, in the rider phase before the death check, on a target the hit felled too: the Mine its
-## machine leaves on the target (_lay_mine, its gated keyword judged as the die is spent) and
-## what the entry does past its blow (_entry_effects: the gather, the detonation, the Swap with
+## machine leaves on the target (_lay_mine, what the hits fired at it) and what the entry does
+## past its blow (_entry_effects: the gather, the detonation, the Swap with
 ## its `second` target); then the hits' end (_finish_hits).
 func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = null) -> void:
 	var pays: int = Pays.HEAT
@@ -2628,9 +2645,8 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 			return
 		ms.ammo -= price
 		pays = Pays.AMMO
-	var gate_open := not f.has(Face.Keyword.SUPPRESS) or Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, target)
 	var h := _hit(ms, f, target)
-	_lay_mine(ms, f, target, gate_open)
+	_lay_mine(ms, target, h.mine)
 	if f.reach != Face.Reach.SWEEP:
 		_entry_effects(ms, f, target, second)
 	_finish_hits(mech_index, ms, f, target, h, pays)
@@ -2743,6 +2759,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
 			struck_once[foe] = true
+			var into_mine := foe == aimed and aimed == target   # a hit aimed at the spend's target: its riders are the Mine's too
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			if int(shapes.get(foe, 0)) == AREA_CHAIN:
@@ -2805,6 +2822,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 					var sid := str(pair[0])
 					var n_laid := _stacks_from(ms, sid, int(pair[1])) * doubled
 					riders.append(func() -> void: _land_rider(foe, sid, n_laid, gained, turned, laid))
+					if into_mine:
+						h.mine_stack(sid, n_laid)
 			# The killing strike: what it had past the kill carries on.
 			if spills and was_alive and not foe.alive():
 				_spill(ms, f, foe, taken - hp_before, hit, s)
@@ -2816,6 +2835,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# blow dealt (it was a stack per 10 of the damage, rounded up, until then).
 				var burn_laid := _stacks_from(ms, "burning", f.burn) * doubled
 				riders.append(func() -> void: _land_rider(foe, "burning", burn_laid, gained, turned))
+				if into_mine:
+					h.mine_stack("burning", burn_laid)
 			if f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
 				if foe.alive() and not told_shut.has(foe):
 					told_shut[foe] = true
@@ -2824,10 +2845,14 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				riders.append(func() -> void:
 					if _suppress(foe, turned):
 						_note_status(gained, foe, "suppressed"))
+				if into_mine:
+					h.mine_flag(Face.Keyword.SUPPRESS)   # fired through its gate: each foe the blast meets judges its own Numbed
 			# Web (18 October): the foe is Webbed, one web however often it is webbed, and the
 			# skirmish bursts it at the end of the foe's action (_web_burst).
 			if f.has(Face.Keyword.WEB):
 				riders.append(func() -> void: _land_web(foe, gained, turned, webbed))
+				if into_mine:
+					h.mine_flag(Face.Keyword.WEB)
 			# Cryo (20 October): a weapon's hit spends every stack the foe carries (Ryan, 25
 			# October), and the hitter cools for them once the spend's own heat has landed (below);
 			# equipment spends none. The blow's own Cryo lands with the riders, so a spend never
@@ -2838,18 +2863,26 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			if f.has(Face.Keyword.CRYO):
 				var cryo_laid := _stacks_from(ms, "cryoed", f.cryo) * doubled
 				riders.append(func() -> void: _land_rider(foe, "cryoed", cryo_laid, gained, turned))
+				if into_mine:
+					h.mine_stack("cryoed", cryo_laid)
 			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
 			# number in stacks a strike, with the riders, so no strike of the spend feeds on what
 			# it lays (Ryan, 3 November: "5,5,5 makes way more sense to me").
 			if f.has(Face.Keyword.FLAK):
 				var flak_laid := _stacks_from(ms, "flakked", f.flak) * doubled
 				riders.append(func() -> void: _land_rider(foe, "flakked", flak_laid, gained, turned))
+				if into_mine:
+					h.mine_stack("flakked", flak_laid)
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
 			# with the riders, equipment's included; a foe the blow killed loses its Getting Back
 			# Up, so it stays down.
 			if f.has(Face.Keyword.DISPEL):
 				var purged := maxi(1, f.dispel)
 				riders.append(func() -> void: _purge_foe(ms.unit.display_name, foe, purged, turned))
+				if into_mine:
+					h.mine["dispel"] = int(h.mine["dispel"]) + purged
+			if into_mine and f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+				h.mine["chain"] = int(h.mine["chain"]) + maxi(0, f.chain)   # every hit's arc number
 			if not touched.has(foe):
 				touched.append(foe)   # every foe the blows reached, felled or not: Shock, Expose, Lure and Disrupt land on it below
 		# A Primed machine's Burning, a stack a strike on each strike's own foe (the mechanics
@@ -2858,6 +2891,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			var primed_laid := _stacks_from(ms, "burning", int(modded["burn"])) * doubled
 			var struck := aimed
 			riders.append(func() -> void: _land_rider(struck, "burning", primed_laid, gained, turned))
+			if aimed == target:
+				h.mine_stack("burning", primed_laid)
 		h.total += landed
 		if sweep:
 			h.swept.append("%s %d" % [aimed.display_name, landed])
@@ -2890,6 +2925,10 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
 	if not sweep:
 		_after_blow(ms, f, touched, gained, turned)
+	# What lands after the blow, and Breach on it, ride a Mine once.
+	for k in [Face.Keyword.SHOCK, Face.Keyword.EXPOSE, Face.Keyword.DISRUPT, Face.Keyword.BREACH]:
+		if f.has(k):
+			h.mine_flag(k)
 	return h
 
 
@@ -3715,9 +3754,8 @@ func _salvo(mech_index: int, ms: MechState, f: Face, target: Foe = null) -> void
 	salvo.reach = Face.Reach.SWEEP
 	salvo.strikes = shots
 	var pays: int = Pays.AMMO if ammo_price_of(ms, salvo) > 0 else Pays.HEAT   # the magazine, emptied above, its price
-	var gate_open := not salvo.has(Face.Keyword.SUPPRESS) or Effects.gate_holds(ms.unit, salvo, Face.Keyword.SUPPRESS, target)
 	var h := _hit(ms, salvo, target)
-	_lay_mine(ms, salvo, target, gate_open)
+	_lay_mine(ms, target, h.mine)
 	_finish_hits(mech_index, ms, salvo, target, h, pays)
 
 
@@ -3986,20 +4024,21 @@ func _muster(ms: MechState, points: int) -> void:
 
 # ---------------------------------------------------------------- mines
 
-## The keywords a Mine carries by their numbers, added up across every spend that fed it (Ryan, 9
-## November: "mines combine into one large hit with all keywords combined"): the stacks it lays
-## (Burn, Cryo, Flak), its Purge and Chain's number. By their content names.
-const MINE_NUMBERED := ["burn", "cryo", "flak", "dispel", "chain"]
-## The keywords a Mine carries once each: a mark or a stun it lays (Shock, Suppress, a web,
-## Expose), Breach on its blow, and Disrupt. Ryan, 9 November: "we're only adding N flat damage
-## ... and the keywords attached to it. Area modifiers, targeting rules (sweep), and hit counts are
-## ignored. Anything that ties it back to the firer is ignored, like lure": Spread, Penetrate,
-## Splash and Spillover are area, the Swap a target, Rapid the spend's own, Lure the firer's.
+## A Mine's riders (Ryan, 9 November: "mines combine into one large hit with all keywords
+## combined"; "the mine should take the entire result of the spend, then apply it"): {stacks,
+## status id -> the stacks of it the spends fired at the foe; dispel, its Purge; chain, its arc
+## number; keywords, the flags once each}. The numbered ones add up across every spend that fed it.
+const MINE_NUMBERED := ["dispel", "chain"]
+## The keywords a Mine carries once each: a stun or a mark it lays (Suppress, a web, Shock,
+## Expose), Breach on its blow, and Disrupt. Ryan, 9 November: "Area modifiers, targeting rules
+## (sweep), and hit counts are ignored. Anything that ties it back to the firer is ignored, like
+## lure": Spread, Penetrate, Splash and Spillover are area, the Swap a target, Rapid the spend's
+## own, Lure the firer's; the hits count in the stacks they fired, never in the Mine's damage.
 const MINE_FLAGS := [Face.Keyword.SHOCK, Face.Keyword.SUPPRESS, Face.Keyword.WEB, Face.Keyword.EXPOSE, Face.Keyword.BREACH, Face.Keyword.DISRUPT]
 
 
 ## The Mine a foe carries (the Lammergeier's Reverberant Payload, Ryan, 9 November): {damage, the
-## status's stacks; riders, {burn, cryo, flak, dispel, chain, keywords}}. Empty when it carries none.
+## status's stacks; riders, as mine_riders_merged gives them}. Empty when it carries none.
 static func mine_of(foe: Foe) -> Dictionary:
 	var dmg := Effects.stacks_of(foe, "mine")
 	if dmg <= 0:
@@ -4011,33 +4050,37 @@ static func mine_of(foe: Foe) -> Dictionary:
 	return {"damage": dmg, "riders": mine_riders_merged(riders, {})}
 
 
-## A spend's riders as its Mine carries them: each numbered keyword at the entry's own number, never
-## deepened or doubled by its machine (nothing ties a Mine to its firer), and each flag once, a gated
-## one only where its gate held on the target as the die was spent (`gate_open`).
-static func mine_riders(f: Face, gate_open: bool = true) -> Dictionary:
-	var r := {"burn": 0, "cryo": 0, "flak": 0, "dispel": 0, "chain": 0, "keywords": []}
-	if f.has(Face.Keyword.BURN):
-		r["burn"] = maxi(0, f.burn)
-	if f.has(Face.Keyword.CRYO):
-		r["cryo"] = maxi(0, f.cryo)
-	if f.has(Face.Keyword.FLAK):
-		r["flak"] = maxi(0, f.flak)
-	if f.has(Face.Keyword.DISPEL):
-		r["dispel"] = maxi(1, f.dispel)
-	if f.has(Face.Keyword.CHAIN):
-		r["chain"] = maxi(0, f.chain)
+## An entry's riders as a Mine would carry them, read off the entry as printed, its every strike's
+## stacks and numbers counted: the bot's estimate before the spend. A spend's own Mine takes what
+## its hits fired at the target (Hits.mine), deepened, doubled and gated as they were.
+static func mine_riders(f: Face) -> Dictionary:
+	var hits := maxi(1, f.strikes)
+	var stacks := {}
+	for k in [Face.Keyword.BURN, Face.Keyword.CRYO, Face.Keyword.FLAK]:
+		if f.has(k):
+			var n := maxi(0, int(f.get(str(Face.NUMBER_FIELDS[k])))) * hits
+			if n > 0:
+				stacks[str(Face.KEYWORD_STATUS[k])] = n
 	var kws: Array = []
 	for k in MINE_FLAGS:
-		if f.has(k) and (k != Face.Keyword.SUPPRESS or gate_open):
+		if f.has(k):
 			kws.append(str(Face.KEYWORD_NAMES[k]))
-	r["keywords"] = kws
-	return r
+	return {"stacks": stacks, "dispel": maxi(1, f.dispel) * hits if f.has(Face.Keyword.DISPEL) else 0,
+		"chain": maxi(0, f.chain) * hits if f.has(Face.Keyword.CHAIN) and not f.is_debuff() else 0, "keywords": kws}
 
 
-## Two Mines' riders as one: the numbered ones added, the flags once each, in a fixed order. A
-## fresh dictionary, neither one changed, since a preview's copy shares its fight's.
+## Two Mines' riders as one: each status's stacks and the numbered ones added, the flags once each,
+## in a fixed order. A fresh dictionary, neither one changed, since a preview's copy shares its
+## fight's.
 static func mine_riders_merged(a: Dictionary, b: Dictionary) -> Dictionary:
-	var out := {}
+	var stacks := {}
+	for src in [a.get("stacks", {}), b.get("stacks", {})]:
+		if src is Dictionary:
+			for sid in (src as Dictionary).keys():
+				var n := int(src[sid])
+				if n > 0:
+					stacks[str(sid)] = int(stacks.get(str(sid), 0)) + n
+	var out := {"stacks": stacks}
 	for key in MINE_NUMBERED:
 		out[key] = int(a.get(key, 0)) + int(b.get(key, 0))
 	var kws: Array = []
@@ -4049,11 +4092,23 @@ static func mine_riders_merged(a: Dictionary, b: Dictionary) -> Dictionary:
 	return out
 
 
-## A Mine's words, for the log and the chip's readout: its damage, then its riders ("Mine 6: Burn 4,
-## Shock, Breach").
+## A Mine's words, for the log and the chip's readout: its damage, then its riders, each stack by
+## the keyword that lays it where one does ("Mine 6: Burn 4, Flak 3, Vitriol 2, Shock, Breach").
 static func mine_text(mine: Dictionary) -> String:
 	var bits: Array[String] = []
 	var r: Dictionary = mine.get("riders", {})
+	var by_status := {}
+	for k in Face.KEYWORD_STATUS.keys():
+		by_status[str(Face.KEYWORD_STATUS[k])] = k
+	var stacks: Dictionary = r.get("stacks", {})
+	var ids: Array = stacks.keys()
+	ids.sort()
+	for sid in ids:
+		var n := int(stacks[sid])
+		if n <= 0:
+			continue
+		var word := Face.keyword_label(int(by_status[sid])).capitalize() if by_status.has(sid) else str(Effects.STATUS.get(sid, {}).get("name", sid))
+		bits.append("%s %d" % [word, n])
 	for key in MINE_NUMBERED:
 		var n := int(r.get(key, 0))
 		if n > 0:
@@ -4068,16 +4123,18 @@ static func mine_text(mine: Dictionary) -> String:
 ## targeted by the lammergeier's weapons and equipment get a mine on hit"; "One mine per spend";
 ## "the mine is laid as a rider, so ... applied before the death check"): the machine's flat damage
 ## and the spend's riders join the Mine the foe carries, one Mine a foe, a Sweep's or a salvo's on
-## the foe the die was dropped on. A Ward turns it away. `gate_open`: the entry's gated keyword held
-## on the foe as the die was spent.
-func _lay_mine(ms: MechState, f: Face, target: Foe, gate_open: bool) -> void:
+## the foe the die was dropped on. Its riders are what the spend's hits fired at the target
+## (`riders`, Hits.mine: "the mine should take the entire result of the spend, then apply it",
+## Ryan, 9 November), every hit's stacks as its machine laid them and a gated keyword where its
+## gate held; its damage stays flat. A Ward turns it away.
+func _lay_mine(ms: MechState, target: Foe, riders: Dictionary) -> void:
 	var n := Effects.mine_damage(ms.unit)
 	if n <= 0 or target == null or target.rank < 0:
 		return
 	if Effects.turns_mark(target, "mine"):
 		log.append("%s's Ward turns %s's Mine away" % [target.display_name, ms.unit.display_name])
 		return
-	_add_mine(target, n, mine_riders(f, gate_open))
+	_add_mine(target, n, mine_riders_merged(riders, {}))
 	mine_tally["laid"] += 1
 	log.append("%s leaves a Mine on %s: %s" % [ms.unit.display_name, target.display_name, mine_text(mine_of(target))])
 	_foe_gained_status(target, "mine")   # a status the team put on the foe: the Paradox counts it
@@ -4117,8 +4174,9 @@ func mine_reach(rank: int, col: int, massive: bool) -> Array[Foe]:
 ## meets (mine_reach), each through its own reads (its Flak, a Barrier, what it takes; aimed at
 ## nobody, so a Shock neither doubles it nor is spent) and its armour, none under Breach, and
 ## Chain's number on every other Shocked foe on the field; then its riders on each foe it met,
-## felled or not, as a hit's land: Burn, Cryo and Flak stacks, Purge, Suppress and a web, then Shock
-## and Expose, and Disrupt in the player's turn alone, the foes' moves being under way in theirs.
+## felled or not, as a hit's land: every status's stacks it carries (Burning, Cryo, Flak, a
+## passive's Vitriol), Purge, Suppress and a web, then Shock and Expose, and Disrupt in the
+## player's turn alone, the foes' moves being under way in theirs.
 ## Nothing ties it to the machine that laid it: no modifier, no deepening, no Cryo cashed. Its
 ## blows are the "mine" kind for the screen, a beat after what the spend has landed. `where` names
 ## the foe it blew on.
@@ -4153,10 +4211,13 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 	var gained := {}
 	var turned := {}
 	var webbed: Array[Foe] = []
+	var stacks: Dictionary = r.get("stacks", {})
+	var ids: Array = stacks.keys()
+	ids.sort()
 	for foe in all:
-		_land_rider(foe, "burning", int(r.get("burn", 0)), gained, turned)
-		_land_rider(foe, "cryoed", int(r.get("cryo", 0)), gained, turned)
-		_land_rider(foe, "flakked", int(r.get("flak", 0)), gained, turned)
+		for sid in ids:
+			if Effects.STATUS.has(str(sid)):
+				_land_rider(foe, str(sid), int(stacks[sid]), gained, turned)
 		if int(r.get("dispel", 0)) > 0:
 			_purge_foe("the Mine", foe, int(r["dispel"]), turned)
 		if kws.has("suppress") and _suppress(foe, turned):
