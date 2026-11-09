@@ -25,10 +25,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1072 tests, 304,160 checks, green (9 November, `claude/playtesting-ui-feedback-hfdiok` with
-  main merged in at `d12ad6c`: main's 1062, the shapes relaid and recast and the skirmish audit's
-  step 3, and the playtest list of 9 November; Godot 4.8-beta2; either map view on 6 November);
-  about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1072 tests, 304,160 checks, green (9 November, main with the shapes relaid and recast, the
+  skirmish audit's step 3 and the playtest list of 9 November; Godot 4.8-beta2; either map view on
+  6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -46,7 +45,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the two branches still working, below. `ccr-1e6e6571-7x7ayr`,
+Everything is on main as of 9 November 2026 but the music session's branch below.
+`claude/playtesting-ui-feedback-hfdiok`, Ryan's playtest list of 9 November (How things stand
+below), took main's map session and skirmish audit step 3 in a merge (the bible, the measurements
+and this file the conflicts, both sides' words kept) and main took it as a fast-forward on Ryan's
+word ("Ok clean up and merge into main"); it is merged and to delete with the rest. `ccr-1e6e6571-7x7ayr`,
 the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
 skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
 into main, so I can try it"); it is merged and to delete with the rest. The
@@ -80,10 +83,7 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (9 November; every other branch on GitHub is merged): `claude/playtesting-ui-feedback-hfdiok`,
-Ryan's playtest list of 9 November (How things stand, below), with main merged in at `d12ad6c` (the
-map session and the skirmish audit's step 3; the bible, the measurements and this file the
-conflicts, both sides' words kept), for main to take as a fast-forward on his word; and `ccr-7effd31a-u5z4gw`, the
+Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
 9 November: `ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 (How things stand: one hit
@@ -484,11 +484,10 @@ commands are in `README.md`.
   `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
   page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
   clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
-  for byte). Main's file is v0.491 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
-  then the map session's shapes and field rows); its republish was refused by the permission
-  check as unrequested and waits on Ryan's word, BASE `dc265dc9`'s file.
-  `claude/playtesting-ui-feedback-hfdiok`'s is v0.492 (main's and the playtest list of 9 November),
-  unpublished, waiting on his word with main's. The live
+  for byte). Main's file is v0.492 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
+  then the map session's shapes and field rows and the playtest list of 9 November); its
+  republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
+  `dc265dc9`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
