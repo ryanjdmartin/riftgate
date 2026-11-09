@@ -75,7 +75,13 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
+Still working (9 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`, the
+formation pass (its proposal `docs/formation_proposal.md`, waiting on Ryan's marks; the curve
+read's `--team`, `--tiers`, `--sizes` and `--domains`; the reads in `docs/measurements.md`, 9
+November; the bible's file at v0.490 with section 12 pointing at the proposal, its republish
+waiting on Ryan's word as v0.489's does, Pages below), beside `ccr-8df9952c-4cccdf`, the skirmish
+code audit's structural steps (one round's end and one blow on a machine, the behaviour trace;
+`sim/skirmish.gd`, which this branch never touches); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
 8 November: `ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a
@@ -137,6 +143,21 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The formation pass, proposed** (9 November, `ccr-722ca9f0-yj8na3`, Ryan: "I'll sort out the
+  questions in the formation pass"): `docs/formation_proposal.md`, every domain's patrols and
+  formations written anew as grids with a question each under `design` (an anchor and a swarm,
+  the grid carrying the reach question, eight the ceiling and the ramp's variant a step toward
+  it), the hunters as heavy patrols rated two and no formation hunting (the wolf, antlion and
+  bomb lines by their codex; the needlers and the Marsh's dead push), a true one for a lone light
+  machine under every patrol for the Badger, the two hunter questions of section 12 with a lean
+  each (the bombs his call; the opening placing its patrols from the pushers, one line), the
+  bosses as stat blocks by tier and ramp with today's multiplier as the first entries, the holes,
+  the bench and the order. The proposal was written to a scratch worktree as content, validated,
+  and read by the curve read with the default four, a light four (the Skua first, for the rating
+  of one) and a tier-two four (`--team`, new), its bands the tables' last columns and the gates
+  and the pruning read off them; `docs/measurements.md`, 9 November. Nothing in `content/` moved.
+  Next: Ryan's marks on its ten questions, then the content lands with the opening's line, the
+  vocabulary and the rules, and the bosses' blocks in a session of their own.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
@@ -360,8 +381,9 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list). Ahead of all of it: Ryan's play of the long wall with its view (built 6
 November; his phone read, the to-do), the harness's BATTLE and FIGHT tabs for it; then the long
-wall's open items (the bible's section 12: the shell, the ratings by who solos, the formations
-and the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
+wall's open items (the bible's section 12: the shell, then the formation pass's proposal
+(`docs/formation_proposal.md`, 9 November: the ratings by who solos and the formations together,
+his marks on its ten questions, then the content), then the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
 is section 12's, its test the to-do's): its structural steps in order (one hit routine with its
 arguments in place of the hidden flags, the mine's half waiting for the Lammergeier's rework; one
