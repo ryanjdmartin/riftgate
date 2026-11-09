@@ -25,8 +25,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1060 tests, 259,914 checks, green (9 November, main with the long wall, the skirmish code
-  audit, a part no kill and a hunter's reach landed, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1060 tests, 259,913 checks, green (9 November, main with the long wall, the skirmish code
+  audit and its step 3, a part no kill and a hunter's reach landed, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -77,9 +77,11 @@ one). Each merge commit says how its conflicts were settled.
 
 Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
-on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
-`ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 from main (How things stand), to land on
-Ryan's word. Landed
+on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
+9 November: `ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 (How things stand: one hit
+routine, the hidden flags gone, one round model, the behaviour trace), on Ryan's word ("Ok, merge
+into main"), main taken as it landed (the hunt and the rings, no conflict) and main taking it as
+a fast-forward. Landed
 8 November: `ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a
 long wall, the packs as designed formations, the shield the fight's resource: his direction and
 Claude's first round as `git show 68381ff:docs/long_wall_proposal.md`, the build brief
