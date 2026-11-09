@@ -48,9 +48,11 @@ func _ready() -> void:
 
 ## The refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): laid over the
 ## content once, as the game starts and before anything is built from it, when RIFTGATE_REFIT
-## names a spec ("all", or its parts: die, regen=half|N, cooling=N, heat1) or a debug build's
-## SETTINGS has REFIT MODEL on (the phone's way: read at the next launch). A battle or a run saved
-## before the switch keeps the dice it was saved with, so judge it on a new one.
+## names a spec ("all", or its parts: die, regen=half|N, cooling=N, heat1, barrier=off|cooldown|heatN)
+## or a debug build's SETTINGS has REFIT TRIAL on one of its three rules (the phone's way, read at
+## the next launch: the model with its Barrier basic free, resting a round after it is spent, or
+## none; Settings.REFIT_TRIALS). A battle or a run saved before the switch keeps the dice it was saved
+## with, so judge it on a new one.
 static var _refit_trial_done := false
 static func refit_trial() -> void:
 	var spec := refit_spec()
@@ -61,12 +63,14 @@ static func refit_trial() -> void:
 		print("refit trial: " + line)
 
 
-## The trial's spec, "" while it is off: the environment's, else "all" where a debug build's
-## setting asks for it.
+## The trial's spec, "" while it is off: the environment's, else the one a debug build's
+## setting names (Settings.REFIT_TRIALS).
 static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
-	if spec.is_empty() and OS.is_debug_build() and bool(Settings.display.get("refit", false)):
-		spec = "all"
+	if spec.is_empty() and OS.is_debug_build():
+		var asked := str(Settings.display.get("refit_trial", "off"))
+		if asked != "off" and Settings.REFIT_TRIALS.has(asked):
+			spec = asked
 	return spec
 
 

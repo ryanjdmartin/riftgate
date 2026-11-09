@@ -35,7 +35,7 @@ const DISPLAY_DEFAULTS := {
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 	"shot_trails": false,   # a debug build's trial: a shot crossing the field from the muzzle to its target (ShotTrail), tabled as maybe too busy (Ryan, 3 November)
 	"map_view": "wall_left",   # MAP_VIEWS: the battle map's orientation (MapOrient), a view only
-	"refit": false,   # a debug build's trial: the refit pass's model laid over the content as the game starts (Refit, "all": the model's die, the shield regen, the basics at heat one), read at the next launch (docs/briefs/refit_pass.md)
+	"refit_trial": "off",   # REFIT_TRIALS: a debug build's trial, the refit pass's model laid over the content as the game starts (Refit), read at the next launch (docs/briefs/refit_pass.md)
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -58,6 +58,13 @@ const AA_LABELS := {"off": "OFF", "fxaa": "FXAA", "msaa2": "MSAA 2X", "msaa4": "
 ## forces one for a run.
 const MAP_VIEWS := ["wall_left", "wall_bottom"]
 const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"}
+## The refit pass's model as a trial (docs/briefs/refit_pass.md; Harness.refit_trial), a debug
+## build's: off, or the model as leaned (the model's die, the shield regen, the basics at heat
+## one) with its Barrier basic under one of three rules, the question its first reads left to
+## his play (9 November): free, dark the round after it is spent, or none among the basics (an
+## Armoured piece or a gun in its place). Each is a spec Refit.parse takes.
+const REFIT_TRIALS := ["off", "all", "all,barrier=cooldown", "all,barrier=off"]
+const REFIT_LABELS := {"off": "OFF", "all": "FREE", "all,barrier=cooldown": "RESTS", "all,barrier=off": "NONE"}
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

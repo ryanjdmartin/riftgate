@@ -397,15 +397,40 @@ func test_a_composition_is_picked_by_tier_and_rating() -> void:
 
 ## The refit pass's model is a trial the harness lays over the content as it starts
 ## (docs/briefs/refit_pass.md): off unless RIFTGATE_REFIT names a spec or a debug build's setting
-## asks for it, which reads as the model as leaned.
+## names one of its trials, the model with its Barrier basic under one of three rules, each a
+## spec the what-if takes.
 func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> void:
 	if not OS.get_environment("RIFTGATE_REFIT").is_empty():
 		assert_eq(HARNESS.refit_spec(), OS.get_environment("RIFTGATE_REFIT"), "the environment's spec is the trial's")
 		return
-	var was := bool(Settings.display.get("refit", false))
-	Settings.display["refit"] = false
+	var was = Settings.display.get("refit_trial", "off")
+	Settings.display["refit_trial"] = "off"
 	assert_eq(HARNESS.refit_spec(), "", "off by default: the game plays the content as written")
-	Settings.display["refit"] = true
-	assert_eq(HARNESS.refit_spec(), "all" if OS.is_debug_build() else "", "a debug build's setting asks for the model as leaned")
-	Settings.display["refit"] = was
-	assert_true(Settings.DISPLAY_DEFAULTS.has("refit") and not bool(Settings.DISPLAY_DEFAULTS["refit"]), "and the setting ships off")
+	for trial in Settings.REFIT_TRIALS:
+		Settings.display["refit_trial"] = trial
+		var want: String = "" if trial == "off" or not OS.is_debug_build() else trial
+		assert_eq(HARNESS.refit_spec(), want, "a debug build's setting names the trial: %s" % trial)
+		assert_true(Settings.REFIT_LABELS.has(trial), "%s has its button's label" % trial)
+		if trial == "off":
+			continue
+		var spec := Refit.parse(trial)
+		assert_true(bool(spec["die"]) and str(spec["regen"]) == "half" and bool(spec["heat1"]), "%s is the model as leaned" % trial)
+	Settings.display["refit_trial"] = "anything else"
+	assert_eq(HARNESS.refit_spec(), "", "a value that is no trial asks for nothing")
+	Settings.display["refit_trial"] = was
+	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("refit_trial", "")), "off", "and the setting ships off")
+	var rules := {}
+	for trial in Settings.REFIT_TRIALS:
+		if trial != "off":
+			rules[str(Refit.parse(trial)["barrier"])] = true
+	assert_eq(rules.size(), 3, "three rules for the Barrier basic, each its own: %s" % str(rules.keys()))
+	if OS.is_debug_build():
+		var menu := PauseMenu.new()
+		menu._show_page("settings")
+		var labels: Array = []
+		for b in menu._rows.find_children("*", "", true, false):
+			if b is HudButton:
+				labels.append(str((b as HudButton).text))
+		for trial in Settings.REFIT_TRIALS:
+			assert_true(labels.has(str(Settings.REFIT_LABELS[trial])), "a debug build's settings page offers %s" % Settings.REFIT_LABELS[trial])
+		menu.free()
