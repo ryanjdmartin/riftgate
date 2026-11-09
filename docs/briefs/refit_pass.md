@@ -248,7 +248,7 @@ a cell and 40 runs a campaign, each a direction, in the bot's hands. What they s
 1. **Over a battle the model takes the bot about twice as far.** Menace killed a battle doubles,
    the Rupture is reached in four battles in ten against one in six, team wipes fall from nine in
    ten to under two in three. The regen alone, on today's dice, is the larger half; the die adds
-   the rest whichever defensive basic fills its slots. The campaign stays a wall for the bot,
+   the rest however the Barrier is dealt. The campaign stays a wall for the bot,
    whose defence rule sends lone machines at formations.
 2. **The regen is the buffer for the outnumbered and for the lights, against plain blows.** At
    the rating its size is one number (2, 4 and half the gauge read alike); short-handed it is the
@@ -261,12 +261,12 @@ a cell and 40 runs a campaign, each a direction, in the bot's hands. What they s
    cleaver. Five of tier one's rank-and-file lines carry it (none of the Meadow's). The needler
    scouts cost a lone machine a quarter of its hull on every read, and the knights' retinue walls
    a lone machine on every read.
-4. **The defensive basic matters in one kind of fight, a full squad against a breaching
-   massive, and there a block trades rounds for hull.** With no Barrier the two such formations
-   cost a third of the trio's hull as today; with a free one a tenth, at half again the rounds
-   and four dice in ten spent on it; a Barrier that rests or a Ward sit between; the aggressor
-   loses a quarter and finishes two rounds sooner. Over a battle the four rules and the aggressor
-   land together.
+4. **The Barrier matters in one kind of fight, a full squad against a breaching massive, and
+   there a block trades rounds for hull.** With none the two such formations cost a third of the
+   trio's hull as today; with one on every die a tenth, at half again the rounds and four dice in
+   ten spent on it; a resting one or a Ward sit between; the aggressor loses a quarter and
+   finishes two rounds sooner. Over a battle every deal and the aggressor land together, the
+   audit's own among them. Tier two reads the same by its own team.
 5. **A round costs nothing, so the block is nearly free hull.** Little in a tier-one pusher's
    fight makes its seventh round worse than its third, and a regen makes a longer fight kinder.
    This is the block-everything loop on one fight's scale, and no rule for the Barrier removes
@@ -274,7 +274,7 @@ a cell and 40 runs a campaign, each a direction, in the bot's hands. What they s
    a guard against the infinite fight; it is what makes aggression pay.
 6. **The fight nobody can finish is back.** No fight passed sixty rounds today; with a regen 5
    to 19 of some 900 do over 40 runs, and the fights the model turns from lost to won for the
-   light trio run twenty rounds and more.
+   light trio run seventeen rounds and more.
 7. **Heat is untouched by losing the vents, and is still no pace.** The bot spent 7% of its dice
    on vents; without them its peaks and overheats sit where they did, a hot die is held less than
    once a fight, and the hottest tier-one trio loses one to three hull a fight to heat. The
@@ -287,12 +287,26 @@ a cell and 40 runs a campaign, each a direction, in the bot's hands. What they s
 9. **The what-if dealt more Barriers than the audit does.** It filled a vent's slot with the
    defensive basic a die lacked, a Barrier on nearly every die, where the audit puts one only
    where a Halo stood. The reads above are that deal's and bracket the audit's: the default trio
-   under the audit's deal holds no Barrier (the no-Barrier column is its own), the light trio
-   holds two.
+   under the audit's deal holds no Barrier (the no-Barrier column is its own), and the light
+   trio holds two and reads as well on it as with one on every die, in shorter fights (a gun
+   where a vent stood is worth more to it than a second block). Over a battle the audit's deal
+   lands with the rest.
+10. **The proposal's pushers sit on the budget but for the breachers.** Of the formation
+   proposal's fifteen tier-one formations, twelve cost the default trio 8% of its hull or less
+   at three on every read, ten of them at or under the twentieth the budget names on the audit's
+   deal. The three over it are breach:
+   the two with a massive at 39%, eight times the budget, and the knights' vigil at 15%; on the
+   audit's deal the model leaves them exactly there, since that trio holds no Barrier and the
+   regen never meets a breach. The massives' own numbers are the lever, the refit's first band.
+   The hunters at their rating of two cost what they did; caught alone, the plain-blow lines
+   lose their teeth on a tank (the wolves nothing, the antlion trio half) and the breaching ones
+   keep theirs.
 
 Still to read: the cautious persona on the model's dice (the rung prices only an overheat, so it
 cannot say whether a player would feel heat); the stalled fights by pack (the campaign runner
-names none); 200 seeds on any cell a decision cites. Then Ryan's play at placeholders, which
+names none); tier three, and the proposal's formations at tiers two and three, under the model
+(their reads ran past the hour and were stopped); a light caught alone by a hunter; 200 seeds on
+any cell a decision cites. Then Ryan's play at placeholders, which
 decides feel.
 
 ## 6. The audit: what the model breaks, touches and leaves (9 November, on main's content)
@@ -441,7 +455,8 @@ Still his, the first five with what the first reads say (section 5):
    nothing against a plain blow, a blank against the Meadow's tier-one line), a Barrier that
    Wards too (his row of 17 October: the old whole block on one piece), a heat price (the read:
    it does not shorten the fight). Claude's lean: the audit's deal, the Barrier a maker's tool
-   with no standing rule on it, read again against the bosses' telegraphs; his play decides.
+   with no standing rule on it (the light trio reads as well on it as with one on every die),
+   read again against the bosses' telegraphs; his play decides.
 2. **What prices a round.** A block trades rounds for hull and a round costs nothing, so the
    best line is still to block. The model's ninth point (every formation carries a rising threat,
    a validator check) is what the reads say prices it; it is a rule over every pusher, his to

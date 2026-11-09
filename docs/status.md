@@ -223,11 +223,15 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   matters for a full squad against a breaching massive and nowhere else, where a block trades
   rounds for hull and a round costs nothing, so blocking stays the best line until a threat
   rises (the model's ninth point, now more than a guard); fights past sixty rounds are back (5
-  to 19 in some 900); heat is unchanged by losing the vents and still no pace. The what-if's
-  first fill dealt a Barrier to nearly every die where the audit deals one only where a Halo
-  stood: `vents=guns` is the audit's own deal and the trial's MODEL. His to settle next, the
-  brief's section 7: how common the Barrier is, what prices a round, the regen's size, breach
-  under a regen, heat's prices.
+  to 19 in some 900); heat is unchanged by losing the vents and still no pace; tier two reads
+  the same by its own team. The what-if's first fill dealt a Barrier to nearly every die where
+  the audit deals one only where a Halo stood: `vents=guns` is the audit's own deal and the
+  trial's MODEL, and it lands with the rest over a battle and reads as well for the light trio
+  in shorter fights. The proposal's fifteen tier-one formations cost the default trio 8% or less
+  at three but for the three that breach (the two with a massive 39%, the knights' vigil 15%),
+  which the audit's deal leaves where they are: the massives' numbers are the refit's first
+  band. His to settle next, the brief's section 7: how common the Barrier is, what prices a
+  round, the regen's size, breach under a regen, heat's prices. The scratch worktree is gone.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
