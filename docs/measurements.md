@@ -5301,3 +5301,91 @@ seed 3, GORGE, , narrowest crossing 5, the guarantee opened 0
 , , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
  , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
 ```
+
+### The recast of the three wall shapes, the same day
+
+The same run again (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after
+Ryan's recast of the gorge, the city and the badlands (the bible's shapes row): cliff mass cut by
+channels, tower blocks in a street grid, an open field of small mesas. The river, the fjord and
+the steppe are as above.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 72% | 9% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 33/55/78/81/82% | 0% | 0.0 |
+| FJORD | 81% | 8% | 0% | 12% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/79/82/82% | 0% | 0.0 |
+| BADLANDS | 48% | 38% | 0% | 4% | 10% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 31/52/72/73/82% | 20% | 0.1 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 18% | 0% | 52% | 1% | 29% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 24/38/52/53/82% | 0% | 0.0 |
+| GORGE | 64% | 7% | 0% | 1% | 27% | 200 of 200 at 3+ | 0.0 | 11.7 | 3.0/3.0/3.0/3.0/3.0 | 26/38/52/53/82% | 0% | 0.0 |
+
+Read: the three now part by mass and by the ground machines' room, where before they parted by
+little. The city (29% of the field in towers, the band's seven tenths) and the gorge (27%, the
+channels a third of the band) are the two heavy shapes, and their tracked reach after two phases
+falls to 24% and 26% against the steppe's 35%, the hover's to 53% against 81%, the flyer's 82%
+untouched: the mass costs the ground a third of its room and the flyer nothing, which is the
+flyer's crossing of its own. The badlands sits between (10% in small mesas, 38% scrub, tracked
+reach 31%), its paths winding but open. Every map keeps the horde's crossing at three or more
+with nothing opened; the gorge's route is the one longer one (11.7 hexes against 11.0: the
+channels wind). Water lies in all three as Ryan asked (the gorge's flooded stretches and the
+city's streets and fountains 1% each, the badlands' ponds 4%). The relief stands (the badlands'
+shoulders, the steppe's rise, the scenery's first ring level since this run). The heavy
+shapes are the floor "how far we can push it" is read against: a tracked machine with a
+quarter of the field in reach after two moves is still a decision, not a wall, since every
+apron hex stays land and every way of moving keeps a path; past this the city's one-wide
+avenues would need widening before more mass. Nothing here is a decision: the three are first
+cuts for the phone (the to-do), and the counts and chances (`BattleMap.GORGE_PER`,
+`GORGE_BRANCHES`, `CITY_SIDE_SEGMENT`, `CITY_FALLEN`, `BADLANDS_PER`) are placeholders.
+
+The three at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, GORGE, , narrowest crossing 3, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , "]" , , , 
+, , , ^[. . . . . . . . . R R R . . . . . . . .]^ , , , 
+ , , " ^[. . . . . . . . . . . . . . . . . . . .]^ , , , 
+" " , ^[. . . . . . . " " . . . . " . . . . . .]^ , " " 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ " . ^ . ^ ^ ^ ^ ^ " " ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[. . . . . . . . " . ^ . ^ ^ . . ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[. . . . . . . . . " . ^ ^ . ^ . ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[. ^ " . . . . . . " . ^ ^ ^ . . " ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ . " ^ . . . ^ ^ ^ ^ ^ ^ . ^ ^ ^ ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . . . " . . " . " . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 4, the guarantee opened 0
+ # # ^ ^[^ # # # ^ ^ ^ # ^ ^ ^ # ^ ^ # ^ # ^ ^ #]# ^ # ^ 
+# ^ # ^[^ ^ # ^ ^ ^ # ^ # ^ ^ ^ # ^ # ^ # ^ ^ #]# # # ^ 
+ ^ # # #[^ # # ^ # # # # # # # ^ ^ # ^ ^ # ^ # #]# # ^ ^ 
+^ # ^ ^[# # # # # # # # . R R R . # # # # # # #]# # ^ ^ 
+ # ^ # #[# # # # # # # # . . . . # # # # # # # #]^ # # ^ 
+^ # # ^[# # # # # # # # # # # # # # # # # # # #]^ ^ ^ ^ 
+ ^ ^ # #[^ ^ ^ ^ ^ # ^ ^ ^ ^ = # ^ ^ ^ = ^ ^ ^ ^]^ ^ # ^ 
+^ # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = ^ ^ ^ ^]# # # # 
+ # ^ # ^[^ ^ ^ ^ ^ = = = = # = # ^ ^ ^ = ^ ^ ^ ^]# # ^ ^ 
+# # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = # # ~ #]^ # # # 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = # # # #]^ ^ ^ ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" ^ " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[" " " " " " ^ " " " " " " " " " " " " "]" " " " 
+ " " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[. . . . . . . . . R R R . . . . . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+" " " "[. . . . . . . . . . . . . " " . . . . .]" " " ^ 
+ " " " "[" . . . ~ ~ . . . . . . " ^ " ~ ~ ~ " "]" " ^ " 
+^ " " "[^ " . . . . ~ ~ . " " . . " " " . " " ^]" " ^ " 
+ ^ ^ " "[" " " . " " . . " ^ " " " ^ ^ " " ^ " "]" " " " 
+" " " "[^ " ^ " " ^ " ~ ~ " " " ^ " " " ^ " " ^]" ^ " " 
+ " " " "[" " " ^ " ^ " . ~ . . " " ^ ^ " ^ " " ^]" " " " 
+" " " "[. . . " " " " . . . . . . " " " " " . "]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
