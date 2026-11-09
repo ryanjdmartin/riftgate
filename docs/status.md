@@ -252,7 +252,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   views (the river's bars, the gorge's mass and the city's blocks in the 3D); the to-do's Ryan
   list has the phone judge, with the counts and the authored sectors (the long wall proposal's
   lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
-  it (not republished: the live page's republish waits on Ryan's word, Pages below).
+  it (live on the page since 9 November's republish, Pages below).
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
@@ -527,15 +527,14 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
-  page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
-  clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
-  for byte). Main's file is v0.497 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
-  then the map session's shapes and field rows, the playtest list of 9 November, the Polar
-  Bear's kit and name of the same day, the ids following their names, and the Lammergeier's
-  rework: its row, the Gel's and the reinforcement row's slot-mine lines, the tables); its
-  republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
-  `dc265dc9`'s file. The live
+  `docs/design-bible.html` after every change. The live page is v0.496, dated 9 November (the
+  page's Version 501, published from main at `f048e67` on Ryan's word, "republish the bible":
+  main's file whole, since the live v0.488 matched `dc265dc9`'s byte for byte and so needed no
+  merge; it carries the hunt the composition's and the rings purged, the map session's shapes and
+  field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
+  following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
+  Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, its republish on
+  Ryan's word. BASE for the next merge is `f048e67`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
