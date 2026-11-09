@@ -551,12 +551,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits` and `designs` read first. At the page's
-  version 215 (9 November, main at `a95e0a1`, Ryan's word on the Polar Bear's id: "its exposed
-  to me as the designer reading the Hangar"): every file changed since the page last moved
-  (version 213's `eca105a`, version 214 adding only vocabulary and components), so the hunts
-  work of 8 November landed with it (the foe list's Zone gone, a composition's `hunts`), and the
-  armadillo paths removed; the 245 files not sent checked against the live listing by size and
-  all match, so main and the page agree. `edits` empty, `designs` the two folded ideas (the Giant
+  version 216 (9 November, main at `f048e67`, every id following its name on Ryan's word: "Yes,
+  rename them all"): the files changed since version 215 (main at `a95e0a1`, which the page
+  matched file for file, the Polar Bear's id and the hunts work of 8 November) and the old ids'
+  27 paths removed; the Kite's and the Buzzard's cards, models and renders and the renamed foes'
+  sprites checked on a local copy of the page. `edits` empty, `designs` the two folded ideas (the Giant
   Petrel and the Needletail, briefed), and one name candidate of Ryan's, the Tesla Gauntlets of
   28 September, still saying "the Armadillo's status" (his words of then, kept). Behind main since the Lammergeier's rework landed (9 November) by `content/chassis.json`,
   `content/components.json` and `content/vocabulary.json` (the Mines), its republish on Ryan's word.
