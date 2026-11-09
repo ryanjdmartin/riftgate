@@ -520,7 +520,7 @@ showing the number with the stacks in; one blow on each foe (no strikes past one
 from it eats each foe's own as it lands. The Suppression Battery's Suppress is
 gated on Flak, and the Backdraft Charge consumes Burning, its Suppress gated at two.
 **Burns its firer** (the Stoker's): spending it sets its own machine Burning, the stacks it
-prints, after the blow; the die in hand's forecast counts the first tick with the turn's heat.
+prints, after the blow; the round preview with the die in hand counts the first tick with the turn's heat.
 **The hopper**: a weapon that fills it puts the loads it prints in its machine's hopper for
 each foe its blows damage, after the blow, in place of what the machine's passive puts in (the
 Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most loads a shot,
@@ -1050,18 +1050,32 @@ a stat.
   a pack's.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
-  battle, each with its own water, walls, decorative ground and relief: River Crossing (a
-  river across, two or three hexes thick, with one or two fords three or four hexes wide in
-  all, a crag on a bank at most), Fjord (water down the field, two or three wide, a
-  lane two wide at least either side), Badlands (mesas in groups and two or three ponds, the
-  paths winding between), Open Steppe (a lone crag and a pond at most), Ruined City (one or
-  two bands of towers across, each with streets through it three or four hexes wide in all,
-  one to four of them), Gorge (one or two cliff walls down the field, lanes two wide at
-  least). A ford or a street is one to three hexes wide, with a hex of river or towers
-  between two. A battle that names no shape draws one by its seed, never by its domain. Every
-  map guarantees the
-  horde a crossing three hexes wide or more through its walls; the rift's mouth (rows 0 to 3)
-  and the two rows before the gate hold no water and no wall. Height is landscape and a look
+  battle, each with its own water, walls, decorative ground and relief, laid to fill the open
+  rows at any size the ramp deals, none of them a band and none an orientation. Two water
+  shapes: River Crossing (a river along the wall, two hexes thick and three where the field is
+  deep, between a bank row at the mouth's edge and one before the team's ground, with one or
+  two fords three or four hexes wide in all, a crag on a bank at most, gravel bars along its
+  banks) and Fjord (water from the rift toward the wall, two or three wide, one fjord for every
+  ten hexes of wall, each in its own stretch of it with a lane two wide at least at the field's
+  edges and four between two, shingle on its shores). Three wall shapes, a spectrum by the mass
+  and the structure of what blocks you: Gorge (cliff mass over the open rows cut by winding,
+  branching channels, a trunk for every seven hexes of wall from the mouth's edge to the team's
+  ground, one or two hexes wide, two or three branches off each, a stretch or two flooded, scree
+  at the cliffs' feet, the gorge's own sides past both edges), Ruined City (large blocks of
+  towers in a grid of streets: avenues one wide from the wall toward the rift four to five
+  columns apart, the gate's always one and two wide, side streets along the wall mid the blocks
+  whose segments are there or not, an avenue segment fallen in now and then, a plaza or two with
+  a fountain in some, a street segment or two flooded, rubble everywhere else, towers thick in
+  the scenery) and Badlands (an open field of small mesas, one to three hexes, a hex of ground
+  between any two so no straight path crosses, two or three ponds of two to four hexes, scrub at
+  the mesas' feet). And Open Steppe, the baseline (a lone crag and a pond at most for every ten
+  hexes of wall). A ford is one to three hexes wide, with a hex of river between two; the fords'
+  total is the team's number and does not scale with the wall. A battle that names no shape
+  draws one by its seed, never by its domain. Every map guarantees the
+  horde a crossing three hexes wide or more through its walls; the rift's mouth (one row for
+  every five of depth, rounded up, two at least and four at most: rows 0 to 2 at twelve deep,
+  0 to 3 at twenty) and the two rows before the gate hold no water and no wall; the rows
+  between are the shape's. Height is landscape and a look
   alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
   steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
   edges rises to three.
@@ -1079,7 +1093,8 @@ a stat.
   sealed (below); and on the field, the siege under way, the compositions the tier and the ramp
   put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
   across the width, each a move of its own from the row before the wall, and its count of
-  patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth, each the
+  patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth (a pack
+  whose opening hex the shape took goes along its row, never back into the mouth), each the
   tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
   as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
   turn short of its peak. No battle opens on a forced fight:
@@ -1228,7 +1243,7 @@ a stat.
   walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
   escalate in place.
 - **The seam** is the flattening's edge: the row the rift's bleed reaches, the first row past
-  the rift's mouth at the start (5), total on the rift's row and gone past the seam. It is the
+  the rift's mouth at the start (row 4 at twelve deep, 5 at twenty), total on the rift's row and gone past the seam. It is the
   clock's picture: no rule reads the flattened hexes.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows

@@ -25,8 +25,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1069 tests, 260,078 checks, green (9 November, `claude/playtesting-ui-feedback-hfdiok` on
-  main's 1060: the playtest list of 9 November; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1072 tests, 304,160 checks, green (9 November, `claude/playtesting-ui-feedback-hfdiok` with
+  main merged in at `d12ad6c`: main's 1062, the shapes relaid and recast and the skirmish audit's
+  step 3, and the playtest list of 9 November; Godot 4.8-beta2; either map view on 6 November);
+  about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -44,7 +46,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the music session's branch below. The
+Everything is on main as of 9 November 2026 but the two branches still working, below. `ccr-1e6e6571-7x7ayr`,
+the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
+skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
+into main, so I can try it"); it is merged and to delete with the rest. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
@@ -76,10 +81,15 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 one). Each merge commit says how its conflicts were settled.
 
 Still working (9 November; every other branch on GitHub is merged): `claude/playtesting-ui-feedback-hfdiok`,
-Ryan's playtest list of 9 November (How things stand, below), on main's `295eadd`, for main to take
-as a fast-forward on his word; and `ccr-7effd31a-u5z4gw`, the
+Ryan's playtest list of 9 November (How things stand, below), with main merged in at `d12ad6c` (the
+map session and the skirmish audit's step 3; the bible, the measurements and this file the
+conflicts, both sides' words kept), for main to take as a fast-forward on his word; and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
+9 November: `ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 (How things stand: one hit
+routine, the hidden flags gone, one round model, the behaviour trace), on Ryan's word ("Ok, merge
+into main"), main taken as it landed (the hunt and the rings, no conflict) and main taking it as
+a fast-forward. Landed
 8 November: `ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a
 long wall, the packs as designed formations, the shield the fight's resource: his direction and
 Claude's first round as `git show 68381ff:docs/long_wall_proposal.md`, the build brief
@@ -165,6 +175,38 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   within 2 of its own column for a flank, a formation the opening places and a tear's patrol, the
   rift's packs keeping the ramp's spread about the rift's column, the least crowded column of the
   window winning.
+- **The shapes relaid for the shallow field** (9 November, `ccr-1e6e6571-7x7ayr`, Ryan: "We lost a
+  lot of polish when we went to the new archetypes, and things need to be adapted to the new map
+  orientation (wide versus tall). It also needs to work for different map sizes, in case those
+  change with convergence"; the long wall brief's open item 5). The old laying kept the old
+  field's reservations as counts (a mouth of four rows, the team's two), so at twelve deep a shape
+  had rows 4 to 7, and the "down the field" shapes laid one divider sized for a wall of nine: the
+  fjord a puddle, the gorge two stubs, the steppe bare, the river a moat (the measurements of 6
+  November). Built: the rift's mouth a share of the depth (`BattleMap.mouth_rows`: a row for every
+  five of depth, two at least and four at most; three at twelve deep, so five open rows), the seam
+  and the opening reading it (a pack whose opening hex the shape took goes along its row, never
+  back into the mouth: `Battlefield.landing`'s floor); every shape laid to fill the open rows at
+  any size, "across" along the wall and "down the field" rift to wall whichever way the view
+  turns; the counts that are the field's scaled with the wall (a fjord for every ten hexes of it,
+  a cliff wall for every six, the steppe's crag and pond for every ten) and the team's not (fords
+  and streets three or four in all); a river between a bank row at the mouth's edge and one before
+  the team's ground; a city's one band mid the open rows with rubble before and after; each shape's
+  second ground along its landform in stretches from a seeded noise (gravel bars, shingle, scree,
+  `BattleMap._shore`). Then Ryan's recast of the three wall shapes the same day ("the 'vertical
+  versus horizontal' categorizations don't really hold together"; his words in the bible's shapes
+  row): a spectrum by the mass and the structure of what blocks you, water in all three. Built as
+  first cuts: the GORGE cliff mass over the open rows cut by winding, branching channels (a trunk
+  for every seven hexes of wall, two or three branches each, a flooded stretch or two); the RUINED
+  CITY large tower blocks in a grid of one-wide avenues (the gate's two wide, the roads) and
+  broken side streets, a plaza with a fountain and a flooded street now and then; the BADLANDS an
+  open field of small mesas a hex apart with ponds. A city band's streets rule retired with the
+  band; the field of every shape but the badlands and the steppe level by rule, and the scenery's
+  first ring level. Saves at 17, runs at 16. Read at 200 seeds on every shape at 20 by 12
+  (`docs/measurements.md`, 9 November, twice: the relaying, then the recast) and drawn on both
+  views (the river's bars, the gorge's mass and the city's blocks in the 3D); the to-do's Ryan
+  list has the phone judge, with the counts and the authored sectors (the long wall proposal's
+  lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
+  it (not republished: the live page's republish waits on Ryan's word, Pages below).
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
@@ -259,8 +301,15 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   unit's own mechanic is an Ability on a chip of its own that no Purge touches
   (`RIFTGATE_ABILITY_DEBUG=1`); the Musk Ox reloads once, the greater; every roll inside the
   round follows the reroll rule but the Knuckle of Fury's and the Spin-Up's, each said on the
-  die. The mine path waits for the Lammergeier's rework; the audit's structural steps are next
-  (below). Waits on Ryan's phone read of the Ability chips (the to-do).
+  die. The mine path waits for the Lammergeier's rework. Its step 3 the same day
+  (`ccr-8df9952c-4cccdf`, no behaviour changed): one hit routine (`_hit`) for the plain spend,
+  the salvo and the blast, each paying its own (`_finish_hits`, `Pays`), one `_land_blow` for
+  every blow of a hit, the hidden flags arguments and returns, the preview's recorder on its
+  copy, one `_finish_round` and one `_blow_on`; checked by the suite and `tools/behaviour_trace.gd`
+  (2,988 fights identical to main's). On his word, 9 November: the die-in-hand forecast gone
+  (`forecast` the bot's estimate of the round as it stands; the round preview the one model with
+  a die in hand, the twenty-three tests moved onto it) and the Swap's gauges on the preview while
+  it waits (Bug 16, the one visible change). Waits on Ryan's phone read of the Ability chips (the to-do).
 - **The spend's order and Sweep's columns** (7 November; the bible's section 5 Sweep, riders and
   spend's order rows): a single-target weapon's hits, their riders, the death check, the spend's
   end, then what its kills bring back (a foe getting back up, a split's halves), so nothing a
@@ -391,10 +440,11 @@ November; his phone read, the to-do), the harness's BATTLE and FIGHT tabs for it
 wall's open items (the bible's section 12: the shell, the ratings by who solos, the formations
 and the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
-is section 12's, its test the to-do's): its structural steps in order (one hit routine with its
-arguments in place of the hidden flags, the mine's half waiting for the Lammergeier's rework; one
-round model; the bot's and the screen's mirrors onto the engine, then a 30-seed direction;
-statuses as data, the Face, the dead code), since its tangles bend every read after it. The
+is section 12's, its test the to-do's): its structural steps in order (step 3 built on
+`ccr-8df9952c-4cccdf` but the mine's half, waiting for the Lammergeier's rework; then the bot's
+and the screen's mirrors onto the engine,
+then a 30-seed direction; statuses as data, the Face, the dead code, each refactor checked by
+`tools/behaviour_trace.gd`), since its tangles bend every read after it. The
 redesign moves every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on
 the refit and the audit's bot step. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
@@ -434,10 +484,11 @@ commands are in `README.md`.
   `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
   page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
   clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
-  for byte). Main's file is v0.489 (`384d3482`: the hunt the composition's, the rings purged); its
-  republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
-  `dc265dc9`'s file. `claude/playtesting-ui-feedback-hfdiok`'s is v0.490 (the playtest list of 9
-  November), unpublished, waiting on his word with main's. The live
+  for byte). Main's file is v0.491 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
+  then the map session's shapes and field rows); its republish was refused by the permission
+  check as unrequested and waits on Ryan's word, BASE `dc265dc9`'s file.
+  `claude/playtesting-ui-feedback-hfdiok`'s is v0.492 (main's and the playtest list of 9 November),
+  unpublished, waiting on his word with main's. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before

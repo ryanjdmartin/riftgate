@@ -214,10 +214,10 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		# its pace known (_open_rows, below).
 		if not forms.is_empty():
 			for k in range(nf):
-				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), BattleMap.MOUTH_ROWS), 1])
+				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), map.mouth_rows()), 1])
 		if not patrols.is_empty():
 			for k in range(np):
-				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, BattleMap.MOUTH_ROWS), 2])
+				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, map.mouth_rows()), 2])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -308,13 +308,14 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 ## probably would shy away from hitting the first battle with a fight in the first turn, that's
 ## for sure. That's just mean"); its first walk is the enemy's first turn, after the player's.
 ## A hunter's ring is the pounce, 2 (ContentDB.HUNTER_RING), and the machines open four rows or
-## more below the mouth, so the mouth's edge always clears.
+## more below the mouth (BattleMap.mouth_rows: three rows at twelve deep), so the mouth's edge
+## always clears.
 func _open_row(sq: Unit, col: int, moves: int) -> void:
-	var row := maxi(BattleMap.MOUTH_ROWS, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
-	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row))
-	while sq.behaviour == "hunt" and row > BattleMap.MOUTH_ROWS and field.catch_of(sq) != null:
+	var row := maxi(map.mouth_rows(), field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
+	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), map.mouth_rows())
+	while sq.behaviour == "hunt" and row > map.mouth_rows() and field.catch_of(sq) != null:
 		row -= 1
-		sq.pos = field.landing(sq, Hex.offset_to_axial(col, row))
+		sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), map.mouth_rows())
 
 
 ## Whether the boss's seal holds: it cannot be ordered onto and joins no fight until the Rupture.

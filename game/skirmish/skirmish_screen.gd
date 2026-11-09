@@ -1320,17 +1320,15 @@ func _refresh(save: bool = true) -> void:
 		autosave.call()
 
 
-## The forecast a machine's gauges and warnings read now: the lure preview's while a die in hand
-## would turn foes, else the round as it stands, the dragged die's own spend counted over the foe
-## under the finger (a Cryo cash). Empty for a wreck or outside the player's turn.
+## The round preview a machine's gauges and warnings read now (_update_round): the round as it
+## stands, the dragged die's own spend counted over the foe under the finger, the lure's turn
+## while a die in hand would turn foes. Empty for a wreck or outside the player's turn.
 func _forecast_for(i: int) -> Dictionary:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	if not ms.alive() or sk.state != Skirmish.State.ASSIGN:
 		return {}
 	var all: Array = _round.get("mechs", [])
-	if i < all.size():
-		return all[i]
-	return sk.forecast(ms, false)   # no preview this refresh (a Swap's second target pending)
+	return all[i] if i < all.size() else {}
 
 
 ## The lure preview (the Whip Scorpion's Siphon, 22 October): while a die whose entry Lures is
@@ -1354,10 +1352,12 @@ func _update_preview() -> void:
 ## everything that will happen but chance and the player's own choices, and "Die faces only apply
 ## to the preview when hovered over a valid target"): the die in hand counts dragged over somewhere
 ## it may be spent, or read or dragged anywhere when its Lure reaches every foe (any foe it turns
-## is its target, its pieces dealing no damage). Nothing while a Swap waits on its second target.
+## is its target, its pieces dealing no damage). While a Swap waits on its second target the round
+## as it stands, the die uncounted (the audit's Bug 16: the gauges fell back to the bot's estimate
+## there, which knows no coming chips, no next-in-line pick and no last act).
 func _update_round() -> void:
 	_round = {}
-	if sk.state != Skirmish.State.ASSIGN or not _pending.is_empty():
+	if sk.state != Skirmish.State.ASSIGN:
 		return
 	var hm := -1
 	var ht = null

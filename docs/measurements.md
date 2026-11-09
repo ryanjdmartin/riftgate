@@ -5231,6 +5231,165 @@ brief)` where it stands, and moved only on Ryan's word:
 | The beat after the Rupture | halved once, never below 1 | `sim/battle.gd:310` (`rupture`) |
 | The attack range | 1 (adjacency) | `sim/unit.gd:108` |
 
+## 9 November: the shapes relaid for the shallow field
+
+`tools/map_survey.gd -- --seeds 200 --type steppe --width 20 --height 12` on `ccr-1e6e6571-7x7ayr`
+(the shapes relaid, the to-do's map line): every shape on seeds 1 to 200 at 20 by 12, read against the
+same table of 6 November (above, "The map survey at 20 by 12"). The mouth is three rows at twelve deep
+(four on 6 November), so a shape has rows 3 to 7.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 72% | 9% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 33/55/78/81/82% | 0% | 0.0 |
+| FJORD | 81% | 8% | 0% | 12% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/79/82/82% | 0% | 0.0 |
+| BADLANDS | 54% | 30% | 0% | 3% | 12% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 30/49/69/69/82% | 19% | 0.3 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 12% | 0% | 75% | 0% | 13% | 200 of 200 at 3+ | 0.0 | 11.5 | 3.0/3.0/3.0/3.0/3.0 | 28/46/65/65/82% | 0% | 0.0 |
+| GORGE | 80% | 12% | 0% | 0% | 8% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 33/54/73/73/82% | 0% | 0.0 |
+
+Read: the shapes tell apart again by what they lay, where on 6 November three had nothing to lay
+(the fjord 5% water in one puddle, the gorge 4% walls in two stubs, the steppe bare): the fjord's
+two channels put 12% of the field under water, the gorge's three cliff walls 8% in walls, the
+steppe's crag and pond for every ten hexes of wall 1% water (none on 51 maps, a pond on 97, ponds
+on 52), and the second ground lies along the landforms (the river's bars 9% of the field, the
+fjord's shingle 8%, the gorge's scree 12%; the badlands' scrub 30%, the city's rubble 75%, the
+steppe none). Every map keeps the horde's crossing at three or more with nothing opened, and the
+route to the gate stays about 11 hexes on every shape, so the depth still parts nothing: what
+parts the shapes is the lanes, read in the reach after two phases, now widest on the steppe
+(35/59/81/81/82%) and narrowest in the city (28/46/65/65/82%), the badlands (30/49/69/69/82%)
+and the gorge (33/54/73/73/82%, the river's and the fjord's wade between). The relief stands as
+decided: level but the badlands' shoulders and the steppe's rise (3% of neighbouring land at
+different heights there, the one rise), never a lone hex but the badlands' 0.3 a map. The
+laying takes 13 ms a map. Nothing here is a decision: the shapes are judged running on the
+phone (the to-do's Ryan list) and the counts (`BattleMap.FJORD_PER`, `GORGE_PER`, `STEPPE_PER`)
+are placeholders.
+
+The two shapes the shallow field had broken, at seed 3 (`--show 3`; `~` water, `^` a wall, `"`
+rough, `=` road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 3, FJORD, fjord, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . . . . R R R . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[. . " " . . . . . . . . . " . " " . . .], , , , 
+ , , , ,[. " ~ ~ . . . . . . . . . ~ ~ ~ . . . .], , , , 
+, , , ,[. " ~ ~ ~ " . . . . . . " ~ ~ . . . . .], , , , 
+ , , , ,[. " ~ ~ . . . . . . . . " ~ ~ " . . . .], , , , 
+, , , ,[. . ~ ~ " . . . . . . . . . ~ ~ ~ " . .], , , , 
+ , , , ,[. . ~ ~ . . . . . . . . . . ~ ~ ~ " . .], , , , 
+, , , ,[. . . " . . . . . . . . . . . . " . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 3, GORGE, , narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , " ,[, , , , , , , , , , , , , , , , , , , "], , , , 
+, , , ^[. . . . . . . . . R R R . . . . . . . "]^ " , , 
+ , , , ^[" . . . . . . . . . . . . . . . . . . .]^ , , , 
+, , " ^[. . " " . . . . . " . . . . . " " . . .]^ , , , 
+ , , " ^[. " ^ . . . . . . ^ " . . . " ^ . . . .]^ " , , 
+, , " ^[" . . ^ . . . . " ^ . . . . . ^ . . . .]^ " , , 
+ , , , ^[. . . ^ . . . . " ^ " . . . . ^ . . . "]^ , , , 
+, , " ^[. . " ^ " . . . . ^ . . . . . ^ . . . .]^ " , , 
+ , , , ^[" . . ^ . . . . " ^ " . . . . ^ . . . .]^ , , , 
+, , , "[" . . " . . . . . . " . . . . . " . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
+
+### The recast of the three wall shapes, the same day
+
+The same run again (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after
+Ryan's recast of the gorge, the city and the badlands (the bible's shapes row): cliff mass cut by
+channels, tower blocks in a street grid, an open field of small mesas. The river, the fjord and
+the steppe are as above.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 72% | 9% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 33/55/78/81/82% | 0% | 0.0 |
+| FJORD | 81% | 8% | 0% | 12% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/79/82/82% | 0% | 0.0 |
+| BADLANDS | 48% | 38% | 0% | 4% | 10% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 31/52/72/73/82% | 20% | 0.1 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 18% | 0% | 52% | 1% | 29% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 24/38/52/53/82% | 0% | 0.0 |
+| GORGE | 64% | 7% | 0% | 1% | 27% | 200 of 200 at 3+ | 0.0 | 11.7 | 3.0/3.0/3.0/3.0/3.0 | 26/38/52/53/82% | 0% | 0.0 |
+
+Read: the three now part by mass and by the ground machines' room, where before they parted by
+little. The city (29% of the field in towers, the band's seven tenths) and the gorge (27%, the
+channels a third of the band) are the two heavy shapes, and their tracked reach after two phases
+falls to 24% and 26% against the steppe's 35%, the hover's to 53% against 81%, the flyer's 82%
+untouched: the mass costs the ground a third of its room and the flyer nothing, which is the
+flyer's crossing of its own. The badlands sits between (10% in small mesas, 38% scrub, tracked
+reach 31%), its paths winding but open. Every map keeps the horde's crossing at three or more
+with nothing opened; the gorge's route is the one longer one (11.7 hexes against 11.0: the
+channels wind). Water lies in all three as Ryan asked (the gorge's flooded stretches and the
+city's streets and fountains 1% each, the badlands' ponds 4%). The relief stands (the badlands'
+shoulders, the steppe's rise, the scenery's first ring level since this run). The heavy
+shapes are the floor "how far we can push it" is read against: a tracked machine with a
+quarter of the field in reach after two moves is still a decision, not a wall, since every
+apron hex stays land and every way of moving keeps a path; past this the city's one-wide
+avenues would need widening before more mass. Nothing here is a decision: the three are first
+cuts for the phone (the to-do), and the counts and chances (`BattleMap.GORGE_PER`,
+`GORGE_BRANCHES`, `CITY_SIDE_SEGMENT`, `CITY_FALLEN`, `BADLANDS_PER`) are placeholders.
+
+The three at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, GORGE, , narrowest crossing 3, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , "]" , , , 
+, , , ^[. . . . . . . . . R R R . . . . . . . .]^ , , , 
+ , , " ^[. . . . . . . . . . . . . . . . . . . .]^ , , , 
+" " , ^[. . . . . . . " " . . . . " . . . . . .]^ , " " 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ " . ^ . ^ ^ ^ ^ ^ " " ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[. . . . . . . . " . ^ . ^ ^ . . ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[. . . . . . . . . " . ^ ^ . ^ . ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[. ^ " . . . . . . " . ^ ^ ^ . . " ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ . " ^ . . . ^ ^ ^ ^ ^ ^ . ^ ^ ^ ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . . . " . . " . " . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 4, the guarantee opened 0
+ # # ^ ^[^ # # # ^ ^ ^ # ^ ^ ^ # ^ ^ # ^ # ^ ^ #]# ^ # ^ 
+# ^ # ^[^ ^ # ^ ^ ^ # ^ # ^ ^ ^ # ^ # ^ # ^ ^ #]# # # ^ 
+ ^ # # #[^ # # ^ # # # # # # # ^ ^ # ^ ^ # ^ # #]# # ^ ^ 
+^ # ^ ^[# # # # # # # # . R R R . # # # # # # #]# # ^ ^ 
+ # ^ # #[# # # # # # # # . . . . # # # # # # # #]^ # # ^ 
+^ # # ^[# # # # # # # # # # # # # # # # # # # #]^ ^ ^ ^ 
+ ^ ^ # #[^ ^ ^ ^ ^ # ^ ^ ^ ^ = # ^ ^ ^ = ^ ^ ^ ^]^ ^ # ^ 
+^ # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = ^ ^ ^ ^]# # # # 
+ # ^ # ^[^ ^ ^ ^ ^ = = = = # = # ^ ^ ^ = ^ ^ ^ ^]# # ^ ^ 
+# # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = # # ~ #]^ # # # 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = # # # #]^ ^ ^ ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" ^ " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[" " " " " " ^ " " " " " " " " " " " " "]" " " " 
+ " " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[. . . . . . . . . R R R . . . . . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+" " " "[. . . . . . . . . . . . . " " . . . . .]" " " ^ 
+ " " " "[" . . . ~ ~ . . . . . . " ^ " ~ ~ ~ " "]" " ^ " 
+^ " " "[^ " . . . . ~ ~ . " " . . " " " . " " ^]" " ^ " 
+ ^ ^ " "[" " " . " " . . " ^ " " " ^ ^ " " ^ " "]" " " " 
+" " " "[^ " ^ " " ^ " ~ ~ " " " ^ " " " ^ " " ^]" ^ " " 
+ " " " "[" " " ^ " ^ " . ~ . . " " ^ ^ " ^ " " ^]" " " " 
+" " " "[. . . " " " " . . . . . . " " " " " . "]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
+
 ## 9 November, the flankers' segments
 
 Ryan, 9 November: "the flankers should target their closest wall with a small amount of
