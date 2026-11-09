@@ -44,11 +44,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 8 November 2026 but the music session's branch below. The
-branches that landed on 3 to 8 November, each a session of its own, fully merged and to delete
+Everything is on main as of 9 November 2026 but the music session's branch below. The
+branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
-`ccr-1eaf0060-jrpw04` (the spend's order and Sweep's columns of 7 November, the Skua's base
+`ccr-d26a1321-xg9xge` (a hunter's reach, below: a composition saying whether it hunts, the rings
+purged, a hunter's ring drawn; main took it as a fast-forward on Ryan's word of 9 November,
+"merge this into main"), `ccr-1eaf0060-jrpw04` (the spend's order and Sweep's columns of 7 November, the Skua's base
 halving, every shot seen to land, the Swap in the rider phase; main took it as a fast-forward
 on Ryan's word, "Push this to main"; again on 8 November with the skirmish code audit, below), `claude/aphelion-minerva-chassis-9qf6cy` (Ryan's chassis session of 4 and 5 November: his ideas
 and Claude's first round, a brief each in `docs/briefs/` with a header the hangar reads, the
@@ -73,8 +75,7 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (8 November; every other branch on GitHub is merged): `ccr-d26a1321-xg9xge`, the
-hunter's reach (below, How things stand), off main at `1863ec5`, for main on Ryan's word; and `ccr-7effd31a-u5z4gw`, the
+Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
 8 November: `ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a
@@ -151,8 +152,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   has hunted since it entered content on 9 October, the ghoul's heir (git); what changed was its
   formation opening a move from the wall (6 November) and the HUNTED band (8 November). Saves at
   16, runs at 15. Section 12 asks whether the rank and file that still hunt (the revenants, the
-  needlers, the bombs) are fodder too, and whether the opening deals no hunter in code; his phone
-  read of the ring is the to-do's.
+  needlers, the bombs) are fodder too, and whether the opening deals no hunter in code, his to
+  settle in the formation pass (9 November: "I'll sort out the questions in the formation pass");
+  his phone read of the ring is the to-do's. On main since 9 November.
 - **The long wall, Phase 1** (6 November, `ccr-56b5169d-lsa2rg`, from
   `git show 68381ff:docs/briefs/long_wall_build.md`): the field's size the ramp's (20 by 12 for now); the battle
   opening with the siege under way (formations a move from the wall, patrols on the flanks, the
