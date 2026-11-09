@@ -183,6 +183,36 @@ turn on a machine. Not a rule the player is told, a shape of the opening, so no 
 
 ## 5. The ramp gates and the pruning, from the reads
 
+The reads: the curve read at 30 seeds (`tools/balance.gd --packs curve`), random and greedy, on
+the proposal's grids, with four teams in stock: the default four (the Honey Badger, the
+Clydesdale, the Kite, the Baboon), a light four (the Skua, the Prairie Dog, the Cottonmouth, the
+Puffin: the Skua alone is the rating of one's read), a tier-two four (the Wild Boar, the
+Clydesdale, the Buzzard, the Dingo) on tiers two and three, and a tier-three four (the
+Swallowtail, the Musk Ox, the Ammit, the Giant Petrel) on tier three; and today's compositions
+with the default four beside them. Every cell a band (free: random wins half or more; a decision:
+greedy wins half or more and random less; a wall: greedy wins less than half) with greedy's hull
+lost; a direction, called one (`docs/measurements.md`, 9 November). The tables of section 12
+carry every cell.
+
+**The gate rule**, read off the bands (Claude's, for Ryan to move). The team that reads a tier is
+its own: the default four for tier one, the tier-two four for tier two, the tier-three four for
+tier three; the light four reads the rating of one at every tier. Within a domain and a tier:
+
+- a formation that reads free at three is the tier's gentlest and carries the foot's gate, from
+  the tier's first Convergence to 7 (tier one's 0 to 7, tier two's 4 to 7);
+- a formation that reads a decision at three carries no gate: it is what a three is;
+- a formation that walls three and is a decision at four carries the top's gate, 8 to 12;
+- the heaviest formation of a tier carries no gate whatever it reads, so the coverage rule holds
+  (every Convergence from the tier's first to 12 dealt something);
+- tier three's compositions carry no gate: its five Convergences are one band;
+- a patrol rated one that reads free for the Skua alone is the foot's; one that is a decision
+  for the Skua carries no gate; one that walls the Skua and is free for the Badger is a two, or
+  the top's one; a hunter keeps its two whatever the Boar makes of it (his word, "at least").
+
+**The pruning rule**: two compositions of a domain, size and tier whose bands match at every
+size and whose questions are one question are one composition, and the lean names which goes;
+where the questions differ they both stay, the read's "same as" notwithstanding.
+
 <!-- GATES -->
 
 ## 6. The bosses as fixed entries by tier and ramp
