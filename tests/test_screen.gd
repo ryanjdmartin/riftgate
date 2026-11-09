@@ -1896,6 +1896,7 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	s._begin_second(0, first)
 	assert_eq(s._pending["primary"], first, "the die waits on its first target")
 	assert_true(s._ghost.visible and s._ghost.can_drag, "shown there, and it can be picked back up")
+	assert_true(s._forecast_for(0).has("coming"), "the gauges still read the round preview while it waits, the die uncounted (the audit's Bug 16: the bot's estimate stood in here)")
 	assert_eq(s._dice[0].modulate.a, 0.0, "its tray slot stands empty")
 	var second = null
 	for x in s.sk.swap_targets(first):

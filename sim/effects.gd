@@ -551,15 +551,12 @@ static func grant(u, m: Modifier) -> Modifier:
 
 
 ## What a play lands (Ryan, 26 October: "All incoming chips should appear as pulsing opacity
-## versions"): while `recording`, every grant and every stack added, as [unit or foe, the
-## modifier, the stacks]. Skirmish.preview_round turns it on for its copy's play and reads it back.
-static var recording := false
-static var recorded: Array = []
-
-
+## versions"): every grant and every stack added to a unit or foe that carries a recorder, noted
+## in it as [the unit or foe, the modifier, the stacks]. Skirmish.preview_round gives one to its
+## copy's machines and foes, so only the copy's play is noted and the recorder goes with the copy.
 static func _record(u, m: Modifier, n: int) -> void:
-	if recording and n > 0:
-		recorded.append([u, m, n])
+	if n > 0 and u.recorder != null:
+		u.recorder.append([u, m, n])
 
 
 ## A timed effect: gone after the end of `round`.
@@ -1616,9 +1613,9 @@ static func free_rerolls(u) -> int:
 
 
 ## Does this machine's shield pay its weapons' heat (burn_shield, static; the Storm Petrel's Riot
-## Field Generator, Ryan's go of 21 October, built 30 October)? While its shield stands, every
-## point of heat a weapon's spend would add comes off the shield instead, as far as it holds, and
-## the target takes a blow of what the shield paid (Skirmish._resolve_attack).
+## Field Generator, Ryan's go of 21 October, built 30 October)? While its shield stands, the gun's
+## own heat a weapon's spend would add comes off the shield instead, as far as it holds, and the
+## target takes a blow of what the shield paid (Skirmish._zap).
 static func burns_shield(u) -> bool:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "burn_shield":

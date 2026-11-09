@@ -238,7 +238,7 @@ func _note_forced(sk: Skirmish, ms: Skirmish.MechState) -> void:
 	var f := ms.face()
 	if f == null or not f.is_attack() or f.power <= 0:
 		return
-	var fc := sk.forecast(ms, false)
+	var fc := sk.forecast(ms)
 	if int(fc["heat_end"]) + heat_of(ms, f) <= ms.heat_max:
 		return
 	forced_holds += 1
@@ -685,8 +685,8 @@ func zap_worth(sk: Skirmish, ms: Skirmish.MechState, target: Foe, burnt: int, ou
 ## through the gap this round, a death it opens, and the shield that would have stood afterwards,
 ## at shield_score's weights, read as the shield gone.
 func burn_cost(sk: Skirmish, ms: Skirmish.MechState, burnt: int) -> float:
-	var before := sk.forecast(ms, false)
-	var after := sk.forecast(ms, false, -burnt)
+	var before := sk.forecast(ms)
+	var after := sk.forecast(ms, -burnt)
 	var lost := maxf(0.0, float(before["hull_after"])) - maxf(0.0, float(after["hull_after"]))
 	var cost := lost * HULL_WEIGHT + float(mini(burnt, int(before["shield_after"]))) * BANK_WEIGHT
 	if after["destroyed"] and not before["destroyed"]:
@@ -808,7 +808,7 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 ## over the cap burns hull, and a machine burnt out is the worst trade there is. Asked of the
 ## entry itself, not the one showing, so a reroll can weigh every entry the same way.
 func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
-	var fc := sk.forecast(ms, false)
+	var fc := sk.forecast(ms)
 	var added := int(roundf(heat_of(ms, f) * uses))
 	var over := maxi(0, int(fc["heat_end"]) + added - ms.heat_max)
 	var burn := (over - int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the added excess burns
@@ -1082,7 +1082,7 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 		# The bite is hull damage, so it banks a stack the machine's own entries spend to roll
 		# again (the Nemesis's rage): a share of the roll it will buy.
 		cost -= RAGE_BANK_WEIGHT * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms) * uses
-	var fc := sk.forecast(ms, false)
+	var fc := sk.forecast(ms)
 	if not fc["destroyed"] and int(fc["hull_after"]) - int(roundf(bite * uses)) <= 0:
 		cost += DEATH_WEIGHT
 	return cost
@@ -1501,7 +1501,7 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var score := 0.0
 	var tick := int(Effects.tick_preview(who.unit, true)["heat"])
 	if tick > 0:
-		var fc := sk.forecast(who, false)
+		var fc := sk.forecast(who)
 		var over := mini(int(fc["overheat"]), tick)
 		score += float(over * Skirmish.overheat_scale) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
 	var scorch := Effects.stacks_of(who.unit, "scorched")
@@ -1528,8 +1528,8 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 ## A shield on a machine: the hull it keeps this round (each blow costs the shield its number
 ## and the excess passes), the death it prevents, and a little for what stands afterwards.
 func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, overshield: bool = false, by: Skirmish.MechState = null) -> float:
-	var before := sk.forecast(who, false)
-	var after := sk.forecast(who, false, power, overshield)
+	var before := sk.forecast(who)
+	var after := sk.forecast(who, power, overshield)
 	var saved := maxf(0.0, float(after["hull_after"])) - maxf(0.0, float(before["hull_after"]))
 	var score := saved * HULL_WEIGHT
 	if before["destroyed"] and not after["destroyed"]:
@@ -1724,7 +1724,7 @@ static func _team_outlook(sk: Skirmish, who: Skirmish.MechState, extra_shield: i
 	var hull := 0
 	var deaths := 0
 	for ms in sk.live_mechs():
-		var fc := sk.forecast(ms, false, extra_shield if ms == who else 0)
+		var fc := sk.forecast(ms, extra_shield if ms == who else 0)
 		hull += maxi(0, int(fc["hull_after"]))
 		if fc["destroyed"]:
 			deaths += 1
@@ -1809,7 +1809,7 @@ func phased_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var after := _forecast_with(sk, who, "phased")
 	if after.is_empty():
 		return 0.0
-	return _outlook_gain(sk.forecast(who, false), after) - face_value(sk, who, who.face())
+	return _outlook_gain(sk.forecast(who), after) - face_value(sk, who, who.face())
 
 
 ## The round's end with and without a status on `who`, read in a what-if: the forecast with
@@ -1819,7 +1819,7 @@ static func _forecast_with(sk: Skirmish, who: Skirmish.MechState, status_id: Str
 	if Effects.has(who.unit, status_id):
 		return {}
 	var m := Effects.grant_buff(who.unit, status_id, 1, "what-if", sk.round)
-	var fc := sk.forecast(who, false)
+	var fc := sk.forecast(who)
 	who.unit.modifiers.erase(m)
 	return fc
 
@@ -1831,7 +1831,7 @@ func barrier_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var after := _forecast_with(sk, who, "barrier")
 	if after.is_empty():
 		return 0.0
-	return _outlook_gain(sk.forecast(who, false), after)
+	return _outlook_gain(sk.forecast(who), after)
 
 
 ## What a Ward is worth (21 October): the breach it turns away, read as the Barrier's is (the
@@ -1843,7 +1843,7 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var after := _forecast_with(sk, who, "ward")
 	if after.is_empty():
 		return 0.0
-	var score := _outlook_gain(sk.forecast(who, false), after)
+	var score := _outlook_gain(sk.forecast(who), after)
 	var n := maxi(1, who.die.faces.size())
 	var scorch := 0
 	for eff in Effects.STATUS["scorched"]["effects"]:
@@ -2084,7 +2084,7 @@ func siphon_score(sk: Skirmish, ms: Skirmish.MechState, per_blow: int) -> float:
 ## A vent on a machine: the hull its overheat would burn this round, and a little for the
 ## room it makes.
 func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
-	var fc := sk.forecast(who, false)
+	var fc := sk.forecast(who)
 	var saved := mini(power, int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the vent keeps from the burn
 	var score := float(saved) * HULL_WEIGHT
 	if fc["destroyed"] and int(fc["overheat"]) > 0 and int(fc["hull_after"]) + saved > 0:

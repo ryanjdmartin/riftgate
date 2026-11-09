@@ -112,7 +112,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   a condition opened or with the foes' heat stacks scaled (`special_probe_read.py` reads its
   parts); `chain_probe.gd` plays a squad through one domain's formation up to nine times in a
   row with its damage carried, for the quick campaign (`chain_probe_read.py` reads its parts);
-  `quick_run.gd` plays whole quick campaigns and writes `docs/quick_run.md`; `endgame_fours.py`
+  `quick_run.gd` plays whole quick campaigns and writes `docs/quick_run.md`; `behaviour_trace.gd`
+  records the skirmish engine byte for byte over 2,988 seeded fights, for a refactor that must
+  change nothing to be compared against main's (the skirmish code audit's steps); `endgame_fours.py`
   fits the five
   endgame fours up to tier two and runs them through the loop driver; `pricing_run.py` is the
   pricing run's driver (every stocked piece by knock-out, every slottable component and every
@@ -391,6 +393,12 @@ python3 tools/special_probe_read.py build
 perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
 python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squads build/endgame_fours.json
 python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain_1.json build/chain_2.json build/chain_3.json
+# the behaviour trace (8 November), for a change that must change nothing: stock teams and teams fitted with every
+# component against every composition, boss and spawn at each tier, random and greedy, two seeds; every spend's
+# previews, forecasts, blows and whole fight state, an md5 a line. Run it on main (a worktree) and on the change,
+# four parts each (about four minutes), then cmp the two; --fight "<id from a .log's ### line>" writes one fight whole
+for i in 0 1 2 3; do perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/behaviour_trace.gd -- --out build/trace_$i --part $i/4 & done; wait
+cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log > build/trace.log   # then cmp each with the other tree's
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, termtip (the first machine's codex with the
