@@ -160,7 +160,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   and merges the reads into the tables; it retires with the proposal). What the reads said: at
   tier one only the massive-anchored formations are a decision for three (the sandworm ambush,
   the magma vent), every fodder formation reads free for three at eight foes and the eight-slot
-  variants move no band against the six (fourteen prunings), so the fodder's lever is the refit's
+  variants move no band against the six (twelve prunings), so the fodder's lever is the refit's
   numbers; two-anchor formations written after the first read are true threes at tier two (the
   grove and bloom, the pit wall); every domain has true ones for the Skua alone (the Peak's the
   new ember pair); the antlions, the pit pair, the queen's hunt and the grenade and balloon
@@ -394,7 +394,7 @@ to-do's Ryan list). Ahead of all of it: Ryan's play of the long wall with its vi
 November; his phone read, the to-do), the harness's BATTLE and FIGHT tabs for it; then the long
 wall's open items (the bible's section 12: the shell, then the formation pass's proposal
 (`docs/formation_proposal.md`, 9 November: the ratings by who solos and the formations together,
-his marks on its ten questions, then the content), then the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
+his marks on its thirteen questions, then the content), then the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
 is section 12's, its test the to-do's): its structural steps in order (one hit routine with its
 arguments in place of the hidden flags, the mine's half waiting for the Lammergeier's rework; one

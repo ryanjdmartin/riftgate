@@ -339,7 +339,7 @@ of 23 October want little fodder and dense fights; the rest carry none.
 | `lichs_court` | formation, 3 | wall 99% at three, decision 75% at four · wall · wall 98%, decision 81% · wall 100%, decision 59% | 11 to 12 | keep: a four by every read, the last battles' formation (a true four is the elites' and the bosses', so it stays a three on the map and earns the top's gate) |
 | `charnel_pit` | formation, 3 | decision 46% · wall · decision 61% · wall 68% at three, decision 16% at four | none | keep: a decision for three for the default and tier-two teams, a wall for the tier-three team, whose three (the Swallowtail, the Musk Ox, the Ammit) has no burst for the knit |
 | `wraith_choir` | formation, 3 | decision 68% · — · decision 71% · wall 84% at three, decision 30% at four | none | keep: a decision for three for the default and tier-two teams, a wall for the tier-three team as the charnel pit is (two grave guards, a question the pit does not ask) |
-| `wraith_host` | formation, 3 | decision 27% · — · — · <!-- HOST3 --> | none | keep: the choir thinned by a knight and a spectre, a decision for three for the default four at a quarter of its hull, the Marsh's lightest tier-three three |
+| `wraith_host` | formation, 3 | decision 27% · — · — · decision 44% | none | keep: the choir thinned by a knight and a spectre, a decision for three for the default four (27%) and for the tier-three four (44%), the Marsh's tier-three three |
 | `dread_host` | formation, 3 | wall 94% at four · wall · wall 96% at four · wall 85% at four | — | prune: a wall for four on every read (two death throes, a grave guard and four raisers), beyond what a formation may be |
 | `wight_shamblers` | patrol, 1 (tiers 2, 3) | free 14% · wall 100% · free 18% · decision 56% | none | keep: a one |
 | `wraiths_wake` | patrol, 1 | decision 42% · wall 100%, decision 37% at two · decision 49% · wall 98% at one, free 4% at two | none | keep, rated two: a decision for the Badger and the Boar alone, a wall for the Swallowtail |
@@ -545,4 +545,324 @@ it), and the compositions of its domain, size and tier whose bands match it at e
 read (the pruning rule's candidates). The elites and the escorts are not here: they stand as
 content has them.
 
-<!-- TABLES -->
+### The Meadow
+
+
+**Tier 1**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `goblin_warband` | formation | 3 | — | Goblin, Goblin, Goblin, Goblin | Mandragora, Mandragora, ·, · | The screamers cost a reroll each round they stand and every knife adds up with every goblin standing: kill count, or reach the two at the back first (they stand behind the knives). | today's, kept as the foot variant |
+| `goblin_horde` | formation | 3 | — | Goblin, Goblin, Goblin, Goblin | Mandragora, Mandragora, Mandragora, Mandragora | Eight: four knives that add up and four screamers behind them, every column walled. Area on the front, then the back; the rerolls go a point a round while the screamers stand. | new, the eight-slot variant for the ramp's middle and top |
+| `treant_grove` | formation | 3 | — | Treant, Goblin, Goblin, Goblin | ·, Mandragora, Mandragora, Mandragora | The treant fills its column and regrows what you cut; the three screamers stand behind the goblins: open a hole to reach one, and decide whether the tree or the back goes first. | today's with a third mandragora |
+| `gel_wall` | formation | 3 | — | Gel, Gel, Gel, Gel | Mandragora, Mandragora, Mandragora, · | Four gels split into eight halves and hold the line; the screamers behind drain the rerolls while they do. Area clears the halves, Indirect reaches past them. | new; today's gel_cluster was four gels as a patrol for one, a twenty-round slog |
+| `goblin_raiders` | patrol | 1 | — | Goblin, Goblin, Goblin, · | ·, ·, ·, · | Three knives that add up: kill one and the other two hit softer. | new, a true one |
+| `screamer_picket` | patrol | 1 | — | Goblin, Goblin, ·, · | ·, ·, Mandragora, · | A screamer behind two knives, its column open: reach it or lose a reroll a round. | new, a true one |
+| `gel_pair` | patrol | 1 | — | Gel, Gel, ·, · | ·, ·, ·, · | Two gels, four halves: a wall for one machine; area or patience. | new; the gel_cluster's patrol half |
+| `wolf_pack` | patrol | 2 | slowest | Dire Wolf, Dire Wolf, Dire Wolf, Dire Wolf | ·, ·, ·, · | Four wolves pounce on the slowest machine and howl each other on: keep the slow one in company, or kill two before the howls stack. | today's three made four and rated two: the Meadow's hunter |
+
+Tier 1: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `goblin_warband` | 3 | 20 | F 51% | F 3% | F 0% | F 0% | W 100% | F 13% | F 0% | F 0% |  |
+| `goblin_horde` | 3 | 28 | D 63% | F 9% | F 1% | F 0% | W 100% | D 54% | F 2% | F 1% | gel_wall |
+| `treant_grove` | 3 | 36 | W 100% | F 32% | F 7% | F 2% | W 100% | W 98% | D 16% | D 2% |  |
+| `gel_wall` | 3 | 32 | D 57% | F 20% | F 4% | F 1% | W 100% | W 96% | F 7% | F 1% | goblin_horde |
+| `goblin_raiders` | 1 | 9 | F 2% | F 0% | F 0% | F 0% | F 32% | F 0% | F 0% | F 0% | gel_pair, screamer_picket, wolf_pack |
+| `screamer_picket` | 1 | 10 | F 0% | F 0% | F 0% | F 0% | F 12% | F 0% | F 0% | F 0% | gel_pair, goblin_raiders, wolf_pack |
+| `gel_pair` | 1 | 10 | F 1% | F 0% | F 0% | F 0% | F 21% | F 0% | F 0% | F 0% | goblin_raiders, screamer_picket, wolf_pack |
+| `wolf_pack` | 2 | 16 | F 4% | F 0% | F 0% | F 0% | F 21% | F 0% | F 0% | F 0% | gel_pair, goblin_raiders, screamer_picket |
+
+**Tier 2**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `guard_warband` | formation | 3 | — | Goblin Guard, Goblin Guard, Goblin Guard, Goblin Guard | Mandrake, Mandrake, Mandrake, · | Guards brace a point of plate between stabs; the mandrakes behind drain rerolls. Flak or one big blow for the plate, reach for the back. | today's two goblins made guards |
+| `guard_horde` | formation | 3 | — | Goblin Guard, Goblin Guard, Goblin Guard, Goblin Guard | Mandrake, Mandrake, Mandrake, Mandrake | Eight, every column walled: four braced knives and four screamers. | new, the eight-slot variant |
+| `treant_march` | formation | 3 | — | Dusk Treant, Goblin Guard, Goblin Guard, Goblin Guard | ·, Mandrake, Mandrake, Mandrake | The dusk treant regrows four and below half its roots come up under every machine: shield the storm, burst past the regen, while the guards' plate and the mandrakes' screams cost the time you need. | today's with a third mandrake |
+| `rotblooms_bed` (tiers 2, 3) | formation | 3 | — | Rotbloom, Goblin Guard, Goblin Guard, · | ·, Mandrake, ·, · | Bad Breath lays burning, heat, a disable and a corruption on every machine at once (a Cleanse, or a Ward); below half it seeds two mandragoras into the open ground behind. Kill it before it seeds, or kill what it seeds. | today's with one mandrake, so the seedfall has two cells to land in |
+| `gel_drift` | formation | 3 | — | Bubble Gel, Bubble Gel, Gel, Gel | Mandrake, Mandrake, ·, · | Skinned gels shrug a point off every blow and still split; the mandrakes behind the plate drain the rerolls while you work. Flak and area. | today's patrol for one (a sixteen-round slog) made a formation with a back |
+| `grove_and_bloom` | formation | 3 | — | Dusk Treant, Rotbloom, Goblin Guard, Goblin Guard | ·, ·, Mandrake, Mandrake | Two anchors: the bloom's breath and the treant's root storm, each a telegraph, behind two braced guards, with the mandrakes draining the rerolls the burst needs. Which anchor first is the fight. | new, the two-anchor variant for the ramp's top (the tier-two team read every other tier-two formation free at three) |
+| `guard_raiders` | patrol | 1 | — | Goblin Guard, Goblin Guard, Goblin Guard, · | ·, ·, ·, · | Three guards: a point of plate when they brace, knives that add up when they do not. | new |
+| `mandrake_picket` | patrol | 1 | — | Goblin Guard, Goblin Guard, ·, · | ·, ·, Mandrake, · | A mandrake behind two braced knives, its column open. | new |
+| `bubble_pair` | patrol | 1 | — | Bubble Gel, Bubble Gel, ·, · | ·, ·, ·, · | Two skinned gels, four halves behind a point of plate. | new |
+| `warg_pack` | patrol | 2 | weakest | Warg, Warg, Warg, Warg | ·, ·, ·, · | Wargs run down the weakest machine on the field: the hurt one is the prey, so it fights in company or alone to the death. | today's, rated two: the Meadow's hunter |
+
+Tier 2: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Tier-two four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `guard_warband` | 3 | 31 | W 89% | F 8% | F 1% | F 0% | W 99% | D 29% | F 1% | F 0% | F 53% | F 4% | F 0% | F 0% | gel_drift, guard_horde, rotblooms_bed |
+| `guard_horde` | 3 | 36 | W 94% | F 14% | F 2% | F 0% | W 100% | D 66% | F 4% | F 1% | D 66% | F 8% | F 1% | F 0% | gel_drift, guard_warband, rotblooms_bed |
+| `treant_march` | 3 | 45 | W 100% | D 47% | F 12% | F 3% | W 100% | W 100% | D 37% | D 5% | W 100% | D 44% | F 10% | F 4% |  |
+| `rotblooms_bed` | 3 | 31 | W 98% | F 18% | F 3% | F 1% | W 100% | W 100% | D 55% | F 12% | W 95% | F 16% | F 3% | F 2% | gel_drift, guard_horde, guard_warband |
+| `gel_drift` | 3 | 32 | W 98% | F 27% | F 4% | F 1% | W 100% | W 100% | D 9% | F 2% | D 73% | F 20% | F 3% | F 1% | guard_horde, guard_warband, rotblooms_bed |
+| `grove_and_bloom` | 3 | 54 |  |  |  |  |  |  |  |  | W 100% | W 100% | D 41% | F 23% |  |
+| `guard_raiders` | 1 | 12 | F 4% | F 0% | F 0% | F 0% | F 23% | F 0% | F 0% | F 0% | F 0% | F 0% | F 0% | F 0% | bubble_pair, mandrake_picket, warg_pack |
+| `mandrake_picket` | 1 | 13 | F 3% | F 0% | F 0% | F 0% | F 17% | F 0% | F 0% | F 0% | F 0% | F 0% | F 0% | F 0% | bubble_pair, guard_raiders, warg_pack |
+| `bubble_pair` | 1 | 12 | F 11% | F 0% | F 0% | F 0% | W 100% | D 7% | F 0% | F 0% | F 11% | F 0% | F 0% | F 0% | guard_raiders, mandrake_picket, warg_pack |
+| `warg_pack` | 2 | 20 | F 14% | F 0% | F 0% | F 0% | D 40% | F 2% | F 0% | F 0% | F 7% | F 0% | F 0% | F 0% | bubble_pair, guard_raiders, mandrake_picket |
+
+**Tier 3**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `rotblooms_bed` (tiers 2, 3) | formation | 3 | — | Rotbloom, Goblin Guard, Goblin Guard, · | ·, Mandrake, ·, · | Bad Breath lays burning, heat, a disable and a corruption on every machine at once (a Cleanse, or a Ward); below half it seeds two mandragoras into the open ground behind. Kill it before it seeds, or kill what it seeds. | today's with one mandrake, so the seedfall has two cells to land in |
+| `captains_warband` | formation | 3 | — | Goblin Guard, Goblin Guard, Goblin Guard, Goblin Guard | Goblin Captain, Goblin Captain, Alraune, Alraune | Two captains shout the warband harder each round and two alraunes turn the die's shown entry to wood: the back rank is the fight, behind a wall of braced guards. | today's |
+| `wolfrider_warband` | formation | 3 | — | Alpha Warg, Alpha Warg, Goblin Guard, Goblin Guard | Goblin Captain, ·, Alraune, Alraune | Alphas howl for two and the captain shouts: the rallies stack on every blow. Kill the voices first, or every knife is a club. | today's alpha_hunt as a pusher: a hunting formation rated three catches a lone machine in a fight it cannot win |
+| `metal_drift` | formation | 3 | — | Metal Gel, Metal Gel, Bubble Gel, Bubble Gel | Mandrake, Mandrake, Alraune, Goblin Captain | Three points of plate on the metal gels: Flak, Empowered or one big blow, while the captain rallies and the alraunes disable. | today's |
+| `treant_wilds` | formation | 3 | — | Frost Treant, Goblin Guard, Goblin Guard, Goblin Guard | ·, Alraune, Alraune, · | The frost treant regrows five and its roots come up under everyone below half; the alraunes behind the guards disable what you show. | today's |
+| `frost_and_bloom` | formation | 3 | — | Frost Treant, Rotbloom, Goblin Guard, Goblin Guard | ·, ·, Alraune, Goblin Captain | The frost treant and the bloom side by side, a captain shouting and an alraune disabling behind the guards: two telegraphs, a rally and a disable, the Meadow at its densest. | new, the two-anchor variant for the ramp's top |
+| `alpha_pack` | patrol | 2 | weakest | Alpha Warg, Alpha Warg, Alpha Warg, · | ·, ·, ·, · | Three alphas, each howling for two, run down the weakest machine. | today's four made three and rated two: the Meadow's hunter |
+| `captains_raiders` | patrol | 1 | — | Goblin Guard, Goblin Guard, Goblin Guard, · | ·, ·, ·, Goblin Captain | A captain behind three guards shouts them harder; its column is open: reach it first. | new |
+| `metal_pair` | patrol | 2 | — | Metal Gel, Metal Gel, ·, · | ·, ·, ·, · | Two gels of living metal, three plate each: nothing small lands. Flak, Empowered or a big blow. | new, a heavy patrol |
+
+Tier 3: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Tier-two four: 1 | 2 | 3 | 4 | Tier-three four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `rotblooms_bed` | 3 | 31 | W 98% | F 18% | F 3% | F 1% | W 100% | W 100% | D 55% | F 12% | W 95% | F 16% | F 3% | F 2% | W 100% | F 41% | F 6% | F 2% | captains_warband, wolfrider_warband |
+| `captains_warband` | 3 | 40 | W 100% | F 19% | F 3% | F 0% | W 100% | W 93% | D 9% | F 2% | D 91% | F 12% | F 1% | F 1% | W 100% | F 32% | F 3% | F 0% | rotblooms_bed, wolfrider_warband |
+| `wolfrider_warband` | 3 | 41 | W 99% | F 15% | F 1% | F 0% | W 100% | W 95% | D 10% | F 2% | W 96% | F 11% | F 1% | F 0% | W 100% | F 27% | F 4% | F 0% | captains_warband, rotblooms_bed |
+| `metal_drift` | 3 | 46 | W 100% | D 80% | D 23% | F 7% | W 100% | W 100% | W 97% | D 40% | W 100% | D 68% | F 20% | F 9% | W 100% | D 81% | F 23% | F 5% | treant_wilds |
+| `treant_wilds` | 3 | 47 | W 100% | D 54% | F 13% | F 3% | W 100% | W 100% | W 84% | D 14% | W 100% | D 59% | F 11% | F 6% | W 100% | W 89% | F 15% | F 4% | metal_drift |
+| `frost_and_bloom` | 3 | 59 |  |  |  |  |  |  |  |  | W 100% | W 100% | D 56% | D 31% | W 100% | W 100% | D 72% | F 27% |  |
+| `alpha_pack` | 2 | 21 | F 16% | F 1% | F 0% | F 0% | W 100% | F 4% | F 0% | F 0% | F 28% | F 0% | F 0% | F 0% | D 61% | F 1% | F 0% | F 0% | captains_raiders, metal_pair |
+| `captains_raiders` | 1 | 17 | F 10% | F 0% | F 0% | F 0% | D 59% | F 1% | F 0% | F 0% | F 5% | F 0% | F 0% | F 0% | D 42% | F 1% | F 0% | F 0% | alpha_pack, metal_pair |
+| `metal_pair` | 2 | 12 | D 62% | F 4% | F 0% | F 0% | W 100% | W 100% | F 3% | F 1% | F 23% | F 1% | F 0% | F 0% | D 67% | F 1% | F 0% | F 0% | alpha_pack, captains_raiders |
+
+### The Waste
+
+
+**Tier 1**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `needler_swarm` | formation | 3 | — | Needler, Needler, Needler, Needler | Cockatrice, Cockatrice, ·, · | Ten needles each, through the shield: this fight is paid in hull, so it is a race. The cockatrices turn the shown entry to stone, so a second weapon on the die matters. | today's, pushing now (the needlers are fodder: nobody has seen one move) |
+| `needler_thicket` | formation | 3 | — | Needler, Needler, Needler, Needler | Cockatrice, Cockatrice, Cockatrice, Cockatrice | Eight: four needlers and four stares, every column walled. | new, the eight-slot variant |
+| `sandworm_ambush` | formation | 3 | — | Sandworm, Needler, Needler, Needler | ·, Cockatrice, Cockatrice, · | The worm bites through the shield and digs in when hurt, three plate until it acts again: hit it when it is not dug in, while the needlers cost hull. | today's with a second cockatrice |
+| `antlion_pit` | formation | 3 | — | Antlion, Antlion, Needler, Needler | Cockatrice, Cockatrice, ·, · | Antlions dig in below half: finish one or leave it whole, never leave it half. | new |
+| `needler_scouts` (tiers 1, 2) | patrol | 1 | — | Needler, Needler, Needler, · | ·, ·, ·, · | Three needlers: nine through the shield a round, two HP each. | today's, pushing now |
+| `needler_pair` | patrol | 1 | — | Needler, Needler, ·, · | ·, ·, ·, · | Two needlers: six through the shield a round, and two dice kill them. | new, a true one |
+| `cockatrice_roost` | patrol | 1 | — | Needler, ·, ·, · | ·, Cockatrice, Cockatrice, · | Two stares turn your die to stone, one needler in front: the birds are open, kill them. | new |
+| `antlion_pair` | patrol | 2 | slowest | Antlion, Antlion, ·, · | ·, ·, ·, · | Two antlions wait under the sand for the slowest machine; hurt, they dig in. | today's, rated two: the Waste's hunter |
+| `antlion_trio` | patrol | 2 | slowest | Antlion, Antlion, Antlion, · | ·, ·, ·, · | Three antlions on the slowest machine. | new, the heavier hunter candidate |
+
+Tier 1: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `needler_swarm` | 3 | 28 | D 86% | F 14% | F 6% | F 2% | D 26% | F 8% | F 2% | F 1% | antlion_pit |
+| `needler_thicket` | 3 | 36 | W 99% | F 15% | F 8% | F 2% | D 73% | D 16% | F 2% | F 0% |  |
+| `sandworm_ambush` | 3 | 41 | W 100% | D 80% | D 37% | F 20% | W 100% | W 100% | W 100% | W 92% |  |
+| `antlion_pit` | 3 | 34 | D 78% | F 8% | F 3% | F 1% | W 100% | D 52% | F 3% | F 1% | needler_swarm |
+| `needler_scouts` | 1 | 15 | F 26% | F 4% | F 0% | F 0% | F 19% | F 5% | F 0% | F 0% | antlion_pair, cockatrice_roost, needler_pair |
+| `needler_pair` | 1 | 10 | F 9% | F 0% | F 0% | F 0% | F 12% | F 1% | F 0% | F 0% | antlion_pair, cockatrice_roost, needler_scouts |
+| `cockatrice_roost` | 1 | 13 | F 10% | F 0% | F 0% | F 0% | F 1% | F 0% | F 0% | F 0% | antlion_pair, needler_pair, needler_scouts |
+| `antlion_pair` | 2 | 16 | F 9% | F 0% | F 0% | F 0% | W 99% | F 4% | F 0% | F 0% | cockatrice_roost, needler_pair, needler_scouts |
+| `antlion_trio` | 2 | 24 | D 36% | F 3% | F 0% | F 0% | W 100% | D 32% | F 1% | F 0% |  |
+
+**Tier 2**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `needler_scouts` (tiers 1, 2) | patrol | 1 | — | Needler, Needler, Needler, · | ·, ·, ·, · | Three needlers: nine through the shield a round, two HP each. | today's, pushing now |
+| `barbed_swarm` | formation | 3 | — | Barbed Needler, Barbed Needler, Needler, Needler | Basilisk, The Djinn, Basilisk, · | Barbs through the shield that corrupt the entry you show, basilisks that stone your guns, and a djinn that unmakes your buffs: the Waste's whole hand, every piece behind a needler. | today's, pushing now; the djinn moved to the middle |
+| `pit_ambush` | formation | 3 | — | Pit Antlion, Pit Antlion, Barbed Needler, Barbed Needler | Basilisk, Basilisk, ·, · | Pit antlions bite through the shield and, hurt, sink behind a barrier that eats the next weapon blow: pop it with a cheap blow, then hit. | today's needlers made barbed, pushing now |
+| `sandworm_pit` | formation | 3 | — | Night Sandworm, Barbed Needler, Barbed Needler, Barbed Needler | ·, Basilisk, Basilisk, · | The night worm bites through the shield, digs in when hurt and heaves the ground under everyone below half. | today's |
+| `djinns_mirage` | formation | 3 | — | Barbed Needler, Barbed Needler, Needler, Needler | The Djinn, The Djinn, Basilisk, · | Two djinns unmake the buffs on the machine that carries the most, and hide in a mirage when hurt: buff late, or kill them first. | new, the Waste's purge formation |
+| `pit_wall` | formation | 3 | — | Pit Antlion, Pit Antlion, Pit Antlion, Pit Antlion | Basilisk, The Djinn, Basilisk, · | Four pits: breaching jaws, and a barrier each when hurt that eats the next weapon blow. Pop them cheap one at a time, under the basilisks' stone and the djinn's unmaking. | new, the anchor-heavy variant for the ramp's top (the barbed swarm and the mirage read as decisions for one) |
+| `barbed_scouts` | patrol | 2 | — | Barbed Needler, Barbed Needler, Barbed Needler, · | ·, ·, ·, · | Three barbs: through the shield, and the entry you show bites when spent. | new, rated two by the reads (a decision for the Badger alone, a wall for the Skua) |
+| `basilisk_nest` | patrol | 1 | — | Barbed Needler, ·, ·, · | ·, Basilisk, Basilisk, · | Two basilisks aim at a machine showing a gun and stone it; one barb in front. The birds are open. | new |
+| `pit_pair` | patrol | 2 | slowest | Pit Antlion, Pit Antlion, ·, · | ·, ·, ·, · | Two pit antlions wait for the slowest machine: breaching jaws and a barrier when hurt. | today's four made two and rated two: the Waste's hunter |
+
+Tier 2: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Tier-two four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `needler_scouts` | 1 | 15 | F 26% | F 4% | F 0% | F 0% | F 19% | F 5% | F 0% | F 0% | F 16% | F 3% | F 0% | F 0% | barbed_scouts, basilisk_nest |
+| `barbed_swarm` | 3 | 39 | W 100% | F 19% | F 8% | F 2% | W 100% | D 41% | F 1% | F 1% | D 89% | F 16% | F 5% | F 1% | djinns_mirage |
+| `pit_ambush` | 3 | 44 | W 100% | D 42% | F 11% | F 7% | W 100% | W 100% | D 40% | D 24% | W 100% | D 41% | F 16% | F 9% |  |
+| `sandworm_pit` | 3 | 51 | W 100% | W 100% | D 60% | F 23% | W 100% | W 100% | W 100% | W 96% | W 100% | W 100% | D 44% | F 28% |  |
+| `djinns_mirage` | 3 | 38 | W 100% | F 20% | F 8% | F 3% | W 100% | D 36% | F 2% | F 1% | D 78% | F 14% | F 4% | F 1% | barbed_swarm |
+| `pit_wall` | 3 | 57 |  |  |  |  |  |  |  |  | W 100% | W 97% | D 43% | F 26% |  |
+| `barbed_scouts` | 2 | 18 | D 49% | F 6% | F 1% | F 0% | W 85% | F 17% | F 1% | F 1% | F 34% | F 6% | F 1% | F 0% | basilisk_nest, needler_scouts, pit_pair |
+| `basilisk_nest` | 1 | 18 | F 20% | F 1% | F 0% | F 0% | W 88% | F 9% | F 0% | F 0% | F 6% | F 0% | F 0% | F 0% | barbed_scouts, needler_scouts |
+| `pit_pair` | 2 | 20 | D 76% | F 13% | F 1% | F 0% | W 100% | W 93% | F 18% | F 8% | D 76% | F 13% | F 5% | F 2% | barbed_scouts |
+
+**Tier 3**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `great_swarm` | formation | 3 | — | Great Needler, Great Needler, Barbed Needler, Barbed Needler | Gorgon, Gorgon, Basilisk, Basilisk | Two great needlers gather for two rounds and put every needle through the shield at once: kill them, suppress them or shield their picks; the gorgons corrupt what you show. | today's, pushing now |
+| `queens_court` | formation | 3 | — | Antlion Queen, Pit Antlion, Pit Antlion, Barbed Needler | Gorgon, Gorgon, Basilisk, Basilisk | The queen's Devour is called a round ahead and comes through the shield; hurt, she digs in behind three plate. Shield the pick, pop the pits' barriers cheaply. | today's, pushing now |
+| `mirage_court` | formation | 3 | — | Great Needler, Barbed Needler, Barbed Needler, Barbed Needler | The Djinn, The Djinn, Gorgon, Gorgon | Two djinns and two gorgons behind the barbs: your buffs unmade and your shown entry corrupted or stoned every round. Play unbuffed with a second weapon, or reach the back. | new, in gorgon_glare's place, which read as the great swarm |
+| `sandworm_flats` | formation | 3 | — | Salt Sandworm, Great Needler, Great Needler, Great Needler | ·, Gorgon, Gorgon, · | The salt worm, oldest of its line, with three gatherers beside it and two gorgons behind them. | today's |
+| `great_scouts` | patrol | 1 | — | Great Needler, Barbed Needler, Barbed Needler, · | ·, ·, ·, · | One gatherer among the barbs: kill it inside two rounds or shield its pick. | today's four made three, pushing now |
+| `gorgon_pair` | patrol | 2 | — | Barbed Needler, ·, ·, · | ·, Gorgon, Gorgon, · | Two gorgons corrupt and stone what you show, one barb in front; the gorgons are open. | new, rated two by the reads (the stares wall a lone machine with few entries) |
+| `queens_hunt` | patrol | 2 | slowest | Antlion Queen, Pit Antlion, Pit Antlion, · | ·, ·, ·, · | The queen and two pits wait for the slowest machine: Devour called a round ahead, barriers when hurt. | new: the Waste's hunter at tier three, the antlion line |
+
+Tier 3: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Tier-two four: 1 | 2 | 3 | 4 | Tier-three four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `great_swarm` | 3 | 62 | W 100% | D 51% | F 15% | F 6% | W 100% | W 100% | D 30% | F 9% | W 100% | D 41% | F 11% | F 4% | W 100% | D 63% | F 17% | F 7% | mirage_court |
+| `queens_court` | 3 | 66 | W 100% | W 96% | D 21% | F 13% | W 100% | W 100% | W 100% | D 81% | W 100% | W 93% | D 33% | F 16% | W 100% | D 84% | D 48% | F 16% | sandworm_flats |
+| `mirage_court` | 3 | 54 | W 100% | D 58% | F 14% | F 8% | W 100% | W 100% | D 30% | F 8% | W 100% | D 46% | F 13% | F 5% | W 100% | D 58% | F 16% | F 6% | great_swarm |
+| `sandworm_flats` | 3 | 74 | W 100% | W 100% | D 75% | F 30% | W 100% | W 100% | W 100% | W 100% | W 100% | W 100% | D 62% | F 37% | W 100% | W 100% | D 76% | F 29% | queens_court |
+| `great_scouts` | 1 | 24 | F 48% | F 7% | F 1% | F 0% | W 94% | F 22% | F 2% | F 0% | F 36% | F 6% | F 1% | F 0% | D 60% | F 11% | F 4% | F 1% | gorgon_pair |
+| `gorgon_pair` | 2 | 20 | D 30% | F 2% | F 0% | F 0% | W 100% | D 27% | F 2% | F 1% | F 34% | F 0% | F 0% | F 0% | W 90% | F 3% | F 0% | F 0% | great_scouts, queens_hunt |
+| `queens_hunt` | 2 | 34 | W 100% | F 35% | F 7% | F 5% | W 100% | W 100% | D 32% | F 15% | W 99% | F 34% | F 11% | F 8% | W 100% | F 47% | F 21% | F 8% | gorgon_pair |
+
+### The Marsh
+
+
+**Tier 1**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `grave_host` | formation | 3 | — | Revenant, Revenant, Revenant, Revenant | Ghost, Ghost, Ghost, · | Three ghosts raise a revenant into every gap you open: kill the ghosts or the host never thins; the claws add up while it stands. | today's, pushing now (fodder by the goblin's codex, nearly word for word) |
+| `grave_throng` | formation | 3 | — | Revenant, Revenant, Revenant, Revenant | Ghost, Ghost, Ghost, Ghost | Eight: four claws and four raisers, every column walled. | new, the eight-slot variant |
+| `barrow_mound` | formation | 3 | — | Barrow Giant, Revenant, Revenant, Revenant | ·, Ghost, Ghost, · | The giant knits three a round for three rounds once hurt: burst it or purge the mending; the ghosts refill the line. | today's with a second ghost |
+| `knights_vigil` | formation | 3 | — | Zombie Knight, Zombie Knight, Revenant, Revenant | Ghost, Ghost, ·, · | Knights ready themselves once hurt and get back up whole: take one from full to dead in a round, or kill the ghosts that raise the rest. | new |
+| `revenant_shamblers` | patrol | 1 | — | Revenant, Revenant, Revenant, · | ·, ·, ·, · | Three claws that add up. | today's, pushing now |
+| `ghost_light` | patrol | 1 | — | Revenant, Revenant, ·, · | ·, ·, Ghost, · | A ghost behind two revenants, its column open: kill it before the line fills. | new, a true one |
+| `knights_retinue` | patrol | 2 | — | Zombie Knight, Zombie Knight, Revenant, · | ·, ·, ·, · | Two knights in armour with breaching cleavers, each getting up once: a fight for two. | today's, rated two (a wall for one in the promise read) |
+
+Tier 1: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `grave_host` | 3 | 24 | W 91% | F 9% | F 1% | F 0% | W 100% | D 50% | F 1% | F 0% | grave_throng |
+| `grave_throng` | 3 | 28 | W 100% | F 16% | F 1% | F 0% | W 100% | W 89% | F 3% | F 1% | grave_host |
+| `barrow_mound` | 3 | 32 | W 100% | D 26% | F 6% | F 2% | W 100% | W 100% | D 23% | D 2% | knights_vigil |
+| `knights_vigil` | 3 | 32 | W 100% | D 51% | F 15% | F 8% | W 100% | W 100% | W 100% | D 76% | barrow_mound |
+| `revenant_shamblers` | 1 | 9 | F 2% | F 0% | F 0% | F 0% | F 32% | F 0% | F 0% | F 0% | ghost_light |
+| `ghost_light` | 1 | 10 | F 1% | F 0% | F 0% | F 0% | D 51% | F 0% | F 0% | F 0% | revenant_shamblers |
+| `knights_retinue` | 2 | 21 | W 100% | F 32% | F 10% | F 5% | W 100% | W 100% | W 87% | D 41% |  |
+
+**Tier 2**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `wight_host` | formation | 3 | — | Wight, Wight, Wight, Wight | Spectre, Spectre, Spectre, · | Wights knit when hurt and spectres strip the marks you lay and raise the dead: kill a wight whole, cash a mark before the spectre acts, and reach the back. | today's, pushing now |
+| `grave_field` | formation | 3 | — | Grave Giant, Wight, Wight, Wight | ·, Spectre, Spectre, · | The grave giant knits and, once hurt, readies itself to get back up whole: a wall of regeneration that wants burst. | today's |
+| `death_knights_retinue` | formation | 3 | — | Death Knight, Death Knight, Wight, Wight | Spectre, Spectre, ·, · | The knights' grave guard plates every foe through the next round: time your blows outside it; each knight gets up once. | today's revenant made a wight |
+| `wight_shamblers` (tiers 2, 3) | patrol | 1 | — | Wight, Wight, Wight, · | ·, ·, ·, · | Three wights that knit when hurt: finish what you start. | today's four made three, pushing now |
+| `spectres_wake` | patrol | 1 | — | Wight, Wight, ·, · | ·, ·, Spectre, · | A spectre behind two wights, its column open: it raises and it cleanses; kill it first. | new |
+| `knight_and_wights` | patrol | 2 | — | Death Knight, Wight, Wight, · | ·, ·, ·, · | A death knight plating two wights: a fight for two. | today's three wights made two, rated two |
+
+Tier 2: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Tier-two four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `wight_host` | 3 | 38 | W 99% | D 29% | F 5% | F 1% | W 100% | W 100% | D 19% | F 4% | W 97% | F 28% | F 5% | F 1% |  |
+| `grave_field` | 3 | 44 | W 100% | D 77% | D 15% | F 4% | W 100% | W 100% | W 54% | W 12% | W 100% | W 96% | D 21% | F 6% | death_knights_retinue |
+| `death_knights_retinue` | 3 | 44 | W 100% | W 96% | D 31% | F 18% | W 100% | W 100% | W 100% | W 100% | W 100% | W 99% | D 36% | F 21% | grave_field |
+| `wight_shamblers` | 1 | 15 | F 14% | F 1% | F 0% | F 0% | W 100% | F 7% | F 0% | F 0% | F 18% | F 0% | F 0% | F 0% | spectres_wake |
+| `spectres_wake` | 1 | 16 | F 14% | F 0% | F 0% | F 0% | W 97% | F 5% | F 0% | F 0% | F 16% | F 0% | F 0% | F 0% | wight_shamblers |
+| `knight_and_wights` | 2 | 21 | D 88% | F 23% | F 7% | F 3% | W 100% | W 100% | D 71% | D 25% | W 100% | F 24% | F 9% | F 4% |  |
+
+**Tier 3**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `wight_shamblers` (tiers 2, 3) | patrol | 1 | — | Wight, Wight, Wight, · | ·, ·, ·, · | Three wights that knit when hurt: finish what you start. | today's four made three, pushing now |
+| `lichs_court` | formation | 3 | — | Wight, Wight, Dread Knight, Dread Knight | Lich, Spectre, Spectre, Wraith | The lich readies its own to rise once and the dread knights strike as they fall: kill order is the fight, the lich first, a shield up before each knight dies. | today's |
+| `charnel_pit` | formation | 3 | — | Charnel Giant, Wight, Wight, Wight | ·, Wraith, Wraith, · | The charnel giant knits four and gets back up once; the wraiths corrupt, raise and cleanse behind the wights. | today's |
+| `dread_host` | formation | 3 | — | Dread Knight, Dread Knight, Death Knight, Wight | Wraith, Wraith, Spectre, Spectre | Two death throes, a grave guard and four raisers that cleanse: the Marsh at its densest. | today's |
+| `wraith_host` | formation | 3 | — | Death Knight, Wight, Wight, Wight | Wraith, Wraith, Spectre, · | One grave guard plating the line by turns, two corrupting raisers and a cleanser behind it, a column open: the choir thinned to a three. | new, written after the tier-three read found every Marsh tier-three formation a wall for three on the tier's own team |
+| `wraith_choir` | formation | 3 | — | Wight, Wight, Death Knight, Death Knight | Wraith, Wraith, Spectre, Spectre | Two grave guards plating the line by turns and four raisers behind it, two of them corrupting: time the blows between the guards, kill the choir before the line refills. | today's, read again after the tier-three read left the Marsh no formation that is a decision for three |
+| `wraiths_wake` | patrol | 2 | — | Wight, Wight, ·, · | ·, ·, Wraith, · | A wraith behind two wights, open: corrupting bolts, a raise and a cleanse. | new, rated two by the reads (a decision for the Badger and the Boar alone, a wall for the Swallowtail) |
+| `dread_vigil` | patrol | 2 | — | Dread Knight, Wight, Wight, · | ·, ·, ·, · | A dread knight that strikes as it falls, with two wights: a fight for two, shield up before the kill. | new, a heavy patrol |
+
+Tier 3: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Tier-two four: 1 | 2 | 3 | 4 | Tier-three four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `wight_shamblers` | 1 | 15 | F 14% | F 1% | F 0% | F 0% | W 100% | F 7% | F 0% | F 0% | F 18% | F 0% | F 0% | F 0% | D 56% | F 1% | F 0% | F 0% |  |
+| `lichs_court` | 3 | 61 | W 100% | W 100% | W 99% | D 75% | W 100% | W 100% | W 100% | W 100% | W 100% | W 100% | W 98% | D 81% | W 100% | W 100% | W 100% | D 59% | charnel_pit, dread_host |
+| `charnel_pit` | 3 | 48 | W 100% | W 100% | D 46% | D 10% | W 100% | W 100% | W 100% | W 87% | W 100% | W 100% | D 61% | D 14% | W 100% | W 100% | W 68% | D 16% | dread_host, lichs_court |
+| `dread_host` | 3 | 68 | W 100% | W 100% | W 100% | W 94% | W 100% | W 100% | W 100% | W 100% | W 100% | W 100% | W 100% | W 96% | W 100% | W 100% | W 100% | W 85% | charnel_pit, lichs_court |
+| `wraith_host` | 3 | 46 | W 100% | W 98% | D 27% | F 12% |  |  |  |  |  |  |  |  | W 100% | W 100% | D 44% | F 13% |  |
+| `wraith_choir` | 3 | 58 | W 100% | W 100% | D 68% | D 34% |  |  |  |  | W 100% | W 100% | D 71% | D 38% | W 100% | W 100% | W 84% | D 30% |  |
+| `wraiths_wake` | 2 | 17 | D 42% | F 2% | F 0% | F 0% | W 100% | D 37% | F 0% | F 0% | D 49% | F 1% | F 0% | F 0% | W 98% | F 4% | F 0% | F 0% |  |
+| `dread_vigil` | 2 | 23 | W 100% | D 37% | F 12% | F 7% | W 100% | W 100% | W 95% | D 70% | W 100% | D 53% | F 16% | F 8% | W 100% | W 89% | F 29% | F 10% |  |
+
+### The Peak
+
+
+**Tier 1**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `ember_pit` | formation | 3 | — | Salamander, Salamander, Bomb, Bomb | Drake, Drake, ·, · | Drakes behind the lizards breathe scorch and set a machine burning; the bombs burst through the shield once hurt. Kill a bomb whole or not at all, and cool what the drakes pick. | today's |
+| `ember_pyre` | formation | 3 | — | Salamander, Salamander, Bomb, Bomb | Drake, Drake, Drake, Drake | Eight: four drakes behind the pit. | new, the eight-slot variant |
+| `magma_vent` | formation | 3 | — | Magma Elemental, Salamander, Salamander, Bomb | ·, Drake, ·, · | The golem's fist comes through the shield every round and, hurt, its cracks vent on everyone: plate answers the fist, cooling the vent; a drake behind the lizards stokes. | today's with a drake |
+| `ember_pair` | patrol | 1 | — | Salamander, Bomb, ·, · | ·, ·, ·, · | One burning bite and one bomb: kill the bomb whole with a blow of four, then the lizard; half-kill the bomb and it bursts through the shield. | new, the Peak's true-one candidate: the light read found the salamander pair walling a lone Skua |
+| `salamander_pair` | patrol | 1 | — | Salamander, Salamander, ·, · | ·, ·, ·, · | Two burning bites: heat you carry into the next round. | new, a true one |
+| `salamander_trio` | patrol | 2 | — | Salamander, Salamander, Salamander, · | ·, ·, ·, · | Three burning bites. | today's, rated two by the reads (free for the Badger, a wall for the Skua) |
+| `drakes_perch` | patrol | 2 | — | Salamander, ·, ·, · | ·, Drake, Drake, · | Two drakes behind one lizard, open: the stoke sets you burning; kill them first. | new, rated two by the reads (free for the Badger, a wall for the Skua) |
+| `bomb_flight` | patrol | 2 | nearest | Bomb, Bomb, Bomb, Bomb | ·, ·, ·, · | Four bombs come straight for the nearest machine and burst through its shield when hurt: fight it in company, kill each whole, or let the shield eat the burst. | today's, rated two: the Peak's hunter (its codex: it comes straight for you) |
+
+Tier 1: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `ember_pit` | 3 | 46 | W 99% | F 11% | F 0% | F 0% | W 100% | W 93% | F 5% | F 1% |  |
+| `ember_pyre` | 3 | 58 | W 100% | D 50% | F 6% | F 1% | W 100% | W 100% | D 27% | F 6% |  |
+| `magma_vent` | 3 | 49 | W 100% | D 77% | D 41% | F 21% | W 100% | W 100% | W 100% | W 99% |  |
+| `ember_pair` | 1 | 17 | F 0% | F 0% | F 0% | F 0% | F 25% | F 0% | F 0% | F 0% |  |
+| `salamander_pair` | 1 | 14 | F 6% | F 0% | F 0% | F 0% | W 91% | F 1% | F 0% | F 0% | bomb_flight, drakes_perch, salamander_trio |
+| `salamander_trio` | 2 | 21 | F 23% | F 2% | F 0% | F 0% | W 100% | F 17% | F 0% | F 0% | bomb_flight, drakes_perch, salamander_pair |
+| `drakes_perch` | 2 | 19 | F 8% | F 0% | F 0% | F 0% | W 94% | F 9% | F 0% | F 0% | bomb_flight, salamander_pair, salamander_trio |
+| `bomb_flight` | 2 | 40 | F 12% | F 0% | F 0% | F 0% | D 48% | F 6% | F 0% | F 0% | drakes_perch, salamander_pair, salamander_trio |
+
+**Tier 2**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `wyvern_roost` | formation | 3 | — | Fire Lizard, Fire Lizard, Bomb, Grenade | Wyvern, Wyvern, ·, · | The wyverns dive through the shield for half again their bite, the spike a Barrier or a shield is sized for; the lizards scorch three a bite. | today's |
+| `grenade_volley` | formation | 3 | — | Grenade, Grenade, Bomb, Fire Lizard | Wyvern, Wyvern, ·, · | Grenades burst on every machine through the shield once hurt: kill them whole, suppress them, or shield everyone. | today's, pushing now |
+| `magma_forge` | formation | 3 | — | Basalt Elemental, Fire Lizard, Fire Lizard, Grenade | ·, Wyvern, ·, · | The basalt stokes every other foe harder and its fist breaches; below half it vents on everyone; a wyvern dives from behind the lizards. | today's with a wyvern |
+| `fire_lizards` | patrol | 1 | — | Fire Lizard, Fire Lizard, ·, · | ·, ·, ·, · | Two lizards that scorch three a bite. | today's four made two (a wall for one) |
+| `lizard_trio` | patrol | 2 | — | Fire Lizard, Fire Lizard, Fire Lizard, · | ·, ·, ·, · | Three lizards: a fight for two. | new, a heavy patrol |
+| `wyverns_perch` | patrol | 2 | — | Fire Lizard, ·, ·, · | ·, Wyvern, Wyvern, · | Two wyverns behind one lizard, open: the dive through the shield, or the stoke. | new, rated two by every read |
+| `grenade_flight` | patrol | 2 | nearest | Grenade, Grenade, Bomb, Bomb | ·, ·, ·, · | Grenades and bombs come for the nearest machine: bursts on everyone and bursts through the shield. | today's, rated two: the Peak's hunter |
+
+Tier 2: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Tier-two four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `wyvern_roost` | 3 | 58 | W 100% | D 48% | F 5% | F 2% | W 100% | W 100% | D 57% | F 20% | W 100% | D 44% | F 10% | F 6% | grenade_volley |
+| `grenade_volley` | 3 | 58 | W 100% | D 35% | F 5% | F 2% | W 100% | W 100% | D 36% | F 17% | W 100% | D 28% | F 8% | F 3% | wyvern_roost |
+| `magma_forge` | 3 | 58 | W 100% | W 100% | D 60% | F 22% | W 100% | W 100% | W 100% | W 100% | W 100% | W 100% | D 52% | F 31% |  |
+| `fire_lizards` | 1 | 16 | F 27% | F 1% | F 0% | F 0% | W 100% | F 8% | F 0% | F 0% | F 19% | F 1% | F 0% | F 0% | grenade_flight |
+| `lizard_trio` | 2 | 24 | D 87% | F 6% | F 0% | F 0% | W 100% | W 81% | F 3% | F 1% | W 85% | F 6% | F 1% | F 0% | wyverns_perch |
+| `wyverns_perch` | 2 | 32 | D 43% | F 5% | F 0% | F 0% | W 100% | D 71% | F 9% | F 3% | W 87% | F 6% | F 1% | F 1% | lizard_trio |
+| `grenade_flight` | 2 | 36 | F 12% | F 0% | F 0% | F 0% | W 90% | F 3% | F 0% | F 0% | F 12% | F 0% | F 0% | F 0% | fire_lizards |
+
+**Tier 3**: the grids
+
+| Composition | Size | For | Hunts | Front, left to right | Back | The question | Note |
+|---|---|---|---|---|---|---|---|
+| `dragons_roost` | formation | 3 | — | Magma Lizard, Fire Lizard, Balloon, Grenade | Red Dragon, Red Dragon, Wyvern, Wyvern | Two dragons go for the hottest machine, crush a round ahead and scorch everyone; the lizard primes the pack to burn. Cool, shield the crush, kill the balloon whole. | today's |
+| `magma_pit` | formation | 3 | — | Magma Lizard, Magma Lizard, Fire Lizard, Grenade | Red Dragon, Red Dragon, ·, · | Two primers in front of two dragons: every blow leaves you burning while they stand. | today's |
+| `balloon_storm` | formation | 3 | — | Balloon, Balloon, Grenade, Magma Lizard | Wyvern, Wyvern, Red Dragon, · | Balloons swell a round and burst on everyone through the shield, scorching: one round to kill each whole, suppress it, or shield everyone. | today's, pushing now |
+| `magma_caldera` | formation | 3 | — | Sulphur Elemental, Magma Lizard, Magma Lizard, Balloon | ·, Wyvern, ·, · | The sulphur elemental, hottest of its line, stokes the others by three and vents by five; a wyvern dives behind the primers. | today's with a wyvern |
+| `magma_lizards` | patrol | 1 | — | Magma Lizard, Magma Lizard, ·, · | ·, ·, ·, · | Two primers: each lights the other's next blow. | new |
+| `dragons_perch` | patrol | 2 | — | Magma Lizard, ·, ·, · | ·, Red Dragon, ·, · | One dragon behind one lizard, open: the crush a round ahead, the breath on everyone. | new, a heavy patrol |
+| `balloon_flight` | patrol | 2 | nearest | Balloon, Balloon, Grenade, Grenade | ·, ·, ·, · | Balloons and grenades come for the nearest machine: everyone bursts on. | today's, rated two: the Peak's hunter |
+
+Tier 3: the reads (F free, D a decision, W a wall; greedy's hull lost beside each; one to four machines)
+
+| Composition | For | Menace | Default four: 1 | 2 | 3 | 4 | Light four: 1 | 2 | 3 | 4 | Tier-two four: 1 | 2 | 3 | 4 | Tier-three four: 1 | 2 | 3 | 4 | Same as |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `dragons_roost` | 3 | 82 | W 100% | W 99% | D 19% | F 10% | W 100% | W 100% | W 100% | D 51% | W 100% | W 96% | D 29% | F 12% | W 100% | W 94% | D 43% | F 11% | magma_caldera |
+| `magma_pit` | 3 | 60 | W 100% | D 59% | F 5% | F 2% | W 100% | W 100% | D 68% | D 23% | W 100% | D 59% | F 13% | F 3% | W 100% | D 55% | F 15% | F 4% | balloon_storm |
+| `balloon_storm` | 3 | 70 | W 100% | D 70% | F 11% | F 4% | W 100% | W 100% | D 76% | D 23% | W 100% | D 71% | F 11% | F 4% | W 100% | D 73% | F 19% | F 5% | magma_pit |
+| `magma_caldera` | 3 | 65 | W 100% | W 100% | D 82% | D 31% | W 100% | W 100% | W 100% | W 100% | W 100% | W 100% | D 75% | D 42% | W 100% | W 100% | D 89% | F 36% | dragons_roost |
+| `magma_lizards` | 1 | 20 | F 34% | F 1% | F 0% | F 0% | W 100% | F 16% | F 1% | F 0% | F 40% | F 2% | F 0% | F 0% | D 75% | F 4% | F 1% | F 0% | balloon_flight, dragons_perch |
+| `dragons_perch` | 2 | 22 | F 14% | F 0% | F 0% | F 0% | W 100% | F 21% | F 1% | F 0% | F 36% | F 1% | F 0% | F 0% | D 69% | F 2% | F 0% | F 0% | balloon_flight, magma_lizards |
+| `balloon_flight` | 2 | 32 | F 18% | F 1% | F 0% | F 0% | W 95% | F 6% | F 0% | F 0% | F 33% | F 0% | F 0% | F 0% | D 65% | F 1% | F 0% | F 0% | dragons_perch, magma_lizards |

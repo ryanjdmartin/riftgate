@@ -5230,3 +5230,201 @@ brief)` where it stands, and moved only on Ryan's word:
 | The opening rows | a formation one of its moves short of the apron, a patrol two (the 1 and 2 at `sim/battle.gd:207` and `:210`), never into the rift's mouth | `sim/battle.gd:289` (`_open_row`) |
 | The beat after the Rupture | halved once, never below 1 | `sim/battle.gd:310` (`rupture`) |
 | The attack range | 1 (adjacency) | `sim/unit.gd:108` |
+
+## 9 November, the formation pass's reads
+
+The reads behind `docs/formation_proposal.md` (the decision they inform: the grids' ratings,
+gates and pruning, and section 12's hunter questions; nothing moved in content). Method: the
+proposal's patrols and formations were written to a scratch worktree's `content/factions.json`
+(the elites and escorts as content has them), validated by `sim/content_db.gd`, and read by the
+curve read (`tools/balance.gd --packs curve --seeds 30 --sizes patrol,formation`), random and
+greedy, each composition against a team cut to one, two, three and four machines, each cell its
+band (free: random wins half or more; a decision: greedy wins half or more and random less; a
+wall: greedy wins less than half) with greedy's mean hull lost. Four teams in stock, by `--team`
+(new today): the default four (the Honey Badger, the Clydesdale, the Kite, the Baboon) on every
+tier; a light four (the Skua, the Prairie Dog, the Cottonmouth, the Puffin), the Skua alone the
+rating of one's read, on every tier; a tier-two four (the Wild Boar, the Clydesdale, the Buzzard,
+the Dingo) on tiers two and three; a tier-three four (the Swallowtail, the Musk Ox, the Ammit, the
+Giant Petrel) on tier three. Today's compositions were read with the default four beside them.
+Every cell is a direction at 30 seeds and is called one; the proposal's tables (its section 12)
+carry every cell, and the gates and the pruning it proposes are read off them by the rule in its
+section 5. A stall (the fight bot's sixty rounds) counts as no win, so a wall with little hull
+lost reads as a stall and is named where it shows.
+
+### The curve reads: today's compositions and the proposal's
+
+The counts at the rating, by tier and size (a cell a composition at a tier; free / a decision /
+a wall; greedy's mean hull lost at the rating):
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost |
+|---|---|---|---|---|---|---|---|
+| Today, the default four | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% |
+|  | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 24% |
+|  | 2 | formation, 3 | 13 | 9 | 4 | 0 | 14% |
+|  | 2 | patrol, 1 | 8 | 3 | 2 | 3 | 54% |
+|  | 3 | formation, 3 | 17 | 8 | 7 | 2 | 35% |
+|  | 3 | patrol, 1 | 4 | 1 | 3 | 0 | 50% |
+| Default four | 1 | formation, 3 | 15 | 13 | 2 | 0 | 9% |
+|  | 1 | patrol, 1 | 12 | 12 | 0 | 0 | 7% |
+|  | 1 | patrol, 2 | 5 | 5 | 0 | 0 | 7% |
+|  | 2 | formation, 3 | 15 | 11 | 4 | 0 | 15% |
+|  | 2 | patrol, 1 | 10 | 8 | 2 | 0 | 21% |
+|  | 2 | patrol, 2 | 5 | 5 | 0 | 0 | 8% |
+|  | 3 | formation, 3 | 18 | 8 | 8 | 2 | 35% |
+|  | 3 | patrol, 1 | 6 | 4 | 2 | 0 | 30% |
+|  | 3 | patrol, 2 | 6 | 5 | 1 | 0 | 13% |
+| Light four | 1 | formation, 3 | 15 | 9 | 3 | 3 | 26% |
+|  | 1 | patrol, 1 | 12 | 8 | 1 | 3 | 41% |
+|  | 1 | patrol, 2 | 5 | 3 | 1 | 1 | 28% |
+|  | 2 | formation, 3 | 15 | 4 | 7 | 4 | 41% |
+|  | 2 | patrol, 1 | 10 | 3 | 0 | 7 | 73% |
+|  | 2 | patrol, 2 | 5 | 2 | 0 | 3 | 56% |
+|  | 3 | formation, 3 | 16 | 0 | 7 | 9 | 72% |
+|  | 3 | patrol, 1 | 6 | 0 | 1 | 5 | 92% |
+|  | 3 | patrol, 2 | 6 | 3 | 0 | 3 | 55% |
+| Tier-two four | 2 | formation, 3 | 17 | 11 | 6 | 0 | 18% |
+|  | 2 | patrol, 1 | 10 | 9 | 0 | 1 | 21% |
+|  | 2 | patrol, 2 | 5 | 5 | 0 | 0 | 9% |
+|  | 3 | formation, 3 | 18 | 9 | 7 | 2 | 37% |
+|  | 3 | patrol, 1 | 6 | 5 | 1 | 0 | 30% |
+|  | 3 | patrol, 2 | 6 | 5 | 1 | 0 | 15% |
+| Tier-three four | 3 | formation, 3 | 19 | 9 | 6 | 4 | 44% |
+|  | 3 | patrol, 1 | 6 | 0 | 4 | 2 | 70% |
+|  | 3 | patrol, 2 | 6 | 5 | 0 | 1 | 24% |
+
+The proposal's table counts the candidates before the pruning its section 5 proposes (the
+default four's tier-one patrol count of twelve includes the needler pair, the antlion pair and
+the salamander pair, each pruned, and the ember pair, written after the first read). The light
+four is tier one's stock, so its tier-two and tier-three rows read a light team a tier short, not
+a light flanker of the tier.
+
+Read, in bands, a direction:
+
+- **Tier one's formations stay free for three.** Today's eight read free at their rating (10%
+  hull); the proposal's fifteen read thirteen free and two decisions, both massive-anchored (the
+  sandworm ambush at 37%, the magma vent at 41%, the only two of today's that were decisions
+  for two), and the eight-slot variants move no band at three against the six they fill out
+  (the goblin horde against the warband, the needler thicket against the swarm, the grave throng
+  against the host, the ember pyre against the pit): the counts are at the slots' ceiling and
+  the fodder formations' lever is the refit's numbers, held until Ryan plays Phase 2. The light
+  four finds three of them decisions at three (the treant grove 16%, the barrow mound 23%, the
+  ember pyre 27%) and walls on the three with a massive, since four stock lights cannot pass a
+  point of plate on thirty-six HP that regrows; the knights wall it too.
+- **The true ones exist.** Every patrol rated one is free for the Badger alone (7% hull against
+  today's 24% with the knight's retinue's wall among them), and free or a decision for the Skua
+  alone in every domain but the Peak's, whose salamander pair, trio and drakes' perch wall it
+  (91 to 100% hull): the ember pair, written after the first read, is free for both (25% and
+  0%). The ghost light is the Skua's one decision at tier one (51%); the Marsh's knight's
+  retinue, today a patrol for one and a wall for one, is a two in the proposal and reads one
+  (a wall for the Badger alone, free for a pair at a third of its hull; a wall for the light four
+  up to three).
+- **The twos.** The proposal's heavy patrols read as twos where they carry a knight, a pit or a
+  queen: the antlion trio a decision for the Badger alone (36%) and a wall for the Skua, the pit
+  pair a decision for the Badger and the Boar alone (76%), the queen's hunt a wall for either
+  alone and free for a pair, the knight's retinue a wall for the Badger alone, the knight and
+  wights a wall for the Boar alone and a decision for the Badger at 88% of its hull, the lizard trio and the wyverns' perch walls for the Boar alone, the grenade and
+  balloon flights walls for the Skua and free for every pair. The wolf pack (free for the Skua
+  at 21%, for the Badger at 4%), the warg pack (a decision for the Skua at 40%, free for the
+  Badger and the Boar) and the bomb flight (a decision for the Skua at 48%, free for the Badger)
+  read as ones: a blow of four kills a wolf or a bomb whole.
+- **Tier two, read by its own team**, keeps the shape: the single-anchor formations are decisions
+  for two and free for three (the treant march 10% at three, the pit ambush 16%, the wyvern roost
+  10%, the grenade volley 8%, the grave field and the death knight's retinue the exceptions at
+  21% and 36%), the worm and the forge true threes (the sandworm pit 44%, the magma forge 52%),
+  and the two-anchor candidates written after the first read are true threes: the grove and
+  bloom (a dusk treant and a rotbloom) a wall for two and a decision for three at 41%, the pit
+  wall (four pit antlions behind the Waste's casters) at 43%, the frost and bloom at tier three a
+  decision for three at 56% and for four at 31% a tier short. The fodder formations read
+  decisions for one (the guard horde 66%, the gel drift 73%, the barbed swarm 89%, the djinn's
+  mirage 78%).
+- **The pruning the bands name**: fourteen candidates whose bands match another's at every size
+  with the same question (the proposal's section 5), the six-slot half of each ramp pair among
+  them, the antlion pair against the trio, the needler pair against the scouts, the salamander
+  pair against the trio, the djinn's mirage against the barbed swarm, the bubble pair, the
+  gorgon glare today against the great swarm.
+- **A stall.** The light four against the grave field reads a wall at four with 12% hull lost,
+  which is a stall, traced (`--trace`, the greedy rung, seed 1): the Grave Giant knits three a
+  round while four light kits chip one or two through its plate, and its blow of eight never
+  passes the shields they raise; sixty rounds, nobody loses hull. The Marsh's giants carry no
+  escalation (a cleaver, a knit, a rise), so a kit that cannot out-damage the knit cannot lose or
+  win; the proposal's hole 8.
+- **The elites, today's cells, for the elites' item** (section 12 of the bible): the lone elites
+  are free for the Badger alone (the Reaper at 0%, the Fell Rider 11%, the Thunder Ape 30%,
+  the Rust Monster 18%, the Shaman's warband 13%), decisions for one at most (the Nob 28%, the
+  Leshy's hunt 42%, the Wild Hunt 55%); the ones with a massive or a court are decisions for
+  two or three (the Old Man's rising 41% at three, the Skeleton King's court 50% at three, the
+  Firelord's rising 11% at three, the Astromancer 31% at two); every elite is free for four at
+  tiers one and two, the Old Man at tier three a decision for four. Unchanged by this pass; his
+  "don't downgrade them" stands.
+- **Tier three, read by its own team** (the Swallowtail, the Musk Ox, the Ammit, the Giant
+  Petrel), reads harder alone than tier two's did, since the Swallowtail is a support frame
+  (every fodder patrol a decision for it at 42 to 75% hull where the Boar found them free), and
+  much the same at three: the frost and bloom (72%), the sandworm flats (76%), the queen's court
+  (48%), the dragon's roost (43%) and the magma caldera (89%) are decisions for three; the lich's
+  court walls three and is a decision for four on every read (59 to 81% hull), the dread host
+  walls four on every read (85 to 96%), and the charnel pit walls three for this team (68%) where
+  the default and tier-two teams found it a decision (46%, 61%). The Marsh had no tier-three
+  formation that is a decision for three, so today's wraith choir (two death knights, two wights,
+  two wraiths, two spectres) was read again: a decision for three for the default four (68%) and the tier-two four (71%), a wall for the
+  tier-three four at three (84%) and a decision at four (30%), the charnel pit's shape (46%, 61%,
+  68% and 16%): the Marsh's tier-three formations are decisions for the mixed stock teams and walls
+  for a tier-three trio with no burst for the knit, the Swallowtail, the Musk Ox and the Ammit.
+  A thinner host (one death knight, three wights, two wraiths, a spectre) was written and read
+  after that: a decision for three for the default four at 27% and for the tier-three four at 44%, a wall
+  for two on both: the Marsh's tier-three three, the choir and the pit beside it.
+
+### The campaign runner: 40 runs on the steppe, today's content and the proposal's
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe`, the same seeds, on main's content as it
+stands (267 s) and on the proposal's grids in a scratch worktree (the same code; the patrols and
+formations the proposal's, the elites and escorts today's). The greedy rung, the defence rule on
+the map, three of the tender at random: the floor the brief built for these reads, not the
+player (the to-do's runner line).
+
+| Measure | Today | The proposal |
+|---|---|---|
+| Runs won | 0 of 40 | 0 of 40 |
+| Turns a run | 5.85 (5 to 8) | 6.30 (5 to 8) |
+| The turn the first city fell | 0.50 | 0.60 |
+| Battles: won, held after a wipe, fell | 1%, 14%, 83% of 191 | 3%, 18%, 77% of 206 |
+| Battles ended in a team wipe | 92% | 91% |
+| Machines wrecked a battle | 1.71 | 1.69 |
+| Components destroyed a battle | 0.98 | 0.52 |
+| Phases a battle | 6.17 (1 to 12) | 6.16 (1 to 11) |
+| Gate damage a battle | 128 | 116 |
+| Peaks of Rift Pressure a battle | 1.18 | 1.27 |
+| Patrols the tears sent a battle | 1.86 (0 to 28) | 1.57 (0 to 28) |
+| Elites spawned a battle | 0.42 | 0.45 |
+| Fractures reached a battle (of about 3) | 0.87 | 0.99 |
+| Battles reaching the Rupture | 16% | 21% |
+| The pressure ratio, a run's mean | 1.02 (0.30 to 2.65) | 1.25 (0.29 to 3.62) |
+| Turns above 1.0, percent of a run's | 26 | 28 |
+| Battles by three machines: won, fell | 6%, 57% of 47 | 15%, 55% of 45 |
+| Battles by one machine: fell | 97% of 78 | 73% of 80 |
+
+The fights, by the pack's rating and the machines the defence rule sent at it:
+
+| A fight for | Machines in it | Today: fights, won | The proposal: fights, won |
+|---|---|---|---|
+| 1 | 1 | 86, 63% | 135, 82% |
+| 1 | 2 | 51, 82% | 28, 100% |
+| 1 | 3 | 31, 90% | 4, 100% |
+| 2 | 1 | — | 11, 27% |
+| 2 | 2 | — | 2, 0% |
+| 3 | 1 | 169, 8% | 229, 10% |
+| 3 | 2 | 69, 56% | 78, 66% |
+| 3 | 3 | 53, 100% | 51, 100% |
+| 4 | 1 | 30, 26% | 55, 27% |
+| 4 | 2 | 37, 59% | 31, 87% |
+| 4 | 3 | 15, 100% | 12, 91% |
+
+Read, in bands, a direction. The campaign stays a wall for this bot either way (no run won, the
+first city on the first turn, nine battles in ten a wipe): the defence rule sends a lone machine at
+a formation 229 times and wins one in ten, which is the floor's shape, not the content's. Where the
+content shows: a patrol rated one fought by one machine is won 82% on the proposal's grids against
+63% today, so the true ones read as ones for the bot's random tier-one machines; a pack rated two
+fought alone is won 27% of 11, a fight for two as its rating says; the pressure ratio rises (1.25
+against 1.02, since more patrols stand on the field and a two counts two); components destroyed a
+battle halve (0.52 against 0.98) and the gate takes less (116 against 128), the lighter patrols
+costing less; a battle by three machines is won 15% against 6%. One fight stalled past the bot's sixty
+rounds on the proposal's grids (none today), unread: the runner names no pack for it.
