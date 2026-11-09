@@ -46,9 +46,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 9 November 2026 but the music session's branch below.
-`claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November and its id's rename (How things
-stand below), landed on main as fast-forwards on Ryan's word ("merge it into main so I can try it");
-it is merged and to delete with the rest.
+`claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November, its id's rename and every id
+following its name (How things stand below), landed on main as fast-forwards on Ryan's word ("merge
+it into main so I can try it"; "clean up and merge into main"); it is merged and to delete with the rest.
 `claude/playtesting-ui-feedback-hfdiok`, Ryan's playtest list of 9 November (How things stand
 below), took main's map session and skirmish audit step 3 in a merge (the bible, the measurements
 and this file the conflicts, both sides' words kept) and main took it as a fast-forward on Ryan's
