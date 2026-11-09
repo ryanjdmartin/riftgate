@@ -189,6 +189,62 @@ func test_the_shield_persona_values_a_standing_shield_by_next_rounds_blows() -> 
 	assert_true(absf(ahead.next_round_hull(sk, ms) - 20.0 / 3.0) < 0.001, "the wind-up's thirty over two beside the ten over two and the brace, three weights, its follow-up (the sweep) never rolled: %f" % ahead.next_round_hull(sk, ms))
 
 
+## The aggressor's habit (the refit pass, 9 November): a block is worth a share of what the rung
+## reads, so the bot rerolls it away for a gun and spends one only when its die is stuck showing
+## it; a buff that is no block keeps its worth. The hull the blocks keep is read as the gap
+## between the two.
+func test_the_aggressor_values_a_block_at_a_share_and_never_rerolls_for_one() -> void:
+	var wall := Face.buff("barrier")
+	var coil := Face.buff("overcharged", 2)
+	assert_true(Policy.is_block(wall) and Policy.is_block(Face.buff("braced", 2)) and Policy.is_block(Face.buff("ward")) and Policy.is_block(Face.buff("phased")), "a Barrier, Armoured, a Ward and Phased are blocks")
+	assert_false(Policy.is_block(coil) or Policy.is_block(Face.attack(10, L)) or Policy.is_block(Face.shield(8)) or Policy.is_block(null), "a damage buff, a gun and a shield are none")
+	var gun := Face.attack(10, L)
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.of([wall, coil, gun]), 20, 100))
+	sk.add_foes([_ghoul(500, 60)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var plain := Policy.make(Policy.GREEDY)
+	var bold := Policy.make(Policy.GREEDY)
+	bold.guard_weight = 0.05
+	var p := plain.machine_spend_score(sk, ms, ms, wall)
+	assert_true(p > plain.attack_score(sk, ms, gun, sk.front[0]), "the rung takes the Barrier over its gun against a blow of sixty: %f" % p)
+	assert_true(absf(bold.machine_spend_score(sk, ms, ms, wall) - p * 0.05) < 0.001, "the aggressor reads it at its share")
+	assert_eq(bold.machine_spend_score(sk, ms, ms, coil), plain.machine_spend_score(sk, ms, ms, coil), "a buff that is no block at its whole worth")
+	# A die of the Barrier and a gun (a reroll never lands on the same entry): the rung ends every
+	# round behind the Barrier, the aggressor on the gun, and it pays the blow for it.
+	for seed in range(1, 9):
+		for habit in [1.0, 0.05]:
+			var s2 := Skirmish.new(seed)
+			var m := _mech("B", Die.of([wall, gun]), 20, 100)
+			s2.add_mech(m)
+			var g := _ghoul(500, 60)
+			s2.add_foes([g])
+			s2.begin()
+			s2.start_round()
+			var pol := Policy.make(Policy.GREEDY, seed)
+			pol.guard_weight = habit
+			pol.play_round(s2)
+			s2.end_round()
+			if habit == 1.0:
+				assert_eq([m.hull, g.hp], [100, 500], "seed %d: the rung's Barrier takes the blow whole, and nothing is fired" % seed)
+			else:
+				assert_eq([m.hull, g.hp], [60, 490], "seed %d: the aggressor fires, and the sixty lands on its twenty of shield" % seed)
+	# Stuck with it, the aggressor spends it all the same: a die of the Barrier alone.
+	var s3 := Skirmish.new(2)
+	var lone := _mech("C", Die.single(wall), 20, 100)
+	s3.add_mech(lone)
+	s3.add_foes([_ghoul(500, 60)])
+	s3.begin()
+	s3.start_round()
+	var stuck := Policy.make(Policy.GREEDY, 2)
+	stuck.guard_weight = 0.05
+	stuck.play_round(s3)
+	s3.end_round()
+	assert_eq(lone.hull, 100, "the block it could not reroll away is still spent")
+
+
 func test_greedy_rerolls_a_face_under_the_average() -> void:
 	# A die of one blank and one big gun: whichever shows first, the bot ends the round on
 	# the gun, having rerolled the blank away (a reroll never lands on the same entry).

@@ -299,7 +299,13 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # --refit SPEC lays the refit pass's what-if over the run's content (sim/refit.gd; the brief
 # docs/briefs/refit_pass.md): "die" (every stock shield and vent swapped for a defensive basic, the
 # machines back in design unfielded), "regen=half" or "regen=N", "cooling=N", "heat1" (the basics
-# at heat one), or "all" for the first three as leaned; tools/campaign_run.gd takes it too.
+# at heat one), or "all" for the first three as leaned; with the die, "barrier=off" (no Barrier
+# among the basics: Armoured or a gun in its place), "barrier=cooldown" (it goes dark the round
+# after it is spent) or "barrier=heatN" (it costs N heat); tools/campaign_run.gd takes it too.
+# --guard 0.05 is the aggressor's habit (a block, a Barrier, Armoured or a Ward, at a twentieth of
+# its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
+# showing it): the hull the blocks keep and the rounds they cost are the gap between it and the
+# rung as it is; tools/campaign_run.gd takes it too.
 # --injury on|N reads a run with the injury rule on (off in the game since 9 November).
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md

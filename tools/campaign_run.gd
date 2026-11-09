@@ -33,6 +33,7 @@ var out_path := OUT
 var trace := 0
 var refit_spec := ""                  # --refit: the refit pass's what-if (sim/refit.gd), as tools/balance.gd takes it
 var refit_notes: Array[String] = []
+var guard_weight := 1.0               # --guard: a block's worth to the fight bot, as a share (Policy.guard_weight)
 
 
 func _init() -> void:
@@ -56,6 +57,8 @@ func _init() -> void:
 				trace = int(v)
 			"--refit":
 				refit_spec = v
+			"--guard":
+				guard_weight = clampf(float(v), 0.0, 1.0)
 			"--injury":
 				Skirmish.injuries = v != "off"
 				if v.is_valid_int():
@@ -131,6 +134,7 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 			continue
 		var gate_before: int = c.cities[city].gate
 		var bot := BattleBot.make(policy, seed_value * 1000 + c.turn)
+		bot.guard_weight = guard_weight
 		bot.play(b)
 		out["fights"] += bot.fights
 		out["fight_sizes"].append_array(bot.fight_sizes)
@@ -221,7 +225,8 @@ func report() -> String:
 		Campaign.START_MACHINES, ", ".join(fields.keys())])
 	L.append("")
 	L.append("The injury rule: %s.%s" % ["on, at %d%% of maximum hull" % Skirmish.injury_pct if Skirmish.injuries else "off, as the game plays it",
-		"" if refit_notes.is_empty() else " The refit what-if (`--refit %s`): %s." % [refit_spec, "; ".join(refit_notes)]])
+		"" if refit_notes.is_empty() else " The refit what-if (`--refit %s`): %s." % [refit_spec, "; ".join(refit_notes)]]
+		+ ("" if guard_weight == 1.0 else " The fight bot's habit (`--guard`): a block at %d%% of its worth, the aggressor, which never rerolls for one." % int(round(guard_weight * 100.0))))
 	L.append("")
 	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, a machine with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie) and the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out. Read the bands.")
 	L.append("")
