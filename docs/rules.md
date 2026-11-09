@@ -1268,7 +1268,11 @@ a stat.
   shows what it holds): it holds its kind's salvage (a range), so many components of the
   battle's tier, and on its kind's chance (the Relic's) a blueprint of that tier the run holds
   none of, drawn from the battle's seed and the cache. A tap on a cache shows its kind and its
-  likely contents, never the contents. The campaign banks what was claimed as it banks the
+  likely contents, never the contents. On the map a cache is its kind's model while its hex is
+  the reconstruction's (a wrecked machine, a skeleton of theirs, splinters of their stone round a
+  lit core that turns) and a flat token where the painting has taken the hex, crossing over as
+  the ground does; over it in both worlds its name and as many pips as its kind's tier, which
+  are what say its kind. A machine standing on one hides the model and dims the name. The campaign banks what was claimed as it banks the
   kills: on a battle won or held, never on a fall; each component one copy in the stores, each
   blueprint the run's.
 - **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an

@@ -837,11 +837,18 @@ func _readout(font: Font, at: Vector2, text: String, fc: Color) -> void:
 var inspected := Vector2i(-9999, -9999)
 
 
-## The caches lying on the field (the bible's loot rows; built 7 November): each a white diamond
-## on a black plate, as many pips in it as its kind's tier (a Derelict one, a Carcass two, a Relic
-## three) and its kind's name over it, so a kind reads by its structure and its name, never a hue
-## (white is good's; the plaque's look is settled). Under the units: a machine standing on one draws
-## over its dimmed mark, and claims it as the turn ends. A first cut, judged on the phone.
+## The caches lying on the field (the bible's loot rows; built 7 November). A cache's picture is
+## its model while its hex is the reconstruction's (Map3D's, Ryan, 9 November: "can we get models
+## (and art, when flattened), for loot caches on map?") and its flat token once the painting has
+## taken the hex (art/loot, tools/loot_tokens.py), crossing over with the ground as the
+## compositor does. What says its kind is over the picture in both worlds: its name on a plaque
+## and under it as many pips as its kind's tier (a Derelict one, a Carcass two, a Relic three), so
+## a kind reads by its structure and its name, never a hue or a silhouette alone. A kind with no
+## model, and every cache drawn headless, wears the first cut's mark instead: the pips in a white
+## diamond on a black plate. Under the units: a machine standing on one draws over its dimmed
+## mark, and claims it as the turn ends. First cuts, judged on the phone.
+const CACHE_TOKEN := 3.0   # a cache's token, in screen pixels a texel at zoom 1: a little over a foe's (2.6), hot for the phone
+
 func _draw_caches() -> void:
 	if field == null or field.caches.is_empty():
 		return
@@ -853,14 +860,52 @@ func _draw_caches() -> void:
 		var t := int(c.get("tier", 1))
 		var a := 0.45 if field.unit_at(h) != null else 1.0
 		var r := HEX_SIZE * 0.46
-		var pts := PackedVector2Array([at + Vector2(0, -r), at + Vector2(r * 0.85, 0), at + Vector2(0, r), at + Vector2(-r * 0.85, 0)])
-		draw_colored_polygon(pts, Color(0, 0, 0, 0.85 * a))
-		Hud.stroke_poly(self, pts, Color(Palette.INK, a), _px(3.0))
-		for k in range(t):
-			var dot := at + Vector2((float(k) - float(t - 1) * 0.5) * r * 0.42, 0.0)
-			draw_circle(dot, maxf(_px(3.0), r * 0.12), Color(Palette.INK, a))
 		var kind := db.loot_kind_of_tier(t)
-		_plaque(at + Vector2(0.0, -r - 10.0), str(db.loot.get(kind, {}).get("name", kind)).to_upper(), Color(Palette.INK, a), 1.5)
+		var label := str(db.loot.get(kind, {}).get("name", kind)).to_upper()
+		if _map3d == null or not Map3D.has_cache_model(kind):
+			var pts := PackedVector2Array([at + Vector2(0, -r), at + Vector2(r * 0.85, 0), at + Vector2(0, r), at + Vector2(-r * 0.85, 0)])
+			draw_colored_polygon(pts, Color(0, 0, 0, 0.85 * a))
+			Hud.stroke_poly(self, pts, Color(Palette.INK, a), _px(3.0))
+			for k in range(t):
+				var dot := at + Vector2((float(k) - float(t - 1) * 0.5) * r * 0.42, 0.0)
+				draw_circle(dot, maxf(_px(3.0), r * 0.12), Color(Palette.INK, a))
+			_plaque(at + Vector2(0.0, -r - 10.0), label, Color(Palette.INK, a), 1.5)
+			continue
+		# The token over the painting, by how much of the hex the painting has (the model's own
+		# sinking is Map3D's, by the same threshold).
+		var flat := 1.0 - _solid_at(h)
+		var tex := Sprites.map_cache(kind)
+		if flat > 0.02 and tex != null:
+			var ts := tex.get_size() * CACHE_TOKEN
+			draw_texture_rect(tex, Rect2((at - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET)).floor(), ts), false, Color(1, 1, 1, flat * a))
+		# The name over the picture and the pips under the name, on their own plate.
+		var top := at + Vector2(0.0, -HEX_SIZE * 0.98)
+		_plaque(top, label, Color(Palette.INK, a), 1.5)
+		_cache_pips(top, t, a)
+
+
+## A cache's kind as pips, on a black plate under its name: as many white dots as its kind's
+## tier. Drawn in screen space like the plaque it hangs under, so it holds its size at every zoom.
+func _cache_pips(name_at: Vector2, n: int, a: float) -> void:
+	_screen_space()
+	var w := float(n) * PIP + float(n - 1) * PIP_GAP + 10.0
+	var rect := _plaque_rect(to_screen(name_at) + Vector2(0.0, 9.0 + 2.0 + (PIP + 6.0) * 0.5), Vector2(w, PIP + 6.0))
+	draw_rect(rect, Color(Palette.BG, a), true)
+	draw_rect(rect, Color(Palette.INK, a), false, 1.5)
+	for i in range(n):
+		draw_circle(rect.position + Vector2(5.0 + PIP * 0.5 + float(i) * (PIP + PIP_GAP), rect.size.y * 0.5), PIP * 0.5, Color(Palette.INK, a))
+	_map_space()
+
+
+## How much of a hex is still the reconstruction's, 1 solid to 0 under the painting (Bleed.solid,
+## the compositor's threshold); 1 with no 3D map, which paints nothing.
+func _solid_at(h: Vector2i) -> float:
+	if _map3d == null:
+		return 1.0
+	if _bleed_src.is_empty():
+		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE)
+		_bleed_src = Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
+	return Bleed.solid(base(h), _bleed_grad, _bleed_src)
 
 
 ## The tears (30 October): each a small vortex ring in the rift's own light on the seam's

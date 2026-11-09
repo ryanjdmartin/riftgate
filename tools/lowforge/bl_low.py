@@ -382,6 +382,20 @@ class Tiles:
             # lightning blue'"): an electric cyan, banked so its flare to sixteen times its rest
             # light holds the colour; paler and greener than the shield's blue, so the two part.
             img = np.tile(np.array([0.095, 0.18, 0.21], np.float32), (TILE, TILE, 1))
+        elif kind == "rift":
+            # The other world's light, for a thing of theirs lying in our ground (the Relic, the
+            # field's rarest cache): the enemy's violet, even like the lit tile so a small facet
+            # reads the same wherever the grid lands on it, banked so it holds its colour at the
+            # amber role's light rather than paling to white. A cache's kind is read by its name
+            # and its pips, never this colour.
+            img = 0.5 * np.tile(np.array([0.62, 0.36, 1.0], np.float32), (TILE, TILE, 1))
+        elif kind == "stone":
+            # Their stone: near black with a faint violet cast and a slow grain, no seam and no
+            # rivet, so nothing about it reads as made here.
+            img = self.metal(0.16, 0.03, tint=(0.86, 0.80, 1.0), mottle=0.02, cast=(1.0, 1.0, 1.0))
+        elif kind == "hide":
+            # Dried hide and sinew on a carcass: a dark brown-violet, matt.
+            img = self.metal(0.20, 0.04, tint=(1.0, 0.74, 0.80), mottle=0.03, cast=(1.0, 1.0, 1.0))
         elif kind == "shield":
             # A shield's light (Ryan, 31 October, of the Puffin's amplifier and the Storm Petrel's
             # field: "since both are related to their shield-related passive, could they glow in a

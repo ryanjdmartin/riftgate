@@ -102,10 +102,38 @@ var _overlay_text: Label
 var _skirmish: SkirmishScreen = null
 
 
+## RIFTGATE_CACHE_DEBUG=1: a new battle lies one cache of every kind beside the team, on solid
+## ground, and one of every kind by the rift, under the painting, in place of the caches its seed
+## dealt, so each kind's model and its flat token are judged side by side in one look (Ryan, 9
+## November: "models (and art, when flattened), for loot caches on map"). A battle read back
+## from a save keeps its own.
+static var CACHE_DEBUG := OS.get_environment("RIFTGATE_CACHE_DEBUG") == "1"
+
+
 func setup(b: Battle) -> void:
 	battle = b
+	if CACHE_DEBUG and b.field.phase == 0:
+		_debug_caches(b)
 	_build()
 	_refresh()
+
+
+func _debug_caches(b: Battle) -> void:
+	var f := b.field
+	var kinds := b.db.loot_kinds()
+	if kinds.is_empty() or b.mechs().is_empty():
+		return
+	f.caches = []
+	for from in [b.mechs()[0].pos, f.map.rift]:
+		var open: Array = f.map.all_hexes().filter(func(h: Vector2i) -> bool: return Hex.distance(h, from) >= 2)
+		open.sort_custom(func(x: Vector2i, y: Vector2i) -> bool: return Hex.distance(x, from) < Hex.distance(y, from))
+		var k := 0
+		for h in open:
+			if k >= kinds.size():
+				break
+			if f._cache_fits(h):
+				f.caches.append({"id": f.caches.size() + 1, "tier": int(b.db.loot[kinds[k]].get("tier", 1)), "pos": h})
+				k += 1
 
 
 func _ready() -> void:

@@ -155,7 +155,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   `hangar/pins.json` (the models' mounts) and `hangar/renders.json` with the renders under
   `docs/hangar/`; Ryan's saved edits live in its database (collection `edits`), the name
   candidates in `candidates`, his corrections to the briefs in `designs`; `spriter/.venv` is the Python
-  the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
+  the tools run with. The gate and wall are lowforge models too (`gate`, `wall`), and the
+  field's caches (`cache_<kind>`, one a kind in `content/loot.json`); `loot_tokens.py` writes each
+  cache's flat map token, for a hex the painting has taken, from the grids typed in it.
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
   numbers, what each hardpoint's stock part is, `hidden_pins` where a model hides its mounts
@@ -163,7 +165,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   and by `mech_view_3d.gd`, which wears a fitted die against that record), `models/shapes/` the
   silhouette classes in each maker's metal, a burn weapon's fire for each and `muzzles.json`,
   where each class's muzzle flare blooms (`forge.py shapes` writes all three), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
-  16x16 map tokens the sheet export writes, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
+  16x16 map tokens the sheet export writes, `loot/` the caches' 16x16 map tokens (`tools/loot_tokens.py`), `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
 - `docs/` — one job each. `rules.md` the rules as they stand; `design-bible.html` the
@@ -220,6 +222,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 
 # run the test suite (about four minutes)
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd
+perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd -- loot rig   # only the files whose names hold one of those words, for a quick look while working
 
 # run the harness: a battle, a skirmish, a saved battle and the quick campaign
 godot --path .
@@ -555,6 +558,10 @@ python3 tools/placeholder_art.py
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
+# the field's caches: a model a kind for solid ground, and each kind's flat token for a hex the painting has taken; then re-import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build cache_derelict cache_carcass cache_relic
+tools/spriter/.venv/bin/python tools/loot_tokens.py [sheet.png]
+RIFTGATE_CACHE_DEBUG=1 godot --path .          # a new battle lies one cache of every kind beside the team and one of every kind by the rift (the screenshot poses `caches` and `cachesflat`)
 # joints are code too: `with b.joint("shoulder_l", pivot, axis="pitch", limits=(-12, 40)):` in models_low.py hangs a limb under a
 # joint_<name> Empty, nested where it rides another; `b.act(name, seconds, {joint: [(t, degrees), ...]}, body=, glow=)` at the end of a
 # machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:

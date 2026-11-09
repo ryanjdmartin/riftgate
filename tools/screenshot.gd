@@ -489,6 +489,18 @@ func _apply_battle_pose() -> void:
 					s._map.zoom_at(s._map.size * 0.5, 2.0)
 					s._map.scroll_to_unit(m)
 					break
+		"caches", "cachesflat":
+			# Zoomed in on the first cache (with RIFTGATE_CACHE_DEBUG=1 the three kinds beside the
+			# team, on solid ground) or the last (the three by the rift, under the painting).
+			var cs: Array = b.field.caches
+			if not cs.is_empty():
+				var on: Vector2i = cs[0 if _pose == "caches" else cs.size() - 1]["pos"]
+				s._map.zoom_at(s._map.size * 0.5, 2.0)
+				var p: Vector2 = s._map.center(on)
+				s._map.scroll_x = s._map.size.x * 0.5 - p.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
+				s._map._clamp_scroll()
+				s._map.queue_redraw()
 		"zoom", "zoomlast":
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)

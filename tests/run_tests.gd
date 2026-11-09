@@ -7,6 +7,9 @@ extends SceneTree
 ## tree is up (its root is not in the tree while the runner starts): a test that needs input
 ## routed as the engine routes it (a touch dragged over a scrolled list) adds its screen to the
 ## tree and pushes the events through a viewport.
+##   godot --headless --path . -s tests/run_tests.gd -- loot rig
+## runs only the files whose names hold one of those words (test_loot.gd, test_mech_rig.gd), for a
+## quick look while working; the whole suite is the check before a commit.
 
 var _total_checks := 0
 var _total_failures := 0
@@ -50,6 +53,9 @@ func _init() -> void:
 		if f.begins_with("test_") and f.ends_with(".gd") and f != "test_case.gd":
 			files.append(f)
 	files.sort()
+	var only := Array(OS.get_cmdline_user_args())
+	if not only.is_empty():
+		files = files.filter(func(f: String) -> bool: return only.any(func(w: String) -> bool: return f.contains(w)))
 
 	for f in files:
 		var script: GDScript = load("res://tests/" + f)

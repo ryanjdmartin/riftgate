@@ -9,6 +9,7 @@ extends RefCounted
 ## Layout on disk (all transparent PNGs, imported with nearest filtering):
 ##   art/foes/<foe>_combat.png                     enemy combat sprite (optional)
 ##   art/foes/<foe>_map.png                        enemy map sprite, one frame (optional)
+##   art/loot/<kind>_map.png                       a cache's map token, for flattened ground (optional)
 
 static var _cache: Dictionary = {}
 
@@ -30,6 +31,11 @@ static func _foe(pattern: String, foe_id: String) -> Texture2D:
 		if not base.is_empty():
 			tex = _load(pattern % base)
 	return tex
+
+
+## A cache's flat token, for a hex the painting has taken (tools/loot_tokens.py), or null.
+static func map_cache(kind: String) -> Texture2D:
+	return _load("res://art/loot/%s_map.png" % kind)
 
 
 ## The rift on the map: a strip of three frames (tools/foeforge `cut-rift`), or null.
