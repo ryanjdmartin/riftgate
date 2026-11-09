@@ -1032,23 +1032,27 @@ a stat.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
-  rows at any size the ramp deals, "across" meaning along the wall and "down the field" from
-  the rift toward the wall whichever way the view turns: River Crossing (a river across, two
-  hexes thick and three where the field is deep, between a bank row at the mouth's edge and one
-  before the team's ground, with one or two fords three or four hexes wide in all, a crag on a
-  bank at most, and gravel bars along its banks), Fjord (water down the field, two or three
-  wide, one fjord for every ten hexes of wall, each in its own stretch of it with a lane two
-  wide at least at the field's edges and four between two, shingle on its shores), Badlands
-  (mesas in groups and two or three ponds, the paths winding between, scrub at the mesas'
-  feet), Open Steppe (a lone crag and a pond at most for every ten hexes of wall), Ruined
-  City (bands of towers across, two where the open rows are nine or more and one otherwise,
-  standing mid the open rows with a row of rubble before and after it, each with streets
-  through it three or four hexes wide in all, one to four of them), Gorge (cliff walls down
-  the field, one for every six hexes of wall and four at most, lanes two wide at least between
-  and beside them, scree at their feet). A ford or a street is one to three hexes wide, with a
-  hex of river or towers between two; the fords' and the streets' totals are the team's
-  numbers and do not scale with the wall. A battle that names no shape draws one by its
-  seed, never by its domain. Every map guarantees the
+  rows at any size the ramp deals, none of them a band and none an orientation. Two water
+  shapes: River Crossing (a river along the wall, two hexes thick and three where the field is
+  deep, between a bank row at the mouth's edge and one before the team's ground, with one or
+  two fords three or four hexes wide in all, a crag on a bank at most, gravel bars along its
+  banks) and Fjord (water from the rift toward the wall, two or three wide, one fjord for every
+  ten hexes of wall, each in its own stretch of it with a lane two wide at least at the field's
+  edges and four between two, shingle on its shores). Three wall shapes, a spectrum by the mass
+  and the structure of what blocks you: Gorge (cliff mass over the open rows cut by winding,
+  branching channels, a trunk for every seven hexes of wall from the mouth's edge to the team's
+  ground, one or two hexes wide, two or three branches off each, a stretch or two flooded, scree
+  at the cliffs' feet, the gorge's own sides past both edges), Ruined City (large blocks of
+  towers in a grid of streets: avenues one wide from the wall toward the rift four to five
+  columns apart, the gate's always one and two wide, side streets along the wall mid the blocks
+  whose segments are there or not, an avenue segment fallen in now and then, a plaza or two with
+  a fountain in some, a street segment or two flooded, rubble everywhere else, towers thick in
+  the scenery) and Badlands (an open field of small mesas, one to three hexes, a hex of ground
+  between any two so no straight path crosses, two or three ponds of two to four hexes, scrub at
+  the mesas' feet). And Open Steppe, the baseline (a lone crag and a pond at most for every ten
+  hexes of wall). A ford is one to three hexes wide, with a hex of river between two; the fords'
+  total is the team's number and does not scale with the wall. A battle that names no shape
+  draws one by its seed, never by its domain. Every map guarantees the
   horde a crossing three hexes wide or more through its walls; the rift's mouth (one row for
   every five of depth, rounded up, two at least and four at most: rows 0 to 2 at twelve deep,
   0 to 3 at twenty) and the two rows before the gate hold no water and no wall; the rows

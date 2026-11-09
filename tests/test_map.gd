@@ -148,14 +148,13 @@ func test_the_mouth_is_a_share_of_the_depth() -> void:
 
 
 func test_each_shape_lays_what_its_name_says() -> void:
-	# Ryan, 28 and 29 October: six shapes, the name on the front card the whole intel. A river
-	# across with fords, a fjord down the field with a lane either side, the badlands' mesas and
-	# ponds, the steppe nearly clear, the city's bands of towers with streets, the gorge's
-	# cliffs down the field; none of it in the rift's mouth or on the team's ground. A river's
-	# fords and a band's streets are three or four hexes in all, one or two fords and one to
-	# four streets. Since 9 November each is laid at any size the ramp deals: the counts that
-	# scale with the width (the fjords, the cliffs, the steppe's crags and ponds) scale, the
-	# counts that are the team's (fords, streets) do not.
+	# Ryan, 28 and 29 October: six shapes, the name on the front card the whole intel; since 9
+	# November laid for the long wall at any size the ramp deals. A river across with fords, a
+	# fjord for every ten hexes of wall with a lane either side, the steppe nearly clear, and the
+	# three wall shapes a spectrum by the mass of what blocks you (Ryan, 9 November): the gorge's
+	# channels through cliff mass, the city's streets between large blocks, the badlands' small
+	# obstacles on open ground; none of it in the rift's mouth or on the team's ground. A river's
+	# fords are three or four hexes in all, one or two of them, the team's number.
 	for size in SIZES:
 		var w: int = size[0]
 		var h: int = size[1]
@@ -210,67 +209,78 @@ func test_each_shape_lays_what_its_name_says() -> void:
 								var gap: int = int(cols[i]) - int(cols[i - 1])
 								assert_true(gap == 1 or gap >= 3, "%s: a lane two wide between two fjords on row %d: %s" % [tag, row, str(cols)])
 					"badlands":
-						assert_true(walls.size() >= 4, "%s: mesas in groups" % tag)
+						# An open field of small obstacles (Ryan, 9 November): many mesas of one to three
+						# hexes, never touching, so no straight path crosses; two or three ponds.
+						assert_true(walls.size() >= 6, "%s: many small mesas: %d" % [tag, walls.size()])
 						for hx in walls:
 							assert_eq(m.wall_look[hx], "mesas", "%s: the walls are mesas" % tag)
-						assert_true(water.size() >= 2, "%s: ponds" % tag)
+						for group in _groups(walls):
+							assert_true((group as Array).size() <= 3, "%s: a mesa is one to three hexes: %d" % [tag, (group as Array).size()])
+						assert_true(water.size() >= 2 and water.size() <= 12, "%s: ponds: %d" % [tag, water.size()])
 					"steppe":
 						var most := maxi(1, w / 10)
 						assert_true(walls.size() <= most, "%s: a lone crag at most for every ten hexes of wall: %d" % [tag, walls.size()])
 						assert_true(water.size() <= 3 * most, "%s: a pond at most for every ten hexes of wall: %d" % [tag, water.size()])
 					"city":
-						assert_true(water.is_empty(), "%s: no water" % tag)
+						# Channels broken by side streets between large blocks (Ryan, 9 November): towers
+						# are most of the band, the streets open, a road down the main avenue from the gate.
 						for hx in walls:
 							assert_eq(m.wall_look[hx], "towers", "%s: the walls are towers" % tag)
-						var bands := 0
-						var band_rows: Array = []
-						for row in range(lo, hi + 1):
-							var n := 0
-							for col in range(w):
-								if m.terrain[Hex.offset_to_axial(col, row)] == BattleMap.Terrain.MOUNTAIN:
-									n += 1
-							if n >= w - 4:
-								bands += 1
-								band_rows.append(row)
-						assert_true(bands >= 1, "%s: a band of towers across, its streets four wide at most" % tag)
-						if m._open_rows() >= 4 and m._open_rows() < 9:
-							assert_false(band_rows.has(lo), "%s: a row of rubble at the mouth's edge" % tag)
-							assert_false(band_rows.has(hi), "%s: a row of rubble before the team's ground" % tag)
-						var by_band := {}   # a band's northmost row -> its streets' widths
-						for i in range(m.gaps.size()):
-							var top := 1 << 20
-							for hx in m.gaps[i]:
-								top = mini(top, Hex.axial_to_offset(hx).y)
-							if not by_band.has(top):
-								by_band[top] = []
-							by_band[top].append(m.gap_widths[i])
-						assert_true(by_band.size() >= 1 and by_band.size() <= 2, "%s: one band or two" % tag)
-						assert_eq(by_band.size(), 2 if m._open_rows() >= 9 else 1, "%s: two bands on a deep field, one on a shallow" % tag)
-						for top in by_band.keys():
-							_check_crossings("%s, the band at row %d" % [tag, top], by_band[top], BattleMap.STREETS_MOST)
+						var band := _band(m)
+						assert_true(walls.size() * 10 >= band * 3 and walls.size() * 10 <= band * 8, "%s: towers between three and eight tenths of the band: %d of %d" % [tag, walls.size(), band])
+						assert_true(water.size() <= 8, "%s: a flooded street or a fountain at most: %d" % [tag, water.size()])
+						assert_true(m.streets.size() >= 1, "%s: streets" % tag)
+						var front := Hex.offset_to_axial(Hex.axial_to_offset(m.gate).x, Hex.axial_to_offset(m.gate).y - BattleMap.GATE_ROWS)
+						assert_eq(m.terrain[front], BattleMap.Terrain.ROAD, "%s: the main avenue starts in front of the gate" % tag)
 					"gorge":
-						assert_true(water.is_empty(), "%s: no water" % tag)
-						var n := m._cliff_count()
-						assert_eq(n, clampi(roundi(float(w) / 6.0), 1, 4), "%s: a cliff wall for every six hexes of wall" % tag)
-						for row in range(lo, hi + 1):
-							var cols: Array = []
-							for col in range(w):
-								var hx := Hex.offset_to_axial(col, row)
-								if m.terrain[hx] == BattleMap.Terrain.MOUNTAIN:
-									cols.append(col)
-									assert_eq(m.wall_look[hx], "cliffs", "%s: the walls are cliffs" % tag)
-							assert_true(cols.size() >= n, "%s: %d cliff walls down the field on row %d: %s" % [tag, n, row, str(cols)])
-							if not cols.is_empty():
-								assert_true(cols.min() >= 2 and cols.max() <= w - 3, "%s: a lane two wide at either edge on row %d: %s" % [tag, row, str(cols)])
-							for i in range(1, cols.size()):
-								assert_true(int(cols[i]) - int(cols[i - 1]) >= 3, "%s: a lane two wide between two cliffs on row %d: %s" % [tag, row, str(cols)])
+						# Winding, branching channels through cliff mass (Ryan, 9 November): cliffs are
+						# most of the band and the channels a quarter at least; the gorge's own sides past
+						# both edges; a flooded stretch at most two.
+						for hx in walls:
+							assert_eq(m.wall_look[hx], "cliffs", "%s: the walls are cliffs" % tag)
+						var band := _band(m)
+						assert_true(walls.size() * 10 >= band * 3, "%s: cliff mass three tenths of the band at least: %d of %d" % [tag, walls.size(), band])
+						assert_true((band - walls.size()) * 4 >= band, "%s: channels a quarter of the band at least: %d of %d" % [tag, band - walls.size(), band])
+						assert_true(water.size() <= 6, "%s: a flooded stretch or two: %d" % [tag, water.size()])
 						assert_eq(m.margin.get(Hex.offset_to_axial(-1, lo + 1), -1), BattleMap.Terrain.MOUNTAIN, "%s: the gorge's own side past the west edge" % tag)
+
+
+## The field's hexes between the mouth and the team's rows, the structures aside: the band a
+## shape lays in.
+func _band(m: BattleMap) -> int:
+	var n := 0
+	for hx in m.all_hexes():
+		var row := Hex.axial_to_offset(hx).y
+		if row >= m.mouth_rows() and row <= _hi(m.height) and not m.is_structure(hx):
+			n += 1
+	return n
+
+
+## The connected groups among `hexes`, each an Array.
+func _groups(hexes: Array) -> Array:
+	var seen := {}
+	var out: Array = []
+	for hx in hexes:
+		if seen.has(hx):
+			continue
+		var group: Array = [hx]
+		seen[hx] = true
+		var queue: Array = [hx]
+		while not queue.is_empty():
+			var cur: Vector2i = queue.pop_front()
+			for n in Hex.neighbors(cur):
+				if hexes.has(n) and not seen.has(n):
+					seen[n] = true
+					group.append(n)
+					queue.append(n)
+		out.append(group)
+	return out
 
 
 func test_the_shapes_second_ground_lies_along_their_landforms() -> void:
 	# The shapes relaid (9 November): a river's gravel bars, a fjord's shingle and a gorge's
 	# scree are rough ground laid in stretches beside the water or the cliffs, never elsewhere
-	# on the field; the steppe and the city lay none.
+	# on the field; the steppe and the city lay none (the city's ground is rubble).
 	for kind in ["river", "fjord", "gorge", "steppe", "city"]:
 		for s in range(1, 11):
 			var m := BattleMap.generate(20, 12, s, kind)
@@ -472,8 +482,8 @@ func test_walls_fill_the_bottom_row_beside_the_gate_and_block() -> void:
 
 func test_roads_are_laid_as_paths_with_gaps() -> void:
 	# Roads are never rolled at random, and they lead somewhere (Ryan, 29 October): the river's
-	# to its fords, the steppe's one road north, the city's streets through its gaps; the fjord,
-	# the badlands and the gorge lay none. Over many seeds every map that lays one has a road,
+	# to its fords, the steppe's one road north, the city's streets (its avenues and side
+	# streets, the main avenue from the gate); the fjord, the badlands and the gorge lay none. Over many seeds every map that lays one has a road,
 	# most road hexes touch another, none is a lone slab and all are level.
 	for kind in ["river", "steppe", "city"]:
 		var touching := 0
@@ -499,15 +509,24 @@ func test_roads_are_laid_as_paths_with_gaps() -> void:
 			assert_true(_field(BattleMap.generate(9, 20, s, kind), BattleMap.Terrain.ROAD).is_empty(), "%s seed %d lays no road" % [kind, s])
 
 
-func test_the_roads_lead_to_the_fords_and_through_the_gaps() -> void:
+func test_the_roads_lead_to_the_fords_and_along_the_streets() -> void:
 	# A river's road reaches each ford two hexes wide or more (the nearest ford when none is),
-	# a city's streets run through every gap (a slab may be missing, so most rather than all).
+	# a city's streets are paved (a slab may be missing, so most rather than all).
 	var reached := 0
 	var places := 0
+	var paved := 0
+	var street_hexes := 0
 	for s in range(1, 41):
 		for kind in ["river", "city"]:
 			var m := BattleMap.generate(9, 20, s, kind)
-			var roaded: Array = m.gaps
+			var roaded: Array = []
+			if kind == "city":
+				for street in m.streets:
+					for hx in street:
+						if m.has(hx) and m.terrain[hx] != BattleMap.Terrain.WATER:
+							street_hexes += 1
+							if m.terrain[hx] == BattleMap.Terrain.ROAD:
+								paved += 1
 			if kind == "river":
 				roaded = []
 				for i in range(m.fords.size()):
@@ -528,7 +547,8 @@ func test_the_roads_lead_to_the_fords_and_through_the_gaps() -> void:
 						near = near or m.terrain.get(n, -1) == BattleMap.Terrain.ROAD
 				if near:
 					reached += 1
-	assert_true(reached * 10 >= places * 9, "a road at %d of %d fords and gaps" % [reached, places])
+	assert_true(reached * 10 >= places * 9, "a road at %d of %d fords" % [reached, places])
+	assert_true(paved * 10 >= street_hexes * 6, "the streets paved: %d of %d hexes" % [paved, street_hexes])
 
 
 func test_the_road_starts_in_front_of_the_gate() -> void:

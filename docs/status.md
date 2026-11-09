@@ -25,7 +25,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1062 tests, 285,482 checks, green (9 November, `ccr-1e6e6571-7x7ayr` with the shapes relaid on
+- Tests: 1062 tests, 303,982 checks, green (9 November, `ccr-1e6e6571-7x7ayr` with the shapes relaid and recast on
   main's hunter's reach, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -156,12 +156,22 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   and streets three or four in all); a river between a bank row at the mouth's edge and one before
   the team's ground; a city's one band mid the open rows with rubble before and after; each shape's
   second ground along its landform in stretches from a seeded noise (gravel bars, shingle, scree,
-  `BattleMap._shore`). Saves at 17, runs at 16. Read at 200 seeds on every shape at 20 by 12
-  (`docs/measurements.md`, 9 November) and drawn on both views (the river's bars and the gorge's
-  scree show in the 3D); the to-do's Ryan list has the phone judge, with the fjord and cliff
-  counts and the authored sectors (the long wall proposal's lean, a content proposal only if the
-  relaid shapes are not enough). The bible's shapes and field rows carry it (v0.490, this file;
-  not republished: the live page's republish waits on Ryan's word, Pages below).
+  `BattleMap._shore`). Then Ryan's recast of the three wall shapes the same day ("the 'vertical
+  versus horizontal' categorizations don't really hold together"; his words in the bible's shapes
+  row): a spectrum by the mass and the structure of what blocks you, water in all three. Built as
+  first cuts: the GORGE cliff mass over the open rows cut by winding, branching channels (a trunk
+  for every seven hexes of wall, two or three branches each, a flooded stretch or two); the RUINED
+  CITY large tower blocks in a grid of one-wide avenues (the gate's two wide, the roads) and
+  broken side streets, a plaza with a fountain and a flooded street now and then; the BADLANDS an
+  open field of small mesas a hex apart with ponds. A city band's streets rule retired with the
+  band; the field of every shape but the badlands and the steppe level by rule, and the scenery's
+  first ring level. Saves at 17, runs at 16. Read at 200 seeds on every shape at 20 by 12
+  (`docs/measurements.md`, 9 November, twice: the relaying, then the recast) and drawn on both
+  views (the river's bars, the gorge's mass and the city's blocks in the 3D); the to-do's Ryan
+  list has the phone judge, with the counts and the authored sectors (the long wall proposal's
+  lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
+  it (v0.491, this file; not republished: the live page's republish waits on Ryan's word, Pages
+  below).
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
