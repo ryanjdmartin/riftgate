@@ -486,6 +486,12 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
 # RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,
 # so any kill shows its blast land round the slot, to judge the Mine's chip and blast running.
+# RIFTGATE_REFIT=all (any run; or a part of the spec tools/balance.gd's --refit takes) plays the
+# refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): no shield or vent on a
+# stock die (a Barrier or an Armoured piece in its place), a shield regen of half the gauge a round,
+# the basics at heat one, and the four machines back in design left out of every picker. On the
+# phone a debug build's SETTINGS has REFIT MODEL (NEXT LAUNCH): switch it, close the app, open it,
+# and start a new battle or run, since a saved one keeps the dice it was saved with.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on

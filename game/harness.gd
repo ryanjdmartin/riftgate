@@ -41,8 +41,33 @@ var _quick_resume_btn: Button
 
 func _ready() -> void:
 	Settings.apply()
+	refit_trial()
 	Hud.oversample(get_window())   # text rasterised at the glass's density, not the design's
 	build(HarnessSetup.load_or_default())
+
+
+## The refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): laid over the
+## content once, as the game starts and before anything is built from it, when RIFTGATE_REFIT
+## names a spec ("all", or its parts: die, regen=half|N, cooling=N, heat1) or a debug build's
+## SETTINGS has REFIT MODEL on (the phone's way: read at the next launch). A battle or a run saved
+## before the switch keeps the dice it was saved with, so judge it on a new one.
+static var _refit_trial_done := false
+static func refit_trial() -> void:
+	var spec := refit_spec()
+	if _refit_trial_done or spec.is_empty():
+		return
+	_refit_trial_done = true
+	for line in Refit.apply(ContentDB.load_default(), Refit.parse(spec)):
+		print("refit trial: " + line)
+
+
+## The trial's spec, "" while it is off: the environment's, else "all" where a debug build's
+## setting asks for it.
+static func refit_spec() -> String:
+	var spec := OS.get_environment("RIFTGATE_REFIT")
+	if spec.is_empty() and OS.is_debug_build() and bool(Settings.display.get("refit", false)):
+		spec = "all"
+	return spec
 
 
 ## Build the menu over a setup (the tests call this out of the tree, with their own).

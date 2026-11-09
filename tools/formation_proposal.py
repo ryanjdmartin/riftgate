@@ -10,8 +10,8 @@ content/factions.json alone and this file goes to git.
       as markdown tables; --prune leaves out the twelve the reads prune (the proposal's section 5), the
       set that would land on Ryan's go
   python3 tools/formation_proposal.py tables <worktree>/content/factions.json content/foes.json tables.md "Default four=curve.md" ...
-      the tables with each read's bands (tools/balance.gd --packs curve --out curve.md; several files
-      may share a label)
+      the tables with each read's bands, hull lost, rounds and stalls (tools/balance.gd --packs curve
+      --out curve.md; several files may share a label)
   python3 tools/formation_proposal.py summary "Default four=curve.md" ...
       band counts at the rating, by tier and size
 
@@ -440,8 +440,16 @@ def tables(args):
     def band(s):
         # "decision · 33%" -> "D 33%"; "free · 0%" -> "F 0%"; "wall · 100%" -> "W 100%"
         if not s: return ""
-        m = re.match(r"(free|decision|wall) · (\d+%)", s)
-        return {"free": "F", "decision": "D", "wall": "W"}[m.group(1)] + " " + m.group(2) if m else s
+        # A cell is a band and greedy's hull lost; since 9 November its rounds and stalled fights too.
+        m = re.match(r"(free|decision|wall) · (\d+%)(?: · ([\d.]+) r)?(?: · (\d+) stalled)?", s)
+        if not m:
+            return s
+        out = {"free": "F", "decision": "D", "wall": "W"}[m.group(1)] + " " + m.group(2)
+        if m.group(3):
+            out += " " + m.group(3) + "r"
+        if m.group(4):
+            out += " (" + m.group(4) + " stalled)"
+        return out
 
     out = []
     for dom in data['entries']:

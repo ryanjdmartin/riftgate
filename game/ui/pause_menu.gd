@@ -151,6 +151,7 @@ func _show_page(page: String) -> void:
 				_toggle("TRACES", "traces")   # the map's creases, one device pixel at every zoom: off draws none, to judge the zoomed-out grain on the phone
 				_toggle("SHOT TRAILS", "shot_trails")   # a shot crossing the field from its muzzle to its target (ShotTrail): tabled as maybe too busy, here to judge
 				_toggle("KEYWORD INK", "keyword_ink")   # a term in shown text bold in ink, its icon in its colour, against the word in its colour (Ryan judges which)
+				_toggle("REFIT MODEL (NEXT LAUNCH)", "refit")   # the refit pass's model as a trial (game/harness.gd, refit_trial): no shield or vent on a stock die, a shield regen, the basics at heat one; start a new battle or run after switching
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"colours":

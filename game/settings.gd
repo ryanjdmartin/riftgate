@@ -35,6 +35,7 @@ const DISPLAY_DEFAULTS := {
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 	"shot_trails": false,   # a debug build's trial: a shot crossing the field from the muzzle to its target (ShotTrail), tabled as maybe too busy (Ryan, 3 November)
 	"map_view": "wall_left",   # MAP_VIEWS: the battle map's orientation (MapOrient), a view only
+	"refit": false,   # a debug build's trial: the refit pass's model laid over the content as the game starts (Refit, "all": the model's die, the shield regen, the basics at heat one), read at the next launch (docs/briefs/refit_pass.md)
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
