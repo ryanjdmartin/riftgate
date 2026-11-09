@@ -25,8 +25,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1062 tests, 303,982 checks, green (9 November, `ccr-1e6e6571-7x7ayr` with the shapes relaid and recast,
-  main's skirmish audit step 3 taken as it landed, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1062 tests, 303,981 checks, green (9 November, main with the shapes relaid and recast and the
+  skirmish audit's step 3, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -44,9 +44,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the music session's branch below and
-`ccr-1e6e6571-7x7ayr`, the map session of 9 November (the shapes relaid, How things stand below),
-which waits on Ryan's word to land. The
+Everything is on main as of 9 November 2026 but the music session's branch below. `ccr-1e6e6571-7x7ayr`,
+the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
+skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
+into main, so I can try it"); it is merged and to delete with the rest. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
