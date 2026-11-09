@@ -55,3 +55,28 @@ func test_a_save_from_before_the_rule_loads_a_sleeping_buff_awake() -> void:
 	var back: Array = SaveGame._modifiers_from([md])
 	assert_eq(back.size(), 1, "one grant")
 	assert_eq(int(back[0].stacks), 3, "its sleeping stack back on it, awake")
+
+
+## What a status is to its unit, the label its chip and its line wear (Ryan, 9 November: "Buffs and
+## debuffs ... need to be clearly labeled as such, so that it's clear what gets purged"): a buff is
+## exactly what a Purge reaches, an ability and a store never one, and what the other side lays to
+## hinder is a debuff, each die entry's Disabled and Corrupted among them.
+func test_every_status_says_whether_a_purge_reaches_it() -> void:
+	for id in Effects.STATUS.keys():
+		var tags: Array = Effects.STATUS[id].get("tags", [])
+		var kind := Effects.status_kind(str(id))
+		assert_eq(kind == "buff", tags.has("buff") and not tags.has("ability"), "%s: a buff exactly when a Purge reaches it" % id)
+		if tags.has("ability"):
+			assert_eq(kind, "ability", "%s: an ability, never a buff" % id)
+		if tags.has("store"):
+			assert_eq(kind, "store", "%s: a store, never a buff" % id)
+	for id in ["burning", "burning_mech", "scorched", "crushed", "silenced", "swallowed", "shocked", "exposure", "flakked", "cryoed", "suppressed", "webbed"]:
+		assert_eq(Effects.status_kind(id), "debuff", "%s is a debuff" % id)
+	assert_eq([Effects.status_kind("disabled_0"), Effects.status_kind("corrupted_2")], ["debuff", "debuff"], "an entry's Disabled and Corrupted are debuffs")
+	assert_eq(Effects.status_kind("siphoning"), "", "the Siphoning, its own doing, is none of them")
+	var u := _unit()
+	Effects.grant_buff(u, "overcharged", 2, "buff", 1)
+	Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 2, Effects.DECAY_TURN_ALL)
+	Effects.purge(u, 5)
+	assert_false(Effects.has(u, "overcharged"), "the buff purged")
+	assert_true(Effects.has(u, "scorched"), "the debuff untouched")

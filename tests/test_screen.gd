@@ -330,6 +330,17 @@ func test_a_dies_tap_waits_out_the_double_tap_window_lit() -> void:
 	d._gui_input(press)
 	d._gui_input(release)
 	assert_eq(count["tap"], 2, "without the wait a tap lands at once")
+	# The window runs from the tap's release to the second touch (Ryan, 9 November: "die face single
+	# press delay can be a bit faster, even"), so the second press's own length never spends it.
+	d.confirm_taps = true
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	d._gui_input(press)   # the second touch inside the window
+	d._last_tap_at -= 1.0   # held long, as a slow finger's second press is: its release is late
+	d._gui_input(release)
+	assert_eq(count["double"], 2, "a second touch inside the window is a double-tap however long it is held")
+	assert_true(DieFaceView.DOUBLE_TAP_SECONDS <= 0.15, "the single tap's wait")
 	d.free()
 
 
@@ -529,7 +540,7 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_eq(int(gauges["Shield"]["parts"][1]["trend"]), 0, "one nothing moved: plain")
 	assert_true(s._details_entry.text().contains("Armour %d · Cooling %d" % [m.armour, m.cooling]), "its armour and cooling as stats, nothing moved: %s" % s._details_entry.text())
 	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
-	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Empowered")), "every chip listed with what it does: %s" % str(chips))
+	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Buff, Empowered")), "every chip listed with what it does, a buff's said so: %s" % str(chips))
 	# A foe: its HP, its attack a rally raised (the foe's gain: up and green), its intent.
 	Effects.stack(foe, Effects.STATUS["kindled"], Effects.SKIRMISH, "test", 2, Effects.DECAY_HALF)
 	s._refresh()
@@ -1152,7 +1163,7 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	assert_eq(_chips_for(s, 0, "overcharged"), ["×3"] as Array[String], "a buff's for the round joins it in one chip")
 	var held := 0
 	for l in s._mech_hold_lines(0):
-		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Empowered"):
+		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Buff, Empowered"):
 			held += 1
 	assert_eq(held, 1, "the hold lists it once")
 	var named := 0
@@ -1203,7 +1214,8 @@ func test_a_braced_foe_wears_one_braced_chip() -> void:
 	assert_eq(chips.size(), 1, "one chip for its brace and the Protect on top")
 	if chips.size() == 1:
 		assert_eq(str(chips[0][1]), "+15", "the armour both add")
-		assert_eq(str(chips[0][2]), "Armoured +15", "named Armoured, as a machine's is, with what the chip counts (its meaning a tap on the term)")
+		assert_eq(str(chips[0][2]), "Buff, Armoured +15", "named Armoured, as a machine's is, with what the chip counts (its meaning a tap on the term), labelled a buff")
+		assert_eq(str(chips[0][5]), "buff", "and its chip wears a buff's mark")
 	s.free()
 
 
@@ -1398,7 +1410,7 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	assert_true(s._mech_views[0].statuses.any(func(st) -> bool: return st.size() >= 4 and str(st[3]) == "ability"), "and the machine's view draws it on its tile")
 	assert_eq(ability.call(s._foe_rows(nob)).size(), 1, "the Nob's rage is its ability")
 	assert_true(str(ability.call(s._foe_rows(nob))[0][2]).contains("Enraged +1"), "which says what goes on")
-	assert_true(s._foe_rows(nob).any(func(row) -> bool: return str(row[2]) == "Enraged +2" and (row.size() < 5 or str(row[4]) != "ability")), "and what it has gathered is a buff's chip beside it")
+	assert_true(s._foe_rows(nob).any(func(row) -> bool: return str(row[2]) == "Buff, Enraged +2" and (row.size() < 5 or str(row[4]) != "ability")), "and what it has gathered is a buff's chip beside it")
 	assert_true(str(ability.call(s._foe_rows(gel))[0][2]).contains("splits"), "a Gel's split is its ability")
 	assert_true(str(ability.call(s._foe_rows(beast))[0][2]).contains("Last Act: Meteor"), "a last act is the Behemoth's")
 	Effects.purge(m, 9)
@@ -1440,12 +1452,12 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 	# don't need the chips descriptions spelled out now that we can tap keywords").
 	if by.has("primed"):
 		assert_eq(str(by["primed"][1]), "×2", "Primed counts its stacks")
-		assert_eq(str(by["primed"][2]), "Primed ×2", "and the readout names it with them")
+		assert_eq(str(by["primed"][2]), "Buff, Primed ×2", "and the readout names it with them, a buff")
 	if by.has("regenerating"):
 		assert_eq(str(by["regenerating"][1]), "+4", "Regenerating its regrowth")
 		assert_true(str(by["regenerating"][2]).contains("3 actions to go"), "and its clock, which no chip shows")
 	if by.has("barrier"):
-		assert_eq(str(by["barrier"][2]), "Barrier", "a foe's Barrier by its name alone, its meaning the term's")
+		assert_eq(str(by["barrier"][2]), "Buff, Barrier", "a foe's Barrier by its name alone, a buff, its meaning the term's")
 	assert_eq(SkirmishScreen.status_glyph("primed"), "primed", "the same chip on a machine")
 	s.free()
 
@@ -2305,12 +2317,12 @@ func test_a_units_readout_names_its_chips_without_their_descriptions() -> void:
 	for l in s._foe_hold_lines(foe):
 		if str(l["style"]) == "chip":
 			chips.append(str(l["text"]))
-	assert_true(chips.has("Burning ×3"), "a foe's Burning by its name and stacks: %s" % str(chips))
+	assert_true(chips.has("Debuff, Burning ×3"), "a foe's Burning by its name and stacks, labelled a debuff (Ryan, 9 November): %s" % str(chips))
 	var mine: Array[String] = []
 	for l in s._mech_hold_lines(0):
 		if str(l["style"]) == "chip":
 			mine.append(str(l["text"]))
-	assert_true(mine.has("%s ×2" % str(Effects.STATUS["overcharged"]["name"])), "a machine's Empowered the same, by its shown name: %s" % str(mine))
+	assert_true(mine.has("Buff, %s ×2" % str(Effects.STATUS["overcharged"]["name"])), "a machine's Empowered the same, by its shown name, labelled a buff: %s" % str(mine))
 	var readout := EntryReadout.new()
 	readout.set_lines(s._foe_hold_lines(foe))
 	var terms: Array = []
@@ -2552,16 +2564,84 @@ func test_undo_takes_back_the_last_spend_and_its_badge_says_how_far_it_reaches()
 	var foe: Foe = s.sk.front[0]
 	var hp := foe.hp
 	var opened := s.sk.log.size()
-	assert_true(s._log_text(0).find(SkirmishScreen.ROLL_BAR) >= 0, "the round's bar in the trail")
+	assert_true(s._log_text().find(SkirmishScreen.ROLL_BAR) >= 0, "the round's bar in the trail")
 	assert_true(s._use_die(0, foe), "the die spent")
 	assert_eq(s.sk.front[0].hp, hp - 1, "the blow landed")
 	assert_false(s._undo_btn.disabled, "the undo opens")
 	assert_eq(s._undo_btn.badge, "×1", "one spend back")
-	var text := s._log_text(0)
+	var text := s._log_text()
 	assert_true(text.find(SkirmishScreen.ROLL_BAR) < text.rfind("> "), "the bar sits under the opening lines, the spend's after it")
 	s._on_undo()
 	assert_eq([s.sk.front[0].hp, s.sk.mechs[0].assigned, s.sk.log.size()], [hp, false, opened], "the spend taken back")
 	assert_true(s._undo_btn.disabled, "and nothing is left")
+	s.free()
+
+
+## UNDO opens once a spend's blow has played, on the clock that shut it (Ryan, 9 November:
+## "skirmish undo, it doesn't work anymore": a tween timed to the same moment ran a frame ahead of
+## the clock and left the button shut for good), and it sits bottom-right, END TURN's mirror, where
+## the withdrawal was (Ryan: "Undo at least should move there").
+func test_undo_opens_once_the_blow_has_played_and_sits_bottom_right() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.die = Die.single(Face.attack(1, Face.Reach.DIRECT))
+	ms.die = ms.unit.die
+	ms.face_index = 0
+	s._refresh()
+	assert_true(s._use_die(0, s.sk.front[0]), "the die spent")
+	s._undo_from = Time.get_ticks_msec() + 100000   # its blow still playing
+	s._undo_waiting = true
+	s._refresh_undo()
+	assert_true(s._undo_btn.disabled, "shut while the blow plays")
+	s._process(0.016)
+	assert_true(s._undo_btn.disabled, "and still, before the clock passes the mark")
+	s._undo_from = Time.get_ticks_msec() - 1   # the clock past it
+	s._process(0.016)
+	assert_false(s._undo_btn.disabled, "then it opens of its own accord, nothing else asked")
+	assert_false(s._undo_waiting, "and stops waiting")
+	assert_eq(s._undo_btn.position, Vector2(SkirmishScreen.W - 16.0 - SkirmishScreen.BOTTOM_BTN.x, s.BOTTOM_Y), "bottom-right")
+	assert_eq(s._undo_btn.position.y, s._end_btn.position.y, "on END TURN's row")
+	assert_true(s._undo_btn.state_marked, "its on and off read by its edge")
+	s.free()
+
+
+## Two foes of one column aiming at the machine below draw two lines apart (Ryan, 9 November: "two
+## foes in the same column targeting the mech in the same column blend together"): the front rank
+## stands a little left of its column and the back a little right, every view on the glass, and
+## each lands its arrow on its own side of the machine.
+func test_the_ranks_stagger_so_one_columns_two_arrows_part() -> void:
+	var s := _screen()
+	for col in range(s.sk.columns):
+		var f: UnitView = s._slot_views[0][col]
+		var b: UnitView = s._slot_views[1][col]
+		assert_true(f.position.x < b.position.x, "column %d: the front left of the back" % col)
+		assert_true(f.position.x >= 0.0 and b.position.x + b.size.x <= SkirmishScreen.W, "column %d on the glass" % col)
+	var front: Foe = s.sk.front[0]
+	var back: Foe = s.sk.back[0]
+	if back != null:
+		var at := Vector2(100, 900)
+		assert_true(s._arrow_end(front, at).x < s._arrow_end(back, at).x, "each lands on its own side of the machine")
+	s.free()
+
+
+## A status says what it is (Ryan, 9 November: "Buffs and debuffs ... need to be clearly labeled as
+## such, so that it's clear what gets purged"): its row's line begins Buff or Debuff and its chip
+## carries the word for its mark; an ability keeps its own.
+func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
+	var buff := SkirmishScreen.status_row("overcharged", "overcharge", "×2", "Empowered ×2", Palette.HEAT)
+	assert_eq(str(buff[2]), "Buff, Empowered ×2", "a buff's line")
+	assert_eq(str(buff[5]), "buff", "and its chip's mark")
+	var debuff := SkirmishScreen.status_row("burning", "burn", "2", "Burning ×2", Palette.HEAT)
+	assert_eq(str(debuff[2]), "Debuff, Burning ×2", "a debuff's line")
+	assert_eq(str(debuff[5]), "debuff", "and its chip's mark")
+	var plain := SkirmishScreen.status_row("siphoning", "heat", "", "Siphoning", Palette.HEAT)
+	assert_eq([str(plain[2]), str(plain[5])], ["Siphoning", ""], "one that is neither keeps its words and wears no mark")
+	var s := _screen()
+	var m: Unit = s.sk.mechs[0].unit
+	Effects.grant_buff(m, "overcharged", 2, "buff", s.sk.round)
+	s._refresh()
+	var v: UnitView = s._mech_views[0]
+	assert_true(v.statuses.any(func(st: Array) -> bool: return st.size() >= 5 and str(st[4]) == "buff"), "the machine's view carries the buff's mark")
 	s.free()
 
 

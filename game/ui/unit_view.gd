@@ -56,7 +56,7 @@ var intent_riders: Array = []
 var chip_wrap := 0.0              # the widest a row of chips runs before the next row starts; 0, the view's width
 var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "preview" a buff on its way (a rally's Empowered), pulsing, "ability" the unit's own mechanic, its glyph on a solid tile
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind), (what)], ...] under the sprite; kind "preview" a buff on its way (a rally's Empowered), pulsing, "ability" the unit's own mechanic, its glyph on a solid tile; what "buff" or "debuff" (Effects.status_kind), its chip's mark
 var highlight: bool = false       # valid drop target while dragging a die
 ## The foe acting in the enemy's turn, lit from just before its move until the next acts (Ryan, 2
 ## November: "enemies need to highlight during their attacks, starting right before"): a glow in
@@ -657,7 +657,7 @@ func _draw() -> void:
 	if not intent_kind.is_empty():
 		chips.append([Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud, "intent", intent_riders])
 	for s in statuses:
-		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status", []])
+		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status", [], s[4] if s.size() >= 5 else ""])
 	if chips.is_empty():
 		_draw_spend(mono)
 		return
@@ -731,7 +731,8 @@ static func chip_width(mono: Font, ch: Array) -> float:
 ## One chip in `rect` on `ci` (the field's views, a readout's mark): its frame by its kind (a
 ## coming status's dashed pulse, an ability's solid tile, a status's box), its glyph, its text
 ## (`txt`, or its own), then each rider after a divider, its mark and its number in its own
-## colour.
+## colour; a buff's or a debuff's mark at its corner (`ch` [glyph, text, Color, kind, riders,
+## what]: _polarity_mark).
 static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> void:
 	var col: Color = ch[2]
 	var kind := str(ch[3]) if ch.size() > 3 else "status"
@@ -782,6 +783,31 @@ static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = 
 		if not rt.is_empty():
 			ci.draw_string(mono, Vector2(x - 2.0, cy + RIDER_TEXT * 0.36), rt, HORIZONTAL_ALIGNMENT_LEFT, -1, RIDER_TEXT, rc)
 			x += mono.get_string_size(rt, HORIZONTAL_ALIGNMENT_LEFT, -1, RIDER_TEXT).x + 2.0
+	_polarity_mark(ci, rect, str(ch[5]) if ch.size() > 5 else "", col)
+
+
+## A buff's or a debuff's mark on its chip (Ryan, 9 November: "Buffs and debuffs ... need to be
+## clearly labeled as such, so that it's clear what gets purged"): a solid wedge on the chip's
+## edge, pointing up off its top at the left for a buff and down off its bottom at the right for a
+## debuff, in the chip's colour on a dark edge, so the two part by shape and place, never by hue
+## (Ryan is colourblind), and a debuff over a buff in the next row never meets its wedge; an
+## ability's solid tile, a store and a warning wear none. Hot, for the phone.
+const POLARITY_W := 12.0   # the wedge's base, along the chip's edge
+const POLARITY_H := 8.0    # how far it stands off the edge, half of it past the chip
+
+static func _polarity_mark(ci: CanvasItem, rect: Rect2, what: String, col: Color) -> void:
+	if what != "buff" and what != "debuff":
+		return
+	var up := what == "buff"
+	var x0 := rect.position.x + 5.0 if up else rect.end.x - 5.0 - POLARITY_W
+	var edge := rect.position.y if up else rect.end.y
+	var dir := -1.0 if up else 1.0   # away from the chip
+	var base_y := edge - dir * POLARITY_H * 0.5
+	var tip := Vector2(x0 + POLARITY_W * 0.5, edge + dir * POLARITY_H * 0.5)
+	var wedge := PackedVector2Array([Vector2(x0, base_y), Vector2(x0 + POLARITY_W, base_y), tip])
+	var rim := PackedVector2Array([Vector2(x0 - 2.0, base_y - dir * 1.0), Vector2(x0 + POLARITY_W + 2.0, base_y - dir * 1.0), tip + Vector2(0.0, dir * 2.0)])
+	ci.draw_colored_polygon(rim, Color(Palette.BG, 0.95 * col.a))
+	ci.draw_colored_polygon(wedge, col)
 
 
 ## A rect drawn in dashes on any canvas item (a chip's edge), its dark edge under each dash.

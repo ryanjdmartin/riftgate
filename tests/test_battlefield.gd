@@ -130,6 +130,39 @@ func test_a_pushers_segment_is_drawn_about_the_rifts_column_and_walked_to() -> v
 	assert_eq(hunter.goal_col, -1, "a hunter draws no segment")
 
 
+## A pack's whole way (Ryan, 9 November: "Pushers should show their current complete path to their
+## targeted wall segment when tapped. Similarly, hunters should show their current complete path to
+## their target"): the walk carries its route to its goal, this turn's path its first stretch; a
+## pusher's ends on the apron hex of its segment, a hunter's where its prey stands inside its ring;
+## each later turn's stop is its move along the rest, a water hex costing two.
+func test_a_walk_carries_its_whole_way_and_the_stops_of_the_turns_after() -> void:
+	var f := _field(20, 12)
+	var rift_col := Hex.axial_to_offset(f.map.rift).x
+	var sq := f.add_unit(Unit.pack(0, "ghouls", _o(3, 1), "marsh", 2))
+	f.assign_goal(sq, 0)
+	var w: Battlefield.Walk = f.plan_walks()[sq.id]
+	assert_true(w.route.size() > w.path.size(), "the way runs past this turn's walk")
+	assert_eq(w.route.slice(0, w.path.size()), w.path, "this turn's walk is its first stretch")
+	assert_eq(Hex.axial_to_offset(w.route[w.route.size() - 1]), Vector2i(rift_col, f.apron_row()), "a pusher's ends at its segment's apron hex")
+	var stops := f.turn_ends(sq, w)
+	assert_eq(stops[stops.size() - 1], w.route.size() - 1, "the last turn's stop is the goal")
+	for n in range(stops.size()):
+		assert_eq(stops[n] + 1, w.path.size() + 2 * (n + 1) if n < stops.size() - 1 else w.route.size(), "a stop a turn, two hexes on at move 2")
+	# A ford of water on the way: the turn that wades it walks less far.
+	var dry := f.turn_ends(sq, w).size()
+	for i in range(w.path.size(), w.route.size()):
+		f.map.terrain[w.route[i]] = BattleMap.Terrain.WATER if Hex.axial_to_offset(w.route[i]).y < f.apron_row() else f.map.terrain[w.route[i]]
+	assert_true(f.turn_ends(sq, w).size() > dry, "wading takes more turns to the wall")
+	# A hunter's ends where its prey stands inside its ring.
+	var g := _field(20, 12)
+	var m := g.add_unit(Unit.mech(5, "Prey", _o(10, 9), 2))
+	var hunter := _hunter(g, _o(10, 1), 2, "nearest")
+	var hw: Battlefield.Walk = g.plan_walks()[hunter.id]
+	assert_eq(hw.prey, m.id, "it comes for the machine")
+	assert_true(g.catches_at(hunter, hw.route[hw.route.size() - 1], m), "its way ends with its prey inside its ring")
+	assert_false(g.catches_at(hunter, hw.end, m), "which this turn's walk does not reach")
+
+
 ## At a spread of four the draw lands eight pushers on eight of the nine columns about the rift's,
 ## never off the wall.
 func test_eight_pushers_at_a_spread_of_four_take_eight_of_the_nine_columns() -> void:

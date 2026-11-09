@@ -23,6 +23,7 @@ extends RefCounted
 ## A pack's walk on the enemy's turn.
 class Walk:
 	var path: Array[Vector2i] = []   # the hexes it walks, after its own
+	var route: Array[Vector2i] = []  # its whole way to its goal as the field stands, after its own hex: the path, then the turns after it (a pusher's to its wall segment, a hunter's to where its prey stands inside its ring); empty when it goes nowhere
 	var end: Vector2i                # where it stops
 	var strikes := false             # it stops on the gate's apron and strikes the gate
 	var waits := false               # no way to its goal: it stays where it is
@@ -469,6 +470,7 @@ func _stand_in_walk(sq: Unit, blocked: Dictionary, prey: Unit) -> Walk:
 	while c != sq.pos:
 		w.path.push_front(c)
 		c = prev[c]
+	w.route = w.path.duplicate()   # it reaches the machine it takes this turn
 	w.end = goal
 	w.prey = taken.id
 	w.catches = taken.id
@@ -579,6 +581,11 @@ func apron_row() -> int:
 	return map.height - BattleMap.GATE_ROWS - 1
 
 
+## Whether a hunter anchored at `at` holds `u` inside its ring: the catch's own reach.
+func catches_at(sq: Unit, at: Vector2i, u: Unit) -> bool:
+	return u != null and _distance_from(sq, at, u) <= ContentDB.HUNTER_RING
+
+
 ## The shortest distance from a pack anchored at `at` to a unit.
 func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 	var best := 1 << 30
@@ -601,6 +608,7 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 		var step := _patrol_step(sq, blocked)
 		if step != sq.pos:
 			w.path.append(step)
+			w.route.append(step)
 			w.end = step
 		return w
 	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
@@ -666,11 +674,37 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	while not walked.is_empty() and not _landable(sq, walked[walked.size() - 1], blocked):
 		walked.pop_back()
 	w.path = walked
+	w.route = route   # the whole way, of which the path is the first turn's
 	w.end = walked[walked.size() - 1] if not walked.is_empty() else sq.pos
 	w.strikes = prey == null and on_apron(sq, w.end)
 	if prey != null and _distance_from(sq, w.end, prey) <= ContentDB.HUNTER_RING:
 		w.catches = prey.id
 	return w
+
+
+## Where each later turn of a walk's whole way ends (Walk.route past its path), as indices into
+## the route: a pack walks its move a turn, a water hex costing two and entered with whatever is
+## left, as the turn's own walk does (_walk), from the first turn's end. The map numbers them on a
+## tapped pack's way (Ryan, 9 November: "Pushers should show their current complete path to their
+## targeted wall segment when tapped"). Read as the field stands, so a stop is where it would be
+## if nothing moved; it reads no landing, since who stands where then is unknown.
+func turn_ends(sq: Unit, w: Walk) -> Array[int]:
+	var out: Array[int] = []
+	var at := w.path.size()
+	while at < w.route.size():
+		var budget := sq.movespeed
+		var moved := false
+		while at < w.route.size():
+			var cost := BattleMap.spend(map.terrain[w.route[at]], sq.traits, budget)
+			if cost < 0:
+				break
+			budget -= cost
+			at += 1
+			moved = true
+		if not moved:
+			break   # nothing this pack can cross: no stop further on
+		out.append(at - 1)
+	return out
 
 
 ## Whether a hex is land: neither water nor a wall (a pusher's segment is a land apron hex).

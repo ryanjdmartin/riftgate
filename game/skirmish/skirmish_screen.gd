@@ -7,13 +7,13 @@ extends Control
 ##   header      round and reinforcements tag, phase readout, MENU at the right
 ##   formation   two ranks of four unit views; a massive foe spans both ranks of its column;
 ##               under each foe its intent (fantasy icon and number) and its statuses
-##   log         every event, scrollable, the newest brightest; double-tap for it full screen;
+##   log         every event at full strength, scrollable, the new lines typing in; double-tap for it full screen;
 ##               the intent eye at its right, in the black between the two grounds
 ##   dice        tap to lock, hold to see every face, drag onto a target to spend; the wide
 ##               Reroll sits right under them, before or after attacking
 ##   mechs       gauges hugging the sprite, warning chips under it: shield break, component
 ##               risk, wreck, overheat; the gauges pulse where they are about to change
-##   bottom      End turn bottom-left, Withdraw bottom-right; both ask first when it matters
+##   bottom      End turn bottom-left, asking first over unspent dice; Undo bottom-right
 ##
 ## No names on screen. Kinetic faces roll when they land and the number flashes over the
 ## target. Hold a unit for numbers, statuses and arrows, a die for every entry and what
@@ -46,7 +46,6 @@ var DIE_Y := 630.0
 const DIE_SIZE := 120.0
 var REROLL_Y := 768.0
 const REROLL_SIZE := Vector2(250, 54)
-const UNDO_SIZE := Vector2(150, 54)
 const UNDO_AFTER := 0.8   # the undo opens this long after a spend's blow has landed: its views have settled
 const ROLL_BAR := "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"   # a roll's bar in the trail (Ryan, 2 November): where the undo stops
 const REROLL_GAP := 30.0   # black between Reroll and the mechs' ground (Ryan, 23 September: 14 was too tight)
@@ -84,7 +83,6 @@ var _cam := {}              # _field_camera
 const BOTTOM_BTN := Vector2(210, 60)
 const MECH_LOG_GAP := 18.0  # with the controls at the bottom, from the machines' row to the log
 const PITCH := 172.0
-const LOG_LINES := 7
 const ENEMY_BEAT := 0.45   # seconds between the enemy's blows at ENEMY PACE 1; the setting divides it
 const ACT_LEAD := 0.45     # how much of a beat the next foe is lit before its move lands
 const PLAQUE_HOLD := 1.0   # seconds the replay holds on a named move's plaque (decided 9 October; a placeholder, judged running); the pace setting does not shorten a read
@@ -238,6 +236,9 @@ func _process(delta: float) -> void:
 	if MISS_DEBUG and _fight_t - _miss_debug_at > 1.5:
 		_miss_debug_at = _fight_t
 		_miss_debug()
+	if _undo_waiting and Time.get_ticks_msec() >= _undo_from:
+		_undo_waiting = false
+		_refresh_undo()   # the spend's blow has played: the undo opens
 	var sec := int(_fight_t)
 	if sec != _clock_sec:
 		_clock_sec = sec
@@ -313,6 +314,7 @@ var _reroll_btn: HudButton
 var spend_played: Dictionary = {"dead": [], "rose": []}
 var _undo_btn: HudButton
 var _undo_from: int = 0   # the tick (ms) the undo opens again after a spend, once its blow has played
+var _undo_waiting := false   # a spend's blow is playing: _process opens the undo once the clock passes _undo_from
 var _end_btn: HudButton
 var _overlay: Control
 var _overlay_title: Label
@@ -507,7 +509,7 @@ func _build() -> void:
 			_stand(v, y, SLOT_SIZE.y)
 			v.empty_pad = true
 			v.chip_wrap = _col_pitch() - 6.0   # a foe's chips wrap at its column, wider than its drawing
-			_place(v, Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
+			_place(v, Vector2(_rank_x(rank, col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
 			v.held.connect(_on_foe_held.bind(v))
 			v.double_tapped.connect(_on_foe_double_tapped.bind(v))
 			v.tapped.connect(_on_foe_tapped.bind(v, rank, col))
@@ -518,7 +520,7 @@ func _build() -> void:
 			tv.is_enemy = true
 			_stand(tv, y, SLOT_SIZE.y)
 			tv.visible = false
-			_place(tv, Vector2(_col_x(col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
+			_place(tv, Vector2(_rank_x(rank, col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
 			tv.held.connect(_on_foe_held.bind(tv))
 			tv.double_tapped.connect(_on_foe_double_tapped.bind(tv))
 			tv.tapped.connect(_on_foe_tapped.bind(tv, rank, col, true))
@@ -551,7 +553,7 @@ func _build() -> void:
 	_prey.size = tear.size
 	add_child(_prey)
 
-	# Log between the formation and the dice: every line, the newest brightest, scrolled to
+	# Log between the formation and the dice: every line at full strength, scrolled to
 	# the end whenever something happens; drag to read back, double-tap for it full screen
 	# (Ryan, 22 September: the strip alone was too little to follow a round).
 	var log_tag := _tag("LOG", 10, true)
@@ -590,15 +592,6 @@ func _build() -> void:
 	_reroll_btn.center_text = true
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
-	# Undo (Ryan, 2 November: "undo to your last roll"): the row's right end, well clear of
-	# Reroll, whose draw it can never take back; its badge says how many spends it reaches.
-	_undo_btn = HudButton.new("UNDO", _on_undo)
-	_undo_btn.sound = ""   # the undo plays its own dismiss
-	_undo_btn.ghost = true
-	_undo_btn.font_size = 20
-	_undo_btn.badge_size = 20
-	_undo_btn.tooltip_text = "Take back the last spend, back to the last roll."
-	_place(_undo_btn, Vector2(W - 16.0 - UNDO_SIZE.x, REROLL_Y), UNDO_SIZE)
 
 	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
@@ -663,12 +656,24 @@ func _build() -> void:
 		v.double_tapped.connect(_on_mech_double_tapped.bind(i))
 		_mech_views.append(v)
 
-	# Bottom row: End turn bottom-left. There is no withdrawal (the long wall brief 3.5 and 7.5): a
-	# fight ends in the pack's fall or the machines' wreck, so no button pulls out of one.
+	# Bottom row: End turn bottom-left, Undo bottom-right, as the map's two are. There is no
+	# withdrawal (the long wall brief 3.5 and 7.5): a fight ends in the pack's fall or the
+	# machines' wreck, so no button pulls out of one, and Undo has its corner (Ryan, 9 November:
+	# "with withdraw gone from skirmish, there's a lot of free real estate down there. Undo at least
+	# should move there"), far from Reroll, whose draw it can never take back.
 	_end_btn = HudButton.new("END TURN", _on_end_turn)
 	_end_btn.sound = ""   # the lever is the sound
 	_end_btn.filled = true
 	_place(_end_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
+	# Undo (Ryan, 2 November: "undo to your last roll"): its badge says how many spends it reaches,
+	# and whether it can be pressed reads by structure (HudButton.state_marked).
+	_undo_btn = HudButton.new("UNDO", _on_undo)
+	_undo_btn.sound = ""   # the undo plays its own dismiss
+	_undo_btn.state_marked = true
+	_undo_btn.font_size = 20
+	_undo_btn.badge_size = 20
+	_undo_btn.tooltip_text = "Take back the last spend, back to the last roll."
+	_place(_undo_btn, Vector2(W - 16.0 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
 	# While the enemy's turn replays, nothing on the screen takes a tap.
 	_replay_shade = Control.new()
@@ -923,7 +928,7 @@ func _toggle_log_full() -> void:
 		return
 	_log_full.visible = not _log_full.visible
 	if _log_full.visible:
-		_log_full_text.text = _log_text(0)   # nothing faded: it is there to be read
+		_log_full_text.text = _log_text()
 		_scroll_to_end(_log_full_scroll)
 
 
@@ -999,9 +1004,28 @@ func _build_outcome() -> void:
 	ov.add_child(back)
 
 
-## Enemy column centres: three columns at a wide pitch, four at a tight one.
+## Enemy column centres: three columns at a wide pitch, four at a tight one. A massive foe stands
+## here, filling both ranks of its column.
 func _col_x(col: int) -> float:
 	return W * 0.5 + (col - (sk.columns - 1) * 0.5) * _col_pitch()
+
+
+## How far each rank stands off its column's centre, as a share of the pitch: the front rank a
+## little to the left and the back a little to the right (Ryan, 9 November: "two foes in the same
+## column targeting the mech in the same column blend together ... offset the enemy ranks"), so
+## two foes of one column aiming at the machine below draw two lines apart, each landing on its
+## own side of the machine (_arrow_end), neither rank's straight down. Never past the room the
+## screen leaves the outer views, so every slot stays on the glass; in whole pixels.
+const RANK_STAGGER := 0.18
+
+
+func _rank_shift() -> float:
+	return floorf(minf(_col_pitch() * RANK_STAGGER, _col_x(0) - SLOT_SIZE.x * 0.5))
+
+
+## A foe's slot centre across the screen: its column's, the rank's stagger off it.
+func _rank_x(rank: int, col: int) -> float:
+	return _col_x(col) + (-1.0 if rank == 0 else 1.0) * _rank_shift()
 
 
 ## The formation's columns apart.
@@ -1081,7 +1105,7 @@ func _refresh(save: bool = true) -> void:
 			# A twin slot (the Gel's pair, 26 October): the left half's view takes the slot's left
 			# half and the right half's view the other, each foe its own target; a plain slot is
 			# one view across the whole.
-			var at := Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, FRONT_Y if rank == 0 else BACK_Y)
+			var at := Vector2(_rank_x(rank, col) - SLOT_SIZE.x * 0.5, FRONT_Y if rank == 0 else BACK_Y)
 			if twin != null:
 				_half_sides[foe] = 0
 				_half_sides[twin] = 1
@@ -1241,7 +1265,7 @@ func _refresh(save: bool = true) -> void:
 		v.highlight = support.has(ms)
 		v.statuses = []
 		for r in _mech_rows(i):
-			v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status"])
+			v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status", r[5] if r.size() > 5 else ""])
 		v.queue_refresh()
 		var d := _dice[i]
 		# A locked piece goes out charged whenever a muster pays and it has somewhere to land
@@ -1339,7 +1363,8 @@ func _update_round() -> void:
 
 func _refresh_log() -> void:
 	var fresh_lines := sk.log.size() > _log_seen
-	_log.text = _log_text(LOG_LINES, true)
+	_log.text = _log_text(true)   # every line at full; the new ones type in
+
 	# New lines type in, so the eye is drawn to what just happened, and the strip scrolls
 	# to them; a strip the player scrolled back stays put until something new happens.
 	if fresh_lines and is_inside_tree():
@@ -1357,42 +1382,28 @@ func _refresh_log() -> void:
 	if fresh_lines or _log_seen == 0:
 		_scroll_to_end(_log_scroll)
 	if _log_full != null and _log_full.visible and fresh_lines:
-		_log_full_text.text = _log_text(0)
+		_log_full_text.text = _log_text()
 		_scroll_to_end(_log_full_scroll)
 	_log_seen = sk.log.size()
 
 
 const PROMPT := "> _"   # the strip's last line: a terminal prompt whose cursor blinks (_process)
 
-## The whole log as bbcode, one line per event, the last `bright` lines fading up to full
-## and everything older at the dim end; `bright` 0 leaves every line at full. `prompt`
-## adds the cursor line at the end (the strip; never the full-screen log).
-## The log as the trail shows it: the last `bright` lines fading up to full and the rest dim, a
-## roll's bar where a draw was made (Ryan, 2 November: "undo to your last roll"; the round's
-## roll, a reroll, a spend that drew), which is where the undo stops; `prompt` adds the cursor.
-func _log_text(bright: int, prompt: bool = false) -> String:
+## The whole log as bbcode, one line per event, every line at full strength (Ryan, 9 November:
+## "don't fade out the log text in the skirmish log"), a roll's bar where a draw was made, dimmer,
+## under the lines (Ryan, 2 November: "undo to your last roll"; the round's roll, a reroll, a spend
+## that drew), which is where the undo stops. `prompt` adds the cursor line at the end (the strip;
+## never the full-screen log).
+func _log_text(prompt: bool = false) -> String:
 	var n := sk.log.size()
 	var out := ""
 	if n == 0:
 		out = "[color=#%s]> round %d // awaiting orders[/color]\n" % [Color(Palette.HUD, 0.45).to_html(true), sk.round]
-	var lines: Array = []   # [text, whether a bar], a bar before the line it came before
 	for j in range(n + 1):
 		if sk.roll_marks.has(j):
-			lines.append([ROLL_BAR, true])
+			out += "[color=#%s]%s[/color]\n" % [Color(Palette.HUD, 0.6).to_html(true), ROLL_BAR]   # a bar sits under the lines
 		if j < n:
-			lines.append(["> " + sk.log[j], false])
-	var start := maxi(0, lines.size() - bright)
-	var count := lines.size() - start
-	for j in range(lines.size()):
-		var a := 1.0
-		if bright > 0:
-			if j < start:
-				a = 0.4
-			elif count > 1:
-				a = lerpf(0.4, 1.0, float(j - start) / float(count - 1))
-		if lines[j][1]:
-			a *= 0.6   # a bar sits under the lines
-		out += "[color=#%s]%s[/color]\n" % [Color(Palette.HUD, a).to_html(true), lines[j][0]]
+			out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, 1.0).to_html(true), sk.log[j]]
 	if prompt:
 		out += "[color=#%s]%s[/color]" % [Color(Palette.HUD, 0.8).to_html(true), PROMPT]
 	return out
@@ -1469,7 +1480,7 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.intent_riders = intent_riders(foe) if blow else []   # the readout's chip is _intent_chip's, the same read
 	v.statuses = []
 	for r in _foe_rows(foe):
-		v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status"])
+		v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status", r[5] if r.size() > 5 else ""])
 	v.queue_redraw()
 
 
@@ -1620,29 +1631,29 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["skull", "", "Destroyed this round", Palette.LOSS, "preview"])
 	rows.append_array(_foe_abilities(foe))
 	if foe.burn_stacks() > 0:
-		rows.append(["burn", str(foe.burn_stacks()), "Burning ×%d" % foe.burn_stacks(), _foe_chip_colour("burning")])
+		rows.append(status_row("burning", "burn", str(foe.burn_stacks()), "Burning ×%d" % foe.burn_stacks(), _foe_chip_colour("burning")))
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
-		rows.append(["vitriol", str(vitriol), "Vitriol ×%d" % vitriol, _foe_chip_colour("vitriol")])
+		rows.append(status_row("vitriol", "vitriol", str(vitriol), "Vitriol ×%d" % vitriol, _foe_chip_colour("vitriol")))
 	var flak := Effects.stacks_of(foe, "flakked")
 	if flak > 0:
 		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow of a
 		# weapon it takes deals.
-		rows.append(["flak", str(flak), "Flak ×%d" % flak, _foe_chip_colour("flakked")])
+		rows.append(status_row("flakked", "flak", str(flak), "Flak ×%d" % flak, _foe_chip_colour("flakked")))
 	var cryo := Effects.stacks_of(foe, "cryoed")
 	if cryo > 0:
 		# The Armadillo's mark (20 October; its chip from 21 October): what a weapon's hit on it
 		# cools the hitter, the stacks it spends.
-		rows.append(["cryo", str(cryo), "Cryo ×%d" % cryo, _foe_chip_colour("cryoed")])
+		rows.append(status_row("cryoed", "cryo", str(cryo), "Cryo ×%d" % cryo, _foe_chip_colour("cryoed")))
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
 		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
 		var caught := sk.web_catch(foe)
 		var mark := "" if caught == null else (">" if caught.column > foe.column else "<")
-		rows.append(["web", mark, "Webbed" + ("" if caught == null else ": bursts on %s too" % caught.display_name), _foe_chip_colour("webbed")])
+		rows.append(status_row("webbed", "web", mark, "Webbed" + ("" if caught == null else ": bursts on %s too" % caught.display_name), _foe_chip_colour("webbed")))
 	if foe.is_suppressed():
-		rows.append(["suppress", "", "Suppressed", _foe_chip_colour("suppressed")])
+		rows.append(status_row("suppressed", "suppress", "", "Suppressed", _foe_chip_colour("suppressed")))
 	var holding := sk.swallowed_by(foe) if foe.swallow_mark >= 0 else null
 	if holding != null:
 		# A swallow (30 October) and its release (31 October): the damage still to deal before it
@@ -1660,15 +1671,15 @@ func _foe_rows(foe: Foe) -> Array:
 		# Armoured, the machines' status (16 October; Braced until 18 October): their chip's
 		# glyph, with the armour every grant adds (its own brace, a Protect).
 		var arm := Effects.foe_armour_bonus(foe)
-		rows.append([status_glyph("braced"), "+%d" % arm, "%s +%d" % [Effects.STATUS["braced"]["name"], arm], _foe_chip_colour("braced")])
+		rows.append(status_row("braced", status_glyph("braced"), "+%d" % arm, "%s +%d" % [Effects.STATUS["braced"]["name"], arm], _foe_chip_colour("braced")))
 	if Effects.has(foe, "kindled"):
 		var kindled := Effects.foe_attack_bonus(foe)
-		rows.append(["overcharge", "+%d" % kindled, "Empowered +%d" % kindled, _foe_chip_colour("kindled")])
+		rows.append(status_row("kindled", "overcharge", "+%d" % kindled, "Empowered +%d" % kindled, _foe_chip_colour("kindled")))
 	var raged := Effects.stacks_of(foe, "enraged")
 	if raged > 0:
 		# What the Nob's rage has gathered (3 November), a buff a Purge lowers; the rage itself is
 		# its ability (_foe_abilities).
-		rows.append(["overcharge", "+%d" % raged, "Enraged +%d" % raged, _foe_chip_colour("enraged")])
+		rows.append(status_row("enraged", "overcharge", "+%d" % raged, "Enraged +%d" % raged, _foe_chip_colour("enraged")))
 	# A rally on its way (Ryan, 26 October: "a pulsing version of the incoming buff as a preview
 	# chip, so the player knows it's incoming and that's the reason for the increased damage"):
 	# the Empowered the rallies will land before its blow, already in the number its intent
@@ -1682,44 +1693,44 @@ func _foe_rows(foe: Foe) -> Array:
 		for r in sk.rallies_on(foe):
 			who.append(r.display_name)
 		var from := ", ".join(who) if not who.is_empty() else "nobody (RIFTGATE_PREVIEW_DEBUG)"
-		rows.append(["overcharge", "+%d" % maxi(1, coming), "Empowered +%d on its way, from %s" % [maxi(1, coming), from], _foe_chip_colour("kindled"), "preview"])
+		rows.append(status_row("kindled", "overcharge", "+%d" % maxi(1, coming), "Empowered +%d on its way, from %s" % [maxi(1, coming), from], _foe_chip_colour("kindled"), "preview"))
 	if Effects.has(foe, "risen"):
-		rows.append(["star", "", str(Effects.STATUS["risen"]["name"]), _foe_chip_colour("risen")])
+		rows.append(status_row("risen", "star", "", str(Effects.STATUS["risen"]["name"]), _foe_chip_colour("risen")))
 	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
 	# flame, the shield with its wall or its struck ring, the heart regrowing.
 	var primed := Effects.stacks_of(foe, "primed")
 	if primed > 0:
-		rows.append([_foe_glyph("primed"), "×%d" % primed, "Primed ×%d" % primed, _foe_chip_colour("primed")])
+		rows.append(status_row("primed", _foe_glyph("primed"), "×%d" % primed, "Primed ×%d" % primed, _foe_chip_colour("primed")))
 	if Effects.has(foe, "barrier"):
-		rows.append([_foe_glyph("barrier"), "", "Barrier", _foe_chip_colour("barrier")])
+		rows.append(status_row("barrier", _foe_glyph("barrier"), "", "Barrier", _foe_chip_colour("barrier")))
 	if Effects.has(foe, "ward"):
-		rows.append([_foe_glyph("ward"), "", "Ward", _foe_chip_colour("ward")])
+		rows.append(status_row("ward", _foe_glyph("ward"), "", "Ward", _foe_chip_colour("ward")))
 	var regrow := Effects.regrowth(foe)
 	if regrow > 0:
 		var left := 0
 		for m in Effects.live(foe):
 			if m.id == "regenerating":
 				left = maxi(left, m.stacks)
-		rows.append([_foe_glyph("regenerating"), "+%d" % regrow, "Regenerating +%d, %d action%s to go" % [regrow, left, "" if left == 1 else "s"], _foe_chip_colour("regenerating")])
+		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "+%d" % regrow, "Regenerating +%d, %d action%s to go" % [regrow, left, "" if left == 1 else "s"], _foe_chip_colour("regenerating")))
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()
-		rows.append(["paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox %d%s" % [paradox, " of %d" % at if at > 0 else ""], _foe_chip_colour("paradox")])
+		rows.append(status_row("paradox", "paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox %d%s" % [paradox, " of %d" % at if at > 0 else ""], _foe_chip_colour("paradox")))
 	if Effects.has(foe, "shocked"):
-		rows.append(["shocked", "×2", "Shocked", _foe_chip_colour("shocked")])
+		rows.append(status_row("shocked", "shocked", "×2", "Shocked", _foe_chip_colour("shocked")))
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
-		rows.append(["numbed", "×%d" % numbed, "Numbed ×%d" % numbed, _foe_chip_colour("numbed")])
+		rows.append(status_row("numbed", "numbed", "×%d" % numbed, "Numbed ×%d" % numbed, _foe_chip_colour("numbed")))
 	if Effects.has(foe, "syrinx_drone"):
 		# The Syrinx Drone (the Lammergeier's, 21 October): its own chip, the killing shot to come.
 		var drone: Dictionary = Effects.STATUS["syrinx_drone"]
-		rows.append(["syrinx_drone", "", str(drone["name"]), _foe_chip_colour("syrinx_drone")])
+		rows.append(status_row("syrinx_drone", "syrinx_drone", "", str(drone["name"]), _foe_chip_colour("syrinx_drone")))
 	if Effects.has(foe, "exposure"):
 		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed. The
 		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26
 		# October: a chip for it "steps on the debuff and is very confusing"); a dragged Direct
 		# weapon lighting it says it is in reach.
-		rows.append(["exposed", "0", "Exposed", _foe_chip_colour("exposure")])
+		rows.append(status_row("exposure", "exposed", "0", "Exposed", _foe_chip_colour("exposure")))
 	# Every status the round will land on it (Ryan, 26 October: "All incoming chips should appear
 	# as pulsing opacity versions"): the copy's grants, each a chip pulsing on a dashed edge with
 	# the stacks it gains, beside the skull when the round kills it, since one may be the cause.
@@ -1728,6 +1739,23 @@ func _foe_rows(foe: Foe) -> Array:
 	if foe.alive():
 		rows.append_array(_coming_rows(fate.get("coming", {}), ["kindled"] if rally_chip else [], _foe_glyph, _foe_chip_colour))
 	return rows
+
+
+## A status's row, as the chips and the hold read it: [glyph, chip text, readout text, colour, kind,
+## what it is to its unit]. The readout says what it is ahead of its name (Ryan, 9 November:
+## "Buffs and debuffs ... need to be clearly labeled as such, so that it's clear what gets
+## purged"), "Buff, Empowered +2" or "Debuff, Burning ×2" as an ability's says "Ability, ...", and
+## the chip wears its mark by the same word (UnitView.draw_chip); one that is neither keeps its
+## words and wears none (Effects.status_kind).
+static func status_row(status_id: String, glyph: String, chip_text: String, text: String, colour: Color, kind: String = "status") -> Array:
+	var what := Effects.status_kind(status_id)
+	var said := text
+	match what:
+		"buff":
+			said = "Buff, " + text
+		"debuff":
+			said = "Debuff, " + text
+	return [glyph, chip_text, said, colour, kind, what if what == "buff" or what == "debuff" else ""]
 
 
 ## The preview chips for the statuses a round preview says a unit gains: one a status, its
@@ -1741,7 +1769,7 @@ static func _coming_rows(coming: Dictionary, skip: Array, glyph_of: Callable, co
 		var c: Dictionary = coming[id]
 		var renews := Effects.STATUS.has(id) and Effects.status_stacking(Effects.STATUS[id]) == "renew"
 		var text := "" if renews else "+%d" % int(c["stacks"])
-		rows.append([glyph_of.call(id), text, "%s%s on its way" % [str(c["name"]), "" if text.is_empty() else " " + text], colour_of.call(id), "preview"])
+		rows.append(status_row(str(id), glyph_of.call(id), text, "%s%s on its way" % [str(c["name"]), "" if text.is_empty() else " " + text], colour_of.call(id), "preview"))
 	return rows
 
 
@@ -1897,7 +1925,7 @@ func _mech_rows(i: int) -> Array:
 		if Effects.is_ability(id):
 			abilities.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "Ability, " + named, colour, "ability"])
 		else:
-			rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", named, colour])
+			rows.append(status_row(id, glyph, ("×%d" % stacks) if stacks > 1 else "", named, colour))
 	if ABILITY_DEBUG and abilities.is_empty():
 		abilities.append([status_glyph("sealed"), "", "Ability, Sealed (RIFTGATE_ABILITY_DEBUG)", _chip_colour("sealed"), "ability"])
 	for k in range(abilities.size()):
@@ -1987,7 +2015,7 @@ func _refresh_arrows() -> void:
 			if not wanted:
 				continue
 			var from: Vector2 = inv * fv.anchor_global()
-			var to: Vector2 = inv * _mech_views[target_index].anchor_global()
+			var to: Vector2 = _arrow_end(foe, inv * _mech_views[target_index].anchor_global())
 			list.append([from, to, Palette.ENEMY, true] if spill.has(target_index) else [from, to, Palette.ENEMY])
 	# The lure preview: every foe the die in hand would turn, dashed to its machine, shown unasked;
 	# one whose blow lands elsewhere as the round stands (the lurer falls before it acts, and it
@@ -1997,11 +2025,24 @@ func _refresh_arrows() -> void:
 			var fv := _foe_view_for(foe)
 			if fv == null:
 				continue
-			list.append([inv * fv.anchor_global(), inv * _mech_views[lurer].anchor_global(), Palette.ENEMY, true])
+			list.append([inv * fv.anchor_global(), _arrow_end(foe, inv * _mech_views[lurer].anchor_global()), Palette.ENEMY, true])
 			for i in _round.get("foes", {}).get(foe, {}).get("struck", []):
 				if int(i) != lurer and int(i) >= 0 and int(i) < _mech_views.size():
-					list.append([inv * fv.anchor_global(), inv * _mech_views[int(i)].anchor_global(), Palette.ENEMY, true])
+					list.append([inv * fv.anchor_global(), _arrow_end(foe, inv * _mech_views[int(i)].anchor_global()), Palette.ENEMY, true])
 	_arrows.set_arrows(list)
+
+
+## Where a foe's arrow lands on its machine: the machine's anchor, a little to the side the foe's
+## rank stands to (RANK_STAGGER: the front a little left, the back a little right), so two foes of
+## one column aiming at one machine land two arrowheads side by side, never one over the other
+## (Ryan, 9 November: "two foes in the same column targeting the mech in the same column blend
+## together"). A massive foe fills its column and lands on the anchor.
+const ARROW_SPREAD := 12.0
+
+func _arrow_end(foe: Foe, anchor: Vector2) -> Vector2:
+	if foe == null or foe.is_massive():
+		return anchor
+	return anchor + Vector2((-1.0 if foe.rank == 0 else 1.0) * ARROW_SPREAD, 0.0)
 
 
 ## Readout over a control: a text block (a mined slot's), or lines (EntryReadout): a die's
@@ -3011,12 +3052,14 @@ func _use_die(i: int, target, second = null) -> bool:
 			_show_outcome(sk.outcome)
 	if ok and is_inside_tree():
 		# The undo opens once the last blow has landed and played out: a view mid-tween takes no
-		# refresh well, and the die should be seen to land before it is taken back.
+		# refresh well, and the die should be seen to land before it is taken back. _process opens
+		# it, reading the same clock that shut it: a tween timed to the same moment ran on the
+		# frames' deltas, which run a frame ahead of the clock, so it fired just short of the mark
+		# and left the button shut for good (Ryan, 9 November: "skirmish undo, it doesn't work
+		# anymore").
 		_undo_from = Time.get_ticks_msec() + int((ends + UNDO_AFTER) * 1000.0)
+		_undo_waiting = true
 		_refresh_undo()
-		var tw_undo := create_tween()
-		tw_undo.tween_interval(ends + UNDO_AFTER)
-		tw_undo.tween_callback(_refresh_undo)
 	return ok
 
 

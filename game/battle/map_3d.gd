@@ -1260,7 +1260,7 @@ func _build_ground() -> void:
 			# same way, by standing on it.
 			_bake(_grid_geo(hgt + 0.35), at_xf, _grid_material(), band, false)
 		rng.seed = h.x * 131 + h.y * 7919
-		if map.city.has(h):
+		if map.city.has(h) or _city_row(h):
 			_city_block(col, hgt, rng)
 			continue
 		if t == BattleMap.Terrain.MOUNTAIN:
@@ -1630,11 +1630,34 @@ func _along_wall() -> Vector3:
 	return Vector3(1.0 / _sin, 1.0, 1.0) if MapOrient.wall_left else Vector3.ONE
 
 
+## Where the wall's models stand off the back row (the gate's and the wall's both stand on it).
+## With the wall at the bottom the camera's pitch stands their height over the row in front, so
+## that row reads as the wall's foot; with the wall at the left the pitch runs along the wall and
+## that row lay bare in front of it, out of play and looking like ground (Ryan, 9 November: "the
+## wall in wall-left view has the out-of-play row completely bare in front ... It looks weird").
+## So there they stand a row toward the field, against the apron, and the back row behind them is
+## the city's (_city_row). RIFTGATE_WALL_ROW=back keeps them on the back row, for a comparison.
+func _wall_shift() -> Vector3:
+	if not MapOrient.wall_left or OS.get_environment("RIFTGATE_WALL_ROW") == "back":
+		return Vector3.ZERO
+	return _world(MapOrient.toward_rift() * hex_px * 1.5)   # one row's pitch toward the rift
+
+
+## Whether a hex on the wall's back row stands behind the shifted wall (_wall_shift), so it holds a
+## city block, as the city past the wall does: every hex of the field's last row and of the margin's,
+## the city's own aside (it builds its block already).
+func _city_row(h: Vector2i) -> bool:
+	if _wall_shift() == Vector3.ZERO or field.map.city.has(h):
+		return false
+	return Hex.axial_to_offset(h).y == field.map.height - 1
+
+
 func _build_structures() -> void:
 	var map := field.map
+	var shift := _wall_shift()
 	if MechView3D.has_model("gate"):
 		var g := _model("gate", "arsenal")
-		g.position = _hex_world(map.gate)
+		g.position = _hex_world(map.gate) + shift
 		g.rotation.y = MapOrient.yaw(PI)   # turned about, so its portcullis face is the one the player sees; with the wall at the left, toward the city
 		g.scale = _along_wall()
 		_bake_model(g, _band(map.gate))   # with ink on its creases, so the towers and reveals read as geometry
@@ -1653,7 +1676,7 @@ func _build_structures() -> void:
 		m.rotation.y = MapOrient.yaw(PI)
 		m.scale = _along_wall()
 		for w in bottom:
-			m.position = _hex_world(w)
+			m.position = _hex_world(w) + shift
 			_bake_model(m, _band(w))
 		_baked_models.append(m)
 	_flush_batches()

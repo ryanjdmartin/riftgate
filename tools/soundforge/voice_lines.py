@@ -85,7 +85,7 @@ HOOKS = {
                   ["target locked", "weapons free", "extreme prejudice authorised", "discharging", "ordnance engaged", "suppressing fire"],
                   ["light them up", "going ballistic", "rampage"]),
     "foe_down": (1.0 / 3.0, False,   # 1 in 3 (Ryan, 9 October: a foe falls ten times a fight; she need not say it every time)
-                 ["bogey eliminated", "neutralising hostile", "target destroyed", "lethal force applied", "threat eliminated"],   # "eliminating" and "bogey down" combined (Ryan, 9 October)
+                 ["neutralising hostile", "target destroyed", "lethal force applied", "threat eliminated"],   # "eliminating" and "bogey down" combined (Ryan, 9 October); "bogey eliminated" cut (Ryan, 9 November: "remove Jenny's \"bogey eliminated\" line")
                  ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality"]),
     "foe_down_undead": (1.0 / 3.0, False,
                         ["undead anomaly cleared", "necrotic signature lost", "animation ceased"],

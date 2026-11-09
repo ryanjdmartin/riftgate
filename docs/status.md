@@ -25,8 +25,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1060 tests, 259,914 checks, green (9 November, main with the long wall, the skirmish code
-  audit, a part no kill and a hunter's reach landed, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1069 tests, 260,078 checks, green (9 November, `claude/playtesting-ui-feedback-hfdiok` on
+  main's 1060: the playtest list of 9 November; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -75,7 +75,9 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
+Still working (9 November; every other branch on GitHub is merged): `claude/playtesting-ui-feedback-hfdiok`,
+Ryan's playtest list of 9 November (How things stand, below), on main's `295eadd`, for main to take
+as a fast-forward on his word; and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
 8 November: `ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a
@@ -137,6 +139,27 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
+  Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
+  all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always
+  on screen, the gate, the rift's spawn and the Fractures (`TopBar`), flashing as one changes; the
+  turn and READY are the board's, the music between the bottom buttons; the gate's and the rift's
+  bars left the map and the gate is no selection. A Fracture is announced as a fight ends (the
+  warning band; THE RUPTURE at the last). Every walk's end hex is lit; a tapped pack shows its
+  whole way to its goal (`Walk.route`, `Battlefield.turn_ends`), its later turns numbered (Claude's
+  addition), its readout saying when it gets there; a selected machine shows its hunters' ways.
+  The action pip is gone, the board's lower panel shows the hull alone, the boss stands 128 px tall
+  on the map, the vortex stands on the rift's lowest hex with the wall at the left, and there the
+  wall and the gate stand a row forward with the city behind (a candidate, `RIFTGATE_WALL_ROW=back`
+  the old look). Both UNDOs read on or off by their edge; the skirmish's sits bottom-right, and it
+  opens again after a spend (the bug: its re-opening tween ran a frame ahead of the clock and left
+  it shut for good). The die's tap waits 0.15 s from its release to a second touch; the skirmish's
+  ranks stagger and each arrow lands on its own side of its machine; every status says Buff or
+  Debuff (`Effects.status_kind`: a wedge on its chip, the word in its hold, its tip's heading, the
+  keywords list's headings); the log stays at full strength; Jenny's "bogey eliminated" is cut.
+  The "chase": no pusher reads a machine, but every pusher's segment is drawn about the rift's
+  column, where the machines open, so the flank patrols cross toward them; the fix, a segment about
+  the pack's own column, is section 12's, with the bare row's other ways and Siphoning's label.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
@@ -406,9 +429,10 @@ commands are in `README.md`.
   `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
   page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
   clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
-  for byte). This file is v0.489 (`384d3482`: the hunt the composition's, the rings purged); its
+  for byte). Main's file is v0.489 (`384d3482`: the hunt the composition's, the rings purged); its
   republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
-  `dc265dc9`'s file. The live
+  `dc265dc9`'s file. `claude/playtesting-ui-feedback-hfdiok`'s is v0.490 (the playtest list of 9
+  November), unpublished, waiting on his word with main's. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
@@ -455,7 +479,8 @@ commands are in `README.md`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV
   (`tools/soundforge/melody_desk.html`; collections `parts`, re-seeded by `desk_parts.py`, and
   `melodies`).
-- The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
+- The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`);
+  its source's generic foe-down pool lost "bogey eliminated" on 9 November, unpublished.
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
