@@ -106,6 +106,10 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - A one-off exception proposed for balance is a symptom (Ryan, 18 October): before proposing
   one, look for the root cause that makes it seem reasonable and fix that, in the open; a
   passive breaking a rule for its design is a different thing (bible section 7).
+- Content slated to change waits for its own session (Ryan, 9 November: "Don't propose issues
+  with content slated to change. We're basing decisions around designs that aren't finished"): a
+  piece whose rework or design session is pending (the to-do's design sessions, a brief) gets no
+  question and no proposal from other work; build around it as it stands and leave it alone.
 - Judge a visual effect running, never from a still: Ryan does, and a screenshot of a
   breathing mark says nothing about it. Ship a debug switch that fires the thing constantly
   (`RIFTGATE_FEED_DEBUG=1` is the pattern), expect several rounds of small tweaks, and when

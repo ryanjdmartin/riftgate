@@ -164,7 +164,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   crowding ... Oversight if not implemented") a segment is the wall nearest where the pack is dealt,
   within 2 of its own column for a flank, a formation the opening places and a tear's patrol, the
   rift's packs keeping the ramp's spread about the rift's column, the least crowded column of the
-  window winning. Siphoning's label is section 12's.
+  window winning.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack

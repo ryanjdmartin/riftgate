@@ -570,8 +570,7 @@ wears a wedge pointing up off its chip's top at the left, and its hold line begi
 **debuff**, laid by the other side, wears a wedge pointing down off its chip's bottom at the
 right, and its line begins "Debuff"; an Ability its solid tile and "Ability". A term's tip heads a
 status by what it is, and the keywords list files the statuses under BUFFS, DEBUFFS and
-ABILITIES. The Whip Scorpion's Siphoning is none of them (its own doing, which no Purge or Cleanse
-touches) and wears no mark.
+ABILITIES.
 
 On a machine:
 - **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
