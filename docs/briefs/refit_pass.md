@@ -122,7 +122,9 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
 9. **The guard against the infinite fight.** Regen and no shield faces make a fight neither side
    can end likelier, so the long wall's principle becomes a validator check: every formation
    carries a rising threat (a rally that stacks, a countdown, a prime, a summon, a blow that
-   grows). The Marsh's giants carry none today and are the first defect.
+   grows). The Marsh's giants carry none today and are the first defect. The first reads make it
+   more than a guard: a block trades rounds for hull, and only a threat that rises makes a round
+   cost anything, so this point is what lets aggression pay (section 5's fifth point).
 
 ## 4. What the formation pass hands in, and the roles
 
@@ -211,25 +213,86 @@ The twelve prunings, the gates, the bosses' stat blocks (its section 6) and the 
 (its hole 8) stand as the proposal has them until the re-read. Nothing of it lands before the
 model's numbers.
 
-## 5. The reads before any content moves
+## 5. The what-if, built, and what its first reads say
 
-Three what-if switches in the balance runner (`tools/balance.gd`), none of them content:
+Built 9 November, none of it content (`sim/refit.gd`, `tests/test_refit.gd`; the README has every
+option):
 
-- `--regen N`: every chassis regains N shield a round, shield faces skipped when the machines are
-  made (a shield entry becomes a blank), so the second shape is read at N of 1, 2, 3 and the full
-  reset.
-- `--novents` with `--cooling N`: vent faces skipped (a conversion vent, the Whip Scorpion's,
-  kept), every chassis's cooling raised by N, so heat as a pace is read at offsets of 0, 1 and 2
-  with the prices as they stand and the basics at heat one.
-- `--noinjury`: the injury rule off whole, no break and no destruction (the game's own switch for
-  the test, so the harness and the phone build play without it too).
+- **The injury rule is off in the game** (`Skirmish.injuries`, false): no break in a fight and
+  no destruction after it; `--injury on|N` reads a run with it back.
+- **`--refit SPEC`** on both runners lays the model over the loaded content for a run and names
+  what it did in the report's head: `die` (every stock shield and vent swapped in its own slot
+  for a defensive basic, a shield spent on its own machine for the Armoured piece and any other
+  for the Barrier piece, a vent for whichever the die lacks, else a tier-zero gun; section 6's
+  four machines undealt; the Stingray cooling one), `vents=guns` (a vent's slot takes a gun
+  instead, so a die holds a defensive basic only where a shield stood: the audit's own deal and
+  the stock re-deal's placeholder), `regen=half|N`, `cooling=N`, `heat1` (the basics at heat
+  one), `barrier=off|cooldown|heatN|ward` (the Barrier basic's rule: none, dark the round after
+  it is spent, N heat a spend, or a Ward in its place), and `all` for the die, half the gauge
+  and heat one. The tier-one Blast Door, Shoring Jack and Decoherence Veil stand in for the
+  pieces section 6 names.
+- **`--guard W`**: the aggressor's habit for the fight bot (`Policy.guard_weight`: a block at a
+  share of its worth; at 0.05 it never rerolls for one and spends one only when its die is stuck
+  showing it), so the hull the blocks keep and the rounds they cost are read as its gap from the
+  rung, which takes every block worth making.
+- **The trial in the game**: `RIFTGATE_REFIT=<spec>` on the desk, and on the phone a debug
+  build's SETTINGS → REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the model with its Barrier
+  basic where a Halo stood, on every die, on every die and resting a round, or on none), read at
+  the next launch and judged on a new battle or run.
+- The curve read's cells carry greedy's rounds and its stalled fights beside the band and the
+  hull lost.
 
-Then, on the proposal's grids in a scratch worktree, at thirty seeds: the curve read with hull
-lost a fight, stalls and rounds beside the bands, for each switch and for the three together; the
-campaign runner's hull a battle, fights a battle and battles won; the vanilla ladder's heat grid
-without vents at each cooling. A persona that trades hull for kills beside the greedy, which
-already shields whenever it saves hull this round, so "aggression rewarded" is read and not felt.
-Every read a direction into `docs/measurements.md`; then Ryan's play at placeholders, which
+The first reads are `docs/measurements.md`'s (9 November, the refit pass's first reads), 30 seeds
+a cell and 40 runs a campaign, each a direction, in the bot's hands. What they say:
+
+1. **Over a battle the model takes the bot about twice as far.** Menace killed a battle doubles,
+   the Rupture is reached in four battles in ten against one in six, team wipes fall from nine in
+   ten to under two in three. The regen alone, on today's dice, is the larger half; the die adds
+   the rest whichever defensive basic fills its slots. The campaign stays a wall for the bot,
+   whose defence rule sends lone machines at formations.
+2. **The regen is the buffer for the outnumbered and for the lights, against plain blows.** At
+   the rating its size is one number (2, 4 and half the gauge read alike); short-handed it is the
+   dial: a lone Badger against a formation for three is a wall with none, a decision at 81 to 85%
+   of its hull at 2, and at 4 (half its gauge) beats the barrow mound for 31% and the treant
+   grove for 37%, each in sixteen rounds. The light trio's two walls at three become decisions,
+   and the lone elites, whose blows are plain, cost a lone Badger 22% against 41%.
+3. **Breach is where hull goes, and the regen never meets it.** Every cell that still costs hull
+   is a breach: the sandworm's maw and the magma elemental's fist, the needlers, the knights'
+   cleaver. Five of tier one's rank-and-file lines carry it (none of the Meadow's). The needler
+   scouts cost a lone machine a quarter of its hull on every read, and the knights' retinue walls
+   a lone machine on every read.
+4. **The defensive basic matters in one kind of fight, a full squad against a breaching
+   massive, and there a block trades rounds for hull.** With no Barrier the two such formations
+   cost a third of the trio's hull as today; with a free one a tenth, at half again the rounds
+   and four dice in ten spent on it; a Barrier that rests or a Ward sit between; the aggressor
+   loses a quarter and finishes two rounds sooner. Over a battle the four rules and the aggressor
+   land together.
+5. **A round costs nothing, so the block is nearly free hull.** Little in a tier-one pusher's
+   fight makes its seventh round worse than its third, and a regen makes a longer fight kinder.
+   This is the block-everything loop on one fight's scale, and no rule for the Barrier removes
+   it: what prices a round is a threat that rises. The model's ninth point is therefore more than
+   a guard against the infinite fight; it is what makes aggression pay.
+6. **The fight nobody can finish is back.** No fight passed sixty rounds today; with a regen 5
+   to 19 of some 900 do over 40 runs, and the fights the model turns from lost to won for the
+   light trio run twenty rounds and more.
+7. **Heat is untouched by losing the vents, and is still no pace.** The bot spent 7% of its dice
+   on vents; without them its peaks and overheats sit where they did, a hot die is held less than
+   once a fight, and the hottest tier-one trio loses one to three hull a fight to heat. The
+   basics at heat one are under the cooling of one nearly every chassis has, so they are no
+   price. The hold needs prices above the cooling, the heat session's list.
+8. **A Ward makes the regen the dial against breach, and is a blank against a plain blow.** It
+   lands the round's breaches on the shield, so hull lost follows the regen's size where a
+   Barrier's does not, in a shorter fight; but the Meadow's whole tier-one line and all of the
+   Marsh's but the knights lay no rider, so on a stock die it would do nothing there.
+9. **The what-if dealt more Barriers than the audit does.** It filled a vent's slot with the
+   defensive basic a die lacked, a Barrier on nearly every die, where the audit puts one only
+   where a Halo stood. The reads above are that deal's and bracket the audit's: the default trio
+   under the audit's deal holds no Barrier (the no-Barrier column is its own), the light trio
+   holds two.
+
+Still to read: the cautious persona on the model's dice (the rung prices only an overheat, so it
+cannot say whether a player would feel heat); the stalled fights by pack (the campaign runner
+names none); 200 seeds on any cell a decision cites. Then Ryan's play at placeholders, which
 decides feel.
 
 ## 6. The audit: what the model breaks, touches and leaves (9 November, on main's content)
@@ -325,10 +388,11 @@ The other eleven modules read no shield, vent or injury and stand.
   tempo over shields"). His call with the budget.
 - A drain is starved by a shield that refills (the Vampire Lord); Scorched and Burning bite
   harder with no vent to answer them, so the Peak's cells are where heat as a pace is read first.
-- A Barrier on every stock die makes it common, and his row of 17 October says what follows:
-  "if a Barrier grows common the foes need more damaging riders to carry past it" (damage over
-  time, on-hit effects, a countdown's blow). The bosses' telegraphs are read with the Halo
-  Projector in the team's dice.
+- A Barrier in stock dice makes it common where it was a tier-one find, and his row of 17
+  October says what follows: "if a Barrier grows common the foes need more damaging riders to
+  carry past it" (damage over time, on-hit effects, a countdown's blow). How common is section
+  7's first question; the bosses' telegraphs are read with the Halo Projector in the team's
+  dice.
 
 **The engine the pass touches** (for its build, after the reads): `Face.Kind`'s SHIELD and VENT
 and what reads them (`is_shield`, `is_vent`, the die's marks, the readouts, `tools/die_sheet.gd`);
@@ -361,40 +425,78 @@ twentieth of the squad's hull at its rating, a flanker's a thirtieth or less, a 
 tenth, an elite's a quarter, the boss what is left); and the formation proposal's remaining leans,
 which his point on the makeups (section 4) now re-cuts for the flankers.
 
-Still his:
+Still his, the first five with what the first reads say (section 5):
 
-1. The Barrier as a basic: the Halo Projector at tier zero puts a Barrier in every stock die,
-   which his row of 17 October treats with Suppress's care; or the Shoring Jack alone is the
-   defensive basic and the Barrier stays a tier-one find, leaving a starting team the regen and
-   the lure for the telegraph. Claude's lean: both, the bosses' telegraphs read with it.
-2. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
+1. **How common the Barrier is.** The audit puts one where a Halo stood (the Halo Projector: in
+   stock the Baboon, the Prairie Dog, the Stingray, the Cassowary and the Cottonmouth, and the
+   Arsenal's two where the Mantle stood) and re-deals the vents' slots; the what-if's first fill
+   gave those slots the defensive basic a die lacked, a Barrier on nearly every die. The reads
+   bracket it: on every die it is the whole saving against a breaching massive, at four dice in
+   ten and half again the rounds; on none those formations cost a third of a trio's hull as they
+   do today; over a battle the deals land together. So the stock re-deal sets it, and a squad's
+   Barriers become a choice of machines. The trial plays four deals: MODEL (the audit's, a gun in
+   every vent's slot), EVERY, RESTS (every die, dark the round after it is spent: half the
+   saving, a round and a half back) and NONE. On the bench, each with what took it off: a Ward in
+   the Barrier's place (the read: the same saving with the regen as its dial; but it does
+   nothing against a plain blow, a blank against the Meadow's tier-one line), a Barrier that
+   Wards too (his row of 17 October: the old whole block on one piece), a heat price (the read:
+   it does not shorten the fight). Claude's lean: the audit's deal, the Barrier a maker's tool
+   with no standing rule on it, read again against the bosses' telegraphs; his play decides.
+2. **What prices a round.** A block trades rounds for hull and a round costs nothing, so the
+   best line is still to block. The model's ninth point (every formation carries a rising threat,
+   a validator check) is what the reads say prices it; it is a rule over every pusher, his to
+   set, and the Marsh's giants are its first defect. The other levers on the bench: a pack's
+   strike at the wall while a fight runs (the wall has no clock inside a fight today), heat that
+   bites (item 5).
+3. **The regen's size.** Half the gauge lets a lone tank beat a plain-blow formation rated for
+   three, slowly; 2 a round leaves it a decision at four fifths of its hull. By role and by maker
+   once the basic is picked; Claude's lean: 2 or 3 a round for the heavies, more for Kestrel's
+   lights, read again with the content.
+4. **Breach under the regen.** Hull is spent where breach is: the Waste's whole line, the
+   Marsh's knights, the Peak's bombs and elementals, none of the Meadow's. Either that is each
+   domain's identity and its budget sits in its numbers (the Waste's "hull and tempo over
+   shields"), or breach becomes rarer on rank and file; and a flanker's duel with breach skips a
+   lone machine's only buffer, so a duelist carries it only where it is the duel's question.
+5. **Heat as a pace.** Losing the vents changed nothing, and nothing makes the bot hold a die:
+   the prices are under the cooling. The heat session's list (the prices on every face, the
+   basics included) is where the hold comes from; the cautious persona's read comes first.
+6. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
    front and his own try of 9 November ride on it).
-3. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
+7. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
    each domain lacks, and whether a pack's strike at the wall follows its rating.
-4. The Waste under the regen: its budget in its numbers, or hull spent there by identity.
-5. The Reinforced Skeleton: parked with destruction, or a new rule now.
-6. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
+8. The Reinforced Skeleton: parked with destruction, or a new rule now.
+9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 
 ## 8. Holes raised, each with what settles it
 
 - A regen large enough to absorb fodder makes lights untouchable against it and the fight a
-  kill-speed race alone; too small and nothing changes. The reads at the dial's steps settle the
-  size, his play the feel.
-- Heat as a background number nobody feels: passive cooling cannot carry a pillar, so the prices
-  must bite; the heat grid without vents says whether they do at each cooling.
-- The bot: the greedy must learn the hold (it cannot vent) and value the regen as hull kept;
-  `sim/policy.gd` moves with the switches, read against its old self on the matrix.
+  kill-speed race alone; too small and nothing changes. The first reads place it: at the rating
+  its size does not show, short-handed half the gauge makes a plain-blow formation survivable
+  alone and 2 a round does not (section 5's second point). His play sets the feel.
+- A fight neither side can end. Read: none today, 5 to 19 in some 900 with a regen. The rising
+  threat in every formation is the guard and the price of a round (section 7's second item).
+- Heat as a background number nobody feels: confirmed for the bot on both dice (section 5's
+  seventh point); the prices must bite, and the cautious persona reads whether they do.
+- The bot: the greedy reads this round's forecast, so it values a block by the hull it keeps now
+  and the regen not at all, and still gains what the model gives; its aggressor's habit
+  (`--guard`) is the second line. It cannot say what a player feels.
 - The Storm Petrel's loop: a shield that pays heat and regenerates each round is a cheaper engine
   under the model; its numbers are read on its row before anything lands.
 - The lights' identity: big shields on small hulls read differently when the shield regenerates;
   Kestrel's shields against Minerva's armour is the lean, the regen and the armour the two
   makers' answers.
+- The elites under a regen: their blows are plain, so a lone Badger takes most of tier one's lone
+  elites for a few points of hull (section 5's second point). Their numbers are their own item
+  (the bible's section 12); this is one more read for it, no proposal.
 
 ## 9. The order, on his answers
 
-1. The three switches and the persona in the runner, tested; the reads of section 5 into
-   `docs/measurements.md`.
-2. His play at placeholders (the switches run in the harness too), his read.
-3. The content of section 6 as marked, the pushers re-cut and read by hull lost, the escalation
-   check, the records, the hangar page.
+1. Done, 9 November: the what-if, the injury rule off, the aggressor's habit, the trial, and the
+   first reads (section 5).
+2. His play at placeholders: the trial under each rule for the defensive basic (the to-do's Ryan
+   list), and his answers to section 7's first five.
+3. The content of section 6 as marked, with the basic he picks; the regen and cooling numbers by
+   chassis; the heat prices; the pushers re-cut and read by hull lost, each with its rising
+   threat and the validator's check for it; the flankers rewritten as duels; the records, the
+   vocabulary, the rules, the hangar page.
 4. The formation proposal's remaining questions settled in play; the bosses' blocks after.

@@ -5749,3 +5749,452 @@ against 1.02, since more patrols stand on the field and a two counts two); compo
 battle halve (0.52 against 0.98) and the gate takes less (116 against 128), the lighter patrols
 costing less; a battle by three machines is won 15% against 6%. One fight stalled past the bot's sixty
 rounds on the proposal's grids (none today), unread: the runner names no pack for it.
+
+## 9 November, the refit pass's first reads
+
+The reads behind the refit pass's brief (`docs/briefs/refit_pass.md`; the decisions they inform:
+the defensive basic and its rule, the regen's size, the heat levers, breach under a regen, the
+pushers' hull budget; nothing moved in content). Method: the what-if (`sim/refit.gd`, `--refit
+SPEC` on both runners) lays the model over the loaded content for a run and names what it did in
+the report's head. `die` swaps every stock shield and vent for a defensive basic in its own slot
+(a shield spent on its own machine for the Armoured piece, any other shield for the Barrier piece,
+a vent for whichever of the two the die lacks, else a tier-zero gun), leaves the four machines
+the model cannot field undealt (the Polar Bear, the Puffin, the Whip Scorpion, the Swallowtail)
+and lets the Stingray cool one; the tier-one Blast Door and Shoring Jack stand in for the Halo
+Projector and the tier-zero Jack the audit names. That fill puts a Barrier on nearly every die;
+`vents=guns` gives a vent's slot a gun instead, so a die holds a defensive basic only where a
+shield stood, which is the audit's own deal (a Barrier where a Halo stood: the Baboon, the
+Prairie Dog, the Stingray, the Cassowary, the Cottonmouth, and the Arsenal's two). `regen=half` gives every chassis half its gauge
+a round, rounded up (the Badger 4, the Clydesdale and the Baboon 5, the Kite 8, the Skua 6), and
+`regen=N` a flat N; `heat1` puts the tier-zero guns at heat one (the Twin Autoguns, the Rivet
+Gun); `cooling=N` cools every chassis N more; `barrier=off`, `cooldown`, `heatN` and `ward` are
+rules for the defensive basic (none among the basics, an Armoured piece or a gun in its place;
+dark the round after it is spent; N heat a spend; a Ward, the Decoherence Veil, in its place);
+`all` is the die, half the gauge and heat one, the model as leaned. `--guard 0.05` is the
+aggressor's habit for the fight bot (`Policy.guard_weight`: a block, a Barrier, Armoured or a
+Ward, at a twentieth of its worth, so the bot never rerolls for one and spends one only when its
+die is stuck showing it), read against the rung as it is, which takes every block worth making.
+The injury rule is off in every read but the one that names it (`Skirmish.injuries`, off in the
+game since this day; `--injury on` reads it back).
+
+The curve read (`tools/balance.gd --packs curve --seeds 30`), random and greedy, each composition
+against a team cut to one, two, three and four machines; a cell now carries greedy's mean rounds
+and its stalled fights beside the band and the hull lost. The default four (the Honey Badger, the
+Clydesdale, the Kite, the Baboon, in that cut order) unless a team is named; the light four is
+the Skua, the Prairie Dog, the Cottonmouth and the Cassowary (the Puffin is back in design), and
+the tier-two four the Wild Boar, the Clydesdale, the Buzzard and the Dingo. Probes of one
+composition at 20 seeds (scratch tools over the same engine: the share of spends by component,
+the heat a fight) are named as probes. Every cell is a direction at 30 seeds or fewer and is
+called one; the bot is a floor that reads this round's forecast, never a player.
+
+### Tier one, the default four: each part alone and the model
+
+The counts at the rating (a patrol by the Badger alone, a formation by the Badger, the Clydesdale
+and the Kite, an elite by the four), today's compositions:
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 24% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% | 3.6 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 2% | 2.3 | 0 |
+| Today, the injury rule on | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 24% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% | 3.7 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 2% | 2.3 | 0 |
+| The regen alone (regen=half) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 20% | 4.6 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 9% | 3.6 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 1% | 2.3 | 0 |
+| The die alone (die,heat1) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 23% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.3 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The die, regen 2 | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 20% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The die, regen 4 | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The model (all) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The model, the basics free (die,regen=half) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The model, cooling one more | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+
+By composition at its rating, the patrols and the formations (the elites move by a point or two:
+every one is free for four on every read, the Old Man's rising 16% today and 3% under the model):
+
+| Composition | Size | Tier | For | Today | The regen alone | The die alone | The model |
+|---|---|---|---|---|---|---|---|
+| `knights_retinue` | patrol | 1 | 1 | wall 100%, 3.7 r | wall 100%, 3.7 r | wall 100%, 4.9 r | wall 100%, 4.9 r |
+| `revenant_shamblers` | patrol | 1 | 1 | free 2%, 3.4 r | free 1%, 3.4 r | free 1%, 3.4 r | free 0%, 3.4 r |
+| `gel_cluster` | patrol | 1 | 1 | free 14%, 13.0 r | free 10%, 12.9 r | free 13%, 13.0 r | free 9%, 12.9 r |
+| `wolf_pack` | patrol | 1 | 1 | free 2%, 3.5 r | free 0%, 3.5 r | free 1%, 3.5 r | free 0%, 3.5 r |
+| `bomb_flight` | patrol | 1 | 1 | free 12%, 4.8 r | free 6%, 4.4 r | free 12%, 4.8 r | free 5%, 4.4 r |
+| `salamander_trio` | patrol | 1 | 1 | free 23%, 4.0 r | free 11%, 3.7 r | free 22%, 3.7 r | free 9%, 3.7 r |
+| `antlion_pair` | patrol | 1 | 1 | free 9%, 2.5 r | free 5%, 2.5 r | free 7%, 2.5 r | free 3%, 2.5 r |
+| `needler_scouts` | patrol | 1 | 1 | free 26%, 3.0 r | free 26%, 3.0 r | free 26%, 3.0 r | free 26%, 3.0 r |
+| `barrow_mound` | formation | 1 | 3 | free 3%, 4.3 r | free 1%, 4.3 r | free 1%, 4.4 r | free 1%, 4.2 r |
+| `grave_host` | formation | 1 | 3 | free 1%, 3.0 r | free 1%, 3.0 r | free 1%, 3.0 r | free 1%, 3.0 r |
+| `goblin_warband` | formation | 1 | 3 | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.4 r |
+| `treant_grove` | formation | 1 | 3 | free 3%, 4.6 r | free 1%, 4.6 r | free 2%, 5.0 r | free 1%, 4.7 r |
+| `ember_pit` | formation | 1 | 3 | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.4 r |
+| `magma_vent` | formation | 1 | 3 | free 32%, 4.9 r | free 32%, 4.9 r | free 8%, 7.4 r | free 8%, 7.4 r |
+| `needler_swarm` | formation | 1 | 3 | free 6%, 2.2 r | free 6%, 2.2 r | free 3%, 2.3 r | free 3%, 2.3 r |
+| `sandworm_ambush` | formation | 1 | 3 | free 34%, 5.4 r | free 34%, 5.4 r | free 11%, 7.3 r | free 11%, 7.3 r |
+
+The same compositions fought short-handed, which is most of a battle's fights for the bot's
+defence rule (the campaign's table below): the formations and the elites by the Badger alone, and
+by the Badger and the Clydesdale.
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 1 | formation, 1 | 8 | 1 | 1 | 6 | 91% | 7.8 | 0 |
+|  | 1 | elite, 1 | 11 | 6 | 3 | 2 | 41% | 7.0 | 0 |
+| The regen alone | 1 | formation, 1 | 8 | 2 | 3 | 3 | 72% | 9.3 | 0 |
+|  | 1 | elite, 1 | 11 | 9 | 1 | 1 | 25% | 6.6 | 0 |
+| The die alone | 1 | formation, 1 | 8 | 1 | 1 | 6 | 90% | 8.5 | 0 |
+|  | 1 | elite, 1 | 11 | 7 | 3 | 1 | 41% | 7.2 | 0 |
+| The die, regen 2 | 1 | formation, 1 | 8 | 1 | 4 | 3 | 83% | 9.9 | 0 |
+|  | 1 | elite, 1 | 11 | 8 | 2 | 1 | 29% | 6.9 | 0 |
+| The model (the Badger regains 4) | 1 | formation, 1 | 8 | 2 | 3 | 3 | 69% | 10.2 | 0 |
+|  | 1 | elite, 1 | 11 | 9 | 1 | 1 | 22% | 6.8 | 0 |
+| Today | 1 | formation, 2 | 8 | 6 | 2 | 0 | 28% | 6.3 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 12% | 4.7 | 0 |
+| The regen alone | 1 | formation, 2 | 8 | 6 | 2 | 0 | 21% | 6.0 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 10% | 4.6 | 0 |
+| The die alone | 1 | formation, 2 | 8 | 5 | 3 | 0 | 21% | 7.1 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 7% | 5.1 | 0 |
+| The die, regen 2 | 1 | formation, 2 | 8 | 6 | 2 | 0 | 16% | 6.7 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 6% | 4.9 | 0 |
+| The model | 1 | formation, 2 | 8 | 6 | 2 | 0 | 15% | 6.6 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 5% | 4.8 | 0 |
+
+By composition, the Badger alone:
+
+| Composition | Size | Tier | For | Today | The regen alone | The die, regen 2 | The model |
+|---|---|---|---|---|---|---|---|
+| `barrow_mound` | formation | 1 | 1 | wall 100%, 12.6 r | decision 36%, 17.3 r | decision 82%, 16.8 r | decision 31%, 16.7 r |
+| `grave_host` | formation | 1 | 1 | wall 91%, 11.4 r | decision 78%, 13.8 r | decision 81%, 15.9 r | decision 75%, 18.4 r |
+| `goblin_warband` | formation | 1 | 1 | free 51%, 8.0 r | free 34%, 7.7 r | free 33%, 8.1 r | free 28%, 7.9 r |
+| `treant_grove` | formation | 1 | 1 | wall 100%, 11.1 r | free 45%, 15.7 r | decision 85%, 15.1 r | free 37%, 15.7 r |
+| `ember_pit` | formation | 1 | 1 | wall 99%, 5.3 r | wall 99%, 5.6 r | wall 99%, 6.1 r | wall 99%, 6.0 r |
+| `magma_vent` | formation | 1 | 1 | wall 100%, 4.5 r | wall 100%, 4.9 r | wall 100%, 7.0 r | wall 100%, 7.2 r |
+| `needler_swarm` | formation | 1 | 1 | decision 86%, 6.3 r | decision 84%, 6.3 r | decision 84%, 6.3 r | decision 83%, 6.3 r |
+| `sandworm_ambush` | formation | 1 | 1 | wall 100%, 3.2 r | wall 100%, 3.2 r | wall 100%, 3.7 r | wall 100%, 3.7 r |
+| `fell_riders_hunt` | elite | 1 | 1 | free 11%, 3.6 r | free 1%, 3.5 r | free 4%, 3.6 r | free 1%, 3.5 r |
+| `the_reaper` | elite | 1 | 1 | free 0%, 2.6 r | free 0%, 2.6 r | free 0%, 2.6 r | free 0%, 2.6 r |
+| `the_wild_hunt` | elite | 1 | 1 | decision 55%, 8.5 r | free 30%, 7.8 r | free 39%, 8.2 r | free 27%, 7.8 r |
+| `shamans_warband` | elite | 1 | 1 | free 13%, 6.8 r | free 5%, 6.5 r | free 6%, 6.7 r | free 4%, 6.4 r |
+| `the_nob` | elite | 1 | 1 | decision 28%, 5.3 r | free 6%, 4.8 r | free 15%, 4.9 r | free 5%, 4.8 r |
+| `cinder_tortoises_brood` | elite | 1 | 1 | decision 63%, 14.1 r | free 18%, 13.2 r | decision 39%, 13.9 r | free 16%, 13.5 r |
+| `thunder_apes_rampage` | elite | 1 | 1 | free 30%, 6.6 r | free 15%, 5.5 r | free 15%, 6.0 r | free 11%, 5.6 r |
+| `gilgamesh_wanders` | elite | 1 | 1 | free 36%, 12.5 r | free 1%, 11.0 r | free 12%, 11.2 r | free 1%, 11.0 r |
+| `old_mans_rising` | elite | 1 | 1 | wall 100%, 3.0 r | wall 100%, 3.0 r | wall 100%, 3.5 r | wall 100%, 3.5 r |
+| `pilgrims_wake` | elite | 1 | 1 | wall 97%, 9.2 r | decision 94%, 9.5 r | decision 77%, 10.9 r | decision 75%, 11.0 r |
+| `rust_monsters_scavenge` | elite | 1 | 1 | free 18%, 5.1 r | free 2%, 4.8 r | free 8%, 4.8 r | free 2%, 4.8 r |
+
+Read, in bands, a direction:
+
+- **The two parts do different jobs.** The regen alone, on today's dice, halves what a lone
+  Badger loses to a plain-blow patrol (the salamander trio 23% to 11%, the bomb flight 12% to
+  6%, the antlion pair 9% to 5%) and moves nothing at three, where little is lost but to the two
+  formations with a massive. The die alone moves nothing for a lone machine and takes those two
+  from a third of the trio's hull to a tenth (the magma vent 32% to 8%, the sandworm ambush 34%
+  to 11%), each two rounds longer. Together they add: 19% at one, 3% at three.
+- **Every cell that still costs hull is a breach.** The sandworm's maw and the magma elemental's
+  fist (8, breach), the needlers (3, breach), the knights' cleaver (6, breach): the regen never
+  meets them, so the needler scouts cost a lone Badger 26% on every read and the knights'
+  retinue walls it on every read. Five of tier one's rank-and-file lines carry breach (the
+  needler, the sandworm, the zombie knight, the bomb, the magma elemental), none of the Meadow's.
+- **The regen's size shows short-handed.** At the rating its sizes read alike (2, 4 and half the
+  gauge: 19 to 20% at one, 3% at three). A lone Badger against a formation for three is where it
+  moves: six walls of eight with no regen, three walls and four decisions at 81 to 85% of its
+  hull at 2, and at 4 (half its gauge) the barrow mound a decision at 31% and the treant grove
+  free at 37%, each over sixteen rounds; the breach formations are walls on every read. By two
+  machines the Meadow's and the Marsh's formations cost 1 to 2% under the model against 3 to 26%
+  today.
+- **The lone elites' blows are plain**, so a lone Badger loses 22% to them under the model against
+  41% today (Gilgamesh 36% to 1%, the Nob 28% to 5%, the Cinder Tortoise's brood 63% to 16%, the
+  Wild Hunt 55% to 27%); the Old Man's rising, a breach, walls it on every read. One more read
+  for the elites' own item (the bible's section 12), no proposal here.
+- **Heat's two levers move no cell.** The basics at heat one and a cooling of one more change
+  nothing at any size: a basic's one heat is the cooling nearly every chassis has.
+- **The injury rule off moves no band and no hull** (24%, 10% and 2% with it on or off): what it
+  cost was components, which the curve read does not count.
+
+### The defensive basic's rule, and the aggressor
+
+Tier one, the default four, the model under each rule for the basic that takes the Barrier's
+slots, and the model's free Barrier played by the aggressor:
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 24% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% | 3.6 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 2% | 2.3 | 0 |
+| A Barrier, free (the model) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| A Barrier that rests | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 5% | 3.8 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 1% | 2.4 | 0 |
+| A Ward in its place | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 20% | 4.9 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 4% | 4.1 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| No Barrier | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.6 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% | 3.5 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 2% | 2.2 | 0 |
+| The model, the aggressor | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 8% | 3.6 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 1% | 2.3 | 0 |
+
+By composition at its rating, the cells that move (every other patrol and formation is under 5%
+on every read):
+
+| Composition | Size | Tier | For | Today | A Barrier, free | A Barrier that rests | A Ward | No Barrier | The aggressor |
+|---|---|---|---|---|---|---|---|---|---|
+| `knights_retinue` | patrol | 1 | 1 | wall 100%, 3.7 r | wall 100%, 4.9 r | wall 100%, 4.2 r | wall 100%, 5.5 r | wall 100%, 3.7 r | wall 100%, 3.9 r |
+| `gel_cluster` | patrol | 1 | 1 | free 14%, 13.0 r | free 9%, 12.9 r | free 9%, 12.9 r | free 9%, 12.9 r | free 8%, 12.6 r | free 9%, 12.9 r |
+| `bomb_flight` | patrol | 1 | 1 | free 12%, 4.8 r | free 5%, 4.4 r | free 5%, 4.4 r | free 5%, 4.4 r | free 7%, 4.4 r | free 8%, 4.5 r |
+| `salamander_trio` | patrol | 1 | 1 | free 23%, 4.0 r | free 9%, 3.7 r | free 9%, 3.7 r | free 11%, 3.7 r | free 10%, 3.6 r | free 9%, 3.7 r |
+| `antlion_pair` | patrol | 1 | 1 | free 9%, 2.5 r | free 3%, 2.5 r | free 3%, 2.5 r | free 4%, 2.5 r | free 4%, 2.5 r | free 3%, 2.5 r |
+| `needler_scouts` | patrol | 1 | 1 | free 26%, 3.0 r | free 26%, 3.0 r | free 26%, 3.0 r | free 26%, 3.2 r | free 25%, 3.0 r | free 26%, 3.0 r |
+| `magma_vent` | formation | 1 | 3 | free 32%, 4.9 r | free 8%, 7.4 r | free 16%, 5.7 r | free 10%, 6.5 r | free 36%, 5.3 r | free 25%, 4.8 r |
+| `needler_swarm` | formation | 1 | 3 | free 6%, 2.2 r | free 3%, 2.3 r | free 5%, 2.2 r | free 3%, 2.4 r | free 4%, 2.0 r | free 5%, 2.2 r |
+| `sandworm_ambush` | formation | 1 | 3 | free 34%, 5.4 r | free 11%, 7.3 r | free 17%, 6.1 r | free 10%, 7.2 r | free 32%, 5.6 r | free 26%, 5.1 r |
+
+Probes of the two formations with a massive, 20 seeds, the Badger, the Clydesdale and the Kite,
+with the share of the trio's spends that went on the defensive basic:
+
+| Rule | Sandworm ambush: rounds, hull lost | Its share of spends | Magma vent: rounds, hull lost |
+|---|---|---|---|
+| Today | 5.2, 32% | none (vents 7%, the Canopy 2%) | 4.8, 32% |
+| A Barrier, free (the model) | 7.5, 10% | 38% | 7.4, 7% |
+| A Barrier that rests a round | 6.2, 18% | 24% | 5.8, 15% |
+| A Barrier at 3 heat | 7.7, 11% | 39% | not probed |
+| A Barrier at 6 heat | 7.3, 21% | 31% | not probed |
+| A Ward, the regen half the gauge | 6.8, 10% | 33% | 6.5, 11% |
+| A Ward, the regen 2 | 6.5, 13% | 32% | not probed |
+| A Ward, no regen | 6.2, 18% | 30% | 5.8, 16% |
+| No Barrier (the Armoured piece, guns) | 5.9, 33% | none (the Shoring Jack 2%) | 5.3, 36% |
+
+And the lone machine against the breach patrols, 20 seeds: the needler scouts cost the Badger 25%
+and the Skua 21% under every rule, and the knights' retinue walls both under every rule.
+
+Read, in bands, a direction:
+
+- **The rule matters in one kind of fight.** A full squad against a massive whose blow breaches
+  (the sandworm's maw and the magma elemental's fist, 8 each): with no Barrier the two cost a
+  third of the trio's hull as they do today, with a free one a tenth, with a resting one or a
+  Ward between. Nowhere else does a cell move by more than a few points, and over a battle the
+  rules land together (the campaign's table).
+- **A block trades rounds for hull, and a round costs nothing.** The free Barrier is found and
+  spent on four dice in ten and the fight runs half again as long (5 rounds to 7.4); the
+  aggressor, the same die never rerolled for a block, loses a quarter of the trio's hull where
+  the rung loses 8 to 11% and finishes in 4.8 to 5.1 rounds. Little in these fights makes the
+  seventh round worse than the third (a bomb's fuse, an eruption's heat), so the block is nearly
+  free hull and taking it is the best line: the block-everything loop on one fight's scale. What
+  prices a round is a threat that rises (the model's ninth point), not the block's rule.
+- **A Ward makes the regen the dial against breach.** It lands the round's breaches on the shield,
+  so the hull lost follows the regen (18% with none, 13% at 2, 10% at half the gauge) where a
+  Barrier's does not, in a fight a round shorter than the free Barrier's.
+- **A heat price on the Barrier does not shorten the fight** (7.7 rounds at 3 heat, 7.3 at 6,
+  where the hull lost doubles to 21% with the Barrier still a third of the spends). A cooldown
+  does (6.2).
+- **A lone machine gets nothing from any of them.** One die a round goes on the kill; against a
+  breach patrol the regen is skipped too, so the lone machine has no buffer there at all.
+
+### Tier one, the light four
+
+The Skua alone at the rating of one, the Skua, the Prairie Dog and the Cottonmouth at three, the
+four with the Cassowary at four: stock lights, no plate and no lure.
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 1 | patrol, 1 | 8 | 3 | 1 | 4 | 62% | 3.2 | 0 |
+|  | 1 | formation, 3 | 8 | 4 | 2 | 2 | 30% | 10.2 | 4 |
+|  | 1 | elite, 4 | 11 | 10 | 1 | 0 | 8% | 4.9 | 0 |
+| The model | 1 | patrol, 1 | 8 | 4 | 2 | 2 | 46% | 4.2 | 0 |
+|  | 1 | formation, 3 | 8 | 5 | 3 | 0 | 9% | 10.8 | 1 |
+|  | 1 | elite, 4 | 11 | 10 | 1 | 0 | 1% | 4.8 | 0 |
+
+| Composition | Size | Tier | For | Today | The model |
+|---|---|---|---|---|---|
+| `knights_retinue` | patrol | 1 | 1 | wall 100%, 2.2 r | wall 100%, 2.2 r |
+| `revenant_shamblers` | patrol | 1 | 1 | free 32%, 3.2 r | free 8%, 3.5 r |
+| `gel_cluster` | patrol | 1 | 1 | wall 100%, 4.4 r | decision 63%, 10.0 r |
+| `bomb_flight` | patrol | 1 | 1 | decision 48%, 3.1 r | decision 40%, 3.3 r |
+| `salamander_trio` | patrol | 1 | 1 | wall 98%, 3.4 r | wall 91%, 3.9 r |
+| `antlion_pair` | patrol | 1 | 1 | wall 99%, 5.0 r | free 48%, 5.7 r |
+| `needler_scouts` | patrol | 1 | 1 | free 19%, 1.7 r | free 19%, 1.7 r |
+| `barrow_mound` | formation | 1 | 3 | decision 19%, 32.3 r, 3 stalled | decision 3%, 17.0 r, 1 stalled |
+| `treant_grove` | formation | 1 | 3 | decision 13%, 17.1 r, 1 stalled | free 1%, 12.4 r |
+| `ember_pit` | formation | 1 | 3 | free 5%, 2.9 r | free 2%, 3.0 r |
+| `magma_vent` | formation | 1 | 3 | wall 100%, 9.3 r | decision 35%, 24.2 r |
+| `sandworm_ambush` | formation | 1 | 3 | wall 100%, 11.5 r | decision 28%, 20.6 r |
+| `cinder_tortoises_brood` | elite | 1 | 4 | free 2%, 10.6 r | free 0%, 9.5 r |
+| `thunder_apes_rampage` | elite | 1 | 4 | free 3%, 3.3 r | free 0%, 4.4 r |
+| `old_mans_rising` | elite | 1 | 4 | decision 74%, 12.2 r | decision 5%, 11.6 r |
+| `pilgrims_wake` | elite | 1 | 4 | free 12%, 4.8 r | free 1%, 5.4 r |
+
+Read, a direction. The model is worth most to the team with no plate and no lure. The Skua alone
+loses 46% of its hull to a patrol against 62% (two walls against four: the knights' retinue and
+the salamander trio stay walls, the gel cluster is a decision at 63% over ten rounds, the antlion
+pair free at 48%); the needler scouts cost it 19% on both reads, breach again. At three the two
+formations with a massive are decisions where they were walls (the magma vent 35% over 24 rounds,
+the sandworm ambush 28% over 21), and at four they cost 8% where they cost 60 to 68%; the Old
+Man's rising at four costs 5% against 74%. What the model buys the lights is time: the fights it
+turns from lost to won run twenty rounds and more, and one barrow mound in thirty still passes
+the bot's sixty.
+
+### Heat with no vent: a probe
+
+A probe, 20 seeds a cell (a scratch tool over the same engine): three stock trios against seven
+tier-one formations, today, under the model and under the model cooling one more; the greedy
+rung, which prices an overheat's hull and nothing under the cap (the reckless persona). The
+model with the basics free was probed beside them: 13 of its 21 cells match the model's to the
+digit and the rest sit inside the noise, so its rows are left out.
+
+| Team | Composition | Read | Won | Rounds | Hull lost | Peak heat | Rounds a machine ended hot | Overheats a fight | Hull they burned | Hot dice held a fight |
+|---|---|---|---|---|---|---|---|---|---|---|
+| The Honey Badger, the Clydesdale, the Kite | `goblin_warband` | today | 100% | 2.4 | 0% | 76% | 0.4 | 0.05 | 0.1 | 0.00 |
+|  |  | the model | 100% | 2.4 | 0% | 80% | 0.5 | 0.05 | 0.1 | 0.00 |
+|  |  | the model, cooling one more | 100% | 2.4 | 0% | 74% | 0.3 | 0.05 | 0.1 | 0.05 |
+|  | `treant_grove` | today | 100% | 4.8 | 4% | 104% | 1.9 | 0.55 | 1.2 | 0.00 |
+|  |  | the model | 100% | 4.8 | 1% | 110% | 2.5 | 0.50 | 1.3 | 0.00 |
+|  |  | the model, cooling one more | 100% | 4.7 | 1% | 94% | 1.3 | 0.45 | 0.9 | 0.00 |
+|  | `needler_swarm` | today | 100% | 2.1 | 6% | 70% | 0.3 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 2.3 | 4% | 64% | 0.4 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 2.3 | 4% | 62% | 0.4 | 0.00 | 0.0 | 0.00 |
+|  | `sandworm_ambush` | today | 100% | 5.2 | 32% | 100% | 1.4 | 0.45 | 0.8 | 0.00 |
+|  |  | the model | 100% | 7.5 | 10% | 73% | 0.8 | 0.10 | 0.1 | 0.00 |
+|  |  | the model, cooling one more | 100% | 7.6 | 10% | 68% | 0.5 | 0.00 | 0.0 | 0.00 |
+|  | `grave_host` | today | 100% | 3.0 | 1% | 79% | 0.7 | 0.15 | 0.6 | 0.20 |
+|  |  | the model | 100% | 3.0 | 1% | 85% | 1.0 | 0.30 | 0.6 | 0.25 |
+|  |  | the model, cooling one more | 100% | 3.0 | 0% | 82% | 0.7 | 0.15 | 0.3 | 0.20 |
+|  | `ember_pit` | today | 100% | 2.4 | 0% | 77% | 0.5 | 0.10 | 0.1 | 0.05 |
+|  |  | the model | 100% | 2.4 | 1% | 85% | 0.8 | 0.25 | 0.3 | 0.05 |
+|  |  | the model, cooling one more | 100% | 2.4 | 1% | 78% | 0.6 | 0.20 | 0.2 | 0.05 |
+|  | `magma_vent` | today | 100% | 4.8 | 32% | 102% | 1.8 | 0.45 | 0.8 | 0.00 |
+|  |  | the model | 100% | 7.4 | 7% | 79% | 1.1 | 0.10 | 0.1 | 0.00 |
+|  |  | the model, cooling one more | 100% | 7.3 | 7% | 72% | 0.7 | 0.00 | 0.0 | 0.00 |
+| The Stingray, the Storm Petrel, the Baboon | `goblin_warband` | today | 100% | 3.5 | 0% | 60% | 0.2 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 3.3 | 0% | 56% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 3.3 | 0% | 49% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  | `treant_grove` | today | 100% | 8.9 | 8% | 102% | 3.0 | 0.40 | 0.7 | 0.55 |
+|  |  | the model | 100% | 8.0 | 2% | 101% | 2.5 | 0.60 | 1.4 | 0.10 |
+|  |  | the model, cooling one more | 100% | 8.0 | 0% | 78% | 0.8 | 0.15 | 0.2 | 0.00 |
+|  | `needler_swarm` | today | 100% | 2.9 | 5% | 44% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 3.0 | 5% | 40% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 3.0 | 5% | 38% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  | `sandworm_ambush` | today | 100% | 6.9 | 45% | 105% | 2.5 | 0.60 | 2.0 | 0.20 |
+|  |  | the model | 100% | 8.1 | 25% | 94% | 1.8 | 0.35 | 0.5 | 0.05 |
+|  |  | the model, cooling one more | 100% | 8.3 | 25% | 72% | 0.5 | 0.05 | 0.1 | 0.00 |
+|  | `grave_host` | today | 100% | 4.6 | 1% | 76% | 1.1 | 0.05 | 0.1 | 0.00 |
+|  |  | the model | 100% | 4.0 | 0% | 60% | 0.3 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 4.0 | 0% | 48% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  | `ember_pit` | today | 100% | 5.0 | 14% | 104% | 2.4 | 1.10 | 2.8 | 0.60 |
+|  |  | the model | 100% | 4.7 | 5% | 105% | 2.0 | 1.15 | 2.5 | 0.70 |
+|  |  | the model, cooling one more | 100% | 4.8 | 4% | 94% | 1.6 | 0.60 | 1.2 | 0.40 |
+|  | `magma_vent` | today | 95% | 7.8 | 58% | 112% | 3.5 | 0.65 | 1.9 | 0.40 |
+|  |  | the model | 100% | 8.7 | 25% | 105% | 3.1 | 0.60 | 1.8 | 0.20 |
+|  |  | the model, cooling one more | 100% | 8.7 | 23% | 88% | 1.8 | 0.20 | 0.3 | 0.10 |
+| The Skua, the Prairie Dog, the Cottonmouth | `goblin_warband` | today | 100% | 2.7 | 0% | 34% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 3.0 | 0% | 35% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 3.0 | 0% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `treant_grove` | today | 95% | 17.7 | 14% | 62% | 0.4 | 0.05 | 0.1 | 0.00 |
+|  |  | the model | 100% | 12.7 | 1% | 93% | 2.8 | 0.25 | 0.2 | 0.00 |
+|  |  | the model, cooling one more | 100% | 12.6 | 0% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `needler_swarm` | today | 100% | 2.1 | 2% | 30% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 2.1 | 1% | 29% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 2.1 | 1% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `sandworm_ambush` | today | 0% | 11.4 | 100% | 49% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 95% | 21.4 | 27% | 39% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 95% | 21.4 | 27% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `grave_host` | today | 100% | 3.6 | 1% | 38% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 3.9 | 0% | 43% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 3.9 | 0% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `ember_pit` | today | 100% | 3.0 | 5% | 73% | 0.4 | 0.10 | 0.1 | 0.05 |
+|  |  | the model | 100% | 2.9 | 2% | 80% | 0.7 | 0.30 | 0.9 | 0.00 |
+|  |  | the model, cooling one more | 100% | 2.9 | 1% | 70% | 0.3 | 0.20 | 0.2 | 0.00 |
+|  | `magma_vent` | today | 0% | 9.2 | 100% | 68% | 0.6 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 95% | 24.9 | 41% | 85% | 2.0 | 0.00 | 0.0 | 0.50 |
+|  |  | the model, cooling one more | 95% | 25.0 | 40% | 59% | 0.2 | 0.00 | 0.0 | 0.00 |
+
+Read, a direction. Taking the vents off the die costs the bot nothing: on today's dice the default
+trio spent 7% of its dice on vents and 2% on shields against the sandworm ambush (the spends
+probe), and the model's peaks, overheats and hull burned sit where today's do (the default trio's overheats 0.05 to 0.55 a fight burning about a point of hull, the
+hot trio's 0.35 to 1.15 burning one to three of its 76). And heat is not a pace in the bot's
+hands on either die: a hot die is held less than once a fight on every row, and the hottest
+tier-one trio loses one to three hull a fight to it. The basics at heat one are under the cooling
+of one nearly every chassis has, so they are no price; cooling one more takes the peaks down ten
+to twenty points and most of the hull burned with them. The prices are where the hold would come
+from, which is the heat session's list (the brief's third point), and a rung that reads only an
+overheat cannot say whether a player would feel it: the cautious persona (`--cool-above`) is the
+read for that, not taken here.
+
+### The campaign runner: 40 runs, today and the model under each rule
+
+`tools/campaign_run.gd -- --runs 40` on the same seeds (each battle's map by its seed), the greedy
+rung with the defence rule on the map, three of the tender at random, the injury rule off in all
+seven: today's content; the regen alone on today's dice (`--refit regen=half`); the model with
+its Barrier basic free (`all`), resting a round (`all,barrier=cooldown`), a Ward in its place
+(`all,barrier=ward`) and none (`all,barrier=off`); and the model played by the aggressor (`all
+--guard 0.05`). The die's five reads deal from a tender without the Polar Bear and the Puffin
+(back in design), so they differ from today's by the tender too; the regen alone keeps today's
+tender, and the five share theirs.
+
+| Measure | Today | The regen alone | The model (a Barrier, free) | A Barrier that rests | A Ward in its place | No Barrier | The model, the aggressor |
+|---|---|---|---|---|---|---|---|
+| Runs won | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 |
+| Turns a run | 5.92 | 6.15 | 6.05 | 6.05 | 6.10 | 6.20 | 6.20 |
+| Battles | 191 | 193 | 194 | 193 | 198 | 201 | 195 |
+| Battles won | 3% | 8% | 9% | 8% | 9% | 9% | 8% |
+| Held after a wipe | 12% | 8% | 8% | 8% | 8% | 9% | 10% |
+| Fell | 83% | 82% | 82% | 82% | 81% | 80% | 81% |
+| Ended in a team wipe | 89% | 73% | 64% | 63% | 65% | 65% | 65% |
+| Machines wrecked a battle | 1.69 | 1.52 | 1.44 | 1.44 | 1.44 | 1.42 | 1.44 |
+| Phases a battle | 6.06 | 6.49 | 6.80 | 6.77 | 6.62 | 6.69 | 6.78 |
+| Menace killed a battle | 45 | 70 | 91 | 88 | 86 | 89 | 90 |
+| Fractures reached a battle (of about 3) | 0.99 | 1.49 | 1.80 | 1.75 | 1.71 | 1.75 | 1.77 |
+| Battles reaching the Rupture | 16% | 35% | 42% | 42% | 40% | 43% | 43% |
+| Gate damage a battle | 128 | 127 | 128 | 128 | 125 | 124 | 125 |
+| Battles by three machines: won, wiped | 12%, 77% of 58 | 20%, 55% of 67 | 20%, 45% of 70 | 18%, 47% of 72 | 20%, 45% of 72 | 19%, 46% of 76 | 18%, 48% of 72 |
+| Battles by one machine: fell | 93% of 76 | 93% of 65 | 91% of 58 | 91% of 58 | 91% of 62 | 90% of 66 | 90% of 60 |
+| Fights | 565 | 794 | 921 | 894 | 886 | 933 | 920 |
+| Fights stalled past sixty rounds | 0 | 19 | 14 | 11 | 11 | 5 | 8 |
+| A fight for 1, 1 in it: won | 58% of 121 | 73% of 212 | 79% of 272 | 78% of 256 | 76% of 234 | 79% of 268 | 79% of 267 |
+| A fight for 1, 2 in it: won | 97% of 43 | 95% of 63 | 93% of 93 | 94% of 94 | 93% of 102 | 94% of 103 | 93% of 98 |
+| A fight for 1, 3 in it: won | 77% of 9 | 87% of 16 | 100% of 9 | 100% of 11 | 100% of 9 | 100% of 12 | 100% of 12 |
+| A fight for 3, 1 in it: won | 16% of 178 | 25% of 222 | 36% of 249 | 34% of 246 | 32% of 243 | 38% of 244 | 39% of 247 |
+| A fight for 3, 2 in it: won | 66% of 87 | 84% of 113 | 86% of 115 | 90% of 110 | 92% of 112 | 89% of 116 | 93% of 106 |
+| A fight for 3, 3 in it: won | 95% of 40 | 100% of 45 | 100% of 47 | 97% of 47 | 100% of 48 | 100% of 47 | 100% of 48 |
+| A fight for 4, 1 in it: won | 30% of 50 | 47% of 68 | 64% of 81 | 65% of 73 | 60% of 79 | 57% of 80 | 52% of 87 |
+| A fight for 4, 2 in it: won | 72% of 22 | 88% of 35 | 86% of 37 | 82% of 39 | 85% of 40 | 86% of 43 | 84% of 38 |
+| A fight for 4, 3 in it: won | 93% of 15 | 100% of 20 | 100% of 18 | 100% of 18 | 100% of 19 | 100% of 20 | 100% of 17 |
+
+Read, in bands, a direction. The campaign stays a wall for this bot on every read (no run won;
+the defence rule sends a lone machine at a formation 178 times today and some 245 times under the model), so the read is
+how far a battle gets, not who wins it.
+
+- **The model takes a battle about twice as far.** Menace killed a battle doubles (45 to about
+  90), the Rupture is reached in four battles in ten against one in six, team wipes fall from nine
+  battles in ten to under two in three, and the team lives to fight half again as many fights (565
+  to about 920). A patrol fought alone is won 79% against 58%, a formation fought alone 36%
+  against 16%, an elite fought alone 64% against 30%.
+- **The regen is the larger half.** On today's dice it alone takes the wipes from 89% to 73% and
+  the menace killed from 45 to 70. The die adds the rest (64%, about 90) whichever defensive basic
+  fills the freed slots, the tender's difference inside that step.
+- **The defensive basic's rule is not visible over a battle.** A Barrier free, a Barrier that
+  rests, a Ward and no Barrier at all land together on every line (wipes 63 to 65%, menace 86 to
+  91, battles won 8 or 9%), and so does the aggressor, who never rerolls for a block. Most of a
+  battle's fights are one or two machines against a pack, where a block is seldom worth the one
+  die; the rule is felt only where a full squad meets a massive (the probes below).
+- **The fight nobody can finish is back.** No fight passed the bot's sixty rounds today; 19 of
+  794 did with the regen alone, 14 of 921 under the model, 11 with the Barrier resting or a Ward,
+  5 with no Barrier and 8 for the aggressor. The runner names no pack for them (unread); the
+  curve read's own stalls are the light trio against the barrow mound. The model's ninth point
+  (every formation carries a rising threat, as a validator check) is the guard, and this is its
+  evidence.
