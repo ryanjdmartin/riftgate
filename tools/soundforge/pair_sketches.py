@@ -193,6 +193,20 @@ def lead_power(f, dur):
 F.NOTE_INST["lead_power"] = lambda f, d, p: lead_power(f, d)
 
 
+def hat_half(pitch=1.0):
+    """A half-open hi-hat (Hold The Line's W, Ryan, 9 November: "do we have a half-open hat sound?"): the forge's
+    hat (hat_real) between its closed and open settings, its partials ringing 40 to 70 ms where the closed hat's
+    die in 10 to 20 and the open's ring 80 to 180, and its wash rattling as the two cymbals buzz loosely against
+    each other, a slow roughness on the sizzle."""
+    n = F.n_of(0.3)
+    partials = F.knock([3100.0 * pitch, 4700.0 * pitch, 6900.0 * pitch, 9300.0 * pitch, 11800.0 * pitch],
+                       [0.07, 0.06, 0.05, 0.045, 0.04], [0.5, 0.45, 0.4, 0.3, 0.2], noise_gain=0.0)
+    rattle = F.lp(F.noise(n), 70.0)
+    rattle = rattle / (np.max(np.abs(rattle)) + 1e-9)
+    wash = F.bp(F.noise(n), 4000.0, 14000.0) * F.env_ad(n, 0.001, 0.06) * (1.0 + 0.4 * rattle)
+    return F.mix(partials * 0.5, wash * 0.6) * 0.4
+
+
 TICKING = {"inst": "guitar_real", "mode": "riff", "octave": 0, "params": {"clean": True}}   # the map's pulse, as Hold The Line's
 
 # The guitar on one string (Night Shift's twelfth round; Hold The Line's bass variations of 4 November).

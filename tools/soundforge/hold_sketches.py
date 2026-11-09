@@ -1,16 +1,20 @@
-"""Hold The Line's twenty-third round as a pair (Ryan, 8 November, on the twenty-second): W's drums from the first
-beat's off-beat, X's bent note as a triplet bend, the guitar and the keys traded in X, W's first beats.
+"""Hold The Line's twenty-fourth round (Ryan, 9 November, on the twenty-third): two sets on the twenty-third's
+pair, which has not changed, X on a rock beat and W's first beats on a half-open hat.
 
-  "Can I hear X: With the bend as quick b-bup-b as a triplet, so that the line goes from c-b-bflat on eighth notes to
-  b-bup-b-bflat as triplet-8th? With the backing guitar (from the descending chords) doing power chords in unison, and
-  the keys doing the backing descending chords instead? The drums 'Two beats earlier' in W is good, let's try 1.
-  Those new intro beats being louder 2. Being on the snare 3. Being on the china 4. Being on the hat"
+  "X - can I hear 'The triplet bend into A, and the guitar and the keys traded' over a more standard rock beat
+  (not necessarily simple, just based on a standard hats on eighths, snare on 2, 4, 6, and the 'and' of 7? W - do
+  we have a half-open hat sound? Either that or the china but starting one hit before, so there's no pause
+  between the crash and when the drums continue."
 
-W's drums from the first beat's off-beat in the pair (W_FILLS["earlier"]); its three eighths louder or on the
-snare, the china or the hat in a set (W_FILLS_INTRO). X's first-pass quarter-flat C and the B after it as one note,
-B pushed up a quarter-tone and let back in eighth-note triplets (forge.py's bent notes on a path, X_TRIPLET), into
-A as the riff goes (X_RIFF_T) or into B-flat as he wrote it (X_RIFF_TB); the backing guitar on the riff from bar 5
-and the keys lead on the descending chords there (x_swap); both together, in a set.
+X's kit on a rock beat (X_ROCK), counting the seven in eighths: the hat on every eighth, the snare on 2, 4 and 6
+and the sixteenth after 7, the kick on 1, 3, 5 and 7, under the triplet bend and the trade (set hr). W's three
+eighths on a half-open hat (pair_sketches' hat_half, in the kit from its own seed) from the off-beat or from the
+crash on the one, or on the china from the crash (set hh). The sets go into hold23.json beside the pair.
+
+The twenty-third round's (the pair): W's drums from the first beat's off-beat (W_FILLS["earlier"]); X's riff as
+the twenty-second had it. Its options stay in the code: the triplet bend into A or B-flat (X_TRIPLET, X_RIFF_T,
+X_RIFF_TB), the guitar and the keys traded (x_swap), W's eighths louder or on the snare, the china or the hat
+(W_FILLS_INTRO).
 
 The twenty-second round's, kept: K's walk on the crunch synth beside the plucked string 3 dB down; X's riff bent
 the first time through alone (X_RIFF_Q1), in both halves; W's held note on the keys lead with the basses and the
@@ -72,7 +76,7 @@ minimalist"), its lifts' riff on the soft sub and the tine piano.
 The full pair on the switch takes every pick. The set's rows are the same bars from the same seed
 through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold23.json beside the pairs (about four minutes on four cores)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold23.json beside the pairs (about four minutes on four cores; `hr hh` the sets alone)
     tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hx       # the named sets only (hx, hk, hw, and full for the pair)
 """
 import json
@@ -1160,6 +1164,20 @@ def w_intro(drum="tom2", hits=W_INTRO):
 
 W_FILLS_INTRO = {"earlier": w_intro(), "loud": w_intro(hits=W_INTRO_LOUD), "snare": w_intro("snare"),
                  "china": w_intro("china"), "hat": w_intro("hat")}
+# Round twenty-four (Ryan, 9 November: "do we have a half-open hat sound? Either that or the china but starting one
+# hit before, so there's no pause between the crash and when the drums continue"): the eighths on a half-open hat
+# (pair_sketches' hat_half, in the kit where a fill uses it, from its own seed), from the first beat's off-beat as
+# now or from the crash on the one; or the china from the crash on the one, one eighth before where it began.
+W_INTRO_FROM_CRASH = ((0, "3"),) + W_INTRO
+
+
+def w_intro_half(hits=W_INTRO):
+    return w_bar(W_BUILD + [("hat_half", step, vel) for step, vel in hits], ("kick", "snare", "tom", "tom2", "crash", "china", "hat", "hat_half"))
+
+
+W_FILLS_INTRO.update({"half": w_intro_half(), "half_crash": w_intro_half(W_INTRO_FROM_CRASH),
+                      "china_crash": w_bar(W_BUILD + [("china", step, vel) for step, vel in W_INTRO_FROM_CRASH],
+                                           ("kick", "snare", "tom", "tom2", "crash", "china", "hat", "hat_half"))})
 W_FILL_DOUBLES = w_bar(
     [("crash", 0, "x"), ("kick", 0, "x")]
     + P.descending_doubles(24, ("tom_hi", "tom", "tom2", "tom_lo"), soft="6", hard="8")
@@ -1168,6 +1186,16 @@ W_FILL_DOUBLES = w_bar(
 W_FILLS = dict({"build": W_FILL_BUILD, "doubles": W_FILL_DOUBLES, "round20": W_FILL, "early": W_FILL_EARLY},
                **{"earlier" if k == "earlier" else "intro_" + k: v for k, v in W_FILLS_INTRO.items()})
 W21_FILL = "build"
+
+
+def w_hat_half(call):
+    """The half-open hat in the kit at the closed hat's gain, from its own seed."""
+    saved = F.RNG
+    F.RNG = np.random.default_rng(zlib.crc32(b"hold_the_line_w_hat_half"))
+    try:
+        call["kit"]["hat_half"] = (F.variants(P.hat_half), call["kit"]["hat"][1])
+    finally:
+        F.RNG = saved
 
 
 def w_toms(call):
@@ -1193,6 +1221,8 @@ def w_six(call, synth=True, fill=None):
         d.pop("W", None)
     if any(name in W_TOMS for name in fill):
         w_toms(call)
+    if "hat_half" in fill:
+        w_hat_half(call)
     for name, pat in fill.items():
         call["drums"].setdefault(name, {})["W"] = pat
     if synth:
@@ -1369,6 +1399,33 @@ def round23(riff=None, swap=False, fill="earlier"):
             x_swap(call)
     return edit
 
+
+# Round twenty-four's X (Ryan, 9 November: "can I hear 'The triplet bend into A, and the guitar and the keys traded'
+# over a more standard rock beat (not necessarily simple, just based on a standard hats on eighths, snare on 2, 4,
+# 6, and the 'and' of 7"): counting the seven in eighths, 1 to 7, the closed hat on every eighth, the snare on 2, 4
+# and 6 and the sixteenth after 7, the kick on 1, 3, 5 and 7 between them; the open hat and the crash on 7 out,
+# the crash every second bar and the industry's knocks kept.
+X_ROCK = {"kick": "x...x...x...x.", "snare": "..x...x...x..x", "hat": "x.x.x.x.x.x.x.", "open": "." * 14, "crash": "." * 14}
+
+
+def x_rock(call):
+    """X's kit on the rock beat (X_ROCK)."""
+    for name, pat in X_ROCK.items():
+        call["drums"].setdefault(name, {})["X"] = pat
+    return call
+
+
+def round24(riff=None, swap=False, rock=False, fill="earlier"):
+    """Round twenty-four's sets on round twenty-three's battle half: X's `riff`, the trade where `swap`, X on the
+    rock beat where `rock`, W's first beats `fill` (W_FILLS)."""
+    base = round23(riff=riff, swap=swap, fill=fill)
+
+    def edit(call):
+        base(call)
+        if rock:
+            x_rock(call)
+    return edit
+
 def round22_bend(more="none"):
     """Round twenty-two's battle half with X's bent note played as a bend, `more` on the riff (X_MORE)."""
     base = round22(more=more)
@@ -1470,21 +1527,18 @@ FORM_X = "M XXXXXXXXXXXX"          # the bar down into the seven and the seven
 FORM_KEYS = "Y KKKKKKKK V"         # the breath, the keys section, the second breath
 FORM_W = "FFFF W SSSSSSSS"         # the keys' tune's first bars, the turn, the climax's first set
 SETS = [
-    {"id": "hx", "half": "battle", "title": "X: the triplet bend, the guitar and the keys", "form": FORM_X,
-     "note": "The bar down into the seven and the seven (Ryan, 8 November: \"With the bend as quick b-bup-b as a triplet ... With the backing guitar (from the descending chords) doing power chords in unison, and the keys doing the backing descending chords instead?\"). The triplet bend is one note across the quarter where the quarter-flat C and B were: B, pushed up a quarter-tone, let back to B, in eighth-note triplets, then the next note. The riff's next note there is A; you wrote B-flat, so a row plays each. The swap is from bar 5, where the guitar held its chords. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hx0", "As the pair has it", "The quarter-flat C held, then B and A; the guitar holding the descending chords from bar 5.", round23()),
-        ("hx1", "The triplet bend, into A", "B, a quarter up, B in triplets, then A, as the riff goes on.", round23(riff=X_RIFF_T)),
-        ("hx2", "The triplet bend, into B-flat", "The same into B-flat, as you wrote it.", round23(riff=X_RIFF_TB)),
-        ("hx3", "The guitar in unison, the keys on the chords", "From bar 5 the backing guitar plays the riff in power chords with the Omnifics, bending with them, and the keys lead holds the descending chords.", round23(swap=True)),
-        ("hx4", "Both", "The triplet bend into A, and the guitar and the keys traded.", round23(riff=X_RIFF_T, swap=True)),
+    {"id": "hr", "half": "battle", "title": "X on a rock beat", "form": FORM_X,
+     "note": "The bar down into the seven and the seven, the triplet bend into A with the guitar and the keys traded (Ryan, 9 November: \"over a more standard rock beat (not necessarily simple, just based on a standard hats on eighths, snare on 2, 4, 6, and the 'and' of 7\"). Counting the seven in eighths, 1 to 7: the hat on every eighth, the snare on 2, 4 and 6 and the sixteenth after 7, the kick on 1, 3, 5 and 7. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hr0", "On X's own drums", "The triplet bend into A and the trade, as round twenty-three's last row had them.", round24(riff=X_RIFF_T, swap=True)),
+        ("hr1", "On the rock beat", "The same over the rock beat; the open hat and the crash on 7 out, the crash every second bar and the knocks kept.", round24(riff=X_RIFF_T, swap=True, rock=True)),
+        ("hr2", "The pair's X on the rock beat", "The beat under X as the pair has it, for the beat alone.", round24(rock=True)),
     ]},
-    {"id": "hw", "half": "battle", "title": "W's first beats", "form": FORM_W,
-     "note": "The keys' tune's first bars, W and the climax's first set, the drums from the first beat's off-beat, your pick (Ryan, 8 November: \"let's try 1. Those new intro beats being louder 2. Being on the snare 3. Being on the china 4. Being on the hat\"). The three eighths in front of the build change; the build is as it was. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hw0", "On the floor tom", "As they were (the full pair's).", round23()),
-        ("hw1", "Louder", "On the floor tom, about 5 dB up.", round23(fill="intro_loud")),
-        ("hw2", "On the snare", "At their own velocities.", round23(fill="intro_snare")),
-        ("hw3", "On the china", "At their own velocities.", round23(fill="intro_china")),
-        ("hw4", "On the hat", "At their own velocities.", round23(fill="intro_hat")),
+    {"id": "hh", "half": "battle", "title": "W's first beats, again", "form": FORM_W,
+     "note": "The keys' tune's first bars, W and the climax's first set (Ryan, 9 November: \"do we have a half-open hat sound? Either that or the china but starting one hit before, so there's no pause between the crash and when the drums continue\"). The forge had a closed hat and an open one; the half-open hat is new, between them. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hh0", "On the floor tom", "As the pair has them, from the first beat's off-beat.", round24()),
+        ("hh1", "On the half-open hat", "From the first beat's off-beat, where they are now.", round24(fill="intro_half")),
+        ("hh2", "On the half-open hat, from the crash", "One eighth earlier, on the one with the crash.", round24(fill="intro_half_crash")),
+        ("hh3", "On the china, from the crash", "One eighth earlier, on the one with the crash.", round24(fill="intro_china_crash")),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r23", "title": "Hold The Line, round twenty-three"}
