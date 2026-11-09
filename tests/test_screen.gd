@@ -2606,21 +2606,26 @@ func test_undo_opens_once_the_blow_has_played_and_sits_bottom_right() -> void:
 
 
 ## Two foes of one column aiming at the machine below draw two lines apart (Ryan, 9 November: "two
-## foes in the same column targeting the mech in the same column blend together"): the front rank
-## stands a little left of its column and the back a little right, every view on the glass, and
-## each lands its arrow on its own side of the machine.
-func test_the_ranks_stagger_so_one_columns_two_arrows_part() -> void:
+## foes in the same column targeting the mech in the same column blend together"): each arrow leaves
+## its foe and lands on its machine a little to its rank's side, the front's left and the back's
+## right; the ranks stand square, so no foe's chips are pressed against the glass (Ryan: "What
+## happens to back rank enemies with a lot of chips if they're that close to the right edge?").
+func test_one_columns_two_arrows_part_and_the_ranks_stand_square() -> void:
 	var s := _screen()
 	for col in range(s.sk.columns):
 		var f: UnitView = s._slot_views[0][col]
 		var b: UnitView = s._slot_views[1][col]
-		assert_true(f.position.x < b.position.x, "column %d: the front left of the back" % col)
-		assert_true(f.position.x >= 0.0 and b.position.x + b.size.x <= SkirmishScreen.W, "column %d on the glass" % col)
+		assert_eq(f.position.x, b.position.x, "column %d: the ranks stand square" % col)
+		assert_eq(f.chip_wrap, s._col_pitch() - 6.0, "column %d: its chips wrap at the column's room" % col)
 	var front: Foe = s.sk.front[0]
 	var back: Foe = s.sk.back[0]
+	var at := Vector2(100, 900)
 	if back != null:
-		var at := Vector2(100, 900)
-		assert_true(s._arrow_end(front, at).x < s._arrow_end(back, at).x, "each lands on its own side of the machine")
+		assert_true(s._arrow_from(front, at).x < s._arrow_from(back, at).x, "each leaves its foe on its rank's side")
+		assert_true(s._arrow_end(front, at).x < s._arrow_end(back, at).x, "and lands on its own side of the machine")
+	var big := Foe.make("giant", 30, 6)
+	big.size = 2
+	assert_eq(s._arrow_from(big, at), at, "a massive foe's keeps the middles")
 	s.free()
 
 

@@ -150,16 +150,21 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   addition), its readout saying when it gets there; a selected machine shows its hunters' ways.
   The action pip is gone, the board's lower panel shows the hull alone, the boss stands 128 px tall
   on the map, the vortex stands on the rift's lowest hex with the wall at the left, and there the
-  wall and the gate stand a row forward with the city behind (a candidate, `RIFTGATE_WALL_ROW=back`
-  the old look). Both UNDOs read on or off by their edge; the skirmish's sits bottom-right, and it
-  opens again after a spend (the bug: its re-opening tween ran a frame ahead of the clock and left
-  it shut for good). The die's tap waits 0.15 s from its release to a second touch; the skirmish's
-  ranks stagger and each arrow lands on its own side of its machine; every status says Buff or
+  wall and the gate stand a row forward with the city behind (his word the same day: "the best
+  solution", city defences to be wall segment upgrades). Both UNDOs read on or off by their edge;
+  the skirmish's sits bottom-right, and it opens again after a spend (the bug: its re-opening
+  tween ran a frame ahead of the clock and left it shut for good). The die's tap waits 0.15 s from its release to a second touch; each skirmish
+  arrow leaves its foe and lands on its machine on its rank's side, the ranks square (staggered,
+  they pressed the edge foes' chips against the glass); every status says Buff or
   Debuff (`Effects.status_kind`: a wedge on its chip, the word in its hold, its tip's heading, the
   keywords list's headings); the log stays at full strength; Jenny's "bogey eliminated" is cut.
-  The "chase": no pusher reads a machine, but every pusher's segment is drawn about the rift's
-  column, where the machines open, so the flank patrols cross toward them; the fix, a segment about
-  the pack's own column, is section 12's, with the bare row's other ways and Siphoning's label.
+  The "chase": no pusher read a machine, but every pusher's segment was drawn about the rift's
+  column, where the machines open, so the flank patrols crossed toward them; on his word the same
+  day ("the flankers should target their closest wall with a small amount of randomness, avoiding
+  crowding ... Oversight if not implemented") a segment is the wall nearest where the pack is dealt,
+  within 2 of its own column for a flank, a formation the opening places and a tear's patrol, the
+  rift's packs keeping the ramp's spread about the rift's column, the least crowded column of the
+  window winning. Siphoning's label is section 12's.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack

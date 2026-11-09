@@ -910,7 +910,7 @@ func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
-	assign_goal(sq)
+	assign_goal(sq, -1, mouth == map.rift)
 	return sq
 
 
@@ -1050,20 +1050,48 @@ func cache_at(h: Vector2i) -> Dictionary:
 	return {}
 
 
-## A pusher's wall segment (the long wall brief 3.3; Ryan, 5 November: rift packs "can target a
-## segment left or right of it, reducing clogging and creating extra tension. The variance of
-## where they target can even be a ramp factor"): the rift's column and a draw in [-spread,
-## +spread], the spread the ramp's (Ramp.spread_at) unless one is given, clamped to the wall. The
-## draw takes no stream, only the turn and the pack's id, so a resumed battle draws as the
-## unbroken one did. A hunter and the boss draw none. Called as a pack is dealt (emerge: the
-## start's placements and every spawn).
-func assign_goal(sq: Unit, spread: int = -1) -> void:
+## A pusher's wall segment (the long wall brief 3.3): the wall nearest where it is dealt, and a
+## draw either side, from the turn and the pack, so a resumed battle draws as the unbroken one did
+## (no stream). A pack the rift sends draws about the rift's column within the ramp's spread (Ryan,
+## 5 November: rift packs "can target a segment left or right of it, reducing clogging and creating
+## extra tension. The variance of where they target can even be a ramp factor"); any other (a flank
+## patrol, a formation the opening places, a tear's patrol) about its own column within
+## Ramp.FLANK_SPREAD (Ryan, 9 November: "the flankers should target their closest wall with a small
+## amount of randomness, avoiding crowding, in order to force the player to make decisions ... make
+## sure packs don't get stuck on one another, but also don't target halfway across the map and
+## become irrelevant"). Of the window's columns the least crowded wins (_crowding: the other
+## pushers' segments on it or beside it), then the one nearest the draw, so the packs spread along
+## the wall and never pile onto one stretch, and none leaves its window for room. A spread given
+## (the tests) sets the window. A hunter and the boss draw none. Called as a pack is dealt
+## (emerge: the start's placements and every spawn).
+func assign_goal(sq: Unit, spread: int = -1, from_rift: bool = false) -> void:
 	if sq.is_boss or sq.behaviour != "push":
 		return
 	if spread < 0:
-		spread = Ramp.spread_at(ramp, map.width)
-	var draw := (phase * 31 + sq.id * 17) % (2 * spread + 1) - spread
-	sq.goal_col = clampi(Hex.axial_to_offset(map.rift).x + draw, 0, map.width - 1)
+		spread = Ramp.spread_at(ramp, map.width) if from_rift else Ramp.FLANK_SPREAD
+	var base := Hex.axial_to_offset(map.rift if from_rift else sq.pos).x
+	var want := clampi(base + (phase * 31 + sq.id * 17) % (2 * spread + 1) - spread, 0, map.width - 1)
+	var best := want
+	var best_key := Vector2i(1 << 30, 0)
+	for col in range(maxi(0, base - spread), mini(map.width - 1, base + spread) + 1):
+		var key := Vector2i(_crowding(sq, col), absi(col - want))
+		if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
+			best_key = key
+			best = col
+	sq.goal_col = best
+
+
+## How crowded a wall column is for a pusher drawing its segment: two for every other pusher whose
+## segment it is, one for each whose segment is beside it, so two packs share a stretch of wall only
+## when the window holds nothing emptier.
+func _crowding(sq: Unit, col: int) -> int:
+	var n := 0
+	for other in packs():
+		if other == sq or other.is_boss or other.behaviour != "push" or other.goal_col < 0:
+			continue
+		var d := absi(other.goal_col - col)
+		n += 2 if d == 0 else (1 if d == 1 else 0)
+	return n
 
 
 ## Whether a machine stands beside a hex.

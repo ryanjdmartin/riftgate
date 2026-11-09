@@ -5230,3 +5230,50 @@ brief)` where it stands, and moved only on Ryan's word:
 | The opening rows | a formation one of its moves short of the apron, a patrol two (the 1 and 2 at `sim/battle.gd:207` and `:210`), never into the rift's mouth | `sim/battle.gd:289` (`_open_row`) |
 | The beat after the Rupture | halved once, never below 1 | `sim/battle.gd:310` (`rupture`) |
 | The attack range | 1 (adjacency) | `sim/unit.gd:108` |
+
+## 9 November, the flankers' segments
+
+Ryan, 9 November: "the flankers should target their closest wall with a small amount of
+randomness, avoiding crowding, in order to force the player to make decisions". The rule built on
+`claude/playtesting-ui-feedback-hfdiok` (a pusher's segment about the wall nearest where it is dealt:
+a rift pack within the ramp's spread of the rift's column, any other within 2 of its own, the least
+crowded column of the window winning) read against the rule before it (every pusher within the
+ramp's spread of the rift's column), the same code but `Battlefield.assign_goal`, the old rule from
+a worktree at `bc36ed9`. Each read is a direction and called one.
+
+### The pushers on 160 opening battles, nobody fighting
+
+A probe (the scratchpad's, not kept): seeds 1 to 40 on each domain, the default team standing
+where it opens, twelve enemy turns or the battle's end.
+
+| Measure | Before | After |
+|---|---|---|
+| A pusher's segment from the column it was dealt at, mean | 5.22 | 0.91 |
+| Pushers with a segment more than 4 columns away | 308 of 656 | 0 of 492 |
+| Pushers stuck (short of the wall, not moving, 3 turns) | 0 | 0 |
+| Walks that waited (no way to the wall) | 0 | 0 |
+| A turn's column shared by two pushers' segments, counted a column a turn | 752 | 0 |
+
+Fewer pushers are counted after because the gate falls sooner with nobody fighting: the flankers
+strike their own ends of the wall within two turns instead of crossing to the middle.
+
+### The campaign runner, 40 runs each
+
+`tools/campaign_run.gd -- --runs 40`, every map shape by its seed, the defence rule on the map (the
+floor, not the player: Ryan, 6 November, "I wouldn't count anything until we've got everything in
+place").
+
+| Measure | Before | After |
+|---|---|---|
+| Battles: won, fell, wiped | 2%, 82%, 90% of 195 | 3%, 86%, 87% of 184 |
+| Gate damage a battle, of 200 | 124 | 135 |
+| The pressure ratio, a run's mean over its turns | 1.16 | 1.70 |
+| Turns above 1.0, percent of a run's | 29 | 40 |
+| A battle's highest ratio, a run's mean | 2.34 | 3.09 |
+| Favour paid per won battle, of 100 | 89 | 65 |
+| Turns a run | 6.03 | 5.75 |
+| Fractures reached a battle | 0.90 | 0.99 |
+
+The direction: the tide spread along the wall asks more of the squad's split, as the rule meant
+it to; the defence bot, which sends each machine at the pack that reaches the wall soonest, leaks
+more, a third more turns above a ratio of one. The full report is `docs/campaign_run.md` (after).

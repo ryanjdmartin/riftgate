@@ -9,7 +9,7 @@ extends SceneTree
 ## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
 ## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
 ## Scorched on the first machine), foeheat (heat's red-orange beside the enemy's violet on three foes' chips), repick (a foe whose machine falls before it acts, a second
-## arrow dashed to the machine it will strike), stagger (every foe aimed at the machine nearest its column, every arrow on).
+## arrow dashed to the machine it will strike), columns (every foe aimed at the machine nearest its column, every arrow on).
 
 var _frames := 0
 var _vp: SubViewport
@@ -219,10 +219,10 @@ func _apply_pose() -> void:
 				foes[i].target = s.sk.mechs[0]
 			s._toggle_all_arrows(true)
 			s._refresh()
-		"stagger":
-			# The ranks staggered (Ryan, 9 November: two foes of one column at the machine below
-			# blended): every foe aimed at the machine nearest its column, its blow drawn, every arrow
-			# on (RIFTGATE_FOES=goblin:4,goblin_shaman:4 fills both ranks).
+		"columns":
+			# One column's two arrows apart (Ryan, 9 November: two foes of one column at the machine
+			# below blended): every foe aimed at the machine nearest its column, its blow drawn, every
+			# arrow on (RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
 			for foe in s.sk.field_foes():
 				for a in foe.actions:
 					if Foe.is_attack_action(a):

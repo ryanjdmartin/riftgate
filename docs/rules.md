@@ -1154,10 +1154,13 @@ a stat.
   against the packs; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the wall at a segment of their own: as a pusher is dealt it draws a wall
-  column, the rift's and a draw either side within the ramp's spread (2 at Convergence 0, half
-  the wall's length at 12), from the turn and the pack, and walks to the land hex of the row
-  before the wall nearest that column, a tie toward the gate's column; a pack with no segment
-  (a hunter left without prey) walks to the nearest. A pusher ending its walk beside any hex
+  column about the wall nearest it, from the turn and the pack: a pack the rift sends about the
+  rift's column within the ramp's spread (2 at Convergence 0, half the wall's length at 12), any
+  other (a flank patrol, a formation the opening places, a tear's patrol) about its own column
+  within 2; of those columns the least crowded wins (another pusher's segment counting 2, one
+  beside it 1), then the nearest the draw. It walks to the land hex of the row before the wall
+  nearest that column, a tie toward the gate's column; a pack with no segment (a hunter left
+  without prey) walks to the nearest. A pusher ending its walk beside any hex
   of the gate or the wall strikes the gate's bar for its strength times 10 divided by 3, at least 1 (the floor of
   ten is gone, so a stray pair chips less than a trio), every enemy turn. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
@@ -1269,7 +1272,7 @@ a stat.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.
-- Not built: city defences (along the wall when they come), the Fracture's prize, rift tiles.
+- Not built: city defences (wall segment upgrades, when they come), the Fracture's prize, rift tiles.
 
 ## The campaign
 

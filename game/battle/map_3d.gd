@@ -1636,9 +1636,10 @@ func _along_wall() -> Vector3:
 ## that row lay bare in front of it, out of play and looking like ground (Ryan, 9 November: "the
 ## wall in wall-left view has the out-of-play row completely bare in front ... It looks weird").
 ## So there they stand a row toward the field, against the apron, and the back row behind them is
-## the city's (_city_row). RIFTGATE_WALL_ROW=back keeps them on the back row, for a comparison.
+## the city's (_city_row), so neither view shows a row out of play (Ryan, the same day: "yeah that's
+## the best solution I think").
 func _wall_shift() -> Vector3:
-	if not MapOrient.wall_left or OS.get_environment("RIFTGATE_WALL_ROW") == "back":
+	if not MapOrient.wall_left:
 		return Vector3.ZERO
 	return _world(MapOrient.toward_rift() * hex_px * 1.5)   # one row's pitch toward the rift
 
