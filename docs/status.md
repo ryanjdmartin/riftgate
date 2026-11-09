@@ -554,7 +554,10 @@ commands are in `README.md`.
   rename them all"): the files changed since version 215 (main at `a95e0a1`, which the page
   matched file for file, the Polar Bear's id and the hunts work of 8 November) and the old ids'
   27 paths removed; the Kite's and the Buzzard's cards, models and renders and the renamed foes'
-  sprites checked on a local copy of the page. `edits` empty, `designs` the two folded ideas (the Giant
+  sprites checked on a local copy of the page. Behind main since the Lammergeier's rework landed
+  (`content/chassis.json`, `components.json` and `vocabulary.json`, and `designs.json` from its
+  briefs; the page and every other file as main's): the publish was refused by the permission
+  check as unrequested, so it waits on Ryan's word. `edits` empty, `designs` the two folded ideas (the Giant
   Petrel and the Needletail, briefed), and one name candidate of Ryan's, the Tesla Gauntlets of
   28 September, still saying "the Armadillo's status" (his words of then, kept). Behind main since the Lammergeier's rework landed (9 November) by `content/chassis.json`,
   `content/components.json` and `content/vocabulary.json` (the Mines), its republish on Ryan's word.
