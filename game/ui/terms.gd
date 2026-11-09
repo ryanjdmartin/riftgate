@@ -37,7 +37,7 @@ const TABLE := {
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"kill_overcharge": ["overcharge", "heat"], "self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],
-	"roll_again_property": ["rapid", "heat"], "pull": ["mine", "heat"], "drone": ["syrinx_drone", "heat"],
+	"roll_again_property": ["rapid", "heat"], "gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
 	"kill_rerolls": ["reroll", "plain"],
 	# Statuses.
@@ -45,7 +45,7 @@ const TABLE := {
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"],
-	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "syrinx_drone": ["syrinx_drone", "heat"],
+	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "mine": ["mine", "heat"],
 	"braced": ["shield", "guard"], "ore_plate": ["hopper", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"],
 	"retaliate": ["shocked", "guard"], "suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],

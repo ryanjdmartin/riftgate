@@ -73,7 +73,6 @@ class TraceSkirmish extends Skirmish:
 			bits.append(tr.ser(shut_gates(ms, sf, foe)))
 			bits.append(str(after_blow(ms, sf, foe)))
 			bits.append(tr.ser(targets_for_face(ms, raw)))
-			bits.append(tr.ser(slot_targets(ms, Effects.effective_face(ms.unit, raw))))
 			bits.append(str(can_spend(mech_index)))
 			bits.append(str(can_assign(mech_index, target)))
 		return "\n".join(bits)

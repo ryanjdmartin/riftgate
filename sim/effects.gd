@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "lay_mines", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -169,12 +169,16 @@ const STATUS := {
 	# id is "exposure" since "exposed" names that formation word and the foes' default aim.
 	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Through the next round.", "stacking": "renew",
 		"tags": ["expose"], "effects": []},
-	# The Lammergeier's Syrinx Drone (Ryan's go, 21 October; built 21 October): the debuff the
-	# piece leaves, its own name. The next weapon to kill the foe, any machine's, leaves its shot
-	# in the slot the foe empties, a mine; one mine a drone; it lasts the fight, and a death by a
-	# tick leaves nothing. A status the team put on the foe, so the Paradox counts it.
-	"syrinx_drone": {"id": "syrinx_drone", "name": "Syrinx Drone", "description": "The next weapon to kill it leaves its shot in the slot it empties, a mine. Lasts the fight.", "stacking": "renew",
-		"tags": ["drone"], "effects": []},
+	# The Mine (the Lammergeier's Reverberant Payload, Ryan, 9 November: "the lammergeier basically
+	# converts all hits to AoE hits, at the cost of a delay until Death"): a spend of its weapons and
+	# equipment aimed at a foe leaves a Mine on it, flat damage and the spend's keywords, one Mine a
+	# foe however many spends fed it ("the single big hit first ... the chip shows the damage instead
+	# of the stacks, with the tooltip showing the riders"). Its stacks are its damage; its riders ride
+	# in its one effect (Skirmish.mine_riders). When the foe falls, getting back up or splitting
+	# included, the Mine blows on every foe round its slot (Skirmish._blow_mine). A mark the team
+	# laid, so a Ward turns it away, a foe's cleanse takes it and the Paradox counts it.
+	"mine": {"id": "mine", "name": "Mine", "description": "When this foe falls, even if it gets back up or splits, the Mine blows: its damage and its riders on every foe round its slot.",
+		"tags": ["mine"], "effects": []},
 	# The Needletail's gate spent (the Quick-turn Avionics Relay, Ryan's go of 21 October; built
 	# that day): its free setup this round is used. A marker, never a chip: the die shows the
 	# gate open by the Rapid it grants a setup.
@@ -465,7 +469,7 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "syrinx_drone"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine"]
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
@@ -1828,7 +1832,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
-const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "syrinx_drone"]
+const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.
@@ -2026,14 +2030,16 @@ static func quick_turn_live(u, face: Face) -> bool:
 	return false
 
 
-## Does this machine lay mines (static lay_mines; the Lammergeier's Fuse-delayed Bay, 21
-## October): its weapons and debuffs may be spent on an empty slot in the enemy's formation, the shot
-## waiting there for whoever steps in.
-static func lays_mines(u) -> bool:
+## The damage of the Mine this machine leaves on a foe with every spend of its weapons and
+## equipment aimed at one (static mine_on_spend, the Lammergeier's Reverberant Payload, Ryan, 9
+## November: "One mine per spend ... N flat damage (plain, not modified by lammergeier modifiers)"),
+## every live source's value added; 0 for a machine that leaves none.
+static func mine_damage(u) -> int:
+	var n := 0
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "lay_mines":
-			return true
-	return false
+		if str(pair[0].get("effect", "")) == "mine_on_spend":
+			n += maxi(0, int(pair[0].get("value", 0)))
+	return n
 
 
 ## Every entry dark from a cooldown comes back at once (the Kite's reset gun, 21 October: a
@@ -2141,7 +2147,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
 		"split_strikes": body = "hits twice (fires twice the shots, for a Sweep), its base weapon damage halved, rounded down, never below one" if vs == "2" else "hits ×%s (×%s the shots, for a Sweep), its base weapon damage divided by %s, rounded down, never below one" % [vs, vs, vs]
 		"weapon_cooldown": body = "every weapon and equipment it aims at a foe goes dark for %s rounds" % vs
-		"lay_mines": body = "every weapon and equipment it aims at a foe may also be spent on an empty slot in the enemy's formation, the shot waiting there for whoever steps in"
+		"mine_on_spend": body = "every weapon and equipment it aims at a foe leaves a Mine of %s on it with the spend's keywords, one Mine a foe however many spends feed it; when the foe falls the Mine blows on every foe round its slot" % vs
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
 		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]

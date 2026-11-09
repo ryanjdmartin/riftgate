@@ -54,7 +54,7 @@ var intent_note: String = ""      # after the number: "×2" for a double strike
 ## breach, a scorch with its stacks, a blow at every machine.
 var intent_riders: Array = []
 var chip_wrap := 0.0              # the widest a row of chips runs before the next row starts; 0, the view's width
-var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
+var intent: String = ""           # quiet text under a foe, or a corpse's regrowth"
 var intent_dim: bool = false
 var statuses: Array = []          # [[glyph id, chip text, (Color), (kind), (what)], ...] under the sprite; kind "preview" a buff on its way (a rally's Empowered), pulsing, "ability" the unit's own mechanic, its glyph on a solid tile; what "buff" or "debuff" (Effects.status_kind), its chip's mark
 var highlight: bool = false       # valid drop target while dragging a die
@@ -70,7 +70,6 @@ var shell: bool = false
 var _shift: float = -1.0          # seconds since its form shifted; negative when idle
 var _shift_sealing := true
 const SHIFT_SECONDS := 1.1
-var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
 var dead: bool = false
 var away: bool = false             # out of the fight, swallowed (30 October): drawn as a faint ghost under a dashed edge
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
@@ -593,8 +592,6 @@ func _draw() -> void:
 	if dead:
 		draw_line(vis.position, vis.end, Palette.LOSS_DIM, 2.0)
 		draw_line(Vector2(vis.position.x, vis.end.y), Vector2(vis.end.x, vis.position.y), Palette.LOSS_DIM, 2.0)
-	if mined and sprite == null:
-		_draw_dashed(sil.grow(5.0), Palette.HEAT, 3.0)
 	if highlight:
 		Hud.brackets(self, vis.grow(6.0), 14.0, Palette.TARGET, 2.0)
 	if act >= 0.0:
@@ -881,7 +878,7 @@ func _draw_shadow(foot: Vector2, rx: float, alpha: float) -> void:
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 
 
-## A rect drawn in dashes (a mined slot's outline, a preview chip's edge): structure, so it never
+## A rect drawn in dashes (a preview chip's edge): structure, so it never
 ## rests on its hue. The dark edge under each dash fades with the colour.
 func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 	dashed_rect(self, rect, color, width)

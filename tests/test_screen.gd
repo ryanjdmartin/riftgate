@@ -154,7 +154,7 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 	d.set_face(lure)
 	assert_eq(d.rail_tags(), ["cryo"] as Array[String], "the second effect on the rail, the first inside, Every Foe its targeting mark")
 	var mines := Face.attack(0)
-	mines.pulls_mines = true
+	mines.gathers_mines = true
 	assert_eq(DieFaceView.inside_effect(mines), "star", "a debuff whose effect is a rule of its own holds the star")
 	d.set_face(mines)
 	assert_false(d.rail_tags().has("star"), "and the rail does not star it again")
@@ -1963,32 +1963,38 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	t.free()
 
 
-## The Lammergeier's mines on the screen (21 October), on a synthetic passive: a weapon of the
-## bay dragged lights the empty slots it may be spent on, a drop there lays the shot, and the
-## mined slot shows its dashed outline and the mine chip with the total waiting; a hold reads it.
-func test_a_weapon_of_the_bay_drops_on_an_empty_slot_and_the_slot_shows_its_mine() -> void:
+## The Lammergeier's Mines on the screen (9 November: "the chip shows the damage instead of the
+## stacks, with the tooltip showing the riders"), on a synthetic passive: a spend at a foe leaves its
+## Mine, and the foe wears the sea mine's chip with the damage, its readout naming the riders; no
+## empty slot lights for a dragged weapon.
+func test_a_mined_foe_wears_its_mine_chip_with_the_damage_and_the_riders_in_its_readout() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]})
-	ms.die.faces[ms.face_index] = Face.attack(10, Face.Reach.INDIRECT, [Face.Keyword.BURN])
+	ms.unit.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]})
+	ms.die.faces[ms.face_index] = Face.attack(1, Face.Reach.INDIRECT, [Face.Keyword.BURN])
 	ms.die.faces[ms.face_index].burn = 2
-	var slots := s.sk.slot_targets(ms, ms.face())
-	assert_false(slots.is_empty(), "an empty slot to lay in")
-	var slot: Vector2i = slots[0]
-	var sv: UnitView = s._slot_views[slot.x][slot.y]
 	s._drag_from = 0
 	s._refresh()
-	assert_true(sv.highlight, "the empty slot lights while the weapon is dragged")
-	assert_eq(s._drop_target_at(sv.get_global_rect().get_center()), slot, "and is a drop target")
+	for rank in range(2):
+		for col in range(s.sk.columns):
+			if s.sk.foe_at(rank, col) == null:
+				assert_false(s._slot_views[rank][col].highlight, "no empty slot lights for a weapon")
 	s._drag_from = -1
-	assert_true(s._use_die(0, slot), "dropped there, the shot is laid")
+	var foe: Foe = s.sk.targets_for(0)[0]
+	assert_true(s._use_die(0, foe), "spent at a foe")
 	s._refresh()
-	assert_true(sv.mined, "the slot shows its outline")
-	assert_eq(sv.intent, "MINED", "and says so")
-	assert_eq(sv.statuses[0][0], "mine", "the mine's chip first")
-	assert_eq(sv.statuses[0][1], "10", "with the total waiting")
-	assert_eq(sv.statuses[1][0], "burn", "then a chip per keyword riding in it")
-	s._on_foe_held(sv)
+	var v: UnitView = s._foe_view_for(foe)
+	var chip: Array = []
+	for row in v.statuses:
+		if str(row[0]) == "mine":
+			chip = row
+	assert_false(chip.is_empty(), "the foe wears the Mine's chip")
+	assert_eq(str(chip[1]), "2", "with its damage")
+	var said := ""
+	for row in s._foe_rows(foe):
+		if str(row[0]) == "mine":
+			said = str(row[2])
+	assert_true(said.contains("Debuff, Mine 2: Burn 2"), "its readout names the riders: %s" % said)
 	s.free()
 
 

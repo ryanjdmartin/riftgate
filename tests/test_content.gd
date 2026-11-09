@@ -2597,13 +2597,20 @@ func test_the_map_and_the_vocabulary_agree_on_the_ground() -> void:
 	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("names no map shape")), "a domain naming a map shape, even a real one, is reported (Ryan, 30 October)")
 
 
-## A Sweep carries no Swap, drone or pull (Ryan, 8 November, agreeing the audit's lean): each acts on
-## one foe or one slot, and a Sweep's drop picks only its rank.
-func test_a_sweep_carries_no_swap_drone_or_pull() -> void:
+## A Sweep carries no Swap, detonation or gather (Ryan, 8 November, agreeing the audit's lean): each
+## acts on one foe, and a Sweep's drop picks only its rank. The slot mines' fields are gone (9
+## November) and refused.
+func test_a_sweep_carries_no_swap_detonation_or_gather() -> void:
 	var db := ContentDB.load_default()
-	for extra in [{"keywords": ["swap"]}, {"drones": true}, {"pulls_mines": true}]:
+	for extra in [{"keywords": ["swap"]}, {"detonates": true}, {"gathers_mines": true}]:
 		var errs: Array[String] = []
 		var fd := {"kind": "attack", "reach": "sweep", "power": 2, "strikes": 4, "keywords": []}
 		fd.merge(extra, true)
 		db._validate_face("test", fd, errs)
-		assert_true(errs.any(func(e) -> bool: return e.contains("a Sweep carries no Swap, drone or pull")), "refused: %s" % str(extra))
+		assert_true(errs.any(func(e) -> bool: return e.contains("a Sweep carries no Swap, detonation or gather")), "refused: %s" % str(extra))
+	for gone in [{"pulls_mines": true}, {"drones": true}]:
+		var errs: Array[String] = []
+		var fd := {"kind": "attack", "reach": "indirect", "power": 0, "keywords": []}
+		fd.merge(gone, true)
+		db._validate_face("test", fd, errs)
+		assert_true(errs.any(func(e) -> bool: return e.contains("are gone (9 November)")), "refused: %s" % str(gone))

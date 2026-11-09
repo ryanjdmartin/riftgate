@@ -601,22 +601,6 @@
    }
   },
   {
-   "id": "syrinx_drone",
-   "category": "status",
-   "name": "Syrinx Drone",
-   "codex": "Foe status, the Lammergeier's: the next weapon to kill it, any machine's, leaves its shot in the slot it empties, a mine. One mine a drone; it lasts the fight, and a death by a tick leaves nothing.",
-   "status": "implemented",
-   "design": {
-    "holes": "A status the team put on the foe, so the Paradox counts it.",
-    "table": {
-     "kind": "debuff",
-     "on": "foe",
-     "stacks": "Never: one drone at a time",
-     "lasts": "The fight, until a weapon kills it"
-    }
-   }
-  },
-  {
    "id": "overcharged",
    "category": "status",
    "name": "Empowered",
@@ -968,12 +952,18 @@
   },
   {
    "id": "mine",
-   "category": "formation",
+   "category": "status",
    "name": "Mine",
-   "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons and equipment aimed at foes may also be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
+   "codex": "Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with the spend's keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Flak and armour (none under Breach), then its keywords as on a blow. Nothing of the machine that laid it rides in it, and Spread, Penetrate, Splash, Spillover, Sweep, strikes and Lure stay with the spend. The chip shows its damage; its readout, its keywords.",
    "status": "implemented",
    "design": {
-    "holes": "Any arrival sets it off at once: a Swap's foe, a split's half, a summon, a part grown back beside its core. Nothing steps in at the round's end since reinforcement inside a fight was cut (6 November), so a mine waits for one of those."
+    "holes": "Ryan, 9 November: \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death\". One Mine a spend at a flat 2 (\"then look at per hit later if it's weak\"); the numbered keywords add up and the rest ride once (\"the single big hit first, as it offers a way to group small weapons into armour-overcoming hits\"); a gated keyword rides only where its gate held on the hit; Chain rides as its arcs (Claude's lean, his to move); in the enemy's turn a Mine's Disrupt does nothing. A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Its damage: every spend adds to it",
+     "lasts": "The fight, until the foe falls or the Syrinx Drone detonates it"
+    }
    }
   },
   {
@@ -1497,23 +1487,23 @@
    }
   },
   {
-   "id": "pull",
+   "id": "gather",
    "category": "component_property",
-   "name": "Pull",
-   "codex": "A rule printed on a component (the Lammergeier's Lorentz Contractor, a debuff): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there.",
+   "name": "Gather",
+   "codex": "A rule printed on a component (the Lammergeier's Lorentz Contractor, a debuff): every Mine the field's other foes carry joins the one its target carries, their damage added and their keywords as one.",
    "status": "implemented",
    "design": {
-    "holes": "Never Rapid, so a pull costs the turn and the laying is still chosen."
+    "holes": "Ryan, 9 November: \"moves all mines to a single target, and Exposes that target. The Expose rider will effectively create an AoE expose mine, which we can try and see if it's dangerous.\" Its Expose is its keyword, so the Mine it gathers carries Expose. A Ward on the target turns the gather away."
    }
   },
   {
-   "id": "drone",
+   "id": "detonate",
    "category": "component_property",
-   "name": "Drone",
-   "codex": "A rule printed on a component (the Lammergeier's Syrinx Drone, a debuff): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it.",
+   "name": "Detonate",
+   "codex": "A rule printed on a component (the Lammergeier's Syrinx Drone, a weapon): after the spend's own Mine joins its target's, the target's Mine blows now, on it and every foe round its slot.",
    "status": "implemented",
    "design": {
-    "holes": "The condition is read before the drone lands, so its own Exposed never makes it Rapid."
+    "holes": "Ryan, 9 November: \"Deals a small amount of damage and detonates a foe's combined mine immediately ... The small chip damage makes it add a stack first. Try without a cooldown first.\" Its chip strike spends a Shock on the target, so a Shock doubles the chip, never the Mine."
    }
   },
   {

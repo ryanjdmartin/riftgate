@@ -1551,10 +1551,14 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
 	if fd.has("resets_on_kill") and (kind != "attack" or not (fd["resets_on_kill"] is bool)):
 		errs.append("%s: resets_on_kill (true) is an attack's: if its spend kills, every dark entry comes back and its machine acts again" % where)
-	if fd.has("pulls_mines") and (kind != "attack" or not (fd["pulls_mines"] is bool)):
-		errs.append("%s: pulls_mines (true) is an attack's, a weapon's or a debuff's: every mine on the field gathers into the slot it is spent on" % where)
-	if fd.has("drones") and (kind != "attack" or not (fd["drones"] is bool)):
-		errs.append("%s: drones (true) is an attack's, a weapon's or a debuff's: the foe carries the Syrinx Drone" % where)
+	if fd.has("gathers_mines") and (kind != "attack" or not (fd["gathers_mines"] is bool)):
+		errs.append("%s: gathers_mines (true) is an attack's, a weapon's or a debuff's: every Mine on the field's other foes joins its target's" % where)
+	if fd.has("detonates") and (kind != "attack" or not (fd["detonates"] is bool)):
+		errs.append("%s: detonates (true) is an attack's, a weapon's or a debuff's: its target's Mine blows now, on it and every foe round it" % where)
+	# The slot mines retired with the Lammergeier's rework (Ryan, 9 November: "A chassis based around
+	# opening an empty spot isn't a good design"): nothing is spent on an empty slot.
+	if fd.has("pulls_mines") or fd.has("drones"):
+		errs.append("%s: pulls_mines and drones are gone (9 November): the Lorentz Contractor gathers (gathers_mines) and the Syrinx Drone detonates (detonates)" % where)
 	# The spray (the Skua's Flechette Pod, built 25 October): the strikes after the first fall on
 	# random foes in reach, so a spray strikes at least twice.
 	# Sweep (Ryan, 2 November), in place of the spray and the random targets of October: a reach
@@ -1564,10 +1568,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if Array(fd.get("keywords", [])).has("sweep"):
 		errs.append("%s: sweep is a reach since 3 November (reach: sweep), never a keyword" % where)
 	# A Sweep's drop picks its rank and nothing else (Ryan, 8 November, agreeing the audit's lean):
-	# a Swap, a drone or a pull acts on one foe or one slot, so none rides a Sweep until one is
-	# wanted and given its rule.
-	if str(fd.get("reach", "")) == "sweep" and (Array(fd.get("keywords", [])).has("swap") or bool(fd.get("drones", false)) or bool(fd.get("pulls_mines", false))):
-		errs.append("%s: a Sweep carries no Swap, drone or pull: each acts on one foe or slot, and a Sweep's drop picks only its rank" % where)
+	# a Swap, a detonation or a gather acts on one foe, so none rides a Sweep until one is wanted
+	# and given its rule.
+	if str(fd.get("reach", "")) == "sweep" and (Array(fd.get("keywords", [])).has("swap") or bool(fd.get("detonates", false)) or bool(fd.get("gathers_mines", false))):
+		errs.append("%s: a Sweep carries no Swap, detonation or gather: each acts on one foe, and a Sweep's drop picks only its rank" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
@@ -1733,6 +1737,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# The Swallowtail's Muster (21 October): points a charge, a cap in charges, points a kill.
 		if effect == "muster" and (int(eff.get("value", 0)) < 1 or int(eff.get("cap", 0)) < 1 or int(eff.get("kill", 0)) < 0):
 			errs.append("%s: muster needs value (the points a charge, positive), cap (the charges it holds, positive) and kill (the points a kill by its own guns gives, 0 or more)" % where)
+		# The Reverberant Payload (the Lammergeier's, Ryan, 9 November): the flat damage of the Mine
+		# every spend aimed at a foe leaves, a whole number, 1 or more.
+		if effect == "mine_on_spend" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: mine_on_spend is the Mine's flat damage a spend: a whole number, 1 or more" % where)
 		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
 			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		# The Petrels' passives (built 30 October): the shield paying a weapon's heat point for

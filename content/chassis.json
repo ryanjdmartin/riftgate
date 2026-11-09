@@ -1021,8 +1021,8 @@
    "maker": "kestrel",
    "tier": 3,
    "design": {
-    "fantasy": "Ryan's bomber (14 and 15 October): soft control that traps a slot so a reinforcement comes in damaged, \"a bomber of some kind\", its bombs taking on the properties of its weapons. The weapon is the bomb: any weapon may be spent on an empty slot and its keywords ride in the mine. The bearded vulture carries bones and tortoises up and drops them to shatter on rock (Ryan named it 21 October): a heavy tandem-wing flyer on big boosters, a pair of wings fore and a pair aft, the mines dropping from the bay between.",
-    "niche": "Kestrel's tier-three minelayer: the lowest floor and the highest ceiling. With reinforcements waiting it is an engine, every arrival paying before it acts (a stun mine takes its first action, a burn mine ticks on it, a shock mine doubles the team's first blow); with nothing waiting a plain d6 flyer whose laid mines the Lorentz Contractor cashes on a chosen foe. It wants keyword weapons of every maker and the team's killers, the Syrinx Drone copying the best killing shot onto the next arrival."
+    "fantasy": "Ryan's bomber (14 October: \"a bomber of some kind\", its bombs taking on the properties of its weapons: \"napalm, aoe, shock, even suppress\"), reworked 9 November when the slot mines failed with reinforcement gone (\"A chassis based around opening an empty spot isn't a good design\"): \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death. It's the same niche as the Cottonmouth, but executed very differently.\" Every spend aimed at a foe leaves a Mine on it, flat damage and the spend's keywords, one Mine a foe, and when the foe falls the Mine blows round its slot. The bearded vulture carries bones and tortoises up and drops them to shatter on rock (Ryan named it 21 October): a heavy flying wing on big boosters, the mines dropping from the bay under its body.",
+    "niche": "Kestrel's tier-three bomber: the team's kills are its area, a delay its price, where the Cottonmouth's drum makes every shot an area shot now. Every spend it aims at a foe leaves a Mine there (2 flat a spend, the keywords one big hit); the Lorentz Contractor gathers every Mine onto one foe and Exposes it for the team's Direct guns, and the Syrinx Drone sets a Mine off at once, on the foe and every foe round it. It wants keyword pieces of every maker (napalm, a shock or a stun Mine, Breach to carry the whole Mine through armour) and a team that kills where the neighbours stand. Ryan, 9 November: one Mine a spend first, \"then look at per hit later if it's weak\"."
    },
    "codex": "",
    "hull": 28,
@@ -1048,13 +1048,14 @@
     "arc_fault_cannon"
    ],
    "passive": {
-    "id": "fuse_delayed_bay",
-    "name": "Fuse-delayed Bay",
-    "description": "Every weapon and equipment it aims at a foe may also be spent on an empty slot in the enemy's formation, as if a foe stood there. The shot waits there, and whoever steps in takes every shot waiting, in laid order, before it acts.",
+    "id": "reverberant_payload",
+    "name": "Reverberant Payload",
+    "description": "Every weapon and equipment it aims at a foe adds 2 to a Mine on that foe, with the spend's keywords. When the foe falls, even one that gets back up or splits, the Mine blows: its damage and keywords on every foe round its slot.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "lay_mines"
+      "effect": "mine_on_spend",
+      "value": 2
      }
     ]
    },

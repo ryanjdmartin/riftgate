@@ -325,8 +325,7 @@ var _drag_from: int = -1
 var _log_seen: int = 0
 ## The unit or die whose readout a tap left open, one at a time (Ryan, 29 October: "a tap toggle,
 ## only one unit popup allowed at a time"; a die's too, 30 October): {"foe": Foe}, {"mech":
-## index}, a mined empty slot's {"mine": Vector2i(rank, col)} or a die's {"die": index}; empty,
-## none.
+## index} or a die's {"die": index}; empty, none.
 var _pop: Dictionary = {}
 const POP_ALPHA := 0.85   # a unit's readout lets the arrows under it show through (Ryan, 29 October: "slightly translucent"; 2 November: "Increase the opacity of the popups in skirmish a bit", from 0.7)
 const POP_GAP := 4.0      # a machine's readout over its gauges
@@ -1075,7 +1074,6 @@ func _refresh(save: bool = true) -> void:
 	var targets: Array[Foe] = []
 	var support: Array[Skirmish.MechState] = []   # the machines a dragged shield, vent or buff may land on
 	var seconds: Array = []   # a pending Swap's second targets: foes and empty slots (Vector2i)
-	var slots: Array = []     # the empty slots a dragged weapon or debuff may be spent on (the Lammergeier's mines, its pull)
 	if not _pending.is_empty():
 		seconds = sk.swap_targets(_pending["primary"])
 		for x in seconds:
@@ -1086,7 +1084,6 @@ func _refresh(save: bool = true) -> void:
 		var f := sk.spend_face(dm)   # the charged form when it goes out charged
 		if f != null and f.is_attack():
 			targets = sk.targets_for_face(dm, f)
-			slots = sk.slot_targets(dm, Effects.effective_face(dm.unit, f))
 			# A sweep targets a rank (Ryan, 3 November: "fix the UI for sweep so its intuitively
 			# targeting a rank"): over a foe, the rank it stands in is the target, lit whole and
 			# bracketed (below), the other rank plain until the finger moves there.
@@ -1146,29 +1143,24 @@ func _refresh(save: bool = true) -> void:
 				v.intent = _regrow_text(corpse)
 				v.intent_kind = ""
 				v.highlight = false
-				v.mined = false
 				v.modulate = Color(1, 1, 1, 0.7)
 				v.queue_redraw()
 				continue
 			if foe == null:
-				# An empty slot; with mines waiting (the Lammergeier's) its dashed outline, the
-				# mine's glyph with the total waiting and a chip per keyword riding in them.
-				var shots := sk.mines_at(Vector2i(rank, col))
+				# An empty slot.
 				v.display_name = ""
 				v.bars = []
-				v.intent = "MINED" if not shots.is_empty() else ""
+				v.intent = ""
 				v.intent_kind = ""
-				v.statuses = _mine_chips(shots)
-				v.mined = not shots.is_empty()
-				# A slot a pending Swap may move its foe into, or one a dragged weapon or debuff may be spent on.
-				v.highlight = seconds.has(Vector2i(rank, col)) or slots.has(Vector2i(rank, col))
+				v.statuses = []
+				# A slot a pending Swap may move its foe into.
+				v.highlight = seconds.has(Vector2i(rank, col))
 				v.dead = false
 				v.sprite = null
 				_settle(v)   # a hit still playing on the foe that stood here would end at full brightness
-				v.modulate = Color(1, 1, 1, 0.75 if v.highlight else (0.95 if v.mined else 0.3))
+				v.modulate = Color(1, 1, 1, 0.75 if v.highlight else 0.3)
 				v.queue_redraw()
 				continue
-			v.mined = false
 			v.modulate = Color.WHITE
 			_fill_foe_view(v, foe, targets, rank * sk.columns + col)
 			_view_foe[v] = foe
@@ -1546,45 +1538,6 @@ static func intent_riders(foe: Foe) -> Array:
 	return out
 
 
-## A mined slot's chips (the Lammergeier's): the mine with the total its shots deal as laid,
-## then each keyword riding in them, a numbered one with its stacks.
-func _mine_chips(shots: Array) -> Array:
-	if shots.is_empty():
-		return []
-	var total := 0
-	var kws: Array = []
-	var stacks := {}
-	for shot in shots:
-		total += int(shot.get("damage", 0))
-		for k in shot.get("keywords", []):
-			if not kws.has(int(k)):
-				kws.append(int(k))
-		for key in ["burn", "cryo", "flak"]:
-			stacks[key] = int(stacks.get(key, 0)) + int(shot.get(key, 0))
-	var chips: Array = [["mine", str(total) if shots.size() == 1 else "%d·%d" % [total, shots.size()], Palette.HEAT]]
-	for k in kws:
-		var id := str(Face.KEYWORD_NAMES.get(k, ""))
-		if id.is_empty():
-			continue
-		var n := int(stacks.get(id, 0))
-		chips.append([id, str(n) if n > 0 else "", Glyphs.colour_for(id)])
-	return chips
-
-
-## What waits in a mined slot, for its hold: each shot in laid order, its number, its keywords
-## and who laid it.
-func _mine_text(rank: int, col: int, shots: Array) -> String:
-	var text := "Mines: the %s rank's slot %d" % ["front" if rank == 0 else "back", col + 1]
-	var n := 0
-	for shot in shots:
-		n += 1
-		var bits: Array[String] = [str(int(shot.get("damage", 0)))]
-		for k in shot.get("keywords", []):
-			bits.append(Face.keyword_label(int(k)))
-		text += "\n%d. %s (%s)" % [n, " ".join(bits), str(shot.get("by", ""))]
-	return text + "\nwhoever steps in takes them all in laid order, before it acts"
-
-
 ## A foe's abilities (Ryan, 8 November: "Nob, and any other enemies with a passive ability, should
 ## have an unpurgable passive chip that points out what's going on ... It's not a Buff, it's not
 ## a Debuff, it's labelled as an Ability"), each its glyph on a solid tile, its readout naming it
@@ -1730,10 +1683,12 @@ func _foe_rows(foe: Foe) -> Array:
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
 		rows.append(status_row("numbed", "numbed", "×%d" % numbed, "Numbed ×%d" % numbed, _foe_chip_colour("numbed")))
-	if Effects.has(foe, "syrinx_drone"):
-		# The Syrinx Drone (the Lammergeier's, 21 October): its own chip, the killing shot to come.
-		var drone: Dictionary = Effects.STATUS["syrinx_drone"]
-		rows.append(status_row("syrinx_drone", "syrinx_drone", "", str(drone["name"]), _foe_chip_colour("syrinx_drone")))
+	var mine := Skirmish.mine_of(foe)
+	if not mine.is_empty():
+		# A Mine (the Lammergeier's Reverberant Payload, Ryan, 9 November: "the chip shows the damage
+		# instead of the stacks, with the tooltip showing the riders"): the sea mine's glyph with its
+		# damage, its readout its keywords and what its fall does.
+		rows.append(status_row("mine", "mine", str(int(mine["damage"])), "%s; blows on every foe round its slot when it falls" % Skirmish.mine_text(mine), _foe_chip_colour("mine")))
 	if Effects.has(foe, "exposure"):
 		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed. The
 		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26
@@ -1805,7 +1760,7 @@ static func _foe_glyph(id: String) -> String:
 			return "star"
 		"exposure":
 			return "exposed"
-		"vitriol", "paradox", "shocked", "numbed", "syrinx_drone":
+		"vitriol", "paradox", "shocked", "numbed", "mine":
 			return id
 	return status_glyph(id)
 
@@ -2192,7 +2147,7 @@ func _show_die(i: int) -> bool:
 	return true
 
 
-## A tap on a foe (or on a mined empty slot) opens its readout, a tap on it again closes it, a
+## A tap on a foe opens its readout, a tap on it again closes it, a
 ## tap on another unit moves it there and a tap on nothing closes it (Ryan, 29 October: "a tap
 ## toggle, only one unit popup allowed at a time"); a hold opens it too. While a Swap waits for
 ## its second target, the tap picks that instead.
@@ -2228,16 +2183,11 @@ func _on_mech_held(i: int) -> void:
 		_open_pop({"mech": i})
 
 
-## What a foe's view would open: its foe, a mined empty slot (the Lammergeier's: what waits
-## there), or nothing.
+## What a foe's view would open: its foe, or nothing.
 func _pop_for(v: UnitView) -> Dictionary:
 	var foe: Foe = _view_foe.get(v, null)
 	if foe != null:
 		return {"foe": foe}
-	for rank in range(2):
-		var col: int = _slot_views[rank].find(v)
-		if col >= 0 and not sk.mines_at(Vector2i(rank, col)).is_empty():
-			return {"mine": Vector2i(rank, col)}
 	return {}
 
 
@@ -2293,13 +2243,6 @@ func _show_pop() -> void:
 		var i: int = _pop["mech"]
 		var mv: UnitView = _mech_views[i]
 		_show_details("", mv, [], _mech_hold_lines(i), mv.drawn_top(), POP_GAP)
-	else:
-		var at: Vector2i = _pop["mine"]
-		var shots := sk.mines_at(at)
-		if shots.is_empty() or sk.foe_at(at.x, at.y) != null:
-			_close_pop()
-			return
-		_show_details(_mine_text(at.x, at.y, shots), _slot_views[at.x][at.y])
 
 
 ## A tap on nothing (the ground, the black) closes an open readout; with none open, it sets a
@@ -2771,8 +2714,8 @@ static func _same_target(a, b) -> bool:
 	return typeof(a) == TYPE_NIL or a == b
 
 
-## What sits under a global point: a Foe, an empty slot as Vector2i(rank, column) (the
-## Lammergeier's mines), a MechState, or null.
+## What sits under a global point: a Foe, an empty slot as Vector2i(rank, column) (a Swap's
+## second target), a MechState, or null.
 func _drop_target_at(global_pos: Vector2):
 	for v in _view_foe.keys():
 		if v.visible and v.get_global_rect().has_point(global_pos):
@@ -2938,13 +2881,11 @@ func _use_die(i: int, target, second = null) -> bool:
 	var aim_view: UnitView = null
 	if ok and target is Foe:
 		aim_view = was[target][0] if was.has(target) else null
-	elif ok and target is Vector2i:
-		aim_view = _slot_views[(target as Vector2i).x][(target as Vector2i).y]
 	var aim := _aim_plan(i, aim_view, spent)
 	fire_at += float(aim[1])
 	# A fixed weapon whose firing slice winds up before its blow (MechRig.fire_wind: the Buzzard's
 	# cannon charging up its spine) plays it from the turn's end, the blow and its sound waiting on it.
-	var wind := _fire_wind(i, spent) if ok and (target is Foe or target is Vector2i) else 0.0
+	var wind := _fire_wind(i, spent) if ok and target is Foe else 0.0
 	fire_at += wind
 	var landed := fire_at + Sound.lands(blow)   # where the first strike lands, from the die let go
 	var strikes := _strikes_of(blows)
@@ -2978,21 +2919,6 @@ func _use_die(i: int, target, second = null) -> bool:
 			# fixed weapon its wind-up began plays its act once (_wind_up).
 			_attack_at(fire_at - BLOW_AT + k * STRIKE_GAP, _mech_views[i], _view_struck(blows, k, was, tv), ranged, BLOW_AT + Sound.lands(blow), cid, wind > 0.0)
 			Sound.play_after(fire_at + k * STRIKE_GAP, blow, 0.0 if k == 0 else -3.0)
-	elif ok and target is Vector2i:
-		# A shot laid in an empty slot (the Lammergeier's), or the pull's gather there: the
-		# weapon fires and the machine kicks back, nothing struck; a swap's mines land as blows.
-		var slot: Vector2i = target
-		var cid := spent.component if spent != null else ""
-		_aim_before(i, aim, fire_at - BLOW_AT - wind, landed, cid)
-		if wind > 0.0:
-			_wind_up(i, true, cid, fire_at - BLOW_AT - wind)
-		if fire_at > BLOW_AT and is_inside_tree():
-			var tw := create_tween()   # the machine fires once it has turned
-			tw.tween_interval(fire_at - BLOW_AT)
-			tw.tween_callback(_animate_attack.bind(_mech_views[i], _slot_views[slot.x][slot.y], true, false, BLOW_AT + Sound.lands(blow), cid, wind > 0.0))
-		else:
-			_animate_attack(_mech_views[i], _slot_views[slot.x][slot.y], true, false, landed, cid, wind > 0.0)
-		Sound.play_after(fire_at, blow)
 	elif ok and spent != null:
 		var vent := spent.kind == Face.Kind.VENT
 		var effect := "vent" if vent else blow
@@ -3075,12 +3001,13 @@ func _form_shift_at(t: float, i: int, sealing: bool) -> void:
 	tw.tween_callback(_mech_views[i].form_shift.bind(sealing))
 
 
-## The strikes a spend's blows came in: one past the last strike any landed on (the zap after them
-## aside), and one at least.
+## The strikes a spend's blows came in: one past the last strike any landed on (the zap and a
+## Mine's blast after them aside: the machine fires once a strike, and a blast is no fire of its
+## own), and one at least.
 static func _strikes_of(blows: Array) -> int:
 	var n := 1
 	for b in blows:
-		if str(b["kind"]) != "zap":
+		if str(b["kind"]) != "zap" and str(b["kind"]) != "mine":
 			n = maxi(n, int(b["strike"]) + 1)
 	return n
 
@@ -4017,7 +3944,7 @@ func _end_turn_now() -> void:
 	var before := _before_enemy_turn()
 	var field_before: Array[Foe] = sk.field_foes()
 	# The foes ready to get back up, as they look now: one that falls in the enemy's turn (to its
-	# Burning, to a mine as reinforcements step in) and stands again is shown dying and rising
+	# Burning, to a Mine's blast) and stands again is shown dying and rising
 	# once the turn has played (26 October), as one killed by a die is.
 	var readied := {}
 	for foe in field_before:
