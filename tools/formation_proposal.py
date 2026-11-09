@@ -4,10 +4,11 @@ reads' bands merged into the proposal's tables, and the bands counted by tier an
 retires with the proposal: once Ryan's marks land as content, the grids live in
 content/factions.json alone and this file goes to git.
 
-  python3 tools/formation_proposal.py write content/factions.json content/foes.json <worktree>/content/factions.json tables.md
+  python3 tools/formation_proposal.py write content/factions.json content/foes.json <worktree>/content/factions.json tables.md [--prune]
       the proposal's grids in place of today's patrols and formations (the elites and escorts kept),
       validated by the worktree's ContentDB (tests/test_content.gd runs the validator), and the grids
-      as markdown tables
+      as markdown tables; --prune leaves out the twelve the reads prune (the proposal's section 5), the
+      set that would land on Ryan's go
   python3 tools/formation_proposal.py tables <worktree>/content/factions.json content/foes.json tables.md "Default four=curve.md" ...
       the tables with each read's bands (tools/balance.gd --packs curve --out curve.md; several files
       may share a label)
@@ -23,7 +24,7 @@ from collections import defaultdict, OrderedDict
 
 def write(args):
 
-    src, foes_path, out_json, out_md = args[0:4]
+    src, foes_path, out_json, out_md = [a for a in args if not a.startswith("--")][0:4]
     data = json.load(open(src))
     foes = {f['id']: f for f in json.load(open(foes_path))['entries']}
 
@@ -183,7 +184,7 @@ def write(args):
           "new, the anchor-heavy variant for the ramp's top (the barbed swarm and the mirage read as decisions for one)"),
         C("barbed_scouts", "patrol", [2], ["barbed_needler", "barbed_needler", "barbed_needler", N], [N]*4,
           "Three barbs: through the shield, and the entry you show bites when spent.",
-          "new"),
+          "new, rated two by the reads (a decision for the Badger alone, a wall for the Skua)", squad=2),
         C("basilisk_nest", "patrol", [2], ["barbed_needler", N, N, N], [N, "basilisk", "basilisk", N],
           "Two basilisks aim at a machine showing a gun and stone it; one barb in front. The birds are open.",
           "new"),
@@ -208,7 +209,7 @@ def write(args):
           "today's four made three, pushing now"),
         C("gorgon_pair", "patrol", [3], ["barbed_needler", N, N, N], [N, "gorgon", "gorgon", N],
           "Two gorgons corrupt and stone what you show, one barb in front; the gorgons are open.",
-          "new"),
+          "new, rated two by the reads (the stares wall a lone machine with few entries)", squad=2),
         C("queens_hunt", "patrol", [3], ["antlion_queen", "pit_antlion", "pit_antlion", N], [N]*4,
           "The queen and two pits wait for the slowest machine: Devour called a round ahead, barriers when hurt.",
           "new: the Waste's hunter at tier three, the antlion line", squad=2, hunts="slowest"),
@@ -266,10 +267,16 @@ def write(args):
           "today's"),
         C("dread_host", "formation", [3], ["dread_knight", "dread_knight", "death_knight", "wight"], ["wraith", "wraith", "spectre", "spectre"],
           "Two death throes, a grave guard and four raisers that cleanse: the Marsh at its densest.",
-          "today's; the wraith_choir read as it and is pruned"),
+          "today's"),
+        C("wraith_host", "formation", [3], ["death_knight", "wight", "wight", "wight"], ["wraith", "wraith", "spectre", N],
+          "One grave guard plating the line by turns, two corrupting raisers and a cleanser behind it, a column open: the choir thinned to a three.",
+          "new, written after the tier-three read found every Marsh tier-three formation a wall for three on the tier's own team"),
+        C("wraith_choir", "formation", [3], ["wight", "wight", "death_knight", "death_knight"], ["wraith", "wraith", "spectre", "spectre"],
+          "Two grave guards plating the line by turns and four raisers behind it, two of them corrupting: time the blows between the guards, kill the choir before the line refills.",
+          "today's, read again after the tier-three read left the Marsh no formation that is a decision for three", lead="wraith"),
         C("wraiths_wake", "patrol", [3], ["wight", "wight", N, N], [N, N, "wraith", N],
           "A wraith behind two wights, open: corrupting bolts, a raise and a cleanse.",
-          "new"),
+          "new, rated two by the reads (a decision for the Badger and the Boar alone, a wall for the Swallowtail)", squad=2),
         C("dread_vigil", "patrol", [3], ["dread_knight", "wight", "wight", N], [N]*4,
           "A dread knight that strikes as it falls, with two wights: a fight for two, shield up before the kill.",
           "new, a heavy patrol", squad=2),
@@ -295,10 +302,10 @@ def write(args):
           "new, a true one"),
         C("salamander_trio", "patrol", [1], ["salamander", "salamander", "salamander", N], [N]*4,
           "Three burning bites.",
-          "today's"),
+          "today's, rated two by the reads (free for the Badger, a wall for the Skua)", squad=2),
         C("drakes_perch", "patrol", [1], ["salamander", N, N, N], [N, "drake", "drake", N],
           "Two drakes behind one lizard, open: the stoke sets you burning; kill them first.",
-          "new"),
+          "new, rated two by the reads (free for the Badger, a wall for the Skua)", squad=2),
         C("bomb_flight", "patrol", [1], ["bomb"]*4, [N]*4,
           "Four bombs come straight for the nearest machine and burst through its shield when hurt: fight it in company, kill each whole, or let the shield eat the burst.",
           "today's, rated two: the Peak's hunter (its codex: it comes straight for you)", squad=2, hunts="nearest"),
@@ -320,7 +327,7 @@ def write(args):
           "new, a heavy patrol", squad=2),
         C("wyverns_perch", "patrol", [2], ["fire_lizard", N, N, N], [N, "wyvern", "wyvern", N],
           "Two wyverns behind one lizard, open: the dive through the shield, or the stoke.",
-          "new"),
+          "new, rated two by every read", squad=2),
         C("grenade_flight", "patrol", [2], ["grenade", "grenade", "bomb", "bomb"], [N]*4,
           "Grenades and bombs come for the nearest machine: bursts on everyone and bursts through the shield.",
           "today's, rated two: the Peak's hunter", squad=2, hunts="nearest"),
@@ -348,6 +355,27 @@ def write(args):
           "today's, rated two: the Peak's hunter", squad=2, hunts="nearest"),
     ]
 
+    # The pruning the reads name (docs/formation_proposal.md, section 5): each the same bands as
+    # another of its domain, size and tier with the same question. `write --prune` leaves them out.
+    PRUNED = {"goblin_warband", "guard_warband", "bubble_pair", "wolfrider_warband",
+              "needler_swarm", "needler_pair", "antlion_pair", "djinns_mirage",
+              "grave_host", "dread_host", "ember_pit", "salamander_pair"}
+    prune = "--prune" in args
+    if prune:
+        for k in P:
+            P[k] = [c for c in P[k] if c["id"] not in PRUNED]
+    # The ramp gates the reads place (section 5's gate rule): a tier-one or tier-two formation that
+    # reads free for three takes the foot, to Convergence 7; a tier-three formation that walls three
+    # and is a decision for four takes the last two battles. The heaviest of a tier carries none.
+    GATES = {"goblin_horde": [0, 7], "gel_wall": [0, 7], "needler_thicket": [0, 7], "antlion_pit": [0, 7],
+             "grave_throng": [0, 7], "barrow_mound": [0, 7], "ember_pyre": [0, 7],
+             "guard_horde": [4, 7], "treant_march": [4, 7], "gel_drift": [4, 7], "barbed_swarm": [4, 7],
+             "pit_ambush": [4, 7], "wight_host": [4, 7], "wyvern_roost": [4, 7], "grenade_volley": [4, 7],
+             "lichs_court": [11, 12]}
+    for k in P:
+        for c in P[k]:
+            if c["id"] in GATES:
+                c["ramp"] = GATES[c["id"]]
     out = copy.deepcopy(data)
     tables = []
     NAMES = {f: foes[f].get('name', f) for f in foes}

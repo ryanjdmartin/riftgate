@@ -205,7 +205,8 @@ tier three; the light four reads the rating of one at every tier. Within a domai
 - a formation that walls three and is a decision at four carries the top's gate, 8 to 12;
 - the heaviest formation of a tier carries no gate whatever it reads, so the coverage rule holds
   (every Convergence from the tier's first to 12 dealt something);
-- tier three's compositions carry no gate: its five Convergences are one band;
+- tier three, fought at 8 to 12, carries one gate only: a formation that walls three and is a
+  decision for four takes the last two battles, 11 to 12; the rest carry none;
 - a patrol rated one that reads free for the Skua alone is the foot's; one that is a decision
   for the Skua carries no gate; one that walls the Skua and is free for the Badger is a two, or
   the top's one; a hunter keeps its two whatever the Boar makes of it (his word, "at least").
@@ -309,12 +310,59 @@ and the lever that would make them twos is their numbers (question 4).
 | `wyverns_perch` | patrol, 1 | decision 43% · wall 100%, decision 71% at two · wall 87% at one, free 6% at two | none | keep, rated two: a two by every read |
 | `grenade_flight` | patrol, 2, hunts the nearest | free 12% · wall 90% at one · free 12% | none | keep: a two (walls the Skua, free for a pair) |
 
-<!-- GATES3 -->
+### Tier three, read by the tier-three four
 
-**The count.** Today's sixty patrols and formations become ninety candidates and, with the
-fourteen prunings above, seventy-six: the Meadow twenty-two, the Waste nineteen, the Marsh
-eighteen, the Peak seventeen (the elites' twenty and the escorts' twenty-four unchanged). The
-hunters: nine patrols (the pair pruned to the trio) and the six elites, from twenty-nine.
+The tier-three team (the Swallowtail, the Musk Ox, the Ammit, the Giant Petrel) reads harder alone
+than the tier-two team did (the Swallowtail is a support frame, no soloist: every fodder patrol is
+a decision for it at 42 to 75% hull, where the Boar found them free) and much the same at three.
+Tier three is fought at Convergence 8 to 12, five battles, so it carries one gate only: a formation
+that walls three and is a decision for four takes the last two battles, 11 to 12, where Ryan's goals
+of 23 October want little fodder and dense fights; the rest carry none.
+
+| Composition | Size, rated | The read at its rating (default · light · tier-two · tier-three) | Gate | Keep or prune |
+|---|---|---|---|---|
+| `captains_warband` | formation, 3 | free 3% · decision 9% · free 1% · free 3% | none | keep; `wolfrider_warband` pruned (the same bands on every read; its alphas' howl is the captains' shout again) |
+| `rotblooms_bed` | formation, 3 (tiers 2, 3) | free 3% · decision 55% · free 3% · free 6% | none at tier three | keep |
+| `metal_drift` | formation, 3 | decision 23% · wall 97% · free 20% · free 23% | none | keep (three plate on the metal gels) |
+| `treant_wilds` | formation, 3 | free 13% · wall 84% · free 11% · free 15% | none | keep |
+| `frost_and_bloom` | formation, 3 | — · — · decision 56% · decision 72% | none (a true three, the heaviest) | keep: the Meadow's tier-three three |
+| `alpha_pack` | patrol, 2, hunts the weakest | free 16% · wall 100% · free 28% · decision 61% at one | none | keep: a two (a wall for the Skua, a decision for the Swallowtail alone) |
+| `captains_raiders` | patrol, 1 | free 10% · decision 59% · free 5% · decision 42% | none | keep: a one |
+| `metal_pair` | patrol, 2 | decision 62% at one · wall at one and two · free 23% · decision 67% at one | none | keep, rated two (a decision for the Badger and the Swallowtail alone); hole 6 stands for a light pair |
+| `great_swarm` | formation, 3 | free 15% · decision 30% · free 11% · free 17% | none | keep |
+| `mirage_court` | formation, 3 | free 14% · decision 30% · free 13% · free 16% | none | keep: the same bands as the great swarm on every read, a different question (two unmakers); his to prune if one of them goes |
+| `queens_court` | formation, 3 | decision 21% · wall 100% · decision 33% · decision 48% | none (a true three) | keep |
+| `sandworm_flats` | formation, 3 | decision 75% · wall 100% · decision 62% · decision 76% | none (a true three, the heaviest) | keep |
+| `great_scouts` | patrol, 1 | free 48% · wall 94% · free 36% · decision 60% | none | keep: a one (a decision for the Swallowtail, half the Badger's hull) |
+| `gorgon_pair` | patrol, 1 | decision 30% · wall 100% · free 34% · wall 90% at one, free 3% at two | none | keep, rated two: the stares wall a lone machine with few entries |
+| `queens_hunt` | patrol, 2, hunts the slowest | wall at one, free 35% at two · wall · wall, free 34% · wall, free 47% | none | keep: a true two, hard |
+| `lichs_court` | formation, 3 | wall 99% at three, decision 75% at four · wall · wall 98%, decision 81% · wall 100%, decision 59% | 11 to 12 | keep: a four by every read, the last battles' formation (a true four is the elites' and the bosses', so it stays a three on the map and earns the top's gate) |
+| `charnel_pit` | formation, 3 | decision 46% · wall · decision 61% · wall 68% at three, decision 16% at four | none | keep: a decision for three for the default and tier-two teams, a wall for the tier-three team, whose three (the Swallowtail, the Musk Ox, the Ammit) has no burst for the knit |
+| `wraith_choir` | formation, 3 | decision 68% · — · decision 71% · wall 84% at three, decision 30% at four | none | keep: a decision for three for the default and tier-two teams, a wall for the tier-three team as the charnel pit is (two grave guards, a question the pit does not ask) |
+<!-- HOST -->
+| `dread_host` | formation, 3 | wall 94% at four · wall · wall 96% at four · wall 85% at four | — | prune: a wall for four on every read (two death throes, a grave guard and four raisers), beyond what a formation may be |
+| `wight_shamblers` | patrol, 1 (tiers 2, 3) | free 14% · wall 100% · free 18% · decision 56% | none | keep: a one |
+| `wraiths_wake` | patrol, 1 | decision 42% · wall 100%, decision 37% at two · decision 49% · wall 98% at one, free 4% at two | none | keep, rated two: a decision for the Badger and the Boar alone, a wall for the Swallowtail |
+| `dread_vigil` | patrol, 2 | wall at one, decision 37% at two · wall to three · wall, decision 53% · wall at one and two, free 29% at three | none | keep: a two (the tier-three pair walls on it: the Swallowtail and the Musk Ox against a dread knight) |
+| `dragons_roost` | formation, 3 | decision 19% · wall 100% · decision 29% · decision 43% | none (a true three) | keep |
+| `magma_pit` | formation, 3 | free 5% · decision 68% · free 13% · free 15% | none | keep |
+| `balloon_storm` | formation, 3 | free 11% · decision 76% · free 11% · free 19% | none | keep: the same bands as the pit on every read, a different question (the swelling bursts); his to prune if one goes |
+| `magma_caldera` | formation, 3 | decision 82% · wall 100% · decision 75% · decision 89% | none (a true three, the heaviest) | keep |
+| `magma_lizards` | patrol, 1 | free 34% · wall 100% · free 40% · decision 75% | none | keep: a one for a heavy (a decision for the Swallowtail at three quarters of its hull) |
+| `dragons_perch` | patrol, 2 | free 14% · wall 100% · free 36% · decision 69% at one | none | keep: a two (a decision for the Swallowtail alone, free for every pair) |
+| `balloon_flight` | patrol, 2, hunts the nearest | free 18% · wall 95% · free 33% · decision 65% at one | none | keep: a two |
+
+**The count.** Today's sixty patrols and formations become ninety-one candidates and, with the
+twelve prunings above (the goblin warband, the guard warband, the bubble pair and the wolfrider
+warband; the needler swarm, the needler pair, the antlion pair and the djinn's mirage; the grave
+host and the dread host; the ember pit and the salamander pair), seventy-nine: the Meadow
+twenty-two, the Waste twenty, the Marsh seventeen, the Peak twenty (the elites' twenty and the
+escorts' twenty-four unchanged). The hunters: nine patrols (the antlion pair pruned to the trio)
+and the six elites, from twenty-nine. Rated two among the patrols: the nine hunters and the
+knight's retinue, the knight and wights, the dread vigil, the lizard trio, the wyverns' perch, the
+salamander trio, the drakes' perch, the barbed scouts, the gorgon pair, the wraiths' wake, the metal
+pair and the dragons' perch, twenty-one in all; rated one, seventeen; the formations
+forty-one.
 
 
 ## 6. The bosses as fixed entries by tier and ramp
