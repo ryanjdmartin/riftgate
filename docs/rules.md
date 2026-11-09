@@ -330,7 +330,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   violet for what only a foe does, the red-red for harm (Exposed, a destroyed component), the
   hull's colour for a price in hull, and ink for a shape, a reach or a rule; never the HUD
   colour.
-  A piece that changes its machine's form wears that form's chip: on the Armadillo, a shield it
+  A piece that changes its machine's form wears that form's chip: on the Polar Bear, a shield it
   may spend on itself the seal's while its shell is open, and a weapon or a vent the opening's
   while it is sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
@@ -560,7 +560,7 @@ unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no P
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Armadillo's seal (its form), the Ore Plate (what the hopper's loads
+lasts. A machine's: the Polar Bear's seal (its form), the Ore Plate (what the hopper's loads
 are worth) and the Kite's Hot Streak. What an ability or a passive grants beyond itself is a
 buff like any (the Nob's gathered Enraged, a module's Empowered or Armoured): a stack is a
 stack, whatever granted it.
@@ -654,7 +654,7 @@ On a machine:
   the hopper spends them. A mine laid with the loads' bonus loads nothing when it goes off
   later. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
   under the heat, one lit a load.
-- **Sealed** (Ability, the Armadillo's form): a shield it spends on itself seals it: armour +3,
+- **Sealed** (Ability, the Polar Bear's form): a shield it spends on itself seals it: armour +3,
   its own cooling stopped, 3 heat more at the end of each turn before the overheat, and its Cryo
   Flinger gains Spread (one foe open, its rank's three sealed); a vent or a weapon opens it; a
   shield on an ally and equipment leave the form as it is. An entry that
@@ -779,9 +779,9 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   included, never a breach; a blow at or under the armour is nothing; a shield takes no armour
   off. A foe's armour comes off every blow on it the same way, never off Burning, Vitriol or a
   breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
-  Armadillo, a tank in its sealed form, 1 open and 4 sealed), and
+  Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
   Armoured adds to it (a brace: a buff, the Breaching Plow, the Siphon) until the
-  round's end, the Armadillo's seal until a vent or a weapon opens it.
+  round's end, the Polar Bear's seal until a vent or a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
   the map. In a fight it comes from components, modules, passives and the shield regen. Hull

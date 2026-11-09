@@ -636,7 +636,7 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "Ability, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is; an entry that cools and shields at once does the one its form calls for. An ally's vent still cools it. No Purge touches it.",
+   "codex": "Ability, the Polar Bear's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is; an entry that cools and shields at once does the one its form calls for. An ally's vent still cools it. No Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
@@ -2020,7 +2020,7 @@
    "id": "ability",
    "category": "status",
    "name": "Ability",
-   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Armadillo's seal, the Honey Badger's Ore Plate, the Kite's Hot Streak.",
+   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Honey Badger's Ore Plate, the Kite's Hot Streak.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 8 November, of the Nob's rage: \"Nob, and any other enemies with a passive ability, should have an unpurgable passive chip that points out what's going on. Plus, that's how slay the Spire works, where he comes from. It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged. Can use this for player units as well, like the armadillo's form. Golden rage should be an ability chip too.\" The tile is a placeholder look, to judge on the phone (RIFTGATE_ABILITY_DEBUG=1)."

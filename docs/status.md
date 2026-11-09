@@ -46,7 +46,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 9 November 2026 but the music session's branch below and
-`claude/modest-ramanujan-uovd42`, the Armadillo's kit of 9 November (How things stand below), on
+`claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November (How things stand below), on
 main's `f4906ee` and waiting on Ryan's play before it merges.
 `claude/playtesting-ui-feedback-hfdiok`, Ryan's playtest list of 9 November (How things stand
 below), took main's map session and skirmish audit step 3 in a merge (the bible, the measurements
@@ -129,7 +129,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   module); the echidna left open (Ryan's new shape of 4 November in its brief), the siege battery
   parked on Ryan's charge brief, the battlecruiser never with the Carrier's session. Ryan's ideas
   of 4 November wait on his marks, each in its brief: the lure tank (his tier-one tank, which the
-  Armadillo's move to tier two lands with), the Cryo party defence, the immune one, the mole
+  Polar Bear's move to tier two lands with), the Cryo party defence, the immune one, the mole
   (its hook later), and the shield bash (the shield-basher cut as a unit, a tier-three piece).
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
@@ -151,14 +151,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
-- **The Armadillo's kit of 9 November** (`claude/modest-ramanujan-uovd42`, Ryan: "The Armadillo is
+- **The Polar Bear's kit of 9 November** (`claude/modest-ramanujan-uovd42`, Ryan: "The Armadillo is
   OP. I never really felt strongly about Sealing it"; built as he gave it after the holes, his play
   the judge): armour 1 open and 4 sealed, one Cryo Flinger on a die of five, the Flinger without
   Rapid and gaining Spread while sealed (Lockdown's grant, scoped to the piece: a `when` of
   `sealed` and an `entry` naming a component, both new), and its weapons 1 harder on a foe
   carrying Cryo (the strike that meets the stacks, its hit spending them). The probe that read the
-  old kit is in `docs/measurements.md`. His rename (Polar Bear, Walrus or the Musk Ox) is section
-  12's, open. 1075 tests green on this branch.
+  old kit is in `docs/measurements.md`. Renamed the Polar Bear the same day ("since we're thinking of giving it
+  claws"; the bible's names row), its id `armadillo` kept as the Kite's was. 1075 tests green on this branch.
 - **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
   Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
   all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always
@@ -218,7 +218,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
   it (not republished: the live page's republish waits on Ryan's word, Pages below).
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
-  enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
+  enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
   taking its widest member's ring, the Mandragoras' back-rank three from the joining days. His
   calls the same day, built: a composition says whether it hunts, never its foes ("The
