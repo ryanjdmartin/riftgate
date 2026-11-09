@@ -508,8 +508,8 @@ func _build() -> void:
 			var y := FRONT_Y if rank == 0 else BACK_Y
 			_stand(v, y, SLOT_SIZE.y)
 			v.empty_pad = true
-			v.chip_wrap = _col_pitch() - 6.0   # a foe's chips wrap at its column, wider than its drawing
-			_place(v, Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
+			v.chip_wrap = _chip_wrap(_rank_x(rank, col))   # a foe's chips wrap at its column, wider than its drawing
+			_place(v, Vector2(_rank_x(rank, col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
 			v.held.connect(_on_foe_held.bind(v))
 			v.double_tapped.connect(_on_foe_double_tapped.bind(v))
 			v.tapped.connect(_on_foe_tapped.bind(v, rank, col))
@@ -520,7 +520,7 @@ func _build() -> void:
 			tv.is_enemy = true
 			_stand(tv, y, SLOT_SIZE.y)
 			tv.visible = false
-			_place(tv, Vector2(_col_x(col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
+			_place(tv, Vector2(_rank_x(rank, col), y), Vector2(SLOT_SIZE.x * 0.5, SLOT_SIZE.y))
 			tv.held.connect(_on_foe_held.bind(tv))
 			tv.double_tapped.connect(_on_foe_double_tapped.bind(tv))
 			tv.tapped.connect(_on_foe_tapped.bind(tv, rank, col, true))
@@ -1010,6 +1010,33 @@ func _col_x(col: int) -> float:
 	return W * 0.5 + (col - (sk.columns - 1) * 0.5) * _col_pitch()
 
 
+## How far each rank stands off its column's centre: the front rank a little to the left and the
+## back a little to the right (Ryan, 9 November: "the lines should come from the intent chip, and
+## always from the intent chip's middle. A slight offset or squeezing would fix the rest, whether
+## that's moving the front rank, back rank, or both"), so one column's two foes aiming at the
+## machine below draw a narrow V from their intent chips, never one line, the back's passing clear
+## of the front's intent chip. Both ranks move, so the parting is twice what either rank gives up;
+## a squeeze would part the outer columns and barely the inner, where the pitch is narrowest.
+const RANK_SHIFT := 18.0
+
+
+## A foe's slot centre across the screen: its column's, its rank's slight shift off it.
+func _rank_x(rank: int, col: int) -> float:
+	return _col_x(col) + (-1.0 if rank == 0 else 1.0) * RANK_SHIFT
+
+
+## How wide a foe's chip rows run before they wrap, for a view centred at `x`: its column's pitch
+## less the gap between two columns' rows; an outer view the shift moved toward the screen's edge
+## (the front rank's first, the back rank's last) loses only what its rows would hang past the glass,
+## so a full row, held on the screen, keeps the same gap to its neighbour's as every other (Ryan, 9
+## November: "What happens to back rank enemies with a lot of chips if they're that close to the
+## right edge?").
+func _chip_wrap(x: float) -> float:
+	var w := _col_pitch() - 6.0
+	var over := maxf(maxf(0.0, x + w * 0.5 - (W - 2.0)), maxf(0.0, 2.0 - (x - w * 0.5)))
+	return w - over
+
+
 ## The formation's columns apart.
 func _col_pitch() -> float:
 	var n := sk.columns
@@ -1087,7 +1114,7 @@ func _refresh(save: bool = true) -> void:
 			# A twin slot (the Gel's pair, 26 October): the left half's view takes the slot's left
 			# half and the right half's view the other, each foe its own target; a plain slot is
 			# one view across the whole.
-			var at := Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, FRONT_Y if rank == 0 else BACK_Y)
+			var at := Vector2(_rank_x(rank, col) - SLOT_SIZE.x * 0.5, FRONT_Y if rank == 0 else BACK_Y)
 			if twin != null:
 				_half_sides[foe] = 0
 				_half_sides[twin] = 1
@@ -1996,8 +2023,8 @@ func _refresh_arrows() -> void:
 			var wanted: bool = show_all_arrows or _pop.get("foe") == foe or target_index == int(_pop.get("mech", -1)) or target_index == lurer
 			if not wanted:
 				continue
-			var from: Vector2 = _arrow_from(foe, inv * fv.anchor_global())
-			var to: Vector2 = _arrow_end(foe, inv * _mech_views[target_index].anchor_global())
+			var from: Vector2 = inv * fv.intent_anchor_global()
+			var to: Vector2 = inv * _mech_views[target_index].anchor_global()
 			list.append([from, to, Palette.ENEMY, true] if spill.has(target_index) else [from, to, Palette.ENEMY])
 	# The lure preview: every foe the die in hand would turn, dashed to its machine, shown unasked;
 	# one whose blow lands elsewhere as the round stands (the lurer falls before it acts, and it
@@ -2007,38 +2034,11 @@ func _refresh_arrows() -> void:
 			var fv := _foe_view_for(foe)
 			if fv == null:
 				continue
-			list.append([_arrow_from(foe, inv * fv.anchor_global()), _arrow_end(foe, inv * _mech_views[lurer].anchor_global()), Palette.ENEMY, true])
+			list.append([inv * fv.intent_anchor_global(), inv * _mech_views[lurer].anchor_global(), Palette.ENEMY, true])
 			for i in _round.get("foes", {}).get(foe, {}).get("struck", []):
 				if int(i) != lurer and int(i) >= 0 and int(i) < _mech_views.size():
-					list.append([_arrow_from(foe, inv * fv.anchor_global()), _arrow_end(foe, inv * _mech_views[int(i)].anchor_global()), Palette.ENEMY, true])
+					list.append([inv * fv.intent_anchor_global(), inv * _mech_views[int(i)].anchor_global(), Palette.ENEMY, true])
 	_arrows.set_arrows(list)
-
-
-## Where a foe's arrow leaves it and lands on its machine (Ryan, 9 November: "two foes in the same
-## column targeting the mech in the same column blend together. Solution is to either offset the
-## enemy ranks, or squeeze the back together a bit, so that there aren't any straight vertical intent
-## lines from at least one of the ranks"): a little to its rank's side of the middle of its drawing
-## and of the machine's, the front rank's to the left and the back's to the right, so one column's
-## two foes at the machine below draw two lines apart the whole way down and two arrowheads side by
-## side. The ranks stand square: offset as a first cut, they pushed the outer foes' chip rows against
-## the glass and into their neighbours' (Ryan: "What happens to back rank enemies with a lot of chips
-## if they're that close to the right edge?"), where the arrows' own offsets cost nothing. A massive
-## foe fills its column: its arrow keeps the middles.
-const ARROW_FROM := 22.0   # off the middle of the foe's drawing
-const ARROW_TO := 12.0     # off the middle of the machine's
-
-func _arrow_side(foe: Foe) -> float:
-	if foe == null or foe.is_massive():
-		return 0.0
-	return -1.0 if foe.rank == 0 else 1.0
-
-
-func _arrow_from(foe: Foe, anchor: Vector2) -> Vector2:
-	return anchor + Vector2(_arrow_side(foe) * ARROW_FROM, 0.0)
-
-
-func _arrow_end(foe: Foe, anchor: Vector2) -> Vector2:
-	return anchor + Vector2(_arrow_side(foe) * ARROW_TO, 0.0)
 
 
 ## Readout over a control: a text block (a mined slot's), or lines (EntryReadout): a die's

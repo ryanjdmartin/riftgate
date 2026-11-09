@@ -153,9 +153,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   wall and the gate stand a row forward with the city behind (his word the same day: "the best
   solution", city defences to be wall segment upgrades). Both UNDOs read on or off by their edge;
   the skirmish's sits bottom-right, and it opens again after a spend (the bug: its re-opening
-  tween ran a frame ahead of the clock and left it shut for good). The die's tap waits 0.15 s from its release to a second touch; each skirmish
-  arrow leaves its foe and lands on its machine on its rank's side, the ranks square (staggered,
-  they pressed the edge foes' chips against the glass); every status says Buff or
+  tween ran a frame ahead of the clock and left it shut for good). The die's tap waits 0.15 s from its release to a second touch; a skirmish
+  intent line leaves its intent chip's middle (`UnitView.intent_anchor_global`) for the machine's,
+  the ranks 18 px apart each way and the edge foes' chip rows kept clear of their neighbours'; every status says Buff or
   Debuff (`Effects.status_kind`: a wedge on its chip, the word in its hold, its tip's heading, the
   keywords list's headings); the log stays at full strength; Jenny's "bogey eliminated" is cut.
   The "chase": no pusher read a machine, but every pusher's segment was drawn about the rift's

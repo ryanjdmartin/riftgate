@@ -404,7 +404,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
 # undo (a spend taken: UNDO lit at the bottom row's right end) and columns (every foe aimed at the machine nearest its
-# column, every arrow on, each leaving and landing on its rank's side; RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
+# column, every arrow on, each from its intent chip's middle, the ranks slightly apart; RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
 # and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
 # The skirmish's controls (any run, the battle's fights too): RIFTGATE_SKIRMISH_CONTROLS=bottom|middle overrides

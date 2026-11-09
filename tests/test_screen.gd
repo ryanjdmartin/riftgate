@@ -2605,27 +2605,35 @@ func test_undo_opens_once_the_blow_has_played_and_sits_bottom_right() -> void:
 	s.free()
 
 
-## Two foes of one column aiming at the machine below draw two lines apart (Ryan, 9 November: "two
-## foes in the same column targeting the mech in the same column blend together"): each arrow leaves
-## its foe and lands on its machine a little to its rank's side, the front's left and the back's
-## right; the ranks stand square, so no foe's chips are pressed against the glass (Ryan: "What
-## happens to back rank enemies with a lot of chips if they're that close to the right edge?").
-func test_one_columns_two_arrows_part_and_the_ranks_stand_square() -> void:
+## A foe's intent arrow leaves the middle of its intent chip (Ryan, 9 November: "the lines should come
+## from the intent chip, and always from the intent chip's middle") and lands on the machine's middle,
+## and the ranks stand slightly apart, the front a little left and the back a little right ("A slight
+## offset or squeezing would fix the rest"), so one column's two foes at the machine below draw two
+## lines; the outer foes' chip rows, held on the glass, keep their gap to their neighbours' (his
+## question: "What happens to back rank enemies with a lot of chips if they're that close to the
+## right edge?").
+func test_an_intent_arrow_leaves_its_chips_middle_and_the_ranks_stand_slightly_apart() -> void:
 	var s := _screen()
 	for col in range(s.sk.columns):
 		var f: UnitView = s._slot_views[0][col]
 		var b: UnitView = s._slot_views[1][col]
-		assert_eq(f.position.x, b.position.x, "column %d: the ranks stand square" % col)
-		assert_eq(f.chip_wrap, s._col_pitch() - 6.0, "column %d: its chips wrap at the column's room" % col)
-	var front: Foe = s.sk.front[0]
-	var back: Foe = s.sk.back[0]
-	var at := Vector2(100, 900)
-	if back != null:
-		assert_true(s._arrow_from(front, at).x < s._arrow_from(back, at).x, "each leaves its foe on its rank's side")
-		assert_true(s._arrow_end(front, at).x < s._arrow_end(back, at).x, "and lands on its own side of the machine")
-	var big := Foe.make("giant", 30, 6)
-	big.size = 2
-	assert_eq(s._arrow_from(big, at), at, "a massive foe's keeps the middles")
+		assert_eq(b.position.x - f.position.x, 2.0 * SkirmishScreen.RANK_SHIFT, "column %d: the back a little right of the front" % col)
+		assert_true(f.position.x >= 0.0 and b.position.x + b.size.x <= SkirmishScreen.W, "column %d on the glass" % col)
+	var last := s.sk.columns - 1
+	var outer: UnitView = s._slot_views[1][last]
+	var inner: UnitView = s._slot_views[1][last - 1]
+	var oc := outer.position.x + outer.size.x * 0.5
+	var start := minf(oc - outer.chip_wrap * 0.5, SkirmishScreen.W - 2.0 - outer.chip_wrap)   # its widest row, held on the glass
+	var inner_end := inner.position.x + inner.size.x * 0.5 + inner.chip_wrap * 0.5
+	assert_true(start - inner_end >= 6.0 - 0.01, "the back rank's last foe's widest row keeps its gap to its neighbour's")
+	var fv := s._foe_view_for(s.sk.front[0])
+	var laid := fv.chip_layout()
+	assert_eq(str((laid[0][1] as Array)[3]), "intent", "the first chip is the intent's")
+	assert_eq(fv.intent_anchor_global(), fv.get_global_transform() * (laid[0][0] as Rect2).get_center(), "its arrow leaves the chip's middle")
+	s._toggle_all_arrows(true)
+	var inv := s._arrows.get_global_transform().affine_inverse()
+	var from := inv * fv.intent_anchor_global()
+	assert_true(s._arrows.arrows.any(func(x: Array) -> bool: return (x[0] as Vector2).is_equal_approx(from)), "and the arrow drawn starts there")
 	s.free()
 
 
