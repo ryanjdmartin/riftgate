@@ -78,7 +78,7 @@ one). Each merge commit says how its conflicts were settled.
 Still working (9 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`, the
 formation pass (its proposal `docs/formation_proposal.md`, waiting on Ryan's marks; the curve
 read's `--team`, `--tiers`, `--sizes` and `--domains`; the reads in `docs/measurements.md`, 9
-November; the bible's file at v0.491 with section 12 pointing at the proposal and holding his play's directions, its republish
+November; the bible's file at v0.492 with section 12 pointing at the proposal and the refit pass's brief, its republish
 waiting on Ryan's word as v0.489's does, Pages below), beside `ccr-8df9952c-4cccdf`, the skirmish
 code audit's structural steps (one round's end and one blow on a machine, the behaviour trace;
 `sim/skirmish.gd`, which this branch never touches); and `ccr-7effd31a-u5z4gw`, the
@@ -143,6 +143,24 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The refit pass's direction** (9 November, from the chat after his play and the formation
+  pass's reads; `docs/briefs/refit_pass.md`): the block-everything loop is structural (hull
+  permanent across eight to ten fights, an injury destroying a component for good, a rolled
+  defence whose failure is permanent against a rolled offence whose failure delays, and packs of
+  eight so a kill buys little safety); Ryan: "The balance between WANTING a tank and NEEDING a
+  tank is pushed all the way to NEED"; "I think we're so worried about preventing stall that
+  we're actually taking away tools that reward aggression." His calls: component destruction off
+  entirely to test ("placed to offer a balancing lever between tanks and dps, an issue that
+  clearly no longer exists"; the in-fight break stays); two rerolls stay (three "effective, but
+  boring", two "less boring, but more unfair", doing its job); the resource model his second
+  shape, "innate shield and shield regen, but no shield faces, only other defensive tools like
+  armoured, barrier and ward", and heat the same way, no vent faces, cooling passive, the hold the
+  decision: "Less component types - weapons and equipment. It's simple, elegant, streamlined …
+  if you greed on heat, well you can always pass, which literally how a Mech game works - run
+  hot, and you're forced to wait and think about your decisions while you cool off"; shield and
+  vent faces "perfect commander actions" for the commander layer if it comes. The cover (an
+  unrolled interpose for the tank) withdrawn: the redirection row's reason stands. Nothing built;
+  the reads first (the brief). The bible at 0.492 carries it in six rows and section 12.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -410,11 +428,14 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it: Ryan's play of the long wall with its view (built 6
-November; his phone read, the to-do), the harness's BATTLE and FIGHT tabs for it; then the long
-wall's open items (the bible's section 12: the shell, then the formation pass's proposal
-(`docs/formation_proposal.md`, 9 November: the ratings by who solos and the formations together,
-his marks on its thirteen questions, then the content), then the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
+to-do's Ryan list). Ahead of all of it: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
+Ryan set on 9 November after his play of Phase 2: shields and vents leave the die, a component a
+weapon or equipment, the shield innate and regenerating, cooling passive, the hold the heat
+decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
+its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: his
+answers to its open list, the what-if switches in the balance runner and the reads before any
+content moves, his play at placeholders, then the content, the vocabulary, the rules and the
+rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
 is section 12's, its test the to-do's): its structural steps in order (one hit routine with its
 arguments in place of the hidden flags, the mine's half waiting for the Lammergeier's rework; one
