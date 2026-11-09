@@ -11,7 +11,7 @@ extends TestCase
 func _team() -> Array:
 	var db := ContentDB.load_default()
 	var out: Array = []
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		out.append(db.make_mech(id))
 	return out
 

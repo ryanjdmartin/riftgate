@@ -8,7 +8,7 @@ extends TestCase
 func _screen(seed_value: int = 3) -> BattleScreen:
 	var db := ContentDB.load_default()
 	var team: Array = []
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(seed_value)
 	# The ramp's field, the long wall's (its brief's Phase 2 lays the view for it), and the start
@@ -47,9 +47,10 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 
 func test_screen_builds_on_the_players_turn() -> void:
 	var s := _screen()
-	assert_true(s._header.text.begins_with("TURN 01"), "turn one in the header")
-	assert_true(s._header.text.contains("NEXT SPAWN IN"), "and how long until the rift spawns")
-	assert_true(s._sub_label.text.begins_with("READY // 3 OF 3"), "every machine ready")
+	assert_eq(s._top.battle, s.battle, "the top bar reads the battle: the gate, the rift's spawn, the Fractures")
+	assert_true(s._board._title().ends_with("TURN 01"), "turn one on the board under the map, the top bar carrying no turn (Ryan, 9 November)")
+	for r in s._board._rows():
+		assert_eq(r["order"], "READY", "every machine ready, on the board")
 	assert_false(s._resolve_btn.disabled, "the turn can end")
 	assert_eq(s._resolve_btn.text, "END TURN", "nothing ordered: the button ends the turn")
 	assert_true(s._clear_btn.disabled, "nothing to undo yet")
@@ -194,7 +195,7 @@ func test_end_turn_asks_while_a_machine_can_still_act() -> void:
 	s._confirm_yes()
 	assert_false(s._confirm.visible, "YES puts it away")
 	assert_eq(b.field.phase, 1, "and ends the turn")
-	assert_true(s._header.text.begins_with("TURN 02"), "the next turn opens")
+	assert_true(s._board._title().ends_with("TURN 02"), "the next turn opens")
 	assert_true(b.forced.is_empty(), "with no catch to fight first")
 	for m in b.mechs():
 		b.spent[m.id] = 1
@@ -278,7 +279,7 @@ func test_end_turn_walks_the_packs_and_opens_the_next_turn() -> void:
 	var shown: Battlefield.Walk = s._map.walks[sq.id]
 	s._on_end_turn()
 	assert_eq(sq.pos, shown.end, "the pack walked where the map showed")
-	assert_true(s._header.text.begins_with("TURN 02"), "next turn")
+	assert_true(s._board._title().ends_with("TURN 02"), "next turn")
 	assert_eq(s.battle.state, Battle.State.PLAN, "the player's turn again")
 	assert_eq(s._skirmish, null, "no fight on its own")
 	s.free()
@@ -306,7 +307,7 @@ func test_a_tap_on_a_pack_with_a_machine_in_hand_orders_it_and_engage_opens_the_
 	s._on_hex_tapped(sq.pos)
 	s._on_main_button()
 	assert_true(s._skirmish != null, "ENGAGE opens the skirmish screen")
-	assert_eq(s._sub_label.text, "FIGHT", "the readout says so")
+	assert_true(s._board._title().begins_with("FIGHT"), "the board says so")
 	var sk: Skirmish = s._skirmish.sk
 	assert_eq(sk.round, 1, "skirmish started")
 	sk.reinforcements.clear()
@@ -319,7 +320,73 @@ func test_a_tap_on_a_pack_with_a_machine_in_hand_orders_it_and_engage_opens_the_
 	assert_false(b.field.units.has(sq), "pack wiped")
 	assert_eq(b.state, Battle.State.PLAN, "back to the turn")
 	assert_eq(b.actions_left(m), 0, "the machine is spent")
-	assert_true(s._sub_label.text.contains("2 OF 3"), "the readout counts it out")
+	assert_eq(s._board._rows().filter(func(r: Dictionary) -> bool: return r["order"] == "READY").size(), 2, "the board counts it out")
+	s.free()
+
+
+## A Fracture a fight earns is announced as the map comes back (Ryan, 9 November: "Fractures need
+## to be announced. The fracture meter needs to be a prominent, always visible UI component"): the
+## top bar's gauge flashes, and the bar reads the count the battle holds.
+func test_a_fracture_earned_by_a_fight_is_announced_on_the_top_bar() -> void:
+	var s := _screen()
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	b.thresholds = [1, 100000, 200000]   # any kill earns the first
+	_engage(b, sq, m)
+	s._refresh()
+	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(sq.pos)
+	s._on_main_button()
+	var sk: Skirmish = s._skirmish.sk
+	sk.reinforcements.clear()
+	for f in sk.field_foes():
+		f.hp = 0
+	s._skirmish._end_turn_now()
+	assert_false(s._top._flash.has("fractures"), "nothing earned until the fight is back")
+	s._on_skirmish_back()
+	assert_eq(b.fractures, 1, "the fight earned the first Fracture")
+	assert_true(s._top._flash.has("fractures"), "the top bar's gauge flashes it")
+	assert_true(b.is_sealed(), "the seal holds until the last")
+	s.free()
+
+
+## A pack's whole way shows while it is tapped, and a hunter's while the machine it comes for is in
+## hand (Ryan, 9 November: "I would also show the hunter path when the hunted unit is tapped as
+## well"); no other pack's.
+func test_a_tapped_pack_and_a_hunted_machine_show_the_whole_way() -> void:
+	var s := _screen()
+	var b := s.battle
+	var packs := b.field.packs().filter(func(p: Unit) -> bool: return not p.is_boss)
+	var sq: Unit = packs[0]
+	var other: Unit = packs[1] if packs.size() > 1 else null
+	var m: Unit = b.mechs()[0]
+	s._refresh()
+	s._on_hex_tapped(sq.pos)
+	var w: Battlefield.Walk = s._map.walks[sq.id]
+	assert_true(s._map.shows_whole_way(sq, w), "the tapped pack's way")
+	if other != null:
+		assert_false(s._map.shows_whole_way(other, s._map.walks[other.id]), "and no other's")
+	sq.behaviour = "hunt"
+	sq.prey = m.id
+	s._refresh()
+	s._on_hex_tapped(m.pos)
+	assert_eq(s._map.selected, m, "the hunted machine in hand")
+	var hw: Battlefield.Walk = s._map.walks[sq.id]
+	if hw.prey == m.id:
+		assert_true(s._map.shows_whole_way(sq, hw), "its hunter's way shows")
+	s.free()
+
+
+## The boss stands far larger than a pack on the map (Ryan, 9 November: "enemy bosses need bigger
+## map sprites ... very big and ominous").
+func test_the_boss_draws_far_larger_than_a_pack() -> void:
+	var s := _screen()
+	var tex := ImageTexture.create_from_image(Image.create(16, 16, false, Image.FORMAT_RGBA8))
+	var boss_size := BattleMapView.sprite_size(s.battle.boss, tex)
+	var pack_size := BattleMapView.sprite_size(s.battle.field.packs()[0], tex)
+	assert_eq(boss_size.y, BattleMapView.BOSS_SPRITE_H, "the boss at its height")
+	assert_true(boss_size.y >= pack_size.y * 2.5, "far larger than a pack's")
 	s.free()
 
 
@@ -482,7 +549,7 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	b._new_turn()
 	s._after_step()
 	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE with nobody ordered")
-	assert_true(s._sub_label.text.begins_with("CAUGHT"), "the readout says so")
+	assert_true(s._board._rows().any(func(r: Dictionary) -> bool: return r["order"] == "CAUGHT"), "the board says so")
 	assert_false(s._map.attack.is_empty(), "the catch's fight shows")
 	# The catch reads as the caught machine's attack order (Ryan, 2 November: "when caught, the
 	# unit should show the attack order on the enemy that caught it for clarity").
@@ -558,7 +625,7 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	s._on_main_button()
 	assert_true(b.boss_fight, "the boss's fight")
 	assert_true(s._skirmish != null, "it opens")
-	assert_eq(s._sub_label.text, "BOSS // FIGHT", "the readout says so")
+	assert_true(s._board._title().begins_with("FIGHT"), "the board says so")
 	assert_eq(s._skirmish.sk.mechs.size(), b.mechs().size(), "with every machine in it")
 	assert_false(has_button(s._skirmish, "WITHDRAW"), "no withdrawing: no button for it (the long wall brief 7.5)")
 	var want := Sound.boss_set(b.faction)
@@ -690,18 +757,20 @@ func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
 	s.free()
 
 
-func test_the_gate_is_selectable_and_has_an_entry() -> void:
+## The gate and the rift are no selection on the map (Ryan, 9 November: "The rift and wall no
+## longer need to show their bars, nor be selectable"): a tap on either lets go of what was held
+## and opens nothing, a double-tap no entry; their numbers are the top bar's.
+func test_the_gate_and_the_rift_are_not_selectable() -> void:
 	var s := _screen()
-	var g: Vector2i = s.battle.field.map.gate
-	s._on_hex_tapped(g)
-	assert_true(s._map.gate_selected, "the gate is selected")
-	assert_true(s._details.visible and s._details_entry.text().contains("Integrity %d/%d" % [s.battle.field.gate_hp, s.battle.field.gate_hp_max]), "its integrity a gauge in the readout")
-	s._on_hex_tapped(s.battle.mechs()[0].pos)
-	assert_false(s._map.gate_selected, "another tap lets it go")
-	s._on_hex_double_tapped(g)
-	assert_true(s._codex.visible, "double-tap opens its entry")
-	assert_eq(s._codex._title.text, "“The Gate”", "titled as the gate")
-	s._codex.close()
+	var m: Unit = s.battle.mechs()[0]
+	for h in [s.battle.field.map.gate, s.battle.field.map.rift]:
+		s._on_hex_tapped(m.pos)
+		assert_eq(s._map.selected, m, "a machine in hand")
+		s._on_hex_tapped(h)
+		assert_eq(s._map.selected, null, "a tap on the structure lets it go")
+		assert_false(s._details.visible, "and opens no readout")
+		s._on_hex_double_tapped(h)
+		assert_false(s._codex.visible, "a double-tap opens no entry")
 	s.free()
 
 
@@ -817,7 +886,7 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	r2._resume_where_it_was()
 	assert_true(r2._skirmish != null, "resumed straight into the skirmish screen")
 	assert_eq(r2._skirmish.sk, mid.current, "on the saved fight")
-	assert_eq(r2._sub_label.text, "FIGHT", "the field reads as in a fight")
+	assert_true(r2._board._title().begins_with("FIGHT"), "the field reads as in a fight")
 	r2.free()
 	# A decided battle clears the save.
 	sk.reinforcements.clear()

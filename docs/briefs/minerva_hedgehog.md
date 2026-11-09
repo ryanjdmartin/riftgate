@@ -11,7 +11,7 @@ Minerva. **Proposed tier**: two. **Read first**:
 `docs/briefs/README.md`; `minerva_armadillo.md`; the bible's rows on the Faraday Hull (section
 7) and on retaliation and thorns (section 5); `docs/roster_analysis.md` section 8 (Minerva's
 gaps); `content/components.json` (proximity_klaxon, retribution_thurible; the Lockdown Shutters left
-content with the Armadillo's landing, 20 October).
+content with the Polar Bear's landing, 20 October).
 
 ## What Ryan said
 
@@ -28,9 +28,9 @@ content with the Armadillo's landing, 20 October).
   blows in, and the Faraday Hull (a foe that strikes its bare hull is Shocked) for the team to
   cash. Low armour makes the exposed aim choose it, so the Hull fires often, and its hull is
   what it pays: the drawback the thorns need. A lure keeps the multiplication a spend rather
-  than a standing state. Two Minerva tanks that read apart: the Armadillo the wall, this one
+  than a standing state. Two Minerva tanks that read apart: the Polar Bear the wall, this one
   the bait that punishes.
-- 15 October, why the Hull lives here and not on the Armadillo: Shock on a striker lands no
+- 15 October, why the Hull lives here and not on the Polar Bear: Shock on a striker lands no
   damage at the blow and must be cashed by a team spend, so it is capped by the team's dice
   rather than the enemy's blows; but under any draw on a heavy machine it is too much, and on
   armour 15 without a draw too little. On a light machine with a lure it fires often and costs
@@ -78,7 +78,7 @@ rare whose Retaliate deals chip damage (10 to each attacker) in place of Shocked
 **Claude's second round**, in chat: count only a blow that deals it damage (shield or hull), so
 Braced or a Barrier on it cannot make free Shocks; fold the draw into the passive, Lure granted
 to every weapon it fires (the Boar's shape), so every gun is the damaging lure and none eats the
-die, or a locked damaging lure with Rapid (the Armadillo's shape again); no locked piece needed;
+die, or a locked damaging lure with Rapid (the Polar Bear's shape again); no locked piece needed;
 medium, hull 110, shield 30, armour 5; the Faraday Hull and Sealed Live retiring, Shocked on a
 strike leaving the game except through the needle; on the Thurible, chip damage is thorns, so
 keep Retaliate's condition (a blow on bare hull) and let the wound be its drawback.
@@ -102,8 +102,8 @@ the spikes or the luring tank, not both; a damaging lure, if kept, is never Rapi
 becomes a tier-three module whose rule pays back a blow that damages its hull, with shield and
 field recharge down and hull up.
 
-Ryan, 20 October: "Echidna I will leave open for now." The Armadillo landed the same day (the
-bible's Armadillo row), so the Faraday Hull and Sealed Live are out of content: the Hull's idea,
+Ryan, 20 October: "Echidna I will leave open for now." The Polar Bear landed the same day (the
+bible's Polar Bear row), so the Faraday Hull and Sealed Live are out of content: the Hull's idea,
 a tank struck by its own choice that Shocks for the team, is this design's if he takes it.
 
 ## Ryan, 4 November: a new shape

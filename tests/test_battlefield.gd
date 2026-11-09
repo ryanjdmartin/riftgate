@@ -86,7 +86,7 @@ func test_a_flyer_is_walked_under_but_never_stopped_on() -> void:
 	var f := _field()
 	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(3, 2), "marsh", 2))
 	var plain: Battlefield.Walk = f.plan_walks()[1]
-	var fly := Unit.mech(2, "Sparrowhawk", plain.path[0], 0)
+	var fly := Unit.mech(2, "Kite", plain.path[0], 0)
 	fly.traits = ["flyer"]
 	f.add_unit(fly)
 	var w: Battlefield.Walk = f.plan_walks()[1]
@@ -110,41 +110,106 @@ func test_a_pack_on_the_apron_strikes_the_gate() -> void:
 	assert_eq(sq.pos, front, "it holds at the gate")
 
 
-## A pusher's wall segment (the long wall brief 3.3): drawn as the pack is dealt about the rift's
-## column, at a spread of nothing the rift's own column, which it walks to from wherever it
-## stands; the ramp's spread 2 at the foot and half the wall at the top; a hunter draws none.
-func test_a_pushers_segment_is_drawn_about_the_rifts_column_and_walked_to() -> void:
+## A pusher's wall segment (the long wall brief 3.3; Ryan, 9 November: "the flankers should target
+## their closest wall with a small amount of randomness, avoiding crowding"): the wall nearest where
+## it is dealt, at a spread of nothing its own column, which it walks to from wherever it stands; a
+## pack the rift sends the rift's column; the ramp's spread 2 at the foot and half the wall at the
+## top, for the rift's packs alone; a flank's the foot's 2, flat; a hunter draws none.
+func test_a_pushers_segment_is_the_wall_nearest_where_it_is_dealt_and_walked_to() -> void:
 	var f := _field(20, 12)
 	var rift_col := Hex.axial_to_offset(f.map.rift).x
 	var sq := f.add_unit(Unit.pack(0, "ghouls", _o(3, 3), "marsh", 2))
 	f.assign_goal(sq, 0)
-	assert_eq(sq.goal_col, rift_col, "at a spread of nothing, the rift's column")
+	assert_eq(sq.goal_col, 3, "at a spread of nothing, its own column: the wall nearest it")
 	for i in range(8):
 		f.enemy_turn()
-	assert_eq(Hex.axial_to_offset(sq.pos), Vector2i(rift_col, f.apron_row()), "walked to the apron hex in that column, across the field")
-	assert_eq(Ramp.spread_at(0, 20), 2, "the ramp's spread at the foot")
+	assert_eq(Hex.axial_to_offset(sq.pos), Vector2i(3, f.apron_row()), "walked to the apron hex in that column, straight down")
+	var sent := f.add_unit(Unit.pack(0, "sent", _o(4, 1), "marsh", 2))
+	f.assign_goal(sent, 0, true)
+	assert_eq(sent.goal_col, rift_col, "a pack the rift sends: the rift's column")
+	assert_eq(Ramp.spread_at(0, 20), 2, "the rift's spread at the foot")
 	assert_eq(Ramp.spread_at(Ramp.TOP, 20), 10, "and half the wall at the top")
+	assert_eq(Ramp.FLANK_SPREAD, 2, "a flank's, the foot's, flat")
+	f.ramp = Ramp.TOP
+	for n in range(6):
+		var flank := f.add_unit(Unit.pack(0, "f%d" % n, _o(18, 2), "marsh", 2))
+		f.assign_goal(flank)
+		assert_true(absi(flank.goal_col - 18) <= Ramp.FLANK_SPREAD, "a flank at the top of the ramp stays by its own stretch of wall, never across the map (%d)" % flank.goal_col)
 	var hunter := f.add_unit(Unit.pack(0, "wolves", _o(15, 3), "marsh", 2))
 	hunter.behaviour = "hunt"
 	f.assign_goal(hunter, 4)
 	assert_eq(hunter.goal_col, -1, "a hunter draws no segment")
 
 
-## At a spread of four the draw lands eight pushers on eight of the nine columns about the rift's,
-## never off the wall.
+## At a spread of four the draw lands eight pushers the rift sends on eight of the nine columns
+## about the rift's, never off the wall; the crowding keeps two from one column while an emptier one
+## is in the window.
 func test_eight_pushers_at_a_spread_of_four_take_eight_of_the_nine_columns() -> void:
 	var f := _field(20, 12)
 	var rift_col := Hex.axial_to_offset(f.map.rift).x
 	var cols := {}
 	for n in range(8):
 		var p := f.add_unit(Unit.pack(0, "p%d" % n, _o(n * 2, 1), "marsh", 2))
-		f.assign_goal(p, 4)
+		f.assign_goal(p, 4, true)
 		assert_true(absi(p.goal_col - rift_col) <= 4, "pusher %d inside the nine columns" % n)
 		cols[p.goal_col] = true
 	assert_eq(cols.size(), 8, "eight columns of the nine")
 	var edge := f.add_unit(Unit.pack(0, "edge", _o(0, 1), "marsh", 2))
 	f.assign_goal(edge, 40)
 	assert_true(edge.goal_col >= 0 and edge.goal_col < f.map.width, "a spread past the wall is clamped to it")
+
+
+## Two flankers dealt side by side never share a segment while their window holds another (Ryan:
+## "avoiding crowding ... make sure packs don't get stuck on one another"), and both strike, each on
+## its own stretch of the apron.
+func test_flankers_dealt_together_take_their_own_segments_and_both_strike() -> void:
+	var f := _field(20, 12)
+	var a := f.add_unit(Unit.pack(0, "a", _o(2, 4), "marsh", 2))
+	f.assign_goal(a)
+	var b := f.add_unit(Unit.pack(0, "b", _o(2, 5), "marsh", 2))
+	f.assign_goal(b)
+	assert_true(absi(a.goal_col - b.goal_col) >= 2, "two segments apart, none beside the other (%d, %d)" % [a.goal_col, b.goal_col])
+	for col in [a.goal_col, b.goal_col]:
+		assert_true(absi(col - 2) <= Ramp.FLANK_SPREAD, "each by its own stretch of wall")
+	for i in range(6):
+		f.enemy_turn()
+	var walks := f.plan_walks()
+	assert_true((walks[a.id] as Battlefield.Walk).strikes or f.on_apron(a, a.pos), "the first at the wall")
+	assert_true((walks[b.id] as Battlefield.Walk).strikes or f.on_apron(b, b.pos), "and the second, neither stuck behind the other")
+	assert_ne(a.pos, b.pos, "on hexes of their own")
+
+
+## A pack's whole way (Ryan, 9 November: "Pushers should show their current complete path to their
+## targeted wall segment when tapped. Similarly, hunters should show their current complete path to
+## their target"): the walk carries its route to its goal, this turn's path its first stretch; a
+## pusher's ends on the apron hex of its segment, a hunter's where its prey stands inside its ring;
+## each later turn's stop is its move along the rest, a water hex costing two.
+func test_a_walk_carries_its_whole_way_and_the_stops_of_the_turns_after() -> void:
+	var f := _field(20, 12)
+	var sq := f.add_unit(Unit.pack(0, "ghouls", _o(3, 1), "marsh", 2))
+	f.assign_goal(sq, 0)
+	var w: Battlefield.Walk = f.plan_walks()[sq.id]
+	assert_true(w.route.size() > w.path.size(), "the way runs past this turn's walk")
+	assert_eq(w.route.slice(0, w.path.size()), w.path, "this turn's walk is its first stretch")
+	assert_eq(Hex.axial_to_offset(w.route[w.route.size() - 1]), Vector2i(sq.goal_col, f.apron_row()), "a pusher's ends at its segment's apron hex")
+	var stops := f.turn_ends(sq, w)
+	assert_eq(stops[stops.size() - 1], w.route.size() - 1, "the last turn's stop is the goal")
+	for n in range(stops.size()):
+		assert_eq(stops[n] + 1, w.path.size() + 2 * (n + 1) if n < stops.size() - 1 else w.route.size(), "a stop a turn, two hexes on at move 2")
+	# Water on the way: each turn that wades walks less far.
+	var dry := f.turn_ends(sq, w).size()
+	for i in range(w.path.size(), w.route.size()):
+		if Hex.axial_to_offset(w.route[i]).y < f.apron_row():
+			f.map.terrain[w.route[i]] = BattleMap.Terrain.WATER
+	assert_true(f.turn_ends(sq, w).size() > dry, "wading takes more turns to the wall")
+	# A hunter's ends where its prey stands inside its ring.
+	var g := _field(20, 12)
+	var m := g.add_unit(Unit.mech(5, "Prey", _o(10, 9), 2))
+	var hunter := _hunter(g, _o(10, 1), 2, "nearest")
+	var hw: Battlefield.Walk = g.plan_walks()[hunter.id]
+	assert_eq(hw.prey, m.id, "it comes for the machine")
+	assert_true(g.catches_at(hunter, hw.route[hw.route.size() - 1], m), "its way ends with its prey inside its ring")
+	assert_false(g.catches_at(hunter, hw.end, m), "which this turn's walk does not reach")
 
 
 ## A segment whose apron hex is water or a wall resolves to the nearest land apron hex, a tie
@@ -199,7 +264,7 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	f.patrol_cycle = [Battlefield.composition([["revenant", 2]], "marsh", "patrol", "shamblers")]
 	f.ramp = 0
 	var m := f.add_unit(Unit.mech(9, "A", _o(4, 2), 3))   # a machine right under the rift
-	assert_eq(f.seam_row, Battlefield.seam_start(), "the seam starts where the bleed's gradient ended")
+	assert_eq(f.seam_row, f.seam_start(), "the seam starts where the bleed's gradient ended")
 	f.peak()
 	assert_eq(f.peaks, 1, "one peak")
 	assert_eq(f.packs().size(), 1, "the rift sent one composition and the new tear sent nothing yet")
@@ -209,7 +274,7 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	assert_false(f.machine_adjacent(sent.pos), "it landed beside no machine")
 	assert_true(Hex.distance(sent.pos, f.map.rift) <= 3, "near the rift")
 	assert_eq(f.tears.size(), Ramp.tears_at(0), "the ramp's count of tears opened")
-	assert_eq(f.seam_row, Battlefield.seam_start() + Ramp.seam_creep_at(0), "the seam crept")
+	assert_eq(f.seam_row, f.seam_start() + Ramp.seam_creep_at(0), "the seam crept")
 	var first: Vector2i = f.tears[0]["pos"]
 	assert_eq(Hex.axial_to_offset(first).y, f.seam_row, "and the tear opened on the seam's new edge")
 	f.peak()
@@ -315,10 +380,10 @@ func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
 	var f := _field(7, 14)
 	var sq := f.add_unit(Unit.pack(1, "brutes", _o(3, 2), "peak", 3))
 	sq.behaviour = "hunt"
-	var slow := f.add_unit(Unit.mech(2, "Armadillo", _o(1, 9), 1))
+	var slow := f.add_unit(Unit.mech(2, "Polar Bear", _o(1, 9), 1))
 	slow.hull = 90
 	slow.shield = 30
-	var weak := f.add_unit(Unit.mech(3, "Sparrowhawk", _o(3, 9), 5))
+	var weak := f.add_unit(Unit.mech(3, "Kite", _o(3, 9), 5))
 	weak.hull = 20
 	weak.shield = 10
 	var mid := f.add_unit(Unit.mech(4, "Badger", _o(5, 9), 3))
@@ -345,7 +410,7 @@ func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
 	sq.prey = 0
 	f.pick_prey(sq)
 	weak.hull = 200
-	assert_eq(f.pick_prey(sq), weak, "still the Sparrowhawk, now the strongest")
+	assert_eq(f.pick_prey(sq), weak, "still the Kite, now the strongest")
 	f.units.erase(weak)
 	assert_eq(f.pick_prey(sq), mid, "the prey gone, it picks again: the weakest left")
 	# A machine whose passive says never_hunted (the Prairie Dog's) is never picked.

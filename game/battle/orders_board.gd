@@ -5,10 +5,12 @@ extends Control
 ## strip of its own so that, held, it never covers a hex someone wants to tap (Ryan, 28
 ## September: an overlay on the map would make selecting under it annoying); empty, the
 ## strip read as a black gap on a tall phone, so it carries the orders board while it
-## waits. What a player wants at a glance (Ryan, 29 September): every machine's shield
-## and hull, what it can still do this turn, and whether a hunter is after it; the enemy on
-## the field as a count; what the enemy's turn will do to the gate. Not the rift's count
-## (the top bar and the rift's own bar say it), not the nearest pack (the map is faster). The display dresses it: a bytes readout ticking in the corner, and a
+## waits. What a player wants at a glance (Ryan, 29 September): every machine's hull (no
+## shield: the fight's, full as every fight opens), what it can still do this turn (the only
+## place that says so: Ryan, 9 November, the pip on the map retired as clutter), and whether a
+## hunter is after it; the turn; the enemy on the field as a count; what the enemy's turn will do
+## to the gate. Not the gate's integrity, the rift's count or the Fractures (the top bar's
+## gauges), not the nearest pack (the map is faster). The display dresses it: a bytes readout ticking in the corner, and a
 ## line whose text changed settles from a scramble. Covered (drawn blank) while the
 ## readout is up. The LOG button at its corner belongs to the screen and opens the full log.
 
@@ -20,7 +22,7 @@ var playing: Callable = Callable()   # -> bool: the movement phase is playing
 const ROW_H := 24.0
 const SETTLE := 0.45   # seconds a changed line spends scrambled
 const BAR_W := 54.0
-const BAR_H := 6.0
+const BAR_H := 10.0   # one gauge, the hull, so a little heavier than the two it replaced
 
 var _t := 0.0
 var _last: Dictionary = {}    # line key -> text last drawn, to see a change
@@ -50,7 +52,7 @@ func _draw() -> void:
 	draw_string(mono, Vector2(0.0, y), Hud.hex_bytes(4, frame, 3), HORIZONTAL_ALIGNMENT_RIGHT, size.x - 76.0, 12, Color(hud, 0.45))
 	draw_line(Vector2(10.0, y + 6.0), Vector2(size.x - 10.0, y + 6.0), Color(hud, 0.22), 1.0)
 	y += ROW_H
-	# The machines, one row each, in the team's order: name, shield and hull, order, contact.
+	# The machines, one row each, in the team's order: name, hull, order, contact.
 	var split := size.x * 0.64   # the field column starts here
 	var rows := _rows()
 	for i in range(rows.size()):
@@ -60,8 +62,9 @@ func _draw() -> void:
 		_text(mono, Vector2(x, y), _settled(key + "n", r["name"], frame), 13, Color(hud, 0.95), 118.0)
 		x += 124.0
 		var u: Unit = r["unit"]
-		_bar(Rect2(x, y - 9.0, BAR_W, BAR_H), u.shield, u.shield_max, Palette.SHIELD)
-		_bar(Rect2(x, y - 1.0, BAR_W, BAR_H), u.hull, u.hull_max, Palette.HULL)
+		# The hull alone: the shield is the fight's, full as every fight opens (the long wall brief
+		# 7.5; Ryan, 9 November: "Lower panel shows shield still").
+		_bar(Rect2(x, y - 10.0, BAR_W, BAR_H), u.hull, u.hull_max, Palette.HULL)
 		x += BAR_W + 12.0
 		_text(mono, Vector2(x, y), _settled(key + "o", r["order"], frame), 13, r["colour"], 90.0)
 		if not str(r["meets"]).is_empty():

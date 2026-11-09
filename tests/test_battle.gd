@@ -7,7 +7,7 @@ extends TestCase
 func _team() -> Array:
 	var db := ContentDB.load_default()
 	var out: Array = []
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		out.append(db.make_mech(id))
 	return out
 
@@ -80,11 +80,11 @@ func test_setup_places_team_formation_and_boss() -> void:
 			assert_true(row <= 2, "the boss starts by the rift")
 		else:
 			var moves := 1 if sq.composition_size == "formation" else 2
-			var want := maxi(BattleMap.MOUTH_ROWS, b.field.apron_row() - moves * sq.movespeed)
+			var want := maxi(b.map.mouth_rows(), b.field.apron_row() - moves * sq.movespeed)
 			if sq.behaviour == "hunt":
 				# A hunter opens a row back at a time until it has caught nobody (no battle opens
 				# on a forced fight, Ryan, 6 November).
-				assert_true(row <= want and row >= BattleMap.MOUTH_ROWS, "%s, a hunter, stands at or behind %d moves from the wall" % [sq.display_name, moves])
+				assert_true(row <= want and row >= b.map.mouth_rows(), "%s, a hunter, stands at or behind %d moves from the wall" % [sq.display_name, moves])
 				assert_true(b.field.catch_of(sq) == null, "%s has caught nobody" % sq.display_name)
 			else:
 				assert_eq(row, want, "%s stands %d move%s from the wall" % [sq.display_name, moves, "" if moves == 1 else "s"])
@@ -113,7 +113,7 @@ func test_no_battle_opens_on_a_forced_fight() -> void:
 					for sq in b.field.packs():
 						if sq.is_boss:
 							continue
-						assert_true(Hex.axial_to_offset(sq.pos).y >= BattleMap.MOUTH_ROWS, "%s opens out of the rift's mouth" % sq.display_name)
+						assert_true(Hex.axial_to_offset(sq.pos).y >= b.map.mouth_rows(), "%s opens out of the rift's mouth" % sq.display_name)
 						if sq.behaviour == "hunt":
 							hunters += 1
 							assert_true(b.field.catch_of(sq) == null, "%s, a hunter, has caught nobody as the battle opens" % sq.display_name)

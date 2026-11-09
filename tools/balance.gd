@@ -25,7 +25,7 @@ extends SceneTree
 ## --damage F (every machine's blows scaled by F through a loadout modifier, to read a
 ## damage scale before the content is rewritten to it; 1.0 is the content as it stands),
 ## --rows id,id (only these rows, by the ids the JSON names: a chassis id, "team", "minerva
-## team", "team:badger+sparrowhawk"), --packs id,id (only these packs, by the ids the JSON
+## team", "team:badger+kite"), --packs id,id (only these packs, by the ids the JSON
 ## names, "treant x1", "meadow formation" (tier one's; "meadow formation tier 2" and "tier 3"
 ## the ladder's, beside a cell for every recolour, "goblin_guard x4", since 28 October),
 ## "finale", --packs promise (the promise read, the long wall brief section 5: every patrol, formation and
@@ -59,7 +59,7 @@ extends SceneTree
 ## hero with its domain's first pack in the other columns as the campaign fields it, and the
 ## finale's line of each domain's first bench hero promoted, beside the packs by default),
 ## --trace "<row id>|<pack id>|<policy>|<seed>" (play that one fight and print its log
-## instead of the matrix; ids as the JSON names them, e.g. "sparrowhawk|brute x4|greedy|3"),
+## instead of the matrix; ids as the JSON names them, e.g. "kite|brute x4|greedy|3"),
 ## --part i/n (21 October: run only every n-th cell from the i-th, counting from 0, into the
 ## --json path and no report, so n processes share the matrix on n cores) and --merge
 ## a.json,b.json (the report from those parts' cells, with the same options the parts ran

@@ -39,6 +39,7 @@ var column: int = -1
 var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
+var recorder = null              # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this foe gains is noted in (Effects._record); null in any fight that plays
 var recovering: bool = false     # lost its action to a stun this turn: its stun resist lands as Numbed at the round's end
 var die = null                   # foes have no die; the pipeline asks, so the field exists
 var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would get back up does not (Execute retired 10 October)
@@ -269,7 +270,7 @@ static func countdown_of(a: Dictionary) -> int:
 	return maxi(0, int(a.get("countdown", 0)))
 
 
-## A last act as an attack action (content `on_death.blow`, 15 October: the Behemoth's Meteor),
+## A last act as an attack action (content `on_death.blow`, 15 October: the Gargantuan King's Meteor),
 ## shaped like any move so the blow reads through the same rules.
 static func death_blow_from(b: Dictionary) -> Dictionary:
 	return {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),

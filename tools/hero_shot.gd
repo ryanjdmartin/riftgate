@@ -9,7 +9,7 @@ extends SceneTree
 ## a model too: <chassis> shapes/barrel_minerva. RIFTGATE_FIT=stock wears what the game puts on
 ## a fresh machine (MechView3D.plan_for): the stock in content against what the model's pins
 ## were built carrying, so a stale part shows as its class shape. RIFTGATE_FORM=<name> renders
-## the model holding that form (the Armadillo's "sealed"), turned all the way in.
+## the model holding that form (the Polar Bear's "sealed"), turned all the way in.
 
 var _frames := 0
 var _view: MechView3D

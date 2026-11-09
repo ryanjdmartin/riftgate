@@ -284,15 +284,15 @@ def write(args):
 
     # ------------------------------------------------------------------ the Peak
     P['peak'] = [
-        # tier one: bomb, salamander, drake (back), magma_golem
+        # tier one: bomb, salamander, drake (back), magma_elemental
         C("ember_pit", "formation", [1], ["salamander", "salamander", "bomb", "bomb"], ["drake", "drake", N, N],
           "Drakes behind the lizards breathe scorch and set a machine burning; the bombs burst through the shield once hurt. Kill a bomb whole or not at all, and cool what the drakes pick.",
           "today's"),
         C("ember_pyre", "formation", [1], ["salamander", "salamander", "bomb", "bomb"], ["drake"]*4,
           "Eight: four drakes behind the pit.",
           "new, the eight-slot variant"),
-        C("magma_vent", "formation", [1], ["magma_golem", "salamander", "salamander", "bomb"], [N, "drake", N, N],
-          "The golem's fist comes through the shield every round and, hurt, its cracks vent on everyone: plate answers the fist, cooling the vent; a drake behind the lizards stokes.",
+        C("magma_vent", "formation", [1], ["magma_elemental", "salamander", "salamander", "bomb"], [N, "drake", N, N],
+          "The elemental's fist comes through the shield every round and, hurt, its cracks vent on everyone: plate answers the fist, cooling the vent; a drake behind the lizards stokes.",
           "today's with a drake"),
         C("ember_pair", "patrol", [1], ["salamander", "bomb", N, N], [N]*4,
           "One burning bite and one bomb: kill the bomb whole with a blow of four, then the lizard; half-kill the bomb and it bursts through the shield.",

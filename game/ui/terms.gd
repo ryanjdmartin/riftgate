@@ -37,7 +37,7 @@ const TABLE := {
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"kill_overcharge": ["overcharge", "heat"], "self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],
-	"roll_again_property": ["rapid", "heat"], "pull": ["mine", "heat"], "drone": ["syrinx_drone", "heat"],
+	"roll_again_property": ["rapid", "heat"], "gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
 	"kill_rerolls": ["reroll", "plain"],
 	# Statuses.
@@ -45,7 +45,7 @@ const TABLE := {
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"],
-	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "syrinx_drone": ["syrinx_drone", "heat"],
+	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "mine": ["mine", "heat"],
 	"braced": ["shield", "guard"], "ore_plate": ["hopper", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"],
 	"retaliate": ["shocked", "guard"], "suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
@@ -126,14 +126,30 @@ static func status_colour(status_id: String) -> Color:
 
 ## What one term is, over its tip: the list's headings (PauseMenu.GLOSSARY) for one.
 const KINDS := {"reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS", "foe": "A FOE'S MOVE"}
+## A status's heading by what it is to its unit (Effects.status_kind; Ryan, 9 November: buffs and
+## debuffs "clearly labeled as such, so that it's clear what gets purged").
+const STATUS_KINDS := {"buff": "BUFF // A PURGE TAKES IT", "debuff": "DEBUFF", "ability": "ABILITY // NOTHING STRIPS IT"}
 
 
-## The list's entry for a term, for its tip: its name, its line and what kind of term it is.
+## The list's entry for a term, for its tip: its name, its line and what kind of term it is, a
+## status's by what it is to its unit.
 static func entry(id: String, db: ContentDB = null) -> Dictionary:
 	if db == null:
 		db = ContentDB.load_default()
 	var e: Dictionary = db.vocabulary.get(id, {})
-	return {"id": id, "name": str(e.get("name", id)), "codex": str(e.get("codex", "")), "heading": str(KINDS.get(str(e.get("category", "")), ""))}
+	var heading := str(KINDS.get(str(e.get("category", "")), ""))
+	if str(e.get("category", "")) == "status":
+		heading = str(STATUS_KINDS.get(Effects.status_kind(engine_status(id)), heading))
+	return {"id": id, "name": str(e.get("name", id)), "codex": str(e.get("codex", "")), "heading": heading}
+
+
+## The engine's status a status term names: its own id, or the engine's where an alias keys it apart
+## (the hopper's term, a machine's Burning reading as the foe's).
+static func engine_status(term_id: String) -> String:
+	for k in ALIASES.keys():
+		if str(ALIASES[k]) == term_id and Effects.STATUS.has(str(k)) and not Effects.STATUS.has(term_id):
+			return str(k)
+	return term_id
 
 
 ## `text` cut into runs, each {text, terms}: a term the list defines, by its name or a keyword's

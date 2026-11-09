@@ -15,7 +15,7 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
 
 - Ryan played Phase 2 on the phone (9 November; the status holds the play in his words): every
   fight survival, the tank needed rather than wanted, Floraison impossible, the Armadillo too
-  strong for tier one, the locked pieces chased, the Lance and the Skua's sweep wanted every
+  strong for tier one (the Polar Bear since his kit for it of the same day), the locked pieces chased, the Lance and the Skua's sweep wanted every
   round whatever their heat.
 - The formation pass's reads (`docs/measurements.md`, 9 November): fodder formations free for
   three at eight foes, the massives walls for four stock lights, a stall against the grave field,

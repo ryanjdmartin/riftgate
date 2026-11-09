@@ -112,7 +112,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   a condition opened or with the foes' heat stacks scaled (`special_probe_read.py` reads its
   parts); `chain_probe.gd` plays a squad through one domain's formation up to nine times in a
   row with its damage carried, for the quick campaign (`chain_probe_read.py` reads its parts);
-  `quick_run.gd` plays whole quick campaigns and writes `docs/quick_run.md`; `endgame_fours.py`
+  `quick_run.gd` plays whole quick campaigns and writes `docs/quick_run.md`; `behaviour_trace.gd`
+  records the skirmish engine byte for byte over 2,988 seeded fights, for a refactor that must
+  change nothing to be compared against main's (the skirmish code audit's steps); `endgame_fours.py`
   fits the five
   endgame fours up to tier two and runs them through the loop driver; `pricing_run.py` is the
   pricing run's driver (every stocked piece by knock-out, every slottable component and every
@@ -264,16 +266,16 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # --shield-ahead (the shield persona: a shield left standing valued by the blows it turns next round,
 # where the rungs bank it at a fifth of a point; the driver's too, for the support ladders),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
-# --rows badger,team runs only those rows; --team badger,sparrowhawk (repeatable) adds a row of exactly those machines,
+# --rows badger,team runs only those rows; --team badger,kite (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
 # twin with that module fitted to every machine, the differences in a section of their own; for prices, --bump armour:5
 # (repeatable: hull, shield, armour, heat, cooling, or damage on every blow) gives every machine
 # that much more, --nopassive strips every chassis's passive, and --set
 # components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only (under
-# components/, chassis/, modules/ or foes/: foes/behemoth/hp=48 reads a boss at another HP;
+# components/, chassis/, modules/ or foes/: foes/gargantuan_king/hp=48 reads a boss at another HP;
 # repeatable, never validated: knock-outs and what-ifs), and --fit badger=ram_frame,tactical_databank
 # (repeatable) fits those modules to every machine of that chassis; compare each against the same seeds without;
-# --trace "sparrowhawk|goblin x6|greedy|3" plays that one fight and prints its log instead.
+# --trace "kite|goblin x6|greedy|3" plays that one fight and prints its log instead.
 # --policies blind,planner reads the coordination gap (blind play's rounds over the planner's, on
 # the big fights and on the rank and file); the planner costs about four greedy fights a fight,
 # so it runs on the team rows: --rows "team,minerva team,kestrel team" --policies blind,planner;
@@ -351,7 +353,7 @@ python3 tools/stock_fills.py .
 # (the endgame fours of 23 October: a loadout by --set, modules by --fit). About half an hour on four cores; a
 # direction, never a band (docs/measurements.md). GODOT names the binary if needed.
 python3 tools/stock_loop.py run blows --lever blows_by:rf=1.5,massive=1.33,hero=2 --policies random,greedy
-python3 tools/stock_loop.py run fours --packs big --rows team:badger+clydesdale+sparrowhawk+dingo --team badger,clydesdale,sparrowhawk,dingo
+python3 tools/stock_loop.py run fours --packs big --rows team:badger+clydesdale+kite+dingo --team badger,clydesdale,kite,dingo
 python3 tools/stock_loop.py run built --packs big --set 'chassis/badger/loadout/0="polarity_projector"'
 python3 tools/stock_loop.py compare base blows
 # the endgame fours (23 October, the endgame half of the read by stage): five squads of four, chassis of any tier,
@@ -373,7 +375,7 @@ python3 tools/pricing_run.py run prices
 python3 tools/pricing_run.py summarise prices
 # the vanilla ladder (28 October): a flat heatless gun of each shape at 2 to 10 and at 3, 5 and 7 across heat 0 to 8 on the
 # cold bench and the hot one, the pieces named read in vanilla points beside it; about 45 minutes on four cores
-python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,goshawk --pieces flak_cannon,stoker
+python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --benches prairie_dog,buzzard --pieces flak_cannon,stoker
 # the synergy map: who sets and who reads every status and resource, from content (--write rewrites docs/synergy_map.md)
 python3 tools/synergy_map.py --write
 # the turn loop's pressure (24 October): the campaign's turn loop modelled from sim/campaign.gd's constants, every
@@ -398,6 +400,12 @@ python3 tools/special_probe_read.py build
 perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
 python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squads build/endgame_fours.json
 python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain_1.json build/chain_2.json build/chain_3.json
+# the behaviour trace (8 November), for a change that must change nothing: stock teams and teams fitted with every
+# component against every composition, boss and spawn at each tier, random and greedy, two seeds; every spend's
+# previews, forecasts, blows and whole fight state, an md5 a line. Run it on main (a worktree) and on the change,
+# four parts each (about four minutes), then cmp the two; --fight "<id from a .log's ### line>" writes one fight whole
+for i in 0 1 2 3; do perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/behaviour_trace.gd -- --out build/trace_$i --part $i/4 & done; wait
+cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log > build/trace.log   # then cmp each with the other tree's
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, termtip (the first machine's codex with the
@@ -409,7 +417,9 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # enemyturn (RIFTGATE_SHOT_FRAME=8 catches the acting foe lit), chips (every unit crowded with chips, the rows wrapping:
 # seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
-# and groundtear (the corrupted side's tear as it fires), and swallowed (the first machine swallowed: a ghost under a dashed edge).
+# and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
+# undo (a spend taken: UNDO lit at the bottom row's right end) and columns (every foe aimed at the machine nearest its
+# column, every arrow on, each from its intent chip's middle, the ranks slightly apart; RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
 # and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
 # The skirmish's controls (any run, the battle's fights too): RIFTGATE_SKIRMISH_CONTROLS=bottom|middle overrides
@@ -427,13 +437,16 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # ROOM), hold, north, zoom, zoomlast,
 # flyer, attack (a fight set up beside a pack), caught (a hunter's catch), resolve (a turn
 # ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, tune, and
-# bosscontact (the boss attacked: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), gate and foe (the gate or a pack tapped).
+# bosscontact (the boss attacked: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), foe (a pack tapped: its whole way,
+# its later turns numbered; select shows the whole way of a hunter coming for the machine in hand), rift (the rift's end of
+# the field: the vortex and the boss at its size) and fracture (a Fracture announced: the band, the top bar's gauge flashing;
+# the default frame catches the band at full).
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 # RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
 # second and the ground tears every couple of seconds, to judge them by eye.
-# RIFTGATE_SEAL_DEBUG=1 (any run with a model that holds a form, the Armadillo) holds the seal and lets it go in
+# RIFTGATE_SEAL_DEBUG=1 (any run with a model that holds a form, the Polar Bear) holds the seal and lets it go in
 # turn, and in a skirmish the sealed shell and its burst follow it, to judge them running; the open
-# Armadillo stands with its vents ajar.
+# Polar Bear stands with its vents ajar.
 # RIFTGATE_ACT_DEBUG=1 (any skirmish) lights one foe after another as the acting foe is lit in the
 # enemy's turn (its violet glow and breathing corners), a beat each, to judge it running.
 # RIFTGATE_RAGE_DEBUG=1 (any skirmish) plays the rage's roll again over and over on the machine
@@ -450,7 +463,7 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # RIFTGATE_MAP_VIEW=left|bottom (any run) turns the battle map for the run without touching the saved
 # MAP VIEW setting (MapOrient): the wall at the left with the rift at the right (flat-top, the default),
 # or at the bottom with the rift at the top; the battle screen's `queue` pose (two orders onto two
-# packs) shows the fight queue's numbers, ENGAGE 1 OF 2 and the action pips.
+# packs) shows the fight queue's numbers and ENGAGE 1 OF 2.
 # RIFTGATE_BLEED_DEBUG=1 (any run) gives the whole field to the painted world, to judge a domain's
 # tileset in place (RIFTGATE_FACTION=meadow|waste|marsh|peak picks the domain on the standalone
 # screen); `xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd
@@ -465,6 +478,8 @@ python3 tools/chain_probe_read.py "starter trios" build/chain_0.json build/chain
 # turn every second and a half: the jolt and the ring of dust thrown off it, to judge running.
 # RIFTGATE_ABILITY_DEBUG=1 (any skirmish) gives every foe and machine that has no ability an
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
+# RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,
+# so any kill shows its blast land round the slot, to judge the Mine's chip and blast running.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
@@ -502,7 +517,7 @@ RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . 
 godot --path . --rendering-method gl_compatibility -s tools/die_sheet.gd -- build/die_sheet.png
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale baboon armadillo wild_boar prairie_dog dingo goshawk nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite clydesdale baboon polar_bear wild_boar prairie_dog dingo buzzard nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # front, rear, or a yaw in degrees
 godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom, with the 3D views' own (the map's world, its machines' layer)
@@ -571,7 +586,7 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 # the fit sheet: every machine's stock, then each class on all its mounts at once, a row a machine, into one PNG (about a minute
 # for all of them); run it after a model's mounts change, before the model goes to Ryan; name chassis to sheet only those
-godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -- fit_sheet.png [armadillo goshawk] [--cell 220]
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -- fit_sheet.png [polar_bear buzzard] [--cell 220]
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
 # nose up), then the art/models/wslook_* and ktlook_* files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles
@@ -668,7 +683,7 @@ loses nothing: Resume battle opens it where it stood, straight into the fight if
 on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
 The harness's FIGHT tab can add any faction's boss; a massive foe fills both ranks of a column. For the
-standalone screen, `RIFTGATE_FOES=warrior,goblin:3,white_mage` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
+standalone screen, `RIFTGATE_FOES=warrior,goblin:3,cleric` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,kite,baboon` picks the team and
 `RIFTGATE_BOSS=1` adds the faction's boss, `RIFTGATE_TERRAIN=<ground>` dresses the field, and
 `RIFTGATE_SKIRMISH_CONTROLS=bottom|middle` places the controls over the saved setting.
 

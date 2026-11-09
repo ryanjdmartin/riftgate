@@ -10,7 +10,7 @@ moved it from Aphelion, and its figure is Ryan's to name.
 
 **Status**: Ryan's idea of 4 November, Claude's first round below, unanswered. **Maker**: the
 Arsenal. **Proposed tier**: two. **Read first**: `docs/briefs/README.md` (ten a maker, the
-orbits); the bible's stun row, the Backdraft Charge's line in it (section 5) and the Armadillo's
+orbits); the bible's stun row, the Backdraft Charge's line in it (section 5) and the Polar Bear's
 row (Cryo); `kestrel_owl.md` (Cryo as the Snowy Owl's cold).
 
 ## What Ryan said
@@ -26,7 +26,7 @@ row (Cryo); `kestrel_owl.md` (Cryo as the Snowy Owl's cold).
 **In today's engine.** This is the Backdraft Charge's pattern with Cryo. The Backdraft is the
 Arsenal's, tier two: it consumes Burning for a point a stack, and its Suppress is gated at two
 stacks. Consuming and gates are both built. Cryo is Aphelion's lean (Ryan, 28 October), and
-Minerva's Armadillo lays it.
+Minerva's Polar Bear lays it.
 
 **Why the Arsenal's** (the ten-a-maker plan, 4 November): Aphelion had too many machines, and
 consuming a status for a blow is the Arsenal's Backdraft shape, the line Claude drew on 22 October
@@ -51,7 +51,7 @@ Macross's Battroid mode and the slottable Cryo setter the to-do gives it.
    asks for (the Cryo Flinger's shape without its Rapid and its lure).
 4. **The gate.** "Enough stacks" is the Backdraft's gate at some number. Numbed takes a stun as it
    always does, and this is one of the five stuns in the roster's orbit (the briefs README).
-5. **Cryo's orbit.** With the Snowy Owl on Cryo, four machines orbit it: the Armadillo lays it, the
+5. **Cryo's orbit.** With the Snowy Owl on Cryo, four machines orbit it: the Polar Bear lays it, the
    Cryo party defence keeps it, the Owl cashes it to stay hidden, and this figure blows it up. It is
    the one to check for room; if the Owl takes the detonator whole, the Arsenal has two slots open.
 6. **The first round's other form is withdrawn**: an Arsenal version that punished with the cold
@@ -67,7 +67,7 @@ list.
 1. The cooling traded for the blow, or kept beside it.
 2. Its planter, locked.
 3. Its gate's number.
-4. Its room beside the Owl, the Cryo party defence and the Armadillo.
+4. Its room beside the Owl, the Cryo party defence and the Polar Bear.
 5. Its figure, its numbers and its look.
 
 ## What the session hands back

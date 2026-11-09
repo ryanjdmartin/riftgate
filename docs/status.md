@@ -25,8 +25,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1060 tests, 259,914 checks, green (9 November, main with the long wall, the skirmish code
-  audit, a part no kill and a hunter's reach landed, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1081 tests, 304,222 checks, green (9 November, main with the shapes relaid and recast,
+  the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
+  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -44,7 +45,18 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the music session's branch below. The
+Everything is on main as of 9 November 2026 but the formation and refit session's branch and the
+music session's, both below.
+`claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November, its id's rename and every id
+following its name (How things stand below), landed on main as fast-forwards on Ryan's word ("merge
+it into main so I can try it"; "clean up and merge into main"); it is merged and to delete with the rest.
+`claude/playtesting-ui-feedback-hfdiok`, Ryan's playtest list of 9 November (How things stand
+below), took main's map session and skirmish audit step 3 in a merge (the bible, the measurements
+and this file the conflicts, both sides' words kept) and main took it as a fast-forward on Ryan's
+word ("Ok clean up and merge into main"); it is merged and to delete with the rest. `ccr-1e6e6571-7x7ayr`,
+the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
+skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
+into main, so I can try it"); it is merged and to delete with the rest. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
@@ -76,14 +88,28 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 one). Each merge commit says how its conflicts were settled.
 
 Still working (9 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`, the
-formation pass (its proposal `docs/formation_proposal.md`, waiting on Ryan's marks; the curve
-read's `--team`, `--tiers`, `--sizes` and `--domains`; the reads in `docs/measurements.md`, 9
-November; the bible's file at v0.492 with section 12 pointing at the proposal and the refit pass's brief, its republish
-waiting on Ryan's word as v0.489's does, Pages below), beside `ccr-8df9952c-4cccdf`, the skirmish
-code audit's structural steps (one round's end and one blow on a machine, the behaviour trace;
-`sim/skirmish.gd`, which this branch never touches); and `ccr-7effd31a-u5z4gw`, the
+formation pass and the refit pass's direction (the proposal `docs/formation_proposal.md`, the
+brief `docs/briefs/refit_pass.md` and the briefs it sends machines back to; the curve read's
+`--team`, `--tiers`, `--sizes`, `--domains` and `--ids`; the reads in `docs/measurements.md`, 9
+November, taken before it took main; nothing in `content/` or `sim/` moved). It took main at
+`2d489f7` on 9 November (Ryan: "merge main in here so that you're working on the latest engine
+and changes"): the bible, the measurements, this file and the to-do the conflicts, both sides'
+words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
+sections main's four and then this branch's, the to-do's lines each by the side that moved it),
+and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
+The bible's file is v0.498, main's v0.497 with this branch's rows, its republish on Ryan's word
+(Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
+9 November: `ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), on Ryan's word
+("Merge this into main. Your reads are correct"), main taken as it landed twice (the Polar Bear,
+then every renamed id: the save versions stacked, battles 20, runs 19 and quick runs 4; the
+bible, the measurements, this file, the to-do and the synergy map the conflicts, both sides kept,
+the generated tables, map and vocabulary run again) and main taking it as a fast-forward; it is merged and to delete with the rest. Landed
+9 November: `ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 (How things stand: one hit
+routine, the hidden flags gone, one round model, the behaviour trace), on Ryan's word ("Ok, merge
+into main"), main taken as it landed (the hunt and the rings, no conflict) and main taking it as
+a fast-forward. Landed
 8 November: `ccr-56b5169d-lsa2rg`, Ryan's redesign of 5 November (the battle as the defence of a
 long wall, the packs as designed formations, the shield the fight's resource: his direction and
 Claude's first round as `git show 68381ff:docs/long_wall_proposal.md`, the build brief
@@ -121,7 +147,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   module); the echidna left open (Ryan's new shape of 4 November in its brief), the siege battery
   parked on Ryan's charge brief, the battlecruiser never with the Carrier's session. Ryan's ideas
   of 4 November wait on his marks, each in its brief: the lure tank (his tier-one tank, which the
-  Armadillo's move to tier two lands with), the Cryo party defence, the immune one, the mole
+  Polar Bear's move to tier two lands with), the Cryo party defence, the immune one, the mole
   (its hook later), and the shield bash (the shield-basher cut as a unit, a tier-three piece).
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
@@ -170,8 +196,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   before a whiffed lure; Floraison impossible ("its HP was insurmountable", eating the tank and
   whittling the dealers); the Stingray caught by hunters and fine, since the Photosphere Lance at
   4 with Burn "takes down most foes", used as burst not as the hybrid meant; the Armadillo "a
-  beast of a tank and way too strong for tier 1", the one reason a boss was reached (his notes in
-  another session); never in control, every fight "how do I get out of this with all my machines
+  beast of a tank and way too strong for tier 1", the one reason a boss was reached (his notes
+  became the Polar Bear's kit of the same day, below); never in control, every fight "how do I get out of this with all my machines
   intact", which "should be reserved for Hunter, Elite and Boss packs, not pushers and flankers".
   The locked pieces warp the die: he chased the Flak Repeater as his only area piece, the Lance
   and the Skua's sweep every round, heat no deterrent. His rough conclusions, each a direction
@@ -210,8 +236,104 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   them, or his word to land the grids on the leans so he can play them (he wants the new
   formations judged before the refit), then the content lands with the opening's line, the
   vocabulary and the rules, and the bosses' blocks in a session of their own.
+- **The Lammergeier's rework** (9 November, `ccr-a0b35006-od22d2`; the bible's Lammergeier row):
+  Ryan sent it back for more than a fix ("A chassis based around opening an empty spot isn't a
+  good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
+  lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death", the
+  Cottonmouth's niche executed differently. The Reverberant Payload: every spend it aims at a
+  foe leaves a Mine on it as a rider, one a spend at a flat 2 with the spend's whole result on
+  that foe ("the mine should take the entire result of the spend, then apply it": every hit's
+  stacks as its machine deepened and doubled them, a gated keyword where its gate held), the
+  numbered ones added and the rest once, area, Sweep's targeting and Lure left behind;
+  when the foe falls (getting back up, splitting, a tick or a part included) the Mine blows in
+  Splash's shape round its slot, plain through each foe's own Flak and armour, in strike order,
+  a blast's fall blowing its own. The Syrinx Drone detonates (a weapon of 1, no cooldown, its
+  own Mine first); the Lorentz Contractor gathers every Mine onto one foe and Exposes it. A Mine
+  is a foe status: its chip shows the damage and its readout the keywords; a Ward turns it away,
+  a cleanse takes it, a merge hands it to the merger. The slot mines' code and the audit's faults
+  parked on it went with it. Saves at 20, runs at 19, quick runs at 4 (the renames of the day took
+  the numbers before). `RIFTGATE_MINE_DEBUG=1` mines every foe at
+  a fight's open, to judge the blast running. His levers if it reads weak or dangerous: a Mine a
+  hit; a cooldown on the drone. On main since 9 November ("Merge this into main. Your reads are
+  correct": the Numbed call and the conditions read as the die is spent among them). The
+  runner's read (30 seeds, a direction, alone): every pack 7 / 43
+  before, 42 / 50 after, from the tier-three band's floor to its top beside the Giant Petrel's
+  38 / 50, the drone picked 21% and the gather 5% (`docs/measurements.md`); not weak, so the
+  per-hit lever waits.
+- **The Polar Bear's kit of 9 November** (`claude/modest-ramanujan-uovd42`, Ryan: "The Armadillo is
+  OP. I never really felt strongly about Sealing it"; built as he gave it after the holes, his play
+  the judge): armour 1 open and 4 sealed, one Cryo Flinger on a die of five, the Flinger without
+  Rapid and gaining Spread while sealed (Lockdown's grant, scoped to the piece: a `when` of
+  `sealed` and an `entry` naming a component, both new), and its weapons 1 harder on a foe
+  carrying Cryo (the strike that meets the stacks, its hit spending them). The probe that read the
+  old kit is in `docs/measurements.md`. Renamed the Polar Bear the same day (the bible's names row; the claws in
+  his words a metaphor for the damage boost), its id `polar_bear` with it on his word, its model, rig,
+  textures, blend and hangar renders moved and the save versions bumped (battles 18, runs 17, quick runs 2). The same day every
+  id still wearing an old name followed its name (Ryan: "Yes, rename them all"): `kite`, `buzzard`, `oblation_mantle`, eleven
+  foes' (`antiquarian`, `world_eater`, `shuffler` and `shuffler_spawn`, `floraison`, `gargantuan_king`, `emperor_scorpion`,
+  `astromancer`, `cleric` and `cleric_promoted`, `bone_wyvern`, `magma_elemental`) and the compositions named for them, their
+  models, rigs, sprites, renders and picks moved; the Kite's codex says the Kite at last (it still said the Sparrowhawk), and
+  the saves moved on again (battles 19, runs 18, quick runs 3). 1075 tests green.
+- **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
+  Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
+  all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always
+  on screen, the gate, the rift's spawn and the Fractures (`TopBar`), flashing as one changes; the
+  turn and READY are the board's, the music between the bottom buttons; the gate's and the rift's
+  bars left the map and the gate is no selection. A Fracture is announced as a fight ends (the
+  warning band; THE RUPTURE at the last). Every walk's end hex is lit; a tapped pack shows its
+  whole way to its goal (`Walk.route`, `Battlefield.turn_ends`), its later turns numbered (Claude's
+  addition), its readout saying when it gets there; a selected machine shows its hunters' ways.
+  The action pip is gone, the board's lower panel shows the hull alone, the boss stands 128 px tall
+  on the map, the vortex stands on the rift's lowest hex with the wall at the left, and there the
+  wall and the gate stand a row forward with the city behind (his word the same day: "the best
+  solution", city defences to be wall segment upgrades). Both UNDOs read on or off by their edge;
+  the skirmish's sits bottom-right, and it opens again after a spend (the bug: its re-opening
+  tween ran a frame ahead of the clock and left it shut for good). The die's tap waits 0.15 s from its release to a second touch; a skirmish
+  intent line leaves its intent chip's middle (`UnitView.intent_anchor_global`) for the machine's,
+  the ranks 18 px apart each way and the edge foes' chip rows kept clear of their neighbours'; every status says Buff or
+  Debuff (`Effects.status_kind`: a wedge on its chip, the word in its hold, its tip's heading, the
+  keywords list's headings); the log stays at full strength; Jenny's "bogey eliminated" is cut.
+  The "chase": no pusher read a machine, but every pusher's segment was drawn about the rift's
+  column, where the machines open, so the flank patrols crossed toward them; on his word the same
+  day ("the flankers should target their closest wall with a small amount of randomness, avoiding
+  crowding ... Oversight if not implemented") a segment is the wall nearest where the pack is dealt,
+  within 2 of its own column for a flank, a formation the opening places and a tear's patrol, the
+  rift's packs keeping the ramp's spread about the rift's column, the least crowded column of the
+  window winning.
+- **The shapes relaid for the shallow field** (9 November, `ccr-1e6e6571-7x7ayr`, Ryan: "We lost a
+  lot of polish when we went to the new archetypes, and things need to be adapted to the new map
+  orientation (wide versus tall). It also needs to work for different map sizes, in case those
+  change with convergence"; the long wall brief's open item 5). The old laying kept the old
+  field's reservations as counts (a mouth of four rows, the team's two), so at twelve deep a shape
+  had rows 4 to 7, and the "down the field" shapes laid one divider sized for a wall of nine: the
+  fjord a puddle, the gorge two stubs, the steppe bare, the river a moat (the measurements of 6
+  November). Built: the rift's mouth a share of the depth (`BattleMap.mouth_rows`: a row for every
+  five of depth, two at least and four at most; three at twelve deep, so five open rows), the seam
+  and the opening reading it (a pack whose opening hex the shape took goes along its row, never
+  back into the mouth: `Battlefield.landing`'s floor); every shape laid to fill the open rows at
+  any size, "across" along the wall and "down the field" rift to wall whichever way the view
+  turns; the counts that are the field's scaled with the wall (a fjord for every ten hexes of it,
+  a cliff wall for every six, the steppe's crag and pond for every ten) and the team's not (fords
+  and streets three or four in all); a river between a bank row at the mouth's edge and one before
+  the team's ground; a city's one band mid the open rows with rubble before and after; each shape's
+  second ground along its landform in stretches from a seeded noise (gravel bars, shingle, scree,
+  `BattleMap._shore`). Then Ryan's recast of the three wall shapes the same day ("the 'vertical
+  versus horizontal' categorizations don't really hold together"; his words in the bible's shapes
+  row): a spectrum by the mass and the structure of what blocks you, water in all three. Built as
+  first cuts: the GORGE cliff mass over the open rows cut by winding, branching channels (a trunk
+  for every seven hexes of wall, two or three branches each, a flooded stretch or two); the RUINED
+  CITY large tower blocks in a grid of one-wide avenues (the gate's two wide, the roads) and
+  broken side streets, a plaza with a fountain and a flooded street now and then; the BADLANDS an
+  open field of small mesas a hex apart with ponds. A city band's streets rule retired with the
+  band; the field of every shape but the badlands and the steppe level by rule, and the scenery's
+  first ring level. Saves at 17, runs at 16. Read at 200 seeds on every shape at 20 by 12
+  (`docs/measurements.md`, 9 November, twice: the relaying, then the recast) and drawn on both
+  views (the river's bars, the gorge's mass and the city's blocks in the 3D); the to-do's Ryan
+  list has the phone judge, with the counts and the authored sectors (the long wall proposal's
+  lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
+  it (live on the page since 9 November's republish, Pages below).
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
-  enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
+  enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
   taking its widest member's ring, the Mandragoras' back-rank three from the joining days. His
   calls the same day, built: a composition says whether it hunts, never its foes ("The
@@ -304,8 +426,15 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   unit's own mechanic is an Ability on a chip of its own that no Purge touches
   (`RIFTGATE_ABILITY_DEBUG=1`); the Musk Ox reloads once, the greater; every roll inside the
   round follows the reroll rule but the Knuckle of Fury's and the Spin-Up's, each said on the
-  die. The mine path waits for the Lammergeier's rework; the audit's structural steps are next
-  (below). Waits on Ryan's phone read of the Ability chips (the to-do).
+  die. The mine path went with the Lammergeier's rework (9 November). Its step 3 the same day
+  (`ccr-8df9952c-4cccdf`, no behaviour changed): one hit routine (`_hit`) for the plain spend,
+  the salvo and the blast, each paying its own (`_finish_hits`, `Pays`), one `_land_blow` for
+  every blow of a hit, the hidden flags arguments and returns, the preview's recorder on its
+  copy, one `_finish_round` and one `_blow_on`; checked by the suite and `tools/behaviour_trace.gd`
+  (2,988 fights identical to main's). On his word, 9 November: the die-in-hand forecast gone
+  (`forecast` the bot's estimate of the round as it stands; the round preview the one model with
+  a die in hand, the twenty-three tests moved onto it) and the Swap's gauges on the preview while
+  it waits (Bug 16, the one visible change). Waits on Ryan's phone read of the Ability chips (the to-do).
 - **The spend's order and Sweep's columns** (7 November; the bible's section 5 Sweep, riders and
   spend's order rows): a single-target weapon's hits, their riders, the death check, the spend's
   end, then what its kills bring back (a foe getting back up, a split's halves), so nothing a
@@ -317,8 +446,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   halved"), its base halved before every buff ("the spirit of buffs and riders is they happen
   after"); a massive foe takes either rank's shot at its column; on screen every hit and shot
   lands, one on a corpse and a wasted shot on its empty slot (`RIFTGATE_MISS_DEBUG=1`), a death
-  at the spend's death check after its last blow; a Swap, a drone and a pull land in the rider
-  phase on a felled target too, a return and a drone's mine coming where the unit died. Waits on Ryan's phone read of the chips and the
+  at the spend's death check after its last blow; a Swap lands in the rider phase on a felled
+  target too, a return coming where the unit died. Waits on Ryan's phone read of the chips and the
   wasted shot, and a Skua read (the to-do).
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
@@ -440,10 +569,11 @@ answers to its open list, the what-if switches in the balance runner and the rea
 content moves, his play at placeholders, then the content, the vocabulary, the rules and the
 rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
-is section 12's, its test the to-do's): its structural steps in order (one hit routine with its
-arguments in place of the hidden flags, the mine's half waiting for the Lammergeier's rework; one
-round model; the bot's and the screen's mirrors onto the engine, then a 30-seed direction;
-statuses as data, the Face, the dead code), since its tangles bend every read after it. The
+is section 12's, its test the to-do's): its structural steps in order (step 3 built on
+`ccr-8df9952c-4cccdf`, the mine's half gone with the slot mines on 9 November; then the bot's
+and the screen's mirrors onto the engine,
+then a 30-seed direction; statuses as data, the Face, the dead code, each refactor checked by
+`tools/behaviour_trace.gd`), since its tangles bend every read after it. The
 redesign moves every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on
 the refit and the audit's bot step. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
@@ -480,12 +610,17 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
-  page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
-  clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
-  for byte). This file is v0.489 (`384d3482`: the hunt the composition's, the rings purged); its
-  republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
-  `dc265dc9`'s file. The live
+  `docs/design-bible.html` after every change. The live page is v0.496, dated 9 November (the
+  page's Version 501, published from main at `f048e67` on Ryan's word, "republish the bible":
+  main's file whole, since the live v0.488 matched `dc265dc9`'s byte for byte and so needed no
+  merge; it carries the hunt the composition's and the rings purged, the map session's shapes and
+  field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
+  following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
+  Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, its republish on
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.498, main's with the formation and refit
+  session's rows (the hunters row's who-may-hunt, the kit, shield, triangle, redirection, injury,
+  command-die and Puffin rows' refit lines, section 12's items), unpublished too. BASE for the
+  next merge is `f048e67`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
@@ -500,21 +635,18 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. Behind
-  `ccr-d26a1321-xg9xge` (8 November) by `content/vocabulary.json` (the Ring's, the Pack's and the
-  Behaviour's codex), `content/foes.json` (no ring or hunt on a foe), `content/factions.json` (a
-  composition's `hunts`) and `tools/hangar.html` (the foe list's Zone gone): the live vocabulary
-  checked byte for byte against main's, `edits` empty and `designs` the two folded ideas, but the
-  publish refused by the permission check as unrequested, so it waits on Ryan's word. At the page's version 214
-  (8 November, from `ccr-1eaf0060-jrpw04` at `34ae947`: only `content/vocabulary.json` and
-  `content/components.json`, the Ability term, the seal, the Ore Plate, Golden, Guarded and Hot
-  Streak as abilities, the Purge's codex and the Null Field Emitter's, onto the long wall's
-  version 213 of that day: the page's foe-tier check reading the grid and `content/factions.json`
-  as grids). As the audit landed on main its seven content files were checked against main's one
-  by one and match, so main and the page agree. Versions 210 and 211 (7 November) were the Sweep
-  session's; version 209 before them the long wall branch's page, content files, pins and
-  `designs.json` with Ryan's eight directions folded in (2e871be), his two ideas, the Giant
-  Petrel and the Needletail, marked briefed (benched in the Kestrel hub's brief); `edits` empty.
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's
+  version 216 (9 November, main at `f048e67`, every id following its name on Ryan's word: "Yes,
+  rename them all"): the files changed since version 215 (main at `a95e0a1`, which the page
+  matched file for file, the Polar Bear's id and the hunts work of 8 November) and the old ids'
+  27 paths removed; the Kite's and the Buzzard's cards, models and renders and the renamed foes'
+  sprites checked on a local copy of the page. Behind main since the Lammergeier's rework landed
+  (`content/chassis.json`, `components.json` and `vocabulary.json`, and `designs.json` from its
+  briefs; the page and every other file as main's): the publish was refused by the permission
+  check as unrequested, so it waits on Ryan's word. `edits` empty, `designs` the two folded ideas (the Giant
+  Petrel and the Needletail, briefed), and one name candidate of Ryan's, the Tesla Gauntlets of
+  28 September, still saying "the Armadillo's status" (his words of then, kept). Behind main since the Lammergeier's rework landed (9 November) by `content/chassis.json`,
+  `content/components.json` and `content/vocabulary.json` (the Mines), its republish on Ryan's word.
   `build/hangar/designs.json` is one
   878 KB line, so a session that must read it whole before publishing writes it indented first.
   Its lit parts show as the phone's renderer shows
@@ -532,7 +664,8 @@ commands are in `README.md`.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV
   (`tools/soundforge/melody_desk.html`; collections `parts`, re-seeded by `desk_parts.py`, and
   `melodies`).
-- The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
+- The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`);
+  its source's generic foe-down pool lost "bogey eliminated" on 9 November, unpublished.
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's

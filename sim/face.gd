@@ -176,8 +176,8 @@ var reaches_all: bool:
 var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
 var resets_on_kill: bool = false   # an attack: if its spend kills, every entry dark from a cooldown comes back and its machine acts again (the Kite's Pinion Driver, 21 October)
-var pulls_mines: bool = false # an attack: every mine on the field gathers into the slot it is spent on, a foe there taking them now (the Lammergeier's Lorentz Contractor, 21 October)
-var drones: bool = false      # an attack: the foe carries the Syrinx Drone; Rapid on a foe already Exposed, otherwise it Exposes (the Lammergeier's, 21 October)
+var gathers_mines: bool = false   # an attack: every Mine on the field's other foes joins its target's (the Lammergeier's Lorentz Contractor, Ryan, 9 November)
+var detonates: bool = false   # an attack: its target's Mine blows now, on it and every foe round it, after the spend's own Mine joined it (the Lammergeier's Syrinx Drone, Ryan, 9 November)
 # The Swallowtail's locked pieces (Ryan's go, 21 October; built that day):
 var vents: int = 0            # a shield: the heat it also takes off the machine it shields, first (the Sutler's Hoist)
 var fills_shield: bool = false   # a shield: it fills the machine's shield to its maximum (the Hoist's charged form)
@@ -363,8 +363,8 @@ static func from_dict(d: Dictionary) -> Face:
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
-	f.pulls_mines = bool(d.get("pulls_mines", false)) and f.kind == Kind.ATTACK
-	f.drones = bool(d.get("drones", false)) and f.kind == Kind.ATTACK
+	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
+	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
 	f.vents = maxi(0, int(d.get("vents", 0))) if f.kind == Kind.SHIELD and not (d.get("vents") is String) else 0
 	f.fills_shield = bool(d.get("fills_shield", false)) and f.kind == Kind.SHIELD
 	f.cools_all = bool(d.get("cools_all", false)) and f.kind == Kind.SHIELD
@@ -466,10 +466,10 @@ func to_dict() -> Dictionary:
 		d["shields"] = shields
 	if resets_on_kill:
 		d["resets_on_kill"] = true
-	if pulls_mines:
-		d["pulls_mines"] = true
-	if drones:
-		d["drones"] = true
+	if gathers_mines:
+		d["gathers_mines"] = true
+	if detonates:
+		d["detonates"] = true
 	if vents > 0:
 		d["vents"] = vents
 	if fills_shield:
@@ -572,7 +572,7 @@ func cooldown_rounds() -> int:
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
-		or spins or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
+		or spins or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
@@ -700,8 +700,8 @@ func duplicate_face() -> Face:
 	f.heat_per_blow = heat_per_blow
 	f.shields = shields
 	f.resets_on_kill = resets_on_kill
-	f.pulls_mines = pulls_mines
-	f.drones = drones
+	f.gathers_mines = gathers_mines
+	f.detonates = detonates
 	f.vents = vents
 	f.fills_shield = fills_shield
 	f.cools_all = cools_all
@@ -827,10 +827,10 @@ func rule_phrases() -> Array[String]:
 	if kind == Kind.ATTACK:
 		if resets_on_kill:
 			out.append("a kill brings back every entry its cooldowns darkened and it acts again")
-		if pulls_mines:
-			out.append("gathers every mine into its slot")
-		if drones:
-			out.append("leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it")
+		if gathers_mines:
+			out.append("gathers every Mine onto it")
+		if detonates:
+			out.append("detonates its Mine")
 		if spends_magazine:
 			out.append("a strike for every ammo in the magazine")
 		if ammo_per_foe_hit > 0:
@@ -971,10 +971,10 @@ func describe() -> String:
 				s += " spends a %s to roll again, itself included" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
 			if resets_on_kill:
 				s += " a kill brings back every entry its cooldowns darkened and it acts again"
-			if pulls_mines:
-				s += " gathers every mine into its slot"
-			if drones:
-				s += " leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it"
+			if gathers_mines:
+				s += " gathers every Mine onto it"
+			if detonates:
+				s += " detonates its Mine"
 			if spends_magazine:
 				s += " a strike for every ammo in the magazine"
 			if ammo_per_foe_hit > 0:

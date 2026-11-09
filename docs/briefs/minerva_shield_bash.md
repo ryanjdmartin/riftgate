@@ -22,16 +22,16 @@ the Honey Badger's hopper row (sections 5 and 7); `docs/rules.md` on armour.
 
 - **It reads every armour the machine carries**: base, Armoured, the Ore Plate and the seal. That
   makes it the payoff for an armour build, which no tier-three piece offers today. A sealed
-  Armadillo cashes its seal (a weapon would open the seal anyway). A full Honey Badger cashes its
+  Polar Bear cashes its seal (a weapon would open the seal anyway). A full Honey Badger cashes its
   plate while its loads stay in the hopper.
 - **The price is the enemy's turn.** Armour zero until the round's end means the machine meets
   that turn's blows bare. It cashes no blows taken: Armoured from being struck ended with the last
-  round, so it is never the Armadillo's refused "stored blows cashed as damage".
+  round, so it is never the Polar Bear's refused "stored blows cashed as damage".
 - **A weapon or a module.** As a weapon it is one entry, and the choice is made on the die when it
   shows. As a module, the rule would ride every weapon the machine fires: the first spend each
   round pays, and the rest of the round fires at armour zero. Claude's lean: the weapon. It reads
   as one decision, where a module's one rule would reach every gun the machine carries.
-- **The scale.** Armour runs 0 to 5 (a sealed Armadillo), so the bonus runs 0 to 5 on a tier-three
+- **The scale.** Armour runs 0 to 5 (a sealed Polar Bear), so the bonus runs 0 to 5 on a tier-three
   blow, near the scale's capstone of 12 at the top.
 - **The Badger's choice** (hold the ore or fire it) stays the Badger's. This piece offers the same
   choice to any armoured machine, at tier three.

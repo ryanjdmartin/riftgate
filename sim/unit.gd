@@ -24,6 +24,7 @@ var shield: int = 40
 ## armour sets the base. Nothing stores a total (decided 18 September).
 var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "cooling": 0, "shield_regen": 0}
 var modifiers: Array = []   # Effects.Modifier list: loadout, battle, skirmish and timed effects
+var recorder = null         # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this unit gains is noted in (Effects._record); null in any fight that plays
 var allies: int = 0         # live allies in the fight this unit is in, kept by the skirmish, for passives that read it
 var hull_max: int:
 	get:

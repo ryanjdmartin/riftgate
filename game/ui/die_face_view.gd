@@ -29,7 +29,12 @@ signal drag_ended(global_pos: Vector2)
 
 const HOLD_SECONDS := 0.45
 const DRAG_THRESHOLD := 14.0
-const DOUBLE_TAP_SECONDS := 0.2   # under Android's own 0.3, which read as lag on a single tap (Ryan, 2 November: "Lower to 0.2 and I'll try again")
+## The double-tap window, from a tap's release to the next touch (Android's own measure, whose 0.3
+## read as lag on a single tap): a tap lands this long after it lets go with no second touch.
+## Ryan, 2 November: "Lower to 0.2 and I'll try again"; 9 November: "die face single press delay
+## can be a bit faster, even". Counted to the second touch rather than its release, so the
+## second press's own length no longer eats the window and a double-tap is no harder at 0.15.
+const DOUBLE_TAP_SECONDS := 0.15
 
 const FACE := 120.0        # the square face
 const RAIL := 18.0         # how far the chips hang past the right edge
@@ -83,7 +88,7 @@ var slot: int = 0            # the entry's place on its die, from one; 0 draws n
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
 var blast: int = 0             # a vent's blast on its own machine (the Whip Scorpion's): the blow it fires at a random foe, its mark and number in the passive box
-var form_mark: String = ""     # "seal" or "unseal": spending the entry shuts its machine's shell or opens it (the Armadillo's Lockdown), a chip on the rail
+var form_mark: String = ""     # "seal" or "unseal": spending the entry shuts its machine's shell or opens it (the Polar Bear's Lockdown), a chip on the rail
 var shut: Array[int] = []      # keywords whose gate is shut over the foe in hand (the gated stuns, 22 October): their chips struck through and dimmed
 var spent: bool = false
 var dead: bool = false
@@ -99,6 +104,7 @@ var _dragging := false
 var _holding := false
 var _last_tap_at := -10.0
 var _tap_due := -1.0         # when a tap waiting out the double-tap window lands; negative, none
+var _second := false         # this touch came inside the window after a tap: its release is the double-tap
 var _t := 0.0
 var _phase := 0.0
 
@@ -136,6 +142,7 @@ func _gui_input(event: InputEvent) -> void:
 			_holding = false
 			_press_pos = event.global_position
 			_press_at = Time.get_ticks_msec() / 1000.0
+			_second = _press_at - _last_tap_at <= DOUBLE_TAP_SECONDS   # the window runs from the last tap's release to this touch
 		else:
 			if _dragging:
 				drag_ended.emit(event.global_position)
@@ -143,7 +150,8 @@ func _gui_input(event: InputEvent) -> void:
 				hold_released.emit()
 			elif _pressed:
 				var now := Time.get_ticks_msec() / 1000.0
-				if now - _last_tap_at <= DOUBLE_TAP_SECONDS:
+				if _second:
+					_second = false
 					_last_tap_at = -10.0
 					_tap_due = -1.0   # the double-tap stands in for its first tap
 					double_tapped.emit()
@@ -541,7 +549,7 @@ func rail_tags() -> Array[String]:
 	if face.has_unique_rule() and inside != "star":
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
 	if not form_mark.is_empty():
-		tags.append(form_mark)   # it seals its machine, or opens it (the Armadillo's, 2 November)
+		tags.append(form_mark)   # it seals its machine, or opens it (the Polar Bear's, 2 November)
 	if corrupted > 0 and face.kind != Face.Kind.BLANK:
 		tags.append("corrupt")   # what a foe did to the entry, last on the rail, in its colour
 	return tags

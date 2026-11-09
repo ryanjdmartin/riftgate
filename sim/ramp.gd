@@ -68,11 +68,18 @@ static func elite_fractures_at(tier: int) -> Array:
 	return Array(ELITE_FRACTURES[clampi(tier, 0, ELITE_FRACTURES.size() - 1)])
 
 
-## How far either side of the rift's column a pusher's wall segment may fall (the long wall brief
-## 3.3; Ryan, 5 November: "The variance of where they target can even be a ramp factor"): 2 at the
-## foot, half the wall's length at the top. `width` is the wall's length.
+## How far either side of the rift's column the wall segment of a pack the rift sends may fall
+## (the long wall brief 3.3; Ryan, 5 November: "The variance of where they target can even be a
+## ramp factor"): 2 at the foot, half the wall's length at the top. `width` is the wall's length.
 static func spread_at(c: int, width: int) -> int:
 	return 2 + ((width / 2 - 2) * clampc(c)) / 12   # placeholder (the long wall brief)
+
+
+## How far either side of its own column the segment of a pack dealt anywhere but the rift may fall
+## (a flank patrol, a formation the opening places, a tear's patrol; Ryan, 9 November: "the
+## flankers should target their closest wall with a small amount of randomness"): the foot's 2, flat,
+## so none aims halfway across the map. Placeholder.
+const FLANK_SPREAD := 2
 
 
 ## The wall's length: the count of hexes along the wall, the map's width (the long wall, Ryan,

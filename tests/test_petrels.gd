@@ -95,8 +95,8 @@ func test_the_shield_pays_the_guns_own_heat_and_scorched_heats_the_gauge() -> vo
 	for eff in Effects.STATUS["scorched"]["effects"]:
 		if str(eff.get("effect", "")) == "add_heat":
 			extra = 2 * int(eff["value"])   # the status's own number, read rather than copied
-	assert_eq(sk.pending_burn(ms), 3, "the die: the shield pays the gun's own 3")
 	var foe: Foe = sk.front[0]
+	assert_eq(sk.shown_face(ms, ms.face(), foe).burns, 3, "the die: the shield pays the gun's own 3")
 	assert_true(sk.assign(0, foe), "the hot gun, scorched")
 	assert_eq(u.shield, 7, "the shield paid the gun's own 3")
 	assert_eq(ms.heat, extra, "and Scorched's extra reached the gauge")
@@ -153,7 +153,7 @@ func test_the_plate_takes_a_point_off_every_blow_while_the_shield_stands() -> vo
 	var u := _mech("Petrel", Die.single(Face.blank()), 3)
 	u.grant_passive(RIOT)
 	var sk := _fight([u], [_foe(300, 5), _foe(300, 5)])
-	var fc := sk.forecast(sk.mechs[0], false)
+	var fc := sk.forecast(sk.mechs[0])
 	assert_eq(int(fc["hull_after"]), 100 - 1 - 5, "the forecast walks the plate: 4 on a shield of 3, then 5 on bare hull")
 	sk.end_round()
 	assert_eq([u.shield, u.hull], [0, 94], "the first blow lost a point to the plate while the shield stood; the second met none")
@@ -171,8 +171,7 @@ func test_the_die_shows_the_burn_and_the_zap() -> void:
 	assert_eq(Skirmish.after_blow(ms, sf, foe), 2, "and the zap its own number, the die's passive box (Ryan, 4 November), its armour off too")
 	assert_eq(sk.shown_number_text(ms, sf), "4", "without a foe, the blow alone")
 	assert_eq(Skirmish.after_blow(ms, sf), 3, "and the zap what the shield pays")
-	assert_eq([sk.pending_heat(ms), sk.pending_burn(ms)], [0, 3], "the gauge waits for nothing; the shield for 3")
-	assert_eq(int(sk.forecast(ms)["shield_after"]), 7, "the round's forecast spends the burn")
+	assert_eq(int(sk.preview_round(0, foe)["mechs"][0]["shield_after"]), 7, "the round preview with the die in hand spends the burn")
 	u.shield = 2
 	sf = sk.shown_face(ms, ms.face(), foe)
 	assert_eq([sf.burns, sf.heat], [2, 1], "a shield short of the heat: what it holds, and the rest as heat")
@@ -194,8 +193,7 @@ func test_a_shield_cost_is_paid_first_and_never_burnt_into_a_blow() -> void:
 	var foe: Foe = sk.front[0]
 	var sf := sk.shown_face(ms, ms.face())
 	assert_eq([sf.shield_cost, sf.burns, sf.heat], [2, 3, 1], "the cost first, the heat from the 3 it leaves, the 1 past it as heat")
-	assert_eq([sk.pending_heat(ms), sk.pending_burn(ms)], [1, 3], "the gauge takes what the shield cannot")
-	assert_eq(int(sk.forecast(ms)["shield_after"]), 0, "the forecast spends the cost, then the burn")
+	assert_eq(int(sk.preview_round(0, foe)["mechs"][0]["shield_after"]), 0, "the round preview spends the cost, then the burn")
 	var d := DieFaceView.new()
 	d.set_face(sf)
 	assert_eq(d.cost_marks().map(func(c: Array) -> String: return "%s %d" % [c[0], c[1]]), ["heat 1", "shield 2"], "along the foot what must be paid: the heat past the shield and the shield cost, never the burn")

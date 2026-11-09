@@ -14,7 +14,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 16   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November); 16: a composition saying whether its pack hunts, never its foes, and a hunter catching at the pounce alone, no pack carrying a ring (8 November)
+const VERSION := 20   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November); 16: a composition saying whether its pack hunts, never its foes, and a hunter catching at the pounce alone, no pack carrying a ring (8 November); 17: the shapes relaid for the shallow field (the mouth a share of the depth, the fjords and cliffs by the width, the shores' rough ground), every seed's map laid anew (9 November); 18: the Armadillo's id the Polar Bear's, polar_bear (9 November), so a battle saved with the old id is set aside rather than drawn without its model; 19: every id still wearing an old name its name's (9 November): kite, buzzard, oblation_mantle, eleven foes and the compositions named for them; 20: the Lammergeier's Mines on foes, a foe status, in place of the slots' shots (9 November)
 
 
 # ---------------------------------------------------------------- the file
@@ -257,7 +257,7 @@ static func _field_from(d: Dictionary, map: BattleMap) -> Battlefield:
 		f.patrol_cycle = f.cycle.duplicate(true)
 	f._cycle_index = int(d.get("cycle_index", d.get("spawn_index", 0)))
 	f._patrol_index = int(d.get("patrol_index", 0))
-	f.seam_row = int(d.get("seam_row", Battlefield.seam_start()))
+	f.seam_row = int(d.get("seam_row", f.seam_start()))
 	for t in d.get("tears", []):
 		f.tears.append({"pos": Vector2i(int(t[0]), int(t[1])), "opened": int(t[2]) if t.size() > 2 else 0})
 	for c in d.get("caches", []):
@@ -470,10 +470,6 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	var paired: Array = []   # the twin slots (the Gel's halves): each slot and its right-hand half
 	for at in sk.twins.keys():
 		paired.append([at.x, at.y, foes.find(sk.twins[at])])
-	# The mines (the Lammergeier's): each slot's shots in laid order, the slot as its rank and column.
-	var mined: Array = []
-	for slot in sk.mines.keys():
-		mined.append({"rank": slot.x, "column": slot.y, "shots": sk.mines[slot]})
 	var held: Array = []   # the corpses holding their slots till their parts regrow (7 November)
 	for slot in sk.corpses.keys():
 		held.append({"rank": slot.x, "column": slot.y, "foe": _foe_dict(sk.corpses[slot], sk)})
@@ -481,7 +477,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain, "ground": sk.ground,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "banked": sk.banked, "state": sk.state, "outcome": sk.outcome,
 		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
-		"reinforcements": queue, "mines": mined, "mine_seq": sk.mine_seq, "committed": sk.committed, "layout": sk.layout, "twins": paired, "corpses": held,
+		"reinforcements": queue, "committed": sk.committed, "layout": sk.layout, "twins": paired, "corpses": held,
 		"kills": _typed_tallies(sk.kills),
 		"roll_marks": sk.roll_marks, "history": sk.history,   # the trail's bars and the undo's snapshots (2 November)
 		"team_kills": sk.team_kills,
@@ -514,7 +510,7 @@ static func _fight_dict(sk: Skirmish) -> Dictionary:
 
 ## A deep copy of a skirmish and its machines through the save's own round trip (the planner's
 ## rollouts, the stock pass's second chunk, 22 October): every unit and live modifier, the dice,
-## the foes and their intents, the ranks, the queue, the mines and the random stream's state,
+## the foes and their intents (their Mines among their statuses), the ranks, the queue and the random stream's state,
 ## so the copy plays on exactly as the original would. What the save leaves to the battle (the
 ## runner's targeting rule, the summoning factory, a roar's reroll debt) is carried across;
 ## the log and the undo are not.
@@ -532,8 +528,8 @@ static func clone_skirmish(sk: Skirmish) -> Skirmish:
 
 
 ## The fight as it stands, for the undo (Skirmish.history, 2 November): the fight's dictionary
-## with every unit's numbers inside, deep-copied, so the fight's own arrays (the log, a slot's
-## mines, a foe's moves) move on without it. The game's tallies ride under `tallies`, so an
+## with every unit's numbers inside, deep-copied, so the fight's own arrays (the log, a foe's
+## statuses, a foe's moves) move on without it. The game's tallies ride under `tallies`, so an
 ## undone spend counts for nothing; the runner's own (reach_tally, taken_by_rank, mine_tally)
 ## are left out, since the runner never undoes.
 static func snapshot_skirmish(sk: Skirmish) -> Dictionary:
@@ -544,7 +540,7 @@ static func snapshot_skirmish(sk: Skirmish) -> Dictionary:
 
 
 ## The fight put back as a snapshot had it, in place: the machines' units are the field's own,
-## their numbers written back; the machines, the foes, the ranks, the queue, the mines, the
+## their numbers written back; the machines, the foes, the ranks, the queue, the
 ## stream and the log as they were; the packs' units, the callables and the undo stack stand.
 ## The last blow, blast and acts, the screen's, are cleared: they were the spend's.
 static func restore_skirmish(sk: Skirmish, d: Dictionary) -> void:
@@ -619,7 +615,6 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 			sk.packs.append(sq)
 	sk.twins.clear()
 	sk.reinforcements.clear()
-	sk.mines.clear()
 	sk.corpses.clear()
 	for cd in d.get("corpses", []):
 		if cd is Dictionary and (cd as Dictionary).has("foe"):
@@ -642,27 +637,6 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 		var i := int(qi)
 		if i >= 0 and i < foes.size():
 			sk.reinforcements.append(foes[i])
-	for md in d.get("mines", []):
-		var shots: Array = []
-		for sd in md.get("shots", []):
-			var shot: Dictionary = (sd as Dictionary).duplicate(true)
-			var kws: Array = []
-			for k in shot.get("keywords", []):
-				kws.append(int(k))
-			shot["keywords"] = kws
-			for key in ["damage", "seq", "burn", "cryo", "flak"]:
-				shot[key] = int(shot.get(key, 0))
-			for key in ["row", "column", "chain", "dispel"]:
-				if shot.has(key):
-					shot[key] = int(shot[key])   # its area numbers and Chain's (28 October); a shot laid before them has none: its area lands half and it arcs nothing (Skirmish._mine_hit)
-			shot["mech"] = int(shot.get("mech", -1))
-			shot["by"] = str(shot.get("by", ""))
-			var fd: Dictionary = shot.get("face", {})
-			shot["face"] = Face.from_dict(fd).to_dict() if not fd.is_empty() else {}
-			shots.append(shot)
-		if not shots.is_empty():
-			sk.mines[Vector2i(int(md.get("rank", 0)), int(md.get("column", 0)))] = shots
-	sk.mine_seq = int(d.get("mine_seq", 0))
 	sk.kills = _typed_tallies_from(d["kills"]) if d.has("kills") else _kills_before_the_tally(sk, d)
 	sk.roll_marks.clear()
 	for m in d.get("roll_marks", []):
@@ -860,7 +834,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 15   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October); 9: the battle inside it on the long wall (6 November); 10: the battle inside it with no reinforcement inside a fight (7 November); 11: the battle inside it with the field's caches (7 November); 12: the battle inside it with a catch a fight a hunter (7 November); 13: its caches by depth (8 November); 14: its compositions grids (8 November); 15: its compositions saying whether they hunt, and no ring but the pounce (8 November)
+const RUN_VERSION := 19   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October); 9: the battle inside it on the long wall (6 November); 10: the battle inside it with no reinforcement inside a fight (7 November); 11: the battle inside it with the field's caches (7 November); 12: the battle inside it with a catch a fight a hunter (7 November); 13: its caches by depth (8 November); 14: its compositions grids (8 November); 15: its compositions saying whether they hunt, and no ring but the pounce (8 November); 16: the battle inside it on the relaid shapes (9 November); 17: the battle inside it, and its roster, with the Polar Bear's id (9 November); 18: the battle inside it, its roster and its fronts with every renamed id (9 November); 19: the battle inside it with the Lammergeier's Mines on foes (9 November)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:
@@ -1012,7 +986,7 @@ static func _strings(list) -> Array:
 # ---------------------------------------------------------------- the quick campaign
 
 const QUICK_PATH := "user://quick_run.json"
-const QUICK_VERSION := 1
+const QUICK_VERSION := 4   # 2: its roster with the Polar Bear's id, polar_bear in place of armadillo (9 November); 3: its roster and fights with every renamed id, kite and buzzard among them (9 November); 4: its fights with the Lammergeier's Mines on foes (9 November)
 
 
 static func quick_exists(path: String = QUICK_PATH) -> bool:
