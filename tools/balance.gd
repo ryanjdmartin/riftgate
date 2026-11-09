@@ -33,7 +33,9 @@ extends SceneTree
 ## short and one over, into its own report, printed or written to --out; no matrix), --packs curve (the
 ## curve read for the formation pass, 7 November: every such composition against the four cut to every
 ## size from one to four, each cell's band and hull, its menace, ramp gate and the bands it shares with
-## its peers, printed or written to --out; no matrix),
+## its peers, printed or written to --out; no matrix; with it --team id,id,id,id reads another team in
+## that cut order, a light machine first for the rating of one, a tier's chassis for its compositions,
+## and --tiers 1,2, --sizes patrol,formation and --domains meadow,waste narrow the read, 9 November),
 ## "<elite composition> tier 2" with --packs elites (every elite composition at each tier
 ## it names, its elites scaled as a battle scales them; 4 November), or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
@@ -85,7 +87,10 @@ var damage_scale := 1.0   # the player's blows, scaled; a question asked of the 
 var only_rows: Array = []   # --rows: the row ids to run, all when empty
 var boss_tiers := false     # --boss-tiers: every boss at tiers two and three, with its escort and alone (2 November)
 var only_packs: Array = []  # --packs: the pack ids to run ("big" and "rank_and_file" for the two kinds), all when empty
-var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids
+var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids; the curve read's team when one is given
+var only_tiers: Array = []    # --tiers: the curve read's tiers (1 to 3), all when empty
+var only_sizes: Array = []    # --sizes: the curve read's sizes (patrol, formation, elite), all when empty
+var only_domains: Array = []  # --domains: the curve read's domains, all when empty
 var custom_packs: Array = []  # --pack: extra packs, each a spec "foe:n+foe:n"
 var fit_module := ""        # --module: a module fitted to every machine of every row
 var bumps: Array = []       # --bump: [stat, amount] pairs given to every machine
@@ -280,6 +285,18 @@ func _parse_args() -> void:
 				i += 1
 			"--team":
 				custom_teams.append(Array(v.split(",")))
+				i += 1
+			"--tiers":
+				only_tiers.clear()
+				for t in v.split(","):
+					only_tiers.append(int(t))
+				i += 1
+			"--sizes":
+				only_sizes = Array(v.split(","))
+				i += 1
+			"--domains":
+				only_domains = Array(v.split(","))
+				i += 1
 			"--pack":
 				custom_packs.append(v.strip_edges())
 				i += 1
@@ -666,13 +683,26 @@ func _promise() -> int:
 ## the compositions of its domain, size and tier whose bands match it at every size: a candidate for
 ## pruning. A direction read for placing variants, never a gate. Printed, and written to --out.
 func _curve() -> int:
-	var team: Array = db.default_team(4)
+	# The team is the default four, or --team's (the formation pass, 9 November: a rating of one
+	# is read by a light machine alone, a tier's compositions by a team of its tier), cut to its
+	# first N; --tiers, --sizes and --domains narrow the read.
+	var team: Array = custom_teams[0].duplicate() if not custom_teams.is_empty() else db.default_team(4)
+	for cid in team:
+		if not db.chassis.has(str(cid)):
+			push_error("--team: no chassis '%s' (chassis: %s)" % [str(cid), ", ".join(db.chassis.keys())])
+			return 1
 	var t0 := Time.get_ticks_msec()
 	var fights := 0
 	var found: Array = []
 	for fac in db.factions.keys():
+		if not only_domains.is_empty() and not only_domains.has(str(fac)):
+			continue
 		for t in [1, 2, 3]:
+			if not only_tiers.is_empty() and not only_tiers.has(t):
+				continue
 			for size in ["patrol", "formation", "elite"]:
+				if not only_sizes.is_empty() and not only_sizes.has(size):
+					continue
 				for c in db.compositions(str(fac), t, size):
 					var mix: Array = c["members"].duplicate(true)
 					var menace := 0
