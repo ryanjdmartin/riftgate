@@ -242,7 +242,7 @@ python3 tools/pages/bible_tables.py
 
 # the bible republished when another session moved the live page: a three-way merge row by row (a row keyed by its lead, one
 # both sides changed merged word by word, the version bumped past the higher), BASE the last publish both started from, OURS
-# this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing </body></html> stripped; a row
+# this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing newline and </body></html> stripped; a row
 # it cannot settle keeps conflict markers and is named on stderr
 python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html > merged.html
 

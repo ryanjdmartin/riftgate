@@ -269,9 +269,9 @@ func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_hom
 
 
 ## A pack as a composition (the foes' fresh start, 30 October): one hex, one sprite (its lead's),
-## every member unpacked into the fight, the survivors kept by member, its ring the largest of
-## its members', its pace the slowest, winged only when every member is, and each kill worth its
-## type's menace.
+## every member unpacked into the fight, the survivors kept by member, pushing unless a composition
+## says it hunts (8 November), its pace the slowest, winged only when every member is, and each
+## kill worth its type's menace.
 func test_a_composition_unpacks_its_members_and_keeps_its_survivors_by_member() -> void:
 	var b := _battle()
 	var db := b.db
@@ -280,10 +280,8 @@ func test_a_composition_unpacks_its_members_and_keeps_its_survivors_by_member() 
 	assert_eq(host.foe_id, "revenant", "its foe type is the lead's")
 	assert_eq(host.strength, 5, "its strength is the count of every member")
 	b.field.add_unit(b.field.dress_pack(host))
-	var ring := maxi(int(db.foes["revenant"].get("zone", 1)), int(db.foes["ghost"].get("zone", 1)))
-	assert_eq(host.zone, ring, "its ring is the largest of its members'")
 	assert_eq(host.movespeed, mini(int(db.foes["revenant"].get("movespeed", 2)), int(db.foes["ghost"].get("movespeed", 2))), "its pace the slowest")
-	assert_eq(host.behaviour, str(db.foes["revenant"].get("behaviour", "push")), "it walks by its lead")
+	assert_eq(host.behaviour, "push", "a pack of no composition pushes: only a composition says it hunts")
 	assert_false(host.traits.has("winged"), "winged only when every member is: the revenants walk")
 	var wisps := Unit.pack(0, "wisps", Vector2i.ZERO, "marsh", Unit.PACK_MOVE, 0, "")
 	wisps.set_members([["ghost", 2]])
@@ -708,15 +706,14 @@ func test_a_machine_cannot_end_on_another() -> void:
 	assert_true(b.move_to(c, shared).is_empty(), "and refused")
 
 
-## One pack is one fight (the long wall brief 3.4): a pack beside the target whose ring covers
-## it stays out, and the machine beside the target is committed.
+## One pack is one fight (the long wall brief 3.4): a pack beside the target stays out, and the
+## machine beside the target is committed.
 func test_attack_opens_a_fight_on_the_one_pack_with_the_machines_committed() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	var other: Unit = b.field.packs()[1]
 	_engage(b, sq, m)
-	other.zone = 3
 	other.behaviour = "push"
 	for n in Hex.neighbors(sq.pos):
 		if b.field.can_stand(other, n) and n != m.pos:
@@ -724,7 +721,7 @@ func test_attack_opens_a_fight_on_the_one_pack_with_the_machines_committed() -> 
 			break
 	var r := b.roster(sq)
 	assert_eq(r["targets"], [sq], "the pack tapped")
-	assert_true((r["joins"] as Array).is_empty(), "nothing joins, a ring of three beside it included")
+	assert_true((r["joins"] as Array).is_empty(), "nothing joins, a pack beside it included")
 	assert_true((r["eligible"] as Array).has(m), "the machine beside it may be committed")
 	var sk := b.attack(sq, [m])
 	assert_true(sk != null, "the fight opens")
@@ -930,7 +927,6 @@ func test_a_hunter_that_caught_its_prey_forces_the_first_fight() -> void:
 	hunter.behaviour = "hunt"
 	hunter.hunts = "nearest"
 	hunter.prey = m.id
-	hunter.zone = 1
 	b._new_turn()
 	assert_eq(b.forced.size(), 1, "caught")
 	assert_true(b.is_pinned(m), "its prey is pinned")
@@ -964,7 +960,6 @@ func test_two_hunters_take_two_machines_and_each_catch_is_its_own_fight() -> voi
 	for h in [first, second]:
 		h.behaviour = "hunt"
 		h.hunts = "nearest"
-		h.zone = 1
 		h.prey = 0
 	second.pos = b.field.landing(second, m.pos)   # beside the first's machine too, so "nearest" would pick it
 	b._new_turn()
@@ -999,7 +994,6 @@ func test_a_hunters_catch_ends_in_the_packs_fall_or_the_machines_wreck() -> void
 		_engage(b, hunter, m)
 		hunter.behaviour = "hunt"
 		hunter.prey = m.id
-		hunter.zone = 1
 		b._new_turn()
 		var sk := b.attack(null, [])
 		assert_false(sk.can_withdraw(), "no withdrawing from a catch")
@@ -1251,7 +1245,6 @@ func test_a_catch_comes_first_through_engage() -> void:
 	_engage(b, hunter, m)
 	hunter.behaviour = "hunt"
 	hunter.prey = m.id
-	hunter.zone = 1
 	b._new_turn()
 	assert_false(b.can_target(other), "another pack cannot be ordered on while the catch waits")
 	assert_false(b.next_fight().is_empty(), "the catch is ready to engage with nobody ordered")

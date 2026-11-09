@@ -5,13 +5,13 @@ extends Control
 ## section 4, the round row). Portrait, 720x1280 logical, absolute layout.
 ##
 ##   header   the turn and Rift Pressure; the turn's readout beside it
-##   map      drag to scroll; tap a machine to select it and light where it can move, and in
-##            violet where it could attack from there; tap a lit hex (or draw a route from it)
+##   map      drag to scroll; tap a machine to select it and light where it can move and bracket
+##            the packs it could be ordered onto; tap a lit hex (or draw a route from it)
 ##            and the move is planned, its route drawn from where the machine stands; with a
 ##            machine in hand, tap a pack (or drag the machine onto one) and it is planned into
-##            range and ordered onto that fight; hold a unit for its numbers. Every pack's
-##            ring, its walk on the enemy's turn, a hunter's lock on its prey, and the next
-##            fight: its target, the packs whose ring covers it, the machines ordered onto it
+##            range and ordered onto that fight; hold a unit for its numbers. Every pack's walk
+##            on the enemy's turn, a hunter's lock on its prey and its ring round where its walk
+##            ends, and the next fight: its target and the machines ordered onto it
 ##   bottom   ENGAGE (while a fight is ready), EXECUTE (while planned moves wait to play) or END
 ##            TURN bottom-left, pulsing when nothing is left to do; UNDO bottom-right, the last
 ##            move or order, in the order they were made, a move that has played included
@@ -727,7 +727,7 @@ func pack_lines(u: Unit) -> Array:
 			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
 		parts.append_array(["·", "Move", str(u.movespeed)])
 		if u.behaviour == "hunt":
-			parts.append_array(["·", "Ring", str(u.zone)])   # a hunter's catch; no other pack's ring means anything since nothing joins (the long wall brief 7.2)
+			parts.append_array(["·", "Ring", str(ContentDB.HUNTER_RING)])   # a hunter's catch, the pounce every hunter shares; a pusher has none (8 November)
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
 		var lines: Array = [_title(u.display_name), _squad_line(u), _words(parts), _behaviour_line(u)]

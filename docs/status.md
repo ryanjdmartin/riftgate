@@ -25,8 +25,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1058 tests, 259,976 checks, green (8 November, main with the long wall and the skirmish
-  code audit landed, a part no kill, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1060 tests, 259,914 checks, green (9 November, main with the long wall, the skirmish code
+  audit, a part no kill and a hunter's reach landed, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -44,11 +44,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 8 November 2026 but the music session's branch below. The
-branches that landed on 3 to 8 November, each a session of its own, fully merged and to delete
+Everything is on main as of 9 November 2026 but the music session's branch below. The
+branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
-`ccr-1eaf0060-jrpw04` (the spend's order and Sweep's columns of 7 November, the Skua's base
+`ccr-d26a1321-xg9xge` (a hunter's reach, below: a composition saying whether it hunts, the rings
+purged, a hunter's ring drawn; main took it as a fast-forward on Ryan's word of 9 November,
+"merge this into main"), `ccr-1eaf0060-jrpw04` (the spend's order and Sweep's columns of 7 November, the Skua's base
 halving, every shot seen to land, the Swap in the rider phase; main took it as a fast-forward
 on Ryan's word, "Push this to main"; again on 8 November with the skirmish code audit, below), `claude/aphelion-minerva-chassis-9qf6cy` (Ryan's chassis session of 4 and 5 November: his ideas
 and Claude's first round, a brief each in `docs/briefs/` with a header the hangar reads, the
@@ -73,7 +75,7 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (8 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
+Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
 `ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 from main (How things stand), to land on
@@ -137,6 +139,24 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
+  enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
+  range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
+  taking its widest member's ring, the Mandragoras' back-rank three from the joining days. His
+  calls the same day, built: a composition says whether it hunts, never its foes ("The
+  composition should say if it hunts, not the units": `hunts`, its caveat, absent for a pusher,
+  never on an escort; the twenty-nine hunts carried over from the foes but the goblins', "normal
+  fodder, as per their codex lines"); the rings purged ("I had also assumed that all range rings
+  were purged from code"): no foe and no pack carries one, a hunter catching at the pounce, 2
+  (`ContentDB.HUNTER_RING`), the validator refusing `zone`, `behaviour` and `hunts` on a foe; and a
+  hunter's ring drawn on the map, round where its walk ends and round the hunter while its catch
+  waits, in the rings' old look (the bible's map marks row; `BattleMapView.hunter_rings`). The goblin
+  has hunted since it entered content on 9 October, the ghoul's heir (git); what changed was its
+  formation opening a move from the wall (6 November) and the HUNTED band (8 November). Saves at
+  16, runs at 15. Section 12 asks whether the rank and file that still hunt (the revenants, the
+  needlers, the bombs) are fodder too, and whether the opening deals no hunter in code, his to
+  settle in the formation pass (9 November: "I'll sort out the questions in the formation pass");
+  his phone read of the ring is the to-do's. On main since 9 November.
 - **The long wall, Phase 1** (6 November, `ccr-56b5169d-lsa2rg`, from
   `git show 68381ff:docs/briefs/long_wall_build.md`): the field's size the ramp's (20 by 12 for now); the battle
   opening with the siege under way (formations a move from the wall, patrols on the flanks, the
@@ -393,25 +413,32 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. This file and the live page are v0.487, dated 8
-  November (the page's Version 499, published from `ccr-1eaf0060-jrpw04` after the skirmish
-  code audit landed on main: a part never a kill, only its core, Ryan's "I thought I said only
-  the core counts", onto v0.486 of the landing, which had put his answer on the Ammit's lean,
-  "between skirmishes", onto the long wall's v0.485 of that day). The live
+  `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
+  page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
+  clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
+  for byte). This file is v0.489 (`384d3482`: the hunt the composition's, the rings purged); its
+  republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
+  `dc265dc9`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
-  `</body></html>` stripped). A page that size counts as read only once every line of its saved
+  newline and `</body></html>` stripped, so it matches the file byte for byte). A page that size
+  counts as read only once every line of its saved
   copy is read, so a subagent reads it and publishes the merge. After main merges in, check the
   tables script's run against the file's tables before keeping it: a row it reverts belongs to a
   branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's version 214
+  the last publish's before it is replaced, and `edits` and `designs` read first. Behind
+  `ccr-d26a1321-xg9xge` (8 November) by `content/vocabulary.json` (the Ring's, the Pack's and the
+  Behaviour's codex), `content/foes.json` (no ring or hunt on a foe), `content/factions.json` (a
+  composition's `hunts`) and `tools/hangar.html` (the foe list's Zone gone): the live vocabulary
+  checked byte for byte against main's, `edits` empty and `designs` the two folded ideas, but the
+  publish refused by the permission check as unrequested, so it waits on Ryan's word. At the page's version 214
   (8 November, from `ccr-1eaf0060-jrpw04` at `34ae947`: only `content/vocabulary.json` and
   `content/components.json`, the Ability term, the seal, the Ore Plate, Golden, Guarded and Hot
   Streak as abilities, the Purge's codex and the Null Field Emitter's, onto the long wall's

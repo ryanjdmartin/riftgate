@@ -14,7 +14,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 15   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November)
+const VERSION := 16   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November); 16: a composition saying whether its pack hunts, never its foes, and a hunter catching at the pounce alone, no pack carrying a ring (8 November)
 
 
 # ---------------------------------------------------------------- the file
@@ -232,7 +232,7 @@ static func _compositions_from(list: Array) -> Array:
 			if m is Array and (m as Array).size() >= 2:
 				members.append([str(m[0]), int(m[1])])
 		var entry := {"id": str(c.get("id", "")), "size": str(c.get("size", "patrol")), "faction": str(c.get("faction", "")), "members": members}
-		for key in ["squad", "layout", "lead"]:   # the long wall brief's composition fields (3.7, section 6)
+		for key in ["squad", "layout", "lead", "hunts"]:   # the long wall brief's composition fields (3.7, section 6) and the hunt (8 November)
 			if c.has(key):
 				entry[key] = c[key]
 		out.append(entry)
@@ -296,7 +296,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "layout": u.layout, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "zone": u.zone, "attack_range": u.attack_range,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "layout": u.layout, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules,
 	}
@@ -348,7 +348,6 @@ static func _unit_into(u: Unit, d: Dictionary) -> void:
 	u.layout = []
 	for cell in d.get("layout", []):
 		u.layout.append(str(cell))
-	u.zone = int(d.get("zone", 1))
 	u.attack_range = int(d.get("attack_range", 1))
 	u.is_boss = bool(d.get("is_boss", d.get("elite", false)))   # a save from before 15 October says elite
 	u.sealed = bool(d.get("sealed", false))
@@ -861,7 +860,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 14   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October); 9: the battle inside it on the long wall (6 November); 10: the battle inside it with no reinforcement inside a fight (7 November); 11: the battle inside it with the field's caches (7 November); 12: the battle inside it with a catch a fight a hunter (7 November); 13: its caches by depth (8 November); 14: its compositions grids (8 November)
+const RUN_VERSION := 15   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October); 9: the battle inside it on the long wall (6 November); 10: the battle inside it with no reinforcement inside a fight (7 November); 11: the battle inside it with the field's caches (7 November); 12: the battle inside it with a catch a fight a hunter (7 November); 13: its caches by depth (8 November); 14: its compositions grids (8 November); 15: its compositions saying whether they hunt, and no ring but the pounce (8 November)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:

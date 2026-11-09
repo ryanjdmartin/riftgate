@@ -1068,7 +1068,10 @@ a stat.
   stands inside its catch, so its first walk comes on the enemy's first turn.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
   and every pack's threat rating under its count, four pips with one filled a machine it is
-  intended for; no pack's ring is drawn. Each machine has one action (the Dingo two): one move,
+  intended for; and every hunter coming for a machine wears its ring round where its coming walk
+  ends, where its catch is judged (round where it stands while a catch it made waits), a dashed
+  violet edge, tinted under a solid one while the hunter is tapped or its catch waits; no other
+  pack's ring is drawn. Each machine has one action (the Dingo two): one move,
   in one go, then it may fight; a fight ends the action however it ends, and a pip under the
   machine stays lit until it does. A selected machine lights the hexes its move reaches and
   brackets the packs it could be ordered onto. A move is planned: its route shows from where the
@@ -1107,19 +1110,20 @@ a stat.
   it leaves), a pack keeps only its survivors, by member, and Rift Pressure does not tick: it
   ticks on the map alone.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
-  strength, in content order, the lead first, whose sprite and behaviour the pack wears; a hold
-  lists them. A composition is a patrol (a few foes, one machine's fight), a formation (the
+  strength, in content order, the lead first, whose sprite the pack wears; a hold lists them. It
+  hunts when its composition says so (its caveat, Content conventions), never by its foes; else it
+  pushes. A composition is a patrol (a few foes, one machine's fight), a formation (the
   body's), an elite (an elite leading its own) or a boss's escort. Every member unpacks into
   the fight, and the survivors come back by member. A composition may name its lead, which then
   stands first; its grid is where each stands (Content conventions). Each pack carries its threat rating, the machines it is intended
   for: its composition's own, else a patrol 1, a formation 3, an elite and an escort 4, a pack
-  of no composition 3, the boss's unit 4. A pack walks at its slowest member's pace
-  with the largest of its members' rings, winged only when every member is. They cross every land hex and wade water as a
+  of no composition 3, the boss's unit 4. A pack walks at its slowest member's pace,
+  winged only when every member is. They cross every land hex and wade water as a
   ground machine does, a water hex costing two of their move (entered with whatever is left),
   and never enter walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb,
   the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
-  moves 2 (fast 3, the Dire Wolf's line 4, massive 1); rings 1 (front rank), 3 (back rank), 2
-  (massive), a hunter's 2 at least, read only by a hunter's catch. A ring counts hexes as the
+  moves 2 (fast 3, the Dire Wolf's line 4, massive 1). No foe and no pack carries a ring: a
+  hunter catches at the pounce, 2, one number for every hunter. A ring counts hexes as the
   crow flies, over anything between. They walk round grounded machines, through each other and under a flyer, never
   ending a walk on another unit's hex, so a flyer holds no ground and a pack holds none
   against the packs; the walk shown is the walk played. The
@@ -1132,7 +1136,7 @@ a stat.
   of the gate or the wall strikes the gate's bar for its strength times 10 divided by 3, at least 1 (the floor of
   ten is gone, so a stray pair chips less than a trio), every enemy turn. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
-- **Hunters** lock one machine when they appear (nearest, weakest, strongest, slowest or fastest; never
+- **Hunters** (the packs whose composition hunts) lock one machine when they appear, by its caveat (nearest, weakest, strongest, slowest or fastest; never
   the Prairie Dog, never a machine another hunter already hunts), keep it while it stands, and
   walk to put it inside their ring; a hunter that finds every machine hunted pushes for the wall
   as a pusher does until one is free, and turns on it then (the log says so). One hunter a
@@ -1368,11 +1372,13 @@ and nothing scales a pack.
   front-rank foe in a front cell, a back-rank foe in a back cell, a massive foe in a front cell
   with the back cell behind it null (it fills its column), a core's parts each in a cell of its
   own beside it, once a core. The grid is the whole count: the pack on the map is what it holds,
-  a variant with one more goblin is its own composition, and no cell lists alternatives. Three
+  a variant with one more goblin is its own composition, and no cell lists alternatives. Four
   fields more, each optional: `squad`, the machines it is intended for, 1 to 4, its threat rating
   on the map (absent: a patrol 1, a formation 3, an elite and an escort 4); `lead`, a foe id in
-  the grid whose sprite and behaviour the pack wears, an elite composition's its elite (absent:
-  the first in reading order, front left to right, then back); `ramp`, `[lo, hi]`, the
+  the grid whose sprite the pack wears, an elite composition's its elite (absent: the first in
+  reading order, front left to right, then back); `hunts`, the caveat its pack hunts by
+  (nearest, weakest, strongest, slowest or fastest; absent: it pushes), never on an escort, which
+  walks with its boss; a foe carries no hunt and no ring; `ramp`, `[lo, hi]`, the
   Convergences it is dealt at, both held (absent: every one): a battle, the quick campaign and the
   Fractures' elites deal only the compositions whose gate holds their ramp, and where a domain's
   compositions of a size at a tier (an escort's, of its boss) carry any, together they hold

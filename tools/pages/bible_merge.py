@@ -5,7 +5,7 @@
 
 BASE is the file both sides started from (the last publish this branch made, or main's copy),
 OURS this branch's docs/design-bible.html, THEIRS the live page's saved source with the tool's
-wrapper line and its trailing </body></html> stripped. The bible is one row a line, so a line
+wrapper line and its trailing newline and </body></html> stripped. The bible is one row a line, so a line
 merge of the whole file conflicts on every neighbouring row two sessions touched; this merges by
 row instead: a row is keyed by its lead (a table row by its first cell, any other line by its
 text), every row either side added or removed is added or removed, and a row both sides changed
