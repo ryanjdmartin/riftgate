@@ -35,7 +35,7 @@ extends SceneTree
 ## size from one to four, each cell's band and hull, its menace, ramp gate and the bands it shares with
 ## its peers, printed or written to --out; no matrix; with it --team id,id,id,id reads another team in
 ## that cut order, a light machine first for the rating of one, a tier's chassis for its compositions,
-## and --tiers 1,2, --sizes patrol,formation and --domains meadow,waste narrow the read, 9 November),
+## and --tiers 1,2, --sizes patrol,formation, --domains meadow,waste and --ids a,b narrow the read, 9 November),
 ## "<elite composition> tier 2" with --packs elites (every elite composition at each tier
 ## it names, its elites scaled as a battle scales them; 4 November), or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
@@ -91,6 +91,7 @@ var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids; 
 var only_tiers: Array = []    # --tiers: the curve read's tiers (1 to 3), all when empty
 var only_sizes: Array = []    # --sizes: the curve read's sizes (patrol, formation, elite), all when empty
 var only_domains: Array = []  # --domains: the curve read's domains, all when empty
+var only_ids: Array = []      # --ids: the curve read's compositions by id, all when empty
 var custom_packs: Array = []  # --pack: extra packs, each a spec "foe:n+foe:n"
 var fit_module := ""        # --module: a module fitted to every machine of every row
 var bumps: Array = []       # --bump: [stat, amount] pairs given to every machine
@@ -296,6 +297,9 @@ func _parse_args() -> void:
 				i += 1
 			"--domains":
 				only_domains = Array(v.split(","))
+				i += 1
+			"--ids":
+				only_ids = Array(v.split(","))
 				i += 1
 			"--pack":
 				custom_packs.append(v.strip_edges())
@@ -704,6 +708,8 @@ func _curve() -> int:
 				if not only_sizes.is_empty() and not only_sizes.has(size):
 					continue
 				for c in db.compositions(str(fac), t, size):
+					if not only_ids.is_empty() and not only_ids.has(str(c["id"])):
+						continue
 					var mix: Array = c["members"].duplicate(true)
 					var menace := 0
 					var said: Array[String] = []

@@ -290,7 +290,7 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # printed, and written to --out (about two minutes a seed, so an hour at 30). With it --team
 # id,id,id,id reads another team in that cut order (a light machine first for the rating of one, a
 # tier's chassis for its compositions: the formation pass, 9 November), and --tiers 1,2, --sizes
-# patrol,formation and --domains meadow,waste narrow the read.
+# patrol,formation, --domains meadow,waste and --ids goblin_horde,gel_wall narrow the read.
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs curve --seeds 30 --out /tmp/curve.md
