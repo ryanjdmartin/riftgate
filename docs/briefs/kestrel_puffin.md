@@ -25,6 +25,18 @@ able to cool its allies."
   faces; the heat reading is the thread worth keeping, turned round: it read an ally's heat to
   shield it, it would now take an ally's heat off.
 
+## What the audit of 9 November found beside it
+
+- Three pieces cool an ally today: the Radiator Sail (Aphelion's tier-one ally vent), the
+  Swallowtail's Sutler's Hoist (a shield that also cools) and any plain vent spent on an ally. All
+  three go with the vent faces, which is what makes the verb free for the Puffin.
+- One way of cooling an ally stays, and it is not a vent: Cryo. Any machine's weapon hit on a foe
+  carrying it cools the hitter (the Polar Bear's Flinger lays it; a slottable Cryo setter is on
+  the synergy map's list; the Snowy Owl leans to Cryo). So "the only unit able to cool its
+  allies" reads as the only one that cools an ally directly, by its own spend, where Cryo is
+  cooling the team has to hit for. The two fit: the Puffin the cold-water bird, Cryo the cold.
+- Its Backwash Ionizer is the game's one overshield on an ally, and Misharu's draft names it.
+
 ## Holes raised, for the chat first
 
 - The model's principle is no pure recovery face on the die. An ally's cooling is a recovery

@@ -56,6 +56,13 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
   immediate emergency effect of a coolant dump or shield boost. It works."
 - **The bombs never hunt** (the formation pass's first question): a hunter's threat is a sequence
   a lone support can play against, never a burst that decides the fight.
+- **The leans accepted, and the send-back** (9 November): of the open list's leans (the basics
+  at heat one and the cooling by chassis with a read of an offset; which shield pieces become
+  which equipment; the pushers' hull budget by kind; the formation proposal's remaining leans),
+  "Your leans are good, but might as well rename the adjusted components when they need to to make
+  sense. Doesn't matter to what. Canopy was always a little lame, though." And, with main merged
+  in first: "send any machine or component or module that clearly doesn't work in the new system
+  (i.e. scorpion, for one), back to design." Section 6 is that audit.
 - **The refit's direction, before the model was reached**: "Enemy HP is probably too high, or
   player damage is too low. I'd rather lower enemy HP slightly, and boost synergy pieces to
   increase damage instead of just raw numbers. However, I want to judge the new formations
@@ -89,8 +96,12 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
    tabled, builds on them).
 4. **The defensive tools on the die are targeted statuses.** Armoured against many small blows,
    Barrier against one big one, Ward against the riders; the lure stays the tank's control. The
-   basic kit gains a Barrier basic and an Armoured basic at tier zero in the Canopy's and the
-   Halo's places, so a stock die carries an answer to the telegraph.
+   three pieces exist already at tier one, in no stock, which is why no starting die has met them
+   (a tier-one chassis stocks tier zero only): the Blast Door (a Barrier), the Shoring Jack
+   (Armoured 2 for the round) and the Decoherence Veil (a Ward), each on itself or an ally. The
+   basics gain the two a stock die needs, an answer to the telegraph and one to the swarm: the
+   Halo becomes the Barrier basic, Aphelion's hard light and its one basic, and the Shoring Jack
+   comes down to tier zero in the Canopy's place, Minerva's (section 6).
 5. **Component destruction off, completely.** No injury: a blow below the threshold breaks nothing
    and nothing is destroyed, a switch for now, the code kept. The injury row's purpose (asymmetric
    balancing between tank and glass cannon) is served by the model instead.
@@ -112,19 +123,92 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
    carries a rising threat (a rally that stacks, a countdown, a prime, a summon, a blow that
    grows). The Marsh's giants carry none today and are the first defect.
 
-## 4. What the formation pass hands in
+## 4. What the formation pass hands in, and the roles
 
 The proposal stands as the grids' first cut (`docs/formation_proposal.md`; its grids as code in
-`tools/formation_proposal.py`, which writes them to a scratch worktree for the reads). Its units
-mix across pushers and flankers (a goblin stands in the horde and in the raiders, a patrol being a
-small pusher), and the hunting lines, the wolves and the antlions, stand in hunters and in pushers
-alike; what never mixes is the lead: a pack wears its lead's sprite, so a hunting line's unit
-never leads a pusher and a hunter is always led by one (Ryan's question of 9 November; the four
-Waste pushers the antlions led are re-led). Under the model it is re-read and re-cut: the pushers smaller where a kill should buy safety (five or six
-foes at tier one rather than eight), measured by hull lost at three under the regen; the hunters,
-elites and bosses keep survival; the twelve prunings stand until the re-read says otherwise; the
-hunters that read as ones (the wolf and warg packs) are his question 11; the bosses' stat blocks
-its section 6; the escalation check its hole 8. Nothing of it lands before the model's numbers.
+`tools/formation_proposal.py`, which writes them to a scratch worktree for the reads). Two things
+re-cut it: the model (the pushers measured by hull lost at three under the regen, the hunters,
+elites and bosses keeping survival), and his point on the makeups, which changes who stands in a
+flanker.
+
+**Ryan, 9 November, on the makeups**, asked whether the units of pushers, flankers and hunters
+are exclusive: "My point about the formation makeups is twofold: 1) player expectation. If a
+hunter pack is coming for me, and its wolves and goblins, I'm like 'what are these goblins doing
+here.' A pack of wolves and things that keep up with the wolves makes sense. Which leads into 2)
+Tuning. If goblins are primarily pushers, then they can be tuned to fight against 3. That same
+goblin in a flanker pack is fighting a completely different player composition (probably), so
+that means its identity needs to be less sharp. Case in point, right now goblins deal damage per
+other goblin in the formation. That's deadly in a formation with 3 or 4 goblins, and lame in a
+flanker formation with 1 or 2. I'm not saying we can't cross lines between battlefield roles,
+just that I don't want it to come across as lazy, nor encourage lazy designs that are just kind
+of generally-threatening or HP sponges to fill out ranks. One spooky flanker revenant or whatever
+is a more interesting duel for a Skua or Kite than the Skua or Kite just mowing down less goblins
+than they would if they were grouped."
+
+So, as a direction (the bible's Foe roles row, open until he marks the form):
+
+- **A rank-and-file unit is designed for a battlefield role**, a pusher's, a flanker's or a
+  hunter's, and tuned for the fight that role meets: a pusher's for three machines, its identity
+  sharp in numbers (the goblin's add, a caster behind a wall); a flanker's for one machine, a
+  duel; a hunter's for the catch, a sequence a lone machine can play against. A unit crossing
+  into another role's pack is deliberate, and its composition says why (beside its question,
+  under `design`), so a filler is a thing the author has to defend.
+- **A hunter is its line and what keeps up with it.** The engine already walks a pack at its
+  slowest member's pace, so the validator can hold it: every member of a hunting composition
+  moves at its lead's pace and flies if it does.
+- **A flanker is a duel, not a small pusher.** The proposal's patrols rated one are cut-down
+  pushers (three goblins, two knives and a screamer, three needlers), which is what his point
+  refuses; they go, and each domain's flankers are written round units made for a duel.
+
+**What the proposal's grids keep and lose under it**: the formations stand (pushers of pusher
+units), less the antlions in the Waste's four (a hunting line in a pusher: the antlion pit, the
+pit ambush, the pit wall and the queen's court are re-cut or defended); the hunters stand (each
+its own line: the wolves, the antlions, the queen with her pits); every patrol rated one is
+rewritten; the patrols the reads rated two that are no hunters (the knight's retinue, the lizard
+trio, the wyverns' perch and the rest) are rewritten with them: a two stays legal for a heavy
+patrol by his word of 6 November, and whether a flanker is ever a fight for two is open with the
+roles.
+
+**The roster by role today**, tier one's lines (the recolours follow their bases):
+
+| Domain | Pushers | Hunters | Flankers |
+|---|---|---|---|
+| The Meadow | the Goblin, the Mandragora, the Gel, the Treant | the Dire Wolf | none |
+| The Waste | the Needler, the Cockatrice, the Sandworm (the Djinn from tier two) | the Antlion | none |
+| The Marsh | the Revenant, the Ghost, the Barrow Giant | none in the ranks (its elites) | the Zombie Knight, if it is re-tuned for one machine and leaves the formations |
+| The Peak | the Salamander, the Drake, the Magma Elemental | none in the ranks (its elites) | the Bomb, if a lone one is the duel (kill it whole, or eat the burst) |
+
+So the Meadow and the Waste want a flanker line each, and the Marsh's and the Peak's are a
+re-tuning of a unit that then leaves the pushers, or new units too. New units are content ideas,
+proposed in chat first; his own bench from the elites session holds candidates (the Coeurl, the
+Dullahan, the Banshee, the Sphinx, the Roc, Anzû, the Iron Giant, Cerberus, the Drowned King:
+"what misses the cut may be rank and file").
+
+**Holes raised, each with what settles it**:
+
+- A lone duelist barely touches the wall: a pusher strikes for its head count (a third of ten a
+  foe), so one foe chips 3 a turn where a formation of eight strikes 26, and leaving a flanker
+  alone costs almost nothing. Claude's lean: the strike follows the threat rating the pack
+  already shows (ten a pip), so the pips say how many machines it wants and how hard it hits the
+  wall. It moves his rule of 30 October ("a stray pair chips less than a trio"), written when a
+  count was the threat; his call.
+- A duel a light enjoys: one sharp question from the kit the engine has (a countdown to beat, a
+  brace to time, a barrier to pop cheaply, a getting-up to kill twice, a last act to shield
+  before), HP for three or four rounds of one die, and no flat armour, which the reads showed
+  walls the Skua whatever else the unit does. A heavy sent at it wins slowly: mismatch costs
+  time.
+- The duels repeat: the flanks at the start and every tear send flankers, so a battle meets four
+  to eight of them from one or two lines a domain and tier. A second line a domain, or a line's
+  duelist alone and as a pair, is the room; the guest's flankers help from tier two.
+- The words: content calls the small composition a patrol and the player's glossary says Patrol;
+  his word is flanker. If the role is the word, the schema's sizes follow (a flanker, a pusher,
+  a hunter, an elite, an escort), an engine rename with the pass's content.
+- The role is read by the validator, so it is a field on the foe, not a line under `design`:
+  `role`, a pusher's unless it says otherwise. Shown or internal is his (the Foe roles row).
+
+The twelve prunings, the gates, the bosses' stat blocks (its section 6) and the escalation check
+(its hole 8) stand as the proposal has them until the re-read. Nothing of it lands before the
+model's numbers.
 
 ## 5. The reads before any content moves
 
@@ -147,48 +231,148 @@ already shields whenever it saves hull this round, so "aggression rewarded" is r
 Every read a direction into `docs/measurements.md`; then Ryan's play at placeholders, which
 decides feel.
 
-## 6. The content the model moves, once the numbers are read
+## 6. The audit: what the model breaks, touches and leaves (9 November, on main's content)
 
-- Eight shield-kind components: the Canopy and the Halo Shield (basics, tier zero), the Laminar
-  Deflector and the Corona Shield (tier two), the Oblation Mantle (tier one), and the fixed pieces
-  the Backwash Ionizer (the Puffin), the Mooring Screens and the Sutler's Hoist (the Swallowtail).
-  Each becomes equipment (a Barrier, an Armoured, a Ward, a one-round overshield as a Kestrel
-  piece if one survives), a commander action later, or retires.
-- Seven vent-kind components: the Coolant Jacket and the Bleed Valve (basics), the Radiator Sail,
-  the Phased Sublimator and the Wake Diffuser (tier one), the Entropy Condenser (tier two), and the
-  Musk Ox's Quick Reload (fixed). A payoff vent becomes equipment that converts heat; a plain vent
-  retires; the Whip Scorpion's vents that blast (Vent, Weapon) are weapons.
-- The chassis whose identity is the shield or the vent, re-stated: the Puffin, sent back to the
-  drawing board (`docs/briefs/kestrel_puffin.md`; Ryan's instinct the one unit able to cool its
-  allies), the Storm Petrel (its shield pays its weapons' heat and zaps; its own regen a timed
-  grant), the Swallowtail (screens and hoist as the team's Ward and an ally's Armoured, its design
-  never finalized, its session's), the Musk Ox (its reload), the Whip Scorpion (its conversion
-  vents), the Cassowary's Spin-Up and the Kite's cooling as identities that stay.
-- Every chassis's `shield_regen` and `cooling`, by role and maker; every component's heat price
-  (the heat session's list); the bosses' and massives' HP by band, the fodder's blows; the
-  pushers re-cut; the injury rule off whole; the basics' Barrier and Armoured pieces.
-- The records: the bible's kit row, shield row, triangle row, injury row, redirection row and the
-  commander layer's Open row; `docs/rules.md` as each lands; the vocabulary's Shield, Vent and
-  Equipment entries; CLAUDE.md's kit words; the hangar page republished.
+Read on the merged content: 24 chassis, 81 components (56 weapons and debuffs, 10 buffs, 8
+shields, 7 vents), 18 modules. Nothing in `content/` has moved; each line is where the piece
+goes when the pass's content lands. Names follow the piece where its kind changes (his word);
+every name here is a working name for his name pass.
+
+**Machines back to design** (each a brief; none is dealt once the pass's content lands, until
+its session hands it back):
+
+| Machine | What breaks | Its brief |
+|---|---|---|
+| The Whip Scorpion (tier two) | "Its vents blast a random foe for the heat they take off it. Nothing else cools it": no vent to spend, so no guns and no way down; his tabled shapes stood on vents too | `ws_whip_scorpion.md` |
+| The Polar Bear (tier one) | Lockdown seals on a shield it spends on itself and opens on a vent or a weapon: nothing seals it; his kit of 9 November stands, the seal's trigger is the question | `minerva_polar_bear.md` |
+| The Puffin (tier one) | a shield escort with no shield to spend; his direction, the one unit that cools its allies | `kestrel_puffin.md` |
+| The Swallowtail (tier three) | the Mooring Screens and the Sutler's Hoist are shields, the Hoist a vent too; with the Horn already to be replaced, three of its four locked pieces are open | `ws_swallowtail.md` |
+
+**Machines touched, no redesign** (a dead line or a number to read again, in the pass's content):
+
+- The Musk Ox: "a vent it spends on itself adds 3, a shield 2" has nothing to mean, so the
+  forge's reloads are its trickle, the Recuperator's refund and the Quick Reload, which becomes
+  equipment as it is; his question of 8 November (whether a shield reloads it at all) is
+  answered by the model. Its ammo is read again with two sources gone (its tabled session).
+- The Storm Petrel: its shield pays its weapons' heat and the shield now refills each round, so
+  its engine runs cheaper; the St. Elmo's regen is a regen buff on top of the chassis's own.
+  Read first, its burn or its regen the lever.
+- The Buzzard: the model's own example already (a shield from its heat each round, one weapon
+  that fires its heat); its Thermal Recoupler stacks on the chassis's regen. Read.
+- The Stingray: cooling 0 to 1 (its vent face was its brake); the Lance untouched.
+- The Nemesis and the Ammit: their stock holds the Oblation Mantle and the Entropy Condenser,
+  the pieces that pay in hull; the Nemesis's rage reads hull damage, which a regenerating shield
+  thins. Read with the Arsenal's two pieces.
+- The Cassowary: its cylinder's order is re-dealt with its stock.
+- Every stock die: 37 stock slots hold a piece that retires or changes (the Coolant Jacket 13,
+  the Canopy 10, the Halo Shield 6, the Bleed Valve 5, the Oblation Mantle 2, the Entropy
+  Condenser 1), on every chassis but the Lammergeier. The stock re-deal is the pass's largest
+  piece of content: a table in chat first.
+
+The other thirteen are untouched in kind: the Honey Badger, the Clydesdale, the Kite, the Baboon,
+the Wild Boar, the Prairie Dog, the Dingo, the Funnel-web, the Cottonmouth, the Skua, the
+Needletail, the Giant Petrel and the Lammergeier read their own numbers again and nothing more.
+
+**Components**, the eight shields and seven vents, and the three that move:
+
+| Piece | Today | Under the model |
+|---|---|---|
+| The Halo Shield (tier zero, Aphelion) | shield 6 | the Barrier basic, on itself or an ally, renamed the Halo Projector: hard light that stops one blow, and Aphelion keeps its one basic |
+| The Canopy (tier zero, Minerva) | shield 8, self | retires ("always a little lame"); the Shoring Jack takes its place |
+| The Shoring Jack (tier one, Minerva) | Armoured 2 for the round, self or ally | comes down to tier zero: the Armoured basic |
+| The Coolant Jacket (tier zero, Wainwright & Sutler) | vent 4 | retires |
+| The Bleed Valve (tier zero, Kestrel) | vent 6, self | retires |
+| The Blast Door (tier one, Minerva) | a Barrier, self or ally | stays at tier one and must be more than the basic (Claude's lean: its Barrier holds until it is struck, where the Halo's lasts the round), or retires as its duplicate |
+| The Decoherence Veil (tier one, Aphelion) | a Ward, self or ally | stays: the Ward at tier one |
+| The Laminar Deflector (tier two, Kestrel) | shield 6, Rapid, a round's cooldown | a Barrier, Rapid, a round's cooldown; the name stands (a deflector turns one blow) |
+| The Corona Shield (tier two, Aphelion) | shield 6 and a Cleanse | a Ward and a Cleanse on a machine, renamed the Corona Veil (Aphelion's Wards are Veils); a Barrier that Wards too, offered first, is the old whole block on one piece and is dropped |
+| The Phased Sublimator (tier one, Aphelion) | vent 4 and a Cleanse | a Cleanse on itself or an ally, equipment; the name stands |
+| The Radiator Sail (tier one, Aphelion) | vent 5 on an ally | retires: cooling an ally is the Puffin's by his direction |
+| The Wake Diffuser (tier one, Kestrel) | vent 3 that shields 3 | back to design: two recoveries on one piece; its own line ("it runs cooler, and somehow faster") points at heat turned into tempo, a payoff vent as equipment |
+| The Oblation Mantle (tier one, the Arsenal) | shield 10, paid 3 hull | back to design with the Arsenal's sessions: what its hull buys when it is no shield (Claude's lean: a Barrier on an ally that holds until it is struck) |
+| The Entropy Condenser (tier two, the Arsenal) | vent 10, paid 3 hull | back to design with the Arsenal's sessions (Claude's lean: its heat thrown at a foe as a blow, paid in hull: a weapon) |
+| The Backwash Ionizer (the Puffin's) | an overshield on an ally | its brief |
+| The Mooring Screens, the Sutler's Hoist (the Swallowtail's) | shields | its brief |
+| The Quick Reload (the Musk Ox's) | a vent in kind | equipment, as it plays today |
+
+The basics are then six, from eight: the four guns (Wainwright & Sutler's Twin Autoguns and Ankle
+Mortar, Minerva's Rivet Gun, Kestrel's Laser Carbine), the Halo Projector and the Shoring Jack;
+the fifth gun he wants, an Indirect one, and whatever the stock re-deal asks are the component
+pass's. The ladder this leaves for the pricing pass: a Barrier for the round at tier zero, one
+that holds at tier one, a Rapid one at tier two; Armoured 2 at tier zero and its higher numbers
+to write; a Ward at tier one and a Ward that cleanses at tier two.
+
+**Modules**:
+
+| Module | Today | Under the model |
+|---|---|---|
+| The Reinforced Skeleton (tier two, Minerva) | its components are never destroyed; hull 8 | back to design: with destruction off its rule does nothing; parked until destruction's fate is known, or a new rule beside its hull line |
+| The Phase Conjugator (tier two, Aphelion) | an ally it shields is Armoured 1; shield 4 | back to design: nothing shields an ally, so it never fires (Claude's lean: it reads a Barrier or a Ward it grants an ally) |
+| The Spall Liner, the Boundary-layer Bleed | stand shield up on a trigger | work as they are: shield onto the gauge |
+| The Ward Plate, the Field Radiators, the plates | stats | work; shield regen is a stat a plate may now carry |
+| The Muzzle Velocity Booster, the Tactical Databank | planned since 2 November | untouched by this; still waiting on rules |
+
+The other eleven modules read no shield, vent or injury and stand.
+
+**The foes the model touches** (no content moves; each is read):
+
+- The Goblin Nob's Enrage counts every shield raised, vent spent and equipment used: under the
+  model it counts equipment alone, so it punishes exactly the Barrier and the Armoured a team
+  reaches for. Sharper, and its text changes.
+- Breach ignores the shield, so the regen buys nothing against the Waste: its pushers carry their
+  hull budget in their numbers, or the Waste is where hull is spent by its identity ("hull and
+  tempo over shields"). His call with the budget.
+- A drain is starved by a shield that refills (the Vampire Lord); Scorched and Burning bite
+  harder with no vent to answer them, so the Peak's cells are where heat as a pace is read first.
+- A Barrier on every stock die makes it common, and his row of 17 October says what follows:
+  "if a Barrier grows common the foes need more damaging riders to carry past it" (damage over
+  time, on-hit effects, a countdown's blow). The bosses' telegraphs are read with the Halo
+  Projector in the team's dice.
+
+**The engine the pass touches** (for its build, after the reads): `Face.Kind`'s SHIELD and VENT
+and what reads them (`is_shield`, `is_vent`, the die's marks, the readouts, `tools/die_sheet.gd`);
+the effects `seal_form`, `vent_blast`, the forge's vent and shield reloads, `on_shield_granted`
+(`shield_per_ally_heat` and the Conjugator's), the keyword Overshield, a face's `vents` and
+`shields`; `shield_regen` read at the round's start (built, zero everywhere); the injury
+(`Skirmish.injury_pct`, `_injure_entry`, `no_destroy`, the campaign's and the quick campaign's
+destroyed pieces); the bot's shield and vent valuation and its cautious and shield personas
+(`sim/policy.gd`); the vocabulary's Shield, Vent, Overshield and Injury entries.
+
+**Designs not yet built whose briefs stand on shield or vent entries** (each folds the model in
+at its own session; the briefs README says so for all): Misharu (its Vigil Pavise a self
+overshield, every shield on the team its bait; his new direction of 6 November supersedes the
+bait), the line frame (its parry is a Barrier already; what breaks its combo names a shield and
+a vent; its stacking regen is a regen buff, which the flat regen keeps meaningful), the gunship
+(Beam weapons raise its shield and recharge), Mastema (the Votive Screen, a shield for each
+burning foe), the Macross (GERWALK's shield regen on allies, his own idea, fits as it is), the
+Carrier (a screen of shield on every machine, benched already), the Onryō's Pall, the Cryo
+defence (a blow on any ally's shield as its trigger still works), the siege battery (its
+charge by components used), and the heat pillar's brief, which this pass takes in whole.
 
 ## 7. Open, for Ryan
 
-1. ~~The regen's size and shape.~~ Settled 9 November: a flat number a chassis, never the full
-   reset; the first numbers placeholders read before they are set.
-2. Heat's prices and the cooling: whether the heat session's list lands here, and the cooling by
-   chassis.
-3. Which shield pieces survive as equipment and as what; whether any one-round overshield stays
-   as a Kestrel piece.
-4. ~~The Puffin's and the Swallowtail's identities under the model.~~ Settled 9 November: the
-   Puffin to the drawing board (its brief), the Swallowtail's to its own session.
-5. The pushers' hull target at their rating: a twentieth a fight, so ten fights spend half a
-   squad, or another number.
-6. ~~The injury's in-fight break: kept, as read here, or off with the destruction.~~ Settled 9
-   November: off completely, for now.
-7. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
-8. The formation proposal's questions still open (its section 9: the opening's line, the ratings'
-   reading, the question under `design`, the ramp bands, the prunings, the bosses' form, the metal
-   pair, the hunters that read as ones, the giants' escalation, a tier-two light's read).
+Settled 9 November: the regen a flat number a chassis, never the full reset; the injury rule off
+completely; the Puffin to the drawing board and the Swallowtail to its session; and his leans
+accepted on the rest of the first list ("Your leans are good"): the basics at heat one, the
+cooling by chassis with a read of an offset, the heat session's list landing here; the shield
+pieces' fates (section 6, with the names following); the hull budget by kind (a pusher's fight a
+twentieth of the squad's hull at its rating, a flanker's a thirtieth or less, a hunter's a
+tenth, an elite's a quarter, the boss what is left); and the formation proposal's remaining leans,
+which his point on the makeups (section 4) now re-cuts for the flankers.
+
+Still his:
+
+1. The Barrier as a basic: the Halo Projector at tier zero puts a Barrier in every stock die,
+   which his row of 17 October treats with Suppress's care; or the Shoring Jack alone is the
+   defensive basic and the Barrier stays a tier-one find, leaving a starting team the regen and
+   the lure for the telegraph. Claude's lean: both, the bosses' telegraphs read with it.
+2. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
+   front and his own try of 9 November ride on it).
+3. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
+   each domain lacks, and whether a pack's strike at the wall follows its rating.
+4. The Waste under the regen: its budget in its numbers, or hull spent there by identity.
+5. The Reinforced Skeleton: parked with destruction, or a new rule now.
+6. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 
 ## 8. Holes raised, each with what settles it
 

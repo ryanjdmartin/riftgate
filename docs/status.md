@@ -97,7 +97,7 @@ and changes"): the bible, the measurements, this file and the to-do the conflict
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
 sections main's four and then this branch's, the to-do's lines each by the side that moved it),
 and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
-The bible's file is v0.498, main's v0.497 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.499, main's v0.497 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -188,8 +188,24 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   number a chassis, never a full reset; the Puffin back to the drawing board (its brief,
   `docs/briefs/kestrel_puffin.md`: his instinct the one unit able to cool its allies); a hunting
   line never leads a pusher, members mixing. The cover (an unrolled interpose for the tank)
-  withdrawn: the redirection row's reason stands. Nothing built; the reads first (the brief). The
-  bible at 0.492 carries it in seven rows and section 12.
+  withdrawn: the redirection row's reason stands. His leans accepted on the rest of the open list
+  ("Your leans are good, but might as well rename the adjusted components when they need to to
+  make sense"): the basics at heat one, the cooling by chassis, the shield pieces' fates, the
+  hull budget by kind. The audit he asked for, on main's content as merged (the brief's section
+  6; "send any machine or component or module that clearly doesn't work in the new system … back
+  to design"): four machines back to design, each a brief (the Whip Scorpion whole, the Polar
+  Bear's seal, the Puffin, the Swallowtail), seven touched without a redesign, thirteen untouched
+  in kind; the eight shields and seven vents each with where it goes (the Halo the Barrier basic
+  as the Halo Projector, the Shoring Jack down to tier zero in the Canopy's place, since the
+  Barrier, Armoured and Ward pieces exist at tier one in no stock; the plain vents retired; the
+  Arsenal's two paid in hull and the Wake Diffuser back to design); two modules whose rules stop
+  firing; a stock re-deal of 37 slots; the foes it touches (the Nob's Enrage, breach against the
+  regen, a common Barrier and his row of 17 October). And his point on the makeups, a direction
+  (the brief's section 4, the bible's Foe roles row): a unit is made for a pusher's, a flanker's
+  or a hunter's fight and tuned for it, a hunter its line and what keeps up with it, a flanker a
+  duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
+  Meadow and the Waste want a flanker line. Nothing in `content/` or `sim/` moved; the reads
+  first (the brief). The bible at 0.499 carries it.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -617,9 +633,10 @@ commands are in `README.md`.
   field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
   following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
   Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.498, main's with the formation and refit
-  session's rows (the hunters row's who-may-hunt, the kit, shield, triangle, redirection, injury,
-  command-die and Puffin rows' refit lines, section 12's items), unpublished too. BASE for the
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.499, main's with the formation and refit
+  session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the kit, shield,
+  triangle, redirection, injury, command-die, Puffin, Whip Scorpion, Polar Bear, Swallowtail and
+  Musk Ox rows' refit lines, section 12's items), unpublished too. BASE for the
   next merge is `f048e67`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,

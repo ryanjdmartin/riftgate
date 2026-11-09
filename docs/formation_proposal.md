@@ -15,6 +15,26 @@ What this pass does not touch: a foe's numbers (the refit is held until he plays
 bible's section 12), the elites' compositions and ratings (his: "don't downgrade them"), and the
 escorts as they stand (the bosses' item, section 6 below, writes them with the bosses' entries).
 
+## 0. Since the proposal (9 November, the same day)
+
+Three things have moved since the grids and the reads below were written; the grids are a first
+cut, re-cut in the refit pass (`docs/briefs/refit_pass.md`), which this pass folds into:
+
+- **The bombs never hunt** (his answer to question 1): a hunter's threat is a sequence a lone
+  support can play against, never a burst that decides the fight. The grids below carry it.
+- **The resource model changed under the reads** (the refit pass): the shield innate and
+  regenerating, no shield or vent faces, the injury rule off. Every band below was read on the
+  old model, and a pusher is now measured by hull lost at its rating, a twentieth of the squad's
+  a fight, not by a win band: the formations section 5 calls true threes, at two fifths of the
+  three's hull, are too dear for pushers, and the fodder formations it calls free are nearer what
+  a pusher should cost.
+- **A unit has a battlefield role** (his point on the makeups; the refit brief's section 4 holds
+  his words, the roster by role and the holes): a pusher's unit is tuned for three machines, a
+  flanker's for a duel with one, a hunter's for the catch, and a hunter is its line and what
+  keeps up with it. So every patrol rated one below, each a cut-down pusher, is to be rewritten
+  round units made for a duel, the Waste's four formations that carry antlions are re-cut or
+  defended, and rule 5 of section 3 is superseded where it lets members mix freely.
+
 ## 1. What Ryan said, and when
 
 - 5 November: packs as designed formations, "either completely predetermined by the engine or
@@ -112,8 +132,9 @@ Claude's method, each line a proposal:
    the units' numbers (the refit, held for Ryan's play), never a ninth foe.
 5. **A hunting line never leads a pusher.** The pack wears its lead's sprite, so the sprite says
    the behaviour: a wolf or an antlion leads only a hunter, and a pusher that carries antlions in
-   its ranks is led by a needler or a basilisk. Members mix across pushers, flankers and hunters
-   (a goblin stands in the horde and in the raiders); leads do not (Ryan's question, 9 November).
+   its ranks is led by a needler or a basilisk. As first written, members mixed across pushers,
+   flankers and hunters (a goblin in the horde and in the raiders); his answer the same day
+   supersedes that: a unit is made for its role, and a crossing is deliberate (section 0).
 6. **Hunters are heavy patrols rated two, one a domain and tier, and the formations push.**
    Ryan's frame of 8 November: a soft wrench, a big deal, few. A hunting formation rated three
    that catches a lone machine is a fight it wins one time in twenty (the campaign read), a hard

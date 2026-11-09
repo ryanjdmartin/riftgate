@@ -19,6 +19,14 @@ chat first.
 
 ## How a session runs
 
+- Read `refit_pass.md` before any brief (9 November). Ryan's direction of that day takes shield
+  and vent entries off the die (a component is a weapon or equipment, the shield innate and
+  regenerating, cooling passive) and switches the injury rule off, so every brief's lines about
+  a shield entry, a vent, an overshield, an injury or a destroyed component predate it and are
+  read under it; its section 6 lists the built pieces sent back to design and the unbuilt
+  designs whose briefs stand on those entries, and its section 4 the battlefield roles a foe is
+  now designed for.
+
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row (`docs/design-bible.html`), the
   "Start here" of `docs/status.md`, this file, then the brief and the files it names. If a chat
   and a file disagree, the chat is newer.
@@ -368,6 +376,9 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
+| `ws_whip_scorpion.md` | the Whip Scorpion's rework (9 November): sent back whole by the refit pass, its guns being vents and no vent staying on a die; what stands (the boiler, heat as ammunition), Claude's first thoughts (the hold as the valve) and the holes | Wainwright & Sutler | 2 | Ryan's session |
+| `minerva_polar_bear.md` | the Polar Bear's seal (9 November): his kit of that day stands, but Lockdown seals on a shield spent and opens on a vent, and neither stays on a die; a bench of four triggers and the holes | Minerva | 1 | Ryan's session, the first of the four (Minerva's tier-one front rides on it) |
+| `ws_swallowtail.md` | the Swallowtail's rework (9 November): its Screens and Hoist are shields, its Horn already to be replaced, so three of its four locked pieces are open; the team Ward Claude offered withdrawn against the Barrier and Ward row; a bench | Wainwright & Sutler | 3 | Ryan's session (his to start since 4 November) |
 | `kestrel_puffin.md` | the Puffin's rework (9 November): sent back to the drawing board by the refit pass, since shield faces leave the die; Ryan's instinct the one unit able to cool its allies, a cold-water bird; the holes for the chat | Kestrel | 1 | Ryan's session, after the heat prices land |
 | `refit_pass.md` | the refit pass's brief (9 November): Ryan's direction from his play of Phase 2, the resource model (an innate shield that regenerates, passive cooling, no shield or vent faces, a component a weapon or equipment, the hold as the heat decision), component destruction off to test, the cover withdrawn, the formation pass folded in, the what-if reads before any content moves, the rework list and the open questions | the battle and the kit | rule | Ryan's answers to its open list, then the reads |
 | `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty-one elites, six wanderers, the Nob's rage, the Fiend of Fire, the demotions; every domain's third boss landed 4 November), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the elites' numbers, the names) |
@@ -418,7 +429,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `stock_pass.md` | landed 22 October (the content, the loops' numbers, the bands at 200 seeds), retired 23 October (`git show a550c2e:docs/briefs/stock_pass.md`): the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method | all | 0 to 3 | nothing here: the name pass and the pricing run are the to-do's |
 | `foes_ladder.md` | landed 28 October (the three enemy verbs, four buffs crossing to the foes, the player's Purge and the Null Field Emitter, twenty-six recolours by tier with the spawn lists, their sprites, the matrix's cells by tier read at 30 seeds), retired the same day (`git show 26c54c7:docs/briefs/foes_ladder.md`) | the foes (every domain) | the rank and file's tiers two and three | nothing here: the 200-seed matrix is the to-do's, the six recolours' move counts section 12's |
 | `chain_conductor.md` | keyword rework, decided 28 October (the bible's Chain row), built 29 October and retired (`git show 0cea0ee:docs/briefs/chain_conductor.md`) | Aphelion's lean, the Arc Fault Cannon the first carrier | keyword | its read (the to-do) |
-| `heat_pillar.md` | design session on heat as a pillar (Ryan, 28 October: a core pillar, undervalued; the bible's triangle row and section 12's heat question): what is built, what is measured, his frame, Claude's bench, the questions and the reads | every maker | rule | Ryan's answers to its six questions, then the prices, the cooling and the vent payoffs land on his go, read on the vanilla ladder's heat grid first |
+| `heat_pillar.md` | design session on heat as a pillar (Ryan, 28 October: a core pillar, undervalued; the bible's triangle row and section 12's heat question): what is built, what is measured, his frame, Claude's bench, the questions and the reads | every maker | rule | folded into the refit pass on 9 November (`refit_pass.md`: no vent entry stays on a die, cooling the heat's passive recovery, the hold the decision, the basics at heat one): its measures and bench are the pass's to read, its six questions answered there or moot |
 | `long_wall_build.md` | retired 8 November, its branch landed (`git show 68381ff:docs/briefs/long_wall_build.md`; the design `git show 68381ff:docs/long_wall_proposal.md`): the build order for Ryan's redesign of 5 and 6 November, the battle as the defence of a long wall, Phases 1 and 2 built, the reinforcement cut, the field's loot, the compositions as grids; what is open is the bible's section 12 (the shell, the formation pass, the refit) | the battle | rule | landed |
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
