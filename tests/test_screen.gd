@@ -2477,15 +2477,15 @@ func test_a_last_act_records_the_gauges_it_met() -> void:
 		assert_true(m.shield < shield or m.hull < hull, "and it struck")
 
 
-## The Armadillo's form reads on its die and its view (Ryan, 2 November: "armadillo needs indication
+## The Polar Bear's form reads on its die and its view (Ryan, 2 November: "armadillo needs indication
 ## when a die face will transform it, like a die chip or something. It also needs some highlight or
 ## something when it is transforming, and a better indication of what form it's in"): open, a shield
 ## it may spend on itself wears the seal chip and its readout says so; sealed, a weapon or a vent
 ## wears the opening one; sealed, the view wears its shell; the Sealed chip the seal's own mark.
-func test_the_armadillos_form_reads_on_its_die_and_its_view() -> void:
+func test_the_polar_bears_form_reads_on_its_die_and_its_view() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
-	var m := db.make_mech("armadillo")
+	var m := db.make_mech("polar_bear")
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 30, 1)])
 	var s := SkirmishScreen.new()

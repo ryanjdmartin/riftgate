@@ -33,7 +33,7 @@ KITS = {
     'sparrowhawk': (['transonic_rifle', 'bleed_valve'], ['boundary_layer_bleed', 'ward_plate']),
     'puffin': (['corona_shield', 'laminar_deflector', 'radiator_sail', 'cyclic_cannon'], ['phase_conjugator', 'flak_skirt']),
     'cottonmouth': (['flak_cannon', 'tesla_gauntlets', 'meteor_artillery', 'corona_shield'], ['susceptibility_tensor', 'flak_skirt']),
-    'armadillo': (['proximity_klaxon', 'slugthrower', 'canopy', 'bleed_valve'], ['ward_plate', 'ablative_plating']),
+    'polar_bear': (['proximity_klaxon', 'slugthrower', 'canopy', 'bleed_valve'], ['ward_plate', 'ablative_plating']),
     'musk_ox': (['thermal_ray', 'enfilade_beam', 'coolant_jacket', 'canopy'], ['ward_plate', 'flak_skirt']),
     'stingray': (['incendiary_shells', 'airburst_shell', 'corona_shield', 'aurora_lattice', 'coolant_jacket'],
                  ['susceptibility_tensor', 'field_radiators']),
@@ -44,7 +44,7 @@ FOURS = [
     ('the heavy line', ['nemesis', 'wild_boar', 'badger', 'goshawk']),
     ('the setups', ['prairie_dog', 'clydesdale', 'baboon', 'dingo']),
     ("Kestrel's four", ['lammergeier', 'sparrowhawk', 'puffin', 'goshawk']),
-    ('armour and the drum', ['badger', 'cottonmouth', 'armadillo', 'musk_ox']),
+    ('armour and the drum', ['badger', 'cottonmouth', 'polar_bear', 'musk_ox']),
     ('the statuses', ['stingray', 'funnel_web', 'whip_scorpion', 'baboon']),
 ]
 MAX_TIER = 2

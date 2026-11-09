@@ -25,9 +25,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1078 tests, 304,181 checks, green (9 November, `ccr-a0b35006-od22d2`: main with the shapes
-  relaid and recast, the skirmish audit's step 3 and the playtest list of 9 November, and the
-  Lammergeier's rework; main alone 1072; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1081 tests, 304,222 checks, green (9 November, main with the shapes relaid and recast,
+  the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name and
+  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -46,6 +46,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 9 November 2026 but the music session's branch below.
+`claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November and its id's rename (How things
+stand below), landed on main as fast-forwards on Ryan's word ("merge it into main so I can try it");
+it is merged and to delete with the rest.
 `claude/playtesting-ui-feedback-hfdiok`, Ryan's playtest list of 9 November (How things stand
 below), took main's map session and skirmish audit step 3 in a merge (the bible, the measurements
 and this file the conflicts, both sides' words kept) and main took it as a fast-forward on Ryan's
@@ -85,9 +88,12 @@ one). Each merge commit says how its conflicts were settled.
 
 Still working (9 November; every other branch on GitHub is merged): `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
-on the live page ahead of its branch, so a republish merges onto the live page (Pages); and
-`ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), main taken as it landed,
-waiting on Ryan's word to land. Landed
+on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
+9 November: `ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), on Ryan's word
+("Merge this into main. Your reads are correct"), main taken as it landed (the Polar Bear: the
+save versions stacked, battles 19 and runs 18; the bible, the measurements, this file, the to-do
+and the synergy map the conflicts, both sides kept, the generated tables and map run again) and
+main taking it as a fast-forward; it is merged and to delete with the rest. Landed
 9 November: `ccr-8df9952c-4cccdf`, the skirmish code audit's step 3 (How things stand: one hit
 routine, the hidden flags gone, one round model, the behaviour trace), on Ryan's word ("Ok, merge
 into main"), main taken as it landed (the hunt and the rings, no conflict) and main taking it as
@@ -129,7 +135,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   module); the echidna left open (Ryan's new shape of 4 November in its brief), the siege battery
   parked on Ryan's charge brief, the battlecruiser never with the Carrier's session. Ryan's ideas
   of 4 November wait on his marks, each in its brief: the lure tank (his tier-one tank, which the
-  Armadillo's move to tier two lands with), the Cryo party defence, the immune one, the mole
+  Polar Bear's move to tier two lands with), the Cryo party defence, the immune one, the mole
   (its hook later), and the shield bash (the shield-basher cut as a unit, a tier-three piece).
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
@@ -166,12 +172,23 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   own Mine first); the Lorentz Contractor gathers every Mine onto one foe and Exposes it. A Mine
   is a foe status: its chip shows the damage and its readout the keywords; a Ward turns it away,
   a cleanse takes it, a merge hands it to the merger. The slot mines' code and the audit's faults
-  parked on it went with it. Saves at 18, runs at 17. `RIFTGATE_MINE_DEBUG=1` mines every foe at
+  parked on it went with it. Saves at 19, runs at 18 (main's Polar Bear id took 18 and 17). `RIFTGATE_MINE_DEBUG=1` mines every foe at
   a fight's open, to judge the blast running. His levers if it reads weak or dangerous: a Mine a
-  hit; a cooldown on the drone. The runner's read (30 seeds, a direction, alone): every pack 7 / 43
+  hit; a cooldown on the drone. On main since 9 November ("Merge this into main. Your reads are
+  correct": the Numbed call and the conditions read as the die is spent among them). The
+  runner's read (30 seeds, a direction, alone): every pack 7 / 43
   before, 42 / 50 after, from the tier-three band's floor to its top beside the Giant Petrel's
   38 / 50, the drone picked 21% and the gather 5% (`docs/measurements.md`); not weak, so the
   per-hit lever waits.
+- **The Polar Bear's kit of 9 November** (`claude/modest-ramanujan-uovd42`, Ryan: "The Armadillo is
+  OP. I never really felt strongly about Sealing it"; built as he gave it after the holes, his play
+  the judge): armour 1 open and 4 sealed, one Cryo Flinger on a die of five, the Flinger without
+  Rapid and gaining Spread while sealed (Lockdown's grant, scoped to the piece: a `when` of
+  `sealed` and an `entry` naming a component, both new), and its weapons 1 harder on a foe
+  carrying Cryo (the strike that meets the stacks, its hit spending them). The probe that read the
+  old kit is in `docs/measurements.md`. Renamed the Polar Bear the same day (the bible's names row; the claws in
+  his words a metaphor for the damage boost), its id `polar_bear` with it on his word, its model, rig,
+  textures, blend and hangar renders moved and the save versions bumped (battles 18, runs 17, quick runs 2). 1075 tests green on this branch.
 - **The playtest list of 9 November** (`claude/playtesting-ui-feedback-hfdiok`; the bible's
   Rupture names, map marks, Ability, UNDO, tap and ranks rows, and section 12): built, first cuts
   all for his phone read (the to-do's one judge line). The battle's top bar is three gauges always
@@ -231,7 +248,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
   it (not republished: the live page's republish waits on Ryan's word, Pages below).
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
-  enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
+  enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
   taking its widest member's ring, the Mandragoras' back-rank three from the joining days. His
   calls the same day, built: a composition says whether it hunts, never its foes ("The
@@ -507,11 +524,12 @@ commands are in `README.md`.
   `docs/design-bible.html` after every change. The live page is v0.488, dated 8 November (the
   page's Version 500, published from `ccr-d26a1321-xg9xge` at `84ed9ef`: a hunter's reach, merged
   clean onto v0.487 of the skirmish code audit's landing on main, which the live page matched byte
-  for byte). Main's file is v0.492 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
-  then the map session's shapes and field rows and the playtest list of 9 November); its
+  for byte). Main's file is v0.496 (v0.489 at `384d3482`, the hunt the composition's and the rings purged,
+  then the map session's shapes and field rows, the playtest list of 9 November, the Polar
+  Bear's kit and name of the same day, and the Lammergeier's rework: its row, the Gel's and the
+  reinforcement row's slot-mine lines, the tables); its
   republish was refused by the permission check as unrequested and waits on Ryan's word, BASE
-  `dc265dc9`'s file. `ccr-a0b35006-od22d2`'s file is v0.493 (the Lammergeier's rework: its row,
-  the Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, with main's. The live
+  `dc265dc9`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
@@ -526,23 +544,16 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. Behind
-  `ccr-a0b35006-od22d2` (9 November) by `content/chassis.json`, `content/components.json` and
-  `content/vocabulary.json` too (the Lammergeier's Mines), unpublished like the rest below. Behind
-  `ccr-d26a1321-xg9xge` (8 November) by `content/vocabulary.json` (the Ring's, the Pack's and the
-  Behaviour's codex), `content/foes.json` (no ring or hunt on a foe), `content/factions.json` (a
-  composition's `hunts`) and `tools/hangar.html` (the foe list's Zone gone): the live vocabulary
-  checked byte for byte against main's, `edits` empty and `designs` the two folded ideas, but the
-  publish refused by the permission check as unrequested, so it waits on Ryan's word. At the page's version 214
-  (8 November, from `ccr-1eaf0060-jrpw04` at `34ae947`: only `content/vocabulary.json` and
-  `content/components.json`, the Ability term, the seal, the Ore Plate, Golden, Guarded and Hot
-  Streak as abilities, the Purge's codex and the Null Field Emitter's, onto the long wall's
-  version 213 of that day: the page's foe-tier check reading the grid and `content/factions.json`
-  as grids). As the audit landed on main its seven content files were checked against main's one
-  by one and match, so main and the page agree. Versions 210 and 211 (7 November) were the Sweep
-  session's; version 209 before them the long wall branch's page, content files, pins and
-  `designs.json` with Ryan's eight directions folded in (2e871be), his two ideas, the Giant
-  Petrel and the Needletail, marked briefed (benched in the Kestrel hub's brief); `edits` empty.
+  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's
+  version 215 (9 November, main at `a95e0a1`, Ryan's word on the Polar Bear's id: "its exposed
+  to me as the designer reading the Hangar"): every file changed since the page last moved
+  (version 213's `eca105a`, version 214 adding only vocabulary and components), so the hunts
+  work of 8 November landed with it (the foe list's Zone gone, a composition's `hunts`), and the
+  armadillo paths removed; the 245 files not sent checked against the live listing by size and
+  all match, so main and the page agree. `edits` empty, `designs` the two folded ideas (the Giant
+  Petrel and the Needletail, briefed), and one name candidate of Ryan's, the Tesla Gauntlets of
+  28 September, still saying "the Armadillo's status" (his words of then, kept). Behind main since the Lammergeier's rework landed (9 November) by `content/chassis.json`,
+  `content/components.json` and `content/vocabulary.json` (the Mines), its republish on Ryan's word.
   `build/hangar/designs.json` is one
   878 KB line, so a session that must read it whole before publishing writes it indented first.
   Its lit parts show as the phone's renderer shows

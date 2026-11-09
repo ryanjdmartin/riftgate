@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cv4xmh2s5dv57"
-path="res://.godot/imported/armadillo_plate.png-1a0ec43c589f75b3ace5118707350081.ctex"
+uid="uid://hv2xsfwimuya"
+path="res://.godot/imported/polar_bear_livery2.png-b5a3c0c328321f3f7d513d4de707b4de.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "279fc0219eeb2b6a48f139dae6d70311"
+"md5": "8361fca31420bc4479093baf6b49e13d"
 }
 
 [deps]
 
-source_file="res://art/models/armadillo_plate.png"
-dest_files=["res://.godot/imported/armadillo_plate.png-1a0ec43c589f75b3ace5118707350081.ctex"]
+source_file="res://art/models/polar_bear_livery2.png"
+dest_files=["res://.godot/imported/polar_bear_livery2.png-b5a3c0c328321f3f7d513d4de707b4de.ctex"]
 
 [params]
 

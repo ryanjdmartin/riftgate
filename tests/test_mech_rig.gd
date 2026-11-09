@@ -5,7 +5,7 @@ extends TestCase
 ## renderer, so the joints' nesting and the sidecars are checked against the real files;
 ## only the drawing needs a window.
 
-const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
+const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
 	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
 	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion"]
 
@@ -263,7 +263,7 @@ func test_only_the_weapon_that_fired_kicks_after_its_aim() -> void:
 			checked += 1
 		pair[1].free()
 	assert_true(checked > 0, "some fixed gun rides a joint carrying no mount")
-	pair = _rig_for("armadillo")
+	pair = _rig_for("polar_bear")
 	rig = pair[0]
 	assert_eq(rig.aim_joint_over(rig.hardpoints[1]), "", "a quad's port guns never turn to aim (Ryan: don't bother)")
 	pair[1].free()
@@ -347,7 +347,7 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],
 		"clydesdale": [["head", ""], ["knee_fl", "hip_fl"], ["knee_hr", "hip_hr"], ["ankle_fl", "knee_fl"], ["ankle_hr", "knee_hr"], ["elev_mortar", "turret_mortar"], ["elev_howitzer", "turret_howitzer"]],
 		"baboon": [["waist", ""], ["shoulder_l", "waist"], ["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["ankle_l", "knee_l"], ["knee_l", "hip_l"], ["elev_r", "waist"]],
-		"armadillo": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["run_l", ""], ["run_r", ""], ["run_fl", ""], ["run_rack", ""], ["shutter_rl", ""], ["louvre_l1", ""], ["louvre_r3", ""], ["louvre_cl1", ""], ["louvre_cr4", ""], ["vent_pop_l", ""]],
+		"polar_bear": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["run_l", ""], ["run_r", ""], ["run_fl", ""], ["run_rack", ""], ["shutter_rl", ""], ["louvre_l1", ""], ["louvre_r3", ""], ["louvre_cl1", ""], ["louvre_cr4", ""], ["vent_pop_l", ""]],
 		"wild_boar": [["elev", "turret"], ["plow", ""], ["elev_pod", ""]],
 		"prairie_dog": [["wheel_fl", "steer_fl"], ["wheel_rl", ""], ["sensor", "chassis"], ["turret", "chassis"]],
 		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["turret_rack", "chassis"], ["elev_rack", "turret_rack"]],
@@ -386,7 +386,7 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 
 func test_a_form_is_held_while_set_and_let_go_after() -> void:
 	# A pose a model holds while its machine carries the status of the same name (the
-	# Armadillo's seal: its guns sink and its irises shut): it turns in when set, no act
+	# Polar Bear's seal: its guns sink and its irises shut): it turns in when set, no act
 	# starts while it turns, held it plays its own acts if it has any and otherwise none that
 	# moves a joint it holds, and letting it go brings them home.
 	var with_form := ""
@@ -444,7 +444,7 @@ func test_a_form_is_held_while_set_and_let_go_after() -> void:
 
 
 func test_a_held_form_may_move_the_body_and_its_own_acts_play_over_it() -> void:
-	# The sealed Armadillo hunkers (Ryan, 29 October: "its base pose should be hunkered down
+	# The sealed Polar Bear hunkers (Ryan, 29 October: "its base pose should be hunkered down
 	# in a defensive position"): a form may carry the whole machine with it, and an act of
 	# its own plays as an offset over that pose and ends back on it, never on the rest.
 	var id := ""
@@ -478,7 +478,7 @@ func test_a_held_form_may_move_the_body_and_its_own_acts_play_over_it() -> void:
 
 
 func test_a_gun_that_runs_in_its_port_kicks_back_along_its_line_and_never_turns() -> void:
-	# Ryan, 29 October (the Armadillo's weapons: "they should only move along their axis of
+	# Ryan, 29 October (the Polar Bear's weapons: "they should only move along their axis of
 	# firing, in and out"): a joint given a line runs along it alone; every turn is held to
 	# nothing, and a shot kicks it back along the line instead of pitching it.
 	var checked := 0
@@ -874,7 +874,7 @@ func test_a_walker_plants_its_feet_and_never_rolls() -> void:
 	# Ryan, 4 October, the third pass: stomp and plod; the weight believable, no weight shift
 	# side to side. A foot down on the ground stays where it was put while the body travels
 	# over it, and the body never rolls.
-	for id in ["clydesdale", "armadillo", "nemesis", "baboon", "ammit"]:
+	for id in ["clydesdale", "polar_bear", "nemesis", "baboon", "ammit"]:
 		var pair := _rig_for(id, 2)
 		var rig: MechRig = pair[0]
 		var model: Node3D = pair[1]
@@ -928,7 +928,7 @@ func test_the_debug_walk_runs_at_the_machine_s_own_pace_on_the_map() -> void:
 	assert_true(BattleMapView.mech_seconds_per_hex(4.0) < 0.69 and BattleMapView.mech_seconds_per_hex(5.0) < 0.55, "the 4s and 5s run faster")
 	assert_true(is_equal_approx(BattleMapView.mech_seconds_per_hex(3.5), lerpf(BattleMapView.mech_seconds_per_hex(3.0), BattleMapView.mech_seconds_per_hex(4.0), 0.5)), "straight between the keys")
 	assert_true(MechRig.map_speed(100.0, 5, Map3D.fit_for("light")) > MechRig.map_speed(100.0, 5, Map3D.fit_for("assault")), "a light machine is drawn smaller, so a hex is more of itself")
-	var pair := _rig_for("armadillo", 2)
+	var pair := _rig_for("polar_bear", 2)
 	var rig: MechRig = pair[0]
 	rig.top_speed = 64.0
 	rig.debug_move = true
@@ -1494,7 +1494,7 @@ func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
 	pair[1].free()
 
 
-## The Armadillo's vents stand ajar while its shell is open (Ryan, 2 November: "When unsealed, the
+## The Polar Bear's vents stand ajar while its shell is open (Ryan, 2 November: "When unsealed, the
 ## vents should be open, and then more open during the vent animation"): at rest each louvre stands
 ## its ajar share open, the seal turning in shuts it, and a vent act's swing takes the share's place
 ## so the act still peaks where it was authored to.

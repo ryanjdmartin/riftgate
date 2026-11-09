@@ -30,7 +30,7 @@ def edit(p, reps):
 # went with the long wall brief, docs/briefs/long_wall_build.md 3.6)
 C = {
  'badger': (36, 8, 12, 1, 2), 'clydesdale': (40, 10, 12, 1, 1), 'sparrowhawk': (12, 16, 10, 2, 0),
- 'baboon': (28, 10, 14, 1, 0), 'armadillo': (40, 8, 12, 1, 2), 'wild_boar': (36, 8, 12, 1, 2),
+ 'baboon': (28, 10, 14, 1, 0), 'polar_bear': (40, 8, 12, 1, 2), 'wild_boar': (36, 8, 12, 1, 2),
  'prairie_dog': (20, 10, 12, 1, 0), 'dingo': (20, 10, 12, 1, 0), 'goshawk': (28, 12, 14, 1, 0),
  'nemesis': (36, 6, 14, 1, 2), 'ammit': (32, 10, 14, 1, 1), 'stingray': (24, 12, 14, 0, 0),
  'puffin': (20, 8, 12, 1, 0), 'funnel_web': (30, 10, 12, 1, 1), 'cassowary': (24, 8, 12, 1, 0),
@@ -46,7 +46,7 @@ for c in d['entries']:
     for eff in (c.get('passive') or {}).get('effects', []):
         e = eff.get('effect')
         if c['id'] == 'sparrowhawk' and e == 'add_heat': eff['value'] = 2
-        if c['id'] == 'armadillo' and e == 'seal_form': eff['value'], eff['heat'] = 3, 3
+        if c['id'] == 'polar_bear' and e == 'seal_form': eff['value'], eff['heat'] = 3, 3
         if c['id'] == 'prairie_dog' and e == 'add_damage_taken': eff['value'] = -1   # not in the brief: 5 less over four
         if c['id'] == 'goshawk' and e == 'shield_per_heat': eff['value'], eff['per_heat'] = 1, 4
         if c['id'] == 'stingray' and e == 'add_stacks': eff['per_heat'] = 5

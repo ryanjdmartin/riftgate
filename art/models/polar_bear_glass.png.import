@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bejnp0ftyjr3d"
-path="res://.godot/imported/armadillo_heat.png-7725fd00c912ef5f979509f5f0c9bd56.ctex"
+uid="uid://bvouprcad33ar"
+path="res://.godot/imported/polar_bear_glass.png-c96129a28ccd24ed845b4a81d9a358d4.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "7651d60b42751556c908dc098316d6ef"
+"md5": "4cffc5b768b5bb874aa2bc560ae1314e"
 }
 
 [deps]
 
-source_file="res://art/models/armadillo_heat.png"
-dest_files=["res://.godot/imported/armadillo_heat.png-7725fd00c912ef5f979509f5f0c9bd56.ctex"]
+source_file="res://art/models/polar_bear_glass.png"
+dest_files=["res://.godot/imported/polar_bear_glass.png-c96129a28ccd24ed845b4a81d9a358d4.ctex"]
 
 [params]
 

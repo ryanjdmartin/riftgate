@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvouprcad33ar"
-path="res://.godot/imported/armadillo_glass.png-c97380858ac9c22673ec8a4b1e44e4d1.ctex"
+uid="uid://bf30nlkbyegnu"
+path="res://.godot/imported/polar_bear_vent.png-506778dda3428e0710fb2e6e7cfd2715.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "4cffc5b768b5bb874aa2bc560ae1314e"
+"md5": "142e4aa2be067474a65577b5bcf7949e"
 }
 
 [deps]
 
-source_file="res://art/models/armadillo_glass.png"
-dest_files=["res://.godot/imported/armadillo_glass.png-c97380858ac9c22673ec8a4b1e44e4d1.ctex"]
+source_file="res://art/models/polar_bear_vent.png"
+dest_files=["res://.godot/imported/polar_bear_vent.png-506778dda3428e0710fb2e6e7cfd2715.ctex"]
 
 [params]
 

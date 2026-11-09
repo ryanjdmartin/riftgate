@@ -32,7 +32,7 @@ the thirteen machines, read in hull at 2.9 points for 20 hull. Means over thirte
 twenty packs, so bands, not directions. Shield 20 is worth about 17 hull, armour 5 about 53,
 5 more on every blow about 60, cooling 5 and heat maximum 20 almost nothing (only the
 Sparrowhawk, which runs hot, values heat). Passives average about 45: the Sparrowhawk's about
-200, the Armadillo's about 130 (with the discharge still in), the Nemesis's about 110 (the
+200, the Polar Bear's about 130 (with the discharge still in), the Nemesis's about 110 (the
 Crucible), the Goshawk's about 50, the Ammit's, the Clydesdale's, the Baboon's and the Stingray's
 20 to 30, the Wild Boar's about 7, and nothing alone for the Badger's, the Prairie Dog's, the
 Dingo's and the Puffin's, which work on the map, on allies or never fire. Module list prices
@@ -47,9 +47,9 @@ each a direction at 50 seeds: the Badger against the Salamanders 56 against 38 a
 formation 90 against 48 for the Booster; the Clydesdale against the Bombs 26 against 4 and the
 Treant 98 against 80 for the Databank. Bible section 7.
 
-**The Faraday Hull.** The lone Armadillo, 50 seeds a cell, random and greedy win rates averaged
+**The Faraday Hull.** The lone Polar Bear, 50 seeds a cell, random and greedy win rates averaged
 over twenty packs (a row mean): 85 and 92 with the discharge, 64 and 85 without, 72 and 85 with
-one Shocked foe a round. Without the discharge the Armadillo stands at the Wild Boar's level
+one Shocked foe a round. Without the discharge the Polar Bear stands at the Wild Boar's level
 against swarms and formations and above it against bosses; Minerva's team wins everything
 either way. Bible section 7.
 
@@ -110,7 +110,7 @@ against the Sandworm 70 to 30 and the Magma Golem 60 to 20; greedy against the B
 and the Salamanders 100 to 57; the Meadow formation greedy 13 to 40. Its die: the fists 66% to
 53% of its spends, the Retribution Thurible 4 to 10%, the Oblation Ward 1 to 4%. It rolls again
 about twice a fight alone, 0.3 times beside the Badger and the Sparrowhawk, 0.6 beside the
-Armadillo and the Prairie Dog; every team wins everything for 5 to 7% of its hull; a team's foes
+Polar Bear and the Prairie Dog; every team wins everything for 5 to 7% of its hull; a team's foes
 reach its hull 0.15 times a round. Bible section 7.
 
 **The shield rule.** Letting every blow's excess past a standing shield: the machines' mean win
@@ -118,7 +118,7 @@ rate 46 to 45 (greedy, 30 seeds a cell, a mean over every machine and pack). Bib
 
 **Armour lowered.** Every chassis's armour 5 lower, then 10, greedy, 30 seeds a cell. The team
 rows move by a point or two of hull (the Minerva team 1 to 3%) at 5, up to 5% at 10, every team
-still winning every single pack. Alone (directions): the Armadillo 88 to 79, then 58; the Wild
+still winning every single pack. Alone (directions): the Polar Bear 88 to 79, then 58; the Wild
 Boar 81 to 64, then 53; the Badger 67 to 49, then 46. What makes fights easy that day: every team
 row beats every boss for 1 to 15% of its hull, the Minerva team every formation for 1 to 11%;
 the Kestrel and Wainwright & Sutler teams lose the Marsh's formation at 7 and 0%. Bible section
@@ -179,7 +179,7 @@ Bombs: the Clydesdale 1 to 72, the Wild Boar 76 to 100, the Nemesis 65 to 100; t
 the Boar 54 to 98, the Badger 77 to 97) and closed for the Goshawk (the Salamanders 80 to 6, as
 the heat-debuff row foresaw); the bosses got harder for the heavy machines (the Treant and the
 Bone Dragon: the Badger greedy 100 to 46, the Nemesis random 71 to 25; the Sandworm: the Badger
-66 to 21); the Marsh's formation turned from a free win into a decision for the Armadillo
+66 to 21); the Marsh's formation turned from a free win into a decision for the Polar Bear
 (random 98 to 2, greedy 100 to 99) and a wall for the Boar (greedy 95 to 49); the Wainwright &
 Sutler team took the Peak's formation (greedy 10 to 68) and the Meadow's (79 to 99). Reach:
 Direct is 76% of attack spends at 17.6 hull a spend for 9.8 heat, Indirect 24% at 12.5 for 8.9,
@@ -205,16 +205,16 @@ single packs, the four bosses and the four formations:
 | Honey Badger alone | 59/79 | 1/24 | 18/48 | 38%, 96%, 76% |
 | Sparrowhawk alone | 62/85 | 64/90 | 0/0 | 36%, 50%, 100% |
 | Honey Badger and Sparrowhawk | 100/100 | 100/100 | 48/89 | 6%, 10%, 54% |
-| Armadillo and Baboon | 99/100 | 98/100 | 49/86 | 7%, 10%, 58% |
+| Polar Bear and Baboon | 99/100 | 98/100 | 49/86 | 7%, 10%, 58% |
 | Clydesdale and Prairie Dog | 82/99 | 77/100 | 0/26 | 9%, 8%, 91% |
 | Nemesis and Puffin | 73/98 | 42/96 | 5/50 | 20%, 36%, 84% |
 | The starting trio | 100/100 | 100/100 | 86/100 | 2%, 4%, 20% |
-| Badger, Clydesdale, Sparrowhawk, Armadillo | 100/100 | 100/100 | 100/100 | 1%, 2%, 8% |
-| Armadillo, Baboon, Nemesis, Puffin | 100/100 | 100/100 | 92/100 | 0%, 0%, 9% |
+| Badger, Clydesdale, Sparrowhawk, Polar Bear | 100/100 | 100/100 | 100/100 | 1%, 2%, 8% |
+| Polar Bear, Baboon, Nemesis, Puffin | 100/100 | 100/100 | 92/100 | 0%, 0%, 9% |
 
 Read: a formation costs a pair about 1.1 machines' worth of hull, a trio 0.6, a four 0.3, and
 a pair loses a formation outright one fight in four to one in two (the Peak's against the
-Armadillo and the Baboon 43%, the Marsh's against the Badger and the Sparrowhawk 75%). Two
+Polar Bear and the Baboon 43%, the Marsh's against the Badger and the Sparrowhawk 75%). Two
 pairs fighting two formations spend about three times the hull of one four fighting both in
 turn, and risk half the team each. A boss alone is two rounds and 2% of a four's hull: no exam.
 Count dominates composition: a four of tank, controller, bruiser and support reads the same as
@@ -244,7 +244,7 @@ five-weapon kit; each tag's bonus is a `--bump`, or for Arc's higher top roll th
 Velocity Booster with its value set. A lone machine is a diagnostic: teams and whole runs
 decide.
 
-The roster that day, for scale: the Armadillo 92, the Wild Boar 83, the Nemesis 72, the Badger
+The roster that day, for scale: the Polar Bear 92, the Wild Boar 83, the Nemesis 72, the Badger
 70, the Sparrowhawk 68, the Clydesdale 48, the Goshawk 36, the Ammit 34, the Prairie Dog 30, the
 Stingray 26, the Baboon 25, the Dingo 11, the Puffin 11. The stand-in with no bonus: 23 to 28,
 whatever its kit. Prices on it, in hull at its kit's own: armour 5 about 78, 10 about 106, 15
@@ -285,7 +285,7 @@ between fights and hull never heals), which one fight cannot see. The warp is ar
 doubles: every steep build is five Ballistic tags, a second tag adding its own row on top (hull
 60 about 17 points, shield 60 about 8), and five Missile and Beam pieces, with no armour,
 win 52. Two two-tag pieces in a mix win 61, about 11 over the plain mix; five pieces sharing two
-tags win 52 to 83, sharing three 86, all under the Armadillo's 92, and Bold's armour 20 puts
+tags win 52 to 83, sharing three 86, all under the Polar Bear's 92, and Bold's armour 20 puts
 five Ballistic at 84 and the three-tag die at 95, past it. So diminishing returns were not
 needed at these amounts: the riders only a mix uses lift the middle with no caveat (+5 here),
 and the falling ladder lifts the mixes 9 to 12 points with five Ballistic unchanged, at a
@@ -446,7 +446,7 @@ random / greedy:
 | Clydesdale | 34.9 / 48.0 | 32.1 / 47.5 | 32.1 / 47.5 |
 | Kite (the Sparrowhawk until its rework) | 49.3 / 67.7 | 44.1 / 58.9 | 21.2 / 26.9 |
 | Baboon | 12.7 / 26.5 | 12.2 / 25.4 | 12.2 / 25.4 |
-| Armadillo | 79.0 / 94.7 | 25.9 / 39.0 | 25.9 / 39.3 |
+| Polar Bear | 79.0 / 94.7 | 25.9 / 39.0 | 25.9 / 39.3 |
 | Wild Boar | 55.3 / 84.9 | 55.2 / 82.0 | 55.2 / 82.0 |
 | Prairie Dog | 19.2 / 31.1 | 15.8 / 23.4 | 15.8 / 23.4 |
 | Dingo | 4.0 / 11.2 | 4.5 / 10.8 | 2.6 / 10.4 |
@@ -471,7 +471,7 @@ The shield rule alone, read from the Flak entry's rows on its parent (`5abc6760`
 seeds): the Wainwright & Sutler team 79.4 / 91.8 to 74.5 / 91.3, the Prairie Dog 16.2 / 28.6 to
 15.8 / 23.4, the starting team 96.9 / 100 to 96.8 / 100; of the Peak's cells it was to move, the
 Wainwright & Sutler team's formation 42 to 34 greedy and the Prairie Dog's Drakes 57 to 50,
-directions at one cell's band. The Armadillo alone falls from the top of the table to the middle
+directions at one cell's band. The Polar Bear alone falls from the top of the table to the middle
 with its rework (20 October), a team tank whose team holds: alone it loses every formation,
 every boss (2 greedy at most), the Goblins, the Revenants and the Salamanders (a trace, six
 Goblins at seed 1: open it takes 15 a blow where the old shell took 5, sealing costs the round's
@@ -483,22 +483,22 @@ Minerva's in both rungs at 100, so a final against a team is no decision; the fi
 for three teams (the starting team 0 / 16, Kestrel's and Wainwright & Sutler's 0 / 0) and a
 decision for Minerva's (3 / 71). Alone, the Badger, the Boar, the Nemesis and the Whip Scorpion
 win every final a third of the time or more greedy and the Cleric's, the Augur's and the
-Summoner's nearly always; the Clydesdale, the Armadillo, the Funnel-web, the Buzzard and the
+Summoner's nearly always; the Clydesdale, the Polar Bear, the Funnel-web, the Buzzard and the
 Cottonmouth take a few; the rest lose nearly all of them. The new rows: the Whip Scorpion in the
 Nemesis's band (the Bombs 91 / 100, the Drakes 100 / 100), the Cassowary among the weakest alone
 (its Spin-Up and its Coolant Jacket never picked: the bot turns the dial and never plans, the
 to-do's line). The heat section, new: the Whip Scorpion peaks at 83% of its maximum, the Kite
-79%, the Armadillo 74% with 0.73 overheats a fight, and the Kestrel team holds back 0.72
+79%, the Polar Bear 74% with 0.73 overheats a fight, and the Kestrel team holds back 0.72
 damaging dice a fight for heat; the stock pass's heat re-pricing reads these.
 
 **The campaign's wall, found** (the to-do's line of 21 October; `docs/campaign_run.md`
 regenerated on main, `32c438ab`). A bisect at three runs a probe (`tools/campaign_run.gd --runs
 3`, seeds 1 to 3: 27% of 36 battles won on the 13 October report's commit `b15e2707`, none of 29
-on main) lands on the Armadillo's rework (`fdb8d6c1`, 20 October: 3% of 33), its parent the
+on main) lands on the Polar Bear's rework (`fdb8d6c1`, 20 October: 3% of 33), its parent the
 merge of main into the Minerva branch (`63487a9c`: 27% of 36). Forty runs either side: 12 of 40
-runs won and 27% of 459 battles before it, 1 of 40 and 5% of 391 after. Before it the Armadillo
-started 20 runs and won 11, the other 20 won one; after it the Armadillo's won none and the rest
-still one, so the rework took the Armadillo's runs and nothing else. Forty runs on main's line
+runs won and 27% of 459 battles before it, 1 of 40 and 5% of 391 after. Before it the Polar Bear
+started 20 runs and won 11, the other 20 won one; after it the Polar Bear's won none and the rest
+still one, so the rework took the Polar Bear's runs and nothing else. Forty runs on main's line
 after it: 4% of 391 battles on the Minerva merge (`459ada33`), 1% of 374 after Flak and the
 shield rule (`9ac36662`), 1% of 373 with the day's engines and the party (`899a7725`), and 0 of
 40 runs, one battle in 348, from the Kestrel merge on (`eee55775`, and main), where the tender
@@ -506,7 +506,7 @@ the draft deals from has changed under the same seeds (the Puffin at tier one, t
 the Cottonmouth dealt, the Kite and the Dingo gone to tier two). On main, 572 of 734 fights hold
 one machine; one machine against one pack wins 31% (64% on 13 October), two together 64 to 76%.
 
-Read: no bug. The old Armadillo was the one machine that carried a lone fight (alone 79 / 95
+Read: no bug. The old Polar Bear was the one machine that carried a lone fight (alone 79 / 95
 over the twenty packs, the next the Boar at 55 / 85), and the plain player's fights are mostly
 one machine alone; the reworked one is the team tank its bible row decided. The rest of the
 slide is the week's small moves on a run that had no margin left, not a second break. The
@@ -540,7 +540,7 @@ read as on 21 October (every team wins every final greedy; the finale 0 / 16 for
 team, 3 / 74 for Minerva's, 0 / 0 for Kestrel's and Wainwright & Sutler's). Heat, greedy, the
 before for the heat test (a hot kit overheats by its third round of firing): the hottest rows
 peak at 70 to 80% of their maximum as a turn ends (the Whip Scorpion 81%, the Kite 79%, the
-Armadillo 74%, the Nemesis 71%), overheat under once a fight (the Armadillo 0.73, the rest under
+Polar Bear 74%, the Nemesis 71%), overheat under once a fight (the Polar Bear 0.73, the rest under
 0.45) and hold back a damaging die for heat almost never (the Kite 0.28 a fight, the Kestrel
 team 0.72, everything else under 0.11); the Buzzard, whose passive turns heat to shield, peaks
 at 20%. So heat barely bites today, the stock pass's heat row's premise.
@@ -584,10 +584,10 @@ design tests (the bible's section 2):
 | Test | At the fills | At the baseline |
 |---|---|---|
 | Rank and file die to a die or two | a team wins a wildlife pack in 1.0 to 3.1 rounds greedy, 1.3 to 4.0 random; one machine in 2.4 to 10 | passes |
-| A massive foe, a round or two of focus | a team of three takes 3.4 to 6.2 rounds greedy on the Treant and the Wyvern, 4.7 to 11.5 on the Sandworm, 5.2 to 10.4 on the Golem; alone, the Armadillo, the Boar, the Swallowtail and the Musk Ox stall past sixty rounds on the Treant and the Wyvern, whose regrow of 5 outpaces what their blows leave past armour 1 | fails by two to five times |
+| A massive foe, a round or two of focus | a team of three takes 3.4 to 6.2 rounds greedy on the Treant and the Wyvern, 4.7 to 11.5 on the Sandworm, 5.2 to 10.4 on the Golem; alone, the Polar Bear, the Boar, the Swallowtail and the Musk Ox stall past sixty rounds on the Treant and the Wyvern, whose regrow of 5 outpaces what their blows leave past armour 1 | fails by two to five times |
 | The coordination gap, about 2 on the big foes, none on the rank and file | the teams 1.39 to 1.56 on the big fights and 1.23 to 1.55 on the rank and file | 1.40 to 1.63 and 1.35 to 1.60: unchanged, and the same on both kinds |
 | Wear, about four hard fights unwithdrawn | a team loses 0.2 to 1.5% of its hull on a wildlife pack, 8 to 22% on a massive foe, 2.5 to 12% on a formation, 0.2 to 1.8% on a final | 0.2 to 4.8%, 8 to 42%, 7 to 84%, 1.5 to 11% |
-| A hot kit overheats by its third round | the Kite peaks at 101% and overheats 0.88 a fight, the Baboon 83% and 0.82, the Nemesis 90% and 0.46, the Stingray 72%, the Whip Scorpion 70%; the other fifteen rows peak at 11 to 49% and hold no die for heat | the Scorpion 81%, the Kite 79%, the Armadillo 74%, the Nemesis 71%, the rest cold |
+| A hot kit overheats by its third round | the Kite peaks at 101% and overheats 0.88 a fight, the Baboon 83% and 0.82, the Nemesis 90% and 0.46, the Stingray 72%, the Whip Scorpion 70%; the other fifteen rows peak at 11 to 49% and hold no die for heat | the Scorpion 81%, the Kite 79%, the Polar Bear 74%, the Nemesis 71%, the rest cold |
 
 Win rates, row means over the twenty packs, random / greedy: every team 95 to 100 / 100 (the
 baseline 67 to 99 / 84 to 100); alone, every machine rose, most by fifteen to thirty points on
@@ -765,7 +765,7 @@ Row means over the twenty packs, random / greedy:
 | Clydesdale | 33.0 / 49.1 | 39.9 / 60.1 |
 | Kite | 21.2 / 26.9 | 34.8 / 50.5 |
 | Baboon | 12.2 / 25.4 | 24.2 / 39.6 |
-| Armadillo | 25.9 / 39.3 | 28.2 / 37.4 |
+| Polar Bear | 25.9 / 39.3 | 28.2 / 37.4 |
 | Wild Boar | 55.2 / 82.0 | 47.9 / 69.8 |
 | Prairie Dog | 15.8 / 23.4 | 8.0 / 19.1 |
 | Dingo | 2.6 / 10.4 | 7.7 / 21.4 |
@@ -803,7 +803,7 @@ to 11.
 Heat, greedy, the hottest machine as a turn ends: the Nemesis 94% of its maximum (0.50 overheats
 and 0.17 dice held for heat a fight), the Kite 92% (0.29, 0.18), the Buzzard 87%, the Whip
 Scorpion 78%, the Stingray 74% (0.16 held), the Lammergeier 56%; every other kit 6 to 44%. The
-baseline's hottest were the Whip Scorpion 81%, the Kite 79%, the Armadillo 74% and the Nemesis
+baseline's hottest were the Whip Scorpion 81%, the Kite 79%, the Polar Bear 74% and the Nemesis
 71%, with everything else cold.
 
 Pick share, greedy: the Ammit's Entropy Condenser 0%, the Dingo's Combat Translocator 1%, the
@@ -880,7 +880,7 @@ and on a trio's order. Directions.
 The fits, through the runner's overrides (applied after the content loads and never validated,
 since a chassis stocks only below its own tier): a tier-zero basic swapped for a found setup
 piece, so each trio carries a Shock and Flak beside its stock's. The Honey Badger's Rivet Gun
-for the Polarity Projector, the Clydesdale's Twin Autoguns for the Flak Cannon, the Armadillo's
+for the Polarity Projector, the Clydesdale's Twin Autoguns for the Flak Cannon, the Polar Bear's
 Twin Autoguns for the Flak Cannon, the Puffin's Twin Autoguns and Laser Carbine for the Polarity
 Projector and the Flak Cannon, the Prairie Dog's Twin Autoguns for the Suppression Battery. The
 overrides are global, so a machine on two rows carries one fit. The fours: the default team with
@@ -955,7 +955,7 @@ experiment's form, and not the cause.
 by stage, which compositions are harder for an early stock team of three than for an endgame
 optimized four; this is the early half). Run with `tools/stock_loop.py` on main's head
 (`781c4d5`): the 28 trios of three tier-one machines from three city makers (the Honey Badger or
-the Armadillo; the Puffin; the Prairie Dog, the Cassowary or the Cottonmouth; the Baboon or the
+the Polar Bear; the Puffin; the Prairie Dog, the Cassowary or the Cottonmouth; the Baboon or the
 Stingray), in stock loadouts, against the twenty-nine packs, random and greedy, 30 seeds a cell,
 no campaign. A direction. The runner's team rows are no starters: each fields a tier-two machine
 and three are one maker's.
@@ -981,7 +981,7 @@ and hull lost:
 By trio, on the five hard fights (the Peak's, the Marsh's and the Meadow's formations, the Golem,
 the Sandworm): the sixteen trios with the Honey Badger or the Cottonmouth win them 96 to 100% of
 the time for 16 to 47% of their hull; the twelve with neither win 25 to 89% for 54 to 93%, the
-Armadillo, the Puffin and the Prairie Dog the lowest. By tender (one tier-one machine a city
+Polar Bear, the Puffin and the Prairie Dog the lowest. By tender (one tier-one machine a city
 maker, the player taking three): the eight tenders that deal the Badger or the Cottonmouth hold
 a pick that clears all five (16 to 31% hull); the four that deal neither top out at 80 to 89%
 for 54 to 68%; a tender's worst pick reads 25 to 100%.
@@ -1016,7 +1016,7 @@ the enemy's turn opens (after any Lure), and its share of its team's hull lost:
 |---|---|---|---|---|---|
 | Baboon | 28 / 10 / 0 | 36% | 36% | 34% | 36% |
 | Honey Badger | 36 / 8 / 2 | 36% | 36% | 38% | 34% |
-| Armadillo | 40 / 8 / 2 | 35% | 41% | 49% | 43% |
+| Polar Bear | 40 / 8 / 2 | 35% | 41% | 49% | 43% |
 | Stingray | 24 / 12 / 0 | 35% | 34% | 31% | 33% |
 | Puffin | 20 / 8 / 0 | 32% | 30% | 28% | 30% |
 | Cassowary | 24 / 8 / 0 | 31% | 30% | 28% | 31% |
@@ -1025,14 +1025,14 @@ the enemy's turn opens (after any Lure), and its share of its team's hull lost:
 
 By kind of fight, with all three standing: the rank and file and the formations spread 28 to
 39%; the breaching bosses (the Golem, the Sandworm) 30 to 39%, every shield failing their blow
-so the draw is near level; the Treant and the Wyvern put 47% on the Armadillo and 44% on the
+so the draw is near level; the Treant and the Wyvern put 47% on the Polar Bear and 44% on the
 Honey Badger, 23 to 33% on the rest. Their blow of 7 is held by a standing shield, so the draw
 follows whichever shield is down, and the tanks' shields hold it least often (38 and 56% of
 the picks, the rest 63 to 81%).
 
 Read: the aim does not pile blows on thick machines while the team stands; the lean to the
 tanks comes from their outliving the light machines (every pick after a wreck lands on a
-survivor), from the Armadillo's Lure (its share of the swings the highest), and against the
+survivor), from the Polar Bear's Lure (its share of the swings the highest), and against the
 shield-held bosses from the draw chasing a broken shield. Half the exposed aim's picks are a
 level draw. Against a boss whose one blow a round a shield holds, the round asks only which
 machine to shield, and the tank's armour takes what gets through: the depth and the pressure
@@ -1123,7 +1123,7 @@ The fours, each machine's pieces and then its modules:
   Plate), the Puffin (Corona Shield, Laminar Deflector, Radiator Sail, Cyclic Cannon; Phase
   Conjugator, Flak Skirt), the Buzzard as above.
 - Armour and the drum: the Honey Badger as above, the Cottonmouth (Flak Cannon, Tesla Gauntlets,
-  Meteor Artillery, Corona Shield; Susceptibility Tensor, Flak Skirt), the Armadillo (Proximity
+  Meteor Artillery, Corona Shield; Susceptibility Tensor, Flak Skirt), the Polar Bear (Proximity
   Klaxon, Slugthrower, Canopy, Bleed Valve; Ward Plate, Ablative Plating), the Musk Ox (its
   stock; Ward Plate, Flak Skirt).
 - The statuses: the Stingray (Incendiary Shells, Airburst Shell, Corona Shield, Aurora Lattice,
@@ -1296,7 +1296,7 @@ Black Mage and the Summoner alone, 30 seeds a cell, 3,600 fights. A direction.
 By trio, ×1 / ×2 / ×3: the four Honey Badger trios, the coldest, win 93 to 100% at ×2 and pay
 0 to 9% of their hull to heat (0 to 1% at ×1, 1 to 26% at ×3); the two Cottonmouth and Stingray
 trios win every fight at every step; the two Cassowary and Baboon trios fall from 90 and 97% won
-to 33 and 47% (20 and 10% at ×3); the two Armadillo and Puffin trios, already hard at ×1 (23
+to 33 and 47% (20 and 10% at ×3); the two Polar Bear and Puffin trios, already hard at ×1 (23
 and 73%) with the seal's own heat, to 3 and 13%. The Magma Elemental, the Black Mage and the
 Summoner alone barely move at any step: the Elemental's breaching blows are its fight, and the
 heroes die in about three rounds, before heat builds.
@@ -1363,7 +1363,7 @@ greedy.
 | Cottonmouth | 38 / 55 | 63 / 91 | 0 / 0 | 0 / 0 | 51% |
 | **Skua** | **27 / 37** | **45 / 61** | **0 / 0** | **0 / 0** | **69%** |
 | Baboon | 25 / 37 | 41 / 55 | 0 / 22 | 0 / 0 | 74% |
-| Armadillo | 25 / 33 | 41 / 55 | 0 / 0 | 0 / 0 | 77% |
+| Polar Bear | 25 / 33 | 41 / 55 | 0 / 0 | 0 / 0 | 77% |
 | Stingray | 23 / 29 | 38 / 48 | 1 / 3 | 0 / 0 | 74% |
 | Cassowary | 16 / 23 | 27 / 38 | 0 / 0 | 0 / 0 | 84% |
 | Puffin | 8 / 22 | 14 / 37 | 0 / 0 | 0 / 0 | 86% |
@@ -1469,10 +1469,10 @@ only.
 **The tender on its own stream** (`docs/mechanics_audit.md`, item 33). `tools/campaign_run.gd`,
 40 runs from seed 1, the greedy rung, on the content as at this entry's commit (the audit's
 fixes with `ccr-170f6d81-465jnr`'s day merged in). Who started the runs, against the 22 October
-report: the Honey Badger 11 (9), the Baboon 15 (18), the Armadillo 17 (20), the Prairie Dog 10
+report: the Honey Badger 11 (9), the Baboon 15 (18), the Polar Bear 17 (20), the Prairie Dog 10
 (12), the Stingray 10 (14), the Puffin 16 (28), the Cassowary 16 (12), the Cottonmouth 10 (7),
 the Skua 15 (not dealt then). On 22 October the tender and the run drew one stream, so the
-runner's pick of three reread Minerva's offer: the Armadillo started every run it was offered
+runner's pick of three reread Minerva's offer: the Polar Bear started every run it was offered
 and the Badger about half. A model of Godot's PCG32 reproduces that table run for run, and on
 the new streams puts every machine at about three starts in four offers over 4,000 seeds. The
 report's other rows (37 of 40 runs to the finale against 25, 3.92 cities fallen a run against
@@ -1679,7 +1679,7 @@ greedy, no party, 72,000 fights: won, random / greedy, before and after.
 | Cottonmouth | 38 / 55 → 31 / 49 | 63 / 91 → 52 / 82 | 0 / 0 | 0 / 0 | 51% → 61% |
 | Prairie Dog | 11 / 21 → 8 / 19 | 18 / 35 → 13 / 32 | 0 / 0 | 0 / 0 | 85% → 86% |
 
-The other six (the Skua, the Baboon, the Armadillo, the Stingray, the Cassowary, the Puffin)
+The other six (the Skua, the Baboon, the Polar Bear, the Stingray, the Cassowary, the Puffin)
 read the same to the fight: their stock carries no area. By pack: the Cottonmouth's drum, Spread
 at the front and Penetrate at the back on every shot, lost the swarms it had cleared at full: the
 Goblin and Revenant sixes 40 / 100 to 10 / 62, the Salamander's three 16 / 96 to 11 / 62, the
@@ -1699,7 +1699,7 @@ seeds) holds in direction; the Cottonmouth, whose every shot carries area, did n
 
 Whether the greedy should read the round preview's copy (Skirmish.preview_round) in place of the
 hand-summed forecast, which misses a heal, a last act and a spill. Timed in a cloud session on
-a four-machine team (Badger, Clydesdale, Sparrowhawk, Armadillo) against six goblins and three
+a four-machine team (Badger, Clydesdale, Sparrowhawk, Polar Bear) against six goblins and three
 wolves, six seeds, eight rounds each (18 rounds played): the greedy spends 145 ms a round and
 reads 391 forecasts a round, at 0.19 ms each; a copy's play costs 2.42 ms a call on the same
 fight. Read through the copy, a round would cost about a second, some seven times what it does,
@@ -1794,8 +1794,8 @@ time in a working copy: as the head stands, injuries off (`--injury`), and area 
 
 By pack, the mean move over the 24 rows both reports hold, random / greedy: the Gels +24 / +33
 (16 rows' cells moved ten points or more, most of them free now: the Badger 7 / 61 to 94 / 100,
-the Boar 15 / 53 to 100 / 100, the Armadillo 0 / 0 to 46 / 100); the Bombs -8 / -8, the
-Salamanders -4 / -8, the Drakes -3 / -4 (the Armadillo against the Drakes 94 / 100 to 51 / 65,
+the Boar 15 / 53 to 100 / 100, the Polar Bear 0 / 0 to 46 / 100); the Bombs -8 / -8, the
+Salamanders -4 / -8, the Drakes -3 / -4 (the Polar Bear against the Drakes 94 / 100 to 51 / 65,
 the Ammit against the Bombs 99 to 69 greedy, the Nemesis against the Salamanders 100 to 76);
 the Meadow formation +1 / +4 (the Boar greedy 6 to 55, the Buzzard 0 to 41), the Waste -1 / -2,
 the Marsh +1 / -1, the Peak -1 / -1; the Augur's final -4 / -6, the Summoner's -3 / -6; every
@@ -1809,7 +1809,7 @@ What moved each, the experiments deciding where a cell could carry more than one
   the Meadow formation eases for the heavies. The Gel's work is inside a formation, where it
   holds a slot; as a pack of its own it is free.
 - The doubled heat (24 October): the Peak's three packs and its finals, the seal's own heat
-  walling the Armadillo against the Drakes.
+  walling the Polar Bear against the Drakes.
 - Area at half (26 October): the Cottonmouth's swarms (the Goblins and Revenants 98 to 62
   greedy) and its finals (the Augur's 88 to 4, the Summoner's 99 to 23, the Cleric's 43 to 10),
   and the formation cells of the other area carriers, which the 26 October read on the tier
@@ -1842,9 +1842,9 @@ and the two swarms of six, 14,400 fights a form: area at half as built; half rou
 (`(dmg + 1) / 2` at the engine's two sites and in the bot's valuation); and whole (every foe
 reached taking the blow, as before 26 October), the bot valuing each form as the engine runs it.
 The rows: the starting team (the Honey Badger, the Clydesdale, the Kite: the Claw, the Enfilade
-Beam and the Airburst Shell); a four without an area piece (the Armadillo, the Cassowary, the
+Beam and the Airburst Shell); a four without an area piece (the Polar Bear, the Cassowary, the
 Skua, the Puffin); a four with two carriers (the Honey Badger, the Cottonmouth, the Cassowary,
-the Puffin); a trio without (the Armadillo, the Cassowary, the Puffin); a trio with (the Honey
+the Puffin); a trio without (the Polar Bear, the Cassowary, the Puffin); a trio with (the Honey
 Badger, the Cottonmouth, the Puffin). Then `tools/quick_run.gd` at 40 runs, greedy, in the
 whole and the rounded-up copies, beside the committed run at half (the stand-in out, above).
 
@@ -1925,7 +1925,7 @@ and the Plow's 2, the Flak spreaders 1), read on the die as Burn N is; the numbe
 **Formations thinned, for the trio** (the same day, for the quick campaign question and the
 three-or-four question). `tools/balance.gd` on main's head after the Zombie Knight's line
 (`b9f85c7d`, area at half as built), 200 seeds a cell, random and greedy, three trio rows (the
-starting team; the Armadillo, the Cassowary and the Puffin without an area piece; the Honey
+starting team; the Polar Bear, the Cassowary and the Puffin without an area piece; the Honey
 Badger, the Cottonmouth and the Puffin with two) against each formation at two thirds and at
 half of its size (`--pack`; the Meadow 10 and 8 foes of 15, the Waste 6 and 5 of 9, the Marsh 7
 and 6 of 11, the Peak 6 and 5 of 9), and the Marsh at its new full size, 14,400 fights. Then
@@ -2006,7 +2006,7 @@ held for heat a fight:
 | Row | Win | Rounds | Hull | Peak | Overheats | Held |
 |---|---|---|---|---|---|---|
 | The default team (Honey Badger, Clydesdale, Kite) | 100 | 3.1 | 5% | 80% | 0.21 | 0.11 |
-| Minerva's team (Honey Badger, Armadillo, Wild Boar) | 100 | 4.9 | 7% | 31% | 0.05 | 0.01 |
+| Minerva's team (Honey Badger, Polar Bear, Wild Boar) | 100 | 4.9 | 7% | 31% | 0.05 | 0.01 |
 | Kestrel's team (Kite, Buzzard, Puffin) | 100 | 2.9 | 8% | 93% | 0.29 | 0.07 |
 | Wainwright & Sutler's team (Clydesdale, Prairie Dog, Dingo) | 99.6 | 5.9 | 18% | 33% | 0.13 | 0.04 |
 | The Arsenal bench's row (Nemesis, Ammit, Puffin) | 100 | 4.5 | 10% | 69% | 0.17 | 0.04 |
@@ -2024,7 +2024,7 @@ the other 41 read as their row (the stock's shields and vents among them, every 
 | Kestrel's | Buzzard | Overclocked Railgun | 10% | 2.9 to 3.2 | 8 to 9% |
 | Wainwright & Sutler's | Clydesdale | Maxigun | 9% | 5.9 to 6.1 | 18 to 20% |
 | Kestrel's | Puffin | Laser Carbine | 11% | 2.9 to 3.2 | 8 to 10% |
-| Minerva's | Armadillo | Twin Autoguns | 13% | 4.9 to 5.1 | 7 to 8% |
+| Minerva's | Polar Bear | Twin Autoguns | 13% | 4.9 to 5.1 | 7 to 8% |
 | Wainwright & Sutler's | Prairie Dog | Halo Shield | 8% | 5.9 to 5.6 | 18 to 20% |
 
 **The ladders.** Each candidate's rounds and hull against the bench's stock row, and its share
@@ -2244,7 +2244,7 @@ the half on main's head before the build (`2b1ace78`, 2,400 fights), which repea
 first read above to the fight; the other cells against the 27 October forms entry, whose content
 differs from today's in the Marsh alone.
 
-The rows without an area piece (the four of the Armadillo, the Cassowary, the Skua and the
+The rows without an area piece (the four of the Polar Bear, the Cassowary, the Skua and the
 Puffin; the trio without the Skua) read the same in every cell, wins, rounds and hull, fight for
 fight: the blow read for each foe struck leaves single-target play, the Skua's spray among it,
 as it was.
@@ -2296,7 +2296,7 @@ every fight of the cell, won or not.
 | 3 | 4 | 84% | 5.6 | 37% | 4% |
 
 By row, won / rounds / hull lost: tier one, the Honey Badger 98% / 4.7 / 27%, the Cottonmouth
-87 / 3.2 / 34, the Skua 65 / 3.7 / 47, the Armadillo 64 / 10.5 / 57, the Baboon 58 / 5.6 / 58,
+87 / 3.2 / 34, the Skua 65 / 3.7 / 47, the Polar Bear 64 / 10.5 / 57, the Baboon 58 / 5.6 / 58,
 the Stingray 49 / 5.8 / 56, the Cassowary 39 / 7.1 / 74, the Puffin 37 / 7.0 / 76, the Prairie
 Dog 32 / 9.5 / 77; tier two, the Wild Boar 99 / 4.9 / 22, the Nemesis 98 / 3.7 / 23, the Whip
 Scorpion 98 / 4.1 / 32, the Buzzard 96 / 2.9 / 15, the Clydesdale 90 / 5.1 / 38, the Kite 72 /
@@ -3820,7 +3820,7 @@ patrols cost more than their tenth.
 Salvage by menace: a won battle banks 246 (230 to 254) at 2 a point of menace where ten a kill
 banked 163 (100 to 320), on 6 won battles against 23, so the constant reads about half again high
 at a won battle and is the economy pass's number (section 10); components destroyed a won battle
-0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
+0.44 (1.15). On every read the plain player wins no run, as since the Polar Bear's rework, and the
 reads of the fights' shape stay the quick campaign's until a runner player fields a squad
 (section 12).
 
@@ -3911,7 +3911,7 @@ Drawn as icons at the chips' size, the three clear the 3:1 a graphic wants, the 
 **The slate's seven read alone, at the scale row's 80 and at 48** (`tools/balance.gd`, 30 seeds,
 the greedy rung, each boss alone with nothing beside it; a direction). Rows: the default team
 (the Honey Badger, the Clydesdale, the Kite), the three makers' trios and a stock four of tier
-ones (the Honey Badger, the Baboon, the Armadillo, the Prairie Dog). The bosses as built, at 80
+ones (the Honey Badger, the Baboon, the Polar Bear, the Prairie Dog). The bosses as built, at 80
 (the Fallen Weapon's core 64, its eyes 12), and at 48 by `--set foes/<id>/hp` (the core 40);
 Rotbloom and the Fallen Weapon read on the fixed runner (below), the eyes once more at 8. Mean
 rounds of the fights won, the win rate where under 100%:
@@ -3961,7 +3961,7 @@ the boss in parts' cells are read again at the next 200-seed matrix.
 
 **Their engine session's reads** (the Storm Petrel and the Giant Petrel fielded 30 October on
 `claude/affectionate-ramanujan-5d24t6`, from main's `d84ad16`), as their briefs asked: the Storm
-Petrel alone and beside the Puffin, its magazine, each against the Armadillo, the other tier-one
+Petrel alone and beside the Puffin, its magazine, each against the Polar Bear, the other tier-one
 body, in the same run; the Giant Petrel in two teams of four against the same three with another
 machine in its place. `tools/balance.gd`, 30 seeds a cell (a direction), random and greedy, no
 party, the matrix's 55 packs as it stands (the thirteen tier-one packs, the ladder's twenty-six
@@ -3970,20 +3970,20 @@ installed it on the old head; the 4.8-beta2 build's unpacking and first run were
 mode, and the headless sim reads no renderer). Won, random / greedy, then greedy's hull lost and
 rounds to a win.
 
-**The Storm Petrel alone**, beside the Armadillo:
+**The Storm Petrel alone**, beside the Polar Bear:
 
 | Row | Every pack | Tier-one rank and file (13) | Tiers two and three (26) | The four big foes | The twelve formations | Hull lost | Rounds won |
 |---|---|---|---|---|---|---|---|
 | Storm Petrel | 32 / 45 | 52 / 66 | 42 / 61 | 0 / 0 | 0 / 0 | 63% | 4.9 |
-| Armadillo | 25 / 38 | 48 / 65 | 29 / 49 | 0 / 0 | 0 / 0 | 75% | 9.7 |
+| Polar Bear | 25 / 38 | 48 / 65 | 29 / 49 | 0 / 0 | 0 / 0 | 75% | 9.7 |
 
 Pick share (greedy): the Laser Carbine 31%, the St. Elmo's Regenerator 24%, the Canopy 20%, the
-Ankle Mortar 15%, the Twin Autoguns 9%. Its heat peaks at a tenth of its gauge (the Armadillo's
+Ankle Mortar 15%, the Twin Autoguns 9%. Its heat peaks at a tenth of its gauge (the Polar Bear's
 41%), 0.04 overheats a fight. The first run of the day, before the bot valued the regen, read the
 row 32 / 46 with the Regenerator spent 4% of the time: valuing it moved the lock's share and not
 the row.
 
-Read: alone it stands in the Armadillo's band and above it on the ladder's recolours, winning in
+Read: alone it stands in the Polar Bear's band and above it on the ladder's recolours, winning in
 half the rounds; every tier one alone is walled by the big foes and the formations, and so is it.
 On its stock the burn is a trickle: the Carbine's 2 is the most any basic burns, and the gauge
 never sees it, so its identity shows at the size of its basics' heat (the bible's section 12 holds
@@ -3994,13 +3994,13 @@ the question).
 | Row | Every pack | Tier-one rank and file | Tiers two and three | The four big foes | The twelve formations | Hull lost | Rounds won |
 |---|---|---|---|---|---|---|---|
 | Storm Petrel + Puffin | 53 / 66 | 85 / 94 | 68 / 84 | 4 / 51 | 0 / 2 | 39% | 4.5 |
-| Armadillo + Puffin | 47 / 62 | 77 / 93 | 60 / 78 | 0 / 32 | 0 / 8 | 46% | 6.5 |
+| Polar Bear + Puffin | 47 / 62 | 77 / 93 | 60 / 78 | 0 / 32 | 0 / 8 | 46% | 6.5 |
 
 Pick share (greedy, the Storm Petrel's pair): the Laser Carbine 31%, the Twin Autoguns 24%, the
 Regenerator 13%, the Halo Shield 10%, the Ankle Mortar 10%, the Canopy 6%, the Backwash Ionizer 3%.
 
-Read: the escort pair reads a few points over the Armadillo's on the rank and file and about half
-again on the big foes (51% against 32%, in a third the rounds), for less hull; the Armadillo's pair
+Read: the escort pair reads a few points over the Polar Bear's on the rank and file and about half
+again on the big foes (51% against 32%, in a third the rounds), for less hull; the Polar Bear's pair
 takes a formation now and then where it takes almost none. Neither is a must-pick on this read; the
 Puffin's overshield is rarely spent on it (the Ionizer 3%), so the brief's magazine claim is not
 read here, the greedy shielding its ally against this round's blows and never for a burn to come.
@@ -4223,13 +4223,13 @@ lost 10 to 35%. Every row won every fight.
 **Three machines or four, against the slate** (31 October; `tools/balance.gd`, 20 seeds, the
 greedy rung, each boss alone, its parts with it; a direction). Ryan's question of 30 October:
 "the biggest power spike the player gets is probably going from 3 to 4 units, right?" The stock
-four (Honey Badger, Baboon, Armadillo, Prairie Dog, stock kits) against each of its trios, the
+four (Honey Badger, Baboon, Polar Bear, Prairie Dog, stock kits) against each of its trios, the
 same kit a machine short, over the twelve bosses at tier one:
 
 | Row | Won | Mean rounds of the fights won | Hull lost |
 |---|---|---|---|
 | The stock four | 100% | 8.6 (7.0 to 12.1) | 2.4% |
-| Less the Armadillo | 100% | 10.3 | 8.0% |
+| Less the Polar Bear | 100% | 10.3 | 8.0% |
 | Less the Prairie Dog | 100% | 10.4 | 8.8% |
 | Less the Honey Badger | 92% | 14.9 | 17.7% |
 | Less the Baboon | 92% | 18.5 | 24.4% |
@@ -4282,7 +4282,7 @@ rounds and the default team 3.3 to 4.7, against the kill-time test's three to fi
 
 **The bosses' escorts at tiers two and three** (2 November; `tools/balance.gd --boss-tiers`, 20 seeds,
 the greedy rung; the default team (the Honey Badger, the Clydesdale, the Kite) and the stock four
-(the Armadillo, the Prairie Dog, the Badger, the Baboon), each with its tier-zero kit, so a
+(the Polar Bear, the Prairie Dog, the Badger, the Baboon), each with its tier-zero kit, so a
 tier-three cell is a trio or a four above its station and the escort's delta, never the cell, is
 the read; a direction). Each boss at the tier's numbers (`ContentDB.scale_boss`, its parts with
 it) with its own escort composition and alone. Won, mean rounds of the fights won, mean hull lost
@@ -4371,14 +4371,14 @@ greedy's hull lost and rounds to a win.
 | Second fallback (base 1, a point for every two loads, to 3) | 38 / 60 | 65 / 95 | 42 / 67 | 34 / 61 | 0 / 4 | 56% | 6.1 |
 | As proposed, the claw 2 a strike | 44 / 64 | 76 / 94 | 44 / 72 | 45 / 59 | 6 / 16 | 51% | 7.4 |
 | As proposed, no plate | 30 / 53 | 53 / 82 | 36 / 64 | 21 / 47 | 0 / 0 | 62% | 5.3 |
-| The Armadillo (beside the old Badger) | 16 / 27 | 37 / 56 | 15 / 30 | 11 / 15 | 0 / 0 | 83% | 10.2 |
+| The Polar Bear (beside the old Badger) | 16 / 27 | 37 / 56 | 15 / 30 | 11 / 15 | 0 / 0 | 83% | 10.2 |
 
 The lone foes the change moved most, random / greedy: the Treant 3 / 67 as it was, 97 / 100 as
 proposed, 83 / 100 at the first fallback, 53 / 100 at the second; the Bone Dragon 3 / 77, 97 /
 100, 83 / 100, 57 / 100; Gilgamesh 7 / 93, 100 / 100, 100 / 100, 80 / 100; the Bourgeon 0 / 0, 100
 / 100, 100 / 100, 67 / 100. The rounds to beat the Treant fell from 27 to 10.
 
-**The Minerva team** (the Badger, the Armadillo, the Wild Boar):
+**The Minerva team** (the Badger, the Polar Bear, the Wild Boar):
 
 | Row | Every pack | Tier-one rank and file | Tiers two and three, the party | Lone big foes and bosses | Formations | Hull lost | Rounds won |
 |---|---|---|---|---|---|---|---|
@@ -4389,7 +4389,7 @@ proposed, 83 / 100 at the first fallback, 53 / 100 at the second; the Bone Drago
 
 Read: the plate carries it. With no plate it reads at the old Badger's line, a claw of 2 a strike
 takes four or five points off, its shield at 6 a point or two; a point a load lifts it eighteen
-points greedy and random play past half the lone big foes, which the old Badger and the Armadillo
+points greedy and random play past half the lone big foes, which the old Badger and the Polar Bear
 lose. Ryan's first fallback moves it two points, since base 2 keeps the early armour the second
 point a load would have given; his second brings it to 38 / 60, a few points over the old Badger,
 its lone big foes at 34 / 61. Landed: the second fallback, as his sequence said. Its base shield
@@ -4432,16 +4432,16 @@ mid steel its edge is its shape, not its lightness.
 Written as a paragraph inside "30 October, the slate's last five" (above), where its method,
 its seeds and its table are; this heading indexes it.
 
-## 2 November, the Armadillo at tier one
+## 2 November, the Polar Bear at tier one
 
-**Is the Armadillo too much of a wall for tier one?** (Ryan's play test of 2 November: "armadillo
+**Is the Polar Bear too much of a wall for tier one?** (Ryan's play test of 2 November: "armadillo
 is probably too much of a wall for tier 1. It's very good at its job.") The balance runner,
 greedy, 30 seeds a cell (a direction), the tier-one packs and formations (`--packs` the seventeen
 of tier one: each spawn-table pack at its strength and each domain's tier-one formation;
-`--noparty`): the Armadillo alone beside three tier-one peers (the Storm Petrel, the Baboon, the
+`--noparty`): the Polar Bear alone beside three tier-one peers (the Storm Petrel, the Baboon, the
 Cassowary) and the Honey Badger; then a starter trio, the Honey Badger and the Skua with the
-Armadillo in the middle seat, beside the same trio with each peer there; then three what-ifs on
-the Armadillo's trio, its Lockdown's armour 3 to 2 (`--set
+Polar Bear in the middle seat, beside the same trio with each peer there; then three what-ifs on
+the Polar Bear's trio, its Lockdown's armour 3 to 2 (`--set
 chassis/armadillo/passive/effects/0/value=2`), its base armour 2 to 1, and both. About twenty
 minutes on two cores, from a frozen copy of `3929042`'s tree (this branch's base, the engine as main has it).
 
@@ -4449,15 +4449,15 @@ The trios' hull lost, mean of every fight (greedy):
 
 | Trio (Honey Badger, X, Skua) | Rank and file (13 packs) | Meadow formation | Waste | Marsh | Peak |
 |---|---|---|---|---|---|
-| Armadillo | 0 to 2%, the Zombie Knights 28% | 6% | 6% | 82% | 8% |
+| Polar Bear | 0 to 2%, the Zombie Knights 28% | 6% | 6% | 82% | 8% |
 | Storm Petrel | 0 to 2%, the Zombie Knights 25% | 4% | 4% | 83% | 4% |
 | Baboon | 0 to 2%, the Zombie Knights 19% | 10% | 7% | 78% | 8% |
 | Cassowary | 0 to 1%, the Zombie Knights 33% | 13% | 8% | 94% | 12% |
-| Armadillo, Lockdown +2 | as the Armadillo's | 6% | 6% | 82% | 8% |
-| Armadillo, armour 1 | as the Armadillo's | 9% | 6% | 81% | 9% |
-| Armadillo, both | as the Armadillo's | 9% | 6% | 81% | 9% |
+| Polar Bear, Lockdown +2 | as the Polar Bear's | 6% | 6% | 82% | 8% |
+| Polar Bear, armour 1 | as the Polar Bear's | 9% | 6% | 81% | 9% |
+| Polar Bear, both | as the Polar Bear's | 9% | 6% | 81% | 9% |
 
-Alone, the Armadillo kills slowly and loses hull on most tier-one packs (98% on the goblins and the
+Alone, the Polar Bear kills slowly and loses hull on most tier-one packs (98% on the goblins and the
 revenants, 88% on the gels, 100% on every formation), the slowest of the five rows (5.6 to 27.9
 rounds won where the Badger takes 2.3 to 10). In the trio, the Canopy is 6% of the spends (26%
 alone): the greedy bot rarely seals in a team, so the runner barely reads Lockdown at all (its
@@ -4467,16 +4467,16 @@ Read:
 
 - **Every starter trio walls tier one's rank and file**: none loses more than 2% hull on any of the
   thirteen packs but the Zombie Knights, whoever sits in the middle seat; the formations take 4% to
-  13% but the Marsh's (about 80%, its Zombie Knights). On the bot's play the Armadillo's trio sits
+  13% but the Marsh's (about 80%, its Zombie Knights). On the bot's play the Polar Bear's trio sits
   in the band, and the Storm Petrel's takes less.
-- **The seal is where the bot cannot look**: sealed, the Armadillo's armour is 5 against tier-one
-  blows of 2 or 3 (the rank and file's), so once its shield is down a sealed Armadillo takes
+- **The seal is where the bot cannot look**: sealed, the Polar Bear's armour is 5 against tier-one
+  blows of 2 or 3 (the rank and file's), so once its shield is down a sealed Polar Bear takes
   nothing from them; the greedy bot spends the Canopy on itself too rarely in a team to show it.
   Ryan's read is of play the runner does not make, so the runner neither confirms it nor clears
-  it; the arithmetic agrees with him for a sealed Armadillo against the rank and file.
+  it; the arithmetic agrees with him for a sealed Polar Bear against the rank and file.
 - **A smaller seal does not reach the root**: at Lockdown +2 the sealed armour is 4, still over
   every tier-one rank-and-file blow; flat armour at or over a tier's blows is immunity at any
-  number. The question is the bible's section 12 (the Armadillo at tier one).
+  number. The question is the bible's section 12 (the Polar Bear at tier one).
 
 ## 3 November, the Cassowary's cycle and the Cottonmouth beside it
 
@@ -4691,14 +4691,14 @@ six groups of 3 November: won, random / greedy.
 
 | Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
 |---|---|---|---|---|---|---|---|---|---|
-| Armadillo, old bot | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 0 | 16 / 26 | 83% | 9.8 |
-| Armadillo, new | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 1 | 16 / 27 | 83% | 9.9 |
+| Polar Bear, old bot | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 0 | 16 / 26 | 83% | 9.8 |
+| Polar Bear, new | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 1 | 16 / 27 | 83% | 9.9 |
 | Giant Petrel, old bot | 49 / 76 | 3 / 32 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 20 | 26 / 46 | 67% | 4.8 |
 | Giant Petrel, new | 49 / 76 | 3 / 29 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 17 | 26 / 46 | 67% | 4.7 |
 | Musk Ox, old bot | 81 / 79 | 2 / 19 | 0 / 0 | 55 / 64 | 0 / 0 | 14 / 54 | 41 / 52 | 64% | 7.1 |
 | Musk Ox, new | 81 / 79 | 2 / 21 | 0 / 0 | 55 / 65 | 0 / 0 | 14 / 51 | 41 / 53 | 64% | 6.9 |
 
-Spends, greedy: the Armadillo's two Cryo Flingers 9% of its spends on the old bot, 13% on the new; the Giant
+Spends, greedy: the Polar Bear's two Cryo Flingers 9% of its spends on the old bot, 13% on the new; the Giant
 Petrel's Immelmann Booster under 2% (alone it buys no ally an action) and 14%; the Musk Ox's Quick
 Reload 11% and 17%. Random play comes out identical cell for cell (76 of 76 for each machine).
 
@@ -5436,6 +5436,79 @@ place").
 The direction: the tide spread along the wall asks more of the squad's split, as the rule meant
 it to; the defence bot, which sends each machine at the pack that reaches the wall soonest, leaks
 more, a third more turns above a ratio of one. The full report is `docs/campaign_run.md` (after).
+
+## 9 November, the Polar Bear's seal and lure, before the kit of the same day
+
+**Why**: Ryan's play ("The Armadillo is OP. I never really felt strongly about Sealing it"), read
+before his try of the same day landed (the bible's Polar Bear row). A scratch probe, not
+committed, and this section is its whole description: the balance runner's fight
+(`tools/balance.gd`'s `_fight`, a composition's members and grid as `--packs promise` fields
+them) on a skirmish whose every blow on a machine is recorded as it lands (what arrived, what its
+shield took, what its armour took and the seal's own share of that, what reached its hull,
+breach or not), with the fight's lures and seals counted from its log. Main's `ee0b27d` (the
+kit of 20 October: armour 2, Lockdown +3, two Rapid Cryo Flingers at 1 heat), tier one's 27
+compositions (patrols, formations, elites; elites scaled as a battle scales them) and tier two's
+42, 30 seeds a cell: a direction throughout. The team is the one Ryan reported from on 8 November
+(the Polar Bear, the Honey Badger, the Clydesdale) unless a row says another. The players: the bot
+as built (greedy, and the planner where said); two personas over the greedy rung, a lure-happy
+one (each foe a lure turns worth the whole blow it takes off an ally, on top of the bot's own
+reading) and a seal-holder (the same, sealing whenever a shield shows with room for two sealed
+turns and holding it while the coming turn's end stays under the maximum, a vent or the clock
+opening it). What-ifs as kits in memory: the Flinger without its lure, without Rapid; a stand-in
+for the lure spreading while sealed (no Rapid, the lure turning the target's neighbours too, its
+Cryo not spreading and no bot valuing it); and the seal's armour taken off a blow before its
+shield rather than after.
+
+**The seal**, per fight, over tier one's 27 compositions:
+
+| Player and kit | Seals | Blows on the sealed shell | Taken whole by its shield | Breach | Hull the seal's +3 saved | Team hull lost | Rounds |
+|---|---|---|---|---|---|---|---|
+| The bot | 0.22 | 0.18 | 0.16 | 0.01 | 0.01 | 6.8% | 4.04 |
+| The bot, the planner | 0.25 | 0.20 | 0.17 | 0.01 | 0.02 | 6.6% | 3.99 |
+| The bot, armour before shield while sealed | 0.21 | 0.16 | 0 | 0.01 | 0.31 | 6.7% | 4.03 |
+| Lure-happy, never holding | 0.28 | 0.36 | 0.28 | 0.01 | 0.07 | 7.3% | 4.05 |
+| Seal-holder | 1.11 | 1.19 | 0.69 | 0.30 | 0.26 | 7.7% | 4.28 |
+| Seal-holder, armour before shield | 1.12 | 1.17 | 0 | 0.30 | 1.53 | 7.3% | 4.28 |
+| Seal-holder, no Rapid, the lure spreading sealed | 1.00 | 1.23 | 0.64 | 0.28 | 0.52 | 8.3% | 4.47 |
+| The same, armour before shield | 0.99 | 1.22 | 0 | 0.28 | 1.62 | 8.0% | 4.44 |
+
+Tier two, the 42 compositions, the same team: the bot 15.0% team hull lost (the seal's +3 saving
+0.20 hull a fight), the seal-holder 16.4% (0.86), the seal-holder with armour before shield 15.4%
+(3.57).
+
+**The lure**, the lure-happy player, formations, a fight:
+
+| Team and kit | Team hull lost | The Polar Bear's hull | The allies' | Its share of the blows | Lures | Components destroyed |
+|---|---|---|---|---|---|---|
+| As built | 12.9% | 11.3 | 3.6 | 68% | 2.2 | |
+| The Flinger's lure removed | 12.7% | 4.6 | 10.1 | 32% | 0 | |
+| Its Rapid removed | 13.9% | 11.6 | 4.5 | 64% | 1.9 | |
+| The Storm Petrel in its seat | 11.6% | 4.7 | 6.9 | 45% | | |
+| With the Skua and the Cassowary, as built | 35.3% | 15.8 | 13.8 | 58% | | 1.30 |
+| With the Skua and the Cassowary, the lure removed | 35.4% | 11.9 | 17.8 | 37% | | 1.65 |
+
+The elites and the patrols read the same way (the team's total within two points, the allies'
+hull falling by three fifths beside the Badger and the Clydesdale, by a fifth to a third beside
+the light pair). Of the hull the lured-on Polar Bear lost, 77% was
+breach on the formations and the elites and 95% on the patrols. Over every tier-one composition
+the planner lost 6.6% team hull with the Polar Bear and 5.8% with the Storm Petrel in its seat
+(3.99 rounds against 3.59); caught alone by tier one's patrols, the bot's Polar Bear won 57 to 61%
+for 64% of its hull in 11 rounds, the Storm Petrel 59% for 55% in 6.
+
+Read, a direction:
+- The seal's armour met almost no blow. Three rules meet: a shield takes a blow whole before
+  armour and takes no armour off; the shield is full as every fight opens; the seal is entered by
+  a shield spent on itself, so the spend that seals it tops up the shield in front of the armour,
+  and the bot's next gun opens it. Held, it saved a quarter of a hull a fight and cost more in the
+  guns not fired; with its armour before the shield it saved one and a half and held even with the
+  player who never holds, at tier two within half a point of the bot.
+- The lure moved the team's blows onto the Polar Bear without lessening them: three full shields
+  soak a fight's blows spread by random picks, and one shield piled on spills into one hull, most
+  of what reached it breach. Beside light allies it broke a fifth fewer of their components on
+  the formations (1.30 against 1.65 a fight), 6 to 14% fewer on the elites and the patrols.
+- Rapid barely moved a row: the lure's alternative is a 2-damage basic.
+- The runner does not read the Polar Bear as OP against its peer: Ryan's play is the evidence, and
+  his try of 9 November is judged there.
 
 ## 9 November, the Lammergeier's Mines on foes
 

@@ -49,7 +49,7 @@ unless marked Ryan's, and the numbers are the proposal's placeholders.
   shield to every machine a fair number rather than four blows negated: 10 hit points on each
   machine, which a breach ignores. A Barrier is never granted to every ally at once, so a
   screen must stay a shield number.
-- Ryan's taste, as the briefs README records it from his words in the Armadillo's go: no
+- Ryan's taste, as the briefs README records it from his words in the Polar Bear's go: no
   team-wide armour, Braced or shield handed out in bulk ("giving the team tank stats is just
   as toxic as taking all the blows"). Does a screen of shield to every machine pass that line?
   It stays open with the verb.

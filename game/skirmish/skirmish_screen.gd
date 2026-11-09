@@ -1252,13 +1252,13 @@ func _refresh(save: bool = true) -> void:
 				after = maxi(0, ms.ammo - sk.ammo_price_of(ms, sk.spend_face(ms)))
 			v.bars.append([ms.ammo, ms.ammo_max, Palette.SELECT, after, 1])
 		v.dead = not ms.alive()
-		# What the model holds while the machine carries a status (the Armadillo's seal, the
+		# What the model holds while the machine carries a status (the Polar Bear's seal, the
 		# Cassowary's spin), and its numbers on its count displays (the Cassowary's capacitor).
 		if i < _mech_3d.size() and _mech_3d[i] != null:
 			_mech_3d[i].hold_statuses(ms.unit)
 			_mech_3d[i].show_counts(ms)
 		if not SEAL_DEBUG:
-			v.shell = ms.alive() and Effects.is_sealed(ms.unit)   # the sealed form's shell (the Armadillo's, 2 November)
+			v.shell = ms.alive() and Effects.is_sealed(ms.unit)   # the sealed form's shell (the Polar Bear's, 2 November)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
@@ -1519,7 +1519,7 @@ static func pair_halves() -> Dictionary:
 
 ## Whether spending entry `f` changes its machine's form (Ryan, 2 November: "armadillo needs
 ## indication when a die face will transform it"): "seal" for a shield it may spend on itself while
-## its shell is open (the Armadillo's Lockdown seals it so), "unseal" for a vent or a weapon while
+## its shell is open (the Polar Bear's Lockdown seals it so), "unseal" for a vent or a weapon while
 ## it is sealed (either opens it), "" for anything else or a machine with no form.
 static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 	match Skirmish.form_change(ms, f, f != null and f.targets != Face.Target.ALLY):
@@ -1613,7 +1613,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("flakked", "flak", str(flak), "Flak ×%d" % flak, _foe_chip_colour("flakked")))
 	var cryo := Effects.stacks_of(foe, "cryoed")
 	if cryo > 0:
-		# The Armadillo's mark (20 October; its chip from 21 October): what a weapon's hit on it
+		# The Polar Bear's mark (20 October; its chip from 21 October): what a weapon's hit on it
 		# cools the hitter, the stacks it spends.
 		rows.append(status_row("cryoed", "cryo", str(cryo), "Cryo ×%d" % cryo, _foe_chip_colour("cryoed")))
 	if Effects.has(foe, "webbed"):
@@ -1884,7 +1884,7 @@ func _mech_rows(i: int) -> Array:
 			total[id] = 0
 		total[id] = int(total[id]) + int(d[4])
 	# An ability (Ryan, 8 November: "It's not a Buff, it's not a Debuff, it's labelled as an
-	# Ability, so it doesn't get purged"): the machine's own mechanic, the Armadillo's seal, the
+	# Ability, so it doesn't get purged"): the machine's own mechanic, the Polar Bear's seal, the
 	# Ore Plate, Hot Streak, on a solid tile and named so in its readout, ahead of the buffs.
 	var abilities: Array = []
 	var at := rows.size()
@@ -2140,7 +2140,7 @@ func _show_die(i: int) -> bool:
 		var next_at := sk.next_index(ms)
 		if next_at >= 0:
 			extra.append(EntryReadout.next_chamber_line(sk.next_face(ms), next_at + 1, ContentDB.load_default()))
-		# Its machine's form (the Armadillo's): the seal or the opening this entry brings, by the
+		# Its machine's form (the Polar Bear's): the seal or the opening this entry brings, by the
 		# chip the die shows for it, Sealed a term a tap opens.
 		var shift := form_mark(ms, sf) if not ms.assigned else ""
 		if not shift.is_empty():

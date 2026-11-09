@@ -271,7 +271,7 @@ func test_three_rows_of_chips_fit_under_the_machines() -> void:
 		Settings.display["skirmish_controls"] = mode
 		var db := ContentDB.load_default()
 		var sk := Skirmish.new(3)
-		for id in ["badger", "armadillo", "clydesdale", "wild_boar"]:
+		for id in ["badger", "polar_bear", "clydesdale", "wild_boar"]:
 			sk.add_mech(db.make_mech(id))
 		sk.add_foes([Foe.make("revenant", 30, 4)])
 		var s := SkirmishScreen.new()

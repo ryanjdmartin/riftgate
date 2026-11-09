@@ -1938,7 +1938,7 @@ static func _front_worth(sk: Skirmish, foe: Foe) -> float:
 	return (KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT) * SWAP_WEIGHT
 
 
-## What sealing is worth (the Armadillo's Lockdown, 20 October; valued 21 October): a shield
+## What sealing is worth (the Polar Bear's Lockdown, 20 October; valued 21 October): a shield
 ## it spends on itself seals it, and the armour stands behind this round's blows, less the heat
 ## the seal adds as the turn ends and the cooling it stops, as room lost. Nothing when it is
 ## sealed already or has no seal.

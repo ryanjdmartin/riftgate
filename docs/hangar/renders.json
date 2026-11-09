@@ -52,7 +52,7 @@
    },
    {
     "when": "Variants, 2 November.",
-    "note": "Ryan, 2 November: “Can't we just model different shapes as options, as needed?” A variant is a class in another form, modelled for the mounts its standard shape does not fit and named for its form, so any hardpoint may take it; a hardpoint declares, for each class, the variant it wears and its scale there, and every other hardpoint wears the class itself at its own scale. The first is the round launcher, for a round port or a pod's nose (the Armadillo's ports, the Goshawk's pods), its face the square rack's missile tile one tube at a time. Shown in Minerva's and Wainwright & Sutler's metal; Classes on the Models tab shows it alone.",
+    "note": "Ryan, 2 November: “Can't we just model different shapes as options, as needed?” A variant is a class in another form, modelled for the mounts its standard shape does not fit and named for its form, so any hardpoint may take it; a hardpoint declares, for each class, the variant it wears and its scale there, and every other hardpoint wears the class itself at its own scale. The first is the round launcher, for a round port or a pod's nose (the Polar Bear's ports, the Goshawk's pods), its face the square rack's missile tile one tube at a time. Shown in Minerva's and Wainwright & Sutler's metal; Classes on the Models tab shows it alone.",
     "small": true,
     "images": [
      {
@@ -184,69 +184,69 @@
     ]
    }
   },
-  "armadillo": {
+  "polar_bear": {
    "when": "Ryan's swap notes, 2 November.",
    "note": "Ryan, 2 November: “what happens if they get swapped out, like putting a missile rack on the armadillo gun port”, then “maybe some hardpoints want circular missile racks, that fixes the armadillo” and “Hardpoint just needs to declare shape (if offered) and scaling”. A class fitted in a port now wears the port's own fit: a rack is the round launcher (a drum with seven tubes, the square rack's missile tile one tube at a time), and every class is sized to pass the port's bore whole, so it rises out of the port as the guns do and sinks under the iris when the shell seals; a rack had been a square box half again as wide as the port, jammed in its mouth. The fore ports are wider (11 across, from 9) and a little lower, so a launcher or a dish fitted there reads; stock, they are bare as before. The shots: the stock (front, rear, side, sealed, venting from behind and from the front), then a round launcher in every port, then a launcher, the Twin Autoguns, a barrel and a dish. Fit any mount on the Models tab to try the rest.",
    "images": [
     {
-     "file": "armadillo/armadillo_front.png",
-     "alt": "armadillo, front"
+     "file": "polar_bear/polar_bear_front.png",
+     "alt": "polar bear, front"
     },
     {
-     "file": "armadillo/armadillo_rear.png",
-     "alt": "armadillo, rear"
+     "file": "polar_bear/polar_bear_rear.png",
+     "alt": "polar bear, rear"
     },
     {
-     "file": "armadillo/armadillo_side.png",
-     "alt": "armadillo, side"
+     "file": "polar_bear/polar_bear_side.png",
+     "alt": "polar bear, side"
     },
     {
-     "file": "armadillo/armadillo_sealed.png",
-     "alt": "armadillo, sealed"
+     "file": "polar_bear/polar_bear_sealed.png",
+     "alt": "polar bear, sealed"
     },
     {
-     "file": "armadillo/armadillo_venting.png",
-     "alt": "armadillo, venting"
+     "file": "polar_bear/polar_bear_venting.png",
+     "alt": "polar bear, venting"
     },
     {
-     "file": "armadillo/armadillo_venting_front.png",
-     "alt": "armadillo, venting front"
+     "file": "polar_bear/polar_bear_venting_front.png",
+     "alt": "polar bear, venting front"
     },
     {
-     "file": "armadillo/armadillo_swapped.png",
-     "alt": "armadillo, swapped"
+     "file": "polar_bear/polar_bear_swapped.png",
+     "alt": "polar bear, swapped"
     },
     {
-     "file": "armadillo/armadillo_swapped_mixed.png",
-     "alt": "armadillo, swapped mixed"
+     "file": "polar_bear/polar_bear_swapped_mixed.png",
+     "alt": "polar bear, swapped mixed"
     }
    ],
    "before": {
     "summary": "Before: the tenth notes of 30 October (every class one size in the ports, the fore ports 9 across)",
     "images": [
      {
-      "file": "armadillo/before_armadillo_front.png",
-      "alt": "Earlier: armadillo, front"
+      "file": "polar_bear/before_polar_bear_front.png",
+      "alt": "Earlier: polar bear, front"
      },
      {
-      "file": "armadillo/before_armadillo_rear.png",
-      "alt": "Earlier: armadillo, rear"
+      "file": "polar_bear/before_polar_bear_rear.png",
+      "alt": "Earlier: polar bear, rear"
      },
      {
-      "file": "armadillo/before_armadillo_side.png",
-      "alt": "Earlier: armadillo, side"
+      "file": "polar_bear/before_polar_bear_side.png",
+      "alt": "Earlier: polar bear, side"
      },
      {
-      "file": "armadillo/before_armadillo_sealed.png",
-      "alt": "Earlier: armadillo, sealed"
+      "file": "polar_bear/before_polar_bear_sealed.png",
+      "alt": "Earlier: polar bear, sealed"
      },
      {
-      "file": "armadillo/before_armadillo_venting.png",
-      "alt": "Earlier: armadillo, venting"
+      "file": "polar_bear/before_polar_bear_venting.png",
+      "alt": "Earlier: polar bear, venting"
      },
      {
-      "file": "armadillo/before_armadillo_venting_front.png",
-      "alt": "Earlier: armadillo, venting, front"
+      "file": "polar_bear/before_polar_bear_venting_front.png",
+      "alt": "Earlier: polar bear, venting, front"
      }
     ]
    }

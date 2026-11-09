@@ -10,7 +10,7 @@ extends SceneTree
 ## An act name of "-" renders the rest pose; "gait" renders the machine that many seconds
 ## into a straight run at its full speed on the map (its stride); "lose" that many seconds after
 ## it is lost (MechView3D.lose: its lights out and its slump). RIFTGATE_FORM=<name> holds
-## that form first, all the way in, so the act is one of its own (the sealed Armadillo's) or
+## that form first, all the way in, so the act is one of its own (the sealed Polar Bear's) or
 ## "-" its held pose. An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
 ## with its act's slice and what it fires out of the machine, lowforge's launches) and renders it that
 ## many seconds on. Needs a window (xvfb-run does, on a Linux box).

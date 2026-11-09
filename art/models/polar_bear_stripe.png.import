@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c42o2f75rkxnn"
-path="res://.godot/imported/armadillo_ember.png-fa0aed2c1466b1e03928a502d9b6c81a.ctex"
+uid="uid://csdq6qut8qc1m"
+path="res://.godot/imported/polar_bear_stripe.png-7fd01dc5f3a5e3e8066023f5e4b60588.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "667f2ace7758b94dc7f6d76a39ee4612"
+"md5": "134cfe0da8e9e4a37fb0ae7d30daf5e9"
 }
 
 [deps]
 
-source_file="res://art/models/armadillo_ember.png"
-dest_files=["res://.godot/imported/armadillo_ember.png-fa0aed2c1466b1e03928a502d9b6c81a.ctex"]
+source_file="res://art/models/polar_bear_stripe.png"
+dest_files=["res://.godot/imported/polar_bear_stripe.png-7fd01dc5f3a5e3e8066023f5e4b60588.ctex"]
 
 [params]
 

@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bf30nlkbyegnu"
-path="res://.godot/imported/armadillo_vent.png-e9de1b44ef149918c921b832c5eb7d41.ctex"
+uid="uid://c42o2f75rkxnn"
+path="res://.godot/imported/polar_bear_ember.png-01382a548cf34affa574406bdf1349f9.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "142e4aa2be067474a65577b5bcf7949e"
+"md5": "667f2ace7758b94dc7f6d76a39ee4612"
 }
 
 [deps]
 
-source_file="res://art/models/armadillo_vent.png"
-dest_files=["res://.godot/imported/armadillo_vent.png-e9de1b44ef149918c921b832c5eb7d41.ctex"]
+source_file="res://art/models/polar_bear_ember.png"
+dest_files=["res://.godot/imported/polar_bear_ember.png-01382a548cf34affa574406bdf1349f9.ctex"]
 
 [params]
 

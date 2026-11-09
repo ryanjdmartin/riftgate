@@ -164,7 +164,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				# inner lining ... extra little flairs").
 				Hud.stroke_poly(ci, PackedVector2Array([c + Vector2(-s * 0.8, -s * 0.68), c + Vector2(s * 0.8, -s * 0.68), c + Vector2(s * 0.8, s * 0.04), c + Vector2(0, s * 0.77), c + Vector2(-s * 0.8, s * 0.04)]), Color(color, color.a * INNER_ALPHA), 1.0)
 		"seal", "unseal":
-			# The Armadillo's shell (Ryan, 2 November: "armadillo needs indication when a die face
+			# The Polar Bear's shell (Ryan, 2 November: "armadillo needs indication when a die face
 			# will transform it"): a seam, and an arrow either side driving shut onto it (seal) or
 			# thrown open off it (unseal), so the two read apart by structure, never by hue.
 			ci.draw_line(c + Vector2(0.0, -s), c + Vector2(0.0, s), color, width * 1.3)
@@ -364,7 +364,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(-s * 0.95, s * 0.9), c + Vector2(-s * 0.35, s * 0.9), color, width * 0.9)
 			ci.draw_line(c + Vector2(s * 0.35, s * 0.9), c + Vector2(s * 0.95, s * 0.9), color, width * 0.9)
 		"cryo":
-			# A snowflake: six arms, each with a fork near its tip (Cryo, the Armadillo's mark,
+			# A snowflake: six arms, each with a fork near its tip (Cryo, the Polar Bear's mark,
 			# 20 October; its glyph from 21 October, the keyword and the foe's chip alike). The web
 			# is rings on three threads; this is forks on six arms.
 			for i in range(6):
@@ -644,7 +644,7 @@ static func colour_for(id: String) -> Color:
 		return Terms.colour(id)
 	match id:
 		"seal", "unseal":
-			return Terms.colour("sealed")   # the Armadillo's shell, the Sealed status's colour
+			return Terms.colour("sealed")   # the Polar Bear's shell, the Sealed status's colour
 		"exposed":
 			return Terms.colour("exposure")
 		"overcharge", "heat", "scorch", "devour", "spin", "mine":

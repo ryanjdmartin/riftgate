@@ -1283,7 +1283,7 @@ func start_round() -> void:
 		ms.assigned = is_swallowed(ms)
 		if not ms.alive():
 			continue
-		# A sealed machine's own cooling stops (the Armadillo's Lockdown, 20 October); an ally's
+		# A sealed machine's own cooling stops (the Polar Bear's Lockdown, 20 October); an ally's
 		# vent still cools it.
 		var drop := 0 if Effects.is_sealed(ms.unit) else mini(ms.heat, ms.unit.cooling)
 		if drop > 0:
@@ -2407,7 +2407,7 @@ func _strike(f: Foe, t: MechState) -> void:
 			f.hp = mini(f.hp_max, f.hp + dealt)
 			if f.hp > had:
 				log.append("%s drains %d" % [f.display_name, f.hp - had])
-		# The live hull (the Armadillo's, a machine under Retaliate): a blow that reaches
+		# The live hull (the Polar Bear's, a machine under Retaliate): a blow that reaches
 		# hull shocks the foe that struck; a shutters' blocked blow (the shield took it whole)
 		# shocks too, and a blow a Barrier took never touched either. Shocked is a setup and
 		# nothing else (Ryan, 11 October): the discharge a Shocked striker paid was thorns,
@@ -2557,7 +2557,7 @@ func _tick_mechs() -> void:
 ## The end of the player's turn, before the overheat (Ryan, 13 October): each machine's
 ## Burning adds its heat, so a vent made room for it or a cleanse took it off; Burning loses a
 ## stack and Scorched goes.
-## The heat a sealed machine runs at the end of its turn (the Armadillo's Lockdown): the
+## The heat a sealed machine runs at the end of its turn (the Polar Bear's Lockdown): the
 ## seal's own number, or nothing.
 func seal_heat(ms: MechState) -> int:
 	if not Effects.is_sealed(ms.unit):
@@ -2575,7 +2575,7 @@ func _seal_heat() -> void:
 			_add_heat(ms, h)
 
 
-## The form change (the Armadillo's Lockdown, Ryan's framework of 15 October, his go 20
+## The form change (the Polar Bear's Lockdown, Ryan's framework of 15 October, his go 20
 ## October): a shield spent on itself seals the machine, a vent or a weapon opens it; a shield
 ## on an ally and equipment (a buff, a debuff: its lures) leave the form as it is. An entry that
 ## is a shield and a vent at once (a vent that shields, the Wake Diffuser; a shield that cools,
@@ -4334,7 +4334,7 @@ func _hull_damaged(ms: MechState) -> void:
 		log.append("%s: %s from the hit" % [ms.unit.display_name, ", ".join(parts)])
 
 
-## Shocked (the Armadillo's retaliation, 28 September; built 29 September): the foe that struck
+## Shocked (the Polar Bear's retaliation, 28 September; built 29 September): the foe that struck
 ## carries one shock, never more, until a weapon's strike aimed at it spends it double. A machine's loop passive
 ## may catch the status like any other.
 ## Exposed on a foe through the next round (renewing, never adding): in Direct reach of every

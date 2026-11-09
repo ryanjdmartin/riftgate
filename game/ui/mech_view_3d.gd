@@ -419,7 +419,7 @@ static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 
 
 ## Hold what each status the machine carries holds on its model, and let it go when it does not:
-## a form of the same name (the Armadillo's Sealed: its guns sink and its ports shut) and a spin
+## a form of the same name (the Polar Bear's Sealed: its guns sink and its ports shut) and a spin
 ## (the Cassowary's Spun Up: its capacitor turns). A borrowed model holds nothing.
 func hold_statuses(u: Unit) -> void:
 	if u == null or rig == null or model_id != u.chassis_id:

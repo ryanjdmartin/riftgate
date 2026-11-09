@@ -1027,7 +1027,7 @@ func _stepper(powers: Array) -> Skirmish:
 	return sk
 
 
-## The seal (the Armadillo's Lockdown, valued 21 October): a shield a machine with a seal
+## The seal (the Polar Bear's Lockdown, valued 21 October): a shield a machine with a seal
 ## spends on itself is worth the armour it stands behind this round's blows, less its heat.
 func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
 	var pol := Policy.make(Policy.GREEDY)

@@ -75,7 +75,7 @@ section 7.
   brake. Small pieces at tier two or three, the combo's fuel. Since Ryan's call the same day,
   Rapid's free reroll may land on a copy (stacked copies chain), so stacked cantrips with no
   cooldown can bounce from copy to copy, and a die of nothing but cantrips never ends its turn:
-  they need the limit raised in the Armadillo's brief (`minerva_armadillo.md`) before they are
+  they need the limit raised in the Polar Bear's brief (`minerva_armadillo.md`) before they are
   built. Ryan's proposal there (15 October) is heat paid every spend; Claude's earlier one, a
   Rapid reroll never landing on an entry already spent this round, is its alternative.
 

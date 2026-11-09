@@ -251,7 +251,7 @@ const STATUS := {
 	# hopper's own, an ability since 8 November, so no purge touches it, as none touches the loads.
 	"ore_plate": {"id": "ore_plate", "name": "Ore Plate", "description": "Armour +1 a stack: what the loads in its hopper are worth, while it holds them.", "decay": "none",
 		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
-	# The Armadillo's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
+	# The Polar Bear's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
 	# framework): a shield it spends on itself seals it, a vent or a weapon opens it.
 	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
 	# with the passive's numbers), renewing, never stacking (Ryan: the granted armour is tied
@@ -259,7 +259,7 @@ const STATUS := {
 	# (Skirmish); an ally's vent still cools it (Ryan, 20 October: allowed).
 	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A vent or a weapon opens it.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
-	# Cryo (Ryan, 20 October: the Armadillo's Cryo Flinger, the debuff called Cryo too, marked
+	# Cryo (Ryan, 20 October: the Polar Bear's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
 	# machine's hit on it with a weapon spends every stack and cools the hitter so much a stack,
 	# the cool_hitter number here (Skirmish.cryo_cool; a field since the stock pass's engine, 22
@@ -486,7 +486,10 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
 ## shield_up (the Storm Petrel's plate, built 30 October): the machine's own shield stands, read
 ## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up"]
+## sealed (the Polar Bear's Lockdown, 9 November): the machine wears its seal (is_sealed), so a
+## grant holds only in the sealed form; with an `entry` beside it (any effect may carry one: a
+## component id) it holds on that piece's entries alone.
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up", "sealed"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -930,9 +933,18 @@ static func _fires(trigger: String) -> bool:
 ## `ctx` carries what a what-if reads in place of the unit's own: the shield a forecast's blow
 ## meets ("shield"), for shield_up.
 static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionary = {}) -> bool:
+	# An effect scoped to one of its machine's pieces (`entry`, a component id: the Polar Bear's
+	# Lockdown granting its Cryo Flinger Spread while sealed, Ryan, 9 November) holds on that
+	# piece's entries alone, never on a stat or another entry.
+	var entry := str(eff.get("entry", ""))
+	if not entry.is_empty() and (face == null or face.component != entry):
+		return false
 	match str(eff.get("when", "")):
 		"":
 			return true
+		"sealed":
+			# The machine's form (the Polar Bear's seal): its Sealed chip stands.
+			return is_sealed(u)
 		"shield_up":
 			# The machine's own shield stands (the Storm Petrel's plate, 30 October): the shield
 			# the blow meets, before it lands.
@@ -1436,7 +1448,7 @@ static func keeps(u, status_id: String) -> bool:
 	return false
 
 
-## The form a machine seals into (seal_form, static; the Armadillo's Lockdown, 20 October):
+## The form a machine seals into (seal_form, static; the Polar Bear's Lockdown, 20 October):
 ## {"armour": the armour the seal grants, "heat": what it runs hotter at the end of each turn}
 ## when a live passive carries it, else empty.
 static func seal_form(u) -> Dictionary:
@@ -1763,7 +1775,7 @@ static func purgeable(m) -> bool:
 
 ## Is this status an ability (Ryan, 8 November): a unit's own mechanic, shown as its chip on a
 ## solid tile, never a buff or a debuff, so nothing that strips buffs or marks reaches it (the
-## Armadillo's seal, the Ore Plate, a core's guard, a golden rage, Hot Streak).
+## Polar Bear's seal, the Ore Plate, a core's guard, a golden rage, Hot Streak).
 static func is_ability(status_id: String) -> bool:
 	return (STATUS.get(status_id, {}).get("tags", []) as Array).has("ability")
 
@@ -2232,12 +2244,16 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("when", "")):
 		"reach_direct": lead += "direct attacks: "
 		"reach_indirect": lead += "indirect attacks: "
-		"target_status": lead += "foes carrying a status: "
+		"target_status":
+			# The status named, where one is (the Polar Bear's Lockdown: foes carrying Cryo), else any.
+			var want := str(eff.get("status", ""))
+			lead += ("foes carrying %s: " % str(STATUS[want]["name"])) if STATUS.has(want) else "foes carrying a status: "
 		"target_no_intent": lead += "foes showing no intent on this machine: "
 		"attacker_status":
 			var st := str(eff.get("status", ""))
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
 		"ally_present": lead += "with an ally in the fight: "
+		"sealed": lead += "while sealed: "
 		"nth_shot": lead += "every %s shot: " % ordinal(int(eff.get("every", 6)))
 		"target_rank":
 			var by := str(eff.get("reach", ""))

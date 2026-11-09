@@ -1147,7 +1147,7 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 ## The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling
 ## returning, as a build-strategy buffer"): a machine regains its shield_regen at each round's
 ## start after the cooling, up to its maximum, one log line for all. A sealed machine's regen
-## runs: the Armadillo's seal stops its own cooling, and nothing says it stops the regen.
+## runs: the Polar Bear's seal stops its own cooling, and nothing says it stops the regen.
 func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(1, L)), 10, 100)
@@ -6322,7 +6322,7 @@ func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
 	assert_eq(Effects.damage_taken(other, 20, lit), 20, "a status the engine lacks never holds")
 
 
-## The form-changing tank (the Armadillo's Lockdown; Ryan's framework of 15 October, his go 20
+## The form-changing tank (the Polar Bear's Lockdown; Ryan's framework of 15 October, his go 20
 ## October): a shield spent on itself seals the machine, one chip carrying the passive's armour;
 ## sealed, its own cooling stops and it runs hotter at the end of each turn, before the overheat;
 ## a vent or a weapon opens it; a shield on an ally and a debuff (its lures) leave the form
@@ -6423,6 +6423,113 @@ func test_a_cool_and_shield_entry_seals_an_open_machine_and_opens_a_sealed_one()
 		sk.mechs[0].face_index = 0
 		assert_true(sk.assign(0, sk.mechs[1]), "%s, on the ally" % kind)
 		assert_false(Effects.is_sealed(m), "%s on an ally: its vent opens the spender, as any vent does" % kind)
+
+
+## A passive's grant scoped to one of its machine's pieces and held while it is sealed (the
+## Polar Bear's Lockdown, Ryan, 9 November: "Cryo flinger: No rapid. While sealed, gains Spread"):
+## open, its lure turns the one foe it is aimed at; sealed, the foes beside it in its rank too, each
+## taking the entry's Cryo; the grant reaches that piece alone, never the machine's gun, and goes as
+## the seal opens. Synthetic pieces and passive, so content may move.
+func test_a_grant_scoped_to_one_piece_holds_on_it_alone_while_sealed() -> void:
+	var sk := Skirmish.new(1)
+	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 1, "cryo": 1})
+	lure.component = "test_flinger"
+	var shield := Face.shield(20)
+	var gun := Face.attack(10, I)
+	gun.component = "test_gun"
+	var m := _mech("A", Die.of([lure, shield, gun]), 0, 200)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 3, "heat": 3},
+		{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "sealed", "entry": "test_flinger"}]})
+	sk.add_mech(m)
+	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
+	sk.add_foes([_ghoul(500, 5), _ghoul(500, 5), _ghoul(500, 5), _ghoul(500, 5)])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	var aim: Foe = sk.front[1]
+	assert_false(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "open, the lure carries no Spread")
+	assert_eq(sk.reached_by(Effects.effective_face(m, lure, aim), aim).size(), 1, "and reaches its one foe")
+	ms.face_index = 0
+	assert_true(sk.assign(0, aim), "the lure, open")
+	assert_eq(aim.target, ms, "its foe turns on it")
+	for k in [0, 2, 3]:
+		assert_eq(Effects.stacks_of(sk.front[k], "cryoed"), 0, "a foe beside it takes nothing (column %d)" % k)
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, null), "a shield on itself")
+	assert_true(Effects.is_sealed(m), "seals it")
+	assert_true(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "sealed, the lure gains Spread")
+	assert_false(Effects.effective_face(m, gun, aim).has(K.CLEAVE), "and the gun does not: the grant names its piece")
+	assert_eq(Effects.effective_face(m, lure, aim).power, 0, "the lure still deals nothing")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, aim), "the lure, sealed")
+	for k in [0, 1, 2]:
+		assert_eq(sk.front[k].target, ms, "the foe in column %d turns on it" % k)
+	assert_eq(Effects.stacks_of(sk.front[0], "cryoed"), 1, "the neighbours take its Cryo")
+	assert_eq(Effects.stacks_of(sk.front[2], "cryoed"), 1, "on both sides")
+	assert_eq(Effects.stacks_of(aim, "cryoed"), 2, "the foe it was aimed at gains a second stack")
+	assert_eq(Effects.stacks_of(sk.front[3], "cryoed"), 0, "the foe past the neighbours, nothing")
+	assert_true(Effects.is_sealed(m), "a lure leaves the seal as it is")
+	var notes := Effects.explain(m, lure)
+	assert_true(notes.has("while sealed: gains spread (Lockdown)"), "the entry's row says the grant with its condition: %s" % str(notes))
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	assert_true(sk.assign(0, sk.front[3]), "the gun")
+	assert_false(Effects.is_sealed(m), "opens it")
+	assert_false(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "and the Spread goes with the seal")
+
+
+## Its weapons deal 1 more to a foe carrying Cryo (the Polar Bear's Lockdown, Ryan, 9 November): an
+## add on the blow, the attacker's condition read on the foe as each strike lands, so the strike
+## that meets the Cryo takes it and its hit spends the stacks; a later strike of the same spend
+## meets none and lands plain; a foe with none takes the plain blow, and a debuff deals nothing still.
+func test_its_weapons_hit_a_foe_carrying_cryo_one_harder_on_the_strike_that_cashes_it() -> void:
+	var sk := Skirmish.new(1)
+	var gun := Face.attack(2, L)
+	var twin := Face.from_dict({"kind": "attack", "reach": "direct", "power": 2, "strikes": 2, "keywords": [], "heat": 0})
+	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 1, "cryo": 1})
+	var m := _mech("A", Die.of([gun, twin, lure]), 0, 200)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_status", "status": "cryoed"}]})
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(20, 0), _ghoul(20, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	var cold: Foe = sk.front[0]
+	var clean: Foe = sk.front[1]
+	Effects.stack(cold, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.heat = 8
+	assert_eq(sk.shown_number(ms, gun, cold), 3, "over a foe carrying Cryo the die shows the blow 1 harder")
+	assert_eq(sk.shown_number(ms, gun, clean), 2, "and over a clean foe the plain blow")
+	ms.face_index = 0
+	assert_true(sk.assign(0, cold), "the gun on the cold foe")
+	assert_eq(cold.hp, 17, "it lands 3")
+	assert_eq(Effects.stacks_of(cold, "cryoed"), 0, "and its hit spent the Cryo")
+	assert_eq(ms.heat, 8 - Effects.status_value("cryoed", "cool_hitter"), "cooling the hitter as ever")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(cold, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.face_index = 1
+	assert_true(sk.assign(0, cold), "two strikes on a foe carrying Cryo")
+	assert_eq(cold.hp, 12, "the first strike 1 harder, its hit spending the Cryo, the second plain")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, cold), "again, the Cryo spent")
+	assert_eq(cold.hp, 10, "the plain 2")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(clean, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.face_index = 2
+	assert_true(sk.assign(0, clean), "the lure on a foe carrying Cryo")
+	assert_eq(clean.hp, 20, "a debuff deals nothing, Cryo or none")
+	assert_eq(Effects.effect_text(m.modifiers[0].effects[0]), "foes carrying Cryo: damage +1", "the rule reads with the status it names")
 
 
 ## Cryo (Ryan, 18 and 20 October): the Cryo Flinger's mark pays in cooling. Any machine's
@@ -7476,7 +7583,7 @@ func _purger() -> Foe:
 ## Purge (Ryan, 17 and 21 October; by its number since 2 November; 8 November: "A stack is a
 ## stack, doesn't matter where it came from"): a foe's Purge N takes N stacks of every buff the
 ## machine carries, for good, whatever granted it, a die entry or a passive; an ability is no
-## buff (the Armadillo's seal, its form, stays and so does its armour); the stores and the
+## buff (the Polar Bear's seal, its form, stays and so does its armour); the stores and the
 ## passives stay; a kept stack is its passive's own and stays, drawing no purger; a Ward turns it
 ## away.
 func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
@@ -7500,7 +7607,7 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	assert_true("\n".join(sk.log).contains("purges A ×9: Empowered gone, Armoured gone"), "the log says what went")
 	sk.start_round()
 	assert_false(Effects.has(u, "overcharged") or Effects.has(u, "braced"), "and nothing comes back")
-	# The seal is the Armadillo's form, an ability: the purge leaves it, its armour standing.
+	# The seal is the Polar Bear's form, an ability: the purge leaves it, its armour standing.
 	var s2 := Skirmish.new(1, 2)
 	var shield := Face.shield(20)
 	var m := _mech("D", Die.of([shield, Face.attack(10, L)]), 40, 200)

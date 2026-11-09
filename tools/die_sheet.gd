@@ -212,6 +212,6 @@ func _rest() -> Array:
 		["Dark", "a cooldown or a switch-\noff: the clock, its turns", dark],
 		["Chips", "keywords, the star for a\nrule, a corruption", chipped],
 		["Next chamber", "its passive's box: the\nnext entry (the Cassowary)", stepping],
-		["Seals", "spent on itself, the\nArmadillo shuts", seal],
-		["Opens", "spent, the Armadillo's\nshell opens", unseal],
+		["Seals", "spent on itself, the\nPolar Bear shuts", seal],
+		["Opens", "spent, the Polar Bear's\nshell opens", unseal],
 	]

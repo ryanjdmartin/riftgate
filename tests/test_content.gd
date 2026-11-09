@@ -2192,6 +2192,38 @@ func test_lay_status_names_an_engine_status_and_lays_at_least_a_stack() -> void:
 	assert_true(Effects.supports_when("target_no_intent"), "the ambush condition is one the engine runs")
 
 
+## A passive effect may hold on one of its machine's pieces (`entry`) and while it is sealed (the
+## Polar Bear's Lockdown, Ryan, 9 November: its Cryo Flinger gains Spread while sealed): the entry
+## names a component the content holds; an area granted to a debuff carries no number, as a
+## debuff's printed one does, and one granted anywhere else says its number. Synthetic passives.
+func test_a_passive_may_hold_on_one_piece_and_on_the_sealed_form() -> void:
+	assert_true(Effects.supports_when("sealed"), "the sealed form is a condition the engine runs")
+	var db := _fresh()
+	var debuff := "proximity_klaxon"   # any shipped debuff; the test reads its kind, never its rules
+	assert_true(db.build_face(db.components[debuff]["face"]).is_debuff(), "the piece named is a debuff")
+	var gun := "rivet_gun"
+	var cases := {
+		"probe_ok": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "sealed", "entry": debuff}, ""],
+		"probe_numbered": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "number": 1, "when": "sealed", "entry": debuff}, "carries no number"],
+		"probe_gun": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "sealed", "entry": gun}, "says what each foe past the target takes"],
+		"probe_gun_numbered": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "number": 1, "when": "sealed", "entry": gun}, ""],
+		"probe_nothing": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "sealed", "entry": "no_such_piece"}, "entry names no component"],
+	}
+	for id in cases:
+		var ch: Dictionary = db.chassis["prairie_dog"].duplicate(true)   # the striker-status test's clean probe
+		ch["passive"] = {"id": "p", "name": "P", "description": "A rule.", "effects": [cases[id][0]]}
+		db.chassis[id] = ch
+	var errs := db.validate()
+	for id in cases:
+		var want: String = cases[id][1]
+		var mine: Array = errs.filter(func(e: String) -> bool: return e.begins_with("chassis %s:" % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused for '%s': %s" % [id, want, str(mine)])
+	assert_eq(Effects.effect_text(cases["probe_ok"][0]), "while sealed: gains spread", "the grant reads with its condition as the lead")
+
+
 func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() -> void:
 	# The Prairie Dog's fight half (21 October): its clause named Flak before Flak was built (the
 	# same day), so the passive stayed built and the chassis dealable; a status nobody knows is refused.
@@ -2217,9 +2249,10 @@ func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() ->
 	assert_true(hit, "a status nobody knows is refused")
 
 
-## Cryo is a numbered keyword like Burn (20 October), and the Armadillo's content runs: its
-## Lockdown passive carries the seal, its die the Cryo Flinger pair before four hardpoints.
-func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_leads_with_its_flingers() -> void:
+## Cryo is a numbered keyword like Burn (20 October), and the Polar Bear's content runs: its
+## Lockdown passive carries the seal, its die its fixed Cryo Flinger before its hardpoints (one
+## since 9 November, Ryan: a five-entry die).
+func test_a_cryo_weapon_says_its_stacks_and_the_polar_bear_leads_with_its_flinger() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var mute: Dictionary = db.components["cryo_flinger"].duplicate(true)
@@ -2238,11 +2271,13 @@ func test_a_cryo_weapon_says_its_stacks_and_the_armadillo_leads_with_its_flinger
 	assert_true(refused.has("mute"), "a Cryo weapon with no number is refused")
 	assert_true(refused.has("stray"), "a number with no Cryo keyword is refused")
 	var fresh := ContentDB.load_default()
-	var m := fresh.make_mech("armadillo")
-	assert_eq(m.die.faces.size(), 6, "two flingers and four hardpoints")
-	assert_true(m.die.faces[0].has(Face.Keyword.CRYO) and m.die.faces[1].has(Face.Keyword.CRYO), "the pair leads the die")
-	assert_true(m.die.faces[0].has(Face.Keyword.LURE) and m.die.faces[0].has(Face.Keyword.RAPID), "each a lure with Rapid")
-	assert_eq(m.armour, int(fresh.chassis["armadillo"]["armour"]), "its base armour, as the content says")
+	var m := fresh.make_mech("polar_bear")
+	var fixed: Array = fresh.chassis["polar_bear"]["fixed"]
+	assert_eq(m.die.faces.size(), fixed.size() + int(fresh.chassis["polar_bear"]["hardpoints"]), "its fixed pieces and its hardpoints")
+	for k in range(fixed.size()):
+		assert_eq(m.die.faces[k].component, str(fixed[k]), "its fixed pieces lead the die")
+	assert_true(m.die.faces[0].has(Face.Keyword.CRYO) and m.die.faces[0].has(Face.Keyword.LURE), "the Flinger lures and lays Cryo")
+	assert_eq(m.armour, int(fresh.chassis["polar_bear"]["armour"]), "its base armour, as the content says")
 
 
 ## Flak lands (21 October): the Flakshot Repeater builds with its Flak and sprays, and the
@@ -2309,9 +2344,10 @@ func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -
 			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
 		else:
 			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused for '%s': %s" % [id, want, str(mine)])
-	var flinger: Dictionary = db.components["cryo_flinger"]["face"]
-	assert_false(flinger.has("cooldown"), "the Cryo Flinger prints no cooldown, its heat the limiter (Ryan's design, 20 October)")
-	assert_eq(db.build_face(flinger).cooldown_rounds(), 0, "and the engine runs it so")
+	# A Rapid entry whose heat is its limiter prints no cooldown, and the engine runs it so (the Cryo
+	# Flinger's form from 20 October to 9 November; synthetic since the Flinger lost its Rapid).
+	var hot: Dictionary = {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "rapid"], "heat": 1}
+	assert_eq(db.build_face(hot).cooldown_rounds(), 0, "a Rapid entry paying heat goes dark for no rounds")
 	var shipped := ContentDB.load_default()
 	for cid in shipped.components.keys():
 		var fd: Dictionary = shipped.components[cid].get("face", {})
