@@ -199,7 +199,7 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	f.patrol_cycle = [Battlefield.composition([["revenant", 2]], "marsh", "patrol", "shamblers")]
 	f.ramp = 0
 	var m := f.add_unit(Unit.mech(9, "A", _o(4, 2), 3))   # a machine right under the rift
-	assert_eq(f.seam_row, Battlefield.seam_start(), "the seam starts where the bleed's gradient ended")
+	assert_eq(f.seam_row, f.seam_start(), "the seam starts where the bleed's gradient ended")
 	f.peak()
 	assert_eq(f.peaks, 1, "one peak")
 	assert_eq(f.packs().size(), 1, "the rift sent one composition and the new tear sent nothing yet")
@@ -209,7 +209,7 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	assert_false(f.machine_adjacent(sent.pos), "it landed beside no machine")
 	assert_true(Hex.distance(sent.pos, f.map.rift) <= 3, "near the rift")
 	assert_eq(f.tears.size(), Ramp.tears_at(0), "the ramp's count of tears opened")
-	assert_eq(f.seam_row, Battlefield.seam_start() + Ramp.seam_creep_at(0), "the seam crept")
+	assert_eq(f.seam_row, f.seam_start() + Ramp.seam_creep_at(0), "the seam crept")
 	var first: Vector2i = f.tears[0]["pos"]
 	assert_eq(Hex.axial_to_offset(first).y, f.seam_row, "and the tear opened on the seam's new edge")
 	f.peak()

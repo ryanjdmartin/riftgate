@@ -25,8 +25,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1060 tests, 259,914 checks, green (9 November, main with the long wall, the skirmish code
-  audit, a part no kill and a hunter's reach landed, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1062 tests, 285,482 checks, green (9 November, `ccr-1e6e6571-7x7ayr` with the shapes relaid on
+  main's hunter's reach, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -44,7 +44,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the music session's branch below. The
+Everything is on main as of 9 November 2026 but the music session's branch below and
+`ccr-1e6e6571-7x7ayr`, the map session of 9 November (the shapes relaid, How things stand below),
+which waits on Ryan's word to land. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
@@ -137,6 +139,29 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The shapes relaid for the shallow field** (9 November, `ccr-1e6e6571-7x7ayr`, Ryan: "We lost a
+  lot of polish when we went to the new archetypes, and things need to be adapted to the new map
+  orientation (wide versus tall). It also needs to work for different map sizes, in case those
+  change with convergence"; the long wall brief's open item 5). The old laying kept the old
+  field's reservations as counts (a mouth of four rows, the team's two), so at twelve deep a shape
+  had rows 4 to 7, and the "down the field" shapes laid one divider sized for a wall of nine: the
+  fjord a puddle, the gorge two stubs, the steppe bare, the river a moat (the measurements of 6
+  November). Built: the rift's mouth a share of the depth (`BattleMap.mouth_rows`: a row for every
+  five of depth, two at least and four at most; three at twelve deep, so five open rows), the seam
+  and the opening reading it (a pack whose opening hex the shape took goes along its row, never
+  back into the mouth: `Battlefield.landing`'s floor); every shape laid to fill the open rows at
+  any size, "across" along the wall and "down the field" rift to wall whichever way the view
+  turns; the counts that are the field's scaled with the wall (a fjord for every ten hexes of it,
+  a cliff wall for every six, the steppe's crag and pond for every ten) and the team's not (fords
+  and streets three or four in all); a river between a bank row at the mouth's edge and one before
+  the team's ground; a city's one band mid the open rows with rubble before and after; each shape's
+  second ground along its landform in stretches from a seeded noise (gravel bars, shingle, scree,
+  `BattleMap._shore`). Saves at 17, runs at 16. Read at 200 seeds on every shape at 20 by 12
+  (`docs/measurements.md`, 9 November) and drawn on both views (the river's bars and the gorge's
+  scree show in the 3D); the to-do's Ryan list has the phone judge, with the fjord and cliff
+  counts and the authored sectors (the long wall proposal's lean, a content proposal only if the
+  relaid shapes are not enough). The bible's shapes and field rows carry it (v0.490, this file;
+  not republished: the live page's republish waits on Ryan's word, Pages below).
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack

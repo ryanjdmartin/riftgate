@@ -59,13 +59,16 @@ var _patrol_index: int = 0
 ## total on the rift's row and gone here, seam_start() at the start; it creeps south a peak
 ## (Ramp.seam_creep_at) as the clock's picture, as far as the apron. No rule reads the
 ## flattened hexes; the tears open on the seam's row.
-var seam_row: int = BattleMap.MOUTH_ROWS + 1   # seam_start()
+var seam_row: int = 0   # seam_start(), set as the field takes its map
 
 
-## Where the seam stands at a battle's start (the long wall brief 3.2): one row below the rift's
-## mouth at any depth, 5 (the old field's number at 20 rows, the first row past the mouth at 12).
-static func seam_start() -> int:
-	return BattleMap.MOUTH_ROWS + 1
+## Where the seam stands at a battle's start (the long wall brief 3.2): the first row past the
+## rift's mouth at any depth (BattleMap.mouth_rows: 4 at twelve deep, 5 at twenty, the old
+## field's number).
+func seam_start() -> int:
+	return map.mouth_rows() + 1
+
+
 ## The tears (Ryan's name, 30 October): the mouths beside the rift's, each {"pos": Vector2i,
 ## "opened": the phase it opened at}. A tear opens at a peak on the seam's row, far from the
 ## other mouths, and sends a patrol at every peak after, so where the next flood comes from is
@@ -98,6 +101,7 @@ var lifted: Array[Unit] = []
 
 func _init(battle_map: BattleMap) -> void:
 	map = battle_map
+	seam_row = seam_start()
 
 
 func add_unit(u: Unit) -> Unit:
@@ -1042,16 +1046,19 @@ func machine_adjacent(h: Vector2i) -> bool:
 
 
 ## Where a pack emerging at a mouth lands: the nearest hex it can stand on with no machine
-## adjacent, by ring search; the nearest it can stand on at all when none is clear.
-func landing(sq: Unit, mouth: Vector2i) -> Vector2i:
+## adjacent, by ring search; the nearest it can stand on at all when none is clear. With a
+## `floor_row` the search never enters a row nearer the rift than it (the opening's packs stay
+## out of the rift's mouth, Battle._open_row: a shape may lay water or a wall on the first row
+## past the mouth, and the pack goes along it rather than back into the mouth).
+func landing(sq: Unit, mouth: Vector2i, floor_row: int = -1) -> Vector2i:
 	var seen := {mouth: true}
 	var queue: Array[Vector2i] = [mouth]
 	while not queue.is_empty():
 		var cur: Vector2i = queue.pop_front()
-		if can_stand(sq, cur) and not machine_adjacent(cur):
+		if can_stand(sq, cur) and not machine_adjacent(cur) and Hex.axial_to_offset(cur).y >= floor_row:
 			return cur
 		for n in Hex.neighbors(cur):
-			if map.has(n) and not seen.has(n):
+			if map.has(n) and not seen.has(n) and Hex.axial_to_offset(n).y >= floor_row:
 				seen[n] = true
 				queue.append(n)
 	return nearest_standable(sq, mouth)

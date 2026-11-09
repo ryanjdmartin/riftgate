@@ -1031,18 +1031,28 @@ a stat.
   are the same in both. A pack, a machine or a tear past the screen's edge has a tag at that edge.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
-  battle, each with its own water, walls, decorative ground and relief: River Crossing (a
-  river across, two or three hexes thick, with one or two fords three or four hexes wide in
-  all, a crag on a bank at most), Fjord (water down the field, two or three wide, a
-  lane two wide at least either side), Badlands (mesas in groups and two or three ponds, the
-  paths winding between), Open Steppe (a lone crag and a pond at most), Ruined City (one or
-  two bands of towers across, each with streets through it three or four hexes wide in all,
-  one to four of them), Gorge (one or two cliff walls down the field, lanes two wide at
-  least). A ford or a street is one to three hexes wide, with a hex of river or towers
-  between two. A battle that names no shape draws one by its seed, never by its domain. Every
-  map guarantees the
-  horde a crossing three hexes wide or more through its walls; the rift's mouth (rows 0 to 3)
-  and the two rows before the gate hold no water and no wall. Height is landscape and a look
+  battle, each with its own water, walls, decorative ground and relief, laid to fill the open
+  rows at any size the ramp deals, "across" meaning along the wall and "down the field" from
+  the rift toward the wall whichever way the view turns: River Crossing (a river across, two
+  hexes thick and three where the field is deep, between a bank row at the mouth's edge and one
+  before the team's ground, with one or two fords three or four hexes wide in all, a crag on a
+  bank at most, and gravel bars along its banks), Fjord (water down the field, two or three
+  wide, one fjord for every ten hexes of wall, each in its own stretch of it with a lane two
+  wide at least at the field's edges and four between two, shingle on its shores), Badlands
+  (mesas in groups and two or three ponds, the paths winding between, scrub at the mesas'
+  feet), Open Steppe (a lone crag and a pond at most for every ten hexes of wall), Ruined
+  City (bands of towers across, two where the open rows are nine or more and one otherwise,
+  standing mid the open rows with a row of rubble before and after it, each with streets
+  through it three or four hexes wide in all, one to four of them), Gorge (cliff walls down
+  the field, one for every six hexes of wall and four at most, lanes two wide at least between
+  and beside them, scree at their feet). A ford or a street is one to three hexes wide, with a
+  hex of river or towers between two; the fords' and the streets' totals are the team's
+  numbers and do not scale with the wall. A battle that names no shape draws one by its
+  seed, never by its domain. Every map guarantees the
+  horde a crossing three hexes wide or more through its walls; the rift's mouth (one row for
+  every five of depth, rounded up, two at least and four at most: rows 0 to 2 at twelve deep,
+  0 to 3 at twenty) and the two rows before the gate hold no water and no wall; the rows
+  between are the shape's. Height is landscape and a look
   alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
   steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
   edges rises to three.
@@ -1060,7 +1070,8 @@ a stat.
   sealed (below); and on the field, the siege under way, the compositions the tier and the ramp
   put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
   across the width, each a move of its own from the row before the wall, and its count of
-  patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth, each the
+  patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth (a pack
+  whose opening hex the shape took goes along its row, never back into the mouth), each the
   tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
   as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
   turn short of its peak. No battle opens on a forced fight:
@@ -1201,7 +1212,7 @@ a stat.
   walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
   escalate in place.
 - **The seam** is the flattening's edge: the row the rift's bleed reaches, the first row past
-  the rift's mouth at the start (5), total on the rift's row and gone past the seam. It is the
+  the rift's mouth at the start (row 4 at twelve deep, 5 at twenty), total on the rift's row and gone past the seam. It is the
   clock's picture: no rule reads the flattened hexes.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
