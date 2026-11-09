@@ -31,10 +31,12 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
 
 ## 2. Ryan's calls, 9 November, in his words
 
-- **Component destruction off**: "I'm fine disabling component destruction entirely to test these
-  points. It was placed to offer a balancing lever between tanks and dps, an issue that clearly
-  no longer exists." The in-fight break of the entry showing stays, a tactical cost and no loss
-  (Claude's reading of "destruction"; his to correct).
+- **Component destruction off, completely**: "I'm fine disabling component destruction entirely to
+  test these points. It was placed to offer a balancing lever between tanks and dps, an issue that
+  clearly no longer exists"; asked whether the injury's in-fight break stays: "Lets turn destruction
+  off completely, for now, and see where that gets us." So the injury rule is switched off whole
+  for the test, the break of the entry showing with the loss after the battle, its code kept behind
+  the switch until the reads say.
 - **Two rerolls stay**: "Third reroll could be ok, but it's still not stable, and encourages the
   chase more, which is why I wanted to try at 2. I did notice in my play that I was more likely
   to take an ok roll when I had 2, than when I had 3, so I think that is doing its job … With 2,
@@ -81,9 +83,9 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
    Barrier against one big one, Ward against the riders; the lure stays the tank's control. The
    basic kit gains a Barrier basic and an Armoured basic at tier zero in the Canopy's and the
    Halo's places, so a stock die carries an answer to the telegraph.
-5. **Component destruction off.** A destroyed hardpoint component is rebuilt after a battle as a
-   fixed one is; the injury's in-fight break of the entry showing stays. The injury row's
-   purpose (asymmetric balancing between tank and glass cannon) is served by the model instead.
+5. **Component destruction off, completely.** No injury: a blow below the threshold breaks nothing
+   and nothing is destroyed, a switch for now, the code kept. The injury row's purpose (asymmetric
+   balancing between tank and glass cannon) is served by the model instead.
 6. **Two rerolls.** Unchanged.
 7. **Hull stays permanent across a battle.** The budget is spent on hunters, elites and bosses:
    a pusher's or a flanker's fight costs time and heat and little hull when played well, a
@@ -121,7 +123,8 @@ Three what-if switches in the balance runner (`tools/balance.gd`), none of them 
   reset.
 - `--novents` with `--cooling N`: vent faces skipped, every chassis cooling N a round, so heat as
   a pace is read at coolings of 0, 1 and 2 with the prices as they stand.
-- `--nodestroy`: the injury breaks the entry for the fight and destroys nothing.
+- `--noinjury`: the injury rule off whole, no break and no destruction (the game's own switch for
+  the test, so the harness and the phone build play without it too).
 
 Then, on the proposal's grids in a scratch worktree, at thirty seeds: the curve read with hull
 lost a fight, stalls and rounds beside the bands, for each switch and for the three together; the
@@ -148,7 +151,7 @@ decides feel.
   Cassowary's Spin-Up and the Kite's cooling as identities that stay.
 - Every chassis's `shield_regen` and `cooling`, by role and maker; every component's heat price
   (the heat session's list); the bosses' and massives' HP by band, the fodder's blows; the
-  pushers re-cut; the injury rule's destruction off; the basics' Barrier and Armoured pieces.
+  pushers re-cut; the injury rule off whole; the basics' Barrier and Armoured pieces.
 - The records: the bible's kit row, shield row, triangle row, injury row, redirection row and the
   commander layer's Open row; `docs/rules.md` as each lands; the vocabulary's Shield, Vent and
   Equipment entries; CLAUDE.md's kit words; the hangar page republished.
@@ -164,7 +167,8 @@ decides feel.
 4. The Puffin's and the Swallowtail's identities under the model.
 5. The pushers' hull target at their rating: a twentieth a fight, so ten fights spend half a
    squad, or another number.
-6. The injury's in-fight break: kept, as read here, or off with the destruction.
+6. ~~The injury's in-fight break: kept, as read here, or off with the destruction.~~ Settled 9
+   November: off completely, for now.
 7. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 8. The formation proposal's questions still open (its section 9: the opening's line, the ratings'
    reading, the question under `design`, the ramp bands, the prunings, the bosses' form, the metal

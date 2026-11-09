@@ -150,8 +150,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   eight so a kill buys little safety); Ryan: "The balance between WANTING a tank and NEEDING a
   tank is pushed all the way to NEED"; "I think we're so worried about preventing stall that
   we're actually taking away tools that reward aggression." His calls: component destruction off
-  entirely to test ("placed to offer a balancing lever between tanks and dps, an issue that
-  clearly no longer exists"; the in-fight break stays); two rerolls stay (three "effective, but
+  completely to test ("placed to offer a balancing lever between tanks and dps, an issue that
+  clearly no longer exists"; the injury's in-fight break off with it, "for now"); two rerolls stay (three "effective, but
   boring", two "less boring, but more unfair", doing its job); the resource model his second
   shape, "innate shield and shield regen, but no shield faces, only other defensive tools like
   armoured, barrier and ward", and heat the same way, no vent faces, cooling passive, the hold the
