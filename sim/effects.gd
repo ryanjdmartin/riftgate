@@ -1764,6 +1764,32 @@ static func is_ability(status_id: String) -> bool:
 	return (STATUS.get(status_id, {}).get("tags", []) as Array).has("ability")
 
 
+## What a status is to its unit, the one table its label reads (Ryan, 9 November: "Buffs and
+## debuffs, or positive and negative status, whatever the terminology, need to be clearly labeled
+## as such, so that it's clear what gets purged"): "buff" (a Purge takes N stacks of it: purgeable),
+## "debuff" (laid by the other side to hinder it: a mark the team lays on a foe, a foe's rider on a
+## machine, each component's Disabled and Corrupted), "ability" (the unit's own mechanic, which
+## nothing strips), "store" (a capped resource, and a count a rule reads), or "" for one that is
+## none of them: a marker no chip shows, and the Whip Scorpion's Siphoning, its own doing that no
+## Purge and no Cleanse touches. The chip and the readout line wear the label; the keywords list
+## files the term under it.
+static func status_kind(status_id: String) -> String:
+	if status_id.begins_with("disabled") or status_id.begins_with("corrupted"):
+		return "debuff"
+	if not STATUS.has(status_id):
+		return ""
+	var tags: Array = STATUS[status_id].get("tags", [])
+	if tags.has("ability"):
+		return "ability"
+	if tags.has("buff"):
+		return "buff"
+	if tags.has("store") or tags.has("count"):
+		return "store"
+	if tags.has("marker") or tags.has("fuel"):
+		return ""
+	return "debuff"
+
+
 ## A Purge N, on either side (28 October; Ryan, 2 November: "lower everything by N"; 8 November:
 ## "A stack is a stack, doesn't matter where it came from"): every buff the unit carries loses N
 ## stacks across its grants, in the order they were granted, gone at none, an unstackable one a

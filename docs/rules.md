@@ -108,8 +108,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
    (Rapid's reroll, a roll again, the Scorpion's blast); a stepping die's step draws nothing,
-   so it is taken back like a spend. The trail shows a bar at every roll, and UNDO's badge
-   says how many spends it reaches. END TURN pulses once no
+   so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
+   full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
+   last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
+   off by its edge, a heavy solid one or a faint dashed one. END TURN pulses once no
    die has anywhere to be spent, rerolls aside.
 4. END TURN: a machine's Burning adds its heat and loses a stack, and its Scorched goes;
    then heat over a machine's maximum burns hull one for one and the gauge settles at the
@@ -315,8 +317,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
   and its extra strike each say so. No source is listed. A tap on it again closes it, and it
   is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
-  lands once the double-tap window (0.2 s) has passed with no second tap, the die lit from the
-  touch until it does, so a double-tap only locks and leaves the readouts as they stand; a tap
+  lands once the double-tap window (0.15 s, from the tap's release to a second touch) has passed
+  with no second touch, the die lit from the touch until it does, so a double-tap only locks and
+  leaves the readouts as they stand; a tap
   that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die is in
   the codex (double-tap the machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
   a foe's move carries (Every Machine, Countdown, Last Act and the rest), with its codex line. Wherever shown text names one of those terms (the holds, the readouts, the codex, the
@@ -342,8 +345,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
   has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
   armour and cooling (a foe's armour and attack) as the codex's stats, the base with the change
-  beside it ("Armour 2 (+1▲)"); every chip on it by its name and count, what it does a tap on its
-  term away, and the round's warnings (an overheat, a wreck, an injury's risk); then a foe's intent
+  beside it ("Armour 2 (+1▲)"); every chip on it by its name and count, a buff's and a debuff's
+  headed by the word ("Buff, Empowered +2", "Debuff, Burning ×2") as an Ability's is, what it does
+  a tap on its term away, and the round's warnings (an overheat, a wreck, an injury's risk); then a foe's intent
   under its chip as the field draws it, a line a mark: its move's name,
   its blow as it will land read against its own, the machine it is aimed at by name, when it
   lands, its riders and its text. The colours are the unit's, so a foe hitting harder is green
@@ -560,6 +564,13 @@ lasts. A machine's: the Armadillo's seal (its form), the Ore Plate (what the hop
 are worth) and the Kite's Hot Streak. What an ability or a passive grants beyond itself is a
 buff like any (the Nob's gathered Enraged, a module's Empowered or Armoured): a stack is a
 stack, whatever granted it.
+
+Every status on a unit says what it is, wherever it shows: a **buff**, which a Purge reaches,
+wears a wedge pointing up off its chip's top at the left, and its hold line begins "Buff"; a
+**debuff**, laid by the other side, wears a wedge pointing down off its chip's bottom at the
+right, and its line begins "Debuff"; an Ability its solid tile and "Ability". A term's tip heads a
+status by what it is, and the keywords list files the statuses under BUFFS, DEBUFFS and
+ABILITIES.
 
 On a machine:
 - **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
@@ -1028,21 +1039,43 @@ a stat.
   too. The map is a view the player turns (MAP VIEW in the settings): the wall at the left with
   the rift at the right, flat-top hexes, scrolled down the wall (the default); or the wall at the
   bottom with the rift at the top, pointy-top, scrolled along the wall. The field and every rule
-  are the same in both. A pack, a machine or a tear past the screen's edge has a tag at that edge.
+  are the same in both. With the wall at the bottom the wall and the gate stand on the last row
+  and their height covers the row before it; with the wall at the left they stand on that row,
+  against the apron, the last row behind them the city's, and the rift's vortex stands on the
+  lowest of its three hexes. A pack, a machine or a tear past the screen's edge has a tag at that
+  edge. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
+  Rift Pressure toward the next spawn (a box a turn of the beat) and the Rupture meter toward its
+  Fractures (a notch a Fracture, those earned lit); the gate and the rift carry no bar on the map
+  and are no selection. A gauge that changes flashes. The boss's picture stands far larger than
+  a pack's.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
-  battle, each with its own water, walls, decorative ground and relief: River Crossing (a
-  river across, two or three hexes thick, with one or two fords three or four hexes wide in
-  all, a crag on a bank at most), Fjord (water down the field, two or three wide, a
-  lane two wide at least either side), Badlands (mesas in groups and two or three ponds, the
-  paths winding between), Open Steppe (a lone crag and a pond at most), Ruined City (one or
-  two bands of towers across, each with streets through it three or four hexes wide in all,
-  one to four of them), Gorge (one or two cliff walls down the field, lanes two wide at
-  least). A ford or a street is one to three hexes wide, with a hex of river or towers
-  between two. A battle that names no shape draws one by its seed, never by its domain. Every
-  map guarantees the
-  horde a crossing three hexes wide or more through its walls; the rift's mouth (rows 0 to 3)
-  and the two rows before the gate hold no water and no wall. Height is landscape and a look
+  battle, each with its own water, walls, decorative ground and relief, laid to fill the open
+  rows at any size the ramp deals, none of them a band and none an orientation. Two water
+  shapes: River Crossing (a river along the wall, two hexes thick and three where the field is
+  deep, between a bank row at the mouth's edge and one before the team's ground, with one or
+  two fords three or four hexes wide in all, a crag on a bank at most, gravel bars along its
+  banks) and Fjord (water from the rift toward the wall, two or three wide, one fjord for every
+  ten hexes of wall, each in its own stretch of it with a lane two wide at least at the field's
+  edges and four between two, shingle on its shores). Three wall shapes, a spectrum by the mass
+  and the structure of what blocks you: Gorge (cliff mass over the open rows cut by winding,
+  branching channels, a trunk for every seven hexes of wall from the mouth's edge to the team's
+  ground, one or two hexes wide, two or three branches off each, a stretch or two flooded, scree
+  at the cliffs' feet, the gorge's own sides past both edges), Ruined City (large blocks of
+  towers in a grid of streets: avenues one wide from the wall toward the rift four to five
+  columns apart, the gate's always one and two wide, side streets along the wall mid the blocks
+  whose segments are there or not, an avenue segment fallen in now and then, a plaza or two with
+  a fountain in some, a street segment or two flooded, rubble everywhere else, towers thick in
+  the scenery) and Badlands (an open field of small mesas, one to three hexes, a hex of ground
+  between any two so no straight path crosses, two or three ponds of two to four hexes, scrub at
+  the mesas' feet). And Open Steppe, the baseline (a lone crag and a pond at most for every ten
+  hexes of wall). A ford is one to three hexes wide, with a hex of river between two; the fords'
+  total is the team's number and does not scale with the wall. A battle that names no shape
+  draws one by its seed, never by its domain. Every map guarantees the
+  horde a crossing three hexes wide or more through its walls; the rift's mouth (one row for
+  every five of depth, rounded up, two at least and four at most: rows 0 to 2 at twelve deep,
+  0 to 3 at twenty) and the two rows before the gate hold no water and no wall; the rows
+  between are the shape's. Height is landscape and a look
   alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
   steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
   edges rises to three.
@@ -1060,7 +1093,8 @@ a stat.
   sealed (below); and on the field, the siege under way, the compositions the tier and the ramp
   put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
   across the width, each a move of its own from the row before the wall, and its count of
-  patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth, each the
+  patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth (a pack
+  whose opening hex the shape took goes along its row, never back into the mouth), each the
   tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
   as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
   turn short of its peak. No battle opens on a forced fight:
@@ -1071,9 +1105,13 @@ a stat.
   intended for; and every hunter coming for a machine wears its ring round where its coming walk
   ends, where its catch is judged (round where it stands while a catch it made waits), a dashed
   violet edge, tinted under a solid one while the hunter is tapped or its catch waits; no other
-  pack's ring is drawn. Each machine has one action (the Dingo two): one move,
-  in one go, then it may fight; a fight ends the action however it ends, and a pip under the
-  machine stays lit until it does. A selected machine lights the hexes its move reaches and
+  pack's ring is drawn. Every walk's end hex is lit, tinted under a solid edge. A tapped pack
+  shows its whole way as the field stands, past this turn's walk to its goal (a pusher's wall
+  segment, a hunter's place beside what it comes for), dashed, each later turn's stop numbered,
+  the goal marked and a hunter's pounce dotted on to its prey; a selected machine shows the whole
+  way of every hunter coming for it. Each machine has one action (the Dingo two): one move,
+  in one go, then it may fight; a fight ends the action however it ends, and the board under the
+  map says what each can still do. A selected machine lights the hexes its move reaches and
   brackets the packs it could be ordered onto. A move is planned: its route shows from where the
   machine stands, and the next move or order reads from the route's end. The one button reads
   ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
@@ -1089,12 +1127,13 @@ a stat.
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
   stands, the button pulses, whichever it reads.
-- **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
+- **The readout**: holding or tapping a machine, a pack, the boss or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's hull as a gauge (its
   shield is the fight's), its move and actions left, a chip for its damaged components; a pack's
   threat rating first ("A fight for three"), then its members (each foe type and its count),
-  move, a hunter's ring, and what it is doing, and SEALED on the boss while its seal
-  holds; the gate's integrity as its gauge; the ground by
+  move, a hunter's ring, what it is doing, and when its whole way gets there as the field stands
+  (at the wall, or catching what it comes for, this turn or in so many), and SEALED on the boss
+  while its seal holds; the ground by
   its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
   packs enter it. A refused order
   says what stopped it there too.
@@ -1129,10 +1168,13 @@ a stat.
   against the packs; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the wall at a segment of their own: as a pusher is dealt it draws a wall
-  column, the rift's and a draw either side within the ramp's spread (2 at Convergence 0, half
-  the wall's length at 12), from the turn and the pack, and walks to the land hex of the row
-  before the wall nearest that column, a tie toward the gate's column; a pack with no segment
-  (a hunter left without prey) walks to the nearest. A pusher ending its walk beside any hex
+  column about the wall nearest it, from the turn and the pack: a pack the rift sends about the
+  rift's column within the ramp's spread (2 at Convergence 0, half the wall's length at 12), any
+  other (a flank patrol, a formation the opening places, a tear's patrol) about its own column
+  within 2; of those columns the least crowded wins (another pusher's segment counting 2, one
+  beside it 1), then the nearest the draw. It walks to the land hex of the row before the wall
+  nearest that column, a tie toward the gate's column; a pack with no segment (a hunter left
+  without prey) walks to the nearest. A pusher ending its walk beside any hex
   of the gate or the wall strikes the gate's bar for its strength times 10 divided by 3, at least 1 (the floor of
   ten is gone, so a stray pair chips less than a trio), every enemy turn. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
@@ -1201,7 +1243,7 @@ a stat.
   walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
   escalate in place.
 - **The seam** is the flattening's edge: the row the rift's bleed reaches, the first row past
-  the rift's mouth at the start (5), total on the rift's row and gone past the seam. It is the
+  the rift's mouth at the start (row 4 at twelve deep, 5 at twenty), total on the rift's row and gone past the seam. It is the
   clock's picture: no rule reads the flattened hexes.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
@@ -1226,7 +1268,8 @@ a stat.
   placed, the boss aside) and the first compositions the rift will send, as many as the tier's
   Fractures, in the cycle's order: the last at two thirds of it, the steps 1, 1.5, 2, 2.5 and 3, so
   later Fractures cost more and a battle that kills the field as it stood earns the Rupture
-  with a third of the field left to leave. A Fracture pays out as a fight ends. At the Fractures
+  with a third of the field left to leave. A Fracture pays out as a fight ends, announced over
+  the map (FRACTURE with its count and what it brings, the last THE RUPTURE). At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
   rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
@@ -1243,7 +1286,7 @@ a stat.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.
-- Not built: city defences (along the wall when they come), the Fracture's prize, rift tiles.
+- Not built: city defences (wall segment upgrades, when they come), the Fracture's prize, rift tiles.
 
 ## The campaign
 
