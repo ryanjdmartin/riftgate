@@ -315,9 +315,11 @@ balance runner's valuation only).
     `last_act_cost`, `blast_score`, the Paradox feed and the Cryo cash call them; the rolled
     outcome lists become one number.
 13. **The screen asks the engine.** Deaths and returns from `returned` (Bug 11) and `form_mark`
-    from the engine's `form_change` (Question 7), both done 8 November; left: a Sweep's rank from
-    `sweep_rank_of` (worked out by hand three times), the intent's value once (three times now),
-    the mine text from `_shot_text`.
+    from the engine's `form_change` (Question 7), both done 8 November; the mine text went with
+    the slot mines (`Skirmish.mine_text`). *Done 9 November:* a Sweep's rank from
+    `sweep_rank_of` at each of the screen's four reads, and the intent's number from
+    `Skirmish.intent_value` through one read for the field's chip and the readout's
+    (`_intent_read`).
 
 ## Unused (checked by grep across `sim/`, `game/`, `tools/` and `tests/`)
 
