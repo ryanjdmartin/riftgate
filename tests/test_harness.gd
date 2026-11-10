@@ -442,10 +442,16 @@ func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> 
 	var was = Settings.display.get("refit_trial", "off")
 	Settings.display["refit_trial"] = "off"
 	assert_eq(HARNESS.refit_spec(), "", "off by default: the game plays the content as written")
+	var regen_was = Settings.display.get("refit_regen", "2")
 	for trial in Settings.REFIT_TRIALS:
 		Settings.display["refit_trial"] = trial
-		var want: String = "" if trial == "off" or not OS.is_debug_build() else trial
-		assert_eq(HARNESS.refit_spec(), want, "a debug build's setting names the trial: %s" % trial)
+		for regen in Settings.REFIT_REGENS:
+			Settings.display["refit_regen"] = regen
+			var want: String = "" if trial == "off" or not OS.is_debug_build() else "%s,regen=%s" % [trial, regen]
+			assert_eq(HARNESS.refit_spec(), want, "a debug build's settings name the trial and its regen: %s, %s" % [trial, regen])
+			if not want.is_empty():
+				assert_eq(str(Refit.parse(want)["regen"]), regen, "the regen named after the deal is the one that holds")
+		Settings.display["refit_regen"] = "2"
 		assert_true(Settings.REFIT_LABELS.has(trial), "%s has its button's label" % trial)
 		if trial == "off":
 			continue
@@ -453,7 +459,14 @@ func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> 
 		assert_true(bool(spec["die"]) and str(spec["regen"]) == "half" and bool(spec["heat1"]), "%s is the model as leaned" % trial)
 	Settings.display["refit_trial"] = "anything else"
 	assert_eq(HARNESS.refit_spec(), "", "a value that is no trial asks for nothing")
+	Settings.display["refit_trial"] = Settings.REFIT_TRIALS[1]
+	Settings.display["refit_regen"] = "plenty"
+	assert_eq(HARNESS.refit_spec(), str(Settings.REFIT_TRIALS[1]) if OS.is_debug_build() else "", "a regen that is no option leaves the deal's own")
+	Settings.display["refit_regen"] = regen_was
 	Settings.display["refit_trial"] = was
+	assert_true(Settings.REFIT_REGENS.has(str(Settings.DISPLAY_DEFAULTS.get("refit_regen", ""))), "the regen ships on one of its options")
+	for regen in Settings.REFIT_REGENS:
+		assert_true(Settings.REFIT_REGEN_LABELS.has(regen), "regen %s has its button's label" % regen)
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("refit_trial", "")), "off", "and the setting ships off")
 	var deals := {}
 	for trial in Settings.REFIT_TRIALS:
@@ -470,4 +483,6 @@ func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> 
 				labels.append(str((b as HudButton).text))
 		for trial in Settings.REFIT_TRIALS:
 			assert_true(labels.has(str(Settings.REFIT_LABELS[trial])), "a debug build's settings page offers %s" % Settings.REFIT_LABELS[trial])
+		for regen in Settings.REFIT_REGENS:
+			assert_true(labels.has(str(Settings.REFIT_REGEN_LABELS[regen])), "and the regen %s" % Settings.REFIT_REGEN_LABELS[regen])
 		menu.free()

@@ -83,6 +83,10 @@ const CLEANSABLE := "cleansable"
 ## "renew" keeps one grant, its end the later and its count the larger, so on an untimed
 ## one-stack status (Shocked, Guarded) a second grant changes nothing (Ryan, 17 October:
 ## never stacking and renewing are one state, parted only by a timer).
+## A status may be "single": one stack whoever grants it and however deep the grant, so no
+## passive that deepens a stack counts it past one (the Barrier, Ryan, 10 November: "Barrier
+## probably shouldn't be stackable. The stingray stacks it due to its passive": its Exothermic
+## Suite had it read x2 at five heat, though it only ever took one blow).
 const STATUS := {
 	# A damage point a stack since 18 October (Ryan, in the spirit of flattening the numbers;
 	# 5 before), the stacks the Burn keyword's own number.
@@ -329,7 +333,7 @@ const STATUS := {
 	# (28 October), from its own specials, they last until the end of the player's next turn in
 	# its own words (foe_barrier, foe_ward): its Barrier pops on a weapon's blow alone, and its
 	# Ward turns the team's marks (TEAM_MARKS, turns_mark), Suppressed excepted.
-	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew",
+	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": []},
 	# A foe's regrowth over time (28 October; the Marsh's by lean): at each of its actions it
 	# regrows its value in HP, after its Burning and Vitriol have ticked, so a burn is a race and
@@ -584,6 +588,11 @@ static func status_stacking(def: Dictionary) -> String:
 	return str(def.get("stacking", "add"))
 
 
+## Whether a status is one stack whoever grants it (its "single": the STATUS note above).
+static func is_single(status_id: String) -> bool:
+	return bool(STATUS.get(status_id, {}).get("single", false))
+
+
 ## The grant a second one of `passive` renews, or null when the status adds (and the caller
 ## grants as usual). A renewal takes the later end of two timed grants and the larger count,
 ## never a second stack.
@@ -619,6 +628,8 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 		scope = BATTLE
 		decay = DECAY_NONE
 		expires_round = -1
+	if bool(passive.get("single", false)):
+		n = mini(n, 1)   # one stack whoever grants it (the STATUS note above)
 	var held := _held(u, passive, scope, n, expires_round)
 	if held != null:
 		return held
@@ -1392,8 +1403,8 @@ static func paradox(u) -> Array[int]:
 ## which is exempt from every interaction but suppress and its own decay (Ryan, 2 October:
 ## a touchable stun resist is where other games' combat loops broke).
 static func extra_stacks(u, status_id: String, heat: int) -> int:
-	if status_id == "numbed":
-		return 0
+	if status_id == "numbed" or is_single(status_id):
+		return 0   # Numbed is exempt from every interaction; a single status has no second stack to gain
 	var n := 0
 	for pair in _taking_part(u, "on_stack", null):
 		var eff: Dictionary = pair[0]

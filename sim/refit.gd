@@ -19,6 +19,9 @@ extends RefCounted
 ##   regen=N    or a flat N on every chassis, 0 to 9
 ##   cooling=N  every chassis cools N more a round (a read of the offset; may be negative)
 ##   heat1      every tier-zero weapon makes 1 heat at least (the basics at heat one)
+##   hotter=N   every weapon makes N more heat, fixed pieces too (a read of how much hotter the
+##              guns must run before heat is a pace; Ryan's first read of the trial, 10 November:
+##              "Heat generation is too low")
 ##   barrier=off        with die: no Barrier basic, the Armoured one alone and guns in the other slots
 ##   barrier=cooldown   with die: the Barrier basic goes dark for the next round once spent
 ##   barrier=heatN      with die: the Barrier basic makes N heat
@@ -40,7 +43,7 @@ const DEAD_TRIGGERS := ["on_shield_granted"]
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"die": false, "regen": "", "cooling": 0, "heat1": false, "barrier": "", "vents": ""}
+	var spec := {"die": false, "regen": "", "cooling": 0, "heat1": false, "hotter": 0, "barrier": "", "vents": ""}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p == "all":
@@ -55,12 +58,14 @@ static func parse(text: String) -> Dictionary:
 			spec["regen"] = p.trim_prefix("regen=")
 		elif p.begins_with("cooling="):
 			spec["cooling"] = int(p.trim_prefix("cooling="))
+		elif p.begins_with("hotter="):
+			spec["hotter"] = int(p.trim_prefix("hotter="))
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif p.begins_with("vents="):
 			spec["vents"] = p.trim_prefix("vents=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (die, regen=half|N, cooling=N, heat1, barrier=off|cooldown|heatN|ward, vents=guns, all)" % p)
+			push_error("--refit: no part '%s' (die, regen=half|N, cooling=N, heat1, hotter=N, barrier=off|cooldown|heatN|ward, vents=guns, all)" % p)
 	return spec
 
 
@@ -94,6 +99,16 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 				warmed.append(str(db.components[cid].get("name", cid)))
 		if not warmed.is_empty():
 			notes.append("the basics at heat one: %s" % ", ".join(warmed))
+	var hotter := int(spec.get("hotter", 0))
+	if hotter != 0:
+		# After the basics' one, so a basic under "all,hotter=2" makes three.
+		var n := 0
+		for cid in db.components.keys():
+			var face = db.components[cid].get("face", null)
+			if face is Dictionary and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
+				face["heat"] = maxi(0, int(face.get("heat", 0)) + hotter)
+				n += 1
+		notes.append("every weapon makes %+d heat (%d weapons)" % [hotter, n])
 	return notes
 
 

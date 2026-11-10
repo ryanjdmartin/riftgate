@@ -74,6 +74,15 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
   section 7's breach question is parked and nothing asks it of him until the model's numbers
   stand; and a team Ward or a team Barrier "probably ok", the Swallowtail a possible home, not
   decided (its brief has his words).
+- **His first read of the trial, 10 November** (the MODEL deal at half the gauge, on the phone):
+  "the half recovery I have a nigh unkillable team, even just stingray + prairie dog against 4
+  goblins/2 mandragora. The same two handily beat the goblin shaman pack without ever using a
+  defensive tool. Just the MODEL seemed like enough mitigation, but the shield really made that
+  hard to judge. The only damage my team took was against floraison and that was only because I
+  stopped bothering." "Heat generation is too low, but I think we knew that." "Barrier probably
+  shouldn't be stackable. The stingray stacks it due to its passive." So half the gauge is far
+  too much, the deal cannot be judged under it, the heat prices are as low as the reads said,
+  and the Barrier is one stack whoever grants it (built).
 - **The refit's direction, before the model was reached**: "Enemy HP is probably too high, or
   player damage is too low. I'd rather lower enemy HP slightly, and boost synergy pieces to
   increase damage instead of just raw numbers. However, I want to judge the new formations
@@ -253,8 +262,12 @@ option):
   rung, which takes every block worth making.
 - **The trial in the game**: `RIFTGATE_REFIT=<spec>` on the desk, and on the phone a debug
   build's SETTINGS → REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the model with its Barrier
-  basic where a Halo stood, on every die, on every die and resting a round, or on none), read at
-  the next launch and judged on a new battle or run.
+  basic where a Halo stood, on every die, on every die and resting a round, or on none) and
+  REFIT REGEN beside it (0, 1, 2, 3, HALF: what every shield regains a round, two the
+  placeholder since his first read), read at the next launch and judged on a new battle or run.
+- `hotter=N` on the what-if: every weapon makes N more heat, a read for the heat prices.
+- The Barrier is one stack whoever grants it (a status may be single: `Effects.is_single`), so
+  the Stingray's Exothermic Suite no longer counts it to two; it only ever took one blow.
 - The curve read's cells carry greedy's rounds and its stalled fights beside the band and the
   hull lost.
 
@@ -496,7 +509,9 @@ word:
    Wards too (his row of 17 October: the old whole block on one piece), a heat price (the read:
    it does not shorten the fight). Claude's lean: the audit's deal, the Barrier a maker's tool
    with no standing rule on it (the light trio reads as well on it as with one on every die),
-   read again against the bosses' telegraphs; his play decides.
+   read again against the bosses' telegraphs; his play decides. His first read, 10 November:
+   "Just the MODEL seemed like enough mitigation, but the shield really made that hard to
+   judge", so it waits on a play at a regen that lets the dice show.
 2. **What prices a round.** A block trades rounds for hull and a round costs nothing, so the
    best line is still to block. The model's ninth point (every formation carries a rising threat,
    a validator check) is what the reads say prices it; it is a rule over every pusher, his to
@@ -504,16 +519,24 @@ word:
    strike at the wall while a fight runs (the wall has no clock inside a fight today), heat that
    bites (item 5).
 3. **The regen's size.** Half the gauge lets a lone tank beat a plain-blow formation rated for
-   three, slowly; 2 a round leaves it a decision at four fifths of its hull. By role and by maker
-   once the basic is picked; Claude's lean: 2 or 3 a round for the heavies, more for Kestrel's
-   lights, read again with the content.
+   three, slowly; 2 a round leaves it a decision at four fifths of its hull. His first read (10
+   November) is that half is far too much: two lights "nigh unkillable" against a formation for
+   three. The probe of those fights agrees (the pair loses 33% of its hull with no regen, 21% at
+   one, 13% at two, 9% at three, 5% at half), so the trial plays at a flat two until he says,
+   and the lights' big gauges want the smaller regens, not the larger: a gauge is the buffer for
+   a bad round and the regen how fast it comes back. By role and by maker with the content.
 4. **Breach under the regen: parked** (Ryan, 10 November: "Let's ignore breach for now, it's
    useless to evaluate at this junction"). The read stands as a read (hull is spent where breach
    is: the Waste's whole line, the Marsh's knights, the Peak's bombs and elementals, none of the
    Meadow's) and nothing is asked of him or proposed on it until the model's numbers stand.
 5. **Heat as a pace.** Losing the vents changed nothing, and nothing makes the bot hold a die:
-   the prices are under the cooling. The heat session's list (the prices on every face, the
-   basics included) is where the hold comes from; the cautious persona's read comes first.
+   the prices are under the cooling. His first read agrees ("Heat generation is too low, but I
+   think we knew that"). The probe that followed says generation is no dial alone: with the
+   cooling left at one, every weapon two hotter makes the hold appear in a short fight and
+   stalls the long one, since a machine sustains one shot of N heat every N rounds once its
+   gauge is full. The sustained rate is the cooling over a shot's heat and the burst the gauge
+   over it, so the price pass moves the three together (the heat session's list: the prices on
+   every face, the basics included, with the cooling and the gauge).
 6. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
    front and his own try of 9 November ride on it).
 7. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units

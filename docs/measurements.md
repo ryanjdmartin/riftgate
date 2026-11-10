@@ -6368,3 +6368,65 @@ fewer battles are held after a wipe (12% to 7%, 7% to 5%), since what is left at
 one now strikes by its rating: a formation thirty where six to eight heads struck twenty to
 twenty-six, an elite forty where it struck for its head. The fights are the same (menace killed
 and battles won do not move). A patrol of three strikes ten on both rules.
+
+## 10 November, the regen's size and hotter weapons, after Ryan's first read of the trial
+
+Probes behind the trial's regen row and its default (`Settings.REFIT_REGENS`, two) and behind
+leaving a heat dial off the phone; nothing moved in content. His read of the trial at half the
+gauge, the MODEL deal: "the half recovery I have a nigh unkillable team, even just stingray +
+prairie dog against 4 goblins/2 mandragora. The same two handily beat the goblin shaman pack
+without ever using a defensive tool"; and "Heat generation is too low, but I think we knew that."
+Scratch probes over the engine, 20 seeds a cell, the greedy rung, the injury rule off, the
+audit's deal (`all,vents=guns`) with the regen named: each a direction.
+
+The two fights he played, by the same two machines (the Stingray regains 6 at half its gauge and
+the Prairie Dog 5):
+
+| Read | Goblin warband (a formation for three): rounds, hull lost | Shaman's warband (an elite): rounds, hull lost |
+|---|---|---|
+| Today's dice, no regen | 6.4, 31% (19 of 20 won) | 7.2, 9% |
+| The model's dice, no regen | 6.3, 33% | 6.0, 8% |
+| Regen 1 | 5.7, 21% | 5.7, 4% |
+| Regen 2 | 5.5, 13% | 5.5, 1% |
+| Regen 3 | 5.5, 9% | 5.5, 1% |
+| Half the gauge | 5.2, 5% | 5.5, 1% |
+
+Read. The bot agrees with him: at half the gauge two lights lose a twentieth of their hull to a
+formation rated for three, the brief's budget for a full squad at its rating, and nothing to the
+elite. The dice alone mitigate nothing in this fight (33% against today's 31%; the goblins' blows
+are small and many, and the bot spends no Barrier on them), so what he felt as the MODEL being
+enough was the regen. The first point of flat regen is worth twelve points of the pair's hull
+here, the second eight, the third four; two leaves the formation a fight (13%) and is the row's
+default, a placeholder. The elite costs two lights under a tenth of their hull on every read, its own
+item's business.
+
+Every weapon hotter (`hotter=N`, after the basics' one), at regen 2:
+
+| Team | Composition | Hotter | Won | Rounds | Hull lost | Peak heat | Overheats a fight | Hot dice held a fight |
+|---|---|---|---|---|---|---|---|---|
+| The Stingray, the Prairie Dog | `goblin_warband` | 0 | 100% | 5.5 | 13% | 73% | 0.10 | 0.00 |
+|  |  | 1 | 100% | 5.6 | 14% | 97% | 0.40 | 0.00 |
+|  |  | 2 | 100% | 6.2 | 18% | 113% | 0.80 | 0.55 |
+|  |  | 3 | 100% | 7.0 | 23% | 124% | 1.60 | 1.25 |
+|  | `treant_grove` | 0 | 100% | 27.2 | 37% | 118% | 1.20 | 0.70 |
+|  |  | 1 | 20% | 55.1 | 40% | 108% | 1.30 | 14.20 |
+|  |  | 2 | 5% | 57.8 | 41% | 115% | 1.75 | 25.20 |
+|  |  | 3 | 0% | 60.0 | 46% | 124% | 2.45 | 32.85 |
+| The Stingray, the Prairie Dog, the Skua | `goblin_warband` | 0 | 100% | 3.0 | 0% | 54% | 0.00 | 0.00 |
+|  |  | 1 | 100% | 3.0 | 0% | 72% | 0.00 | 0.00 |
+|  |  | 2 | 100% | 3.0 | 0% | 86% | 0.05 | 0.00 |
+|  |  | 3 | 100% | 3.0 | 0% | 93% | 0.05 | 0.00 |
+|  | `treant_grove` | 0 | 100% | 13.8 | 2% | 111% | 0.60 | 0.15 |
+|  |  | 1 | 100% | 28.2 | 2% | 122% | 0.60 | 11.00 |
+|  |  | 2 | 10% | 58.5 | 4% | 106% | 0.65 | 51.25 |
+|  |  | 3 | 0% | 60.0 | 3% | 108% | 0.65 | 66.30 |
+
+Read. Hotter weapons with the cooling left at one make the hold appear in a short fight (two
+hotter: a die held in one goblin fight in two, the gauge past its cap) and end the long one: a
+machine that cools one a round sustains one shot of N heat every N rounds once its gauge is
+full, so against the treant three lights go from fourteen rounds to twenty-eight at one hotter
+and past the bot's sixty at two, losing almost no hull. Generation alone is therefore no dial: the
+sustained rate is the cooling over a shot's heat and the burst is the gauge over it, and a price
+pass moves the three together (the heat session's list). No heat row went on the phone for it.
+The bot holds rather than overheat, where a player may fire hot and pass a round, so the stall
+is the rung's and the arithmetic is not.

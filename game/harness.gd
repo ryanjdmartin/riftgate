@@ -48,11 +48,12 @@ func _ready() -> void:
 
 ## The refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): laid over the
 ## content once, as the game starts and before anything is built from it, when RIFTGATE_REFIT
-## names a spec ("all", or its parts: die, regen=half|N, cooling=N, heat1,
+## names a spec ("all", or its parts: die, regen=half|N, cooling=N, heat1, hotter=N,
 ## barrier=off|cooldown|heatN|ward, vents=guns) or a debug build's SETTINGS has REFIT TRIAL on one
 ## of its four deals (the phone's way, read at the next launch: the model with its Barrier basic
-## where a Halo stood, on every die, on every die and resting, or on none; Settings.REFIT_TRIALS). A battle or a run saved before the switch keeps the dice it was saved
-## with, so judge it on a new one.
+## where a Halo stood, on every die, on every die and resting, or on none; Settings.REFIT_TRIALS),
+## with REFIT REGEN beside it, what every shield regains a round (Settings.REFIT_REGENS). A battle
+## or a run saved before the switch keeps the dice it was saved with, so judge it on a new one.
 static var _refit_trial_done := false
 ## The machines the trial leaves out, by chassis id: back in design under the model (Refit.sent_back),
 ## so no row on the team page and none deployed, the team as ticked kept for when the trial ends.
@@ -70,14 +71,18 @@ static func refit_trial() -> void:
 		print("refit trial: " + line)
 
 
-## The trial's spec, "" while it is off: the environment's, else the one a debug build's
-## setting names (Settings.REFIT_TRIALS).
+## The trial's spec, "" while it is off: the environment's as written, else the one a debug
+## build's settings name, the deal (Settings.REFIT_TRIALS) and the shield regen beside it
+## (Settings.REFIT_REGENS: a part named after "all" takes the place of all's own half).
 static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
 	if spec.is_empty() and OS.is_debug_build():
 		var asked := str(Settings.display.get("refit_trial", "off"))
 		if asked != "off" and Settings.REFIT_TRIALS.has(asked):
 			spec = asked
+			var regen := str(Settings.display.get("refit_regen", Settings.DISPLAY_DEFAULTS["refit_regen"]))
+			if Settings.REFIT_REGENS.has(regen):
+				spec += ",regen=" + regen
 	return spec
 
 

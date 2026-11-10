@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1081 tests, 304,222 checks, green on main (9 November, with the shapes relaid and recast,
   the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
-  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November), and 1093 tests, 305,059 checks, green on
+  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November), and 1093 tests, 305,251 checks, green on
   `ccr-722ca9f0-yj8na3` (10 November, main with the refit pass's first build and the wall strike by the rating); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -100,7 +100,7 @@ and changes"): the bible, the measurements, this file and the to-do the conflict
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
 sections main's four and then this branch's, the to-do's lines each by the side that moved it),
 and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
-The bible's file is v0.505 (the locked row, the tiers row and the basic kit row, 10 November), main's v0.497 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.506 (the refit's rows of 10 November with the locked row, the tiers row and the basic kit row), main's v0.497 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -233,7 +233,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (the brief's section 4, the bible's Foe roles row): a unit is made for a pusher's, a flanker's
   or a hunter's fight and tuned for it, a hunter its line and what keeps up with it, a flanker a
   duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
-  Meadow and the Waste want a flanker line. The bible at 0.502 carries it.
+  Meadow and the Waste want a flanker line. The bible at 0.503 carries it.
 - **The refit pass's first build and reads** (9 November, on his "Your leans are good"; the
   brief's section 5; nothing in `content/` moved): the injury rule is off in the game
   (`Skirmish.injuries`; `--injury on` reads it back; the tests that read an injury turn it on);
@@ -270,6 +270,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   or a team Barrier "probably ok" where the two cannot be cast back to back, the Swallowtail a
   possible home, undecided (the Barrier and Ward row, its brief). What the trial plays without
   is the brief's section 5 (the content, the re-deal, the numbers, the foes, the reworks).
+  His first read of the trial, 10 November (MODEL at half the gauge): "the half recovery I have
+  a nigh unkillable team, even just stingray + prairie dog against 4 goblins/2 mandragora ...
+  Just the MODEL seemed like enough mitigation, but the shield really made that hard to judge";
+  "Heat generation is too low, but I think we knew that"; "Barrier probably shouldn't be
+  stackable. The stingray stacks it due to its passive." Built on it: SETTINGS → REFIT REGEN
+  beside the trial (0, 1, 2, 3, HALF, two the placeholder: a probe of his two fights reads the
+  pair's hull lost at 33% with no regen, 13% at two, 5% at half); the Barrier one stack whoever
+  grants it (the Exothermic Suite had counted it to two, a label: it took one blow all the
+  same); and `hotter=N` for the runners, whose probe says generation is no dial alone (every
+  weapon two hotter with the cooling at one stalls the long fights), so no heat row went on
+  the phone and the heat prices are the price pass's, the cooling and the gauge with them.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -706,7 +717,7 @@ commands are in `README.md`.
   field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
   following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
   Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.502, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.503, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the kit, shield,
   triangle, redirection, injury, command-die, Puffin, Whip Scorpion, Polar Bear, Swallowtail and
   Musk Ox rows' refit lines, section 12's items), unpublished too. BASE for the

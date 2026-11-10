@@ -36,6 +36,7 @@ const DISPLAY_DEFAULTS := {
 	"shot_trails": false,   # a debug build's trial: a shot crossing the field from the muzzle to its target (ShotTrail), tabled as maybe too busy (Ryan, 3 November)
 	"map_view": "wall_left",   # MAP_VIEWS: the battle map's orientation (MapOrient), a view only
 	"refit_trial": "off",   # REFIT_TRIALS: a debug build's trial, the refit pass's model laid over the content as the game starts (Refit), read at the next launch (docs/briefs/refit_pass.md)
+	"refit_regen": "2",   # REFIT_REGENS: the trial's shield regen, what every chassis regains a round while a trial is on
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -68,6 +69,14 @@ const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"
 ## Barrier's place among them).
 const REFIT_TRIALS := ["off", "all,vents=guns", "all", "all,barrier=cooldown", "all,barrier=off"]
 const REFIT_LABELS := {"off": "OFF", "all,vents=guns": "MODEL", "all": "EVERY", "all,barrier=cooldown": "RESTS", "all,barrier=off": "NONE"}
+## The trial's shield regen, a flat number every chassis regains a round, or half its gauge, the
+## pass's first lean (Ryan's first read of the trial, 10 November: "the half recovery I have a nigh
+## unkillable team, even just stingray + prairie dog against 4 goblins/2 mandragora ... Just the
+## MODEL seemed like enough mitigation, but the shield really made that hard to judge"). Two is the
+## placeholder the probe of those fights points at (docs/measurements.md); nought plays the
+## model's dice alone. Read with the trial, at the next launch.
+const REFIT_REGENS := ["0", "1", "2", "3", "half"]
+const REFIT_REGEN_LABELS := {"0": "0", "1": "1", "2": "2", "3": "3", "half": "HALF"}
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

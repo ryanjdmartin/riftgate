@@ -2761,6 +2761,37 @@ func test_stacks_a_hot_machine_applies_run_deeper() -> void:
 	s3.assign(0, s3.front[0])
 	assert_eq(Effects.stacks_of(g3, "numbed"), 0, "Numbed is exempt: the stun lays none, the recovery counts its resist and nothing deepens it")
 	assert_eq(Effects.extra_stacks(z, "numbed", 100), 0, "asked directly, Numbed gains nothing")
+	# A Barrier is one stack whoever grants it (Ryan, 10 November: "Barrier probably shouldn't be
+	# stackable. The stingray stacks it due to its passive"): the hot machine's reads x1, takes
+	# one blow, and a Purge of one takes it whole; a foe's own Barrier the same.
+	assert_true(Effects.is_single("barrier") and not Effects.is_single("primed"), "the Barrier is single, a buff that stacks is not")
+	assert_eq(Effects.extra_stacks(z, "barrier", 100), 0, "asked directly, a Barrier gains nothing")
+	var s4 := Skirmish.new(4)
+	var door := _mech("Ray", Die.single(Face.buff("barrier", 1, 1)), 12, 100)
+	door.grant_passive(hot)
+	s4.add_mech(door)
+	var h1 := _ghoul(500, 6)
+	var h2 := _ghoul(500, 6)
+	s4.add_foes([h1, h2])
+	s4.begin()
+	s4.start_round()
+	s4.mechs[0].heat = 60
+	h1.target = s4.mechs[0]
+	h2.target = s4.mechs[0]
+	s4.assign(0, s4.mechs[0])
+	assert_eq(Effects.stacks_of(door, "barrier"), 1, "at 60 heat its Barrier is still one")
+	assert_false(s4.log[s4.log.size() - 1].contains("runs hot") or s4.log[s4.log.size() - 2].contains("runs hot"), "and the log claims no deeper one")
+	s4.end_round()
+	assert_eq([door.shield, door.hull], [6, 100], "it took one blow of the two: the other landed on the shield")
+	var twice := _mech("Twice", Die.single(Face.buff("barrier", 3, 1)), 12, 100)
+	Effects.grant_buff(twice, "barrier", 3, "test", 1)
+	Effects.grant_buff(twice, "barrier", 2, "test", 1)
+	assert_eq(Effects.stacks_of(twice, "barrier"), 1, "a grant of three, then of two: one")
+	Effects.purge(twice, 1)
+	assert_false(Effects.has(twice, "barrier"), "a Purge of one takes it whole")
+	var sheltered := _ghoul(50, 1)
+	Effects.stack(sheltered, Effects.foe_barrier(), Effects.SKIRMISH, "test", 2, Effects.DECAY_TURN_ALL)
+	assert_eq(Effects.stacks_of(sheltered, "barrier"), 1, "a foe's Barrier is one too")
 	assert_eq(Effects.extra_stacks(z, "burning", 19), 0, "under one step, nothing")
 	assert_eq(Effects.extra_stacks(z, "burning", 100), 5, "five steps at 100")
 	assert_true(Effects.effect_text({"trigger": "on_stack", "effect": "add_stacks", "value": 1, "per_heat": 20}).begins_with("every stack this machine applies is 1 deeper for every 20 heat it carries"), "reads as a sentence")

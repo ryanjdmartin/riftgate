@@ -153,6 +153,8 @@ func _show_page(page: String) -> void:
 				_toggle("KEYWORD INK", "keyword_ink")   # a term in shown text bold in ink, its icon in its colour, against the word in its colour (Ryan judges which)
 				_choice_row("REFIT TRIAL", "refit_trial", Settings.REFIT_TRIALS, Settings.REFIT_LABELS)   # the refit pass's model as a trial (game/harness.gd, refit_trial): no shield or vent on a stock die, a shield regen, the basics at heat one, its Barrier basic dealt one of four ways; read at the next launch, judged on a new battle or run
 				_credit("Refit's Barrier: where a Halo stood, every die, resting, none. Next launch.")
+				_choice_row("REFIT REGEN", "refit_regen", Settings.REFIT_REGENS, Settings.REFIT_REGEN_LABELS)   # the trial's shield regen: a flat number every chassis regains a round, or half its gauge (the first lean, far too much by his first read)
+				_credit("Shield back each round while a refit trial is on. Next launch.")
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"colours":
