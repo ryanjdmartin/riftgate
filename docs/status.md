@@ -25,7 +25,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1081 tests, 304,222 checks, green (10 November on the Text tab's branch, which changes no engine or content file; 9 November, main with the shapes relaid and recast,
+- Tests: 1081 tests, 304,222 checks, green (10 November, main with the Text tab, which changes no engine or content file; 9 November, main with the shapes relaid and recast,
   the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
   the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
@@ -45,7 +45,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the music session's branch below.
+Everything is on main as of 10 November 2026 but the music session's branch below.
+`ccr-7d7ed303-tbdkg4`, the hangar's Text tab of 10 November (How things stand below), landed on
+main as a fast-forward on Ryan's word ("Ok merge into main please"); it is merged and to delete
+with the rest.
 `claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November, its id's rename and every id
 following its name (How things stand below), landed on main as fast-forwards on Ryan's word ("merge
 it into main so I can try it"; "clean up and merge into main"); it is merged and to delete with the rest.
@@ -184,7 +187,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   furniture and Jenny's lines. Checked on a local copy of the page with a stand-in database
   (signing, writing, the next row, a live sync under a half-typed text, a fold into
   `chassis.json` and the hand-laid `foes.json`, both flags, a phone's width), then published
-  (Pages, below). The branch waits on his word to land on main.
+  (Pages, below).
 - **The Lammergeier's rework** (9 November, `ccr-a0b35006-od22d2`; the bible's Lammergeier row):
   Ryan sent it back for more than a fix ("A chassis based around opening an empty spot isn't a
   good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
@@ -561,8 +564,8 @@ commands are in `README.md`.
   merge; it carries the hunt the composition's and the rings purged, the map session's shapes and
   field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
   following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
-  Gel's and the reinforcement row's slot-mine lines, the tables), and this branch's v0.498 with the
-  hangar row's tabs and the shown-text row, both unpublished, the republish on Ryan's word. BASE for the next merge is `f048e67`'s file. The live
+  Gel's and the reinforcement row's slot-mine lines, the tables), and v0.498 since the Text tab landed (the
+  hangar row's tabs and the shown-text row), both unpublished, the republish on Ryan's word. BASE for the next merge is `f048e67`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
@@ -578,7 +581,7 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 218 (10 November, this branch at `5a490e5`): the page with its Text tab,
+  page's Version 218 (10 November, main's `5a490e5`): the page with its Text tab,
   `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. The version
   before it was a whole publish of main at `2d489f7` that no record names (the live page and its
   content matched that commit byte for byte, the Lammergeier's rework on it), so the page was not
