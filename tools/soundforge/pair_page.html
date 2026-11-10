@@ -158,10 +158,11 @@
 <h2>Hold The Line: passed</h2>
 <p>You passed the full pair. Both halves are built into the game's files as you heard them here: the battle half plays wherever Hold The Line played, and the map half sits beside it until the game can play a pair (the map choosing the track, a fight flipping to the battle half in place). The full pair on the switch is still <strong>Hold The Line, round twenty-seven</strong>. X's riff stays in <a href="https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV">the Melody Desk</a> as Hold The Line, round twenty-two.</p>
 
-<h2>Round thirty: Night Shift</h2>
-<p>The tunes are locked. The off-beat piano is out of the head again and stays in the lead's section and R; nothing else in the pair has changed. The full pair on the switch is <strong>Night Shift, round thirty</strong>, at 94.</p>
-<p><strong>At 96.</strong> Two sets, one for each half, since both would move together: the same bars at 94 and at 96. These rows run at different speeds, so start each from its top instead of switching partway.</p>
-<p><strong>The drums dressed.</strong> The pair's kit is plain: the hat on even eighths, the snare on two and four, the kick on the bass's rhythm. The dressed row keeps the kick and the fills and adds three things. The hat's off-beats are softer than its beats. A loose half-open hat closes every second bar, and two quick sixteenths close every fourth. The snare gets ghost notes, placed differently in odd and even bars, with a small turn every fourth.</p>
+<h2>Round thirty-one: Night Shift</h2>
+<p>The tunes are locked, and the dressed kit is in the pair now, with more fills. The full pair on the switch is <strong>Night Shift, round thirty-one</strong>, at 94.</p>
+<p><strong>The fills.</strong> The ones the track had stay: the toms at each section's eighth bar, into R and into the outro. New: a snare building out of the intro into the head; the snare and the toms running down into the breakdown; the toms and the snare trading into D; two snares closing R's first pass and the toms closing its second; two snares at the end of the outro into the top.</p>
+<p><strong>Faster.</strong> Two sets, one for each half, since both would move together: the same bars at 94, at 96 and at 98. These rows run at different speeds, so start each from its top instead of switching partway.</p>
+<p><strong>The sets.</strong> The two tempo sets, and the whole battle half with the new fills or with the dressing alone, as you heard it.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-night"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -513,12 +514,12 @@
   function none() { return null; }
 
   var RUN_LABELS = {engage: 'ENGAGE', victory: 'victory', field: 'back to the field', contact: 'a hunter catches'};
-  Promise.all([getJSON('manifest.json'), getJSON('hold27.json').catch(none), getJSON('night30.json').catch(none), getJSON('far8.json').catch(none)]).then(function (all) {
+  Promise.all([getJSON('manifest.json'), getJSON('hold27.json').catch(none), getJSON('night31.json').catch(none), getJSON('far8.json').catch(none)]).then(function (all) {
     var m = all[0], hold = all[1], night = all[2], far = all[3];
     man = m;
     // Each later round's pairs after its first-round track.
     if (hold) hold.tracks.forEach(function (t) { t.round = 'twenty-seven'; });
-    if (night) night.tracks.forEach(function (t) { t.round = 'thirty'; });
+    if (night) night.tracks.forEach(function (t) { t.round = 'thirty-one'; });
     if (far) far.tracks.forEach(function (t) { t.round = 'eight'; });
     var later = [].concat(hold ? hold.tracks : [], night ? night.tracks : [], far ? far.tracks : []);
     var tracks = [];

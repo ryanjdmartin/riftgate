@@ -1,4 +1,7 @@
-"""Night Shift's thirtieth round as a pair (Ryan, 10 November: "Remove the piano from A, keep in C and R. Like the new
+"""Night Shift's thirty-first round as a pair (Ryan, 10 November: "the amount of dressing is good in your sample. Can
+use a few more fills and such, especially during transitions. Almost there"; "Can I hear 98?"): the thirtieth's with
+the kit dressed (DRESS_ON) and fills at the transitions (FILLS_MORE, battle_half's `fills`), and each half at 96 and
+98 beside 94. Before it, the thirtieth as a pair (Ryan, 10 November: "Remove the piano from A, keep in C and R. Like the new
 R. I think that locks the tunes for now. Can I hear the 96? And a version where we dress up the drums a bit?"): the
 twenty-ninth's with the off-beat piano out of the head again (PIANO_OUT), the tunes locked, and two things to hear:
 the pair's bars at 96 beside 94 (the renders' `bpm`), and the kit dressed (battle_half's `dress`, DRESS). Before it,
@@ -375,6 +378,34 @@ PIANO_OUT = "A"   # the off-beat piano's sections out of the battle half (Ryan, 
 DRESS = {"hat": ("x.6.x.6.x.6.x.6.", "x.6.x.6.x.6.x...", "x.6.x.6.x.6.x.6.", "x.6.x.6.x.6.x.77"),
          "hat_half": ("." * 16, "..............x.", "." * 16, "." * 16),
          "snare": ("....x..o....x...", "....x....o..x..o", "....x..o....x...", "....x..o.o..x.o.")}
+
+
+DRESS_ON = True   # the full pair's (Ryan, 10 November: "the amount of dressing is good in your sample")
+# More fills, at the transitions most (Ryan, 10 November: "Can use a few more fills and such, especially during
+# transitions"), by section and bar: the intro's last bar a snare building into the head; the head's last a snare
+# and the toms down into the breakdown; the lead's section's last the toms and the snare trading into D; R's eighth
+# bar two snares closing the first pass, its sixteenth the toms' fill closing the second; the outro's last two snares
+# into the top. The fills already there stay: the toms' at each section's eighth bar, D's into R, R's into the outro.
+FILL_HAT = "x.x.x.x........."
+SEC_BARS = {"I": 8, "A": 16, "C": 16, "R": R_BARS, "O": 8}
+FILLS_MORE = {
+    ("I", 7): {"snare": "....x...5.6.7.8x", "tom": "." * 16, "tom2": "." * 16, "hat": FILL_HAT, "hat_half": "." * 16},
+    ("A", 15): {"snare": "....x...6x7x....", "tom": "............xx..", "tom2": "..............xx", "hat": FILL_HAT, "hat_half": "." * 16},
+    ("C", 15): {"snare": "....x.....xx....", "tom": "........xx..x...", "tom2": "..............xx", "hat": FILL_HAT, "hat_half": "." * 16},
+    ("R", 7): {"snare": "....x..o....x.xx"},
+    ("R", 15): {"tom": FILL_TOM, "tom2": FILL_TOM2, "hat": FILL_HAT, "hat_half": "." * 16, "snare": "....x.......x..."},
+    ("O", 7): {"snare": "....x..o....x.xx"},
+}
+
+
+def more_fills(drums):
+    """FILLS_MORE written over the kit, each section's patterns laid out to its whole length first."""
+    for (sec, bar), rows in FILLS_MORE.items():
+        n = 16 * SEC_BARS[sec]
+        for name, pat in rows.items():
+            old = drums.setdefault(name, {}).get(sec) or "." * 16
+            old = (old * (n // len(old) + 1))[:n]
+            drums[name][sec] = old[:16 * bar] + pat + old[16 * bar + 16:]
 
 
 def dressed(drums):
@@ -1199,7 +1230,7 @@ def arp_bars(pat, keep):
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
                 d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
                 duel_break=True, duel_chords=False, duel_octaves=False, dark_notes=DARK_NOTES, dark_colours=DARK_COLOURS,
-                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=False):
+                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
@@ -1395,8 +1426,11 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         if d_fill:   # the toms' fill closing D into R
             drums["tom"]["D"], drums["tom2"]["D"] = "." * 112 + FILL_TOM, "." * 112 + FILL_TOM2
             drums["hat"]["D"] = HATQ * 7 + "x.x.x.x........."
+    dress = DRESS_ON if dress is None else dress
     if dress:
         dressed(drums)
+        if fills:
+            more_fills(drums)
     kit = P.fight_kit()
     if dress:   # the loose half-open hat, from its own seed so every other sound keeps its own
         saved, F.RNG = F.RNG, np.random.default_rng(zlib.crc32(b"night_shift_hat_half"))
@@ -1494,22 +1528,24 @@ def drive_set(sid, title, form, note):
             "rows": [("%s%d" % (sid, k), t, n, opts) for k, (t, n, opts) in enumerate(DRIVE_ROWS)]}
 
 
-TEMPO_NOTE = "At 94, the shipped tempo and the pair's, or at 96 (Ryan, 10 November: \"Can I hear the 96?\"). The two rows run at different speeds, so a switch partway lands on another beat: start each from its top. Both halves would move together, since they keep one timeline."
+TEMPO_NOTE = "At 94, the shipped tempo and the pair's, at 96 or at 98 (Ryan, 10 November: \"Can I hear the 96?\"; \"Can I hear 98?\"). The rows run at different speeds, so a switch partway lands on another beat: start each from its top. Both halves would move together, since they keep one timeline."
 SETS = [
-    {"id": "nb", "half": "battle", "title": "The battle half at 96", "form": "A" * 8 + " " + "C" * 8 + " " + "R" * 16, "seed": NAME + "_battle",
+    {"id": "nb", "half": "battle", "title": "The battle half faster", "form": "A" * 8 + " " + "C" * 8 + " " + "R" * 16, "seed": NAME + "_battle",
      "note": "Eight bars of the head, eight of the lead's section and R's first sixteen. " + TEMPO_NOTE,
      "rows": [("nb0", "At 94", "The full pair's.", {}),
-              ("nb1", "At 96", "Two beats a minute faster.", {"bpm": 96})]},
-    {"id": "nq", "half": "map", "title": "The map half at 96", "form": "A" * 8 + " " + "C" * 8, "seed": NAME,
+              ("nb1", "At 96", "Two beats a minute faster.", {"bpm": 96}),
+              ("nb2", "At 98", "Four faster (Ryan, 10 November: \"Can I hear 98?\").", {"bpm": 98})]},
+    {"id": "nq", "half": "map", "title": "The map half faster", "form": "A" * 8 + " " + "C" * 8, "seed": NAME,
      "note": "Eight bars of the map's groove and eight of its lead's section. " + TEMPO_NOTE,
      "rows": [("nq0", "At 94", "The full pair's.", {}),
-              ("nq1", "At 96", "Two beats a minute faster.", {"bpm": 96})]},
-    {"id": "nk", "half": "battle", "title": "The drums dressed", "form": "A" * 8 + " " + "C" * 8 + " " + "R" * 16, "seed": NAME + "_battle",
-     "note": "Eight bars of the head, eight of the lead's section and R's first sixteen (Ryan, 10 November: \"a version where we dress up the drums a bit\"). Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("nk0", "As the pair has them", "The hat on even eighths, the snare on two and four, the kick on the bass's rhythm.", {}),
-              ("nk1", "Dressed", "The hat's off-beats softer, a loose half-open hat closing every second bar and two sixteenths every fourth; ghost notes on the snare and a small turn every fourth bar. The kick as it was.", {"dress": True})]},
+              ("nq1", "At 96", "Two beats a minute faster.", {"bpm": 96}),
+              ("nq2", "At 98", "Four faster (Ryan, 10 November: \"Can I hear 98?\").", {"bpm": 98})]},
+    {"id": "nk", "half": "battle", "title": "More fills", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The whole battle half, so every transition is in it (Ryan, 10 November: \"the amount of dressing is good in your sample. Can use a few more fills and such, especially during transitions\"). Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("nk0", "With more fills", "The dressed kit with a fill into the head, into the breakdown, into D, closing each of R's passes and into the top (the full pair's).", {}),
+              ("nk1", "Dressed, as you heard it", "The dressing alone, with the fills the track already had.", {"fills": False})]},
 ]
-PAIR = {"id": "night_shift_r30", "title": "Night Shift, round thirty"}
+PAIR = {"id": "night_shift_r31", "title": "Night Shift, round thirty-one"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -1639,7 +1675,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night30.json")
+    path = os.path.join(P.OUT, "night31.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1651,7 +1687,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night30_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night31_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
