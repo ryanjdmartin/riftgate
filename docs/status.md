@@ -205,7 +205,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   window; the caches' chests in place of name and pips; the tilt-shift along the rift's axis
   (`far_axis`: right and left with the wall at the left), the vortex shifted right there, the
   3D scenery a step darker; nothing takes a touch during a cutscene and nothing skips one; an
-  elite introduced as it arrives after a Fracture (`hold_spawn`, `play_spawn`). The skirmish,
+  elite introduced as it arrives after a Fracture (`hold_spawn`, `play_spawn`); no STRIKES THE
+  GATE tag, and the rare pusher with nowhere beside the wall to land tagged BLOCKED (WAITS before). The skirmish,
   built by a worker in a worktree and cherry-picked: Jenny's heat warning latched a machine
   (once over three quarters until seen back under, the overheat every time); the hopper's worth
   the game's Armoured, granted as each round opens and following the loads between, a Purge

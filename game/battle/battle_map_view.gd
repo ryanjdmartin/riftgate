@@ -597,9 +597,11 @@ func _draw() -> void:
 			_walk_end(sq, w, whole)
 			# No tag says a pack strikes the gate: the warning on its landing hex does (Ryan, 10
 			# November: "Remove "strikes the gate""). A pusher with nowhere beside the wall to land
-			# this turn stays where it is, and says so.
+			# this turn stays where it is, and says so: BLOCKED, the rare case (his word the same
+			# day, of the tag that read WAITS: "Leave it in for the rare case, and change it to
+			# "blocked"").
 			if w.waits:
-				_plaque(center(w.end) + Vector2(0.0, HEX_SIZE * 1.15), "WAITS", Palette.MUTED, 1.5)
+				_plaque(center(w.end) + Vector2(0.0, HEX_SIZE * 1.15), "BLOCKED", Palette.MUTED, 1.5)
 
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
