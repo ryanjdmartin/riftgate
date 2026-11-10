@@ -713,6 +713,7 @@ func set_sweep(map_y: float) -> void:
 var _anim_px: Dictionary = {}   # unit id -> map pixel while a move plays, in place of its hex
 ## A machine whose move is planned and not yet played stands where its plan starts (Ryan, 25
 ## October): unit id -> [hex, facing], in place of the battle's hex, until the plan plays.
+var seam_shown := -1.0   # the seam's row as the map shows it while its creep waits or plays (BattleMapView.seam_shown); under 0, the field's
 var held: Dictionary = {}
 
 
@@ -1697,7 +1698,7 @@ func _build_camera() -> void:
 ## Put every mech where the field says it is, on top of its column and turned to its
 ## facing.
 func sync() -> void:
-	var grad := Bleed.gradient(field, _origin, hex_px)
+	var grad := Bleed.gradient(field, _origin, hex_px, seam_shown)
 	var src := Bleed.sources(field, _origin, hex_px, _anim_px)
 	var map := field.map
 	for h in _columns.keys():

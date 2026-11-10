@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1087 tests, 304,398 checks, green (10 November, `ccr-c71bc17f-hclj2c`: main with the
+- Tests: 1089 tests, 304,422 checks, green (10 November, `ccr-c71bc17f-hclj2c`: main with the
   Text tab and the side session's work, and the map playtest list's two tests; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
@@ -177,23 +177,29 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
 - **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, not on main; five points from
-  Ryan's phone). A tear's ring stands on its hex: it was drawn in screen space at its map
-  position, so it hung at one place on the glass while the map scrolled ("it's just fixed in
-  place as I pan around"), and its plaque left the transform in map space for the edge tags and
-  the scan lines after it; found with it, no tear ever had its edge tag (the tags' list was the
-  packs' typed array, which refused a tear with an error a frame). The boss has a picture of its
-  own on the map ("now it's just a giant blob. Probably needs to be actually regenerated for a
-  sensible size"): `art/foes/<id>_boss.png`, 48 pixels, cut from its combat sprite for all
-  twenty-one that can lead a boss unit (the domains' bosses and benches) by `forge.py boss`,
-  which needs no image model; the token stays for the small faces, and a test ties the pictures
-  to content. Under the painting the scenery past the field is one shaded ground with no cells
-  ("the out-of-play areas on the flattened parts of the map are made clear"; `PaintedMap`). The
-  vortex stands a little higher with the wall at the left (`BattleMapView.rift_drop`). His fifth
-  ("tear spawned at the apron without the seam moving. If that's because the seam doesn't move
-  yet, then that's fine") is not that: the seam moves, and its picture's edge stands at half its
-  distance, so nothing was built and the choice is his (the bible's section 12, The long wall;
-  the two pictures side by side went to him in chat). The `tear` pose is new. All first cuts
-  (the to-do's judge line).
+  Ryan's phone, then his answers the same day). A tear's ring stands on its hex: it was drawn in
+  screen space at its map position, so it hung at one place on the glass while the map scrolled
+  ("it's just fixed in place as I pan around"), and its plaque left the transform in map space
+  for the edge tags and the scan lines after it. A tear has no edge tag ("same way the rift
+  doesn't"; none had ever drawn, the tags' list refusing one with an error a frame). The boss
+  has a picture of its own on the map ("now it's just a giant blob. Probably needs to be
+  actually regenerated for a sensible size"): `art/foes/<id>_boss.png`, 48 pixels, cut from its
+  combat sprite for all twenty-one that can lead a boss unit (the domains' bosses and benches)
+  by `forge.py boss`, which needs no image model; the token stays for the small faces, and a
+  test ties the pictures to content. Under the painting the scenery past the field is one shaded
+  ground with no cells ("the out-of-play areas on the flattened parts of the map are made
+  clear"; `PaintedMap`). The vortex stands a little higher with the wall at the left
+  (`BattleMapView.rift_drop`). The painting's edge stands on the seam's own row ("The point of
+  the seam was to visually represent where the tears can open"; `Bleed.gradient`: it stood at
+  half the seam's distance, so a tear "spawned at the apron without the seam moving"): four rows
+  painted as a battle opens and the field to the apron by the third peak, the engine untouched.
+  A peak is shown as it happens ("an animation/cutscene when one opens. And ... when the seam
+  moves, too"; `BattleMapView.hold_peak` and `play_peak`, the rules' "A peak is shown"): held
+  through the packs' walks, then the seam's sweep under its front and each tear bursting open,
+  a press skipping it; its two sounds are borrowed (`contact`, `reveal`). The `tear` and `peak`
+  poses are new. His notes for a later session are in the bible's tears row (the seam starts too
+  far up and could be curved; crossing the map is the issue more than the tears' distance). All
+  first cuts (the to-do's judge line).
 - **The side session of 9 November** (`ccr-df879779-uf9076`, beside the formation and refit pass,
   on Ryan's "go"; on main since 10 November). The test runner hears a crash: it reads the engine's log for
   script errors while each test runs (a Logger) and fails the test for each, in the test or under
@@ -620,8 +626,8 @@ commands are in `README.md`.
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
   reinforcement row's slot-mine lines and the tables). Main's file is v0.498 since the Text tab
   landed (the hangar row's tabs and the shown-text row), unpublished, its republish on Ryan's
-  word; `ccr-c71bc17f-hclj2c`'s is v0.499 (the boss's picture, the scenery under the painting,
-  the tears row's read and section 12's seam question), unpublished too; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
+  word; `ccr-c71bc17f-hclj2c`'s is v0.499 (the boss's picture, the scenery under the painting
+  and the tears row's read of 10 November), unpublished too; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
   rows, unpublished too. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,

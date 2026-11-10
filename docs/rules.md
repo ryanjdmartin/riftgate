@@ -1054,8 +1054,8 @@ a stat.
   are the same in both. With the wall at the bottom the wall and the gate stand on the last row
   and their height covers the row before it; with the wall at the left they stand on that row,
   against the apron, the last row behind them the city's, and the rift's vortex stands on the
-  lowest of its three hexes. A pack, a machine or a tear past the screen's edge has a tag at that
-  edge. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
+  lowest of its three hexes. A pack or a machine past the screen's edge has a tag at that
+  edge; a tear has none, as the rift has none. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
   Rift Pressure toward the next spawn (a box a turn of the beat) and the Rupture meter toward its
   Fractures (a notch a Fracture, those earned lit); the gate and the rift carry no bar on the map
   and are no selection. A gauge that changes flashes. The boss's picture stands far larger than
@@ -1259,10 +1259,14 @@ a stat.
   walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
   escalate in place.
 - **The seam** is the flattening's edge: the row the rift's bleed reaches, the first row past
-  the rift's mouth at the start (row 4 at twelve deep, 5 at twenty), total on the rift's row and gone past the seam. It is the
-  clock's picture: no rule reads the flattened hexes. The painting takes the ground where the
-  bleed is past half, so the edge seen stands at half the seam's distance from the rift, and a
-  tear opens on the seam's row in front of it (the bible's section 12).
+  the rift's mouth at the start (row 4 at twelve deep, 5 at twenty). It is the clock's picture,
+  and it shows where the tears can open: the painting's edge stands on it, the seam's own row
+  the painting's front row and the row past it solid ground. No rule reads the flattened hexes.
+- **A peak is shown** once the packs have walked: the map keeps the seam where it stood and the
+  new tears unseen through the walks, then glides to the seam, whose edge sweeps to its new row
+  under a bright front with its name on it, then to each new tear as it bursts open, and back to
+  where the player was looking; a press on the map skips it. The turn's declarations (a
+  hunter's lock, a catch) follow it.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
   from the third past the rift's to the second short of the apron (never that close to the

@@ -529,6 +529,14 @@ func _apply_battle_pose() -> void:
 				s._map.scroll_y = s._map.size.y * 0.6 - tp.y * s._map.zoom
 				s._map._clamp_scroll()
 			s._map.queue_redraw()
+		"peak":
+			# A peak's cutscene (10 November): the seam's creep under its front, then the tear
+			# bursting open, then the map back where it was; RIFTGATE_SHOT_FRAME picks the moment
+			# (a cloud session draws few frames a second: the sweep near 12, the tear's burst near 26).
+			s._map.hold_peak()
+			b.field.peak()
+			s._refresh()
+			s._map.play_peak(Callable())
 		"fracture":
 			# A Fracture announced as a fight's tally earns it (Ryan, 9 November: "Fractures need to
 			# be announced"): the band over the map and the top bar's gauge flashing (the default

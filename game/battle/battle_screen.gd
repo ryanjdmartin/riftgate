@@ -248,6 +248,7 @@ func _build() -> void:
 	_map.route_drag_started.connect(_on_route_drag_started)
 	_map.route_drag_to.connect(_on_route_drag_to)
 	_map.route_drag_ended.connect(_on_route_drag_ended)
+	_map.peak_beat.connect(_on_peak_beat)
 	_apply_display()
 	_map.hold_released.connect(_on_hold_released)
 
@@ -1052,6 +1053,7 @@ func _on_end_turn() -> void:
 		Sound.say("resolve_all" if committed == free else "resolve_move")
 	var gate_before := battle.field.gate_hp
 	var plan := battle.take_plan()   # the machines' planned moves play first, then the packs walk
+	_map.hold_peak()   # a peak this turn is shown after the walks (_after_step): the seam and the tears stand as they were until then
 	var walks := battle.end_turn()
 	_gate_struck = battle.field.gate_hp < gate_before
 	_spawned = battle.last_spawned
@@ -1076,6 +1078,33 @@ func _after_step() -> void:
 		_top.flash("rift")
 	_gate_struck = false
 	_spawned = false
+	if battle.state == Battle.State.DONE:
+		_map.play_peak(Callable())   # nothing to show over the outcome: the hold is let go
+		_refresh()
+		_show_outcome()
+		_autosave()
+		return
+	# A peak's cutscene first (the seam's creep, a tear opening: BattleMapView.play_peak), then
+	# what the turn opens with; at once when the turn held no peak.
+	_refresh()
+	_map.play_peak(_after_peak)
+	if _map.peak_playing():
+		_refresh()   # the buttons grey while it plays
+
+
+## A beat of the peak's cutscene, heard: the seam's creep starting, a tear opening. Borrowed
+## sounds until each has its own (the audio to-do).
+func _on_peak_beat(what: String) -> void:
+	if what == "tear":
+		Sound.play("reveal")
+	else:
+		Sound.play("contact", -4.0)
+	_top.flash("rift")
+
+
+## The peak shown (or none to show): the next turn opens, with a hunter's lock declared and any
+## catch.
+func _after_peak() -> void:
 	match battle.state:
 		Battle.State.DONE:
 			_refresh()

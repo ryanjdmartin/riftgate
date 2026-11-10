@@ -635,8 +635,8 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	s.free()
 
 
-## Every pack, machine and tear past the view's edge gets a tag at the edge it lies past, in
-## either view (the long wall brief 7.1: a wall longer than a screen), inside the view and never
+## Every pack and machine past the view's edge gets a tag at the edge it lies past, in either
+## view (the long wall brief 7.1: a wall longer than a screen), inside the view and never
 ## overlapping another.
 func test_offscreen_packs_get_edge_tags() -> void:
 	var s := _screen()
@@ -645,9 +645,8 @@ func test_offscreen_packs_get_edge_tags() -> void:
 	var m := BattleMapView.HEX_SIZE * 0.3
 	var view: Rect2 = Rect2(Vector2.ZERO, s._map.size).grow(m)
 	var things: Array = s.battle.field.packs() + s.battle.field.mechs()
-	things.append_array(s.battle.field.tears)
 	for thing in things:
-		var c: Vector2 = s._map.to_screen(s._map.center(thing.pos if thing is Unit else thing["pos"]))   # center is map space; tags are judged on screen
+		var c: Vector2 = s._map.to_screen(s._map.center(thing.pos))   # center is map space; tags are judged on screen
 		if not view.has_point(c):
 			hidden += 1
 	assert_true(hidden >= 1, "a long wall leaves packs off screen at the gate's end")
@@ -668,28 +667,72 @@ func test_offscreen_packs_get_edge_tags() -> void:
 	s.free()
 
 
-## A tear past the view's edge has its tag (10 November: the list the tags were built from was
-## the packs' typed array, which refused a tear with an error a frame, so none ever had one).
-func test_a_tear_off_screen_gets_its_edge_tag() -> void:
+## A tear has no edge tag, as the rift has none (Ryan, 10 November: "Tear doesn't need an edge
+## tag, same way the rift doesn't"): wherever the map looks, every tag is a unit's.
+func test_a_tear_has_no_edge_tag() -> void:
 	var s := _screen()
 	var f: Battlefield = s.battle.field
 	f.peak()
 	assert_false(f.tears.is_empty(), "a peak opens a tear")
-	var tear: Dictionary = f.tears[0]
-	# Look as far from it as the scroll runs, at whichever end leaves it off the screen.
-	var found := false
 	for end in ["top", "bottom"]:
 		if end == "top":
 			s._map.scroll_to_top()
 		else:
 			s._map.scroll_to_bottom()
-		var at: Vector2 = s._map.to_screen(s._map.center(tear["pos"]))
-		if Rect2(Vector2.ZERO, s._map.size).grow(BattleMapView.HEX_SIZE * 0.3).has_point(at):
-			continue
 		for t in s._map.offscreen_tags():
-			found = found or (t[1] is Dictionary and t[1] == tear)
-		assert_true(found, "the tear off screen has a tag at the edge it lies past")
-		break
+			assert_true(t[1] is Unit, "a tag stands for a unit, never a tear")
+	s.free()
+
+
+## A peak is shown after the packs' walks, never under them (Ryan, 10 November: a tear "needs ...
+## an animation/cutscene when one opens. And an animation/cutscene when the seam moves, too"):
+## the map holds the seam where it stood and the new tear unseen until the cutscene plays, then
+## shows the field as it is and hands on. Headless nothing plays, so it hands on at once.
+func test_a_peak_is_held_until_its_cutscene_plays() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	var seam := f.seam_row
+	var tears := f.tears.size()
+	s._map.hold_peak()
+	f.peak()
+	assert_eq(s._map.seam_shown, float(seam), "the seam drawn where it stood")
+	assert_eq(s._map.tears_shown, tears, "the new tear not drawn yet")
+	var grad_held: Vector2 = Bleed.gradient(f, Vector2.ZERO, 48.0, s._map.seam_shown)
+	var grad_now: Vector2 = Bleed.gradient(f, Vector2.ZERO, 48.0)
+	assert_true(grad_now.x > grad_held.x, "the painting's edge as held stands short of the field's")
+	var handed := [false]
+	s._map.play_peak(func() -> void: handed[0] = true)
+	assert_true(handed[0], "the cutscene hands on")
+	assert_false(s._map.peak_playing(), "and is over")
+	assert_eq(s._map.seam_shown, -1.0, "the seam drawn as the field has it")
+	assert_eq(s._map.tears_shown, -1, "and every tear")
+	# A turn with no peak hands on the same way.
+	s._map.hold_peak()
+	handed[0] = false
+	s._map.play_peak(func() -> void: handed[0] = true)
+	assert_true(handed[0], "nothing to show: at once")
+	s.free()
+
+
+## The painting's edge stands on the seam (Ryan, 10 November: "The point of the seam was to
+## visually represent where the tears can open"): the seam's own row is the painting's, where a
+## tear opens, and the row past it the reconstruction's, at the start and after every creep, in
+## either view.
+func test_the_paintings_edge_stands_on_the_seam() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	var was := Bleed.everywhere
+	Bleed.everywhere = false
+	var none := PackedVector3Array()
+	for step in range(4):
+		var grad := Bleed.gradient(f, Vector2.ZERO, 48.0)
+		var col := Hex.axial_to_offset(f.map.gate).x
+		var on := MapOrient.to_pixel(Hex.offset_to_axial(col, f.seam_row), 48.0)
+		var past := MapOrient.to_pixel(Hex.offset_to_axial(col, f.seam_row + 1), 48.0)
+		assert_eq(Bleed.solid(on, grad, none), 0.0, "the seam's row %d is the painting's" % f.seam_row)
+		assert_eq(Bleed.solid(past, grad, none), 1.0, "the row past it is solid ground")
+		f.peak()
+	Bleed.everywhere = was
 	s.free()
 
 
