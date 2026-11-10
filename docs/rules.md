@@ -643,7 +643,7 @@ On a machine:
   entry granted it, a buff, so an enemy's purge takes it.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
   injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
-  the round's end. Never granted to every ally at once. The Blast Door grants it, self or ally.
+  the round's end. No piece grants it to every ally at once. The Blast Door grants it, self or ally.
   A foe's, from its own special: the next blow of a weapon the team lands on it deals no damage,
   the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
   or the end of the player's next turn.

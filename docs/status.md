@@ -100,7 +100,7 @@ and changes"): the bible, the measurements, this file and the to-do the conflict
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
 sections main's four and then this branch's, the to-do's lines each by the side that moved it),
 and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
-The bible's file is v0.500, main's v0.497 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.501, main's v0.497 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -220,7 +220,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (the brief's section 4, the bible's Foe roles row): a unit is made for a pusher's, a flanker's
   or a hunter's fight and tuned for it, a hunter its line and what keeps up with it, a flanker a
   duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
-  Meadow and the Waste want a flanker line. The bible at 0.500 carries it.
+  Meadow and the Waste want a flanker line. The bible at 0.501 carries it.
 - **The refit pass's first build and reads** (9 November, on his "Your leans are good"; the
   brief's section 5; nothing in `content/` moved): the injury rule is off in the game
   (`Skirmish.injuries`; `--injury on` reads it back; the tests that read an injury turn it on);
@@ -245,6 +245,13 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   which the audit's deal leaves where they are: the massives' numbers are the refit's first
   band. His to settle next, the brief's section 7: how common the Barrier is, what prices a
   round, the regen's size, breach under a regen, heat's prices. The scratch worktree is gone.
+  His words of 10 November on that list: the wall strike follows the threat rating ("otherwise a
+  single giant dude that composes a threat 3 on his own could be ignored. It also makes elites
+  make more sense too"), agreed and not built, a worn pack's strike the one detail left; breach
+  parked ("Let's ignore breach for now, it's useless to evaluate at this junction"); a team Ward
+  or a team Barrier "probably ok" where the two cannot be cast back to back, the Swallowtail a
+  possible home, undecided (the Barrier and Ward row, its brief). What the trial plays without
+  is the brief's section 5 (the content, the re-deal, the numbers, the foes, the reworks).
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -679,7 +686,7 @@ commands are in `README.md`.
   field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
   following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
   Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.500, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.501, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the kit, shield,
   triangle, redirection, injury, command-die, Puffin, Whip Scorpion, Polar Bear, Swallowtail and
   Musk Ox rows' refit lines, section 12's items), unpublished too. BASE for the

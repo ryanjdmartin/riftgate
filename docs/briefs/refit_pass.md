@@ -65,6 +65,13 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
   sense. Doesn't matter to what. Canopy was always a little lame, though." And, with main merged
   in first: "send any machine or component or module that clearly doesn't work in the new system
   (i.e. scorpion, for one), back to design." Section 6 is that audit.
+- **After the first reads, 10 November**: the wall strike, "Strike following the threat rating
+  makes a lot of sense, otherwise a single giant dude that composes a threat 3 on his own could
+  be ignored. It also makes elites make more sense too" (section 4's first hole, answered; to
+  build); breach, "Let's ignore breach for now, it's useless to evaluate at this junction", so
+  section 7's breach question is parked and nothing asks it of him until the model's numbers
+  stand; and a team Ward or a team Barrier "probably ok", the Swallowtail a possible home, not
+  decided (its brief has his words).
 - **The refit's direction, before the model was reached**: "Enemy HP is probably too high, or
   player damage is too low. I'd rather lower enemy HP slightly, and boost synergy pieces to
   increase damage instead of just raw numbers. However, I want to judge the new formations
@@ -193,8 +200,13 @@ Dullahan, the Banshee, the Sphinx, the Roc, Anzû, the Iron Giant, Cerberus, the
   foe), so one foe chips 3 a turn where a formation of eight strikes 26, and leaving a flanker
   alone costs almost nothing. Claude's lean: the strike follows the threat rating the pack
   already shows (ten a pip), so the pips say how many machines it wants and how hard it hits the
-  wall. It moves his rule of 30 October ("a stray pair chips less than a trio"), written when a
-  count was the threat; his call.
+  wall. Ryan, 10 November: "Strike following the threat rating makes a lot of sense, otherwise a
+  single giant dude that composes a threat 3 on his own could be ignored. It also makes elites
+  make more sense too." Agreed, not built: it replaces his rule of 30 October ("a stray pair
+  chips less than a trio"), written when a count was the threat. One detail his words leave
+  open: a pack that has won a fight keeps its survivors and its rating, so a formation worn to
+  two foes would still strike as a three. Claude's lean: the rating's strike scaled by the share
+  of the pack still standing, never under one pip's; his call when it is built.
 - A duel a light enjoys: one sharp question from the kit the engine has (a countdown to beat, a
   brace to time, a barrier to pop cheaply, a getting-up to kill twice, a last act to shield
   before), HP for three or four rounds of one die, and no flat armour, which the reads showed
@@ -241,6 +253,28 @@ option):
   the next launch and judged on a new battle or run.
 - The curve read's cells carry greedy's rounds and its stalled fights beside the band and the
   hull lost.
+
+Not built, so the trial plays without it (10 November, on his asking what is built):
+
+- **Section 6's content.** No component is retired, renamed or re-kinded: the eleven slottable
+  shield and vent pieces are still in content, four of them basics, so a refit by hand, a loot
+  drop and the quick campaign's hangar can still put one on a die. The tier-zero Shoring Jack
+  and the Halo Projector do not exist; the tier-one pieces stand in, on the stock dice only.
+- **The stock re-deal.** A vent's slot holds a Twin Autoguns as a placeholder (MODEL) or the
+  defensive basic the die lacks (EVERY).
+- **The numbers.** The regen is half the gauge on every chassis, no role or maker in it; cooling
+  is as it was but for the Stingray's one; no heat price moved but the two basics'; no foe's
+  number moved.
+- **The foes.** The formation proposal's grids; the bombs that no longer hunt (content's bomb,
+  grenade and balloon compositions still do); the roles and the flankers as duels; the rising
+  threat and its validator check; the wall strike by the rating.
+- **The machines.** The four reworks; the two modules (the Skeleton's rule does nothing with the
+  injury off, the Conjugator never fires on a die with no shield); the lines on fielded machines
+  that name a shield or a vent (the Musk Ox's forge reads neither; the Storm Petrel's and the
+  Buzzard's shields run as written, cheaper under a regen).
+- **The engine and the words.** Shield and vent are still kinds, with their keywords, their
+  vocabulary and the Overshield; shown text still names the injury (the keywords list) though
+  the rule is off. The bot does not value the regen. The commander layer is a note.
 
 The first reads are `docs/measurements.md`'s (9 November, the refit pass's first reads), 30 seeds
 a cell and 40 runs a campaign, each a direction, in the bot's hands. What they say:
@@ -439,7 +473,8 @@ twentieth of the squad's hull at its rating, a flanker's a thirtieth or less, a 
 tenth, an elite's a quarter, the boss what is left); and the formation proposal's remaining leans,
 which his point on the makeups (section 4) now re-cuts for the flankers.
 
-Still his, the first five with what the first reads say (section 5):
+Still his, the first five with what the first reads say (section 5), the fourth parked on his
+word:
 
 1. **How common the Barrier is.** The audit puts one where a Halo stood (the Halo Projector: in
    stock the Baboon, the Prairie Dog, the Stingray, the Cassowary and the Cottonmouth, and the
@@ -467,18 +502,18 @@ Still his, the first five with what the first reads say (section 5):
    three, slowly; 2 a round leaves it a decision at four fifths of its hull. By role and by maker
    once the basic is picked; Claude's lean: 2 or 3 a round for the heavies, more for Kestrel's
    lights, read again with the content.
-4. **Breach under the regen.** Hull is spent where breach is: the Waste's whole line, the
-   Marsh's knights, the Peak's bombs and elementals, none of the Meadow's. Either that is each
-   domain's identity and its budget sits in its numbers (the Waste's "hull and tempo over
-   shields"), or breach becomes rarer on rank and file; and a flanker's duel with breach skips a
-   lone machine's only buffer, so a duelist carries it only where it is the duel's question.
+4. **Breach under the regen: parked** (Ryan, 10 November: "Let's ignore breach for now, it's
+   useless to evaluate at this junction"). The read stands as a read (hull is spent where breach
+   is: the Waste's whole line, the Marsh's knights, the Peak's bombs and elementals, none of the
+   Meadow's) and nothing is asked of him or proposed on it until the model's numbers stand.
 5. **Heat as a pace.** Losing the vents changed nothing, and nothing makes the bot hold a die:
    the prices are under the cooling. The heat session's list (the prices on every face, the
    basics included) is where the hold comes from; the cautious persona's read comes first.
 6. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
    front and his own try of 9 November ride on it).
 7. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
-   each domain lacks, and whether a pack's strike at the wall follows its rating.
+   each domain lacks. The strike at the wall follows the rating (his word, 10 November; a worn
+   pack's strike the one detail left, section 4).
 8. The Reinforced Skeleton: parked with destruction, or a new rule now.
 9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 
@@ -508,10 +543,10 @@ Still his, the first five with what the first reads say (section 5):
 
 1. Done, 9 November: the what-if, the injury rule off, the aggressor's habit, the trial, and the
    first reads (section 5).
-2. His play at placeholders: the trial under each rule for the defensive basic (the to-do's Ryan
-   list), and his answers to section 7's first five.
-3. The content of section 6 as marked, with the basic he picks; the regen and cooling numbers by
+2. His play at placeholders: the trial under each deal of the Barrier (the to-do's Ryan list),
+   and his answers to section 7's first five but the fourth, which is parked.
+3. The content of section 6 as marked, with the deal he picks; the regen and cooling numbers by
    chassis; the heat prices; the pushers re-cut and read by hull lost, each with its rising
-   threat and the validator's check for it; the flankers rewritten as duels; the records, the
-   vocabulary, the rules, the hangar page.
+   threat and the validator's check for it; the flankers rewritten as duels; the wall strike by
+   the rating; the records, the vocabulary, the rules, the hangar page.
 4. The formation proposal's remaining questions settled in play; the bosses' blocks after.

@@ -17,7 +17,8 @@ anyway."
   cleansed). Both are shield entries and the Hoist is a vent besides; neither kind stays on a die.
 - The Screens were "the team shield, honest by its number", the form its row passed where
   Armoured on every ally and a Barrier on every ally were refused. With no shield number to hand
-  out, that passing form is gone, and the refused ones are still refused.
+  out, that passing form is gone; his word of 10 November reopens a team Barrier or a team Ward
+  for it (below).
 - Its stock carries a Canopy, which retires.
 
 ## What stands
@@ -28,19 +29,22 @@ anyway."
 - Its body and model, and the fantasy in his words: "It doesn't rain death, but it directs
   units to rain death, offers in-fight refueling and support, and gives them a lift when needed."
 
-## A correction to what Claude offered on 9 November
+## A team Ward or a team Barrier: his word, 10 November
 
-The Screens as the team's Ward and the Hoist as an ally's Armoured were offered in chat and he
-called them probably correct. The first runs against a decided row: "Barrier and Ward: the block
-is a buff, one machine at a time", and the Decoherence Veil's own line, "never a team buff". A
-Ward on every ally is the team buff that row refuses, and the Swallowtail's row already records
-him refusing Armoured on all hands and a Barrier on every ally for the same piece. So the offer
-is withdrawn as made; whether a tier-three capstone's charged piece, paid in a Muster, may break
-that row by design is his to say in its session (a passive breaking a rule for its design is a
-different thing from an exception for balance), and the bench below holds forms that do not.
+The Screens as the team's Ward and the Hoist as an ally's Armoured were offered in chat on 9
+November and he called them probably correct; Claude then withdrew the first against the Barrier
+and Ward row ("the block is a buff, one machine at a time"). His answer, 10 November: "A team
+ward is probably ok, as is a team barrier, really, it's just combining them in a way that doesn't
+let both be cast back to back granting perpetual invulnerability. So yeah, I would consider the
+swallowtail as a potential home since it has a lot of levers. But not necessarily a decision to
+make now." So the withdrawal is undone: either may sit here, the two never chained into a
+standing block, and this machine's levers (the Muster, a charged form, a cooldown) are what
+would hold them apart. Nothing is decided; it is his session's.
 
 ## Bench, Claude's, for his session
 
+- The Screens as the team's Ward (9 November's offer, open again on his word above); or a team
+  Barrier as its charged form, the two on one piece so one die never casts both in a round.
 - The Screens: every ally's shield regenerates double this round (a regen buff, the kind his flat
   regen keeps meaningful); charged, Phased on every ally as today.
 - The Hoist: "in-fight refueling" as the model has it: a Cleanse on an ally plain; charged, the
